@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-06-15 23:13:09 $'
- * '$Revision: 1.3 $'
+ *     '$Date: 2001-06-18 21:18:36 $'
+ * '$Revision: 1.4 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -47,15 +47,15 @@ public class LockedPanel extends JPanel
         JPanel jp2 = new JPanel();
         jp2.setLayout(new BoxLayout(jp2,BoxLayout.Y_AXIS));
         jp2.setAlignmentX(Component.LEFT_ALIGNMENT);
-        jp1.setMaximumSize(new Dimension(350,25));
-        jp2.setMaximumSize(new Dimension(350,25));
+ //       jp1.setMaximumSize(new Dimension(350,25));
+//        jp2.setMaximumSize(new Dimension(350,25));
         jp.add(jp1);
         jp.add(jp2);
-		NodeInfo info = (NodeInfo)(nd.getUserObject());
+		    NodeInfo info = (NodeInfo)(nd.getUserObject());
         JLabel jl = new JLabel(info.name);
         jl.setForeground(java.awt.Color.black);
-		jl.setFont(new Font("Dialog", Font.PLAIN, 12));
-		jl.setVisible(true);
+		    jl.setFont(new Font("Dialog", Font.PLAIN, 12));
+		    jl.setVisible(true);
         jp1.add(jl);
 
 
@@ -63,8 +63,11 @@ public class LockedPanel extends JPanel
         if (info.getHelp()!=null) {
             name.append(info.getHelp()); 
         }
-
-        jl.setText(name.toString());
+        String helpString = name.toString();
+        if (helpString.length()>0) {
+          jl.setForeground(Color.black);
+          jl.setText("<html><font size='-1'>"+helpString+"</html>");
+        }
         //now check if there are child TEXT nodes
         Enumeration nodes = nd.children();
         // loop over child node
@@ -78,8 +81,8 @@ public class LockedPanel extends JPanel
             if (txt.length()>0) {
                 JTextField jtf1 = new JTextField();
                 jtf1.setEditable(false);
-                jtf1.setMaximumSize(new Dimension(350,19));
-                jtf1.setPreferredSize(new Dimension(350,19));
+  //              jtf1.setMaximumSize(new Dimension(350,19));
+  //              jtf1.setPreferredSize(new Dimension(350,19));
                 jp2.add(jtf1);
                 if (txt.equals("text")) { txt = " "; }
                 jtf1.setText(txt);

@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-06-15 23:13:09 $'
- * '$Revision: 1.13 $'
+ *     '$Date: 2001-06-18 21:18:35 $'
+ * '$Revision: 1.14 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -66,6 +66,7 @@ public class XMLPanels extends Component
  
  public DocFrame container = null;
  
+ 
  // nodeMap will store the tree node associated with each textfield
  Hashtable nodeMap;
  
@@ -81,9 +82,22 @@ public class XMLPanels extends Component
     /** Constructs a panel tree with the specified root. */
     public XMLPanels(DefaultMutableTreeNode node) {
         this.doc = node;
+        topPanel = new JPanel();
         nodeMap = new Hashtable();  // textfield key mapped to node
         init();
     }
+
+    /** Constructs a panel tree with the specified root. 
+      * and the specified default panel width
+      */
+    public XMLPanels(DefaultMutableTreeNode node, int defaultWidth) {
+        this.doc = node;
+        nodeMap = new Hashtable();  // textfield key mapped to node
+        topPanel = new JPanel();
+        topPanel.setSize(new Dimension(defaultWidth, 300));
+        init();
+    }
+    
     
 //    public void setTreeModel(MyDefaultTreeModel tm) {
     public void setTreeModel(DefaultTreeModel tm) {
@@ -100,81 +114,74 @@ public class XMLPanels extends Component
     /**
      */
     void init(){
-        topPanel = new JPanel();
 //        topPanel.setPreferredSize(new Dimension(400,30));
 //        topPanel.setMinimumSize(new Dimension(400,300));
-        topPanel.setMaximumSize(new Dimension(300,30));
+//        topPanel.setMaximumSize(new Dimension(300,30));
         NodeInfo info = (NodeInfo)(doc.getUserObject());
         topPanel.setBorder(BorderFactory.createCompoundBorder(
             BorderFactory.createTitledBorder(info.name),
             BorderFactory.createEmptyBorder(4, 4, 4, 4)
             ));
-		topPanel.setLayout(new BoxLayout(topPanel,BoxLayout.Y_AXIS));    
+		    topPanel.setLayout(new BoxLayout(topPanel,BoxLayout.Y_AXIS));    
          // is there anything to do?
          if (doc == null) { return; }
 
- /*        // iterate over children of this node
-         Enumeration nodes = doc.children();
-         while(nodes.hasMoreElements()) {
-            DefaultMutableTreeNode node = (DefaultMutableTreeNode)(nodes.nextElement()); 
-            doPanels(node, topPanel);
-         }
- */
         doPanels(doc,topPanel);
     }
     
     void doPanels(DefaultMutableTreeNode node, JPanel panel) {
     // panel is the surrounding panel for this node
-    
     // check to see if there is a special editor for this node
       NodeInfo inf = (NodeInfo)(node.getUserObject());
-   //   String temp = (String)inf.attr.get("editor");
       String temp = inf.getEditor();
       if (temp!=null) {
         try {
-            Object[] Args = new Object[] {node};
-            Class[] ArgsClass = new Class[] {DefaultMutableTreeNode.class};
-            Class componentDefinition = Class.forName(temp);
-            Constructor ArgsConstructor = componentDefinition.getConstructor(ArgsClass);
-            Object obj = createObject(ArgsConstructor,Args);
+          Object[] Args = new Object[] {node};
+          Class[] ArgsClass = new Class[] {DefaultMutableTreeNode.class};
+          Class componentDefinition = Class.forName(temp);
+          Constructor ArgsConstructor = componentDefinition.getConstructor(ArgsClass);
+          Object obj = createObject(ArgsConstructor,Args);
             
-            // obj should be a component that can be added to a container (e.g. a descendent
-            // of JPanel) with a constructor that takes a node as an argument
-            if (obj!=null) {
-                panel.add((Component)obj);    
-            }
+          // obj should be a component that can be added to a container (e.g. a descendent
+          // of JPanel) with a constructor that takes a node as an argument
+          if (obj!=null) {
+            panel.add((Component)obj);    
+          }
         } 
         catch (ClassNotFoundException e) {
           System.out.println(e);
-      } catch (NoSuchMethodException e) {
+        } 
+        catch (NoSuchMethodException e) {
           System.out.println(e);
-      }
+        }
       }
       else{
         panel.add(getDataPanel(node));
-         // iterate over children of this node
-         Enumeration nodes = node.children();
-         // loop over child node
-         while(nodes.hasMoreElements()) {
-            DefaultMutableTreeNode nd = (DefaultMutableTreeNode)(nodes.nextElement());
-		    NodeInfo info = (NodeInfo)(nd.getUserObject());
-            if (!((info.name).equals("#PCDATA"))) {
+        // iterate over children of this node
+        Enumeration nodes = node.children();
+        // loop over child node
+        while(nodes.hasMoreElements()) {
+          DefaultMutableTreeNode nd = (DefaultMutableTreeNode)(nodes.nextElement());
+		      NodeInfo info = (NodeInfo)(nd.getUserObject());
+          if (!((info.name).equals("#PCDATA"))) {
             JPanel new_panel = new JPanel();
             new_panel.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createTitledBorder(info.name),
-          //      BorderFactory.createLineBorder(Color.black),
-                BorderFactory.createEmptyBorder(4, 4, 4, 4)
-                ));
-		    new_panel.setLayout(new BoxLayout(new_panel,BoxLayout.Y_AXIS));    
-            panel.add(new_panel);
-            doPanels(nd, new_panel);
-            }
-         }
+            BorderFactory.createTitledBorder(info.name),
+            BorderFactory.createEmptyBorder(4, 4, 4, 4)
+            ));
+		      new_panel.setLayout(new BoxLayout(new_panel,BoxLayout.Y_AXIS));
+          panel.add(new_panel);
+          doPanels(nd, new_panel);
+          }
+        }
       }
         
     }
     
+    
     JPanel getDataPanel(DefaultMutableTreeNode node) {
+        int panelWidth = topPanel.getWidth() - 40;
+    
         JPanel jp = new JPanel();
         jp.setLayout(new BoxLayout(jp,BoxLayout.Y_AXIS));
         jp.setAlignmentX(Component.LEFT_ALIGNMENT);
@@ -184,58 +191,47 @@ public class XMLPanels extends Component
         JPanel jp2 = new JPanel();
         jp2.setLayout(new BoxLayout(jp2,BoxLayout.Y_AXIS));
         jp2.setAlignmentX(Component.LEFT_ALIGNMENT);
-        jp1.setMaximumSize(new Dimension(300,25));
-        jp2.setMaximumSize(new Dimension(300,25));
+        jp1.setMaximumSize(new Dimension(panelWidth,50));
+        jp2.setMaximumSize(new Dimension(panelWidth,25));
         jp.add(jp1);
         jp.add(jp2);
-		NodeInfo info = (NodeInfo)(node.getUserObject());
-        JLabel jl = new JLabel(info.name);
-        jl.setForeground(java.awt.Color.black);
-		jl.setFont(new Font("Dialog", Font.PLAIN, 12));
-        jp1.add(jl);
+		    NodeInfo info = (NodeInfo)(node.getUserObject());
 
-      StringBuffer name = new StringBuffer();
-      if (info.getHelp()!=null) {
-        name.append(info.getHelp()); 
-      }
-/*	    Enumeration keys = info.attr.keys();
-	    while (keys.hasMoreElements()) {
-	        String str = (String)(keys.nextElement());
-	        String val = (String)info.attr.get(str);
- //               name.append(' ');
-                name.append(str);
-                name.append("=\"");
-                name.append(val);
-                name.append('"');
-      }
-*/
-             jl.setText(name.toString());
-            //now check if there are child TEXT nodes
-         Enumeration nodes = node.children();
-         // loop over child node
-            String txt ="";
-         while(nodes.hasMoreElements()) {
-            DefaultMutableTreeNode nd = (DefaultMutableTreeNode)(nodes.nextElement());
-		    NodeInfo info1 = (NodeInfo)(nd.getUserObject());
-		    if ((info1.name).equals("#PCDATA")) {
+
+        StringBuffer name = new StringBuffer();
+        if (info.getHelp()!=null) {
+          name.append(info.getHelp()); 
+        }
+        String helpString = name.toString();
+        if (helpString.length()>0) {
+          JLabel jl = new JLabel();
+          jl.setForeground(Color.black);
+          jl.setText("<html><font size='-1'>"+helpString+"</html>");
+          jp1.add(jl);
+        }
+        //now check if there are child TEXT nodes
+        Enumeration nodes = node.children();
+        // loop over child node
+        String txt ="";
+        DefaultMutableTreeNode nd = null;
+        while(nodes.hasMoreElements()) {
+          nd = (DefaultMutableTreeNode)(nodes.nextElement());
+		      NodeInfo info1 = (NodeInfo)(nd.getUserObject());
+		      if ((info1.name).equals("#PCDATA")) {
 		        txt = info1.getPCValue();
-         }
-            if (txt.length()>0) {
+          }
+        }
+          if (txt.length()>0) {
             JTextField jtf1 = new JTextField();
-            jtf1.setMaximumSize(new Dimension(300,19));
-            jtf1.setPreferredSize(new Dimension(300,19));
+            jtf1.setPreferredSize(new Dimension(panelWidth,19));
             jp2.add(jtf1);
             nodeMap.put(jtf1,nd);  // for use in saving changes to text
             jtf1.addFocusListener(new dfhFocus());
             if (txt.equals("text")) { txt = " "; }
             jtf1.setText(txt);
-            }
-         }
-        
-        
+          }
         
         return jp;
-        
     }
     
     // get pixels from any component inside topPanel to top of topPanel
@@ -256,16 +252,14 @@ class dfhAction implements java.awt.event.ActionListener
 		public void actionPerformed(java.awt.event.ActionEvent event)
 		{
 			Object object = event.getSource();
-			if (object instanceof JTextField)
-				{
-				    DefaultMutableTreeNode nd = (DefaultMutableTreeNode)nodeMap.get(object);
-		            NodeInfo info = (NodeInfo)(nd.getUserObject());
-                    info.setPCValue(((JTextField)object).getText());
-		//		    System.out.println(((JTextField)object).getText());
-				    if (treeModel!=null) {
-				        treeModel.reload();
-				    }
+			if (object instanceof JTextField)  {
+			  DefaultMutableTreeNode nd = (DefaultMutableTreeNode)nodeMap.get(object);
+		    NodeInfo info = (NodeInfo)(nd.getUserObject());
+        info.setPCValue(" "+((JTextField)object).getText());
+			  if (treeModel!=null) {
+				  treeModel.reload();
 				}
+			}
 		}
 }
 
@@ -274,55 +268,35 @@ class dfhAction implements java.awt.event.ActionListener
 		public void focusLost(java.awt.event.FocusEvent event)
 		{
 			Object object = event.getSource();
-			if (object instanceof JTextField)
-				{
-				    DefaultMutableTreeNode nd = (DefaultMutableTreeNode)nodeMap.get(object);
-		        NodeInfo info = (NodeInfo)(nd.getUserObject());
-            info.setPCValue(((JTextField)object).getText());
-//				    System.out.println(((JTextField)object).getText());
-				    if (treeModel!=null) {
+			if (object instanceof JTextField) {
+			  DefaultMutableTreeNode nd = (DefaultMutableTreeNode)nodeMap.get(object);
+		    NodeInfo info = (NodeInfo)(nd.getUserObject());
+        info.setPCValue(" "+((JTextField)object).getText());
+			  if (treeModel!=null) {
 //				        treeModel.reload();
-				    }
 				}
+			}
 		}
 		
 		public void focusGained(java.awt.event.FocusEvent event)
 		{
 			Object object = event.getSource();
-			if (object instanceof JTextField)
-				{
-				    int dist = pixelsFromTop((JComponent)object);
-	//			    System.out.println("Distance = "+dist);
-				    topPanel.scrollRectToVisible(new Rectangle(0,dist,50,50));
-				    DefaultMutableTreeNode nd = (DefaultMutableTreeNode)nodeMap.get(object);
-				    if (container!=null) {
-				      container.setTreeValueFlag(false);
-				      TreePath tp = new TreePath(nd.getPath());
-				      tree.setSelectionPath(tp);
-				      tree.scrollPathToVisible(tp);
-				    }
+			if (object instanceof JTextField) {
+			  int dist = pixelsFromTop((JComponent)object);
+			  topPanel.scrollRectToVisible(new Rectangle(0,dist,50,50));
+			  DefaultMutableTreeNode nd = (DefaultMutableTreeNode)nodeMap.get(object);
+			  if (container!=null) {
+				  container.setTreeValueFlag(false);
+				  TreePath tp = new TreePath(nd.getPath());
+				  tree.setSelectionPath(tp);
+				    tree.scrollPathToVisible(tp);
 				}
+			}
 		}
 	}
 	
 	
 
-/*
-	class dfhFocus extends java.awt.event.FocusAdapter
-	{
-		public void focusLost(java.awt.event.FocusEvent event)
-		{
-			Object object = event.getSource();
-			if (object instanceof JTextField)
-				{
-				    DefaultMutableTreeNode nd = (DefaultMutableTreeNode)nodeMap.get(object);
-		            NodeInfo info = (NodeInfo)(nd.getUserObject());
-				    ((JTextField)object).setText((info.getPCValue());				    
-	//			    System.out.println(((JTextField)object).getText());
-				}
-		}
-	}
-*/
    
     
 public static Object createObject(Constructor constructor, Object[] arguments) {

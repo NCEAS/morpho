@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-06-18 15:55:09 $'
- * '$Revision: 1.35 $'
+ *     '$Date: 2001-06-18 21:18:36 $'
+ * '$Revision: 1.36 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -99,6 +99,8 @@ public class DocFrame extends javax.swing.JFrame
     String dtdfile;
     int numlevels = 9;
     
+    JSplitPane DocControlPanel;
+    
     boolean treeValueFlag = true;
     
     //* nodeCopy is the 'local clipboard' for node storage
@@ -167,7 +169,7 @@ public class DocFrame extends javax.swing.JFrame
     headLabel.setFont(new Font("Dialog", Font.BOLD, 14));
     headLabel.setBorder(BorderFactory.createLoweredBevelBorder());
 		
-		JSplitPane DocControlPanel = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT
+		DocControlPanel = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT
 		       , OutputScrollPanel, NestedPanelScrollPanel);
 		     
 		DocControlPanel.setOneTouchExpandable(true);
@@ -202,6 +204,8 @@ public class DocFrame extends javax.swing.JFrame
 		this.addWindowListener(aSymWindow);
 		EditingExit.addActionListener(lSymAction);
 		CancelButton.addActionListener(lSymAction);
+		SymComponent aSymComponent = new SymComponent();
+		this.addComponentListener(aSymComponent);
 		//}}
 		DeletemenuItem.addActionListener(lSymAction);
 		DupmenuItem.addActionListener(lSymAction);
@@ -209,27 +213,27 @@ public class DocFrame extends javax.swing.JFrame
 		CopymenuItem.addActionListener(lSymAction);
 		ReplacemenuItem.addActionListener(lSymAction);
 		PastemenuItem.addActionListener(lSymAction);
-         //Create the popup menu.
-        javax.swing.JPopupMenu popup = new JPopupMenu();
+    //Create the popup menu.
+    javax.swing.JPopupMenu popup = new JPopupMenu();
 		
 		rootNode = newNode("Configuration");
 		treeModel = new DefaultTreeModel(rootNode);
 
-        tree = new JTree(treeModel);
+    tree = new JTree(treeModel);
 		OutputScrollPanel.getViewport().add(tree);
-        tree.setCellRenderer(new XMLTreeCellRenderer());
+    tree.setCellRenderer(new XMLTreeCellRenderer());
 		
 		tree.setShowsRootHandles(true);
-        tree.setEditable(false);
-        tree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
-        tree.setShowsRootHandles(true);
-        tree.putClientProperty("JTree.lineStyle", "Angled");
+    tree.setEditable(false);
+    tree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
+    tree.setShowsRootHandles(true);
+    tree.putClientProperty("JTree.lineStyle", "Angled");
 		
 		SymTreeSelection lSymTreeSelection = new SymTreeSelection();
 		tree.addTreeSelectionListener(lSymTreeSelection);
 	
 		MouseListener popupListener = new PopupListener();
-        tree.addMouseListener(popupListener);
+    tree.addMouseListener(popupListener);
 	}
 
 	/**
@@ -320,60 +324,60 @@ public class DocFrame extends javax.swing.JFrame
 	    this.framework = cf;
 	    counter++;
 	    setName("Morpho Editor"+counter);
-		XMLTextString = doctext;
-		putXMLintoTree(treeModel, XMLTextString);
-        tree.setSelectionRow(0);
+		  XMLTextString = doctext;
+		  putXMLintoTree(treeModel, XMLTextString);
+//      tree.setSelectionRow(0);
 
 		// now want to possibly merge the input document with a formatting document
 		// and set the 'editor' and 'help' fields for each node
 		// use the root node name as a key
 		rootNode = (DefaultMutableTreeNode)treeModel.getRoot();
-        String rootname = ((NodeInfo)rootNode.getUserObject()).getName();
-        rootname = rootname+".xml";
+    String rootname = ((NodeInfo)rootNode.getUserObject()).getName();
+    rootname = rootname+".xml";
 		file = new File("./lib", rootname);
 		DefaultMutableTreeNode frootNode = new DefaultMutableTreeNode("froot");
 		DefaultTreeModel ftreeModel = new DefaultTreeModel(frootNode);
 		String fXMLString = "";
 		boolean formatflag = true;
-        try{
-            FileReader in = new FileReader(file);
-            StringWriter out = new StringWriter();
-            int c;
-            while ((c = in.read()) != -1) {
-                out.write(c);
-            }
-            in.close();
-            out.close();
-            fXMLString = out.toString();
-        }
+    try{
+      FileReader in = new FileReader(file);
+      StringWriter out = new StringWriter();
+      int c;
+      while ((c = in.read()) != -1) {
+        out.write(c);
+      }
+      in.close();
+      out.close();
+      fXMLString = out.toString();
+    }
 	    catch(Exception e){formatflag = false;}	
 		
 		if (formatflag) {
-		    putXMLintoTree(ftreeModel,fXMLString);
-		    frootNode = (DefaultMutableTreeNode)ftreeModel.getRoot();
-		    treeUnion(rootNode,frootNode);
+		  putXMLintoTree(ftreeModel,fXMLString);
+		  frootNode = (DefaultMutableTreeNode)ftreeModel.getRoot();
+		  treeUnion(rootNode,frootNode);
 		}
     
     
-        if (dtdfile!=null) {
-		    dtdtree = new DTDTree(dtdfile);
-		    dtdtree.setRootElementName(rootnodeName);
-		    dtdtree.parseDTD();
+    if (dtdfile!=null) {
+		  dtdtree = new DTDTree(dtdfile);
+		  dtdtree.setRootElementName(rootnodeName);
+		  dtdtree.parseDTD();
 		
-	        rootNode = (DefaultMutableTreeNode)treeModel.getRoot();
+	    rootNode = (DefaultMutableTreeNode)treeModel.getRoot();
 
 	        // the treeUnion method will 'merge' the input document with
 	        // a template XML document created using the DTD parser from the DTD doc
-		    treeUnion(rootNode,dtdtree.rootNode);
+	    treeUnion(rootNode,dtdtree.rootNode);
             // treeTrim will remove nodes in the input that are not in the DTD
             // remove the following line if this is not wanted
-            treeTrim(rootNode,dtdtree.rootNode);
+      treeTrim(rootNode,dtdtree.rootNode);
 		}
 		
 		
 		treeModel.reload();
 		tree.setModel(treeModel);
-        tree.setSelectionRow(0);
+    tree.setSelectionRow(0);
 	    
 	}
 	
@@ -565,14 +569,14 @@ class SymTreeSelection implements javax.swing.event.TreeSelectionListener
             OutputScrollPanel.repaint();
          }
          
-         
-         XMLPanels xp = new XMLPanels(node);
+         int width = this.getWidth() - DocControlPanel.getDividerLocation() - 40;
+         XMLPanels xp = new XMLPanels(node, width);
          xp.setTreeModel(treeModel);
          xp.setContainer(this);
          xp.setTree(tree);
          NestedPanelScrollPanel.getViewport().add(xp.topPanel);
-         xp.invalidate();
-         NestedPanelScrollPanel.repaint();
+//         xp.invalidate();
+//         NestedPanelScrollPanel.repaint();
       }
 		}
 		treeValueFlag = true;
@@ -1305,4 +1309,27 @@ class SymWindow extends java.awt.event.WindowAdapter {
 		    	this.setVisible(false);    // hide the Frame
 		    	this.dispose();            // free the system resources
 	}
+
+	class SymComponent extends java.awt.event.ComponentAdapter
+	{
+		public void componentResized(java.awt.event.ComponentEvent event)
+		{
+			Object object = event.getSource();
+			if (object == DocFrame.this)
+				DocFrame_componentResized(event);
+		}
+	}
+
+	void DocFrame_componentResized(java.awt.event.ComponentEvent event)
+	{
+    int width = this.getWidth() - DocControlPanel.getDividerLocation() - 40;
+    XMLPanels xp = new XMLPanels(selectedNode, width);
+    xp.setTreeModel(treeModel);
+    xp.setContainer(this);
+    xp.setTree(tree);
+    NestedPanelScrollPanel.getViewport().add(xp.topPanel);
+//         xp.invalidate();
+//         NestedPanelScrollPanel.repaint();
+	}
+	
 }
