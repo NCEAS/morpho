@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2001-05-22 18:00:08 $'
- * '$Revision: 1.10 $'
+ *     '$Date: 2001-05-30 01:21:01 $'
+ * '$Revision: 1.11 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -82,7 +82,7 @@ public class Query extends DefaultHandler {
   /** List of sites/scopes used to constrain search */
   private Vector siteList;
   /** The root query group that contains the recursive query constraints */
-  private QueryGroup query = null;
+  private QueryGroup rootQG = null;
 
   // Query data structures used temporarily during XML parsing
   private Stack elementStack;
@@ -349,7 +349,7 @@ public class Query extends DefaultHandler {
    */
   public QueryGroup getQueryGroup()
   {
-    return query;
+    return rootQG;
   }
    
   /**
@@ -357,7 +357,7 @@ public class Query extends DefaultHandler {
    */
   public void setQueryGroup(QueryGroup qg) 
   {
-    this.query = qg;
+    this.rootQG = qg;
   }
 
   /**
@@ -406,8 +406,8 @@ public class Query extends DefaultHandler {
     if (currentNode.getTagName().equals("querygroup")) {
       QueryGroup currentGroup = new QueryGroup(
                                 currentNode.getAttribute("operator"));
-      if (query == null) {
-        query = currentGroup;
+      if (rootQG == null) {
+        rootQG = currentGroup;
       } else {
         QueryGroup parentGroup = (QueryGroup)queryStack.peek();
         parentGroup.addChild(currentGroup);
@@ -489,7 +489,7 @@ public class Query extends DefaultHandler {
     self.append("FROM xml_documents WHERE docid IN (");
 
     // This determines the documents that meet the query conditions
-    self.append(query.printSQL(useXMLIndex));
+    self.append(rootQG.printSQL(useXMLIndex));
 
     self.append(") ");
  
@@ -548,6 +548,79 @@ public class Query extends DefaultHandler {
       }
       self.append(") ");
     }
+    return self.toString();
+  }
+
+  /**
+   * create a XML  serialization of the query that this instance represents
+   */
+  public String toXml() {
+    StringBuffer self = new StringBuffer();
+
+    self.append("<?xml version=\"1.0\"?>\n");
+    self.append("<pathquery version=\"1.2\">\n");
+
+    // The identifier
+    if (meta_file_id != null) { 
+      self.append("  <meta_file_id>"+meta_file_id+"</meta_file_id>\n"); 
+    }
+
+    // The query title
+    if (queryTitle != null) { 
+      self.append("  <querytitle>"+queryTitle+"</querytitle>\n"); 
+    }
+
+    // Add XML for the return doctype list
+    if (!returnDocList.isEmpty()) {
+      Enumeration en = returnDocList.elements();
+      while (en.hasMoreElements()) {
+        String currentDoctype = (String)en.nextElement();
+        self.append("  <returndoctype>"+currentDoctype+"</returndoctype>\n"); 
+      }
+    }
+    
+    // Add XML for the filter doctype list
+    if (!filterDocList.isEmpty()) {
+      Enumeration en = filterDocList.elements();
+      while (en.hasMoreElements()) {
+        String currentDoctype = (String)en.nextElement();
+        self.append("  <filterdoctype>"+currentDoctype+"</filterdoctype>\n"); 
+      }
+    }
+    
+    // Add XML for the return field list
+    if (!returnFieldList.isEmpty()) {
+      Enumeration en = returnFieldList.elements();
+      while (en.hasMoreElements()) {
+        String current = (String)en.nextElement();
+        self.append("  <returnfield>"+current+"</returnfield>\n"); 
+      }
+    }
+    
+    // Add XML for the owner list
+    if (!ownerList.isEmpty()) {
+      Enumeration en = ownerList.elements();
+      while (en.hasMoreElements()) {
+        String current = (String)en.nextElement();
+        self.append("  <owner>"+current+"</owner>\n"); 
+      }
+    }
+
+    // Add XML for the site list
+    if (!siteList.isEmpty()) {
+      Enumeration en = siteList.elements();
+      while (en.hasMoreElements()) {
+        String current = (String)en.nextElement();
+        self.append("  <site>"+current+"</site>\n"); 
+      }
+    }
+
+    // Print the QueryGroup XML
+    self.append(rootQG.toXml(2));
+ 
+    // End the query
+    self.append("</pathquery>\n");
+ 
     return self.toString();
   }
   
@@ -696,8 +769,8 @@ public class Query extends DefaultHandler {
    * This should become a way to get the XML serialization of the query.
    */
   public String toString() {
-    //return "meta_file_id=" + meta_file_id + "\n" + query;
-    return queryString;
+    //return queryString;
+    return toXml();
   }
 
   /** Send the query to metacat, get back the XML resultset */
@@ -799,6 +872,8 @@ public class Query extends DefaultHandler {
          FileReader xml = new FileReader(new File(xmlfile));
          
          Query qspec = new Query(xml, cf);
+         cf.debug(9, qspec.toXml());
+/*
          InputStreamReader returnStream =
                        new InputStreamReader( qspec.queryMetacat());
 
@@ -807,7 +882,7 @@ public class Query extends DefaultHandler {
          while ((len = returnStream.read(characters, 0, 512)) != -1) {
 	   System.out.print(characters);
          }
-
+*/
 /*
          ResultSet results = qspec.execute();
 

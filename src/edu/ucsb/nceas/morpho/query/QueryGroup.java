@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2001-05-22 18:00:08 $'
- * '$Revision: 1.3 $'
+ *     '$Date: 2001-05-30 01:21:01 $'
+ * '$Revision: 1.4 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -120,19 +120,41 @@ public class QueryGroup
   }
 
   /**
-   * create a String description of the query that this instance represents.
-   * This should become a way to get the XML serialization of the query.
+   * create a XML serialization of the query that this instance represents
    */
-  public String toString() {
+  public String toXml(int indent) {
     StringBuffer self = new StringBuffer();
 
-    self.append("  (Query group operator=" + operator + "\n");
+    for (int i = 0; i < indent; i++) {
+      self.append(" ");
+    }
+    self.append("<querygroup operator=\"");
+    self.append(operator);
+    self.append("\">\n");
+
     Enumeration en= getChildren();
     while (en.hasMoreElements()) {
       Object qobject = en.nextElement();
-      self.append(qobject);
+      if (qobject instanceof QueryGroup) {
+        QueryGroup qg = (QueryGroup)qobject;
+        self.append(qg.toXml(indent+2));
+      } else if (qobject instanceof QueryTerm) {
+        QueryTerm qt = (QueryTerm)qobject;
+        self.append(qt.toXml(indent+2));
+      } else {
+        System.err.println("qobject wrong type: fatal error");
+      }
     }
-    self.append("  )\n");
+    self.append("</querygroup>\n");
+
     return self.toString();
+  }
+
+  /**
+   * create a String description of the query that this instance represents.
+   * This is a way to get the XML serialization of the query group.
+   */
+  public String toString() {
+    return toXml(0);
   }
 }

@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2001-05-22 18:00:08 $'
- * '$Revision: 1.2 $'
+ *     '$Date: 2001-05-30 01:21:01 $'
+ * '$Revision: 1.3 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -157,6 +157,39 @@ public class QueryTerm
     } else {
       self.append(nodedataterm + " LIKE " + "'" + searchvalue + "' ");
     }
+
+    return self.toString();
+  }
+
+  /**
+   * create a XML serialization of the query that this instance represents
+   */
+  public String toXml(int indent) {
+    StringBuffer self = new StringBuffer();
+
+    for (int i = 0; i < indent; i++) {
+      self.append(" ");
+    }
+    self.append("<queryterm");
+    self.append(" searchmode=\""+searchmode+"\"");
+    self.append(" casesensitive=\""+
+                (new Boolean(casesensitive).booleanValue())+"\"");
+    self.append(">\n");
+
+    for (int i = 0; i < indent+2; i++) {
+      self.append(" ");
+    }
+    self.append( "<value>" + value + "</value>\n");
+    if (pathexpr != null) {
+      for (int i = 0; i < indent+2; i++) {
+        self.append(" ");
+      }
+      self.append( "<pathexpr>" + pathexpr + "</pathexpr>\n");
+    }
+    for (int i = 0; i < indent; i++) {
+      self.append(" ");
+    }
+    self.append("</queryterm>\n");
 
     return self.toString();
   }
