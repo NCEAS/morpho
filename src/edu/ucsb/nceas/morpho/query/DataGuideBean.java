@@ -5,7 +5,7 @@
  *              National Center for Ecological Analysis and Synthesis
  *     Authors: Dan Higgins
  *
- *     Version: '$Id: DataGuideBean.java,v 1.6 2000-09-25 20:01:36 higgins Exp $'
+ *     Version: '$Id: DataGuideBean.java,v 1.7 2000-09-25 20:43:09 higgins Exp $'
  */
 
 package edu.ucsb.nceas.querybean;
@@ -570,30 +570,33 @@ public void LogOut() {
 
 	void DocTypeList_valueChanged(javax.swing.event.ListSelectionEvent event)
 	{
-	   if (local) { 
 		try
 		{
 		    String file = (String)localDocTypes.get(DocTypeList.getSelectedValue());
-			FileReader reader = new FileReader(local_dtd_directory+System.getProperty("file.separator")+file);
-            DTDParser parser = new DTDParser(new BufferedReader(reader));
-            dtd = parser.parse(true);
-			String root = (dtd.rootElement).name;
+		    File dtdfile = new File(local_dtd_directory+System.getProperty("file.separator")+file);
+		    if (dtdfile.exists()) {
+			    FileReader reader = new FileReader(local_dtd_directory+System.getProperty("file.separator")+file);
+                DTDParser parser = new DTDParser(new BufferedReader(reader));
+                dtd = parser.parse(true);
+			    String root = (dtd.rootElement).name;
        
-            NodeInfoDG rootNodeInfo = new NodeInfoDG(root);
-            DefaultMutableTreeNode rootTreeNode = new DefaultMutableTreeNode(rootNodeInfo);
+                NodeInfoDG rootNodeInfo = new NodeInfoDG(root);
+                DefaultMutableTreeNode rootTreeNode = new DefaultMutableTreeNode(rootNodeInfo);
 
-	        buildTree(rootTreeNode);
-		    treeModel.setRoot(rootTreeNode);
-		    treeModel.reload();
+	            buildTree(rootTreeNode);
+		        treeModel.setRoot(rootTreeNode);
+		        treeModel.reload();
+		    }
+	       else {
+	            String doctype = (String)(DocTypeList.getSelectedValue());
+	            getDGfromServer(doctype);
+	        
+	       }
+		    
 		}
         catch (Exception e) {}
 	   }
-	   else {
-	        String doctype = (String)(DocTypeList.getSelectedValue());
-	        getDGfromServer(doctype);
-	        
-	    }
-	}
+	
 	
 	
 public DefaultMutableTreeNode buildTree(DefaultMutableTreeNode root) {
