@@ -6,7 +6,7 @@
   *    Copyright: 2000 Regents of the University of California and the
   *               National Center for Ecological Analysis and Synthesis
   *  For Details: http://www.nceas.ucsb.edu/
-  *    File Info: '$Id: build.xml,v 1.10.2.2 2001-04-24 02:35:06 jones Exp $'
+  *    File Info: '$Id: build.xml,v 1.10.2.3 2001-04-25 18:45:25 jones Exp $'
   *
   *  Build file for the Ant cross-platform build system for metacat
   *  See http://jakarta.apache.org for details on Ant
@@ -46,8 +46,10 @@
                 value="${libdir}/dtdparser111.jar" />
       <property name="morpho" 
                 value="${libdir}/dmanclient.jar" />
+     <property name="junit" 
+               value="/usr/local/devtools/junit3.6/junit.jar" />
       <property name="cpath" 
-                value="${xerces}:${xalan}:${xml4j}:${build.dest}:${sym}:${dtd}"/>
+                value="${xerces}:${xalan}:${xml4j}:${build.dest}:${sym}:${dtd}:${junit}"/>
       <property name="package.home" value="edu/ucsb/nceas" />
 
    </target>
@@ -57,17 +59,19 @@
       <mkdir dir="${build.src}"/>
       <mkdir dir="${build.dest}"/>
 
+       <!--
       <copy todir="${build.src}" filtering="no">
         <fileset dir="${srcdir}">
           <exclude name="**/CVS*"/>
           <exclude name="**/.#*"/>
         </fileset>
       </copy>
+       -->
    </target>
 
    <target name="compile" depends="prepare">
 
-      <javac srcdir="${build.src}" 
+      <javac srcdir="${srcdir}" 
              destdir="${build.dest}" 
              classpath="${cpath}" /> 
    </target> 
@@ -118,11 +122,42 @@
            fork="yes" />
    </target>
 
-   <target name="tests" depends="install">
-     <java classname="edu.ucsb.nceas.dtclient.tests.LogInOut"
-           classpath="${cpath}:${morpho}"
+   <!-- use the ant "junit" task to run JUnit tests. -->
+   <target name="test" depends="install">
+     <!-- this currently does not work for CLientFramework
+          because of a problem with Class.getResource() calls
+          in ClientFramework.  Looks like its probably a ClassLoader
+          issue, but I'm not sure.  You can instead use the "junit"
+          target that I manually configured below -->
+     <junit printsummary="yes" haltonfailure="no" fork="no"
+            haltonerror="yes">
+       <classpath>
+         <pathelement path="${cpath}:${morpho}:${junit}" />
+       </classpath>
+       
+       <formatter type="plain" />
+       
+       <test name="edu.ucsb.nceas.dtclient.tests.ConnectTest"/>
+       <!--
+       <batchtest fork="yes" todir="${reports.tests}">
+         <fileset dir="${src.tests}">
+           <include name="**/*Test*.java" />
+           <exclude name="**/AllTests.java" />
+         </fileset>
+       </batchtest>
+       -->
+     </junit>
+   </target>
+
+   <!-- Manually run JUnit by calling the TestRunner program.
+        Obviously, this requires Junit to be available on the
+        classpath -->
+   <target name="junit" depends="install">
+     <java classname="junit.textui.TestRunner"
+           classpath="${cpath}:${morpho}:${junit}"
            fork="yes">
-       <arg line="jones myrm3cho"/>
+       <arg line="edu.ucsb.nceas.dtclient.tests.ConnectTest"/>
      </java>
    </target>
+
 </project>
