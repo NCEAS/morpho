@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2002-09-13 23:04:58 $'
- * '$Revision: 1.2 $'
+ *     '$Date: 2002-09-16 22:35:28 $'
+ * '$Revision: 1.3 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -110,18 +110,18 @@ public class XSLTResolverPlugin implements  XSLTResolverInterface,
         //H A C K ! ! ! ! !
         //needs to be implemented properly. 
         
-//        if (docType.indexOf("entity")>0) {
-//          return new InputStreamReader(
-//          classLoader.getResourceAsStream("style/eml-entity-2.0.0beta6.xsl"));
-//        } else if (docType.indexOf("dataset")>0) {
-//          return new InputStreamReader(
-//          classLoader.getResourceAsStream("style/eml-dataset-2.0.0beta6.xsl"));
-//        } else if (docType.indexOf("attribute")>0) {
-//          return new InputStreamReader(
-//          classLoader.getResourceAsStream("style/eml-attribute-2.0.0beta6.xsl"));
-//        } else {
+        if (docType.indexOf("entity")>0) {
+          return new InputStreamReader(
+          classLoader.getResourceAsStream("style/eml-entity-2.0.0beta6.xsl"));
+        } else if (docType.indexOf("dataset")>0) {
+          return new InputStreamReader(
+          classLoader.getResourceAsStream("style/eml-dataset-2.0.0beta6.xsl"));
+        } else if (docType.indexOf("attribute")>0) {
+          return new InputStreamReader(
+          classLoader.getResourceAsStream("style/eml-attribute-2.0.0beta6.xsl"));
+        } else {
           return new InputStreamReader(
           classLoader.getResourceAsStream(GENERIC_STYLESHEET));
-//        }
+        }
     }
 }
