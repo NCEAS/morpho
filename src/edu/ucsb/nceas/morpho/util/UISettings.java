@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2002-12-09 22:05:37 $'
- * '$Revision: 1.6 $'
+ *   '$Author: brooke $'
+ *     '$Date: 2002-12-09 23:21:39 $'
+ * '$Revision: 1.7 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,8 +28,10 @@ package edu.ucsb.nceas.morpho.util;
 
 import java.awt.Font;
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.Image;
+import java.awt.Dimension;
+import java.awt.Toolkit;
+
 import javax.swing.ImageIcon;
 
 /**
@@ -50,6 +52,64 @@ import javax.swing.ImageIcon;
  */
 public class UISettings
 {
+
+    private static final Dimension scrDim 
+                                  = Toolkit.getDefaultToolkit().getScreenSize();
+                                  
+    // * * * * * *  D E F A U L T   D I M E N S I O N S  * * * * * * * * * * * * 
+    
+    public static final int CLIENT_SCREEN_WIDTH       = (int)scrDim.getWidth();
+    public static final int CLIENT_SCREEN_HEIGHT      = (int)scrDim.getHeight();
+    //a guess at how high most taskbars will be:
+    public static final int TASKBAR_HEIGHT = 100;
+    
+    public  static final int FOCUS_BORDER_WIDTH         = 4;
+
+    private static final int TITLEBAR_HEIGHT            = 27;
+    public static final int TITLEBAR_TOP_PADDING        = 0;
+    public static final int TITLEBAR_SIDES_PADDING      = 0;
+    public static final int TITLEBAR_BOTTOM_PADDING     = 2;
+    
+    public static final int PATHBAR_TOP_PADDING         = 2;
+    public static final int PATHBAR_SIDES_PADDING       = 0;
+    public static final int PATHBAR_BOTTOM_PADDING      = 2;
+    
+                                           
+    //ignored by Borderlayout, but needed to create Dimension:
+    private static final int DUMMY_WIDTH                = 5000;
+
+    public static final Dimension TITLEBAR_DIMS 
+                                  = new Dimension(DUMMY_WIDTH,TITLEBAR_HEIGHT);
+    public static final Dimension HEADER_BOTTOMLINE_DIMS 
+                                  = new Dimension(DUMMY_WIDTH, 2);
+    public static final int TITLEBAR_COMPONENT_HEIGHT 
+                                  = TITLEBAR_HEIGHT - TITLEBAR_TOP_PADDING 
+                                                    - TITLEBAR_BOTTOM_PADDING;
+                                                    
+    public static final int TITLE_CITATION_HEIGHT       = 50;
+    public static final Dimension TITLE_CITATION_DIMS  
+                                  = new Dimension(  DUMMY_WIDTH,
+                                                    TITLE_CITATION_HEIGHT);
+    
+    public static final int TITLE_LOCATION_HEIGHT       = TITLE_CITATION_HEIGHT;
+    public static final int TITLE_LOCATION_WIDTH        = 51;
+    public static final Dimension TITLE_LOCATION_DIMS  
+                                  = new Dimension(  TITLE_LOCATION_WIDTH,
+                                                    TITLE_CITATION_HEIGHT);
+
+    public static final int VERT_SPLIT_INIT_LOCATION  = 2+TITLE_CITATION_HEIGHT;
+  
+    
+    // dims for MorphoFrame
+    public static final int MAX_WINDOW_WIDTH            = 1024;
+    public static final int MAX_WINDOW_HEIGHT           = 768;
+    
+    /**
+     *  How many pixels to leave at each edge of initial, centered screen?
+     */
+    public static final int WINDOW_CASCADE_X_OFFSET     = 25;
+    public static final int WINDOW_CASCADE_Y_OFFSET     = 25;
+
     // * * * *  D E F A U L T   F O N T S  &  T E X T - C O L O R S   * * * * * 
 
     //                                       "null" means use default font...
@@ -68,46 +128,7 @@ public class UISettings
     public static final Color CLOSEBUTTON_TEXT_COLOR  = BACKBUTTON_TEXT_COLOR;
     public static final Color EDITBUTTON_TEXT_COLOR   = new Color(0, 255, 0);
     public static final Color ALERT_TEXT_COLOR        = Color.red;
-    
-    // * * * * * *  D E F A U L T   D I M E N S I O N S  * * * * * * * * * * * * 
-    
-    public  static final int FOCUS_BORDER_WIDTH       = 4;
 
-    private static final int TITLEBAR_HEIGHT          = 27;
-    public static final int TITLEBAR_TOP_PADDING      = 0;
-    public static final int TITLEBAR_SIDES_PADDING    = 0;
-    public static final int TITLEBAR_BOTTOM_PADDING   = 2;
-
-    public static final int PATHBAR_TOP_PADDING       = 2;
-    public static final int PATHBAR_SIDES_PADDING     = 0;
-    public static final int PATHBAR_BOTTOM_PADDING    = 2;
-    
-                                           
-    //ignored by Borderlayout, but needed to create Dimension:
-    private static final int DUMMY_WIDTH              = 5000;
-
-    public static final Dimension TITLEBAR_DIMS 
-                                  = new Dimension(DUMMY_WIDTH,TITLEBAR_HEIGHT);
-    public static final Dimension HEADER_BOTTOMLINE_DIMS 
-                                  = new Dimension(DUMMY_WIDTH, 2);
-    public static final int TITLEBAR_COMPONENT_HEIGHT 
-                                  = TITLEBAR_HEIGHT - TITLEBAR_TOP_PADDING 
-                                                    - TITLEBAR_BOTTOM_PADDING;
-                                                    
-    public static final int TITLE_CITATION_HEIGHT      = 50;
-    public static final Dimension TITLE_CITATION_DIMS  
-                                  = new Dimension(  DUMMY_WIDTH,
-                                                    TITLE_CITATION_HEIGHT);
-    
-    public static final int TITLE_LOCATION_HEIGHT      = TITLE_CITATION_HEIGHT;
-    public static final int TITLE_LOCATION_WIDTH       = 51;
-    public static final Dimension TITLE_LOCATION_DIMS  
-                                  = new Dimension(  TITLE_LOCATION_WIDTH,
-                                                    TITLE_CITATION_HEIGHT);
-
-    public static final int VERT_SPLIT_INIT_LOCATION   = TITLE_CITATION_HEIGHT+2;
-  
-    
     // * * * * *  D E F A U L T   C O M P O N E N T   C O L O R S  * * * * * * *
     
     public static final Color TITLEBAR_COLOR       = Color.gray;
@@ -132,7 +153,10 @@ public class UISettings
         Object cpLocator = new Object();
         return new ImageIcon(cpLocator.getClass().getResource(path)).getImage();
     }
-                                              
+
+
+
+
     /**
      *  private constructor - no instantiation, since all methods static
      */
