@@ -2,7 +2,7 @@
 <root>
 <plugin>edu.ucsb.nceas.morpho.query.QueryPlugin</plugin>
 <plugin>edu.ucsb.nceas.morpho.datapackage.DataPackagePlugin</plugin>
-<MetaCatServletURL>http://dev.nceas.ucsb.edu:8090/knb/servlet/metacat</MetaCatServletURL>
+<MetaCatServletURL>http://dev.nceas.ucsb.edu/jones/servlet/metacat</MetaCatServletURL>
 <local_dtd_directory>./lib/catalog</local_dtd_directory>
 <local_xml_directory>./XMLworkFolder</local_xml_directory>
 <local_cache_directory>./cache</local_cache_directory>
@@ -55,7 +55,7 @@
     <localdoctypedtd>eml-variable.dtd</localdoctypedtd>
 </localdoctypes>
 <saxparser>org.apache.xerces.parsers.SAXParser</saxparser>
-<username>berkley</username>
+<username>jones</username>
 <accessionNumber>
   <scope>username</scope>
   <lastId>0</lastId>

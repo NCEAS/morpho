@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2001-05-22 18:02:51 $'
- * '$Revision: 1.12 $'
+ *     '$Date: 2001-05-22 19:09:03 $'
+ * '$Revision: 1.13 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -68,18 +68,8 @@ public class ResultSet extends AbstractTableModel implements ContentHandler
   /** store a private copy of the Query run to create this resultset */
   private Query savedQuery = null;
 
-  /** store a private copy of the LocalQuery run to create this resultset */
-  private LocalQuery savedLocalQuery = null;
-
   /** Store each row of the result set as a row in a Vector */
   private Vector resultsVector = null;
-
-  /**
-   * used to save relation doc info for each doc returned
-   * key is docid, value is a Vector of string arrays
-   * each string array is (relationtype,relationdoc,relationdoctype)
-   */
-  private Vector relationsVector; 
 
   /**
    * a list of the desired return fields from the configuration file. 
@@ -87,7 +77,7 @@ public class ResultSet extends AbstractTableModel implements ContentHandler
    * NOTE: This info should really come from the query so that it can 
    * vary by query.
    */
-  private Vector returnFields; // return field path names
+  private Vector returnFields;
 
   /** Flag indicating whether the results are from a local query */
   private boolean isLocal = false;
@@ -112,11 +102,15 @@ public class ResultSet extends AbstractTableModel implements ContentHandler
   private String createdate;
   private String updatedate;
   private String paramName;
-  private String relationtype;
-  private String relationdoc;
-  private String relationdoctype;
   private Hashtable params;
-  private Hashtable relations; 
+  /**
+   * used to save package info for each doc returned during SAX parsing
+   * Hashtable has up to five fields with the following String keys:
+   * subject, subjectdoctype, relationship, object, objectdoctype
+   */
+  private Hashtable triple; 
+  /** a collection of triple Hashtables, used during SAX parsing */
+  private Vector tripleList;
 
   /** The folder icon for representing local storage. */
   private ImageIcon folder = null;
@@ -140,7 +134,6 @@ public class ResultSet extends AbstractTableModel implements ContentHandler
     }
 
     resultsVector = new Vector();
-    relations = new Hashtable(); 
 
     folder = new ImageIcon( getClass().getResource("Btflyyel.gif"));
 
@@ -338,15 +331,13 @@ public class ResultSet extends AbstractTableModel implements ContentHandler
       createdate = "";
       updatedate = "";
       paramName = "";
-      relationsVector = new Vector();
       params = new Hashtable();
+      tripleList = new Vector();
     }
 
     // Reset the variables for each relation within a document
-    if (localName.equals("relation")) {
-      relationtype = "";
-      relationdoc = "";
-      relationdoctype = "";
+    else if (localName.equals("triple")) {
+      triple = new Hashtable(); 
     }
   }
   
@@ -357,12 +348,8 @@ public class ResultSet extends AbstractTableModel implements ContentHandler
   public void endElement (String uri, String localName,
                           String qName) throws SAXException 
   {
-    if (localName.equals("relation")) {
-      String[] rel = new String[3];
-      rel[0] = relationtype;
-      rel[1] = relationdoc;
-      rel[2] = relationdoctype;
-      relationsVector.addElement(rel);
+    if (localName.equals("triple")) {
+      tripleList.addElement(triple);
 
     } else if (localName.equals("document")) {
       int cnt = 0;
@@ -380,7 +367,7 @@ public class ResultSet extends AbstractTableModel implements ContentHandler
         row.add((String)(params.get(returnFields.elementAt(i))));
       }
 
-      // Then display additional default fields
+      // Then store additional default fields
       row.add(createdate);
       row.add(updatedate);
       row.add(docid);
@@ -388,11 +375,9 @@ public class ResultSet extends AbstractTableModel implements ContentHandler
       row.add(doctype);
       row.add(new Boolean(isLocal));
       row.add(new Boolean(isMetacat));
-
-      if (relationsVector.size() > 0) {
-        relations.put(docid, relationsVector);
-      }
+      row.add(tripleList);
         
+      // Add this document row to the list of results
       resultsVector.add(row);
     }
     String leaving = (String)elementStack.pop();
@@ -423,12 +408,16 @@ public class ResultSet extends AbstractTableModel implements ContentHandler
         val = cur + "; " + val;
       }
       params.put(paramName, val);  
-    } else if (currentTag.equals("relationtype")) {
-      relationtype = inputString;
-    } else if (currentTag.equals("relationdoc")) {
-      relationdoc = inputString;
-    } else if (currentTag.equals("relationdoctype")) {
-      relationdoctype = inputString;
+    } else if (currentTag.equals("subject")) {
+      triple.put("subject", inputString);
+    } else if (currentTag.equals("subjectdoctype")) {
+      triple.put("subjectdoctype", inputString);
+    } else if (currentTag.equals("relationship")) {
+      triple.put("relationship", inputString);
+    } else if (currentTag.equals("object")) {
+      triple.put("object", inputString);
+    } else if (currentTag.equals("objectdoctype")) {
+      triple.put("objectdoctype", inputString);
     }
   }
 
@@ -492,13 +481,6 @@ public class ResultSet extends AbstractTableModel implements ContentHandler
   }
    
   /**
-   * Return the package relations for the whole result set
-   */
-  public Hashtable getRelations() {
-    return relations; 
-  }
-
-  /**
    * Get the query that was used to construct these results
    */
   public Query getQuery() {
@@ -518,16 +500,27 @@ public class ResultSet extends AbstractTableModel implements ContentHandler
    */
   public void openResultRecord(int row)
   {
-    framework.debug(9, "Opening row: " + row);
     int numHeaders = headers.length;
     String docid = null;
     boolean openLocal = false;
     boolean openMetacat = false;
+    Vector rowTriples = null;
     try {
       Vector rowVector = (Vector)resultsVector.get(row);
       docid = (String)rowVector.get(numHeaders+2);
       openLocal = ((Boolean)rowVector.get(numHeaders+5)).booleanValue();
       openMetacat = ((Boolean)rowVector.get(numHeaders+6)).booleanValue();
+      rowTriples = (Vector)rowVector.get(numHeaders+7);
+/*    // DEBUGGING output to determine if the triples Hash is correct
+      for (int j=0; j < rowTriples.size(); j++) {
+        Hashtable currentTriple = (Hashtable)rowTriples.get(j);
+        Enumeration en = currentTriple.keys();
+        while (en.hasMoreElements()) {
+          String key = (String)en.nextElement(); 
+          framework.debug(9, key + " => " + (String)(currentTriple.get(key)) );
+        }
+      }
+*/
     } catch (ArrayIndexOutOfBoundsException aioobe) {
       docid = null;
     } catch (NullPointerException npe) {
@@ -537,17 +530,15 @@ public class ResultSet extends AbstractTableModel implements ContentHandler
     String location = null;
     if (openLocal) {
       location = "local";
-      //framework.debug(9, "Opening local copy of " + docid);
     } else if (openMetacat) {
       location = "metacat";
-      //framework.debug(9, "Opening metacat copy of " + docid);
     }
 
     try {
       ServiceProvider provider = 
                       framework.getServiceProvider(DataPackageInterface.class);
       DataPackageInterface dataStore = (DataPackageInterface)provider;
-      dataStore.openDataPackage(location, docid, relationsVector);
+      dataStore.openDataPackage(location, docid, rowTriples);
     } catch (ServiceNotHandledException snhe) {
       framework.debug(6, snhe.getMessage());
     }
@@ -558,7 +549,7 @@ public class ResultSet extends AbstractTableModel implements ContentHandler
    */
   public void merge(ResultSet r2)
   {
-    framework.debug(9, "Simple merge, no comparison done yet!");
+    framework.debug(9, "Simple concatenation, no comparison done yet!");
     Vector r2Rows = r2.getResultsVector();
     Enumeration ee = r2Rows.elements();
     while (ee.hasMoreElements()) {
