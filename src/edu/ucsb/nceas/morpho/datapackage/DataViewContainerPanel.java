@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2004-03-29 21:19:13 $'
- * '$Revision: 1.99 $'
+ *     '$Date: 2004-03-30 16:05:11 $'
+ * '$Revision: 1.100 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -729,13 +729,11 @@ public class DataViewContainerPanel extends javax.swing.JPanel
           boolean changeFlag = dvArray[i].getDataChangedFlag();
           if (changeFlag) {
             dvArray[i].saveCurrentTable(false);
+            adp.setLocation("");
           }
           dvArray[i].setDataChangedFlag(false);
         }
       }  // end of loop over all dvs
-      // note that 'false' parameter passed to saveCurrentTable avoids updating package id
-      // for each data change; thus, do it now
-      adp.setLocation("");
     }
   }
 
