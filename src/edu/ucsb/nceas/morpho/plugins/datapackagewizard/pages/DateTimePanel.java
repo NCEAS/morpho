@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: sambasiv $'
- *     '$Date: 2003-12-16 01:29:18 $'
- * '$Revision: 1.12 $'
+ *     '$Date: 2003-12-17 03:06:33 $'
+ * '$Revision: 1.13 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -80,6 +80,11 @@ class DateTimePanel extends JPanel implements WizardPageSubPanelAPI {
   
   private String[] numberTypesArray = new String[] { "natural", "whole",
                                                      "integer", "real" };
+																										 
+	private String[] boundsPickListValues = new String[] {
+												"<",
+												"<="
+										};
   
   // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
   
@@ -126,7 +131,7 @@ class DateTimePanel extends JPanel implements WizardPageSubPanelAPI {
     formatStringGrid.add(WidgetFactory.makeLabel(
         WizardSettings.HTML_NO_TABLE_OPENING
         +WizardSettings.HTML_EXAMPLE_FONT_OPENING
-        +"e.g: YYYY-MM-DDTHH:MM:SS ,&nbsp;&nbsp;YYYY-MM-DD ,&nbsp;&nbsp;hh:mm:ss.sss"
+        +"e.g: YYYY-MM-DDThh:mm:ss ,&nbsp;&nbsp;YYYY-MM-DD ,&nbsp;&nbsp;hh:mm:ss.sss"
         +WizardSettings.HTML_EXAMPLE_FONT_CLOSING
         +WizardSettings.HTML_NO_TABLE_CLOSING, false, new Dimension(1000,30)) );
 
@@ -158,14 +163,19 @@ class DateTimePanel extends JPanel implements WizardPageSubPanelAPI {
     this.add(WidgetFactory.makeHalfSpacer());
   
 
-    String[] colNames     = new String[] {  "Min.", "excl?", 
-                                            "Max.", "excl?"};
-                                            
-    Object[] colTemplates = new Object[] {  new JTextField(), new JCheckBox(), 
-                                            new JTextField(), new JCheckBox()};
-    ////////////////////////
+    String[] colNames     = new String[] {  "Min.", "", "" , "", "Max."};
+    JLabel valueLabel = new JLabel("value", null, JLabel.CENTER);
+		
+		JComboBox combobox1 = WidgetFactory.makePickList(boundsPickListValues, false, 0, null);
+		JComboBox combobox2 = WidgetFactory.makePickList(boundsPickListValues, false, 0, null);
+		                                         
+    Object[] colTemplates = new Object[] {  new JTextField(),
+														combobox1, valueLabel, combobox2,	new JTextField()
+													  };                                        
     
-    JPanel boundsHelpPanel = WidgetFactory.makeVerticalPanel(4);
+		////////////////////////
+    
+    //JPanel boundsHelpPanel = WidgetFactory.makeVerticalPanel(4);
 //    new JPanel();
 //    boundsHelpPanel.setLayout(new BoxLayout(boundsHelpPanel, BoxLayout.Y_AXIS));
 
@@ -179,22 +189,22 @@ class DateTimePanel extends JPanel implements WizardPageSubPanelAPI {
     boundsList = WidgetFactory.makeList(colNames, colTemplates, 2,
                                         true, false, false, true, false, false);
     boundsList.setListButtonDimensions(WizardSettings.LIST_BUTTON_DIMS_SMALL);
-    boundsPanel.add(boundsList);
+		boundsPanel.add(boundsList);
     
     /////////////////
 
     
-    boundsHelpPanel.add(boundsPanel);
-    boundsHelpPanel.add(WidgetFactory.makeLabel(
+    //boundsHelpPanel.add(boundsPanel);
+    /*boundsHelpPanel.add(WidgetFactory.makeLabel(
         WizardSettings.HTML_NO_TABLE_OPENING
         +WizardSettings.HTML_EXAMPLE_FONT_OPENING
         +"Check 'excl?' box if bound does not include the value itself"
         +WizardSettings.HTML_EXAMPLE_FONT_CLOSING
-        +WizardSettings.HTML_NO_TABLE_CLOSING, false, new Dimension(1000,22)) );
+        +WizardSettings.HTML_NO_TABLE_CLOSING, false, new Dimension(1000,22)) );*/
     
     
     JPanel boundsGrid = new JPanel(new GridLayout(1,2));
-    boundsGrid.add(boundsHelpPanel);
+    boundsGrid.add(boundsPanel);
     boundsGrid.add(WidgetFactory.makeLabel(
     WizardSettings.HTML_NO_TABLE_OPENING
     +"Range of permitted values, in same date-time format as used in the format "
@@ -330,7 +340,7 @@ class DateTimePanel extends JPanel implements WizardPageSubPanelAPI {
           returnMap.put(xPathRoot + index + "]/minimum", nextMin);
 
           nextExcl = nextRow.get(1);
-          if (nextExcl!=null && ((Boolean)nextExcl).booleanValue()) {
+          if (nextExcl!=null && ((String)nextExcl).equals("<") ) {
       
             returnMap.put(xPathRoot + index + "]/minimum/@exclusive", "true");
         
@@ -341,14 +351,14 @@ class DateTimePanel extends JPanel implements WizardPageSubPanelAPI {
         }
       }
       
-      if (nextRow.get(2)!=null) {
+      if (nextRow.get(4)!=null) {
       
-        nextMax = (String)(nextRow.get(2));
+        nextMax = (String)(nextRow.get(4));
         if (!nextMax.trim().equals("")) {
           returnMap.put(xPathRoot + index + "]/maximum", nextMax);
 
           nextExcl = nextRow.get(3);
-          if (nextExcl!=null && ((Boolean)nextExcl).booleanValue()) {
+          if (nextExcl!=null && ((String)nextExcl).equals("<") ) {
       
             returnMap.put(xPathRoot + index + "]/maximum/@exclusive", "true");
         
@@ -392,27 +402,29 @@ class DateTimePanel extends JPanel implements WizardPageSubPanelAPI {
 		  if(min != null) {
 			  row.add(min);
 			  Boolean  excl = (Boolean)map.get(xPathRoot + "/dateTimeDomain/bounds[" +index+ "]/minimum/@exclusive");
-			  if(excl != null)
-				  row.add(excl);
+			  if(excl != null && excl.booleanValue() == true)
+				  row.add("<");
 			  else
-				  row.add(new Boolean(false));
+				  row.add("<=");
 		  }
 		  else {
 			  row.add("");
-			  row.add(new Boolean(false));
+			  row.add("<");
 		  }
+			row.add("value");
 		  String max = (String)map.get(xPathRoot + "/dateTimeDomain/bounds[" +index+ "]/maximum");
 		  if(max != null) {
-			  row.add(max);
+			  
 			  Boolean  excl = (Boolean)map.get(xPathRoot + "/dateTimeDomain/bounds[" +index+ "]/maximum/@exclusive");
-			  if(excl != null)
-				  row.add(excl);
+			  if(excl != null && excl.booleanValue() == true)
+				  row.add("<");
 			  else
-				  row.add(new Boolean(false));
+				  row.add("<=");
+				row.add(max);
 		  }  
 		  else {
-			  row.add("");
-			  row.add(new Boolean(false));
+				row.add("<");
+				row.add("");
 		  }
 		  if(min == null && max == null)
 			  break;

@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: sambasiv $'
- *     '$Date: 2003-12-16 01:29:18 $'
- * '$Revision: 1.20 $'
+ *     '$Date: 2003-12-17 03:06:33 $'
+ * '$Revision: 1.21 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -175,7 +175,7 @@ public class IntervalRatioPanel extends JPanel implements WizardPageSubPanelAPI 
     pickListPanel.add(unitsPickListLabel);
     pickListPanel.add(unitsPickList);
  
-    this.add(WidgetFactory.makeHalfSpacer());
+    this.add(Box.createGlue());
     this.add(pickListPanel);
     
     ////////////////////////
@@ -188,17 +188,16 @@ public class IntervalRatioPanel extends JPanel implements WizardPageSubPanelAPI 
 
     JPanel precisionGrid = new JPanel(new GridLayout(1,2));
     precisionGrid.add(precisionPanel);
-    precisionGrid.add(WidgetFactory.makeLabel(
+    precisionGrid.add(this.getLabel(
         WizardSettings.HTML_NO_TABLE_OPENING
         +WizardSettings.HTML_EXAMPLE_FONT_OPENING
         +"e.g: for an attribute with unit \"meter\", "
         +"a precision of \"0.1\" would be interpreted as precise to the "
         +"nearest 1/10th of a meter"
         +WizardSettings.HTML_EXAMPLE_FONT_CLOSING
-        +WizardSettings.HTML_NO_TABLE_CLOSING, false,
-        new Dimension(1000,40)) );
+        +WizardSettings.HTML_NO_TABLE_CLOSING));
 
-    this.add(WidgetFactory.makeHalfSpacer());
+    this.add(Box.createGlue());
     this.add(precisionGrid);
   
     ////////////////////////
@@ -229,28 +228,27 @@ public class IntervalRatioPanel extends JPanel implements WizardPageSubPanelAPI 
 
     JPanel numericDomainGrid = new JPanel(new GridLayout(1,2));
     numericDomainGrid.add(numberTypePanel);
+		numericDomainGrid.add(this.getLabel(""));
 
-    ///////////////////////////
-    
-    JPanel boundsPanel = WidgetFactory.makePanel(3);
-
-    boundsLabel = WidgetFactory.makeLabel("    Bounds:", false);
-    final Dimension boundsLabelDim 
-              = new Dimension(WizardSettings.WIZARD_CONTENT_LABEL_DIMS.width/2,
-                              WizardSettings.WIZARD_CONTENT_LABEL_DIMS.height);
-    boundsLabel.setPreferredSize(boundsLabelDim);
-    boundsLabel.setMaximumSize(boundsLabelDim);
-    boundsPanel.add(boundsLabel);
-    boundsPanel.add(Box.createHorizontalGlue());
+		this.add(Box.createGlue());
+    this.add(numericDomainGrid);
 		
+    ///////////////////////////
+    JPanel boundsGrid = new JPanel();
+		boundsGrid.setLayout(new GridLayout(1,2));
+		
+    JPanel boundsPanel = WidgetFactory.makePanel();
+
+    boundsLabel = WidgetFactory.makeLabel("Bounds:", false,
+						WizardSettings.WIZARD_CONTENT_LABEL_DIMS);
+    boundsPanel.add(boundsLabel);
+    		
     String[] colNames     = new String[] {  "Min.", "", "",
                                             "", "Max."};
 		JLabel valueLabel = new JLabel("value", null, JLabel.CENTER);
 		JComboBox combobox1 = WidgetFactory.makePickList(boundsPickListValues, false, 0, null);
-		//combobox1.setFont(new Font("Dialog",20,Font.BOLD));
 		JComboBox combobox2 = WidgetFactory.makePickList(boundsPickListValues, false, 0, null);
-		//combobox2.setFont(new Font("Dialog",12,Font.BOLD));                                           
-    Object[] colTemplates = new Object[] {  new JTextField(),
+		Object[] colTemplates = new Object[] {  new JTextField(),
 														combobox1, 
 														valueLabel, 
 														combobox2,
@@ -261,28 +259,17 @@ public class IntervalRatioPanel extends JPanel implements WizardPageSubPanelAPI 
                                         true, false, false, true, false, false);
     boundsList.setListButtonDimensions(WizardSettings.LIST_BUTTON_DIMS_SMALL);
     boundsPanel.add(boundsList);
-
-    numericDomainGrid.add(boundsPanel);
+		
+    boundsGrid.add(boundsPanel);
+		boundsGrid.add(this.getLabel(""));
     
+		this.add(Box.createGlue());
+    this.add(boundsGrid);
+		this.add(Box.createGlue());
     /////////////////
 
-    this.add(WidgetFactory.makeHalfSpacer());
-    this.add(numericDomainGrid);
+    
   
-    ////////////////////////
-
-    JPanel boundsHelpGrid = new JPanel(new GridLayout(1,2));
-    
-    boundsHelpGrid.add(WidgetFactory.makeHalfSpacer());
-
-    boundsHelpGrid.add(WidgetFactory.makeLabel(
-        WizardSettings.HTML_NO_TABLE_OPENING
-        +WizardSettings.HTML_EXAMPLE_FONT_OPENING
-        +"Check the 'excl?' box if the bound does not include the value itself"
-        +WizardSettings.HTML_EXAMPLE_FONT_CLOSING
-        +WizardSettings.HTML_NO_TABLE_CLOSING, false, new Dimension(1000,20)) );
-    
-    //this.add(boundsHelpGrid);
     
   }
   
@@ -294,7 +281,17 @@ public class IntervalRatioPanel extends JPanel implements WizardPageSubPanelAPI 
                     WizardSettings.DEFAULT_SPACER_DIMS.height/2));
   }
   
-
+	private JLabel getLabel(String text) {
+		
+		if (text==null) text= "";
+		JLabel label = new JLabel(text);
+		
+		label.setAlignmentX(1.0f);
+		label.setFont(WizardSettings.WIZARD_CONTENT_FONT);
+		label.setBorder(BorderFactory.createMatteBorder(1,10,1,3, (Color)null));
+		
+		return label;
+	}
   /** 
    *  The action to be executed when the panel is displayed. May be empty
    */
@@ -489,8 +486,11 @@ public class IntervalRatioPanel extends JPanel implements WizardPageSubPanelAPI 
         if (!nextMin.trim().equals("")) {
           returnMap.put(xPathRoot + index + "]/minimum", nextMin);
           nextExcl = nextRow.get(1);
-
-          if (nextExcl!=null && ((JComboBox)nextExcl).getSelectedIndex()==0 ) {
+					if(nextExcl instanceof Integer)
+						System.out.println("GOT ELEMENT AS INTEGER");
+					else if(nextExcl instanceof String)
+						System.out.println("GOT ELEMENT AS String");
+          if (nextExcl!=null && ((String)nextExcl).equals("<") ) {
       
             returnMap.put(xPathRoot + index + "]/minimum/@exclusive", "true");
         
@@ -501,15 +501,15 @@ public class IntervalRatioPanel extends JPanel implements WizardPageSubPanelAPI 
         }
       }
       
-      if (nextRow.get(3)!=null) {
+      if (nextRow.get(4)!=null) {
       
-        nextMax = (String)(nextRow.get(3));
+        nextMax = (String)(nextRow.get(4));
         if (!nextMax.trim().equals("")) {
           returnMap.put(xPathRoot + index + "]/maximum", nextMax);
           
-          nextExcl = nextRow.get(4);
+          nextExcl = nextRow.get(3);
 
-          if (nextExcl!=null && ((JComboBox)nextExcl).getSelectedIndex()==0) {
+          if (nextExcl!=null && ((String)nextExcl).equals("<") ) {
       
             returnMap.put(xPathRoot + index + "]/maximum/@exclusive", "true");
         
@@ -556,26 +556,27 @@ public class IntervalRatioPanel extends JPanel implements WizardPageSubPanelAPI 
 			row.add(min);
 			Boolean  excl = (Boolean)map.get(xPathRoot + "/numericDomain/bounds[" +index+ "]/minimum/@exclusive");
 			if(excl != null)
-				row.add(excl);
+				row.add("<");
 			else
-				row.add(new Boolean(false));
+				row.add("<=");
 		}
 		else {
 			row.add("");
-			row.add(new Boolean(false));
+			row.add("<");
 		}
+		row.add("value");
 		String max = (String)map.get(xPathRoot + "/numericDomain/bounds[" +index+ "]/maximum");
 		if(max != null) {
-			row.add(max);
 			Boolean  excl = (Boolean)map.get(xPathRoot + "/numericDomain/bounds[" +index+ "]/maximum/@exclusive");
 			if(excl != null)
-				row.add(excl);
+				row.add("<");
 			else
-				row.add(new Boolean(false));
+				row.add("<=");
+			row.add(max);
 		}
 		else {
+			row.add("<");
 			row.add("");
-			row.add(new Boolean(false));
 		}
 		if(min == null && max == null)
 			break;

@@ -7,8 +7,8 @@
 *    Release: @release@
 *
 *   '$Author: sambasiv $'
-*     '$Date: 2003-12-16 01:29:18 $'
-* '$Revision: 1.12 $'
+*     '$Date: 2003-12-17 03:06:33 $'
+* '$Revision: 1.13 $'
 *
 * This program is free software; you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -92,6 +92,7 @@ class NominalOrdinalPanel extends JPanel implements WizardPageSubPanelAPI {
 	
 	private final String[] nomOrdDisplayNames = { "nominal", "ordinal" };
 	
+	double[] enumColumnWidthPercentages = new double[] { 25.0, 75.0};
 	
 	private final int ENUMERATED_DOMAIN = 10;
 	private final int TEXT_DOMAIN       = 20;
@@ -189,7 +190,7 @@ class NominalOrdinalPanel extends JPanel implements WizardPageSubPanelAPI {
 		
 		
 		JPanel pickListPanel = WidgetFactory.makePanel();
-		chooseLabel = WidgetFactory.makeLabel("CHOOSE:", true, WizardSettings.WIZARD_CONTENT_LABEL_DIMS);
+		chooseLabel = WidgetFactory.makeLabel("Choose:", true, WizardSettings.WIZARD_CONTENT_LABEL_DIMS);
 		pickListPanel.add(chooseLabel);
 		pickListPanel.add(domainPickList);
 		
@@ -342,9 +343,7 @@ class NominalOrdinalPanel extends JPanel implements WizardPageSubPanelAPI {
 		= WidgetFactory.makeList( colNames, colTemplates, 2,
 		true, false, false, true, false, false);
 		
-		double[] columnWidthPercentages = new double[] { 33.0, 67.0};
-		enumDefinitionList.setColumnWidthPercentages(columnWidthPercentages);
-		
+		enumDefinitionList.setColumnWidthPercentages(enumColumnWidthPercentages);
 		enumDefinitionList.setListButtonDimensions(WizardSettings.LIST_BUTTON_DIMS_SMALL);
 		enumPanel.add(enumDefinitionList);
 		
@@ -353,34 +352,33 @@ class NominalOrdinalPanel extends JPanel implements WizardPageSubPanelAPI {
 		///////////////////////////
 		
 		JPanel helpPanel = new JPanel();
-		helpPanel.setLayout(new GridLayout(1,5));
+		helpPanel.setLayout(new GridLayout(1,7));
 		
 		helpPanel.add(this.getLabel(
 		WizardSettings.HTML_NO_TABLE_OPENING
 		+WizardSettings.HTML_EXAMPLE_FONT_OPENING
-		+"Examples:"+WizardSettings.HTML_EXAMPLE_FONT_CLOSING
+		+"Example:"+WizardSettings.HTML_EXAMPLE_FONT_CLOSING
 		+WizardSettings.HTML_NO_TABLE_CLOSING));
 		
 		helpPanel.add(this.getLabel(
 		WizardSettings.HTML_NO_TABLE_OPENING
-		+"<center>"+WizardSettings.HTML_EXAMPLE_FONT_OPENING
-		+"CA"+WizardSettings.HTML_EXAMPLE_FONT_CLOSING
-		+"</center>"+WizardSettings.HTML_NO_TABLE_CLOSING));
+		+WizardSettings.HTML_EXAMPLE_FONT_OPENING
+		//+"Example: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CA&nbsp;&nbsp;"
+		+"CA"
+		+WizardSettings.HTML_EXAMPLE_FONT_CLOSING
+		+WizardSettings.HTML_NO_TABLE_CLOSING));
 		
 		helpPanel.add(this.getLabel(
 		WizardSettings.HTML_NO_TABLE_OPENING
-		+"<center>"+WizardSettings.HTML_EXAMPLE_FONT_OPENING
-		+"California"+WizardSettings.HTML_EXAMPLE_FONT_CLOSING
-		+"</center>"+WizardSettings.HTML_NO_TABLE_CLOSING));
-		
-		helpPanel.add(this.getLabel(
-		WizardSettings.HTML_NO_TABLE_OPENING
-		+"<center>"+WizardSettings.HTML_EXAMPLE_FONT_OPENING
-		+"FIPS U.S. state codes"+WizardSettings.HTML_EXAMPLE_FONT_CLOSING
-		+"</center>"+WizardSettings.HTML_NO_TABLE_CLOSING));
-		
-		helpPanel.add(this.getLabel(" "));
-		
+		+"<left>"+WizardSettings.HTML_EXAMPLE_FONT_OPENING
+		+"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
+		+"California"
+		+WizardSettings.HTML_EXAMPLE_FONT_CLOSING
+		+"</left>"+WizardSettings.HTML_NO_TABLE_CLOSING));
+		helpPanel.add(this.getLabel(""));
+		helpPanel.add(this.getLabel(""));
+		helpPanel.add(this.getLabel(""));
+		helpPanel.add(this.getLabel(""));
 		panel.add(helpPanel);
 		
 		panel.add(WidgetFactory.makeHalfSpacer());

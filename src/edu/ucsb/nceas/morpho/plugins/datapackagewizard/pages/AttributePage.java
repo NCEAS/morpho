@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: sambasiv $'
- *     '$Date: 2003-12-16 01:29:18 $'
- * '$Revision: 1.3 $'
+ *     '$Date: 2003-12-17 03:06:33 $'
+ * '$Revision: 1.4 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -88,9 +88,11 @@ public class AttributePage extends AbstractWizardPage {
   private final String CONFIG_KEY_MCONFJAR_LOC   = "morphoConfigJarLocation";
 
   private JTextField attribNameField;
-
+	private JTextField attribLabelField;
+	
   private JLabel kwLabel;
   private JLabel attribNameLabel;
+	private JLabel attribLabelLabel;
   private JLabel attribDefinitionLabel;
   private JLabel measScaleLabel;
   private JPanel currentPanel;
@@ -111,47 +113,76 @@ public class AttributePage extends AbstractWizardPage {
   private final String xPathRoot = AttributeSettings.Attribute_xPath;
 
   private JTextArea attribDefinitionField;
+	
+	final String ATTRIB_NAME_HELP 
+		= WizardSettings.HTML_NO_TABLE_OPENING
+		+"Name of the attribute as it appears in the data file"
+		+WizardSettings.HTML_NO_TABLE_CLOSING;
+	
+	final String ATTRIB_LABEL_HELP 
+		= WizardSettings.HTML_NO_TABLE_OPENING
+		+"A more readable label for the attribute"
+		+WizardSettings.HTML_NO_TABLE_CLOSING;
+		
+	final String ATTRIB_DEFN_HELP 
+		= WizardSettings.HTML_NO_TABLE_OPENING
+    +"Define the contents of the attribute (or column) precisely, "
+    +"so that a data user could interpret the attribute accurately.<br></br>"
+    +WizardSettings.HTML_EXAMPLE_FONT_OPENING
+    +"&nbsp;&nbsp;e.g:&nbsp;&nbsp;&nbsp;"
+    +"\"spden\" is the number of individuals of all macro <br></br>"
+		+"&nbsp;&nbsp;invertebrate species found in the plot"
+		+WizardSettings.HTML_EXAMPLE_FONT_CLOSING
+    +WizardSettings.HTML_NO_TABLE_OPENING;
+		
   private final String[] buttonsText
       = {
           WizardSettings.HTML_NO_TABLE_OPENING
-          +"NOMINAL:&nbsp;&nbsp;&nbsp;unordered categories or text strings " 
+          +"Unordered:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
+					+" unordered categories or text 	(statistically &nbsp;<b>nominal</b>) "
 					+WizardSettings.HTML_EXAMPLE_FONT_OPENING
           + "e.g: Male, Female"
           +WizardSettings.HTML_EXAMPLE_FONT_CLOSING
           +WizardSettings.HTML_NO_TABLE_CLOSING,
 
           WizardSettings.HTML_NO_TABLE_OPENING
-          +"ORDINAL:&nbsp;&nbsp;&nbsp;ordered categories "
+          +"Ordered:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
+					+"ordered categories (statistically &nbsp;<b>ordinal</b>) "
           +WizardSettings.HTML_EXAMPLE_FONT_OPENING
           +"e.g: Low, High"
           +WizardSettings.HTML_EXAMPLE_FONT_CLOSING
           +WizardSettings.HTML_NO_TABLE_CLOSING,
 
           WizardSettings.HTML_NO_TABLE_OPENING
-          +"INTERVAL:&nbsp;&nbsp;values from a scale with equidistant points "
+          +"Relative:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
+					+" values from a scale with equidistant points "
+					+"(statistically &nbsp;<b>interval</b>) "
           +WizardSettings.HTML_EXAMPLE_FONT_OPENING
           +"e.g: 12.2 meters"
           +WizardSettings.HTML_EXAMPLE_FONT_CLOSING
           +WizardSettings.HTML_NO_TABLE_CLOSING,
 
           WizardSettings.HTML_NO_TABLE_OPENING
-          +"RATIO:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;interval scale "
-					+"with a meaningful zero point "
+          +"Absolute:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
+					+"measurement scale with a meaningful zero point "
+					+"(statistically &nbsp;<b>ratio</b>) "
           +WizardSettings.HTML_EXAMPLE_FONT_OPENING
 					+"e.g: 273 Kelvin"
           +WizardSettings.HTML_EXAMPLE_FONT_CLOSING
           +WizardSettings.HTML_NO_TABLE_CLOSING,
 
           WizardSettings.HTML_NO_TABLE_OPENING
-          +"DATE-TIME: date or time values from the Gregorian calendar "
+          +"Date-Time:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
+					+"date or time values from the Gregorian calendar "
           +WizardSettings.HTML_EXAMPLE_FONT_OPENING
-          +"e.g: 2002-10-14"
+          +"e.g: 2002-10-24"
           +WizardSettings.HTML_EXAMPLE_FONT_CLOSING
           +WizardSettings.HTML_NO_TABLE_CLOSING
         };
 
 
   private final String[] measScaleElemNames = new String[5];
+	private final String[] measScaleDisplayNames = new String[5];
 
   // these must correspond to indices of measScaleElemNames array
   public static final int MEASUREMENTSCALE_NOMINAL  = 0;
@@ -193,6 +224,12 @@ public class AttributePage extends AbstractWizardPage {
     measScaleElemNames[MEASUREMENTSCALE_INTERVAL] = "interval";
     measScaleElemNames[MEASUREMENTSCALE_RATIO]    = "ratio";
     measScaleElemNames[MEASUREMENTSCALE_DATETIME] = "datetime";
+		
+		measScaleDisplayNames[MEASUREMENTSCALE_NOMINAL]  = "Unordered";
+    measScaleDisplayNames[MEASUREMENTSCALE_ORDINAL]  = "Ordered";
+		measScaleDisplayNames[MEASUREMENTSCALE_INTERVAL] = "Relative";
+		measScaleDisplayNames[MEASUREMENTSCALE_RATIO]    = "Absolute";
+    measScaleDisplayNames[MEASUREMENTSCALE_DATETIME] = "Datetime";
   }
 
 
@@ -210,17 +247,42 @@ public class AttributePage extends AbstractWizardPage {
     middlePanel.add(WidgetFactory.makeHTMLLabel(
               "<font size=\"4\"><b>Define Attribute or Column:</b></font>", 1));
 
-    middlePanel.add(WidgetFactory.makeDefaultSpacer());
+    //middlePanel.add(WidgetFactory.makeDefaultSpacer());
+		middlePanel.add(Box.createGlue());
 
     ////
+		JPanel namePanel = new JPanel();
+		namePanel.setLayout(new GridLayout(1,2));
+		
     JPanel attribNamePanel = WidgetFactory.makePanel(1);
-    attribNameLabel = WidgetFactory.makeLabel("Attribute name:", true, WizardSettings.WIZARD_CONTENT_LABEL_DIMS);
+    attribNameLabel = WidgetFactory.makeLabel("Name:", true, WizardSettings.WIZARD_CONTENT_LABEL_DIMS);
     attribNamePanel.add(attribNameLabel);
     attribNameField = WidgetFactory.makeOneLineTextField();
     attribNamePanel.add(attribNameField);
-    middlePanel.add(attribNamePanel);
+		JLabel attribNameHelpLabel = getLabel(this.ATTRIB_NAME_HELP);
+		namePanel.add(attribNamePanel);
+		namePanel.add(attribNameHelpLabel);
 		
-    middlePanel.add(WidgetFactory.makeDefaultSpacer());
+    middlePanel.add(namePanel);
+		//middlePanel.add(WidgetFactory.makeDefaultSpacer());
+		middlePanel.add(Box.createGlue());
+		
+		JPanel labelPanel = new JPanel();
+		labelPanel.setLayout(new GridLayout(1,2));
+		
+    JPanel attribLabelPanel = WidgetFactory.makePanel(1);
+    attribLabelLabel = WidgetFactory.makeLabel("Label:", false, WizardSettings.WIZARD_CONTENT_LABEL_DIMS);
+    attribLabelPanel.add(attribLabelLabel);
+    attribLabelField = WidgetFactory.makeOneLineTextField();
+    attribLabelPanel.add(attribLabelField);
+		JLabel attribLabelHelpLabel = getLabel(this.ATTRIB_LABEL_HELP);
+		
+		labelPanel.add(attribLabelPanel);
+		labelPanel.add(attribLabelHelpLabel);
+		
+    middlePanel.add(labelPanel);
+		//middlePanel.add(WidgetFactory.makeDefaultSpacer());
+		middlePanel.add(Box.createGlue());
 
     ////////////////////////////////////////////////////////////////////////////
 
@@ -228,7 +290,7 @@ public class AttributePage extends AbstractWizardPage {
     // WidgetFactory.makeHTMLLabel() is required because the Java HTML rendering
     // on JLabels seems to be buggy - using WidgetFactory.makeHTMLLabel() yields
     // labels that resize themselves depending which radiobutton is chosen :-(
-    Dimension infoDim = new Dimension(WizardSettings.DIALOG_WIDTH,30);
+    /*Dimension infoDim = new Dimension(WizardSettings.DIALOG_WIDTH,30);
     JPanel infoPanel  = new JPanel();
     infoPanel.setLayout(new BoxLayout(infoPanel, BoxLayout.X_AXIS));
 
@@ -247,9 +309,11 @@ public class AttributePage extends AbstractWizardPage {
 
     infoPanel.add(infoLabel);
     infoPanel.add(Box.createGlue());
-    middlePanel.add(infoPanel);
-		//middlePanel.add(Box.createGlue());
+    //middlePanel.add(infoPanel);
+		//middlePanel.add(Box.createGlue());*/
 		
+		JPanel defnPanel = new JPanel();
+		defnPanel.setLayout(new GridLayout(1,2));
     JPanel attribDefinitionPanel = WidgetFactory.makePanel(2);
 
     attribDefinitionLabel = WidgetFactory.makeLabel("Definition:", true, WizardSettings.WIZARD_CONTENT_LABEL_DIMS);
@@ -260,9 +324,15 @@ public class AttributePage extends AbstractWizardPage {
     attribDefinitionField = WidgetFactory.makeTextArea("", 3, true);
     JScrollPane jscrl = new JScrollPane(attribDefinitionField);
     attribDefinitionPanel.add(jscrl);
-    middlePanel.add(attribDefinitionPanel);
+		JLabel attribDefnHelpLabel = getLabel(this.ATTRIB_DEFN_HELP);
+		
+		defnPanel.add(attribDefinitionPanel);
+		defnPanel.add(attribDefnHelpLabel);
+		
+    middlePanel.add(defnPanel);
 
-    middlePanel.add(WidgetFactory.makeDefaultSpacer());
+    //middlePanel.add(WidgetFactory.makeDefaultSpacer());
+		middlePanel.add(Box.createGlue());
 
     ////
     ActionListener listener = new ActionListener() {
@@ -306,7 +376,8 @@ public class AttributePage extends AbstractWizardPage {
     };
 
     measScaleLabel = WidgetFactory.makeLabel(
-                                "Select and define a Measurement Scale:", true,
+                                //"Select and define a Measurement Scale:"
+																"Category:", true,
                                 WizardSettings.WIZARD_CONTENT_TEXTFIELD_DIMS);
 
     middlePanel.add(measScaleLabel);
@@ -319,7 +390,8 @@ public class AttributePage extends AbstractWizardPage {
 
     middlePanel.add(currentPanel);
 		
-		 //middlePanel.add(Box.createVerticalGlue());
+		//middlePanel.add(Box.createVerticalGlue());
+		middlePanel.add(Box.createGlue());
 
     nominalPanel  = getNomOrdPanel(MEASUREMENTSCALE_NOMINAL);
     ordinalPanel  = getNomOrdPanel(MEASUREMENTSCALE_ORDINAL);
@@ -367,7 +439,7 @@ public class AttributePage extends AbstractWizardPage {
   private NominalOrdinalPanel getNomOrdPanel(int nom_ord) {
 
     NominalOrdinalPanel panel = new NominalOrdinalPanel(this);
-    WidgetFactory.addTitledBorder(panel, measScaleElemNames[nom_ord]);
+    WidgetFactory.addTitledBorder(panel, measScaleDisplayNames[nom_ord]);
     return panel;
   }
 
@@ -378,7 +450,7 @@ public class AttributePage extends AbstractWizardPage {
   private IntervalRatioPanel getIntervalRatioPanel(int intvl_ratio) {
 
     IntervalRatioPanel panel = new IntervalRatioPanel(this);
-    WidgetFactory.addTitledBorder(panel, measScaleElemNames[intvl_ratio]);
+    WidgetFactory.addTitledBorder(panel, measScaleDisplayNames[intvl_ratio]);
     return panel;
   }
 
@@ -389,10 +461,21 @@ public class AttributePage extends AbstractWizardPage {
   private DateTimePanel getDateTimePanel() {
 
     DateTimePanel panel = new DateTimePanel(this);
-    WidgetFactory.addTitledBorder(panel, measScaleElemNames[MEASUREMENTSCALE_DATETIME]);
+    WidgetFactory.addTitledBorder(panel, measScaleDisplayNames[MEASUREMENTSCALE_DATETIME]);
     return panel;
   }
-
+	
+	private JLabel getLabel(String text) {
+		
+		if (text==null) text="";
+		JLabel label = new JLabel(text);
+		
+		label.setAlignmentX(1.0f);
+		label.setFont(WizardSettings.WIZARD_CONTENT_FONT);
+		label.setBorder(BorderFactory.createMatteBorder(1,10,1,3, (Color)null));
+		
+		return label;
+	}
 
   // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
