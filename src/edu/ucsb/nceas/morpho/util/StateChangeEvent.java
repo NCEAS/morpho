@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2002-10-07 20:00:41 $'
- * '$Revision: 1.10 $'
+ *   '$Author: tao $'
+ *     '$Date: 2002-10-17 18:51:06 $'
+ * '$Revision: 1.11 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -135,6 +135,13 @@ public class StateChangeEvent extends ChangeEvent
      */
     public static String SEARCH_RESULT_SELECTED 
         = "searchResultSelected";
+        
+   /**
+     *  Public constant to denote that no entry in a search result frame has 
+     *  been selected, 
+     */
+    public static String SEARCH_RESULT_NONSELECTED 
+        = "searchResultNonSelected";
 
     /**
      *  Public constant to denote that an entry in a search result frame has 
