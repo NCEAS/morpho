@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: sgarg $'
- *     '$Date: 2004-03-22 19:27:20 $'
- * '$Revision: 1.87 $'
+ *   '$Author: brooke $'
+ *     '$Date: 2004-03-23 21:14:13 $'
+ * '$Revision: 1.88 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -62,6 +62,11 @@ public class DataPackagePlugin
 {
   /** A reference to the container framework */
   private Morpho morpho = null;
+
+  public static final String FILE_MENU_LABEL = "File";
+  public static final String EDIT_MENU_LABEL = "Edit";
+  public static final String METADATA_MENU_LABEL = "Documentation";
+  public static final String DATA_MENU_LABEL = "Data";
 
   /** Constant int for data menu position */
   public static final int DOCUMENTATIONMENUPOSITION = 3;
@@ -137,7 +142,7 @@ public class DataPackagePlugin
                                               new SavePackageCommand());
     saveAction.setMenuItemPosition(4);
     saveAction.setToolTipText("Save...");
-    saveAction.setMenu("File", 0);
+    saveAction.setMenu(FILE_MENU_LABEL, 0);
     saveAction.setToolbarPosition(1);
     saveAction.setEnabled(false);
     saveAction.setEnabledOnStateChange(
@@ -152,7 +157,7 @@ public class DataPackagePlugin
     GUIAction revertTab = new GUIAction("Revert Tab", null, new RevertCommand());
     revertTab.setToolTipText("Revert to original data shown in current tab");
     revertTab.setMenuItemPosition(0);
-    revertTab.setMenu("Edit", EDITMENUPOSITION);
+    revertTab.setMenu(EDIT_MENU_LABEL, EDITMENUPOSITION);
     revertTab.setEnabled(false);
     revertTab.setEnabledOnStateChange(
                       StateChangeEvent.CREATE_EDITABLE_ENTITY_DATAPACKAGE_FRAME,
@@ -171,7 +176,7 @@ public class DataPackagePlugin
     GUIAction revertAll = new GUIAction("Revert All Tabs", null, new RevertAllCommand());
     revertAll.setToolTipText("Revert to original data shown in all tabs");
     revertAll.setMenuItemPosition(1);
-    revertAll.setMenu("Edit", EDITMENUPOSITION);
+    revertAll.setMenu(EDIT_MENU_LABEL, EDITMENUPOSITION);
     revertAll.setEnabled(false);
     revertAll.setEnabledOnStateChange(
                       StateChangeEvent.CREATE_EDITABLE_ENTITY_DATAPACKAGE_FRAME,
@@ -194,7 +199,7 @@ public class DataPackagePlugin
     cut.setAcceleratorKeyString(CUTKEY);
     cut.setMenuItemPosition(2);
     cut.setSeparatorPosition(Morpho.SEPARATOR_PRECEDING);
-    cut.setMenu("Edit", EDITMENUPOSITION);
+    cut.setMenu(EDIT_MENU_LABEL, EDITMENUPOSITION);
     cut.setEnabledOnStateChange(
                       StateChangeEvent.CREATE_EDITABLE_ENTITY_DATAPACKAGE_FRAME,
                       true, GUIAction.EVENT_LOCAL);
@@ -216,7 +221,7 @@ public class DataPackagePlugin
            getResource("/toolbarButtonGraphics/general/Copy16.gif")));
     copy.setAcceleratorKeyString(COPYKEY);
     copy.setMenuItemPosition(3);
-    copy.setMenu("Edit", EDITMENUPOSITION);
+    copy.setMenu(EDIT_MENU_LABEL, EDITMENUPOSITION);
     copy.setEnabledOnStateChange(
                       StateChangeEvent.CREATE_EDITABLE_ENTITY_DATAPACKAGE_FRAME,
                       true, GUIAction.EVENT_LOCAL);
@@ -239,7 +244,7 @@ public class DataPackagePlugin
            getResource("/toolbarButtonGraphics/general/Paste16.gif")));
     paste.setAcceleratorKeyString(PASTEKEY);
     paste.setMenuItemPosition(4);
-    paste.setMenu("Edit", EDITMENUPOSITION);
+    paste.setMenu(EDIT_MENU_LABEL, EDITMENUPOSITION);
    /*
     paste.setEnabledOnStateChange(
                       StateChangeEvent.CREATE_EDITABLE_ENTITY_DATAPACKAGE_FRAME,
@@ -267,11 +272,11 @@ public class DataPackagePlugin
     paste.setEnabled(false);
 
     int i = 0; // postition for menu item
-    GUIAction addDocumentation = new GUIAction("Add Documentation...", null,
+    GUIAction addDocumentation = new GUIAction("Add/Edit Documentation...", null,
                                           new AddDocumentationCommand());
-    addDocumentation.setToolTipText("Add a XML documentation");
+    addDocumentation.setToolTipText("Add/Edit XML documentation...");
     addDocumentation.setMenuItemPosition(i);
-    addDocumentation.setMenu("Documentation", DOCUMENTATIONMENUPOSITION);
+    addDocumentation.setMenu(METADATA_MENU_LABEL, DOCUMENTATIONMENUPOSITION);
     addDocumentation.setSeparatorPosition(Morpho.SEPARATOR_FOLLOWING);
     addDocumentation.setEnabledOnStateChange(
                             StateChangeEvent.CREATE_DATAPACKAGE_FRAME,
@@ -284,11 +289,11 @@ public class DataPackagePlugin
 
     i++;
     GUIAction addResearchProjectAction = new GUIAction(
-        "Add Research Project Information...",
+        "Research Project...",
         null, new AddResearchProjectCommand());
-    addResearchProjectAction.setToolTipText("Add research project information");
+    addResearchProjectAction.setToolTipText("Research Project...");
     addResearchProjectAction.setMenuItemPosition(i);
-    addResearchProjectAction.setMenu("Documentation", DOCUMENTATIONMENUPOSITION);
+    addResearchProjectAction.setMenu(METADATA_MENU_LABEL, DOCUMENTATIONMENUPOSITION);
     addResearchProjectAction.setEnabledOnStateChange(
         StateChangeEvent.CREATE_EDITABLE_ENTITY_DATAPACKAGE_FRAME,
         true, GUIAction.EVENT_LOCAL);
@@ -299,11 +304,11 @@ public class DataPackagePlugin
 
     i++;
     GUIAction addUsageRightsAction = new GUIAction(
-        "Add Usage Rights Information...",
+        "Usage Rights...",
         null, new AddUsageRightsCommand());
-    addUsageRightsAction.setToolTipText("Add usage rights information");
+    addUsageRightsAction.setToolTipText("usage rights");
     addUsageRightsAction.setMenuItemPosition(i);
-    addUsageRightsAction.setMenu("Documentation", DOCUMENTATIONMENUPOSITION);
+    addUsageRightsAction.setMenu(METADATA_MENU_LABEL, DOCUMENTATIONMENUPOSITION);
     addUsageRightsAction.setEnabledOnStateChange(
         StateChangeEvent.CREATE_EDITABLE_ENTITY_DATAPACKAGE_FRAME,
         true, GUIAction.EVENT_LOCAL);
@@ -314,11 +319,11 @@ public class DataPackagePlugin
 
 
     i++;
-    GUIAction addGeographicCovAction = new GUIAction("Add Geographic Information...",
+    GUIAction addGeographicCovAction = new GUIAction("Geographic Coverage...",
                                            null, new AddGeographicCovCommand());
-    addGeographicCovAction.setToolTipText("Add geographic coverage information");
+    addGeographicCovAction.setToolTipText("geographic coverage");
     addGeographicCovAction.setMenuItemPosition(i);
-    addGeographicCovAction.setMenu("Documentation", DOCUMENTATIONMENUPOSITION);
+    addGeographicCovAction.setMenu(METADATA_MENU_LABEL, DOCUMENTATIONMENUPOSITION);
     addGeographicCovAction.setEnabledOnStateChange(
                       StateChangeEvent.CREATE_EDITABLE_ENTITY_DATAPACKAGE_FRAME,
                       true, GUIAction.EVENT_LOCAL);
@@ -328,11 +333,11 @@ public class DataPackagePlugin
     controller.addGuiAction(addGeographicCovAction);
 
     i++;
-    GUIAction addTemporalCovAction = new GUIAction("Add Temporal Information...",
+    GUIAction addTemporalCovAction = new GUIAction("Temporal Coverage...",
                                            null, new AddTemporalCovCommand());
-    addTemporalCovAction.setToolTipText("Add temporal coverage information");
+    addTemporalCovAction.setToolTipText("temporal coverage...");
     addTemporalCovAction.setMenuItemPosition(i);
-    addTemporalCovAction.setMenu("Documentation", DOCUMENTATIONMENUPOSITION);
+    addTemporalCovAction.setMenu(METADATA_MENU_LABEL, DOCUMENTATIONMENUPOSITION);
     addTemporalCovAction.setEnabledOnStateChange(
                       StateChangeEvent.CREATE_EDITABLE_ENTITY_DATAPACKAGE_FRAME,
                       true, GUIAction.EVENT_LOCAL);
@@ -342,11 +347,11 @@ public class DataPackagePlugin
     controller.addGuiAction(addTemporalCovAction);
 
     i++;
-    GUIAction addTaxonomicCovAction = new GUIAction("Add Taxonomic Information...",
+    GUIAction addTaxonomicCovAction = new GUIAction("Taxonomic Coverage...",
                                            null, new AddTaxonomicCovCommand());
-    addTaxonomicCovAction.setToolTipText("Add taxonomic coverage information");
+    addTaxonomicCovAction.setToolTipText("taxonomic coverage");
     addTaxonomicCovAction.setMenuItemPosition(i);
-    addTaxonomicCovAction.setMenu("Documentation", DOCUMENTATIONMENUPOSITION);
+    addTaxonomicCovAction.setMenu(METADATA_MENU_LABEL, DOCUMENTATIONMENUPOSITION);
     addTaxonomicCovAction.setEnabledOnStateChange(
                       StateChangeEvent.CREATE_EDITABLE_ENTITY_DATAPACKAGE_FRAME,
                       true, GUIAction.EVENT_LOCAL);
@@ -357,11 +362,11 @@ public class DataPackagePlugin
 
     i++;
     GUIAction addMethodAction = new GUIAction(
-        "Add Method Information...",
+        "Methods...",
         null, new AddMethodCommand());
-    addMethodAction.setToolTipText("Add method information");
+    addMethodAction.setToolTipText("methods");
     addMethodAction.setMenuItemPosition(i);
-    addMethodAction.setMenu("Documentation", DOCUMENTATIONMENUPOSITION);
+    addMethodAction.setMenu(METADATA_MENU_LABEL, DOCUMENTATIONMENUPOSITION);
     addMethodAction.setEnabledOnStateChange(
         StateChangeEvent.CREATE_EDITABLE_ENTITY_DATAPACKAGE_FRAME,
         true, GUIAction.EVENT_LOCAL);
@@ -372,11 +377,11 @@ public class DataPackagePlugin
 
     i++;
     GUIAction addAccessAction = new GUIAction(
-        "Add Access Information...",
+        "Access Permissions...",
         null, new AddAccessCommand());
-    addAccessAction.setToolTipText("Add access information");
+    addAccessAction.setToolTipText("Access Permissions...");
     addAccessAction.setMenuItemPosition(i);
-    addAccessAction.setMenu("Documentation", DOCUMENTATIONMENUPOSITION);
+    addAccessAction.setMenu(METADATA_MENU_LABEL, DOCUMENTATIONMENUPOSITION);
     addAccessAction.setEnabledOnStateChange(
         StateChangeEvent.CREATE_EDITABLE_ENTITY_DATAPACKAGE_FRAME,
         true, GUIAction.EVENT_LOCAL);
@@ -393,7 +398,7 @@ public class DataPackagePlugin
                                                       new ImportDataCommand());
     createNewDatatable.setToolTipText("Add a new table");
     createNewDatatable.setMenuItemPosition(i);
-    createNewDatatable.setMenu("Data", DATAMENUPOSITION);
+    createNewDatatable.setMenu(DATA_MENU_LABEL, DATAMENUPOSITION);
     createNewDatatable.setEnabledOnStateChange(
                             StateChangeEvent.CREATE_DATAPACKAGE_FRAME,
                             true, GUIAction.EVENT_LOCAL);
@@ -408,7 +413,7 @@ public class DataPackagePlugin
                                                       new DeleteTableCommand());
     deleteDatatable.setToolTipText("Remove the currently displayed table");
     deleteDatatable.setMenuItemPosition(i);
-    deleteDatatable.setMenu("Data", DATAMENUPOSITION);
+    deleteDatatable.setMenu(DATA_MENU_LABEL, DATAMENUPOSITION);
     deleteDatatable.setSeparatorPosition(Morpho.SEPARATOR_FOLLOWING);
     deleteDatatable.setEnabledOnStateChange(
                       StateChangeEvent.CREATE_EDITABLE_ENTITY_DATAPACKAGE_FRAME,
@@ -430,7 +435,7 @@ public class DataPackagePlugin
                                            null, new SortDataTableCommand());
     sortBySelectedColumn.setToolTipText("Sort table by selected column");
     sortBySelectedColumn.setMenuItemPosition(i);
-    sortBySelectedColumn.setMenu("Data", DATAMENUPOSITION);
+    sortBySelectedColumn.setMenu(DATA_MENU_LABEL, DATAMENUPOSITION);
     sortBySelectedColumn.setSeparatorPosition(Morpho.SEPARATOR_FOLLOWING);
     sortBySelectedColumn.setEnabledOnStateChange(
                       StateChangeEvent.CREATE_EDITABLE_ENTITY_DATAPACKAGE_FRAME,
@@ -451,7 +456,7 @@ public class DataPackagePlugin
                             null, new InsertRowCommand(InsertRowCommand.AFTER));
     insertRowAfter.setToolTipText("Insert a row after selected row");
     insertRowAfter.setMenuItemPosition(i);
-    insertRowAfter.setMenu("Data", DATAMENUPOSITION);
+    insertRowAfter.setMenu(DATA_MENU_LABEL, DATAMENUPOSITION);
     insertRowAfter.setAcceleratorKeyString("control I");
     insertRowAfter.setEnabledOnStateChange(
                       StateChangeEvent.CREATE_EDITABLE_ENTITY_DATAPACKAGE_FRAME,
@@ -472,7 +477,7 @@ public class DataPackagePlugin
                            null, new InsertRowCommand(InsertRowCommand.BEFORE));
     insertRowBefore.setToolTipText("Insert a row before selected row");
     insertRowBefore.setMenuItemPosition(i);
-    insertRowBefore.setMenu("Data", DATAMENUPOSITION);
+    insertRowBefore.setMenu(DATA_MENU_LABEL, DATAMENUPOSITION);
     insertRowBefore.setEnabledOnStateChange(
                       StateChangeEvent.CREATE_EDITABLE_ENTITY_DATAPACKAGE_FRAME,
                       true, GUIAction.EVENT_LOCAL);
@@ -492,7 +497,7 @@ public class DataPackagePlugin
                               new DeleteRowCommand());
     deleteRow.setToolTipText("Delete a selected row");
     deleteRow.setMenuItemPosition(i);
-    deleteRow.setMenu("Data", DATAMENUPOSITION);
+    deleteRow.setMenu(DATA_MENU_LABEL, DATAMENUPOSITION);
     deleteRow.setSeparatorPosition(Morpho.SEPARATOR_FOLLOWING);
     deleteRow.setEnabledOnStateChange(
                       StateChangeEvent.CREATE_EDITABLE_ENTITY_DATAPACKAGE_FRAME,
@@ -513,7 +518,7 @@ public class DataPackagePlugin
                     null, new InsertColumnCommand(InsertColumnCommand.AFTER));
     insertColumnAfter.setToolTipText("Insert a column after selected column");
     insertColumnAfter.setMenuItemPosition(i);
-    insertColumnAfter.setMenu("Data", DATAMENUPOSITION);
+    insertColumnAfter.setMenu(DATA_MENU_LABEL, DATAMENUPOSITION);
     insertColumnAfter.setEnabledOnStateChange(
                       StateChangeEvent.CREATE_EDITABLE_ENTITY_DATAPACKAGE_FRAME,
                       true, GUIAction.EVENT_LOCAL);
@@ -534,7 +539,7 @@ public class DataPackagePlugin
                            new InsertColumnCommand(InsertColumnCommand.BEFORE));
     insertColumnBefore.setToolTipText("Insert a column before selected column");
     insertColumnBefore.setMenuItemPosition(i);
-    insertColumnBefore.setMenu("Data", DATAMENUPOSITION);
+    insertColumnBefore.setMenu(DATA_MENU_LABEL, DATAMENUPOSITION);
     insertColumnBefore.setEnabledOnStateChange(
                       StateChangeEvent.CREATE_EDITABLE_ENTITY_DATAPACKAGE_FRAME,
                       true, GUIAction.EVENT_LOCAL);
@@ -554,7 +559,7 @@ public class DataPackagePlugin
                                   new DeleteColumnCommand());
     deleteColumn.setToolTipText("Delete a selected column");
     deleteColumn.setMenuItemPosition(i);
-    deleteColumn.setMenu("Data", DATAMENUPOSITION);
+    deleteColumn.setMenu(DATA_MENU_LABEL, DATAMENUPOSITION);
     deleteColumn.setSeparatorPosition(Morpho.SEPARATOR_FOLLOWING);
     deleteColumn.setEnabledOnStateChange(
                       StateChangeEvent.CREATE_EDITABLE_ENTITY_DATAPACKAGE_FRAME,
@@ -571,11 +576,11 @@ public class DataPackagePlugin
     controller.addGuiAction(deleteColumn);
 
     i = i+2;
-    GUIAction editColumnMetadata = new GUIAction("Edit Column Metadata", null,
+    GUIAction editColumnMetadata = new GUIAction("Edit Column "+METADATA_MENU_LABEL, null,
                                       new EditColumnMetaDataCommand());
-    editColumnMetadata.setToolTipText("Edit selected column metadata");
+    editColumnMetadata.setToolTipText("Edit selected column "+METADATA_MENU_LABEL);
     editColumnMetadata.setMenuItemPosition(i);
-    editColumnMetadata.setMenu("Data", DATAMENUPOSITION);
+    editColumnMetadata.setMenu(DATA_MENU_LABEL, DATAMENUPOSITION);
     //editColumnMetadata.setSeparatorPosition(Morpho.SEPARATOR_FOLLOWING);
     editColumnMetadata.setEnabledOnStateChange(
                             StateChangeEvent.CREATE_ENTITY_DATAPACKAGE_FRAME,
@@ -615,7 +620,7 @@ public class DataPackagePlugin
            getResource("/toolbarButtonGraphics/general/New16.gif")));
     createNewDataPackage.setToolTipText("Create a new data package");
     createNewDataPackage.setMenuItemPosition(1);
-    createNewDataPackage.setMenu("File", 0);
+    createNewDataPackage.setMenu(FILE_MENU_LABEL, 0);
     createNewDataPackage.setToolbarPosition(0);
     controller.addGuiAction(createNewDataPackage);
 
