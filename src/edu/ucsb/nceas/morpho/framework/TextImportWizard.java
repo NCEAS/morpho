@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-12-05 04:42:50 $'
- * '$Revision: 1.47 $'
+ *     '$Date: 2002-12-10 17:51:13 $'
+ * '$Revision: 1.48 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -194,7 +194,7 @@ public class TextImportWizard extends javax.swing.JFrame
 		setTitle("Text Import Wizard");
 		setDefaultCloseOperation(javax.swing.JFrame.DO_NOTHING_ON_CLOSE);
 		getContentPane().setLayout(new BorderLayout(0,0));
-		setSize(695,486);
+		setSize(695,500);
 		setVisible(false);
 		saveFileDialog.setMode(FileDialog.SAVE);
 		saveFileDialog.setTitle("Save");
@@ -1093,6 +1093,7 @@ public void startImport(String file) {
 
 	void FinishButton_actionPerformed(java.awt.event.ActionEvent event)
 	{
+  cmePanel.FieldsToColData();  
 	String info = checkForBlankInfo();
 	// info should be null if all fields are not blank
 	if (info!=null) {
