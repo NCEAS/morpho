@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-04-21 20:53:17 $'
- * '$Revision: 1.57 $'
+ *     '$Date: 2003-05-07 23:25:15 $'
+ * '$Revision: 1.58 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -182,7 +182,7 @@ public class DataViewContainerPanel extends javax.swing.JPanel
 // tabbedEntitiesPanel = new JTabbedPane(SwingConstants.BOTTOM, JTabbedPane.SCROLL_TAB_LAYOUT);
 
     tabbedEntitiesPanel = new JTabbedPane(SwingConstants.BOTTOM);
-    tabbedEntitiesPanel.addChangeListener(this);
+//    tabbedEntitiesPanel.addChangeListener(this);
 
     tabbedEntitiesPanel.addMouseListener(
       new MouseAdapter() {
@@ -442,6 +442,7 @@ public class DataViewContainerPanel extends javax.swing.JPanel
       File f = dp.getDataFile(id);
       String dataString = "";
     }
+    tabbedEntitiesPanel.addChangeListener(this);
     
     if (entityItems.size()>0) 
     {
@@ -668,7 +669,6 @@ public class DataViewContainerPanel extends javax.swing.JPanel
    * large memory usage
    */
   private void setDataViewer(int index) {
-   
     TabbedContainer comp = 
         (TabbedContainer) tabbedEntitiesPanel.getComponentAt(lastTabSelected);
     JSplitPane entireDataPanel = comp.getSplitPane();

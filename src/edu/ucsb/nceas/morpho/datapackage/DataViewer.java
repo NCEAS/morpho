@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-01-10 00:21:37 $'
- * '$Revision: 1.80 $'
+ *     '$Date: 2003-05-07 23:25:15 $'
+ * '$Revision: 1.81 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -755,6 +755,9 @@ public class DataViewer extends javax.swing.JPanel
         }
         else if (format.indexOf("ASCI")>-1) {
           text_flag=true;
+        }
+        else if ((format.trim()).length()<1) {
+          Log.debug(1, "Format string in physical module is empty!");
         }
         
         boolean image_flag = false;
