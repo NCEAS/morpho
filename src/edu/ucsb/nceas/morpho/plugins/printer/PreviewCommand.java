@@ -1,5 +1,5 @@
 /**
- *  '$RCSfile: PrintCommand.java,v $'
+ *  '$RCSfile: PreviewCommand.java,v $'
  *  Copyright: 2000 Regents of the University of California and the
  *              National Center for Ecological Analysis and Synthesis
  *    Authors: @authors@
@@ -7,7 +7,7 @@
  *
  *   '$Author: sambasiv $'
  *     '$Date: 2004-04-05 22:00:30 $'
- * '$Revision: 1.3 $'
+ * '$Revision: 1.1 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -55,7 +55,7 @@ import edu.ucsb.nceas.morpho.framework.ConfigXML;
 import edu.ucsb.nceas.morpho.util.Log;
 
 
-public class PrintCommand implements Command
+public class PreviewCommand implements Command
 {
 	
 	private Morpho instanceOfMorpho;
@@ -101,11 +101,11 @@ public class PrintCommand implements Command
 		}	catch (Exception e) {
 				Log.debug(12, "Exception during Transformation in PrintCommand - " + e);
 		}
-		printerPlugin.print( htmlDoc , "text/html");
+		printerPlugin.display( htmlDoc , "text/html");
 	}
 	
 	
-	public PrintCommand(Morpho morpho, PrinterPlugin prPlugin)
+	public PreviewCommand(Morpho morpho, PrinterPlugin prPlugin)
 	{
 		instanceOfMorpho = morpho;
 		printerPlugin = prPlugin;

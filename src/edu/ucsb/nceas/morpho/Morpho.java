@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: jones $'
- *     '$Date: 2004-03-24 18:09:21 $'
- * '$Revision: 1.67 $'
+ *   '$Author: sambasiv $'
+ *     '$Date: 2004-04-05 22:00:30 $'
+ * '$Revision: 1.68 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1160,8 +1160,8 @@ public class Morpho
         GUIAction connectItemAction = 
             new GUIAction("Login/Logout", null, connectCommand);
         connectItemAction.setToolTipText("Login/Logout...");
-        connectItemAction.setMenuItemPosition(6);
-        connectItemAction.setSeparatorPosition(SEPARATOR_PRECEDING);
+        connectItemAction.setMenuItemPosition(8);
+				connectItemAction.setSeparatorPosition(SEPARATOR_PRECEDING);
         connectItemAction.setMenu("File", 0);
         controller.addGuiAction(connectItemAction);
 
@@ -1171,7 +1171,7 @@ public class Morpho
         GUIAction profileItemAction = 
             new GUIAction("New profile...", null, profileCommand);
         profileItemAction.setToolTipText("New Profile...");
-        profileItemAction.setMenuItemPosition(7);
+        profileItemAction.setMenuItemPosition(9);
         profileItemAction.setMenu("File", 0);
         controller.addGuiAction(profileItemAction);
 
@@ -1183,7 +1183,7 @@ public class Morpho
         GUIAction switchItemAction =
             new GUIAction("Switch profile...", null, switchCommand);
         switchItemAction.setToolTipText("Switch Profile...");
-        switchItemAction.setMenuItemPosition(8);
+        switchItemAction.setMenuItemPosition(10);
         switchItemAction.setSeparatorPosition(SEPARATOR_FOLLOWING);
         switchItemAction.setMenu("File", 0);
         controller.addGuiAction(switchItemAction);
@@ -1196,7 +1196,7 @@ public class Morpho
         GUIAction prefsItemAction =
             new GUIAction("Set preferences...", null, prefsCommand);
         prefsItemAction.setToolTipText("Set Preferences...");
-        prefsItemAction.setMenuItemPosition(9);
+        prefsItemAction.setMenuItemPosition(11);
         prefsItemAction.setSeparatorPosition(SEPARATOR_FOLLOWING);
         prefsItemAction.setMenu("File", 0);
         controller.addGuiAction(prefsItemAction);

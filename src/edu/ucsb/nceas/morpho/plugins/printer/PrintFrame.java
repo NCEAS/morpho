@@ -6,8 +6,8 @@
 *    Release: @release@
 *
 *   '$Author: sambasiv $'
-*     '$Date: 2004-02-12 22:25:58 $'
-* '$Revision: 1.4 $'
+*     '$Date: 2004-04-05 22:00:30 $'
+* '$Revision: 1.5 $'
 *
 * This program is free software; you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -66,9 +66,15 @@ public class PrintFrame extends JFrame implements ActionListener, HyperlinkListe
 	JScrollPane scrollPane;
 	PageFormat pageFormat = null;
 	PrinterJob job = null;
+	Rectangle editorBounds = null;
 	
 	
 	PrintFrame(String text, String contentType) {
+		
+		this(text, contentType, new Dimension(800, 600));
+	}
+	
+	PrintFrame(String text, String contentType, Dimension dim) {
 		
 		super();
 		
@@ -98,53 +104,53 @@ public class PrintFrame extends JFrame implements ActionListener, HyperlinkListe
 		getContentPane().add(panel, BorderLayout.NORTH);
 		getContentPane().add(scrollPane, BorderLayout.CENTER);
 		
-		setSize(800,600);
-		setVisible(true);
+		editorBounds = editor.getBounds();
 		
 		job = PrinterJob.getPrinterJob();
 		pageFormat = job.defaultPage();
-	
+		
+		setSize((int)dim.getWidth(), (int)dim.getHeight());
+		setVisible(true);
+		
 	}
 	
 	public void hyperlinkUpdate(HyperlinkEvent e) 
 	{
 		Log.debug(50,"hyperlinkUpdate called in PrintPlugin; eventType=" + e.getEventType());
 		Log.debug(50,"hyperlinks not supported in Print Window");
-		/*if ( e.getEventType() == HyperlinkEvent.EventType.ACTIVATED ) {
-			Log.debug(50,"eventType=ACTIVATED; description="
-			+e.getDescription()+"; url="+e.getURL());
-			try {
-				controller.display(e.getDescription());
-			} catch (DocumentNotFoundException ex) {
-				Log.debug(12,"HTMLPanel.hyperlinkUpdate(): "
-				+"DocumentNotFoundException from HyperlinkEvent: "
-				+ e.getEventType() + "; exception is: "+ex);
-				ex.printStackTrace(System.err);
-			}
-		}*/
 		
+	}
+	
+	public void setPageFormat(PageFormat format) {
+		
+		this.pageFormat = format;
+	}
+	
+	public void print() {
+		job = PrinterJob.getPrinterJob();
+		if(editorBounds.getWidth() == 0) editorBounds = new Rectangle(800, 600);
+		PrintableComponent pc = new PrintableComponent(editor, pageFormat, editorBounds);
+		
+		if(job.printDialog())
+		{
+			pc.scaleToFitX();
+			job.setPageable(pc);
+			try {
+				job.print();
+			}
+			catch(PrinterException pe)
+			{
+				Log.debug(6, "Printer Exception - " + pe);
+			}
+		}
 	}
 	
 	public void actionPerformed(ActionEvent ae) 
 	{
 		Object obj = ae.getSource();
-		Dimension oldD = this.getSize();
 		if(obj == printButton) 
 		{
-			job = PrinterJob.getPrinterJob();
-			PrintableComponent pc = new PrintableComponent(editor, pageFormat);
-			if(job.printDialog())
-			{
-				pc.scaleToFitX();
-				job.setPageable(pc);
-				try {
-					job.print();
-				}
-				catch(PrinterException pe)
-				{
-					Log.debug(6, "Printer Exception - " + pe);
-				}
-			}
+			print();
 		}
 		else if(obj == pageSetupButton)
 		{
@@ -165,6 +171,7 @@ public class PrintFrame extends JFrame implements ActionListener, HyperlinkListe
 		
 		private double mScaleX;
 		private double mScaleY;
+		Rectangle componentBounds;
 		
 		/**
 		* The Swing component to print.
@@ -179,16 +186,14 @@ public class PrintFrame extends JFrame implements ActionListener, HyperlinkListe
 		* @param format The size of the pages over which
 		* the componenent will be printed.
 		*/
-		public PrintableComponent(JComponent c, PageFormat format) {
-			
-			
+		public PrintableComponent(JComponent c, PageFormat format, Rectangle bounds) {
 			
 			setPageFormat(format);
 			setPrintable(this);
 			setComponent(c);
 			
-			Rectangle componentBounds = c.getBounds(null);
-						
+			//Rectangle componentBounds = c.getBounds(null);
+			this.componentBounds = bounds;
 			setSize(componentBounds.width, componentBounds.height);
 			setScale(1, 1);
 		}
@@ -204,9 +209,10 @@ public class PrintFrame extends JFrame implements ActionListener, HyperlinkListe
 		
 		public void scaleToFit(boolean useSymmetricScaling) {
 			PageFormat format = getPageFormat();
-			Rectangle componentBounds = mComponent.getBounds(null);
-			double scaleX = format.getImageableWidth() /componentBounds.width;
-			double scaleY = format.getImageableHeight() /componentBounds.height;
+			Rectangle bounds = mComponent.getBounds(null);
+			
+			double scaleX = format.getImageableWidth() /bounds.width;
+			double scaleY = format.getImageableHeight() /bounds.height;
 			
 			if (scaleX < 1 || scaleY < 1) {
 				if (useSymmetricScaling) {
@@ -216,7 +222,7 @@ public class PrintFrame extends JFrame implements ActionListener, HyperlinkListe
 						scaleX = scaleY;
 					}
 				}
-				setSize( (float) (componentBounds.width * scaleX), (float) (componentBounds.height * scaleY) );
+				setSize( (float) (bounds.width * scaleX), (float) (bounds.height * scaleY) );
 				setScale(scaleX, scaleY);
 				
 			}
@@ -224,12 +230,13 @@ public class PrintFrame extends JFrame implements ActionListener, HyperlinkListe
 		
 		public void scaleToFitX() {
 			PageFormat format = getPageFormat();
-			Rectangle componentBounds = mComponent.getBounds(null);
-			double scaleX = format.getImageableWidth() /componentBounds.width;
+			Rectangle bounds = mComponent.getBounds(null);
+			if(bounds.getHeight() == 0 || bounds.getWidth() == 0) bounds = this.componentBounds;
+			double scaleX = format.getImageableWidth() /bounds.width;
 			double scaleY = scaleX;
 			if (scaleX < 1) {
 				setSize( (float) format.getImageableWidth(),
-				(float) (componentBounds.height * scaleY));
+				(float) (bounds.height * scaleY));
 				setScale(scaleX, scaleY);
 			}
 		}
@@ -238,8 +245,9 @@ public class PrintFrame extends JFrame implements ActionListener, HyperlinkListe
 			
 			Graphics2D g2 = (Graphics2D) graphics;
 			g2.translate(pageFormat.getImageableX(), pageFormat.getImageableY());
-			Rectangle componentBounds = mComponent.getBounds(null);
-			g2.translate(-componentBounds.x, -componentBounds.y);
+			Rectangle bounds = mComponent.getBounds(null);
+			if(bounds.getHeight() == 0 || bounds.getWidth() == 0) bounds = this.componentBounds;
+			g2.translate(-bounds.x, -bounds.y);
 			g2.scale(mScaleX, mScaleY);
 			boolean wasBuffered = mComponent.isDoubleBuffered();
 			mComponent.paint(g2);
@@ -294,7 +302,7 @@ public class PrintFrame extends JFrame implements ActionListener, HyperlinkListe
 			mNumPagesX = (int) ((width + mFormat.getImageableWidth() - 1)/ mFormat.getImageableWidth());
 			mNumPagesY = (int) ((height + mFormat.getImageableHeight() - 1)/ mFormat.getImageableHeight());
 			mNumPages = mNumPagesX * mNumPagesY;
-			Log.debug(20, "Number Of Pages for printing = " + mNumPages);
+			Log.debug(30, "Number Of Pages for printing = " + mNumPages);
 			
 		}
 		

@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: sambasiv $'
- *     '$Date: 2003-12-19 01:44:02 $'
- * '$Revision: 1.3 $'
+ *     '$Date: 2004-04-05 22:00:30 $'
+ * '$Revision: 1.4 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -35,14 +35,18 @@ import edu.ucsb.nceas.morpho.plugins.PrinterInterface;
 import edu.ucsb.nceas.morpho.plugins.ServiceController;
 import edu.ucsb.nceas.morpho.plugins.ServiceExistsException;
 import edu.ucsb.nceas.morpho.plugins.ServiceProvider;
-import edu.ucsb.nceas.morpho.plugins.DocumentNotFoundException;
+import edu.ucsb.nceas.morpho.util.DocumentNotFoundException;
 import edu.ucsb.nceas.morpho.util.GUIAction;
 import edu.ucsb.nceas.morpho.util.UISettings;
+import edu.ucsb.nceas.morpho.util.Command;
 import edu.ucsb.nceas.morpho.util.StateChangeEvent;
 
 import edu.ucsb.nceas.morpho.framework.UIController;
 import edu.ucsb.nceas.morpho.util.Log;
 
+import java.awt.print.*;
+import java.awt.event.ActionEvent;
+import java.awt.Dimension;
 
 
 
@@ -55,15 +59,25 @@ public class PrinterPlugin implements       PrinterInterface,
 																						PluginInterface,
                                             ServiceProvider
 {
-	 
-	 private Morpho instanceOfMorpho;
-	 private final ClassLoader classLoader;
-	 
-	 public PrinterPlugin() 
+	
+	private Morpho instanceOfMorpho;
+	private final ClassLoader classLoader;
+	
+	/** Constant to indicate a separator should precede an action */
+	private static String SEPARATOR_PRECEDING = "separator_preceding";
+	/** Constant to indicate a separator should follow an action */
+	private static String SEPARATOR_FOLLOWING = "separator_following";
+	
+	private Dimension PRINT_FRAME_DIMENSION = new Dimension(800, 600);  
+	private static PageFormat pageFormat = null;
+	
+	public PrinterPlugin() 
 	 {
 		 	classLoader = Morpho.class.getClassLoader();
       Thread t = Thread.currentThread();
       t.setContextClassLoader(classLoader);
+			PrinterJob job = PrinterJob.getPrinterJob();
+			pageFormat = job.defaultPage();
 			
 	 }
 				
@@ -95,20 +109,52 @@ public class PrinterPlugin implements       PrinterInterface,
 				
 				UIController controller = UIController.getInstance();
 				
-				// Action for search
-				GUIAction displayItemAction = new GUIAction("View/Print Metadata",
-							null, new PrintCommand(this.instanceOfMorpho, this));
-				displayItemAction.setToolTipText("Display and/or Print MetaData");
-				displayItemAction.setMenuItemPosition(4);
-				displayItemAction.setMenu("File", 0);
-				displayItemAction.setEnabled(false);  //default
-				controller.addGuiAction(displayItemAction);
-				displayItemAction.setEnabledOnStateChange(
+				// Action for Page setup
+				GUIAction pageSetupAction = new GUIAction("Page setup...",
+							null, new PageSetupCommand());
+				pageSetupAction.setMenuItemPosition(5);
+				pageSetupAction.setSeparatorPosition(SEPARATOR_PRECEDING);
+				pageSetupAction.setMenu("File", 0);
+				pageSetupAction.setEnabled(false);  //default
+				controller.addGuiAction(pageSetupAction);
+				pageSetupAction.setEnabledOnStateChange(
                             StateChangeEvent.CREATE_DATAPACKAGE_FRAME, 
                             true, GUIAction.EVENT_LOCAL);
-				displayItemAction.setEnabledOnStateChange(
+				pageSetupAction.setEnabledOnStateChange(
                             StateChangeEvent.CREATE_SEARCH_RESULT_FRAME, 
                             false, GUIAction.EVENT_LOCAL);
+														
+				// Action for preview
+				GUIAction previewAction = new GUIAction("Print preview...",
+							null, new PreviewCommand(this.instanceOfMorpho, this));
+				previewAction.setMenuItemPosition(6);
+				previewAction.setMenu("File", 0);
+				previewAction.setEnabled(false);  //default
+				controller.addGuiAction(previewAction);
+				previewAction.setEnabledOnStateChange(
+                            StateChangeEvent.CREATE_DATAPACKAGE_FRAME, 
+                            true, GUIAction.EVENT_LOCAL);
+				previewAction.setEnabledOnStateChange(
+                            StateChangeEvent.CREATE_SEARCH_RESULT_FRAME, 
+                            false, GUIAction.EVENT_LOCAL);
+				
+				// Action for Print
+				GUIAction printAction = new GUIAction("Print...",
+							null, new PrintCommand(this.instanceOfMorpho, this));
+				printAction.setMenuItemPosition(7);
+				
+				printAction.setMenu("File", 0);
+				printAction.setEnabled(false);  //default
+				controller.addGuiAction(printAction);
+				printAction.setEnabledOnStateChange(
+                            StateChangeEvent.CREATE_DATAPACKAGE_FRAME, 
+                            true, GUIAction.EVENT_LOCAL);
+				printAction.setEnabledOnStateChange(
+                            StateChangeEvent.CREATE_SEARCH_RESULT_FRAME, 
+                            false, GUIAction.EVENT_LOCAL);
+														
+				
+				
 				
 		}
 		
@@ -175,29 +221,82 @@ public class PrinterPlugin implements       PrinterInterface,
 			
 		}
 		
+		
 		public void display( String displayString, String contentType) 
 		{
 			
 			String ctype;
-			
 			if(displayString == null || displayString.trim().equals("")) {
 				return;
 			}
-			
 			if(contentType == null || contentType.trim().equals("")) {
 				ctype = DEFAULT_CONTENT_TYPE;
 			} else {
 				ctype = contentType;
 			}
-		  
-			displayString = stripHTMLMetaTags(displayString);
-			displayString = stripComments(displayString);
+		  displayString = processHTMLString(displayString);
+			PrintFrame frame = createFrame(displayString, ctype, PRINT_FRAME_DIMENSION);
+			frame.setPageFormat(pageFormat);
+		}
+		
+		
+		public void print( String displayString, String contentType) 
+		{
 			
-			displayString = appendTrailingSpace(displayString);
-			
-			new PrintFrame(displayString, ctype);
+			String ctype;
+			if(displayString == null || displayString.trim().equals("")) {
+				return;
+			}
+			if(contentType == null || contentType.trim().equals("")) {
+				ctype = DEFAULT_CONTENT_TYPE;
+			} else {
+				ctype = contentType;
+			}
+		  displayString = processHTMLString(displayString);
+			PrintFrame frame = createFrame(displayString, ctype, new Dimension(1, 1));
+			frame.setPageFormat(pageFormat);
+			frame.print();
+			frame.dispose();
 			
 		}
+		
+		private String processHTMLString(String displayString) {
+			displayString = stripHTMLMetaTags(displayString);
+			displayString = stripComments(displayString);
+			displayString = appendTrailingSpace(displayString);
+			return displayString;
+		}
+		
+		private PrintFrame createFrame(String displayString, String ctype, Dimension dims) {
+			
+			return new PrintFrame(displayString, ctype, dims);
+		}
+		
+		
+		public static void setPageFormat(PageFormat pf) {
+			
+			pageFormat = pf;
+		}
+		
+		public static PageFormat getPageFormat() {
+			return pageFormat;
+		}
 }
+
+class PageSetupCommand implements Command {
+	
+	PageSetupCommand() {
 		
+	}
+	
+	public void execute(ActionEvent event) {
 		
+		PageFormat format = PrinterPlugin.getPageFormat();
+		PrinterJob job = PrinterJob.getPrinterJob();
+		format = job.pageDialog(format);
+		PrinterPlugin.setPageFormat(format);
+		
+	}
+}
+
+	
