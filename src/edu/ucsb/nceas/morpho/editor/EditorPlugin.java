@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-07-09 20:17:34 $'
- * '$Revision: 1.17 $'
+ *     '$Date: 2001-10-22 22:30:02 $'
+ * '$Revision: 1.18 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -125,9 +125,9 @@ public class EditorPlugin implements PluginInterface, ServiceProvider, EditorInt
     menuActions = new Action[1];
     Action openItemAction = new AbstractAction("Open Editor") {
       public void actionPerformed(ActionEvent e) {
-        EditorController editframe = new EditorController(framework,"Editor Controller");
-        editframe.setVisible(true);
-        framework.addWindow(editframe);
+//        EditorController editframe = new EditorController(framework,"Editor Controller");
+//        editframe.setVisible(true);
+//        framework.addWindow(editframe);
       }
     };
     openItemAction.putValue(Action.SMALL_ICON, 
