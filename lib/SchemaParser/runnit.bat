@@ -1,1 +1,0 @@
-java -Xmx512m -Xss1m -cp ./;xercesImpl.jar;xmlParserAPIs.jar;SchemaParser.jar SchemaInfoFrame
