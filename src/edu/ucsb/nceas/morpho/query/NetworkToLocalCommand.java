@@ -5,9 +5,9 @@
  *    Authors: @tao@
  *    Release: @release@
  *
- *   '$Author: cjones $'
- *     '$Date: 2002-09-26 01:57:53 $'
- * '$Revision: 1.7 $'
+ *   '$Author: tao $'
+ *     '$Date: 2002-10-02 20:32:58 $'
+ * '$Revision: 1.8 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -53,6 +53,9 @@ public class NetworkToLocalCommand implements Command
   /** A reference to the MorphoFrame */
    private MorphoFrame morphoFrame = null;
  
+  /** A flag indicate the frame 'type, search result or data packag*/
+   private String morphoFrameType = null;
+ 
   /** selected docid to synchronize */
   String selectDocId = null;
   
@@ -69,17 +72,25 @@ public class NetworkToLocalCommand implements Command
    * @param myOpenDialog the open dialog which will be applied synchronize
    * @param dialog a synchronize dialog need to be destroied
    * @param myFrame the parent frame of synchronize dialog
+   * @param frameType the parent frame'type, search result or package
    * @param selectId the id of data package need to be synchronized
    * @param myInLocal if the datapackage has a local copy
    * @param myInNetwork if the datapackage has a network copy
    */
   public NetworkToLocalCommand(OpenDialogBox myOpenDialog, JDialog mySynDialog,
-   MorphoFrame myFrame, String selectId, boolean myInLocal, boolean myInNetwork)
+                               MorphoFrame myFrame, String frameType, 
+                               String selectId, boolean myInLocal, 
+                               boolean myInNetwork)
   {
     if(myOpenDialog != null)
     {
+      // for open dialg
       openDialog = myOpenDialog;
       comeFromOpenDialog = true;
+    }
+    else
+    {
+      morphoFrameType = frameType;
     }
     synchronizeDialog = mySynDialog;
     morphoFrame = myFrame;
@@ -94,7 +105,7 @@ public class NetworkToLocalCommand implements Command
    */    
   public void execute(ActionEvent event)
   {
-       // Make sure selected a id, and there no package in metacat
+    // Make sure selected a id, and there no package in metacat
     if (selectDocId != null && !selectDocId.equals("") && !inLocal && inNetwork)
     {
         if (synchronizeDialog != null)
@@ -117,25 +128,13 @@ public class NetworkToLocalCommand implements Command
  {
   final SwingWorker worker = new SwingWorker() 
   {
+        DataPackageInterface dataPackage;
         // A variable to indicate it reach refresh command or not
         // This is for butterfly flapping, if reach refresh, butterfly will
         // stop flapping by refresh        
         boolean refreshFlag = false;        
         public Object construct() 
         {
-          frame.setBusy(true);
-          DataPackageInterface dataPackage;
-          // Create a refresh command 
-          RefreshCommand refresh = null;
-          if(hasOpen)
-          {
-            refresh = new RefreshCommand(open);
-          }
-          else
-          {
-            refresh = new RefreshCommand(frame);
-          }
-          
           try 
           {
             ServiceController services = ServiceController.getInstance();
@@ -148,14 +147,51 @@ public class NetworkToLocalCommand implements Command
             Log.debug(6, "Error in upload");
             return null;
           }
+          frame.setBusy(true);
+          // Create a refresh command 
+          RefreshCommand refresh = null;
+          if(hasOpen)
+          {
+            refresh = new RefreshCommand(open);
+          }
+          else
+          {
+            refresh = new RefreshCommand(frame);
+          }
+          
           //download the current selection to the local disk
           Log.debug(20, "Downloading package.");
           dataPackage.download(docid);
           refreshFlag = true;
-          refresh.execute(null);
+          //refresh.execute(null);
+          if ( comeFromOpenDialog || (morphoFrameType != null &&
+                      morphoFrameType.equals(morphoFrame.SEARCHRESULTFRAME)))
+         {
+           refresh.execute(null);
+         }
+         else if (morphoFrameType != null &&
+                     morphoFrameType.equals(morphoFrame.DATAPACKAGEFRAME))
+         {
+           // for data package frame
+           refreshDataPackageFrame();
+         }
           
           return null;  
           
+        }
+        
+        /*
+         * Method to refresh a open datackage 
+         */
+        private void refreshDataPackageFrame()
+        {
+          
+          // the location of data package after synchronize
+          String location = DataPackageInterface.BOTH;
+          dataPackage.openDataPackage(location, selectDocId, null, null);
+          // Distroy old frame
+          UIController.getInstance().removeWindow(frame);
+          frame.dispose();
         }
 
         //Runs on the event-dispatching thread.

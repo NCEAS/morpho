@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2002-09-13 20:08:47 $'
- * '$Revision: 1.7 $'
+ *     '$Date: 2002-10-02 20:34:07 $'
+ * '$Revision: 1.8 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -90,6 +90,9 @@ public class SynchronizeDialog extends JDialog
   /** A reference to morpho frame */
   private MorphoFrame morphoFrame = null;
   
+  /** Type of morpho frame, search result or package frame */
+  private String morphoFrameType = null;
+  
   /** A reference to open dialog */
   private OpenDialogBox openDialog = null;
   
@@ -110,15 +113,18 @@ public class SynchronizeDialog extends JDialog
    * morpho frame
    *
    * @param parent  The parent frame for this dialog
+   * @param frameType the paremt frame's type, search result frame or package 
    * @param myDocid the docid need to be synchronized
    * @param myInLocal if the docid is in local
    * @param myInNetwork if the docid is in Network
    */
-  public SynchronizeDialog(MorphoFrame parent, String myDocid, 
-                                        boolean myInLocal, boolean myInNetwork)
+  public SynchronizeDialog(MorphoFrame parent, String frameType,
+                           String myDocid, boolean myInLocal, 
+                           boolean myInNetwork)
   {
     super(parent);
     morphoFrame = parent;
+    morphoFrameType = frameType;
     this.docid = myDocid;
     this.inLocal = myInLocal;
     this.inNetwork = myInNetwork;
@@ -208,7 +214,8 @@ public class SynchronizeDialog extends JDialog
      
       arrowIcon = new ImageIcon(getClass().getResource("rightarrow.gif"));
       executeAction = new GUIAction("Execute", null, new LocalToNetworkCommand
-                    (openDialog, this, morphoFrame, docid, inLocal, inNetwork)); 
+                                   (openDialog, this, morphoFrame, 
+                                   morphoFrameType, docid, inLocal, inNetwork)); 
       warningMessage = WARNING;
     }
     // down load 
@@ -217,7 +224,8 @@ public class SynchronizeDialog extends JDialog
       
       arrowIcon = new ImageIcon(getClass().getResource("leftarrow.gif"));
       executeAction = new GUIAction("Execute", null, new NetworkToLocalCommand
-                   (openDialog, this, morphoFrame, docid, inLocal, inNetwork));
+                                   (openDialog, this, morphoFrame, 
+                                   morphoFrameType, docid, inLocal, inNetwork));
       warningMessage = "";
     }
     
