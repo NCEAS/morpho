@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: sgarg $'
- *     '$Date: 2003-12-18 17:27:20 $'
- * '$Revision: 1.6 $'
+ *   '$Author: brooke $'
+ *     '$Date: 2003-12-24 05:45:44 $'
+ * '$Revision: 1.7 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -384,8 +384,8 @@ public class PartyPage extends AbstractWizardPage {
 
     ////
     warningPanel = WidgetFactory.makePanel(1);
-    warningLabel = WidgetFactory.makeLabel("Warning: Either one of the three "
-                                             +"enteries is required: Last Name, Position Name or Organization", true);
+    warningLabel = WidgetFactory.makeLabel("Warning: at least one of the three "
+      +"entries is required: Last Name, Position Name or Organization", true);
     warningPanel.add(warningLabel);
     warningPanel.setVisible(false);
     setPrefMinMaxSizes(warningLabel, PARTY_FULL_LABEL_DIMS);
@@ -860,7 +860,7 @@ public class PartyPage extends AbstractWizardPage {
   private OrderedMap returnMap = new OrderedMap();
   //
   public OrderedMap getPageData() {
-	  return getPageData(xPathRoot);
+    return getPageData(xPathRoot);
   }
 
   public OrderedMap getPageData(String xPathRoot) {
