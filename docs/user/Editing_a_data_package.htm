@@ -31,11 +31,11 @@
   </tr>
  -->
   <tr>
-    <td width="28%" height="52" align=center valign=middle>
-      <p><a href="index.html" class="sitelink">Help Index</a></td>
-    <td align=center valign=middle width="72%"> <a href="Adding_Data_to_a_Data_Package.htm" class="sitelink"><img src="./images/previous.gif" vspace=0 hspace=5 border=0 alt=Previous>Adding
+    <td width="10%" height="52" align=center valign=middle>
+      <p align="left"><a href="index.html" class="sitelink">Help Index</a></td>
+    <td align=center valign=middle width="90%"> <div align="right"><a href="Adding_Data_to_a_Data_Package.htm" class="sitelink"><img src="./images/previous.gif" vspace=0 hspace=5 border=0 alt=Previous>Adding
         Data to a Data Package&nbsp;</a>&nbsp;&nbsp; &nbsp;&nbsp; <a href="saving_to_network_synchronizing.htm" class="sitelink"> Uploading
-        and Downloading Data Packages<img src="./images/next.gif" vspace=0 hspace=5 border=0 alt=Next></a></td>
+        and Downloading Data Packages<img src="./images/next.gif" vspace=0 hspace=5 border=0 alt=Next></a></div></td>
   </tr>
 </table>
 <p>
@@ -44,196 +44,218 @@
 <table border="0" cellpadding="4" cellspacing="0" width="100%"
        class="tablepanel">
   <tr class="tablehead">
-    <td><b>Editing a Data Package</b></td>
+    <td width="50%"><b>Editing a Data Package</b></td>
   </tr>
-  <tr> 
-    <td rowspan="2" width="50%"><p>&nbsp;</p>
-      <p>There are two main reasons you may wish to edit a data package. First,
-         you may want to add additional documentation to the data package documentation,
-        
+  <tr>
+    <td><p>There are two main reasons you may wish to edit a data package. First,
+        you may want to add additional documentation to the data package documentation,
         that was not available in the <a href="Creating_a_new_data_package.htm#dpw">Data
-         Package Wizard</a>. Second, you may want to change or delete documentation
-          that you entered in the Data Package Wizard, or that you added to the
-         
-        data package documentation in some other way. For either of these purposes,
-          you can use either the Morpho Editor, or use the selection available
-         under the Documentation menu at the top of each window. The functions
-         and uses of the Morpho Editor are described below, and the Documentation
-         menu is described later (click <a href="#DocMenu">here</a> to skip ahead).</p>
-      <p>&nbsp;</p>
-      <p class="helpsub"><a name="editor"></a>Morpho Editor</p>
-      <p>Begin by <a href="opening_a_data_package.htm">opening the data package</a> 
-        you wish to edit. Next, open Morpho Editor by doing ONE of the following:</p>
+        Package Wizard</a>. Second, you may want to change or delete documentation
+        that you entered in the Data Package Wizard, or that you added to the data
+        package documentation in some other way. For either of these purposes,
+        you can use either the Morpho Editor, or use the selection available under
+        the Documentation menu at the top of each window. The functions and uses
+        of the Morpho Editor are described below, and the Documentation menu is
+    described later (click <a href="#DocMenu">here</a> to skip ahead). </p>
+    <p>&nbsp; </p>
+  </tr>
+  <tr>
+    <td><p class="helpsub"><a name="editor"></a>Morpho Editor</p>
+      <p>Begin by <a href="opening_a_data_package.htm">opening the data package</a> you
+        wish to edit. Next, open Morpho Editor by doing ONE of the following:</p>
       <ul>
         <li>Under the &quot;Data&quot; menu, choose &quot;Add Documentation&quot;.</li>
         <li>Under the &quot;Documentation&quot; menu, choose Add/Edit Documentation&quot;</li>
-        <li>On the upper right side of the data package documentation, click on 
-          the &quot;Edit&quot; button.</li>
-      </ul>
-      <p>You will then see the Morpho Editor, pictured below.</p>
+        <li>On the upper right side of the data package documentation, click
+          on the &quot;Edit&quot; button.</li>
+      </ul>  
+      <p>&nbsp;</p>
+    
+  </tr>
+  <tr>
+    <td><p>You will then see the Morpho Editor, pictured below.</p>
       <p>&nbsp;</p>
       <p align="center"><img src="images/editor1.gif" width="712" height="484"></p>
+    <p align="center">&nbsp;</p>
+  </tr>
+  <tr>
+    <td><p>Each type of data documentation document (i.e. each metadata type)
+        has some structure which is indicated by the hierarchical outline on
+        the left. By clicking on the &quot;+&quot; symbol next to a category,
+        you can browse through the hierarchy, viewing &quot;parent&quot; and &quot;child&quot; nodes.
+        Parent nodes are the higher level nodes, and child nodes are the sub-level
+        nodes.</p>
       <p>&nbsp;</p>
-      <p>Each type of data documentation document (i.e. each metadata type) has 
-        some structure which is indicated by the hierarchical outline on the left. 
-        By clicking on the &quot;+&quot; symbol next to a category, you can browse 
-        through the hierarchy, viewing &quot;parent&quot; and &quot;child&quot; 
-        nodes. Parent nodes are the higher level nodes, and child nodes are the 
-        sub-level nodes.</p>
+      <p>Items in the outline are color coded to indicate which items are required
+        and which can be repeated. The legend for this color-coding is found
+        at the bottom-left of the screen. Blue and red nodes in the hierarchy
+        are required, while green and yellow nodes are optional. Blue and green
+        nodes are repeatable, meaning they can be duplicated (for example, there
+        can be multiple data set owners), while red nodes can only be used once,
+        and yellow nodes can be used once or not at all (zero).</p>
       <p>&nbsp;</p>
-      <p>Items in the outline are color coded to indicate which items are required 
-        and which can be repeated. The legend for this color-coding is found at 
-        the bottom-left of the screen. Blue and red nodes in the hierarchy are 
-        required, while green and yellow nodes are optional. Blue and green nodes 
-        are repeatable, meaning they can be duplicated (for example, there can 
-        be multiple data set owners), while red nodes can only be used once, and 
-        yellow nodes can be used once or not at all (zero).</p>
+      <p>Initially, only the documentation types that already exist in the data
+        package documentation are displayed in the list. When an item is selected
+        in this outline, a form based view of the information contained in the
+        selected item is shown on the right side of the window. You may navigate
+        your way to a desired field that you would like to edit by clicking on
+        the plus symbols next to the documentation types. Alternatively, you
+        can scroll through the fields shown on the right half of the screen by
+        using the scroll bar.</p>
       <p>&nbsp;</p>
-      <p>Initially, only the documentation types that already exist in the data 
-        package documentation are displayed in the list. When an item is selected 
-        in this outline, a form based view of the information contained in the 
-        selected item is shown on the right side of the window. You may navigate 
-        your way to a desired field that you would like to edit by clicking on 
-        the plus symbols next to the documentation types. Alternatively, you can 
-        scroll through the fields shown on the right half of the screen by using 
-        the scroll bar.</p>
+      <p>Most of the fields on the right side of the editor screen are editable.
+        One can just click on the field of interest and enter text. The 'tab
+        key' will move the selection to the next editable field. To add additional
+        documentation for types that are not shown initially in the tree on the
+        left of the screen, click the &quot;Show All&quot; button.
+        This will cause all of the documentation types to be displayed. To get
+      back to the original view, click &quot;Trim&quot;. To expand and view all
+      of the levels of the tree, click on the &quot;+&quot; button
+        at the top left of the screen. All parents and their children will be
+      displayed. To contract the levels of the tree, click the &quot;-&quot; button.</p>
       <p>&nbsp;</p>
-      <p>Most of the fields on the right side of the editor screen are editable. 
-        One can just click on the field of interest and enter text. The 'tab key' 
-        will move the selection to the next editable field.</p>
+      <p>A right-click on any item in the outline displays a popup menu (as shown
+        below) which allows the user to choose among several options. These include
+        duplicating an item, deleting an item, or copy and pasting items. Note
+        that all of these operations will include not only the selected item,
+        but also all of the item's children, or sub-levels, in the indicated
+        hierarchy. </p>
       <p>&nbsp;</p>
-      <p>To add additional documentation for types that are not shown initially 
-        in the tree on the left of the screen, click the &quot;Show All&quot; 
-        button. This will cause all of the documentation types to be displayed. 
-        To get back to the original view, click &quot;Trim&quot;.</p>
-      <p>&nbsp;</p>
-      <p>To expand and view all of the levels of the tree, click on the &quot;+&quot; 
-        button at the top left of the screen. All parents and their children will 
-        be displayed. To contract the levels of the tree, click the &quot;-&quot; 
-        button.</p>
-      <p>&nbsp;</p>
-      <p>A right-click on any item in the outline displays a popup menu (as shown 
-        below) which allows the user to choose among several options. These include 
-        duplicating an item, deleting an item, or copy and pasting items. Note 
-        that all of these operations will include not only the selected item, 
-        but also all of the item's children, or sub-levels, in the indicated hierarchy. 
-      </p>
-      <p>&nbsp;</p>
-      <p align="center"><img src="images/editor2.gif" width="712" height="484"></p>
-      <p>&nbsp;</p>
-      <p>To navigate quickly through the tree, you can find a section of documentation 
-        by choosing it from the drop down list located at the top left of the 
-        screen, next to &quot;Find:&quot;.</p>
-      <p>&nbsp;</p>
-      <p><span class="helpsub"><a name="DocMenu" id="DocMenu"></a>The Documentation
+      <p align="center"><img src="images/editor2.gif" width="712" height="484"></p>  
+    
+  </tr>
+  <tr>
+    <td><p>To navigate quickly through the tree, you can find a section of documentation
+        by choosing it from the drop down list located at the top left of the
+    screen, next to &quot;Find:&quot;. </p>
+    <p>&nbsp;</p>
+  </tr>
+  <tr>
+    <td><p><span class="helpsub"><a name="DocMenu" id="DocMenu"></a>The Documentation
           Menu</span></p>
       <p>The Documentation menu, which can be found at the top of each screen
         in Morpho (see picture below), is activated when the Morpho user opens
-        an existing data package. The Documentation
-        
-        menu options invoke various documentation editing tools and/or data entry
-        screens  that, together, enable the user to edit any field in the data
-        package. 
-        As mentioned in the <a href="#editor">Morpho Editor</a> section above,
-        the first choice in the Documentation menu opens the Morpho Editor, which
-        allows the editing of
-        any
-        field. The other
-        choices
-        in the
-        menu
-        bring
-        up screens
-        
-        that allow one to edit or add data for specific subsections of the documentation.
-         These same screens are used in the Data Package Wizard to create a new
+        an existing data package. The Documentation menu options invoke various
+        documentation editing tools and/or data entry screens that, together,
+        enable the user to edit any field in the data package. As mentioned in
+        the <a href="#editor">Morpho Editor</a> section above, the first choice
+        in the Documentation menu opens the Morpho Editor, which allows the editing
+        of any field. The other choices in the menu bring up screens that allow
+        one to edit or add data for specific subsections of the documentation.
+        These same screens are used in the Data Package Wizard to create a new
         data package, and therefore may look familiar. </p>
       <p>&nbsp;</p>
       <p align="center"><img src="images/docmenuclearer.gif" width="704" height="503"></p>
-      <p>&nbsp;</p>
-      <p>The Documentation menu options are (with screens pictured below):</p>
+    <p align="center">&nbsp;</p>
+  </tr>
+  <tr>
+    <td><p>The Documentation menu options are (with screens pictured below):</p>
       <ul>
-        <li class="tablepanel"><a href="#editor">Add/Edit Documentation</a>: Invokes the full-featured
-           Morpho Editor, giving the user editing access to all fields in
-          
-          the data package. </li>
-        <li class="tablepanel"><a href="#viewdoc">View Documentation</a>: Allows the user to view all
-          the documentation for the data package in one window.</li>
-        <li><a href="Creating_a_new_data_package.htm#researchproject">Research Project</a>: Allows user to specifiy
-          whether data is part of a larger research program. </li>
+        <li class="tablepanel"><a href="#editor">Add/Edit Documentation</a>:
+          Invokes the full-featured Morpho Editor, giving the user editing access
+          to all fields in the data package. </li>
+        <li class="tablepanel"><a href="#viewdoc">View Documentation</a>: Allows
+          the user to view all the documentation for the data package in one
+          window.</li>
+        <li><a href="Creating_a_new_data_package.htm#researchproject">Research
+            Project</a>: Allows user to specifiy whether data is part of a larger
+            research program. </li>
         <li class="tablepanel"><a href="Creating_a_new_data_package.htm#usagerights">Usage
-            Rights</a>:Accepts a text paragraph
-            that describes the intended usage rights for the <br>
-          data package. </li>
+            Rights</a>:Accepts a text paragraph that describes the intended usage
+            rights for the <br>
+    data package. </li>
         <li class="tablepanel"><a href="Creating_a_new_data_package.htm#geogcov">Geographic
-            Coverage</a>: Allows the user to
-            specify and describe the geographic region<br>
-          associated with the data package. </li>
+            Coverage</a>: Allows the user to specify and describe the geographic
+            region<br>
+    associated with the data package. </li>
         <li class="tablepanel"><a href="Creating_a_new_data_package.htm#tempcov">Temporal
-            Coverage</a>: Accepts the specification
-          of a temporal coverage boundries.</li>
+            Coverage</a>: Accepts the specification of a temporal coverage boundries.</li>
         <li class="tablepanel"><a href="Creating_a_new_data_package.htm#taxcov">Taxonomic
-            Coverage</a>: Accepts a list of
-          taxa to which the data package applies. </li>
-        <li> 
-          <p class="tablepanel"><a href="Creating_a_new_data_package.htm#meth">Methods</a>: Allows user to specify the method
-              steps used to collect data, and describe <br>
-            the study extent and sampling area.</p>
+            Coverage</a>: Accepts a list of taxa to which the data package applies. </li>
+        <li>
+          <p class="tablepanel"><a href="Creating_a_new_data_package.htm#meth">Methods</a>:
+            Allows user to specify the method steps used to collect data, and
+            describe <br>
+      the study extent and sampling area.</p>
         </li>
-        <li> 
-          <p><span class="tablepanel"><a href="Creating_a_new_data_package.htm#accesspermissions">Access
-                Permissions</a>: En</span>ablers the user to specify 
-            access rights to the data for <br>
-            specific persons, and to establish public access rights to view and/or 
-          edit the data. </p>
-        </li>
-      </ul>
-      <p>Click on any of the above menu options to read about how to fill out
+        <li>          <span class="tablepanel"><a href="Creating_a_new_data_package.htm#accesspermissions">Access
+                Permissions</a>: En</span>ablers the user to specify access rights
+                to the data for <br>
+      specific persons, and to establish public access rights to view and/or
+      edit the data. </li>
+      </ul>  
+      <p>&nbsp;</p>
+    
+  </tr>
+  <tr>
+    <td><p>Click on any of the above menu options to read about how to fill out
         the screens.</p>
-      <p>&nbsp;</p>
       <p>Following are sample screens from each of these options: </p>
-      <p>&nbsp;</p>
-      <p><strong>Add/Edit Documentation:</strong></p>
+    <p>&nbsp;</p>
+  </tr>
+  <tr>
+    <td><p>Add/Edit Documentation:</p>
       <p align="center"><img src="images/editor1.gif" width="712" height="484"></p>
-      <p>&nbsp;</p>
-      <p><strong><a name="viewdoc"></a>View Documentation:</strong></p>
+    <p align="center">&nbsp;</p>
+  </tr>
+  <tr>
+    <td><p><strong><a name="viewdoc"></a></strong>View Documentation:</p>
       <p align="center"><img src="images/viewdoc.gif" width="720" height="570"></p>
-      <p>&nbsp;</p>
-      <p><strong>Research Project:</strong></p>      <p align="center"><img src="images/researchproject.gif" width="705" height="523"></p>
-      <p>&nbsp;</p>
-      <p><strong>Usage Rights:</strong></p>
+    <p align="center">&nbsp;</p>
+  </tr>
+  <tr>
+    <td><p>Research Project:</p>
+      <p align="center"><img src="images/researchproject.gif" width="705" height="523"></p>
+    <p align="center">&nbsp;</p>
+  </tr>
+  <tr>
+    <td><p>Usage Rights:</p>
       <p align="center"><img src="images/usagedoc.gif" width="710" height="479"></p>
-      <p>&nbsp;</p>
-      <p><strong>Geographic Coverage:</strong></p>
+    <p align="center">&nbsp;</p>
+  </tr>
+  <tr>
+    <td><p>Geographic Coverage:</p>
       <p align="center"><img src="images/geogdoc.gif" width="707" height="457"></p>
-      <p>&nbsp;</p>
-      <p><strong>Temporal Coverage:</strong></p>
+    <p align="center">&nbsp;</p>
+  </tr>
+  <tr>
+    <td><p>Temporal Coverage:</p>
       <p align="center"><img src="images/tempdoc.gif" width="665" height="451"></p>
-      <p>&nbsp;</p>
-      <p><strong><a name="taxonomic"></a>Taxonomic Coverage:</strong></p>
+    <p align="center">&nbsp;</p>
+  </tr>
+  <tr>
+    <td><p><strong><a name="taxonomic"></a></strong>Taxonomic Coverage:</p>
       <p align="center"><img src="images/taxdoc.gif" width="677" height="502"></p>
-      <p>&nbsp;</p>
-      <p><strong>Methods:</strong></p>
+    <p align="center">&nbsp;</p>
+  </tr>
+  <tr>
+    <td><p>Methods:</p>
       <p align="center"><img src="images/methodsdoc.gif" width="679" height="469"></p>
-      <p>&nbsp;</p>
-      <p><strong>Access Permissions:</strong></p>
+    <p align="center">&nbsp;</p>
+  </tr>
+  <tr>
+    <td><p>Access Permissions:</p>
       <p align="center"><img src="images/accessdoc.gif" width="676" height="475"></p>
+    <p align="center">&nbsp;</p>
+  </tr>
+  <tr>
+    <td><p><span class="helpsub"><a name="technical"></a>Technical Notes</span><br>
+  For those who are interested in technical details, the Morpho editor is an
+      XML editor. It works by first reading an XML file and building an outline
+      (tree) view of the XML document. XML files can have formalized templates
+      called &quot;DTD's&quot;, which describe how the document can be constructed.
+      If the XML document indicates that its structure should conform to a DTD,
+      then the DTD is scanned and a single instance of any optional nodes not
+      present in the original is added to the hierarchy. Finally, if the editor
+      has additional data about the document type, it will add that data as custom
+      displays or help information about the node, as is shown in the above examples.
+      The editor can thus be customized to display the XML data in a variety
+      of ways.</p>
       <p>&nbsp;</p>
-      <p><span class="helpsub"><a name="technical"></a>Technical Notes</span><br>
-        For those who are interested in technical details, the Morpho editor is 
-        an XML editor. It works by first reading an XML file and building an outline 
-        (tree) view of the XML document. XML files can have formalized templates 
-        called &quot;DTD's&quot;, which describe how the document can be constructed. 
-        If the XML document indicates that its structure should conform to a DTD, 
-        then the DTD is scanned and a single instance of any optional nodes not 
-        present in the original is added to the hierarchy. Finally, if the editor 
-        has additional data about the document type, it will add that data as 
-        custom displays or help information about the node, as is shown in the 
-        above examples. The editor can thus be customized to display the XML data 
-        in a variety of ways.</p>
-      <p>&nbsp;</p>
-      <p>Learn how to upload and download data packages in the <a href="saving_to_network_synchronizing.htm">next 
-        section</a>.</p></tr>
+      <p>Learn how to upload and download data packages in the <a href="saving_to_network_synchronizing.htm">next
+          section</a>.</p>
+    <p>&nbsp;</p>
+  </tr>
 </table>
 
 <p>&nbsp;</p>
@@ -247,13 +269,14 @@
   </tr>
  -->
   <tr>
-    <td width="28%" height="52" align=center valign=middle>
-      <p><a href="index.html" class="sitelink">Help Index</a></td>
-    <td align=center valign=middle width="72%"> <a href="Adding_Data_to_a_Data_Package.htm" class="sitelink"><img src="./images/previous.gif" vspace=0 hspace=5 border=0 alt=Previous>Adding
-        Data to a Data Package&nbsp;</a>&nbsp;&nbsp; &nbsp;&nbsp; <a href="saving_to_network_synchronizing.htm" class="sitelink"> Uploading
-        and Downloading Data Packages<img src="./images/next.gif" vspace=0 hspace=5 border=0 alt=Next></a></td>
+    <td width="10%" height="52" align=center valign=middle>
+      <p align="left"><a href="index.html" class="sitelink">Help Index</a></td>
+    <td align=center valign=middle width="90%">
+      <div align="right"><a href="Adding_Data_to_a_Data_Package.htm" class="sitelink"><img src="./images/previous.gif" vspace=0 hspace=5 border=0 alt=Previous>Adding
+          Data to a Data Package&nbsp;</a>&nbsp;&nbsp; &nbsp;&nbsp; <a href="saving_to_network_synchronizing.htm" class="sitelink"> Uploading
+          and Downloading Data Packages<img src="./images/next.gif" vspace=0 hspace=5 border=0 alt=Next></a></div>
+    </td>
   </tr>
 </table>
-<p>&nbsp;</p>
 </body>
 </html>
