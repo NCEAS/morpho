@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2004-03-18 00:23:33 $'
- * '$Revision: 1.25 $'
+ *     '$Date: 2004-03-23 20:02:17 $'
+ * '$Revision: 1.26 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,26 +29,19 @@
 package edu.ucsb.nceas.morpho.plugins.datapackagewizard;
 
 import edu.ucsb.nceas.morpho.Morpho;
-
-import edu.ucsb.nceas.morpho.util.Log;
-
-import edu.ucsb.nceas.utilities.XMLUtilities;
-
-import edu.ucsb.nceas.morpho.plugins.DataPackageWizardListener;
+import edu.ucsb.nceas.morpho.datapackage.AbstractDataPackage;
+import edu.ucsb.nceas.morpho.datapackage.DataPackageFactory;
+import edu.ucsb.nceas.morpho.editor.DocFrame;
+import edu.ucsb.nceas.morpho.framework.AbstractUIPage;
 import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
-import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardPageLibrary;
-import edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.PartyMainPage;
+import edu.ucsb.nceas.morpho.plugins.DataPackageWizardListener;
 import edu.ucsb.nceas.morpho.plugins.PluginInterface;
 import edu.ucsb.nceas.morpho.plugins.ServiceController;
 import edu.ucsb.nceas.morpho.plugins.ServiceExistsException;
 import edu.ucsb.nceas.morpho.plugins.ServiceProvider;
-
-import edu.ucsb.nceas.morpho.framework.AbstractUIPage;
-
-import edu.ucsb.nceas.morpho.datapackage.DataPackageFactory;
-import edu.ucsb.nceas.morpho.datapackage.AbstractDataPackage;
-import edu.ucsb.nceas.morpho.editor.*;
-
+import edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.PartyMainPage;
+import edu.ucsb.nceas.morpho.util.Log;
+import edu.ucsb.nceas.utilities.XMLUtilities;
 
 import org.w3c.dom.Node;
 
@@ -102,8 +95,8 @@ public class DataPackageWizardPlugin implements PluginInterface,
   public void startPackageWizard(DataPackageWizardListener listener) {
     startWizardAtPage(WizardSettings.PACKAGE_WIZ_FIRST_PAGE_ID, true, listener,
                       "New Data Package Wizard");
-  responsiblePartyList.clear();
-  PartyMainPage.RESPONSIBLE_PARTY_REFERENCE_COUNT = 0;
+    responsiblePartyList.clear();
+    PartyMainPage.RESPONSIBLE_PARTY_REFERENCE_COUNT = 0;
   }
 
 
@@ -135,12 +128,12 @@ public class DataPackageWizardPlugin implements PluginInterface,
 
 
   /**
-   *  method to start the wizard at a given page
+   * method to start the wizard at a given page
    *
-   *	@param pageID	 the ID of the page from where the wizard is to be started
-   *
-   *  @param listener the <code>DataPackageWizardListener</code> to be called
-   *                  back when the Entity Wizard has finished
+   * @param pageID the ID of the page from where the wizard is to be started
+   * @param listener the <code>DataPackageWizardListener</code> to be called
+   *   back when the Entity Wizard has finished
+   * @param title String
    */
   private void startWizardAtPage(String pageID, DataPackageWizardListener listener, String title) {
 
@@ -151,6 +144,7 @@ public class DataPackageWizardPlugin implements PluginInterface,
   private void startWizardAtPage(String pageID, boolean showPageCount,
                         DataPackageWizardListener listener, String frameTitle) {
 
+    WizardPageLibrary.reInitialize();
     dpWiz.setDataPackageWizardListener(listener);
     dpWiz.setBounds(
                   WizardSettings.WIZARD_X_COORD, WizardSettings.WIZARD_Y_COORD,
@@ -160,7 +154,6 @@ public class DataPackageWizardPlugin implements PluginInterface,
     dpWiz.setTitle(frameTitle);
     dpWiz.setVisible(true);
   }
-
 
 
   /**

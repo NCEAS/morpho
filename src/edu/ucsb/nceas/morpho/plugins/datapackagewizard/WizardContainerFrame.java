@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2004-03-17 22:56:23 $'
- * '$Revision: 1.49 $'
+ *     '$Date: 2004-03-23 20:02:17 $'
+ * '$Revision: 1.50 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,14 +28,14 @@
 
 package edu.ucsb.nceas.morpho.plugins.datapackagewizard;
 
+import edu.ucsb.nceas.morpho.framework.AbstractUIPage;
+import edu.ucsb.nceas.morpho.framework.UIController;
 import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
 import edu.ucsb.nceas.morpho.plugins.DataPackageWizardListener;
 import edu.ucsb.nceas.morpho.util.Log;
+import edu.ucsb.nceas.morpho.util.UISettings;
 import edu.ucsb.nceas.utilities.OrderedMap;
 import edu.ucsb.nceas.utilities.XMLUtilities;
-import edu.ucsb.nceas.morpho.framework.AbstractUIPage;
-
-import edu.ucsb.nceas.morpho.framework.AbstractUIPage;
 
 import java.io.StringReader;
 import java.util.ArrayList;
@@ -65,8 +65,6 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
 import org.w3c.dom.Node;
-import edu.ucsb.nceas.morpho.framework.UIController;
-import edu.ucsb.nceas.morpho.util.UISettings;
 
 /**
  *  provides a top-level container for AbstractUIPage objects. The top (title) panel
@@ -850,9 +848,6 @@ public class WizardContainerFrame extends JFrame {
     this.toBeImportedCount = 0;
     this.lastImportedAttributes = null;
     this.lastImportedEntityName = null;
-
-    //clear all page objects (re-init??)
-    pageLib.reInitialize();
   }
 
   /**

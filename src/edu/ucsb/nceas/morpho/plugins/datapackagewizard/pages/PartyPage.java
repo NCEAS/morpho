@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2004-03-23 00:17:49 $'
- * '$Revision: 1.22 $'
+ *     '$Date: 2004-03-23 20:02:17 $'
+ * '$Revision: 1.23 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -87,7 +87,6 @@ public class PartyPage extends AbstractUIPage {
   // variables to descrive role
   private short role;
   private String roleString;
-  private String currentRole;
   private final String[] roleArray
       = new String[] {
       "",
@@ -764,6 +763,15 @@ public class PartyPage extends AbstractUIPage {
     component.setMinimumSize(dims);
   }
 
+
+  private String getCurrentRole() {
+
+     String role = (String) rolePickList.getSelectedItem();
+     return (role!=null)? role.trim() : null;
+  }
+
+
+
   /**
    *  The action to be executed when the "OK" button is pressed. If no onAdvance
    *  processing is required, implementation must return boolean true.
@@ -779,9 +787,8 @@ public class PartyPage extends AbstractUIPage {
 
     //if we have a role field, it must have a value...
     if (role == ASSOCIATED || role == PERSONNEL) {
-      currentRole = (String) rolePickList.getSelectedItem();
 
-      if (notNullAndNotEmpty(currentRole)) {
+      if (notNullAndNotEmpty(getCurrentRole())) {
 
         WidgetFactory.unhiliteComponent(roleLabel);
 
@@ -1403,9 +1410,8 @@ public class PartyPage extends AbstractUIPage {
 
     if (role == ASSOCIATED || role == PERSONNEL) {
 
-      if (currentRole!=null && currentRole.trim().length() > 0) {
-        nextText = currentRole.trim();
-        returnMap.put(xPathRoot + "/role", nextText);
+      if (getCurrentRole()!=null && getCurrentRole().length() > 0) {
+        returnMap.put(xPathRoot + "/role", getCurrentRole());
       }
     }
 
@@ -1440,11 +1446,10 @@ public class PartyPage extends AbstractUIPage {
         "PartyPage.setPageData() XMLUtilities.removeAllPredicates(xPathRoot) = "
               + xpathRootNoPredicates);
 
-    OrderedMap map2 = map;
-    map = removePredicatesFromMapKeys(map);
+    map = removeAllButLastPredicatesFromMapKeys(map);
 
     Log.debug(45,
-        "PartyPage.setPageData() after removePredicatesFromMapKeys. map = \n"
+        "PartyPage.setPageData() after removeAllButLastPredicatesFromMapKeys. map = \n"
               + map);
 
     // check if it's a reference:
@@ -1480,7 +1485,7 @@ public class PartyPage extends AbstractUIPage {
 
     //role
     if (role == ASSOCIATED || role == PERSONNEL) {
-      String role = (String)map.get(xpathRootNoPredicates + "/role");
+      String role = (String)map.get(xpathRootNoPredicates + "/role[1]");
       if (role != null) {
         rolePickList.addItem(role);
         rolePickList.setSelectedItem(role);
@@ -1488,82 +1493,95 @@ public class PartyPage extends AbstractUIPage {
     }
 
     String name = (String)map.get(xpathRootNoPredicates
-                                  + "/individualName/salutation");
+                                  + "/individualName/salutation[1]");
     if (name != null) {
       salutationField.setText(name);
     }
-    name = (String)map.get(xpathRootNoPredicates + "/individualName/givenName");
+    name = (String)map.get(xpathRootNoPredicates + "/individualName/givenName[1]");
     if (name != null) {
       firstNameField.setText(name);
     }
-    name = (String)map.get(xpathRootNoPredicates + "/individualName/surName");
+    name = (String)map.get(xpathRootNoPredicates + "/individualName/surName[1]");
     if (name != null) {
       lastNameField.setText(name);
     }
-    name = (String)map.get(xpathRootNoPredicates + "/organizationName");
+    name = (String)map.get(xpathRootNoPredicates + "/organizationName[1]");
     if (name != null) {
       organizationField.setText(name);
     }
-    name = (String)map.get(xpathRootNoPredicates + "/positionName");
+    name = (String)map.get(xpathRootNoPredicates + "/positionName[1]");
     if (name != null) {
       positionNameField.setText(name);
     }
-    name = (String)map.get(xpathRootNoPredicates + "/address/deliveryPoint");
+    name = (String)map.get(xpathRootNoPredicates + "/address/deliveryPoint[1]");
     if (name != null) {
       address1Field.setText(name);
     }
-    name = (String)map2.get(xpathRootNoPredicates
-                            + "/address[1]/deliveryPoint[2]");
+    name = (String)map.get(xpathRootNoPredicates + "/address/deliveryPoint[2]");
     if (name != null) {
       address2Field.setText(name);
     }
-    name = (String)map.get(xpathRootNoPredicates + "/address/city");
+    name = (String)map.get(xpathRootNoPredicates + "/address/city[1]");
     if (name != null) {
       cityField.setText(name);
     }
     name = (String)map.get(xpathRootNoPredicates
-                           + "/address/administrativeArea");
+                           + "/address/administrativeArea[1]");
     if (name != null) {
       stateField.setText(name);
     }
-    name = (String)map.get(xpathRootNoPredicates + "/address/postalCode");
+    name = (String)map.get(xpathRootNoPredicates + "/address/postalCode[1]");
     if (name != null) {
       zipField.setText(name);
     }
-    name = (String)map.get(xpathRootNoPredicates + "/address/country");
+    name = (String)map.get(xpathRootNoPredicates + "/address/country[1]");
     if (name != null) {
       countryField.setText(name);
     }
-    name = (String)map2.get(xpathRootNoPredicates + "/phone[1]");
-    String type = (String)map2.get(xpathRootNoPredicates
+    name = (String)map.get(xpathRootNoPredicates + "/phone[1]");
+    String type = (String)map.get(xpathRootNoPredicates
                                    + "/phone[1]/@phonetype");
     if ((name != null) && (type.equals("voice"))) {
       phoneField.setText(name);
     }
-    name = (String)map2.get(xpathRootNoPredicates + "/phone[2]");
-    type = (String)map2.get(xpathRootNoPredicates + "/phone[2]/@phonetype");
+    name = (String)map.get(xpathRootNoPredicates + "/phone[2]");
+    type = (String)map.get(xpathRootNoPredicates + "/phone[2]/@phonetype");
     if ((name != null) && (type.equals("fax"))) {
       faxField.setText(name);
     }
-    name = (String)map.get(xpathRootNoPredicates + "/electronicMailAddress");
+    name = (String)map.get(xpathRootNoPredicates + "/electronicMailAddress[1]");
     if (name != null) {
       emailField.setText(name);
     }
-    name = (String)map.get(xpathRootNoPredicates + "/onlineUrl");
+    name = (String)map.get(xpathRootNoPredicates + "/onlineUrl[1]");
     if (name != null) {
       urlField.setText(name);
     }
 
   }
 
-  private OrderedMap removePredicatesFromMapKeys(OrderedMap map) {
+  private OrderedMap removeAllButLastPredicatesFromMapKeys(OrderedMap map) {
 
     OrderedMap newMap = new OrderedMap();
     Iterator it = map.keySet().iterator();
     while(it.hasNext()) {
       String key = (String) it.next();
       String val = (String)map.get(key);
-      newMap.put(XMLUtilities.removeAllPredicates(key), val);
+      String firstPart = null;
+      String lastPart  = null;
+
+      int lastOpenBracketIndex = key.lastIndexOf("[");
+
+      if (lastOpenBracketIndex > -1 && lastOpenBracketIndex < key.length()) {
+
+        firstPart = key.substring(0, lastOpenBracketIndex);
+        //keep last predicate in xpath
+        lastPart  = key.substring(lastOpenBracketIndex);
+      }
+
+      firstPart = XMLUtilities.removeAllPredicates(firstPart);
+
+      newMap.put(firstPart + lastPart, val);
     }
     return newMap;
   }

@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2004-03-23 00:17:49 $'
- * '$Revision: 1.7 $'
+ *     '$Date: 2004-03-23 20:02:17 $'
+ * '$Revision: 1.8 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,7 +28,6 @@ package edu.ucsb.nceas.morpho.datapackage;
 
 import edu.ucsb.nceas.morpho.framework.AbstractUIPage;
 import edu.ucsb.nceas.morpho.framework.ModalDialog;
-import edu.ucsb.nceas.morpho.framework.MorphoFrame;
 import edu.ucsb.nceas.morpho.framework.UIController;
 import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
 import edu.ucsb.nceas.morpho.plugins.ServiceController;
@@ -68,8 +67,6 @@ public class AddResearchProjectCommand implements Command {
    * @param event ActionEvent
    */
   public void execute(ActionEvent event) {
-
-    dataViewContainerPanel = null;
 
     adp = UIController.getInstance().getCurrentAbstractDataPackage();
 
@@ -127,7 +124,8 @@ public class AddResearchProjectCommand implements Command {
 
     OrderedMap map = projectPage.getPageData(PROJECT_SUBTREE_NODENAME);
 
-    Log.debug(45, "got project details from Project page -\n\n" + map.toString());
+    Log.debug(45, "\n insertProject() Got project details from Project page -\n"
+              + map.toString());
 
     if (map==null || map.isEmpty()) {
       Log.debug(5, "Unable to get project details from input!");
@@ -158,7 +156,8 @@ public class AddResearchProjectCommand implements Command {
     if (check != null) {
       Log.debug(45, "deleted old project details from package...");
     } else {
-      Log.debug(5,  "Unable to delete old project details from package...");
+      Log.debug(5,
+                "** ERROR: Unable to delete old project details from package **");
     }
 
     // add to the datapackage
@@ -173,7 +172,5 @@ public class AddResearchProjectCommand implements Command {
 
   private Node projectRoot;
   private AbstractDataPackage adp;
-  private MorphoFrame morphoFrame;
-  private DataViewContainerPanel dataViewContainerPanel;
   private AbstractUIPage projectPage;
 }

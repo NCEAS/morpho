@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2004-03-23 00:17:49 $'
- * '$Revision: 1.25 $'
+ *     '$Date: 2004-03-23 20:02:17 $'
+ * '$Revision: 1.26 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -52,11 +52,11 @@ import java.awt.event.ItemListener;
 
 import javax.swing.AbstractAction;
 import javax.swing.Box;
+import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
-import javax.swing.JCheckBox;
 
 public class Project extends AbstractUIPage {
 
@@ -294,18 +294,21 @@ public class Project extends AbstractUIPage {
        }
      }
 
+
   /**
    *  The action to be executed when the page is displayed. May be empty
    */
   public void onLoadAction() {
+
+    WidgetFactory.unhiliteComponent(titleLabel);
+    WidgetFactory.unhiliteComponent(minRequiredLabel);
   }
 
   /**
    *  The action to be executed when the "Prev" button is pressed. May be empty
    *
    */
-  public void onRewindAction() {
-  }
+  public void onRewindAction() {}
 
   /**
    *  The action to be executed when the "Next" button (pages 1 to last-but-one)
@@ -324,14 +327,17 @@ public class Project extends AbstractUIPage {
         titleField.requestFocus();
         return false;
       }
+      WidgetFactory.unhiliteComponent(titleLabel);
 
       if (partiesList.getRowCount() < 1) {
         WidgetFactory.hiliteComponent(minRequiredLabel);
         return false;
       }
+      WidgetFactory.unhiliteComponent(minRequiredLabel);
     }
     return true;
   }
+
 
   /**
    *  gets the Map object that contains all the key/value paired
@@ -355,6 +361,7 @@ public class Project extends AbstractUIPage {
     returnMap.clear();
 
     if (currentPanel == dataPanel) {
+
       if ( !(titleField.getText().trim().equals("")) ) {
         returnMap.put(rootXPath + TITLE_REL_XPATH, titleField.getText().trim());
       }
@@ -394,7 +401,6 @@ public class Project extends AbstractUIPage {
         returnMap.put(rootXPath + FUNDING_REL_XPATH, fundingField.getText().trim());
       }
     }
-    if (!hiddenFieldsMap.isEmpty()) returnMap.putAll(hiddenFieldsMap);
 
     return returnMap;
   }
@@ -451,23 +457,19 @@ public class Project extends AbstractUIPage {
 
 
 
-  private OrderedMap hiddenFieldsMap = new OrderedMap();
-  private OrderedMap personnelMap = new OrderedMap();
-
   public void setPageData(OrderedMap data, String _xPathRoot) {
 
     if (_xPathRoot!=null && _xPathRoot.trim().length() > 0) this.xPathRoot = _xPathRoot;
 
     JCheckBox checkBox = ((JCheckBox)(checkBoxPanel.getComponent(0)));
-    if (data == null || data.isEmpty()) {
+
+    if (data==null || data.isEmpty()) {
 
       checkBox.setSelected(false);
+      this.resetBlankData();
       return;
     }
     checkBox.setSelected(true);
-
-    hiddenFieldsMap.clear();
-    personnelMap.clear();
 
     Iterator keyIt = data.keySet().iterator();
     Object nextXPathObj = null;
@@ -510,9 +512,6 @@ public class Project extends AbstractUIPage {
         Log.debug(45,">>>>>>>>>> adding to personnelList: nextXPathObj="
                   +nextXPathObj+"; nextValObj="+nextValObj);
         addToPersonnel(nextXPathObj, nextValObj, personnelList);
-      } else {
-
-        hiddenFieldsMap.put(nextXPathObj, nextValObj);
       }
     }
 
@@ -546,6 +545,16 @@ public class Project extends AbstractUIPage {
   }
 
 
+  // resets all fields to blank
+  private void resetBlankData() {
+
+    titleField.setText("");
+    fundingField.setText("");
+    partiesList.removeAllRows();
+
+  }
+
+
   private int getFirstPredicate(String xpath, String firstSegment) {
 
     String tempXPath
@@ -568,7 +577,6 @@ public class Project extends AbstractUIPage {
 
       for (int i = personnelList.size(); i <= predicate; i++) {
         personnelList.add(new OrderedMap());
-//Log.debug(45, "~~~~~~~~~~~ added "+1);
       }
     }
 
