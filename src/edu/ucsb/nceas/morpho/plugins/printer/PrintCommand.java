@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: sambasiv $'
- *     '$Date: 2003-12-12 20:24:05 $'
- * '$Revision: 1.1 $'
+ *     '$Date: 2003-12-12 22:04:36 $'
+ * '$Revision: 1.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -92,7 +92,8 @@ public class PrintCommand implements Command
 		}
 																	
 		XMLTransformer transformer = XMLTransformer.getInstance();
-		//transformer.addTransformerProperty("displaymodule", "printall");
+		transformer.addTransformerProperty(XMLTransformer.SELECTED_DISPLAY_XSLPROP, 	
+						XMLTransformer.XSLVALU_DISPLAY_PRNT);
 		transformer.addTransformerProperty( XMLTransformer.CSS_PATH_XSLPROP, 
                                             getFullStylePath());
 		Reader xmlReader = null, resultReader = null;

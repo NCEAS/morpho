@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: sambasiv $'
- *     '$Date: 2003-12-12 20:24:05 $'
- * '$Revision: 1.1 $'
+ *     '$Date: 2003-12-12 22:04:36 $'
+ * '$Revision: 1.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -104,17 +104,11 @@ public class PrinterPlugin implements       PrinterInterface,
 				displayItemAction.setEnabled(false);  //default
 				controller.addGuiAction(displayItemAction);
 				displayItemAction.setEnabledOnStateChange(
-                      StateChangeEvent.CREATE_EDITABLE_ENTITY_DATAPACKAGE_FRAME, 
-                      true, GUIAction.EVENT_LOCAL);
+                            StateChangeEvent.CREATE_DATAPACKAGE_FRAME, 
+                            true, GUIAction.EVENT_LOCAL);
 				displayItemAction.setEnabledOnStateChange(
                             StateChangeEvent.CREATE_SEARCH_RESULT_FRAME, 
                             false, GUIAction.EVENT_LOCAL);
-				displayItemAction.setEnabledOnStateChange(
-                            StateChangeEvent.CREATE_NOENTITY_DATAPACKAGE_FRAME, 
-                            false, GUIAction.EVENT_LOCAL);
-				displayItemAction.setEnabledOnStateChange(
-        	           				StateChangeEvent.CREATE_NONEDITABLE_ENTITY_DATAPACKAGE_FRAME, 
-														false, GUIAction.EVENT_LOCAL);
 				
 		}
 		
