@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2002-08-30 16:16:30 $'
- * '$Revision: 1.4 $'
+ *     '$Date: 2002-09-13 18:56:33 $'
+ * '$Revision: 1.5 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -58,7 +58,7 @@ public class MetaDisplayPlugin implements   PluginInterface,
         try 
         {
           ServiceController services = ServiceController.getInstance();
-          services.addService(MetaDisplayInterface.class, this);
+          services.addService(MetaDisplayFactoryInterface.class, this);
           Log.debug(20, "Service added: MetaDisplayFactoryInterface.");
         } 
         catch (ServiceExistsException see)
