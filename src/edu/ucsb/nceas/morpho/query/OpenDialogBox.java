@@ -6,9 +6,9 @@
  *    Authors: @Jing Tao@
  *    Release: @release@
  *
- *   '$Author: tao $'
- *     '$Date: 2002-08-22 00:02:08 $'
- * '$Revision: 1.7 $'
+ *   '$Author: brooke $'
+ *     '$Date: 2002-08-22 20:41:14 $'
+ * '$Revision: 1.8 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -92,22 +92,13 @@ public class OpenDialogBox extends JDialog
   ResultSet results = null;
   ResultPanel ownerPanel = null;
   
-  /**
-   * Construct a new instance of the query dialog
-   *
-   * @param morpho A reference to the morpho application
-   */
-  public OpenDialogBox(Morpho morpho, Query myQuery)
-  {
-    //MBJ fix this null reference to be a real Frame
-    this(null, morpho, myQuery);
-  }
   
   /**
    * Construct a new instance of the query dialog
    *
-   * @param parent The parent frame for this dialog
-   * @param morpho A reference to the Morpho application
+   * @param parent  The parent frame for this dialog
+   * @param morpho  A reference to the Morpho application
+   * @param myQuery a Query to get the user's own packages
    */
   public OpenDialogBox(Frame parent, Morpho morpho, Query myQuery)
   {
