@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2004-01-21 20:18:05 $'
- * '$Revision: 1.8 $'
+ *     '$Date: 2004-01-21 20:37:44 $'
+ * '$Revision: 1.9 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -60,7 +60,7 @@ public class Temporal extends AbstractWizardPage{
   private final String title      = "Temporal Coverage";
   private final String subtitle   = "";
   private final String xPathRoot  = "/eml:eml/dataset/coverage/temporalCoverage[";
-  private final String pageNumber  = "0";
+  private final String pageNumber  = "11";
 
   private final String[] colNames =  {"Time Coverages"};
   private final Object[] editors  =   null; //makes non-directly-editable

@@ -7,9 +7,9 @@
  *    Authors: Saurabh Garg
  *    Release: @release@
  *
- *   '$Author: sgarg $'
- *     '$Date: 2004-01-09 23:03:50 $'
- * '$Revision: 1.9 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2004-01-21 20:37:44 $'
+ * '$Revision: 1.10 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -56,7 +56,7 @@ public class Access extends AbstractWizardPage {
 
   public final String pageID     = DataPackageWizardInterface.ACCESS;
   public final String nextPageID = DataPackageWizardInterface.SUMMARY;
-  public final String pageNumber = "10";
+  public final String pageNumber = "12";
 
   //////////////////////////////////////////////////////////
 

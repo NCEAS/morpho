@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2004-01-21 20:14:48 $'
- * '$Revision: 1.10 $'
+ *     '$Date: 2004-01-21 20:37:44 $'
+ * '$Revision: 1.11 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -60,7 +60,7 @@ public class Geographic extends AbstractWizardPage{
   private final String title      = "Geographic Coverage";
   private final String subtitle   = "";
   private final String xPathRoot  = "/eml:eml/dataset/coverage/geographicCoverage[";
-  private final String pageNumber  = "0";
+  private final String pageNumber  = "10";
 
   private final String[] colNames =  {"Geographic Coverages"};
   private final Object[] editors  =   null; //makes non-directly-editable
