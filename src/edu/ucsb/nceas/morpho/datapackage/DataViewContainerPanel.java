@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-12-08 19:56:28 $'
- * '$Revision: 1.71 $'
+ *     '$Date: 2003-12-09 18:21:38 $'
+ * '$Revision: 1.72 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -518,6 +518,8 @@ public class DataViewContainerPanel extends javax.swing.JPanel
       // entity metadata
 //DFH      String id = getEntityIDForThisEntityName(item);
       String id = adp.getPackageId();
+        if ((id==null)||(id.equals(""))) id = "tempid";
+
 //      String location = dp.getLocation();
        
       JPanel currentEntityMetadataPanel = (JPanel)currentEntityPanel.getRightComponent();
@@ -659,7 +661,9 @@ public class DataViewContainerPanel extends javax.swing.JPanel
       try{
 //        mdcomponent = md.getDisplayComponent( dp.getID(), dp,  
 //                                              new MetaViewListener(vertSplit));
-        mdcomponent = md.getDisplayComponent( adp.getPackageId(), adp,  
+        String tempid = adp.getPackageId();
+        if ((tempid==null)||(tempid.equals(""))) tempid = "tempid";
+        mdcomponent = md.getDisplayComponent( tempid, adp,  
                                               new MetaViewListener(vertSplit));
       }
       catch (Exception m) {
