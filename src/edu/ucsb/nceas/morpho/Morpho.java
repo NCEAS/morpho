@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2002-12-12 01:18:24 $'
- * '$Revision: 1.35 $'
+ *     '$Date: 2002-12-12 02:34:29 $'
+ * '$Revision: 1.36 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -892,7 +892,7 @@ public class Morpho
                 MorphoFrame initialFrame = 
                                         controller.addWindow(INITIALFRAMENAME);
 
-                //initialFrame.setMainContentPane(new InitialScreen(morpho));
+                initialFrame.setMainContentPane(new InitialScreen(morpho));
                 
                 initialFrame.setSize((int)UISettings.DEFAULT_WINDOW_WIDTH,
                                      (int)UISettings.DEFAULT_WINDOW_HEIGHT);
