@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: sambasiv $'
- *     '$Date: 2004-04-01 00:38:45 $'
- * '$Revision: 1.3 $'
+ *     '$Date: 2004-04-05 22:04:31 $'
+ * '$Revision: 1.4 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -561,42 +561,42 @@ public class CitationPage extends AbstractUIPage {
 	
 		OrderedMap map = new OrderedMap();
 		
-		map.put(xPath + "/title", this.titleField.getText());
+		map.put(xPath + "/title[1]", this.titleField.getText());
 		
 		String st = this.salutationField.getText(); 
 		if(!st.trim().equals(""))
-			map.put(xPath + "/creator/individualName/salutation[1]", st);
+			map.put(xPath + "/creator[1]/individualName[1]/salutation[1]", st);
 		
 		String fn = this.firstNameField.getText(); 
 		if(!fn.trim().equals(""))
-			map.put(xPath + "/creator/individualName/givenName[1]", fn);
+			map.put(xPath + "/creator[1]/individualName[1]/givenName[1]", fn);
 		
 		String ln = this.lastNameField.getText(); 
-		map.put(xPath + "/creator/individualName/surName", ln);
+		map.put(xPath + "/creator[1]/individualName[1]/surName[1]", ln);
 		
 		String on = this.organizationField.getText(); 
-		map.put(xPath + "/creator/organizationName", on);
+		map.put(xPath + "/creator[1]/organizationName[1]", on);
 		
 		String pn = this.positionNameField.getText(); 
-		map.put(xPath + "/creator/positionName", pn);
+		map.put(xPath + "/creator[1]/positionName[1]", pn);
 		
 		String pubn = this.pubDateField.getText(); 
 		if(!pubn.trim().equals(""))
-			map.put(xPath + "/pubDate", pubn);
+			map.put(xPath + "/pubDate[1]", pubn);
 		
 		if(this.citationType.equals("Book")) {
 			
-			OrderedMap newMap = ((WizardPageSubPanelAPI)bookPanel).getPanelData(xPath + "/book");
+			OrderedMap newMap = ((WizardPageSubPanelAPI)bookPanel).getPanelData(xPath + "/book[1]");
 			map.putAll(newMap);
 			
 		} else if(citationType.equals("Article")) {
 			
-			OrderedMap newMap = ((WizardPageSubPanelAPI)articlePanel).getPanelData(xPath + "/article");
+			OrderedMap newMap = ((WizardPageSubPanelAPI)articlePanel).getPanelData(xPath + "/article[1]");
 			map.putAll(newMap);
 			
 		} else if(citationType.equals("Report")) {
 			
-			OrderedMap newMap = ((WizardPageSubPanelAPI)reportPanel).getPanelData(xPath + "/report");
+			OrderedMap newMap = ((WizardPageSubPanelAPI)reportPanel).getPanelData(xPath + "/report[1]");
 			map.putAll(newMap);
 		}
 		return map;
@@ -791,11 +791,11 @@ class BookPanel extends JPanel implements WizardPageSubPanelAPI{
 		
 		String en = this.editionField.getText();
 		if(!en.trim().equals(""))
-			map.put(xPathRoot + "/edition", en);
+			map.put(xPathRoot + "/edition[1]", en);
 		
 		String vn = this.volumeField.getText();
 		if(!vn.trim().equals(""))
-			map.put(xPathRoot + "/volume", vn);
+			map.put(xPathRoot + "/volume[1]", vn);
 		
 		return map;
 	}
@@ -948,12 +948,11 @@ class ArticlePanel extends JPanel  implements WizardPageSubPanelAPI{
   public OrderedMap getPanelData(String xPathRoot) {
 		
 		OrderedMap map = new OrderedMap();
-		map.put(xPathRoot + "/journal", journalField.getText());
-		map.put(xPathRoot + "/volume", volumeField.getText());
+		map.put(xPathRoot + "/journal[1]", journalField.getText());
+		map.put(xPathRoot + "/volume[1]", volumeField.getText());
 		
 		String pr = this.rangeField.getText();
-		if(!pr.trim().equals(""))
-			map.put(xPathRoot + "/pageRange", pr);
+		map.put(xPathRoot + "/pageRange[1]", pr);
 		
 		map.putAll(publisherPanel.getPanelData(xPathRoot));
 		
@@ -981,8 +980,7 @@ class ArticlePanel extends JPanel  implements WizardPageSubPanelAPI{
 		volumeField.setText((String)map.get(xPathRoot + "/volume[1]"));
 		
 		String pr = (String)map.get(xPathRoot + "/pageRange[1]");
-		if(!pr.trim().equals(""))
-			this.rangeField.setText(pr);
+		this.rangeField.setText(pr);
 		
 		((WizardPageSubPanelAPI)publisherPanel).setPanelData(xPathRoot, map);
 		
@@ -1082,11 +1080,11 @@ class ReportPanel extends JPanel  implements WizardPageSubPanelAPI{
 		
 		String rn = this.numberField.getText();
 		if(!rn.trim().equals(""))
-			map.put(xPathRoot + "/reportNumber", rn);
+			map.put(xPathRoot + "/reportNumber[1]", rn);
 		
 		String pn = this.pagesField.getText();
 		if(!pn.trim().equals(""))
-			map.put(xPathRoot + "/totalPages", pn);
+			map.put(xPathRoot + "/totalPages[1]", pn);
 		
 		return map;
 	}
