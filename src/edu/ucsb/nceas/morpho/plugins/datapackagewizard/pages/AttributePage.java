@@ -6,9 +6,9 @@
  *             National Center for Ecological Analysis and Synthesis
  *    Release: @release@
  *
- *   '$Author: sambasiv $'
- *     '$Date: 2004-02-06 19:46:02 $'
- * '$Revision: 1.13 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2004-02-09 18:53:29 $'
+ * '$Revision: 1.14 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -689,7 +689,8 @@ public class AttributePage extends AbstractWizardPage {
         ((WizardPageSubPanelAPI)currentPanel).getPanelData(
                             xPath+"/measurementScale/"+measurementScale) );
     }
-		returnMap.put(xPath + "/storageType", measurementScale);
+//		returnMap.put(xPath + "/storageType", measurementScale);
+// this should be inserted BEFORE measurementScale --- DFH
     return returnMap;
   }
 
