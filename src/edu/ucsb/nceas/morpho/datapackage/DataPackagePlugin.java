@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2004-03-23 21:14:13 $'
- * '$Revision: 1.88 $'
+ *   '$Author: tao $'
+ *     '$Date: 2004-03-26 21:46:50 $'
+ * '$Revision: 1.89 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -884,7 +884,7 @@ public class DataPackagePlugin
    * @param docid the id of the package to download
    * @param location String
    */
-  public void delete(String docid, String location)
+  public void delete(String docid, String location) throws Exception
   {
 //    DataPackage dp = new DataPackage(location, docid, null, morpho, false);
 //    dp.delete(location);
