@@ -30,6 +30,8 @@ public class SplashFrame extends javax.swing.JFrame
 		LoadingLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
 		LoadingLabel.setText("Now Loading!!! ... Please Wait");
 		JPanel1.add(BorderLayout.NORTH,LoadingLabel);
+		LoadingLabel.setForeground(java.awt.Color.red);
+		LoadingLabel.setFont(new Font("Dialog", Font.BOLD, 14));
 		LoadingLabel.setBounds(0,0,427,15);
 		LoadingLabel.setVisible(false);
 		JLabel3.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
@@ -40,7 +42,7 @@ public class SplashFrame extends javax.swing.JFrame
 		JLabel3.setFont(new Font("Dialog", Font.BOLD|Font.ITALIC, 36));
 		JLabel3.setBounds(0,0,427,42);
 		JLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-		JLabel1.setText("Data Managment for Ecologists");
+		JLabel1.setText("Data Management for Ecologists");
 		JPanel1.add(BorderLayout.SOUTH,JLabel1);
 		JLabel1.setForeground(java.awt.Color.black);
 		JLabel1.setFont(new Font("Dialog", Font.BOLD, 14));
