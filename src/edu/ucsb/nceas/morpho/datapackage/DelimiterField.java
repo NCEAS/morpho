@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2002-09-17 20:27:36 $'
- * '$Revision: 1.1 $'
+ *     '$Date: 2002-09-18 01:01:01 $'
+ * '$Revision: 1.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,6 +27,7 @@
 package edu.ucsb.nceas.morpho.datapackage;
 
 import java.util.Locale;
+import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
@@ -98,6 +99,8 @@ public class DelimiterField extends JTextField
                 throws BadLocationException 
        {
            
+            String error ="Your data file uses this character as a delimiter.\n"
+                          + "It cannot be used inside data field!";
             char[] source = str.toCharArray();
             char[] result = new char[source.length];
             int j = 0;
@@ -109,9 +112,13 @@ public class DelimiterField extends JTextField
                 }//if
                 else
                 {
-                   JOptionPane.showMessageDialog(parent, 
-                                    "Could't input delimiter!", 
-                                    "Alter!", JOptionPane.ERROR_MESSAGE);
+                   JOptionPane pane = 
+                            new JOptionPane(error, JOptionPane.ERROR_MESSAGE);
+                   JDialog dialog = pane.createDialog(parent, "Alert!");
+                   dialog.setResizable(false);
+                   dialog.setVisible(true);
+                   dialog.setModal(true);
+                   
                 }//else
                
             }//for
