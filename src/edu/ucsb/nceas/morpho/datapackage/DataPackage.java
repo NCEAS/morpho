@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-06-08 15:45:17 $'
- * '$Revision: 1.14 $'
+ *     '$Date: 2001-06-08 16:23:52 $'
+ * '$Revision: 1.15 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -56,6 +56,7 @@ public class DataPackage
   private Hashtable docAtts = new Hashtable();
   private ClientFramework framework;
   private String location = null;
+  private String id = null;
   
   /**
    * used to signify that this package is located on a metacat server
@@ -90,6 +91,7 @@ public class DataPackage
     this.framework = framework;
     config = framework.getConfiguration();
     this.location = location;
+    this.id = identifier;
     
     framework.debug(9, "Creating new DataPackage Object");
     framework.debug(9, "id: " + identifier);
@@ -176,6 +178,14 @@ public class DataPackage
   public String getLocation()
   {
     return location;
+  }
+  
+  /**
+   * returns the id of the head of this package (i.e. the resource file)
+   */
+  public String getID()
+  {
+    return this.id;
   }
   
   /**

@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-06-08 15:45:17 $'
- * '$Revision: 1.11 $'
+ *     '$Date: 2001-06-08 16:23:52 $'
+ * '$Revision: 1.12 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -45,10 +45,12 @@ public class DataPackageGUI extends javax.swing.JFrame
   private DataPackage dataPackage;
   private JList otherFileList;
   private String location = null;
+  private String id = null;
   
   public DataPackageGUI(ClientFramework framework, DataPackage dp)
   {
     this.location = dp.getLocation();
+    this.id = dp.getID();
     this.dataPackage = dp;
     this.framework = framework;
     this.config = framework.getConfiguration();
@@ -103,6 +105,7 @@ public class DataPackageGUI extends javax.swing.JFrame
                                                  altTitle, orig);
     Hashtable relfiles = dataPackage.getRelatedFiles();
     Vector listitems = new Vector();
+    listitems.add("Basic Information (" + this.id + ")");
     Enumeration keys = relfiles.keys();
     while(keys.hasMoreElements())
     {
@@ -110,8 +113,12 @@ public class DataPackageGUI extends javax.swing.JFrame
       Vector v = (Vector)relfiles.get(key);
       for(int i=0; i<v.size(); i++)
       {
-        String s = key + " (" + v.elementAt(i) + ")";
-        listitems.addElement(s);
+        String eleId = (String)v.elementAt(i);
+        if(!eleId.equals(this.id))
+        {
+          String s = key + " (" + eleId + ")";
+          listitems.addElement(s);
+        }
       }
     }
     JPanel listPanel = createListPanel(listitems);
@@ -308,10 +315,48 @@ public class DataPackageGUI extends javax.swing.JFrame
     }
   }
   
+  /**
+   * this is called whenever the editor exits.  the file returned is saved
+   * back to its  original location.
+   * @param xmlString the xml in string format
+   * @param id the id of the file
+   * @param location the location of the file
+   */
   public void editingCompleted(String xmlString, String id, String location)
   {
     System.out.println("editing complete: id: " + id + " location: " + location);
-    
+    try
+    {
+      if(location.equals(DataPackage.METACAT))
+      { //save it to metacat
+        MetacatDataStore mds = new MetacatDataStore(framework);
+        int choice = JOptionPane.showConfirmDialog(null, 
+                               "Do you wish to make this file publicly readable "+ 
+                               "(Searchable) on Metacat?", 
+                               "Package Editor", 
+                               JOptionPane.YES_NO_CANCEL_OPTION,
+                               JOptionPane.WARNING_MESSAGE);
+        if(choice == JOptionPane.YES_OPTION)
+        {
+          mds.saveFile(id, new StringReader(xmlString), true);
+        }
+        else
+        {
+          mds.saveFile(id, new StringReader(xmlString), false);
+        }
+      
+      }
+      else if(location.equals(DataPackage.LOCAL))
+      { //save it locally
+        FileSystemDataStore fsds = new FileSystemDataStore(framework);
+        fsds.saveFile(id, new StringReader(xmlString), false);
+      }
+    }
+    catch(Exception e)
+    {
+      framework.debug(0, "Error saving file "+ id + " to " + location);
+      e.printStackTrace();
+    }
   }
   
   public static void main(String[] args)
