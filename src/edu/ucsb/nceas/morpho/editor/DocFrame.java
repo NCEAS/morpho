@@ -5,9 +5,9 @@
  *    Authors: @higgins@
  *    Release: @release@
  *
- *   '$Author: jones $'
- *     '$Date: 2001-06-11 02:13:37 $'
- * '$Revision: 1.24 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2001-06-11 21:55:45 $'
+ * '$Revision: 1.25 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -249,8 +249,39 @@ public class DocFrame extends javax.swing.JFrame
 		this();
 		setTitle(sTitle);
 		XMLTextString = doctext;
-		putXMLintoTree();
+		putXMLintoTree(treeModel, XMLTextString);
     tree.setSelectionRow(0);
+
+		// now want to possibly merge the input document with a formatting document
+		// and set the 'editor' and 'help' fields for each node
+		// use the root node name as a key
+		rootNode = (DefaultMutableTreeNode)treeModel.getRoot();
+    String rootname = ((NodeInfo)rootNode.getUserObject()).getName();
+    rootname = rootname+".xml";
+		file = new File("./lib", rootname);
+		DefaultMutableTreeNode frootNode = new DefaultMutableTreeNode("froot");
+		DefaultTreeModel ftreeModel = new DefaultTreeModel(frootNode);
+		String fXMLString = "";
+		boolean formatflag = true;
+    try{
+      FileReader in = new FileReader(file);
+      StringWriter out = new StringWriter();
+      int c;
+      while ((c = in.read()) != -1) {
+          out.write(c);
+      }
+      in.close();
+      out.close();
+      fXMLString = out.toString();
+    }
+	  catch(Exception e){formatflag = false;}	
+		
+		if (formatflag) {
+		  putXMLintoTree(ftreeModel,fXMLString);
+		  frootNode = (DefaultMutableTreeNode)ftreeModel.getRoot();
+		  treeUnion(rootNode,frootNode);
+		}
+    
     
     if (dtdfile!=null) {
 		  dtdtree = new DTDTree(dtdfile);
@@ -258,8 +289,12 @@ public class DocFrame extends javax.swing.JFrame
 		  dtdtree.parseDTD();
 		
 	    rootNode = (DefaultMutableTreeNode)treeModel.getRoot();
+	    // the treeUnion method will 'merge' the input document with
+	    // a template XML document created using the DTD parser from the DTD doc
 		  treeUnion(rootNode,dtdtree.rootNode);
 		}
+		
+		
 		treeModel.reload();
 		tree.setModel(treeModel);
     tree.setSelectionRow(0);
@@ -353,7 +388,7 @@ public void writeInfo() {
     in.close();
     out.close();
     XMLTextString = out.toString();
-		putXMLintoTree();
+		putXMLintoTree(treeModel,XMLTextString);
     tree.setSelectionRow(0);
     }
 	catch (Exception e) {;}
@@ -390,8 +425,8 @@ class SymAction implements java.awt.event.ActionListener {
 }
 
 		
-void putXMLintoTree() {
-  if (XMLTextString!=null) {
+void putXMLintoTree(DefaultTreeModel tm, String xmlText) {
+  if (xmlText!=null) {
     CatalogEntityResolver cer = new CatalogEntityResolver();
     ConfigXML config = new ConfigXML("lib/config.xml");
     String local_dtd_directory =config.get("local_dtd_directory",0);     
@@ -405,12 +440,12 @@ void putXMLintoTree() {
     }
     catch (Exception e) {System.out.println("Problem creating Catalog!");}
     try {
-      StringReader sr = new StringReader(XMLTextString);
+      StringReader sr = new StringReader(xmlText);
       String parserName = "org.apache.xerces.parsers.SAXParser";
       XMLReader parser = null;
       // Get an instance of the parser
       parser = XMLReaderFactory.createXMLReader(parserName);
-      XMLDisplayHandler mh = new XMLDisplayHandler(treeModel);
+      XMLDisplayHandler mh = new XMLDisplayHandler(tm);
       parser.setContentHandler(mh);
       parser.setProperty("http://xml.org/sax/properties/lexical-handler",mh);
       
@@ -418,7 +453,7 @@ void putXMLintoTree() {
 	    InputSource is = new InputSource(sr);
 
       parser.parse(is);
-      DefaultMutableTreeNode rt = (DefaultMutableTreeNode)treeModel.getRoot();
+      DefaultMutableTreeNode rt = (DefaultMutableTreeNode)tm.getRoot();
       if (mh.getPublicId()!=null) {
         doctype = mh.getPublicId();
         publicIDString = doctype;
@@ -1029,6 +1064,17 @@ void mergeNodes(DefaultMutableTreeNode input, DefaultMutableTreeNode template) {
     NodeInfo inputni = (NodeInfo)input.getUserObject();
     NodeInfo templateni = (NodeInfo)template.getUserObject();
     inputni.setCardinality(templateni.getCardinality());
+    
+    // special case - template has editor and help info
+    String editor = (String)(templateni.attr).get("editor");
+    if (editor!=null) {
+      inputni.setEditor(editor); 
+    }
+    String help = (String)(templateni.attr).get("help");
+    if (help!=null) {
+      inputni.setHelp(help); 
+    }
+
   }
 }
 	

@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-06-05 21:07:54 $'
- * '$Revision: 1.10 $'
+ *     '$Date: 2001-06-11 21:55:45 $'
+ * '$Revision: 1.11 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -125,7 +125,8 @@ public class XMLPanels extends Component
     
     // check to see if there is a special editor for this node
       NodeInfo inf = (NodeInfo)(node.getUserObject());
-      String temp = (String)inf.attr.get("editor");
+   //   String temp = (String)inf.attr.get("editor");
+      String temp = inf.getEditor();
       if (temp!=null) {
         try {
             Object[] Args = new Object[] {node};
@@ -194,13 +195,11 @@ public class XMLPanels extends Component
  //       jp2.add(BorderLayout.CENTER,jtf1);
  
 //        if (node.getNodeType()==Node.ELEMENT_NODE) {
-        if (true) {
-            StringBuffer name = new StringBuffer();
-//            name.append('<');
-//            name.append(node.getNodeName());
-//            name.append(info.name);
-            
-	    Enumeration keys = info.attr.keys();
+      StringBuffer name = new StringBuffer();
+      if (info.getHelp()!=null) {
+        name.append(info.getHelp()); 
+      }
+/*	    Enumeration keys = info.attr.keys();
 	    while (keys.hasMoreElements()) {
 	        String str = (String)(keys.nextElement());
 	        String val = (String)info.attr.get(str);
@@ -209,12 +208,10 @@ public class XMLPanels extends Component
                 name.append("=\"");
                 name.append(val);
                 name.append('"');
-        }
- 
-//            name.append('>');
-            jl.setText(name.toString());
+      }
+*/
+             jl.setText(name.toString());
             //now check if there are child TEXT nodes
- 
          Enumeration nodes = node.children();
          // loop over child node
             String txt ="";
@@ -228,19 +225,13 @@ public class XMLPanels extends Component
             JTextField jtf1 = new JTextField();
             jtf1.setMaximumSize(new Dimension(600,30));
             jtf1.setPreferredSize(new Dimension(600,30));
-//            JTextArea jtf1 = new JTextArea();
-//            jtf1.setEditable(false);
-//            jtf1.setLineWrap(true);
-//            jtf1.setWrapStyleWord(true);
             jp2.add(jtf1);
             nodeMap.put(jtf1,nd);  // for use in saving changes to text
-//            jtf1.addActionListener(new dfhAction());
             jtf1.addFocusListener(new dfhFocus());
             if (txt.equals("text")) { txt = ""; }
             jtf1.setText(txt);
             }
          }
-        }
         
         
         

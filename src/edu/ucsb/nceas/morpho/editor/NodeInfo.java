@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-06-01 22:38:59 $'
- * '$Revision: 1.12 $'
+ *     '$Date: 2001-06-11 21:55:45 $'
+ * '$Revision: 1.13 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -67,6 +67,12 @@ public class NodeInfo implements Serializable
 
     // used with DTD parser with 'Choice' Elements
     boolean Item;
+    
+    /** name of special class used to display this node */
+    String editor = null;
+    
+    /** help string for this node */
+    String help = null;
  /**
   * creates a new NodeInfo object with the indicated name.
   * 
@@ -110,6 +116,21 @@ public class NodeInfo implements Serializable
   }
         
   }
+  
+  public String getHelp() {
+    return help;
+  }
+  public void setHelp(String hlp) {
+    this.help = hlp;
+  }
+  
+  public String getEditor() {
+    return editor;
+  }
+  public void setEditor(String edt) {
+    this.editor = edt;
+  }
+  
   
   public void setPCValue(String val) {
     PCDataValue = val; 
