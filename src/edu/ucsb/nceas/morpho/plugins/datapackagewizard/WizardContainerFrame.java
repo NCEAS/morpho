@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2004-04-02 05:44:43 $'
- * '$Revision: 1.57 $'
+ *     '$Date: 2004-04-02 18:47:42 $'
+ * '$Revision: 1.58 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -435,16 +435,38 @@ public class WizardContainerFrame
     return firstPageID;
   }
 
+  /**
+   * returns the String ID of the previous page that was displayed in the current
+   * wizard sequence.
+   *
+   * @return String ID of the previous page that was displayed in the current
+   * 					wizard sequence (@see DataPackageWizardInterface for values)
+   */
   public String getPreviousPageID() {
-    if (pageStack.isEmpty()) {
-      return "";
-    }
-    AbstractUIPage page = (AbstractUIPage) pageStack.peek();
-    if (page == null) {
-      return "";
-    }
+
+    AbstractUIPage page = getPreviousPage();
+    if (page == null) return "";
+
     return page.getPageID();
   }
+
+
+
+  /**
+   * returns the AbstractUIPage object representing the previous page that was
+   * displayed in the current wizard sequence.
+   *
+   * @return  AbstractUIPage object representing the previous page that was
+   * displayed in the current wizard sequence. DOES NOT REMOVE IT FROM THE STACK,
+   * so multiple calls will all return the same value
+   */
+  public AbstractUIPage getPreviousPage() {
+
+    if (pageStack.isEmpty()) return null;
+
+    return (AbstractUIPage)pageStack.peek();
+  }
+
 
   /**
    *  The action to be executed when the "Next" button (pages 1 to last-but-one)

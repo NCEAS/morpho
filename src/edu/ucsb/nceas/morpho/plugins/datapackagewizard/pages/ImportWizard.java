@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2004-03-24 02:14:18 $'
- * '$Revision: 1.24 $'
+ *     '$Date: 2004-04-02 18:47:42 $'
+ * '$Revision: 1.25 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -39,6 +39,7 @@ import edu.ucsb.nceas.morpho.plugins.datapackagewizard.TextImportWizardEml2;
 
 import edu.ucsb.nceas.utilities.OrderedMap;
 import java.io.File;
+import edu.ucsb.nceas.morpho.util.Log;
 
 
 public class ImportWizard extends     AbstractUIPage
@@ -79,8 +80,8 @@ public class ImportWizard extends     AbstractUIPage
     // a "cancel"), start up the import wizard.
     if (!importCompletedOK) {
 
-      AbstractUIPage locationPage
-          = WizardPageLibrary.getPage(DataPackageWizardInterface.DATA_LOCATION);
+      AbstractUIPage locationPage = mainWizFrame.getPreviousPage();
+
       File dataFileObj = ((DataLocation)locationPage).getDataFile();
 
       importWizFrame = new TextImportWizardEml2(dataFileObj, this, mainWizFrame);
