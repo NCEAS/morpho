@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: sgarg $'
- *     '$Date: 2003-12-03 02:38:49 $'
- * '$Revision: 1.25 $'
+ *   '$Author: brooke $'
+ *     '$Date: 2004-01-07 02:02:17 $'
+ * '$Revision: 1.26 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,42 +28,32 @@
 
 package edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages;
 
+import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
+import edu.ucsb.nceas.morpho.plugins.datapackagewizard.AbstractWizardPage;
+import edu.ucsb.nceas.morpho.plugins.datapackagewizard.CustomList;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WidgetFactory;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardSettings;
-import edu.ucsb.nceas.morpho.plugins.datapackagewizard.CustomList;
-
 import edu.ucsb.nceas.morpho.util.Log;
 import edu.ucsb.nceas.utilities.OrderedMap;
 
-import java.util.Map;
-import java.util.List;
-import java.util.Arrays;
 import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
-
-import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 
-import javax.swing.JComboBox;
 import javax.swing.Box;
-import javax.swing.JLabel;
-import javax.swing.JCheckBox;
 import javax.swing.BoxLayout;
-import javax.swing.JTextField;
-import javax.swing.JTextArea;
-import javax.swing.SwingConstants;
+import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-
-import javax.swing.BorderFactory;
-
-
-import edu.ucsb.nceas.morpho.plugins.datapackagewizard.AbstractWizardPage;
-import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
+import javax.swing.JTextField;
 
 
 public class DataFormat extends AbstractWizardPage{

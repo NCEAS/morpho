@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: sgarg $'
- *     '$Date: 2003-12-30 17:08:47 $'
- * '$Revision: 1.6 $'
+ *   '$Author: brooke $'
+ *     '$Date: 2004-01-07 02:02:18 $'
+ * '$Revision: 1.7 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,31 +29,27 @@
 package edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages;
 
 
+import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.AbstractWizardPage;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.CustomList;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WidgetFactory;
-import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardSettings;
-
 import edu.ucsb.nceas.morpho.util.Log;
-
 import edu.ucsb.nceas.utilities.OrderedMap;
 
-import javax.swing.JLabel;
-import javax.swing.BoxLayout;
-import javax.swing.JTextField;
-import javax.swing.JPanel;
-import javax.swing.JComboBox;
-import javax.swing.border.EmptyBorder;
-
-import java.util.Map;
-import java.util.List;
-import java.util.Iterator;
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
 import java.awt.BorderLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+import javax.swing.BoxLayout;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
 
 public class KeywordsPage extends AbstractWizardPage {
 
@@ -66,7 +62,6 @@ public class KeywordsPage extends AbstractWizardPage {
   private final String EMPTY_STRING = "";
   private JTextField thesaurusField;
   private JLabel thesaurusLabel;
-  private JComboBox  kwTypePickList;
   private JLabel kwLabel;
   private CustomList kwList;
   private JPanel middlePanel;

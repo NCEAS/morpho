@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: sgarg $'
- *     '$Date: 2003-12-30 17:08:47 $'
- * '$Revision: 1.8 $'
+ *   '$Author: brooke $'
+ *     '$Date: 2004-01-07 02:02:18 $'
+ * '$Revision: 1.9 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -109,7 +109,6 @@ public class PartyPage extends AbstractWizardPage {
                                               "Distributor",
                                               "User"};
 
-  private int currentRoleIndex;
   private String currentRole;
   public boolean isReference;
 

@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: sambasiv $'
- *     '$Date: 2003-12-24 00:10:05 $'
- * '$Revision: 1.16 $'
+ *   '$Author: brooke $'
+ *     '$Date: 2004-01-07 02:02:17 $'
+ * '$Revision: 1.17 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,43 +30,29 @@ package edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages;
 
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.CustomList;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WidgetFactory;
-import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardSettings;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardPageSubPanelAPI;
-import edu.ucsb.nceas.morpho.plugins.datapackagewizard.AbstractWizardPage;
-
-
-import edu.ucsb.nceas.morpho.util.Log;
-
+import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardSettings;
 import edu.ucsb.nceas.utilities.OrderedMap;
 
-import javax.swing.Box;
-import javax.swing.BoxLayout;
-import javax.swing.JComboBox;
-import javax.swing.ComboBoxModel;
-import javax.swing.DefaultComboBoxModel;
-import javax.swing.JLabel;
-import javax.swing.JTextField;
-import javax.swing.JPanel;
-import javax.swing.BorderFactory;
-import javax.swing.JCheckBox;
-import javax.swing.JButton;
-
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.ArrayList;
-import java.util.Vector;
-import java.util.Enumeration;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridLayout;
-import java.awt.BorderLayout;
-import java.awt.Component;
-
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+
+import javax.swing.BorderFactory;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
 
 
 
@@ -75,58 +61,46 @@ class DateTimePanel extends JPanel implements WizardPageSubPanelAPI {
 
   private JLabel     formatStringLabel;
   private JLabel     precisionLabel;
-  
+
   private JTextField formatStringField;
   private JTextField precisionField;
-  
+
   private CustomList boundsList;
-  
-  private AbstractWizardPage wizardPage;
-  
-  private String[] numberTypesArray = new String[] { "natural", "whole",
-                                                     "integer", "real" };
-																										 
+
 	private String[] boundsPickListValues = new String[] {
 												"<",
 												"<="
 										};
 
 	private JButton addButton, delButton;
-  
+
   // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-  
-  
+
+
   /**
-   *  Constructor
-   *
-   *  @param page the parent wizard page
-   *
-   *  @param nom_ord_mode can be AttributePage.MEASUREMENTSCALE_NOMINAL 
-   *                  or AttributePage.MEASUREMENTSCALE_ORDINAL
+   * Constructor
    */
-  public DateTimePanel(AbstractWizardPage page) {
-  
+  public DateTimePanel() {
+
     super();
-    this.wizardPage = page;
     init();
-  } 
-  
-  
+  }
+
+
   private void init() {
-  
+
     this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-  
+
     int width = WizardSettings.WIZARD_CONTENT_SINGLE_LINE_DIMS.width;
-    int height = AttributePage.BORDERED_PANEL_TOT_ROWS 
+    int height = AttributePage.BORDERED_PANEL_TOT_ROWS
                   * WizardSettings.WIZARD_CONTENT_SINGLE_LINE_DIMS.height;
 
     Dimension dims = new Dimension(width, height);
 
     this.setPreferredSize(dims);
-    //this.setMaximumSize(dims);
-    
+
     ////////////////////////
-    
+
     JPanel formatStringPanel = WidgetFactory.makePanel();
     formatStringLabel    = WidgetFactory.makeLabel("Format:", true, WizardSettings.WIZARD_CONTENT_LABEL_DIMS);
     formatStringPanel.add(formatStringLabel);
@@ -144,10 +118,10 @@ class DateTimePanel extends JPanel implements WizardPageSubPanelAPI {
 
 //    this.add(WidgetFactory.makeHalfSpacer());
     this.add(formatStringGrid);
-  
+
 
     ////////////////////////
-    
+
     JPanel precisionPanel = WidgetFactory.makePanel();
     precisionLabel    = WidgetFactory.makeLabel("Precision:", true, WizardSettings.WIZARD_CONTENT_LABEL_DIMS);
     precisionPanel.add(precisionLabel);
@@ -168,56 +142,56 @@ class DateTimePanel extends JPanel implements WizardPageSubPanelAPI {
     this.add(WidgetFactory.makeHalfSpacer());
     this.add(precisionGrid);
     this.add(WidgetFactory.makeHalfSpacer());
-  
+
 
     String[] colNames     = new String[] {  "Min.", "", "" , "", "Max."};
     JLabel valueLabel = new JLabel("value", null, JLabel.CENTER);
-		
+
 		JComboBox combobox1 = WidgetFactory.makePickList(boundsPickListValues, false, 0, null);
 		JComboBox combobox2 = WidgetFactory.makePickList(boundsPickListValues, false, 0, null);
-		                                         
+
     Object[] colTemplates = new Object[] {  new JTextField(),
 														combobox1, valueLabel, combobox2,	new JTextField()
-													  };                                        
-    
+													  };
+
 		////////////////////////
-    
+
     //JPanel boundsHelpPanel = WidgetFactory.makeVerticalPanel(4);
 //    new JPanel();
 //    boundsHelpPanel.setLayout(new BoxLayout(boundsHelpPanel, BoxLayout.Y_AXIS));
 
     ////////////////////////
-    
+
     JPanel boundsPanel = WidgetFactory.makePanel(3);//new JPanel();
     //boundsPanel.setLayout(new BoxLayout(boundsPanel, BoxLayout.X_AXIS));
-    
+
     boundsPanel.add(WidgetFactory.makeLabel("Bounds:", false, WizardSettings.WIZARD_CONTENT_LABEL_DIMS));
-    
+
     boundsList = WidgetFactory.makeList(colNames, colTemplates, 2,
                                         false, false, false, false, false, false);
     boundsList.setListButtonDimensions(WizardSettings.LIST_BUTTON_DIMS_SMALL);
 		boundsList.setBorderForButtonPanel(0, WizardSettings.PADDING, 0, 0);
 		boundsPanel.add(boundsList);
-    
+
     /////////////////
-		
+
     JPanel boundsGrid = new JPanel(new GridLayout(1,2));
     boundsGrid.add(boundsPanel);
 
     JPanel buttonPanel = new JPanel();
     buttonPanel.setLayout(new BoxLayout(buttonPanel,BoxLayout.Y_AXIS));
-		
+
 		addButton = new JButton("Add");
 		addButton.setPreferredSize(WizardSettings.LIST_BUTTON_DIMS_SMALL);
 		addButton.setMaximumSize(WizardSettings.LIST_BUTTON_DIMS_SMALL);
 		addButton.setFont(WizardSettings.WIZARD_CONTENT_FONT);
-		
+
 		delButton = new JButton("Delete");
 		delButton.setPreferredSize(WizardSettings.LIST_BUTTON_DIMS_SMALL);
 		delButton.setMaximumSize(WizardSettings.LIST_BUTTON_DIMS_SMALL);
 		delButton.setFont(WizardSettings.WIZARD_CONTENT_FONT);
 		delButton.setEnabled(false);
-		
+
 		addButton.addActionListener( new ActionListener() {
 			public void actionPerformed(ActionEvent ae) {
 				boundsList.fireAddAction();
@@ -225,7 +199,7 @@ class DateTimePanel extends JPanel implements WizardPageSubPanelAPI {
 					delButton.setEnabled(true);
 			}
 		});
-		
+
 		delButton.addActionListener( new ActionListener() {
 			public void actionPerformed(ActionEvent ae) {
 				boundsList.fireDeleteAction();
@@ -233,7 +207,7 @@ class DateTimePanel extends JPanel implements WizardPageSubPanelAPI {
 					delButton.setEnabled(false);
 			}
 		});
-		
+
 		buttonPanel.add(addButton);
 		buttonPanel.add(delButton);
 		buttonPanel.add(Box.createVerticalGlue());
@@ -241,7 +215,7 @@ class DateTimePanel extends JPanel implements WizardPageSubPanelAPI {
 		outerButtonPanel.setLayout(new BoxLayout(outerButtonPanel, BoxLayout.X_AXIS));
 		outerButtonPanel.setBorder(BorderFactory.createEmptyBorder(0,10,0,0));
 		outerButtonPanel.add(buttonPanel);
-	
+
 	 	outerButtonPanel.add(Box.createHorizontalStrut(10));
 		JPanel boundsHelpPanel = new JPanel();
 		boundsHelpPanel.setLayout(new BorderLayout());
@@ -254,64 +228,57 @@ class DateTimePanel extends JPanel implements WizardPageSubPanelAPI {
     +"e.g: if format is \"YYYY-MM-DD\", a valid minimum would be \"2001-05-29\""
     +WizardSettings.HTML_EXAMPLE_FONT_CLOSING+"<br></br>"
     +WizardSettings.HTML_NO_TABLE_CLOSING);
-		
+
 		helpLabel.setFont(WizardSettings.WIZARD_CONTENT_FONT);
-		
+
     boundsHelpPanel.add( helpLabel, BorderLayout.CENTER);
 		//boundsHelpPanel.add(Box.createGlue());
 		outerButtonPanel.add(boundsHelpPanel);
-    
+
 		boundsGrid.add(outerButtonPanel);
     this.add(boundsGrid);
 		this.add(Box.createGlue());
     ////////////////////////
 
   }
-  
- 
-  private static Component makeHalfSpacer() {
-    
-    return Box.createRigidArea(new Dimension(
-                    WizardSettings.DEFAULT_SPACER_DIMS.width/2,
-                    WizardSettings.DEFAULT_SPACER_DIMS.height/2));
-  }
-  
+
+
 	private JLabel getLabel(String text) {
-			
+
 		if (text==null) text= "";
 		JLabel label = new JLabel(text);
-							
+
 		label.setAlignmentX(1.0f);
 		label.setFont(WizardSettings.WIZARD_CONTENT_FONT);
 		label.setBorder(BorderFactory.createMatteBorder(1,10,1,3, (Color)null));
-			
+
 		return label;
 	}
 
-  
 
-  /** 
+
+  /**
    *  The action to be executed when the panel is displayed. May be empty
    */
   public void onLoadAction() {
-  
+
     WidgetFactory.unhiliteComponent(formatStringLabel);
     WidgetFactory.unhiliteComponent(precisionLabel);
     formatStringField.requestFocus();
   }
-  
-  /** 
-   *  checks that the user has filled in required fields - if not, highlights 
+
+  /**
+   *  checks that the user has filled in required fields - if not, highlights
    *  labels to draw attention to them
    *
-   *  @return   boolean true if user data validated OK. false if intervention 
+   *  @return   boolean true if user data validated OK. false if intervention
    *            required
    */
   public boolean validateUserInput() {
 
-    
+
     // CHECK FOR AND ELIMINATE EMPTY ROWS...
-    boundsList.deleteEmptyRows( CustomList.AND, 
+    boundsList.deleteEmptyRows( CustomList.AND,
                                 new short[] { CustomList.EMPTY_STRING_TRIM,
                                               CustomList.IGNORE,
                                               CustomList.EMPTY_STRING_TRIM,
@@ -333,17 +300,17 @@ class DateTimePanel extends JPanel implements WizardPageSubPanelAPI {
       return false;
     }
     WidgetFactory.unhiliteComponent(precisionLabel);
-    
-    return true; 
+
+    return true;
   }
 
-  
-  /** 
+
+  /**
    *  gets the Map object that contains all the key/value paired
    *
-   *  @param    xPathRoot the string xpath to which this dialog's xpaths will be 
-   *            appended when making name/value pairs.  For example, in the 
-   *            following xpath: 
+   *  @param    xPathRoot the string xpath to which this dialog's xpaths will be
+   *            appended when making name/value pairs.  For example, in the
+   *            following xpath:
    *
    *            /eml:eml/dataset/dataTable/attributeList/attribute[2]
    *            /measurementScale/nominal/nonNumericDomain/textDomain/definition
@@ -353,7 +320,7 @@ class DateTimePanel extends JPanel implements WizardPageSubPanelAPI {
    *              /eml:eml/dataset/dataTable/attributeList
    *                                /attribute[2]/measurementScale
    *
-   *            NOTE - MUST NOT END WITH A SLASH, BUT MAY END WITH AN INDEX IN 
+   *            NOTE - MUST NOT END WITH A SLASH, BUT MAY END WITH AN INDEX IN
    *            SQUARE BRACKETS []
    *
    *  @return   data the Map object that contains all the
@@ -364,17 +331,17 @@ class DateTimePanel extends JPanel implements WizardPageSubPanelAPI {
   public OrderedMap getPanelData(String xPathRoot) {
 
     returnMap.clear();
-   
-    returnMap.put(  xPathRoot + "/formatString", 
+
+    returnMap.put(  xPathRoot + "/formatString",
                     formatStringField.getText().trim());
 
-    returnMap.put(  xPathRoot + "/dateTimePrecision", 
+    returnMap.put(  xPathRoot + "/dateTimePrecision",
                     precisionField.getText().trim());
-                
+
     returnMap.put(  xPathRoot + "/dateTimeDomain", "");
-    
+
     xPathRoot = xPathRoot + "/dateTimeDomain/bounds[";
-    
+
     int index = 0;
     List rowLists = boundsList.getListOfRowLists();
     String nextMin = null;
@@ -382,77 +349,77 @@ class DateTimePanel extends JPanel implements WizardPageSubPanelAPI {
     Object nextExcl = null;
 
     for (Iterator it = rowLists.iterator(); it.hasNext(); ) {
-  
+
       Object nextRowObj = it.next();
       if (nextRowObj==null) continue;
-      
+
       List nextRow = (List)nextRowObj;
       if (nextRow.size() < 1) continue;
-      
+
       index++;
-      
+
       if (nextRow.get(0)!=null) {
-      
+
         nextMin = (String)(nextRow.get(0));
         if (!nextMin.trim().equals("")) {
           returnMap.put(xPathRoot + index + "]/minimum", nextMin);
 
           nextExcl = nextRow.get(1);
           if (nextExcl!=null && ((String)nextExcl).equals("<") ) {
-      
+
             returnMap.put(xPathRoot + index + "]/minimum/@exclusive", "true");
-        
+
           } else {
-        
+
             returnMap.put(xPathRoot + index + "]/minimum/@exclusive", "false");
           }
         }
       }
-      
+
       if (nextRow.get(4)!=null) {
-      
+
         nextMax = (String)(nextRow.get(4));
         if (!nextMax.trim().equals("")) {
           returnMap.put(xPathRoot + index + "]/maximum", nextMax);
 
           nextExcl = nextRow.get(3);
           if (nextExcl!=null && ((String)nextExcl).equals("<") ) {
-      
+
             returnMap.put(xPathRoot + index + "]/maximum/@exclusive", "true");
-        
+
           } else {
-        
+
             returnMap.put(xPathRoot + index + "]/maximum/@exclusive", "false");
           }
         }
       }
     }
     return returnMap;
-  
+
   }
-  
-  /** 
-   *  sets the Data in the DataTime Panel. This is called by the setData() function 
+
+  /**
+   *  sets the Data in the DataTime Panel. This is called by the setData() function
    *  of AttributePage.
-   
+
    *  @param  xPathRoot - this is the relative xPath of the current attribute
    *
-   *  @param  map - Data is passed as OrderedMap of xPath-value pairs. xPaths in this map 
+   *  @param  map - Data is passed as OrderedMap of xPath-value pairs. xPaths in this map
    *		    are absolute xPath and not the relative xPaths
    *
    **/
-   
+
   public void setPanelData(String xPathRoot, OrderedMap map) {
-	  
-	  
+
+
 	  String format = (String)map.get(xPathRoot + "/formatString");
 	  if(format != null)
 		  formatStringField.setText(format);
-	  
+
 	  String precision = (String)map.get(xPathRoot + "/dateTimePrecision");
 	  if(precision != null)
 		  precisionField.setText(precision);
-	  
+
 	  int index = 1;
 	  while(true) {
 		  List row = new ArrayList();
@@ -479,7 +446,7 @@ class DateTimePanel extends JPanel implements WizardPageSubPanelAPI {
 			if(index == 1 && max == null)
 				max = (String)map.get(xPathRoot + "/dateTimeDomain/bounds/maximum");
 		  if(max != null) {
-			  
+
 			  Boolean  excl = (Boolean)map.get(xPathRoot + "/dateTimeDomain/bounds[" +index+ "]/maximum/@exclusive");
 				if(index == 1 && excl == null)
 					excl = (Boolean)map.get(xPathRoot +
@@ -489,7 +456,7 @@ class DateTimePanel extends JPanel implements WizardPageSubPanelAPI {
 			  else
 				  row.add("<=");
 				row.add(max);
-		  }  
+		  }
 		  else {
 				row.add("<");
 				row.add("");
@@ -500,8 +467,8 @@ class DateTimePanel extends JPanel implements WizardPageSubPanelAPI {
 			  boundsList.addRow(row);
 		  index++;
 	  }
-	  
+
 	  return;
   }
-  
+
 }

@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2004-01-05 17:05:54 $'
- * '$Revision: 1.43 $'
+ *   '$Author: brooke $'
+ *     '$Date: 2004-01-07 02:02:17 $'
+ * '$Revision: 1.44 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,37 +28,30 @@
 
 package edu.ucsb.nceas.morpho.plugins.datapackagewizard;
 
+import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
 import edu.ucsb.nceas.morpho.util.Log;
 import edu.ucsb.nceas.utilities.IOUtil;
+import edu.ucsb.nceas.utilities.OrderedMap;
 import edu.ucsb.nceas.utilities.StringUtil;
 import edu.ucsb.nceas.utilities.XMLUtilities;
-import edu.ucsb.nceas.utilities.OrderedMap;
-import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
 
-import javax.swing.JLabel;
-import javax.swing.JTextField;
-import javax.swing.JComponent;
-
-import java.awt.Dimension;
-import java.awt.Color;
-import java.awt.Font;
-
+import java.io.IOException;
+import java.io.Reader;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.HashMap;
-import java.util.Arrays;
-import java.util.ArrayList;
-import java.util.Iterator;
 
-import java.io.Reader;
-import java.io.IOException;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Font;
 
 import org.w3c.dom.Attr;
-import org.w3c.dom.NodeList;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
-
-import javax.xml.transform.TransformerException;
+import org.w3c.dom.NodeList;
 
 /**
  *  WizardSettings

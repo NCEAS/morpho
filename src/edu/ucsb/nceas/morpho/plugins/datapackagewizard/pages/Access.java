@@ -7,9 +7,9 @@
  *    Authors: Saurabh Garg
  *    Release: @release@
  *
- *   '$Author: sgarg $'
- *     '$Date: 2003-12-30 17:08:47 $'
- * '$Revision: 1.6 $'
+ *   '$Author: brooke $'
+ *     '$Date: 2004-01-07 02:02:17 $'
+ * '$Revision: 1.7 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -54,7 +54,6 @@ public class Access extends AbstractWizardPage {
   public final String title      = "Access Information";
   public final String subtitle   = " ";
 
-  private JLabel radioLabel;
   private JPanel radioPanel;
   private final String xPathRoot  = "/eml:eml/dataset/access/";
 
@@ -104,13 +103,6 @@ public class Access extends AbstractWizardPage {
     topBox.add(radioPanel);
 
     this.add(topBox, BorderLayout.NORTH);
-
-  }
-
-  /**
-   *
-   */
-  private void initActions() {
 
   }
 

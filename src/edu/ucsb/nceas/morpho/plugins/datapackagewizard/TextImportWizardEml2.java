@@ -5,8 +5,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2003-12-24 08:27:12 $'
- * '$Revision: 1.11 $'
+ *     '$Date: 2004-01-07 02:02:17 $'
+ * '$Revision: 1.12 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -39,8 +39,10 @@ import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.text.DateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Enumeration;
+import java.util.List;
 import java.util.StringTokenizer;
 import java.util.Vector;
 
@@ -54,11 +56,10 @@ import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.FocusAdapter;
 import java.awt.event.WindowAdapter;
-import javax.swing.border.EmptyBorder;
 
 import javax.swing.BorderFactory;
-import javax.swing.BoxLayout;
 import javax.swing.Box;
+import javax.swing.BoxLayout;
 import javax.swing.DefaultListSelectionModel;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -66,19 +67,17 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
+import javax.swing.border.EmptyBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableColumnModel;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
-import java.util.List;
-import java.util.ArrayList;
 
 
 /**
@@ -1532,12 +1531,6 @@ public class TextImportWizardEml2 extends JFrame {
   private JPanel Step1_TableDescriptionPanel = new JPanel();
   private JLabel Step1_TableDescriptionLabel = new JLabel();
   private JTextField TableDescriptionTextField = new JTextField();
-  private JPanel Step1_DelimiterChoicePanel = new JPanel();
-  private JLabel Step1_DelimiterLabel = new JLabel();
-  private JPanel Step1_DelimeterRadioPanel = new JPanel();
-  private JRadioButton DelimitedRadioButton = new JRadioButton();
-  private JPanel Step1_FixedFieldRadioPanel = new JPanel();
-  private JRadioButton FixedFieldRadioButton = new JRadioButton();
   private JPanel StartingLinePanel = new JPanel();
   private JLabel StartingLineLabel = new JLabel();
   private JTextField StartingLineTextField = new JTextField();

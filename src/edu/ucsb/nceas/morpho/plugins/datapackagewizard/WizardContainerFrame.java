@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2004-01-06 22:16:15 $'
- * '$Revision: 1.33 $'
+ *     '$Date: 2004-01-07 02:02:17 $'
+ * '$Revision: 1.34 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -288,12 +288,12 @@ public class WizardContainerFrame extends JFrame {
 
   private void initButtons()  {
 
-    cancelButton      = addButton(WizardSettings.CANCEL_BUTTON_TEXT, new ActionListener() {
+    addButton(WizardSettings.CANCEL_BUTTON_TEXT, new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         cancelAction();
       }
     });
-    prevButton        = addButton(WizardSettings.PREV_BUTTON_TEXT, new ActionListener() {
+    prevButton  = addButton(WizardSettings.PREV_BUTTON_TEXT, new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         previousAction();
       }
@@ -758,7 +758,6 @@ public class WizardContainerFrame extends JFrame {
   private JLabel titleLabel, subtitleLabel;
   private JButton nextButton;
   private JButton prevButton;
-  private JButton cancelButton;
   private JButton finishButton;
   private AbstractWizardPage currentPage;
   private Stack pageStack;

@@ -7,9 +7,9 @@
  *    Authors: Saurabh Garg
  *    Release: @release@
  *
- *   '$Author: sgarg $'
- *     '$Date: 2003-12-12 03:05:35 $'
- * '$Revision: 1.2 $'
+ *   '$Author: brooke $'
+ *     '$Date: 2004-01-07 02:02:18 $'
+ * '$Revision: 1.3 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,32 +28,11 @@
 
 package edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages;
 
-import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardSettings;
-import edu.ucsb.nceas.morpho.util.Log;
-
-import java.util.Map;
-import java.util.List;
-import javax.swing.Box;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
-import java.awt.BorderLayout;
-import javax.swing.AbstractAction;
-
-import edu.ucsb.nceas.morpho.plugins.datapackagewizard.CustomList;
-import edu.ucsb.nceas.morpho.plugins.datapackagewizard.AbstractWizardPage;
 import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
-import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WidgetFactory;
+import edu.ucsb.nceas.morpho.plugins.datapackagewizard.AbstractWizardPage;
 import edu.ucsb.nceas.utilities.OrderedMap;
-import edu.ucsb.nceas.morpho.plugins.ServiceController;
-import edu.ucsb.nceas.morpho.plugins.ServiceProvider;
-import edu.ucsb.nceas.morpho.plugins.ServiceNotHandledException;
-import edu.ucsb.nceas.morpho.plugins.datapackagewizard.DataPackageWizardPlugin;
-import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardContainerFrame;
-import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardPopupDialog;
 
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
+import java.awt.BorderLayout;
 
 public class Geographic extends AbstractWizardPage {
 
@@ -65,13 +44,6 @@ public class Geographic extends AbstractWizardPage {
   public final String title      = "Geographic Information";
   public final String subtitle   = "Unintentionally left blank";
 
-  private JLabel radioLabel;
-
-  private final String[] buttonsText = new String[] {
-      "READ",
-      "ALL",
-      "NONE"
-  };
 
   public Geographic() {
 
@@ -85,13 +57,6 @@ public class Geographic extends AbstractWizardPage {
   private void init() {
 
     this.setLayout(new BorderLayout());
-
-  }
-
-  /**
-   *
-   */
-  private void initActions() {
 
   }
 

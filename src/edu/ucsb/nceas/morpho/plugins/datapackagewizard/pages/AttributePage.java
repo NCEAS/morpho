@@ -6,9 +6,9 @@
  *             National Center for Ecological Analysis and Synthesis
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2003-12-29 21:43:23 $'
- * '$Revision: 1.9 $'
+ *   '$Author: brooke $'
+ *     '$Date: 2004-01-07 02:02:17 $'
+ * '$Revision: 1.10 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,58 +27,45 @@
 
 package edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages;
 
-import edu.ucsb.nceas.morpho.plugins.datapackagewizard.CustomList;
-import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WidgetFactory;
-import edu.ucsb.nceas.morpho.plugins.datapackagewizard.AbstractWizardPage;
-import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardSettings;
-import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardPageSubPanelAPI;
-import edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.NominalOrdinalPanel;
-import edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.AttributeSettings;
-import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
-import edu.ucsb.nceas.morpho.util.Log;
 import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.framework.ConfigXML;
-
-
+import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
+import edu.ucsb.nceas.morpho.plugins.datapackagewizard.AbstractWizardPage;
+import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WidgetFactory;
+import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardPageSubPanelAPI;
+import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardSettings;
+import edu.ucsb.nceas.morpho.util.Log;
 import edu.ucsb.nceas.utilities.OrderedMap;
 
-import javax.swing.Box;
-import javax.swing.JComboBox;
-import javax.swing.JLabel;
-import javax.swing.JFrame;
-import javax.swing.BoxLayout;
-import javax.swing.JTextField;
-import javax.swing.JTextArea;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.SwingConstants;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Container;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.GridLayout;
+import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
 import javax.swing.BorderFactory;
-import javax.swing.JCheckBox;
-import javax.swing.JOptionPane;
-import javax.swing.JRadioButton;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JEditorPane;
-import java.awt.BorderLayout;
-
-import java.util.List;
-import java.util.ArrayList;
-import java.util.Iterator;
-
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.GridLayout;
-import java.awt.Component;
-import java.awt.Container;
-import java.awt.Insets;
-import java.awt.Font;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JRadioButton;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
+import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
-
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
-import java.io.File;
 
 
 public class AttributePage extends AbstractWizardPage {
@@ -98,7 +85,6 @@ public class AttributePage extends AbstractWizardPage {
   private JTextField attribNameField;
   private JTextField attribLabelField;
 
-  private JLabel kwLabel;
   private JLabel attribNameLabel;
   private JLabel attribLabelLabel;
   private JLabel attribDefinitionLabel;
@@ -314,10 +300,10 @@ public class AttributePage extends AbstractWizardPage {
         //undo any hilites:
 
         if (e.getActionCommand().equals(buttonsText[0])) {
-          
+
           setMeasurementScaleUI(nominalPanel);
           setMeasurementScale(measScaleElemNames[0]);
-					
+
         } else if (e.getActionCommand().equals(buttonsText[1])) {
 
           setMeasurementScaleUI(ordinalPanel);
@@ -389,23 +375,23 @@ public class AttributePage extends AbstractWizardPage {
     topMiddlePanel.add(radioPanel);
 
     middlePanel.add(topMiddlePanel);
-		
+
 		currentPanel  = getEmptyPanel();
-		
+
     middlePanel.add(currentPanel);
-		
+
     middlePanel.add(Box.createGlue());
-		
+
 		topMiddlePanel.setMaximumSize(topMiddlePanel.getPreferredSize());
     topMiddlePanel.setMinimumSize(topMiddlePanel.getPreferredSize());
-		
+
     nominalPanel  = getNomOrdPanel(MEASUREMENTSCALE_NOMINAL);
     ordinalPanel  = getNomOrdPanel(MEASUREMENTSCALE_ORDINAL);
     intervalPanel = getIntervalRatioPanel(MEASUREMENTSCALE_INTERVAL);
     ratioPanel    = getIntervalRatioPanel(MEASUREMENTSCALE_RATIO);
     dateTimePanel = getDateTimePanel();
 
-		
+
 		refreshUI();
   }
 
@@ -422,17 +408,17 @@ public class AttributePage extends AbstractWizardPage {
     topMiddlePanel.setMinimumSize(new Dimension(0,0));
 		middlePanel.remove(currentPanel);
 		//middlePanel.remove(topMiddlePanel);
-    
+
     currentPanel = panel;
 		//middlePanel.add(topMiddlePanel);
     middlePanel.add(currentPanel);
 		topMiddlePanel.setMaximumSize(topMiddlePanel.getPreferredSize());
     topMiddlePanel.setMinimumSize(topMiddlePanel.getPreferredSize());
-		
+
 		((WizardPageSubPanelAPI)currentPanel).onLoadAction();
-		
+
     currentPanel.invalidate();
-		
+
     currentPanel.repaint();
     topMiddlePanel.validate();
     topMiddlePanel.repaint();
@@ -478,7 +464,7 @@ public class AttributePage extends AbstractWizardPage {
 
   private DateTimePanel getDateTimePanel() {
 
-    DateTimePanel panel = new DateTimePanel(this);
+    DateTimePanel panel = new DateTimePanel();
     WidgetFactory.addTitledBorder(panel, measScaleDisplayNames[MEASUREMENTSCALE_DATETIME]);
     return panel;
   }
@@ -706,7 +692,7 @@ public class AttributePage extends AbstractWizardPage {
   if(o1 != null) return "Ordinal";
   o1 = map.get(AttributeSettings.Ordinal_xPath+"/textDomain/definition");
   if(o1 != null) return "Ordinal";
-	
+
   o1 = map.get(AttributeSettings.Ratio_xPath+"/unit/standardUnit");
   if(o1 != null) return "Ratio";
   o1 = map.get(AttributeSettings.Ratio_xPath+"/numericDomain/numberType");
@@ -725,32 +711,25 @@ public class AttributePage extends AbstractWizardPage {
   return "";
   }
 
+
   /**
-   *  sets the Data in the Attribute Dialog fields. This is called from the TextImportWizard
-   *  when it wants to set some information it has already guessed from the given data file.
+   * sets the Data in the Attribute Dialog fields. This is called from the
+   * TextImportWizard when it wants to set some information it has already
+   * guessed from the given data file. Any data in the AttributeDialog can be
+   * set through this method. The TextImportWizard however sets only the
+   * "Attribute Name", "Measurement Scale", "Number Type" and the "Enumeration
+   * Code Definitions"
    *
-   *  Any data in the AttributeDialog can be set through this method. The TextImportWizard
-   *  however sets only the "Attribute Name", "Measurement Scale", "Number Type" and the
-   *  "Enumeration Code Definitions"
-   *
-   *  @param  xPathRoot - this is the relative xPath of the current attribute
-   *
-   *  @param  map - Data is passed as OrderedMap of xPath-value pairs. xPaths in this map
-   *		    are absolute xPath and not the relative xPaths
-   *
-   *  @param  mScale - The guessed measurement scale. The appropriate radioButton is
-   *			selected and that Panel is displayed
-   *
-   *
+   * @param map - Data is passed as OrderedMap of xPath-value pairs. xPaths in
+   *   this map are absolute xPath and not the relative xPaths
    */
+  public void setPageData(OrderedMap map) {
 
-   public void setPageData(OrderedMap map) {
 
-		 
 		 String name = (String)map.get(xPathRoot + "/attributeName[1]");
 		 if(name != null)
 			 map = stripIndexOneFromMapKeys(map);
-		 
+
 		 String mScale = findMeasurementScale(map);
 		 String xPathRoot = AttributeSettings.Attribute_xPath;
      name = (String)map.get(xPathRoot + "/attributeName");
@@ -799,25 +778,25 @@ public class AttributePage extends AbstractWizardPage {
      //selects the appropriate radio button
 
      if(componentNum != -1) {
-	
+
        Container c = (Container)(radioPanel.getComponent(1));
        JRadioButton jrb = (JRadioButton)c.getComponent(componentNum);
        jrb.setSelected(true);
-			 
+
      }
-     
+
 		 ((NominalOrdinalPanel)nominalPanel).setPanelData(xPathRoot+ "/measurementScale/nominal/nonNumericDomain", map);
      ((NominalOrdinalPanel)ordinalPanel).setPanelData(xPathRoot+ "/measurementScale/ordinal/nonNumericDomain", map);
      ((IntervalRatioPanel)intervalPanel).setPanelData(xPathRoot+ "/measurementScale/interval", map);
      ((IntervalRatioPanel)ratioPanel).setPanelData(xPathRoot+ "/measurementScale/ratio", map);
      ((DateTimePanel)dateTimePanel).setPanelData(xPathRoot+ "/measurementScale/datetime", map);
-		 
+
 		 refreshUI();
 		 return;
    }
 
 	 private OrderedMap stripIndexOneFromMapKeys(OrderedMap map) {
-		 
+
 		 OrderedMap newMap = new OrderedMap();
 		 Iterator it = map.keySet().iterator();
 		 while(it.hasNext()) {
@@ -832,7 +811,7 @@ public class AttributePage extends AbstractWizardPage {
 		 }
 		 return newMap;
 	 }
-	 
+
   /**
    *  gets the HTML representation of the attribute values
    *  The HTML text references the entity.css file
