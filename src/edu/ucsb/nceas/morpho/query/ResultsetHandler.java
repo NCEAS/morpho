@@ -1,6 +1,7 @@
 package edu.ucsb.nceas.morpho.query;
 
 import edu.ucsb.nceas.morpho.Morpho;
+import edu.ucsb.nceas.morpho.framework.ConfigXML;
 import edu.ucsb.nceas.morpho.util.Log;
 
 import org.xml.sax.Attributes;
@@ -43,28 +44,76 @@ public class ResultsetHandler implements ContentHandler, Runnable
   private Hashtable params;
   private Morpho morpho;
   private Hashtable triple;
-  /** a collection of triple Hashtables, used during SAX parsing */
+  // a collection of triple Hashtables, used during SAX parsing
   private Vector tripleList;
   private Vector returnFields;
-  /** global for accumulating characters in SAX parser */
+  // global for accumulating characters in SAX parser
   private String accumulatedCharacters = null;
-  /** Flag indicating whether the results are from a local query */
+  //Flag indicating whether the results are from a local query
   private boolean isLocal = false;
-
-  /** Flag indicating whether the results are from a metacat query */
+  // Flag indicating whether the results are from a metacat query
   private boolean isMetacat = false;
-
   //Vetor to store the data
-  SynchronizeVector resultsVector;
+  private SynchronizeVector resultsVector;
   //input stream
-  InputStream resultsXMLStream;
+  private InputStream resultsXMLStream;
+  // source the location of search, local or network
+  private String source;
+  // indicator if the parsing is done;
+  private boolean isdone = false;
 
+
+  /**
+   *  A contruct will be used in another thread
+   * @param resultsXMLStream InputStream
+   * @param resultsVector SynchronizeVector
+   * @param morpho Morpho
+   * @param source String  the location of search, local or network
+   */
   public ResultsetHandler(InputStream resultsXMLStream,
-                          SynchronizeVector resultsVector)
+                          SynchronizeVector resultsVector,
+                          Morpho morpho, String source)
   {
      this.resultsXMLStream = resultsXMLStream;
      this.resultsVector = resultsVector;
+     this.morpho = morpho;
+     this.source = source;
+     init();
   }
+
+  /**
+   * A constructor to set up a ContentHanler
+   * @param morpho Morpho  contains configration info
+   * @param source String  the location of search, local or network
+   */
+  public ResultsetHandler(Morpho morpho, String source)
+ {
+    resultsVector = new SynchronizeVector();
+    this.morpho = morpho;
+    this.source = source;
+    init();
+ }
+
+ /*
+  * Method to init return fields and result set location
+  */
+ private void init()
+ {
+   ConfigXML config = morpho.getConfiguration();
+   returnFields = config.get("returnfield");
+   if (source.equals("local"))
+   {
+     isLocal = true;
+     isMetacat = false;
+   }
+   else if (source.equals("metacat"))
+   {
+     isLocal = false;
+     isMetacat = true;
+   }
+
+ }
+
 
   public void run()
   {
@@ -82,6 +131,33 @@ public class ResultsetHandler implements ContentHandler, Runnable
      Log.debug(30, "(2.431) Exception creating result set ...");
      Log.debug(6, "(2.432) " + e.toString());
      Log.debug(30, "(2.433) Exception is: " + e.getClass().getName());
+    }
+
+  }
+
+  /**
+   * Method to get synchorinze vector
+   * @return SynchronizeVector
+   */
+  public SynchronizeVector getSynchronizeVector()
+  {
+    return resultsVector;
+  }
+
+  /**
+   * A method to see if the parsing is done
+   * @return boolean
+   */
+  public boolean isDone()
+  {
+    // parsing is finished and every data was send out
+    if (isdone && resultsVector.isEmpty())
+    {
+      return true;
+    }
+    else
+    {
+      return false;
     }
 
   }
@@ -246,13 +322,15 @@ public class ResultsetHandler implements ContentHandler, Runnable
   * SAX handler callback that is called when an XML document
   * is initially parsed.
   */
- public void startDocument() throws SAXException {
+ public void startDocument() throws SAXException
+ {
    elementStack = new Stack();
  }
 
  /** Unused SAX handler */
  public void endDocument() throws SAXException
  {
+   isdone = true;
  }
 
  /** Unused SAX handler */

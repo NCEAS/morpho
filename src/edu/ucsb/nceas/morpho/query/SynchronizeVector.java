@@ -24,6 +24,15 @@ public class SynchronizeVector
   }
 
   /**
+   * Method to see if this vector is empty
+   * @return boolean
+   */
+  public synchronized  boolean isEmpty()
+  {
+    return  contentVector.isEmpty();
+  }
+
+  /**
    * The synchronized method to get Vector and reset contentVector to empty.
    * @return Vector
    */

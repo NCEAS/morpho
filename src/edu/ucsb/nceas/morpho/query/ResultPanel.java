@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2003-10-13 21:19:48 $'
- * '$Revision: 1.69 $'
+ *   '$Author: tao $'
+ *     '$Date: 2004-04-12 16:19:52 $'
+ * '$Revision: 1.69.2.1 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -89,7 +89,7 @@ public class ResultPanel extends JPanel implements StoreStateChangeEvent
   ToolTippedSortableJTable table = null;
   /** vector to store the state change event */
   Vector storedStateChangeEventlist = null;
- 
+
   /** Button used to trigger a re-execution of the query */
 //  private JButton refreshButton;
 //  /** Button used to trigger a revision using QueryDialog */
@@ -121,27 +121,27 @@ public class ResultPanel extends JPanel implements StoreStateChangeEvent
   boolean localLoc = false;
   private String doctype = "";
   private Dimension preferredSize;
-  
+
   ImageIcon bfly;
   ImageIcon flapping;
   int threadCount = 0;
   int selectedRow = -1;
-  
+
   private int vers = -1;
   private String packageName = "";
-  
 
-  
+
+
   /**
    * Construct a new ResultPanel and display the result set.  By default
    * the panel has reset and refresh buttons.
    *
-   * @param dialog the dialog the resultpanel will be set to. If it is null, 
+   * @param dialog the dialog the resultpanel will be set to. If it is null,
    *               the result panel would be set to a dialog
    * @param results the result listing to display
    * @param myMediator the mediaor passed from frame to control table
    */
-  public ResultPanel(OpenDialogBox dialog, ResultSet results, 
+  public ResultPanel(OpenDialogBox dialog, ResultSet results,
                                         ResultPanelAndFrameMediator myMediator)
   {
     this(dialog, results, 12, myMediator, new Dimension(775,500));
@@ -151,13 +151,13 @@ public class ResultPanel extends JPanel implements StoreStateChangeEvent
    * Construct a new ResultPanel and display the result set.  By default
    * the panel has reset and refresh buttons.
    *
-   * @param dialog the dialog the resultpanel will be set to. If it is null, 
+   * @param dialog the dialog the resultpanel will be set to. If it is null,
    *               the result panel would be set to a dialog
    * @param results the result listing to display
    * @param myMediator the mediaor passed from frame to control table
    * @param preferredSize the specific size of the panel
    */
-  public ResultPanel(OpenDialogBox dialog, ResultSet results, 
+  public ResultPanel(OpenDialogBox dialog, ResultSet results,
               ResultPanelAndFrameMediator myMediator, Dimension preferredSize)
   {
     this(dialog, results, 12, myMediator, preferredSize);
@@ -167,13 +167,13 @@ public class ResultPanel extends JPanel implements StoreStateChangeEvent
   /**
    * Construct a new ResultPanel and display the result set
    *
-   * @param dialog the dialog the resultpanel will be set to. If it is null, 
+   * @param dialog the dialog the resultpanel will be set to. If it is null,
    *               the result panel would be set to a dialog
    * @param results the result listing to display
    * @param fontSize the fontsize for the cells of the table
    * @param myMediator the mediaor passed from frame to control table
    */
-  public ResultPanel(OpenDialogBox dialog, ResultSet results, int fontSize, 
+  public ResultPanel(OpenDialogBox dialog, ResultSet results, int fontSize,
             ResultPanelAndFrameMediator myMediator, Dimension preferredSize)
   {
     super();
@@ -209,29 +209,29 @@ public class ResultPanel extends JPanel implements StoreStateChangeEvent
       setName(results.getQuery().getQueryTitle());
 
 
- 
+
       // Set up the results table
-      table = new ToolTippedSortableJTable(results);
-           
+      table = new ToolTippedSortableJTable();
+      table.setModel(results);
       // Set resize model
       table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
       // Set horizontal line off
       table.setShowHorizontalLines(false);
       table.setShowVerticalLines(false);
-      
-      ToolTippedTextRenderer stringRenderer = 
+
+      ToolTippedTextRenderer stringRenderer =
                                        new ToolTippedTextRenderer(fontSize);
-     
+
       //stringRenderer.setRows(5);
       //table.setRowHeight((int)(stringRenderer.getPreferredSize().height));
       table.setRowHeight(results.getRowHeight());
       table.setDefaultRenderer(String.class, stringRenderer);
       table.setDefaultRenderer
                             (javax.swing.ImageIcon.class, new ImageRenderer());
-     
-      // Create the scroll pane and add the table to it. 
+
+      // Create the scroll pane and add the table to it.
       JScrollPane scrollPane = new JScrollPane(table);
-      
+
       // Set JScrollPane background color white
       scrollPane.getViewport().setBackground(Color.white);
       // Initialize column, pass the width of virwport to the table
@@ -239,10 +239,10 @@ public class ResultPanel extends JPanel implements StoreStateChangeEvent
       initTableColumnSize(table, results, (int)preferredSize.getWidth());
       // Add the table to scroll pane
       //scrollPane.add(table);
-  
+
       //Add the scroll pane to this Panel.
       add(scrollPane, BorderLayout.CENTER);
-    
+
       // In open dialog, doesn't show popup
       //if (dialog == null)
       //{
@@ -253,14 +253,14 @@ public class ResultPanel extends JPanel implements StoreStateChangeEvent
                             new OpenPackageCommand(dialog));
         openMenu = new JMenuItem(openAction);
         popup.add(openMenu);
-      
+
         // Create a OpenPreviousVersion action
         GUIAction openPreviousAction = new GUIAction("Open Previous Version",null,
                             new OpenPreviousVersionCommand(dialog, null));
         openPreviousVersion = new JMenuItem(openPreviousAction);
         popup.add(openPreviousVersion);
         openPreviousAction.setEnabled(false);
-      
+
         // Create a refresh action
         GUIAction refreshAction = null;
         if (dialog != null)
@@ -276,49 +276,49 @@ public class ResultPanel extends JPanel implements StoreStateChangeEvent
         }
         refreshMenu = new JMenuItem(refreshAction);
         popup.add(refreshMenu);
-      
+
         popup.add(new JSeparator());
-      
+
         // Create a action to open a synchronize dialog
         GUIAction synchronizeAction = new GUIAction("Synchronize...", null,
                                       new OpenSynchronizeDialogCommand(dialog));
         synchronizeMenu = new JMenuItem(synchronizeAction);
         popup.add(synchronizeMenu);
-      
-     
+
+
         popup.add(new JSeparator());
-      
+
         // Create a action to open a delete dialog
         GUIAction openDeleteDialogAction = new GUIAction("Delete...", null,
                                          new OpenDeleteDialogCommand(dialog));
         deleteMenu = new JMenuItem(openDeleteDialogAction);
-        popup.add(deleteMenu);                             
-        
+        popup.add(deleteMenu);
+
         popup.add(new JSeparator());
-      
+
         // Create export
-        GUIAction exportAction = new GUIAction("Export...", null, 
+        GUIAction exportAction = new GUIAction("Export...", null,
 //                            new ExportCommand(dialog, ExportCommand.REGULAR));
                              new OpenExportDialogCommand(dialog));
                             exportMenu = new JMenuItem(exportAction);
         popup.add(exportMenu);
-//        GUIAction exportToZipAction = new GUIAction("Export to Zip...", null, 
+//        GUIAction exportToZipAction = new GUIAction("Export to Zip...", null,
   //                            new ExportCommand(dialog, ExportCommand.ZIP));
 //                             new OpenExportDialogCommand(dialog));
 //        exportToZipMenu = new JMenuItem(exportToZipAction);
 //        popup.add(exportToZipMenu);
       //}//if
-      
-    
+
+
       MouseListener popupListener = new PopupListener(this);
       table.addMouseListener(popupListener);
-      
+
       // Listen for mouse events to see if the user double-clicks
       table.addMouseListener(new MouseAdapter()
       {
         public void mouseClicked(MouseEvent e)
         {
-          if (2 == e.getClickCount()) 
+          if (2 == e.getClickCount())
           {
              //doOpenDataPackage();
              // Using OpenPackageCommand to open package
@@ -332,7 +332,7 @@ public class ResultPanel extends JPanel implements StoreStateChangeEvent
    * Double click to open a package
    */
   private void doDoubleClickOpen()
-  { 
+  {
     // Create a open pakcag command
     OpenPackageCommand open = new OpenPackageCommand(dialog);
     open.execute(null);
@@ -345,23 +345,23 @@ public class ResultPanel extends JPanel implements StoreStateChangeEvent
   {
     return results;
   }//getResultSet
-  
-  /** 
+
+  /**
    * Get the Jable
    */
   public SortableJTable getJTable()
   {
     return table;
   }//getJTable
-  
-  /** 
+
+  /**
    * Get the dialog from ResultPanle
    */
   public OpenDialogBox getDialog()
   {
     return dialog;
   }//getDialog
-  
+
   /**
    * Get the selectedId
    */
@@ -369,7 +369,7 @@ public class ResultPanel extends JPanel implements StoreStateChangeEvent
   {
     return selectedId;
   }
-  
+
   /**
    *  get the doctype
    */
@@ -377,7 +377,7 @@ public class ResultPanel extends JPanel implements StoreStateChangeEvent
   {
     return doctype;
   }
-  
+
   /**
    * Get the metacatLoc
    */
@@ -385,7 +385,7 @@ public class ResultPanel extends JPanel implements StoreStateChangeEvent
   {
     return metacatLoc;
   }
-  
+
   /**
    * Get the local location
    */
@@ -393,16 +393,16 @@ public class ResultPanel extends JPanel implements StoreStateChangeEvent
   {
     return localLoc;
   }
-  
+
   /**
-   * Get the package name (docid without version). This method is for 
+   * Get the package name (docid without version). This method is for
    * openPreviousVersionCommand
    */
   public String getPackageName()
   {
     return packageName;
   }
-  
+
   /**
    * Get the version number. This method is for OpenPrevisouVrsionCommand
    */
@@ -410,21 +410,34 @@ public class ResultPanel extends JPanel implements StoreStateChangeEvent
   {
     return vers;
   }
-  
+
+  /**
+   * A method to reset a vector as result, repaint table
+   * @param newResultVector Vector
+   */
+  public void resetResultsVector (Vector newResultVector)
+  {
+    results.setResultsVector(newResultVector);
+    table.setModel(results);
+    results.fireTableDataChanged();
+    table.validate();
+    table.repaint();
+    table.setVisible(true);
+  }
   /*
-   * This method picks column sizes depend on the length of talbe and the 
+   * This method picks column sizes depend on the length of talbe and the
    * value for every column in an array.
    */
-  private void initTableColumnSize(JTable table, ResultSet results, int width) 
+  private void initTableColumnSize(JTable table, ResultSet results, int width)
   {
     // width for the each column (by percentage), change the value in the
     // array, the column width will be changed
     // Add the all element in the array together you will get 1 (100%100)
-    // The value is 30/768, 282/768, 96/768, 72/768, 120/768, 90/768, 42/768, 
+    // The value is 30/768, 282/768, 96/768, 72/768, 120/768, 90/768, 42/768,
     // 36/768
-    /*double [] columnWidth = {0.0390625, 0.3671875, 0.125, 0.09375, 0.15625, 
+    /*double [] columnWidth = {0.0390625, 0.3671875, 0.125, 0.09375, 0.15625,
                             0.1171875, 0.0546875, 0.046875};*/
-     double [] columnWidth = {0.03, 0.355, 0.132, 0.1, 0.14, 
+     double [] columnWidth = {0.03, 0.355, 0.132, 0.1, 0.14,
                              0.13, 0.066, 0.047};
     // column object
     TableColumn column = null;
@@ -438,11 +451,11 @@ public class ResultPanel extends JPanel implements StoreStateChangeEvent
     int preferredSize = 0;
     // Minimum size
     int minimumSize = 0;
-    // Maxmum size 
+    // Maxmum size
     int maxmumSize = 0;
-    
-    
-    for (int i = 0; i < results.getColumnCount(); i++) 
+
+
+    for (int i = 0; i < results.getColumnCount(); i++)
     {
       // Get the column
       column = table.getColumnModel().getColumn(i);
@@ -450,7 +463,7 @@ public class ResultPanel extends JPanel implements StoreStateChangeEvent
       percentage = columnWidth[i];
       // Get the width as preferred width
       preferredSize = (new Double(width*percentage)).intValue();
-     
+
       // Get the minimum size
       minimumSize =(new Double(preferredSize*minFactor)).intValue();
       // Get the maxmum size
@@ -465,7 +478,7 @@ public class ResultPanel extends JPanel implements StoreStateChangeEvent
         minimumSize=( new Double(preferredSize*minFactor)).intValue();
         // Get the maxmum size
         maxmumSize = preferredSize*maxFactor;
-    
+
       }//if
       // Set preferred width
       column.setPreferredWidth(preferredSize);
@@ -474,12 +487,12 @@ public class ResultPanel extends JPanel implements StoreStateChangeEvent
       // Set maxmum width
       column.setMaxWidth(maxmumSize);
     }//for
-  }// initTableColumnSize 
+  }// initTableColumnSize
 
 
   /*
    * This method picks good column sizes.
-   * If all column heads are wider than the column's cells' 
+   * If all column heads are wider than the column's cells'
    * contents, then you can just use column.sizeWidthToFit().
    */
   private void initColumnSizes(JTable table, ResultSet results) {
@@ -510,7 +523,7 @@ public class ResultPanel extends JPanel implements StoreStateChangeEvent
         column.setMinWidth(cellWidth+20);
       }
     }
-  } 
+  }
 
   /**
    * Method to sort the table in result panel
@@ -537,8 +550,8 @@ public class ResultPanel extends JPanel implements StoreStateChangeEvent
       storedStateChangeEventlist.add(event);
     }
   }
-  
-    
+
+
   /**
    * Get the  stored state change event.
    */
@@ -546,7 +559,7 @@ public class ResultPanel extends JPanel implements StoreStateChangeEvent
   {
     return storedStateChangeEventlist;
   }
-  
+
   /**
    * Broadcast the stored StateChangeEvent
    */
@@ -556,13 +569,16 @@ public class ResultPanel extends JPanel implements StoreStateChangeEvent
     {
       for ( int i = 0; i< storedStateChangeEventlist.size(); i++)
       {
-        StateChangeEvent event = 
+        StateChangeEvent event =
                 (StateChangeEvent) storedStateChangeEventlist.elementAt(i);
         (StateChangeMonitor.getInstance()).notifyStateChange(event);
       }//for
     }//if
   }
-  
+
+
+
+
   class PopupListener extends MouseAdapter {
     // on the Mac, popups are triggered on mouse pressed, while mouseReleased triggers them
     // on the PC; use the trigger flag to record a trigger, but do not show popup until the
@@ -570,13 +586,13 @@ public class ResultPanel extends JPanel implements StoreStateChangeEvent
     boolean trigger = false;
     String docid = "";
     ResultPanel pane = null;
-    
+
     public PopupListener(ResultPanel panel)
     {
       pane = panel;
     }
-    
-    public void mousePressed(MouseEvent e) 
+
+    public void mousePressed(MouseEvent e)
     {
       //select the clicked row first
       table.clearSelection();
@@ -585,15 +601,15 @@ public class ResultPanel extends JPanel implements StoreStateChangeEvent
       table.setRowSelectionInterval(selrow, selrow);
       Vector resultV = results.getResultsVector();
       Vector rowV = (Vector)resultV.elementAt(selrow);
-      
+
       // If the panel need a mediator
       if (mediator != null)
       {
         // If select a row, open button will enable
         mediator.enableOpenButton();
       }
-    
-   
+
+
       docid = (String)rowV.elementAt(6);
       selectedId = docid;
       Log.debug(30, "selectedId is: "+docid);
@@ -607,58 +623,58 @@ public class ResultPanel extends JPanel implements StoreStateChangeEvent
       // Fire state change event only in morpho frame
       if (dialog == null)
       {
-      
+
         StateChangeMonitor monitor = StateChangeMonitor.getInstance();
         // select a data package event
         monitor.notifyStateChange(
-                          new StateChangeEvent( 
-                          pane, 
+                          new StateChangeEvent(
+                          pane,
                           StateChangeEvent.SEARCH_RESULT_SELECTED));
         if (localLoc ^ metacatLoc)
         {
             // unsynchronized package
             monitor.notifyStateChange(
-                      new StateChangeEvent( 
-                      pane, 
+                      new StateChangeEvent(
+                      pane,
                       StateChangeEvent.SEARCH_RESULT_SELECTED_UNSYNCHRONIZED));
         }
         else
         {
             // synchronized package
             monitor.notifyStateChange(
-                      new StateChangeEvent( 
-                      pane, 
+                      new StateChangeEvent(
+                      pane,
                       StateChangeEvent.SEARCH_RESULT_SELECTED_SYNCHRONIZED));
         }
-        
-       
+
+
         if (vers > 0)
         {
             // mutipleversion package
             monitor.notifyStateChange(
-                      new StateChangeEvent( 
-                      pane, 
+                      new StateChangeEvent(
+                      pane,
                       StateChangeEvent.SEARCH_RESULT_SELECTED_VERSIONS));
         }
         else
         {
             // one version package
             monitor.notifyStateChange(
-                      new StateChangeEvent( 
-                      pane, 
+                      new StateChangeEvent(
+                      pane,
                       StateChangeEvent.SEARCH_RESULT_SELECTED_NO_VERSIONS));
         }
-        
+
       }// if dialg == null
-      
-      
-      if (e.isPopupTrigger()) 
+
+
+      if (e.isPopupTrigger())
       {
         trigger = true;
-      }  
+      }
     }
 
-    public void mouseReleased(MouseEvent e) 
+    public void mouseReleased(MouseEvent e)
     {
       // Don't show popup in dilog
       //if (dialog == null)
@@ -667,37 +683,37 @@ public class ResultPanel extends JPanel implements StoreStateChangeEvent
       //}
     }
 
-    private void maybeShowPopup(MouseEvent e) 
+    private void maybeShowPopup(MouseEvent e)
     {
-      if(e.isPopupTrigger() || trigger) 
-      {     
+      if(e.isPopupTrigger() || trigger)
+      {
         if (vers>0) {
           openPreviousVersion.setEnabled(true);
         }
         else {
           openPreviousVersion.setEnabled(false);
         }
-        
+
         synchronizeMenu.setEnabled
                       ((localLoc && !metacatLoc)||(metacatLoc && !localLoc));
         //uploadMenu.setEnabled(localLoc && !metacatLoc);
         //downloadMenu.setEnabled(metacatLoc && !localLoc);
         // delete menu always enable
         deleteMenu.setEnabled(true);
-       
+
 	      trigger = false;
         popup.show(e.getComponent(), e.getX(), e.getY());
-        
+
       }
     }
- 
-  }	
-  
+
+  }
+
   /**
    * Given a docid, caculate the number of its previous versions
    * @param docId,  docId need to caculate previouse version
    */
-  public static int getNumberOfPrevVersions(String docId) 
+  public static int getNumberOfPrevVersions(String docId)
   {
       int prevVersions = 0;
       int iii = docId.lastIndexOf(".");
@@ -706,18 +722,18 @@ public class ResultPanel extends JPanel implements StoreStateChangeEvent
       prevVersions = prevVersions - 1;
       return prevVersions;
   }
-  
+
   /**
    * Given a docid, return the string withoutversion
    * @param docId,  docId need to be trimed version
    */
-  public static String getIdWithoutVersion(String docId) 
+  public static String getIdWithoutVersion(String docId)
   {
       int prevVersions = 0;
       int iii = docId.lastIndexOf(".");
       String ver = docId.substring(0,iii);
       return ver;
   }
-    
-  
+
+
 }

@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2004-01-07 19:32:21 $'
- * '$Revision: 1.20 $'
+ *   '$Author: tao $'
+ *     '$Date: 2004-04-12 16:19:52 $'
+ * '$Revision: 1.20.2.1 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,11 +28,14 @@ package edu.ucsb.nceas.morpho.query;
 
 import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.framework.ConfigXML;
+import edu.ucsb.nceas.morpho.framework.MorphoFrame;
+import edu.ucsb.nceas.morpho.framework.SwingWorker;
 import edu.ucsb.nceas.morpho.util.Log;
+import edu.ucsb.nceas.morpho.util.SortableJTable;
+import edu.ucsb.nceas.morpho.util.StateChangeEvent;
+import edu.ucsb.nceas.morpho.util.StateChangeMonitor;
 
-import java.awt.Dimension;
-import java.awt.event.WindowEvent;
-import java.awt.event.WindowAdapter;
+
 import java.io.IOException;
 import java.io.File;
 import java.io.FileReader;
@@ -46,9 +49,6 @@ import java.util.Properties;
 import java.util.Stack;
 import java.util.Vector;
 
-import javax.swing.JFrame;
-import javax.swing.JTable;
-import javax.swing.table.TableModel;
 
 import org.xml.sax.Attributes;
 import org.xml.sax.ContentHandler;
@@ -61,12 +61,12 @@ import org.xml.sax.helpers.XMLReaderFactory;
 import org.xml.sax.helpers.DefaultHandler;
 
 /**
- * A Class that represents a structured query, and can be 
- * constructed from an XML serialization conforming to @see pathquery.dtd. 
+ * A Class that represents a structured query, and can be
+ * constructed from an XML serialization conforming to @see pathquery.dtd.
  * The printSQL() method can be used to print a SQL serialization of the query.
  */
 public class Query extends DefaultHandler {
- 
+
   /** flag determining whether extended query terms are present */
   private boolean containsExtendedSQL=false;
   /** Identifier for this query document */
@@ -116,13 +116,13 @@ public class Query extends DefaultHandler {
   public Query(Reader queryspec, Morpho morpho)
   {
     this(morpho);
-    
+
     // Initialize temporary variables
     elementStack = new Stack();
     queryStack   = new Stack();
 
     // Initialize the parser and read the queryspec
-    XMLReader parser = Morpho.createSaxParser((ContentHandler)this, 
+    XMLReader parser = Morpho.createSaxParser((ContentHandler)this,
             (ErrorHandler)this);
 
     if (parser == null) {
@@ -134,7 +134,7 @@ public class Query extends DefaultHandler {
     } catch (IOException ioe) {
       Log.debug(4, "Error reading the query during parsing.");
     } catch (SAXException e) {
-      Log.debug(4, "Error parsing Query (" + 
+      Log.debug(4, "Error parsing Query (" +
                       e.getClass().getName() +").");
       Log.debug(4, e.getMessage());
     }
@@ -173,7 +173,7 @@ public class Query extends DefaultHandler {
   }
 
   /**
-   * Returns true if the parsed query contains and extended xml query 
+   * Returns true if the parsed query contains and extended xml query
    * (i.e. there is at least one &lt;returnfield&gt; in the pathquery document)
    */
   public boolean containsExtendedSQL()
@@ -187,123 +187,123 @@ public class Query extends DefaultHandler {
       return false;
     }
   }
-  
+
   /**
    * Accessor method to return the identifier of this Query
    */
   public String getIdentifier()
   {
-    return meta_file_id; 
+    return meta_file_id;
   }
-  
+
   /**
    * method to set the identifier of this query
    */
   public void setIdentifier(String id) {
     this.meta_file_id = id;
   }
-   
+
   /**
    * Accessor method to return the title of this Query
    */
   public String getQueryTitle()
   {
-    return queryTitle; 
+    return queryTitle;
   }
-  
+
   /**
    * method to set the title of this query
    */
-  public void setQueryTitle(String title) 
+  public void setQueryTitle(String title)
   {
     this.queryTitle = title;
   }
-   
+
   /**
    * Accessor method to return a vector of the return document types as
    * defined in the &lt;returndoctype&gt; tag in the pathquery dtd.
    */
   public Vector getReturnDocList()
   {
-    return this.returnDocList; 
+    return this.returnDocList;
   }
 
   /**
    * method to set the list of return docs of this query
    */
-  public void setReturnDocList(Vector returnDocList) 
+  public void setReturnDocList(Vector returnDocList)
   {
     this.returnDocList = returnDocList;
   }
-   
+
   /**
    * Accessor method to return a vector of the filter doc types as
    * defined in the &lt;filterdoctype&gt; tag in the pathquery dtd.
    */
   public Vector getFilterDocList()
   {
-    return this.filterDocList; 
+    return this.filterDocList;
   }
 
   /**
    * method to set the list of filter docs of this query
    */
-  public void setFilterDocList(Vector filterDocList) 
+  public void setFilterDocList(Vector filterDocList)
   {
     this.filterDocList = filterDocList;
   }
-   
+
   /**
    * Accessor method to return a vector of the extended return fields as
    * defined in the &lt;returnfield&gt; tag in the pathquery dtd.
    */
   public Vector getReturnFieldList()
   {
-    return this.returnFieldList; 
+    return this.returnFieldList;
   }
 
   /**
    * method to set the list of fields to be returned by this query
    */
-  public void setReturnFieldList(Vector returnFieldList) 
+  public void setReturnFieldList(Vector returnFieldList)
   {
     this.returnFieldList = returnFieldList;
   }
-   
+
   /**
    * Accessor method to return a vector of the owner fields as
    * defined in the &lt;owner&gt; tag in the pathquery dtd.
    */
   public Vector getOwnerList()
   {
-    return this.ownerList; 
+    return this.ownerList;
   }
 
   /**
    * method to set the list of owners used to constrain this query
    */
-  public void setOwnerList(Vector ownerList) 
+  public void setOwnerList(Vector ownerList)
   {
     this.ownerList = ownerList;
   }
-   
+
   /**
    * Accessor method to return a vector of the site fields as
    * defined in the &lt;site&gt; tag in the pathquery dtd.
    */
   public Vector getSiteList()
   {
-    return this.siteList; 
+    return this.siteList;
   }
 
   /**
    * method to set the list of sites used to constrain this query
    */
-  public void setSiteList(Vector siteList) 
+  public void setSiteList(Vector siteList)
   {
     this.siteList = siteList;
   }
-   
+
   /**
    * determine if we should search metacat
    */
@@ -311,11 +311,11 @@ public class Query extends DefaultHandler {
   {
     return searchMetacat;
   }
-   
+
   /**
    * method to set searchMetacat
    */
-  public void setSearchMetacat(boolean searchMetacat) 
+  public void setSearchMetacat(boolean searchMetacat)
   {
     this.searchMetacat = searchMetacat;
   }
@@ -327,7 +327,7 @@ public class Query extends DefaultHandler {
   {
     return searchLocal;
   }
-   
+
   /**
    * method to set searchLocal
    */
@@ -342,22 +342,22 @@ public class Query extends DefaultHandler {
   {
     return rootQG;
   }
-   
+
   /**
    * set the QueryGroup used to express query constraints
    */
-  public void setQueryGroup(QueryGroup qg) 
+  public void setQueryGroup(QueryGroup qg)
   {
     this.rootQG = qg;
   }
 
   /**
-   * callback method used by the SAX Parser when the start tag of an 
+   * callback method used by the SAX Parser when the start tag of an
    * element is detected. Used in this context to parse and store
    * the query information in class variables.
    */
-  public void startElement (String uri, String localName, 
-                            String qName, Attributes atts) 
+  public void startElement (String uri, String localName,
+                            String qName, Attributes atts)
          throws SAXException {
     BasicNode currentNode = new BasicNode(localName);
     // add attributes to BasicNode here
@@ -368,7 +368,7 @@ public class Query extends DefaultHandler {
       }
     }
 
-    elementStack.push(currentNode); 
+    elementStack.push(currentNode);
     if (currentNode.getTagName().equals("querygroup")) {
       QueryGroup currentGroup = new QueryGroup(
                                 currentNode.getAttribute("operator"));
@@ -384,13 +384,13 @@ public class Query extends DefaultHandler {
   }
 
   /**
-   * callback method used by the SAX Parser when the end tag of an 
+   * callback method used by the SAX Parser when the end tag of an
    * element is detected. Used in this context to parse and store
    * the query information in class variables.
    */
   public void endElement (String uri, String localName,
                           String qName) throws SAXException {
-    BasicNode leaving = (BasicNode)elementStack.pop(); 
+    BasicNode leaving = (BasicNode)elementStack.pop();
     if (leaving.getTagName().equals("queryterm")) {
       boolean isCaseSensitive = (new Boolean(
               leaving.getAttribute("casesensitive"))).booleanValue();
@@ -413,14 +413,14 @@ public class Query extends DefaultHandler {
   }
 
   /**
-   * callback method used by the SAX Parser when the text sequences of an 
+   * callback method used by the SAX Parser when the text sequences of an
    * xml stream are detected. Used in this context to parse and store
    * the query information in class variables.
    */
   public void characters(char ch[], int start, int length) {
 
     String inputString = new String(ch, start, length);
-    BasicNode currentNode = (BasicNode)elementStack.peek(); 
+    BasicNode currentNode = (BasicNode)elementStack.peek();
     String currentTag = currentNode.getTagName();
     if (currentTag.equals("meta_file_id")) {
       meta_file_id = inputString;
@@ -459,38 +459,38 @@ public class Query extends DefaultHandler {
     self.append(rootQG.printSQL(useXMLIndex));
 
     self.append(") ");
- 
+
     // Add SQL to filter for doctypes requested in the query
     // This is an implicit OR for the list of doctypes
     if (!filterDocList.isEmpty()) {
       boolean firstdoctype = true;
-      self.append(" AND ("); 
+      self.append(" AND (");
       Enumeration en = filterDocList.elements();
       while (en.hasMoreElements()) {
         String currentDoctype = (String)en.nextElement();
         if (firstdoctype) {
            firstdoctype = false;
-           self.append(" doctype = '" + currentDoctype + "'"); 
+           self.append(" doctype = '" + currentDoctype + "'");
         } else {
-          self.append(" OR doctype = '" + currentDoctype + "'"); 
+          self.append(" OR doctype = '" + currentDoctype + "'");
         }
       }
       self.append(") ");
     }
-    
+
     // Add SQL to filter for owners requested in the query
     // This is an implicit OR for the list of owners
     if (!ownerList.isEmpty()) {
       boolean first = true;
-      self.append(" AND ("); 
+      self.append(" AND (");
       Enumeration en = ownerList.elements();
       while (en.hasMoreElements()) {
         String current = (String)en.nextElement();
         if (first) {
            first = false;
-           self.append(" user_owner = '" + current + "'"); 
+           self.append(" user_owner = '" + current + "'");
         } else {
-          self.append(" OR user_owner = '" + current + "'"); 
+          self.append(" OR user_owner = '" + current + "'");
         }
       }
       self.append(") ");
@@ -500,17 +500,17 @@ public class Query extends DefaultHandler {
     // This is an implicit OR for the list of sites
     if (!siteList.isEmpty()) {
       boolean first = true;
-      self.append(" AND ("); 
+      self.append(" AND (");
       Enumeration en = siteList.elements();
       while (en.hasMoreElements()) {
         String current = (String)en.nextElement();
         if (first) {
            first = false;
            self.append(" SUBSTR(docid, 1, INSTR(docid, '" +
-               accNumberSeparator + "')-1) = '" + current + "'"); 
+               accNumberSeparator + "')-1) = '" + current + "'");
         } else {
           self.append(" OR SUBSTR(docid, 1, INSTR(docid, '" +
-               accNumberSeparator + "')-1) = '" + current + "'"); 
+               accNumberSeparator + "')-1) = '" + current + "'");
         }
       }
       self.append(") ");
@@ -528,13 +528,13 @@ public class Query extends DefaultHandler {
     self.append("<pathquery version=\"1.2\">\n");
 
     // The identifier
-    if (meta_file_id != null) { 
-      self.append("  <meta_file_id>"+meta_file_id+"</meta_file_id>\n"); 
+    if (meta_file_id != null) {
+      self.append("  <meta_file_id>"+meta_file_id+"</meta_file_id>\n");
     }
 
     // The query title
-    if (queryTitle != null) { 
-      self.append("  <querytitle>"+queryTitle+"</querytitle>\n"); 
+    if (queryTitle != null) {
+      self.append("  <querytitle>"+queryTitle+"</querytitle>\n");
     }
 
     // Add XML for the return doctype list
@@ -542,34 +542,34 @@ public class Query extends DefaultHandler {
       Enumeration en = returnDocList.elements();
       while (en.hasMoreElements()) {
         String currentDoctype = (String)en.nextElement();
-        self.append("  <returndoctype>"+currentDoctype+"</returndoctype>\n"); 
+        self.append("  <returndoctype>"+currentDoctype+"</returndoctype>\n");
       }
     }
-    
+
     // Add XML for the filter doctype list
     if (!filterDocList.isEmpty()) {
       Enumeration en = filterDocList.elements();
       while (en.hasMoreElements()) {
         String currentDoctype = (String)en.nextElement();
-        self.append("  <filterdoctype>"+currentDoctype+"</filterdoctype>\n"); 
+        self.append("  <filterdoctype>"+currentDoctype+"</filterdoctype>\n");
       }
     }
-    
+
     // Add XML for the return field list
     if (!returnFieldList.isEmpty()) {
       Enumeration en = returnFieldList.elements();
       while (en.hasMoreElements()) {
         String current = (String)en.nextElement();
-        self.append("  <returnfield>"+current+"</returnfield>\n"); 
+        self.append("  <returnfield>"+current+"</returnfield>\n");
       }
     }
-    
+
     // Add XML for the owner list
     if (!ownerList.isEmpty()) {
       Enumeration en = ownerList.elements();
       while (en.hasMoreElements()) {
         String current = (String)en.nextElement();
-        self.append("  <owner>"+current+"</owner>\n"); 
+        self.append("  <owner>"+current+"</owner>\n");
       }
     }
 
@@ -578,27 +578,27 @@ public class Query extends DefaultHandler {
       Enumeration en = siteList.elements();
       while (en.hasMoreElements()) {
         String current = (String)en.nextElement();
-        self.append("  <site>"+current+"</site>\n"); 
+        self.append("  <site>"+current+"</site>\n");
       }
     }
 
     // Print the QueryGroup XML
     self.append(rootQG.toXml(2));
- 
+
     // End the query
     self.append("</pathquery>\n");
- 
+
     return self.toString();
   }
-  
+
   /**
    * This method prints sql based upon the &lt;returnfield&gt; tag in the
-   * pathquery document.  This allows for customization of the 
+   * pathquery document.  This allows for customization of the
    * returned fields
    * @param doclist the list of document ids to search by
    */
   public String printExtendedSQL(String doclist)
-  {  
+  {
     StringBuffer self = new StringBuffer();
     self.append("select xml_nodes.docid, xml_index.path, xml_nodes.nodedata ");
     self.append("from xml_index, xml_nodes where xml_index.nodeid=");
@@ -629,7 +629,7 @@ public class Query extends DefaultHandler {
 
     return self.toString();
   }
-  
+
   public static String printRelationSQL(String docid)
   {
     StringBuffer self = new StringBuffer();
@@ -638,7 +638,7 @@ public class Query extends DefaultHandler {
     self.append("where subject like '").append(docid).append("'");
     return self.toString();
   }
-   
+
   /**
    * Prints sql that returns all relations in the database.
    */
@@ -663,7 +663,7 @@ public class Query extends DefaultHandler {
     //self.append("%'");
     return self.toString();
   }
-  
+
   /**
    * Prints sql that returns all relations in the database that were input
    * under a specific docid
@@ -686,14 +686,14 @@ public class Query extends DefaultHandler {
     self.append("and y.parentnodeid in o.nodeid ");
     self.append("and z.parentnodeid in s.nodeid ");
     self.append("and z.docid like '").append(docid).append("'");
-    
+
     return self.toString();
   }
-  
+
   /**
    * Returns all of the relations that has a certain docid in the subject
    * or the object.
-   * 
+   *
    * @param docid the docid to search for
    */
   public static String printPackageSQL(String subDocidURL, String objDocidURL)
@@ -719,7 +719,7 @@ public class Query extends DefaultHandler {
     self.append("')");
     return self.toString();
   }
-  
+
   public static String printGetDocByDoctypeSQL(String docid)
   {
     StringBuffer self = new StringBuffer();
@@ -730,7 +730,7 @@ public class Query extends DefaultHandler {
     self.append(docid).append(")");
     return self.toString();
   }
-  
+
   /**
    * create a String description of the query that this instance represents.
    * This should become a way to get the XML serialization of the query.
@@ -786,9 +786,9 @@ public class Query extends DefaultHandler {
 
 
 // write the query result xml to a file for debugging
-// remove the '/*' to enable      
+// remove the '/*' to enable
 // take a look at the result
-/* 
+/*
       try{
         InputStreamReader isr = new InputStreamReader(queryMetacat());
         File resfile = new File("resultFile");
@@ -806,9 +806,10 @@ public class Query extends DefaultHandler {
       }
 // end looking at result
 */
-      
-      metacatResults = new HeadResultSet(this, "metacat", 
+
+      metacatResults = new HeadResultSet(this, "metacat",
                                      queryMetacat(), morpho);
+
     }
 
     Log.debug(30, "(2.5) Executing result set...");
@@ -825,7 +826,7 @@ public class Query extends DefaultHandler {
       results = metacatResults;
     } else if (!searchMetacat) {
       results = localResults;
-    } else {  
+    } else {
       // must merge results
       metacatResults.merge(localResults);
       results = metacatResults;
@@ -833,6 +834,94 @@ public class Query extends DefaultHandler {
     // return the merged results
     return results;
   }
+
+  /**
+ * This method will run the query and display the query results streamly in
+ * a given panel
+ * @param frame MorphoFrame   the frame which the rsult pane will be display
+ */
+ public void displaySearchResult(MorphoFrame frame, ResultPanel resultPanle)
+ {
+
+   // query local first, it is faster
+   ResultSet localResults = null;
+   // if appropriate, query metacat
+   ResultSet metacatResults = null;
+
+   if (!searchLocal)
+   {
+     Log.debug(30, "(3) Executing metacat query...");
+     doMetacatSearchDisplay(frame, resultPanle, morpho);
+
+   }
+   else if (!searchMetacat)
+   {
+     Log.debug(30, "(2) Executing local query...");
+
+
+   }//else if
+   else
+  {
+    Log.debug(30, "(2) Executing both local and metacat query...");
+
+   }//else
+
+ }//excute
+
+ /*
+  * Method to display the metacat search result
+ */
+ private void doMetacatSearchDisplay(final MorphoFrame resultWindow,
+                                            final ResultPanel resultDisplayPanel,
+                                            final Morpho morpho)
+ {
+   final SwingWorker worker = new SwingWorker()
+   {
+        public Object construct()
+       {
+         resultWindow.setBusy(true);
+         SynchronizeVector dataVector = new SynchronizeVector();
+         String source = "metacat";
+         // parsing result set
+         ResultsetHandler handler = new ResultsetHandler(queryMetacat(),
+                                            dataVector,  morpho, source);
+         // start another thread for parser
+         Thread parserThread = new Thread(handler);
+         parserThread.start();
+
+         Vector allResults = new Vector();
+         // if the parsing is not finished, get the synchronzied vector
+         while (!handler.isDone())
+         {
+           Vector partResult = dataVector.getVector();
+           // add partReulst inot all Result
+           for ( int i=0; i < partResult.size(); i++)
+           {
+             allResults.add(partResult.elementAt(i));
+           }
+           resultDisplayPanel.resetResultsVector(allResults);
+         }
+         resultDisplayPanel.sortTable(5, SortableJTable.DECENDING);
+         StateChangeMonitor.getInstance().notifyStateChange(
+                         new StateChangeEvent(
+                                 resultDisplayPanel,
+                                 StateChangeEvent.CREATE_SEARCH_RESULT_FRAME));
+         return null;
+       }
+
+       //Runs on the event-dispatching thread.
+       public void finished()
+       {
+         resultWindow.setMessage(resultDisplayPanel.getResultSet().getRowCount()
+                                 + " data sets found");
+         resultWindow.setBusy(false);
+
+       }
+   };
+   worker.start();  //required for SwingWorker 3
+
+ }
+
 
   /**
    * Save an XML serialized version of the query in the profile directory
@@ -845,7 +934,7 @@ public class Query extends DefaultHandler {
                             File.separator +
                             profile.get("profilename", 0) +
                             File.separator +
-                            profile.get("queriesdir", 0); 
+                            profile.get("queriesdir", 0);
     File queriesDir = new File(queriesDirName);
     if (!queriesDir.exists()) {
       queriesDir.mkdirs();
@@ -872,7 +961,7 @@ public class Query extends DefaultHandler {
   }
 
   /** Main routine for testing */
-  static public void main(String[] args) 
+  static public void main(String[] args)
   {
      if (args.length < 1) {
        Log.debug(1, "Wrong number of arguments!!!");
@@ -890,7 +979,7 @@ public class Query extends DefaultHandler {
        try {
          Morpho morpho = new Morpho(new ConfigXML("lib/config.xml"));
          FileReader xml = new FileReader(new File(xmlfile));
-         
+
          Query qspec = new Query(xml, morpho);
          Log.debug(9, qspec.toXml());
 /*

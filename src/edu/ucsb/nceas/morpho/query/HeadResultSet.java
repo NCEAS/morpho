@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2004-04-06 23:25:32 $'
- * '$Revision: 1.10 $'
+ *     '$Date: 2004-04-12 16:19:52 $'
+ * '$Revision: 1.10.2.1 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -100,6 +100,7 @@ public class HeadResultSet extends ResultSet
    */
   public Object getValueAt(int row, int col)
   {
+    System.out.println("in get value in headresultset");
     Object value = null;
     try {
       Vector rowVector = (Vector)headResultsVector.elementAt(row);
@@ -188,6 +189,7 @@ public class HeadResultSet extends ResultSet
     int numHeaders = getColumnCount();
     Hashtable maxRevHash = new Hashtable();
     Hashtable maxRevRow = new Hashtable();
+
     for (int i=0; i<resultsVector.size(); i++) {
       // Get the row, and its docid, parse out the rev #
       Vector rowVector = null;
@@ -198,6 +200,7 @@ public class HeadResultSet extends ResultSet
       Integer maxRev = null;
       try
       {
+
         rowVector = (Vector)resultsVector.elementAt(i);
         docid = (String)rowVector.elementAt(DOCIDINDEX);
         family = docid.substring(0, docid.lastIndexOf("."));

@@ -5,9 +5,9 @@
  *    Authors: @tao@
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2003-12-24 00:29:11 $'
- * '$Revision: 1.17 $'
+ *   '$Author: tao $'
+ *     '$Date: 2004-04-12 16:19:52 $'
+ * '$Revision: 1.17.2.1 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -35,6 +35,7 @@ import edu.ucsb.nceas.morpho.util.SortableJTable;
 import edu.ucsb.nceas.morpho.util.StateChangeEvent;
 import edu.ucsb.nceas.morpho.util.StateChangeMonitor;
 
+import java.util.Vector;
 import java.awt.event.ActionEvent;
 
 /**
@@ -96,7 +97,14 @@ public class SearchCommand implements Command
           MorphoFrame resultWindow = UIController.getInstance().addWindow(
                 query.getQueryTitle());
           resultWindow.setVisible(true);
-          doQuery(resultWindow, query);
+          Vector vector = new Vector();
+          String source ="";
+          HeadResultSet results = new HeadResultSet(query, source, vector, morpho);
+          ResultPanel resultDisplayPanel = new ResultPanel(
+          null,results, 12, null, resultWindow.getDefaultContentAreaSize());
+          resultDisplayPanel.setVisible(true);
+          resultWindow.setMainContentPane(resultDisplayPanel);
+          query.displaySearchResult(resultWindow, resultDisplayPanel);
         }//if
       }//if
     }//if
