@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2001-04-25 17:52:39 $'
- * '$Revision: 1.1.2.2 $'
+ *     '$Date: 2001-04-25 18:54:32 $'
+ * '$Revision: 1.1.2.3 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -421,6 +421,7 @@ public class ConfigXML
     catch(Exception e)
     {
     }
+    out.println("<?xml version=\"1.0\"?>");
     print(nd);
     out.close();
   }
