@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: cjones $'
- *     '$Date: 2002-09-26 01:57:53 $'
- * '$Revision: 1.89 $'
+ *   '$Author: jones $'
+ *     '$Date: 2002-09-26 05:34:39 $'
+ * '$Revision: 1.90 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -56,20 +56,12 @@ public class QueryPlugin implements PluginInterface, ConnectionListener,
   /** The configuration options object reference from the morpho */
   private ConfigXML config = null;
 
-  /** Store our menus and toolbars */
-  private Action[] menuActions = null;
-  private Action[] toolbarActions = null;
-  private Action[] fileMenuActions = null;
-
   /** Query used to find data owned by the user */
   private Query ownerQuery = null;
 
   /** Tabbed panel that displays the data owned by the user */
   private ResultPanel ownerPanel = null;
   
-  /** The number of actions in search menu, exclude saved queries */
-  public static final int NUMBEROFACTIONINSEARCH = 4;
-
   /**
    * Construct the query plugin.  Initialize our one tab for the 
    * plugin plus any menus and toolbars.
@@ -93,13 +85,6 @@ public class QueryPlugin implements PluginInterface, ConnectionListener,
    
     // Create the menus and toolbar actions, will register later
     initializeActions(); 
-    // Add the menus and toolbars
-    // Add open action in file menu
-    UIController controller = UIController.getInstance();
-    controller.addMenu("File", new Integer(1),fileMenuActions);
-    // Add search menu
-    controller.addMenu("Search", new Integer(3), menuActions);
-    controller.addToolbarActions(toolbarActions);
 
     // Register Services
     try
@@ -120,9 +105,8 @@ public class QueryPlugin implements PluginInterface, ConnectionListener,
   /**
    * Set up the actions for menus and toolbars
    */
-  private void initializeActions() {
-    // Set up the search menus for the application
-    menuActions = new Action[NUMBEROFACTIONINSEARCH];
+  private void initializeActions() 
+  {
 
     UIController controller = UIController.getInstance();
 
@@ -174,14 +158,7 @@ public class QueryPlugin implements PluginInterface, ConnectionListener,
     reviseSearchItemAction.setMenu("Search", 3);
     reviseSearchItemAction.setToolbarPosition(5);
     controller.addGuiAction(reviseSearchItemAction);
-    controller.removeGuiAction(reviseSearchItemAction);
 
-    // Put actions into array which will be added into search menu
-    menuActions[0] = searchItemAction;
-    menuActions[1] = refreshItemAction;
-    menuActions[2] = saveQueryItemAction;
-    menuActions[3] = reviseSearchItemAction;
-    
     // Load user saved the query to search menu too
     saveCommand.loadSavedQueries();
     
@@ -230,26 +207,11 @@ public class QueryPlugin implements PluginInterface, ConnectionListener,
                              new ExportCommand(null, ExportCommand.ZIP));
     exportZipAction.setMenuItemPosition(11);
     exportZipAction.setToolTipText("Export data package into zip file...");
-    exportZipAction.setSeparatorPosition(Morpho.SEPARATOR_FOLLOWING);
+    //exportZipAction.setSeparatorPosition(Morpho.SEPARATOR_FOLLOWING);
     exportZipAction.setMenu("File", 1);
     //exportZipAction.setToolbarPosition(1);
     controller.addGuiAction(exportZipAction);
     
-     // Set up the toolbar for the application
-    toolbarActions = new Action[5];
-    toolbarActions[0] = openDialogBoxAction;
-    toolbarActions[1] = searchItemAction;
-    toolbarActions[2] = refreshItemAction;
-    toolbarActions[3] = saveQueryItemAction;
-    toolbarActions[4] = reviseSearchItemAction;
-    
-    //Set up action for file menu
-    fileMenuActions = new Action[5];
-    fileMenuActions[0] = openDialogBoxAction;
-    fileMenuActions[1] = synchronizeAction;
-    fileMenuActions[2] = deleteDialogAction;
-    fileMenuActions[3] = exportAction;
-    fileMenuActions[4] = exportZipAction;
   }
 
   /**

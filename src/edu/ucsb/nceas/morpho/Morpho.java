@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: cjones $'
- *     '$Date: 2002-09-26 01:57:53 $'
- * '$Revision: 1.12 $'
+ *   '$Author: jones $'
+ *     '$Date: 2002-09-26 05:34:38 $'
+ * '$Revision: 1.13 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1100,7 +1100,7 @@ public class Morpho
                 KeyStroke.getKeyStroke("control Q"));
         exitItemAction.setToolTipText("Exit Morpho");
         exitItemAction.setSeparatorPosition(SEPARATOR_PRECEDING);
-        exitItemAction.putValue("menuPosition", new Integer(-1));
+        exitItemAction.putValue("menuPosition", new Integer(20));
         exitItemAction.setMenu("File", 0);
         controller.addGuiAction(exitItemAction);
 

@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: cjones $'
- *     '$Date: 2002-09-26 01:57:53 $'
- * '$Revision: 1.31 $'
+ *   '$Author: jones $'
+ *     '$Date: 2002-09-26 05:34:38 $'
+ * '$Revision: 1.32 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -67,11 +67,6 @@ public class DataPackagePlugin
   /** The configuration options object reference from the framework */
   private ConfigXML config = null;
 
-  /** Store our menus and toolbars */
-  private Action[] menuActions = null;
-  private Action[] dataMenuActions = null;
-  private Action[] toolbarActions = null;
-
   /**
    * Construct the plugin.  Initialize our menus and toolbars.
    */
@@ -104,12 +99,6 @@ public class DataPackagePlugin
     this.config = morpho.getConfiguration();
     loadConfigurationParameters();
 
-    // Add menus, and toolbars
-    UIController controller = UIController.getInstance();
-    controller.addMenu("File", new Integer(1), menuActions);
-    controller.addMenu("Data", new Integer(4), dataMenuActions);
-    controller.addToolbarActions(toolbarActions);
-
     // Register Services
     try 
     {
@@ -131,7 +120,6 @@ public class DataPackagePlugin
    */
   private void initializeActions() 
   {
-    dataMenuActions = new Action[10];
     GUIAction addDocumentation = new 
                                   GUIAction("Add Documentation...", null, null);
     GUIAction createNewDatatable = new GUIAction("Create New Datatable...", null, null);
@@ -154,18 +142,7 @@ public class DataPackagePlugin
     deleteColumn.setEnabled(false);
     editColumnMetadata.setEnabled(false);
     
-    dataMenuActions[0] = addDocumentation;
-    dataMenuActions[1] = createNewDatatable;
-    dataMenuActions[2] = sortBySelectedColumn;
-    dataMenuActions[3] = insertRowAfter;
-    dataMenuActions[4] = insertRowBefore;
-    dataMenuActions[5] = deleteRow;
-    dataMenuActions[6] = insertColumnBefore;
-    dataMenuActions[7] = insertColumnAfter;
-    dataMenuActions[8] = deleteColumn;
-    dataMenuActions[9] = editColumnMetadata;
     // Set up the menus for the application
-    menuActions = new Action[1];
     Action newItemAction = new AbstractAction("New Data Package") 
     {
       public void actionPerformed(ActionEvent e) 
@@ -194,11 +171,9 @@ public class DataPackagePlugin
            getResource("/toolbarButtonGraphics/general/New16.gif")));
     newItemAction.putValue(Action.SHORT_DESCRIPTION, "New data package");
     newItemAction.putValue("menuPosition", new Integer(0));
-    menuActions[0] = newItemAction;
+    // MBJ remeber to add the newItemAction to the toolbar when this is
+    // converted into a GUIAction
 
-    // Set up the toolbar for the application
-    toolbarActions = new Action[1];
-    toolbarActions[0] = newItemAction;
   }
 
   /**

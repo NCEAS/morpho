@@ -5,9 +5,9 @@
  *    Authors: @tao@
  *    Release: @release@
  *
- *   '$Author: cjones $'
- *     '$Date: 2002-09-26 01:57:53 $'
- * '$Revision: 1.7 $'
+ *   '$Author: jones $'
+ *     '$Date: 2002-09-26 05:34:39 $'
+ * '$Revision: 1.8 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -44,6 +44,7 @@ import java.io.IOException;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileNotFoundException;
+import java.util.Enumeration;
 import java.util.Hashtable;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
@@ -138,7 +139,7 @@ public class SaveQueryCommand implements Command
     }//if
   }//execute
 
-    /**
+  /**
    * Add a new menu item to the Search menu for the query
    *
    * @param query the query to be added to the Search menu
@@ -154,17 +155,15 @@ public class SaveQueryCommand implements Command
     // if the menu item doesn't already exist, which is determined
     // by seeing if the query identifier is in the static list of queries
     if (! savedQueriesList.containsKey(query.getIdentifier())) {
-      Action[] menuActions = new Action[1];
       // Create a RunSaveQueryCommand
       RunSavedQueryCommand command = new RunSavedQueryCommand(query);
       // Create a GUIAction to run saved query
       GUIAction savedSearchItemAction = 
                 new GUIAction(query.getQueryTitle(), null,command);
-     
+      savedSearchItemAction.setMenu("Search", 3);  
+      savedSearchItemAction.setMenuItemPosition(-1);  
       savedSearchItemAction.setToolTipText("Execute saved search");
-      menuActions[0] = savedSearchItemAction;
-      UIController.getInstance().
-                              addMenu("Search", new Integer(-1), menuActions);
+      UIController.getInstance().addGuiAction(savedSearchItemAction);
       savedQueriesList.put(query.getIdentifier(), savedSearchItemAction);
     } else {
       // The menu already exists, so update its title and query object
@@ -209,16 +208,11 @@ public class SaveQueryCommand implements Command
     // Make sure the list is empty (because this may be called when the
     // profile is being switched)
     if (!savedQueriesList.isEmpty()) {
-      // QueryPlugin.NUMBEROFACTIONINSEARCH is exclude the saved quries in 
-      // search menu. So the total number in search menu is saved queris size
-      // plus QueryPlugin.NUMBEROFACTIONINSEARCH(search, refresh ...)
-      int numOfItemInSearch =
-                savedQueriesList.size()+QueryPlugin.NUMBEROFACTIONINSEARCH;
-      
-      for(int i=numOfItemInSearch-1;i>QueryPlugin.NUMBEROFACTIONINSEARCH-1; i--) 
-      {
-        // Clear the search menu too 
-        UIController.getInstance().removeMenuItem("Search", i);
+      UIController controller = UIController.getInstance();
+      Enumeration queryActions = savedQueriesList.elements();
+      while (queryActions.hasMoreElements()) {
+          GUIAction action = (GUIAction)queryActions.nextElement();
+          controller.removeGuiAction(action);
       }
       savedQueriesList = new Hashtable();
     }
@@ -235,7 +229,6 @@ public class SaveQueryCommand implements Command
    
     File queriesDir = new File(queriesDirName);
     if (queriesDir.exists()) {
-//DFH      File[] queriesList = queriesDir.listFiles();
       File[] queriesList = listFiles(queriesDir);
       for (int n=0; n < queriesList.length; n++) {
         File queryFile = queriesList[n];

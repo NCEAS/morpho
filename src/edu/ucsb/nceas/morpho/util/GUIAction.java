@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: cjones $'
- *     '$Date: 2002-09-26 01:57:54 $'
- * '$Revision: 1.10 $'
+ *   '$Author: jones $'
+ *     '$Date: 2002-09-26 05:34:39 $'
+ * '$Revision: 1.11 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -56,6 +56,7 @@ public class GUIAction extends AbstractAction implements StateChangeListener
      */
     public GUIAction ( String name, Icon icon, Command cmd ) {
         super(name, icon);
+        Log.debug(50, "Creating GUIAction: " + name + " " + this.toString());
         defaultIcon = icon;
         command=cmd;
         menuPosition = -1;

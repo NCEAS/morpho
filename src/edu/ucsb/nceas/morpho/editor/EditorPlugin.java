@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2002-08-19 21:55:42 $'
- * '$Revision: 1.23 $'
+ *     '$Date: 2002-09-26 05:34:38 $'
+ * '$Revision: 1.24 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -54,10 +54,6 @@ public class EditorPlugin implements PluginInterface, ServiceProvider, EditorInt
 
   /** The configuration options object reference from the framework */
   private ConfigXML config = null;
-
-  /** Store our menus and toolbars */
-  private Action[] menuActions = null;
-  private Action[] toolbarActions = null;
 
   private Vector editingCompleteRegistry = null;
   
@@ -106,9 +102,6 @@ public class EditorPlugin implements PluginInterface, ServiceProvider, EditorInt
     this.config = morpho.getConfiguration();
     loadConfigurationParameters();
 
-    // Add the menus and toolbars
-    UIController.getInstance().addToolbarActions(toolbarActions);
-
     editingCompleteRegistry = new Vector();
 
     // Register Services
@@ -131,7 +124,7 @@ public class EditorPlugin implements PluginInterface, ServiceProvider, EditorInt
    */
   private void initializeActions() {
     // Set up the menus for the application
-    menuActions = new Action[1];
+    // MBJ not complete yet -- need to convert to GUIAction
     Action openItemAction = new AbstractAction("Open Editor") {
       public void actionPerformed(ActionEvent e) {
 //        EditorController editframe = new EditorController(framework,"Editor Controller");
@@ -144,7 +137,6 @@ public class EditorPlugin implements PluginInterface, ServiceProvider, EditorInt
            getResource("/toolbarButtonGraphics/general/Edit16.gif")));
     openItemAction.putValue(Action.SHORT_DESCRIPTION, "Open Editor");
     openItemAction.putValue("menuPosition", new Integer(0));
-    menuActions[0] = openItemAction;
   }
  
   /**

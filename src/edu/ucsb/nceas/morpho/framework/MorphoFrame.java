@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: cjones $'
- *     '$Date: 2002-09-26 01:57:53 $'
- * '$Revision: 1.8 $'
+ *   '$Author: jones $'
+ *     '$Date: 2002-09-26 05:34:38 $'
+ * '$Revision: 1.9 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -40,6 +40,9 @@ import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.Enumeration;
+import java.util.Iterator;
+import java.util.TreeMap;
 import java.util.Vector;
 import javax.swing.Action;
 import javax.swing.Box;
@@ -67,7 +70,9 @@ import javax.swing.KeyStroke;
 public class MorphoFrame extends JFrame
 {
     private JMenuBar menuBar;
-    private Vector orderedMenuList;
+    private TreeMap menuList;
+    private TreeMap menuActions;
+    private TreeMap toolbarActions;
     private JToolBar morphoToolbar;
     private StatusBar statusBar;
     private ProgressIndicator indicator;
@@ -113,11 +118,13 @@ public class MorphoFrame extends JFrame
         layeredPane.add(indicator, JLayeredPane.DEFAULT_LAYER);
 
         // Set up the menu bar
-        orderedMenuList = new Vector();
+        menuList = new TreeMap();
+	menuActions = new TreeMap();
         menuBar = new JMenuBar();
         setMenuBar(menuBar);
 
         // Set up the toolbar
+        toolbarActions = new TreeMap();
         int indicatorHeight = (int)indicator.getSize().getHeight();
         int menuHeight = getMenuHeight();
         int toolbarHeight = indicatorHeight - menuHeight;
@@ -163,17 +170,6 @@ public class MorphoFrame extends JFrame
         pack();
         instance = this;
     }
-    
-    private int getMenuHeight() {
-        if (menuBarHeight <= 0) {
-            JMenuBar testBar = new JMenuBar();
-            JMenu testMenu = new JMenu("Test");
-            testBar.add(testMenu);
-            menuBarHeight = (int)testBar.getPreferredSize().getHeight();
-        }
-        return menuBarHeight;
-    }    
-    
     
     /**
      * Create a new instance and set its default size
@@ -229,6 +225,10 @@ public class MorphoFrame extends JFrame
     /**
      * Add a GUIAction to the menu and toolbar for this frame. 
      * If the menu already exists, the actions are added to it.
+     * Each time an action is added, it is stored in the appropriate
+     * menu and toolbar lists (menuList, menuActions, toolbarActions)
+     * in the proper order and then the menus and toolbars are rebuilt
+     * from these data structures.
      *
      * @param action the action to be added to the menus and toolbar
      */
@@ -237,10 +237,13 @@ public class MorphoFrame extends JFrame
         String menuName = action.getMenuName();
         int menuPosition = action.getMenuPosition();
         JMenu currentMenu = null;
+        Integer currentPosition = null;
         boolean menuExists = false;
         // Check if a menu already exists
-        for (int i=0; i<orderedMenuList.size(); i++) {
-            currentMenu = (JMenu)orderedMenuList.elementAt(i);
+        Iterator menuPositions = menuList.keySet().iterator();
+        while (menuPositions.hasNext()) {
+            currentPosition = (Integer)menuPositions.next();
+            currentMenu = (JMenu)menuList.get(currentPosition);
             if (currentMenu != null ) {
                 String currentMenuName = currentMenu.getText();
                 if (currentMenuName.equals(menuName)) {
@@ -253,70 +256,51 @@ public class MorphoFrame extends JFrame
         // If not, add a new menu with that name in the right position
         if (!menuExists) {
             currentMenu = new JMenu(menuName);
-            if (menuPosition > orderedMenuList.size()) {
-                menuPosition = orderedMenuList.size();
-            }
-            orderedMenuList.insertElementAt(currentMenu, menuPosition);
+            menuList.put(new Integer(menuPosition), currentMenu);
+            TreeMap actionList = new TreeMap();
+            menuActions.put(menuName, actionList);
             // Rebuild a new menu bar
             JMenuBar newBar = new JMenuBar();
-            for (int i=0; i<orderedMenuList.size(); i++) {
-                JMenu menu = (JMenu)orderedMenuList.elementAt(i);
+            Iterator menuPositionList = menuList.keySet().iterator();
+            while (menuPositionList.hasNext()) {
+                Integer position = (Integer)menuPositionList.next();
+                JMenu menu = (JMenu)menuList.get(position);
                 newBar.add(menu);
             }
             setMenuBar(newBar);
         }
         
-        // add the action to the menu in which it belongs
+        // add the action to the list in which it belongs
         int menuPos = action.getMenuItemPosition();
-        JMenuItem currentItem = null;
-        String hasDefaultSep = action.getSeparatorPosition();
-        if (menuPos >= 0) {
-            // Insert menus at the specified position
-            int menuCount = currentMenu.getItemCount();
-            if (menuPos > menuCount) {
-                menuPos = menuCount;
-            }
-            if (hasDefaultSep != null &&
-                hasDefaultSep.equals(UIController.SEPARATOR_PRECEDING)) {
-                currentMenu.insertSeparator(menuPos++);
-            }
-            // MBJ not completed yet -- menu item order not working
-            currentItem = currentMenu.insert(action, menuPos);
-            currentItem.setAccelerator(
-                    (KeyStroke)action.getValue(Action.ACCELERATOR_KEY));
-            if (hasDefaultSep != null &&
-                hasDefaultSep.equals(UIController.SEPARATOR_FOLLOWING)) {
-                menuPos++;
-                currentMenu.insertSeparator(menuPos);
-            }
+        Integer menuPosInteger = new Integer(menuPos);
+        TreeMap actionList = (TreeMap)menuActions.get(menuName);
+        Vector actionVector = null;
+        if (actionList.containsKey(menuPosInteger)) {
+            actionVector = (Vector)actionList.get(menuPosInteger);
         } else {
-            // Append everything else at the bottom of the menu
-            if (hasDefaultSep != null &&
-                hasDefaultSep.equals(UIController.SEPARATOR_PRECEDING)) {
-                currentMenu.addSeparator();
-            }
-            currentItem = currentMenu.add(action);
-            currentItem.setAccelerator(
-                (KeyStroke)action.getValue(Action.ACCELERATOR_KEY));
-            if (hasDefaultSep != null &&
-                hasDefaultSep.equals(UIController.SEPARATOR_FOLLOWING)) {
-                currentMenu.addSeparator();
-            }
+            actionVector = new Vector();
+            actionList.put(menuPosInteger, actionVector);
         }
+        actionVector.add(action);
+        rebuildMenu(currentMenu, actionList);
 
         // add the action to the toolbar if its position > 0
-        // MBJ not completed yet -- need to control order based on position
-        int toolbarPosition = action.getToolbarPosition();
+	int toolbarPosition = action.getToolbarPosition();
         if (toolbarPosition >= 0) {
-            int componentCount = morphoToolbar.getComponentCount();
-            JButton toolButton = morphoToolbar.add(action);
-            String toolTip  = action.getToolTipText();
-            if (toolTip != null) {
-                toolButton.setToolTipText(toolTip);
+
+            Integer position = new Integer(toolbarPosition);
+            Vector toolbarActionVector = null;
+            if (toolbarActions.containsKey(position)) {
+                toolbarActionVector = (Vector)toolbarActions.get(position);
+            } else {
+                toolbarActionVector = new Vector();
+                toolbarActions.put(position, toolbarActionVector);
             }
+            toolbarActionVector.add(action);
+            rebuildToolbar();
         }
     }
-    
+
     /**
      * Remove a GUIAction from the menu and toolbar for this frame. 
      *
@@ -325,50 +309,28 @@ public class MorphoFrame extends JFrame
     public void removeGuiAction(GUIAction action)
     {
         // Remove the action from the menus
-        for (int i=0; i<orderedMenuList.size(); i++) {
-            JMenu currentMenu = (JMenu)orderedMenuList.elementAt(i);
-            if (currentMenu != null ) {
-                for (int j=0; j<currentMenu.getItemCount(); j++) {
-                    JMenuItem currentItem = currentMenu.getItem(j);
-                    if (currentItem != null) {
-                        GUIAction currentAction = 
-                            (GUIAction)currentItem.getAction();
-                        if (currentAction == action) {
-                            currentMenu.remove(currentItem);
-                        }
-                    }
-                }
+        Iterator menus = menuList.values().iterator();
+        while (menus.hasNext()) {
+            JMenu currentMenu = (JMenu)menus.next();
+            String currentMenuName = currentMenu.getText();
+            TreeMap actionList = (TreeMap)menuActions.get(currentMenuName); 
+            Iterator actionListVectors = actionList.values().iterator();
+            while (actionListVectors.hasNext()) {
+                Vector actionVector = (Vector)actionListVectors.next();
+                if (actionVector.contains(action)) {
+                    actionVector.remove(action);
+                    rebuildMenu(currentMenu, actionList);
+                }  
             }
         }
         
         // Remove the action from the toolbar if present
-        Component[] buttons = morphoToolbar.getComponents();
-        for (int i=0; i<buttons.length; i++) {
-            JButton toolButton = (JButton)buttons[i];
-            GUIAction currentAction = (GUIAction)toolButton.getAction();
-            if (currentAction == action) {
-                morphoToolbar.remove(toolButton);
-            }
-        }
-    }
-
-    /**
-     * Add new toolbar actions by adding all of the components that
-     * are currently not on our toolbar.
-     */
-    public void addToolbarActions(Vector toolbarList)
-    {
-        int toolbarActionCount = toolbarList.size();
-        int componentCount = morphoToolbar.getComponentCount();
-        if ((toolbarActionCount > 0) && (toolbarActionCount > componentCount)) {
-            for (int i=componentCount; i < toolbarActionCount; i++) {
-                Action currentAction = (Action)toolbarList.elementAt(i);
-                JButton toolButton = morphoToolbar.add(currentAction);
-                String toolTip  = 
-                    (String)currentAction.getValue(Action.SHORT_DESCRIPTION);
-                if (toolTip != null) {
-                    toolButton.setToolTipText(toolTip);
-                }
+        Iterator toolbarVectors = toolbarActions.values().iterator();
+        while (toolbarVectors.hasNext()) {
+            Vector actionVector = (Vector)toolbarVectors.next();
+            if (actionVector.contains(action)) {
+                actionVector.remove(action);
+                rebuildToolbar();
             }
         }
     }
@@ -418,6 +380,59 @@ public class MorphoFrame extends JFrame
     protected StatusBar getStatusBar()
     {
         return statusBar;
+    }
+
+    /**
+     * Rebuild a menu based on the set of GUIActions that belong in the
+     * menu.
+     */
+    private void rebuildMenu(JMenu currentMenu, TreeMap actionList)
+    {
+        currentMenu.removeAll();
+        Iterator actionPositionList = actionList.keySet().iterator();
+        while (actionPositionList.hasNext()) {
+            Integer position = (Integer)actionPositionList.next();
+            Vector actionVector = (Vector)actionList.get(position);
+
+            for (int i=0; i<actionVector.size(); i++) {
+                GUIAction action = (GUIAction)actionVector.elementAt(i);
+                String hasDefaultSep = action.getSeparatorPosition();
+                // Append everything else at the bottom of the menu
+                if (hasDefaultSep != null &&
+                    hasDefaultSep.equals(UIController.SEPARATOR_PRECEDING)) {
+                    currentMenu.addSeparator();
+                }
+                JMenuItem currentItem = currentMenu.add(action);
+                currentItem.setAccelerator(
+                    (KeyStroke)action.getValue(Action.ACCELERATOR_KEY));
+                if (hasDefaultSep != null &&
+                    hasDefaultSep.equals(UIController.SEPARATOR_FOLLOWING)) {
+                    currentMenu.addSeparator();
+                }
+            }
+        }
+    }
+    
+    /**
+     * Rebuild the toolbar based on the set of GUIActions that belong in the
+     * toolbar.
+     */
+    private void rebuildToolbar()
+    {
+        morphoToolbar.removeAll();
+        Iterator actionPositionList = toolbarActions.keySet().iterator();
+        while (actionPositionList.hasNext()) {
+            Integer position = (Integer)actionPositionList.next();
+            Vector actionVector = (Vector)toolbarActions.get(position);
+            for (int i=0; i<actionVector.size(); i++) {
+                GUIAction action = (GUIAction)actionVector.elementAt(i);
+                JButton toolButton = morphoToolbar.add(action);
+                String toolTip  = action.getToolTipText();
+                if (toolTip != null) {
+                    toolButton.setToolTipText(toolTip);
+                }
+            }
+        }
     }
 
     /** 
@@ -504,4 +519,20 @@ public class MorphoFrame extends JFrame
         content.setBackground(Color.darkGray);
         setMainContentPane(content);
     }
+
+    /**
+     * Return the height of the menu bar for use in layout calculations.
+     *
+     * @return the height of a menu bar
+     */
+    private int getMenuHeight() {
+        if (menuBarHeight <= 0) {
+            JMenuBar testBar = new JMenuBar();
+            JMenu testMenu = new JMenu("Test");
+            testBar.add(testMenu);
+            menuBarHeight = (int)testBar.getPreferredSize().getHeight();
+        }
+        return menuBarHeight;
+    }    
+    
 }

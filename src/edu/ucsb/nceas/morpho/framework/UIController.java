@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: cjones $'
- *     '$Date: 2002-09-26 01:57:53 $'
- * '$Revision: 1.14 $'
+ *   '$Author: jones $'
+ *     '$Date: 2002-09-26 05:34:38 $'
+ * '$Revision: 1.15 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -143,8 +143,6 @@ public class UIController
 
         registerWindow(window);
 
-        window.addToolbarActions(toolbarList);
-
         updateStatusBar(window.getStatusBar());
 
         if (getCurrentActiveWindow()==null) {
@@ -241,6 +239,36 @@ public class UIController
             morpho.exitApplication();
         }
     }
+/*
+    public void addGuiAction(GUIAction action)
+    {
+        // for each window, clone the action, add it to the vector of
+        // clones for this GUIAction, add it to the clone/window
+        // association hash, and send the clone to the window
+        Vector cloneList = new Vector();
+        guiActionClones.put(action, cloneList);
+        Enumeration windows = windowList.elements();
+        while (windows.hasMoreElements()) {
+            MorphoFrame window = (MorphoFrame)windows.nextElement();
+            GUIAction clone = action.cloneAction();
+            cloneList.addElement(clone);
+            actionCloneWindowAssociation.put(clone, window);
+            window.addGuiAction(clone);
+        }
+    }
+
+    public void removeGuiAction(GUIAction action)
+    {
+        Vector cloneList = (Vector)guiActionClones.get(action);
+        guiActionClones.remove(action);
+        for (int i=0; i< cloneList.size(); i++) {
+            GUIAction clone = (GUIAction)cloneList.elementAt(i);
+            MorphoFrame window = 
+                (MorphoFrame)actionCloneWindowAssociation.get(clone);
+            window.removeGuiAction(clone);
+        }
+    }
+*/
 
     /**
      * Add a menu item and optionally a toolbar button by registering
@@ -283,132 +311,6 @@ public class UIController
                 (MorphoFrame)actionCloneWindowAssociation.get(clone);
             window.removeGuiAction(clone);
         }
-    }
-
-    /**
-     * This method is called by plugins to register a menu that
-     * the plugin wants created, but that currently has no items.
-     *
-     * @param menuName the name of the menu to be added to the framework
-     * @param menuPosition the position of the menu to be added to the framework
-     */
-    public void addMenu(String menuName, Integer menuPosition)
-    {
-        addMenu(menuName, menuPosition, null);
-    }
-
-    /**
-     * This method is called by plugins to register a menu and its
-     * associated Actions. If the menu already exists, the actions
-     * are added to it.
-     *
-     * @param menuName the name of the menu to which to add the action
-     * @param menuPosition the  position of the menu on the menu bar
-     * @param menuActions an array of Actions to be added to the menu
-     */
-    public void addMenu(String menuName, Integer menuPosition, 
-                        Action[] menuActions)
-    {
-        /* MBJ NOT NEEDED
-         
-        Vector currentActions = null;
-        // Check if the menu exists already here, otherwise create it
-        if (orderedMenuList.contains(menuName)) {
-            currentActions = (Vector)orderedMenuActions.get(menuName);
-        } else {
-            currentActions = new Vector();
-            orderedMenuActions.put(menuName, currentActions);
-            if (menuPosition.intValue() < orderedMenuList.size()) {
-                orderedMenuList.insertElementAt(menuName,
-                        menuPosition.intValue());
-            } else {
-                orderedMenuList.addElement(menuName);
-            }
-        }
-    
-        // Get the menu items (Actions) and add them to the menu
-        if (menuActions != null) {
-            for (int j=0; j < menuActions.length; j++) {
-                Action currentAction = menuActions[j];
-                
-                Integer itemPosition = 
-                    (Integer)currentAction.getValue("menuPosition");
-                int menuPos = 
-                    (itemPosition != null) ? itemPosition.intValue() : -1;
-        
-                if (menuPos >= 0) {
-                    // Insert menus at the specified position
-                    int menuCount = currentActions.size();
-                    if (menuPos > menuCount) {
-                        menuPos = menuCount;
-                    }
-                    currentActions.insertElementAt(currentAction, menuPos);
-                } else {
-                    // Append everything else at the bottom of the menu
-                    currentActions.addElement(currentAction);
-                }
-            }
-        }
-
-        updateWindowMenus();
-        */
-    }
-    
-    /**
-     * This method is called by plugins to remove a menu item from
-     * a menu based on the index of the menu item.
-     *
-     * @param menuName the name of the menu from which to remove the item
-     * @param index the  position of the menu item to remove
-     */
-    public void removeMenuItem(String menuName, int index)
-    {
-        /* MBJ NOT NEEDED
-        Log.debug(50, "Removing menu item: " + menuName + " (" + index + ")");
-        // Check if the menu exists, and if so, remove the item
-        if (orderedMenuList.contains(menuName)) {
-            Vector currentActions = (Vector)orderedMenuActions.get(menuName);
-            currentActions.remove(index);
-            updateWindowMenus();
-        }
-        */
-    }
-    
-    /**
-     * This method is called by plugins to remove all menu items from
-     * a menu 
-     *
-     * @param menuName the name of the menu from which to remove the item
-     */
-    public void removeAllMenuItems(String menuName)
-    {
-        /* MBJ NOT NEEDED
-        Log.debug(50, "Removing menu item: " + menuName);
-        // Check if the menu exists, and if so, remove the item
-        if (orderedMenuList.contains(menuName)) {
-            Vector currentActions = (Vector)orderedMenuActions.get(menuName);
-            currentActions.removeAllElements();
-            updateWindowMenus();
-        }
-        */
-    }
-
-   /**
-    * This method is called by plugins to register a toolbar Action. 
-    *
-    * @param toolbarActions an array of Actions to be added to the toolbar
-    */
-    public void addToolbarActions(Action[] toolbarActions)
-    {
-        /* MBJ NOT NEEDED
-        if (toolbarActions != null) {
-            for (int j=0; j < toolbarActions.length; j++) {
-                Action currentAction = toolbarActions[j];
-                toolbarList.add(currentAction);
-            }
-            updateWindowToolbars();
-        }
-        */
     }
 
     /**
@@ -471,14 +373,19 @@ public class UIController
      */
     private void registerWindow(MorphoFrame window)
     {
+        if (window == null) {
+          Log.debug(50, "Window is null, create failed!");
+        }
         // clone all of the existing GUIActions for this new window
         Enumeration actionList = guiActionClones.keys();
         while (actionList.hasMoreElements()) {
             GUIAction action = (GUIAction)actionList.nextElement();
+            Log.debug(50, "Cloning action: " + action.toString());
             GUIAction clone = action.cloneAction();
             Vector cloneList = (Vector)guiActionClones.get(action);
             cloneList.addElement(clone);
             actionCloneWindowAssociation.put(clone, window);
+            Log.debug(50, "Clone menu name is: " + clone.getMenuName());
             window.addGuiAction(clone);
         }
 
@@ -500,38 +407,6 @@ public class UIController
         action.setToolTipText("Select Window");
         windowList.put(action, window);
         addGuiAction(action);
-    }
-
-    /**
-     * Update the menu bar by rebuilding it when a new menu is added
-     * to the list.
-     */
-    private void updateWindowMenus()
-    {
-        // Notify all of the windows of the changed menubar
-        Enumeration windows = windowList.elements();
-        while (windows.hasMoreElements()) {
-            JMenuBar newMenuBar = createMenuBar();
-            MorphoFrame currentWindow = (MorphoFrame)windows.nextElement();
-            currentWindow.setMenuBar(newMenuBar);
-            Log.debug(50, "Updated menu for window: " + 
-                    currentWindow.getTitle());
-        }
-    }
-
-    /**
-     * Update the toolbars for each of the windows when a new action is added.
-     */
-    private void updateWindowToolbars()
-    {
-        // Notify all of the windows of the changed toolbar
-        Enumeration windows = windowList.elements();
-        while (windows.hasMoreElements()) {
-            MorphoFrame currentWindow = (MorphoFrame)windows.nextElement();
-            currentWindow.addToolbarActions(toolbarList);
-            Log.debug(50, "Updated toolbar for window: " + 
-                    currentWindow.getTitle());
-        }
     }
 
     /**
