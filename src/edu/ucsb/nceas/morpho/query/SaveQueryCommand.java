@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2002-08-23 23:56:24 $'
- * '$Revision: 1.5 $'
+ *     '$Date: 2002-09-06 18:01:04 $'
+ * '$Revision: 1.6 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,11 +27,14 @@
 package edu.ucsb.nceas.morpho.query;
 
 import edu.ucsb.nceas.morpho.Morpho;
-import edu.ucsb.nceas.morpho.datapackage.AccessionNumber;
 import edu.ucsb.nceas.morpho.framework.ConfigXML;
+import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
 import edu.ucsb.nceas.morpho.framework.MorphoFrame;
 import edu.ucsb.nceas.morpho.framework.SwingWorker;
 import edu.ucsb.nceas.morpho.framework.UIController;
+import edu.ucsb.nceas.morpho.plugins.ServiceController;
+import edu.ucsb.nceas.morpho.plugins.ServiceNotHandledException;
+import edu.ucsb.nceas.morpho.plugins.ServiceProvider;
 import edu.ucsb.nceas.morpho.util.Command;
 import edu.ucsb.nceas.morpho.util.GUIAction;
 import edu.ucsb.nceas.morpho.util.Log;
@@ -50,7 +53,7 @@ import javax.swing.JDialog;
 import javax.swing.JMenuItem;
 
 /**
- * Class to handle search command
+ * Class to handle savequery command
  */
 public class SaveQueryCommand implements Command 
 {
@@ -66,7 +69,7 @@ public class SaveQueryCommand implements Command
   
   /**
    * Constructor of SearcCommand
-   * @param morpho the morpho application which the cancel command will apply
+   * @param morpho the morpho application which the savequery command will apply
    */
   public SaveQueryCommand(Morpho morpho)
   {
@@ -76,7 +79,7 @@ public class SaveQueryCommand implements Command
   
   
   /**
-   * execute cancel command
+   * execute savequery command
    */    
   public void execute()
   {
@@ -97,14 +100,28 @@ public class SaveQueryCommand implements Command
       query = resultPane.getResultSet().getQuery();
      
       // Serialize the query in the profiles directory
-      AccessionNumber a = new AccessionNumber(morpho);
+      
       String identifier = query.getIdentifier();
       if (identifier == null) 
       {
-        identifier = a.getNextId();
+        //identifier = a.getNextId();
+        DataPackageInterface dataPackage = null;
+        try 
+        {
+          ServiceController services = ServiceController.getInstance();
+          ServiceProvider provider = 
+                     services.getServiceProvider(DataPackageInterface.class);
+          dataPackage = (DataPackageInterface)provider;
+        } 
+        catch (ServiceNotHandledException snhe) 
+        {
+          Log.debug(6, "Error in save query: "+snhe);
+        }
+        identifier = dataPackage.getNextId(morpho);
+        
         query.setIdentifier(identifier);
       }
-
+      
       try 
       {
         Log.debug(10, "Saving query to disk...");
