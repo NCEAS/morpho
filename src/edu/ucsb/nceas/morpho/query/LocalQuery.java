@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-10-07 22:22:59 $'
- * '$Revision: 1.64 $'
+ *     '$Date: 2003-10-08 18:33:07 $'
+ * '$Revision: 1.65 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -295,7 +295,7 @@ public class LocalQuery
           if (temp==null) temp = root.getNodeName();
           doctype_collection.put(docid,temp);
           currentDoctype = temp;
-          if ((dt2bReturned.contains("any")) || (dt2bReturned.contains(currentDoctype))) {
+          if ((dt2bReturned.contains("any")) || (dt2bReturned.contains(currentDoctype))) {    
               addToPackageList(root, docid);
           }
         } // end else
@@ -306,7 +306,7 @@ public class LocalQuery
             // see if current doctype is in list of doctypes to be searched
           if ((doctypes2bsearched.contains("any"))
               ||(doctypes2bsearched.contains(currentDoctype))) {
-             
+Log.debug(1, "currentDocType: "+currentDoctype);                   
                 
             // Use the simple XPath API to obtain a node list.
  //           Log.debug(30,"starting XPathSearch: "+xpathExpression);
@@ -472,11 +472,22 @@ public class LocalQuery
   /**
    * Given a DOM document node, this method returns the DocType
    * as a String
+   * Modified to return the namespace if there is no dtd doctype
    */
   private String getDocTypeFromDOM(Document doc){
     String ret = null;
     DocumentType ddd = doc.getDoctype();
-    if (ddd==null) return ret;
+    if (ddd==null) {
+      // most likely reason that we get here is that the document is based on a schema
+      // i.e. a namespace rather than a dtd; thus look for NS info
+      Node root = doc.getDocumentElement();
+      String temp = root.getNamespaceURI();
+      if (temp!=null) {   
+        return temp;
+      } else {
+        return ret;
+      }
+    }
     ret = ddd.getPublicId();
     if (ret==null) {
       ret = ddd.getSystemId();
@@ -827,6 +838,17 @@ public class LocalQuery
           dataPackage_collection.put(object, vec);
         }
       }
+    }
+
+    // add the packageDocid itself
+    // needed here to handle case where packageDoc does NOT contain triple (e.g. eml2)
+    if (dataPackage_collection.containsKey(packageDocid)) {    
+      // already in collection
+      // don't do anything
+    } else {  // new
+      Vector vec = new Vector();
+      vec.addElement(packageDocid); 
+      dataPackage_collection.put(packageDocid, vec);
     }
 
     // Add the tripleList to the static cache of tripleLists
