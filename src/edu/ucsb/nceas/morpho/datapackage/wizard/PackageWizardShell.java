@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: tao $'
- *     '$Date: 2002-08-28 17:20:13 $'
- * '$Revision: 1.70 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2002-08-30 20:27:05 $'
+ * '$Revision: 1.71 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -998,10 +998,26 @@ public class PackageWizardShell extends javax.swing.JFrame
       Log.debug(6, snhe.getMessage());
     }
     */
+    
+    // Show the package
+    try 
+    {
+      ServiceController services = ServiceController.getInstance();
+       ServiceProvider provider = 
+                      services.getServiceProvider(DataPackageInterface.class);
+       DataPackageInterface dataPackage = (DataPackageInterface)provider;
+       dataPackage.openDataPackage(location, dp.getID(), null);
+    }
+    catch (ServiceNotHandledException snhe) 
+    {
+       Log.debug(6, snhe.getMessage());
+    }
 
+/* old package display code    
     // Show the package in a window
     DataPackageGUI gui = new DataPackageGUI(morpho, dp);
     gui.show();
+*/
         
     //make the package wizard go away
     this.dispose();
