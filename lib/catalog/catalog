@@ -79,3 +79,21 @@ PUBLIC "eml-software-2.0" "eml-software-2.0.dtd"
 PUBLIC "-//NCEAS//eml-software-2.0//EN" "eml-software-2.0.dtd"
 SYSTEM "urn:nceas:test-eml-software-2.0" "eml-software-2.0.dtd"
 SYSTEM "eml-software-2.0.dtd" "eml-software-2.0.dtd"
+
+OVERRIDE YES
+PUBLIC "eml-distribution-2.0" "eml-distribution-2.0.dtd"
+PUBLIC "-//NCEAS//eml-distribution-2.0//EN" "eml-distribution-2.0.dtd"
+SYSTEM "urn:nceas:test-eml-distribution-2.0" "eml-distribution-2.0.dtd"
+SYSTEM "eml-distribution-2.0.dtd" "eml-distribution-2.0.dtd"
+
+OVERRIDE YES
+PUBLIC "eml-party-2.0" "eml-party-2.0.dtd"
+PUBLIC "-//NCEAS//eml-party-2.0//EN" "eml-party-2.0.dtd"
+SYSTEM "urn:nceas:test-eml-party-2.0" "eml-party-2.0.dtd"
+SYSTEM "eml-party-2.0.dtd" "eml-party-2.0.dtd"
+
+OVERRIDE YES
+PUBLIC "eml-physical-2.0" "eml-physical-2.0.dtd"
+PUBLIC "-//NCEAS//eml-physical-2.0//EN" "eml-physical-2.0.dtd"
+SYSTEM "urn:nceas:test-eml-physical-2.0" "eml-physical-2.0.dtd"
+SYSTEM "eml-physical-2.0.dtd" "eml-physical-2.0.dtd"
