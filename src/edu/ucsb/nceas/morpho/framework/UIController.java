@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2004-04-03 06:35:09 $'
- * '$Revision: 1.34 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2004-04-07 18:03:50 $'
+ * '$Revision: 1.35 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1096,29 +1096,24 @@ public class UIController
 
   /**
    * method to display the new package after changes have been made
+   * with no change in location
+   * @param adp AbstractDataPackage
+   */
+  public static void showNewPackageNoLocChange(AbstractDataPackage adp) {
+    showNewPackage_base(adp);   
+  }
+
+  /**
+   * method to display the new package after changes have been made
    *
    * @param adp AbstractDataPackage
    */
   public static void showNewPackage(AbstractDataPackage adp) {
     adp.setLocation("");
-/*
-    if (!location.equals("")) {
-      // if location is "", then id should be current
-      // otherwise try to increment version
-      try{
-        String id = adp.getAccessionNumber();
-        AccessionNumber an = new AccessionNumber(morpho);
-        String newid = an.incRev(id);
-        adp.setAccessionNumber(newid);
-        adp.setLocation("");
-      }
-      catch (Exception www) {
-        AccessionNumber an = new AccessionNumber(morpho);
-        String nextid = an.getNextId();
-        adp.setAccessionNumber(nextid);
-      }
-    }
-*/
+    showNewPackage_base(adp);   
+  }
+  
+  private static void showNewPackage_base(AbstractDataPackage adp) {
     MorphoFrame morphoFrame = UIController.getInstance().getCurrentActiveWindow();
     Point pos = morphoFrame.getLocation();
     Dimension size = morphoFrame.getSize();
@@ -1143,6 +1138,6 @@ public class UIController
       Log.debug(6, snhe.getMessage());
       morphoFrame.setVisible(true);
     }
-}
+  }
 
 }
