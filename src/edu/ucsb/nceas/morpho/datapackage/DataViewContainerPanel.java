@@ -1,13 +1,13 @@
 /**
- *  '$RCSfile: DataViewContainerPanel.java,v $'
+ *  '$RCSfile: DataViewContainerPanel.java,v $'Split
  *  Copyright: 2000 Regents of the University of California and the
  *              National Center for Ecological Analysis and Synthesis
  *    Authors: @authors@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-12-09 22:05:12 $'
- * '$Revision: 1.43 $'
+ *     '$Date: 2002-12-09 23:12:09 $'
+ * '$Revision: 1.44 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -207,6 +207,7 @@ public class DataViewContainerPanel extends javax.swing.JPanel
     entitiesContainerPanel.add(BorderLayout.CENTER, tabbedEntitiesPanel);
     vertSplit = new JSplitPane(JSplitPane.VERTICAL_SPLIT, packageMetadataPanel,
                                                           entitiesContainerPanel);
+    vertSplit.setUI(new javax.swing.plaf.metal.MetalSplitPaneUI());
     vertSplit.setOneTouchExpandable(true);
     this.add(BorderLayout.CENTER,vertSplit);
     vertSplit.setDividerLocation(UISettings.VERT_SPLIT_INIT_LOCATION);
@@ -718,6 +719,7 @@ public class DataViewContainerPanel extends javax.swing.JPanel
     dataViewPanel.setLayout(new BorderLayout(0,0));
     
     entityPanel = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,dataViewPanel, entityMetadataPanel);
+    entityPanel.setUI(new javax.swing.plaf.metal.MetalSplitPaneUI());
     entityPanel.setOneTouchExpandable(true);
     entityPanel.setDividerLocation(700);
     
