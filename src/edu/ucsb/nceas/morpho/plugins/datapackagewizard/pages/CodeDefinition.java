@@ -174,17 +174,6 @@ public class CodeDefinition extends AbstractUIPage {
         Log.debug(30,"Adding Entity object to AbstractDataPackage..");
         adp.addEntity(entityNode);
 
-        // ---DFH
-        Morpho morpho = Morpho.thisStaticInstance;
-        AccessionNumber an = new AccessionNumber(morpho);
-        String curid = adp.getAccessionNumber();
-        String newid = null;
-        if (!curid.equals("")) {
-          newid = an.incRev(curid);
-        } else {
-          newid = an.getNextId();
-        }
-        adp.setAccessionNumber(newid);
         adp.setLocation("");  // we've changed it and not yet saved
     }
 

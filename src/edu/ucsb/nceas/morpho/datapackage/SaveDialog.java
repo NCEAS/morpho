@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2004-03-16 19:04:02 $'
- * '$Revision: 1.12 $'
+ *     '$Date: 2004-03-29 21:19:13 $'
+ * '$Revision: 1.13 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -253,21 +253,18 @@ public class SaveDialog extends JDialog
 		boolean problem = false;
     Morpho morpho = Morpho.thisStaticInstance;
     String location = adp.getLocation();
-    if (!location.equals("")) {
-      // if location is "", then id should be current
-      // otherwise try to increment version
-      try{
-        String id = adp.getAccessionNumber();
-        AccessionNumber an = new AccessionNumber(morpho);
-        String newid = an.incRev(id);
-        adp.setAccessionNumber(newid);
-      }
-      catch (Exception www) {
-        AccessionNumber an = new AccessionNumber(morpho);
-        String nextid = an.getNextId();
-        adp.setAccessionNumber(nextid);
-      }
+    try{
+      String id = adp.getAccessionNumber();
+      AccessionNumber an = new AccessionNumber(morpho);
+      String newid = an.incRev(id);
+      adp.setAccessionNumber(newid);
     }
+    catch (Exception www) {
+      AccessionNumber an = new AccessionNumber(morpho);
+      String nextid = an.getNextId();
+      adp.setAccessionNumber(nextid);
+    }
+    
 		try{
       if ((localLoc.isSelected())&&(networkLoc.isSelected())) {
         adp.serialize(AbstractDataPackage.BOTH);

@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2004-03-27 21:42:06 $'
- * '$Revision: 1.31 $'
+ *     '$Date: 2004-03-29 21:19:48 $'
+ * '$Revision: 1.32 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -999,7 +999,8 @@ public class UIController
    *  method to display the new package after changes have been made
    */
   public static void showNewPackage(AbstractDataPackage adp) {
-    String location = adp.getLocation();
+    adp.setLocation("");
+/*
     if (!location.equals("")) {
       // if location is "", then id should be current
       // otherwise try to increment version
@@ -1016,30 +1017,31 @@ public class UIController
         adp.setAccessionNumber(nextid);
       }
     }
-      MorphoFrame morphoFrame = UIController.getInstance().getCurrentActiveWindow();
-      Point pos = morphoFrame.getLocation(); 
-      Dimension size = morphoFrame.getSize();
+*/    
+    MorphoFrame morphoFrame = UIController.getInstance().getCurrentActiveWindow();
+    Point pos = morphoFrame.getLocation(); 
+    Dimension size = morphoFrame.getSize();
     
-      try {
-        ServiceController services = ServiceController.getInstance();
-        ServiceProvider provider = 
+    try {
+      ServiceController services = ServiceController.getInstance();
+      ServiceProvider provider = 
                 services.getServiceProvider(DataPackageInterface.class);
-        DataPackageInterface dataPackage = (DataPackageInterface)provider;
-        dataPackage.openHiddenNewDataPackage(adp, null);
-        UIController controller = UIController.getInstance();
-				MorphoFrame newMorphoFrame = controller.getCurrentActiveWindow();
-				newMorphoFrame.setLocation(pos);
-				newMorphoFrame.setSize(size);
-				newMorphoFrame.setVisible(true);
-				morphoFrame.setVisible(false);
+      DataPackageInterface dataPackage = (DataPackageInterface)provider;
+      dataPackage.openHiddenNewDataPackage(adp, null);
+      UIController controller = UIController.getInstance();
+		  MorphoFrame newMorphoFrame = controller.getCurrentActiveWindow();
+		  newMorphoFrame.setLocation(pos);
+		  newMorphoFrame.setSize(size);
+		  newMorphoFrame.setVisible(true);
+		  morphoFrame.setVisible(false);
 
-        controller.removeWindow(morphoFrame);
-        morphoFrame.dispose();
-      }
-      catch (ServiceNotHandledException snhe) {
-        Log.debug(6, snhe.getMessage());
-        morphoFrame.setVisible(true);
-      }
+      controller.removeWindow(morphoFrame);
+      morphoFrame.dispose();
+    }
+    catch (ServiceNotHandledException snhe) {
+      Log.debug(6, snhe.getMessage());
+      morphoFrame.setVisible(true);
+    }
 }
    
 }

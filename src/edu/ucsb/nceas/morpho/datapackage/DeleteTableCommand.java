@@ -5,9 +5,9 @@
  *    Authors: @tao@
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2004-03-18 02:21:40 $'
- * '$Revision: 1.2 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2004-03-29 21:19:13 $'
+ * '$Revision: 1.3 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -81,15 +81,6 @@ public class DeleteTableCommand implements Command
 
        // ---DFH - resetting the displayed package info
               Morpho morpho = Morpho.thisStaticInstance;
-              AccessionNumber an = new AccessionNumber(morpho);
-              String curid = adp.getAccessionNumber();
-              String newid = null;
-              if (!curid.equals("")) {
-                newid = an.incRev(curid);
-              } else {
-                newid = an.getNextId();
-              }
-              adp.setAccessionNumber(newid);
               adp.setLocation("");  // we've changed it and not yet saved
               try
               {

@@ -5,8 +5,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2004-03-16 21:54:01 $'
- * '$Revision: 1.107 $'
+ *     '$Date: 2004-03-29 21:19:13 $'
+ * '$Revision: 1.108 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -91,7 +91,7 @@ import edu.ucsb.nceas.morpho.util.StoreStateChangeEvent;
  * Also has ability to Cut/Copy/Paste selections from the table.
  */
 public class DataViewer extends javax.swing.JPanel
-            implements EditingCompleteListener, StoreStateChangeEvent
+            implements StoreStateChangeEvent
 {
 
 
@@ -1277,178 +1277,6 @@ public class DataViewer extends javax.swing.JPanel
 
 
 
-    /**
-   * this is called whenever the editor exits.  the file returned is saved
-   * back to its  original location.
-   * @param xmlString the xml in string format
-   * @param id the id of the file
-   * @param location the location of the file
-   */
-  public void editingCompleted(String xmlString, String id, String location)
-  {
-    //System.out.println(xmlString);
-    Log.debug(11, "editing complete: id: " + id + " location: " + location);
-    AccessionNumber a = new AccessionNumber(morpho);
-    boolean metacatpublic = false;
-    FileSystemDataStore fsds = new FileSystemDataStore(morpho);
-    //System.out.println(xmlString);
-
-    boolean metacatloc = false;
-    boolean localloc = false;
-    boolean bothloc = false;
-    String newid = "";
-    String newPackageId = "";
-    if(location.equals(DataPackageInterface.BOTH))
-    {
-      metacatloc = true;
-      localloc = true;
-    }
-    else if(location.equals(DataPackageInterface.METACAT))
-    {
-      metacatloc = true;
-    }
-    else if(location.equals(DataPackageInterface.LOCAL))
-    {
-      localloc = true;
-    }
-/*DFH
-    try
-    {
-      if(localloc)
-      { //save the file locally
-        if(id.trim().equals(dp.getID().trim()))
-        { //we just edited the package file itself
-          String oldid = id;
-          newid = a.incRev(id);
-          File f = fsds.saveTempFile(oldid, new StringReader(xmlString));
-          String newPackageFile = a.incRevInTriples(f, oldid, newid);
-          fsds.saveFile(newid, new StringReader(newPackageFile));
-          newPackageId = newid;
-        }
-        else
-        { //we edited a file in the package
-          Vector newids = new Vector();
-          Vector oldids = new Vector();
-          String oldid = id;
-          newid = a.incRev(id);
-          fsds.saveFile(newid, new StringReader(xmlString));
-          newPackageId = a.incRev(dp.getID());
-          oldids.addElement(oldid);
-          oldids.addElement(dp.getID());
-          newids.addElement(newid);
-          newids.addElement(newPackageId);
-          //increment the package files id in the triples
-          String newPackageFile = a.incRevInTriples(dp.getTriplesFile(),
-                                                    oldids,
-                                                    newids);
-          System.out.println("oldid: " + oldid + " newid: " + newid);
-          fsds.saveFile(newPackageId, new StringReader(newPackageFile));
-        }
-      }
-    }
-    catch(Exception e)
-    {
-      Log.debug(0, "Error saving file locally"+ id + " to " + location +
-                         "--message: " + e.getMessage());
-      Log.debug(11, "File: " + xmlString);
-      e.printStackTrace();
-    }
-
-    try
-    {
-      if(metacatloc)
-      { //save it to metacat
-        MetacatDataStore mds = new MetacatDataStore(morpho);
-
-        if(id.trim().equals(dp.getID().trim()))
-        { //edit the package file
-          Vector oldids = new Vector();
-          Vector newids = new Vector();
-          String oldid = id;
-          newid = a.incRev(id);
-          File f = fsds.saveTempFile(oldid, new StringReader(xmlString));
-          oldids.addElement(oldid);
-          newids.addElement(newid);
-          String newPackageFile = a.incRevInTriples(f, oldids, newids);
-          mds.saveFile(newid, new StringReader(newPackageFile),
-                       dp);
-          newPackageId = newid;
-        }
-        else
-        { //edit another file in the package
-          Vector oldids = new Vector();
-          Vector newids = new Vector();
-          String oldid = id;
-          newid = a.incRev(id);
- //         mds.saveFile(newid, new StringReader(xmlString), dp);
-          Vector names = new Vector();
-          Vector readers = new Vector();
-          names.addElement(newid);
-          readers.addElement(new StringReader(xmlString));
-          newPackageId = a.incRev(dp.getID());
-          //increment the package files id in the triples
-          oldids.addElement(oldid);
-          oldids.addElement(dp.getID());
-          newids.addElement(newid);
-          newids.addElement(newPackageId);
-          String newPackageFile = a.incRevInTriples(dp.getTriplesFile(),
-                                                    oldids,
-                                                    newids);
-//          mds.saveFile(newPackageId, new StringReader(newPackageFile),
-//                       dp);
-          names.addElement(newPackageId);
-          readers.addElement(new StringReader(newPackageFile));
-          String res = mds.saveFilesTransaction(names, readers, dp);
-          Log.debug(20,"Transaction result is: "+res);
-        }
-      }
-    }
-    catch(Exception e)
-    {
-      String message = e.getMessage();
-      if(message.indexOf("Next revision number must be") != -1)
-      {
-        Log.debug(0,"The file you are attempting to update " +
-                                 "has been changed by another user.  " +
-                                 "Please refresh your query screen, " +
-                                 "open the package again and " +
-                                 "re-enter your changes.");
-        return;
-      }
-      Log.debug(0, "Error saving file to metacat "+ id + " to " + location +
-                         "--message: " + e.getMessage());
-      e.printStackTrace();
-    }
-
-    DataPackage newPackage = new DataPackage(location, newPackageId, null,
-                                           morpho, true);
-
-    MorphoFrame thisFrame = (UIController.getInstance()).getCurrentActiveWindow();
-
-        // Show the new package
-    try
-    {
-      ServiceController services = ServiceController.getInstance();
-      ServiceProvider provider =
-                      services.getServiceProvider(DataPackageInterface.class);
-      DataPackageInterface dataPackage = (DataPackageInterface)provider;
-      dataPackage.openDataPackage(location, newPackage.getID(), null, null, null);
-    }
-    catch (ServiceNotHandledException snhe)
-    {
-       Log.debug(6, snhe.getMessage());
-    }
-    thisFrame.setVisible(false);
-    UIController controller = UIController.getInstance();
-    controller.removeWindow(thisFrame);
-    thisFrame.dispose();
-*/
-
-  }
-
-  public void editingCanceled(String xmlString, String id, String location)
-  { //do nothing
-  }
 
    /**
    * Method implements form StoreStateChangeEvent

@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2004-03-24 02:14:18 $'
- * '$Revision: 1.98 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2004-03-29 21:19:13 $'
+ * '$Revision: 1.99 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -735,15 +735,7 @@ public class DataViewContainerPanel extends javax.swing.JPanel
       }  // end of loop over all dvs
       // note that 'false' parameter passed to saveCurrentTable avoids updating package id
       // for each data change; thus, do it now
-      AccessionNumber a = new AccessionNumber(morpho);
-      String curid = adp.getAccessionNumber();
-      String newid = null;
-      if (!curid.equals("")) {
-        newid = a.incRev(curid);
-      } else {
-        newid = a.getNextId();
-      }
-      adp.setAccessionNumber(newid);
+      adp.setLocation("");
     }
   }
 
@@ -1152,16 +1144,8 @@ public class DataViewContainerPanel extends javax.swing.JPanel
 
   public void editingCompleted(String xmlString, String id, String location) {
 
-    Log.debug(30, "editing complete: id: " + id + " location: " + location);
+    Log.debug(20, "editing complete: id: " + id + " location: " + location);
     MorphoFrame morphoFrame = UIController.getInstance().getCurrentActiveWindow();
-    AccessionNumber a = new AccessionNumber(morpho);
-    String curid = adp.getAccessionNumber();
-    String newid = null;
-    if (!curid.equals("")) {
-      newid = a.incRev(curid);
-    } else {
-      newid = a.getNextId();
-    }
     morphoFrame.setVisible(false);
     UIController uicontroller = UIController.getInstance();
 
@@ -1171,7 +1155,6 @@ public class DataViewContainerPanel extends javax.swing.JPanel
       StringReader sr = new StringReader(xmlString);
       Node nd = XMLUtilities.getXMLReaderAsDOMTreeRootNode(sr);
       AbstractDataPackage newadp = DataPackageFactory.getDataPackage(nd);
-      newadp.setAccessionNumber(newid);
       newadp.setLocation("");  // we've changed it and not yet saved
 
       ServiceController services = ServiceController.getInstance();
