@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2003-08-07 19:36:04 $'
- * '$Revision: 1.2 $'
+ *     '$Date: 2003-08-08 00:56:17 $'
+ * '$Revision: 1.3 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,9 +33,12 @@ import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WidgetFactory;
 import edu.ucsb.nceas.utilities.OrderedMap;
 import edu.ucsb.nceas.morpho.util.Log;
 
-import java.util.Vector;
+import java.util.ArrayList;
 import java.util.EventObject;
 import java.util.Enumeration;
+import java.util.List;
+import java.util.Iterator;
+import java.util.Vector;
 
 import java.awt.Component;
 import java.awt.BorderLayout;
@@ -57,11 +60,14 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 import javax.swing.table.TableModel;
+import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableCellEditor;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.DefaultCellEditor;
+import javax.swing.ListSelectionModel;
 
+import javax.swing.event.TableModelEvent;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.CellEditorListener;
@@ -122,14 +128,14 @@ public class CustomList extends JPanel {
     row0Data.add("");
     rowsData.add(row0Data);
     
-    table = new eJTable(rowsData, colNamesVec);
+    table = new CustomJTable(rowsData, colNamesVec);
          
     table.setColumnSelectionAllowed(false);
     table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
     table.setShowHorizontalLines(false);
     table.setShowVerticalLines(true);
+    table.editCellAt(0, 0, new EventObject(table.getValueAt(0, 0)));
     table.setRowSelectionInterval(0, 0);
-    table.editCellAt(0, 0);
     
     final JScrollPane scrollPane = new JScrollPane(table);
     scrollPane.getViewport().setBackground(java.awt.Color.white);
@@ -158,9 +164,6 @@ public class CustomList extends JPanel {
   
   private void setColumnSizes(double tableWidth) {
   
-
-    Log.debug(45,"*** tableWidth = "+tableWidth);
-
     final double  fraction  = 1d/((double)(table.getColumnCount()));
     final double  minFactor = 0.7;
     final double  maxFactor = 5;
@@ -192,7 +195,7 @@ public class CustomList extends JPanel {
 
     if (showAddButton) {
       
-      addButton      = new JButton(new AddAction());
+      addButton      = new JButton(new AddAction(table));
       WidgetFactory.setPrefMaxSizes(addButton, WizardSettings.LIST_BUTTON_DIMS);
       addButton.setFont(WizardSettings.WIZARD_CONTENT_FONT);
       buttonBox.add(addButton);
@@ -200,7 +203,7 @@ public class CustomList extends JPanel {
     
     if (showEditButton) {
       
-      editButton     = new JButton(new EditAction());
+      editButton     = new JButton(new EditAction(table));
       WidgetFactory.setPrefMaxSizes(editButton, WizardSettings.LIST_BUTTON_DIMS);
       editButton.setFont(WizardSettings.WIZARD_CONTENT_FONT);
       buttonBox.add(editButton);
@@ -208,7 +211,7 @@ public class CustomList extends JPanel {
     
     if (showDeleteButton) {
       
-      deleteButton   = new JButton(new DeleteAction());
+      deleteButton   = new JButton(new DeleteAction(table));
       WidgetFactory.setPrefMaxSizes(deleteButton, WizardSettings.LIST_BUTTON_DIMS);
       deleteButton.setFont(WizardSettings.WIZARD_CONTENT_FONT);
       buttonBox.add(deleteButton);
@@ -216,7 +219,7 @@ public class CustomList extends JPanel {
     
     if (showMoveUpButton) {
       
-      moveUpButton   = new JButton(new MoveUpAction());
+      moveUpButton   = new JButton(new MoveUpAction(table));
       WidgetFactory.setPrefMaxSizes(moveUpButton, WizardSettings.LIST_BUTTON_DIMS);
       moveUpButton.setFont(WizardSettings.WIZARD_CONTENT_FONT);
       buttonBox.add(moveUpButton);
@@ -224,7 +227,7 @@ public class CustomList extends JPanel {
     
     if (showMoveDownButton) {
       
-      moveDownButton = new JButton(new MoveDownAction());
+      moveDownButton = new JButton(new MoveDownAction(table));
       WidgetFactory.setPrefMaxSizes(moveDownButton, WizardSettings.LIST_BUTTON_DIMS);
       moveDownButton.setFont(WizardSettings.WIZARD_CONTENT_FONT);
       buttonBox.add(moveDownButton);
@@ -239,56 +242,137 @@ public class CustomList extends JPanel {
 
 class AddAction extends AbstractAction {
 
-  public AddAction() { super("Add"); }
+  private JTable table;
+  private DefaultTableModel model;
+  
+  public AddAction(JTable table) { 
+    
+    super("Add"); 
+    this.table = table;
+    model = (DefaultTableModel)(table.getModel());
+  }
   
   public void actionPerformed(ActionEvent e) {
 
-    Log.debug(45, "CustomList ADD action");  
+    Log.debug(45, "CustomList ADD action");
+    int row = table.getSelectedRow();
+    
+    if (row < 0) {
+      model.addRow(new Vector());
+      row = model.getRowCount() - 1;
+    } else {
+      model.insertRow(++row, (Vector)null);
+    }
+    table.tableChanged(new TableModelEvent(model));
+    Component comp = table.getComponentAt(row, 0);
+    table.editCellAt(row, 0, new EventObject(comp));
+    comp.requestFocus();
+    table.setRowSelectionInterval(row, row);
   }
 }
 
+
 class EditAction extends AbstractAction {
 
-  public EditAction() { super("Edit"); }
+  private JTable table;
+  
+  public EditAction(JTable table) { 
+    
+    super("Edit"); 
+    this.table = table;
+  }
   
   public void actionPerformed(ActionEvent e) {
   
     Log.debug(45, "CustomList EDIT action");  
+    int row = table.getSelectedRow();
+    if (row < 0) return;
+    // get object here - only a String surrogate is shown by the cell renderer, 
+    // but the entire object is actually in the table model!
   }
 }
 
 class DeleteAction extends AbstractAction {
 
-  public DeleteAction() { super("Delete"); }
+  private JTable table;
+  private DefaultTableModel model;
+  
+  public DeleteAction(JTable table) { 
+    
+    super("Delete"); 
+    this.table = table;
+    model = (DefaultTableModel)(table.getModel());
+  }
   
   public void actionPerformed(ActionEvent e) {
   
     Log.debug(45, "CustomList DELETE action");  
+    int row = table.getSelectedRow();
+    if (row < 0) return;
+    if (table.getEditorComponent()!=null) {
+      table.editingStopped(new ChangeEvent(table.getEditorComponent()));
+    }
+    model.removeRow(row);
+    table.tableChanged(new TableModelEvent(model));
+    table.clearSelection();
   }
 }
 
 class MoveUpAction extends AbstractAction {
 
-  public MoveUpAction() { super("Move Up"); }
+  private JTable table;
+  private DefaultTableModel model;
+  
+  public MoveUpAction(JTable table) { 
+    
+    super("Move Up"); 
+    this.table = table;
+    model = (DefaultTableModel)(table.getModel());
+  }
   
   public void actionPerformed(ActionEvent e) {
   
     Log.debug(45, "CustomList MOVE UP action");  
+    int row = table.getSelectedRow();
+    if (row < 0) return;
+    if (table.getEditorComponent()!=null) {
+      table.editingStopped(new ChangeEvent(table.getEditorComponent()));
+    }
+    model.moveRow(row, row, row - 1);
+    table.tableChanged(new TableModelEvent(model));
+    table.setRowSelectionInterval(row - 1, row - 1);
+    table.repaint();
   }
 }
 
 class MoveDownAction extends AbstractAction {
 
-  public MoveDownAction() { super("Move Down"); }
+  private JTable table;
+  private DefaultTableModel model;
+  
+  public MoveDownAction(JTable table) { 
+    
+    super("Move Down"); 
+    this.table = table;
+    model = (DefaultTableModel)(table.getModel());
+  }
   
   public void actionPerformed(ActionEvent e) {
   
     Log.debug(45, "CustomList MOVE DOWN action");  
+    int row = table.getSelectedRow();
+    if (row < 0) return;
+    if (table.getEditorComponent()!=null) {
+      table.editingStopped(new ChangeEvent(table.getEditorComponent()));
+    }
+    model.moveRow(row, row, row + 1);
+    table.tableChanged(new TableModelEvent(model));
+    table.setRowSelectionInterval(row + 1, row + 1);
   }
 }
 
 
-class eJTable extends JTable  {
+class CustomJTable extends JTable  {
 
     EditableStringRenderer    editableStringRenderer 
                                     = new EditableStringRenderer();
@@ -298,9 +382,11 @@ class eJTable extends JTable  {
     DefaultCellEditor         defaultCellEditor 
                                     = new DefaultCellEditor(new JTextField());
     
-    public eJTable(Vector rowVect, Vector colVect) {
+    public CustomJTable(Vector rowVect, Vector colNamesVec) {
     
-      super(rowVect, colVect);
+      super(rowVect, colNamesVec);
+      
+      super.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
       defaultCellEditor.setClickCountToStart(1);
       this.setRowHeight((int)(editableStringRenderer.getPreferredSize().height));
     }
@@ -326,10 +412,14 @@ class eJTable extends JTable  {
         return defaultCellEditor;
     }
 
+
+
+
     //override super
     public boolean getDragEnabled() { return false; }
 
 }
+
 
 
 
