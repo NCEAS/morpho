@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2002-12-11 01:05:05 $'
- * '$Revision: 1.3 $'
+ *     '$Date: 2004-03-29 06:04:36 $'
+ * '$Revision: 1.4 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,6 +28,7 @@ package edu.ucsb.nceas.morpho.framework;
 
 import edu.ucsb.nceas.morpho.util.Command;
 import edu.ucsb.nceas.morpho.Morpho;
+import javax.swing.table.AbstractTableModel;
 
 /**
  * This service allows plugins to request that the query results be
@@ -51,32 +52,40 @@ public interface QueryRefreshInterface
   public static final int SEARCH_COMMAND           = 30;
 
 
-  /** 
-   * This method is called to refresh the main query when a change is 
+  /**
+   * This method is called to refresh the main query when a change is
    * made that should be propogated to the query result screens.
    */
   public void refresh();
-  
+
   /**
    * This mehod will be called when Morpho switch to another profile. Old saved
-   * queries will be removed from search menu and new saved queries will be 
+   * queries will be removed from search menu and new saved queries will be
    * adde into search menu.
    * @param newMorpho new Morpho object after switch profile
    */
   public void updateSavedQueryMenuItems(Morpho newMorpho);
-   
+
   /**
-   * return an instance of a Command object, identified by one of the integer 
+   * return an instance of a Command object, identified by one of the integer
    * constants defined above
    *
-   * @param commandIdentifier   integer constant identifying the command 
+   * @param commandIdentifier   integer constant identifying the command
    *                            Options include:<ul>
    *                            <li>OPEN_DATAPACKAGE_COMMAND</li>
    *                            <li>SEARCH_COMMAND</li>
    *                            </ul>
    * @throws ommandNotFoundException if Command not found
    */
-  public Command getCommandObject(int commandIdentifier) 
+  public Command getCommandObject(int commandIdentifier)
                                                 throws ClassNotFoundException;
-  
+
+  /**
+   * performs a local query to get the documents owned by the user, as
+   * identified by the current profile
+   * @return AbstractTableModel containing results
+   * (@see edu.ucsb.nceas.morpho.query.ResultSet)
+   */
+  public AbstractTableModel doOwnerQueryForCurrentUser();
+
 }

@@ -5,9 +5,9 @@
  *    Authors: @tao@
  *    Release: @release@
  *
- *   '$Author: jones $'
- *     '$Date: 2004-03-24 18:09:21 $'
- * '$Revision: 1.15 $'
+ *   '$Author: brooke $'
+ *     '$Date: 2004-03-29 06:04:36 $'
+ * '$Revision: 1.16 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -125,7 +125,7 @@ public class OpenDialogBoxCommand implements Command
    *
    * @return String
    */
-  private String getOwnerQuery()
+  protected String getOwnerQuery()
   {
   	ConfigXML config = Morpho.getConfiguration();
   	ConfigXML profile = morpho.getProfile();

@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2004-03-20 20:44:50 $'
- * '$Revision: 1.104 $'
+ *   '$Author: brooke $'
+ *     '$Date: 2004-03-29 06:04:36 $'
+ * '$Revision: 1.105 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -41,12 +41,15 @@ import edu.ucsb.nceas.morpho.util.StateChangeEvent;
 import edu.ucsb.nceas.morpho.util.UISettings;
 
 import javax.swing.ImageIcon;
+import edu.ucsb.nceas.morpho.framework.ConfigXML;
+import java.util.Vector;
+import javax.swing.table.AbstractTableModel;
 
 public class QueryPlugin implements PluginInterface, ConnectionListener,
                                     ServiceProvider, QueryRefreshInterface
 {
   /** A reference to the container framework */
-  private Morpho morpho = null;
+  private static Morpho morpho = null;
 
   /**
    * Construct the query plugin.  Initialize our one tab for the
@@ -378,6 +381,18 @@ public class QueryPlugin implements PluginInterface, ConnectionListener,
   }
 
 
+  /**
+   * performs a local query to get the documents owned by the user, as
+   * identified by the current profile
+   * @return AbstractTableModel containing results
+   * (@see edu.ucsb.nceas.morpho.query.ResultSet)
+   */
+  public AbstractTableModel doOwnerQueryForCurrentUser() {
+
+    OpenDialogBoxCommand odbCmd = new OpenDialogBoxCommand(morpho);
+    Query ownerQuery = new Query(odbCmd.getOwnerQuery(), morpho);
+    return (AbstractTableModel)(ownerQuery.execute());
+  }
 
 
 }
