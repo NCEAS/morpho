@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2004-04-06 00:17:39 $'
- * '$Revision: 1.31 $'
+ *     '$Date: 2004-04-06 16:12:29 $'
+ * '$Revision: 1.32 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -127,14 +127,10 @@ public class PartyMainPage
       xPathRoot = "/eml:eml/dataset/contact[";
       DATAPACKAGE_PARTY_GENERIC_NAME = "contact";
       description =
-          "<p><b>Enter information about the Contacts</b>: This is information about the "
-          +
-          "person or organizations who are the contacts for this dataset. This is "
-          +
-          "the person or institution to contact with questions about the use or "
-          +
-          "interpretation of a data package. This may or may not be same as the owner."
-          + "<br></br></p>";
+        "<p><b>Enter information about contacts</b>. This is information "
+        + "about the people or organizations who would be contacted with "
+        + "questions about the use or interpretation of a data package. "
+        + "<br></br></p>";
 
     } else if (role.equals(DataPackageWizardInterface.PARTY_ASSOCIATED)) {
 
@@ -146,14 +142,11 @@ public class PartyMainPage
       xPathRoot = "/eml:eml/dataset/associatedParty[";
       DATAPACKAGE_PARTY_GENERIC_NAME = "associatedParty";
       description =
-          "<p><b>Enter information about Associated People and Organizations</b>: "
-          + "This is information about the people or organizations "
-          + "who should be associated with the resource. These "
-          +
-          "parties might play various roles in the creation or maintenance of "
-          +
-          "the resource, and these roles should be indicated in the \"role\" "
-          + "element.<br></br></p>";
+          "<p><b>Enter associated parties information</b>.  These are persons "
+          + "or organizations functionally associated with the dataset. "
+          + "Enter the nature of the relationship in the role field. "
+          + "For example, the person who maintains the database is an "
+          + "associated party with the role of 'custodian'.<br></br><p>";
 
 //    } else if (role.equals(DataPackageWizardInterface.PARTY_PERSONNEL)) {
 //
