@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2004-02-03 23:15:46 $'
- * '$Revision: 1.141 $'
+ *     '$Date: 2004-02-03 23:59:29 $'
+ * '$Revision: 1.142 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -381,7 +381,9 @@ public class DocFrame extends javax.swing.JFrame
     popup.add(DeletemenuItem);
     popup.add(new JSeparator());
     AttrmenuItem = new JMenuItem("Edit Attributes");
-    popup.add(AttrmenuItem);
+//    popup.add(AttrmenuItem);
+//  this menu item is not added to menu because all attributes should now appear in the tree
+//  leave code for possibile use in debugging (to see attributes trimmed from tree)
     popup.add(new JSeparator());
     AddtextItem = new JMenuItem("Add Text");
     AddtextItem.setEnabled(false);
@@ -2591,9 +2593,12 @@ public class DocFrame extends javax.swing.JFrame
     }
     else {
       Log.debug(20,"Validation problem: "+valresult);
+      String msg = "The saved document is not valid EML2 for some reason.\n"+
+                   "You can save it locally and fix the problem later,\n"+
+                   "but you will be unable to submit it to the network storage system.\n"+
+                   "\nDo you want to Continue Exiting the Editor?";
       int opt1 = JOptionPane.showConfirmDialog(null,
-         valresult+"\n"+
-         "Do you want to Continue Exiting the Editor?",
+         msg,
          "Validation Problem!",
          JOptionPane.YES_NO_OPTION);
       if (opt1== JOptionPane.YES_OPTION) {
