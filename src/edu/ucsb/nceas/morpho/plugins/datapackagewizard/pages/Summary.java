@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2003-09-08 22:11:21 $'
- * '$Revision: 1.1 $'
+ *     '$Date: 2003-09-10 00:54:36 $'
+ * '$Revision: 1.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -78,6 +78,9 @@ public class Summary extends AbstractWizardPage {
 
     this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
     
+    this.add(WidgetFactory.makeDefaultSpacer());
+    this.add(WidgetFactory.makeDefaultSpacer());
+    this.add(WidgetFactory.makeDefaultSpacer());
     this.add(desc1);
     this.add(desc2);
     this.add(desc3);

@@ -1,5 +1,5 @@
 /**
- *  '$RCSfile: Keywords.java,v $'
+ *  '$RCSfile: Entity.java,v $'
  *    Purpose: A class that handles xml messages passed by the
  *             package wizard
  *  Copyright: 2000 Regents of the University of California and the
@@ -9,7 +9,7 @@
  *
  *   '$Author: brooke $'
  *     '$Date: 2003-09-10 00:54:36 $'
- * '$Revision: 1.4 $'
+ * '$Revision: 1.1 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -45,9 +45,11 @@ import javax.swing.JLabel;
 import javax.swing.JFrame;
 import javax.swing.BoxLayout;
 import javax.swing.JTextField;
+import javax.swing.JTextArea;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.AbstractAction;
-import javax.swing.JComboBox;
+import javax.swing.SwingConstants;
 
 import java.util.List;
 import java.util.ArrayList;
@@ -57,25 +59,30 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 
-public class Keywords extends AbstractWizardPage{
+public class Entity extends AbstractWizardPage{
   
   // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
   
-  private final String pageID     = WizardPageLibrary.KEYWORDS;
-  private final String nextPageID = WizardPageLibrary.PARTY_INTRO;
-  private final String title      = "General Dataset Information:";
-  private final String subtitle   = "Keyword Sets";
-  private final String xPathRoot  = "/eml:eml/keywordSet[";
+  private final String pageID     = WizardPageLibrary.ENTITY;
+  private final String nextPageID = WizardPageLibrary.SUMMARY;
+  private final String title      = "Data Information:";
+  private final String subtitle   = "Table (Entity)";
+  private final String xPathRoot  = "/eml:eml/dataset/dataTable[1]";
   
-  private final String[] colNames =  {"Thesaurus", "Keywords"};
+  private final String[] colNames =  {"Attribute Name", 
+                                      "Attribute Definition", 
+                                      "Measurement Scale"};
   private final Object[] editors  =   null; //makes non-directly-editable
   
-  private CustomList  keywordsList;
-  private JLabel      keywordsLabel;
+  private JTextField  entityNameField;  
+  private JTextArea   entityDescField;
+  private JLabel      entityNameLabel;
+  private CustomList  attributeList;
+  private JLabel      attributesLabel;
   
   // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
-  public Keywords() { init(); }
+  public Entity() { init(); }
   
   
   
@@ -86,34 +93,64 @@ public class Keywords extends AbstractWizardPage{
   private void init() {
 
     this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-    JPanel vbox = this;
     
-    vbox.add(WidgetFactory.makeDefaultSpacer());
+    this.add(WidgetFactory.makeDefaultSpacer());
 
     JLabel desc1 = WidgetFactory.makeHTMLLabel(
-      "A data package may have multiple keywords associated with it to enable "
-      +"easy searching and categorizing.  In addition, one to many keywords "
-      +"may be associated with a &quot;keyword thesaurus&quot;, which allows "
-      +"one to associate a data package with an authoritative definition. "
-      +"Thesauri may also be used for internal categorization.", 3);
-    vbox.add(desc1);
+      "Enter some information about the data table contained in your file. "
+      +"If you have more than one data table, additional tables may be added "
+      +"after you create your data package. Required fields are highlighted. ",
+                                                                             2);
+    this.add(desc1);
     
-    vbox.add(WidgetFactory.makeDefaultSpacer());
-    vbox.add(WidgetFactory.makeDefaultSpacer());
+    this.add(WidgetFactory.makeDefaultSpacer());
+    this.add(WidgetFactory.makeDefaultSpacer());
     
-    keywordsLabel = WidgetFactory.makeLabel(
-        "Enter one or more keywords, with an optional keyword thesaurus, as "
-          +"groups of keyword sets:", 
-          true, WizardSettings.WIZARD_CONTENT_TEXTFIELD_DIMS);
-    vbox.add(keywordsLabel);
+    ///
+    JPanel attributePanel = WidgetFactory.makePanel(1);
     
+    entityNameLabel = WidgetFactory.makeLabel("Table name:", true);
+
+    attributePanel.add(entityNameLabel);
     
-    vbox.add(WidgetFactory.makeDefaultSpacer());
+    entityNameField = WidgetFactory.makeOneLineTextField();
+    attributePanel.add(entityNameField);
     
-    keywordsList = WidgetFactory.makeList(colNames, editors, 4,
+    this.add(attributePanel);
+    
+    this.add(WidgetFactory.makeDefaultSpacer());
+    this.add(WidgetFactory.makeDefaultSpacer());
+    
+    ////////////////////////////////////////////////////////////////////////////
+    
+    JLabel entityDesc = WidgetFactory.makeHTMLLabel(
+    "Enter a descriptive paragraph that describes the entity, its type, and "
+    +"relevant information about the data in the entity.<br></br>Example: "
+    +"Species abundance data for 1996 at the VCR LTER site", 3);
+    
+    this.add(entityDesc);
+
+    this.add(WidgetFactory.makeDefaultSpacer());
+        
+    JPanel entityDescPanel = WidgetFactory.makePanel();
+
+    JLabel entityLabel = WidgetFactory.makeLabel("Description", false);
+    entityLabel.setVerticalAlignment(SwingConstants.TOP);
+    entityLabel.setAlignmentY(SwingConstants.TOP);
+    entityDescPanel.add(entityLabel);
+    
+    entityDescField = WidgetFactory.makeTextArea("", 6, true);
+    JScrollPane jscrl = new JScrollPane(entityDescField);
+    entityDescPanel.add(jscrl);
+    this.add(entityDescPanel);
+    
+    ////////////////////////////////////////////////////////////////////////////
+    this.add(WidgetFactory.makeDefaultSpacer());
+    
+    attributeList = WidgetFactory.makeList(colNames, editors, 4,
                                     true, true, false, true, true, true );
     
-    vbox.add(keywordsList);
+    this.add(attributeList);
     
     initActions();
   }
@@ -124,63 +161,63 @@ public class Keywords extends AbstractWizardPage{
    */
   private void initActions() {
   
-    keywordsList.setCustomAddAction( 
+    attributeList.setCustomAddAction( 
       
       new AbstractAction() {
     
         public void actionPerformed(ActionEvent e) {
       
-          Log.debug(45, "\nKeywords: CustomAddAction called");
-          showNewKeywordsDialog();
+          Log.debug(45, "\nEntity: CustomAddAction called");
+          showNewEntityDialog();
         }
       });
   
-    keywordsList.setCustomEditAction( 
+    attributeList.setCustomEditAction( 
       
       new AbstractAction() {
     
         public void actionPerformed(ActionEvent e) {
       
-          Log.debug(45, "\nKeywords: CustomEditAction called");
-          showEditKeywordsDialog();
+          Log.debug(45, "\nEntity: CustomEditAction called");
+          showEditEntityDialog();
         }
       });
   }
   
-  private void showNewKeywordsDialog() {
+  private void showNewEntityDialog() {
     
-    KeywordsDialog keywordsDialog 
-                              = new KeywordsDialog(WizardContainerFrame.frame);
+    EntityDialog keywordsDialog 
+                              = new EntityDialog(WizardContainerFrame.frame);
 
     if (keywordsDialog.USER_RESPONSE==WizardPopupDialog.OK_OPTION) {
     
       List newRow = keywordsDialog.getSurrogate();
       newRow.add(keywordsDialog);
-      keywordsList.addRow(newRow);
+      attributeList.addRow(newRow);
     }
-    WidgetFactory.unhiliteComponent(keywordsLabel);
+    WidgetFactory.unhiliteComponent(attributesLabel);
   }
   
 
-  private void showEditKeywordsDialog() {
+  private void showEditEntityDialog() {
     
-    List selRowList = keywordsList.getSelectedRowList();
+    List selRowList = attributeList.getSelectedRowList();
     
     if (selRowList==null || selRowList.size() < 3) return;
     
     Object dialogObj = selRowList.get(2);
     
-    if (dialogObj==null || !(dialogObj instanceof KeywordsDialog)) return;
-    KeywordsDialog editKeywordsDialog = (KeywordsDialog)dialogObj;
+    if (dialogObj==null || !(dialogObj instanceof EntityDialog)) return;
+    EntityDialog editEntityDialog = (EntityDialog)dialogObj;
 
-    editKeywordsDialog.resetBounds();
-    editKeywordsDialog.setVisible(true);
+    editEntityDialog.resetBounds();
+    editEntityDialog.setVisible(true);
     
-    if (editKeywordsDialog.USER_RESPONSE==KeywordsDialog.OK_OPTION) {
+    if (editEntityDialog.USER_RESPONSE==EntityDialog.OK_OPTION) {
     
-      List newRow = editKeywordsDialog.getSurrogate();
-      newRow.add(editKeywordsDialog);
-      keywordsList.replaceSelectedRow(newRow);
+      List newRow = editEntityDialog.getSurrogate();
+      newRow.add(editEntityDialog);
+      attributeList.replaceSelectedRow(newRow);
     }
   }
 
@@ -203,7 +240,7 @@ public class Keywords extends AbstractWizardPage{
    */
   public void onRewindAction() {
     
-    WidgetFactory.unhiliteComponent(keywordsLabel);
+    WidgetFactory.unhiliteComponent(attributesLabel);
   }
   
   
@@ -217,9 +254,9 @@ public class Keywords extends AbstractWizardPage{
    */
   public boolean onAdvanceAction() {
     
-    if (keywordsList.getRowCount() < 1) {
+    if (attributeList.getRowCount() < 1) {
 
-      WidgetFactory.hiliteComponent(keywordsLabel);
+      WidgetFactory.hiliteComponent(attributesLabel);
       return false;
     }
     return true; 
@@ -245,9 +282,9 @@ public class Keywords extends AbstractWizardPage{
     List    nextRowList     = null;
     Object  nextUserObject  = null;
     OrderedMap  nextNVPMap  = null;
-    KeywordsDialog nextKeywordsDialog = null;
+    EntityDialog nextEntityDialog = null;
     
-    List rowLists = keywordsList.getListOfRowLists();
+    List rowLists = attributeList.getListOfRowLists();
     
     if (rowLists==null) return null;
     
@@ -262,9 +299,9 @@ public class Keywords extends AbstractWizardPage{
       nextUserObject = nextRowList.get(2);
       if (nextUserObject==null) continue;
       
-      nextKeywordsDialog = (KeywordsDialog)nextUserObject;
+      nextEntityDialog = (EntityDialog)nextUserObject;
       
-      nextNVPMap = nextKeywordsDialog.getPageData(xPathRoot + (index++) + "]");
+      nextNVPMap = nextEntityDialog.getPageData(xPathRoot + (index++) + "]");
       returnMap.putAll(nextNVPMap);
     }
     return returnMap;
@@ -319,10 +356,9 @@ public class Keywords extends AbstractWizardPage{
 ////////////////////////////////////////////////////////////////////////////////
 
 
-class KeywordsDialog extends WizardPopupDialog {
+class EntityDialog extends WizardPopupDialog {
 
   private JTextField thesaurusField;
-  private JComboBox  kwTypePickList;
   private JLabel kwLabel;
   private CustomList kwList;
   private String[] kwTypeArray = new String[]{  "discipline",
@@ -332,7 +368,7 @@ class KeywordsDialog extends WizardPopupDialog {
                                                 "temporal",
                                                 "thematic" };
   
-  public KeywordsDialog(JFrame parent) { 
+  public EntityDialog(JFrame parent) { 
   
     super(parent); 
     
@@ -369,18 +405,9 @@ class KeywordsDialog extends WizardPopupDialog {
 
     ////
     JPanel kwPanel = WidgetFactory.makePanel(4);
-    kwLabel = WidgetFactory.makeLabel("Keywords:", true);
+    kwLabel = WidgetFactory.makeLabel("Entity:", true);
     kwPanel.add(kwLabel);
     
-    kwTypePickList = WidgetFactory.makePickList(kwTypeArray, false, -1, 
-            new ItemListener(){ public void itemStateChanged(ItemEvent e) {}});
-            
-    kwList = WidgetFactory.makeList(new String[]{ "Keyword",
-                                                  "Keyword Type (optional)" }, 
-                                    new Object[]{ new JTextField(), 
-                                                  kwTypePickList }, 
-                                    4, true, false, false, true, true, true );
-    kwPanel.add(kwList);
     middlePanel.add(kwPanel);
   } 
   
