@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-06-07 23:27:42 $'
- * '$Revision: 1.7 $'
+ *     '$Date: 2001-06-18 15:54:26 $'
+ * '$Revision: 1.8 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -106,6 +106,7 @@ class XMLDisplayHandler extends DefaultHandler implements LexicalHandler {
 		// Set Text of Node on top of Stack
     	String text = new String (ch, start, length);
     	text = text.trim();
+    	text = text.replace('\n', ' ');
     	if (text.length()>0) {
 		    NodeInfo ni = new NodeInfo("#PCDATA");
 		    DefaultMutableTreeNode newNode = new DefaultMutableTreeNode (ni);
