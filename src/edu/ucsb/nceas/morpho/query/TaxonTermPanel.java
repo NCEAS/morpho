@@ -1,5 +1,5 @@
 /**
- *       Name: TextQueryTermPanel.java
+ *       Name: TaxonTermPanel.java
  *    Purpose: subpanel repeated in QueryDialog
  *  Copyright: 2000 Regents of the University of California and the
  *             National Center for Ecological Analysis and Synthesis
@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2001-05-31 00:59:25 $'
- * '$Revision: 1.4 $'
+ *     '$Date: 2001-05-31 01:28:02 $'
+ * '$Revision: 1.1 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -43,13 +43,13 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 /**
- * This panel contains all the elements for a single text
+ * This panel contains all the elements for a single taxon
  * query term. It is repeated for multiple combined queries.
  * It is essential a query component that can return a search
  * term, a search type (e.g. contains, matches, etc.), and
- * some information about the path (e.g. all, title, etc.)
+ * some information about the path
  */
-public class TextQueryTermPanel extends JComponent
+public class TaxonTermPanel extends JComponent
 {
 
   //{{DECLARE_CONTROLS
@@ -64,7 +64,7 @@ public class TextQueryTermPanel extends JComponent
   /**
    * Constructor
    */
-  public TextQueryTermPanel()
+  public TaxonTermPanel()
   {
     //{{INIT_CONTROLS
     setLayout(new BorderLayout(0, 0));

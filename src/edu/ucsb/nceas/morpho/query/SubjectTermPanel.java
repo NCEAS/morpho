@@ -1,5 +1,5 @@
 /**
- *       Name: TextQueryTermPanel.java
+ *       Name: SubjectTermPanel.java
  *    Purpose: subpanel repeated in QueryDialog
  *  Copyright: 2000 Regents of the University of California and the
  *             National Center for Ecological Analysis and Synthesis
@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2001-05-31 00:59:25 $'
- * '$Revision: 1.4 $'
+ *     '$Date: 2001-05-31 01:28:02 $'
+ * '$Revision: 1.5 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -49,7 +49,7 @@ import javax.swing.JTextField;
  * term, a search type (e.g. contains, matches, etc.), and
  * some information about the path (e.g. all, title, etc.)
  */
-public class TextQueryTermPanel extends JComponent
+public class SubjectTermPanel extends JComponent
 {
 
   //{{DECLARE_CONTROLS
@@ -64,7 +64,7 @@ public class TextQueryTermPanel extends JComponent
   /**
    * Constructor
    */
-  public TextQueryTermPanel()
+  public SubjectTermPanel()
   {
     //{{INIT_CONTROLS
     setLayout(new BorderLayout(0, 0));
