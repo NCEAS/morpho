@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-11-21 16:08:37 $'
- * '$Revision: 1.13 $'
+ *     '$Date: 2001-12-03 03:44:09 $'
+ * '$Revision: 1.14 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -912,9 +912,10 @@ public class AddMetadataWizard extends JFrame
   }
  
   private void handleAddedFiles(boolean locLocal, boolean locMetacat, Vector files)  {
+    boolean hasData = true;
     String docString = "";
     String currentFileName;
-    Triple t;
+    Triple t = null;
     TripleCollection triples = new TripleCollection();
     FileSystemDataStore fsds = null;
     AccessionNumber a = new AccessionNumber(framework);
@@ -928,6 +929,7 @@ public class AddMetadataWizard extends JFrame
     File currentFile = (File)filedata.elementAt(1);
     if (type.equals("GETDATA")) {
       currentFileName = (String)filedata.elementAt(0);
+      if (currentFileName.equals("")) hasData = false;
     }
     else {
       currentFileName = currentFile.getAbsolutePath();
@@ -937,7 +939,7 @@ public class AddMetadataWizard extends JFrame
     String relationship = "isRelatedTo";
     fsds = new FileSystemDataStore(framework);
     //relate the new data file to the package itself
-    if (type.equals("GETDATA")) {
+    if ((type.equals("GETDATA"))&&(hasData)) {
       relationship = currentFileName;
       if(relationship.indexOf("/") != -1 || 
         relationship.indexOf("\\") != -1)
@@ -961,12 +963,19 @@ public class AddMetadataWizard extends JFrame
     // the second is an entity file which is related to the data file;
     // remaining files should be related to entity file
     if (i==0) {
-      t = new Triple(newid, relationship, dataPackage.getID());
-      dataFileID = newid;
+        if (hasData) {
+            t = new Triple(newid, relationship, dataPackage.getID());
+            dataFileID = newid;
+        }
     }
     else if (i==1) {
       newid = a.getNextId();
-      t = new Triple(newid, relationship, dataFileID);
+      if (hasData) {
+        t = new Triple(newid, relationship, dataFileID);
+      }
+      else {
+        t = new Triple(newid, relationship, dataPackage.getID());
+      }
       entityFileID = newid;
       
     }
@@ -974,24 +983,26 @@ public class AddMetadataWizard extends JFrame
       newid = a.getNextId();
       t = new Triple(newid, relationship, entityFileID);      
     }
-      
-    triples.addTriple(t);
     
-    if(locLocal)
-    {
-      File newPackageMember;
-      try
-      { //save the new package member
-          newPackageMember = fsds.newFile(newid, new FileReader(currentFile));
-      }
-      catch(Exception e)
-      {
-        ClientFramework.debug(0, "Error saving file: " + e.getMessage());
-        e.printStackTrace();
-        e.printStackTrace();
-        return;
-      }
-    }
+    if (((i==0)&&(hasData))||(i>0)) {
+      
+        triples.addTriple(t);
+    
+        if(locLocal)
+        {
+        File newPackageMember;
+        try
+        { //save the new package member
+            newPackageMember = fsds.newFile(newid, new FileReader(currentFile));
+        }
+        catch(Exception e)
+        {
+            ClientFramework.debug(0, "Error saving file: " + e.getMessage());
+            e.printStackTrace();
+            e.printStackTrace();
+            return;
+        }
+        }
     
     if(locMetacat)
     { //send the file to metacat
@@ -1016,7 +1027,7 @@ public class AddMetadataWizard extends JFrame
       }
     }
     
-    
+    }  
   } // end of loop over files vector
     File packageFile = dataPackage.getTriplesFile();
     //add the triple to the triple file

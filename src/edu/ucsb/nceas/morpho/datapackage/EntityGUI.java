@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: berkley $'
- *     '$Date: 2001-11-20 19:06:49 $'
- * '$Revision: 1.30 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2001-12-03 03:44:09 $'
+ * '$Revision: 1.31 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -218,7 +218,8 @@ public class EntityGUI extends javax.swing.JFrame
       editDataButton.setEnabled(true); 
     }
     else {
-      editDataButton.setEnabled(false); 
+     // editDataButton.setEnabled(false); 
+      editDataButton.setText("Associate Data"); 
     }
     editDataButton.addActionListener(this);
     editEntityButton.addActionListener(this);
@@ -837,6 +838,10 @@ public class EntityGUI extends javax.swing.JFrame
                                "Alert", 
                                JOptionPane.ERROR_MESSAGE);    
       }
+    }
+    else if (command.equals("Associate Data")) {
+       // a new data file to be associated with this existing metadata is to be entered here 
+      (new NewDataFile(this)).setVisible(true);     
     }
   }
   
