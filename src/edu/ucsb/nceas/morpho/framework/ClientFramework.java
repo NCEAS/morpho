@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2001-04-17 19:59:08 $'
- * '$Revision: 1.31.2.5 $'
+ *     '$Date: 2001-04-18 01:56:02 $'
+ * '$Revision: 1.31.2.6 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -53,6 +53,9 @@ import com.symantec.itools.javax.swing.borders.LineBorder;
 public class ClientFramework extends javax.swing.JFrame 
                              implements PluginInterface
 {
+  /** Constant to indicate a spearator should precede an action */
+  public static String SEPARATOR_PRECEDING = "TRUE";
+
   // following static block will reset the mdehome config variable to the
   // current working dir if it is currently set to 'settocwd'
   // to be used when first installed
@@ -93,6 +96,7 @@ public class ClientFramework extends javax.swing.JFrame
   edu.ucsb.nceas.querybean.LocalQuery lq = null;
   Hashtable menuList = null;
   Action[] fileMenuActions = null;
+  Action[] editMenuActions = null;
   Action[] helpMenuActions = null;
   Action[] containerToolbarActions = null;
 
@@ -118,18 +122,6 @@ public class ClientFramework extends javax.swing.JFrame
       xxx = new ImageIcon(getClass().getResource("save.gif"));
       saveButton.setIcon(xxx);
       saveItem.setIcon(xxx);
-      xxx = new ImageIcon(getClass().getResource("cut.gif"));
-      cutButton.setIcon(xxx);
-      cutItem.setIcon(xxx);
-      xxx = new ImageIcon(getClass().getResource("copy.gif"));
-      copyButton.setIcon(xxx);
-      copyItem.setIcon(xxx);
-      xxx = new ImageIcon(getClass().getResource("paste.gif"));
-      pasteButton.setIcon(xxx);
-      pasteItem.setIcon(xxx);
-      xxx = new ImageIcon(getClass().getResource("about.gif"));
-      aboutButton.setIcon(xxx);
-      aboutItem.setIcon(xxx);
       xxx = new ImageIcon(getClass().getResource("saveserver.gif"));
       saveserverButton.setIcon(xxx);
       xxx = new ImageIcon(getClass().getResource("export.gif"));
@@ -164,100 +156,7 @@ public class ClientFramework extends javax.swing.JFrame
     JToolBar1.setAlignmentY(0.222222F);
     ToolBarPanel.add(JToolBar1);
     JToolBar1.setBounds(0, 0, 834, 36);
-/*
-    newButton.setDefaultCapable(false);
-    newButton.setToolTipText("Create a new document");
-    newButton.setMnemonic((int) 'N');
-    JToolBar1.add(newButton);
-    newButton.setBounds(16, 11, 35, 11);
-    openButton.setDefaultCapable(false);
-    openButton.setToolTipText("Open an existing document");
-    openButton.setMnemonic((int) 'O');
-    JToolBar1.add(openButton);
-    openButton.setBounds(51, 11, 35, 11);
-    saveButton.setDefaultCapable(false);
-    saveButton.setToolTipText("Save the active document");
-    saveButton.setMnemonic((int) 'S');
-    JToolBar1.add(saveButton);
-    saveButton.setBounds(86, 11, 35, 11);
 
-    saveserverButton.setDefaultCapable(false);
-    saveserverButton.setToolTipText
-      ("Load, Delete, or Update Information on Server");
-    JToolBar1.add(saveserverButton);
-    saveserverButton.setBounds(121, 11, 35, 11);
-
-    exportButton.setDefaultCapable(false);
-    exportButton.setToolTipText("Export Datafile to Central Catalog");
-    JToolBar1.add(exportButton);
-
-    JToolBar1.add(JToolBarSeparator1);
-    JToolBarSeparator1.setBounds(156, 9, 10, 5);
-    cutButton.setDefaultCapable(false);
-    cutButton.setToolTipText("Cut the selection and put it on the Clipboard");
-    cutButton.setMnemonic((int) 'T');
-    JToolBar1.add(cutButton);
-    cutButton.setBounds(166, 11, 35, 11);
-    copyButton.setDefaultCapable(false);
-    copyButton.setToolTipText
-      ("Copy the selection and put it on the Clipboard");
-    copyButton.setMnemonic((int) 'C');
-    JToolBar1.add(copyButton);
-    copyButton.setBounds(201, 11, 35, 11);
-    pasteButton.setDefaultCapable(false);
-    pasteButton.setToolTipText("Insert Clipboard contents");
-    pasteButton.setMnemonic((int) 'P');
-    JToolBar1.add(pasteButton);
-    pasteButton.setBounds(236, 11, 35, 11);
-    JToolBar1.add(JToolBarSeparator2);
-    JToolBarSeparator2.setBounds(271, 9, 10, 5);
-    aboutButton.setDefaultCapable(false);
-    aboutButton.setToolTipText
-      ("Display program information, version number and copyright");
-    aboutButton.setMnemonic((int) 'A');
-    JToolBar1.add(aboutButton);
-    aboutButton.setBounds(281, 11, 35, 11);
-    JToolBar1.add(JToolBarSeparator3);
-    JToolBarSeparator3.setBounds(316, 9, 10, 5);
-    ExpertCheckBox.setText("ExpertMode");
-    ExpertCheckBox.setToolTipText
-      ("Shows additional \'Search\' functions when selected");
-    JToolBar1.add(ExpertCheckBox);
-    ExpertCheckBox.setBackground(new java.awt.Color(204, 204, 204));
-    ExpertCheckBox.setFont(new Font("Dialog", Font.PLAIN, 10));
-    ExpertCheckBox.setBounds(326, 11, 82, 21);
-    JToolBar1.add(JToolBarSeparator4);
-    JToolBarSeparator4.setBounds(408, 9, 10, 5);
-    ToolBarSearchText.setColumns(12);
-    ToolBarSearchText.setText("%");
-    JToolBar1.add(ToolBarSearchText);
-    ToolBarSearchText.setFont(new Font("Dialog", Font.PLAIN, 12));
-    ToolBarSearchText.setBounds(418, 2, 132, 32);
-    queryButton.setDefaultCapable(false);
-    queryButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-    queryButton.setText("Quick Search");
-    queryButton.setActionCommand("Find Text");
-    JToolBar1.add(queryButton);
-    queryButton.setFont(new Font("Dialog", Font.PLAIN, 10));
-    queryButton.setBounds(550, 11, 97, 23);
-    LocalSearchCheckBox.setSelected(true);
-    LocalSearchCheckBox.setToolTipText
-      ("When selected, locally stored documents are searched");
-    LocalSearchCheckBox.setText("Local Search");
-    LocalSearchCheckBox.setActionCommand("Local Search");
-    JToolBar1.add(LocalSearchCheckBox);
-    LocalSearchCheckBox.setFont(new Font("Dialog", Font.PLAIN, 10));
-    LocalSearchCheckBox.setBounds(647, 11, 87, 21);
-    CatalogSearchCheckBox.setToolTipText
-      ("When selected, catalog on remote server is searched during queries");
-    CatalogSearchCheckBox.setText("Catalog Search");
-    CatalogSearchCheckBox.setSelected(true);
-    CatalogSearchCheckBox.setActionCommand("Catalog Search");
-    JToolBar1.add(CatalogSearchCheckBox);
-    CatalogSearchCheckBox.setFont(new Font("Dialog", Font.PLAIN, 10));
-    CatalogSearchCheckBox.setBounds(734, 11, 98, 21);
-    ExpertCheckBox.setActionCommand("ExpertMode");
-*/
     ContentPanel.setLayout(new BorderLayout(0, 0));
     getContentPane().add(BorderLayout.CENTER, ContentPanel);
     ContentPanel.setBounds(0, 0, 0, 0);
@@ -265,194 +164,7 @@ public class ClientFramework extends javax.swing.JFrame
     ContentPanel.add(BorderLayout.CENTER, JTabbedPane1);
     JTabbedPane1.setBounds(0, 0, 0, 0);
 
-    //MBJEXCISE//EditorPanel.setLayout(new BorderLayout(0, 0));
-    //MBJEXCISE//JTabbedPane1.add(EditorPanel);
-    //MBJEXCISE//EditorPanel.setBounds(0, 0, 0, 0);
-    //MBJEXCISE//EditorPanel.setVisible(false);
-    //MBJEXCISE//EditorPanel.add(BorderLayout.CENTER, mdeBean1);
-    //MBJEXCISE//QueryPanel.setLayout(new BorderLayout(0, 0));
-    //MBJEXCISE//JTabbedPane1.add(QueryPanel);
-    //MBJEXCISE//QueryPanel.setBounds(0, 0, 0, 0);
-    //MBJEXCISE//QueryPanel.setVisible(false);
-    //MBJEXCISE//queryBean1.setExpertMode(false);
-    //MBJEXCISE//QueryPanel.add(BorderLayout.CENTER, queryBean1);
-/*    DataViewerPanel.setLayout(new BorderLayout(0,0));
-    JTabbedPane1.add(DataViewerPanel);
-    DataViewerPanel.setBounds(0,0,0,0);
-    DataViewerPanel.setVisible(false);
-    UnderConstruction.setText("Under Construction!!! (NOT Functional)");
-    UnderConstruction.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-    DataViewerPanel.add(BorderLayout.NORTH,UnderConstruction);
-    UnderConstruction.setForeground(java.awt.Color.red);
-    UnderConstruction.setFont(new Font("Dialog", Font.BOLD, 20));
-    UnderConstruction.setBounds(0,0,0,0);
-    DataViewerPanel.add(BorderLayout.CENTER,dataPict);
-    dataPict.setBounds(0,0,20,40);
-    JLabel1.setText("Eventually this tab will display an assortment " +
-                    "of tools for viewing and manipulating data " +
-                    "collections (i.e. metadata and data)");
-    DataViewerPanel.add(BorderLayout.SOUTH,JLabel1);
-    JLabel1.setBounds(0,0,20,40);
-*/
-    //MBJEXCISE//JTabbedPane1.setSelectedComponent(EditorPanel);
-    //MBJEXCISE//JTabbedPane1.setSelectedIndex(0);
-    //MBJEXCISE//JTabbedPane1.setTitleAt(0, "");
-    //MBJEXCISE//JTabbedPane1.setTitleAt(1, "");
-    //JTabbedPane1.setTitleAt(2,"");
-    //$$ lineBorder1.move(240,481);
-    //$$ stringListModel1.move(72,406);
-    //$$ stringComboBoxModel1.move(48,481);
-    //$$ stringComboBoxModel2.move(72,481);
-    //$$ JMenuBar1.move(168,312);
-
-/*
-    fileMenu.setText("File");
-    fileMenu.setActionCommand("File");
-    fileMenu.setMnemonic((int) 'F');
-    JMenuBar1.add(fileMenu);
-
-    newItem.setAccelerator(javax.swing.
-			   KeyStroke.getKeyStroke(java.awt.event.KeyEvent.
-						  VK_N,
-						  java.awt.Event.CTRL_MASK));
-    newItem.setText("New");
-    newItem.setActionCommand("New");
-    newItem.setMnemonic((int) 'N');
-    fileMenu.add(newItem);
-    openItem.setAccelerator(javax.swing.
-			    KeyStroke.getKeyStroke(java.awt.event.KeyEvent.
-						   VK_O,
-						   java.awt.Event.CTRL_MASK));
-    openItem.setText("Open...");
-    openItem.setActionCommand("Open...");
-    openItem.setMnemonic((int) 'O');
-    fileMenu.add(openItem);
-    saveItem.setAccelerator(javax.swing.
-			    KeyStroke.getKeyStroke(java.awt.event.KeyEvent.
-						   VK_S,
-						   java.awt.Event.CTRL_MASK));
-    saveItem.setText("Save");
-    saveItem.setActionCommand("Save");
-    saveItem.setMnemonic((int) 'S');
-    fileMenu.add(saveItem);
-
-    saveAsItem.setText("Save As...");
-    saveAsItem.setActionCommand("Save As...");
-    saveAsItem.setMnemonic((int) 'A');
-    fileMenu.add(saveAsItem);
-
-    SaveToDatabase.setText("Save To Database...");
-    SaveToDatabase.setActionCommand("Save To Database...");
-    fileMenu.add(SaveToDatabase);
-
-    SaveDataItem.setText("Save Data to Server...");
-    SaveDataItem.setActionCommand("Save Data to Server...");
-    fileMenu.add(SaveDataItem);
-
-    PreviewXML.setText("Preview XML");
-    PreviewXML.setActionCommand("Preview XML");
-    fileMenu.add(PreviewXML);
-
-    fileMenu.add(JSeparator1);
-
-    ConnectMenuItem.setText("Connect...");
-    ConnectMenuItem.setActionCommand("Connect...");
-    fileMenu.add(ConnectMenuItem);
-
-    fileMenu.add(JSeparator3);
-
-    exitItem.setText("Exit");
-    exitItem.setActionCommand("Exit");
-    exitItem.setMnemonic((int) 'X');
-    fileMenu.add(exitItem);
-
-    editMenu.setText("Edit");
-    editMenu.setActionCommand("Edit");
-    editMenu.setMnemonic((int) 'E');
-    JMenuBar1.add(editMenu);
-
-    cutItem.setEnabled(false);
-    cutItem.setAccelerator(javax.swing.
-			   KeyStroke.getKeyStroke(java.awt.event.KeyEvent.
-						  VK_X,
-						  java.awt.Event.CTRL_MASK));
-    cutItem.setText("Cut");
-    cutItem.setActionCommand("Cut");
-    cutItem.setMnemonic((int) 'T');
-    editMenu.add(cutItem);
-    copyItem.setEnabled(false);
-    copyItem.setAccelerator(javax.swing.
-			    KeyStroke.getKeyStroke(java.awt.event.KeyEvent.
-						   VK_C,
-						   java.awt.Event.CTRL_MASK));
-    copyItem.setText("Copy");
-    copyItem.setActionCommand("Copy");
-    copyItem.setMnemonic((int) 'C');
-    editMenu.add(copyItem);
-    pasteItem.setEnabled(false);
-    pasteItem.setAccelerator(javax.swing.
-			     KeyStroke.getKeyStroke(java.awt.event.KeyEvent.
-						    VK_V,
-						    java.awt.Event.
-						    CTRL_MASK));
-    pasteItem.setText("Paste");
-    pasteItem.setActionCommand("Paste");
-    pasteItem.setMnemonic((int) 'P');
-    editMenu.add(pasteItem);
-
-    editMenu.add(JSeparator2);
-
-    OptionsMenuItem.setText("Options...");
-    OptionsMenuItem.setActionCommand("Options...");
-    editMenu.add(OptionsMenuItem);
-
-    WindowsMenu.setText("Windows");
-    WindowsMenu.setActionCommand("Windows");
-    JMenuBar1.add(WindowsMenu);
-
-    ElementChoiceMenuItem.setSelected(true);
-    ElementChoiceMenuItem.setText("Element Choice");
-    ElementChoiceMenuItem.setActionCommand("Element Choice");
-    WindowsMenu.add(ElementChoiceMenuItem);
-
-    ElementTextMenuItem.setSelected(true);
-    ElementTextMenuItem.setText("Element Text");
-    ElementTextMenuItem.setActionCommand("Element Text");
-    WindowsMenu.add(ElementTextMenuItem);
-
-    helpMenu.setText("Help");
-    helpMenu.setActionCommand("Help");
-    helpMenu.setMnemonic((int) 'H');
-    JMenuBar1.add(helpMenu);
-
-    aboutItem.setText("About...");
-    aboutItem.setActionCommand("About...");
-    aboutItem.setMnemonic((int) 'A');
-    helpMenu.add(aboutItem);
-*/
     //}}
-
-    // Update the menu list with the statically created menus
-/*    menuList.put("File", fileMenu);
-    menuList.put("Edit", editMenu);
-    menuList.put("Windows", WindowsMenu);
-    menuList.put("Help", helpMenu);
-*/
-
-    // Set up the container's menus and toolbars
-    initializeActions();
-    loadPluginMenusAndToolbars(this);
-
-    // Set the tab titles -- these should be dynamically set
-    // from the client.properties rather than hardcoded
-    //MBJEXCISE//JTabbedPane1.setSelectedComponent(QueryPanel);
-    //MBJEXCISE//JTabbedPane1.setSelectedIndex(1);
-    //MBJEXCISE//JTabbedPane1.setTitleAt(0, "Edit Document");
-    //MBJEXCISE//JTabbedPane1.setTitleAt(1, "Search Document");
-    // JTabbedPane1.setTitleAt(2,"Browse Data");
-
-    // Load all of the plugins, their menus, and toolbars
-    loadPlugins();
 
     //{{INIT_MENUS
     //}}
@@ -461,34 +173,9 @@ public class ClientFramework extends javax.swing.JFrame
     SymWindow aSymWindow = new SymWindow();
     this.addWindowListener(aSymWindow);
     SymAction lSymAction = new SymAction();
-/*
-    openItem.addActionListener(lSymAction);
-    saveItem.addActionListener(lSymAction);
-    exitItem.addActionListener(lSymAction);
-    aboutItem.addActionListener(lSymAction);
-    openButton.addActionListener(lSymAction);
-    saveButton.addActionListener(lSymAction);
-    saveserverButton.addActionListener(lSymAction);
-    exportButton.addActionListener(lSymAction);
-    aboutButton.addActionListener(lSymAction);
-    SymItem lSymItem = new SymItem();
-    queryButton.addActionListener(lSymAction);
-    ToolBarSearchText.addActionListener(lSymAction);
-    newItem.addActionListener(lSymAction);
-    saveAsItem.addActionListener(lSymAction);
-    SaveToDatabase.addActionListener(lSymAction);
-    SaveDataItem.addActionListener(lSymAction);
-    PreviewXML.addActionListener(lSymAction);
-    OptionsMenuItem.addActionListener(lSymAction);
-    SymChange lSymChange = new SymChange();
-    JTabbedPane1.addChangeListener(lSymChange);
-    LocalSearchCheckBox.addItemListener(lSymItem);
-    CatalogSearchCheckBox.addItemListener(lSymItem);
-    ExpertCheckBox.addItemListener(lSymItem);
-    ConnectMenuItem.addActionListener(lSymAction);
-    newButton.addActionListener(lSymAction);
-*/
+
     //}}
+
     // Get the configuration file information
     try
     {
@@ -501,6 +188,14 @@ public class ClientFramework extends javax.swing.JFrame
     {
       System.out.println("Could not locate properties file!");
     }
+
+    // Set up the container's menus and toolbars
+    initializeActions();
+    loadPluginMenusAndToolbars(this);
+
+    // Load all of the plugins, their menus, and toolbars
+    loadPlugins();
+
     JTabbedPane1_stateChanged(null);
     queryBean1.setEditor(mdeBean1);
     queryBean1.setTabbedPane(JTabbedPane1);
@@ -508,25 +203,22 @@ public class ClientFramework extends javax.swing.JFrame
   }
 
   /**
-   * Load all of the plugins specified in the configuration file as
-   * new tabs in the main components pane.  This routine also loads the
-   * menus and toolboxes for the plugins.
+   * Load all of the plugins specified in the configuration file. The plugins
+   * are classes that implement the PluginInterface interface.
    */
   private void loadPlugins()
   {
-    Vector plugins = new Vector();	// eventually load from config file
-    //plugins.addElement("edu.ucsb.nceas.dsbrowser.DataSetBrowser");
-    plugins.addElement("edu.ucsb.nceas.editor.EditorBean");
+    // Get the list of plugins to load from the config file
+    Vector plugins = config.get("plugin");
 
     // Dynamically load the plugins and their associated menus and toolbars
-
-    // First, create the new bean plugin
     try
     {
       for (Enumeration q = plugins.elements(); q.hasMoreElements();)
       {
+        // Start by creating the new bean plugin
 	PluginInterface plugin = (PluginInterface)
-	createObject((String) (q.nextElement()));
+	                createObject((String) (q.nextElement()));
 
 	// Create a panel to contain the plugin
 	JPanel pluginPanel = new JPanel();
@@ -535,6 +227,7 @@ public class ClientFramework extends javax.swing.JFrame
 	pluginPanel.setVisible(false);
 	pluginPanel.add(BorderLayout.CENTER, (Container) plugin);
 
+        // Allow the plugin to add menus and toolbar items
         loadPluginMenusAndToolbars(plugin);
       }
     }
@@ -545,9 +238,7 @@ public class ClientFramework extends javax.swing.JFrame
   }
 
   /**
-   * Load all of the plugins specified in the configuration file as
-   * new tabs in the main components pane.  This routine also loads the
-   * menus and toolboxes for the plugins.
+   * Load the menus and toolboxes for a particular plugin
    */
   private void loadPluginMenusAndToolbars(PluginInterface plugin)
   {
@@ -569,7 +260,6 @@ public class ClientFramework extends javax.swing.JFrame
 	    //currentMenu.setMnemonic((int)'H');
             JMenuBar1.add(currentMenu);
             menuList.put(currentMenuName, currentMenu);
-            System.err.println("Creating menu: " + currentMenuName);
           }
 
 	 // Get the menu items (Actions) and add them to the menus
@@ -578,17 +268,25 @@ public class ClientFramework extends javax.swing.JFrame
          if (menuActions != null) {
 	   for (int j=0; j < menuActions.length; j++) {
 	     Action currentAction = menuActions[j];
-             System.err.println("Processing item: " + currentAction);
+             String hasDefaultSep = 
+                    (String)currentAction.getValue(Action.DEFAULT);
              if (currentMenuName.equals("File")) {
 	       // Insert File menu items above the "Exit" item and separator
                int pos = currentMenu.getMenuComponentCount() - 2;
                if (pos < 0) {
                  pos = 0;
                }
-               System.err.println("Current position: " + pos);
+               if (hasDefaultSep != null &&
+                   hasDefaultSep.equals(SEPARATOR_PRECEDING)) {
+                 currentMenu.insertSeparator(pos++);
+               }
                currentMenu.insert(currentAction, pos);
              } else {
 	       // Append everything else at the bottom of the menu
+               if (hasDefaultSep != null &&
+                   hasDefaultSep.equals(SEPARATOR_PRECEDING)) {
+                 currentMenu.addSeparator();
+               }
                currentMenu.add(currentAction);
              }
            }
@@ -644,6 +342,8 @@ public class ClientFramework extends javax.swing.JFrame
     Action actionList[] = null;
     if (menu.equals("File")) {
       actionList = fileMenuActions;
+    } else if (menu.equals("Edit")) {
+      actionList = editMenuActions;
     } else if (menu.equals("Help")) {
       actionList = helpMenuActions;
     }
@@ -658,18 +358,24 @@ public class ClientFramework extends javax.swing.JFrame
     return containerToolbarActions;;
   }
 
+  public void setContainer(Object o) 
+  {
+  }
+
   /**
    * Set up the actions for menus and toolbars
    */
   private void initializeActions() {
-    // Set up the menus for the application
+    // FILE MENU ACTIONS
     fileMenuActions = new Action[2];
+
     Action exitItemAction = new AbstractAction("Exit") {
       public void actionPerformed(ActionEvent e) {
         exitApplication();
       }
     };
     exitItemAction.putValue(Action.SHORT_DESCRIPTION, "Exit Morpho");
+    exitItemAction.putValue(Action.DEFAULT, SEPARATOR_PRECEDING);
     fileMenuActions[0] = exitItemAction;
 
     Action connectItemAction = new AbstractAction("Connect...") {
@@ -681,6 +387,55 @@ public class ClientFramework extends javax.swing.JFrame
     connectItemAction.putValue(Action.SHORT_DESCRIPTION, "Log In");
     fileMenuActions[1] = connectItemAction;
 
+    // EDIT MENU ACTIONS
+    editMenuActions = new Action[4];
+    Action cutItemAction = new AbstractAction("Cut") {
+      public void actionPerformed(ActionEvent e) {
+        System.err.println("Cut requested.");
+      }
+    };
+    cutItemAction.putValue(Action.SHORT_DESCRIPTION, 
+                  "Cut the selection and put it on the Clipboard");
+    cutItemAction.putValue(Action.SMALL_ICON, 
+                    new ImageIcon(getClass().getResource("cut.gif")));
+    cutItemAction.setEnabled(false);
+    editMenuActions[0] = cutItemAction;
+
+    Action copyItemAction = new AbstractAction("Copy") {
+      public void actionPerformed(ActionEvent e) {
+        System.err.println("Copy requested.");
+      }
+    };
+    copyItemAction.putValue(Action.SHORT_DESCRIPTION, 
+                  "Copy the selection and put it on the Clipboard");
+    copyItemAction.putValue(Action.SMALL_ICON, 
+                    new ImageIcon(getClass().getResource("copy.gif")));
+    copyItemAction.setEnabled(false);
+    editMenuActions[1] = copyItemAction;
+
+    Action pasteItemAction = new AbstractAction("Paste") {
+      public void actionPerformed(ActionEvent e) {
+        System.err.println("Paste requested.");
+      }
+    };
+    pasteItemAction.putValue(Action.SHORT_DESCRIPTION, 
+                  "Paste the selection.");
+    pasteItemAction.putValue(Action.SMALL_ICON, 
+                    new ImageIcon(getClass().getResource("paste.gif")));
+    pasteItemAction.setEnabled(false);
+    editMenuActions[2] = pasteItemAction;
+
+    Action prefsItemAction = new AbstractAction("Preferences...") {
+      public void actionPerformed(ActionEvent e) {
+        System.err.println("Preferences requested. GUI not yet implemented!");
+      }
+    };
+    prefsItemAction.putValue(Action.SHORT_DESCRIPTION, 
+                  "Open the Preferences dialog.");
+    prefsItemAction.putValue(Action.DEFAULT, SEPARATOR_PRECEDING);
+    editMenuActions[3] = prefsItemAction;
+
+    // HELP MENU ACTIONS
     helpMenuActions = new Action[1];
     Action aboutItemAction = new AbstractAction("About...") {
       public void actionPerformed(ActionEvent e) {
@@ -694,12 +449,10 @@ public class ClientFramework extends javax.swing.JFrame
     helpMenuActions[0] = aboutItemAction;
 
     // Set up the toolbar for the application
-    containerToolbarActions = new Action[1];
-    containerToolbarActions[0] = exitItemAction;
-  }
-
-  public void setContainer(Object o) 
-  {
+    containerToolbarActions = new Action[3];
+    containerToolbarActions[0] = cutItemAction;
+    containerToolbarActions[1] = copyItemAction;
+    containerToolbarActions[2] = pasteItemAction;
   }
 
   /**
@@ -821,68 +574,17 @@ public class ClientFramework extends javax.swing.JFrame
   java.awt.FileDialog openFileDialog = new java.awt.FileDialog(this);
   javax.swing.JPanel ToolBarPanel = new javax.swing.JPanel();
   javax.swing.JToolBar JToolBar1 = new javax.swing.JToolBar();
-/*
-  javax.swing.JButton newButton = new javax.swing.JButton();
-  javax.swing.JButton openButton = new javax.swing.JButton();
-  javax.swing.JButton saveButton = new javax.swing.JButton();
-  javax.swing.JButton saveserverButton = new javax.swing.JButton();
-  javax.swing.JButton exportButton = new javax.swing.JButton();
-  com.symantec.itools.javax.swing.JToolBarSeparator JToolBarSeparator1 =
-    new com.symantec.itools.javax.swing.JToolBarSeparator();
-  javax.swing.JButton cutButton = new javax.swing.JButton();
-  javax.swing.JButton copyButton = new javax.swing.JButton();
-  javax.swing.JButton pasteButton = new javax.swing.JButton();
-  com.symantec.itools.javax.swing.JToolBarSeparator JToolBarSeparator2 =
-    new com.symantec.itools.javax.swing.JToolBarSeparator();
-  javax.swing.JButton aboutButton = new javax.swing.JButton();
-  com.symantec.itools.javax.swing.JToolBarSeparator JToolBarSeparator3 =
-    new com.symantec.itools.javax.swing.JToolBarSeparator();
-  javax.swing.JCheckBox ExpertCheckBox = new javax.swing.JCheckBox();
-  com.symantec.itools.javax.swing.JToolBarSeparator JToolBarSeparator4 =
-    new com.symantec.itools.javax.swing.JToolBarSeparator();
-  javax.swing.JTextField ToolBarSearchText = new javax.swing.JTextField();
-  javax.swing.JButton queryButton = new javax.swing.JButton();
-  javax.swing.JCheckBox LocalSearchCheckBox = new javax.swing.JCheckBox();
-  javax.swing.JCheckBox CatalogSearchCheckBox = new javax.swing.JCheckBox();
-*/
+
   javax.swing.JPanel ContentPanel = new javax.swing.JPanel();
   javax.swing.JTabbedPane JTabbedPane1 = new javax.swing.JTabbedPane();
-  //MBJEXCISE//javax.swing.JPanel EditorPanel = new javax.swing.JPanel();
-  //MBJEXCISE//javax.swing.JPanel QueryPanel = new javax.swing.JPanel();
-  //MBJEXCISE//javax.swing.JPanel DataViewerPanel = new javax.swing.JPanel();
+
   javax.swing.JLabel UnderConstruction = new javax.swing.JLabel();
   javax.swing.JLabel dataPict = new javax.swing.JLabel();
   javax.swing.JLabel JLabel1 = new javax.swing.JLabel();
   com.symantec.itools.javax.swing.borders.LineBorder lineBorder1 =
     new com.symantec.itools.javax.swing.borders.LineBorder();
   javax.swing.JMenuBar JMenuBar1 = new javax.swing.JMenuBar();
-  javax.swing.JMenu fileMenu = new javax.swing.JMenu();
-/*
-  javax.swing.JMenuItem newItem = new javax.swing.JMenuItem();
-  javax.swing.JMenuItem openItem = new javax.swing.JMenuItem();
-  javax.swing.JMenuItem saveItem = new javax.swing.JMenuItem();
-  javax.swing.JMenuItem saveAsItem = new javax.swing.JMenuItem();
-  javax.swing.JMenuItem SaveToDatabase = new javax.swing.JMenuItem();
-  javax.swing.JMenuItem PreviewXML = new javax.swing.JMenuItem();
-  javax.swing.JSeparator JSeparator1 = new javax.swing.JSeparator();
-  javax.swing.JMenuItem ConnectMenuItem = new javax.swing.JMenuItem();
-  javax.swing.JSeparator JSeparator3 = new javax.swing.JSeparator();
-  javax.swing.JMenuItem exitItem = new javax.swing.JMenuItem();
-  javax.swing.JMenu editMenu = new javax.swing.JMenu();
-  javax.swing.JMenuItem cutItem = new javax.swing.JMenuItem();
-  javax.swing.JMenuItem copyItem = new javax.swing.JMenuItem();
-  javax.swing.JMenuItem pasteItem = new javax.swing.JMenuItem();
-  javax.swing.JSeparator JSeparator2 = new javax.swing.JSeparator();
-  javax.swing.JMenuItem OptionsMenuItem = new javax.swing.JMenuItem();
-  javax.swing.JMenu WindowsMenu = new javax.swing.JMenu();
-  javax.swing.JCheckBoxMenuItem ElementChoiceMenuItem =
-    new javax.swing.JCheckBoxMenuItem();
-  javax.swing.JCheckBoxMenuItem ElementTextMenuItem =
-    new javax.swing.JCheckBoxMenuItem();
-  javax.swing.JMenu helpMenu = new javax.swing.JMenu();
-  javax.swing.JMenuItem aboutItem = new javax.swing.JMenuItem();
-  javax.swing.JMenuItem SaveDataItem = new javax.swing.JMenuItem();
-*/
+
   //}}
   edu.ucsb.nceas.metaedit.AbstractMdeBean mdeBean1 =
     (edu.ucsb.nceas.metaedit.AbstractMdeBean)
@@ -934,7 +636,6 @@ public class ClientFramework extends javax.swing.JFrame
   void ClientFramework_windowClosing(java.awt.event.WindowEvent event)
   {
     // to do: code goes here.
-
     ClientFramework_windowClosing_Interaction1(event);
   }
 
@@ -995,7 +696,6 @@ public class ClientFramework extends javax.swing.JFrame
       else if (object == SaveDataItem)
 	  SaveDataItem_actionPerformed(event);
 */
-
     }
   }
 
@@ -1031,33 +731,6 @@ public class ClientFramework extends javax.swing.JFrame
     mdeBean1.saveDocument();
   }
 
-/*
-  void exitItem_actionPerformed(java.awt.event.ActionEvent event)
-  {
-    // to do: code goes here.
-
-    exitItem_actionPerformed_Interaction1(event);
-  }
-
-  void exitItem_actionPerformed_Interaction1(java.awt.event.ActionEvent event)
-  {
-    try
-    {
-      this.exitApplication();
-    }
-    catch(Exception e)
-    {
-    }
-  }
-*/
-
-  void aboutItem_actionPerformed(java.awt.event.ActionEvent event)
-  {
-    SplashFrame sf = new SplashFrame();
-      sf.setVisible(true);
-
-  }
-
   void openButton_actionPerformed(java.awt.event.ActionEvent event)
   {
     // to do: code goes here.
@@ -1089,13 +762,6 @@ public class ClientFramework extends javax.swing.JFrame
     mdeBean1.saveDocument();
   }
 
-
-  void aboutButton_actionPerformed(java.awt.event.ActionEvent event)
-  {
-    SplashFrame sf = new SplashFrame();
-      sf.setVisible(true);
-
-  }
 
   class SymItem implements java.awt.event.ItemListener
   {
@@ -1258,7 +924,7 @@ public class ClientFramework extends javax.swing.JFrame
     // Now try to write the document to the database
       try
     {
-      ConfigXML config = new ConfigXML("config.xml");
+      //MBJEXCISE//ConfigXML config = new ConfigXML("config.xml");
       String MetaCatServletURL = config.get("MetaCatServletURL", 0);
         System.err.println("Trying: " + MetaCatServletURL);
       URL url = new URL(MetaCatServletURL);
@@ -1292,7 +958,7 @@ public class ClientFramework extends javax.swing.JFrame
     // Now try to write the document to the database
     try
     {
-      ConfigXML config = new ConfigXML("config.xml");
+      //MBJEXCISE//ConfigXML config = new ConfigXML("config.xml");
       String MetaCatServletURL = config.get("MetaCatServletURL", 0);
         System.err.println("Trying: " + MetaCatServletURL);
       URL url = new URL(MetaCatServletURL);
