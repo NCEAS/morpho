@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-05-25 22:29:05 $'
- * '$Revision: 1.16 $'
+ *     '$Date: 2001-05-29 15:46:10 $'
+ * '$Revision: 1.17 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1052,9 +1052,9 @@ public class PackageWizard extends javax.swing.JFrame
           }
           
           //tempPanel.setLayout(new /*GridLayout(0,2)*/FlowLayout());
-          //BoxLayout box = new BoxLayout(tempPanel, BoxLayout.Y_AXIS);
+          BoxLayout box = new BoxLayout(tempPanel, BoxLayout.Y_AXIS);
           //layout management for internal panels
-          //tempPanel.setLayout(box);
+          tempPanel.setLayout(box);
           
           if(prevIndex == null)
           { //add this group as a child of it's parent for later reconstruction.
@@ -1120,15 +1120,29 @@ public class PackageWizard extends javax.swing.JFrame
                   int textfieldindex = parentPanel.children.indexOf(textfield);
                   parentPanel.children.insertElementAt(newtextfield, 
                                                        textfieldindex+1);
+                  JPanel parentPanel2 = (JPanel)textfield.getParent().getParent();
+                  int numcomponents = parentPanel2.getComponentCount();
                   
-                  int numcomponents = parentPanel.getParent().getComponentCount();
                   int insertindex = numcomponents;
                   for(int j=0; j<numcomponents; j++)
                   {
-                    Component nextcomp = parentPanel.getParent().getComponent(j);
-                    if(nextcomp == textfield)
+                    Component nextcomp = parentPanel2.getComponent(j); 
+                    try
                     {
-                      insertindex = j;
+                      JTextField t = (JTextField)((Component)
+                                            ((JPanel)nextcomp).getComponent(1));
+                      if(t == textfield)
+                      {
+                        insertindex = j;
+                      }
+                    }
+                    catch(ClassCastException cce)
+                    {
+                      
+                    }
+                    catch(ArrayIndexOutOfBoundsException aioobe)
+                    {
+                      
                     }
                   }
                   
@@ -1141,7 +1155,7 @@ public class PackageWizard extends javax.swing.JFrame
                   JPanel layoutpanel = new JPanel();
                   layoutpanel.add(newLabel);
                   layoutpanel.add(newtextfield);
-                  parentPanel.add(layoutpanel, insertindex);
+                  parentPanel2.add(layoutpanel, insertindex + 1);
                   //parentPanel.add(newLabel, insertindex + 1);
                   //parentPanel.add(newtextfield, insertindex + 2);
                   contentPane.repaint();
