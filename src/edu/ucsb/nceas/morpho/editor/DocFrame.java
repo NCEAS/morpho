@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-06-06 22:46:18 $'
- * '$Revision: 1.17 $'
+ *     '$Date: 2001-06-07 22:18:18 $'
+ * '$Revision: 1.18 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -407,8 +407,8 @@ void putXMLintoTree() {
       System.out.println("doctype = " + doctype);
       String temp = myCatalog.resolvePublic(doctype,null);
       if (temp!=null) {
-        if (temp.startsWith("file:/")) {
-          temp = temp.substring(6,temp.length());
+        if (temp.startsWith("file:")) {
+          temp = temp.substring(5,temp.length());
         }
         System.out.println("cat out: "+temp);
         dtdfile = temp;
