@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-12-11 17:57:36 $'
- * '$Revision: 1.44 $'
+ *     '$Date: 2002-01-10 21:06:30 $'
+ * '$Revision: 1.45 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1477,7 +1477,8 @@ public class PackageWizard extends javax.swing.JFrame
         
         if(button != null)
         { //if this item is repeatable add the button  
-          button.add(label);
+          button.setText("<html><font color=\"" + getColor(label.getForeground().toString()) + 
+                         "\">" + label.getText() + "</font></html>");
           layoutpanel.add(button, BorderLayout.WEST);
         }
         else
@@ -1659,8 +1660,8 @@ public class PackageWizard extends javax.swing.JFrame
         
         if(button != null)
         {
-          
-          button.add(label);
+          button.setText("<html><font color=\"" + getColor(label.getForeground().toString()) + 
+                         "\">" + label.getText() + "</font></html>");
           layoutpanel.add(button, BorderLayout.WEST);
           //parentPanel.add(button);
         }
@@ -1901,5 +1902,55 @@ public class PackageWizard extends javax.swing.JFrame
     {
       System.out.println("Component " + i + ": " + c.getComponent(i));
     }
+  }
+  
+  /** 
+   * gets the hex rgb color data out of a string representation of a color class
+   * the string usually looks like this: org.whatever.classname[r=RRR,g=GGG,b=BBB]
+   * where RRR, GGG, and BBB are the RGB values in decimal.
+   * this method returns those values in the for #RRGGBB with RR, GG and BB
+   * being the hex representation of the RGB values
+   */
+  private static String getColor(String s)
+  {
+    int begindex = s.indexOf("[");
+    int endindex = s.indexOf("]");
+    String rgb = s.substring(begindex+1, endindex);
+    //get each of the color channel values
+    String r = rgb.substring(rgb.indexOf("r=")+2, rgb.indexOf(",", rgb.indexOf("r=")));
+    String g = rgb.substring(rgb.indexOf("g=")+2, rgb.indexOf(",", rgb.indexOf("g=")));
+    String b = rgb.substring(rgb.indexOf("b=")+2, rgb.length());
+    
+    String temphex = "";
+    String hex = "#";
+    temphex = Integer.toHexString(new Integer(r).intValue());
+    if(temphex.length() == 1)
+    { //if the hex rep is a single digit, we need a leading 0
+      hex += "0" + temphex;
+    }
+    else
+    { //if the hex value already had 2 digits then just append it.
+      hex += temphex;
+    }
+    temphex = Integer.toHexString(new Integer(g).intValue());
+    if(temphex.length() == 1)
+    {
+      hex += "0" + temphex;
+    }
+    else
+    {
+      hex += temphex;
+    }
+    temphex = Integer.toHexString(new Integer(b).intValue());
+    if(temphex.length() == 1)
+    {
+      hex += "0" + temphex;
+    }
+    else
+    {
+      hex += temphex;
+    }
+    //return the hex representation.
+    return hex;
   }
 }
