@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2004-03-30 00:09:15 $'
- * '$Revision: 1.2 $'
+ *     '$Date: 2004-03-30 04:57:02 $'
+ * '$Revision: 1.3 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -37,10 +37,10 @@ import edu.ucsb.nceas.morpho.util.UISettings;
 import edu.ucsb.nceas.utilities.OrderedMap;
 import edu.ucsb.nceas.utilities.XMLUtilities;
 
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.Iterator;
-import java.util.Map;
+import java.util.List;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -57,6 +57,7 @@ import javax.swing.JTable;
 import javax.swing.table.AbstractTableModel;
 
 import org.w3c.dom.Node;
+import java.util.Comparator;
 
 public class ReferencesHandler {
 
@@ -70,6 +71,7 @@ public class ReferencesHandler {
   private String[] surrogateXPaths;
   private ModalDialog externalRefsDialog;
   private ExternalRefsPage externalRefsPage;
+  private List listenerList = new ArrayList();
 
   /**
    * constructor
@@ -115,45 +117,42 @@ public class ReferencesHandler {
    * instantiate this ReferencesHandler, and whose values are String surrogates
    * for those referenced subtrees
    *
-   * @param dataPkg the AbstractDataPackage from whence the references should be
-   * obtained. If this is null, an empty Map is returned
-   *
-   * @return a Map whose keys are all the IDs currently in the DataPackage that
-   *   point to subtree root-nodes corresponding to the genericName used to
-   *   instantiate this ReferencesHandler, and whose values are String
-   *   surrogates for those referenced subtrees. An empty Map is returned if the
-   *   passed dataPkg parameter is null
+   * @param dataPkg the AbstractDataPackage from whence the references should
+   *   be obtained. If this is null, an empty Map is returned
+   * @param extraSlots int the number of additional array slots to add to the
+   * return-array size for subsequent use by the calling code
+   * @return an array of ReferenceMapping objects containing all the IDs
+   *   currently in the DataPackage that point to subtree root-nodes
+   *   corresponding to the genericName used to instantiate this
+   *   ReferencesHandler, and String surrogates for those referenced subtrees.
+   *   An empty array is returned if the passed dataPkg parameter is null
    */
-  private Map getReferences(AbstractDataPackage dataPkg) {
+  private ReferenceMapping[] getReferences(AbstractDataPackage dataPkg, int extraSlots) {
 
-    Map returnMap = new HashMap();
+    if (dataPkg==null) return new ReferenceMapping[0];
 
-    if (dataPkg==null) return returnMap;
+    List idsList = dataPkg.getIDsForNodesWithName(this.genericName);
 
-    Iterator idIt = dataPkg.getIDsForNodesWithName(this.genericName).iterator();
+    Iterator idIt = idsList.iterator();
+
+    ReferenceMapping[] returnArray
+        = new ReferenceMapping[extraSlots + idsList.size()];
+
+    int index = 0;
 
     while (idIt.hasNext()) {
 
       String nextID = (String)idIt.next();
-      if (nextID == null || nextID.trim().length() < 1) continue;
+      if (nextID == null || nextID.trim().length() < 1)continue;
 
       Node nextSubtree = dataPkg.getSubtreeAtReference(nextID);
 
       if (nextSubtree == null)continue;
 
-      returnMap.put(nextID, nextSubtree);
+      returnArray[index++] = new ReferenceMapping(nextID,
+                                                  getSurrogate(nextSubtree));
     }
-
-    //TESTING ONLY - REMOVE THIS!!!!!!!!!!!!!!!!
-    returnMap.put("bogus.id.2", "aaaa");
-    returnMap.put("bogus.id.9", "_aaa");
-    returnMap.put("2blanks", "  ");
-    returnMap.put("4blanks", "    ");
-    returnMap.put("3blanks", "   ");
-    returnMap.put("1blank", " ");
-    returnMap.put("bogus.id.3", "!");
-
-    return returnMap;
+    return returnArray;
   }
 
 
@@ -198,48 +197,31 @@ public class ReferencesHandler {
         if (e.getStateChange()!=e.SELECTED) return;
 
         JComboBox source = (JComboBox) e.getSource();
-
-        ReferenceSelectionEvent event = new ReferenceSelectionEvent();
+        ReferenceSelectionEvent event = null;
 
         switch (source.getSelectedIndex()) {
 
 
           case 0: //default (blank) item selected
-
-            event.setLocation(ReferenceSelectionEvent.UNDEFINED);
-            event.setReferenceID(null);
-            event.setXPathValsMap(null);
+            event = new ReferenceSelectionEvent(
+                null, ReferenceSelectionEvent.UNDEFINED, null);
             break;
 
-          case 1:
-
-            instance.showCopyExternalRefsDialog(finalPkg, finalParent);
-            event.setLocation(ReferenceSelectionEvent.DIFFERENT_DATA_PACKAGE);
-Log.debug(1, "NOT FINISHED! ReferencesHandler.getJComboBox() - switch case 1");
-//            event.setReferenceID();
-//            event.setXPathValsMap(null);
-////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////
+          case 1: //ref selected from external package
+            event = instance.showCopyExternalRefsDialog(finalPkg, finalParent);
             break;
 
-          default:
+          default: //ref selected from current pkg
+            ReferenceMapping refMap = (ReferenceMapping)(source.getSelectedItem());
 
-Log.debug(1,
-  "NOT FINISHED! ReferencesHandler.getJComboBox() - switch default. ID = "
-  + ((ReferenceMapping)(source.getSelectedItem())).getID());
+            OrderedMap map
+                = XMLUtilities.getDOMTreeAsXPathMap(
+                    finalPkg.getSubtreeAtReference(refMap.getID()));
+
+            event = new ReferenceSelectionEvent(
+              refMap.getID(), ReferenceSelectionEvent.CURRENT_DATA_PACKAGE, map);
         }
+        fireReferencesSelectionEvent(event);
       }
     });
 
@@ -257,34 +239,54 @@ Log.debug(1,
    */
   public void updateJComboBox(AbstractDataPackage dataPkg, JComboBox dropdown) {
 
-    Map refsMap = this.getReferences(dataPkg);
+//    ReferenceMapping[] refMappings = this.getReferences(dataPkg, 2);
 
-    Iterator it = refsMap.keySet().iterator();
-    int index = 0;
-    int listLength = 2 + refsMap.size();
-    ReferenceMapping nextRefMapping = null;
-    Object[] refMappings = new String[listLength];
+    ReferenceMapping[] refMappings = this.getReferences(dataPkg, 6);
 
-    while (it.hasNext()) {
 
-      String nextRefID = (String)(it.next());
-      String nextSurrogate = (String)(refsMap.get(nextRefID));
 
-      nextRefMapping = new ReferenceMapping(nextRefID, nextSurrogate);
+    //TESTING ONLY - REMOVE THIS!!!!!!!!!!!!!!!!
+    //TESTING ONLY - REMOVE THIS!!!!!!!!!!!!!!!!
+    //TESTING ONLY - REMOVE THIS!!!!!!!!!!!!!!!!
+    //TESTING ONLY - REMOVE THIS!!!!!!!!!!!!!!!!
+    //TESTING ONLY - REMOVE THIS!!!!!!!!!!!!!!!!
+    //TESTING ONLY - REMOVE THIS!!!!!!!!!!!!!!!!
+    //TESTING ONLY - REMOVE THIS!!!!!!!!!!!!!!!!
+    //TESTING ONLY - REMOVE THIS!!!!!!!!!!!!!!!!
+    refMappings[refMappings.length - 3] = (new ReferenceMapping("2blanks",     "  "));
+    refMappings[refMappings.length - 4] = (new ReferenceMapping("emptystring", ""));
+    refMappings[refMappings.length - 5] = (new ReferenceMapping("4blanks",     "    "));
+    refMappings[refMappings.length - 6] = (new ReferenceMapping("3blanks",     "   "));
+    //TESTING ONLY - REMOVE THIS!!!!!!!!!!!!!!!!
+    //TESTING ONLY - REMOVE THIS!!!!!!!!!!!!!!!!
+    //TESTING ONLY - REMOVE THIS!!!!!!!!!!!!!!!!
+    //TESTING ONLY - REMOVE THIS!!!!!!!!!!!!!!!!
+    //TESTING ONLY - REMOVE THIS!!!!!!!!!!!!!!!!
+    //TESTING ONLY - REMOVE THIS!!!!!!!!!!!!!!!!
+    //TESTING ONLY - REMOVE THIS!!!!!!!!!!!!!!!!
 
-      refMappings[index] = nextRefMapping;
 
-      index++;
-    }
-    refMappings[listLength - 2] = "BBAA";
-    refMappings[listLength - 1] = "AAAA";
+
+    refMappings[refMappings.length - 2] = new ReferenceMapping("BBAA", "BBAA");
+    refMappings[refMappings.length - 1] = new ReferenceMapping("AAAA", "AAAA");
 
 Log.debug(1, "BEFORE SORT: array = "+dumpArray(refMappings));
-    Arrays.sort(refMappings);
+    Arrays.sort(refMappings, new Comparator() {
+
+      public int compare(Object o1, Object o2) {
+
+        String s1 = o1.toString();
+        String s2 = o2.toString();
+
+        return (s1.compareTo(s2));
+      }
+    });
 Log.debug(1, "AFTER SORT: array = "+dumpArray(refMappings));
 
-    refMappings[0] = DEFAULT_DROPDOWN_ITEM;
-    refMappings[1] = EXT_DIALOG_DROPDOWN_ITEM;
+    refMappings[0] = new ReferenceMapping(DEFAULT_DROPDOWN_ITEM + "0",
+                                          DEFAULT_DROPDOWN_ITEM);
+    refMappings[1] = new ReferenceMapping(EXT_DIALOG_DROPDOWN_ITEM + "1",
+                                          EXT_DIALOG_DROPDOWN_ITEM);
 
     dropdown.setModel(new DefaultComboBoxModel(refMappings));
     dropdown.invalidate();
@@ -318,10 +320,12 @@ Log.debug(1, "AFTER SORT: array = "+dumpArray(refMappings));
    * @return the subtree root Node for the selected entry in an external
    *   datapackage
    */
-  private Node showCopyExternalRefsDialog(AbstractDataPackage dataPkg,
-                                          Frame parent) {
+  private ReferenceSelectionEvent showCopyExternalRefsDialog(
+      AbstractDataPackage dataPkg, Frame parent) {
 
     Node returnNode = null;
+    //event object will be populated by dialog...
+    ReferenceSelectionEvent event = new ReferenceSelectionEvent();
 
     if (externalRefsDialog == null) {
 
@@ -331,6 +335,8 @@ Log.debug(1, "AFTER SORT: array = "+dumpArray(refMappings));
                                            UISettings.POPUPDIALOG_WIDTH,
                                            UISettings.POPUPDIALOG_HEIGHT);
     }
+    externalRefsPage.setReferenceSelectionEvent(event);
+    externalRefsPage.setCurrentDataPackageID(dataPkg.getPackageId());
     externalRefsDialog.setVisible(true);
 
     //first get a list of available local datapackages
@@ -339,11 +345,11 @@ Log.debug(1, "AFTER SORT: array = "+dumpArray(refMappings));
 
 
 
-    //get dialog return value...
-
     //...and get corresponding node from external datapackage
 
-    return returnNode;
+    OrderedMap map = XMLUtilities.getDOMTreeAsXPathMap(returnNode);
+
+    return event;
   }
 
 
@@ -438,6 +444,51 @@ Log.debug(1, "AFTER SORT: array = "+dumpArray(refMappings));
   }
 
 
+  /**
+   * register a listener
+   * @param listener ReferencesListener
+   */
+  public void addReferencesListener(ReferencesListener listener) {
+
+    if (listener==null) {
+      Log.debug(15, "addReferencesListener() received NULL listener");
+      return;
+    }
+
+    if (listenerList.contains(listener)) {
+      Log.debug(15, "Not adding; listener already registered: " + listener);
+      return;
+    }
+    listenerList.add(listener);
+  }
+
+  /**
+   * unregister a listener
+   * @param listener ReferencesListener
+   */
+  public void removeReferencesListener(ReferencesListener listener) {
+
+    if (listener==null) {
+      Log.debug(15, "removeReferencesListener() received NULL listener");
+      return;
+    }
+
+    if (!listenerList.contains(listener)) {
+      Log.debug(15, "Cannot remove - listener wasn't registered: " + listener);
+      return;
+    }
+    listenerList.remove(listener);
+  }
+
+  private void fireReferencesSelectionEvent(ReferenceSelectionEvent event) {
+
+    Iterator listenerIt = listenerList.iterator();
+    while (listenerIt.hasNext()) {
+      ReferencesListener nextListener = (ReferencesListener)listenerIt.next();
+      if (nextListener!=null) nextListener.referenceSelected(event);
+    }
+  }
+
 }
 
 
@@ -449,11 +500,25 @@ Log.debug(1, "AFTER SORT: array = "+dumpArray(refMappings));
 class ExternalRefsPage extends AbstractUIPage {
 
 
-  JTable table;
+  private JTable table;
+  private ReferenceSelectionEvent event;
+  private String refID;
+  private String currentDataPackageID;
+  private Node referencedSubtree;
+
 
   ExternalRefsPage() {
-
     init();
+  }
+
+  protected void setReferenceSelectionEvent(ReferenceSelectionEvent event) {
+
+    this.event = event;
+  }
+
+  protected void setCurrentDataPackageID(String currentDataPackageID) {
+
+    this.currentDataPackageID = currentDataPackageID;
   }
 
   private void init() {
@@ -462,14 +527,14 @@ class ExternalRefsPage extends AbstractUIPage {
 
     table = new JTable();
     JScrollPane scroll = new JScrollPane(table);
-    scroll.setBackground(Color.white);
+    scroll.getViewport().setBackground(Color.white);
     this.add(scroll, BorderLayout.WEST);
 
     JPanel refsPanel = new JPanel();
     refsPanel.setLayout(new BoxLayout(refsPanel, BoxLayout.Y_AXIS));
 
     refsPanel.setOpaque(true);
-    refsPanel.setBackground(Color.yellow);
+    refsPanel.setBackground(Color.green);
 
     this.add(refsPanel, BorderLayout.CENTER);
   }
@@ -552,7 +617,7 @@ class ExternalRefsPage extends AbstractUIPage {
   /**
    *  The action to be executed when the page is displayed. May be empty
    */
-  public void onLoadAction() {};
+  public void onLoadAction() {}
 
 
   /**
@@ -570,6 +635,11 @@ class ExternalRefsPage extends AbstractUIPage {
    *          (e.g. if a required field hasn't been filled in)
    */
   public boolean onAdvanceAction() {
+
+    if (refID==null) return false;
+
+    event.setReferenceID(refID);
+    event.setXPathValsMap(XMLUtilities.getDOMTreeAsXPathMap(referencedSubtree));
     return true;
   }
 

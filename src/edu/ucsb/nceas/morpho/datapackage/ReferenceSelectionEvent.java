@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2004-03-29 06:07:47 $'
- * '$Revision: 1.1 $'
+ *     '$Date: 2004-03-30 04:57:02 $'
+ * '$Revision: 1.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -47,7 +47,14 @@ public class ReferenceSelectionEvent {
   private String refID;
   private short location;
 
+  public ReferenceSelectionEvent() {}
 
+  public ReferenceSelectionEvent(String refID, short location, OrderedMap referencedData) {
+
+    this.setReferenceID(refID);
+    this.setLocation(location);
+    this.setXPathValsMap(referencedData);
+  }
 
   /**
    * Set referenced id string
