@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: sambasiv $'
- *     '$Date: 2004-02-04 02:25:51 $'
- * '$Revision: 1.2 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2004-02-14 00:02:28 $'
+ * '$Revision: 1.3 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -47,12 +47,17 @@ public class AttributeSettings
 	public static final String MeasurementScale_xPath = "/eml:eml/dataset/dataTable/attributeList/attribute/measurementScale";
 	public static final String MissingValueCode_xPath = "/eml:eml/dataset/dataTable/attributeList/attribute/missingValueCode";
 	public static final String Nominal_xPath = "/eml:eml/dataset/dataTable/attributeList/attribute/measurementScale/nominal/nonNumericDomain";
+	public static final String Nominal_xPath_rel = "/measurementScale/nominal/nonNumericDomain";
 	
 	public static final String Ordinal_xPath = "/eml:eml/dataset/dataTable/attributeList/attribute/measurementScale/ordinal/nonNumericDomain";
+	public static final String Ordinal_xPath_rel = "/measurementScale/ordinal/nonNumericDomain";
 	
 	public static final String Interval_xPath = "/eml:eml/dataset/dataTable/attributeList/attribute/measurementScale/interval";
+	public static final String Interval_xPath_rel = "/measurementScale/interval";
 	public static final String Ratio_xPath = "/eml:eml/dataset/dataTable/attributeList/attribute/measurementScale/ratio";
+	public static final String Ratio_xPath_rel = "/measurementScale/ratio";
 	public static final String DateTime_xPath = "/eml:eml/dataset/dataTable/attributeList/attribute/measurementScale/datetime";
+	public static final String DateTime_xPath_rel = "/measurementScale/datetime";
 
 
 }
