@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: berkley $'
- *     '$Date: 2001-11-30 15:50:55 $'
- * '$Revision: 1.69 $'
+ *   '$Author: jones $'
+ *     '$Date: 2001-12-18 01:21:03 $'
+ * '$Revision: 1.70 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -112,9 +112,12 @@ public class DataPackageGUI extends javax.swing.JFrame
     String altTitle = "No Alternate Title Provided";
     Hashtable docAtts = dataPackage.getAttributes();
     
-    String entitytype = config.get("entitydoctype", 0);
-    String resourcetype = config.get("resourcedoctype", 0);
-    String attributetype = config.get("attributedoctype", 0);
+    Vector entityDoctypeList = config.get("entitydoctype");
+    Vector resourceDoctypeList = config.get("resourcedoctype");
+    Vector attributeDoctypeList = config.get("attributedoctype");
+    //String entitytype = config.get("entitydoctype", 0);
+    //String resourcetype = config.get("resourcedoctype", 0);
+    //String attributetype = config.get("attributedoctype", 0);
     
     if(docAtts.containsKey("originator"))
     {
@@ -161,7 +164,7 @@ public class DataPackageGUI extends javax.swing.JFrame
           dataitems.addElement(s);
         }
       }
-      else if(key.equals(entitytype))
+      else if (vectorContainsString(entityDoctypeList, key))
       {
         Vector v = (Vector)relfiles.get(key);
         String spacecount = "";
@@ -211,7 +214,8 @@ public class DataPackageGUI extends javax.swing.JFrame
           }
         }
       }
-      else if(!key.equals(resourcetype) && !key.equals(attributetype))
+      else if (!vectorContainsString(resourceDoctypeList, key) &&
+               !vectorContainsString(attributeDoctypeList, key))
       {
         Vector v = (Vector)relfiles.get(key);
         for(int i=0; i<v.size(); i++)
@@ -225,12 +229,16 @@ public class DataPackageGUI extends javax.swing.JFrame
           else {
            displayName = (String)h.get("displaypath");
           }
-          if(displayName.indexOf("FIXED:") != -1)
-          {
-            displayName = displayName.substring(displayName.indexOf(":") + 1, 
+          if ((displayName == null) || (displayName.indexOf("FIXED:") != -1))
+          {  // only substring if displayName != null
+            if (displayName == null) {
+              otheritems.addElement(eleid.trim());
+            } else {
+              displayName = displayName.substring(displayName.indexOf(":") + 1,
                                                 displayName.length());
-            String s = displayName.trim() + " (" + eleid + ")";
-            otheritems.addElement(s.trim());
+              String s = displayName.trim() + " (" + eleid + ")";
+              otheritems.addElement(s.trim());
+            }
           }
           else
           { //read the file to get the display text from the file
@@ -314,6 +322,19 @@ public class DataPackageGUI extends javax.swing.JFrame
     layoutPanel.add(Box.createRigidArea(new Dimension(0, 8)));
     layoutPanel.add(listPanel);
     contentPane.add(layoutPanel);
+  }
+  
+  /**
+   * Determine if the string s is contained within the Vector v
+   */
+  private boolean vectorContainsString(Vector v, String s) {
+    boolean foundMatch = false;
+    for (int i=0; i < v.size(); i++) {
+      if (s.equals((String)v.elementAt(i))) {
+        foundMatch = true;
+      }
+    }
+    return foundMatch;
   }
   
   /**

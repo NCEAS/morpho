@@ -21,6 +21,9 @@
   <accessFileType>
     -//ecoinformatics.org//eml-access-2.0.0beta6//EN
   </accessFileType>
+  <accessFileType>
+    -//ecoinformatics.org//eml-access-2.0.0beta4//EN
+  </accessFileType>
   <entityEditorPaths>
     <entityNamePath>//entityName</entityNamePath>
     <entityDescPath>//entityDescription</entityDescPath>
@@ -50,6 +53,9 @@
       <entitydoctype>-//ecoinformatics.org//eml-entity-2.0.0beta6//EN</entitydoctype>
       <resourcedoctype>-//ecoinformatics.org//eml-dataset-2.0.0beta6//EN</resourcedoctype>
       <attributedoctype>-//ecoinformatics.org//eml-attribute-2.0.0beta6//EN</attributedoctype>
+      <entitydoctype>-//ecoinformatics.org//eml-entity-2.0.0beta4//EN</entitydoctype>
+      <resourcedoctype>-//ecoinformatics.org//eml-dataset-2.0.0beta4//EN</resourcedoctype>
+      <attributedoctype>-//ecoinformatics.org//eml-attribute-2.0.0beta4//EN</attributedoctype>
     </listdoctypes>
   </packageEditor>
   <customFrames>
@@ -107,6 +113,17 @@
       <displaypath>FIXED:Access Permissions</displaypath>
       <editexisting>yes</editexisting>
       <idpath>/acl/identifier</idpath>
+    </file>
+    <file>
+      <name>Access</name>
+      <label>Access Permissions (2.0.0beta4)</label>
+      <xmlfiletype>-//ecoinformatics.org//eml-access-2.0.0beta4//EN</xmlfiletype>
+      <rootnode>acl</rootnode>
+      <tooltip>Access control information for this data package.</tooltip>
+      <displaypath>FIXED:Access Permissions</displaypath>
+      <editexisting>yes</editexisting>
+      <idpath>/acl/identifier</idpath>
+      <visible>no</visible>
     </file>
     <file>
       <name>Software</name>
