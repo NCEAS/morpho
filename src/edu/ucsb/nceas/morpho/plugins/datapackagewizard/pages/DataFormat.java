@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: berkley $'
- *     '$Date: 2004-04-08 19:22:39 $'
- * '$Revision: 1.33 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2004-04-13 04:51:21 $'
+ * '$Revision: 1.34 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -80,6 +80,9 @@ public class DataFormat extends AbstractUIPage{
   private String orientationComplex = COLUMN_MAJOR;
 
   private String formatXPath;
+  
+  private final String PHYSICAL_XPATH
+                  = "/eml:eml/dataset/dataTable/physical/";
   private final String TEXT_BASE_XPATH
                   = "/eml:eml/dataset/dataTable/physical/dataFormat/textFormat/";
   private final String SIMPLE_TEXT_XPATH  = TEXT_BASE_XPATH+"simpleDelimited/fieldDelimiter";
@@ -130,6 +133,8 @@ public class DataFormat extends AbstractUIPage{
   private boolean delim_other    = false;
   private CustomList list;
   private WizardContainerFrame mainWizFrame;
+  
+  private String fileName = "";
 
   // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
@@ -504,6 +509,7 @@ public class DataFormat extends AbstractUIPage{
 
     AbstractUIPage prevPage = mainWizFrame.getPreviousPage();
     boolean flag = ((DataLocation)prevPage).isCreateChoice();
+    fileName = ((DataLocation)prevPage).getFileName();
     Container middlePanel = (Container) radioPanel.getComponent(1);
     JRadioButton jrb = (JRadioButton)middlePanel.getComponent(1);
     if (flag) {
@@ -720,7 +726,7 @@ public class DataFormat extends AbstractUIPage{
       return returnMap;
 
     } else if (formatXPath==SIMPLE_TEXT_XPATH)  {
-
+      returnMap.put(PHYSICAL_XPATH+"objectName",fileName);
       returnMap.put(TEXT_BASE_XPATH+"attributeOrientation", orientationSimple);
 
       int index=1;
@@ -779,13 +785,13 @@ public class DataFormat extends AbstractUIPage{
 
 
     } else if (formatXPath==COMPLEX_TEXT_XPATH)  {
-
+      returnMap.put(PHYSICAL_XPATH+"objectName",fileName);
       returnMap.put(TEXT_BASE_XPATH+"attributeOrientation", orientationComplex);
 
       returnMap.putAll(getCmplxDelimListAsNVP());
 
     } else if (formatXPath==PROPRIETARY_XPATH)  {
-
+      returnMap.put(PHYSICAL_XPATH+"objectName",fileName);
       returnMap.put(PROPRIETARY_XPATH, proprietaryText);
 
 //    } else if (formatXPath==RASTER_XPATH) {
