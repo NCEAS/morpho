@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2004-04-07 16:19:52 $'
- * '$Revision: 1.13 $'
+ *     '$Date: 2004-04-07 16:29:14 $'
+ * '$Revision: 1.14 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -83,6 +83,7 @@ public class ExternalRefsPage extends AbstractUIPage
   // select columns
   private String[] columnNames = {QueryRefreshInterface.TITLE,
                                   QueryRefreshInterface.DOCID};
+  private final double[] columnWidth = {0.75, 0.25};
 
   // constant
   private static final int       DOCIDINDEX = 1;
@@ -321,7 +322,7 @@ public class ExternalRefsPage extends AbstractUIPage
   {
 
     dataPackageTable.setModel(model);
-    setTableColumnSize(width, dataPackageTable);
+    setTableColumnSize(width, columnWidth, dataPackageTable);
     dataPackageTable.validate();
     dataPackageTable.repaint();
   }
@@ -329,9 +330,8 @@ public class ExternalRefsPage extends AbstractUIPage
   /*
    * Method to setup table's column size
    */
-  private void setTableColumnSize(int width, JTable table)
+  private void setTableColumnSize(int width, double[] lengthRatio, JTable table)
   {
-    double [] columnWidth = {0.75, 0.25};
     // column object
     TableColumn column = null;
     // Minimum factor for MinWidth
@@ -353,7 +353,7 @@ public class ExternalRefsPage extends AbstractUIPage
      // Get the column
      column = table.getColumnModel().getColumn(i);
      // Get the percentage of width for this column from the array
-     percentage = columnWidth[i];
+     percentage = lengthRatio[i];
      // Get the width as preferred width
      preferredSize = (new Double(width*percentage)).intValue();
      // Get the minimum size
