@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2003-08-03 17:31:48 $'
- * '$Revision: 1.1 $'
+ *     '$Date: 2003-08-03 22:28:15 $'
+ * '$Revision: 1.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -35,8 +35,6 @@ import java.util.Map;
 import javax.swing.JLabel;
 
 import java.awt.BorderLayout;
-import java.awt.Font;
-import java.awt.Color;
 
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.AbstractWizardPage;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardPageLibrary;
@@ -45,8 +43,8 @@ import edu.ucsb.nceas.utilities.OrderedMap;
 
 public class Introduction extends AbstractWizardPage{
 
-  public final String pageID     = WizardPageLibrary.PAGE01_ID;
-  public final String nextPageID = WizardPageLibrary.PAGE02_ID;
+  public final String pageID     = WizardPageLibrary.INTRODUCTION;
+  public final String nextPageID = WizardPageLibrary.GENERAL;
   public final String title      = "Welcome to the Data Package Wizard";
   public final String subtitle   = " ";
   
@@ -159,11 +157,4 @@ public class Introduction extends AbstractWizardPage{
    */
   public String getNextPageID() { return nextPageID; }
 
-  
-  
-  
-  private final Font  defaultFont    
-                              = WizardSettings.WIZARD_CONTENT_FONT;
-  private final Color defaultFGColor 
-                              = WizardSettings.WIZARD_CONTENT_TEXT_COLOR;
 }

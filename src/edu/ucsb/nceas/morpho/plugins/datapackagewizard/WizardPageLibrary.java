@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2003-08-03 17:33:44 $'
- * '$Revision: 1.2 $'
+ *     '$Date: 2003-08-03 22:28:15 $'
+ * '$Revision: 1.3 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -79,15 +79,15 @@ public class WizardPageLibrary {
 
     pages = new HashMap();
     
-    pages.put(PAGE01_ID,  new Introduction());
-    pages.put(PAGE02_ID,  new General());
-    pages.put(PAGE03_ID,  new Keywords());
-//    pages.put(PAGE04_ID,  new WizPage04());
-    pages.put(PAGE05_ID,  new PartyIntro());
-//    pages.put(PAGE06_ID,  new WizPage06());
-//    pages.put(PAGE07_ID,  new WizPage07());
-//    pages.put(PAGE08_ID,  new WizPage08());
-//    pages.put(PAGE09_ID,  new WizPage09());
+    pages.put(INTRODUCTION,   new Introduction());
+    pages.put(GENERAL,        new General());
+    pages.put(KEYWORDS,       new Keywords());
+//    pages.put(KEYWORDS_DIALOG,  new KeywordsDialog());
+    pages.put(PARTY_INTRO,    new PartyIntro());
+    pages.put(USAGE_RIGHTS,   new UsageRights());
+    pages.put(DATA_LOCATION,  new DataLocation());
+//    pages.put(DATA_FORMAT,  new DataFormat());
+//    pages.put(TEXT_IMPORT_WIZARD,  new TextImportWizard());
 //    pages.put(PAGE10_ID,  new WizPage10());
 //    pages.put(PAGE11_ID,  new WizPage11());
 //    pages.put(PAGE12_ID,  new WizPage12());
@@ -104,28 +104,28 @@ public class WizardPageLibrary {
 //    pages.put(PAGE23_ID,  new WizPage23());
   }
 
-  public static final String PAGE01_ID = "PAGE01_ID";
-  public static final String PAGE02_ID = "PAGE02_ID";
-  public static final String PAGE03_ID = "PAGE03_ID";
-  public static final String PAGE04_ID = "PAGE04_ID";
-  public static final String PAGE05_ID = "PAGE05_ID";
-  public static final String PAGE06_ID = "PAGE06_ID";
-  public static final String PAGE07_ID = "PAGE07_ID";
-  public static final String PAGE08_ID = "PAGE08_ID";
-  public static final String PAGE09_ID = "PAGE09_ID";
-  public static final String PAGE10_ID = "PAGE10_ID";
-  public static final String PAGE11_ID = "PAGE11_ID";
-  public static final String PAGE12_ID = "PAGE12_ID";
-  public static final String PAGE13_ID = "PAGE13_ID";
-  public static final String PAGE14_ID = "PAGE14_ID";
-  public static final String PAGE15_ID = "PAGE15_ID";
-  public static final String PAGE16_ID = "PAGE16_ID";
-  public static final String PAGE17_ID = "PAGE17_ID";
-  public static final String PAGE18_ID = "PAGE18_ID";
-  public static final String PAGE19_ID = "PAGE19_ID";
-  public static final String PAGE20_ID = "PAGE20_ID";
-  public static final String PAGE21_ID = "PAGE21_ID";
-  public static final String PAGE22_ID = "PAGE22_ID";
-  public static final String PAGE23_ID = "PAGE23_ID";
+  public static final String INTRODUCTION     = "INTRODUCTION";
+  public static final String GENERAL          = "GENERAL";
+  public static final String KEYWORDS         = "KEYWORDS";
+  public static final String KEYWORDS_DIALOG  = "KEYWORDS_DIALOG";
+  public static final String PARTY_INTRO      = "PARTY_INTRO";
+  public static final String USAGE_RIGHTS     = "USAGE_RIGHTS";
+  public static final String DATA_LOCATION    = "DATA_LOCATION";
+  public static final String TEXT_IMPORT_WIZARD = "TEXT_IMPORT_WIZARD";
+  public static final String DATA_FORMAT        = "DATA_FORMAT";
+  public static final String PAGE10_ID        = "PAGE10_ID";
+  public static final String PAGE11_ID        = "PAGE11_ID";
+  public static final String PAGE12_ID        = "PAGE12_ID";
+  public static final String PAGE13_ID        = "PAGE13_ID";
+  public static final String PAGE14_ID        = "PAGE14_ID";
+  public static final String PAGE15_ID        = "PAGE15_ID";
+  public static final String PAGE16_ID        = "PAGE16_ID";
+  public static final String PAGE17_ID        = "PAGE17_ID";
+  public static final String PAGE18_ID        = "PAGE18_ID";
+  public static final String PAGE19_ID        = "PAGE19_ID";
+  public static final String PAGE20_ID        = "PAGE20_ID";
+  public static final String PAGE21_ID        = "PAGE21_ID";
+  public static final String PAGE22_ID        = "PAGE22_ID";
+  public static final String PAGE23_ID        = "PAGE23_ID";
   
 }

@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2003-08-03 17:32:58 $'
- * '$Revision: 1.1 $'
+ *     '$Date: 2003-08-03 22:28:15 $'
+ * '$Revision: 1.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -45,8 +45,8 @@ import edu.ucsb.nceas.utilities.OrderedMap;
 
 public class PartyIntro extends AbstractWizardPage{
 
-  public final String pageID     = WizardPageLibrary.PAGE05_ID;
-  public final String nextPageID = null;
+  public final String pageID     = WizardPageLibrary.PARTY_INTRO;
+  public final String nextPageID = WizardPageLibrary.USAGE_RIGHTS;
   public final String title      = "General Dataset Information:";
   public final String subtitle   = "Responsible Parties";
   

@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2003-08-03 17:31:48 $'
- * '$Revision: 1.1 $'
+ *     '$Date: 2003-08-03 22:28:15 $'
+ * '$Revision: 1.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -47,8 +47,8 @@ public class General extends AbstractWizardPage{
   
   // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
   
-  private final String pageID     = WizardPageLibrary.PAGE02_ID;
-  private final String nextPageID = WizardPageLibrary.PAGE03_ID;
+  private final String pageID     = WizardPageLibrary.GENERAL;
+  private final String nextPageID = WizardPageLibrary.KEYWORDS;
   private final String title      = "General Dataset Information:";
   private final String subtitle   = "Title and Abstract";
   

@@ -3,7 +3,12 @@ package edu.ucsb.nceas.morpho.plugins.datapackagewizard;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.GridLayout;
+  
+import java.awt.event.ActionListener;
 
+import javax.swing.JRadioButton;
+import javax.swing.ButtonGroup;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JLabel;
@@ -16,7 +21,7 @@ import javax.swing.SwingConstants;
 
 public class WidgetFactory {
   
-  private static boolean debug = false;
+  private static boolean debugHilite = false;
   
   private WidgetFactory() {}
    
@@ -40,7 +45,7 @@ public class WidgetFactory {
   public static JLabel makeHTMLLabel(String text, int numberOfLines) {
   
     buff.delete(0, buff.length());
-    buff.append("<html><table width=\"95%\"><tr><td valign=\"top\">");
+    buff.append("<html><table width=\"100%\"><tr><td valign=\"top\" width=\"100%\">");
     buff.append(text);
     buff.append("</td></tr></table></html>");
     
@@ -63,7 +68,7 @@ public class WidgetFactory {
     
     setPrefMaxSizes(label, dims);
     label.setMinimumSize(dims);
-    label.setAlignmentX(SwingConstants.LEFT);
+    label.setAlignmentX(1.0f);
     label.setFont(WizardSettings.WIZARD_CONTENT_FONT);
     
     label.setBorder(BorderFactory.createMatteBorder(1,3,1,3, (Color)null));
@@ -72,8 +77,8 @@ public class WidgetFactory {
     } else { 
       label.setForeground(WizardSettings.WIZARD_CONTENT_TEXT_COLOR);
     }
-    
-    if (debug) {
+
+    if (debugHilite) {
       label.setBackground(java.awt.Color.blue);
       label.setOpaque(true);
     }
@@ -96,6 +101,36 @@ public class WidgetFactory {
     return field;
   }
   
+  public static void addTitledBorder(JComponent component, String title) {
+    
+    component.setBorder(BorderFactory.createTitledBorder(
+              BorderFactory.createLineBorder(
+                                  WizardSettings.WIZARD_CONTENT_TEXT_COLOR, 1),
+              title, 
+              0, 
+              0, 
+              WizardSettings.WIZARD_CONTENT_BOLD_FONT, 
+              WizardSettings.WIZARD_CONTENT_TEXT_COLOR));
+  }
+  
+  
+  public static JPanel makeVerticalPanel(int numberOfLines) {
+    
+    JPanel panel = new JPanel();
+    panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+    
+    if (numberOfLines>0) {
+      setPrefMaxSizes(panel, getDimForNumberOfLines(numberOfLines));
+    }
+    
+    if (debugHilite) {
+      panel.setBackground(java.awt.Color.green);
+      panel.setOpaque(true);
+    }
+    
+    return panel;
+  }
+  
   
   public static JPanel makePanel() {
   
@@ -113,7 +148,7 @@ public class WidgetFactory {
       setPrefMaxSizes(panel, getDimForNumberOfLines(numberOfLines));
     }
     
-    if (debug) {
+    if (debugHilite) {
       panel.setBackground(java.awt.Color.green);
       panel.setOpaque(true);
     }
@@ -146,6 +181,31 @@ public class WidgetFactory {
   
   
   
+  public static JPanel makeRadioPanel(String[] buttonsText, 
+                                  int selectedIndex, ActionListener listener) {
+
+    JPanel radioPanel = new JPanel(new GridLayout(0, 1));
+    
+    int totalButtons = buttonsText.length;
+    
+    JRadioButton[] buttons = new JRadioButton[totalButtons];
+    ButtonGroup group = new ButtonGroup();
+    
+    for (int i=0; i<totalButtons; i++) {
+    
+      buttons[i] = new JRadioButton(buttonsText[i]);
+      buttons[i].setFont(WizardSettings.WIZARD_CONTENT_FONT);
+      buttons[i].setForeground(WizardSettings.WIZARD_CONTENT_TEXT_COLOR);
+      buttons[i].setActionCommand(buttonsText[i]);
+      if (i==selectedIndex) buttons[i].setSelected(true);
+      group.add(buttons[i]);
+      buttons[i].addActionListener(listener);
+      radioPanel.add(buttons[i]);
+    }
+    setPrefMaxSizes(radioPanel, getDimForNumberOfLines(5*totalButtons/4));
+    return radioPanel;
+  }
+
   // ***************************************************************************
 
   private static Dimension getDimForNumberOfLines(int numberOfLines) {

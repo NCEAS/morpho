@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2003-08-03 17:32:58 $'
- * '$Revision: 1.1 $'
+ *     '$Date: 2003-08-03 22:28:15 $'
+ * '$Revision: 1.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -48,8 +48,8 @@ public class Keywords extends AbstractWizardPage{
   
   // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
   
-  private final String pageID     = WizardPageLibrary.PAGE03_ID;
-  private final String nextPageID = WizardPageLibrary.PAGE05_ID;
+  private final String pageID     = WizardPageLibrary.KEYWORDS;
+  private final String nextPageID = WizardPageLibrary.PARTY_INTRO;
   private final String title      = "General Dataset Information:";
   private final String subtitle   = "Keyword Sets";
   

@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2003-07-30 19:44:01 $'
- * '$Revision: 1.4 $'
+ *     '$Date: 2003-08-03 22:28:15 $'
+ * '$Revision: 1.5 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -53,7 +53,7 @@ public class WizardSettings {
   protected static final int WIZARD_HEIGHT  = 600;
   
 
-  protected static final String FIRST_PAGE_ID = WizardPageLibrary.PAGE01_ID;
+  protected static final String FIRST_PAGE_ID = WizardPageLibrary.INTRODUCTION;
   
   protected static final Color TOP_PANEL_BG_COLOR = new Color(11,85,112);
   
@@ -86,6 +86,9 @@ public class WizardSettings {
 
   public static final  Font  WIZARD_CONTENT_FONT 
                                       = new Font("Sans-Serif",Font.PLAIN,11);
+
+  public static final  Font  WIZARD_CONTENT_BOLD_FONT 
+                                      = new Font("Sans-Serif",Font.BOLD,11);
                                       
   public static final  Color WIZARD_CONTENT_TEXT_COLOR  
                                       = new Color(51, 51, 51);
