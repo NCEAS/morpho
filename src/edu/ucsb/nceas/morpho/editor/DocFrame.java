@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-12-13 23:51:50 $'
- * '$Revision: 1.71 $'
+ *     '$Date: 2001-12-15 00:05:29 $'
+ * '$Revision: 1.72 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1310,7 +1310,6 @@ void expandTreeToLevel(JTree jt, int level) {
                     }
                 }
                 if (!insTest) {
-  //              if (false) {
                 Vector hits = getMatches(tNode, nextLevelInputNodes);
                 // merge hits with template node
                 tempVector = (Vector)currentLevelInputNodes.clone();
@@ -1378,12 +1377,29 @@ void expandTreeToLevel(JTree jt, int level) {
  *  returns boolean indicating if input node mathches any child of tempparent
  */
  boolean hasAMatch(DefaultMutableTreeNode input, DefaultMutableTreeNode tempparent) {
+    Vector specNodes = new Vector();
     String inputS = ((NodeInfo)input.getUserObject()).getName();
     Enumeration enum = tempparent.children();
     while (enum.hasMoreElements()) {
         DefaultMutableTreeNode enumNode = (DefaultMutableTreeNode)enum.nextElement();
         String matchS = ((NodeInfo)enumNode.getUserObject()).getName();
-        if (matchS.endsWith(inputS)) return true;
+        if ((matchS.startsWith("(CHOICE)"))||(matchS.startsWith("(SEQUENCE)"))) {
+            specNodes.addElement(enumNode);    
+        }
+        if (matchS.startsWith(inputS)) return true;
+    }
+    // the following ia for the case of two consecutive (CHOICE) or (SEQUENCE) nodes
+    // a more general case of 3 or more (CHOICE) elements should be developed!
+    if (specNodes.size()>0) {
+        for (int i=0;i<specNodes.size();i++) {
+            DefaultMutableTreeNode specialNode = (DefaultMutableTreeNode)specNodes.elementAt(i);
+            Enumeration enum1 = specialNode.children();
+            while (enum1.hasMoreElements()) {
+                DefaultMutableTreeNode enum1Node = (DefaultMutableTreeNode)enum1.nextElement();
+                String matchSpecial = ((NodeInfo)enum1Node.getUserObject()).getName();
+                if (matchSpecial.startsWith(inputS)) return true;
+            }
+        }
     }
     return false;
  }
