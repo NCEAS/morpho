@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-07-10 17:02:19 $'
- * '$Revision: 1.46 $'
+ *     '$Date: 2001-07-10 18:18:50 $'
+ * '$Revision: 1.47 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -611,7 +611,7 @@ public class DataPackageGUI extends javax.swing.JFrame
     JPanel otherFileButtonList = new JPanel();
     otherFileButtonList.setLayout(new BoxLayout(otherFileButtonList,
                                                BoxLayout.Y_AXIS));
-    otherFileButtonList.add(new JLabel("Other Descriptions"));
+    otherFileButtonList.add(new JLabel("Other Information"));
     otherFileButtonList.add(otherFileScrollPane);
     
     //listPanel.setBorder(BorderFactory.createCompoundBorder(
@@ -742,6 +742,18 @@ public class DataPackageGUI extends javax.swing.JFrame
     }
     else if(command.equals("Remove"))
     {
+      int sure = JOptionPane.showConfirmDialog(null, 
+                                 "If you remove this package member it will " +
+                                 "no longer be available in this package. " +
+                                 "Are you sure you want to do this?", 
+                                 "Package Editor", 
+                                 JOptionPane.YES_NO_CANCEL_OPTION,
+                                 JOptionPane.WARNING_MESSAGE);
+      if(sure == JOptionPane.NO_OPTION || sure == JOptionPane.CANCEL_OPTION)
+      { //let the user opt out of this if it was an accident.
+        return;
+      }
+      
       item = "";
       if(otherFileList.getSelectedIndex() == -1)
       {
