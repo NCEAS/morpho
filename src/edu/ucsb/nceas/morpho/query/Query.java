@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: jones $'
- *     '$Date: 2002-10-23 22:48:21 $'
- * '$Revision: 1.19 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2004-01-07 19:32:21 $'
+ * '$Revision: 1.20 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -783,6 +783,30 @@ public class Query extends DefaultHandler {
     ResultSet metacatResults = null;
     if (searchMetacat) {
       Log.debug(30, "(2) Executing metacat query...");
+
+
+// write the query result xml to a file for debugging
+// remove the '/*' to enable      
+// take a look at the result
+/* 
+      try{
+        InputStreamReader isr = new InputStreamReader(queryMetacat());
+        File resfile = new File("resultFile");
+        FileWriter fw = new FileWriter(resfile);
+        int res = isr.read();
+        while (res>-1) {
+          fw.write(res);
+          res = isr.read();
+        }
+        fw.close();
+        isr.close();
+      }
+      catch (Exception www) {
+        Log.debug(1, "problem writing query result to file!");
+      }
+// end looking at result
+*/
+      
       metacatResults = new HeadResultSet(this, "metacat", 
                                      queryMetacat(), morpho);
     }
