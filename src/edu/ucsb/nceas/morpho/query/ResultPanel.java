@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-04-04 20:23:34 $'
- * '$Revision: 1.32 $'
+ *     '$Date: 2002-04-08 03:57:19 $'
+ * '$Revision: 1.33 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -57,6 +57,7 @@ import javax.swing.JPopupMenu;
 import javax.swing.JSeparator;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
+import javax.swing.JMenu;
 
 
 
@@ -94,6 +95,8 @@ public class ResultPanel extends JPanel
   private JPopupMenu popup;
   /**menu items for the popup menu*/
   private JMenuItem openMenu = new JMenuItem("Open");
+  private JMenu openPreviousVersion = new JMenu("Open Previous Version");
+
   private JMenuItem uploadMenu = new JMenuItem("Upload to Metacat");
   private JMenuItem downloadMenu = new JMenuItem("Download from Metacat");
   private JMenuItem deleteLocalMenu = new JMenuItem("Delete Local Copy");
@@ -111,6 +114,7 @@ public class ResultPanel extends JPanel
   ImageIcon bfly;
   ImageIcon flapping;
   int threadCount = 0;
+  int selectedRow = -1;
   
   /**
    * Construct a new ResultPanel and display the result set.  By default
@@ -244,7 +248,9 @@ public class ResultPanel extends JPanel
       //Build the popup menu for the right click functionality
       popup = new JPopupMenu();
       popup.add(openMenu);
-      popup.add(new JSeparator());
+      openPreviousVersion.setEnabled(false);
+      popup.add(openPreviousVersion);
+      
       popup.add(refreshMenu);
       popup.add(new JSeparator());
       popup.add(uploadMenu);
@@ -540,6 +546,7 @@ public class ResultPanel extends JPanel
       //select the clicked row first
       table.clearSelection();
       int selrow = table.rowAtPoint(new Point(e.getX(), e.getY()));
+      selectedRow = selrow;
       table.setRowSelectionInterval(selrow, selrow);
       Vector resultV = results.getResultsVector();
       Vector rowV = (Vector)resultV.elementAt(selrow);
@@ -574,7 +581,10 @@ public class ResultPanel extends JPanel
     private void maybeShowPopup(MouseEvent e) 
     {
       if(e.isPopupTrigger() || trigger) 
-      {
+      {     
+        int vers = getNumberOfPrevVersions(selectedRow);
+        System.out.println("Number of versions: "+vers);
+        
         uploadMenu.setEnabled(localLoc && !metacatLoc);
         downloadMenu.setEnabled(metacatLoc && !localLoc);
         deleteLocalMenu.setEnabled(localLoc);
@@ -583,6 +593,7 @@ public class ResultPanel extends JPanel
         
 	      trigger = false;
         popup.show(e.getComponent(), e.getX(), e.getY());
+        
       }
     }
   }	
@@ -786,7 +797,17 @@ public class ResultPanel extends JPanel
     return list;
   }
   
- 
+private int getNumberOfPrevVersions(int row) {
+    int prevVersions = 0;
+    String docid = results.getDocIdOfRecord(row);
+    int iii = docid.lastIndexOf(".");
+    String ver = docid.substring(iii+1,docid.length());
+    prevVersions = (new Integer(ver)).intValue();
+    prevVersions = prevVersions - 1;
+    return prevVersions;
+}
+
+
 private void doUpload() {
   final SwingWorker worker = new SwingWorker() {
         public Object construct() {

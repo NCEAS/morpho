@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: jones $'
- *     '$Date: 2001-12-08 07:13:35 $'
- * '$Revision: 1.25 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2002-04-08 03:57:19 $'
+ * '$Revision: 1.26 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -593,6 +593,23 @@ public class ResultSet extends AbstractTableModel implements ContentHandler
       framework.debug(6, snhe.getMessage());
     }
   }
+  
+  /**
+   *  Get the docid for a specific Result record for use in
+   *  building a list of previous packages
+   */
+   public String getDocIdOfRecord(int row) {
+    String docid = "";
+    int numHeaders = headers.length;
+    try {
+      Vector rowVector = (Vector)resultsVector.elementAt(row);
+      docid = (String)rowVector.elementAt(numHeaders+2);
+      return docid;
+    } catch (ArrayIndexOutOfBoundsException aioobe) {
+      ClientFramework.debug(1, "array index out of bounds");
+    }
+    return docid;
+   }
 
   /**
    * Merge a ResultSet onto this one using the docid as the join column
