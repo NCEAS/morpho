@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-10-28 19:54:08 $'
- * '$Revision: 1.92 $'
+ *     '$Date: 2002-11-20 19:33:04 $'
+ * '$Revision: 1.93 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -508,8 +508,8 @@ public class DataPackageGUI extends javax.swing.JFrame
                   htmlize(keywords, "Keywords") + 
                   htmlize(abstractS, "Abstract");
     
-    referenceLabel = referenceLabel + "<b><i>" + title + "</i></b><br>" +
-           "<b>Accession Number " + id + "</b>  Keywords: " + keywords; 
+    referenceLabel = referenceLabel + "<b><i>" + title + "</i></b></td></tr>" +
+           "<tr><td><b>Accession Number " + id + "</b>  Keywords: " + keywords+"</td></tr></table>"; 
     
     String originators = "<br><b>Originator(s)</b><br>";
     String name = "";
@@ -630,7 +630,7 @@ public class DataPackageGUI extends javax.swing.JFrame
                      
       authorList = authorList + name + ", ";          
     }
-    referenceLabel = authorList + referenceLabel;
+    referenceLabel = "<table width=3000><tr><td>"+authorList + referenceLabel;
     
  //   System.out.println("Ref Label: "+referenceLabel);
     
