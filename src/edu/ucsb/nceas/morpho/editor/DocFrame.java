@@ -1,4 +1,4 @@
-/**setSelectedNodes
+/**
  *        Name: DocFrame.java
  *  Copyright: 2000 Regents of the University of California and the
  *              National Center for Ecological Analysis and Synthesis
@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-03-11 03:55:21 $'
- * '$Revision: 1.92 $'
+ *     '$Date: 2002-03-11 19:54:49 $'
+ * '$Revision: 1.93 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -367,6 +367,7 @@ public class DocFrame extends javax.swing.JFrame
 		MouseListener popupListener = new PopupListener();
     tree.addMouseListener(popupListener);
     validate();
+    setLocation(50, 50);
     setVisible(true);
     Graphics g = getGraphics();
     paint(g);
@@ -620,7 +621,7 @@ public class DocFrame extends javax.swing.JFrame
 	public void setVisible(boolean b)
 	{
 		if (b)
-			setLocation(50, 50);
+//			setLocation(50, 50);
 		super.setVisible(b);
 	}
 
@@ -1131,6 +1132,7 @@ class SymTreeSelection implements javax.swing.event.TreeSelectionListener
     * write the tree starting at the indicated node to a file 'fn'
     */
 	void writeXML (DefaultMutableTreeNode node, String fn) {
+	    setSelectedNodes(node);
 	    File outputFile = new File(fn);
 	    try {
 	        FileWriter out = new FileWriter(outputFile);
@@ -1160,7 +1162,8 @@ class SymTreeSelection implements javax.swing.event.TreeSelectionListener
     * write the tree starting at the indicated node to a file 'fn'
     */
 	String writeXMLString (DefaultMutableTreeNode node) {
-        tempStack = new Stack();
+	    setSelectedNodes(node);
+      tempStack = new Stack();
 	    start = new StringBuffer();
 	    if (trimFlag) {
 	      trimNoInfoNodes(node);
