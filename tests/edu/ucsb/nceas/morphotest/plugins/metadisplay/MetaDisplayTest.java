@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2002-09-02 16:54:26 $'
- * '$Revision: 1.6 $'
+ *     '$Date: 2002-09-28 18:38:51 $'
+ * '$Revision: 1.7 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -340,13 +340,13 @@ public class MetaDisplayTest extends TestCase
                         eventType ="NAVIGATION_EVENT";
                         break;
                     case MetaDisplayInterface.HISTORY_BACK_EVENT:
-                        eventType ="NAVIGATION_EVENT";
+                        eventType ="HISTORY_BACK_EVENT";
                         break;
                     case MetaDisplayInterface.CLOSE_EVENT:
-                        eventType ="NAVIGATION_EVENT";
+                        eventType ="CLOSE_EVENT";
                         break;
                     case MetaDisplayInterface.EDIT_BEGIN_EVENT:
-                        eventType ="NAVIGATION_EVENT";
+                        eventType ="EDIT_BEGIN_EVENT";
                         break;
                 }
                 System.out.println(

@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2002-09-28 06:14:11 $'
- * '$Revision: 1.28 $'
+ *     '$Date: 2002-09-28 18:38:50 $'
+ * '$Revision: 1.29 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -158,7 +158,7 @@ public class DataViewContainerPanel extends javax.swing.JPanel
     vertSplit = new JSplitPane(JSplitPane.VERTICAL_SPLIT,packageMetadataPanel,tabbedEntitiesPanel);
     vertSplit.setOneTouchExpandable(true);
     this.add(BorderLayout.CENTER,vertSplit);
-    vertSplit.setDividerLocation(52);
+    vertSplit.setDividerLocation(UISettings.VERT_SPLIT_INIT_LOCATION);
     this.setVisible(true);
  
   }
@@ -184,7 +184,7 @@ public class DataViewContainerPanel extends javax.swing.JPanel
     refLabel.setOpaque(true);
     refLabel.setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
     JPanel refPanel = new JPanel();
-    refPanel.setPreferredSize(new Dimension(5000,50));
+    refPanel.setPreferredSize(UISettings.TITLE_CITATION_DIMS);
     refPanel.setBorder(BorderFactory.createEmptyBorder(0,0,0,0));
     refPanel.setLayout(new BorderLayout(0,0));
     refPanel.add(BorderLayout.CENTER, refLabel);
@@ -194,7 +194,7 @@ public class DataViewContainerPanel extends javax.swing.JPanel
     Border lineBorder1 = BorderFactory.createLineBorder(Color.black);
     Border margin1 = BorderFactory.createEmptyBorder(4,2,4,2); //top,lft,bot,rgt
     Border inner = new CompoundBorder(lineBorder1,margin1);
-    locationPanel.setPreferredSize(new Dimension(51,50));
+    locationPanel.setPreferredSize(UISettings.TITLE_LOCATION_DIMS);
     locationPanel.setBorder(inner);
     locationPanel.setBackground(UISettings.NONEDITABLE_BACKGROUND_COLOR);
     locationPanel.setOpaque(true);
@@ -241,7 +241,8 @@ public class DataViewContainerPanel extends javax.swing.JPanel
     MetaDisplayInterface md = getMetaDisplayInstance();
     Component mdcomponent = null;
     try{
-      mdcomponent = md.getDisplayComponent(dp.getID(), dp, null);
+      mdcomponent = md.getDisplayComponent(dp.getID(), dp,  
+                                      new MetaViewListener(vertSplit));
     }
     catch (Exception m) {
       Log.debug(5, "Unable to display MetaData:\n"+m.getMessage()); 
@@ -335,7 +336,8 @@ public class DataViewContainerPanel extends javax.swing.JPanel
       MetaDisplayInterface md = getMetaDisplayInstance();
       Component mdcomponent = null;
       try{
-        mdcomponent = md.getDisplayComponent(id, dp, null);
+        mdcomponent = md.getDisplayComponent(id, dp, 
+                                      new MetaViewListener(currentEntityPanel));
       }
       catch (Exception m) {
         Log.debug(5, "Unable to display MetaData:\n"+m.getMessage()); 
@@ -622,4 +624,37 @@ public class DataViewContainerPanel extends javax.swing.JPanel
     }
     
   }//TabbedComponent
+
+  class MetaViewListener implements ActionListener 
+  {
+  
+    private final JSplitPane entitySplitPane;
+    
+    MetaViewListener(JSplitPane splitPane){
+      this.entitySplitPane = splitPane;
+    }
+  
+    public void actionPerformed(ActionEvent e)
+    {
+      int closedPosition = 0;
+      switch (e.getID())  {
+          case MetaDisplayInterface.CLOSE_EVENT:
+              if (entitySplitPane.getOrientation()==JSplitPane.VERTICAL_SPLIT){
+                closedPosition = UISettings.VERT_SPLIT_INIT_LOCATION;
+                Log.debug(50,"VERTICAL_SPLIT, closedPosition="+closedPosition);
+              } else {
+                closedPosition = entitySplitPane.getWidth();
+                Log.debug(50,"HORIZONAL_SPLIT, closedPosition="+closedPosition);
+              }
+              entitySplitPane.setDividerLocation(closedPosition);
+              break;
+          case MetaDisplayInterface.NAVIGATION_EVENT:
+              break;
+          case MetaDisplayInterface.HISTORY_BACK_EVENT:
+              break;
+          case MetaDisplayInterface.EDIT_BEGIN_EVENT:
+              break;
+      }
+    }
+  }
 }

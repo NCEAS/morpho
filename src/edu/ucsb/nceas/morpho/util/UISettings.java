@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2002-09-28 06:14:11 $'
- * '$Revision: 1.2 $'
+ *     '$Date: 2002-09-28 18:38:50 $'
+ * '$Revision: 1.3 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -80,7 +80,7 @@ public class UISettings
     
                                            
     //ignored by Borderlayout, but needed to create Dimension:
-    private static final int DUMMY_WIDTH              = 100;
+    private static final int DUMMY_WIDTH              = 5000;
 
     public static final Dimension TITLEBAR_DIMS 
                                   = new Dimension(DUMMY_WIDTH,TITLEBAR_HEIGHT);
@@ -89,7 +89,21 @@ public class UISettings
     public static final int TITLEBAR_COMPONENT_HEIGHT 
                                   = TITLEBAR_HEIGHT - TITLEBAR_TOP_PADDING 
                                                     - TITLEBAR_BOTTOM_PADDING;
-        
+                                                    
+    public static final int TITLE_CITATION_HEIGHT      = 50;
+    public static final Dimension TITLE_CITATION_DIMS  
+                                  = new Dimension(  DUMMY_WIDTH,
+                                                    TITLE_CITATION_HEIGHT);
+    
+    public static final int TITLE_LOCATION_HEIGHT      = TITLE_CITATION_HEIGHT;
+    public static final int TITLE_LOCATION_WIDTH       = 51;
+    public static final Dimension TITLE_LOCATION_DIMS  
+                                  = new Dimension(  TITLE_LOCATION_WIDTH,
+                                                    TITLE_CITATION_HEIGHT);
+
+    public static final int VERT_SPLIT_INIT_LOCATION   = TITLE_CITATION_HEIGHT+2;
+  
+    
     // * * * * *  D E F A U L T   C O M P O N E N T   C O L O R S  * * * * * * *
     
     public static final Color TITLEBAR_COLOR       = Color.gray;

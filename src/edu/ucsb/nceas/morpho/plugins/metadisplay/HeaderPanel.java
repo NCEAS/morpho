@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2002-09-28 06:14:11 $'
- * '$Revision: 1.12 $'
+ *     '$Date: 2002-09-28 18:38:50 $'
+ * '$Revision: 1.13 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -132,7 +132,7 @@ public class HeaderPanel extends JPanel
         closeButton.setFocusPainted(false);
         closeButton.setFont(UISettings.BUTTON_FONT);
         titleBar.add(closeButton, BorderLayout.EAST);
-        closeButton.setEnabled(false);  //hack for now, since dataviewer not 
+//        closeButton.setEnabled(false);  //hack for now, since dataviewer not 
                                         //listening to close events
     }
 
