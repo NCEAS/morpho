@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2004-03-18 00:23:33 $'
- * '$Revision: 1.9 $'
+ *     '$Date: 2004-03-25 23:58:02 $'
+ * '$Revision: 1.10 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,25 +27,20 @@
 package edu.ucsb.nceas.morpho.datapackage;
 
 import edu.ucsb.nceas.morpho.Morpho;
-import edu.ucsb.nceas.morpho.plugins.DataPackageWizardListener;
-import edu.ucsb.nceas.morpho.framework.MorphoFrame;
-import edu.ucsb.nceas.morpho.framework.SwingWorker;
+import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
 import edu.ucsb.nceas.morpho.framework.UIController;
+import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
+import edu.ucsb.nceas.morpho.plugins.DataPackageWizardListener;
+import edu.ucsb.nceas.morpho.plugins.ServiceController;
+import edu.ucsb.nceas.morpho.plugins.ServiceNotHandledException;
+import edu.ucsb.nceas.morpho.plugins.ServiceProvider;
 import edu.ucsb.nceas.morpho.util.Command;
 import edu.ucsb.nceas.morpho.util.Log;
-import edu.ucsb.nceas.morpho.plugins.ServiceController;
-import edu.ucsb.nceas.morpho.plugins.ServiceProvider;
-import edu.ucsb.nceas.morpho.plugins.ServiceNotHandledException;
-import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
-import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
+import edu.ucsb.nceas.utilities.XMLUtilities;
 
 import java.awt.event.ActionEvent;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 
 import org.w3c.dom.Node;
-import edu.ucsb.nceas.morpho.editor.*;
-import edu.ucsb.nceas.utilities.XMLUtilities;
 
 /**
  * Class to handle create new data package command
@@ -63,8 +58,11 @@ public class CreateNewDataPackageCommand implements Command
     this.morpho = morpho;
   }
 
+
   /**
-   * execute create data package  command
+   * execute create data package command
+   *
+   * @param event ActionEvent
    */
   public void execute(ActionEvent event)
   {
@@ -81,16 +79,17 @@ public class CreateNewDataPackageCommand implements Command
       Log.debug(6, snhe.getMessage());
     }
 
-    dpw.startPackageWizard(
-      new DataPackageWizardListener() {
+    try {
+      dpw.startPackageWizard(
+          new DataPackageWizardListener() {
 
         public void wizardComplete(Node newDOM) {
 
-          Log.debug(30,"Wizard complete - Will now create an AbstractDataPackage..");
+          Log.debug(30,
+              "Wizard complete - Will now create an AbstractDataPackage..");
 
           AbstractDataPackage adp = DataPackageFactory.getDataPackage(newDOM);
-          Log.debug(30,"AbstractDataPackage complete - Will now show in an XML Editor..");
-          Node domnode = adp.getMetadataNode();
+          Log.debug(30, "AbstractDataPackage complete");
 
           Morpho morpho = Morpho.thisStaticInstance;
           AccessionNumber an = new AccessionNumber(morpho);
@@ -99,7 +98,7 @@ public class CreateNewDataPackageCommand implements Command
           try {
             ServiceController services = ServiceController.getInstance();
             ServiceProvider provider =
-                       services.getServiceProvider(DataPackageInterface.class);
+                services.getServiceProvider(DataPackageInterface.class);
             DataPackageInterface dataPackage = (DataPackageInterface)provider;
             dataPackage.openNewDataPackage(adp, null);
 
@@ -111,11 +110,18 @@ public class CreateNewDataPackageCommand implements Command
           Log.debug(45, XMLUtilities.getDOMTreeAsString(newDOM, false));
         }
 
+
         public void wizardCanceled() {
 
           Log.debug(45, "\n\n********** Wizard canceled!");
         }
       });
+
+    } catch (Throwable t) {
+
+      Log.debug(5, "** ERROR: Unable to start wizard!");
+      t.printStackTrace();
+    }
   }
 
 
