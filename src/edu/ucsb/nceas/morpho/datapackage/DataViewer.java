@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: tao $'
- *     '$Date: 2002-09-03 18:11:35 $'
- * '$Revision: 1.29 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2002-09-04 14:56:47 $'
+ * '$Revision: 1.30 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -83,6 +83,8 @@ public class DataViewer extends javax.swing.JPanel
     
     int sortdirection = 1;
     boolean columnAddFlag = true;
+    
+    Document attributeDoc;
   
     Morpho framework;
     ConfigXML config;
@@ -454,6 +456,13 @@ public class DataViewer extends javax.swing.JPanel
           Log.debug(15, "Attribute information about the data is missing!");
           missing_metadata_flag = true;
       } else {
+        // build a DOM represntation of the attribute file
+        try{
+          attributeDoc = PackageUtil.getDoc(attributeFile, framework);
+        }
+        catch (Exception qq) {
+          Log.debug(20,"Error building attribute DOM !");
+        }
         // get attribute labels and build column headers
         Vector attributeNamesPath = new Vector();
         attributeNamesPath.addElement("eml-attribute/attribute/attributeName");
@@ -952,8 +961,8 @@ public class DataViewer extends javax.swing.JPanel
           if (columnAddFlag) {
             try {
               cmep.setMorpho(framework);
-              cmep.insertNewAttributeAt(sel, attributeFile);
-              cmep.save();
+              cmep.insertNewAttributeAt(sel, attributeDoc);
+ //             cmep.save();
             }
             catch (Exception w) {
               Log.debug(20, "Exception trying to modify attribute DOM");
@@ -979,8 +988,8 @@ public class DataViewer extends javax.swing.JPanel
           if (columnAddFlag) {
             try {
               cmep.setMorpho(framework);
-              cmep.insertNewAttributeAt(sel, attributeFile);
-              cmep.save();
+              cmep.insertNewAttributeAt(sel, attributeDoc);
+ //             cmep.save();
             }
             catch (Exception w) {
               Log.debug(20, "Exception trying to modify attribute DOM");
@@ -1002,9 +1011,16 @@ public class DataViewer extends javax.swing.JPanel
       else if ((object == deleteColumn)||(object == deleteColumn1)) {
         int sel = table.getSelectedColumn();
         if (sel>-1) {
+          // remove the attribute node associated with the column
+          NodeList nl = attributeDoc.getElementsByTagName("attribute");
+          Node deleteNode = nl.item(sel);
+          Node root = attributeDoc.getDocumentElement();
+          root.removeChild(deleteNode);
+          
           column_labels.removeElementAt(sel);
           ptm.deleteColumn(sel);
           pv = ptm.getPersistentVector();
+          // need to delete column from attributeDOM here !!!
         }
       }
       else if ((object == editColumnMetadata)||(object == editColumnMetadata1)) {
@@ -1124,7 +1140,33 @@ public class DataViewer extends javax.swing.JPanel
 	{ 
     
 	  if (dp!=null) {
-	    
+      // make a temporary copy of the data file
+      ptm.getPersistentVector().writeObjects(tempdir + "/" + "tempdata");
+      File newDataFile = new File(tempdir + "/" + "tempdata");
+      long newDataFileLength = newDataFile.length();
+  
+      try {
+        String attrDocType = "<!DOCTYPE eml-attribute PUBLIC "+
+            "\"-//ecoinformatics.org//eml-attribute-2.0.0beta6//EN\" "+
+            "\"eml-attribute.dtd\">";
+        String entityDocType = "<!DOCTYPE eml-entity PUBLIC "+
+            "\"-//ecoinformatics.org//eml-entity-2.0.0beta6//EN\" "+
+            "\"eml-entity.dtd\">";
+        String physicalDocType = "<!DOCTYPE eml-physical PUBLIC "+
+            "\"-//ecoinformatics.org//eml-physical-2.0.0beta6//EN\" "+
+            "\"eml-physical.dtd\">";
+        PackageUtil.saveDOM(tempdir + "/" + "tempattribute", attributeDoc, attrDocType, framework);
+        Document doc = PackageUtil.getDoc(entityFile, framework);
+        PackageUtil.saveDOM(tempdir + "/" + "tempentity", doc, entityDocType, framework);
+        doc = PackageUtil.getDoc(physicalFile, framework);
+        PackageUtil.saveDOM(tempdir + "/" + "tempphysical", doc, physicalDocType, framework);
+      }
+      catch (Exception q) {
+        Log.debug(20, "Error trying to save from DOM");
+      }
+      
+      
+      
         AccessionNumber a = new AccessionNumber(framework);
         FileSystemDataStore fsds = new FileSystemDataStore(framework);
         //System.out.println(xmlString);

@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: tao $'
- *     '$Date: 2002-09-03 18:11:35 $'
- * '$Revision: 1.8 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2002-09-04 14:56:47 $'
+ * '$Revision: 1.9 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -675,48 +675,9 @@ public class ColumnMetadataEditPanel extends javax.swing.JPanel //implements jav
         return res;
     }
 
-  void insertNewAttributeAt(int index, File file) throws FileNotFoundException
+  void insertNewAttributeAt(int index, Document doc) 
   {
-    DocumentBuilder parser = Morpho.createDomParser();
-    File XMLConfigFile = file;
-    InputSource in;
-    FileInputStream fs;
-
-    CatalogEntityResolver cer = new CatalogEntityResolver();
-    try 
-    {
-      Catalog myCatalog = new Catalog();
-      myCatalog.loadSystemCatalogs();
-      ConfigXML config = morpho.getConfiguration();
-      String catalogPath = // config.getConfigDirectory() + File.separator +
-                                       config.get("local_catalog_path", 0);
-      ClassLoader cl = Thread.currentThread().getContextClassLoader();
-      URL catalogURL = cl.getResource(catalogPath);
-        
-      myCatalog.parseCatalog(catalogURL.toString());
-      cer.setCatalog(myCatalog);
-    } 
-    catch (Exception e) 
-    {
-      Log.debug(11, "Problem creating Catalog in " +
-                   "packagewizardshell.handleFinishAction!" + e.toString());
-    }
-    
-    parser.setEntityResolver(cer);
-
-
-
-    fs = new FileInputStream(file);
-    in = new InputSource(fs);
-     try
-    {
-      doc = parser.parse(in);
-      fs.close();
-    } catch(Exception e1) {
-      Log.debug(4, "Parsing threw: " + 
-                            e1.toString());
-      e1.printStackTrace();
-    }
+    this.doc = doc;
     root = doc.getDocumentElement();
     
     // create the root of the new attribute subtree
@@ -840,7 +801,7 @@ public class ColumnMetadataEditPanel extends javax.swing.JPanel //implements jav
     // --------------------------------
     // now find the 'index'th attribute and insert the new branch there
     NodeList nl = doc.getElementsByTagName("attribute");
-    // nl should not contain all the 'Attribute' nodes
+    // nl should now contain all the 'Attribute' nodes
     int cnt = index;
     if (cnt > nl.getLength()) cnt=nl.getLength();
     Node nextNode = nl.item(cnt);
@@ -867,7 +828,7 @@ public class ColumnMetadataEditPanel extends javax.swing.JPanel //implements jav
   private PrintWriter out;
 
     /**
-   * Save the configuration file
+   * Save the DOM doc as a file
    */
   public void save()
   {
@@ -884,10 +845,6 @@ public class ColumnMetadataEditPanel extends javax.swing.JPanel //implements jav
   public void saveDOM(Node nd)
   { 
     File outfile = new File(fileName);
-   if (!outfile.canWrite()) {
-	JOptionPane.showMessageDialog(null, "Cannot Save configuration information to "+fileName+ " !", "alert",  JOptionPane.ERROR_MESSAGE);
-    }
-   else {
     try
     {
       out = new PrintWriter(new FileWriter(fileName));
@@ -898,14 +855,12 @@ public class ColumnMetadataEditPanel extends javax.swing.JPanel //implements jav
     out.println("<?xml version=\"1.0\"?>");
     print(nd);
     out.close(); 
-   }
   }
 
   /**
    * This method can 'print' any DOM subtree. Specifically it is
-   * set (by means of 'out') to write the in-memory DOM to the
-   * same XML file that was originally read. Action thus saves
-   * a new version of the XML doc
+   * set (by means of 'out') to write the in-memory DOM  
+   * Action thus saves a new version of the XML doc
    * 
    * @param node node usually set to the 'doc' node for complete XML file
    * re-write
@@ -1007,7 +962,7 @@ public class ColumnMetadataEditPanel extends javax.swing.JPanel //implements jav
     {
       out.print("</");
       out.print(node.getNodeName());
-      out.print('>');
+      out.println('>');
     }
 
     out.flush();

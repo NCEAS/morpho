@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: tao $'
- *     '$Date: 2002-09-03 18:11:35 $'
- * '$Revision: 1.20 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2002-09-04 14:56:47 $'
+ * '$Revision: 1.21 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -224,7 +224,68 @@ public class PackageUtil
     
     return doc;
   }
-  
+ 
+
+  /**
+   * parses file with the dom parser and returns a dom Document
+   * @param file the file to create the document from
+   * @param morpho the top level Morpho class
+   */
+  public static Document getDoc(File file, Morpho morpho) throws 
+                                                               SAXException, 
+                                                               Exception
+  {
+    DocumentBuilder parser = Morpho.createDomParser();
+    Document doc;
+    InputSource in;
+    FileInputStream fs;
+    CatalogEntityResolver cer = new CatalogEntityResolver();
+    try 
+    {
+      Catalog myCatalog = new Catalog();
+      myCatalog.loadSystemCatalogs();
+      ConfigXML config = morpho.getConfiguration();
+      String catalogPath = config.get("local_catalog_path", 0);
+      ClassLoader cl = Thread.currentThread().getContextClassLoader();
+      URL catalogURL = cl.getResource(catalogPath);
+        
+      myCatalog.parseCatalog(catalogURL.toString());
+      //myCatalog.parseCatalog(catalogPath);
+      cer.setCatalog(myCatalog);
+    } 
+    catch (Exception e) 
+    {
+      Log.debug(11, "Problem creating Catalog in " +
+                   "packagewizardshell.handleFinishAction!" + e.toString());
+      throw new Exception(e.getMessage());
+    }
+    
+    parser.setEntityResolver(cer);
+    
+    try
+    { //parse the wizard created file without the triples
+      fs = new FileInputStream(file);
+      in = new InputSource(fs);
+    }
+    catch(FileNotFoundException fnf)
+    {
+      fnf.printStackTrace();
+      throw new Exception(fnf.getMessage());
+    }
+    try
+    {
+      doc = parser.parse(in);
+      fs.close();
+    }
+    catch(Exception e1)
+    {
+      throw new Exception(e1.getMessage());
+    }
+    
+    return doc;
+  }
+
+ 
   /**
    * This method can 'print' any DOM subtree. Specifically it is
    * set (by means of 'out') to write the in-memory DOM to the
@@ -861,4 +922,156 @@ public class PackageUtil
     }
     return returnhash;
   }
+  
+  //-----------------------------------------
+  /**
+   * Save the DOM doc as a file
+   */
+  static public void save(String filename, Document doc, String doctype, Morpho morpho)
+  {
+    saveDOM(filename, doc, doctype, morpho);
+  }
+
+  /**
+   * This method wraps the 'print' method to send DOM back to the
+   * XML document (file) that was used to create the DOM. i.e.
+   * this method saves changes to disk
+   * 
+   * @param nd node (usually the document root)
+   */
+  static public void saveDOM(String fileName, Document doc, String doctype, Morpho morpho)
+  { 
+    PrintWriter out = null;
+    Node nd = doc.getDocumentElement();
+    File outfile = new File(fileName);
+    try
+    {
+      out = new PrintWriter(new FileWriter(fileName));
+    }
+    catch(Exception e)
+    {
+    }
+    out.println("<?xml version=\"1.0\"?>");
+    String dt = doctype;
+    if (doctype==null) dt = "";
+    out.println(dt);
+    print(nd, out);
+    out.close(); 
+  }
+
+  /**
+   * This method can 'print' any DOM subtree. Specifically it is
+   * set (by means of 'out') to write the in-memory DOM  
+   * Action thus saves a new version of the XML doc
+   * 
+   * @param node node usually set to the 'doc' node for complete XML file
+   * re-write
+   */
+  static private void print(Node node, PrintWriter out)
+  {
+
+    // is there anything to do?
+    if (node == null)
+    {
+      return;
+    }
+
+    int type = node.getNodeType();
+    switch (type)
+    {
+      // print document
+    case Node.DOCUMENT_NODE:
+    {
+
+      out.println("<?xml version=\"1.0\"?>");
+      print(((Document) node).getDocumentElement(), out);
+      out.flush();
+      break;
+    }
+
+      // print element with attributes
+    case Node.ELEMENT_NODE:
+    {
+      out.print('<');
+      out.print(node.getNodeName());
+      Attr attrs[] = sortAttributes(node.getAttributes());
+      for (int i = 0; i < attrs.length; i++)
+      {
+        Attr attr = attrs[i];
+        out.print(' ');
+        out.print(attr.getNodeName());
+        out.print("=\"");
+        out.print(normalize(attr.getNodeValue()));
+        out.print('"');
+      }
+      out.print('>');
+      NodeList children = node.getChildNodes();
+      if (children != null)
+      {
+        int len = children.getLength();
+        for (int i = 0; i < len; i++)
+        {
+          print(children.item(i), out);
+        }
+      }
+      break;
+    }
+
+      // handle entity reference nodes
+    case Node.ENTITY_REFERENCE_NODE:
+    {
+      out.print('&');
+      out.print(node.getNodeName());
+      out.print(';');
+
+      break;
+    }
+
+      // print cdata sections
+    case Node.CDATA_SECTION_NODE:
+    {
+      out.print("<![CDATA[");
+      out.print(node.getNodeValue());
+      out.print("]]>");
+
+      break;
+    }
+
+      // print text
+    case Node.TEXT_NODE:
+    {
+      out.print(normalize(node.getNodeValue()));
+      break;
+    }
+
+      // print processing instruction
+    case Node.PROCESSING_INSTRUCTION_NODE:
+    {
+      out.print("<?");
+      out.print(node.getNodeName());
+      String data = node.getNodeValue();
+      if (data != null && data.length() > 0)
+      {
+        out.print(' ');
+        out.print(data);
+      }
+      out.print("?>");
+      break;
+    }
+    }
+
+    if (type == Node.ELEMENT_NODE)
+    {
+      out.print("</");
+      out.print(node.getNodeName());
+      out.println('>');
+    }
+
+    out.flush();
+
+  } // print(Node)
+
+
+  
+  
 }
