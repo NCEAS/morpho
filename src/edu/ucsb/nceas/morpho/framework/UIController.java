@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: tao $'
- *     '$Date: 2002-10-21 18:32:41 $'
- * '$Revision: 1.21 $'
+ *   '$Author: brooke $'
+ *     '$Date: 2002-12-09 23:27:36 $'
+ * '$Revision: 1.22 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,6 +29,7 @@ package edu.ucsb.nceas.morpho.framework;
 import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.util.Command;
 import edu.ucsb.nceas.morpho.util.GUIAction;
+import edu.ucsb.nceas.morpho.util.UISettings;
 import edu.ucsb.nceas.morpho.util.Log;
 import java.awt.Container;
 import java.awt.Component;
@@ -76,6 +77,11 @@ public class UIController
     private static Hashtable subMenuAndPath;
     private static int count = 0; // count create how many frames
 
+    private static int windowXcoord, windowYcoord;
+    private static int windowXcoordUpperBound, windowYcoordUpperBound;
+    private static int WIN_CASCADE_MOD_X;
+    private static int WIN_CASCADE_MOD_Y;
+    
     // Constants
     public static final String SEPARATOR_PRECEDING = "separator_preceding";
     public static final String SEPARATOR_FOLLOWING = "separator_following";
@@ -164,9 +170,50 @@ public class UIController
         if (getCurrentActiveWindow()==null) {
             setCurrentActiveWindow(window);
         }
-      
+
+        setWindowLocation(window);
+
         count++;
         return window;
+    }
+
+
+    //sets the location of the frame to follow a cascade layout
+    private void setWindowLocation(MorphoFrame window)
+    {
+        if (count==0) {
+        
+            initWindowCoords(window);
+            
+            Log.debug(45,"UIController.initWindowCoords(): windowXcoordUpperBound="
+                                                       +windowXcoordUpperBound);
+            Log.debug(45,"UIController.initWindowCoords(): windowYcoordUpperBound="
+                                                       +windowYcoordUpperBound);
+            Log.debug(45,"UIController.initWindowCoords(): WIN_CASCADE_MOD_X="
+                                                            +WIN_CASCADE_MOD_X);
+            Log.debug(45,"UIController.initWindowCoords(): WIN_CASCADE_MOD_Y="
+                                                            +WIN_CASCADE_MOD_Y);
+        }
+        
+
+        // don't do this if this is the first window after the welcome screen, 
+        // because we need to replace the welcome screen at the same location...
+        if (count!=1) {
+            if (WIN_CASCADE_MOD_X > 0) {
+                windowXcoord = windowXcoordUpperBound 
+                    + ((  windowXcoord - windowXcoordUpperBound 
+                    + UISettings.WINDOW_CASCADE_X_OFFSET) % WIN_CASCADE_MOD_X);
+            }
+            if (WIN_CASCADE_MOD_Y > 0) {
+                windowYcoord = windowYcoordUpperBound 
+                    + ((  windowYcoord - windowYcoordUpperBound 
+                    + UISettings.WINDOW_CASCADE_Y_OFFSET) % WIN_CASCADE_MOD_Y);
+            }
+        }
+
+        Log.debug(45,"UIController.setWindowLocation(): ("  +windowXcoord+", "
+                                                            +windowYcoord+")");
+        window.setLocation(windowXcoord,windowYcoord);
     }
     
     /**
@@ -754,4 +801,58 @@ public class UIController
        }//if
        return flag;
    }//isSubMenuPathExisted
+   
+   
+   
+   //initialize values for window locations
+   private void initWindowCoords(MorphoFrame frame) 
+   {
+        int xQttyTopLeft, yQttyTopLeft, qttyTopLeft;
+        int xQttyLoRt,    yQttyLoRt,    qttyLoRt;
+        int fWidth  = frame.getWidth();
+        int fHeight = frame.getHeight();
+               
+        windowXcoord = ((UISettings.CLIENT_SCREEN_WIDTH  - fWidth) / 2);
+        windowYcoord = ((UISettings.CLIENT_SCREEN_HEIGHT 
+                       - UISettings.TASKBAR_HEIGHT - fHeight) / 2);
+
+        // UPPER LEFT LIMIT:
+        //how many frames can we fit between centered frame and 
+        //top left of screen?
+        xQttyTopLeft = windowXcoord/UISettings.WINDOW_CASCADE_X_OFFSET;
+        yQttyTopLeft = windowYcoord/UISettings.WINDOW_CASCADE_Y_OFFSET;
+        //which one (x or y) is the minimum (i.e. limiting) number?
+        qttyTopLeft  = (xQttyTopLeft > yQttyTopLeft)? yQttyTopLeft : xQttyTopLeft;
+
+        //so these are the top-leftmost coords for any window:
+        windowXcoordUpperBound = windowXcoord 
+                    - (qttyTopLeft * UISettings.WINDOW_CASCADE_X_OFFSET);
+        windowYcoordUpperBound = windowYcoord 
+                    - (qttyTopLeft * UISettings.WINDOW_CASCADE_Y_OFFSET);
+       
+        // LOWER RIGHT LIMIT:
+        //how many frames can we fit between centered frame and 
+        //bottom right of screen (minus task-bar area)?
+        int loRightXcoord = windowXcoord + fWidth;
+        int loRightYcoord = windowYcoord + fHeight;
+        xQttyLoRt = (UISettings.CLIENT_SCREEN_WIDTH  - loRightXcoord)
+                                        /UISettings.WINDOW_CASCADE_X_OFFSET;
+        yQttyLoRt = (UISettings.CLIENT_SCREEN_HEIGHT - loRightYcoord)
+                                        /UISettings.WINDOW_CASCADE_Y_OFFSET;
+        //which one (x or y) is the minimum (i.e. limiting) number?
+        qttyLoRt  = (xQttyLoRt > yQttyLoRt)? yQttyLoRt : xQttyLoRt;
+
+        int modInt = qttyTopLeft + qttyLoRt;
+        
+        WIN_CASCADE_MOD_X = modInt * UISettings.WINDOW_CASCADE_X_OFFSET;
+        WIN_CASCADE_MOD_Y = modInt * UISettings.WINDOW_CASCADE_Y_OFFSET;
+        
+        //do this because algorithm will add cascade offset next:
+        if (WIN_CASCADE_MOD_X > 0) {
+            windowXcoord -= UISettings.WINDOW_CASCADE_X_OFFSET;
+        }
+        if (WIN_CASCADE_MOD_Y > 0) {
+            windowYcoord -= UISettings.WINDOW_CASCADE_Y_OFFSET;
+        }
+   }
 }
