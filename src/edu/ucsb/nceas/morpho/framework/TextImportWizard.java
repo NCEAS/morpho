@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-12-04 20:29:09 $'
- * '$Revision: 1.17 $'
+ *     '$Date: 2001-12-10 18:33:23 $'
+ * '$Revision: 1.18 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -2022,13 +2022,16 @@ public void startImport(String file) {
 	  String filesizeString = (new Long(filesize)).toString();
 	  String delimit = getDelimiterStringAsText();
 	  StringBuffer XMLBuffer = new StringBuffer();
+	  int numHeaderLines = startingLine;
+	  if (!labelsInStartingLine) numHeaderLines = numHeaderLines-1;
+	  
 	  XMLBuffer.append("<?xml version=\"1.0\"?>\n");
-	  XMLBuffer.append("<!DOCTYPE eml-physical PUBLIC \"-//ecoinformatics.org//eml-physical-2.0.0beta4//EN\" \"eml-entity.dtd\">\n");
+	  XMLBuffer.append("<!DOCTYPE eml-physical PUBLIC \"-//ecoinformatics.org//eml-physical-2.0.0beta4//EN\" \"eml-physical.dtd\">\n");
 	  XMLBuffer.append("<eml-physical>\n");
 	  XMLBuffer.append("    <identifier> </identifier>\n");
       XMLBuffer.append("    <format> Text</format>\n");  // text import wizard only handles text 
-      XMLBuffer.append("    <size>"+filesizeString+" bytes"+"</size>\n");  
-      XMLBuffer.append("    <numHeaderLines>"+startingLine+"</numHeaderLines>\n");  
+      XMLBuffer.append("    <size unit=\"bytes\">"+filesizeString+"</size>\n");  
+      XMLBuffer.append("    <numHeaderLines>"+numHeaderLines+"</numHeaderLines>\n");  
       XMLBuffer.append("    <recordDelimiter>"+"end of line"+"</recordDelimiter>\n"); 
       XMLBuffer.append("    <fieldDelimiter>"+delimit+"</fieldDelimiter>\n"); 
       XMLBuffer.append("</eml-physical>\n");
@@ -2158,7 +2161,7 @@ public void startImport(String file) {
 	        if (colName.length()==0) res=false;
 	        if (colDefinition.length()==0) res=false;
 	        if (colType.length()==0) res=false;
-	        if (colUnits.length()==0) res=false;
+	   //     if (colUnits.length()==0) res=false;
 	        return res;
 	    }
 	}
