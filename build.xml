@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+<project name="dtclient" default="compileClient" basedir=".">
+   <target name="init">
+      <property name="classesdir" value="./classes" />
+      <property name="dtclient.home" value="edu/ucsb/nceas/dtclient" />
+      <property name="src.dtclient.home" value="src/edu/ucsb/nceas/dtclient" />
+      <property name="src.arbortext.home"  value="src/com/arbortext/catalog"  />
+      <property name="src.sym.home.awt"  value="src/com/symantec/itools/awt"  />
+      <property name="src.sym.home.swing"  value="src/com/symantec/itools/javax/swing"  />
+      <mkdir dir="classes" />
+   </target>
+   
+   <target name="compileCat" depends="init">
+       <javac srcdir="${src.arbortext.home}" destdir="${classesdir}" />
+   </target>
+
+   <target name="compileSymAwt" depends="init">
+       <javac srcdir="${src.sym.home.awt}" destdir="${classesdir}" />
+   </target>
+      
+   <target name="compileSymSwing" depends="init">
+       <javac srcdir="${src.sym.home.swing}" destdir="${classesdir}" />
+   </target>
+
+   <target name="compileClient" depends="init,compileCat,compileSymAwt,compileSymSwing">
+       <javac srcdir="${src.dtclient.home}" destdir="${classesdir}" classpath="xerces.jar;xalan.jar" /> 
+       <copydir src="images/" dest="${classesdir}/${dtclient.home}" />
+       <delete file="XMLClient.jar" />
+       <jar jarfile="XMLClient.jar" basedir="${classesdir}"  />
+   </target> 
+
+   <target name="clean" depends="init">
+       <delete file="XMLClient.jar" />
+       <deltree dir="${classesdir}" />
+   </target>
+</project>
