@@ -8,8 +8,8 @@
 *    Release: @release@
 *
 *   '$Author: sambasiv $'
-*     '$Date: 2004-04-21 23:17:43 $'
-* '$Revision: 1.27 $'
+*     '$Date: 2004-04-22 00:07:25 $'
+* '$Revision: 1.28 $'
 *
 * This program is free software; you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -642,6 +642,7 @@ public class Taxonomic extends AbstractUIPage {
   public boolean onAdvanceAction() {
 		
 		taxonList.fireEditingStopped();
+		taxonList.selectAndEditCell(0, 0);
     List rows = this.classList.getListOfRowLists();
     if(rows != null && rows.size() > 0){
 

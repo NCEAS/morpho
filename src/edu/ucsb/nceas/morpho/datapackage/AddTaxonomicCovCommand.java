@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: sambasiv $'
- *     '$Date: 2004-04-14 20:29:00 $'
- * '$Revision: 1.15 $'
+ *     '$Date: 2004-04-22 00:07:25 $'
+ * '$Revision: 1.16 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -130,7 +130,8 @@ public class AddTaxonomicCovCommand implements Command {
         //Restore project subtree to state it was in when we started...
 
         adp.removeTaxonomicNodes();
-        if (existingValuesMap != null) insertTaxonomicNode(existingValuesMap);
+				OrderedMap newMap = preprendKeysWithString(existingValuesMap, "/coverage");
+				if (existingValuesMap != null) insertTaxonomicNode(newMap);
       }
 
     } else {
@@ -195,7 +196,17 @@ public class AddTaxonomicCovCommand implements Command {
 //    return true;
 //  }
 
-
+	private OrderedMap preprendKeysWithString(OrderedMap map, String prefix) {
+		
+		OrderedMap newMap = new OrderedMap();
+		Iterator it = map.keySet().iterator();
+		while(it.hasNext()) {
+			String key = (String)it.next();
+			newMap.put(prefix + key, map.get(key));
+			
+		}
+		return newMap;
+	}
   private OrderedMap getTaxonSubtreeMap(AbstractDataPackage adp) {
 
     NodeList taxonList = adp.getTaxonomicNodeList();
@@ -209,7 +220,9 @@ public class AddTaxonomicCovCommand implements Command {
 
     if (totTaxa!=1) Log.debug(45, "More than 1 taxon definition found!!!!");
 
-     return XMLUtilities.getDOMTreeAsXPathMap(taxonList.item(0));
+    OrderedMap map = XMLUtilities.getDOMTreeAsXPathMap(taxonList.item(0));
+		
+		return map;
   }
 
 
@@ -223,7 +236,7 @@ public class AddTaxonomicCovCommand implements Command {
 
     //backup subtree so it can be restored if user hits cancel:
     existingValuesMap = getTaxonSubtreeMap(adp);
-
+		
     if (existingValuesMap == null) {
 
       //there wasn't a project subtree in the datapackage, so add one
@@ -269,16 +282,21 @@ public class AddTaxonomicCovCommand implements Command {
       //there was already a project subtree in the datapackage, so read it...
 
       Log.debug(45, "Found project subtree in the datapackage; reading...");
-    }
-
+		}
+		
     Log.debug(45, "sending previous data to projectPage -\n\n"
               + existingValuesMap);
-
+		
+		OrderedMap newMap = null;
+		if(existingValuesMap != null) {
+			newMap = this.preprendKeysWithString(existingValuesMap, "");
+		}
+		
     boolean pageCanHandleAllData
-        = taxonomicPage.setPageData(existingValuesMap,
+        = taxonomicPage.setPageData(newMap,
                                     "/" + TAXONOMIC_COVERAGE_SUBTREE_NODENAME);
-
-    return pageCanHandleAllData;
+		
+		return pageCanHandleAllData;
   }
 
 }
