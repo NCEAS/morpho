@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2001-04-21 03:43:03 $'
- * '$Revision: 1.2.2.2 $'
+ *     '$Date: 2001-04-23 21:49:14 $'
+ * '$Revision: 1.2.2.3 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,6 +27,7 @@
 package edu.ucsb.nceas.dtclient;
 
 import javax.swing.Action;
+import java.awt.Container;
 
 /**
  * All component plugins that are to be included in the ClientFramework
@@ -68,6 +69,13 @@ public interface PluginInterface
 
   /**
    * This method is called by the framework when the plugin should 
+   * register a UI tab pane that is to be incorporated into the main
+   * user interface.
+   */
+  public Container registerTabPane();
+
+  /**
+   * This method is called by the framework when the plugin should 
    * register any services that it handles.  The plugin should then
    * call the framework's 'addService' method for each service it can
    * handle.
@@ -87,7 +95,7 @@ public interface PluginInterface
 
   /**
    * This method is called by a service provider that is handling 
-   *  a service request that originated with the plugin.  Data
+   * a service request that originated with the plugin.  Data
    * from the ServiceRequest is handed back to the source plugin in
    * the ServiceResponse object.
    *
