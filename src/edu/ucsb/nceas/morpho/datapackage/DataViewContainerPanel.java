@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-02-19 19:09:23 $'
- * '$Revision: 1.56 $'
+ *     '$Date: 2003-04-21 20:53:17 $'
+ * '$Revision: 1.57 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -56,6 +56,7 @@ import edu.ucsb.nceas.morpho.util.StoreStateChangeEvent;
 import edu.ucsb.nceas.morpho.datastore.FileSystemDataStore;
 import edu.ucsb.nceas.morpho.datastore.MetacatDataStore;
 import edu.ucsb.nceas.morpho.datastore.CacheAccessException;
+import edu.ucsb.nceas.morpho.query.LocalQuery;
 
 
 import edu.ucsb.nceas.morpho.framework.*;
@@ -976,6 +977,15 @@ public class DataViewContainerPanel extends javax.swing.JPanel
           String oldid = id;
           newid = a.incRev(id);
           File f = fsds.saveTempFile(oldid, new StringReader(xmlString));
+          
+          // remove old version from cache
+          if (LocalQuery.dom_collection.containsKey(oldid)) {
+              LocalQuery.dom_collection.remove(oldid);
+          }
+
+     if (f==null) {
+        Log.debug(1,"file is null!");  
+     }
           String newPackageFile = a.incRevInTriples(f, oldid, newid);
           fsds.saveFile(newid, new StringReader(newPackageFile));
           newPackageId = newid;
