@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2002-12-13 19:51:15 $'
- * '$Revision: 1.6 $'
+ *     '$Date: 2002-12-16 21:43:49 $'
+ * '$Revision: 1.7 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -35,6 +35,8 @@ import java.awt.event.WindowEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemListener;
+import java.awt.event.ItemEvent;
 
 import javax.swing.Box;
 import javax.swing.JPanel;
@@ -42,8 +44,9 @@ import javax.swing.JLabel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
-import javax.swing.JPasswordField;
 import javax.swing.SwingConstants;
+import javax.swing.JPasswordField;
+import javax.swing.DefaultComboBoxModel;
 
 import edu.ucsb.nceas.morpho.Morpho;
 
@@ -74,12 +77,20 @@ public class InitialScreen extends JPanel
 
     private final Morpho        morpho;
     private final MorphoFrame   parentFrame;
-    private final JLabel        currentProfileLDAPLabel = new JLabel();
+    private final JComboBox     profileComboBox;
+    private final JPasswordField passwordField;
+    private ProfileComboBoxModel profileComboBoxModel;
+    private final JLabel        currentProfileLDAPLabel;
+    private static boolean      ignoreSelectionEvents;
     
-    private HyperlinkButton logoutLink;
-    private Command         logoutCommand;
-    private LeftPanel       profilePanel;
-    private LeftPanel       loginPanel;
+    private HyperlinkButton     logoutLink;
+    private LeftPanel           dataPanel;
+    private LeftPanel           loginPanel;
+    private LeftPanel           profilePanel;
+    private Command             logoutCommand;
+    private String[]            profileStrings;
+    private ItemListener        pickListListener;
+    
     
     
     private boolean prevLoginStatus = true; //initially set to true so login  
@@ -91,8 +102,17 @@ public class InitialScreen extends JPanel
         this.setLayout(new BorderLayout(0,0));
         this.morpho      = morpho;
         this.parentFrame = parentFrame;
+        
+        profileComboBox = new JComboBox();
+        currentProfileLDAPLabel = new JLabel();
+        passwordField = new JPasswordField();
+        ignoreSelectionEvents = false;
+        
         init();
         addLeftPanels();
+        
+        passwordField.requestFocus();
+        
     }
     
     private void init() {
@@ -114,30 +134,33 @@ public class InitialScreen extends JPanel
                            +UISettings.INIT_SCR_PANEL_TITLE_HILITE_FONT_CLOSE
                            +UISettings.INIT_SCRN_PANELS_TITLE_CLOSE,
                             UISettings.INIT_SCRN_PROFILE_PANEL_HEIGHT);
+                            
         loginPanel   = new LeftPanel(
                             UISettings.INIT_SCRN_PANELS_LOGIN_TITLE_TEXT_OPEN
                             +UISettings.INIT_SCRN_PANELS_TITLE_CLOSE,
                             UISettings.INIT_SCRN_LOGIN_PANEL_HEIGHT);
-        LeftPanel dataPanel    = new LeftPanel( 
+                            
+        dataPanel    = new LeftPanel( 
                             UISettings.INIT_SCRN_PANELS_DATA_TITLE_TEXT_OPEN
                             +UISettings.INIT_SCRN_PANELS_TITLE_CLOSE,
                             UISettings.INIT_SCRN_DATA_PANEL_HEIGHT);
-        leftPanelContainer.add(
-            Box.createVerticalStrut(UISettings.INIT_SCRN_LEFT_PANELS_PADDING));
+                            
+        leftPanelContainer.add(Box.createVerticalStrut(
+                            UISettings.INIT_SCRN_LEFT_PANELS_PADDING));
         leftPanelContainer.add(profilePanel);
         leftPanelContainer.add(Box.createVerticalStrut(
-                                    UISettings.INIT_SCRN_LEFT_PANELS_PADDING));
+                            UISettings.INIT_SCRN_LEFT_PANELS_PADDING));
         leftPanelContainer.add(loginPanel);
         leftPanelContainer.add(Box.createVerticalStrut(
-                                    UISettings.INIT_SCRN_LEFT_PANELS_PADDING));
+                            UISettings.INIT_SCRN_LEFT_PANELS_PADDING));
         leftPanelContainer.add(dataPanel);
         leftPanelContainer.add(Box.createVerticalGlue());
         
         leftPanelLayoutBox.add(Box.createHorizontalStrut(
-                                    UISettings.INIT_SCRN_LEFT_PANELS_PADDING));
+                            UISettings.INIT_SCRN_LEFT_PANELS_PADDING));
         leftPanelLayoutBox.add(leftPanelContainer);
         leftPanelLayoutBox.add(Box.createHorizontalStrut(
-                                    UISettings.INIT_SCRN_LEFT_PANELS_PADDING));
+                            UISettings.INIT_SCRN_LEFT_PANELS_PADDING));
             
         this.add(leftPanelLayoutBox, BorderLayout.WEST);
         
@@ -146,6 +169,10 @@ public class InitialScreen extends JPanel
         populateDataPanel(dataPanel);
     }
     
+    
+    //
+    // Initializes layout & widgets displayed on Profile panel. 
+    //
     private void populateProfilePanel(final LeftPanel panel)
     {
         // ROW 1 ///////////////////////////////////////////////////////////////
@@ -162,34 +189,56 @@ public class InitialScreen extends JPanel
         panel.addToRow2(changeProfileLabel);
         
         //PICKLIST:
-        String[] profileStrings =  morpho.getProfilesList();
-        
-        final JComboBox profilePicker = new JComboBox(profileStrings);
-        
-        for (int sel = 0; sel < profileStrings.length; sel++) {
-            if (morpho.getCurrentProfileName().equals(profileStrings[sel])) {
-                profilePicker.setSelectedIndex(sel);
-                break;
-            }
-        }
+        profileComboBoxModel = new ProfileComboBoxModel();
+        profileComboBox.setModel(profileComboBoxModel);
 
-        panel.addToRow2(profilePicker);
-        setSizes(profilePicker, UISettings.INIT_SCRN_LEFT_PANELS_PICKLISTDIMS);
-
-        profilePicker.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                logoutCommand.execute(e);
-                morpho.setProfileDontLogin(
-                                    (String)profilePicker.getSelectedItem());
-                updateLDAPStatus();
+        panel.addToRow2(profileComboBox);
+        setSizes(profileComboBox, UISettings.INIT_SCRN_LEFT_PANELS_PICKLISTDIMS);
+        
+        
+        // ItemListener pickListListener ///////////////////
+        
+        pickListListener = new ItemListener() {
+            public void itemStateChanged(ItemEvent e) {
+                //itemStateChanged gets called during picklist initial setup, so 
+                //check for null logoutCommand or null selectedProfile and skip:
+                if (ignoreSelectionEvents) return;
+                if (logoutCommand==null) return;
+                Object selectedProfileObj = profileComboBox.getSelectedItem();
+                if (selectedProfileObj==null) return;
+                String selectedProfile = (String)selectedProfileObj;
+                //if there's no change (ie user re-selected same profile), skip
+                if (selectedProfile.equals(morpho.getCurrentProfileName())) {
+                    return;
+                }
+                ///////////////////////////////////////////////////////////////
+                logoutCommand.execute(null);
+                morpho.setProfileDontLogin(selectedProfile);
+                updateProfileStatus();
             }
-        });
+        };
+        ////////////////////////////////////////////////////
+                
+        profileComboBox.addItemListener(pickListListener);
+
+        
+        // ProfileAddedListener ////////////////////////////
+        morpho.addProfileAddedListener(
+            new ProfileAddedListener() {
+
+                public void profileAdded(String profileName) {
+                    logoutCommand.execute(null);
+                    updateProfileStatus();
+                }
+            });
+        ////////////////////////////////////////////////////
 
         panel.addToRow2(Box.createHorizontalGlue());
 
+        
         // ROW 3 ///////////////////////////////////////////////////////////////
         Command newProfileCmd = new Morpho.CreateNewProfileCommand();
-        
+
         GUIAction newProfileAction 
                     = new GUIAction(UISettings.NEW_PROFILE_LINK_TEXT,
                                     UISettings.NEW_PROFILE_ICON, newProfileCmd);
@@ -201,18 +250,67 @@ public class InitialScreen extends JPanel
         panel.addToRow3(Box.createHorizontalGlue());
         
         //DO INITIAL UPDATES:
-        updateLDAPStatus();
+        updateProfileStatus();
     }
     
-    private void setSizes(JComponent comp, Dimension dims)
+    
+    //
+    // loops thru' items in profileComboBoxModel and sets selected on the item 
+    // that matches Morpho's currently-selected profile
+    //
+    private void setCurrentPicklistSelection()
     {
-        comp.setPreferredSize(dims);
-        comp.setMinimumSize(dims);
-        comp.setMaximumSize(dims);
+        for (int sel = 0; sel < profileComboBoxModel.getSize(); sel++) {
+            if (morpho.getCurrentProfileName().equals(profileStrings[sel])) {
+                //don't want to fire a selection event here...
+                ignoreSelectionEvents = true;
+                profileComboBox.setSelectedIndex(sel);
+                //now add back listener for selection events...
+                ignoreSelectionEvents = false;
+                break;
+            }
+        }
     }
     
     
+    //
+    // updates info & widgets displayed on Profile panel. Shows current profile 
+    // and a picklist to allow change
+    //
+    private void updateProfileStatus() 
+    {
+        profileStrings = morpho.getProfilesList();
+        //don't want to fire a selection event here...
+        ignoreSelectionEvents = true;
+        profileComboBoxModel.resetElementsTo(profileStrings);
+        setCurrentPicklistSelection();
+        //now add back listener for selection events...
+        ignoreSelectionEvents = false;
+        
+        profileComboBox.invalidate();
+        
+        profilePanel.setTitle(  
+                         UISettings.INIT_SCRN_PANELS_PROFILE_TITLE_TEXT_OPEN
+                        +UISettings.INIT_SCR_PANEL_TITLE_HILITE_FONT_OPEN
+                        +morpho.getCurrentProfileName()
+                        +UISettings.INIT_SCR_PANEL_TITLE_HILITE_FONT_CLOSE
+                        +UISettings.INIT_SCRN_PANELS_TITLE_CLOSE);
+        profilePanel.invalidate();
+
+        currentProfileLDAPLabel.setText(  
+                         UISettings.INIT_SCR_PANEL_LITE_FONT_OPEN
+                        +"("+morpho.getUserName()+")"
+                        +UISettings.INIT_SCR_PANEL_LITE_FONT_CLOSE);
+                        
+        currentProfileLDAPLabel.invalidate();
+
+        profilePanel.revalidate();
+    }
     
+    
+    //
+    // Initializes layout & widgets displayed on login panel. 
+    //
     private void populateLoginPanel(final LeftPanel panel) 
     {
         final JButton loginButton = new JButton(); 
@@ -237,16 +335,13 @@ public class InitialScreen extends JPanel
         //////////////
        
         //PASSWORD FIELD:
-        final JPasswordField passwordField = new JPasswordField();
         setSizes(passwordField,UISettings.INIT_SCRN_LEFT_PANELS_PICKLISTDIMS);
         passwordField.addActionListener(
             new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
-                    loginButton.getAction().actionPerformed(null); 
+                    loginButton.doClick(); 
                 }
             });
- 
- 
         //////////////
         
         
@@ -278,12 +373,17 @@ public class InitialScreen extends JPanel
                     public String getPassword()
                     {
                         parentFrame.setBusy(true);
+                        loginButton.setEnabled(false);
+                        passwordField.setEnabled(false);
                         return new String(passwordField.getPassword());
                     }
 
                     public void setLoginSuccessful(boolean success)
                     {
                         parentFrame.setBusy(false);
+                        loginButton.setEnabled(true);
+                        passwordField.setEnabled(true);
+                        
                         if (success) {
                             updateLoginStatus(  loginMessageLabel, 
                                                 loginHeaderLabel, passwordLabel, 
@@ -312,9 +412,8 @@ public class InitialScreen extends JPanel
                                         passwordField, loginButton);
                 }
               
-                public void usernameChanged(String username)
-                {
-                    updateLDAPStatus();
+                public void usernameChanged(String username) {
+                    updateProfileStatus();
                 }
             });
             
@@ -325,21 +424,10 @@ public class InitialScreen extends JPanel
     }
     
     
-    private void updateLDAPStatus() 
-    {
-        profilePanel.setTitle(  
-                         UISettings.INIT_SCRN_PANELS_PROFILE_TITLE_TEXT_OPEN
-                        +UISettings.INIT_SCR_PANEL_TITLE_HILITE_FONT_OPEN
-                        +morpho.getCurrentProfileName()
-                        +UISettings.INIT_SCR_PANEL_TITLE_HILITE_FONT_CLOSE
-                        +UISettings.INIT_SCRN_PANELS_TITLE_CLOSE);
-        currentProfileLDAPLabel.setText(  
-                         UISettings.INIT_SCR_PANEL_LITE_FONT_OPEN
-                        +"("+morpho.getUserName()+")"
-                        +UISettings.INIT_SCR_PANEL_LITE_FONT_CLOSE);
-    }
-    
-    
+    //
+    // updates info & widgets displayed on login panel. If logged in, shows
+    // "logout" link; if not logged in, shows password box & "login" button
+    //
     private void updateLoginStatus( JLabel          loginMessageLabel,
                                     JLabel          loginHeaderLabel, 
                                     JLabel          passwordLabel, 
@@ -362,19 +450,20 @@ public class InitialScreen extends JPanel
                                         UISettings.INIT_SCR_LOGIN_MESSAGE)
                         +UISettings.INIT_SCR_PANEL_LITE_FONT_CLOSE);
 
-        //if no change, don't need to update panel    
+        //if no change, don't need to update panel
         if (morpho.isConnected() == prevLoginStatus) return;
-        
+
         if (morpho.isConnected()) {
             loginPanel.clearRow3();
             loginPanel.addToRow3(logoutLink);
+            logoutLink.resetRollovers();
             loginPanel.addToRow3(Box.createHorizontalGlue());
             loginHeaderLabel.setText("");
             prevLoginStatus = true;
         } else {
             loginPanel.clearRow3();
             loginPanel.addToRow3(passwordLabel);
-            passwordField.setText("");       
+            passwordField.setText("");
             loginPanel.addToRow3(passwordField);
             loginPanel.addToRow3(Box.createHorizontalStrut(10));
             loginPanel.addToRow3(loginButton);
@@ -382,10 +471,10 @@ public class InitialScreen extends JPanel
             loginHeaderLabel.setText(UISettings.INIT_SCR_LOGIN_HEADER);
             prevLoginStatus = false;
         }
-                        
+
     }
-    
-    
+
+
     private void populateDataPanel(final LeftPanel panel) 
     {
         //get handles to plugins so we can then get Command objects...
@@ -469,6 +558,21 @@ public class InitialScreen extends JPanel
         panel.addToRow3(searchLink);
         panel.addToRow3(Box.createHorizontalGlue());
     }
+    
+    private void setSizes(JComponent comp, Dimension dims)
+    {
+        comp.setPreferredSize(dims);
+        comp.setMinimumSize(dims);
+        comp.setMaximumSize(dims);
+    }
+    
+
+//******************************************************************************
+//**                                                                          **
+//** class to extend JPanel so we can create a reusable custom panel and      **
+//** provide convenience methods as described below                           **
+//**                                                                          **
+//******************************************************************************
 
     
     /**
@@ -487,7 +591,7 @@ public class InitialScreen extends JPanel
      *  |-----------------------------------|
      *  |  third  content row               |
      *  |-----------------------------------|
-     *  <pre>
+     *  </pre>
      *
      */
     class LeftPanel extends JPanel
@@ -602,10 +706,45 @@ public class InitialScreen extends JPanel
             bottomBox.removeAll();
             bottomBox.validate();
         }
-    
-    
     }
     
+    
+//******************************************************************************
+//**                                                                          **
+//** class to extend DefaultComboBoxModel so we can add a method to reset the **
+//** contents of the model with a single call                                 **
+//**                                                                          **
+//******************************************************************************
+
+    
+    class ProfileComboBoxModel extends DefaultComboBoxModel 
+    {
+        ProfileComboBoxModel() 
+        {
+            super();
+        }
+
+        ProfileComboBoxModel(Object[] elements) 
+        {
+            super(elements);
+        }
+    
+        public void resetElementsTo(Object[] elements) 
+        {
+            if (elements==null) return;
+            this.removeAllElements();
+            for (int i=0; i<elements.length; i++) {
+                if (elements[i]==null) continue;
+                this.addElement(elements[i]);
+            }
+        }        
+    }
+    
+//******************************************************************************
+//**                                                                          **
+//** overrides superclass JPanel's paintComponent() method                    **
+//**                                                                          **
+//******************************************************************************
     
     /**
      *  overrides JPanel's paintComponent() method to paint graphic behind 
@@ -618,4 +757,5 @@ public class InitialScreen extends JPanel
         
         g.drawImage(UISettings.INIT_SCR_BACKGROUND, 0, 0, this);
     }
+    
 }
