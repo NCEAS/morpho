@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2004-01-05 22:15:01 $'
- * '$Revision: 1.30 $'
+ *     '$Date: 2004-01-14 20:53:39 $'
+ * '$Revision: 1.31 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -385,6 +385,15 @@ public class DataPackageFactory
     try{
       Morpho.createMorphoInstance();
       adp = DataPackageFactory.getDataPackage("jscientist.7.1", false, true);
+      
+      // create a simple subtree to use to test coverage insertion
+      Document doc = adp.getMetadataNode().getOwnerDocument();
+      Node elem = (Node)(doc.createElement("temporalCoverage"));
+      Node txt = (Node)doc.createTextNode("when");
+      elem.appendChild(txt);
+      
+      adp.insertCoverage(elem);
+      
       adp.showPackageSummary();
       
       // now let us test the add attribute
