@@ -5,9 +5,9 @@
  *    Authors: @tao@
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2003-12-24 00:29:11 $'
- * '$Revision: 1.17 $'
+ *   '$Author: tao $'
+ *     '$Date: 2004-04-19 20:44:50 $'
+ * '$Revision: 1.18 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -35,6 +35,7 @@ import edu.ucsb.nceas.morpho.util.SortableJTable;
 import edu.ucsb.nceas.morpho.util.StateChangeEvent;
 import edu.ucsb.nceas.morpho.util.StateChangeMonitor;
 
+import java.util.Vector;
 import java.awt.event.ActionEvent;
 
 /**
@@ -93,10 +94,10 @@ public class SearchCommand implements Command
         Query query = queryDialog.getQuery();
         if (query != null)
         {
-          MorphoFrame resultWindow = UIController.getInstance().addWindow(
-                query.getQueryTitle());
-          resultWindow.setVisible(true);
-          doQuery(resultWindow, query);
+           MorphoFrame box = UIController.getInstance().addWindow(query.getQueryTitle());
+           // first true is sorted or not, 5 is sorted column index, second true
+          // is send event of not
+          doQuery(box, query, true, 5, SortableJTable.DECENDING, true);
         }//if
       }//if
     }//if
@@ -109,39 +110,31 @@ public class SearchCommand implements Command
    * @param resultWindow MorphoFrame
    * @param query Query
    */
-  public static void doQuery(final MorphoFrame resultWindow, final Query query)
+  public static void doQuery(MorphoFrame resultWindow, Query query,
+                             boolean sorted, int sortedIndex, String sortedOder,
+                             boolean sendEvent)
   {
+     Morpho morphoInQuery = query.getMorpho();
+     resultWindow.setVisible(true);
+     Vector vector = new Vector();
+     String source ="";
+     HeadResultSet results = new HeadResultSet(
+                                         query, source, vector, morphoInQuery);
+     ResultPanel resultDisplayPanel = new ResultPanel(
+     null,results, 12, null, resultWindow.getDefaultContentAreaSize());
+     resultDisplayPanel.setVisible(true);
+     resultWindow.setMainContentPane(resultDisplayPanel);
+     boolean showSearchNumber = true;
+     StateChangeEvent event = null;
+     if (sendEvent)
+     {
+       event = new StateChangeEvent(resultDisplayPanel,
+                                 StateChangeEvent.CREATE_SEARCH_RESULT_FRAME);
 
-    final SwingWorker worker = new SwingWorker()
-    {
-        ResultSet results;
-        public Object construct()
-        {
-          resultWindow.setBusy(true);
-          results = query.execute();
-          // null means the resultpanel would NOT be setted to a Jdialog
-          ResultPanel resultDisplayPanel = new ResultPanel(
-          null,results, 12, null, resultWindow.getDefaultContentAreaSize());
-          resultDisplayPanel.setVisible(true);
-          // sort the result panel
-          resultDisplayPanel.sortTable(5, SortableJTable.DECENDING);
-          resultWindow.setMainContentPane(resultDisplayPanel);
-          StateChangeMonitor.getInstance().notifyStateChange(
-                          new StateChangeEvent(
-                                  resultDisplayPanel,
-                                  StateChangeEvent.CREATE_SEARCH_RESULT_FRAME));
-          return null;
-        }
+     }
+     query.displaySearchResult(resultWindow, resultDisplayPanel, sorted,
+                               sortedIndex, sortedOder, showSearchNumber, event);
 
-        //Runs on the event-dispatching thread.
-        public void finished()
-        {
-          resultWindow.setMessage(results.getRowCount() + " data sets found");
-          resultWindow.setBusy(false);
-
-        }
-    };
-    worker.start();  //required for SwingWorker 3
   }//doQuery
 
   /**

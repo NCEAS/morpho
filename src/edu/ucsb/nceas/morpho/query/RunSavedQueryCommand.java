@@ -5,9 +5,9 @@
  *    Authors: @tao@
  *    Release: @release@
  *
- *   '$Author: cjones $'
- *     '$Date: 2002-09-26 01:57:53 $'
- * '$Revision: 1.2 $'
+ *   '$Author: tao $'
+ *     '$Date: 2004-04-19 20:44:50 $'
+ * '$Revision: 1.3 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -37,13 +37,13 @@ import javax.swing.JDialog;
 /**
  * Class to handle click a saved query menu item
  */
-public class RunSavedQueryCommand implements Command 
+public class RunSavedQueryCommand implements Command
 {
-    
+
   /** A reference to the query */
   private Query query;
-  
- 
+
+
   /**
    * Constructor of SearcCommand
    * @param myQuery the query stored in this save query menu item
@@ -52,7 +52,7 @@ public class RunSavedQueryCommand implements Command
   {
     query = myQuery;
   }//SearchCommand
-  
+
   /**
    * Set query to this object
    *
@@ -62,41 +62,45 @@ public class RunSavedQueryCommand implements Command
   {
     query = myQuery;
   }
-  
-  /** 
+
+  /**
    * Get query from the object
    */
   public Query getQuery()
   {
     return query;
   }
-   
-   
+
+
   /**
    * execute cancel command
-   */    
+   */
   public void execute(ActionEvent event)
   {
-   
-      if (query != null) 
+
+      if (query != null)
       {
         MorphoFrame resultWindow = UIController.getInstance().addWindow(
                 query.getQueryTitle());
-        resultWindow.setBusy(true);
+        //resultWindow.setBusy(true);
         resultWindow.setVisible(true);
-        SearchCommand.doQuery(resultWindow, query);
+        //SearchCommand.doQuery(resultWindow, query);
+        //true means sored, 5 means sored column index
+        // second true means send state change event or not.
+        SearchCommand.doQuery(resultWindow, query, true, 5,
+                              SortableJTable.DECENDING, true);
       }//if
       else
       {
          Log.debug(6, "There is no query associate this menu item!");
       }
-   
+
   }//execute
 
- 
+
   /**
    * could also have undo functionality; disabled for now
-   */ 
+   */
   // public void undo();
 
 }//class RunSavedQueryCommand

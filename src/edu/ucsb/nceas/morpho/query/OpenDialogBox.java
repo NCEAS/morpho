@@ -6,9 +6,9 @@
  *    Authors: @Jing Tao@
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2004-04-04 04:27:00 $'
- * '$Revision: 1.20 $'
+ *   '$Author: tao $'
+ *     '$Date: 2004-04-19 20:44:50 $'
+ * '$Revision: 1.21 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,6 +33,7 @@ import edu.ucsb.nceas.morpho.util.Command;
 import edu.ucsb.nceas.morpho.util.GUIAction;
 import edu.ucsb.nceas.morpho.util.Log;
 import edu.ucsb.nceas.morpho.util.SortableJTable;
+import edu.ucsb.nceas.morpho.util.StateChangeEvent;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
@@ -58,14 +59,6 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JDialog;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JRadioButton;
-import javax.swing.JScrollPane;
-import javax.swing.JTabbedPane;
-import javax.swing.JTextField;
-import javax.swing.WindowConstants;
 import javax.swing.SwingConstants;
 
 /**
@@ -81,28 +74,28 @@ public class OpenDialogBox extends JDialog
 
   /** the reference to mediator */
   private ResultPanelAndFrameMediator mediator = null;
-  
+
   /** the reference to the owner query */
   private Query ownerQuery = null;
-  
+
   /** the reference to the parent of dialog */
   private MorphoFrame parentFrame = null;
-  
- 
+
+
   //{{DECLARE_CONTROLS
   private JButton openButton = null;
   private JButton cancelButton = null;
   private JButton searchButton = null;
   //}}
-  
+
   // ResultSet and result panel for the owner
   private ResultSet results = null;
   private ResultPanel ownerPanel = null;
-  
+
   // DIMENTION Factor to parent
   private static final double DIMENSIONFACTOR = 0.9;
   private static final int PADDINGWIDTH = 8;
-  
+
   /**
    * Construct a new instance of the query dialog
    *
@@ -118,14 +111,14 @@ public class OpenDialogBox extends JDialog
     this.config = morpho.getConfiguration();
     this.mediator = new ResultPanelAndFrameMediator();
     this.ownerQuery = myQuery;
-  
+
     // Set OpenDialog size depent on parent size
     int parentWidth = parent.getWidth();
     int parentHeight = parent.getHeight();
     int dialogWidth = 820;
     int dialogHeight = 500;
     setSize(dialogWidth, dialogHeight);
-    
+
     // Set location of dialog, it shared same center of parent
     double parentX = parent.getLocation().getX();
     double parentY = parent.getLocation().getY();
@@ -134,29 +127,29 @@ public class OpenDialogBox extends JDialog
     int dialogX = (new Double(centerX - 0.5 * dialogWidth)).intValue();
     int dialogY = (new Double(centerY - 0.5 * dialogHeight)).intValue();
     setLocation(dialogX, dialogY);
-    
+
     setTitle("Open");
     // Set the default close operation is dispose
     setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-    
+
     // Set the border layout as layout
     getContentPane().setLayout(new BorderLayout(0, 0));
 
     // Create padding
-    getContentPane().add(BorderLayout.NORTH, 
+    getContentPane().add(BorderLayout.NORTH,
                                       Box.createVerticalStrut(PADDINGWIDTH));
-    getContentPane().add(BorderLayout.EAST, 
+    getContentPane().add(BorderLayout.EAST,
                                       Box.createHorizontalStrut(PADDINGWIDTH));
-    getContentPane().add(BorderLayout.WEST, 
+    getContentPane().add(BorderLayout.WEST,
                                       Box.createHorizontalStrut(PADDINGWIDTH));
-   
+
     // Create result panel
     createOwnerPanel();
     ownerPanel.setBackground(Color.white);
     // Sort ownerPanel by last updated date
     ownerPanel.sortTable(5, SortableJTable.DECENDING);
     getContentPane().add(BorderLayout.CENTER, ownerPanel);
-    
+
     // Create bottom box
     Box bottomBox = Box.createVerticalBox();
     getContentPane().add(BorderLayout.SOUTH, bottomBox);
@@ -166,49 +159,50 @@ public class OpenDialogBox extends JDialog
     // Create a controlbuttionBox
     Box controlButtonsBox = Box.createHorizontalBox();
     controlButtonsBox.add(Box.createHorizontalStrut(PADDINGWIDTH));
-    
+
     // Search button
     GUIAction searchAction = new GUIAction("Search...", new ImageIcon
        (getClass().getResource("/toolbarButtonGraphics/general/Search16.gif")),
        new SearchCommand(this, morpho));
-    searchAction.setToolTipText("Switch to search system to open packages from" 
+    searchAction.setToolTipText("Switch to search system to open packages from"
                                 + " the whole network");
-  
+
     searchButton = new JButton(searchAction);
-    // Set text on the left of icon        
+    // Set text on the left of icon
     searchButton.setHorizontalTextPosition(SwingConstants.LEFT);
     controlButtonsBox.add(searchButton);
-    
+
     controlButtonsBox.add(Box.createHorizontalGlue());
-    
+
     // Open button
-    GUIAction openAction = new GUIAction("Open", null, 
-                                  new OpenPackageCommand(this));    
-    openButton = new JButton(openAction);   
+    GUIAction openAction = new GUIAction("Open", null,
+                                  new OpenPackageCommand(this));
+    openButton = new JButton(openAction);
     // Registor open button to mediator
     mediator.registerOpenButton(openButton);
     // After registor resultPanel and open button, init mediator
     mediator.init();
     controlButtonsBox.add(openButton);
-    
+
     controlButtonsBox.add(Box.createHorizontalStrut(PADDINGWIDTH));
-    
+
     //Cancel button
-    GUIAction cancelAction = new GUIAction("Cancel", null, 
+    GUIAction cancelAction = new GUIAction("Cancel", null,
                                                       new CancelCommand(this));
     cancelButton = new JButton(cancelAction);
     controlButtonsBox.add(cancelButton);
     controlButtonsBox.add(Box.createHorizontalStrut(PADDINGWIDTH));
-    
+
     // Add controlButtonsBox to bottomBox
     bottomBox.add(controlButtonsBox);
     // Add the margin between controlButtonPanel to the bottom line
     bottomBox.add(Box.createVerticalStrut(10));
-   
+
     // Add a keyPressActionListener
     this.addKeyListener(new KeyPressActionListener());
-    setVisible(false);
-   
+    setModal(true);
+    setVisible(true);
+
   }
 
   /**
@@ -218,16 +212,16 @@ public class OpenDialogBox extends JDialog
   {
     return parentFrame;
   }//getParent
- 
+
   /**
    * Method to get the parent morphoFrame of dialog
    */
   public ResultPanel getResultPanel()
   {
     return ownerPanel;
-  }//getParent 
-  
-  /** 
+  }//getParent
+
+  /**
    * Method to set a resultpanel to the dialog
    *
    * @param resultPanel the ResultPanel need to be setted
@@ -235,23 +229,23 @@ public class OpenDialogBox extends JDialog
   public void setResultPanel(ResultPanel resultPanel)
   {
     //ownerPanel = resultPanel;
-     if (resultPanel != null) 
+     if (resultPanel != null)
      {
          Container contentPane = getContentPane();
-         if (ownerPanel != null) 
+         if (ownerPanel != null)
          {
            contentPane.remove(ownerPanel);
          }
          ownerPanel = resultPanel;
          contentPane.add(BorderLayout.CENTER, ownerPanel);
          validate();
-        
-     } 
-   
+
+     }
+
   }
 
   /**
-   * Listens for key events coming from the dialog.  responds to escape and 
+   * Listens for key events coming from the dialog.  responds to escape and
    * enter buttons.  escape toggles the cancel button and enter toggles the
    * Search button
    */
@@ -260,18 +254,18 @@ public class OpenDialogBox extends JDialog
     public KeyPressActionListener()
     {
     }
-    
+
     public void keyPressed(KeyEvent e)
     {
       if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-        java.awt.event.ActionEvent event = new 
+        java.awt.event.ActionEvent event = new
                        java.awt.event.ActionEvent(openButton, 0, "Search");
-        
+
       } else if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
         dispose();
-        java.awt.event.ActionEvent event = new 
+        java.awt.event.ActionEvent event = new
                        java.awt.event.ActionEvent(cancelButton, 0, "Cancel");
-        
+
       }
     }
   }
@@ -281,11 +275,25 @@ public class OpenDialogBox extends JDialog
    */
   private void createOwnerPanel()
   {
-    results = ownerQuery.execute();
+    //results = ownerQuery.execute();
+    //ownerPanel = new ResultPanel(this, results, mediator);
+    Vector vector = new Vector();
+    String source ="";
+    HeadResultSet results = new HeadResultSet(
+                                       ownerQuery, source, vector, morpho);
     ownerPanel = new ResultPanel(this, results, mediator);
-    
+    ownerPanel.setVisible(true);
+    StateChangeEvent event = null;
+    boolean showSearchNumber = false;
+    boolean sort = true;
+    int index = 5;
+    String order = SortableJTable.DECENDING;
+    ownerQuery.displaySearchResult(parentFrame, ownerPanel, sort,
+                             index, order, showSearchNumber, event);
+
+
    }// createOwnerPanel
-  
-  
- 
+
+
+
 }

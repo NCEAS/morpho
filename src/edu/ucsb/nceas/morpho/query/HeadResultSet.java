@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2004-04-10 21:17:54 $'
- * '$Revision: 1.12 $'
+ *     '$Date: 2004-04-19 20:44:50 $'
+ * '$Revision: 1.13 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -100,6 +100,7 @@ public class HeadResultSet extends ResultSet
    */
   public Object getValueAt(int row, int col)
   {
+
     Object value = null;
     try {
       Vector rowVector = (Vector)headResultsVector.elementAt(row);
@@ -179,6 +180,16 @@ public class HeadResultSet extends ResultSet
   }
 
   /**
+  * Merge a ResultSet onto this one using the docid as the join column
+  */
+  public void merge(Vector vector2)
+  {
+    super.merge(vector2);
+    consolidateResults();
+  }
+
+
+  /**
    * Consolidate the results Vector to produce a new Vector with only the
    * most recent revision of each document in the Vector. Warning: this
    * implementation doesn't preserve sort order of the results
@@ -188,6 +199,7 @@ public class HeadResultSet extends ResultSet
     int numHeaders = getColumnCount();
     Hashtable maxRevHash = new Hashtable();
     Hashtable maxRevRow = new Hashtable();
+
     for (int i=0; i<resultsVector.size(); i++) {
       // Get the row, and its docid, parse out the rev #
       Vector rowVector = null;
@@ -198,6 +210,7 @@ public class HeadResultSet extends ResultSet
       Integer maxRev = null;
       try
       {
+
         rowVector = (Vector)resultsVector.elementAt(i);
         docid = (String)rowVector.elementAt(DOCIDINDEX);
         family = docid.substring(0, docid.lastIndexOf("."));
@@ -244,33 +257,6 @@ public class HeadResultSet extends ResultSet
    */
   public void sortTableByColumn(int col, String order)
   {
-    boolean sort = false;
-    boolean ascending = false;
-
-    // look up sort and ascending
-    if (order.equals(SortableJTable.ASCENDING))
-    {
-      sort = true;
-      ascending = true;
-    }
-    else if (order.equals(SortableJTable.DECENDING))
-    {
-      sort = true;
-      ascending = false;
-    }
-    else if (order.equals(SortableJTable.NONORDERED))
-    {
-      sort = false;
-    }
-    // sorting
-    if (sort)
-    {
-      //look up index in result vector
-      int resultColIndex = lookupResultsVectorIndex(col);
-      // sort the result vector
-      Collections.sort(headResultsVector,
-                    new CellComparator(resultColIndex, ascending));
-    }
-
+    sortVector(headResultsVector, col, order);
   }//sortColumn
 }

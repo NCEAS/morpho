@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2002-10-17 18:54:02 $'
- * '$Revision: 1.14 $'
+ *     '$Date: 2004-04-19 20:44:50 $'
+ * '$Revision: 1.15 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -36,35 +36,36 @@ import edu.ucsb.nceas.morpho.util.SortableJTable;
 import edu.ucsb.nceas.morpho.util.StateChangeEvent;
 import edu.ucsb.nceas.morpho.util.StateChangeMonitor;
 import java.awt.Component;
+import java.util.Vector;
 import java.awt.event.ActionEvent;
 import javax.swing.JDialog;
 
 /**
  * Class to handle refresh command
  */
-public class RefreshCommand implements Command 
+public class RefreshCommand implements Command
 {
   /** A reference to the MophorFrame */
   private MorphoFrame morphoFrame = null;
-  
+
   /** A reference to a dialog */
   private OpenDialogBox dialog = null;
-  
+
   /** A flag to indicate if a morpho frame is specified  need to be refresh */
   private boolean specifyMorpho = false;
-  
+
   /** A flag to indicate if a OpenDialog is specified need to be refresh */
   private boolean specifyOpenDialog = false;
-  
+
   /**
    * Constructor of refreshCommand
    * There is no parameter, means it will refresh current active morpho frame
    */
   public RefreshCommand()
   {
- 
+
   }//RefreshCommand
-  
+
   /**
    * Constructor of RefreshCommand
    * @param box specify a morphoframe need to be refreshed
@@ -77,7 +78,7 @@ public class RefreshCommand implements Command
       specifyMorpho = true;
     }
   }//RefreshCommand
-  
+
  /**
    * Constructor of RefreshCommand
    * @param myOpenDialog specify a Open dialog need to be refreshed
@@ -90,11 +91,11 @@ public class RefreshCommand implements Command
       specifyOpenDialog = true;
     }
   }//RefreshCommand
-  
-  
+
+
   /**
    * execute refresh command
-   */    
+   */
   public void execute(ActionEvent event)
   {
     ResultPanel resultPane = null;
@@ -103,12 +104,13 @@ public class RefreshCommand implements Command
       // for a dialog
       morphoFrame = dialog.getParentFrame();
       resultPane = dialog.getResultPanel();
-      
+
     }//if
     else if (specifyMorpho)
     {
       // for a specify morpho frame
       resultPane = getResultPanelFromMorphoFrame(morphoFrame);
+      morphoFrame.setMessage("");
     }//else if
     else
     {
@@ -118,9 +120,10 @@ public class RefreshCommand implements Command
       if (morphoFrame != null)
       {
          resultPane = getResultPanelFromMorphoFrame(morphoFrame);
+         morphoFrame.setMessage("");
       }//if
     }//else
- 
+
     // make sure resulPanel is not null
     if ( resultPane != null)
     {
@@ -134,7 +137,7 @@ public class RefreshCommand implements Command
         index = table.getIndexOfSortedColumn();
         order = table.getOrderOfSortedColumn();
       }
- 
+
       Query myQuery = null;
       myQuery = resultPane.getResultSet().getQuery();
       if (myQuery != null)
@@ -142,71 +145,45 @@ public class RefreshCommand implements Command
         doQuery(myQuery, specifyOpenDialog, sorted, index, order);
       }//if
     }//if
-  
-  }//execute
-  
- 
-  /**
-   * Run the search query again 
-   */
-  private void doQuery(final Query query, final boolean forOpenDialog, 
-                        final boolean sort, final int index, final String order) 
-  {
-  
-    final SwingWorker worker = new SwingWorker() 
-    {
-        ResultSet results;
-        ResultPanel resultDisplayPanel = null;
-        public Object construct() 
-        {
-          morphoFrame.setBusy(true);
-          results = query.execute();
-          
-          // The size of resultpanel for morpho frame
-          if (!forOpenDialog)
-          {
-            resultDisplayPanel = new ResultPanel(
-              null, results, 12, null, morphoFrame.getDefaultContentAreaSize());
-            // if the table alread sort the new resul panel should be sorted too
-            if (sort)
-            {
-              resultDisplayPanel.sortTable(index, order);
-            }
-            resultDisplayPanel.setVisible(true); 
-            morphoFrame.setMainContentPane(resultDisplayPanel);
-            morphoFrame.setMessage(results.getRowCount() + " data sets found");
-            // Generate a non select event for resulpane
-            StateChangeMonitor monitor = StateChangeMonitor.getInstance();
-            monitor.notifyStateChange(
-                          new StateChangeEvent( 
-                          resultDisplayPanel, 
-                          StateChangeEvent.SEARCH_RESULT_NONSELECTED));
-          }//if
-          else
-          {
-            // size for open dialog
-            resultDisplayPanel = new ResultPanel(dialog, results, null);
-            // if the table alread sort the new resul panel should be sorted too
-            if (sort)
-            {
-              resultDisplayPanel.sortTable(index, order);
-            }
-            resultDisplayPanel.setVisible(true); 
-            dialog.setResultPanel(resultDisplayPanel);
-          }//esle
-        
-          return null;  
-        }
 
-        //Runs on the event-dispatching thread.
-        public void finished() 
-        {
-          morphoFrame.setBusy(false);
-        }
-    };
-    worker.start();  //required for SwingWorker 3
+  }//execute
+
+
+  /**
+   * Run the search query again
+   */
+  private void doQuery(Query query, boolean forOpenDialog,
+                        boolean sort, int index, String order)
+  {
+
+     // The size of resultpanel for morpho frame
+     if (!forOpenDialog)
+     {
+       // last false means not send a statechange event
+       SearchCommand.doQuery(morphoFrame, query, sort, index, order, false);
+     }//if
+     else
+     {
+       Morpho morphoInQuery = query.getMorpho();
+       Vector vector = new Vector();
+       String source ="";
+       HeadResultSet results = new HeadResultSet(
+                                       query, source, vector, morphoInQuery);
+       ResultPanel resultDisplayPanel = new ResultPanel(dialog, results, null);
+       resultDisplayPanel.setVisible(true);
+       dialog.setResultPanel(resultDisplayPanel);
+       StateChangeEvent event = null;
+       boolean showSearchNumber = false;
+       query.displaySearchResult(morphoFrame, resultDisplayPanel, sort,
+                             index, order, showSearchNumber, event);
+
+    }//esle
+
+
+
+
   }//doQuery
-  
+
   /**
    * Gave a morphoFrame, get resultpanel from it. If morphFrame doesn't contain
    * a resultPanel, null will be returned
@@ -235,12 +212,12 @@ public class RefreshCommand implements Command
     {
       return null;
     }
-      
+
   }//getResulPanelFromMorphFrame
-  
+
   /**
    * could also have undo functionality; disabled for now
-   */ 
+   */
   // public void undo();
 
 }//class CancelCommand
