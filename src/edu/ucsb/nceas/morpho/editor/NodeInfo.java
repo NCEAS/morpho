@@ -7,9 +7,9 @@
  *    Authors: Dan Higgins
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2004-03-27 21:25:30 $'
- * '$Revision: 1.25 $'
+ *   '$Author: brooke $'
+ *     '$Date: 2005-02-22 23:21:51 $'
+ * '$Revision: 1.26 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -37,58 +37,58 @@ import java.io.*;
 import com.wutka.dtd.*;
 
 /**
- * NodeInfo is a class used as a UserObject for a specialized JTree model. It is 
+ * NodeInfo is a class used as a UserObject for a specialized JTree model. It is
  * basically the container for all information about the node in the tree data
  * structure. This includes the node text and icon. When the tree is used to show
  * the hierarchy of an XML document, it also contains all all information in the
  * attributes of the XML node, as well as other information like the cardinality
- * of the node. 
+ * of the node.
  * Content information from a DTD/schema can thus be stored along with actual
  * XML element data
- * 
+ *
  * @author higgins
  */
 public class NodeInfo implements Serializable
 {
     static Hashtable icons;
     static { icons = new Hashtable(); }
-    
+
     // name is the string that appears when NodeInfo is associated with tree node
     String name;
-    
+
     // iconName is string used to get icon from icons Hashtable
     String iconName;
-    
+
     // value that is returned for PCDATA
     String PCDataValue;
-    
+
     // allowed values - ONE, ZERO to MANY, ONE to MANY, OPTIONAL
-    String cardinality = "ONE"; 
-        
+    String cardinality = "ONE";
+
     // attributes of associated XML element
     Hashtable attr;
 
     // used with DTD parser with 'Choice' Elements
     Object Item = null;
-    
+
     /** name of special class used to display this node */
     String editor = null;
 
     /** name of special class used to display rootnode */
     String rooteditor = null;
-    
+
     /** help string for this node */
     String help = null;
-    
+
     /** indicates whether this node is a CHOICE node */
     boolean choice_flag;
-    
-    
-    /** indicates whether this node is SELECTED 
+
+
+    /** indicates whether this node is SELECTED
      *  only meaningful if choice_flag is true
      */
     boolean selected_flag;
-    
+
     /** indicates whether this node is a CHECKBOX
      *  this is a selected node whose parent CHOICE element
      *  is repeatable, meaning that multiple choice can occur.
@@ -96,8 +96,8 @@ public class NodeInfo implements Serializable
      *  only meaningful if choice_flag is true
      */
     boolean checkbox_flag;
-    
-    
+
+
    /**
     * flag to indicate that this nodeInfo object really is an XML attribute of its parent
     * node. Needed so that xml attributes can be displayed just kike other PCDATA node
@@ -115,7 +115,7 @@ public class NodeInfo implements Serializable
      int nodeVisLevel = 0;
  /**
   * creates a new NodeInfo object with the indicated name.
-  * 
+  *
   * @param name name is the text that will appear when a TreeNode which has been
   * assigned a NodeInfo object with 'name' as the UserObject;
   */
@@ -129,7 +129,7 @@ public class NodeInfo implements Serializable
     checkbox_flag = false;
     setCardinality("ZERO to MANY");
  }
- 
+
   public String toString() {
     if (name.equalsIgnoreCase("#PCDATA")) {
  //     return ((String)attr.get("Value"));
@@ -147,7 +147,7 @@ public class NodeInfo implements Serializable
       }
     }
   }
-  
+
   public void setNodeVisLevel(int nvl) {
     this.nodeVisLevel = nvl;
   }
@@ -155,43 +155,43 @@ public class NodeInfo implements Serializable
   public int getNodeVisLevel() {
     return nodeVisLevel;
   }
-  
+
   public void setXMLAttribute (boolean val) {
     xml_attribute = val;
   }
-  
+
   public boolean isXMLAttribute() {
     return xml_attribute;
   }
-  
+
   public void setCardinality(String card) {
     this.cardinality = card;
     if(card.equalsIgnoreCase("ONE")) {
-      setIcon("red.gif");    
+      setIcon("red.gif");
     }
     if(card.equalsIgnoreCase("OPTIONAL")) {
-      setIcon("yellow.gif");    
+      setIcon("yellow.gif");
     }
     if(card.equalsIgnoreCase("ZERO to MANY")) {
-      setIcon("green.gif");    
+      setIcon("green.gif");
     }
     if(card.equalsIgnoreCase("ONE to MANY")) {
-      setIcon("blue.gif");    
+      setIcon("blue.gif");
     }
     if (choice_flag && selected_flag) {
-      setIcon("sel.gif");  
+      setIcon("sel.gif");
     }
     if (choice_flag && !selected_flag) {
       setIcon("unsel.gif");
     }
   }
-  
-  
+
+
   // Accesors
   public boolean isChoice() {
-    return choice_flag;  
+    return choice_flag;
   }
-  
+
   public void setChoice(boolean flg) {
     this.choice_flag = flg;
   }
@@ -199,50 +199,50 @@ public class NodeInfo implements Serializable
   public void setCheckboxFlag(boolean flg) {
     this.checkbox_flag = flg;
     if (choice_flag && selected_flag && !checkbox_flag) {
-        setIcon("sel.gif");  
+        setIcon("sel.gif");
     }
     if (choice_flag && selected_flag && checkbox_flag) {
-        setIcon("checkedBox.gif");  
+        setIcon("checkedBox.gif");
     }
     if (choice_flag && !selected_flag && !checkbox_flag) {
-        setIcon("unsel.gif");  
+        setIcon("unsel.gif");
     }
     if (choice_flag && !selected_flag && checkbox_flag) {
-        setIcon("uncheckedBox.gif");  
+        setIcon("uncheckedBox.gif");
     }
   }
-  
+
   public boolean isCheckbox() {
     return checkbox_flag;
   }
-  
+
   public boolean isSelected() {
-    return selected_flag;  
+    return selected_flag;
   }
-  
+
   public void setSelected(boolean flg) {
     this.selected_flag = flg;
     if (choice_flag && selected_flag && !checkbox_flag) {
-        setIcon("sel.gif");  
+        setIcon("sel.gif");
     }
     if (choice_flag && selected_flag && checkbox_flag) {
-        setIcon("checkedBox.gif");  
+        setIcon("checkedBox.gif");
     }
     if (choice_flag && !selected_flag && !checkbox_flag) {
-        setIcon("unsel.gif");  
+        setIcon("unsel.gif");
     }
     if (choice_flag && !selected_flag && checkbox_flag) {
-        setIcon("uncheckedBox.gif");  
+        setIcon("uncheckedBox.gif");
     }
   }
-  
+
   public String getHelp() {
     return help;
   }
   public void setHelp(String hlp) {
     this.help = hlp;
   }
-  
+
   public String getEditor() {
     return editor;
   }
@@ -256,35 +256,35 @@ public class NodeInfo implements Serializable
   public void setRootEditor(String redt) {
     this.rooteditor = redt;
   }
-  
-  
+
+
   public void setPCValue(String val) {
-    PCDataValue = val; 
+    PCDataValue = val;
   }
-  
+
   public String getPCValue() {
-    return PCDataValue.trim(); 
+    return PCDataValue.trim();
   }
   public String getCardinality() {
-    return cardinality;    
+    return cardinality;
   }
-    
+
   public Object getItem() {
     return Item;
   }
-  
+
   public void setItem(Object o) {
     Item = o;
   }
-    
+
   public void setName (String name) {
     this.name = name;
   }
-    
+
   public String getName() {
     return name;
   }
-  
+
   public void setIcon(String name) {
     iconName = name;
     if (!icons.containsKey(name)) {    //see if icon is not already in hashtable
@@ -292,7 +292,7 @@ public class NodeInfo implements Serializable
       icons.put(name,temp);
     }
   }
-  
+
   public ImageIcon getIcon() {
     if (iconName!=null) {
       if (icons.containsKey(iconName)) {
@@ -302,12 +302,12 @@ public class NodeInfo implements Serializable
     }
     return null;
     }
-    
+
   public String getIconName() {
     return iconName;
   }
-  
-  
+
+
   public NodeInfo cloneNodeInfo() {
     NodeInfo clone = new NodeInfo(this.name);
     clone.cardinality = this.cardinality;
@@ -319,22 +319,22 @@ public class NodeInfo implements Serializable
     clone.selected_flag = this.selected_flag;
     clone.rooteditor = this.rooteditor;
     clone.help = this.help;
-    Enumeration enum = this.attr.keys();
-    while (enum.hasMoreElements()) {
-        Object kk = enum.nextElement();
+    Enumeration enumeration = this.attr.keys();
+    while (enumeration.hasMoreElements()) {
+        Object kk = enumeration.nextElement();
         Object val = this.attr.get(kk);
-        clone.attr.put(kk, val);    
+        clone.attr.put(kk, val);
     }
-    
+
     return clone;
   }
-  
+
   public String getAttrValue(String key) {
     String ret = null;
     if (attr.containsKey(key)) {
       ret = (String)attr.get(key);
-    } 
+    }
     return ret;
   }
-  
+
 }

@@ -5,9 +5,9 @@
  *    Authors: @higgins@
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2004-04-30 17:04:20 $'
- * '$Revision: 1.165 $'
+ *   '$Author: brooke $'
+ *     '$Date: 2005-02-22 23:21:51 $'
+ * '$Revision: 1.166 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,81 +23,81 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
- 
- 
+
+
 /**
 Morpho XML Editor
 April 28, 2004
 Dan Higgins
 
-The tree-based Morpho XML editor in version 1.5 has many changes from previous 
-versions. This document is a discussion of how the editor has been changed, 
+The tree-based Morpho XML editor in version 1.5 has many changes from previous
+versions. This document is a discussion of how the editor has been changed,
 how it works, and how to update it in the future for new versions of eml.
 
-The code for the tree editor is in the editor package with most of the code 
-in the rather large DocFrame class (Yes, I know, it should have been broken 
-into several smaller classes! DFH). The code folds together information 
-from an XML instance document with schema information about cardinality, 
+The code for the tree editor is in the editor package with most of the code
+in the rather large DocFrame class (Yes, I know, it should have been broken
+into several smaller classes! DFH). The code folds together information
+from an XML instance document with schema information about cardinality,
 choices, sequences, etc.
 
 In versions of Morpho before 1.5, DTDs were used instead of XMLSchemas
  to provide generic schema information. THe DTDs were parsed along with
- instance documents everytime the editor was launched. In Morpho 1.5+, 
- we have shifted to eml2 and to the use of XMLSchemas (which are used to 
+ instance documents everytime the editor was launched. In Morpho 1.5+,
+ we have shifted to eml2 and to the use of XMLSchemas (which are used to
  define eml2 - no eml2 DTDs have been generated).
 
 In order to speed up the editor, it was decided not to parse the rather
- large eml2 schema everytime an instance document is loaded. Instead, 
- the eml schema is parsed ahead of time and the information saved in a 
- separate 'template' xml documemt which can be more easily merged with 
- an instance document. In the case of eml2 and Morpho, this document 
- is called 'eml.xml' and is stored in the Morpho ./lib/ directory. That 
- template document contains all the schema information (cardinality, 
- choices, help, etc) for all the possible eml elements in a form that 
- is much closer to the form of an instance document.  
+ large eml2 schema everytime an instance document is loaded. Instead,
+ the eml schema is parsed ahead of time and the information saved in a
+ separate 'template' xml documemt which can be more easily merged with
+ an instance document. In the case of eml2 and Morpho, this document
+ is called 'eml.xml' and is stored in the Morpho ./lib/ directory. That
+ template document contains all the schema information (cardinality,
+ choices, help, etc) for all the possible eml elements in a form that
+ is much closer to the form of an instance document.
 
-Note also that to minimize confusion, the XMLEditor now does not initially 
-show all elements that MIGHT exist in an eml document. Instead, the default 
+Note also that to minimize confusion, the XMLEditor now does not initially
+show all elements that MIGHT exist in an eml document. Instead, the default
 display contains just the nodes that already DO exist in the instance document.
- One has to click the "Show All" button to make the editor merge all the nodes 
- in the template with those in the instance. (Also, xml attributes are now 
+ One has to click the "Show All" button to make the editor merge all the nodes
+ in the template with those in the instance. (Also, xml attributes are now
  also shown in the tree, just like elements.)
 
-A template document like eml.xml can be generated using the XMLSchema parser 
-that is located in the Morpho CVS module (./lib/SchemaParser). This app can 
-parse any XMLSchema package, but parses eml2.0.0 by default. (It can be 
-launched using the 'runnit.bat' file on a Windows machine. It uses PSVI 
-information from the Xerces XML parser to extract various XMLSchema 
-information.) The app shows various schema information in a tree, including 
-all 'Global Elements'. One of these is the eml2 root node, "eml:eml". 
-You can expand that node to see eml structure, and selecting a node in the 
-tree shows cardinality information at the bottom of the window. Clicking the 
-"Save" button writes the information out to a file called "SchemaOut.xml" 
+A template document like eml.xml can be generated using the XMLSchema parser
+that is located in the Morpho CVS module (./lib/SchemaParser). This app can
+parse any XMLSchema package, but parses eml2.0.0 by default. (It can be
+launched using the 'runnit.bat' file on a Windows machine. It uses PSVI
+information from the Xerces XML parser to extract various XMLSchema
+information.) The app shows various schema information in a tree, including
+all 'Global Elements'. One of these is the eml2 root node, "eml:eml".
+You can expand that node to see eml structure, and selecting a node in the
+tree shows cardinality information at the bottom of the window. Clicking the
+"Save" button writes the information out to a file called "SchemaOut.xml"
 which is the basis of the template used by the XML Editor in Morpho.
 
-Note that because eml is recursiuve, one has to have some means of stopping 
-when building the eml tree. The XMLSchemaParser just sets the maximum number 
-of 'levels' of the tree. In the default Java code, this maximum is set to 
-14. Note that this setting results in almost 5000 possible elements in the 
-eml template! (This includes SEQUENCE and CHOICE nodes and well as elements 
-repeated in several places.) 
+Note that because eml is recursiuve, one has to have some means of stopping
+when building the eml tree. The XMLSchemaParser just sets the maximum number
+of 'levels' of the tree. In the default Java code, this maximum is set to
+14. Note that this setting results in almost 5000 possible elements in the
+eml template! (This includes SEQUENCE and CHOICE nodes and well as elements
+repeated in several places.)
 
-The eml.xml file was originally created as described above, but a number of 
-changes have been made in the machine-generated version to make the display 
-less confusing. One example is changes to any 'TextType' subtrees which allow 
-sections and paragraphs of text with inline formatting (html-like). These have 
-been simplified to simple <para> elements for paragraph information. In addtion, 
-an 'editor="edu.ucsb.nceas.morpho.editor.TextAreaPanel"' attribute has been 
-added to many of these text elements to customize the display to show a large 
-text area rather than a single line textbox. Another example is the use of a 
-'nodeVisLevel' attribute to make certain seldom used eml subtrees invisible 
-(e.g. the "otherEntity" subtree). Also, the arbitrary depth of recursion in 
-the machine generated template was insufficient in some cases. Thus, certain 
-subtrees have been extended (made deeper) by copy and pasting from more fully 
+The eml.xml file was originally created as described above, but a number of
+changes have been made in the machine-generated version to make the display
+less confusing. One example is changes to any 'TextType' subtrees which allow
+sections and paragraphs of text with inline formatting (html-like). These have
+been simplified to simple <para> elements for paragraph information. In addtion,
+an 'editor="edu.ucsb.nceas.morpho.editor.TextAreaPanel"' attribute has been
+added to many of these text elements to customize the display to show a large
+text area rather than a single line textbox. Another example is the use of a
+'nodeVisLevel' attribute to make certain seldom used eml subtrees invisible
+(e.g. the "otherEntity" subtree). Also, the arbitrary depth of recursion in
+the machine generated template was insufficient in some cases. Thus, certain
+subtrees have been extended (made deeper) by copy and pasting from more fully
 expanded subtrees.
 
-When a minor update to eml2 appears, it may be sufficient to simply hand-edit 
-the existing eml.xml template. More extenisve changes would require regenerating 
+When a minor update to eml2 appears, it may be sufficient to simply hand-edit
+the existing eml.xml template. More extenisve changes would require regenerating
 the template using the SchemaParser.
 */
 
@@ -153,8 +153,8 @@ public class DocFrame extends javax.swing.JFrame
    *  most recent instance of DocFrame
    *  (for use by specialized editors)
    */
-  static DocFrame currentDocFrameInstance = null; 
-   
+  static DocFrame currentDocFrameInstance = null;
+
   /**
    *   cached copy of template tree
    */
@@ -164,7 +164,7 @@ public class DocFrame extends javax.swing.JFrame
    *   used with cached template to see if new template tree is needed
    */
   static String templateRootName = "";
-  
+
   /**
    *   the DOM node passed in which contains a parsed XML document
    *   to be displayed and edited
@@ -173,20 +173,20 @@ public class DocFrame extends javax.swing.JFrame
 
   File openfile = null;
   File file = null;
-    
+
   /** counter for name */
   public static int counter = 0;
 
   /* flag to indicate whether help, cardinality, CHOICE, SEQUENCE nodes should
-   * be stripped when output is created 
+   * be stripped when output is created
    */
   public boolean removeExtraInfoFlag = true;
-  
+
   /* flag to indicate whether XML attribute values should appear as
-   * child nodes in the tree 
+   * child nodes in the tree
    */
   public boolean xmlAttributesInTreeFlag = true;
-    
+
   /** number of level of expansion of the initial JTree  */
   int exp_level = 5;
 
@@ -235,11 +235,11 @@ public class DocFrame extends javax.swing.JFrame
 
   /* treeValueFlag is used to turn off/on the response of the
    * tree to changes in selection. When done by the user, the
-   * right-hand display should be updated, but some programatic tree changes 
+   * right-hand display should be updated, but some programatic tree changes
    * should not trigger update events
    */
   boolean treeValueFlag = true;
-  
+
   /**
    * if true, this flag will cause the display of missing subtrees by
    * merging from the template tree
@@ -252,7 +252,7 @@ public class DocFrame extends javax.swing.JFrame
    */
   boolean emptyFlag = false;
 
-  /** nodeCopy is the 'local clipboard' for node storage 
+  /** nodeCopy is the 'local clipboard' for node storage
    *  because it is static it can be shared between multiple object.
    */
   static DefaultMutableTreeNode nodeCopy = null;
@@ -271,7 +271,7 @@ public class DocFrame extends javax.swing.JFrame
   /** flag used to communicate between the mousedown event handler and
    * the tree selection changed handler; used in setting check boxes
    * in a meaningful manner.
-   */   
+   */
   boolean treeSelChangedFlag = false;
 
 
@@ -314,25 +314,25 @@ public class DocFrame extends javax.swing.JFrame
   javax.swing.JLabel JLabel3 = new javax.swing.JLabel();
   javax.swing.JLabel JLabel4 = new javax.swing.JLabel();
   javax.swing.JComboBox choiceCombo = new javax.swing.JComboBox();
-  
+
   //Create the popup menu.
   javax.swing.JPopupMenu popup = new JPopupMenu();
   static Hashtable icons;
 
   /** A reference to the container framework */
   private Morpho morpho = null;
-  
+
   /**
    *  flag to indicate whether 'references' should be shown
    *  determines whether the 'removeAllReferences' method does
    *  remove references
    */
-  private boolean removeReferencesFlag = true; 
+  private boolean removeReferencesFlag = true;
 
   // the index of the node found in findNode
   private int findNodeCount = 0;
   private String lastFoundString = "";
-  
+
   /** This constructor builds the contents of the DocFrame Display  */
 
   public DocFrame()  {
@@ -349,15 +349,15 @@ public class DocFrame extends javax.swing.JFrame
       setSize(dw, dh);
     }
     setVisible(false);
-		final DocFrame df = this;
-		// Register window listeners
+    final DocFrame df = this;
+    // Register window listeners
     this.addWindowListener(
       new WindowAdapter() {
-                public void windowActivated(WindowEvent e) 
+                public void windowActivated(WindowEvent e)
                 {
                   Log.debug(50, "Processing window activated event");
-								  currentDocFrameInstance = df;
-                } 
+                  currentDocFrameInstance = df;
+                }
                 public void windowClosing(WindowEvent event)
                 {
                  }
@@ -383,12 +383,12 @@ public class DocFrame extends javax.swing.JFrame
     TreeControlPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 1, 1));
     ControlsPanel.add(BorderLayout.NORTH, TreeControlPanel);
     ControlsPanel.add(BorderLayout.SOUTH, TreeChoicePanel);
-		OutputScrollPanelContainer.add(BorderLayout.NORTH, ControlsPanel);
+    OutputScrollPanelContainer.add(BorderLayout.NORTH, ControlsPanel);
     OutputScrollPanelContainer.add(BorderLayout.CENTER, OutputScrollPanel);
     TrimTreeButton.setText("Trim");
     TrimTreeButton.setActionCommand("Trim");
     TrimTreeButton.setToolTipText("Remove all optional nodes that contain no text.");
-		TrimTreeButton.setEnabled(false);
+    TrimTreeButton.setEnabled(false);
     UntrimTreeButton.setText("Show All");
     UntrimTreeButton.setActionCommand("Show All");
     UntrimTreeButton.setToolTipText("Show all possible elements.");
@@ -420,13 +420,13 @@ public class DocFrame extends javax.swing.JFrame
     NewButton.setActionCommand("Open");
 
     NewButton.setVisible(false);
-    
+
     ButtonPanel.add(NewButton);
     OpenButton.setText("Open");
     OpenButton.setActionCommand("Open");
 
-    OpenButton.setVisible(false);  
-    
+    OpenButton.setVisible(false);
+
     ButtonPanel.add(OpenButton);
     EditingExit.setText("OK");
     EditingExit.setActionCommand("OK");
@@ -537,7 +537,7 @@ public class DocFrame extends javax.swing.JFrame
     popup.add(ReplacemenuItem);
     PastemenuItem = new JMenuItem("Paste as Sibling to Selected Node");
     popup.add(PastemenuItem);
-    
+
     //  REGISTER_LISTENERS
     SymAction lSymAction = new SymAction();
     SymWindow aSymWindow = new SymWindow();
@@ -649,7 +649,7 @@ public class DocFrame extends javax.swing.JFrame
    * @param morpho   the main morpho object controller
    * @param sTitle   window title string
    * @param doctext  xml document as a string
-   * @param flag     only the template based on the DocType is displayed 
+   * @param flag     only the template based on the DocType is displayed
    * (i.e. no merging with existing data) For use in creating new docs.
    */
   public DocFrame(Morpho morpho, String sTitle, String doctext, boolean flag)
@@ -691,7 +691,7 @@ public class DocFrame extends javax.swing.JFrame
    * @param doctext   xml document as a string
    * @param id        document id
    * @param location  i.e. local or metacat
-   * @param templFlag  only the template based on the DocType is displayed 
+   * @param templFlag  only the template based on the DocType is displayed
    * (i.e. no merging with existing data) For use in creating new docs.
    */
   public DocFrame(Morpho morpho, String sTitle, String doctext, String id, String location, boolean templFlag)
@@ -815,7 +815,7 @@ public class DocFrame extends javax.swing.JFrame
    *
    * @param finalMorpho  The parent Morpho class
    * @param doctext      xml to be edited
-   * @param flag     
+   * @param flag
    */
   public void initDoc(Morpho finalMorpho, String doctext)
   {
@@ -855,8 +855,8 @@ public class DocFrame extends javax.swing.JFrame
      worker.start();
      //required for SwingWorker 3
   }
-    
-    
+
+
   /**
    *  The method for initialization that is executed in the worker
    *  thread. Takes the xml string in doctext and initilizes it for editing
@@ -874,7 +874,7 @@ public class DocFrame extends javax.swing.JFrame
     treeModel = new DefaultTreeModel(rootNode);
     putXMLintoTree(treeModel, XMLTextString);
     NodeInfo ni = (NodeInfo)(((DefaultMutableTreeNode)(treeModel.getRoot())).getUserObject());
-    
+
     // if templateFlag is true, don't bother merging the instance
     // with the template; reset the flag for next time
     if (templateFlag) {
@@ -907,7 +907,7 @@ public class DocFrame extends javax.swing.JFrame
     try {
       ClassLoader cl = this.getClass().getClassLoader();
 // next 2 lines check for templates inside jar files; at least temporarily
-// changed to look in lib directory to make it easier for user to customize      
+// changed to look in lib directory to make it easier for user to customize
 //      BufferedReader in = new BufferedReader(new InputStreamReader(
 //                        cl.getResourceAsStream(rootname)));
       BufferedReader in = new BufferedReader(new FileReader(
@@ -919,7 +919,7 @@ public class DocFrame extends javax.swing.JFrame
       out.flush();
       out.close();
       fXMLString = out.toString();
-    
+
     // if catch is called, then we don't have a valid template
     } catch (Exception e) {formatflag = false;}
     if (formatflag) {
@@ -931,14 +931,14 @@ public class DocFrame extends javax.swing.JFrame
       // first remove all the nodes with visLevel>0 to simplify the display
       // (the '0' value should be a parameter)
 
-			// remove 'references' nodes from template
+      // remove 'references' nodes from template
       removeAllReferences(frootNode);
-			
+
       removeNodesVisLevel(frootNode, 0);//
-      
+
       treeUnion(rootNode, frootNode);
     }
-    
+
     // if the document instance has a DTD, the DTD is parsed
     // and info from the result is merged into the tree
     // DFH left over from earlier versions where DTD is dynamically parsed
@@ -967,7 +967,7 @@ public class DocFrame extends javax.swing.JFrame
         }
       }
     }
-    
+
     setAttributeNames(rootNode);
     setChoiceNodes(rootNode);
     setAllNodesAsSelected(rootNode);
@@ -996,11 +996,11 @@ public class DocFrame extends javax.swing.JFrame
       setChoiceNodes(rootNode);
       setAllNodesAsSelected(rootNode);
       setSelectedNodes(rootNode);
-      
+
       if (xmlAttributesInTreeFlag) {
         addXMLAttributeNodes(rootNode);
       }
-      
+
       treeModel.reload();
       tree.setModel(treeModel);
 
@@ -1014,7 +1014,7 @@ public class DocFrame extends javax.swing.JFrame
     rootNode = (DefaultMutableTreeNode)treeModel.getRoot();
     String rname = ((NodeInfo)rootNode.getUserObject()).getName();
          // check for changes in the root name indicating need for new template
-   if((frootNode==null)||(!rname.equals(templateRootName))) { 
+   if((frootNode==null)||(!rname.equals(templateRootName))) {
     // now want to possibly merge the input document with a formatting/template document
     // and set the 'editor' and 'help' fields for each node
     // use the root node name as a key
@@ -1034,7 +1034,7 @@ public class DocFrame extends javax.swing.JFrame
     try {
       ClassLoader cl = this.getClass().getClassLoader();
 // next 2 lines check for templates inside jar files; at least temporarily
-// changed to look in lib directory to make it easier for user to customize      
+// changed to look in lib directory to make it easier for user to customize
 //      BufferedReader in = new BufferedReader(new InputStreamReader(
 //                        cl.getResourceAsStream(rootname)));
       BufferedReader in = new BufferedReader(new FileReader(
@@ -1056,26 +1056,26 @@ public class DocFrame extends javax.swing.JFrame
       // first remove all the nodes with visLevel>0 to simplify the display
       // (the '0' value should be a parameter)
       removeNodesVisLevel(frootNode, 0);//
-			
-			// remove 'references' nodes from template
+
+      // remove 'references' nodes from template
       removeAllReferences(frootNode);
-		 
+
     // if catch is called, then we don't have a valid template
     } catch (Exception e) {
       formatflag = false;
       frootNode = null;
     }
    } // this code block is skippped when frootNode is not null !
-   
+
     if (formatflag) {
-      
+
       treeUnion(rootNode, frootNode);
 
       setAttributeNames(rootNode);
       setChoiceNodes(rootNode);
       setSelectedNodes(rootNode);
       setLeafNodes(rootNode);
-      
+
       if (xmlAttributesInTreeFlag) {
         addXMLAttributeNodes(rootNode);
       }
@@ -1085,7 +1085,7 @@ public class DocFrame extends javax.swing.JFrame
     tree.setModel(treeModel);
 
     tree.expandRow(4);
-    treeValueFlag=false;  // added to speed up display    
+    treeValueFlag=false;  // added to speed up display
     tree.setSelectionRow(0);
     headLabel.setText("Morpho Editor");
     logoLabel.setIcon((ImageIcon)icons.get("logo-icon.gif"));
@@ -1097,13 +1097,13 @@ public class DocFrame extends javax.swing.JFrame
    *  root node
    */
   public void initDoc(Morpho morpho, Document doc, String id, String loc,
-                             String initNodeName, int initNodeNumber) 
+                             String initNodeName, int initNodeNumber)
   {
     Node docnode = doc.getDocumentElement() ;
     initDoc(morpho, docnode, id, loc);
     findNode(rootNode, initNodeName, initNodeNumber);
   }
-  
+
   /**
    *  This method will reset the treeModel rootnode, thus changing
    *  the node displayed at the top of the tree
@@ -1139,9 +1139,9 @@ public class DocFrame extends javax.swing.JFrame
   public void setTopOfTree(DefaultMutableTreeNode rootTreeNode, String name) {
     DefaultMutableTreeNode nd = null;
     DefaultMutableTreeNode tn = null;
-    Enumeration enum = rootTreeNode.breadthFirstEnumeration();
-    while (enum.hasMoreElements()) {
-      nd = (DefaultMutableTreeNode)enum.nextElement();
+    Enumeration enumeration = rootTreeNode.breadthFirstEnumeration();
+    while (enumeration.hasMoreElements()) {
+      nd = (DefaultMutableTreeNode)enumeration.nextElement();
       NodeInfo ni = (NodeInfo)nd.getUserObject();
       String nodeName = (ni.getName()).trim();
       if (nodeName.equals(name)) {
@@ -1200,9 +1200,9 @@ public class DocFrame extends javax.swing.JFrame
        }
      }
      int cnt = -1;
-     Enumeration enum = startNode.preorderEnumeration();
-     while (enum.hasMoreElements()) {
-       DefaultMutableTreeNode nd = (DefaultMutableTreeNode)enum.nextElement();
+     Enumeration enumeration = startNode.preorderEnumeration();
+     while (enumeration.hasMoreElements()) {
+       DefaultMutableTreeNode nd = (DefaultMutableTreeNode)enumeration.nextElement();
        NodeInfo ni = (NodeInfo)nd.getUserObject();
        String nodeName = (ni.getName()).trim();
        if (nodeName.indexOf(newName)>-1) {
@@ -1221,10 +1221,10 @@ public class DocFrame extends javax.swing.JFrame
      String msg = "Sorry, could not locate a node containing '"+name+"'";
      JOptionPane.showMessageDialog(this, msg, "alert", JOptionPane.INFORMATION_MESSAGE);
      findNodeCount = 0;
-     
-  }     
- 
- 
+
+  }
+
+
   /**
    * Creates a new DefaultMutableTreeNode with the special
    * NodeInfo userObject used here
@@ -1338,7 +1338,7 @@ public class DocFrame extends javax.swing.JFrame
     df.initDoc(null, domnode, null, null);
   }
 
-  
+
   /*
    * adds a #PCDATA node to leaf nodes
    */
@@ -1353,13 +1353,13 @@ public class DocFrame extends javax.swing.JFrame
       leafs.addElement(curNode);
       }
     }
-    Enumeration enum = leafs.elements();
-    while (enum.hasMoreElements()) {
-      parentNode = (DefaultMutableTreeNode)enum.nextElement();
+    Enumeration enumeration = leafs.elements();
+    while (enumeration.hasMoreElements()) {
+      parentNode = (DefaultMutableTreeNode)enumeration.nextElement();
       if (!(((NodeInfo)parentNode.getUserObject()).getName().equals("#PCDATA"))){
-		    NodeInfo ni = new NodeInfo("#PCDATA");
+        NodeInfo ni = new NodeInfo("#PCDATA");
         ni.setPCValue(" ");
-		    DefaultMutableTreeNode newNode = new DefaultMutableTreeNode (ni);
+        DefaultMutableTreeNode newNode = new DefaultMutableTreeNode (ni);
         parentNode.add(newNode);
       }
     }
@@ -1385,9 +1385,9 @@ public class DocFrame extends javax.swing.JFrame
         leafs.addElement(curNode);
       }
     }
-    Enumeration enum = leafs.elements();
-    while (enum.hasMoreElements()) {
-      curNode = (DefaultMutableTreeNode)enum.nextElement();
+    Enumeration enumeration = leafs.elements();
+    while (enumeration.hasMoreElements()) {
+      curNode = (DefaultMutableTreeNode)enumeration.nextElement();
       NodeInfo ni = (NodeInfo)curNode.getUserObject();
       if (ni.name.equals("#PCDATA")) {
           // is a text node
@@ -1402,7 +1402,7 @@ public class DocFrame extends javax.swing.JFrame
             path2root.addElement(parentNode);
             parentNode = (DefaultMutableTreeNode)parentNode.getParent();
           }
-          // now go from the root toward the leaf, 
+          // now go from the root toward the leaf,
           // setting selected nodes
           DefaultMutableTreeNode cNode;
           for (int i = path2root.size() - 1; i > -1; i--) {
@@ -1445,9 +1445,9 @@ public class DocFrame extends javax.swing.JFrame
   Vector getMatches(DefaultMutableTreeNode match, Vector vec)
   {
     Vector matches = new Vector();
-    Enumeration enum = vec.elements();
-    while (enum.hasMoreElements()) {
-      DefaultMutableTreeNode tn = (DefaultMutableTreeNode)enum.nextElement();
+    Enumeration enumeration = vec.elements();
+    while (enumeration.hasMoreElements()) {
+      DefaultMutableTreeNode tn = (DefaultMutableTreeNode)enumeration.nextElement();
       if (compareNodes(tn, match)) {
         matches.addElement(tn);
       }
@@ -1457,7 +1457,7 @@ public class DocFrame extends javax.swing.JFrame
 
 
   /**
-   * reads xml and puts it into a JTree using a 
+   * reads xml and puts it into a JTree using a
    * SAX parser
    *
    * @param tm       treemodel where XML tree is placed
@@ -1468,7 +1468,7 @@ public class DocFrame extends javax.swing.JFrame
     if (xmlText != null) {
       CatalogEntityResolver cer = new CatalogEntityResolver();
       config = morpho.getConfiguration();
-      String local_dtd_directory = config.getConfigDirectory() + 
+      String local_dtd_directory = config.getConfigDirectory() +
           File.separator + config.get("local_dtd_directory", 0);
       String catalogPath = config.get("local_catalog_path", 0);
       String xmlcatalogfile = local_dtd_directory + "/catalog";
@@ -1534,7 +1534,7 @@ public class DocFrame extends javax.swing.JFrame
     JTree domtree = new DOMTree(doc);
     return (DefaultTreeModel)domtree.getModel();
   }
-  
+
   /**
    * method to handle changes in the JTree selection
    *
@@ -1657,8 +1657,8 @@ public class DocFrame extends javax.swing.JFrame
     }
   }
 
-  
-  
+
+
   /**
    * popup menu action to replace a selected node
    * in the tree with one from the clipboard
@@ -1694,7 +1694,7 @@ public class DocFrame extends javax.swing.JFrame
 
   /**
    * popup menu action to display the xml attribute
-   * editor/display window 
+   * editor/display window
    *
    * @param event  the event
    */
@@ -1762,7 +1762,7 @@ public class DocFrame extends javax.swing.JFrame
           DefaultMutableTreeNode cn = (DefaultMutableTreeNode)eee.nextElement();
           NodeInfo ni1 = (NodeInfo)cn.getUserObject();
           String name = ni1.getName();
-          if (name.startsWith("attribute-")) name = "attribute";          
+          if (name.startsWith("attribute-")) name = "attribute";
           if ((name.equals(curNodeName))||
              (ni1.isChoice()))  {
             cnt++;
@@ -1865,7 +1865,7 @@ public class DocFrame extends javax.swing.JFrame
       if (systemIDString != null) {
         temp1 = "\"file://" + systemIDString + "\"";
       }
-      doctype = "<!DOCTYPE " + rootNodeName + " PUBLIC " + temp + " " + 
+      doctype = "<!DOCTYPE " + rootNodeName + " PUBLIC " + temp + " " +
                 temp1 + ">\n";
     }
     str1 = "<?xml version=\"1.0\"?>\n" + doctype + str1;
@@ -1913,12 +1913,12 @@ public class DocFrame extends javax.swing.JFrame
        ) {
       if (ni.isXMLAttribute()) Log.debug(0,"node "+ni.name+" is Attribute");
       // completely ignore NOT SELECTED nodes AND their children
-      if ((!(name.indexOf("CHOICE")>-1)) && 
+      if ((!(name.indexOf("CHOICE")>-1)) &&
           (!(name.indexOf("SEQUENCE")>-1)) && (!(name.equals("Empty")))
-          || (!removeExtraInfoFlag&&(!name.equals("Empty"))) 
+          || (!removeExtraInfoFlag&&(!name.equals("Empty")))
         ) {
         // ignore (CHOICE) nodes but process their children
-        
+
         // modify if the node has name 'eml' to add namespace info
         // needed for eml2 docs
         if (name.equals("eml")) {
@@ -1935,7 +1935,7 @@ public class DocFrame extends javax.swing.JFrame
           if (!(str.equals("minOccurs")) && (!(str.equals("maxOccurs")))
             && (!str.equals("editor"))
             && (!str.equals("help"))
-            && (!str.equals("")) 
+            && (!str.equals(""))
 //            &&(!(str.indexOf("schemaLocation")>-1))
           ) {
 //            if (!((str.equals("id"))&&(val.equals("")))) {
@@ -1959,16 +1959,16 @@ public class DocFrame extends javax.swing.JFrame
         }
         tempStack.push(end);
       }
-      Enumeration enum = node.children();
-      // if enum has no elements, then node is a leaf node
-      if (!enum.hasMoreElements()) {
+      Enumeration enumeration = node.children();
+      // if enumeration has no elements, then node is a leaf node
+      if (!enumeration.hasMoreElements()) {
         start.append(start1.toString());
         start1 = new StringBuffer();
       }
 
-      while (enum.hasMoreElements()) {
+      while (enumeration.hasMoreElements()) {
         // process child nodes
-        DefaultMutableTreeNode nd = (DefaultMutableTreeNode)(enum.nextElement());
+        DefaultMutableTreeNode nd = (DefaultMutableTreeNode)(enumeration.nextElement());
         NodeInfo ni1 = (NodeInfo)nd.getUserObject();
         if (ni1.name.equals("#PCDATA")) {
           // remove nodes with empty PCDATA
@@ -2002,9 +2002,9 @@ public class DocFrame extends javax.swing.JFrame
           write_loop(nd, indent + 2);
         }
       }
-      if ((!(name.indexOf("CHOICE")>-1)) && 
+      if ((!(name.indexOf("CHOICE")>-1)) &&
           (!(name.indexOf("SEQUENCE")>-1)) && (!(name.equals("Empty")))
-          || (!removeExtraInfoFlag&&(!name.equals("Empty"))) 
+          || (!removeExtraInfoFlag&&(!name.equals("Empty")))
       ) {
 
         if (textnode) {
@@ -2026,7 +2026,7 @@ public class DocFrame extends javax.swing.JFrame
   }
 
   /**
-   * Trim tree branches where there is no information in the leaf text node 
+   * Trim tree branches where there is no information in the leaf text node
    * and there is a parent node that is optional.
    *
    * @param node  Description of Parameter
@@ -2044,9 +2044,9 @@ public class DocFrame extends javax.swing.JFrame
         leafs.addElement(curNode);
       }
     }
-    Enumeration enum = leafs.elements();
-    while (enum.hasMoreElements()) {
-      curNode = (DefaultMutableTreeNode)enum.nextElement();
+    Enumeration enumeration = leafs.elements();
+    while (enumeration.hasMoreElements()) {
+      curNode = (DefaultMutableTreeNode)enumeration.nextElement();
       NodeInfo ni = (NodeInfo)curNode.getUserObject();
       if (ni.name.equals("#PCDATA")) {
         // is a text node
@@ -2068,7 +2068,7 @@ public class DocFrame extends javax.swing.JFrame
             NodeInfo cni = (NodeInfo)cNode.getUserObject();
             String card = cni.getCardinality();
             // if node is not required, perhaps trim it
-            if ((card.equals("ZERO to MANY")) || 
+            if ((card.equals("ZERO to MANY")) ||
                 (card.equals("OPTIONAL"))) {
               // first see if there are nonempty sub-branches
 
@@ -2121,9 +2121,9 @@ public class DocFrame extends javax.swing.JFrame
   {
     boolean res = false;
     DefaultMutableTreeNode parentNode = null;
-    Enumeration enum = node.depthFirstEnumeration();
-    while (enum.hasMoreElements()) {
-      DefaultMutableTreeNode curNode = (DefaultMutableTreeNode)enum.nextElement();
+    Enumeration enumeration = node.depthFirstEnumeration();
+    while (enumeration.hasMoreElements()) {
+      DefaultMutableTreeNode curNode = (DefaultMutableTreeNode)enumeration.nextElement();
       if (curNode.isLeaf()) {
         NodeInfo ni = (NodeInfo)curNode.getUserObject();
         if ((!ni.isXMLAttribute())&&(ni.name.equals("#PCDATA"))) {
@@ -2150,9 +2150,9 @@ public class DocFrame extends javax.swing.JFrame
   {
     boolean res = false;
     DefaultMutableTreeNode parentNode = null;
-    Enumeration enum = node.depthFirstEnumeration();
-    while (enum.hasMoreElements()) {
-      DefaultMutableTreeNode curNode = (DefaultMutableTreeNode)enum.nextElement();
+    Enumeration enumeration = node.depthFirstEnumeration();
+    while (enumeration.hasMoreElements()) {
+      DefaultMutableTreeNode curNode = (DefaultMutableTreeNode)enumeration.nextElement();
       if (curNode.isLeaf()) {
         NodeInfo ni = (NodeInfo)curNode.getUserObject();
         if (ni.name.equals("#PCDATA")) {
@@ -2168,7 +2168,7 @@ public class DocFrame extends javax.swing.JFrame
     }
     return res;
   }
-  
+
   /**
    * expands a JTree to the indicated level
    *
@@ -2180,9 +2180,9 @@ public class DocFrame extends javax.swing.JFrame
     DefaultMutableTreeNode childNode;
     TreeModel tm = jt.getModel();
     DefaultMutableTreeNode root = (DefaultMutableTreeNode)tm.getRoot();
-    Enumeration enum = root.breadthFirstEnumeration();
-    DefaultMutableTreeNode curNode = (DefaultMutableTreeNode)enum.nextElement();
-    while ((enum.hasMoreElements()) && (curNode.getLevel() < level)) {
+    Enumeration enumeration = root.breadthFirstEnumeration();
+    DefaultMutableTreeNode curNode = (DefaultMutableTreeNode)enumeration.nextElement();
+    while ((enumeration.hasMoreElements()) && (curNode.getLevel() < level)) {
       try {
         childNode = (DefaultMutableTreeNode)curNode.getFirstChild();
         NodeInfo ni = (NodeInfo)childNode.getUserObject();
@@ -2193,7 +2193,7 @@ public class DocFrame extends javax.swing.JFrame
         }
       } catch (Exception w) {
       }
-      curNode = (DefaultMutableTreeNode)enum.nextElement();
+      curNode = (DefaultMutableTreeNode)enumeration.nextElement();
     }
   }
 
@@ -2237,9 +2237,9 @@ public class DocFrame extends javax.swing.JFrame
       currentLevelTemplateNodes.addElement(template);
       for (int j = 0; j < numlevels; j++) {
         nextLevelInputNodes = new Vector();
-        for (Enumeration enum = currentLevelInputNodes.elements(); 
-          enum.hasMoreElements(); ) {
-          DefaultMutableTreeNode nd = (DefaultMutableTreeNode)enum.nextElement();
+        for (Enumeration enumeration = currentLevelInputNodes.elements();
+          enumeration.hasMoreElements(); ) {
+          DefaultMutableTreeNode nd = (DefaultMutableTreeNode)enumeration.nextElement();
           for (Enumeration qq = nd.children(); qq.hasMoreElements(); ) {
             DefaultMutableTreeNode nd1 = (DefaultMutableTreeNode)qq.nextElement();
             nextLevelInputNodes.addElement(nd1);
@@ -2253,17 +2253,17 @@ public class DocFrame extends javax.swing.JFrame
             nextLevelTemplateNodes.addElement(ndt1);
           }
         }
-        // now have a list of all elements in input and template 
+        // now have a list of all elements in input and template
         // trees at the level being processed
         // loop over all the template nodes at the 'next' level
-        Enumeration enum = nextLevelTemplateNodes.elements();
-        while (enum.hasMoreElements()) {
+        Enumeration enumeration = nextLevelTemplateNodes.elements();
+        while (enumeration.hasMoreElements()) {
           boolean insTest = false;
-          tNode = (DefaultMutableTreeNode)enum.nextElement();
+          tNode = (DefaultMutableTreeNode)enumeration.nextElement();
 
           // insert (CHOICE) or (SEQUENCE) elements into instance
           NodeInfo ni = (NodeInfo)tNode.getUserObject();
-          if ((ni.getName().indexOf("CHOICE")>-1) || 
+          if ((ni.getName().indexOf("CHOICE")>-1) ||
                 (ni.getName().indexOf("SEQUENCE")>-1)) {
             DefaultMutableTreeNode templParent = (DefaultMutableTreeNode)tNode.getParent();
             DefaultMutableTreeNode specCopy = (DefaultMutableTreeNode)tNode.clone();
@@ -2332,9 +2332,9 @@ public class DocFrame extends javax.swing.JFrame
       // loop over all the levels of the instance (assumed small compared to template)
       for (int j = 0; j < instance.getDepth(); j++) {
         nextLevelInputNodes = new Vector();
-        for (Enumeration enum = currentLevelInputNodes.elements(); 
-          enum.hasMoreElements(); ) {
-          DefaultMutableTreeNode nd = (DefaultMutableTreeNode)enum.nextElement();
+        for (Enumeration enumeration = currentLevelInputNodes.elements();
+          enumeration.hasMoreElements(); ) {
+          DefaultMutableTreeNode nd = (DefaultMutableTreeNode)enumeration.nextElement();
           for (Enumeration qq = nd.children(); qq.hasMoreElements(); ) {
             DefaultMutableTreeNode nd1 = (DefaultMutableTreeNode)qq.nextElement();
             nextLevelInputNodes.addElement(nd1);
@@ -2348,15 +2348,15 @@ public class DocFrame extends javax.swing.JFrame
             DefaultMutableTreeNode ndt1 = (DefaultMutableTreeNode)qq1.nextElement();
             nextLevelTemplateNodes.addElement(ndt1);
             String name = pathToString(ndt1);
-            nextLevelTemplateHash.put(name,ndt1); 
+            nextLevelTemplateHash.put(name,ndt1);
           }
         }
-        // now have a list of all elements in input and template 
+        // now have a list of all elements in input and template
         // trees at the level being processed
         // loop over all the instance nodes at the 'next' level
-        Enumeration enum = nextLevelInputNodes.elements();
-        while (enum.hasMoreElements()) {
-          DefaultMutableTreeNode tNode = (DefaultMutableTreeNode)enum.nextElement();
+        Enumeration enumeration = nextLevelInputNodes.elements();
+        while (enumeration.hasMoreElements()) {
+          DefaultMutableTreeNode tNode = (DefaultMutableTreeNode)enumeration.nextElement();
           String nm = pathToString(tNode);
           DefaultMutableTreeNode fromNode = (DefaultMutableTreeNode)nextLevelTemplateHash.get(nm);
           if (fromNode!=null) {
@@ -2368,7 +2368,7 @@ public class DocFrame extends javax.swing.JFrame
       }
     }
   }
- 
+
 
   /**
    * merges any subtrees that exist in the template into the instance tree
@@ -2389,13 +2389,13 @@ public class DocFrame extends javax.swing.JFrame
       // Note: Vectors are built which contain both the current and next level
       // tree nodes. These vectors are built because the tree itself is being
       // manipulated and we want a list that is not changing!
-      
+
       // loop over all the levels of the instance (assumed small compared to template)
       for (int j = 0; j < instance.getDepth(); j++) {
         nextLevelInputNodes = new Vector();
-        for (Enumeration enum = currentLevelInputNodes.elements(); 
-          enum.hasMoreElements(); ) {
-          DefaultMutableTreeNode nd = (DefaultMutableTreeNode)enum.nextElement();
+        for (Enumeration enumeration = currentLevelInputNodes.elements();
+          enumeration.hasMoreElements(); ) {
+          DefaultMutableTreeNode nd = (DefaultMutableTreeNode)enumeration.nextElement();
           for (Enumeration qq = nd.children(); qq.hasMoreElements(); ) {
             DefaultMutableTreeNode nd1 = (DefaultMutableTreeNode)qq.nextElement();
             nextLevelInputNodes.addElement(nd1);
@@ -2407,14 +2407,14 @@ public class DocFrame extends javax.swing.JFrame
           DefaultMutableTreeNode ndt = (DefaultMutableTreeNode)enum1.nextElement();
           String name = pathToString(ndt);
           curLevelTemplateHash.put(name.trim(), ndt);
-  
+
           for (Enumeration qq1 = ndt.children(); qq1.hasMoreElements(); ) {
             DefaultMutableTreeNode ndt1 = (DefaultMutableTreeNode)qq1.nextElement();
             nextLevelTemplateNodes.addElement(ndt1);
           }
         }
-          
-          // now have a list of all elements in input and template 
+
+          // now have a list of all elements in input and template
           // trees at the level being processed
           // loop over all the instance nodes at the 'current' level
           Enumeration enum2 = currentLevelInputNodes.elements();
@@ -2430,22 +2430,22 @@ public class DocFrame extends javax.swing.JFrame
             }
           }
         currentLevelInputNodes = nextLevelInputNodes;
-        currentLevelTemplateNodes = nextLevelTemplateNodes;         
+        currentLevelTemplateNodes = nextLevelTemplateNodes;
       }
     }
   }
-   
+
   /**
    *  merges child nodes from template that are missing from instance
-   *  works for a given node in the instamce document 
+   *  works for a given node in the instamce document
    *  (called from mergingMissingSubtrees)
    */
-   
+
   void mergeMissingChildren(DefaultMutableTreeNode instance, DefaultMutableTreeNode template) {
-    Enumeration enum = instance.children();
+    Enumeration enumeration = instance.children();
     Vector instChildren = new Vector();
-    while (enum.hasMoreElements()) {
-      instChildren.addElement(enum.nextElement());
+    while (enumeration.hasMoreElements()) {
+      instChildren.addElement(enumeration.nextElement());
     }
     instChildren.addElement(newNode("end")); // end of set marker
     int instChildrenIndex = 0;
@@ -2461,7 +2461,7 @@ public class DocFrame extends javax.swing.JFrame
         instance.add(templChild);
       }
       else{
-        DefaultMutableTreeNode instChild = 
+        DefaultMutableTreeNode instChild =
                  (DefaultMutableTreeNode)instChildren.elementAt(instChildrenIndex);
       if(!simpleCompareNodes(instChild, templChild)){
         if (instChildrenIndex<(instChildren.size()-1)) {
@@ -2478,7 +2478,7 @@ public class DocFrame extends javax.swing.JFrame
         // exist in instance child list
           if ((instChildrenIndex<(instChildren.size()))&&(instChildrenIndex>0)) {
             instChild = (DefaultMutableTreeNode)instChildren.elementAt(instChildrenIndex);
-            DefaultMutableTreeNode prevInstChild = 
+            DefaultMutableTreeNode prevInstChild =
                       (DefaultMutableTreeNode)instChildren.elementAt(instChildrenIndex-1);
             while ((simpleCompareNodes(instChild, prevInstChild)) &&
                 (instChildrenIndex<(instChildren.size()-1))){
@@ -2491,7 +2491,7 @@ public class DocFrame extends javax.swing.JFrame
       }
     }
   }
-  
+
   /**
    * returns boolean indicating if input node matches any CHILD of tempparent
    *
@@ -2503,9 +2503,9 @@ public class DocFrame extends javax.swing.JFrame
   {
     Vector specNodes = new Vector();
     String inputS = ((NodeInfo)input.getUserObject()).getName();
-    Enumeration enum = tempparent.children();
-    while (enum.hasMoreElements()) {
-      DefaultMutableTreeNode enumNode = (DefaultMutableTreeNode)enum.nextElement();
+    Enumeration enumeration = tempparent.children();
+    while (enumeration.hasMoreElements()) {
+      DefaultMutableTreeNode enumNode = (DefaultMutableTreeNode)enumeration.nextElement();
       String matchS = ((NodeInfo)enumNode.getUserObject()).getName();
       if ((matchS.indexOf("CHOICE")>-1) || (matchS.indexOf("SEQUENCE")>-1)) {
         specNodes.addElement(enumNode);
@@ -2538,9 +2538,9 @@ public class DocFrame extends javax.swing.JFrame
    */
   private Vector getRealChildren(DefaultMutableTreeNode nd) {
     Vector res = new Vector();
-    Enumeration enum = nd.children();
-    while (enum.hasMoreElements()) {
-      DefaultMutableTreeNode curnode = (DefaultMutableTreeNode)enum.nextElement();
+    Enumeration enumeration = nd.children();
+    while (enumeration.hasMoreElements()) {
+      DefaultMutableTreeNode curnode = (DefaultMutableTreeNode)enumeration.nextElement();
       NodeInfo ni = (NodeInfo)curnode.getUserObject();
       if ((ni.getName().indexOf("CHOICE")>-1) || (ni.getName().indexOf("SEQUENCE")>-1)) {
         // recursive call
@@ -2555,7 +2555,7 @@ public class DocFrame extends javax.swing.JFrame
     }
     return res;
   }
-  
+
   /**
    * treeTrim is designed to remove any nodes in the input that do not match
    * the the nodes in the template tree; i.e. the goal is to remove
@@ -2581,9 +2581,9 @@ public class DocFrame extends javax.swing.JFrame
       currentLevelTemplateNodes.addElement(template);
       for (int j = 0; j < numlevels; j++) {
         nextLevelInputNodes = new Vector();
-        for (Enumeration enum = currentLevelInputNodes.elements(); 
-          enum.hasMoreElements(); ) {
-          DefaultMutableTreeNode nd = (DefaultMutableTreeNode)enum.nextElement();
+        for (Enumeration enumeration = currentLevelInputNodes.elements();
+          enumeration.hasMoreElements(); ) {
+          DefaultMutableTreeNode nd = (DefaultMutableTreeNode)enumeration.nextElement();
           for (Enumeration qq = nd.children(); qq.hasMoreElements(); ) {
             DefaultMutableTreeNode nd1 = (DefaultMutableTreeNode)qq.nextElement();
             nextLevelInputNodes.addElement(nd1);
@@ -2597,12 +2597,12 @@ public class DocFrame extends javax.swing.JFrame
             nextLevelTemplateNodes.addElement(ndt1);
           }
         }
-        // now have a list of all elements in input and template trees 
+        // now have a list of all elements in input and template trees
         // at the level being processed
         // loop over all the input nodes at the 'next' level
-        Enumeration enum = nextLevelInputNodes.elements();
-        while (enum.hasMoreElements()) {
-          inNode = (DefaultMutableTreeNode)enum.nextElement();
+        Enumeration enumeration = nextLevelInputNodes.elements();
+        while (enumeration.hasMoreElements()) {
+          inNode = (DefaultMutableTreeNode)enumeration.nextElement();
           Vector hits = simpleGetMatches(inNode,nextLevelTemplateNodes);
           // if there are no 'hits' then the node should be removed
           if (hits.size() < 1) {
@@ -2629,9 +2629,9 @@ public class DocFrame extends javax.swing.JFrame
   Vector simpleGetMatches(DefaultMutableTreeNode match, Vector vec)
   {
     Vector matches = new Vector();
-    Enumeration enum = vec.elements();
-    while (enum.hasMoreElements()) {
-      DefaultMutableTreeNode tn = (DefaultMutableTreeNode)enum.nextElement();
+    Enumeration enumeration = vec.elements();
+    while (enumeration.hasMoreElements()) {
+      DefaultMutableTreeNode tn = (DefaultMutableTreeNode)enumeration.nextElement();
       if (simpleCompareNodes(tn, match)) {
         matches.addElement(tn);
       }
@@ -2694,7 +2694,7 @@ public class DocFrame extends javax.swing.JFrame
     StringBuffer sb = new StringBuffer();
     TreeNode[] tset = node.getPath();
     int numiterations = tset.length;
-    // following line arbitrarily limits the path length to '3' 
+    // following line arbitrarily limits the path length to '3'
     // to speed up code
     int pathLength = 3;
     if (numiterations > pathLength) {
@@ -2740,12 +2740,12 @@ public class DocFrame extends javax.swing.JFrame
           }
           ((NodeInfo)parent.getUserObject()).setSelected(true);
         }
-        Enumeration enum = parent.children();
-        while (enum.hasMoreElements()) {
-          DefaultMutableTreeNode sib = (DefaultMutableTreeNode)enum.nextElement();
+        Enumeration enumeration = parent.children();
+        while (enumeration.hasMoreElements()) {
+          DefaultMutableTreeNode sib = (DefaultMutableTreeNode)enumeration.nextElement();
           ((NodeInfo)sib.getUserObject()).setSelected(false);
         }
-        // the fact that the input node exists indicates that it 
+        // the fact that the input node exists indicates that it
         // should be the selected node
         inputni.setSelected(true);
       }
@@ -2779,7 +2779,7 @@ public class DocFrame extends javax.swing.JFrame
         inputni.setHelp(help);
         inputni.attr.remove("help");
       }
-      
+
     }
   }
 
@@ -2803,12 +2803,12 @@ Log.debug(20, xmlout);
   /*
   // the following code for checking for empty leaf nodes is
   // commented out because of problems with eml-attribute documents
-  // eml-attribute docs have a DTD element defined as 
+  // eml-attribute docs have a DTD element defined as
   // "<!ELEMENT attributeDomain ((enumeratedDomain | textDomain)+ | numericDomain+)>"
   // Handling a CHOICE element followed by a '+' creates problems for the XML editor
   // which, in this case decides that 'enumeratedDomain is a required element and
   // 'textDomain' is not required. It thus adds an 'enumeratedDomain' node even when
-  // a 'textDomain' node is present. The resulting xml is valid, but the empty 
+  // a 'textDomain' node is present. The resulting xml is valid, but the empty
   // enumeratedDomain node is not really wanted.
   // The trouble is that when a CHOICE is followed by a '+', the DTD really means tha
   // at least one of the choices is required, but all the choices might be there.
@@ -2819,17 +2819,17 @@ Log.debug(20, xmlout);
       int opt = JOptionPane.showConfirmDialog(null,
          "Some required fields may be empty.\n"+
          "If you choose to continue a 'space' \n"+
-         "will inserted in these fields.", 
+         "will inserted in these fields.",
          "DO YOU WANT TO CONTINUE?",
          JOptionPane.YES_NO_OPTION);
       if (opt == JOptionPane.YES_OPTION) {
-      
+
       }
       else {
       return;
       }
     }
-  */  
+  */
     String valresult = xmlvalidate(xmlout);
     if (valresult.indexOf("<valid />")>-1) {
       if (controller!=null) {
@@ -2845,7 +2845,7 @@ Log.debug(20, xmlout);
       System.gc();
       }
       else {
-        writeOutputFile(xmlout); 
+        writeOutputFile(xmlout);
       }
     }
     else {
@@ -2868,7 +2868,7 @@ Log.debug(20, xmlout);
           System.gc();
         }
         else {
-          writeOutputFile(xmlout);      
+          writeOutputFile(xmlout);
         }
       }
     }
@@ -2899,7 +2899,7 @@ Log.debug(20, xmlout);
       // user cancelled the open file command
     }
   }
-  
+
   /**
    * method for quiting editor without saving any changes
    *
@@ -2970,7 +2970,7 @@ Log.debug(20, xmlout);
       catch (Exception e) {}
       logoLabel.setIcon((ImageIcon)icons.get("Btfly4.gif"));
       headLabel.setText("Working...");
-        
+
       initDoc(null, sw.toString());
     } else {
       // user cancelled the open file command
@@ -2997,29 +2997,29 @@ Log.debug(20, xmlout);
       int c;
       while ((c = r.read())!=-1)
         sw.write(c);
-      
+
       r.close();
       sw.close();
     }
     catch (Exception e) {}
-    
+
     initDoc(null, sw.toString());
   }
-  
+
   /**
    * method carried out when 'Cancel' button is clicked
    *
    * @param event  Cancel button clicked event
    */
   void CancelButton_actionPerformed(java.awt.event.ActionEvent event)
-  { 
+  {
     // hide the Frame
     this.setVisible(false);
     // free the system resources
     this.dispose();
     System.gc();
   }
-  
+
   /**
    *  Let user select a  DTD file; file is parsed into a tree
    *  showing schema which can then be saved as a DTD template
@@ -3058,7 +3058,7 @@ Log.debug(20, xmlout);
       }
     }
   }
-    
+
   /**
    * removes nodes that have no data from the displayed tree
    * while saving the full tree for later display
@@ -3120,7 +3120,7 @@ Log.debug(20, xmlout);
     tree.setSelectionRow(0);
   }
 
-  
+
   /**
    * expands closed nodes in the displayed tree
    *
@@ -3135,7 +3135,7 @@ Log.debug(20, xmlout);
   }
 
 
-  /** 
+  /**
    * called when the docFrame is resized; uses all the space in the
    * nested scroll pane area.
    *
@@ -3162,9 +3162,9 @@ Log.debug(20, xmlout);
   {
     DefaultMutableTreeNode nd = null;
     boolean hit = false;
-    Enumeration enum = topnode.breadthFirstEnumeration();
-    while (enum.hasMoreElements() && (!hit)) {
-      nd = (DefaultMutableTreeNode)enum.nextElement();
+    Enumeration enumeration = topnode.breadthFirstEnumeration();
+    while (enumeration.hasMoreElements() && (!hit)) {
+      nd = (DefaultMutableTreeNode)enumeration.nextElement();
       NodeInfo ni = (NodeInfo)nd.getUserObject();
       if (ni.getName().equals(name)) {
         hit = true;
@@ -3194,9 +3194,9 @@ Log.debug(20, xmlout);
   {
     DefaultMutableTreeNode nd = null;
     boolean hit = false;
-    Enumeration enum = topnode.breadthFirstEnumeration();
-    while (enum.hasMoreElements() && (!hit)) {
-      nd = (DefaultMutableTreeNode)enum.nextElement();
+    Enumeration enumeration = topnode.breadthFirstEnumeration();
+    while (enumeration.hasMoreElements() && (!hit)) {
+      nd = (DefaultMutableTreeNode)enumeration.nextElement();
       NodeInfo ni = (NodeInfo)nd.getUserObject();
       if (ni.getName().equals(nodename)) {
         //now check if there are child TEXT nodes
@@ -3239,11 +3239,11 @@ Log.debug(20, xmlout);
    * @param vec   vector of child nodes
    */
   private void getRealChildren(DefaultMutableTreeNode node, Vector vec)
-  {  
+  {
     if ((node != null) && (node.children() != null)) {
-      Enumeration enum = node.children();
-      while (enum.hasMoreElements()) {
-        DefaultMutableTreeNode child = (DefaultMutableTreeNode)enum.nextElement();
+      Enumeration enumeration = node.children();
+      while (enumeration.hasMoreElements()) {
+        DefaultMutableTreeNode child = (DefaultMutableTreeNode)enumeration.nextElement();
         vec.addElement(child);
 
         if (((NodeInfo)child.getUserObject()).getName().indexOf("SEQUENCE")>-1) {
@@ -3252,7 +3252,7 @@ Log.debug(20, xmlout);
           getRealChildren(child, vec);
         }
       }
-    } 
+    }
   }
 
 
@@ -3289,20 +3289,20 @@ Log.debug(20, xmlout);
    * corresponds to index in tree without duplicates enum is Enumeration with
    * duplicates
    *
-   * @param enum  Description of Parameter
+   * @param enumeration  Description of Parameter
    * @param indx  Description of Parameter
    * @return    Description of the Returned Value
    */
-  private int findDuplicateIndex(Enumeration enum, int indx)
+  private int findDuplicateIndex(Enumeration enumeration, int indx)
   {
     int dupcount = 0;
     int uniquecount = 1;
     if (indx == 0) {
       return 0;
     }
-    DefaultMutableTreeNode oldnd = (DefaultMutableTreeNode)enum.nextElement();
-    while ((uniquecount <= indx) && (enum.hasMoreElements())) {
-      DefaultMutableTreeNode nd = (DefaultMutableTreeNode)enum.nextElement();
+    DefaultMutableTreeNode oldnd = (DefaultMutableTreeNode)enumeration.nextElement();
+    while ((uniquecount <= indx) && (enumeration.hasMoreElements())) {
+      DefaultMutableTreeNode nd = (DefaultMutableTreeNode)enumeration.nextElement();
       if (!compareNodes(oldnd, nd)) {
         uniquecount++;
       } else {
@@ -3397,9 +3397,9 @@ Log.debug(20, xmlout);
       } else if (object == ContractTreeButton) {
         ContractTreeButton_actionPerformed(event);
       } else if (object == choiceCombo) {
-        choiceCombo_actionPerformed(event); 
+        choiceCombo_actionPerformed(event);
       }
-      
+
     }
   }
 
@@ -3447,7 +3447,7 @@ Log.debug(20, xmlout);
       }
   }
 
-  
+
 
   /**
    * handles tree popup actions
@@ -3456,8 +3456,8 @@ Log.debug(20, xmlout);
    */
   class PopupListener extends MouseAdapter
   {
-    // on the Mac, popups are triggered on mouse pressed, while 
-    // mouseReleased triggers them on the PC; use the trigger flag to 
+    // on the Mac, popups are triggered on mouse pressed, while
+    // mouseReleased triggers them on the PC; use the trigger flag to
     // record a trigger, but do not show popup until the
     // mouse released event
     boolean trigger = false;
@@ -3515,7 +3515,7 @@ Log.debug(20, xmlout);
             String card = ((NodeInfo)selectedNode.getUserObject()).getCardinality();
             DefaultMutableTreeNode parent = (DefaultMutableTreeNode)selectedNode.getParent();
             NodeInfo parni = (NodeInfo)parent.getUserObject();
-            if (((nodename.equals(savenodename))&&(!card.equals("ONE"))) || 
+            if (((nodename.equals(savenodename))&&(!card.equals("ONE"))) ||
                (parni.getName().indexOf("CHOICE")>-1)&&(!parni.getCardinality().equals("ONE")) )
             {
               PastemenuItem.setEnabled(true);
@@ -3619,12 +3619,12 @@ Log.debug(20, xmlout);
   static {
     icons = new Hashtable();
   }
-  
+
 //-------------------------------------------------------------------------------------
   /**
    * specialized method for searching for <attribute> tags and then getting their 'name'
    * from a child node for display at the attribute level in the tree
-   * 
+   *
    * NOTE: this method makes the schema specific assumption that 'attributeName'
    * is a child of the 'attribute' node
    */
@@ -3656,7 +3656,7 @@ Log.debug(20, xmlout);
       }
     }
   }
-  
+
   /**
    * need to trim extra text added to attribute nodes before saving
    *
@@ -3671,22 +3671,22 @@ Log.debug(20, xmlout);
       }
     }
   }
-  
+
   /**
    * walk the tree and set the ChoiceNode flag in NodeInfo for all children
    * of any node that is a CHOICE
    */
   void setChoiceNodes(DefaultMutableTreeNode root) {
-    Enumeration enum = root.depthFirstEnumeration();
-    while (enum.hasMoreElements()) {
-      DefaultMutableTreeNode node = (DefaultMutableTreeNode)enum.nextElement();
+    Enumeration enumeration = root.depthFirstEnumeration();
+    while (enumeration.hasMoreElements()) {
+      DefaultMutableTreeNode node = (DefaultMutableTreeNode)enumeration.nextElement();
       DefaultMutableTreeNode parent = (DefaultMutableTreeNode)(node.getParent());
       if (parent!=null) {
         NodeInfo ni = (NodeInfo)parent.getUserObject();
         if (ni.getName().indexOf("CHOICE")>-1) {
           NodeInfo nc = (NodeInfo)node.getUserObject();
           nc.setChoice(true);
-          if ((ni.getCardinality().equals("ONE to MANY")) || 
+          if ((ni.getCardinality().equals("ONE to MANY")) ||
                (ni.getCardinality().equals("ZERO to MANY"))) {
             nc.setCheckboxFlag(true);
           }
@@ -3697,20 +3697,20 @@ Log.debug(20, xmlout);
       }
     }
   }
-  
+
   /**
    * marks all nodes in the tree as selected
    * should be used on instance tree before other info is added
    */
   void setAllNodesAsSelected(DefaultMutableTreeNode root) {
-    Enumeration enum = root.depthFirstEnumeration();
-    while (enum.hasMoreElements()) {
-      DefaultMutableTreeNode node = (DefaultMutableTreeNode)enum.nextElement();
+    Enumeration enumeration = root.depthFirstEnumeration();
+    while (enumeration.hasMoreElements()) {
+      DefaultMutableTreeNode node = (DefaultMutableTreeNode)enumeration.nextElement();
       NodeInfo ni = (NodeInfo)node.getUserObject();
       ni.setSelected(true);
     }
     // now handle the children of CHOICE nodes and set only the first child
-    // as selected. This is not needed for valid instances, but is needed for 
+    // as selected. This is not needed for valid instances, but is needed for
     // displaying templates
     Enumeration enum1 = root.depthFirstEnumeration();
     while (enum1.hasMoreElements()) {
@@ -3732,16 +3732,16 @@ Log.debug(20, xmlout);
       }
     }
   }
-  
+
   /**
    * removes all nodes woth nodeVisLevels greater than
    * indicated level
    */
   void removeNodesVisLevel(DefaultMutableTreeNode root, int vlev) {
-    Enumeration enum = root.breadthFirstEnumeration();
+    Enumeration enumeration = root.breadthFirstEnumeration();
     Vector vec = new Vector();
-    while (enum.hasMoreElements()) {
-      vec.addElement(enum.nextElement());
+    while (enumeration.hasMoreElements()) {
+      vec.addElement(enumeration.nextElement());
     }
     for (int i=0;i<vec.size();i++) {
       DefaultMutableTreeNode node = (DefaultMutableTreeNode)vec.elementAt(i);
@@ -3758,16 +3758,16 @@ Log.debug(20, xmlout);
   /**
    * modify tree by moving all xml attributes to the first child nodes in the
    * tree display
-   * 
+   *
    */
    void addXMLAttributeNodes(DefaultMutableTreeNode root) {
     if (root==null) {
       Log.debug(0,"root is null!");
     } else {
-      Enumeration enum = root.breadthFirstEnumeration();
+      Enumeration enumeration = root.breadthFirstEnumeration();
       Vector vec = new Vector();
-      while (enum.hasMoreElements()) {
-        vec.addElement(enum.nextElement());
+      while (enumeration.hasMoreElements()) {
+        vec.addElement(enumeration.nextElement());
       }
       for (int i=0;i<vec.size();i++) {
         DefaultMutableTreeNode node = (DefaultMutableTreeNode)vec.elementAt(i);
@@ -3783,7 +3783,7 @@ Log.debug(20, xmlout);
                (!keyName.equalsIgnoreCase("help")) &&
                (!keyName.startsWith("xmlns")) &&
                (!(keyName.indexOf("schemaLocation")>-1)) &&
-               (!(keyName.equals("")))               
+               (!(keyName.equals("")))
              )
           {
             if ((value==null)||(value.length()==0)) value = "";
@@ -3791,7 +3791,7 @@ Log.debug(20, xmlout);
             newni.setXMLAttribute(true);
             newni.setCardinality("ONE");
             newni.setIcon("equal.gif");
-            DefaultMutableTreeNode newnode = new DefaultMutableTreeNode(); 
+            DefaultMutableTreeNode newnode = new DefaultMutableTreeNode();
             newnode.setUserObject(newni);
             NodeInfo valni = new NodeInfo("#PCDATA");
             valni.setCardinality("ONE");
@@ -3806,7 +3806,7 @@ Log.debug(20, xmlout);
       }
     }
   }
-   
+
   /**
    * if xml attributes are displayed as separate child node, their value may br
    * updated by the user (see method 'addXMLAttributeNodes'). Need a method to
@@ -3816,9 +3816,9 @@ Log.debug(20, xmlout);
     if (root==null) {
       Log.debug(0,"root  in 'saveAttribute' method is null!");
     } else {
-      Enumeration enum = root.breadthFirstEnumeration();
-      while (enum.hasMoreElements()) {
-        DefaultMutableTreeNode node = (DefaultMutableTreeNode)enum.nextElement();
+      Enumeration enumeration = root.breadthFirstEnumeration();
+      while (enumeration.hasMoreElements()) {
+        DefaultMutableTreeNode node = (DefaultMutableTreeNode)enumeration.nextElement();
         NodeInfo ni = (NodeInfo)node.getUserObject();
         if ((ni.isXMLAttribute())&&(ni.name.equalsIgnoreCase("#PCDATA"))) {
           String val = ni.toString();
@@ -3833,7 +3833,7 @@ Log.debug(20, xmlout);
       }
     }
    }
-   
+
   /**
    *  if xml attributes are displayed, remove them
    */
@@ -3842,9 +3842,9 @@ Log.debug(20, xmlout);
     if (root==null) {
       Log.debug(0,"root  in 'saveAttribute' method is null!");
     } else {
-      Enumeration enum = root.breadthFirstEnumeration();
-      while (enum.hasMoreElements()) {
-        DefaultMutableTreeNode node = (DefaultMutableTreeNode)enum.nextElement();
+      Enumeration enumeration = root.breadthFirstEnumeration();
+      while (enumeration.hasMoreElements()) {
+        DefaultMutableTreeNode node = (DefaultMutableTreeNode)enumeration.nextElement();
         NodeInfo ni = (NodeInfo)node.getUserObject();
         if (ni.isXMLAttribute()) {
           attrNodes.addElement(node);
@@ -3858,7 +3858,7 @@ Log.debug(20, xmlout);
       }
     }
   }
-  
+
   /**
    *  build a DTD-based tree and return root
    */
@@ -3871,7 +3871,7 @@ Log.debug(20, xmlout);
     DefaultMutableTreeNode root = (DefaultMutableTreeNode)dtdtree.rootNode;
     return root;
   }
-//--------------------------------------------------------------------------------------    
+//--------------------------------------------------------------------------------------
 
   /**
    * used to validate the xml string from the editor before leaving
@@ -3917,71 +3917,71 @@ Log.debug(20, xmlout);
   }
 
   /**
-	 *  locate the first node in the template tree by name
-	 *  return null if unable to locate
-	 *  to be used to get subtrees
-	 */
+   *  locate the first node in the template tree by name
+   *  return null if unable to locate
+   *  to be used to get subtrees
+   */
   public DefaultMutableTreeNode findTemplateNodeByName(String nodeName) {
-		if (frootNode==null) return null;
-		Enumeration enum = frootNode.breadthFirstEnumeration();
-		while (enum.hasMoreElements()) {
-			DefaultMutableTreeNode nd = (DefaultMutableTreeNode)(enum.nextElement());
-			NodeInfo ni = (NodeInfo)(nd).getUserObject();
-			String ndname = ni.getName();
-			if (ndname.equals(nodeName)) {
-				return nd;
-			}
-		}
-		return null;
-	}
+    if (frootNode==null) return null;
+    Enumeration enumeration = frootNode.breadthFirstEnumeration();
+    while (enumeration.hasMoreElements()) {
+      DefaultMutableTreeNode nd = (DefaultMutableTreeNode)(enumeration.nextElement());
+      NodeInfo ni = (NodeInfo)(nd).getUserObject();
+      String ndname = ni.getName();
+      if (ndname.equals(nodeName)) {
+        return nd;
+      }
+    }
+    return null;
+  }
 
-	/**
-	 *   look for any nodes named 'references' (eml2 specific)
-	 *   when found, there should be a 'parent' CHOICE node and probably
-	 *   a sibling SEQUENCE node. remove references node, parent CHOOICE
-	 *   to simplify (apply this to the eml2 template tree
-	 */
-	void removeAllReferences(DefaultMutableTreeNode node) {
+  /**
+   *   look for any nodes named 'references' (eml2 specific)
+   *   when found, there should be a 'parent' CHOICE node and probably
+   *   a sibling SEQUENCE node. remove references node, parent CHOOICE
+   *   to simplify (apply this to the eml2 template tree
+   */
+  void removeAllReferences(DefaultMutableTreeNode node) {
     if (!removeReferencesFlag) return;
-		Vector refsnodes = new Vector();
-		// first, list all 'references' nodes
-		Enumeration enum = node.depthFirstEnumeration();
-		while (enum.hasMoreElements()) {
-			DefaultMutableTreeNode dmtn = (DefaultMutableTreeNode)(enum.nextElement());
-			NodeInfo ni = (NodeInfo)(dmtn.getUserObject());
-			if ((ni.getName()).equals("references")) {
-			  refsnodes.addElement(dmtn);
-			}
-		}
-		for (int i=0; i<refsnodes.size();i++) {
-			DefaultMutableTreeNode nd = (DefaultMutableTreeNode)refsnodes.elementAt(i);
-			DefaultMutableTreeNode parent = (DefaultMutableTreeNode)(nd.getParent());
-			NodeInfo pni = (NodeInfo)parent.getUserObject();
-			String parname = pni.getName();
-			if (parname.indexOf("SEQUENCE")>-1) {
-				nd = parent;
-				parent = (DefaultMutableTreeNode)(parent.getParent());
-			}
-			DefaultMutableTreeNode grandparent = (DefaultMutableTreeNode)(parent.getParent());
+    Vector refsnodes = new Vector();
+    // first, list all 'references' nodes
+    Enumeration enumeration = node.depthFirstEnumeration();
+    while (enumeration.hasMoreElements()) {
+      DefaultMutableTreeNode dmtn = (DefaultMutableTreeNode)(enumeration.nextElement());
+      NodeInfo ni = (NodeInfo)(dmtn.getUserObject());
+      if ((ni.getName()).equals("references")) {
+        refsnodes.addElement(dmtn);
+      }
+    }
+    for (int i=0; i<refsnodes.size();i++) {
+      DefaultMutableTreeNode nd = (DefaultMutableTreeNode)refsnodes.elementAt(i);
+      DefaultMutableTreeNode parent = (DefaultMutableTreeNode)(nd.getParent());
+      NodeInfo pni = (NodeInfo)parent.getUserObject();
+      String parname = pni.getName();
+      if (parname.indexOf("SEQUENCE")>-1) {
+        nd = parent;
+        parent = (DefaultMutableTreeNode)(parent.getParent());
+      }
+      DefaultMutableTreeNode grandparent = (DefaultMutableTreeNode)(parent.getParent());
       int parentIndex = grandparent.getIndex(parent);
-			nd.removeFromParent();
-			parent.removeFromParent();
-			Enumeration kids = parent.children();
+      nd.removeFromParent();
+      parent.removeFromParent();
+      Enumeration kids = parent.children();
       int indx = parentIndex;
-			while (kids.hasMoreElements()) {
-				DefaultMutableTreeNode cnd = (DefaultMutableTreeNode)kids.nextElement();
+      while (kids.hasMoreElements()) {
+        DefaultMutableTreeNode cnd = (DefaultMutableTreeNode)kids.nextElement();
         // kid nodes are set to be choice nodes (choice between kids and references)
         // thus, remove this setting when removing 'references'
         NodeInfo ni_cnd = (NodeInfo)cnd.getUserObject();
         ni_cnd.setChoice(false);
         ni_cnd.setSelected(ni_cnd.isSelected()); // forces icon update
-				grandparent.insert(cnd, indx);
+        grandparent.insert(cnd, indx);
         indx++;
-			}
-		}
-	}
-	
-	
+      }
+    }
+  }
+
+
 }
 
 

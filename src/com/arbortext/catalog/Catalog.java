@@ -263,23 +263,23 @@ public class Catalog {
      * and initializes the catalog data structures.</p>
      */
     public Catalog() {
-	String property = System.getProperty("xml.catalog.debug");
+  String property = System.getProperty("xml.catalog.debug");
 
-	if (property != null) {
-	    try {
-		debug = Integer.parseInt(property);
-	    } catch (NumberFormatException e) {
-		debug = 0;
-	    }
-	}
+  if (property != null) {
+      try {
+    debug = Integer.parseInt(property);
+      } catch (NumberFormatException e) {
+    debug = 0;
+      }
+  }
 
-	property = System.getProperty("xml.catalog.override");
+  property = System.getProperty("xml.catalog.override");
 
-	if (property != null) {
-	    default_override = (property.equalsIgnoreCase("true")
-				|| property.equalsIgnoreCase("yes")
-				|| property.equalsIgnoreCase("1"));
-	}
+  if (property != null) {
+      default_override = (property.equalsIgnoreCase("true")
+        || property.equalsIgnoreCase("yes")
+        || property.equalsIgnoreCase("1"));
+  }
     }
 
     /**
@@ -295,7 +295,7 @@ public class Catalog {
      * interface to be used for subsequent XML Catalog parsing.
      */
     public void setParserClass(String parser) {
-	parserClass = parser;
+  parserClass = parser;
     }
 
     /**
@@ -310,42 +310,42 @@ public class Catalog {
      * @throws IOException One of the system catalogs cannot be read.
      */
     public void loadSystemCatalogs()
-	throws MalformedURLException, IOException {
-	String PCS = System.getProperty("path.separator");
-	String catalog_files = System.getProperty("xml.catalog.files");
+  throws MalformedURLException, IOException {
+  String PCS = System.getProperty("path.separator");
+  String catalog_files = System.getProperty("xml.catalog.files");
 
-	while (catalog_files != null) {
-	    int pos = catalog_files.indexOf(PCS);
-	    String catfile = null;
+  while (catalog_files != null) {
+      int pos = catalog_files.indexOf(PCS);
+      String catfile = null;
 
-	    if (pos > 0) {
-		catfile = catalog_files.substring(0, pos);
-		catalog_files = catalog_files.substring(pos+1);
-	    } else {
-		catfile = catalog_files;
-		catalog_files = null;
-	    }
+      if (pos > 0) {
+    catfile = catalog_files.substring(0, pos);
+    catalog_files = catalog_files.substring(pos+1);
+      } else {
+    catfile = catalog_files;
+    catalog_files = null;
+      }
 
-	    catalogFiles.addElement(catfile);
-	}
+      catalogFiles.addElement(catfile);
+  }
 
-	if (catalogFiles.size() > 0) {
-	    // This is a little odd. The parseCatalog() method expects
-	    // a filename, but it adds that name to the end of the
-	    // catalogFiles vector, and then processes that vector.
-	    // This allows the system to handle CATALOG entries
-	    // correctly.
-	    //
-	    // In this init case, we take the last element off the
-	    // catalogFiles vector and pass it to parseCatalog. This
-	    // will "do the right thing" in the init case, and allow
-	    // parseCatalog() to do the right thing in the non-init
-	    // case. Honest.
-	    //
-	    String catfile = (String) catalogFiles.lastElement();
-	    catalogFiles.removeElement(catfile);
-	    parseCatalog(catfile);
-	}
+  if (catalogFiles.size() > 0) {
+      // This is a little odd. The parseCatalog() method expects
+      // a filename, but it adds that name to the end of the
+      // catalogFiles vector, and then processes that vector.
+      // This allows the system to handle CATALOG entries
+      // correctly.
+      //
+      // In this init case, we take the last element off the
+      // catalogFiles vector and pass it to parseCatalog. This
+      // will "do the right thing" in the init case, and allow
+      // parseCatalog() to do the right thing in the non-init
+      // case. Honest.
+      //
+      String catfile = (String) catalogFiles.lastElement();
+      catalogFiles.removeElement(catfile);
+      parseCatalog(catfile);
+  }
     }
 
     /**
@@ -358,61 +358,61 @@ public class Catalog {
      * @throws IOException Error reading catalog file.
      */
     public synchronized void parseCatalog(String fileName)
-	throws MalformedURLException, IOException {
+  throws MalformedURLException, IOException {
 
-	// Put the file into the list of catalogs to process...
-	// In all cases except the case when initCatalog() is the
-	// caller, this will be the only catalog initially in the list...
-	catalogFiles.addElement(fileName);
+  // Put the file into the list of catalogs to process...
+  // In all cases except the case when initCatalog() is the
+  // caller, this will be the only catalog initially in the list...
+  catalogFiles.addElement(fileName);
 
-	// Now process all the files on the catalogFiles vector. This
-	// vector can grow during processing if CATALOG entries are
-	// encountered in the catalog
-	int curCat = 0;
-	while (curCat < catalogFiles.size()) {
-	    String catfile = (String) catalogFiles.elementAt(curCat++);
+  // Now process all the files on the catalogFiles vector. This
+  // vector can grow during processing if CATALOG entries are
+  // encountered in the catalog
+  int curCat = 0;
+  while (curCat < catalogFiles.size()) {
+      String catfile = (String) catalogFiles.elementAt(curCat++);
 
-	    if (catalogEntries.size() == 0 && catalogs.size() == 0) {
-		// We haven't parsed any catalogs yet, let this
-		// catalog be the first...
-		parseCatalogFile(catfile);
-	    } else {
-		// This is a subordinate catalog. We save its name,
-		// but don't bother to load it unless it's necessary.
-		catalogs.addElement(catfile);
-	    }
+      if (catalogEntries.size() == 0 && catalogs.size() == 0) {
+    // We haven't parsed any catalogs yet, let this
+    // catalog be the first...
+    parseCatalogFile(catfile);
+      } else {
+    // This is a subordinate catalog. We save its name,
+    // but don't bother to load it unless it's necessary.
+    catalogs.addElement(catfile);
+      }
 
-	    if (!localCatalogFiles.isEmpty()) {
-		// Move all the localCatalogFiles into the front of
-		// the catalogFiles queue
-		Vector newQueue = new Vector();
-		Enumeration q = localCatalogFiles.elements();
-		while (q.hasMoreElements()) {
-		    newQueue.addElement(q.nextElement());
-		}
+      if (!localCatalogFiles.isEmpty()) {
+    // Move all the localCatalogFiles into the front of
+    // the catalogFiles queue
+    Vector newQueue = new Vector();
+    Enumeration q = localCatalogFiles.elements();
+    while (q.hasMoreElements()) {
+        newQueue.addElement(q.nextElement());
+    }
 
-		// Put the rest of the catalogs on the end of the new list
-		while (curCat < catalogFiles.size()) {
-		    catfile = (String) catalogFiles.elementAt(curCat++);
-		    newQueue.addElement(catfile);
-		}
+    // Put the rest of the catalogs on the end of the new list
+    while (curCat < catalogFiles.size()) {
+        catfile = (String) catalogFiles.elementAt(curCat++);
+        newQueue.addElement(catfile);
+    }
 
-		localCatalogFiles = new Vector();
-		catalogFiles = newQueue;
-		curCat = 0;
-	    }
+    localCatalogFiles = new Vector();
+    catalogFiles = newQueue;
+    curCat = 0;
+      }
 
-	    if (!localDelegate.isEmpty()) {
-		Enumeration e = localDelegate.elements();
-		while (e.hasMoreElements()) {
-		    catalogEntries.addElement(e.nextElement());
-		}
-		localDelegate = new Vector();
-	    }
-	}
+      if (!localDelegate.isEmpty()) {
+    Enumeration e = localDelegate.elements();
+    while (e.hasMoreElements()) {
+        catalogEntries.addElement(e.nextElement());
+    }
+    localDelegate = new Vector();
+      }
+  }
 
-	// We've parsed them all, reinit the vector...
-	catalogFiles = new Vector();
+  // We've parsed them all, reinit the vector...
+  catalogFiles = new Vector();
     }
 
     /**
@@ -425,79 +425,79 @@ public class Catalog {
      * @throws IOException Error reading catalog file.
      */
     private synchronized void parseCatalogFile(String fileName)
-	throws MalformedURLException, IOException {
+  throws MalformedURLException, IOException {
 
-	CatalogEntry entry;
+  CatalogEntry entry;
 
-	// The base-base is the cwd. If the catalog file is specified
-	// with a relative path, this assures that it gets resolved
-	// properly...
-	try {
-	    // tack on a basename because URLs point to files not dirs
-	    String userdir = fixSlashes(System.getProperty("user.dir"));
-	    if (userdir.startsWith("/")) userdir = userdir.substring(1,userdir.length());
-	    catalogCwd = new URL("file:///" + userdir + "/basename");
-	} catch (MalformedURLException e) {
-	    String userdir = fixSlashes(System.getProperty("user.dir"));
-	    debug(1, "Malformed URL on cwd", userdir);
-	    catalogCwd = null;
-	}
+  // The base-base is the cwd. If the catalog file is specified
+  // with a relative path, this assures that it gets resolved
+  // properly...
+  try {
+      // tack on a basename because URLs point to files not dirs
+      String userdir = fixSlashes(System.getProperty("user.dir"));
+      if (userdir.startsWith("/")) userdir = userdir.substring(1,userdir.length());
+      catalogCwd = new URL("file:///" + userdir + "/basename");
+  } catch (MalformedURLException e) {
+      String userdir = fixSlashes(System.getProperty("user.dir"));
+      debug(1, "Malformed URL on cwd", userdir);
+      catalogCwd = null;
+  }
 
-	// The initial base URI is the location of the catalog file
-	try {
-	    base = new URL(catalogCwd, fixSlashes(fileName));
-	} catch (MalformedURLException e) {
-	    try {
-		base = new URL("file:///" + fixSlashes(fileName));
-	    } catch (MalformedURLException e2) {
-		debug(1, "Malformed URL on catalog filename", 
-		      fixSlashes(fileName));
-		base = null;
-	    }
-	}
+  // The initial base URI is the location of the catalog file
+  try {
+      base = new URL(catalogCwd, fixSlashes(fileName));
+  } catch (MalformedURLException e) {
+      try {
+    base = new URL("file:///" + fixSlashes(fileName));
+      } catch (MalformedURLException e2) {
+    debug(1, "Malformed URL on catalog filename",
+          fixSlashes(fileName));
+    base = null;
+      }
+  }
 
-	debug(1, "Loading catalog", fileName);
-	debug(3, "Default BASE", base.toString());
+  debug(1, "Loading catalog", fileName);
+  debug(3, "Default BASE", base.toString());
 
-	fileName = base.toString();
+  fileName = base.toString();
 
-	if (parserClass != null) {
-	    try {
-		XMLCatalogReader catfile = new XMLCatalogReader();
-		catfile.setParserClass(parserClass);
-		catfile.parseCatalog(fileName);
+  if (parserClass != null) {
+      try {
+    XMLCatalogReader catfile = new XMLCatalogReader();
+    catfile.setParserClass(parserClass);
+    catfile.parseCatalog(fileName);
 
-		CatalogEntry ce = null;
-		while ((ce = catfile.nextEntry()) != null) {
-		    addEntry(ce);
-		}
-		return;
-	    } catch (SAXException e1) {
-		// not an XML catalog, continue with text parse
-	    } catch (NoXMLParserException e2) {
-		// not an XML catalog, continue with text parse
-	    } catch (NotXMLCatalogException e2) {
-		// not an XML catalog, continue with text parse
-	    } catch (InstantiationException e3) {
-		debug(1, "Cannot instantiate XML Parser class", parserClass);
-	    } catch (IllegalAccessException e4) {
-		debug(1, "Cannot access XML Parser class", parserClass);
-	    } catch (ClassNotFoundException e5) {
-		debug(1, "Cannot load XML Parser class", parserClass);
-	    } catch (UnknownCatalogFormatException e6) {
-		debug(1, "Unrecognized XML Catalog format.");
-		return;
-	    }
-	}
+    CatalogEntry ce = null;
+    while ((ce = catfile.nextEntry()) != null) {
+        addEntry(ce);
+    }
+    return;
+      } catch (SAXException e1) {
+    // not an XML catalog, continue with text parse
+      } catch (NoXMLParserException e2) {
+    // not an XML catalog, continue with text parse
+      } catch (NotXMLCatalogException e2) {
+    // not an XML catalog, continue with text parse
+      } catch (InstantiationException e3) {
+    debug(1, "Cannot instantiate XML Parser class", parserClass);
+      } catch (IllegalAccessException e4) {
+    debug(1, "Cannot access XML Parser class", parserClass);
+      } catch (ClassNotFoundException e5) {
+    debug(1, "Cannot load XML Parser class", parserClass);
+      } catch (UnknownCatalogFormatException e6) {
+    debug(1, "Unrecognized XML Catalog format.");
+    return;
+      }
+  }
 
-	CatalogReader catfile = new CatalogReader();
-	catfile.parseCatalog(fileName);
+  CatalogReader catfile = new CatalogReader();
+  catfile.parseCatalog(fileName);
 
-	// Process the contents of the catalog file as a whitespace
-	// delimited set of tokens
-	while ((entry = catfile.nextEntry()) != null) {
-	    addEntry(entry);
-	}
+  // Process the contents of the catalog file as a whitespace
+  // delimited set of tokens
+  while ((entry = catfile.nextEntry()) != null) {
+      addEntry(entry);
+  }
     }
 
     /**
@@ -511,127 +511,127 @@ public class Catalog {
      * @param entry The CatalogEntry to process.
      */
     private void addEntry(CatalogEntry entry) {
-	switch (entry.entryType()) {
-	case CatalogEntry.BASE: {
-	    String value = entry.formalSystemIdentifier();
-	    URL newbase = null;
+  switch (entry.entryType()) {
+  case CatalogEntry.BASE: {
+      String value = entry.formalSystemIdentifier();
+      URL newbase = null;
 
-	    debug(3, "BASE", value);
+      debug(3, "BASE", value);
 
-	    try {
-		value = fixSlashes(value);
-		newbase = new URL(catalogCwd, value);
-	    } catch (MalformedURLException e) {
-		try {
-		    newbase = new URL("file:///" + value);
-		} catch (MalformedURLException e2) {
-		    debug(1, "Malformed URL on base", value);
-		    newbase = null;
-		}
-	    }
+      try {
+    value = fixSlashes(value);
+    newbase = new URL(catalogCwd, value);
+      } catch (MalformedURLException e) {
+    try {
+        newbase = new URL("file:///" + value);
+    } catch (MalformedURLException e2) {
+        debug(1, "Malformed URL on base", value);
+        newbase = null;
+    }
+      }
 
-	    if (newbase != null) {
-		base = newbase;
-	    }
+      if (newbase != null) {
+    base = newbase;
+      }
 
-	    break;
-	}
+      break;
+  }
 
-	case CatalogEntry.CATALOG: {
-	    String fsi = makeAbsolute(entry.formalSystemIdentifier());
+  case CatalogEntry.CATALOG: {
+      String fsi = makeAbsolute(entry.formalSystemIdentifier());
 
-	    debug(3, "CATALOG", fsi);
+      debug(3, "CATALOG", fsi);
 
-	    localCatalogFiles.addElement(fsi);
-	    break;
-	}
+      localCatalogFiles.addElement(fsi);
+      break;
+  }
 
-	case CatalogEntry.DOCUMENT: {
-	    String fsi = makeAbsolute(entry.formalSystemIdentifier());
-	    entry.updateFormalSystemIdentifier(fsi);
+  case CatalogEntry.DOCUMENT: {
+      String fsi = makeAbsolute(entry.formalSystemIdentifier());
+      entry.updateFormalSystemIdentifier(fsi);
 
-	    debug(3, "DOCUMENT", fsi);
+      debug(3, "DOCUMENT", fsi);
 
-	    catalogEntries.addElement(entry);
-	    break;
-	}
-	case CatalogEntry.OVERRIDE: {
-	    debug(3, "OVERRIDE", entry.yes_or_no());
+      catalogEntries.addElement(entry);
+      break;
+  }
+  case CatalogEntry.OVERRIDE: {
+      debug(3, "OVERRIDE", entry.yes_or_no());
 
-	    catalogEntries.addElement(entry);
-	    break;
-	}
-	case CatalogEntry.SGMLDECL: {
-	    // meaningless in XML
-	    break;
-	}
-	case CatalogEntry.DELEGATE: {
-	    String fsi = makeAbsolute(entry.formalSystemIdentifier());
-	    entry.updateFormalSystemIdentifier(fsi);
+      catalogEntries.addElement(entry);
+      break;
+  }
+  case CatalogEntry.SGMLDECL: {
+      // meaningless in XML
+      break;
+  }
+  case CatalogEntry.DELEGATE: {
+      String fsi = makeAbsolute(entry.formalSystemIdentifier());
+      entry.updateFormalSystemIdentifier(fsi);
 
-	    debug(3, "DELEGATE", entry.partialPublicId(), fsi);
+      debug(3, "DELEGATE", entry.partialPublicId(), fsi);
 
-	    addDelegate(entry);
-	    break;
-	}
-	case CatalogEntry.DOCTYPE: {
-	    String fsi = makeAbsolute(entry.formalSystemIdentifier());
-	    entry.updateFormalSystemIdentifier(fsi);
+      addDelegate(entry);
+      break;
+  }
+  case CatalogEntry.DOCTYPE: {
+      String fsi = makeAbsolute(entry.formalSystemIdentifier());
+      entry.updateFormalSystemIdentifier(fsi);
 
-	    debug(3, "DOCTYPE", entry.publicId(), fsi);
+      debug(3, "DOCTYPE", entry.publicId(), fsi);
 
-	    catalogEntries.addElement(entry);
-	    break;
-	}
-	case CatalogEntry.DTDDECL: {
-	    // meaningless in XML
-	    break;
-	}
-	case CatalogEntry.ENTITY: {
-	    String fsi = makeAbsolute(entry.formalSystemIdentifier());
-	    entry.updateFormalSystemIdentifier(fsi);
+      catalogEntries.addElement(entry);
+      break;
+  }
+  case CatalogEntry.DTDDECL: {
+      // meaningless in XML
+      break;
+  }
+  case CatalogEntry.ENTITY: {
+      String fsi = makeAbsolute(entry.formalSystemIdentifier());
+      entry.updateFormalSystemIdentifier(fsi);
 
-	    debug(3, "ENTITY", entry.entityName(), fsi);
+      debug(3, "ENTITY", entry.entityName(), fsi);
 
-	    catalogEntries.addElement(entry);
-	    break;
-	}
-	case CatalogEntry.LINKTYPE: {
-	    // meaningless in XML
-	    break;
-	}
-	case CatalogEntry.NOTATION: {
-	    String fsi = makeAbsolute(entry.formalSystemIdentifier());
-	    entry.updateFormalSystemIdentifier(fsi);
+      catalogEntries.addElement(entry);
+      break;
+  }
+  case CatalogEntry.LINKTYPE: {
+      // meaningless in XML
+      break;
+  }
+  case CatalogEntry.NOTATION: {
+      String fsi = makeAbsolute(entry.formalSystemIdentifier());
+      entry.updateFormalSystemIdentifier(fsi);
 
-	    debug(3, "NOTATION", entry.entityName(), fsi);
+      debug(3, "NOTATION", entry.entityName(), fsi);
 
-	    catalogEntries.addElement(entry);
-	    break;
-	}
-	case CatalogEntry.PUBLIC: {
-	    // This entry has to go in the vector because it would
-	    // be relevant in subsequent searches for notations.
-	    String publicid = entry.publicId();
-	    String systemid = makeAbsolute(entry.formalSystemIdentifier());
+      catalogEntries.addElement(entry);
+      break;
+  }
+  case CatalogEntry.PUBLIC: {
+      // This entry has to go in the vector because it would
+      // be relevant in subsequent searches for notations.
+      String publicid = entry.publicId();
+      String systemid = makeAbsolute(entry.formalSystemIdentifier());
 
-	    debug(3, "PUBLIC", publicid, systemid);
+      debug(3, "PUBLIC", publicid, systemid);
 
-	    entry.updateFormalSystemIdentifier(systemid);
-	    catalogEntries.addElement(entry);
-	    break;
-	}
-	case CatalogEntry.SYSTEM: {
-	    String systemid = entry.systemId();
-	    String fsi = makeAbsolute(entry.formalSystemIdentifier());
+      entry.updateFormalSystemIdentifier(systemid);
+      catalogEntries.addElement(entry);
+      break;
+  }
+  case CatalogEntry.SYSTEM: {
+      String systemid = entry.systemId();
+      String fsi = makeAbsolute(entry.formalSystemIdentifier());
 
-	    debug(3, "SYSTEM", systemid, fsi);
+      debug(3, "SYSTEM", systemid, fsi);
 
-	    entry.updateFormalSystemIdentifier(fsi);
-	    catalogEntries.addElement(entry);
-	    break;
-	}
-	}
+      entry.updateFormalSystemIdentifier(fsi);
+      catalogEntries.addElement(entry);
+      break;
+  }
+  }
     }
 
     /**
@@ -664,37 +664,37 @@ public class Catalog {
      * catalog file.
      */
     public void parseAllCatalogs()
-	throws MalformedURLException, IOException {
+  throws MalformedURLException, IOException {
 
-	// Parse all the subordinate catalogs
-	for (int catPos = 0; catPos < catalogs.size(); catPos++) {
-	    Catalog c = null;
+  // Parse all the subordinate catalogs
+  for (int catPos = 0; catPos < catalogs.size(); catPos++) {
+      Catalog c = null;
 
-	    try {
-		c = (Catalog) catalogs.elementAt(catPos);
-	    } catch (ClassCastException e) {
-		String catfile = (String) catalogs.elementAt(catPos);
-		c = new Catalog();
-		c.setParserClass(parserClass);
-		c.debug = debug;
+      try {
+    c = (Catalog) catalogs.elementAt(catPos);
+      } catch (ClassCastException e) {
+    String catfile = (String) catalogs.elementAt(catPos);
+    c = new Catalog();
+    c.setParserClass(parserClass);
+    c.debug = debug;
 
-		c.parseCatalog(catfile);
-		catalogs.setElementAt(c, catPos);
-		c.parseAllCatalogs();
-	    }
-	}
+    c.parseCatalog(catfile);
+    catalogs.setElementAt(c, catPos);
+    c.parseAllCatalogs();
+      }
+  }
 
-	// Parse all the DELEGATE catalogs
-	Enumeration enum = catalogEntries.elements();
-	while (enum.hasMoreElements()) {
-	    CatalogEntry e = (CatalogEntry) enum.nextElement();
-	    if (e.entryType() == CatalogEntry.DELEGATE) {
-		Catalog dcat = new Catalog();
-		dcat.setParserClass(parserClass);
-		dcat.debug = debug;
-		dcat.parseCatalog(e.formalSystemIdentifier());
-	    }
-	}
+  // Parse all the DELEGATE catalogs
+  Enumeration enumeration = catalogEntries.elements();
+  while (enumeration.hasMoreElements()) {
+      CatalogEntry e = (CatalogEntry) enumeration.nextElement();
+      if (e.entryType() == CatalogEntry.DELEGATE) {
+    Catalog dcat = new Catalog();
+    dcat.setParserClass(parserClass);
+    dcat.debug = debug;
+    dcat.parseCatalog(e.formalSystemIdentifier());
+      }
+  }
     }
 
 
@@ -715,53 +715,53 @@ public class Catalog {
      * @throws IOException Error reading subordinate catalog file.
      */
     public String resolveDoctype(String entityName,
-				 String publicId,
-				 String systemId)
-	throws MalformedURLException, IOException {
-	String resolved = null;
+         String publicId,
+         String systemId)
+  throws MalformedURLException, IOException {
+  String resolved = null;
 
-	if (systemId != null) {
-	    // If there's a SYSTEM entry in this catalog, use it
-	    resolved = resolveLocalSystem(systemId);
-	    if (resolved != null) {
-		return resolved;
-	    }
-	}
+  if (systemId != null) {
+      // If there's a SYSTEM entry in this catalog, use it
+      resolved = resolveLocalSystem(systemId);
+      if (resolved != null) {
+    return resolved;
+      }
+  }
 
-	if (publicId != null) {
-	    // If there's a PUBLIC entry in this catalog, use it
-	    resolved = resolveLocalPublic(CatalogEntry.DOCTYPE,
-					  entityName,
-					  publicId,
-					  systemId);
-	    if (resolved != null) {
-		return resolved;
-	    }
-	}
+  if (publicId != null) {
+      // If there's a PUBLIC entry in this catalog, use it
+      resolved = resolveLocalPublic(CatalogEntry.DOCTYPE,
+            entityName,
+            publicId,
+            systemId);
+      if (resolved != null) {
+    return resolved;
+      }
+  }
 
-	// If there's a DOCTYPE entry in this catalog, use it
-	boolean over = default_override;
-	Enumeration enum = catalogEntries.elements();
-	while (enum.hasMoreElements()) {
-	    CatalogEntry e = (CatalogEntry) enum.nextElement();
-	    if (e.entryType() == CatalogEntry.OVERRIDE) {
-		over = e.yes_or_no().equalsIgnoreCase("YES");
-		continue;
-	    }
+  // If there's a DOCTYPE entry in this catalog, use it
+  boolean over = default_override;
+  Enumeration enumeration = catalogEntries.elements();
+  while (enumeration.hasMoreElements()) {
+      CatalogEntry e = (CatalogEntry) enumeration.nextElement();
+      if (e.entryType() == CatalogEntry.OVERRIDE) {
+    over = e.yes_or_no().equalsIgnoreCase("YES");
+    continue;
+      }
 
-	    if (e.entryType() == CatalogEntry.DOCTYPE
-		&& e.entityName().equals(entityName)) {
-		if (over || systemId == null) {
-		    return e.formalSystemIdentifier();
-		}
-	    }
-	}
+      if (e.entryType() == CatalogEntry.DOCTYPE
+    && e.entityName().equals(entityName)) {
+    if (over || systemId == null) {
+        return e.formalSystemIdentifier();
+    }
+      }
+  }
 
-	// Otherwise, look in the subordinate catalogs
-	return resolveSubordinateCatalogs(CatalogEntry.DOCTYPE,
-					  entityName,
-					  publicId,
-					  systemId);
+  // Otherwise, look in the subordinate catalogs
+  return resolveSubordinateCatalogs(CatalogEntry.DOCTYPE,
+            entityName,
+            publicId,
+            systemId);
     }
 
     /**
@@ -774,18 +774,18 @@ public class Catalog {
      * @throws IOException Error reading subordinate catalog file.
      */
     public String resolveDocument()
-	throws MalformedURLException, IOException {
-	// If there's a DOCUMENT entry, return it
-	Enumeration enum = catalogEntries.elements();
-	while (enum.hasMoreElements()) {
-	    CatalogEntry e = (CatalogEntry) enum.nextElement();
-	    if (e.entryType() == CatalogEntry.DOCUMENT) {
-		return e.formalSystemIdentifier();
-	    }
-	}
+  throws MalformedURLException, IOException {
+  // If there's a DOCUMENT entry, return it
+  Enumeration enumeration = catalogEntries.elements();
+  while (enumeration.hasMoreElements()) {
+      CatalogEntry e = (CatalogEntry) enumeration.nextElement();
+      if (e.entryType() == CatalogEntry.DOCUMENT) {
+    return e.formalSystemIdentifier();
+      }
+  }
 
-	return resolveSubordinateCatalogs(CatalogEntry.DOCUMENT,
-					  null, null, null);
+  return resolveSubordinateCatalogs(CatalogEntry.DOCUMENT,
+            null, null, null);
     }
 
     /**
@@ -805,53 +805,53 @@ public class Catalog {
      * @throws IOException Error reading subordinate catalog file.
      */
     public String resolveEntity(String entityName,
-				String publicId,
-				String systemId)
-	throws MalformedURLException, IOException {
-	String resolved = null;
+        String publicId,
+        String systemId)
+  throws MalformedURLException, IOException {
+  String resolved = null;
 
-	if (systemId != null) {
-	    // If there's a SYSTEM entry in this catalog, use it
-	    resolved = resolveLocalSystem(systemId);
-	    if (resolved != null) {
-		return resolved;
-	    }
-	}
+  if (systemId != null) {
+      // If there's a SYSTEM entry in this catalog, use it
+      resolved = resolveLocalSystem(systemId);
+      if (resolved != null) {
+    return resolved;
+      }
+  }
 
-	if (publicId != null) {
-	    // If there's a PUBLIC entry in this catalog, use it
-	    resolved = resolveLocalPublic(CatalogEntry.ENTITY,
-					  entityName,
-					  publicId,
-					  systemId);
-	    if (resolved != null) {
-		return resolved;
-	    }
-	}
+  if (publicId != null) {
+      // If there's a PUBLIC entry in this catalog, use it
+      resolved = resolveLocalPublic(CatalogEntry.ENTITY,
+            entityName,
+            publicId,
+            systemId);
+      if (resolved != null) {
+    return resolved;
+      }
+  }
 
-	// If there's a ENTITY entry in this catalog, use it
-	boolean over = default_override;
-	Enumeration enum = catalogEntries.elements();
-	while (enum.hasMoreElements()) {
-	    CatalogEntry e = (CatalogEntry) enum.nextElement();
-	    if (e.entryType() == CatalogEntry.OVERRIDE) {
-		over = e.yes_or_no().equalsIgnoreCase("YES");
-		continue;
-	    }
+  // If there's a ENTITY entry in this catalog, use it
+  boolean over = default_override;
+  Enumeration enumeration = catalogEntries.elements();
+  while (enumeration.hasMoreElements()) {
+      CatalogEntry e = (CatalogEntry) enumeration.nextElement();
+      if (e.entryType() == CatalogEntry.OVERRIDE) {
+    over = e.yes_or_no().equalsIgnoreCase("YES");
+    continue;
+      }
 
-	    if (e.entryType() == CatalogEntry.ENTITY
-		&& e.entityName().equals(entityName)) {
-		if (over || systemId == null) {
-		    return e.formalSystemIdentifier();
-		}
-	    }
-	}
+      if (e.entryType() == CatalogEntry.ENTITY
+    && e.entityName().equals(entityName)) {
+    if (over || systemId == null) {
+        return e.formalSystemIdentifier();
+    }
+      }
+  }
 
-	// Otherwise, look in the subordinate catalogs
-	return resolveSubordinateCatalogs(CatalogEntry.ENTITY,
-					  entityName,
-					  publicId,
-					  systemId);
+  // Otherwise, look in the subordinate catalogs
+  return resolveSubordinateCatalogs(CatalogEntry.ENTITY,
+            entityName,
+            publicId,
+            systemId);
     }
 
     /**
@@ -871,53 +871,53 @@ public class Catalog {
      * @throws IOException Error reading subordinate catalog file.
      */
     public String resolveNotation(String notationName,
-				  String publicId,
-				  String systemId)
-	throws MalformedURLException, IOException {
-	String resolved = null;
+          String publicId,
+          String systemId)
+  throws MalformedURLException, IOException {
+  String resolved = null;
 
-	if (systemId != null) {
-	    // If there's a SYSTEM entry in this catalog, use it
-	    resolved = resolveLocalSystem(systemId);
-	    if (resolved != null) {
-		return resolved;
-	    }
-	}
+  if (systemId != null) {
+      // If there's a SYSTEM entry in this catalog, use it
+      resolved = resolveLocalSystem(systemId);
+      if (resolved != null) {
+    return resolved;
+      }
+  }
 
-	if (publicId != null) {
-	    // If there's a PUBLIC entry in this catalog, use it
-	    resolved = resolveLocalPublic(CatalogEntry.NOTATION,
-					  notationName,
-					  publicId,
-					  systemId);
-	    if (resolved != null) {
-		return resolved;
-	    }
-	}
+  if (publicId != null) {
+      // If there's a PUBLIC entry in this catalog, use it
+      resolved = resolveLocalPublic(CatalogEntry.NOTATION,
+            notationName,
+            publicId,
+            systemId);
+      if (resolved != null) {
+    return resolved;
+      }
+  }
 
-	// If there's a NOTATION entry in this catalog, use it
-	boolean over = default_override;
-	Enumeration enum = catalogEntries.elements();
-	while (enum.hasMoreElements()) {
-	    CatalogEntry e = (CatalogEntry) enum.nextElement();
-	    if (e.entryType() == CatalogEntry.OVERRIDE) {
-		over = e.yes_or_no().equalsIgnoreCase("YES");
-		continue;
-	    }
+  // If there's a NOTATION entry in this catalog, use it
+  boolean over = default_override;
+  Enumeration enumeration = catalogEntries.elements();
+  while (enumeration.hasMoreElements()) {
+      CatalogEntry e = (CatalogEntry) enumeration.nextElement();
+      if (e.entryType() == CatalogEntry.OVERRIDE) {
+    over = e.yes_or_no().equalsIgnoreCase("YES");
+    continue;
+      }
 
-	    if (e.entryType() == CatalogEntry.NOTATION
-		&& e.entityName().equals(notationName)) {
-		if (over || systemId == null) {
-		    return e.formalSystemIdentifier();
-		}
-	    }
-	}
+      if (e.entryType() == CatalogEntry.NOTATION
+    && e.entityName().equals(notationName)) {
+    if (over || systemId == null) {
+        return e.formalSystemIdentifier();
+    }
+      }
+  }
 
-	// Otherwise, look in the subordinate catalogs
-	return resolveSubordinateCatalogs(CatalogEntry.NOTATION,
-					  notationName,
-					  publicId,
-					  systemId);
+  // Otherwise, look in the subordinate catalogs
+  return resolveSubordinateCatalogs(CatalogEntry.NOTATION,
+            notationName,
+            publicId,
+            systemId);
     }
 
     /**
@@ -943,31 +943,31 @@ public class Catalog {
      * match is not found in the catalog, instead null is returned
      * to indicate that no match was found.
      */
-    public String resolvePublic(String publicId, String systemId) 
-	throws MalformedURLException, IOException {
+    public String resolvePublic(String publicId, String systemId)
+  throws MalformedURLException, IOException {
 
-	// If there's a SYSTEM entry in this catalog, use it
-	if (systemId != null) {
-	    String resolved = resolveLocalSystem(systemId);
-	    if (resolved != null) {
-		return resolved;
-	    }
-	}
+  // If there's a SYSTEM entry in this catalog, use it
+  if (systemId != null) {
+      String resolved = resolveLocalSystem(systemId);
+      if (resolved != null) {
+    return resolved;
+      }
+  }
 
-	// If there's a PUBLIC entry in this catalog, use it
-	String resolved = resolveLocalPublic(CatalogEntry.PUBLIC,
-					     null,
-					     publicId,
-					     systemId);
-	if (resolved != null) {
-	    return resolved;
-	}
+  // If there's a PUBLIC entry in this catalog, use it
+  String resolved = resolveLocalPublic(CatalogEntry.PUBLIC,
+               null,
+               publicId,
+               systemId);
+  if (resolved != null) {
+      return resolved;
+  }
 
-	// Otherwise, look in the subordinate catalogs
-	return resolveSubordinateCatalogs(CatalogEntry.PUBLIC,
-					  null,
-					  publicId,
-					  systemId);
+  // Otherwise, look in the subordinate catalogs
+  return resolveSubordinateCatalogs(CatalogEntry.PUBLIC,
+            null,
+            publicId,
+            systemId);
     }
 
     /**
@@ -1019,89 +1019,89 @@ public class Catalog {
      * to indicate that no match was found.
      */
     private synchronized String resolveLocalPublic(int entityType,
-				      String entityName,
-				      String publicId,
-				      String systemId)
-	throws MalformedURLException, IOException {
+              String entityName,
+              String publicId,
+              String systemId)
+  throws MalformedURLException, IOException {
 
-	// Always normalize the public identifier before attempting a match
-	publicId = CatalogReader.normalize(publicId);
+  // Always normalize the public identifier before attempting a match
+  publicId = CatalogReader.normalize(publicId);
 
-	// If there's a SYSTEM entry in this catalog, use it
-	if (systemId != null) {
-	    String resolved = resolveLocalSystem(systemId);
-	    if (resolved != null) {
-		return resolved;
-	    }
-	}
+  // If there's a SYSTEM entry in this catalog, use it
+  if (systemId != null) {
+      String resolved = resolveLocalSystem(systemId);
+      if (resolved != null) {
+    return resolved;
+      }
+  }
 
-	// If there's a PUBLIC entry in this catalog, use it
-	boolean over = default_override;
-	Enumeration enum = catalogEntries.elements();
-	while (enum.hasMoreElements()) {
-	    CatalogEntry e = (CatalogEntry) enum.nextElement();
-	    if (e.entryType() == CatalogEntry.OVERRIDE) {
-		over = e.yes_or_no().equalsIgnoreCase("YES");
-		continue;
-	    }
+  // If there's a PUBLIC entry in this catalog, use it
+  boolean over = default_override;
+  Enumeration enumeration = catalogEntries.elements();
+  while (enumeration.hasMoreElements()) {
+      CatalogEntry e = (CatalogEntry) enumeration.nextElement();
+      if (e.entryType() == CatalogEntry.OVERRIDE) {
+    over = e.yes_or_no().equalsIgnoreCase("YES");
+    continue;
+      }
 
-	    if (e.entryType() == CatalogEntry.PUBLIC
-		&& e.publicId().equals(publicId)) {
-		if (over || systemId == null) {
-		    return e.formalSystemIdentifier();
-		}
-	    }
-	}
+      if (e.entryType() == CatalogEntry.PUBLIC
+    && e.publicId().equals(publicId)) {
+    if (over || systemId == null) {
+        return e.formalSystemIdentifier();
+    }
+      }
+  }
 
-	// If there's a DELEGATE entry in this catalog, use it
-	over = default_override;
-	enum = catalogEntries.elements();
-	Vector delCats = new Vector();
-	while (enum.hasMoreElements()) {
-	    CatalogEntry e = (CatalogEntry) enum.nextElement();
-	    if (e.entryType() == CatalogEntry.OVERRIDE) {
-		over = e.yes_or_no().equalsIgnoreCase("YES");
-		continue;
-	    }
+  // If there's a DELEGATE entry in this catalog, use it
+  over = default_override;
+  enumeration = catalogEntries.elements();
+  Vector delCats = new Vector();
+  while (enumeration.hasMoreElements()) {
+      CatalogEntry e = (CatalogEntry) enumeration.nextElement();
+      if (e.entryType() == CatalogEntry.OVERRIDE) {
+    over = e.yes_or_no().equalsIgnoreCase("YES");
+    continue;
+      }
 
-	    if (e.entryType() == CatalogEntry.DELEGATE
-		&& (over || systemId == null)) {
-		String p = (String) e.partialPublicId();
-		if (p.length() <= publicId.length()
-		    && p.equals(publicId.substring(0, p.length()))) {
-		    // delegate this match to the other catalog
+      if (e.entryType() == CatalogEntry.DELEGATE
+    && (over || systemId == null)) {
+    String p = (String) e.partialPublicId();
+    if (p.length() <= publicId.length()
+        && p.equals(publicId.substring(0, p.length()))) {
+        // delegate this match to the other catalog
 
-		    delCats.addElement(e.formalSystemIdentifier());
-		}
-	    }
-	}
+        delCats.addElement(e.formalSystemIdentifier());
+    }
+      }
+  }
 
-	if (delCats.size() > 0) {
-	    Enumeration enumCats = delCats.elements();
+  if (delCats.size() > 0) {
+      Enumeration enumCats = delCats.elements();
 
-	    if (debug > 0) {
-		debug(1, "Switching to delegated catalog(s):");
-		while (enumCats.hasMoreElements()) {
-		    String delegatedCatalog = (String) enumCats.nextElement();
-		    debug(1, "\t" + delegatedCatalog);
-		}
-	    }
+      if (debug > 0) {
+    debug(1, "Switching to delegated catalog(s):");
+    while (enumCats.hasMoreElements()) {
+        String delegatedCatalog = (String) enumCats.nextElement();
+        debug(1, "\t" + delegatedCatalog);
+    }
+      }
 
-	    Catalog dcat = new Catalog();
-	    dcat.setParserClass(parserClass);
-	    dcat.debug = debug;
+      Catalog dcat = new Catalog();
+      dcat.setParserClass(parserClass);
+      dcat.debug = debug;
 
-	    enumCats = delCats.elements();
-	    while (enumCats.hasMoreElements()) {
-		String delegatedCatalog = (String) enumCats.nextElement();
-		dcat.parseCatalog(delegatedCatalog);
-	    }
+      enumCats = delCats.elements();
+      while (enumCats.hasMoreElements()) {
+    String delegatedCatalog = (String) enumCats.nextElement();
+    dcat.parseCatalog(delegatedCatalog);
+      }
 
-	    return dcat.resolvePublic(publicId, null);
-	}
+      return dcat.resolvePublic(publicId, null);
+  }
 
-	// Nada!
-	return null;
+  // Nada!
+  return null;
     }
 
     /**
@@ -1129,21 +1129,21 @@ public class Catalog {
      * @throws IOException Error reading subordinate catalog file.
      */
     public String resolveSystem(String systemId)
-	throws MalformedURLException, IOException {
+  throws MalformedURLException, IOException {
 
-	// If there's a SYSTEM entry in this catalog, use it
-	if (systemId != null) {
-	    String resolved = resolveLocalSystem(systemId);
-	    if (resolved != null) {
-		return resolved;
-	    }
-	}
+  // If there's a SYSTEM entry in this catalog, use it
+  if (systemId != null) {
+      String resolved = resolveLocalSystem(systemId);
+      if (resolved != null) {
+    return resolved;
+      }
+  }
 
-	// Otherwise, look in the subordinate catalogs
-	return resolveSubordinateCatalogs(CatalogEntry.SYSTEM,
-					  null,
-					  null,
-					  systemId);
+  // Otherwise, look in the subordinate catalogs
+  return resolveSubordinateCatalogs(CatalogEntry.SYSTEM,
+            null,
+            null,
+            systemId);
     }
 
     /**
@@ -1158,19 +1158,19 @@ public class Catalog {
      * @return The mapped system identifier or null
      */
     private String resolveLocalSystem(String systemId) {
-	String osname = System.getProperty("os.name");
-	boolean windows = (osname.indexOf("Windows") >= 0);
-	Enumeration enum = catalogEntries.elements();
-	while (enum.hasMoreElements()) {
-	    CatalogEntry e = (CatalogEntry) enum.nextElement();
-	    if (e.entryType() == CatalogEntry.SYSTEM
-		&& (e.systemId().equals(systemId)
-		    || (windows
-			&& e.systemId().equalsIgnoreCase(systemId)))) {
-		return e.formalSystemIdentifier();
-	    }
-	}
-	return null;
+  String osname = System.getProperty("os.name");
+  boolean windows = (osname.indexOf("Windows") >= 0);
+  Enumeration enumeration = catalogEntries.elements();
+  while (enumeration.hasMoreElements()) {
+      CatalogEntry e = (CatalogEntry) enumeration.nextElement();
+      if (e.entryType() == CatalogEntry.SYSTEM
+    && (e.systemId().equals(systemId)
+        || (windows
+      && e.systemId().equalsIgnoreCase(systemId)))) {
+    return e.formalSystemIdentifier();
+      }
+  }
+  return null;
     }
 
 
@@ -1203,78 +1203,78 @@ public class Catalog {
      * to indicate that no match was found.
      */
     private synchronized String resolveSubordinateCatalogs(int entityType,
-					      String entityName,
-					      String publicId,
-					      String systemId)
-	throws MalformedURLException, IOException {
+                String entityName,
+                String publicId,
+                String systemId)
+  throws MalformedURLException, IOException {
 
-	for (int catPos = 0; catPos < catalogs.size(); catPos++) {
-	    Catalog c = null;
+  for (int catPos = 0; catPos < catalogs.size(); catPos++) {
+      Catalog c = null;
 
-	    try {
-		c = (Catalog) catalogs.elementAt(catPos);
-	    } catch (ClassCastException e) {
-		String catfile = (String) catalogs.elementAt(catPos);
-		c = new Catalog();
-		c.setParserClass(parserClass);
-		c.debug = debug;
+      try {
+    c = (Catalog) catalogs.elementAt(catPos);
+      } catch (ClassCastException e) {
+    String catfile = (String) catalogs.elementAt(catPos);
+    c = new Catalog();
+    c.setParserClass(parserClass);
+    c.debug = debug;
 
-		try {
-		    c.parseCatalog(catfile);
-		} catch (MalformedURLException mue) {
-		    debug(1, "Malformed Catalog URL", catfile);
-		} catch (FileNotFoundException fnfe) {
-		    debug(1, "Failed to load catalog, file not found",
-			  catfile);
-		} catch (IOException ioe) {
-		    debug(1, "Failed to load catalog, I/O error", catfile);
-		}
+    try {
+        c.parseCatalog(catfile);
+    } catch (MalformedURLException mue) {
+        debug(1, "Malformed Catalog URL", catfile);
+    } catch (FileNotFoundException fnfe) {
+        debug(1, "Failed to load catalog, file not found",
+        catfile);
+    } catch (IOException ioe) {
+        debug(1, "Failed to load catalog, I/O error", catfile);
+    }
 
-		catalogs.setElementAt(c, catPos);
-	    }
+    catalogs.setElementAt(c, catPos);
+      }
 
-	    String resolved = null;
+      String resolved = null;
 
-	    // Ok, now what are we supposed to call here?
-	    switch (entityType) {
-	    case CatalogEntry.DOCTYPE: {
-		resolved = c.resolveDoctype(entityName,
-					    publicId,
-					    systemId);
-		break;
-	    }
-	    case CatalogEntry.DOCUMENT: {
-		resolved = c.resolveDocument();
-		break;
-	    }
-	    case CatalogEntry.ENTITY: {
-		resolved = c.resolveEntity(entityName,
-					   publicId,
-					   systemId);
-		break;
-	    }
-	    case CatalogEntry.NOTATION: {
-		resolved = c.resolveNotation(entityName,
-					     publicId,
-					     systemId);
-		break;
-	    }
-	    case CatalogEntry.PUBLIC: {
-		resolved = c.resolvePublic(publicId, systemId);
-		break;
-	    }
-	    case CatalogEntry.SYSTEM: {
-		resolved = c.resolveSystem(systemId);
-		break;
-	    }
-	    }
+      // Ok, now what are we supposed to call here?
+      switch (entityType) {
+      case CatalogEntry.DOCTYPE: {
+    resolved = c.resolveDoctype(entityName,
+              publicId,
+              systemId);
+    break;
+      }
+      case CatalogEntry.DOCUMENT: {
+    resolved = c.resolveDocument();
+    break;
+      }
+      case CatalogEntry.ENTITY: {
+    resolved = c.resolveEntity(entityName,
+             publicId,
+             systemId);
+    break;
+      }
+      case CatalogEntry.NOTATION: {
+    resolved = c.resolveNotation(entityName,
+               publicId,
+               systemId);
+    break;
+      }
+      case CatalogEntry.PUBLIC: {
+    resolved = c.resolvePublic(publicId, systemId);
+    break;
+      }
+      case CatalogEntry.SYSTEM: {
+    resolved = c.resolveSystem(systemId);
+    break;
+      }
+      }
 
-	    if (resolved != null) {
-		return resolved;
-	    }
-	}
+      if (resolved != null) {
+    return resolved;
+      }
+  }
 
-	return null;
+  return null;
     }
 
     // -----------------------------------------------------------------
@@ -1289,7 +1289,7 @@ public class Catalog {
      */
     private String fixSlashes (String sysid) {
         sysid.replace(':', '/');   //DFH - for the Mac
-	return sysid.replace('\\', '/');
+  return sysid.replace('\\', '/');
     }
 
     /**
@@ -1301,21 +1301,21 @@ public class Catalog {
      * current {@link #base}.
      */
     private String makeAbsolute(String sysid) {
-	URL local = null;
+  URL local = null;
 
-	sysid = fixSlashes(sysid);
+  sysid = fixSlashes(sysid);
 
-	try {
-	    local = new URL(base, sysid);
-	} catch (MalformedURLException e) {
-	    debug(1, "Malformed URL on system identifier", sysid);
-	}
+  try {
+      local = new URL(base, sysid);
+  } catch (MalformedURLException e) {
+      debug(1, "Malformed URL on system identifier", sysid);
+  }
 
-	if (local != null) {
-	    return local.toString();
-	} else {
-	    return sysid;
-	}
+  if (local != null) {
+      return local.toString();
+  } else {
+      return sysid;
+  }
     }
 
     /**
@@ -1328,9 +1328,9 @@ public class Catalog {
      * @param message The text of the message.
      */
     private void debug(int level, String message) {
-	if (debug >= level) {
-	    System.out.println(message);
-	}
+  if (debug >= level) {
+      System.out.println(message);
+  }
     }
 
     /**
@@ -1344,9 +1344,9 @@ public class Catalog {
      * @param spec An argument to the message.
      */
     private void debug(int level, String message, String spec) {
-	if (debug >= level) {
-	    System.out.println(message + ": " + spec);
-	}
+  if (debug >= level) {
+      System.out.println(message + ": " + spec);
+  }
     }
 
     /**
@@ -1361,10 +1361,10 @@ public class Catalog {
      * @param spec1 Another argument to the message.
      */
     private void debug(int level, String message, String spec1, String spec2) {
-	if (debug >= level) {
-	    System.out.println(message + ": " + spec1);
-	    System.out.println("\t" + spec2);
-	}
+  if (debug >= level) {
+      System.out.println(message + ": " + spec1);
+      System.out.println("\t" + spec2);
+  }
     }
 
     // -----------------------------------------------------------------
@@ -1379,30 +1379,30 @@ public class Catalog {
      * @param entry The DELEGATE catalog entry
      */
     private void addDelegate(CatalogEntry entry) {
-	int pos = 0;
-	String partial = entry.partialPublicId();
+  int pos = 0;
+  String partial = entry.partialPublicId();
 
-	Enumeration local = localDelegate.elements();
-	while (local.hasMoreElements()) {
-	    CatalogEntry dpe = (CatalogEntry) local.nextElement();
-	    String dp = dpe.partialPublicId();
-	    if (dp.equals(partial)) {
-		// we already have this prefix
-		return;
-	    }
-	    if (dp.length() > partial.length()) {
-		pos++;
-	    }
-	    if (dp.length() < partial.length()) {
-		break;
-	    }
-	}
+  Enumeration local = localDelegate.elements();
+  while (local.hasMoreElements()) {
+      CatalogEntry dpe = (CatalogEntry) local.nextElement();
+      String dp = dpe.partialPublicId();
+      if (dp.equals(partial)) {
+    // we already have this prefix
+    return;
+      }
+      if (dp.length() > partial.length()) {
+    pos++;
+      }
+      if (dp.length() < partial.length()) {
+    break;
+      }
+  }
 
-	// now insert partial into the vector at [pos]
-	if (localDelegate.size() == 0) {
-	    localDelegate.addElement(entry);
-	} else {
-	    localDelegate.insertElementAt(entry, pos);
-	}
+  // now insert partial into the vector at [pos]
+  if (localDelegate.size() == 0) {
+      localDelegate.addElement(entry);
+  } else {
+      localDelegate.insertElementAt(entry, pos);
+  }
     }
 }

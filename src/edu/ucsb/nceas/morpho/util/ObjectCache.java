@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2003-08-21 19:24:31 $'
- * '$Revision: 1.2 $'
+ *   '$Author: brooke $'
+ *     '$Date: 2005-02-22 23:21:51 $'
+ * '$Revision: 1.3 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -38,7 +38,7 @@ import edu.ucsb.nceas.morpho.util.Log;
  * Thus, garbage collection can clean up out-of-date objects, while objects can still be
  * referenced until removed from memory
  */
- 
+
 public class ObjectCache
 {
   /**
@@ -47,14 +47,14 @@ public class ObjectCache
     * each Object is assumed to have an id by which it is referenced
     */
   private Hashtable object_collection;
-  
+
   /**
    * constructor
    */
    public ObjectCache() {
      object_collection = new Hashtable();
    }
-   
+
   public void putObject(String docid, Object obj) {
     if (docid!=null) {
       if (obj!= null) {
@@ -66,7 +66,7 @@ public class ObjectCache
       Log.debug(20,"docid in ObjectCache.putObject is null!");
     }
   }
-  
+
   public boolean isInObjectCollection(String docid) {
     boolean res = false;
     if (object_collection.containsKey(docid)) {
@@ -81,7 +81,7 @@ public class ObjectCache
     }
     return res;
   }
-  
+
   /**
    *  get an object in the cache;
    *  returns null if object is not in the cache or has been garbage collected
@@ -112,7 +112,7 @@ public class ObjectCache
     cleanup();
     return object_collection.keys();
   }
-  
+
   /**
    *  create a new object and add it to the cache
    *  Override this to put a new object in the cache if it is currently missing
@@ -120,16 +120,16 @@ public class ObjectCache
   protected void addNewObjectToCache(String docid) {
     // do nothing here
   }
-  
+
   /**
    *  force removal of null WeakRef objects
    */
   private void cleanup() {
     Vector storageVec = new Vector();
-    Enumeration enum = object_collection.keys();
+    Enumeration enumeration = object_collection.keys();
     // put in a Vector to avoid messing with enumeration while iterating over it
-    while (enum.hasMoreElements()) {
-      storageVec.addElement(enum.nextElement());
+    while (enumeration.hasMoreElements()) {
+      storageVec.addElement(enumeration.nextElement());
     }
     for (int i = 0;i<storageVec.size();i++) {
       String docid = (String)storageVec.elementAt(i);

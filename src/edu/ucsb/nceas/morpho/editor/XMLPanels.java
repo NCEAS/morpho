@@ -6,9 +6,9 @@
  *    Authors: Dan Higgins
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2004-03-29 17:31:10 $'
- * '$Revision: 1.42 $'
+ *   '$Author: brooke $'
+ *     '$Date: 2005-02-22 23:21:51 $'
+ * '$Revision: 1.43 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -42,7 +42,7 @@
  * enter text into the textboxes and then press tab to move to
  * the next box. The display scrolls as the user moves to a
  * textbox out of view.
- * 
+ *
  * @author higgins
  */
 package edu.ucsb.nceas.morpho.editor;
@@ -55,26 +55,26 @@ import java.util.Enumeration;
 import java.lang.reflect.*;
 import edu.ucsb.nceas.morpho.util.Log;
 
- 
+
 public class XMLPanels extends Component
 {
- 
+
  public JPanel topPanel;
  public DefaultMutableTreeNode doc;
 // public MyDefaultTreeModel treeModel = null;
  public DefaultTreeModel treeModel = null;
  public JTree tree = null;
- 
+
  public DocFrame container = null;
- 
+
  // create default panel if true
  private boolean defaultPanel = true;
- 
+
  private int numPanels = 0;
- 
+
  // nodeMap will store the tree node associated with each textfield
  Hashtable nodeMap;
- 
+
     //
     // Constructors
     //
@@ -92,7 +92,7 @@ public class XMLPanels extends Component
         init();
     }
 
-    /** Constructs a panel tree with the specified root. 
+    /** Constructs a panel tree with the specified root.
       * and the specified default panel width
       */
     public XMLPanels(DefaultMutableTreeNode node, int defaultWidth) {
@@ -102,19 +102,19 @@ public class XMLPanels extends Component
         topPanel.setSize(new Dimension(defaultWidth, 300));
         init();
     }
-    
-    
+
+
 //    public void setTreeModel(MyDefaultTreeModel tm) {
     public void setTreeModel(DefaultTreeModel tm) {
         treeModel = tm;
     }
-    
+
     public void setTree(JTree tree) {
       this.tree = tree;
     }
-    
+
     public void setContainer(DocFrame df) {
-      container = df; 
+      container = df;
     }
     /**
      */
@@ -129,7 +129,7 @@ public class XMLPanels extends Component
             BorderFactory.createTitledBorder(info.toString()),
             BorderFactory.createEmptyBorder(4, 4, 4, 4)
             ));
-		    topPanel.setLayout(new BoxLayout(topPanel,BoxLayout.Y_AXIS));    
+        topPanel.setLayout(new BoxLayout(topPanel,BoxLayout.Y_AXIS));
         String temp = info.getRootEditor();
         if (temp!=null) {
           try {
@@ -139,16 +139,16 @@ public class XMLPanels extends Component
             Class componentDefinition = Class.forName(temp);
             Constructor ArgsConstructor = componentDefinition.getConstructor(ArgsClass);
             Object obj = createObject(ArgsConstructor,Args);
-            
+
             // obj should be a component that can be added to a container (e.g. a descendent
             // of JPanel) with a constructor that takes a node as an argument
             if (obj!=null) {
-              topPanel.add((Component)obj);    
+              topPanel.add((Component)obj);
             }
-          } 
+          }
           catch (ClassNotFoundException e) {
             System.out.println(e);
-          } 
+          }
           catch (NoSuchMethodException e) {
             System.out.println(e);
           }
@@ -156,14 +156,14 @@ public class XMLPanels extends Component
           refLock = false;
           doPanels(doc,topPanel);
     }
-    
+
     /**
      *  refLock is used to 'lock' all the subpanels of any 'referenced' node
      *  displayed on the right side of the editor. i.e. the referenced data is
      *  displayed but can only be edited in the original location of the node
      */
     boolean refLock = false;
-    
+
     /**
      *  this method recursively displays a node and its children in a Panel
      *  that appears on the right side of the display
@@ -190,7 +190,7 @@ public class XMLPanels extends Component
       String temp = inf.getEditor();
       if (temp!=null) {
         if (temp.indexOf("LockedPanel")>-1) {
-          locked = true; 
+          locked = true;
           temp = null;
         }
       }
@@ -201,16 +201,16 @@ public class XMLPanels extends Component
           Class componentDefinition = Class.forName(temp);
           Constructor ArgsConstructor = componentDefinition.getConstructor(ArgsClass);
           Object obj = createObject(ArgsConstructor,Args);
-            
+
           // obj should be a component that can be added to a container (e.g. a descendent
           // of JPanel) with a constructor that takes a node as an argument
           if (obj!=null) {
-            panel.add((Component)obj);    
+            panel.add((Component)obj);
           }
-        } 
+        }
         catch (ClassNotFoundException e) {
           System.out.println(e);
-        } 
+        }
         catch (NoSuchMethodException e) {
           System.out.println(e);
         }
@@ -222,12 +222,12 @@ public class XMLPanels extends Component
         // loop over child node
         while(nodes.hasMoreElements()) {
           DefaultMutableTreeNode nd = (DefaultMutableTreeNode)(nodes.nextElement());
-		      NodeInfo info = (NodeInfo)(nd.getUserObject());
+          NodeInfo info = (NodeInfo)(nd.getUserObject());
 //          Log.debug(0, "info.name: "+info.name);
           if (!((info.name).equals("#PCDATA")))
           {
             if (((info.name).indexOf("CHOICE")<0) &&
-                ((info.name).indexOf("SEQUENCE")<0) )  
+                ((info.name).indexOf("SEQUENCE")<0) )
             {
               JPanel new_panel = new JPanel();
               String borderTitle = info.toString();
@@ -238,7 +238,7 @@ public class XMLPanels extends Component
                  ));
               numPanels++;
               if (numPanels<500) {   // limited for performance reasons
-		            new_panel.setLayout(new BoxLayout(new_panel,BoxLayout.Y_AXIS));
+                new_panel.setLayout(new BoxLayout(new_panel,BoxLayout.Y_AXIS));
                 panel.add(new_panel);
                 doPanels(nd, new_panel);
               }
@@ -258,11 +258,11 @@ public class XMLPanels extends Component
       }
       defaultPanel = true;
     }
-    
-    
+
+
     JPanel getDataPanel(DefaultMutableTreeNode node, boolean locked) {
         int panelWidth = topPanel.getWidth() - 40;
-    
+
         JPanel jp = new JPanel();
         jp.setLayout(new BoxLayout(jp,BoxLayout.Y_AXIS));
         jp.setAlignmentX(Component.LEFT_ALIGNMENT);
@@ -277,12 +277,12 @@ public class XMLPanels extends Component
         jp2.setMaximumSize(new Dimension(panelWidth,25));
         jp.add(jp1);
         jp.add(jp2);
-		    NodeInfo info = (NodeInfo)(node.getUserObject());
+        NodeInfo info = (NodeInfo)(node.getUserObject());
 
 
         StringBuffer name = new StringBuffer();
         if (info.getHelp()!=null) {
-          name.append(info.getHelp()); 
+          name.append(info.getHelp());
         }
         String helpString = name.toString();
         if (helpString.length()==0) {
@@ -311,9 +311,9 @@ public class XMLPanels extends Component
         DefaultMutableTreeNode nd = null;
         while(nodes.hasMoreElements()) {
           nd = (DefaultMutableTreeNode)(nodes.nextElement());
-		      NodeInfo info1 = (NodeInfo)(nd.getUserObject());
-		      if ((info1.name).equals("#PCDATA")) {
-		        txt = info1.getPCValue();
+          NodeInfo info1 = (NodeInfo)(nd.getUserObject());
+          if ((info1.name).equals("#PCDATA")) {
+            txt = info1.getPCValue();
             if (txt.equals("")) txt = " ";
           }
         }
@@ -327,82 +327,82 @@ public class XMLPanels extends Component
             jtf1.setText(txt.trim());
             jtf1.setEnabled(!locked);
           }
-        
+
         return jp;
     }
-    
+
     // get pixels from any component inside topPanel to top of topPanel
     int pixelsFromTop(JComponent comp) {
         int dist = 0;
-        JComponent parent = (JComponent)comp.getParent(); 
+        JComponent parent = (JComponent)comp.getParent();
         dist = dist + comp.getY();
         while (parent!=topPanel) {
             comp = parent;
-            parent = (JComponent)comp.getParent(); 
-            dist = dist + comp.getY();            
+            parent = (JComponent)comp.getParent();
+            dist = dist + comp.getY();
         }
         return dist;
     }
-    
+
 class dfhAction implements java.awt.event.ActionListener
 {
-		public void actionPerformed(java.awt.event.ActionEvent event)
-		{
-			Object object = event.getSource();
-			if (object instanceof JTextField)  {
-			  DefaultMutableTreeNode nd = (DefaultMutableTreeNode)nodeMap.get(object);
-		    NodeInfo info = (NodeInfo)(nd.getUserObject());
+    public void actionPerformed(java.awt.event.ActionEvent event)
+    {
+      Object object = event.getSource();
+      if (object instanceof JTextField)  {
+        DefaultMutableTreeNode nd = (DefaultMutableTreeNode)nodeMap.get(object);
+        NodeInfo info = (NodeInfo)(nd.getUserObject());
 //        info.setPCValue(" "+((JTextField)object).getText());
         String temp = ((JTextField)object).getText().trim();
         ((JTextField)object).setText(temp);
         info.setPCValue(temp);
-			  if (treeModel!=null) {
-				  treeModel.reload();
-				}
-			}
-		}
+        if (treeModel!=null) {
+          treeModel.reload();
+        }
+      }
+    }
 }
 
-	class dfhFocus extends java.awt.event.FocusAdapter
-	{
-		public void focusLost(java.awt.event.FocusEvent event)
-		{
-			Object object = event.getSource();
-			if (object instanceof JTextField) {
-			  DefaultMutableTreeNode nd = (DefaultMutableTreeNode)nodeMap.get(object);
-		    NodeInfo info = (NodeInfo)(nd.getUserObject());
+  class dfhFocus extends java.awt.event.FocusAdapter
+  {
+    public void focusLost(java.awt.event.FocusEvent event)
+    {
+      Object object = event.getSource();
+      if (object instanceof JTextField) {
+        DefaultMutableTreeNode nd = (DefaultMutableTreeNode)nodeMap.get(object);
+        NodeInfo info = (NodeInfo)(nd.getUserObject());
 //        info.setPCValue(" "+((JTextField)object).getText());
         String temp = ((JTextField)object).getText().trim();
         ((JTextField)object).setText(temp);
         info.setPCValue(temp);
-			  if (treeModel!=null) {
+        if (treeModel!=null) {
 //				        treeModel.reload();
-				}
-			}
-		}
-		
-		public void focusGained(java.awt.event.FocusEvent event)
-		{
-			Object object = event.getSource();
-			if (object instanceof JTextField) {
-			  int dist = pixelsFromTop((JComponent)object);
-			  topPanel.scrollRectToVisible(new Rectangle(0,dist,50,50));
-			  DefaultMutableTreeNode nd = (DefaultMutableTreeNode)nodeMap.get(object);
-			  DefaultMutableTreeNode prevnd = (DefaultMutableTreeNode)nd.getPreviousNode();
-			  if (container!=null) {
-				  container.setTreeValueFlag(false);
-				  TreePath tp = new TreePath(prevnd.getPath());
-				  tree.setSelectionPath(tp);
-				    tree.scrollPathToVisible(tp);
-				}
-			}
-		}
-	}
-	
-	
+        }
+      }
+    }
 
-   
-    
+    public void focusGained(java.awt.event.FocusEvent event)
+    {
+      Object object = event.getSource();
+      if (object instanceof JTextField) {
+        int dist = pixelsFromTop((JComponent)object);
+        topPanel.scrollRectToVisible(new Rectangle(0,dist,50,50));
+        DefaultMutableTreeNode nd = (DefaultMutableTreeNode)nodeMap.get(object);
+        DefaultMutableTreeNode prevnd = (DefaultMutableTreeNode)nd.getPreviousNode();
+        if (container!=null) {
+          container.setTreeValueFlag(false);
+          TreePath tp = new TreePath(prevnd.getPath());
+          tree.setSelectionPath(tp);
+            tree.scrollPathToVisible(tp);
+        }
+      }
+    }
+  }
+
+
+
+
+
 public static Object createObject(Constructor constructor, Object[] arguments) {
 //      System.out.println ("Constructor: " + constructor.toString());
       Object object = null;
@@ -421,15 +421,15 @@ public static Object createObject(Constructor constructor, Object[] arguments) {
       }
       return object;
    }
-    
+
   /**
    *  Finds a node with the given id, starting at the input node.
    *  Note that id is an attribute with the name "ID"
    */
   private DefaultMutableTreeNode getReferencedNode(DefaultMutableTreeNode root, String id) {
-    Enumeration enum = root.breadthFirstEnumeration();
-    while (enum.hasMoreElements()) {
-      DefaultMutableTreeNode curNode = (DefaultMutableTreeNode)enum.nextElement();
+    Enumeration enumeration = root.breadthFirstEnumeration();
+    while (enumeration.hasMoreElements()) {
+      DefaultMutableTreeNode curNode = (DefaultMutableTreeNode)enumeration.nextElement();
       NodeInfo curni = (NodeInfo)curNode.getUserObject();
       String idval = curni.getAttrValue("id");
       if (idval!=null) {  // check its value
@@ -437,7 +437,7 @@ public static Object createObject(Constructor constructor, Object[] arguments) {
       }
     }
     return null; // didn't find a match
-  }    
+  }
 
   /**
    *  Checks to see if a child of the input node has the name 'references'
@@ -445,9 +445,9 @@ public static Object createObject(Constructor constructor, Object[] arguments) {
    */
   private DefaultMutableTreeNode getRefsNode(DefaultMutableTreeNode node) {
     DefaultMutableTreeNode ret = null;
-    Enumeration enum = node.children();
-    while (enum.hasMoreElements()) {
-      DefaultMutableTreeNode kid = (DefaultMutableTreeNode)enum.nextElement();
+    Enumeration enumeration = node.children();
+    while (enumeration.hasMoreElements()) {
+      DefaultMutableTreeNode kid = (DefaultMutableTreeNode)enumeration.nextElement();
       if (kid==null) return ret;
       String name = ((NodeInfo)kid.getUserObject()).getName();
       if (name.equals("references")) {
@@ -461,7 +461,7 @@ public static Object createObject(Constructor constructor, Object[] arguments) {
             return ret;
           }
           else {
-            return kid; 
+            return kid;
           }
         }
         return ret;
@@ -469,5 +469,5 @@ public static Object createObject(Constructor constructor, Object[] arguments) {
     }
     return ret;
   }
-    
+
 }

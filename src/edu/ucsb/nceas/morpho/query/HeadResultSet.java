@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: tao $'
- *     '$Date: 2004-04-19 20:44:50 $'
- * '$Revision: 1.13 $'
+ *   '$Author: brooke $'
+ *     '$Date: 2005-02-22 23:21:51 $'
+ * '$Revision: 1.14 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -242,9 +242,9 @@ public class HeadResultSet extends ResultSet
     // Create the new consolidated vector of rows
 //DFH    headResultsVector = new Vector(maxRevRow.values());
       headResultsVector = new Vector();
-      Enumeration enum = maxRevRow.elements();
-      while (enum.hasMoreElements()) {
-          headResultsVector.addElement(enum.nextElement());
+      Enumeration enumeration = maxRevRow.elements();
+      while (enumeration.hasMoreElements()) {
+          headResultsVector.addElement(enumeration.nextElement());
       }
 
   }

@@ -6,9 +6,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2004-04-04 05:27:51 $'
- * '$Revision: 1.33 $'
+ *   '$Author: brooke $'
+ *     '$Date: 2005-02-22 23:21:51 $'
+ * '$Revision: 1.34 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -61,7 +61,7 @@ import javax.swing.JTextField;
 /**
  * Dialog which collects search information from user
  * to be used to create a Query
- * 
+ *
  */
 public class QueryDialog extends JDialog
 {
@@ -110,7 +110,7 @@ public class QueryDialog extends JDialog
     /** default search path for EastBoundary value  */
   String eastBCSearchPath = "eastBoundingCoordinate";
 
-  
+
   /** Flag, true if Metacat searches are performed for this query */
   private boolean searchMetacat = true;
 
@@ -134,7 +134,7 @@ public class QueryDialog extends JDialog
 
   /** Determine whether the spatial screen is used */
   boolean buildSpatial = false;
-  
+
   /** panel for lat/long selection */
   LiveMapPanel liveMap = null;
 
@@ -232,14 +232,14 @@ public class QueryDialog extends JDialog
     //{{INIT_CONTROLS
     setTitle("Search");
     getContentPane().setLayout(new BorderLayout(0, 0));
-    
+
     // Set dialog size
     int parentWidth = parent.getWidth();
     int parentHeight = parent.getHeight();
     int dialogWidth = 650;
     int dialogHeight = 390;
     setSize(dialogWidth, dialogHeight);
-    
+
     // Set location of dialog, it shared same center of parent
     double parentX = parent.getLocation().getX();
     double parentY = parent.getLocation().getY();
@@ -248,7 +248,7 @@ public class QueryDialog extends JDialog
     int dialogX = (new Double(centerX - 0.5 * dialogWidth)).intValue();
     int dialogY = (new Double(centerY - 0.5 * dialogHeight)).intValue();
     setLocation(dialogX, dialogY);
-    
+
     setVisible(false);
     JPanel queryPanel = new JPanel();
     queryPanel.setLayout(new BoxLayout(queryPanel, BoxLayout.Y_AXIS));
@@ -305,7 +305,7 @@ public class QueryDialog extends JDialog
     queryScrollPanel.setPreferredSize(new Dimension(
                      queryScrollPanel.getPreferredSize().width, 500 ));
     subjectPanel.add(BorderLayout.CENTER, queryScrollPanel);
-    queryChoicesPanel.setLayout(new BoxLayout(queryChoicesPanel, 
+    queryChoicesPanel.setLayout(new BoxLayout(queryChoicesPanel,
                                               BoxLayout.Y_AXIS));
     queryChoicesPanel.setAlignmentX(0.0F);
     SubjectTermPanel tqt1 = new SubjectTermPanel(keyPressListener);
@@ -313,7 +313,7 @@ public class QueryDialog extends JDialog
     queryChoicesPanel.add(tqt1);
     queryScrollPanel.getViewport().add(queryChoicesPanel);
     JPanel subjectMoreLessPanel = new JPanel();
-    subjectMoreLessPanel.setLayout(new BoxLayout(subjectMoreLessPanel, 
+    subjectMoreLessPanel.setLayout(new BoxLayout(subjectMoreLessPanel,
                                                   BoxLayout.X_AXIS));
     subjectMoreLessPanel.add(Box.createHorizontalStrut(8));
     andRadioButton.setText("And");
@@ -347,7 +347,7 @@ public class QueryDialog extends JDialog
     taxonScrollPanel.setPreferredSize(new Dimension(
                      taxonScrollPanel.getPreferredSize().width, 500 ));
     taxonPanel.add(BorderLayout.CENTER, taxonScrollPanel);
-    taxonChoicesPanel.setLayout(new BoxLayout(taxonChoicesPanel, 
+    taxonChoicesPanel.setLayout(new BoxLayout(taxonChoicesPanel,
                                               BoxLayout.Y_AXIS));
     taxonChoicesPanel.setAlignmentX(0.0F);
     TaxonTermPanel taxonTerm = new TaxonTermPanel(keyPressListener);
@@ -355,7 +355,7 @@ public class QueryDialog extends JDialog
     taxonChoicesPanel.add(taxonTerm);
     taxonScrollPanel.getViewport().add(taxonChoicesPanel);
     JPanel taxonMoreLessPanel = new JPanel();
-    taxonMoreLessPanel.setLayout(new BoxLayout(taxonMoreLessPanel, 
+    taxonMoreLessPanel.setLayout(new BoxLayout(taxonMoreLessPanel,
                                                   BoxLayout.X_AXIS));
     taxonMoreLessPanel.add(Box.createHorizontalStrut(8));
     taxonAndRadioButton.setText("And");
@@ -456,20 +456,20 @@ public class QueryDialog extends JDialog
     catalogSearchCheckBox.addItemListener(checkboxHandler);
     localSearchCheckBox.addItemListener(checkboxHandler);
     this.addKeyListener(keyPressListener);
- 
+
     SymChange lSymChange = new SymChange();
-		queryTabs.addChangeListener(lSymChange);
+    queryTabs.addChangeListener(lSymChange);
 
     liveMap.setVisible(false);
     liveMap.invalidate();
     spatialPanel.validate();
-    
+
     //}}
   }
 
-  
+
   /**
-   * Listens for key events coming from the dialog.  responds to escape and 
+   * Listens for key events coming from the dialog.  responds to escape and
    * enter buttons.  escape toggles the cancel button and enter toggles the
    * Search button
    */
@@ -478,16 +478,16 @@ public class QueryDialog extends JDialog
     public KeyPressActionListener()
     {
     }
-    
+
     public void keyPressed(KeyEvent e)
     {
       if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-        java.awt.event.ActionEvent event = new 
+        java.awt.event.ActionEvent event = new
                        java.awt.event.ActionEvent(executeButton, 0, "Search");
         handleExecuteButtonAction(event);
       } else if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
         dispose();
-        java.awt.event.ActionEvent event = new 
+        java.awt.event.ActionEvent event = new
                        java.awt.event.ActionEvent(cancelButton, 0, "Cancel");
         handleCancelButtonAction(event);
       }
@@ -599,11 +599,11 @@ public class QueryDialog extends JDialog
     if (event.getStateChange() == ItemEvent.DESELECTED) {
       String messageText = "You must select at least one of \"Catalog Search\"\n" +
                            "or \"Local Search\". You can not deselect both.\n";
-      if (object == catalogSearchCheckBox && 
+      if (object == catalogSearchCheckBox &&
           localSearchCheckBox.isSelected() == false) {
         catalogSearchCheckBox.setSelected(true);
         JOptionPane.showMessageDialog(this, messageText);
-      } else if (object == localSearchCheckBox && 
+      } else if (object == localSearchCheckBox &&
                  catalogSearchCheckBox.isSelected() == false) {
         localSearchCheckBox.setSelected(true);
         JOptionPane.showMessageDialog(this, messageText);
@@ -611,7 +611,7 @@ public class QueryDialog extends JDialog
     }
   }
 
-  /** 
+  /**
    * method to constuct a Query from the dialog tabs
    */
   private Query buildQuery()
@@ -657,7 +657,7 @@ public class QueryDialog extends JDialog
         buildSubject = false;
         buildTaxon = false;
         buildSpatial = true;
-      } 
+      }
     }
 
     // Add a child query group for the subject search
@@ -682,7 +682,7 @@ public class QueryDialog extends JDialog
     return newQuery;
   }
 
-  /** 
+  /**
    * method to constuct a QueryGroup for the subject panel of the dialog
    */
   private QueryGroup buildSubjectQueryGroup()
@@ -702,10 +702,10 @@ public class QueryDialog extends JDialog
     QueryGroup subjectGroup = new QueryGroup(op);
 
     // For each subject constraint, add a query group
-    Enumeration enum = textPanels.elements();
-    while (enum.hasMoreElements())
+    Enumeration enumeration = textPanels.elements();
+    while (enumeration.hasMoreElements())
     {
-      SubjectTermPanel tqtp = (SubjectTermPanel) enum.nextElement();
+      SubjectTermPanel tqtp = (SubjectTermPanel) enumeration.nextElement();
       // Create a separate QG for each textPanel (always INTERSECT)
       QueryGroup termGroup = new QueryGroup("UNION");
       subjectGroup.addChild(termGroup);
@@ -763,7 +763,7 @@ public class QueryDialog extends JDialog
     // is inside the bounding box drawn on the screen.
     // This limitation is partially due to the fact that obfs data
     // has incorrect metadata values for SouthEast boundaries
-    
+
     value = (new Double(liveMap.getTop()).toString());
     mode = "less-than";
     path = northBCSearchPath;
@@ -788,11 +788,11 @@ public class QueryDialog extends JDialog
     QueryTerm minLong = new QueryTerm(caseSensitive, mode, value, path);
     boundingBoxGroup.addChild(minLong);
 
-   
+
      return boundingBoxGroup;
    }
-  
-  /** 
+
+  /**
    * method to constuct a QueryGroup for the taxon panel of the dialog
    */
   private QueryGroup buildTaxonQueryGroup()
@@ -813,10 +813,10 @@ public class QueryDialog extends JDialog
     QueryGroup taxonGroup = new QueryGroup(op);
 
     // For each taxon constraint, add a query group
-    Enumeration enum = taxonPanels.elements();
-    while (enum.hasMoreElements())
+    Enumeration enumeration = taxonPanels.elements();
+    while (enumeration.hasMoreElements())
     {
-      TaxonTermPanel taxonTermPanel = (TaxonTermPanel)enum.nextElement();
+      TaxonTermPanel taxonTermPanel = (TaxonTermPanel)enumeration.nextElement();
       QueryGroup parentGroup;
 
       if (includeSynonyms) {
@@ -887,7 +887,7 @@ public class QueryDialog extends JDialog
       String message = "Please select one of the Subject, Taxonomic, or Spatial \n" +
                        "query tabs before clicking the Search button.";
       JOptionPane.showMessageDialog(this, message);
-    } 
+    }
     else if(tabIndex == 20) {
       String message = "This is a test of the spatial query input tool. \n" +
                        "Actual spatial queries are not yet implemented.\n" +
@@ -913,7 +913,7 @@ public class QueryDialog extends JDialog
       ConfigXML profile = morpho.getProfile();
       profile.set("searchmetacat", 0, metacatflag);
       profile.set("searchlocal",0,localflag);
-      
+
       savedQuery = buildQuery();
       searchStarted = true;
       setVisible(false);
@@ -936,13 +936,13 @@ public class QueryDialog extends JDialog
   {
     ConfigXML profile = morpho.getProfile();
 
-    profile.set("searchmetacat", 0, 
+    profile.set("searchmetacat", 0,
                 catalogSearchCheckBox.isSelected() ? "true" : "false");
-    profile.set("searchlocal",0, 
+    profile.set("searchlocal",0,
                 localSearchCheckBox.isSelected() ? "true" : "false");
-    profile.set("casesensitive",0, 
+    profile.set("casesensitive",0,
                 caseSensitiveCheckBox.isSelected() ? "true" : "false");
-    profile.set("includesynonyms",0, 
+    profile.set("includesynonyms",0,
                 includeItisSynonymsCheckBox.isSelected() ? "true" : "false");
 
     JOptionPane.showMessageDialog(this, "Options have been saved.");
@@ -951,7 +951,7 @@ public class QueryDialog extends JDialog
   /**
    * determine whether the query should be executed
    */
-  public boolean isSearchStarted() 
+  public boolean isSearchStarted()
   {
     return searchStarted;
   }
@@ -990,7 +990,7 @@ public class QueryDialog extends JDialog
    * Fill in the fields in the subject query with the proper values from
    * a QueryGroup
    */
-  private void repopulateSubjectSearchTab(QueryGroup rootGroup) 
+  private void repopulateSubjectSearchTab(QueryGroup rootGroup)
   {
     // Remove any existing text panels
     for (int i = 0;  i < textPanels.size();  i++) {
@@ -1002,8 +1002,8 @@ public class QueryDialog extends JDialog
     // Find the QueryGroup containing the subject parameters
     Enumeration rootChildren = rootGroup.getChildren();
 
-    // Find the group with the subject info by testing if the expected 
-    // pathquery structure is in place 
+    // Find the group with the subject info by testing if the expected
+    // pathquery structure is in place
     // (pathquery/QueryGroup/QueryGroup/QueryGroup/QueryTerm)
     QueryGroup subjectGroup = null;
     boolean foundSubjectGroup = false;
@@ -1012,14 +1012,14 @@ public class QueryDialog extends JDialog
       QueryGroup tempSubjectGroup = (QueryGroup)rootChildren.nextElement();
       Enumeration tempSubjectChildren = tempSubjectGroup.getChildren();
       try {
-        QueryGroup tempTermsGroup = 
+        QueryGroup tempTermsGroup =
                    (QueryGroup)tempSubjectChildren.nextElement();
         Enumeration tempQTList = tempTermsGroup.getChildren();
         QueryTerm tempQT = (QueryTerm)tempQTList.nextElement();
         String path = tempQT.getPathExpression();
-        if ( (path == null)|| 
-             (path.equals(titleSearchPath)) || 
-             (path.equals(abstractSearchPath)) || 
+        if ( (path == null)||
+             (path.equals(titleSearchPath)) ||
+             (path.equals(abstractSearchPath)) ||
              (path.equals(keywordSearchPath)) ) {
           foundSubjectGroup = true;
           subjectGroup = tempSubjectGroup;
@@ -1045,27 +1045,27 @@ public class QueryDialog extends JDialog
       // Create a textPanel for each group in the subject group
       Enumeration subjectChildren = subjectGroup.getChildren();
       while (subjectChildren.hasMoreElements()) {
-  
+
         Object obj = subjectChildren.nextElement();
-  
+
         // Create the panel for this subject term, and set defaults
         SubjectTermPanel tq = new SubjectTermPanel(keyPressListener);
         tq.setAllState(true);
         tq.setTitleState(false);
         tq.setAbstractState(false);
         tq.setKeywordsState(false);
-  
+
         try {
           // Process each subject query group and make a text panel out of it
           // By getting the params out of the contained QueryTerms
           QueryGroup termsGroup = (QueryGroup)obj;
           Enumeration qtList = termsGroup.getChildren();
-    
+
           // Step through the QueryTerms and extract parameters
           while (qtList.hasMoreElements()) {
             Object obj2 = qtList.nextElement();
             QueryTerm qt = (QueryTerm)obj2;
-      
+
             tq.setValue(qt.getValue());
             tq.setSearchMode(qt.getSearchMode());
             caseSensitiveCheckBox.setSelected(qt.isCaseSensitive());
@@ -1089,7 +1089,7 @@ public class QueryDialog extends JDialog
           tq = new SubjectTermPanel(keyPressListener);
           tq.setAllState(true);
         }
-  
+
         // Add the text panel to the dialog
         queryChoicesPanel.add(tq);
         textPanels.addElement(tq);
@@ -1116,7 +1116,7 @@ public class QueryDialog extends JDialog
    * Fill in the fields in the taxon query with the proper values from
    * a QueryGroup
    */
-  private void repopulateTaxonSearchTab(QueryGroup rootGroup) 
+  private void repopulateTaxonSearchTab(QueryGroup rootGroup)
   {
     // Remove any existing taxon panels
     for (int i = 0;  i < taxonPanels.size();  i++) {
@@ -1128,8 +1128,8 @@ public class QueryDialog extends JDialog
     // Find the QueryGroup containing the taxon parameters
     Enumeration rootChildren = rootGroup.getChildren();
 
-    // Find the group with the taxon info by testing if the expected 
-    // pathquery structure is in place 
+    // Find the group with the taxon info by testing if the expected
+    // pathquery structure is in place
     // (pathquery/QueryGroup/QueryGroup/QueryTerm,QueryTerm)
     // or, including synonyms,
     // (pathquery/QueryGroup/QueryGroup/QueryGroup/QueryTerm,QueryTerm)
@@ -1213,10 +1213,10 @@ public class QueryDialog extends JDialog
       // Create a taxonPanel for each group in the taxon group
       Enumeration taxonChildren = taxonGroup.getChildren();
       while (taxonChildren.hasMoreElements()) {
-  
+
         // Create the panel for this taxon term, and set defaults
         TaxonTermPanel termPanel = new TaxonTermPanel(keyPressListener);
-  
+
         try {
           // Process each taxon query group and make a taxon panel out of it
           // By getting the params out of the contained QueryTerms
@@ -1228,13 +1228,13 @@ public class QueryDialog extends JDialog
           } else {
             termsGroup = (QueryGroup)taxonChildren.nextElement();
           }
-  
+
           Enumeration qtList = termsGroup.getChildren();
-    
+
           // Step through the QueryTerms and extract parameters
           while (qtList.hasMoreElements()) {
             QueryTerm qt = (QueryTerm)qtList.nextElement();
-      
+
             //termPanel.setValue(qt.getValue());
             //termPanel.setSearchMode(qt.getSearchMode());
             String searchMode = qt.getSearchMode();
@@ -1254,7 +1254,7 @@ public class QueryDialog extends JDialog
                           "so couldn't rebuild dialog correctly!");
           termPanel = new TaxonTermPanel(keyPressListener);
         }
-  
+
         // Add the text panel to the dialog
         taxonChoicesPanel.add(termPanel);
         taxonPanels.addElement(termPanel);
@@ -1275,28 +1275,28 @@ public class QueryDialog extends JDialog
     taxonChoicesPanel.invalidate();
     taxonPanel.validate();
   }
-  
+
   class SymChange implements javax.swing.event.ChangeListener
-	{
-		public void stateChanged(javax.swing.event.ChangeEvent event)
-		{
-			Object object = event.getSource();
-			if (object == queryTabs) {
-				int sel = queryTabs.getSelectedIndex();
+  {
+    public void stateChanged(javax.swing.event.ChangeEvent event)
+    {
+      Object object = event.getSource();
+      if (object == queryTabs) {
+        int sel = queryTabs.getSelectedIndex();
         System.out.println("Selected index is: "+sel);
         if (sel==2) {
-          liveMap.setVisible(true); 
+          liveMap.setVisible(true);
           spatialPanel.setVisible(true);
           liveMap.invalidate();
           spatialPanel.validate();
         }
         else {
-          liveMap.setVisible(false);            
+          liveMap.setVisible(false);
           liveMap.invalidate();
           spatialPanel.validate();
         }
-		  }
-	  }
+      }
+    }
   }
 
 }

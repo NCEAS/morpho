@@ -72,11 +72,11 @@ public class AccessTreeModel
 
   protected Object[] getChildren(Object node) {
     DefaultMutableTreeNode treeNode = ( (DefaultMutableTreeNode) node);
-    Enumeration enum = treeNode.children();
+    Enumeration enumeration = treeNode.children();
     Object[] children = new Object[treeNode.getChildCount()];
     int count = 0;
-    while (enum.hasMoreElements()) {
-      children[count++] = enum.nextElement();
+    while (enumeration.hasMoreElements()) {
+      children[count++] = enumeration.nextElement();
     }
     return children;
   }
