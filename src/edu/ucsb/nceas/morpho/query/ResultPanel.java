@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2002-08-14 16:47:56 $'
- * '$Revision: 1.42 $'
+ *     '$Date: 2002-08-15 23:01:30 $'
+ * '$Revision: 1.43 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -867,8 +867,7 @@ public class ResultPanel extends JPanel
       rsf.setTitle(newTitle);
     } else if (parent instanceof ClientFramework) {
     } else {
-      framework.debug(1, "Error: Parent instance of: " + 
-                      parent.getClass().getName());
+     
     }
  
     // Update the record count
