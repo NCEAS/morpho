@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2002-08-26 21:09:43 $'
- * '$Revision: 1.12 $'
+ *     '$Date: 2002-08-27 17:20:01 $'
+ * '$Revision: 1.13 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -40,7 +40,7 @@ import javax.swing.JDialog;
 public class SearchCommand implements Command 
 {
   /** A reference to the JDialogBox */
-  private JDialog dialogBox = null;
+  private OpenDialogBox dialogBox = null;
   
   /** A reference to the Morpho application */
   private Morpho morpho = null;
@@ -51,7 +51,7 @@ public class SearchCommand implements Command
    * @param myDialogBox the dialogbox has a search button
    * @param morpho the morpho application which the search command will apply
    */
-  public SearchCommand(JDialog myDialogBox, Morpho morpho)
+  public SearchCommand(OpenDialogBox myDialogBox, Morpho morpho)
   {
     dialogBox = myDialogBox;
     this.morpho = morpho;
@@ -65,30 +65,35 @@ public class SearchCommand implements Command
   public void execute()
   {
     // Hide and destory the dialogBox
+    MorphoFrame morphoFrame = null;
     if ( dialogBox != null)
     {
+      morphoFrame = dialogBox.getParentFrame();
       dialogBox.setVisible(false);
       dialogBox.dispose();
       dialogBox = null;
     }//if
-    // QueryDialog Create and show as modal
-    MorphoFrame morphoFrame = 
-                          UIController.getInstance().getCurrentActiveWindow();
-    QueryDialog queryDialog = new QueryDialog(morphoFrame, morpho);
-    queryDialog.setModal(true);
-    queryDialog.show();
-    if (queryDialog.isSearchStarted()) 
+    else
     {
-      Query query = queryDialog.getQuery();
-      if (query != null) 
+      morphoFrame=UIController.getInstance().getCurrentActiveWindow();
+    }//else
+     // QueryDialog Create and show as modal
+    if (morphoFrame != null)
+    {
+      QueryDialog queryDialog = new QueryDialog(morphoFrame, morpho);
+      queryDialog.setModal(true);
+      queryDialog.show();
+      if (queryDialog.isSearchStarted()) 
       {
-        MorphoFrame resultWindow = UIController.getInstance().addWindow(
+        Query query = queryDialog.getQuery();
+        if (query != null) 
+        {
+          MorphoFrame resultWindow = UIController.getInstance().addWindow(
                 query.getQueryTitle());
-        resultWindow.setBusy(true);
-        resultWindow.setVisible(true);
-        doQuery(resultWindow, query);
-     
-
+          resultWindow.setBusy(true);
+          resultWindow.setVisible(true);
+          doQuery(resultWindow, query);
+        }//if
       }//if
     }//if
   }//execute
