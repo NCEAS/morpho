@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-09-05 21:52:08 $'
- * '$Revision: 1.1 $'
+ *     '$Date: 2002-10-07 20:17:15 $'
+ * '$Revision: 1.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -42,6 +42,8 @@ import edu.ucsb.nceas.morpho.framework.*;
 import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.datastore.*;
 import edu.ucsb.nceas.morpho.util.*;
+import edu.ucsb.nceas.morpho.util.StateChangeEvent;
+import edu.ucsb.nceas.morpho.util.StateChangeMonitor;
 
 
 public class TableCutAction extends AbstractAction { 
@@ -128,6 +130,11 @@ public class TableCutAction extends AbstractAction {
 		if (!isEmpty) {
 			tbl.getToolkit().getSystemClipboard().setContents(
 					new StringSelection(sel.toString()), null);
+          
+      StateChangeMonitor.getInstance().notifyStateChange(
+          new StateChangeEvent(tbl, 
+          StateChangeEvent.CLIPBOARD_HAS_DATA_TO_PASTE));
+          
 		}
 	}
 
