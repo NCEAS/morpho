@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-07-05 20:53:44 $'
- * '$Revision: 1.8 $'
+ *     '$Date: 2001-07-05 21:50:18 $'
+ * '$Revision: 1.9 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -57,7 +57,8 @@ import com.arbortext.catalog.*;
  */
 public class NewPackageMetadataWizard extends JFrame
                                       implements ActionListener,
-                                                 EditingCompleteListener
+                                                 EditingCompleteListener, 
+                                                 WindowListener
 {
   ConfigXML config;
   ClientFramework framework = null;
@@ -110,6 +111,7 @@ public class NewPackageMetadataWizard extends JFrame
     framework = cont;
     config = framework.getConfiguration();
     this.dataPackage = dataPackage;
+    this.addWindowListener(this);
     
     //if functionality to add an existing file is added, remove this line.
     existingFile.setEnabled(false);
@@ -340,12 +342,7 @@ public class NewPackageMetadataWizard extends JFrame
    */
   private void cancelButtonHandler(ActionEvent event)
   {
-    DataPackageGUI dpg = new DataPackageGUI(framework, dataPackage);
-    dpg.show();
     dispose();
-    dpg.setName("Package Editor:" + dataPackage.getID());
-    framework.addWindow(dpg);
-    framework.removeWindow(this);
   }
 
   /**
@@ -1048,4 +1045,25 @@ public class NewPackageMetadataWizard extends JFrame
     layoutScreen();
     this.show();
   }
+  
+  public void windowClosed(WindowEvent event)
+  {
+    DataPackageGUI dpg = new DataPackageGUI(framework, dataPackage);
+    dpg.show();
+    dpg.setName("Package Editor:" + dataPackage.getID());
+    framework.addWindow(dpg);
+    framework.removeWindow(this); 
+  }
+  public void windowClosing(WindowEvent event)
+  {}
+  public void windowActivated(WindowEvent event)
+  {}
+  public void windowDeactivated(WindowEvent event)
+  {}
+  public void windowIconified(WindowEvent event)
+  {}
+  public void windowDeiconified(WindowEvent event)
+  {}
+  public void windowOpened(WindowEvent event)
+  {}
 }

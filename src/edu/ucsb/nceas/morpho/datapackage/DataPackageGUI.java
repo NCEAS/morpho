@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-07-05 20:57:54 $'
- * '$Revision: 1.40 $'
+ *     '$Date: 2001-07-05 21:50:18 $'
+ * '$Revision: 1.41 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -588,7 +588,6 @@ public class DataPackageGUI extends javax.swing.JFrame
       npmw.show();
       npmw.setName("New Description Wizard:" + dataPackage.getID());
       framework.addWindow(npmw);
-      framework.removeWindow(this);
     }
     else if(command.equals("Remove"))
     {
@@ -865,7 +864,9 @@ public class DataPackageGUI extends javax.swing.JFrame
   }
   
   public void windowClosing(WindowEvent event)
-  {}
+  {
+    framework.removeWindow(this);
+  }
   public void windowActivated(WindowEvent event)
   {}
   public void windowDeactivated(WindowEvent event)

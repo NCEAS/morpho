@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-06-20 18:27:29 $'
- * '$Revision: 1.61 $'
+ *     '$Date: 2001-07-05 21:50:19 $'
+ * '$Revision: 1.62 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -389,8 +389,24 @@ public class ClientFramework extends javax.swing.JFrame
         menuItem = null;
       }
     } 
-    windowMenu.remove(menuItem);
-    windowsRegistry.remove(menuItem);
+    
+    try
+    {
+      windowMenu.remove(menuItem);
+    }
+    catch(NullPointerException npe)
+    {
+      debug(20, "Window already removed from menu.");
+    }
+    
+    try
+    {
+      windowsRegistry.remove(menuItem);
+    }
+    catch(NullPointerException npe2)
+    {
+      debug(20, "Window already removed from registry.");
+    }
   }
 
   /**

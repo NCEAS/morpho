@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-06-29 23:23:42 $'
- * '$Revision: 1.29 $'
+ *     '$Date: 2001-07-05 21:50:19 $'
+ * '$Revision: 1.30 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -823,7 +823,7 @@ public class PackageWizardShell extends javax.swing.JFrame
     imageLabel.setIcon(logoIcon);
     descriptionPanel.add(imageLabel);
     
-    mainPanel.setLayout(new BorderLayout());
+    mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.X_AXIS));
     wizardFrame.setMaximumSize(new Dimension(595, 450));
     wizardFrame.setPreferredSize(new Dimension(595, 450));
     buttonPanel.setMaximumSize(new Dimension(595, 50));
@@ -851,10 +851,19 @@ public class PackageWizardShell extends javax.swing.JFrame
     buttonPanel.add(next);
     buttonPanel.add(Box.createRigidArea(new Dimension(10,0)));
     
-    mainPanel.add(headPanel, BorderLayout.NORTH);
-    mainPanel.add(descriptionPanel, BorderLayout.WEST);
-    mainPanel.add(wizardFrame, BorderLayout.CENTER);
-    mainPanel.add(buttonPanel, BorderLayout.SOUTH);
+    mainPanel.add(descriptionPanel);
+    mainPanel.add(Box.createRigidArea(new Dimension(8,8)));
+    JPanel rightpanel = new JPanel();
+    rightpanel.setLayout(new BoxLayout(rightpanel, BoxLayout.Y_AXIS));
+    headPanel.setAlignmentX(0);
+    wizardFrame.setAlignmentX(0);
+    buttonPanel.setAlignmentX(0);
+    rightpanel.add(headPanel);
+    rightpanel.add(wizardFrame);
+    rightpanel.add(buttonPanel);
+    mainPanel.add(rightpanel);
+    mainPanel.add(Box.createHorizontalGlue());
+    mainPanel.add(Box.createHorizontalStrut(8));
     return mainPanel;
   }
   
@@ -872,6 +881,7 @@ public class PackageWizardShell extends javax.swing.JFrame
     imageLabel.setIcon(logoIcon);
     descriptionLabel.setPreferredSize(new Dimension(150, 400));
     descriptionLabel.setForeground(Color.black);
+    descriptionLabel.setBorder(BorderFactory.createEmptyBorder(8,8,8,8));
     descriptionPanel.setBorder(BorderFactory.createLoweredBevelBorder());
     descriptionPanel.removeAll();
     descriptionPanel.add(imageLabel);
