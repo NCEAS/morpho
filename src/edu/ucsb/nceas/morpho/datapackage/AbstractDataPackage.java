@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2004-03-30 20:36:47 $'
- * '$Revision: 1.81 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2004-03-30 22:31:21 $'
+ * '$Revision: 1.82 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -516,7 +516,7 @@ public abstract class AbstractDataPackage extends MetadataObject
           Node importedClone = doc.importNode(deepClone, true);
           Node tempRoot = doc.getDocumentElement();
           doc.replaceChild(importedClone, tempRoot);
-          return deepClone;
+          return importedClone;
         } else {
 
           Log.debug(50, "AbstractDataPackage.getSubtree() - index was "
