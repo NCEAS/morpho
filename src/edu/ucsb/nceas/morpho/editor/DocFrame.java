@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-06-29 17:33:17 $'
- * '$Revision: 1.47 $'
+ *     '$Date: 2001-06-29 18:28:32 $'
+ * '$Revision: 1.48 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1458,8 +1458,9 @@ class SymWindow extends java.awt.event.WindowAdapter {
         if (framework!=null) {
 			    framework.removeWindow(this);  
 			  }
-		    	this.setVisible(false);    // hide the Frame
-		    	this.dispose();            // free the system resources
+		    controller.fireEditingCanceledEvent(this, XMLTextString);
+		    this.setVisible(false);    // hide the Frame
+		    this.dispose();            // free the system resources
 //	  }
 	}
 	
@@ -1469,8 +1470,10 @@ class SymWindow extends java.awt.event.WindowAdapter {
 			  if (framework!=null) {
 			    framework.removeWindow(this);  
 			  }
-		    	this.setVisible(false);    // hide the Frame
-		    	this.dispose();            // free the system resources
+		    controller.fireEditingCanceledEvent(this, XMLTextString);
+			  
+		    this.setVisible(false);    // hide the Frame
+		    this.dispose();            // free the system resources
 	}
 
 	class SymComponent extends java.awt.event.ComponentAdapter

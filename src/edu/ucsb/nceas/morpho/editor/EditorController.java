@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-06-28 22:13:16 $'
- * '$Revision: 1.3 $'
+ *     '$Date: 2001-06-29 18:28:32 $'
+ * '$Revision: 1.4 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -401,6 +401,8 @@ public class EditorController extends javax.swing.JFrame implements EditingCompl
 public void editingCompleted(String xmlString, String id, String location) {
   JTextArea1.setText(xmlString);
 //  JOptionPane.showMessageDialog(null, "Editing Completed!!!", "Alert", JOptionPane.INFORMATION_MESSAGE);
+}
+public void editingCanceled(String xmlString, String id, String location) {
 }
 
 // --------------------------
