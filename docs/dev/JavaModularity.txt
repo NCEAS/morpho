@@ -1,0 +1,79 @@
+Modular Java
+
+In an attempt to provide modularity to the Desktop Client, a ClientFramework class is defined that contains a tabbed panel. Major functional areas of the code are assigned to each tab (e.g. metadata editing on one tab, searches on another, etc.) The code for each of these major areas is placed into a JavaBean which is then just 'dropped' onto the tab. Currently there is a mdeBean (editing) and a QueryBean (searching).
+
+This level of modularity is convenient when building the Desktop client in a development envioronment like VisualCafe which support JavaBeans. However, one would still need to change the top level code to replace the beans with new ones, since the beans are imported at compile time and their names are typically included in the ClientFramework source code.
+
+One way to avoid this problem is to use Java's reflection capabilities to create the bean classes at runtime rather than at compile time. Sun's Java Tutorial gives this example code fragment:
+
+   public static void main(String[] args) {
+                Rectangle r = (Rectangle) createObject("java.awt.Rectangle");
+                System.out.println(r.toString());
+             }
+
+             static Object createObject(String className) {
+                Object object = null;
+                try {
+                    Class classDefinition = Class.forName(className);
+                    object = classDefinition.newInstance();
+                } catch (InstantiationException e) {
+                    System.out.println(e);
+                } catch (IllegalAccessException e) {
+                    System.out.println(e);
+                } catch (ClassNotFoundException e) {
+                    System.out.println(e);
+                }
+                return object;
+             }
+         }
+     
+Note that the 'createObject' method is used to load an object from its String name (Rectangle in the example). The string can be read from a properties file, so that the beans used in the desktop client could be changed without changing the Framework code.
+
+There is a problem with this approach, however. Note that in the example an 'Object' is returned and it must by cast into a 'Rectangle' before being used. In our case, we might not know what class to cast the Object into when the framework is compiled!
+
+A related issue is that the Framework must communicate with whatever bean is added. The beans currently being used are 'Container' objects and they handle all events inside their boundaries without needing to know anything about the containers they are in. However, one may well want to attach menu items in the Framework to methods in the beans (or call some method in the bean).
+
+One way to solve this problem is to create an abstract class that a bean must extend if it is to be added to the Client framework. An example for the mdeBean is shown below.
+In this case, there are a number of empty methods defined that any XML editor installed as a bean must implement (basically these are the methods are used in menus)
+
+package edu.ucsb.nceas.metaedit;
+import java.awt.*;
+
+public class AbstractMdeBean extends Container
+{
+    public void openDocument() {
+    }
+    public void newDocument() {
+    }
+    public void saveDocument() {
+    }
+    public void saveDocumentAs() {
+    }
+    public void saveDocumentToDatabase() {
+    }
+    public void previewXMLFile() {
+    }
+    public void showOptions() {
+    }
+    public void set_eChoiceVisible(boolean flg) {
+    }
+    public void set_inputer(boolean flg) {
+    }
+}
+
+Now, an actual mdeBean should extend this abstract class; i.e. 
+
+public class mdeBean extends AbstractMdeBean
+...
+           
+and the Framework now loads the bean using a statement like
+
+	edu.ucsb.nceas.metaedit.AbstractMdeBean mdeBean1 = (edu.ucsb.nceas.metaedit.AbstractMdeBean)createObject("edu.ucsb.nceas.metaedit.mdeBean");
+
+Note that the cast is now to the Abstractclass that all new beans must implement. This means that the Framework need not know anything about the actual bean being added and that been can be changed without changing the client. The bean needs to implement the empty methods in the Abstact class, however, if menus are to work properly.
+
+---
+
+There are several other options for creating modular Java objects. One is described in an article called "Compose Java Objects with XML at Run Time" which appeared in the July 2000 issue of Java Pro magazine (see http://www.xmlmag.com/upload/free/features/xml/2000/02spr00/skspr00/skspr00.asp) The technique uses Java reflection and an XML parser to build a set of components at runtime. This technique allows user customization but requires the user to understand how to describe a component in an XML file. Building a Javabean in one of the many Java GUI layout tools may be easier.
+
+Another method is to use HTML and Java 1.2. Java can display (some) HTML files and Java components can be added to HTML layout.                                  
