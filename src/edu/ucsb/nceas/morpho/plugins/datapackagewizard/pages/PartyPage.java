@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2004-04-06 06:32:42 $'
- * '$Revision: 1.35 $'
+ *     '$Date: 2004-04-06 06:35:21 $'
+ * '$Revision: 1.36 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -834,7 +834,7 @@ public class PartyPage extends AbstractUIPage {
             this.getPageData("/thisXPathRootWillGetReplaced"));
 
         //now make a backup of role string
-        String backupRole = getCurrentPickListRole());
+        String backupRole = getCurrentPickListRole();
 
         //and this party needs to be set as a "/references"
         clearAllFields();
