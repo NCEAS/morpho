@@ -17,7 +17,7 @@
     <attributes>attributeList/attribute</attributes>
   </contextNode>
   <contextNode name="attribute"> 
-    <name>entityName</name>
+    <name>attributeName</name>
     <dataType>numberOfRecords</dataType>
     <unit>entityDescription</unit>
   </contextNode>
