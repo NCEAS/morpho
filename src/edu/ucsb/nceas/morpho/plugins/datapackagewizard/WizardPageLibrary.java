@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2003-09-03 00:45:40 $'
- * '$Revision: 1.5 $'
+ *     '$Date: 2003-09-06 01:37:15 $'
+ * '$Revision: 1.6 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -84,28 +84,14 @@ public class WizardPageLibrary {
     pages.put(KEYWORDS,       new Keywords());
 //    pages.put(KEYWORDS_DIALOG,  new KeywordsDialog());
     pages.put(PARTY_INTRO,    new PartyIntro());
-    pages.put(PARTY_CREATOR,    new PartyCreator());
-//    pages.put(PARTY_CONTACT,    new PartyContact());
-//    pages.put(PARTY_ASSOCIATED,    new PartyAssociated());
+    pages.put(PARTY_CREATOR,    new PartyPage(PartyDialog.CREATOR));
+    pages.put(PARTY_CONTACT,    new PartyPage(PartyDialog.CONTACT));
+    pages.put(PARTY_ASSOCIATED, new PartyPage(PartyDialog.ASSOCIATED));
     
     pages.put(USAGE_RIGHTS,   new UsageRights());
     pages.put(DATA_LOCATION,  new DataLocation());
     pages.put(DATA_FORMAT,    new DataFormat());
 //    pages.put(TEXT_IMPORT_WIZARD,  new TextImportWizard());
-//    pages.put(PAGE10_ID,  new WizPage10());
-//    pages.put(PAGE11_ID,  new WizPage11());
-//    pages.put(PAGE12_ID,  new WizPage12());
-//    pages.put(PAGE13_ID,  new WizPage13());
-//    pages.put(PAGE14_ID,  new WizPage14());
-//    pages.put(PAGE15_ID,  new WizPage15());
-//    pages.put(PAGE16_ID,  new WizPage16());
-//    pages.put(PAGE17_ID,  new WizPage17());
-//    pages.put(PAGE18_ID,  new WizPage18());
-//    pages.put(PAGE19_ID,  new WizPage19());
-//    pages.put(PAGE20_ID,  new WizPage20());
-//    pages.put(PAGE21_ID,  new WizPage21());
-//    pages.put(PAGE22_ID,  new WizPage22());
-//    pages.put(PAGE23_ID,  new WizPage23());
   }
 
   public static final String INTRODUCTION     = "INTRODUCTION";
@@ -120,19 +106,5 @@ public class WizardPageLibrary {
   public static final String DATA_LOCATION    = "DATA_LOCATION";
   public static final String TEXT_IMPORT_WIZARD = "TEXT_IMPORT_WIZARD";
   public static final String DATA_FORMAT        = "DATA_FORMAT";
-  public static final String PAGE10_ID        = "PAGE10_ID";
-  public static final String PAGE11_ID        = "PAGE11_ID";
-  public static final String PAGE12_ID        = "PAGE12_ID";
-  public static final String PAGE13_ID        = "PAGE13_ID";
-  public static final String PAGE14_ID        = "PAGE14_ID";
-  public static final String PAGE15_ID        = "PAGE15_ID";
-  public static final String PAGE16_ID        = "PAGE16_ID";
-  public static final String PAGE17_ID        = "PAGE17_ID";
-  public static final String PAGE18_ID        = "PAGE18_ID";
-  public static final String PAGE19_ID        = "PAGE19_ID";
-  public static final String PAGE20_ID        = "PAGE20_ID";
-  public static final String PAGE21_ID        = "PAGE21_ID";
-  public static final String PAGE22_ID        = "PAGE22_ID";
-  public static final String PAGE23_ID        = "PAGE23_ID";
-  
+
 }
