@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-11-27 23:00:37 $'
- * '$Revision: 1.13 $'
+ *     '$Date: 2002-12-02 22:28:16 $'
+ * '$Revision: 1.14 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -307,7 +307,10 @@ public class ColumnMetadataEditPanel extends javax.swing.JPanel //implements jav
 		{
       if (colData!=null) {
 			  Object object = event.getSource();
-			  if (object == nameTextField)
+	      if (tiw!=null) {
+          tiw.save_flag = true;  
+        }
+		  if (object == nameTextField)
 				  colData.colName = getColumnName();
 			  else if (object == labelTextField) {
 				  colData.colTitle = getColumnLabel();
@@ -341,15 +344,15 @@ public class ColumnMetadataEditPanel extends javax.swing.JPanel //implements jav
 	{
 		public void focusLost(java.awt.event.FocusEvent event)
 		{
-      if (colData!=null) {
+      if (tiw!=null) {
+          tiw.save_flag = true;  
+      }
+/*      if (colData!=null) {
 			  Object object = event.getSource();
 			  if (object == nameTextField)
 				  colData.colName = getColumnName();
 			  else if (object == labelTextField){
 				  colData.colTitle = getColumnLabel();
-          if (tiw!=null) {
-            tiw.resetColumnHeader(colData.colTitle);  
-          }
         }
         else if (object == definitionTextArea)
           colData.colDefinition = getColumnDefinition();
@@ -370,12 +373,15 @@ public class ColumnMetadataEditPanel extends javax.swing.JPanel //implements jav
 			  else if (object == textSourceTextField)
           colData.colTextSource = getTextSource();
 			  else if (object == table) {
+//          TableCellEditor tce = table.getCellEditor();
+//          if (tce!=null) tce.stopCellEditing();
           enumTableToColData();
         }
         else if (object == typeComboBox) {
           colData.colType = getDataType();  
         }
       }
+*/      
     }
   }
         
@@ -1053,7 +1059,7 @@ public class ColumnMetadataEditPanel extends javax.swing.JPanel //implements jav
   
   
   // fill in fields based on colData object
-  private void colDataToFields() {
+  public void colDataToFields() {
     setColumnName(colData.colName);
     setColumnLabel(colData.colTitle);
     setColumnDefinition(colData.colDefinition);
@@ -1096,6 +1102,7 @@ public class ColumnMetadataEditPanel extends javax.swing.JPanel //implements jav
     Vector vec1 = colData.enumDefinitionVector;
     Vector vec2 = colData.enumSourceVector;
     table = new JTable();
+    table.addFocusListener(aSymFocus);
     pv = new PersistentVector();
     for (int j=0;j<100;j++) {
       if (j<vec0.size()) {
@@ -1127,22 +1134,24 @@ public class ColumnMetadataEditPanel extends javax.swing.JPanel //implements jav
     enumScrollPane.getViewport().add(table);     
   }
  
- private void enumTableToColData() {
+ public void enumTableToColData() {
    colData.enumCodeVector = new Vector();    
    colData.enumDefinitionVector = new Vector();    
    colData.enumSourceVector = new Vector(); 
+   int cnt = 0;
    for (int j=0;j<pv.size();j++) {
       String[] rec = (String[])pv.elementAt(j);
       if (rec[0].length()>0) {
         colData.enumCodeVector.addElement(rec[0]);
         colData.enumDefinitionVector.addElement(rec[1]);
         colData.enumSourceVector.addElement(rec[2]);
+        cnt++;
       }
     }   
  }
  
    // fill in colData object based on fields
-   private void FieldsToColData() {
+   public void FieldsToColData() {
     colData.colName = getColumnName();
     colData.colTitle = getColumnLabel();
     colData.colDefinition = getColumnDefinition();

@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-11-27 23:00:00 $'
- * '$Revision: 1.42 $'
+ *     '$Date: 2002-12-02 22:27:58 $'
+ * '$Revision: 1.43 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -164,6 +164,8 @@ public class TextImportWizard extends javax.swing.JFrame
    * physical wizard
    */
   PackageWizard physicalWizard = null;
+  
+  public boolean save_flag = false;
   
   private TextImportListener listener = null;
   
@@ -325,7 +327,8 @@ public class TextImportWizard extends javax.swing.JFrame
 		Step3_HelpPanel.setLayout(new FlowLayout(FlowLayout.CENTER,5,5));
 		Step3ControlsPanel.add(BorderLayout.WEST, Step3_HelpPanel);
 		Step3_HelpPanel.setBackground(java.awt.Color.white);
-		Step3_HelpLabel.setText("<html><br>Select column of<p>interest by \'clicking\'<p>on any cell in <p>column.<p>A red label indicates</p><p>a requiired item.</p>");
+		Step3_HelpLabel.setText("<html><br>Select column of<p>interest by \'clicking\'"+
+             "<p>on any cell in <p>column.<p>A red label indicates</p><p>a requiired item.</p>");
 		Step3_HelpPanel.add(Step3_HelpLabel);
 		Step3_HelpLabel.setForeground(java.awt.Color.black);
     ColDataSummaryPanel.setLayout(new GridLayout(2,1));
@@ -872,6 +875,9 @@ public void startImport(String file) {
 	      ColumnData cd = new ColumnData(k);
 	      colDataInfo.addElement(cd);
 	      cd.colType = guessColFormat(k);
+        if (cd.colType.equals("text")) cd.textChoice=true;
+        if (cd.colType.equals("float")) cd.numChoice=true;
+        if (cd.colType.equals("integer")) cd.numChoice=true;
 	      cd.colTitle = (String)colTitles.elementAt(k);
 	      cd.colName = (String)colTitles.elementAt(k);
 	      Vector lst = getUniqueColValues(k);
@@ -910,6 +916,12 @@ public void startImport(String file) {
                   if (lsm.isSelectionEmpty()) {
                       //no columns are selected
                   } else {
+                     // first save current data
+                     if (save_flag) {
+                      cmePanel.enumTableToColData();
+                      cmePanel.FieldsToColData();
+                     }
+                       
                       String str = "<b>Column Contents:</b><br>";
                       selectedCol = lsm.getMinSelectionIndex();
                       str = str + "Selected Column: "+selectedCol +"<br>";
@@ -974,6 +986,7 @@ public void startImport(String file) {
 //                      DataTypeList.setSelectedValue(colType, true);
 //                      ColumnDefTextArea.setText(cd.colDefinition);
                       ColDataSummaryLabel.setText("<html>"+str+"</html>");
+                      
                       cmePanel.setColumnData(cd);
                      
                   }
