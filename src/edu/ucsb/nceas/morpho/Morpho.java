@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2002-10-23 22:48:21 $'
- * '$Revision: 1.21 $'
+ *     '$Date: 2002-10-24 01:59:45 $'
+ * '$Revision: 1.22 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -84,7 +84,7 @@ import org.xml.sax.XMLReader;
 public class Morpho
 {
     /** The version of this release of Morpho */
-    public static String VERSION = "0.0.0";
+    public static String VERSION = "1.2beta1+";
 
     /** Constant to indicate a separator should precede an action */
     public static String SEPARATOR_PRECEDING = "separator_preceding";
@@ -758,10 +758,10 @@ public class Morpho
             Morpho morpho = new Morpho(config);
 
             // Set the version number
-            VERSION = config.get("version", 0);
+            //VERSION = config.get("version", 0);
 
             // Show the Splash frame
-              // must occur after the VERSION number has been retrieved
+            // must occur after the VERSION number has been retrieved
             SplashFrame sf = new SplashFrame(true);
             sf.setVisible(true);
             
@@ -1522,10 +1522,41 @@ public class Morpho
         }
 
         // Make sure the config file has been copied to the proper directory
+        boolean copyConfig = false;
+        boolean saveOldVersion = false;
+        String configVersion = null;
         try {
+            // Determine if the config needs to be created or upgraded
             configurationFile = new File(configDir, configFile);
             if (configurationFile.createNewFile() 
                     || configurationFile.length() == 0) {
+                copyConfig = true;
+            } else {
+                saveOldVersion = true;
+                config = new ConfigXML(configurationFile.getAbsolutePath());
+                configVersion = config.get("version", 0);
+                if (!configVersion.equals(VERSION)) {
+                    copyConfig = true;
+                }
+            }
+
+            // If the config file is out-of-date, replace it,
+            // keeping a copy of the old version
+            if (copyConfig) {
+
+                // Save the old version
+                if (saveOldVersion) {
+                    String extension = ".saved";
+                    if (configVersion != null) {
+                        extension = "." + configVersion;
+                    }
+                    File savedConfigFile = new File(
+                            configurationFile.getAbsolutePath() + extension); 
+                    configurationFile.renameTo(savedConfigFile);
+                }
+
+                // Create a new config file from the jar file copy
+                configurationFile.createNewFile();
                 FileOutputStream out = new FileOutputStream(configurationFile);
                 ClassLoader cl = Thread.currentThread().getContextClassLoader();
                 InputStream configInput =  cl.getResourceAsStream(configFile);
@@ -1540,14 +1571,15 @@ public class Morpho
                 }
                 configInput.close();
                 out.close();
+                
+                // Open the new configuration file
+                config = new ConfigXML(configurationFile.getAbsolutePath());
             }
         } catch (IOException ioe) {
             Log.debug(1, "Error copying config: " + ioe.getMessage());
             Log.debug(1, ioe.getClass().getName());
             System.exit(1);
         }
-        // Open the configuration file
-        config = new ConfigXML(configurationFile.getAbsolutePath());
     }
     
     
