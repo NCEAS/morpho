@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: jones $'
- *     '$Date: 2002-08-19 21:10:33 $'
- * '$Revision: 1.44 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2002-08-21 22:23:02 $'
+ * '$Revision: 1.45 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -63,7 +63,8 @@ import org.xml.sax.InputSource;
 /**
  * Class that implements a GUI to edit an entity
  */
-public class EntityGUI extends javax.swing.JFrame 
+//public class EntityGUI extends javax.swing.JFrame 
+public class EntityGUI extends javax.swing.JPanel 
                        implements ActionListener, 
                                   EditingCompleteListener
 {
@@ -86,8 +87,9 @@ public class EntityGUI extends javax.swing.JFrame
   private String location;
   private Hashtable attributeHash = new Hashtable();
   private boolean editAttribute = false;
-  private File entityFile;
-  
+  public File entityFile;
+  public JButton editEntityButton;
+
   
   //visual components
   private JLabel name = new JLabel();
@@ -98,6 +100,10 @@ public class EntityGUI extends javax.swing.JFrame
   private JList attributeList = new JList();
   private DataPackageGUI parent;
   
+  
+  public JPanel entityPanel;
+  JFrame dpv = null;
+
   /**
    * Creates a new entity editor.
    * @param dp the datapackage that the entity belongs to
@@ -125,13 +131,13 @@ public class EntityGUI extends javax.swing.JFrame
     this.morpho = morpho;
     this.dataPackage = dp;
     this.entityId = id;
-    contentPane = getContentPane();
-    setTitle("Table Editor");
-    BoxLayout box = new BoxLayout(contentPane, BoxLayout.Y_AXIS);
-    contentPane.setLayout(box);
+  //  contentPane = getContentPane();
+  //  setTitle("Table Editor");
+  //  BoxLayout box = new BoxLayout(contentPane, BoxLayout.Y_AXIS);
+  //  contentPane.setLayout(box);
     parseEntity();
     initComponents();
-    pack();
+  //  pack();
     setSize(500, 450);
     /* Center the Frame */
     Dimension screenDim = Toolkit.getDefaultToolkit().getScreenSize();
@@ -223,7 +229,7 @@ public class EntityGUI extends javax.swing.JFrame
   
   private void initComponents()
   {
-    JButton editEntityButton = new JButton("Edit Table Description");
+    editEntityButton = new JButton("Edit Table Description");
     JButton editAttributes = new JButton("Edit Attributes");
     JButton editDataButton = new JButton("View Data");
     if (dataPackage.hasDataFile(entityId)) {
@@ -347,7 +353,7 @@ public class EntityGUI extends javax.swing.JFrame
     JPanel mainPanel = new JPanel();
     mainPanel.setLayout(new FlowLayout());
     
-    JPanel entityPanel = new JPanel();
+    entityPanel = new JPanel();
     entityPanel.setLayout(new BoxLayout(entityPanel, BoxLayout.Y_AXIS));
     
     JPanel attributePanel = new JPanel();
@@ -424,7 +430,7 @@ public class EntityGUI extends javax.swing.JFrame
     mainPanel.add(editAttributes);
     mainPanel.add(editDataButton);
     
-    contentPane.add(mainPanel);
+//    contentPane.add(mainPanel);
   }
   
   private JPanel createHeadPanel()
@@ -462,6 +468,12 @@ public class EntityGUI extends javax.swing.JFrame
    */
   public void editingCompleted(String xmlString, String id, String location)
   {
+    if (this.dpv!=null) {
+    //  dpv.setVisible(false);
+      dpv.dispose();
+      dpv = null;
+    }
+
     Log.debug(11, "Editing complete: id: " + id + " location: " + 
                               location);
     AccessionNumber a = new AccessionNumber(morpho);
@@ -533,10 +545,15 @@ public class EntityGUI extends javax.swing.JFrame
       
       DataPackage newPackage = new DataPackage(location, packageId, null,
                                                morpho);
-      this.dispose();
-      parent.dispose();
+      //this.dispose();
+      //parent.dispose();
       
       DataPackageGUI newgui = new DataPackageGUI(morpho, newPackage);
+    
+      DataPackageViewer dpv = new DataPackageViewer("Data Package Viewer", newPackage, newgui);
+ 
+      this.dpv = dpv;
+      dpv.show();
 
       // Refresh the query results after the update
       try {
@@ -648,11 +665,16 @@ public class EntityGUI extends javax.swing.JFrame
       
       DataPackage newPackage = new DataPackage(location, newPackageId, null,
                                                  morpho);
-      this.dispose();
-      parent.dispose();
+  //    this.dispose();
+  //    parent.dispose();
       
       DataPackageGUI newgui = new DataPackageGUI(morpho, newPackage);
-      EntityGUI newEntitygui;
+      DataPackageViewer dpv = new DataPackageViewer("Data Package Viewer", newPackage, newgui);
+ 
+     this.dpv = dpv;
+     dpv.show();
+   /*  
+     EntityGUI newEntitygui;
       DataPackage newDataPackage = new DataPackage(location, 
                                            a.incRev(dataPackage.getID()),
                                            null, morpho);
@@ -666,6 +688,7 @@ public class EntityGUI extends javax.swing.JFrame
         newEntitygui = new EntityGUI(newDataPackage, a.incRev(entityId), 
                                      location, newgui, morpho);
       }
+      */
       // Refresh the query results after the update
       try {
         ServiceController services = ServiceController.getInstance();
@@ -676,8 +699,8 @@ public class EntityGUI extends javax.swing.JFrame
         Log.debug(6, snhe.getMessage());
       }
 
-      newgui.show();
-      newEntitygui.show();
+  //    newgui.show();
+  //    newEntitygui.show();
     }
     catch(Exception e)
     {
@@ -864,7 +887,7 @@ public class EntityGUI extends javax.swing.JFrame
     
     else if (command.equals("Associate Data")) {
        // a new data file to be associated with this existing metadata is to be entered here 
-      (new NewDataFile(this, dataPackage, morpho, entityId)).setVisible(true); 
+    //  (new NewDataFile(this, dataPackage, morpho, entityId)).setVisible(true); 
     }
   }
   

@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: jones $'
- *     '$Date: 2002-08-19 21:10:33 $'
- * '$Revision: 1.6 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2002-08-21 22:23:02 $'
+ * '$Revision: 1.7 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -251,9 +251,9 @@ public class NewDataFile extends javax.swing.JDialog
 		  this.dispose();
         
       if (dataPackageId!=null) {
-        EntityGUI eu = (EntityGUI)parent;
-        eu.dispose();
-        (eu.getDataPackageGui()).dispose();
+      //  EntityGUI eu = (EntityGUI)parent;
+      //  eu.dispose();
+      //  (eu.getDataPackageGui()).dispose();
 		
       DataPackage newPackage = new DataPackage(location, dataPackageId, null,
                                                morpho);

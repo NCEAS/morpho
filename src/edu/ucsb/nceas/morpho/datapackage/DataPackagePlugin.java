@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: jones $'
- *     '$Date: 2002-08-19 21:10:33 $'
- * '$Revision: 1.19 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2002-08-21 22:23:02 $'
+ * '$Revision: 1.20 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,6 +28,7 @@ package edu.ucsb.nceas.morpho.datapackage;
 
 import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.framework.ConfigXML;
+import edu.ucsb.nceas.morpho.framework.MorphoFrame;
 import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
 import edu.ucsb.nceas.morpho.framework.UIController;
 import edu.ucsb.nceas.morpho.datastore.MetacatUploadException;
@@ -40,6 +41,7 @@ import edu.ucsb.nceas.morpho.plugins.ServiceNotHandledException;
 import edu.ucsb.nceas.morpho.util.Log;
 
 import java.awt.event.ActionEvent;
+import java.awt.BorderLayout;
 import java.util.Hashtable;
 import java.util.Vector;
 
@@ -47,6 +49,9 @@ import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.ImageIcon;
 import java.awt.event.*;
+import javax.swing.*;
+import java.awt.*;
+
 
 /**
  * Class that implements the plugin for package editing
@@ -166,6 +171,23 @@ public class DataPackagePlugin
     //Log.debug(11, "location: " + location + " identifier: " + identifier +
     //                " relations: " + relations.toString());
     final DataPackageGUI gui = new DataPackageGUI(morpho, dp);
+    
+
+    MorphoFrame resultWindow = UIController.getInstance().addWindow(
+                "Data Package");
+    
+    DataViewContainerPanel dvcp = new DataViewContainerPanel(dp, gui);
+    dvcp.setFramework(morpho);
+
+//    dvcp.setTopPanel(packagePanel);
+    dvcp.setEntityItems(gui.entityitems);
+    dvcp.setListValueHash(gui.listValueHash);
+    dvcp.init();
+
+    dvcp.setVisible(true);
+    resultWindow.setMainContentPane(dvcp);
+    resultWindow.setVisible(true);
+/*
     gui.addWindowListener(new WindowAdapter()
     {
       public void windowClosed(WindowEvent e)
@@ -181,6 +203,7 @@ public class DataPackagePlugin
     gui.setName("Package Editor: " + dp.getID());
     //MBJ framework.addWindow(gui);
     gui.show();
+  */  
   }
   
   /**

@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: jones $'
- *     '$Date: 2002-08-19 21:55:42 $'
- * '$Revision: 1.85 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2002-08-21 22:23:02 $'
+ * '$Revision: 1.86 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -72,7 +72,9 @@ public class DataPackageGUI extends javax.swing.JFrame
                                        EditingCompleteListener,
                                        WindowListener
 {
-  private Morpho morpho;
+  public JPanel basicInfoPanel;
+  public String referenceLabel = "";
+  Morpho morpho;
   private ConfigXML config;
   Container contentPane;
   private DataPackage dataPackage;
@@ -82,7 +84,7 @@ public class DataPackageGUI extends javax.swing.JFrame
   private String location = null;
   private String id = null;
   private JButton editBaseInfoButton = new JButton();
-  private Hashtable listValueHash = new Hashtable();
+  Hashtable listValueHash = new Hashtable();
   private Hashtable fileAttributes = new Hashtable();
   private static final String htmlBegin = "<html><font color=black>";
   private static final String htmlEnd = "</font></html>";
@@ -90,7 +92,13 @@ public class DataPackageGUI extends javax.swing.JFrame
   JScrollPane tpscroll;
   String wholelabel;
   JEditorPane biglabel;
+  JPanel listPanel;
   
+  Vector otheritems;
+  Vector dataitems;
+  public Vector entityitems;
+
+ 
   public DataPackageGUI(Morpho morpho, DataPackage dp)
   {
     this.location = dp.getLocation();
@@ -161,14 +169,14 @@ public class DataPackageGUI extends javax.swing.JFrame
       }
     }
     
-    JPanel basicInfoPanel = new JPanel();
+    basicInfoPanel = new JPanel();
     //create the top panel with the package basic info
     basicInfoPanel = createBasicInfoPanel();
     
     Hashtable relfiles = dataPackage.getRelatedFiles();
-    Vector otheritems = new Vector();
-    Vector dataitems = new Vector();
-    Vector entityitems = new Vector();
+    otheritems = new Vector();
+    dataitems = new Vector();
+    entityitems = new Vector();
     Enumeration keys = relfiles.keys();
     while(keys.hasMoreElements()) 
     { //populate the list box vectors
@@ -321,7 +329,7 @@ public class DataPackageGUI extends javax.swing.JFrame
     toppanel.add(logoLabel);
     toppanel.add(headLabel);
     
-    JPanel listPanel = createListPanel(entityitems, otheritems);
+    listPanel = createListPanel(entityitems, otheritems);
     JPanel layoutPanel = new JPanel();
     layoutPanel.setLayout(new GridLayout(2,1,8,8));
 //    layoutPanel.setPreferredSize(new Dimension(450, 500));
@@ -361,8 +369,11 @@ public class DataPackageGUI extends javax.swing.JFrame
   /**
    * creates the basicinfopanel
    */
-  private JPanel createBasicInfoPanel()
+  public JPanel createBasicInfoPanel()
   {
+    referenceLabel = "";
+    String authorList = "";
+    
     String idPath = config.get("datasetIdPath", 0);
     String shortNamePath = config.get("datasetShortNamePath", 0);
     String titlePath = config.get("datasetTitlePath", 0);
@@ -372,9 +383,9 @@ public class DataPackageGUI extends javax.swing.JFrame
     
     //layout the big main panel
     JPanel textpanel = new JPanel();
-    textpanel.setBorder(BorderFactory.createCompoundBorder(
-                        BorderFactory.createLoweredBevelBorder(),
-                        BorderFactory.createEmptyBorder(10, 10, 10, 10)));
+   // textpanel.setBorder(BorderFactory.createCompoundBorder(
+   //                     BorderFactory.createLoweredBevelBorder(),
+   //                     BorderFactory.createEmptyBorder(10, 10, 10, 10)));
 //    textpanel.setLayout(new BoxLayout(textpanel, BoxLayout.Y_AXIS));
     textpanel.setLayout(new BorderLayout());
     textpanel.setBackground(Color.white);
@@ -391,7 +402,7 @@ public class DataPackageGUI extends javax.swing.JFrame
     headerPanel.add(headerLabel);
     headerPanel.add(Box.createHorizontalGlue());
     headerPanel.add(editBaseInfoButton);
-    headerPanel.setBackground(Color.white);
+  //  headerPanel.setBackground(Color.white);
     
     Document doc = dataPackage.getTripleFileDom();
     
@@ -478,6 +489,9 @@ public class DataPackageGUI extends javax.swing.JFrame
                   htmlize(shortName, "Short Name") + 
                   htmlize(keywords, "Keywords") + 
                   htmlize(abstractS, "Abstract");
+    
+    referenceLabel = referenceLabel + "<b><i>" + title + "</i></b><br>" +
+           "<b>KNB Accession Number " + id + "</b>  Keywords: " + keywords; 
     
     String originators = "<br><b>Originator(s)</b><br>";
     String name = "";
@@ -595,7 +609,12 @@ public class DataPackageGUI extends javax.swing.JFrame
       originators += htmlize(name) + htmlize(orgname) + htmlize(address) + 
                      htmlize(phone) + htmlize(email) + htmlize(web) +
                      htmlize(role) + "<br>";
+                     
+      authorList = authorList + name + ", ";          
     }
+    referenceLabel = authorList + referenceLabel;
+    
+ //   System.out.println("Ref Label: "+referenceLabel);
     
     wholelabel += originators + "</html>";
 //    JLabel biglabel = new JLabel(wholelabel);
@@ -666,7 +685,7 @@ public class DataPackageGUI extends javax.swing.JFrame
     entityFileButtonList.add(new JLabel("Table Descriptions"));
     entityFileButtonList.add(entityFileScrollPane);
     
-    listPanel.add(entityFileButtonList);
+//    listPanel.add(entityFileButtonList);
     
     ////////////////other files//////////////////////
     
