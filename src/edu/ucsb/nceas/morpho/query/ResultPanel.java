@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-04-01 22:31:52 $'
- * '$Revision: 1.30 $'
+ *     '$Date: 2002-04-03 16:15:55 $'
+ * '$Revision: 1.31 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -337,7 +337,8 @@ public class ResultPanel extends JPanel
       if (object == reviseButton) {
         reviseQuery();
       } else if (object == refreshButton) {
-        refreshQuery();
+//        refreshQuery();
+        doRefreshQuery();
       } else if (object == saveButton) {
         saveQuery();
       }
@@ -350,15 +351,6 @@ public class ResultPanel extends JPanel
    */
   private void exportDataset(String id)
   {
-  /*  FileDialog saveFileDialog = new FileDialog(new Frame());
-    saveFileDialog.setMode(FileDialog.SAVE);
-    saveFileDialog.setTitle("Save");
-    saveFileDialog.setDirectory(System.getProperty("user.dir"));
-    saveFileDialog.setFile(id);
-    saveFileDialog.setVisible(true);
-    System.out.println("Dir: "+saveFileDialog.getDirectory());
-    System.out.println("File: "+saveFileDialog.getFile());
-  */  
     String curdir = System.getProperty("user.dir");
     JFileChooser filechooser = new JFileChooser(curdir);
 //    filechooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
@@ -367,14 +359,11 @@ public class ResultPanel extends JPanel
     filechooser.setApproveButtonMnemonic('E');
     filechooser.setApproveButtonToolTipText("Choose a directory to export " +
                                             "this Datapackage to.");
- //   filechooser.updateUI();
     String msg = "ALERT: Please select a DIRECTORY, not a file in the File Dialog which will appear next!";
-//    JOptionPane.showMessageDialog(null, msg, "Please select a Directory!",  JOptionPane.ERROR_MESSAGE);       
  
     File exportDir;
     int result = filechooser.showSaveDialog(this);
     
-//    exportDir = filechooser.getSelectedFile();
     exportDir = filechooser.getCurrentDirectory();
     if (result==JFileChooser.APPROVE_OPTION) {
       //now we know where to export the files to, so export them.
@@ -492,126 +481,28 @@ public class ResultPanel extends JPanel
       { 
         doOpenDataPackage();
         //open the current selection in the package editor
-/*        ClientFramework.debug(20, "Opening package.");
-        openResultRecord(table);
-*/
       }
 			else if (object == uploadMenu)
       { 
         doUpload();
-  /*      //upload the current selection to metacat
-        ClientFramework.debug(20, "Uploading package.");
-        try
-        {
-          dataPackage.upload(docid, false);
-          refreshQuery();
-        }
-        catch(MetacatUploadException mue)
-        {
-          //ask the user if he is sure he wants to overwrite the package
-          //if he is do it, otherwise return
-          String message = "A conflict has been found in one or more of the " +
-             "identifiers \nin your package.  It is possible that you or \n" + 
-             "someone else has made a change on the server that has not \n" +
-             "been reflected on your local copy. If you proceed, you may \n" +
-             "overwrite package information.  If you proceed the identifier \n"+
-             "for this package will be changed.  Are you sure you want to \n" +
-             "proceed with the upload?";
-          int choice = JOptionPane.YES_OPTION;
-          choice = JOptionPane.showConfirmDialog(null, message, 
-                                 "Morpho", 
-                                 JOptionPane.YES_NO_CANCEL_OPTION,
-                                 JOptionPane.WARNING_MESSAGE);
-          if(choice == JOptionPane.YES_OPTION)
-          {
-            try
-            {
-              dataPackage.upload(docid, true);
-              refreshQuery();
-            }
-            catch(MetacatUploadException mue2)
-            {
-              framework.debug(0, mue2.getMessage());
-            }
-          }
-          else
-          {
-            return;
-          }
-        }
-        
- */       
       }
 			else if (object == downloadMenu)
       { 
         doDownload();
         
- /*       //download the current selection to the local disk
-        ClientFramework.debug(20, "Downloading package.");
-        dataPackage.download(docid);
-        refreshQuery();
- */       
       }
 			else if (object == deleteLocalMenu)
 		  { 
 		    doDeleteLocal();
-/*		    //delete the local package
-        ClientFramework.debug(20, "Deleteing the local package.");
-        String message = "Are you sure you want to delete \nthe package from " +
-                         "your local file system?";
-        int choice = JOptionPane.YES_OPTION;
-        choice = JOptionPane.showConfirmDialog(null, message, 
-                               "Morpho", 
-                               JOptionPane.YES_NO_CANCEL_OPTION,
-                               JOptionPane.WARNING_MESSAGE);
-        if(choice == JOptionPane.YES_OPTION)
-        {
-          dataPackage.delete(docid, DataPackage.LOCAL);
-          refreshQuery();
-        }
-*/        
       }
 			else if (object == deleteMetacatMenu)
 			{ 
 			  doDeleteMetacat();
 			  
-/*			  //delete the object on metacat
-        ClientFramework.debug(20, "Deleteing the metacat package.");
-        String message = "Are you sure you want to delete \nthe package from " +
-                         "Metacat? You \nwill not be able to upload \nit " +
-                         "again with the same identifier.";
-        int choice = JOptionPane.YES_OPTION;
-        choice = JOptionPane.showConfirmDialog(null, message, 
-                               "Morpho", 
-                               JOptionPane.YES_NO_CANCEL_OPTION,
-                               JOptionPane.WARNING_MESSAGE);
-        if(choice == JOptionPane.YES_OPTION)
-        {
-          dataPackage.delete(docid, DataPackage.METACAT);
-          refreshQuery();
-          
-        }
-*/       
       }
 			else if (object == deleteAllMenu)
 			{ 
 			  doDeleteAll();
-/*			  //delete both of the objects
-        ClientFramework.debug(20, "Deleting both copies of the package.");
-        String message = "Are you sure you want to delete \nthe package from " +
-                         "Metacat and your \nlocal file system? " +
-                         "Deleting a package\n cannot be undone!";
-        int choice = JOptionPane.YES_OPTION;
-        choice = JOptionPane.showConfirmDialog(null, message, 
-                               "Morpho", 
-                               JOptionPane.YES_NO_CANCEL_OPTION,
-                               JOptionPane.WARNING_MESSAGE);
-        if(choice == JOptionPane.YES_OPTION)
-        {
-          dataPackage.delete(docid, DataPackage.BOTH);
-          refreshQuery();
-        }
-  */      
       }
       else if (object == exportMenu)
       {
@@ -624,9 +515,6 @@ public class ResultPanel extends JPanel
       else if (object == exportToZipMenu)
       {
         doExportToZip();
-/*        ClientFramework.debug(20, "Exporting dataset to zip file");
-        exportDatasetToZip(docid);
-*/
       }
 //      refreshQuery();
       getParent().invalidate();
@@ -1277,6 +1165,30 @@ private void doOpenDataPackage() {
 			  //do open
           ClientFramework.debug(20, "Opening package.");
           openResultRecord(table);
+        
+          return null;  
+        }
+
+        //Runs on the event-dispatching thread.
+        public void finished() {
+          threadCount--;
+          if (threadCount<1) {
+           recordCountLabel.setText(results.getRowCount() + " data packages");    
+           recordCountLabel.setIcon(null);
+          }
+        }
+    };
+    worker.start();  //required for SwingWorker 3
+}
+ 
+  
+private void doRefreshQuery() {
+  final SwingWorker worker = new SwingWorker() {
+        public Object construct() {
+          recordCountLabel.setText("Working !!!");    
+          recordCountLabel.setIcon(flapping);
+          threadCount++;
+          refreshQuery();
         
           return null;  
         }
