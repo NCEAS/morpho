@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-08-17 21:48:21 $'
- * '$Revision: 1.58.2.1 $'
+ *     '$Date: 2003-08-17 23:27:19 $'
+ * '$Revision: 1.58.2.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -369,7 +369,7 @@ public class DataViewContainerPanel extends javax.swing.JPanel
       packageMetadataPanel.removeAll();
       packageMetadataPanel.add(BorderLayout.CENTER,toppanel);
     }
-    if (entityItems==null) 
+    if ((entityItems==null)|| (entityItems.size()<1))
     {
       Log.debug(20, "EntityItems vector is null");
       vertSplit.removeAll();
