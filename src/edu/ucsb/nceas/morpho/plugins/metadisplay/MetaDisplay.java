@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2002-09-28 06:14:11 $'
- * '$Revision: 1.24 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2002-10-04 22:02:58 $'
+ * '$Revision: 1.25 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -426,7 +426,7 @@ public class MetaDisplay implements MetaDisplayInterface,
      */
     public void editingCompleted(String xmlString, String id, String location) 
     {
-        Log.debug(50, "MetaDisplay: editingCompleted() callback received.");
+        Log.debug(40, "MetaDisplay: editingCompleted() callback received.");
                                        
         Enumeration listeners = editingCompletelistenerList.elements();
         while (listeners.hasMoreElements()) {
