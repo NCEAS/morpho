@@ -4,8 +4,8 @@
 #
 # '$RCSfile: morpho,v $'
 # '$Author: tao $'
-# '$Date: 2002-11-21 01:35:58 $'
-# '$Revision: 1.23 $'
+# '$Date: 2002-11-27 00:40:34 $'
+# '$Revision: 1.24 $'
 
 if ! ls $JAVA_HOME/bin/ | grep -q java; then
  echo ----------------------------------------------------------------------
@@ -31,7 +31,7 @@ CFG=./lib/morpho-config.jar
 #CFG=./build/morpho-config.jar
 JHELP=./lib/jhall.jar
 JLF=./lib/shippedIcons.jar
-HELP=./lib/holidays.jar
+HELP=./lib/morphohelp.jar
 HTP=./lib/httpclient.jar
 ITS=./lib/itislib.jar
 JSE=./lib/jsse.jar
