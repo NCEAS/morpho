@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: sambasiv $'
- *     '$Date: 2004-03-30 20:36:06 $'
- * '$Revision: 1.45 $'
+ *     '$Date: 2004-03-30 21:42:18 $'
+ * '$Revision: 1.46 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -285,7 +285,12 @@ public class CustomList
         new ListSelectionListener() {
 
       public void valueChanged(ListSelectionEvent e) {
-
+				
+				if(table.getRowCount() == 0) {
+					doEnablesDisables(new int[]{});
+					return;
+				}
+				
         if (e.getValueIsAdjusting()) {
           return;
         }
@@ -332,7 +337,7 @@ public class CustomList
           Log.debug(45, "\nsetting Column " + i + " Editor = " + editor);
           if (editor instanceof JTextField) {
 
-            JTextField jtf = new JTextField();
+            /*JTextField jtf = new JTextField();
             if (! ( (JTextField) editor).isEditable()) {
               jtf.setEditable(false);
             }
@@ -344,9 +349,9 @@ public class CustomList
             jtf.setForeground( ( (JTextField) editor).getForeground());
             jtf.setDisabledTextColor( ( (JTextField) editor).
                                      getDisabledTextColor());
-            jtf.setBackground( ( (JTextField) editor).getBackground());
+            jtf.setBackground( ( (JTextField) editor).getBackground());*/
             Log.debug(45, "(JTextField)");
-            DefaultCellEditor cellEd = new DefaultCellEditor(jtf);
+            DefaultCellEditor cellEd = new DefaultCellEditor((JTextField)editor);
             cellEd.setClickCountToStart(1);
 
             column.setCellEditor(cellEd);
@@ -1489,7 +1494,7 @@ class MoveDownAction
 }
 
 class CustomJTable
-    extends JTable {
+    extends JTable implements KeyListener{
 
 //    EditableStringRenderer    editableStringRenderer
 //                                    = new EditableStringRenderer();
@@ -1529,6 +1534,7 @@ class CustomJTable
       public void mouseReleased(MouseEvent e) {}
     }
     );
+		addKeyListener(this);
   }
 
   //override super
@@ -1654,6 +1660,10 @@ class CustomJTable
       DefaultTableCellRenderer defaultR = new DefaultTableCellRenderer();
       defaultR.setBackground(origTextField.getBackground());
       defaultR.setForeground(origTextField.getForeground());
+			EventListener[] list = origTextField.getListeners(java.awt.event.FocusListener.class);
+			for(int i = 0; i < list.length; i++) 
+				defaultR.addFocusListener((java.awt.event.FocusListener)list[i]);
+			
       return defaultR;
 
     }
@@ -1703,9 +1713,63 @@ class CustomJTable
     return columnsEditableFlags[col];
   }
 
-  // to prevent the table from being a part of the focus cycle.
-  public boolean isFocusTraversable() {
-
-    return false;
-  }
+	// to prevent the table from being a part of the focus cycle.
+	/*public boolean isFocusTraversable() {
+		
+		return false;
+	}*/
+	
+	
+	public void keyPressed(KeyEvent ke) {
+		
+	}
+	
+	public void keyReleased(KeyEvent ke) {
+		
+	}
+	
+	public void keyTyped(KeyEvent ke) {
+		
+		int col = this.getSelectedColumn();
+		int row = this.getSelectedRow();
+		int maxCol = this.getColumnCount();
+		int maxRow = this.getRowCount();
+		boolean fireListener = false;
+		
+		if(col != -1 && row !=-1) {
+			
+			if(ke.getKeyChar() == ke.VK_TAB && ke.getModifiers() != ke.SHIFT_MASK) {
+				
+				if(col > 0) col--;
+				else col = maxCol - 1;
+				fireListener = true;
+				
+			} else if(ke.getModifiers() == ke.SHIFT_MASK && ke.getKeyChar() == ke.VK_TAB) {
+				
+				if(col < maxCol -1) col++;
+				else col = 0;
+				fireListener = true;
+				
+			}	else if(ke.getKeyCode() == ke.VK_UP || ke.getKeyCode() == ke.VK_DOWN) {
+				
+				fireListener = true;
+			} 
+			
+			if(fireListener) {
+				
+				System.out.print("my firing  at " + col + " - ");
+				if(editors[col] != null) {
+					if(editors[col] instanceof JTextField) {
+						
+						JTextField jtf = (JTextField)editors[col];
+						EventListener[] list = jtf.getListeners(java.awt.event.FocusListener.class);
+						for(int i = 0; i < list.length; i++) 
+							((FocusListener)list[i]).focusLost(new FocusEvent(jtf, FocusEvent.FOCUS_LOST));
+					}
+				}
+			}
+			
+		}
+	}
+		
 }
