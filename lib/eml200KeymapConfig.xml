@@ -8,7 +8,10 @@
     <author>/eml:eml/dataset/creator/individualName/surName</author>
     <accessionNumber>/eml:eml/@packageId</accessionNumber>
     <keywords>/eml:eml/dataset/keywordSet/keyword</keywords>
-    <coverage>/eml:eml/dataset/coverage</coverage>   
+    <coverage>/eml:eml/dataset/coverage</coverage>  
+    <project>/eml:eml/dataset/project</project> 
+    <intellectualRights>/eml:eml/dataset/intellectualRights</intellectualRights> 
+    <access>/eml:eml/dataset/access</access> 
     <geographicCoverage>/eml:eml/dataset/coverage/geographicCoverage</geographicCoverage>   
     <temporalCoverage>/eml:eml/dataset/coverage/temporalCoverage</temporalCoverage>   
     <taxonomicCoverage>/eml:eml/dataset/coverage/taxonomicCoverage</taxonomicCoverage>   
@@ -63,5 +66,30 @@
     <prevNode>/eml:eml/dataset/associatedParty</prevNode>
     <prevNode>/eml:eml/dataset/metadataProvider</prevNode>
     <prevNode>/eml:eml/dataset/creator</prevNode>
+  </insertionList>   
+  <insertionList name="project">
+    <prevNode>/eml:eml/dataset/methods</prevNode>
+    <prevNode>/eml:eml/dataset/pubPlace</prevNode>
+    <prevNode>/eml:eml/dataset/publisher</prevNode>
+    <prevNode>/eml:eml/dataset/contact</prevNode>
   </insertionList>
+  <insertionList name="access">
+    <prevNode>/eml:eml/dataset/project</prevNode>
+    <prevNode>/eml:eml/dataset/methods</prevNode>
+    <prevNode>/eml:eml/dataset/pubPlace</prevNode>
+    <prevNode>/eml:eml/dataset/publisher</prevNode>
+    <prevNode>/eml:eml/dataset/contact</prevNode>
+  </insertionList>
+  <insertionList name="intellectualRights">
+    <prevNode>/eml:eml/dataset/additionalInfo</prevNode>
+    <prevNode>/eml:eml/dataset/keywordSet</prevNode>
+    <prevNode>/eml:eml/dataset/abstract</prevNode>
+    <prevNode>/eml:eml/dataset/series</prevNode>
+    <prevNode>/eml:eml/dataset/language</prevNode>
+    <prevNode>/eml:eml/dataset/pubdate</prevNode>
+    <prevNode>/eml:eml/dataset/associatedParty</prevNode>
+    <prevNode>/eml:eml/dataset/metadataProvider</prevNode>
+    <prevNode>/eml:eml/dataset/creator</prevNode>
+  </insertionList>   
+
 </xpathKeyMap>
