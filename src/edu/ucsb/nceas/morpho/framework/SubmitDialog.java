@@ -6,7 +6,7 @@
  *              National Center for Ecological Analysis and Synthesis
  *     Authors: Dan Higgins
  *
- *     Version: '$Id: SubmitDialog.java,v 1.12 2001-01-19 23:20:24 higgins Exp $'
+ *     Version: '$Id: SubmitDialog.java,v 1.13 2001-01-31 23:37:47 higgins Exp $'
  */
 
 package edu.ucsb.nceas.dtclient;
@@ -48,7 +48,7 @@ public class SubmitDialog extends javax.swing.JDialog implements ContentHandler
     char sepchar = '.';
     String tempXMLFileName = null;
     boolean idExistsFlag = false;
-    
+    String access = "yes";   
     
 	public SubmitDialog(Frame parent)
 	{
@@ -643,6 +643,12 @@ void InsertButton_actionPerformed(java.awt.event.ActionEvent event)
 
 	void SubmitButton_actionPerformed(java.awt.event.ActionEvent event)
 	{
+	    if (AnyUser.isSelected()) {
+	       access = "yes"; 
+	    }
+	    else {
+	       access = "no";
+	    }
 	    StringBuffer txt = new StringBuffer();
 	    if (container.userName.equals("public")) {
 	        JOptionPane.showMessageDialog(this,"You must be logged in as a registered user to insert data into the system catalog!");
@@ -676,6 +682,7 @@ void InsertButton_actionPerformed(java.awt.event.ActionEvent event)
 		    HttpMessage msg = new HttpMessage(url);
 		    Properties prop = new Properties();
 		    prop.put("action","insert");
+		    prop.put("public", access);
 		    prop.put("doctext",txt.toString());
 		    String indocid = getdocid();
 		    if (indocid!=null) { prop.put("docid",indocid);}
@@ -820,6 +827,7 @@ void InsertButton_actionPerformed(java.awt.event.ActionEvent event)
 		            HttpMessage msg = new HttpMessage(url);
 		            Properties prop = new Properties();
 		            prop.put("action","delete");
+		            prop.put("public", access);
 		            prop.put("docid",indocid);
 		    
 		    
@@ -857,6 +865,12 @@ void InsertButton_actionPerformed(java.awt.event.ActionEvent event)
 
 	void UpdateButton_actionPerformed(java.awt.event.ActionEvent event)
 	{
+	    if (AnyUser.isSelected()) {
+	       access = "yes"; 
+	    }
+	    else {
+	       access = "no";
+	    }
 		JOptionPane.showMessageDialog(null, "Update will replace a document having the displayed ID Number from the remote Server", "Alert", JOptionPane.INFORMATION_MESSAGE);
 	    if (container.userName.equals("public")) {
 	        JOptionPane.showMessageDialog(this,"You must be logged in as a registered user to update data in the system catalog!");
@@ -896,6 +910,7 @@ void InsertButton_actionPerformed(java.awt.event.ActionEvent event)
 		            Properties prop = new Properties();
 		            prop.put("action","update");
 		            prop.put("docid",indocid);
+		            prop.put("public", access);
 		            prop.put("doctext",txt.toString());
 		    
 		            InputStream in = msg.sendPostMessage(prop);

@@ -6,7 +6,7 @@
  *              National Center for Ecological Analysis and Synthesis
  *     Authors: Dan Higgins
  *
- *     Version: '$Id: SubmitDataDialog.java,v 1.8 2001-01-19 23:20:24 higgins Exp $'
+ *     Version: '$Id: SubmitDataDialog.java,v 1.9 2001-01-31 23:37:47 higgins Exp $'
  */
 
 package edu.ucsb.nceas.dtclient;
@@ -36,6 +36,8 @@ public class SubmitDataDialog extends javax.swing.JDialog implements ContentHand
     ClientFramework container = null;
     String userName = "public";
     String passWord = "none";
+	String access = "yes";
+    
     Socket echoSocket = null;
     OutputStream out = null;
     InputStream in = null;
@@ -194,11 +196,15 @@ public class SubmitDataDialog extends javax.swing.JDialog implements ContentHand
 		SubmitDataButton.setText("Submit");
 		SubmitDataButton.setActionCommand("Submit");
 		JPanel1.add(SubmitDataButton);
-		SubmitDataButton.setBounds(272,5,75,25);
+		SubmitDataButton.setBounds(214,5,75,25);
 		CancelButton.setText("Cancel");
 		CancelButton.setActionCommand("Cancel");
 		JPanel1.add(CancelButton);
-		CancelButton.setBounds(352,5,73,25);
+		CancelButton.setBounds(294,5,73,25);
+		PublicCheckBox.setSelected(true);
+		PublicCheckBox.setText("public access?");
+		JPanel1.add(PublicCheckBox);
+		PublicCheckBox.setBounds(372,6,111,23);
 		JPanel2.setAlignmentY(0.466667F);
 		JPanel2.setLayout(new BoxLayout(JPanel2,BoxLayout.X_AXIS));
 		getContentPane().add(BorderLayout.CENTER,JPanel2);
@@ -350,6 +356,7 @@ public class SubmitDataDialog extends javax.swing.JDialog implements ContentHand
 	javax.swing.JPanel JPanel1 = new javax.swing.JPanel();
 	javax.swing.JButton SubmitDataButton = new javax.swing.JButton();
 	javax.swing.JButton CancelButton = new javax.swing.JButton();
+	javax.swing.JCheckBox PublicCheckBox = new javax.swing.JCheckBox();
 	javax.swing.JPanel JPanel2 = new javax.swing.JPanel();
 	javax.swing.JTextArea SubmitDataTextArea = new javax.swing.JTextArea();
 	com.symantec.itools.javax.swing.models.StringComboBoxModel stringComboBoxModel1 = new com.symantec.itools.javax.swing.models.StringComboBoxModel();
@@ -404,8 +411,12 @@ public class SubmitDataDialog extends javax.swing.JDialog implements ContentHand
 	    String filemetadatafile = "";
 	    String fileID = "";
 	    String packID = "";
-	    
-	    
+	    if(PublicCheckBox.isSelected()) {
+	        access = "yes";
+	    }
+	    else {
+	        access = "no";   
+	    }
 	    if (container.userName.equals("public")) {
 	        JOptionPane.showMessageDialog(this,"You must be logged in as a registered user to insert data into the system catalog!");
 	    }
@@ -776,6 +787,7 @@ public String insertStringIntoMetacat(String xmlstring) {
 		    HttpMessage msg = new HttpMessage(url);
 		    Properties prop = new Properties();
 		    prop.put("action","insert");
+		    prop.put("public", access);
 		    prop.put("doctext",xmlstring);
 		    InputStream inn = msg.sendPostMessage(prop);
 	
@@ -871,6 +883,7 @@ public String insertIntoMetacat(String filename) {
 		    HttpMessage msg = new HttpMessage(url);
 		    Properties prop = new Properties();
 		    prop.put("action","insert");
+		    prop.put("public", access);
 		    prop.put("doctext",txt.toString());
 		    InputStream inn = msg.sendPostMessage(prop);
 	
