@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2004-01-27 23:01:42 $'
- * '$Revision: 1.136 $'
+ *     '$Date: 2004-01-28 20:09:17 $'
+ * '$Revision: 1.137 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -234,7 +234,8 @@ public class DocFrame extends javax.swing.JFrame
     OutputScrollPanelContainer.add(BorderLayout.CENTER, OutputScrollPanel);
     OutputScrollPanelContainer.add(BorderLayout.NORTH, TreeChoicePanel);
     JLabel test = new JLabel("Choice: ");
-    String[] choices = {"eml", "dataset", "access", "creator", "contact", "keywordSet"};
+    String[] choices = {"eml", "dataset", "access", "creator", "contact", "keywordSet",
+            "dataTable", "attributeList"};
     choiceCombo = new JComboBox(choices);
     choiceCombo.setVisible(false);
     choiceCombo.addItemListener(new SymItemListener());
@@ -269,22 +270,23 @@ public class DocFrame extends javax.swing.JFrame
     getContentPane().add(BorderLayout.NORTH, TopPanel);
     TopLabelPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
     TopPanel.add(BorderLayout.CENTER, TopLabelPanel);
-    headLabel.setText("Morpho Editor");
+//    headLabel.setText("Morpho Editor");
+    headLabel.setText("Working...");
     TopLabelPanel.add(headLabel);
-    TopPanel.add(BorderLayout.WEST, logoLabel);
+    TopPanel.add(BorderLayout.EAST, logoLabel);
     ControlPanel.setLayout(new BorderLayout(0, 0));
     getContentPane().add(BorderLayout.SOUTH, ControlPanel);
     ButtonPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
     ControlPanel.add(BorderLayout.EAST, ButtonPanel);
     NewButton.setText("New EML2");
     NewButton.setActionCommand("Open");
-//DFH
+
     NewButton.setVisible(false);
     
     ButtonPanel.add(NewButton);
     OpenButton.setText("Open");
     OpenButton.setActionCommand("Open");
-//DFH  
+
     OpenButton.setVisible(false);  
     
     ButtonPanel.add(OpenButton);
@@ -355,7 +357,7 @@ public class DocFrame extends javax.swing.JFrame
       icons.put("Btfly4.gif", flapping);
     }
 
-    logoLabel.setIcon((ImageIcon)icons.get("logo-icon.gif"));
+    logoLabel.setIcon((ImageIcon)icons.get("Btfly4.gif"));
     headLabel.setIcon((ImageIcon)icons.get("smallheader-bg.gif"));
 
     headLabel.setHorizontalTextPosition(SwingConstants.CENTER);
@@ -671,7 +673,7 @@ public class DocFrame extends javax.swing.JFrame
   }
 
   /**
-   * The initialization routine for DOcFrame; this
+   * The initialization routine for DocFrame; this
    * method creates a secondary thread where the input
    * XML string is parsed and turned into an editable document.
    *
@@ -697,7 +699,7 @@ public class DocFrame extends javax.swing.JFrame
       {
         setLeafNodes((DefaultMutableTreeNode)treeModel.getRoot());
 //        setAllNodesAsSelected(rootNode);  //DFH
-//        setAttributeNames(rootNode);
+        setAttributeNames(rootNode);
         setChoiceNodes(rootNode);
         if (xmlAttributesInTreeFlag) {
           addXMLAttributeNodes(rootNode);
@@ -740,7 +742,7 @@ public class DocFrame extends javax.swing.JFrame
       templateFlag = false;
       rootNode = (DefaultMutableTreeNode)treeModel.getRoot();
 //      setAllNodesAsSelected(rootNode);  //DFH
-//      setAttributeNames(rootNode);
+      setAttributeNames(rootNode);
       setChoiceNodes(rootNode);
       setAllNodesAsSelected(rootNode);
       setSelectedNodes(rootNode);
@@ -850,7 +852,7 @@ public class DocFrame extends javax.swing.JFrame
       templateFlag = false;
       rootNode = (DefaultMutableTreeNode)treeModel.getRoot();
 //      setAllNodesAsSelected(rootNode);  //DFH
-//      setAttributeNames(rootNode);
+      setAttributeNames(rootNode);
       setChoiceNodes(rootNode);
       setAllNodesAsSelected(rootNode);
       setSelectedNodes(rootNode);
@@ -933,6 +935,8 @@ public class DocFrame extends javax.swing.JFrame
     tree.expandRow(1);
 //    tree.expandRow(2);
     tree.setSelectionRow(0);
+    headLabel.setText("Morpho Editor");
+    logoLabel.setIcon((ImageIcon)icons.get("logo-icon.gif"));
   }
 
   /*
@@ -1692,9 +1696,6 @@ public class DocFrame extends javax.swing.JFrame
         // needed for eml2 docs
         if (name.equals("eml")) {
           start1.append("\n" + indentString + "<" + "eml:eml ");;
-// following namespace info already added - DFH          
-//          start1.append("\n" + indentString + "xmlns:stmml=\"http://www.xml-cml.org/schema/stmml\"");
-//          start1.append("\n" + indentString + "xmlns:eml=\"eml://ecoinformatics.org/eml-2.0.0\"");
         } else {
           start1.append("\n" + indentString + "<" + name);
         }
@@ -3370,23 +3371,27 @@ public class DocFrame extends javax.swing.JFrame
   /**
    * specialized method for searching for <attribute> tags and then getting their 'name'
    * from a child node for display at the attribute level in the tree
+   * 
+   * NOTE: this method makes the schema specific assumption that 'attributeName'
+   * is a child of the 'attribute' node
    */
   void setAttributeNames(DefaultMutableTreeNode root) {
-    // first find all the attribute nodes, which are assumed to be children of root
+    setLeafNodes(root);
+    // first find all the attribute nodes
     String attr_name = "";
-    Enumeration kids = root.children();
+    Enumeration kids = root.breadthFirstEnumeration();
     while(kids.hasMoreElements()) {
       DefaultMutableTreeNode node = (DefaultMutableTreeNode)kids.nextElement();
       NodeInfo ni = (NodeInfo)node.getUserObject();
-      if(ni.toString().startsWith("attribute")) {  // an attribute node
-        Enumeration attr_kids = node.children();
+      if(ni.toString().equals("attribute")) {  // an attribute node
+        Enumeration attr_kids = node.breadthFirstEnumeration();
         while(attr_kids.hasMoreElements()) {  // attributes children
           DefaultMutableTreeNode node1 = (DefaultMutableTreeNode)attr_kids.nextElement();
           NodeInfo ni1 = (NodeInfo)node1.getUserObject();
-          if(ni1.toString().startsWith("attributeName")) {
-            DefaultMutableTreeNode name_node = (DefaultMutableTreeNode)node1.getFirstChild();
+          if(ni1.toString().equals("attributeName")) {
+            DefaultMutableTreeNode name_node = (DefaultMutableTreeNode)(node1.getFirstChild());
             attr_name = ((NodeInfo)(name_node.getUserObject())).toString();
-          ni.setName(ni.getName()+"-"+attr_name);
+            ni.setName(ni.getName()+"-"+attr_name);
           }
         }
       }
