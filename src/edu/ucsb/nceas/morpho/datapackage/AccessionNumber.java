@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-06-13 22:21:26 $'
- * '$Revision: 1.1 $'
+ *     '$Date: 2001-06-14 17:03:46 $'
+ * '$Revision: 1.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -48,7 +48,7 @@ import org.apache.xerces.dom.DocumentTypeImpl;
 import com.arbortext.catalog.*;
 
 /**
- *
+ * Class that implements Accession Number utility functions for morpho
  */
 public class AccessionNumber 
 {

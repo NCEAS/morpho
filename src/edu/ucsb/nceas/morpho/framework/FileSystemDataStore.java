@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-06-13 22:21:27 $'
- * '$Revision: 1.13 $'
+ *     '$Date: 2001-06-14 17:03:47 $'
+ * '$Revision: 1.14 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -59,7 +59,7 @@ public class FileSystemDataStore extends DataStore
    */
   public File openFile(String name) throws FileNotFoundException
   {
-    debug(11, "opening files from: " + datadir);
+    //debug(11, "opening files from: " + datadir);
     String path = parseId(name);
     path = datadir + "/" + path;
     File file = new File(path);

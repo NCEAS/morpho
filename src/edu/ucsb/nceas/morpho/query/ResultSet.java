@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: jones $'
- *     '$Date: 2001-06-13 03:11:25 $'
- * '$Revision: 1.19 $'
+ *   '$Author: berkley $'
+ *     '$Date: 2001-06-14 17:03:47 $'
+ * '$Revision: 1.20 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -532,12 +532,16 @@ public class ResultSet extends AbstractTableModel implements ContentHandler
       docid = null;
     }
 
-    String location = null;
+    String location = "";
     if (openLocal) {
       location = "local";
-    } else if (openMetacat) {
-      location = "metacat";
     }
+    
+    if (openMetacat) {
+      location += "metacat";
+    }
+    
+    location = location.trim();
 
     try {
       ServiceProvider provider = 

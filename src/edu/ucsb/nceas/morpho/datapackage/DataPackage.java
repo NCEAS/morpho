@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-06-13 22:21:27 $'
- * '$Revision: 1.18 $'
+ *     '$Date: 2001-06-14 17:03:47 $'
+ * '$Revision: 1.19 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -66,6 +66,10 @@ public class DataPackage
    * used to signify that this package is located locally
    */
   public static final String LOCAL = "local";
+  /**
+   * used to signify that this package is stored on metacat and locally.
+   */
+  public static final String BOTH = "localmetacat";
   
   /*
   public DataPackage()
@@ -96,6 +100,7 @@ public class DataPackage
     framework.debug(11, "Creating new DataPackage Object");
     framework.debug(11, "id: " + identifier);
     framework.debug(11, "location: " + location);
+    
     this.identifier = identifier;
     if(relations != null)
     { //if the relations are provided don't reparse the document
@@ -148,7 +153,7 @@ public class DataPackage
         cae.printStackTrace();
       }
     }
-    else if(location.equals(LOCAL))
+    else
     {
       framework.debug(11, "opening local file");
       FileSystemDataStore fsds = new FileSystemDataStore(framework);

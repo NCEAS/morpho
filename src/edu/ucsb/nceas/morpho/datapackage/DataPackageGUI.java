@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-06-13 22:21:27 $'
- * '$Revision: 1.17 $'
+ *     '$Date: 2001-06-14 17:03:47 $'
+ * '$Revision: 1.18 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -330,7 +330,24 @@ public class DataPackageGUI extends javax.swing.JFrame
     //System.out.println(xmlString);
     try
     {
-      if(location.equals(DataPackage.METACAT))
+      boolean metacatloc = false;
+      boolean localloc = false;
+      boolean bothloc = false;
+      if(location.equals(DataPackage.BOTH))
+      {
+        metacatloc = true;
+        localloc = true;
+      }
+      else if(location.equals(DataPackage.METACAT))
+      {
+        metacatloc = true;
+      }
+      else if(location.equals(DataPackage.LOCAL))
+      {
+        localloc = true;
+      }
+      
+      if(metacatloc)
       { //save it to metacat
         MetacatDataStore mds = new MetacatDataStore(framework);
         int choice = JOptionPane.showConfirmDialog(null, 
@@ -346,50 +363,54 @@ public class DataPackageGUI extends javax.swing.JFrame
         if(id.trim().equals(dataPackage.getID().trim()))
         { //edit the package file
           String oldid = id;
-          id = a.incRev(id);
+          String newid = a.incRev(id);
           File f = fsds.saveTempFile(oldid, new StringReader(xmlString));
-          String newPackageFile = a.incRevInTriples(f, oldid, id);
-          mds.saveFile(id, new StringReader(newPackageFile), metacatpublic);
+          String newPackageFile = a.incRevInTriples(f, oldid, newid);
+          mds.saveFile(newid, new StringReader(newPackageFile), metacatpublic);
         }
         else
         { //edit another file in the package
           String oldid = id;
-          id = a.incRev(id);
-          mds.saveFile(id, new StringReader(xmlString), metacatpublic);
+          String newid = a.incRev(id);
+          mds.saveFile(newid, new StringReader(xmlString), metacatpublic);
           String newPackageId = a.incRev(dataPackage.getID());
           String newPackageFile = a.incRevInTriples(dataPackage.getTriplesFile(),
                                                     oldid,
-                                                    id);
+                                                    newid);
           mds.saveFile(newPackageId, new StringReader(newPackageFile), 
                        metacatpublic);
         }
       }
-      else if(location.equals(DataPackage.LOCAL))
+      
+      if(localloc)
       { //save it locally
         if(id.trim().equals(dataPackage.getID().trim()))
         { //we just edited the package file itself
           String oldid = id;
-          id = a.incRev(id);
+          String newid = a.incRev(id);
           File f = fsds.saveTempFile(oldid, new StringReader(xmlString));
-          String newPackageFile = a.incRevInTriples(f, oldid, id);
-          fsds.saveFile(id, new StringReader(newPackageFile), false);
+          String newPackageFile = a.incRevInTriples(f, oldid, newid);
+          fsds.saveFile(newid, new StringReader(newPackageFile), false);
         }
         else
         { //we edited a file in the package
           String oldid = id;
-          id = a.incRev(id);
-          fsds.saveFile(id, new StringReader(xmlString), false);
+          String newid = a.incRev(id);
+          fsds.saveFile(newid, new StringReader(xmlString), false);
           String newPackageId = a.incRev(dataPackage.getID());
           String newPackageFile = a.incRevInTriples(dataPackage.getTriplesFile(), 
                                                     oldid, 
-                                                    id);
+                                                    newid);
           fsds.saveFile(newPackageId, new StringReader(newPackageFile), false);
         }
       }
+      
     }
     catch(Exception e)
     {
-      framework.debug(0, "Error saving file "+ id + " to " + location);
+      framework.debug(0, "Error saving file "+ id + " to " + location +
+                         " --message: " + e.getMessage());
+      
       e.printStackTrace();
     }
   }

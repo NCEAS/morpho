@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-06-14 15:20:46 $'
- * '$Revision: 1.12 $'
+ *     '$Date: 2001-06-14 17:03:47 $'
+ * '$Revision: 1.13 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -210,7 +210,7 @@ public class MetacatDataStore extends DataStore
         fileText.append((char)c);
         c = file.read();
       }
-      
+      //System.out.println(fileText.toString());
       
       Properties prop = new Properties();
       prop.put("action", action);
