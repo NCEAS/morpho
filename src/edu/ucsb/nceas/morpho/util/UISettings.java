@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2004-03-18 00:23:34 $'
- * '$Revision: 1.19 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2004-03-20 20:45:14 $'
+ * '$Revision: 1.20 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -405,6 +405,9 @@ public class UISettings
 
     public static final Icon SAVE_ICON
             = getAsImageIcon("/toolbarButtonGraphics/general/Save16.gif");
+
+    public static final Icon SAVE_QUERY_ICON
+            = getAsImageIcon("/toolbarButtonGraphics/general/SaveAs16.gif");
 
 
     public static final Icon NEW_PROFILE_ICON

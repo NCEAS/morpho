@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2003-12-24 04:29:31 $'
- * '$Revision: 1.103 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2004-03-20 20:44:50 $'
+ * '$Revision: 1.104 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -127,7 +127,7 @@ public class QueryPlugin implements PluginInterface, ConnectionListener,
     // Action for save query
     SaveQueryCommand saveCommand = new SaveQueryCommand(morpho);
     GUIAction saveQueryItemAction
-              = new GUIAction("Save Search", UISettings.SAVE_ICON, saveCommand);
+              = new GUIAction("Save Search", UISettings.SAVE_QUERY_ICON, saveCommand);
     saveQueryItemAction.setToolTipText("Save search");
     saveQueryItemAction.setMenuItemPosition(2);
     saveQueryItemAction.setMenu("Search", 2);
