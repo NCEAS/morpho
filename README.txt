@@ -60,7 +60,7 @@ If this is the first time you have launched Morpho, you will see a "New Profile"
 
 When asked for information about your KNB Metacat account, simply fill in your username and organization from your KNB account.  If you do not have a  KNB account you can get one at the KNB website (http://knb.ecoinformatics.org) by filling out a simple registration form.  This account allows you to  collaborate with other researchers and share and exchange data securely.
 
-Further help information, including a tutorial, can be found in the Morpho "Help..." menu once you can see the main screen.
+Further help information, including a tutorial, can be found in the Morpho "Help..." menu once you can see the main screen. [You can also use a browser to open the file 'index.html' which is in the "docs/user/" subdirectory.]
 
 The Knowledge Network for Biocomplexity (KNB)
 ---------------------------------------------
