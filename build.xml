@@ -6,7 +6,7 @@
   *    Copyright: 2000 Regents of the University of California and the
   *               National Center for Ecological Analysis and Synthesis
   *  For Details: http://www.nceas.ucsb.edu/
-  *    File Info: '$Id: build.xml,v 1.18 2001-05-25 14:57:25 berkley Exp $'
+  *    File Info: '$Id: build.xml,v 1.19 2001-06-01 00:56:04 jones Exp $'
   *
   *  Build file for the Ant cross-platform build system for metacat
   *  See http://jakarta.apache.org for details on Ant
@@ -179,4 +179,12 @@
      </java>
    </target>
 
+   <target name="itis" depends="install">
+     <java classname="edu.ucsb.nceas.itis.Itis"
+           classpath="${cpath}:${morpho}"
+           fork="yes">
+           <arg value="Ursus"/>
+     </java>
+   </target>
+   
 </project>
