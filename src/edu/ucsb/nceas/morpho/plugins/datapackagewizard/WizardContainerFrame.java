@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: sgarg $'
- *     '$Date: 2004-01-09 05:51:54 $'
- * '$Revision: 1.36 $'
+ *     '$Date: 2004-01-13 21:59:31 $'
+ * '$Revision: 1.37 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -406,9 +406,10 @@ public class WizardContainerFrame extends JFrame {
         = pagesList.indexOf(pageLib.getPage(DataPackageWizardInterface.PROJECT));
     int USAGE_RIGHTS
         = pagesList.indexOf(pageLib.getPage(DataPackageWizardInterface.USAGE_RIGHTS));
+    int TEMPORAL
+        = pagesList.indexOf(pageLib.getPage(DataPackageWizardInterface.TEMPORAL));
     int ACCESS
         = pagesList.indexOf(pageLib.getPage(DataPackageWizardInterface.ACCESS));
-
     int DATA_LOCATION
         = pagesList.indexOf(pageLib.getPage(DataPackageWizardInterface.DATA_LOCATION));
     int TEXT_IMPORT_WIZARD
@@ -451,6 +452,11 @@ public class WizardContainerFrame extends JFrame {
 //KEYWORDS:
     if (KEYWORDS>=0)            {
       addPageDataToResultsMap((WizardPage)(pagesList.get(KEYWORDS)),wizData);
+    }
+
+//TEMPORAL:
+    if (TEMPORAL>=0)        {
+      addPageDataToResultsMap((WizardPage)(pagesList.get(TEMPORAL)),wizData);
     }
 
 //INTELLECTUAL RIGHTS:
@@ -498,7 +504,7 @@ public class WizardContainerFrame extends JFrame {
 
 
     Log.debug(45, "\n\n********** Wizard finished: NVPs:");
-    Log.debug(10, wizData.toString());
+    Log.debug(45, wizData.toString());
 
     ////////////////////////////////////////////////////////////////////////////
     // this is the end of the page processing - wizData OrderedMap should now

@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: sgarg $'
- *     '$Date: 2004-01-09 23:03:50 $'
- * '$Revision: 1.5 $'
+ *     '$Date: 2004-01-13 21:59:31 $'
+ * '$Revision: 1.6 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -56,11 +56,11 @@ public class Temporal extends AbstractWizardPage{
   // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
   private final String pageID     = DataPackageWizardInterface.TEMPORAL;
-  private final String nextPageID = DataPackageWizardInterface.PARTY_INTRO;
+  private final String nextPageID = "";
   private final String title      = "Temporal Coverage";
   private final String subtitle   = "";
   private final String xPathRoot  = "/eml:eml/dataset/coverage/temporalCoverage[";
-  private final String pageNumber  = "*";
+  private final String pageNumber  = "0";
 
   private final String[] colNames =  {"Time Coverages"};
   private final Object[] editors  =   null; //makes non-directly-editable
@@ -70,7 +70,6 @@ public class Temporal extends AbstractWizardPage{
   // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
   public Temporal() { init(); }
-
 
 
   /**
@@ -152,9 +151,9 @@ public class Temporal extends AbstractWizardPage{
 
     List selRowList = timespanList.getSelectedRowList();
 
-    if (selRowList==null || selRowList.size() < 3) return;
+    if (selRowList==null || selRowList.size() < 2) return;
 
-    Object dialogObj = selRowList.get(2);
+    Object dialogObj = selRowList.get(1);
 
     if (dialogObj==null || !(dialogObj instanceof TemporalPage)) return;
     TemporalPage editTemporalPage = (TemporalPage)dialogObj;
@@ -219,7 +218,6 @@ public class Temporal extends AbstractWizardPage{
   public OrderedMap getPageData() {
 
     returnMap.clear();
-
     int index = 1;
     Object  nextRowObj      = null;
     List    nextRowList     = null;
@@ -238,8 +236,8 @@ public class Temporal extends AbstractWizardPage{
 
       nextRowList = (List)nextRowObj;
       //column 2 is user object - check it exists and isn't null:
-      if (nextRowList.size()<3)     continue;
-      nextUserObject = nextRowList.get(2);
+      if (nextRowList.size()<2)     continue;
+      nextUserObject = nextRowList.get(1);
       if (nextUserObject==null) continue;
 
       nextTemporalPage = (TemporalPage)nextUserObject;

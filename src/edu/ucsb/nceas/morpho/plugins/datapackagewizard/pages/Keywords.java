@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: sgarg $'
- *     '$Date: 2004-01-09 23:03:50 $'
- * '$Revision: 1.23 $'
+ *     '$Date: 2004-01-13 21:59:31 $'
+ * '$Revision: 1.24 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -55,7 +55,7 @@ public class Keywords extends AbstractWizardPage{
   // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
   private final String pageID     = DataPackageWizardInterface.KEYWORDS;
-  private final String nextPageID = DataPackageWizardInterface.TEMPORAL;
+  private final String nextPageID = DataPackageWizardInterface.PARTY_INTRO;
   private final String title      = "Keywords";
   private final String subtitle   = "";
   private final String xPathRoot  = "/eml:eml/dataset/keywordSet[";

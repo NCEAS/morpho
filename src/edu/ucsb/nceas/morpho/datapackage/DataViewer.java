@@ -4,9 +4,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2004-01-08 19:19:24 $'
- * '$Revision: 1.97 $'
+ *   '$Author: sgarg $'
+ *     '$Date: 2004-01-13 21:59:31 $'
+ * '$Revision: 1.98 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -80,7 +80,7 @@ import edu.ucsb.nceas.morpho.util.StoreStateChangeEvent;
  * associated Phyical and Attribute modules of eml.
  * Currently, eml2-beta 1.6 is assumed. (some features are 'hard-coded'
  * in this class and will need to be updated for future versions.)
- * 
+ *
  * A PersistentTableModel is used so that very large tables can be
  * displayed (millions of rows). Data editing is also enabled with
  * the ability to add rows and columns. Columns can also be sorted.
@@ -90,11 +90,11 @@ import edu.ucsb.nceas.morpho.util.StoreStateChangeEvent;
  *
  * Also has ability to Cut/Copy/Paste selections from the table.
  */
-public class DataViewer extends javax.swing.JPanel 
+public class DataViewer extends javax.swing.JPanel
             implements EditingCompleteListener, StoreStateChangeEvent
 {
-  
-    
+
+
   /**popup menu for right clicks*/
   private JPopupMenu popup;
   /**menu items for the popup menu*/
@@ -148,47 +148,47 @@ public class DataViewer extends javax.swing.JPanel
    *   id of the file containing the data
    */
    String dataFileId = null;
-   
+
   /**
    *   file containing the entity metadata
    */
    File entityFile = null;
-     
+
   /**
    *   file containing the attribute metadata
    */
    File attributeFile = null;
-   
+
   /**
    *   file containing the physical metadata
    */
    File physicalFile = null;
-  
+
   /**
    *  entity file Id
    */
    String entityFileId = null;
-  
+
   /**
    * data format
    */
    String format = "";
-   
+
   /**
    *  field delimiter (hex string)
    */
    String field_delimiter = "";
-     
+
   /**
    * number of records
    */
    int num_records;
-   
+
   /**
    * delimiter
    */
    String delimiter_string = "";
-   
+
   /**
    * numHeaderLines
    */
@@ -198,22 +198,22 @@ public class DataViewer extends javax.swing.JPanel
    * num_header_lines
    */
    int num_header_lines = 0;
-   
+
   /**
    * number of columns
    */
    int num_columns;
-    
+
   /**
    * Vector of column lablels
    */
   Vector column_labels;
-     
+
 	/**
 	 * number of parsed lines in file
 	 */
-	int nlines; 
-	
+	int nlines;
+
 	/**
 	 *  max nlines
 	 */
@@ -222,7 +222,7 @@ public class DataViewer extends javax.swing.JPanel
 	/**
 	 * array of line strings
 	 */
-	String[] lines; 
+	String[] lines;
 
   /**
 	 * vector containing column Title strings
@@ -232,7 +232,7 @@ public class DataViewer extends javax.swing.JPanel
 	 * vector of vectors with table data
 	 */
 	Vector vec;
-	
+
 	/**
 	 * The DataPackage that contains the data
 	 */
@@ -242,10 +242,10 @@ public class DataViewer extends javax.swing.JPanel
 	 * The AbstractDataPackage that contains the data (eml2.0.0)
 	 */
 	 AbstractDataPackage adp = null;
-   
+
    /**
 	 *  The index of the entity within the AbstractDataPackage
-   *  Note that we do not need an entityfile, etc when using 
+   *  Note that we do not need an entityfile, etc when using
    *  the AbstractDataPackage!
 	 */
 	 int entityIndex = -1;
@@ -254,15 +254,15 @@ public class DataViewer extends javax.swing.JPanel
 	 * value of entityName element
 	 */
   String entityName = "";
-   
+
  	/**
 	 * value of entityDescription element
 	 */
   String entityDescription = "";
-  
+
   // Vector to store stateChange event
   private Vector storedStateChangeEventlist = new Vector();
-    
+
   boolean missing_metadata_flag = false;
 
     // assorted gui components
@@ -276,7 +276,7 @@ public class DataViewer extends javax.swing.JPanel
 	JLabel DataIDLabel = new javax.swing.JLabel();
 	JButton CancelButton = new javax.swing.JButton();
 	JButton UpdateButton = new javax.swing.JButton();
-    
+
   JPanel controlPanel;
   JButton controlOK;
   JButton controlCancel;
@@ -296,12 +296,12 @@ public class DataViewer extends javax.swing.JPanel
    * the data table
    */
   JTable table;
-    
+
   int sortdirection = 1;
   boolean columnAddFlag = true;
-    
+
   Document attributeDoc;
-  
+
   Morpho morpho;
   ConfigXML config;
   String datadir;
@@ -310,10 +310,10 @@ public class DataViewer extends javax.swing.JPanel
   String tempdir;
   String dataString = "";
   String dataID = "";
-    
-    
+
+
   DataViewer thisRef;
-  
+
   // Display data view or not
   private boolean showDataView = true;
 
@@ -349,27 +349,27 @@ public class DataViewer extends javax.swing.JPanel
     String updatetext = "Saves all data changes to new version of the Data Package";
     UpdateButton.setToolTipText(updatetext);
 		ButtonControlPanel.add(UpdateButton);
-    
+
     headerLabel = new JLabel("DataTitle");
     headerLabel.setForeground(Color.white);
     HeaderPanel.setBackground(Color.gray);
     HeaderPanel.add(headerLabel);
 		DataViewerPanel.add(BorderLayout.NORTH, HeaderPanel);
-    
+
 	  thisRef = this;
-	
+
 // REGISTER_LISTENERS for Cancel and Update buttons that
 // appear at bottom of DataViewer table. These buttons
-// 'Cancel' or 'Update' changes made in the data table  
+// 'Cancel' or 'Update' changes made in the data table
 		SymAction lSymAction = new SymAction();
 		CancelButton.addActionListener(lSymAction);
 		UpdateButton.addActionListener(lSymAction);
-    
-	
+
+
 //Build the popup menu for the right click functionality
     popup = new JPopupMenu();
     // Create a add documentation menu item
-    addDocumentationAction = new GUIAction("Add Documentation...", null, 
+    addDocumentationAction = new GUIAction("Add Documentation...", null,
                                           new AddDocumentationCommand());
     addDocumentation = new JMenuItem(addDocumentationAction);
     popup.add(addDocumentation);
@@ -378,17 +378,17 @@ public class DataViewer extends javax.swing.JPanel
     createNewDatatable = new JMenuItem(createNewDatatableAction);
     popup.add(createNewDatatable);
     deleteDatatableAction = new GUIAction("Delete Current Datatable", null,
-                                                new DeleteTableCommand());  
+                                                new DeleteTableCommand());
     deleteDatatable = new JMenuItem(deleteDatatableAction);
     popup.add(deleteDatatable);
     popup.add(new JSeparator());
-    
-    sortAction = new GUIAction("Sort by Selected Column", null, 
+
+    sortAction = new GUIAction("Sort by Selected Column", null,
                                                 new SortDataTableCommand());
     sortBySelectedColumn = new JMenuItem(sortAction);
     popup.add(sortBySelectedColumn);
     popup.add(new JSeparator());
-    
+
     insertRowAfterAction = new GUIAction("Insert Row After Selection", null,
                                   new InsertRowCommand(InsertRowCommand.AFTER));
     insertRowAfter = new JMenuItem(insertRowAfterAction);
@@ -402,12 +402,12 @@ public class DataViewer extends javax.swing.JPanel
     deleteRow = new JMenuItem(deleteRowAction);
     popup.add(deleteRow);
     popup.add(new JSeparator());
-    
-    insertColumnAfterAction = new GUIAction("Insert Column After Selection", 
+
+    insertColumnAfterAction = new GUIAction("Insert Column After Selection",
                       null, new InsertColumnCommand(InsertColumnCommand.AFTER));
     insertColumnAfter = new JMenuItem(insertColumnAfterAction);
     popup.add(insertColumnAfter);
-    insertColumnBeforeAction = new GUIAction("Insert Column Before Selection", 
+    insertColumnBeforeAction = new GUIAction("Insert Column Before Selection",
                      null, new InsertColumnCommand(InsertColumnCommand.BEFORE));
     insertColumnBefore = new JMenuItem(insertColumnBeforeAction);
     popup.add(insertColumnBefore);
@@ -416,12 +416,12 @@ public class DataViewer extends javax.swing.JPanel
     deleteColumn = new JMenuItem(deleteColumnAction);
     popup.add(deleteColumn);
     popup.add(new JSeparator());
-    
+
     editColumnMetadataAction = new GUIAction("Edit Column Metadata", null,
                                new EditColumnMetaDataCommand());
     editColumnMetadata = new JMenuItem(editColumnMetadataAction);
     popup.add(editColumnMetadata);
-  
+
 	}
 
     /*
@@ -433,17 +433,17 @@ public class DataViewer extends javax.swing.JPanel
         this.morpho = morpho;
         config = morpho.getConfiguration();
         ConfigXML profile = morpho.getProfile();
-        String profileDirName = config.getConfigDirectory() + 
+        String profileDirName = config.getConfigDirectory() +
                                 File.separator +
                                 config.get("profile_directory", 0) +
-                                File.separator + 
+                                File.separator +
                                 profile.get("profilename", 0);
         datadir = profileDirName + File.separator + profile.get("datadir", 0);
         tempdir = profileDirName + File.separator + profile.get("tempdir", 0);
         cachedir = profileDirName + File.separator + profile.get("cachedir", 0);
         separator = profile.get("separator", 0);
         separator = separator.trim();
-        
+
     }
 
     /*
@@ -454,9 +454,9 @@ public class DataViewer extends javax.swing.JPanel
         this();
         this.dataID = dataID;
         this.dataString = dataString;
-        
+
     }
-    
+
     /*
      * contructor which includes data to be display as a File
      */
@@ -467,7 +467,7 @@ public class DataViewer extends javax.swing.JPanel
         config = morpho.getConfiguration();
         ConfigXML profile = morpho.getProfile();
         String profileDirName = config.getConfigDirectory() + File.separator +
-                            config.get("profile_directory", 0) + 
+                            config.get("profile_directory", 0) +
                             File.separator +
                             profile.get("profilename", 0);
         datadir = profileDirName + File.separator + profile.get("datadir", 0);
@@ -477,19 +477,19 @@ public class DataViewer extends javax.swing.JPanel
         separator = separator.trim();
         this.dataFile = dataFile;
     }
-    
+
     public void setDataFile(File file) {
       this.dataFile = file;
     }
-    
+
     public void setDataFileId(String dfid) {
       this.dataFileId = dfid;
     }
-   
+
     public PersistentVector getPV() {
-      return pv;  
+      return pv;
     }
-    
+
     /**
      * Method to get the show data view
      */
@@ -497,7 +497,7 @@ public class DataViewer extends javax.swing.JPanel
     {
       return showDataView;
     }//getShowDataView
-    
+
     /**
      * Method to get data table
      */
@@ -505,15 +505,15 @@ public class DataViewer extends javax.swing.JPanel
     {
       return table;
     }
-        
+
     /**
      * Method to get the attribute documentation
-     */ 
+     */
     public Document getAttributeDoc()
     {
       return attributeDoc;
     }
-    
+
     /**
      * Method to get the column_lables
      */
@@ -529,7 +529,7 @@ public class DataViewer extends javax.swing.JPanel
     {
       column_labels = collabels;
     }
-    
+
     /**
      * Method to get field_delimiter string
      */
@@ -537,7 +537,7 @@ public class DataViewer extends javax.swing.JPanel
     {
       return delimiter_string;
     }
-    
+
     /**
      * Method to get table panel
      */
@@ -545,7 +545,7 @@ public class DataViewer extends javax.swing.JPanel
     {
       return TablePanel;
     }
-    
+
     /**
      * Method to get persistent talbe model
      */
@@ -553,7 +553,7 @@ public class DataViewer extends javax.swing.JPanel
     {
       return ptm;
     }
-    
+
     /**
      * Method to get morpho
      */
@@ -561,16 +561,16 @@ public class DataViewer extends javax.swing.JPanel
     {
       return morpho;
     }
-    
+
     /**
      * Method to get EntityFileid
-     */ 
+     */
     public String getEntityFileId()
     {
       return entityFileId;
     }
-    
-  
+
+
     /**
      * Method to get sort direction
      */
@@ -578,7 +578,7 @@ public class DataViewer extends javax.swing.JPanel
     {
       return sortdirection;
     }
-    
+
     /**
      * Method to set sort direction
      * @param direction the direction of sorting
@@ -587,7 +587,7 @@ public class DataViewer extends javax.swing.JPanel
     {
       sortdirection = direction;
     }
-   
+
    /**
     * Method to get text flag
     */
@@ -595,13 +595,13 @@ public class DataViewer extends javax.swing.JPanel
    {
      return text_flag;
    }
-   
-   
+
+
    public void setEntityIndex(int indx) {
      entityIndex = indx;
    }
-    
-    
+
+
    public int getEntityIndex() {
      return this.entityIndex;
    }
@@ -616,7 +616,7 @@ public class DataViewer extends javax.swing.JPanel
         if (entityIndex == -1) {
           Log.debug(1, "Entity index has not been set!");
           return;
-        } else {  
+        } else {
           Node[] physicalArray = adp.getPhysicalArray(entityIndex);
           if (physicalArray.length==0) {
             Log.debug(15, "Physical information about the data is missing!");
@@ -632,9 +632,9 @@ public class DataViewer extends javax.swing.JPanel
           Log.debug(20, "delimiter_string: "+delimiter_string);
           String nhl = adp.getPhysicalNumberHeaderLines(entityIndex, 0);
           if (nhl.length()>0) {
-            this.numHeaderLines = nhl; 
+            this.numHeaderLines = nhl;
           } else {
-            this.numHeaderLines = "0"; 
+            this.numHeaderLines = "0";
           }
           Log.debug(20, "numHeaderLines: "+numHeaderLines);
           }
@@ -650,16 +650,16 @@ public class DataViewer extends javax.swing.JPanel
           entityDescription = adp.getEntityDescription(entityIndex).trim();
           if (entityName.length()>0) {
             headerLabel.setText(entityName);
-          } 
+          }
           if (entityDescription.length()>0) {
             headerLabel.setText(entityDescription);
-          } 
+          }
           Node[] attributeArray = adp.getAttributeArray(entityIndex);
           if (attributeArray.length==0) {
             Log.debug(15, "Attribute information about the data is missing!");
             missing_metadata_flag = true;
           } else {
-            column_labels = new Vector(); 
+            column_labels = new Vector();
             for (int i=0;i<attributeArray.length;i++) {
               String unitString = "";
               String dataTypeString = "";
@@ -668,7 +668,7 @@ public class DataViewer extends javax.swing.JPanel
               // unit and dataType node values, which are NOT required
               dataTypeString = adp.getAttributeDataType(entityIndex, i);
               unitString = adp.getAttributeUnit(entityIndex, i);
-              
+
               temp = "<html><font face=\"Courier\"><center><small>"+dataTypeString+"<br>"+unitString
                                                   +"<br></small><b>"
                                                   +temp+"</b></font></center></html>";
@@ -676,20 +676,20 @@ public class DataViewer extends javax.swing.JPanel
             }
           }
         }
-        
-      } 
-      
+
+      }
+
       // now examine format info and see if we want to simply display a text
       // file, create a table, or display an image
       if (missing_metadata_flag) {
-        // try displaying as text since don't know what else to do 
-        
+        // try displaying as text since don't know what else to do
+
         // add text display here!!!
         Log.debug(30, "attempting to display as text");
         buildTextDisplay();
       }
-      else { 
-//Log.debug(1,"format: "+format);        
+      else {
+//Log.debug(1,"format: "+format);
         if (format.indexOf("text")>-1){
           text_flag=true;
         }
@@ -708,7 +708,7 @@ public class DataViewer extends javax.swing.JPanel
         else if ((format.trim()).length()<1) {
           Log.debug(1, "Format string in physical module is empty!");
         }
-        
+
         boolean image_flag = false;
         if (format.indexOf("image")>-1){
           image_flag=true;
@@ -737,7 +737,7 @@ public class DataViewer extends javax.swing.JPanel
         else if (format.indexOf("JPG")>-1) {
           image_flag=true;
         }
-        
+
         if (image_flag) {
           // try to display image here
           String filename = dataFile.getPath();
@@ -747,14 +747,14 @@ public class DataViewer extends javax.swing.JPanel
           DataScrollPanel.getViewport().removeAll();
           DataScrollPanel.getViewport().add(imagelabel);
           /*StateChangeMonitor.getInstance().notifyStateChange(
-               new StateChangeEvent( 
-               DataViewerPanel, 
+               new StateChangeEvent(
+               DataViewerPanel,
                StateChangeEvent.CREATE_NONEDITABLE_ENTITY_DATAPACKAGE_FRAME));*/
          // Store this event
-         storingStateChangeEvent( new StateChangeEvent( 
-               DataViewerPanel, 
+         storingStateChangeEvent( new StateChangeEvent(
+               DataViewerPanel,
                StateChangeEvent.CREATE_NONEDITABLE_ENTITY_DATAPACKAGE_FRAME));
-   
+
         }
         else if (text_flag) {
           // try building a table
@@ -762,13 +762,13 @@ public class DataViewer extends javax.swing.JPanel
             if ((field_delimiter.trim().length()>0)&&((dataFile.length()>0))) {
               buildTable();
               /*StateChangeMonitor.getInstance().notifyStateChange(
-                   new StateChangeEvent( 
-                   DataViewerPanel, 
+                   new StateChangeEvent(
+                   DataViewerPanel,
                   StateChangeEvent.CREATE_EDITABLE_ENTITY_DATAPACKAGE_FRAME));*/
-              storingStateChangeEvent( new StateChangeEvent( 
+              storingStateChangeEvent( new StateChangeEvent(
                     DataViewerPanel,
                     StateChangeEvent.CREATE_EDITABLE_ENTITY_DATAPACKAGE_FRAME));
-              
+
               /*tcuta.setSource(table);
               tca.setSource(table);
               tpa.setTarget(table);*/
@@ -780,26 +780,26 @@ public class DataViewer extends javax.swing.JPanel
               field_delimiter = ",";
               buildTable();
               /*StateChangeMonitor.getInstance().notifyStateChange(
-                  new StateChangeEvent( 
-                  DataViewerPanel, 
+                  new StateChangeEvent(
+                  DataViewerPanel,
                   StateChangeEvent.CREATE_EDITABLE_ENTITY_DATAPACKAGE_FRAME));*/
-              storingStateChangeEvent( new StateChangeEvent( 
+              storingStateChangeEvent( new StateChangeEvent(
                     DataViewerPanel,
                     StateChangeEvent.CREATE_EDITABLE_ENTITY_DATAPACKAGE_FRAME));
-              
+
               //MouseListener popupListener = new PopupListener();
-              //table.addMouseListener(popupListener);              
+              //table.addMouseListener(popupListener);
             }
             else {
               buildTextDisplay();
               /*StateChangeMonitor.getInstance().notifyStateChange(
-                 new StateChangeEvent( 
-                 DataViewerPanel, 
+                 new StateChangeEvent(
+                 DataViewerPanel,
                StateChangeEvent.CREATE_NONEDITABLE_ENTITY_DATAPACKAGE_FRAME));*/
               storingStateChangeEvent( new StateChangeEvent(
                  DataViewerPanel,
                  StateChangeEvent.CREATE_NONEDITABLE_ENTITY_DATAPACKAGE_FRAME));
-                
+
             }
           }
         }
@@ -808,34 +808,34 @@ public class DataViewer extends javax.swing.JPanel
           // Couldn't show data view
           showDataView = false;
           /*StateChangeMonitor.getInstance().notifyStateChange(
-                 new StateChangeEvent( 
-                 DataViewerPanel, 
+                 new StateChangeEvent(
+                 DataViewerPanel,
                StateChangeEvent.CREATE_NONEDITABLE_ENTITY_DATAPACKAGE_FRAME));*/
           storingStateChangeEvent( new StateChangeEvent(
                  DataViewerPanel,
                  StateChangeEvent.CREATE_NONEDITABLE_ENTITY_DATAPACKAGE_FRAME));
-        
+
         }
       }
-      
+
     }
-    
+
     public void setAbstractDataPackage(AbstractDataPackage adp) {
       this.adp = adp;
     }
-    
+
     public AbstractDataPackage getAbstractDataPackage() {
       return this.adp;
     }
-         
+
     public void setAttributeFile(File attr) {
         this.attributeFile = attr;
     }
-    
+
     public void setEntityFile(File ent) {
         this.entityFile = ent;
     }
-    
+
     public void setEntityFileId(String id) {
         this.entityFileId = id;
     }
@@ -844,14 +844,14 @@ public class DataViewer extends javax.swing.JPanel
     public void setPhysicalFile(File phys) {
         this.physicalFile = phys;
     }
-        
-    
+
+
     public void setDataID(String dataID) {
         this.dataID = dataID;
         //setTitle("DataFile: "+dataID);
         DataIDLabel.setText("DataFile: "+dataID);
     }
-    
+
     public void getEntityInfo()  {
       if (entityFile==null) {
           Log.debug(15, "Entity information about the data is missing!");
@@ -860,9 +860,9 @@ public class DataViewer extends javax.swing.JPanel
         // get number of records, etc
         Vector numRecordsPath = new Vector();
         numRecordsPath.addElement("table-entity/numberOfRecords");
-        NodeList numRecordsList = PackageUtil.getPathContent(entityFile, 
-                                                     numRecordsPath, 
-                                                     morpho);  
+        NodeList numRecordsList = PackageUtil.getPathContent(entityFile,
+                                                     numRecordsPath,
+                                                     morpho);
         if(numRecordsList != null && numRecordsList.getLength() != 0)
         {
           String s = numRecordsList.item(0).getFirstChild().getNodeValue();
@@ -873,12 +873,12 @@ public class DataViewer extends javax.swing.JPanel
             catch(Exception w) {}
           }
         }
-        
+
         Vector entityNamesPath = new Vector();
         entityNamesPath.addElement("table-entity/entityName");
-        NodeList entityNamesList = PackageUtil.getPathContent(entityFile, 
-                                                     entityNamesPath, 
-                                                     morpho);  
+        NodeList entityNamesList = PackageUtil.getPathContent(entityFile,
+                                                     entityNamesPath,
+                                                     morpho);
         if(entityNamesList != null && entityNamesList.getLength() != 0)
         {
           String s = entityNamesList.item(0).getFirstChild().getNodeValue();
@@ -889,12 +889,12 @@ public class DataViewer extends javax.swing.JPanel
             catch(Exception w) {}
           }
         }
- 
+
         Vector entityDescriptionPath = new Vector();
         entityDescriptionPath.addElement("table-entity/entityDescription");
-        NodeList entityDescriptionList = PackageUtil.getPathContent(entityFile, 
-                                                     entityDescriptionPath, 
-                                                     morpho);  
+        NodeList entityDescriptionList = PackageUtil.getPathContent(entityFile,
+                                                     entityDescriptionPath,
+                                                     morpho);
         if(entityDescriptionList != null && entityDescriptionList.getLength() != 0)
         {
           String s = entityDescriptionList.item(0).getFirstChild().getNodeValue();
@@ -907,10 +907,10 @@ public class DataViewer extends javax.swing.JPanel
         }
         if (entityName.length()>0) {
           headerLabel.setText(entityName);
-        } 
+        }
         if (entityDescription.length()>0) {
           headerLabel.setText(entityDescription);
-        } 
+        }
       }
     }
 
@@ -925,11 +925,11 @@ public class DataViewer extends javax.swing.JPanel
     // on the PC; use the trigger flag to record a trigger, but do not show popup until the
     // mouse released event (DFH)
     boolean trigger = false;
-    
-    public void mousePressed(MouseEvent e) 
+
+    public void mousePressed(MouseEvent e)
     {
       //select the clicked row first
-      
+
       /*
       table.clearSelection();
       int selrow = table.rowAtPoint(new Point(e.getX(), e.getY()));
@@ -938,33 +938,33 @@ public class DataViewer extends javax.swing.JPanel
       table.setEditingRow(selrow);
       table.setColumnSelectionInterval(selcol, selcol);
       */
-      if (e.isPopupTrigger()) 
+      if (e.isPopupTrigger())
       {
         trigger = true;
-      }  
+      }
     }
-    
-    public void mouseReleased(MouseEvent e) 
+
+    public void mouseReleased(MouseEvent e)
     {
       maybeShowPopup(e);
     }
 
-    private void maybeShowPopup(MouseEvent e) 
+    private void maybeShowPopup(MouseEvent e)
     {
-      if(e.isPopupTrigger() || trigger) 
-      {     
-        
+      if(e.isPopupTrigger() || trigger)
+      {
+
 	      trigger = false;
         popup.show(e.getComponent(), e.getX(), e.getY());
-        
+
       }
     }
   }
-  
-  
+
+
 	/**
 	 * parses a line of text data into a Vector of column data for that row
-	 * 
+	 *
 	 * @param str a line of string data from input
 	 * @return a vector with each elements being column data for the row
 	 */
@@ -1025,13 +1025,13 @@ public class DataViewer extends javax.swing.JPanel
     delimiter_string = str;
 	  return str;
 	}
-	
-  
+
+
 
 
     /**
      * parses data input string into an array of lines (Strings)
-     * 
+     *
      * @param s input file
      */
 
@@ -1047,17 +1047,17 @@ public class DataViewer extends javax.swing.JPanel
           try {
             while (((temp = in.readLine())!=null)&&(nlines<nlines_max)) {
                 if (temp.length()>0) {   // do not count blank lines
-                nlines++;} 
+                nlines++;}
             }
             in.close();
           }
 	  catch (Exception e) {};
         }
         catch (Exception w) {};
-        
+
         lines = new String[nlines];
           // now read again since we know how many lines
-        try{  
+        try{
           BufferedReader in1 = new BufferedReader(new FileReader(f));
           try {
             for (i=0;i<nlines;i++) {
@@ -1071,7 +1071,7 @@ public class DataViewer extends javax.swing.JPanel
           catch (Exception e) {};
         }
         catch (Exception w1) {};
-    }            
+    }
 
 
     /**
@@ -1082,18 +1082,18 @@ public class DataViewer extends javax.swing.JPanel
         ta.setEditable(false);
         parseFile();
         for (int i=0;i<nlines;i++) {
-            ta.append(lines[i]+"\n");   
+            ta.append(lines[i]+"\n");
         }
         ta.setCaretPosition(0);
         DataScrollPanel.getViewport().removeAll();
         DataScrollPanel.getViewport().add(ta);
-        
+
      }
 
 	/**
 	 * builds JTable from input data and includes event code for handling clicks on
 	 * table (e.g. column selection)
-	 * 
+	 *
 	 * @param cTitles
 	 * @param data
 	 */
@@ -1104,7 +1104,7 @@ public class DataViewer extends javax.swing.JPanel
     // is used (DFH)
     Integer temp = new Integer(numHeaderLines);
     if (temp!=null) {
-      num_header_lines = temp.intValue();  
+      num_header_lines = temp.intValue();
     }
 
 	  vec = new Vector();
@@ -1117,7 +1117,7 @@ public class DataViewer extends javax.swing.JPanel
       field_delimiter = ",";
       String[] row = new String[column_labels.size()];
       for (int ii=0;ii<column_labels.size();ii++) {
-        row[ii] = "";  
+        row[ii] = "";
       }
       pv.initEmpty(row);
       pv.setFieldDelimiter(field_delimiter);
@@ -1128,13 +1128,13 @@ public class DataViewer extends javax.swing.JPanel
     ptm = new PersistentTableModel(pv, column_labels);
     ptm.setFieldDelimiter(field_delimiter);
     table.setModel(ptm);
-    
+
     table.setColumnSelectionAllowed(true);
     table.setRowSelectionAllowed(true);
     table.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
     (table.getTableHeader()).setReorderingAllowed(false);
     table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-    
+
     table.registerKeyboardAction (new GUIAction("Copy", null, new TableCopyCommand()),
                           KeyStroke.getKeyStroke("ctrl C"),
                           JComponent.WHEN_FOCUSED);
@@ -1144,39 +1144,39 @@ public class DataViewer extends javax.swing.JPanel
     table.registerKeyboardAction (new GUIAction("Cut", null, new TableCutCommand()),
                           KeyStroke.getKeyStroke("ctrl X"),
                           JComponent.WHEN_FOCUSED);
-      
+
     DataScrollPanel.getViewport().removeAll();
     DataScrollPanel.getViewport().add(table);
-    
+
     JTableHeader header = table.getTableHeader();
     header.addMouseListener(new HeaderMouseListener());
     MouseListener popupListener = new PopupListener();
-    table.addMouseListener(popupListener);  
+    table.addMouseListener(popupListener);
     if (table.getRowCount()>0) {
         table.setRowSelectionInterval(0,0);
         table.setColumnSelectionInterval(0,0);
     }
     setUpDelimiterEditor(table, field_delimiter, TablePanel);
-   
+
 	}
-  
+
     /*
    * Method to set a table's interger and string column editor
    */
    private void setUpDelimiterEditor(JTable jtable, String delimiter,
-                                                         JPanel pane) 
+                                                         JPanel pane)
    {
       //Set up the editor for the integer and string cells.
       int columns = jtable.getColumnCount();
-      final DelimiterField delimiterField = 
+      final DelimiterField delimiterField =
                               new DelimiterField(pane, delimiter, "", columns);
       delimiterField.setHorizontalAlignment(DelimiterField.RIGHT);
 
       DefaultCellEditor delimiterEditor =
-            new DefaultCellEditor(delimiterField) 
+            new DefaultCellEditor(delimiterField)
             {
                 //Override DefaultCellEditor's getCellEditorValue method
-                public Object getCellEditorValue() 
+                public Object getCellEditorValue()
                 {
                     return new String(delimiterField.getValue());
                 }
@@ -1187,10 +1187,10 @@ public class DataViewer extends javax.swing.JPanel
           columnModel.getColumn(j).setCellEditor(delimiterEditor);
           columnModel.getColumn(j).setPreferredWidth(85);
        }
-     
+
     }
 
- 
+
 
 	class SymAction implements java.awt.event.ActionListener
 	{
@@ -1208,7 +1208,7 @@ public class DataViewer extends javax.swing.JPanel
 	{
 // following is simply a test to see if the Log function in the
 // PresistentTableModel works
-/*    
+/*
 		Stack st = ptm.getLogStack();
     while (!st.empty()) {
       String[] temp = (String[])st.pop();
@@ -1219,11 +1219,11 @@ public class DataViewer extends javax.swing.JPanel
    }
 // the init() function will create a new PersistentTableVector, thus
 // destroying the Log
-*/   
+*/
 		this.init();
 	}
-	
-	/* 
+
+	/*
 	 * Convert the vector of vectors with the table data back to a string
 	 */
 	void vecToString() {
@@ -1244,7 +1244,7 @@ public class DataViewer extends javax.swing.JPanel
 	  }
 	  dataString = resultString.toString();
 	}
-  
+
 
 
     /**
@@ -1262,7 +1262,7 @@ public class DataViewer extends javax.swing.JPanel
     boolean metacatpublic = false;
     FileSystemDataStore fsds = new FileSystemDataStore(morpho);
     //System.out.println(xmlString);
-  
+
     boolean metacatloc = false;
     boolean localloc = false;
     boolean bothloc = false;
@@ -1281,9 +1281,9 @@ public class DataViewer extends javax.swing.JPanel
     {
       localloc = true;
     }
-/*DFH  
+/*DFH
     try
-    { 
+    {
       if(localloc)
       { //save the file locally
         if(id.trim().equals(dp.getID().trim()))
@@ -1308,11 +1308,11 @@ public class DataViewer extends javax.swing.JPanel
           newids.addElement(newid);
           newids.addElement(newPackageId);
           //increment the package files id in the triples
-          String newPackageFile = a.incRevInTriples(dp.getTriplesFile(), 
-                                                    oldids, 
+          String newPackageFile = a.incRevInTriples(dp.getTriplesFile(),
+                                                    oldids,
                                                     newids);
-          System.out.println("oldid: " + oldid + " newid: " + newid);          
-          fsds.saveFile(newPackageId, new StringReader(newPackageFile)); 
+          System.out.println("oldid: " + oldid + " newid: " + newid);
+          fsds.saveFile(newPackageId, new StringReader(newPackageFile));
         }
       }
     }
@@ -1323,13 +1323,13 @@ public class DataViewer extends javax.swing.JPanel
       Log.debug(11, "File: " + xmlString);
       e.printStackTrace();
     }
-    
+
     try
     {
       if(metacatloc)
       { //save it to metacat
         MetacatDataStore mds = new MetacatDataStore(morpho);
-        
+
         if(id.trim().equals(dp.getID().trim()))
         { //edit the package file
           Vector oldids = new Vector();
@@ -1340,7 +1340,7 @@ public class DataViewer extends javax.swing.JPanel
           oldids.addElement(oldid);
           newids.addElement(newid);
           String newPackageFile = a.incRevInTriples(f, oldids, newids);
-          mds.saveFile(newid, new StringReader(newPackageFile), 
+          mds.saveFile(newid, new StringReader(newPackageFile),
                        dp);
           newPackageId = newid;
         }
@@ -1364,7 +1364,7 @@ public class DataViewer extends javax.swing.JPanel
           String newPackageFile = a.incRevInTriples(dp.getTriplesFile(),
                                                     oldids,
                                                     newids);
-//          mds.saveFile(newPackageId, new StringReader(newPackageFile), 
+//          mds.saveFile(newPackageId, new StringReader(newPackageFile),
 //                       dp);
           names.addElement(newPackageId);
           readers.addElement(new StringReader(newPackageFile));
@@ -1380,7 +1380,7 @@ public class DataViewer extends javax.swing.JPanel
       {
         Log.debug(0,"The file you are attempting to update " +
                                  "has been changed by another user.  " +
-                                 "Please refresh your query screen, " + 
+                                 "Please refresh your query screen, " +
                                  "open the package again and " +
                                  "re-enter your changes.");
         return;
@@ -1389,22 +1389,22 @@ public class DataViewer extends javax.swing.JPanel
                          "--message: " + e.getMessage());
       e.printStackTrace();
     }
-    
+
     DataPackage newPackage = new DataPackage(location, newPackageId, null,
                                            morpho, true);
 
     MorphoFrame thisFrame = (UIController.getInstance()).getCurrentActiveWindow();
-    
+
         // Show the new package
-    try 
+    try
     {
       ServiceController services = ServiceController.getInstance();
-      ServiceProvider provider = 
+      ServiceProvider provider =
                       services.getServiceProvider(DataPackageInterface.class);
       DataPackageInterface dataPackage = (DataPackageInterface)provider;
       dataPackage.openDataPackage(location, newPackage.getID(), null, null, null);
     }
-    catch (ServiceNotHandledException snhe) 
+    catch (ServiceNotHandledException snhe)
     {
        Log.debug(6, snhe.getMessage());
     }
@@ -1413,9 +1413,9 @@ public class DataViewer extends javax.swing.JPanel
     controller.removeWindow(thisFrame);
     thisFrame.dispose();
 */
-    
+
   }
-  
+
   public void editingCanceled(String xmlString, String id, String location)
   { //do nothing
   }
@@ -1433,8 +1433,8 @@ public class DataViewer extends javax.swing.JPanel
       storedStateChangeEventlist.add(event);
     }
   }
-  
-    
+
+
   /**
    * Get the  stored state change event.
    */
@@ -1442,7 +1442,7 @@ public class DataViewer extends javax.swing.JPanel
   {
     return storedStateChangeEventlist;
   }
-  
+
   /**
    * Broadcast the stored StateChangeEvent
    */
@@ -1452,15 +1452,15 @@ public class DataViewer extends javax.swing.JPanel
     {
       for ( int i = 0; i< storedStateChangeEventlist.size(); i++)
       {
-        StateChangeEvent event = 
+        StateChangeEvent event =
                 (StateChangeEvent) storedStateChangeEventlist.elementAt(i);
         (StateChangeMonitor.getInstance()).notifyStateChange(event);
       }//for
     }//if
   }
-  
+
 	void UpdateButton_actionPerformed(java.awt.event.ActionEvent event)
-	{ 
+	{
     TripleCollection triples = null;
     MorphoFrame thisFrame = null;
     if (adp!=null) {  // new eml2.0.0 handling
@@ -1474,17 +1474,17 @@ public class DataViewer extends javax.swing.JPanel
       dataFileId = id;  // update to new value
       String tempfilename = parseId(id);
       ptm.getPersistentVector().writeObjects(tempdir + "/" + tempfilename);
-      
+
       File newDataFile = new File(tempdir + "/" + tempfilename);
       long newDataFileLength = newDataFile.length();
-      
+
       int rowcnt = ptm.getRowCount();
       String rowcntS = (new Integer(rowcnt)).toString();
       adp.setEntityNumRecords(entityIndex, rowcntS);
-      
+
       String sizeS = (new Long(newDataFileLength)).toString();
       adp.setPhysicalSize(entityIndex, 0, sizeS);
-      
+
       adp.setPhysicalFieldDelimiter(entityIndex, 0, field_delimiter);
       adp.setDistributionUrl(entityIndex, 0, 0, "ecogrid://knb/"+dataFileId);
       adp.setLocation("");
@@ -1510,20 +1510,20 @@ public class DataViewer extends javax.swing.JPanel
       dataPackageInt.openNewDataPackage(adp, null);
       uicontroller.removeWindow(morphoFrame);
       morphoFrame.dispose();
-      
+
     } catch (Exception e) {
         Log.debug(5, "Exception in converting edited XML to DOM!");
-    }    
-    
-    }    
+    }
+
+    }
 	}
 
-  /** 
+  /**
    * Parses a dotted notation id into a file path.  johnson2343.13223 becomes
    * johnson2343/13223.  Revision numbers are left on the end so
    * johnson2343.13223.2 becomes johnson2343/13223.2
    */
-  private String parseId(String id) 
+  private String parseId(String id)
   {
     String path = new String();
     path = id.substring(0, id.indexOf("."));
@@ -1536,15 +1536,15 @@ public class DataViewer extends javax.swing.JPanel
     return path;
   }
 
-  
-  
+
+
   class HeaderMouseListener implements MouseListener {
 
     /**
      * Mouse click event handler
      */
     private boolean trigger = false;
-    public void mouseClicked(MouseEvent event) 
+    public void mouseClicked(MouseEvent event)
     {
       TableColumnModel colModel = table.getColumnModel();
       int index = colModel.getColumnIndexAtX(event.getX());
@@ -1554,7 +1554,7 @@ public class DataViewer extends javax.swing.JPanel
           table.setRowSelectionInterval(0, table.getRowCount()-1);
       }
       table.setColumnSelectionInterval(modelIndex, modelIndex);
-      if (event.isPopupTrigger()) 
+      if (event.isPopupTrigger())
       {
         // Show popup menu
         trigger = true;
@@ -1562,32 +1562,32 @@ public class DataViewer extends javax.swing.JPanel
       else
       {
         // Fire a state change event to show attribute file in meta panel
-        StateChangeEvent stateEvent = new 
+        StateChangeEvent stateEvent = new
               StateChangeEvent(table,StateChangeEvent.SELECT_DATATABLE_COLUMN);
         StateChangeMonitor stateMonitor = StateChangeMonitor.getInstance();
         stateMonitor.notifyStateChange(stateEvent);
-      }  
+      }
     }
-    
-    public void mouseReleased(MouseEvent e) 
+
+    public void mouseReleased(MouseEvent e)
     {
       maybeShowPopup(e);
     }
 
-    private void maybeShowPopup(MouseEvent e) 
+    private void maybeShowPopup(MouseEvent e)
     {
-      if(e.isPopupTrigger() || trigger) 
-      {     
-        
+      if(e.isPopupTrigger() || trigger)
+      {
+
 	      trigger = false;
         popup.show(e.getComponent(), e.getX(), e.getY());
-        
+
       }
     }
     //public void mouseReleased(MouseEvent event){}
     public void mousePressed(MouseEvent event) {}
     public void mouseEntered(MouseEvent event) {}
-    public void mouseExited(MouseEvent event) {}    
+    public void mouseExited(MouseEvent event) {}
   }
-  
+
 }

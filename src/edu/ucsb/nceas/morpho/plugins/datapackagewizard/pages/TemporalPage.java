@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: sgarg $'
- *     '$Date: 2004-01-13 16:26:27 $'
- * '$Revision: 1.2 $'
+ *     '$Date: 2004-01-13 21:59:31 $'
+ * '$Revision: 1.3 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -99,9 +99,10 @@ public class TemporalPage extends AbstractWizardPage {
     "July", "August", "September", "October", "November", "December"
   };
 
-  private final String xPathRoot  = "/eml:eml/dataset/access";
+  private final String xPathRoot  = "/eml:eml/dataset/coverage/temporalCoverage";
 
   private static final Dimension PANEL_DIMS = new Dimension(325,220);
+  private static final int YYYYMMDD = 8;
   private static final int ALL = 4;
   private static final int MONTH_YEAR = 2;
   private static final int YEAR_ONLY = 1;
@@ -186,6 +187,9 @@ public class TemporalPage extends AbstractWizardPage {
     singleTimeTF.setEditable(false);
     singleTimeTF.setBackground(Color.WHITE);
 
+    singleTimeCalendar = new JCalendar();
+    singleTimeCalendar.setVisible(true);
+
     JPanel singlePanel = getDateTimePanel("Enter date:", "Time",
                                           singleTimeTF, singleTimeCalendar);
     panel.add(singlePanel);
@@ -210,6 +214,9 @@ public class TemporalPage extends AbstractWizardPage {
     startTimeTF.setEditable(false);
     startTimeTF.setBackground(Color.WHITE);
 
+    startTimeCalendar = new JCalendar();
+    startTimeCalendar.setVisible(true);
+
     JPanel startingPanel = getDateTimePanel("Enter starting date:",
                                             "Start Time", startTimeTF,
                                             startTimeCalendar);
@@ -218,6 +225,9 @@ public class TemporalPage extends AbstractWizardPage {
     endTimeTF = new JTextField();
     endTimeTF.setEditable(false);
     endTimeTF.setBackground(Color.WHITE);
+
+    endTimeCalendar = new JCalendar();
+    endTimeCalendar.setVisible(true);
 
     JPanel endingPanel = getDateTimePanel("Enter ending date:", "End Time",
                                           endTimeTF, endTimeCalendar);
@@ -248,9 +258,6 @@ public class TemporalPage extends AbstractWizardPage {
     panel.setBorder(new javax.swing.border.EmptyBorder(2*WizardSettings.PADDING,
         4*WizardSettings.PADDING,0,
         4*WizardSettings.PADDING));
-
-    timeCalendar = new JCalendar();
-    timeCalendar.setVisible(true);
 
     timeTextField.setText(calendarToString(timeCalendar, ALL));
     panel.add(timeTextField, BorderLayout.NORTH);
@@ -312,13 +319,43 @@ public class TemporalPage extends AbstractWizardPage {
     Calendar calendar = c.getCalendar();
     DateFormat df = DateFormat.getDateInstance(DateFormat.LONG,
         c.getLocale());
+
     if(returnType == YEAR_ONLY){
       return calendar.get(Calendar.YEAR) + "";
     }
     if(returnType == MONTH_YEAR){
-
       return Months[calendar.get(Calendar.MONTH)] + "," +
           calendar.get(Calendar.YEAR);
+    }
+    if(returnType == YYYYMMDD){
+      String dateString = calendar.get(Calendar.YEAR) + "-";
+
+      int month = calendar.get(Calendar.MONTH) + 1;
+      int day = calendar.get(Calendar.DAY_OF_MONTH) + 1;
+
+      if(returnType != YEAR_ONLY){
+        if (month < 10) {
+          dateString = dateString + "0" + month + "-";
+        }
+        else {
+          dateString = dateString + month + "-";
+        }
+      } else {
+        dateString = dateString + "01" + "-";
+      }
+
+      if(returnType != ALL){
+        dateString = dateString + "01";
+      } else {
+        if (day < 10) {
+          dateString = dateString + "0" + day;
+        }
+        else {
+          dateString = dateString + day;
+        }
+      }
+
+      return dateString;
     }
     return df.format(calendar.getTime());
   }
@@ -383,10 +420,17 @@ public class TemporalPage extends AbstractWizardPage {
   public OrderedMap getPageData(String xPathRoot) {
 
     returnMap.clear();
+    if(currentPanel == singlePointPanel){
+      returnMap.put(xPathRoot + "/singleDateTime/calendarDate",
+                    calendarToString(singleTimeCalendar, YYYYMMDD));
 
-  //  returnMap.put(xPathRoot + "/principal", dnField.getText().trim());
+    } else {
+      returnMap.put(xPathRoot + "/startDateTime/calendarDate",
+                    calendarToString(startTimeCalendar, YYYYMMDD));
 
-//    returnMap.put(xPathRoot + "/permission", userAccess.toLowerCase());
+      returnMap.put(xPathRoot + "/endDateTime/calendarDate",
+                    calendarToString(endTimeCalendar, YYYYMMDD));
+    }
 
     return returnMap;
   }
