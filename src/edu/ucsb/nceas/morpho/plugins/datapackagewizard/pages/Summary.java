@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2003-10-01 18:22:42 $'
- * '$Revision: 1.5 $'
+ *   '$Author: sambasiv $'
+ *     '$Date: 2003-11-19 01:42:19 $'
+ * '$Revision: 1.6 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -37,13 +37,13 @@ import javax.swing.JLabel;
 import javax.swing.BoxLayout;
 
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.AbstractWizardPage;
-import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardPageLibrary;
+import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WidgetFactory;
 import edu.ucsb.nceas.utilities.OrderedMap;
 
 public class Summary extends AbstractWizardPage {
 
-  public final String pageID     = WizardPageLibrary.SUMMARY;
+  public final String pageID     = DataPackageWizardInterface.SUMMARY;
   public final String nextPageID = null;
   public final String title      = "Data Package Wizard";
   public final String subtitle   = "Summary";
@@ -179,4 +179,5 @@ public class Summary extends AbstractWizardPage {
    */
   public String getNextPageID() { return nextPageID; }
 
+  public void setPageData(OrderedMap data) { }
 }

@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2003-10-15 21:14:15 $'
- * '$Revision: 1.85 $'
+ *   '$Author: sambasiv $'
+ *     '$Date: 2003-11-19 01:42:18 $'
+ * '$Revision: 1.86 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -964,7 +964,7 @@ public class DataViewer extends javax.swing.JPanel
     public void setDataPackage(DataPackage dp) {
         this.dp = dp;
     }
-    
+     
     public void setAttributeFile(File attr) {
         this.attributeFile = attr;
     }
@@ -1128,7 +1128,7 @@ public class DataViewer extends javax.swing.JPanel
 	        else {
 	            if ((inDelimiterList(oldToken,sDelim))&&(inDelimiterList(token,sDelim))) {
 	                res.addElement("");
-                }
+		    }
 	        }
 	        oldToken = token;
 	      }
@@ -1188,7 +1188,7 @@ public class DataViewer extends javax.swing.JPanel
             }
             in.close();
           }
-        catch (Exception e) {};
+	  catch (Exception e) {};
         }
         catch (Exception w) {};
         
@@ -1269,7 +1269,7 @@ public class DataViewer extends javax.swing.JPanel
     table.setColumnSelectionAllowed(true);
     table.setRowSelectionAllowed(true);
     table.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
-	  (table.getTableHeader()).setReorderingAllowed(false);
+    (table.getTableHeader()).setReorderingAllowed(false);
     table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
     
     table.registerKeyboardAction (new GUIAction("Copy", null, new TableCopyCommand()),

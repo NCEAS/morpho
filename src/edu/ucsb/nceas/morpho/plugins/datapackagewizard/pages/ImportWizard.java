@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: sambasiv $'
- *     '$Date: 2003-10-30 20:05:17 $'
- * '$Revision: 1.8 $'
+ *     '$Date: 2003-11-19 01:42:19 $'
+ * '$Revision: 1.9 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -49,16 +49,20 @@ import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.framework.UIController;
 
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.AbstractWizardPage;
-import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardPageLibrary;
+import edu.ucsb.nceas.morpho.plugins.datapackagewizard.DataPackageWizardPlugin;
+import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WidgetFactory;
 import edu.ucsb.nceas.utilities.OrderedMap;
+import edu.ucsb.nceas.morpho.plugins.ServiceController;
+import edu.ucsb.nceas.morpho.plugins.ServiceProvider;
+import edu.ucsb.nceas.morpho.plugins.ServiceNotHandledException;
 
 public class ImportWizard extends     AbstractWizardPage 
                           implements  TextImportListener {
 
-  public final String pageID     = WizardPageLibrary.TEXT_IMPORT_WIZARD;
+  public final String pageID     = DataPackageWizardInterface.TEXT_IMPORT_WIZARD;
   
-  public final String nextPageID = WizardPageLibrary.SUMMARY;
+  public final String nextPageID = DataPackageWizardInterface.SUMMARY;
   
   public final String title      = "Data Package Wizard";
   public final String subtitle   = "Import Data/Information";
@@ -93,8 +97,18 @@ public class ImportWizard extends     AbstractWizardPage
     // a "cancel"), start up the import wizard.
     if (!importCompletedOK) {
 
-      AbstractWizardPage locationPage
-                  = WizardPageLibrary.getPage(WizardPageLibrary.DATA_LOCATION);
+      ServiceController sc;
+      DataPackageWizardPlugin dpwPlugin = null;
+      try {
+	      sc = ServiceController.getInstance();
+	      dpwPlugin = (DataPackageWizardPlugin)sc.getServiceProvider(DataPackageWizardInterface.class);
+      } catch (ServiceNotHandledException se) {
+	      Log.debug(6, se.getMessage());
+      }
+      if(dpwPlugin == null) 
+	return;
+      
+      AbstractWizardPage locationPage = dpwPlugin.getPage(DataPackageWizardInterface.DATA_LOCATION);
 
       String fileTextName = ((DataLocation)locationPage).getImportFilePath();
                 
@@ -226,4 +240,5 @@ public class ImportWizard extends     AbstractWizardPage
    */
   public String getNextPageID() { return nextPageID; }
 
+  public void setPageData(OrderedMap data) { }
 }

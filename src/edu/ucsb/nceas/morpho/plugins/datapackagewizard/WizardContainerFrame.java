@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2003-09-27 00:59:15 $'
- * '$Revision: 1.18 $'
+ *   '$Author: sambasiv $'
+ *     '$Date: 2003-11-19 01:42:19 $'
+ * '$Revision: 1.19 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,6 +30,7 @@ package edu.ucsb.nceas.morpho.plugins.datapackagewizard;
 
 import edu.ucsb.nceas.morpho.util.Log;
 import edu.ucsb.nceas.morpho.plugins.DataPackageWizardListener;
+import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.ImportWizard;
 import edu.ucsb.nceas.morpho.framework.TextImportListener;
 
@@ -212,7 +213,7 @@ public class WizardContainerFrame extends JFrame {
   
 
     ImportWizard importPage 
-        = (ImportWizard)(pageLib.getPage(WizardPageLibrary.TEXT_IMPORT_WIZARD));
+        = (ImportWizard)(pageLib.getPage(DataPackageWizardInterface.TEXT_IMPORT_WIZARD));
     
     importPage.setTextImportListener( 
     
@@ -367,25 +368,25 @@ public class WizardContainerFrame extends JFrame {
     List pagesList = (Vector)pageStack;
 
     int GENERAL 
-        = pagesList.indexOf(pageLib.getPage(WizardPageLibrary.GENERAL));
+        = pagesList.indexOf(pageLib.getPage(DataPackageWizardInterface.GENERAL));
     int KEYWORDS 
-        = pagesList.indexOf(pageLib.getPage(WizardPageLibrary.KEYWORDS));
+        = pagesList.indexOf(pageLib.getPage(DataPackageWizardInterface.KEYWORDS));
     int PARTY_CREATOR 
-        = pagesList.indexOf(pageLib.getPage(WizardPageLibrary.PARTY_CREATOR));
+        = pagesList.indexOf(pageLib.getPage(DataPackageWizardInterface.PARTY_CREATOR));
     int PARTY_CONTACT 
-        = pagesList.indexOf(pageLib.getPage(WizardPageLibrary.PARTY_CONTACT));
+        = pagesList.indexOf(pageLib.getPage(DataPackageWizardInterface.PARTY_CONTACT));
     int PARTY_ASSOCIATED 
-        = pagesList.indexOf(pageLib.getPage(WizardPageLibrary.PARTY_ASSOCIATED));
+        = pagesList.indexOf(pageLib.getPage(DataPackageWizardInterface.PARTY_ASSOCIATED));
     int USAGE_RIGHTS 
-        = pagesList.indexOf(pageLib.getPage(WizardPageLibrary.USAGE_RIGHTS));
+        = pagesList.indexOf(pageLib.getPage(DataPackageWizardInterface.USAGE_RIGHTS));
     int DATA_LOCATION 
-        = pagesList.indexOf(pageLib.getPage(WizardPageLibrary.DATA_LOCATION));
+        = pagesList.indexOf(pageLib.getPage(DataPackageWizardInterface.DATA_LOCATION));
     int TEXT_IMPORT_WIZARD 
-        = pagesList.indexOf(pageLib.getPage(WizardPageLibrary.TEXT_IMPORT_WIZARD));
+        = pagesList.indexOf(pageLib.getPage(DataPackageWizardInterface.TEXT_IMPORT_WIZARD));
     int DATA_FORMAT 
-        = pagesList.indexOf(pageLib.getPage(WizardPageLibrary.DATA_FORMAT));
+        = pagesList.indexOf(pageLib.getPage(DataPackageWizardInterface.DATA_FORMAT));
     int ENTITY 
-        = pagesList.indexOf(pageLib.getPage(WizardPageLibrary.ENTITY));
+        = pagesList.indexOf(pageLib.getPage(DataPackageWizardInterface.ENTITY));
 
 //TITLE:      
     OrderedMap generalMap = null; 

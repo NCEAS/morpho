@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2003-09-28 17:20:27 $'
- * '$Revision: 1.11 $'
+ *   '$Author: sambasiv $'
+ *     '$Date: 2003-11-19 01:42:19 $'
+ * '$Revision: 1.12 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,7 +32,7 @@ package edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.AbstractWizardPage;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.CustomList;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WidgetFactory;
-import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardPageLibrary;
+import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardPopupDialog;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardSettings;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardContainerFrame;
@@ -64,8 +64,8 @@ public class Entity extends AbstractWizardPage{
   
   // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
   
-  private final String pageID     = WizardPageLibrary.ENTITY;
-  private final String nextPageID = WizardPageLibrary.SUMMARY;
+  private final String pageID     = DataPackageWizardInterface.ENTITY;
+  private final String nextPageID = DataPackageWizardInterface.SUMMARY;
   private final String title      = "Data Information:";
   private final String subtitle   = "Table (Entity)";
   private final String xPathRoot  = "/eml:eml/dataset/dataTable";
@@ -194,12 +194,13 @@ public class Entity extends AbstractWizardPage{
   
   private void showNewAttributeDialog() {
     
-    AttributeDialog attributeDialog = new AttributeDialog(WizardContainerFrame.frame);
+    AttributePage attributePage = new AttributePage();
+    WizardPopupDialog wpd = new WizardPopupDialog(attributePage, WizardContainerFrame.frame);
 
-    if (attributeDialog.USER_RESPONSE==WizardPopupDialog.OK_OPTION) {
+    if (wpd.USER_RESPONSE==WizardPopupDialog.OK_OPTION) {
     
-      List newRow = attributeDialog.getSurrogate();
-      newRow.add(attributeDialog);
+      List newRow = attributePage.getSurrogate();
+      newRow.add(attributePage);
       attributeList.addRow(newRow);
     }
     WidgetFactory.unhiliteComponent(attributesLabel);
@@ -214,16 +215,17 @@ public class Entity extends AbstractWizardPage{
     
     Object dialogObj = selRowList.get(3);
     
-    if (dialogObj==null || !(dialogObj instanceof AttributeDialog)) return;
-    AttributeDialog editAttributeDialog = (AttributeDialog)dialogObj;
-
-    editAttributeDialog.resetBounds();
-    editAttributeDialog.setVisible(true);
+    if (dialogObj==null || !(dialogObj instanceof AttributePage)) return;
+    AttributePage editAttributePage = (AttributePage)dialogObj;
     
-    if (editAttributeDialog.USER_RESPONSE==AttributeDialog.OK_OPTION) {
+    WizardPopupDialog wpd = new WizardPopupDialog(editAttributePage, WizardContainerFrame.frame);
+    wpd.resetBounds();
+    wpd.setVisible(true);
     
-      List newRow = editAttributeDialog.getSurrogate();
-      newRow.add(editAttributeDialog);
+    if (wpd.USER_RESPONSE==WizardPopupDialog.OK_OPTION) {
+    
+      List newRow = editAttributePage.getSurrogate();
+      newRow.add(editAttributePage);
       attributeList.replaceSelectedRow(newRow);
     }
   }
@@ -308,7 +310,7 @@ public class Entity extends AbstractWizardPage{
     List    nextRowList     = null;
     Object  nextUserObject  = null;
     OrderedMap  nextNVPMap  = null;
-    AttributeDialog nextAttributeDialog = null;
+    AttributePage nextAttributePage = null;
     
     List rowLists = attributeList.getListOfRowLists();
     
@@ -325,9 +327,9 @@ public class Entity extends AbstractWizardPage{
       nextUserObject = nextRowList.get(3);
       if (nextUserObject==null) continue;
       
-      nextAttributeDialog = (AttributeDialog)nextUserObject;
+      nextAttributePage = (AttributePage)nextUserObject;
       
-      nextNVPMap = nextAttributeDialog.getPageData(xPathRoot 
+      nextNVPMap = nextAttributePage.getPageData(xPathRoot 
                                 + "/attributeList/attribute["+(index++) + "]");
       returnMap.putAll(nextNVPMap);
     }
@@ -369,4 +371,6 @@ public class Entity extends AbstractWizardPage{
    *  this is te last page
    */
   public String getNextPageID() { return nextPageID; }
+  
+  public void setPageData(OrderedMap data) { }
 }

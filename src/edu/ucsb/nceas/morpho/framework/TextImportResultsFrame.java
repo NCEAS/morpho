@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2001-10-31 17:25:58 $'
- * '$Revision: 1.2 $'
+ *   '$Author: sambasiv $'
+ *     '$Date: 2003-11-19 01:42:19 $'
+ * '$Revision: 1.3 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,14 +26,17 @@
 
 package edu.ucsb.nceas.morpho.framework;
 
+
 import java.awt.*;
 import javax.swing.*;
+
+import edu.ucsb.nceas.morpho.util.Log;
 
 /**
  * A window whose purpose is  to display the results string
  * created from the data parsing.
  */
-public class TextImportResultsFrame extends javax.swing.JFrame
+public class TextImportResultsFrame extends javax.swing.JDialog
 {
 	public TextImportResultsFrame()
 	{
@@ -43,7 +46,9 @@ public class TextImportResultsFrame extends javax.swing.JFrame
 		// what Visual Cafe can generate, or Visual Cafe may be unable to back
 		// parse your Java file into its visual environment.
 		//{{INIT_CONTROLS
+		
 		setTitle("Results");
+		setModal(true);
 		getContentPane().setLayout(new BorderLayout(0,0));
 		setSize(600,305);
 		setVisible(false);
@@ -65,6 +70,7 @@ public class TextImportResultsFrame extends javax.swing.JFrame
 		//{{REGISTER_LISTENERS
 		SymAction lSymAction = new SymAction();
 		CloseResultsButton.addActionListener(lSymAction);
+		
 		//}}
 	}
 
@@ -132,6 +138,7 @@ public class TextImportResultsFrame extends javax.swing.JFrame
 
 	void CloseResultsButton_actionPerformed_Interaction1(java.awt.event.ActionEvent event)
 	{
+		
 		try {
 			// ResultsFrame Hide the ResultsFrame
 			this.setVisible(false);

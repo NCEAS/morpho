@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: sambasiv $'
- *     '$Date: 2003-10-22 00:16:58 $'
- * '$Revision: 1.10 $'
+ *     '$Date: 2003-11-19 01:42:19 $'
+ * '$Revision: 1.11 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,7 +31,8 @@ package edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.CustomList;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WidgetFactory;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardSettings;
-import edu.ucsb.nceas.morpho.plugins.datapackagewizard.DialogSubPanelAPI;
+import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardPageSubPanelAPI;
+import edu.ucsb.nceas.morpho.plugins.datapackagewizard.AbstractWizardPage;
 
 
 import edu.ucsb.nceas.morpho.util.Log;
@@ -65,7 +66,7 @@ import java.awt.event.ItemListener;
 
 
 
-class DateTimePanel extends JPanel implements DialogSubPanelAPI {
+class DateTimePanel extends JPanel implements WizardPageSubPanelAPI {
 
   private JLabel     formatStringLabel;
   private JLabel     precisionLabel;
@@ -75,7 +76,7 @@ class DateTimePanel extends JPanel implements DialogSubPanelAPI {
   
   private CustomList boundsList;
   
-  private AttributeDialog attributeDialog;
+  private AbstractWizardPage wizardPage;
   
   private String[] numberTypesArray = new String[] { "natural", "whole",
                                                      "integer", "real" };
@@ -86,15 +87,15 @@ class DateTimePanel extends JPanel implements DialogSubPanelAPI {
   /**
    *  Constructor
    *
-   *  @param attributeDialog the parent dialog
+   *  @param page the parent wizard page
    *
-   *  @param nom_ord_mode can be AttributeDialog.MEASUREMENTSCALE_NOMINAL 
-   *                  or AttributeDialog.MEASUREMENTSCALE_ORDINAL
+   *  @param nom_ord_mode can be AttributePage.MEASUREMENTSCALE_NOMINAL 
+   *                  or AttributePage.MEASUREMENTSCALE_ORDINAL
    */
-  public DateTimePanel(AttributeDialog attributeDialog) {
+  public DateTimePanel(AbstractWizardPage page) {
   
     super();
-    this.attributeDialog = attributeDialog;
+    this.wizardPage = page;
     init();
   } 
   
@@ -104,7 +105,7 @@ class DateTimePanel extends JPanel implements DialogSubPanelAPI {
     this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
   
     int width = WizardSettings.WIZARD_CONTENT_SINGLE_LINE_DIMS.width;
-    int height = AttributeDialog.BORDERED_PANEL_TOT_ROWS 
+    int height = AttributePage.BORDERED_PANEL_TOT_ROWS 
                   * WizardSettings.WIZARD_CONTENT_SINGLE_LINE_DIMS.height;
 
     Dimension dims = new Dimension(width, height);
@@ -115,7 +116,7 @@ class DateTimePanel extends JPanel implements DialogSubPanelAPI {
     ////////////////////////
     
     JPanel formatStringPanel = WidgetFactory.makePanel();
-    formatStringLabel    = WidgetFactory.makeLabel("Format:", true);
+    formatStringLabel    = WidgetFactory.makeLabel("Format:", true, WizardSettings.WIZARD_REDUCED_CONTENT_LABEL_DIMS);
     formatStringPanel.add(formatStringLabel);
     formatStringField = WidgetFactory.makeOneLineTextField();
     formatStringPanel.add(formatStringField);
@@ -136,7 +137,7 @@ class DateTimePanel extends JPanel implements DialogSubPanelAPI {
     ////////////////////////
     
     JPanel precisionPanel = WidgetFactory.makePanel();
-    precisionLabel    = WidgetFactory.makeLabel("Precision:", true);
+    precisionLabel    = WidgetFactory.makeLabel("Precision:", true, WizardSettings.WIZARD_REDUCED_CONTENT_LABEL_DIMS);
     precisionPanel.add(precisionLabel);
     precisionField = WidgetFactory.makeOneLineTextField();
     precisionPanel.add(precisionField);
@@ -173,7 +174,7 @@ class DateTimePanel extends JPanel implements DialogSubPanelAPI {
     JPanel boundsPanel = new JPanel();
     boundsPanel.setLayout(new BoxLayout(boundsPanel, BoxLayout.X_AXIS));
     
-    boundsPanel.add(WidgetFactory.makeLabel("Bounds:", false));
+    boundsPanel.add(WidgetFactory.makeLabel("Bounds:", false, WizardSettings.WIZARD_REDUCED_CONTENT_LABEL_DIMS));
     
     boundsList = WidgetFactory.makeList(colNames, colTemplates, 2,
                                         true, false, false, true, false, false);
@@ -364,7 +365,7 @@ class DateTimePanel extends JPanel implements DialogSubPanelAPI {
   
   /** 
    *  sets the Data in the DataTime Panel. This is called by the setData() function 
-   *  of AttributeDialog.
+   *  of AttributePage.
    
    *  @param  xPathRoot - this is the relative xPath of the current attribute
    *

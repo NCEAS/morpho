@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2003-10-06 21:25:19 $'
- * '$Revision: 1.12 $'
+ *   '$Author: sambasiv $'
+ *     '$Date: 2003-11-19 01:42:19 $'
+ * '$Revision: 1.13 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,10 +32,14 @@ package edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.AbstractWizardPage;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.CustomList;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WidgetFactory;
-import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardPageLibrary;
+import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardPopupDialog;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardSettings;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardContainerFrame;
+import edu.ucsb.nceas.morpho.plugins.datapackagewizard.DataPackageWizardPlugin;
+import edu.ucsb.nceas.morpho.plugins.ServiceController;
+import edu.ucsb.nceas.morpho.plugins.ServiceProvider;
+import edu.ucsb.nceas.morpho.plugins.ServiceNotHandledException;
 
 import edu.ucsb.nceas.morpho.util.Log;
 
@@ -63,8 +67,8 @@ public class Keywords extends AbstractWizardPage{
   
   // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
   
-  private final String pageID     = WizardPageLibrary.KEYWORDS;
-  private final String nextPageID = WizardPageLibrary.PARTY_INTRO;
+  private final String pageID     = DataPackageWizardInterface.KEYWORDS;
+  private final String nextPageID = DataPackageWizardInterface.PARTY_INTRO;
   private final String title      = "General Dataset Information:";
   private final String subtitle   = "Keyword Sets";
   private final String xPathRoot  = "/eml:eml/dataset/keywordSet[";
@@ -143,13 +147,24 @@ public class Keywords extends AbstractWizardPage{
   
   private void showNewKeywordsDialog() {
     
-    KeywordsDialog keywordsDialog 
-                              = new KeywordsDialog(WizardContainerFrame.frame);
-
-    if (keywordsDialog.USER_RESPONSE==WizardPopupDialog.OK_OPTION) {
+    ServiceController sc;
+    DataPackageWizardPlugin dpwPlugin = null;
+    try {
+	sc = ServiceController.getInstance();
+	dpwPlugin = (DataPackageWizardPlugin)sc.getServiceProvider(DataPackageWizardPlugin.class);
+    } catch (ServiceNotHandledException se) {
+	Log.debug(6, se.getMessage());
+    }
+    if(dpwPlugin == null) 
+	return;
+    KeywordsPage keywordsPage = (KeywordsPage)dpwPlugin.getPage(DataPackageWizardInterface.KEYWORDS_PAGE);
+    WizardPopupDialog wpd = new WizardPopupDialog(keywordsPage, WizardContainerFrame.frame, false);
+    wpd.setVisible(true);
+	
+    if (wpd.USER_RESPONSE==WizardPopupDialog.OK_OPTION) {
     
-      List newRow = keywordsDialog.getSurrogate();
-      newRow.add(keywordsDialog);
+      List newRow = keywordsPage.getSurrogate();
+      newRow.add(keywordsPage);
       keywordsList.addRow(newRow);
     }
   }
@@ -163,16 +178,18 @@ public class Keywords extends AbstractWizardPage{
     
     Object dialogObj = selRowList.get(2);
     
-    if (dialogObj==null || !(dialogObj instanceof KeywordsDialog)) return;
-    KeywordsDialog editKeywordsDialog = (KeywordsDialog)dialogObj;
+    if (dialogObj==null || !(dialogObj instanceof KeywordsPage)) return;
+    KeywordsPage editKeywordsPage = (KeywordsPage)dialogObj;
 
-    editKeywordsDialog.resetBounds();
-    editKeywordsDialog.setVisible(true);
+    WizardPopupDialog wpd = new WizardPopupDialog(editKeywordsPage, WizardContainerFrame.frame, false);
+    wpd.resetBounds();
+    wpd.setVisible(true);
     
-    if (editKeywordsDialog.USER_RESPONSE==KeywordsDialog.OK_OPTION) {
     
-      List newRow = editKeywordsDialog.getSurrogate();
-      newRow.add(editKeywordsDialog);
+    if (wpd.USER_RESPONSE==WizardPopupDialog.OK_OPTION) {
+    
+      List newRow = editKeywordsPage.getSurrogate();
+      newRow.add(editKeywordsPage);
       keywordsList.replaceSelectedRow(newRow);
     }
   }
@@ -230,7 +247,7 @@ public class Keywords extends AbstractWizardPage{
     List    nextRowList     = null;
     Object  nextUserObject  = null;
     OrderedMap  nextNVPMap  = null;
-    KeywordsDialog nextKeywordsDialog = null;
+    KeywordsPage nextKeywordsPage = null;
     
     List rowLists = keywordsList.getListOfRowLists();
     
@@ -247,9 +264,9 @@ public class Keywords extends AbstractWizardPage{
       nextUserObject = nextRowList.get(2);
       if (nextUserObject==null) continue;
       
-      nextKeywordsDialog = (KeywordsDialog)nextUserObject;
+      nextKeywordsPage = (KeywordsPage)nextUserObject;
       
-      nextNVPMap = nextKeywordsDialog.getPageData(xPathRoot + (index++) + "]");
+      nextNVPMap = nextKeywordsPage.getPageData(xPathRoot + (index++) + "]");
       returnMap.putAll(nextNVPMap);
     }
     return returnMap;
@@ -290,6 +307,8 @@ public class Keywords extends AbstractWizardPage{
    *  this is te last page
    */
   public String getNextPageID() { return nextPageID; }
+  
+  public void setPageData(OrderedMap data) { }
 }
 
 
@@ -304,223 +323,3 @@ public class Keywords extends AbstractWizardPage{
 ////////////////////////////////////////////////////////////////////////////////
 
 
-class KeywordsDialog extends WizardPopupDialog {
-
-  private final String EMPTY_STRING = "";
-  private JTextField thesaurusField;
-  private JComboBox  kwTypePickList;
-  private JLabel kwLabel;
-  private CustomList kwList;
-  private final String[] kwTypeArray 
-                            = new String[]{ EMPTY_STRING,
-                                            "place",
-                                            "stratum", 
-                                            "taxonomic",
-                                            "temporal",
-                                            "theme" };
-  
-  public KeywordsDialog(JFrame parent) { 
-  
-    super(parent); 
-    
-    init();
-    this.setVisible(true);
-  }
-  
-  /** 
-   * initialize method does frame-specific design - i.e. adding the widgets that 
-   are displayed only in this frame (doesn't include prev/next buttons etc)
-   */
-  private void init() {
-    
-    JLabel desc = WidgetFactory.makeHTMLLabel(
-                      "<font size=\"4\"><b>Define Keyword Set:</b></font>", 1);
-    middlePanel.setLayout(new BoxLayout(middlePanel, BoxLayout.Y_AXIS));
-    
-    middlePanel.add(WidgetFactory.makeDefaultSpacer());
-    
-    middlePanel.add(desc);
-    
-    middlePanel.add(WidgetFactory.makeDefaultSpacer());
-    middlePanel.add(WidgetFactory.makeDefaultSpacer());
-    
-    ////
-    JPanel thesaurusPanel = WidgetFactory.makePanel(1);
-    thesaurusPanel.add(WidgetFactory.makeLabel("Thesaurus name:", false));
-    thesaurusField = WidgetFactory.makeOneLineTextField();
-    thesaurusPanel.add(thesaurusField);
-    middlePanel.add(thesaurusPanel);
-        
-    middlePanel.add(WidgetFactory.makeDefaultSpacer());
-    middlePanel.add(WidgetFactory.makeDefaultSpacer());
-
-    ////
-    JPanel kwPanel = WidgetFactory.makePanel(8);
-    kwLabel = WidgetFactory.makeLabel("Keywords:", true);
-    kwPanel.add(kwLabel);
-    
-    kwTypePickList = WidgetFactory.makePickList(kwTypeArray, false, 0, 
-            new ItemListener(){ public void itemStateChanged(ItemEvent e) {}});
-            
-    kwList = WidgetFactory.makeList(new String[]{ "Keyword",
-                                                  "Keyword Type (optional)" }, 
-                                    new Object[]{ new JTextField(), 
-                                                  kwTypePickList }, 
-                                    4, true, false, false, true, true, true );
-    kwPanel.add(kwList);
-    middlePanel.add(kwPanel);
-  } 
-  
-  
-  /** 
-   *  The action to be executed when the "OK" button is pressed. If no onAdvance 
-   *  processing is required, implementation must return boolean true.
-   *
-   *  @return boolean true if dialog should close and return to wizard, false 
-   *          if not (e.g. if a required field hasn't been filled in)
-   */
-  public boolean onAdvanceAction() {
-   
-    Map listNVP = getKWListAsNVP(EMPTY_STRING);
-    if (listNVP==null || listNVP.size() < 1) {
-  
-      WidgetFactory.hiliteComponent(kwLabel);
-      return false;
-    }
-    return true; 
-  }
-
-
-  /**
-   *  @return a List contaiing 2 String elements - one for each column of the 
-   *  2-col list in which this surrogate is displayed
-   *
-   */
-  private final StringBuffer surrogateBuff = new StringBuffer();
-  //
-  public List getSurrogate() {
-
-    WidgetFactory.unhiliteComponent(kwLabel);
-    
-    List surrogate = new ArrayList();
-    
-    //thesaurus (first column) surrogate:
-    String thesaurus   = thesaurusField.getText().trim();
-    if (thesaurus==null) thesaurus = EMPTY_STRING;
-    surrogate.add(thesaurus);
-
-    
-    //keywords (second column) surrogate:
-    surrogateBuff.delete(0, surrogateBuff.length());
-    List rowLists = kwList.getListOfRowLists();
-    boolean firstKW = true;
-    String  nextKW  = null;
-  
-    for (Iterator it = rowLists.iterator(); it.hasNext(); ) {
-  
-      // CHECK FOR AND ELIMINATE EMPTY ROWS...
-      Object nextRowObj = it.next();
-      if (nextRowObj==null) continue;
-      
-      List nextRow = (List)nextRowObj;
-      if (nextRow.size() < 1) continue;
-      
-      if (nextRow.get(0)==null) continue;
-      nextKW = ((String)(nextRow.get(0))).trim();
-      
-      if (nextKW.equals(EMPTY_STRING)) continue;
-      
-      if (firstKW) firstKW = false;
-      else surrogateBuff.append(", ");
-
-      surrogateBuff.append(nextKW);
-    }
-    
-    surrogate.add(surrogateBuff.toString());
-
-    return surrogate;
-  }
-
-
-  /** 
-   *  gets the Map object that contains all the key/value paired
-   *
-   *  @param    xPathRoot the string xpath to which this dialog's xpaths will be 
-   *            appended when making name/value pairs.  For example, in the 
-   *            xpath: /eml:eml/dataset/keywordSet[2]/keywordThesaurus, the 
-   *            root would be /eml:eml/dataset/keywordSet[2]
-   *            NOTE - MUST NOT END WITH A SLASH, BUT MAY END WITH AN INDEX IN 
-   *            SQUARE BRACKETS []
-   *
-   *  @return   data the Map object that contains all the
-   *            key/value paired settings for this particular wizard page
-   */
-  private OrderedMap returnMap = new OrderedMap();
-  //
-  public OrderedMap getPageData(String xPathRoot) {
-  
-    returnMap.clear();
-
-    returnMap.putAll(getKWListAsNVP(xPathRoot));
-    
-    String thesaurus = thesaurusField.getText().trim();
-    if (thesaurus!=null && !thesaurus.equals(EMPTY_STRING)) {
-      returnMap.put(xPathRoot + "/keywordThesaurus", thesaurus);
-    }
-    
-    return returnMap;
-  }
-
-  
-  private final OrderedMap listResultsMap    = new OrderedMap();
-  private final StringBuffer listResultsBuff = new StringBuffer();
-  //
-  private OrderedMap getKWListAsNVP(String xPathRoot) {
-  
-    listResultsMap.clear();
-    
-    // CHECK FOR AND ELIMINATE EMPTY ROWS...
-    kwList.deleteEmptyRows( CustomList.OR, 
-                            new short[] {  CustomList.EMPTY_STRING_TRIM  } );
-    
-    int rowNumber       = -1;
-    int predicateIndex  = 0;
-    List rowLists       = kwList.getListOfRowLists();
-    String nextKWType   = null;
-  
-
-    for (Iterator it = rowLists.iterator(); it.hasNext(); ) {
-  
-      rowNumber++;
-      // CHECK FOR AND ELIMINATE EMPTY ROWS...
-      Object nextRowObj = it.next();
-      if (nextRowObj==null) continue;
-      
-      List nextRow = (List)nextRowObj;
-      if (nextRow.size() < 1) continue;
-      
-      listResultsBuff.delete(0,listResultsBuff.length());
-      listResultsBuff.append(xPathRoot);
-      listResultsBuff.append("/keyword[");
-      listResultsBuff.append(++predicateIndex);
-      listResultsBuff.append("]");
-      listResultsMap.put(listResultsBuff.toString(), 
-                          ((String)(nextRow.get(0))).trim());
-    
-      if (nextRow.get(1)==null) continue;
-      nextKWType = ((String)(nextRow.get(1))).trim();
-    
-      if (nextKWType.equals(EMPTY_STRING)) continue;
-    
-      listResultsBuff.delete(0,listResultsBuff.length());
-      listResultsBuff.append(xPathRoot);
-      listResultsBuff.append("/keyword[");
-      listResultsBuff.append(predicateIndex);
-      listResultsBuff.append("]/@keywordType");
-      listResultsMap.put(listResultsBuff.toString(), nextKWType);
-    }
-    
-    return listResultsMap;
-  }
-  
-}

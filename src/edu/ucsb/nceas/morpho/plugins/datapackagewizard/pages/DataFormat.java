@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2003-10-06 21:25:19 $'
- * '$Revision: 1.23 $'
+ *   '$Author: sambasiv $'
+ *     '$Date: 2003-11-19 01:42:19 $'
+ * '$Revision: 1.24 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -63,13 +63,13 @@ import javax.swing.BorderFactory;
 
 
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.AbstractWizardPage;
-import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardPageLibrary;
+import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
 
 
 public class DataFormat extends AbstractWizardPage{
 
-  private final String pageID     = WizardPageLibrary.DATA_FORMAT;
-  private String nextPageID       = WizardPageLibrary.ENTITY;
+  private final String pageID     = DataPackageWizardInterface.DATA_FORMAT;
+  private String nextPageID       = DataPackageWizardInterface.ENTITY;
   
   private final String title      = "Data File Information:";
   private final String subtitle   = "File Format";
@@ -910,4 +910,5 @@ public class DataFormat extends AbstractWizardPage{
    */
   public String getNextPageID() { return nextPageID; }
 
+  public void setPageData(OrderedMap data) { }
 }

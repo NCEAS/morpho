@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: sambasiv $'
- *     '$Date: 2003-10-30 20:05:17 $'
- * '$Revision: 1.18 $'
+ *     '$Date: 2003-11-19 01:42:19 $'
+ * '$Revision: 1.19 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,7 +31,8 @@ package edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.CustomList;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WidgetFactory;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardSettings;
-import edu.ucsb.nceas.morpho.plugins.datapackagewizard.DialogSubPanelAPI;
+import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardPageSubPanelAPI;
+import edu.ucsb.nceas.morpho.plugins.datapackagewizard.AbstractWizardPage;
 
 
 import edu.ucsb.nceas.morpho.util.Log;
@@ -65,7 +66,7 @@ import java.awt.event.ItemListener;
 
 
 
-public class IntervalRatioPanel extends JPanel implements DialogSubPanelAPI {
+public class IntervalRatioPanel extends JPanel implements WizardPageSubPanelAPI {
 
   private JLabel     unitsPickListLabel;
   private JLabel     precisionLabel;
@@ -77,7 +78,7 @@ public class IntervalRatioPanel extends JPanel implements DialogSubPanelAPI {
   private JComboBox  numberTypePickList;
   private CustomList boundsList;
   
-  private AttributeDialog attributeDialog;
+  private AbstractWizardPage wizardPage;
   
   // note - order must match numberEMLVals array!
   private String[] numberTypesDisplayVals = new String[] { 
@@ -134,15 +135,15 @@ public class IntervalRatioPanel extends JPanel implements DialogSubPanelAPI {
   /**
    *  Constructor
    *
-   *  @param attributeDialog the parent dialog
+   *  @param page the parent wizard page
    *
-   *  @param nom_ord_mode can be AttributeDialog.MEASUREMENTSCALE_NOMINAL 
-   *                  or AttributeDialog.MEASUREMENTSCALE_ORDINAL
+   *  @param nom_ord_mode can be AttributePage.MEASUREMENTSCALE_NOMINAL 
+   *                  or AttributePage.MEASUREMENTSCALE_ORDINAL
    */
-  public IntervalRatioPanel(AttributeDialog attributeDialog) {
+  public IntervalRatioPanel(AbstractWizardPage page) {
   
     super();
-    this.attributeDialog = attributeDialog;
+    this.wizardPage = page;
     init();
   } 
   
@@ -152,7 +153,7 @@ public class IntervalRatioPanel extends JPanel implements DialogSubPanelAPI {
     this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
   
     int width = WizardSettings.WIZARD_CONTENT_SINGLE_LINE_DIMS.width;
-    int height = AttributeDialog.BORDERED_PANEL_TOT_ROWS 
+    int height = AttributePage.BORDERED_PANEL_TOT_ROWS 
                   * WizardSettings.WIZARD_CONTENT_SINGLE_LINE_DIMS.height;
 
     Dimension dims = new Dimension(width, height);
@@ -164,7 +165,7 @@ public class IntervalRatioPanel extends JPanel implements DialogSubPanelAPI {
     unitsPickList = new UnitsPickList();
     
     JPanel pickListPanel = WidgetFactory.makePanel();
-    unitsPickListLabel    = WidgetFactory.makeLabel("Standard Unit:", true);
+    unitsPickListLabel    = WidgetFactory.makeLabel("Standard Unit:", true, WizardSettings.WIZARD_REDUCED_CONTENT_LABEL_DIMS);
     pickListPanel.add(unitsPickListLabel);
     pickListPanel.add(unitsPickList);
  
@@ -174,7 +175,7 @@ public class IntervalRatioPanel extends JPanel implements DialogSubPanelAPI {
     ////////////////////////
     
     JPanel precisionPanel = WidgetFactory.makePanel();
-    precisionLabel    = WidgetFactory.makeLabel("Precision:", true);
+    precisionLabel    = WidgetFactory.makeLabel("Precision:", true, WizardSettings.WIZARD_REDUCED_CONTENT_LABEL_DIMS);
     precisionPanel.add(precisionLabel);
     precisionField = WidgetFactory.makeOneLineTextField();
     precisionPanel.add(precisionField);
@@ -208,9 +209,15 @@ public class IntervalRatioPanel extends JPanel implements DialogSubPanelAPI {
 
     numberTypePickList = WidgetFactory.makePickList(numberTypesDisplayVals, 
                                                     false, 0, listener);
+    // using preferredSize just to ensure that the picklist displays correctly with the
+    // arrow button shown properly, when the size of the attribute page is reduced(as in 
+    // TextImportWizard). Without this, the picklist wouldnt appear fully. This doesnt 
+    // affect the way it is displayed on a normal size attribute page.
+						    
+    numberTypePickList.setPreferredSize(new Dimension(200,10));
     
     JPanel numberTypePanel = WidgetFactory.makePanel();
-    numberTypeLabel = WidgetFactory.makeLabel("Number Type:", true);
+    numberTypeLabel = WidgetFactory.makeLabel("Number Type:", true, WizardSettings.WIZARD_REDUCED_CONTENT_LABEL_DIMS);
     numberTypePanel.add(numberTypeLabel);
     numberTypePanel.add(numberTypePickList);
 
@@ -503,7 +510,7 @@ public class IntervalRatioPanel extends JPanel implements DialogSubPanelAPI {
   
   /** 
    *  sets the Data in the IntervalRatio Panel. This is called by the setData() function 
-   *  of AttributeDialog.
+   *  of AttributePage.
    
    *  @param  xPathRoot - this is the relative xPath of the current attribute
    *

@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2003-10-04 03:47:44 $'
- * '$Revision: 1.30 $'
+ *   '$Author: sambasiv $'
+ *     '$Date: 2003-11-19 01:42:19 $'
+ * '$Revision: 1.31 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,6 +33,7 @@ import edu.ucsb.nceas.utilities.IOUtil;
 import edu.ucsb.nceas.utilities.StringUtil;
 import edu.ucsb.nceas.utilities.XMLUtilities;
 import edu.ucsb.nceas.utilities.OrderedMap;
+import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
 
 import javax.swing.JLabel;
 import javax.swing.JTextField;
@@ -119,7 +120,7 @@ public class WizardSettings {
   public static final int DIALOG_HEIGHT
   = WIZARD_HEIGHT - DIALOG_SMALLER_THAN_WIZARD_BY;
   
-  protected static final String FIRST_PAGE_ID = WizardPageLibrary.INTRODUCTION;
+  protected static final String FIRST_PAGE_ID = DataPackageWizardInterface.INTRODUCTION;
   
   protected static final Color TOP_PANEL_BG_COLOR = new Color(11,85,112);
   
@@ -169,6 +170,9 @@ public class WizardSettings {
   
   public static final  Dimension WIZARD_CONTENT_LABEL_DIMS
   = new Dimension(100,20);
+  
+  public static final  Dimension WIZARD_REDUCED_CONTENT_LABEL_DIMS
+  = new Dimension(80,20);
   // x-dimension is ignored:
   public static final  Dimension WIZARD_CONTENT_TEXTFIELD_DIMS
   = new Dimension(2000,20);

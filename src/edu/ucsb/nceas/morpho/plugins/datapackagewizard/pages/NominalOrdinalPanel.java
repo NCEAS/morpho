@@ -7,8 +7,8 @@
 *    Release: @release@
 *
 *   '$Author: sambasiv $'
-*     '$Date: 2003-10-30 20:05:17 $'
-* '$Revision: 1.10 $'
+*     '$Date: 2003-11-19 01:42:19 $'
+* '$Revision: 1.11 $'
 *
 * This program is free software; you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -31,8 +31,8 @@ package edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.CustomList;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WidgetFactory;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardSettings;
-import edu.ucsb.nceas.morpho.plugins.datapackagewizard.DialogSubPanelAPI;
-
+import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardPageSubPanelAPI;
+import edu.ucsb.nceas.morpho.plugins.datapackagewizard.AbstractWizardPage;
 
 import edu.ucsb.nceas.morpho.util.Log;
 
@@ -47,6 +47,7 @@ import javax.swing.JPanel;
 import javax.swing.BorderFactory;
 import javax.swing.JCheckBox;
 import javax.swing.JOptionPane;
+import javax.swing.border.EmptyBorder;
 
 import java.util.Iterator;
 import java.util.List;
@@ -64,7 +65,7 @@ import java.awt.event.ItemListener;
 
 
 
-class NominalOrdinalPanel extends JPanel implements DialogSubPanelAPI {
+class NominalOrdinalPanel extends JPanel implements WizardPageSubPanelAPI {
 	
 	
 	
@@ -97,7 +98,7 @@ class NominalOrdinalPanel extends JPanel implements DialogSubPanelAPI {
 	
 	private final String EMPTY_STRING = "";
 	
-	private AttributeDialog attributeDialog;
+	private AbstractWizardPage wizardPage;
 	
 	private JComboBox domainPickList;
 	
@@ -107,15 +108,15 @@ class NominalOrdinalPanel extends JPanel implements DialogSubPanelAPI {
 	/**
 	*  Constructor
 	*
-	*  @param attributeDialog the parent dialog
+	*  @param page the parent wizard page
 	*
-	*  @param nom_ord_mode can be AttributeDialog.MEASUREMENTSCALE_NOMINAL 
-	*                  or AttributeDialog.MEASUREMENTSCALE_ORDINAL
+	*  @param nom_ord_mode can be AttributePage.MEASUREMENTSCALE_NOMINAL 
+	*                  or AttributePage.MEASUREMENTSCALE_ORDINAL
 	*/
-	public NominalOrdinalPanel(AttributeDialog attributeDialog) {
+	public NominalOrdinalPanel(AbstractWizardPage page) {
 		
 		super();
-		this.attributeDialog = attributeDialog;
+		this.wizardPage = page;
 		init();
 	} 
 	
@@ -125,7 +126,7 @@ class NominalOrdinalPanel extends JPanel implements DialogSubPanelAPI {
 		this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		
 		int width = WizardSettings.WIZARD_CONTENT_SINGLE_LINE_DIMS.width;
-		int height = AttributeDialog.BORDERED_PANEL_TOT_ROWS 
+		int height = AttributePage.BORDERED_PANEL_TOT_ROWS 
 		* WizardSettings.WIZARD_CONTENT_SINGLE_LINE_DIMS.height;
 		
 		Dimension dims = new Dimension(width, height);
@@ -179,16 +180,28 @@ class NominalOrdinalPanel extends JPanel implements DialogSubPanelAPI {
 		domainPickList.addItemListener(listener);
 		domainPickList.setEditable(false);
 		domainPickList.setSelectedIndex(0);
+		 
+		// using preferredSize just to ensure that the picklist displays correctly with the
+		// arrow button shown properly, when the size of the attribute page is reduced(as in 
+		// TextImportWizard). Without this, the picklist wouldnt appear fully. This doesnt 
+		// affect the way it is displayed on a normal size attribute page.
+		domainPickList.setPreferredSize(new Dimension(200,10));
 		
 		
 		JPanel pickListPanel = WidgetFactory.makePanel();
-		chooseLabel = WidgetFactory.makeLabel("CHOOSE:", true);
+		chooseLabel = WidgetFactory.makeLabel("CHOOSE:", true, WizardSettings.WIZARD_REDUCED_CONTENT_LABEL_DIMS);
 		pickListPanel.add(chooseLabel);
 		pickListPanel.add(domainPickList);
 		
+		
 		JPanel measScalePanel = new JPanel();
-		measScalePanel.setLayout(new GridLayout(1,2));
+		measScalePanel.setLayout(new GridLayout(1,2,3,0));
 		measScalePanel.add(pickListPanel);
+		
+		/*JPanel helpTextPanel = WidgetFactory.makePanel();
+		helpTextPanel.add(WidgetFactory.makeDefaultSpacer());
+		helpTextPanel.add(helpTextLabel);*/
+		
 		measScalePanel.add(helpTextLabel);
 		
 		this.add(measScalePanel);
@@ -211,7 +224,7 @@ class NominalOrdinalPanel extends JPanel implements DialogSubPanelAPI {
 		
 		this.add(currentSubPanel);
 		textDefinitionField.requestFocus();
-		attributeDialog.refreshUI();
+		((AttributePage)wizardPage).refreshUI();
 	}
 	
 	
@@ -221,7 +234,7 @@ class NominalOrdinalPanel extends JPanel implements DialogSubPanelAPI {
 	private JPanel getTextSubPanel() {
 		
 		JPanel panel 
-		= WidgetFactory.makeVerticalPanel(AttributeDialog.DOMAIN_NUM_ROWS);
+		= WidgetFactory.makeVerticalPanel(AttributePage.DOMAIN_NUM_ROWS);
 		
 		panel.add(WidgetFactory.makeHalfSpacer());
 		
@@ -231,7 +244,7 @@ class NominalOrdinalPanel extends JPanel implements DialogSubPanelAPI {
 		topHorizPanel.setLayout(new GridLayout(1,2));
 		
 		JPanel defFieldPanel = WidgetFactory.makePanel();
-		textDefinitionLabel = WidgetFactory.makeLabel("Definition:", true);
+		textDefinitionLabel = WidgetFactory.makeLabel("Definition:", true, WizardSettings.WIZARD_REDUCED_CONTENT_LABEL_DIMS);
 		defFieldPanel.add(textDefinitionLabel);
 		textDefinitionField = WidgetFactory.makeOneLineTextField();
 		defFieldPanel.add(textDefinitionField);
@@ -255,7 +268,7 @@ class NominalOrdinalPanel extends JPanel implements DialogSubPanelAPI {
 		middleHorizPanel.setLayout(new GridLayout(1,2));
 		
 		JPanel srcFieldPanel = WidgetFactory.makePanel();
-		srcFieldPanel.add(WidgetFactory.makeLabel("Source:", false));
+		srcFieldPanel.add(WidgetFactory.makeLabel("Source:", false, WizardSettings.WIZARD_REDUCED_CONTENT_LABEL_DIMS));
 		textSourceField = WidgetFactory.makeOneLineTextField();
 		srcFieldPanel.add(textSourceField);
 		
@@ -280,7 +293,7 @@ class NominalOrdinalPanel extends JPanel implements DialogSubPanelAPI {
 		Object[] colTemplates = new Object[] { new JTextField() };
 		
 		JPanel patternPanel = WidgetFactory.makePanel();
-		patternPanel.add(WidgetFactory.makeLabel("Pattern(s)", false));
+		patternPanel.add(WidgetFactory.makeLabel("Pattern(s)", false, WizardSettings.WIZARD_REDUCED_CONTENT_LABEL_DIMS));
 		String[] colNames = new String[] { "Pattern(s) (optional):" };
 		
 		textPatternsList 
@@ -310,7 +323,7 @@ class NominalOrdinalPanel extends JPanel implements DialogSubPanelAPI {
 	
 	private JPanel getEnumSubPanel() {
 		
-		JPanel panel = WidgetFactory.makeVerticalPanel(AttributeDialog.DOMAIN_NUM_ROWS);
+		JPanel panel = WidgetFactory.makeVerticalPanel(AttributePage.DOMAIN_NUM_ROWS);
 		
 		///////////////////////////
 		panel.add(WidgetFactory.makeHalfSpacer());
@@ -322,7 +335,7 @@ class NominalOrdinalPanel extends JPanel implements DialogSubPanelAPI {
 		= new String[] { "Code", "Definition", "Source (optional)" };
 		
 		JPanel enumPanel = WidgetFactory.makePanel();
-		enumDefinitionLabel = WidgetFactory.makeLabel("Definitions", true);
+		enumDefinitionLabel = WidgetFactory.makeLabel("Definitions", true, WizardSettings.WIZARD_REDUCED_CONTENT_LABEL_DIMS);
 		enumPanel.add(enumDefinitionLabel);
 		
 		enumDefinitionList 
@@ -617,7 +630,7 @@ class NominalOrdinalPanel extends JPanel implements DialogSubPanelAPI {
 	
 	/** 
 	*  sets the Data in the NominalOrdinal Panel. This is called by the setData() function 
-	*  of AttributeDialog.
+	*  of AttributePage.
 	*
 	*  @param  xPathRoot - this is the relative xPath of the current attribute
 	*

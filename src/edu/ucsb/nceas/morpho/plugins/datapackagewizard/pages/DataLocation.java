@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: sambasiv $'
- *     '$Date: 2003-10-22 00:16:58 $'
- * '$Revision: 1.16 $'
+ *     '$Date: 2003-11-19 01:42:19 $'
+ * '$Revision: 1.17 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -57,14 +57,14 @@ import javax.swing.BorderFactory;
 
 
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.AbstractWizardPage;
-import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardPageLibrary;
+import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardSettings;
 
 
 public class DataLocation extends AbstractWizardPage {
 
-  private final String pageID     = WizardPageLibrary.DATA_LOCATION;
-  private String nextPageID       = WizardPageLibrary.TEXT_IMPORT_WIZARD;
+  private final String pageID     = DataPackageWizardInterface.DATA_LOCATION;
+  private String nextPageID       = DataPackageWizardInterface.TEXT_IMPORT_WIZARD;
   
   private final String title      = "Data File Information:";
   private final String subtitle   = "Location";
@@ -109,9 +109,9 @@ public class DataLocation extends AbstractWizardPage {
                   = "/eml:eml/dataset/dataTable/physical/distribution/offline";
   private final String NODATA_XPATH  = EMPTY_STRING;
 
-  private String inlineNextPageID  = WizardPageLibrary.TEXT_IMPORT_WIZARD;
-  private String onlineNextPageID  = WizardPageLibrary.DATA_FORMAT;
-  private String offlineNextPageID = WizardPageLibrary.TEXT_IMPORT_WIZARD;
+  private String inlineNextPageID  = DataPackageWizardInterface.TEXT_IMPORT_WIZARD;
+  private String onlineNextPageID  = DataPackageWizardInterface.DATA_FORMAT;
+  private String offlineNextPageID = DataPackageWizardInterface.TEXT_IMPORT_WIZARD;
     
   private JPanel inlinePanel;
   private JPanel onlinePanel;
@@ -367,7 +367,7 @@ public class DataLocation extends AbstractWizardPage {
           public void actionPerformed(ActionEvent e) {
       
             if (e.getActionCommand().equals(genHandButtonsText[0])) {
-              setNextPageID(WizardPageLibrary.TEXT_IMPORT_WIZARD);
+              setNextPageID(DataPackageWizardInterface.TEXT_IMPORT_WIZARD);
               offlineSubPanel.removeAll();
               offlineSubPanel.add(fileLocatorWidgetOffline, BorderLayout.NORTH);
               offlineSubPanel.validate();
@@ -375,7 +375,7 @@ public class DataLocation extends AbstractWizardPage {
         
             } else if (e.getActionCommand().equals(genHandButtonsText[1])) {
       
-              setNextPageID(WizardPageLibrary.DATA_FORMAT);
+              setNextPageID(DataPackageWizardInterface.DATA_FORMAT);
               offlineSubPanel.removeAll();
               offlineSubPanel.add(byHandPanelOffline, BorderLayout.CENTER);
               offlineSubPanel.validate();
@@ -484,7 +484,7 @@ public class DataLocation extends AbstractWizardPage {
     } else if (distribXPath==OFFLINE_XPATH) {
 //  O F F L I N E  ///////////////////////////////////
     
-      if (offlineNextPageID.equals(WizardPageLibrary.DATA_FORMAT)) {
+      if (offlineNextPageID.equals(DataPackageWizardInterface.DATA_FORMAT)) {
       //entered by hand:    
       
         if (medNameField.getText().trim().equals(EMPTY_STRING)) {
@@ -524,7 +524,7 @@ public class DataLocation extends AbstractWizardPage {
 //  N O   D A T A  ///////////////////////////////////
 
       WizardSettings.setSummaryText(WizardSettings.SUMMARY_TEXT_NODATA);
-      nextPageID = WizardPageLibrary.SUMMARY;
+      nextPageID = DataPackageWizardInterface.SUMMARY;
     }
     return true;
   }
@@ -563,7 +563,7 @@ public class DataLocation extends AbstractWizardPage {
     } else if (distribXPath==OFFLINE_XPATH)  {
 //  O F F L I N E  ///////////////////////////////////
     
-      if (nextPageID==WizardPageLibrary.DATA_FORMAT) {
+      if (nextPageID==DataPackageWizardInterface.DATA_FORMAT) {
         //entered by hand:
         
         returnMap.put(OBJECTNAME_XPATH, objNameField.getText().trim());
@@ -627,6 +627,8 @@ public class DataLocation extends AbstractWizardPage {
    */
   
   public String  getImportFilePath() { return this.importFilePath; }
+  
+  public void setPageData(OrderedMap data) { }
   
 }
 

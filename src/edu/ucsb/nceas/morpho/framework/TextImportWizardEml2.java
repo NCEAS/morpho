@@ -4,9 +4,9 @@
 *              National Center for Ecological Analysis and Synthesis
 *    Release: @release@
 *
-*   '$Author: higgins $'
-*     '$Date: 2003-11-07 18:37:33 $'
-* '$Revision: 1.3 $'
+*   '$Author: sambasiv $'
+*     '$Date: 2003-11-19 01:42:19 $'
+* '$Revision: 1.4 $'
 *
 * This program is free software; you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -40,17 +40,25 @@ import java.util.Enumeration;
 import java.text.DateFormat;
 import javax.swing.border.EmptyBorder;
 import javax.swing.AbstractAction;
+import javax.swing.DefaultListSelectionModel;
 
 import edu.ucsb.nceas.morpho.util.Log;
 import edu.ucsb.nceas.morpho.util.XMLUtil;
 import edu.ucsb.nceas.morpho.util.Base64;
 import edu.ucsb.nceas.morpho.datapackage.wizard.PackageWizard;
 import edu.ucsb.nceas.morpho.datapackage.ColumnMetadataEditPanel;
-import edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.AttributeDialog;
+import edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.AttributePage;
+import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardPopupDialog;
+import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
+import edu.ucsb.nceas.morpho.plugins.datapackagewizard.DataPackageWizardPlugin;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.AttributeSettings;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.IntervalRatioPanel;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardPopupDialog;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardContainerFrame;
+import edu.ucsb.nceas.morpho.plugins.ServiceController;
+import edu.ucsb.nceas.morpho.plugins.ServiceProvider;
+import edu.ucsb.nceas.morpho.plugins.ServiceNotHandledException;
+
 import edu.ucsb.nceas.utilities.*;
 import edu.ucsb.nceas.utilities.OrderedMap;
 import edu.ucsb.nceas.morpho.plugins.metadisplay.HTMLPanel;
@@ -75,13 +83,6 @@ import edu.ucsb.nceas.morpho.Morpho;
 */
 public class TextImportWizardEml2 extends javax.swing.JFrame
 {
-	
-	/**
-	* The editor panel for entering and displaying column metadata
-	* This component was originally used with the data display table
-	* (when a new column is created)and is reused here
-	*/
-	ColumnMetadataEditPanelEml2 cmePanel = null;
 	
 	
 	/**
@@ -158,7 +159,7 @@ public class TextImportWizardEml2 extends javax.swing.JFrame
 	* flag indicating that labels for each column are contained in the
 	* starting line of parsed data
 	*/
-	boolean labelsInStartingLine = true;
+	boolean labelsInStartingLine = false;
 	
 	/**
 	* vector containing column Title strings
@@ -172,7 +173,7 @@ public class TextImportWizardEml2 extends javax.swing.JFrame
 	//Vector colDataInfo;
 	
 	/**
-	* vector containing AttributeDialog objects
+	* vector containing AttributePage objects
 	*/
 	public Vector columnAttributes;
 	
@@ -204,6 +205,9 @@ public class TextImportWizardEml2 extends javax.swing.JFrame
 	
 	String delimiter = "";
 	
+	// Column Model of the table containting all the columns
+	TableColumnModel fullColumnModel;
+
 	//number types for interval/ratio number type
 	
 	private String[] numberTypesArray = new String[] { 
@@ -225,9 +229,7 @@ public class TextImportWizardEml2 extends javax.swing.JFrame
   public TextImportWizardEml2(String dataFileName, TextImportListener listener)
 	{
 		this.listener = listener;
-		cmePanel = new ColumnMetadataEditPanelEml2();
-		cmePanel.setTextImportWizard(this);
-		cmePanel.setPreferredSize(new Dimension(300, 4000));
+		
 		
 		
 		//{{INIT_CONTROLS
@@ -242,9 +244,15 @@ public class TextImportWizardEml2 extends javax.swing.JFrame
 				openFileDialog.setTitle("Open");
 				//$$ openFileDialog.move(0,336);
 				MainDisplayPanel.setLayout(new BorderLayout(0,0));
-				getContentPane().add(BorderLayout.CENTER, MainDisplayPanel);
+				getContentPane().add(MainDisplayPanel, BorderLayout.CENTER);
 				ControlsPlusDataPanel.setLayout(new GridLayout(2,1,0,4));
-				MainDisplayPanel.add(BorderLayout.CENTER,ControlsPlusDataPanel);
+				MainDisplayPanel.add(ColumnDataScrollPanel, BorderLayout.WEST);
+				MainDisplayPanel.add(ControlsPlusDataPanel,BorderLayout.CENTER);
+				
+				
+				ColumnDataScrollPanel.setPreferredSize(new Dimension(80, 4000));
+				ColumnDataScrollPanel.setVisible(false);
+				
 				ControlsPanel.setLayout(new CardLayout(0,0));
 				ControlsPlusDataPanel.add(ControlsPanel);
 				
@@ -317,7 +325,7 @@ public class TextImportWizardEml2 extends javax.swing.JFrame
 				StartingLinePanel.add(ColumnLabelsLabel);
 				ColumnLabelsCheckBox.setText("Column Labels are in starting row");
 				ColumnLabelsCheckBox.setActionCommand("Column Labels are in starting row");
-				ColumnLabelsCheckBox.setSelected(true);
+				ColumnLabelsCheckBox.setSelected(false);
 				StartingLinePanel.add(ColumnLabelsCheckBox);
 				ColumnLabelsCheckBox.setFont(new Font("Dialog", Font.PLAIN, 12));
 				
@@ -371,39 +379,18 @@ public class TextImportWizardEml2 extends javax.swing.JFrame
 				ConsecutiveCheckBox.setFont(new Font("Dialog", Font.PLAIN, 12));
 				
 				//---------------------------------
-				Step3ControlsPanel.setLayout(new BorderLayout(0,0));
 				
 				ControlsPanel.add("card3", ColumnDataPanel);
-				Step3ControlsPanel.setVisible(false);
-				Step3_HelpPanel.setLayout(new FlowLayout(FlowLayout.CENTER,5,5));
-				Step3ControlsPanel.add(BorderLayout.WEST, Step3_HelpPanel);
-				Step3_HelpPanel.setBackground(java.awt.Color.white);
-				Step3_HelpLabel.setText("<html><br>Select column of<p>interest by \'clicking\'"+
-				"<p>on any cell in <p>column.<p>A red label indicates</p><p>a requiired item.</p>");
-				Step3_HelpPanel.add(Step3_HelpLabel);
-				Step3_HelpLabel.setForeground(java.awt.Color.black);
-				ColDataSummaryPanel.setLayout(new GridLayout(2,1));
-				ColDataSummaryPanel.add(TopColSummaryPanel);
-				ColDataSummaryPanel.add(BottomColSummaryPanel);    
-				TopColSummaryPanel.setLayout(new BoxLayout(TopColSummaryPanel,BoxLayout.Y_AXIS));
-				ColDataSummaryPanel.setBorder(BorderFactory.createEmptyBorder(10,5,5,5));
-				TopColSummaryPanel.add(ColDataSummaryLabel);
-				BottomColSummaryPanel.setLayout(new BorderLayout(0,0));
-				BottomColSummaryPanel.add(BorderLayout.NORTH, new JLabel("Unique Items List"));
-				BottomColSummaryPanel.add(BorderLayout.CENTER, UniqueItemsScrollPane);
+				ColumnDataPanel.setLayout(new BorderLayout(0,0));
 				
-				UniqueItemsScrollPane.getViewport().add(UniqueItemsList);
-				
-				Step3ControlsPanel.add(BorderLayout.CENTER, ColDataSummaryPanel);
+				ColumnDataPanel.setVisible(false);
 				
 				//------------------------------------------------
 				DataPanel.setLayout(new BorderLayout(0,0));
 				ControlsPlusDataPanel.add(DataPanel);
 				DataPanel.add(BorderLayout.CENTER, DataScrollPanel);
 				
-				ColumnDataPanel.setLayout(new BorderLayout(0,0));
-				//MainDisplayPanel.add(BorderLayout.WEST,ColumnDataPanel);
-				ColumnDataPanel.setVisible(false);
+				
 				
 				((CardLayout) ControlsPanel.getLayout()).show(ControlsPanel,"card1");
 				ButtonsPanel.setLayout(new BorderLayout(0,0));
@@ -413,6 +400,10 @@ public class TextImportWizardEml2 extends javax.swing.JFrame
 				ShowResultsButton.setText("Show Results of Data Scan");
 				ShowResultsButton.setActionCommand("Show Results");
 				ShowResultsButton.setDefaultCapable(false);
+				// initally, keep it invisible because its not useful in step #1 when 
+				// TIW is first started. It will later be made visible
+				ShowResultsButton.setVisible(false);
+				
 				JPanelLeft.add(ShowResultsButton);
 				JPanelCenter.setLayout(new FlowLayout(FlowLayout.RIGHT,5,5));
 				ButtonsPanel.add(BorderLayout.CENTER,JPanelCenter);
@@ -458,7 +449,7 @@ public class TextImportWizardEml2 extends javax.swing.JFrame
 				
 				resultsBuffer = new StringBuffer();
 				
-				ColumnDataPanel.add(BorderLayout.CENTER, cmePanel);
+				
 				
 				//assign the filename and get the wizard started.
 				if(dataFileName != null)
@@ -555,6 +546,7 @@ public class TextImportWizardEml2 extends javax.swing.JFrame
 			javax.swing.JPanel ColDataSummaryPanel = new javax.swing.JPanel();
 			javax.swing.JPanel DataPanel = new javax.swing.JPanel();
 			javax.swing.JScrollPane DataScrollPanel = new javax.swing.JScrollPane();
+			javax.swing.JScrollPane ColumnDataScrollPanel = new javax.swing.JScrollPane();
 			javax.swing.JPanel ColumnDataPanel = new javax.swing.JPanel();
 			javax.swing.JPanel ButtonsPanel = new javax.swing.JPanel();
 			javax.swing.JPanel JPanelLeft = new javax.swing.JPanel();
@@ -662,9 +654,12 @@ public class TextImportWizardEml2 extends javax.swing.JFrame
 		BackButton.setEnabled(false);
 		FinishButton.setEnabled(false);
 		NextButton.setEnabled(true);
+		setVisible(true);
 	}
 	
-	
+	public static void main(String args[]) {
+		new TextImportWizardEml2(args[0], null).startImport(args[0]);	
+	}
 	
 	
 	/**
@@ -839,10 +834,23 @@ public class TextImportWizardEml2 extends javax.swing.JFrame
 			buildTable(colTitles, vec);
 			
 			columnAttributes = new Vector();
+			ServiceController sc;
+			DataPackageWizardPlugin dpwPlugin = null;
+			AttributePage ad;
+			try {
+			sc = ServiceController.getInstance();
+			dpwPlugin = (DataPackageWizardPlugin)sc.getServiceProvider(DataPackageWizardInterface.class);
+			} catch (ServiceNotHandledException se) {
+				Log.debug(6, se.getMessage());
+			}
+			if(dpwPlugin == null) 
+				return;
 			for (int k=0;k<numcols;k++) {
 				
-				AttributeDialog ad = new AttributeDialog(WizardContainerFrame.frame, false);
-				ad.setVisible(false);
+				ad = (AttributePage)dpwPlugin.getPage(DataPackageWizardInterface.ATTRIBUTE_PAGE);
+				ad.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+				//WizardPopupDialog wpd = new WizardPopupDialog(ad, WizardContainerFrame.frame, false);
+				//wpd.setVisible(false);
 				
 				columnAttributes.add(ad);
 				
@@ -864,7 +872,7 @@ public class TextImportWizardEml2 extends javax.swing.JFrame
 						map.put(path,elem);
 						pos++;
 					}
-					ad.setPageData(AttributeSettings.Attribute_xPath, map, "nominal");
+					ad.setPageData(map);
 				}
 				
 				
@@ -873,7 +881,7 @@ public class TextImportWizardEml2 extends javax.swing.JFrame
 					map.put(numberTypePath,numberTypesArray[3]);
 					numberTypePath = AttributeSettings.Ratio_xPath + "/numericDomain/numberType";
 					map.put(numberTypePath,numberTypesArray[3]);
-					ad.setPageData(AttributeSettings.Attribute_xPath, map, "interval");
+					ad.setPageData(map);
 				}
 				
 				else if(type.equals("integer")) {
@@ -898,10 +906,11 @@ public class TextImportWizardEml2 extends javax.swing.JFrame
 						numberTypePath = AttributeSettings.Ratio_xPath + "/numericDomain/numberType";
 						map.put(numberTypePath,numberTypesArray[2]);
 					}
-					ad.setPageData(AttributeSettings.Attribute_xPath, map, "interval");
+					ad.setPageData(map);
 				}
 				else if (type.equals("date")) {
-					ad.setPageData(AttributeSettings.Attribute_xPath, map, "datetime");
+					map.put(AttributeSettings.DateTime_xPath + "/dateTimePrecision", new String("0"));
+					ad.setPageData(map);
 				}
 			}
 			
@@ -925,6 +934,8 @@ public class TextImportWizardEml2 extends javax.swing.JFrame
 		table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 		
+		fullColumnModel = table.getColumnModel();
+		
 		ListSelectionModel colSM = table.getColumnModel().getSelectionModel();
 		colSM.addListSelectionListener(new ListSelectionListener() {
 			public void valueChanged(ListSelectionEvent e) {
@@ -938,7 +949,7 @@ public class TextImportWizardEml2 extends javax.swing.JFrame
 				} else {
 					
 					selectedCol = lsm.getMinSelectionIndex();
-					cmePanel.setCurrentAttributeIndex(selectedCol);
+					
 					
 				}
 			}
@@ -1030,29 +1041,61 @@ public class TextImportWizardEml2 extends javax.swing.JFrame
 	
 	void NextButton_actionPerformed(java.awt.event.ActionEvent event)
 	{
+		if(stepNumber >= 3) {
+			AttributePage attrd = (AttributePage)columnAttributes.elementAt(stepNumber -3);
+			if(!attrd.onAdvanceAction())
+				return;
+		}
+		
 		stepNumber++;
-		if (stepNumber>1) table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-		if (stepNumber==3) FinishButton.setEnabled(true);
+		if (stepNumber==2) table.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
+		if (fullColumnModel != null && stepNumber==(fullColumnModel.getColumnCount() + 2)) 
+			FinishButton.setEnabled(true);
 		if (stepNumber<3) {
 			BackButton.setEnabled(true);
+			ShowResultsButton.setVisible(true);
 		}
 		else {
+			ShowResultsButton.setVisible(false);
 			//NextButton.setEnabled(false);
 			
 		}
 		StepNumberLabel.setText("Step #"+stepNumber);
 		CardLayout cl = (CardLayout)ControlsPanel.getLayout();
 		cl.show(ControlsPanel, "card"+stepNumber);
+		
 		if (stepNumber == 2) parseDelimited();
 		if (stepNumber >= 3) {
-			StepNumberLabel.setText("Step #"+stepNumber+" of " + (table.getColumnCount()+2));
-			ColumnDataPanel.setVisible(true);
-			table.setColumnSelectionInterval(stepNumber-3,stepNumber-3);
+			TableColumnModel model = new DefaultTableColumnModel();
+			model.addColumn(fullColumnModel.getColumn(stepNumber - 3));
+			DefaultListSelectionModel dlsm = new DefaultListSelectionModel();
+			dlsm.setSelectionInterval(0,0);
+			model.setColumnSelectionAllowed(true);
+			model.setSelectionModel(dlsm);
+			table.setColumnModel(model);
+			table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+			table.sizeColumnsToFit(-1);	
+			ColumnDataScrollPanel.getViewport().removeAll();
+			ColumnDataScrollPanel.getViewport().add(table);
+			ColumnDataScrollPanel.setVisible(true);
+			DataPanel.setVisible(false);
+			StepNumberLabel.setText("Step #"+stepNumber+" of " + (fullColumnModel.getColumnCount()+2));
+			AttributePage attrd = (AttributePage)columnAttributes.elementAt(stepNumber -3);
+			/*ColumnDataPanel.removeAll();
+			ColumnDataPanel.add(attrd,BorderLayout.CENTER);
+			ColumnDataPanel.validate();*/
+			MainDisplayPanel.remove(MainDisplayPanel.getComponent(1));
+			MainDisplayPanel.add(attrd, BorderLayout.CENTER);
+			attrd.refreshUI();
+			MainDisplayPanel.validate();
+			MainDisplayPanel.repaint();
+			this.repaint();
 		}
 		else {
 			ColumnDataPanel.setVisible(false);
 		}
-		if (stepNumber>=table.getColumnCount()+2) {
+
+		if (stepNumber >= fullColumnModel.getColumnCount()+2) {
 			NextButton.setEnabled(false);
 		}
 		else {
@@ -1063,27 +1106,67 @@ public class TextImportWizardEml2 extends javax.swing.JFrame
 	void BackButton_actionPerformed(java.awt.event.ActionEvent event)
 	{
 		stepNumber--;
-		if (stepNumber<2) table.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
+		if(stepNumber ==2) {
+			ColumnDataScrollPanel.setVisible(false);
+			table.setColumnModel(fullColumnModel);
+			
+			table.setColumnSelectionAllowed(true);
+			table.setRowSelectionAllowed(false);
+			table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+			table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+			DataScrollPanel.getViewport().removeAll();
+			DataScrollPanel.getViewport().add(table);
+			DataPanel.setVisible(true);
+			MainDisplayPanel.remove(MainDisplayPanel.getComponent(1));
+			MainDisplayPanel.add(ControlsPlusDataPanel, BorderLayout.CENTER);
+			MainDisplayPanel.validate();
+			MainDisplayPanel.repaint();
+			
+		}
+		if (stepNumber<2) table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 		if (stepNumber==1){
 			saveScreen1Settings();
 			hasReturnedFromScreen2=true;
 		}
 		if (stepNumber >= 3) {
-			ColumnDataPanel.setVisible(true);
-			table.setColumnSelectionInterval(stepNumber-3,stepNumber-3);
+			TableColumnModel model = new DefaultTableColumnModel();
+			model.addColumn(fullColumnModel.getColumn(stepNumber - 3));
+			DefaultListSelectionModel dlsm = new DefaultListSelectionModel();
+			dlsm.setSelectionInterval(0,0);
+			model.setColumnSelectionAllowed(true);
+			model.setSelectionModel(dlsm);
+			table.setColumnModel(model);
+			
+			ColumnDataScrollPanel.getViewport().removeAll();
+			ColumnDataScrollPanel.getViewport().add(table);
+			ColumnDataScrollPanel.setVisible(true);
+			DataPanel.setVisible(false);
+			
+			AttributePage attrd = (AttributePage)columnAttributes.elementAt(stepNumber -3);
+			MainDisplayPanel.remove(MainDisplayPanel.getComponent(1));
+			MainDisplayPanel.add(attrd, BorderLayout.CENTER);
+			attrd.refreshUI();
+			MainDisplayPanel.validate();
+			MainDisplayPanel.repaint();
+			this.repaint();
+			//table.setColumnSelectionInterval(stepNumber-3,stepNumber-3);
+			ShowResultsButton.setVisible(false);
 		}
 		else {
 			ColumnDataPanel.setVisible(false);
+			ShowResultsButton.setVisible(true);
 		}
 		
-		if (stepNumber<3) FinishButton.setEnabled(false);
+		if (fullColumnModel != null && stepNumber<(fullColumnModel.getColumnCount() + 2)) 
+			FinishButton.setEnabled(false);
 		if (stepNumber>1) {
 			NextButton.setEnabled(true);
 		}
 		else {
 			BackButton.setEnabled(false); 
 		}
-		StepNumberLabel.setText("Step #"+stepNumber+" of " + (table.getColumnCount()+2));
+		StepNumberLabel.setText("Step #"+stepNumber+" of " + (fullColumnModel.getColumnCount()+2));
+		
 		CardLayout cl = (CardLayout)ControlsPanel.getLayout();
 		cl.show(ControlsPanel, "card"+stepNumber);
 		if (stepNumber==1) {
@@ -1095,11 +1178,12 @@ public class TextImportWizardEml2 extends javax.swing.JFrame
 	
 	void FinishButton_actionPerformed(java.awt.event.ActionEvent event)
 	{
-		//cmePanel.FieldsToColData();  
-		String info = checkForBlankInfo();
+		AttributePage ad = (AttributePage)columnAttributes.elementAt(columnAttributes.size()-1);
+		
 		// info should be null if all fields are not blank
-		if (info!=null) {
-			int  choice = JOptionPane.showConfirmDialog(null, 
+		if (!ad.onAdvanceAction()) {
+			return;
+			/*int  choice = JOptionPane.showConfirmDialog(null, 
 			"This package may be invalid because certain metadata" + 
 			"fields which refer to columns \n"+info+"\n contain no information. \n " +
 			"To correct this, please press Cancel or No\n" +
@@ -1111,7 +1195,7 @@ public class TextImportWizardEml2 extends javax.swing.JFrame
 			JOptionPane.WARNING_MESSAGE);
 			if((choice == JOptionPane.CANCEL_OPTION)||(choice == JOptionPane.NO_OPTION)) {
 				return;  
-			}
+			}*/
 		}
 		
 		if (entityWizard!=null) {
@@ -1360,6 +1444,7 @@ public class TextImportWizardEml2 extends javax.swing.JFrame
 	}
 	
 	
+	
 	/**
 	* guesses column type based on frequency of content
 	* types include text, integer, floating point number, and date.
@@ -1467,7 +1552,7 @@ public class TextImportWizardEml2 extends javax.swing.JFrame
 		
 		if(colNum >= columnAttributes.size()) 
 			return;
-		AttributeDialog ad = (AttributeDialog)columnAttributes.elementAt(colNum);
+		AttributePage ad = (AttributePage)columnAttributes.elementAt(colNum);
 		OrderedMap map = ad.getPageData(AttributeSettings.Attribute_xPath);
 		String type = findMeasurementScale(map);
 		if (type.equalsIgnoreCase("Nominal") || type.equalsIgnoreCase("Ordinal")) {
@@ -1856,7 +1941,7 @@ public class TextImportWizardEml2 extends javax.swing.JFrame
 		Enumeration e = columnAttributes.elements();
 		int index = 1;
 		while(e.hasMoreElements()) {
-			AttributeDialog ad = (AttributeDialog)e.nextElement();
+			AttributePage ad = (AttributePage)e.nextElement();
 			OrderedMap map = ad.getPageData(header + "attributeList/attribute["+(index++) + "]");
 			om.putAll(map);
 		}
@@ -1931,7 +2016,7 @@ public class TextImportWizardEml2 extends javax.swing.JFrame
 		String temp = "";
 		
 		for (int i=0;i<columnAttributes.size();i++) {
-			AttributeDialog ad = (AttributeDialog)columnAttributes.elementAt(i);
+			AttributePage ad = (AttributePage)columnAttributes.elementAt(i);
 			if (!ad.onAdvanceAction()) {
 				temp = temp + "#" + (i+1) +" ";
 			}
@@ -2023,13 +2108,14 @@ public class TextImportWizardEml2 extends javax.swing.JFrame
 			editButton.addActionListener( new ActionListener() {
 				public void actionPerformed(ActionEvent ae){
 					
-					AttributeDialog ad = (AttributeDialog) columnAttributes.elementAt(currentAttributeIndex);
-					ad.resetBounds();
-					ad.setVisible(true);
+					AttributePage ad = (AttributePage) columnAttributes.elementAt(currentAttributeIndex);
+					WizardPopupDialog wpd = new WizardPopupDialog(ad, WizardContainerFrame.frame,false);
+					wpd.resetBounds();
+					wpd.setVisible(true);
 					
 					//colData.attributeDialog.show();
 					
-					if (ad.USER_RESPONSE == WizardPopupDialog.OK_OPTION) {
+					if (wpd.USER_RESPONSE == WizardPopupDialog.OK_OPTION) {
 						htmlPanel.setText( ad.getText());							
 					}
 					
@@ -2045,7 +2131,7 @@ public class TextImportWizardEml2 extends javax.swing.JFrame
 		public void setCurrentAttributeIndex(int index) {
 
 			currentAttributeIndex = index;
-			AttributeDialog ad = (AttributeDialog) columnAttributes.elementAt(currentAttributeIndex);
+			AttributePage ad = (AttributePage) columnAttributes.elementAt(currentAttributeIndex);
 			htmlPanel.setText(ad.getText());
 		}
 		

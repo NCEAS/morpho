@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2003-10-07 15:47:44 $'
- * '$Revision: 1.12 $'
+ *   '$Author: sambasiv $'
+ *     '$Date: 2003-11-19 01:42:19 $'
+ * '$Revision: 1.13 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -36,6 +36,7 @@ import edu.ucsb.nceas.utilities.XMLUtilities;
 
 import edu.ucsb.nceas.morpho.plugins.DataPackageWizardListener;
 import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
+import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardPageLibrary;
 import edu.ucsb.nceas.morpho.plugins.PluginInterface;
 import edu.ucsb.nceas.morpho.plugins.ServiceController;
 import edu.ucsb.nceas.morpho.plugins.ServiceExistsException;
@@ -105,17 +106,30 @@ public class DataPackageWizardPlugin implements PluginInterface,
     dpWiz.setVisible(true);
   }
   
-
+  
+  /** 
+   *  returns the WizardPage with the corresponding pageID provided
+   *
+   *  @param pageID the String pageID for the WizardPage to be returned
+   *
+   *  @return  the corresponding WizardPage with this ID
+   */
+  public AbstractWizardPage getPage(String pageID) {
+  
+    return WizardPageLibrary.getPage(pageID);
+  }
+  
   // for testing/development
   public static void main(String[] args) {
   
-// TEXT IMPORT WIZARD NEEDS MORPHO TO GET CONFIG
-//      Morpho.createMorphoInstance();
-      Morpho.main(null);
-///////////////////////    
+  // TEXT IMPORT WIZARD NEEDS MORPHO TO GET CONFIG
+  //      Morpho.createMorphoInstance();
+    Morpho.main(null);
+    ///////////////////////    
     
     Log.setDebugLevel(55);
     DataPackageWizardPlugin plugin = new DataPackageWizardPlugin();
+    //plugin.initialize(Morpho.thisStaticInstance);
     plugin.startWizard(
       new DataPackageWizardListener() {
       

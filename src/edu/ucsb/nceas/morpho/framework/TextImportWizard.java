@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: sambasiv $'
- *     '$Date: 2003-10-22 00:16:57 $'
- * '$Revision: 1.59 $'
+ *     '$Date: 2003-11-19 01:42:19 $'
+ * '$Revision: 1.60 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -44,7 +44,6 @@ import edu.ucsb.nceas.morpho.util.Log;
 import edu.ucsb.nceas.morpho.util.XMLUtil;
 import edu.ucsb.nceas.morpho.datapackage.wizard.PackageWizard;
 import edu.ucsb.nceas.morpho.datapackage.ColumnMetadataEditPanel;
-import edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.AttributeDialog;
 import edu.ucsb.nceas.utilities.*;
 
 /**

@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2003-07-30 05:26:10 $'
- * '$Revision: 1.2 $'
+ *   '$Author: sambasiv $'
+ *     '$Date: 2003-11-19 01:42:19 $'
+ * '$Revision: 1.3 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -102,5 +102,14 @@ public interface WizardPage {
    */
   public OrderedMap getPageData();
 
+  
+  /** 
+   *  sets the fields in the waird page using the Map object
+   *  that contains all the key/value paired
+   *
+   *  @param   data the Map object that contains all the
+   *            key/value paired settings for this particular wizard page
+   */
+  public void setPageData(OrderedMap data);
 }
 

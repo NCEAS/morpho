@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: sambasiv $'
- *     '$Date: 2003-10-22 00:16:58 $'
- * '$Revision: 1.4 $'
+ *     '$Date: 2003-11-19 01:42:19 $'
+ * '$Revision: 1.5 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -41,6 +41,7 @@ import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.border.EmptyBorder;
 import javax.swing.BorderFactory;
+import javax.swing.JOptionPane;
 
 import java.awt.BorderLayout;
 import java.awt.Container;
@@ -50,7 +51,7 @@ import java.awt.event.ActionListener ;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WidgetFactory;
 
 
-public abstract class WizardPopupDialog extends JDialog {
+public class WizardPopupDialog extends JDialog {
 
   public short USER_RESPONSE;
   
@@ -58,13 +59,27 @@ public abstract class WizardPopupDialog extends JDialog {
   public static final short CANCEL_OPTION  = 20;
   public static final short CLOSED_OPTION  = 30;
 
-  public WizardPopupDialog(JFrame parent) {
+  protected AbstractWizardPage wizardPage;
+  
+  public WizardPopupDialog(AbstractWizardPage page, JFrame parent) {
     
     super(parent, true);
     this.parent = parent;
+    this.wizardPage = page;
     init();
+    this.setVisible(true);
   }
   
+  public WizardPopupDialog(AbstractWizardPage page, JFrame parent, boolean showNow) {
+    
+    super(parent, true);
+    this.parent = parent;
+    this.wizardPage = page;
+    init();
+    this.setVisible(showNow);
+    validate();
+    
+  }
   
   private void init() {
   
@@ -83,7 +98,12 @@ public abstract class WizardPopupDialog extends JDialog {
    *  @return boolean true if dialog should close and return to wizard, false 
    *          if not (e.g. if a required field hasn't been filled in)
    */
-   public abstract boolean onAdvanceAction();
+   public boolean onAdvanceAction() {
+		
+	if(wizardPage == null)
+		return false;
+	return wizardPage.onAdvanceAction();
+   }
   
   
 
@@ -118,8 +138,15 @@ public abstract class WizardPopupDialog extends JDialog {
   
     middlePanel = new JPanel();
     middlePanel.setLayout(new BorderLayout());
-    middlePanel.setBorder(new EmptyBorder(PADDING,3*PADDING,PADDING,3*PADDING));
-    contentPane.add(middlePanel, BorderLayout.CENTER);
+    if(wizardPage != null) {
+	    middlePanel.add(wizardPage,BorderLayout.CENTER);
+	    
+    }
+    
+    //middlePanel.setBorder(new EmptyBorder(PADDING,3*PADDING,PADDING,3*PADDING));
+    contentPane.add(wizardPage, BorderLayout.CENTER);
+    wizardPage.validate();
+    validate();
   }
   
   private void initBottomPanel() {

@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2003-08-03 22:27:13 $'
- * '$Revision: 1.1 $'
+ *   '$Author: sambasiv $'
+ *     '$Date: 2003-11-19 01:42:19 $'
+ * '$Revision: 1.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -40,15 +40,15 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.AbstractWizardPage;
-import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardPageLibrary;
+import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
 
 
 public class UsageRights extends AbstractWizardPage{
   
   // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
   
-  private final String pageID     = WizardPageLibrary.USAGE_RIGHTS;
-  private final String nextPageID = WizardPageLibrary.DATA_LOCATION;
+  private final String pageID     = DataPackageWizardInterface.USAGE_RIGHTS;
+  private final String nextPageID = DataPackageWizardInterface.DATA_LOCATION;
   private final String title      = "General Dataset Information:";
   private final String subtitle   = "Usage Rights";
   
@@ -191,5 +191,5 @@ public class UsageRights extends AbstractWizardPage{
    */
   public String getNextPageID() { return nextPageID; }
   
-  
+  public void setPageData(OrderedMap data) { } 
 }

@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2003-11-06 22:13:20 $'
- * '$Revision: 1.65 $'
+ *   '$Author: sambasiv $'
+ *     '$Date: 2003-11-19 01:42:18 $'
+ * '$Revision: 1.66 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -229,7 +229,7 @@ public class DataViewContainerPanel extends javax.swing.JPanel
       vertSplit.setUI(new javax.swing.plaf.metal.MetalSplitPaneUI());
     }
     SymComponent aSymComponent = new SymComponent();
-		packageMetadataPanel.addComponentListener(aSymComponent);
+    packageMetadataPanel.addComponentListener(aSymComponent);
 
     vertSplit.setOneTouchExpandable(true);
     this.add(BorderLayout.CENTER,vertSplit);
@@ -974,7 +974,7 @@ public class DataViewContainerPanel extends javax.swing.JPanel
     TabbedContainer container = 
         (TabbedContainer) tabbedEntitiesPanel.getComponentAt(lastTabSelected);
     MetaDisplayInterface meta = container.getMetaDisplayInterface();
-    // Get attribute file identifier
+    // Get Uattribute file identifier
     String item = (String)entityItems.elementAt(lastTabSelected);
 //    String id = (String)listValueHash.get(item);
     String id = getEntityIDForThisEntityName(item);

@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2003-09-22 21:53:23 $'
- * '$Revision: 1.2 $'
+ *   '$Author: sambasiv $'
+ *     '$Date: 2003-11-19 01:42:19 $'
+ * '$Revision: 1.3 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,6 +28,7 @@
 
 package edu.ucsb.nceas.morpho.plugins;
 
+import edu.ucsb.nceas.morpho.plugins.datapackagewizard.AbstractWizardPage;
 
 /**
  *  Interface for Data Package Wizard Plugin
@@ -35,7 +36,28 @@ package edu.ucsb.nceas.morpho.plugins;
 
 public interface DataPackageWizardInterface {
 
-
+	
+  /**	Page IDs of the pages in the DataPackageWizard
+    * 	We can request a particular page in the wizard through
+    *	the getPage() method by passing the appropriate page ID.	
+  **/
+  
+  public static final String INTRODUCTION       = "INTRODUCTION";
+  public static final String GENERAL            = "GENERAL";
+  public static final String KEYWORDS           = "KEYWORDS";
+  public static final String KEYWORDS_PAGE	= "KEYWORDS_PAGE";
+  public static final String PARTY_INTRO        = "PARTY_INTRO";
+  public static final String PARTY_CREATOR      = "PARTY_CREATOR";
+  public static final String PARTY_CONTACT      = "PARTY_CONTACT";
+  public static final String PARTY_ASSOCIATED   = "PARTY_ASSOCIATED";
+  public static final String USAGE_RIGHTS       = "USAGE_RIGHTS";
+  public static final String DATA_LOCATION      = "DATA_LOCATION";
+  public static final String TEXT_IMPORT_WIZARD = "TEXT_IMPORT_WIZARD";
+  public static final String DATA_FORMAT        = "DATA_FORMAT";
+  public static final String ENTITY             = "ENTITY";
+  public static final String ATTRIBUTE_PAGE	= "ATTRIBUTE_PAGE";
+  public static final String PARTY_PAGE		= "PARTY_PAGE";
+  public static final String SUMMARY            = "SUMMARY";
   /**
    *  method to start the wizard
    *
@@ -43,4 +65,14 @@ public interface DataPackageWizardInterface {
    *                  back when the Wizard has finished
    */
   public void startWizard(DataPackageWizardListener listener);
+  
+  
+  /** 
+   *  returns the WizardPage with the corresponding pageID provided
+   *
+   *  @param pageID the String pageID for the WizardPage to be returned
+   *
+   *  @return  the corresponding WizardPage with this ID
+   */
+  public AbstractWizardPage getPage(String pageID);
 }
