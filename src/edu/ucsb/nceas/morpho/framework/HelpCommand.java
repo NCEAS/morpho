@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2002-11-27 00:36:49 $'
- * '$Revision: 1.2 $'
+ *     '$Date: 2002-12-20 20:26:28 $'
+ * '$Revision: 1.3 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,13 +28,16 @@ package edu.ucsb.nceas.morpho.framework;
 
 import edu.ucsb.nceas.morpho.util.Command;
 import edu.ucsb.nceas.morpho.util.Log;
-import java.awt.Window;
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.Point;
+import java.awt.Window;
 import java.net.URL;
 import javax.help.CSH;
 import javax.help.HelpBroker;
 import javax.help.HelpSet;
+import javax.swing.JFrame;
 
 /**
  * Class to handle help command
@@ -48,6 +51,12 @@ public class HelpCommand implements Command
   // Defaults for Main Help
   static final String helpsetName = "morpho";
   private String errorMessage = null;
+  // Size of help window
+  private int helpWidth = 800;
+  private int helpHeight= 600;
+  private Dimension size = new Dimension(helpWidth, helpHeight);
+  // Location of help window
+  private Point location = null;
   /**
    * Constructor of HelpCommand
    */
@@ -70,7 +79,9 @@ public class HelpCommand implements Command
 	    Log.debug(30, "initialization error:");
 	    ex.getException().printStackTrace();
 	  }
-	  mainHB = mainHS.createHelpBroker();
+    	  
+    mainHB = mainHS.createHelpBroker();
+    mainHB.setSize(size);
     helpListener = new CSH.DisplayHelpFromSource(mainHB);
   }//CancelCommand
   
@@ -82,8 +93,24 @@ public class HelpCommand implements Command
   {
     if (helpListener != null)
     {
+       MorphoFrame parent = UIController.getInstance().getCurrentActiveWindow();
+       // make sure the morphoFrame is not null
+      if ( parent != null )
+      {
+        // Make the help window is in the center of parent frame
+        int parentWidth = parent.getWidth();
+        int parentHeight = parent.getHeight();
+        double parentX = parent.getLocation().getX();
+        double parentY = parent.getLocation().getY();
+        double centerX = parentX + 0.5 * parentWidth;
+        double centerY = parentY + 0.5 * parentHeight;
+        int helpX = (new Double(centerX - 0.5 * helpWidth)).intValue();
+        int helpY = (new Double(centerY - 0.5 * helpHeight)).intValue();
+        location = new Point(helpX, helpY);
+        mainHB.setLocation(location);
+      }//if
       helpListener.actionPerformed(event);
-    }
+    }//if
     else
     {
       Log.debug(5, errorMessage);
