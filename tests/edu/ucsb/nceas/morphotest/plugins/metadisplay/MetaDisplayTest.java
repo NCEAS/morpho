@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2002-09-28 18:38:51 $'
- * '$Revision: 1.7 $'
+ *     '$Date: 2004-03-16 18:00:35 $'
+ * '$Revision: 1.8 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -55,19 +55,19 @@ public class MetaDisplayTest extends TestCase
     private static Component            testComponent;
     private static Exception            testException;
     private static ActionEvent          testActionEvent;
-    
-    //put these in a static block.  If they are in constructor, they get called 
+
+    //put these in a static block.  If they are in constructor, they get called
     //before every single test, for some bizzarre reason...
     static  {
       display = new MetaDisplay();
       System.err.println("MetaDisplay object created OK...");
       assertNotNull(display);
-      
+
       createActionListener();
       assertNotNull(listener);
       System.err.println("ActionListener() object created OK...");
     }
-    
+
     /**
      * Constructor to build the test
      *
@@ -76,19 +76,19 @@ public class MetaDisplayTest extends TestCase
     public MetaDisplayTest(String name) {  super(name); }
 
     /**
-     * NOTE - this gets called before *each* *test* 
+     * NOTE - this gets called before *each* *test*
      */
     public void setUp() {
         testComponent   = null;
         testException   = null;
         testActionEvent = null;
     }
-    
+
     /**
      * Release any objects after tests are complete
      */
     public void tearDown() {}
-    
+
 
 ////////////////////////////////////////////////////////////////////////////////
 //                    S T A R T   T E S T   M E T H O D S                     //
@@ -99,31 +99,31 @@ public class MetaDisplayTest extends TestCase
      */
     public void testGetDisplayComponent()
     {
-        System.err.println("testing getDisplay with valid params..."); 
+        System.err.println("testing getDisplay with valid params...");
         getDisplayAll_OK();
         display.removeActionListener(listener);
-        
-        System.err.println("testing getDisplay with BOGUS_ID..."); 
-        getDisplay_bad_params("BOGUS_ID", 
+
+        System.err.println("testing getDisplay with BOGUS_ID...");
+        getDisplay_bad_params("BOGUS_ID",
                             MetaDisplayTestResources.getXMLFactory(), listener);
         display.removeActionListener(listener);
-        
-        System.err.println("testing getDisplay with null ID..."); 
-        getDisplay_bad_params(null, 
+
+        System.err.println("testing getDisplay with null ID...");
+        getDisplay_bad_params(null,
                             MetaDisplayTestResources.getXMLFactory(), listener);
         display.removeActionListener(listener);
-        
-        System.err.println("testing getDisplay with null factory..."); 
+
+        System.err.println("testing getDisplay with null factory...");
         getDisplay_bad_params(MetaDisplayTestResources.TEST_DOC_1,null,listener);
         display.removeActionListener(listener);
-        
-        System.err.println("testing getDisplay with null listener..."); 
+
+        System.err.println("testing getDisplay with null listener...");
         getDisplay_null_listener();
     }
 
 
-    /** 
-     *  Test the display(String id) and display(String id, Reader xmldoc) 
+    /**
+     *  Test the display(String id) and display(String id, Reader xmldoc)
      *  functions
      */
     public void testDisplay()
@@ -133,49 +133,49 @@ public class MetaDisplayTest extends TestCase
             display.display(MetaDisplayTestResources.TEST_DOC_3);
         } catch (DocumentNotFoundException dnfe) {
             dnfe.printStackTrace();
-            fail("testGetDisplayComponent() DocumentNotFoundException: " 
+            fail("testGetDisplayComponent() DocumentNotFoundException: "
                                                           + dnfe.getMessage());
         }
         System.err.println("testDisplay(id) completed OK...");
         MetaDisplayTestResources.doSleep(1);
-        
-        //null id - should throw DocumentNotFoundException: * * * * * 
+
+        //null id - should throw DocumentNotFoundException: * * * * *
         try {
             display.display(null);
         } catch (DocumentNotFoundException dnfe) {
-            System.out.println("OK - testDisplay(null) DocumentNotFoundException: " 
+            System.out.println("OK - testDisplay(null) DocumentNotFoundException: "
                                                           + dnfe.getMessage());
             testException = dnfe;
         }
         assertNotNull(testException);
         testException = null;
 
-        //display(String id, Reader xmldoc) * * * * * * * * * * * * * * * * * * 
+        //display(String id, Reader xmldoc) * * * * * * * * * * * * * * * * * *
         try {
-            display.display(MetaDisplayTestResources.TEST_DOC_4, 
+            display.display(MetaDisplayTestResources.TEST_DOC_4,
                     new StringReader(MetaDisplayTestResources.TEST_XML_DOC_4));
         } catch (DocumentNotFoundException dnfe) {
             dnfe.printStackTrace();
-            fail("testGetDisplayComponent() DocumentNotFoundException: " 
+            fail("testGetDisplayComponent() DocumentNotFoundException: "
                                                           + dnfe.getMessage());
         } catch (NullArgumentException nae) {
             nae.printStackTrace();
-            fail("testGetDisplayComponent() NullArgumentException: " 
+            fail("testGetDisplayComponent() NullArgumentException: "
                                                           + nae.getMessage());
         }
         System.err.println("testDisplay(id,Reader) completed OK...");
         MetaDisplayTestResources.doSleep(1);
-        
+
         //null id - not allowed - should throw NullArgumentException:* * * * * *
         try {
-            display.display(null, 
+            display.display(null,
                     new StringReader(MetaDisplayTestResources.TEST_XML_DOC_1));
         } catch (DocumentNotFoundException dnfe) {
             dnfe.printStackTrace();
-            fail("testGetDisplayComponent() DocumentNotFoundException: " 
+            fail("testGetDisplayComponent() DocumentNotFoundException: "
                                                           + dnfe.getMessage());
         } catch (NullArgumentException nae) {
-            System.out.println("OK: testDisplay(NULL, Rdr) NullArgumentException: " 
+            System.out.println("OK: testDisplay(NULL, Rdr) NullArgumentException: "
                                                           + nae.getMessage());
             testException = nae;
         }
@@ -183,22 +183,23 @@ public class MetaDisplayTest extends TestCase
         testException = null;
 
         //null Reader - should be handled gracefully - display blank document* *
+        Reader nullReader = null;
         try {
-            display.display(MetaDisplayTestResources.TEST_DOC_1, null);
+            display.display(MetaDisplayTestResources.TEST_DOC_1, nullReader);
         } catch (DocumentNotFoundException dnfe) {
             dnfe.printStackTrace();
-            fail("testGetDisplayComponent() DocumentNotFoundException: " 
+            fail("testGetDisplayComponent() DocumentNotFoundException: "
                                                           + dnfe.getMessage());
         } catch (NullArgumentException nae) {
             nae.printStackTrace();
-            fail("testGetDisplayComponent() NullArgumentException: " 
+            fail("testGetDisplayComponent() NullArgumentException: "
                                                           + nae.getMessage());
         }
         System.err.println("testDisplay(id,NULL) completed OK...");
         MetaDisplayTestResources.doSleep(1);
     }
-    
-    /** 
+
+    /**
      *  Test the redisplay() function
      */
     public void testRedisplay()
@@ -207,13 +208,13 @@ public class MetaDisplayTest extends TestCase
             display.redisplay();
         } catch (DocumentNotFoundException dnfe) {
             dnfe.printStackTrace();
-            fail("testGetDisplayComponent() DocumentNotFoundException: " 
+            fail("testGetDisplayComponent() DocumentNotFoundException: "
                                                           + dnfe.getMessage());
         }
         System.err.println("testRedisplay() completed OK...");
         MetaDisplayTestResources.doSleep(1);
     }
-    
+
     /**
      * Test if the removeActionListener() function works
      */
@@ -222,16 +223,16 @@ public class MetaDisplayTest extends TestCase
         assertNull(testActionEvent);
         display.removeActionListener(listener);
         try {
-            display.redisplay();    
+            display.redisplay();
         } catch (DocumentNotFoundException dnfe) {
             dnfe.printStackTrace();
-            fail("testAddActionListener() DocumentNotFoundException: " 
+            fail("testAddActionListener() DocumentNotFoundException: "
                                                           + dnfe.getMessage());
         }
         assertNull(testActionEvent);
         testActionEvent = null;
     }
-    
+
     /**
      * Test if the addActionListener() function works
      */
@@ -241,10 +242,10 @@ public class MetaDisplayTest extends TestCase
         display.addActionListener(listener);
         //assert should happen in callback to actionPerformed():
         try {
-            display.redisplay();    
+            display.redisplay();
         } catch (DocumentNotFoundException dnfe) {
             dnfe.printStackTrace();
-            fail("testAddActionListener() DocumentNotFoundException: " 
+            fail("testAddActionListener() DocumentNotFoundException: "
                                                           + dnfe.getMessage());
         }
         assertNotNull(testActionEvent);
@@ -263,15 +264,15 @@ public class MetaDisplayTest extends TestCase
         testComponent = null;
         try {
             testComponent = display.getDisplayComponent(
-                            MetaDisplayTestResources.TEST_DOC_1, 
+                            MetaDisplayTestResources.TEST_DOC_1,
                             MetaDisplayTestResources.getXMLFactory(), listener);
         } catch (DocumentNotFoundException dnfe) {
             dnfe.printStackTrace();
-            fail("testGetDisplayComponent() DocumentNotFoundException: " 
+            fail("testGetDisplayComponent() DocumentNotFoundException: "
                                                           + dnfe.getMessage());
         } catch (NullArgumentException nae) {
             nae.printStackTrace();
-            fail("testGetDisplayComponent() NullArgumentException: " 
+            fail("testGetDisplayComponent() NullArgumentException: "
                                                           + nae.getMessage());
         }
         assertNotNull(testComponent);
@@ -283,18 +284,18 @@ public class MetaDisplayTest extends TestCase
 
     // * * * SHOULD THROW AN EXCEPTION if ID or XMLFactory are not valid * * *
     // * * * (ActionListener may be null) * * *
-    private void getDisplay_bad_params( String id, 
+    private void getDisplay_bad_params( String id,
                                       XMLFactoryInterface f, ActionListener l) {
 
         testComponent = null;
         try {
             testComponent = display.getDisplayComponent(id, f, l);
         } catch (DocumentNotFoundException dnfe) {
-            System.out.println("OK: testGetDisplayComponent() DocumentNotFoundException: " 
+            System.out.println("OK: testGetDisplayComponent() DocumentNotFoundException: "
                                                           + dnfe.getMessage());
             testException = dnfe;
         } catch (NullArgumentException nae) {
-            System.out.println("OK: testGetDisplayComponent() NullArgumentException: " 
+            System.out.println("OK: testGetDisplayComponent() NullArgumentException: "
                                                           + nae.getMessage());
             testException = nae;
         }
@@ -307,19 +308,19 @@ public class MetaDisplayTest extends TestCase
     // * * * NULL LISTENER - SHOULD NOT THROW AN ERROR * * *
 
     private void getDisplay_null_listener() {
-    
+
         testComponent = null;
         try {
             testComponent = display.getDisplayComponent(
-                                MetaDisplayTestResources.TEST_DOC_2, 
+                                MetaDisplayTestResources.TEST_DOC_2,
                                 MetaDisplayTestResources.getXMLFactory(), null);
         } catch (DocumentNotFoundException dnfe) {
             dnfe.printStackTrace();
-            fail("testGetDisplayComponent() DocumentNotFoundException: " 
+            fail("testGetDisplayComponent() DocumentNotFoundException: "
                                                           + dnfe.getMessage());
         } catch (NullArgumentException nae) {
             nae.printStackTrace();
-            fail("testGetDisplayComponent() NullArgumentException: " 
+            fail("testGetDisplayComponent() NullArgumentException: "
                                                           + nae.getMessage());
         }
         assertNotNull(testComponent);
@@ -328,7 +329,7 @@ public class MetaDisplayTest extends TestCase
         MetaDisplayTestResources.displayInJFrame(testComponent,1,(TestCase)this);
     }
 
-    private static void createActionListener() 
+    private static void createActionListener()
     {
         listener = new ActionListener() {
             public void actionPerformed(ActionEvent ae) {
@@ -357,7 +358,7 @@ public class MetaDisplayTest extends TestCase
                     +"\n* * * * * * * * * * * * * * * * * * * * * * *\n\n");
             }
         };
-    }   
+    }
 
     public static void main(String args[]) {
         Log.getLog().setDebugLevel(51);

@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2002-09-13 19:12:20 $'
- * '$Revision: 1.6 $'
+ *     '$Date: 2004-03-16 18:00:35 $'
+ * '$Revision: 1.7 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,39 +26,36 @@
 
 package edu.ucsb.nceas.morphotest.plugins.metadisplay;
 
+import edu.ucsb.nceas.morpho.exception.NullArgumentException;
+import edu.ucsb.nceas.morpho.plugins.DocumentNotFoundException;
+import edu.ucsb.nceas.morpho.plugins.PluginInterface;
+import edu.ucsb.nceas.morpho.plugins.XMLFactoryInterface;
+import edu.ucsb.nceas.morpho.plugins.metadisplay.MetaDisplay;
+import edu.ucsb.nceas.morpho.plugins.xsltresolver.XSLTResolverPlugin;
+import edu.ucsb.nceas.utilities.XMLUtilities;
+
+import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
 
-import java.awt.Dimension;
-import java.awt.Component;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.awt.BorderLayout;
 
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 
+import org.w3c.dom.Document;
+
 import junit.framework.TestCase;
-
-import edu.ucsb.nceas.morpho.plugins.PluginInterface;
-import edu.ucsb.nceas.morpho.plugins.xsltresolver.XSLTResolverPlugin;
-
-import edu.ucsb.nceas.morpho.plugins.metadisplay.MetaDisplay;
-import edu.ucsb.nceas.morpho.plugins.XMLFactoryInterface;
-import edu.ucsb.nceas.morpho.plugins.DocumentNotFoundException;
-
-import edu.ucsb.nceas.morpho.plugins.metadisplay.MetaDisplay;
-
-import edu.ucsb.nceas.morpho.exception.NullArgumentException;
-
 
 /**
  * A JUnit test for testing the metadisplay plugin.
  */
-public class MetaDisplayTestResources  
+public class MetaDisplayTestResources
 {
     public static final String TEST_DOC_1 = "1.1";
     public static final String TEST_DOC_2 = "2.2";
@@ -71,12 +68,12 @@ public class MetaDisplayTestResources
     static final JLabel topArea;
     static final JLabel dataArea;
     private static XSLTResolverPlugin xsltResolverPlugin;
-    
+
     static {
         xsltResolverPlugin = new XSLTResolverPlugin();
         // Start by creating the new plugin
         PluginInterface plugin = (PluginInterface)xsltResolverPlugin;
-  
+
         // Set a reference to the framework in the Plugin
         plugin.initialize(null);
 
@@ -88,10 +85,10 @@ public class MetaDisplayTestResources
         metaDisplay = new MetaDisplay();
         try {
             metaDisplay.setFactory(factory);
-        } catch (NullArgumentException nae) { 
+        } catch (NullArgumentException nae) {
             System.err.println("Problem setting test MetaDisplay XMLFactory: "+nae);
         }
-    }    
+    }
 
 
     private MetaDisplayTestResources() {}
@@ -109,9 +106,9 @@ public class MetaDisplayTestResources
         dataArea.setPreferredSize(new Dimension(500,500));
         frame.getContentPane().add(topArea, BorderLayout.NORTH);
         frame.getContentPane().add(dataArea, BorderLayout.WEST);
-    } 
-    
-    public static void displayInJFrame(Component comp, 
+    }
+
+    public static void displayInJFrame(Component comp,
                                           int secondsDelay, TestCase caller)
     {
         if (comp==null) {
@@ -130,10 +127,10 @@ public class MetaDisplayTestResources
     //pause briefly so we can see UI before test exits...
     public static void doSleep(int seconds)
     {
-        try { 
+        try {
             Thread.sleep(seconds*1000L);
-        } catch(InterruptedException ie) { 
-            System.err.println("Thread interrupted!"); 
+        } catch(InterruptedException ie) {
+            System.err.println("Thread interrupted!");
         }
     }
 
@@ -141,12 +138,12 @@ public class MetaDisplayTestResources
     public static MetaDisplay getTestMetaDisplay()
     {
         return metaDisplay;
-    }        
+    }
 
     public static XMLFactoryInterface getXMLFactory()
     {
         return factory;
-    }        
+    }
 
 // * * * * * * *      S T A T I C   T E S T    D A T A     * * * * * * * * * * *
 
@@ -200,7 +197,7 @@ public class MetaDisplayTestResources
         + "  <precision>5</precision>"
         + "</attribute>"
         + "</eml-attribute>";
-        
+
     public static final String TEST_XML_DOC_3 =
           "<?xml version=\"1.0\"?>"
         + "<!DOCTYPE eml-attribute "
@@ -253,7 +250,7 @@ public class MetaDisplayTestResources
         + "</eml-attribute>";
 
 }
- 
+
 
 //bare-bones test implementation
 class XMLFactoryAdapter implements XMLFactoryInterface
@@ -264,130 +261,40 @@ class XMLFactoryAdapter implements XMLFactoryInterface
             return new StringReader(MetaDisplayTestResources.TEST_XML_DOC_1);
         } else if (id.equals(MetaDisplayTestResources.TEST_DOC_2)) {
             return new StringReader(MetaDisplayTestResources.TEST_XML_DOC_2);
-        } else if (id.equals(MetaDisplayTestResources.TEST_DOC_3)) {  
+        } else if (id.equals(MetaDisplayTestResources.TEST_DOC_3)) {
             return new StringReader(MetaDisplayTestResources.TEST_XML_DOC_3);
         } else if (id.equals(MetaDisplayTestResources.TEST_DOC_4)) {
             return new StringReader(MetaDisplayTestResources.TEST_XML_DOC_4);
-        } else { 
+        } else {
             throw new DocumentNotFoundException("document not found for id:"+id);
         }
     }
+
+
+    public Document openAsDom(String id) {
+
+      try {
+        if (id.equals(MetaDisplayTestResources.TEST_DOC_1)) {
+          return XMLUtilities.getXMLReaderAsDOMDocument(new StringReader(
+              MetaDisplayTestResources.TEST_XML_DOC_1));
+        } else if (id.equals(MetaDisplayTestResources.TEST_DOC_2)) {
+          return XMLUtilities.getXMLReaderAsDOMDocument(new StringReader(
+              MetaDisplayTestResources.TEST_XML_DOC_2));
+        } else if (id.equals(MetaDisplayTestResources.TEST_DOC_3)) {
+          return XMLUtilities.getXMLReaderAsDOMDocument(new StringReader(
+              MetaDisplayTestResources.TEST_XML_DOC_3));
+        } else if (id.equals(MetaDisplayTestResources.TEST_DOC_4)) {
+          return XMLUtilities.getXMLReaderAsDOMDocument(new StringReader(
+              MetaDisplayTestResources.TEST_XML_DOC_4));
+        } else {
+          System.err.println("document not found for id:" + id);
+        }
+      } catch (IOException ioe) {
+
+        System.err.println("document not found for id:" + id                                   +
+            "\ncause: IOException trying to get string reader as DOM" + ioe);
+      }
+      return null;
+    }
+
 }
-
-
-// K E E P    T H I S :::::::::::
-
-//        "<html><head></head>\n<body bgcolor=\"#00ff00\">\n"
-//        +"<h1>TEST DOCUMENT 2</h1><br>"
-//        +"<a href=\""+TEST_DOC_3+"\">test link</a></body></html>";
-
-
-
-    //    private static final String TEST_XML_DOC_1 =
-    //        "<?xml version=\"1.0\"?>"
-    //        + "<!DOCTYPE eml-attribute "
-    //        + "PUBLIC \"-//ecoinformatics.org//eml-attribute-2.0.0beta6//EN\" "
-    //        + "\"file://jar:file:/C:/DEV/ecoinfo/MORPHO_ROOT/CVS_SOURCE/morpho/lib/"
-    //        + "morpho-config.jar!/catalog/eml-attribute-2.0.0.beta6e.dtd\">"
-    //        + "<eml-attribute>"
-    //        + "  <identifier> * * * * TESTDOC 1 1 1 1 1 * * * * </identifier>"
-    //        + "</eml-attribute>";
-    //    
-    //    private static final String TEST_XML_DOC_2 =
-    //        "<?xml version=\"1.0\"?>"
-    //        + "<!DOCTYPE eml-attribute "
-    //        + "PUBLIC \"-//ecoinformatics.org//eml-attribute-2.0.0beta6//EN\" "
-    //        + "\"file://jar:file:/C:/DEV/ecoinfo/MORPHO_ROOT/CVS_SOURCE/morpho/lib/"
-    //        + "morpho-config.jar!/catalog/eml-attribute-2.0.0.beta6e.dtd\">"
-    //        + "<eml-attribute>"
-    //        + "  <identifier> * * * * TESTDOC 2 2 2 2 2 * * * * </identifier>"
-    //        + "  <identifier> * * * * TESTDOC 2 2 2 2 2 * * * * </identifier>"
-    //        + "</eml-attribute>";
-    //        
-    //    private static final String TEST_XML_DOC_3 =
-    //        "<?xml version=\"1.0\"?>"
-    //        + "<!DOCTYPE eml-attribute "
-    //        + "PUBLIC \"-//ecoinformatics.org//eml-attribute-2.0.0beta6//EN\" "
-    //        + "\"file://jar:file:/C:/DEV/ecoinfo/MORPHO_ROOT/CVS_SOURCE/morpho/lib/"
-    //        + "morpho-config.jar!/catalog/eml-attribute-2.0.0.beta6e.dtd\">"
-    //        + "<eml-attribute>"
-    //        + "  <identifier> * * * * TESTDOC 3 3 3 3 3 * * * * </identifier>"
-    //        + "  <identifier> * * * * TESTDOC 3 3 3 3 3 * * * * </identifier>"
-    //        + "  <identifier> * * * * TESTDOC 3 3 3 3 3 * * * * </identifier>"
-    //        + "</eml-attribute>";
-    //        
-    //    private static final String TEST_XML_DOC_4 =
-    //        "<?xml version=\"1.0\"?>"
-    //        + "<!DOCTYPE eml-attribute "
-    //        + "PUBLIC \"-//ecoinformatics.org//eml-attribute-2.0.0beta6//EN\" "
-    //        + "\"file://jar:file:/C:/DEV/ecoinfo/MORPHO_ROOT/CVS_SOURCE/morpho/lib/"
-    //        + "morpho-config.jar!/catalog/eml-attribute-2.0.0.beta6e.dtd\">"
-    //        + "<eml-attribute>"
-    //        + "  <identifier> * * * * TESTDOC 4 4 4 4 4 * * * * </identifier>"
-    //        + "  <identifier> * * * * TESTDOC 4 4 4 4 4 * * * * </identifier>"
-    //        + "  <identifier> * * * * TESTDOC 4 4 4 4 4 * * * * </identifier>"
-    //        + "  <identifier> * * * * TESTDOC 4 4 4 4 4 * * * * </identifier>"
-    //        + "</eml-attribute>";
-
-
-    //    private static final String TEST_XML_DOC_ORIG =
-    //        "<?xml version=\"1.0\"?>"
-    //        + "<!DOCTYPE eml-attribute "
-    //        + "PUBLIC \"-//ecoinformatics.org//eml-attribute-2.0.0beta6//EN\" "
-    //        + "\"file://jar:file:/C:/DEV/ecoinfo/MORPHO_ROOT/CVS_SOURCE/morpho/lib/"
-    //        + "morpho-config.jar!/catalog/eml-attribute-2.0.0.beta6e.dtd\">"
-    //        + "<eml-attribute>"
-    //        + "  <identifier>brooke2.122.4</identifier>"
-    //        + "  <attribute>"
-    //        + "    <attributeName>field 1</attributeName>"
-    //        + "    <attributeLabel>label for attribute 1</attributeLabel>"
-    //        + "    <attributeDefinition>none whatsoever</attributeDefinition>"
-    //        + "    <unit>cm</unit>"
-    //        + "    <dataType>integer</dataType>"
-    //        + "    <attributeDomain>"
-    //        + "        <numericDomain>"
-    //        + "          <minimum>2</minimum>"
-    //        + "          <maximum>222</maximum>"
-    //        + "        </numericDomain>"
-    //        + "    </attributeDomain>"
-    //        + "    <missingValueCode>~</missingValueCode>"
-    //        + "    <precision>5</precision>"
-    //        + "  </attribute>"
-    //        + "  <attribute>"
-    //        + "    <attributeName>field 2</attributeName>"
-    //        + "    <attributeLabel>label for attribute 1</attributeLabel>"
-    //        + "    <attributeDefinition>none whatsoever</attributeDefinition>"
-    //        + "    <unit>cm</unit>"
-    //        + "    <dataType>integer</dataType>"
-    //        + "    <attributeDomain>"
-    //        + "          <enumeratedDomain>"
-    //        + "            <code>CD</code>"
-    //        + "            <definition>CoDe</definition>"
-    //        + "            <source>FIPS</source>"
-    //        + "          </enumeratedDomain>"
-    //        + "    </attributeDomain>"
-    //        + "    <missingValueCode>~</missingValueCode>"
-    //        + "    <precision>5</precision>"
-    //        + "  </attribute>"
-    //        + "  <attribute>"
-    //        + "    <attributeName>field 3</attributeName>"
-    //        + "    <attributeLabel>label for attribute 1</attributeLabel>"
-    //        + "    <attributeDefinition>none whatsoever</attributeDefinition>"
-    //        + "    <unit>cm</unit>"
-    //        + "    <dataType>integer</dataType>"
-    //        + "    <attributeDomain>"
-    //        + "          <enumeratedDomain>"
-    //        + "            <code> </code>"
-    //        + "            <definition> </definition>"
-    //        + "          </enumeratedDomain>"
-    //        + "          <textDomain>"
-    //        + "            <definition>textD</definition>"
-    //        + "            <pattern>*[^~#]</pattern>"
-    //        + "            <source>Dunno</source>"
-    //        + "          </textDomain>"
-    //        + "    </attributeDomain>"
-    //        + "    <missingValueCode>^</missingValueCode>"
-    //        + "    <precision>5</precision>"
-    //        + "  </attribute>"
-    //        + "</eml-attribute>";
-
