@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2002-08-27 00:02:16 $'
- * '$Revision: 1.1 $'
+ *     '$Date: 2002-08-27 23:45:52 $'
+ * '$Revision: 1.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -62,21 +62,13 @@ public class NetworkToLocalCommand implements Command
   public NetworkToLocalCommand(OpenDialogBox box)
   {
     dialog = box;
-    // Get morphoframe and resultPanel depends on this command apply to
-    if (dialog == null)
-    {
-      // If the command would not applyto a dialog, moreFrame will be set to be
-      // current active morphoFrame
-      morphoFrame = UIController.getInstance().getCurrentActiveWindow();
-      resultPane = RefreshCommand.getResultPanelFromMorphoFrame(morphoFrame);
-    }
-    else
+    if (dialog != null)
     {
       // This command will apply to a dialog
       morphoFrame = dialog.getParentFrame();
       resultPane = dialog.getResultPanel();
     }
-   }//LocalToNetworkCommand
+  }//LocalToNetworkCommand
   
  
   /**
@@ -84,7 +76,14 @@ public class NetworkToLocalCommand implements Command
    */    
   public void execute()
   {
-   
+    
+    if (dialog == null)
+    {
+      // If the command would not applyto a dialog, moreFrame will be set to be
+      // current active morphoFrame
+      morphoFrame = UIController.getInstance().getCurrentActiveWindow();
+      resultPane = RefreshCommand.getResultPanelFromMorphoFrame(morphoFrame);
+    }
     // make sure the resultPane is not null
     if ( resultPane != null)
     {
