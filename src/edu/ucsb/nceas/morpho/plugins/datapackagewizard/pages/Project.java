@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2004-04-01 02:37:16 $'
- * '$Revision: 1.31 $'
+ *     '$Date: 2004-04-01 07:06:06 $'
+ * '$Revision: 1.32 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -57,6 +57,11 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
+import edu.ucsb.nceas.morpho.framework.UIController;
+import edu.ucsb.nceas.morpho.datapackage.AbstractDataPackage;
+import edu.ucsb.nceas.utilities.XMLUtilities;
+import org.w3c.dom.Node;
+import edu.ucsb.nceas.morpho.plugins.datapackagewizard.DataPackageWizardPlugin;
 
 public class Project extends AbstractUIPage {
 
@@ -71,6 +76,8 @@ public class Project extends AbstractUIPage {
   private JPanel dataPanel;
   private JPanel noDataPanel;
   private JPanel currentPanel;
+
+  private final String DATAPACKAGE_PROJECT_GENERIC_NAME = "project";
 
   private final String PROJECT_ROOT        = "project/";
   private final String XPATH_ROOT          = "/eml:eml/dataset[1]/" + PROJECT_ROOT;
@@ -262,16 +269,12 @@ public class Project extends AbstractUIPage {
          newRow.add(partyPage);
          partiesList.addRow(newRow);
 
-         //partyPage.addToPartyRefsLists();
-
-//         if (!partyPage.isReference) {
-//           WidgetFactory.getPartyRefsListForCurrentPkg().add(newRow);
-//           if (!partyPage.referDiffDP) {
-//             WidgetFactory.partyRefsListForAllPkgs.add(newRow);
-//           }
-//         }
+         //add entire project subtree to datapackage, which will include new
+         //parties
+         DataPackageWizardPlugin.addPageDataToDOM(
+             UIController.getInstance().getCurrentAbstractDataPackage(),
+             this, xPathRoot, DATAPACKAGE_PROJECT_GENERIC_NAME, 0);
        }
-
        WidgetFactory.unhiliteComponent(minRequiredLabel);
      }
 
@@ -299,6 +302,13 @@ public class Project extends AbstractUIPage {
          List newRow = editPartyPage.getSurrogate();
          newRow.add(editPartyPage);
          partiesList.replaceSelectedRow(newRow);
+
+
+         //add entire project subtree to datapackage, which will include new
+         //parties
+         DataPackageWizardPlugin.addPageDataToDOM(
+             UIController.getInstance().getCurrentAbstractDataPackage(),
+             this, xPathRoot, DATAPACKAGE_PROJECT_GENERIC_NAME, 0);
        }
      }
 

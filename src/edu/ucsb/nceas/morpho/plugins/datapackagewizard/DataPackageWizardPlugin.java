@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2004-04-01 02:37:16 $'
- * '$Revision: 1.28 $'
+ *     '$Date: 2004-04-01 07:06:06 $'
+ * '$Revision: 1.29 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -44,6 +44,11 @@ import edu.ucsb.nceas.morpho.util.Log;
 import edu.ucsb.nceas.utilities.XMLUtilities;
 
 import org.w3c.dom.Node;
+import javax.xml.transform.TransformerException;
+import edu.ucsb.nceas.utilities.OrderedMap;
+import org.w3c.dom.DOMImplementation;
+import org.apache.xerces.dom.DOMImplementationImpl;
+import org.w3c.dom.Document;
 
 
 /**
@@ -199,4 +204,94 @@ public class DataPackageWizardPlugin implements PluginInterface,
       }
     );
   }
+
+
+
+  /**
+   * sets the fields in the UI page using the Map object that contains all
+   * the key/value paired
+   *
+   * @param data the Map object that contains all the key/value paired settings
+   *   for this particular UI page
+   * @param rootXPath the String that represents the "root" of the XPath to the
+   *   content of this widget, INCLUDING PREDICATES. example - if this is a
+   *   "Party" widget, being used for the second "Creator" entry in a list,
+   *   then xPathRoot = "/eml:eml/dataset[1]/creator[2]
+   * @return boolean true if this page can handle all the data passed in the
+   * OrderedMap, false if not. <em>NOTE that the setPageData() method should
+   * still complete its work and fill out all the UI values, even if it is
+   * returning false</em>
+   */
+  public static boolean addPageDataToDOM(AbstractDataPackage adp,
+                                         AbstractUIPage page,
+                                         String rootXPath,
+                                         String subtreeGenericName,
+                                         int predicate) {
+
+    if (adp==null) {
+      Log.debug(15, "** ERROR - addPageDataToDOM() Got NULL AbstractDataPackage");
+      return false;
+    }
+    if (page==null) {
+      Log.debug(15, "** ERROR - addPageDataToDOM() Got NULL AbstractUIPage");
+      return false;
+    }
+    if (subtreeGenericName==null || subtreeGenericName.trim().length()==0) {
+      Log.debug(15, "** ERROR - addPageDataToDOM() Got subtreeGenericName: "
+                + subtreeGenericName);
+      return false;
+    }
+    if (predicate < 1) {
+      Log.debug(15, "** ERROR - addPageDataToDOM() Got invalid predicate: "
+                + predicate);
+      return false;
+    }
+
+    OrderedMap map = page.getPageData(rootXPath);
+
+    Log.debug(45, "\n addPageDataToDOM() Got details from page -\n" + map);
+
+    if (map == null || map.isEmpty()) {
+      Log.debug(5, "Unable to get details from input!");
+      return false;
+    }
+    String rootNodeName = rootXPath;
+    //strip leading slashes...
+    while (rootNodeName.startsWith("/")) rootNodeName = rootNodeName.substring(1);
+    int firstSlashIdx = rootNodeName.indexOf("/");
+    if (firstSlashIdx < 0) firstSlashIdx = rootNodeName.length();
+    rootNodeName = rootNodeName.substring(0, firstSlashIdx);
+
+    DOMImplementation impl = DOMImplementationImpl.getDOMImplementation();
+    Document doc = impl.createDocument("", rootNodeName, null);
+
+    Node subtreeRoot = doc.getDocumentElement();
+
+    try {
+      XMLUtilities.getXPathMapAsDOMTree(map, subtreeRoot);
+
+    } catch (TransformerException w) {
+      Log.debug(5, "Unable to add to package!");
+      Log.debug(15, "TransformerException (" + w + ") calling "
+                + "XMLUtilities.getXPathMapAsDOMTree(map, subtreeRoot) with \n"
+                + "map = " + map
+                + " and subtreeRoot = " + subtreeRoot);
+      w.printStackTrace();
+      return false;
+    }
+    // add to the datapackage
+    Node check = adp.insertSubtree(subtreeGenericName, subtreeRoot, predicate - 1);
+
+    if (check == null) {
+
+      Log.debug(5, "** ERROR: Unable to add new project details to package **");
+      return false;
+    }
+    //delete old subtree from datapackage
+    adp.deleteSubtree(subtreeGenericName, predicate - 1);
+
+    Log.debug(45, "added new project details to package...");
+    return true;
+  }
+
 }
