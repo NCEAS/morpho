@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2004-03-22 22:00:55 $'
- * '$Revision: 1.14 $'
+ *   '$Author: brooke $'
+ *     '$Date: 2004-04-06 06:32:42 $'
+ * '$Revision: 1.15 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -63,18 +63,18 @@ public  class EML2Beta6DataPackage extends AbstractDataPackage
   private TripleCollection  triples;
   private File              tripleFile;
 
-  
+
   public EML2Beta6DataPackage() {
-    morpho = Morpho.thisStaticInstance;  
+    morpho = Morpho.thisStaticInstance;
     fileSysDataStore = new FileSystemDataStore(morpho);
     metacatDataStore = new MetacatDataStore(morpho);
   }
-  
+
   public void serialize(String location) throws MetacatUploadException {
     // this method should serialize the ENTIRE package by
     // going though all the modules referenced in the triples!
   }
-  
+
   public void load(String location, String identifier, Morpho morpho) {
     this.morpho = morpho;
     this.location = location;
@@ -85,7 +85,7 @@ public  class EML2Beta6DataPackage extends AbstractDataPackage
       tripleFile = getFileWithID(identifier, morpho);
       triples = new TripleCollection(tripleFile, morpho);
     } catch (Throwable t) {
-      //already handled in getFileWithID() method, 
+      //already handled in getFileWithID() method,
       //so just abandon this instance:
       Log.debug(1, "Unable to get tripleFile!!!");
       return;
@@ -122,12 +122,12 @@ public  class EML2Beta6DataPackage extends AbstractDataPackage
   }
 
     public AbstractDataPackage upload(String id, boolean updatePackageIds) throws MetacatUploadException {
-    
+
     return this;
   }
-  
+
   public AbstractDataPackage download(String id) {
-    
+
     return this;
   }
 
@@ -157,17 +157,17 @@ public  class EML2Beta6DataPackage extends AbstractDataPackage
     {
       localloc = true;
     }
-    
+
     //get a list of the files and save them to the new location. if the file
     //is a data file, save it with its original name.
-   
+
     String sourcePath = "metadata";
     File savedirSub = new File(sourcePath);
     savedirSub.mkdirs();
     Hashtable dataFileNameMap = getMapBetweenDataIdAndDataFileName();
     Vector files = getAllIdentifiers();
     for(int i=0; i<files.size(); i++)
-    { 
+    {
       try
       {
        //save one file at a time
@@ -193,7 +193,7 @@ public  class EML2Beta6DataPackage extends AbstractDataPackage
         { //get the file from metacat
           openfile = metacatDataStore.openFile(docid);
         }
-        
+
         if (f!=null) {
           fileV.addElement(openfile);
           FileInputStream fis = new FileInputStream(openfile);
@@ -216,7 +216,7 @@ public  class EML2Beta6DataPackage extends AbstractDataPackage
         System.out.println("Error in DataPackage.exportToEml2(): " + e.getMessage());
         e.printStackTrace();
       }
-    }//for 
+    }//for
     try{
       EMLConvert.outputfileName = path;
       // when the package is on metacat, one wants to use a url pointing to the
@@ -238,10 +238,10 @@ public  class EML2Beta6DataPackage extends AbstractDataPackage
       nf.delete();
     }
     savedirSub.delete();
-    
+
 //    JOptionPane.showMessageDialog(null,
 //                    "Conversion to EML2 Complete ! ");
-    
+
   }
 
     /*
@@ -253,16 +253,16 @@ public  class EML2Beta6DataPackage extends AbstractDataPackage
     Vector triplesV = triples.getCollection();
     int i = 1;
     String dataFileName = null;
-    for(int j=0; j<triplesV.size(); j++) 
+    for(int j=0; j<triplesV.size(); j++)
     {
       Triple triple = (Triple)triplesV.elementAt(j);
       String relationship = triple.getRelationship();
       String subject = triple.getSubject();
-      if(relationship.indexOf("isDataFileFor") != -1) 
+      if(relationship.indexOf("isDataFileFor") != -1)
       {
         //get the name of the data file.
         int lparenindex = relationship.indexOf("(");
-        dataFileName = relationship.substring(lparenindex + 1, 
+        dataFileName = relationship.substring(lparenindex + 1,
                                                      relationship.length() - 1);
         dataFileName = trimFullPathFromFileName(dataFileName);
         if (dataFileName != null)
@@ -296,13 +296,13 @@ public  class EML2Beta6DataPackage extends AbstractDataPackage
       {
         v.addElement(sub.trim());
       }
-      
+
       if(!v.contains(obj.trim()))
       {
         v.addElement(obj.trim());
       }
     }
-    // often access control needs to be first 
+    // often access control needs to be first
     // so lets go ahead and put it 1st in this vector
     String accessID = getAccessFileIdForDataPackage();
     accessID = accessID.trim();
@@ -313,7 +313,7 @@ public  class EML2Beta6DataPackage extends AbstractDataPackage
       // now put it at start of vector
       v.insertElementAt(accessID,0);
     }
-    
+
     return v;
   }
 
@@ -352,7 +352,7 @@ public  class EML2Beta6DataPackage extends AbstractDataPackage
     return onlyFileName;
   }
 
-    
+
   /*
    * A method to append file name a number, not in extension
    */
@@ -369,7 +369,7 @@ public  class EML2Beta6DataPackage extends AbstractDataPackage
     }
     int size = fileName.length();
     index = fileName.lastIndexOf(dot);
-    
+
     if (index == -1)
     {
       // no extension
@@ -414,16 +414,16 @@ public  class EML2Beta6DataPackage extends AbstractDataPackage
          accessfile = getFileType(sub, "access");
          if (accessfile!=null) return sub.trim();
     }
-    
+
     return "unknown";
   }
-  
+
   private String getAccessFileIdForDataPackage() {
-    String temp = getAccessFileId(this.id); 
+    String temp = getAccessFileId(this.id);
     return temp;
   }
 
-    
+
   private File getFileType(String id, String typeString) {
     String catalogPath = config.get("local_catalog_path", 0);
     File subfile;
@@ -453,9 +453,9 @@ public  class EML2Beta6DataPackage extends AbstractDataPackage
           return null;
         }
       }
-      
+
       try
-      { 
+      {
         FileReader fr = new FileReader(subfile);
         String xmlString = "";
         for(int j=0; j<5; j++)
@@ -472,7 +472,7 @@ public  class EML2Beta6DataPackage extends AbstractDataPackage
         else
         { //this is a data file not an xml file
           name = "Data File";
-        } 
+        }
       }
       catch (Exception ww) {}
       if (name.indexOf(typeString)>-1)   // i.e. PublicId contains typeString
@@ -484,14 +484,14 @@ public  class EML2Beta6DataPackage extends AbstractDataPackage
       return subfile;
   }
 
-		/**
-	 *  This method follows the pointer stored in 'references' node to return the
-	 *  DOM node referred to by 'references' 
-	 *  This is really specific to eml2; thus just returns input
-	 */
-	public Node getReferencedNode(Node node) {
-		return node;
-	}
+    /**
+   *  This method follows the pointer stored in 'references' node to return the
+   *  DOM node referred to by 'references'
+   *  This is really specific to eml2; thus just returns input
+   */
+  public Node getReferencedNode(Node node) {
+    return node;
+  }
 
   /**
    * returns cloned root Node of subtree identified by the passed unique String
@@ -502,6 +502,27 @@ public  class EML2Beta6DataPackage extends AbstractDataPackage
    */
   public Node getSubtreeAtReference(String refID) {
     return null;
-  }    
+  }
+
+
+
+  /**
+   * replaces subtree identified by the passed unique String refID; returns null
+   * if not found. Note that the new subtree will be given the same refID as the
+   * subtree it replaces, even if the newSubtreeRoot node has a different id set
+   *
+   * @param refID unique String refID. Note that the new subtree will be given
+   *   the same refID as the subtree it replaces, even if the newSubtreeRoot
+   *   node has a different id set
+   * @param newSubtreeRoot Node
+   * @return root Node of new subtree, or null if refID not found
+   */
+  public Node replaceSubtreeAtReference(String refID, Node newSubtreeRoot) {
+
+    throw new java.lang.UnsupportedOperationException(
+      "EML2Beta6DataPackage - method not implemented - "
+     +"replaceSubtreeAtReference()");
+  }
+
 }
 

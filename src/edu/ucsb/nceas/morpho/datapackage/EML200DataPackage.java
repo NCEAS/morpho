@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2004-04-01 02:23:27 $'
- * '$Revision: 1.34 $'
+ *     '$Date: 2004-04-06 06:32:42 $'
+ * '$Revision: 1.35 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -41,21 +41,15 @@ import java.util.Enumeration;
 import java.util.Vector;
 
 import javax.xml.parsers.DocumentBuilder;
+import javax.xml.transform.TransformerException;
 
-import org.w3c.dom.Document;
-import org.w3c.dom.NodeList;
-import org.xml.sax.InputSource;
-
-import org.apache.xpath.XPathAPI;
-import org.apache.xpath.objects.XObject;
+import org.apache.xerces.dom.DOMImplementationImpl;
+import org.w3c.dom.Attr;
+import org.w3c.dom.DOMImplementation;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
-import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
-import org.w3c.dom.NamedNodeMap;
-import org.apache.xerces.dom.DOMImplementationImpl;
-import org.w3c.dom.DOMImplementation;
-import javax.xml.transform.TransformerException;
+import org.xml.sax.InputSource;
 
 /**
  * class that represents a data package. This class is abstract. Specific datapackages
@@ -302,9 +296,13 @@ public  class EML200DataPackage extends AbstractDataPackage
     return this;
   }
 
+
   /**
-   *  This method follows the pointer stored in 'references' node to return the
-   *  DOM node referred to by 'references'
+   * This method follows the pointer stored in 'references' node to return the
+   * DOM node referred to by 'references'
+   *
+   * @param node Node
+   * @return Node
    */
   public Node getReferencedNode(Node node) {
     Node referencedNode = node;
@@ -342,7 +340,78 @@ public  class EML200DataPackage extends AbstractDataPackage
    */
   public Node getSubtreeAtReference(String refID) {
     Node refdNode = null;
-    Node refdNodeClone = null;
+    try{
+      refdNode = getSubtreeAtReferenceNoClone(refID);
+      Node deepClone = refdNode.cloneNode(true);
+      DOMImplementation impl = DOMImplementationImpl.getDOMImplementation();
+      Document doc = impl.createDocument("", "tempRoot", null);
+      Node importedClone = doc.importNode(deepClone, true);
+      Node tempRoot = doc.getDocumentElement();
+      doc.replaceChild(importedClone, tempRoot);
+      return importedClone;
+    } catch (Throwable w) {
+      Log.debug(25,
+        "Exception trying to follow references (in getSubtreeAtReference)! "+w);
+      w.printStackTrace();
+    }
+    return null;
+  }
+
+
+  /**
+   * replaces subtree identified by the passed unique String refID; returns null
+   * if not found. Note that the new subtree will be given the same refID as the
+   * subtree it replaces, even if the newSubtreeRoot node has a different id set
+   *
+   * @param refID unique String refID. Note that the new subtree will be given
+   *   the same refID as the subtree it replaces, even if the newSubtreeRoot
+   *   node has a different id set
+   * @param newSubtreeRoot Node
+   * @return root Node of new subtree, or null if refID not found
+   */
+  public Node replaceSubtreeAtReference(String refID, Node newSubtreeRoot) {
+
+    Document doc = getMetadataNode().getOwnerDocument();
+    try {
+      Node oldSubtreeRoot = getSubtreeAtReferenceNoClone(refID);
+      if (oldSubtreeRoot == null) return null;
+
+      Node newIDAttr = newSubtreeRoot.getAttributes().getNamedItem("id");
+      if (newIDAttr!=null && newIDAttr.getNodeType() == Node.ATTRIBUTE_NODE) {
+
+        Log.debug(45, "replaceSubtreeAtReference() - newID="
+                  + newIDAttr.getNodeValue());
+
+        if (!newIDAttr.getNodeValue().equals(refID)) {
+          Log.debug(25, "new Subtree ID (" + newIDAttr.getNodeValue()
+                    + ") will be changed to agree with original subtree ID ("
+                    + refID + ")");
+          newIDAttr.setNodeValue(refID);
+        }
+      }
+      Node importedSubtree = doc.importNode(newSubtreeRoot, true);
+      oldSubtreeRoot.getParentNode().replaceChild(importedSubtree,
+                                                  oldSubtreeRoot);
+      return importedSubtree;
+
+    } catch (Throwable w) {
+      Log.debug(25, "Exception in replaceSubtreeAtReference)! " + w);
+      w.printStackTrace();
+    }
+    return null;
+  }
+
+
+
+  /**
+   * returns pointer to root Node of subtree identified by the passed unique
+   * String refID; returns null if not found
+   *
+   * @param refID unique String refID
+   * @return  pointer to root Node of subtree, or null if refID not found
+   */
+  private Node getSubtreeAtReferenceNoClone(String refID) {
+
     try{
       Node rootNode = getMetadataNode();
       NodeList refs2 = XMLUtilities.getNodeListWithXPath(rootNode, "//*[@id='"+refID+"']");
@@ -351,21 +420,13 @@ public  class EML200DataPackage extends AbstractDataPackage
       Node referencedNode = (refs2.item(0));
       // 'referencedNode' is the first order reference
       // next line calls to see if further references occur
-      refdNode = getReferencedNode(referencedNode);
-      Node deepClone = refdNode.cloneNode(true);
-      DOMImplementation impl = DOMImplementationImpl.getDOMImplementation();
-      Document doc = impl.createDocument("", "tempRoot", null);
-      Node importedClone = doc.importNode(deepClone, true);
-      Node tempRoot = doc.getDocumentElement();
-      doc.replaceChild(importedClone, tempRoot);
-      return importedClone;
+      return getReferencedNode(referencedNode);
 
     } catch (TransformerException w) {
       Log.debug(25, "TransformerException trying to follow references (in getSubtreeAtReference)! "+w);
       w.printStackTrace();
     }
     return null;
-
   }
 
 }

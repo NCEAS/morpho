@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: sambasiv $'
- *     '$Date: 2004-04-05 21:58:19 $'
- * '$Revision: 1.88 $'
+ *   '$Author: brooke $'
+ *     '$Date: 2004-04-06 06:32:42 $'
+ * '$Revision: 1.89 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -553,6 +553,21 @@ public abstract class AbstractDataPackage extends MetadataObject
    * @return  cloned root Node of subtree, or null if refID not found
    */
   abstract public Node getSubtreeAtReference(String refID);
+
+
+  /**
+   * replaces subtree identified by the passed unique String refID; returns null
+   * if not found. Note that the new subtree will be given the same refID as the
+   * subtree it replaces, even if the newSubtreeRoot node has a different id set
+   *
+   * @param refID unique String refID. Note that the new subtree will be given
+   *   the same refID as the subtree it replaces, even if the newSubtreeRoot
+   *   node has a different id set
+   * @param newSubtreeRoot Node
+   * @return root Node of new subtree, or null if refID not found
+   */
+  abstract public Node replaceSubtreeAtReference(String refID,
+                                                 Node newSubtreeRoot);
 
 
   /**

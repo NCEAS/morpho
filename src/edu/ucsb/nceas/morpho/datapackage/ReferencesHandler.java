@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: tao $'
- *     '$Date: 2004-04-06 00:28:42 $'
- * '$Revision: 1.12 $'
+ *   '$Author: brooke $'
+ *     '$Date: 2004-04-06 06:32:42 $'
+ * '$Revision: 1.13 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -38,6 +38,8 @@ import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 
+import javax.xml.transform.TransformerException;
+
 import java.awt.Frame;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
@@ -45,6 +47,9 @@ import java.awt.event.ItemListener;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
 
+import org.apache.xerces.dom.DOMImplementationImpl;
+import org.w3c.dom.DOMImplementation;
+import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 
 public class ReferencesHandler {
@@ -330,6 +335,82 @@ public class ReferencesHandler {
 
 
 
+  /**
+   * gets the subtree with refID "subtreeID" from the datapackage "adp", and
+   * replaces it with the subtree described in the newData OrderedMap
+   *
+   * @param adp AbstractDataPackage the current datapkg
+   * @param subtreeID String refID of the subtree to be replaced
+   * @param newData OrderedMap containing new data to replace referenced subtree
+   * @return Node the replacement subtree, or null if original subtree not found,
+   * or if any of the input parameters are invalid
+   */
+  public Node updateOriginalReferenceSubtree(AbstractDataPackage adp,
+                                             String subtreeID,
+                                             OrderedMap newData) {
+
+    Log.debug(45, "updateOriginalReferenceSubtree() Got subtreeID="+subtreeID
+              +"\nnewData map:"+newData);
+    if (subtreeID == null || subtreeID.trim().length()<1) {
+      Log.debug(15, "\n** ERROR - subtreeID map is NULL/blank!");
+      return null;
+    }
+    if (newData == null) {
+      Log.debug(15, "\n** ERROR - newData map is NULL!");
+      return null;
+    }
+    if (adp == null) {
+      Log.debug(15, "\n** ERROR - AbstractDataPackage map is NULL!");
+      return null;
+    }
+
+    Node referencedSubtree = adp.getSubtreeAtReference(subtreeID);
+    if (referencedSubtree==null) {
+      Log.debug(15, "ReferencesHandler.updateOriginalReferenceSubtree() - "
+                +"got null back from datapackage - couldn't find subtree with "
+                +"this refID: " + subtreeID);
+      return null;
+    }
+    String rootNodeName = referencedSubtree.getNodeName();
+
+    //now need to change map so all xpaths are rooted at this new value
+    newData = replaceXPathRootWith(newData, "/" + rootNodeName);
+
+    DOMImplementation impl = DOMImplementationImpl.getDOMImplementation();
+    Document doc = impl.createDocument("", rootNodeName, null);
+
+    Node subtreeRoot = doc.getDocumentElement();
+
+    try {
+      XMLUtilities.getXPathMapAsDOMTree(newData, subtreeRoot);
+
+    } catch (TransformerException w) {
+      Log.debug(15, "TransformerException (" + w + ") calling "
+                +
+                "XMLUtilities.getXPathMapAsDOMTree(map, subtreeRoot) with \n"
+                + "newData = " + newData
+                + " and subtreeRoot = " + subtreeRoot);
+      w.printStackTrace();
+      Log.debug(5, "ERROR: Unable to update original reference data!");
+      return null;
+    }
+    Node check = null;
+
+    Log.debug(45,
+              "updateOriginalReferenceSubtree() adding subtree to package...");
+    Log.debug(45,"subtreeRoot=" + XMLUtilities.getDOMTreeAsString(subtreeRoot));
+
+    check = adp.replaceSubtreeAtReference(subtreeID, subtreeRoot);
+
+    if (check == null) {
+
+      Log.debug(15, "updateOriginalReferenceSubtree(): NULL returned from "
+                + "ADP.replaceSubtreeAtReference(); subtreeID="+subtreeID
+                +";\nsubtreeRoot="+subtreeRoot);
+      Log.debug(5, "** ERROR: Unable to update original ref **\n");
+    }
+    return referencedSubtree;
+  }
 
 
 
@@ -415,7 +496,47 @@ public class ReferencesHandler {
     }
   }
 
+
+  OrderedMap returnMap = new OrderedMap();
+  //
+  // newRoot MUST start with a slash, and MUUST NOT end with a slash!
+  private OrderedMap replaceXPathRootWith(OrderedMap map, String newRoot) {
+
+    boolean firstLoop = true;
+    String xpathRoot = null;
+    returnMap.clear();
+
+    for (Iterator it = map.keySet().iterator(); it.hasNext();) {
+
+      String xpath = (String)it.next();
+      Object value = map.get(xpath);
+
+      //remove leading slash(es)
+      while (xpath.startsWith("/")) xpath = xpath.substring(1);
+
+      //find next slash
+      int firstSlashIdx = xpath.indexOf("/");
+      if (firstSlashIdx < 0) firstSlashIdx = xpath.length();
+
+      if (firstLoop) {
+        //get first element in xpath -> assume it's the root
+        xpathRoot = xpath.substring(0, firstSlashIdx);
+        Log.debug(45, "\nReferencesHandler.replaceXPathRootWith(); xpathRoot="
+                  +xpathRoot);
+        firstLoop = false;
+      }
+
+      xpath = newRoot + xpath.substring(firstSlashIdx);
+      Log.debug(45, "\nReferencesHandler.replaceXPathRootWith(); adding xpath "
+                +"to map: "+xpath);
+
+      returnMap.put(xpath, value);
+    }
+    return returnMap;
+  }
+
 }
+
 
 
 ////////////////////////////////////////////////////////////////////////////////

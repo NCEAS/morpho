@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2004-04-05 07:06:52 $'
- * '$Revision: 1.34 $'
+ *     '$Date: 2004-04-06 06:32:42 $'
+ * '$Revision: 1.35 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -181,13 +181,13 @@ public class PartyPage extends AbstractUIPage {
 
   private boolean backupExists = false;
 
-  private boolean processingReferenceSelection = false;
+  private boolean editingOriginalRef = false;
 
   private String referenceIdString;
 
   private String referencesNodeIDString;
 
-  public boolean referDiffDP = false;
+  private boolean editingAllowed = true;
 
   //
   private final String[] checkBoxArray
@@ -238,8 +238,6 @@ public class PartyPage extends AbstractUIPage {
 
       public void referenceSelected(ReferenceSelectionEvent event) {
 
-        processingReferenceSelection = true;
-
         String eventRefID = event.getReferenceID();
 
         if (eventRefID == null) {
@@ -273,16 +271,17 @@ public class PartyPage extends AbstractUIPage {
 
             case ReferenceSelectionEvent.CURRENT_DATA_PACKAGE:
 
-              Log.debug(45,
-                        "ReferencesListener - location=CURRENT_DATA_PACKAGE");
-
               // referredPage  was created in same DP - so current page would be
               // a reference... get reference Id, set instance non-editable,
               // set value of all fields and radio panel visible
+              Log.debug(45,
+                        "ReferencesListener - location=CURRENT_DATA_PACKAGE");
+
               referencesNodeIDString = eventRefID;
 
+              editingAllowed
+                  = instance.setPageData(event.getXPathValsMap(), rxp);
               instance.setEditable(false);
-              instance.setPageData(event.getXPathValsMap(), rxp);
 
               checkBoxPanel.setVisible(true);
               Log.debug(45,
@@ -292,16 +291,16 @@ public class PartyPage extends AbstractUIPage {
 
             case ReferenceSelectionEvent.DIFFERENT_DATA_PACKAGE:
 
-              Log.debug(45,
-                        "ReferencesListener - location=DIFFERENT_DATA_PACKAGE");
-
               // referredPage was not created in same DP - so current page would
               // not be a reference... set reference Id null, set referDiffDP
               // true, set instance editable as it is not a reference,
               // set value of all fields and radio panel invisible
-              referDiffDP = true;
+              Log.debug(45,
+                        "ReferencesListener - location=DIFFERENT_DATA_PACKAGE");
+
               referencesNodeIDString = null;
 
+              editingAllowed = true;
               instance.setEditable(true);
               instance.setPageData(event.getXPathValsMap(), rxp);
 
@@ -317,8 +316,6 @@ public class PartyPage extends AbstractUIPage {
 
           }
         }
-        processingReferenceSelection = false;
-
       }
     };
 
@@ -559,49 +556,58 @@ public class PartyPage extends AbstractUIPage {
     middlePanel.add(WidgetFactory.makeDefaultSpacer());
 
     // Itemlistener for the check box
-    ItemListener ilistener1 = new ItemListener() {
+    ItemListener editCheckBoxListener = new ItemListener() {
 
       public void itemStateChanged(ItemEvent e) {
 
         Log.debug(45, "got check box command: " + e.getStateChange());
-        onLoadAction(); // ????
 
         if (e.getStateChange() == ItemEvent.DESELECTED) {
-          // If the checkbox is not selected - set it to non-editable
+
+          // If the checkbox is not selected - set dialog non-editable
           instance.setEditable(false);
+
         } else if (e.getStateChange() == ItemEvent.SELECTED) {
+
           // If the checkbox is selected - need to ask the user if he wants to
           // edit the previous entry or make a copy of the previous entry
           // and edit that one
           Object[] optionArray
               = new String[] {
                 "Edit previous entry",
-                "Copy and edit the previous Entry",
+                "Copy previous entry and edit",
                 "Cancel"};
           JOptionPane optPane = new JOptionPane();
           optPane.setOptions(optionArray);
           optPane.setMessage(
-              "Do you want to edit the previous entry or do you "
-              + "want to create a copy of the previous entry and edit that?");
+              "Do you want to :\nedit the original entry (and therefore change \n"
+              +"all entries that refer to the original), or \n"
+              +"create a copy of the original and edit that?");
           optPane.createDialog(instance, "Select an option...").show();
           Object selectedValue = optPane.getValue();
 
           if (selectedValue == optionArray[0]) {
+
             // edit the previous reference
             instance.setEditable(true);
+            editingOriginalRef = true;
 
           } else if (selectedValue == optionArray[1]) {
+
             // create a new copy - do not edit reference, is a reference
             // and remove reference id string
             instance.setEditable(true);
             referencesNodeIDString = null;
+            editingOriginalRef = false;
 
           } else {
+
             // Cancel - remove selection from source - instance is not editable,
             // and do edit reference
             JCheckBox source = (JCheckBox)e.getSource();
             source.setSelected(false);
             instance.setEditable(false);
+            editingOriginalRef = false;
           }
         }
         instance.validate();
@@ -611,7 +617,7 @@ public class PartyPage extends AbstractUIPage {
 
     // Check box for editing the instance - is not visible initially
     checkBoxPanel = WidgetFactory.makeCheckBoxPanel(checkBoxArray, -1,
-                                                    ilistener1);
+                                                    editCheckBoxListener);
     checkBoxPanel.setBorder(new javax.swing.border.EmptyBorder(0,
         12 * WizardSettings.PADDING,
         0, 8 * WizardSettings.PADDING));
@@ -701,7 +707,7 @@ public class PartyPage extends AbstractUIPage {
     emailField.setEditable(editable);
     urlField.setEditable(editable);
 
-    checkBoxPanel.setVisible(!editable);
+    checkBoxPanel.setVisible(!editable && editingAllowed);
   }
 
 
@@ -724,6 +730,7 @@ public class PartyPage extends AbstractUIPage {
 
   private String getCurrentPickListRole() {
 
+    if (rolePickList==null) return EMPTY_STRING;
     String pickListRole = (String)rolePickList.getSelectedItem();
     return (pickListRole != null) ? pickListRole.trim() : EMPTY_STRING;
   }
@@ -811,10 +818,45 @@ public class PartyPage extends AbstractUIPage {
       return false;
     }
 
-    if (!this.isReference())getRefID();
+    if (this.isReference()) {
+
+      if (editingOriginalRef) {
+
+        //save referencesNodeIDString and reset it to null, so
+        //getPageData() assumes we're *not* dealing with a reference...
+        String backupReferencesNodeIDString = referencesNodeIDString;
+        referencesNodeIDString = null;
+
+        //values in dialog need to be written to original (referenced) party,
+        referencesHandler.updateOriginalReferenceSubtree(
+            UIController.getInstance().getCurrentAbstractDataPackage(),
+            backupReferencesNodeIDString,
+            this.getPageData("/thisXPathRootWillGetReplaced"));
+
+        //now make a backup of role string
+        String backupRole = getCurrentPickListRole());
+
+        //and this party needs to be set as a "/references"
+        clearAllFields();
+
+        //now reinstate referencesNodeIDString, ready for call to getPageData
+        referencesNodeIDString = backupReferencesNodeIDString;
+
+        //and reinstate role string
+        addAndSetRole(backupRole);
+
+        Log.debug(45, "PartyPage - editingOriginalRef... referencesNodeIDString="
+                  +referencesNodeIDString);
+      }
+
+    } else {
+
+      getRefID();
+    }
 
     //if (!processingReferenceSelection)
     rememberPreviousValues();
+
 
     Log.debug(45, "\nfinished onAdvanceAction for page ID: "+this.getPageID());
 
@@ -841,16 +883,16 @@ public class PartyPage extends AbstractUIPage {
         UIController.getInstance().getCurrentAbstractDataPackage(),
         refsDropdown, getRefID());
 
-    boolean canHandleAllData = true;
-
     //backupExists will be false only the first
     //ever time onLoadAction() is called...
     if (!backupExists) {
       rememberPreviousValues();
     } else {
-      canHandleAllData = restoreFromPreviousValues();
+      editingAllowed = restoreFromPreviousValues();
     }
-    this.setEditable(canHandleAllData && !this.isReference());
+
+    this.setEditable(!this.isReference());
+
     Log.debug(45, "PartyPage.onAdvanceAction() - isReference() = "+isReference());
   }
 
@@ -1177,7 +1219,7 @@ public class PartyPage extends AbstractUIPage {
       }
     }
 
-    if (rolePickList!=null) {
+    if (!editingOriginalRef && rolePickList!=null) {
 
       if (getCurrentPickListRole().length() > 0) {
         returnMap.put(rootXPath + "/role[1]", getCurrentPickListRole());
@@ -1192,8 +1234,6 @@ public class PartyPage extends AbstractUIPage {
     Log.debug(45,
               "PartyPage.setPageData() called with rootXPath = " + rootXPath
               + "\n Map = \n" + map);
-
-    checkBoxPanel.setVisible(false);
 
     if (rootXPath != null && rootXPath.trim().length() > 0) {
 
@@ -1222,8 +1262,7 @@ public class PartyPage extends AbstractUIPage {
       if (map != null) {
 
         referencesNodeIDString = ref;
-        this.setEditable(false);
-        checkBoxPanel.setVisible(true);
+
         //NOTE - rootXPath needs changing to match referenced node's xpath
         int index = 0;
         for (Iterator it = map.keySet().iterator(); it.hasNext(); ) {
@@ -1275,14 +1314,7 @@ public class PartyPage extends AbstractUIPage {
     if (rolePickList!=null) {
       String role = (String)map.get(xpathRootNoPredicates + "/role[1]");
       if (role != null) {
-
-        //quick way to check if role string is already in list:
-        //first select it...
-        rolePickList.setSelectedItem(role);
-        //...then see if it's selected, and if not, add it
-        if (rolePickList.getSelectedItem()!=role) rolePickList.addItem(role);
-        rolePickList.setSelectedItem(role);
-        map.remove(xpathRootNoPredicates + "/role[1]");
+        if (addAndSetRole(role)) map.remove(xpathRootNoPredicates + "/role[1]");
       }
     }
 
@@ -1386,15 +1418,26 @@ public class PartyPage extends AbstractUIPage {
     }
 
     //if anything left in map, then it included stuff we can't handle...
-    boolean returnVal = map.isEmpty();
+    boolean canHandleAllData = map.isEmpty();
 
-    if (!returnVal) {
+    if (!canHandleAllData) {
 
       Log.debug(20,
                 "PartyPage.setPageData returning FALSE! Map still contains:"
                 + map);
     }
-    return returnVal;
+
+    if (isReference()) {
+
+      editingAllowed = canHandleAllData;
+      this.setEditable(false);
+
+    } else {
+
+      this.setEditable(true);
+    }
+
+    return canHandleAllData;
 
   }
 
@@ -1489,13 +1532,27 @@ public class PartyPage extends AbstractUIPage {
               +"\nMap = "+previousValuesMap);
     if (previousValuesMap.isEmpty()) return true;
 
-    processingReferenceSelection = true;
     boolean canHandleAllData = this.setPageData(previousValuesMap,
                                                 backupXPath);
-    processingReferenceSelection = false;
     return canHandleAllData;
   }
 
+
+  private boolean addAndSetRole(String role) {
+
+    if (rolePickList==null) return false;
+
+    //quick way to check if role string is already in list:
+    //first select it...
+    rolePickList.setSelectedItem(role);
+
+    //...then see if it's selected, and if not, add it
+    if (rolePickList.getSelectedItem() != role) rolePickList.addItem(role);
+
+    rolePickList.setSelectedItem(role);
+
+    return true;
+  }
 
   private void clearAllFields() {
 
