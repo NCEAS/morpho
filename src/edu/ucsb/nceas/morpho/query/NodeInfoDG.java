@@ -5,7 +5,7 @@
  *              National Center for Ecological Analysis and Synthesis
  *     Authors: Dan Higgins
  *
- *     Version: '$Id: NodeInfoDG.java,v 1.1 2000-08-22 19:16:09 higgins Exp $'
+ *     Version: '$Id: NodeInfoDG.java,v 1.2 2000-09-01 22:21:38 higgins Exp $'
  */
 
 package edu.ucsb.nceas.querybean;
@@ -86,7 +86,9 @@ public class NodeInfoDG
                 }
                 catch (Exception e) {}
 //            }
+         if (temp!=null) {
             icons.put(name,temp);
+         }
         }
     }
     public ImageIcon getIcon() {

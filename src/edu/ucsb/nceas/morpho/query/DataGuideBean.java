@@ -5,12 +5,13 @@
  *              National Center for Ecological Analysis and Synthesis
  *     Authors: Dan Higgins
  *
- *     Version: '$Id: DataGuideBean.java,v 1.3 2000-08-29 15:58:26 higgins Exp $'
+ *     Version: '$Id: DataGuideBean.java,v 1.4 2000-09-01 22:21:38 higgins Exp $'
  */
 
 package edu.ucsb.nceas.querybean;
 
 import java.awt.*;
+import java.awt.event.*;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -42,6 +43,10 @@ public class DataGuideBean extends java.awt.Container
 {   
     String 	local_dtd_directory = null;
     PropertyResourceBundle options;
+    MouseListener popupListener;
+    JMenuItem ShowmenuItem;
+    JMenuItem SavemenuItem;
+    JMenuItem EditmenuItem;
     
     PathQueries pqs;
     LocalQuery lq;
@@ -62,8 +67,8 @@ public class DataGuideBean extends java.awt.Container
     public QueryBean qb;
     
     boolean local = true;
-    
-    String MetaCatServletURL = "http://dev.nceas.ucsb.edu/metadata/servlet/metacat";
+    String MetaCatServletURL;
+ //   String MetaCatServletURL = "http://dev.nceas.ucsb.edu/metadata/servlet/metacat";
     
 	public DataGuideBean(QueryBean qb)
 	{
@@ -201,6 +206,15 @@ public class DataGuideBean extends java.awt.Container
 		OrRadioButton.addItemListener(lSymItem);
 		DGSearch.addActionListener(lSymAction);
 		//}}
+		popupListener = new PopupListener();
+		ShowmenuItem = new JMenuItem("Display Document");
+		ShowmenuItem.addActionListener(lSymAction);
+        popup.add(ShowmenuItem);
+		EditmenuItem = new JMenuItem("Edit Document");
+		EditmenuItem.addActionListener(lSymAction);
+        popup.add(EditmenuItem);
+		SavemenuItem = new JMenuItem("Save Document");
+        popup.add(SavemenuItem);
 		
 		pqs = new PathQueries();
 		
@@ -222,6 +236,7 @@ public class DataGuideBean extends java.awt.Container
 		
     try {
       options = (PropertyResourceBundle)PropertyResourceBundle.getBundle("client");
+      MetaCatServletURL = (String)options.handleGetObject("MetaCatServletURL");
       local_dtd_directory = (String)options.handleGetObject("local_dtd_directory");
     }
     catch (Exception e) {System.out.println("Could not locate properties file!");}
@@ -261,6 +276,8 @@ public class DataGuideBean extends java.awt.Container
 	com.symantec.itools.javax.swing.models.StringListModel stringListModel1 = new com.symantec.itools.javax.swing.models.StringListModel();
 	com.symantec.itools.javax.swing.models.StringComboBoxModel stringComboBoxModel1 = new com.symantec.itools.javax.swing.models.StringComboBoxModel();
 	//}}
+    //Create the popup menu.
+        javax.swing.JPopupMenu popup = new JPopupMenu();
 
 	public static void main(String argv[])
 	{
@@ -463,8 +480,40 @@ public void LogOut() {
 				ClearButton_actionPerformed(event);
 			else if (object == DGSearch)
 				DGSearch_actionPerformed(event);
+			else if (object == ShowmenuItem) 
+				ShowMenuItem_actionPerformed(event);
+			else if (object == EditmenuItem) 
+				EditMenuItem_actionPerformed(event);
 		}
 	}
+
+	void ShowMenuItem_actionPerformed(java.awt.event.ActionEvent event)
+	{
+	   int sel = table.getSelectedRow();
+	   if (sel>-1) {
+            String filename = (String)table.getModel().getValueAt(sel, 0);
+            File file = new File(filename);
+            DocFrame df = new DocFrame(file);
+            df.setVisible(true);
+            df.writeInfo();
+	   }
+	}
+
+	void EditMenuItem_actionPerformed(java.awt.event.ActionEvent event)
+	{
+	   int selectedRow = table.getSelectedRow();
+	    if (selectedRow>-1) {
+            String filename = (String)table.getModel().getValueAt(selectedRow, 0);
+            File temp = new File(filename);
+	//	            if (mde!=null) {
+	//	                mde.openDocument(temp);
+	//	                tabbedPane.setSelectedIndex(0);
+	//	            }
+	//	            else {System.out.println("mde is null in RSFrame class");}
+	    }
+ 	}
+
+
 
 	void RemoteButton_actionPerformed(java.awt.event.ActionEvent event)
 	{
@@ -846,8 +895,10 @@ return "NONE";
         lq = new LocalQuery(xpath, AndRadioButton.isSelected(), DGSearch);
 		     table = lq.getRSTable();
 		     
+             table.addMouseListener(popupListener);
+		     
 		     table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-            ListSelectionModel rowSM = table.getSelectionModel();
+/*            ListSelectionModel rowSM = table.getSelectionModel();
             rowSM.addListSelectionListener(new ListSelectionListener() {
                 public void valueChanged(ListSelectionEvent e) {
                     //Ignore extra messages.
@@ -867,7 +918,7 @@ return "NONE";
                     }
                 }
             });
-        
+ */       
 		     
 	//	     RSFrame rs = new RSFrame();
 		     qb.RSScrollPane2.getViewport().add(table);
@@ -881,4 +932,23 @@ return "NONE";
 	    LogOut();
 	    
 	}
+	
+    class PopupListener extends MouseAdapter {
+              public void mousePressed(MouseEvent e) {
+                  maybeShowPopup(e);
+              }
+
+              public void mouseReleased(MouseEvent e) {
+                  maybeShowPopup(e);
+              }
+
+              private void maybeShowPopup(MouseEvent e) {
+                  if (e.isPopupTrigger()) {
+                     popup.show(e.getComponent(), e.getX(), e.getY());
+                  }
+                      
+              }
+    }
+	
+	
 }

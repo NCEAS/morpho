@@ -6,7 +6,7 @@
  *              National Center for Ecological Analysis and Synthesis
  *     Authors: Dan Higgins
  *
- *     Version: '$Id: LocalQuery.java,v 1.6 2000-08-31 16:40:15 higgins Exp $'
+ *     Version: '$Id: LocalQuery.java,v 1.7 2000-09-01 22:21:38 higgins Exp $'
  */
 
 package edu.ucsb.nceas.querybean;
@@ -42,6 +42,7 @@ public class LocalQuery extends Thread
     JButton Halt = null; //supplied by calling routine
     String Haltname;
     boolean stopFlag = false;
+    boolean AndResultFlag;
     
 public LocalQuery() {
     this(null);
@@ -274,7 +275,7 @@ void queryAll()
                         }
                     } // end !Andflag
                     if (Andflag) {   //handle "AND" here
-                        boolean AndResultFlag = true;
+                        AndResultFlag = true;
                         NodeList[] nls = new NodeList[xpathExpressions.length];
                         for (int k=0;k<xpathExpressions.length;k++) {
                             if (xpathExpressions[k].length()>0) {
@@ -282,7 +283,7 @@ void queryAll()
                                 nl = XPathAPI.selectNodeList(root, xpathExpression);
                                 if (nl.getLength()==0) {  // one of search conditions failed
                                     AndResultFlag = false;
-                                    break;
+                                  //  break;
                                 }
                             nls[k] = nl;
                             }
@@ -290,6 +291,7 @@ void queryAll()
             if (AndResultFlag) {   
                 for (int kkk=0;kkk<xpathExpressions.length;kkk++) {
                     nl = nls[kkk];
+                    if (nl!=null) {
                     String[] rss = new String[4];
                     for (int ii=0;ii<nl.getLength();ii++) {
                         if (stopFlag) break;
@@ -303,8 +305,9 @@ void queryAll()
                             else { rss[3]="";}
                             dtm.addRow(rss);
                     }
-                    
+                    }
                 }
+                
             }
           }
           

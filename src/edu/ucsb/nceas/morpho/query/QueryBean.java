@@ -5,7 +5,7 @@
  *              National Center for Ecological Analysis and Synthesis
  *     Authors: Dan Higgins
  *
- *     Version: '$Id: QueryBean.java,v 1.15 2000-08-31 23:06:05 higgins Exp $'
+ *     Version: '$Id: QueryBean.java,v 1.16 2000-09-01 22:21:37 higgins Exp $'
  */
 
 package edu.ucsb.nceas.querybean;
@@ -1158,23 +1158,25 @@ public class QueryBean extends AbstractQueryBean
 	    String op = "and";
 	    
 	    if (OrButton2.isSelected()) op = "or";
-	    if (TitleCheckBox.isSelected()) {
-	        paths[0] = "/eml-dataset/title[contains(text(),\""+TextValue11.getText()+"\")]";
-	    }
-	    if (AbstractCheckBox.isSelected()) {
-	        paths[1] = "/eml-dataset/abstract/paragraph[contains(text(),\""+TextValue11.getText()+"\")]";
-	    }
-	    if (KeyWordsCheckBox.isSelected()) {
-	        paths[2] = "/eml-dataset/keyword_info/keyword[contains(text(),\""+TextValue11.getText()+"\")]";
-	    }
+	    if (TextValue11.getText().length()>0) {
+	        if (TitleCheckBox.isSelected()) {
+	            paths[0] = "/eml-dataset/title[contains(text(),\""+TextValue11.getText()+"\")]";
+	        }
+	        if (AbstractCheckBox.isSelected()) {
+	            paths[1] = "/eml-dataset/abstract/paragraph[contains(text(),\""+TextValue11.getText()+"\")]";
+	        }
+	        if (KeyWordsCheckBox.isSelected()) {
+	            paths[2] = "/eml-dataset/keyword_info/keyword[contains(text(),\""+TextValue11.getText()+"\")]";
+	        }
 	    
-	    if (AllCheckBox.isSelected()) {
-	        paths[0] = "//*[(contains(text(),\""+TextValue11.getText()+"\"))]";
-	        paths[1] = "";
-	        paths[2] = "";
+	        if (AllCheckBox.isSelected()) {
+	            paths[0] = "//*[(contains(text(),\""+TextValue11.getText()+"\"))]";
+	            paths[1] = "";
+	            paths[2] = "";
+	        }
 	    }
 	    if (TextValue22.getText().length()>0) {
-            paths[2] = "/eml-dataset/originator/party/party_individual/surname[(contains(text(),\""+TextValue22.getText()+"\"))]";
+            paths[3] = "/eml-dataset/originator/party/party_individual/surname[(contains(text(),\""+TextValue22.getText()+"\"))]";
 	    }
         
 	    boolean op1 = true;
@@ -1227,18 +1229,20 @@ public class QueryBean extends AbstractQueryBean
 	
 	String create_XMLQuery() {
 	    String out = "";
-	 	if(TextValue11.getText().length()>0) {
+	 	if((TextValue11.getText().length()>0)||(TextValue22.getText().length()>0)) {
 	    String op = "INTERSECT";
 	    if (OrRadioButton.isSelected()) op = "UNION";
 	    
 		pathqueryXML pqx = new pathqueryXML();
 	 if (QueryChoiceTabs.getSelectedIndex()==0) {
-		if ((TextChoices2.isVisible())&&(TextValue2.getText().length()>0)) {
+		if ((TextValue11.getText().length()>0)&&(TextValue22.getText().length()>0)) {
 		    pqx.add_querygroup(op);
 		    pqx.add_querygroup_asChild("UNION");
 		}
 		else {
-		    pqx.add_querygroup("UNION");
+		    if (TextValue11.getText().length()>0) {
+		        pqx.add_querygroup("UNION");
+		    }
 		}
 		if ((TextChoices11.isVisible())&&(TextValue11.getText().length()>0)) {
 		    if (TitleCheckBox.isSelected()) {
@@ -1258,9 +1262,9 @@ public class QueryBean extends AbstractQueryBean
 		    }
 		}
 //		pqx.end_querygroup();
-		if ((TextChoices2.isVisible())&&(TextValue2.getText().length()>0)) {
+		if ((TextChoices22.isVisible())&&(TextValue22.getText().length()>0)) {
 		    pqx.add_querygroup(op);
-		    pqx.add_queryterm(TextValue2.getText(),"/eml-dataset/originator/party/party_individual/surname","contains",true);
+		    pqx.add_queryterm(TextValue22.getText(),"/eml-dataset/originator/party/party_individual/surname","contains",true);
 //		    pqx.end_querygroup();
 		}
 		pqx.end_query();
@@ -1351,8 +1355,7 @@ private String getPath(String type, String match){
 	}
 // this method is called by external full text search routines	
 public void searchFor(String searchText) {
-    QueryChoiceTabs.setSelectedIndex(0);
- //   TextMatch1.setSelectedIndex(0);
+    QueryChoiceTabs.setSelectedIndex(1);
     TextValue1.setText(searchText);
     simplequery_submitToDatabase(searchText);
     SearchButton1_actionPerformed(null);

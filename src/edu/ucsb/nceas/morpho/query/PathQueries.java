@@ -5,13 +5,14 @@
  *              National Center for Ecological Analysis and Synthesis
  *     Authors: Dan Higgins
  *
- *     Version: '$Id: PathQueries.java,v 1.3 2000-08-31 16:40:15 higgins Exp $'
+ *     Version: '$Id: PathQueries.java,v 1.4 2000-09-01 22:21:38 higgins Exp $'
  */
 
 package edu.ucsb.nceas.querybean;
 // This class is designed to handle a collection of unique queries
 
 import java.util.*;
+import java.io.*;
 
 
 public class PathQueries
@@ -121,7 +122,6 @@ public class PathQueries
         sb.append("<pathquery version=\"1.0\">\n");
         sb.append("<meta_file_id>DG Query</meta_file_id>\n");
         sb.append("<querytitle>DG Query</querytitle>\n");
-        sb.append("<returndoctype>any</returndoctype>\n");
         String op = "UNION";
         if (andflag) {
             op = "INTERSECT"; }
@@ -137,6 +137,24 @@ public class PathQueries
         }
         sb.append("</querygroup>\n");
         sb.append("</pathquery>");
+        
+/*		try{
+		    String out = sb.toString();
+		    StringReader sr = new StringReader(out);
+		    File pathFile = new File("pathFile.xml");
+		    FileWriter fw = new FileWriter(pathFile);
+            int c;
+            while ((c = sr.read()) != -1) {
+                fw.write(c);
+            }
+            sr.close();
+            fw.close();
+        }
+        catch (Exception z) {}
+*/        
+//        System.out.println(out);
+        
+        
         return sb.toString();
     }
     
