@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-05-09 16:11:25 $'
- * '$Revision: 1.38 $'
+ *     '$Date: 2002-05-09 20:47:42 $'
+ * '$Revision: 1.39 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -506,7 +506,7 @@ public class ResultPanel extends JPanel
       }
       else if (object == openPreviousVersion)
       {
-        if (vers>1) {
+        if (vers>0) {
           OpenPreviousDialog opd = new OpenPreviousDialog(packageName,vers,framework,localLoc );
           opd.setVisible(true);
         }
@@ -638,7 +638,7 @@ public class ResultPanel extends JPanel
       {     
         vers = getNumberOfPrevVersions();
         packageName = getIdWithoutVersion();
-        if (vers>1) {
+        if (vers>0) {
           openPreviousVersion.setEnabled(true);
         }
         else {
