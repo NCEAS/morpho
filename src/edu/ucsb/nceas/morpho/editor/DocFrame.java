@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2004-02-20 23:27:09 $'
- * '$Revision: 1.154 $'
+ *     '$Date: 2004-02-21 00:04:07 $'
+ * '$Revision: 1.155 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -210,7 +210,6 @@ public class DocFrame extends javax.swing.JFrame
   javax.swing.JMenuItem ReplacemenuItem;
   javax.swing.JMenuItem PastemenuItem;
   javax.swing.JMenuItem AddtextItem;
-  javax.swing.JMenuItem NewWindowItem;
 
   javax.swing.JPanel OutputScrollPanelContainer = new javax.swing.JPanel();
   javax.swing.JScrollPane OutputScrollPanel = new javax.swing.JScrollPane();
@@ -437,7 +436,7 @@ public class DocFrame extends javax.swing.JFrame
     popup.add(DeletemenuItem);
     popup.add(new JSeparator());
     AttrmenuItem = new JMenuItem("Edit Attributes");
-    popup.add(AttrmenuItem);
+//    popup.add(AttrmenuItem);
 //  this menu item is not added to menu because all attributes should now appear in the tree
 //  leave code for possibile use in debugging (to see attributes trimmed from tree)
     popup.add(new JSeparator());
@@ -452,9 +451,6 @@ public class DocFrame extends javax.swing.JFrame
     popup.add(ReplacemenuItem);
     PastemenuItem = new JMenuItem("Paste as Sibling to Selected Node");
     popup.add(PastemenuItem);
-    NewWindowItem = new JMenuItem("Open New Editor");
-    popup.add(new JSeparator());
-    popup.add(NewWindowItem);
     
     //  REGISTER_LISTENERS
     SymAction lSymAction = new SymAction();
@@ -479,7 +475,6 @@ public class DocFrame extends javax.swing.JFrame
     ReplacemenuItem.addActionListener(lSymAction);
     PastemenuItem.addActionListener(lSymAction);
     AddtextItem.addActionListener(lSymAction);
-    NewWindowItem.addActionListener(lSymAction);
     //Create the popup menu.
     javax.swing.JPopupMenu popup = new JPopupMenu();
 
@@ -1573,11 +1568,6 @@ public class DocFrame extends javax.swing.JFrame
     }
   }
 
-  
-  void NewWindow_actionPerformed(java.awt.event.ActionEvent event)
-  {
-    (new DocFrame()).setVisible(true);    
-  }
   
   
   /**
@@ -3295,8 +3285,6 @@ Log.debug(20, xmlout);
         Paste_actionPerformed(event);
       } else if (object == AddtextItem) {
         Addtext_actionPerformed(event);
-      } else if (object == NewWindowItem) {
-        NewWindow_actionPerformed(event);
       } else if (object == EditingExit) {
         EditingExit_actionPerformed(event);
       } else if (object == CancelButton) {
