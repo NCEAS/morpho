@@ -6,9 +6,9 @@
   *               National Center for Ecological Analysis and Synthesis
   *  For Details: http://www.nceas.ucsb.edu/
   *
-  *   '$Author: cjones $'
-  *     '$Date: 2002-09-26 01:57:52 $'
-  * '$Revision: 1.2 $'
+  *   '$Author: brooke $'
+  *     '$Date: 2002-09-28 03:29:14 $'
+  * '$Revision: 1.3 $'
   * 
   * This program is free software; you can redistribute it and/or modify
   * it under the terms of the GNU General Public License as published by
@@ -46,7 +46,7 @@
           <h1>Software Description</h1>
           <h3>Ecological Metadata Language</h3>
         </center>
-        <table class="tabledefault" width="100%"><!-- width needed for NN4 - doesn't recognize width in css -->
+        <table class="tabledefault" width="80%"><!-- width needed for NN4 - doesn't recognize width in css -->
 
           <!--xsl:apply-templates select="software/identifier" mode="resource"/>
           <xsl:apply-templates select="software/pubDate" mode="resource"/>
