@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-02-16 00:02:54 $'
- * '$Revision: 1.89 $'
+ *     '$Date: 2002-02-21 16:37:53 $'
+ * '$Revision: 1.90 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -63,6 +63,8 @@ import edu.ucsb.nceas.morpho.framework.*;
  */
 public class DocFrame extends javax.swing.JFrame
 {
+    static Hashtable icons;
+    static { icons = new Hashtable(); }
   
     /** a hashtable for saving trees with help and formatting info
      *  assume that the key is the name of the rootnode
@@ -172,7 +174,7 @@ public class DocFrame extends javax.swing.JFrame
 		setDefaultCloseOperation(javax.swing.JFrame.DO_NOTHING_ON_CLOSE);
 		getContentPane().setLayout(new BorderLayout(0,0));
 		setSize(643,452);
-		setVisible(false);
+//		setVisible(false);
 		OutputScrollPanelContainer.setLayout(new BorderLayout(0,0));
 		getContentPane().add(OutputScrollPanelContainer);
 		OutputScrollPanelContainer.add(BorderLayout.CENTER, OutputScrollPanel);
@@ -202,7 +204,7 @@ public class DocFrame extends javax.swing.JFrame
 		TopLabelPanel.setLayout(new FlowLayout(FlowLayout.CENTER,5,5));
 		TopPanel.add(BorderLayout.CENTER, TopLabelPanel);
 		TopLabelPanel.setBackground(new java.awt.Color(204,204,204));
-		headLabel.setText("Morpho Editor");
+		headLabel.setText("Working...!!!");
 		TopLabelPanel.add(headLabel);
 		TopPanel.add(BorderLayout.WEST, logoLabel);
 		ControlPanel.setLayout(new BorderLayout(0,0));
@@ -239,22 +241,49 @@ public class DocFrame extends javax.swing.JFrame
 		JLabel4.setForeground(java.awt.Color.black);
 		JLabel4.setFont(new Font("Dialog", Font.PLAIN, 10));
 		//}}
-    ImageIcon plus = new ImageIcon(getClass().getResource("blue.gif"));
-		JLabel1.setIcon(plus);
-    ImageIcon square = new ImageIcon(getClass().getResource("red.gif"));
-		JLabel2.setIcon(square);
-    ImageIcon astr = new ImageIcon(getClass().getResource("green.gif"));
-		JLabel3.setIcon(astr);
-    ImageIcon qu = new ImageIcon(getClass().getResource("yellow.gif"));
-		JLabel4.setIcon(qu);
+		if (!icons.containsKey("blue.gif")) {
+            ImageIcon plus = new ImageIcon(getClass().getResource("blue.gif"));
+            icons.put("blue.gif",plus);
+        }
+		JLabel1.setIcon((ImageIcon)icons.get("blue.gif"));
 		
-    ImageIcon head = new ImageIcon(
+		if (!icons.containsKey("red.gif")) {
+            ImageIcon square = new ImageIcon(getClass().getResource("red.gif"));
+            icons.put("red.gif",square);
+        }
+		JLabel2.setIcon((ImageIcon)icons.get("red.gif"));
+		
+		if (!icons.containsKey("green.gif")) {
+            ImageIcon astr = new ImageIcon(getClass().getResource("green.gif"));
+            icons.put("green.gif",astr);
+        }
+		JLabel3.setIcon((ImageIcon)icons.get("green.gif"));
+		
+		if (!icons.containsKey("yellow.gif")) {
+            ImageIcon qu = new ImageIcon(getClass().getResource("yellow.gif"));
+            icons.put("yellow.gif",qu);
+        }
+		JLabel4.setIcon((ImageIcon)icons.get("yellow.gif"));
+		
+		if (!icons.containsKey("smallheader-bg.gif")) {
+            ImageIcon head = new ImageIcon(
                          getClass().getResource("smallheader-bg.gif"));
-    ImageIcon logoIcon = 
+            icons.put("smallheader-bg.gif",head);
+        }
+ 		if (!icons.containsKey("logo-icon.gif")) {
+            ImageIcon logoIcon = 
               new ImageIcon(getClass().getResource("logo-icon.gif"));
+            icons.put("logo-icon.gif",logoIcon);
+        }
+        if (!icons.containsKey("Btfly4.gif")) {
+            ImageIcon flapping = new ImageIcon(getClass().getResource("Btfly4.gif"));
+            icons.put("Btfly4.gif",flapping);
+        }
+        
+        
+    logoLabel.setIcon((ImageIcon)icons.get("Btfly4.gif"));
+    headLabel.setIcon((ImageIcon)icons.get("smallheader-bg.gif"));
     
-    logoLabel.setIcon(logoIcon);
-    headLabel.setIcon(head);
     headLabel.setHorizontalTextPosition(SwingConstants.CENTER);
     headLabel.setHorizontalAlignment(SwingConstants.LEFT);
     headLabel.setAlignmentY(Component.LEFT_ALIGNMENT);
@@ -337,6 +366,11 @@ public class DocFrame extends javax.swing.JFrame
 	
 		MouseListener popupListener = new PopupListener();
     tree.addMouseListener(popupListener);
+    validate();
+    setVisible(true);
+    Graphics g = getGraphics();
+    paint(g);
+    g.dispose();
 	}
 
 	/**
@@ -373,9 +407,45 @@ public class DocFrame extends javax.swing.JFrame
 	public DocFrame(ClientFramework cf, String sTitle, String doctext, boolean flag) 
 	{
 	  this();
+
+/*	  final ClientFramework fcf = cf;
+	  final String fdoctext = doctext;
+	  final boolean fflag = flag;
+	  
+	  long startTime = System.currentTimeMillis();
+	  long curTime = System.currentTimeMillis();
+	  while ((curTime-startTime)>5000) {
+	    curTime = System.currentTimeMillis(); 
+	  }
+	  
+	  SwingUtilities.invokeLater(new Runnable() {
+			    public void run() {
+	                initDoc(fcf, fdoctext, fflag);    
+			    }
+			  });
+*/
+	}
+	
+	public void initDoc(ClientFramework cf, String doctext, boolean flag) {
+	  final ClientFramework fcf = cf;
+	  final String fdoctext = doctext;
+	  final boolean fflag = flag;
+
+	  try{
+	    Thread.sleep(300);  
+	  }
+	  catch(Exception w) {}
+	  
+	  SwingUtilities.invokeLater(new Runnable() {
+			    public void run() {
+	                initDocInner(fcf, fdoctext, fflag);    
+			    }
+			  });
+	}
+	
+	public void initDocInner(ClientFramework cf, String doctext, boolean flag) {
 	  DefaultMutableTreeNode frootNode = null;
 //	  this.templateFlag = flag;
-	  setTitle("Morpho Editor");
 	  this.framework = cf;
 	  counter++;
 	  setName("Morpho Editor"+counter);
@@ -479,10 +549,12 @@ public class DocFrame extends javax.swing.JFrame
     DefaultTreeModel dftm = new DefaultTreeModel(dtdtree.rootNode);
     tree.setModel(dftm);
 	}
-		tree.expandRow(1);
-		tree.expandRow(2);
+	tree.expandRow(1);
+	tree.expandRow(2);
     tree.setSelectionRow(0);
-	    
+	setTitle("Morpho Editor:"+id);
+	headLabel.setText("Morpho Editor");
+	logoLabel.setIcon((ImageIcon)icons.get("logo-icon.gif"));    
 	}
 	
 	/** this version of the constructor is needed so that each DocFrame can 'remember' the
@@ -491,7 +563,7 @@ public class DocFrame extends javax.swing.JFrame
 	public DocFrame(ClientFramework cf, String sTitle, String doctext, String id, String location) {
 	  this(cf, sTitle, doctext, false);
 	  if (id!=null) {
-	    setTitle("Morpho Editor:"+id+" - "+location);
+	    setTitle("Working...");
 	    setName("Morpho Editor"+counter+":"+id);
 	  }
 	  this.id = id;
@@ -504,7 +576,7 @@ public class DocFrame extends javax.swing.JFrame
 	public DocFrame(ClientFramework cf, String sTitle, String doctext, String id, String location, boolean templFlag) {
 	  this(cf, sTitle, doctext, templFlag);
 	  if (id!=null) {
-	    setTitle("Morpho Editor:"+id+" - "+location);
+	    setTitle("Working...");
 	    setName("Morpho Editor"+counter+":"+id);
 	  }
 	  this.id = id;
@@ -716,8 +788,9 @@ class SymTreeSelection implements javax.swing.event.TreeSelectionListener
 		public  void valueChanged(javax.swing.event.TreeSelectionEvent event)
 		{
 			Object object = event.getSource();
-			if (object == tree)
+			if (object == tree) {
 				tree_valueChanged(event);
+            }
 		}
 	}
 
@@ -1970,26 +2043,34 @@ class SymWindow extends java.awt.event.WindowAdapter {
 
 		public void componentResized(java.awt.event.ComponentEvent event)
 		{
+            validate();
+            setVisible(true);
+            Graphics g = getGraphics();
+            paint(g);
+            g.dispose();
+		    
 			Object object = event.getSource();
 			if (object == DocFrame.this)
-				DocFrame_componentResized(event);
+			  SwingUtilities.invokeLater(new Runnable() {
+			    public void run() {
+			        DocFrame_componentResized();    
+			    }
+			  });
+			  
 		}
 	}
 
 
 
-	void DocFrame_componentResized(java.awt.event.ComponentEvent event)
+	void DocFrame_componentResized()
 	{
-//DFH    int width = this.getWidth() - DocControlPanel.getDividerLocation() - 40;
-    int width = this.getSize().width - DocControlPanel.getDividerLocation() - 40;
-    XMLPanels xp = new XMLPanels(selectedNode, width);
-    xp.setTreeModel(treeModel);
-    xp.setContainer(this);
-    xp.setTree(tree);
-    NestedPanelScrollPanel.getViewport().removeAll();
-    NestedPanelScrollPanel.getViewport().add(xp.topPanel);
-//         xp.invalidate();
-//         NestedPanelScrollPanel.repaint();
+        int width = this.getSize().width - DocControlPanel.getDividerLocation() - 40;
+        XMLPanels xp = new XMLPanels(selectedNode, width);
+        xp.setTreeModel(treeModel);
+        xp.setContainer(this);
+        xp.setTree(tree);
+        NestedPanelScrollPanel.getViewport().removeAll();
+        NestedPanelScrollPanel.getViewport().add(xp.topPanel);
 	}
 	
 	

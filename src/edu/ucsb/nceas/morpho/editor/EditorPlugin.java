@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-12-13 22:09:38 $'
- * '$Revision: 1.21 $'
+ *     '$Date: 2002-02-21 16:37:53 $'
+ * '$Revision: 1.22 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -178,17 +178,19 @@ public class EditorPlugin implements PluginInterface, ServiceProvider, EditorInt
   }
   
   public void openEditor(String xmlText) {
-    DocFrame editorframe = new DocFrame(framework, "Morpho Editor", xmlText, false);
+    DocFrame editorframe = new DocFrame(framework, "Working...", xmlText, false);
     editorframe.setController(this);
-    editorframe.setVisible(true);
+//    editorframe.setVisible(true);
+    editorframe.initDoc(framework, xmlText, false);
     framework.addWindow(editorframe);
   }
 
   public void openEditor(String xmlText, String id, String location, 
                          EditingCompleteListener listener) {
-    DocFrame editorframe = new DocFrame(framework, "Morpho Editor", xmlText, id, location);
+    DocFrame editorframe = new DocFrame(framework, "Working...", xmlText, id, location);
     editorframe.setController(this);
-    editorframe.setVisible(true);
+//    editorframe.setVisible(true);
+    editorframe.initDoc(framework, xmlText, false);
     this.id = id;
     this.location = location;
     if (framework!=null) {
@@ -199,9 +201,10 @@ public class EditorPlugin implements PluginInterface, ServiceProvider, EditorInt
 
   public void openEditor(String xmlText, String id, String location, 
                          EditingCompleteListener listener, boolean template) {
-    DocFrame editorframe = new DocFrame(framework, "Morpho Editor", xmlText, id, location, template );
+    DocFrame editorframe = new DocFrame(framework, "Working...", xmlText, id, location, template );
     editorframe.setController(this);
-    editorframe.setVisible(true);
+ //   editorframe.setVisible(true);
+    editorframe.initDoc(framework, xmlText, false);
     this.id = id;
     this.location = location;
     if (framework!=null) {
@@ -218,10 +221,11 @@ public class EditorPlugin implements PluginInterface, ServiceProvider, EditorInt
   public void openEditor(String xmlText, String id, String location,
                          String nodeName, String nodeValue,
                          EditingCompleteListener listener) {
-    DocFrame editorframe = new DocFrame(framework, "Morpho Editor", xmlText, id, location,
+    DocFrame editorframe = new DocFrame(framework, "Working...", xmlText, id, location,
                           nodeName, nodeValue);
     editorframe.setController(this);
-    editorframe.setVisible(true);
+  //  editorframe.setVisible(true);
+    editorframe.initDoc(framework, xmlText, false);
     this.id = id;
     this.location = location;
     if (framework!=null) {
