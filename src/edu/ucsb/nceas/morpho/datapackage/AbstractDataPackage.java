@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2004-04-23 22:40:26 $'
- * '$Revision: 1.99 $'
+ *     '$Date: 2004-04-24 19:09:08 $'
+ * '$Revision: 1.100 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -2575,6 +2575,9 @@ public abstract class AbstractDataPackage extends MetadataObject
    * already been saved. If not, the temp directory is checked. Note that it
    * is assumed that the data file has been assigned an id and stored in the
    * temp directory if it has not been saved to one of the stores
+   *
+   * It has been assumed that the 'location' has been set to point to the
+   * place where the data is to be saved.
    */
   public void serializeData() throws MetacatUploadException {
     File dataFile = null;
@@ -2633,10 +2636,19 @@ public abstract class AbstractDataPackage extends MetadataObject
           dfis.close();
 //          dataFile.delete();
       }catch (Exception qq) {
-        // some other problem has occured
-        Log.debug(5, "Some problem with saving local data files has occurred!");
-        qq.printStackTrace();
-      }//end catch
+        // if a datafile is on metacat and one wants to save locally
+        try{
+          MetacatDataStore mds = new MetacatDataStore(morpho);
+          dataFile = mds.openDataFile(urlinfo);
+          InputStream dfis = new FileInputStream(dataFile);
+          fds.saveDataFile(urlinfo, dfis);
+          dfis.close();
+        }catch (Exception qqq) {
+          // some other problem has occured
+          Log.debug(5, "Some problem with saving local data files has occurred!");
+          qq.printStackTrace();
+        }//end catch
+      }
     }
   }
 
@@ -2648,11 +2660,10 @@ public abstract class AbstractDataPackage extends MetadataObject
     try {
       dataFile = mds.openDataFile(urlinfo);
     }
-    catch (FileNotFoundException fnf) {
-      // if the datfile has NOT been located, a FileNotFoundException will be thrown.
+    catch (Exception fnf) {
+      // if the datfile has NOT been located, an Exception will be thrown.
       // this indicates that the datafile with the url has NOT been saved
       // the datafile should be stored in the profile temp dir
-      //Log.debug(1, "FileNotFoundException");
       ConfigXML profile = morpho.getProfile();
       String separator = profile.get("separator", 0);
       separator = separator.trim();
@@ -2694,15 +2705,45 @@ public abstract class AbstractDataPackage extends MetadataObject
         }
       }
       catch (Exception qq) {
-        // some other problem has occured
-        Log.debug(5, "Some problem with saving data files has occurred!");
-        qq.printStackTrace();
+        // data file might already be in the local file store, but not the temp dir
+        try{
+          dataFile = fds.openFile(urlinfo);
+          InputStream dfis = new FileInputStream(dataFile);
+          try{
+            mds.newDataFile(urlinfo, dataFile);
+          } 
+          catch (MetacatUploadException mue) {
+            // if we reach here, most likely there has been a problem saving the datafile
+            // on metacat because the id is already in use
+            // so, get a new id
+            AccessionNumber an = new AccessionNumber(morpho);
+            String newid = an.getNextId();
+            // now try saving with the new id
+            try{
+              mds.newDataFile(newid, dataFile);
+              dataFile.delete();
+              // newDataFile must have worked; thus update the package
+              setDistributionUrl(entityIndex, 0, 0, newid);
+              String newPackageId = an.getNextId();
+              setAccessionNumber(newPackageId);
+              serialize(AbstractDataPackage.METACAT);
+              if(location.equals(BOTH)) {  // save new package locally
+                serialize(AbstractDataPackage.LOCAL);
+              }
+            } catch (MetacatUploadException mue1) {
+              Log.debug(5, "Problem saving data to metacat\n"+
+                           mue1.getMessage());
+              throw new MetacatUploadException("ERROR SAVING DATA TO METACAT! "
+                          +mue1.getMessage());
+            }
+          }
+        }
+        catch (Exception qqq) {
+          // some other problem has occured
+          Log.debug(5, "Some problem with saving data files has occurred!");
+          qq.printStackTrace();
+        }
       }
-    }
-    catch (Exception ww) {
-        // some other problem has occured
-        Log.debug(5, "Some other problem with saving data files has occurred!");
-        ww.printStackTrace();
     }
   }
 
