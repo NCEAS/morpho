@@ -13,7 +13,6 @@
 <!ELEMENT mdattim (sngdate+)>
 <!ELEMENT rngdates ((begdate, begtime?, enddate, endtime?) | (beggeol, endgeol))>
 <!ELEMENT sngdate ((caldate, time?) | geolage)>
-<!ELEMENT taxoncl (taxonrn?, taxonrv?, common*, taxoncl*)>
 <!ELEMENT temporalCov (sngdate | mdattim | rngdates)>
 <!ELEMENT citation ((identifier+, shortName?, title+, originator+, pubDate?, pubPlace?, series?, abstract?, keywordSet*, additionalInfo*, rights*, (onlineURL | offlineMedium)*, triple*), (ISBN?, ISSN?, (article | book | chapter | manuscript | report | thesis)))>
 <!ELEMENT designDescription (protocol*, sampling*, paragraph*, citation*)>
@@ -34,11 +33,6 @@
 <!ELEMENT gringlon (#PCDATA)>
 <!ELEMENT caldate (#PCDATA)>
 <!ELEMENT time (#PCDATA)>
-<!ELEMENT taxonrn (#PCDATA)>
-<!ELEMENT taxonrv (#PCDATA)>
-<!ELEMENT common (#PCDATA)>
-<!ELEMENT keywtax (taxonkt, taxonkey+)>
-<!ELEMENT taxongen (#PCDATA)>
 <!ELEMENT identifier (#PCDATA)>
 <!ATTLIST identifier system CDATA #IMPLIED>
 <!ELEMENT shortName (#PCDATA)>
@@ -74,16 +68,8 @@
 <!ELEMENT northbc (#PCDATA)>
 <!ELEMENT southbc (#PCDATA)>
 <!ELEMENT boundalt (altmin, almax, altunits)>
-<!ELEMENT dsgpolyo ((grngpoin, grngpoin, grngpoin, grngpoin+) | gring)>
-<!ELEMENT dsgpolyx ((grngpoin, grngpoin, grngpoin, grngpoin+) | gring)>
-<!ELEMENT taxonkt (#PCDATA)>
-<!ELEMENT taxonkey (#PCDATA)>
-<!ELEMENT classsys (classcit, classmod?)>
-<!ELEMENT idref (citeinfo)>
-<!ELEMENT ider (cntinfo)>
-<!ELEMENT taxonpro (#PCDATA)>
-<!ELEMENT taxoncom (#PCDATA)>
-<!ELEMENT vouchers (specimen, reposit)>
+<!ELEMENT dsgpolyo (grngpoin+ | gring)>
+<!ELEMENT dsgpolyx (grngpoin+ | gring)>
 <!ELEMENT individualName (salutation*, givenName*, surName)>
 <!ELEMENT organizationName (#PCDATA)>
 <!ELEMENT positionName (#PCDATA)>
@@ -127,11 +113,7 @@
 <!ELEMENT altmin (#PCDATA)>
 <!ELEMENT almax (#PCDATA)>
 <!ELEMENT altunits (#PCDATA)>
-<!ELEMENT classcit (citeinfo)>
-<!ELEMENT classmod (#PCDATA)>
 <!ELEMENT cntinfo ANY>
-<!ELEMENT specimen (#PCDATA)>
-<!ELEMENT reposit (cntinfo)>
 <!ELEMENT salutation (#PCDATA)>
 <!ELEMENT givenName (#PCDATA)>
 <!ELEMENT surName (#PCDATA)>
