@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: cjones $'
- *     '$Date: 2002-09-26 01:57:53 $'
- * '$Revision: 1.75 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2002-10-02 15:12:31 $'
+ * '$Revision: 1.76 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -436,10 +436,10 @@ public class PackageWizardShell extends javax.swing.JFrame
       }
       
       donePanel = new JPanel();
-      saveToMetacatCheckBox = new JCheckBox("Save package to Metacat?", true);
+      saveToMetacatCheckBox = new JCheckBox("Save package to Network?", true);
       publicAccessCheckBox = new JCheckBox("Package should be publicly " +
-                                           "readable (on Metacat)?", true);
-      //saveToMetacatButton = new JButton("Save To Metacat");
+                                           "readable (on Network)?", true);
+      //saveToMetacatButton = new JButton("Save To Network");
       JList idlist = new JList(listContent);
       idlist.setPreferredSize(new Dimension(100,1000));
       JLabel listLabel = new JLabel("You are creating the following package " +
@@ -1477,10 +1477,10 @@ public class PackageWizardShell extends javax.swing.JFrame
     }
     
     donePanel = new JPanel();
-    saveToMetacatCheckBox = new JCheckBox("Save package to Metacat?", true);
+    saveToMetacatCheckBox = new JCheckBox("Save package to Network?", true);
     publicAccessCheckBox = new JCheckBox("Package should be publicly " +
-                                         "readable (on Metacat)?", true);
-    //saveToMetacatButton = new JButton("Save To Metacat");
+                                         "readable (on Network)?", true);
+    //saveToMetacatButton = new JButton("Save To Network");
     JList idlist = new JList(listContent);
     idlist.setPreferredSize(new Dimension(100,1000));
     JLabel listLabel = new JLabel("You are creating the following package " +

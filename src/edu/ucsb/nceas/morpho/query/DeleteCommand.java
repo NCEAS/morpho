@@ -5,9 +5,9 @@
  *    Authors: @tao@
  *    Release: @release@
  *
- *   '$Author: tao $'
- *     '$Date: 2002-10-01 21:51:00 $'
- * '$Revision: 1.10 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2002-10-02 15:11:19 $'
+ * '$Revision: 1.11 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -72,11 +72,11 @@ public class DeleteCommand implements Command
                             + "your local file system?";
   private static final String NETWORKWARNING = 
                         "Are you sure you want to delete \nthe package from " +
-                        "Metacat? You \nwill not be able to upload \nit " +
+                        "the Network? You \nwill not be able to upload \nit " +
                         "again with the same identifier.";
   private static final String BOTHWARNING =
                         "Are you sure you want to delete \nthe package from " +
-                        "Metacat and your \nlocal file system? " +
+                        "the Network and your \nlocal file system? " +
                         "Deleting a package\n cannot be undone!";
   /** selected docid to delete */
   String selectDocId = null;

@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: jones $'
- *     '$Date: 2002-08-22 17:03:49 $'
- * '$Revision: 1.34 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2002-10-02 15:09:23 $'
+ * '$Revision: 1.35 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -75,12 +75,12 @@ public class ConnectionFrame extends javax.swing.JDialog
     // parse your Java file into its visual environment.
     //{{INIT_CONTROLS
     setDefaultCloseOperation(javax.swing.JFrame.DISPOSE_ON_CLOSE);
-    setTitle("Metacat Login");
+    setTitle("Network Login");
     getContentPane().setLayout(new BorderLayout(0,0));
     //setSize(315,290);
     setVisible(false);
     JLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-    JLabel1.setText("Metacat Login");
+    JLabel1.setText("Network Login");
     getContentPane().add(BorderLayout.NORTH,JLabel1);
     JLabel1.setForeground(java.awt.Color.black);
     JLabel1.setFont(new Font("Dialog", Font.BOLD, 14));
@@ -96,7 +96,7 @@ public class ConnectionFrame extends javax.swing.JDialog
     JLabel instructLabel = new JLabel();
     instructLabel.setFont(new Font("Dialog", Font.BOLD, 12));
     instructLabel.setForeground(java.awt.Color.black);
-    instructLabel.setText("Enter your Metacat password in order to log in.");
+    instructLabel.setText("Enter your Network password in order to log in.");
     instructPanel.add(instructLabel);
 
     JPanel3.setLayout(new FlowLayout(FlowLayout.LEFT,5,5));

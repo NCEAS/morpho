@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-08-20 18:06:41 $'
- * '$Revision: 1.21 $'
+ *     '$Date: 2002-10-02 15:09:23 $'
+ * '$Revision: 1.22 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -383,11 +383,11 @@ public class ProfileDialog extends JDialog
       addLabelTextRows(labels, textFields, gridbag, screenPanel);
       addKeyListenerToComponents(textFields);
     } else if (1 == currentScreen) {
-      String helpText = "<html><p>Enter your Metacat account information. " +
-                        "This will allow you to log in to Metacat " +
+      String helpText = "<html><p>Enter your Network account information. " +
+                        "This will allow you to log in to Network " +
                         "and collaborate with other researchers " +
                         "through the KNB.  To register for a new " + 
-                        "Metacat account, go to " +
+                        "Network account, go to " +
                         "\"http://knb.ecoinformatics.org\".</p></html>";
       helpLabel.setText(helpText);
       screenPanel.setBorder(BorderFactory.createTitledBorder(
@@ -396,7 +396,7 @@ public class ProfileDialog extends JDialog
       JLabel usernameLabel = new JLabel();
       JLabel orgLabel = new JLabel();
       JLabel otherOrgLabel = new JLabel();
-      usernameLabel.setText("Metacat Username: ");
+      usernameLabel.setText("Network Username: ");
       orgLabel.setText("Organization: ");
       otherOrgLabel.setText("Other organization: ");
       usernameLabel.setForeground(Color.black);

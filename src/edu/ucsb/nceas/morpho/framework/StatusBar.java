@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: jones $'
- *     '$Date: 2002-08-16 23:19:50 $'
- * '$Revision: 1.5 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2002-10-02 15:09:23 $'
+ * '$Revision: 1.6 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -61,13 +61,13 @@ public class StatusBar extends JPanel
                                 = "ssl_no.gif";
 
   private final String CONN_YES_TEXT 
-                                = "metacat connection is available";
+                                = "network connection is available";
   private final String CONN_NO_TEXT 
-                                = "metacat connection NOT available";
+                                = "network connection NOT available";
   private final String LOGIN_YES_TEXT 
-                                = "logged into metacat";
+                                = "logged into network";
   private final String LOGIN_NO_TEXT 
-                                = "NOT logged into metacat";
+                                = "NOT logged into network";
   private final String SSL_YES_TEXT 
                                 = "using secure connection";
   private final String SSL_NO_TEXT 
