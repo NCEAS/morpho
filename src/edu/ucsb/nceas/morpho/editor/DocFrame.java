@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-10-30 22:22:32 $'
- * '$Revision: 1.66 $'
+ *     '$Date: 2001-11-28 04:18:10 $'
+ * '$Revision: 1.67 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1960,4 +1960,157 @@ class SymWindow extends java.awt.event.WindowAdapter {
 	    
 	 }
 	
+	
+//--------------------------
+
+/* 
+* code for combining the content of two DefaultMutableTreeNode trees
+* inputTree is modified based on content of template tree
+* template may be based on DTD and thus provides info like cardinality
+* It is assumed that nodes use NodeInfo user objects
+*/
+	 
+ void treeUnion1(DefaultMutableTreeNode instance, DefaultMutableTreeNode template) {
+    // start by looping over all nodes in the instance for possible insertion in template
+    Enumeration enum = instance.depthFirstEnumeration();
+    while (enum.hasMoreElements()) {
+        DefaultMutableTreeNode currentTN = (DefaultMutableTreeNode)enum.nextElement();
+        // skip all text nodes
+        if (!((NodeInfo)currentTN.getUserObject()).getName().equals("#PCDATA")) {
+            TreeNode[] tnList = currentTN.getPath();
+            DefaultMutableTreeNode matched = getMatchingRealPath(template, tnList);
+            if (matched!=null)  {        // a match was found!
+                // now need to see if currentTN node carries any data i.e. text node or attributes
+                // if it does it should be added to the template tree
+                if (hasData(matched)) {
+                    // now merge data and add as sibling    
+                }
+           }
+        }
+    }
+        
+ }
+
+/**
+ *  is the input Object has a child text node or attribute data, method should return true
+ *
+ */
+  boolean hasData(DefaultMutableTreeNode tn) {
+    boolean res = false;
+    NodeInfo ni = (NodeInfo)tn.getUserObject();
+    Hashtable ht = ni.attr;
+    if (!ht.isEmpty()) res=true;
+    if (!res) {   // no need to check if
+         Enumeration children = tn.children();
+         while (children.hasMoreElements()) {
+            DefaultMutableTreeNode child = (DefaultMutableTreeNode)children.nextElement();
+            String childName = ((NodeInfo)child.getUserObject()).getName();
+            if (childName.equalsIgnoreCase("#PCDATA")) {
+                res = true; 
+                break;
+            }
+         }
+    }
+    return res;
+  }
+  
+/**
+ *  merge data from two nodes
+ *  more precisely, source data is put in target data node
+ */
+  void mergeNodeData(DefaultMutableTreeNode source, DefaultMutableTreeNode target) {
+    NodeInfo targetNodeInfo = (NodeInfo)target.getUserObject();
+    NodeInfo sourceNodeInfo = (NodeInfo)source.getUserObject();
+    Hashtable sourceAttr = sourceNodeInfo.attr;
+    Hashtable targetAttr = targetNodeInfo.attr;
+    Enumeration sourceEnum = sourceAttr.keys();
+    while (sourceEnum.hasMoreElements()) {
+       String key = (String)sourceEnum.nextElement();
+       if(!targetAttr.containsKey(key)) {
+           // add the pair from source to target if not there!
+           targetAttr.put(key,sourceAttr.get(key));
+       }
+    }
+    //now merge child text nodes
+    int indx = -1;
+    // find out index of target text node child
+    Enumeration targetChildren = target.children();
+    while(targetChildren.hasMoreElements()) {
+        indx++;
+        DefaultMutableTreeNode targetchild = (DefaultMutableTreeNode)targetChildren.nextElement();
+        String targetchildName = ((NodeInfo)targetchild.getUserObject()).getName();
+        if (targetchildName.equalsIgnoreCase("#PCDATA")) {
+            target.remove(indx);
+            break;   
+        }
+           
+    }
+    Enumeration children = source.children();
+    while (children.hasMoreElements()) {
+        DefaultMutableTreeNode child = (DefaultMutableTreeNode)children.nextElement();
+        String childName = ((NodeInfo)child.getUserObject()).getName();
+        if (childName.equalsIgnoreCase("#PCDATA")) {
+            //add source child to target node here
+            target.insert(child, indx);
+        }
+    }
+    
+  }
+ 
+  
+/**
+ *  searches a tree (defined by a root node) for paths that match the input TreePath
+ *  The match should be based on node names all along the path but igonore all
+ *  SEQUENCE and CHOICE node along the path in the tree.
+ *  The first node in the tree that matches the path is returned.
+ *  null is returned if there is no match.
+ */
+ 
+ private DefaultMutableTreeNode getMatchingRealPath(DefaultMutableTreeNode root, TreeNode[] tp) {
+	Vector testVec = null;
+    DefaultMutableTreeNode res = null;
+    DefaultMutableTreeNode lastNode = (DefaultMutableTreeNode)tp[tp.length-1];
+    Enumeration nodeList = root.breadthFirstEnumeration();
+    while (nodeList.hasMoreElements()) {
+        DefaultMutableTreeNode testNode = (DefaultMutableTreeNode)nodeList.nextElement();
+        TreeNode[] testNodes = testNode.getPath();
+        DefaultMutableTreeNode lastTestNode = (DefaultMutableTreeNode)testNodes[testNodes.length-1];
+        // first check to see if last nodes match
+        if (namesMatch(lastNode, lastTestNode)) {
+            // now collapse the testNodes array and make into a vector of DefaultMutableTreeNode objects
+            testVec = new Vector();
+            for (int i=0;i<testNodes.length;i++) {
+                DefaultMutableTreeNode tn = (DefaultMutableTreeNode)testNodes[i];
+                String name = ((NodeInfo)tn.getUserObject()).getName();
+                if ((!name.startsWith("(CHOICE)"))&&(!name.startsWith("(SEQUENCE)"))) {
+                    testVec.addElement(tn);   
+                }
+            }
+            boolean eq = true;
+            if (testVec.size()==tp.length) {   // proceed only if paths are of same length
+                for (int j=0;j<tp.length;j++) {
+                    if (!namesMatch((DefaultMutableTreeNode)tp[j],(DefaultMutableTreeNode)testVec.elementAt(j))) {
+                        eq = false;
+                        break;
+                    }
+                }
+            }
+        }
+    res = (DefaultMutableTreeNode)testVec.elementAt(testVec.size());    
+    }
+    return res;
+ }
+
+/**
+ *  compares DefaultMutableTreeNodes on the basis of name
+ */
+ private boolean namesMatch(DefaultMutableTreeNode dmtn1, DefaultMutableTreeNode dmtn2) {
+    boolean ret = false;
+    String name1 = ((NodeInfo)dmtn1.getUserObject()).getName();
+    String name2 = ((NodeInfo)dmtn2.getUserObject()).getName();
+    if (name1.equals(name2)) ret = true;
+    
+    return ret;
+ }
+ 
 }
