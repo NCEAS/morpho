@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-12-28 18:30:39 $'
- * '$Revision: 1.76 $'
+ *     '$Date: 2002-01-03 23:27:00 $'
+ * '$Revision: 1.77 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -818,7 +818,11 @@ class SymTreeSelection implements javax.swing.event.TreeSelectionListener
           
           
           CardmenuItem.setText("Number: "+ni.getCardinality());
-          if (ni.getCardinality().equalsIgnoreCase("ONE")) {
+          if ((ni.getCardinality().equalsIgnoreCase("ONE")) ||
+             (ni.getCardinality().equalsIgnoreCase("SELECTED"))  ||
+             (ni.getCardinality().equalsIgnoreCase("NOT SELECTED")))
+          
+          {
             DupmenuItem.setEnabled(false);
             DeletemenuItem.setEnabled(false);
           }
