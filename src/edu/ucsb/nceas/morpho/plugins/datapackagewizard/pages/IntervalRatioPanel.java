@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: sambasiv $'
- *     '$Date: 2004-04-12 21:18:17 $'
- * '$Revision: 1.34 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2004-04-14 20:08:20 $'
+ * '$Revision: 1.35 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -728,8 +728,7 @@ class UnitsPickList extends JPanel {
     this.unitTypeLabel = unitTypeLabel;
     init();
   }
-
-
+  
   private void init() {
 
     unitTypesListItems = getUnitTypesArray();
@@ -799,7 +798,7 @@ class UnitsPickList extends JPanel {
           }
         };
         customPanel = new CustomUnitPanel(parentPanel);
-        customUnitDialog = WidgetFactory.makeContainerDialog(customPanel, okAction, cancelAction);
+        customUnitDialog = WidgetFactory.makeContainerDialogNoParent(customPanel, okAction, cancelAction);
         customUnitDialog.setTitle("New Unit Definition");
         Point loc = parentPanel.getLocationOnScreen();
         int wd = parentPanel.getWidth();
