@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: sambasiv $'
- *     '$Date: 2003-12-16 20:39:15 $'
- * '$Revision: 1.30 $'
+ *     '$Date: 2003-12-16 21:08:35 $'
+ * '$Revision: 1.31 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -195,7 +195,7 @@ public class CustomList extends JPanel {
     initList(colNames, displayRows, columnEditors);
 
     initButtons();
-    doEnablesDisables(new int[] {-1});
+    doEnablesDisables(new int[]{});
   }
 
   private void initList(String[] colNames, int displayRows,
@@ -382,8 +382,7 @@ public class CustomList extends JPanel {
 		int len = columnWidths.length;
 		
 		if(len != table.getColumnCount()) {
-			Log.debug(50, "CustomList.setColumnWidthPercentages: Length of array passed is not 
-								equal to the number of columns"); 
+			Log.debug(50, "CustomList.setColumnWidthPercentages: Length of array passed is not equal to the number of columns"); 
 			return;
 		}
 		
@@ -503,7 +502,7 @@ public class CustomList extends JPanel {
 
     Log.debug(45, "\n\n>>>> doEnablesDisables(): selRows count = "+selRows.length);
 
-    selectionExists = (selRows.length > 0);
+    selectionExists = (selRows !=null && selRows.length > 0);
 
     // ADD always available:
     //if (showAddButton) addButton.setEnabled(true);
