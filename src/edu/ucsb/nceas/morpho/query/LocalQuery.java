@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2002-08-14 16:47:56 $'
- * '$Revision: 1.54 $'
+ *     '$Date: 2002-08-14 21:58:05 $'
+ * '$Revision: 1.55 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -37,11 +37,12 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import com.arbortext.catalog.*;
 import java.net.URL;
+import java.sql.Timestamp;
+import java.text.DateFormat;
 import java.util.Vector;
 import java.util.Hashtable;
 import java.util.Enumeration;
 import java.util.Stack;
-import java.util.Date;
 import javax.swing.ImageIcon;
 
 import edu.ucsb.nceas.morpho.framework.*;
@@ -399,7 +400,9 @@ public class LocalQuery
       rss.addElement(getValueForPath(fieldName,docid));   
     }
     File fl = new File(fullfilename);
-    Date creationDate = new Date(fl.lastModified());
+    // Create a time stamp for modified date. So local and metacat will have
+    // same format
+    Timestamp creationDate = new Timestamp(fl.lastModified()); 
     String date = creationDate.toString();
     rss.addElement(date);                                 // create date
     rss.addElement(date);                                 // update date
