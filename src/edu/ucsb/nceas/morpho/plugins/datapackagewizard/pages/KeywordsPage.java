@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: sgarg $'
- *     '$Date: 2003-12-12 03:05:36 $'
- * '$Revision: 1.4 $'
+ *     '$Date: 2003-12-18 17:27:20 $'
+ * '$Revision: 1.5 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -105,16 +105,12 @@ public class KeywordsPage extends AbstractWizardPage {
 
     middlePanel = new JPanel();
     this.setLayout( new BorderLayout());
-    this.add(middlePanel, BorderLayout.CENTER);
 
-    middlePanel.setBorder(new EmptyBorder(0,10,0,10));
+    middlePanel.setLayout(new BoxLayout(middlePanel, BoxLayout.Y_AXIS));
+    middlePanel.add(WidgetFactory.makeDefaultSpacer());
 
     JLabel desc = WidgetFactory.makeHTMLLabel(
                       "<font size=\"4\"><b>Define Keyword Set:</b></font>", 1);
-    middlePanel.setLayout(new BoxLayout(middlePanel, BoxLayout.Y_AXIS));
-
-    middlePanel.add(WidgetFactory.makeDefaultSpacer());
-
     middlePanel.add(desc);
 
     middlePanel.add(WidgetFactory.makeDefaultSpacer());
@@ -125,28 +121,13 @@ public class KeywordsPage extends AbstractWizardPage {
     kwLabel = WidgetFactory.makeLabel("Keywords:", true);
     kwPanel.add(kwLabel);
 
-    /* Commenting out code for removing KeywordType from the screen...
-       kwTypePickList = WidgetFactory.makePickList(kwTypeArray, false, 0,
-               new ItemListener(){ public void itemStateChanged(ItemEvent e) {}});
-
-       kwList = WidgetFactory.makeList(new String[]{ "Keyword",
-                                                     "Keyword Type (optional)" },
-                                       new Object[]{ new JTextField(),
-                                                     kwTypePickList },
-                                       4, true, false, false, true, true, true );
-     */
-
     kwList = WidgetFactory.makeList(new String[]{ "Keyword" },
                                     new Object[]{ new JTextField()},
                                     4, true, false, false, true, true, true );
-
     kwPanel.add(kwList);
     middlePanel.add(kwPanel);
-    middlePanel.add(WidgetFactory.makeDefaultSpacer());
-    middlePanel.add(WidgetFactory.makeDefaultSpacer());
 
     ////
-
     ActionListener listener = new ActionListener() {
 
       public void actionPerformed(ActionEvent e) {
@@ -156,13 +137,16 @@ public class KeywordsPage extends AbstractWizardPage {
 
         if (e.getActionCommand().equals(buttonsText[0])) {
           thesaurusField.disable();
+          thesaurusField.setText("");
         } else if (e.getActionCommand().equals(buttonsText[1])) {
           thesaurusField.enable();
         }
       }
     };
 
-    JPanel radioPanel = WidgetFactory.makeRadioPanel(buttonsText, 1, listener);
+    ////
+    JPanel radioPanel = WidgetFactory.makeRadioPanel(buttonsText, 0, listener);
+    middlePanel.add(WidgetFactory.makeDefaultSpacer());
     middlePanel.add(radioPanel);
 
     JPanel thesaurusPanel = WidgetFactory.makePanel(1);
@@ -170,8 +154,15 @@ public class KeywordsPage extends AbstractWizardPage {
     thesaurusField = WidgetFactory.makeOneLineTextField();
     thesaurusField.disable();
     thesaurusPanel.add(thesaurusField);
+    thesaurusPanel.setBorder(new javax.swing.border.EmptyBorder(0,0,0,
+        WizardSettings.PADDING));
+    middlePanel.add(WidgetFactory.makeHalfSpacer());
     middlePanel.add(thesaurusPanel);
 
+    middlePanel.setBorder(new javax.swing.border.EmptyBorder(0,4*WizardSettings.PADDING,
+        37*WizardSettings.PADDING,8*WizardSettings.PADDING));
+
+    this.add(middlePanel, BorderLayout.CENTER);
   }
 
 

@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: sgarg $'
- *     '$Date: 2003-12-16 23:21:02 $'
- * '$Revision: 1.5 $'
+ *     '$Date: 2003-12-18 17:27:20 $'
+ * '$Revision: 1.6 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -57,7 +57,6 @@ import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardContainerFrame;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardPopupDialog;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardPageLibrary;
 
-import java.awt.event.ActionListener;
 import java.awt.event.ItemListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ActionEvent;

@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: sgarg $'
- *     '$Date: 2003-12-03 02:38:49 $'
- * '$Revision: 1.5 $'
+ *     '$Date: 2003-12-18 17:27:20 $'
+ * '$Revision: 1.6 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -47,12 +47,16 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.ItemListener;
 import java.awt.event.ItemEvent;
+import java.awt.Font;
 
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.AbstractWizardPage;
 import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WidgetFactory;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardPopupDialog;
 import edu.ucsb.nceas.utilities.OrderedMap;
+
+import java.awt.event.ItemListener;
+import java.awt.event.ItemEvent;
 
 public class PartyPage extends AbstractWizardPage {
 
@@ -68,14 +72,14 @@ public class PartyPage extends AbstractWizardPage {
   public static final short PERSONNEL  = 30;
 
   private static final Dimension PARTY_2COL_LABEL_DIMS = new Dimension(70,20);
-  private static final Dimension PARTY_FULL_LABEL_DIMS = new Dimension(800,20);
+  private static final Dimension PARTY_HALF_LABEL_DIMS = new Dimension(350,20);
+  private static final Dimension PARTY_FULL_LABEL_DIMS = new Dimension(700,20);
 
   private final String xPathRoot = "/eml:eml/dataset/creator[1]";
 
   private short  role;
   private String roleString;
   private JLabel     roleLabel;
-  private JTextField roleField;    /*Commented out to replace field with combo list*/
   private JComboBox  rolePickList;
   private JTextField salutationField;
   private JTextField firstNameField;
@@ -102,6 +106,9 @@ public class PartyPage extends AbstractWizardPage {
 
   private final String[] roleArray
                               = new String[]{ "",
+                                              "Originator",
+                                              "Content Provider",
+                                              "Principal Investigator",
                                               "Editor",
                                               "Publisher",
                                               "Processor",
@@ -113,7 +120,7 @@ public class PartyPage extends AbstractWizardPage {
 
   private int currentRoleIndex;
   private String currentRole;
-
+  public boolean isReference;
 
   public PartyPage() {
   }
@@ -122,7 +129,6 @@ public class PartyPage extends AbstractWizardPage {
     this.role = role;
 
     switch (role) {
-
       case CREATOR:
         roleString = "Owner";
         break;
@@ -140,13 +146,9 @@ public class PartyPage extends AbstractWizardPage {
     init();
   }
 
-
-  public void modifyEditPage(short role) {
-    int oldRole = this.role;
-    this.role = role;
-
+  public String getRole(){
+    String roleString = null;
     switch (role) {
-
       case CREATOR:
         roleString = "Owner";
         break;
@@ -154,30 +156,13 @@ public class PartyPage extends AbstractWizardPage {
         roleString = "Contact";
         break;
       case ASSOCIATED:
-        roleString = "Associated Party";
+        roleString = (String)rolePickList.getSelectedItem();
         break;
       case PERSONNEL:
-        roleString = "Personnel";
+        roleString = (String)rolePickList.getSelectedItem();
         break;
-
     }
-
-    if ((role == ASSOCIATED || role == PERSONNEL) && (oldRole == CONTACT || oldRole == CREATOR)) {
-      rolePanel = WidgetFactory.makePanel(1);
-      roleLabel = WidgetFactory.makeLabel("Role:", true);
-      rolePanel.add(roleLabel);
-//  roleField = WidgetFactory.makeOneLineTextField();
-      rolePickList = WidgetFactory.makePickList(roleArray, false, 0,
-                                                new ItemListener(){ public void itemStateChanged(ItemEvent e) {}});
-      rolePanel.add(rolePickList);
-      middlePanel.add(rolePanel);
-      middlePanel.add(WidgetFactory.makeHalfSpacer());
-    }
-
-    if ((oldRole == ASSOCIATED || oldRole == PERSONNEL) && (role == CONTACT || role == CREATOR)) {
-      middlePanel.remove(rolePanel);
-    }
-
+    return roleString;
   }
 
   /**
@@ -186,25 +171,29 @@ public class PartyPage extends AbstractWizardPage {
    */
   private void init() {
 
-    JLabel desc = WidgetFactory.makeHTMLLabel("<font size=\"4\"><b>"
+    JLabel desc = WidgetFactory.makeHTMLLabel("<font size=\"4\"><b>&nbsp;&nbsp;"
                                               +roleString+" Details</b></font>", 1);
     middlePanel = new JPanel();
     this.setLayout( new BorderLayout());
     this.add(middlePanel, BorderLayout.CENTER);
 
     middlePanel.setLayout(new BoxLayout(middlePanel, BoxLayout.Y_AXIS));
+    middlePanel.add(WidgetFactory.makeDefaultSpacer());
     middlePanel.add(desc);
+    middlePanel.add(WidgetFactory.makeDefaultSpacer());
     middlePanel.add(WidgetFactory.makeDefaultSpacer());
 
     ////
+    rolePickList = null;
     if (role == ASSOCIATED || role == PERSONNEL) {
       rolePanel = WidgetFactory.makePanel(1);
       roleLabel = WidgetFactory.makeLabel("Role:", true);
       rolePanel.add(roleLabel);
-    //  roleField = WidgetFactory.makeOneLineTextField();
-      rolePickList = WidgetFactory.makePickList(roleArray, false, 0,
+      rolePickList = WidgetFactory.makePickList(roleArray, true, 0,
             new ItemListener(){ public void itemStateChanged(ItemEvent e) {}});
       rolePanel.add(rolePickList);
+      rolePanel.setBorder(new javax.swing.border.EmptyBorder(0,12*WizardSettings.PADDING,
+          0,8*WizardSettings.PADDING));
       middlePanel.add(rolePanel);
       middlePanel.add(WidgetFactory.makeHalfSpacer());
     }
@@ -214,6 +203,8 @@ public class PartyPage extends AbstractWizardPage {
     salutationPanel.add(WidgetFactory.makeLabel("Salutation:", false));
     salutationField = WidgetFactory.makeOneLineTextField();
     salutationPanel.add(salutationField);
+    salutationPanel.setBorder(new javax.swing.border.EmptyBorder(0,12*WizardSettings.PADDING,
+        0,8*WizardSettings.PADDING));
     middlePanel.add(salutationPanel);
     middlePanel.add(WidgetFactory.makeHalfSpacer());
 
@@ -222,8 +213,54 @@ public class PartyPage extends AbstractWizardPage {
     firstNamePanel.add(WidgetFactory.makeLabel("First Name:", false));
     firstNameField = WidgetFactory.makeOneLineTextField();
     firstNamePanel.add(firstNameField);
+    firstNamePanel.setBorder(new javax.swing.border.EmptyBorder(0,12*WizardSettings.PADDING,
+        0,8*WizardSettings.PADDING));
     middlePanel.add(firstNamePanel);
     middlePanel.add(WidgetFactory.makeHalfSpacer());
+
+    ////
+//    JPanel reqPanel = new JPanel();
+//    reqPanel.setLayout( new BorderLayout());
+    JPanel reqPanel = new JPanel();
+    reqPanel.setLayout(new BoxLayout(reqPanel, BoxLayout.X_AXIS));
+    JPanel reqInfoPanel = new JPanel();
+    reqInfoPanel.setLayout(new BoxLayout(reqInfoPanel, BoxLayout.Y_AXIS));
+
+    JPanel reqWarningPanel = new JPanel();
+    reqWarningPanel.setLayout(new BoxLayout(reqWarningPanel, BoxLayout.Y_AXIS));
+    reqWarningPanel.add(WidgetFactory.makeHalfSpacer());
+
+    JLabel warn1Label = new JLabel(" One of");
+    warn1Label.setFont(WizardSettings.WIZARD_CONTENT_FONT);
+    warn1Label.setForeground(WizardSettings.WIZARD_CONTENT_REQD_TEXT_COLOR);
+    reqWarningPanel.add(warn1Label);
+
+    JLabel warn2Label = new JLabel("    the");
+    warn2Label.setFont(WizardSettings.WIZARD_CONTENT_FONT);
+    warn2Label.setForeground(WizardSettings.WIZARD_CONTENT_REQD_TEXT_COLOR);
+    reqWarningPanel.add(warn2Label);
+
+    JLabel warn3Label = new JLabel("  three");
+    warn3Label.setFont(WizardSettings.WIZARD_CONTENT_FONT);
+    warn3Label.setForeground(WizardSettings.WIZARD_CONTENT_REQD_TEXT_COLOR);
+    reqWarningPanel.add(warn3Label);
+
+    JLabel warn4Label = new JLabel("required");
+    warn4Label.setFont(WizardSettings.WIZARD_CONTENT_FONT);
+    warn4Label.setForeground(WizardSettings.WIZARD_CONTENT_REQD_TEXT_COLOR);
+    reqWarningPanel.add(warn4Label);
+
+//  reqWarningPanel.add(WidgetFactory.makeHalfSpacer());
+    reqWarningPanel.add(WidgetFactory.makeDefaultSpacer());
+    reqPanel.add(reqWarningPanel);
+
+    JLabel bracketLabel = new JLabel("{");
+    bracketLabel.setFont(new Font("Sans-Serif", Font.PLAIN, 40));
+    bracketLabel.setForeground(WizardSettings.WIZARD_CONTENT_REQD_TEXT_COLOR);
+    bracketLabel.setBorder(new javax.swing.border.EmptyBorder(0,0,
+        3*WizardSettings.PADDING,0));
+    reqPanel.add(bracketLabel);
+    ////
 
     ////
     JPanel lastNamePanel = WidgetFactory.makePanel(1);
@@ -231,8 +268,10 @@ public class PartyPage extends AbstractWizardPage {
     lastNamePanel.add(lastNameLabel);
     lastNameField = WidgetFactory.makeOneLineTextField();
     lastNamePanel.add(lastNameField);
-    middlePanel.add(lastNamePanel);
-    middlePanel.add(WidgetFactory.makeHalfSpacer());
+    lastNamePanel.setBorder(new javax.swing.border.EmptyBorder(0,0,
+        0,8*WizardSettings.PADDING));
+    reqInfoPanel.add(lastNamePanel);
+    reqInfoPanel.add(WidgetFactory.makeHalfSpacer());
 
     ////
     JPanel organizationPanel = WidgetFactory.makePanel(1);
@@ -240,8 +279,10 @@ public class PartyPage extends AbstractWizardPage {
     organizationPanel.add(organizationLabel);
     organizationField = WidgetFactory.makeOneLineTextField();
     organizationPanel.add(organizationField);
-    middlePanel.add(organizationPanel);
-    middlePanel.add(WidgetFactory.makeHalfSpacer());
+    organizationPanel.setBorder(new javax.swing.border.EmptyBorder(0,0,
+        0,8*WizardSettings.PADDING));
+    reqInfoPanel.add(organizationPanel);
+    reqInfoPanel.add(WidgetFactory.makeHalfSpacer());
 
     ////
     JPanel positionNamePanel = WidgetFactory.makePanel(1);
@@ -249,14 +290,21 @@ public class PartyPage extends AbstractWizardPage {
     positionNamePanel.add(positionNameLabel);
     positionNameField = WidgetFactory.makeOneLineTextField();
     positionNamePanel.add(positionNameField);
-    middlePanel.add(positionNamePanel);
-    middlePanel.add(WidgetFactory.makeHalfSpacer());
+    positionNamePanel.setBorder(new javax.swing.border.EmptyBorder(0,0,
+        0,8*WizardSettings.PADDING));
+    reqInfoPanel.add(positionNamePanel);
+    reqInfoPanel.add(WidgetFactory.makeHalfSpacer());
+
+    reqPanel.add(reqInfoPanel, BorderLayout.CENTER);
+    middlePanel.add(reqPanel);
 
     ////
     JPanel address1Panel = WidgetFactory.makePanel(1);
     address1Panel.add(WidgetFactory.makeLabel("Address 1:", false));
     address1Field = WidgetFactory.makeOneLineTextField();
     address1Panel.add(address1Field);
+    address1Panel.setBorder(new javax.swing.border.EmptyBorder(0,12*WizardSettings.PADDING,
+        0,8*WizardSettings.PADDING));
     middlePanel.add(address1Panel);
     middlePanel.add(WidgetFactory.makeHalfSpacer());
 
@@ -265,6 +313,8 @@ public class PartyPage extends AbstractWizardPage {
     address2Panel.add(WidgetFactory.makeLabel("Address 2:", false));
     address2Field = WidgetFactory.makeOneLineTextField();
     address2Panel.add(address2Field);
+    address2Panel.setBorder(new javax.swing.border.EmptyBorder(0,12*WizardSettings.PADDING,
+        0,8*WizardSettings.PADDING));
     middlePanel.add(address2Panel);
     middlePanel.add(WidgetFactory.makeHalfSpacer());
 
@@ -279,6 +329,8 @@ public class PartyPage extends AbstractWizardPage {
     cityStatePanel.add(stateLabel);
     stateField = WidgetFactory.makeOneLineTextField();
     cityStatePanel.add(stateField);
+    cityStatePanel.setBorder(new javax.swing.border.EmptyBorder(0,12*WizardSettings.PADDING,
+        0,8*WizardSettings.PADDING));
     middlePanel.add(cityStatePanel);
     middlePanel.add(WidgetFactory.makeHalfSpacer());
 
@@ -293,6 +345,8 @@ public class PartyPage extends AbstractWizardPage {
     zipCountryPanel.add(countryLabel);
     countryField = WidgetFactory.makeOneLineTextField();
     zipCountryPanel.add(countryField);
+    zipCountryPanel.setBorder(new javax.swing.border.EmptyBorder(0,12*WizardSettings.PADDING,
+        0,8*WizardSettings.PADDING));
     middlePanel.add(zipCountryPanel);
     middlePanel.add(WidgetFactory.makeHalfSpacer());
 
@@ -307,6 +361,8 @@ public class PartyPage extends AbstractWizardPage {
     phoneFaxPanel.add(faxLabel);
     faxField = WidgetFactory.makeOneLineTextField();
     phoneFaxPanel.add(faxField);
+    phoneFaxPanel.setBorder(new javax.swing.border.EmptyBorder(0,12*WizardSettings.PADDING,
+        0,8*WizardSettings.PADDING));
     middlePanel.add(phoneFaxPanel);
     middlePanel.add(WidgetFactory.makeHalfSpacer());
 
@@ -321,6 +377,8 @@ public class PartyPage extends AbstractWizardPage {
     emailUrlPanel.add(urlLabel);
     urlField = WidgetFactory.makeOneLineTextField();
     emailUrlPanel.add(urlField);
+    emailUrlPanel.setBorder(new javax.swing.border.EmptyBorder(0,12*WizardSettings.PADDING,
+        0,8*WizardSettings.PADDING));
     middlePanel.add(emailUrlPanel);
     middlePanel.add(WidgetFactory.makeDefaultSpacer());
 
@@ -331,10 +389,114 @@ public class PartyPage extends AbstractWizardPage {
     warningPanel.add(warningLabel);
     warningPanel.setVisible(false);
     setPrefMinMaxSizes(warningLabel, PARTY_FULL_LABEL_DIMS);
+    warningPanel.setBorder(new javax.swing.border.EmptyBorder(0,12*WizardSettings.PADDING,
+        0,8*WizardSettings.PADDING));
     middlePanel.add(warningPanel);
     middlePanel.add(WidgetFactory.makeDefaultSpacer());
+    middlePanel.add(WidgetFactory.makeDefaultSpacer());
+
+    JPanel listPanel = WidgetFactory.makePanel(1);
+    JLabel listLabel = WidgetFactory.makeLabel("You can pick one from one of the earlier "
+                                           +"entries that you have made.", false);
+    setPrefMinMaxSizes(listLabel, PARTY_HALF_LABEL_DIMS);
+    listPanel.add(listLabel);
+    listPanel.setBorder(new javax.swing.border.EmptyBorder(0,12*WizardSettings.PADDING,
+        0,8*WizardSettings.PADDING));
+
+    final PartyPage instance = this;
+    ItemListener ilistener = new ItemListener(){
+      public void itemStateChanged(ItemEvent e) {
+        JComboBox source = (JComboBox)e.getSource();
+        if(source.getSelectedIndex() == 0){
+          isReference = false;
+          instance.setEditable(true);
+          instance.setValue(null);
+        } else {
+          isReference = true;
+          int index = source.getSelectedIndex();
+          instance.setEditable(false);
+          List currentList = (List)WidgetFactory.responsiblePartyList.get(index);
+          instance.setValue((PartyPage)currentList.get(3));
+        }
+      }
+    };
+
+    String listValues[] = {};
+    JComboBox listCombo = WidgetFactory.makePickList(listValues,false, 0, ilistener);
+    for (int count=0; count < WidgetFactory.responsiblePartyList.size(); count++){
+      List rowList = (List)WidgetFactory.responsiblePartyList.get(count);
+      String name = (String)rowList.get(0);
+      String role = (String)rowList.get(1);
+      String row = "";
+      if (name != ""){
+        row = name + ", " + role;
+      }
+      listCombo.addItem(row);
+    }
+    listPanel.add(listCombo);
+    middlePanel.add(listPanel);
   }
 
+  private void setValue(PartyPage Page) {
+    if(Page == null){
+      if(rolePickList != null) rolePickList.setSelectedIndex(0);
+      salutationField.setText("");
+      firstNameField.setText("");
+      lastNameField.setText("");
+      organizationField.setText("");
+      positionNameField.setText("");
+      address1Field.setText("");
+      address2Field.setText("");
+      cityField.setText("");
+      stateField.setText("");
+      zipField.setText("");
+      countryField.setText("");
+      phoneField.setText("");
+      faxField.setText("");
+      emailField.setText("");
+      urlField.setText("");
+    } else {
+      if(rolePickList != null) {
+        rolePickList.addItem(Page.getRole());
+        rolePickList.setSelectedItem(Page.getRole());
+        rolePickList.setEditable(true);
+      }
+      salutationField.setText(Page.getsalutationFieldText());
+      firstNameField.setText(Page.getfirstNameFieldText());
+      lastNameField.setText(Page.getlastNameFieldText());
+      organizationField.setText(Page.getorganizationFieldText());
+      positionNameField.setText(Page.getpositionNameFieldText());
+      address1Field.setText(Page.getaddress1FieldText());
+      address2Field.setText(Page.getaddress2FieldText());
+      cityField.setText(Page.getcityFieldText());
+      stateField.setText(Page.getstateFieldText());
+      zipField.setText(Page.getzipFieldText());
+      countryField.setText(Page.getcountryFieldText());
+      phoneField.setText(Page.getphoneFieldText());
+      faxField.setText(Page.getfaxFieldText());
+      emailField.setText(Page.getemailFieldText());
+      urlField.setText(Page.geturlFieldText());
+    }
+  }
+
+  public void setEditable(boolean editable) {
+    if(rolePickList != null) rolePickList.setEditable(editable);
+    salutationField.setEditable(editable);
+    firstNameField.setEditable(editable);
+    lastNameField.setEditable(editable);
+    organizationField.setEditable(editable);
+    positionNameField.setEditable(editable);
+    address1Field.setEditable(editable);
+    address2Field.setEditable(editable);
+    cityField.setEditable(editable);
+    stateField.setEditable(editable);
+    zipField.setEditable(editable);
+    countryField.setEditable(editable);
+    phoneField.setEditable(editable);
+    faxField.setEditable(editable);
+    emailField.setEditable(editable);
+    urlField.setEditable(editable);
+  }
 
 
   private void setPrefMinMaxSizes(JComponent component, Dimension dims) {
@@ -359,8 +521,7 @@ public class PartyPage extends AbstractWizardPage {
 
     //if we have a role field, it must have a value...
     if (role==ASSOCIATED || role==PERSONNEL) {
-      currentRoleIndex = rolePickList.getSelectedIndex();
-      currentRole = (String)rolePickList.getItemAt(currentRoleIndex);
+      currentRole = (String)rolePickList.getSelectedItem();
 
       if (notNullAndNotEmpty(currentRole.trim())) {
 
@@ -383,6 +544,8 @@ public class PartyPage extends AbstractWizardPage {
       if (!lastNameOK) {
 
         WidgetFactory.hiliteComponent(lastNameLabel);
+        warningPanel.setVisible(true);
+        WidgetFactory.hiliteComponent(warningLabel);
         return false;
       }
     }
@@ -428,9 +591,114 @@ public class PartyPage extends AbstractWizardPage {
   }
 
   /**
-   *  gets the unique ID for this wizard page
+   *  gets the salutationField for this wizard page
    *
-   *  @return   the unique ID String for this wizard page
+   *  @return   the salutationField String for this wizard page
+   */
+  public String getsalutationFieldText() { return this.salutationField.getText();}
+
+  /**
+   *  gets the firstNameField for this wizard page
+   *
+   *  @return   the firstNameField String for this wizard page
+   */
+  public String getfirstNameFieldText() { return this.firstNameField.getText();}
+
+  /**
+   *  gets the lastNameField for this wizard page
+   *
+   *  @return   the lastNameField String for this wizard page
+   */
+  public String getlastNameFieldText() { return this.lastNameField.getText();}
+
+  /**
+   *  gets the urlField for this wizard page
+   *
+   *  @return  the urlField String for this wizard page
+   */
+  public String geturlFieldText() { return this.urlField.getText();}
+
+  /**
+   *  gets the positionNameField for this wizard page
+   *
+   *  @return   the positionNameField String for this wizard page
+   */
+  public String getpositionNameFieldText() { return this.positionNameField.getText();}
+
+  /**
+   *  gets the cityField for this wizard page
+   *
+   *  @return   the cityField String for this wizard page
+   */
+  public String getcityFieldText() { return this.cityField.getText();}
+
+  /**
+   *  gets the faxField for this wizard page
+   *
+   *  @return   the faxField String for this wizard page
+   */
+  public String getfaxFieldText() { return this.faxField.getText();}
+
+  /**
+   *  gets the zipField for this wizard page
+   *
+   *  @return   the zipField String for this wizard page
+   */
+  public String getzipFieldText() { return this.zipField.getText();}
+
+  /**
+   *  gets the stateField for this wizard page
+   *
+   *  @return   the stateField String for this wizard page
+   */
+  public String getstateFieldText() { return this.stateField.getText();}
+
+  /**
+   *  gets the emailField for this wizard page
+   *
+   *  @return   the emailField String for this wizard page
+   */
+  public String getemailFieldText() { return this.emailField.getText();}
+
+  /**
+   *  gets the organizationFieldText() for this wizard page
+   *
+   *  @return   the organizationField String for this wizard page
+   */
+  public String getorganizationFieldText() { return this.organizationField.getText();}
+
+  /**
+   *  gets the countryField for this wizard page
+   *
+   *  @return   the countryField String for this wizard page
+   */
+  public String getcountryFieldText() { return this.countryField.getText();}
+
+  /**
+   *  gets the phoneField for this wizard page
+   *
+   *  @return   the phoneField String for this wizard page
+   */
+  public String getphoneFieldText() { return this.phoneField.getText();}
+
+  /**
+   *  gets the address1Field for this wizard page
+   *
+   *  @return   the address1Field String for this wizard page
+   */
+  public String getaddress1FieldText() { return this.address1Field.getText();}
+
+  /**
+   *  gets the address2Field for this wizard page
+   *
+   *  @return   the address2Field String for this wizard page
+   */
+  public String getaddress2FieldText() { return this.address2Field.getText();}
+
+  /**
+   *  gets the Page ID for this wizard page
+   *
+   *  @return   the Page ID String for this wizard page
    */
   public String getPageID() { return this.pageID;}
 

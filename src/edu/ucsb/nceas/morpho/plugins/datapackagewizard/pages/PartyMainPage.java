@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: sgarg $'
- *     '$Date: 2003-12-16 23:21:02 $'
- * '$Revision: 1.6 $'
+ *     '$Date: 2003-12-18 17:27:20 $'
+ * '$Revision: 1.7 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,6 +32,7 @@ import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardSettings;
 
 import java.util.List;
 import java.util.Iterator;
+import java.util.ArrayList;
 
 import javax.swing.JPanel;
 import javax.swing.JLabel;
@@ -80,6 +81,15 @@ public class PartyMainPage extends AbstractWizardPage{
     this.role = role;
     initRole();
     init();
+
+    if(WidgetFactory.responsiblePartyList.size() == 0){
+      List newRow = new ArrayList();
+      newRow.add("");
+      newRow.add("");
+      newRow.add("");
+      newRow.add("");
+      WidgetFactory.responsiblePartyList.add(newRow);
+    }
   }
 
   private void initRole() {
@@ -241,7 +251,9 @@ public class PartyMainPage extends AbstractWizardPage{
       List newRow = partyPage.getSurrogate();
       newRow.add(partyPage);
       partiesList.addRow(newRow);
-      //partiesPickList.addRow(newRow);
+      if(!partyPage.isReference){
+        WidgetFactory.responsiblePartyList.add(newRow);
+      }
     }
 
     if (oneOrMoreRequired) WidgetFactory.unhiliteComponent(minRequiredLabel);
@@ -258,15 +270,18 @@ public class PartyMainPage extends AbstractWizardPage{
 
     if (dialogObj==null || !(dialogObj instanceof PartyPage)) return;
     PartyPage editPartyPage = (PartyPage)dialogObj;
+    editPartyPage.setEditable(true);
     WizardPopupDialog wpd = new WizardPopupDialog(editPartyPage, WizardContainerFrame.frame, false);
     wpd.resetBounds();
     wpd.setVisible(true);
 
     if (wpd.USER_RESPONSE==WizardPopupDialog.OK_OPTION) {
-
       List newRow = editPartyPage.getSurrogate();
       newRow.add(editPartyPage);
       partiesList.replaceSelectedRow(newRow);
+      if(!editPartyPage.isReference){
+        WidgetFactory.responsiblePartyList.add(newRow);
+      }
     }
   }
 

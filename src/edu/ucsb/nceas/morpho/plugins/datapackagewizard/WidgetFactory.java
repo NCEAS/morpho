@@ -53,7 +53,7 @@ public class WidgetFactory {
   private static final StringBuffer buff = new StringBuffer();
 
   public static JLabel makeHTMLLabel(String text, int numberOfLines) {
-  
+
     return makeHTMLLabel(text, numberOfLines, false);
   }
 
