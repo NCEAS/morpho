@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2002-08-22 15:34:27 $'
- * '$Revision: 1.81 $'
+ *     '$Date: 2002-08-22 16:53:01 $'
+ * '$Revision: 1.82 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -154,7 +154,7 @@ public class QueryPlugin implements PluginInterface, ConnectionListener,
     GUIAction reviseSearchItemAction = new GUIAction("Revise search", null,
                                             new ReviseSearchCommand(morpho));
     reviseSearchItemAction.setSmallIcon(new ImageIcon(getClass().
-           getResource("/toolbarButtonGraphics/general/Search16.gif")));
+           getResource("revisesearch16.gif")));
     reviseSearchItemAction.setToolTipText("Revise search");
     reviseSearchItemAction.setMenuItemPosition(4);
     reviseSearchItemAction.setSeparatorPosition(Morpho.SEPARATOR_FOLLOWING);
