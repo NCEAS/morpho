@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2002-08-15 23:01:30 $'
- * '$Revision: 1.43 $'
+ *     '$Date: 2002-08-16 20:21:12 $'
+ * '$Revision: 1.44 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -192,7 +192,7 @@ public class ResultPanel extends JPanel
       setName(results.getQuery().getQueryTitle());
 
       // Set up the Header panel with a title and refresh/revise buttons
-      titleLabel = new JLabel(results.getQuery().getQueryTitle());
+      /*titleLabel = new JLabel(results.getQuery().getQueryTitle());
       titleLabel.setForeground(Color.black);
       titleLabel.setFont(new Font("Dialog", Font.BOLD, 18));
       Box headerBox = Box.createHorizontalBox();
@@ -244,7 +244,7 @@ public class ResultPanel extends JPanel
       headerPanel.add(Box.createVerticalStrut(4));
       Border headerBorder = BorderFactory.createLineBorder(Color.black);
       headerPanel.setBorder(headerBorder);
-      add(headerPanel, BorderLayout.NORTH);
+      add(headerPanel, BorderLayout.NORTH);*/
  
       // Set up the results table
       table = new ToolTippedSortableJTable(results);
@@ -860,7 +860,7 @@ public class ResultPanel extends JPanel
 
     // Notify the frame of any title changes
     String newTitle = results.getQuery().getQueryTitle();
-    titleLabel.setText(newTitle);
+    //titleLabel.setText(newTitle);
     Container parent = getRootPane().getParent();
     if (parent instanceof ResultFrame) {
       ResultFrame rsf = (ResultFrame)parent;
@@ -871,7 +871,7 @@ public class ResultPanel extends JPanel
     }
  
     // Update the record count
-    recordCountLabel.setText(results.getRowCount() + " data packages");
+    //recordCountLabel.setText(results.getRowCount() + " data packages");
 
     // Notify the JTable that the TableModel changed a bunch!
     table.setModel(results);
@@ -988,7 +988,7 @@ public class ResultPanel extends JPanel
 private void doUpload() {
   final SwingWorker worker = new SwingWorker() {
         public Object construct() {
-          bflyLabel.setIcon(flapping);
+          //bflyLabel.setIcon(flapping);
           threadCount++;
           
           
@@ -1055,8 +1055,8 @@ private void doUpload() {
         public void finished() {
           threadCount--;
           if (threadCount<1) {
-           recordCountLabel.setText(results.getRowCount() + " data packages");    
-           bflyLabel.setIcon(bfly);
+           //recordCountLabel.setText(results.getRowCount() + " data packages");    
+           //bflyLabel.setIcon(bfly);
           }
         }
     };
@@ -1069,7 +1069,7 @@ private void doUpload() {
 private void doDownload() {
   final SwingWorker worker = new SwingWorker() {
         public Object construct() {
-          bflyLabel.setIcon(flapping);
+          //bflyLabel.setIcon(flapping);
           threadCount++;
  
           String docid = selectedId;
@@ -1099,8 +1099,8 @@ private void doDownload() {
         public void finished() {
           threadCount--;
           if (threadCount<1) {
-           recordCountLabel.setText(results.getRowCount() + " data packages");    
-           bflyLabel.setIcon(bfly);
+           //recordCountLabel.setText(results.getRowCount() + " data packages");    
+           //bflyLabel.setIcon(bfly);
           }
         }
     };
@@ -1110,7 +1110,7 @@ private void doDownload() {
 private void doDeleteLocal() {
   final SwingWorker worker = new SwingWorker() {
         public Object construct() {
-          bflyLabel.setIcon(flapping);
+          //bflyLabel.setIcon(flapping);
           threadCount++;
           
           
@@ -1151,8 +1151,8 @@ private void doDeleteLocal() {
         public void finished() {
           threadCount--;
           if (threadCount<1) {
-           recordCountLabel.setText(results.getRowCount() + " data packages");    
-           bflyLabel.setIcon(bfly);
+           //recordCountLabel.setText(results.getRowCount() + " data packages");    
+           //bflyLabel.setIcon(bfly);
           }
         }
     };
@@ -1162,7 +1162,7 @@ private void doDeleteLocal() {
 private void doDeleteMetacat() {
   final SwingWorker worker = new SwingWorker() {
         public Object construct() {
-          bflyLabel.setIcon(flapping);
+          //bflyLabel.setIcon(flapping);
           threadCount++;
           
           String docid = selectedId;
@@ -1204,8 +1204,8 @@ private void doDeleteMetacat() {
         public void finished() {
           threadCount--;
           if (threadCount<1) {
-           recordCountLabel.setText(results.getRowCount() + " data packages");    
-           bflyLabel.setIcon(bfly);
+           //recordCountLabel.setText(results.getRowCount() + " data packages");    
+           //bflyLabel.setIcon(bfly);
           }
         }
     };
@@ -1215,7 +1215,7 @@ private void doDeleteMetacat() {
 private void doDeleteAll() {
   final SwingWorker worker = new SwingWorker() {
         public Object construct() {
-          bflyLabel.setIcon(flapping);
+          //bflyLabel.setIcon(flapping);
           threadCount++;
           
           String docid = selectedId;
@@ -1255,8 +1255,8 @@ private void doDeleteAll() {
         public void finished() {
           threadCount--;
           if (threadCount<1) {
-           recordCountLabel.setText(results.getRowCount() + " data packages");    
-           bflyLabel.setIcon(bfly);
+           //recordCountLabel.setText(results.getRowCount() + " data packages");    
+           //bflyLabel.setIcon(bfly);
           }
         }
     };
@@ -1266,7 +1266,7 @@ private void doDeleteAll() {
 private void doExport() {
   final SwingWorker worker = new SwingWorker() {
         public Object construct() {
-          bflyLabel.setIcon(flapping);
+          //bflyLabel.setIcon(flapping);
           threadCount++;
           
           String docid = selectedId;
@@ -1294,8 +1294,8 @@ private void doExport() {
         public void finished() {
           threadCount--;
           if (threadCount<1) {
-           recordCountLabel.setText(results.getRowCount() + " data packages");    
-           bflyLabel.setIcon(bfly);
+           //recordCountLabel.setText(results.getRowCount() + " data packages");    
+           //bflyLabel.setIcon(bfly);
           }
         }
     };
@@ -1305,7 +1305,7 @@ private void doExport() {
 private void doExportToZip() {
   final SwingWorker worker = new SwingWorker() {
         public Object construct() {
-          bflyLabel.setIcon(flapping);
+          //bflyLabel.setIcon(flapping);
           threadCount++;
           
           String docid = selectedId;
@@ -1333,8 +1333,8 @@ private void doExportToZip() {
         public void finished() {
           threadCount--;
           if (threadCount<1) {
-           recordCountLabel.setText(results.getRowCount() + " data packages");    
-           bflyLabel.setIcon(bfly);
+           //recordCountLabel.setText(results.getRowCount() + " data packages");    
+           //bflyLabel.setIcon(bfly);
           }
         }
     };
@@ -1345,7 +1345,7 @@ private void doExportToZip() {
    
   final SwingWorker worker = new SwingWorker() {
         public Object construct() {
-          bflyLabel.setIcon(flapping);
+          //bflyLabel.setIcon(flapping);
           threadCount++;
           
           String docid = selectedId;
@@ -1373,8 +1373,8 @@ private void doExportToZip() {
         public void finished() {
           threadCount--;
           if (threadCount<1) {
-           recordCountLabel.setText(results.getRowCount() + " data packages");    
-           bflyLabel.setIcon(bfly);
+           //recordCountLabel.setText(results.getRowCount() + " data packages");    
+           //bflyLabel.setIcon(bfly);
           }
         }
     };
@@ -1385,7 +1385,7 @@ private void doExportToZip() {
 private void doRefreshQuery() {
   final SwingWorker worker = new SwingWorker() {
         public Object construct() {
-          bflyLabel.setIcon(flapping);
+          //bflyLabel.setIcon(flapping);
           threadCount++;
           refreshQuery();
         
@@ -1396,8 +1396,8 @@ private void doRefreshQuery() {
         public void finished() {
           threadCount--;
           if (threadCount<1) {
-           recordCountLabel.setText(results.getRowCount() + " data packages");    
-           bflyLabel.setIcon(bfly);
+           //recordCountLabel.setText(results.getRowCount() + " data packages");    
+           //bflyLabel.setIcon(bfly);
           }
         }
     };
