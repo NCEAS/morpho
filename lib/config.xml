@@ -2,7 +2,7 @@
 <root>
 <plugin>edu.ucsb.nceas.morpho.query.QueryPlugin</plugin>
 <plugin>edu.ucsb.nceas.morpho.datapackage.DataPackagePlugin</plugin>
-<MetaCatServletURL>http://dev.nceas.ucsb.edu:8090/knb/servlet/metacat</MetaCatServletURL>
+<MetaCatServletURL>http://dev.nceas.ucsb.edu/berkley/servlet/metacat</MetaCatServletURL>
 <local_dtd_directory>./catalog</local_dtd_directory>
 <local_xml_directory>./XMLworkFolder</local_xml_directory>
 <local_cache_directory>./cache</local_cache_directory>
@@ -61,4 +61,11 @@
   <lastId>0</lastId>
   <separator>.</separator>
 </accessionNumber>
+<customFrames>
+  <mainFrame>Resource</mainFrame>
+  <frame>
+    <frameName>Resource</frameName>
+    <frameConfigFile>./frames/resource.xml</frameConfigFile>
+  </frame>
+</customFrames>
 </root>
