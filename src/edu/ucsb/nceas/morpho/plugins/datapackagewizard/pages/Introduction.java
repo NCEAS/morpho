@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2004-03-18 00:23:33 $'
- * '$Revision: 1.17 $'
+ *   '$Author: sgarg $'
+ *     '$Date: 2004-03-18 02:43:49 $'
+ * '$Revision: 1.18 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -80,13 +80,18 @@ public class Introduction extends AbstractUIPage {
     +"<li><b>Coverage Details</b><br></br></li>"
     +"<li><b>Methods</b><br></br></li>"
     +"<li><b>Access Control</b><br></br></li></ul>"
-    +"<p><b>Note:</b> You will be required to provide title of your data "
+    +"<p><b>Note:</b> You will be required to provide a title of your data "
     +"package and information about people and organizations related to your "
-    +"data package. Rest of the information is optional but helps in adequately "
-    +"documenting your data package.</p>", 22);
+    +"data package. And, rest of the information is optional but helps "
+    +"in adequately documenting your data package.</p>", 21);
 
     this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
     this.add(desc);
+
+    this.add(WidgetFactory.makeDefaultSpacer());
+    this.add(WidgetFactory.makeDefaultSpacer());
+    this.add(WidgetFactory.makeDefaultSpacer());
+    this.add(WidgetFactory.makeDefaultSpacer());
   }
 
 

@@ -7,9 +7,9 @@
  *    Authors: Saurabh Garg
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2004-03-17 21:13:01 $'
- * '$Revision: 1.5 $'
+ *   '$Author: sgarg $'
+ *     '$Date: 2004-03-18 02:43:49 $'
+ * '$Revision: 1.6 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -223,8 +223,10 @@ public class AccessPage extends AbstractUIPage {
 
         if (e.getItem().toString().compareTo(accessText[0]) == 0) {
           userAccess = "Read";
+        } else if (e.getItem().toString().compareTo(accessText[1]) == 0) {
+          userAccess = "Read & Write";
         } else if (e.getItem().toString().compareTo(accessText[2]) == 0) {
-          userAccess = "Write";
+          userAccess = "Read, Write & Change Permissions";
         } else if (e.getItem().toString().compareTo(accessText[3]) == 0) {
           userAccess = "All";
         }

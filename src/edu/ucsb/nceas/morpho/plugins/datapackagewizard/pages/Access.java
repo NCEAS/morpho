@@ -7,9 +7,9 @@
  *    Authors: Saurabh Garg
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2004-03-18 00:23:33 $'
- * '$Revision: 1.18 $'
+ *   '$Author: sgarg $'
+ *     '$Date: 2004-03-18 02:43:49 $'
+ * '$Revision: 1.19 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -61,33 +61,33 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import edu.ucsb.nceas.morpho.util.UISettings;
-import edu.ucsb.nceas.morpho.framework.UIController;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardContainerFrame;
 
-public class Access extends AbstractUIPage {
+public class Access
+    extends AbstractUIPage {
 
-  public final String pageID     = DataPackageWizardInterface.ACCESS;
+  public final String pageID = DataPackageWizardInterface.ACCESS;
   public final String nextPageID = DataPackageWizardInterface.SUMMARY;
   public final String pageNumber = "13";
 
   //////////////////////////////////////////////////////////
 
-  public final String title      = "Access Information";
-  public final String subtitle   = " ";
+  public final String title = "Access Information";
+  public final String subtitle = " ";
 
   private JPanel radioPanel;
-  private final String xPathRoot  = "/eml:eml/dataset/access/";
+  private final String xPathRoot = "/eml:eml/dataset/access/";
 
   private boolean publicReadAccess = true;
   private final String[] buttonsText = new String[] {
-      "YES",
-      "NO"
+      "Yes, give read-only access to public",
+      "No. Don't give read-only access to public"
   };
 
-  private final String[] colNames =  {"User", "Permissions"};
-  private final Object[] editors  =   null;
-  private CustomList  accessList;
-
+  private final String[] colNames = {
+      "User", "Permissions"};
+  private final Object[] editors = null;
+  private CustomList accessList;
 
   private Morpho morpho;
   private InputStream queryResult;
@@ -114,42 +114,45 @@ public class Access extends AbstractUIPage {
     vBox.add(WidgetFactory.makeDefaultSpacer());
 
     JLabel desc = WidgetFactory.makeHTMLLabel(
-        "<p><b>Allow public viewing access to your dataset?</b> Access to your "
-        +"data can be controlled using this screen. By default, "
-        +"read and write access is given to your username and read-only access is "
-        +"given to the public. Do you want to give read access to the public?</p>", 3);
+        "<p><b>Allow read access to public for your dataset?</b> By default, "
+        + "read-only access is given to the public. Do you want to give read "
+        + "access to the public?</p>", 3);
 
     vBox.add(desc);
 
     ActionListener listener = new ActionListener() {
 
       public void actionPerformed(ActionEvent e) {
-        Log.debug(45, "got radiobutton command: "+e.getActionCommand());
+        Log.debug(45, "got radiobutton command: " + e.getActionCommand());
         if (e.getActionCommand().equals(buttonsText[0])) {
           publicReadAccess = true;
         }
         if (e.getActionCommand().equals(buttonsText[1])) {
           publicReadAccess = false;
         }
-     }
-   };
+      }
+    };
 
     radioPanel = WidgetFactory.makeRadioPanel(buttonsText, 0, listener);
+    radioPanel.setBorder(new javax.swing.border.EmptyBorder(0,WizardSettings.
+        PADDING,0, 0));
+
     vBox.add(radioPanel);
-    vBox.add(WidgetFactory.makeDefaultSpacer());
     vBox.add(WidgetFactory.makeDefaultSpacer());
 
     JLabel desc1 = WidgetFactory.makeHTMLLabel(
-    "<p><b>Specify access for other people related to the data package?</b> You "
-    +"can specify access for other members of your team or any other person "
-    +"related to the data package. Use the table below to add, edit and "
-    +"delete access rights to your datapackage.</p>", 3);
+        "<p><b>Specify access rights for other people?</b> You "
+        +
+        "can specify access for other members of your team or any other person. "
+        + "Use the table below to add, edit and "
+        + "delete access rights to your datapackage.</p>", 3);
     vBox.add(desc1);
 
     accessList = WidgetFactory.makeList(colNames, editors, 4,
-                                   true, true, false, true, true, true );
-    accessList.setBorder(new EmptyBorder(0,WizardSettings.PADDING,
-                            WizardSettings.PADDING, 2*WizardSettings.PADDING));
+                                        true, true, false, true, true, true);
+    accessList.setBorder(new EmptyBorder(0, WizardSettings.PADDING,
+                                         WizardSettings.PADDING,
+                                         2 * WizardSettings.PADDING));
 
     vBox.add(accessList);
     vBox.add(WidgetFactory.makeDefaultSpacer());
@@ -166,41 +169,42 @@ public class Access extends AbstractUIPage {
 
     accessList.setCustomAddAction(
 
-      new AbstractAction() {
+        new AbstractAction() {
 
-        public void actionPerformed(ActionEvent e) {
+      public void actionPerformed(ActionEvent e) {
 
-          Log.debug(45, "\nAccess: CustomAddAction called");
-          showNewAccessDialog();
-        }
-      });
+        Log.debug(45, "\nAccess: CustomAddAction called");
+        showNewAccessDialog();
+      }
+    });
 
     accessList.setCustomEditAction(
 
-      new AbstractAction() {
+        new AbstractAction() {
 
-        public void actionPerformed(ActionEvent e) {
+      public void actionPerformed(ActionEvent e) {
 
-          Log.debug(45, "\nAccess: CustomEditAction called");
-          showEditAccessDialog();
-        }
-      });
+        Log.debug(45, "\nAccess: CustomEditAction called");
+        showEditAccessDialog();
+      }
+    });
   }
 
   private void showNewAccessDialog() {
 
-    if(accessTreeNode == null){
+    if (accessTreeNode == null) {
       accessTreeNode = createTree();
     }
 
-    AccessPage accessPage = (AccessPage)WizardPageLibrary.getPage(DataPackageWizardInterface.ACCESS_PAGE);
+    AccessPage accessPage = (AccessPage) WizardPageLibrary.getPage(
+        DataPackageWizardInterface.ACCESS_PAGE);
     ModalDialog wpd = new ModalDialog(accessPage,
-                                WizardContainerFrame.getDialogParent(),
-                                UISettings.POPUPDIALOG_WIDTH,
-                                UISettings.POPUPDIALOG_HEIGHT, false);
+                                      WizardContainerFrame.getDialogParent(),
+                                      UISettings.POPUPDIALOG_WIDTH,
+                                      UISettings.POPUPDIALOG_HEIGHT, false);
     wpd.setVisible(true);
 
-    if (wpd.USER_RESPONSE==ModalDialog.OK_OPTION) {
+    if (wpd.USER_RESPONSE == ModalDialog.OK_OPTION) {
 
       List newRow = accessPage.getSurrogate();
       newRow.add(accessPage);
@@ -208,31 +212,33 @@ public class Access extends AbstractUIPage {
     }
   }
 
-
   private void showEditAccessDialog() {
 
-    if(accessTreeNode == null){
+    if (accessTreeNode == null) {
       accessTreeNode = createTree();
     }
 
     List selRowList = accessList.getSelectedRowList();
 
-    if (selRowList==null || selRowList.size() < 3) return;
+    if (selRowList == null || selRowList.size() < 3) {
+      return;
+    }
 
     Object dialogObj = selRowList.get(2);
 
-    if (dialogObj==null || !(dialogObj instanceof AccessPage)) return;
-    AccessPage editAccessPage = (AccessPage)dialogObj;
+    if (dialogObj == null || ! (dialogObj instanceof AccessPage)) {
+      return;
+    }
+    AccessPage editAccessPage = (AccessPage) dialogObj;
 
     ModalDialog wpd = new ModalDialog(editAccessPage,
-                                WizardContainerFrame.getDialogParent(),
-                                UISettings.POPUPDIALOG_WIDTH,
-                                UISettings.POPUPDIALOG_HEIGHT, false);
+                                      WizardContainerFrame.getDialogParent(),
+                                      UISettings.POPUPDIALOG_WIDTH,
+                                      UISettings.POPUPDIALOG_HEIGHT, false);
     wpd.resetBounds();
     wpd.setVisible(true);
 
-
-    if (wpd.USER_RESPONSE==ModalDialog.OK_OPTION) {
+    if (wpd.USER_RESPONSE == ModalDialog.OK_OPTION) {
 
       List newRow = editAccessPage.getSurrogate();
       newRow.add(editAccessPage);
@@ -240,50 +246,50 @@ public class Access extends AbstractUIPage {
     }
   }
 
-   private DefaultMutableTreeNode createTree(){
+  private DefaultMutableTreeNode createTree() {
 
-       DefaultMutableTreeNode top =
-           new DefaultMutableTreeNode("Access Tree                        ");
+    DefaultMutableTreeNode top =
+        new DefaultMutableTreeNode("Access Tree                        ");
 
+    Properties prop = new Properties();
+    prop.put("action", "getprincipals");
 
-       Properties prop = new Properties();
-       prop.put("action", "getprincipals");
+    morpho = Morpho.thisStaticInstance;
 
-       morpho = Morpho.thisStaticInstance;
+    try {
+      queryResult = morpho.getMetacatInputStream(prop);
+    }
+    catch (Exception w) {
+      Log.debug(10, "Error in retrieving User list from Metacat server.");
+      Log.debug(45, w.getMessage());
+    }
 
-       try{
-         queryResult = morpho.getMetacatInputStream(prop);
-       } catch(Exception w) {
-         Log.debug(10, "Error in retrieving User list from Metacat server.");
-         Log.debug(45, w.getMessage());
-       }
+    NodeList nl = null;
 
-       NodeList nl = null;
+    if (queryResult != null) {
+      DocumentBuilder parser = Morpho.createDomParser();
 
-       if(queryResult != null){
-         DocumentBuilder parser = Morpho.createDomParser();
+      try {
+        doc = parser.parse(queryResult);
+        nl = doc.getElementsByTagName("authSystem");
+      }
+      catch (Exception e) {
+        Log.debug(10, "Exception in parsing result set from Metacat...");
+        Log.debug(45, e.toString());
+        return null;
+      }
 
-         try {
-           doc = parser.parse(queryResult);
-           nl = doc.getElementsByTagName("authSystem");
-         }
-         catch (Exception e) {
-           Log.debug(10, "Exception in parsing result set from Metacat...");
-           Log.debug(45, e.toString());
-           return null;
-         }
+      if (nl != null) {
+        makeTree(nl, top);
+      }
 
-         if(nl != null){
-           makeTree(nl, top);
-         }
+      return top;
+    }
 
-         return top;
-       }
+    return null;
+  }
 
-       return null;
-     }
-
-  DefaultMutableTreeNode makeTree(NodeList nl, DefaultMutableTreeNode top){
+  DefaultMutableTreeNode makeTree(NodeList nl, DefaultMutableTreeNode top) {
     for (int count = 0; count < nl.getLength(); count++) {
       tempNode = nl.item(count);
       boolean done = false;
@@ -291,8 +297,8 @@ public class Access extends AbstractUIPage {
       while (!done) {
         if (tempNode.getNodeName().compareTo("authSystem") == 0) {
           nodeObject = new AccessTreeNodeObject(
-                tempNode.getAttributes().getNamedItem("URI").getNodeValue(),
-                WizardSettings.ACCESS_PAGE_AUTHSYS);
+              tempNode.getAttributes().getNamedItem("URI").getNodeValue(),
+              WizardSettings.ACCESS_PAGE_AUTHSYS);
 
           tempTreeNode = new DefaultMutableTreeNode();
           tempTreeNode.setUserObject(nodeObject);
@@ -301,33 +307,38 @@ public class Access extends AbstractUIPage {
 
           top.add(tempTreeNode);
           done = true;
-        } else if (tempNode.getNodeName().compareTo("group") == 0) {
+        }
+        else if (tempNode.getNodeName().compareTo("group") == 0) {
           DefaultMutableTreeNode tempUserNode = null;
 
           NodeList nl2 = tempNode.getChildNodes();
           nodeObject = null;
           AccessTreeNodeObject groupNodeObject = new AccessTreeNodeObject(
-                                             WizardSettings.ACCESS_PAGE_GROUP);
+              WizardSettings.ACCESS_PAGE_GROUP);
           tempTreeNode = new DefaultMutableTreeNode();
 
           for (int i = 0; i < nl2.getLength(); i++) {
             Node node = nl2.item(i);
             if (node.getNodeName().compareTo("groupname") == 0) {
               groupNodeObject.setDN(node.getFirstChild().getNodeValue());
-            } else if (node.getNodeName().compareTo("description") == 0) {
+            }
+            else if (node.getNodeName().compareTo("description") == 0) {
               groupNodeObject.setDescription(node.getFirstChild().getNodeValue());
-            } else if (node.getNodeName().compareTo("user") == 0) {
+            }
+            else if (node.getNodeName().compareTo("user") == 0) {
               NodeList nl3 = node.getChildNodes();
               nodeObject = new AccessTreeNodeObject(
-                          WizardSettings.ACCESS_PAGE_USER);
+                  WizardSettings.ACCESS_PAGE_USER);
 
               for (int j = 0; j < nl3.getLength(); j++) {
                 Node node1 = nl3.item(j);
                 if (node1.getNodeName().compareTo("username") == 0) {
                   nodeObject.setDN(node1.getFirstChild().getNodeValue());
-                } else if (node1.getNodeName().compareTo("name") == 0) {
+                }
+                else if (node1.getNodeName().compareTo("name") == 0) {
                   nodeObject.setName(node1.getFirstChild().getNodeValue());
-                } else if (node1.getNodeName().compareTo("email") == 0) {
+                }
+                else if (node1.getNodeName().compareTo("email") == 0) {
                   nodeObject.setEmail(node1.getFirstChild().getNodeValue());
                 }
               }
@@ -336,26 +347,29 @@ public class Access extends AbstractUIPage {
               tempTreeNode.add(tempUserNode);
             }
             tempTreeNode.setUserObject(groupNodeObject);
-        }
+          }
 
           top.add(tempTreeNode);
           done = true;
-        } else if (tempNode.getNodeName().compareTo("user") == 0) {
+        }
+        else if (tempNode.getNodeName().compareTo("user") == 0) {
           NodeList nl2 = tempNode.getChildNodes();
           nodeObject = null;
 
           for (int i = 0; i < nl2.getLength(); i++) {
             Node node = nl2.item(i);
             nodeObject = new AccessTreeNodeObject(
-                        WizardSettings.ACCESS_PAGE_USER);
+                WizardSettings.ACCESS_PAGE_USER);
 
             for (int j = 0; j < nl2.getLength(); j++) {
               Node node1 = nl2.item(j);
               if (node1.getNodeName().compareTo("username") == 0) {
                 nodeObject.setDN(node1.getFirstChild().getNodeValue());
-              } else if (node1.getNodeName().compareTo("name") == 0) {
+              }
+              else if (node1.getNodeName().compareTo("name") == 0) {
                 nodeObject.setName(node1.getFirstChild().getNodeValue());
-              } else if (node1.getNodeName().compareTo("email") == 0) {
+              }
+              else if (node1.getNodeName().compareTo("email") == 0) {
                 nodeObject.setEmail(node1.getFirstChild().getNodeValue());
               }
             }
@@ -366,17 +380,19 @@ public class Access extends AbstractUIPage {
 
           top.add(tempTreeNode);
           done = true;
-        } else if(tempNode.hasChildNodes()){
+        }
+        else if (tempNode.hasChildNodes()) {
           tempNode = tempNode.getFirstChild();
-        } else {
-            done = true;
+        }
+        else {
+          done = true;
         }
       }
     }
     return top;
   }
 
-  public static DefaultMutableTreeNode refreshTree(){
+  public static DefaultMutableTreeNode refreshTree() {
     Access access = new Access();
     accessTreeNode = access.createTree();
     return accessTreeNode;
@@ -388,14 +404,12 @@ public class Access extends AbstractUIPage {
   public void onLoadAction() {
   }
 
-
   /**
    *  The action to be executed when the "Prev" button is pressed. May be empty
    *
    */
   public void onRewindAction() {
   }
-
 
   /**
    *  The action to be executed when the "Next" button (pages 1 to last-but-one)
@@ -408,7 +422,6 @@ public class Access extends AbstractUIPage {
   public boolean onAdvanceAction() {
     return true;
   }
-
 
   /**
    *  gets the Map object that contains all the access/value paired
@@ -425,48 +438,59 @@ public class Access extends AbstractUIPage {
 
     int allowIndex = 1;
     int denyIndex = 1;
-    Object  nextRowObj      = null;
-    List    nextRowList     = null;
-    Object  nextUserObject  = null;
-    OrderedMap  nextNVPMap  = null;
+    Object nextRowObj = null;
+    List nextRowList = null;
+    Object nextUserObject = null;
+    OrderedMap nextNVPMap = null;
     AccessPage nextAccessPage = null;
 
-
-    if(publicReadAccess){
+    if (publicReadAccess) {
       returnMap.put(xPathRoot + "@authSystem", "knb");
       returnMap.put(xPathRoot + "@order", "denyFirst");
-      returnMap.put(xPathRoot + "allow[" + (allowIndex) + "]/principal", "public");
-      returnMap.put(xPathRoot + "allow[" + (allowIndex++) + "]/permission", "read");
+      returnMap.put(xPathRoot + "allow[" + (allowIndex) + "]/principal",
+                    "public");
+      returnMap.put(xPathRoot + "allow[" + (allowIndex++) + "]/permission",
+                    "read");
     }
 
     List rowLists = accessList.getListOfRowLists();
 
-    if (rowLists==null) return null;
+    if (rowLists == null) {
+      return null;
+    }
 
-       for (Iterator it = rowLists.iterator(); it.hasNext(); ) {
+    for (Iterator it = rowLists.iterator(); it.hasNext(); ) {
 
-         nextRowObj = it.next();
-         if (nextRowObj==null) continue;
+      nextRowObj = it.next();
+      if (nextRowObj == null) {
+        continue;
+      }
 
-         nextRowList = (List)nextRowObj;
-         //column 2 is user object - check it exists and isn't null:
-         if (nextRowList.size()<3)     continue;
-         nextUserObject = nextRowList.get(2);
-         if (nextUserObject==null) continue;
+      nextRowList = (List) nextRowObj;
+      //column 2 is user object - check it exists and isn't null:
+      if (nextRowList.size() < 3) {
+        continue;
+      }
+      nextUserObject = nextRowList.get(2);
+      if (nextUserObject == null) {
+        continue;
+      }
 
-         nextAccessPage = (AccessPage)nextUserObject;
+      nextAccessPage = (AccessPage) nextUserObject;
 
-         if(nextAccessPage.accessIsAllow){
-           nextNVPMap = nextAccessPage.getPageData(xPathRoot + "allow[" + (allowIndex++) + "]");
-         } else {
-           nextNVPMap = nextAccessPage.getPageData(xPathRoot + "deny[" + (denyIndex++) + "]");
-         }
-         returnMap.putAll(nextNVPMap);
-       }
+      if (nextAccessPage.accessIsAllow) {
+        nextNVPMap = nextAccessPage.getPageData(xPathRoot + "allow[" +
+                                                (allowIndex++) + "]");
+      }
+      else {
+        nextNVPMap = nextAccessPage.getPageData(xPathRoot + "deny[" +
+                                                (denyIndex++) + "]");
+      }
+      returnMap.putAll(nextNVPMap);
+    }
 
     return returnMap;
   }
-
 
   /**
    * gets the Map object that contains all the key/value paired settings for
@@ -480,30 +504,35 @@ public class Access extends AbstractUIPage {
   public OrderedMap getPageData(String rootXPath) {
 
     throw new UnsupportedOperationException(
-      "getPageData(String rootXPath) Method Not Implemented");
+        "getPageData(String rootXPath) Method Not Implemented");
   }
-
 
   /**
    *  gets the unique ID for this wizard page
    *
    *  @return   the unique ID String for this wizard page
    */
-  public String getPageID() { return pageID; }
+  public String getPageID() {
+    return pageID;
+  }
 
   /**
    *  gets the title for this wizard page
    *
    *  @return   the String title for this wizard page
    */
-  public String getTitle() { return title; }
+  public String getTitle() {
+    return title;
+  }
 
   /**
    *  gets the subtitle for this wizard page
    *
    *  @return   the String subtitle for this wizard page
    */
-  public String getSubtitle() { return subtitle; }
+  public String getSubtitle() {
+    return subtitle;
+  }
 
   /**
    *  Returns the ID of the page that the user will see next, after the "Next"
@@ -512,15 +541,19 @@ public class Access extends AbstractUIPage {
    *  @return the String ID of the page that the user will see next, or null if
    *  this is te last page
    */
-  public String getNextPageID() { return nextPageID; }
+  public String getNextPageID() {
+    return nextPageID;
+  }
 
   /**
-     *  Returns the serial number of the page
-     *
-     *  @return the serial number of the page
-     */
-  public String getPageNumber() { return pageNumber; }
+   *  Returns the serial number of the page
+   *
+   *  @return the serial number of the page
+   */
+  public String getPageNumber() {
+    return pageNumber;
+  }
 
-  public void setPageData(OrderedMap data) { }
+  public void setPageData(OrderedMap data) {}
 
 }

@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2004-03-17 21:13:01 $'
- * '$Revision: 1.2 $'
+ *   '$Author: sgarg $'
+ *     '$Date: 2004-03-18 02:43:49 $'
+ * '$Revision: 1.3 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,7 +28,6 @@
 
 package edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages;
 
-
 import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
 import edu.ucsb.nceas.morpho.framework.AbstractUIPage;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WidgetFactory;
@@ -44,24 +43,29 @@ import javax.swing.BoxLayout;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
+import javax.swing.JTextField;
 import javax.swing.JScrollPane;
 
-public class MethodsPage extends AbstractUIPage {
+public class MethodsPage
+    extends AbstractUIPage {
 
-  private final String pageID     = DataPackageWizardInterface.METHODS_PAGE;
+  private final String pageID = DataPackageWizardInterface.METHODS_PAGE;
   private final String nextPageID = "";
   private final String pageNumber = "";
-  private final String title      = "Methods Page";
-  private final String subtitle   = "";
+  private final String title = "Methods Page";
+  private final String subtitle = "";
 
   private final String EMPTY_STRING = "";
   private JPanel middlePanel;
+  private JLabel titleLabel;
   private JLabel descLabel;
   private JTextArea descField;
-  private final String xPathRoot  = "/eml:eml/dataset/methods/methodStep/description/section";
+  private JTextField titleField;
+  private final String xPathRoot =
+      "/eml:eml/dataset/methods/methodStep/description/section";
 
   public MethodsPage() {
-          init();
+    init();
   }
 
   /**
@@ -71,36 +75,62 @@ public class MethodsPage extends AbstractUIPage {
   private void init() {
 
     middlePanel = new JPanel();
-    this.setLayout( new BorderLayout());
+    this.setLayout(new BorderLayout());
 
     middlePanel.setLayout(new BoxLayout(middlePanel, BoxLayout.Y_AXIS));
     middlePanel.add(WidgetFactory.makeDefaultSpacer());
 
     JLabel desc = WidgetFactory.makeHTMLLabel(
-                      "<font size=\"4\"><b>Enter Method Description:</b></font>", 1);
+        "<font size=\"4\"><b>Enter Method Step Information:</b></font>", 1);
     middlePanel.add(desc);
 
     middlePanel.add(WidgetFactory.makeDefaultSpacer());
     middlePanel.add(WidgetFactory.makeDefaultSpacer());
 
-    JPanel descPanel = WidgetFactory.makePanel(10);
+    JLabel titleDesc = WidgetFactory.makeHTMLLabel(
+        "<b>Enter title</b> ", 1);
+    middlePanel.add(titleDesc);
+    middlePanel.add(WidgetFactory.makeHalfSpacer());
+
+    JPanel titlePanel = WidgetFactory.makePanel(1);
+
+    titleLabel = WidgetFactory.makeLabel(" Title", false);
+    titlePanel.add(titleLabel);
+
+    titleField = WidgetFactory.makeOneLineTextField();
+    titlePanel.add(titleField);
+
+    titlePanel.setBorder(new javax.swing.border.EmptyBorder(0, 0, 0,
+        WizardSettings.PADDING));
+
+    middlePanel.add(titlePanel);
+    middlePanel.add(WidgetFactory.makeDefaultSpacer());
+    middlePanel.add(WidgetFactory.makeDefaultSpacer());
+    middlePanel.add(WidgetFactory.makeDefaultSpacer());
+
+    JLabel descTitle = WidgetFactory.makeHTMLLabel(
+        "<b>Enter description</b> ", 1);
+    middlePanel.add(descTitle);
+    middlePanel.add(WidgetFactory.makeHalfSpacer());
+
+    JPanel descPanel = WidgetFactory.makePanel(25);
     descLabel = WidgetFactory.makeLabel("Description:", false);
     descPanel.add(descLabel);
 
-    descField = WidgetFactory.makeTextArea("", 4, true);
+    descField = WidgetFactory.makeTextArea("", 14, true);
     JScrollPane jSampleScrl = new JScrollPane(descField);
     descPanel.add(jSampleScrl);
 
-    descPanel.setBorder(new javax.swing.border.EmptyBorder(0,0,0,
+    descPanel.setBorder(new javax.swing.border.EmptyBorder(0, 0, 0,
         WizardSettings.PADDING));
     middlePanel.add(descPanel);
 
-    middlePanel.setBorder(new javax.swing.border.EmptyBorder(0,4*WizardSettings.PADDING,
-        37*WizardSettings.PADDING,8*WizardSettings.PADDING));
+    middlePanel.setBorder(new javax.swing.border.EmptyBorder(0,
+        4 * WizardSettings.PADDING,
+        7 * WizardSettings.PADDING, 8 * WizardSettings.PADDING));
 
     this.add(middlePanel, BorderLayout.CENTER);
   }
-
 
   /**
    *  The action to be executed when the "OK" button is pressed. If no onAdvance
@@ -110,9 +140,24 @@ public class MethodsPage extends AbstractUIPage {
    *          if not (e.g. if a required field hasn't been filled in)
    */
   public boolean onAdvanceAction() {
+
+    String title = titleField.getText().trim();
+    String desc = descField.getText().trim();
+
+    if (title.compareTo(EMPTY_STRING) == 0 && desc.compareTo(EMPTY_STRING) == 0) {
+      WidgetFactory.hiliteComponent(titleLabel);
+      WidgetFactory.hiliteComponent(descLabel);
+
+      return false;
+    }
+
+    WidgetFactory.unhiliteComponent(titleLabel);
+    titleLabel.setForeground(java.awt.Color.black);
+    WidgetFactory.unhiliteComponent(descLabel);
+    descLabel.setForeground(java.awt.Color.black);
+
     return true;
   }
-
 
   /**
    *  @return a List contaiing 2 String elements - one for each column of the
@@ -120,17 +165,24 @@ public class MethodsPage extends AbstractUIPage {
    *
    */
   public List getSurrogate() {
-    WidgetFactory.unhiliteComponent(descLabel);
-
     List surrogate = new ArrayList();
+
+    String title = titleField.getText().trim();
+
+    if (title == null) {
+      title = EMPTY_STRING;
+    }
+    surrogate.add(title);
+
     String desc = descField.getText().trim();
 
-    if (desc==null) desc = EMPTY_STRING;
+    if (desc == null) {
+      desc = EMPTY_STRING;
+    }
     surrogate.add(desc);
 
     return surrogate;
   }
-
 
   /**
    *  gets the Map object that contains all the key/value paired
@@ -147,17 +199,25 @@ public class MethodsPage extends AbstractUIPage {
    *            key/value paired settings for this particular wizard page
    */
   private OrderedMap returnMap = new OrderedMap();
+
   //
   public OrderedMap getPageData() {
-          return getPageData(xPathRoot);
+    return getPageData(xPathRoot);
   }
 
   public OrderedMap getPageData(String xPathRoot) {
     returnMap.clear();
 
+    String title = titleField.getText().trim();
+
+    if (title!=null) {
+      if (title.length()<1) return null;
+      returnMap.put(xPathRoot + "/title", title);
+    }
+
     String desc = descField.getText().trim();
-    if (desc!=null && !desc.equals(EMPTY_STRING)) {
-      returnMap.put(xPathRoot + "", desc);
+    if (desc != null && !desc.equals(EMPTY_STRING)) {
+      returnMap.put(xPathRoot + "/para", desc);
     }
 
     return returnMap;
@@ -184,21 +244,27 @@ public class MethodsPage extends AbstractUIPage {
    *
    *  @return   the unique ID String for this wizard page
    */
-  public String getPageID() { return this.pageID;}
+  public String getPageID() {
+    return this.pageID;
+  }
 
   /**
    *  gets the title for this wizard page
    *
    *  @return   the String title for this wizard page
    */
-  public String getTitle() { return title; }
+  public String getTitle() {
+    return title;
+  }
 
   /**
    *  gets the subtitle for this wizard page
    *
    *  @return   the String subtitle for this wizard page
    */
-  public String getSubtitle() { return subtitle; }
+  public String getSubtitle() {
+    return subtitle;
+  }
 
   /**
    *  Returns the ID of the page that the user will see next, after the "Next"
@@ -207,14 +273,18 @@ public class MethodsPage extends AbstractUIPage {
    *  @return the String ID of the page that the user will see next, or null if
    *  this is te last page
    */
-  public String getNextPageID() { return this.nextPageID; }
+  public String getNextPageID() {
+    return this.nextPageID;
+  }
 
   /**
-     *  Returns the serial number of the page
-     *
-     *  @return the serial number of the page
-     */
-  public String getPageNumber() { return pageNumber; }
+   *  Returns the serial number of the page
+   *
+   *  @return the serial number of the page
+   */
+  public String getPageNumber() {
+    return pageNumber;
+  }
 
   public void setPageData(OrderedMap data) {}
 }

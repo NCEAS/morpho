@@ -7,9 +7,9 @@
  *    Authors: Saurabh Garg
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2004-03-17 21:13:01 $'
- * '$Revision: 1.13 $'
+ *   '$Author: sgarg $'
+ *     '$Date: 2004-03-18 02:43:49 $'
+ * '$Revision: 1.14 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -187,7 +187,7 @@ public class TemporalPage extends AbstractUIPage {
     singleTimeCalendar.setFont(WizardSettings.WIZARD_CONTENT_FONT);
     singleTimeCalendar.getMonthChooser().setFont(WizardSettings.WIZARD_CONTENT_FONT);
 
-    JPanel singlePanel = getDateTimePanel("Enter date:", "Time",
+    JPanel singlePanel = getDateTimePanel("Enter date:",
                                           singleTimeTF, singleTimeCalendar);
 
     panel.add(Box.createGlue());
@@ -219,7 +219,7 @@ public class TemporalPage extends AbstractUIPage {
     startTimeCalendar.setVisible(true);
 
     JPanel startingPanel = getDateTimePanel("Enter starting date:",
-                                            "Start Time", startTimeTF,
+                                            startTimeTF,
                                             startTimeCalendar);
     panel.add(Box.createGlue());
 
@@ -231,7 +231,7 @@ public class TemporalPage extends AbstractUIPage {
     endTimeCalendar = new JCalendar();
     endTimeCalendar.setVisible(true);
 
-    JPanel endingPanel = getDateTimePanel("Enter ending date:", "End Time",
+    JPanel endingPanel = getDateTimePanel("Enter ending date:",
                                           endTimeTF, endTimeCalendar);
     panel.add(endingPanel);
 
@@ -250,7 +250,7 @@ public class TemporalPage extends AbstractUIPage {
    * @param timeTextField JTextField
    * @param timeCalendar JCalendar
    */
-  public JPanel getDateTimePanel(String panelHeading, String buttonText,
+  public JPanel getDateTimePanel(String panelHeading,
                                  JTextField timeTextField, JCalendar timeCalendar) {
 
     JPanel outerPanel = new JPanel();
@@ -413,6 +413,14 @@ public class TemporalPage extends AbstractUIPage {
    *          if not (e.g. if a required field hasn't been filled in)
    */
   public boolean onAdvanceAction() {
+    if(currentPanel == rangeTimePanel){
+      Calendar sCalendar = startTimeCalendar.getCalendar();
+      Calendar eCalendar = endTimeCalendar.getCalendar();
+      if(sCalendar.after(eCalendar)){
+        Log.debug(1,"Starting date should be before ending date.");
+        return false;
+      }
+    }
     return true;
   }
 

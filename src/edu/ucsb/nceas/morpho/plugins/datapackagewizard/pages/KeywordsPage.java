@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2004-03-17 21:13:01 $'
- * '$Revision: 1.8 $'
+ *   '$Author: sgarg $'
+ *     '$Date: 2004-03-18 02:43:49 $'
+ * '$Revision: 1.9 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -106,13 +106,13 @@ public class KeywordsPage extends AbstractUIPage {
     middlePanel.add(WidgetFactory.makeDefaultSpacer());
 
     ////
-    JPanel kwPanel = WidgetFactory.makePanel(8);
+    JPanel kwPanel = WidgetFactory.makePanel(16);
     kwLabel = WidgetFactory.makeLabel("Keywords:", true);
     kwPanel.add(kwLabel);
 
     kwList = WidgetFactory.makeList(new String[]{ "Keyword" },
                                     new Object[]{ new JTextField()},
-                                    4, true, false, false, true, true, true );
+                                    8, true, false, false, true, true, true );
     kwPanel.add(kwList);
     middlePanel.add(kwPanel);
 
@@ -153,7 +153,7 @@ public class KeywordsPage extends AbstractUIPage {
     middlePanel.add(thesaurusPanel);
 
     middlePanel.setBorder(new javax.swing.border.EmptyBorder(0,4*WizardSettings.PADDING,
-        37*WizardSettings.PADDING,8*WizardSettings.PADDING));
+        7*WizardSettings.PADDING,8*WizardSettings.PADDING));
 
     this.add(middlePanel, BorderLayout.CENTER);
   }

@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2004-03-18 00:23:33 $'
- * '$Revision: 1.6 $'
+ *   '$Author: sgarg $'
+ *     '$Date: 2004-03-18 02:43:49 $'
+ * '$Revision: 1.7 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -51,38 +51,39 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
-import edu.ucsb.nceas.morpho.framework.UIController;
 import edu.ucsb.nceas.morpho.util.UISettings;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardContainerFrame;
 
-public class Methods extends AbstractUIPage{
+public class Methods
+    extends AbstractUIPage {
 
   // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
-  private final String pageID     = DataPackageWizardInterface.METHODS;
+  private final String pageID = DataPackageWizardInterface.METHODS;
   private final String nextPageID = DataPackageWizardInterface.ACCESS;
-  private final String title      = "Methods";
-  private final String subtitle   = "";
-  private final String xPathRoot  = "/eml:eml/dataset/methods";
-  private final String pageNumber  = "12";
+  private final String title = "Methods and Sampling";
+  private final String subtitle = "";
+  private final String xPathRoot = "/eml:eml/dataset/methods";
+  private final String pageNumber = "12";
 
-  private JTextArea studyField;
-  private JTextArea sampleField;
-  private JLabel    titleLabel;
-  private JLabel    studyLabel;
-  private JLabel    sampleLabel;
+  private JTextArea studyArea;
+  private JTextArea sampleArea;
+  private JLabel titleLabel;
+  private JLabel studyLabel;
+  private JLabel sampleLabel;
   private JTextField titleField;
 
-  private final String[] colNames =  {"Method Description"};
-  private final Object[] editors  =   null; //makes non-directly-editable
+  private final String[] colNames = {
+      "Method step title", "Method step description"};
+  private final Object[] editors = null; //makes non-directly-editable
 
-  private CustomList  methodsList;
+  private CustomList methodsList;
 
   // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
-  public Methods() { init(); }
-
-
+  public Methods() {
+    init();
+  }
 
   /**
    * initialize method does frame-specific design - i.e. adding the widgets that
@@ -93,82 +94,61 @@ public class Methods extends AbstractUIPage{
     this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
     JPanel vbox = this;
 
-    vbox.add(WidgetFactory.makeHalfSpacer());
-
-    JLabel titleDesc = WidgetFactory.makeHTMLLabel(
-        "<b>Enter title of the method</b> ", 1);
-    vbox.add(titleDesc);
-
-    JPanel titlePanel = WidgetFactory.makePanel(1);
-
-    titleLabel = WidgetFactory.makeLabel(" Title", false);
-    titlePanel.add(titleLabel);
-
-    titleField = WidgetFactory.makeOneLineTextField();
-    titlePanel.add(titleField);
-
-    titlePanel.setBorder(new javax.swing.border.EmptyBorder(0,0,0,5*WizardSettings.PADDING));
-    vbox.add(titlePanel);
-
     vbox.add(WidgetFactory.makeDefaultSpacer());
     JLabel desc1 = WidgetFactory.makeHTMLLabel(
-      "<b>Enter Method Description</b>", 1);
+        "<b>Enter Method Step Description</b>", 1);
     vbox.add(desc1);
     vbox.add(WidgetFactory.makeHalfSpacer());
 
     methodsList = WidgetFactory.makeList(colNames, editors, 4,
-                                    true, true, false, true, true, true );
+                                         true, true, false, true, true, true);
 
-    methodsList.setBorder(new EmptyBorder(0,WizardSettings.PADDING,
-                             WizardSettings.PADDING, 4*WizardSettings.PADDING));
-
+    methodsList.setBorder(new javax.swing.border.EmptyBorder(0,
+        WizardSettings.PADDING, 0, 0));
     vbox.add(methodsList);
+
     vbox.add(WidgetFactory.makeHalfSpacer());
     vbox.add(WidgetFactory.makeDefaultSpacer());
 
     JLabel studyDesc = WidgetFactory.makeHTMLLabel(
-        "<b>Description of Study Extent</b> Describe the temporal, spatial and "
-        +"taxonomic extent of the study, supplementing the information on "
-        +"coverage provided above. For example, if the temporal coverage of the"
-        +" data is 1990-2000, you might provide details about any years that "
-        +"were missed or the months in which sampling occurred.", 3);
+        "<b>Study Extent Description</b> Describe the temporal, spatial and "
+        + "taxonomic extent of the study, supplementing the information on "
+        +
+        "coverage provided earlier. For example, if the temporal coverage of the"
+        + " data is 1990-2000, you might provide details about any years that "
+        + "were missed or the months in which sampling occurred.", 3);
     vbox.add(studyDesc);
-    vbox.add(WidgetFactory.makeHalfSpacer());
 
-    JPanel studyPanel = WidgetFactory.makePanel(4);
+    JPanel studyPanel = WidgetFactory.makePanel(10);
     studyLabel = WidgetFactory.makeLabel(" Study Extent", false);
     studyPanel.add(studyLabel);
 
-    studyField = WidgetFactory.makeTextArea("", 4, true);
-    JScrollPane jStudyScrl = new JScrollPane(studyField);
+    studyArea = WidgetFactory.makeTextArea("", 3, true);
+    JScrollPane jStudyScrl = new JScrollPane(studyArea);
     studyPanel.add(jStudyScrl);
 
-    studyPanel.setBorder(new javax.swing.border.EmptyBorder(0,0,0,5*WizardSettings.PADDING));
     vbox.add(studyPanel);
     vbox.add(WidgetFactory.makeDefaultSpacer());
 
     JLabel sampleDesc = WidgetFactory.makeHTMLLabel(
         "<b>Sampling Description</b> Describe the sampling design of the study."
-        +" For example, you might describe the way in which treatments were "
-        +"assigned to sampling units.", 2);
+        + " For example, you might describe the way in which treatments were "
+        + "assigned to sampling units.", 2);
     vbox.add(sampleDesc);
-    vbox.add(WidgetFactory.makeHalfSpacer());
 
-    JPanel samplePanel = WidgetFactory.makePanel(4);
-    sampleLabel = WidgetFactory.makeLabel(" Description", false);
+    JPanel samplePanel = WidgetFactory.makePanel(10);
+    sampleLabel = WidgetFactory.makeLabel(" Sampling", false);
     samplePanel.add(sampleLabel);
 
-    sampleField = WidgetFactory.makeTextArea("", 4, true);
-    JScrollPane jSampleScrl = new JScrollPane(sampleField);
+    sampleArea = WidgetFactory.makeTextArea("", 3, true);
+    JScrollPane jSampleScrl = new JScrollPane(sampleArea);
     samplePanel.add(jSampleScrl);
 
-    samplePanel.setBorder(new javax.swing.border.EmptyBorder(0,0,0,5*WizardSettings.PADDING));
     vbox.add(samplePanel);
     vbox.add(WidgetFactory.makeDefaultSpacer());
 
     initActions();
   }
-
 
   /**
    *  Custom actions to be initialized for list buttons
@@ -177,38 +157,39 @@ public class Methods extends AbstractUIPage{
 
     methodsList.setCustomAddAction(
 
-      new AbstractAction() {
+        new AbstractAction() {
 
-        public void actionPerformed(ActionEvent e) {
+      public void actionPerformed(ActionEvent e) {
 
-          Log.debug(45, "\nMethods: CustomAddAction called");
-          showNewMethodsDialog();
-        }
-      });
+        Log.debug(45, "\nMethods: CustomAddAction called");
+        showNewMethodsDialog();
+      }
+    });
 
     methodsList.setCustomEditAction(
 
-      new AbstractAction() {
+        new AbstractAction() {
 
-        public void actionPerformed(ActionEvent e) {
+      public void actionPerformed(ActionEvent e) {
 
-          Log.debug(45, "\nMethods: CustomEditAction called");
-          showEditMethodsDialog();
-        }
-      });
+        Log.debug(45, "\nMethods: CustomEditAction called");
+        showEditMethodsDialog();
+      }
+    });
   }
 
   private void showNewMethodsDialog() {
 
-    MethodsPage methodsPage = (MethodsPage)WizardPageLibrary.getPage(DataPackageWizardInterface.METHODS_PAGE);
+    MethodsPage methodsPage = (MethodsPage) WizardPageLibrary.getPage(
+        DataPackageWizardInterface.METHODS_PAGE);
     ModalDialog wpd = new ModalDialog(methodsPage,
-                                WizardContainerFrame.getDialogParent(),
-                                UISettings.POPUPDIALOG_WIDTH,
-                                UISettings.POPUPDIALOG_HEIGHT
-, false);
+                                      WizardContainerFrame.getDialogParent(),
+                                      UISettings.POPUPDIALOG_WIDTH,
+                                      UISettings.POPUPDIALOG_HEIGHT
+                                      , false);
     wpd.setVisible(true);
 
-    if (wpd.USER_RESPONSE==ModalDialog.OK_OPTION) {
+    if (wpd.USER_RESPONSE == ModalDialog.OK_OPTION) {
 
       List newRow = methodsPage.getSurrogate();
       newRow.add(methodsPage);
@@ -216,39 +197,36 @@ public class Methods extends AbstractUIPage{
     }
   }
 
-
   private void showEditMethodsDialog() {
 
     List selRowList = methodsList.getSelectedRowList();
 
-    if (selRowList==null || selRowList.size() < 1) return;
+    if (selRowList == null || selRowList.size() < 3) {
+      return;
+    }
 
-    Object dialogObj = selRowList.get(1);
+    Object dialogObj = selRowList.get(2);
 
-    if (dialogObj==null || !(dialogObj instanceof MethodsPage)) return;
-    MethodsPage editMethodsPage = (MethodsPage)dialogObj;
+    if (dialogObj == null || ! (dialogObj instanceof MethodsPage)) {
+      return;
+    }
+    MethodsPage editMethodsPage = (MethodsPage) dialogObj;
 
     ModalDialog wpd = new ModalDialog(editMethodsPage,
-                                WizardContainerFrame.getDialogParent(),
-                                UISettings.POPUPDIALOG_WIDTH,
-                                UISettings.POPUPDIALOG_HEIGHT
-, false);
+                                      WizardContainerFrame.getDialogParent(),
+                                      UISettings.POPUPDIALOG_WIDTH,
+                                      UISettings.POPUPDIALOG_HEIGHT
+                                      , false);
     wpd.resetBounds();
     wpd.setVisible(true);
 
-
-    if (wpd.USER_RESPONSE==ModalDialog.OK_OPTION) {
+    if (wpd.USER_RESPONSE == ModalDialog.OK_OPTION) {
 
       List newRow = editMethodsPage.getSurrogate();
       newRow.add(editMethodsPage);
       methodsList.replaceSelectedRow(newRow);
     }
   }
-
-
-
-
-
 
   /**
    *  The action to be executed when the page is displayed. May be empty
@@ -257,13 +235,11 @@ public class Methods extends AbstractUIPage{
 
   }
 
-
   /**
    *  The action to be executed when the "Prev" button is pressed. May be empty
    *
    */
   public void onRewindAction() {}
-
 
   /**
    *  The action to be executed when the "Next" button (pages 1 to last-but-one)
@@ -278,7 +254,6 @@ public class Methods extends AbstractUIPage{
     return true;
   }
 
-
   /**
    *  gets the Map object that contains all the key/value paired
    *  settings for this particular wizard page
@@ -288,60 +263,61 @@ public class Methods extends AbstractUIPage{
    */
 
   private OrderedMap returnMap = new OrderedMap();
+
   //
   public OrderedMap getPageData() {
 
     returnMap.clear();
 
     int index = 1;
-    Object  nextRowObj      = null;
-    List    nextRowList     = null;
-    Object  nextUserObject  = null;
-    OrderedMap  nextNVPMap  = null;
+    Object nextRowObj = null;
+    List nextRowList = null;
+    Object nextUserObject = null;
+    OrderedMap nextNVPMap = null;
     MethodsPage nextMethodsPage = null;
 
-
-
-    String title = titleField.getText().trim();
-
-    if (title!=null) {
-      if (title.length()<1) return null;
-      returnMap.put(xPathRoot + "/methodStep/description/section/title", title);
-    }
-
     List rowLists = methodsList.getListOfRowLists();
-    if (rowLists==null) return null;
+    if (rowLists == null) {
+      return null;
+    }
 
     for (Iterator it = rowLists.iterator(); it.hasNext(); ) {
 
       nextRowObj = it.next();
-      if (nextRowObj==null) continue;
+      if (nextRowObj == null) {
+        continue;
+      }
 
-      nextRowList = (List)nextRowObj;
+      nextRowList = (List) nextRowObj;
       //column 2 is user object - check it exists and isn't null:
-      if (nextRowList.size()<1)     continue;
+      if (nextRowList.size() < 1) {
+        continue;
+      }
       nextUserObject = nextRowList.get(1);
-      if (nextUserObject==null) continue;
+      if (nextUserObject == null) {
+        continue;
+      }
 
-      nextMethodsPage = (MethodsPage)nextUserObject;
+      nextMethodsPage = (MethodsPage) nextUserObject;
 
-      nextNVPMap = nextMethodsPage.getPageData("/eml:eml/dataset/methods/methodStep/description/section/para[" + (index++) + "]");
+      nextNVPMap = nextMethodsPage.getPageData(
+          "/eml:eml/dataset/methods/methodStep/description/section[" + (index++) +
+          "]");
       returnMap.putAll(nextNVPMap);
     }
 
-    String study = studyField.getText().trim();
-    if (study!=null) {
+    String study = studyArea.getText().trim();
+    if (study != null) {
       returnMap.put(xPathRoot + "/sampling/studyExtent/description/para", study);
     }
 
-    String sample = sampleField.getText().trim();
-    if (sample!=null) {
+    String sample = sampleArea.getText().trim();
+    if (sample != null) {
       returnMap.put(xPathRoot + "/sampling/samplingDescription/para", sample);
     }
 
     return returnMap;
   }
-
 
   /**
    * gets the Map object that contains all the key/value paired settings for
@@ -355,10 +331,8 @@ public class Methods extends AbstractUIPage{
   public OrderedMap getPageData(String rootXPath) {
 
     throw new UnsupportedOperationException(
-      "getPageData(String rootXPath) Method Not Implemented");
+        "getPageData(String rootXPath) Method Not Implemented");
   }
-
-
 
   // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
@@ -368,21 +342,27 @@ public class Methods extends AbstractUIPage{
    *
    *  @return   the unique ID String for this wizard page
    */
-  public String getPageID() { return pageID; }
+  public String getPageID() {
+    return pageID;
+  }
 
   /**
    *  gets the title for this wizard page
    *
    *  @return   the String title for this wizard page
    */
-  public String getTitle() { return title; }
+  public String getTitle() {
+    return title;
+  }
 
   /**
    *  gets the subtitle for this wizard page
    *
    *  @return   the String subtitle for this wizard page
    */
-  public String getSubtitle() { return subtitle; }
+  public String getSubtitle() {
+    return subtitle;
+  }
 
   /**
    *  Returns the ID of the page that the user will see next, after the "Next"
@@ -391,16 +371,18 @@ public class Methods extends AbstractUIPage{
    *  @return the String ID of the page that the user will see next, or null if
    *  this is te last page
    */
-  public String getNextPageID() { return nextPageID; }
+  public String getNextPageID() {
+    return nextPageID;
+  }
 
   /**
-     *  Returns the serial number of the page
-     *
-     *  @return the serial number of the page
-     */
-  public String getPageNumber() { return pageNumber; }
+   *  Returns the serial number of the page
+   *
+   *  @return the serial number of the page
+   */
+  public String getPageNumber() {
+    return pageNumber;
+  }
 
-  public void setPageData(OrderedMap data) { }
+  public void setPageData(OrderedMap data) {}
 }
-
-

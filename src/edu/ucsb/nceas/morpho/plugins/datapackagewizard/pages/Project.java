@@ -1,15 +1,14 @@
 /**
  *  '$RCSfile: Project.java,v $'
- *    Purpose: A class that handles xml messages passed by the
- *             package wizard
+ *    Purpose: A class for showing project screen
  *  Copyright: 2000 Regents of the University of California and the
  *             National Center for Ecological Analysis and Synthesis
  *    Authors: Saurabh Garg
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2004-03-18 00:23:33 $'
- * '$Revision: 1.18 $'
+ *   '$Author: sgarg $'
+ *     '$Date: 2004-03-18 02:43:49 $'
+ * '$Revision: 1.19 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -62,7 +61,6 @@ public class Project extends AbstractUIPage {
 
   public final String pageID     = DataPackageWizardInterface.PROJECT;
   public final String nextPageID = DataPackageWizardInterface.USAGE_RIGHTS;
-//////////////////////////////////////////////////////////
 
   public final String title      = "Research Project Information";
   public final String subtitle   = " ";
@@ -127,6 +125,9 @@ public class Project extends AbstractUIPage {
     };
 
     JPanel radioPanel = WidgetFactory.makeCheckBoxPanel(buttonsText, -1, ilistener);
+    radioPanel.setBorder(new EmptyBorder(0, WizardSettings.PADDING,
+                                          WizardSettings.PADDING,
+                                          2 * WizardSettings.PADDING));
     topBox.add(radioPanel);
     topBox.add(WidgetFactory.makeHalfSpacer());
 

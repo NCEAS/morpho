@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2004-03-18 00:23:33 $'
- * '$Revision: 1.12 $'
+ *   '$Author: sgarg $'
+ *     '$Date: 2004-03-18 02:43:49 $'
+ * '$Revision: 1.13 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -80,19 +80,13 @@ public class UsageRights extends AbstractUIPage{
     vbox.add(desc);
 
     vbox.add(WidgetFactory.makeDefaultSpacer());
-    vbox.add(WidgetFactory.makeDefaultSpacer());
-
-    //JLabel titleDesc = WidgetFactory.makeHTMLLabel(
-    //    "", 2);
-    //vbox.add(titleDesc);
-    //vbox.add(WidgetFactory.makeDefaultSpacer());
 
     JPanel usagePanel = WidgetFactory.makePanel();
 
     JLabel usageLabel = WidgetFactory.makeLabel("Usage Rights:", false);
     usagePanel.add(usageLabel);
 
-    usageField = WidgetFactory.makeTextArea("", 10, true);
+    usageField = WidgetFactory.makeTextArea("", 18, true);
 
     JScrollPane jscrl = new JScrollPane(usageField);
 
@@ -101,8 +95,7 @@ public class UsageRights extends AbstractUIPage{
 
     vbox.add(usagePanel);
 
-    vbox.add(WidgetFactory.makeDefaultSpacer());
-    vbox.add(WidgetFactory.makeDefaultSpacer());
+    vbox.add(WidgetFactory.makeHalfSpacer());
     vbox.add(WidgetFactory.makeDefaultSpacer());
 
   }
