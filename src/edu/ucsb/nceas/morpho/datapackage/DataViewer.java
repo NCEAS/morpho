@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-09-04 22:42:03 $'
- * '$Revision: 1.32 $'
+ *     '$Date: 2002-09-05 18:17:42 $'
+ * '$Revision: 1.33 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -230,6 +230,9 @@ public class DataViewer extends javax.swing.JPanel
 	 * value of entityDescription element
 	 */
   String entityDescription = "";
+  
+  TableCopyAction tca;
+  TablePasteAction tpa;
   
   boolean missing_metadata_flag = false;
 
@@ -575,6 +578,8 @@ public class DataViewer extends javax.swing.JPanel
           if ((column_labels!=null)&&(column_labels.size()>0)) {
             if ((field_delimiter.trim().length()>0)) {
               buildTable();
+              tca.setSource(table);
+              tpa.setTarget(table);
               MouseListener popupListener = new PopupListener();
               table.addMouseListener(popupListener);
             }
@@ -1110,6 +1115,43 @@ public class DataViewer extends javax.swing.JPanel
       menu.add(deleteColumn1);
       menu.add(new JSeparator());
       menu.add(editColumnMetadata1);
+      
+      menu = mb.getMenu(1);  // the "Edit" menu
+      menu.removeAll();
+      JMenuItem cutMenuItem = new JMenuItem("Cut", new ImageIcon(getClass().
+                getResource("/toolbarButtonGraphics/general/Cut16.gif")));
+      cutMenuItem.setEnabled(false);
+      JMenuItem copyMenuItem = new JMenuItem("Copy");
+      tca = new TableCopyAction(table);
+      tca.putValue(Action.ACCELERATOR_KEY,
+                KeyStroke.getKeyStroke("control C"));
+      tca.putValue(Action.SHORT_DESCRIPTION,
+                "Copy the selection and put it on the Clipboard");
+      tca.putValue(Action.SMALL_ICON,
+                new ImageIcon(getClass().
+                getResource("/toolbarButtonGraphics/general/Copy16.gif")));
+      copyMenuItem.setAction(tca);
+
+      JMenuItem pasteMenuItem = new JMenuItem("Paste");
+      tpa = new TablePasteAction(table);
+      tpa.putValue(Action.ACCELERATOR_KEY,
+                KeyStroke.getKeyStroke("control P"));tpa.putValue(Action.SHORT_DESCRIPTION,
+                "Paste from the Clipboard to the selection.");
+      tpa.putValue(Action.SMALL_ICON,
+                new ImageIcon(getClass().
+                getResource("/toolbarButtonGraphics/general/Paste16.gif")));
+      pasteMenuItem.setAction(tpa);
+ 
+      JMenuItem prefMenuItem = new JMenuItem("Preferences...", new ImageIcon(getClass().
+                getResource("/toolbarButtonGraphics/general/Preferences16.gif")));
+      prefMenuItem.setEnabled(false);
+     
+      menu.add(cutMenuItem);
+      menu.add(copyMenuItem);
+      menu.add(pasteMenuItem);
+      menu.add(new JSeparator());
+      menu.add(prefMenuItem);
+
     }    
   }
   

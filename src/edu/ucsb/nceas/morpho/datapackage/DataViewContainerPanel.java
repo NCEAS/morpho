@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-09-04 21:17:00 $'
- * '$Revision: 1.10 $'
+ *     '$Date: 2002-09-05 18:17:42 $'
+ * '$Revision: 1.11 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -89,6 +89,7 @@ public class DataViewContainerPanel extends javax.swing.JPanel implements javax.
   public DataViewContainerPanel()
   {
     this.setLayout(new BorderLayout(0,0));
+    this.setBorder(BorderFactory.createEmptyBorder(5,5,0,5));
     packageMetadataPanel = new JPanel();
     packageMetadataPanel.setLayout(new BorderLayout(0,0));
     packageMetadataPanel.setMinimumSize(new Dimension(34,34));
