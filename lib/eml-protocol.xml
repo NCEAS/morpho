@@ -1,3 +1,4 @@
+<?xml version="1.0"?>
 <eml-protocol help="eml-protocol is a set of fields that contains method, processing, and 
           quality control information.  It may consist of paragraphs of descriptive
           text that describes the methods to be employed, or optionally references 
@@ -12,6 +13,8 @@
                 systems." editor="edu.ucsb.nceas.morpho.editor.LockedPanel" >
 
 </identifier>
+
+<protocol>
 
 <method help="The method field allows for repeated paragraphs of text that
               describe the methodology for a project, experiment, or particular
@@ -2358,6 +2361,7 @@ digitally, such as 3.5&quot; floppy disk, or various tape media types, or 'hardc
   </degreeInstitution>
 </thesis>
 </citation>
-</qualityControl>
+</qualityControl>  
+</protocol>
 </eml-protocol>
 
