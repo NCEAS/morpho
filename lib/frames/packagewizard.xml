@@ -23,7 +23,6 @@
   <frame name="Fields"
          repeatable="no"/>
          
-  <!--<frame name="Attribute" description="Enter metadata about the attributes in your entity."/>-->
   <descriptions>
     <description name="InitialDescription">
       Welcome to the Morpho Package Wizard.  This wizard will assist you in 

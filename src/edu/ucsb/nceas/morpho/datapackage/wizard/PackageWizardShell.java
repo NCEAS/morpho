@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-06-26 22:38:51 $'
- * '$Revision: 1.28 $'
+ *     '$Date: 2001-06-29 23:23:42 $'
+ * '$Revision: 1.29 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -97,6 +97,8 @@ public class PackageWizardShell extends javax.swing.JFrame
   private String finishDescription;
   private Hashtable descriptions = new Hashtable();
   
+  private ConfigXML config;
+  
   public PackageWizardShell()
   {
     setTitle("Data Package Wizard");
@@ -116,7 +118,7 @@ public class PackageWizardShell extends javax.swing.JFrame
   
   private void initComponents()
   {
-    ConfigXML config = framework.getConfiguration();
+    config = framework.getConfiguration();
     Vector saxparserV = config.get("saxparser");
     String saxparser = (String)saxparserV.elementAt(0);
     Vector packageWizardConfigV = config.get("packageWizardConfig");
@@ -435,7 +437,8 @@ public class PackageWizardShell extends javax.swing.JFrame
     //add the triples to the triples file
     //open the new package in the package editor if the check box is true
     Vector packageFiles = new Vector();
-    String triplesTag = "//triple";
+    //String triplesTag = "//triple";
+    String triplesTag = config.get("triplesTag", 0);
     for(int i=0; i<frameWizards.size(); i++)
     { //find the triplesTag
       WizardFrameContainer wfc = (WizardFrameContainer)frameWizards.elementAt(i);

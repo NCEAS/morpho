@@ -11,10 +11,12 @@
   <local_catalog_path>./lib/catalog/catalog</local_catalog_path>
   <debug_level>20</debug_level>
   <log_file>false</log_file>
+  <triplesTag>//triple</triplesTag>
   <saxparser>org.apache.xerces.parsers.SAXParser</saxparser>
   <packageWizardConfig>./lib/frames/packagewizard.xml</packageWizardConfig>
   <tempDir>./tmp</tempDir>
   <packageEditor>
+    
     <paths>
       <titlePath>/dataset/title</titlePath>
       <originatorPath>/dataset/originator/individualName/surName</originatorPath>
@@ -27,6 +29,7 @@
     </listdoctypes>
   </packageEditor>
   <customFrames>
+    
     <mainFrame>Resource</mainFrame>
     <frame>
       <frameName>Resource</frameName>
@@ -36,15 +39,24 @@
     </frame>
   </customFrames>
   <newxmlfiletypes>
+    
     <file>
+      <name>Entity</name>
       <label>Table Description</label>
       <xmlfiletype>-//NCEAS//eml-entity-2.0//EN</xmlfiletype>
+      <rootnode>table-entity</rootnode>
       <tooltip>Information about the data tables in data set.</tooltip>
+      <relatedto>DATAFILE</relatedto>
+      <displaypath>//entityName</displaypath>
     </file>
     <file>
+      <name>Attribute</name>
       <label>Field Description</label>
-      <xmlfiletype>-//NCEAS//eml-variable-2.0//EN</xmlfiletype>
+      <xmlfiletype>-//NCEAS//eml-variable//EN</xmlfiletype>
+      <rootnode>eml-variable</rootnode>
       <tooltip>Information about the fields (columns) in your data tables.</tooltip>
+      <relatedto>-//NCEAS//eml-entity-2.0//EN</relatedto>
+      <displaypath>//variable_name</displaypath>
     </file>
   </newxmlfiletypes>
   <current_profile></current_profile>

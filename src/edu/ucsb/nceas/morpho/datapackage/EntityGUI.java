@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-06-28 18:20:57 $'
- * '$Revision: 1.6 $'
+ *     '$Date: 2001-06-29 23:23:42 $'
+ * '$Revision: 1.7 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -243,6 +243,10 @@ public class EntityGUI extends javax.swing.JFrame
       }
     }
     
+    if(attributes.size() == 0)
+    {
+     attributes.addElement(" "); 
+    }
     attributeList = new JList(attributes);
     attributeList.addMouseListener(new MouseAdapter()
     {
@@ -589,6 +593,11 @@ public class EntityGUI extends javax.swing.JFrame
       }
       File f;
       String id = (String)attributeHash.get(selectedItem);
+      if(id == null)
+      {
+        return;
+      }
+      
       try
       {
         f = PackageUtil.openFile(id, location, framework);
