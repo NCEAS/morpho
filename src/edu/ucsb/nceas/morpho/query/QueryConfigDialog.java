@@ -1,3 +1,12 @@
+/**
+ *        Name: QueryConfigDialog.java
+ *     Purpose: A Class for interactively changing Query Parameters
+ *   Copyright: 2000 Regents of the University of California and the
+ *              National Center for Ecological Analysis and Synthesis
+ *     Authors: Dan Higgins
+ *
+ *     Version: '$Id: QueryConfigDialog.java,v 1.2 2000-11-22 23:12:58 higgins Exp $'
+ */
 /*
 		A basic implementation of the JDialog class.
 */
@@ -229,14 +238,14 @@ public class QueryConfigDialog extends javax.swing.JDialog
 		OKButton.setText("OK");
 		OKButton.setActionCommand("OK");
 		JPanel9.add(OKButton);
-		OKButton.setBounds(539,5,51,25);
+		OKButton.setBounds(453,5,51,25);
 		CancelButton.setText("Cancel");
 		CancelButton.setActionCommand("Cancel");
 		JPanel9.add(CancelButton);
-		CancelButton.setBounds(595,5,73,25);
+		CancelButton.setBounds(509,5,73,25);
 		DefaultButton.setText("Defaults");
 		JPanel9.add(DefaultButton);
-		DefaultButton.setBounds(0,0,35,40);
+		DefaultButton.setBounds(587,5,81,25);
 		{
 			String[] tempString = new String[2];
 			tempString[0] = "test";
@@ -460,14 +469,14 @@ public class QueryConfigDialog extends javax.swing.JDialog
 	void AllButton1_actionPerformed(java.awt.event.ActionEvent event)
 	{
 	    Vector allvector = new Vector();
-	    allvector.add("all");
+	    allvector.add("any");
 		SearchList.setListData(allvector);
 	}
 
 	void AllButton2_actionPerformed(java.awt.event.ActionEvent event)
 	{
 	    Vector allvector = new Vector();
-	    allvector.add("all");
+	    allvector.add("any");
 		ReturnList.setListData(allvector);
 	}
 

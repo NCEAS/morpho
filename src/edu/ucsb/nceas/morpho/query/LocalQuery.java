@@ -6,7 +6,7 @@
  *              National Center for Ecological Analysis and Synthesis
  *     Authors: Dan Higgins
  *
- *     Version: '$Id: LocalQuery.java,v 1.12 2000-11-21 19:34:07 higgins Exp $'
+ *     Version: '$Id: LocalQuery.java,v 1.13 2000-11-22 23:12:58 higgins Exp $'
  */
 
 package edu.ucsb.nceas.querybean;
@@ -20,6 +20,7 @@ import org.apache.xerces.parsers.DOMParser;
 import org.apache.xalan.xpath.xml.FormatterToXML;
 import org.apache.xalan.xpath.xml.TreeWalker;
 import org.w3c.dom.Document;
+import org.w3c.dom.DocumentType;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
@@ -28,6 +29,7 @@ import com.arbortext.catalog.*;
 import java.util.Vector;
 // import java.util.PropertyResourceBundle;
 import java.util.Hashtable;
+import java.util.Enumeration;
 
 import edu.ucsb.nceas.dtclient.*;
 
@@ -35,6 +37,7 @@ public class LocalQuery extends Thread
 {
     
     static Hashtable dom_collection;
+    static Hashtable doctype_collection;
     String local_xml_directory;
     String local_dtd_directory;
     String xmlcatalogfile; 
@@ -50,13 +53,21 @@ public class LocalQuery extends Thread
     boolean stopFlag = false;
     boolean AndResultFlag;
     Vector returnFields;
+    Vector doctypes2bsearched;
+    Vector dt2bReturned;
+    String currentDoctype;
     
-    static {dom_collection = new Hashtable();}
+    static {
+        dom_collection = new Hashtable();
+        doctype_collection = new Hashtable();
+    }
     
 public LocalQuery() {
     this(null);
     ConfigXML config = new ConfigXML("config.xml");
     returnFields = config.get("returnfield");
+    doctypes2bsearched = config.get("doctype");
+    dt2bReturned = config.get("returndoc");
     local_dtd_directory = config.get("local_dtd_directory", 0);
     local_xml_directory = config.get("local_xml_directory", 0);
     int cnt;
@@ -93,6 +104,8 @@ public LocalQuery() {
 public LocalQuery(String xpathstring) {
     ConfigXML config = new ConfigXML("config.xml");
     returnFields = config.get("returnfield");
+    doctypes2bsearched = config.get("doctype");
+    dt2bReturned = config.get("returndoc");
     local_dtd_directory = config.get("local_dtd_directory", 0);
     local_xml_directory = config.get("local_xml_directory", 0);
     int cnt;
@@ -126,6 +139,8 @@ public LocalQuery(String xpathstring) {
 public LocalQuery(String xpathstring, JButton button) {
     ConfigXML config = new ConfigXML("config.xml");
     returnFields = config.get("returnfield");
+    doctypes2bsearched = config.get("doctype");
+    dt2bReturned = config.get("returndoc");
     local_dtd_directory = config.get("local_dtd_directory", 0);
     local_xml_directory = config.get("local_xml_directory", 0);
     int cnt;
@@ -160,6 +175,8 @@ public LocalQuery(String xpathstring, JButton button) {
 public LocalQuery(String[] xpathstrings, boolean and_flag, JButton button) {
     ConfigXML config = new ConfigXML("config.xml");
     returnFields = config.get("returnfield");
+    doctypes2bsearched = config.get("doctype");
+    dt2bReturned = config.get("returndoc");
     local_dtd_directory = config.get("local_dtd_directory", 0);
     local_xml_directory = config.get("local_xml_directory", 0);
     int cnt;
@@ -301,6 +318,9 @@ void queryAll()
             {
               if (dom_collection.containsKey(filename)){
                 root = ((Document)dom_collection.get(filename)).getDocumentElement();
+                if (doctype_collection.containsKey(filename)) {
+                    currentDoctype = ((String)doctype_collection.get(filename));   
+                }
               }
               else {
                 InputSource in;
@@ -330,11 +350,23 @@ void queryAll()
 //                Node root = parser.getDocument().getDocumentElement();
                 root = parser.getDocument().getDocumentElement();
                 dom_collection.put(filename,current_doc);
+                String temp = getDocTypeFromDOM(current_doc);
+                if (temp==null) temp = root.getNodeName();
+                doctype_collection.put(filename,temp);
+                currentDoctype = temp;
               }     
                 String rootname = root.getNodeName();
                 NodeList nl = null;
-                try
-                {
+                try {
+                   boolean search_flag = true;
+                // first see if current doctype is in list of doctypes to be searched
+                 if ((doctypes2bsearched.contains("any"))||(doctypes2bsearched.contains(currentDoctype))) {
+                 }
+                 else {
+                    search_flag = false;
+                 }
+                if (search_flag) { 
+                
                 if (xpathExpressions == null) {   // a single xpath expression
                 if (stopFlag) break;
                     // Use the simple XPath API to select a node.
@@ -416,7 +448,7 @@ void queryAll()
         } // end multiple expression 'else'
     
         
-        
+                }  
       }
       catch (Exception e2)
       {
@@ -450,6 +482,107 @@ void queryAll()
     
 	//{{DECLARE_CONTROLS
 	//}}
+	
+  private void addRowsToTable(String hitfilename) {
+    Vector temp = getResultSetDocs(hitfilename);
+    for (Enumeration e = temp.elements();e.hasMoreElements();) {
+        String fn = e.nextElement();
+        String[] row = createRSRow(fn);
+        dtm.addRow(row);
+    }   
+  }
+  
+  // given the filename of a doc where a 'hit' has occured, return a vector of names of related docs	
+  private Vector getResultSetDocs(String filename) {
+    Vector result = new Vector();
+    String currentDoctype = getDoctypeFor(filename);
+    //first see if the current doc type is in return list
+    if (dt2bReturned.contains(currentDoctype)) {
+        result.addElement(currentDoctype);   
+    }
+    // now check if objects of relationship are of types to be returned
+    Vector objs = getRelationshipObjects(filename);
+    for (Enumeration e=objs.elements();e.hasMoreElements();) {
+        String obj = (String)e.nextElement();
+        if (dt2bReturned.contains(obj)) {
+            result.addElement(obj);          
+        }
+    // now check if subjects of each object are of types to be returned i.e. backtracking
+        Vector subs = getRelationshipSubjects(obj);  
+        for (Enumeration w=objs.elements();w.hasMoreElements();) {
+            String sub = (String)w.nextElement();
+            if (dt2bReturned.contains(sub)) {
+                result.addElement(sub);          
+            }
+        }
+    }
+  return result;  
+  }
+
+	private String getDoctypeFor(String filename) {
+	    String ret = "";
+	    
+	return ret;
+	}
+	
+	private Vector getRelationshipSubjects(String obj) {
+	    Vector ret = new Vector();
+	    
+	    return ret;
+	}
+	
+	private Vector getRelationshipObjects(String sub) {
+	    Vector ret = new Vector();
+	    
+	    return ret;
+	}
+	
+	private String[] createRSRow(String filename) {
+	    int cols = 4 + returnFields.size();
+	    String[] rss = new String[cols];
+	    rss[0] = filename;                         //ID
+	    rss[1] = getLastPathElement(filename);     //docname
+	    rss[2] = currentDoctype;                   // doctype
+	    
+	    rss[3] =  getValueForPath("title",filename);  // title
+	   
+	    for (int i=0;i<returnFields.size();i++) {
+	        rss[3+i] = getValueForPath((String)returnFields.elementAt(i),filename);   
+	    }
+	return rss;
+	}
+	
+	private String getValueForPath(String pathstring, String filename) {
+	    String val = "";
+	    try{
+	    // assume that the filename file has already been parsed
+        if (dom_collection.containsKey(filename)){
+            Node doc = ((Document)dom_collection.get(filename)).getDocumentElement();
+            NodeList nl = null;
+            nl = XPathAPI.selectNodeList(doc, pathstring);
+            Node cn = nl.item(0).getFirstChild();  // assume 1st child is text node
+               if ((cn!=null)&&(cn.getNodeType()==Node.TEXT_NODE)) {
+                    val = cn.getNodeValue().trim();
+                  }
+               else { val="";}
+        }
+        }
+        catch (Exception e){System.out.println("Error in getValueForPath method");}
+	return val;    
+	}
+	
+	private String getDocTypeFromDOM(Document doc){
+	    String ret = null;
+	    DocumentType ddd = doc.getDoctype();
+	    ret = ddd.getPublicId();
+	    if (ret==null) {
+	        ret = ddd.getSystemId();
+	        if (ret==null){
+	            ret = ddd.getName();   
+	        }
+	    }
+	return ret;
+	}
 	
 	
    // given a directory, return a vector of files it contains
