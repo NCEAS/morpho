@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2002-09-09 16:34:40 $'
- * '$Revision: 1.41 $'
+ *   '$Author: tao $'
+ *     '$Date: 2002-09-13 01:40:28 $'
+ * '$Revision: 1.42 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -458,6 +458,8 @@ public class DataViewer extends javax.swing.JPanel
           String s = fieldDelimiterList.item(0).getFirstChild().getNodeValue();
           this.field_delimiter = s;
         }
+        // Set delimiter_String
+        this.delimiter_string = getDelimiterString();
         
         Vector numHeaderLinesPath = new Vector();
         numHeaderLinesPath.addElement("eml-physical/numHeaderLines");
@@ -1513,6 +1515,8 @@ public class DataViewer extends javax.swing.JPanel
     File tempfile = null;
 	  if (dp!=null) {
       // make a temporary copy of the data file
+      ptm.setFieldDelimiter(delimiter_string);
+      ptm.getPersistentVector().setFieldDelimiter(delimiter_string);
       ptm.getPersistentVector().writeObjects(tempdir + "/" + "tempdata");
       File newDataFile = new File(tempdir + "/" + "tempdata");
       long newDataFileLength = newDataFile.length();
