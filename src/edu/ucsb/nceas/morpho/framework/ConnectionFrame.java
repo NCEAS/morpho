@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-12-03 22:12:33 $'
- * '$Revision: 1.29 $'
+ *     '$Date: 2001-12-11 22:46:19 $'
+ * '$Revision: 1.30 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -71,11 +71,6 @@ public class ConnectionFrame extends javax.swing.JDialog
     setTitle("Metacat Login");
     getContentPane().setLayout(new BorderLayout(0,0));
     //setSize(315,290);
-    /* Center the Frame */
-    Dimension screenDim = Toolkit.getDefaultToolkit().getScreenSize();
-    Rectangle frameDim = getBounds();
-    setLocation((screenDim.width - frameDim.width) / 2 ,
-            (screenDim.height - frameDim.height) /2);
     setVisible(false);
     JLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
     JLabel1.setText("Metacat Login");
@@ -161,6 +156,13 @@ public class ConnectionFrame extends javax.swing.JDialog
     }
 
     pack();
+    
+    /* Center the Frame */
+    Dimension screenDim = Toolkit.getDefaultToolkit().getScreenSize();
+    Rectangle frameDim = getBounds();
+    setLocation((screenDim.width - frameDim.width) / 2 ,
+            (screenDim.height - frameDim.height) /2);
+    
   }
 
   /**
