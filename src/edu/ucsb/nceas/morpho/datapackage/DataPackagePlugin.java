@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2004-02-27 19:06:52 $'
- * '$Revision: 1.77 $'
+ *   '$Author: sgarg $'
+ *     '$Date: 2004-03-04 03:45:34 $'
+ * '$Revision: 1.78 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -492,7 +492,7 @@ public class DataPackagePlugin
     editColumnMetadata.setEnabled(false);
 
     // create new data package menu in file menu
-    GUIAction createNewDataPackage = new GUIAction("New Datapackage...",
+    GUIAction createNewDataPackage = new GUIAction("New Data Package...",
                                       UISettings.NEW_DATAPACKAGE_ICON,
                                       new CreateNewDataPackageCommand(morpho));
     createNewDataPackage.setSmallIcon(new ImageIcon(getClass().
@@ -620,7 +620,7 @@ public class DataPackagePlugin
                  dvcp,
                  StateChangeEvent.CREATE_DATAPACKAGE_FRAME_VERSIONS));
     }
-    
+
     monitor.notifyStateChange(
                  new StateChangeEvent(
                  dvcp,
