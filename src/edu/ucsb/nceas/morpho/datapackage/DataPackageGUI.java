@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-06-22 21:13:36 $'
- * '$Revision: 1.28 $'
+ *     '$Date: 2001-06-25 21:19:45 $'
+ * '$Revision: 1.29 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -215,7 +215,7 @@ public class DataPackageGUI extends javax.swing.JFrame
     }
     if(entityitems.size()==0)
     {
-      otheritems.add(" ");
+      entityitems.add(" ");
     }
     
     //create the banner panel
@@ -409,7 +409,7 @@ public class DataPackageGUI extends javax.swing.JFrame
       {
         if(e.getClickCount() == 2) 
         {
-          actionPerformed(new ActionEvent(this, 0, "Edit"));
+          actionPerformed(new ActionEvent(this, 0, "EditEntity"));
         }
       }
     });
@@ -418,7 +418,7 @@ public class DataPackageGUI extends javax.swing.JFrame
     JPanel entityFileButtonList = new JPanel();
     entityFileButtonList.setLayout(new BoxLayout(entityFileButtonList,
                                                  BoxLayout.Y_AXIS));
-    entityFileButtonList.add(new JLabel("Entity Members"));
+    entityFileButtonList.add(new JLabel("Table Descriptions"));
     entityFileButtonList.add(entityFileScrollPane);
     
     listPanel.add(entityFileButtonList);
@@ -444,7 +444,7 @@ public class DataPackageGUI extends javax.swing.JFrame
     JPanel otherFileButtonList = new JPanel();
     otherFileButtonList.setLayout(new BoxLayout(otherFileButtonList,
                                                BoxLayout.Y_AXIS));
-    otherFileButtonList.add(new JLabel("Other Members"));
+    otherFileButtonList.add(new JLabel("Other Descriptions"));
     otherFileButtonList.add(otherFileScrollPane);
     
     listPanel.setBorder(BorderFactory.createCompoundBorder(
@@ -508,8 +508,10 @@ public class DataPackageGUI extends javax.swing.JFrame
           }
           else
           { 
-            item = (String)entityFileList.getSelectedValue();
-            item = item + "(" + (String)listValueHash.get(item) + ")";
+            actionPerformed(new ActionEvent(this, 0, "EditEntity"));
+            return;
+            //item = (String)entityFileList.getSelectedValue();
+            //item = item + "(" + (String)listValueHash.get(item) + ")";
           }
         }
         else
@@ -519,7 +521,7 @@ public class DataPackageGUI extends javax.swing.JFrame
       }
       
       String id = item.substring(item.indexOf("(")+1, item.indexOf(")"));
-      System.out.println("id: " + id);
+      //System.out.println("id: " + id);
       File xmlFile;
       try
       {
@@ -569,6 +571,32 @@ public class DataPackageGUI extends javax.swing.JFrame
     else if(command.equals("Remove"))
     {
       ClientFramework.debug(9, "Removing-doesn't work yet!");
+    }
+    else if(command.equals("EditEntity"))
+    {
+      item = "";
+      if(otherFileList.getSelectedIndex() == -1)
+      {
+        if(entityFileList.getSelectedIndex() == -1)
+        { //nothing is selected, give an error and return
+          ClientFramework.debug(1, "You must select an item to edit.");
+          return;
+        }
+        else
+        { 
+          item = (String)entityFileList.getSelectedValue();
+          item = item + "(" + (String)listValueHash.get(item) + ")";
+        }
+      }
+      else
+      {
+        item = (String)otherFileList.getSelectedValue();
+      }
+      
+      String id = item.substring(item.indexOf("(")+1, item.indexOf(")"));
+      ClientFramework.debug(20, "Edititing entity: " + id);
+      EntityGUI entityEdit = new EntityGUI(dataPackage, id, location, framework);
+      entityEdit.show();
     }
   }
   
