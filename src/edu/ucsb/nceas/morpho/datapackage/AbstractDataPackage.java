@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2004-04-06 06:32:42 $'
- * '$Revision: 1.89 $'
+ *     '$Date: 2004-04-06 22:21:54 $'
+ * '$Revision: 1.90 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -568,6 +568,21 @@ public abstract class AbstractDataPackage extends MetadataObject
    */
   abstract public Node replaceSubtreeAtReference(String refID,
                                                  Node newSubtreeRoot);
+
+
+  /**
+   * returns a List of subtrees that reference (the subtree identified by) the
+   * passed refID.
+   * More formally, returns a List of subtree root Nodes, where each subtree root
+   * Node contains a "references" child-node, and the content String of the
+   * references child-node matches the unique String refID passed to this method;
+   * returns an empty List if none found. Should never return null;
+   *
+   * @param refID unique String refID
+   * @return List of subtrees that reference the subtree identified by the
+   * passed refID. Returns an empty List if none found. Should never return null;
+   */
+  abstract public List getSubtreesThatReference(String refID);
 
 
   /**
