@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-02-14 22:23:03 $'
- * '$Revision: 1.30 $'
+ *     '$Date: 2002-03-04 15:27:24 $'
+ * '$Revision: 1.31 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -492,4 +492,42 @@ public class MetacatDataStore extends DataStore implements DataStoreInterface
       e.printStackTrace();
     }
   }
+ 
+  /* This method is designed to handle the case where there are several
+   * xml metadata documents that need to be submitted to the metacat server.
+   * The idea is to keep track of the success or failure of each submission
+   * and retract any changes that have been successfully maide if a later
+   * submission fails. The entire transaction should thus leave the server
+   * version unchanged if any part of the transaction fails.
+   * NamesVec should be a vector of strings with docnamed(ids)
+   * readersVec should be a vector of Reader streams corresponding to the
+   * ids.
+   * 
+   */
+  
+   public String saveFilesTransaction(Vector namesVec, Vector readersVec, DataPackage dp) {
+        String temp = "";
+        String response = "OK";
+        for (int i=0;i<namesVec.size();i++) {
+            String name = (String)namesVec.elementAt(i);
+            Reader reader = (Reader)readersVec.elementAt(i);
+            try{
+                saveFile(name, reader, dp);   
+            }
+            catch(Exception e) {
+                // oops, error; save name for return and undo previous inserts
+                response = name;
+                for (int j=0;j<i-1;j++) {
+                    String name1 = (String)namesVec.elementAt(i);
+                    boolean deleted = deleteFile(name1);
+                    if (!deleted) {  // could not remove
+                        temp = temp + "Could not delete" + name;    
+                    }
+                }
+            }
+            
+        }
+        if (temp.length()>0) response = temp;
+        return response;
+   }
 }
