@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-12-04 22:50:49 $'
- * '$Revision: 1.30 $'
+ *     '$Date: 2002-12-05 00:23:17 $'
+ * '$Revision: 1.31 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -139,7 +139,7 @@ public class Morpho
     /** flag set to indicate that connection to metacat is busy
      *  used by doPing to avoid thread problem
      */
-    private static boolean connectionBusy = false;
+    public static boolean connectionBusy = false;
 
     /**
      * Creates a new instance of Morpho
@@ -316,7 +316,8 @@ public class Morpho
             HttpMessage msg = new HttpMessage(url);
             returnStream = msg.sendPostMessage(prop);
             sessionCookie = msg.getCookie();
-            return returnStream;
+           connectionBusy = false;
+           return returnStream;
         } catch (Exception e) {
             try {
                 Log.debug(20, "Sending data (again) to : " + metacatURL);
@@ -324,6 +325,7 @@ public class Morpho
                 HttpMessage msg = new HttpMessage(url);
                 returnStream = msg.sendPostMessage(prop);
                 sessionCookie = msg.getCookie();
+                connectionBusy = false;
                 return returnStream;
             } catch (Exception e2) {
                 try {
@@ -333,6 +335,7 @@ public class Morpho
                     HttpMessage msg = new HttpMessage(url);
                     returnStream = msg.sendPostMessage(prop);
                     sessionCookie = msg.getCookie();
+                    connectionBusy = false;
                     return returnStream;
                 } catch (Exception e3) {
                     Log.debug(1, "Fatal error sending data to Metacat: " + 
