@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2004-02-06 17:26:30 $'
- * '$Revision: 1.145 $'
+ *     '$Date: 2004-02-10 19:45:07 $'
+ * '$Revision: 1.146 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -3429,6 +3429,11 @@ Log.debug(20, xmlout);
       DefaultMutableTreeNode node = (DefaultMutableTreeNode)kids.nextElement();
       NodeInfo ni = (NodeInfo)node.getUserObject();
       if(ni.toString().equals("attribute")) {  // an attribute node
+        // we set the Checkbox flag here due to an eml2 technicality which
+        // causes the attributes to be shown with radio buttons
+        // This can result in inadvertent data loss if viewed in the editor.
+        // (in most places, there is a choice between a sequence and 'references').
+        ni.setCheckboxFlag(true);
         Enumeration attr_kids = node.breadthFirstEnumeration();
         while(attr_kids.hasMoreElements()) {  // attributes children
           DefaultMutableTreeNode node1 = (DefaultMutableTreeNode)attr_kids.nextElement();
