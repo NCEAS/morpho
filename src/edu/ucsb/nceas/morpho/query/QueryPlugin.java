@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: tao $'
- *     '$Date: 2002-10-17 22:56:06 $'
- * '$Revision: 1.100 $'
+ *   '$Author: brooke $'
+ *     '$Date: 2002-12-11 01:01:05 $'
+ * '$Revision: 1.101 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -36,7 +36,12 @@ import edu.ucsb.nceas.morpho.plugins.PluginInterface;
 import edu.ucsb.nceas.morpho.plugins.ServiceController;
 import edu.ucsb.nceas.morpho.plugins.ServiceProvider;
 import edu.ucsb.nceas.morpho.plugins.ServiceExistsException;
-import edu.ucsb.nceas.morpho.util.*;
+
+import edu.ucsb.nceas.morpho.util.Log;
+import edu.ucsb.nceas.morpho.util.Command;
+import edu.ucsb.nceas.morpho.util.GUIAction;
+import edu.ucsb.nceas.morpho.util.UISettings;
+import edu.ucsb.nceas.morpho.util.StateChangeEvent;
 
 import java.awt.Component;
 import java.awt.event.ActionEvent;
@@ -111,10 +116,9 @@ public class QueryPlugin implements PluginInterface, ConnectionListener,
     UIController controller = UIController.getInstance();
 
     // Action for search
-    GUIAction searchItemAction = new GUIAction("Search...", null,
-                                        new SearchCommand(null, morpho));
-    searchItemAction.setSmallIcon(new ImageIcon(getClass().
-           getResource("/toolbarButtonGraphics/general/Search16.gif")));
+    GUIAction searchItemAction = new GUIAction("Search...", 
+                                               UISettings.SEARCH_ICON, 
+                                               new SearchCommand(null, morpho));
     searchItemAction.setToolTipText("Search for data");
     searchItemAction.setMenuItemPosition(0);
     searchItemAction.setMenu("Search", 2);
@@ -124,10 +128,8 @@ public class QueryPlugin implements PluginInterface, ConnectionListener,
     //searchItemAction.setSeparatorPosition(Morpho.SEPARATOR_FOLLOWING);
     // Action for refresh
     RefreshCommand refreshCommand = new RefreshCommand();
-    GUIAction refreshItemAction = 
-                    new GUIAction("Refresh", null, refreshCommand);
-    refreshItemAction.setSmallIcon(new ImageIcon(getClass().
-           getResource("/toolbarButtonGraphics/general/Refresh16.gif")));
+    GUIAction refreshItemAction  
+            = new GUIAction("Refresh", UISettings.REFRESH_ICON, refreshCommand);
     refreshItemAction.setToolTipText("Refresh...");
     refreshItemAction.setMenuItemPosition(1);
     refreshItemAction.setMenu("Search", 2);
@@ -147,10 +149,8 @@ public class QueryPlugin implements PluginInterface, ConnectionListener,
     //refreshItemAction.setSeparatorPosition(Morpho.SEPARATOR_FOLLOWING);
     // Action for save query
     SaveQueryCommand saveCommand = new SaveQueryCommand(morpho);
-    GUIAction saveQueryItemAction = 
-                    new GUIAction("Save Search", null, saveCommand);
-    saveQueryItemAction.setSmallIcon(new ImageIcon(getClass().
-           getResource("/toolbarButtonGraphics/general/Save16.gif")));
+    GUIAction saveQueryItemAction 
+              = new GUIAction("Save Search", UISettings.SAVE_ICON, saveCommand);
     saveQueryItemAction.setToolTipText("Save search");
     saveQueryItemAction.setMenuItemPosition(2);
     saveQueryItemAction.setMenu("Search", 2);
@@ -193,10 +193,9 @@ public class QueryPlugin implements PluginInterface, ConnectionListener,
     saveCommand.loadSavedQueries();
     
     // Open dialog box action
-    GUIAction openDialogBoxAction = new GUIAction("Open...", null, 
-                          new OpenDialogBoxCommand(morpho));
-    openDialogBoxAction.setSmallIcon( new ImageIcon(getClass().
-                  getResource("/toolbarButtonGraphics/general/Open16.gif")));
+    GUIAction openDialogBoxAction = new GUIAction("Open...", 
+                                              UISettings.OPEN_DATAPACKAGE_ICON, 
+                                              new OpenDialogBoxCommand(morpho));
     openDialogBoxAction.setMenuItemPosition(2);
     openDialogBoxAction.setToolTipText("Open...");
     openDialogBoxAction.setMenu("File", 0);
@@ -359,5 +358,41 @@ public class QueryPlugin implements PluginInterface, ConnectionListener,
   {
     SaveQueryCommand.loadSavedQueries(newMorpho);
   }//updateSaveQuery
+  
+  
+  /**
+   * return an instance of a Command object, identified by one of the integer 
+   * constants defined above
+   *
+   * @param commandIdentifier   integer constant identifying the command 
+   *                            Options include:<ul>
+   *                            <li>OPEN_DATAPACKAGE_COMMAND</li>
+   *                            <li>SEARCH_COMMAND</li>
+   *                            </ul>
+   */
+  public Command getCommandObject(int commandIdentifier) 
+                                                throws ClassNotFoundException
+  {
+    switch (commandIdentifier) {
+    
+        case QueryRefreshInterface.OPEN_DATAPACKAGE_COMMAND:
+        
+            return new OpenDialogBoxCommand(morpho);
+            
+        case QueryRefreshInterface.SEARCH_COMMAND:
+        
+            return new SearchCommand(null, morpho);
+            
+        default:
+            ClassNotFoundException e 
+                                = new ClassNotFoundException("command with ID="
+                                            +commandIdentifier+" not found");
+            e.fillInStackTrace();
+            throw e;        
+    }
+  }
+  
+  
+  
    
 }
