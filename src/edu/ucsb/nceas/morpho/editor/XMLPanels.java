@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-12-14 04:59:38 $'
- * '$Revision: 1.21 $'
+ *     '$Date: 2002-01-08 14:04:02 $'
+ * '$Revision: 1.22 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -68,6 +68,8 @@ public class XMLPanels extends Component
  
  // create default panel if true
  private boolean defaultPanel = true;
+ 
+ private int numPanels = 0;
  
  // nodeMap will store the tree node associated with each textfield
  Hashtable nodeMap;
@@ -191,12 +193,15 @@ public class XMLPanels extends Component
           if (!((info.name).equals("#PCDATA"))) {
             JPanel new_panel = new JPanel();
             new_panel.setBorder(BorderFactory.createCompoundBorder(
-            BorderFactory.createTitledBorder(info.toString()),
-            BorderFactory.createEmptyBorder(4, 4, 4, 4)
-            ));
+               BorderFactory.createTitledBorder(info.toString()),
+               BorderFactory.createEmptyBorder(4, 4, 4, 4)
+               ));
+            numPanels++;
+            if (numPanels<500) {   // limited for performance reasons
 		      new_panel.setLayout(new BoxLayout(new_panel,BoxLayout.Y_AXIS));
-          panel.add(new_panel);
-          doPanels(nd, new_panel);
+              panel.add(new_panel);
+              doPanels(nd, new_panel);
+            }
           }
         }
       }
