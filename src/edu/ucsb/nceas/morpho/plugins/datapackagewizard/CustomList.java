@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: sambasiv $'
- *     '$Date: 2004-03-06 00:17:28 $'
- * '$Revision: 1.39 $'
+ *     '$Date: 2004-03-06 01:30:36 $'
+ * '$Revision: 1.40 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -311,8 +311,11 @@ public class CustomList extends JPanel {
           if (editor instanceof JTextField) {
 						
 							JTextField jtf = new JTextField();
-							if(! ((JTextField)editor).isEditable() )
+							if(! ((JTextField)editor).isEditable() ) {
 									jtf.setEditable(false);
+							}
+							jtf.setForeground(((JTextField)editor).getForeground());
+							jtf.setDisabledTextColor(((JTextField)editor).getDisabledTextColor());
 							jtf.setBackground(((JTextField)editor).getBackground());
 							Log.debug(45, "(JTextField)");
 							DefaultCellEditor cellEd = new DefaultCellEditor(jtf);
@@ -1463,9 +1466,8 @@ class CustomJTable extends JTable  {
 			if (colClass.getName().equals("javax.swing.JTextField")) {
 	       final JTextField origTextField = (JTextField)(editors[col]);
 				 DefaultTableCellRenderer defaultR = new DefaultTableCellRenderer();
-				 if(!origTextField.isEditable()) 
-								defaultR.setEnabled(false);
 				 defaultR.setBackground(origTextField.getBackground());
+				 defaultR.setForeground(origTextField.getForeground());
 				 return defaultR;
 				 
 			}

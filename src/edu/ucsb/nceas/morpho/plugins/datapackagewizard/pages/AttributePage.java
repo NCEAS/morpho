@@ -6,9 +6,9 @@
  *             National Center for Ecological Analysis and Synthesis
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2004-03-02 19:31:07 $'
- * '$Revision: 1.17 $'
+ *   '$Author: sambasiv $'
+ *     '$Date: 2004-03-06 01:30:36 $'
+ * '$Revision: 1.18 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -689,7 +689,7 @@ public class AttributePage extends AbstractWizardPage {
       returnMap.put(xPath + "/attributeDefinition", attribDef);
     }
     
-    if(!storageType.equals("")) {
+    if(storageType !=null && !storageType.equals("")) {
       returnMap.put(xPath + "/storageType", storageType);
     }
 
@@ -796,7 +796,7 @@ public class AttributePage extends AbstractWizardPage {
        attribDefinitionField.setText(defn);
 
      storageType = (String)map.get(xPathRoot + "/storageType");
-
+		 if(storageType == null) storageType = "";
        
      if(mScale == null || mScale.equals(""))
        return;
