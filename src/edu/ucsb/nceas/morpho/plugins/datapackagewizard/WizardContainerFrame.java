@@ -7,9 +7,9 @@
  *    Authors: Matthew Brooke
  *    Release: @release@
  *
- *   '$Author: sgarg $'
- *     '$Date: 2003-12-23 19:07:19 $'
- * '$Revision: 1.29 $'
+ *   '$Author: sambasiv $'
+ *     '$Date: 2003-12-24 00:10:05 $'
+ * '$Revision: 1.30 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -254,14 +254,14 @@ public class WizardContainerFrame extends JFrame {
   private void initBottomPanel() {
 
     bottomBorderPanel = new JPanel();
-    bottomBorderPanel.setLayout(new BorderLayout());
+    bottomBorderPanel.setLayout(new BorderLayout(0,2));
 
     bottomPanel = new JPanel();
     bottomPanel.setLayout(new BoxLayout(bottomPanel, BoxLayout.X_AXIS));
     bottomPanel.add(Box.createHorizontalGlue());
     bottomPanel.setOpaque(false);
-    bottomPanel.setBorder(new EmptyBorder(PADDING/2,0,0,0));
 
+    bottomPanel.setBorder(new EmptyBorder(PADDING/2,0,0,0));
     bottomBorderPanel.setBorder(
                   BorderFactory.createMatteBorder(2, 0, 0, 0, WizardSettings.TOP_PANEL_BG_COLOR));
 //    bottomPanel.setBorder(new EmptyBorder(PADDING,3*PADDING,3*PADDING,PADDING));
@@ -269,10 +269,11 @@ public class WizardContainerFrame extends JFrame {
     stepLabel = new JLabel();
     stepLabel.setBorder(BorderFactory.createEmptyBorder(3,10,3,3));
     stepLabel.setText("Step 1 of " + WizardSettings.NUMBER_OF_STEPS );
-
+		
     bottomBorderPanel.add(stepLabel, BorderLayout.WEST);
     bottomBorderPanel.add(bottomPanel, BorderLayout.CENTER);
-
+		//bottomBorderPanel.add(WidgetFactory.makeHalfSpacer(), BorderLayout.NORTH);
+		
     contentPane.add(bottomBorderPanel, BorderLayout.SOUTH);
   }
 

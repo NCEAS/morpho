@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: sambasiv $'
- *     '$Date: 2003-12-19 01:44:01 $'
- * '$Revision: 1.22 $'
+ *     '$Date: 2003-12-24 00:10:05 $'
+ * '$Revision: 1.23 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -595,13 +595,20 @@ public class IntervalRatioPanel extends JPanel implements WizardPageSubPanelAPI 
 	while(true) {
 		List row = new ArrayList();
 		String min = (String)map.get(xPathRoot + "/numericDomain/bounds[" +index+ "]/minimum");
+		if(index ==1 && min == null)
+			min = (String)map.get(xPathRoot + "/numericDomain/bounds/minimum");
 		if(min != null) {
 			row.add(min);
-			Boolean  excl = (Boolean)map.get(xPathRoot + "/numericDomain/bounds[" +index+ "]/minimum/@exclusive");
-			if(excl != null)
+			String  excl = (String)map.get(xPathRoot + "/numericDomain/bounds[" +index+ "]/minimum/@exclusive");
+			if(index == 1 && excl == null)
+				excl = (String)map.get(xPathRoot +
+						"/numericDomain/bounds/minimum/@exclusive");
+			if(excl.equals("true"))
 				row.add("<");
-			else
+			else 
 				row.add("<=");
+			
+			
 		}
 		else {
 			row.add("");
@@ -609,12 +616,18 @@ public class IntervalRatioPanel extends JPanel implements WizardPageSubPanelAPI 
 		}
 		row.add("value");
 		String max = (String)map.get(xPathRoot + "/numericDomain/bounds[" +index+ "]/maximum");
+		if(index ==1 && max == null)
+			max = (String)map.get(xPathRoot + "/numericDomain/bounds/maximum");
 		if(max != null) {
-			Boolean  excl = (Boolean)map.get(xPathRoot + "/numericDomain/bounds[" +index+ "]/maximum/@exclusive");
-			if(excl != null)
+			String  excl = (String)map.get(xPathRoot + "/numericDomain/bounds[" +index+ "]/maximum/@exclusive");
+			if(index == 1 && excl == null)
+				excl = (String)map.get(xPathRoot +
+						"/numericDomain/bounds/maximum/@exclusive");
+			if(excl.equals("true"))
 				row.add("<");
 			else
 				row.add("<=");
+			
 			row.add(max);
 		}
 		else {

@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: sgarg $'
- *     '$Date: 2003-12-12 03:05:35 $'
- * '$Revision: 1.14 $'
+ *   '$Author: sambasiv $'
+ *     '$Date: 2003-12-24 00:10:05 $'
+ * '$Revision: 1.15 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -196,8 +196,10 @@ public class Entity extends AbstractWizardPage{
   private void showNewAttributeDialog() {
 
     AttributePage attributePage = new AttributePage();
-    WizardPopupDialog wpd = new WizardPopupDialog(attributePage, WizardContainerFrame.frame);
-
+    WizardPopupDialog wpd = new WizardPopupDialog(attributePage, WizardContainerFrame.frame, false);
+		wpd.setBounds(wpd.getX(), WizardContainerFrame.frame.getY(),
+					WizardSettings.DIALOG_WIDTH, WizardSettings.ATTR_DIALOG_HEIGHT);
+		wpd.setVisible(true);
     if (wpd.USER_RESPONSE==WizardPopupDialog.OK_OPTION) {
 
       List newRow = attributePage.getSurrogate();
@@ -221,6 +223,7 @@ public class Entity extends AbstractWizardPage{
 
     WizardPopupDialog wpd = new WizardPopupDialog(editAttributePage, WizardContainerFrame.frame);
     wpd.resetBounds();
+		wpd.setSize(WizardSettings.DIALOG_WIDTH, WizardSettings.ATTR_DIALOG_HEIGHT);
     wpd.setVisible(true);
 
     if (wpd.USER_RESPONSE==WizardPopupDialog.OK_OPTION) {

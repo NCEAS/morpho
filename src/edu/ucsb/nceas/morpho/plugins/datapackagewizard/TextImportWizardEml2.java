@@ -4,9 +4,9 @@
  *              National Center for Ecological Analysis and Synthesis
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2003-12-22 23:14:38 $'
- * '$Revision: 1.8 $'
+ *   '$Author: sambasiv $'
+ *     '$Date: 2003-12-24 00:10:05 $'
+ * '$Revision: 1.9 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -647,11 +647,12 @@ public class TextImportWizardEml2 extends JFrame {
       }
       nlines = 0;
       nlines_actual = 0;
-      StringBuffer buff = new StringBuffer();
+      
       List linesList = new ArrayList();
       try {
         while ((temp = in.readLine()) != null) {
           // do not count blank lines
+					StringBuffer buff = new StringBuffer();
           if (temp.length() > 0) {
             nlines_actual++;
             if (nlines < nlines_max) {

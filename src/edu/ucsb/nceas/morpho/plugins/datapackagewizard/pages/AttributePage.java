@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: sambasiv $'
- *     '$Date: 2003-12-19 22:39:02 $'
- * '$Revision: 1.7 $'
+ *     '$Date: 2003-12-24 00:10:05 $'
+ * '$Revision: 1.8 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -63,6 +63,7 @@ import java.awt.BorderLayout;
 
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Iterator;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -313,11 +314,10 @@ public class AttributePage extends AbstractWizardPage {
         //undo any hilites:
 
         if (e.getActionCommand().equals(buttonsText[0])) {
-          nominalPanel.repaint();
+          
           setMeasurementScaleUI(nominalPanel);
           setMeasurementScale(measScaleElemNames[0]);
-    nominalPanel.repaint();
-
+					
         } else if (e.getActionCommand().equals(buttonsText[1])) {
 
           setMeasurementScaleUI(ordinalPanel);
@@ -389,24 +389,24 @@ public class AttributePage extends AbstractWizardPage {
     topMiddlePanel.add(radioPanel);
 
     middlePanel.add(topMiddlePanel);
-
-
-    currentPanel  = getEmptyPanel();
-
+		
+		currentPanel  = getEmptyPanel();
+		
     middlePanel.add(currentPanel);
-
+		
     middlePanel.add(Box.createGlue());
-
-
-    topMiddlePanel.setMaximumSize(topMiddlePanel.getPreferredSize());
+		
+		topMiddlePanel.setMaximumSize(topMiddlePanel.getPreferredSize());
     topMiddlePanel.setMinimumSize(topMiddlePanel.getPreferredSize());
-
+		
     nominalPanel  = getNomOrdPanel(MEASUREMENTSCALE_NOMINAL);
     ordinalPanel  = getNomOrdPanel(MEASUREMENTSCALE_ORDINAL);
     intervalPanel = getIntervalRatioPanel(MEASUREMENTSCALE_INTERVAL);
     ratioPanel    = getIntervalRatioPanel(MEASUREMENTSCALE_RATIO);
     dateTimePanel = getDateTimePanel();
 
+		
+		refreshUI();
   }
 
   private void setMeasurementScale(String scale) {
@@ -420,18 +420,23 @@ public class AttributePage extends AbstractWizardPage {
   private void setMeasurementScaleUI(JPanel panel) {
 
     topMiddlePanel.setMinimumSize(new Dimension(0,0));
-    middlePanel.remove(currentPanel);
+		middlePanel.remove(currentPanel);
+		//middlePanel.remove(topMiddlePanel);
+    
     currentPanel = panel;
+		//middlePanel.add(topMiddlePanel);
     middlePanel.add(currentPanel);
-
-    ((WizardPageSubPanelAPI)currentPanel).onLoadAction();
-    topMiddlePanel.setMaximumSize(topMiddlePanel.getPreferredSize());
+		topMiddlePanel.setMaximumSize(topMiddlePanel.getPreferredSize());
     topMiddlePanel.setMinimumSize(topMiddlePanel.getPreferredSize());
-    currentPanel.validate();
+		
+		((WizardPageSubPanelAPI)currentPanel).onLoadAction();
+		
+    currentPanel.invalidate();
+		
     currentPanel.repaint();
     topMiddlePanel.validate();
     topMiddlePanel.repaint();
-    middlePanel.validate();
+		middlePanel.validate();
     middlePanel.repaint();
   }
 
@@ -498,7 +503,7 @@ public class AttributePage extends AbstractWizardPage {
    */
   public void refreshUI() {
 
-    currentPanel.validate();
+		currentPanel.validate();
     currentPanel.repaint();
     middlePanel.validate();
     middlePanel.repaint();
@@ -688,11 +693,20 @@ public class AttributePage extends AbstractWizardPage {
   if(o1 != null) return "Nominal";
   o1 = map.get(AttributeSettings.Nominal_xPath+"/textDomain[1]/definition");
   if(o1 != null) return "Nominal";
+	o1 = map.get(AttributeSettings.Nominal_xPath+"/enumeratedDomain/codeDefinition/code");
+  if(o1 != null) return "Nominal";
+  o1 = map.get(AttributeSettings.Nominal_xPath+"/textDomain/definition");
+  if(o1 != null) return "Nominal";
 
   o1 = map.get(AttributeSettings.Ordinal_xPath+"/enumeratedDomain[1]/codeDefinition[1]/code");
   if(o1 != null) return "Ordinal";
   o1 = map.get(AttributeSettings.Ordinal_xPath+"/textDomain[1]/definition");
   if(o1 != null) return "Ordinal";
+	o1 = map.get(AttributeSettings.Ordinal_xPath+"/enumeratedDomain/codeDefinition/code");
+  if(o1 != null) return "Ordinal";
+  o1 = map.get(AttributeSettings.Ordinal_xPath+"/textDomain/definition");
+  if(o1 != null) return "Ordinal";
+	
   o1 = map.get(AttributeSettings.Ratio_xPath+"/unit/standardUnit");
   if(o1 != null) return "Ratio";
   o1 = map.get(AttributeSettings.Ratio_xPath+"/numericDomain/numberType");
@@ -732,9 +746,14 @@ public class AttributePage extends AbstractWizardPage {
 
    public void setPageData(OrderedMap map) {
 
-     String mScale = findMeasurementScale(map);
-     String xPathRoot = AttributeSettings.Attribute_xPath;
-     String name = (String)map.get(xPathRoot + "/attributeName");
+		 
+		 String name = (String)map.get(xPathRoot + "/attributeName[1]");
+		 if(name != null)
+			 map = stripIndexOneFromMapKeys(map);
+		 
+		 String mScale = findMeasurementScale(map);
+		 String xPathRoot = AttributeSettings.Attribute_xPath;
+     name = (String)map.get(xPathRoot + "/attributeName");
      if(name != null)
        attribNameField.setText(name);
 
@@ -751,9 +770,9 @@ public class AttributePage extends AbstractWizardPage {
 
      measurementScale = mScale;
 
-     int componentNum = -1;
+		 int componentNum = -1;
      if(measurementScale.equalsIgnoreCase("nominal")) {
-       setMeasurementScaleUI(nominalPanel);
+			 setMeasurementScaleUI(nominalPanel);
        setMeasurementScale(measScaleElemNames[0]);
        componentNum = 0;
      }
@@ -784,17 +803,36 @@ public class AttributePage extends AbstractWizardPage {
        Container c = (Container)(radioPanel.getComponent(1));
        JRadioButton jrb = (JRadioButton)c.getComponent(componentNum);
        jrb.setSelected(true);
+			 
      }
-     ((NominalOrdinalPanel)nominalPanel).setPanelData(xPathRoot+ "/measurementScale/nominal/nonNumericDomain", map);
+     
+		 ((NominalOrdinalPanel)nominalPanel).setPanelData(xPathRoot+ "/measurementScale/nominal/nonNumericDomain", map);
      ((NominalOrdinalPanel)ordinalPanel).setPanelData(xPathRoot+ "/measurementScale/ordinal/nonNumericDomain", map);
      ((IntervalRatioPanel)intervalPanel).setPanelData(xPathRoot+ "/measurementScale/interval", map);
      ((IntervalRatioPanel)ratioPanel).setPanelData(xPathRoot+ "/measurementScale/ratio", map);
      ((DateTimePanel)dateTimePanel).setPanelData(xPathRoot+ "/measurementScale/datetime", map);
-     ordinalPanel.invalidate();
-     refreshUI();
-     return;
+		 
+		 refreshUI();
+		 return;
    }
 
+	 private OrderedMap stripIndexOneFromMapKeys(OrderedMap map) {
+		 
+		 OrderedMap newMap = new OrderedMap();
+		 Iterator it = map.keySet().iterator();
+		 while(it.hasNext()) {
+			 String key = (String) it.next();
+			 String val = (String)map.get(key);
+			 if(key.indexOf("[1]") < 0) {
+				 newMap.put(key, val);
+				 continue;
+			 }
+			 String newKey = key.replaceAll("\\[1\\]","");
+			 newMap.put(newKey, val);
+		 }
+		 return newMap;
+	 }
+	 
   /**
    *  gets the HTML representation of the attribute values
    *  The HTML text references the entity.css file

@@ -5,9 +5,9 @@
 *    Authors: @tao@
 *    Release: @release@
 *
-*   '$Author: brooke $'
-*     '$Date: 2003-12-15 20:28:31 $'
-* '$Revision: 1.9 $'
+*   '$Author: sambasiv $'
+*     '$Date: 2003-12-24 00:10:05 $'
+* '$Revision: 1.10 $'
 *
 * This program is free software; you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -36,6 +36,7 @@ import edu.ucsb.nceas.morpho.util.Log;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.AttributePage;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.AttributeSettings;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardPopupDialog;
+import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardSettings;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.DataPackageWizardPlugin;
 import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
 import edu.ucsb.nceas.morpho.plugins.ServiceController;
@@ -278,6 +279,7 @@ public class InsertColumnCommand implements Command
 			return;
 		attributePage = (AttributePage)dpwPlugin.getPage(DataPackageWizardInterface.ATTRIBUTE_PAGE);
 		WizardPopupDialog wpd = new WizardPopupDialog(attributePage, mf, false);
+		wpd.setSize(WizardSettings.DIALOG_WIDTH, WizardSettings.ATTR_DIALOG_HEIGHT);
 		wpd.setVisible(true);
 		
 		if (wpd.USER_RESPONSE == WizardPopupDialog.OK_OPTION) {

@@ -7,8 +7,8 @@
 *    Release: @release@
 *
 *   '$Author: sambasiv $'
-*     '$Date: 2003-12-19 01:44:01 $'
-* '$Revision: 1.14 $'
+*     '$Date: 2003-12-24 00:10:05 $'
+* '$Revision: 1.15 $'
 *
 * This program is free software; you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -631,18 +631,28 @@ class NominalOrdinalPanel extends JPanel implements WizardPageSubPanelAPI {
 		
 		
 		setEnumListData(xPathRoot + "/enumeratedDomain[1]", map);
+		setEnumListData(xPathRoot + "/enumeratedDomain", map);
 		
 		String freeText = (String)map.get(xPathRoot + "/textDomain[1]/definition");
+		if(freeText == null)
+			freeText = (String)map.get(xPathRoot + "/textDomain/definition");
 		if(freeText != null && freeText.equals("Free text (unrestricted)"))
 			enumDefinitionFreeTextCheckBox.setSelected(true);
 		else
 			enumDefinitionFreeTextCheckBox.setSelected(false);
 		
 		String defn = (String)map.get(xPathRoot + "/textDomain[1]/definition");
-		if(defn != null)
+		if(defn == null)
+			defn = (String)map.get(xPathRoot + "/textDomain/definition");
+		if(defn != null) {
 			textDefinitionField.setText(defn);
+			domainPickList.setSelectedItem(this.textEnumPicklistVals[1]);
+		}
 		setTextListData(xPathRoot + "/textDomain[1]", map);
+		setTextListData(xPathRoot + "/textDomain", map);
 		String source = (String)map.get(xPathRoot + "/textDomain[1]/source");
+		if(source == null)
+			source = (String)map.get(xPathRoot + "/textDomain/source");
 		if(source != null)
 			textSourceField.setText(source);
 		return;
@@ -663,10 +673,15 @@ class NominalOrdinalPanel extends JPanel implements WizardPageSubPanelAPI {
 			List row = new ArrayList();
 			String code = (String)map.get(xPathRoot+"/codeDefinition[" +index+ "]/code");
 			
+			if(index == 1 && code == null)
+				code = (String)map.get(xPathRoot+"/codeDefinition/code");
+			
 			if(code == null)
 				break;
 			row.add(code);
 			String defn = (String)map.get(xPathRoot+"/codeDefinition[" +index+ "]/definition");
+			if(index == 1 && defn == null)
+				defn = (String)map.get(xPathRoot+"/codeDefinition/definition");
 			row.add(defn);
 			enumDefinitionList.addRow(row);
 			index++;
@@ -679,6 +694,9 @@ class NominalOrdinalPanel extends JPanel implements WizardPageSubPanelAPI {
 		while(true) {
 			List row = new ArrayList();
 			String pattern = (String)map.get(xPathRoot+"/pattern[" +index+ "]");
+			if(index == 1 && pattern == null)
+				pattern = (String)map.get(xPathRoot+"/pattern");
+			
 			if(pattern == null)
 				break;
 			row.add(pattern);

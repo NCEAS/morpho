@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: sambasiv $'
- *     '$Date: 2003-12-19 01:44:01 $'
- * '$Revision: 1.40 $'
+ *     '$Date: 2003-12-24 00:10:05 $'
+ * '$Revision: 1.41 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -119,6 +119,9 @@ public class WizardSettings {
 
   public static final int DIALOG_HEIGHT
   = WIZARD_HEIGHT - DIALOG_SMALLER_THAN_WIZARD_BY;
+	
+	public static final int ATTR_DIALOG_HEIGHT
+  = (WIZARD_HEIGHT - DIALOG_SMALLER_THAN_WIZARD_BY + 30);
 
   protected static final String PACKAGE_WIZ_FIRST_PAGE_ID = DataPackageWizardInterface.INTRODUCTION;
 

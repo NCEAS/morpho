@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: sambasiv $'
- *     '$Date: 2003-12-19 22:39:02 $'
- * '$Revision: 1.15 $'
+ *     '$Date: 2003-12-24 00:10:05 $'
+ * '$Revision: 1.16 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -263,7 +263,7 @@ class DateTimePanel extends JPanel implements WizardPageSubPanelAPI {
     
 		boundsGrid.add(outerButtonPanel);
     this.add(boundsGrid);
-  
+		this.add(Box.createGlue());
     ////////////////////////
 
   }
@@ -457,9 +457,14 @@ class DateTimePanel extends JPanel implements WizardPageSubPanelAPI {
 	  while(true) {
 		  List row = new ArrayList();
 		  String min = (String)map.get(xPathRoot + "/dateTimeDomain/bounds[" +index+ "]/minimum");
+			if(index == 1 && min == null)
+				min = (String)map.get(xPathRoot + "/dateTimeDomain/bounds/minimum");
 		  if(min != null) {
 			  row.add(min);
 			  Boolean  excl = (Boolean)map.get(xPathRoot + "/dateTimeDomain/bounds[" +index+ "]/minimum/@exclusive");
+				if(index == 1 && excl == null)
+					excl = (Boolean)map.get(xPathRoot +
+							"/dateTimeDomain/bounds/minimum/@exclusive");
 			  if(excl != null && excl.booleanValue() == true)
 				  row.add("<");
 			  else
@@ -471,9 +476,14 @@ class DateTimePanel extends JPanel implements WizardPageSubPanelAPI {
 		  }
 			row.add("value");
 		  String max = (String)map.get(xPathRoot + "/dateTimeDomain/bounds[" +index+ "]/maximum");
+			if(index == 1 && max == null)
+				max = (String)map.get(xPathRoot + "/dateTimeDomain/bounds/maximum");
 		  if(max != null) {
 			  
 			  Boolean  excl = (Boolean)map.get(xPathRoot + "/dateTimeDomain/bounds[" +index+ "]/maximum/@exclusive");
+				if(index == 1 && excl == null)
+					excl = (Boolean)map.get(xPathRoot +
+							"/dateTimeDomain/bounds/maximum/@exclusive");
 			  if(excl != null && excl.booleanValue() == true)
 				  row.add("<");
 			  else
