@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2002-12-12 18:14:34 $'
- * '$Revision: 1.94 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2002-12-13 00:03:44 $'
+ * '$Revision: 1.95 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -63,6 +63,8 @@ import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import javax.swing.*;
+
 
 import java.net.URL;
 
@@ -146,7 +148,7 @@ public class DataPackage implements XMLFactoryInterface
     initTriplesCollection();
     //parse triples file and get basic information (title, Originators etc)
     parseTripleFile();
- //   checkTriplesForAccess();
+    checkTriplesForAccess();
   }
 
 
@@ -2086,7 +2088,6 @@ public class DataPackage implements XMLFactoryInterface
     }
     catch (Exception e) {}
     Vector ids = getAllIdentifiers();
-  Log.debug(1, "triples check beginning: access id: "+accessId);
     Vector missingIds = new Vector();
     String temp = "";
     if (accessId!=null) {
@@ -2094,7 +2095,18 @@ public class DataPackage implements XMLFactoryInterface
         String obj = (String)ids.elementAt(i);
         temp = temp + obj + "::";
         if (!subjectAndObjectCheck(accessId, obj)) {
-          missingIds.addElement(obj);
+          int choice = JOptionPane.showConfirmDialog(null, 
+                   "Some modules in this package do not have an associated access "+
+                   "control module. This means that only the owner has access to these modules.\n\n"+
+                   "Would you like to associate the package access "+
+                   "control module with all other modules?\n\n"+
+                   "(Changes will appear the next time the package is opened.)",
+                   "Access Information Missing ",
+                   JOptionPane.YES_NO_OPTION,
+                   JOptionPane.WARNING_MESSAGE);
+          if (choice == JOptionPane.YES_OPTION) {
+            missingIds.addElement(obj);
+          }
         }
       }
     }
@@ -2102,7 +2114,9 @@ public class DataPackage implements XMLFactoryInterface
       // case where there is no access control file for package
       Log.debug(1, "No access file in package!!!!");
     }
-  Log.debug(1, "Number of modules without access triple: "+ missingIds.size()+ temp);
+    if (missingIds.size()>0) {
+      fixMissingAccess(accessId, missingIds);
+    }
   }
   
   /* should return true if a triple exists with the indicated
@@ -2121,5 +2135,81 @@ public class DataPackage implements XMLFactoryInterface
       }
     }
     return res;
+  }
+  
+  private void fixMissingAccess(String accessId, Vector missingIds) {
+    String docString;
+    TripleCollection newTriples = new TripleCollection();
+    for (int i=0;i<missingIds.size();i++) {
+      Triple tr = new Triple(accessId, "provides access control rules for", 
+                                       (String)missingIds.elementAt(i));
+      newTriples.addTriple(tr);                                 
+    }
+    AccessionNumber a = new AccessionNumber(morpho);
+    FileSystemDataStore fsds = new FileSystemDataStore(morpho);
+    docString = PackageUtil.addTriplesToTriplesFile(newTriples, this, 
+                                                      morpho);
+    File newDPTempFile;
+    //get a new id for the package file
+    String dataPackageId = a.incRev(this.getID());
+    try
+    { //this handles the package file
+      //save a temp file with the new id
+      newDPTempFile = fsds.saveTempFile(dataPackageId,
+                                    new StringReader(docString));
+      //inc the revision of the new Package file in the triples
+      docString = a.incRevInTriples(newDPTempFile, this.getID(), 
+                                    dataPackageId);
+      //save new temp file that has the right id and the id inced in the triples
+      newDPTempFile = fsds.saveTempFile(dataPackageId, 
+                                    new StringReader(docString));
+    }
+    catch(Exception e)
+    {
+      Log.debug(0, "Error saving file(5): " + e.getMessage());
+      e.printStackTrace();
+      return;
+    }
+    String location = this.getLocation();
+    boolean locMetacat = false;
+    boolean locLocal = false;
+    if(location.equals(DataPackageInterface.LOCAL) || 
+       location.equals(DataPackageInterface.BOTH))
+    {
+      locLocal = true;
+    }
+    
+    if(location.equals(DataPackageInterface.METACAT) || 
+       location.equals(DataPackageInterface.BOTH))
+    {
+      locMetacat = true;
+    }
+    
+    if(locLocal) {
+      try
+      { //save the new package file
+        fsds.saveFile(dataPackageId, new FileReader(newDPTempFile));
+      }
+      catch(Exception e)
+      {
+        Log.debug(0, "Error saving file(3): " + e.getMessage());
+        e.printStackTrace();
+        return;
+      }
+    }
+    if(locMetacat) {
+      MetacatDataStore mds = new MetacatDataStore(morpho);
+      try
+      {
+        mds.saveFile(dataPackageId, new FileReader(newDPTempFile), this);
+      }
+      catch(Exception e)
+      {
+        Log.debug(0, "Error saving file(2): " + e.getMessage());
+        e.printStackTrace();
+        return;
+      }
+    }
+
   }
 }
