@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-07-06 23:37:40 $'
- * '$Revision: 1.55 $'
+ *     '$Date: 2001-07-09 23:24:14 $'
+ * '$Revision: 1.56 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1419,11 +1419,22 @@ private Vector sameParent(Vector list) {
             // special case - template has editor and help info
             String editor = (String)(templateni.attr).get("editor");
             if (editor!=null) {
-                inputni.setEditor(editor); 
+                inputni.setEditor(editor);
+                templateni.attr.remove("editor");
             }
             String help = (String)(templateni.attr).get("help");
             if (help!=null) {
                 inputni.setHelp(help); 
+                templateni.attr.remove("help");
+            }
+            
+            // copy attribute to input tree
+            Enumeration attrlist = templateni.attr.keys();
+            while (attrlist.hasMoreElements()) {
+              String key = (String)attrlist.nextElement();
+              if (!inputni.attr.containsKey(key)) {
+                inputni.attr.put(key,templateni.attr.get(key));
+              }
             }
         }
     }
