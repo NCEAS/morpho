@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2003-09-22 21:53:24 $'
- * '$Revision: 1.5 $'
+ *     '$Date: 2003-09-26 00:43:13 $'
+ * '$Revision: 1.6 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,12 +29,16 @@
 package edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages;
 
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardSettings;
+import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardContainerFrame;
 
 import java.util.Map;
 
 import javax.swing.JLabel;
+import javax.swing.JDialog;
+import javax.swing.JFrame;
 
 import java.awt.BorderLayout;
+import java.awt.Container;
 
 import edu.ucsb.nceas.morpho.framework.ConfigXML;
 import edu.ucsb.nceas.morpho.framework.TextImportWizard;
@@ -58,12 +62,15 @@ public class ImportWizard extends     AbstractWizardPage
   public final String title      = "Data Package Wizard";
   public final String subtitle   = "Import Data/Information";
   
+  private final String IMPORT_WIZ_TITLE = "Text Import Wizard";
+  
   private OrderedMap resultsMap;
   private TextImportWizard importWiz;
   
   private TextImportListener listener;
   private boolean importCompletedOK = false;
   
+  private JDialog importWizDialog;
   
   public ImportWizard() { init(); }
   
@@ -78,6 +85,8 @@ public class ImportWizard extends     AbstractWizardPage
    */
   public void onLoadAction() {
     
+    // if import hasn't completed OK (i.e. first visit, or returning after 
+    // a "cancel"), start up the import wizard.
     if (!importCompletedOK) {
 
       AbstractWizardPage locationPage
@@ -86,11 +95,28 @@ public class ImportWizard extends     AbstractWizardPage
       String fileTextName = ((DataLocation)locationPage).getImportFilePath();
                 
       importWiz = new TextImportWizard(fileTextName, this);
-      importWiz.setVisible(true);
+
+      importWiz.setVisible(false);
       
+      final JFrame parent = WizardContainerFrame.frame;
+      final int xcoord = ( parent.getX() + parent.getWidth()/2 ) 
+                                                - WizardSettings.DIALOG_WIDTH/2;
+      final int ycoord = ( parent.getY() + parent.getHeight()/2 ) 
+                                                - WizardSettings.DIALOG_HEIGHT/2;
+      
+      importWizDialog = new JDialog(parent, IMPORT_WIZ_TITLE, true);
+                                                
+      importWizDialog.getContentPane().add(importWiz.getContentPane());
+
+      importWizDialog.setBounds(xcoord, ycoord, WizardSettings.DIALOG_WIDTH, 
+                                                WizardSettings.DIALOG_HEIGHT);
+
+      importWizDialog.setVisible(true);
+
     } else {
-      importCompletedOK = false; 
-      listener.importCanceled();
+      // if import has completed OK, we don't need to be on this 
+      // page - go straight back to previous page
+      importCanceled();
     }
   }
 
@@ -101,10 +127,15 @@ public class ImportWizard extends     AbstractWizardPage
    */
   public void importComplete(OrderedMap om) {
 
-    importWiz.setVisible(false);
+    if (importWiz!=null) importWiz.setVisible(false);
     resultsMap = om;
     listener.importComplete(om);
     importCompletedOK = true; 
+    if (importWizDialog!=null) {
+      importWizDialog.setVisible(false);
+      importWizDialog.dispose();
+    }
+    importWizDialog = null;
     importWiz = null;
   }
   
@@ -113,9 +144,14 @@ public class ImportWizard extends     AbstractWizardPage
    */
   public void importCanceled() {
   
-    importWiz.setVisible(false);
+    if (importWiz!=null) importWiz.setVisible(false);
+    if (importWizDialog!=null) {
+      importWizDialog.setVisible(false);
+      importWizDialog.dispose();
+    }
     listener.importCanceled();
     importCompletedOK = false; 
+    importWizDialog = null;
     importWiz = null;
   }
   
@@ -145,10 +181,7 @@ public class ImportWizard extends     AbstractWizardPage
    *  @return boolean true if wizard should advance, false if not 
    *          (e.g. if a required field hasn't been filled in)
    */
-  public boolean onAdvanceAction() { 
-  
-    return true; 
-  }
+  public boolean onAdvanceAction() { return true; }
   
   /** 
    *  gets the Map object that contains all the key/value paired

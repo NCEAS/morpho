@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2003-09-25 19:28:22 $'
- * '$Revision: 1.18 $'
+ *     '$Date: 2003-09-26 00:43:13 $'
+ * '$Revision: 1.19 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -79,10 +79,10 @@ public class WizardSettings {
 
   private   static final int DIALOG_SMALLER_THAN_WIZARD_BY = 30;
 
-  protected static final int DIALOG_WIDTH  
+  public static final int DIALOG_WIDTH  
                           = WIZARD_WIDTH - DIALOG_SMALLER_THAN_WIZARD_BY;
 
-  protected static final int DIALOG_HEIGHT  
+  public static final int DIALOG_HEIGHT  
                           = WIZARD_HEIGHT - DIALOG_SMALLER_THAN_WIZARD_BY;
 
   protected static final String FIRST_PAGE_ID = WizardPageLibrary.INTRODUCTION;
