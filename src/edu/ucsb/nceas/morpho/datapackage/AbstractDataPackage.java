@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2004-04-26 22:47:45 $'
- * '$Revision: 1.102 $'
+ *   '$Author: sambasiv $'
+ *     '$Date: 2004-04-26 23:12:16 $'
+ * '$Revision: 1.103 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -72,6 +72,7 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Arrays;
+import java.util.Vector;
 import java.util.Iterator;
 import java.util.HashMap;
 import java.util.Map;
@@ -1476,6 +1477,26 @@ public abstract class AbstractDataPackage extends MetadataObject
     parent.removeChild(entity);
     entityArray = null;
   }
+	
+	/**
+	* This method deletes the indexed entity from the DOM
+	*
+	* @param entNum int
+	*/
+	public void deleteAllEntities() {
+		if ( (entityArray == null) || (entityArray.length < 1)) {
+			Log.debug(20, "Unable to find any entities");
+			return;
+		}
+		Node parent = (entityArray[0]).getNode().getParentNode();
+		for(int i = 0; i < entityArray.length; i++) {
+			
+			Node entity = (entityArray[i]).getNode();
+			parent.removeChild(entity);
+		}
+		entityArray = null;
+	}
+
 
 
   /**
@@ -3267,37 +3288,205 @@ public abstract class AbstractDataPackage extends MetadataObject
         }
         for (int k = 0; k < getPhysicalArray(i).length; k++) {
           sb.append("   entity " + i + " physical " + k + "--- name: " +
-                    getPhysicalName(i, k) + "\n");
-          sb.append("   entity " + i + " physical " + k + "--- format: " +
-                    getPhysicalFormat(i, k) + "\n");
-          sb.append("   entity " + i + " physical " + k +
-                    "--- fieldDelimiter: " + getPhysicalFieldDelimiter(i, k) +
-                    "\n");
-          sb.append("   entity " + i + " physical " + k +
-                    "--- numHeaderLines: " + getPhysicalNumberHeaderLines(i, k) +
-                    "\n");
-          sb.append("   entity " + i + " physical " + k +
-                    "------ compression: " + getCompressionMethod(i, k) + "\n");
-          sb.append("   entity " + i + " physical " + k + "------ encoding: " +
-                    getEncodingMethod(i, k) + "\n");
-          sb.append("      entity " + i + " physical " + k + "------ inline: " +
-                    getDistributionInlineData(i, k, 0) + "\n");
-          sb.append("      entity " + i + " physical " + k + "------ url: " +
-                    getDistributionUrl(i, k, 0) + "\n");
-        }
-      }
-    }
-    Log.debug(1, sb.toString());
-  }
-
-  // methods to implement the XMLFactoryInterface
-  public Reader openAsReader(String id) throws DocumentNotFoundException {
-    return null;
-  }
-
-  public Document openAsDom(String id) {
-    // ignore the id and just return the dom for this instance
-    return (this.getMetadataNode()).getOwnerDocument();
-  }
+					getPhysicalName(i, k) + "\n");
+					sb.append("   entity " + i + " physical " + k + "--- format: " +
+					getPhysicalFormat(i, k) + "\n");
+					sb.append("   entity " + i + " physical " + k +
+					"--- fieldDelimiter: " + getPhysicalFieldDelimiter(i, k) +
+					"\n");
+					sb.append("   entity " + i + " physical " + k +
+					"--- numHeaderLines: " + getPhysicalNumberHeaderLines(i, k) +
+					"\n");
+					sb.append("   entity " + i + " physical " + k +
+					"------ compression: " + getCompressionMethod(i, k) + "\n");
+					sb.append("   entity " + i + " physical " + k + "------ encoding: " +
+					getEncodingMethod(i, k) + "\n");
+					sb.append("      entity " + i + " physical " + k + "------ inline: " +
+					getDistributionInlineData(i, k, 0) + "\n");
+					sb.append("      entity " + i + " physical " + k + "------ url: " +
+					getDistributionUrl(i, k, 0) + "\n");
+				}
+			}
+		}
+		Log.debug(1, sb.toString());
+	}
+	
+	// methods to implement the XMLFactoryInterface
+	public Reader openAsReader(String id) throws DocumentNotFoundException {
+		return null;
+	}
+	
+	public Document openAsDom(String id) {
+		// ignore the id and just return the dom for this instance
+		return (this.getMetadataNode()).getOwnerDocument();
+	}
+	
+	// Code Import stuff
+	
+	private List toBeImported = null;
+	private int toBeImportedCount = 0;
+	
+	private List lastImportedAttributes;
+	private String lastImportedEntityName;
+	private Vector lastImportedDataSet;
+	private Entity[] originalEntities = null;
+	
+	
+	public void addAttributeForImport(String entityName, String attributeName,
+	String scale, OrderedMap omap, String xPath,
+	boolean newTable) {
+		
+		List t = new ArrayList();
+		t.add(entityName);
+		t.add(attributeName);
+		t.add(scale);
+		t.add(omap);
+		t.add(xPath);
+		t.add(new Boolean(newTable));
+		if (toBeImported == null) {
+			toBeImported = new ArrayList();
+			toBeImportedCount = 0;
+		}
+		toBeImported.add(t);
+		toBeImportedCount++;
+		Log.debug(10,
+		"Adding Attr to Import - (" + entityName + ", " + attributeName +
+		") ; count = " + toBeImportedCount);
+	}
+	
+	
+	public String getCurrentImportEntityName() {
+		
+		if (toBeImportedCount == 0) {
+			return null;
+		}
+		List t = (List) toBeImported.get(0);
+		if (t == null) {
+			return null;
+		}
+		return (String) t.get(0);
+	}
+	
+	public String getCurrentImportAttributeName() {
+		
+		if (toBeImportedCount == 0) {
+			return null;
+		}
+		List t = (List) toBeImported.get(0);
+		if (t == null) {
+			return null;
+		}
+		return (String) t.get(1);
+	}
+	
+	public String getCurrentImportScale() {
+		if (toBeImportedCount == 0) {
+			return null;
+		}
+		List t = (List) toBeImported.get(0);
+		if (t == null) {
+			return null;
+		}
+		return (String) t.get(2);
+	}
+	
+	public OrderedMap getCurrentImportMap() {
+		if (toBeImportedCount == 0) {
+			return null;
+		}
+		List t = (List) toBeImported.get(0);
+		if (t == null) {
+			return null;
+		}
+		return (OrderedMap) t.get(3);
+	}
+	
+	public OrderedMap getSecondImportMap() {
+		if (toBeImportedCount < 2) {
+			return null;
+		}
+		List t = (List) toBeImported.get(1);
+		if (t == null) {
+			return null;
+		}
+		return (OrderedMap) t.get(3);
+	}
+	
+	public String getCurrentImportXPath() {
+		if (toBeImportedCount == 0) {
+			return null;
+		}
+		List t = (List) toBeImported.get(0);
+		if (t == null) {
+			return null;
+		}
+		return (String) t.get(4);
+	}
+	
+	public boolean isCurrentImportNewTable() {
+		if (toBeImportedCount == 0) {
+			return false;
+		}
+		List t = (List) toBeImported.get(0);
+		if (t == null) {
+			return false;
+		}
+		return ( (Boolean) t.get(5)).booleanValue();
+	}
+	
+	public int getAttributeImportCount() {
+		return toBeImportedCount;
+	}
+	
+	public void removeAttributeForImport() {
+		if (toBeImportedCount == 0) {
+			return;
+		}
+		toBeImported.remove(0);
+		toBeImportedCount--;
+	}
+	
+	public void setLastImportedEntity(String name) {
+		lastImportedEntityName = name;
+	}
+	
+	public void setLastImportedDataSet(Vector data) {
+		lastImportedDataSet = data;
+	}
+	
+	public void setLastImportedAttributes(List attr) {
+		lastImportedAttributes = attr;
+	}
+	
+	public String getLastImportedEntity() {
+		return lastImportedEntityName;
+	}
+	
+	public List getLastImportedAttributes() {
+		return lastImportedAttributes;
+	}
+	
+	public Vector getLastImportedDataSet() {
+		return lastImportedDataSet;
+	}
+	
+	public Entity[] getOriginalEntityArray() {
+		return this.originalEntities;
+	}
+	
+	public void setOriginalEntityArray(Entity[] arr) {
+		this.originalEntities = arr;
+	}
+	
+	public void clearAllAttributeImports() {
+		
+		this.originalEntities = null;
+		toBeImported = null;
+		toBeImportedCount = 0;
+		lastImportedAttributes = null;
+		lastImportedEntityName = null;
+		lastImportedDataSet = null;
+		
+	}
 }
 
