@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2002-09-06 17:07:54 $'
- * '$Revision: 1.3 $'
+ *     '$Date: 2002-09-11 22:56:10 $'
+ * '$Revision: 1.4 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -42,6 +42,7 @@ import java.awt.event.ItemListener;
 import java.awt.FlowLayout;
 import java.awt.Frame;
 import java.awt.Insets;
+import java.awt.Window;
 import java.util.Vector;
 
 
@@ -70,7 +71,7 @@ public class DeleteDialog extends JDialog
   private JButton cancelButton = null;
   
   /** Action for executeButton */
-  private GUIAction executeAction = new GUIAction("Execute", null, null);
+  private GUIAction executeAction = new GUIAction("Delete", null, null);
   
   /** Radio button */
   private JRadioButton deleteLocal = new JRadioButton("Delete local copy");
@@ -80,10 +81,13 @@ public class DeleteDialog extends JDialog
   private static final int PADDINGWIDTH = 8;
   private static String WARNING =
       "Are you sure you want to delete the data package? \n" +
-      "If yes, please choose one option and click the Execute button."; 
+      "If yes, please choose one option and click the Delete button."; 
 
   /** A reference to morpho frame */
-  MorphoFrame parent = null;    
+  MorphoFrame morphoFrame = null;
+
+  /** A reference to open dialog*/
+  OpenDialogBox openDialog = null;    
   
   /** selected docid to delete */
   String selectDocId = null;
@@ -96,7 +100,7 @@ public class DeleteDialog extends JDialog
 
   
   /**
-   * Construct a new instance of the synchonize dialog
+   * Construct a new instance of the delete dialog which parent is morphoframe
    *
    * @param myParent  The parent frame for this dialog
    * @param mySelecteDocId the selected docid
@@ -107,11 +111,39 @@ public class DeleteDialog extends JDialog
                                       boolean myInLocal, boolean myInNetwork)
   {
     super(myParent);
-    parent = myParent;
+    morphoFrame = myParent;
     selectDocId = mySelectedDocId;
     inLocal = myInLocal;
     inNetwork = myInNetwork;
-    
+    initialize(morphoFrame);
+ 
+  }
+  
+  /**
+   * Construct a new instance of the delete dialog which parent is open dialog
+   *
+   * @param myParent  The parent open dialog for this dialog
+   * @param grandParent the parent frame of myParent open dialog
+   * @param mySelecteDocId the selected docid
+   * @param myInLocal if the datapackage is in local
+   * @param myInNetwork if the datapackage is in network
+   */
+  public DeleteDialog(OpenDialogBox myParent, MorphoFrame grandParent, 
+              String mySelectedDocId, boolean myInLocal, boolean myInNetwork)
+  {
+    super(myParent); 
+    openDialog = myParent;
+    morphoFrame = grandParent;
+    selectDocId = mySelectedDocId;
+    inLocal = myInLocal;
+    inNetwork = myInNetwork;
+    initialize(openDialog);
+ 
+  }
+  
+  /** Method to initialize delete dialog */
+  private void initialize(Window parent)
+  {
      // Set OpenDialog size depent on parent size
     int parentWidth = parent.getWidth();
     int parentHeight = parent.getHeight();
@@ -264,24 +296,27 @@ public class DeleteDialog extends JDialog
         // Enable execute button
         Log.debug(45, "In delete local branch");
         executeAction.setEnabled(true);
-        executeAction.setCommand( new DeleteCommand(dialog, parent, 
-            DataPackageInterface.LOCAL, selectDocId, inLocal, inNetwork));
+        executeAction.setCommand( new DeleteCommand(openDialog, dialog, 
+                        morphoFrame, DataPackageInterface.LOCAL, selectDocId, 
+                        inLocal, inNetwork));
       } 
       else if (object == deleteNetwork) 
       {
         // Enable execute button
         Log.debug(50, "In delete network branch");
         executeAction.setEnabled(true);
-        executeAction.setCommand( new DeleteCommand(dialog, parent, 
-            DataPackageInterface.METACAT, selectDocId, inLocal, inNetwork));
+        executeAction.setCommand( new DeleteCommand(openDialog, dialog,
+                        morphoFrame, DataPackageInterface.METACAT, selectDocId, 
+                        inLocal, inNetwork));
       }
       else if (object == deleteBoth)
       {
          // Enable execute button
         Log.debug(50, "In delete both branch");
         executeAction.setEnabled(true);
-        executeAction.setCommand( new DeleteCommand(dialog, parent, 
-              DataPackageInterface.BOTH, selectDocId, inLocal, inNetwork));
+        executeAction.setCommand( new DeleteCommand(openDialog, dialog, 
+                            morphoFrame, DataPackageInterface.BOTH, selectDocId,
+                            inLocal, inNetwork));
       }
    }//enableExecuteButton
  
