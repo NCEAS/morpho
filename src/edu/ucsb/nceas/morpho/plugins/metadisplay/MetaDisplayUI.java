@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2002-08-21 20:15:19 $'
- * '$Revision: 1.3 $'
+ *     '$Date: 2002-08-22 16:46:09 $'
+ * '$Revision: 1.4 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -39,11 +39,10 @@ import javax.swing.BoxLayout;
 
 
 /**
- *  Plugin that builds a display panel to display metadata.  Given a String ID, 
- *  does a lookup using a factory that must also be provided (and which 
- *  implements the ContentFactoryInterface) to get the XML document to display.  
- *  Then styles this document accordingly using XSLT, before displaying it in an 
- *  embedded HTML display.
+ *  Display component used by the MetaDisplay class to display:<ul>
+ *  <li> an embedded header panel containing navigation controls, and </li>
+ *  <li> an embedded HTML display showing the results of styling the XML 
+ *  metadata document usig XSLT.</li></ul>
  */
 public class MetaDisplayUI extends JPanel
 {
@@ -85,11 +84,10 @@ public class MetaDisplayUI extends JPanel
         
         this.setLayout(new BorderLayout());
         this.add(Box.createHorizontalStrut(PADDING),BorderLayout.WEST);
-        JPanel centerPanel = new JPanel();
+        Box centerPanel = Box.createVerticalBox();
         this.add(centerPanel, BorderLayout.CENTER) ;
         this.add(Box.createHorizontalStrut(PADDING),BorderLayout.EAST);
 
-        centerPanel.setLayout(new BoxLayout(centerPanel,BoxLayout.Y_AXIS));
         centerPanel.add(Box.createVerticalStrut(PADDING));
         centerPanel.add(header);
         centerPanel.add(Box.createVerticalStrut(PADDING));
@@ -100,30 +98,40 @@ public class MetaDisplayUI extends JPanel
         this.setPreferredSize(OVERALL_DIMS);
     }
 
-	
-	/**
-	 *  get a reference to the embedded HeaderPanel object
-	 *
-     *  @return  a reference to the embedded HeaderPanel object
-	 */
-	public HeaderPanel getHeader()
-	{
-		return this.header;
-	}
 
 	
 	/**
-	 *  get a reference to the embedded HTMLPanel object
+	 *  add a PathElement object to the path
 	 *
-	 *  @return  a reference to the embedded HTMLDisplay object
+	 *  @param  pathElement the <code>PathElement</code> to add
+	 */
+	public void addToPath(PathElementInterface pathElement)
+	{
+//		getHeader().getPath().add(pathElement);
+	}
+
+	/**
+	 *  set content in the embedded HTMLPanel object
+	 *
+	 *  @param  html  the HTML content to be displayed
 	 */
 	public void setHTML(String html)
 	{
 		getHTMLPanel().setHTML(html);
 	}
+	
+	/**
+	 *  protected method: get a reference to the embedded HeaderPanel object
+	 *
+     *  @return  a reference to the embedded HeaderPanel object
+	 */
+	protected HeaderPanel getHeader()
+	{
+		return this.header;
+	}
 
 	/**
-	 *  get a reference to the embedded HTMLPanel object
+	 *  protected method: get a reference to the embedded HTMLPanel object
 	 *
 	 *  @return  a reference to the embedded HTMLDisplay object
 	 */
