@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-03-19 19:14:00 $'
- * '$Revision: 1.9 $'
+ *     '$Date: 2002-03-21 23:18:52 $'
+ * '$Revision: 1.10 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -36,6 +36,21 @@ import java.util.Vector;
 import java.util.StringTokenizer;
 import java.util.Date;
 import java.util.Enumeration;
+
+import org.apache.xerces.parsers.DOMParser;
+import org.apache.xalan.xpath.xml.FormatterToXML;
+import org.apache.xalan.xpath.xml.TreeWalker;
+import org.w3c.dom.Attr;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.NodeList;
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.w3c.dom.DocumentType;
+import org.xml.sax.SAXException;
+import org.xml.sax.InputSource;
+import org.apache.xerces.dom.DocumentTypeImpl;
+
 import edu.ucsb.nceas.morpho.framework.*;
 
 public class DataViewer extends javax.swing.JFrame
@@ -48,17 +63,61 @@ public class DataViewer extends javax.swing.JFrame
     String tempdir;
     String dataString = "";
     String dataID = "";
-    String delimiter;
     
     DataPackageGUI grandParent;
     EntityGUI parent;
     
 
 
+  /**
+   *   file containing the data
+   */
+   File dataFile = null;
+
+  /**
+   *   file containing the entity metadata
+   */
+   File entityFile = null;
+     
+  /**
+   *   file containing the attribute metadata
+   */
+   File attributeFile = null;
+   
+  /**
+   *   file containing the physical metadata
+   */
+   File physicalFile = null;
+  
+  /**
+   * data format
+   */
+   String format;
+   
+   /**
+    *  field delimiter (hex string)
+    */
+   String field_delimiter;
+     
+  /**
+   * number of records
+   */
+   int num_records;
+   
+  /**
+   * delimiter
+   */
+   String delimiter_string;
+   
+   /**
+    * number of columns
+    */
+    int num_columns;
+    
     /**
-     *   file containing the data
+     * Vector of column lablels
      */
-     File dataFile = null;
+     Vector column_labels;
      
 	/**
 	 * number of parsed lines in file
@@ -68,7 +127,7 @@ public class DataViewer extends javax.swing.JFrame
 	/**
 	 *  max nlines
 	 */
-	 int nlines_max = 2000;
+	 int nlines_max = 100000;
 
 	/**
 	 * array of line strings
@@ -78,8 +137,6 @@ public class DataViewer extends javax.swing.JFrame
     	/**
 	 * vector containing column Title strings
 	 */
-	// contains column titles
-	Vector colTitles;
 
 	/**
 	 * vector of vectors with table data
@@ -151,8 +208,6 @@ public class DataViewer extends javax.swing.JFrame
 		SymAction lSymAction = new SymAction();
 		CancelButton.addActionListener(lSymAction);
 		UpdateButton.addActionListener(lSymAction);
-		SymChange lSymChange = new SymChange();
-		TabbedViewPanel.addChangeListener(lSymChange);
 		//}}
 		TabbedViewPanel.setSelectedIndex(1);
 		
@@ -162,16 +217,16 @@ public class DataViewer extends javax.swing.JFrame
 	{
 		this();
 		this.framework = framework;
-        config = framework.getConfiguration();
-        ConfigXML profile = framework.getProfile();
-        String profileDirName = config.get("profile_directory", 0) + 
+    config = framework.getConfiguration();
+    ConfigXML profile = framework.getProfile();
+    String profileDirName = config.get("profile_directory", 0) + 
                             File.separator +
                             config.get("current_profile", 0);
-        datadir = profileDirName + File.separator + profile.get("datadir", 0);
-        tempdir = profileDirName + File.separator + profile.get("tempdir", 0);
-        cachedir = profileDirName + File.separator + profile.get("cachedir", 0);
-        separator = profile.get("separator", 0);
-        separator = separator.trim();
+    datadir = profileDirName + File.separator + profile.get("datadir", 0);
+    tempdir = profileDirName + File.separator + profile.get("tempdir", 0);
+    cachedir = profileDirName + File.separator + profile.get("cachedir", 0);
+    separator = profile.get("separator", 0);
+    separator = separator.trim();
 		setTitle(sTitle);
 	}
 
@@ -186,7 +241,7 @@ public class DataViewer extends javax.swing.JFrame
     public DataViewer(ClientFramework framework, String sTitle, File dataFile)
     {
         this();
-		this.framework = framework;
+		    this.framework = framework;
         config = framework.getConfiguration();
         ConfigXML profile = framework.getProfile();
         String profileDirName = config.get("profile_directory", 0) + 
@@ -202,25 +257,167 @@ public class DataViewer extends javax.swing.JFrame
     }
     
     
+    public void init() {
+      boolean missing_metadata_flag = false;
+      if (physicalFile==null) {
+          framework.debug(9, "Physical information about the data is missing!");
+          missing_metadata_flag = true;
+      } else {
+          // get format, recordDelimiter, field delimiter
+          // in general, get all info need to read a record
+        
+        Vector formatPath = new Vector();
+        formatPath.addElement("eml-physical/format");
+        NodeList formatList = PackageUtil.getPathContent(physicalFile, 
+                                                     formatPath, 
+                                                     framework);  
+        if(formatList != null && formatList.getLength() != 0)
+        {
+          String s = formatList.item(0).getFirstChild().getNodeValue();
+          this.format = s;
+        }
+        
+        Vector fieldDelimiterPath = new Vector();
+        fieldDelimiterPath.addElement("eml-physical/fieldDelimiter");
+        NodeList fieldDelimiterList = PackageUtil.getPathContent(physicalFile, 
+                                                     fieldDelimiterPath, 
+                                                     framework);  
+        if(fieldDelimiterList != null && fieldDelimiterList.getLength() != 0)
+        {
+          String s = fieldDelimiterList.item(0).getFirstChild().getNodeValue();
+          this.field_delimiter = s;
+        }
+                                                     
+      }
+      if (entityFile==null) {
+          framework.debug(9, "Entity information about the data is missing!");
+          missing_metadata_flag = true;
+      } else {
+          // get number of records, etc
+        Vector numRecordsPath = new Vector();
+        numRecordsPath.addElement("table-entity/numberOfRecords");
+        NodeList numRecordsList = PackageUtil.getPathContent(entityFile, 
+                                                     numRecordsPath, 
+                                                     framework);  
+        if(numRecordsList != null && numRecordsList.getLength() != 0)
+        {
+          String s = numRecordsList.item(0).getFirstChild().getNodeValue();
+          num_records = (new Integer(s.trim())).intValue();
+        }
+          
+      }
+      if (attributeFile==null) {
+          framework.debug(9, "Attribute information about the data is missing!");
+          missing_metadata_flag = true;
+      } else {
+          // get attribute labels and build column headers
+        Vector attributeLabelsPath = new Vector();
+        attributeLabelsPath.addElement("eml-attribute/attribute/attributeLabel");
+        NodeList attributeLabelsList = PackageUtil.getPathContent(attributeFile, 
+                                                     attributeLabelsPath, 
+                                                     framework);  
+        if(attributeLabelsList != null && attributeLabelsList.getLength() != 0)
+        {
+          column_labels = new Vector(); 
+          for (int i=0;i<attributeLabelsList.getLength();i++) {
+            String temp = attributeLabelsList.item(i).getFirstChild().getNodeValue();
+            column_labels.addElement(temp); 
+          }
+        }
+      }
+      // now examine format info and see if we want to simply display a text
+      // file, create a table, or display an image
+      if (missing_metadata_flag) {
+        // try displaying as text since don't know what else to do 
+        
+        // add text display here!!!
+      }
+      else { 
+        boolean text_flag = false;
+        if (format.indexOf("text")>-1){
+          text_flag=true;
+        }
+        else if (format.indexOf("Text")>-1) {
+          text_flag=true;
+        }
+        else if (format.indexOf("asci")>-1) {
+          text_flag=true;
+        }
+        else if (format.indexOf("Asci")>-1) {
+          text_flag=true;
+        }
+        
+        boolean image_flag = false;
+        if (format.indexOf("image")>-1){
+          image_flag=true;
+        }
+        else if (format.indexOf("gif")>-1) {
+          image_flag=true;
+        }
+        else if (format.indexOf("GIF")>-1) {
+          image_flag=true;
+        }
+        else if (format.indexOf("jpeg")>-1) {
+          image_flag=true;
+        }
+        else if (format.indexOf("JPEG")>-1) {
+          image_flag=true;
+        }
+        else if (format.indexOf("jpg")>-1) {
+          image_flag=true;
+        }
+        else if (format.indexOf("JPG")>-1) {
+          image_flag=true;
+        }
+        
+        if (image_flag) {
+          // try to display image here
+        }
+        else if (text_flag) {
+          // try building a table
+          if ((column_labels!=null)&&(column_labels.size()>0)) {
+            buildTable();
+          }
+        }
+        else {
+          framework.debug(9, "Unable to display data!");
+        }
+      }
+      
+      
+    }
+    
     public void setDataPackage(DataPackage dp) {
         this.dp = dp;
     }
     
-    public void setDataString(String dataString) {
+    public void setAttributeFile(File attr) {
+        this.attributeFile = attr;
+    }
+    
+    public void setEntityFile(File ent) {
+        this.entityFile = ent;
+    }
+
+    public void setPhysicalFile(File phys) {
+        this.physicalFile = phys;
+    }
+    
+ /*   public void setDataString(String dataString) {
         this.dataString = dataString;
         JTextArea ta = new JTextArea(dataString);
         ta.setEditable(false);
         JScrollPane1.getViewport().removeAll();
         JScrollPane1.getViewport().add(ta);
         if (dataFile!=null) {
-            parseFile(dataFile);
+            parseFile();
         } else {
 	        parseString(dataString);
         }
-	    parseDelimited();
+//	    parseDelimited();
         
     }
-    
+*/    
     public void setParent(EntityGUI egui) {
       this.parent = egui; 
     }
@@ -290,75 +487,31 @@ public class DataViewer extends javax.swing.JFrame
 	    String oldToken = "";
 	    String token = "";
 	    Vector res = new Vector();
-	    boolean ignoreConsequtiveDelimiters = false;
-	    if (ignoreConsequtiveDelimiters) {
-	      StringTokenizer st = new StringTokenizer(str, sDelim, false);
-	      while( st.hasMoreTokens() ) {
+	    StringTokenizer st = new StringTokenizer(str, sDelim, false);
+	    while( st.hasMoreTokens() ) {
 	        token = st.nextToken().trim();
 	        res.addElement(token);
-	      }
-	    }
-	    else {
-	      StringTokenizer st = new StringTokenizer(str, sDelim, true);
-	      while( st.hasMoreTokens() ) {
-	        token = st.nextToken().trim();
-	        if (!inDelimiterList(token, sDelim)) {
-	            res.addElement(token);
-	        }
-	        else {
-	            if ((inDelimiterList(oldToken,sDelim))&&(inDelimiterList(token,sDelim))) {
-	                res.addElement("");
-                }
-	        }
-	        oldToken = token;
-	      }
 	    }
 	    return res;
 	}
 
+
 	private String getDelimiterString() {
 	  String str = "";
-      String temp = guessDelimiter();
-      if (temp.equals("tab")) str = "\t";
-      if (temp.equals("comma")) str = ",";
-      if (temp.equals("space")) str = " ";
-      if (temp.equals("semicolon")) str = ";";
-      delimiter = str;
+	  String temp = field_delimiter.trim();
+    if (temp.startsWith("#x")) {
+      temp = temp.substring(2);
+      if (temp.equals("0A")) str = "\n";
+      if (temp.equals("09")) str = "\t";
+      if (temp.equals("20")) str = " ";
+    }
+    else {
+      str = temp;
+    }
+    delimiter_string = str;
 	  return str;
 	}
 	
-	private void parseDelimited() {
-	  if (lines!=null) {
-	    int start = startingLine;  // startingLine is 1-based not 0-based
-//	    if (labelsInStartingLine) {
-      if (true) {
-	      colTitles = getColumnValues(lines[startingLine-1]);
-	    }
-	    else {
-	      colTitles = getColumnValues(lines[startingLine-1]);  // use just to get # of cols
-	      int temp = colTitles.size();
-	      colTitles = new Vector();
-	      for (int l=0;l<temp;l++) {
-	        colTitles.addElement("Column "+(l+1));  
-	      }
-	      start--;  // include first line
-	    }
-	    vec = new Vector();
-	    Vector vec1 = new Vector();
-	    int numcols = colTitles.size();
-	    for (int i=start;i<nlines;i++) {
-	      vec1 = getColumnValues(lines[i]);
-	      boolean missing = false;
-	      while (vec1.size()<numcols) {
-	        vec1.addElement("");
-	        missing = true;
-	      }
-	      vec.addElement(vec1);
-	    }
-	  
-	    buildTable();
-    }
-	}
   
     
     /**
@@ -404,7 +557,8 @@ public class DataViewer extends javax.swing.JFrame
      * @param s input file
      */
 
-    private void parseFile (File f) {
+    public void parseFile () {
+        File f = dataFile;
         int i;
         int pos;
         String temp, temp1;
@@ -441,85 +595,19 @@ public class DataViewer extends javax.swing.JFrame
     }            
 
 
-  /* returns the number of occurances of a substring in specified input string 
-   * inS is input string
-   * subS is substring
-  */
-  private int charCount(String inS, String subS ) {
-    int cnt = -1;
-    int pos = 0;
-    int pos1 = 0;
-    while (pos > -1) {
-      pos1=inS.indexOf(subS, pos+1);
-      pos = pos1;
-      cnt++; 
-    }
-    if (cnt<0) cnt = 0;
-    return cnt;
-  }
-
-
-   /**
-    * return most frequent number of occurances of indicated substring
-    * 
-    * @param subS delimiter substring
-    */
-   private int mostFrequent(String subS) {
-    int maxcnt = 500; // arbitrary limit of 500 occurances
-    int[] freq = new int[maxcnt];  
-      for (int i=0;i<nlines;i++) {
-        int cnt = charCount(lines[i],subS);
-        if (cnt>maxcnt-1) cnt = maxcnt-1;
-        freq[cnt]++;
-      }
-      int mostfreq = 0;
-      int mostfreqindex = 0;
-      int tot = 0;
-      for (int j=0;j<maxcnt;j++) {
-        tot = tot + freq[j];
-        if (freq[j]>mostfreq) {
-          mostfreq = freq[j];
-          mostfreqindex = j;
-        }
-      }
-      // establish a threshold; if less than, then return 0
-      if ( (100*mostfreq/tot)<80) mostfreq = 0;
-      return mostfreqindex;
-   }
-
-  /**
-   * guesses a delimiter based on frequency of appearance of common delimites
-   */
-  private String guessDelimiter() {
-    if (mostFrequent("\t")>0) {
-      return "tab";
-    }
-    else if (mostFrequent(",")>0) {
-      return "comma";
-    }
-    else if (mostFrequent(" ")>0) {
-      return "space";
-    }
-    else if (mostFrequent(";")>0) {
-      return "semicolon";
-    }
-    else if (mostFrequent(":")>0) {
-      return "colon";
-    }
-    return "unknown";
-  }
 
 	/**
-	 * builds JTable from input data ans includes event code for handling clicks on
+	 * builds JTable from input data and includes event code for handling clicks on
 	 * table (e.g. column selection)
 	 * 
 	 * @param cTitles
 	 * @param data
 	 */
 	private void buildTable() {
-	  
-      final JTable table = new JTable(vec, colTitles);
-      
+	    vec = new Vector();
+      final JTable table = new JTable();
+      DefaultTableModel model = new DefaultTableModel(vec, column_labels);
+      table.setModel(model);
       table.setColumnSelectionAllowed(true);
       table.setRowSelectionAllowed(false);
       table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -598,17 +686,13 @@ public class DataViewer extends javax.swing.JFrame
       
       DataScrollPanel.getViewport().removeAll();
       DataScrollPanel.getViewport().add(table);
+      parseFile();
+      for (int i=0;i<nlines;i++) {
+        Vector rowvals = getColumnValues(lines[i]); 
+        model.addRow(rowvals);
+      }
 	}
 
-	private boolean inDelimiterList(String token, String delim) {
-	    boolean result = false;
-	    int test = delim.indexOf(token);
-	    if (test>-1) {
-	        result = true;
-	    }
-	    else { result = false; }
-	    return result;
-	}
 
 	//{{DECLARE_MENUS
 	//}}
@@ -639,15 +723,15 @@ public class DataViewer extends javax.swing.JFrame
 	  Vector innerVec;
 	  StringBuffer coltitles = new StringBuffer();
 	  StringBuffer resultString = new StringBuffer();
-	  for (int k=0;k<colTitles.size();k++){
-	      coltitles.append((String)colTitles.elementAt(k)+delimiter);
+	  for (int k=0;k<column_labels.size();k++){
+	      coltitles.append((String)column_labels.elementAt(k)+delimiter_string);
 	  }
 	  resultString.append(coltitles.toString()+"\n");
 	  for (int i=0;i<nlines-1;i++) {
 	    StringBuffer lineString = new StringBuffer();
 	    innerVec = (Vector)vec.elementAt(i);
 	    for (int j=0;j<innerVec.size();j++) {
-	      lineString.append((String)innerVec.elementAt(j)+delimiter);
+	      lineString.append((String)innerVec.elementAt(j)+delimiter_string);
 	    }
 	    resultString.append(lineString.toString()+"\n");
 	  }
@@ -656,6 +740,10 @@ public class DataViewer extends javax.swing.JFrame
 
 	void UpdateButton_actionPerformed(java.awt.event.ActionEvent event)
 	{ 
+	  if(nlines>=nlines_max) {
+	    framework.debug(9,"Sorry, this data file is too large to be updated from within Morpho!");
+	    return;
+	  }
 	  if (dp!=null) {
 	      // convert table info to string
 	      vecToString();
@@ -778,26 +866,5 @@ public class DataViewer extends javax.swing.JFrame
 	  }		 
 	}
 
-	class SymChange implements javax.swing.event.ChangeListener
-	{
-		public void stateChanged(javax.swing.event.ChangeEvent event)
-		{
-			Object object = event.getSource();
-			if (object == TabbedViewPanel)
-				TabbedViewPanel_stateChanged(event);
-		}
-	}
-
-	void TabbedViewPanel_stateChanged(javax.swing.event.ChangeEvent event)
-	{
-		if (TabbedViewPanel.getSelectedIndex()==0) { // text display
-		  vecToString();
-      JTextArea ta = new JTextArea(dataString);
-      ta.setEditable(false);
-      JScrollPane1.getViewport().removeAll();
-      JScrollPane1.getViewport().add(ta);
-      ta.setCaretPosition(0);
-		}
-	}
 	
 }

@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-03-19 19:14:00 $'
- * '$Revision: 1.39 $'
+ *     '$Date: 2002-03-21 23:18:52 $'
+ * '$Revision: 1.40 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -77,6 +77,7 @@ public class EntityGUI extends javax.swing.JFrame
   private String location;
   private Hashtable attributeHash = new Hashtable();
   private boolean editAttribute = false;
+  private File entityFile;
   
   
   //visual components
@@ -149,6 +150,7 @@ public class EntityGUI extends javax.swing.JFrame
         MetacatDataStore mds = new MetacatDataStore(framework);
         xmlFile = mds.openFile(entityId);
       }
+      entityFile = xmlFile;
     }
     catch(FileNotFoundException fnfe)
     {
@@ -685,7 +687,8 @@ public class EntityGUI extends javax.swing.JFrame
   {
     String command = e.getActionCommand();
     framework.debug(20, "Action fired: " + command);
-    
+  
+    //-------------------------------------
     if(command.equals("Edit Table Description"))
     {
       editAttribute = false;
@@ -753,6 +756,8 @@ public class EntityGUI extends javax.swing.JFrame
       }
       editor.openEditor(sb.toString(), entityId, location, this);
     }
+ 
+    //-------------------------------------
     else if(command.equals("Edit Attributes"))
     {
       editAttribute = true;
@@ -803,42 +808,29 @@ public class EntityGUI extends javax.swing.JFrame
       editor.openEditor(s, id, location, (String)attributeNameNode.elementAt(0), 
                         selectedItem, this);
     }
+
+    //-------------------------------------
+    
     else if(command.equals("View Data")) {
       String fn = dataPackage.getDataFileName(entityId);
+      File fphysical = dataPackage.getPhysicalFile(entityId);
+//      System.out.println("eml-physical: "+fphysical.getName());
+      File fattribute = dataPackage.getAttributeFile(entityId);
+//      System.out.println("eml-attribute: "+fattribute.getName());
       File f = dataPackage.getDataFile(entityId);
       if(dataPackage.isDataFileText(entityId)) {
         String dataString = "";
- /*       try{
-          if (f!=null) {
-            FileReader fis = new FileReader(f);
-            BufferedReader bfis = new BufferedReader(fis);
-            StringWriter sw = new StringWriter();
-            BufferedWriter bsw = new BufferedWriter(sw);
-            int c = bfis.read();
-            while(c != -1)
-            { //copy the files to the source directory
-              bsw.write(c);
-              c = bfis.read();
-            }
-            bsw.flush();
-            bfis.close();
-            bsw.close();
-            dataString = sw.toString();
-          }
-        }
-        catch (Exception e1) {
-          System.out.println("Error in EntityGUI:actionPerformed(): " + e1.getMessage());
-          e1.printStackTrace();
-        }
- */       
-//        DataViewer dv = new DataViewer(framework, "DataFile: "+fn);
         DataViewer dv = new DataViewer(framework, "DataFile: "+fn, f);
         dv.setDataID(dataPackage.getDataFileID(entityId));
-        dv.setDataString(dataString);
+        dv.setPhysicalFile(fphysical);
+        dv.setAttributeFile(fattribute);
+        dv.setEntityFile(entityFile);
         dv.setDataPackage(this.dataPackage);
         dv.setParent(this);
         dv.setGrandParent(this.parent);
         
+        dv.init();
+        dv.parseFile();
         dv.show();
 //        JTextArea ta = new JTextArea(dataString);
 //        ta.setEditable(false);
@@ -853,6 +845,9 @@ public class EntityGUI extends javax.swing.JFrame
                                JOptionPane.ERROR_MESSAGE);    
       }
     }
+    
+    //-------------------------------------
+    
     else if (command.equals("Associate Data")) {
        // a new data file to be associated with this existing metadata is to be entered here 
       (new NewDataFile(this, dataPackage, framework, entityId)).setVisible(true); 
