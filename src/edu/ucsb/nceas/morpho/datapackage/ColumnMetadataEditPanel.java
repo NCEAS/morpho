@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-01-06 22:47:47 $'
- * '$Revision: 1.18 $'
+ *     '$Date: 2003-01-08 04:26:17 $'
+ * '$Revision: 1.19 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -301,7 +301,7 @@ public class ColumnMetadataEditPanel extends javax.swing.JPanel //implements jav
     typeComboBox.addFocusListener(aSymFocus);
   }
   
-  	class SymAction implements java.awt.event.ActionListener
+  class SymAction implements java.awt.event.ActionListener
 	{
 		public void actionPerformed(java.awt.event.ActionEvent event)
 		{
@@ -387,14 +387,18 @@ public class ColumnMetadataEditPanel extends javax.swing.JPanel //implements jav
   {
     public void actionPerformed(ActionEvent e) {
       Object object = e.getSource();
-      colData.enumChoice = false;
-      colData.numChoice =false;
-      colData.textChoice = false;
+      if (colData!=null) {
+        colData.enumChoice = false;
+        colData.numChoice =false;
+        colData.textChoice = false;
+      }
 			if (object == enumButton) {
         if (tiw!=null) {
           tiw.showInsertEnumPanel(true);
         }
-        colData.enumChoice = true; 
+        if (colData!=null) {
+          colData.enumChoice = true; 
+        }
         textPanel.setVisible(false);
         numPanel.setVisible(false);
         enumPanel.setVisible(true);
@@ -403,7 +407,9 @@ public class ColumnMetadataEditPanel extends javax.swing.JPanel //implements jav
         if (tiw!=null) {
           tiw.showInsertEnumPanel(false);
         }
-        colData.textChoice = true; 
+        if (colData!=null) {
+         colData.textChoice = true; 
+        }
         textPanel.setVisible(true);
         numPanel.setVisible(false);
         enumPanel.setVisible(false);
@@ -412,7 +418,9 @@ public class ColumnMetadataEditPanel extends javax.swing.JPanel //implements jav
         if (tiw!=null) {
           tiw.showInsertEnumPanel(false);
         }
-        colData.numChoice = true; 
+        if (colData!=null) {
+          colData.numChoice = true; 
+        }
         textPanel.setVisible(false);
         numPanel.setVisible(true);
         enumPanel.setVisible(false);
@@ -438,7 +446,7 @@ public class ColumnMetadataEditPanel extends javax.swing.JPanel //implements jav
                               "attribute.</html>");
     enumButton.setActionCommand("Enumeration");
     buttonPanel.add(enumButton);
-    textButton = new JRadioButton("Text", true);
+    textButton = new JRadioButton("Text", false);
     textButton.setActionCommand("Text");
     textButton.setToolTipText("<html>This element describes a free<br>"+
                               "text domain for the attribute.<br>"+
@@ -449,7 +457,7 @@ public class ColumnMetadataEditPanel extends javax.swing.JPanel //implements jav
                               "constraining the allowable character<br>"+
                               "sequences for the attribute.</html>");
     buttonPanel.add(textButton);
-    numButton = new JRadioButton("Numeric", false);
+    numButton = new JRadioButton("Numeric", true);
     numButton.setToolTipText("<html>This element specifies the minimum<br>"+
                              "and maximum values of a numeric attribute.<br>"+
                              "These are theoretical or expected values,<br>"+
@@ -478,6 +486,7 @@ public class ColumnMetadataEditPanel extends javax.swing.JPanel //implements jav
     enumPanel.setMaximumSize(new Dimension(3000,100));
     enumPanel.setMinimumSize(new Dimension(3000,100));
     enumPanel.setPreferredSize(new Dimension(3000,100));
+    enumPanel.setVisible(true);
     enumScrollPane = new JScrollPane();
     enumPanel.add(BorderLayout.CENTER,enumScrollPane);
     buildEnumTable();
@@ -487,6 +496,7 @@ public class ColumnMetadataEditPanel extends javax.swing.JPanel //implements jav
     numPanel = new JPanel();
     numPanel.setLayout(new BoxLayout(numPanel,BoxLayout.Y_AXIS));
     numPanel.setBorder(BorderFactory.createEmptyBorder(5,0,5,0));
+    numPanel.setVisible(true);
     JPanel minimumPanel = new JPanel();
     minimumPanel.setLayout(new BoxLayout(minimumPanel,BoxLayout.X_AXIS));
     minimumPanel.setBorder(BorderFactory.createEmptyBorder(1,3,1,3));
