@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-07-24 16:57:40 $'
- * '$Revision: 1.1 $'
+ *     '$Date: 2001-07-24 21:11:00 $'
+ * '$Revision: 1.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -439,12 +439,6 @@ public class AddMetadataWizard extends JFrame
     }
     else if(2 == currentScreen)
     {
-      //if(prevFlag)
-      //{
-      //  previousButtonHandler(new ActionEvent(this, 0, ""));
-      //  return;
-      //}
-      
       if(createNew.isSelected())
       { //open the editor and handle the editing complete action
         
@@ -505,15 +499,21 @@ public class AddMetadataWizard extends JFrame
             }
           }
         }
-      
         EditorInterface editor = PackageUtil.getEditor(framework);
         editor.openEditor(dummydoc, null, null, this);
         this.hide();
       }
       else
       { //the user wishes to put an existing file into the package.
+        
+        //get the file
+        //go to screen 4
         addedFile = new File(fileTextField.getText());
-/*
+        if(!prevFlag)
+        {
+          nextButtonHandler(new ActionEvent(this, 0, ""));
+        }
+        /*
         StringBuffer sb;
         try
         {
@@ -556,9 +556,9 @@ public class AddMetadataWizard extends JFrame
           {
             return;
           }
- */       
+          */       
           
-/*
+          /*
           // This sections establishes the relationships to go in triples
           relatedFileIds = (Vector)packageFiles.get(relatedto.trim());
           if(relatedFileIds != null && relatedFileIds.size() == 1)
@@ -591,11 +591,11 @@ public class AddMetadataWizard extends JFrame
               }
             }
           }
-*/
+          */
 
-/*
+          /*
         }
-*/
+          */
       }
     }
     else if(3 == currentScreen)
@@ -730,40 +730,42 @@ public class AddMetadataWizard extends JFrame
                                  String newid)
   { //add a data file here whenever metacat supports it.
     AccessionNumber a = new AccessionNumber(framework);
+    FileSystemDataStore fsds = new FileSystemDataStore(framework);
+    //relate the new data file to the package itself
+    Triple t = new Triple(newid, "isRelatedTo", dataPackage.getID());
+    TripleCollection triples = new TripleCollection();
+    triples.addTriple(t);
+    File packageFile = dataPackage.getTriplesFile();
+    //add the triple to the triple file
+    String docString = PackageUtil.addTriplesToTriplesFile(triples, 
+                                                           dataPackage, 
+                                                           framework);
+    //write out the files
+    File newDPTempFile;
+    //get a new id for the package file
+    String dataPackageId = a.incRev(dataPackage.getID());
+    System.out.println("datapackageid: " + dataPackage.getID() + " newid: " + dataPackageId);
+    try
+    { //this handles the package file
+      //save a temp file with the new id
+      newDPTempFile = fsds.saveTempFile(dataPackageId,
+                                        new StringReader(docString));
+      //inc the revision of the new Package file in the triples
+      docString = a.incRevInTriples(newDPTempFile, dataPackage.getID(), 
+                                    dataPackageId);
+      //save new temp file that has the right id and the id inced in the triples
+      newDPTempFile = fsds.saveTempFile(dataPackageId, 
+                                        new StringReader(docString));
+    }
+    catch(Exception e)
+    {
+      ClientFramework.debug(0, "Error saving file: " + e.getMessage());
+      e.printStackTrace();
+      return;
+    }
+    
     if(locLocal)
     {
-      FileSystemDataStore fsds = new FileSystemDataStore(framework);
-      Triple t = new Triple(newid, "isRelatedTo", relatedtoId);
-      TripleCollection triples = new TripleCollection();
-      triples.addTriple(t);
-      File packageFile = dataPackage.getTriplesFile();
-      //add the triple to the triple file
-      String docString = PackageUtil.addTriplesToTriplesFile(triples, 
-                                                             dataPackage, 
-                                                             framework);
-      //write out the files
-      File newDPTempFile;
-      //get a new id for the package file
-      String dataPackageId = a.incRev(dataPackage.getID());
-      try
-      { //this handles the package file
-        //save a temp file with the new id
-        newDPTempFile = fsds.saveTempFile(dataPackageId,
-                                          new StringReader(docString));
-        //inc the revision of the new Package file in the triples
-        docString = a.incRevInTriples(newDPTempFile, dataPackage.getID(), 
-                                      dataPackageId);
-        //save new temp file that has the right id and the id inced in the triples
-        newDPTempFile = fsds.saveTempFile(dataPackageId, 
-                                          new StringReader(docString));
-      }
-      catch(Exception e)
-      {
-        ClientFramework.debug(0, "Error saving file: " + e.getMessage());
-        e.printStackTrace();
-        return;
-      }
-      
       File newPackageMember;
       try
       { //save the new package member
@@ -791,12 +793,50 @@ public class AddMetadataWizard extends JFrame
     }
     
     if(locMetacat)
-    {
-      ClientFramework.debug(0, "Metacat does not currently support uploading" +
-                            " data files.");
-      return;
+    { //send the package file and the data file to metacat
+      ClientFramework.debug(20, "Sending file(s) to metacat.");
+      MetacatDataStore mds = new MetacatDataStore(framework);
+      try
+      { //send the new data file to the server
+        mds.newDataFile(newid, addedFile);
+      }
+      catch(MetacatUploadException mue)
+      {
+        ClientFramework.debug(0, "Error saving data file to metacat: " + 
+                              mue.getMessage());
+        mue.printStackTrace();
+        return;
+      }
+      
+      try
+      { //save the new package file
+        mds.saveFile(dataPackageId, new FileReader(newDPTempFile), true);
+      }
+      catch(MetacatUploadException mue)
+      {
+        ClientFramework.debug(0, "Error saving package file to metacat: " + 
+                              mue.getMessage());
+        mue.printStackTrace();
+        return;
+      }
+      catch(FileNotFoundException fnfe)
+      {
+        ClientFramework.debug(0, "Error saving package file to metacat(2): " + 
+                              fnfe.getMessage());
+        fnfe.printStackTrace();
+        return;
+      }
     }
     
+    //refresh the package wizard view
+    DataPackage newpackage = new DataPackage(dataPackage.getLocation(),
+                                             dataPackageId, null,
+                                             framework);
+    DataPackageGUI dpg = new DataPackageGUI(framework, newpackage);
+    dpg.show();
+    dpg.setName("Package Editor:" + newpackage.getID());
+    framework.addWindow(dpg);
+    framework.removeWindow(this);
   }
   
   /**
@@ -827,11 +867,12 @@ public class AddMetadataWizard extends JFrame
     }
     
     if(addedFile != null)
-    { //we are adding a data file
+    { //we are adding a data file, go to a different handler
+      newid = a.getNextId();
       handleAddDataFile(locLocal, locMetacat, newid);
       return;
     }
-     
+    
     if(editingExistingFile)
     { //if we edited an existing file we don't need to create a new id
       //and a new triple

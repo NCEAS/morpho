@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-06-22 17:51:04 $'
- * '$Revision: 1.4 $'
+ *     '$Date: 2001-07-24 21:10:59 $'
+ * '$Revision: 1.5 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -195,7 +195,15 @@ public class AccessionNumber
           String nodename = childNode.getNodeName().trim().toUpperCase();
           if(nodename.equals("SUBJECT") || nodename.equals("OBJECT"))
           {
-            String nodeval = childNode.getFirstChild().getNodeValue().trim();
+            String nodeval;
+            try
+            {
+              nodeval = childNode.getFirstChild().getNodeValue().trim();
+            }
+            catch(NullPointerException npe)
+            {
+              continue;
+            }
             //System.out.println("node found: " + nodeval + " oldid: " + oldid.trim());
             if(nodeval.equals(oldid.trim()))
             {

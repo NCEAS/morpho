@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-07-23 21:15:01 $'
- * '$Revision: 1.37 $'
+ *     '$Date: 2001-07-24 21:11:00 $'
+ * '$Revision: 1.38 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -499,8 +499,6 @@ public class PackageWizardShell extends javax.swing.JFrame
         aclTriples.addElement(aclt);
       }
     }
-    
-    // ---------------
     
     Hashtable tripleNames = new Hashtable();
     for(int i=0; i<frameWizards.size(); i++)
