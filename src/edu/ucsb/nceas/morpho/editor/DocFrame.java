@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-05-23 23:41:51 $'
- * '$Revision: 1.5 $'
+ *     '$Date: 2001-05-24 23:39:18 $'
+ * '$Revision: 1.6 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -98,13 +98,16 @@ public class DocFrame extends javax.swing.JFrame
 		setSize(600,305);
 		setVisible(false);
 		getContentPane().add(OutputScrollPanel);
-		getContentPane().add(NestedPanelScrollPanel);
+		getContentPane().add(BorderLayout.CENTER,NestedPanelScrollPanel);
 		
-		getContentPane().add(BorderLayout.NORTH, JPanel2);
-		JPanel2.setLayout(new FlowLayout(FlowLayout.LEFT,5,5));
+		getContentPane().add(BorderLayout.NORTH, ControlPanel);
+		ControlPanel.setLayout(new FlowLayout(FlowLayout.LEFT,5,5));
 		reload.setText("Reload Tree");
 		reload.setActionCommand("Reload Tree");
-		JPanel2.add(reload);
+		ControlPanel.add(reload);
+		DTDParse.setText("Parse DTD");
+		DTDParse.setActionCommand("Parse DTD");
+		ControlPanel.add(DTDParse);
 		//}}
 		JSplitPane DocControlPanel = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT
 		       , OutputScrollPanel, NestedPanelScrollPanel);
@@ -124,6 +127,7 @@ public class DocFrame extends javax.swing.JFrame
 		SymAction lSymAction = new SymAction();
 		SymChange lSymChange = new SymChange();
 		reload.addActionListener(lSymAction);
+		DTDParse.addActionListener(lSymAction);
 		//}}
 		DeletemenuItem.addActionListener(lSymAction);
 		DupmenuItem.addActionListener(lSymAction);
@@ -227,8 +231,9 @@ public class DocFrame extends javax.swing.JFrame
 	//{{DECLARE_CONTROLS
 	javax.swing.JScrollPane OutputScrollPanel = new javax.swing.JScrollPane();
 	javax.swing.JScrollPane NestedPanelScrollPanel = new javax.swing.JScrollPane();
-	javax.swing.JPanel JPanel2 = new javax.swing.JPanel();
+	javax.swing.JPanel ControlPanel = new javax.swing.JPanel();
 	javax.swing.JButton reload = new javax.swing.JButton();
+	javax.swing.JButton DTDParse = new javax.swing.JButton();
 	//}}
 
 	//{{DECLARE_MENUS
@@ -265,6 +270,8 @@ class SymAction implements java.awt.event.ActionListener {
 				Dup_actionPerformed(event);
 			else if (object == reload)
 				reload_actionPerformed(event);
+			else if (object == DTDParse)
+				DTDParse_actionPerformed(event);
 		}
 }
 
@@ -294,11 +301,16 @@ void putXMLintoTree() {
       parser.setContentHandler(mh);
 	    parser.setEntityResolver(cer);
 	    InputSource is = new InputSource(sr);
+      if (is.getPublicId()!=null) {
+        doctype = is.getPublicId();
+      }
+      else if (is.getSystemId()!=null) {
+        doctype = is.getSystemId();
+	    }
       parser.parse(is);
       DefaultMutableTreeNode rt = (DefaultMutableTreeNode)treeModel.getRoot();
-      if (is.getPublicId()!=null) doctype = is.getPublicId();
-      else if (is.getSystemId()!=null) doctype = is.getSystemId();
       doctype = ((NodeInfo)rt.getUserObject()).toString();
+      System.out.println("doctype = " + doctype);
       } 
       catch (Exception e) { 
         System.err.println(e.toString());
@@ -457,6 +469,15 @@ void Del_actionPerformed(java.awt.event.ActionEvent event) {
 void reload_actionPerformed(java.awt.event.ActionEvent event)
 	{
 		treeModel.reload();
+		tree.setModel(treeModel);
+		
 	}
 	
+
+	void DTDParse_actionPerformed(java.awt.event.ActionEvent event)
+	{
+		DTDTree dtdtree = new DTDTree("./catalog/resource.dtd");
+		dtdtree.parseDTD();
+		tree.setModel(dtdtree.treeModel);
+	}
 }

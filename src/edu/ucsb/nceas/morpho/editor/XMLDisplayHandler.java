@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-05-23 18:40:39 $'
- * '$Revision: 1.3 $'
+ *     '$Date: 2001-05-24 23:39:18 $'
+ * '$Revision: 1.4 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,7 +32,7 @@ import org.xml.sax.*;
 import org.xml.sax.helpers.*;
 import javax.swing.tree.*;
 import java.util.*;
-
+import org.xml.sax.ext.*;
 
 /**
  * SAX2 event handler for parsing an XML file and turning it
@@ -42,10 +42,11 @@ import java.util.*;
  */
 // SAX2 implementation of event handler
 //  Event Handler
-class XMLDisplayHandler extends DefaultHandler {
+class XMLDisplayHandler extends DefaultHandler implements LexicalHandler {
 	private Stack stack;
 	private DefaultTreeModel treeModel;
 	private int nodeCount;
+
 	// Constructor
 	public XMLDisplayHandler (DefaultTreeModel treeModel) {
 		// Create stack
@@ -54,7 +55,7 @@ class XMLDisplayHandler extends DefaultHandler {
 		stack = new Stack ();
 	}
 	
-    public void startElement (String uri, String localName,
+  public void startElement (String uri, String localName,
                               String qName, Attributes atts)
            throws SAXException {
 		//  Create new Node
@@ -62,18 +63,18 @@ class XMLDisplayHandler extends DefaultHandler {
 		for (int i=0;i<atts.getLength();i++) {
 		    ni.attr.put(atts.getLocalName(i),atts.getValue(i));
 		}
-		DefaultMutableTreeNode newNode = 
-			new DefaultMutableTreeNode (ni);
+		DefaultMutableTreeNode newNode = new DefaultMutableTreeNode (ni);
 		if (nodeCount>0) {	
-		//  Add current Node to Node on top of Stack
-		DefaultMutableTreeNode parentNode = (DefaultMutableTreeNode) stack.peek();
-		parentNode.add (newNode);
-		treeModel.reload();
+		  //  Add current Node to Node on top of Stack
+		  DefaultMutableTreeNode parentNode = (DefaultMutableTreeNode) stack.peek();
+		  parentNode.add (newNode);
+		  treeModel.reload();
 		}
 		else {    // root node
-		    treeModel.setRoot(newNode);
+		  treeModel.setRoot(newNode);
 		}
 		nodeCount++;
+		
 		//  Push current Node on top of Stack
 		stack.push (newNode);
 		
@@ -81,9 +82,9 @@ class XMLDisplayHandler extends DefaultHandler {
   
     public void endElement (String uri, String localName,
                             String qName) throws SAXException {
-		if (nodeCount>1) {
+		  if (nodeCount>1) {
 		    stack.pop ();
-		}
+		  }
     }
   
     public void characters(char ch[], int start, int length) {
@@ -98,7 +99,7 @@ class XMLDisplayHandler extends DefaultHandler {
 		    ni.attr.put("Value", text);
 		    treeModel.reload();
 		    nodeCount++;
-		}
+		  }
     }
 
    public void startDocument() throws SAXException { 
@@ -106,4 +107,62 @@ class XMLDisplayHandler extends DefaultHandler {
    }
 
    public void endDocument() throws SAXException { }
+   
+   
+      //
+   // the next section implements the LexicalHandler interface
+   //
+
+   /** SAX Handler that receives notification of DOCTYPE. Sets the DTD */
+   public void startDTD(String name, String publicId, String systemId) 
+               throws SAXException {
+//     docname = name;
+//     doctype = publicId;
+//     systemid = systemId;
+
+//System.out.println("Start DTD");
+//System.out.println("DOCNAME: " + docname);
+//System.out.println("DOCTYPE: " + doctype);
+//System.out.println("  SYSID: " + systemid);
+
+   }
+
+   /** 
+    * SAX Handler that receives notification of end of DTD 
+    */
+   public void endDTD() throws SAXException {
+    
+//System.out.println("end DTD");
+   }
+
+   /** 
+    * SAX Handler that receives notification of comments in the DTD
+    */
+   public void comment(char[] ch, int start, int length) throws SAXException {
+   }
+
+   /** 
+    * SAX Handler that receives notification of the start of CDATA sections
+    */
+   public void startCDATA() throws SAXException {
+   }
+
+   /** 
+    * SAX Handler that receives notification of the end of CDATA sections
+    */
+   public void endCDATA() throws SAXException {
+   }
+
+   /** 
+    * SAX Handler that receives notification of the start of entities
+    */
+   public void startEntity(String name) throws SAXException {
+   }
+
+   /** 
+    * SAX Handler that receives notification of the end of entities
+    */
+   public void endEntity(String name) throws SAXException {
+   }
+
 }

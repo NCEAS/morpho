@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-05-23 23:41:51 $'
- * '$Revision: 1.8 $'
+ *     '$Date: 2001-05-24 23:39:18 $'
+ * '$Revision: 1.9 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -62,6 +62,8 @@ public class NodeInfo implements Serializable
     // attributes of associated XML element
     Hashtable attr;
 
+    // used with DTD parser with 'Choice' Elements
+    boolean Item;
  /**
   * creates a new NodeInfo object with the indicated name.
   * 
@@ -109,6 +111,13 @@ public class NodeInfo implements Serializable
     return cardinality;    
   }
     
+  public boolean getItem() {
+    return Item;
+  }
+  
+  public void setItem(boolean o) {
+    Item = o;
+  }
     
   public void setName (String name) {
     this.name = name;
