@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2001-05-31 18:54:35 $'
- * '$Revision: 1.3 $'
+ *     '$Date: 2001-09-06 01:25:53 $'
+ * '$Revision: 1.4 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -104,7 +104,7 @@ public class TaxonTermPanel extends JComponent
     searchModeComboBox.addItem("contains");
     searchModeComboBox.addItem("starts-with");
     searchModeComboBox.addItem("ends-with");
-    searchModeComboBox.addItem("matches-exactly");
+    searchModeComboBox.addItem("equals");
     searchModeComboBox.setSelectedIndex(0);
     searchModeComboBox.setBackground(java.awt.Color.white);
     queryTermPanel.add(searchModeComboBox);

@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2001-05-30 01:21:01 $'
- * '$Revision: 1.3 $'
+ *     '$Date: 2001-09-06 01:25:53 $'
+ * '$Revision: 1.4 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -45,7 +45,7 @@ public class QueryTerm
    *
    * @param casesensitive flag indicating whether case is used to match
    * @param searchmode determines what kind of substring match is performed
-   *        (one of starts-with|ends-with|contains|matches-exactly)
+   *        (one of starts-with|ends-with|contains|equals)
    * @param value the text value to match
    */
   public QueryTerm(boolean casesensitive, String searchmode, 
@@ -61,7 +61,7 @@ public class QueryTerm
    *
    * @param casesensitive flag indicating whether case is used to match
    * @param searchmode determines what kind of substring match is performed
-   *        (one of starts-with|ends-with|contains|matches-exactly)
+   *        (one of starts-with|ends-with|contains|equals)
    * @param value the text value to match
    * @param pathexpr the hierarchical path to the nodes to be searched
    */

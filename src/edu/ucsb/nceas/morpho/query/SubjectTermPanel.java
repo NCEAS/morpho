@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2001-05-31 18:47:09 $'
- * '$Revision: 1.6 $'
+ *     '$Date: 2001-09-06 01:25:53 $'
+ * '$Revision: 1.7 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -132,7 +132,7 @@ public class SubjectTermPanel extends JComponent
     searchModeComboBox.addItem("contains");
     searchModeComboBox.addItem("starts-with");
     searchModeComboBox.addItem("ends-with");
-    searchModeComboBox.addItem("matches-exactly");
+    searchModeComboBox.addItem("equals");
     searchModeComboBox.setSelectedIndex(0);
 
     setChoicesPanel.setBorder(BorderFactory.createLineBorder(Color.black));

@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2001-06-26 21:36:16 $'
- * '$Revision: 1.44 $'
+ *   '$Author: jones $'
+ *     '$Date: 2001-09-06 01:25:52 $'
+ * '$Revision: 1.45 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -465,7 +465,7 @@ public class LocalQuery
           xpath = xpath+"[contains(translate(text(),"
             +"\"ABCDEFGHIJKLMNOPQRSTUVWXYZ\",\"abcdefghijklmnopqrstuvwxyz\"),\""
             +value+"\")]";
-        } else if (searchMode.equals("matches-exactly")) {
+        } else if (searchMode.equals("equals")) {
           xpath = xpath+"[translate(text(),"
             +"\"ABCDEFGHIJKLMNOPQRSTUVWXYZ\",\"abcdefghijklmnopqrstuvwxyz\")=\""
             +value+"\"]";
@@ -478,7 +478,7 @@ public class LocalQuery
                           // not correct - fix later
         } else if (searchMode.equals("contains")) {
           xpath = xpath+"[contains(text(),\""+value+"\")]";
-        } else if (searchMode.equals("matches-exactly")) {
+        } else if (searchMode.equals("equals")) {
           xpath = xpath+"[text()=\""+value+"\"]";
         } 
       }

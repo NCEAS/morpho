@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2001-09-05 21:16:53 $'
- * '$Revision: 1.19 $'
+ *     '$Date: 2001-09-06 01:25:52 $'
+ * '$Revision: 1.20 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -76,7 +76,10 @@ public class QueryDialog extends JDialog
   Vector taxonPanels;
 
   /** flag to set whether searches are case sensitive */
-  boolean caseSensitive = true;
+  boolean caseSensitive = false;
+
+  /** flag to set whether searches should include synonyms from ITIS */
+  boolean includeSynonyms = false;
 
   /** default search path for title   */
   String titleSearchPath = "title";
@@ -129,6 +132,11 @@ public class QueryDialog extends JDialog
   private JCheckBox localSearchCheckBox = new JCheckBox();
   private JButton executeButton = new JButton();
   private JButton cancelButton = new JButton();
+  private JPanel queryOptionsPanel = new JPanel();
+  private JCheckBox caseSensitiveCheckBox = new JCheckBox("Case sensitive match");
+  private JCheckBox includeItisSynonymsCheckBox = new JCheckBox(
+          "Include taxon synonyms from ITIS in query");
+  private JButton saveDefaultsButton = new JButton();
   //}}
 
   /**
@@ -315,12 +323,38 @@ public class QueryDialog extends JDialog
     spatialPanel.setVisible(false);
     queryTabs.add(spatialPanel);
 
+    // Configure the query options panel
+    queryOptionsPanel.setLayout(new BoxLayout(queryOptionsPanel, BoxLayout.X_AXIS));
+    queryOptionsPanel.setVisible(false);
+    queryOptionsPanel.add(Box.createHorizontalStrut(8));
+    JPanel optionsListPanel = new JPanel();
+    optionsListPanel.setLayout(new BoxLayout(optionsListPanel, BoxLayout.Y_AXIS));
+    optionsListPanel.add(Box.createVerticalStrut(8));
+    optionsListPanel.add(new JLabel("Choose search options for this query:"));
+    optionsListPanel.add(Box.createVerticalStrut(8));
+    String caseSensitiveString = profile.get("casesensitive", 0);
+    caseSensitive = (new Boolean(caseSensitiveString)).booleanValue();
+    caseSensitiveCheckBox.setSelected(caseSensitive);
+    optionsListPanel.add(caseSensitiveCheckBox);
+    String includeSynonymsString = profile.get("includesynonyms", 0);
+    includeSynonyms = (new Boolean(includeSynonymsString)).booleanValue();
+    includeItisSynonymsCheckBox.setSelected(includeSynonyms);
+    //optionsListPanel.add(includeItisSynonymsCheckBox);
+    optionsListPanel.add(Box.createVerticalGlue());
+    saveDefaultsButton.setText("Save Default Options");
+    saveDefaultsButton.setActionCommand("Save Default Options");
+    optionsListPanel.add(saveDefaultsButton);
+    optionsListPanel.add(Box.createVerticalStrut(8));
+    queryOptionsPanel.add(optionsListPanel);
+    queryTabs.add(queryOptionsPanel);
+
     // Set the titles of the tabs
     queryTabs.setSelectedIndex(0);
     queryTabs.setSelectedComponent(subjectPanel);
     queryTabs.setTitleAt(0, "Subject");
     queryTabs.setTitleAt(1, "Taxonomic");
     queryTabs.setTitleAt(2, "Spatial");
+    queryTabs.setTitleAt(3, "Options");
 
     // Configure the control buttons area
     queryPanel.add(Box.createVerticalStrut(8));
@@ -352,6 +386,7 @@ public class QueryDialog extends JDialog
     taxonLessButton.addActionListener(actionHandler);
     executeButton.addActionListener(actionHandler);
     cancelButton.addActionListener(actionHandler);
+    saveDefaultsButton.addActionListener(actionHandler);
     CheckBoxListener checkboxHandler = new CheckBoxListener();
     catalogSearchCheckBox.addItemListener(checkboxHandler);
     localSearchCheckBox.addItemListener(checkboxHandler);
@@ -367,28 +402,6 @@ public class QueryDialog extends JDialog
   {
     this((Frame)framework, framework);
   }
-
-  /** Used by visual cafe -- but why? */
-  public void addNotify()
-  {
-    // Record the size of the window prior to calling parents addNotify.
-    Dimension size = getSize();
-
-    super.addNotify();
-
-    if (frameSizeAdjusted) {
-      return;
-    }
-    frameSizeAdjusted = true;
-
-    // Adjust size of frame according to the insets
-    Insets insets = getInsets();
-    setSize(insets.left + insets.right + size.width,
-            insets.top + insets.bottom + size.height);
-  }
-
-  // Used by addNotify
-  private boolean frameSizeAdjusted = false;
 
   /** Class to listen for ActionEvents */
   private class ActionEventHandler implements ActionListener
@@ -408,6 +421,8 @@ public class QueryDialog extends JDialog
         handleExecuteButtonAction(event);
       } else if (object == cancelButton) {
         handleCancelButtonAction(event);
+      } else if (object == saveDefaultsButton) {
+        handleSaveDefaultsButtonAction(event);
       }
     }
   }
@@ -575,6 +590,7 @@ public class QueryDialog extends JDialog
     String op = "UNION";
     String value = "*";
     String mode = "contains";
+    caseSensitive = caseSensitiveCheckBox.isSelected();
 
     // Add a query group for the overall Subject tab
     if (orRadioButton.isSelected()) {
@@ -637,6 +653,7 @@ public class QueryDialog extends JDialog
     String op = "UNION";
     String value = "*";
     String mode = "contains";
+    caseSensitive = caseSensitiveCheckBox.isSelected();
 
     // Add a query group for the overall Taxon tab
     if (taxonOrRadioButton.isSelected()) {
@@ -662,7 +679,7 @@ public class QueryDialog extends JDialog
       // Create the QueryTerm for the taxon Rank
       value = taxonTermPanel.getTaxonRank();
       path = taxonRankSearchPath;
-      QueryTerm rankTerm = new QueryTerm(true, "exact-match", value, path);
+      QueryTerm rankTerm = new QueryTerm(true, "equals", value, path);
       termGroup.addChild(rankTerm);
 
       // Create the QueryTerm for the taxon value phrase
@@ -682,23 +699,30 @@ public class QueryDialog extends JDialog
    */
   private void handleExecuteButtonAction(ActionEvent event)
   {
-    String metacatflag = "true";
-    String localflag = "true";
-    if (!catalogSearchCheckBox.isSelected()) {
-        metacatflag = "false";
-    }
-    if (!localSearchCheckBox.isSelected()) {
-      if (catalogSearchCheckBox.isSelected()) {
-        localflag = "false";
+    int tabIndex = queryTabs.getSelectedIndex();
+    if (tabIndex > 2) {
+      String message = "Please select one of the Subject, Taxonomic, or Spatial \n" +
+                       "query tabs before clicking the Search button.";
+      JOptionPane.showMessageDialog(this, message);
+    } else {
+      String metacatflag = "true";
+      String localflag = "true";
+      if (!catalogSearchCheckBox.isSelected()) {
+          metacatflag = "false";
       }
+      if (!localSearchCheckBox.isSelected()) {
+        if (catalogSearchCheckBox.isSelected()) {
+          localflag = "false";
+        }
+      }
+      ConfigXML profile = framework.getProfile();
+      profile.set("searchmetacat", 0, metacatflag);
+      profile.set("searchlocal",0,localflag);
+      
+      savedQuery = buildQuery();
+      searchStarted = true;
+      setVisible(false);
     }
-    ConfigXML profile = framework.getProfile();
-    profile.set("searchmetacat", 0, metacatflag);
-    profile.set("searchlocal",0,localflag);
-    
-    savedQuery = buildQuery();
-    searchStarted = true;
-    setVisible(false);
   }
 
   /**
@@ -708,6 +732,25 @@ public class QueryDialog extends JDialog
   {
     searchStarted = false;
     setVisible(false);
+  }
+
+  /**
+   * Save the options as defaults in the user's profile
+   */
+  private void handleSaveDefaultsButtonAction(ActionEvent event)
+  {
+    ConfigXML profile = framework.getProfile();
+
+    profile.set("searchmetacat", 0, 
+                catalogSearchCheckBox.isSelected() ? "true" : "false");
+    profile.set("searchlocal",0, 
+                localSearchCheckBox.isSelected() ? "true" : "false");
+    profile.set("casesensitive",0, 
+                caseSensitiveCheckBox.isSelected() ? "true" : "false");
+    profile.set("includesynonyms",0, 
+                includeItisSynonymsCheckBox.isSelected() ? "true" : "false");
+
+    JOptionPane.showMessageDialog(this, "Options have been saved.");
   }
 
   /**
@@ -822,6 +865,7 @@ public class QueryDialog extends JDialog
       
             tq.setValue(qt.getValue());
             tq.setSearchMode(qt.getSearchMode());
+            caseSensitiveCheckBox.setSelected(qt.isCaseSensitive());
             String pathExpression = qt.getPathExpression();
             if (pathExpression == null) {
               tq.setAllState(true);
@@ -944,6 +988,7 @@ public class QueryDialog extends JDialog
             String searchMode = qt.getSearchMode();
             String pathExpression = qt.getPathExpression();
             String value = qt.getValue();
+            caseSensitiveCheckBox.setSelected(qt.isCaseSensitive());
 
             if (pathExpression.equals(taxonRankSearchPath)) {
               termPanel.setTaxonRank(value);
