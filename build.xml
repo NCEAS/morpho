@@ -6,7 +6,7 @@
   *    Copyright: 2000 Regents of the University of California and the
   *               National Center for Ecological Analysis and Synthesis
   *  For Details: http://www.nceas.ucsb.edu/
-  *    File Info: '$Id: build.xml,v 1.14 2001-05-03 17:16:20 jones Exp $'
+  *    File Info: '$Id: build.xml,v 1.15 2001-05-03 22:21:01 jones Exp $'
   *
   *  Build file for the Ant cross-platform build system for metacat
   *  See http://jakarta.apache.org for details on Ant
@@ -126,6 +126,14 @@
            classpath="${cpath}:${morpho}"
            fork="yes">
            <arg file="src/edu/ucsb/nceas/morpho/datapackage/wizard/wizardTest.xml"/>
+     </java>
+   </target>
+   
+   <target name="Query" depends="install">
+     <java classname="edu.ucsb.nceas.morpho.query.Query"
+           classpath="${cpath}:${morpho}"
+           fork="yes">
+           <arg file="lib/ownerquery.xml"/>
      </java>
    </target>
    

@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2001-05-03 18:51:30 $'
- * '$Revision: 1.3 $'
+ *     '$Date: 2001-05-03 22:21:03 $'
+ * '$Revision: 1.4 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -57,9 +57,9 @@ import java.util.Hashtable;
  * original query, so the result set can be refreshed by re-running the query.
  * Current MetaCat query returns a <document> element for each 'hit'
  * in query. That <document> element has 5 fixed children: <docid>, <docname>,
- * <doctype>, <createdate>, and <updatadate>
+ * <doctype>, <createdate>, and <updatadate>.
  * Other child elements are determined by query and are returned as <param>
- * elements with a "name" attribute and a value in the text.
+ * elements with a "name" attribute and the value as the content.
  */
 public class ResultSet extends AbstractTableModel implements ContentHandler
 {
@@ -69,26 +69,39 @@ public class ResultSet extends AbstractTableModel implements ContentHandler
   /** Store each row of the result set as a row in a Vector */
   private Vector resultsVector = null;
 
+  /**
+   * used to save relation doc info for each doc returned
+   * key is docid, value is a Vector of string arrays
+   * each string array is (relationtype,relationdoc,relationdoctype)
+   */
+  private Vector relationsVector; 
+
+  /**
+   * a list of the desired return fields fromthe configuration file. 
+   *
+   * NOTE: This info should really come from the query so that it can 
+   * vary by query.
+   */
+  private Vector returnFields; // return field path names
+
+  // this group of variables are temporary vars that are used while 
+  // parsing the XML stream.  Ultimately the data ends up in the
+  // resultsVector above
   private Stack elementStack = null;
-  private String[] headers = {"Doc ID", "Document Name", 
-                              "Document Type", "Document Title"};
+  private String[] headers;
   private String docid;
   private String docname;
   private String doctype;
-  private String doctitle;
+  private String createdate;
+  private String updatedate;
   private String paramName;
   private String relationtype;
   private String relationdoc;
   private String relationdoctype;
   private Hashtable params;
   private Hashtable relations; 
-  // used to save relation doc info for each doc returned
-  // key is docid, value is a Vector of string arrays
-  // each string array is (relationtype,relationdoc,relationdoctype)
-  private Vector relationsVector; 
-  private Vector returnFields; // return field path names
-  private int num_cols_to_remove = 3;
 
+  /** The folder icon for representing local storage. */
   private ImageIcon folder = null;
 
   /**
@@ -113,14 +126,21 @@ public class ResultSet extends AbstractTableModel implements ContentHandler
         cnt = returnFields.size();
     }
     
-    headers = new String[4+cnt];  // assume at least 4 fields returned
-    headers[0] = "Doc ID";
-    headers[1] = "Document Name";
-    headers[2] = "Document Type";
-    headers[3] = "Document Title";
+    // Set up the headers
+    // assume at least 5 fixed fields returned, plus add an icon column
+    int numberFixedHeaders = 3;
+    headers = new String[numberFixedHeaders+cnt];  
+    headers[0] = "";  // This is for the icon
     for (int i=0;i<cnt;i++) {
-      headers[4+i] = getLastPathElement((String)returnFields.elementAt(i));
+      headers[1+i] = getLastPathElement((String)returnFields.elementAt(i));
     }
+    headers[cnt+1] = "Created";
+    headers[cnt+2] = "Updated";
+    /*headers[cnt+3] = "Doc ID";*/
+    /*headers[cnt+4] = "Document Name";*/
+    /*headers[cnt+5] = "Document Type";*/
+
+    // Parse the incoming XML stream and extract the data
     String parserName = "org.apache.xerces.parsers.SAXParser";
     XMLReader parser = null;
 
@@ -173,8 +193,17 @@ public class ResultSet extends AbstractTableModel implements ContentHandler
    */
   public Object getValueAt(int row, int col)
   {
-    Vector rowVector = (Vector)resultsVector.get(row);
-    return rowVector.get(col);
+    Object value = null;
+    try {
+      Vector rowVector = (Vector)resultsVector.get(row);
+      value = rowVector.get(col);
+    } catch (NullPointerException npe) {
+      String emptyString = "";
+      value = emptyString;
+      //System.err.println("Error getting value at: row: " + row +
+                         //" col: " + col);
+    }
+    return value;
   }
 
   /**
@@ -183,7 +212,17 @@ public class ResultSet extends AbstractTableModel implements ContentHandler
    */
   public Class getColumnClass(int c)
   {
-    return getValueAt(0, c).getClass();
+    Class currentClass = null;
+    try {
+      currentClass = this.getValueAt(0, c).getClass();
+    } catch (NullPointerException npe) {
+      try {
+        currentClass = Class.forName("java.lang.String");
+      } catch (ClassNotFoundException cnfe) {
+      }
+      //System.err.println("Error getting class for col: " + c);
+    }
+    return currentClass;
   }
 
   /**
@@ -201,16 +240,20 @@ public class ResultSet extends AbstractTableModel implements ContentHandler
     }
 
     elementStack.push(localName);
+
+    // Reset the variables for each document
     if (localName.equals("document")) {
       docid = "";
       docname = "";
       doctype = "";
-      doctitle = "";
+      createdate = "";
+      updatedate = "";
       paramName = "";
       relationsVector = new Vector();
       params = new Hashtable();
     }
 
+    // Reset the variables for each relation within a document
     if (localName.equals("relation")) {
       relationtype = "";
       relationdoc = "";
@@ -231,8 +274,8 @@ public class ResultSet extends AbstractTableModel implements ContentHandler
       rel[1] = relationdoc;
       rel[2] = relationdoctype;
       relationsVector.addElement(rel);
-    }
-    if (localName.equals("document")) {
+
+    } else if (localName.equals("document")) {
       int cnt = 0;
       if (returnFields != null) {
         cnt = returnFields.size();
@@ -240,21 +283,22 @@ public class ResultSet extends AbstractTableModel implements ContentHandler
 
       Vector row = new Vector();
 
+      // Display the right icon for the data package
       row.add(folder);
+
+      // Then display requested fields in requested order
+      for (int i=0; i < cnt; i++) {
+        row.add((String)(params.get(returnFields.elementAt(i))));
+      }
+
+      // Then display additional default fields
+      row.add(createdate);
+      row.add(updatedate);
       row.add(docid);
       row.add(docname);
       row.add(doctype);
 
-      // for cases where there is no doctitle
-      if (!doctitle.equals("")) {
-        row.add(doctitle);
-      } else { 
-        row.add(docid);
-      }  
-      for (int i=0;i<cnt;i++) {
-        row.add((String)(params.get(returnFields.elementAt(i))));
-      }
-      if (relationsVector.size()>0) {
+      if (relationsVector.size() > 0) {
         relations.put(docid, relationsVector);
       }
         
@@ -273,31 +317,26 @@ public class ResultSet extends AbstractTableModel implements ContentHandler
     String currentTag = (String)elementStack.peek();
     if (currentTag.equals("docid")) {
       docid = inputString;
-    }
-    if (currentTag.equals("docname")) {
+    } else if (currentTag.equals("docname")) {
       docname = inputString;
-    }
-    if (currentTag.equals("doctype")) {
+    } else if (currentTag.equals("doctype")) {
       doctype = inputString;
-    }
-    if (currentTag.equals("doctitle")) {
-      doctitle = inputString;
-    }
-    if (currentTag.equals("param")) {
+    } else if (currentTag.equals("createdate")) {
+      createdate = inputString;
+    } else if (currentTag.equals("updatedate")) {
+      updatedate = inputString;
+    } else if (currentTag.equals("param")) {
       String val = inputString;
       if (params.containsKey(paramName)) {  // key already in hash table
         String cur = (String)params.get(paramName);
         val = cur + "; " + val;
       }
       params.put(paramName, val);  
-    }
-    if (currentTag.equals("relationtype")) {
+    } else if (currentTag.equals("relationtype")) {
       relationtype = inputString;
-    }
-    if (currentTag.equals("relationdoc")) {
+    } else if (currentTag.equals("relationdoc")) {
       relationdoc = inputString;
-    }
-    if (currentTag.equals("relationdoctype")) {
+    } else if (currentTag.equals("relationdoctype")) {
       relationdoctype = inputString;
     }
   }

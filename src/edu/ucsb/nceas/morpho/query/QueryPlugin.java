@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2001-05-03 18:51:30 $'
- * '$Revision: 1.54 $'
+ *     '$Date: 2001-05-03 22:21:03 $'
+ * '$Revision: 1.55 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -189,6 +189,12 @@ public class QueryPlugin implements PluginInterface
       searchtext.append("<returndoctype>");
       searchtext.append((String)returnDoctypeList.get(i));
       searchtext.append("</returndoctype>\n");
+    }
+    Vector returnFieldList = config.get("returnfield");
+    for (int i=0; i < returnFieldList.size(); i++) {
+      searchtext.append("<returnfield>");
+      searchtext.append((String)returnFieldList.get(i));
+      searchtext.append("</returnfield>\n");
     }
     searchtext.append("<owner>" + framework.getUserName() + "</owner>\n");
     searchtext.append("<querygroup operator=\"UNION\">\n");

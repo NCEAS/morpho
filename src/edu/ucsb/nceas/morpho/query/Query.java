@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2001-05-03 01:51:58 $'
- * '$Revision: 1.1 $'
+ *     '$Date: 2001-05-03 22:21:03 $'
+ * '$Revision: 1.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -35,6 +35,7 @@ import java.io.IOException;
 import java.io.File;
 import java.io.FileReader;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.StringReader;
 import java.util.Enumeration;
@@ -584,7 +585,16 @@ public class Query extends DefaultHandler {
          FileReader xml = new FileReader(new File(xmlfile));
          
          Query qspec = new Query(xml, cf);
-         cf.debug(9, qspec.printSQL(useXMLIndex));
+         InputStreamReader returnStream =
+                       new InputStreamReader( qspec.queryMetacat());
+
+         int len = 0;
+         char[] characters = new char[512];
+         while ((len = returnStream.read(characters, 0, 512)) != -1) {
+	   System.out.print(characters);
+         }
+
+/*
          ResultSet results = qspec.execute();
 
          JFrame frame = new JFrame("SimpleTest");
@@ -599,7 +609,9 @@ public class Query extends DefaultHandler {
          ResultPanel resultsPanel = new ResultPanel(results);
          frame.getContentPane().add(resultsPanel);
          frame.pack();
+         resultsPanel.invalidate();
          frame.setVisible(true);
+*/
        } catch (IOException e) {
          System.err.println(e.getMessage());
        }

@@ -11,22 +11,28 @@
 <searchnetwork>true</searchnetwork>
 <searchlocal>true</searchlocal>
 <pathquery_config>
-    <doctypes_searched><doctype>any</doctype></doctypes_searched>
-    <doctypes_returned><returndoc>-//NCEAS//resource//EN</returndoc></doctypes_returned>
-    <fields_returned><returnfield>/resource/dataset/title</returnfield></fields_returned>
+  <doctypes_searched><doctype>any</doctype></doctypes_searched>
+  <doctypes_returned><returndoc>-//NCEAS//resource//EN</returndoc>
+  </doctypes_returned>
+  <fields_returned>
+  <returnfield>dataset/title</returnfield>
+  <returnfield>dataset/originator/individualName/surname</returnfield>
+  <returnfield>keyword</returnfield>
+  </fields_returned>
 
-    <doctypes_searched_default>
-        <doctype_default>any</doctype_default>
-   </doctypes_searched_default>
-    <doctypes_returned_default>
-        <returndoc_default>-//NCEAS//resource//EN</returndoc_default>
-        <returndoc_default>-//NCEAS//eml-dataset//EN</returndoc_default>
-        <returndoc_default>eml-dataset</returndoc_default>
-    </doctypes_returned_default>
-    <fields_returned_default>
-        <returnfield_default>resource/dataset/keywordInfo/keyword</returnfield_default>
-        <returnfield_default>eml-dataset/dataset/keywordInfo/keyword</returnfield_default>
-    </fields_returned_default>
+  <doctypes_searched_default>
+    <doctype_default>any</doctype_default>
+  </doctypes_searched_default>
+  <doctypes_returned_default>
+    <returndoc_default>-//NCEAS//resource//EN</returndoc_default>
+    <returndoc_default>-//NCEAS//eml-dataset//EN</returndoc_default>
+    <returndoc_default>eml-dataset</returndoc_default>
+  </doctypes_returned_default>
+  <fields_returned_default>
+    <returnfield_default>dataset/title</returnfield_default>
+    <returnfield_default>dataset/originator/individualName/surname</returnfield_default>
+    <returnfield_default>keyword</returnfield_default>
+  </fields_returned_default>
 </pathquery_config>
 <localdoctypes>
     <localdoctypename>resource</localdoctypename>
