@@ -52,6 +52,11 @@ public class WidgetFactory {
   private static final StringBuffer buff = new StringBuffer();
 
   public static JLabel makeHTMLLabel(String text, int numberOfLines) {
+  
+    return makeHTMLLabel(text, numberOfLines, false);
+  }
+
+  public static JLabel makeHTMLLabel(String text, int numberOfLines, boolean hiliteRequired) {
 
     if (text==null) text="";
     buff.delete(0, buff.length());
@@ -59,7 +64,7 @@ public class WidgetFactory {
     buff.append(text);
     buff.append(WizardSettings.HTML_TABLE_LABEL_CLOSING);
 
-    return makeLabel( buff.toString(), false,
+    return makeLabel( buff.toString(), hiliteRequired,
                       getDimForNumberOfLines(numberOfLines));
 
   }
@@ -199,6 +204,7 @@ public class WidgetFactory {
 
   public static void hiliteComponent(JComponent component) {
 
+    if (component==null) return;
     component.setOpaque(true);
     component.setBackground(
                     WizardSettings.WIZARD_CONTENT_HILITE_BG_COLOR);
@@ -208,6 +214,7 @@ public class WidgetFactory {
 
   public static void unhiliteComponent(JComponent component) {
 
+    if (component==null) return;
     component.setOpaque(false);
     component.setForeground(
                     WizardSettings.WIZARD_CONTENT_REQD_TEXT_COLOR);
