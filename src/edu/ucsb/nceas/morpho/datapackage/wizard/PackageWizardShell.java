@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-10-31 16:35:53 $'
- * '$Revision: 1.56 $'
+ *     '$Date: 2001-11-01 00:13:19 $'
+ * '$Revision: 1.57 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1333,7 +1333,7 @@ public class PackageWizardShell extends javax.swing.JFrame
             
             if(item != null && !item.equals("InitialDescription"))
             {
-              listContent.add(item);
+              listContent.addElement(item);
             }
           }
         }
