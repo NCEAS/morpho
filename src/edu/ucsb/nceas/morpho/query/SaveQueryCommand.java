@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2002-08-23 17:12:51 $'
- * '$Revision: 1.4 $'
+ *     '$Date: 2002-08-23 23:56:24 $'
+ * '$Revision: 1.5 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,6 +33,7 @@ import edu.ucsb.nceas.morpho.framework.MorphoFrame;
 import edu.ucsb.nceas.morpho.framework.SwingWorker;
 import edu.ucsb.nceas.morpho.framework.UIController;
 import edu.ucsb.nceas.morpho.util.Command;
+import edu.ucsb.nceas.morpho.util.GUIAction;
 import edu.ucsb.nceas.morpho.util.Log;
 
 import java.io.IOException;
@@ -136,39 +137,32 @@ public class SaveQueryCommand implements Command
     // by seeing if the query identifier is in the static list of queries
     if (! savedQueriesList.containsKey(query.getIdentifier())) {
       Action[] menuActions = new Action[1];
-      Action savedSearchItemAction = 
-             new AbstractAction(query.getQueryTitle()) {
-        public void actionPerformed(ActionEvent e) {
- 
-          Action queryAction = ((JMenuItem)e.getSource()).getAction();
-          Query savedQuery = (Query)queryAction.getValue("SAVED_QUERY_OBJ");
-          if (savedQuery != null) {
-            MorphoFrame resultWindow = UIController.getInstance().addWindow(
-                query.getQueryTitle());
-            resultWindow.setBusy(true);
-            resultWindow.setVisible(true);
-            ResultSet results = savedQuery.execute();
-            ResultPanel resultDisplayPanel = new ResultPanel(
-                results,12, null, resultWindow.getDefaultContentAreaSize());
-            resultDisplayPanel.setVisible(true);
-            resultWindow.setMainContentPane(resultDisplayPanel);
-            resultWindow.setMessage(results.getRowCount() + " data sets found");
-            resultWindow.setBusy(false);
-          }
-        }
-      };
-      savedSearchItemAction.putValue("SAVED_QUERY_OBJ", query);
-      savedSearchItemAction.putValue(Action.SHORT_DESCRIPTION, 
-                            "Execute saved search");
+      // Create a RunSaveQueryCommand
+      RunSavedQueryCommand command = new RunSavedQueryCommand(query);
+      // Create a GUIAction to run saved query
+      GUIAction savedSearchItemAction = 
+                new GUIAction(query.getQueryTitle(), null,command);
+     
+      savedSearchItemAction.setToolTipText("Execute saved search");
       menuActions[0] = savedSearchItemAction;
-      UIController.getInstance().addMenu("Search", new Integer(-1), menuActions);
+      UIController.getInstance().
+                              addMenu("Search", new Integer(-1), menuActions);
       savedQueriesList.put(query.getIdentifier(), savedSearchItemAction);
     } else {
       // The menu already exists, so update its title and query object
-      Action savedQueryAction = 
-             (Action)savedQueriesList.get(query.getIdentifier());
-      savedQueryAction.putValue(Action.NAME, query.getQueryTitle());
-      savedQueryAction.putValue("SAVED_QUERY_OBJ", query);
+      GUIAction savedQueryAction = 
+             (GUIAction)savedQueriesList.get(query.getIdentifier());
+      // Upate query
+      if (savedQueryAction.getCommand() instanceof RunSavedQueryCommand)
+      {
+        RunSavedQueryCommand queryCommand = 
+                (RunSavedQueryCommand) savedQueryAction.getCommand();
+        queryCommand.setQuery(query);
+        savedQueryAction.setCommand(queryCommand);
+        // Update query title
+        savedQueryAction.putValue(Action.NAME, query.getQueryTitle());
+      }
+        //savedQueryAction.putValue("SAVED_QUERY_OBJ", query);
     }
   }
   
