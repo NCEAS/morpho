@@ -8,8 +8,8 @@
 *    Release: @release@
 *
 *   '$Author: sambasiv $'
-*     '$Date: 2004-04-22 00:07:25 $'
-* '$Revision: 1.28 $'
+*     '$Date: 2004-04-22 02:01:08 $'
+* '$Revision: 1.29 $'
 *
 * This program is free software; you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -381,8 +381,9 @@ public class Taxonomic extends AbstractUIPage {
       OrderedMap map = citationPage.getPageData("/classificationSystemCitation[1]");
       row.add(map);
       this.classList.addRow(row);
+			
     }
-
+		this.refreshCitationList();
   }
 
   private void classificationCitationEditAction() {
@@ -407,8 +408,9 @@ public class Taxonomic extends AbstractUIPage {
 			row = citationPage.getSurrogate();
       row.add(citationPage.getPageData("/classificationSystemCitation[1]"));
       this.classList.replaceSelectedRow(row);
+			
     }
-
+		this.refreshCitationList();
   }
 
   private void TaxonListAddAction() {
@@ -619,9 +621,27 @@ public class Taxonomic extends AbstractUIPage {
 
     // create the first row when the page is loaded, if there are no rows already
     if(this.taxonList.getRowCount() == 0) TaxonListAddAction();
-
+		refreshCitationList();
+		
   }
-
+	
+	private void refreshCitationList() { 
+		
+		List rows = this.classList.getListOfRowLists();
+		for(int i = 0; i < rows.size(); i++) {
+			
+			List row = (List)rows.get(i);
+			if(row.size() < 4) continue;
+			OrderedMap map = (OrderedMap) row.get(3);
+			if(map == null || map.size() == 0) continue;
+			OrderedMap copyMap = (OrderedMap)map.clone();
+			CitationPage citationPage = new CitationPage();
+			citationPage.setPageData(copyMap, "/classificationSystemCitation[1]");
+			row = citationPage.getSurrogate();
+			row.add(citationPage.getPageData("/classificationSystemCitation[1]"));
+			this.classList.replaceRow(i, row);
+		}
+	}
 
   /**
   *  The action to be executed when the "Prev" button is pressed. May be empty

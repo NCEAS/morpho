@@ -5,9 +5,9 @@
  *             National Center for Ecological Analysis and Synthesis
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2004-04-22 00:53:54 $'
- * '$Revision: 1.19 $'
+ *   '$Author: sambasiv $'
+ *     '$Date: 2004-04-22 02:01:08 $'
+ * '$Revision: 1.20 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -177,14 +177,14 @@ public class CitationPage extends AbstractUIPage {
       public void actionPerformed(ActionEvent e) {
         updateDOMFromListOfPages();
         showNewAuthorPartyDialog();
-      }
+			}
     });
 
     authorList.setCustomEditAction(new AbstractAction() {
       public void actionPerformed(ActionEvent e) {
         updateDOMFromListOfPages();
         showEditAuthorPartyDialog();
-      }
+			}
     });
 
     authorPanel.add(authorList);
@@ -297,6 +297,7 @@ public class CitationPage extends AbstractUIPage {
       }
      //update datapackage...
       updateDOMFromListOfPages();
+			refreshAuthorList();
     }
     WidgetFactory.unhiliteComponent(authorLabel);
   }
@@ -338,6 +339,7 @@ public class CitationPage extends AbstractUIPage {
       }
       //update datapackage...
       updateDOMFromListOfPages();
+			refreshAuthorList();
     }
   }
 
@@ -579,8 +581,28 @@ public class CitationPage extends AbstractUIPage {
    */
   public void onLoadAction() {
     //updateListFromDOM();
+		refreshAuthorList();
   }
-
+	
+	private void refreshAuthorList() {
+		
+		List rows = this.authorList.getListOfRowLists();
+		for(int i = 0; i < rows.size(); i++) {
+			
+			List row = (List) rows.get(i);
+			if(row.size() < 4) continue;
+			Object dialogObj = row.get(3);
+			if (dialogObj == null || ! (dialogObj instanceof PartyPage)) continue;
+			PartyPage editPartyPage = (PartyPage) dialogObj;
+			OrderedMap map = editPartyPage.getPageData("/creator[1]");
+			editPartyPage.setPageData(map, "/creator[1]");
+			List newRow = editPartyPage.getSurrogate();
+      newRow.add(editPartyPage);
+      authorList.replaceRow(i, newRow);
+			
+		}
+	}
+	
   /**
    *  gets the unique ID for this wizard page
    *
