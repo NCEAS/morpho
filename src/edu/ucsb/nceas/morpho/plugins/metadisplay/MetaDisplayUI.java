@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2002-09-06 22:30:29 $'
- * '$Revision: 1.10 $'
+ *   '$Author: brooke $'
+ *     '$Date: 2002-09-13 23:04:57 $'
+ * '$Revision: 1.11 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -36,12 +36,14 @@ import java.awt.event.FocusEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
-import javax.swing.JPanel;
 import javax.swing.Box;
+import javax.swing.JPanel;
 import javax.swing.BoxLayout;
 import javax.swing.JComponent;
-import javax.swing.border.Border;
+import javax.swing.JScrollPane;
 import javax.swing.BorderFactory;
+
+import javax.swing.border.Border;
 
 import edu.ucsb.nceas.morpho.util.Log;
 
@@ -114,14 +116,20 @@ public class MetaDisplayUI extends JPanel
     {
         header.setPreferredSize(HEADER_DIMS);
         htmlPanel.setPreferredSize(HTML_DIMS);
+        JScrollPane htmlScroll = new JScrollPane(htmlPanel);
+        
         this.setOpaque(true);
         this.setLayout(new BorderLayout());
-        Box centerPanel = Box.createVerticalBox();
-        this.add(centerPanel, BorderLayout.CENTER) ;
-
-        centerPanel.add(header);
-        centerPanel.add(htmlPanel);
+//        Box centerPanel = Box.createVerticalBox();
+//        this.add(centerPanel, BorderLayout.CENTER);
+//
+//        centerPanel.add(header);
+//        centerPanel.add(htmlScroll);
         
+        this.add(header, BorderLayout.NORTH);
+        this.add(htmlScroll, BorderLayout.CENTER);
+        
+                
     //    this.setMinimumSize(OVERALL_DIMS);
         this.setPreferredSize(OVERALL_DIMS);
     }

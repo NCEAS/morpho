@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2002-09-13 19:11:43 $'
- * '$Revision: 1.18 $'
+ *     '$Date: 2002-09-13 23:04:57 $'
+ * '$Revision: 1.19 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -83,6 +83,12 @@ public class MetaDisplay implements MetaDisplayInterface,
         editingCompletelistenerList = new Vector();
         ui                          = new MetaDisplayUI(this);
         transformer                 = XMLTransformer.getInstance();
+        
+        //maybe we can detect the base path automatically??:
+        //definitely need to put in config file
+        transformer.addTransformerProperty("stylePath", 
+        "jar:file:/C:/DEV/ecoinfo/MORPHO_ROOT/CVS_SOURCE/morpho/lib/morpho-config.jar!/style");
+        
         history                     = new History();
     }
 

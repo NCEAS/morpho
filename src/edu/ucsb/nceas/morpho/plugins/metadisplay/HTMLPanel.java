@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2002-09-13 19:11:43 $'
- * '$Revision: 1.7 $'
+ *     '$Date: 2002-09-13 23:04:57 $'
+ * '$Revision: 1.8 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,7 +26,11 @@
 
 package edu.ucsb.nceas.morpho.plugins.metadisplay;
 
+import java.io.File;
 import java.io.IOException;
+
+import java.net.URL;
+import java.net.MalformedURLException;
 
 import java.awt.Color;
 
@@ -52,9 +56,6 @@ public class HTMLPanel extends JEditorPane implements HyperlinkListener
 {
 //  * * * * * * * C L A S S    V A R I A B L E S * * * * * * *
 
-	private static final String DEFAULT_HTML =
-	     "<html><head></head>\n<body bgcolor=\"#eeeeee\">&nbsp;</body></html>";
-
     private MetaDisplayInterface  controller;
 
     /**
@@ -63,7 +64,7 @@ public class HTMLPanel extends JEditorPane implements HyperlinkListener
      */
     public HTMLPanel(MetaDisplayInterface controller) throws IOException {
     
-        this("DEFAULT_HTML");
+        this(MetaDisplay.BLANK_HTML_PAGE);
         this.controller = controller;
     }
 
@@ -103,6 +104,7 @@ public class HTMLPanel extends JEditorPane implements HyperlinkListener
         this.setEditable(false);
     }
 
+    
 	/**
 	 *  set the HTML content
 	 *
@@ -112,11 +114,12 @@ public class HTMLPanel extends JEditorPane implements HyperlinkListener
 	{
         Log.debug(50, "\nHTMLPanel.setHTML() received HTML: \n"+html+"\n");
         html = stripHTMLMetaTags(html);
+
         try {
-          this.setText(html);
+            this.setText(html);
         } catch (ArrayIndexOutOfBoundsException e) {
-          Log.debug(12,"HTMLPanel error - invalid HTML mark-up!\n"+html);
-          this.setText(MetaDisplay.BLANK_HTML_PAGE);
+            Log.debug(12,"HTMLPanel error - invalid HTML mark-up!\n"+html);
+            this.setText(MetaDisplay.BLANK_HTML_PAGE);
         }
 	}
     

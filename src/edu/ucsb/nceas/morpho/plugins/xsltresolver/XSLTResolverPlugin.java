@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2002-09-12 03:04:48 $'
- * '$Revision: 1.1 $'
+ *     '$Date: 2002-09-13 23:04:58 $'
+ * '$Revision: 1.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -95,7 +95,7 @@ public class XSLTResolverPlugin implements  XSLTResolverInterface,
      *  If no suitable stylesheet can be returned, a DocumentNotFoundException 
      *  is thrown
      *
-     *  @param docID  a unique DOCID used to determine what stylesheet to return 
+     *  @param docType unique DOCTYPE used to determine the stylesheet to return 
      *
      *  @return       a Reader for the character-based XSLT stylesheet. If a 
      *                stylesheet corresponding to the DOCID cannot be found, 
@@ -103,12 +103,25 @@ public class XSLTResolverPlugin implements  XSLTResolverInterface,
      *
      *  @throws DocumentNotFoundException if no suitable stylesheet is available
      */
-    public Reader getXSLTStylesheetReader(String docID) 
+    public Reader getXSLTStylesheetReader(String docType) 
                                               throws DocumentNotFoundException
     {
+        
+        //H A C K ! ! ! ! !
         //needs to be implemented properly. 
-        //Currently always returns default stylesheet!!!!!!
-        return new InputStreamReader(
-                          classLoader.getResourceAsStream(GENERIC_STYLESHEET));
+        
+//        if (docType.indexOf("entity")>0) {
+//          return new InputStreamReader(
+//          classLoader.getResourceAsStream("style/eml-entity-2.0.0beta6.xsl"));
+//        } else if (docType.indexOf("dataset")>0) {
+//          return new InputStreamReader(
+//          classLoader.getResourceAsStream("style/eml-dataset-2.0.0beta6.xsl"));
+//        } else if (docType.indexOf("attribute")>0) {
+//          return new InputStreamReader(
+//          classLoader.getResourceAsStream("style/eml-attribute-2.0.0beta6.xsl"));
+//        } else {
+          return new InputStreamReader(
+          classLoader.getResourceAsStream(GENERIC_STYLESHEET));
+//        }
     }
 }
