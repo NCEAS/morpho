@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-10-22 21:37:24 $'
- * '$Revision: 1.33 $'
+ *     '$Date: 2002-11-01 00:33:28 $'
+ * '$Revision: 1.34 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -76,6 +76,8 @@ public class AddMetadataWizard extends JFrame
   public static final String NOTSHOWIMPORTDATA = "not show import data";
   public static final String SHOWEVERYTHING = "show";
   private String showRadioButton = SHOWEVERYTHING;
+  
+  String doctype;
   
   ConfigXML config;
   Morpho morpho = null;
@@ -534,7 +536,7 @@ public class AddMetadataWizard extends JFrame
               String label = jrb.getLabel();
               Hashtable h = (Hashtable)newXMLFileAtts.get(label);
               String editexisting = (String)h.get("editexisting");
-              String doctype = (String)h.get("xmlfiletype");
+              doctype = (String)h.get("xmlfiletype");
               String rootnode = (String)h.get("rootnode");
               dummydoc += "<?xml version=\"1.0\"?>\n";
               dummydoc += "<!DOCTYPE " + rootnode + " PUBLIC \"" + doctype + 
@@ -1291,7 +1293,11 @@ public class AddMetadataWizard extends JFrame
     else
     { //create a new id and a new triple for the triple file.
       newid = a.getNextId();
-      Triple t = new Triple(newid, "isRelatedTo", relatedtoId);
+      int pos1 = doctype.indexOf("eml-");
+      int pos2 = doctype.indexOf("-",pos1+4);
+      String simple_doctype = doctype.substring(pos1,pos2);
+      
+      Triple t = new Triple(newid, "provides " + simple_doctype +" information for ", relatedtoId);
       // assign the access file for the package as access for this new doc
       Triple ta = new Triple(dataPackage.getAccessFileIdForDataPackage(), 
                                "provides access control rules for", newid);
