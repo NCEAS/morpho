@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2004-03-16 20:09:24 $'
- * '$Revision: 1.4 $'
+ *     '$Date: 2004-03-16 20:37:16 $'
+ * '$Revision: 1.5 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -102,8 +102,6 @@ public class AddTemporalCovCommand implements Command {
 
 
   private void showTemporalDialog() {
-
-    MorphoFrame mf = UIController.getInstance().getCurrentActiveWindow();
 
     ServiceController sc;
     DataPackageWizardPlugin dpwPlugin = null;

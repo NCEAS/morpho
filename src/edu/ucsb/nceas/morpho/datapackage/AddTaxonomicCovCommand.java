@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2004-03-16 20:09:24 $'
- * '$Revision: 1.3 $'
+ *     '$Date: 2004-03-16 20:37:16 $'
+ * '$Revision: 1.4 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -73,8 +73,6 @@ public class AddTaxonomicCovCommand implements Command {
 
 
   private void showTaxonomicDialog() {
-
-    MorphoFrame mf = UIController.getInstance().getCurrentActiveWindow();
 
     ServiceController sc;
     DataPackageWizardPlugin dpwPlugin = null;

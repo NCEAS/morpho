@@ -6,8 +6,8 @@
 *    Release: @release@
 *
 *   '$Author: brooke $'
-*     '$Date: 2004-03-16 20:09:24 $'
-* '$Revision: 1.13 $'
+*     '$Date: 2004-03-16 20:37:16 $'
+* '$Revision: 1.14 $'
 *
 * This program is free software; you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -46,8 +46,6 @@ import edu.ucsb.nceas.utilities.OrderedMap;
 
 import java.util.Vector;
 
-import java.awt.Dimension;
-import java.awt.Point;
 import java.awt.event.ActionEvent;
 
 import javax.swing.DefaultCellEditor;
@@ -300,13 +298,7 @@ public class InsertColumnCommand implements Command
 
 
   private void showAttributeDialog() {
-    int newCompWidth = 400;
-    int newCompHeight = 650;
-    MorphoFrame mf = UIController.getInstance().getCurrentActiveWindow();
-    Point curLoc = mf.getLocationOnScreen();
-    Dimension dim = mf.getSize();
-    int newx = curLoc.x +dim.width/2;
-    int newy = curLoc.y+dim.height/2;
+
     ServiceController sc;
     DataPackageWizardPlugin dpwPlugin = null;
     try {
@@ -315,8 +307,8 @@ public class InsertColumnCommand implements Command
     } catch (ServiceNotHandledException se) {
       Log.debug(6, se.getMessage());
     }
-    if(dpwPlugin == null)
-      return;
+    if(dpwPlugin == null) return;
+
     attributePage = (AttributePage)dpwPlugin.getPage(DataPackageWizardInterface.ATTRIBUTE_PAGE);
     WizardPopupDialog wpd = new WizardPopupDialog(attributePage, false);
     wpd.setSize(WizardSettings.DIALOG_WIDTH, WizardSettings.ATTR_DIALOG_HEIGHT);
