@@ -4,9 +4,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: sambasiv $'
- *     '$Date: 2003-11-25 18:03:10 $'
- * '$Revision: 1.87 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2003-12-02 19:30:26 $'
+ * '$Revision: 1.88 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -142,6 +142,11 @@ public class DataViewer extends javax.swing.JPanel
    */
    File dataFile = null;
 
+  /**
+   *   id of the file containing the data
+   */
+   String dataFileId = null;
+   
   /**
    *   file containing the entity metadata
    */
@@ -1611,6 +1616,34 @@ public class DataViewer extends javax.swing.JPanel
     File tempfileAttr = null;
     File tempfilePhy = null;
     File tempfileEnt = null;
+    if (adp!=null) {  // new eml2.0.0 handling
+      String id = "";
+      AccessionNumber an = new AccessionNumber(Morpho.thisStaticInstance);
+      if (dataFileId==null) {
+        id = an.getNextId();
+      } else {
+        id = an.incRev(dataFileId);
+      }
+      dataFileId = id;  // update to new value
+      String tempfilename = parseId(id);
+      ptm.getPersistentVector().writeObjects(tempdir + "/" + tempfilename);
+      
+      File newDataFile = new File(tempdir + "/" + tempfilename);
+      long newDataFileLength = newDataFile.length();
+      
+      int rowcnt = ptm.getRowCount();
+      String rowcntS = (new Integer(rowcnt)).toString();
+      adp.setEntityNumRecords(entityIndex, rowcntS);
+      
+      String sizeS = (new Long(newDataFileLength)).toString();
+      adp.setPhysicalSize(entityIndex, 0, sizeS);
+      
+      adp.setPhysicalFieldDelimiter(entityIndex, 0, field_delimiter);
+      
+ Log.debug(1,"Data File Number of Records: "+adp.getEntityNumRecords(entityIndex));
+ Log.debug(1,"Physical Size: "+adp.getPhysicalSize(entityIndex,0));
+ Log.debug(1,"Field Delimiter: "+adp.getPhysicalFieldDelimiter(entityIndex,0));
+    }
 	  if (dp!=null) {
       // make a temporary copy of the data file
       // PersistentVector get from ptm
@@ -1888,6 +1921,25 @@ public class DataViewer extends javax.swing.JPanel
     
 	}
 
+  /** 
+   * Parses a dotted notation id into a file path.  johnson2343.13223 becomes
+   * johnson2343/13223.  Revision numbers are left on the end so
+   * johnson2343.13223.2 becomes johnson2343/13223.2
+   */
+  private String parseId(String id) 
+  {
+    String path = new String();
+    path = id.substring(0, id.indexOf("."));
+    // now create a directory in the temp dir if it does not exist
+    File pathFile = new File(tempdir + "/" + path);
+    if (!pathFile.exists()) {
+      pathFile.mkdir();
+    }
+    path += "/" + id.substring(id.indexOf(separator) + 1, id.length());
+    return path;
+  }
+
+  
 	private TripleCollection buildTriplesForNewData(String accessId, 
                                   String entityFileId,
                                   String dataid) {
