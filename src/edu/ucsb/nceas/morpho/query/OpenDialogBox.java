@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2002-08-08 00:13:34 $'
- * '$Revision: 1.1.2.2 $'
+ *     '$Date: 2002-08-09 01:11:48 $'
+ * '$Revision: 1.1.2.3 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -74,7 +74,7 @@ public class OpenDialogBox extends JDialog
   private ConfigXML config = null;
 
   /** the reference to mediator */
-  private ResultPanelAndFrameMediator mediator;
+  private ResultPanelAndFrameMediator mediator = null;
  
 
   //{{DECLARE_CONTROLS
@@ -92,10 +92,9 @@ public class OpenDialogBox extends JDialog
    *
    * @param framework A reference to the client framework 
    */
-  public OpenDialogBox(ClientFramework framework, 
-                                  ResultPanelAndFrameMediator myMediator)
+  public OpenDialogBox(ClientFramework framework)
   {
-    this((Frame)framework, framework, myMediator);
+    this((Frame)framework, framework);
   }
   
   /**
@@ -104,13 +103,12 @@ public class OpenDialogBox extends JDialog
    * @param parent The parent frame for this dialog
    * @param framework A reference to the client framework 
    */
-  public OpenDialogBox(Frame parent, ClientFramework framework, 
-                      ResultPanelAndFrameMediator myMediator)
+  public OpenDialogBox(Frame parent, ClientFramework framework)
   {
     super(parent);
     this.framework = framework;
     this.config = framework.getConfiguration();
-    this.mediator = myMediator;
+    this.mediator = new ResultPanelAndFrameMediator();
     
     setSize(800, 600);
     setTitle("Open");
@@ -268,8 +266,7 @@ public class OpenDialogBox extends JDialog
     File configDir = null;
     String configFile = "config.xml";
     configDir = new File(ConfigXML.getConfigDirectory());
-    ResultPanelAndFrameMediator myMediator = new ResultPanelAndFrameMediator() ;
-   
+    
     try {
         
         configurationFile = new File(configDir, configFile);
@@ -325,7 +322,7 @@ public class OpenDialogBox extends JDialog
         e.printStackTrace(System.err);
       }
       clf.setProfile(profile);
-      OpenDialogBox open = new OpenDialogBox(clf, myMediator);
+      OpenDialogBox open = new OpenDialogBox(clf);
       open.show();
     
   }
