@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-07-05 20:57:54 $'
- * '$Revision: 1.11 $'
+ *     '$Date: 2001-07-05 22:50:37 $'
+ * '$Revision: 1.12 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -253,6 +253,7 @@ public class EntityGUI extends javax.swing.JFrame
      attributes.addElement(" "); 
     }
     attributeList = new JList(attributes);
+    attributeList.setSelectedIndex(0);
     attributeList.addMouseListener(new MouseAdapter()
     {
       public void mouseClicked(MouseEvent e)

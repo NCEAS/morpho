@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-07-05 21:50:18 $'
- * '$Revision: 1.41 $'
+ *     '$Date: 2001-07-05 22:50:37 $'
+ * '$Revision: 1.42 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -256,13 +256,8 @@ public class DataPackageGUI extends javax.swing.JFrame
     layoutPanel.setMinimumSize(new Dimension(450, 500));
     
     layoutPanel.add(toppanel);      
-    //JPanel layoutpanel2 = new JPanel();
-    //layoutpanel2.add(basicInfoPanel);
-    //layoutpanel2.add(listPanel);
     layoutPanel.add(basicInfoPanel);
     layoutPanel.add(listPanel);
-    //layoutpanel2.setBorder(BorderFactory.createLineBorder(Color.black));
-    //layoutPanel.add(layoutpanel2);
     contentPane.add(layoutPanel);
   }
   
@@ -416,8 +411,8 @@ public class DataPackageGUI extends javax.swing.JFrame
     //////////////entity files////////////////////////
     
     entityFileList = new JList(entityfiles);
-    entityFileList.setPreferredSize(new Dimension(80, 70));
-    entityFileList.setMaximumSize(new Dimension(80, 70));
+    entityFileList.setPreferredSize(new Dimension(60, 70));
+    entityFileList.setMaximumSize(new Dimension(60, 70));
     entityFileList.addListSelectionListener(new EntitySelectionHandler());
     entityFileList.addMouseListener(new MouseAdapter()
     {
@@ -442,8 +437,8 @@ public class DataPackageGUI extends javax.swing.JFrame
     ////////////////other files//////////////////////
     
     otherFileList = new JList(otherfiles);
-    otherFileList.setPreferredSize(new Dimension(80, 70));
-    otherFileList.setMaximumSize(new Dimension(80, 70));
+    otherFileList.setPreferredSize(new Dimension(60, 70));
+    otherFileList.setMaximumSize(new Dimension(60, 70));
     otherFileList.addListSelectionListener(new OtherSelectionHandler());
     otherFileList.addMouseListener(new MouseAdapter()
     {

@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-07-05 21:50:18 $'
- * '$Revision: 1.9 $'
+ *     '$Date: 2001-07-05 22:50:37 $'
+ * '$Revision: 1.10 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -78,6 +78,7 @@ public class NewPackageMetadataWizard extends JFrame
   File addedFile = null;
   String relateDataFileTo = "";
   String dummydoc = "";
+  boolean finishflag = false;
   
   JLabel helpLabel = new JLabel();
   JPanel screenPanel = null;
@@ -793,6 +794,7 @@ public class NewPackageMetadataWizard extends JFrame
    */
   private void handleFinishAction()
   {
+    finishflag = true;
     AccessionNumber a = new AccessionNumber(framework);
     String newid = a.getNextId();
     String location = dataPackage.getLocation();
@@ -1048,10 +1050,13 @@ public class NewPackageMetadataWizard extends JFrame
   
   public void windowClosed(WindowEvent event)
   {
-    DataPackageGUI dpg = new DataPackageGUI(framework, dataPackage);
-    dpg.show();
-    dpg.setName("Package Editor:" + dataPackage.getID());
-    framework.addWindow(dpg);
+    if(!finishflag)
+    {
+      DataPackageGUI dpg = new DataPackageGUI(framework, dataPackage);
+      dpg.show();
+      dpg.setName("Package Editor:" + dataPackage.getID());
+      framework.addWindow(dpg);
+    }
     framework.removeWindow(this); 
   }
   public void windowClosing(WindowEvent event)
