@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: sgarg $'
- *     '$Date: 2004-04-10 21:50:27 $'
- * '$Revision: 1.17 $'
+ *     '$Date: 2004-04-11 19:54:57 $'
+ * '$Revision: 1.18 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -42,6 +42,7 @@ import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import javax.swing.AbstractAction;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -67,22 +68,12 @@ import edu.ucsb.nceas.morpho.framework.ModalDialog;
 import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WidgetFactory;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardSettings;
-import edu.ucsb.nceas.morpho.util.ProgressBarThread;
 import edu.ucsb.nceas.morpho.util.Command;
 import edu.ucsb.nceas.morpho.util.GUIAction;
 import edu.ucsb.nceas.morpho.util.HyperlinkButton;
 import edu.ucsb.nceas.morpho.util.Log;
+import edu.ucsb.nceas.morpho.util.ProgressBarThread;
 import edu.ucsb.nceas.utilities.OrderedMap;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.Source;
-import java.io.File;
-import javax.xml.transform.stream.StreamResult;
-import javax.xml.transform.Result;
-import javax.xml.transform.TransformerConfigurationException;
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerFactory;
-import javax.swing.AbstractAction;
 
 public class AccessPage
     extends AbstractUIPage {
@@ -108,10 +99,12 @@ public class AccessPage
   protected JComboBox typeComboBox;
   protected JComboBox accessComboBox;
   private JScrollPane accessTreePane;
-  private AccessProgressThread pbt = null;
+  protected AccessProgressThread pbt = null;
   private String accessListFilePath = "./lib/accesslist.xml";
   public JTreeTable treeTable = null;
   private QueryMetacatThread queryMetacat = null;
+  private boolean queryMetacatCancelled;
+
   private final String[] accessTypeText = new String[] {
       "  Allow",
       "  Deny"
@@ -126,6 +119,10 @@ public class AccessPage
 
   public boolean accessIsAllow = true;
   private final String xPathRoot = "/eml:eml/dataset/access";
+
+  public void setQueryMetacatCancelled(boolean queryMetacatCancelled) {
+    this.queryMetacatCancelled = queryMetacatCancelled;
+  }
 
   public AccessPage() {
     init();
@@ -225,10 +222,11 @@ public class AccessPage
     if ( (doc = getDocumentFromFile()) == null) {
       pbt = new AccessProgressThread(this);
       pbt.start();
+
       pbt.setCustomCancelAction(
           new AbstractAction() {
         public void actionPerformed(ActionEvent e) {
-          Log.debug(45, "\nAccess: CustomAddAction called");
+          Log.debug(45, "\nAccessPage: CustomCancelAction called");
           cancelGetDocumentFromMetacat();
         }
       });
@@ -283,23 +281,6 @@ public class AccessPage
       Node tempRoot = tempDoc.getDocumentElement();
       tempRoot.appendChild(importedClone);
 
-      try {
-        // Prepare the DOM document for writing
-        Source source = new DOMSource(tempDoc);
-
-        // Prepare the output file
-        File file = new File("./lib/ls.xml");
-        Result result = new StreamResult(file);
-
-        // Write the DOM document to the file
-        Transformer xformer = TransformerFactory.newInstance().newTransformer();
-        xformer.transform(source, result);
-
-      }
-      catch (TransformerConfigurationException e) {
-      }
-      catch (TransformerException e) {
-      }
       return tempDoc;
     }
     catch (FileNotFoundException e) {
@@ -323,6 +304,7 @@ public class AccessPage
     pbt.setProgressBarString(
         "Contacting Metacat Server for Access information....");
 
+    queryMetacatCancelled = false;
     queryMetacat = new QueryMetacatThread(this);
     queryMetacat.start();
 
@@ -622,9 +604,19 @@ public class AccessPage
   }
 
   private void cancelGetDocumentFromMetacat() {
-    Log.debug(10, "EXECUTED");
 
-    queryMetacat.interrupt();
+    if (Access.accessTreeNode != null &&
+        Access.accessTreeMetacatServerName.compareTo(Morpho.
+        thisStaticInstance.getMetacatURLString()) == 0) {
+      Log.debug(10,
+          "Retrieving access information from Metacat server cancelled. "
+          + "Using the old access tree.");
+      displayTree(Access.accessTreeNode);
+    } else {
+      displayDNPanel();
+    }
+
+    setQueryMetacatCancelled(true);
   }
 
   /**
@@ -635,6 +627,10 @@ public class AccessPage
 
   protected void displayTree(DefaultMutableTreeNode treeNode) {
     accessTreePane = null;
+
+    // clear out any other components on the screen...
+    dnField = null;
+    middlePanel.removeAll();
 
     if (treeNode != null) {
       treeTable = new JTreeTable(new AccessTreeModel(treeNode));
@@ -1043,6 +1039,10 @@ public class AccessPage
     return pageNumber;
   }
 
+  public boolean isQueryMetacatCancelled() {
+    return queryMetacatCancelled;
+  }
+
   public boolean setPageData(OrderedMap data, String xPathRoot) {
     return true;
   }
@@ -1174,8 +1174,10 @@ class QueryMetacatThread
       queryResult = null;
       //if (morpho.isConnected()) {
       queryResult = morpho.getMetacatInputStream(prop);
-      accessPage.parseInputStream(queryResult);
-      // }
+
+      if(!accessPage.isQueryMetacatCancelled()){
+        accessPage.parseInputStream(queryResult);
+      }
     }
     catch (Exception w) {
       Log.debug(10, "Error in retrieving User list from Metacat server.");
@@ -1196,4 +1198,31 @@ class QueryMetacatThread
     }
   }
 
+
 }
+
+
+/**
+ *
+ * Code for debugging dom trees made in between
+ * processing of xml files and doms
+ *
+ * try {
+ * // Prepare the DOM document for writing
+ * Source source = new DOMSource(tempDoc);
+ *
+ * // Prepare the output file
+ * File file = new File("./lib/ls.xml");
+ * Result result = new StreamResult(file);
+ *
+ * // Write the DOM document to the file
+ * Transformer xformer = TransformerFactory.newInstance().newTransformer();
+ * xformer.transform(source, result);
+ *
+ *}
+ *catch (TransformerConfigurationException e) {
+ *}
+ *catch (TransformerException e) {
+ *}
+ *
+ */

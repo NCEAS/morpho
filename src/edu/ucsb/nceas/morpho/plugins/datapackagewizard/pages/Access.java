@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: sgarg $'
- *     '$Date: 2004-04-09 22:20:19 $'
- * '$Revision: 1.30 $'
+ *     '$Date: 2004-04-11 19:54:57 $'
+ * '$Revision: 1.31 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -160,8 +160,6 @@ public class Access
    */
   private void initActions() {
 
-    final Access access = this;
-
     accessList.setCustomAddAction(
 
         new AbstractAction() {
@@ -254,11 +252,6 @@ public class Access
         accessList.addRow(newRow);
       }
     }
-  }
-
-  public static void refreshTree(AccessPage accessPage) {
-    Access access = new Access();
-
   }
 
   /**
