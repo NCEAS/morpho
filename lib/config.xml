@@ -1,11 +1,11 @@
 <?xml version="1.0"?>
 <config>
-  <version>1.0.0 Beta 1.2</version>
+  <version>1.0.0 Beta 1.3</version>
   <plugin>edu.ucsb.nceas.morpho.query.QueryPlugin</plugin>
   <plugin>edu.ucsb.nceas.morpho.datapackage.DataPackagePlugin</plugin>
   <plugin>edu.ucsb.nceas.morpho.editor.EditorPlugin</plugin>
   <plugin>edu.ucsb.nceas.morpho.framework.ToolPlugin</plugin>
-  <metacat_url>http://dev.nceas.ucsb.edu/jones/servlet/metacat</metacat_url>
+  <metacat_url>http://dev.nceas.ucsb.edu:8090/knb/servlet/metacat</metacat_url>
   <profile_directory>./profiles</profile_directory>
   <samples_directory>./lib/sampledata</samples_directory>
   <default_profile>./lib/default-profile.xml</default_profile>
@@ -70,7 +70,8 @@
       <relatedto>DATAFILE</relatedto>
       <displaypath>//entityName</displaypath>
       <editexisting>no</editexisting>
-      <idpath>/table-entity/identifier</idpath>
+       <visible>no</visible>
+     <idpath>/table-entity/identifier</idpath>
     </file>
     <file>
       <name>Attribute</name>
@@ -112,8 +113,8 @@
       <xmlfiletype>-//ecoinformatics.org//eml-software-2.0.0beta5//EN</xmlfiletype>
       <rootnode>software</rootnode>
       <tooltip>Description of any software created or used in the creation of this data package.</tooltip>
-      <displaypath>//shortName</displaypath>
-      <editexisting>no</editexisting>
+      <displaypath>FIXED:Software</displaypath>
+       <editexisting>no</editexisting>
       <idpath>/software/identifier</idpath>
     </file>
     <file>
