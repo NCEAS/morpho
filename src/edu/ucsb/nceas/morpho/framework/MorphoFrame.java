@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2002-08-23 23:43:44 $'
- * '$Revision: 1.6 $'
+ *   '$Author: tao $'
+ *     '$Date: 2002-09-05 18:21:11 $'
+ * '$Revision: 1.7 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -57,6 +57,7 @@ public class MorphoFrame extends JFrame
     private Dimension contentAreaSize;
     private final MorphoFrame instance;
     private static int menuBarHeight = 0;
+    private boolean busyFlag =false;
 
     // Constants (probably should be set in a property file, but what the hell)
     private static final int MAX_WINDOW_WIDTH = 1024;
@@ -227,7 +228,12 @@ public class MorphoFrame extends JFrame
      */
     public void setBusy(boolean isBusy)
     {
+      // Only isBusy is different to current status(busyFlag, it change status
+      if(busyFlag ^ isBusy)
+      {
         indicator.setBusy(isBusy);
+        busyFlag = isBusy;
+      }
     }
 
     /**
