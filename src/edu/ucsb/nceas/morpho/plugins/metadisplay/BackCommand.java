@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2002-08-26 23:49:27 $'
- * '$Revision: 1.1 $'
+ *     '$Date: 2002-08-28 01:04:36 $'
+ * '$Revision: 1.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,15 +29,15 @@ package edu.ucsb.nceas.morpho.plugins.metadisplay;
 import  edu.ucsb.nceas.morpho.util.Log;
 import  edu.ucsb.nceas.morpho.util.Command;
 
-import  edu.ucsb.nceas.morpho.plugins.MetaDisplayInterface;
+import  edu.ucsb.nceas.morpho.plugins.metadisplay.MetaDisplay;
 import  edu.ucsb.nceas.morpho.plugins.DocumentNotFoundException;
 
 
 public class BackCommand implements Command {
 
-    private final MetaDisplayInterface controller;
+    private final MetaDisplay controller;
     
-    BackCommand(MetaDisplayInterface controller) 
+    BackCommand(MetaDisplay controller) 
     {
         this.controller = controller;
     }
@@ -47,6 +47,8 @@ public class BackCommand implements Command {
      */    
     public void execute() 
     {
+        Log.debug(50,
+          "BackCommand.execute() called. Doing controller.displayPrevious()...");
         try {
             controller.displayPrevious();
         } catch (DocumentNotFoundException dnfe) {

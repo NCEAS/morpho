@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2002-08-26 23:48:18 $'
- * '$Revision: 1.7 $'
+ *     '$Date: 2002-08-28 01:04:36 $'
+ * '$Revision: 1.8 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,16 +28,19 @@ package edu.ucsb.nceas.morpho.plugins.metadisplay;
 
 import java.io.IOException;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.BorderLayout;
 
 import javax.swing.JPanel;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
+import javax.swing.border.Border;
+import javax.swing.BorderFactory;
 
 import edu.ucsb.nceas.morpho.util.Log;
 
-import edu.ucsb.nceas.morpho.plugins.MetaDisplayInterface;
+import edu.ucsb.nceas.morpho.plugins.metadisplay.MetaDisplay;
 
 
 /**
@@ -52,28 +55,35 @@ public class MetaDisplayUI extends JPanel
 
     private       HTMLPanel             htmlPanel;
     private final HeaderPanel           header;
-    private final MetaDisplayInterface  controller;
+    private final MetaDisplay           controller;
 
-    private final int TOTAL_WIDTH     = 400;
-    private final int TOTAL_HEIGHT    = 600;
+    private final int TOTAL_WIDTH       = 400;
+    private final int TOTAL_HEIGHT      = 600;
     
-    private final int PADDING   = 0;
+    private static final int BORDER_WIDTH      = 4;
 
-    private final int HEADER_HEIGHT    = 55;
-    private final int HEADER_WIDTH     = TOTAL_WIDTH - 2 * PADDING;
+    private static final int HEADER_HEIGHT     = 55;
+    private final int HEADER_WIDTH      = TOTAL_WIDTH - 2 * BORDER_WIDTH;
 
     private final Dimension OVERALL_DIMS 
-        = new Dimension(TOTAL_WIDTH, TOTAL_HEIGHT);
+                                    = new Dimension(TOTAL_WIDTH, TOTAL_HEIGHT);
     protected final Dimension HEADER_DIMS 
-        = new Dimension(HEADER_WIDTH, HEADER_HEIGHT);
+                                    = new Dimension(HEADER_WIDTH, HEADER_HEIGHT);
     private final Dimension HTML_DIMS   
-        = new Dimension(HEADER_WIDTH, TOTAL_HEIGHT - HEADER_HEIGHT - 3*PADDING);
+                                    = new Dimension(HEADER_WIDTH, TOTAL_HEIGHT 
+                                            - HEADER_HEIGHT - 2*BORDER_WIDTH);
+                                            
+    private static final Color FOCUSED_BORDER_COLOR = new Color(115,147,196);
+    private static final Border focusedBorder 
+                = BorderFactory.createMatteBorder(  BORDER_WIDTH, BORDER_WIDTH, 
+                                                    BORDER_WIDTH, BORDER_WIDTH,
+                                                    FOCUSED_BORDER_COLOR );
 
     /**
      *  constructor
      *
      */
-    public MetaDisplayUI(MetaDisplayInterface controller) {
+    public MetaDisplayUI(MetaDisplay controller) {
     
         this.controller = controller;
         this.header     = new HeaderPanel(controller);
@@ -91,18 +101,18 @@ public class MetaDisplayUI extends JPanel
         header.setPreferredSize(HEADER_DIMS);
         htmlPanel.setPreferredSize(HTML_DIMS);
         this.setOpaque(true);
-        
+        this.setBorder(focusedBorder);
         this.setLayout(new BorderLayout());
-        this.add(Box.createHorizontalStrut(PADDING),BorderLayout.WEST);
+//        this.add(Box.createHorizontalStrut(PADDING),BorderLayout.WEST);
         Box centerPanel = Box.createVerticalBox();
         this.add(centerPanel, BorderLayout.CENTER) ;
-        this.add(Box.createHorizontalStrut(PADDING),BorderLayout.EAST);
+//        this.add(Box.createHorizontalStrut(PADDING),BorderLayout.EAST);
 
-        centerPanel.add(Box.createVerticalStrut(PADDING));
+//        centerPanel.add(Box.createVerticalStrut(PADDING));
         centerPanel.add(header);
-        centerPanel.add(Box.createVerticalStrut(PADDING));
+//        centerPanel.add(Box.createVerticalStrut(PADDING));
         centerPanel.add(htmlPanel);
-        centerPanel.add(Box.createVerticalStrut(PADDING));
+//        centerPanel.add(Box.createVerticalStrut(PADDING));
         
         this.setMinimumSize(OVERALL_DIMS);
         this.setPreferredSize(OVERALL_DIMS);
@@ -149,4 +159,5 @@ public class MetaDisplayUI extends JPanel
 	{
 		return this.htmlPanel;
 	}
+    
 }

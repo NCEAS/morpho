@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2002-08-26 23:48:18 $'
- * '$Revision: 1.8 $'
+ *     '$Date: 2002-08-28 01:04:36 $'
+ * '$Revision: 1.9 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -351,7 +351,7 @@ public class MetaDisplay implements MetaDisplayInterface
 	}
 
 	
-	private String getIdentifier()
+	protected String getIdentifier()
 	{
 		return this.identifier;
 	}
