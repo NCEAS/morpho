@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2003-09-24 04:40:38 $'
- * '$Revision: 1.5 $'
+ *     '$Date: 2003-09-24 21:43:05 $'
+ * '$Revision: 1.6 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -177,8 +177,8 @@ class DateTimePanel extends JPanel implements DialogSubPanelAPI {
     
     boundsHelpPanel.add(boundsPanel);
     boundsHelpPanel.add(WidgetFactory.makeLabel(
-        "<html><font color=\"#666666\">Check the 'excl?' box if "
-        +"the bound does not include the value itself</font></html>", false,
+        "<html><font color=\"#666666\">Check 'excl?' box if "
+        +"bound does not include the value itself</font></html>", false,
         new Dimension(1000,22)) );
     
     
