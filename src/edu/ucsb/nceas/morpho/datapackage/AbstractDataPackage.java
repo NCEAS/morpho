@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2004-03-22 23:47:51 $'
- * '$Revision: 1.71 $'
+ *     '$Date: 2004-03-23 23:55:51 $'
+ * '$Revision: 1.72 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -66,6 +66,9 @@ import org.w3c.dom.Node;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.NamedNodeMap;
+import org.apache.xerces.dom.DOMImplementationImpl;
+import org.w3c.dom.DOMImplementation;
+
 
 
 /**
@@ -480,11 +483,8 @@ public abstract class AbstractDataPackage extends MetadataObject
   /**
    * returns cloned root Node of subtree identified by genericName String and int
    * index; returns null if not found
-   * NOTE: the cloned subtree is a new node but it is still part of the original
-   * DOM Document. All DOM nodes can only exist as part of a Document. In this case
-   * the original document is used to hold the clone since it will probably be placed
-   * back in the same Document tree after editing. This means that one should NOT use
-   * getDocument to find the root node of the subtree.
+   * NOTE: the cloned subtree is a new node. That new node is copied to a new
+   * Document object and made the root of the new document
    *
    * @param genericName String
    * @param index int
@@ -509,6 +509,10 @@ public abstract class AbstractDataPackage extends MetadataObject
         if (index<nodelist.getLength()) {
           // create a deep cloned version
           Node deepClone = (nodelist.item(index)).cloneNode(true);
+          DOMImplementation impl = DOMImplementationImpl.getDOMImplementation();
+          Document doc = impl.createDocument("", "tempRoot", null);
+          Node tempRoot = doc.getDocumentElement();
+          doc.replaceChild(deepClone, tempRoot);
           return deepClone;
         } else {
 
