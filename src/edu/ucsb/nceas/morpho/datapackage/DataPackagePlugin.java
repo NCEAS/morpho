@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: jones $'
- *     '$Date: 2002-09-26 05:34:38 $'
- * '$Revision: 1.32 $'
+ *   '$Author: tao $'
+ *     '$Date: 2002-09-26 18:16:31 $'
+ * '$Revision: 1.33 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -67,6 +67,11 @@ public class DataPackagePlugin
   /** The configuration options object reference from the framework */
   private ConfigXML config = null;
 
+  /** Constant int for data menu position */
+  public static final int DATAMENUPOSITION = 3;
+  
+  /** Constant int for edit menu position */
+  public static final int EDITMENUPOSITION = 1;
   /**
    * Construct the plugin.  Initialize our menus and toolbars.
    */
@@ -120,18 +125,118 @@ public class DataPackagePlugin
    */
   private void initializeActions() 
   {
-    GUIAction addDocumentation = new 
-                                  GUIAction("Add Documentation...", null, null);
-    GUIAction createNewDatatable = new GUIAction("Create New Datatable...", null, null);
-    GUIAction sortBySelectedColumn = new GUIAction("Sort by Selected Column", null, null);
-    GUIAction insertRowAfter = new GUIAction("insert Row After Selected Row", null, null);
-    GUIAction insertRowBefore = new GUIAction("insert Row Before Selected Row", null, null);
-    GUIAction deleteRow = new GUIAction("Delete Selected Row", null, null);
-    GUIAction insertColumnBefore = new GUIAction("insert Column Before Selected Column", null, null);
-    GUIAction insertColumnAfter = new GUIAction("insert Column After Selected Column", null, null);
-    GUIAction deleteColumn = new GUIAction("Delete Selected Column", null, null);
-    GUIAction editColumnMetadata = new GUIAction("Edit Column Metadata", null, null);
+    UIController controller = UIController.getInstance();
     
+    // For edit menu
+    GUIAction copy = new GUIAction("Copy", null, null);
+    copy.setToolTipText("Copy value in data table cells");
+    copy.setMenuItemPosition(0);
+    copy.setMenu("Edit", EDITMENUPOSITION);
+    controller.addGuiAction(copy);
+    
+    GUIAction cut = new GUIAction("Cut", null, null);
+    cut.setToolTipText("Cut value in data table cells");
+    cut.setMenuItemPosition(1);
+    cut.setMenu("Edit", EDITMENUPOSITION);
+    controller.addGuiAction(cut);
+    
+    GUIAction paste = new GUIAction("paste", null, null);
+    paste.setToolTipText("paste value in data table cells");
+    paste.setMenuItemPosition(2);
+    paste.setMenu("Edit", EDITMENUPOSITION);
+    controller.addGuiAction(paste);
+    
+    copy.setEnabled(false);
+    cut.setEnabled(false);
+    paste.setEnabled(false);
+    
+    // For data menu
+    int i = 0; // postition for menu item in data menu
+    
+    GUIAction addDocumentation = new GUIAction("Add Documentation...", null, 
+                                          new AddDocumentationCommand());
+    addDocumentation.setToolTipText("Add a XML documentation");
+    addDocumentation.setMenuItemPosition(i);
+    addDocumentation.setMenu("Data", DATAMENUPOSITION);
+    controller.addGuiAction(addDocumentation);
+    
+    i = i+1;
+    GUIAction createNewDatatable = new GUIAction("Create New Datatable...", null,
+                                                      new ImportDataCommand());
+    createNewDatatable.setToolTipText("Add a new table");
+    createNewDatatable.setMenuItemPosition(i);
+    createNewDatatable.setMenu("Data", DATAMENUPOSITION);
+    createNewDatatable.setSeparatorPosition(Morpho.SEPARATOR_FOLLOWING);
+    controller.addGuiAction(createNewDatatable);
+    
+    i= i+2; // separator will take a position so add 2
+    GUIAction sortBySelectedColumn = 
+                        new GUIAction("Sort by Selected Column", null, null);
+    sortBySelectedColumn.setToolTipText("Sort table by selected column");
+    sortBySelectedColumn.setMenuItemPosition(i);
+    sortBySelectedColumn.setMenu("Data", DATAMENUPOSITION);
+    sortBySelectedColumn.setSeparatorPosition(Morpho.SEPARATOR_FOLLOWING);
+    controller.addGuiAction(sortBySelectedColumn);
+    
+    i = i+2;
+    GUIAction insertRowAfter = 
+            new GUIAction("Insert Row After Selected Row", null, null);
+    insertRowAfter.setToolTipText("Insert a row after selected row");
+    insertRowAfter.setMenuItemPosition(i);
+    insertRowAfter.setMenu("Data", DATAMENUPOSITION);
+    controller.addGuiAction(insertRowAfter);
+    
+    i = i+1;
+    GUIAction insertRowBefore = 
+                  new GUIAction("Insert Row Before Selected Row", null, null);
+    insertRowBefore.setToolTipText("Insert a row before selected row");
+    insertRowBefore.setMenuItemPosition(i);
+    insertRowBefore.setMenu("Data", DATAMENUPOSITION);
+    controller.addGuiAction(insertRowBefore);
+    
+    i = i+1;
+    GUIAction deleteRow = new GUIAction("Delete Selected Row", null, null);
+    deleteRow.setToolTipText("Delete a selected row");
+    deleteRow.setMenuItemPosition(i);
+    deleteRow.setMenu("Data", DATAMENUPOSITION);
+    deleteRow.setSeparatorPosition(Morpho.SEPARATOR_FOLLOWING);
+    controller.addGuiAction(deleteRow);
+    
+    i = i+2;
+    GUIAction insertColumnAfter = new 
+            GUIAction("Insert Column After Selected Column", null, null);
+    insertColumnAfter.setToolTipText("Insert a column after selected column");
+    insertColumnAfter.setMenuItemPosition(i);
+    insertColumnAfter.setMenu("Data", DATAMENUPOSITION);
+    controller.addGuiAction(insertColumnAfter);
+       
+    i = i+1;
+    GUIAction insertColumnBefore = 
+        new GUIAction("Insert Column Before Selected Column", null, null);
+    insertColumnBefore.setToolTipText("Insert a column before selected column");
+    insertColumnBefore.setMenuItemPosition(i);
+    insertColumnBefore.setMenu("Data", DATAMENUPOSITION);
+    controller.addGuiAction(insertColumnBefore);
+    
+    i = i+1;
+    GUIAction deleteColumn = new 
+                          GUIAction("Delete Selected Column", null, null);
+    deleteColumn.setToolTipText("Delete a selected column");
+    deleteColumn.setMenuItemPosition(i);
+    deleteColumn.setMenu("Data", DATAMENUPOSITION);
+    deleteColumn.setSeparatorPosition(Morpho.SEPARATOR_FOLLOWING);
+    controller.addGuiAction(deleteColumn);
+    
+    i = i+2;
+    GUIAction editColumnMetadata = 
+                          new GUIAction("Edit Column Metadata", null, null);
+    editColumnMetadata.setToolTipText("Edit selected column metadata");
+    editColumnMetadata.setMenuItemPosition(i);
+    editColumnMetadata.setMenu("Data", DATAMENUPOSITION);
+    //editColumnMetadata.setSeparatorPosition(Morpho.SEPARATOR_FOLLOWING);
+    controller.addGuiAction(editColumnMetadata);
+    
+    addDocumentation.setEnabled(false);
     createNewDatatable.setEnabled(false);
     sortBySelectedColumn.setEnabled(false);
     insertRowAfter.setEnabled(false);
@@ -141,6 +246,9 @@ public class DataPackagePlugin
     insertColumnAfter.setEnabled(false);
     deleteColumn.setEnabled(false);
     editColumnMetadata.setEnabled(false);
+    
+    
+    
     
     // Set up the menus for the application
     Action newItemAction = new AbstractAction("New Data Package") 
