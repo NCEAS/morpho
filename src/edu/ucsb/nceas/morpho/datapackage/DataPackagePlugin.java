@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2002-09-27 03:58:24 $'
- * '$Revision: 1.35 $'
+ *     '$Date: 2002-09-27 16:14:14 $'
+ * '$Revision: 1.36 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -128,27 +128,27 @@ public class DataPackagePlugin
     UIController controller = UIController.getInstance();
     
     // For edit menu
-    GUIAction copy = new GUIAction("Copy", null, null);
+    GUIAction copy = new GUIAction("Copy", null, new TableCopyCommand());
     copy.setToolTipText("Copy value in data table cells");
     copy.setMenuItemPosition(0);
     copy.setMenu("Edit", EDITMENUPOSITION);
     controller.addGuiAction(copy);
     
-    GUIAction cut = new GUIAction("Cut", null, null);
+    GUIAction cut = new GUIAction("Cut", null, new TableCutCommand());
     cut.setToolTipText("Cut value in data table cells");
     cut.setMenuItemPosition(1);
     cut.setMenu("Edit", EDITMENUPOSITION);
     controller.addGuiAction(cut);
     
-    GUIAction paste = new GUIAction("paste", null, null);
+    GUIAction paste = new GUIAction("Paste", null, new TablePasteCommand());
     paste.setToolTipText("paste value in data table cells");
     paste.setMenuItemPosition(2);
     paste.setMenu("Edit", EDITMENUPOSITION);
     controller.addGuiAction(paste);
     
-    copy.setEnabled(false);
+    /*copy.setEnabled(false);
     cut.setEnabled(false);
-    paste.setEnabled(false);
+    paste.setEnabled(false);*/
     
     // For data menu
     int i = 0; // postition for menu item in data menu
