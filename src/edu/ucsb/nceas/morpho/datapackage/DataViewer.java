@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2002-09-27 03:58:24 $'
- * '$Revision: 1.56 $'
+ *     '$Date: 2002-09-27 16:16:14 $'
+ * '$Revision: 1.57 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -300,6 +300,8 @@ public class DataViewer extends javax.swing.JPanel
   // Display data view or not
   private boolean showDataView = true;
 
+  // flag for text file
+  boolean text_flag = false;
 	/*
    * No argument contstructor that builds basic gui
    */
@@ -399,7 +401,7 @@ public class DataViewer extends javax.swing.JPanel
     editColumnMetadata = new JMenuItem(editColumnMetadataAction);
     popup.add(editColumnMetadata);
   
-    updateDataMenu();
+    //updateDataMenu();
 	}
 
     /*
@@ -558,6 +560,13 @@ public class DataViewer extends javax.swing.JPanel
       sortdirection = direction;
     }
    
+   /**
+    * Method to get text flag
+    */
+   public boolean getTextFlag()
+   {
+     return text_flag;
+   }
     
     
     /**
@@ -725,7 +734,6 @@ public class DataViewer extends javax.swing.JPanel
         buildTextDisplay();
       }
       else { 
-        boolean text_flag = false;
         if (format.indexOf("text")>-1){
           text_flag=true;
         }
@@ -786,9 +794,9 @@ public class DataViewer extends javax.swing.JPanel
           if ((column_labels!=null)&&(column_labels.size()>0)) {
             if ((field_delimiter.trim().length()>0)) {
               buildTable();
-              tcuta.setSource(table);
+              /*tcuta.setSource(table);
               tca.setSource(table);
-              tpa.setTarget(table);
+              tpa.setTarget(table);*/
               //MouseListener popupListener = new PopupListener();
               //table.addMouseListener(popupListener);
             }
