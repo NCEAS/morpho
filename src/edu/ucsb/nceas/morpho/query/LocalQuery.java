@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-05-14 23:09:38 $'
- * '$Revision: 1.24 $'
+ *     '$Date: 2001-05-15 17:57:55 $'
+ * '$Revision: 1.25 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -46,6 +46,8 @@ import java.util.Vector;
 import java.util.Hashtable;
 import java.util.Enumeration;
 import java.util.Stack;
+import java.util.Date;
+import javax.swing.ImageIcon;
 
 import edu.ucsb.nceas.morpho.framework.*;
 
@@ -113,6 +115,8 @@ public class LocalQuery extends DefaultHandler
   /** Doctype of document currently being queried */
   private String currentDoctype;
     
+  /** The folder icon for representing local storage. */
+  private ImageIcon localIcon = null;
     
   // Query data structures used temporarily during XML parsing
   private boolean containsExtendedSQL=false;
@@ -155,7 +159,6 @@ public LocalQuery(Reader queryspec, ClientFramework framework) {
       
   local_xml_directory = local_xml_directory.trim();
   xmlcatalogfile = local_dtd_directory.trim()+"/catalog"; 
- // xmlFileFolder = local_xml_directory.trim();
 
     // Initialize the members
     doctypeList = new Vector();
@@ -210,6 +213,27 @@ public LocalQuery(Reader queryspec, ClientFramework framework) {
   {
     this(new StringReader(queryspec), framework);
   }
+
+/**
+ *
+ */
+ public ResultSet execute() {
+    // first, get a list of all packages that meet the query requirements
+    Vector packageList = executeLocal(this.query, null);
+    Vector row = null;
+    Vector rowCollection = new Vector();
+    
+    // now build a Vector of Vectors (tablemodel)
+    Enumeration pl = packageList.elements();
+    while (pl.hasMoreElements()) {
+      String packageName = (String)pl.nextElement();
+      row = createRSRow(packageName);
+      rowCollection.addElement(row);
+    }
+    ResultSet rs = new ResultSet(this, "local", rowCollection, framework);
+ return rs;
+ }
+
 
  /**
   *  loops recursively over all files in the 'local_xml_directory'
@@ -349,18 +373,27 @@ public LocalQuery(Reader queryspec, ClientFramework framework) {
 	}
 	
 	
-	private String[] createRSRow(String filename) {
-	    int cols = 4 + returnFields.size();
-	    String[] rss = new String[cols];
-	    rss[0] = filename;                         //ID
-	    rss[1] = getLastPathElement(filename);     //docname
-	    rss[2] = currentDoctype;                   // doctype
-	    
-	    rss[3] =  getValueForPath("//*/title",filename);  // title
-	    if (rss[3].equals("")) { rss[3] = filename; }
+	private Vector createRSRow(String filename) {
+	    File fn = new File(local_xml_directory, filename);
+	    String fullfilename = fn.getPath();
+	    Vector rss = new Vector();
+      // add icon
+      rss.addElement(localIcon);
+
 	    for (int i=0;i<returnFields.size();i++) {
-	        rss[4+i] = getValueForPath((String)returnFields.elementAt(i),filename);   
+	      String tmp = (String)returnFields.elementAt(i);  
+	      rss.addElement(getValueForPath(tmp,fullfilename));   
 	    }
+	    File fl = new File(fullfilename);
+	    Date creationDate = new Date(fl.lastModified());
+	    String date = creationDate.toString();
+	    rss.addElement(date);                                 // create date
+	    rss.addElement(date);                                 // update date
+	    rss.addElement(filename);                             // docid
+	    String temp = (String)doctype_collection.get(fullfilename);
+	    rss.addElement(temp);                                 // doctype
+	    rss.addElement(new Boolean(true));                    // isLocal
+	    rss.addElement(new Boolean(false));                   // isMetacat
 	return rss;
 	}
 	
@@ -371,6 +404,9 @@ public LocalQuery(Reader queryspec, ClientFramework framework) {
 	 */
 	private String getValueForPath(String pathstring, String filename) {
 	  String val = "";
+	  if (!pathstring.startsWith("/")) {
+	    pathstring = "//*/"+pathstring;
+	  }
 	    try{
 	    // assume that the filename file has already been parsed
         if (dom_collection.containsKey(filename)){
@@ -736,11 +772,8 @@ return rs;
          
         LocalQuery qspec = new LocalQuery(xml, cf);
         
-        Vector test = qspec.executeLocal(qspec.query, null);
-        Enumeration www = test.elements();
-        while (www.hasMoreElements()) {
-          System.out.println((String)www.nextElement());  
-        }
+    //    Vector test = qspec.executeLocal(qspec.query, null);
+        ResultSet rs = qspec.execute();
          
        } catch (IOException e) {
          System.err.println(e.getMessage());
@@ -774,21 +807,14 @@ return rs;
       System.out.println("Error in building PackageList!");  
     }
     if ((nl!=null)&&(nl.getLength()>0)) {
-  //  System.out.println("Node list length = "+nl.getLength());
       for (int m=0;m<nl.getLength();m++) {
       NodeList nlchildren = (nl.item(m)).getChildNodes();
         for (int n=0;n<nlchildren.getLength();n++) {
           if (nlchildren.item(n).getNodeType()!=Node.TEXT_NODE) {
-        // System.out.println("localName = "+(nlchildren.item(n)).getLocalName());
             if ((nlchildren.item(n)).getLocalName().equalsIgnoreCase("subject")) {
               nd = nlchildren.item(n).getFirstChild();
               subject = nd.getNodeValue().trim();
-//        System.out.println("sub = "+subject);
             }
-//            if ((nlchildren.item(n)).getLocalName().equalsIgnoreCase("relationship")) {
-//              nd = nlchildren.item(n).getFirstChild();
-//              relationship = nd.getNodeValue().trim();   
-//            }
             if ((nlchildren.item(n)).getLocalName().equalsIgnoreCase("object")) {
               nd = nlchildren.item(n).getFirstChild();
               object = nd.getNodeValue().trim();   
