@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-08-29 21:21:15 $'
- * '$Revision: 1.3 $'
+ *     '$Date: 2002-09-02 17:34:24 $'
+ * '$Revision: 1.4 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -80,6 +80,11 @@ public class PersistentVector
     * field delimiter string
     */
     String field_delimiter = "#x09";
+    
+    /*
+    * header line vector
+    */
+    Vector headerLinesVector;
 
     
     public PersistentVector() {
@@ -117,6 +122,7 @@ public class PersistentVector
           BufferedReader in = new BufferedReader(new FileReader(f));
           nlines = 0;
           long pos = 0;
+          headerLinesVector = new Vector();
           try {
             while (((temp = in.readLine())!=null)) {
                 if (temp.length()>0) {   // do not count blank lines
@@ -131,8 +137,11 @@ public class PersistentVector
                     else {
                       objectList.addElement(tempA);  
                     }
-                 }
-                } 
+                  }
+                  else {    // header info
+                   headerLinesVector.addElement(temp);
+                  }
+                }
             }
             in.close();
           }
@@ -150,6 +159,7 @@ public class PersistentVector
           BufferedReader in = new BufferedReader(new FileReader(f));
           nlines = 0;
           long pos = 0;
+          headerLinesVector = new Vector();
           try {
             while (((temp = in.readLine())!=null)) {
                 if (temp.length()>0) {   // do not count blank lines
@@ -165,6 +175,9 @@ public class PersistentVector
                       objectList.addElement(tempA);  
                     }
                   }
+                  else {    // header info
+                   headerLinesVector.addElement(temp);
+                  } 
                 } 
             }
             in.close();
@@ -200,10 +213,18 @@ public class PersistentVector
         File f = new File(filename);
         try{
             BufferedWriter out = new BufferedWriter(new FileWriter(f));
+            // write header lines if they exist
+            if (headerLinesVector!=null) {
+              for (int jj=0;jj<headerLinesVector.size();jj++) {
+                String hline = (String)headerLinesVector.elementAt(jj);
+                out.write(hline, 0, hline.length());
+                out.newLine(); 
+              }
+            }
             for (int i=0; i<this.size();i++) {
                 String[] s = (String[])this.elementAt(i);
-                String sss = "";
-                for (int ii=0;ii<s.length;ii++) {
+                String sss = s[0];
+                for (int ii=1;ii<s.length;ii++) {
                   sss = sss + "\t" + s[ii];
                 } 
                 out.write(sss, 0, sss.length());

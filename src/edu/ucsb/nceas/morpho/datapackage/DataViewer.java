@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-08-29 23:12:34 $'
- * '$Revision: 1.27 $'
+ *     '$Date: 2002-09-02 17:34:24 $'
+ * '$Revision: 1.28 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -54,6 +54,7 @@ import org.xml.sax.InputSource;
 
 import edu.ucsb.nceas.morpho.framework.*;
 import edu.ucsb.nceas.morpho.Morpho;
+import edu.ucsb.nceas.morpho.datastore.*;
 import edu.ucsb.nceas.morpho.util.*;
 
 //public class DataViewer extends javax.swing.JFrame
@@ -949,6 +950,15 @@ public class DataViewer extends javax.swing.JPanel
         if (sel>-1) {
           showColumnMetadataEditPanel();
           if (columnAddFlag) {
+            try {
+              cmep.setMorpho(framework);
+              cmep.insertNewAttributeAt(sel, attributeFile);
+              cmep.save();
+            }
+            catch (Exception w) {
+              Log.debug(20, "Exception trying to modify attribute DOM");
+            }
+            
             String newHeader = cmep.getColumnName();
             if (newHeader.trim().length()==0) newHeader = "New Column";
             String type = cmep.getDataType();
@@ -967,6 +977,15 @@ public class DataViewer extends javax.swing.JPanel
         if (sel>-1) {
           showColumnMetadataEditPanel();
           if (columnAddFlag) {
+            try {
+              cmep.setMorpho(framework);
+              cmep.insertNewAttributeAt(sel, attributeFile);
+              cmep.save();
+            }
+            catch (Exception w) {
+              Log.debug(20, "Exception trying to modify attribute DOM");
+            }
+
             String newHeader = cmep.getColumnName();
             if (newHeader.trim().length()==0) newHeader = "New Column";
             String type = cmep.getDataType();
@@ -1103,16 +1122,9 @@ public class DataViewer extends javax.swing.JPanel
 
 	void UpdateButton_actionPerformed(java.awt.event.ActionEvent event)
 	{ 
-    /*
-	  if(nlines>=nlines_max) {
-	    Log.debug(9,"Sorry, this data file is too large to be updated from within Morpho!");
-	    return;
-	  }
+    
 	  if (dp!=null) {
-	      // convert table info to string
-	      vecToString();
 	    
-        Log.debug(20, "beginning of data file update");
         AccessionNumber a = new AccessionNumber(framework);
         FileSystemDataStore fsds = new FileSystemDataStore(framework);
         //System.out.println(xmlString);
@@ -1144,8 +1156,19 @@ public class DataViewer extends javax.swing.JPanel
           Vector oldids = new Vector();
           String oldid = dataID;
           newid = a.incRev(dataID);
-//          System.out.println("newid= "+newid);
-          fsds.saveFile(newid, new StringReader(dataString));
+          // save data to a temporary file
+          FileReader fr = null;
+          try{
+            ptm.getPersistentVector().writeObjects(tempdir + "/" + "tempdata");
+            File tempfile = new File(tempdir + "/" + "tempdata");
+            fr = new FileReader(tempfile);
+          }
+          catch (Exception ww) {
+            Log.debug(20,"Problem making temporary copy of data");
+          }
+          
+          
+          fsds.saveFile(newid, fr);
           newPackageId = a.incRev(dp.getID());
           oldids.addElement(oldid);
           oldids.addElement(dp.getID());
@@ -1155,11 +1178,11 @@ public class DataViewer extends javax.swing.JPanel
           String newPackageFile = a.incRevInTriples(dp.getTriplesFile(), 
                                                     oldids, 
                                                     newids);
-          System.out.println("oldid: " + oldid + " newid: " + newid);          
           fsds.saveFile(newPackageId, new StringReader(newPackageFile)); 
+
         }
         catch (Exception e) {
-            Log.debug(20, "error in local update of data file");    
+          Log.debug(20, "error in local update of data file");    
         }
       }
       if(metacatloc)
@@ -1175,7 +1198,10 @@ public class DataViewer extends javax.swing.JPanel
         
         try{
           // save to a temporary file
-          StringReader sr = new StringReader(dataString);
+          ptm.getPersistentVector().writeObjects(tempdir + "/" + newFileName);
+          File tempfile = new File(tempdir + "/" + newFileName);
+          
+ /*         StringReader sr = new StringReader(dataString);
           File tempfile = new File(tempdir + "/" + newFileName);
           FileWriter fw = new FileWriter(tempfile);
           BufferedWriter bfw = new BufferedWriter(fw);
@@ -1187,7 +1213,7 @@ public class DataViewer extends javax.swing.JPanel
           }
           bfw.flush();
           bfw.close();
-          
+*/          
           mds.newDataFile(newid, tempfile);
           System.out.println("new data file added:newid="+newid);
           newPackageId = a.incRev(dp.getID());
@@ -1215,9 +1241,10 @@ public class DataViewer extends javax.swing.JPanel
       //this.dispose();
   //    if (parent!=null) parent.dispose();
   //    if (grandParent!=null) grandParent.dispose();
-      DataPackageGUI newgui = new DataPackageGUI(framework, newPackage);
+  //    DataPackageGUI newgui = new DataPackageGUI(framework, newPackage);
 
-      // Refresh the query results after the update
+ /*
+     // Refresh the query results after the update
       try {
         ServiceProvider provider = 
                framework.getServiceProvider(QueryRefreshInterface.class);
@@ -1226,8 +1253,9 @@ public class DataViewer extends javax.swing.JPanel
         Log.debug(6, snhe.getMessage());
       }
       newgui.show();
+  */    
 	  }		
-  */  
+    
 	}
 
 	

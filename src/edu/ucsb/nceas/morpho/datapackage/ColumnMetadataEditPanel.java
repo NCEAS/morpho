@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-08-29 23:12:34 $'
- * '$Revision: 1.6 $'
+ *     '$Date: 2002-09-02 17:34:24 $'
+ * '$Revision: 1.7 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -49,6 +49,9 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 import org.xml.sax.InputSource;
 
+import com.arbortext.catalog.*;
+import java.net.URL;
+
 import edu.ucsb.nceas.morpho.framework.*;
 /**
  * A panel that displays the metadata for a column in a data table
@@ -59,6 +62,7 @@ public class ColumnMetadataEditPanel extends javax.swing.JPanel //implements jav
    * root node of the in-memory DOM structure
    */
   private Node root;
+  private Morpho morpho;
 
   /**
    * Document node of the in-memory DOM structure
@@ -254,6 +258,11 @@ public class ColumnMetadataEditPanel extends javax.swing.JPanel //implements jav
     
     
   }
+  
+  public void setMorpho(Morpho morpho) {
+    this.morpho = morpho;    
+  }
+  
 	public static void main(String argv[])
 	{
 		class DriverFrame extends javax.swing.JFrame
@@ -666,20 +675,45 @@ public class ColumnMetadataEditPanel extends javax.swing.JPanel //implements jav
         return res;
     }
 
-  void insertNewAttributeAt(int index, String filename) throws FileNotFoundException
+  void insertNewAttributeAt(int index, File file) throws FileNotFoundException
   {
     DocumentBuilder parser = Morpho.createDomParser();
-    File XMLConfigFile = new File(filename);
+    File XMLConfigFile = file;
     InputSource in;
     FileInputStream fs;
-    fs = new FileInputStream(filename);
+
+    CatalogEntityResolver cer = new CatalogEntityResolver();
+    try 
+    {
+      Catalog myCatalog = new Catalog();
+      myCatalog.loadSystemCatalogs();
+      ConfigXML config = morpho.getConfiguration();
+      String catalogPath = // config.getConfigDirectory() + File.separator +
+                                       config.get("local_catalog_path", 0);
+      ClassLoader cl = Thread.currentThread().getContextClassLoader();
+      URL catalogURL = cl.getResource(catalogPath);
+        
+      myCatalog.parseCatalog(catalogURL.toString());
+      cer.setCatalog(myCatalog);
+    } 
+    catch (Exception e) 
+    {
+      Log.debug(11, "Problem creating Catalog in " +
+                   "packagewizardshell.handleFinishAction!" + e.toString());
+    }
+    
+    parser.setEntityResolver(cer);
+
+
+
+    fs = new FileInputStream(file);
     in = new InputSource(fs);
      try
     {
       doc = parser.parse(in);
       fs.close();
     } catch(Exception e1) {
-      Log.debug(4, "Parsing " + filename + " threw: " + 
+      Log.debug(4, "Parsing threw: " + 
                             e1.toString());
       e1.printStackTrace();
     }
@@ -716,6 +750,25 @@ public class ColumnMetadataEditPanel extends javax.swing.JPanel //implements jav
     Node domainNode = doc.createElement("attributeDomain");
     newAttrRoot.appendChild(domainNode);
     if (enumButton.isSelected()) {
+      if (pv.size()==0) {
+        Node enumNode = doc.createElement("enumeratedDomain");
+        domainNode.appendChild(enumNode);
+          
+        temp = doc.createElement("code");
+        newText = doc.createTextNode("");
+        temp.appendChild(newText);
+        enumNode.appendChild(temp);      
+
+        temp = doc.createElement("definition");
+        newText = doc.createTextNode("");
+        temp.appendChild(newText);
+        enumNode.appendChild(temp);      
+        
+        temp = doc.createElement("source");
+        newText = doc.createTextNode("");
+        temp.appendChild(newText);
+        enumNode.appendChild(temp);      
+      }
       for (int j=0;j<pv.size();j++) {
         String[] rec = (String[])pv.elementAt(j);
         if (rec[0].length()>0) {
@@ -784,7 +837,7 @@ public class ColumnMetadataEditPanel extends javax.swing.JPanel //implements jav
     temp.appendChild(newText);
     newAttrRoot.appendChild(temp);
     
-     // --------------------------------
+    // --------------------------------
     // now find the 'index'th attribute and insert the new branch there
     NodeList nl = doc.getElementsByTagName("attribute");
     // nl should not contain all the 'Attribute' nodes
@@ -804,4 +857,199 @@ public class ColumnMetadataEditPanel extends javax.swing.JPanel //implements jav
     return typeComboBox.getSelectedItem().toString();
   }   
   
+  
+  //-----------------------------------------
+  String fileName = "outtest";
+  
+    /**
+   * Print writer (output)
+   */
+  private PrintWriter out;
+
+    /**
+   * Save the configuration file
+   */
+  public void save()
+  {
+    saveDOM(root);
+  }
+
+  /**
+   * This method wraps the 'print' method to send DOM back to the
+   * XML document (file) that was used to create the DOM. i.e.
+   * this method saves changes to disk
+   * 
+   * @param nd node (usually the document root)
+   */
+  public void saveDOM(Node nd)
+  { 
+    File outfile = new File(fileName);
+   if (!outfile.canWrite()) {
+	JOptionPane.showMessageDialog(null, "Cannot Save configuration information to "+fileName+ " !", "alert",  JOptionPane.ERROR_MESSAGE);
+    }
+   else {
+    try
+    {
+      out = new PrintWriter(new FileWriter(fileName));
+    }
+    catch(Exception e)
+    {
+    }
+    out.println("<?xml version=\"1.0\"?>");
+    print(nd);
+    out.close(); 
+   }
+  }
+
+  /**
+   * This method can 'print' any DOM subtree. Specifically it is
+   * set (by means of 'out') to write the in-memory DOM to the
+   * same XML file that was originally read. Action thus saves
+   * a new version of the XML doc
+   * 
+   * @param node node usually set to the 'doc' node for complete XML file
+   * re-write
+   */
+  public void print(Node node)
+  {
+
+    // is there anything to do?
+    if (node == null)
+    {
+      return;
+    }
+
+    int type = node.getNodeType();
+    switch (type)
+    {
+      // print document
+    case Node.DOCUMENT_NODE:
+    {
+
+      out.println("<?xml version=\"1.0\"?>");
+      print(((Document) node).getDocumentElement());
+      out.flush();
+      break;
+    }
+
+      // print element with attributes
+    case Node.ELEMENT_NODE:
+    {
+      out.print('<');
+      out.print(node.getNodeName());
+      Attr attrs[] = sortAttributes(node.getAttributes());
+      for (int i = 0; i < attrs.length; i++)
+      {
+        Attr attr = attrs[i];
+        out.print(' ');
+        out.print(attr.getNodeName());
+        out.print("=\"");
+        out.print(normalize(attr.getNodeValue()));
+        out.print('"');
+      }
+      out.print('>');
+      NodeList children = node.getChildNodes();
+      if (children != null)
+      {
+        int len = children.getLength();
+        for (int i = 0; i < len; i++)
+        {
+          print(children.item(i));
+        }
+      }
+      break;
+    }
+
+      // handle entity reference nodes
+    case Node.ENTITY_REFERENCE_NODE:
+    {
+      out.print('&');
+      out.print(node.getNodeName());
+      out.print(';');
+
+      break;
+    }
+
+      // print cdata sections
+    case Node.CDATA_SECTION_NODE:
+    {
+      out.print("<![CDATA[");
+      out.print(node.getNodeValue());
+      out.print("]]>");
+
+      break;
+    }
+
+      // print text
+    case Node.TEXT_NODE:
+    {
+      out.print(normalize(node.getNodeValue()));
+      break;
+    }
+
+      // print processing instruction
+    case Node.PROCESSING_INSTRUCTION_NODE:
+    {
+      out.print("<?");
+      out.print(node.getNodeName());
+      String data = node.getNodeValue();
+      if (data != null && data.length() > 0)
+      {
+        out.print(' ');
+        out.print(data);
+      }
+      out.print("?>");
+      break;
+    }
+    }
+
+    if (type == Node.ELEMENT_NODE)
+    {
+      out.print("</");
+      out.print(node.getNodeName());
+      out.print('>');
+    }
+
+    out.flush();
+
+  } // print(Node)
+
+  /** Returns a sorted list of attributes. */
+  protected Attr[] sortAttributes(NamedNodeMap attrs)
+  {
+
+    int len = (attrs != null) ? attrs.getLength() : 0;
+    Attr array[] = new Attr[len];
+    for (int i = 0; i < len; i++)
+    {
+      array[i] = (Attr) attrs.item(i);
+    }
+    for (int i = 0; i < len - 1; i++)
+    {
+      String name = array[i].getNodeName();
+      int index = i;
+      for (int j = i + 1; j < len; j++)
+      {
+        String curName = array[j].getNodeName();
+        if (curName.compareTo(name) < 0)
+        {
+          name = curName;
+          index = j;
+        }
+      }
+      if (index != i)
+      {
+        Attr temp = array[i];
+        array[i] = array[index];
+        array[index] = temp;
+      }
+    }
+
+    return (array);
+
+  } // sortAttributes(NamedNodeMap):Attr[]
+
+  
+
+
 }

@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-08-21 22:20:11 $'
- * '$Revision: 1.2 $'
+ *     '$Date: 2002-09-02 17:34:24 $'
+ * '$Revision: 1.3 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -228,6 +228,7 @@ public class PersistentTableModel extends javax.swing.table.AbstractTableModel
   public void setValueAt(Object obj, int row, int col) {
     String[] rowA = (String[])pv.elementAt(row);
     rowA[col] = (String)obj;
+    System.out.println("Setting value to: "+rowA[col]);
     pv.setElementAt(rowA, row);
   }
  
