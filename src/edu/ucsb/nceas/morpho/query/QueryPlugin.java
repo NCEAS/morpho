@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2004-04-03 04:29:07 $'
- * '$Revision: 1.107 $'
+ *     '$Date: 2004-04-05 21:33:48 $'
+ * '$Revision: 1.108 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -400,14 +400,6 @@ public class QueryPlugin implements PluginInterface, ConnectionListener,
     String source = "local";
     Vector resultVector = originalSet.getResultsVector();
     Morpho morpho = originalSet.getMorpho();
-    // new vector which will store the subset of original vector
-    //Vector newVector = new Vector();
-    // new hash mapping between column name and vector
-    //Hashtable mapping = new Hashtable();
-    // create selected column index vector and set mapping
-    //Vector selectedColumn = selectColumnIndex(headNames, mapping, originalSet);
-    //copy the vector and set mapping hashtable
-    //newVector = copyVector(resultVector, selectedColumn);
 
     // create a new headresultset base on the new vector
     HeadResultSet newResultSet = new HeadResultSet(
@@ -420,60 +412,5 @@ public class QueryPlugin implements PluginInterface, ConnectionListener,
     //return (ColumnSortableTableModel) originalSet;
   }
 
-  /*
-   *
-   */
-  private Vector selectColumnIndex(String[] headNames, Hashtable mapping,
-                                   HeadResultSet originalSet)
-  {
-    Vector columnIndex = new Vector();
-    int count = 0;
-    for (int k=0; k< headNames.length; k++)
-    {
-       int index = originalSet.lookupResultsVectorIndex(headNames[k]);
-       if (index != -1)
-       {
-         // put index into a array
-         columnIndex.add(new Integer(index));
-         mapping.put(headNames[k], new Integer(count));
-         count ++;
-       }
-    }
-    return columnIndex;
-  }
 
-  /*
-   * The result set vector is two dimension
-   * Java vector is row orented, but we need to select a cloumn.
-   * So this method will copy selected cloumn from two dimention vector to
-   * another two dimention vector.
-   */
-  private Vector copyVector(Vector orginalVector, Vector selectedColumn)
-  {
-     Vector newVector = new Vector();
-      // go throgh the two dimention vector
-      for (int i = 0; i < orginalVector.size(); i++)
-      {
-
-        Vector rowVector = (Vector) orginalVector.elementAt(i);
-        Vector newRowVector = new Vector();
-        // go through the row vector
-        for (int j = 0; j < rowVector.size(); j++)
-        {
-          // go through the selected column
-          for(int k = 0; k < selectedColumn.size(); k++)
-          {
-            Integer obj = (Integer)selectedColumn.elementAt(k);
-            if ( j == obj.intValue())
-            {
-              newRowVector.add(rowVector.elementAt(j));
-            } //if
-          } //for
-        } //for
-        //add newRowVector into new dimentsion vector
-         newVector.add(newRowVector);
-      }//for
-
-     return newVector;
-  }
 }

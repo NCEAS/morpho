@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2004-04-03 04:29:07 $'
- * '$Revision: 1.4 $'
+ *     '$Date: 2004-04-05 21:33:48 $'
+ * '$Revision: 1.5 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -40,34 +40,50 @@ import edu.ucsb.nceas.utilities.XMLUtilities;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.Point;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Vector;
 
 import javax.swing.BoxLayout;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JTable;
-import javax.swing.table.AbstractTableModel;
+import javax.swing.ListSelectionModel;
+
 
 import org.w3c.dom.Node;
 
 public class ExternalRefsPage extends AbstractUIPage
 {
 
-
+  private ReferencesHandler referenceHandler;
   private SortableJTable table;
+  private JList idList;
   private ColumnSortableTableModel resultsModel;
   private ReferenceSelectionEvent event;
   private String refID;
   private String currentDataPackageID;
+  private AbstractDataPackage currentDataPackage;
   private Node referencedSubtree;
   private QueryRefreshInterface queryRefreshInterface;
   // select columns
   private String[] columnNames = {QueryRefreshInterface.TITLE,
                                   QueryRefreshInterface.DOCID};
+  private static final int DOCIDINDEX = 1;
 
-  ExternalRefsPage()
+  ExternalRefsPage(ReferencesHandler referenceHandler)
   {
+    this.referenceHandler = referenceHandler;
     init();
-  }
+    addingMouseListenerForSearchResultTable();
+   }
+
+
 
   protected void setReferenceSelectionEvent(ReferenceSelectionEvent event)
   {
@@ -92,8 +108,10 @@ public class ExternalRefsPage extends AbstractUIPage
     scroll.getViewport().setBackground(Color.white);
     this.add(scroll, BorderLayout.WEST);
 
+    idList = new JList();
     JPanel refsPanel = new JPanel();
     refsPanel.setLayout(new BoxLayout(refsPanel, BoxLayout.Y_AXIS));
+    refsPanel.add(idList);
 
     refsPanel.setOpaque(true);
     refsPanel.setBackground(Color.green);
@@ -101,8 +119,71 @@ public class ExternalRefsPage extends AbstractUIPage
     this.add(refsPanel, BorderLayout.CENTER);
   }
 
+  /*
+   * Method to add mouse listener to the table
+   */
+   private void addingMouseListenerForSearchResultTable()
+   {
+     // Listen for mouse events to see if the user double-clicks
+     table.addMouseListener(new MouseAdapter()
+     {
+       public void mouseClicked(MouseEvent e)
+       {
+         int selectedRow = table.getSelectedRow();
+         currentDataPackageID =
+                 (String) table.getModel().getValueAt(selectedRow, DOCIDINDEX);
+         // create a data package base on selected docid
+         // because we only search the local, so set metacat = false
+         boolean metacat = false;
+         boolean local   = true;
+         currentDataPackage = DataPackageFactory.
+                           getDataPackage(currentDataPackageID, metacat, local);
+         parsingPackageIntoList(currentDataPackage);
+       }
+     });
+   }//addingMouseListener
+
+  /*
+   * Method to parse selected data package into a list
+   */
+  private void parsingPackageIntoList(AbstractDataPackage selectedPackage)
+  {
+     String id = null;
+     List content = referenceHandler.getReferences(selectedPackage, id);
+     //tansfer a List to vector and vector will be the data model of JList
+     Iterator iterator = content.iterator();
+     Vector listDataVector = new Vector();
+     while (iterator.hasNext())
+     {
+       ReferenceMapping mapping = (ReferenceMapping) iterator.next();
+       if (mapping != null)
+       {
+         listDataVector.add(mapping);
+       }
+     }
+     idList.setListData(listDataVector);
+     // set single selection mode
+     idList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+     // add list selection listener
+     /*idList.addListSelectionListener
+     ( new ListSelectionListener ()
+          {
+            public void valueChanged(ListSelectionEvent e)
+            {
+               //selected row number in list
+               int selectedListRow = e.getLastIndex();
+               Log.debug(20, "The selected row number in list is "
+                         + selectedListRow);
 
 
+            }
+          }
+
+      );*/
+      idList.validate();
+      idList.repaint();
+
+   }
 
   /**
    * Run the local search query
@@ -269,9 +350,23 @@ public class ExternalRefsPage extends AbstractUIPage
    */
   public boolean onAdvanceAction()
   {
-
-    if (refID==null) return false;
-
+    ReferenceMapping map = (ReferenceMapping) idList.getSelectedValue();
+    // get refID
+    if (map != null)
+    {
+      refID = map.getID();
+    }
+    if (refID==null)
+    {
+      return false;
+    }
+    else
+    {
+      Log.debug(30, "The external package is " + currentDataPackageID);
+      Log.debug(30, "The reference id in external package is " + refID);
+      // get subtee from current selected package
+      referencedSubtree = currentDataPackage.getSubtreeAtReference(refID);
+    }
     event.setReferenceID(refID);
     event.setXPathValsMap(XMLUtilities.getDOMTreeAsXPathMap(referencedSubtree));
     return true;

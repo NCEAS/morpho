@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2004-04-05 07:06:52 $'
- * '$Revision: 1.10 $'
+ *   '$Author: tao $'
+ *     '$Date: 2004-04-05 21:33:48 $'
+ * '$Revision: 1.11 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -98,6 +98,15 @@ public class ReferencesHandler {
     this.surrogateXPaths = surrogateXPaths;
   }
 
+  /**
+   * Method to return genericName
+   * @return String
+   */
+  public String getGenericName()
+  {
+    return genericName;
+  }
+
 
   /**
    * get a Map whose keys are all the IDs currently in the DataPackage that
@@ -114,7 +123,7 @@ public class ReferencesHandler {
    *   ReferencesHandler, and String surrogates for those referenced subtrees.
    *   An empty List is returned if the passed dataPkg parameter is null
    */
-  private List getReferences(AbstractDataPackage dataPkg, String suppressRefID) {
+  protected List getReferences(AbstractDataPackage dataPkg, String suppressRefID) {
 
     if (dataPkg==null) return new ArrayList(0);
     if (suppressRefID==null) suppressRefID = "";
@@ -300,7 +309,7 @@ public class ReferencesHandler {
 
     if (externalRefsDialog == null) {
 
-      externalRefsPage = new ExternalRefsPage();
+      externalRefsPage = new ExternalRefsPage(this);
       externalRefsDialog = new ModalDialog(externalRefsPage,
                                            parent,
                                            UISettings.POPUPDIALOG_WIDTH,
@@ -416,26 +425,3 @@ public class ReferencesHandler {
 ////////////////////////////////////////////////////////////////////////////////
 
 
-class ReferenceMapping {
-
-  private String surrogate;
-  private String ID;
-
-  public ReferenceMapping(String ID, String surrogate) {
-
-    this.ID = ID;
-    this.surrogate = surrogate;
-  }
-
-  public String toString() {
-
-    return surrogate;
-  }
-
-
-  public String getID() {
-
-    return ID;
-  }
-
-}
