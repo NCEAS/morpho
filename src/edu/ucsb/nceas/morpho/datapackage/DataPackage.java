@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2002-05-08 19:45:29 $'
- * '$Revision: 1.52.2.2 $'
+ *     '$Date: 2002-05-08 21:30:54 $'
+ * '$Revision: 1.52.2.3 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -45,7 +45,6 @@ import org.w3c.dom.NodeList;
 import org.w3c.dom.DocumentType;
 import org.xml.sax.SAXException;
 import org.xml.sax.InputSource;
-import org.apache.xerces.dom.DocumentTypeImpl;
 /*
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.Transformer;
@@ -378,7 +377,7 @@ public class DataPackage
         if(xmlString.equals("<?xml"))
         { //we are dealing with an xml file here.
           Document subDoc = PackageUtil.getDoc(subfile, catalogPath);
-          DocumentTypeImpl dt = (DocumentTypeImpl)subDoc.getDoctype();
+          DocumentType dt = subDoc.getDoctype();
           name = dt.getPublicId();
         }
         else
@@ -449,7 +448,7 @@ public class DataPackage
         if(xmlString.equals("<?xml"))
         { //we are dealing with a data file here.
           Document objDoc = PackageUtil.getDoc(objfile, catalogPath);
-          DocumentTypeImpl dt = (DocumentTypeImpl)objDoc.getDoctype();
+          DocumentType dt = objDoc.getDoctype();
           name = dt.getPublicId();
           
         }
@@ -573,7 +572,7 @@ public class DataPackage
         if(s.indexOf("<?xml") != -1)
         {
           Document doc = PackageUtil.getDoc(f, catalogpath);
-          DocumentTypeImpl dt = (DocumentTypeImpl)doc.getDoctype();
+          DocumentType dt = doc.getDoctype();
           publicid = dt.getPublicId();
           for(int j=0; j<accessFileType.size(); j++)
           {
@@ -1795,7 +1794,7 @@ private File getFileType(String id, String typeString) {
         if(xmlString.equals("<?xml"))
         { //we are dealing with an xml file here.
           Document subDoc = PackageUtil.getDoc(subfile, catalogPath);
-          DocumentTypeImpl dt = (DocumentTypeImpl)subDoc.getDoctype();
+          DocumentType dt = subDoc.getDoctype();
           name = dt.getPublicId();
         }
         else

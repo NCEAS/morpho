@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2002-05-08 19:45:29 $'
- * '$Revision: 1.6.4.3 $'
+ *     '$Date: 2002-05-08 21:30:55 $'
+ * '$Revision: 1.6.4.4 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -71,11 +71,10 @@ public class PackageWizardParser extends DefaultHandler
   
   /**
    * @param xml a FileReader object that reprents a stream of XML
-   * @param parserName the fully specifified parser name to be used in 
    * processing
    */
   
-  public PackageWizardParser(Reader xml, String parserName)
+  public PackageWizardParser(Reader xml)
   {
     XMLReader parser = ClientFramework.createSaxParser((ContentHandler)this, 
             (ErrorHandler)this);
@@ -100,31 +99,6 @@ public class PackageWizardParser extends DefaultHandler
       ioe.printStackTrace(System.out);
     }
   }
-  
-  /*
-  private XMLReader initializeParser(String parserName) 
-  {
-    XMLReader parser = null;
-    // Set up the SAX document handlers for parsing
-    try 
-    {
-      // Get an instance of the parser
-      parser = XMLReaderFactory.createXMLReader(parserName);
-      // Set the ContentHandler to this instance
-      parser.setContentHandler(this);
-      // Set the error Handler to this instance
-      parser.setErrorHandler(this);
-    } 
-    catch (Exception e) 
-    {
-       ClientFramework.debug(4, 
-               "Error in PackageWizardParser.initializeParser\n" + 
-               e.toString());
-       e.printStackTrace();
-    }
-    return parser;
-  }
-  */
   
   /**
    * This method is called whenever a new start tag is encountered.  It sorts
@@ -380,8 +354,7 @@ public class PackageWizardParser extends DefaultHandler
       //while(xml.ready())
       //  System.out.print((char)xml.read());
 
-      PackageWizardParser pwp = new PackageWizardParser(xml, 
-			      "org.apache.xerces.parsers.SAXParser");
+      PackageWizardParser pwp = new PackageWizardParser(xml);
       System.out.println("Doc is: " );
       pwp.printDoc(pwp.getDoc());
     }

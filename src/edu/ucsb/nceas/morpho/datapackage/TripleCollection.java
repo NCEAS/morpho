@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2002-05-08 19:45:29 $'
- * '$Revision: 1.9.2.2 $'
+ *     '$Date: 2002-05-08 21:30:54 $'
+ * '$Revision: 1.9.2.3 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -143,8 +143,7 @@ public class TripleCollection
    */
   public TripleCollection(Reader xml)
   {
-    TripleParser tp = new TripleParser(xml, 
-                                       "org.apache.xerces.parsers.SAXParser");
+    TripleParser tp = new TripleParser(xml);
     this.triples = tp.getTriples().getCollection();
   }
   
@@ -153,9 +152,7 @@ public class TripleCollection
    */
   public TripleCollection(Reader xml, CatalogEntityResolver cer)
   {
-    TripleParser tp = new TripleParser(xml, 
-                                       "org.apache.xerces.parsers.SAXParser",
-                                       cer);
+    TripleParser tp = new TripleParser(xml, cer);
     this.triples = tp.getTriples().getCollection();
   }
   

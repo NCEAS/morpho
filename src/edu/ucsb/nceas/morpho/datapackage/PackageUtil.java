@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2002-05-08 19:45:29 $'
- * '$Revision: 1.15.4.2 $'
+ *     '$Date: 2002-05-08 21:30:54 $'
+ * '$Revision: 1.15.4.3 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -37,7 +37,6 @@ import org.w3c.dom.NodeList;
 import org.w3c.dom.DocumentType;
 import org.xml.sax.SAXException;
 import org.xml.sax.InputSource;
-import org.apache.xerces.dom.DocumentTypeImpl;
 
 import edu.ucsb.nceas.morpho.framework.*;
 import edu.ucsb.nceas.morpho.datapackage.wizard.*;
@@ -414,7 +413,7 @@ public class PackageUtil
   */
   public static String printDoctype(Document doc)
   {
-    DocumentTypeImpl dt = (DocumentTypeImpl)doc.getDoctype();
+    DocumentType dt = doc.getDoctype();
     String publicid = dt.getPublicId();
     String systemid = dt.getSystemId();
     String nameid = dt.getName();

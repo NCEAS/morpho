@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2002-05-08 19:45:30 $'
- * '$Revision: 1.95.2.4 $'
+ *     '$Date: 2002-05-08 21:30:55 $'
+ * '$Revision: 1.95.2.5 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -774,13 +774,10 @@ class SymAction implements java.awt.event.ActionListener {
         }
         try {
             StringReader sr = new StringReader(xmlText);
-            //String parserName = "org.apache.xerces.parsers.SAXParser";
             XMLReader parser = null;
             // Get an instance of the parser
             XMLDisplayHandler mh = new XMLDisplayHandler(tm);
-            //parser = XMLReaderFactory.createXMLReader(parserName);
             parser = ClientFramework.createSaxParser((ContentHandler)mh,  null);
-            //parser.setContentHandler(mh);
             parser.setProperty("http://xml.org/sax/properties/lexical-handler",mh);
 	        parser.setEntityResolver(cer);
 	        InputSource is = new InputSource(sr);

@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2002-05-08 19:45:29 $'
- * '$Revision: 1.4.4.1 $'
+ *     '$Date: 2002-05-08 21:30:54 $'
+ * '$Revision: 1.4.4.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -67,17 +67,17 @@ public class TripleParser extends DefaultHandler
   String tag = "";
   boolean instart = true;
   
-  public TripleParser(Reader xml, String parserName)
+  public TripleParser(Reader xml)
   {
-    doInit(xml, parserName, null);
+    doInit(xml, null);
   }
   
-  public TripleParser(Reader xml, String parserName, CatalogEntityResolver cer)
+  public TripleParser(Reader xml, CatalogEntityResolver cer)
   {
-    doInit(xml, parserName, cer);
+    doInit(xml, cer);
   }
   
-  private void doInit(Reader xml, String parserName, CatalogEntityResolver cer)
+  private void doInit(Reader xml, CatalogEntityResolver cer)
   {
     XMLReader parser = ClientFramework.createSaxParser((ContentHandler)this, 
             (ErrorHandler)this);
@@ -106,30 +106,6 @@ public class TripleParser extends DefaultHandler
       ioe.printStackTrace(System.out);
     }
   }
-  
-  /*
-  private XMLReader initializeParser(String parserName) 
-  {
-    XMLReader parser = null;
-    // Set up the SAX document handlers for parsing
-    try 
-    {
-      // Get an instance of the parser
-      parser = XMLReaderFactory.createXMLReader(parserName);
-      // Set the ContentHandler to this instance
-      parser.setContentHandler(this);
-      // Set the error Handler to this instance
-      parser.setErrorHandler(this);
-    } 
-    catch (Exception e) 
-    {
-       System.err.println("Error in TripleParser.initializeParser " + 
-                           e.toString());
-       e.printStackTrace();
-    }
-    return parser;
-  }
-  */
   
   public void startElement(String uri, String localName, String qName, 
                            Attributes attributes) throws SAXException
@@ -203,8 +179,7 @@ public class TripleParser extends DefaultHandler
       //while(xml.ready())
       //  System.out.print((char)xml.read());
 
-      TripleParser tp = new TripleParser(xml, 
-			      "org.apache.xerces.parsers.SAXParser");
+      TripleParser tp = new TripleParser(xml);
       System.out.println("Triples are:" );
       System.out.println(tp.getTriples().toString());
     }

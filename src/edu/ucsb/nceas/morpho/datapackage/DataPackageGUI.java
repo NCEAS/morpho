@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2002-03-02 00:02:31 $'
- * '$Revision: 1.76 $'
+ *   '$Author: jones $'
+ *     '$Date: 2002-05-08 21:30:54 $'
+ * '$Revision: 1.76.2.1 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -38,7 +38,6 @@ import java.awt.event.*;
 import javax.swing.event.*;
 import javax.swing.text.html.*;
 
-import org.apache.xerces.parsers.DOMParser;
 import org.apache.xalan.xpath.xml.FormatterToXML;
 import org.apache.xalan.xpath.xml.TreeWalker;
 import org.w3c.dom.Attr;
@@ -50,7 +49,6 @@ import org.w3c.dom.NodeList;
 import org.w3c.dom.DocumentType;
 import org.xml.sax.SAXException;
 import org.xml.sax.InputSource;
-import org.apache.xerces.dom.DocumentTypeImpl;
 
 /**
  * Class that implements a GUI to edit a data package

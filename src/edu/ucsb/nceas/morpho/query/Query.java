@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2002-05-08 19:45:30 $'
- * '$Revision: 1.16.4.3 $'
+ *     '$Date: 2002-05-08 21:30:55 $'
+ * '$Revision: 1.16.4.4 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -348,33 +348,6 @@ public class Query extends DefaultHandler {
   {
     this.rootQG = qg;
   }
-
-  /**
-   * Set up the SAX parser for reading the XML serialized query
-   */
-  /*
-  private XMLReader initializeParser() {
-    XMLReader parser = null;
-
-    // Set up the SAX document handlers for parsing
-    try {
-
-      // Get an instance of the parser
-      parser = XMLReaderFactory.createXMLReader(parserName);
-
-      // Set the ContentHandler to this instance
-      parser.setContentHandler(this);
-
-      // Set the error Handler to this instance
-      parser.setErrorHandler(this);
-
-    } catch (Exception e) {
-       framework.debug(1, "Error in Query.initializeParser " + e.toString());
-    }
-
-    return parser;
-  }
-    */
 
   /**
    * callback method used by the SAX Parser when the start tag of an 

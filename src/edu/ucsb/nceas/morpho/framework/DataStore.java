@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2002-04-10 00:06:25 $'
- * '$Revision: 1.14.4.1 $'
+ *     '$Date: 2002-05-08 21:30:55 $'
+ * '$Revision: 1.14.4.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,7 +31,6 @@ import edu.ucsb.nceas.morpho.datapackage.*;
 import java.io.*;
 import java.util.*;
 
-import org.apache.xerces.parsers.DOMParser;
 import org.apache.xalan.xpath.xml.FormatterToXML;
 import org.apache.xalan.xpath.xml.TreeWalker;
 import org.w3c.dom.Attr;
@@ -43,7 +42,6 @@ import org.w3c.dom.NodeList;
 import org.w3c.dom.DocumentType;
 import org.xml.sax.SAXException;
 import org.xml.sax.InputSource;
-import org.apache.xerces.dom.DocumentTypeImpl;
 
 import com.arbortext.catalog.*;
 
@@ -133,7 +131,7 @@ public abstract class DataStore implements DataStoreInterface
             e.getMessage());
       return null;
     }
-    DocumentTypeImpl dt = (DocumentTypeImpl)doc.getDoctype();
+    DocumentType dt = doc.getDoctype();
     String doctype = dt.getPublicId();
     Hashtable docatts = PackageUtil.getConfigFileTypeAttributes(framework, 
                                                                 "xmlfiletype");
