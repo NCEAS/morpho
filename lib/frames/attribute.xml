@@ -23,7 +23,7 @@
           </group>
         </group>
         </group>
-        <textbox label="Missing Value Code" field="missing_value_code" 
+        <textbox label="Missing Value Code" field="missingValueCode" 
                  size="15" repeatable="yes"
                  tooltip="The code that was entered to show a missing entry"/>
         <textbox label="Precision" field="precision" size="15"
