@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-12-12 21:10:02 $'
- * '$Revision: 1.9 $'
+ *     '$Date: 2003-12-15 19:12:30 $'
+ * '$Revision: 1.10 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -156,7 +156,12 @@ public class ImportDataCommand implements Command
               Morpho morpho = Morpho.thisStaticInstance;
               AccessionNumber an = new AccessionNumber(morpho);
               String curid = adp.getAccessionNumber();
-              String newid = an.incRev(curid);
+              String newid = null;
+              if (!curid.equals("")) {
+                newid = an.incRev(curid);
+              } else {
+                newid = an.getNextId();
+              }
               adp.setAccessionNumber(newid);
               adp.setLocation("");  // we've changed it and not yet saved
               try 
