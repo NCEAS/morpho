@@ -7,9 +7,9 @@
  *    Authors: Saurabh Garg
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2004-01-07 02:02:18 $'
- * '$Revision: 1.11 $'
+ *   '$Author: sgarg $'
+ *     '$Date: 2004-01-13 16:26:27 $'
+ * '$Revision: 1.12 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -119,7 +119,6 @@ public class Project extends AbstractWizardPage {
           currentPanel = dataPanel;
           instance.add(dataPanel, BorderLayout.CENTER);
         }
-
         instance.validate();
         instance.repaint();
       }

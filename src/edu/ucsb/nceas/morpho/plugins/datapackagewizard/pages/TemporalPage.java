@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: sgarg $'
- *     '$Date: 2004-01-09 23:03:50 $'
- * '$Revision: 1.1 $'
+ *     '$Date: 2004-01-13 16:26:27 $'
+ * '$Revision: 1.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,32 +31,38 @@ package edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages;
 
 import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.AbstractWizardPage;
-import edu.ucsb.nceas.morpho.plugins.datapackagewizard.CustomList;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WidgetFactory;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardSettings;
 import edu.ucsb.nceas.morpho.util.Log;
 import edu.ucsb.nceas.utilities.OrderedMap;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
+import java.util.Calendar;
+import java.util.Date;
+import java.awt.Color;
+import java.text.DateFormat;
 
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.Dimension;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+
+import javax.swing.border.EmptyBorder;
 import javax.swing.JComponent;
-import javax.swing.JComboBox;
 import javax.swing.BoxLayout;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
+import com.toedter.calendar.JCalendar;
+
 public class TemporalPage extends AbstractWizardPage {
 
-  private final String pageID     = DataPackageWizardInterface.ACCESS_PAGE;
+  private final String pageID     = DataPackageWizardInterface.TEMPORAL_PAGE;
   private final String nextPageID = "";
   private final String pageNumber = "";
   private final String title      = "Access Page";
@@ -64,24 +70,41 @@ public class TemporalPage extends AbstractWizardPage {
 
   private final String EMPTY_STRING = "";
   private JPanel topPanel;
-  private JTextField dnField;
-  private JLabel dnLabel;
   private JLabel descLabel;
-  private String userAccessType   = new String("Allow");
-  private String userAccess       = new String("Read");
 
   private JPanel currentPanel;
   private JPanel singlePointPanel;
   private JPanel rangeTimePanel;
+
+  private JTextField singleTimeTF;
+  private JTextField startTimeTF;
+  private JTextField endTimeTF;
+  private JCalendar singleTimeCalendar;
+  private JCalendar startTimeCalendar;
+  private JCalendar endTimeCalendar;
 
   private final String[] timeTypeText = new String[] {
     "Single Point in Time",
     "Range of Date/Time"
   };
 
+  private final String[] timeText = new String[] {
+    "Enter Year 0nly",
+    "Enter Month and Year",
+    "Enter Day, Month and Year"
+  };
+
+  private final String[] Months = new String[] {
+    "January", "February", "March", "April", "May", "June",
+    "July", "August", "September", "October", "November", "December"
+  };
+
   private final String xPathRoot  = "/eml:eml/dataset/access";
 
-  private static final Dimension PARTY_COL_LABEL_DIMS = new Dimension(60,20);
+  private static final Dimension PANEL_DIMS = new Dimension(325,220);
+  private static final int ALL = 4;
+  private static final int MONTH_YEAR = 2;
+  private static final int YEAR_ONLY = 1;
 
   public TemporalPage() {
           init();
@@ -93,11 +116,10 @@ public class TemporalPage extends AbstractWizardPage {
    */
   private void init() {
 
-//    this.setLayout(new BorderLayout());
-    this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+    this.setLayout(new BorderLayout());
+ //   this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
     topPanel = new JPanel();
-
     topPanel.setLayout(new BoxLayout(topPanel, BoxLayout.Y_AXIS));
     topPanel.add(WidgetFactory.makeDefaultSpacer());
 
@@ -106,7 +128,6 @@ public class TemporalPage extends AbstractWizardPage {
     topPanel.add(desc);
 
     final JPanel instance = this;
-
     ActionListener accessTypeListener = new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         Log.debug(45, "got radiobutton command: "+e.getActionCommand());
@@ -120,7 +141,6 @@ public class TemporalPage extends AbstractWizardPage {
           currentPanel = rangeTimePanel;
           instance.add(rangeTimePanel);
         }
-
         instance.validate();
         instance.repaint();
       }
@@ -128,28 +148,28 @@ public class TemporalPage extends AbstractWizardPage {
 
     JPanel typeRadioOuterPanel = WidgetFactory.makePanel(2);
     JPanel typeRadioPanel = WidgetFactory.makeRadioPanel(timeTypeText, 0, accessTypeListener);
+
     typeRadioPanel.setBorder(new javax.swing.border.EmptyBorder(0,4*WizardSettings.PADDING,0,0));
+    typeRadioOuterPanel.add(typeRadioPanel);
 
     topPanel.add(WidgetFactory.makeDefaultSpacer());
     topPanel.add(WidgetFactory.makeDefaultSpacer());
-    typeRadioOuterPanel.add(typeRadioPanel);
+
     descLabel = WidgetFactory.makeHTMLLabel(
         "<p><b>Choose access type:</b> Choose to allow or deny the user the "
         +"below defined permission.</p>", 1);
     topPanel.add(descLabel);
     topPanel.add(typeRadioOuterPanel);
-    topPanel.add(WidgetFactory.makeDefaultSpacer());
-    topPanel.add(WidgetFactory.makeDefaultSpacer());
 
     topPanel.setBorder(new javax.swing.border.EmptyBorder(0,4*WizardSettings.PADDING,
-        5*WizardSettings.PADDING,8*WizardSettings.PADDING));
-
-    this.add(topPanel);
+        0,0));
+    this.add(topPanel, BorderLayout.NORTH);
 
     singlePointPanel = getSinglePointPanel();
     rangeTimePanel  = getRangeTimePanel();
+
     currentPanel = singlePointPanel;
-    this.add(singlePointPanel);
+    this.add(singlePointPanel, BorderLayout.CENTER);
   }
 
   /**
@@ -160,17 +180,17 @@ public class TemporalPage extends AbstractWizardPage {
 
   public JPanel getSinglePointPanel() {
     JPanel panel = new JPanel();
-    panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+    panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
 
-    JLabel desc = WidgetFactory.makeHTMLLabel(
-                      "<b>Enter date and time:</b>", 1);
-    panel.add(desc);
-    desc.setBorder(new javax.swing.border.EmptyBorder(0,4*WizardSettings.PADDING,
-                          0,8*WizardSettings.PADDING));
+    singleTimeTF = new JTextField();
+    singleTimeTF.setEditable(false);
+    singleTimeTF.setBackground(Color.WHITE);
 
-    JPanel singlePanel = getDateTimePanel();
+    JPanel singlePanel = getDateTimePanel("Enter date:", "Time",
+                                          singleTimeTF, singleTimeCalendar);
     panel.add(singlePanel);
-
+    panel.setBorder(new javax.swing.border.EmptyBorder(0,40*WizardSettings.PADDING,
+        0,4*WizardSettings.PADDING));
     return panel;
   }
 
@@ -184,28 +204,27 @@ public class TemporalPage extends AbstractWizardPage {
   public JPanel getRangeTimePanel() {
     JPanel panel = new JPanel();
 
-    panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+    panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
 
-    JLabel desc = WidgetFactory.makeHTMLLabel(
-                      "<b>Enter starting date:</b>", 1);
-    desc.setBorder(new javax.swing.border.EmptyBorder(0,4*WizardSettings.PADDING,
-                      0,8*WizardSettings.PADDING));
+    startTimeTF = new JTextField();
+    startTimeTF.setEditable(false);
+    startTimeTF.setBackground(Color.WHITE);
 
-    panel.add(desc);
-
-    JPanel startingPanel = getDateTimePanel();
+    JPanel startingPanel = getDateTimePanel("Enter starting date:",
+                                            "Start Time", startTimeTF,
+                                            startTimeCalendar);
     panel.add(startingPanel);
-    panel.add(WidgetFactory.makeDefaultSpacer());
 
-    JLabel desc1 = WidgetFactory.makeHTMLLabel(
-                      "<b>Enter ending date:</b>", 1);
-    desc1.setBorder(new javax.swing.border.EmptyBorder(0,4*WizardSettings.PADDING,
-                       0,8*WizardSettings.PADDING));
-    panel.add(desc1);
+    endTimeTF = new JTextField();
+    endTimeTF.setEditable(false);
+    endTimeTF.setBackground(Color.WHITE);
 
-    JPanel endingPanel = getDateTimePanel();
+    JPanel endingPanel = getDateTimePanel("Enter ending date:", "End Time",
+                                          endTimeTF, endTimeCalendar);
     panel.add(endingPanel);
 
+    panel.setBorder(new javax.swing.border.EmptyBorder(0,8*WizardSettings.PADDING,
+        0,4*WizardSettings.PADDING));
     return panel;
   }
 
@@ -215,47 +234,94 @@ public class TemporalPage extends AbstractWizardPage {
    *
    *  @return JPanel to select a date.
    */
-  private String[] valueList = new String[] {""};
-  public JPanel getDateTimePanel() {
+
+  public JPanel getDateTimePanel(String panelHeading, String buttonText,
+                                 JTextField timeTextField, JCalendar timeCalendar) {
+
+    JPanel outerPanel = new JPanel();
+    outerPanel.setLayout(new BoxLayout(outerPanel, BoxLayout.Y_AXIS));
+
+    WidgetFactory.addTitledBorder(outerPanel, panelHeading);
+
     JPanel panel = new JPanel();
-    panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+    panel.setLayout(new BorderLayout());
+    panel.setBorder(new javax.swing.border.EmptyBorder(2*WizardSettings.PADDING,
+        4*WizardSettings.PADDING,0,
+        4*WizardSettings.PADDING));
 
-    JPanel timePanel = WidgetFactory.makePanel(1);
+    timeCalendar = new JCalendar();
+    timeCalendar.setVisible(true);
 
-    JLabel yearLabel = WidgetFactory.makeLabel("Year:", false);
-    setPrefMinMaxSizes(yearLabel, PARTY_COL_LABEL_DIMS);
-    timePanel.add(yearLabel);
-    JComboBox yearBox = WidgetFactory.makePickList(valueList, true, 0, null);
-    for (int count=1960; count < 2006; count++){
-      yearBox.addItem("" + count);
-    }
-    timePanel.add(yearBox);
+    timeTextField.setText(calendarToString(timeCalendar, ALL));
+    panel.add(timeTextField, BorderLayout.NORTH);
 
-    JLabel monthLabel = WidgetFactory.makeLabel("   Month:", false);
-    setPrefMinMaxSizes(monthLabel, PARTY_COL_LABEL_DIMS);
-    timePanel.add(monthLabel);
-    JComboBox monthBox = WidgetFactory.makePickList(valueList, false, 0, null);
-    for (int count=1; count <= 12; count++){
-      monthBox.addItem("" + count);
-    }
-    timePanel.add(monthBox);
+    final JCalendar finalTimeCalendar = timeCalendar;
+    final JTextField finalTimeTextField = timeTextField;
 
-    JLabel dayLabel = WidgetFactory.makeLabel("      Day:", false);
-    setPrefMinMaxSizes(dayLabel, PARTY_COL_LABEL_DIMS);
-    timePanel.add(dayLabel);
-    JComboBox dayBox = WidgetFactory.makePickList(valueList, false, 0, null);
-    for (int count=1; count <= 31; count++){
-      dayBox.addItem("" + count);
-    }
-    timePanel.add(dayBox);
+    PropertyChangeListener propertyListener = new PropertyChangeListener() {
+      public void propertyChange(PropertyChangeEvent e) {
+        Log.debug(45, "got radiobutton command: "+e.getPropertyName());
+        if (e.getPropertyName().equals("calendar")) {
+          if(finalTimeCalendar.getDayChooser().isEnabled()){
+            finalTimeTextField.setText(calendarToString(finalTimeCalendar, ALL));
+          } else if(finalTimeCalendar.getMonthChooser().isEnabled()){
+            finalTimeTextField.setText(calendarToString(finalTimeCalendar, MONTH_YEAR));
+          } else {
+            finalTimeTextField.setText(calendarToString(finalTimeCalendar, YEAR_ONLY));
+          }
+        }
+      }
+    };
 
-    timePanel.setBorder(new javax.swing.border.EmptyBorder(0,8*WizardSettings.PADDING,
-        0,8*WizardSettings.PADDING));
-    panel.add(timePanel);
+    timeCalendar.addPropertyChangeListener(propertyListener);
+    panel.add(timeCalendar, BorderLayout.CENTER);
 
-    return panel;
+    ActionListener dayTypeListener = new ActionListener() {
+      public void actionPerformed(ActionEvent e) {
+        Log.debug(45, "got radiobutton command: "+e.getActionCommand());
+        onLoadAction();
+        if (e.getActionCommand().equals(timeText[0])) {
+          finalTimeCalendar.getDayChooser().setEnabled(false);
+          finalTimeCalendar.getMonthChooser().setEnabled(false);
+          finalTimeCalendar.getYearChooser().setEnabled(true);
+          finalTimeTextField.setText(calendarToString(finalTimeCalendar, YEAR_ONLY));
+        } else if (e.getActionCommand().equals(timeText[1])) {
+          finalTimeCalendar.getDayChooser().setEnabled(false);
+          finalTimeCalendar.getMonthChooser().setEnabled(true);
+          finalTimeCalendar.getYearChooser().setEnabled(true);
+          finalTimeTextField.setText(calendarToString(finalTimeCalendar, MONTH_YEAR));
+        } else if (e.getActionCommand().equals(timeText[2])) {
+          finalTimeCalendar.getDayChooser().setEnabled(true);
+          finalTimeCalendar.getMonthChooser().setEnabled(true);
+          finalTimeCalendar.getYearChooser().setEnabled(true);
+          finalTimeTextField.setText(calendarToString(finalTimeCalendar, ALL));
+        }
+      }
+    };
+
+    JPanel typeRadioPanel = WidgetFactory.makeRadioPanel(timeText, 2, dayTypeListener);
+    panel.add(typeRadioPanel, BorderLayout.SOUTH);
+
+    setPrefMinMaxSizes(panel, PANEL_DIMS);
+    outerPanel.add(panel);
+
+    return outerPanel;
   }
 
+  private String calendarToString(JCalendar c, int returnType){
+    Calendar calendar = c.getCalendar();
+    DateFormat df = DateFormat.getDateInstance(DateFormat.LONG,
+        c.getLocale());
+    if(returnType == YEAR_ONLY){
+      return calendar.get(Calendar.YEAR) + "";
+    }
+    if(returnType == MONTH_YEAR){
+
+      return Months[calendar.get(Calendar.MONTH)] + "," +
+          calendar.get(Calendar.YEAR);
+    }
+    return df.format(calendar.getTime());
+  }
 
   private void setPrefMinMaxSizes(JComponent component, Dimension dims) {
     WidgetFactory.setPrefMaxSizes(component, dims);
@@ -285,12 +351,12 @@ public class TemporalPage extends AbstractWizardPage {
 
     List surrogate = new ArrayList();
 
-    // Get the value of the DN
-    surrogate.add(" " + dnField.getText().trim());
-
-    // Get access given to the user
-    surrogate.add(" " + userAccessType + "   " + userAccess);
-
+    if(currentPanel == singlePointPanel){
+      surrogate.add(" " + singleTimeTF.getText().trim());
+    } else {
+      surrogate.add(startTimeTF.getText().trim() + "-" +
+                    endTimeTF.getText().trim());
+    }
     return surrogate;
   }
 
@@ -318,9 +384,9 @@ public class TemporalPage extends AbstractWizardPage {
 
     returnMap.clear();
 
-    returnMap.put(xPathRoot + "/principal", dnField.getText().trim());
+  //  returnMap.put(xPathRoot + "/principal", dnField.getText().trim());
 
-    returnMap.put(xPathRoot + "/permission", userAccess.toLowerCase());
+//    returnMap.put(xPathRoot + "/permission", userAccess.toLowerCase());
 
     return returnMap;
   }
