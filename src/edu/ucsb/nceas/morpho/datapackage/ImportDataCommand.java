@@ -5,9 +5,9 @@
  *    Authors: @tao@
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2003-12-15 21:03:04 $'
- * '$Revision: 1.12 $'
+ *   '$Author: sgarg $'
+ *     '$Date: 2004-01-07 19:56:40 $'
+ * '$Revision: 1.13 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,7 +29,6 @@ package edu.ucsb.nceas.morpho.datapackage;
 import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.datapackage.*;
 import edu.ucsb.nceas.morpho.framework.MorphoFrame;
-import edu.ucsb.nceas.morpho.framework.SwingWorker;
 import edu.ucsb.nceas.morpho.framework.UIController;
 import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
 import edu.ucsb.nceas.morpho.plugins.ServiceController;
@@ -38,9 +37,7 @@ import edu.ucsb.nceas.morpho.plugins.ServiceNotHandledException;
 import edu.ucsb.nceas.morpho.plugins.DataPackageWizardListener;
 import edu.ucsb.nceas.morpho.util.Command;
 import edu.ucsb.nceas.morpho.util.Log;
-import java.awt.Component;
 import java.awt.event.ActionEvent;
-import javax.swing.JDialog;
 
 import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
 
@@ -53,39 +50,39 @@ import edu.ucsb.nceas.utilities.XMLUtilities;
 /**
  * Class to handle import data file command
  */
-public class ImportDataCommand implements Command 
+public class ImportDataCommand implements Command
 {
   /** A reference to the MophorFrame */
   private MorphoFrame morphoFrame = null;
- 
+
   /**
    * Constructor of Import data command
    */
   public ImportDataCommand()
   {
- 
+
   }//RefreshCommand
 
   /**
    * execute refresh command
-   */    
+   */
   public void execute(ActionEvent event)
-  {   
+  {
     DataViewContainerPanel resultPane = null;
     morphoFrame = UIController.getInstance().getCurrentActiveWindow();
     if (morphoFrame != null) {
-      
+
        resultPane = AddDocumentationCommand.
                           getDataViewContainerPanelFromMorphoFrame(morphoFrame);
     }//if
     // make sure resulPanel is not null
     if ( resultPane != null) {
-      
+
 //DFH      DataPackage dp = resultPane.getDataPackage();
       final AbstractDataPackage adp = resultPane.getAbstractDataPackage();
       DataViewer dv = resultPane.getCurrentDataViewer();
       String entityId = null;
-      
+
       if (dv!=null) {
         entityId = dv.getEntityFileId();
       }
@@ -95,30 +92,30 @@ public class ImportDataCommand implements Command
         DataPackageWizardInterface dpw = null;
         try {
           ServiceController services = ServiceController.getInstance();
-          ServiceProvider provider = 
+          ServiceProvider provider =
              services.getServiceProvider(DataPackageWizardInterface.class);
           dpw = (DataPackageWizardInterface)provider;
-        
+
         } catch (ServiceNotHandledException snhe) {
-      
+
           Log.debug(6, snhe.getMessage());
         }
-  
+
         dpw.startEntityWizard(
-        
+
           new DataPackageWizardListener() {
-      
+
             public void wizardComplete(Node newDOM) {
-          
+
               Log.debug(45, "\n\n********** Entity Wizard finished: DOM:");
               Log.debug(45, XMLUtilities.getDOMTreeAsString(newDOM, false));
               Log.debug(30,"Entity Wizard complete - creating Entity object..");
 
-// DFH --- Note: newDOM is root node (eml:eml), not the entity node              
-              Node entNode = null;             
+// DFH --- Note: newDOM is root node (eml:eml), not the entity node
+              Node entNode = null;
               String entityXpath = "";
               try{
-                entityXpath = (XMLUtilities.getTextNodeWithXPath(adp.getMetadataPath(), 
+                entityXpath = (XMLUtilities.getTextNodeWithXPath(adp.getMetadataPath(),
                        "/xpathKeyMap/contextNode[@name='package']/entities")).getNodeValue();
                 NodeList entityNodes = XMLUtilities.getNodeListWithXPath(newDOM,
                          entityXpath);
@@ -127,15 +124,15 @@ public class ImportDataCommand implements Command
               catch (Exception w) {
                 Log.debug(5, "Error in trying to get entNode in ImportDataCommand");
               }
-                
-                
+
+
                 //              Entity entity = new Entity(newDOM);
               Entity entity = new Entity(entNode);
 
               Log.debug(30,"Adding Entity object to AbstractDataPackage..");
               adp.addEntity(entity);
 
-       // ---DFH			
+       // ---DFH
               Morpho morpho = Morpho.thisStaticInstance;
               AccessionNumber an = new AccessionNumber(morpho);
               String curid = adp.getAccessionNumber();
@@ -147,15 +144,15 @@ public class ImportDataCommand implements Command
               }
               adp.setAccessionNumber(newid);
               adp.setLocation("");  // we've changed it and not yet saved
-              try 
+              try
               {
                 ServiceController services = ServiceController.getInstance();
-                ServiceProvider provider = 
+                ServiceProvider provider =
                       services.getServiceProvider(DataPackageInterface.class);
                 DataPackageInterface dataPackageInt = (DataPackageInterface)provider;
                 dataPackageInt.openNewDataPackage(adp, null);
               }
-              catch (ServiceNotHandledException snhe) 
+              catch (ServiceNotHandledException snhe)
               {
                 Log.debug(6, snhe.getMessage());
               }
@@ -164,21 +161,21 @@ public class ImportDataCommand implements Command
               controller.removeWindow(morphoFrame);
               morphoFrame.dispose();
             }
-  
+
             public void wizardCanceled() {
-    
+
               Log.debug(45, "\n\n********** Wizard canceled!");
             }
           });
-      
+
     }//if
-  
-  }//execute 
- 
-  
+
+  }//execute
+
+
   /**
    * could also have undo functionality; disabled for now
-   */ 
+   */
   // public void undo();
 
 }//class CancelCommand

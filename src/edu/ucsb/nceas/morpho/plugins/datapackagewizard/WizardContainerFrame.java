@@ -7,9 +7,9 @@
  *    Authors: Matthew Brooke
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2004-01-07 02:02:17 $'
- * '$Revision: 1.34 $'
+ *   '$Author: sgarg $'
+ *     '$Date: 2004-01-07 19:56:40 $'
+ * '$Revision: 1.35 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -151,14 +151,8 @@ public class WizardContainerFrame extends JFrame {
 
     setpageTitle(newPage.getTitle());
     setpageSubtitle(getCurrentPage().getSubtitle());
-    if (showPageCount) {
-      stepLabel.setText("Step " + getCurrentPage().getPageNumber()
-                                    + " of " + WizardSettings.NUMBER_OF_STEPS );
-    } else {
-      stepLabel.setText("");
-    }
     middlePanel.removeAll();
-
+    setPageCount();
     middlePanel.add(getCurrentPage(), BorderLayout.CENTER);
     getCurrentPage().setOpaque(false);
     middlePanel.repaint();
@@ -174,6 +168,20 @@ public class WizardContainerFrame extends JFrame {
   public AbstractWizardPage getCurrentPage() {
 
     return this.currentPage;
+  }
+
+  /**
+   *  sets the page count on the Wizard Page if showPageCount is true
+   *
+   *  @sets the page count on the wizard page
+   */
+  private void setPageCount(){
+    if (showPageCount) {
+      stepLabel.setText("Step " + getCurrentPage().getPageNumber()
+                                    + " of " + WizardSettings.NUMBER_OF_STEPS );
+    } else {
+      stepLabel.setText("");
+    }
   }
 
   private void updateButtonsStatus() {
@@ -318,8 +326,8 @@ public class WizardContainerFrame extends JFrame {
    * @param show boolean
    */
   protected void setShowPageCountdown(boolean show) {
-
     showPageCount = show;
+    setPageCount();
   }
 
   /**

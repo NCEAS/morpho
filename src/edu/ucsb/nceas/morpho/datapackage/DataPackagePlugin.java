@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2004-01-06 21:20:50 $'
- * '$Revision: 1.68 $'
+ *   '$Author: sgarg $'
+ *     '$Date: 2004-01-07 19:56:40 $'
+ * '$Revision: 1.69 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,7 +29,6 @@ package edu.ucsb.nceas.morpho.datapackage;
 import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.datastore.MetacatUploadException;
 import edu.ucsb.nceas.morpho.framework.ButterflyFlapCoordinator;
-import edu.ucsb.nceas.morpho.framework.ConfigXML;
 import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
 import edu.ucsb.nceas.morpho.framework.MorphoFrame;
 import edu.ucsb.nceas.morpho.framework.UIController;
@@ -936,7 +935,7 @@ public class DataPackagePlugin
         case DataPackageInterface.NEW_DATAPACKAGE_COMMAND:
             return new CreateNewDataPackageCommand(morpho);
         case DataPackageInterface.NEW_DATA_TABLE_COMMAND:
-          return new ImportDataCommand();
+            return new ImportDataCommand();
         default:
             ClassNotFoundException e
                                 = new ClassNotFoundException("command with ID="
