@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-10-04 22:02:58 $'
- * '$Revision: 1.25 $'
+ *     '$Date: 2002-10-09 18:01:40 $'
+ * '$Revision: 1.26 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -446,7 +446,7 @@ public class MetaDisplay implements MetaDisplayInterface,
         Enumeration listeners = editingCompletelistenerList.elements();
         while (listeners.hasMoreElements()) {
             ((EditingCompleteListener)listeners.nextElement())
-                                    .editingCompleted(xmlString, id, location);
+                                    .editingCanceled(xmlString, id, location);
         }
     }
     
