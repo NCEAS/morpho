@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2003-08-06 05:44:56 $'
- * '$Revision: 1.2 $'
+ *     '$Date: 2003-08-07 19:36:04 $'
+ * '$Revision: 1.3 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -93,8 +93,8 @@ public class DataFormat extends AbstractWizardPage{
   private final String[] buttonsText = new String[] {
       "Simple delimited text format (uses one of a series of delimiters to indicate the ends of fields)",
       "Complex text format (delimited fields, fixed width fields, and mixtures of the two)",
-      "Non-text or proprietary formatted object that is externally defined (e.g. 'Microsoft Excel')",
-      "Binary raster image file"
+      "Non-text or proprietary formatted object that is externally defined (e.g. 'Microsoft Excel')"
+//      ,"Binary raster image file"
     };
   
   private final String[] orientButtonsText = new String[] {
@@ -198,7 +198,7 @@ public class DataFormat extends AbstractWizardPage{
     simpleTextpanel  = getSimpleTextpanel();
     complexTextPanel = getComplexTextPanel();
     proprietaryPanel = getProprietaryPanel();
-    rasterPanel      = getRasterPanel();
+//    rasterPanel      = getRasterPanel();
 
     currentPanel = getEmptyPanel();
   }
@@ -338,7 +338,7 @@ public class DataFormat extends AbstractWizardPage{
     ////
     JPanel proprietaryPanel = WidgetFactory.makePanel(1);
     
-    proprietaryLabel = WidgetFactory.makeLabel("File Name:", true);
+    proprietaryLabel = WidgetFactory.makeLabel("Format:", true);
 
     proprietaryPanel.add(proprietaryLabel);
     

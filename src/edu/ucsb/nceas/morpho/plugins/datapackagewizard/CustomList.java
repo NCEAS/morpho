@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2003-08-06 05:44:18 $'
- * '$Revision: 1.1 $'
+ *     '$Date: 2003-08-07 19:36:04 $'
+ * '$Revision: 1.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,6 +34,8 @@ import edu.ucsb.nceas.utilities.OrderedMap;
 import edu.ucsb.nceas.morpho.util.Log;
 
 import java.util.Vector;
+import java.util.EventObject;
+import java.util.Enumeration;
 
 import java.awt.Component;
 import java.awt.BorderLayout;
@@ -42,6 +44,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.Container;
 import java.awt.Point;
+import java.awt.Dimension;
 
 import javax.swing.BoxLayout;
 import javax.swing.Box;
@@ -53,8 +56,17 @@ import javax.swing.JScrollPane;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
-//import javax.swing.table.TableModel;
-//import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
+import javax.swing.table.TableColumn;
+import javax.swing.table.TableCellEditor;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.DefaultCellEditor;
+
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+import javax.swing.event.CellEditorListener;
+
+  
 
 /**
  *  Interface   CustomList
@@ -71,8 +83,9 @@ public class CustomList extends JPanel {
   private JButton deleteButton;
   private JButton moveUpButton;
   private JButton moveDownButton;
-    
-    
+  private double  tableWidthReference;
+  
+
   public CustomList(String[] colNames, int displayRows, boolean showAddButton, 
                     boolean showEditButton,       boolean showDeleteButton, 
                     boolean showMoveUpButton,     boolean showMoveDownButton) { 
@@ -86,9 +99,7 @@ public class CustomList extends JPanel {
                     boolean showMoveUpButton,     boolean showMoveDownButton) { 
   
     this.setLayout(new BorderLayout());
-    
-    
-    
+
     initList(colNames, displayRows);
     
     initButtons(showAddButton,  showEditButton,   showDeleteButton, 
@@ -97,13 +108,6 @@ public class CustomList extends JPanel {
   
   private void initList(String[] colNames, int displayRows) {
     
-
-//    tableModel = new AbstractTableModel() {
-//    
-//      public int getColumnCount() { return colNames.length; }
-//      public int getRowCount()    { return 1; }
-//      public Object getValueAt(int row, int col) { return colNames.length }
-//    }
 
     Vector colNamesVec = new Vector(colNames.length);
     
@@ -114,27 +118,70 @@ public class CustomList extends JPanel {
     
     Vector rowsData = new Vector();
     Vector row0Data = new Vector(2);
-    row0Data.add("CELL1");
-    row0Data.add("CELL2");
+    row0Data.add("");
+    row0Data.add("");
     rowsData.add(row0Data);
     
-    table = new JTable(rowsData, colNamesVec);
+    table = new eJTable(rowsData, colNamesVec);
          
+    table.setColumnSelectionAllowed(false);
     table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
     table.setShowHorizontalLines(false);
-    table.setShowVerticalLines(false);
+    table.setShowVerticalLines(true);
+    table.setRowSelectionInterval(0, 0);
+    table.editCellAt(0, 0);
     
-    StringRenderer stringRenderer = new StringRenderer();
-   
-    table.setDefaultRenderer(String.class, stringRenderer);
-    //table.setRowHeight((int)(stringRenderer.getPreferredSize().height));
-
-    JScrollPane scrollPane = new JScrollPane(table);
+    final JScrollPane scrollPane = new JScrollPane(table);
     scrollPane.getViewport().setBackground(java.awt.Color.white);
-
-    this.add(scrollPane, BorderLayout.CENTER);
+    scrollPane.getViewport().addChangeListener(new ChangeListener() {
     
+      public void stateChanged(ChangeEvent e) {
+      
+        setColumnSizes(scrollPane.getSize().getWidth());
+      }
+    });
+    this.add(scrollPane, BorderLayout.CENTER);
   }
+  
+  private void setTableWidthReference(double width) {
+  
+    tableWidthReference = width;
+  }
+  
+  private double getTableWidthReference() {
+  
+    return tableWidthReference;
+  }
+  
+  
+  
+  
+  private void setColumnSizes(double tableWidth) {
+  
+
+    Log.debug(45,"*** tableWidth = "+tableWidth);
+
+    final double  fraction  = 1d/((double)(table.getColumnCount()));
+    final double  minFactor = 0.7;
+    final double  maxFactor = 5;
+    
+    for (int i = 0; i < table.getModel().getColumnCount(); i++) {
+    
+      TableColumn column = table.getColumnModel().getColumn(i);
+      
+      int preferredWidth = (int)(tableWidth*fraction) - 2;
+      if (preferredWidth <150) preferredWidth = 150;
+      
+      int minimumWidth   = (int)(preferredWidth*minFactor);
+      int maximumWidth   = (int)(preferredWidth*maxFactor);
+
+      column.setPreferredWidth(preferredWidth);
+      column.setMinWidth(minimumWidth);
+      column.setMaxWidth(maximumWidth);
+    }
+  }
+
+  
 
   
   private void initButtons( boolean showAddButton,    boolean showEditButton,       
@@ -186,39 +233,6 @@ public class CustomList extends JPanel {
     this.add(buttonBox, BorderLayout.EAST);
   }
   
-}
-
-
-class StringRenderer extends JTextField implements TableCellRenderer {
-
-
-  private JTextField[] textFields;
-  
-  public Component getTableCellRendererComponent(JTable table,
-                                                Object  value,
-                                                boolean isSelected,
-                                                boolean hasFocus,
-                                                int     row,
-                                                int     col ) {
-                                                
-    if (value==null) return this;
-    if (!(value instanceof String)) return null;
-    
-    if (isSelected) {
-      this.setBackground(table.getSelectionBackground());
-      this.setForeground(table.getSelectionForeground());
-    } else {
-      this.setBackground(table.getBackground());
-      this.setForeground(table.getForeground());
-    }
-    this.setEnabled(table.isEnabled());
-    this.setFont(table.getFont());
-    this.setOpaque(true);
-
-    this.setText((String)value);
-
-    return this;
-  }
 }
 
  
@@ -273,3 +287,108 @@ class MoveDownAction extends AbstractAction {
   }
 }
 
+
+class eJTable extends JTable  {
+
+    EditableStringRenderer    editableStringRenderer 
+                                    = new EditableStringRenderer();
+    DefaultTableCellRenderer  defaultRenderer 
+                                    = new DefaultTableCellRenderer();
+    
+    DefaultCellEditor         defaultCellEditor 
+                                    = new DefaultCellEditor(new JTextField());
+    
+    public eJTable(Vector rowVect, Vector colVect) {
+    
+      super(rowVect, colVect);
+      defaultCellEditor.setClickCountToStart(1);
+      this.setRowHeight((int)(editableStringRenderer.getPreferredSize().height));
+    }
+    
+    //override super
+    public TableCellRenderer getCellRenderer(int row, int col) {
+    
+        Class colClass = getModel().getColumnClass(col);
+        Log.debug(45, "getCellRenderer(): colClass.getName() = "+colClass.getName());
+        // can test for surrogates here////
+
+//        if (colClass.getName().equals("java.lang.String")) return editableStringRenderer;
+        return defaultRenderer;
+    }
+
+    //override super
+    public TableCellEditor getCellEditor(int row, int col) {
+
+        Class colClass = getModel().getColumnClass(col);
+        Log.debug(45, "getCellEditor(): colClass.getName() = "+colClass.getName());
+        // can test for surrogates here////
+        
+        return defaultCellEditor;
+    }
+
+    //override super
+    public boolean getDragEnabled() { return false; }
+
+}
+
+
+
+//class EditableStringRenderer extends JTextField implements TableCellRenderer {
+//
+//
+//  public EditableStringRenderer() {
+//  
+//    Dimension prefSize 
+//        = new Dimension(1000, this.getFontMetrics(this.getFont()).getHeight());
+//    this.setPreferredSize(prefSize);
+//  }
+//  
+//  
+//  public Component getTableCellRendererComponent( final JTable table,
+//                                                  Object  value,
+//                                                  boolean isSelected,
+//                                                  boolean hasFocus,
+//                                                  int     row,
+//                                                  int     col ) {
+//                                                
+//    if (value==null)                return this;
+//    if (!(value instanceof String)) return null;
+//    
+//    this.setEnabled(table.isEnabled());
+//    this.setFont(table.getFont());
+//    this.setOpaque(true);
+//
+//    if (isSelected) {
+//      this.setBackground(table.getSelectionBackground());
+//      this.setForeground(table.getSelectionForeground());
+//    } else {
+//      this.setBackground(table.getBackground());
+//      this.setForeground(table.getForeground());
+//    }
+//
+//    this.setText((String)value);
+//    table.addMouseListener(new MouseAdapter() {
+//    
+//      public void mouseClicked(MouseEvent e) {
+//        Log.debug(45, "\n***** EditableStringRenderer -> mouseClicked");
+//        int i = table.getSelectedRow();
+//        int j = table.getSelectedColumn();
+//        if (i > -1 && j > -1) {
+//          table.editCellAt(  
+//              i, j, new ChangeEvent(table.getModel().getValueAt(i, j)));
+//          
+//          Component comp = table.getComponentAt(i, j);
+//          
+//          if (comp instanceof JTextField) {
+//            JTextField field = (JTextField)comp;
+//            Log.debug(45, "\n***** EditableStringRenderer -> JTextField text = "+field.getText());
+//            field.setCaretPosition(field.getText().length());
+//            field.requestFocus();
+//          }
+//        }
+//        
+//      }
+//    });
+//    return this;
+//  }
+//}
