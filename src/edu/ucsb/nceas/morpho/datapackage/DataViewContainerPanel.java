@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: sambasiv $'
- *     '$Date: 2004-04-05 21:58:20 $'
- * '$Revision: 1.101 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2004-04-08 19:09:56 $'
+ * '$Revision: 1.102 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -163,6 +163,12 @@ public class DataViewContainerPanel extends javax.swing.JPanel
 
   private static final int METADATA_PANEL_DEFAULT_WIDTH = 675;
 
+
+  /**
+   *  the value of the current URL, if there is one
+   */
+  private String currentURLInfo = null;
+  
   // Store the event
   private Vector storedStateChangeEventlist = new Vector();
   /*
@@ -462,28 +468,16 @@ public class DataViewContainerPanel extends javax.swing.JPanel
         }
       }
       currentEntityMetadataPanel.add(BorderLayout.CENTER, mdcomponent);
-//DFH    }
       currentEntityPanel.setDividerLocation(METADATA_PANEL_DEFAULT_WIDTH);
 
       // create a tabbed component instance
       TabbedContainer component = new TabbedContainer();
       component.setSplitPane(currentEntityPanel);
-//DFH      if(dp != null) {
         component.setMetaDisplayInterface(md);
-//DFH      }
       component.setVisible(true);
       tabbedEntitiesPanel.addTab((String)entityItems.elementAt(i),component);
       //tabbedEntitiesPanel.addTab((String)entityItems.elementAt(i), currentEntityPanel);
-//DFH      if (dp!=null) {
-//DFH        this.entityFile[i] = dp.getFileFromId(id);
-//DFH      }
 
-      // create the data display panel (usually a table) using DataViewer class
-//      String fn = dp.getDataFileName(id);
-//      File fphysical = dp.getPhysicalFile(id);
-//      File fattribute = dp.getAttributeFile(id);
-//      File f = dp.getDataFile(id);
-//      String dataString = "";
     }
     tabbedEntitiesPanel.addChangeListener(this);
 
@@ -512,9 +506,7 @@ public class DataViewContainerPanel extends javax.swing.JPanel
         stateMonitor.notifyStateChange( new StateChangeEvent( this,
                             StateChangeEvent.CREATE_ENTITY_DATAPACKAGE_FRAME));
       }//else
-//      if (dp!=null) {
         initDPMetaView(true);
-//      }
     } else {
       moreLabel.setEnabled(false);
       initDPMetaView(false);
@@ -543,26 +535,6 @@ public class DataViewContainerPanel extends javax.swing.JPanel
         while (it.hasNext()) {
             nextObj = it.next();
             if (nextObj==null || !(nextObj instanceof String)) continue;
-//            if (dp!=null) {
-//              nextEntityID        = getEntityIDForThisEntityName((String)nextObj);
-//              nextDataFileID      = dp.getDataFileID(nextEntityID);
-//              nextAttributeFileID = dp.getAttributeFileId(nextEntityID);
-//            }
-
-/*            if (nextDataFileID!=null && !nextDataFileID.equals("")) {
-                suppressBuff.append(XMLTransformer.SUPPRESS_TRIPLES_DELIMETER);
-                suppressBuff.append(nextDataFileID);
-                Log.debug(44,"adding datafile: "+nextDataFileID
-                                                     +" to XSL suppress list");
-            }
-
-            if (nextAttributeFileID!=null && !nextAttributeFileID.equals("")) {
-                suppressBuff.append(XMLTransformer.SUPPRESS_TRIPLES_DELIMETER);
-                suppressBuff.append(nextAttributeFileID);
-                Log.debug(44,"adding attribute: "+nextAttributeFileID
-                                                     +" to XSL suppress list");
-            }
-*/
         }
         md.useTransformerProperty(
                               XMLTransformer.SUPPRESS_TRIPLES_SUBJECTS_XSLPROP,
@@ -805,6 +777,7 @@ public class DataViewContainerPanel extends javax.swing.JPanel
         } else if (adp.getDistributionUrl(index, 0,0).length()>0) {
           // this is the case where there is a url link to the data
           String urlinfo = adp.getDistributionUrl(index, 0,0);
+          currentURLInfo = urlinfo;
           // assumed that urlinfo is of the form 'protocol://systemname/localid/other'
           // protocol is probably 'ecogrid'; system name is 'knb'
           // we just want the local id here
@@ -887,7 +860,7 @@ public class DataViewContainerPanel extends javax.swing.JPanel
         dv.setEntityIndex(index);
 
         dv.setDataFile(displayFile);
-
+        dv.setCurrentURLInfo(currentURLInfo);
         dv.init();
         dvArray[index] = dv;
     } else {

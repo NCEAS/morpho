@@ -5,8 +5,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2004-04-06 22:20:40 $'
- * '$Revision: 1.115 $'
+ *     '$Date: 2004-04-08 19:09:56 $'
+ * '$Revision: 1.116 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -266,6 +266,8 @@ public class DataViewer extends javax.swing.JPanel
   private Vector storedStateChangeEventlist = new Vector();
 
   boolean missing_metadata_flag = false;
+  
+  private String currentURLInfo = null;
 
     // assorted gui components
 	JPanel DataViewerPanel = new javax.swing.JPanel();
@@ -481,6 +483,10 @@ public class DataViewer extends javax.swing.JPanel
         this.dataFile = dataFile;
     }
 
+    public void setCurrentURLInfo(String curURL) {
+      this.currentURLInfo = curURL;
+    }
+    
     public void setDataFile(File file) {
       this.dataFile = file;
     }
@@ -827,9 +833,12 @@ public class DataViewer extends javax.swing.JPanel
           // Couldn't show data view
           // create an empty table that cannot be edited since
           // do not know how to display
-          Log.debug(9, "Unable to display the data when stored in this format ("
-          +format+"). \nHowever, an empty table with"
-                    +" the column header information will be shown.");
+          String msg = "Unable to display this data."+"\nHowever, an empty table with"
+                    +" the column header information will be shown.";
+          if ((currentURLInfo!=null)&&(currentURLInfo.length()>0)) {
+            msg = msg +"\nData is referenced by the URL \n"+currentURLInfo;
+          }
+          Log.debug(9, msg);
           showDataView = false;
           dataFile = null;
           buildTable();
