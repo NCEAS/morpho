@@ -6,8 +6,8 @@
   *  For Details: http://www.nceas.ucsb.edu/
   *
   *   '$Author: sgarg $'
-  *     '$Date: 2003-12-24 01:59:23 $'
-  * '$Revision: 1.7 $'
+  *     '$Date: 2004-03-24 00:00:48 $'
+  * '$Revision: 1.8 $'
   *
   * This program is free software; you can redistribute it and/or modify
   * it under the terms of the GNU General Public License as published by
@@ -1739,11 +1739,31 @@
         </xsl:for-each>
       </xsl:when>
       <xsl:otherwise>
-         <tr><td colspan="2" align="center" class="{$stripes}" >
+       <tr><td colspan="2" align="center" class="{$stripes}" >
+       <xsl:if test="$withHTMLLinks='1'">
            <a><xsl:attribute name="href"><xsl:value-of select="$tripleURI"/><xsl:value-of select="$docid"/>&amp;displaymodule=attributedomain&amp;entitytype=<xsl:value-of select="$entitytype"/>&amp;entityindex=<xsl:value-of select="$entityindex"/>&amp;attributeindex=<xsl:value-of select="$attributeindex"/></xsl:attribute>
            <b>Domain Info</b>
            </a>
-         </td></tr>
+       </xsl:if>
+       <xsl:if test="$withHTMLLinks='0' and $displaymodule!='printall'">
+         <xsl:call-template name="nonNumericDomain">
+           <xsl:with-param name="displaymodule" select="$displaymodule"/>
+           <xsl:with-param name="entitytype" select="$entitytype"/>
+           <xsl:with-param name="entityindex" select="$entityindex"/>
+           <xsl:with-param name="attributeindex" select="$attributeindex"/>
+           <xsl:with-param name="nondomainfirstColStyle" select="$firstColStyle"/>
+         </xsl:call-template>
+       </xsl:if>
+        <xsl:if test="$withHTMLLinks='0' and $displaymodule='printall'">
+         <xsl:call-template name="nonNumericDomain">
+           <xsl:with-param name="displaymodule" select="$displaymodule"/>
+           <xsl:with-param name="entitytype" select="$entitytype"/>
+           <xsl:with-param name="entityindex" select="$entityindex"/>
+           <xsl:with-param name="attributeindex" select="$attributeindex"/>
+           <xsl:with-param name="nondomainfirstColStyle"> </xsl:with-param>
+         </xsl:call-template>
+       </xsl:if>
+       </td></tr>
       </xsl:otherwise>
     </xsl:choose>
  </xsl:template>
@@ -1897,8 +1917,14 @@
     <xsl:param name="entitytype"/>
     <xsl:param name="entityindex"/>
     <xsl:param name="attributeindex"/>
-     <a><xsl:attribute name="href"><xsl:value-of select="$tripleURI"/><xsl:value-of select="$docid"/>&amp;displaymodule=attributecoverage&amp;entitytype=<xsl:value-of select="$entitytype"/>&amp;entityindex=<xsl:value-of select="$entityindex"/>&amp;attributeindex=<xsl:value-of select="$attributeindex"/></xsl:attribute>
+       <xsl:if test="$withHTMLLinks='1'">
+          <a><xsl:attribute name="href"><xsl:value-of select="$tripleURI"/><xsl:value-of select="$docid"/>&amp;displaymodule=attributecoverage&amp;entitytype=<xsl:value-of select="$entitytype"/>&amp;entityindex=<xsl:value-of select="$entityindex"/>&amp;attributeindex=<xsl:value-of select="$attributeindex"/></xsl:attribute>
            <b>Coverage Info</b></a>
+       </xsl:if>
+       <xsl:if test="$withHTMLLinks='0'">
+          <xsl:call-template name="coverage">
+          </xsl:call-template>
+       </xsl:if>
  </xsl:template>
 
  <xsl:template name="attributemethod">
@@ -1906,8 +1932,16 @@
     <xsl:param name="entitytype"/>
     <xsl:param name="entityindex"/>
     <xsl:param name="attributeindex"/>
-     <a><xsl:attribute name="href"><xsl:value-of select="$tripleURI"/><xsl:value-of select="$docid"/>&amp;displaymodule=attributemethod&amp;entitytype=<xsl:value-of select="$entitytype"/>&amp;entityindex=<xsl:value-of select="$entityindex"/>&amp;attributeindex=<xsl:value-of select="$attributeindex"/></xsl:attribute>
-           <b>Method Info</b></a>
- </xsl:template>
+    <xsl:if test="$withHTMLLinks='1'">
+       <a><xsl:attribute name="href"><xsl:value-of select="$tripleURI"/><xsl:value-of select="$docid"/>&amp;displaymodule=attributemethod&amp;entitytype=<xsl:value-of select="$entitytype"/>&amp;entityindex=<xsl:value-of select="$entityindex"/>&amp;attributeindex=<xsl:value-of select="$attributeindex"/></xsl:attribute>
+       <b>Method Info</b></a>
+    </xsl:if>
+    <xsl:if test="$withHTMLLinks='0'">
+      <xsl:call-template name="method">
+        <xsl:with-param name="methodfirstColStyle" select="$firstColStyle"/>
+        <xsl:with-param name="methodsubHeaderStyle" select="$firstColStyle"/>
+      </xsl:call-template>
+    </xsl:if>
+</xsl:template>
 
 </xsl:stylesheet>
