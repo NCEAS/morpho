@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: sgarg $'
- *     '$Date: 2003-11-26 17:54:20 $'
- * '$Revision: 1.1 $'
+ *     '$Date: 2003-11-26 21:10:01 $'
+ * '$Revision: 1.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -89,22 +89,22 @@ public class Project extends AbstractWizardPage {
     this.setLayout(new BorderLayout());
 
     Box topBox = Box.createVerticalBox();
-    topBox.add(WidgetFactory.makeDefaultSpacer());
+    topBox.add(WidgetFactory.makeHalfSpacer());
 
     JLabel desc = WidgetFactory.makeHTMLLabel(
-        "<p>Data may be collected as part of a large research program with many "
+        "Data may be collected as part of a large research program with many "
         +"sub-projects or they may be associated with a single, independent "
         +"investigation. For example, a large NSF grant may provide funds for "
         +"several PIs to collect data at various locations. In this case it is "
         +"important to be able to reference sub-projects to the larger project "
-        +"with which they are associated. </p>", 3);
+        +"with which they are associated.<br></br><b>Is your project part of a larger, "
+        +"umbrella research project?</b>", 3);
 
   //  topBox.add(WidgetFactory.makeDefaultSpacer());
     topBox.add(desc);
 
-    radioLabel = WidgetFactory.makeHTMLLabel("<b>Is your project part of a larger, "
-                                             + "umbrella research project?</b>", 1);
-    topBox.add(radioLabel);
+//    radioLabel = WidgetFactory.makeHTMLLabel("", 1);
+  //  topBox.add(radioLabel);
 
     final JPanel instance = this;
 
@@ -166,7 +166,7 @@ public class Project extends AbstractWizardPage {
 
   private JPanel getDataPanel() {
 
-    JPanel panel = WidgetFactory.makeVerticalPanel(7);
+    JPanel panel = WidgetFactory.makeVerticalPanel(6);
 
     WidgetFactory.addTitledBorder(panel, "Enter Project Information");
 
@@ -222,7 +222,7 @@ public class Project extends AbstractWizardPage {
                                 WizardSettings.WIZARD_CONTENT_TEXTFIELD_DIMS);
     vPanel.add(minRequiredLabel);
 
-    partiesList = WidgetFactory.makeList(colNames, editors, 7,
+    partiesList = WidgetFactory.makeList(colNames, editors, 6,
                                     true, true, false, true, true, true );
 
  //   vPanel.add(WidgetFactory.makeDefaultSpacer());

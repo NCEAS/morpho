@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: sgarg $'
- *     '$Date: 2003-11-26 17:54:19 $'
- * '$Revision: 1.32 $'
+ *     '$Date: 2003-11-26 21:10:01 $'
+ * '$Revision: 1.33 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -181,7 +181,7 @@ public class WizardSettings {
   = new Dimension(2000,20);
 
   public static final String HTML_FONT_OPENING
-          = "<font size=\"3\" face=\"verdana\">";
+          = "<font size=\"3\">";
 
   public static final String HTML_EXAMPLE_FONT_OPENING
                                                   = "<font color=\"#666666\">";
