@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2004-04-06 20:16:24 $'
- * '$Revision: 1.50 $'
+ *     '$Date: 2004-04-07 00:06:27 $'
+ * '$Revision: 1.51 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -88,8 +88,7 @@ import java.awt.event.MouseEvent;
  *
  */
 
-public class CustomList
-    extends JPanel {
+public class CustomList extends JPanel {
 
   public static final short NULL = 0;
   public static final short EMPTY_STRING_TRIM = 10;
@@ -765,6 +764,34 @@ public class CustomList
     return (List) rowObj;
   }
 
+
+  /**
+   * returns an array of Lists containing the objects in the currently-selected
+   * rows, or null if none selected
+   *
+   *  @return the List containing the objects in the currently-selected row, or
+   *          null if none selected
+   */
+  public List[] getSelectedRows() {
+
+    int[] rows = table.getSelectedRows();
+
+    if (rows == null || rows.length < 1)return null;
+
+    List listOfRowLists = this.getListOfRowLists();
+    if (listOfRowLists == null)return null;
+
+    List[] returnList = new List[rows.length];
+
+    for (int i=0; i < rows.length; i++) {
+
+      returnList[i] = (List)(listOfRowLists.get(rows[i]));
+    }
+    return returnList;
+  }
+
+
+
   public void setSelectedRows(int idx[]) {
 
     DefaultListSelectionModel newModel = new DefaultListSelectionModel();
@@ -1194,8 +1221,8 @@ public class CustomList
 
   /**
    * Sets the <code>javax.swing.Action</code> to be executed on pressing the
-   * appropriate list button. NOTE that the button's 'private' Action (defined
-   * elsewhere in this class) will be executed first, and then the custom action
+   * appropriate list button. NOTE that the CUSTOM action will be executed FIRST,
+   * and then the button's 'private' Action (defined elsewhere in this class)
    * will be executed
    *
    * @param a <code>javax.swing.Action</code> to be executed
@@ -1417,23 +1444,25 @@ class DeleteAction
     this.parentList = parentList;
   }
 
+
   public void actionPerformed(ActionEvent e) {
 
     Log.debug(45, "CustomList DELETE action");
     int[] rows = table.getSelectedRows();
-    if (rows.length == 0) {
-      return;
-    }
+
+    if (rows.length == 0) return;
 
     parentList.fireEditingStopped();
 
+    //execute the user's custom action:
+    if (parentList.getCustomDeleteAction() != null) {
+      parentList.getCustomDeleteAction().actionPerformed(
+      new ActionEvent(parentList, ActionEvent.ACTION_PERFORMED, "Delete"));
+    }
+
+    //now remove the rows
     for (int i = 0; i < rows.length; i++) {
       parentList.removeRow(rows[i] - i);
-
-      //execute the user's custom action:
-    }
-    if (parentList.getCustomDeleteAction() != null) {
-      parentList.getCustomDeleteAction().actionPerformed(null);
     }
   }
 
@@ -1707,6 +1736,7 @@ class CustomJTable
 
     return super.getSelectionModel().getMaxSelectionIndex();
   }
+
 
   public void makeColumnNotEditable(int col) {
 
