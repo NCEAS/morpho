@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-10-11 20:10:18 $'
- * '$Revision: 1.102 $'
+ *     '$Date: 2002-10-15 18:01:20 $'
+ * '$Revision: 1.103 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -743,6 +743,7 @@ public class DocFrame extends javax.swing.JFrame
 //	           System.out.println("FiinishTrimTree:"+((new Long(temp)).toString()));
             }
         }
+        setAttributeNames(rootNode);
         setSelectedNodes(rootNode);
 
 /*
@@ -1291,6 +1292,7 @@ public class DocFrame extends javax.swing.JFrame
     void writeXML(DefaultMutableTreeNode node, String fn)
     {
         //setSelectedNodes(node);
+        trimAttributeNames(node);  // remove extra info in attribute nodes
         File outputFile = new File(fn);
         try {
             FileWriter out = new FileWriter(outputFile);
@@ -1333,6 +1335,7 @@ public class DocFrame extends javax.swing.JFrame
     String writeXMLString(DefaultMutableTreeNode node)
     {
         //setSelectedNodes(node);
+        trimAttributeNames(node);  // remove extra info in attribute nodes
         tempStack = new Stack();
         start = new StringBuffer();
         if (trimFlag) {
@@ -2739,5 +2742,44 @@ public class DocFrame extends javax.swing.JFrame
     static {
         icons = new Hashtable();
     }
+    
+//-------------------------------------------------------------------------------------
+  // specialized method for serching for <attribute> tags and then getting their 'name'
+  // from a child node for display at the attribute level in the tree
+  void setAttributeNames(DefaultMutableTreeNode root) {
+    // first find all the attribute nodes, which are assumed to be children of root
+    String attr_name = "";
+    Enumeration kids = root.children();
+    while(kids.hasMoreElements()) {
+      DefaultMutableTreeNode node = (DefaultMutableTreeNode)kids.nextElement();
+      NodeInfo ni = (NodeInfo)node.getUserObject();
+      if(ni.toString().startsWith("attribute")) {  // an attribute node
+        Enumeration attr_kids = node.children();
+        while(attr_kids.hasMoreElements()) {  // attributes children
+          DefaultMutableTreeNode node1 = (DefaultMutableTreeNode)attr_kids.nextElement();
+          NodeInfo ni1 = (NodeInfo)node1.getUserObject();
+          if(ni1.toString().startsWith("attributeName")) {
+            DefaultMutableTreeNode name_node = (DefaultMutableTreeNode)node1.getFirstChild();
+            attr_name = ((NodeInfo)(name_node.getUserObject())).toString();
+            ni.setName(ni.getName()+"-"+attr_name);
+          }
+        }
+      }
+    }
+  }
+  
+  // need to trim extra text added to attribute nodes before saving
+  void trimAttributeNames(DefaultMutableTreeNode root) {
+    Enumeration kids = root.children();
+    while(kids.hasMoreElements()) {
+      DefaultMutableTreeNode node = (DefaultMutableTreeNode)kids.nextElement();
+      NodeInfo ni = (NodeInfo)node.getUserObject();
+      if(ni.toString().startsWith("attribute")) {  // an attribute node
+        ni.setName("attribute");
+      }
+    }
+  }
+//--------------------------------------------------------------------------------------    
+
 }
 
