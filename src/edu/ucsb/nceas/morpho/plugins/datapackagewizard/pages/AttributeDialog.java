@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2003-09-18 21:59:40 $'
- * '$Revision: 1.7 $'
+ *     '$Date: 2003-09-18 22:57:00 $'
+ * '$Revision: 1.8 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -482,36 +482,7 @@ class AttributeDialog extends WizardPopupDialog {
       returnMap.putAll(
         ((DialogSubPanelAPI)currentPanel).getPanelData(
                             xPathRoot+"/measurementScale/"+measurementScale) );
-    
-    
-//      measScaleBuff.delete(0, measScaleBuff.length);
-//      if (measurementScale.equals(measScaleElemNames[0])) {
-//      
-//        //nominal:
-//        
-//      } else if (measurementScale.equals(measScaleElemNames[1])){
-//        
-//        //ordinal:
-//        
-//      } else if (measurementScale.equals(measScaleElemNames[2])){
-//        
-//        //interval:
-//      
-//        
-//      } else if (measurementScale.equals(measScaleElemNames[3])){
-//        
-//        //ratio:
-//      
-//        
-//      } else if (measurementScale.equals(measScaleElemNames[4])){
-//        
-//        //datetime:
-//      
-//      }
-      
-//      returnMap.put(xPathRoot + "/"+measurementScale", measurementScale);
     }
-
 
     return returnMap;
   }

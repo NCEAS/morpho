@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2003-09-18 21:59:40 $'
- * '$Revision: 1.3 $'
+ *     '$Date: 2003-09-18 22:57:00 $'
+ * '$Revision: 1.4 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -68,6 +68,7 @@ class IntervalRatioPanel extends JPanel implements DialogSubPanelAPI {
   private JLabel     precisionLabel;
   private JLabel     numberTypeLabel;
   
+  private UnitsPickList unitsPickList;
   private JTextField precisionField;
   private JComboBox  numberTypePickList;
   private CustomList boundsList;
@@ -110,7 +111,7 @@ class IntervalRatioPanel extends JPanel implements DialogSubPanelAPI {
     this.setMaximumSize(dims);
     
     ////////////////////////
-    UnitsPickList unitsPickList = new UnitsPickList();
+    unitsPickList = new UnitsPickList();
     
     JPanel pickListPanel = WidgetFactory.makePanel();
     unitsPickListLabel    = WidgetFactory.makeLabel("Standard Unit:", true);
@@ -224,15 +225,31 @@ class IntervalRatioPanel extends JPanel implements DialogSubPanelAPI {
 //    }
 //
 //
-//    if (precisionField.getText().trim().equals("")) {
-//
-//      WidgetFactory.hiliteComponent(textDefinitionLabel);
-//      precisionField.requestFocus();
-//      
-//      return false;
-//    }
-//    WidgetFactory.unhiliteComponent(enumDefinitionLabel);
-//    WidgetFactory.unhiliteComponent(textDefinitionLabel);
+
+    if (unitsPickList.getSelectedUnit().trim().equals("")) {
+
+      WidgetFactory.hiliteComponent(unitsPickListLabel);
+      
+      return false;
+    }
+    WidgetFactory.unhiliteComponent(unitsPickListLabel);
+
+    if (precisionField.getText().trim().equals("")) {
+
+      WidgetFactory.hiliteComponent(precisionLabel);
+      
+      return false;
+    }
+    WidgetFactory.unhiliteComponent(precisionLabel);
+
+    if (numberTypePickList.getSelectedItem().toString().trim().equals("")) {
+
+      WidgetFactory.hiliteComponent(numberTypeLabel);
+      
+      return false;
+    }
+    WidgetFactory.unhiliteComponent(numberTypeLabel);
+    
     return true; 
   }
 
@@ -260,68 +277,68 @@ class IntervalRatioPanel extends JPanel implements DialogSubPanelAPI {
    *            key/value paired settings for this particular wizard page
    */
   private OrderedMap   returnMap  = new OrderedMap();
-  private StringBuffer nomOrdBuff = new StringBuffer();
+  private StringBuffer intRatBuff = new StringBuffer();
   ////////////////////////////////////////////////////////
   public OrderedMap getPanelData(String xPathRoot) {
 
     returnMap.clear();
 
-//    nomOrdBuff.delete(0, nomOrdBuff.length());
-//
-//    nomOrdBuff.append(xPathRoot);
-//    nomOrdBuff.append("/");
-//    nomOrdBuff.append(nomOrdDisplayNames[nom_ord_mode]);
-//    nomOrdBuff.append("/nonNumericDomain/");
-//    
-//    xPathRoot = nomOrdBuff.toString();
-//    
-//    if (currentSubPanel==enumSubPanel) {  //ENUMERATED
-//      
-//      getEnumListData(xPathRoot + "enumeratedDomain[1]", returnMap);
-//      
-//      if (enumDefinitionFreeTextCheckBox.isSelected()) {
-//        
-//        returnMap.put(  xPathRoot + "textDomain[1]/definition",
-//                        "Free text (unrestricted)");
-//        returnMap.put(xPathRoot + "textDomain[1]/pattern[1]", ".*");
-//      }
-//    
-//    } else {                              //TEXT
-//            
-//      returnMap.put(  xPathRoot + "textDomain[1]/definition",
-//                      precisionField.getText().trim());
-//      
-//      int index = 1;
-//      List rowLists = boundsList.getListOfRowLists();
-//      String nextStr = null;
-//    
-//      for (Iterator it = rowLists.iterator(); it.hasNext(); ) {
-//    
-//        // CHECK FOR AND ELIMINATE EMPTY ROWS...
-//        Object nextRowObj = it.next();
-//        if (nextRowObj==null) continue;
-//        
-//        List nextRow = (List)nextRowObj;
-//        if (nextRow.size() < 1) continue;
-//        
-//        if (nextRow.get(0)==null) continue;
-//        nextStr = (String)(nextRow.get(0));
-//        if (nextStr.trim().equals("")) continue;
-//        
-//        nomOrdBuff.delete(0, nomOrdBuff.length());
-//        nomOrdBuff.append(xPathRoot);
-//        nomOrdBuff.append("textDomain[1]/pattern[");
-//        nomOrdBuff.append(index++);
-//        nomOrdBuff.append("]");
-//                        
-//        returnMap.put(nomOrdBuff.toString(), nextStr);
-//      }
-//
-//      String source = textSourceField.getText().trim();
-//      if (!source.equals("")) {
-//        returnMap.put(  xPathRoot + "textDomain[1]/source", source);
-//      }
-//    }
+    intRatBuff.delete(0, intRatBuff.length());
+    
+    returnMap.put(  xPathRoot + "/unit/standardUnit",
+                    unitsPickList.getSelectedUnit().trim());
+    
+    returnMap.put(  xPathRoot + "/precision", 
+                    precisionField.getText().trim());
+
+    intRatBuff.delete(0, intRatBuff.length());
+    intRatBuff.append(xPathRoot);
+    intRatBuff.append("/numericDomain/");
+
+    returnMap.put(  xPathRoot + "/numberType", 
+                    numberTypePickList.getSelectedItem().toString().trim());
+    
+    intRatBuff.append("bounds[");
+
+    xPathRoot = intRatBuff.toString();
+    
+    int index = 0;
+    List rowLists = boundsList.getListOfRowLists();
+    String nextMin = null;
+    String nextMax = null;
+  
+    for (Iterator it = rowLists.iterator(); it.hasNext(); ) {
+  
+      // CHECK FOR AND ELIMINATE EMPTY ROWS...
+      Object nextRowObj = it.next();
+      if (nextRowObj==null) continue;
+      
+      List nextRow = (List)nextRowObj;
+      if (nextRow.size() < 1) continue;
+      
+      boolean minIsNull = (nextRow.get(0)==null);
+      boolean maxIsNull = (nextRow.get(1)==null);
+
+      if (minIsNull && maxIsNull) continue;
+      
+      index++;
+      
+      if (!minIsNull) {
+      
+        nextMin = (String)(nextRow.get(0));
+        if (!nextMin.trim().equals("")) {
+          returnMap.put(xPathRoot + index + "]/minimum", nextMin);
+        }
+      }
+      
+      if (!maxIsNull) {
+      
+        nextMax = (String)(nextRow.get(1));
+        if (!nextMax.trim().equals("")) {
+          returnMap.put(xPathRoot + index + "]/maximum", nextMax);
+        }
+      }
+    }
     return returnMap;
   }
 }
@@ -344,9 +361,11 @@ class IntervalRatioPanel extends JPanel implements DialogSubPanelAPI {
 class UnitsPickList extends JPanel {
 
 
-  private final JComboBox unitTypesList = new JComboBox();
-  private final JComboBox unitsList     = new JComboBox();
-
+  private final JComboBox unitTypesList  = new JComboBox();
+  private final JComboBox unitsList      = new JComboBox();
+  private final ComboBoxModel emptyModel = new DefaultComboBoxModel();
+  private final String UNITLIST_DEFAULT  = "- Select a Unit Type -";
+  
   public UnitsPickList() {
   
     init();
@@ -364,8 +383,12 @@ class UnitsPickList extends JPanel {
 
           String value = e.getItem().toString();
           Log.debug(45, "unitTypesList state changed: " +value);
+          
+          if (unitTypesList.getSelectedIndex()==0) unitsList.setEnabled(false);
+          else unitsList.setEnabled(true);
+
           unitsList.setModel(
-                        ((UnitTypesListItem)(e.getItem())).getComboBoxModel() );
+                      ((UnitTypesListItem)(e.getItem())).getComboBoxModel() );
           unitsList.setSelectedIndex(0);
         }
       });
@@ -398,17 +421,19 @@ class UnitsPickList extends JPanel {
     unitsPanel.add(WidgetFactory.makeDefaultSpacer());
 
     ///////////////////////
-//    this.setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
     this.setLayout(new GridLayout(1,2));
     this.setPreferredSize(WizardSettings.WIZARD_CONTENT_SINGLE_LINE_DIMS);
     this.setMaximumSize(WizardSettings.WIZARD_CONTENT_SINGLE_LINE_DIMS);
     this.add(unitTypesPanel);
     this.add(unitsPanel);
+    unitsList.setEnabled(false);
   }
   
   public String getSelectedUnit() {
   
-    return unitsList.getSelectedItem().toString();
+    Object selItem = unitsList.getSelectedItem();
+    if (selItem==null) return "";
+    return selItem.toString();
   }
   
   
@@ -420,7 +445,7 @@ class UnitsPickList extends JPanel {
     
     String[] unitsOfThisType = null;
     
-    listItemsArray[0] = new UnitTypesListItem("- Select a Unit Type -", 
+    listItemsArray[0] = new UnitTypesListItem(UNITLIST_DEFAULT, 
                                               new String[] {""});
 
     for (int i=0; i < totUnitTypes; i++) {
