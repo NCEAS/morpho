@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-09-06 22:29:03 $'
- * '$Revision: 1.37 $'
+ *     '$Date: 2002-09-06 23:20:06 $'
+ * '$Revision: 1.38 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -89,45 +89,7 @@ import edu.ucsb.nceas.morpho.util.Log;
 public class DataViewer extends javax.swing.JPanel 
                         implements EditingCompleteListener
 {
-	public JPanel DataViewerPanel = new javax.swing.JPanel();
-	JPanel TablePanel = new javax.swing.JPanel();
-	JScrollPane DataScrollPanel = new javax.swing.JScrollPane();
-	JPanel ControlPanel = new javax.swing.JPanel();
-  JPanel HeaderPanel = new javax.swing.JPanel();
-  JLabel headerLabel;
-	JPanel ButtonControlPanel = new javax.swing.JPanel();
-	JLabel DataIDLabel = new javax.swing.JLabel();
-	JButton CancelButton = new javax.swing.JButton();
-	JButton UpdateButton = new javax.swing.JButton();
-  ColumnMetadataEditPanel cmep;
-    
-  JPanel controlPanel;
-  JButton controlOK;
-  JButton controlCancel;
-  JDialog columnDialog;
-
-  PersistentVector pv;
-  PersistentTableModel ptm;
-  JTable table;
-    
-  int sortdirection = 1;
-  boolean columnAddFlag = true;
-    
-  Document attributeDoc;
   
-  Morpho framework;
-  ConfigXML config;
-  String datadir;
-  String separator;
-  String cachedir;
-  String tempdir;
-  String dataString = "";
-  String dataID = "";
-    
-  DataPackageGUI grandParent;
-  EntityGUI parent;
-    
-  DataViewer thisRef;
     
   /**popup menu for right clicks*/
   private JPopupMenu popup;
@@ -265,6 +227,56 @@ public class DataViewer extends javax.swing.JPanel
   
   boolean missing_metadata_flag = false;
 
+    // assorted gui components
+	JPanel DataViewerPanel = new javax.swing.JPanel();
+	JPanel TablePanel = new javax.swing.JPanel();
+	JScrollPane DataScrollPanel = new javax.swing.JScrollPane();
+	JPanel ControlPanel = new javax.swing.JPanel();
+  JPanel HeaderPanel = new javax.swing.JPanel();
+  JLabel headerLabel;
+	JPanel ButtonControlPanel = new javax.swing.JPanel();
+	JLabel DataIDLabel = new javax.swing.JLabel();
+	JButton CancelButton = new javax.swing.JButton();
+	JButton UpdateButton = new javax.swing.JButton();
+  ColumnMetadataEditPanel cmep;
+    
+  JPanel controlPanel;
+  JButton controlOK;
+  JButton controlCancel;
+  JDialog columnDialog;
+
+  /*
+   * the PersistentVector used to store rows in the data table
+   */
+  PersistentVector pv;
+
+  /*
+   * the PersistentTableModel used for the data table
+   */
+  PersistentTableModel ptm;
+
+  /*
+   * the data table
+   */
+  JTable table;
+    
+  int sortdirection = 1;
+  boolean columnAddFlag = true;
+    
+  Document attributeDoc;
+  
+  Morpho morpho;
+  ConfigXML config;
+  String datadir;
+  String separator;
+  String cachedir;
+  String tempdir;
+  String dataString = "";
+  String dataID = "";
+    
+    
+  DataViewer thisRef;
+
 	public DataViewer()
 	{
 		setLayout(new BorderLayout(0,0));
@@ -346,12 +358,12 @@ public class DataViewer extends javax.swing.JPanel
     updateDataMenu();
 	}
 
-    public DataViewer(Morpho framework, String sTitle)
+    public DataViewer(Morpho morpho, String sTitle)
     {
         this();
-        this.framework = framework;
-        config = framework.getConfiguration();
-        ConfigXML profile = framework.getProfile();
+        this.morpho = morpho;
+        config = morpho.getConfiguration();
+        ConfigXML profile = morpho.getProfile();
         String profileDirName = config.getConfigDirectory() + 
                                 File.separator +
                                 config.get("profile_directory", 0) + 
@@ -370,12 +382,12 @@ public class DataViewer extends javax.swing.JPanel
         this.dataString = dataString;
     }
     
-    public DataViewer(Morpho framework, String sTitle, File dataFile)
+    public DataViewer(Morpho morpho, String sTitle, File dataFile)
     {
         this();
-		    this.framework = framework;
-        config = framework.getConfiguration();
-        ConfigXML profile = framework.getProfile();
+		    this.morpho = morpho;
+        config = morpho.getConfiguration();
+        ConfigXML profile = morpho.getProfile();
         String profileDirName = config.getConfigDirectory() + File.separator +
                             config.get("profile_directory", 0) + 
                             File.separator +
@@ -405,7 +417,7 @@ public class DataViewer extends javax.swing.JPanel
         formatPath.addElement("eml-physical/format");
         NodeList formatList = PackageUtil.getPathContent(physicalFile, 
                                                      formatPath, 
-                                                     framework);  
+                                                     morpho);  
         if(formatList != null && formatList.getLength() != 0)
         {
           String s = formatList.item(0).getFirstChild().getNodeValue();
@@ -417,7 +429,7 @@ public class DataViewer extends javax.swing.JPanel
         fieldDelimiterPath.addElement("eml-physical/fieldDelimiter");
         NodeList fieldDelimiterList = PackageUtil.getPathContent(physicalFile, 
                                                      fieldDelimiterPath, 
-                                                     framework);  
+                                                     morpho);  
         if(fieldDelimiterList != null && fieldDelimiterList.getLength() != 0)
         {
           String s = fieldDelimiterList.item(0).getFirstChild().getNodeValue();
@@ -428,7 +440,7 @@ public class DataViewer extends javax.swing.JPanel
         numHeaderLinesPath.addElement("eml-physical/numHeaderLines");
         NodeList numHeaderLinesList = PackageUtil.getPathContent(physicalFile, 
                                                      numHeaderLinesPath, 
-                                                     framework); 
+                                                     morpho); 
         if(numHeaderLinesList != null && numHeaderLinesList.getLength() != 0) 
         {
           String s = numHeaderLinesList.item(0).getFirstChild().getNodeValue();
@@ -445,7 +457,7 @@ public class DataViewer extends javax.swing.JPanel
         numRecordsPath.addElement("table-entity/numberOfRecords");
         NodeList numRecordsList = PackageUtil.getPathContent(entityFile, 
                                                      numRecordsPath, 
-                                                     framework);  
+                                                     morpho);  
         if(numRecordsList != null && numRecordsList.getLength() != 0)
         {
           String s = numRecordsList.item(0).getFirstChild().getNodeValue();
@@ -461,7 +473,7 @@ public class DataViewer extends javax.swing.JPanel
         entityNamesPath.addElement("table-entity/entityName");
         NodeList entityNamesList = PackageUtil.getPathContent(entityFile, 
                                                      entityNamesPath, 
-                                                     framework);  
+                                                     morpho);  
         if(entityNamesList != null && entityNamesList.getLength() != 0)
         {
           String s = entityNamesList.item(0).getFirstChild().getNodeValue();
@@ -477,7 +489,7 @@ public class DataViewer extends javax.swing.JPanel
         entityDescriptionPath.addElement("table-entity/entityDescription");
         NodeList entityDescriptionList = PackageUtil.getPathContent(entityFile, 
                                                      entityDescriptionPath, 
-                                                     framework);  
+                                                     morpho);  
         if(entityDescriptionList != null && entityDescriptionList.getLength() != 0)
         {
           String s = entityDescriptionList.item(0).getFirstChild().getNodeValue();
@@ -502,7 +514,7 @@ public class DataViewer extends javax.swing.JPanel
       } else {
         // build a DOM represntation of the attribute file
         try{
-          attributeDoc = PackageUtil.getDoc(attributeFile, framework);
+          attributeDoc = PackageUtil.getDoc(attributeFile, morpho);
         }
         catch (Exception qq) {
           Log.debug(20,"Error building attribute DOM !");
@@ -513,7 +525,7 @@ public class DataViewer extends javax.swing.JPanel
            // use names rather than Label because name is required!
         NodeList attributeNamesList = PackageUtil.getPathContent(attributeFile, 
                                                      attributeNamesPath, 
-                                                     framework);  
+                                                     morpho);  
        if(attributeNamesList != null && attributeNamesList.getLength() != 0)
         {
           column_labels = new Vector(); 
@@ -657,15 +669,7 @@ public class DataViewer extends javax.swing.JPanel
     public void setPhysicalFile(File phys) {
         this.physicalFile = phys;
     }
-    
-    public void setParent(EntityGUI egui) {
-      this.parent = egui; 
-    }
-    
-    public void setGrandParent(DataPackageGUI dpgui) {
-      this.grandParent = dpgui; 
-    }
-    
+        
     
     public void setDataID(String dataID) {
         this.dataID = dataID;
@@ -683,7 +687,7 @@ public class DataViewer extends javax.swing.JPanel
         numRecordsPath.addElement("table-entity/numberOfRecords");
         NodeList numRecordsList = PackageUtil.getPathContent(entityFile, 
                                                      numRecordsPath, 
-                                                     framework);  
+                                                     morpho);  
         if(numRecordsList != null && numRecordsList.getLength() != 0)
         {
           String s = numRecordsList.item(0).getFirstChild().getNodeValue();
@@ -699,7 +703,7 @@ public class DataViewer extends javax.swing.JPanel
         entityNamesPath.addElement("table-entity/entityName");
         NodeList entityNamesList = PackageUtil.getPathContent(entityFile, 
                                                      entityNamesPath, 
-                                                     framework);  
+                                                     morpho);  
         if(entityNamesList != null && entityNamesList.getLength() != 0)
         {
           String s = entityNamesList.item(0).getFirstChild().getNodeValue();
@@ -715,7 +719,7 @@ public class DataViewer extends javax.swing.JPanel
         entityDescriptionPath.addElement("table-entity/entityDescription");
         NodeList entityDescriptionList = PackageUtil.getPathContent(entityFile, 
                                                      entityDescriptionPath, 
-                                                     framework);  
+                                                     morpho);  
         if(entityDescriptionList != null && entityDescriptionList.getLength() != 0)
         {
           String s = entityDescriptionList.item(0).getFirstChild().getNodeValue();
@@ -971,7 +975,7 @@ public class DataViewer extends javax.swing.JPanel
 			Object object = event.getSource();
 			if (object == createNewDatatable) {
         Log.debug(1, "Test");
-        AddMetadataWizard amw = new AddMetadataWizard(framework, true, dp);
+        AddMetadataWizard amw = new AddMetadataWizard(morpho, true, dp);
         amw.setVisible(true);
         MorphoFrame thisFrame = (UIController.getInstance()).getCurrentActiveWindow();
         thisFrame.setVisible(false);
@@ -1017,7 +1021,7 @@ public class DataViewer extends javax.swing.JPanel
           showColumnMetadataEditPanel();
           if (columnAddFlag) {
             try {
-              cmep.setMorpho(framework);
+              cmep.setMorpho(morpho);
               cmep.insertNewAttributeAt(sel, attributeDoc);
  //             cmep.save();
             }
@@ -1044,7 +1048,7 @@ public class DataViewer extends javax.swing.JPanel
           showColumnMetadataEditPanel();
           if (columnAddFlag) {
             try {
-              cmep.setMorpho(framework);
+              cmep.setMorpho(morpho);
               cmep.insertNewAttributeAt(sel, attributeDoc);
  //             cmep.save();
             }
@@ -1288,9 +1292,9 @@ public class DataViewer extends javax.swing.JPanel
   {
     //System.out.println(xmlString);
     Log.debug(11, "editing complete: id: " + id + " location: " + location);
-    AccessionNumber a = new AccessionNumber(framework);
+    AccessionNumber a = new AccessionNumber(morpho);
     boolean metacatpublic = false;
-    FileSystemDataStore fsds = new FileSystemDataStore(framework);
+    FileSystemDataStore fsds = new FileSystemDataStore(morpho);
     //System.out.println(xmlString);
   
     boolean metacatloc = false;
@@ -1358,7 +1362,7 @@ public class DataViewer extends javax.swing.JPanel
     {
       if(metacatloc)
       { //save it to metacat
-        MetacatDataStore mds = new MetacatDataStore(framework);
+        MetacatDataStore mds = new MetacatDataStore(morpho);
         
         if(id.trim().equals(dp.getID().trim()))
         { //edit the package file
@@ -1421,7 +1425,7 @@ public class DataViewer extends javax.swing.JPanel
     }
     
     DataPackage newPackage = new DataPackage(location, newPackageId, null,
-                                                 framework);
+                                                 morpho);
 
     MorphoFrame thisFrame = (UIController.getInstance()).getCurrentActiveWindow();
     thisFrame.setVisible(false);
@@ -1475,28 +1479,28 @@ public class DataViewer extends javax.swing.JPanel
         // changes in the attribute metadata should be up-to-date since they
         // are changed when columns are added or deleted.
         // thus just save a copy to a file
-        PackageUtil.saveDOM(tempdir + "/" + "tempattribute", attributeDoc, attrDocType, framework);
+        PackageUtil.saveDOM(tempdir + "/" + "tempattribute", attributeDoc, attrDocType, morpho);
         
         // entity metadata needs to be changed due to a change in the number of records
         // that occurs when rows are added to the dataset
         // Here we get the current entity metadata and save a new temp copy
         
-        Document doc = PackageUtil.getDoc(entityFile, framework);
+        Document doc = PackageUtil.getDoc(entityFile, morpho);
         NodeList nl = doc.getElementsByTagName("numberOfRecords");
         Node textNode = nl.item(0).getFirstChild(); // assumed to be a text node
         int rowcnt = ptm.getRowCount();
         String rowcntS = (new Integer(rowcnt)).toString();
         textNode.setNodeValue(rowcntS);  //set to new record count
-        PackageUtil.saveDOM(tempdir + "/" + "tempentity", doc, entityDocType, framework);
+        PackageUtil.saveDOM(tempdir + "/" + "tempentity", doc, entityDocType, morpho);
         
         // physical metadata needs to be updated due to change in datafile size (and
         // perhaps the delimiter)
-        doc = PackageUtil.getDoc(physicalFile, framework);
+        doc = PackageUtil.getDoc(physicalFile, morpho);
         nl = doc.getElementsByTagName("size");
         textNode = nl.item(0).getFirstChild(); // assumed to be a text node
         String sizeS = (new Long(newDataFileLength)).toString();
         textNode.setNodeValue(sizeS);  //set to new file length
-        PackageUtil.saveDOM(tempdir + "/" + "tempphysical", doc, physicalDocType, framework);
+        PackageUtil.saveDOM(tempdir + "/" + "tempphysical", doc, physicalDocType, morpho);
       }
       catch (Exception q) {
         Log.debug(20, "Error trying to save from DOM");
@@ -1504,9 +1508,9 @@ public class DataViewer extends javax.swing.JPanel
       
       
       
-        AccessionNumber a = new AccessionNumber(framework);
-        FileSystemDataStore fsds = new FileSystemDataStore(framework);
-        MetacatDataStore mds = new MetacatDataStore(framework);
+        AccessionNumber a = new AccessionNumber(morpho);
+        FileSystemDataStore fsds = new FileSystemDataStore(morpho);
+        MetacatDataStore mds = new MetacatDataStore(morpho);
   
         boolean metacatloc = false;
         boolean localloc = false;
@@ -1645,7 +1649,7 @@ public class DataViewer extends javax.swing.JPanel
         }
       }
       newPackage = new DataPackage(location, newPackageId, null,
-                                                 framework);
+                                                 morpho);
                                                  
       thisFrame = (UIController.getInstance()).getCurrentActiveWindow();
       thisFrame.setVisible(false);
