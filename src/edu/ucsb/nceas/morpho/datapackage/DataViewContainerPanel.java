@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2002-10-26 08:05:52 $'
- * '$Revision: 1.36 $'
+ *     '$Date: 2002-10-29 19:45:10 $'
+ * '$Revision: 1.37 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -78,11 +78,21 @@ public class DataViewContainerPanel extends javax.swing.JPanel
                         EditingCompleteListener
 {
 
-  //XSL Transformer parameter name passed to MetaDisplay for setting params 
-  //used during transforms (i.e. NAME part of NAME/VALUE pair)
-  //XSL_SEL_ATTRIB_PARAM_NAME used to identify selected attribute(s) when   
-  //clicking on col headers:
+  //XSL Transformer parameter names passed to MetaDisplay for setting params 
+  //used during transforms (i.e. NAME part of NAME/VALUE pairs)
+  
+  //1) XSL_SEL_ATTRIB_PARAM_NAME used to identify selected attribute(s) when   
+  //   clicking on col headers (NOTE - identified by column index (0..n) - not 
+  //   by attribute ID:
   private static final String XSL_SEL_ATTRIB_PARAM_NAME = "selected_attribute";
+
+  //2) SUPPRESS_TRIPLES_SUBJECTS_PARAM_NAME, SUPPRESS_TRIPLES_OBJECTS_PARAM_NAME
+  //   used to hold a list of all module ID(s) to be suppressed in DataPackage 
+  //   metaview.  
+  private static final String SUPPRESS_TRIPLES_SUBJECTS_PARAM_NAME 
+                                              = "suppress_subjects_identifier";
+  private static final String SUPPRESS_TRIPLES_OBJECTS_PARAM_NAME 
+                                              = "suppress_objects_identifier";
 
   
   /**
@@ -94,6 +104,8 @@ public class DataViewContainerPanel extends javax.swing.JPanel
    * toppanel is added to packageMetadataPanel by init
    */
   JPanel toppanel;
+  
+  private JPanel packagePanel;
   
   /**
    * tabbedEntitiesPanel is the tabbed panel which contains
@@ -194,7 +206,7 @@ public class DataViewContainerPanel extends javax.swing.JPanel
   {
     this();
     this.dp = dp;
-    JPanel packagePanel = new JPanel();
+    packagePanel = new JPanel();
     packagePanel.setLayout(new BorderLayout(5,5));
 
 // the following code builds the datapackage summary at the top of
@@ -251,38 +263,6 @@ public class DataViewContainerPanel extends javax.swing.JPanel
     locationPanel.add(BorderLayout.NORTH,localLabel);
     locationPanel.add(BorderLayout.SOUTH, netLabel);
     refPanel.add(BorderLayout.EAST, locationPanel);
-// ------------------------------------
-// this is where the datapackage metadata is inserted into the container !!!!! 
-// simply add Component to the packagePanel container, which has a Border
-// layout. leave the 'NORTH' region empty, since the
-// refpanel is added there later
-  
-// -----------------------Test of MetaDisplay-------------------------
-    MetaDisplayInterface md = getMetaDisplayInstance();
-    md.addEditingCompleteListener(this);
-    Component mdcomponent = null;
-    try{
-      mdcomponent = md.getDisplayComponent(dp.getID(), dp,  
-                                      new MetaViewListener(vertSplit));
-    }
-    catch (Exception m) {
-      Log.debug(5, "Unable to display MetaData:\n"+m.getMessage()); 
-      // can't display requested ID, so just display empty viewer:
-      try{
-        mdcomponent = md.getDisplayComponent(dp, null);
-      }
-      catch (Exception e) {
-        Log.debug(15, "Error showing blank MetaData view:\n"+e.getMessage()); 
-        e.printStackTrace();
-      }
-    }
-    packagePanel.add(BorderLayout.CENTER, mdcomponent);
-// ------------------==End Test of MetaDisplay-------------------------
-    
-// the  following 2 lines add the Morpho 1.1.2 metadata displays when uncommented 
-//    packagePanel.add(BorderLayout.CENTER,dpgui.basicInfoPanel);
-//    packagePanel.add(BorderLayout.EAST,dpgui.listPanel);
-// ------------------------------------
     
 // refpanel is created in this class and added to the top of the 
 // panel in the next statement  
@@ -361,7 +341,7 @@ public class DataViewContainerPanel extends javax.swing.JPanel
       // this is where entity metadata is inserted !!!!!!!!!!!!!!!!
       // add Component to 'currentEntityMetadataPanel' which has a borderlayout
       
-      // -----------------------Test of MetaDisplay-------------------------
+// --------- E N T I T Y / A T T R I B U T E   M e t a D i s p l a y -----------
       MetaDisplayInterface md = getMetaDisplayInstance();
       md.addEditingCompleteListener(this);
       Component mdcomponent = null;
@@ -382,7 +362,7 @@ public class DataViewContainerPanel extends javax.swing.JPanel
       }
       currentEntityMetadataPanel.add(BorderLayout.CENTER, mdcomponent);
 
-// ------------------==End Test of MetaDisplay-------------------------
+// ------------------- End Entity/Attribute MetaDisplay ------------------------
 
 //      currentEntityMetadataPanel.add(BorderLayout.CENTER, entityInfoPanel);                                     
 //      currentEntityMetadataPanel.add(BorderLayout.SOUTH, entityEditControls);                                     
@@ -410,6 +390,7 @@ public class DataViewContainerPanel extends javax.swing.JPanel
     if ((entityItems!=null) && (entityItems.size()>0)) 
     {
       setDataViewer(0);
+      
       // Register the instance of this class as an listener in state change 
       // monitor
       StateChangeMonitor stateMonitor = StateChangeMonitor.getInstance();
@@ -428,8 +409,47 @@ public class DataViewContainerPanel extends javax.swing.JPanel
                             StateChangeEvent.CREATE_ENTITY_DATAPACKAGE_FRAME));
       }//else
     }
+    initDPMetaView();
   }
 
+// this is where the datapackage metadata is inserted into the container.
+// Simply add Component to the packagePanel container, which has a Border
+// layout. leave the 'NORTH' region empty, since the
+// refpanel is added there later
+  
+    private void initDPMetaView() 
+    {
+// -------------- D A T A P A C K A G E   M e t a D i s p l a y ----------------
+        MetaDisplayInterface md = getMetaDisplayInstance();
+        md.addEditingCompleteListener(this);
+        Component mdcomponent = null;
+    
+        String attributeFileID = dp.getAttributeFileId(dv.getEntityFileId());
+        md.useTransformerProperty(  SUPPRESS_TRIPLES_SUBJECTS_PARAM_NAME, 
+                                      attributeFileID);
+        md.useTransformerProperty(  SUPPRESS_TRIPLES_OBJECTS_PARAM_NAME, 
+                                      attributeFileID);
+        try{
+          mdcomponent = md.getDisplayComponent( dp.getID(), dp,  
+                                                new MetaViewListener(vertSplit));
+        }
+        catch (Exception m) {
+          Log.debug(5, "Unable to display MetaData:\n"+m.getMessage()); 
+          // can't display requested ID, so just display empty viewer:
+          try{
+            mdcomponent = md.getDisplayComponent(dp, null);
+          }
+          catch (Exception e) {
+            Log.debug(15, "Error showing blank MetaData view:\n"+e.getMessage()); 
+            e.printStackTrace();
+          }
+        }
+        packagePanel.add(BorderLayout.CENTER, mdcomponent);
+// ---------------------- End DataPackage MetaDisplay --------------------------
+    }  
+  
+  
+  
 // public setters for various members  
   public void setFramework(Morpho cf) {
     this.morpho = cf;

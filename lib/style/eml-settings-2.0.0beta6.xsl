@@ -7,8 +7,8 @@
   *  For Details: http://www.nceas.ucsb.edu/
   *
   *   '$Author: brooke $'
-  *     '$Date: 2002-10-26 08:04:13 $'
-  * '$Revision: 1.7 $'
+  *     '$Date: 2002-10-29 19:45:10 $'
+  * '$Revision: 1.8 $'
   * 
   * This program is free software; you can redistribute it and/or modify
   * it under the terms of the GNU General Public License as published by
@@ -149,7 +149,19 @@
   
   <xsl:param name="selected_attribute">-1</xsl:param>
 
+<!-- 
+    /**
+    *   These are the parameters that tell the Resource stylesheet which triple 
+    *   subjects/objects need to be suppressed in the datapackage metaview.  
+    *   Export function uses default value (blank) so they are displayed in the 
+    *   exported HTML file
+    */ 
+-->
+  
+  <xsl:param name="suppress_subjects_identifier"></xsl:param>
+  <xsl:param name="suppress_objects_identifier"></xsl:param>
 
+  
 <!-- 
     /**
     *   Most of the html pages are currently laid out as a 2-column table, with 

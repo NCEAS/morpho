@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: tao $'
- *     '$Date: 2002-10-25 01:05:10 $'
- * '$Revision: 1.87 $'
+ *   '$Author: brooke $'
+ *     '$Date: 2002-10-29 19:45:10 $'
+ * '$Revision: 1.88 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1330,6 +1330,7 @@ public class DataPackage implements XMLFactoryInterface
             transformer.
                     addTransformerProperty("package_index_name", METACATHTML);
             transformer.addTransformerProperty("qformat", EXPORTSYLE);
+            transformer.addTransformerProperty("entitystyle", EXPORTSYLE);
             transformer.addTransformerProperty("stylePath", ".");
             try {
               result = transformer.transform(xmlInputReader);

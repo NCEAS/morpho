@@ -7,8 +7,8 @@
   *  For Details: http://www.nceas.ucsb.edu/
   *
   *   '$Author: brooke $'
-  *     '$Date: 2002-10-26 08:04:13 $'
-  * '$Revision: 1.6 $'
+  *     '$Date: 2002-10-29 19:45:10 $'
+  * '$Revision: 1.7 $'
   * 
   * This program is free software; you can redistribute it and/or modify
   * it under the terms of the GNU General Public License as published by
@@ -221,28 +221,47 @@
   </xsl:template> 
        
   <xsl:template name="renderTriple">
-    <xsl:if test="not(contains(./relationship,'ttribute'))">
-    <tr><td width="{$firstColWidth}" class="{$firstColStyle}">
-      <xsl:text>&#160;</xsl:text></td><td width="{$secondColWidth}" class="{$secondColStyle}">
-      <a><xsl:attribute name="href"><xsl:value-of select="$tripleURI" />
-          <xsl:value-of select="./subject"/><xsl:value-of select="$href_path_extension" />
-          </xsl:attribute><xsl:value-of select="./subject"/>
-      </a>
-      <xsl:text> &#160;&#160;</xsl:text>
-      <xsl:value-of select="./relationship"/>
-      <xsl:text> &#160;&#160;</xsl:text>
-      <a><xsl:attribute name="href"><xsl:value-of select="$tripleURI" />
-          <xsl:choose>
-            <xsl:when test="normalize-space($package_index_name)!='' and normalize-space($package_id)!='' and normalize-space(./object)=normalize-space($package_id)">
-                <xsl:value-of select="normalize-space($package_index_name)"/>
-            </xsl:when>
-            <xsl:otherwise>
-                <xsl:value-of select="./object"/>
-            </xsl:otherwise>
-          </xsl:choose>
-          <xsl:value-of select="$href_path_extension" /></xsl:attribute><xsl:value-of select="./object"/>
-      </a>
-    </td></tr>
+    <!-- If the parameter 'suppress_subjects_identifier' contains the SUBJECT,
+         then don't display the triple at all -->
+    <xsl:if test="not(contains($suppress_subjects_identifier,./subject))">
+      <tr><td width="{$firstColWidth}" class="{$firstColStyle}">
+        <xsl:text>&#160;</xsl:text></td><td width="{$secondColWidth}" class="{$secondColStyle}">
+        <a><xsl:attribute name="href"><xsl:value-of select="$tripleURI" />
+            <xsl:value-of select="./subject"/><xsl:value-of select="$href_path_extension" />
+            </xsl:attribute><xsl:value-of select="./subject"/>
+        </a>
+        <xsl:text> &#160;&#160;</xsl:text>
+        <xsl:value-of select="./relationship"/>
+        <xsl:text> &#160;&#160;</xsl:text>
+        
+        <xsl:choose>
+          <!-- If the parameter 'suppress_objects_identifier' contains the OBJECT,
+               then display the object only as text, not as a hyperlink -->
+          <xsl:when test="contains($suppress_objects_identifier,./object)">
+              <xsl:value-of select="./object"/>
+          </xsl:when>
+          
+          <!-- Otherwise, if the parameter 'suppress_objects_identifier' does *NOT*
+               contain the OBJECT, then display the object as a hyperlink -->
+          <xsl:otherwise>
+              <a><xsl:attribute name="href"><xsl:value-of select="$tripleURI" />
+                <xsl:choose>
+                  <!-- If this OBJECT is equal to 'package_id', then replace hyperlink 
+                       with a link to the filename in 'package_index_name'. (for exports, 
+                       where main html file is renamed to be more recognizable by user -->
+                  <xsl:when test="normalize-space($package_index_name)!='' and normalize-space($package_id)!='' and normalize-space(./object)=normalize-space($package_id)">
+                      <xsl:value-of select="normalize-space($package_index_name)"/>
+                  </xsl:when>
+                  <xsl:otherwise>
+                      <xsl:value-of select="./object"/>
+                  </xsl:otherwise>
+                </xsl:choose>
+                <xsl:value-of select="$href_path_extension" /></xsl:attribute><xsl:value-of select="./object"/>
+              </a>
+          </xsl:otherwise>
+          
+        </xsl:choose>
+      </td></tr>
     </xsl:if>
     </xsl:template>
   
