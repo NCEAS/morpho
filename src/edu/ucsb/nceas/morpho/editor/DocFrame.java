@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-07-11 16:40:56 $'
- * '$Revision: 1.59 $'
+ *     '$Date: 2001-07-12 22:06:02 $'
+ * '$Revision: 1.60 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1475,23 +1475,6 @@ private Vector sameParent(Vector list) {
             NodeInfo templateni = (NodeInfo)template.getUserObject();
             inputni.setCardinality(templateni.getCardinality());
     
-            // special case - template has editor and help info
-            String editor = (String)(templateni.attr).get("editor");
-            if (editor!=null) {
-                inputni.setEditor(editor);
-                templateni.attr.remove("editor");
-            }
-            String rooteditor = (String)(templateni.attr).get("rooteditor");
-            if (rooteditor!=null) {
-                inputni.setRootEditor(rooteditor);
-                templateni.attr.remove("rooteditor");
-            }
-            String help = (String)(templateni.attr).get("help");
-            if (help!=null) {
-                inputni.setHelp(help); 
-                templateni.attr.remove("help");
-            }
-            
             // copy attribute to input tree
             Enumeration attrlist = templateni.attr.keys();
             while (attrlist.hasMoreElements()) {
@@ -1500,8 +1483,26 @@ private Vector sameParent(Vector list) {
                 inputni.attr.put(key,templateni.attr.get(key));
               }
             }
+            
+            String editor = (String)(inputni.attr).get("editor");
+            if (editor!=null) {
+                inputni.setEditor(editor);
+                inputni.attr.remove("editor");
+            }
+            String rooteditor = (String)(inputni.attr).get("rooteditor");
+            if (rooteditor!=null) {
+                inputni.setRootEditor(rooteditor);
+                inputni.attr.remove(rooteditor);
+            }
+            String help = (String)(inputni.attr).get("help");
+            if (help!=null) {
+                inputni.setHelp(help); 
+                inputni.attr.remove("help");
+            }
+            
         }
     }
+
 	
     /** Normalizes the given string. */
     private String normalize(String s) {
