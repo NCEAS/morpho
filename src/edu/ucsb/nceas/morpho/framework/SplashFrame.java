@@ -29,7 +29,6 @@ public class SplashFrame extends javax.swing.JFrame
 		JLabel2.setBounds(293,0,91,145);
 		JPanel3.setLayout(new GridLayout(4,1,0,0));
 		getContentPane().add(BorderLayout.CENTER,JPanel3);
-		JPanel3.setBackground(java.awt.Color.white);
 		JPanel3.setBounds(105,0,188,145);
 		JLabel3.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
 		JLabel3.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
@@ -50,12 +49,13 @@ public class SplashFrame extends javax.swing.JFrame
 		JLabel7.setForeground(java.awt.Color.black);
 		JLabel7.setBounds(0,72,188,36);
 		JLabel8.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-		JLabel8.setText("Version 0.5 - June 2000");
+		JLabel8.setText("Version 0.6 - Aug 2000");
 		JPanel3.add(JLabel8);
 		JLabel8.setForeground(java.awt.Color.black);
 		JLabel8.setFont(new Font("Dialog", Font.PLAIN, 12));
 		JLabel8.setBounds(0,108,188,36);
 		CloseButton.setText("Close");
+		CloseButton.setActionCommand("Close");
 		getContentPane().add(BorderLayout.SOUTH,CloseButton);
 		CloseButton.setBounds(0,145,384,25);
 		//}}
@@ -126,8 +126,6 @@ public class SplashFrame extends javax.swing.JFrame
 	javax.swing.JLabel JLabel6 = new javax.swing.JLabel();
 	javax.swing.JLabel JLabel7 = new javax.swing.JLabel();
 	javax.swing.JLabel JLabel8 = new javax.swing.JLabel();
-//	com.symantec.itools.javax.swing.icons.ImageIcon NCEASIcon = new com.symantec.itools.javax.swing.icons.ImageIcon();
-//	com.symantec.itools.javax.swing.icons.ImageIcon NSFIcon = new com.symantec.itools.javax.swing.icons.ImageIcon();
 	javax.swing.JButton CloseButton = new javax.swing.JButton();
 	//}}
 

@@ -6,7 +6,7 @@
  *              National Center for Ecological Analysis and Synthesis
  *     Authors: Dan Higgins
  *
- *     Version: '$Id: ClientFramework.java,v 1.7 2000-08-10 23:32:45 higgins Exp $'
+ *     Version: '$Id: ClientFramework.java,v 1.8 2000-08-11 18:02:44 higgins Exp $'
  */
 
 package edu.ucsb.nceas.dtclient;
@@ -115,7 +115,7 @@ public class ClientFramework extends javax.swing.JFrame
 		saveButton.setBounds(86,11,35,11);
 		
 		saveserverButton.setDefaultCapable(false);
-		saveserverButton.setToolTipText("Save to Remote Server");
+		saveserverButton.setToolTipText("Load, Delete, or Update Information on Server");
 		JToolBar1.add(saveserverButton);
 		saveserverButton.setBounds(121,11,35,11);
 		
@@ -594,6 +594,11 @@ public class ClientFramework extends javax.swing.JFrame
 	}
 
 	void saveserverButton_actionPerformed_Interaction1(java.awt.event.ActionEvent event) {
+            LoadServerFrame lsf = new LoadServerFrame(this);
+            lsf.setVisible(true);
+    }
+    
+	void saveserverButton_actionPerformed_Interaction1xx(java.awt.event.ActionEvent event) {
 		StringBuffer txt = new StringBuffer();
 		try {
 			// saveFileDialog Show the FileDialog
@@ -639,9 +644,9 @@ public class ClientFramework extends javax.swing.JFrame
 		    System.out.println(txt1);
 		    
 //   What do I need to do to acknowlede that XML text was sent??? Does servlet respond?
-            ResultFrame rs = new ResultFrame();
-            rs.ResultTextArea.setText(txt1);
-            rs.setVisible(true);
+            LoadServerFrame lsf = new LoadServerFrame();
+            lsf.ResultTextArea.setText(txt1);
+            lsf.setVisible(true);
         LogOut();
 		}
 		catch (Exception e) {
@@ -750,7 +755,7 @@ public class ClientFramework extends javax.swing.JFrame
 		    newButton.setEnabled(true);
 		    openButton.setEnabled(true);
 		    saveButton.setEnabled(true);
-		    saveserverButton.setEnabled(true);
+//		    saveserverButton.setEnabled(true);
 		}
 		if (JTabbedPane1.getSelectedIndex()==1) {
 		    ElementChoiceMenuItem.setEnabled(false);
@@ -763,7 +768,7 @@ public class ClientFramework extends javax.swing.JFrame
 		    newButton.setEnabled(false);
 		    openButton.setEnabled(false);
 		    saveButton.setEnabled(false);
-		    saveserverButton.setEnabled(false);
+//		    saveserverButton.setEnabled(false);
 		}
 		if (JTabbedPane1.getSelectedIndex()==2) {
 		    ElementChoiceMenuItem.setEnabled(false);
@@ -776,7 +781,7 @@ public class ClientFramework extends javax.swing.JFrame
 		    newButton.setEnabled(false);
 		    openButton.setEnabled(false);
 		    saveButton.setEnabled(false);
-		    saveserverButton.setEnabled(false);
+//		    saveserverButton.setEnabled(false);
 		}
 			 
 	}

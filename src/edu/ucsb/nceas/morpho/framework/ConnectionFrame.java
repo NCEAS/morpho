@@ -6,7 +6,7 @@
  *              National Center for Ecological Analysis and Synthesis
  *     Authors: Dan Higgins
  *
- *     Version: '$Id: ConnectionFrame.java,v 1.2 2000-08-10 23:32:45 higgins Exp $'
+ *     Version: '$Id: ConnectionFrame.java,v 1.3 2000-08-11 18:02:44 higgins Exp $'
  */
 
 package edu.ucsb.nceas.dtclient;
@@ -32,6 +32,11 @@ public class ConnectionFrame extends javax.swing.JFrame
 		setTitle("Connection");
 		getContentPane().setLayout(new BorderLayout(0,0));
 		setSize(317,334);
+		/* Center the Frame */
+		Dimension screenDim = Toolkit.getDefaultToolkit().getScreenSize();
+		Rectangle frameDim = getBounds();
+		setLocation((screenDim.width - frameDim.width) / 2 ,
+		        (screenDim.height - frameDim.height) /2);
 		setVisible(false);
 		JLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
 		JLabel1.setText("Connection Choices");
@@ -123,7 +128,7 @@ public class ConnectionFrame extends javax.swing.JFrame
 	public void setVisible(boolean b)
 	{
 		if (b)
-			setLocation(50, 50);
+//			setLocation(50, 50);
 		super.setVisible(b);
 	}
 
