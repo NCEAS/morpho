@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-07-05 19:12:27 $'
- * '$Revision: 1.9 $'
+ *     '$Date: 2001-07-10 18:32:15 $'
+ * '$Revision: 1.10 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -270,9 +270,23 @@ private void getAttributes(NodeInfo ni, DTDElement el) {
   }
 }  
 
+
+// currently set to return only 'REQUIRED' attributes with specified Default value
 private void getAttribute(NodeInfo ni, DTDAttribute attr) {
   sb = new StringBuffer();
-        
+  if (attr.getDecl().equals(DTDDecl.REQUIRED)) {
+   if (attr.defaultValue!=null) {
+      sb.append(attr.defaultValue);
+      ni.attr.put(attr.name,sb.toString());  
+   }
+   else if (attr.type instanceof DTDEnumeration) {
+    // arbitrarily pick first choice
+    String[] items = ((DTDEnumeration) attr.type).getItems();
+    sb.append(items[0]);
+    ni.attr.put(attr.name,sb.toString());
+   }
+  }
+/*
   if (attr.type instanceof String) {
        //       sb.append(attr.defaultValue);
   }
@@ -305,7 +319,8 @@ private void getAttribute(NodeInfo ni, DTDAttribute attr) {
     sb.append(attr.defaultValue);
   }
 //  sb.append("\" ");
-  ni.attr.put(attr.name,sb.toString());  
+
+*/
 }
 
 private String getCardinality(DTDItem item) {

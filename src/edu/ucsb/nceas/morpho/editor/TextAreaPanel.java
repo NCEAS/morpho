@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-06-29 17:33:16 $'
- * '$Revision: 1.4 $'
+ *     '$Date: 2001-07-10 18:32:15 $'
+ * '$Revision: 1.5 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -44,7 +44,7 @@ public class TextAreaPanel extends JPanel
 {  
     
   DefaultMutableTreeNode nd = null;  
-    
+  DefaultMutableTreeNode nd1 = null;  
   public TextAreaPanel(DefaultMutableTreeNode node) { 
         nd = node;
         JPanel jp = this;
@@ -56,7 +56,7 @@ public class TextAreaPanel extends JPanel
         JPanel jp2 = new JPanel();
         jp2.setLayout(new BorderLayout(0,0));
         jp2.setAlignmentX(Component.LEFT_ALIGNMENT);
-        jp1.setMaximumSize(new Dimension(300,30));
+        jp1.setMaximumSize(new Dimension(300,60));
         jp2.setMaximumSize(new Dimension(300,200));
         jp2.setMinimumSize(new Dimension(300,200));
         jp2.setPreferredSize(new Dimension(300,200));
@@ -86,7 +86,7 @@ public class TextAreaPanel extends JPanel
         // loop over child node
         String txt ="";
         while(nodes.hasMoreElements()) {
-            DefaultMutableTreeNode nd1 = (DefaultMutableTreeNode)(nodes.nextElement());
+            nd1 = (DefaultMutableTreeNode)(nodes.nextElement());
 		        NodeInfo info1 = (NodeInfo)(nd1.getUserObject());
 		        if ((info1.name).equals("#PCDATA")) {
 		          txt = info1.getPCValue();
@@ -95,6 +95,7 @@ public class TextAreaPanel extends JPanel
                 JTextArea jta = new JTextArea();
                 jta.setLineWrap(true);
                 jta.setWrapStyleWord(true);
+                jta.addFocusListener(new dfhFocus());
                 jsp.getViewport().add(jta);
                 if (txt.equals("text")) { txt = " "; }
                 jta.setText(txt);
@@ -107,10 +108,10 @@ class dfhAction implements java.awt.event.ActionListener
 		public void actionPerformed(java.awt.event.ActionEvent event)
 		{
 			Object object = event.getSource();
-			if (object instanceof JTextField)
+			if (object instanceof JTextArea)
 				{
-		            NodeInfo info = (NodeInfo)(nd.getUserObject());
-                    info.setPCValue(((JTextField)object).getText());
+		            NodeInfo info = (NodeInfo)(nd1.getUserObject());
+                    info.setPCValue(((JTextArea)object).getText());
 				}
 		}
 }
@@ -120,17 +121,18 @@ class dfhAction implements java.awt.event.ActionListener
 		public void focusLost(java.awt.event.FocusEvent event)
 		{
 			Object object = event.getSource();
-			if (object instanceof JTextField)
+			if (object instanceof JTextArea)
 				{
-		        NodeInfo info = (NodeInfo)(nd.getUserObject());
-                info.setPCValue(((JTextField)object).getText());
+		        NodeInfo info = (NodeInfo)(nd1.getUserObject());
+		        String val = ((JTextArea)object).getText();
+            info.setPCValue(" "+val.trim());
 				}
 		}
 		
 		public void focusGained(java.awt.event.FocusEvent event)
 		{
 			Object object = event.getSource();
-			if (object instanceof JTextField)
+			if (object instanceof JTextArea)
 				{
 				}
 		}
