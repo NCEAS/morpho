@@ -6,7 +6,7 @@
  *              National Center for Ecological Analysis and Synthesis
  *     Authors: Dan Higgins
  *
- *     Version: '$Id: ClientFramework.java,v 1.20 2000-09-29 05:44:56 jones Exp $'
+ *     Version: '$Id: ClientFramework.java,v 1.21 2000-09-30 03:22:24 jones Exp $'
  */
 
 package edu.ucsb.nceas.dtclient;
@@ -92,7 +92,7 @@ public class ClientFramework extends javax.swing.JFrame
 		setTitle("MORPHO - Data Management for Ecologists");
 		setDefaultCloseOperation(javax.swing.JFrame.DO_NOTHING_ON_CLOSE);
 		getContentPane().setLayout(new BorderLayout(0,0));
-		setSize(744,525);
+		setSize(775,550);
 		setVisible(false);
 		saveFileDialog.setMode(FileDialog.SAVE);
 		saveFileDialog.setTitle("Save");
@@ -188,26 +188,19 @@ public class ClientFramework extends javax.swing.JFrame
 		ExpertCheckBox.setActionCommand("ExpertMode");
 		JPanel1.setLayout(new BorderLayout(0,0));
 		getContentPane().add(BorderLayout.CENTER, JPanel1);
-		JPanel1.setBounds(0,36,744,489);
 		JTabbedPane1.setToolTipText("Select tab of interest");
 		JPanel1.add(BorderLayout.CENTER, JTabbedPane1);
-		JTabbedPane1.setBounds(0,0,744,489);
 		EditorPanel.setLayout(new BorderLayout(0,0));
 		JTabbedPane1.add(EditorPanel);
-		EditorPanel.setBounds(2,27,739,459);
 		EditorPanel.setVisible(false);
 		EditorPanel.add(BorderLayout.CENTER,mdeBean1);
-		mdeBean1.setBounds(0,0,693,414);
 		QueryPanel.setLayout(new BorderLayout(0,0));
 		JTabbedPane1.add(QueryPanel);
-		QueryPanel.setBounds(2,27,739,459);
 		QueryPanel.setVisible(false);
 		queryBean1.setExpertMode(false);
 		QueryPanel.add(BorderLayout.CENTER,queryBean1);
-		queryBean1.setBounds(0,0,693,414);
 		DataViewerPanel.setLayout(new BorderLayout(0,0));
 		JTabbedPane1.add(DataViewerPanel);
-		DataViewerPanel.setBounds(2,27,739,459);
 		DataViewerPanel.setVisible(false);
 		JTextArea1.setEditable(false);
 		JTextArea1.setWrapStyleWord(true);
@@ -220,7 +213,6 @@ public class ClientFramework extends javax.swing.JFrame
 		DataViewerPanel.add(BorderLayout.NORTH,UnderConstruction);
 		UnderConstruction.setForeground(java.awt.Color.red);
 		UnderConstruction.setFont(new Font("Dialog", Font.BOLD, 20));
-		UnderConstruction.setBounds(0,0,739,459);
 		//$$ lineBorder1.move(240,481);
 		//$$ stringListModel1.move(72,406);
 		//$$ stringComboBoxModel1.move(48,481);
