@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-12-04 00:01:37 $'
- * '$Revision: 1.3 $'
+ *     '$Date: 2002-12-04 18:04:40 $'
+ * '$Revision: 1.4 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,7 +33,8 @@ import java.util.*;
 /**
  *  class to store all the metadate about the data in a column of the table
  *  Previously, this was an inner private class defined as part of the 
- *  TextImportWizard.
+ *  TextImportWizard. It was made a 'stand-alone' class for use in sharing
+ * data between the TextImportWizard and the ColumnMetadataEditPanel class
  */
 public class ColumnData
 	{

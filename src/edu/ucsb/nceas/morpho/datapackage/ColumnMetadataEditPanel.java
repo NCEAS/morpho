@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-12-04 00:01:11 $'
- * '$Revision: 1.15 $'
+ *     '$Date: 2002-12-04 18:04:12 $'
+ * '$Revision: 1.16 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -347,41 +347,6 @@ public class ColumnMetadataEditPanel extends javax.swing.JPanel //implements jav
       if (tiw!=null) {
           tiw.save_flag = true;  
       }
-/*      if (colData!=null) {
-			  Object object = event.getSource();
-			  if (object == nameTextField)
-				  colData.colName = getColumnName();
-			  else if (object == labelTextField){
-				  colData.colTitle = getColumnLabel();
-        }
-        else if (object == definitionTextArea)
-          colData.colDefinition = getColumnDefinition();
-			  else if (object == unitTextField)
-          colData.colUnits = getUnit();
-			  else if (object == missingValueTextField)
-          colData.colUnits = getMissingValue();
-			  else if (object == precisionTextField)
-          colData.colUnits = getPrecision();
-			  else if (object == minimumTextField)
-          colData.colMin = (new Double(getMinimum())).doubleValue();
-			  else if (object == maximumTextField)
-          colData.colMin = (new Double(getMaximum())).doubleValue();
-			  else if (object == textDefinitionTextField)
-          colData.colTextDefinition = getTextDefinition();
-			  else if (object == textPatternTextField)
-          colData.colTextPattern = getTextPattern();
-			  else if (object == textSourceTextField)
-          colData.colTextSource = getTextSource();
-			  else if (object == table) {
-//          TableCellEditor tce = table.getCellEditor();
-//          if (tce!=null) tce.stopCellEditing();
-          enumTableToColData();
-        }
-        else if (object == typeComboBox) {
-          colData.colType = getDataType();  
-        }
-      }
-*/      
     }
   }
         

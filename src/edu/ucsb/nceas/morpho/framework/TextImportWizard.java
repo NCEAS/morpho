@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-12-04 05:09:29 $'
- * '$Revision: 1.45 $'
+ *     '$Date: 2002-12-04 18:04:40 $'
+ * '$Revision: 1.46 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -60,7 +60,17 @@ import edu.ucsb.nceas.morpho.datapackage.ColumnMetadataEditPanel;
 public class TextImportWizard extends javax.swing.JFrame
 {
   
-  ColumnMetadataEditPanel cmePanel = null;
+ /**
+  * The editor panel for entering and displaying column metadata
+  * This component was originally used with the data display table
+  * (when a new column is created)and is reused here
+  */
+ ColumnMetadataEditPanel cmePanel = null;
+ 
+  /**
+  * a global reference to the table used to display the data that is
+  * being referenced by this text import process
+  */
   JTable table;
   
   /**
@@ -435,17 +445,6 @@ public class TextImportWizard extends javax.swing.JFrame
     }
 	}
 
-    /**
-     * Creates a new instance of JFrame1 with the given title.
-     * @param sTitle the title for the new frame.
-     * @see #JFrame1()
-     */
-/*	public TextImportWizard(String sTitle)
-	{
-		this();
-		setTitle(sTitle);
-	}
-	*/
 	
 	/**
 	 * reference to a packagewizard
@@ -472,63 +471,6 @@ public class TextImportWizard extends javax.swing.JFrame
 	}
 	
 	
-	/**
-	 * The entry point for this application.
-	 * Sets the Look and Feel to the System Look and Feel.
-	 * Creates a new JFrame1 and makes it visible.
-	 */
-	/*static public void main(String args[])
-	{
-		try {
-		    // Add the following code if you want the Look and Feel
-		    // to be set to the Look and Feel of the native system.
-		    
-		    try {
-		        UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-		    } 
-		    catch (Exception e) { 
-		    }
-		    
-
-			//Create a new instance of our application's frame, and make it visible.
-			(new TextImportWizard(args[0])).setVisible(true);
-		} 
-		catch (Throwable t) {
-			t.printStackTrace();
-			//Ensure the application exits with an error condition.
-			System.exit(1);
-		}
-	}*/
-
-    /**
-     * Notifies this component that it has been added to a container
-     * This method should be called by <code>Container.add</code>, and 
-     * not by user code directly.
-     * Overridden here to adjust the size of the frame if needed.
-     * @see java.awt.Container#removeNotify
-     */
-	public void addNotify()
-	{
-		// Record the size of the window prior to calling parents addNotify.
-		Dimension size = getSize();
-		
-		super.addNotify();
-		
-		if (frameSizeAdjusted)
-			return;
-		frameSizeAdjusted = true;
-		
-		// Adjust size of frame according to the insets and menu bar
-		javax.swing.JMenuBar menuBar = getRootPane().getJMenuBar();
-		int menuBarHeight = 0;
-		if (menuBar != null)
-		    menuBarHeight = menuBar.getPreferredSize().height;
-		Insets insets = getInsets();
-		setSize(insets.left + insets.right + size.width, insets.top + insets.bottom + size.height + menuBarHeight);
-	}
-
-	// Used by addNotify
-	boolean frameSizeAdjusted = false;
 
 	//{{DECLARE_CONTROLS
 	java.awt.FileDialog saveFileDialog = new java.awt.FileDialog(this);
@@ -598,8 +540,6 @@ public class TextImportWizard extends javax.swing.JFrame
   
 //}}
 
-	//{{DECLARE_MENUS
-	//}}
 
 	void exitApplication()
 	{
@@ -608,24 +548,6 @@ public class TextImportWizard extends javax.swing.JFrame
 	  
 	  this.setVisible(false);
 	  this.dispose();
-/*		try {
-	    	// Beep
-	    	Toolkit.getDefaultToolkit().beep();
-	    	// Show a confirmation dialog
-	    	int reply = JOptionPane.showConfirmDialog(this, 
-	    	                                          "Do you really want to exit?", 
-	    	                                          "JFC Application - Exit" , 
-	    	                                          JOptionPane.YES_NO_OPTION, 
-	    	                                          JOptionPane.QUESTION_MESSAGE);
-			// If the confirmation was affirmative, handle exiting.
-			if (reply == JOptionPane.YES_OPTION)
-			{
-*/
- //         this.setVisible(false);    // hide the Frame//	    	this.dispose();            // free the system resources
-//		    	System.exit(0);            // close the application
-//			}
-//		} catch (Exception e) {
-//		}
 	}
 
    class UneditableTableModel extends javax.swing.table.DefaultTableModel 
@@ -652,8 +574,6 @@ public class TextImportWizard extends javax.swing.JFrame
 
 	void TextImportWizard_windowClosing(java.awt.event.WindowEvent event)
 	{
-		// to do: code goes here.
-			 
 		TextImportWizard_windowClosing_Interaction1(event);
 	}
 
@@ -956,9 +876,6 @@ public void startImport(String file) {
                         String daver = Long.toString(raver);
                         daver = daver.substring(0,daver.length()-2)+"."+daver.substring(daver.length()-2);
                         str = str + "Min:"+ dmin +"  Max:" + dmax + "  Aver:" +daver+"<br>";
-//                        MinMaxLabel.setText("Min:"+ dmin +"  Max:" + dmax + "  Aver:" +daver);
-//                        MinTextField.setText(dmin);
-//                        MaxTextField.setText(dmax);
                       } 
                       else if ((cd.colType.equals("integer"))) {
                         String min = Integer.toString((int)cd.colMin);
@@ -967,14 +884,8 @@ public void startImport(String file) {
                         String aver = Long.toString(iaver);
                         aver = aver.substring(0,aver.length()-2)+"."+aver.substring(aver.length()-2);
                         str = str + "Min:"+ min +"  Max:" + max + "  Aver:" +aver+"<br>";
-//                        MinMaxLabel.setText("Min:"+ min +"  Max:" + max + "  Aver:" +aver);   
-//                        MinTextField.setText(min);
-//                        MaxTextField.setText(max);
                      }
                       else {
-//                        MinMaxLabel.setText("");
-//                        MinTextField.setText("");
-//                        MaxTextField.setText("");
                       }
                       String[] headers = new String[2];
                       headers[0] = "Code";
@@ -993,17 +904,6 @@ public void startImport(String file) {
                       }
                       UniqueItemsList.setListData(cd.colUniqueItemsList);
                       
-            //          JList uniq = new JList(cd.colUniqueItemsList);
-            //          JTable uniq = new JTable(dtm);
-//                      uniq.setModel(dtm);
-//                      UniqueItemsScroll.getViewport().removeAll();
-//                      UniqueItemsScroll.getViewport().add(uniq);
-//                      ColumnUnitTextField.setText(cd.colUnits);
-//                      ColumnNameTextField.setText(cd.colName);
-//                      ColumnLabelTextField.setText(cd.colTitle);
-//                      String colType = cd.colType;
-//                      DataTypeList.setSelectedValue(colType, true);
-//                      ColumnDefTextArea.setText(cd.colDefinition);
                       ColDataSummaryLabel.setText("<html>"+str+"</html>");
                       showInsertEnumPanel(cd.enumChoice); 
                       cmePanel.setColumnData(cd);
@@ -1225,10 +1125,6 @@ public void startImport(String file) {
 	    checkColumnInfo(i);
 	  }
 	  
-//	  resultsBuffer.append("\n");
-//	  resultsBuffer.append(createXMLEntityString());
-//	  resultsBuffer.append("\n\n");
-//	  resultsBuffer.append(createXMLAttributeString());
 	  
 	  String tempS = "Click on 'Show Results' button to see results, including XML files.";
 	  if (entityWizard!=null) {
@@ -1237,17 +1133,6 @@ public void startImport(String file) {
 	  else {
 	    tempS = tempS + " Also, see File Menu to Save Files.";
 	  }
-    //JOptionPane.showMessageDialog(this, tempS,
-    //"Message",JOptionPane.INFORMATION_MESSAGE, null);
-    //----------
-/*		try {
-			// ResultsFrame Create and show the ResultsFrame
-			TextImportResultsFrame rf = new TextImportResultsFrame();
-			rf.ResultsTextArea.setText(resultsBuffer.toString());
-			rf.setVisible(true);
-		} catch (java.lang.Exception e) {
-		}
-*/    //----------
 	  finishFlag = true;
     if(listener != null)
     {
@@ -1500,10 +1385,6 @@ public void startImport(String file) {
           if (val<minInt) minInt = val;
           intSum = intSum+val;
           intAverage = ((double)(intSum))/integerCount;
-//	      ColumnData cd = (ColumnData)colDataInfo.elementAt(colNum);
-//          cd.colAverage = intAverage;
-//          cd.colMin = minInt;
-//          cd.colMax = maxInt;
         }
         else if (isDouble(str)) {
           doubleCount++;
@@ -1518,10 +1399,6 @@ public void startImport(String file) {
           if (val<minDouble) minDouble = val;
           doubleSum = doubleSum+val;
           doubleAverage = ((doubleSum))/doubleCount;
-//	      ColumnData cd = (ColumnData)colDataInfo.elementAt(colNum);
-//          cd.colAverage = doubleAverage;
-//          cd.colMin = minDouble;
-//          cd.colMax = maxDouble;
         }
         if (isDate(str)) {
           dateCount++;
