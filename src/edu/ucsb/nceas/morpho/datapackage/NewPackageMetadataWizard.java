@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-06-27 21:36:39 $'
- * '$Revision: 1.1 $'
+ *     '$Date: 2001-06-28 20:38:51 $'
+ * '$Revision: 1.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -36,6 +36,20 @@ import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
 
+import org.apache.xerces.parsers.DOMParser;
+import org.apache.xalan.xpath.xml.FormatterToXML;
+import org.apache.xalan.xpath.xml.TreeWalker;
+import org.w3c.dom.Attr;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.NodeList;
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.w3c.dom.DocumentType;
+import org.xml.sax.SAXException;
+import org.xml.sax.InputSource;
+import org.apache.xerces.dom.DocumentTypeImpl;
+
 /**
  * A graphical window for creating a new user profile with user provided
  * information.
@@ -49,7 +63,9 @@ public class NewPackageMetadataWizard extends JDialog
   int numScreens;
   /** the screen currently displaying (indexed from 0 to numScreens-1) */
   int currentScreen;
-
+  Hashtable newXMLFileAtts = new Hashtable();
+  Vector radioButtons = new Vector();
+  
   JLabel helpLabel = new JLabel();
   JPanel screenPanel = null;
   JButton previousButton = null;
@@ -57,21 +73,11 @@ public class NewPackageMetadataWizard extends JDialog
   JButton cancelButton = new JButton();
 
   ImageIcon forwardIcon = null;
-  JTextField firstNameField = new JTextField();
-  JTextField lastNameField = new JTextField();
-  JTextField usernameField = new JTextField();
-  JPasswordField passwordField = new JPasswordField();
-  JPasswordField passwordField2 = new JPasswordField();
-  JTextField constructionField = new JTextField();
-
+  
   JRadioButton createNew = new JRadioButton("New Description");
   JRadioButton existingFile = new JRadioButton("Open Exising Description");
-  JRadioButton tableRadioButton = new JRadioButton("Table Description");
-  JRadioButton fieldRadioButton = new JRadioButton("Field Description");
-  JRadioButton researchRadioButton = new JRadioButton("Research Description");
-  JRadioButton projectRadioButton = new JRadioButton("Project Description");
-  JRadioButton softwareRadioButton = new JRadioButton("Software Description");
   JTextField fileTextField = new JTextField();
+  
   
   /**
    * Construct a dialog and set the framework
@@ -88,10 +94,10 @@ public class NewPackageMetadataWizard extends JDialog
   public NewPackageMetadataWizard(ClientFramework cont, boolean modal)
   {
     super((Frame)cont, modal);
-
     framework = cont;
-
-    numScreens = 2;
+    config = framework.getConfiguration();
+    
+    numScreens = 3;
     currentScreen = 0;
 
     setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -105,25 +111,44 @@ public class NewPackageMetadataWizard extends JDialog
     group1.add(createNew);
     group1.add(existingFile);
     
-    tableRadioButton.setSelected(true);
-    tableRadioButton.setToolTipText("Information about the data tables in " +
-                                    "data set.");
-    fieldRadioButton.setToolTipText("Information about the fields (columns) " +
-                                    "in your data tables.");
-    researchRadioButton.setToolTipText("Information about the methods " + 
-                                       "involved in the research represented " +
-                                       "by your data set.");
-    projectRadioButton.setToolTipText("Information about the overall project " +
-                                      "of which your data set is a part.");
-    softwareRadioButton.setToolTipText("Information about any software tools" +
-                                       "produced or used in the creation " + 
-                                       "of your data set.");
-    ButtonGroup group2 = new ButtonGroup();
-    group2.add(tableRadioButton);
-    group2.add(fieldRadioButton);
-    group2.add(researchRadioButton);
-    group2.add(projectRadioButton);
-    group2.add(softwareRadioButton);
+    //parse the config file and create the new file buttons
+    NodeList filetypes = config.getPathContent("//newxmlfiletypes/file");
+    for(int i=0; i<filetypes.getLength(); i++)
+    {
+      Node n = filetypes.item(i);
+      NodeList children = n.getChildNodes();
+      Hashtable h = new Hashtable();
+      for(int j=0; j<children.getLength(); j++)
+      {
+        Node n2 = children.item(j);
+        String nodename = n2.getNodeName();
+        if(nodename.equals("label"))
+        {
+          h.put("label", n2.getFirstChild().getNodeValue());
+        }
+        else if(nodename.equals("xmlfiletype"))
+        {
+          h.put("xmlfiletype", n2.getFirstChild().getNodeValue());
+        }
+        else if(nodename.equals("tooltip"))
+        {
+          h.put("tooltip", n2.getFirstChild().getNodeValue());
+        }
+      }
+      newXMLFileAtts.put((String)h.get("label"), h);
+    }
+    
+    Enumeration keys = newXMLFileAtts.keys();
+    ButtonGroup newRadioButtons = new ButtonGroup();
+    while(keys.hasMoreElements())
+    { //create the radio buttons for the file type choices
+      String key = (String)keys.nextElement();
+      Hashtable h = (Hashtable)newXMLFileAtts.get(key);
+      JRadioButton b = new JRadioButton((String)h.get("label"));
+      b.setToolTipText((String)h.get("tooltip"));
+      newRadioButtons.add(b);
+      radioButtons.addElement(b);
+    }
     
     
     JPanel helpPanel = new JPanel();
@@ -220,8 +245,6 @@ public class NewPackageMetadataWizard extends JDialog
     previousButton.addActionListener(myActionHandler);
     nextButton.addActionListener(myActionHandler);
     cancelButton.addActionListener(myActionHandler);
-
-    config = framework.getConfiguration();
   }
 
   /**
@@ -259,7 +282,7 @@ public class NewPackageMetadataWizard extends JDialog
   private void nextButtonHandler(ActionEvent event)
   {
     if (currentScreen == numScreens-1) {
-      createProfile();
+      //do the finish action here
     } else {
       currentScreen++;
       layoutScreen();
@@ -313,7 +336,8 @@ public class NewPackageMetadataWizard extends JDialog
     screenPanel.setLayout(gridbag);
 
     if (0 == currentScreen) 
-    {
+    { //find out whether the user wants to create a new file or use an existing 
+      //one
       String helpText = "<html><p>This wizard will assist you in creating or " +
                         "inserting new descriptions or data files into your " +
                         "Data Package.  You will be asked several questions " +
@@ -348,7 +372,7 @@ public class NewPackageMetadataWizard extends JDialog
     else if (1 == currentScreen) 
     {
       if(createNew.isSelected())
-      {
+      { //give the user choices as to which type of MD they want to create
         String helpText = "<html>Select the type of description that you " +
                           "to add. Holding your mouse over any of the " +
                           "selections will give you more information on that " +
@@ -361,16 +385,24 @@ public class NewPackageMetadataWizard extends JDialog
         JPanel layoutpanel = new JPanel();
         layoutpanel.setLayout(new BoxLayout(layoutpanel, BoxLayout.Y_AXIS));
         layoutpanel.add(initLabel);
-        layoutpanel.add(tableRadioButton);
+        for(int i=0; i<radioButtons.size(); i++)
+        {
+          if(i==0)
+          {
+            ((JRadioButton)radioButtons.elementAt(i)).setSelected(true);
+          }
+          layoutpanel.add((JRadioButton)radioButtons.elementAt(i));
+        }
+        /*layoutpanel.add(tableRadioButton);
         layoutpanel.add(fieldRadioButton);
         layoutpanel.add(researchRadioButton);
         layoutpanel.add(projectRadioButton);
-        layoutpanel.add(softwareRadioButton);
+        layoutpanel.add(softwareRadioButton);*/
         screenPanel.add(layoutpanel);
         screenPanel.setLayout(new GridLayout(0,1));
       }
       else
-      {
+      { //display an open file dialog
         String helpText = "<html>Select a file to add to your data package." +
                           "</html>";
         helpLabel.setText(helpText);
@@ -387,6 +419,23 @@ public class NewPackageMetadataWizard extends JDialog
         layoutpanel.add(browseButton);
         screenPanel.add(layoutpanel);
         screenPanel.setLayout(new GridLayout(0,1));
+      }
+    }
+    else if(2 == currentScreen)
+    {
+      if(createNew.isSelected())
+      { //open the editor and handle the editing complete action
+        
+        //pick which type of file to open
+        
+        
+        EditorInterface editor = PackageUtil.getEditor(framework);
+        
+      }
+      else
+      { //check to made sure the file exists and try to determine what
+        //kind of file it is.
+        
       }
     }
     
@@ -412,167 +461,6 @@ public class NewPackageMetadataWizard extends JDialog
     screenPanel.paint(screenPanel.getGraphics());
   }
 
-  /**
-   * Validate the contents of required and critical fields before actually
-   * creating the profile.  If there are problems, return false, otherwise true
-   *
-   * @returns boolean true if fields are valid, false otherwise
-   */
-  private boolean validateFieldContents()
-  {
-    boolean fieldsAreValid = true;
-    if (usernameField.getText() == null || 
-        usernameField.getText().equals("")) {
-      fieldsAreValid = false;
-    }
-
-    if (!passwordField.getText().equals(passwordField2.getText())) {
-      fieldsAreValid = false;
-    }
-    return fieldsAreValid;
-  }
-
-  /**
-   * Process the data and create a new profile.
-   */
-  private void createProfile()
-  {
-    if (validateFieldContents()) {
-      // Create a profile directory
-      String profileDirName = config.get("profile_directory", 0);
-      File profileDirFile = new File(profileDirName);
-      if (!profileDirFile.exists()) {
-        if (!profileDirFile.mkdir()) {
-          // Error creating the directory
-          currentScreen = 0;
-          layoutScreen();
-          String messageText = "Error creating the profiles directory.\n";
-          JOptionPane.showMessageDialog(this, messageText);      
-        }
-      }
-      String username = usernameField.getText();
-      String profilePath = profileDirName + File.separator + username;
-      String profileName = profilePath + File.separator + username + ".xml";
-      File profileDir = new File(profilePath);
-      if (!profileDir.mkdir()) {
-        // Error creating the directory
-        currentScreen = 0;
-        layoutScreen();
-        String messageText = "A profile for user \"" + username +
-                             "\" already exists.  Would you like to use it?" +
-                             "\n\nUse existing profile?\n";
-        int result = JOptionPane.showConfirmDialog(this, messageText, 
-                                                   "Use existing profile?", 
-                                                   JOptionPane.YES_NO_OPTION);
-        if (result == JOptionPane.YES_OPTION) {
-          try {
-            ConfigXML profile = new ConfigXML(profileName);
-            // Log into metacat
-            framework.setPassword(passwordField.getText());
-            framework.setProfile(profile);
-            framework.logIn();
-  
-            // Get rid of the dialog
-            setVisible(false);
-            dispose();
-          } catch (FileNotFoundException fnf) {
-            messageText = "Sorry, I tried, but it looks like that profile\n" +
-                          "is corrupted.  You'll have to choose another " +
-                          "username.";
-            JOptionPane.showMessageDialog(this, messageText);      
-          }
-        } else {
-          messageText = "OK, then please choose another username.\n";
-          JOptionPane.showMessageDialog(this, messageText);      
-        }
-      } else {
-        try {
-          // Copy default profile to the new directory
-          String defaultProfile = config.get("default_profile", 0);
-          FileUtils.copy(defaultProfile, profileName);
-
-          // Store the collected information in the profile
-          ConfigXML profile = new ConfigXML(profileName);
-          boolean success = false;
-          if (! profile.set("username", 0, username)) {
-            success = profile.insert("username", username);
-          }
-          if (! profile.set("firstname", 0, firstNameField.getText())) {
-            success = profile.insert("firstname", firstNameField.getText());
-          }
-          if (! profile.set("lastname", 0, lastNameField.getText())) {
-            success = profile.insert("lastname", lastNameField.getText());
-          }
-          if (! profile.set("scope", 0, username)) {
-            success = profile.insert("scope", username);
-          }
-
-          profile.save();
-
-          // Create our directories for user data
-          String dataDirName = profile.get("datadir", 0);
-          String dataPath = profilePath + File.separator + dataDirName;
-          File dataDir = new File(dataPath);
-          success = dataDir.mkdir();
-
-          String cacheDirName = profile.get("cachedir", 0);
-          String cachePath = profilePath + File.separator + cacheDirName;
-          File cacheDir = new File(cachePath);
-          success = cacheDir.mkdir();
-
-          String tempDirName = profile.get("tempdir", 0);
-          String tempPath = profilePath + File.separator + tempDirName;
-          File tempDir = new File(tempPath);
-          success = tempDir.mkdir();
-
-          // Copy sample data to the data directory
-          Hashtable tokens = new Hashtable();
-          tokens.put("SCOPE", username);
-          String samplePath = config.get("samples_directory", 0);
-          File sampleDir = new File(samplePath);
-          File[] samplesList = sampleDir.listFiles();
-          for (int n=0; n < samplesList.length; n++) {
-            File srcFile = samplesList[n];
-            if (srcFile.isFile()) {
-              String destDirName = dataPath + File.separator + username;
-              File destDir = new File(destDirName);
-              destDir.mkdirs();
-              String destName = destDirName + File.separator + 
-                                srcFile.getName();
-              ClientFramework.debug(9, destName);
-              FileUtils.copy(srcFile.getAbsolutePath(), destName, tokens);
-            }
-          }
-           
-          // Create a metacat user
- 
-          // Log into metacat
-          framework.setPassword(passwordField.getText());
-          framework.setProfile(profile);
-          framework.logIn();
-
-          // Get rid of the dialog
-          setVisible(false);
-          dispose();
-   
-        } catch (IOException ioe) {
-          currentScreen = 0;
-          layoutScreen();
-          String messageText = "Error creating profile for user \"" + 
-                               username + "\".  Please try again.\n";
-          JOptionPane.showMessageDialog(this, messageText);      
-        }
-      }
-    } else {
-      currentScreen = 0;
-      layoutScreen();
-      String messageText = "Some required information was invalid.\n\n" +
-                           "Please check that you have provided a\n" +
-                           "username and that the two passwords match.\n";
-      JOptionPane.showMessageDialog(this, messageText);      
-    }
-  }
-  
   public void actionPerformed(ActionEvent e) 
   {
     String command = e.getActionCommand();

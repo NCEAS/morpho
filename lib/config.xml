@@ -35,5 +35,17 @@
       <frameConfigFile>./lib/frames/entity.xml</frameConfigFile>
     </frame>
   </customFrames>
+  <newxmlfiletypes>
+    <file>
+      <label>Table Description</label>
+      <xmlfiletype>-//NCEAS//eml-entity-2.0//EN</xmlfiletype>
+      <tooltip>Information about the data tables in data set.</tooltip>
+    </file>
+    <file>
+      <label>Field Description</label>
+      <xmlfiletype>-//NCEAS//eml-variable-2.0//EN</xmlfiletype>
+      <tooltip>Information about the fields (columns) in your data tables.</tooltip>
+    </file>
+  </newxmlfiletypes>
   <current_profile></current_profile>
 </config>

@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: jones $'
- *     '$Date: 2001-06-13 20:10:16 $'
- * '$Revision: 1.10 $'
+ *   '$Author: berkley $'
+ *     '$Date: 2001-06-28 20:38:51 $'
+ * '$Revision: 1.11 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -628,5 +628,23 @@ public class ConfigXML
       ClientFramework.debug(4, "Error in getValueForPath method");
     }
     return val;    
+  }
+  
+    /**
+   * gets the content of a tag in a given xml file with the given path
+   * @param path the path to get the content from
+   */
+  public NodeList getPathContent(String path)
+  {
+    try
+    {
+      NodeList docNodeList = XPathAPI.selectNodeList(doc, path);
+      return docNodeList;
+    }
+    catch(SAXException se)
+    {
+      System.err.println(se.toString());
+      return null;
+    }
   }
 }
