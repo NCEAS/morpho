@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2004-03-18 02:23:46 $'
- * '$Revision: 1.1 $'
+ *     '$Date: 2004-03-18 06:03:17 $'
+ * '$Revision: 1.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -39,32 +39,21 @@ import edu.ucsb.nceas.morpho.util.UISettings;
 import edu.ucsb.nceas.utilities.OrderedMap;
 import edu.ucsb.nceas.utilities.XMLUtilities;
 
-import java.util.Iterator;
-import java.util.Set;
-
 import java.awt.event.ActionEvent;
 
 import org.apache.xerces.dom.DOMImplementationImpl;
 import org.w3c.dom.DOMImplementation;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
+import javax.xml.transform.TransformerException;
 
 /**
- * Class to handle add temporal coverage command
+ * Class to handle add project command
  */
 public class AddResearchProjectCommand implements Command {
 
-  /* Flag if need to add coverage info*/
-  private boolean infoAddFlag = false;
 
-  /* Referrence to  morphoframe */
-  private MorphoFrame morphoFrame = null;
-
-  private DataViewContainerPanel resultPane;
-  private AbstractUIPage temporalPage;
-
-  public AddResearchProjectCommand() {
-  }
+  public AddResearchProjectCommand() {}
 
 
   /**
@@ -77,33 +66,27 @@ public class AddResearchProjectCommand implements Command {
     resultPane = null;
     morphoFrame = UIController.getInstance().getCurrentActiveWindow();
 
-    if (morphoFrame != null) {
-      resultPane = morphoFrame.getDataViewContainerPanel();
-    }
+    if (morphoFrame != null) resultPane = morphoFrame.getDataViewContainerPanel();
+
 
     // make sure resulPanel is not null
-    if (resultPane != null) {
+    if (resultPane==null) return;
 
-      showProjectDialog();
-      if (infoAddFlag) {
+    if (showProjectDialog()) {
 
-        try {
-          insertNewProject();
-        }
-        catch (Exception w) {
-          Log.debug(20, "Exception trying to modify coverage DOM");
-        }
+      try {
+        insertNewProject();
+      } catch (Exception w) {
+        Log.debug(20, "Exception trying to modify project DOM");
       }
-
     }
   }
 
 
-  private void showProjectDialog() {
+  private boolean showProjectDialog() {
 
     ServiceController sc;
     DataPackageWizardInterface dpwPlugin = null;
-
     try {
       sc = ServiceController.getInstance();
       dpwPlugin = (DataPackageWizardInterface) sc.getServiceProvider(
@@ -113,80 +96,42 @@ public class AddResearchProjectCommand implements Command {
       Log.debug(6, se.getMessage());
     }
 
-    if (dpwPlugin == null) {
-      return;
-    }
+    if (dpwPlugin == null) return false;
 
-    temporalPage = dpwPlugin.getPage(
-        DataPackageWizardInterface.TEMPORAL);
-    ModalDialog wpd = new ModalDialog(temporalPage,
-                                UIController.getInstance().getCurrentActiveWindow(),
-                                UISettings.POPUPDIALOG_WIDTH,
-                                UISettings.POPUPDIALOG_HEIGHT, false);
+    projectPage = dpwPlugin.getPage(DataPackageWizardInterface.PROJECT);
+    ModalDialog dialog = new ModalDialog(projectPage,
+                            UIController.getInstance().getCurrentActiveWindow(),
+                            UISettings.POPUPDIALOG_WIDTH,
+                            UISettings.POPUPDIALOG_HEIGHT);
 
-    wpd.setSize(UISettings.POPUPDIALOG_WIDTH, UISettings.POPUPDIALOG_HEIGHT);
-    wpd.setVisible(true);
-
-    if (wpd.USER_RESPONSE == ModalDialog.OK_OPTION) {
-      infoAddFlag = true;
-    }
-    else {
-      infoAddFlag = false;
-    }
-
-    return;
+    return (dialog.USER_RESPONSE==ModalDialog.OK_OPTION);
   }
 
-  private Node covRoot;
-  private Set mapSet;
-  private Iterator mapSetIt;
-  private Object key;
-  private OrderedMap map, newMap;
-  AbstractDataPackage adp;
 
   private void insertNewProject() {
 
-    covRoot = null;
-    map = temporalPage.getPageData("/temporalCoverage[");
-    adp = resultPane.getAbstractDataPackage();
+    OrderedMap map = projectPage.getPageData();
+    AbstractDataPackage adp = resultPane.getAbstractDataPackage();
 
-    mapSet = map.keySet();
-    mapSetIt = mapSet.iterator();
+    DOMImplementation impl = DOMImplementationImpl.getDOMImplementation();
+    Document doc = impl.createDocument("", "project", null);
 
-    while(mapSetIt.hasNext()){
-      key = mapSetIt.next();
-      newMap = new OrderedMap();
+    Node root = doc.getDocumentElement();
 
-      int i = key.toString().indexOf("[");
-      String keySt = key.toString().substring(0,i) + key.toString().substring(i+3);
+    try {
+      XMLUtilities.getXPathMapAsDOMTree(map, root);
 
-      newMap.put(keySt,map.get(key));
+// how do we add this to the datapackage???
+//      adp.insertCoverage(root);
+      Log.debug(5, "Need to add project details to package!");
 
-      if(key.toString().indexOf("startDateTime") > 0){
-        key = mapSetIt.next();
-
-        i = key.toString().indexOf("[");
-        keySt = key.toString().substring(0,i) + key.toString().substring(i+3);
-
-        newMap.put(keySt,map.get(key));
-      }
-
-      try {
-        DOMImplementation impl = DOMImplementationImpl.getDOMImplementation();
-        Document doc = impl.createDocument("", "temporalCoverage", null);
-
-        covRoot = doc.getDocumentElement();
-        XMLUtilities.getXPathMapAsDOMTree(newMap, covRoot);
-
-        adp.insertCoverage(covRoot);
-      }
-      catch (Exception w) {
-        Log.debug(5, "Unable to add OrderMap elements to DOM");
-        w.printStackTrace();
-      }
+    } catch (TransformerException w) {
+      Log.debug(5, "Unable to add project details to package!");
+      w.printStackTrace();
     }
-
-    return;
   }
 
+  private MorphoFrame morphoFrame = null;
+  private DataViewContainerPanel resultPane;
+  private AbstractUIPage projectPage;
 }
