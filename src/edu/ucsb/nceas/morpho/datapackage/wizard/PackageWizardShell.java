@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-10-17 20:00:55 $'
- * '$Revision: 1.45 $'
+ *     '$Date: 2001-10-18 21:35:12 $'
+ * '$Revision: 1.46 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -75,6 +75,7 @@ public class PackageWizardShell extends javax.swing.JFrame
   private TripleCollection triples = new TripleCollection();
   private String triplesFile;
   
+  private String aclID = "";
   //visual components
   private Container contentPane;
   private JPanel descriptionPanel;
@@ -215,6 +216,12 @@ public class PackageWizardShell extends javax.swing.JFrame
         wfc.type="IGNORE";
         wfc.description = "Instructions";
         wfc.attributes.put("name", "InitialDescription");
+        
+        // get a new Accession number here so that that ACL accession number is smallest of package
+        // since it must be inserted into Metacat before other package members
+        AccessionNumber aa = new AccessionNumber(framework);
+        aclID = aa.getNextId();
+        
       }
       else
       { //this builds a packagewizard frame
@@ -524,15 +531,20 @@ public class PackageWizardShell extends javax.swing.JFrame
     }
     
     // Now create an AccessControl XML document for the dataset
-    AccessionNumber aa = new AccessionNumber(framework);
-    String newid = aa.getNextId();
-    File aclFile = getACLFile(newid);
+    File aclFile = getACLFile(aclID);
     
     Vector fvec = new Vector();
-    fvec.addElement(newid);
+    fvec.addElement(aclID);
     fvec.addElement(aclFile);
     fvec.addElement("ACL");
-    packageFiles.addElement(fvec);
+    
+    // add the ACL File to the head of the packageFiles vector
+    packageFiles.addElement(packageFiles.elementAt(packageFiles.size()-1));  
+    for (int j=packageFiles.size()-2;j>-1;j--) {
+      Object temp = packageFiles.elementAt(j);
+      packageFiles.setElementAt(temp, j+1);
+    }
+    packageFiles.setElementAt(fvec,0);
     
     // now create a triple for the ACL relating it to datapackage file
     Vector aclTriples = new Vector();
@@ -543,7 +555,7 @@ public class PackageWizardShell extends javax.swing.JFrame
       WizardFrameContainer wfc2 = (WizardFrameContainer)frameWizards.elementAt(m);
       if ((wfc2.id!=null)&&(!(wfc2.id).equals("NULLDATAFILE"))) 
       {
-        aclt = new Triple(newid, "isRelatedTo", wfc2.id);
+        aclt = new Triple(aclID, "isRelatedTo", wfc2.id);
         aclTriples.addElement(aclt);
       }
     }
@@ -782,7 +794,8 @@ public class PackageWizardShell extends javax.swing.JFrame
       framework.debug(15, "saving the package to metacat");
       
       MetacatDataStore mds = new MetacatDataStore(framework);
-      for(int i=packageFiles.size()-1; i>=0; i--)
+//      for(int i=packageFiles.size()-1; i>=0; i--)
+      for(int i=0;i<packageFiles.size(); i++)
       {
         Vector v = (Vector)packageFiles.elementAt(i);
         String id = (String)v.elementAt(0);
