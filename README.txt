@@ -1,9 +1,9 @@
 Morpho: XML Metadata Client  
 ---------------------------
 
-Version: 1.2Beta1 - Oct 9, 2002
+Version: 1.2beta1
 
-Feedback and bugs to: knb-software@nceas.ucsb.edu
+Feedback and bugs to: morpho-dev@ecoinformatics.org
                       http://bugzilla.ecoinformatics.org
 
 Contributors: 
@@ -16,10 +16,16 @@ Contributors:
     Eric Fegraus (fegraus@nceas.ucsb.edu)
     Matthew Brooke (brooke@nceas.ucsb.edu)
     Jing Tao (tao@nceas.ucsb.edu)
+    Christy Bowles (bowles@nceas.ucsb.edu)
 
-This is Morpho, a data management application for managing ecological data.  Morpho allows researchers to describe their data using a comprehensive and flexible metadata specification, and to share their data publicly or to specific collaborators over the Knowledge Netwrok for Biocomplexity system. Although Morpho can be used without an account on the KNB, it is free and simple to obtain one: just register at
+This is Morpho, a data management application for managing ecological data.
+Morpho allows researchers to describe their data using a comprehensive and
+flexible metadata specification, and to share their data publicly or to
+specific collaborators over the Knowledge Network for Biocomplexity system.
+Although Morpho can be used without an account on the KNB, it is free and
+simple to obtain one: just register at:
 
- http://knb.ecoinformatics.org.
+ http://knb.ecoinformatics.org
 
 Morpho's main features include:
   1. Flexible metadata creation and editing
@@ -122,4 +128,5 @@ Legalese
 --------
 This software is copyrighted by The Regents of the University of California and the National Center for Ecological Analysis and Synthesis and licensed under the GNU GPL; see the 'LICENSE' file for details.
 
-This material is based upon work supported by the  National Science Foundation under Grant No. DEB99-80154 and DBI99-04777. Any opinions, findings and conclusions or recomendations expressed in this material are those of the author(s) and do not necessarily reflect  the views of the National Science Foundation (NSF).
+This material is based upon work supported by the  National Science Foundation
+under Grant No. DEB99-80154, DBI99-04777, and DBI01-31178. Any opinions, findings and conclusions or recomendations expressed in this material are those of the author(s) and do not necessarily reflect  the views of the National Science Foundation (NSF).

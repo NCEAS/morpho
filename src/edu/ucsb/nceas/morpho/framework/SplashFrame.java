@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2002-08-19 22:34:46 $'
- * '$Revision: 1.21 $'
+ *     '$Date: 2002-10-23 20:28:43 $'
+ * '$Revision: 1.22 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -49,7 +49,11 @@ public class SplashFrame extends javax.swing.JFrame
                                      "Chad Berkley",
                                      "Jivka Bojilova",
                                      "Chris Jones",
-                                     "Rudolf Nottrott" };
+                                     "Mark Schildhauer",
+                                     "Eric Fegraus",
+                                     "Matthew Brooke",
+                                     "Jing Tao",
+                                     "Christy Bowles" };
   private static String[] orgs = { 
                  "National Center for Ecological Analysis and Synthesis",
                  "Long Term Ecological Research Network Office",
@@ -59,7 +63,7 @@ public class SplashFrame extends javax.swing.JFrame
   private static String credit = 
                   "This material is based upon work supported\n" +
                   "by the National Science Foundation under Grant\n" +
-                  "No. DEB99-80154 and Grant No. DBI99-04777. Also\n" +
+                  "No. DEB99-80154, DBI99-04777, and DBI01-31178. Also\n" +
                   "supported by the National Center for Ecological\n" +
                   "Analysis and Synthesis, a Center funded by\n" +
                   "NSF (Grant No. DEB-94-21535), the University of\n" +
@@ -87,9 +91,13 @@ public class SplashFrame extends javax.swing.JFrame
   //}}
 
   /**
-   * Construct the window
+   * Construct a frame and optionally display a note that the application 
+   * is loading.  This is used during application startup only.
+   *
+   * @param sTitle the title for the frame
+   * @param showLoading use boolean true if the loading message should appear
    */
-  public SplashFrame()
+  public SplashFrame(String sTitle, boolean showLoading)
   {
     //{{INIT_CONTROLS
     setDefaultCloseOperation(javax.swing.JFrame.DISPOSE_ON_CLOSE);
@@ -97,13 +105,7 @@ public class SplashFrame extends javax.swing.JFrame
     getContentPane().setLayout(
                      new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
     getContentPane().setBackground(java.awt.Color.white);
-    setSize(490, 380);
 
-    // Center the Frame
-    Dimension screenDim = Toolkit.getDefaultToolkit().getScreenSize();
-    Rectangle frameDim = getBounds();
-    setLocation((screenDim.width - frameDim.width) / 2,
-                (screenDim.height - frameDim.height) / 2);
     setVisible(false);
 
     getContentPane().add(Box.createVerticalStrut(8));
@@ -221,6 +223,20 @@ public class SplashFrame extends javax.swing.JFrame
     footerBox.add(Box.createHorizontalStrut(8));
     getContentPane().add(footerBox);
     getContentPane().add(Box.createVerticalStrut(8));
+
+    setTitle(sTitle);
+    if (showLoading)
+    {
+      loadingLabel.setVisible(showLoading);
+      closeButton.setEnabled(false);
+    }
+
+    // Size and center the Frame
+    pack();
+    Dimension screenDim = Toolkit.getDefaultToolkit().getScreenSize();
+    Rectangle frameDim = getBounds();
+    setLocation((screenDim.width - frameDim.width) / 2,
+                (screenDim.height - frameDim.height) / 2);
     //}}
 
     //{{INIT_MENUS
@@ -236,14 +252,21 @@ public class SplashFrame extends javax.swing.JFrame
   }
 
   /**
+   * Construct the window with defaults
+   */
+  public SplashFrame()
+  {
+      this("Morpho", false);
+  }
+
+  /**
    * Construct a frame with a title
    *
    * @param sTitle the title for the frame
    */
   public SplashFrame(String sTitle)
   {
-    this();
-    setTitle(sTitle);
+    this(sTitle, false);
   }
 
   /**
@@ -254,30 +277,7 @@ public class SplashFrame extends javax.swing.JFrame
    */
   public SplashFrame(boolean showLoading)
   {
-    this();
-    if (showLoading)
-    {
-      loadingLabel.setVisible(showLoading);
-      closeButton.setEnabled(false);
-    }
-  }
-
-  /**
-   * Construct a frame and display a note that the application is loading.
-   * This is used during application startup only.
-   *
-   * @param sTitle the title for the frame
-   * @param showLoading use boolean true if the loading message should appear
-   */
-  public SplashFrame(String sTitle, boolean showLoading)
-  {
-    this();
-    setTitle(sTitle);
-    if (showLoading)
-    {
-      loadingLabel.setVisible(showLoading);
-      closeButton.setEnabled(false);
-    }
+    this("Morpho", showLoading);
   }
 
   /**
