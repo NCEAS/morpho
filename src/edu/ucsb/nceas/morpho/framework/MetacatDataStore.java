@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-11-28 17:56:26 $'
- * '$Revision: 1.28 $'
+ *     '$Date: 2001-11-30 17:20:08 $'
+ * '$Revision: 1.29 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -85,9 +85,6 @@ public class MetacatDataStore extends DataStore implements DataStoreInterface
       
       framework.debug(11,"MetacatDataStore: getting file from Metacat");
       Properties props = new Properties();
-//      props.setProperty("action", "read");
-//      props.setProperty("docid", name);
-//      props.setProperty("qformat", "xml");
       props.put("action", "read");
       props.put("docid", name);
       props.put("qformat", "xml");
@@ -95,7 +92,6 @@ public class MetacatDataStore extends DataStore implements DataStoreInterface
       try
       {
         localdir.mkdirs(); //create any directories
-//DFH        localfile.createNewFile(); //create the file
       }
       catch(Exception ee)
       {
@@ -107,11 +103,16 @@ public class MetacatDataStore extends DataStore implements DataStoreInterface
         writer = new FileWriter(localfile);
         InputStream metacatInput = framework.getMetacatInputStream(props);
         InputStreamReader metacatInputReader = new InputStreamReader(metacatInput);
-        
+        int x = 1;
         while(!metacatInputReader.ready())
         { //this is a stall to wait until the input stream is ready to read
           //there is probably a better way to do this.
-          int x = 1;
+          x++;
+          if(x == 200000)
+          { //200000 cycle time out.  this is so the whole program won't lock
+            //up if the stream for some reason never becomes ready.
+            break;
+          }
         }
         
         int c = metacatInputReader.read();

@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-11-01 17:30:48 $'
- * '$Revision: 1.82 $'
+ *     '$Date: 2001-11-30 17:20:08 $'
+ * '$Revision: 1.83 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -988,6 +988,7 @@ public class ClientFramework extends javax.swing.JFrame
       HttpMessage msg = new HttpMessage(url);
       returnStream = msg.sendPostMessage(prop);
       sessionCookie = msg.getCookie();
+      return returnStream;
     }
     catch(Exception e)
     {
@@ -998,6 +999,7 @@ public class ClientFramework extends javax.swing.JFrame
         HttpMessage msg = new HttpMessage(url);
         returnStream = msg.sendPostMessage(prop);
         sessionCookie = msg.getCookie();
+        return returnStream;
       }
       catch(Exception e2)
       {
@@ -1008,6 +1010,7 @@ public class ClientFramework extends javax.swing.JFrame
           HttpMessage msg = new HttpMessage(url);
           returnStream = msg.sendPostMessage(prop);
           sessionCookie = msg.getCookie();
+          return returnStream;
         }
         catch(Exception e3)
         {
