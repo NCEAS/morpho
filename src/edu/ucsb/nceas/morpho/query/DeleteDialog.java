@@ -6,9 +6,9 @@
  *    Authors: @Jing Tao@
  *    Release: @release@
  *
- *   '$Author: tao $'
- *     '$Date: 2002-10-01 21:51:49 $'
- * '$Revision: 1.5 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2004-01-27 21:34:02 $'
+ * '$Revision: 1.6 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -300,7 +300,7 @@ public class DeleteDialog extends JDialog
       if (object == deleteLocal) 
       {
         // Enable execute button
-        Log.debug(45, "In delete local branch");
+        Log.debug(30, "In delete local branch");
         executeAction.setEnabled(true);
         executeAction.setCommand( new DeleteCommand(openDialog, dialog, 
                        morphoFrame, morphoFrameType, DataPackageInterface.LOCAL, 
@@ -309,7 +309,7 @@ public class DeleteDialog extends JDialog
       else if (object == deleteNetwork) 
       {
         // Enable execute button
-        Log.debug(50, "In delete network branch");
+        Log.debug(30, "In delete network branch");
         executeAction.setEnabled(true);
         executeAction.setCommand( new DeleteCommand(openDialog, dialog,
                      morphoFrame, morphoFrameType, DataPackageInterface.METACAT, 
