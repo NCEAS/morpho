@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: jones $'
- *     '$Date: 2002-08-22 17:03:49 $'
- * '$Revision: 1.5 $'
+ *   '$Author: tao $'
+ *     '$Date: 2002-08-22 22:58:04 $'
+ * '$Revision: 1.6 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -139,7 +139,52 @@ public class UIController
         if (getCurrentActiveWindow()==null) setCurrentActiveWindow(window);
         return window;
     }
+    
+    /**
+     * This method is called by plugins to update window that is an
+     * instance of MorphoFrame.  
+     *
+     * @param frame the window will be given new name
+     * @param newFrameName the new name will give to window
+     */
+    public void updateWindow(MorphoFrame frame,String newFrameName)
+    { 
+      // Get title from old frame
+      String oldTitle = frame.getTitle();
+      System.out.println("oldTitle: "+oldTitle);
+      String title = oldTitle;
+      if (newFrameName != null) {
+          title = newFrameName;
+      }
+      // Remove the frame from window list
+      removeWindow(frame);
+      // Set frame new title
+      frame.setTitle(title);
+      // Create a new action for frame
+      Action windowAction = new AbstractAction(title) {
+            public void actionPerformed(ActionEvent e) {
+                JMenuItem source = (JMenuItem)e.getSource();
+                Action firedAction = source.getAction();
+                MorphoFrame window1 = (MorphoFrame)windowList.get(firedAction);
+                window1.toFront();
+            }
+        };
+      windowAction.putValue(Action.SHORT_DESCRIPTION, "Select Window");
+      windowList.put(windowAction, frame);
+      Vector windowMenuActions = (Vector)orderedMenuActions.get("Window");
+      windowMenuActions.addElement(windowAction);
 
+      updateWindowMenus();
+      frame.addToolbarActions(toolbarList);
+
+      updateStatusBar(frame.getStatusBar());
+
+      if (getCurrentActiveWindow()==null) setCurrentActiveWindow(frame);
+    
+     
+    }//updateWindowName
+
+      
     /**
      * This method is called to de-register a Window that
      * the plugin has created.  The window is removed from the "Windows"
