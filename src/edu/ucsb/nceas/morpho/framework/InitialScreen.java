@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2002-12-12 00:39:00 $'
- * '$Revision: 1.2 $'
+ *     '$Date: 2002-12-12 02:35:45 $'
+ * '$Revision: 1.3 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,6 +26,8 @@
 
 package edu.ucsb.nceas.morpho.framework;
 
+import java.awt.Insets;
+import java.awt.Graphics;
 import java.awt.Dimension;
 import java.awt.Component;
 import java.awt.BorderLayout;
@@ -37,7 +39,11 @@ import java.awt.event.ActionListener;
 import javax.swing.Box;
 import javax.swing.JPanel;
 import javax.swing.JLabel;
+import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JComponent;
+import javax.swing.JPasswordField;
+import javax.swing.SwingConstants;
 
 import edu.ucsb.nceas.morpho.Morpho;
 
@@ -83,7 +89,7 @@ public class InitialScreen extends JPanel
     private void init() {
     
         this.setBackground(UISettings.INIT_SCRN_MAIN_BG_COLOR);
-        this.setPreferredSize(UISettings.INIT_SCRN_MAIN_DIMS);
+//        this.setPreferredSize(UISettings.INIT_SCRN_MAIN_DIMS);
         this.setOpaque(true);
     }
     
@@ -146,12 +152,7 @@ public class InitialScreen extends JPanel
         //LABEL:
         JLabel changeProfileLabel = new JLabel(
                                     UISettings.CHANGE_PROFILE_LABEL_TEXT);
-        changeProfileLabel.setPreferredSize(
-                                    UISettings.INIT_SCRN_LEFT_PANELS_LABELDIMS);
-        changeProfileLabel.setMinimumSize(
-                                    UISettings.INIT_SCRN_LEFT_PANELS_LABELDIMS);
-        changeProfileLabel.setMaximumSize(
-                                    UISettings.INIT_SCRN_LEFT_PANELS_LABELDIMS);
+        setSizes(changeProfileLabel,UISettings.INIT_SCRN_LEFT_PANELS_LABELDIMS);
         panel.addToRow2(changeProfileLabel);
         
         //PICKLIST:
@@ -167,8 +168,7 @@ public class InitialScreen extends JPanel
         }
 
         panel.addToRow2(profilePicker);
-        profilePicker.setPreferredSize(
-                                UISettings.INIT_SCRN_LEFT_PANELS_PICKLISTDIMS);
+        setSizes(profilePicker, UISettings.INIT_SCRN_LEFT_PANELS_PICKLISTDIMS);
                                 
         
         profilePicker.addActionListener(new ActionListener() {
@@ -199,21 +199,69 @@ public class InitialScreen extends JPanel
         panel.addToRow3(Box.createHorizontalGlue());
     }
     
+    private void setSizes(JComponent comp, Dimension dims)
+    {
+        comp.setPreferredSize(dims);
+        comp.setMinimumSize(dims);
+        comp.setMaximumSize(dims);
+    }
+    
+    
+    
     private void populateLoginPanel(LeftPanel panel) 
     {
         // ROW 1 ///////////////////////////////////////////////////////////////
 
-
+        final JLabel loginMessageLabel = new JLabel();
+        updateLoginMessageLabel(loginMessageLabel, 
+                                UISettings.INIT_SCR_LOGIN_MESSAGE);
+        panel.addToRow1(loginMessageLabel);
+        panel.addToRow1(Box.createHorizontalGlue());
+        
         // ROW 2 ///////////////////////////////////////////////////////////////
 
+        final JLabel loginHeaderLabel = new JLabel();
+        loginHeaderLabel.setText(UISettings.INIT_SCR_LOGIN_HEADER);
+        panel.addToRow2(loginHeaderLabel);
+        panel.addToRow2(Box.createHorizontalGlue());
 
         // ROW 3 ///////////////////////////////////////////////////////////////
+
+        //LABEL:
+        JLabel passwordLabel = new JLabel(UISettings.PASSWORD_LABEL_TEXT);
+        setSizes(passwordLabel,UISettings.INIT_SCRN_LEFT_PANELS_LABELDIMS);
+        panel.addToRow3(passwordLabel);
+        
+        //PICKLIST:
+        final JPasswordField passwordField = new JPasswordField();
+        setSizes(passwordField,UISettings.INIT_SCRN_LEFT_PANELS_PICKLISTDIMS);
+        
+        panel.addToRow3(passwordField);
+        panel.addToRow3(Box.createHorizontalStrut(10));
+        
+        JButton loginButton = new JButton(UISettings.INIT_SCR_LOGIN_BUTTON_TEXT); 
+        loginButton.setContentAreaFilled(false); 
+        loginButton.setRolloverEnabled(true);
+        loginButton.setHorizontalAlignment(SwingConstants.CENTER);
+        loginButton.setMargin(new Insets(0,0,0,0));
+        
+        panel.addToRow3(loginButton);
+        
+        panel.addToRow3(Box.createHorizontalGlue());
+
     }
     
     private void updateLDAPLabel(JLabel label) 
     {
         label.setText(  UISettings.INIT_SCR_PANEL_LITE_FONT_OPEN
-                        +morpho.getUserName()
+                        +"("+morpho.getUserName()+")"
+                        +UISettings.INIT_SCR_PANEL_LITE_FONT_CLOSE);
+    }
+    
+    private void updateLoginMessageLabel(JLabel label, String message) 
+    {
+        label.setText(  UISettings.INIT_SCR_PANEL_LITE_FONT_OPEN
+                        +message
                         +UISettings.INIT_SCR_PANEL_LITE_FONT_CLOSE);
     }
     
@@ -296,24 +344,6 @@ public class InitialScreen extends JPanel
         panel.addToRow3(Box.createHorizontalGlue());
     }
 
-
-//    //convenience method to add HTML tags to the passed text    
-//    // <html>**UISettings.INIT_SCRN_LEFT_PANELS_TITLE_FONT_HTML** 
-//    // (e.g. <font color="#ffffff" size="2">)
-//    // **textToWrap**
-//    // </font></html>    
-//    StringBuffer buff = new StringBuffer();
-//    //
-//    private String wrapTitleHTML(String textToWrap) {
-//
-//       buff.delete(0,buff.length());
-//       buff.append("<html><p align=\"left\">");
-//       buff.append(UISettings.INIT_SCRN_LEFT_PANELS_TITLE_FONT_HTML);
-//       buff.append(textToWrap);
-//       buff.append("</font></p></html>");
-//       return buff.toString();
-//    }
-
     
     private void addRightPicture() 
     {
@@ -357,18 +387,11 @@ public class InitialScreen extends JPanel
                 = new Dimension(UISettings.INIT_SCRN_LEFT_PANELS_WIDTH, height);
                 
             this.setBackground(UISettings.INIT_SCRN_LEFT_PANELS_BG_COLOR);
-            this.setMinimumSize(thisDim);
-            this.setPreferredSize(thisDim);
-            this.setMaximumSize(thisDim);
+            setSizes(this,thisDim);
             this.setOpaque(true);
 
             titleLabel = new JLabel(title);
-            titleLabel.setMinimumSize(
-                            UISettings.INIT_SCRN_LEFT_PANELS_TITLE_DIMS);
-            titleLabel.setPreferredSize(
-                            UISettings.INIT_SCRN_LEFT_PANELS_TITLE_DIMS);
-            titleLabel.setMaximumSize(
-                            UISettings.INIT_SCRN_LEFT_PANELS_TITLE_DIMS);
+            setSizes(titleLabel,UISettings.INIT_SCRN_LEFT_PANELS_TITLE_DIMS);
             titleLabel.setBackground(
                             UISettings.INIT_SCRN_LEFT_PANELS_TITLE_BG_COLOR);
             titleLabel.setOpaque(true);
@@ -376,7 +399,6 @@ public class InitialScreen extends JPanel
             this.add(titleLabel, BorderLayout.NORTH);
             
             Box vertBox = Box.createVerticalBox();
-            this.add(vertBox, BorderLayout.CENTER);
             
             topBox    = Box.createHorizontalBox();
             middleBox = Box.createHorizontalBox();
@@ -389,6 +411,13 @@ public class InitialScreen extends JPanel
             vertBox.add(Box.createVerticalGlue());
             vertBox.add(bottomBox);
             vertBox.add(Box.createVerticalGlue());
+            
+            //add padding at each side:
+            Box horizBox = Box.createHorizontalBox();
+            horizBox.add(Box.createHorizontalStrut(10));
+            horizBox.add(vertBox);
+            horizBox.add(Box.createHorizontalStrut(10));
+            this.add(horizBox, BorderLayout.CENTER);
         }
         
         public void setTitle(String title) {
@@ -435,5 +464,17 @@ public class InitialScreen extends JPanel
         testFrame.setLocation(200,200);
         testFrame.setVisible(true);
         testFrame.pack();
+    }
+    
+    /**
+     *  overrides JPanel's paintComponent() method to paint graphic behind 
+     *  3 panels on left of initial screen. Starts with a call to 
+     *  <code>super.paintComponent(g)</code>
+     */
+    public void paintComponent(Graphics g) 
+    {
+        super.paintComponent(g);
+        
+        g.drawImage(UISettings.INIT_SCR_BACKGROUND, 0, 0, this);
     }
 }

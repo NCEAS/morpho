@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2002-12-12 01:03:42 $'
- * '$Revision: 1.11 $'
+ *     '$Date: 2002-12-12 02:35:45 $'
+ * '$Revision: 1.12 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -194,29 +194,29 @@ public class UISettings
      *  html opening tags for font on hyperlink urls
      */
     public static final String HYPERLINK_FONT_HTML_OPENTAGS
-                    = "<html><p align=\"left\">"
-                        +"<font face=\"Verdana, Arial, Helvetica, sans-serif\" "
-                            +" size=\"1\" color=\"#0000d2\">&nbsp;";
+                        = "<html><p align=\"left\" style=\"color: #0000d2; "
+                            +"font-family: Verdana, Arial, Helvetica, sans-serif; "
+                            +"font-size: 9px;\">&nbsp;";
     /**
      *  html closing tags for font on hyperlink urls
      */
     public static final String HYPERLINK_FONT_HTML_CLOSETAGS 
-                                                    = "</font></p></html>";
+                                                    = "</p></html>";
 
     
     /**
      *  html opening tags for font on hyperlink urls during mouseover 
      */
     public static final String HYPERLINK_FONT_OVER_HTML_OPENTAGS 
-                    = "<html><p align=\"left\">"
-                        +"<font face=\"Verdana, Arial, Helvetica, sans-serif\" "
-                          +" size=\"1\" color=\"#00d200\">&nbsp;<a href=\"#\">";
+                      = "<html><p align=\"left\" style=\"color: #00d200; "
+                          +"font-family: Verdana, Arial, Helvetica, sans-serif; "
+                          +"font-size: 9px;\">&nbsp;<a href=\"#\">";
 
     /**
      *  html closing tags for font on hyperlink urls during mouseover 
      */
     public static final String HYPERLINK_FONT_OVER_HTML_CLOSETAGS 
-                                                    = "</a></font></p></html>";
+                                                    = "</a></p></html>";
 
     
     /**
@@ -224,9 +224,13 @@ public class UISettings
      *  left of the initial screen
      */
     public static final String INIT_SCR_PANEL_TITLE_HILITE_FONT_OPEN 
-                    = "<font face=\"Verdana, Arial, Helvetica, sans-serif\" "
-                        +" size=\"1\" color=\"#d2ffad\"><b>";
-                        
+//                    = "<span style=\"color: #d2ffad; text-align: left;"
+//                        +"font-family: Verdana, Arial, Helvetica, sans-serif; "
+//                        +"font-size: 9px; font-weight: bold;\">";
+                    = "<font color=\"#d2ffad\"><b>";
+
+
+
     /**
      *  opening html tags for highlighted text in title bars on panel to the 
      *  left of the initial screen
@@ -239,16 +243,16 @@ public class UISettings
      *  left of the initial screen
      */
     public static final String INIT_SCR_PANEL_LITE_FONT_OPEN 
-                    = "<html><p align=\"left\">"
-                        +"<font face=\"Verdana, Arial, Helvetica, sans-serif\" "
-                        +" size=\"1\" color=\"#666666\">";
-                        
+                    = "<html><p align=\"left\" style=\"color: #666666; "
+                        +"font-family: Verdana, Arial, Helvetica, sans-serif; "
+                        +"font-size: 8px;\">";
+
     /**
-     *  opening html tags for highlighted text in title bars on panel to the 
+     *  closing html tags for light-value text in panels to the  
      *  left of the initial screen
      */
     public static final String INIT_SCR_PANEL_LITE_FONT_CLOSE 
-                    = "</font></p></html>";
+                    = "</p></html>";
 
 
     /**
@@ -318,6 +322,9 @@ public class UISettings
     public static final Image FRAME_AND_TASKBAR_ICON 
             = getAsImage("/edu/ucsb/nceas/morpho/framework/Btfly16x16.gif");
 
+    public static final Image INIT_SCR_BACKGROUND 
+            = getAsImage("/edu/ucsb/nceas/morpho/framework/InitScreenBG.jpg");
+
             
     //ICONS//////////////////
     public static final Icon NEW_DATAPACKAGE_ICON 
@@ -362,36 +369,35 @@ public class UISettings
      *  the initial screen
      */
     public static final String INIT_SCRN_PANELS_PROFILE_TITLE_TEXT_OPEN
-                    = "<html><p align=\"left\">"
-                        +"<font face=\"Verdana, Arial, Helvetica, sans-serif\" "
-                        +" size=\"1\" color=\"#ffffff\">&nbsp;"
+                    = "<html><p align=\"left\" style=\"color: #ffffff; "
+                        +"font-family: Verdana, Arial, Helvetica, sans-serif; "
+                        +"font-size: 9px;\">&nbsp;"
                         +"Current profile:"
                         +"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
-                        +"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
-                        +"</font>";
+                        +"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
     
     /**
      *  html tags and text for title bar on the "Login" panel to the left of  
      *  the initial screen
      */
     public static final String INIT_SCRN_PANELS_LOGIN_TITLE_TEXT_OPEN
-                    = "<html><p align=\"left\">"
-                        +"<font face=\"Verdana, Arial, Helvetica, sans-serif\" "
-                        +" size=\"1\" color=\"#ffffff\">&nbsp;"
+                    = "<html><p align=\"left\" style=\"color: #ffffff; "
+                        +"font-family: Verdana, Arial, Helvetica, sans-serif; "
+                        +"font-size: 9px;\">&nbsp;"
                         +"Network Status:"
                         +"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
                         +"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
-                        +"&nbsp;&nbsp;&nbsp;</font>";
+                        +"&nbsp;&nbsp;&nbsp;";
     
     /**
      *  html tags and text for title bar on the "Data" panel to the left of  
      *  the initial screen
      */
     public static final String INIT_SCRN_PANELS_DATA_TITLE_TEXT_OPEN 
-                    = "<html><p align=\"left\">"
-                        +"<font face=\"Verdana, Arial, Helvetica, sans-serif\" "
-                        +" size=\"1\" color=\"#ffffff\">&nbsp;"
-                        +"Work with your data...</font>";
+                    = "<html><p align=\"left\" style=\"color: #ffffff; "
+                        +"font-family: Verdana, Arial, Helvetica, sans-serif; "
+                        +"font-size: 9px;\">&nbsp;"
+                        +"Work with your data...";
                         
     /**
      *  common to the above 3: closing html tags and text for title bar on the 
@@ -413,18 +419,35 @@ public class UISettings
                                     = "Create a new profile...";
                                 
     public static final String CHANGE_PROFILE_LABEL_TEXT 
-                    = "<html><p align=\"left\">"
-                        +"<font face=\"Verdana, Arial, Helvetica, sans-serif\" "
-                        +" size=\"1\" color=\"#000000\">&nbsp;"
-                        +"<b>Change profile:</b></font></p></html>";
+                    = "<html><p align=\"left\" style=\"color: #000000; "
+                        +"font-family: Verdana, Arial, Helvetica, sans-serif; "
+                        +"font-size: 9px;\">&nbsp;"
+                        +"<b>Change profile:</b></p></html>";
 
                                     
     public static final String PASSWORD_LABEL_TEXT 
-                    = "<html><p align=\"left\">"
-                        +"<font face=\"Verdana, Arial, Helvetica, sans-serif\" "
-                        +" size=\"1\" color=\"#000000\">&nbsp;"
-                        +"Password:</font></p></html>";
+                    = "<html><p align=\"left\" style=\"color: #000000; "
+                        +"font-family: Verdana, Arial, Helvetica, sans-serif; "
+                        +"font-size: 9px;\">&nbsp;"
+                        +"Password:</p></html>";
 
+    public static final String INIT_SCR_LOGIN_MESSAGE 
+                    = "If you do not choose to login, you will "
+                        +"be able to access only \"public\" network "
+                        +"files as a Guest User";
+    
+    public static final String INIT_SCR_LOGIN_BUTTON_TEXT 
+                    = "<html><p align=\"left\" style=\"color: #000000; "
+                        +"font-family: Verdana, Arial, Helvetica, sans-serif; "
+                        +"font-size: 9px;\">"
+                        +"login</p></html>";
+
+    public static final String INIT_SCR_LOGIN_HEADER 
+                    = "<html><p align=\"left\" style=\"color: #000000; "
+                        +"font-family: Verdana, Arial, Helvetica, sans-serif; "
+                        +"font-size: 9px;font-weight: bold;\">"
+                        +"Login to network using current profile:"
+                        +"</p></html>";
 
 
     // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
