@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: sambasiv $'
- *     '$Date: 2004-02-12 22:25:58 $'
- * '$Revision: 1.61 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2004-03-09 20:05:03 $'
+ * '$Revision: 1.62 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1787,16 +1787,19 @@ public abstract class AbstractDataPackage extends MetadataObject
       return; // there is no data!
     }
     for (int i = 0; i < entityArray.length; i++) {
-      String urlinfo = getUrlInfo(i);
-      // urlinfo should be the id in a string
-      if (location.equals(LOCAL))  {
-        handleLocal(urlinfo);
-      }
-      else if (location.equals(METACAT)) {
-        handleMetacat(urlinfo, i);
-      }
-      else if (location.equals(BOTH)) {
-        handleBoth(urlinfo, i);
+      String protocol = getUrlProtocol(i);
+      if(protocol.equals("ecogrid:")) {
+        String urlinfo = getUrlInfo(i);
+        // urlinfo should be the id in a string
+        if (location.equals(LOCAL))  {
+          handleLocal(urlinfo);
+        }
+        else if (location.equals(METACAT)) {
+          handleMetacat(urlinfo, i);
+        }
+        else if (location.equals(BOTH)) {
+          handleBoth(urlinfo, i);
+        }
       }
     }
   }
@@ -1937,6 +1940,13 @@ public abstract class AbstractDataPackage extends MetadataObject
     }
     return urlinfo;
 }
+
+  private String getUrlProtocol(int entityIndex) {
+    String urlinfo = getDistributionUrl(entityIndex, 0, 0);
+    int indx2 = urlinfo.indexOf("//");
+    if (indx2<0) return "";
+    return urlinfo.substring(0,indx2);
+  }
 
   /**
    * exports a package to a given path

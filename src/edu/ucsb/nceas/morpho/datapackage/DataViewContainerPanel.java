@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: sambasiv $'
- *     '$Date: 2004-02-04 02:25:50 $'
- * '$Revision: 1.92 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2004-03-09 20:05:03 $'
+ * '$Revision: 1.93 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -761,61 +761,70 @@ public class DataViewContainerPanel extends javax.swing.JPanel
         // protocol is probably 'ecogrid'; system name is 'knb'
         // we just want the local id here
         int indx2 = urlinfo.indexOf("//");
-        if (indx2>-1) urlinfo = urlinfo.substring(indx2+2);
-        // now start should be just past the '//'
-        indx2 = urlinfo.indexOf("/");
-        if (indx2>-1) urlinfo = urlinfo.substring(indx2+1);
-        //now should be past the system name
-        indx2 = urlinfo.indexOf("/");
-        if (indx2>-1) urlinfo = urlinfo.substring(0,indx2);
-        // should have trimmed 'other'
-        if (urlinfo.length()==0) return;
-        // if we reach here, urlinfo should be the id in a string
-        try{
-          String loc = adp.location;
-          if ((loc.equals(adp.LOCAL))||(loc.equals(adp.BOTH))) {
-            FileSystemDataStore fds = new FileSystemDataStore(morpho);
-            displayFile = fds.openFile(urlinfo);
-          }
-          else if (loc.equals(adp.METACAT)) {
-            MetacatDataStore mds = new MetacatDataStore(morpho);
-            displayFile = mds.openFile(urlinfo);
-          }
-          else if (loc.equals("")) {  // just created the package; not yet saved!!!
-            try{
-              // first try looking in the profile temp dir
-              ConfigXML profile = morpho.getProfile();
-              String separator = profile.get("separator", 0);
-              separator = separator.trim();
+        String protocol = urlinfo.substring(0,indx2);
+        if (protocol.equals("ecoinfo:")) {
+          if (indx2>-1) urlinfo = urlinfo.substring(indx2+2);
+          // now start should be just past the '//'
+          indx2 = urlinfo.indexOf("/");
+          if (indx2>-1) urlinfo = urlinfo.substring(indx2+1);
+          //now should be past the system name
+          indx2 = urlinfo.indexOf("/");
+          if (indx2>-1) urlinfo = urlinfo.substring(0,indx2);
+          // should have trimmed 'other'
+          if (urlinfo.length()==0) return;
+          // if we reach here, urlinfo should be the id in a string
+          try{
+            String loc = adp.location;
+            if ((loc.equals(adp.LOCAL))||(loc.equals(adp.BOTH))) {
               FileSystemDataStore fds = new FileSystemDataStore(morpho);
-              String temp = new String();
-              temp = urlinfo.substring(0, urlinfo.indexOf(separator));
-              temp += "/" + urlinfo.substring(urlinfo.indexOf(separator) + 1, urlinfo.length());
-              displayFile = fds.openTempFile(temp);
+              displayFile = fds.openFile(urlinfo);
             }
-            catch (Exception q1) {
-              // oops - now try locally
+            else if (loc.equals(adp.METACAT)) {
+              MetacatDataStore mds = new MetacatDataStore(morpho);
+              displayFile = mds.openFile(urlinfo);
+            }
+            else if (loc.equals("")) {  // just created the package; not yet saved!!!
               try{
+                // first try looking in the profile temp dir
+                ConfigXML profile = morpho.getProfile();
+                String separator = profile.get("separator", 0);
+                separator = separator.trim();
                 FileSystemDataStore fds = new FileSystemDataStore(morpho);
-                displayFile = fds.openFile(urlinfo);
+                String temp = new String();
+                temp = urlinfo.substring(0, urlinfo.indexOf(separator));
+                temp += "/" + urlinfo.substring(urlinfo.indexOf(separator) + 1, urlinfo.length());
+                displayFile = fds.openTempFile(temp);
               }
-              catch (Exception q2) {
-                // now try metacat
+              catch (Exception q1) {
+                // oops - now try locally
                 try{
-                  MetacatDataStore mds = new MetacatDataStore(morpho);
-                  displayFile = mds.openFile(urlinfo);
+                  FileSystemDataStore fds = new FileSystemDataStore(morpho);
+                  displayFile = fds.openFile(urlinfo);
                 }
-                catch (Exception q3) {
-                  // give up!
-                  Log.debug(5,"Exception opening datafile after trying all sources!");
+                catch (Exception q2) {
+                  // now try metacat
+                  try{
+                    MetacatDataStore mds = new MetacatDataStore(morpho);
+                    displayFile = mds.openFile(urlinfo);
+                  }
+                  catch (Exception q3) {
+                    // give up!
+                    Log.debug(5,"Exception opening datafile after trying all sources!");
+                  }
                 }
               }
             }
+          }
+          catch (Exception q) {
+            Log.debug(5,"Exception opening file!");
+            q.printStackTrace();
           }
         }
-        catch (Exception q) {
-          Log.debug(5,"Exception opening file!");
-          q.printStackTrace();
+        else if (protocol.equals("http:")) {
+          Log.debug(20, "urlinfo: "+urlinfo);
+        }
+        else {
+          Log.debug(20, "protocol: "+protocol);
         }
       }
       else if (adp.getDistributionArray(index, 0)==null) {
