@@ -6,9 +6,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2004-03-24 02:14:18 $'
- * '$Revision: 1.34 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2004-04-06 19:42:30 $'
+ * '$Revision: 1.35 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1118,6 +1118,17 @@ public class DataLocation extends AbstractUIPage {
     }
   }
 
+  
+  protected boolean isCreateChoice() {
+    Container radioPanel = (Container)mainRadioPanel.getComponent(1);
+    Container middlePanel = (Container) radioPanel.getComponent(1);
+    // for CREATE
+    JRadioButton jrb = (JRadioButton)middlePanel.getComponent(CREATE_CHOICE);
+    if (jrb.isSelected()) return true;
+    return false;
+  }
+
+  
 }
 
 

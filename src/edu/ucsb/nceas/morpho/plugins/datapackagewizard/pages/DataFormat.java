@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: sambasiv $'
- *     '$Date: 2004-04-05 23:01:03 $'
- * '$Revision: 1.31 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2004-04-06 19:42:30 $'
+ * '$Revision: 1.32 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -35,6 +35,7 @@ import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WidgetFactory;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardSettings;
 import edu.ucsb.nceas.morpho.util.Log;
 import edu.ucsb.nceas.utilities.OrderedMap;
+import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardContainerFrame;
 
 import java.util.Iterator;
 import java.util.List;
@@ -46,11 +47,13 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.awt.Container;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
+import javax.swing.JRadioButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
@@ -86,6 +89,7 @@ public class DataFormat extends AbstractUIPage{
   private final String RASTER_XPATH
           = "/eml:eml/dataset/dataTable/physical/dataFormat/binaryRasterFormat";
 
+  private JPanel radioPanel;
   private JPanel simpleTextpanel;
   private JPanel complexTextPanel;
   private JPanel proprietaryPanel;
@@ -123,17 +127,21 @@ public class DataFormat extends AbstractUIPage{
   private String delim_semicolon = null;
   private boolean delim_other    = false;
   private CustomList list;
+  private WizardContainerFrame mainWizFrame;
 
   // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
-  public DataFormat() { init(); }
+  public DataFormat(WizardContainerFrame mainWizFrame) {
+    this.mainWizFrame = mainWizFrame;
+    init(); 
+  }
 
   /**
    * initialize method does frame-specific design - i.e. adding the widgets that
    * are displayed only in this frame (doesn't include prev/next buttons etc)
    */
   private void init() {
-
+    
     this.setLayout(new BorderLayout());
 
     Box topBox = Box.createVerticalBox();
@@ -195,7 +203,7 @@ public class DataFormat extends AbstractUIPage{
 
 
 
-    JPanel radioPanel = WidgetFactory.makeRadioPanel(buttonsText, -1, listener);
+    radioPanel = WidgetFactory.makeRadioPanel(buttonsText, -1, listener);
 
     topBox.add(radioPanel);
 
@@ -493,6 +501,15 @@ public class DataFormat extends AbstractUIPage{
    */
   public void onLoadAction() {
 
+    AbstractUIPage prevPage = mainWizFrame.getPreviousPage();
+    boolean flag = ((DataLocation)prevPage).isCreateChoice();
+    Container middlePanel = (Container) radioPanel.getComponent(1);
+    JRadioButton jrb = (JRadioButton)middlePanel.getComponent(1);
+    if (flag) {
+      jrb.setEnabled(false);
+    } else {
+      jrb.setEnabled(true);
+    }
     WidgetFactory.unhiliteComponent(radioButtonGrpLabel);
     WidgetFactory.unhiliteComponent(proprietaryLabel);
     WidgetFactory.unhiliteComponent(listLabel);
