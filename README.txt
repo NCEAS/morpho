@@ -1,8 +1,8 @@
 # 
 #  '$RCSfile: README.txt,v $'
-#   '$Author: jones $'
-# '$Revision: 1.9 $'
-#     '$Date: 2001-07-23 17:16:20 $'
+#   '$Author: berkley $'
+# '$Revision: 1.10 $'
+#     '$Date: 2001-07-30 16:49:44 $'
 #
 
 Morpho: XML Metadata Client
@@ -14,11 +14,11 @@ Feedback and bugs to: knb-software@nceas.ucsb.edu
                       http://bugzilla.ecoinformatics.org
 
 Contributors: Matt Jones (jones@nceas.ucsb.edu)
-              Chad Berkley (berkley@nceas.ucsb.edu)
               Dan Higgins (higgins@nceas.ucsb.edu)
+              Chad Berkley (berkley@nceas.ucsb.edu)
 
 This is a BETA version of the Morpho client tool. It is known to be incomplete
-and to have a number of 'bugs'. It is being released simply for preliminary
+and to have a number of bugs. It is being released simply for preliminary
 review. 
 
 It is almost a complete change from previous versions - thus, previous help 
@@ -47,31 +47,26 @@ accessible in the Metacat system.  To do so, one must have an account on
 the KNB, which can be obtained for testing purposes by writing to
 "knb-software@nceas.ucsb.edu".
 
-See the KNB website (http://knb.ecoinformatics.org) for more information and
+See the KNB website (http://knb.ecoinformatics.org/software) for more information and
 other software tools.
 
-Major Known Bugs (see http://bugzilla.ecoinformatics.org)
+Known Bugs (see http://bugzilla.ecoinformatics.org)
 ---------------------------------------------------------
-237 exclude old revisions of packages from results display 
-257 package wizard error when data file selected 
-224 default ACL for data packages 
-241 Package Wizard does not upload data files 
-
-244 need refresh mechanism for query screen 
-245 need right click menu for query results 
+244 need refresh mechanism for query screen  
 255 Migrate to EML 2 beta DTDs for all Morpho uses 
 202 new config management/profile feature for morpho framework 
 250 add additional attribute metadata to display 
 251 add return and escape defaults on wizard 
 252 reformat table entity display 
 253 use profile info for default text in wizard 
+260 acl handling for packages needs to be updated 
 116 need data set parser module 
 115 need short-term dataset parser implementation 
 212 jar file handling for data packages 
 217 need simple spatial search 
 201 add https support to client framework 
- 88 need ability to manipulate access control lists 
-166 Update options handling 
+088 need ability to manipulate access control lists 
+166 Update options handling
 206 need help system for morpho 
 211 Data entity editor and display 
 236 improve handling of query options 
@@ -81,6 +76,8 @@ Major Known Bugs (see http://bugzilla.ecoinformatics.org)
 205 cut/copy/paste 
 165 taxonomic search facility 
 256 allow toolbar to display alternative widgets
+
+
 
 
 Legalese
