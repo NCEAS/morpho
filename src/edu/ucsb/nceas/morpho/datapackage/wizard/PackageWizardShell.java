@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-10-14 21:47:37 $'
- * '$Revision: 1.77 $'
+ *     '$Date: 2002-10-24 20:10:25 $'
+ * '$Revision: 1.78 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -41,6 +41,8 @@ import edu.ucsb.nceas.morpho.datastore.MetacatDataStore;
 import edu.ucsb.nceas.morpho.datastore.MetacatUploadException;
 import edu.ucsb.nceas.morpho.datapackage.*;
 import edu.ucsb.nceas.morpho.util.Log;
+import edu.ucsb.nceas.morpho.framework.MorphoFrame;
+import edu.ucsb.nceas.morpho.framework.UIController;
 
 import javax.swing.*;
 import javax.swing.border.*; 
@@ -1092,10 +1094,8 @@ public class PackageWizardShell extends javax.swing.JFrame
       if(choice == JOptionPane.YES_OPTION)
       {
         this.dispose();
-        if (addMetaWiz != null)
-        {
-          addMetaWiz.setVisible(true);
-        }
+        MorphoFrame morphoFrame = UIController.getInstance().getCurrentActiveWindow();
+        morphoFrame.setVisible(true);
       }
     }
   }
