@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: jones $'
- *     '$Date: 2002-05-10 18:44:50 $'
- * '$Revision: 1.53 $'
+ *   '$Author: tao $'
+ *     '$Date: 2002-08-14 00:15:42 $'
+ * '$Revision: 1.53.4.1 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -129,9 +129,9 @@ public class LocalQuery
   private String currentDoctype;
     
   /** The folder icon for representing local storage. */
-  private ImageIcon localIcon = null;
+  private ImageIcon localPackageIcon = null;
   /** The folder icon for representing local storage with data. */
-  private ImageIcon localDataIcon = null;
+  private ImageIcon localPackageDataIcon = null;
     
   // create these static caches when class is first loaded
   static {
@@ -150,10 +150,13 @@ public class LocalQuery
   public LocalQuery(Query query, ClientFramework framework) {
     super();
     this.savedQuery = query;
-  
-    localIcon = new ImageIcon( getClass().  getResource("local-metadata.gif"));
-    localDataIcon = new ImageIcon( 
-            getClass().  getResource("local-metadata+data.gif"));
+    
+    localPackageIcon
+      = new ImageIcon(getClass().getResource("localscreen.gif"));
+    
+    localPackageDataIcon
+      = new ImageIcon(getClass().getResource("net.gif"));
+   
   
     this.framework = framework;
     this.config = framework.getConfiguration();   
@@ -384,9 +387,9 @@ public class LocalQuery
         }
     }
     if (hasData) {
-        rss.addElement(localDataIcon);
+        rss.addElement(localPackageDataIcon);
     } else {
-        rss.addElement(localIcon);
+        rss.addElement(localPackageIcon);
     }
 
     for (int i=0;i<returnFields.size();i++) {
