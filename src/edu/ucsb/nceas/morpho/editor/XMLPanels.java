@@ -110,22 +110,22 @@ public class XMLPanels extends Component
 //        if (node.getNodeType()==Node.ELEMENT_NODE) {
         if (true) {
             StringBuffer name = new StringBuffer();
-            name.append('<');
+//            name.append('<');
 //            name.append(node.getNodeName());
-            name.append(info.name);
+//            name.append(info.name);
             
 	    Enumeration keys = info.attr.keys();
 	    while (keys.hasMoreElements()) {
 	        String str = (String)(keys.nextElement());
 	        String val = (String)info.attr.get(str);
-                name.append(' ');
+                name.append(" ");
                 name.append(str);
-                name.append("=\"");
+                name.append("=");
                 name.append(val);
-                name.append('"');
+ //               name.append("\"");
         }
  
-            name.append('>');
+ //           name.append('>');
             jl.setText(name.toString());
             //now check if there are child TEXT nodes
  
