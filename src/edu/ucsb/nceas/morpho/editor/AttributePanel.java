@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2004-02-17 18:53:47 $'
- * '$Revision: 1.3 $'
+ *     '$Date: 2004-02-17 21:39:16 $'
+ * '$Revision: 1.4 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -58,6 +58,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 import org.w3c.dom.DOMImplementation;
 import org.apache.xerces.dom.DOMImplementationImpl;
 
@@ -81,7 +82,9 @@ public class AttributePanel extends JPanel
      
     DocFrame df = DocFrame.currentDocFrameInstance;
     final Node domNode = df.writeToDOM(node);
-    
+    // domNode is now the DOM tree equivalent of the original JTree subtree in node
+    // The parts of this DOM tree that are NOT handled by the attribute panel need to be preserved
+    // so that when data from the panel is merged back, information is not lost.
     final OrderedMap om = XMLUtilities.getDOMTreeAsXPathMap(domNode);
     
     ((AttributePage)awp).setXPathRoot("/attribute");
@@ -95,6 +98,15 @@ public class AttributePanel extends JPanel
         final Document doc = domNode.getOwnerDocument();
         try{
 //          Log.debug(1, "InDOM: "+ XMLUtilities.getDOMTreeAsString(domNode));
+          // data from the panel is merged back into the DOM tree here
+          // note that the entire measurementScale subtree might be changed
+          // Thus remove the current measurementScale !
+          NodeList nl = doc.getElementsByTagName("measurementScale");
+          if ((nl!=null)&&(nl.getLength()>0)) {
+            Node msnode = nl.item(0);
+            Node parent_msnode = msnode.getParentNode();
+            parent_msnode.removeChild(msnode);
+          }
           XMLUtilities.getXPathMapAsDOMTree(awp.getPageData(), domNode);
 //          Log.debug(1, "OutDOM: "+ XMLUtilities.getDOMTreeAsString(domNode));
           JTree domtree = new DOMTree(doc);
