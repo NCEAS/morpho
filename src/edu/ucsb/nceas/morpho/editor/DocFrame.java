@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-08-25 03:35:32 $'
- * '$Revision: 1.64 $'
+ *     '$Date: 2001-10-29 23:33:57 $'
+ * '$Revision: 1.65 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -787,7 +787,8 @@ class SymTreeSelection implements javax.swing.event.TreeSelectionListener
             OutputScrollPanel.repaint();
          }
          
-         int width = this.getWidth() - DocControlPanel.getDividerLocation() - 40;
+//DFH         int width = this.getWidth() - DocControlPanel.getDividerLocation() - 40;
+         int width = this.getSize().width - DocControlPanel.getDividerLocation() - 40;
          XMLPanels xp = new XMLPanels(node, width);
          xp.setTreeModel(treeModel);
          xp.setContainer(this);
@@ -1331,7 +1332,7 @@ void expandTreeToLevel(JTree jt, int level) {
                     // needed to handle case when some elements have text data and others with
                     // same name are blank
                     DefaultMutableTreeNode mergeParent = (DefaultMutableTreeNode)tempnode.getParent();
-                    currentLevelInputNodes.remove(mergeParent);
+                    currentLevelInputNodes.removeElement(mergeParent);
                 }
                 // Here we need to add nodes that are 'missing'
                 // go to parent of tnode; find matching nodes in input at same level; add children
@@ -1417,7 +1418,7 @@ void expandTreeToLevel(JTree jt, int level) {
                                      //           nwnode.insert(nd2,indx1);
                                      //       }
                                       //      nwnode.insert(nd2, indx1);
-                                            nextLevelInputNodes.remove(nd2);
+                                            nextLevelInputNodes.removeElement(nd2);
                                           }
                                         }
                                      }
@@ -1875,7 +1876,8 @@ class SymWindow extends java.awt.event.WindowAdapter {
 
 	void DocFrame_componentResized(java.awt.event.ComponentEvent event)
 	{
-    int width = this.getWidth() - DocControlPanel.getDividerLocation() - 40;
+//DFH    int width = this.getWidth() - DocControlPanel.getDividerLocation() - 40;
+    int width = this.getSize().width - DocControlPanel.getDividerLocation() - 40;
     XMLPanels xp = new XMLPanels(selectedNode, width);
     xp.setTreeModel(treeModel);
     xp.setContainer(this);

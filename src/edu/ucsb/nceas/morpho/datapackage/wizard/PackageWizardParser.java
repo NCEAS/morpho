@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: berkley $'
- *     '$Date: 2001-05-29 22:50:18 $'
- * '$Revision: 1.4 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2001-10-29 23:34:47 $'
+ * '$Revision: 1.5 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -238,7 +238,9 @@ public class PackageWizardParser extends DefaultHandler
       //System.out.println("popping tempgroup in item");
       tempgroup = (XMLElement)groupStack.pop();
       textObj = new XMLElement();
-      textObj = (XMLElement)tempgroup.content.remove(tempgroup.content.size()-1);
+//      textObj = (XMLElement)tempgroup.content.remove(tempgroup.content.size()-1);
+      textObj = (XMLElement)tempgroup.content.elementAt(tempgroup.content.size()-1);
+      tempgroup.content.removeElementAt(tempgroup.content.size()-1);
       XMLElement item = new XMLElement();
       item.name = currentTag;
       if(atts != null)

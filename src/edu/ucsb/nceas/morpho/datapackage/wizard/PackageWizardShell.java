@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: berkley $'
- *     '$Date: 2001-10-24 18:12:20 $'
- * '$Revision: 1.53 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2001-10-29 23:34:47 $'
+ * '$Revision: 1.54 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -278,7 +278,8 @@ public class PackageWizardShell extends javax.swing.JFrame
           JPanel framePanel = new JPanel();
           WizardFrameContainer wfc = new WizardFrameContainer(framePanel);
           wfc.description = new String(activeContainer.description);
-          wfc.attributes = new Hashtable(activeContainer.attributes);
+//DFH          wfc.attributes = new Hashtable(activeContainer.attributes);
+          wfc.attributes = (Hashtable)(activeContainer.attributes).clone();
           activeContainer.attributes.remove("repeatable");
           PackageWizard pw = new PackageWizard(framework, framePanel, 
                                             (String)wfc.attributes.get("path"));
@@ -287,7 +288,7 @@ public class PackageWizardShell extends javax.swing.JFrame
           
           wizardFrame.removeAll();
           frameWizardIndex++;
-          frameWizards.add(frameWizardIndex, wfc);
+          frameWizards.insertElementAt(wfc, frameWizardIndex);
           wizardFrame.add(wfc.panel);
           changeDescription(wfc.description);
           //show();
@@ -350,7 +351,7 @@ public class PackageWizardShell extends javax.swing.JFrame
               
               if(item != null && !item.equals("InitialDescription"))
               {
-                listContent.add(item);
+                listContent.addElement(item);
               }
             }
           }

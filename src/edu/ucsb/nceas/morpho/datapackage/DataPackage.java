@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: jones $'
- *     '$Date: 2001-10-24 17:45:31 $'
- * '$Revision: 1.36 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2001-10-29 23:34:33 $'
+ * '$Revision: 1.37 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -596,12 +596,12 @@ public class DataPackage
       String obj = ((Triple)trips.elementAt(i)).getObject();
       if(!v.contains(sub.trim()))
       {
-        v.add(sub.trim());
+        v.addElement(sub.trim());
       }
       
       if(!v.contains(obj.trim()))
       {
-        v.add(obj.trim());
+        v.addElement(obj.trim());
       }
     }
     return v;
@@ -892,7 +892,8 @@ public class DataPackage
       packdir += "/metadata";
       temppackdir += "/metadata";
       File sourcedir = new File(temppackdir);
-      File[] sourcefiles = sourcedir.listFiles();
+//DFH      File[] sourcefiles = sourcedir.listFiles();
+      File[] sourcefiles = listFiles(sourcedir);
       for(int i=0; i<sourcefiles.length; i++)
       {
         File f = sourcefiles[i];
@@ -963,7 +964,7 @@ public class DataPackage
       { //save one file at a time
         File f = new File(sourcePath + "/" + (String)files.elementAt(i));
         File openfile = null;
-        f.createNewFile();
+//DFH        f.createNewFile();
         if(localloc)
         { //get the file locally and save it
           openfile = fsds.openFile((String)files.elementAt(i));
@@ -1004,7 +1005,7 @@ public class DataPackage
           dataFileId = triple.getSubject();
           File datafile = new File(sourcePath + "/" + dataFileId);
           File realdatafile = new File(packagePath + "/" + dataFileName);
-          realdatafile.createNewFile();
+//DFH          realdatafile.createNewFile();
           FileInputStream fis = new FileInputStream(datafile);
           FileOutputStream fos = new FileOutputStream(realdatafile);
           int c = fis.read();
@@ -1242,6 +1243,15 @@ public class DataPackage
       }
     return datafile;
   } 
-  
+
+  private File[] listFiles(File dir) {
+    String[] fileStrings = dir.list();
+    int len = fileStrings.length;
+    File[] list = new File[len];
+    for (int i=0; i<len; i++) {
+        list[i] = new File(dir, fileStrings[i]);    
+    }
+    return list;
+  }
   
 }

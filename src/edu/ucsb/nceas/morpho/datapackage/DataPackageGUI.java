@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: jones $'
- *     '$Date: 2001-10-24 06:29:31 $'
- * '$Revision: 1.61 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2001-10-29 23:34:32 $'
+ * '$Revision: 1.62 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -260,11 +260,11 @@ public class DataPackageGUI extends javax.swing.JFrame
     //messed up.
     if(otheritems.size()==0)
     {
-      otheritems.add(" ");
+      otheritems.addElement(" ");
     }
     if(entityitems.size()==0)
     {
-      entityitems.add(" ");
+      entityitems.addElement(" ");
     }
     
     //create the banner panel

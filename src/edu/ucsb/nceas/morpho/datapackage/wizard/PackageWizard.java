@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-10-23 21:39:01 $'
- * '$Revision: 1.41 $'
+ *     '$Date: 2001-10-29 23:34:48 $'
+ * '$Revision: 1.42 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -135,7 +135,8 @@ public class PackageWizard extends javax.swing.JFrame
   private void initComponents()
   {
     Container contentPane = getContentPane();
-    this.setDefaultCloseOperation(EXIT_ON_CLOSE);  
+//DFH    this.setDefaultCloseOperation(javax.swing.JFrame.EXIT_ON_CLOSE);  
+    this.setDefaultCloseOperation(javax.swing.JFrame.DISPOSE_ON_CLOSE);  
     mainTabbedPane = new JTabbedPane();
     contentPane.add(mainTabbedPane);
     docPanel = new JPanelWrapper();
@@ -446,7 +447,9 @@ public class PackageWizard extends javax.swing.JFrame
             
             for(int j=elements.size()-1; j>=diff; j--)
             { //print out any end tags that need to be closed.
-              String endTag = (String)elements.remove(j);
+//              String endTag = (String)elements.remove(j);
+              String endTag = (String)elements.elementAt(j);
+              elements.removeElementAt(j);
               if(!endTag.equals(elements.elementAt(elements.size()-1)))
               { //make sure that the endTag is not on the end of the elements
                 //vector.  if it is it is not time to print it yet.
@@ -467,7 +470,9 @@ public class PackageWizard extends javax.swing.JFrame
           {
             for(int j=elements.size()-1; j>=diff; j--)
             { //end the overlapping tags.
-              String endTag = (String)elements.remove(j);  
+//              String endTag = (String)elements.remove(j);  
+              String endTag = (String)elements.elementAt(j);  
+              elements.removeElementAt(j);  
               //System.out.println(spaces + "</" + endTag+ ">");
               if(endTag.equals("ENDEMPTY"))
               {
@@ -576,11 +581,13 @@ public class PackageWizard extends javax.swing.JFrame
           
           for(int j=diff+1; j<elements.size(); j++)
           { //remove any extra attributes that we have already used.
-            elements.remove(j);
+            elements.removeElementAt(j);
           }
           
           //add the end tag
-          String attributeEndTag = (String)elements.remove(diff);
+//          String attributeEndTag = (String)elements.remove(diff);
+          String attributeEndTag = (String)elements.elementAt(diff);
+          elements.removeElementAt(diff);
           //remove the @ sign
           attributeEndTag = attributeEndTag.substring(1, 
                                                       attributeEndTag.length());
@@ -645,7 +652,9 @@ public class PackageWizard extends javax.swing.JFrame
           
           for(int j=elements.size()-1; j>=diff; j--)
           { //print out any end tags that need to be closed.
-            String endTag = (String)elements.remove(j);
+//            String endTag = (String)elements.remove(j);
+            String endTag = (String)elements.elementAt(j);
+            elements.removeElementAt(j);
             if(!endTag.equals(elements.elementAt(elements.size()-1)))
             { //make sure that the endTag is not on the end of the elements
               //vector.  if it is it is not time to print it yet.
@@ -695,7 +704,9 @@ public class PackageWizard extends javax.swing.JFrame
           //doc.append("diff<elements.size()-1\n");
           for(int j=elements.size()-1; j>=diff; j--)
           { //end the overlapping tags.
-            String endTag = (String)elements.remove(j);  
+//            String endTag = (String)elements.remove(j);  
+            String endTag = (String)elements.elementAt(j);
+            elements.removeElementAt(j);
             //System.out.println(spaces + "</" + endTag+ ">");
             if(endTag.equals("ENDEMPTY"))
             {
@@ -739,7 +750,9 @@ public class PackageWizard extends javax.swing.JFrame
     { //print out the remainder of the elements vector to finish off the
       //document
       //System.out.println(spaces + "</" + elements.remove(i) + ">");
-      String endTag = (String)elements.remove(i);
+//      String endTag = (String)elements.remove(i);
+      String endTag = (String)elements.elementAt(i);
+      elements.removeElementAt(i);
       if(endTag.equals("ENDEMPTY"))
       {
         doc.append("/>\n");

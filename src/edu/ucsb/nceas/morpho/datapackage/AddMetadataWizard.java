@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-10-29 22:48:44 $'
- * '$Revision: 1.9 $'
+ *     '$Date: 2001-10-29 23:34:33 $'
+ * '$Revision: 1.10 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -658,7 +658,7 @@ public class AddMetadataWizard extends JFrame
         while(keys.hasMoreElements())
         {
           String name = (String)relatedFiles.get(keys.nextElement());
-          listvec.add(name);
+          listvec.addElement(name);
         }
         relatedFileList = new JList(listvec);
         relatedFileList.setVisibleRowCount(5);

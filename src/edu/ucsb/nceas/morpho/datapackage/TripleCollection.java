@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: berkley $'
- *     '$Date: 2001-06-22 17:51:05 $'
- * '$Revision: 1.7 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2001-10-29 23:34:32 $'
+ * '$Revision: 1.8 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -148,7 +148,8 @@ public class TripleCollection
    */
   public TripleCollection(Vector triples)
   {
-    this.triples = new Vector(triples);
+//    this.triples = new Vector(triples);   //DFH
+    this.triples = (Vector)triples.clone();
   }
   
   /**
@@ -164,7 +165,7 @@ public class TripleCollection
    */
   public boolean containsTriple(Triple triple)
   {
-    return triples.remove(triple);
+    return triples.removeElement(triple);
   }
   
   /**
@@ -173,7 +174,7 @@ public class TripleCollection
    */ 
   public Triple removeTriple(Triple triple)
   {
-    boolean removed = triples.remove(triple);
+    boolean removed = triples.removeElement(triple);
     if(removed)
     {
       return triple;
