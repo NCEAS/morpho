@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-06-08 21:47:15 $'
- * '$Revision: 1.3 $'
+ *     '$Date: 2001-06-25 23:32:19 $'
+ * '$Revision: 1.4 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -37,7 +37,7 @@ import javax.swing.table.*;
 import javax.swing.event.*;
 import javax.swing.tree.*;
 
-public class AttributeEditDialog extends javax.swing.JDialog implements TableModelListener
+public class AttributeEditDialog extends javax.swing.JDialog //implements TableModelListener
 {
   public DefaultTableModel dtm;
   public JTable table = null;
@@ -71,7 +71,7 @@ public class AttributeEditDialog extends javax.swing.JDialog implements TableMod
         headers[0] = "Attribute Name";
         headers[1] = "Attribute Value";
         dtm = new DefaultTableModel(headers,0);
-        dtm.addTableModelListener(this);
+//        dtm.addTableModelListener(this);
         table = new JTable(dtm);
         AttributeScrollPane.getViewport().add(table);
 
@@ -147,9 +147,9 @@ public class AttributeEditDialog extends javax.swing.JDialog implements TableMod
 
 
 
- public void tableChanged(TableModelEvent e) {
- 
- }
+// public void tableChanged(TableModelEvent e) {
+// 
+// }
 
 
 	class SymAction implements java.awt.event.ActionListener
@@ -182,6 +182,10 @@ public class AttributeEditDialog extends javax.swing.JDialog implements TableMod
 
 	void SaveButton_actionPerformed(java.awt.event.ActionEvent event)
 	{
+	  TableCellEditor tce = table.getCellEditor();
+	  if (tce!=null) {
+	    tce.stopCellEditing();  
+	  }
     int cnt = dtm.getRowCount();
     Hashtable newattr = new Hashtable();
     for (int i=0;i<cnt;i++) {
