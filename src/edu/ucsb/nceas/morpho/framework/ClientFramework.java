@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2002-08-10 01:47:49 $'
- * '$Revision: 1.99.4.1 $'
+ *     '$Date: 2002-08-16 18:34:44 $'
+ * '$Revision: 1.99.4.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -173,8 +173,8 @@ public class ClientFramework extends javax.swing.JFrame
 		toolbarPanel.add(morphoToolbar);
 
     // get StatusBar instance, initialize and add to interface:
-    statusBar = StatusBar.getInstance();
-		getContentPane().add(BorderLayout.SOUTH, statusBar);
+    statusBar = new StatusBar();
+	getContentPane().add(BorderLayout.SOUTH, statusBar);
   
  
     //{{REGISTER_LISTENERS

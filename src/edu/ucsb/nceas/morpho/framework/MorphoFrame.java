@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2002-08-16 00:52:19 $'
- * '$Revision: 1.1.2.11 $'
+ *     '$Date: 2002-08-16 18:34:44 $'
+ * '$Revision: 1.1.2.12 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -48,7 +48,6 @@ import javax.swing.*;
  */
 public class MorphoFrame extends JFrame
 {
-    private JMenuBar morphoMenuBar;
     private JToolBar morphoToolbar;
     private StatusBar statusBar;
     private ProgressIndicator indicator;
@@ -91,40 +90,20 @@ public class MorphoFrame extends JFrame
 
         // Set up the toolbar
         int indicatorHeight = (int)indicator.getSize().getHeight();
+        // For some reason the menubar returns 0 as its height.  This needs
+        // to be fixed so that the toolbar is the right height on all platforms
         //int menuHeight = (int)morphoMenuBar.getSize().getHeight();
         int menuHeight = 24;
         int toolbarHeight = indicatorHeight - menuHeight;
-        Log.debug(10, "(indicator, menu, tool) = (" + indicatorHeight + "," + 
+        Log.debug(50, "(indicator, menu, tool) = (" + indicatorHeight + "," + 
                 menuHeight + "," + toolbarHeight + ")");
         morphoToolbar = new JToolBar();
         morphoToolbar.setFloatable(false);
         morphoToolbar.add(Box.createRigidArea(new Dimension(1,toolbarHeight)));
-
-/*
-        Action cutItemAction = new AbstractAction("Cut") {
-            public void actionPerformed(ActionEvent e) {
-                Log.debug(9, "Cut is not yet implemented.");
-            }
-        };
-        cutItemAction.putValue(Action.SMALL_ICON, 
-                        new ImageIcon(getClass().
-            getResource("/toolbarButtonGraphics/general/Cut16.gif")));
-        JButton toolButton = morphoToolbar.add(cutItemAction);
-        Log.debug(50, "Toolbar components: " + 
-                morphoToolbar.getComponentCount());
-        toolButton = morphoToolbar.add(cutItemAction);
-        toolButton = morphoToolbar.add(cutItemAction);
-        toolButton = morphoToolbar.add(cutItemAction);
-
-        morphoToolbar.add(
-            Box.createHorizontalGlue());
-        morphoToolbar.add(
-            Box.createHorizontalStrut((int)(indicator.getSize().getWidth())));
-*/
         getContentPane().add(BorderLayout.NORTH, morphoToolbar);
 
         // Set up and add a StatusBar
-        statusBar = StatusBar.getInstance();
+        statusBar = new StatusBar();
         getContentPane().add(BorderLayout.SOUTH, statusBar);
 
         // Register listeners
@@ -234,9 +213,9 @@ public class MorphoFrame extends JFrame
      *
      * @param message the message to display in the StatusBar
      */
-    public void setStatusMessage(String message)
+    public void setMessage(String message)
     {
-        // Not implemented yet because StatusBar is currently a singleton
+        statusBar.setMessage(message);
     }
 
     /**
@@ -248,6 +227,16 @@ public class MorphoFrame extends JFrame
     public Dimension getDefaultContentAreaSize()
     {
         return contentAreaSize;
+    }
+
+    /**
+     * Get the StatusBar to update its status
+     *
+     * @returns the StatusBar instance for this window
+     */
+    protected StatusBar getStatusBar()
+    {
+        return statusBar;
     }
 
     /** 
