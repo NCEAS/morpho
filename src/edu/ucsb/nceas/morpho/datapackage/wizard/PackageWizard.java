@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-05-25 15:06:08 $'
- * '$Revision: 1.13 $'
+ *     '$Date: 2001-05-25 17:31:01 $'
+ * '$Revision: 1.14 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,8 +27,6 @@
  */
 
 package edu.ucsb.nceas.morpho.datapackage.wizard;
-
-import com.hss.easylay.*;
 import edu.ucsb.nceas.morpho.framework.*;
 import javax.swing.*;
 import javax.swing.border.*; 
@@ -103,6 +101,146 @@ public class PackageWizard extends javax.swing.JFrame
     {
       framework.debug(9, "error initializing custom frame");
       e.printStackTrace();
+    }
+  }
+  
+  /**
+   * constructor which creates a package wizard frame in the given contentPane
+   * using the given framefile (xml configuration file).  This constructor
+   * allows you to pass an xml file with content.  the wizard will attempt
+   * to match the content in the file with the paths in the wizard file. 
+   * if a match is made, the content in the wizard is automatically filled in.
+   * @param framework: the framework in which this wizard is created
+   * @param contentPane: the Container in which this wizard is created
+   * @param framefile: the configuration file used to create this wizard
+   * @param xmlfile: the file to open in the wizard
+   */
+  public PackageWizard(ClientFramework framework, Container contentPane, 
+                       String framefile, Reader xmlfile)
+  {
+    try
+    {
+      this.framework = framework;
+      //get configuration information
+      ConfigXML config = framework.getConfiguration();
+      Vector saxparserV = config.get("saxparser");
+      saxparser = (String)saxparserV.elementAt(0);
+      
+      //get the config file and parse it
+      File mainFile = new File(framefile);
+      FileReader xmlConfig = new FileReader(mainFile);
+      pwp = new PackageWizardParser(xmlConfig, saxparser);
+      doc = pwp.getDoc();
+      Hashtable wizardAtts = doc.attributes;
+      String size = (String)wizardAtts.get("size");
+      
+      //create the initial tabbed pane
+      mainTabbedPane = new JTabbedPane();
+      mainTabbedPane.setPreferredSize(parseSize(size));
+      contentPane.add(mainTabbedPane);
+      docPanel = new JPanelWrapper();
+      docPanel.element = doc;
+      //create the content of the initial frame
+      XMLElement newdoc = openFile(doc, xmlfile);
+      createPanel(newdoc, contentPane, docPanel);
+    }
+    catch(Exception e)
+    {
+      framework.debug(9, "error initializing custom frame");
+      e.printStackTrace();
+    }
+  }
+  
+  /**
+   * This method opens an xml file, parses it and attempts to match it's 
+   * paths to the config file that was provided to this PackageWizard object.
+   * when a matching path is found, the defaulttext attribute in the config
+   * file is set to match the content in the xmlfile at the same path.
+   */
+  private XMLElement openFile(XMLElement doc, Reader xmlfile)
+  {
+    PackageWizardOpenFileParser parser = 
+                         new PackageWizardOpenFileParser(xmlfile, saxparser);
+    String configFile = parser.getConfigFile();
+    Hashtable fieldEnum = new Hashtable();
+    createFieldEnum(new XMLElement(doc), fieldEnum);
+    
+    //look at each element in configFile and try to match it to an enumeration in 
+    //fieldEnum
+    Vector configFileV = parser.getConfigFileV();
+    System.out.println("configfile");
+    printVector(configFileV);
+    System.out.println("fieldenum");
+    printHashtable(fieldEnum);
+    for(int i=0; i<configFileV.size(); i++)
+    {
+      String line = (String)configFileV.elementAt(i);
+      String lineField = parser.getField(line);
+      //if line.field matches a field in fieldEnum then take all of the attributes
+      //from fieldEnum and put them into the line in the configFile.
+      //if line.field does not match any field in fieldEnum then delete it from 
+      //configFile
+      if(fieldEnum.containsKey(lineField))
+      { //take attributes from fieldEnum and put them in the line
+        Hashtable fieldEnumAtts = (Hashtable)fieldEnum.get(lineField);
+        String tagtype = (String)fieldEnumAtts.get("type");
+        String linetagtype = line.substring(1, line.indexOf(" ", 1));
+        System.out.println("tagtype: " + tagtype + " linetagtype: " + linetagtype); 
+        if(tagtype.trim().equals(linetagtype.trim()))
+        {
+          line = parser.addAttributes(line, fieldEnumAtts);
+          configFileV.remove(i);
+          configFileV.add(i, line);
+        }
+        else
+        {
+          configFileV.remove(i);
+        }
+      }
+      else
+      { //remove the line from configFile
+        configFileV.remove(i);
+      }
+      
+    }
+    
+    printVector(configFileV);
+    return new XMLElement();
+  }
+  
+  /**
+   * This method, given a document map (a list of all of the paths in the 
+   * document) and a hashtable keying these paths against their textual content,
+   * attempts to find the path in XMLElement e and add content to it's 
+   * defaulttext attribute.
+   */
+  private void createFieldEnum(XMLElement e, Hashtable fieldEnum)
+  {
+    for(int i=0; i<e.content.size(); i++)
+    {
+      final XMLElement tempElement = (XMLElement)e.content.elementAt(i);
+      final int tempi = i;
+      
+      if(tempElement.name.equals("group"))
+      {
+        tempElement.attributes.put("type", "group");
+      }
+      else if(tempElement.name.equals("textbox"))
+      { 
+        tempElement.attributes.put("type", "textbox");
+      }
+      else if(tempElement.name.equals("combobox"))
+      {
+        tempElement.attributes.put("type", "combobox");
+      }
+      
+      if(tempElement.attributes.containsKey("field"))
+      {
+        fieldEnum.put(tempElement.attributes.get("field"), 
+                      tempElement.attributes);
+      }
+      
+      createFieldEnum(tempElement, fieldEnum);
     }
   }
   
@@ -209,7 +347,7 @@ public class PackageWizard extends javax.swing.JFrame
         if(((String)content.get("MISSINGREQUIREDELEMENTS")).equals("true"))
         { //tell the user that there are missing required fields.
           choice = JOptionPane.showConfirmDialog(null, 
-                               "This package may be invalid because certain \n"+ 
+                               "This package may be invalid because certain \n" + 
                                "fields are marked as 'required' but are not " +
                                "filled in.\n" +
                                "Are you sure you want to save now?", 
@@ -342,8 +480,8 @@ public class PackageWizard extends javax.swing.JFrame
           //as attributes and values
           //doc.append("diff: " + diff + "\n");
           //doc.append("elements size: " + (elements.size()-1) + "\n");
-          doc.append("elements: " + elements.toString() + "\n");
-          doc.append("pathVec: " + pathVec.toString() + "\n");
+          //doc.append("elements: " + elements.toString() + "\n");
+          //doc.append("pathVec: " + pathVec.toString() + "\n");
           if(diff == elements.size()-1)
           { //first print out the end tag for the last element.
             String e = (String)elements.elementAt(diff);
@@ -620,12 +758,8 @@ public class PackageWizard extends javax.swing.JFrame
    * as required has content.  If it does not it creates a hash in the
    * returned hashtable with a key of "MISSINGREQUIREDELENTS" and sets the 
    * value to true.
-   * @param jpw: the JPanelWrapper to create this hash from
-   * @param paths: the hashtable from the last recurse
-   * @param fields: a string representation of all of the fields in this form
    */
-  private Hashtable createContentHash(JPanelWrapper jpw, Hashtable paths, 
-                                      String fields)
+  private Hashtable createContentHash(JPanelWrapper jpw, Hashtable paths, String fields)
   {
     String field = new String();   
     String endField = new String();
@@ -659,6 +793,7 @@ public class PackageWizard extends javax.swing.JFrame
         try
         { //get the textfield and append its field onto the paths
           JTextFieldWrapper jtfw = (JTextFieldWrapper)jpw.children.elementAt(i);
+          //paths.addElement(fields + "/" + jtfw.element.attributes.get("field"));
           String allowNullS = "TRUE";
           boolean allowNullB = true;
           if(jtfw.element.attributes.containsKey("allowNull"))
@@ -702,6 +837,7 @@ public class PackageWizard extends javax.swing.JFrame
               allowNullB = false;
             }
           }
+          //paths.addElement(fields + "/" + jcbw.element.attributes.get("field"));
           String jcbwContent = (String)jcbw.getSelectedItem();
           if(jcbwContent.equals("") && !allowNullB)
           {
@@ -715,6 +851,7 @@ public class PackageWizard extends javax.swing.JFrame
           }
           
           paths.put(fields + "/" + localfield, jcbwContent);
+          //paths.put(fields + "/" + jcbw.element.attributes.get("field"), jcbwContent);
           //put the field and the content into the hash.
         }
       }
@@ -732,9 +869,6 @@ public class PackageWizard extends javax.swing.JFrame
    * When the user chooses to save the document, this method builds all of the
    * paths in the xml tree along with a hashtable of their values
    * for use in the createDocumentContent method.
-   * @param jpw: the JPanelWrapper to create the document from
-   * @param paths: the vector of paths that exist in this form
-   * @param fields: string of all of the fields in this form.
    */
   private Vector createDocument(JPanelWrapper jpw, Vector paths, String fields)
   {
@@ -809,10 +943,6 @@ public class PackageWizard extends javax.swing.JFrame
    * and text element structure.  It also builds a tree out of the J*
    * elements so that the structure of the document can be recreated.  
    * in this method a prevIndex is not required.
-   * @param e: the element that you are building the representation for
-   * @param contentPane: the contentPane you are building the representation in
-   * @param parentPanel: the panel you are building the representation in
-   
    */
   private void createPanel(XMLElement e, final Container contentPane, 
                            final JPanelWrapper parentPanel)
@@ -824,13 +954,6 @@ public class PackageWizard extends javax.swing.JFrame
    * The method goes through the XMLElement doc and creates from it the panel
    * and text element structure.  It also builds a tree out of the J*
    * elements so that the structure of the document can be recreated.
-   * @param e: the element that you are building the representation for
-   * @param contentPane: the contentPane you are building the representation in
-   * @param parentPanel: the panel you are building the representation in
-   * @param prevIndex: this is used only if we are repeating an element.
-   *        this is the index of the element that is being repeated.  This is 
-   *        needed so that we can put the new element next to the one that 
-   *        created it
    */
   private void createPanel(XMLElement e, final Container contentPane, 
                            final JPanelWrapper parentPanel, Integer prevIndex)
@@ -895,9 +1018,8 @@ public class PackageWizard extends javax.swing.JFrame
                     newtempPanel.element = newtempElement;
                     XMLElement newe = new XMLElement();
                     newe.content.addElement(newtempElement);
-                    
                     createPanel(newe, contentPane, parentPanel, 
-                          new Integer(parentPanel.children.indexOf(tempPanel)));
+                                new Integer(parentPanel.children.indexOf(tempPanel))); 
                     contentPane.repaint();
                   }
                 }
@@ -907,6 +1029,9 @@ public class PackageWizard extends javax.swing.JFrame
           
           if(button != null)
           {
+            JPanel layoutpanel = new JPanel();
+            layoutpanel.add(button);
+            tempPanel.add(layoutpanel);
             tempPanel.add(new JPanel());
           }
           
@@ -919,12 +1044,9 @@ public class PackageWizard extends javax.swing.JFrame
           }
           
           //tempPanel.setLayout(new /*GridLayout(0,2)*/FlowLayout());
-          //BoxLayout box = new BoxLayout(tempPanel, BoxLayout.Y_AXIS);
+          BoxLayout box = new BoxLayout(tempPanel, BoxLayout.Y_AXIS);
           //layout management for internal panels
-          //tempPanel.setLayout(box);
-          EasyLayout elayout = new EasyLayout(tempPanel);
-          tempPanel.setLayout(elayout);
-          
+          tempPanel.setLayout(box);
           if(prevIndex == null)
           { //add this group as a child of it's parent for later reconstruction.
             parentPanel.children.addElement(tempPanel);
@@ -932,23 +1054,10 @@ public class PackageWizard extends javax.swing.JFrame
           else
           { //if an item is repeated it has to be inserted next to the element
             //that created it.
-            parentPanel.children.insertElementAt(tempPanel, 
-                                                 prevIndex.intValue()+1);
-          }
-
-          try
-          {          
-            EasyLayout parentLayout = (EasyLayout)parentPanel.getLayout();
-            parentLayout.setContainerSize(1000,1000);
-            parentLayout.add(new JScrollPane(tempPanel), new ELR(parentPanel, ELR.SOUTH, ELR.CENTER, 10));
-          }
-          catch(Exception cce)
-          {
-            parentPanel.add(new JScrollPane(tempPanel));
+            parentPanel.children.insertElementAt(tempPanel, prevIndex.intValue()+1);
           }
           
-          //eLayout.add(textfield, new ELR(button, ELR.EAST, ELR.CENTER, 10));
-          //parentPanel.add(new JScrollPane(tempPanel));
+          parentPanel.add(new JScrollPane(tempPanel));
           //add the panel in a scroll pane in case it's too big.
         }
       }
@@ -959,12 +1068,7 @@ public class PackageWizard extends javax.swing.JFrame
         
         final JLabel label = new JLabel(
                                  (String)tempElement.attributes.get("label"));
-        Integer size = new Integer(15);
-        if(tempElement.attributes.containsKey("size"))
-        {
-          size = new Integer((String)tempElement.attributes.get("size"));
-        }
-        
+        Integer size = new Integer((String)tempElement.attributes.get("size"));
         JButton button = null;
         boolean required = false;
         String defaultText = null;
@@ -993,12 +1097,8 @@ public class PackageWizard extends javax.swing.JFrame
                   JTextFieldWrapper newtextfield = new JTextFieldWrapper();
                   newtextfield.element = newtempElement;
                   newtextfield.setPreferredSize(new Dimension(10, 20));
-                  Integer newsize = new Integer(15);
-                  if(newtempElement.attributes.containsKey("size"))
-                  {
-                    newsize = new Integer(
+                  Integer newsize = new Integer(
                                  (String)newtempElement.attributes.get("size"));
-                  }
                   newtextfield.setColumns(newsize.intValue());
                   int textfieldindex = parentPanel.children.indexOf(textfield);
                   parentPanel.children.insertElementAt(newtextfield, 
@@ -1049,25 +1149,19 @@ public class PackageWizard extends javax.swing.JFrame
         textfield.setColumns(size.intValue());
         parentPanel.children.addElement(textfield);
         
-        EasyLayout eLayout = (EasyLayout)parentPanel.getLayout();
-        
         if(button != null)
         { //if this item is repeatable add the button
+          JPanel layoutpanel = new JPanel();
           button.add(label);
-          System.out.println("adding button");
-          eLayout.add(button, new ELR(75,30 + (i*50)));
-          eLayout.add(textfield, new ELR(button, ELR.EAST, ELR.CENTER, 10));
-          //parentPanel.add(button);
+          layoutpanel.add(button);
+          parentPanel.add(button);
         }
         else
         { //add just the label if it is not repeatable
-          System.out.println("adding label");
-          eLayout.add(label, new ELR(75,30 + (i*50)));
-          eLayout.add(textfield, new ELR(label, ELR.EAST, ELR.CENTER, 10));
-          //parentPanel.add(label);
+          parentPanel.add(label);
         }
         textfield.setText(defaultText);
-        //parentPanel.add(textfield);
+        parentPanel.add(textfield);
       }
       else if(tempElement.name.equals("combobox"))
       {//add a new combo box with it's enumerated items
@@ -1082,8 +1176,7 @@ public class PackageWizard extends javax.swing.JFrame
         combofield.element = tempElement;
         combofield.setEditable(true);
         combofield.setAlignmentX(Component.LEFT_ALIGNMENT);
-        String tLabel = (String)tempElement.attributes.get("label");
-        final JLabel label = new JLabel(tLabel);
+        final JLabel label = new JLabel((String)tempElement.attributes.get("label"));
         JButton button = null;
         boolean required = false;
         
@@ -1107,16 +1200,14 @@ public class PackageWizard extends javax.swing.JFrame
                   newcombofield.element = newtempElement;
                   for(int j=0; j<newtempElement.content.size(); j++)
                   {//get all of the items and add them to the combo box
-                    XMLElement itemElement = (XMLElement)
-                                            newtempElement.content.elementAt(j);
+                    XMLElement itemElement = (XMLElement)newtempElement.content.elementAt(j);
                     String item = (String)itemElement.attributes.get("value");
                     newcombofield.addItem(item);
                   }
                   newcombofield.setEditable(true);
                   newcombofield.setAlignmentX(Component.LEFT_ALIGNMENT);
                   int combofieldindex = parentPanel.children.indexOf(combofield);
-                  parentPanel.children.insertElementAt(newcombofield, 
-                                                       combofieldindex+1);
+                  parentPanel.children.insertElementAt(newcombofield, combofieldindex+1);
                   
                   int numcomponents = parentPanel.getComponentCount();
                   int insertindex = numcomponents;
@@ -1133,7 +1224,7 @@ public class PackageWizard extends javax.swing.JFrame
                   if(newtempElement.attributes.containsKey("defaulttext"))
                   {
                     String defaultText = (String)
-                                   newtempElement.attributes.get("defaulttext");
+                                         newtempElement.attributes.get("defaulttext");
                     combofield.setSelectedItem(defaultText);
                   }
                   
@@ -1169,13 +1260,11 @@ public class PackageWizard extends javax.swing.JFrame
           JPanel layoutpanel = new JPanel();
           //layoutpanel.setLayout(new FlowLayout(FlowLayout.LEFT));
           button.add(label);
-          System.out.println("button adding");
           layoutpanel.add(button);
           parentPanel.add(button);
         }
         else
         {
-          System.out.println("button adding");
           parentPanel.add(label);
         }
         
@@ -1204,7 +1293,7 @@ public class PackageWizard extends javax.swing.JFrame
       }
       else
       {
-        //System.out.println("parentPanel: " + parentPanel.element.name + ":" +
+        //System.out.println("parentPanel: " + parentPanel.element.name + ":" + 
         //                    parentPanel.element.attributes.toString());
         createPanel(tempElement, contentPane, parentPanel);
       }
@@ -1317,6 +1406,42 @@ public class PackageWizard extends javax.swing.JFrame
         "instantiated for a combobox or a textbox but not both");
       }
     }
+    /*
+    public JFieldWrapper(String label, JComboBoxWrapper combobox)
+    {
+      if(textbox == null)
+      {
+        this.label = new JLabel(label);
+        this.combobox = combobox;
+      }
+      else
+      {
+         //error because either combobox or text box needs to be null
+        System.out.println("error2 in JFieldWrapper: this class can only be " +
+        "instantiated for a combobox or a textbox but not both");
+      }
+    
+      public JPanel getWrappedElement()
+      {
+        JPanel tempPanel = new JPanel();
+        tempPanel.add(this.label);
+        if(textbox == null && combobox != null)
+        {
+          tempPanel.add(this.combobox);
+        }
+        else if(textbox != null && combobox == null)
+        {
+          tempPanel.add(this.textbox);
+        }
+        else
+        {
+          //error because either combobox or text box needs to be null
+          System.out.println("error3 in JFieldWrapper: this class can only be " +
+          "instantiated for a combobox or a textbox but not both");
+        }
+      }
+    }
+    */
   }
   
   /**
