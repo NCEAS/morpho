@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-09-17 23:33:01 $'
- * '$Revision: 1.6 $'
+ *     '$Date: 2003-09-17 23:43:52 $'
+ * '$Revision: 1.7 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -177,6 +177,32 @@ public class MetadataObject
     }
     else { return ret;}
     return ret;
+  }
+  
+  public String getXPathValue(String path) {
+    String ret = "";
+      if ((path!=null)&&(path.length()>1)) {
+        Log.debug(30,"path: "+path);
+        try{
+          // metadataNode is the context node
+          NodeList nl = XPathAPI.selectNodeList(metadataNode, path);
+          if (nl.getLength() == 0) return ret;
+          // for now, just get first node value
+          Node n = nl.item(0);
+          Node child = n.getFirstChild();
+          if (child != null) {
+            String s = child.getNodeValue();
+            if (s==null) return "";
+            s = s.trim();
+            return s;
+          } else {
+            return ret;
+          }
+        } catch (Exception e) {
+          Log.debug(5, "error in XPath node selection in MetadataObject");
+        }
+      }
+    return ret;  
   }
   
   public void setGenericValue(String genericName, String genericValue) {

@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-09-17 23:33:01 $'
- * '$Revision: 1.4 $'
+ *     '$Date: 2003-09-17 23:43:52 $'
+ * '$Revision: 1.5 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -120,9 +120,9 @@ public  class EML200DataPackage extends AbstractDataPackage
     String givenNameXpath = "/eml:eml/dataset/creator/individualName/givenName";
     String salutationXpath = "/eml:eml/dataset/creator/individualName/salutation";
     
-    String surName = getGenericValue(surNameXpath);
-    String givenName = getGenericValue(givenNameXpath);
-    String salutation = getGenericValue(salutationXpath);
+    String surName = getXPathValue(surNameXpath);
+    String givenName = getXPathValue(givenNameXpath);
+    String salutation = getXPathValue(salutationXpath);
     
     temp = salutation + " " + givenName + " " + surName;
     return temp;
