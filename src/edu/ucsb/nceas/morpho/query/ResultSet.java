@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-10-29 23:31:35 $'
- * '$Revision: 1.23 $'
+ *     '$Date: 2001-11-20 17:51:38 $'
+ * '$Revision: 1.24 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -139,9 +139,9 @@ public class ResultSet extends AbstractTableModel implements ContentHandler
 
     resultsVector = new Vector();
 
-    localIcon = new ImageIcon( getClass().getResource("local.gif"));
-    metacatIcon = new ImageIcon( getClass().getResource("metacat.gif"));
-    bothIcon = new ImageIcon( getClass().getResource("local-metacat.gif"));
+    localIcon = new ImageIcon( getClass().getResource("local-metadata.gif"));
+    metacatIcon = new ImageIcon( getClass().getResource("network-metadata.gif"));
+    bothIcon = new ImageIcon( getClass().getResource("local+network-metadata.gif"));
 
     this.framework = framework;
     this.config = framework.getConfiguration();   

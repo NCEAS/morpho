@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-11-02 21:47:24 $'
- * '$Revision: 1.47 $'
+ *     '$Date: 2001-11-20 17:51:38 $'
+ * '$Revision: 1.48 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -139,7 +139,7 @@ public class LocalQuery
     super();
     this.savedQuery = query;
   
-    localIcon = new ImageIcon( getClass().  getResource("local.gif"));
+    localIcon = new ImageIcon( getClass().  getResource("local-metadata.gif"));
   
     this.framework = framework;
     this.config = framework.getConfiguration();   
