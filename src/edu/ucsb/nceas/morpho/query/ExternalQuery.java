@@ -9,7 +9,7 @@
  *  Authors: Dan Higgins
  *
  *  
- *     Version: '$Id: ExternalQuery.java,v 1.6 2000-12-15 17:44:54 higgins Exp $'
+ *     Version: '$Id: ExternalQuery.java,v 1.7 2000-12-19 23:46:23 higgins Exp $'
  */
 
 /*
@@ -55,10 +55,20 @@ public class ExternalQuery implements ContentHandler
     String doctype;
     String doctitle;
     String paramName;
+    String relationtype;
+    String relationdoc;
+    String relationdoctype;
     Hashtable params;
+    Hashtable relations; 
+                        // used to save relation doc info for each doc returned
+                         // key is docid, value is a Vector of string arrays
+                         // each string array is (relationtype,relationdoc,relationdoctype)
+    Vector relationsVector; 
+    
     Vector returnFields; // return field path names
     
 public ExternalQuery(InputStream is) {
+    relations = new Hashtable(); 
     this.is = is;
     ConfigXML config = new ConfigXML("config.xml");
     returnFields = config.get("returnfield");
@@ -114,12 +124,26 @@ public JTable getTable() {
             doctype = "";
             doctitle = "";
             paramName = "";
+            relationsVector = new Vector();
             params = new Hashtable();
+      }
+      if (localName.equals("relation")) {
+            relationtype = "";
+            relationdoc = "";
+            relationdoctype = "";
       }
     }
   
     public void endElement (String uri, String localName,
                             String qName) throws SAXException {
+                                
+      if (localName.equals("relation")) {
+        String[] rel = new String[3];
+        rel[0] = relationtype;
+        rel[1] = relationdoc;
+        rel[2] = relationdoctype;
+        relationsVector.addElement(rel);
+      }
       if (localName.equals("document")) {
         int cnt = 0;
         if (returnFields!=null) cnt = returnFields.size();
@@ -131,6 +155,9 @@ public JTable getTable() {
         row[3] = doctitle;
         for (int i=0;i<cnt;i++) {
             row[4+i] = (String)(params.get(returnFields.elementAt(i)));   
+        }
+        if (relationsVector.size()>0) {
+            relations.put(docid, relationsVector);
         }
         
       dtm.addRow(row);
@@ -156,6 +183,15 @@ public JTable getTable() {
       }
       if (currentTag.equals("param")) {
           params.put(paramName, inputString);  
+      }
+      if (currentTag.equals("relationtype")) {
+          relationtype = inputString;
+      }
+      if (currentTag.equals("relationdoc")) {
+          relationdoc = inputString;
+      }
+      if (currentTag.equals("relationdoctype")) {
+          relationdoctype = inputString;
       }
       
     }
@@ -201,7 +237,9 @@ public JTable getTable() {
         }
   }
    
-   
+  public Hashtable getRelations() {
+    return relations; 
+  }
    
 }
 

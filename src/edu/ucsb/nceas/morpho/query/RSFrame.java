@@ -5,7 +5,7 @@
  *              National Center for Ecological Analysis and Synthesis
  *     Authors: Dan Higgins
  *
- *     Version: '$Id: RSFrame.java,v 1.7 2000-12-14 16:19:22 higgins Exp $'
+ *     Version: '$Id: RSFrame.java,v 1.8 2000-12-19 23:46:23 higgins Exp $'
  */
 
 
@@ -31,12 +31,15 @@ public class RSFrame extends javax.swing.JFrame
     JMenuItem ShowmenuItem;
     JMenuItem SavemenuItem;
     JMenuItem EditmenuItem;
+    JMenuItem RelatedmenuItem;
     
     public boolean local = true;
     // local or remote results?
     
     PropertyResourceBundle options;
     String MetaCatServletURL = null;
+    
+    Hashtable relations;
     
 	public RSFrame()
 	{
@@ -95,6 +98,9 @@ public class RSFrame extends javax.swing.JFrame
 		SymAction lSymAction = new SymAction();
 		
 		popupListener = new PopupListener();
+		RelatedmenuItem = new JMenuItem("Show Related Documents");
+		RelatedmenuItem.addActionListener(lSymAction);
+		popup.add(RelatedmenuItem);
 		ShowmenuItem = new JMenuItem("Display Document");
 		ShowmenuItem.addActionListener(lSymAction);
         popup.add(ShowmenuItem);
@@ -256,7 +262,33 @@ public class RSFrame extends javax.swing.JFrame
 				ShowMenuItem_actionPerformed(event);
 	        else if (object == EditmenuItem)
 	            EditMenuItem_actionPerformed(event);
+	        else if (object == RelatedmenuItem)
+	            RelatedMenuItem_actionPerformed(event);
+	        
 		}
+	}
+
+
+	void RelatedMenuItem_actionPerformed(java.awt.event.ActionEvent event)
+	{
+	   int selectedRow = JTable1.getSelectedRow();
+	   if (local) {
+	    
+	   }
+	   else {
+            String qtext1 = (String)JTable1.getModel().getValueAt(selectedRow, 0);
+                    // assumes that docid is in first column of table
+            if (relations.size()>0) {        
+	            Vector relationsVector = (Vector)relations.get(qtext1);
+	            for (Enumeration e = relationsVector.elements();e.hasMoreElements();) {
+	                String[] rels = (String[])e.nextElement();
+	                System.out.println("relationtype = "+rels[0]);
+	                System.out.println("relationdoc = "+rels[1]);
+	                System.out.println("relationdoctype = "+rels[2]);
+	            }
+	        }
+	   }
+	 
 	}
 
 	void ShowMenuItem_actionPerformed(java.awt.event.ActionEvent event)
@@ -342,7 +374,7 @@ public class RSFrame extends javax.swing.JFrame
 		        URL url = new URL(MetaCatServletURL);
 		        HttpMessage msg = new HttpMessage(url);
 		        Properties prop = new Properties();
-		        prop.put("action","getdocument");
+		        prop.put("action","read");
 		        prop.put("docid",qtext1);
 		        prop.put("qformat",respType);
 		    
