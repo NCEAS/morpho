@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-06-21 21:54:28 $'
- * '$Revision: 1.24 $'
+ *     '$Date: 2001-06-21 22:09:23 $'
+ * '$Revision: 1.25 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -408,14 +408,16 @@ public class DataPackageGUI extends javax.swing.JFrame
     EditorInterface editor;
     String item = null;
     
-    if(command.equals("Edit Base Info"))
+    if(command.equals("Edit Basic Information"))
     {
       item = "Base Info (" + dataPackage.getID() + ")";
       command = "Edit";
+      System.out.println("item: " + item + " command: " + command);
     }
     
     if(command.equals("Edit"))
     {
+      System.out.println("item: " + item + " command: " + command);
       try
       {
         ServiceProvider provider = 
