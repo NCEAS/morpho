@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2002-09-26 17:07:12 $'
- * '$Revision: 1.14 $'
+ *     '$Date: 2002-09-27 01:13:37 $'
+ * '$Revision: 1.15 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1060,8 +1060,10 @@ public class Morpho
         switchItemAction.setToolTipText("Switch Profile");
         switchItemAction.putValue("menuPosition", new Integer(2));
         switchItemAction.setMenu("File", 0);
-        switchItemAction.setEnabledOnStateChange("DISABLE", false, false);
-        switchItemAction.setEnabledOnStateChange("ENABLE", true, false);
+        switchItemAction.setEnabledOnStateChange("DISABLE", false, 
+                                                        GUIAction.EVENT_LOCAL);
+        switchItemAction.setEnabledOnStateChange("ENABLE",  true, 
+                                                        GUIAction.EVENT_LOCAL);
         controller.addGuiAction(switchItemAction);
 
         Command enableCommand = new Command() {
@@ -1463,13 +1465,13 @@ public class Morpho
         //check if metacat can be reached:
         origNetworkStatus = networkStatus;
         try {
-            Log.debug(19, "Determining net status ...");
+            Log.debug(51, "Determining net status ...");
             urlConn = metacatPingURL.openConnection();
             urlConn.connect();
             networkStatus = (urlConn.getDate() > 0L);
-            Log.debug(19, "... which is: " + networkStatus);
+            Log.debug(51, "... which is: " + networkStatus);
         } catch (IOException ioe) {
-            Log.debug(19, " - unable to open network connection to Metacat");
+            Log.debug(51, " - unable to open network connection to Metacat");
             networkStatus = false;
             if (profile != null) {
                 profile.set("searchmetacat", 0, "false");
@@ -1487,7 +1489,7 @@ public class Morpho
      */
     private void finishPing(boolean isStartUp)
     {
-        Log.debug(21, "doPing() called - network available?? - " +
+        Log.debug(51, "doPing() called - network available?? - " +
                 networkStatus);
         if (origNetworkStatus != networkStatus) {
             //if lost connection, can't log out, but can still do cleanup

@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2002-09-26 21:44:39 $'
- * '$Revision: 1.14 $'
+ *     '$Date: 2002-09-27 01:13:37 $'
+ * '$Revision: 1.15 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -50,7 +50,18 @@ import java.util.Hashtable;
  */
 public class GUIAction extends AbstractAction implements StateChangeListener
 {
-
+    /**
+     *  Public constant to denote that a GUIAction should consume events 
+     *  originating only within the same frame as the GUIAction itself
+     */
+     public static final int EVENT_LOCAL = 100;
+     
+    /**
+     *  Public constant to denote that a GUIAction should consume events 
+     *  originating from any frame, not just its own
+     */
+     public static final int EVENT_GLOBAL = 200;
+     
     /** 
      *  Constructor
      *
@@ -103,7 +114,8 @@ public class GUIAction extends AbstractAction implements StateChangeListener
             String changedState = new String(key);
             boolean enabled 
                       = ((Boolean)enabledList.getNewState(key)).booleanValue();
-            clone.setEnabledOnStateChange(changedState, enabled, false);
+            clone.setEnabledOnStateChange(changedState, enabled, 
+                                                enabledList.getRespondsTo(key));
         }
         // Clone the command list
         Enumeration commandKeys = commandList.keys();
@@ -111,7 +123,8 @@ public class GUIAction extends AbstractAction implements StateChangeListener
             String key = (String)commandKeys.nextElement();
             String changedState = new String(key);
             Command command = (Command)commandList.getNewState(key);
-            clone.setCommandOnStateChange(changedState, command, false);
+            clone.setCommandOnStateChange(changedState, command, 
+                                                commandList.getRespondsTo(key));
         }
 
         return clone;
@@ -311,15 +324,19 @@ public class GUIAction extends AbstractAction implements StateChangeListener
      *                        occur in response only to events originating 
      *                        within the same frame as this GUIAction's 
      *                        container
-     * @param localEventsOnly boolean value indicating whether the change should 
+     * @param respondTo       int value indicating whether the change should 
      *                        occur in response only to events originating 
      *                        within the same frame as this GUIAction's 
-     *                        container
+     *                        container (GUIAction.EVENT_LOCAL) or in response 
+     *                        to all events, irrespective of their source 
+     *                        (GUIAction.EVENT_GLOBAL).
      */
-    public void setEnabledOnStateChange(String changedState, boolean enabled, 
-                                                        boolean localEventsOnly)
+    public void setEnabledOnStateChange(String changedState, 
+                                                boolean enabled, int respondTo)
     {
-        enabledList.put(changedState, new Boolean(enabled), localEventsOnly);
+        
+        enabledList.put(
+                  changedState, new Boolean(enabled), respondTo);
         StateChangeMonitor.getInstance().addStateChangeListener(changedState,
                 (StateChangeListener)this);
     }
@@ -330,15 +347,17 @@ public class GUIAction extends AbstractAction implements StateChangeListener
      *
      * @param changedState the name of the state change
      * @param command Command that should be set upon a state change
-     * @param localEventsOnly boolean value indicating whether the change should 
+     * @param respondTo       int value indicating whether the change should 
      *                        occur in response only to events originating 
      *                        within the same frame as this GUIAction's 
-     *                        container
+     *                        container (GUIAction.EVENT_LOCAL) or in response 
+     *                        to all events, irrespective of their source 
+     *                        (GUIAction.EVENT_GLOBAL).
      */
-    public void setCommandOnStateChange(String changedState, Command command,
-                                                        boolean localEventsOnly)
+    public void setCommandOnStateChange(String changedState,
+                                                  Command command,int respondTo)
     {
-        commandList.put(changedState, command, localEventsOnly);
+        commandList.put(changedState, command, respondTo);
         StateChangeMonitor.getInstance().addStateChangeListener(changedState,
                 (StateChangeListener)this);
     }
@@ -355,7 +374,8 @@ public class GUIAction extends AbstractAction implements StateChangeListener
         String changedState = event.getChangedState();
         
         if (enabledList.containsKey(changedState)) {
-            if ( enabledList.respondsLocalOnly(changedState) && !isLocalEvent(event)) {    
+            if ( enabledList.getRespondsTo(changedState)==EVENT_LOCAL
+                && !isLocalEvent(event)) {    
                 Log.debug(50,"GUIAction.handleStateChange: event in enabledList"
                                     +" but not of this frame");
             } else {
@@ -367,7 +387,8 @@ public class GUIAction extends AbstractAction implements StateChangeListener
         } 
         
         if (commandList.containsKey(changedState)) {
-            if (commandChangesOnlyLocal(changedState) && !isLocalEvent(event)) {
+            if (commandList.getRespondsTo(changedState)==EVENT_LOCAL
+                && !isLocalEvent(event)) {
                 Log.debug(50,"GUIAction.handleStateChange: event in commandList"
                                     +" but not of this frame");
             } else {
@@ -379,38 +400,30 @@ public class GUIAction extends AbstractAction implements StateChangeListener
         }
     }
     
-    private boolean enableChangesOnlyLocal(String event) 
-    {
-        return true;
-    }
-    
-    private boolean commandChangesOnlyLocal(String event)
-    {
-        return true;
-    }
-      
     //returns true if event originated in same MorphoFrame as this GUIAction
     private boolean isLocalEvent(StateChangeEvent event) 
     {
         Object source = event.getSource();
-        
         if (source==null) {
             Log.debug(50, "GUIAction.isLocalEvent: got event with NULL source");
             return false;
         }
-        
         MorphoFrame eventAncestor = null;
         
         if (source instanceof Component) {
             eventAncestor = getMorphoFrameAncestor((Component)source);
             
         } else if (source instanceof MenuComponent) {
-            
             eventAncestor = getMorphoFrameAncestor(
                         (Component)( ( (MenuComponent)source ).getParent()) );
-        }           
+        } else {
+          return false;
+        }          
         MorphoFrame thisAncestor
                         = UIController.getMorphoFrameContainingGUIAction(this);
+        Log.debug(50,"\n# # GUIAction.isLocalEvent: comparing eventAncestor="
+                              +eventAncestor+" and thisAncestor="+thisAncestor);
+        Log.debug(50,"\n# # result = "+( eventAncestor==thisAncestor ));
         return ( eventAncestor==thisAncestor );
     }
 
@@ -460,7 +473,19 @@ public class GUIAction extends AbstractAction implements StateChangeListener
 
     private MorphoFrame getMorphoFrameAncestor(Component c) 
     {
-        return null;
+        Object parent = null;                      
+        if (c instanceof MorphoFrame) {
+        
+            return (MorphoFrame)c;
+            
+        } else {
+        
+            parent = c.getParent();
+            if ((parent==null) || (parent instanceof MorphoFrame)) {
+                return (MorphoFrame)parent;
+            }
+        }
+        return getMorphoFrameAncestor((Component)parent);
     }
     
 // * * *  V A R I A B L E S  * * *
@@ -484,19 +509,17 @@ public class GUIAction extends AbstractAction implements StateChangeListener
         
         public Object getNewState(String key) { return getColumn(key,1); }
         
-        public boolean respondsLocalOnly(String key) { 
+        public int getRespondsTo(String key) { 
         
-            return ((Boolean)getColumn(key,2)).booleanValue();
+            return ((Integer)getColumn(key,2)).intValue();
         }
 
-        public void put(String key, Object newState, boolean respondsLocalOnly)
+        public void put(String key, Object newState, int respondsTo)
         {
             if (!table.containsKey(key))  {
             
                 table.put(  key, 
-                            new Object[] {  newState, 
-                                            new Boolean(respondsLocalOnly) 
-                                         });
+                            new Object[] { newState, new Integer(respondsTo) });
             }
         }
 
