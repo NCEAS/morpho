@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2001-05-03 01:51:58 $'
- * '$Revision: 1.53 $'
+ *     '$Date: 2001-05-03 18:51:30 $'
+ * '$Revision: 1.54 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -36,6 +36,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.Hashtable;
 import java.util.Properties;
+import java.util.Vector;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -58,7 +59,7 @@ public class QueryPlugin implements PluginInterface
   /** Query used to find data owned by the user */
   private Query ownerQuery = null;
 
-  /** Tabbed panel that contains the data owned by the user */
+  /** Tabbed panel that displays the data owned by the user */
   private ResultPanel ownerPanel = null;
 
   /**
@@ -67,14 +68,15 @@ public class QueryPlugin implements PluginInterface
    */
   public QueryPlugin()
   {
-    // Create the menus and toolbar actions
+    // Create the menus and toolbar actions, will register later
     initializeActions();
   }
 
   /** 
    * The plugin must store a reference to the ClientFramework 
    * in order to be able to call the services available through 
-   * the framework
+   * the framework.  This is also the time to register menus
+   * and toolbars with the framework.
    */
   public void initialize(ClientFramework cf)
   {
@@ -94,50 +96,6 @@ public class QueryPlugin implements PluginInterface
     framework.addToolbarActions(toolbarActions);
   }
 
-  /**
-   * This method is called on component initialization to generate a list
-   * of the names of the menus, indexed by display position, that the component 
-   * wants added to the framework.  If a menu already exists (from another 
-   * component or the framework itself), the position will be determined by 
-   * the earlier registration of the menu.
-   */
-  public Hashtable registerMenus() {
-    Hashtable menuList = new Hashtable();
-    menuList.put(new Integer(3), "Search");
-    return menuList;
-  }
-
-  /**
-   * The plugin must return the Actions that should be associated 
-   * with a particular menu. They will be appended onto the bottom of the menu
-   * in most cases.
-   */
-  public Action[] registerMenuActions(String menu) {
-    Action actionList[] = null;
-    if (menu.equals("Search")) {
-      actionList = menuActions;
-    }
-    return actionList;
-  }
-
-  /**
-   * The plugin must return the list of Actions to be associated with the
-   * toolbar for the framework. 
-   */
-  public Action[] registerToolbarActions() {
-    return toolbarActions;;
-  }
-
-  /**
-   * This method is called by the framework when the plugin should 
-   * register a UI tab pane that is to be incorporated into the main
-   * user interface.
-   */
-  public Component registerTabPane()
-  {
-    return ownerPanel;
-  } 
-    
   /**
    * This method is called by the framework when the plugin should 
    * register any services that it handles.  The plugin should then
@@ -216,22 +174,22 @@ public class QueryPlugin implements PluginInterface
     toolbarActions[1] = reviseItemAction;
     toolbarActions[2] = refreshItemAction;
   }
-/*
-  void TestSearch_actionPerformed(java.awt.event.ActionEvent event)
-  {
-    framework.debug(9, "Current user: " + framework.getUserName());
-    getOwnerDocs(framework.getUserName());
-  }
-*/
 
   /**
    * Construct a query suitable for getting the owner documents
    */
-  public String getOwnerQuery()
+  private String getOwnerQuery()
   {
     StringBuffer searchtext = new StringBuffer();
     searchtext.append("<?xml version=\"1.0\"?>\n");
     searchtext.append("<pathquery version=\"1.0\">\n");
+    searchtext.append("<querytitle>My Data</querytitle>\n");
+    Vector returnDoctypeList = config.get("returndoc");
+    for (int i=0; i < returnDoctypeList.size(); i++) {
+      searchtext.append("<returndoctype>");
+      searchtext.append((String)returnDoctypeList.get(i));
+      searchtext.append("</returndoctype>\n");
+    }
     searchtext.append("<owner>" + framework.getUserName() + "</owner>\n");
     searchtext.append("<querygroup operator=\"UNION\">\n");
     searchtext.append("<queryterm casesensitive=\"true\" ");

@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2001-05-03 01:51:58 $'
- * '$Revision: 1.2 $'
+ *     '$Date: 2001-05-03 18:51:30 $'
+ * '$Revision: 1.3 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -55,21 +55,23 @@ import java.util.Hashtable;
  * A ResultSet encapsulates the list of results returned from either a
  * local query or a Metacat query. It contains a reference to its
  * original query, so the result set can be refreshed by re-running the query.
+ * Current MetaCat query returns a <document> element for each 'hit'
+ * in query. That <document> element has 5 fixed children: <docid>, <docname>,
+ * <doctype>, <createdate>, and <updatadate>
+ * Other child elements are determined by query and are returned as <param>
+ * elements with a "name" attribute and a value in the text.
  */
 public class ResultSet extends AbstractTableModel implements ContentHandler
 {
   /** store a private copy of the Query run to create this resultset */
-  private Query query = null;
+  private Query savedQuery = null;
 
   /** Store each row of the result set as a row in a Vector */
-  Vector resultsVector = null;
+  private Vector resultsVector = null;
 
-  //private InputStream is;   
   private Stack elementStack = null;
-  //private JTable RSTable = null;
   private String[] headers = {"Doc ID", "Document Name", 
                               "Document Type", "Document Title"};
-  //private DefaultTableModel dtm;
   private String docid;
   private String docname;
   private String doctype;
@@ -87,25 +89,7 @@ public class ResultSet extends AbstractTableModel implements ContentHandler
   private Vector returnFields; // return field path names
   private int num_cols_to_remove = 3;
 
-  private ImageIcon folder = null; //folder = new ImageIcon(
-                    //getClass().getResource("Btflyyel.gif"));
-  private String[] columnNames = { "First Name",
-                                   "Last Name", "Sport",
-                                   "# of Years", "Vegetarian"
-  };
-
-  private Object[][] data = {
-    {"Mary", "Campione",
-     "Snowboarding", new Integer(5), new Boolean(false)},
-    {"Alison", "Huml",
-     "Rowing", new Integer(3), new Boolean(true)},
-    {"Kathy", "Walrath",
-     "Chasing toddlers", new Integer(2), new Boolean(false)},
-    {"Mark", "Andrews",
-     "Speed reading", new Integer(20), new Boolean(true)},
-    {"Angela", "Lih",
-     "Teaching high school", new Integer(4), new Boolean(false)}
-  };
+  private ImageIcon folder = null;
 
   /**
    * Construct a ResultSet instance given a query object and a
@@ -113,7 +97,7 @@ public class ResultSet extends AbstractTableModel implements ContentHandler
    */
   public ResultSet(Query query, InputStream resultsXMLStream)
   {
-    this.query = query;
+    this.savedQuery = query;
 
     resultsVector = new Vector();
     relations = new Hashtable(); 
@@ -137,12 +121,6 @@ public class ResultSet extends AbstractTableModel implements ContentHandler
     for (int i=0;i<cnt;i++) {
       headers[4+i] = getLastPathElement((String)returnFields.elementAt(i));
     }
-/*
-    dtm = new DefaultTableModel(headers,0);
-    RSTable = new JTable(dtm);
-    TableColumnModel tcm = RSTable.getColumnModel();
-    removeFirstNColumns(tcm,num_cols_to_remove);
-*/
     String parserName = "org.apache.xerces.parsers.SAXParser";
     XMLReader parser = null;
 
@@ -195,7 +173,6 @@ public class ResultSet extends AbstractTableModel implements ContentHandler
    */
   public Object getValueAt(int row, int col)
   {
-    //return data[row][col];
     Vector rowVector = (Vector)resultsVector.get(row);
     return rowVector.get(col);
   }
@@ -209,104 +186,10 @@ public class ResultSet extends AbstractTableModel implements ContentHandler
     return getValueAt(0, c).getClass();
   }
 
-
-/*
-*   Current MetaCat result set returns a <document> element for each 'hit'
-*   in query. That <document> element has 6 fixed children: <docid>, <docname>,
-*   <doctype>, <createdate>, and <updatadate>
-*   Other child elements are determined by query and are returned as <param>
-*   elements with a "name" attribute and a value in the text.
-*/
-
-
-  /*
-  public ResultSet(InputStream is, int cols) {
-    relations = new Hashtable(); 
-    this.is = is;
-    ConfigXML config = new ConfigXML("lib/config.xml");
-    returnFields = config.get("returnfield");
-    int cnt;
-    if (returnFields==null) {
-        cnt = 0;
-    }
-    else {
-        cnt = returnFields.size();
-    }
-    
-    headers = new String[4+cnt];  // assume at least 4 fields returned
-    headers[0] = "Doc ID";
-    headers[1] = "Document Name";
-    headers[2] = "Document Type";
-    headers[3] = "Document Title";
-    for (int i=0;i<cnt;i++) {
-        headers[4+i] = getLastPathElement((String)returnFields.elementAt(i));
-    }
-    dtm = new DefaultTableModel(headers,0);
-    RSTable = new JTable(dtm);
-    TableColumnModel tcm = RSTable.getColumnModel();
-    removeFirstNColumns(tcm,cols);
-    String parserName = "org.apache.xerces.parsers.SAXParser";
-    XMLReader parser = null;
-
-    // Set up the SAX document handlers for parsing
-    try {
-          // Get an instance of the parser
-          parser = XMLReaderFactory.createXMLReader(parserName);
-          // Set the ContentHandler to this instance
-          parser.setContentHandler(this);
-          parser.parse(new InputSource(is));
-        } catch (Exception e) {
-           System.err.println(e.toString());
-        }
-  }   
-    
-  public ResultSet(InputStream is) {
-    relations = new Hashtable(); 
-    this.is = is;
-    ConfigXML config = new ConfigXML("lib/config.xml");
-    returnFields = config.get("returnfield");
-    int cnt;
-    if (returnFields==null) {
-        cnt = 0;
-    }
-    else {
-        cnt = returnFields.size();
-    }
-    
-    headers = new String[4+cnt];  // assume at least 4 fields returned
-    headers[0] = "Doc ID";
-    headers[1] = "Document Name";
-    headers[2] = "Document Type";
-    headers[3] = "Document Title";
-    for (int i=0;i<cnt;i++) {
-        headers[4+i] = getLastPathElement((String)returnFields.elementAt(i));
-    }
-    dtm = new DefaultTableModel(headers,0);
-    RSTable = new JTable(dtm);
-    TableColumnModel tcm = RSTable.getColumnModel();
-    removeFirstNColumns(tcm,num_cols_to_remove);
-    String parserName = "org.apache.xerces.parsers.SAXParser";
-    XMLReader parser = null;
-
-    // Set up the SAX document handlers for parsing
-    try {
-          // Get an instance of the parser
-          parser = XMLReaderFactory.createXMLReader(parserName);
-          // Set the ContentHandler to this instance
-          parser.setContentHandler(this);
-          parser.parse(new InputSource(is));
-        } catch (Exception e) {
-           System.err.println(e.toString());
-        }
-  }
-  */
-
-  /*
-  public JTable getTable() {
-    return RSTable;
-  }
-  */
-
+  /**
+   * SAX handler callback that is called upon the start of an
+   * element when parsing an XML document.
+   */
   public void startElement (String uri, String localName,
                             String qName, Attributes atts)
                             throws SAXException 
@@ -335,6 +218,10 @@ public class ResultSet extends AbstractTableModel implements ContentHandler
     }
   }
   
+  /**
+   * SAX handler callback that is called upon the end of an
+   * element when parsing an XML document.
+   */
   public void endElement (String uri, String localName,
                           String qName) throws SAXException 
   {
@@ -352,28 +239,20 @@ public class ResultSet extends AbstractTableModel implements ContentHandler
       }
 
       Vector row = new Vector();
-      //String[] row = new String[4+cnt];
 
       row.add(folder);
       row.add(docid);
       row.add(docname);
       row.add(doctype);
-/*
-      row[0] = docid;
-      row[1] = docname;
-      row[2] = doctype;
-*/
+
       // for cases where there is no doctitle
       if (!doctitle.equals("")) {
         row.add(doctitle);
-        //row[3] = doctitle;
       } else { 
         row.add(docid);
-        //row[3] = docid;
       }  
       for (int i=0;i<cnt;i++) {
         row.add((String)(params.get(returnFields.elementAt(i))));
-        //row[4+i] = (String)(params.get(returnFields.elementAt(i)));   
       }
       if (relationsVector.size()>0) {
         relations.put(docid, relationsVector);
@@ -384,6 +263,10 @@ public class ResultSet extends AbstractTableModel implements ContentHandler
     String leaving = (String)elementStack.pop();
   }
   
+  /**
+   * SAX handler callback that is called for character content of an
+   * element when parsing an XML document.
+   */
   public void characters(char ch[], int start, int length) 
   {
     String inputString = new String(ch, start, length);
@@ -419,42 +302,54 @@ public class ResultSet extends AbstractTableModel implements ContentHandler
     }
   }
 
+  /**
+   * SAX handler callback that is called when an XML document 
+   * is initially parsed.
+   */
   public void startDocument() throws SAXException { 
     elementStack = new Stack();
   }
 
+  /** Unused SAX handler */
   public void endDocument() throws SAXException 
   { 
   }
 
+  /** Unused SAX handler */
   public void ignorableWhitespace(char[] cbuf, int start, int len) 
   { 
   }
 
+  /** Unused SAX handler */
   public void skippedEntity(String name) throws SAXException 
   { 
   }
 
+  /** Unused SAX handler */
   public void processingInstruction(String target, String data) 
               throws SAXException 
   { 
   }
 
+  /** Unused SAX handler */
   public void startPrefixMapping(String prefix, String uri) 
               throws SAXException 
   { 
   }
 
+  /** Unused SAX handler */
   public void endPrefixMapping(String prefix) throws SAXException 
   { 
   }
 
+  /** Unused SAX handler */
   public void setDocumentLocator (Locator locator) 
   { 
   }
 
-
-  // use to get the last element in a path string
+  /**
+   * Get the last element in a path string
+   */
   private String getLastPathElement(String str) {
     String last = "";
     int ind = str.lastIndexOf("/");
@@ -466,21 +361,9 @@ public class ResultSet extends AbstractTableModel implements ContentHandler
     return last;
   }
    
-  private void removeTableColumn( TableColumnModel tcm, int index) {
-    int cnt = tcm.getColumnCount();
-    if (index<cnt) {
-      TableColumn tc = tcm.getColumn(index);
-      tcm.removeColumn(tc);
-    }
-  }
-  
-  private void removeFirstNColumns(TableColumnModel tcm, int n) {
-    // n is the number of leading columns to remove
-    for (int i=0;i<n;i++) {
-      removeTableColumn(tcm,0);
-    }
-  }
-   
+  /**
+   * Return the package relations for the whole result set
+   */
   public Hashtable getRelations() {
     return relations; 
   }
