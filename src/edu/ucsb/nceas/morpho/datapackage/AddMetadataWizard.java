@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: berkley $'
- *     '$Date: 2001-08-31 22:40:01 $'
- * '$Revision: 1.3 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2001-10-09 20:44:27 $'
+ * '$Revision: 1.4 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -76,6 +76,7 @@ public class AddMetadataWizard extends JFrame
   String relatedtoId = "";
   Vector relatedFileIds;
   File addedFile = null;
+  File addedMetadataFile = null;
   String relateDataFileTo = "";
   String dummydoc = "";
   boolean editingExistingFile;
@@ -90,6 +91,7 @@ public class AddMetadataWizard extends JFrame
 
   ImageIcon forwardIcon = null;
   
+  JRadioButton existingMetadata = new JRadioButton("Existing Description");
   JRadioButton createNew = new JRadioButton("New Description");
   JRadioButton existingFile = new JRadioButton("Existing Data File");
   JTextField fileTextField = new JTextField();
@@ -132,6 +134,7 @@ public class AddMetadataWizard extends JFrame
     ButtonGroup group1 = new ButtonGroup();
     group1.add(createNew);
     group1.add(existingFile);
+    group1.add(existingMetadata);
     
     //parse the config file and create the new file buttons
     newXMLFileAtts = PackageUtil.getConfigFileTypeAttributes(framework, "label");
@@ -366,8 +369,10 @@ public class AddMetadataWizard extends JFrame
       JLabel initLabel = new JLabel("<html><p><font color=black>What kind of " +
                                     "information would you like " +
                                     "to provide?  To add an existing data file " +
-                                    "on your system, select 'Existing " +
+                                    "on your system, select 'Existing Data" +
                                     "File'. " +
+                                    "To add an existing description file (XML metadata) " +
+                                    "select 'Existing Description'. " +
                                     "To add new descriptions from scratch, " +
                                     "select 'New Description'." +
                                     "</font></p></html>");
@@ -378,6 +383,7 @@ public class AddMetadataWizard extends JFrame
       JPanel layoutpanel = new JPanel();
       layoutpanel.setLayout(new BoxLayout(layoutpanel, BoxLayout.Y_AXIS));
       layoutpanel.add(createNew);
+      layoutpanel.add(existingMetadata);
       layoutpanel.add(existingFile);
       screenPanel.add(layoutpanel);
       screenPanel.setLayout(new GridLayout(0,1));
@@ -387,7 +393,7 @@ public class AddMetadataWizard extends JFrame
       if(createNew.isSelected())
       { //give the user choices as to which type of MD they want to create
         String helpText = "<html>Select the type of description that you " +
-                          "to add. Holding your mouse over any of the " +
+                          "want to add. Holding your mouse over any of the " +
                           "selections will give you more information on that " +
                           "item. Clicking the 'Next' button will temporarily " +
                           "close this window and open the editor so you can " +
@@ -417,9 +423,9 @@ public class AddMetadataWizard extends JFrame
         screenPanel.setLayout(new GridLayout(0,1));
         dummydoc = "";
       }
-      else
+      else if (existingFile.isSelected())
       { //display an open file dialog
-        String helpText = "<html>Select a file to add to your data package." +
+        String helpText = "<html>Select a DATA FILE to add to your data package." +
                           "</html>";
         helpLabel.setText(helpText);
         JLabel initLabel = new JLabel("<html><p><font color=black>Choose a " +
@@ -436,6 +442,25 @@ public class AddMetadataWizard extends JFrame
         screenPanel.add(layoutpanel);
         screenPanel.setLayout(new GridLayout(0,1));
       }
+      else if (existingMetadata.isSelected()) {
+ //display an open file dialog
+        String helpText1 = "<html>Select a DESCRIPTION FILE to add to your data package." +
+                          " [This file should be an XML metadata file.]" +
+                          "</html>";
+        helpLabel.setText(helpText1);
+        JLabel initLabel1 = new JLabel("<html><p><font color=black>Choose a " +
+                                      "file.</font></p></html>");
+        initLabel1.setMaximumSize(new Dimension(375, 100));
+        JPanel layoutpanel = new JPanel();
+        //layoutpanel.setLayout(new BoxLayout(layoutpanel, BoxLayout.X_AXIS));
+        JButton browseButton = new JButton("Browse...");
+        browseButton.addActionListener(this);
+        fileTextField.setColumns(20);
+        screenPanel.add(initLabel1);
+        layoutpanel.add(fileTextField);
+        layoutpanel.add(browseButton);
+        screenPanel.add(layoutpanel);
+        screenPanel.setLayout(new GridLayout(0,1));      }
     }
     else if(2 == currentScreen)
     {
@@ -503,7 +528,7 @@ public class AddMetadataWizard extends JFrame
         editor.openEditor(dummydoc, null, null, this);
         this.hide();
       }
-      else
+      else if (existingFile.isSelected())
       { //the user wishes to put an existing file into the package.
         
         //get the file
@@ -596,6 +621,17 @@ public class AddMetadataWizard extends JFrame
           /*
         }
           */
+          
+          
+      }
+      else if (existingMetadata.isSelected())
+      {
+        addedMetadataFile = new File(fileTextField.getText());
+        if(!prevFlag)
+        {
+          nextButtonHandler(new ActionEvent(this, 0, ""));
+        }
+         
       }
     }
     else if(3 == currentScreen)
@@ -713,7 +749,7 @@ public class AddMetadataWizard extends JFrame
 
     if (currentScreen == numScreens-1) {
       nextButton.setEnabled(true);
-      nextButton.setText("Finished");
+      nextButton.setText("Finish");
       nextButton.setIcon(null);
     } else {
       nextButton.setEnabled(true);
@@ -729,22 +765,28 @@ public class AddMetadataWizard extends JFrame
   private void handleAddDataFile(boolean locLocal, boolean locMetacat, 
                                  String newid)
   { //add a data file here 
+    String relationship = "isRelatedTo";
     AccessionNumber a = new AccessionNumber(framework);
     FileSystemDataStore fsds = new FileSystemDataStore(framework);
     //relate the new data file to the package itself
-    String relationship = fileTextField.getText();
-    if(relationship.indexOf("/") != -1 || 
-       relationship.indexOf("\\") != -1)
-    { //strip out the path info
-      int slashindex = relationship.lastIndexOf("/") + 1;
-      if(slashindex == -1)
-      {
-        slashindex = relationship.lastIndexOf("\\") + 1;
-      }
+    if (addedFile!=null) {
+      relationship = fileTextField.getText();
+      if(relationship.indexOf("/") != -1 || 
+        relationship.indexOf("\\") != -1)
+      { //strip out the path info
+        int slashindex = relationship.lastIndexOf("/") + 1;
+        if(slashindex == -1)
+        {
+          slashindex = relationship.lastIndexOf("\\") + 1;
+        }
       
-      relationship = relationship.substring(slashindex, 
+        relationship = relationship.substring(slashindex, 
                                             relationship.length());
-      relationship = "isDataFileFor(" + relationship + ")";
+        relationship = "isDataFileFor(" + relationship + ")";
+      }
+    }
+    else if (addedMetadataFile!=null) {
+      relationship = "isRelatedTo";  
     }
     Triple t = new Triple(newid, relationship, dataPackage.getID());
     TripleCollection triples = new TripleCollection();
@@ -783,8 +825,14 @@ public class AddMetadataWizard extends JFrame
       File newPackageMember;
       try
       { //save the new package member
-        newPackageMember = fsds.newFile(newid, new FileReader(addedFile), 
+        if (addedFile!=null) {
+          newPackageMember = fsds.newFile(newid, new FileReader(addedFile), 
                                         false);
+        }
+        else if (addedMetadataFile!=null) {
+          newPackageMember = fsds.newFile(newid, new FileReader(addedMetadataFile), 
+                                        false);
+        }
       }
       catch(Exception e)
       {
@@ -886,6 +934,13 @@ public class AddMetadataWizard extends JFrame
       handleAddDataFile(locLocal, locMetacat, newid);
       return;
     }
+    
+    if(addedMetadataFile != null) {
+     // we are adding an existing metadata file to the package here
+      newid = a.getNextId();
+      handleAddDataFile(locLocal, locMetacat, newid);
+      return;
+    } 
     
     if(editingExistingFile)
     { //if we edited an existing file we don't need to create a new id

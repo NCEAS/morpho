@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-10-03 15:50:43 $'
- * '$Revision: 1.55 $'
+ *     '$Date: 2001-10-09 20:44:27 $'
+ * '$Revision: 1.56 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -213,7 +213,13 @@ public class DataPackageGUI extends javax.swing.JFrame
         {
           String eleid = (String)v.elementAt(i);
           Hashtable h = (Hashtable)fileAttributes.get(key);
-          String displayName = (String)h.get("displaypath");
+          String displayName = "";
+          if ((h==null)||(h.get("displaypath")==null)) {
+            displayName = "";
+          }
+          else {
+           displayName = (String)h.get("displaypath");
+          }
           if(displayName.indexOf("FIXED:") != -1)
           {
             displayName = displayName.substring(displayName.indexOf(":") + 1, 
@@ -235,13 +241,15 @@ public class DataPackageGUI extends javax.swing.JFrame
               e.printStackTrace();
               return;
             }
-            NodeList nl = PackageUtil.getPathContent(f, displayName, framework);
-            for(int j=0; j<nl.getLength(); j++)
-            {
-              Node n = nl.item(j);
-              String nodeContent = n.getFirstChild().getNodeValue();
-              String s = nodeContent + " (" + eleid + ")";
-              otheritems.addElement(s.trim());
+            if (displayName.length()>0) {
+              NodeList nl = PackageUtil.getPathContent(f, displayName, framework);
+              for(int j=0; j<nl.getLength(); j++)
+              {
+                Node n = nl.item(j);
+                String nodeContent = n.getFirstChild().getNodeValue();
+                String s = nodeContent + " (" + eleid + ")";
+                otheritems.addElement(s.trim());
+              }
             }
           }
         }
