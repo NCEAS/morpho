@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-10-04 20:58:08 $'
- * '$Revision: 1.16 $'
+ *     '$Date: 2003-10-15 19:20:43 $'
+ * '$Revision: 1.17 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -142,7 +142,14 @@ public abstract class AbstractDataPackage extends MetadataObject
     return dataPkgFile;  
   }
 
-  /**
+ /**
+  *  Method to return the location
+  */
+  String getLocation() {
+    return location;
+  }
+
+ /**
    *  convenience method to get the DataPackage title
    */
   public String getTitle() {
@@ -211,7 +218,8 @@ public abstract class AbstractDataPackage extends MetadataObject
    *  Metadata object, but this offers no obvious advantage over simply saving this node array
    *  as one of the members of AbstractDataPackage
    */
-  public void getEntityArray() {
+  public Node[] getEntityArray() {
+    if (entityArray!=null) return entityArray;
     String entityXpath = "";
     try{
       entityXpath = (XMLUtilities.getTextNodeWithXPath(getMetadataPath(), 
@@ -228,7 +236,9 @@ public abstract class AbstractDataPackage extends MetadataObject
     }
     catch (Exception w) {
       Log.debug(50,"exception in getting entityArray");
+      return null;
     }
+    return entityArray;
   }
 
   /**
