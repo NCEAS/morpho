@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-01-12 22:40:06 $'
- * '$Revision: 1.82 $'
+ *     '$Date: 2002-01-28 18:59:44 $'
+ * '$Revision: 1.83 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1231,7 +1231,7 @@ class SymTreeSelection implements javax.swing.event.TreeSelectionListener
 	            if ((card.equals("ZERO to MANY"))||(card.equals("OPTIONAL"))||(card.equals("NOT SELECTED")) ) {
 	              if (!hasNonEmptyTextLeaves(tempNode)) {
 	                parentNode.remove(tempNode);
-	                parentNode = null;
+//	                parentNode = null;
 	              }
 	            }
 	          }
