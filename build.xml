@@ -1,18 +1,18 @@
 <?xml version="1.0"?>
-<!-- 
+<!--
   * build.xml
   *
   *      Authors: Matt Jones
   *    Copyright: 2000 Regents of the University of California and the
   *               National Center for Ecological Analysis and Synthesis
   *  For Details: http://www.nceas.ucsb.edu/
-  *    File Info: '$Id: build.xml,v 1.63 2002-11-01 16:43:19 higgins Exp $'
+  *    File Info: '$Id: build.xml,v 1.64 2002-11-01 22:42:53 berkley Exp $'
   *
   *  Build file for the Ant cross-platform build system for metacat
   *  See http://jakarta.apache.org for details on Ant
   *
   * usage: ant [compile|jar|install|jdoc]
---> 
+-->
 <project name="morpho" default="install" basedir=".">
    <target name="init">
       <property name="name" value="morpho"/>
@@ -33,7 +33,7 @@
       <property name="itisdir" value="../itislib" />
       <property name="srcdir" value="./src" />
       <property name="libdir" value="./lib" />
-      <property name="jwsdir" 
+      <property name="jwsdir"
                 value="/var/www/org.ecoinformatics.knb/software/dist/morpho" />
       <property name="testdir" value="./tests" />
 
@@ -61,21 +61,21 @@
       <property name="morpho.docs.licenses" value="${morpho.docs}/licenses"/>
       <property name="morpho.docs.dev.api" value="${morpho.docs.dev}/api"/>
 
-      <property name="xml4j" 
+      <property name="xml4j"
                 value="${libdir}/xml4j.jar" />
-      <property name="xerces" 
+      <property name="xerces"
                 value="${libdir}/xercesImpl.jar" />
-      <property name="apis" 
+      <property name="apis"
                 value="${libdir}/xml-apis.jar" />
-      <property name="xalan" 
+      <property name="xalan"
                 value="${libdir}/xalan.jar" />
-      <property name="sym" 
+      <property name="sym"
                 value="${libdir}/sym.jar" />
-      <property name="dtd" 
+      <property name="dtd"
                 value="${libdir}/dtdparser111.jar" />
-      <property name="morpho" 
+      <property name="morpho"
                 value="${libdir}/${name}.jar" />
-      <property name="jlf" 
+      <property name="jlf"
                 value="${libdir}/shippedIcons.jar" />
       <property name="itisjar"
                 value="${libdir}/itislib.jar" />
@@ -85,18 +85,18 @@
                 value="${libdir}/jcert.jar" />
       <property name="jnet"
                 value="${libdir}/jnet.jar" />
-      <property name="httpclient" 
+      <property name="httpclient"
                 value="${libdir}/httpclient.jar" />
-      <property name="kunststoff" 
+      <property name="kunststoff"
                 value="${libdir}/kunststoff.jar" />
       <property name="morpho-config"
                 value="${libdir}/morpho-config.jar" />
-      <property name="cpath" 
+      <property name="cpath"
                 value="lib/jsse.jar:lib/jcert.jar:lib/jnet.jar:${xerces}:${apis}:${kunststoff}:${xalan}:${xml4j}:${build.dest}:${sym}:${dtd}:${jlf}:${itisjar}:${httpclient}:${morpho-config}"/>
       <property name="package.home" value="edu/ucsb/nceas" />
 
    </target>
-   
+
    <target name="prepare" depends="init">
       <mkdir dir="${build.dir}"/>
       <mkdir dir="${build.src}"/>
@@ -122,11 +122,11 @@
         <fileset dir="lib" includes="HTTPClient/**/*.class"/>
       </jar>
 
-      <javac srcdir="${srcdir}" 
-             destdir="${build.dest}" 
+      <javac srcdir="${srcdir}"
+             destdir="${build.dest}"
              debug="on"
-             classpath="${cpath}" /> 
-   </target> 
+             classpath="${cpath}" />
+   </target>
 
    <target name="jar" depends="compile">
       <delete file="${build.dir}/${name}.jar" />
@@ -145,7 +145,7 @@
       </copy>
       <copy todir="${build.dest}/${package.home}/morpho/util" filtering="no">
          <fileset dir="${srcdir}/${package.home}/morpho/util/images">
-	 </fileset>
+   </fileset>
       </copy>
       <copy todir="${build.dest}/${package.home}/morpho/editor" filtering="no">
         <fileset dir="${srcdir}/${package.home}/morpho/editor/images">
@@ -169,9 +169,9 @@
    </target>
 
    <target name="sign" depends="install">
-      <signjar jar="${libdir}/${name}.jar" alias="myself" 
+      <signjar jar="${libdir}/${name}.jar" alias="myself"
                storepass="${storepass}" keystore="${keystore}"/>
-      <signjar jar="${libdir}/${name}-config.jar" alias="myself" 
+      <signjar jar="${libdir}/${name}-config.jar" alias="myself"
                storepass="${storepass}" keystore="${keystore}"/>
    </target>
 
@@ -208,6 +208,7 @@
           <exclude name="**/api"/>
         </fileset>
       </copy>
+      <mkdir dir="$morpho.docs.dev.api}"/>
       <copy todir="${morpho.docs.dev.api}">
         <fileset dir="${build.docs}/api"/>
       </copy>
@@ -215,23 +216,23 @@
       <copy file="./lib/shippedIcons.jar" todir="${morpho.lib}"/>
       <copy file="./lib/morpho.jar" todir="${morpho.lib}"/>
       <copy file="./lib/xalan.jar" todir="${morpho.lib}"/>
-      <copy file="./lib/httpclient.jar" todir="${morpho.lib}"/> 
-      <copy file="./lib/jsse.jar" todir="${morpho.lib}"/> 
-      <copy file="./lib/jcert.jar" todir="${morpho.lib}"/> 
-      <copy file="./lib/jnet.jar" todir="${morpho.lib}"/>  
+      <copy file="./lib/httpclient.jar" todir="${morpho.lib}"/>
+      <copy file="./lib/jsse.jar" todir="${morpho.lib}"/>
+      <copy file="./lib/jcert.jar" todir="${morpho.lib}"/>
+      <copy file="./lib/jnet.jar" todir="${morpho.lib}"/>
       <copy file="./lib//${name}-config.jar" todir="${morpho.lib}"/>
-      <copy file="./lib/xercesImpl.jar" todir="${morpho.lib}"/>  
-      <copy file="./lib/kunststoff.jar" todir="${morpho.lib}"/>  
-      <copy file="./lib/xml-apis.jar" todir="${morpho.lib}"/>  
-       
+      <copy file="./lib/xercesImpl.jar" todir="${morpho.lib}"/>
+      <copy file="./lib/kunststoff.jar" todir="${morpho.lib}"/>
+      <copy file="./lib/xml-apis.jar" todir="${morpho.lib}"/>
+
       <delete file="./lib/morpho-${release}.zip"/>
       <zip zipfile="./lib/morpho-${release}.zip" basedir="${dist.dir}"/>
       <delete file="./lib/morpho-${release}.tar.gz" />
       <tar tarfile="./lib/morpho-${release}.tar" basedir="${dist.dir}"/>
-      <gzip zipfile="./lib/morpho-${release}.tar.gz" 
+      <gzip zipfile="./lib/morpho-${release}.tar.gz"
                 src="./lib/morpho-${release}.tar"/>
       <delete file="./lib/morpho-${release}.tar" />
-  </target> 
+  </target>
 
   <target name="distsrc" depends="dist">
       <mkdir dir="${morpho.src}"/>
@@ -247,10 +248,10 @@
       <zip zipfile="./lib/morpho-src-${release}.zip" basedir="${dist.dir}"/>
       <delete file="./lib/morpho-src-${release}.tar.gz" />
       <tar tarfile="./lib/morpho-src-${release}.tar" basedir="${dist.dir}"/>
-      <gzip zipfile="./lib/morpho-src-${release}.tar.gz" 
+      <gzip zipfile="./lib/morpho-src-${release}.tar.gz"
                 src="./lib/morpho-src-${release}.tar"/>
       <delete file="./lib/morpho-src-${release}.tar" />
-  </target> 
+  </target>
 
    <target name="clean" depends="init">
        <delete dir="${build.dir}" />
@@ -261,7 +262,7 @@
    </target>
 
    <target name="docs" depends="init">
-     <mkdir dir="${build.docs}"/> 
+     <mkdir dir="${build.docs}"/>
      <mkdir dir="${build.docs}/user"/>
      <mkdir dir="${build.docs}/user/advanced"/>
      <mkdir dir="${build.docs}/licenses"/>
@@ -280,7 +281,7 @@
        <fileset dir="./docs/user">
          <include name="*.html"/>
        </fileset>
-     </copy> 
+     </copy>
      <copy todir="${build.docs}/user/advanced" filtering="yes">
        <fileset dir="./docs/user/advanced">
          <include name="*.html"/>
@@ -312,7 +313,7 @@
        <jvmarg line="-Djava.protocol.handler.pkgs=HTTPClient"/>
      </java>
    </target>
-   
+
    <!-- use the ant "junit" task to run JUnit tests. -->
    <target name="test" depends="install">
       <!-- copy and compile the tests into a jar file -->
@@ -347,7 +348,7 @@
         </batchtest>
      </junit>
    </target>
-   
+
    <!-- use the ant "junit" task to run one JUnit tests. -->
    <target name="runonetest" depends="install">
      <!-- set the test that you want to run here -->
@@ -384,11 +385,11 @@
         </batchtest>
      </junit>
    </target>
-   
+
    <!-- build the itis library for querying ITIS -->
    <target name="itis" depends="init">
      <ant dir="${itisdir}" />
      <copy file="${itisdir}/lib/itislib.jar" todir="${libdir}" />
    </target>
-   
+
 </project>
