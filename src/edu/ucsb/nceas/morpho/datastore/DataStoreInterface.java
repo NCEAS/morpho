@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: jones $'
- *     '$Date: 2002-08-06 21:10:39 $'
- * '$Revision: 1.1 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2003-12-30 17:10:40 $'
+ * '$Revision: 1.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,7 +28,6 @@ package edu.ucsb.nceas.morpho.datastore;
 
 import java.io.*;
 import java.util.*;
-import edu.ucsb.nceas.morpho.datapackage.*;
 
 /**
  * creates an interface for getting files from any dataStore using the same
@@ -51,14 +50,14 @@ public interface DataStoreInterface
    * is true, then an unauthenticated user may read the document from the 
    * data store.
    */
-  public File saveFile(String name, Reader file, DataPackage dp)
+  public File saveFile(String name, Reader file)
          throws Exception;
   
   /**
    * create a new file with an id of name in the datastore and return a File
    * object that represents it.
    */
-  public File newFile(String name, Reader file, DataPackage dp)
+  public File newFile(String name, Reader file)
          throws Exception;
   
   /**

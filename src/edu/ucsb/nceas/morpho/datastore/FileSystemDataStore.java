@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-11-25 23:13:46 $'
- * '$Revision: 1.5 $'
+ *     '$Date: 2003-12-30 17:10:40 $'
+ * '$Revision: 1.6 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,7 +27,6 @@
 package edu.ucsb.nceas.morpho.datastore;
 
 import edu.ucsb.nceas.morpho.Morpho;
-import edu.ucsb.nceas.morpho.datapackage.*;
 import edu.ucsb.nceas.morpho.framework.ConfigXML;
 import edu.ucsb.nceas.morpho.util.Log;
 
@@ -64,7 +63,6 @@ public class FileSystemDataStore extends DataStore
    */
   public File openFile(String name) throws FileNotFoundException
   {
-    //debug(11, "opening files from: " + datadir);
     String path = parseId(name);
     path = datadir + "/" + path;
     File file = new File(path);
@@ -76,19 +74,15 @@ public class FileSystemDataStore extends DataStore
     return file;
   }
   
+  
   public File saveFile(String name, Reader file)
   {
-    return saveFile(name, file, datadir, null);
-  }
-  
-  public File saveFile(String name, Reader file, DataPackage dp)
-  {
-    return saveFile(name, file, datadir, dp);
+    return saveFile(name, file, datadir);
   }
   
   public File saveTempFile(String name, Reader file)
   {
-    return saveFile(name, file, tempdir, null);
+    return saveFile(name, file, tempdir);
   }
   
   public File openTempFile(String name) throws FileNotFoundException
@@ -105,22 +99,22 @@ public class FileSystemDataStore extends DataStore
 
   public File saveDataFile(String name, Reader file)
   {
-    return saveDataFile(name, file, datadir, null);
+    return saveDataFile(name, file, datadir);
   }
   
   public File saveTempDataFile(String name, Reader file)
   {
-    return saveDataFile(name, file, tempdir, null);
+    return saveDataFile(name, file, tempdir);
   }
 
   public File saveDataFile(String name, InputStream file)
   {
-    return saveDataFile(name, file, datadir, null);
+    return saveDataFile(name, file, datadir);
   }
   
   public File saveTempDataFile(String name, InputStream file)
   {
-    return saveDataFile(name, file, tempdir, null);
+    return saveDataFile(name, file, tempdir);
   }
   
   /**
@@ -136,7 +130,7 @@ public class FileSystemDataStore extends DataStore
    * accession number.  Hence the id johnson2343.13223.5 would produce 
    * the file johnson2343/13223.5
    */
-  public File saveFile(String name, Reader file, String rootDir, DataPackage dp)
+  public File saveFile(String name, Reader file, String rootDir)
   {
     try
     {
@@ -155,46 +149,7 @@ public class FileSystemDataStore extends DataStore
           ee.printStackTrace();
         }
       }
-/* comment out the section to insert id - DFH      
-      //save a temp file so that the id can be put in the file.
-      BufferedReader bfile = new BufferedReader(file);
-      StringWriter sw = new StringWriter();
-//      BufferedWriter bsw = new BufferedWriter(sw);
-      File tempfile = new File(tempdir + "/local.noid");
-      FileWriter fw = new FileWriter(tempfile);
-      BufferedWriter bfw = new BufferedWriter(fw);
-      int c = bfile.read();
-      while(c != -1)
-      {
-        bfw.write(c); //write out everything in the reader
-        sw.write(c);
-        c = bfile.read();
-      }
-      bfw.flush();
-      bfw.close();
-      bfile.close();
-      Log.debug(30, "Starting insert");
-      String fileWithId = insertIdInFile(tempfile, name); //put the id in
-      if(fileWithId == null)
-      {
-        Log.debug(30, "fileWithId is null!");
-        fileWithId = sw.toString();
-        Log.debug(30, "fileWithId length is: "+fileWithId.length());
-      }
-      else {
-        Log.debug(30, "fileWithId length is: "+fileWithId.length());
-        
-      }
-      
-      //now that the id has been put in the file, we can save it.
-      StringReader sr = new StringReader(fileWithId);
-      BufferedReader bsr = new BufferedReader(sr);
- */     
       BufferedReader bsr = new BufferedReader(file);
-//      while(!sr.ready())
-//      {
-//        int x = 1;
-//      }
       BufferedWriter bwriter = new BufferedWriter(new FileWriter(savefile));
       int d = bsr.read();
       while(d != -1)
@@ -220,25 +175,14 @@ public class FileSystemDataStore extends DataStore
    * @param publicAccess: flag for unauthenticated read access to the file.
    * true if anauthenticated users can read the file, false otherwise.
    */
-  public File newFile(String name, Reader file, DataPackage dp)
-  {
-    return saveFile(name, file, datadir, dp);
-  }
-  
-   /**
-   * returns a File object in the local repository.
-   * @param name: the id of the file
-   * @param file: the stream to the file
-   * @param publicAccess: flag for unauthenticated read access to the file.
-   * true if anauthenticated users can read the file, false otherwise.
-   */
   public File newFile(String name, Reader file)
   {
-    return saveFile(name, file, datadir, null);
+    return saveFile(name, file, datadir);
   }
   
+  
   public File newDataFile(String name, InputStream is) {
-    return saveDataFile(name, is, datadir, null);
+    return saveDataFile(name, is, datadir);
   }
   
   /**
@@ -298,7 +242,7 @@ public class FileSystemDataStore extends DataStore
   *  and allows for very large data files. (i.e. no file is put entirely
   *  in memory)
   */
-  public File saveDataFile(String name, Reader file, String rootDir, DataPackage dp)
+  public File saveDataFile(String name, Reader file, String rootDir)
   {
     BufferedWriter bwriter = null;
     BufferedReader bfile = null;
@@ -322,35 +266,6 @@ public class FileSystemDataStore extends DataStore
       
       //save a temp file so that the id can be put in the file.
       bfile = new BufferedReader(file);
-/* 
-      StringWriter sw = new StringWriter();
-      BufferedWriter bsw = new BufferedWriter(sw);
-      File tempfile = new File(tempdir + "/local.noid");
-      FileWriter fw = new FileWriter(tempfile);
-      BufferedWriter bfw = new BufferedWriter(fw);
-      int c = bfile.read();
-      while(c != -1)
-      {
-        bfw.write(c); //write out everything in the reader
-        bsw.write(c);
-        c = bfile.read();
-      }
-      bfw.flush();
-      bfw.close();
-      String fileWithId = insertIdInFile(tempfile, name); //put the id in
-      if(fileWithId == null)
-      {
-        fileWithId = sw.toString();
-      }
-      
-      //now that the id has been put in the file, we can save it.
-      StringReader sr = new StringReader(fileWithId);
-      BufferedReader bsr = new BufferedReader(sr);
-*/      
-//      while(!sr.ready())
-//      {
-//        int x = 1;
-//      }
       bwriter = new BufferedWriter(new FileWriter(savefile));
       int d = bfile.read();
       while(d != -1)
@@ -386,7 +301,7 @@ public class FileSystemDataStore extends DataStore
   *  in memory) This version uses an InputStream rather than a Reader to
   *  avoid problems with binary file corruption
   */
-  public File saveDataFile(String name, InputStream file, String rootDir, DataPackage dp)
+  public File saveDataFile(String name, InputStream file, String rootDir)
   {
     BufferedInputStream bfile = null;
     BufferedOutputStream bos = null;

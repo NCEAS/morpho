@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: jones $'
- *     '$Date: 2002-10-23 22:48:21 $'
- * '$Revision: 1.4 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2003-12-30 17:10:40 $'
+ * '$Revision: 1.5 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -184,9 +184,9 @@ public abstract class DataStore implements DataStoreInterface
   
   abstract public File openFile(String name) throws FileNotFoundException, 
                                                     CacheAccessException;
-  abstract public File saveFile(String name, Reader file, DataPackage dp)
+  abstract public File saveFile(String name, Reader file)
            throws Exception;
-  abstract public File newFile(String name, Reader file, DataPackage dp)
+  abstract public File newFile(String name, Reader file)
            throws Exception;
   abstract public boolean deleteFile(String name) throws Exception;
 }

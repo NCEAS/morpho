@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-11-26 18:39:41 $'
- * '$Revision: 1.6 $'
+ *     '$Date: 2003-12-30 17:10:40 $'
+ * '$Revision: 1.7 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,7 +32,6 @@ import java.util.*;
 import javax.swing.*;
 import java.awt.*;
 
-import edu.ucsb.nceas.morpho.datapackage.*;
 import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.framework.ConfigXML;
 import edu.ucsb.nceas.morpho.util.Log;
@@ -109,30 +108,15 @@ public class MetacatDataStore extends DataStore implements DataStoreInterface
       
       try
       {
-//        writer = new FileWriter(localfile);
         fos = new FileOutputStream(localfile);
-//        BufferedWriter bwriter = new BufferedWriter(writer);
         BufferedOutputStream bfos = new BufferedOutputStream(fos);
         InputStream metacatInput = morpho.getMetacatInputStream(props);
         // set here because previous line call to getMetacatInputStream will set
         // to false
         Morpho.connectionBusy = true;
 
-//        InputStreamReader metacatInputReader = new InputStreamReader(metacatInput);
-//        BufferedReader bmetacatInputReader = new BufferedReader(metacatInputReader);
         BufferedInputStream bmetacatInputStream = new BufferedInputStream(metacatInput);
         int x = 1;
-/*        while(!bmetacatInputReader.ready())
-        { //this is a stall to wait until the input stream is ready to read
-          //there is probably a better way to do this.
-          x++;
-          if(x == 200000)
-          { //200000 cycle time out.  this is so the whole program won't lock
-            //up if the stream for some reason never becomes ready.
-            break;
-          }
-        }
-*/        
         int c = bmetacatInputStream.read();
         while(c != -1)
         {
@@ -154,8 +138,6 @@ public class MetacatDataStore extends DataStore implements DataStoreInterface
           c = breader.read();
         }
         String responseStr = response.toString();
-        //Log.debug(11, "==========================responseStr: " + 
-        //                      responseStr/*.substring(22,29)*/);
         if(responseStr.indexOf("<error>") != -1)
         {//metacat reported some error
           bfos.close();
@@ -204,24 +186,19 @@ public class MetacatDataStore extends DataStore implements DataStoreInterface
    * @param publicAccess: true if the file can be read by unauthenticated
    * users, false otherwise.
    */
-  public File saveFile(String name, Reader file, DataPackage dp) 
+  public File saveFile(String name, Reader file) 
               throws MetacatUploadException
   {
-    return saveFile(name, file, dp, "update", true);
+    return saveFile(name, file, "update", true);
   }
   
-   public File saveFile(String name, Reader file) 
-              throws MetacatUploadException
-  {
-    return saveFile(name, file, null, "update", true);
-  }
  
   
   public File saveFile(String name, Reader file, 
-                       DataPackage dp, boolean checkforaccessfile) 
+                       boolean checkforaccessfile) 
               throws MetacatUploadException
   {
-    return saveFile(name, file, dp, "update", checkforaccessfile);
+    return saveFile(name, file, "update", checkforaccessfile);
   }
   
   /**
@@ -234,7 +211,7 @@ public class MetacatDataStore extends DataStore implements DataStoreInterface
    * @param action: the action (update or insert) to perform
    */
   private File saveFile(String name, Reader file, 
-                        DataPackage dp, String action, boolean checkforaccessfile) 
+                        String action, boolean checkforaccessfile) 
                        throws MetacatUploadException
   { //-attempt to write file to metacat
     //-if successfull, write file to cache, return pointer to that file
@@ -247,16 +224,6 @@ public class MetacatDataStore extends DataStore implements DataStoreInterface
     BufferedReader bfile = new BufferedReader(file);
     try
     {
-      /*
-      int c = file.read();
-      while(c != -1)
-      {
-        fileText.append((char)c);
-        c = file.read();
-      }*/
-      //System.out.println(fileText.toString());
-      
-// assume id already inserted!!! - DFH      
       //save a temp file so that the id can be put in the file.
       StringWriter sw = new StringWriter();
       File tempfile = new File(tempdir + "/metacat.noid");
@@ -272,12 +239,6 @@ public class MetacatDataStore extends DataStore implements DataStoreInterface
       bfw.flush();
       bfw.close();
       bfile.close();
-//      String filetext = insertIdInFile(tempfile, name); //put the id in
-      
-//      if(filetext == null)
-//      {
-//        filetext = sw.toString();
-//      }
       String filetext = sw.toString();
       
       Log.debug(30, "filelength is:"+filetext.length());
@@ -347,11 +308,6 @@ public class MetacatDataStore extends DataStore implements DataStoreInterface
     }
     catch(Exception e)
     {
-      //metacatInputReader.close();
-      //metacatInput.close();
-      //Log.debug(4, "Error in MetacatDataStore.saveFile(): " + 
-      //                    e.getMessage());
-      //e.printStackTrace();
       Morpho.connectionBusy = false;
       throw new MetacatUploadException(e.getMessage());
     }
@@ -364,27 +320,15 @@ public class MetacatDataStore extends DataStore implements DataStoreInterface
    */
   public File newFile(String name, Reader file) throws MetacatUploadException
   {
-    return saveFile(name, file, null, "insert", true);
+    return saveFile(name, file, "insert", true);
   }
   
-  /**
-   * Create and save a new file to metacat using the "insert" action.
-   * @param name: the id of the new file
-   * @param file: the stream to the file to write to metacat
-   * @param publicAccess: flag for unauthenticated read access to the new file
-   * true if unauthenticated users should have read access, false otherwise
-   */
-  public File newFile(String name, Reader file, DataPackage dp)
-         throws MetacatUploadException
-  {
-    return saveFile(name, file, dp, "insert", true);
-  }
   
-  public File newFile(String name, Reader file, DataPackage dp, 
+  public File newFile(String name, Reader file, 
                       boolean checkforaccessfile)
          throws MetacatUploadException
   {
-    return saveFile(name, file, dp, "insert", checkforaccessfile);
+    return saveFile(name, file,"insert", checkforaccessfile);
   }
   
   /**
@@ -553,14 +497,14 @@ public class MetacatDataStore extends DataStore implements DataStoreInterface
    * 
    */
   
-   public String saveFilesTransaction(Vector namesVec, Vector readersVec, DataPackage dp) {
+   public String saveFilesTransaction(Vector namesVec, Vector readersVec) {
         String temp = "";
         String response = "OK";
         for (int i=0;i<namesVec.size();i++) {
             String name = (String)namesVec.elementAt(i);
             Reader reader = (Reader)readersVec.elementAt(i);
             try{
-                saveFile(name, reader, dp);   
+                saveFile(name, reader);   
             }
             catch(Exception e) {
                 // oops, error; save name for return and undo previous inserts
