@@ -5,9 +5,9 @@
  *    Authors: @tao@
  *    Release: @release@
  *
- *   '$Author: tao $'
- *     '$Date: 2002-09-27 03:54:59 $'
- * '$Revision: 1.1 $'
+ *   '$Author: brooke $'
+ *     '$Date: 2004-03-18 02:21:40 $'
+ * '$Revision: 1.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,46 +26,36 @@
 
 package edu.ucsb.nceas.morpho.datapackage;
 
-import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.framework.MorphoFrame;
-import edu.ucsb.nceas.morpho.framework.SwingWorker;
 import edu.ucsb.nceas.morpho.framework.UIController;
 import edu.ucsb.nceas.morpho.util.Command;
-import edu.ucsb.nceas.morpho.util.Log;
-import java.awt.BorderLayout;
-import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.event.ActionEvent;
-import java.awt.Point;
+
 import java.util.Vector;
-import javax.swing.DefaultCellEditor;
-import javax.swing.JButton;
-import javax.swing.JDialog;
-import javax.swing.JPanel;
+
+import java.awt.event.ActionEvent;
+
 import javax.swing.JTable;
-import javax.swing.table.TableColumnModel;
-import org.w3c.dom.Document;
 
 
 /**
  * Class to handle insert a row command
  */
-public class InsertRowCommand implements Command 
+public class InsertRowCommand implements Command
 {
   /* Indicate before selected column */
   private boolean beforeFlag = true;
-  
+
   /* Referrence to  morphoframe */
   private MorphoFrame morphoFrame = null;
-  
+
   /* Constant string for column position */
   public static final String AFTER = "after";
   public static final String BEFORE = "before";
-  
- 
- 
+
   /**
    * Constructor of Import data command
+   *
+   * @param column String
    */
   public InsertRowCommand(String column)
   {
@@ -75,19 +65,21 @@ public class InsertRowCommand implements Command
     }
   }
 
+
   /**
    * execute insert command
-   */    
+   *
+   * @param event ActionEvent
+   */
   public void execute(ActionEvent event)
-  {   
+  {
     DataViewContainerPanel resultPane = null;
     morphoFrame = UIController.getInstance().getCurrentActiveWindow();
     if (morphoFrame != null)
     {
-       resultPane = AddDocumentationCommand.
-                          getDataViewContainerPanelFromMorphoFrame(morphoFrame);
+       resultPane = morphoFrame.getDataViewContainerPanel();
     }//if
-    
+
     // make sure resulPanel is not null
     if (resultPane != null)
     {
@@ -99,19 +91,19 @@ public class InsertRowCommand implements Command
          PersistentTableModel ptmodel=(PersistentTableModel)jtable.getModel();
          insertRow(jtable, ptmodel);
        }
-       
+
     }//if
-  
+
   }//execute
-  
-  
-  
+
+
+
   /* Method to insert a new row into table */
   private void insertRow(JTable table, PersistentTableModel ptm)
-                           
-  {  
+
+  {
      int sel = table.getSelectedRow();
-     if (sel>-1) 
+     if (sel>-1)
      {
           Vector blanks = new Vector();
           blanks.addElement(" \t");
@@ -131,7 +123,7 @@ public class InsertRowCommand implements Command
 
   /**
    * could also have undo functionality; disabled for now
-   */ 
+   */
   // public void undo();
 
 }//class CancelCommand

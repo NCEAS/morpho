@@ -25,41 +25,31 @@
 package edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages;
 
 import edu.ucsb.nceas.morpho.Morpho;
-import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardContainerFrame;
-import edu.ucsb.nceas.morpho.framework.AbstractUIPage;
-import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardPageLibrary;
-import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WidgetFactory;
-import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardSettings;
-import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
-
-import edu.ucsb.nceas.morpho.framework.UIController;
-import edu.ucsb.nceas.morpho.framework.MorphoFrame;
-import edu.ucsb.nceas.morpho.datapackage.DataViewContainerPanel;
 import edu.ucsb.nceas.morpho.datapackage.AbstractDataPackage;
-import edu.ucsb.nceas.morpho.datapackage.AddDocumentationCommand;
 import edu.ucsb.nceas.morpho.datapackage.AccessionNumber;
-import edu.ucsb.nceas.morpho.datapackage.Entity;
-
+import edu.ucsb.nceas.morpho.datapackage.DataViewContainerPanel;
+import edu.ucsb.nceas.morpho.framework.AbstractUIPage;
+import edu.ucsb.nceas.morpho.framework.MorphoFrame;
+import edu.ucsb.nceas.morpho.framework.UIController;
+import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
+import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WidgetFactory;
+import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardContainerFrame;
+import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardSettings;
+import edu.ucsb.nceas.morpho.util.Log;
 import edu.ucsb.nceas.utilities.OrderedMap;
 import edu.ucsb.nceas.utilities.XMLUtilities;
-import edu.ucsb.nceas.morpho.util.Log;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-
-import javax.swing.BoxLayout;
-import javax.swing.Box;
-import javax.swing.JTextField;
-import javax.swing.JLabel;
-import javax.swing.JRadioButton;
-import javax.swing.JPanel;
 
 import java.awt.BorderLayout;
-import java.awt.Font;
-import java.awt.Color;
-import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
-import java.util.Iterator;
+import javax.swing.BoxLayout;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 public class CodeImportPage extends AbstractUIPage {
 
@@ -244,8 +234,7 @@ public class CodeImportPage extends AbstractUIPage {
     MorphoFrame morphoFrame = UIController.getInstance().getCurrentActiveWindow();
     DataViewContainerPanel resultPane = null;
     if (morphoFrame != null) {
-      resultPane = AddDocumentationCommand.
-      getDataViewContainerPanelFromMorphoFrame(morphoFrame);
+      resultPane = morphoFrame.getDataViewContainerPanel();
     }//if
     // make sure resulPanel is not null
     if ( resultPane != null) {

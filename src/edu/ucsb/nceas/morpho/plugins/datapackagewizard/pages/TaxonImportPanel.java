@@ -8,8 +8,8 @@
 *    Release: @release@
 *
 *   '$Author: brooke $'
-*     '$Date: 2004-03-17 21:13:01 $'
-* '$Revision: 1.3 $'
+*     '$Date: 2004-03-18 02:21:41 $'
+* '$Revision: 1.4 $'
 *
 * This program is free software; you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -29,49 +29,39 @@
 
 package edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages;
 
-import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
-import edu.ucsb.nceas.morpho.framework.AbstractUIPage;
-import edu.ucsb.nceas.morpho.plugins.datapackagewizard.AbstractCustomTablePopupHandler;
-import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WidgetFactory;
-import edu.ucsb.nceas.morpho.plugins.datapackagewizard.CustomList;
-import edu.ucsb.nceas.morpho.plugins.datapackagewizard.CustomTable;
-import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardSettings;
-import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardPageSubPanelAPI;
-
-import edu.ucsb.nceas.morpho.framework.UIController;
-import edu.ucsb.nceas.morpho.framework.MorphoFrame;
+import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.datapackage.AbstractDataPackage;
-import edu.ucsb.nceas.morpho.datapackage.AddDocumentationCommand;
 import edu.ucsb.nceas.morpho.datapackage.DataViewContainerPanel;
-
+import edu.ucsb.nceas.morpho.framework.MorphoFrame;
+import edu.ucsb.nceas.morpho.framework.UIController;
+import edu.ucsb.nceas.morpho.plugins.datapackagewizard.AbstractCustomTablePopupHandler;
+import edu.ucsb.nceas.morpho.plugins.datapackagewizard.CustomTable;
+import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WidgetFactory;
+import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardPageSubPanelAPI;
+import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardSettings;
+import edu.ucsb.nceas.morpho.util.Log;
 import edu.ucsb.nceas.utilities.OrderedMap;
 import edu.ucsb.nceas.utilities.XMLUtilities;
-import edu.ucsb.nceas.morpho.util.Log;
-import edu.ucsb.nceas.morpho.Morpho;
 
-import java.awt.BorderLayout;
-import javax.swing.Box;
-import javax.swing.BoxLayout;
-import javax.swing.BorderFactory;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JDialog;
-import javax.swing.JList;
-
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
-import javax.swing.ListSelectionModel;
-import javax.swing.Action;
-import javax.swing.AbstractAction;
-
-import java.util.List;
-import java.util.Vector;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.io.File;
-import java.awt.Container;
+import java.util.List;
+import java.util.Vector;
+
+import java.awt.BorderLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
+import javax.swing.JDialog;
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.JPanel;
+import javax.swing.ListSelectionModel;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 
 import org.w3c.dom.Node;
 
@@ -481,8 +471,7 @@ public class TaxonImportPanel extends JPanel implements WizardPageSubPanelAPI
 
     MorphoFrame morphoFrame = UIController.getInstance().getCurrentActiveWindow();
     if (morphoFrame != null) {
-      resultPane = AddDocumentationCommand.
-      getDataViewContainerPanelFromMorphoFrame(morphoFrame);
+      resultPane = morphoFrame.getDataViewContainerPanel();
     }//if
     // make sure resulPanel is not null
     if ( resultPane != null) {

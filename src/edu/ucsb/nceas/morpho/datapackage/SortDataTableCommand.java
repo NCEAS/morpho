@@ -5,9 +5,9 @@
  *    Authors: @tao@
  *    Release: @release@
  *
- *   '$Author: sambasiv $'
- *     '$Date: 2004-02-06 20:07:27 $'
- * '$Revision: 1.2 $'
+ *   '$Author: brooke $'
+ *     '$Date: 2004-03-18 02:21:40 $'
+ * '$Revision: 1.3 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,57 +26,47 @@
 
 package edu.ucsb.nceas.morpho.datapackage;
 
-import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.framework.MorphoFrame;
-import edu.ucsb.nceas.morpho.framework.SwingWorker;
 import edu.ucsb.nceas.morpho.framework.UIController;
 import edu.ucsb.nceas.morpho.util.Command;
-import edu.ucsb.nceas.morpho.util.Log;
-import java.awt.BorderLayout;
-import java.awt.Component;
-import java.awt.Dimension;
+
 import java.awt.event.ActionEvent;
-import java.awt.Point;
-import java.util.Vector;
-import javax.swing.DefaultCellEditor;
-import javax.swing.JButton;
-import javax.swing.JDialog;
-import javax.swing.JPanel;
+
 import javax.swing.JTable;
-import javax.swing.table.TableColumnModel;
-import org.w3c.dom.Document;
 
 
 /**
  * Class to handle sort data table command
  */
-public class SortDataTableCommand implements Command 
+public class SortDataTableCommand implements Command
 {
   /* Referrence to  morphoframe */
   private MorphoFrame morphoFrame = null;
-  
- 
+
+
   /**
    * Constructor of sort data table command
    */
   public SortDataTableCommand()
   {
-  
+
   }
+
 
   /**
    * execute sort data table command
-   */    
+   *
+   * @param event ActionEvent
+   */
   public void execute(ActionEvent event)
-  {   
+  {
     DataViewContainerPanel resultPane = null;
     morphoFrame = UIController.getInstance().getCurrentActiveWindow();
     if (morphoFrame != null)
     {
-       resultPane = AddDocumentationCommand.
-                          getDataViewContainerPanelFromMorphoFrame(morphoFrame);
+       resultPane = morphoFrame.getDataViewContainerPanel();
     }//if
-    
+
     // make sure resulPanel is not null
     if (resultPane != null)
     {
@@ -90,35 +80,35 @@ public class SortDataTableCommand implements Command
          int direction = dataView.getSortDirection();
          sort(morphoFrame, dataView, jtable, ptmodel, vector, direction);
        }
-       
+
     }//if
-  
+
   }//execute
-  
-  
-  
+
+
+
   /* Method to sort a column into table */
-  private void sort(MorphoFrame frame, DataViewer viewer,  JTable table, 
+  private void sort(MorphoFrame frame, DataViewer viewer,  JTable table,
               PersistentTableModel ptm, PersistentVector pv, int sortdirection)
-  {  
+  {
     frame.setBusy(true);
     int sel = table.getSelectedColumn();
-    if (sel>-1) 
+    if (sel>-1)
     {
       ptm.sort(sel, sortdirection);
       pv = ptm.getPersistentVector();
-			viewer.setPV(pv);
+      viewer.setPV(pv);
       sortdirection = -1 * sortdirection;
       viewer.setSortDirection(sortdirection);
     }//if
     frame.setBusy(false);
-  
+
   }//sort
 
- 
+
   /**
    * could also have undo functionality; disabled for now
-   */ 
+   */
   // public void undo();
 
 }//class CancelCommand

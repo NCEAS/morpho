@@ -5,9 +5,9 @@
  *    Authors: @higgins@
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2003-11-25 23:20:14 $'
- * '$Revision: 1.3 $'
+ *   '$Author: brooke $'
+ *     '$Date: 2004-03-18 02:21:40 $'
+ * '$Revision: 1.4 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -43,15 +43,15 @@ import javax.swing.JDialog;
  * Class to Save an AbstractDataPackage to Metacat and/or Local
  * File system
  */
-public class SavePackageCommand implements Command 
+public class SavePackageCommand implements Command
 {
   /* Referrence to  morphoframe */
   private MorphoFrame morphoFrame = null;
 
   /** A reference to the AbstractDataPackage to be saved */
   private AbstractDataPackage adp = null;
-  
- 
+
+
   /**
    * Constructor of OpenExportDialogCommand
    */
@@ -59,7 +59,7 @@ public class SavePackageCommand implements Command
   {
 
   }//SavePackageCommand
-  
+
   /**
    * Constructor of OpenExportDialogCommand
    *
@@ -69,30 +69,29 @@ public class SavePackageCommand implements Command
   {
     this.adp = adp;
   }//SavePackageCommand
-  
+
   /**
    * execute the save datapackage command
-   */    
+   */
   public void execute(ActionEvent event)
   {
     DataViewContainerPanel dvcp = null;
     morphoFrame = UIController.getInstance().getCurrentActiveWindow();
     if (morphoFrame != null)
     {
-       dvcp = AddDocumentationCommand.
-                          getDataViewContainerPanelFromMorphoFrame(morphoFrame);
+       dvcp = morphoFrame.getDataViewContainerPanel();
     }//if
     if (dvcp!=null) {
       adp = dvcp.getAbstractDataPackage();
     }
     new SaveDialog(adp);
-    
+
   }//execute
 
- 
+
   /**
    * could also have undo functionality; disabled for now
-   */ 
+   */
   // public void undo();
 
 }//class OpenDialogBoxCommand

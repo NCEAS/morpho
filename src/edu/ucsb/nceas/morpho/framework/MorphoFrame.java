@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2004-03-16 19:06:58 $'
- * '$Revision: 1.20 $'
+ *   '$Author: brooke $'
+ *     '$Date: 2004-03-18 02:21:41 $'
+ * '$Revision: 1.21 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,9 +26,15 @@
 
 package edu.ucsb.nceas.morpho.framework;
 
+import edu.ucsb.nceas.morpho.datapackage.DataViewContainerPanel;
+import edu.ucsb.nceas.morpho.datapackage.SavePackageCommand;
 import edu.ucsb.nceas.morpho.util.GUIAction;
 import edu.ucsb.nceas.morpho.util.Log;
 import edu.ucsb.nceas.morpho.util.UISettings;
+
+import java.util.Iterator;
+import java.util.TreeMap;
+import java.util.Vector;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -36,17 +42,13 @@ import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Insets;
-import java.awt.Graphics;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.Enumeration;
-import java.util.Iterator;
-import java.util.TreeMap;
-import java.util.Vector;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+
 import javax.swing.Action;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -57,14 +59,11 @@ import javax.swing.JLayeredPane;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JToolBar;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
-import javax.swing.JOptionPane;
-
-import edu.ucsb.nceas.morpho.datapackage.DataViewContainerPanel;
-import edu.ucsb.nceas.morpho.datapackage.SavePackageCommand;
 
 /**
  * The MorphoFrame is a Window in the Morpho application containing the standard
@@ -92,13 +91,13 @@ public class MorphoFrame extends JFrame
     private static int menuBarHeight = 0;
     private boolean busyFlag =false;
 
-    // A string indicating which frame it is 
+    // A string indicating which frame it is
     public static final String SEARCHRESULTFRAME = "searchResultFrame";
     public static final String DATAPACKAGEFRAME = "dataPackageFrame";
-  
+
 
     /**
-     * Creates a new instance of MorphoFrame, but is private because 
+     * Creates a new instance of MorphoFrame, but is private because
      * getInstance() should be used to obtain new MorphoFrame instances
      */
     private MorphoFrame()
@@ -131,7 +130,7 @@ public class MorphoFrame extends JFrame
 
         // Set up the menu bar
         menuList = new TreeMap();
-	    menuActions = new TreeMap();
+      menuActions = new TreeMap();
         menuBar = new JMenuBar();
         setMenuBar(menuBar);
 
@@ -140,7 +139,7 @@ public class MorphoFrame extends JFrame
         int indicatorHeight = (int)indicator.getSize().getHeight();
         int menuHeight = getMenuHeight();
         int toolbarHeight = indicatorHeight - menuHeight;
-        Log.debug(50, "(indicator, menu, tool) = (" + indicatorHeight + "," + 
+        Log.debug(50, "(indicator, menu, tool) = (" + indicatorHeight + "," +
                 menuHeight + "," + toolbarHeight + ")");
         morphoToolbar = new JToolBar();
         morphoToolbar.setFloatable(false);
@@ -154,7 +153,7 @@ public class MorphoFrame extends JFrame
         // Register listeners
         this.addWindowListener(
             new WindowAdapter() {
-                public void windowActivated(WindowEvent e) 
+                public void windowActivated(WindowEvent e)
                 {
                     Log.debug(50, "Processing window activated event");
                     gp.setVisible(false);
@@ -162,7 +161,7 @@ public class MorphoFrame extends JFrame
                     controller.setCurrentActiveWindow(instance);
                     controller.refreshWindows();
                     indicator.repaint();
-                } 
+                }
                 public void windowClosing(WindowEvent event)
                 {
                     Object object = event.getSource();
@@ -181,22 +180,25 @@ public class MorphoFrame extends JFrame
 
             });
         this.addComponentListener(
-            new ComponentAdapter() { 
-                public void componentResized (ComponentEvent e) 
+            new ComponentAdapter() {
+                public void componentResized (ComponentEvent e)
                 {
                     updateProgressIndicatorLocation();
-                } 
-            }); 
+                }
+            });
 
         // Size the window properly
         pack();
         instance = this;
     }
-    
-    /**
-     * Create a new instance and set its default size
-     */
-    public static MorphoFrame getInstance() {
+
+
+  /**
+   * Create a new instance and set its default size
+   *
+   * @return MorphoFrame
+   */
+  public static MorphoFrame getInstance() {
         MorphoFrame window = new MorphoFrame();
         window.calculateDefaultSizes();
         window.addDefaultContentArea();
@@ -225,27 +227,53 @@ public class MorphoFrame extends JFrame
             Log.debug(5, "Component was null so I could not set it!");
         }
     }
-    
-    /**
-     * Get the contentComponent of MorphoFrame
-     */
-    public Component getContentComponent()
+
+
+  /**
+   * Get the contentComponent of MorphoFrame
+   *
+   * @return Component
+   */
+  public Component getContentComponent()
     {
       return contentComponent;
     }
 
-    /**
-     * Set the menu bar when it needs to be changed.  This is mainly called by
-     * the UIController when it is managing the menus.
-     */
-    public void setMenuBar(JMenuBar newMenuBar)
+
+  /**
+   * Get DataViewContainerPanel from this frame, if it exists. If morphFrame
+   * doesn't contain a DataViewContainerPanel, null will be returned
+   *
+   * @return DataViewContainerPanel
+   */
+  public DataViewContainerPanel getDataViewContainerPanel() {
+
+      Component comp = this.getContentComponent();
+
+      // Make sure the comp is a DataViewContainerPanel object
+      if (comp!=null && comp instanceof DataViewContainerPanel) {
+
+        return (DataViewContainerPanel) comp;
+      }
+
+      return null;
+    }
+
+
+  /**
+   * Set the menu bar when it needs to be changed. This is mainly called by
+   * the UIController when it is managing the menus.
+   *
+   * @param newMenuBar JMenuBar
+   */
+  public void setMenuBar(JMenuBar newMenuBar)
     {
         this.setJMenuBar(newMenuBar);
         this.getLayeredPane().invalidate();
     }
 
     /**
-     * Add a GUIAction to the menu and toolbar for this frame. 
+     * Add a GUIAction to the menu and toolbar for this frame.
      * If the menu already exists, the actions are added to it.
      * Each time an action is added, it is stored in the appropriate
      * menu and toolbar lists (menuList, menuActions, toolbarActions)
@@ -274,7 +302,7 @@ public class MorphoFrame extends JFrame
                 }
             }
         }
-        
+
         // If not, add a new menu with that name in the right position
         if (!menuExists) {
             currentMenu = new JMenu(menuName);
@@ -291,7 +319,7 @@ public class MorphoFrame extends JFrame
             }
             setMenuBar(newBar);
         }
-        
+
         // add the action to the list in which it belongs
         int menuPos = action.getMenuItemPosition();
         Integer menuPosInteger = new Integer(menuPos);
@@ -307,7 +335,7 @@ public class MorphoFrame extends JFrame
         rebuildMenu(currentMenu, actionList);
 
         // add the action to the toolbar if its position > 0
-	int toolbarPosition = action.getToolbarPosition();
+  int toolbarPosition = action.getToolbarPosition();
         if (toolbarPosition >= 0) {
 
             Integer position = new Integer(toolbarPosition);
@@ -324,7 +352,7 @@ public class MorphoFrame extends JFrame
     }
 
     /**
-     * Remove a GUIAction from the menu and toolbar for this frame. 
+     * Remove a GUIAction from the menu and toolbar for this frame.
      *
      * @param action the action to be removed from the menus and toolbar
      */
@@ -335,17 +363,17 @@ public class MorphoFrame extends JFrame
         while (menus.hasNext()) {
             JMenu currentMenu = (JMenu)menus.next();
             String currentMenuName = currentMenu.getText();
-            TreeMap actionList = (TreeMap)menuActions.get(currentMenuName); 
+            TreeMap actionList = (TreeMap)menuActions.get(currentMenuName);
             Iterator actionListVectors = actionList.values().iterator();
             while (actionListVectors.hasNext()) {
                 Vector actionVector = (Vector)actionListVectors.next();
                 if (actionVector.contains(action)) {
                     actionVector.remove(action);
                     rebuildMenu(currentMenu, actionList);
-                }  
+                }
             }
         }
-        
+
         // Remove the action from the toolbar if present
         Iterator toolbarVectors = toolbarActions.values().iterator();
         while (toolbarVectors.hasNext()) {
@@ -373,7 +401,7 @@ public class MorphoFrame extends JFrame
         busyFlag = isBusy;
       }
     }
-    
+
     /**
      * Set the StatusBar to display a message
      *
@@ -384,13 +412,16 @@ public class MorphoFrame extends JFrame
         statusBar.setMessage(message);
     }
 
-    /**
-     * Returns the default size that the content area should be on this
-     * screen.  This is determined by considering the screen size, the sizes
-     * of the window insets, and sizes of internal components of the
-     * MorphoFrame such as the ProgressIndicator and StatusBar.
-     */
-    public Dimension getDefaultContentAreaSize()
+
+  /**
+   * Returns the default size that the content area should be on this screen.
+   * This is determined by considering the screen size, the sizes of the
+   * window insets, and sizes of internal components of the MorphoFrame such
+   * as the ProgressIndicator and StatusBar.
+   *
+   * @return Dimension
+   */
+  public Dimension getDefaultContentAreaSize()
     {
         return contentAreaSize;
     }
@@ -405,11 +436,14 @@ public class MorphoFrame extends JFrame
         return statusBar;
     }
 
-    /**
-     * Rebuild a menu based on the set of GUIActions that belong in the
-     * menu.
-     */
-    private void rebuildMenu(JMenu currentMenu, TreeMap actionList)
+
+  /**
+   * Rebuild a menu based on the set of GUIActions that belong in the menu.
+   *
+   * @param currentMenu JMenu
+   * @param actionList TreeMap
+   */
+  private void rebuildMenu(JMenu currentMenu, TreeMap actionList)
     {
         currentMenu.removeAll();
         Iterator actionPositionList = actionList.keySet().iterator();
@@ -435,7 +469,7 @@ public class MorphoFrame extends JFrame
             }
         }
     }
-    
+
     /**
      * Rebuild the toolbar based on the set of GUIActions that belong in the
      * toolbar.
@@ -458,32 +492,32 @@ public class MorphoFrame extends JFrame
         }
     }
 
-    /** 
+    /**
      * Properly locate the progress indicator
      * when the window size changes
      */
     private void updateProgressIndicatorLocation()
     {
-        Log.debug(50, "Resized Window"); 
+        Log.debug(50, "Resized Window");
         Dimension indicatorSize = indicator.getSize();
         Dimension cpSize = getContentPane().getSize();
         indicator.setLocation(
                 (int) (cpSize.getWidth() - indicatorSize.getWidth()), 0);
     }
 
-    /** 
-     * close the window when requested 
+    /**
+     * close the window when requested
      */
     private void close()
     {
-      
+
       Object contentsPanel = getContentComponent();
       if (contentsPanel instanceof DataViewContainerPanel) {
          DataViewContainerPanel dvcp = (DataViewContainerPanel)contentsPanel;
          dvcp.saveDataChanges();
          String loc = dvcp.getPackageLocation();
          if (loc.equals("")) {
-           int res = JOptionPane.showConfirmDialog(null, 
+           int res = JOptionPane.showConfirmDialog(null,
                  "Would you like to save the current package?",
                  "Save ?", JOptionPane.YES_NO_OPTION);
            if (res==JOptionPane.YES_OPTION) {
@@ -514,7 +548,7 @@ public class MorphoFrame extends JFrame
      */
     private void calculateDefaultSizes()
     {
-        Log.debug(50,"Screen size (w,h): ("+UISettings.CLIENT_SCREEN_WIDTH+", " 
+        Log.debug(50,"Screen size (w,h): ("+UISettings.CLIENT_SCREEN_WIDTH+", "
                                            +UISettings.CLIENT_SCREEN_HEIGHT+")");
         double windowWidth  = UISettings.DEFAULT_WINDOW_WIDTH;
         double windowHeight = UISettings.DEFAULT_WINDOW_HEIGHT;
@@ -563,8 +597,8 @@ public class MorphoFrame extends JFrame
             menuBarHeight = (int)testBar.getPreferredSize().getHeight();
         }
         return menuBarHeight;
-    }    
- 
+    }
+
 
   class CustomGlassPane extends JPanel {
     public CustomGlassPane() {
@@ -573,8 +607,8 @@ public class MorphoFrame extends JFrame
         public void mousePressed(MouseEvent e) {
           Log.debug(11, "mousePressed");
         }
-      });  
+      });
     }
-    
+
   }
 }

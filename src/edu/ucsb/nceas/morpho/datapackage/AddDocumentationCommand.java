@@ -5,9 +5,9 @@
  *    Authors: @tao@
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2004-02-20 21:31:35 $'
- * '$Revision: 1.8 $'
+ *   '$Author: brooke $'
+ *     '$Date: 2004-03-18 02:21:40 $'
+ * '$Revision: 1.9 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,68 +27,61 @@
 package edu.ucsb.nceas.morpho.datapackage;
 
 import edu.ucsb.nceas.morpho.Morpho;
+import edu.ucsb.nceas.morpho.framework.EditorInterface;
 import edu.ucsb.nceas.morpho.framework.MorphoFrame;
-import edu.ucsb.nceas.morpho.framework.SwingWorker;
 import edu.ucsb.nceas.morpho.framework.UIController;
-import edu.ucsb.nceas.morpho.editor.*;
+import edu.ucsb.nceas.morpho.plugins.ServiceController;
+import edu.ucsb.nceas.morpho.plugins.ServiceProvider;
 import edu.ucsb.nceas.morpho.util.Command;
 import edu.ucsb.nceas.morpho.util.Log;
-import java.awt.Component;
+
 import java.awt.event.ActionEvent;
-import javax.swing.JDialog;
-import org.w3c.dom.Node;
-
-import  edu.ucsb.nceas.morpho.framework.EditorInterface;
-import  edu.ucsb.nceas.morpho.framework.EditingCompleteListener;
-
-import  edu.ucsb.nceas.morpho.plugins.ServiceProvider;
-import  edu.ucsb.nceas.morpho.plugins.ServiceController;
 
 import org.w3c.dom.Document;
 
 /**
  * Class to handle add documentation command
  */
-public class AddDocumentationCommand implements Command 
+public class AddDocumentationCommand implements Command
 {
   /** A reference to the MophorFrame */
   private MorphoFrame morphoFrame = null;
- 
+
   /**
    * Constructor of refreshCommand
    * There is no parameter, means it will refresh current active morpho frame
    */
   public AddDocumentationCommand()
   {
- 
+
   }//RefreshCommand
-  
-  
-  
-  
+
+
   /**
    * execute refresh command
-   */    
+   *
+   * @param event ActionEvent
+   */
   public void execute(ActionEvent event)
-  {   
+  {
     DataViewContainerPanel resultPane = null;
     morphoFrame = UIController.getInstance().getCurrentActiveWindow();
     if (morphoFrame != null)
     {
-       resultPane = getDataViewContainerPanelFromMorphoFrame(morphoFrame);
+       resultPane = morphoFrame.getDataViewContainerPanel();
     }//if
-    
+
     // make sure resulPanel is not null
     if ( resultPane != null)
     {
        Morpho morpho = resultPane.getFramework();
        AbstractDataPackage adp = resultPane.getAbstractDataPackage();
-       
+
        EditorInterface editor = null;
        try
        {
          ServiceController services = ServiceController.getInstance();
-         ServiceProvider provider = 
+         ServiceProvider provider =
                           services.getServiceProvider(EditorInterface.class);
          editor = (EditorInterface)provider;
        }
@@ -103,47 +96,15 @@ public class AddDocumentationCommand implements Command
        String loc = adp.getLocation();
        editor.openEditor(thisdoc, id, loc, resultPane, null,0);
     }//if
-  
-  }//execute
-  
- 
 
-  
-  /**
-   * Gave a morphoFrame, get DataViewContainerPanel from it. If morphFrame 
-   * doesn't contain a DataViewContainerPanel, null will be returned
-   *
-   * @param frame the morpho frame which contains the need to be check
-   */
-  public static DataViewContainerPanel 
-                      getDataViewContainerPanelFromMorphoFrame(MorphoFrame frame)
-  {
-    if (frame == null)
-    {
-      return null;
-    }
-    // Get content of frame
-    Component comp = frame.getContentComponent();
-    if (comp == null)
-    {
-      return null;
-    }
-    // Make sure the comp is a result panel object
-    if (comp instanceof DataViewContainerPanel)
-    {
-      DataViewContainerPanel panel = (DataViewContainerPanel) comp;
-      return panel;
-    }
-    else
-    {
-      return null;
-    }
-      
-  }//getDataViewContainerPanelFromMorphFrame
-  
+  }//execute
+
+
+
+
   /**
    * could also have undo functionality; disabled for now
-   */ 
+   */
   // public void undo();
 
 }//class CancelCommand

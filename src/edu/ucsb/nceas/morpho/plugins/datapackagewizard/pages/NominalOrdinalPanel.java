@@ -7,8 +7,8 @@
 *    Release: @release@
 *
 *   '$Author: brooke $'
-*     '$Date: 2004-03-17 22:56:23 $'
-* '$Revision: 1.24 $'
+*     '$Date: 2004-03-18 02:21:41 $'
+* '$Revision: 1.25 $'
 *
 * This program is free software; you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -28,19 +28,15 @@
 
 package edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages;
 
-import edu.ucsb.nceas.morpho.framework.UIController;
-import edu.ucsb.nceas.morpho.framework.MorphoFrame;
 import edu.ucsb.nceas.morpho.datapackage.AbstractDataPackage;
-import edu.ucsb.nceas.morpho.datapackage.AddDocumentationCommand;
 import edu.ucsb.nceas.morpho.datapackage.DataViewContainerPanel;
-
 import edu.ucsb.nceas.morpho.framework.AbstractUIPage;
+import edu.ucsb.nceas.morpho.framework.MorphoFrame;
+import edu.ucsb.nceas.morpho.framework.UIController;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.CustomList;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WidgetFactory;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardPageSubPanelAPI;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardSettings;
-import edu.ucsb.nceas.morpho.framework.ModalDialog;
-
 import edu.ucsb.nceas.morpho.util.Log;
 import edu.ucsb.nceas.utilities.OrderedMap;
 
@@ -48,31 +44,29 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Font;
 import java.awt.Dimension;
 import java.awt.GridLayout;
-import java.awt.event.ItemEvent;
-import java.awt.event.ActionEvent;
-import java.awt.event.ItemListener;
-import java.awt.event.ActionListener;
-import java.awt.BorderLayout;
 import java.awt.Insets;
 import java.awt.Point;
-import java.awt.Container;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 
+import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
+import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
+import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
-import javax.swing.JButton;
-import javax.swing.JDialog;
 import javax.swing.border.EmptyBorder;
-import javax.swing.AbstractAction;
 
 
 
@@ -532,8 +526,7 @@ class NominalOrdinalPanel extends JPanel implements WizardPageSubPanelAPI {
 
     MorphoFrame morphoFrame = UIController.getInstance().getCurrentActiveWindow();
     if (morphoFrame != null) {
-      resultPane = AddDocumentationCommand.
-      getDataViewContainerPanelFromMorphoFrame(morphoFrame);
+      resultPane = morphoFrame.getDataViewContainerPanel();
     }//if
     // make sure resulPanel is not null
     if ( resultPane != null) {
@@ -875,15 +868,16 @@ class NominalOrdinalPanel extends JPanel implements WizardPageSubPanelAPI {
     return;
   }
 
-  /**
-  *	This function is used to set the data in the enumeration customlist.
-  *	This is called from the setPanelData() function
-  *  	@param  xPathRoot - this is the relative xPath of the current attribute
-  *
-  * 	@param  map - Data is passed as OrderedMap of xPath-value pairs. xPaths in this map
-  *		    are absolute xPath and not the relative xPaths
-  */
 
+  /**
+   * This function is used to set the data in the enumeration customlist. This
+   * is called from the setPanelData() function
+   *
+   * @param xPathRoot - this is the relative xPath of the current attribute
+   * @param map - Data is passed as OrderedMap of xPath-value pairs. xPaths in
+   *   this map are absolute xPath and not the relative xPaths
+   * @return boolean
+   */
   private boolean setEnumListData(String xPathRoot, OrderedMap map) {
     int index = 1;
     boolean codePresent = false;
@@ -1030,16 +1024,15 @@ class NominalOrdinalPanel extends JPanel implements WizardPageSubPanelAPI {
 
     } // end of function fillCustomList
 
-    /**
-    *	Function to set the page data from the ordered map. It creates a
-    *		codeImport page if necessary and sets the data in that page
-    * @param  xPathRoot - this is the relative xPath of the current
-    *										attribute
-    * @param  map - Data is passed as OrderedMap of xPath-value pairs.
-    *								xPaths in this map are absolute xPath and not the
-    *								relative xPaths
-    */
 
+    /**
+     * Function to set the page data from the ordered map. It creates a
+     * codeImport page if necessary and sets the data in that page
+     *
+     * @param xPath - this is the relative xPath of the current attribute
+     * @param map - Data is passed as OrderedMap of xPath-value pairs. xPaths
+     *   in this map are absolute xPath and not the relative xPaths
+     */
     public void setPageData(String xPath, OrderedMap map) {
 
       if(codeImportPanel == null)

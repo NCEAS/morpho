@@ -5,9 +5,9 @@
  *    Authors: @higgins@
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2004-03-16 21:54:01 $'
- * '$Revision: 1.2 $'
+ *   '$Author: brooke $'
+ *     '$Date: 2004-03-18 02:21:40 $'
+ * '$Revision: 1.3 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,32 +25,25 @@
  */
 package edu.ucsb.nceas.morpho.datapackage;
 
-import edu.ucsb.nceas.morpho.datapackage.AbstractDataPackage;
-import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
 import edu.ucsb.nceas.morpho.framework.MorphoFrame;
 import edu.ucsb.nceas.morpho.framework.UIController;
-import edu.ucsb.nceas.morpho.plugins.ServiceController;
-import edu.ucsb.nceas.morpho.plugins.ServiceNotHandledException;
-import edu.ucsb.nceas.morpho.plugins.ServiceProvider;
 import edu.ucsb.nceas.morpho.util.Command;
-import edu.ucsb.nceas.morpho.util.GUIAction;
-import edu.ucsb.nceas.morpho.util.Log;
+
 import java.awt.event.ActionEvent;
-import javax.swing.JDialog;
 
 
 /**
  * Class to Revert to current tab to original data sets
  */
-public class RevertCommand implements Command 
+public class RevertCommand implements Command
 {
   /* Referrence to  morphoframe */
   private MorphoFrame morphoFrame = null;
 
   /** A reference to the AbstractDataPackage to be saved */
   private AbstractDataPackage adp = null;
-  
- 
+
+
   /**
    * Constructor of RevertCommand
    */
@@ -58,40 +51,43 @@ public class RevertCommand implements Command
   {
 
   }
-  
+
+
   /**
    * Constructor of RevertCommand
    *
-   * @param myDialog the open dialog box will be applied this command
+   * @param adp the open dialog box will be applied this command
    */
   public RevertCommand(AbstractDataPackage adp)
   {
 
   }
-  
+
+
   /**
    * execute the revert command
-   */    
+   *
+   * @param event ActionEvent
+   */
   public void execute(ActionEvent event)
   {
     DataViewContainerPanel dvcp = null;
     morphoFrame = UIController.getInstance().getCurrentActiveWindow();
     if (morphoFrame != null)
     {
-       dvcp = AddDocumentationCommand.
-                          getDataViewContainerPanelFromMorphoFrame(morphoFrame);
+       dvcp = morphoFrame.getDataViewContainerPanel();
     }//if
     if (dvcp!=null) {
       DataViewer dv = dvcp.getCurrentDataViewer();
       dv.init();
     }
-    
+
   }//execute
 
- 
+
   /**
    * could also have undo functionality; disabled for now
-   */ 
+   */
   // public void undo();
 
 }//class OpenDialogBoxCommand

@@ -5,9 +5,9 @@
  *    Authors: @tao@
  *    Release: @release@
  *
- *   '$Author: sambasiv $'
- *     '$Date: 2004-02-06 20:07:27 $'
- * '$Revision: 1.4 $'
+ *   '$Author: brooke $'
+ *     '$Date: 2004-03-18 02:21:40 $'
+ * '$Revision: 1.5 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,18 +26,16 @@
 
 package edu.ucsb.nceas.morpho.datapackage;
 
-import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.framework.MorphoFrame;
-import edu.ucsb.nceas.morpho.framework.SwingWorker;
 import edu.ucsb.nceas.morpho.framework.UIController;
 import edu.ucsb.nceas.morpho.util.Command;
-import edu.ucsb.nceas.morpho.util.Log;
+
+import java.util.Vector;
 
 import java.awt.event.ActionEvent;
-import java.awt.Point;
-import java.util.Vector;
+
 import javax.swing.JTable;
-import javax.swing.table.TableColumnModel;
+
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -46,35 +44,37 @@ import org.w3c.dom.NodeList;
 /**
  * Class to handle delete  a column command
  */
-public class DeleteColumnCommand implements Command 
+public class DeleteColumnCommand implements Command
 {
-  
-  
+
+
   /* Referrence to  morphoframe */
   private MorphoFrame morphoFrame = null;
 
-  
+
   /**
    * Constructor of Import data command
    */
   public DeleteColumnCommand()
   {
-    
+
   }
+
 
   /**
    * execute insert command
-   */    
+   *
+   * @param event ActionEvent
+   */
   public void execute(ActionEvent event)
-  {   
+  {
     DataViewContainerPanel resultPane = null;
     morphoFrame = UIController.getInstance().getCurrentActiveWindow();
     if (morphoFrame != null)
     {
-       resultPane = AddDocumentationCommand.
-                          getDataViewContainerPanelFromMorphoFrame(morphoFrame);
+       resultPane =  morphoFrame.getDataViewContainerPanel();
     }//if
-    
+
     // make sure resulPanel is not null
     if (resultPane != null)
     {
@@ -90,67 +90,78 @@ public class DeleteColumnCommand implements Command
          Document attributeDocument=dataView.getAttributeDoc();
          Vector columnLabels=dataView.getColumnLabels();
          deleteColumn(jtable, ptmodel, vector, adp, entityIndex, columnLabels);
-				 dataView.setPV(ptmodel.getPersistentVector());
+         dataView.setPV(ptmodel.getPersistentVector());
        }
-       
+
     }//if
-  
+
   }//execute
-  
-  
-  
- /**
-  *  Method to delete a column into table
-  *  eml2.0.0 version (Morpho 1.5 +)
-  */
-   private void deleteColumn(JTable table, PersistentTableModel ptm, 
-                           PersistentVector pv, AbstractDataPackage adp, 
+
+
+  /**
+   * Method to delete a column into table eml2.0.0 version (Morpho 1.5 +)
+   *
+   * @param table JTable
+   * @param ptm PersistentTableModel
+   * @param pv PersistentVector
+   * @param adp AbstractDataPackage
+   * @param entityIndex int
+   * @param column_labels Vector
+   */
+  private void deleteColumn(JTable table, PersistentTableModel ptm,
+                           PersistentVector pv, AbstractDataPackage adp,
                            int entityIndex, Vector column_labels)
-  {  
+  {
     int sel = table.getSelectedColumn();
-    if (sel>-1) 
+    if (sel>-1)
     {
       adp.deleteAttribute(entityIndex, sel);
 
       column_labels.removeElementAt(sel);
       ptm.deleteColumn(sel);
       pv = ptm.getPersistentVector();
-			
-      ptm.fireTableStructureChanged();    
-      
+
+      ptm.fireTableStructureChanged();
+
     }
   }
-  
-  
- /** 
-  *  Method to delete a column into table 
-  *  This is the method used for Morpho version 1.4 and earlier
-  */
-  private void deleteColumn(JTable table, PersistentTableModel ptm, 
-                           PersistentVector pv, Document attributeDoc, 
+
+
+  /**
+   * Method to delete a column into table This is the method used for Morpho
+   * version 1.4 and earlier
+   *
+   * @param table JTable
+   * @param ptm PersistentTableModel
+   * @param pv PersistentVector
+   * @param attributeDoc Document
+   * @param column_labels Vector
+   */
+  private void deleteColumn(JTable table, PersistentTableModel ptm,
+                           PersistentVector pv, Document attributeDoc,
                            Vector column_labels)
-  {  
+  {
     int sel = table.getSelectedColumn();
-    if (sel>-1) 
+    if (sel>-1)
     {
       // remove the attribute node associated with the column
       NodeList nl = attributeDoc.getElementsByTagName("attribute");
       Node deleteNode = nl.item(sel);
       Node root = attributeDoc.getDocumentElement();
       root.removeChild(deleteNode);
-          
+
       column_labels.removeElementAt(sel);
       ptm.deleteColumn(sel);
       pv = ptm.getPersistentVector();
-      ptm.fireTableStructureChanged();    
+      ptm.fireTableStructureChanged();
     }
-  
+
   }//deleteColumn
 
- 
+
   /**
    * could also have undo functionality; disabled for now
-   */ 
+   */
   // public void undo();
 
 }//class DeleteColumnCommand

@@ -5,9 +5,9 @@
  *    Authors: @tao@
  *    Release: @release@
  *
- *   '$Author: tao $'
- *     '$Date: 2002-09-27 03:51:56 $'
- * '$Revision: 1.1 $'
+ *   '$Author: brooke $'
+ *     '$Date: 2004-03-18 02:21:40 $'
+ * '$Revision: 1.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,58 +26,48 @@
 
 package edu.ucsb.nceas.morpho.datapackage;
 
-import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.framework.MorphoFrame;
-import edu.ucsb.nceas.morpho.framework.SwingWorker;
 import edu.ucsb.nceas.morpho.framework.UIController;
 import edu.ucsb.nceas.morpho.util.Command;
-import edu.ucsb.nceas.morpho.util.Log;
-import java.awt.BorderLayout;
-import java.awt.Component;
-import java.awt.Dimension;
+
 import java.awt.event.ActionEvent;
-import java.awt.Point;
-import java.util.Vector;
-import javax.swing.DefaultCellEditor;
-import javax.swing.JButton;
-import javax.swing.JDialog;
-import javax.swing.JPanel;
+
 import javax.swing.JTable;
-import javax.swing.table.TableColumnModel;
-import org.w3c.dom.Document;
 
 
 /**
  * Class to handle delete a row command
  */
-public class DeleteRowCommand implements Command 
+public class DeleteRowCommand implements Command
 {
 
   /* Referrence to  morphoframe */
   private MorphoFrame morphoFrame = null;
-  
- 
+
+
   /**
    * Constructor of delete a row command
    */
   public DeleteRowCommand()
   {
-   
+
   }
+
 
   /**
    * execute delete row command
-   */    
+   *
+   * @param event ActionEvent
+   */
   public void execute(ActionEvent event)
-  {   
+  {
     DataViewContainerPanel resultPane = null;
     morphoFrame = UIController.getInstance().getCurrentActiveWindow();
     if (morphoFrame != null)
     {
-       resultPane = AddDocumentationCommand.
-                          getDataViewContainerPanelFromMorphoFrame(morphoFrame);
+       resultPane = morphoFrame.getDataViewContainerPanel();
     }//if
-    
+
     // make sure resulPanel is not null
     if (resultPane != null)
     {
@@ -89,28 +79,28 @@ public class DeleteRowCommand implements Command
          PersistentTableModel ptmodel=(PersistentTableModel)jtable.getModel();
          deleteRow(jtable, ptmodel);
        }
-       
+
     }//if
-  
+
   }//execute
-  
-  
-  
+
+
+
   /* Method to insert a new row into table */
   private void deleteRow(JTable table, PersistentTableModel ptm)
-                           
-  {  
+
+  {
     int sel = table.getSelectedRow();
-    if (sel>-1) 
+    if (sel>-1)
     {
-       ptm.deleteRow(sel);	 
+       ptm.deleteRow(sel);
     }
 
   }//insert row
 
   /**
    * could also have undo functionality; disabled for now
-   */ 
+   */
   // public void undo();
 
 }//class CancelCommand

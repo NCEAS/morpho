@@ -5,9 +5,9 @@
  *    Authors: @tao@
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2004-01-08 19:14:49 $'
- * '$Revision: 1.1 $'
+ *   '$Author: brooke $'
+ *     '$Date: 2004-03-18 02:21:40 $'
+ * '$Revision: 1.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,60 +27,50 @@
 package edu.ucsb.nceas.morpho.datapackage;
 
 import edu.ucsb.nceas.morpho.Morpho;
-import edu.ucsb.nceas.morpho.datapackage.*;
+import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
 import edu.ucsb.nceas.morpho.framework.MorphoFrame;
-import edu.ucsb.nceas.morpho.framework.SwingWorker;
 import edu.ucsb.nceas.morpho.framework.UIController;
-import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
 import edu.ucsb.nceas.morpho.plugins.ServiceController;
-import edu.ucsb.nceas.morpho.plugins.ServiceProvider;
 import edu.ucsb.nceas.morpho.plugins.ServiceNotHandledException;
-import edu.ucsb.nceas.morpho.plugins.DataPackageWizardListener;
+import edu.ucsb.nceas.morpho.plugins.ServiceProvider;
 import edu.ucsb.nceas.morpho.util.Command;
 import edu.ucsb.nceas.morpho.util.Log;
-import java.awt.Component;
+
 import java.awt.event.ActionEvent;
-import javax.swing.JDialog;
-
-import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
-
-
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-
-import edu.ucsb.nceas.utilities.XMLUtilities;
 
 /**
  * Class to handle import data file command
  */
-public class DeleteTableCommand implements Command 
+public class DeleteTableCommand implements Command
 {
   /** A reference to the MophorFrame */
   private MorphoFrame morphoFrame = null;
- 
+
   /**
    * Constructor of Import data command
    */
   public DeleteTableCommand()
   {
- 
+
   }//RefreshCommand
+
 
   /**
    * execute refresh command
-   */    
+   *
+   * @param event ActionEvent
+   */
   public void execute(ActionEvent event)
-  {   
+  {
     DataViewContainerPanel resultPane = null;
     morphoFrame = UIController.getInstance().getCurrentActiveWindow();
     if (morphoFrame != null) {
-      
-       resultPane = AddDocumentationCommand.
-                          getDataViewContainerPanelFromMorphoFrame(morphoFrame);
+
+       resultPane = morphoFrame.getDataViewContainerPanel();
     }//if
     // make sure resulPanel is not null
     if ( resultPane != null) {
-      
+
       final AbstractDataPackage adp = resultPane.getAbstractDataPackage();
       DataViewer dv = resultPane.getCurrentDataViewer();
       String entityId = null;
@@ -89,7 +79,7 @@ public class DeleteTableCommand implements Command
         adp.deleteEntity(entityNum);
       }
 
-       // ---DFH - resetting the displayed package info			
+       // ---DFH - resetting the displayed package info
               Morpho morpho = Morpho.thisStaticInstance;
               AccessionNumber an = new AccessionNumber(morpho);
               String curid = adp.getAccessionNumber();
@@ -101,32 +91,32 @@ public class DeleteTableCommand implements Command
               }
               adp.setAccessionNumber(newid);
               adp.setLocation("");  // we've changed it and not yet saved
-              try 
+              try
               {
                 ServiceController services = ServiceController.getInstance();
-                ServiceProvider provider = 
+                ServiceProvider provider =
                       services.getServiceProvider(DataPackageInterface.class);
                 DataPackageInterface dataPackageInt = (DataPackageInterface)provider;
                 dataPackageInt.openNewDataPackage(adp, null);
               }
-              catch (ServiceNotHandledException snhe) 
+              catch (ServiceNotHandledException snhe)
               {
                 Log.debug(6, snhe.getMessage());
               }
-							morphoFrame.setVisible(false);
+              morphoFrame.setVisible(false);
               UIController controller = UIController.getInstance();
               controller.removeWindow(morphoFrame);
               morphoFrame.dispose();
             }
-  
-      
-  
-  }//execute 
- 
-  
+
+
+
+  }//execute
+
+
   /**
    * could also have undo functionality; disabled for now
-   */ 
+   */
   // public void undo();
 
 }

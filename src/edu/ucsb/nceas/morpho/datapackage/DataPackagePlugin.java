@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2004-03-17 19:13:50 $'
- * '$Revision: 1.83 $'
+ *   '$Author: brooke $'
+ *     '$Date: 2004-03-18 02:21:40 $'
+ * '$Revision: 1.84 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -65,7 +65,7 @@ public class DataPackagePlugin
 
   /** Constant int for data menu position */
   public static final int DOCUMENTATIONMENUPOSITION = 3;
-  
+
   /** Constant int for data menu position */
   public static final int DATAMENUPOSITION = 4;
 
@@ -281,7 +281,7 @@ public class DataPackagePlugin
                             false, GUIAction.EVENT_LOCAL);
     controller.addGuiAction(addDocumentation);
 
-		i=i+2;
+    i=i+2;
     GUIAction addGeographicCovColumn = new GUIAction("Add Geographic Information...",
                                            null, new AddGeographicCovCommand());
     addGeographicCovColumn.setToolTipText("Add geographic coverage information");
@@ -291,7 +291,7 @@ public class DataPackagePlugin
                       StateChangeEvent.CREATE_EDITABLE_ENTITY_DATAPACKAGE_FRAME,
                       true, GUIAction.EVENT_LOCAL);
     addGeographicCovColumn.setEnabledOnStateChange(
-                            StateChangeEvent.CREATE_DATAPACKAGE_FRAME, 
+                            StateChangeEvent.CREATE_DATAPACKAGE_FRAME,
                             true, GUIAction.EVENT_LOCAL);
     controller.addGuiAction(addGeographicCovColumn);
 
@@ -305,7 +305,7 @@ public class DataPackagePlugin
                       StateChangeEvent.CREATE_EDITABLE_ENTITY_DATAPACKAGE_FRAME,
                       true, GUIAction.EVENT_LOCAL);
     addTemporalCovColumn.setEnabledOnStateChange(
-                            StateChangeEvent.CREATE_DATAPACKAGE_FRAME, 
+                            StateChangeEvent.CREATE_DATAPACKAGE_FRAME,
                             true, GUIAction.EVENT_LOCAL);
     controller.addGuiAction(addTemporalCovColumn);
 
@@ -319,9 +319,9 @@ public class DataPackagePlugin
                       StateChangeEvent.CREATE_EDITABLE_ENTITY_DATAPACKAGE_FRAME,
                       true, GUIAction.EVENT_LOCAL);
     addTaxonomicCovColumn.setEnabledOnStateChange(
-                            StateChangeEvent.CREATE_DATAPACKAGE_FRAME, 
+                            StateChangeEvent.CREATE_DATAPACKAGE_FRAME,
                             true, GUIAction.EVENT_LOCAL);
-		controller.addGuiAction(addTaxonomicCovColumn);
+    controller.addGuiAction(addTaxonomicCovColumn);
 
     // For data menu
     i = 0; // postition for menu item in data menu
@@ -362,7 +362,7 @@ public class DataPackagePlugin
                    false, GUIAction.EVENT_LOCAL);
     controller.addGuiAction(deleteDatatable);
 
-		
+
     i= i+2; // separator will take a position so add 2
     GUIAction sortBySelectedColumn = new GUIAction("Sort by Selected Column",
                                            null, new SortDataTableCommand());
@@ -531,7 +531,7 @@ public class DataPackagePlugin
     deleteDatatable.setEnabled(false);
     addGeographicCovColumn.setEnabled(false);
     addTemporalCovColumn.setEnabled(false);
-		addTaxonomicCovColumn.setEnabled(false);
+    addTaxonomicCovColumn.setEnabled(false);
     sortBySelectedColumn.setEnabled(false);
     insertRowAfter.setEnabled(false);
     insertRowBefore.setEnabled(false);
@@ -960,8 +960,7 @@ public class DataPackagePlugin
   {
     String location = null;
     boolean flagInLocal = false;
-     DataViewContainerPanel dvcp = AddDocumentationCommand.
-                               getDataViewContainerPanelFromMorphoFrame(morphoFrame);
+     DataViewContainerPanel dvcp = morphoFrame.getDataViewContainerPanel();
      AbstractDataPackage adp = dvcp.getAbstractDataPackage();
 
        location = adp.getLocation();
@@ -987,8 +986,7 @@ public class DataPackagePlugin
   {
     String location = null;
     boolean flagInNetwork = false;
-     DataViewContainerPanel dvcp = AddDocumentationCommand.
-                               getDataViewContainerPanelFromMorphoFrame(morphoFrame);
+     DataViewContainerPanel dvcp = morphoFrame.getDataViewContainerPanel();
      AbstractDataPackage adp = dvcp.getAbstractDataPackage();
        location = adp.getLocation();
 
@@ -1013,8 +1011,7 @@ public class DataPackagePlugin
 
     if (morphoFrame != null)
     {
-       resultPane = AddDocumentationCommand.
-                          getDataViewContainerPanelFromMorphoFrame(morphoFrame);
+       resultPane = morphoFrame.getDataViewContainerPanel();
     }//if
 
     // make sure resulPanel is not null
@@ -1027,7 +1024,7 @@ public class DataPackagePlugin
 
   private boolean hasClipboardData(Component c) {
     boolean ret = true;
- 		Transferable t = c.getToolkit().getSystemClipboard().getContents(null);
+     Transferable t = c.getToolkit().getSystemClipboard().getContents(null);
     if (t==null) {
       ret = false;
     }
