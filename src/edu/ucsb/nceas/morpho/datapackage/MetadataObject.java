@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-09-17 23:43:52 $'
- * '$Revision: 1.7 $'
+ *     '$Date: 2003-11-25 23:15:10 $'
+ * '$Revision: 1.8 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -215,7 +215,7 @@ public class MetadataObject
     }
     if (value!=null) {
       // value is an XPath
-      String path = (String)value;
+      String path = (String)((Node)value).getNodeValue();
       if ((path!=null)||(path.length()<1)) {
         try{
           // metadataNode is the context node
