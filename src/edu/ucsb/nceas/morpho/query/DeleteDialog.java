@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2002-09-04 23:25:51 $'
- * '$Revision: 1.1 $'
+ *     '$Date: 2002-09-05 18:25:31 $'
+ * '$Revision: 1.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -80,9 +80,9 @@ public class DeleteDialog extends JDialog
   
   private static final int PADDINGWIDTH = 8;
   private static String WARNING =
-      "Are you sure to delete the data package? \n" +
-      "If yes, please chose one option and click Execute button, " +
-      "else please click Cancel button.";
+      "Are you sure you want to delete the data package? \n" +
+      "If yes, please choose one option and click the Execute button, " +
+      "otherwise please click the Cancel button.";
   /** A reference to morpho frame */
   MorphoFrame parent = null;    
   
@@ -117,7 +117,7 @@ public class DeleteDialog extends JDialog
     int parentWidth = parent.getWidth();
     int parentHeight = parent.getHeight();
     int dialogWidth = 500;
-    int dialogHeight = 300;
+    int dialogHeight = 250;
     setSize(dialogWidth, dialogHeight);
     
     // Set location of dialog, it shared same center of parent
@@ -140,16 +140,7 @@ public class DeleteDialog extends JDialog
                                       Box.createHorizontalStrut(PADDINGWIDTH));
     getContentPane().add(BorderLayout.WEST, 
                                       Box.createHorizontalStrut(PADDINGWIDTH));
-    // Create panel to store the note
-    Box noteBox = Box.createVerticalBox();
-    noteBox.add(Box.createVerticalStrut(PADDINGWIDTH));
-    JTextArea note = new JTextArea(WARNING);
-    note.setEditable(false);
-    note.setLineWrap(true);
-    note.setOpaque(false);
-    noteBox.add(note);
-    getContentPane().add(BorderLayout.NORTH, noteBox);
-    
+  
    
     // Initially set radio button disable
     deleteLocal.setEnabled(false);
@@ -176,13 +167,38 @@ public class DeleteDialog extends JDialog
       deleteBoth.setEnabled(true);
     }
     
-     // Create icon box
+    // Create JPanel and set it border layout
+    JPanel mainPanel = new JPanel();
+    mainPanel.setLayout(new BorderLayout(0, 0));
+    
+    // Create note box and add it to the north of mainPanel
+    Box noteBox = Box.createVerticalBox();
+    noteBox.add(Box.createVerticalStrut(PADDINGWIDTH));
+    JTextArea note = new JTextArea(WARNING);
+    note.setEditable(false);
+    note.setLineWrap(true);
+    note.setWrapStyleWord(true);
+    note.setOpaque(false);
+    noteBox.add(note);
+    noteBox.add(Box.createVerticalStrut(PADDINGWIDTH));
+    mainPanel.add(BorderLayout.NORTH, noteBox);
+    
+    // Create a radio box 
     Box radioBox = Box.createVerticalBox();
-    radioBox.add(Box.createVerticalStrut(PADDINGWIDTH));
     radioBox.add(deleteLocal);
     radioBox.add(deleteNetwork);
     radioBox.add(deleteBoth);
-    getContentPane().add(BorderLayout.CENTER, radioBox);
+    
+    // create another center box which will put radion box in the center
+    // and it will be add into center of mainPanel
+    Box centerBox = Box.createHorizontalBox();
+    centerBox.add(Box.createHorizontalGlue());
+    centerBox.add(radioBox);
+    centerBox.add(Box.createHorizontalGlue());
+    mainPanel.add(BorderLayout.CENTER, centerBox);
+   
+    // Finish mainPanel and add it the certer of contentpanel    
+    getContentPane().add(BorderLayout.CENTER, mainPanel);
     
     // Create bottom box
     Box bottomBox = Box.createVerticalBox();
