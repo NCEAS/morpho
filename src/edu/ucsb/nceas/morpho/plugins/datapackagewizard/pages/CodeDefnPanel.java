@@ -69,6 +69,7 @@ import edu.ucsb.nceas.utilities.OrderedMap;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Vector;
 
 import java.awt.GridLayout;
 import java.awt.event.ItemEvent;
@@ -97,7 +98,6 @@ public class CodeDefnPanel extends JPanel implements WizardPageSubPanelAPI {
 	private final String subtitle   = "";
 
 	public short USER_RESPONSE;
-	public static final short OK_OPTION      = 10;
 	public static final short CANCEL_OPTION  = 20;
 
 
@@ -180,14 +180,12 @@ public class CodeDefnPanel extends JPanel implements WizardPageSubPanelAPI {
 
 		setLayout(new BorderLayout());
 
-		add(WidgetFactory.makeDefaultSpacer());
-
 		JPanel topPanel = new JPanel();
 		topPanel.setLayout(new BoxLayout(topPanel, BoxLayout.Y_AXIS));
 
 		choiceLabel = WidgetFactory.makeHTMLLabel("Select one of the following",1,true);
 		topPanel.add(choiceLabel);
-		add(WidgetFactory.makeDefaultSpacer());
+		topPanel.add(WidgetFactory.makeDefaultSpacer());
 
 		ActionListener listener = new ActionListener() {
 
@@ -340,28 +338,28 @@ public class CodeDefnPanel extends JPanel implements WizardPageSubPanelAPI {
 
 		if(entityNames != null)
 			return entityNames;
-
-		ArrayList names = new ArrayList();
-
+		
 		if(adp == null)
 			getADP();
-
+		
+		String[] entNames = new String[1];
+		
 		if(adp != null) {
-			for(int i = 0; i < adp.getEntityCount(); i++) {
-				names.add(adp.getEntityName(i));
+		
+			int cnt = adp.getEntityCount();
+			entNames = new String[cnt +1];
+
+			for(int i = 0; i < cnt; i++) {
+				entNames[i+1] = adp.getEntityName(i);
 			}
+			
 		} else {
 			Log.debug(45, "Error - Unable to get the AbstractDataPackage in CodeImportPanel. ");
 		}
 
-		int cnt = names.size();
-		String[] entNames = new String[cnt + 1];
 		entNames[0] = "--Select data table--";
-		int i = 1;
-		for(Iterator it = names.iterator(); it.hasNext();)
-			entNames[i++] = (String)it.next();
-
 		return entNames;
+
 	}
 
 	/**
@@ -708,10 +706,64 @@ public class CodeDefnPanel extends JPanel implements WizardPageSubPanelAPI {
 			Log.debug(15, "Abstract Data Package is null. Cannot fill customlist with the imported codes");
 			return null;
 		}
-
-		int entityIndex = entityIdx;
-		String inline = adp.getDistributionInlineData(entityIndex, 0,0);
+		
 		Morpho morpho = resultPane.getFramework();
+		entityFile = getEntityFile(morpho, adp, entityIdx);
+		if(entityFile == null) {
+			return null;
+		}
+		
+		int codeIndex = codePickList.getSelectedIndex() - 1;
+		int defnIndex = defnPickList.getSelectedIndex() - 1;
+		String numHeaders = adp.getPhysicalNumberHeaderLines(entityIdx, 0);
+		int numHeaderLines = 0;
+		try {
+			if(numHeaders != null) {
+				numHeaderLines = Integer.parseInt(numHeaders);
+			}
+		} catch(Exception e) {}
+
+		
+		String field_delimiter = adp.getPhysicalFieldDelimiter(entityIdx, 0);
+		String delimiter = getDelimiterString(field_delimiter);
+		
+		Vector colIndices = new Vector();
+		if(codeIndex <= defnIndex) {
+		
+			colIndices.add(new Integer(codeIndex));
+			colIndices.add(new Integer(defnIndex));
+		} else {
+			
+			colIndices.add(new Integer(defnIndex));
+			colIndices.add(new Integer(codeIndex));
+		}
+
+		List data = getColumnValues(entityFile, colIndices, numHeaderLines, delimiter, MAX_IMPORTED_ROWS_DISPLAYED);
+		
+		if(codeIndex > defnIndex) {
+			List newData = new ArrayList();
+			Iterator it = data.iterator();
+			while(it.hasNext()) {
+				
+				List t = (List)it.next();
+				List newT = new ArrayList();
+				newT.add(t.get(1));
+				newT.add(t.get(0));
+				newData.add(newT);
+			}
+			data = newData;
+		}
+		
+		return data;
+
+
+	}
+
+
+	public static File getEntityFile(Morpho morpho, AbstractDataPackage adp, int entityIndex) {
+		
+		File entityFile = null;
+		String inline = adp.getDistributionInlineData(entityIndex, 0,0);
 
 		if (inline.length()>0) {  // there is inline data
 
@@ -807,34 +859,14 @@ public class CodeDefnPanel extends JPanel implements WizardPageSubPanelAPI {
 			Log.debug(15, "Unable to get the selected entity's data file!");
 			return null;
 		}
-
-		int codeIndex = codePickList.getSelectedIndex() - 1;
-		int defnIndex = defnPickList.getSelectedIndex() - 1;
-		String numHeaders = adp.getPhysicalNumberHeaderLines(entityIndex, 0);
-		int numHeaderLines = 0;
-		try {
-			if(numHeaders != null)
-				numHeaderLines = Integer.parseInt(numHeaders);
-		} catch(Exception e) {
-		}
-
-		List data = readTwoColumnsFromFile(entityFile, codeIndex, defnIndex, numHeaderLines);
-
-		return data;
-
-	} // end of getColumns
-
-	private List readTwoColumnsFromFile(File file, int firstCol, int secondCol, int numHeaderLines) {
+		
+		return entityFile;
+	}
+	public static List getColumnValues(File file, Vector colIndices, int numHeaderLines, String delimiter, int maxLinesNeeded) {
 
 		List result = new ArrayList();
 		String line;
-		int entityIndex = entityIdx;
-		String field_delimiter = adp.getPhysicalFieldDelimiter(entityIndex, 0);
-		String delimiter = getDelimiterString(field_delimiter);
 		boolean ignoreConsequtiveDelimiters = false;
-		boolean orderReversed = false;
-		if(firstCol > secondCol)
-			orderReversed = true;
 		String token, oldToken = "";
 		try
 		{
@@ -848,7 +880,7 @@ public class CodeDefnPanel extends JPanel implements WizardPageSubPanelAPI {
 					continue;
 				List row = new ArrayList();
 
-				if(result.size() >= MAX_IMPORTED_ROWS_DISPLAYED) {
+				if(maxLinesNeeded != -1 && result.size() >= maxLinesNeeded) {
 					int space = TRUNCATE_STRING.indexOf(" ");
 					row.add(TRUNCATE_STRING.substring(0, space));
 					row.add(TRUNCATE_STRING.substring(space + 1));
@@ -862,18 +894,18 @@ public class CodeDefnPanel extends JPanel implements WizardPageSubPanelAPI {
 					while( st.hasMoreTokens() ) {
 						token = st.nextToken().trim();
 						cnt++;
-						if(cnt == firstCol) {
-							if(orderReversed) {
-								row.add(0, token);
-								break;
-							} else {
+						int idx = -1;
+						if((idx = colIndices.indexOf(new Integer(cnt))) >  -1) {
 								row.add(token);
-							}
+								int lastIdx = colIndices.lastIndexOf(new Integer(cnt));
+								while(idx < lastIdx) {
+									idx = colIndices.indexOf(new Integer(cnt), idx +1);
+									if(idx > -1)
+										row.add(token);
+								}
 						}
-						if (cnt == secondCol) {
-							row.add(token);
-							if(!orderReversed) break;
-						}
+						
+						if(idx == colIndices.size() -1) break;
 					} // end of while
 					result.add(row);
 					continue;
@@ -885,35 +917,32 @@ public class CodeDefnPanel extends JPanel implements WizardPageSubPanelAPI {
 						token = st.nextToken().trim();
 						if (! (delimiter.indexOf(token) > -1) ) {
 							cnt++;
-							if(cnt == firstCol) {
-								if(orderReversed) {
-									row.add(0, token);
-									break;
-								} else {
-									row.add(token);
+							int idx = -1;
+							if((idx = colIndices.indexOf(new Integer(cnt))) >  -1) {
+								row.add(token);
+								int lastIdx = colIndices.lastIndexOf(new Integer(cnt));
+								while(idx < lastIdx) {
+									idx = colIndices.indexOf(new Integer(cnt), idx +1);
+									if(idx > -1)
+										row.add(token);
 								}
 							}
-							if (cnt == secondCol) {
-								row.add(token);
-								if(!orderReversed) break;
-							}
-
+							if(idx == colIndices.size() -1) break;
 						}
 						else {
 							if ((delimiter.indexOf(oldToken) > -1) && (delimiter.indexOf(token) > -1)) {
 								cnt++;
-								if(cnt == firstCol) {
-									if(orderReversed) {
-										row.add(0, "");
-										break;
-									} else {
-										row.add("");
+								int idx = -1;
+								if((idx = colIndices.indexOf(new Integer(cnt))) >  -1) {
+									row.add("");
+									int lastIdx = colIndices.lastIndexOf(new Integer(cnt));
+									while(idx < lastIdx) {
+										idx = colIndices.indexOf(new Integer(cnt), idx +1);
+										if(idx > -1)
+											row.add("");
 									}
 								}
-								if (cnt == secondCol) {
-									row.add("");
-									if(!orderReversed) break;
-								}
+								if(idx == colIndices.size() -1) break;
 							}
 						}
 						oldToken = token;
@@ -930,7 +959,84 @@ public class CodeDefnPanel extends JPanel implements WizardPageSubPanelAPI {
 		}
 		return result;
 
-	}// end of function readTwoColumnsFromFile
+	}// end of function getcolumnValues
+	
+
+
+	public static List getOneColumnValue(File file, int colIndex, int numHeaderLines, String delimiter, int maxLinesNeeded) {
+
+		List result = new ArrayList();
+		String line;
+		boolean ignoreConsequtiveDelimiters = false;
+		String token, oldToken = "";
+		try
+		{
+			BufferedReader br = new BufferedReader(new FileReader(file));
+			int linecnt = 0;
+			while( (line = br.readLine()) != null) {
+				linecnt++;
+				if(linecnt <= numHeaderLines)
+					continue;
+				if(line.trim().equals(""))
+					continue;
+				
+				if(maxLinesNeeded != -1 && result.size() >= maxLinesNeeded) {
+					result.add(TRUNCATE_STRING);
+					break;
+				}
+
+				if (ignoreConsequtiveDelimiters) {
+					StringTokenizer st = new StringTokenizer(line, delimiter, false);
+					int cnt = -1;
+					while( st.hasMoreTokens() ) {
+						token = st.nextToken().trim();
+						cnt++;
+						if(cnt == colIndex) {
+								result.add(token);
+								break;
+						}
+					} // end of while
+					
+					continue;
+				}
+				else { // not consecutive delimiters
+					int cnt = -1;
+					StringTokenizer st = new StringTokenizer(line, delimiter, true);
+					while( st.hasMoreTokens() ) {
+						token = st.nextToken().trim();
+						if (! (delimiter.indexOf(token) > -1) ) {
+							cnt++;
+							
+							if(cnt == colIndex) {
+								result.add(token);
+								break;
+							}
+						}
+						else {
+							if ((delimiter.indexOf(oldToken) > -1) && (delimiter.indexOf(token) > -1)) {
+								cnt++;
+								
+								if(cnt == colIndex) {
+									result.add("");
+									break;
+								}
+							}
+						}
+						oldToken = token;
+					}
+				} // end of else
+
+				
+			} // end of while
+
+		} // end of try bolck
+		catch(Exception e) {
+			Log.debug(15, "Exception in reading the data File: " + e);
+
+		}
+		return result;
+
+	}// end of function getcolumnValues
 
 	private String getDelimiterString(String field_delimiter) {
 		String str = "";

@@ -2,6 +2,7 @@ package edu.ucsb.nceas.morpho.plugins.datapackagewizard;
 
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.BorderLayout;
@@ -16,6 +17,7 @@ import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JDialog;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.JComponent;
@@ -366,4 +368,77 @@ public class WidgetFactory {
     component.setPreferredSize(dims);
     component.setMaximumSize(dims);
   }
+	
+	
+	/**
+		Function that creates a container dialog for a given panel. The container provides 
+		the 'OK' and 'Cancel' buttons at the bottom of the container . The listeners for the
+		'OK' and 'Cancel' button are provided as parameters.
+		
+		@param centerPanel - the JPanel that is to displayed in this dialog
+		@param okListener  - the ActionListener for the 'OK' button
+		@param cancelListener  - the ActionListener for the 'Cancel' button
+		@return JDialog 	- returns a JDialog that contains the centerPanel and a button panel
+												at the bottom
+	*/
+	
+	public static JDialog makeContainerDialog(JPanel centerPanel, ActionListener okListener, ActionListener cancelListener) {
+		
+		return makeContainerDialog(centerPanel, okListener, cancelListener, "OK", "Cancel");
+	}
+	
+	/**
+		Function that creates a container dialog for a given panel. The container provides 
+		the 'OK' and 'Cancel' buttons at the bottom of the container . The listeners for the
+		'OK' and 'Cancel' button are provided as parameters. The labels for the buttons are 
+		also provided.
+		
+		@param centerPanel - the JPanel that is to displayed in this dialog
+		@param okListener  - the ActionListener for the 'OK' button
+		@param cancelListener  - the ActionListener for the 'Cancel' button
+		@param okCaption  - the label for the 'OK' button
+		@param cancelCaption  - the label for the 'Cancel' button
+		@return JDialog 	- returns a JDialog that contains the centerPanel and a button panel
+												at the bottom
+	*/
+	
+	public static JDialog makeContainerDialog(JPanel centerPanel, ActionListener okListener, ActionListener cancelListener, String okCaption, String cancelCaption)
+	{
+		
+		JDialog dialog = new JDialog();
+		Container c = dialog.getContentPane();
+		c.setLayout(new BorderLayout());
+		
+		dialog.setModal(true);
+		dialog.setVisible(false);
+		
+		JPanel buttonsPanel = new JPanel();
+		buttonsPanel.setLayout(new BoxLayout(buttonsPanel, BoxLayout.X_AXIS));
+		buttonsPanel.add(Box.createHorizontalGlue());
+		buttonsPanel.setOpaque(false);
+		
+		buttonsPanel.setBorder(
+		BorderFactory.createMatteBorder(2, 0, 0, 0, WizardSettings.TOP_PANEL_BG_COLOR));
+		c.add(buttonsPanel, BorderLayout.SOUTH);
+		
+		JButton okButton  = new JButton(okCaption);
+		okButton.addActionListener(okListener);
+		okButton.setForeground(WizardSettings.BUTTON_TEXT_COLOR);
+		okButton.setFont(WizardSettings.BUTTON_FONT);
+		
+		JButton cancelButton = new JButton(cancelCaption);
+		cancelButton.addActionListener(cancelListener);
+		cancelButton.setForeground(WizardSettings.BUTTON_TEXT_COLOR);
+		cancelButton.setFont(WizardSettings.BUTTON_FONT);
+		
+		buttonsPanel.add(okButton);
+		buttonsPanel.add(Box.createHorizontalStrut(WizardSettings.PADDING));
+		buttonsPanel.add(cancelButton);
+		buttonsPanel.add(Box.createHorizontalStrut(WizardSettings.PADDING));
+		
+		c.add(centerPanel, BorderLayout.CENTER);
+		return dialog;
+	}
+	
 }
+

@@ -7,8 +7,8 @@
 *    Release: @release@
 *
 *   '$Author: sambasiv $'
-*     '$Date: 2004-02-12 22:25:58 $'
-* '$Revision: 1.19 $'
+*     '$Date: 2004-03-06 01:29:24 $'
+* '$Revision: 1.20 $'
 *
 * This program is free software; you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -910,10 +910,7 @@ class NominalOrdinalPanel extends JPanel implements WizardPageSubPanelAPI {
 		private AbstractWizardPage attributePage;
 		private Dimension DIALOG_SIZE = new Dimension(500,450);
 		private JDialog importDialog = null;
-		private JPanel buttonsPanel = null;
-		private final Font  BUTTON_FONT = new Font("Sans-Serif",Font.PLAIN,11);
-		private final Color BUTTON_TEXT_COLOR = new Color(51, 51, 51);
-		private final Color BG_COLOR = new Color(11,85,112);
+		
 		
 		
 		
@@ -936,7 +933,11 @@ class NominalOrdinalPanel extends JPanel implements WizardPageSubPanelAPI {
 						cancelAction();
 					}
 				};
-				importDialog = getContainerDialog(codeImportPanel, okAction, cancelAction);
+				Point loc = attributePage.getLocationOnScreen();
+				int xc = (int)(loc.getX() + attributePage.getWidth()/2 - DIALOG_SIZE.width/2);
+				int yc = (int)(loc.getY() + attributePage.getHeight()/2 - DIALOG_SIZE.height/2);
+				importDialog = WidgetFactory.makeContainerDialog(codeImportPanel, okAction, cancelAction);
+				importDialog.setBounds(xc, yc, DIALOG_SIZE.width, DIALOG_SIZE.height);
 			}
 		
 			importDialog.setVisible(true);
@@ -967,48 +968,7 @@ class NominalOrdinalPanel extends JPanel implements WizardPageSubPanelAPI {
 		}
 		
 	
-		private JDialog getContainerDialog(JPanel centerPanel, ActionListener okListener, 
-						ActionListener cancelListener) 
-		{
-			
-			JDialog dialog = new JDialog();
-			Container c = dialog.getContentPane();
-			c.setLayout(new BorderLayout());
-			
-			Point loc = attributePage.getLocationOnScreen();
-			int xc = (int)(loc.getX() + attributePage.getWidth()/2 - DIALOG_SIZE.width/2);
-			int yc = (int)(loc.getY() + attributePage.getHeight()/2 - DIALOG_SIZE.height/2);
-			dialog.setBounds(xc, yc, DIALOG_SIZE.width, DIALOG_SIZE.height);
-			dialog.setModal(true);
-			dialog.setVisible(false);
-			
-			buttonsPanel = new JPanel();
-			buttonsPanel.setLayout(new BoxLayout(buttonsPanel, BoxLayout.X_AXIS));
-			buttonsPanel.add(Box.createHorizontalGlue());
-			buttonsPanel.setOpaque(false);
-			
-			buttonsPanel.setBorder(
-			BorderFactory.createMatteBorder(2, 0, 0, 0, BG_COLOR));
-			c.add(buttonsPanel, BorderLayout.SOUTH);
-			
-			JButton okButton  = new JButton("OK");
-			okButton.addActionListener(okListener);
-			okButton.setForeground(BUTTON_TEXT_COLOR);
-			okButton.setFont(BUTTON_FONT);
-			
-			JButton cancelButton = new JButton("Cancel");
-			cancelButton.addActionListener(cancelListener);
-			cancelButton.setForeground(BUTTON_TEXT_COLOR);
-			cancelButton.setFont(BUTTON_FONT);
-			
-			buttonsPanel.add(okButton);
-			buttonsPanel.add(Box.createHorizontalStrut(WizardSettings.PADDING));
-			buttonsPanel.add(cancelButton);
-			buttonsPanel.add(Box.createHorizontalStrut(WizardSettings.PADDING));
-			
-			c.add(centerPanel, BorderLayout.CENTER);
-			return dialog;
-		}
+		
 		
 		// to fill the custom list in the attribute page with the imported values.
 		// This custom list is non-editable

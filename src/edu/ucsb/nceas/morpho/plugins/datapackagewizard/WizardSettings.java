@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: sgarg $'
- *     '$Date: 2004-03-04 03:47:25 $'
- * '$Revision: 1.48 $'
+ *   '$Author: sambasiv $'
+ *     '$Date: 2004-03-06 01:29:24 $'
+ * '$Revision: 1.49 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -122,7 +122,7 @@ public class WizardSettings {
 
   protected static final String ENTITY_WIZ_FIRST_PAGE_ID = DataPackageWizardInterface.DATA_LOCATION;
 
-  protected static final Color TOP_PANEL_BG_COLOR = new Color(11,85,112);
+  public static final Color TOP_PANEL_BG_COLOR = new Color(11,85,112);
 
   // x-dimension is ignored:
   protected static final Dimension TOP_PANEL_DIMS = new Dimension(100,60);
@@ -143,10 +143,10 @@ public class WizardSettings {
   protected static final Color SUBTITLE_TEXT_COLOR
   = new Color(255,255,255);
 
-  protected static final Font  BUTTON_FONT
+  public static final Font  BUTTON_FONT
   = new Font("Sans-Serif",Font.PLAIN,11);
 
-  protected static final Color BUTTON_TEXT_COLOR
+  public static final Color BUTTON_TEXT_COLOR
   = new Color(51, 51, 51);
 
   public static final  Font  WIZARD_CONTENT_FONT
@@ -657,5 +657,29 @@ public class WizardSettings {
     }
     return !(Float.isNaN(floatNum));
   }
+	
+	// Taxonomic Information
+	
+	public static final String[] stdTaxonRanks = {"Kingdom", "Sub-Kingdom", "Phylum", "Sub-Phylum", "Class", "Sub-Class", "Order", "Sub-Order", "Family", "Sub-Family", "Genus", "Sub-Genus", "Species", "Sub-Species"};
+	
+	public static final String[] commonTaxonRanks = {"Kingdom", "Phylum", "Class", "Order", "Family", "Genus", "Species"};
+	
+	public static int getIndexOfTaxonRank(String rank) {
+		
+		for(int i = 0;i < commonTaxonRanks.length; i++)
+			if(commonTaxonRanks[i].equals(rank))
+				return i;
+		return -1;
+	}
+	
+	public static List getTaxonHierarchyTillIndex(int index) {
+		
+		List ret = new ArrayList();
+		for(int i =0; i <= index; i++)
+			ret.add(commonTaxonRanks[i]);
+		return ret;
+	}
+	
+	
 }
 
