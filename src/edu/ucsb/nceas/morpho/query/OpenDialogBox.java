@@ -6,9 +6,9 @@
  *    Authors: @Jing Tao@
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2002-08-23 20:51:28 $'
- * '$Revision: 1.10 $'
+ *   '$Author: tao $'
+ *     '$Date: 2002-08-23 21:27:17 $'
+ * '$Revision: 1.11 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -89,9 +89,12 @@ public class OpenDialogBox extends JDialog
   //}}
   
   // ResultSet and result panel for the owner
-  ResultSet results = null;
-  ResultPanel ownerPanel = null;
+  private ResultSet results = null;
+  private ResultPanel ownerPanel = null;
   
+  // DIMENTION Factor to parent
+  private static final double DIMENSIONFACTOR = 0.9;
+  private static final int PADDINGWIDTH = 8;
   
   /**
    * Construct a new instance of the query dialog
@@ -108,36 +111,51 @@ public class OpenDialogBox extends JDialog
     this.mediator = new ResultPanelAndFrameMediator();
     this.ownerQuery = myQuery;
   
+    // Set OpenDialog size depent on parent size
+    int parentWidth = parent.getWidth();
+    int parentHeight = parent.getHeight();
+    int dialogWidth = 780;
+    int dialogHeight = 500;
+    setSize(dialogWidth, dialogHeight);
     
-    setSize(820, 600);
+    // Set location of dialog, it shared same center of parent
+    double parentX = parent.getLocation().getX();
+    double parentY = parent.getLocation().getY();
+    double centerX = parentX + 0.5 * parentWidth;
+    double centerY = parentY + 0.5 * parentHeight;
+    int dialogX = (new Double(centerX - 0.5 * dialogWidth)).intValue();
+    int dialogY = (new Double(centerY - 0.5 * dialogHeight)).intValue();
+    setLocation(dialogX, dialogY);
+    
     setTitle("Open");
     // Set the default close operation is dispose
     setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+    
+    // Set the border layout as layout
     getContentPane().setLayout(new BorderLayout(0, 0));
-//    getContentPane().setBackground(Color.white);
-    
-    // Create top padding
-    getContentPane().add(BorderLayout.NORTH, Box.createVerticalStrut(8));
-    getContentPane().add(BorderLayout.EAST, Box.createHorizontalStrut(8));
-    getContentPane().add(BorderLayout.WEST, Box.createHorizontalStrut(8));
-    
+
+    // Create padding
+    getContentPane().add(BorderLayout.NORTH, 
+                                      Box.createVerticalStrut(PADDINGWIDTH));
+    getContentPane().add(BorderLayout.EAST, 
+                                      Box.createHorizontalStrut(PADDINGWIDTH));
+    getContentPane().add(BorderLayout.WEST, 
+                                      Box.createHorizontalStrut(PADDINGWIDTH));
+   
+    // Create result panel
     createOwnerPanel();
     ownerPanel.setBackground(Color.white);
     getContentPane().add(BorderLayout.CENTER, ownerPanel);
     
-    // Create a margin panel
-    JPanel marginPanel = new JPanel();
-    marginPanel.setLayout(new BoxLayout(marginPanel, BoxLayout.Y_AXIS));
-    getContentPane().add(BorderLayout.SOUTH, marginPanel);
-    // Add the margin between controlButtonsPanel and resultPanel
-    marginPanel.add(Box.createVerticalStrut(8));
-  
-    
-    // Create a controlbuttionPanel
-    JPanel controlButtonsPanel = new JPanel();
-    controlButtonsPanel.setLayout(new BoxLayout(controlButtonsPanel,
-                                  BoxLayout.X_AXIS));
-    controlButtonsPanel.add(Box.createHorizontalStrut(8));
+    // Create bottom box
+    Box bottomBox = Box.createVerticalBox();
+    getContentPane().add(BorderLayout.SOUTH, bottomBox);
+    //Create padding between result panel and Contorl button box
+    bottomBox.add(Box.createVerticalStrut(PADDINGWIDTH));
+
+    // Create a controlbuttionBox
+    Box controlButtonsBox = Box.createHorizontalBox();
+    controlButtonsBox.add(Box.createHorizontalStrut(PADDINGWIDTH));
     
     // Search button
     GUIAction searchAction = new GUIAction("Search...", new ImageIcon
@@ -149,9 +167,9 @@ public class OpenDialogBox extends JDialog
     searchButton = new JButton(searchAction);
     // Set text on the left of icon        
     searchButton.setHorizontalTextPosition(SwingConstants.LEFT);
-    controlButtonsPanel.add(searchButton);
+    controlButtonsBox.add(searchButton);
     
-    controlButtonsPanel.add(Box.createHorizontalGlue());
+    controlButtonsBox.add(Box.createHorizontalGlue());
     
     // Open button
     GUIAction openAction = new GUIAction("Open", null, 
@@ -161,21 +179,21 @@ public class OpenDialogBox extends JDialog
     mediator.registerOpenButton(openButton);
     // After registor resultPanel and open button, init mediator
     mediator.init();
-    controlButtonsPanel.add(openButton);
+    controlButtonsBox.add(openButton);
     
-    controlButtonsPanel.add(Box.createHorizontalStrut(8));
+    controlButtonsBox.add(Box.createHorizontalStrut(PADDINGWIDTH));
     
     //Cancel button
     GUIAction cancelAction = new GUIAction("Cancel", null, 
                                                       new CancelCommand(this));
     cancelButton = new JButton(cancelAction);
-    controlButtonsPanel.add(cancelButton);
-    controlButtonsPanel.add(Box.createHorizontalStrut(8));
+    controlButtonsBox.add(cancelButton);
+    controlButtonsBox.add(Box.createHorizontalStrut(PADDINGWIDTH));
     
-    // Add controlButtonsPanel to marginPanel
-    marginPanel.add(controlButtonsPanel);
+    // Add controlButtonsBox to bottomBox
+    bottomBox.add(controlButtonsBox);
     // Add the margin between controlButtonPanel to the bottom line
-    marginPanel.add(Box.createVerticalStrut(10));
+    bottomBox.add(Box.createVerticalStrut(10));
    
     // Add a keyPressActionListener
     this.addKeyListener(new KeyPressActionListener());
