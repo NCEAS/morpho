@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2002-09-12 01:04:52 $'
- * '$Revision: 1.5 $'
+ *     '$Date: 2002-09-13 18:20:00 $'
+ * '$Revision: 1.6 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -70,9 +70,9 @@ public class SynchronizeDialog extends JDialog
   
   /** Icons  */
   private ImageIcon localIcon 
-      = new ImageIcon(getClass().getResource("local-package-small.png"));
+      = new ImageIcon(getClass().getResource("local-package.png"));
   private ImageIcon networkIcon 
-      = new ImageIcon(getClass().getResource("network-package-small.png"));
+      = new ImageIcon(getClass().getResource("network-package-large.png"));
   private ImageIcon arrowIcon = null;
     
   private static final int PADDINGWIDTH = 8;
