@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2002-09-26 18:13:55 $'
- * '$Revision: 1.9 $'
+ *     '$Date: 2002-10-04 16:00:08 $'
+ * '$Revision: 1.10 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -68,6 +68,9 @@ public class SaveQueryCommand implements Command
   
   /** A reference to the MorphoFrame */
   private MorphoFrame morphoFrame = null;
+  
+  // Start index for saved query in search menu
+  private static final int STARTINDEXFORSAVEDQUERY = 6; 
   
   /**
    * Constructor of SearcCommand
@@ -146,6 +149,7 @@ public class SaveQueryCommand implements Command
    */
   private static void addQueryToMenu(final Query query)
   {
+    int index = STARTINDEXFORSAVEDQUERY;// Start index for saved query in search menu
     // See if the query list is null, and initialize it if so
     if (savedQueriesList == null) {
       savedQueriesList = new Hashtable();
@@ -161,10 +165,11 @@ public class SaveQueryCommand implements Command
       GUIAction savedSearchItemAction = 
                 new GUIAction(query.getQueryTitle(), null,command);
       savedSearchItemAction.setMenu("Search", 2);  
-      savedSearchItemAction.setMenuItemPosition(-1);  
+      savedSearchItemAction.setMenuItemPosition(index);  
       savedSearchItemAction.setToolTipText("Execute saved search");
       UIController.getInstance().addGuiAction(savedSearchItemAction);
       savedQueriesList.put(query.getIdentifier(), savedSearchItemAction);
+      index++;
     } else {
       // The menu already exists, so update its title and query object
       GUIAction savedQueryAction = 
