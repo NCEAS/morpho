@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: jones $'
- *     '$Date: 2002-09-26 05:34:38 $'
- * '$Revision: 1.9 $'
+ *   '$Author: tao $'
+ *     '$Date: 2002-10-01 21:50:20 $'
+ * '$Revision: 1.10 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -88,6 +88,11 @@ public class MorphoFrame extends JFrame
     private static final int MAX_WINDOW_WIDTH = 1024;
     private static final int MAX_WINDOW_HEIGHT = 768;
     private static final int SCREEN_PADDING = 50;
+    
+    // A string indicating which frame it is 
+    public static final String SEARCHRESULTFRAME = "searchResultFrame";
+    public static final String DATAPACKAGEFRAME = "dataPackageFrame";
+  
 
     /**
      * Creates a new instance of MorphoFrame, but is private because 
