@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2002-12-17 23:24:17 $'
- * '$Revision: 1.98 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2002-12-23 22:13:20 $'
+ * '$Revision: 1.99 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -832,7 +832,8 @@ public class DataPackage implements XMLFactoryInterface
           if((message.indexOf(accNumMess1) != -1 && 
              message.indexOf(accNumMess2) != -1) || 
              (message.indexOf(accNumMess3) != -1 &&
-             message.indexOf(accNumMess4) != -1))
+             message.indexOf(accNumMess4) != -1) ||
+             message.indexOf("null") != -1)
           {
             if(updateIds)
             {
@@ -1141,24 +1142,28 @@ public class DataPackage implements XMLFactoryInterface
     
     for(int i=0; i<v.size(); i++)
     { //loop through and delete all of the files in the package
-      
-      if(localLoc)
-      {
-        String delfile = (String)v.elementAt(i);
-        String rev = delfile.substring(delfile.lastIndexOf(".")+1, 
+      try{
+        if(localLoc)
+        {
+          String delfile = (String)v.elementAt(i);
+          String rev = delfile.substring(delfile.lastIndexOf(".")+1, 
                                        delfile.length());
-        int revi = (new Integer(rev)).intValue();
-        for(int j=1; j<=revi; j++)
-        { //we have to make sure that we delete all of the revisions or else
-          //the package will still be found in a query
-          String acc = delfile.substring(0, delfile.lastIndexOf("."));
-          fileSysDataStore.deleteFile(acc + "." + j);
+          int revi = (new Integer(rev)).intValue();
+          for(int j=1; j<=revi; j++)
+          { //we have to make sure that we delete all of the revisions or else
+            //the package will still be found in a query
+            String acc = delfile.substring(0, delfile.lastIndexOf("."));
+            fileSysDataStore.deleteFile(acc + "." + j);
+          }
+        }
+      
+        if(metacatLoc)
+        {
+          metacatDataStore.deleteFile((String)v.elementAt(i));
         }
       }
-      
-      if(metacatLoc)
-      {
-        metacatDataStore.deleteFile((String)v.elementAt(i));
+      catch (Exception w) {
+        // just go to next file
       }
     }
   }
