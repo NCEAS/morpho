@@ -6,2076 +6,2076 @@
  <south>47.995</south>
  <east>-91.831</east>
  </location>
- <location> <name>Adirondack Ecological Center</name>
+<location> <name>Adirondack Ecological Center</name>
  <description>Adirondack Ecological Center</description>
  <north>43.985</north>
  <west>-74.235</west>
  <south>43.985</south>
  <east>-74.235</east>
  </location>
- <location> <name>Alice L. Kibbe Life Science Station</name>
+<location> <name>Alice L. Kibbe Life Science Station</name>
  <description>Alice L. Kibbe Life Science Station</description>
  <north>40.250</north>
  <west>-91.380</west>
  <south>40.250</south>
  <east>-91.380</east>
  </location>
- <location><name>Angelo Coast Range Reserve UCNRS</name>
+<location><name>Angelo Coast Range Reserve UCNRS</name>
  <description>Angelo Coast Range Reserve UCNRS</description>
  <north>39.72916666666667</north>
  <west>-123.64444444444445</west>
  <south>39.72916666666667</south>
  <east>-123.64444444444445</east>
  </location>
- <location> <name>Anheuser Busch Coastal Research Center</name>
+<location> <name>Anheuser Busch Coastal Research Center</name>
  <description>Anheuser Busch Coastal Research Center</description>
  <north>37.300</north>
  <west>-75.933</west>
  <south>37.300</south>
  <east>-75.933</east>
  </location>
- <location><name>Ano Nuevo Island Reserve UCNRS</name>
+<location><name>Ano Nuevo Island Reserve UCNRS</name>
  <description>Ano Nuevo Island Reserve UCNRS</description>
  <north>37.108333333333334</north>
  <west>-122.33611111111111</west>
  <south>37.108333333333334</south>
  <east>-122.33611111111111</east>
  </location>
- <location> <name>Appleton-Whittell Research Ranch</name>
+<location> <name>Appleton-Whittell Research Ranch</name>
  <description>Appleton-Whittell Research Ranch</description>
  <north>31.591</north>
  <west>-110.506</west>
  <south>31.591</south>
  <east>-110.506</east>
  </location>
- <location> <name>Archbold Biological Station</name>
+<location> <name>Archbold Biological Station</name>
  <description>Archbold Biological Station</description>
  <north>27.188</north>
  <west>-81.338</west>
  <south>27.188</south>
  <east>-81.338</east>
  </location>
- <location> <name>Archibold Tropical Research Center (Dominica)</name>
+<location> <name>Archibold Tropical Research Center (Dominica)</name>
  <description>Archibold Tropical Research Center (Dominica)</description>
  <north>15.500</north>
  <west>-61.250</west>
  <south>15.500</south>
  <east>-61.250</east>
  </location>
- <location> <name>Arnot Teaching and Research Forest</name>
+<location><name>Arctic LTER (ARC)</name>
+<description>Arctic LTER (ARC)</description>
+<north>68.6</north>
+<west>-149.6</west>
+<south>68.6</south>
+<east>-149.4504</east>
+</location>
+<location> <name>Arnot Teaching and Research Forest</name>
  <description>Arnot Teaching and Research Forest</description>
  <north>42.285</north>
  <west>-76.636</west>
  <south>42.285</south>
  <east>-76.636</east>
  </location>
- <location><name>Artic LTER (ARC)</name>
- <description>Artic LTER (ARC)</description>
- <north>68.6</north>
- <west>-149.6</west>
- <south>68.6</south>
- <east>-149.6</east>
- </location>
- <location> <name>Au Sable Institute of Environmental Studies</name>
+<location> <name>Au Sable Institute of Environmental Studies</name>
  <description>Au Sable Institute of Environmental Studies</description>
  <north>44.770</north>
  <west>-84.900</west>
  <south>44.770</south>
  <east>-84.900</east>
  </location>
- <location> <name>Au-Sable Pacific Rim Facility</name>
+<location> <name>Au-Sable Pacific Rim Facility</name>
  <description>Au-Sable Pacific Rim Facility</description>
  <north>48.200</north>
  <west>-122.000</west>
  <south>48.200</south>
  <east>-122.000</east>
  </location>
-  <location> <name>Ball State Field Station and Evironmental Ed Center</name>
+<location> <name>Ball State Field Station and Evironmental Ed Center</name>
  <description>Ball State Field Station and Evironmental Ed Center</description>
  <north>40.320</north>
  <west>-85.680</west>
  <south>40.320</south>
  <east>-85.680</east>
  </location>
- <location><name>Baltimore Ecosystem Study LTER (BES)</name>
+<location><name>Baltimore Ecosystem Study LTER (BES)</name>
  <description>Baltimore Ecosystem Study LTER (BES)</description>
  <north>39.1</north>
  <west>-76.3</west>
  <south>39.1</south>
  <east>-76.3</east>
  </location>
- <location> <name>Bamfield Marine Station BC</name>
+<location> <name>Bamfield Marine Station BC</name>
  <description>Bamfield Marine Station BC</description>
  <north>48.834</north>
  <west>-125.133</west>
  <south>48.834</south>
  <east>-125.133</east>
  </location>
- <location> <name>Bard College Field Station</name>
+<location> <name>Bard College Field Station</name>
  <description>Bard College Field Station</description>
  <north>42.030</north>
  <west>-73.900</west>
  <south>42.030</south>
  <east>-73.900</east>
  </location>
-  <location> <name>Bath Field Station</name>
+<location> <name>Bath Field Station</name>
  <description>Bath Field Station</description>
  <north>41.109</north>
  <west>-81.388</west>
  <south>41.109</south>
  <east>-81.388</east>
  </location>
- <location> <name>Bermuda Biological Station</name>
+<location> <name>Bermuda Biological Station</name>
  <description>Bermuda Biological Station</description>
  <north>32.367</north>
  <west>-64.700</west>
  <south>32.367</south>
  <east>-64.700</east>
  </location>
- <location> <name>Bernard Biological Field Station (Claremont Colleges)</name>
+<location> <name>Bernard Biological Field Station (Claremont Colleges)</name>
  <description>Bernard Biological Field Station (Claremont Colleges)</description>
  <north>34.110</north>
  <west>-117.709</west>
  <south>34.110</south>
  <east>-117.709</east>
  </location>
- <location> <name>Bimini Biological Field Station</name>
+<location> <name>Bimini Biological Field Station</name>
  <description>Bimini Biological Field Station</description>
  <north>25.7</north>
  <west>-79.3</west>
  <south>25.7</south>
  <east>-79.3</east>
  </location>
- <location> <name>Black Rock Forest</name>
+<location> <name>Black Rock Forest</name>
  <description>Black Rock Forest</description>
  <north>41.406</north>
  <west>-74.029</west>
  <south>41.406</south>
  <east>-74.029</east>
  </location>
- <location> <name>Blackwater Ecological Preserve</name>
+<location> <name>Blackwater Ecological Preserve</name>
  <description>Blackwater Ecological Preserve</description>
  <north>36.750</north>
  <west>-76.500</west>
  <south>36.750</south>
  <east>-76.500</east>
  </location>
- <location> <name>Blakely Island Field Station</name>
+<location> <name>Blakely Island Field Station</name>
  <description>Blakely Island Field Station</description>
  <north>48.554</north>
  <west>-122.805</west>
  <south>48.554</south>
  <east>-122.805</east>
  </location>
- <location> <name>Blandy Experimental Farm</name>
+<location> <name>Blandy Experimental Farm</name>
  <description>Blandy Experimental Farm</description>
  <north>39.064</north>
  <west>-78.065</west>
  <south>39.064</south>
  <east>-78.065</east>
  </location>
- <location> <name>Blodgett Forest Research Station</name>
+<location> <name>Blodgett Forest Research Station</name>
  <description>Blodgett Forest Research Station</description>
  <north>38.900</north>
  <west>-120.600</west>
  <south>38.900</south>
  <east>-120.600</east>
  </location>
- <location> <name>Bodega Bay Marine Laboratory and Reserve</name>
+<location> <name>Bodega Bay Marine Laboratory and Reserve</name>
  <description>Bodega Bay Marine Laboratory and Reserve</description>
  <north>38.318</north>
  <west>-123.070</west>
  <south>38.318</south>
  <east>-123.070</east>
  </location>
- <location><name>Bodega Marine Reserve UCNRS</name>
+<location><name>Bodega Marine Reserve UCNRS</name>
  <description>Bodega Marine Reserve UCNRS</description>
  <north>38.30694444444444</north>
  <west>-123.065</west>
  <south>38.30694444444444</south>
  <east>-123.065</east>
  </location>
- <location><name>Bonanza Creek LTER (BNZ)</name>
+<location><name>Bonanza Creek LTER (BNZ)</name>
  <description>Bonanza Creek LTER (BNZ)</description>
  <north>64.8</north>
  <west>-148.0</west>
  <south>64.8</south>
  <east>-148.0</east>
  </location>
- <location> <name>Bowdoin Scientific Station</name>
+<location> <name>Bowdoin Scientific Station</name>
  <description>Bowdoin Scientific Station</description>
  <north>44.501</north>
  <west>-66.834</west>
  <south>44.501</south>
  <east>-66.834</east>
  </location>
- <location><name>Box Springs Reserve UCNRS</name>
+<location><name>Box Springs Reserve UCNRS</name>
  <description>Box Springs Reserve UCNRS</description>
  <north>33.99194444444444</north>
  <west>-117.29527777777777</west>
  <south>33.99194444444444</south>
  <east>-117.29527777777777</east>
  </location>
- <location> <name>Boyd Deep Canyon Desert Research Center</name>
+<location> <name>Boyd Deep Canyon Desert Research Center</name>
  <description>Boyd Deep Canyon Desert Research Center</description>
  <north>33.722</north>
  <west>-116.384</west>
  <south>33.722</south>
  <east>-116.384</east>
  </location>
- <location> <name>Brackenridge Field Laboratory</name>
+<location> <name>Brackenridge Field Laboratory</name>
  <description>Brackenridge Field Laboratory</description>
  <north>30.274</north>
  <west>-97.732</west>
  <south>30.274</south>
  <east>-97.732</east>
  </location>
- <location> <name>Brooker Creek Preserve</name>
+<location> <name>Brooker Creek Preserve</name>
  <description>Brooker Creek Preserve</description>
  <north>28.137</north>
  <west>-82.674</west>
  <south>28.137</south>
  <east>-82.674</east>
  </location>
- <location> <name>Bull Shoals Field Station</name>
+<location> <name>Bull Shoals Field Station</name>
  <description>Bull Shoals Field Station</description>
  <north>36.566</north>
  <west>-93.076</west>
  <south>36.566</south>
  <east>-93.076</east>
  </location>
- <location><name>Burns Pinon Ridge Reserve UCNRS</name>
+<location><name>Burns Pinon Ridge Reserve UCNRS</name>
  <description>Burns Pinon Ridge Reserve UCNRS</description>
  <north>34.138888888888886</north>
  <west>-116.45277777777778</west>
  <south>34.138888888888886</south>
  <east>-116.45277777777778</east>
  </location>
- <location> <name>Cano Palma Field Station</name>
+<location> <name>Cano Palma Field Station</name>
  <description>Cano Palma Field Station</description>
  <north>10.500</north>
  <west>-83.500</west>
  <south>10.500</south>
  <east>-83.500</east>
  </location>
- <location><name>Carpentria Salt Marsh Reserve UCNRS</name>
+<location><name>Carpentria Salt Marsh Reserve UCNRS</name>
  <description>Carpentria Salt Marsh Reserve UCNR</description>
  <north>34.4</north>
  <west>-119.525</west>
  <south>34.4</south>
  <east>-119.525</east>
  </location>
- <location> <name>Cascade Head Experimental Forest and Scenic Research Area</name>
+<location> <name>Cascade Head Experimental Forest and Scenic Research Area</name>
  <description>Cascade Head Experimental Forest and Scenic Research Area</description>
  <north>45.042</north>
  <west>-123.925</west>
  <south>45.042</south>
  <east>-123.925</east>
  </location>
- <location> <name>Catamount Environmental Institute</name>
+<location> <name>Catamount Environmental Institute</name>
  <description>Catamount Environmental Institute</description>
  <north>38.917</north>
  <west>-105.100</west>
  <south>38.917</south>
  <east>-105.100</east>
  </location>
- <location><name>Cedar Creek LTER (CDR)</name>
+<location><name>Cedar Creek LTER (CDR)</name>
  <description>Cedar Creek LTER (CDR)</description>
  <north>45.4</north>
  <west>-93.2</west>
  <south>45.4</south>
  <east>-93.2</east>
  </location>
- <location> <name>Cedar Mountain Science Center</name>
+<location> <name>Cedar Mountain Science Center</name>
  <description>Cedar Mountain Science Center</description>
  <north>37.595</north>
  <west>-113.1</west>
  <south>37.595</south>
  <east>-113.1</east>
  </location>
- <location> <name>Cedar Point Biological Station</name>
+<location> <name>Cedar Point Biological Station</name>
  <description>Cedar Point Biological Station</description>
  <north>41.209</north>
  <west>-101.646</west>
  <south>41.209</south>
  <east>-101.646</east>
  </location>
- <location><name>Central Arizona - Phoenix LTER (CAP)</name>
+<location><name>Central Arizona - Phoenix LTER (CAP)</name>
  <description>Central Arizona - Phoenix LTER (CAP)</description>
  <north>33.54</north>
  <west>-112.07</west>
  <south>33.54</south>
  <east>-112.07</east>
  </location>
-  <location><name>Chickering American River Reserve UCNRS</name>
+<location><name>Chickering American River Reserve UCNRS</name>
  <description>Chickering American River Reserve UCNRS</description>
  <north>39.24675</north>
  <west>-120.3253</west>
  <south>39.24675</south>
  <east>-120.3253</east>
  </location>
- <location> <name>Churchill Northern Studies Centre  Manitoba</name>
+<location> <name>Churchill Northern Studies Centre  Manitoba</name>
  <description>Churchill Northern Studies Centre  Manitoba</description>
  <north>58.730</north>
  <west>-93.820</west>
  <south>58.730</south>
  <east>-93.820</east>
  </location>
- <location> <name>Clark Fork Field Station</name>
+<location> <name>Clark Fork Field Station</name>
  <description>Clark Fork Field Station</description>
  <north>48.150</north>
  <west>-116.152</west>
  <south>48.150</south>
  <east>-116.152</east>
  </location>
- <location> <name>Cloquet Forestry Center</name>
+<location> <name>Cloquet Forestry Center</name>
  <description>Cloquet Forestry Center</description>
  <north>46.705</north>
  <west>-92.522</west>
  <south>46.705</south>
  <east>-92.522</east>
  </location>
- <location> <name>CMU Biological Station</name>
+<location> <name>CMU Biological Station</name>
  <description>CMU Biological Station</description>
  <north>45.694</north>
  <west>-85.540</west>
  <south>45.694</south>
  <east>-85.540</east>
  </location>
- <location> <name>Coal Oil Point Reserve</name>
+<location> <name>Coal Oil Point Reserve</name>
  <description>Coal Oil Point Reserve</description>
  <north>34.417</north>
  <west>-119.875</west>
  <south>34.417</south>
  <east>-119.875</east>
  </location>
- <location> <name>Columbia-Greene Community College FS</name>
+<location> <name>Columbia-Greene Community College FS</name>
  <description>Columbia-Greene Community College FS</description>
  <north>38.750</north>
  <west>-79.500</west>
  <south>38.750</south>
  <east>-79.500</east>
  </location>
- <location> <name>Conard (Henry S.)  Environmental Research Area</name>
+<location> <name>Conard (Henry S.)  Environmental Research Area</name>
  <description>Conard (Henry S.)  Environmental Research Area</description>
  <north>41.713</north>
  <west>-92.879</west>
  <south>41.713</south>
  <east>-92.879</east>
  </location>
- <location> <name>Cornell Biological Field Station</name>
+<location> <name>Cornell Biological Field Station</name>
  <description>Cornell Biological Field Station</description>
  <north>43.170</north>
  <west>-75.968</west>
  <south>43.170</south>
  <east>-75.968</east>
  </location>
- <location><name>Coweeta Hydrologic Lab LTER (CWT)</name>
+<location><name>Coweeta Hydrologic Lab LTER (CWT)</name>
  <description>Coweeta Hydrologic Lab LTER (CWT)</description>
  <north>35.0</north>
  <west>-83.5</west>
  <south>35.0</south>
  <east>-83.5</east>
  </location>
- <location> <name>Cranberry Lake Biological Station</name>
+<location> <name>Cranberry Lake Biological Station</name>
  <description>Cranberry Lake Biological Station</description>
  <north>44.222</north>
  <west>-74.837</west>
  <south>44.222</south>
  <east>-74.837</east>
  </location>
- <location> <name>Darrin Fresh Water Institute (Rensselaer)</name>
+<location> <name>Darrin Fresh Water Institute (Rensselaer)</name>
  <description>Darrin Fresh Water Institute (Rensselaer)</description>
  <north>43.557</north>
  <west>-73.655</west>
  <south>43.557</south>
  <east>-73.655</east>
  </location>
- <location><name>Dawson Los Monos Canyon Reserve UCNRS</name>
+<location><name>Dawson Los Monos Canyon Reserve UCNRS</name>
  <description>Dawson Los Monos Canyon Reserve UCNRS</description>
  <north>33.141666666666666</north>
  <west>-117.25555555555556</west>
  <south>33.141666666666666</south>
  <east>-117.25555555555556</east>
  </location>
- <location> <name>Delta Marsh Field Station Manitoba</name>
+<location> <name>Delta Marsh Field Station Manitoba</name>
  <description>Delta Marsh Field Station Manitoba</description>
  <north>50.182</north>
  <west>-98.382</west>
  <south>50.182</south>
  <east>-98.382</east>
  </location>
- <location> <name>Desert Research Institute</name>
+<location> <name>Desert Research Institute</name>
  <description>Desert Research Institute</description>
  <north>39.530</north>
  <west>-119.813</west>
  <south>39.530</south>
  <east>-119.813</east>
  </location>
- <location> <name>Desert Station</name>
+<location> <name>Desert Station</name>
  <description>Desert Station</description>
  <north>32.234</north>
  <west>-111.159</west>
  <south>32.234</south>
  <east>-111.159</east>
  </location>
- <location> <name>Desert Studies Center</name>
+<location> <name>Desert Studies Center</name>
  <description>Desert Studies Center</description>
  <north>35.589</north>
  <west>-116.355</west>
  <south>35.589</south>
  <east>-116.355</east>
  </location>
- <location> <name>Disney Wilderness Preserve</name>
+<location> <name>Disney Wilderness Preserve</name>
  <description>Disney Wilderness Preserve</description>
  <north>28.132</north>
  <west>-81.405</west>
  <south>28.132</south>
  <east>-81.405</east>
  </location>
- <location> <name>E.N. Huyck Preserve and Biological Research</name>
+<location> <name>E.N. Huyck Preserve and Biological Research</name>
  <description>E.N. Huyck Preserve and Biological Research</description>
  <north>42.516</north>
  <west>-74.138</west>
  <south>42.516</south>
  <east>-74.138</east>
  </location>
- <location><name>Eagle Lake Field Station UCNRS</name>
+<location><name>Eagle Lake Field Station UCNRS</name>
  <description>Eagle Lake Field Station UCNRS</description>
  <north>40.617222222222225</north>
  <west>-120.72694444444444</west>
  <south>40.617222222222225</south>
  <east>-120.72694444444444</east>
  </location>
- <location> <name>Ecological Field Station-Monmoth College</name>
+<location> <name>Ecological Field Station-Monmoth College</name>
  <description>Ecological Field Station-Monmoth College</description>
  <north>41.068</north>
  <west>-90.751</west>
  <south>41.068</south>
  <east>-90.751</east>
  </location>
- <location> <name>Ecology Research Center</name>
+<location> <name>Ecology Research Center</name>
  <description>Ecology Research Center</description>
  <north>39.883</north>
  <west>-85.200</west>
  <south>39.883</south>
  <east>-85.200</east>
  </location>
- <location> <name>Ecology Research Center Miami University</name>
+<location> <name>Ecology Research Center Miami University</name>
  <description>Ecology Research Center Miami University</description>
  <north>39.532</north>
  <west>-84.723</west>
  <south>39.532</south>
  <east>-84.723</east>
  </location>
- <location> <name>EJ Meeman Biological Station</name>
+<location> <name>EJ Meeman Biological Station</name>
  <description>EJ Meeman Biological Station</description>
  <north>35.351</north>
  <west>-89.987</west>
  <south>35.351</south>
  <east>-89.987</east>
  </location>
- <location><name>Elliot Chaparral Reserve UCNRS</name>
+<location><name>Elliot Chaparral Reserve UCNRS</name>
  <description>Elliot Chaparral Reserve UCNRS</description>
  <north>32.86833333333333</north>
  <west>-117.14250000000001</west>
  <south>32.86833333333333</south>
  <east>-117.14250000000001</east>
  </location>
- <location> <name>El Verde Field Station</name>
+<location> <name>El Verde Field Station</name>
  <description>El Verde Field Station</description>
  <north>18.323</north>
  <west>-65.820</west>
  <south>18.323</south>
  <east>-65.820</east>
  </location>
- <location><name>Emerson Oaks Reserve UCNRS</name>
+<location><name>Emerson Oaks Reserve UCNRS</name>
  <description>Emerson Oaks Reserve UCNRS</description>
  <north>33.46666666666667</north>
  <west>-117.03944444444444</west>
  <south>33.46666666666667</south>
  <east>-117.03944444444444</east>
  </location>
- <location> <name>Emporia State University Natural Area</name>
+<location> <name>Emporia State University Natural Area</name>
  <description>Emporia State University Natural Area</description>
  <north>38.490</north>
  <west>-96.330</west>
  <south>38.490</south>
  <east>-96.330</east>
  </location>
- <location> <name>E S George Reserve</name>
+<location> <name>E S George Reserve</name>
  <description>E S George Reserve</description>
  <north>42.463</north>
  <west>-83.964</west>
  <south>42.463</south>
  <east>-83.964</east>
  </location>
- <location> <name>F.T. Stone Laboratory</name>
+<location> <name>F.T. Stone Laboratory</name>
  <description>F.T. Stone Laboratory</description>
  <north>41.654</north>
  <west>-82.823</west>
  <south>41.654</south>
  <east>-82.823</east>
  </location>
- <location> <name>Fernow Experimental Forest</name>
+<location> <name>Fernow Experimental Forest</name>
  <description>Fernow Experimental Forest</description>
  <north>39.033</north>
  <west>-79.683</west>
  <south>39.033</south>
  <east>-79.683</east>
  </location>
- <location> <name>Flathead Lake Biological Station</name>
+<location> <name>Flathead Lake Biological Station</name>
  <description>Flathead Lake Biological Station</description>
  <north>47.876</north>
  <west>-114.032</west>
  <south>47.876</south>
  <east>-114.032</east>
  </location>
- <location><name>Florida Coastal Everglades LTER (FCE)</name>
+<location><name>Florida Coastal Everglades LTER (FCE)</name>
  <description>Florida Coastal Everglades LTER (FCE)</description>
  <north>25.0</north>
  <west>-80.0</west>
  <south>25.0</south>
  <east>-80.0</east>
  </location>
- <location> <name>Forbes Biological Station</name>
+<location> <name>Forbes Biological Station</name>
  <description>Forbes Biological Station</description>
  <north>40.353</north>
  <west>-90.050</west>
  <south>40.353</south>
  <east>-90.050</east>
  </location>
-  <location><name>Fort Ord Natural Reserve UCNRS</name>
+<location><name>Fort Ord Natural Reserve UCNRS</name>
  <description>Fort Ord Natural Reserve UCNRS</description>
  <north>36.666666666666664</north>
  <west>-121.76666666666667</west>
  <south>36.666666666666664</south>
  <east>-121.76666666666667</east>
  </location>
- <location> <name>Fortuna Mountain Research Reserve</name>
+<location> <name>Fortuna Mountain Research Reserve</name>
  <description>Fortuna Mountain Research Reserve</description>
  <north>32.844</north>
  <west>-117.056</west>
  <south>32.844</south>
  <east>-117.056</east>
  </location>
- <location> <name>Galapagos Academic Institute for Arts Sciences</name>
+<location> <name>Galapagos Academic Institute for Arts Sciences</name>
  <description>Galapagos Academic Institute for Arts Sciences</description>
  <north>0.920</north>
  <west>-90.750</west>
  <south>0.920</south>
  <east>-90.750</east>
  </location>
- <location> <name>Gault Nature Reserve QB</name>
+<location> <name>Gault Nature Reserve QB</name>
  <description>Gault Nature Reserve QB</description>
  <north>45.517</north>
  <west>-73.133</west>
  <south>45.517</south>
  <east>-73.133</east>
  </location>
- <location><name>Georgia Coastal Ecosystems LTER (GCE)</name>
+<location><name>Georgia Coastal Ecosystems LTER (GCE)</name>
  <description>Georgia Coastal Ecosystems LTER (GCE</description>
  <north>31.4</north>
  <west>-81.3</west>
  <south>31.4</south>
  <east>-81.3</east>
  </location>
- <location> <name>Gerace Research Center (San Salvador Isl. Bahamas)</name>
+<location> <name>Gerace Research Center (San Salvador Isl. Bahamas)</name>
  <description>Gerace Research Center (San Salvador Isl. Bahamas)</description>
  <north>24.117</north>
  <west>-74.467</west>
  <south>24.117</south>
  <east>-74.467</east>
  </location>
- <location> <name>Glen Helen Ecology Institute</name>
+<location> <name>Glen Helen Ecology Institute</name>
  <description>Glen Helen Ecology Institute</description>
  <north>39.660</north>
  <west>-84.000</west>
  <south>39.660</south>
  <east>-84.000</east>
  </location>
- <location> <name>Gobabeb Training and Research Centre</name>
+<location> <name>Gobabeb Training and Research Centre</name>
  <description>Gobabeb Training and Research Centre</description>
  <north>-23.569</north>
  <west>15.046</west>
  <south>-23.569</south>
  <east>15.046</east>
  </location>
- <location> <name>Grasslands Wildlife Research Lab</name>
+<location> <name>Grasslands Wildlife Research Lab</name>
  <description>Grasslands Wildlife Research Lab</description>
  <north>38.917</north>
  <west>-88.200</west>
  <south>38.917</south>
  <east>-88.200</east>
  </location>
- <location> <name>Great Rivers Field Station</name>
+<location> <name>Great Rivers Field Station</name>
  <description>Great Rivers Field Station</description>
  <north>38.933</north>
  <west>-90.022</west>
  <south>38.933</south>
  <east>-90.022</east>
  </location>
- <location> <name>Green Wing Environmental Laboratory</name>
+<location> <name>Green Wing Environmental Laboratory</name>
  <description>Green Wing Environmental Laboratory</description>
  <north>41.714</north>
  <west>-89.329</west>
  <south>41.714</south>
  <east>-89.329</east>
  </location>
- <location><name>H.J. Andrews LTER (AND)</name>
+<location><name>H.J. Andrews LTER (AND)</name>
  <description>H.J. Andrews LTER (AND)</description>
  <north>44.2</north>
  <west>-122.2</west>
  <south>44.2</south>
  <east>-122.2</east>
  </location>
- <location> <name>Hancock Biological Station</name>
+<location> <name>Hancock Biological Station</name>
  <description>Hancock Biological Station</description>
  <north>36.742</north>
  <west>-88.125</west>
  <south>36.742</south>
  <east>-88.125</east>
  </location>
- <location><name>Hans Jenny Pygmy Forest Reserve UCNRS</name>
+<location><name>Hans Jenny Pygmy Forest Reserve UCNRS</name>
  <description>Hans Jenny Pygmy Forest Reserve UCNRS</description>
  <north>39.28333333333333</north>
  <west>-123.75694444444444</west>
  <south>39.28333333333333</south>
  <east>-123.75694444444444</east>
  </location>
- <location><name>Harvard Forest LTER (HFR)</name>
+<location><name>Harvard Forest LTER (HFR)</name>
  <description>Harvard Forest LTER (HFR)</description>
  <north>42.5</north>
  <west>-72.2</west>
  <south>42.5</south>
  <east>-72.2</east>
  </location>
- <location> <name>Hastings Natural History Reservation</name>
+<location> <name>Hastings Natural History Reservation</name>
  <description>Hastings Natural History Reservation</description>
  <north>36.388</north>
  <west>-121.551</west>
  <south>36.388</south>
  <east>-121.551</east>
  </location>
- <location><name>Hastings Natural History Reservation UCNRS</name>
+<location><name>Hastings Natural History Reservation UCNRS</name>
  <description>Hastings Natural History Reservation UCNRS</description>
  <north>36.38805555555555</north>
  <west>-121.55</west>
  <south>36.38805555555555</south>
  <east>-121.55</east>
  </location>
- <location> <name>Hatfield Marine Science Center</name>
+<location> <name>Hatfield Marine Science Center</name>
  <description>Hatfield Marine Science Center</description>
  <north>44.637</north>
  <west>-124.052</west>
  <south>44.637</south>
  <east>-124.052</east>
  </location>
- <location> <name>Hawk Mountain Sanctuary</name>
+<location> <name>Hawk Mountain Sanctuary</name>
  <description>Hawk Mountain Sanctuary</description>
  <north>40.646</north>
  <west>-75.980</west>
  <south>40.646</south>
  <east>-75.980</east>
  </location>
- <location> <name>Highlands Biological Station</name>
+<location> <name>Highlands Biological Station</name>
  <description>Highlands Biological Station</description>
  <north>35.054</north>
  <west>-83.188</west>
  <south>35.054</south>
  <east>-83.188</east>
  </location>
- <location> <name>HJ Andrews Experimental Forest</name>
+<location> <name>HJ Andrews Experimental Forest</name>
  <description>HJ Andrews Experimental Forest</description>
  <north>44.217</north>
  <west>-122.250</west>
  <south>44.217</south>
  <east>-122.250</east>
  </location>
- <location> <name>Hopkins Marine Station</name>
+<location> <name>Hopkins Marine Station</name>
  <description>Hopkins Marine Station</description>
  <north>36.621</north>
  <west>-121.903</west>
  <south>36.621</south>
  <east>-121.903</east>
  </location>
- <location> <name>Hopkins Memorial Forest</name>
+<location> <name>Hopkins Memorial Forest</name>
  <description>Hopkins Memorial Forest</description>
  <north>42.733</north>
  <west>-73.250</west>
  <south>42.733</south>
  <east>-73.250</east>
  </location>
- <location> <name>Howard T. Greene Field Station</name>
+<location> <name>Howard T. Greene Field Station</name>
  <description>Howard T. Greene Field Station</description>
  <north>42.967</north>
  <west>-88.367</west>
  <south>42.967</south>
  <east>-88.367</east>
  </location>
- <location><name>Hubbard Brook LTER (HBR)</name>
+<location><name>Hubbard Brook LTER (HBR)</name>
  <description>Hubbard Brook LTER (HBR)</description>
  <north>43.9</north>
  <west>-71.8</west>
  <south>43.9</south>
  <east>-71.8</east>
  </location>
- <location> <name>Hubbard Brook Research Foundation</name>
+<location> <name>Hubbard Brook Research Foundation</name>
  <description>Hubbard Brook Research Foundation</description>
  <north>43.933</north>
  <west>-71.750</west>
  <south>43.933</south>
  <east>-71.750</east>
  </location>
- <location> <name>Humboldt Field Research Institute</name>
+<location> <name>Humboldt Field Research Institute</name>
  <description>Humboldt Field Research Institute</description>
  <north>44.480</north>
  <west>-68.030</west>
  <south>44.480</south>
  <east>-68.030</east>
  </location>
- <location> <name>Huntsman Marine Science Centre NB</name>
+<location> <name>Huntsman Marine Science Centre NB</name>
  <description>Huntsman Marine Science Centre NB</description>
  <north>45.083</north>
  <west>-67.083</west>
  <south>45.083</south>
  <east>-67.083</east>
  </location>
- <location> <name>Huron Mt. Ives Lake Field Station</name>
+<location> <name>Huron Mt. Ives Lake Field Station</name>
  <description>Huron Mt. Ives Lake Field Station</description>
  <north>46.850</north>
  <west>-87.670</west>
  <south>46.850</south>
  <east>-87.670</east>
  </location>
-  <location> <name>Indiana Univ Research and Training Preserve</name>
+<location> <name>Indiana Univ Research and Training Preserve</name>
  <description>Indiana Univ Research and Training Preserve</description>
  <north>39.180</north>
  <west>-86.500</west>
  <south>39.180</south>
  <east>-86.500</east>
  </location>
- <location> <name>Indio Mountains Research Station</name>
+<location> <name>Indio Mountains Research Station</name>
  <description>Indio Mountains Research Station</description>
  <north>30.778</north>
  <west>-105.014</west>
  <south>30.778</south>
  <east>-105.014</east>
  </location>
- <location> <name>Inger and Walter Rice Center for Environmental Life Science</name>
+<location> <name>Inger and Walter Rice Center for Environmental Life Science</name>
  <description>Inger and Walter Rice Center for Environmental Life Science</description>
  <north>37.317</north>
  <west>-77.200</west>
  <south>37.317</south>
  <east>-77.200</east>
  </location>
- <location> <name>Institute for Tropical Ecology and Conservation</name>
+<location> <name>Institute for Tropical Ecology and Conservation</name>
  <description>Institute for Tropical Ecology and Conservation</description>
  <north>9.426</north>
  <west>-82.323</west>
  <south>9.426</south>
  <east>-82.323</east>
  </location>
- <location> <name>Institute for Tropical Marine Ecology</name>
+<location> <name>Institute for Tropical Marine Ecology</name>
  <description>Institute for Tropical Marine Ecology</description>
  <north>15.317</north>
  <west>-61.400</west>
  <south>15.317</south>
  <east>-61.400</east>
  </location>
- <location> <name>Institute of  Ecosystem Studies</name>
+<location> <name>Institute of  Ecosystem Studies</name>
  <description>Institute of  Ecosystem Studies</description>
  <north>41.785</north>
  <west>-73.694</west>
  <south>41.785</south>
  <east>-73.694</east>
  </location>
- <location> <name>Institute of Neurobiology</name>
+<location> <name>Institute of Neurobiology</name>
  <description>Institute of Neurobiology</description>
  <north>18.468333</north>
  <west>-66.106111</west>
  <south>18.468333</south>
  <east>-66.106111</east>
  </location>
- <location> <name>Intercultural Center for Study of Deserts and Oceans</name>
+<location> <name>Intercultural Center for Study of Deserts and Oceans</name>
  <description>Intercultural Center for Study of Deserts and Oceans</description>
  <north>31.200</north>
  <west>-113.330</west>
  <south>31.200</south>
  <east>-113.330</east>
  </location>
- <location> <name>Iowa Lakeside Laboratory</name>
+<location> <name>Iowa Lakeside Laboratory</name>
  <description>Iowa Lakeside Laboratory</description>
  <north>43.490</north>
  <west>-95.190</west>
  <south>43.490</south>
  <east>-95.190</east>
  </location>
- <location> <name>Iracambi Atlantic Rainforest Research and Conservation Center</name>
+<location> <name>Iracambi Atlantic Rainforest Research and Conservation Center</name>
  <description>Iracambi Atlantic Rainforest Research and Conservation Center</description>
  <north>-21.000</north>
  <west>-42.500</west>
  <south>-21.000</south>
  <east>-42.500</east>
  </location>
- <location> <name>Jaguar Creek</name>
+<location> <name>Jaguar Creek</name>
  <description>Jaguar Creek</description>
  <north>17.161</north>
  <west>-88.680</west>
  <south>17.161</south>
  <east>-88.680</east>
  </location>
- <location><name>James San Jacinto Mountains Reserve UCNRS</name>
+<location><name>James San Jacinto Mountains Reserve UCNRS</name>
  <description>James San Jacinto Mountains Reserve UCNRS</description>
  <north>33.80833333333333</north>
  <west>-116.77777777777777</west>
  <south>33.80833333333333</south>
  <east>-116.77777777777777</east>
  </location>
- <location> <name>Jasper Ridge Biological Preserve</name>
+<location> <name>Jasper Ridge Biological Preserve</name>
  <description>Jasper Ridge Biological Preserve</description>
  <north>37.400</north>
  <west>-122.225</west>
  <south>37.400</south>
  <east>-122.225</east>
  </location>
- <location><name>Jepson Prairie Reserve UCNRS</name>
+<location><name>Jepson Prairie Reserve UCNRS</name>
  <description>Jepson Prairie Reserve UCNRS</description>
  <north>38.45055555555555</north>
  <west>-123.37805555555555</west>
  <south>38.45055555555555</south>
  <east>-123.37805555555555</east>
  </location>
- <location> <name>JH Barrow Field Station</name>
+<location> <name>JH Barrow Field Station</name>
  <description>JH Barrow Field Station</description>
  <north>41.313</north>
  <west>-81.144</west>
  <south>41.313</south>
  <east>-81.144</east>
  </location>
- <location><name>Jornada LTER (JRN)</name>
+<location><name>Jornada LTER (JRN)</name>
  <description>Jornada LTER (JRN)</description>
  <north>32.5</north>
  <west>-106.8</west>
  <south>32.5</south>
  <east>-106.8</east>
  </location>
- <location> <name>Kananaskis Field Stations ON</name>
+<location> <name>Kananaskis Field Stations ON</name>
  <description>Kananaskis Field Stations ON</description>
  <north>51.033</north>
  <west>-115.050</west>
  <south>51.033</south>
  <east>-115.050</east>
  </location>
- <location> <name>Kansas Ecological Reserves</name>
+<location> <name>Kansas Ecological Reserves</name>
  <description>Kansas Ecological Reserves</description>
  <north>39.033</north>
  <west>-95.200</west>
  <south>39.033</south>
  <east>-95.200</east>
  </location>
- <location> <name>Kaskaskia Biological Station</name>
+<location> <name>Kaskaskia Biological Station</name>
  <description>Kaskaskia Biological Station</description>
  <north>39.500</north>
  <west>-88.750</west>
  <south>39.500</south>
  <east>-88.750</east>
  </location>
- <location> <name>Katharine Ordway Natural History Study Area</name>
+<location> <name>Katharine Ordway Natural History Study Area</name>
  <description>Katharine Ordway Natural History Study Area</description>
  <north>44.133</north>
  <west>-93.000</west>
  <south>44.133</south>
  <east>-93.000</east>
  </location>
- <location> <name>Katharine Ordway Preserve - Swisher Memorial Sanctuary</name>
+<location> <name>Katharine Ordway Preserve - Swisher Memorial Sanctuary</name>
  <description>Katharine Ordway Preserve - Swisher Memorial Sanctuary</description>
  <north>29.696</north>
  <west>-81.982</west>
  <south>29.696</south>
  <east>-81.982</east>
  </location>
- <location> <name>Kemp Natural Resources Station</name>
+<location> <name>Kemp Natural Resources Station</name>
  <description>Kemp Natural Resources Station</description>
  <north>45.833</north>
  <west>-89.667</west>
  <south>45.833</south>
  <east>-89.667</east>
  </location>
- <location> <name>Kendall Frost Marsh Reserve</name>
+<location> <name>Kendall Frost Marsh Reserve</name>
  <description>Kendall Frost Marsh Reserve</description>
  <north>32.793</north>
  <west>-117.217</west>
  <south>32.793</south>
  <east>-117.217</east>
  </location>
- <location><name>Kendall-Frost Mission Bay Marsh Reserve UCNRS</name>
+<location><name>Kendall-Frost Mission Bay Marsh Reserve UCNRS</name>
  <description>Kendall-Frost Mission Bay Marsh Reserve UCNRS</description>
  <north>32.793055555555554</north>
  <west>-117.21666666666667</west>
  <south>32.793055555555554</south>
  <east>-117.21666666666667</east>
  </location>
- <location><name>Kenneth S. Norris Rancho Marino Reserve UCNRS</name>
+<location><name>Kenneth S. Norris Rancho Marino Reserve UCNRS</name>
  <description>Kenneth S. Norris Rancho Marino Reserve UCNRS</description>
  <north>35.52813333333334</north>
  <west>-121.07641666666666</west>
  <south>35.52813333333334</south>
  <east>-121.07641666666666</east>
  </location>
- <location> <name>Kibbe Life Sciences Field Station</name>
+<location> <name>Kibbe Life Sciences Field Station</name>
  <description>Kibbe Life Sciences Field Station</description>
  <north>40.359</north>
  <west>-91.434</west>
  <south>40.359</south>
  <east>-91.434</east>
  </location>
- <location> <name>Kino Bay Center for Cultural and Ecological Studies (AZ)</name>
+<location> <name>Kino Bay Center for Cultural and Ecological Studies (AZ)</name>
  <description>Kino Bay Center for Cultural and Ecological Studies (AZ)</description>
  <north>25.025</north>
  <west>-112.025</west>
  <south>25.025</south>
  <east>-112.025</east>
  </location>
- <location> <name>Kioloa Costal Campus - Edith and Joy London Foundation</name>
+<location> <name>Kioloa Costal Campus - Edith and Joy London Foundation</name>
  <description>Kioloa Costal Campus - Edith and Joy London Foundation</description>
  <north>-35.550</north>
  <west>150.383</west>
  <south>-35.550</south>
  <east>150.383</east>
  </location>
- <location> <name>Koffler Scientific Reserve at Jokers Hill ON</name>
+<location> <name>Koffler Scientific Reserve at Jokers Hill ON</name>
  <description>Koffler Scientific Reserve at Jokers Hill ON</description>
  <north>44.010</north>
  <west>-79.500</west>
  <south>44.010</south>
  <east>-79.500</east>
  </location>
- <location> <name>Konza Prairie Biological Station</name>
+<location> <name>Konza Prairie Biological Station</name>
  <description>Konza Prairie Biological Station</description>
  <north>39.050</north>
  <west>-96.350</west>
  <south>39.050</south>
  <east>-96.350</east>
  </location>
- <location><name>Konza Prairie LTER (KNZ)</name>
+<location><name>Konza Prairie LTER (KNZ)</name>
  <description>Konza Prairie LTER (KNZ)</description>
  <north>39.1</north>
  <west>-94.6</west>
  <south>39.1</south>
  <east>-94.6</east>
  </location>
- <location> <name>Lacawac Sanctuary</name>
+<location> <name>Lacawac Sanctuary</name>
  <description>Lacawac Sanctuary</description>
  <north>41.371</north>
  <west>-75.329</west>
  <south>41.371</south>
  <east>-75.329</east>
  </location>
- <location> <name>Laguna Madre Field Station</name>
+<location> <name>Laguna Madre Field Station</name>
  <description>Laguna Madre Field Station</description>
  <north>27.530</north>
  <west>-97.280</west>
  <south>27.530</south>
  <east>-97.280</east>
  </location>
- <location> <name>Lake Erie Center</name>
+<location> <name>Lake Erie Center</name>
  <description>Lake Erie Center</description>
  <north>41.689</north>
  <west>-83.399</west>
  <south>41.689</south>
  <east>-83.399</east>
  </location>
- <location> <name>Lake Itasca Forestry and Biological Station</name>
+<location> <name>Lake Itasca Forestry and Biological Station</name>
  <description>Lake Itasca Forestry and Biological Station</description>
  <north>47.228</north>
  <west>-95.192</west>
  <south>47.228</south>
  <east>-95.192</east>
  </location>
- <location> <name>Lake Louise Field Station</name>
+<location> <name>Lake Louise Field Station</name>
  <description>Lake Louise Field Station</description>
  <north>38.000</north>
  <west>-84.000</west>
  <south>38.000</south>
  <east>-84.000</east>
  </location>
- <location> <name>Lake Michigan Biological Station</name>
+<location> <name>Lake Michigan Biological Station</name>
  <description>Lake Michigan Biological Station</description>
  <north>42.467</north>
  <west>-87.817</west>
  <south>42.467</south>
  <east>-87.817</east>
  </location>
- <location> <name>Landels-Hill Big Creek Reserve</name>
+<location> <name>Landels-Hill Big Creek Reserve</name>
  <description>Landels-Hill Big Creek Reserve</description>
  <north>36.070</north>
  <west>-121.599</west>
  <south>36.070</south>
  <east>-121.599</east>
  </location>
- <location><name>Landels-Hill Big Creek Reserve UCNRS</name>
+<location><name>Landels-Hill Big Creek Reserve UCNRS</name>
  <description>Landels-Hill Big Creek Reserve UCNRS</description>
  <north>36.06666666666667</north>
  <west>-121.58333333333333</west>
  <south>36.06666666666667</south>
  <east>-121.58333333333333</east>
  </location>
- <location> <name>Las Cuevas Forest Research Station</name>
+<location> <name>Las Cuevas Forest Research Station</name>
  <description>Las Cuevas Forest Research Station</description>
  <north>16.733</north>
  <west>-88.983</west>
  <south>16.733</south>
  <east>-88.983</east>
  </location>
- <location> <name>La Selva Biological Station</name>
+<location> <name>La Selva Biological Station</name>
  <description>La Selva Biological Station</description>
  <north>10.431</north>
  <west>-84.007</west>
  <south>10.431</south>
  <east>-84.007</east>
  </location>
- <location> <name>La Suerte Biological Field Station</name>
+<location> <name>La Suerte Biological Field Station</name>
  <description>La Suerte Biological Field Station</description>
  <north>10.442</north>
  <west>-83.771</west>
  <south>10.442</south>
  <east>-83.771</east>
  </location>
- <location> <name>Lay Field Station</name>
+<location> <name>Lay Field Station</name>
  <description>Lay Field Station</description>
  <north>39.404</north>
  <west>-91.151</west>
  <south>39.404</south>
  <east>-91.151</east>
  </location>
- <location> <name>Lilley Cornett Woods</name>
+<location> <name>Lilley Cornett Woods</name>
  <description>Lilley Cornett Woods</description>
  <north>37.090</north>
  <west>-83.020</west>
  <south>37.090</south>
  <east>-83.020</east>
  </location>
- <location> <name>Long Marine Laboratory</name>
+<location> <name>Long Marine Laboratory</name>
  <description>Long Marine Laboratory</description>
  <north>36.948</north>
  <west>-122.064</west>
  <south>36.948</south>
  <east>-122.064</east>
  </location>
- <location> <name>Louis Calder Center - Biological Station</name>
+<location> <name>Louis Calder Center - Biological Station</name>
  <description>Louis Calder Center - Biological Station</description>
  <north>41.128</north>
  <west>-73.732</west>
  <south>41.128</south>
  <east>-73.732</east>
  </location>
-  <location><name>Luquillo Experimental Forest LTER (LUQ)</name>
+<location><name>Luquillo Experimental Forest LTER (LUQ)</name>
  <description>Luquillo Experimental Forest LTER (LUQ)</description>
  <north>18.3</north>
  <west>-65.8</west>
  <south>18.3</south>
  <east>-65.8</east>
  </location>
- <location> <name>MacArthur Agro-Ecology Research Station</name>
+<location> <name>MacArthur Agro-Ecology Research Station</name>
  <description>MacArthur Agro-Ecology Research Station</description>
  <north>27.140</north>
  <west>-81.150</west>
  <south>27.140</south>
  <east>-81.150</east>
  </location>
- <location> <name>Malheur Field Station</name>
+<location> <name>Malheur Field Station</name>
  <description>Malheur Field Station</description>
  <north>43.266</north>
  <west>-118.843</west>
  <south>43.266</south>
  <east>-118.843</east>
  </location>
- <location> <name>Manomet Center for Conservation Sciences</name>
+<location> <name>Manomet Center for Conservation Sciences</name>
  <description>Manomet Center for Conservation Sciences</description>
  <north>42.067</north>
  <west>-71.067</west>
  <south>42.067</south>
  <east>-71.067</east>
  </location>
- <location> <name>Marine Science Center</name>
+<location> <name>Marine Science Center</name>
  <description>Marine Science Center</description>
  <north>40.880</north>
  <west>-72.441</west>
  <south>40.880</south>
  <east>-72.441</east>
  </location>
- <location> <name>Marine Science Institute</name>
+<location> <name>Marine Science Institute</name>
  <description>Marine Science Institute</description>
  <north>27.834</north>
  <west>-97.061</west>
  <south>27.834</south>
  <east>-97.061</east>
  </location>
- <location> <name>Mata de Platano Field Station and Nature Reserve</name>
+<location> <name>Mata de Platano Field Station and Nature Reserve</name>
  <description>Mata de Platano Field Station and Nature Reserve</description>
  <north>18.417</north>
  <west>-66.717</west>
  <south>18.417</south>
  <east>-66.717</east>
  </location>
- <location> <name>McCall Field Campus</name>
+<location> <name>McCall Field Campus</name>
  <description>McCall Field Campus</description>
  <north>44.911</north>
  <west>-116.101</west>
  <south>44.911</south>
  <east>-116.101</east>
  </location>
- <location><name>McLaughlin Natural Reserve UCNRS</name>
+<location><name>McLaughlin Natural Reserve UCNRS</name>
  <description>McLaughlin Natural Reserve UCNRS</description>
  <north>38.87388888888889</north>
  <west>-122.43166666666667</west>
  <south>38.87388888888889</south>
  <east>-122.43166666666667</east>
  </location>
- <location> <name>McLaughlin Reserve</name>
+<location> <name>McLaughlin Reserve</name>
  <description>McLaughlin Reserve</description>
  <north>39.459</north>
  <west>-122.723</west>
  <south>39.459</south>
  <east>-122.723</east>
  </location>
- <location><name>McMurdo Dry Valleys LTER (MCM)</name>
+<location><name>McMurdo Dry Valleys LTER (MCM)</name>
  <description>McMurdo Dry Valleys LTER (MCM)</description>
  <north>-78.0</north>
  <west>165.0</west>
  <south>-78.0</south>
  <east>165.0</east>
  </location>
- <location> <name>MeadWestvaco Wildlife and Ecosystem Res Forest</name>
+<location> <name>MeadWestvaco Wildlife and Ecosystem Res Forest</name>
  <description>MeadWestvaco Wildlife and Ecosystem Res Forest</description>
  <north>38.700</north>
  <west>-80.020</west>
  <south>38.700</south>
  <east>-80.020</east>
  </location>
- <location> <name>Meanook Biological Research Station Alberta</name>
+<location> <name>Meanook Biological Research Station Alberta</name>
  <description>Meanook Biological Research Station Alberta</description>
  <north>54.617</north>
  <west>-113.350</west>
  <south>54.617</south>
  <east>-113.350</east>
  </location>
- <location> <name>Merriam-Powel Center for Environmental Research</name>
+<location> <name>Merriam-Powel Center for Environmental Research</name>
  <description>Merriam-Powel Center for Environmental Research</description>
  <north>35.167</north>
  <west>-111.750</west>
  <south>35.167</south>
  <east>-111.750</east>
  </location>
- <location> <name>Merry Lea Environmental Learning Center</name>
+<location> <name>Merry Lea Environmental Learning Center</name>
  <description>Merry Lea Environmental Learning Center</description>
  <north>41.300</north>
  <west>-85.510</west>
  <south>41.300</south>
  <east>-85.510</east>
  </location>
- <location> <name>Mohonk Preserve Inc</name>
+<location> <name>Mohonk Preserve Inc</name>
  <description>Mohonk Preserve Inc</description>
  <north>41.750</north>
  <west>-74.100</west>
  <south>41.750</south>
  <east>-74.100</east>
  </location>
- <location> <name>Moss Landing Marine Laboratory</name>
+<location> <name>Moss Landing Marine Laboratory</name>
  <description>Moss Landing Marine Laboratory</description>
  <north>36.800</north>
  <west>-121.788</west>
  <south>36.800</south>
  <east>-121.788</east>
  </location>
- <location><name>Motte Rimrock Reserve UCNRS</name>
+<location><name>Motte Rimrock Reserve UCNRS</name>
  <description>Motte Rimrock Reserve UCNRS</description>
  <north>33.8125</north>
  <west>-117.25833333333334</west>
  <south>33.8125</south>
  <east>-117.25833333333334</east>
  </location>
- <location> <name>Mountain Lake Biological Station</name>
+<location> <name>Mountain Lake Biological Station</name>
  <description>Mountain Lake Biological Station</description>
  <north>37.375</north>
  <west>-80.522</west>
  <south>37.375</south>
  <east>-80.522</east>
  </location>
- <location> <name>Mountain Research Station</name>
+<location> <name>Mountain Research Station</name>
  <description>Mountain Research Station</description>
  <north>40.100</north>
  <west>-105.490</west>
  <south>40.100</south>
  <east>-105.490</east>
  </location>
- <location> <name>Mountain Studies Institute</name>
+<location> <name>Mountain Studies Institute</name>
  <description>Mountain Studies Institute</description>
  <north>37.490</north>
  <west>-107.400</west>
  <south>37.490</south>
  <east>-107.400</east>
  </location>
- <location> <name>Mount Desert Island Biological Laboratory</name>
+<location> <name>Mount Desert Island Biological Laboratory</name>
  <description>Mount Desert Island Biological Laboratory</description>
  <north>44.430</north>
  <west>-68.290</west>
  <south>44.430</south>
  <east>-68.290</east>
  </location>
- <location> <name>MSUM Regional Sceince Center</name>
+<location> <name>MSUM Regional Sceince Center</name>
  <description>MSUM Regional Sceince Center</description>
  <north>46.870</north>
  <west>-96.490</west>
  <south>46.870</south>
  <east>-96.490</east>
  </location>
- <location> <name>Nantucket Field Station</name>
+<location> <name>Nantucket Field Station</name>
  <description>Nantucket Field Station</description>
  <north>41.389</north>
  <west>-70.046</west>
  <south>41.389</south>
  <east>-70.046</east>
  </location>
- <location> <name>Nevada Desert Ecological Research Facility</name>
+<location> <name>Nevada Desert Ecological Research Facility</name>
  <description>Nevada Desert Ecological Research Facility</description>
  <north>36.767</north>
  <west>-115.967</west>
  <south>36.767</south>
  <east>-115.967</east>
  </location>
- <location><name>Niwot Ridge/Green Lakes Valley LTER (NWT)</name>
+<location><name>Niwot Ridge/Green Lakes Valley LTER (NWT)</name>
  <description>Niwot Ridge/Green Lakes Valley LTER (NWT)</description>
  <north>40.1</north>
  <west>-105.6</west>
  <south>40.1</south>
  <east>-105.6</east>
  </location>
- <location> <name>Northern Arizona University Centennial Forest</name>
+<location> <name>Northern Arizona University Centennial Forest</name>
  <description>Northern Arizona University Centennial Forest</description>
  <north>35.198</north>
  <west>-111.651</west>
  <south>35.198</south>
  <east>-111.651</east>
  </location>
- <location><name>North Temperate Lakes LTER (NTL)</name>
+<location><name>North Temperate Lakes LTER (NTL)</name>
  <description>North Temperate Lakes LTER (NTL)</description>
  <north>46.0</north>
  <west>-89.7</west>
  <south>46.0</south>
  <east>-89.7</east>
  </location>
- <location> <name>Northwest Watershed Research Center</name>
+<location> <name>Northwest Watershed Research Center</name>
  <description>Northwest Watershed Research Center</description>
  <north>43.600</north>
  <west>-116.217</west>
  <south>43.600</south>
  <east>-116.217</east>
  </location>
- <location> <name>Notre Dame Environmental Research Center</name>
+<location> <name>Notre Dame Environmental Research Center</name>
  <description>Notre Dame Environmental Research Center</description>
  <north>46.227</north>
  <west>-89.523</west>
  <south>46.227</south>
  <east>-89.523</east>
  </location>
- <location> <name>Oak Lake Field Station</name>
+<location> <name>Oak Lake Field Station</name>
  <description>Oak Lake Field Station</description>
  <north>44.509</north>
  <west>-96.532</west>
  <south>44.509</south>
  <east>-96.532</east>
  </location>
- <location><name>Oasis de los Osos (James Reserve) UCNRS</name>
+<location><name>Oasis de los Osos (James Reserve) UCNRS</name>
  <description>Oasis de los Osos (James Reserve) UCNRS</description>
  <north>33.89175</north>
  <west>-116.68826666666666</west>
  <south>33.89175</south>
  <east>-116.68826666666666</east>
  </location>
- <location> <name>Oregon Institute of Marine Biology</name>
+<location> <name>Oregon Institute of Marine Biology</name>
  <description>Oregon Institute of Marine Biology</description>
  <north>43.340</north>
  <west>-124.329</west>
  <south>43.340</south>
  <east>-124.329</east>
  </location>
- <location> <name>Ouachita Mountains Biological Station</name>
+<location> <name>Ouachita Mountains Biological Station</name>
  <description>Ouachita Mountains Biological Station</description>
  <north>34.449</north>
  <west>-94.009</west>
  <south>34.449</south>
  <east>-94.009</east>
  </location>
- <location><name>Palmer Station LTER (PAL)</name>
+<location><name>Palmer Station LTER (PAL)</name>
  <description>Palmer Station LTER (PAL)</description>
  <north>-64.7</north>
  <west>-64.0</west>
  <south>-64.7</south>
  <east>-64.0</east>
  </location>
- <location> <name>Palomarin Field Station (PRBO)</name>
+<location> <name>Palomarin Field Station (PRBO)</name>
  <description>Palomarin Field Station (PRBO)</description>
  <north>37.933</north>
  <west>-122.733</west>
  <south>37.933</south>
  <east>-122.733</east>
  </location>
- <location> <name>Pan American Coastal Studies Laboratory</name>
+<location> <name>Pan American Coastal Studies Laboratory</name>
  <description>Pan American Coastal Studies Laboratory</description>
  <north>26.075</north>
  <west>-97.158</west>
  <south>26.075</south>
  <east>-97.158</east>
  </location>
- <location> <name>Pepperwood Ranch Natural Preserve</name>
+<location> <name>Pepperwood Ranch Natural Preserve</name>
  <description>Pepperwood Ranch Natural Preserve</description>
  <north>38.568</north>
  <west>-122.701</west>
  <south>38.568</south>
  <east>-122.701</east>
  </location>
- <location> <name>Pescadero Conservation Alliance</name>
+<location> <name>Pescadero Conservation Alliance</name>
  <description>Pescadero Conservation Alliance</description>
  <north>37.165</north>
  <west>-122.362</west>
  <south>37.165</south>
  <east>-122.362</east>
  </location>
- <location> <name>Pierce Cedar Creek Institute</name>
+<location> <name>Pierce Cedar Creek Institute</name>
  <description>Pierce Cedar Creek Institute</description>
  <north>42.533</north>
  <west>-85.283</west>
  <south>42.533</south>
  <east>-85.283</east>
  </location>
- <location> <name>Pigeon Lake Field Station</name>
+<location> <name>Pigeon Lake Field Station</name>
  <description>Pigeon Lake Field Station</description>
  <north>46.370</north>
  <west>-91.410</west>
  <south>46.370</south>
  <east>-91.410</east>
  </location>
- <location> <name>Pinelands Field Research Station</name>
+<location> <name>Pinelands Field Research Station</name>
  <description>Pinelands Field Research Station</description>
  <north>39.930</north>
  <west>-74.600</west>
  <south>39.930</south>
  <east>-74.600</east>
  </location>
- <location> <name>Pinellas County Biological Field Research Station at Broo</name>
+<location> <name>Pinellas County Biological Field Research Station at Broo</name>
  <description>Pinellas County Biological Field Research Station at Broo</description>
  <north>28.137</north>
  <west>-82.674</west>
  <south>28.137</south>
  <east>-82.674</east>
  </location>
- <location><name>Plum Island Ecosystem LTER (PIE)</name>
+<location><name>Plum Island Ecosystem LTER (PIE)</name>
  <description>Plum Island Ecosystem LTER (PIE)</description>
  <north>42.4</north>
  <west>-70.5</west>
  <south>42.4</south>
  <east>-70.5</east>
  </location>
- <location> <name>Powdermill Biological Station</name>
+<location> <name>Powdermill Biological Station</name>
  <description>Powdermill Biological Station</description>
  <north>40.197</north>
  <west>-79.239</west>
  <south>40.197</south>
  <east>-79.239</east>
  </location>
- <location> <name>PSU-Ecosystem Studies Field Lab</name>
+<location> <name>PSU-Ecosystem Studies Field Lab</name>
  <description>PSU-Ecosystem Studies Field Lab</description>
  <north>44.840</north>
  <west>-73.569</west>
  <south>44.840</south>
  <east>-73.569</east>
  </location>
- <location> <name>PSU-Twin Valleys Outdoor Education Center</name>
+<location> <name>PSU-Twin Valleys Outdoor Education Center</name>
  <description>PSU-Twin Valleys Outdoor Education Center</description>
  <north>44.267</north>
  <west>-73.483</west>
  <south>44.267</south>
  <east>-73.483</east>
  </location>
- <location> <name>PSU-Valcour Kayaking and Docking Station</name>
+<location> <name>PSU-Valcour Kayaking and Docking Station</name>
  <description>PSU-Valcour Kayaking and Docking Station</description>
  <north>44.610</north>
  <west>-73.442</west>
  <south>44.610</south>
  <east>-73.442</east>
  </location>
- <location> <name>Purdue Univ. N. Central Biology Field Station</name>
+<location> <name>Purdue Univ. N. Central Biology Field Station</name>
  <description>Purdue Univ. N. Central Biology Field Station</description>
  <north>41.712</north>
  <west>-86.936</west>
  <south>41.712</south>
  <east>-86.936</east>
  </location>
- <location> <name>Pymatuning Laboratory of Ecology</name>
+<location> <name>Pymatuning Laboratory of Ecology</name>
  <description>Pymatuning Laboratory of Ecology</description>
  <north>41.656</north>
  <west>-80.424</west>
  <south>41.656</south>
  <east>-80.424</east>
  </location>
- <location> <name>Quail Ridge Reserve</name>
+<location> <name>Quail Ridge Reserve</name>
  <description>Quail Ridge Reserve</description>
  <north>38.818</north>
  <west>-122.241</west>
  <south>38.818</south>
  <east>-122.241</east>
  </location>
- <location><name>Quail Ridge Reserve UCNRS</name>
+<location><name>Quail Ridge Reserve UCNRS</name>
  <description>Quail Ridge Reserve UCNRS</description>
  <north>38.81777777777778</north>
  <west>-122.24111111111111</west>
  <south>38.81777777777778</south>
  <east>-122.24111111111111</east>
  </location>
- <location> <name>Quesnel River Research Centre BC</name>
+<location> <name>Quesnel River Research Centre BC</name>
  <description>Quesnel River Research Centre BC</description>
  <north>52.580</north>
  <west>-121.550</west>
  <south>52.580</south>
  <east>-121.550</east>
  </location>
- <location> <name>Quetzal Education Research Complex</name>
+<location> <name>Quetzal Education Research Complex</name>
  <description>Quetzal Education Research Complex</description>
  <north>9.553</north>
  <west>-83.811</west>
  <south>9.553</south>
  <east>-83.811</east>
  </location>
- <location> <name>Raystown Field Station</name>
+<location> <name>Raystown Field Station</name>
  <description>Raystown Field Station</description>
  <north>40.358</north>
  <west>-78.150</west>
  <south>40.358</south>
  <east>-78.150</east>
  </location>
- <location> <name>Red Butte Garden and Arboretum</name>
+<location> <name>Red Butte Garden and Arboretum</name>
  <description>Red Butte Garden and Arboretum</description>
  <north>40.798</north>
  <west>-111.783</west>
  <south>40.798</south>
  <east>-111.783</east>
  </location>
- <location> <name>Reelfoot Lake Research and Teaching Center</name>
+<location> <name>Reelfoot Lake Research and Teaching Center</name>
  <description>Reelfoot Lake Research and Teaching Center</description>
  <north>36.384</north>
  <west>-89.350</west>
  <south>36.384</south>
  <east>-89.350</east>
  </location>
- <location> <name>Reis Biological Station</name>
+<location> <name>Reis Biological Station</name>
  <description>Reis Biological Station</description>
  <north>37.980</north>
  <west>-91.230</west>
  <south>37.980</south>
  <east>-91.230</east>
  </location>
- <location> <name>Rice Creek Field Station</name>
+<location> <name>Rice Creek Field Station</name>
  <description>Rice Creek Field Station</description>
  <north>43.455</north>
  <west>-76.511</west>
  <south>43.455</south>
  <east>-76.511</east>
  </location>
- <location> <name>Richard B Gump South Pacific Biological Research Station</name>
+<location> <name>Richard B Gump South Pacific Biological Research Station</name>
  <description>Richard B Gump South Pacific Biological Research Station</description>
  <north>-17.500</north>
  <west>-148.833</west>
  <south>-17.500</south>
  <east>-148.833</east>
  </location>
- <location> <name>Rincon Institute</name>
+<location> <name>Rincon Institute</name>
  <description>Rincon Institute</description>
  <north>32.086</north>
  <west>-110.711</west>
  <south>32.086</south>
  <east>-110.711</east>
  </location>
- <location> <name>Riverwoods Field Laboratory</name>
+<location> <name>Riverwoods Field Laboratory</name>
  <description>Riverwoods Field Laboratory</description>
  <north>27.378</north>
  <west>-81.097</west>
  <south>27.378</south>
  <east>-81.097</east>
  </location>
- <location> <name>Robert R. Smith Envir. Field Station (Oneonta)</name>
+<location> <name>Robert R. Smith Envir. Field Station (Oneonta)</name>
  <description>Robert R. Smith Envir. Field Station (Oneonta)</description>
  <north>42.710</north>
  <west>-74.910</west>
  <south>42.710</south>
  <east>-74.910</east>
  </location>
- <location> <name>Robinson Forest</name>
+<location> <name>Robinson Forest</name>
  <description>Robinson Forest</description>
  <north>37.553</north>
  <west>-83.384</west>
  <south>37.553</south>
  <east>-83.384</east>
  </location>
- <location> <name>Rocky Mountain Biological Laboratory</name>
+<location> <name>Rocky Mountain Biological Laboratory</name>
  <description>Rocky Mountain Biological Laboratory</description>
  <north>38.959</north>
  <west>-106.989</west>
  <south>38.959</south>
  <east>-106.989</east>
  </location>
- <location><name>Sacramento Mountains UCNRS</name>
+<location><name>Sacramento Mountains UCNRS</name>
  <description>Sacramento Mountains UCNRS</description>
  <north>34.7975</north>
  <west>-114.73083333333334</west>
  <south>34.7975</south>
  <east>-114.73083333333334</east>
  </location>
- <location> <name>Sagehen Creek Field Station</name>
+<location> <name>Sagehen Creek Field Station</name>
  <description>Sagehen Creek Field Station</description>
  <north>39.442</north>
  <west>-120.246</west>
  <south>39.442</south>
  <east>-120.246</east>
  </location>
- <location> <name>Sanibel-Captiva Consv. Fndt. Marine Lab</name>
+<location> <name>Sanibel-Captiva Consv. Fndt. Marine Lab</name>
  <description>Sanibel-Captiva Consv. Fndt. Marine Lab</description>
  <north>26.442</north>
  <west>-82.033</west>
  <south>26.442</south>
  <east>-82.033</east>
  </location>
- <location><name>San Joaquin Freshwater Marsh Reserve UCNRS</name>
+<location><name>San Joaquin Freshwater Marsh Reserve UCNRS</name>
  <description>San Joaquin Freshwater Marsh Reserve UCNRS</description>
  <north>33.65833333333333</north>
  <west>-117.85833333333333</west>
  <south>33.65833333333333</south>
  <east>-117.85833333333333</east>
  </location>
- <location><name>Santa Barbara Coastal LTER (SBC)</name>
+<location><name>Santa Barbara Coastal LTER (SBC)</name>
  <description>Santa Barbara Coastal LTER (SBC)</description>
  <north>34.0</north>
  <west>-119.0</west>
  <south>34.0</south>
  <east>-119.0</east>
  </location>
- <location><name>Santa Cruz Island Reserve UCNRS</name>
+<location><name>Santa Cruz Island Reserve UCNRS</name>
  <description>Santa Cruz Island Reserve UCNRS</description>
  <north>34.0</north>
  <west>-119.73333333333333</west>
  <south>34.0</south>
  <east>-119.73333333333333</east>
  </location>
- <location> <name>Santa Margarita Biological Field Station</name>
+<location> <name>Santa Margarita Biological Field Station</name>
  <description>Santa Margarita Biological Field Station</description>
  <north>34.668</north>
  <west>-117.167</west>
  <south>34.668</south>
  <east>-117.167</east>
  </location>
- <location> <name>Savannah River Enviormental Field Station</name>
+<location> <name>Savannah River Enviormental Field Station</name>
  <description>Savannah River Enviormental Field Station</description>
  <north>33.364</north>
  <west>-81.679</west>
  <south>33.364</south>
  <east>-81.679</east>
  </location>
- <location> <name>School for Field Studies-Center for Marine Studies</name>
+<location> <name>School for Field Studies-Center for Marine Studies</name>
  <description>School for Field Studies-Center for Marine Studies</description>
  <north>21.483</north>
  <west>-71.533</west>
  <south>21.483</south>
  <east>-71.533</east>
  </location>
- <location> <name>Scripps Coastal Reserve</name>
+<location> <name>Scripps Coastal Reserve</name>
  <description>Scripps Coastal Reserve</description>
  <north>32.875</north>
  <west>-117.254</west>
  <south>32.875</south>
  <east>-117.254</east>
  </location>
- <location><name>Scripps Coastal Reserve UCNRS</name>
+<location><name>Scripps Coastal Reserve UCNRS</name>
  <description>Scripps Coastal Reserve UCNRS</description>
  <north>32.875</north>
  <west>-117.25416666666666</west>
  <south>32.875</south>
  <east>-117.25416666666666</east>
  </location>
- <location> <name>Seahorse Key Marine Laboratory</name>
+<location> <name>Seahorse Key Marine Laboratory</name>
  <description>Seahorse Key Marine Laboratory</description>
  <north>29.086</north>
  <west>-83.019</west>
  <south>29.086</south>
  <east>-83.019</east>
  </location>
- <location> <name>Seatuck MWR</name>
+<location> <name>Seatuck MWR</name>
  <description>Seatuck MWR</description>
  <north>40.814</north>
  <west>-72.727</west>
  <south>40.814</south>
  <east>-72.727</east>
  </location>
- <location> <name>Sedgwick Reserve</name>
+<location> <name>Sedgwick Reserve</name>
  <description>Sedgwick Reserve</description>
  <north>34.668</north>
  <west>-120.114</west>
  <south>34.668</south>
  <east>-120.114</east>
  </location>
- <location><name>Sedgwick Reserve UCNRS</name>
+<location><name>Sedgwick Reserve UCNRS</name>
  <description>Sedgwick Reserve UCNRS</description>
  <north>34.6725</north>
  <west>-120.00916666666667</west>
  <south>34.6725</south>
  <east>-120.00916666666667</east>
  </location>
- <location> <name>Selman Living Laboratory</name>
+<location> <name>Selman Living Laboratory</name>
  <description>Selman Living Laboratory</description>
  <north>48.200</north>
  <west>-99.267</west>
  <south>48.200</south>
  <east>-99.267</east>
  </location>
- <location> <name>Sevilleta Field Station</name>
+<location> <name>Sevilleta Field Station</name>
  <description>Sevilleta Field Station</description>
  <north>34.350</north>
  <west>-106.884</west>
  <south>34.350</south>
  <east>-106.884</east>
  </location>
- <location><name>Sevilleta LTER (SEV)</name>
+<location><name>Sevilleta LTER (SEV)</name>
  <description>Sevilleta LTER (SEV)</description>
  <north>34.3</north>
  <west>-106.8</west>
  <south>34.3</south>
  <east>-106.8</east>
  </location>
- <location> <name>Shannon Point Marine Center</name>
+<location> <name>Shannon Point Marine Center</name>
  <description>Shannon Point Marine Center</description>
  <north>48.513</north>
  <west>-122.611</west>
  <south>48.513</south>
  <east>-122.611</east>
  </location>
- <location> <name>Shoals Marine Laboratory</name>
+<location> <name>Shoals Marine Laboratory</name>
  <description>Shoals Marine Laboratory</description>
  <north>42.989</north>
  <west>-70.615</west>
  <south>42.989</south>
  <east>-70.615</east>
  </location>
- <location><name>Shortgrass Steppe LTER (SGS)</name>
+<location><name>Shortgrass Steppe LTER (SGS)</name>
  <description>Shortgrass Steppe LTER (SGS)</description>
  <north>40.8</north>
  <west>-104.8</west>
  <south>40.8</south>
  <east>-104.8</east>
  </location>
- <location> <name>Shortgrass Steppe LTER Site</name>
+<location> <name>Shortgrass Steppe LTER Site</name>
  <description>Shortgrass Steppe LTER Site</description>
  <north>40.710</north>
  <west>-104.780</west>
  <south>40.710</south>
  <east>-104.780</east>
  </location>
- <location> <name>Sierra Ancha Station</name>
+<location> <name>Sierra Ancha Station</name>
  <description>Sierra Ancha Station</description>
  <north>33.683</north>
  <west>-110.967</west>
  <south>33.683</south>
  <east>-110.967</east>
  </location>
- <location> <name>Sierra Nevada Aquatic Research Lab</name>
+<location> <name>Sierra Nevada Aquatic Research Lab</name>
  <description>Sierra Nevada Aquatic Research Lab</description>
  <north>37.614</north>
  <west>-118.830</west>
  <south>37.614</south>
  <east>-118.830</east>
  </location>
- <location> <name>Sierra Nevada Field Campus</name>
+<location> <name>Sierra Nevada Field Campus</name>
  <description>Sierra Nevada Field Campus</description>
  <north>39.588</north>
  <west>-120.429</west>
  <south>39.588</south>
  <east>-120.429</east>
  </location>
- <location> <name>Sky Oaks Field Station</name>
+<location> <name>Sky Oaks Field Station</name>
  <description>Sky Oaks Field Station</description>
  <north>33.377</north>
  <west>-116.623</west>
  <south>33.377</south>
  <east>-116.623</east>
  </location>
- <location> <name>Smithsonian Tropical Research Institute</name>
+<location> <name>Smithsonian Tropical Research Institute</name>
  <description>Smithsonian Tropical Research Institute</description>
  <north>9.426</north>
  <west>-82.323</west>
  <south>9.426</south>
  <east>-82.323</east>
  </location>
- <location> <name>Sonoran Arthropod Studies Institute</name>
+<location> <name>Sonoran Arthropod Studies Institute</name>
  <description>Sonoran Arthropod Studies Institute</description>
  <north>32.129</north>
  <west>-111.242</west>
  <south>32.129</south>
  <east>-111.242</east>
  </location>
- <location> <name>Southwestern Research Station</name>
+<location> <name>Southwestern Research Station</name>
  <description>Southwestern Research Station</description>
  <north>31.884</north>
  <west>-109.208</west>
  <south>31.884</south>
  <east>-109.208</east>
  </location>
- <location> <name>Spruce Knob Mountain Center</name>
+<location> <name>Spruce Knob Mountain Center</name>
  <description>Spruce Knob Mountain Center</description>
  <north>38.671</north>
  <west>-79.491</west>
  <south>38.671</south>
  <east>-79.491</east>
  </location>
- <location> <name>St. Catherines Island Research Station</name>
+<location> <name>St. Catherines Island Research Station</name>
  <description>St. Catherines Island Research Station</description>
  <north>31.667</north>
  <west>-81.150</west>
  <south>31.667</south>
  <east>-81.150</east>
  </location>
- <location> <name>Starr Ranch Sanctuary</name>
+<location> <name>Starr Ranch Sanctuary</name>
  <description>Starr Ranch Sanctuary</description>
  <north>33.629</north>
  <west>-117.553</west>
  <south>33.629</south>
  <east>-117.553</east>
  </location>
- <location> <name>St Croix Watershed Research Station</name>
+<location> <name>St Croix Watershed Research Station</name>
  <description>St Croix Watershed Research Station</description>
  <north>45.171</north>
  <west>-92.761</west>
  <south>45.171</south>
  <east>-92.761</east>
  </location>
- <location> <name>Stebbins Cold Canyon Reserve</name>
+<location> <name>Stebbins Cold Canyon Reserve</name>
  <description>Stebbins Cold Canyon Reserve</description>
  <north>38.856</north>
  <west>-122.174</west>
  <south>38.856</south>
  <east>-122.174</east>
  </location>
- <location><name>Stebbins Cold Canyon Reserve UCNRS</name>
+<location><name>Stebbins Cold Canyon Reserve UCNRS</name>
  <description>Stebbins Cold Canyon Reserve UCNRS</description>
  <north>38.856388888888894</north>
  <west>-122.17444444444445</west>
  <south>38.856388888888894</south>
  <east>-122.17444444444445</east>
  </location>
- <location> <name>Stengl Lost Pines Biological Station</name>
+<location> <name>Stengl Lost Pines Biological Station</name>
  <description>Stengl Lost Pines Biological Station</description>
  <north>30.081</north>
  <west>-97.173</west>
  <south>30.081</south>
  <east>-97.173</east>
  </location>
- <location> <name>Stroud Water Research Center</name>
+<location> <name>Stroud Water Research Center</name>
  <description>Stroud Water Research Center</description>
  <north>39.264</north>
  <west>-75.788</west>
  <south>39.264</south>
  <east>-75.788</east>
  </location>
- <location> <name>Stunt Ranch Santa Monica Mountains Reserve</name>
+<location> <name>Stunt Ranch Santa Monica Mountains Reserve</name>
  <description>Stunt Ranch Santa Monica Mountains Reserve</description>
  <north>34.100</north>
  <west>-118.650</west>
  <south>34.100</south>
  <east>-118.650</east>
  </location>
- <location><name>Stunt Ranch Santa Monica Mountains Reserve UCNRS</name>
+<location><name>Stunt Ranch Santa Monica Mountains Reserve UCNRS</name>
  <description>Stunt Ranch Santa Monica Mountains Reserve UCNRS</description>
  <north>34.1</north>
  <west>-118.65</west>
  <south>34.1</south>
  <east>-118.65</east>
  </location>
- <location> <name>SUNY Oneonta Biological Field Station</name>
+<location> <name>SUNY Oneonta Biological Field Station</name>
  <description>SUNY Oneonta Biological Field Station</description>
  <north>42.750</north>
  <west>-74.830</west>
  <south>42.750</south>
  <east>-74.830</east>
  </location>
- <location> <name>Sweeney Granite Mountains Desert Research Center</name>
+<location> <name>Sweeney Granite Mountains Desert Research Center</name>
  <description>Sweeney Granite Mountains Desert Research Center</description>
  <north>34.806</north>
  <west>-115.664</west>
  <south>34.806</south>
  <east>-115.664</east>
  </location>
- <location><name>Sweeney Granite Mountains Desert Reserve Center UCNRS</name>
+<location><name>Sweeney Granite Mountains Desert Reserve Center UCNRS</name>
  <description>Sweeney Granite Mountains Desert Reserve Center UCNRS</description>
  <north>34.80555555555555</north>
  <west>-115.66388888888889</west>
  <south>34.80555555555555</south>
  <east>-115.66388888888889</east>
  </location>
- <location> <name>Taiga Biological Station Manitoba</name>
+<location> <name>Taiga Biological Station Manitoba</name>
  <description>Taiga Biological Station Manitoba</description>
  <north>51.030</north>
  <west>-95.330</west>
  <south>51.030</south>
  <east>-95.330</east>
  </location>
- <location> <name>Tall Timbers Research Station</name>
+<location> <name>Tall Timbers Research Station</name>
  <description>Tall Timbers Research Station</description>
  <north>30.500</north>
  <west>-84.000</west>
  <south>30.500</south>
  <east>-84.000</east>
  </location>
- <location> <name>Taylor Ranch Wilderness Field Station</name>
+<location> <name>Taylor Ranch Wilderness Field Station</name>
  <description>Taylor Ranch Wilderness Field Station</description>
  <north>45.104</north>
  <west>-114.854</west>
  <south>45.104</south>
  <east>-114.854</east>
  </location>
- <location> <name>Teakettle Experimental Forest</name>
+<location> <name>Teakettle Experimental Forest</name>
  <description>Teakettle Experimental Forest</description>
  <north>36.960</north>
  <west>-119.030</west>
  <south>36.960</south>
  <east>-119.030</east>
  </location>
- <location> <name>Thomas More College</name>
+<location> <name>Thomas More College</name>
  <description>Thomas More College</description>
  <north>39.020</north>
  <west>-84.330</west>
  <south>39.020</south>
  <east>-84.330</east>
  </location>
- <location> <name>Tifft Nature Preserve</name>
+<location> <name>Tifft Nature Preserve</name>
  <description>Tifft Nature Preserve</description>
  <north>39.020</north>
  <west>-84.330</west>
  <south>39.020</south>
  <east>-84.330</east>
  </location>
- <location> <name>Tijuana River National Estuarine Research R</name>
+<location> <name>Tijuana River National Estuarine Research R</name>
  <description>Tijuana River National Estuarine Research R</description>
  <north>32.554</north>
  <west>-117.114</west>
  <south>32.554</south>
  <east>-117.114</east>
  </location>
- <location> <name>Toolik Field Station</name>
+<location> <name>Toolik Field Station</name>
  <description>Toolik Field Station</description>
  <north>68.633</north>
  <west>-149.717</west>
  <south>68.633</south>
  <east>-149.717</east>
  </location>
- <location> <name>Treehaven Field Station</name>
+<location> <name>Treehaven Field Station</name>
  <description>Treehaven Field Station</description>
  <north>45.550</north>
  <west>-89.560</west>
  <south>45.550</south>
  <east>-89.560</east>
  </location>
- <location> <name>Trinity College Field Station</name>
+<location> <name>Trinity College Field Station</name>
  <description>Trinity College Field Station</description>
  <north>41.833</north>
  <west>-72.169</west>
  <south>41.833</south>
  <east>-72.169</east>
  </location>
- <location> <name>Trout Lake Station</name>
+<location> <name>Trout Lake Station</name>
  <description>Trout Lake Station</description>
  <north>46.018</north>
  <west>-89.668</west>
  <south>46.018</south>
  <east>-89.668</east>
  </location>
- <location> <name>Turtle Cove Environmental Research Station</name>
+<location> <name>Turtle Cove Environmental Research Station</name>
  <description>Turtle Cove Environmental Research Station</description>
  <north>30.294</north>
  <west>-90.304</west>
  <south>30.294</south>
  <east>-90.304</east>
  </location>
- <location> <name>Tyson Research Center</name>
+<location> <name>Tyson Research Center</name>
  <description>Tyson Research Center</description>
  <north>38.537</north>
  <west>-90.559</west>
  <south>38.537</south>
  <east>-90.559</east>
  </location>
- <location> <name>University Forest (Missouri)</name>
+<location> <name>University Forest (Missouri)</name>
  <description>University Forest (Missouri)</description>
  <north>36.880</north>
  <west>-90.300</west>
  <south>36.880</south>
  <east>-90.300</east>
  </location>
- <location> <name>Univ of Michigan Biological Station Douglas L</name>
+<location> <name>Univ of Michigan Biological Station Douglas L</name>
  <description>Univ of Michigan Biological Station Douglas L</description>
  <north>45.581</north>
  <west>-84.697</west>
  <south>45.581</south>
  <east>-84.697</east>
  </location>
- <location> <name>Univ of Mississippi Field Station</name>
+<location> <name>Univ of Mississippi Field Station</name>
  <description>Univ of Mississippi Field Station</description>
  <north>34.425</north>
  <west>-89.392</west>
  <south>34.425</south>
  <east>-89.392</east>
  </location>
- <location> <name>Univ of Oklahoma Biological Station</name>
+<location> <name>Univ of Oklahoma Biological Station</name>
  <description>Univ of Oklahoma Biological Station</description>
  <north>33.882</north>
  <west>-96.801</west>
  <south>33.882</south>
  <east>-96.801</east>
  </location>
- <location> <name>Univ of Wisconsin Milwaukee Field Station</name>
+<location> <name>Univ of Wisconsin Milwaukee Field Station</name>
  <description>Univ of Wisconsin Milwaukee Field Station</description>
  <north>43.382</north>
  <west>-88.021</west>
  <south>43.382</south>
  <east>-88.021</east>
  </location>
- <location> <name>Upper Rio Grande Biological Station</name>
+<location> <name>Upper Rio Grande Biological Station</name>
  <description>Upper Rio Grande Biological Station</description>
  <north>26.514</north>
  <west>-99.115</west>
  <south>26.514</south>
  <east>-99.115</east>
  </location>
- <location><name>Valentine Eastern Sierra (SNARL) UCNRS</name>
+<location><name>Valentine Eastern Sierra (SNARL) UCNRS</name>
  <description>Valentine Eastern Sierra (SNARL) UCNRS</description>
  <north>37.61416666666667</north>
  <west>-118.82972222222222</west>
  <south>37.61416666666667</south>
  <east>-118.82972222222222</east>
  </location>
- <location><name>Valentine Eastern Sierra (Valentine Camp) UCNRS</name>
+<location><name>Valentine Eastern Sierra (Valentine Camp) UCNRS</name>
  <description>Valentine Eastern Sierra (Valentine Camp) UCNRS</description>
  <north>37.625</north>
  <west>-118.99166666666667</west>
  <south>37.625</south>
  <east>-118.99166666666667</east>
  </location>
- <location> <name>Valentine Eastern Sierra Reserve</name>
+<location> <name>Valentine Eastern Sierra Reserve</name>
  <description>Valentine Eastern Sierra Reserve</description>
  <north>37.625</north>
  <west>-118.992</west>
  <south>37.625</south>
  <east>-118.992</east>
  </location>
- <location> <name>Vermilion Sea Field Station</name>
+<location> <name>Vermilion Sea Field Station</name>
  <description>Vermilion Sea Field Station</description>
  <north>47.901</north>
  <west>-91.868</west>
  <south>47.901</south>
  <east>-91.868</east>
  </location>
- <location><name>Virginia Coast Reserve LTER (VCR)</name>
+<location><name>Virginia Coast Reserve LTER (VCR)</name>
  <description>Virginia Coast Reserve LTER (VCR)</description>
  <north>37.5</north>
  <west>-74.8</west>
  <south>37.5</south>
  <east>-74.8</east>
  </location>
- <location> <name>W.K. Kellogg Biological Station</name>
+<location> <name>W.K. Kellogg Biological Station</name>
  <description>W.K. Kellogg Biological Station</description>
  <north>42.400</north>
  <west>-85.411</west>
  <south>42.400</south>
  <east>-85.411</east>
  </location>
- <location><name>W.K. Kellogg Biological Station LTER (KBS)</name>
+<location><name>W.K. Kellogg Biological Station LTER (KBS)</name>
  <description>W.K. Kellogg Biological Station LTER (KBS)</description>
  <north>42.4</north>
  <west>-85.4</west>
  <south>42.4</south>
  <east>-85.4</east>
  </location>
- <location> <name>Walnut Creek Center for Education and Research</name>
+<location> <name>Walnut Creek Center for Education and Research</name>
  <description>Walnut Creek Center for Education and Research</description>
  <north>34.923</north>
  <west>-112.844</west>
  <south>34.923</south>
  <east>-112.844</east>
  </location>
- <location> <name>Wheaton College Science Station</name>
+<location> <name>Wheaton College Science Station</name>
  <description>Wheaton College Science Station</description>
  <north>44.090</north>
  <west>-103.220</west>
  <south>44.090</south>
  <east>-103.220</east>
  </location>
- <location> <name>White Mountain Research Station</name>
+<location> <name>White Mountain Research Station</name>
  <description>White Mountain Research Station</description>
  <north>37.361</north>
  <west>-118.326</west>
  <south>37.361</south>
  <east>-118.326</east>
  </location>
- <location> <name>Whittaker's Forest</name>
+<location> <name>Whittaker's Forest</name>
  <description>Whittaker's Forest</description>
  <north>38.750</north>
  <west>-79.500</west>
  <south>38.750</south>
  <east>-79.500</east>
  </location>
- <location> <name>Whittell Forest and Wildlife Area</name>
+<location> <name>Whittell Forest and Wildlife Area</name>
  <description>Whittell Forest and Wildlife Area</description>
  <north>39.275</north>
  <west>-119.878</west>
  <south>39.275</south>
  <east>-119.878</east>
  </location>
- <location> <name>Wind River Canopy Crane Research Facility</name>
+<location> <name>Wind River Canopy Crane Research Facility</name>
  <description>Wind River Canopy Crane Research Facility</description>
  <north>45.821</north>
  <west>-121.952</west>
  <south>45.821</south>
  <east>-121.952</east>
  </location>
- <location> <name>Woodlake Environmental Field Station</name>
+<location> <name>Woodlake Environmental Field Station</name>
  <description>Woodlake Environmental Field Station</description>
  <north>41.230</north>
  <west>-81.520</west>
  <south>41.230</south>
  <east>-81.520</east>
  </location>
- <location> <name>Wrigley Marine Science Center</name>
+<location> <name>Wrigley Marine Science Center</name>
  <description>Wrigley Marine Science Center</description>
  <north>33.433</north>
  <west>-118.500</west>
  <south>33.433</south>
  <east>-118.500</east>
  </location>
- <location> <name>Wyoming National Park Service</name>
+<location> <name>Wyoming National Park Service</name>
  <description>Wyoming National Park Service</description>
  <north>43.857</north>
  <west>-110.589</west>
  <south>43.857</south>
  <east>-110.589</east>
  </location>
- <location> <name>Yellowstone Ecosystem Studies Field Station</name>
+<location> <name>Yellowstone Ecosystem Studies Field Station</name>
  <description>Yellowstone Ecosystem Studies Field Station</description>
  <north>45.000</north>
  <west>-109.833</west>
  <south>45.000</south>
  <east>-109.833</east>
  </location>
- <location><name>Younger Lagoon Reserve UCNRS</name>
+<location><name>Younger Lagoon Reserve UCNRS</name>
  <description>Younger Lagoon Reserve UCNRS</description>
  <north>36.950833333333335</north>
  <west>-122.06583333333333</west>
  <south>36.950833333333335</south>
  <east>-122.06583333333333</east>
  </location>
- </locationList>
+</locationList>
