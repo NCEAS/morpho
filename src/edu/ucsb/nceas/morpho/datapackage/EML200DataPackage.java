@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2004-01-27 21:33:15 $'
- * '$Revision: 1.26 $'
+ *     '$Date: 2004-02-09 05:56:40 $'
+ * '$Revision: 1.27 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -46,6 +46,13 @@ import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 
+import org.apache.xpath.XPathAPI;
+import org.apache.xpath.objects.XObject;
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
+import org.w3c.dom.NamedNodeMap;
 
 /**
  * class that represents a data package. This class is abstract. Specific datapackages
@@ -290,5 +297,35 @@ public  class EML200DataPackage extends AbstractDataPackage
     }
     return this;
   }
+	
+	/**
+	 *  This method follows the pointer stored in 'references' node to return the
+	 *  DOM node referred to by 'references'
+	 */
+	public Node getReferencedNode(Node node) {
+		Node referencedNode = node;
+		// does the node have a child named 'references'?
+		// if so, resolve
+		try {
+		  String refpath = "references";
+		  NodeList refs = XMLUtilities.getNodeListWithXPath(node, refpath);
+			while ((refs!=null)&&(refs.getLength()>0)) {
+				// get id
+			  String id = (XMLUtilities.getTextNodeWithXPath(node, "references")).getNodeValue();
+			  // get node under rootNode with the id
+				Node rootNode = node.getOwnerDocument().getDocumentElement();
+			  NodeList refs2 = XMLUtilities.getNodeListWithXPath(rootNode, "//*[@id='"+id+"']");
+				// there should be a single node with the id
+        referencedNode = refs2.item(0);								 
+			  // check for another reference!
+			  refs = XMLUtilities.getNodeListWithXPath(referencedNode, refpath);
+				     // if refs is non-zero in length, we repeat
+			} // end while
+		} catch (Exception w) {
+			Log.debug(5, "Exception trying to follow references!");
+		}
+		return referencedNode;
+	}
+	
 }
 

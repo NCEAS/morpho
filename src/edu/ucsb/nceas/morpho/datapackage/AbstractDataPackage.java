@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: sambasiv $'
- *     '$Date: 2004-02-04 02:25:50 $'
- * '$Revision: 1.57 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2004-02-09 05:56:40 $'
+ * '$Revision: 1.58 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -254,6 +254,15 @@ public abstract class AbstractDataPackage extends MetadataObject
    * @return AbstractDataPackage
    */
   abstract public AbstractDataPackage download(String id);
+
+	
+	/**
+	 *  This method follows the pointer stored in 'references' node to return the
+	 *  DOM node referred to by 'references' 
+	 *  This is really specific to eml2; thus just declared as abstract here
+	 *  and implemented in the EML200DataPackage class.
+	 */
+	abstract Node getReferencedNode(Node node);
 
   /**
    * used to signify that this package is located on a metacat server

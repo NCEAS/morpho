@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2004-01-25 22:04:35 $'
- * '$Revision: 1.11 $'
+ *     '$Date: 2004-02-09 05:56:40 $'
+ * '$Revision: 1.12 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -483,6 +483,15 @@ public  class EML2Beta6DataPackage extends AbstractDataPackage
       }
       return subfile;
   }
+
+		/**
+	 *  This method follows the pointer stored in 'references' node to return the
+	 *  DOM node referred to by 'references' 
+	 *  This is really specific to eml2; thus just returns input
+	 */
+	public Node getReferencedNode(Node node) {
+		return node;
+	}
 
     
 }

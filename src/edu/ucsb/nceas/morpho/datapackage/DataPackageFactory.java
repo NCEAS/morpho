@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2004-01-22 18:59:22 $'
- * '$Revision: 1.32 $'
+ *     '$Date: 2004-02-09 05:56:40 $'
+ * '$Revision: 1.33 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,6 +34,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.DocumentType;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.DOMImplementation;
+import org.apache.xpath.XPathAPI;
 
 import org.xml.sax.InputSource;
 
@@ -408,6 +409,7 @@ public class DataPackageFactory
               +"bounds/minimum","0.0");
       om.put("/attribute/"+"measurementScale/interval/numericDomain/"
               +"bounds/maximum","1.0");
+			om.put("/attribute/references","123456");
       //  create ordermap elements for a new entity
       om1.put("/dataTable/entityName", "TestEntityName");
       om1.put("/dataTable/attributeList/attribute/attributeName", "attributeOne");
@@ -424,7 +426,25 @@ public class DataPackageFactory
       
       adp.insertEntity(entityObject, 3);
       adp.insertAttribute(0, attributeObject,1);
-      
+			
+			Node[] ndarry = adp.getAttributeArray(0);
+			Node nd1 = ndarry[1];
+      Node attrnode = adp.getReferencedNode(ndarry[1]);
+			
+    Node attribute = attrnode;
+    String temp = "";
+    try {
+      NodeList aNodes = XPathAPI.selectNodeList(attribute, "./attributeName");
+      if (aNodes == null) {
+        Log.debug(5, "aNodes is null !");
+      }
+      Node child = aNodes.item(0).getFirstChild(); // get first ?; (only 1?)
+      temp = child.getNodeValue();
+    }
+    catch (Exception w) {
+      Log.debug(50, "exception in getting entity description" + w.toString());
+    }
+Log.debug(1, "AttrName: "+temp);			
       Log.debug(1,"AbstractDataPackage complete - Will now show in an XML Editor..");
       Node domnode = adp.getMetadataNode();
       DocFrame df = new DocFrame();
