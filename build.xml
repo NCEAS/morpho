@@ -6,7 +6,7 @@
   *    Copyright: 2000 Regents of the University of California and the
   *               National Center for Ecological Analysis and Synthesis
   *  For Details: http://www.nceas.ucsb.edu/
-  *    File Info: '$Id: build.xml,v 1.25 2001-07-19 18:03:56 jones Exp $'
+  *    File Info: '$Id: build.xml,v 1.26 2001-07-21 01:00:16 jones Exp $'
   *
   *  Build file for the Ant cross-platform build system for metacat
   *  See http://jakarta.apache.org for details on Ant
@@ -135,7 +135,7 @@
       <copy file="./LICENSE" todir="${morpho.dir}"/>
       <copy file="./morpho" todir="${morpho.dir}"/>
       <copy file="./morpho.bat" todir="${morpho.dir}"/>
-      <copy file="./readme.txt" todir="${morpho.dir}"/>
+      <copy file="./README.txt" todir="${morpho.dir}"/>
       <copy todir="${morpho.lib.catalog}">
         <fileset dir="./lib/catalog"/>
       </copy>
