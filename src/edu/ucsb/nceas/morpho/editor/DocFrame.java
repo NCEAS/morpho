@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-07-06 21:55:33 $'
- * '$Revision: 1.54 $'
+ *     '$Date: 2001-07-06 23:37:40 $'
+ * '$Revision: 1.55 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1021,11 +1021,12 @@ class SymTreeSelection implements javax.swing.event.TreeSelectionListener
 	      tempStack.push(end);
 	    }
 	  Enumeration enum = node.children();
-	  if (!enum.hasMoreElements()) {
+/*	  if (!enum.hasMoreElements()) {
 	      start.append(start1.toString());
 	      start1 = new StringBuffer();
 	      textnode = true;
 	  }
+*/
 	  while (enum.hasMoreElements()) {  // process child nodes 
 	    DefaultMutableTreeNode nd = (DefaultMutableTreeNode)(enum.nextElement());
 	    NodeInfo ni1 = (NodeInfo)nd.getUserObject();
@@ -1051,7 +1052,7 @@ class SymTreeSelection implements javax.swing.event.TreeSelectionListener
 	      start1.append(">");
 	      start.append(start1.toString());  
 	      start1 = new StringBuffer();
-	//      tempStack.pop();
+	      tempStack.pop();
 	      emptyNodeParent = true;
 	      write_loop(nd, indent+2);
 	    }
@@ -1063,16 +1064,15 @@ class SymTreeSelection implements javax.swing.event.TreeSelectionListener
 	  }
 	    if ((!name.equals("(CHOICE)"))&&(!name.equals("Empty"))) {
 	      if (textnode) {
-	        if (notempty) {
+          if (!tempStack.isEmpty()) {
 	            start.append((String)(tempStack.pop()));
-	        }
-	        else {
-	            tempStack.pop();
 	        }
 	      }
 	      else {
 	        if (!emptyNodeParent) {
-	          start.append("\n"+indentString+(String)(tempStack.pop()));
+	          if (!tempStack.isEmpty()) {
+	            start.append("\n"+indentString+(String)(tempStack.pop()));
+	          }
 	        }
 	        else {
 	          emptyNodeParent = false;  
