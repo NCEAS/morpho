@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: berkley $'
- *     '$Date: 2001-07-24 16:46:27 $'
- * '$Revision: 1.13 $'
+ *   '$Author: jones $'
+ *     '$Date: 2002-07-22 20:43:45 $'
+ * '$Revision: 1.14 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -81,6 +81,8 @@ public class HttpMessage
   {
     // Open the connection
     con = servlet.openConnection();
+    ClientFramework.debug(20, "HTTP Handler class is: " + 
+            con.getClass().getName());
 
     // Write any cookies in the request
     if (cookie != null) {

@@ -6,7 +6,7 @@
   *    Copyright: 2000 Regents of the University of California and the
   *               National Center for Ecological Analysis and Synthesis
   *  For Details: http://www.nceas.ucsb.edu/
-  *    File Info: '$Id: build.xml,v 1.46 2002-07-22 18:43:48 jones Exp $'
+  *    File Info: '$Id: build.xml,v 1.47 2002-07-22 20:43:44 jones Exp $'
   *
   *  Build file for the Ant cross-platform build system for metacat
   *  See http://jakarta.apache.org for details on Ant
@@ -20,7 +20,7 @@
       <property name="release" value="1.1.1"/>
       <property name="keystore" value="myKeystore"/>
       <property name="storepass" value="your-pw-goes-here"/>
-      <property name="muser" value="jones"/>
+      <property name="muser" value="uid=jones,o=NCEAS,dc=ecoinformatics,dc=org"/>
       <property name="mpass" value="your-pw-goes-here"/>
 
       <filter token="release" value="${release}"/>

@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2002-07-22 18:43:50 $'
- * '$Revision: 1.1 $'
+ *     '$Date: 2002-07-22 20:43:45 $'
+ * '$Revision: 1.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,6 +29,7 @@ package edu.ucsb.nceas.morphotest;
 import edu.ucsb.nceas.morpho.framework.*;
 
 import java.io.FileNotFoundException;
+import java.net.URLStreamHandler;
 
 import junit.framework.Test;
 import junit.framework.TestCase;
@@ -63,7 +64,30 @@ public class ConnectTest extends TestCase
   public void setUp()
   {
     try {
+      // Set system property to use HTTPClient or ssl protocol
+      System.setProperty("java.protocol.handler.pkgs","HTTPClient");
+      /*
+      java.net.URL.setURLStreamHandlerFactory(
+          new java.net.URLStreamHandlerFactory() {
+          public java.net.URLStreamHandler createURLStreamHandler(
+              final String protocol) 
+          {
+              if ("http".equals(protocol)) {
+                  try { 
+                      URLStreamHandler urlsh = new HTTPClient.http.Handler(); 
+                      return urlsh; 
+                  } catch (Exception e) {
+                      System.out.println("Error setting URL StreamHandler!");
+                      return null;
+                  }           
+              }
+              return null;
+          }
+      });
+      */
+
       ConfigXML config = new ConfigXML(configFile);
+      config.set("debug_level", 0, "0");
       framework = new ClientFramework(config);
       framework.setUserName(username);
       framework.setPassword(password);
@@ -87,9 +111,9 @@ public class ConnectTest extends TestCase
   {
     TestSuite suite = new TestSuite();
     suite.addTest(new ConnectTest("initialize"));
-    //suite.addTest(new ConnectTest("testValidLogin"));
-    //suite.addTest(new ConnectTest("testLogout"));
-    //suite.addTest(new ConnectTest("testInvalidLogin"));
+    suite.addTest(new ConnectTest("testValidLogin"));
+    suite.addTest(new ConnectTest("testLogout"));
+    suite.addTest(new ConnectTest("testInvalidLogin"));
     return suite;
   }
 
