@@ -5,9 +5,9 @@
  *    Authors: Saurabh Garg
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2004-03-18 02:21:40 $'
- * '$Revision: 1.4 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2004-03-23 21:08:01 $'
+ * '$Revision: 1.5 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -48,6 +48,8 @@ import org.apache.xerces.dom.DOMImplementationImpl;
 import org.w3c.dom.DOMImplementation;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+
 
 /**
  * Class to handle add temporal coverage command
@@ -147,44 +149,28 @@ public class AddGeographicCovCommand implements Command {
   private void insertNewGeographic() {
 
     covRoot = null;
-    map = geographicPage.getPageData();
+    map = geographicPage.getPageData("/coverage/geographicCoverage[");
     adp = resultPane.getAbstractDataPackage();
 
-    mapSet = map.keySet();
-    mapSetIt = mapSet.iterator();
 
-    while(mapSetIt.hasNext()){
-      key = mapSetIt.next();
-      newMap = new OrderedMap();
-
-      int i = key.toString().indexOf("[");
-      String keySt = key.toString().substring(0,i) + key.toString().substring(i+3);
-
-      newMap.put(keySt,map.get(key));
-
-      if(key.toString().indexOf("startDateTime") > 0){
-        key = mapSetIt.next();
-
-        i = key.toString().indexOf("[");
-        keySt = key.toString().substring(0,i) + key.toString().substring(i+3);
-
-        newMap.put(keySt,map.get(key));
-      }
-
-      try {
+       try {
         DOMImplementation impl = DOMImplementationImpl.getDOMImplementation();
-        Document doc = impl.createDocument("", "temporalCoverage", null);
+        Document doc = impl.createDocument("", "coverage", null);
 
         covRoot = doc.getDocumentElement();
-        XMLUtilities.getXPathMapAsDOMTree(newMap, covRoot);
-
-        adp.insertCoverage(covRoot);
+        XMLUtilities.getXPathMapAsDOMTree(map, covRoot);
+        // now the covRoot node may have a number of geographicCoverage children
+        NodeList kids = covRoot.getChildNodes();
+        for (int i=0;i<kids.getLength();i++) {
+          Node kid = kids.item(i);
+          adp.insertCoverage(kid);          
+        }
       }
       catch (Exception w) {
         Log.debug(5, "Unable to add OrderMap elements to DOM");
         w.printStackTrace();
       }
-    }
+    
 
     return;
   }
