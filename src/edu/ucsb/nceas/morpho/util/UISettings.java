@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2002-10-28 04:02:59 $'
- * '$Revision: 1.4 $'
+ *     '$Date: 2002-10-28 04:12:06 $'
+ * '$Revision: 1.5 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -122,7 +122,7 @@ public class UISettings
                                                   = new Color(237, 237, 237);
     
     public static final Image FRAME_AND_TASKBAR_ICON 
-                        = getAsImage("/edu/ucsb/nceas/morpho/framework/Btfly.gif");
+              = getAsImage("/edu/ucsb/nceas/morpho/framework/Btfly16x16.gif");
 
     
     private static Image getAsImage(String path) {
