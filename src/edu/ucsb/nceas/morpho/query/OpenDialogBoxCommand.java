@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2002-12-18 17:49:00 $'
- * '$Revision: 1.13 $'
+ *     '$Date: 2003-12-24 04:29:31 $'
+ * '$Revision: 1.14 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,30 +25,30 @@
  */
 package edu.ucsb.nceas.morpho.query;
 
+import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.framework.ConfigXML;
 import edu.ucsb.nceas.morpho.framework.MorphoFrame;
 import edu.ucsb.nceas.morpho.framework.SwingWorker;
 import edu.ucsb.nceas.morpho.framework.UIController;
-import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.util.Command;
-import edu.ucsb.nceas.morpho.util.GUIAction;
-import java.awt.event.ActionEvent;
+
 import java.util.Vector;
-import javax.swing.JDialog;
+
+import java.awt.event.ActionEvent;
 
 
 /**
  * Class to handle Open a dialog box command
  */
-public class OpenDialogBoxCommand implements Command 
+public class OpenDialogBoxCommand implements Command
 {
-  
+
   /** A reference to Morpho application */
   private Morpho morpho = null;
-  
+
   /** A reference to the owner query*/
   private Query ownerQuery = null;
-  
+
   /**
    * Constructor of SearchCommand
    *
@@ -57,50 +57,55 @@ public class OpenDialogBoxCommand implements Command
   public OpenDialogBoxCommand(Morpho morpho)
   {
     this.morpho = morpho;
-   
+
   }//OpenDialogBoxCommand
-  
-  
+
+
   /**
    * execute cancel command
-   */    
+   *
+   * @param event ActionEvent
+   */
   public void execute(ActionEvent event)
   {
     // create ownerQuery depend on the suiation when it executed
-    ownerQuery = new Query(getOwnerQuery(), morpho);   
+    ownerQuery = new Query(getOwnerQuery(), morpho);
     // Get the current morphoFrame. Maybe change get open dialog parent
-    MorphoFrame frame = 
+    MorphoFrame frame =
                     UIController.getInstance().getCurrentActiveWindow();
-    
+
     // Open a open dialog
     if ( frame != null)
     {
       doOpenDialog(frame);
     }
-    
-   
+
+
   }//execute
+
 
   /**
    * Using SwingWorket class to open open dialog
+   *
+   * @param morphoFrame MorphoFrame
    */
   private void doOpenDialog(final MorphoFrame morphoFrame)
   {
-    
-    final SwingWorker worker = new SwingWorker() 
+
+    final SwingWorker worker = new SwingWorker()
     {
         OpenDialogBox open = null;
-        public Object construct() 
+        public Object construct()
         {
           // set frame butterfly flapping
           morphoFrame.setBusy(true);
           morphoFrame.setEnabled(false);
           open = new OpenDialogBox(morphoFrame, morpho, ownerQuery);
-          return null;  
+          return null;
         }
 
         //Runs on the event-dispatching thread.
-        public void finished() 
+        public void finished()
         {
           morphoFrame.setEnabled(true);
           morphoFrame.setBusy(false);
@@ -113,8 +118,12 @@ public class OpenDialogBoxCommand implements Command
     };
     worker.start();  //required for SwingWorker 3
   }//doOpenDialog
+
+
   /**
    * Construct a query suitable for getting the owner documents
+   *
+   * @return String
    */
   private String getOwnerQuery()
   {
@@ -145,11 +154,11 @@ public class OpenDialogBoxCommand implements Command
     searchtext.append("<value>%</value>\n");
     searchtext.append("</queryterm></querygroup></pathquery>");
     return searchtext.toString();
-  } 
-  
+  }
+
   /**
    * could also have undo functionality; disabled for now
-   */ 
+   */
   // public void undo();
 
 }//class OpenDialogBoxCommand
