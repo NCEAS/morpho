@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2001-05-03 01:51:58 $'
- * '$Revision: 1.2 $'
+ *     '$Date: 2001-05-05 01:29:55 $'
+ * '$Revision: 1.3 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,85 +30,109 @@ import java.awt.*;
 import java.awt.event.*;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.table.TableColumn;
 
 /**
  * Display a ResultSet in a table view in a panel that can be
  * embedded in a window or tab or other location
  */
-public class ResultPanel extends javax.swing.JPanel
+public class ResultPanel extends JPanel
 {
-  private boolean DEBUG = true;
   private ResultSet results = null;
 
+  /**
+   * Construct a new ResultPanel and display the result set
+   *
+   * @param results the result listing to display
+   */
   public ResultPanel(ResultSet results)
   {
+    this(results, 12);
+  }
+
+  /**
+   * Construct a new ResultPanel and display the result set
+   *
+   * @param results the result listing to display
+   * @param fontSize the fontsize for the cells of the table
+   */
+  public ResultPanel(ResultSet results, int fontSize)
+  {
     super();
+    this.results = results;
     setLayout(new BorderLayout());
     setBackground(Color.white);
 
-    this.results = results;
-    JTable table = new JTable(results);
-    table.setRowHeight(results.getRowHeight());
-
-    //Create the scroll pane and add the table to it. 
-    JScrollPane scrollPane = new JScrollPane(table);
-
-    //Add the scroll pane to this Panel.
-    add(scrollPane, BorderLayout.CENTER);
-
-    /*
-    if (DEBUG)
-    {
-      table.addMouseListener(new MouseAdapter()
-      {
-        public void mouseClicked(MouseEvent e)
+    if (results != null) {
+      // Set up the Header panel with a title
+      JLabel titleLabel = new JLabel(results.getQuery().getQueryTitle());
+      JPanel headerPanel = new JPanel();
+      //headerPanel.setBackground(Color.white);
+      headerPanel.add(titleLabel);
+      add(headerPanel, BorderLayout.NORTH);
+  
+      // Set up the results table
+      JTable table = new JTable(results);
+      WrappedTextRenderer stringRenderer = new WrappedTextRenderer(fontSize);
+      stringRenderer.setRows(5);
+      table.setRowHeight((int)(stringRenderer.getPreferredSize().getHeight()));
+      //table.setRowHeight(results.getRowHeight());
+      table.setDefaultRenderer(String.class, stringRenderer);
+      initColumnSizes(table, results);
+  
+      //Create the scroll pane and add the table to it. 
+      JScrollPane scrollPane = new JScrollPane(table);
+  
+      //Add the scroll pane to this Panel.
+      add(scrollPane, BorderLayout.CENTER);
+      
+      /*
+        table.addMouseListener(new MouseAdapter()
         {
-          printDebugData(table);
-        }
-      });
+          public void mouseClicked(MouseEvent e)
+          {
+            printDebugData(table);
+          }
+        });
+      */
     }
-    */
   }
 
-/*
-  private void printDebugData(JTable table)
-  {
-    int numRows = table.getRowCount();
-    int numCols = table.getColumnCount();
-      javax.swing.table.TableModel model = table.getModel();
-
-      System.out.println("Value of data: ");
-    for (int i = 0; i < numRows; i++)
-    {
-      System.out.print("    row " + i + ":");
-      for (int j = 0; j < numCols; j++)
-      {
-	System.out.print("  " + model.getValueAt(i, j));
-      }
-      System.out.println();
-    }
-    System.out.println("--------------------------");
-  }
-*/
   /*
-  public static void main(String[]args)
-  {
-    JFrame frame = new JFrame("SimpleTest");
-    frame.setSize(new Dimension(700, 200));
-    frame.addWindowListener(new WindowAdapter()
-    {
-      public void windowClosing(WindowEvent e)
-      {
-        System.exit(0);}
+   * This method picks good column sizes.
+   * If all column heads are wider than the column's cells' 
+   * contents, then you can just use column.sizeWidthToFit().
+   */
+  private void initColumnSizes(JTable table, ResultSet results) {
+    TableColumn column = null;
+    Component comp = null;
+    Component hcomp = null;
+    int headerWidth = 0;
+    int cellWidth = 0;
+    Object[] longValues = null;;
+
+    for (int i = 0; i < results.getColumnCount(); i++) {
+      column = table.getColumnModel().getColumn(i);
+      hcomp = (Component)column.getHeaderRenderer();
+      if (hcomp != null) {
+        headerWidth = hcomp.getPreferredSize().width;
       }
-    );
-    ResultPanel resultsPanel = new ResultPanel(new ResultSet());
-    frame.getContentPane().add(resultsPanel);
-    frame.pack();
-    frame.setVisible(true);
-  }
-  */
+
+      comp = table.getDefaultRenderer(results.getColumnClass(i)).
+                 getTableCellRendererComponent(
+                 table, results.getValueAt(1, i),
+                 false, false, 0, i);
+      cellWidth = comp.getPreferredSize().width;
+      System.err.println("Column (Width): " + i + 
+                         " (" + cellWidth + "/" + headerWidth + ")");
+      column.setPreferredWidth(Math.max(headerWidth, cellWidth));
+      if (cellWidth < 100 && i > 0) {
+        column.setMinWidth(100);
+      }
+    }
+  } 
 }

@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2001-05-03 22:21:03 $'
- * '$Revision: 1.4 $'
+ *     '$Date: 2001-05-05 01:29:55 $'
+ * '$Revision: 1.5 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -128,14 +128,14 @@ public class ResultSet extends AbstractTableModel implements ContentHandler
     
     // Set up the headers
     // assume at least 5 fixed fields returned, plus add an icon column
-    int numberFixedHeaders = 3;
+    int numberFixedHeaders = 1;
     headers = new String[numberFixedHeaders+cnt];  
     headers[0] = "";  // This is for the icon
     for (int i=0;i<cnt;i++) {
       headers[1+i] = getLastPathElement((String)returnFields.elementAt(i));
     }
-    headers[cnt+1] = "Created";
-    headers[cnt+2] = "Updated";
+    /*headers[cnt+1] = "Created";*/
+    /*headers[cnt+2] = "Updated";*/
     /*headers[cnt+3] = "Doc ID";*/
     /*headers[cnt+4] = "Document Name";*/
     /*headers[cnt+5] = "Document Type";*/
@@ -197,6 +197,11 @@ public class ResultSet extends AbstractTableModel implements ContentHandler
     try {
       Vector rowVector = (Vector)resultsVector.get(row);
       value = rowVector.get(col);
+    } catch (ArrayIndexOutOfBoundsException aioobe) {
+      String emptyString = "";
+      value = null;
+      //System.err.println("No such row or column: row: " + row +
+                         //" col: " + col);
     } catch (NullPointerException npe) {
       String emptyString = "";
       value = emptyString;
@@ -405,5 +410,12 @@ public class ResultSet extends AbstractTableModel implements ContentHandler
    */
   public Hashtable getRelations() {
     return relations; 
+  }
+
+  /**
+   * Get the query that was used to construct these results
+   */
+  public Query getQuery() {
+    return savedQuery; 
   }
 }

@@ -4,11 +4,9 @@
 <MetaCatServletURL>http://dev.nceas.ucsb.edu:8090/knb/servlet/metacat</MetaCatServletURL>
 <local_dtd_directory>./catalog</local_dtd_directory>
 <local_xml_directory>./XMLworkFolder</local_xml_directory>
-<searchlocal>true</searchlocal>
-<searchnetwork>true</searchnetwork>
 <debug_level>9</debug_level>
 <log_file>false</log_file>
-<searchnetwork>true</searchnetwork>
+<searchmetacat>true</searchmetacat>
 <searchlocal>true</searchlocal>
 <pathquery_config>
   <doctypes_searched><doctype>any</doctype></doctypes_searched>
@@ -16,7 +14,7 @@
   </doctypes_returned>
   <fields_returned>
   <returnfield>dataset/title</returnfield>
-  <returnfield>dataset/originator/individualName/surname</returnfield>
+  <returnfield>dataset/originator/responsibleParty/individualName/surName</returnfield>
   <returnfield>keyword</returnfield>
   </fields_returned>
 
@@ -30,7 +28,7 @@
   </doctypes_returned_default>
   <fields_returned_default>
     <returnfield_default>dataset/title</returnfield_default>
-    <returnfield_default>dataset/originator/individualName/surname</returnfield_default>
+    <returnfield_default>dataset/originator/responsibleParty/individualName/surName</returnfield_default>
     <returnfield_default>keyword</returnfield_default>
   </fields_returned_default>
 </pathquery_config>

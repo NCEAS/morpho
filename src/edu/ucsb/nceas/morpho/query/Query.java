@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2001-05-03 22:21:03 $'
- * '$Revision: 1.2 $'
+ *     '$Date: 2001-05-05 01:29:55 $'
+ * '$Revision: 1.3 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -66,6 +66,7 @@ public class Query extends DefaultHandler {
   private String queryString;
   private boolean containsExtendedSQL=false;
   private String meta_file_id;
+  private String queryTitle;
   private Vector doctypeList;
   private Vector returnFieldList;
   private Vector ownerList;
@@ -84,6 +85,12 @@ public class Query extends DefaultHandler {
 
   /** The configuration options object reference from the framework */
   private ConfigXML config = null;
+
+  /** Flag, true if Metacat searches are performed for this query */
+  private boolean searchMetacat = true;
+
+  /** Flag, true if network searches are performed for this query */
+  private boolean searchLocal = true;
 
   /**
    * construct an instance of the Query class 
@@ -122,7 +129,6 @@ public class Query extends DefaultHandler {
       framework.debug(4, "Error reading the query.");
     }
     queryString = qtext.toString();
-    System.out.println(queryString);
 
     // Initialize the parser and read the queryspec
     XMLReader parser = initializeParser();
@@ -177,6 +183,14 @@ public class Query extends DefaultHandler {
   public Vector getReturnFieldList()
   {
     return this.returnFieldList; 
+  }
+
+  /**
+   * Accessor method to return the title of this Query
+   */
+  public String getQueryTitle()
+  {
+    return queryTitle; 
   }
 
   /**
@@ -276,6 +290,8 @@ public class Query extends DefaultHandler {
     String currentTag = currentNode.getTagName();
     if (currentTag.equals("meta_file_id")) {
       meta_file_id = inputString;
+    } else if (currentTag.equals("querytitle")) {
+      queryTitle = inputString;
     } else if (currentTag.equals("value")) {
       currentValue = inputString;
     } else if (currentTag.equals("pathexpr")) {
@@ -542,12 +558,18 @@ public class Query extends DefaultHandler {
     // TODO: Run these queries in parallel threads
 
     // if appropriate, query metacat
-    ResultSet metacatResults = new ResultSet(this, queryMetacat());
+    ResultSet metacatResults = null;
+    if (searchMetacat) {
+      metacatResults = new ResultSet(this, queryMetacat());
+    }
 
     // if appropriate, query locally
-    //ResultSet localResults = new ResultSet(this, queryLocal());
+    ResultSet localResults = null;
+    if (searchLocal) {
+      //ResultSet localResults = new ResultSet(this, queryLocal());
+    }
 
-    // merge the results
+    // merge the results -- currently unimplemented!
     results = metacatResults;
 
     // return the merged results
@@ -561,7 +583,11 @@ public class Query extends DefaultHandler {
   {
     parserName = config.get("saxparser", 0);
     accNumberSeparator = config.get("accNumberSeparator", 0);
-        }
+    String searchMetacatString = config.get("searchmetacat", 0);
+    searchMetacat = (new Boolean(searchMetacatString)).booleanValue();
+    String searchLocalString = config.get("searchlocal", 0);
+    searchLocal = (new Boolean(searchLocalString)).booleanValue();
+  }
 
   /** Main routine for testing */
   static public void main(String[] args) 
