@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2004-04-06 00:28:42 $'
- * '$Revision: 1.6 $'
+ *     '$Date: 2004-04-06 01:25:27 $'
+ * '$Revision: 1.7 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -42,7 +42,6 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.Point;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
@@ -54,6 +53,7 @@ import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.ListSelectionModel;
+import javax.swing.table.TableColumn;
 
 
 import org.w3c.dom.Node;
@@ -258,12 +258,56 @@ public class ExternalRefsPage extends AbstractUIPage
    * @param model AbstractTableModel to be used as basis of query results
    * listing (shows all packages owned by current user on local system)
    */
-  public void setQueryResults(ColumnSortableTableModel model)
+  private void setQueryResults(ColumnSortableTableModel model)
   {
 
     table.setModel(model);
     table.validate();
     table.repaint();
+  }
+
+  /*
+   * Method to setup table's column size
+   */
+  private void setTableCloumnSize(int width)
+  {
+    double [] columnWidth = {0.65, 0.35};
+    // column object
+    TableColumn column = null;
+    // Minimum factor for MinWidth
+    double minFactor = 0.7;
+    // Maxmum factor for MaxWidth
+    int maxFactor = 5;
+    // Percentage width
+    double percentage = 0.0;
+    // Perferred size of column
+    int preferredSize = 0;
+    // Minimum size
+    int minimumSize = 0;
+    // Maxmum size
+    int maxmumSize = 0;
+
+
+    for (int i = 0; i < columnNames.length; i++)
+    {
+     // Get the column
+     column = table.getColumnModel().getColumn(i);
+     // Get the percentage of width for this column from the array
+     percentage = columnWidth[i];
+     // Get the width as preferred width
+     preferredSize = (new Double(width*percentage)).intValue();
+     // Get the minimum size
+     minimumSize =(new Double(preferredSize*minFactor)).intValue();
+     // Get the maxmum size
+     maxmumSize = preferredSize*maxFactor;
+     // Set preferred width
+     column.setPreferredWidth(preferredSize);
+     // Set minimum width
+     column.setMinWidth(minimumSize);
+     // Set maxmum width
+     column.setMaxWidth(maxmumSize);
+   }//for
+
   }
 
 
