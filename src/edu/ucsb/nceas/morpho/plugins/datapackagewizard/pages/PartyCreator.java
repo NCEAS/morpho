@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2003-09-04 01:05:00 $'
- * '$Revision: 1.2 $'
+ *     '$Date: 2003-09-04 04:27:14 $'
+ * '$Revision: 1.3 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -84,7 +84,7 @@ public class PartyCreator extends AbstractWizardPage{
     this.add(desc, BorderLayout.NORTH);
     
     creatorList = WidgetFactory.makeList(colNames, editors, 4,
-                                    true, true, true, true, true, true );
+                                    true, true, false, true, true, true );
     this.add(creatorList);
     initActions();
   }
@@ -110,17 +110,32 @@ public class PartyCreator extends AbstractWizardPage{
   private void showPartyDialog() {
     
     int row = creatorList.getSelectedRow();
+    Log.debug(45, "\nPartyCreator: showPartyDialog() BEFORE - thinks selected row = "+row);
     if (row < 0) return;
     
     partyDialog 
             = new PartyDialog(WizardContainerFrame.frame, PartyDialog.CREATOR);
             
+    Log.debug(45, "\nPartyCreator: showPartyDialog() AFTER - thinks selected row = "+row);
+    Log.debug(45, "\nPartyCreator: showPartyDialog() thinks partyDialog.USER_RESPONSE = "+partyDialog.USER_RESPONSE);
+
+    Log.debug(45, "\nPartyCreator: showPartyDialog() doing creatorList.removeRow("+row+")");
+    creatorList.removeRow(row);
+
     if (partyDialog.USER_RESPONSE==PartyDialog.OK_OPTION) {
     
-      List newRow = (List)(creatorList.getListOfRowLists().get(row));
-      newRow = partyDialog.getSurrogate();
-    } else {
-      creatorList.removeRow(row);
+//      List newRow = (List)(creatorList.getListOfRowLists().get(row));
+//      newRow = partyDialog.getSurrogate();
+      
+      //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+      //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+      //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+      //need to create an addrow(List) method for list
+      //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+      //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+      //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+//      Log.debug(45, "\nPartyCreator: showPartyDialog() newRow = "+newRow);
     }
   }
   

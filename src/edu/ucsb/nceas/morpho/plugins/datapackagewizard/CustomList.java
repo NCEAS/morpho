@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2003-09-04 01:05:00 $'
- * '$Revision: 1.8 $'
+ *     '$Date: 2003-09-04 04:27:14 $'
+ * '$Revision: 1.9 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -57,6 +57,7 @@ import javax.swing.JTextField;
 import javax.swing.table.TableModel;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
+import javax.swing.table.TableColumnModel;
 import javax.swing.table.TableCellEditor;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.DefaultCellEditor;
@@ -156,14 +157,8 @@ public class CustomList extends JPanel {
     // The last column is never displayed, but is used to hold a pointer to any 
     // Object the user wants to associate with the row
     
-    int userObjColIndex = table.getColumnCount() - 1;
-    
-    System.err.println("\n***** table.getColumnModel().getColumn("
-      +userObjColIndex+") = "+table.getColumnModel().getColumn(userObjColIndex));
-      
-    table.getColumnModel().getColumn(userObjColIndex).setMaxWidth(0);
-    table.getColumnModel().getColumn(userObjColIndex).setWidth(0);
-    table.makeColumnNotEditable(userObjColIndex);
+    TableColumnModel columnModel = table.getColumnModel();        
+    columnModel.removeColumn(columnModel.getColumn(table.getColumnCount() - 1));
     
     /////////////////////////////////
     
@@ -204,7 +199,7 @@ public class CustomList extends JPanel {
     if (columnEditors==null)  {
     
       Log.debug(45,"NULL Column Editor Array; making ALL columns non-editable");
-      for (int colIdx=0; colIdx<table.getColumnModel().getColumnCount(); colIdx++) {
+      for (int colIdx=0; colIdx<table.getColumnCount(); colIdx++) {
         table.makeColumnNotEditable(colIdx);
       } 
       
@@ -212,7 +207,8 @@ public class CustomList extends JPanel {
       
       for (int i=0; i<columnEditors.length; i++) {
     
-        if (i>=table.getColumnCount()) continue;
+        if (i>table.getColumnCount() - 1) continue;
+        
         Object editor = columnEditors[i];
         TableColumn column = table.getColumnModel().getColumn(i);
       
@@ -278,7 +274,7 @@ public class CustomList extends JPanel {
     final double  minFactor = 0.7;
     final double  maxFactor = 5;
     
-    for (int i = 0; i < table.getModel().getColumnCount(); i++) {
+    for (int i = 0; i < table.getColumnCount(); i++) {
     
       TableColumn column = table.getColumnModel().getColumn(i);
       
@@ -369,6 +365,9 @@ public class CustomList extends JPanel {
     
     // EDIT available only if a row selected:
     if (showEditButton) editButton.setEnabled(selectionExists);
+    
+    // DUPLICATE available only if a row selected:
+    if (showDuplicateButton) duplicateButton.setEnabled(selectionExists);
     
     // DELETE available only if a row selected:
     if (showDeleteButton) deleteButton.setEnabled(selectionExists);
