@@ -6,9 +6,9 @@
  *    Authors: @higgins@
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2003-12-09 23:31:53 $'
- * '$Revision: 1.6 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2003-12-10 19:28:57 $'
+ * '$Revision: 1.7 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -78,7 +78,6 @@ public class SaveDialog extends JDialog
   /** Radio button */
   private JCheckBox localLoc = new JCheckBox("Save Locally");
   private JCheckBox networkLoc = new JCheckBox("Save to Network.");
-  private JCheckBox saveData = new JCheckBox("Save Data?");
   
   private static final int PADDINGWIDTH = 8;
   private static String WARNING =
@@ -174,7 +173,6 @@ public class SaveDialog extends JDialog
     Box radioBox = Box.createVerticalBox();
     radioBox.add(localLoc);
     radioBox.add(networkLoc);
-    radioBox.add(saveData);
     
     // create another center box which will put radion box in the center
     // and it will be add into center of mainPanel
