@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-06-25 22:13:43 $'
- * '$Revision: 1.30 $'
+ *     '$Date: 2001-06-26 22:38:50 $'
+ * '$Revision: 1.31 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -99,6 +99,7 @@ public class DataPackageGUI extends javax.swing.JFrame
     
     String entitytype = config.get("entitydoctype", 0);
     String resourcetype = config.get("resourcedoctype", 0);
+    String attributetype = config.get("attributedoctype", 0);
     
     if(docAtts.containsKey("originator"))
     {
@@ -195,7 +196,7 @@ public class DataPackageGUI extends javax.swing.JFrame
           listValueHash.put(s + spacecount, eleid);
         }
       }
-      else if(!key.equals(resourcetype))
+      else if(!key.equals(resourcetype) && !key.equals(attributetype))
       {
         Vector v = (Vector)relfiles.get(key);
         for(int i=0; i<v.size(); i++)
@@ -245,10 +246,14 @@ public class DataPackageGUI extends javax.swing.JFrame
     layoutPanel.setPreferredSize(new Dimension(450, 500));
     layoutPanel.setMinimumSize(new Dimension(450, 500));
     
-    layoutPanel.add(toppanel);                         
+    layoutPanel.add(toppanel);      
+    //JPanel layoutpanel2 = new JPanel();
+    //layoutpanel2.add(basicInfoPanel);
+    //layoutpanel2.add(listPanel);
     layoutPanel.add(basicInfoPanel);
     layoutPanel.add(listPanel);
-    
+    //layoutpanel2.setBorder(BorderFactory.createLineBorder(Color.black));
+    //layoutPanel.add(layoutpanel2);
     contentPane.add(layoutPanel);
   }
   
@@ -259,7 +264,9 @@ public class DataPackageGUI extends javax.swing.JFrame
                                       String altTitle, Vector originator)
   {
     JPanel textpanel = new JPanel();
-    textpanel.setBorder(BorderFactory.createLoweredBevelBorder());
+    textpanel.setBorder(BorderFactory.createCompoundBorder(
+                        BorderFactory.createLoweredBevelBorder(),
+                        BorderFactory.createEmptyBorder(10, 10, 10, 10)));
     textpanel.setLayout(new BoxLayout(textpanel, BoxLayout.Y_AXIS));
     textpanel.setBackground(Color.white);
     editBaseInfoButton = new JButton("Edit Basic Information");
@@ -269,8 +276,8 @@ public class DataPackageGUI extends javax.swing.JFrame
     JLabel titleL = new JLabel("Title: ");
     JLabel altTitleL = new JLabel("Short Title: ");
     JLabel originatorL = new JLabel("Data Originator: ");
-    String htmlBegin = "<html><p>";
-    String htmlEnd = "</p></html>";
+    String htmlBegin = "<html><p><font color=black>";
+    String htmlEnd = "</font></p></html>";
     
     JPanel titleTempPanel = new JPanel();
     titleTempPanel.setLayout(new BoxLayout(titleTempPanel, BoxLayout.X_AXIS));
@@ -447,10 +454,10 @@ public class DataPackageGUI extends javax.swing.JFrame
     otherFileButtonList.add(new JLabel("Other Descriptions"));
     otherFileButtonList.add(otherFileScrollPane);
     
-    listPanel.setBorder(BorderFactory.createCompoundBorder(
-                        BorderFactory.createTitledBorder(
-                        /*"Package Members"*/""),
-                        BorderFactory.createEmptyBorder(4, 4, 4, 4)));
+    //listPanel.setBorder(BorderFactory.createCompoundBorder(
+    //                    BorderFactory.createTitledBorder(
+    //                    /*"Package Members"*/""),
+    //                   BorderFactory.createEmptyBorder(4, 4, 4, 4)));
     listPanel.setLayout(new BoxLayout(listPanel, BoxLayout.X_AXIS));
     //listPanel.setPreferredSize(new Dimension(300, 100));
     

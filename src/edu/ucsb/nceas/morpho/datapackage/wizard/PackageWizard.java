@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-06-22 17:51:06 $'
- * '$Revision: 1.33 $'
+ *     '$Date: 2001-06-26 22:38:51 $'
+ * '$Revision: 1.34 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -184,7 +184,9 @@ public class PackageWizard extends javax.swing.JFrame
     Hashtable contentReps = new Hashtable();
     
     pathReps = createDocument(docPanel, pathReps, ""); //IMPORTANT
+    //printVector(pathReps);
     Hashtable content = createContentHash(docPanel, contentReps, ""); //IMPORTANT
+    //printHashtable(content);
     if(content.containsKey("MISSINGREQUIREDELEMENTS"))
     {
       if(((String)content.get("MISSINGREQUIREDELEMENTS")).equals("true"))
@@ -745,7 +747,7 @@ public class PackageWizard extends javax.swing.JFrame
       if(atts.containsKey("field"))
       { //check to see if this group has a field associated with it
         field = (String)atts.get("field");
-        if(!fields.endsWith(field))
+        if(!fields.endsWith("/" + field))
         { //make sure it is not already there
           fields += "/" + field;
           paths.put(fields, "");
@@ -859,7 +861,20 @@ public class PackageWizard extends javax.swing.JFrame
       if(atts.containsKey("field"))
       { //check to see if this group has a field associated with it
         field = (String)atts.get("field");
-        if(!fields.endsWith(field))
+        /*
+        System.out.println("fields: " + fields);
+        String lastfield = "";
+        if(fields.length() > 0 && fields.indexOf("/") != -1)
+        {
+          lastfield = fields.substring(fields.lastIndexOf("/"), 
+                                       fields.length());
+        }
+        else
+        {
+          lastfield = field;
+        }
+        */
+        if(!fields.endsWith("/" + field))
         { //make sure it is not already there
           fields += "/" + field;
           paths.addElement(fields);
@@ -1010,11 +1025,11 @@ public class PackageWizard extends javax.swing.JFrame
             tempPanel.setBorder(BorderFactory.createCompoundBorder(
                                 BorderFactory.createTitledBorder(
                                 (String)tempElement.attributes.get("label")),
-                                BorderFactory.createEmptyBorder(4, 4, 4, 4)));
+                                BorderFactory.createEmptyBorder(8,8,8,8)));
           }
           else
           {
-            tempPanel.setBorder(null);
+            tempPanel.setBorder(BorderFactory.createEmptyBorder(8,8,8,8));
           }
           
           if(tempElement.attributes.containsKey("repeatable"))
@@ -1175,12 +1190,14 @@ public class PackageWizard extends javax.swing.JFrame
                     catch(ClassCastException cce)
                     {
                       ClientFramework.debug(11, 
-                                     "Error in packagewizard.createpanel()(1)");
+                                     "Exception in packagewizard." +
+                                     "createpanel()(1): This is OK.");
                     }
                     catch(ArrayIndexOutOfBoundsException aioobe)
                     {
                       ClientFramework.debug(11, 
-                                     "Error in packagewizard.createpanel()(2)");
+                                     "Exception in packagewizard." + 
+                                     "createpanel()(2): This is OK.");
                     }
                   }
                   
@@ -1192,10 +1209,6 @@ public class PackageWizard extends javax.swing.JFrame
                   }
                   JPanel layoutpanel = new JPanel();
                   BorderLayout bl = new BorderLayout();
-                  bl.setHgap(10);
-                  bl.setVgap(10);
-                  newtextfield.setAlignmentY(0);
-                  newtextfield.setAlignmentX(0);
                   layoutpanel.setLayout(bl);
                   layoutpanel.add(newLabel, BorderLayout.WEST);
                   layoutpanel.add(newtextfield, BorderLayout.EAST);
@@ -1242,10 +1255,7 @@ public class PackageWizard extends javax.swing.JFrame
         //navigation
         
         JPanel layoutpanel = new JPanel();
-        Dimension d;
         BorderLayout bl = new BorderLayout();
-        bl.setHgap(10);
-        bl.setVgap(10);
         layoutpanel.setLayout(bl);
         
         if(button != null)
@@ -1267,10 +1277,7 @@ public class PackageWizard extends javax.swing.JFrame
             textfield.setVisible(false);
           }
         }
-        textfield.setAlignmentY(0);
-        textfield.setAlignmentX(0);
         textfield.setText(defaultText);
-        //parentPanel.add(textfield);
         layoutpanel.add(textfield, BorderLayout.EAST);
         parentPanel.add(layoutpanel);
       }
@@ -1343,12 +1350,14 @@ public class PackageWizard extends javax.swing.JFrame
                     catch(ClassCastException cce)
                     {
                       ClientFramework.debug(11, 
-                                     "Error in packagewizard.createpanel()(3)");
+                                     "Exception in packagewizard." +
+                                     "createpanel()(3): This is OK.");
                     }
                     catch(ArrayIndexOutOfBoundsException aioobe)
                     {
                       ClientFramework.debug(11, 
-                                     "Error in packagewizard.createpanel()(4)");
+                                     "Exception in packagewizard." +
+                                     "createpanel()(4): This is OK.");
                     }
                   }
                   

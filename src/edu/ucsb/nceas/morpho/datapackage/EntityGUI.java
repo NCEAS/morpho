@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-06-25 22:13:43 $'
- * '$Revision: 1.2 $'
+ *     '$Date: 2001-06-26 22:38:51 $'
+ * '$Revision: 1.3 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -142,15 +142,20 @@ public class EntityGUI extends javax.swing.JFrame
       return;
     }
     
-    NodeList nameList = PackageUtil.getPathContent(xmlFile, namePath, 
+    NodeList nameList = PackageUtil.getPathContent(xmlFile, 
+                                                   namePath, 
                                                    framework);
-    NodeList descList = PackageUtil.getPathContent(xmlFile, descPath, 
+    NodeList descList = PackageUtil.getPathContent(xmlFile, 
+                                                   descPath, 
                                                    framework);
-    NodeList numrecList = PackageUtil.getPathContent(xmlFile, numrecPath, 
+    NodeList numrecList = PackageUtil.getPathContent(xmlFile, 
+                                                     numrecPath, 
                                                      framework);
-    NodeList caseSensList = PackageUtil.getPathContent(xmlFile, caseSensPath, 
+    NodeList caseSensList = PackageUtil.getPathContent(xmlFile, 
+                                                       caseSensPath, 
                                                        framework);
-    NodeList orientationList = PackageUtil.getPathContent(xmlFile, orientationPath, 
+    NodeList orientationList = PackageUtil.getPathContent(xmlFile, 
+                                                          orientationPath, 
                                                           framework);
     
     if(nameList.getLength() != 0)
@@ -186,15 +191,55 @@ public class EntityGUI extends javax.swing.JFrame
   
   private void initComponents()
   {
+    String attributeNamePath = "/eml-variable/variable/variable_name";
     JButton editEntityButton = new JButton("Edit Table Description");
+    JButton editAttributes = new JButton("Edit Attributes");
     editEntityButton.addActionListener(this);
+    editAttributes.addActionListener(this);
     
-    attributes.add("attribute 1");
-    attributes.add("attribute 2");
-    attributes.add("attribute 3");
+    //poplulate the attributes list box
+    Vector triples = dataPackage.getTriples().getCollectionByObject(entityId);
+    
+    for(int i=0; i<triples.size(); i++)
+    {
+      Triple t = (Triple)triples.elementAt(i);
+      String id = t.getSubject();
+      File f;
+      try
+      {
+        if(location.equals(DataPackage.LOCAL) || 
+           location.equals(DataPackage.BOTH))
+        {
+          FileSystemDataStore fsds = new FileSystemDataStore(framework);
+          f = fsds.openFile(id);
+        }
+        else
+        {
+          MetacatDataStore mds = new MetacatDataStore(framework);
+          f = mds.openFile(id);
+        }
+      }
+      catch(Exception e)
+      {
+        framework.debug(0, "The attribute file referenced in the package does" +
+                           " not exist: EntityGUI.initComponents().: " +
+                           e.getMessage());
+        return;
+      }
+      
+      NodeList nl = PackageUtil.getPathContent(f, attributeNamePath, framework);
+      
+      for(int j=0; j<nl.getLength(); j++)
+      {
+        Node n = nl.item(j);
+        String att = n.getFirstChild().getNodeValue();
+        attributes.addElement(att.trim());
+      }
+    }
+    
     attributeList = new JList(attributes);
-    attributeList.setPreferredSize(new Dimension(180, 225)); 
-    attributeList.setMaximumSize(new Dimension(180, 225));
+    attributeList.setPreferredSize(new Dimension(180, 215)); 
+    attributeList.setMaximumSize(new Dimension(180, 215));
     attributeList.setBorder(BorderFactory.createCompoundBorder(
                             BorderFactory.createLineBorder(Color.black),
                             BorderFactory.createLoweredBevelBorder()));
@@ -252,28 +297,19 @@ public class EntityGUI extends javax.swing.JFrame
     entityPanel.add(orientationL);
     entityPanel.add(orientation);
     entityPanel.add(new JLabel(" "));
+    entityPanel.add(new JLabel(" "));
     entityPanel.add(editEntityButton);
     entityPanel.setPreferredSize(new Dimension(225, 280));
     entityPanel.setBackground(Color.white);
     
-    JButton add = new JButton("Add");
-    JButton remove = new JButton("Remove");
-    JButton edit = new JButton("Edit");
-    add.setFont(new Font("Dialog", Font.PLAIN, 9));
-    edit.setFont(new Font("Dialog", Font.PLAIN, 9));
-    remove.setFont(new Font("Dialog", Font.PLAIN, 9));
-    remove.addActionListener(this);
+    JButton edit = new JButton("Edit Attributes");
     edit.addActionListener(this);
-    add.addActionListener(this);
     JPanel buttonPanel = new JPanel();
     buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.X_AXIS));
-    buttonPanel.add(add);
-    buttonPanel.add(remove);
     buttonPanel.add(edit);
-    buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.X_AXIS));
     buttonPanel.setBackground(Color.white);
+    listandbuttons.add(new JLabel(" "));
     listandbuttons.add(buttonPanel);
-    listandbuttons.setBorder(BorderFactory.createLineBorder(Color.black));
     listandbuttons.setLayout(new BoxLayout(listandbuttons, BoxLayout.Y_AXIS));
     listandbuttons.setBackground(Color.white);
     attributePanel.add(listandbuttons);
@@ -516,6 +552,10 @@ public class EntityGUI extends javax.swing.JFrame
         return;
       }
       editor.openEditor(sb.toString(), entityId, location, this);
+    }
+    else if(command.equals("Edit Attributes"))
+    {
+      
     }
   }
 }

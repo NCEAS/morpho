@@ -10,14 +10,18 @@
           idtag="/table-entity/identifier" 
           relatedTo="DATAFILE" 
           displayNamePath="/table-entity/entityName"/>
-    <!--<spec name="Attribute" 
-          path="./lib/frames/attribute.xml" 
+    <spec name="Fields" 
+          path="./lib/frames/variable.xml" 
           idtag="/attribute/identifier"
-          relatedTo="Entity"/>-->
+          relatedTo="Table"
+          displayNamePath="/eml-variable/variable/variable_name"/>
   </specs>
   
   <frame name="Table"
-         repeatable="yes"/>
+         repeatable="no"
+         dependsOn="Fields"/>
+  <frame name="Fields"
+         repeatable="no"/>
          
   <!--<frame name="Attribute" description="Enter metadata about the attributes in your entity."/>-->
   <descriptions>
@@ -54,6 +58,10 @@
       to fill in another table form when you click the 'Next'
       button. You should fill out as many table forms as you
       have tables in your dataset.
+    </description>
+    <description name="Fields">
+      Enter information about the fields in your previously described table here.
+      Only the name and definition of the field are required.  
     </description>
   </descriptions>
   

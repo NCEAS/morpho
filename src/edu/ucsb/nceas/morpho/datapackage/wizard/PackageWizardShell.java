@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-06-22 21:13:36 $'
- * '$Revision: 1.27 $'
+ *     '$Date: 2001-06-26 22:38:51 $'
+ * '$Revision: 1.28 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -226,6 +226,7 @@ public class PackageWizardShell extends javax.swing.JFrame
       if(repeatable.equals("yes"))
       { //ask the user if he wished to add another file of the type which
         //he just created
+        
         File f = activeContainer.getFile(true);
         //write out the file from the current Active container
         if(f == null)
@@ -314,19 +315,17 @@ public class PackageWizardShell extends javax.swing.JFrame
             String namePath = (String)wfcont.attributes.get("displayNamePath");
             NodeList namelist = PackageUtil.getPathContent(wfcont.file, 
                                                            namePath, framework);
-            Node itemnode = namelist.item(0);
-            item = (String)itemnode.getFirstChild().getNodeValue().trim();
+            for(int j=0; j<namelist.getLength(); j++)
+            {
+              Node itemnode = namelist.item(j);
+              item = (String)itemnode.getFirstChild().getNodeValue().trim();
+              
+              if(item != null && !item.equals("InitialDescription"))
+              {
+                listContent.add(item);
+              }
+            }
           }
-        }
-        else
-        {
-          item = null;
-        }
-        
-        if(item != null && !item.equals("InitialDescription"))
-        {
-          System.out.println("item: " + item);
-          listContent.add(item);
         }
       }
       
@@ -515,7 +514,7 @@ public class PackageWizardShell extends javax.swing.JFrame
       if(wfc.attributes.containsKey("relatedTo"))
       {
         String relation = (String)wfc.attributes.get("relatedTo");
-        System.out.println("relation: " + relation);
+        //System.out.println("relation: " + relation);
         Vector v = (Vector)tripleNames.get(relation);
         for(int j=0; j<v.size(); j++)
         {

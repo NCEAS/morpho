@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-06-22 17:51:05 $'
- * '$Revision: 1.21 $'
+ *     '$Date: 2001-06-26 22:38:50 $'
+ * '$Revision: 1.22 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -100,11 +100,14 @@ public class DataPackage
     framework.debug(11, "location: " + location);
     
     this.identifier = identifier;
-    if(relations != null)
+    /*if(relations != null)
     { //if the relations are provided don't reparse the document
       triples = new TripleCollection(relations);
     }
     else
+    I'm not relying on the relations right now because I think they are not
+    always returned correctly from metacat.
+    */
     { //since the relations were not provided we need to parse them out of
       //the document.
       File triplesFile;

@@ -2,7 +2,7 @@
 <wizard size="460x400" dtd="eml-dataset.dtd" 
         doctype="-//NCEAS//eml-dataset-2.0//EN">
   <group label="Base Information" field="dataset" type="panel">
-    <group>
+    <group >
       <textbox label="Identifier" field="identifier" size="10" allowNull="no" 
                editable="no" defaulttext="to be assigned" visible="no"/>
       <textbox label="Short Name" field="shortName" size="15" />

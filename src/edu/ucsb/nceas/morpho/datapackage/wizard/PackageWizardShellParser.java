@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-06-22 17:51:06 $'
- * '$Revision: 1.5 $'
+ *     '$Date: 2001-06-26 22:38:51 $'
+ * '$Revision: 1.6 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -164,17 +164,26 @@ public class PackageWizardShellParser extends DefaultHandler
         initFlag = false;
       }
       
+      //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+      //this code sucks.  It needs to be rewritten so that it makes more sense!
+      //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
       String name = atts.getValue(0);
       String description = atts.getValue(1);
       Hashtable g = (Hashtable)frameObjects.remove(name);
       g.put("description", description);
       descriptions.put(name, description);
       
-      if(atts.getLength() == 2)
+      if(atts.getLength() >= 2)
       {
         String repeatable = atts.getValue(1);
         g.put("repeatable", repeatable);
       }
+      if(atts.getLength() == 3)
+      {
+        String dependsOn = atts.getValue(2);
+        g.put("dependsOn", dependsOn);
+      }
+      
       frameObjects.put(name, g);
       frames.addElement(frameObjects.get(name));
     }
