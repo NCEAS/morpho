@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2001-05-22 16:04:00 $'
- * '$Revision: 1.27 $'
+ *   '$Author: jones $'
+ *     '$Date: 2001-05-22 18:02:51 $'
+ * '$Revision: 1.28 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -72,6 +72,11 @@ public class LocalQuery extends DefaultHandler
    * match document id.
    */
   static Hashtable dom_collection;
+
+  /**
+   * The query on which this LocalQuery is based.
+   */
+  Query savedQuery = null;
 
   /**
    * hash table which contains doctype information about each of
@@ -143,25 +148,25 @@ public class LocalQuery extends DefaultHandler
     buildPackageList();    
   }
     
-/**
- * Basic Constuctor for the class
- * 
- * @param queryspec the XML representation of the query (should conform
- *                  to pathquery.dtd) as a Reader Stream
- * @param framework
- */
-public LocalQuery(Reader queryspec, ClientFramework framework) {
-  super();
+  /**
+   * Basic Constuctor for the class
+   * 
+   * @param query the query on which this Local query is based
+   * @param framework the framework
+   */
+  public LocalQuery(Query query, ClientFramework framework) {
+    super();
+    this.savedQuery = query;
   
-  localIcon = new ImageIcon( getClass().getResource("Open24.gif"));
+    localIcon = new ImageIcon( getClass().getResource("Open24.gif"));
   
-  this.framework = framework;
-  this.config = framework.getConfiguration();   
-
-  loadConfigurationParameters();
+    this.framework = framework;
+    this.config = framework.getConfiguration();   
+  
+    loadConfigurationParameters();
       
-  local_xml_directory = local_xml_directory.trim();
-  xmlcatalogfile = local_dtd_directory.trim()+"/catalog"; 
+    local_xml_directory = local_xml_directory.trim();
+    xmlcatalogfile = local_dtd_directory.trim()+"/catalog"; 
 
     // Initialize the members
     doctypeList = new Vector();
@@ -174,18 +179,7 @@ public LocalQuery(Reader queryspec, ClientFramework framework) {
 
 
     // Store the text of the initial query
-    StringBuffer qtext = new StringBuffer();
-    int len = 0;
-    char[] characters = new char[512];
-    try {
-      while ((len = queryspec.read(characters, 0, 512)) != -1) {
-        qtext.append(characters);
-        characters = new char[512];
-      }
-    } catch (IOException ioe) {
-      framework.debug(4, "Error reading the query.");
-    }
-    queryString = qtext.toString();
+    queryString = savedQuery.toString();
 
     // Initialize the parser and read the queryspec
     XMLReader parser = initializeParser();
@@ -201,26 +195,13 @@ public LocalQuery(Reader queryspec, ClientFramework framework) {
                       e.getClass().getName() +").");
       framework.debug(4, e.getMessage());
     }
-	}
-
-  /**
-   * construct an instance of the LocalQuery class 
-   *
-   * @param queryspec the XML representation of the query (should conform
-   *                  to pathquery.dtd) as a String
-   * @param parserName the fully qualified name of a Java Class implementing
-   *                  the org.xml.sax.Parser interface
-   */
-  public LocalQuery( String queryspec, ClientFramework framework)
-         //throws IOException 
-  {
-    this(new StringReader(queryspec), framework);
   }
 
-/**
- *
- */
- public ResultSet execute() {
+  /**
+   * Run the query against the local document store
+   */
+  public ResultSet execute() 
+  {
     // first, get a list of all packages that meet the query requirements
     Vector packageList = executeLocal(this.query, null);
     Vector row = null;
@@ -233,16 +214,16 @@ public LocalQuery(Reader queryspec, ClientFramework framework) {
       row = createRSRow(packageName);
       rowCollection.addElement(row);
     }
-    ResultSet rs = new ResultSet(this, "local", rowCollection, framework);
- return rs;
- }
+    ResultSet rs = new ResultSet(savedQuery, "local", rowCollection, framework);
+    return rs;
+  }
 
-
- /**
-  *  loops recursively over all files in the 'local_xml_directory'
-  *  and applies XPath search
-  */
-  Vector queryAll(String xpathExpression) {
+  /**
+   *  loops recursively over all files in the 'local_xml_directory'
+   *  and applies XPath search
+   */
+  Vector queryAll(String xpathExpression) 
+  {
     Vector package_IDs = new Vector();
     Node root;
     long starttime, curtime, fm;
@@ -257,8 +238,9 @@ public LocalQuery(Reader queryspec, ClientFramework framework) {
       //System.out.println("loadSystemCatalogs completed!");
       myCatalog.parseCatalog(xmlcatalogfile);
       cer.setCatalog(myCatalog);
+    } catch (Exception e) {
+      System.out.println("Problem creating Catalog!" + e.toString());
     }
-    catch (Exception e) {System.out.println("Problem creating Catalog!" + e.toString());}
     parser.setEntityResolver(cer);
     // set start time variable
     starttime = System.currentTimeMillis();
@@ -273,6 +255,7 @@ public LocalQuery(Reader queryspec, ClientFramework framework) {
     for (int i=0;i<filevector.size();i++) {
       File currentfile = (File)filevector.elementAt(i);
       String filename = currentfile.getPath();
+      framework.debug(9, "Processing file: " + filename); 
       
       // skips subdirectories
       if (currentfile.isFile()) {
@@ -283,28 +266,28 @@ public LocalQuery(Reader queryspec, ClientFramework framework) {
           if (doctype_collection.containsKey(filename)) {
             currentDoctype = ((String)doctype_collection.get(filename));   
           }
-        }
-        else {
+        } else {
           InputSource in;
-            try {
-              in = new InputSource(new FileInputStream(filename));
-            }
-            catch (FileNotFoundException fnf) {
-              System.err.println("FileInputStream of " + filename + " threw: " + fnf.toString());
-//              fnf.printStackTrace();
-              continue;
-            }
-            try {
-              parser.parse(in);
-            }
-            catch(Exception e1) {
-              System.err.println("Parsing " + filename + " threw: " + e1.toString());
-      //        e1.printStackTrace();
-              continue;
-            }
+          try {
+            in = new InputSource(new FileInputStream(filename));
+          } catch (FileNotFoundException fnf) {
+            System.err.println("FileInputStream of " + filename + 
+                               " threw: " + fnf.toString());
+            //fnf.printStackTrace();
+            continue;
+          }
+          try {
+            parser.parse(in);
+          }
+          catch(Exception e1) {
+            System.err.println("Parsing " + filename + 
+                               " threw: " + e1.toString());
+            //e1.printStackTrace();
+            continue;
+          }
 
-        // Get the documentElement from the parser, which is what the selectNodeList 
-              //method expects
+          // Get the documentElement from the parser, which is what 
+          // the selectNodeList method expects
           Document current_doc = parser.getDocument();
           root = parser.getDocument().getDocumentElement();
           dom_collection.put(filename,current_doc);
@@ -320,7 +303,9 @@ public LocalQuery(Reader queryspec, ClientFramework framework) {
             // see if current doctype is in list of doctypes to be searched
           if ((doctypes2bsearched.contains("any"))
                 ||(doctypes2bsearched.contains(currentDoctype))) {
-                  
+                 
+              framework.debug(9, "Still processing: " + filename); 
+              framework.debug(9, "Using XPath: " + xpathExpression); 
               // Use the simple XPath API to obtain a node list.
               nl = XPathAPI.selectNodeList(root, xpathExpression);
               // if nl has no elements, then the document does not contain the
@@ -343,7 +328,7 @@ public LocalQuery(Reader queryspec, ClientFramework framework) {
         {
           System.err.println("selectNodeList threw: " + e2.toString() 
             + " perhaps your xpath didn't select any nodes");
-//          e2.printStackTrace();
+          // e2.printStackTrace();
           continue;
         }
       }
@@ -772,8 +757,9 @@ return rs;
                               new ConfigXML("lib/config.xml"));
         
         FileReader xml = new FileReader(new File(xmlfile));
+        Query query = new Query(xml, cf);
          
-        LocalQuery qspec = new LocalQuery(xml, cf);
+        LocalQuery qspec = new LocalQuery(query, cf);
         
     //    Vector test = qspec.executeLocal(qspec.query, null);
         ResultSet rs = qspec.execute();

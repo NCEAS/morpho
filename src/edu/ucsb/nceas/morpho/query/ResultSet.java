@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2001-05-21 23:46:10 $'
- * '$Revision: 1.11 $'
+ *   '$Author: jones $'
+ *     '$Date: 2001-05-22 18:02:51 $'
+ * '$Revision: 1.12 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,6 +31,7 @@ import edu.ucsb.nceas.morpho.framework.*;
 import java.io.*;
 import java.io.InputStream;
 
+import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Stack;
 import java.util.Vector;
@@ -189,10 +190,9 @@ public class ResultSet extends AbstractTableModel implements ContentHandler
    * Construct a ResultSet instance from a vector of vectors;
    * for use with LocalQuery
    */
-  public ResultSet(LocalQuery query, String source, Vector vec,
-                   ClientFramework cf)
+  public ResultSet(Query query, String source, Vector vec, ClientFramework cf)
   {
-    this.savedLocalQuery = query;
+    this.savedQuery = query;
     this.framework = cf;
 
     if (source.equals("local")) {
@@ -558,6 +558,12 @@ public class ResultSet extends AbstractTableModel implements ContentHandler
    */
   public void merge(ResultSet r2)
   {
-    framework.debug(9, "Merge is not yet implemented!");
+    framework.debug(9, "Simple merge, no comparison done yet!");
+    Vector r2Rows = r2.getResultsVector();
+    Enumeration ee = r2Rows.elements();
+    while (ee.hasMoreElements()) {
+      Vector row = (Vector)ee.nextElement();
+      resultsVector.addElement(row);
+    }
   }
 }
