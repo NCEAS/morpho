@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2002-10-29 18:17:31 $'
- * '$Revision: 1.23 $'
+ *   '$Author: jones $'
+ *     '$Date: 2004-04-12 20:09:41 $'
+ * '$Revision: 1.24 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -409,7 +409,8 @@ public class ProfileDialog extends JDialog
       orgLabel.setHorizontalAlignment(SwingConstants.RIGHT);
       otherOrgLabel.setHorizontalAlignment(SwingConstants.RIGHT);
       userIdField.setColumns(15);
-      String[] organizations = {"unaffiliated", "NCEAS", "LTER", "NRS", "PISCO", "MARINE"};
+      Vector orgs = config.get("organization");
+      String[] organizations = (String[])orgs.toArray(new String[0]);
       orgList = new JList(organizations);
       orgList.setSelectionMode(1);
       orgList.setVisibleRowCount(3);

@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <config>
-  <version>1.5.0beta2.0+</version>
+  <version>1.5.0beta2.0++</version>
   <dataLocationInlineOnline>online</dataLocationInlineOnline>
   <plugin>edu.ucsb.nceas.morpho.query.QueryPlugin</plugin>
   <plugin>edu.ucsb.nceas.morpho.datapackage.DataPackagePlugin</plugin>
@@ -220,6 +220,12 @@
   <uid_tag>uid</uid_tag>
   <org_tag>o</org_tag>
   <ldapbase>dc=ecoinformatics,dc=org</ldapbase>
+  <organization>unaffiliated</organization>
+  <organization>NCEAS</organization>
+  <organization>LTER</organization>
+  <organization>OBFS</organization>
+  <organization>UCNRS</organization>
+  <organization>PISCO</organization>
   <lookAndFeel></lookAndFeel>
   <stylesheetLocation>style/eml200</stylesheetLocation>
   <genericStylesheet>style/generic.xsl</genericStylesheet>
