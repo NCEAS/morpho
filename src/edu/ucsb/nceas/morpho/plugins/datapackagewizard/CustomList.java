@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: sambasiv $'
- *     '$Date: 2004-01-06 19:39:21 $'
- * '$Revision: 1.34 $'
+ *   '$Author: brooke $'
+ *     '$Date: 2004-01-07 00:39:43 $'
+ * '$Revision: 1.35 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,54 +28,49 @@
 
 package edu.ucsb.nceas.morpho.plugins.datapackagewizard;
 
-import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WidgetFactory;
-
-import edu.ucsb.nceas.utilities.OrderedMap;
 import edu.ucsb.nceas.morpho.util.Log;
 
-import java.util.EventObject;
-import java.util.Vector;
-import java.util.List;
-import java.util.Arrays;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.EventObject;
 import java.util.Iterator;
+import java.util.List;
+import java.util.Vector;
 
-import java.awt.Component;
-import java.awt.Insets;
-import java.awt.Dimension;
 import java.awt.BorderLayout;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 
-import javax.swing.Action;
-import javax.swing.JComboBox;
-import javax.swing.JCheckBox;
-import javax.swing.Box;
 import javax.swing.AbstractAction;
-import javax.swing.JTable;
-import javax.swing.table.TableCellRenderer;
+import javax.swing.Action;
+import javax.swing.Box;
+import javax.swing.DefaultCellEditor;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
+import javax.swing.JComponent;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.ScrollPaneConstants;
-import javax.swing.JComponent;
-import javax.swing.JButton;
-import javax.swing.JLabel;
+import javax.swing.JTable;
 import javax.swing.JTextField;
-import javax.swing.table.TableModel;
-import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableColumn;
-import javax.swing.table.TableColumnModel;
-import javax.swing.table.TableCellEditor;
-import javax.swing.table.DefaultTableCellRenderer;
-import javax.swing.DefaultCellEditor;
-import javax.swing.ListSelectionModel;
 import javax.swing.ListModel;
+import javax.swing.ListSelectionModel;
+import javax.swing.ScrollPaneConstants;
 import javax.swing.border.EmptyBorder;
-
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.event.TableModelEvent;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableCellEditor;
+import javax.swing.table.TableCellRenderer;
+import javax.swing.table.TableColumn;
+import javax.swing.table.TableColumnModel;
 
 
 /**
@@ -102,7 +97,6 @@ public class CustomList extends JPanel {
   private JButton deleteButton;
   private JButton moveUpButton;
   private JButton moveDownButton;
-  private double  tableWidthReference;
 
   private boolean showAddButton;
   private boolean showEditButton;
@@ -117,7 +111,7 @@ public class CustomList extends JPanel {
 	protected DuplicateAction duplicateAction;
 	protected MoveUpAction   	moveUpAction;
 	protected MoveDownAction  moveDownAction;
-	
+
   private static  TableModelEvent tableModelEvent;
   private DefaultTableModel model;
   private Dimension   buttonDims;
@@ -227,7 +221,7 @@ public class CustomList extends JPanel {
     table.setShowHorizontalLines(false);
     table.setShowVerticalLines(true);
 		table.setFocusable(false);
-		
+
     // The last column is never displayed, but is used to hold a pointer to any
     // Object the user wants to associate with the row
 
@@ -266,7 +260,7 @@ public class CustomList extends JPanel {
 		duplicateAction = new DuplicateAction(table, this);
 		moveUpAction 		= new MoveUpAction(table, this);
 		moveDownAction	= new MoveDownAction(table, this);
-		
+
 //    addAction.addRowNoCustomAction();
 
 //    if (table.getComponentAt(0, 0)!=null) {
@@ -413,7 +407,7 @@ public class CustomList extends JPanel {
 	}
 
 	public void setBorderForButtonPanel(int top, int left, int bottom, int right) {
-	
+
 		buttonBox.setBorder(new EmptyBorder(top, left, bottom, right));
 		this.remove(buttonBox);
 		this.add(buttonBox, BorderLayout.EAST);
@@ -445,7 +439,7 @@ public class CustomList extends JPanel {
   private void initButtons() {
 
     buttonBox = Box.createVerticalBox();
-		
+
 		boolean buttonPresent = false;
 
     buttonBox.setBorder(new EmptyBorder(0,2*WizardSettings.PADDING,
@@ -457,7 +451,7 @@ public class CustomList extends JPanel {
       addButton.setFont(WizardSettings.WIZARD_CONTENT_FONT);
       buttonBox.add(addButton);
 			buttonPresent = true;
-    }								
+    }
 
     if (showEditButton) {
       editButton     = new JButton(editAction);
@@ -493,10 +487,10 @@ public class CustomList extends JPanel {
       buttonBox.add(moveDownButton);
 			buttonPresent = true;
     }
-		
+
 		if(!buttonPresent)
 			return;
-		
+
     setListButtonDimensions(WizardSettings.LIST_BUTTON_DIMS);
     resizeButtons();
 
@@ -527,7 +521,7 @@ public class CustomList extends JPanel {
 
     // ADD always available:
     //if (showAddButton) addButton.setEnabled(true);
-		
+
     // EDIT available only if a row selected:
     if (showEditButton) editButton.setEnabled(selectionExists);
 
@@ -561,58 +555,58 @@ public class CustomList extends JPanel {
     }
   }
 	/**
-	*		Method to fire the Add action of the CustomList. A row is added to the customlist as 
+	*		Method to fire the Add action of the CustomList. A row is added to the customlist as
 	*		a result.This is useful when the customlist needs to be controlled from outside.
-	*		
+	*
 	*/
 	public void fireAddAction() {
 		addAction.actionPerformed(null);
 	}
 
 	/**
-	*		Method to fire the Edit action of the CustomList. The selected row is edited as 
+	*		Method to fire the Edit action of the CustomList. The selected row is edited as
 	*		a result.This is useful when the customlist needs to be controlled from outside.
-	*		
+	*
 	*/
 	public void fireEditAction() {
 		editAction.actionPerformed(null);
 	}
-	
+
 	/**
-	*		Method to fire the Delete action of the CustomList. The selected row is deleted as 
+	*		Method to fire the Delete action of the CustomList. The selected row is deleted as
 	*		a result.This is useful when the customlist needs to be controlled from outside.
-	*		
+	*
 	*/
 	public void fireDeleteAction() {
 		deleteAction.actionPerformed(null);
 	}
-	
+
 	/**
 	*		Method to fire the Duplicate action of the CustomList. The selected row is duplicated 	*		as a result.This is useful when the customlist needs to be controlled from outside.
-	*		
+	*
 	*/
 	public void fireDuplicateAction() {
 		duplicateAction.actionPerformed(null);
 	}
-	
+
 	/**
-	*		Method to fire the Move-Up action of the CustomList. The selected row is moved one row 
+	*		Method to fire the Move-Up action of the CustomList. The selected row is moved one row
 	*		up as a result.This is useful when the customlist needs to be controlled from outside.
-	*		
+	*
 	*/
 	public void fireMoveUpAction() {
 		moveUpAction.actionPerformed(null);
 	}
-	
+
 	/**
-	*		Method to fire the Move-Down action of the CustomList. The selected row is moved one row 
+	*		Method to fire the Move-Down action of the CustomList. The selected row is moved one row
 	*		down as a result.This is useful when the customlist needs to be controlled from outside.
-	*		
+	*
 	*/
 	public void fireMoveDownAction() {
 		moveDownAction.actionPerformed(null);
 	}
-	
+
   /**
    *  returns the index of the currently-selected row, or -1 if none selected
    *
@@ -646,13 +640,12 @@ public class CustomList extends JPanel {
   }
 
 
-
   /**
-   *  replaces the currently-selected row with the Objects in the List provided,
-   *  or with a blank row if the List is null
+   * replaces the currently-selected row with the Objects in the List provided,
+   * or with a blank row if the List is null
    *
-   *  @param  the List containing the objects in the new row that will replace
-   *          the currently-selected row.
+   * @param newRow List containing the objects in the new row that will replace
+   *   the currently-selected row.
    */
   public void replaceSelectedRow(List newRow) {
 
@@ -679,22 +672,21 @@ public class CustomList extends JPanel {
 
 
   /**
-   *  adds the row to the list after the currently-selected row, or at the end
-   *  if no row is selected. Then scrolls to make the new row visible.
+   * adds the row to the list after the currently-selected row, or at the end if
+   * no row is selected. Then scrolls to make the new row visible.
    *
-   *  @param  the List defining the row data. If the list has "n" columns, the
-   *          passed List may have 0 -> (n+1) elements as follows:
-   *          <ul><li>0..n represents the actual data that will appear displayed
-   *            in the list columns. If the number of elements is less than the
-   *          number of display columns, the remaining columns will appear blank
-   *          </li><li>List element (n+1) is the optional "user object", which
-   *            may be any object that the user wants to associate with this row
-   *            </li>
+   * @param rowList List defining the row data. If the list has "n" columns,
+   *   the passed List may have 0 -> (n+1) elements as follows: <ul><li>0..n
+   *   represents the actual data that will appear displayed in the list
+   *   columns. If the number of elements is less than the number of display
+   *   columns, the remaining columns will appear blank </li><li>List element
+   *   (n+1) is the optional "user object", which may be any object that the
+   *   user wants to associate with this row </li>
    */
   public void addRow(List rowList) {
 
     int row = getSelectedRowIndex();
-		
+
     if (row < 0) {
 
       row = model.getRowCount();
@@ -720,9 +712,9 @@ public class CustomList extends JPanel {
 
 
   /**
-   *  removes the row with the specified index from the list
+   * removes the row with the specified index from the list
    *
-   *  @param the index of the row to be removed
+   * @param row index of the row to be removed
    */
   public void removeRow(int row) {
 
@@ -943,18 +935,16 @@ public class CustomList extends JPanel {
   }
 
 
-
-
   /**
-   *  Sets the <code>javax.swing.Action</code> to be executed on pressing the
-   *  ADD button. NOTE that if no custom add action is set, or if a null action
-   *  is set, the ADD button's 'private' Action (defined elsewhere in this
-   *  class) will be executed; otherwise the custom action will be executed (and
-   *  the 'private' Action will NOT be executed).
-   *  <em>Note that this behavior is different for the other custom action
-   *  get/set methods, which are executed IN ADDITION to private actions</em>
+   * Sets the <code>javax.swing.Action</code> to be executed on pressing the ADD
+   * button. NOTE that if no custom add action is set, or if a null action is
+   * set, the ADD button's 'private' Action (defined elsewhere in this class)
+   * will be executed; otherwise the custom action will be executed (and the
+   * 'private' Action will NOT be executed). <em>Note that this behavior is
+   * different for the other custom action get/set methods, which are executed
+   * IN ADDITION to private actions</em>
    *
-   *  @param the <code>javax.swing.Action</code> to be executed
+   * @param a <code>javax.swing.Action</code> to be executed
    */
   public void setCustomAddAction(Action a) {
 
@@ -981,12 +971,12 @@ public class CustomList extends JPanel {
 
 
   /**
-   *  Sets the <code>javax.swing.Action</code> to be executed on pressing the
-   *  appropriate list button. NOTE that the button's 'private' Action (defined
-   *  elsewhere in this class) will be executed first, and then the custom
-   *  action will be executed
+   * Sets the <code>javax.swing.Action</code> to be executed on pressing the
+   * appropriate list button. NOTE that the button's 'private' Action (defined
+   * elsewhere in this class) will be executed first, and then the custom action
+   * will be executed
    *
-   *  @param the <code>javax.swing.Action</code> to be executed
+   * @param a <code>javax.swing.Action</code> to be executed
    */
   public void setCustomEditAction(Action a) {
 
@@ -1009,12 +999,12 @@ public class CustomList extends JPanel {
 
 
   /**
-   *  Sets the <code>javax.swing.Action</code> to be executed on pressing the
-   *  appropriate list button. NOTE that the button's 'private' Action (defined
-   *  elsewhere in this class) will be executed first, and then the custom
-   *  action will be executed
+   * Sets the <code>javax.swing.Action</code> to be executed on pressing the
+   * appropriate list button. NOTE that the button's 'private' Action (defined
+   * elsewhere in this class) will be executed first, and then the custom action
+   * will be executed
    *
-   *  @param the <code>javax.swing.Action</code> to be executed
+   * @param a <code>javax.swing.Action</code> to be executed
    */
   public void setCustomDuplicateAction(Action a) {
 
@@ -1037,12 +1027,12 @@ public class CustomList extends JPanel {
 
 
   /**
-   *  Sets the <code>javax.swing.Action</code> to be executed on pressing the
-   *  appropriate list button. NOTE that the button's 'private' Action (defined
-   *  elsewhere in this class) will be executed first, and then the custom
-   *  action will be executed
+   * Sets the <code>javax.swing.Action</code> to be executed on pressing the
+   * appropriate list button. NOTE that the button's 'private' Action (defined
+   * elsewhere in this class) will be executed first, and then the custom action
+   * will be executed
    *
-   *  @param the <code>javax.swing.Action</code> to be executed
+   * @param a <code>javax.swing.Action</code> to be executed
    */
   public void setCustomDeleteAction(Action a) {
 
@@ -1080,14 +1070,12 @@ class AddAction extends AbstractAction {
 
   private CustomJTable table;
   private CustomList parentList;
-  private DefaultTableModel model;
 
   public AddAction(CustomJTable table, CustomList parentList) {
 
     super("Add");
     this.table = table;
     this.parentList = parentList;
-    model = (DefaultTableModel)(table.getModel());
   }
 
 
@@ -1096,7 +1084,7 @@ class AddAction extends AbstractAction {
     Log.debug(45, "CustomList ADD action");
 
     if (parentList.getCustomAddAction()==null) {
-			
+
 			List newRowList = new ArrayList();
 
       for (int i=0; i < table.getColumnCount(); i++) {
@@ -1204,15 +1192,12 @@ class DeleteAction extends AbstractAction {
 
   private CustomJTable table;
   private CustomList parentList;
-  private DefaultTableModel model;
-  private AddAction addAction;
 
   public DeleteAction(CustomJTable table, CustomList parentList) {
 
     super("Delete");
     this.table = table;
     this.parentList = parentList;
-    model = (DefaultTableModel)(table.getModel());
   }
 
   public void actionPerformed(ActionEvent e) {
@@ -1233,11 +1218,6 @@ class DeleteAction extends AbstractAction {
     }
   }
 
-//  private void addFirstRowBack() {
-//
-//    if (addAction==null) addAction = new AddAction(table, parentList);
-//    CustomList.addAction.addRowNoCustomAction();
-//  }
 }
 
 class MoveUpAction extends AbstractAction {
