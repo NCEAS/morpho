@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-10-29 23:33:57 $'
- * '$Revision: 1.65 $'
+ *     '$Date: 2001-10-30 22:22:32 $'
+ * '$Revision: 1.66 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -688,7 +688,7 @@ class SymAction implements java.awt.event.ActionListener {
         String local_dtd_directory =config.get("local_dtd_directory",0);     
             
         String xmlcatalogfile = local_dtd_directory+"/catalog"; 
-        try {
+       try {
             myCatalog = new Catalog();
             myCatalog.loadSystemCatalogs();
             myCatalog.parseCatalog(xmlcatalogfile);
