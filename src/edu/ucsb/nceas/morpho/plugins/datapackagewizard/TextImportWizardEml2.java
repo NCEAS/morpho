@@ -5,8 +5,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2003-12-21 06:08:12 $'
- * '$Revision: 1.4 $'
+ *     '$Date: 2003-12-22 02:01:08 $'
+ * '$Revision: 1.5 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -76,6 +76,8 @@ import javax.swing.table.DefaultTableColumnModel;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
+import java.util.List;
+import java.util.ArrayList;
 
 
 /**
@@ -112,12 +114,6 @@ public class TextImportWizardEml2 extends JFrame {
   private boolean ignoreConsequtiveDelimiters = false;
 
   /**
-   * used as a flag to indicate whether 'blank' fields should be reported
-   * as errors; if false, they are not reported
-   */
-  private boolean blankCheckFlag = false;
-
-  /**
    * actual number of lines in fdata file
    */
   private int nlines_actual;
@@ -151,10 +147,6 @@ public class TextImportWizardEml2 extends JFrame {
    **/
   private int stepNumber = 1;
 
-  /**
-   * StringBuffer used to store results from various parts of the wizard
-   */
-  private StringBuffer resultsBuffer;
 
   // starting line
   private int startingLine = 1;
@@ -215,236 +207,12 @@ public class TextImportWizardEml2 extends JFrame {
 
     registerListeners();
 
-    resultsBuffer = new StringBuffer();
-
     //assign the filename and get the wizard started.
     if (file != null) {
       shortFilename = file.getName();
-      startImport(shortFilename);
+      startImport(file);
     }
   }
-
-
-  private void initControls() {
-    //{{INIT_CONTROLS
-    setTitle("Text Import Wizard");
-    setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-    getContentPane().setLayout(new BorderLayout(0, 0));
-    setSize(695, 500);
-    setVisible(false);
-    saveFileDialog.setMode(FileDialog.SAVE);
-    saveFileDialog.setTitle("Save");
-    openFileDialog.setMode(FileDialog.LOAD);
-    openFileDialog.setTitle("Open");
-    //$$ openFileDialog.move(0,336);
-    MainDisplayPanel.setLayout(new BorderLayout(0, 0));
-    getContentPane().add(MainDisplayPanel, BorderLayout.CENTER);
-    ControlsPlusDataPanel.setLayout(new GridLayout(2, 1, 0, 4));
-    MainDisplayPanel.add(ColumnDataScrollPanel, BorderLayout.WEST);
-    MainDisplayPanel.add(ControlsPlusDataPanel, BorderLayout.CENTER);
-
-    ColumnDataScrollPanel.setPreferredSize(new Dimension(80, 4000));
-    ColumnDataScrollPanel.setVisible(false);
-
-    ControlsPanel.setLayout(new CardLayout(0, 0));
-    ControlsPlusDataPanel.add(ControlsPanel);
-
-    //-----------------------------------------------------
-    Step1ControlsPanel.setAlignmentY(0.0F);
-    Step1ControlsPanel.setAlignmentX(0.0F);
-    Step1ControlsPanel.setLayout(new GridLayout(7, 1, 0, 10));
-    ControlsPanel.add("card1", Step1ControlsPanel);
-    Step1_TopTitlePanel.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
-    Step1ControlsPanel.add(Step1_TopTitlePanel);
-    Step1_TopTitleLabel.setText("This set of screens will create metadata based on the content of the specified data file");
-    Step1_TopTitlePanel.add(Step1_TopTitleLabel);
-    Step1_TopTitleLabel.setForeground(java.awt.Color.black);
-    Step1_TopTitleLabel.setFont(new Font("Dialog", Font.BOLD, 12));
-    Step1_TableNamePanel.setAlignmentY(0.473684F);
-    Step1_TableNamePanel.setAlignmentX(0.0F);
-    Step1_TableNamePanel.setLayout(new BoxLayout(Step1_TableNamePanel,
-                                                 BoxLayout.X_AXIS));
-    Step1ControlsPanel.add(Step1_TableNamePanel);
-    Step1_NameLabel.setText(" Table Name: ");
-    Step1_NameLabel.setPreferredSize(WizardSettings.WIZARD_CONTENT_LABEL_DIMS);
-    Step1_TableNamePanel.add(Step1_NameLabel);
-    Step1_NameLabel.setForeground(java.awt.Color.black);
-    Step1_NameLabel.setFont(new Font("Dialog", Font.PLAIN, 12));
-    Step1_TableDescriptionLabel.setPreferredSize(WizardSettings.
-                                                 WIZARD_CONTENT_LABEL_DIMS);
-    Step1_TableNamePanel.add(TableNameTextField);
-    Step1_TableDescriptionPanel.setAlignmentY(0.473684F);
-    Step1_TableDescriptionPanel.setAlignmentX(0.0F);
-    Step1_TableDescriptionPanel.setLayout(new BoxLayout(
-        Step1_TableDescriptionPanel, BoxLayout.X_AXIS));
-    Step1ControlsPanel.add(Step1_TableDescriptionPanel);
-    Step1_TableDescriptionLabel.setText(" Description: ");
-    Step1_TableDescriptionPanel.add(Step1_TableDescriptionLabel);
-    Step1_TableDescriptionLabel.setForeground(java.awt.Color.black);
-    Step1_TableDescriptionLabel.setFont(new Font("Dialog", Font.PLAIN, 12));
-    Step1_TableDescriptionPanel.add(TableDescriptionTextField);
-    Step1_DelimiterChoicePanel.setAlignmentX(0.0F);
-    Step1_DelimiterChoicePanel.setLayout(new FlowLayout(FlowLayout.LEFT, 5, 5));
-    Step1ControlsPanel.add(Step1_DelimiterChoicePanel);
-    Step1_DelimiterLabel.setText(
-        "Choose the method used to separate fields on each line of your data");
-    Step1_DelimiterLabel.setAlignmentY(0.0F);
-    Step1_DelimiterChoicePanel.add(Step1_DelimiterLabel);
-    Step1_DelimiterLabel.setForeground(new java.awt.Color(102, 102, 153));
-    Step1_DelimiterLabel.setFont(new Font("Dialog", Font.PLAIN, 12));
-    Step1_DelimeterRadioPanel.setAlignmentX(0.0F);
-    Step1_DelimeterRadioPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 5, 5));
-    Step1ControlsPanel.add(Step1_DelimeterRadioPanel);
-    DelimitedRadioButton.setHorizontalTextPosition(SwingConstants.
-                                                   RIGHT);
-    DelimitedRadioButton.setText(
-        "Delimited  -  Characters such as tabs or commas separate each data field");
-    DelimitedRadioButton.setActionCommand(
-        "Delimited  -  Characters such as tabs or commas separate each data field");
-    DelimitedRadioButton.setAlignmentY(0.0F);
-    DelimitedRadioButton.setSelected(true);
-    Step1_DelimeterRadioPanel.add(DelimitedRadioButton);
-    DelimitedRadioButton.setFont(new Font("Dialog", Font.PLAIN, 12));
-    Step1_FixedFieldRadioPanel.setAlignmentX(0.0F);
-    Step1_FixedFieldRadioPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 5, 5));
-    Step1ControlsPanel.add(Step1_FixedFieldRadioPanel);
-    FixedFieldRadioButton.setText("Fixed Width  -  Fields are aligned in columns with specified number of characters");
-    FixedFieldRadioButton.setActionCommand("Fixed Width  -  Fields are aligned in columns with specified number of characters");
-    FixedFieldRadioButton.setAlignmentY(0.0F);
-    FixedFieldRadioButton.setEnabled(false);
-    Step1_FixedFieldRadioPanel.add(FixedFieldRadioButton);
-    FixedFieldRadioButton.setFont(new Font("Dialog", Font.PLAIN, 12));
-    StartingLinePanel.setAlignmentX(0.0F);
-    StartingLinePanel.setLayout(new FlowLayout(FlowLayout.LEFT, 5, 5));
-    Step1ControlsPanel.add(StartingLinePanel);
-    StartingLineLabel.setText("Start import at row: ");
-    StartingLinePanel.add(StartingLineLabel);
-    StartingLineLabel.setForeground(java.awt.Color.black);
-    StartingLineLabel.setFont(new Font("Dialog", Font.PLAIN, 12));
-    StartingLineTextField.setText("1");
-    StartingLineTextField.setColumns(4);
-    StartingLinePanel.add(StartingLineTextField);
-    ColumnLabelsLabel.setText("     ");
-    StartingLinePanel.add(ColumnLabelsLabel);
-    ColumnLabelsCheckBox.setText("Column Labels are in starting row");
-    ColumnLabelsCheckBox.setActionCommand("Column Labels are in starting row");
-    ColumnLabelsCheckBox.setSelected(false);
-    StartingLinePanel.add(ColumnLabelsCheckBox);
-    ColumnLabelsCheckBox.setFont(new Font("Dialog", Font.PLAIN, 12));
-
-    //-------------------------------------------------------
-    Step2ControlsPanel.setLayout(new GridLayout(6, 1, 0, 0));
-    ControlsPanel.add("card2", Step2ControlsPanel);
-    Step2ControlsPanel.setVisible(false);
-    Step2_TopLabelPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
-    Step2ControlsPanel.add(Step2_TopLabelPanel);
-    Step2_TopLabel.setText("If the columns indicated in the table are incorrect, try changing the assumed delimiter(s)");
-    Step2_TopLabelPanel.add(Step2_TopLabel);
-    Step2_TopLabel.setForeground(java.awt.Color.black);
-    Step2_DelimiterChoicePanel.setLayout(new FlowLayout(FlowLayout.LEFT, 5, 5));
-    Step2ControlsPanel.add(Step2_DelimiterChoicePanel);
-    Step2_DelimterChoiceLabel.setText("  Delimiters: ");
-    Step2_DelimiterChoicePanel.add(Step2_DelimterChoiceLabel);
-    Step2_DelimterChoiceLabel.setForeground(java.awt.Color.black);
-    Step2_DelimterChoiceLabel.setFont(new Font("Dialog", Font.PLAIN, 12));
-    TabCheckBox.setText("tab");
-    TabCheckBox.setActionCommand("tab");
-    TabCheckBox.setSelected(true);
-    Step2_DelimiterChoicePanel.add(TabCheckBox);
-    TabCheckBox.setFont(new Font("Dialog", Font.PLAIN, 12));
-    CommaCheckBox.setText("comma");
-    CommaCheckBox.setActionCommand("comma");
-    Step2_DelimiterChoicePanel.add(CommaCheckBox);
-    CommaCheckBox.setFont(new Font("Dialog", Font.PLAIN, 12));
-    SpaceCheckBox.setText("space");
-    SpaceCheckBox.setActionCommand("space");
-    Step2_DelimiterChoicePanel.add(SpaceCheckBox);
-    SpaceCheckBox.setFont(new Font("Dialog", Font.PLAIN, 12));
-    SemicolonCheckBox.setText("semicolon");
-    SemicolonCheckBox.setActionCommand("semicolon");
-    Step2_DelimiterChoicePanel.add(SemicolonCheckBox);
-    SemicolonCheckBox.setFont(new Font("Dialog", Font.PLAIN, 12));
-    OtherCheckBox.setText("other");
-    OtherCheckBox.setActionCommand("other");
-    Step2_DelimiterChoicePanel.add(OtherCheckBox);
-    OtherCheckBox.setFont(new Font("Dialog", Font.PLAIN, 12));
-    OtherTextField.setColumns(2);
-    Step2_DelimiterChoicePanel.add(OtherTextField);
-    JPanel10.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
-    Step2ControlsPanel.add(JPanel10);
-    JPanel11.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
-    Step2ControlsPanel.add(JPanel11);
-    Step2_ConsequtivePanel.setLayout(new FlowLayout(FlowLayout.LEFT, 5, 5));
-    Step2ControlsPanel.add(Step2_ConsequtivePanel);
-    ConsecutiveCheckBox.setText("Treat consecutive delimiters as one");
-    ConsecutiveCheckBox.setActionCommand("Treat consecutive delimiters as one");
-    Step2_ConsequtivePanel.add(ConsecutiveCheckBox);
-    ConsecutiveCheckBox.setFont(new Font("Dialog", Font.PLAIN, 12));
-
-    //---------------------------------
-
-    ControlsPanel.add("card3", ColumnDataPanel);
-    ColumnDataPanel.setLayout(new BorderLayout(0, 0));
-
-    ColumnDataPanel.setVisible(false);
-
-    //------------------------------------------------
-    DataPanel.setLayout(new BorderLayout(0, 0));
-    ControlsPlusDataPanel.add(DataPanel);
-    DataPanel.add(BorderLayout.CENTER, DataScrollPanel);
-
-    ((CardLayout)ControlsPanel.getLayout()).show(ControlsPanel, "card1");
-    ButtonsPanel.setLayout(new BorderLayout(0, 0));
-    getContentPane().add(BorderLayout.SOUTH, ButtonsPanel);
-    JPanelLeft.setLayout(new FlowLayout(FlowLayout.LEFT, 5, 5));
-    ButtonsPanel.add(BorderLayout.WEST, JPanelLeft);
-
-    JPanelCenter.setLayout(new FlowLayout(FlowLayout.RIGHT, 5, 5));
-    ButtonsPanel.add(BorderLayout.CENTER, JPanelCenter);
-    StepNumberLabel.setText("Step #1");
-    JPanelCenter.add(StepNumberLabel);
-    StepNumberLabel.setForeground(java.awt.Color.black);
-    CancelButton.setText("Cancel");
-    CancelButton.setActionCommand("Cancel");
-    JPanelCenter.add(CancelButton);
-    BackButton.setText("< Back");
-    BackButton.setActionCommand("< Back");
-    BackButton.setEnabled(false);
-    JPanelCenter.add(BackButton);
-    NextButton.setText("Next >");
-    NextButton.setActionCommand("Next >");
-    JPanelCenter.add(NextButton);
-    FinishButton.setText("Finish");
-    FinishButton.setActionCommand("Finish");
-    FinishButton.setEnabled(false);
-    JPanelCenter.add(FinishButton);
-  }
-
-
-  private void registerListeners() {
-    //{{REGISTER_LISTENERS
-    SymWindow aSymWindow = new SymWindow();
-    this.addWindowListener(aSymWindow);
-    SymAction lSymAction = new SymAction();
-    NextButton.addActionListener(lSymAction);
-    BackButton.addActionListener(lSymAction);
-    FinishButton.addActionListener(lSymAction);
-    SymListSelection lSymListSelection = new SymListSelection();
-    StartingLineTextField.addActionListener(lSymAction);
-    SymFocus aSymFocus = new SymFocus();
-    StartingLineTextField.addFocusListener(aSymFocus);
-    SymItem lSymItem = new SymItem();
-    ColumnLabelsCheckBox.addItemListener(lSymItem);
-    TabCheckBox.addItemListener(lSymItem);
-    CommaCheckBox.addItemListener(lSymItem);
-    SpaceCheckBox.addItemListener(lSymItem);
-    SemicolonCheckBox.addItemListener(lSymItem);
-    OtherCheckBox.addItemListener(lSymItem);
-    CancelButton.addActionListener(lSymAction);
-    //}}
-  }
-
-
 
 
   private void setDistribution(short distribution) {
@@ -523,11 +291,10 @@ public class TextImportWizardEml2 extends JFrame {
     }
   }
 
-  public void startImport(String file) {
-    TableNameTextField.setText(file);
+  public void startImport(File file) {
+    TableNameTextField.setText(shortFilename);
     parsefile(file);
     createLinesTable();
-    resultsBuffer = new StringBuffer();
     stepNumber = 1;
     hasReturnedFromScreen2 = false;
     StepNumberLabel.setText("Step #" + stepNumber);
@@ -541,7 +308,8 @@ public class TextImportWizardEml2 extends JFrame {
 
 
   public static void main(String args[]) {
-    new TextImportWizardEml2(new File(args[0]), null).startImport(args[0]);
+    File f = new File(args[0]);
+    new TextImportWizardEml2(f, null);
   }
 
 
@@ -578,61 +346,55 @@ public class TextImportWizardEml2 extends JFrame {
    *
    * @param f the file name
    */
-  private void parsefile(String f) {
+  private void parsefile(File f) {
     int i;
     String temp;
 
     if (isTextFile(f)) {
-      resultsBuffer = new StringBuffer("");
-      resultsBuffer.append(f + " is apparently a text file\n");
+
+      BufferedReader in = null;
       try {
-        BufferedReader in = new BufferedReader(new FileReader(f));
-        nlines = 0;
-        try {
-          while ((temp = in.readLine()) != null) {
-            if (temp.length() > 0) { // do not count blank lines
+        in = new BufferedReader(new FileReader(f));
+      } catch (IOException e) {
+        e.printStackTrace();
+      }
+      nlines = 0;
+      nlines_actual = 0;
+      StringBuffer buff = new StringBuffer();
+      List linesList = new ArrayList();
+      try {
+        while ((temp = in.readLine()) != null) {
+          // do not count blank lines
+          if (temp.length() > 0) {
+            nlines_actual++;
+            if (nlines < nlines_max) {
               nlines++;
+              buff.append(temp);
+              buff.append("\n");
+              linesList.add(buff.toString());
             }
           }
-          in.close();
-        } catch (IOException e) {}
-        ;
-      } catch (IOException e) {}
-      ;
-
-      nlines_actual = nlines;
-      if (nlines > nlines_max) {
-        nlines = nlines_max;
-        JOptionPane.showMessageDialog(this, "Data File parsing has been truncated due to large size! (Note: NO data has been lost!)",
-                                      "Message",
-                                      JOptionPane.INFORMATION_MESSAGE, null);
+        }
+      } catch (IOException e) {
+        e.printStackTrace();
+      } finally {
+        try { in.close(); } catch (IOException e) { /* ignore */ }
       }
 
-      lines = new String[nlines];
-      // now read again since we know how many lines
-      try {
-        BufferedReader in1 = new BufferedReader(new FileReader(f));
-        try {
-          for (i = 0; i < nlines; i++) {
-            temp = in1.readLine();
-            while (temp.length() == 0) {temp = in1.readLine();
-            }
-            lines[i] = temp + "\n";
-          }
-          in1.close();
-        } catch (IOException e) {}
-        ;
-      } catch (IOException e) {}
-      ;
-      resultsBuffer.append("Number of lines: " + nlines + "\n");
-      resultsBuffer.append("Most probable delimiter is " + guessDelimiter()
-                           + "\n");
+      if (nlines_actual > nlines_max) {
+        JOptionPane.showMessageDialog(this,
+          "Data File parsing has been truncated due to large size! (Note: NO data has been lost!)",
+          "Message",
+          JOptionPane.INFORMATION_MESSAGE, null);
+      }
+      //convert list to the "lines" array:
+      lines = (String[])(linesList.toArray(new String[nlines]));
+      guessDelimiter();
     } else {
-      resultsBuffer = new StringBuffer("");
-      resultsBuffer.append(f + " is NOT a text file\n");
       JOptionPane.showMessageDialog(this, "Selected File is NOT a text file!",
-                                    "Message", JOptionPane.INFORMATION_MESSAGE, null);
-
+                                    "Message",
+                                    JOptionPane.INFORMATION_MESSAGE, null);
+      this.CancelButton_actionPerformed(null);
     }
   }
 
@@ -661,18 +423,12 @@ public class TextImportWizardEml2 extends JFrame {
         vec = new Vector();
         Vector vec1 = new Vector();
         numcols = colTitles.size();
-        resultsBuffer.append("Number of columns assumed: " + numcols + "\n");
         for (int i = start; i < nlines; i++) {
           vec1 = getColumnValues(lines[i]);
           boolean missing = false;
           while (vec1.size() < numcols) {
             vec1.addElement("");
             missing = true;
-          }
-          if (missing) {
-            resultsBuffer.append("Insufficient number of items in row "
-                                 + (i + 1) + "\n" + " Empty strings added!"
-                                 + "\n" + "\n");
           }
           vec.addElement(vec1);
         }
@@ -1319,115 +1075,25 @@ public class TextImportWizardEml2 extends JFrame {
 
 
   /**
-   * Uses the assumed column type to check all values in a column.
-   * If data is not the correct type, a message is added to the Results
-   * StringBuffer.
+   * attempts to check to see if a file is just text or is binary. Reads bytes
+   * in file and looks for '0'. If any '0's are found, assumed that the file is
+   * NOT a text file.
    *
-   * @param colNum column number
+   * @param file the File to be checked
+   * @return boolean true if it's a text file, false if not
    */
-  void checkColumnInfo(int colNum) {
-
-    if (colNum >= columnAttributes.size())
-      return;
-    AttributePage ad = (AttributePage)columnAttributes.elementAt(colNum);
-    OrderedMap map = ad.getPageData(AttributeSettings.Attribute_xPath);
-    String type = findMeasurementScale(map);
-    if (type.equalsIgnoreCase("Nominal") || type.equalsIgnoreCase("Ordinal")) {
-    } else if (type.equalsIgnoreCase("Interval")
-               || type.equalsIgnoreCase("Ratio")) {
-      Object o1 = map.get(AttributeSettings.Interval_xPath
-                          + "/numericDomain/numberType");
-      if (o1 == null)return;
-      String numTypeStr = (String)o1;
-      int numType = -1;
-      if (numTypeStr.equalsIgnoreCase("natural"))numType = 0;
-      if (numTypeStr.equalsIgnoreCase("whole"))numType = 1;
-      if (numTypeStr.equalsIgnoreCase("integer"))numType = 2;
-      if (numTypeStr.equalsIgnoreCase("real"))numType = 3;
-
-      for (int j = 0; j < vec.size(); j++) {
-        Vector v = (Vector)vec.elementAt(j);
-        String str = (String)v.elementAt(colNum);
-        if ((blankCheckFlag) || (str.length() > 0)) {
-          if (numType == 0 && (!isInteger(str) || Integer.parseInt(str) <= 0)) {
-            resultsBuffer.append("Item in col " + (colNum + 1) + " and row "
-                                 + (j + 1) + " is NOT a Natural number!\n");
-          } else if (numType == 1
-                     && (!isInteger(str) || Integer.parseInt(str) < 0)) {
-            resultsBuffer.append("Item in col " + (colNum + 1) + " and row "
-                                 + (j + 1) + " is NOT a Whole number!\n");
-          } else if (numType == 2 && !isInteger(str)) {
-            resultsBuffer.append("Item in col " + (colNum + 1) + " and row "
-                                 + (j + 1) + " is NOT an Integer!\n");
-          } else if (numType == 3 && !isDouble(str)) {
-            resultsBuffer.append("Item in col " + (colNum + 1) + " and row "
-                                 + (j + 1) + " is NOT a Real number!\n");
-          }
-        }
-      }
-    } else if (type.equalsIgnoreCase("Datetime")) {
-      for (int j = 0; j < vec.size(); j++) {
-        Vector v = (Vector)vec.elementAt(j);
-        String str = (String)v.elementAt(colNum);
-        if ((blankCheckFlag) || (str.length() > 0)) {
-          if (!isDate(str)) {
-            resultsBuffer.append("Item in col " + (colNum + 1) + " and row "
-                                 + (j + 1) + " is NOT a Date!\n");
-          }
-        }
-      }
-    }
-
-  }
-
-
-  private String findMeasurementScale(OrderedMap map) {
-
-    Object o1 = map.get(AttributeSettings.Nominal_xPath
-                        + "/enumeratedDomain[1]/codeDefinition[1]/code");
-    if (o1 != null)return "Nominal";
-    o1 = map.get(AttributeSettings.Nominal_xPath + "/textDomain[1]/definition");
-    if (o1 != null)return "Nominal";
-
-    o1 = map.get(AttributeSettings.Ordinal_xPath
-                 + "/enumeratedDomain[1]/codeDefinition[1]/code");
-    if (o1 != null)return "Ordinal";
-    o1 = map.get(AttributeSettings.Ordinal_xPath + "/textDomain[1]/definition");
-    if (o1 != null)return "Ordinal";
-
-    o1 = map.get(AttributeSettings.Interval_xPath + "/unit/standardUnit");
-    if (o1 != null)return "Interval";
-    o1 = map.get(AttributeSettings.Ratio_xPath + "/unit/standardUnit");
-    if (o1 != null)return "Ratio";
-
-    o1 = map.get(AttributeSettings.DateTime_xPath + "/formatString");
-    if (o1 != null)return "Datetime";
-
-    return "";
-  }
-
-
-  /**
-   * attempts to check to see if a file is just text or is binary. Reads bytes in
-   * file and looks for '0'. If any '0's are found, assumed that the file is NOT
-   * a text file.
-   *
-   * @param filename / //000000000000000000000000000000000 /* Checks a file to
-    *   see if it is a text file by looking for bytes containing '0'
-    * @return boolean
-    */
-   private boolean isTextFile(String filename) {
+  private boolean isTextFile(File file) {
      boolean text = true;
      int res;
      int cnt = 0;
      int maxcnt = 2000; // only check this many bytes to avoid performance problems
      try {
-       FileInputStream in = new FileInputStream(filename);
+       FileInputStream in = new FileInputStream(file);
        while (((res = in.read()) > -1) && (cnt < maxcnt)) {
          cnt++;
-         if (res == 0)text = false;
+         if (res == 0) text = false;
        }
-     } catch (Exception e) {}
+     } catch (Exception e) { e.printStackTrace(); }
      return text;
    }
 
@@ -1567,30 +1233,6 @@ public class TextImportWizardEml2 extends JFrame {
     om.put(header
            + "physical/dataFormat/textFormat/simpleDelimited/fieldDelimiter",
            delimit);
-/**
-    switch (distribution) {
-
-      case WizardSettings.ONLINE:
-        String id = saveDataFileAsTemp(filename);
-        om.put(header + "physical/distribution/online/url",
-               "ecogrid://knb/" + id);
-        break;
-
-      case WizardSettings.INLINE:
-        String encoded = encodeAsBase64(new File(filename));
-        om.put(header + "physical/distribution/inline", encoded);
-        break;
-
-      case WizardSettings.OFFLINE:
-
-        //note - bug #1154 will eventually require at least one of the "offline"
-        //element's children to be populated. For now, this is not required
-        om.put(header + "physical/distribution/offline", "");
-        break;
-      case WizardSettings.NODATA:
-        //if no data, then miss out the distribution elements altogether
-    }
-**/
     Enumeration e = columnAttributes.elements();
     int index = 1;
     while (e.hasMoreElements()) {
@@ -1610,59 +1252,233 @@ public class TextImportWizardEml2 extends JFrame {
   }
 
 
-  /*
-   * create a new id,
-   * assign id to the data file and save a copy with that id as the
-   * name
-   */
-//  private String saveDataFileAsTemp(String fn) {
-//    AccessionNumber an = new AccessionNumber(Morpho.thisStaticInstance);
-//    String id = an.getNextId();
-//    File f = new File(fn);
-//    FileSystemDataStore fds = new FileSystemDataStore(Morpho.thisStaticInstance);
-//    try {
-//      File res = fds.saveTempDataFile(id, new FileReader(f));
-//    } catch (Exception w) {Log.debug(1, "error in TIW saving temp data file!");
-//    }
-//    return id;
-//  }
-
-
-  /*
-   *  this method converts the input file to a byte array and then
-   *  encodes it as a Base64 string
-   */
-//  private String encodeAsBase64(File f) {
-//    byte[] b = null;
-//    long len = f.length();
-//    if (len > 200000) { // choice of 200000 is arbitrary - DFH
-//      Log.debug(1, "Data file is too long to be put 'inline'!");
-//      return null;
-//    }
-//    try {
-//      FileReader fsr = new FileReader(f);
-//      ByteArrayOutputStream baos = new ByteArrayOutputStream();
-//      int chr = 0;
-//      while ((chr = fsr.read()) != -1) {
-//        baos.write(chr);
-//      }
-//      fsr.close();
-//      baos.close();
-//      b = baos.toByteArray();
-//    } catch (Exception e) {Log.debug(1, "Problem encoding data as Base64!");
-//    }
-//    String enc = Base64.encode(b);
-//    return enc;
-//  }
 
 
   void CancelButton_actionPerformed(java.awt.event.ActionEvent event) {
-    this.setVisible(false);
-    this.dispose();
+
     if (listener != null) {
       listener.importCanceled();
     }
   }
+
+  private void initControls() {
+    //{{INIT_CONTROLS
+    setTitle("Text Import Wizard");
+    setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+    getContentPane().setLayout(new BorderLayout(0, 0));
+    setSize(695, 500);
+    setVisible(false);
+    saveFileDialog.setMode(FileDialog.SAVE);
+    saveFileDialog.setTitle("Save");
+    openFileDialog.setMode(FileDialog.LOAD);
+    openFileDialog.setTitle("Open");
+    MainDisplayPanel.setLayout(new BorderLayout(0, 0));
+    getContentPane().add(MainDisplayPanel, BorderLayout.CENTER);
+    ControlsPlusDataPanel.setLayout(new GridLayout(2, 1, 0, 4));
+    MainDisplayPanel.add(ColumnDataScrollPanel, BorderLayout.WEST);
+    MainDisplayPanel.add(ControlsPlusDataPanel, BorderLayout.CENTER);
+
+    ColumnDataScrollPanel.setPreferredSize(new Dimension(80, 4000));
+    ColumnDataScrollPanel.setVisible(false);
+
+    ControlsPanel.setLayout(new CardLayout(0, 0));
+    ControlsPlusDataPanel.add(ControlsPanel);
+
+    //-----------------------------------------------------
+    Step1ControlsPanel.setAlignmentY(0.0F);
+    Step1ControlsPanel.setAlignmentX(0.0F);
+    Step1ControlsPanel.setLayout(new GridLayout(7, 1, 0, 10));
+    ControlsPanel.add("card1", Step1ControlsPanel);
+    Step1_TopTitlePanel.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
+    Step1ControlsPanel.add(Step1_TopTitlePanel);
+    Step1_TopTitleLabel.setText("This set of screens will create metadata based on the content of the specified data file");
+    Step1_TopTitlePanel.add(Step1_TopTitleLabel);
+    Step1_TopTitleLabel.setForeground(java.awt.Color.black);
+    Step1_TopTitleLabel.setFont(new Font("Dialog", Font.BOLD, 12));
+    Step1_TableNamePanel.setAlignmentY(0.473684F);
+    Step1_TableNamePanel.setAlignmentX(0.0F);
+    Step1_TableNamePanel.setLayout(new BoxLayout(Step1_TableNamePanel,
+                                                 BoxLayout.X_AXIS));
+    Step1ControlsPanel.add(Step1_TableNamePanel);
+    Step1_NameLabel.setText(" Table Name: ");
+    Step1_NameLabel.setPreferredSize(WizardSettings.WIZARD_CONTENT_LABEL_DIMS);
+    Step1_TableNamePanel.add(Step1_NameLabel);
+    Step1_NameLabel.setForeground(java.awt.Color.black);
+    Step1_NameLabel.setFont(new Font("Dialog", Font.PLAIN, 12));
+    Step1_TableDescriptionLabel.setPreferredSize(WizardSettings.
+                                                 WIZARD_CONTENT_LABEL_DIMS);
+    Step1_TableNamePanel.add(TableNameTextField);
+    Step1_TableDescriptionPanel.setAlignmentY(0.473684F);
+    Step1_TableDescriptionPanel.setAlignmentX(0.0F);
+    Step1_TableDescriptionPanel.setLayout(new BoxLayout(
+        Step1_TableDescriptionPanel, BoxLayout.X_AXIS));
+    Step1ControlsPanel.add(Step1_TableDescriptionPanel);
+    Step1_TableDescriptionLabel.setText(" Description: ");
+    Step1_TableDescriptionPanel.add(Step1_TableDescriptionLabel);
+    Step1_TableDescriptionLabel.setForeground(java.awt.Color.black);
+    Step1_TableDescriptionLabel.setFont(new Font("Dialog", Font.PLAIN, 12));
+    Step1_TableDescriptionPanel.add(TableDescriptionTextField);
+    Step1_DelimiterChoicePanel.setAlignmentX(0.0F);
+    Step1_DelimiterChoicePanel.setLayout(new FlowLayout(FlowLayout.LEFT, 5, 5));
+    Step1ControlsPanel.add(Step1_DelimiterChoicePanel);
+    Step1_DelimiterLabel.setText(
+        "Choose the method used to separate fields on each line of your data");
+    Step1_DelimiterLabel.setAlignmentY(0.0F);
+    Step1_DelimiterChoicePanel.add(Step1_DelimiterLabel);
+    Step1_DelimiterLabel.setForeground(new java.awt.Color(102, 102, 153));
+    Step1_DelimiterLabel.setFont(new Font("Dialog", Font.PLAIN, 12));
+    Step1_DelimeterRadioPanel.setAlignmentX(0.0F);
+    Step1_DelimeterRadioPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 5, 5));
+    Step1ControlsPanel.add(Step1_DelimeterRadioPanel);
+    DelimitedRadioButton.setHorizontalTextPosition(SwingConstants.
+                                                   RIGHT);
+    DelimitedRadioButton.setText(
+        "Delimited  -  Characters such as tabs or commas separate each data field");
+    DelimitedRadioButton.setActionCommand(
+        "Delimited  -  Characters such as tabs or commas separate each data field");
+    DelimitedRadioButton.setAlignmentY(0.0F);
+    DelimitedRadioButton.setSelected(true);
+    Step1_DelimeterRadioPanel.add(DelimitedRadioButton);
+    DelimitedRadioButton.setFont(new Font("Dialog", Font.PLAIN, 12));
+    Step1_FixedFieldRadioPanel.setAlignmentX(0.0F);
+    Step1_FixedFieldRadioPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 5, 5));
+    Step1ControlsPanel.add(Step1_FixedFieldRadioPanel);
+    FixedFieldRadioButton.setText("Fixed Width  -  Fields are aligned in columns with specified number of characters");
+    FixedFieldRadioButton.setActionCommand("Fixed Width  -  Fields are aligned in columns with specified number of characters");
+    FixedFieldRadioButton.setAlignmentY(0.0F);
+    FixedFieldRadioButton.setEnabled(false);
+    Step1_FixedFieldRadioPanel.add(FixedFieldRadioButton);
+    FixedFieldRadioButton.setFont(new Font("Dialog", Font.PLAIN, 12));
+    StartingLinePanel.setAlignmentX(0.0F);
+    StartingLinePanel.setLayout(new FlowLayout(FlowLayout.LEFT, 5, 5));
+    Step1ControlsPanel.add(StartingLinePanel);
+    StartingLineLabel.setText("Start import at row: ");
+    StartingLinePanel.add(StartingLineLabel);
+    StartingLineLabel.setForeground(java.awt.Color.black);
+    StartingLineLabel.setFont(new Font("Dialog", Font.PLAIN, 12));
+    StartingLineTextField.setText("1");
+    StartingLineTextField.setColumns(4);
+    StartingLinePanel.add(StartingLineTextField);
+    ColumnLabelsLabel.setText("     ");
+    StartingLinePanel.add(ColumnLabelsLabel);
+    ColumnLabelsCheckBox.setText("Column Labels are in starting row");
+    ColumnLabelsCheckBox.setActionCommand("Column Labels are in starting row");
+    ColumnLabelsCheckBox.setSelected(false);
+    StartingLinePanel.add(ColumnLabelsCheckBox);
+    ColumnLabelsCheckBox.setFont(new Font("Dialog", Font.PLAIN, 12));
+
+    //-------------------------------------------------------
+    Step2ControlsPanel.setLayout(new GridLayout(6, 1, 0, 0));
+    ControlsPanel.add("card2", Step2ControlsPanel);
+    Step2ControlsPanel.setVisible(false);
+    Step2_TopLabelPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
+    Step2ControlsPanel.add(Step2_TopLabelPanel);
+    Step2_TopLabel.setText("If the columns indicated in the table are incorrect, try changing the assumed delimiter(s)");
+    Step2_TopLabelPanel.add(Step2_TopLabel);
+    Step2_TopLabel.setForeground(java.awt.Color.black);
+    Step2_DelimiterChoicePanel.setLayout(new FlowLayout(FlowLayout.LEFT, 5, 5));
+    Step2ControlsPanel.add(Step2_DelimiterChoicePanel);
+    Step2_DelimterChoiceLabel.setText("  Delimiters: ");
+    Step2_DelimiterChoicePanel.add(Step2_DelimterChoiceLabel);
+    Step2_DelimterChoiceLabel.setForeground(java.awt.Color.black);
+    Step2_DelimterChoiceLabel.setFont(new Font("Dialog", Font.PLAIN, 12));
+    TabCheckBox.setText("tab");
+    TabCheckBox.setActionCommand("tab");
+    TabCheckBox.setSelected(true);
+    Step2_DelimiterChoicePanel.add(TabCheckBox);
+    TabCheckBox.setFont(new Font("Dialog", Font.PLAIN, 12));
+    CommaCheckBox.setText("comma");
+    CommaCheckBox.setActionCommand("comma");
+    Step2_DelimiterChoicePanel.add(CommaCheckBox);
+    CommaCheckBox.setFont(new Font("Dialog", Font.PLAIN, 12));
+    SpaceCheckBox.setText("space");
+    SpaceCheckBox.setActionCommand("space");
+    Step2_DelimiterChoicePanel.add(SpaceCheckBox);
+    SpaceCheckBox.setFont(new Font("Dialog", Font.PLAIN, 12));
+    SemicolonCheckBox.setText("semicolon");
+    SemicolonCheckBox.setActionCommand("semicolon");
+    Step2_DelimiterChoicePanel.add(SemicolonCheckBox);
+    SemicolonCheckBox.setFont(new Font("Dialog", Font.PLAIN, 12));
+    OtherCheckBox.setText("other");
+    OtherCheckBox.setActionCommand("other");
+    Step2_DelimiterChoicePanel.add(OtherCheckBox);
+    OtherCheckBox.setFont(new Font("Dialog", Font.PLAIN, 12));
+    OtherTextField.setColumns(2);
+    Step2_DelimiterChoicePanel.add(OtherTextField);
+    JPanel10.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
+    Step2ControlsPanel.add(JPanel10);
+    JPanel11.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
+    Step2ControlsPanel.add(JPanel11);
+    Step2_ConsequtivePanel.setLayout(new FlowLayout(FlowLayout.LEFT, 5, 5));
+    Step2ControlsPanel.add(Step2_ConsequtivePanel);
+    ConsecutiveCheckBox.setText("Treat consecutive delimiters as one");
+    ConsecutiveCheckBox.setActionCommand("Treat consecutive delimiters as one");
+    Step2_ConsequtivePanel.add(ConsecutiveCheckBox);
+    ConsecutiveCheckBox.setFont(new Font("Dialog", Font.PLAIN, 12));
+
+    //---------------------------------
+
+    ControlsPanel.add("card3", ColumnDataPanel);
+    ColumnDataPanel.setLayout(new BorderLayout(0, 0));
+
+    ColumnDataPanel.setVisible(false);
+
+    //------------------------------------------------
+    DataPanel.setLayout(new BorderLayout(0, 0));
+    ControlsPlusDataPanel.add(DataPanel);
+    DataPanel.add(BorderLayout.CENTER, DataScrollPanel);
+
+    ((CardLayout)ControlsPanel.getLayout()).show(ControlsPanel, "card1");
+    ButtonsPanel.setLayout(new BorderLayout(0, 0));
+    getContentPane().add(BorderLayout.SOUTH, ButtonsPanel);
+    JPanelLeft.setLayout(new FlowLayout(FlowLayout.LEFT, 5, 5));
+    ButtonsPanel.add(BorderLayout.WEST, JPanelLeft);
+
+    JPanelCenter.setLayout(new FlowLayout(FlowLayout.RIGHT, 5, 5));
+    ButtonsPanel.add(BorderLayout.CENTER, JPanelCenter);
+    StepNumberLabel.setText("Step #1");
+    JPanelCenter.add(StepNumberLabel);
+    StepNumberLabel.setForeground(java.awt.Color.black);
+    CancelButton.setText("Cancel");
+    CancelButton.setActionCommand("Cancel");
+    JPanelCenter.add(CancelButton);
+    BackButton.setText("< Back");
+    BackButton.setActionCommand("< Back");
+    BackButton.setEnabled(false);
+    JPanelCenter.add(BackButton);
+    NextButton.setText("Next >");
+    NextButton.setActionCommand("Next >");
+    JPanelCenter.add(NextButton);
+    FinishButton.setText("Finish");
+    FinishButton.setActionCommand("Finish");
+    FinishButton.setEnabled(false);
+    JPanelCenter.add(FinishButton);
+  }
+
+
+  private void registerListeners() {
+    //{{REGISTER_LISTENERS
+    SymWindow aSymWindow = new SymWindow();
+    this.addWindowListener(aSymWindow);
+    SymAction lSymAction = new SymAction();
+    NextButton.addActionListener(lSymAction);
+    BackButton.addActionListener(lSymAction);
+    FinishButton.addActionListener(lSymAction);
+    SymListSelection lSymListSelection = new SymListSelection();
+    StartingLineTextField.addActionListener(lSymAction);
+    SymFocus aSymFocus = new SymFocus();
+    StartingLineTextField.addFocusListener(aSymFocus);
+    SymItem lSymItem = new SymItem();
+    ColumnLabelsCheckBox.addItemListener(lSymItem);
+    TabCheckBox.addItemListener(lSymItem);
+    CommaCheckBox.addItemListener(lSymItem);
+    SpaceCheckBox.addItemListener(lSymItem);
+    SemicolonCheckBox.addItemListener(lSymItem);
+    OtherCheckBox.addItemListener(lSymItem);
+    CancelButton.addActionListener(lSymAction);
+    //}}
+  }
+
 
 
   private FileDialog saveFileDialog = new FileDialog(this);
