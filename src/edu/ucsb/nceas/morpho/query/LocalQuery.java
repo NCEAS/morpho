@@ -6,7 +6,7 @@
  *              National Center for Ecological Analysis and Synthesis
  *     Authors: Dan Higgins
  *
- *     Version: '$Id: LocalQuery.java,v 1.16 2000-12-28 21:56:27 higgins Exp $'
+ *     Version: '$Id: LocalQuery.java,v 1.17 2001-01-15 02:23:21 higgins Exp $'
  */
 
 package edu.ucsb.nceas.querybean;
@@ -608,14 +608,15 @@ void queryAll()
 	
 	private String getDocTypeFromDOM(Document doc){
 	    String ret = null;
-	    DocumentType ddd = doc.getDoctype();
-	    ret = ddd.getPublicId();
-	    if (ret==null) {
-	        ret = ddd.getSystemId();
-	        if (ret==null){
-	            ret = ddd.getName();   
+	        DocumentType ddd = doc.getDoctype();
+	        ret = ddd.getPublicId();
+	        if (ret==null) {
+	            ret = ddd.getSystemId();
+	            if (ret==null){
+	                ret = ddd.getName();   
+	            }
 	        }
-	    }
+
 	return ret;
 	}
 	

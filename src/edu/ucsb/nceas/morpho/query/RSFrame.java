@@ -5,7 +5,7 @@
  *              National Center for Ecological Analysis and Synthesis
  *     Authors: Dan Higgins
  *
- *     Version: '$Id: RSFrame.java,v 1.12 2001-01-08 19:08:17 higgins Exp $'
+ *     Version: '$Id: RSFrame.java,v 1.13 2001-01-15 02:23:21 higgins Exp $'
  */
 
 
@@ -299,16 +299,25 @@ public class RSFrame extends javax.swing.JFrame
 	        String respType = "xml";
 	        try {
 		        URL url = new URL(MetaCatServletURL);
-		        if (qtext1.startsWith("http://")) {
-		            System.out.println("URL used = "+qtext1);
+		        if (qtext2.startsWith("http://")) {
+//		            System.out.println("URL used = "+qtext1);
 		            url = new URL(qtext1);  // case where actual http URL data doc is specified    
 		        }
 		        HttpMessage msg = new HttpMessage(url);
 		        Properties prop = new Properties();
-		        if (!qtext1.startsWith("http://")) {
-		            prop.put("action","read");
-		            prop.put("docid",qtext1);
-		            prop.put("qformat",respType);
+		        if (!qtext2.startsWith("http://")) {
+		            System.out.println("qtext1 = "+qtext1);
+
+		            if (qtext2.startsWith("metacatdata://")) {
+		                prop.put("action","read");
+		                prop.put("docid",qtext1);
+		                prop.put("qformat","bin");
+		            }
+		            else {
+		                prop.put("action","read");
+		                prop.put("docid",qtext1);
+		                prop.put("qformat",respType);
+		            }
 		        }
 		    
 		        InputStream in = msg.sendPostMessage(prop);
@@ -471,6 +480,7 @@ public class RSFrame extends javax.swing.JFrame
 	    }
 	    return res;
 	}
+	
 	
 	void EditMenuItem_actionPerformed(java.awt.event.ActionEvent event)
 	{
