@@ -16,6 +16,9 @@ import org.apache.xerces.xni.grammars.Grammar;
 import org.apache.xerces.xni.parser.XMLInputSource;
 import org.apache.xerces.xni.parser.XMLParserConfiguration;
 import org.apache.xerces.impl.xs.psvi.*;
+import org.apache.xerces.impl.dv.*;
+
+import edu.ucsb.nceas.utilities.*;
 
 import java.util.Vector;
 import javax.swing.tree.*;
@@ -421,11 +424,16 @@ public class SchemaStructure
          XSTerm term = part.getTerm(); 
          XSModelGroup mg = (XSModelGroup)term;
          if (mg.getCompositor()==XSModelGroup.COMPOSITOR_SEQUENCE) {
-           NodeInfo seqni = new NodeInfo("SEQUENCE");
-           seqni.setMinOcc(minocc);
-           seqni.setMaxOcc(maxocc);
-           child = new DefaultMutableTreeNode(seqni);
-           node.add(child);
+//           if(!((minocc.equals("1"))&&(maxocc.equals("1")))) {
+             NodeInfo seqni = new NodeInfo("SEQUENCE");
+             seqni.setMinOcc(minocc);
+             seqni.setMaxOcc(maxocc);
+             child = new DefaultMutableTreeNode(seqni);
+             node.add(child);
+//           }
+//           else {
+//             child = node;
+//           }
          }
          else if (mg.getCompositor()==XSModelGroup.COMPOSITOR_CHOICE) {
            NodeInfo choiceni = new NodeInfo("CHOICE");
@@ -440,9 +448,16 @@ public class SchemaStructure
            getParticleInfo((XSParticle)list.item(k), child); 
          }
       }
-      if (testtd.getTypeCategory()==XSTypeDefinition.SIMPLE_TYPE) {
-        System.out.println("Simple type!");
-      }
+    }
+ // Note: this if check has been moved to proper location outside of previous if check
+ // it also casts 'testtd' to an XSSimpleType to get primitive type information
+ // although just using 'getName()' will give the name of the primative type
+ // or the named type if available. 
+ // Note also that the XSSimpleType class is in the package 'org.apache.xerces.impl.dv'
+    if (testtd.getTypeCategory()==XSTypeDefinition.SIMPLE_TYPE) {
+      System.out.println("Simple type!");
+      XSSimpleType st = (XSSimpleType)testtd;
+      System.out.println("Simple Type: name:"+st.getName()+" type: "+st.getPrimitiveKind());
     }
     return node;
   }
@@ -524,11 +539,15 @@ public class SchemaStructure
         DefaultMutableTreeNode child = null;
         NodeInfo childni = null;
        if (mg.getCompositor()==XSModelGroup.COMPOSITOR_SEQUENCE) {
-         childni = new NodeInfo("SEQUENCE");
-         childni.setMinOcc(minocc);
-         childni.setMaxOcc(maxocc);
-         child = new DefaultMutableTreeNode(childni);
-         cnode.add(child);
+//         if(!((minocc.equals("1"))&&(maxocc.equals("1")))) {
+           childni = new NodeInfo("SEQUENCE");
+           childni.setMinOcc(minocc);
+           childni.setMaxOcc(maxocc);
+           child = new DefaultMutableTreeNode(childni);
+           cnode.add(child);
+//         } else {
+//           child = cnode;
+//         }
        }
        else if (mg.getCompositor()==XSModelGroup.COMPOSITOR_CHOICE) {
          childni = new NodeInfo("CHOICE");
@@ -557,6 +576,14 @@ public class SchemaStructure
         if (au==null) System.out.println("au is null!");
         String name = (au.getAttrDeclaration()).getName();
         if (name==null) System.out.println("Attribute name is null!");
+/*
+ // shows how to determine if an attribute is required or optional
+        if (au.getRequired()) {
+          name = name + "(required)";   
+        } else {
+          name = name + "(optional)";   
+        }
+*/        
         String val = au.getConstraintValue();
         if (val==null) val = "";
         attr_hash.put(name,val);
