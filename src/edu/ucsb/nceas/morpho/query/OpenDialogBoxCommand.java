@@ -5,9 +5,9 @@
  *    Authors: @tao@
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2003-12-24 04:29:31 $'
- * '$Revision: 1.14 $'
+ *   '$Author: jones $'
+ *     '$Date: 2004-03-24 18:09:21 $'
+ * '$Revision: 1.15 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -127,7 +127,8 @@ public class OpenDialogBoxCommand implements Command
    */
   private String getOwnerQuery()
   {
-    ConfigXML profile = morpho.getProfile();
+  	ConfigXML config = Morpho.getConfiguration();
+  	ConfigXML profile = morpho.getProfile();
     StringBuffer searchtext = new StringBuffer();
     searchtext.append("<?xml version=\"1.0\"?>\n");
     searchtext.append("<pathquery version=\"1.0\">\n");
@@ -135,13 +136,13 @@ public class OpenDialogBoxCommand implements Command
     String firstname = profile.get("firstname", 0);
     searchtext.append("<querytitle>My Data (" + firstname + " " + lastname);
     searchtext.append(")</querytitle>\n");
-    Vector returnDoctypeList = profile.get("returndoc");
+    Vector returnDoctypeList = config.get("returndoc");
     for (int i=0; i < returnDoctypeList.size(); i++) {
       searchtext.append("<returndoctype>");
       searchtext.append((String)returnDoctypeList.elementAt(i));
       searchtext.append("</returndoctype>\n");
     }
-    Vector returnFieldList = profile.get("returnfield");
+    Vector returnFieldList = config.get("returnfield");
     for (int i=0; i < returnFieldList.size(); i++) {
       searchtext.append("<returnfield>");
       searchtext.append((String)returnFieldList.elementAt(i));

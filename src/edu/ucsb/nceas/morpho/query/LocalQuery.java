@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2004-01-07 19:37:26 $'
- * '$Revision: 1.67 $'
+ *   '$Author: jones $'
+ *     '$Date: 2004-03-24 18:09:21 $'
+ * '$Revision: 1.68 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -40,11 +40,9 @@ import org.xml.sax.InputSource;
 import com.arbortext.catalog.*;
 import java.net.URL;
 import java.sql.Timestamp;
-import java.text.DateFormat;
 import java.util.Vector;
 import java.util.Hashtable;
 import java.util.Enumeration;
-import java.util.Stack;
 import javax.swing.ImageIcon;
 
 /**
@@ -712,9 +710,9 @@ public class LocalQuery
     datadir = profileDir + File.separator + profile.get("datadir", 0);
     String searchLocalString = profile.get("searchlocal", 0);
     //searchLocal = (new Boolean(searchLocalString)).booleanValue();
-    returnFields = profile.get("returnfield");
-    doctypes2bsearched = profile.get("doctype");
-    dt2bReturned = profile.get("returndoc");
+    returnFields = config.get("returnfield");
+    doctypes2bsearched = config.get("doctype");
+    dt2bReturned = config.get("returndoc");
     local_dtd_directory = config.get("local_dtd_directory", 0);
     separator = profile.get("separator", 0);
   }

@@ -6,9 +6,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2004-02-06 19:27:46 $'
- * '$Revision: 1.31 $'
+ *   '$Author: jones $'
+ *     '$Date: 2004-03-24 18:09:21 $'
+ * '$Revision: 1.32 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -35,7 +35,6 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Frame;
-import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
@@ -178,7 +177,7 @@ public class QueryDialog extends JDialog
   {
     super(parent);
     this.morpho = morpho;
-    this.config = morpho.getConfiguration();
+    this.config = Morpho.getConfiguration();
     String temp = config.get("titleSearchPath", 0);
     if (temp != null) {
       titleSearchPath = temp;
@@ -630,9 +629,9 @@ public class QueryDialog extends JDialog
 
     // Set the returndoc and returnfield parameters
     ConfigXML profile = morpho.getProfile();
-    Vector returndocList = profile.get("returndoc");
+    Vector returndocList = config.get("returndoc");
     newQuery.setReturnDocList(returndocList);
-    Vector returnFieldList = profile.get("returnfield");
+    Vector returnFieldList = config.get("returnfield");
     newQuery.setReturnFieldList(returnFieldList);
 
     // Add a query group that combines the tabs (always INTERSECT)

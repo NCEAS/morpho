@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2004-03-19 01:23:28 $'
- * '$Revision: 1.66 $'
+ *   '$Author: jones $'
+ *     '$Date: 2004-03-24 18:09:21 $'
+ * '$Revision: 1.67 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -36,7 +36,6 @@ import edu.ucsb.nceas.morpho.framework.*;
 import edu.ucsb.nceas.morpho.framework.ConfigXML;
 import edu.ucsb.nceas.morpho.framework.MorphoPrefsDialog;
 import edu.ucsb.nceas.morpho.framework.ConnectionListener;
-import edu.ucsb.nceas.morpho.framework.HTMLBrowser;
 import edu.ucsb.nceas.morpho.framework.HttpMessage;
 import edu.ucsb.nceas.morpho.framework.InitialScreen;
 import edu.ucsb.nceas.morpho.framework.MorphoFrame;
@@ -44,26 +43,18 @@ import edu.ucsb.nceas.morpho.framework.ProfileDialog;
 import edu.ucsb.nceas.morpho.framework.SplashFrame;
 import edu.ucsb.nceas.morpho.framework.SwingWorker;
 import edu.ucsb.nceas.morpho.framework.UIController;
-import edu.ucsb.nceas.morpho.framework.MorphoFrame;
 import edu.ucsb.nceas.morpho.plugins.PluginInterface;
 import edu.ucsb.nceas.morpho.plugins.ServiceController;
-import edu.ucsb.nceas.morpho.plugins.ServiceProvider;
-import edu.ucsb.nceas.morpho.plugins.ServiceNotHandledException;
 import edu.ucsb.nceas.morpho.util.Command;
 import edu.ucsb.nceas.morpho.util.GUIAction;
 import edu.ucsb.nceas.morpho.util.Log;
-import edu.ucsb.nceas.morpho.util.StateChangeMonitor;
-import edu.ucsb.nceas.morpho.util.StateChangeEvent;
 import edu.ucsb.nceas.morpho.util.UISettings;
 
-import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
 import java.lang.ClassCastException;
-import java.lang.reflect.*;
 import java.net.*;
 import java.net.URL;
-import java.util.Date;
 import java.util.List;
 import java.util.Vector;
 import java.util.Iterator;
@@ -95,7 +86,7 @@ import org.xml.sax.XMLReader;
 public class Morpho
 {
     /** The version of this release of Morpho */
-    public static String VERSION = "1.5.0beta2.0";
+    public static String VERSION = "1.5.0beta2.0+";
 
     /** Constant to indicate a separator should precede an action */
     public static String SEPARATOR_PRECEDING = "separator_preceding";
@@ -1814,7 +1805,7 @@ public class Morpho
     {
         Log log = Log.getLog();
         debug_level = (new Integer(config.get("debug_level", 0))).intValue();
-        log.setDebugLevel(debug_level);
+        Log.setDebugLevel(debug_level);
         String log_file_setting = config.get("log_file", 0);
         if (log_file_setting != null) {
             if (log_file_setting.equalsIgnoreCase("true")) {

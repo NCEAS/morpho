@@ -28,6 +28,16 @@
   <eastBCSearchPath>eastBoundingCoordinate</eastBCSearchPath>
   <taxonRankSearchPath>taxonomicClassification/taxonRankName</taxonRankSearchPath>
   <taxonValueSearchPath>taxonomicClassification/taxonRankValue</taxonValueSearchPath>
+  <doctype>any</doctype>
+  <returndoc>-//ecoinformatics.org//eml-dataset-2.0.0beta4//EN</returndoc>
+  <returndoc>-//ecoinformatics.org//eml-dataset-2.0.0beta6//EN</returndoc>
+  <returndoc>-//NCEAS//eml-dataset-2.0//EN</returndoc>
+  <returndoc>-//NCEAS//resource//EN</returndoc>
+  <returndoc>eml://ecoinformatics.org/eml-2.0.0</returndoc> 
+  <returnfield>dataset/title</returnfield>
+  <returnfield>individualName/surName</returnfield>
+  <returnfield>keyword</returnfield> 
+  <returnfield>entityName</returnfield>
   <accessFileType>
     -//ecoinformatics.org//eml-access-2.0.0beta6//EN
   </accessFileType>

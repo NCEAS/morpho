@@ -12,16 +12,6 @@
   <searchlocal>true</searchlocal>
   <casesensitive>false</casesensitive>
   <includesynonyms>false</includesynonyms>
-  <doctype>any</doctype>
-  <returndoc>-//ecoinformatics.org//eml-dataset-2.0.0beta4//EN</returndoc>
-  <returndoc>-//ecoinformatics.org//eml-dataset-2.0.0beta6//EN</returndoc>
-  <returndoc>-//NCEAS//eml-dataset-2.0//EN</returndoc>
-  <returndoc>-//NCEAS//resource//EN</returndoc>
-  <returndoc>eml://ecoinformatics.org/eml-2.0.0</returndoc> 
-  <returnfield>dataset/title</returnfield>
-  <returnfield>individualName/surName</returnfield>
-  <returnfield>keyword</returnfield> 
-  <returnfield>entityName</returnfield>
   <scope>jones</scope>
   <lastId>3</lastId>
   <separator>.</separator>
