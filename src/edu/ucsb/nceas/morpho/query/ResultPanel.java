@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2002-08-07 00:10:11 $'
- * '$Revision: 1.40.4.2 $'
+ *     '$Date: 2002-08-08 00:15:14 $'
+ * '$Revision: 1.40.4.3 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -251,10 +251,16 @@ public class ResultPanel extends JPanel
       //table.setRowHeight((int)(stringRenderer.getPreferredSize().height));
       table.setRowHeight(results.getRowHeight());
       table.setDefaultRenderer(String.class, stringRenderer);
-      initColumnSizes(table, results);
-  
-      //Create the scroll pane and add the table to it. 
+     
+      // Create the scroll pane and add the table to it. 
       JScrollPane scrollPane = new JScrollPane(table);
+      System.out.println("width: "+getWidth());
+      // Set JScrollPane background color white
+      scrollPane.getViewport().setBackground(Color.white);
+      // Initialize column, pass the width of virwport to the table
+      initTableColumnSize(table, results, 775);
+      // Add the table to scroll pane
+      //scrollPane.add(table);
   
       //Add the scroll pane to this Panel.
       add(scrollPane, BorderLayout.CENTER);
@@ -310,6 +316,74 @@ public class ResultPanel extends JPanel
       });
     }
   }
+
+  /*
+   * This method picks column sizes depend on the length of talbe and the 
+   * value for every column in an array.
+   */
+  private void initTableColumnSize(JTable table, ResultSet results, int width) 
+  {
+    // width for the each column (by percentage), change the value in the
+    // array, the column width will be changed
+    // Add the all element in the array together you will get 1 (100%100)
+    // The value is 30/768, 282/768, 96/768, 72/768, 120/768, 90/768, 42/768, 
+    // 36/768
+    /*double [] columnWidth = {0.0390625, 0.3671875, 0.125, 0.09375, 0.15625, 
+                            0.1171875, 0.0546875, 0.046875};*/
+     double [] columnWidth = {0.03, 0.355, 0.132, 0.1, 0.14, 
+                             0.13, 0.066, 0.047};
+    // column object
+    TableColumn column = null;
+    // Minimum factor for MinWidth
+    double minFactor = 0.7;
+    // Maxmum factor for MaxWidth
+    int maxFactor = 5;
+    // Percentage width
+    double percentage = 0.0;
+    // Perferred size of column
+    int preferredSize = 0;
+    // Minimum size
+    int minimumSize = 0;
+    // Maxmum size 
+    int maxmumSize = 0;
+    
+    
+    for (int i = 0; i < results.getColumnCount(); i++) 
+    {
+      // Get the column
+      column = table.getColumnModel().getColumn(i);
+      // Get the percentage of width for this column from the array
+      percentage = columnWidth[i];
+      System.out.println("percentage: "+percentage);
+      System.out.println("percentage*width: "+percentage*width);
+      // Get the width as preferred width
+      preferredSize = (new Double(width*percentage)).intValue();
+      System.out.println("preferredSize: "+ preferredSize);
+      // Get the minimum size
+      minimumSize =(new Double(preferredSize*minFactor)).intValue();
+      // Get the maxmum size
+      maxmumSize = preferredSize*maxFactor;
+       // In order to keep title at least show 6 words, we need to make sure
+      // it is bigger than 200
+      if ( i== 1 && preferredSize <200 )
+      {
+        // Set preferred size is 200
+        preferredSize = 200;
+        // Get the minimum size
+        minimumSize=( new Double(preferredSize*minFactor)).intValue();
+        // Get the maxmum size
+        maxmumSize = preferredSize*maxFactor;
+    
+      }//if
+      // Set preferred width
+      column.setPreferredWidth(preferredSize);
+      // Set minimum width
+      column.setMinWidth(minimumSize);
+      // Set maxmum width
+      column.setMaxWidth(maxmumSize);
+    }//for
+  }// initTableColumnSize 
+
 
   /*
    * This method picks good column sizes.
