@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2004-03-30 22:31:21 $'
- * '$Revision: 1.82 $'
+ *   '$Author: sambasiv $'
+ *     '$Date: 2004-03-31 04:47:23 $'
+ * '$Revision: 1.83 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -829,7 +829,7 @@ public abstract class AbstractDataPackage extends MetadataObject
   }
 
     /**
-   *  remove all the geographicNodes
+   *  remove all the temporalNodes
    */
    public void removeTemporalNodes() {
      NodeList tList = getTemporalNodeList();
@@ -841,6 +841,38 @@ public abstract class AbstractDataPackage extends MetadataObject
      }
    }
 
+	 
+    /**
+   * gets a list of taxonomic nodes
+   */
+  public NodeList getTaxonomicNodeList() {
+    NodeList taxNodes = null;
+    String taxXpath = "";
+    try {
+      taxXpath = (XMLUtilities.getTextNodeWithXPath(getMetadataPath(),
+          "/xpathKeyMap/contextNode[@name='package']/taxonomicCoverage")).getNodeValue();
+      taxNodes = XMLUtilities.getNodeListWithXPath(metadataNode,
+          taxXpath);
+    }
+    catch (Exception w) {
+      Log.debug(50, "exception in getting taxoNodeLIst");
+    }
+    return taxNodes;
+  }
+
+    /**
+   *  remove all the taxonomicNodes
+   */
+   public void removeTaxonomicNodes() {
+     NodeList tList = getTaxonomicNodeList();
+     if (tList==null) return;
+     for (int i=0;i<tList.getLength();i++) {
+       Node node = tList.item(i);
+       Node par = node.getParentNode();
+       par.removeChild(node);
+     }
+   }
+	 
   /**
    *  insert a coverage subtree (geographic, temporal, or taxonomic)
    *  under the package level coverage node
