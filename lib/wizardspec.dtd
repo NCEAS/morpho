@@ -1,16 +1,17 @@
 <!--
 /**
  *  '$RCSfile: wizardspec.dtd,v $'
- *    Purpose: A class that creates a custom data entry form that is made
- *             by parsing an xml file.  XML is then produced from the form
- *  Copyright: 2000 Regents of the University of California and the
+ *  Purpose:  This file defines the specification for the package wizard 
+ *            configuration file.  For an example of an implementation of \
+ *            this file see WizardTest.xml.
+ *  Copyright: 2001 Regents of the University of California and the
  *             National Center for Ecological Analysis and Synthesis
  *    Authors: Chad Berkley
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-05-29 17:28:40 $'
- * '$Revision: 1.2 $'
+ *     '$Date: 2001-05-29 17:30:01 $'
+ * '$Revision: 1.3 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,10 +27,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
-
- This file defines the specification for the package wizard configuration file.
- For an example of an implementation of this file see WizardTest.xml.
-
 -->
 
 <!ELEMENT wizard (group)>
