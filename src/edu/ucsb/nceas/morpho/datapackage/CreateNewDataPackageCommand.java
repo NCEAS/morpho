@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2004-04-03 22:21:28 $'
- * '$Revision: 1.11 $'
+ *     '$Date: 2004-04-05 21:46:14 $'
+ * '$Revision: 1.12 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -90,7 +90,7 @@ public class CreateNewDataPackageCommand implements Command
 
           AbstractDataPackage adp = DataPackageFactory.getDataPackage(newDOM);
           Log.debug(30, "AbstractDataPackage complete");
-
+          adp.setAccessionNumber("temporary.1.1");
 
           try {
             ServiceController services = ServiceController.getInstance();

@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2004-04-04 20:39:55 $'
- * '$Revision: 1.17 $'
+ *     '$Date: 2004-04-05 21:46:14 $'
+ * '$Revision: 1.18 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -289,9 +289,15 @@ public class SaveDialog extends JDialog
     if (location.equals("")) { // only update version if new
       try{
         String id = adp.getAccessionNumber();
-        AccessionNumber an = new AccessionNumber(morpho);
-        String newid = an.incRev(id);
-        adp.setAccessionNumber(newid);
+        if (id.indexOf("temporary")>-1) {
+          AccessionNumber an = new AccessionNumber(morpho);
+          String nextid = an.getNextId();
+          adp.setAccessionNumber(nextid);
+        } else {
+          AccessionNumber an = new AccessionNumber(morpho);
+          String newid = an.incRev(id);
+          adp.setAccessionNumber(newid);
+        }
       }
       catch (Exception www) {
         // no valid accession number; thus create one
