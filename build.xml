@@ -6,7 +6,7 @@
   *    Copyright: 2000 Regents of the University of California and the
   *               National Center for Ecological Analysis and Synthesis
   *  For Details: http://www.nceas.ucsb.edu/
-  *    File Info: '$Id: build.xml,v 1.22 2001-06-12 23:09:35 berkley Exp $'
+  *    File Info: '$Id: build.xml,v 1.23 2001-06-22 16:01:55 higgins Exp $'
   *
   *  Build file for the Ant cross-platform build system for metacat
   *  See http://jakarta.apache.org for details on Ant
@@ -33,6 +33,14 @@
       <property name="build.tests" value="${build.dir}/tests"/>
       <property name="build.data" value="${build.dir}/data"/>
       <property name="build.javadocs" value="${build.dir}/docs/apiDocs"/>
+
+      <property name="morpho.dir" value="./morpho_runtime"/>
+      <property name="morpho.lib" value="${morpho.dir}/lib"/>
+      <property name="morpho.lib.catalog" value="${morpho.lib}/catalog"/>
+      <property name="morpho.lib.frames" value="${morpho.lib}/frames"/>
+      <property name="morpho.lib.sampledata" value="${morpho.lib}/sampledata"/>
+      <property name="morpho.lib.style" value="${morpho.lib}/style"/>
+      
 
       <property name="xml4j" 
                 value="${libdir}/xml4j.jar" />
@@ -104,7 +112,45 @@
    <target name="install" depends="jar">
       <copy file="${build.dir}/${name}.jar" todir="${libdir}" />
       <echo message="Install complete. Use the morpho script to run it." />
-   </target> 
+   </target>
+
+   <target name="build_runtime" depends="install">
+      <delete dir="${morpho.dir}" />
+      <mkdir dir="${morpho.dir}"/>
+      <mkdir dir="${morpho.lib}"/>
+      <mkdir dir="${morpho.lib.catalog}"/>
+      <mkdir dir="${morpho.lib.frames}"/>
+      <mkdir dir="${morpho.lib.sampledata}"/>
+      <mkdir dir="${morpho.lib.style}"/>
+      <copy file="./LICENSE" todir="${morpho.dir}"/>
+      <copy file="./morpho" todir="${morpho.dir}"/>
+      <copy file="./morpho.bat" todir="${morpho.dir}"/>
+      <copy file="./readme.txt" todir="${morpho.dir}"/>
+      <copy todir="${morpho.lib.catalog}">
+        <fileset dir="./lib/catalog"/>
+      </copy>
+      <copy todir="${morpho.lib.frames}">
+        <fileset dir="./lib/frames"/>
+      </copy>
+      <copy todir="${morpho.lib.sampledata}">
+        <fileset dir="./lib/sampledata"/>
+      </copy>
+      <copy todir="${morpho.lib.style}">
+        <fileset dir="./lib/style"/>
+      </copy>
+      <copy file="./lib/config.xml.fresh" todir="${morpho.lib}"/>
+      <move file="${morpho.lib}/config.xml.fresh" tofile="${morpho.lib}/config.xml"/>
+      <copy file="./lib/dataset.xml" todir="${morpho.lib}"/>
+      <copy file="./lib/default-profile.xml" todir="${morpho.lib}"/>
+      <copy file="./lib/itislib.jar" todir="${morpho.lib}"/>
+      <copy file="./lib/jlfgr-1_0.jar" todir="${morpho.lib}"/>
+      <copy file="./lib/morpho.jar" todir="${morpho.lib}"/>
+      <copy file="./lib/xalan.jar" todir="${morpho.lib}"/>
+      <copy file="./lib/xerces.jar" todir="${morpho.lib}"/> 
+       
+      <delete file="./lib/morpho.zip"/>
+      <zip zipfile="./lib/morpho.zip" basedir="${morpho.dir}"/>
+  </target> 
 
    <target name="clean" depends="init">
        <delete dir="${build.dir}" />
