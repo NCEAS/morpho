@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-12-13 18:27:56 $'
- * '$Revision: 1.50 $'
+ *     '$Date: 2002-12-13 20:30:25 $'
+ * '$Revision: 1.51 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1037,9 +1037,6 @@ public class DataViewContainerPanel extends javax.swing.JPanel
       //Log.debug(11, "File: " + xmlString);
       e.printStackTrace();
     }
-    
-    DataPackage newPackage = new DataPackage(location, newPackageId, null,
-                                                 morpho);
     MorphoFrame thisFrame = (UIController.getInstance()).getCurrentActiveWindow();
     
     // Show the new package
@@ -1049,7 +1046,7 @@ public class DataViewContainerPanel extends javax.swing.JPanel
       ServiceProvider provider = 
                       services.getServiceProvider(DataPackageInterface.class);
       DataPackageInterface dataPackage = (DataPackageInterface)provider;
-      dataPackage.openDataPackage(location, newPackage.getID(), null, null);
+      dataPackage.openDataPackage(location, newPackageId, null, null);
     }
     catch (ServiceNotHandledException snhe) 
     {

@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-12-13 00:03:44 $'
- * '$Revision: 1.95 $'
+ *     '$Date: 2002-12-13 20:30:25 $'
+ * '$Revision: 1.96 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -2095,18 +2095,7 @@ public class DataPackage implements XMLFactoryInterface
         String obj = (String)ids.elementAt(i);
         temp = temp + obj + "::";
         if (!subjectAndObjectCheck(accessId, obj)) {
-          int choice = JOptionPane.showConfirmDialog(null, 
-                   "Some modules in this package do not have an associated access "+
-                   "control module. This means that only the owner has access to these modules.\n\n"+
-                   "Would you like to associate the package access "+
-                   "control module with all other modules?\n\n"+
-                   "(Changes will appear the next time the package is opened.)",
-                   "Access Information Missing ",
-                   JOptionPane.YES_NO_OPTION,
-                   JOptionPane.WARNING_MESSAGE);
-          if (choice == JOptionPane.YES_OPTION) {
-            missingIds.addElement(obj);
-          }
+          missingIds.addElement(obj);
         }
       }
     }
@@ -2115,7 +2104,18 @@ public class DataPackage implements XMLFactoryInterface
       Log.debug(1, "No access file in package!!!!");
     }
     if (missingIds.size()>0) {
-      fixMissingAccess(accessId, missingIds);
+      int choice = JOptionPane.showConfirmDialog(null, 
+                   "Some modules in this package do not have an associated access "+
+                   "control module. This means that only the owner has access to these modules.\n\n"+
+                   "Would you like to associate the package access "+
+                   "control module with all other modules?\n\n"+
+                   "(Changes will appear the next time the package is opened.)",
+                   "Access Information Missing ",
+                   JOptionPane.YES_NO_OPTION,
+                   JOptionPane.WARNING_MESSAGE);
+      if (choice == JOptionPane.YES_OPTION) {
+        fixMissingAccess(accessId, missingIds);
+      }
     }
   }
   
