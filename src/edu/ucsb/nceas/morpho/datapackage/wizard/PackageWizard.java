@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-10-09 20:42:44 $'
- * '$Revision: 1.37 $'
+ *     '$Date: 2001-10-12 22:01:51 $'
+ * '$Revision: 1.38 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -56,6 +56,8 @@ public class PackageWizard extends javax.swing.JFrame
   private String globalDtd;
   private String globalDoctype;
   private String globalRoot;
+  
+  private String xmlString = null;
   
   /**
    * constructor which initializes the window based on the paramater values
@@ -174,24 +176,35 @@ public class PackageWizard extends javax.swing.JFrame
   }
   
   /**
+   * set the xmlString parameter
+   */
+   public void setXMLString(String xml) {
+      this.xmlString = xml;
+   }
+  
+  /**
    * gets the xml produced from the wizard
    */
   public String getXML()
   {
-    int choice = JOptionPane.YES_OPTION;
-    Stack fieldStack = new Stack();
-    Vector pathReps = new Vector();
-    Hashtable contentReps = new Hashtable();
+    if (xmlString!=null) {
+      return xmlString;
+    }
+    else {
+      int choice = JOptionPane.YES_OPTION;
+      Stack fieldStack = new Stack();
+      Vector pathReps = new Vector();
+      Hashtable contentReps = new Hashtable();
     
-    pathReps = createDocument(docPanel, pathReps, ""); //IMPORTANT
-    //printVector(pathReps);
-    Hashtable content = createContentHash(docPanel, contentReps, ""); //IMPORTANT
-    //printHashtable(content);
-    if(content.containsKey("MISSINGREQUIREDELEMENTS"))
-    {
-      if(((String)content.get("MISSINGREQUIREDELEMENTS")).equals("true"))
-      { //tell the user that there are missing required fields.
-        choice = JOptionPane.showConfirmDialog(null, 
+      pathReps = createDocument(docPanel, pathReps, ""); //IMPORTANT
+      //printVector(pathReps);
+      Hashtable content = createContentHash(docPanel, contentReps, ""); //IMPORTANT
+      //printHashtable(content);
+      if(content.containsKey("MISSINGREQUIREDELEMENTS"))
+      {
+        if(((String)content.get("MISSINGREQUIREDELEMENTS")).equals("true"))
+        { //tell the user that there are missing required fields.
+          choice = JOptionPane.showConfirmDialog(null, 
                              "This package may be invalid because certain \n" + 
                              "fields are marked as 'required' but are not " +
                              "filled in.\n" +
@@ -199,21 +212,22 @@ public class PackageWizard extends javax.swing.JFrame
                              "Invalid Document", 
                              JOptionPane.YES_NO_CANCEL_OPTION,
                              JOptionPane.WARNING_MESSAGE);
+        }
       }
-    }
-    if(choice == JOptionPane.YES_OPTION)
-    { //only save the document if it is valid or if the user wants an invalid
-      //document
-      StringBuffer xmldoc = createDocumentContent(pathReps, content); //IMPORTANT
-      String doctype = "<?xml version=\"1.0\"?>\n<!DOCTYPE " + globalRoot;
-      doctype += " PUBLIC \"" + globalDoctype + "\" \"" + globalDtd + "\">";
-      //doctype += " PUBLIC \"" + globalDoctype + "\">";
-      doctype += "\n" + xmldoc.toString();
-      return doctype;
-    }
-    else
-    {
-      return null;
+      if(choice == JOptionPane.YES_OPTION)
+      { //only save the document if it is valid or if the user wants an invalid
+        //document
+        StringBuffer xmldoc = createDocumentContent(pathReps, content); //IMPORTANT
+        String doctype = "<?xml version=\"1.0\"?>\n<!DOCTYPE " + globalRoot;
+        doctype += " PUBLIC \"" + globalDoctype + "\" \"" + globalDtd + "\">";
+        //doctype += " PUBLIC \"" + globalDoctype + "\">";
+        doctype += "\n" + xmldoc.toString();
+        return doctype;
+      }
+      else
+      {
+        return null;
+      }
     }
   }
   
@@ -1472,6 +1486,7 @@ public class PackageWizard extends javax.swing.JFrame
         createPanel(tempElement, contentPane, parentPanel);
       }
     }
+  
   }
   
   /**

@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-10-10 23:00:22 $'
- * '$Revision: 1.41 $'
+ *     '$Date: 2001-10-12 22:01:50 $'
+ * '$Revision: 1.42 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -183,6 +183,7 @@ public class PackageWizardShell extends javax.swing.JFrame
         fileTextField.setColumns(25);
         
         JButton parseTextButton = new JButton("Get Information from Text-Based Table...");
+        parseTextButton.addActionListener(this);
         JLabel parseLabel = new JLabel();
         parseLabel.setText("<html>If your dataset is a 'table' in a text format <br>"
                 + "you can extract information about the table<br> from the table itself.<br> "
@@ -393,9 +394,35 @@ public class PackageWizardShell extends javax.swing.JFrame
       frameWizardIndex++;
       WizardFrameContainer nextContainer = (WizardFrameContainer)
                                          frameWizards.elementAt(frameWizardIndex);
+                                                                                  
       activeContainer = nextContainer;
       changeDescription(nextContainer.description);
-      wizardFrame.add(nextContainer.panel);
+      
+      String test = null;
+      
+      if (frameWizardIndex>1) {
+        PackageWizard nextPW = nextContainer.wizard;
+        if (nextPW!=null) {
+          test = nextPW.getXML();   
+        }
+      }
+      if (test==null) {
+        wizardFrame.add(nextContainer.panel);
+      }
+      else {
+        JPanel continuePanel = new JPanel();
+        continuePanel.setLayout(new BoxLayout(continuePanel,BoxLayout.Y_AXIS));
+        String messageStr = "This information has been automatically created from a data table.";
+        String messageStr1 = "Please press the 'Next' button to continue.";
+        JLabel message = new JLabel(messageStr);
+        JLabel message1 = new JLabel(messageStr1);
+        continuePanel.add(Box.createRigidArea(new Dimension(0,90)));
+        continuePanel.add(message);
+        continuePanel.add(Box.createRigidArea(new Dimension(0,90)));
+        continuePanel.add(message1);
+        wizardFrame.add(continuePanel);
+      }
+      
       
       if(frameWizardIndex > 0)
       {
@@ -842,6 +869,21 @@ public class PackageWizardShell extends javax.swing.JFrame
       filechooser.showOpenDialog(this);
       datafile = filechooser.getSelectedFile();
       fileTextField.setText(datafile.getAbsolutePath());
+    }
+    else if(command.equals("Get Information from Text-Based Table..."))
+    {
+      int entitynum = frameWizardIndex + 1;
+      int attributenum = frameWizardIndex + 2;
+      WizardFrameContainer wfc1 = (WizardFrameContainer)frameWizards.elementAt(entitynum);
+      WizardFrameContainer wfc2 = (WizardFrameContainer)frameWizards.elementAt(attributenum);
+      PackageWizard pw1 = wfc1.wizard;
+      PackageWizard pw2 = wfc2.wizard;
+      
+      
+      TextImportWizard tiw = new TextImportWizard();
+      tiw.setEntityWizard(pw1);
+      tiw.setAttributeWizard(pw2);
+      tiw.setVisible(true);
     }
     else if(command.equals("Finish"))
     {
