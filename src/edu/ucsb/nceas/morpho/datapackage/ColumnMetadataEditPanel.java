@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-01-08 20:15:24 $'
- * '$Revision: 1.20 $'
+ *     '$Date: 2003-01-08 23:53:04 $'
+ * '$Revision: 1.21 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -298,7 +298,10 @@ public class ColumnMetadataEditPanel extends javax.swing.JPanel //implements jav
     textPatternTextField.addFocusListener(aSymFocus);
     textSourceTextField.addFocusListener(aSymFocus);
     definitionTextArea.addFocusListener(aSymFocus);
-    typeComboBox.addFocusListener(aSymFocus);
+    
+    SymItem lSymItem = new SymItem();
+		typeComboBox.addItemListener(lSymItem);
+
   }
   
   class SymAction implements java.awt.event.ActionListener
@@ -350,7 +353,22 @@ public class ColumnMetadataEditPanel extends javax.swing.JPanel //implements jav
     }
   }
         
-        
+  	class SymItem implements java.awt.event.ItemListener
+	{
+		public void itemStateChanged(java.awt.event.ItemEvent event)
+		{
+			Object object = event.getSource();
+			if (object == typeComboBox) {
+				Object obj = typeComboBox.getSelectedItem();
+        if (obj!=null) {
+          if (colData!=null) {
+            colData.colType = (String)obj;
+          }
+        }
+      }
+		}
+	}
+      
   public void setMorpho(Morpho morpho) {
     this.morpho = morpho;    
   }
