@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: berkley $'
- *     '$Date: 2001-10-30 16:55:55 $'
- * '$Revision: 1.1 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2003-09-11 22:47:44 $'
+ * '$Revision: 1.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,6 +26,9 @@
 
 package edu.ucsb.nceas.morpho.framework;
 
+import edu.ucsb.nceas.utilities.*;
+
+
 /**
  * This listener is called when the TextImportWizard either finishes or is 
  * canceled
@@ -37,7 +40,7 @@ public interface TextImportListener
    *
    * @param xmlString is the edited XML in String format
    */
-  public void importComplete();
+  public void importComplete(OrderedMap om);
   
   /**
    * this method handles canceled editing
