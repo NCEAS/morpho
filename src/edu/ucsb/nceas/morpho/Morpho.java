@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2002-08-15 07:45:43 $'
- * '$Revision: 1.1.2.6 $'
+ *     '$Date: 2002-08-15 22:44:36 $'
+ * '$Revision: 1.1.2.7 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1209,6 +1209,11 @@ public class Morpho
         tempFrame2.setVisible(true);
         MorphoFrame tempFrame3 = controller.addWindow("Test 3 window");
         tempFrame3.setVisible(true);
+
+        Log.debug(4, "Butterfly flaps after clicking OK ...");
+        tempFrame3.setBusy(true);
+        Log.debug(4, "Butterfly stops flapping after clicking OK ...");
+        tempFrame3.setBusy(false);
       }
     } catch(Throwable t) {
       t.printStackTrace();

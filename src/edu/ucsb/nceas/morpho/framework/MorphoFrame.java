@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2002-08-15 19:44:52 $'
- * '$Revision: 1.1.2.9 $'
+ *   '$Author: jones $'
+ *     '$Date: 2002-08-15 22:44:36 $'
+ * '$Revision: 1.1.2.10 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -56,6 +56,11 @@ public class MorphoFrame extends JFrame
     private Dimension screenSize;
     private Dimension windowSize;
     private Dimension contentAreaSize;
+
+    // Constants (probably should be set in a property file, but what the hell)
+    private static final int MAX_WINDOW_WIDTH = 1024;
+    private static final int MAX_WINDOW_HEIGHT = 768;
+    private static final int SCREEN_PADDING = 50;
 
     /**
      * Creates a new instance of MorphoFrame, but is private because 
@@ -136,7 +141,9 @@ public class MorphoFrame extends JFrame
             new WindowAdapter() {
                 public void windowActivated(WindowEvent e) 
                 {
+                    Log.debug(50, "Processing window activated event");
                     UIController.getInstance().refreshWindows();
+                    indicator.repaint();
                 } 
                 public void windowClosing(WindowEvent event)
                 {
@@ -153,6 +160,7 @@ public class MorphoFrame extends JFrame
                     updateProgressIndicatorLocation();
                 } 
             }); 
+
         // Size the window properly
         pack();
     }
@@ -269,15 +277,15 @@ public class MorphoFrame extends JFrame
         // determine default window size
         double windowWidth;
         double windowHeight;
-        if (screenSize.getWidth() >= 1024) {
-            windowWidth = 1024 - 50;
+        if (screenSize.getWidth() >= MAX_WINDOW_WIDTH) {
+            windowWidth = MAX_WINDOW_WIDTH - SCREEN_PADDING;
         } else {
-            windowWidth = screenSize.getWidth() - 50;
+            windowWidth = screenSize.getWidth() - SCREEN_PADDING;
         }
-        if (screenSize.getHeight() >= 768) {
-            windowHeight = 768 - 50;
+        if (screenSize.getHeight() >= MAX_WINDOW_HEIGHT) {
+            windowHeight = MAX_WINDOW_HEIGHT - SCREEN_PADDING;
         } else {
-            windowHeight = screenSize.getHeight() - 50;
+            windowHeight = screenSize.getHeight() - SCREEN_PADDING;
         }
         windowSize = new Dimension((int)windowWidth, (int)windowHeight);
         Log.debug(50, "Window size (w, h): (" + windowSize.getWidth() +
