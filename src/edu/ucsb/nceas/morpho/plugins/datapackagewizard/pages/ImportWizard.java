@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2003-09-13 20:18:10 $'
- * '$Revision: 1.2 $'
+ *     '$Date: 2003-09-19 18:42:51 $'
+ * '$Revision: 1.3 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -61,6 +61,8 @@ public class ImportWizard extends     AbstractWizardPage
   private OrderedMap resultsMap;
   private TextImportWizard importWiz;
   
+  private TextImportListener listener;
+  
   public ImportWizard() {
     
     init();
@@ -104,8 +106,7 @@ public class ImportWizard extends     AbstractWizardPage
 
     importWiz.setVisible(false);
     resultsMap = om;
-    Log.debug(5, "importComplete() called - OrderedMap = "+om);
-    
+    listener.importComplete(om);
   }
   
   
@@ -115,10 +116,21 @@ public class ImportWizard extends     AbstractWizardPage
   public void importCanceled() {
   
     importWiz.setVisible(false);
-    Log.debug(1, "TO DO: NEED TO GO BACK A PAGE HERE!!");
-  
+    listener.importCanceled();
   }
   
+  /** 
+   *  sets TextImportListener to be called when this class gets a callback from 
+   *  the Text Import Wizard (i.e. the call gets passed on)
+   *
+   *  @param listener TextImportListener to be called when this class gets a 
+   *                  callback from the Text Import Wizard (i.e. the call gets 
+   *                  passed on)
+   */
+  public void setTextImportListener(TextImportListener listener) {
+  
+    this.listener = listener;
+  }
   
   
   /** 

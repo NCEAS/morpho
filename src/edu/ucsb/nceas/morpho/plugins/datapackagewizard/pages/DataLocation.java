@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2003-09-11 23:44:22 $'
- * '$Revision: 1.8 $'
+ *     '$Date: 2003-09-19 18:42:51 $'
+ * '$Revision: 1.9 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,7 +32,12 @@ import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WidgetFactory;
 import edu.ucsb.nceas.morpho.util.Log;
 import edu.ucsb.nceas.utilities.OrderedMap;
 
+import java.io.File;
+
 import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.awt.Color;
+import java.awt.FlowLayout;
 
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
@@ -45,7 +50,8 @@ import javax.swing.JTextArea;
 import javax.swing.SwingConstants;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-
+import javax.swing.JFileChooser;
+import javax.swing.JButton;
 import javax.swing.BorderFactory;
 
 
@@ -54,7 +60,7 @@ import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardPageLibrary;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardSettings;
 
 
-public class DataLocation extends AbstractWizardPage{
+public class DataLocation extends AbstractWizardPage {
 
   private final String pageID     = WizardPageLibrary.DATA_LOCATION;
   private String nextPageID       = WizardPageLibrary.TEXT_IMPORT_WIZARD;
@@ -64,6 +70,7 @@ public class DataLocation extends AbstractWizardPage{
   
   // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
+  private final AbstractWizardPage instance = this;
   private String distribXPath;
   private final String OBJECTNAME_XPATH 
                   = "/eml:eml/dataset/datatable/physical/objectName";
@@ -88,6 +95,9 @@ public class DataLocation extends AbstractWizardPage{
   private JPanel noDataPanel;
   private JPanel currentPanel;
   private JLabel radioLabel;
+  
+  private String importFilePath;
+  
   private final String[] buttonsText = new String[] {
       "Import the data into your new package file",
       "Link to online data using a URL",
@@ -192,13 +202,89 @@ public class DataLocation extends AbstractWizardPage{
 
   // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
   
+  private JLabel  fileNameLabelInline;
+  private JLabel  fileNameFieldInline;
+
   private JPanel getInlinePanel() {
     
-    JPanel panel = WidgetFactory.makeVerticalPanel(7);
+    JPanel panel =  new JPanel(new BorderLayout());
+  
+    WidgetFactory.addTitledBorder(panel, buttonsText[0]);
+  
+//    panel.add(WidgetFactory.makeDefaultSpacer());
+
+    panel.add(WidgetFactory.makeHTMLLabel(
+      "Locate your data file:", 1), BorderLayout.NORTH);
+
+      
+    ////
+    JPanel fileNamePanel = WidgetFactory.makePanel();
+    fileNamePanel.setLayout(new BorderLayout());
+    fileNamePanel.setMaximumSize(WizardSettings.WIZARD_CONTENT_SINGLE_LINE_DIMS);
+//    fileNamePanel.setLayout(new BoxLayout(fileNamePanel, BoxLayout.X_AXIS));
+fileNamePanel.setOpaque(true);
+fileNamePanel.setBackground(Color.green);
     
+    fileNameLabelInline = WidgetFactory.makeLabel("File Name:", true);
+
+    fileNamePanel.add(fileNameLabelInline, BorderLayout.EAST);
+  
+    fileNameFieldInline = WidgetFactory.makeLabel("", true);
+    fileNameFieldInline.setText("use button to select a file -->");
+fileNameFieldInline.setOpaque(true);
+fileNameFieldInline.setBackground(Color.yellow);
+
+    fileNamePanel.add(fileNameFieldInline, BorderLayout.CENTER);
+
+    JButton fileButton = WidgetFactory.makeJButton("locate...", 
+    
+            new ActionListener() {
+            
+              public void actionPerformed(ActionEvent e) {
+              
+                final JFileChooser fc = new JFileChooser();
+                fc.setDialogTitle("Select a data file to import...");
+                String userdir = System.getProperty("user.dir");
+                fc.setCurrentDirectory(new File(userdir));
+                int returnVal = fc.showOpenDialog(instance);
+                File file = null;
+                if (returnVal == JFileChooser.APPROVE_OPTION) {
+                  
+                  file = fc.getSelectedFile();
+                  
+                  if (file!=null) {
+                  
+                    setImportFilePath(file.getAbsolutePath());
+                    fileNameFieldInline.setText(getImportFilePath());
+                  }
+                }
+              }
+            });
+  
+    fileNamePanel.add(fileButton, BorderLayout.EAST);
+    
+fileButton.setOpaque(true);
+fileButton.setBackground(Color.blue);
+  
+    panel.add(fileNamePanel, BorderLayout.CENTER);
+  
+//    panel.add(WidgetFactory.makeDefaultSpacer());
+//  
+//    panel.add(Box.createGlue());
+
     return panel;
   }
   
+  private void setImportFilePath(String filePath) {
+  
+    this.importFilePath = filePath;
+  }
+  
+  
+  private String getImportFilePath() {
+  
+    return this.importFilePath;
+  }
   
   // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
   
@@ -284,9 +370,9 @@ public class DataLocation extends AbstractWizardPage{
         
     panel.add(WidgetFactory.makeDefaultSpacer());
     
-    panel.add(WidgetFactory.makeHTMLLabel(
+    panel.add(WidgetFactory.makeLabel(
       "How would you like to enter the information describing "
-      +"the format and structure of the data?", 1));
+      +"the format and structure of the data?", true, new Dimension(500,30)));
   
     panel.add(getGeneratedOrByHandRadioPanel());
     
@@ -323,7 +409,7 @@ public class DataLocation extends AbstractWizardPage{
     
   }
   
-  
+
   /**
    *  The action to be executed when the "Prev" button is pressed. May be empty
    *

@@ -21,6 +21,7 @@ import javax.swing.JComponent;
 import javax.swing.BorderFactory;
 import javax.swing.SwingConstants;
 import javax.swing.JComboBox;
+import javax.swing.JButton;
 
 public class WidgetFactory {
   
@@ -91,6 +92,18 @@ public class WidgetFactory {
     return label;
   }
   
+  
+  public static JButton makeJButton(String title, ActionListener actionListener) {
+    
+    if (title==null) title = "";
+    JButton button = new JButton(title);
+    button.setForeground(WizardSettings.BUTTON_TEXT_COLOR);
+    button.setFont(WizardSettings.BUTTON_FONT);
+    if (actionListener!=null) button.addActionListener(actionListener);
+    setPrefMaxSizes(button, WizardSettings.LIST_BUTTON_DIMS);
+    return button;
+  }
+
   
   public static JTextField makeOneLineTextField() {
     
