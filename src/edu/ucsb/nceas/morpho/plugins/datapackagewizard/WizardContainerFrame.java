@@ -7,9 +7,9 @@
  *    Authors: Matthew Brooke
  *    Release: @release@
  *
- *   '$Author: sambasiv $'
- *     '$Date: 2004-02-04 02:25:50 $'
- * '$Revision: 1.41 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2004-02-06 22:40:35 $'
+ * '$Revision: 1.42 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -504,6 +504,11 @@ public class WizardContainerFrame extends JFrame {
 			addPageDataToResultsMap((WizardPage)(pagesList.get(KEYWORDS)),wizData);
 		}
 		
+		//INTELLECTUAL RIGHTS:
+		if (USAGE_RIGHTS>=0)        {
+			addPageDataToResultsMap((WizardPage)(pagesList.get(USAGE_RIGHTS)),wizData);
+		}
+		
 		//GEOGRAPHIC:
 		if (GEOGRAPHIC>=0)        {
 			addPageDataToResultsMap((WizardPage)(pagesList.get(GEOGRAPHIC)),wizData);
@@ -512,11 +517,6 @@ public class WizardContainerFrame extends JFrame {
 		//TEMPORAL:
 		if (TEMPORAL>=0)        {
 			addPageDataToResultsMap((WizardPage)(pagesList.get(TEMPORAL)),wizData);
-		}
-		
-		//INTELLECTUAL RIGHTS:
-		if (USAGE_RIGHTS>=0)        {
-			addPageDataToResultsMap((WizardPage)(pagesList.get(USAGE_RIGHTS)),wizData);
 		}
 		
 		//CONTACT:
