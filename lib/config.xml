@@ -74,7 +74,7 @@
       <xmlfiletype>-//NCEAS//eml-software-2.0//EN</xmlfiletype>
       <rootnode>software</rootnode>
       <tooltip>Description of any software created or used in the creation of this data package.</tooltip>
-      <displaypath>FIXED: Software Description</displaypath>
+      <displaypath>//shortName</displaypath>
       <editexisting>no</editexisting>
     </file>
   </newxmlfiletypes>
