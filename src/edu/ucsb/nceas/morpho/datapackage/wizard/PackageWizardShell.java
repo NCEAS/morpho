@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: berkley $'
- *     '$Date: 2001-08-31 22:40:01 $'
- * '$Revision: 1.40 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2001-10-10 23:00:22 $'
+ * '$Revision: 1.41 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -174,12 +174,30 @@ public class PackageWizardShell extends javax.swing.JFrame
       wfc.attributes = frame;
       if(frame.containsKey("GETDATA"))
       { //this field is built when the wizard need to get a data file
+        framePanel.setLayout(new BoxLayout(framePanel,BoxLayout.Y_AXIS));
+        
+        JPanel container1 = new JPanel();
         JButton chooseFileButton = new JButton("Browse...");
         chooseFileButton.addActionListener(this);
         fileTextField = new JTextField();
         fileTextField.setColumns(25);
-        framePanel.add(fileTextField);
-        framePanel.add(chooseFileButton);
+        
+        JButton parseTextButton = new JButton("Get Information from Text-Based Table...");
+        JLabel parseLabel = new JLabel();
+        parseLabel.setText("<html>If your dataset is a 'table' in a text format <br>"
+                + "you can extract information about the table<br> from the table itself.<br> "
+                + "Click on this button to start the process.");
+        
+        
+        container1.add(fileTextField);
+        container1.add(chooseFileButton);
+        
+        framePanel.add(container1);
+        framePanel.add(Box.createRigidArea(new Dimension(0, 60)));
+
+
+        framePanel.add(parseTextButton);
+        framePanel.add(parseLabel);
         
         wfc.textfield = fileTextField;
         wfc.type = "GETDATA";
