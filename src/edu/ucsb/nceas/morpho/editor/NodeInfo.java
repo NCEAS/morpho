@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-05-23 18:40:39 $'
- * '$Revision: 1.7 $'
+ *     '$Date: 2001-05-23 23:41:51 $'
+ * '$Revision: 1.8 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -48,14 +48,18 @@ import com.wutka.dtd.*;
 public class NodeInfo implements Serializable
 {
     static Hashtable icons;
-    static Hashtable images;
-    static { icons = new Hashtable(); 
-             images = new Hashtable();}
+    static { icons = new Hashtable(); }
+    
+    // name is the string that appears when NodeInfo is associated with tree node
     String name;
-    String target;
-    String iconName;    // iconName is string used to get icon from icons Hashtable; assumed to be filename
-    String cardinality = "ONE";  // allowed values - ONE, ZERO to MANY, ONE to MANY, OPTIONAL
-    boolean Item;
+    
+    // iconName is string used to get icon from icons Hashtable
+    String iconName;
+    
+    // allowed values - ONE, ZERO to MANY, ONE to MANY, OPTIONAL
+    String cardinality = "ONE"; 
+        
+    // attributes of associated XML element
     Hashtable attr;
 
  /**
@@ -67,97 +71,72 @@ public class NodeInfo implements Serializable
  public NodeInfo(String name) {
     attr = new Hashtable();
     this.name = name;
-    this.target = null;
     this.iconName = null;
  }
-    public String toString() {
-        if (name.equalsIgnoreCase("#PCDATA")) {
-          return ((String)attr.get("Value"));
-        }
-        else {return name;}
+ 
+  public String toString() {
+    if (name.equalsIgnoreCase("#PCDATA")) {
+      return ((String)attr.get("Value"));
     }
-    public void setCardinality(String card) {
-        this.cardinality = card;
-/*        if(card.equalsIgnoreCase("ONE")) {
-            setIcon("greensq.gif");    
-        }
-        if(card.equalsIgnoreCase("OPTIONAL")) {
-            setIcon("greenqumark.gif");    
-        }
-        if(card.equalsIgnoreCase("ZERO to MANY")) {
-            setIcon("greenasterisk.gif");    
-        }
-        if(card.equalsIgnoreCase("ONE to MANY")) {
-            setIcon("greenplus.gif");    
-        }
-        if(card.equalsIgnoreCase("SELECTED")) {
-            setIcon("sel.gif");    
-        }
-        if(card.equalsIgnoreCase("NOT SELECTED")) {
-            setIcon("unsel.gif");    
-        }
+    else {return name;}
+  }
+  
+  public void setCardinality(String card) {
+    this.cardinality = card;
+/*       
+  if(card.equalsIgnoreCase("ONE")) {
+    setIcon("greensq.gif");    
+  }
+  if(card.equalsIgnoreCase("OPTIONAL")) {
+    setIcon("greenqumark.gif");    
+  }
+  if(card.equalsIgnoreCase("ZERO to MANY")) {
+    setIcon("greenasterisk.gif");    
+  }
+  if(card.equalsIgnoreCase("ONE to MANY")) {
+    setIcon("greenplus.gif");    
+  }
+  if(card.equalsIgnoreCase("SELECTED")) {
+    setIcon("sel.gif");    
+  }
+  if(card.equalsIgnoreCase("NOT SELECTED")) {
+    setIcon("unsel.gif");    
+  }
  */       
+  }
+  
+  public String getCardinality() {
+    return cardinality;    
+  }
+    
+    
+  public void setName (String name) {
+    this.name = name;
+  }
+    
+  public String getName() {
+    return name;
+  }
+  
+  public void setIcon(String name) {
+    iconName = name;
+    if (!icons.containsKey(name)) {    //see if icon is not already in hashtable
+      ImageIcon temp = new ImageIcon("icons"+System.getProperty("file.separator")+name);
+      icons.put(name,temp);
     }
-    public String getCardinality() {
-        return cardinality;    
+  }
+  
+  public ImageIcon getIcon() {
+    if (iconName!=null) {
+      if (icons.containsKey(iconName)) {
+        return (ImageIcon)(icons.get(iconName));
+      }
+      else { return null; }
+    }
+    return null;
     }
     
-    public boolean getItem() {
-        return Item;
-    }
-    public void setItem(boolean o) {
-        Item = o;
-    }
-    
-    public void setName (String name) {
-        this.name = name;
-    }
-    public void setTarget (String target) {
-        this.target = target;
-    }
-    public String getName() {
-        return name;
-    }
-    public String getTarget() {
-        return target;
-    }
-    public void setIcon(String name) {
-        iconName = name;
-        if (!icons.containsKey(name)) {    //see if icon is not already in hashtable
-            ImageIcon temp = new ImageIcon("icons"+System.getProperty("file.separator")+name);
-            icons.put(name,temp);
-        }
-    }
-    public ImageIcon getIcon() {
-        if (iconName!=null) {
-        if (icons.containsKey(iconName)) {
-            return (ImageIcon)(icons.get(iconName));
-        }
-        else { return null; }
-        }
-        return null;
-    }
-    public void setImage(String name) {
-        iconName = name;
-        if (!name.equalsIgnoreCase("")) {
-        if (!images.containsKey(name)) {    //see if image is not already in hashtable
-            Image temp = Toolkit.getDefaultToolkit().getImage("icons"+System.getProperty("file.separator")+name);
-            images.put(name,temp);
-        }}
-    }
-    public Image getImage() {
-        if (iconName!=null) {
-        if (icons.containsKey(iconName)) {
-            return (Image)(images.get(iconName));
-        }
-        else { return null; }
-        }
-        return null;
-    }
-    
-    public String getIconName() {
-        return iconName;
-    }
-	//{{DECLARE_CONTROLS
-	//}}
+  public String getIconName() {
+    return iconName;
+  }
 }
