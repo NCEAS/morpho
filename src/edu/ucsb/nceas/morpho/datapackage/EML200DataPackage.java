@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-12-11 21:22:22 $'
- * '$Revision: 1.15 $'
+ *     '$Date: 2003-12-19 04:35:55 $'
+ * '$Revision: 1.16 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -59,6 +59,7 @@ import edu.ucsb.nceas.utilities.*;
  */
 public  class EML200DataPackage extends AbstractDataPackage
 {
+	// serialize to the indicated location
   public void serialize(String location) {
     Morpho morpho = Morpho.thisStaticInstance;
     String temp = XMLUtilities.getDOMTreeAsString(getMetadataNode(), false);
@@ -72,7 +73,16 @@ public  class EML200DataPackage extends AbstractDataPackage
                  (location.equals(AbstractDataPackage.BOTH))) {
         MetacatDataStore mds = new MetacatDataStore(morpho);  
       try{
-        mds.saveFile(getAccessionNumber(),sr);
+				if ((this.getLocation().equals(AbstractDataPackage.METACAT))||
+					 (this.getLocation().equals(AbstractDataPackage.BOTH)))
+				{
+          mds.saveFile(getAccessionNumber(),sr);
+				} // originally came from metacat; thus update
+				else
+				{
+					mds.newFile(getAccessionNumber(),sr);
+				}// not currently on metacat
+					
       } catch(Exception e) {
           Log.debug(5,"Problem with saving to metacat in EML200DataPackage!");
         }
