@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2002-08-27 23:40:36 $'
- * '$Revision: 1.3 $'
+ *     '$Date: 2002-08-28 17:48:18 $'
+ * '$Revision: 1.4 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -87,12 +87,7 @@ public class DeleteCommand implements Command
   {
     dialog = box;
     state = myState;
-    if (dialog != null)
-    {
-      // This command will apply to a dialog
-      morphoFrame = dialog.getParentFrame();
-      resultPane = dialog.getResultPanel();
-    }
+  
   }//LocalToNetworkCommand
   
  
@@ -101,7 +96,14 @@ public class DeleteCommand implements Command
    */    
   public void execute()
   {
-    if (dialog == null)
+    // Get frame and resultpanel depen on different situation
+    if (dialog != null)
+    {
+      // This command will apply to a dialog
+      morphoFrame = dialog.getParentFrame();
+      resultPane = dialog.getResultPanel();
+    }
+    else
     {
       // If the command would not applyto a dialog, moreFrame will be set to be
       // current active morphoFrame
@@ -183,7 +185,7 @@ public class DeleteCommand implements Command
 		      //delete the local package
           Log.debug(20, "Deleteing the package.");
           int choice = JOptionPane.YES_OPTION;
-          choice = JOptionPane.showConfirmDialog(null, message, 
+          choice = JOptionPane.showConfirmDialog(box, message, 
                                "Morpho", 
                                JOptionPane.YES_NO_CANCEL_OPTION,
                                JOptionPane.WARNING_MESSAGE);
