@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2003-09-24 02:54:10 $'
- * '$Revision: 1.4 $'
+ *     '$Date: 2003-09-24 04:40:38 $'
+ * '$Revision: 1.5 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -234,7 +234,8 @@ class DateTimePanel extends JPanel implements DialogSubPanelAPI {
     }
     WidgetFactory.unhiliteComponent(formatStringLabel);
 
-    if (precisionField.getText().trim().equals("")) {
+    String precision = precisionField.getText().trim();
+    if (precision.equals("")  || !(WizardSettings.isFloat(precision))) {
 
       WidgetFactory.hiliteComponent(precisionLabel);
       precisionField.requestFocus();

@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2003-09-23 18:48:14 $'
- * '$Revision: 1.8 $'
+ *     '$Date: 2003-09-24 04:40:38 $'
+ * '$Revision: 1.9 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -245,7 +245,8 @@ class IntervalRatioPanel extends JPanel implements DialogSubPanelAPI {
     }
     WidgetFactory.unhiliteComponent(unitsPickListLabel);
 
-    if (precisionField.getText().trim().equals("")) {
+    String precision = precisionField.getText().trim();
+    if (precision.equals("") || !(WizardSettings.isFloat(precision))) {
 
       WidgetFactory.hiliteComponent(precisionLabel);
       precisionField.requestFocus();

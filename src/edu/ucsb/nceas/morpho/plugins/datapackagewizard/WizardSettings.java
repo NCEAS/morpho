@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2003-09-20 01:11:33 $'
- * '$Revision: 1.16 $'
+ *     '$Date: 2003-09-24 04:40:38 $'
+ * '$Revision: 1.17 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -46,7 +46,6 @@ import java.util.Arrays;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-import java.io.File;
 import java.io.Reader;
 import java.io.IOException;
 
@@ -259,16 +258,27 @@ public class WizardSettings {
   private static Map          unitDictionaryNVPs;
   /////////////
   public static String[] getUnitDictionaryUnitTypes() { 
-  
-    if (!((new File(EML_UNIT_DICTIONARY_PATH)).exists())) {
+
+    Reader reader = null;
+    try {
+      
+      reader = IOUtil.getResourceAsInputStreamReader(EML_UNIT_DICTIONARY_PATH);
+      
+    } catch (Exception e) {
+    
+      e.printStackTrace();
+      Log.debug(12,"Exception: <"+e+"> trying to open unit dictionary file.\n"
+           +"\nClasspath was: ---------------------------------------------\n"
+                                   +System.getProperty("java.class.path")+"\n");
+      reader = null;
+    }
+    
+    if (reader==null) {
     
       Log.debug(1, "ATTENTION! Cannot find unit dictionary file at: "
                                                     +EML_UNIT_DICTIONARY_PATH);
       return new String[]{" "};
     } 
-    
-    Reader reader 
-              = IOUtil.getResourceAsInputStreamReader(EML_UNIT_DICTIONARY_PATH);
     
     Node udRootNode = null;
     try {
@@ -379,6 +389,22 @@ public class WizardSettings {
     returnArray = (String[])(returnList.toArray(returnArray));
     Arrays.sort(returnArray);
     return returnArray;
+  }
+  
+  
+  /**
+   * returns true if the String can be parsed as a float
+   */
+  private static float floatNum = 0f;
+  //
+  public static boolean isFloat(String numberString) {
+  
+    try {
+      floatNum = Float.parseFloat(numberString);
+    } catch (Exception e) {
+      return false;
+    }
+    return !(Float.isNaN(floatNum));
   }
 }
 

@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2003-09-24 02:54:10 $'
- * '$Revision: 1.7 $'
+ *     '$Date: 2003-09-24 04:40:38 $'
+ * '$Revision: 1.8 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -44,8 +44,6 @@ import edu.ucsb.nceas.utilities.OrderedMap;
 public class Introduction extends AbstractWizardPage {
 
   public final String pageID     = WizardPageLibrary.INTRODUCTION;
-//  public final String nextPageID = WizardPageLibrary.DATA_LOCATION;
-//  
   public final String nextPageID = WizardPageLibrary.GENERAL;
 //////////////////////////////////////////////////////////
 

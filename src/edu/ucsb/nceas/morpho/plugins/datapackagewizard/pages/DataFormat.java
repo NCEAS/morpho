@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2003-09-22 21:53:24 $'
- * '$Revision: 1.13 $'
+ *     '$Date: 2003-09-24 04:40:38 $'
+ * '$Revision: 1.14 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -317,10 +317,8 @@ public class DataFormat extends AbstractWizardPage{
       "Width or Delimiter Character:" 
     };
     
-                                    
     list = WidgetFactory.makeList(colNames, colTemplates, 4,
                                   true, false, false, true, true, true);
-    
     panel.add(list);
   
     return panel;
@@ -360,25 +358,13 @@ public class DataFormat extends AbstractWizardPage{
   
   
   // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-  
-  
-  private JPanel getRasterPanel() {
     
-    JPanel panel = WidgetFactory.makeVerticalPanel(7);
-  
-    return panel;
-  }
-  
-  // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-  
   
   private JPanel getEmptyPanel() {
     
     return WidgetFactory.makeVerticalPanel(7);
   }
   
-  
-
 
   // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
   
@@ -390,8 +376,6 @@ public class DataFormat extends AbstractWizardPage{
     WidgetFactory.unhiliteComponent(radioButtonGrpLabel);
     WidgetFactory.unhiliteComponent(proprietaryLabel);
     WidgetFactory.unhiliteComponent(listLabel);
-
-    
   }
   
   

@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2003-09-23 18:48:14 $'
- * '$Revision: 1.16 $'
+ *     '$Date: 2003-09-24 04:40:38 $'
+ * '$Revision: 1.17 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -313,10 +313,6 @@ public class CustomList extends JPanel {
   
   private void setColumnSizes(double tableWidth) {
   
-System.err.println("\n\n*****************************************************");
-System.err.println("  setColumnSizes() - tableWidth = "+tableWidth);
-System.err.println("*****************************************************\n\n");
-
     final double  fraction  = 1d/((double)(table.getColumnCount()));
     final double  minFactor = 0.5;
     final double  maxFactor = 2;
