@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2002-08-07 00:12:19 $'
- * '$Revision: 1.30.4.2 $'
+ *     '$Date: 2002-08-08 00:17:56 $'
+ * '$Revision: 1.30.4.3 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -186,10 +186,10 @@ public class ResultSet extends AbstractTableModel implements ContentHandler,
   public ResultSet( Query query, String source, 
                     InputStream resultsXMLStream, ClientFramework cf) {
 
+    initIcons();
     init(query, source, cf);
     framework.debug(30, "(2.41) Creating result set ...");
-    initIcons();
-    resultsVector = new Vector();
+     resultsVector = new Vector();
     
     // Parse the incoming XML stream and extract the data
     XMLReader parser = null;
@@ -305,8 +305,15 @@ public class ResultSet extends AbstractTableModel implements ContentHandler,
    */
   public int getRowHeight()
   {
-    int height = (localIcon.getIconHeight())*HEIGHTFACTOR;
-    return height ;
+    if (localIcon != null)
+    {
+      int height = (localIcon.getIconHeight())*HEIGHTFACTOR;
+      return height ;
+    }
+    else
+    {
+      return 1;
+    }
   }
 
   /**
