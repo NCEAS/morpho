@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-09-06 18:06:00 $'
- * '$Revision: 1.35 $'
+ *     '$Date: 2002-09-06 18:13:22 $'
+ * '$Revision: 1.36 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1086,7 +1086,6 @@ public class DataViewer extends javax.swing.JPanel
         Reader reader = null;
         try {
           reader = dp.openAsReader(id);
-        Log.debug(1,"id: "+id);
           char[] buff = new char[4096];
           int numCharsRead;
       
