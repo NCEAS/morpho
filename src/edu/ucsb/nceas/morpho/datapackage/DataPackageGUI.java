@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-06-25 21:19:45 $'
- * '$Revision: 1.29 $'
+ *     '$Date: 2001-06-25 22:13:43 $'
+ * '$Revision: 1.30 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -595,7 +595,8 @@ public class DataPackageGUI extends javax.swing.JFrame
       
       String id = item.substring(item.indexOf("(")+1, item.indexOf(")"));
       ClientFramework.debug(20, "Edititing entity: " + id);
-      EntityGUI entityEdit = new EntityGUI(dataPackage, id, location, framework);
+      EntityGUI entityEdit = new EntityGUI(dataPackage, id, location, this, 
+                                           framework);
       entityEdit.show();
     }
   }

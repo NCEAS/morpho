@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-06-22 17:51:05 $'
- * '$Revision: 1.2 $'
+ *     '$Date: 2001-06-25 22:13:43 $'
+ * '$Revision: 1.3 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -127,6 +127,61 @@ public class PackageUtil
                          se.toString());
       return null;
     }
+  }
+  
+  /**
+   * parses file with the dom parser and returns a dom Document
+   */
+  public static Document getDoc(File file, String catalogPath) throws 
+                                                               SAXException, 
+                                                               Exception
+  {
+    DOMParser parser = new DOMParser();
+    Document doc;
+    InputSource in;
+    FileInputStream fs;
+    CatalogEntityResolver cer = new CatalogEntityResolver();
+    try 
+    {
+      Catalog myCatalog = new Catalog();
+      myCatalog.loadSystemCatalogs();
+      //ConfigXML config = framework.getConfiguration();
+      //String catalogPath = config.get("local_catalog_path", 0);
+      myCatalog.parseCatalog(catalogPath);
+      cer.setCatalog(myCatalog);
+    } 
+    catch (Exception e) 
+    {
+      ClientFramework.debug(11, "Problem creating Catalog in " +
+                   "packagewizardshell.handleFinishAction!" + e.toString());
+      throw new Exception(e.getMessage());
+    }
+    
+    parser.setEntityResolver(cer);
+    
+    try
+    { //parse the wizard created file without the triples
+      fs = new FileInputStream(file);
+      in = new InputSource(fs);
+    }
+    catch(FileNotFoundException fnf)
+    {
+      fnf.printStackTrace();
+      throw new Exception(fnf.getMessage());
+    }
+    try
+    {
+      parser.parse(in);
+      fs.close();
+    }
+    catch(Exception e1)
+    {
+      throw new Exception(e1.getMessage());
+    }
+    //get the DOM rep of the document without triples
+    doc = parser.getDocument();
+    
+    return doc;
   }
   
   /**
@@ -337,60 +392,5 @@ public class PackageUtil
     docString += "\n<!DOCTYPE " + nameid +  " PUBLIC \"" + publicid + 
                  "\" \"" + systemid + "\">\n";
     return docString;
-  }
-  
-  /**
-   * parses file with the dom parser and returns a dom Document
-   */
-  public static Document getDoc(File file, String catalogPath) throws 
-                                                               SAXException, 
-                                                               Exception
-  {
-    DOMParser parser = new DOMParser();
-    Document doc;
-    InputSource in;
-    FileInputStream fs;
-    CatalogEntityResolver cer = new CatalogEntityResolver();
-    try 
-    {
-      Catalog myCatalog = new Catalog();
-      myCatalog.loadSystemCatalogs();
-      //ConfigXML config = framework.getConfiguration();
-      //String catalogPath = config.get("local_catalog_path", 0);
-      myCatalog.parseCatalog(catalogPath);
-      cer.setCatalog(myCatalog);
-    } 
-    catch (Exception e) 
-    {
-      ClientFramework.debug(11, "Problem creating Catalog in " +
-                   "packagewizardshell.handleFinishAction!" + e.toString());
-      throw new Exception(e.getMessage());
-    }
-    
-    parser.setEntityResolver(cer);
-    
-    try
-    { //parse the wizard created file without the triples
-      fs = new FileInputStream(file);
-      in = new InputSource(fs);
-    }
-    catch(FileNotFoundException fnf)
-    {
-      fnf.printStackTrace();
-      throw new Exception(fnf.getMessage());
-    }
-    try
-    {
-      parser.parse(in);
-      fs.close();
-    }
-    catch(Exception e1)
-    {
-      throw new Exception(e1.getMessage());
-    }
-    //get the DOM rep of the document without triples
-    doc = parser.getDocument();
-    
-    return doc;
   }
 }

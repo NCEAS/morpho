@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-06-25 21:19:46 $'
- * '$Revision: 1.1 $'
+ *     '$Date: 2001-06-25 22:13:43 $'
+ * '$Revision: 1.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -60,6 +60,11 @@ public class EntityGUI extends javax.swing.JFrame
 {
   private static final String htmlBegin = "<html><p><font color=black>";
   private static final String htmlEnd = "</font></p></html>";
+  private static final String namePath = "//entityName";
+  private static final String descPath = "//entityDescription";
+  private static final String numrecPath = "//numberOfRecords";
+  private static final String caseSensPath = "//caseSensitive";
+  private static final String orientationPath = "//orientation";
   
   private ClientFramework framework;
   private Container contentPane;
@@ -75,14 +80,21 @@ public class EntityGUI extends javax.swing.JFrame
   private JLabel caseSensitive = new JLabel(htmlBegin + "yes" + htmlEnd);
   private JLabel orientation = new JLabel(htmlBegin + "column" + htmlEnd);
   private JList attributeList = new JList();
+  private DataPackageGUI parent;
   
   /**
    * Creates a new entity editor.
    * @param dp the datapackage that the entity belongs to
    * @param id the id of the entity file that we want to edit.
+   * @param location the location of this data package
+   * @param parent the DataPackageGUI parent of this window.
+   * @param cf the clientframework from which this morpho instantiation was
+   *        created.
    */
-  public EntityGUI(DataPackage dp, String id, String location, ClientFramework cf)
+  public EntityGUI(DataPackage dp, String id, String location, 
+                   DataPackageGUI parent, ClientFramework cf)
   {
+    this.parent = parent;
     this.location = location;
     this.framework = cf;
     this.dataPackage = dp;
@@ -91,9 +103,85 @@ public class EntityGUI extends javax.swing.JFrame
     setTitle("Table Editor");
     BoxLayout box = new BoxLayout(contentPane, BoxLayout.Y_AXIS);
     contentPane.setLayout(box);
+    parseEntity();
     initComponents();
     pack();
     setSize(500, 450);
+  }
+  
+  /**
+   * parse the entity file to fill in the entity fields
+   */
+  private void parseEntity()
+  {
+    File xmlFile;
+    try
+    {
+      if(location.equals(DataPackage.LOCAL) || 
+         location.equals(DataPackage.BOTH))
+      {
+        FileSystemDataStore fsds = new FileSystemDataStore(framework);
+        xmlFile = fsds.openFile(entityId);
+      }
+      else
+      {
+        MetacatDataStore mds = new MetacatDataStore(framework);
+        xmlFile = mds.openFile(entityId);
+      }
+    }
+    catch(FileNotFoundException fnfe)
+    {
+      framework.debug(0, "Error reading file : " + entityId + " " + 
+                         fnfe.getMessage() + "---File NOT found.");
+      return;
+    }
+    catch(CacheAccessException cae)
+    {
+      framework.debug(0, "Error reading file : " + entityId + " " + 
+                         cae.getMessage() + "---Cache could not be accessed");
+      return;
+    }
+    
+    NodeList nameList = PackageUtil.getPathContent(xmlFile, namePath, 
+                                                   framework);
+    NodeList descList = PackageUtil.getPathContent(xmlFile, descPath, 
+                                                   framework);
+    NodeList numrecList = PackageUtil.getPathContent(xmlFile, numrecPath, 
+                                                     framework);
+    NodeList caseSensList = PackageUtil.getPathContent(xmlFile, caseSensPath, 
+                                                       framework);
+    NodeList orientationList = PackageUtil.getPathContent(xmlFile, orientationPath, 
+                                                          framework);
+    
+    if(nameList.getLength() != 0)
+    { 
+      String s = nameList.item(0).getFirstChild().getNodeValue();
+      name = new JLabel(htmlBegin + s + htmlEnd);
+    }
+    if(descList.getLength() != 0)
+    {
+      String s = descList.item(0).getFirstChild().getNodeValue();
+      description = new JLabel(htmlBegin + s + htmlEnd);
+    }
+    if(numrecList.getLength() != 0)
+    {
+      String s = numrecList.item(0).getFirstChild().getNodeValue();
+      numrecords = new JLabel(htmlBegin + s + htmlEnd);
+    }
+    if(caseSensList.getLength() != 0)
+    {
+      NamedNodeMap nnm = caseSensList.item(0).getAttributes();
+      Node n = nnm.getNamedItem("yesorno");
+      String s = n.getFirstChild().getNodeValue();
+      caseSensitive = new JLabel(htmlBegin + s + htmlEnd);
+    }
+    if(orientationList.getLength() != 0)
+    {
+      NamedNodeMap nnm = orientationList.item(0).getAttributes();
+      Node n = nnm.getNamedItem("columnorrow");
+      String s = n.getFirstChild().getNodeValue();
+      orientation = new JLabel(htmlBegin + s + htmlEnd);
+    }
   }
   
   private void initComponents()
@@ -107,11 +195,9 @@ public class EntityGUI extends javax.swing.JFrame
     attributeList = new JList(attributes);
     attributeList.setPreferredSize(new Dimension(180, 225)); 
     attributeList.setMaximumSize(new Dimension(180, 225));
-    //attributeList.setBorder(BorderFactory.createLoweredBevelBorder());
     attributeList.setBorder(BorderFactory.createCompoundBorder(
                             BorderFactory.createLineBorder(Color.black),
                             BorderFactory.createLoweredBevelBorder()));
-    //attributeList.setMaximumSize(new Dimension(200, 250)); 
     
     JLabel nameL = new JLabel("Name");
     JLabel descriptionL = new JLabel("Description");
@@ -242,6 +328,120 @@ public class EntityGUI extends javax.swing.JFrame
   {
     ClientFramework.debug(11, "Editing complete: id: " + id + " location: " + 
                               location);
+    AccessionNumber a = new AccessionNumber(framework);
+    boolean metacatpublic = false;
+    FileSystemDataStore fsds = new FileSystemDataStore(framework);
+    //System.out.println(xmlString);
+  
+    boolean metacatloc = false;
+    boolean localloc = false;
+    boolean bothloc = false;
+    String newid = "";
+    String newPackageId = "";
+    if(location.equals(DataPackage.BOTH))
+    {
+      metacatloc = true;
+      localloc = true;
+    }
+    else if(location.equals(DataPackage.METACAT))
+    {
+      metacatloc = true;
+    }
+    else if(location.equals(DataPackage.LOCAL))
+    {
+      localloc = true;
+    }
+    
+    try
+    {
+      if(metacatloc)
+      { //save it to metacat
+        MetacatDataStore mds = new MetacatDataStore(framework);
+        int choice = JOptionPane.showConfirmDialog(null, 
+                               "Do you wish to make this file publicly readable "+ 
+                               "(Searchable) on Metacat?", 
+                               "Package Editor", 
+                               JOptionPane.YES_NO_CANCEL_OPTION,
+                               JOptionPane.WARNING_MESSAGE);
+        if(choice == JOptionPane.YES_OPTION)
+        {
+          metacatpublic = true;
+        }
+        if(id.trim().equals(dataPackage.getID().trim()))
+        { //edit the package file
+          String oldid = id;
+          newid = a.incRev(id);
+          File f = fsds.saveTempFile(oldid, new StringReader(xmlString));
+          String newPackageFile = a.incRevInTriples(f, oldid, newid);
+          mds.saveFile(newid, new StringReader(newPackageFile), metacatpublic);
+          newPackageId = newid;
+        }
+        else
+        { //edit another file in the package
+          String oldid = id;
+          newid = a.incRev(id);
+          mds.saveFile(newid, new StringReader(xmlString), metacatpublic);
+          newPackageId = a.incRev(dataPackage.getID());
+          String newPackageFile = a.incRevInTriples(dataPackage.getTriplesFile(),
+                                                    oldid,
+                                                    newid);
+          mds.saveFile(newPackageId, new StringReader(newPackageFile), 
+                       metacatpublic);
+        }
+      }
+    }
+    catch(Exception e)
+    {
+      framework.debug(0, "Error saving file to metacat"+ id + " to " + location +
+                         "--message: " + e.getMessage());
+      framework.debug(11, "File: " + xmlString);
+      e.printStackTrace();
+    }
+    
+    try
+    { 
+      if(localloc)
+      { //save the file locally
+        if(id.trim().equals(dataPackage.getID().trim()))
+        { //we just edited the package file itself
+          String oldid = id;
+          newid = a.incRev(id);
+          File f = fsds.saveTempFile(oldid, new StringReader(xmlString));
+          String newPackageFile = a.incRevInTriples(f, oldid, newid);
+          fsds.saveFile(newid, new StringReader(newPackageFile), false);
+          newPackageId = newid;
+        }
+        else
+        { //we edited a file in the package
+          String oldid = id;
+          newid = a.incRev(id);
+          fsds.saveFile(newid, new StringReader(xmlString), false);
+          newPackageId = a.incRev(dataPackage.getID());
+          String newPackageFile = a.incRevInTriples(dataPackage.getTriplesFile(), 
+                                                    oldid, 
+                                                    newid);
+          fsds.saveFile(newPackageId, new StringReader(newPackageFile), false); 
+        }
+      }
+      
+      DataPackage newPackage = new DataPackage(location, newPackageId, null,
+                                                 framework);
+      this.dispose();
+      parent.dispose();
+      
+      DataPackageGUI newgui = new DataPackageGUI(framework, newPackage);
+      EntityGUI newEntitygui = new EntityGUI(dataPackage, a.incRev(entityId), location, 
+                                             newgui, framework);
+      newgui.show();
+      newEntitygui.show();
+    }
+    catch(Exception e)
+    {
+      framework.debug(0, "Error saving file locally"+ id + " to " + location +
+                         "--message: " + e.getMessage());
+      framework.debug(11, "File: " + xmlString);
+      e.printStackTrace();
+    }
   }
   
   /**
