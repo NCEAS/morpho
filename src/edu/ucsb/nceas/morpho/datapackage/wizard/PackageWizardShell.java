@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2002-09-03 18:11:35 $'
- * '$Revision: 1.72 $'
+ *     '$Date: 2002-09-19 00:52:32 $'
+ * '$Revision: 1.73 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -601,7 +601,12 @@ public class PackageWizardShell extends javax.swing.JFrame
    * Handles the action when the user presses the 'finish' button
    */
   private void handleFinishAction()
-  { //write out all of the files to their proper homes with proper (non temp) ids
+  { 
+    if (addMetaWiz != null)
+    {
+      addMetaWiz.dispose();
+    }//if
+    //write out all of the files to their proper homes with proper (non temp) ids
     //add the triples to the triples file
     //open the new package in the package editor if the check box is true
     String aclid = "";
@@ -1087,6 +1092,10 @@ public class PackageWizardShell extends javax.swing.JFrame
       if(choice == JOptionPane.YES_OPTION)
       {
         this.dispose();
+        if (addMetaWiz != null)
+        {
+          addMetaWiz.setVisible(true);
+        }
       }
     }
   }
