@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2002-12-09 23:21:39 $'
- * '$Revision: 1.7 $'
+ *     '$Date: 2002-12-11 00:58:50 $'
+ * '$Revision: 1.8 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,6 +32,7 @@ import java.awt.Image;
 import java.awt.Dimension;
 import java.awt.Toolkit;
 
+import javax.swing.Icon;
 import javax.swing.ImageIcon;
 
 /**
@@ -110,6 +111,35 @@ public class UISettings
     public static final int WINDOW_CASCADE_X_OFFSET     = 25;
     public static final int WINDOW_CASCADE_Y_OFFSET     = 25;
 
+    /**
+     *  # pixels padding around & between the 3 panels on the left side of the 
+     *  initial screen
+     */
+    public static final int INIT_SCRN_LEFT_PANELS_PADDING  = 15;
+    
+    
+    /**
+     *  Width in pixels for each of 3 panels on the left side of initial screen
+     */
+    public static final int INIT_SCRN_LEFT_PANELS_WIDTH = 340;
+    
+    public static final int INIT_SCRN_PROFILE_PANEL_HEIGHT  = 110;
+    public static final int INIT_SCRN_LOGIN_PANEL_HEIGHT    = 120;
+    public static final int INIT_SCRN_DATA_PANEL_HEIGHT     = 115;
+                                                        
+    /**
+     *  Dims in pixels for each of 3 panels on the left side of initial screen
+     */
+    public static final Dimension INIT_SCRN_LEFT_PANELS_TITLE_DIMS 
+                            = new Dimension(INIT_SCRN_LEFT_PANELS_WIDTH,18);
+                                                        
+    
+    /**
+     *  Preferred overall dims in pixels for main initial screen
+     */
+    public static final Dimension INIT_SCRN_MAIN_DIMS = new Dimension(735, 400);
+    
+    
     // * * * *  D E F A U L T   F O N T S  &  T E X T - C O L O R S   * * * * * 
 
     //                                       "null" means use default font...
@@ -122,12 +152,30 @@ public class UISettings
                                           = new Font("Dialog", Font.BOLD, 12);
     public static final Font TITLE_LOCATION_FONT 
                                           = new Font("Dialog", Font.PLAIN, 9);
-                                          
+
+    /**
+     *  html style for font on title bars on the 3 panels to the left of the 
+     *  initial screen
+     */
+    public static final String INIT_SCRN_LEFT_PANELS_TITLE_FONT_HTML 
+        = "<font face=\"Verdana, Arial, Helvetica, sans-serif\" "
+                                        +" size=\"1\" color=\"#ffffff\">&nbsp;";
+
+    /**
+     *  html style for font on hyperlink urls
+     */
+    public static final String HYPERLINK_FONT_HTML 
+        = "<font face=\"Verdana, Arial, Helvetica, sans-serif\" "
+                                        +" size=\"1\" color=\"#0000d2\">&nbsp;";
+
+
     public static final Color TITLE_TEXT_COLOR        = Color.white;
     public static final Color BACKBUTTON_TEXT_COLOR   = new Color(0, 198, 255);
     public static final Color CLOSEBUTTON_TEXT_COLOR  = BACKBUTTON_TEXT_COLOR;
     public static final Color EDITBUTTON_TEXT_COLOR   = new Color(0, 255, 0);
     public static final Color ALERT_TEXT_COLOR        = Color.red;
+    
+    
 
     // * * * * *  D E F A U L T   C O M P O N E N T   C O L O R S  * * * * * * *
     
@@ -143,18 +191,80 @@ public class UISettings
     
     public static final Color NONEDITABLE_BACKGROUND_COLOR  
                                                   = new Color(237, 237, 237);
+ 
+    /**
+     *  background color of the 3 panels on the left side of the initial screen
+     */
+    public static final Color INIT_SCRN_LEFT_PANELS_BG_COLOR = Color.white;
     
-    public static final Image FRAME_AND_TASKBAR_ICON 
-              = getAsImage("/edu/ucsb/nceas/morpho/framework/Btfly16x16.gif");
+    /**
+     *  background color of the title bars on the 3 panels to the left of the 
+     *  initial screen
+     */
+    public static final Color INIT_SCRN_LEFT_PANELS_TITLE_BG_COLOR 
+                                                      = new Color(11,85,112);
+    
+    /**
+     *  background color of the main part of the initial screen
+     */
+    public static final Color INIT_SCRN_MAIN_BG_COLOR = new Color(0,153,203);
+    
 
     
+    // * * * * * *  D E F A U L T   I M A G E S   &   I C O N S  * * * * * * * *
+    
+    public static final Image FRAME_AND_TASKBAR_ICON 
+            = getAsImage("/edu/ucsb/nceas/morpho/framework/Btfly16x16.gif");
+
+    public static final Icon NEW_DATAPACKAGE_ICON 
+            = getAsImageIcon("/toolbarButtonGraphics/general/New16.gif");
+
+    public static final Icon OPEN_DATAPACKAGE_ICON 
+            = getAsImageIcon("/toolbarButtonGraphics/general/Open16.gif");
+
+    public static final Icon SEARCH_ICON 
+            = getAsImageIcon("/toolbarButtonGraphics/general/Search16.gif");
+
+    public static final Icon REFRESH_ICON 
+            = getAsImageIcon("/toolbarButtonGraphics/general/Refresh16.gif");
+          
+    public static final Icon SAVE_ICON 
+            = getAsImageIcon("/toolbarButtonGraphics/general/Save16.gif");
+                  
+              
+    
+    /////////////////////////////////////////////
+    
+    private static Object cpLocator = null;
+    
+    // needs classpath-relative path string (i.e. starts with a "/")
     private static Image getAsImage(String path) {
         
-        Object cpLocator = new Object();
+        if (cpLocator==null) cpLocator = new Object();
         return new ImageIcon(cpLocator.getClass().getResource(path)).getImage();
     }
 
+    // needs classpath-relative path string (i.e. starts with a "/")
+    private static Icon getAsImageIcon(String path) {
+        
+        return new ImageIcon(getAsImage(path));
+    }
 
+    
+    
+    // * * * * * * * * * *    T E X T   L A B E L S    * * * * * * * * * * * * *
+    
+    
+    public static final String NEW_DATAPACKAGE_LINK_TEXT 
+                                    = "Create a <b>new</b> data package...";
+    
+    public static final String OPEN_DATAPACKAGE_LINK_TEXT 
+                                    = "Open an <b>existing</b> data package...";
+    
+    public static final String SEARCH_LINK_TEXT 
+                                    = "<b>Search</b> for an existing data package...";
+    
+    // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
 
     /**
