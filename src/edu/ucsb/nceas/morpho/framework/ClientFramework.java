@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2001-04-25 01:10:36 $'
- * '$Revision: 1.31.2.13 $'
+ *     '$Date: 2001-04-25 17:53:37 $'
+ * '$Revision: 1.31.2.14 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -130,6 +130,9 @@ public class ClientFramework extends javax.swing.JFrame
       String local_dtd_directory = config.get("local_dtd_directory", 0);
       xmlcatalogfile = local_dtd_directory + "/catalog";
       MetaCatServletURL = config.get("MetaCatServletURL", 0);
+      
+      String temp_uname = config.get("username", 0);
+      userName = (temp_uname != null) ? temp_uname : "public";
       debug_level = (new Integer(config.get("debug_level", 0))).intValue();
       debug(9, "Debug_level set to: " + debug_level);
     }
@@ -669,6 +672,7 @@ public class ClientFramework extends javax.swing.JFrame
       if (reply == JOptionPane.YES_OPTION)
       {
 	logOut();
+        config.save();
 	this.setVisible(false);	// hide the Frame
 	this.dispose();		// free the system resources
 	System.exit(0);		// close the application
@@ -841,6 +845,11 @@ public class ClientFramework extends javax.swing.JFrame
   public void setUserName(String uname)
   {
     this.userName = uname;
+    boolean success = config.set("username", 0, uname);
+    if (!success)
+    {
+      config.insert("username", uname);
+    }
   } 
 
   /**
