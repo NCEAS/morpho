@@ -53,8 +53,7 @@ help="Eml-attribute element represents a list of all attributes in a dataset.">
       help="This element describes a free text domain for the attribute. By default, if pattern is missing or empty, then any text is allowed. If pattern is present, then it is interpreted as a regular expression constraining the allowable character sequences for the attribute.">
 
         <definition
-        help="The element definition provides the
-                    text domain definition, that is, what kinds of text expressions are allowed for this attribute. If there is a pattern supplied, the definition element expresses the meaning of the pattern, For example, a particular pattern may be meant to represent phone numbers in the US phone system format. ">
+        help="The element definition provides the text domain definition, that is, what kinds of text expressions are allowed for this attribute. If there is a pattern supplied, the definition element expresses the meaning of the pattern, For example, a particular pattern may be meant to represent phone numbers in the US phone system format. ">
         </definition>
 
         <pattern
