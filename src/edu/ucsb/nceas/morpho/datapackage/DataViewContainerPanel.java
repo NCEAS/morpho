@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2002-09-18 18:02:04 $'
- * '$Revision: 1.18 $'
+ *     '$Date: 2002-09-24 00:55:38 $'
+ * '$Revision: 1.19 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,6 +30,7 @@ import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
 import javax.swing.border.*;
+import javax.swing.event.ChangeListener;
 import java.io.*;
 import java.util.*;
 import edu.ucsb.nceas.morpho.Morpho;
@@ -44,6 +45,9 @@ import edu.ucsb.nceas.morpho.plugins.ServiceExistsException;
 import edu.ucsb.nceas.morpho.plugins.ServiceProvider;
 import edu.ucsb.nceas.morpho.plugins.ServiceNotHandledException;
 import edu.ucsb.nceas.morpho.util.Log;
+import edu.ucsb.nceas.morpho.util.StateChangeEvent;
+import edu.ucsb.nceas.morpho.util.StateChangeListener;
+import edu.ucsb.nceas.morpho.util.StateChangeMonitor;
 
 import edu.ucsb.nceas.morpho.framework.*;
 
@@ -60,7 +64,7 @@ import edu.ucsb.nceas.morpho.framework.*;
  * customize the display
  */
 public class DataViewContainerPanel extends javax.swing.JPanel 
-                                    implements javax.swing.event.ChangeListener
+                                implements ChangeListener, StateChangeListener
 {
   /**
    * The DataPackage that contains the data
@@ -121,6 +125,8 @@ public class DataViewContainerPanel extends javax.swing.JPanel
   
   private static final Color BACKGROUND = new Color(237, 237, 237);
   private static final Color RED = Color.red;
+  
+  private static final int DEFAULTWIDTHOFMETADATAPANEL = 675;
   /*
    * no parameter constuctor for DataViewContainerPanel.
    * Some basic gui setup
@@ -278,7 +284,7 @@ public class DataViewContainerPanel extends javax.swing.JPanel
     entityFile = new File[entityItems.size()];
     for (int i=0;i<entityItems.size();i++) {
       JSplitPane currentEntityPanel = createEntityPanel();
-      tabbedEntitiesPanel.addTab((String)entityItems.elementAt(i), currentEntityPanel);
+      
       String item = (String)entityItems.elementAt(i);
       // id is the id of the Entity metadata module
       // code from here to 'end_setup' comment sets up the display for the
@@ -329,7 +335,15 @@ public class DataViewContainerPanel extends javax.swing.JPanel
 //      currentEntityMetadataPanel.add(BorderLayout.SOUTH, entityEditControls);                                     
 //      currentEntityMetadataPanel.setMaximumSize(new Dimension(200,4000));
 
-      currentEntityPanel.setDividerLocation(675);
+      currentEntityPanel.setDividerLocation(DEFAULTWIDTHOFMETADATAPANEL);
+      
+      // create a tabbed component instance
+      TabbedContainer component = new TabbedContainer();
+      component.setSplitPane(currentEntityPanel);
+      component.setMetaDisplayInterface(md);
+      component.setVisible(true);
+      tabbedEntitiesPanel.addTab((String)entityItems.elementAt(i),component);
+      //tabbedEntitiesPanel.addTab((String)entityItems.elementAt(i), currentEntityPanel);
       this.entityFile[i] = entityEdit.entityFile;
     
       // create the data display panel (usually a table) using DataViewer class
@@ -339,8 +353,14 @@ public class DataViewContainerPanel extends javax.swing.JPanel
       File f = dp.getDataFile(id);
       String dataString = "";
     }
-    if ((entityItems!=null) && (entityItems.size()>0)) {
+    if ((entityItems!=null) && (entityItems.size()>0)) 
+    {
       setDataViewer(0);
+      // Register the instance of this class as an listener in state change 
+      // monitor
+      StateChangeMonitor stateMonitor = StateChangeMonitor.getInstance();
+      stateMonitor.addStateChangeListener
+                                (StateChangeEvent.SELECTDATATABLECOLUMN, this);
     }
   }
 
@@ -366,15 +386,34 @@ public class DataViewContainerPanel extends javax.swing.JPanel
   }
 
   /**
+   * Method implements from StateChangeListener. This method will handle
+   * state change event
+   */
+  public void handleStateChange(StateChangeEvent event)
+  {
+    // Handle select data table column
+    if ((event.getChangedState()).
+                          equals(StateChangeEvent.SELECTDATATABLECOLUMN))
+    {
+      // Get attribute file id and show it the metacat panel
+    }
+  }
+  
+  /**
    * creates the data display and puts it into the center of the window
    * This needs to be dynamically done as tabs are selected due to potentially
    * large memory usage
    */
   private void setDataViewer(int index) {
-    JSplitPane entireDataPanel = (JSplitPane)(tabbedEntitiesPanel.getComponentAt(lastTabSelected));
-    JPanel currentDataPanel1 = (JPanel)entireDataPanel.getLeftComponent();
+    //JSplitPane entireDataPanel = (
+          //JSplitPane)(tabbedEntitiesPanel.getComponentAt(lastTabSelected));
+    
+    TabbedContainer comp = 
+        (TabbedContainer) tabbedEntitiesPanel.getComponentAt(lastTabSelected);
+    JSplitPane entireDataPanel = comp.getSplitPane();
+    JPanel currentDataPanelOld = (JPanel)entireDataPanel.getLeftComponent();
     removePVObject();
-    currentDataPanel1.removeAll();
+    currentDataPanelOld.removeAll();
     lastTabSelected = index;
     String item = (String)entityItems.elementAt(index);
     String id = (String)listValueHash.get(item);
@@ -383,7 +422,6 @@ public class DataViewContainerPanel extends javax.swing.JPanel
     File fattribute = dp.getAttributeFile(id);
     File f = dp.getDataFile(id);
     String dataString = "";
-    
     DataViewer dv = new DataViewer(morpho, "DataFile: "+fn, f);
     dv.setDataID(dp.getDataFileID(id));
     dv.setPhysicalFile(fphysical);
@@ -408,13 +446,19 @@ public class DataViewContainerPanel extends javax.swing.JPanel
       warning.setForeground(RED);
       tablePanel.add(BorderLayout.CENTER, warning);
     }
+    
     tablePanel.setOpaque(true);
     tablePanel.setBackground(BACKGROUND);
-    JSplitPane EntireDataPanel = (JSplitPane)(tabbedEntitiesPanel.getComponentAt(index));
-    JPanel currentDataPanel = (JPanel)EntireDataPanel.getLeftComponent();
+    //JSplitPane EntireDataPanel = (JSplitPane)(tabbedEntitiesPanel.getComponentAt(index));
+    //JPanel currentDataPanel = (JPanel)EntireDataPanel.getLeftComponent();
+    TabbedContainer compn = 
+        (TabbedContainer) tabbedEntitiesPanel.getComponentAt(index);
+    JSplitPane entireDataPane = compn.getSplitPane();
+    JPanel currentDataPanel = (JPanel)entireDataPane.getLeftComponent();
     currentDataPanel.setLayout(new BorderLayout(0,0));
     currentDataPanel.add(BorderLayout.CENTER,tablePanel);
     currentDataPanel.setBackground(BACKGROUND);
+    
   }
   
   private JSplitPane createEntityPanel() {
@@ -429,7 +473,19 @@ public class DataViewContainerPanel extends javax.swing.JPanel
     
     return entityPanel;
   }
-
+  
+  /*  Method to create a attribute panel to replace entity */
+  private JSplitPane createAttributePanel() 
+  {
+    JPanel attributeMetadataPanel = new JPanel();
+    attributeMetadataPanel.setLayout(new BorderLayout(0,0));
+    entityPanel = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,dataViewPanel, 
+                                      attributeMetadataPanel);
+    entityPanel.setOneTouchExpandable(true);
+    entityPanel.setDividerLocation(700);
+    
+    return entityPanel;
+  }
   
   public void stateChanged(javax.swing.event.ChangeEvent event) {
     Object object = event.getSource();
@@ -455,5 +511,58 @@ public class DataViewContainerPanel extends javax.swing.JPanel
       metaDisplayFactory = (MetaDisplayFactoryInterface)provider;
     }
     return metaDisplayFactory.getInstance();
-  }  
+  }
+
+  /*
+   * A class to keep the information for every tabbed panel
+   */
+  private class TabbedContainer extends Container
+  {
+    // JSplitPanel in tabbed panel
+    JSplitPane splitPane = null;
+    // MetaDispaly in the splitPane
+    MetaDisplayInterface metaDisplay = null;
+    
+    /*
+     * Constructor of this class
+     */
+    public TabbedContainer()
+    {
+      super();
+      this.setLayout(new BorderLayout());
+    }
+    /*
+     * Method to get the JSplitPane
+     */
+    public JSplitPane getSplitPane()
+    {
+      return splitPane;
+    }
+    
+    /*
+     * Method to set up SplitPane
+     */
+    public void setSplitPane(JSplitPane pane)
+    {
+      splitPane = pane;
+      this.add(splitPane, BorderLayout.CENTER);
+    }
+    
+    /*
+     * Method to get meta display interface
+     */
+    public MetaDisplayInterface getMetaDisplayInterface()
+    {
+      return metaDisplay;
+    }
+    
+    /*
+     * Method to set meta display interface
+     */
+    public void setMetaDisplayInterface(MetaDisplayInterface display)
+    {
+      metaDisplay = display;
+    }
+    
+  }//TabbedComponent
 }
