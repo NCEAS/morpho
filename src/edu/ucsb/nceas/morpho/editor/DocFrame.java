@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-05-04 21:37:44 $'
- * '$Revision: 1.1 $'
+ *     '$Date: 2001-05-07 16:19:37 $'
+ * '$Revision: 1.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -46,7 +46,7 @@ import javax.swing.tree.*;
 import org.xml.sax.*;
 import org.xml.sax.helpers.*;
 import java.util.*;
-//import edu.ucsb.nceas.dtclient.*;
+import edu.ucsb.nceas.morpho.framework.*;
 
 
 public class DocFrame extends javax.swing.JFrame
