@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: tao $'
- *     '$Date: 2002-09-27 18:46:20 $'
- * '$Revision: 1.17 $'
+ *   '$Author: brooke $'
+ *     '$Date: 2002-09-27 21:03:03 $'
+ * '$Revision: 1.18 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -434,33 +434,6 @@ public class GUIAction extends AbstractAction implements StateChangeListener
             }
         }
     }
-    
-    //returns true if event originated in same MorphoFrame as this GUIAction
-    private boolean isLocalEvent(StateChangeEvent event) 
-    {
-        Object source = event.getSource();
-        if (source==null) {
-            Log.debug(50, "GUIAction.isLocalEvent: got event with NULL source");
-            return false;
-        }
-        MorphoFrame eventAncestor = null;
-        
-        if (source instanceof Component) {
-            eventAncestor = getMorphoFrameAncestor((Component)source);
-            
-        } else if (source instanceof MenuComponent) {
-            eventAncestor = getMorphoFrameAncestor(
-                        (Component)( ( (MenuComponent)source ).getParent()) );
-        } else {
-          return false;
-        }          
-        MorphoFrame thisAncestor
-                        = UIController.getMorphoFrameContainingGUIAction(this);
-        Log.debug(50,"\n# # GUIAction.isLocalEvent: comparing eventAncestor="
-                              +eventAncestor+" and thisAncestor="+thisAncestor);
-        Log.debug(50,"\n# # result = "+( eventAncestor==thisAncestor ));
-        return ( eventAncestor==thisAncestor );
-    }
 
     /**
      * Get the position of this action on the toolbar.  If it is less than
@@ -510,7 +483,6 @@ public class GUIAction extends AbstractAction implements StateChangeListener
     {
         Object parent = null;                      
         if (c instanceof MorphoFrame) {
-        
             return (MorphoFrame)c;
             
         } else {
@@ -521,6 +493,33 @@ public class GUIAction extends AbstractAction implements StateChangeListener
             }
         }
         return getMorphoFrameAncestor((Component)parent);
+    }
+    
+    //returns true if event originated in same MorphoFrame as this GUIAction
+    private boolean isLocalEvent(StateChangeEvent event) 
+    {
+        Object source = event.getSource();
+        if (source==null) {
+            Log.debug(50, "GUIAction.isLocalEvent: got event with NULL source");
+            return false;
+        }
+        MorphoFrame eventAncestor = null;
+        
+        if (source instanceof Component) {
+            eventAncestor = getMorphoFrameAncestor((Component)source);
+            
+        } else if (source instanceof MenuComponent) {
+            eventAncestor = getMorphoFrameAncestor(
+                        (Component)( ( (MenuComponent)source ).getParent()) );
+        } else {
+          return false;
+        }          
+        MorphoFrame thisAncestor
+                        = UIController.getMorphoFrameContainingGUIAction(this);
+        Log.debug(50,"\n# # GUIAction.isLocalEvent: comparing eventAncestor="
+                              +eventAncestor+" and thisAncestor="+thisAncestor);
+        Log.debug(50,"\n# # result = "+( eventAncestor==thisAncestor ));
+        return ( eventAncestor==thisAncestor );
     }
     
 // * * *  V A R I A B L E S  * * *
