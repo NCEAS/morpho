@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2002-10-30 20:46:13 $'
- * '$Revision: 1.32 $'
+ *     '$Date: 2002-12-18 02:30:57 $'
+ * '$Revision: 1.33 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -690,6 +690,17 @@ public class MetaDisplay implements MetaDisplayInterface,
     protected MetaDisplayUI getMetaDisplayUI() 
     {
         return this.ui;
+    }
+
+    /**
+     *  Set the title in the titlebar
+     *
+     *  @param identifier  <code>String</code> title to be set in the titlebar
+     *
+     */
+    public void setTitle(String title) 
+    {
+        ui.getHeader().setTitleBarText(title);
     }
     
 }

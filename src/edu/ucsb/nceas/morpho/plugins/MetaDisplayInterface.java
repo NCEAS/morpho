@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2002-10-30 20:46:13 $'
- * '$Revision: 1.9 $'
+ *     '$Date: 2002-12-18 02:30:57 $'
+ * '$Revision: 1.10 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -229,24 +229,32 @@ public interface MetaDisplayInterface
      */
     public void useTransformerProperty(String key, String value);
     
-	  /**
-	   *  method to get the transformer property value corresponding to the passed 
+    /**
+     *  method to get the transformer property value corresponding to the passed 
      *  key 
-	   *
-	   *  @param key  
-	   *
-	   *  @return value  <code>String</code> value associated with the passed key
-	   */
-	  public String getTransformerProperty(String key);
+     *
+     *  @param key  
+     *
+     *  @return value  <code>String</code> value associated with the passed key
+     */
+    public String getTransformerProperty(String key);
 
-	  /**
-	   *  Get the <code>String</code> identifier associated with the 
+    /**
+     *  Get the <code>String</code> identifier associated with the 
      *  currently-displayed metadata
-	   *
-	   *  @return identifier  <code>String</code> identifier associated with the 
+     *
+     *  @return identifier  <code>String</code> identifier associated with the 
      *                      currently-displayed metadata
-	   *
-	   */
-	  public String getIdentifier();
+     *
+     */
+    public String getIdentifier();
+
+    /**
+     *  Set the title in the titlebar
+     *
+     *  @param identifier  <code>String</code> title to be set in the titlebar
+     *
+     */
+    public void setTitle(String title);
 }
 
