@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2003-09-08 17:10:03 $'
- * '$Revision: 1.5 $'
+ *     '$Date: 2003-09-08 17:32:56 $'
+ * '$Revision: 1.6 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -281,31 +281,31 @@ public class PartyDialog extends WizardPopupDialog {
     StringBuffer partyBuff = new StringBuffer();
     
     String salutation   = salutationField.getText().trim();
-    if (salutation!=null) {
+    if (notNullAndNotEmpty(salutation)) {
       partyBuff.append(salutation);
       partyBuff.append(" ");
     }
     
     String firstName    = firstNameField.getText().trim();
-    if (firstName!=null) {
+    if (notNullAndNotEmpty(firstName)) {
       partyBuff.append(firstName);
       partyBuff.append(" ");
     }
     
     String lastName     = lastNameField.getText().trim();
-    if (lastName!=null) {
+    if (notNullAndNotEmpty(lastName)) {
       partyBuff.append(lastName);
     }
   
     String positionName = positionNameField.getText().trim();
-    if (positionName!=null) {
-      if (partyBuff.length()>0 && hasNoTrailingComma(partyBuff)) partyBuff.append(", ");
+    if (notNullAndNotEmpty(positionName)) {
+      appendCommaIfNeeded(partyBuff); 
       partyBuff.append(positionName);
     }
 
     String organization = organizationField.getText().trim();
-    if (organization!=null) {
-      if (partyBuff.length()>0 && hasNoTrailingComma(partyBuff)) partyBuff.append(", ");
+    if (notNullAndNotEmpty(organization)) {
+      appendCommaIfNeeded(partyBuff); 
       partyBuff.append(organization);
     }
     surrogate.add(partyBuff.toString());
@@ -319,37 +319,37 @@ public class PartyDialog extends WizardPopupDialog {
     StringBuffer addressBuff = new StringBuffer();
     
     String address1   = address1Field.getText().trim();
-    if (address1!=null) {
+    if (notNullAndNotEmpty(address1)) {
       addressBuff.append(address1);
     }
     
-    String address2   = address1Field.getText().trim();
-    if (address2!=null) {
-      if (addressBuff.length()>0 && hasNoTrailingComma(addressBuff)) addressBuff.append(", ");
+    String address2   = address2Field.getText().trim();
+    if (notNullAndNotEmpty(address2)) {
+      appendCommaIfNeeded(addressBuff); 
       addressBuff.append(address2);
     }
     
     String city   = cityField.getText().trim();
-    if (city!=null) {
-      if (addressBuff.length()>0 && hasNoTrailingComma(addressBuff)) addressBuff.append(", ");
+    if (notNullAndNotEmpty(city)) {
+      appendCommaIfNeeded(addressBuff); 
       addressBuff.append(city);
     }
     
     String state   = stateField.getText().trim();
-    if (state!=null) {
-      if (addressBuff.length()>0 && hasNoTrailingComma(addressBuff)) addressBuff.append(", ");
+    if (notNullAndNotEmpty(state)) {
+      appendCommaIfNeeded(addressBuff); 
       addressBuff.append(state);
     }
     
     String zip   = zipField.getText().trim();
-    if (zip!=null) {
-      if (addressBuff.length()>0 && hasNoTrailingComma(addressBuff)) addressBuff.append(", ");
+    if (notNullAndNotEmpty(zip)) {
+      appendCommaIfNeeded(addressBuff); 
       addressBuff.append(zip);
     }
     
     String country   = countryField.getText().trim();
-    if (country!=null) {
-      if (addressBuff.length()>0 && hasNoTrailingComma(addressBuff)) addressBuff.append(", ");
+    if (notNullAndNotEmpty(country)) {
+      appendCommaIfNeeded(addressBuff); 
       addressBuff.append(country);
     }
     
@@ -358,13 +358,24 @@ public class PartyDialog extends WizardPopupDialog {
     return surrogate;
   }
 
-  // returns true if stringbuffer does NOT end with ", "
-  private boolean hasNoTrailingComma(StringBuffer buff) {
+  // If stringbuffer does NOT end with ", ", this method will add ", "
+  private void appendCommaIfNeeded(StringBuffer buff) {
   
     int lastIndex = buff.length() - 1;
-    return !((buff.charAt(lastIndex)==' ') && (buff.charAt(lastIndex-1)==','));
+    if ( lastIndex > -1 
+          && !(     (buff.charAt(lastIndex)==' ') 
+                &&  (buff.charAt(lastIndex-1)==',') ) ) {
+      
+      buff.append(", ");
+    }
   }
   
+  // returns true if string is not null and not empty.
+  // NOTE - assumes string has already been trimmed 
+  // of leading & trailing whitespace
+  private boolean notNullAndNotEmpty(String arg) {
+    return (arg!=null && !(arg.equals("")));
+  }
 
   /** 
    *  gets the Map object that contains all the key/value paired
