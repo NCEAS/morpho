@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2004-03-14 21:27:01 $'
- * '$Revision: 1.5 $'
+ *     '$Date: 2004-03-15 18:27:57 $'
+ * '$Revision: 1.6 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -638,7 +638,6 @@ public class GeographicPage extends AbstractWizardPage {
    *  This is a static main method configured to test the class 
    */
   static public void main(String args[]) {			
-		System.out.println("Starting up!");
 
     JFrame frame = new JFrame("Demo/Test");
     frame.setSize(800, 600);
