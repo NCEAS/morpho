@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-12-09 22:06:58 $'
- * '$Revision: 1.32 $'
+ *     '$Date: 2002-12-09 23:11:16 $'
+ * '$Revision: 1.33 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1499,8 +1499,8 @@ public class Morpho
                                                 "WindowsLookAndFeel")<0) return;
         UIManager.getLookAndFeelDefaults().put("SplitPane.dividerSize",
                                                DIVIDER_THICKNESS_FOR_MSWINDOWS);
-        UIManager.getLookAndFeelDefaults().put("SplitPane.background",
-                       UISettings.CUSTOM_GRAY);
+//        UIManager.getLookAndFeelDefaults().put("SplitPane.background",
+//                       UISettings.CUSTOM_GRAY);
     }
     /**
      * Attempts to connect a socket, returns null if it is not successful
