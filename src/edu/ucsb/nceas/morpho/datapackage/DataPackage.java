@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-07-09 23:17:02 $'
- * '$Revision: 1.24 $'
+ *     '$Date: 2001-07-10 21:06:00 $'
+ * '$Revision: 1.25 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -359,7 +359,7 @@ public class DataPackage
         
         String name;
         if(xmlString.equals("<?xml"))
-        { //we are dealing with a data file here.
+        { //we are dealing with an xml file here.
           Document subDoc = PackageUtil.getDoc(subfile, catalogPath);
           DocumentTypeImpl dt = (DocumentTypeImpl)subDoc.getDoctype();
           name = dt.getPublicId();

@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-07-05 18:04:32 $'
- * '$Revision: 1.16 $'
+ *     '$Date: 2001-07-10 21:06:01 $'
+ * '$Revision: 1.17 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -121,6 +121,7 @@ public class FileSystemDataStore extends DataStore
         }
       }
       
+      StringWriter swriter = new StringWriter();
       FileWriter writer = new FileWriter(savefile);
       int c = file.read();
       while(c != -1)
@@ -130,6 +131,8 @@ public class FileSystemDataStore extends DataStore
       }
       writer.flush();
       writer.close();
+      String s = insertIdInFile(savefile, name);
+      System.out.println("==============================s: " + s);
       return savefile;
     }
     catch(Exception e)

@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-07-05 18:04:32 $'
- * '$Revision: 1.8 $'
+ *     '$Date: 2001-07-10 21:06:01 $'
+ * '$Revision: 1.9 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,8 +26,26 @@
 
 package edu.ucsb.nceas.morpho.framework;
 
+import edu.ucsb.nceas.morpho.datapackage.*;
+
 import java.io.*;
 import java.util.*;
+
+import org.apache.xerces.parsers.DOMParser;
+import org.apache.xalan.xpath.xml.FormatterToXML;
+import org.apache.xalan.xpath.xml.TreeWalker;
+import org.w3c.dom.Attr;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.NodeList;
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.w3c.dom.DocumentType;
+import org.xml.sax.SAXException;
+import org.xml.sax.InputSource;
+import org.apache.xerces.dom.DocumentTypeImpl;
+
+import com.arbortext.catalog.*;
 
 /**
  * creates an abstract class for getting files from any dataStore using the same
@@ -78,6 +96,9 @@ public abstract class DataStore implements DataStoreInterface
     return path;
   }
   
+  /**
+   * parses the id of a file from the message that metacat returns
+   */
   protected String parseIdFromMessage(String message)
   {
     int docidIndex = message.indexOf("<docid>") + 1;
@@ -86,6 +107,68 @@ public abstract class DataStore implements DataStoreInterface
                                      message.indexOf("<", afterDocidIndex));
     debug(11, "docid in parseIdFromMessage: " + docid);
     return docid;
+  }
+  
+  /**
+   * inserts a documents id into a specified path in the document.  the document
+   * is returned as a string
+   * @param file the file to insert the id into
+   * @param id the id to insert into the file.
+   */
+  protected String insertIdInFile(File file, String id)
+  {
+    String catalogPath = config.get("local_catalog_path", 0);
+    Document doc;
+    try
+    {
+      doc = PackageUtil.getDoc(file, catalogPath);
+    }
+    catch(Exception e)
+    {
+      debug(0, "Error getting a DOM rep. of file: " + file.getPath() + " : " +
+            e.getMessage());
+      return null;
+    }
+    DocumentTypeImpl dt = (DocumentTypeImpl)doc.getDoctype();
+    String doctype = dt.getPublicId();
+    Hashtable docatts = PackageUtil.getConfigFileTypeAttributes(framework, 
+                                                                "xmlfiletype");
+    Hashtable h = (Hashtable)docatts.get(doctype);
+    String idpath = (String)h.get("idpath");
+    
+    NodeList idNL;
+    try
+    {
+      idNL = XPathAPI.selectNodeList(doc, idpath);
+    }
+    catch(Exception ee)
+    {
+      debug(0, "Error XPath searching file: " + file.getPath() + " : " +
+            ee.getMessage());
+      return null;
+    }
+    
+    String idNodeName = idpath.substring(idpath.lastIndexOf("/") + 1, 
+                                         idpath.length()).trim();
+    debug(19, "idNodeName: " + idNodeName);
+    if(idNL.getLength() != 0)
+    { //the path already exists, change the value
+      for(int i=0; i<idNL.getLength(); i++)
+      {
+        Node n = idNL.item(i);
+        String nname = n.getNodeName();
+        if(nname.equals(idNodeName))
+        {
+          n.getFirstChild().setNodeValue(id);
+        }
+      }
+    }
+    else
+    { //the path does not exist, create it and add the value
+      
+    }
+    
+    return PackageUtil.print(doc.getDocumentElement());
   }
   
   abstract public File openFile(String name) throws FileNotFoundException, 

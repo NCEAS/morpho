@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-07-10 18:18:50 $'
- * '$Revision: 1.47 $'
+ *     '$Date: 2001-07-10 21:06:00 $'
+ * '$Revision: 1.48 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -375,11 +375,11 @@ public class DataPackageGUI extends javax.swing.JFrame
     String abstractS = "";
     String keywords = ""; 
     
-    if(idNL != null)
+    if(idNL != null && idNL.getLength() != 0)
     {
       id = idNL.item(0).getFirstChild().getNodeValue();
     }
-    if(shortNameNL != null)
+    if(shortNameNL != null && shortNameNL.getLength() != 0)
     {
       shortName = shortNameNL.item(0).getFirstChild().getNodeValue();
     }
@@ -387,7 +387,7 @@ public class DataPackageGUI extends javax.swing.JFrame
     {
       title = titleNL.item(0).getFirstChild().getNodeValue();
     }
-    if(abstractNL != null)
+    if(abstractNL != null && abstractNL.getLength() != 0)
     {
       NodeList children = abstractNL.item(0).getChildNodes();
       for(int i=0; i<children.getLength(); i++)
@@ -407,7 +407,7 @@ public class DataPackageGUI extends javax.swing.JFrame
         }
       }
     }
-    if(keywordNL != null)
+    if(keywordNL != null && keywordNL.getLength() != 0)
     {
       for(int i=0; i<keywordNL.getLength(); i++)
       { //get the keywords and concat them into one string

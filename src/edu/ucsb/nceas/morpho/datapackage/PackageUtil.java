@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-07-06 23:07:27 $'
- * '$Revision: 1.7 $'
+ *     '$Date: 2001-07-10 21:06:01 $'
+ * '$Revision: 1.8 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -807,6 +807,10 @@ public class PackageUtil
         else if(nodename.equals("visible"))
         {
           h.put("visible", n2.getFirstChild().getNodeValue());
+        }
+        else if(nodename.equals("idpath"))
+        {
+          h.put("idpath", n2.getFirstChild().getNodeValue());
         }
       }
       returnhash.put(h.get(hashby), h);

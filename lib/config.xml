@@ -47,6 +47,7 @@
       <relatedto>DATAFILE</relatedto>
       <displaypath>//entityName</displaypath>
       <editexisting>no</editexisting>
+      <idpath>/table-entity/identifier</idpath>
     </file>
     <file>
       <name>Attribute</name>
@@ -58,6 +59,7 @@
       <displaypath>//variable_name</displaypath>
       <editexisting>yes</editexisting>
       <visible>no</visible>
+      <idpath>/eml-variable/meta_file_id</idpath>
     </file>
     <file>
       <name>Access</name>
@@ -67,6 +69,7 @@
       <tooltip>Access control information for this data package.</tooltip>
       <displaypath>FIXED:Access Permisions</displaypath>
       <editexisting>yes</editexisting>
+      <idpath>/acl/identifier</idpath>
     </file>
     <file>
       <name>Software</name>
@@ -76,6 +79,16 @@
       <tooltip>Description of any software created or used in the creation of this data package.</tooltip>
       <displaypath>//shortName</displaypath>
       <editexisting>no</editexisting>
+      <idpath>/software/identifier</idpath>
+    </file>
+    <file>
+      <name>Resource</name>
+      <label>Package Head</label>
+      <xmlfiletype>-//NCEAS//eml-dataset-2.0//EN</xmlfiletype>
+      <rootnode>dataset</rootnode>
+      <editexisting>no</editexisting>
+      <idpath>/dataset/identifier</idpath>
+      <visible>no</visible>
     </file>
   </newxmlfiletypes>
   <current_profile></current_profile> 
