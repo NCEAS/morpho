@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2001-05-07 21:14:08 $'
- * '$Revision: 1.5 $'
+ *     '$Date: 2001-05-08 01:46:49 $'
+ * '$Revision: 1.6 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -551,6 +551,14 @@ public class Query extends DefaultHandler {
     return queryResult;
   }
 
+  /**
+   * Run the query against the local data store and metacat, depending
+   * on how the searchMetacat and searchLocal flags are set.  If both
+   * local and metacat searches are run, merge the results into a single
+   * ResultSet and return it.
+   *
+   * @returns ResultSet the results of the query(s)
+   */
   public ResultSet execute()
   {
     ResultSet results = null;
