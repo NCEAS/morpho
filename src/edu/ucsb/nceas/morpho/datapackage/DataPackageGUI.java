@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-10-30 23:36:10 $'
- * '$Revision: 1.64 $'
+ *     '$Date: 2001-11-01 18:45:13 $'
+ * '$Revision: 1.65 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -740,7 +740,6 @@ public class DataPackageGUI extends javax.swing.JFrame
           sb.append((char)c);
           c = fr.read();
         }
-        sb.append((char)c);
         fr.close();
       }
       catch(Exception eeeee)
