@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2004-04-02 01:09:57 $'
- * '$Revision: 1.30 $'
+ *     '$Date: 2004-04-02 07:31:19 $'
+ * '$Revision: 1.31 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -246,11 +246,15 @@ public class DataPackageWizardPlugin implements PluginInterface,
       return false;
     }
     String rootNodeName = rootXPath;
-    //strip leading slashes...
-    while (rootNodeName.startsWith("/")) rootNodeName = rootNodeName.substring(1);
-    int firstSlashIdx = rootNodeName.indexOf("/");
-    if (firstSlashIdx < 0) firstSlashIdx = rootNodeName.length();
-    rootNodeName = rootNodeName.substring(0, firstSlashIdx);
+    //strip trailing slashes...
+    while (rootNodeName.endsWith("/")) {
+      rootNodeName = rootNodeName.substring(0, rootNodeName.length() - 1);
+    }
+    int lastSlashIdx = 1 + rootNodeName.lastIndexOf("/");
+    int lastPredicateIdx = rootNodeName.lastIndexOf("[");
+    if (lastPredicateIdx < 0) lastPredicateIdx = rootNodeName.length();
+    rootNodeName = rootNodeName.substring(lastSlashIdx, lastPredicateIdx);
+    Log.debug(5, "rootNodeName=" + rootNodeName);
 
     DOMImplementation impl = DOMImplementationImpl.getDOMImplementation();
     Document doc = impl.createDocument("", rootNodeName, null);
@@ -269,9 +273,21 @@ public class DataPackageWizardPlugin implements PluginInterface,
       w.printStackTrace();
       return false;
     }
-    // add to the datapackage
-    Node check = adp.replaceSubtree(subtreeGenericName, subtreeRoot, predicate - 1);
+    Node check = null;
 
+    if (adp.getSubtree(subtreeGenericName, predicate - 1) == null) {
+      //not existing, so add to the datapackage
+      Log.debug(45, "addPageDataToDOM() adding subtree to package...");
+      Log.debug(45, "subtreeGenericName="+subtreeGenericName);
+      Log.debug(45, "subtreeRoot="+XMLUtilities.getDOMTreeAsString(subtreeRoot));
+      Log.debug(45, "predicate - 1="+(predicate - 1));
+      check = adp.insertSubtree(subtreeGenericName, subtreeRoot, predicate - 1);
+    } else {
+      //existing, so replace...
+      Log.debug(45,
+                "addPageDataToDOM() replacing existing subtree in package...");
+      check = adp.replaceSubtree(subtreeGenericName, subtreeRoot, predicate - 1);
+    }
     if (check == null) {
 
       Log.debug(5, "** ERROR: Unable to add new details to package **\n");
@@ -279,7 +295,7 @@ public class DataPackageWizardPlugin implements PluginInterface,
       return false;
     }
 
-    Log.debug(45, "added new project details to package...");
+    Log.debug(45, "...new project details successfully added/replaced");
     return true;
   }
 

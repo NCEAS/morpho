@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2004-04-02 05:44:43 $'
- * '$Revision: 1.31 $'
+ *     '$Date: 2004-04-02 07:31:20 $'
+ * '$Revision: 1.32 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -802,8 +802,7 @@ public class PartyPage extends AbstractUIPage {
       WidgetFactory.hiliteComponent(organizationLabel);
       WidgetFactory.hiliteComponent(positionNameLabel);
       warningLabel.setText("Warning: at least one of the three entries is "
-                           +
-                           "required: Last Name, Position Name or Organization");
+                           + "required: Last Name, Position Name or Organization");
       warningPanel.setVisible(true);
       WidgetFactory.hiliteComponent(warningLabel);
       return false;

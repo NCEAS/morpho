@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2004-04-01 02:37:16 $'
- * '$Revision: 1.25 $'
+ *     '$Date: 2004-04-02 07:31:20 $'
+ * '$Revision: 1.26 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -39,7 +39,6 @@ import edu.ucsb.nceas.morpho.util.Log;
 import edu.ucsb.nceas.morpho.util.UISettings;
 import edu.ucsb.nceas.utilities.OrderedMap;
 
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -50,16 +49,19 @@ import javax.swing.AbstractAction;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
+import edu.ucsb.nceas.morpho.plugins.datapackagewizard.DataPackageWizardPlugin;
+import edu.ucsb.nceas.morpho.framework.UIController;
 
 public class PartyMainPage
     extends AbstractUIPage {
 
-  public String pageID;
-  public String nextPageID;
-  public String pageNumber;
-  public String subtitle;
-  public String description;
-  public String xPathRoot;
+  private String pageID;
+  private String nextPageID;
+  private String pageNumber;
+  private String subtitle;
+  private String description;
+  private String xPathRoot;
+  private String DATAPACKAGE_PARTY_GENERIC_NAME;
 
   private final String[] colNames = { "Party", "Role", "Address" };
   private final Object[] editors = null; //makes non-directly-editable
@@ -88,6 +90,8 @@ public class PartyMainPage
 
 
 
+
+
   /**
    * Initiates various parameters of PartyMainPage based on value of variable
    * role.
@@ -102,6 +106,7 @@ public class PartyMainPage
       pageNumber = "5";
       subtitle = "Owners";
       xPathRoot = "/eml:eml/dataset/creator[";
+      DATAPACKAGE_PARTY_GENERIC_NAME = "creator";
       description =
           "<p><b>Enter information about the Owners</b>: This is information about the "
           +
@@ -119,6 +124,7 @@ public class PartyMainPage
       pageNumber = "6";
       subtitle = "Contacts";
       xPathRoot = "/eml:eml/dataset/contact[";
+      DATAPACKAGE_PARTY_GENERIC_NAME = "contact";
       description =
           "<p><b>Enter information about the Contacts</b>: This is information about the "
           +
@@ -137,6 +143,7 @@ public class PartyMainPage
       pageNumber = "7";
       subtitle = "Associated Parties";
       xPathRoot = "/eml:eml/dataset/associatedParty[";
+      DATAPACKAGE_PARTY_GENERIC_NAME = "associatedParty";
       description =
           "<p><b>Enter information about Associated People and Organizations</b>: "
           + "This is information about the people or organizations "
@@ -240,6 +247,9 @@ public class PartyMainPage
    */
   private void showNewPartyDialog() {
 
+    int predicate = 1 + partiesList.getSelectedRowIndex();
+    if (predicate < 1) predicate = 1 + partiesList.getRowCount();
+
     PartyPage partyPage =  (PartyPage) WizardPageLibrary.getPage(role);
 
     ModalDialog wpd = new ModalDialog(partyPage,
@@ -252,6 +262,12 @@ public class PartyMainPage
       List newRow = partyPage.getSurrogate();
       newRow.add(partyPage);
       partiesList.addRow(newRow);
+
+      //add new party to datapackage...
+      DataPackageWizardPlugin.addPageDataToDOM(
+          UIController.getInstance().getCurrentAbstractDataPackage(), partyPage,
+          "/" + DATAPACKAGE_PARTY_GENERIC_NAME + "[" + (predicate) + "]",
+          DATAPACKAGE_PARTY_GENERIC_NAME, predicate);
     }
     if (oneOrMoreRequired) WidgetFactory.unhiliteComponent(minRequiredLabel);
   }
@@ -262,6 +278,9 @@ public class PartyMainPage
    */
   private void showEditPartyDialog() {
 
+    int predicate = 1 + partiesList.getSelectedRowIndex();
+    if (predicate < 1)predicate = 1 + partiesList.getRowCount();
+
     List selRowList = partiesList.getSelectedRowList();
 
     if (selRowList == null || selRowList.size() < 4) return;
@@ -271,7 +290,7 @@ public class PartyMainPage
     if (dialogObj == null || ! (dialogObj instanceof PartyPage)) return;
 
     PartyPage editPartyPage = (PartyPage) dialogObj;
-//    editPartyPage.setEditValue();
+
     ModalDialog wpd = new ModalDialog(editPartyPage,
                                       WizardContainerFrame.getDialogParent(),
                                       UISettings.POPUPDIALOG_WIDTH,
@@ -283,6 +302,13 @@ public class PartyMainPage
       List newRow = editPartyPage.getSurrogate();
       newRow.add(editPartyPage);
       partiesList.replaceSelectedRow(newRow);
+
+      //replace party in datapackage...
+      DataPackageWizardPlugin.addPageDataToDOM(
+          UIController.getInstance().getCurrentAbstractDataPackage(), editPartyPage,
+          "/" + DATAPACKAGE_PARTY_GENERIC_NAME + "[" + (predicate) + "]",
+          DATAPACKAGE_PARTY_GENERIC_NAME, predicate);
+
     }
   }
 

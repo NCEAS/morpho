@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: sambasiv $'
- *     '$Date: 2004-03-31 21:01:06 $'
- * '$Revision: 1.48 $'
+ *   '$Author: brooke $'
+ *     '$Date: 2004-04-02 07:31:19 $'
+ * '$Revision: 1.49 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -228,8 +228,8 @@ public class CustomList
     table = new CustomJTable(this, rowsData, colNamesVec, columnEditors);
     model = (DefaultTableModel) (table.getModel());
     table.setColumnSelectionAllowed(false);
-		table.setRowSelectionAllowed(true);
-		table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+    table.setRowSelectionAllowed(true);
+    table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
     table.setShowHorizontalLines(false);
     table.setShowVerticalLines(true);
 
@@ -260,7 +260,7 @@ public class CustomList
         setColumnSizes(scrollPane.getViewport().getSize().getWidth());
       }
     });
-		
+
     this.add(scrollPane, BorderLayout.CENTER);
 
     this.setBorder(new EmptyBorder(0, 0, //WizardSettings.PADDING,
@@ -285,12 +285,12 @@ public class CustomList
         new ListSelectionListener() {
 
       public void valueChanged(ListSelectionEvent e) {
-				
-				if(table.getRowCount() == 0) {
-					doEnablesDisables(new int[]{});
-					return;
-				}
-				
+
+        if(table.getRowCount() == 0) {
+          doEnablesDisables(new int[]{});
+          return;
+        }
+
         if (e.getValueIsAdjusting()) {
           return;
         }
@@ -327,14 +327,14 @@ public class CustomList
         // if editor null, make non-editable:
         if (editor == null) {
 
-          Log.debug(45,
+          Log.debug(51,
                     "\nNULL Column Editor; making column " + i + " non-editable");
           table.makeColumnNotEditable(i);
 
         }
         else {
 
-          Log.debug(45, "\nsetting Column " + i + " Editor = " + editor);
+          Log.debug(51, "\nsetting Column " + i + " Editor = " + editor);
           if (editor instanceof JTextField) {
 
             /*JTextField jtf = new JTextField();
@@ -350,7 +350,7 @@ public class CustomList
             jtf.setDisabledTextColor( ( (JTextField) editor).
                                      getDisabledTextColor());
             jtf.setBackground( ( (JTextField) editor).getBackground());*/
-            Log.debug(45, "(JTextField)");
+            Log.debug(51, "(JTextField)");
             DefaultCellEditor cellEd = new DefaultCellEditor((JTextField)editor);
             cellEd.setClickCountToStart(1);
 
@@ -359,7 +359,7 @@ public class CustomList
           }
           else if (editor instanceof JCheckBox) {
 
-            Log.debug(45, "(JCheckBox)");
+            Log.debug(51, "(JCheckBox)");
             DefaultCellEditor cellEd = new DefaultCellEditor( (JCheckBox)
                 editor);
             cellEd.setClickCountToStart(1);
@@ -368,7 +368,7 @@ public class CustomList
           }
           else if (editor instanceof JComboBox) {
 
-            Log.debug(45, "(JComboBox)");
+            Log.debug(51, "(JComboBox)");
             DefaultCellEditor cellEd = new DefaultCellEditor( (JComboBox)
                 editor);
             cellEd.setClickCountToStart(1);
@@ -377,7 +377,7 @@ public class CustomList
           }
           else {
 
-            Log.debug(45, "(NOT RECOGNIZED - SETTING NON-EDITABLE)");
+            Log.debug(51, "(NOT RECOGNIZED - SETTING NON-EDITABLE)");
             //make non-editable for now; do we need other editor types??
             table.makeColumnNotEditable(i);
           }
@@ -609,7 +609,7 @@ public class CustomList
   //
   private void doEnablesDisables(int[] selRows) {
 
-    Log.debug(45,
+    Log.debug(51,
               "\n\n>>>> doEnablesDisables(): selRows count = " + selRows.length);
 
     selectionExists = (selRows != null && selRows.length > 0);
@@ -656,12 +656,12 @@ public class CustomList
    */
   public void fireEditingStopped() {
 
-		Component editingComp = table.getEditorComponent();
+    Component editingComp = table.getEditorComponent();
     if (editingComp != null) {
       table.editingStopped(new ChangeEvent(editingComp));
-			EventListener[] list = editingComp.getListeners(java.awt.event.FocusListener.class);
-			for(int i = 0; list != null && i < list.length; i++) 
-				((FocusListener)list[i]).focusLost(new FocusEvent(editingComp, FocusEvent.FOCUS_LOST));
+      EventListener[] list = editingComp.getListeners(java.awt.event.FocusListener.class);
+      for(int i = 0; list != null && i < list.length; i++)
+        ((FocusListener)list[i]).focusLost(new FocusEvent(editingComp, FocusEvent.FOCUS_LOST));
     }
   }
 
@@ -833,10 +833,10 @@ public class CustomList
   public void addRow(List rowList) {
 
     int row = getSelectedRowIndex();
-		
-		if(table.getRowCount() == 0)
-			row = -1;
-		
+
+    if(table.getRowCount() == 0)
+      row = -1;
+
     if (row < 0) {
 
       row = model.getRowCount();
@@ -1538,7 +1538,7 @@ class CustomJTable
       public void mouseReleased(MouseEvent e) {}
     }
     );
-		addKeyListener(this);
+    addKeyListener(this);
   }
 
   //override super
@@ -1550,8 +1550,6 @@ class CustomJTable
       colClass = editors[col].getClass();
 
     }
-    Log.debug(45, "\nCustomJTable.getCellRenderer(): colClass.getName() = "
-              + colClass);
     if (colClass == null) {
       return defaultRenderer;
     }
@@ -1664,10 +1662,10 @@ class CustomJTable
       DefaultTableCellRenderer defaultR = new DefaultTableCellRenderer();
       defaultR.setBackground(origTextField.getBackground());
       defaultR.setForeground(origTextField.getForeground());
-			EventListener[] list = origTextField.getListeners(java.awt.event.FocusListener.class);
-			for(int i = 0; i < list.length; i++) 
-				defaultR.addFocusListener((java.awt.event.FocusListener)list[i]);
-			
+      EventListener[] list = origTextField.getListeners(java.awt.event.FocusListener.class);
+      for(int i = 0; i < list.length; i++)
+        defaultR.addFocusListener((java.awt.event.FocusListener)list[i]);
+
       return defaultR;
 
     }
@@ -1717,62 +1715,62 @@ class CustomJTable
     return columnsEditableFlags[col];
   }
 
-	// to prevent the table from being a part of the focus cycle.
-	/*public boolean isFocusTraversable() {
-		
-		return false;
-	}*/
-	
-	
-	public void keyPressed(KeyEvent ke) {
-		
-	}
-	
-	public void keyReleased(KeyEvent ke) {
-		
-	}
-	
-	public void keyTyped(KeyEvent ke) {
-		
-		int col = this.getSelectedColumn();
-		int row = this.getSelectedRow();
-		int maxCol = this.getColumnCount();
-		int maxRow = this.getRowCount();
-		boolean fireListener = false;
-		
-		if(col != -1 && row !=-1) {
-			
-			if(ke.getKeyChar() == ke.VK_TAB && ke.getModifiers() != ke.SHIFT_MASK) {
-				
-				if(col > 0) col--;
-				else col = maxCol - 1;
-				fireListener = true;
-				
-			} else if(ke.getModifiers() == ke.SHIFT_MASK && ke.getKeyChar() == ke.VK_TAB) {
-				
-				if(col < maxCol -1) col++;
-				else col = 0;
-				fireListener = true;
-				
-			}	else if(ke.getKeyCode() == ke.VK_UP || ke.getKeyCode() == ke.VK_DOWN) {
-				
-				fireListener = true;
-			} 
-			
-			if(fireListener) {
-				
-				if(editors[col] != null) {
-					if(editors[col] instanceof JTextField) {
-						
-						JTextField jtf = (JTextField)editors[col];
-						EventListener[] list = jtf.getListeners(java.awt.event.FocusListener.class);
-						for(int i = 0; i < list.length; i++) 
-							((FocusListener)list[i]).focusLost(new FocusEvent(jtf, FocusEvent.FOCUS_LOST));
-					}
-				}
-			}
-			
-		}
-	}
-		
+  // to prevent the table from being a part of the focus cycle.
+  /*public boolean isFocusTraversable() {
+
+    return false;
+  }*/
+
+
+  public void keyPressed(KeyEvent ke) {
+
+  }
+
+  public void keyReleased(KeyEvent ke) {
+
+  }
+
+  public void keyTyped(KeyEvent ke) {
+
+    int col = this.getSelectedColumn();
+    int row = this.getSelectedRow();
+    int maxCol = this.getColumnCount();
+    int maxRow = this.getRowCount();
+    boolean fireListener = false;
+
+    if(col != -1 && row !=-1) {
+
+      if(ke.getKeyChar() == ke.VK_TAB && ke.getModifiers() != ke.SHIFT_MASK) {
+
+        if(col > 0) col--;
+        else col = maxCol - 1;
+        fireListener = true;
+
+      } else if(ke.getModifiers() == ke.SHIFT_MASK && ke.getKeyChar() == ke.VK_TAB) {
+
+        if(col < maxCol -1) col++;
+        else col = 0;
+        fireListener = true;
+
+      }	else if(ke.getKeyCode() == ke.VK_UP || ke.getKeyCode() == ke.VK_DOWN) {
+
+        fireListener = true;
+      }
+
+      if(fireListener) {
+
+        if(editors[col] != null) {
+          if(editors[col] instanceof JTextField) {
+
+            JTextField jtf = (JTextField)editors[col];
+            EventListener[] list = jtf.getListeners(java.awt.event.FocusListener.class);
+            for(int i = 0; i < list.length; i++)
+              ((FocusListener)list[i]).focusLost(new FocusEvent(jtf, FocusEvent.FOCUS_LOST));
+          }
+        }
+      }
+
+    }
+  }
+
 }
