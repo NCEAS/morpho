@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2002-08-10 01:47:49 $'
- * '$Revision: 1.1.2.2 $'
+ *     '$Date: 2002-08-13 21:35:54 $'
+ * '$Revision: 1.1.2.3 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -48,9 +48,9 @@ import javax.swing.*;
  */
 public class MorphoFrame extends JFrame
 {
+    private JMenuBar morphoMenuBar;
     private JPanel toolbarPanel;
     private JToolBar morphoToolbar;
-    private JMenuBar morphoMenuBar;
     private StatusBar statusBar;
     private ProgressIndicator indicator;
 
@@ -72,6 +72,8 @@ public class MorphoFrame extends JFrame
         // Set up the menu bar
         morphoMenuBar = new JMenuBar();
         JMenu fileMenu = new JMenu("File");
+        JMenuItem newItem = new JMenuItem("New");
+        fileMenu.add(newItem);
         morphoMenuBar.add(fileMenu);
         setJMenuBar(morphoMenuBar);
 
@@ -90,20 +92,51 @@ public class MorphoFrame extends JFrame
         layeredPane.add(indicator, JLayeredPane.DEFAULT_LAYER);
 
         // Set up the toolbar
+        int indicatorHeight = (int)indicator.getSize().getHeight();
+        int menuHeight = (int)morphoMenuBar.getSize().getHeight();
+        menuHeight = 24;
+        int toolbarHeight = indicatorHeight - menuHeight;
+        Log.debug(10, "(indicator, menu, tool) = (" + indicatorHeight + "," + 
+                menuHeight + "," + toolbarHeight + ")");
         toolbarPanel = new JPanel();
+        //toolbarPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 0, 0));
+        toolbarPanel.setLayout(new BoxLayout(toolbarPanel, BoxLayout.X_AXIS));
         morphoToolbar = new JToolBar();
-        toolbarPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 0, 0));
-        //getContentPane().add(BorderLayout.NORTH, toolbarPanel);
-        morphoToolbar.setAlignmentY(0.222222F);
+        morphoToolbar.add(Box.createVerticalStrut(toolbarHeight));
         toolbarPanel.add(morphoToolbar);
 
-        // Put in a default content area
-        Box content = Box.createHorizontalBox();
+        Action cutItemAction = new AbstractAction("Cut") {
+            public void actionPerformed(ActionEvent e) {
+                Log.debug(9, "Cut is not yet implemented.");
+            }
+        };
+        cutItemAction.putValue(Action.SMALL_ICON, 
+                        new ImageIcon(getClass().
+            getResource("/toolbarButtonGraphics/general/Cut16.gif")));
+        //cutItemAction.setAlignmentY(Component.LEFT_ALIGNMENT);
+        JButton toolButton = morphoToolbar.add(cutItemAction);
+        //toolButton.setAlignmentY(LEFT_ALIGNMENT);
+        toolButton = morphoToolbar.add(cutItemAction);
+        //toolButton.setAlignmentY(LEFT_ALIGNMENT);
+        toolButton = morphoToolbar.add(cutItemAction);
+        //toolButton.setAlignmentY(LEFT_ALIGNMENT);
+        toolButton = morphoToolbar.add(cutItemAction);
+        //toolButton.setAlignmentY(LEFT_ALIGNMENT);
+
+        morphoToolbar.add(
+            Box.createHorizontalGlue());
+        toolbarPanel.add(
+            Box.createHorizontalStrut((int)(indicator.getSize().getWidth())));
+        getContentPane().add(BorderLayout.NORTH, toolbarPanel);
+
+        // Put in a default content area that is blank
+        JPanel content = new JPanel();
+        content.setLayout(new BoxLayout(content, BoxLayout.X_AXIS));
         Component hstrut = Box.createHorizontalStrut(600);
         Component vstrut = Box.createVerticalStrut(800);
         content.add(hstrut);
         content.add(vstrut);
-        content.setBackground(java.awt.Color.red);
+        content.setBackground(Color.darkGray);
         setMainContentPane(content);
 
         // Set up and add a StatusBar
@@ -158,7 +191,7 @@ public class MorphoFrame extends JFrame
      */
     private void updateProgressIndicatorLocation()
     {
-        Log.debug(20, "Resized Window"); 
+        Log.debug(50, "Resized Window"); 
         Dimension indicatorSize = indicator.getSize();
         Dimension cpSize = getContentPane().getSize();
         indicator.setLocation(

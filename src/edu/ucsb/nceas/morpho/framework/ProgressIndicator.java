@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2002-08-10 01:47:49 $'
- * '$Revision: 1.1.2.1 $'
+ *     '$Date: 2002-08-13 21:35:54 $'
+ * '$Revision: 1.1.2.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -43,7 +43,7 @@ import javax.swing.JPanel;
  */
 public class ProgressIndicator extends JPanel
 {
-    private static final int BORDER_WIDTH = 5;
+    private static final int BORDER_WIDTH = 4;
     
     private ImageIcon busyIcon;
     private ImageIcon notBusyIcon;
