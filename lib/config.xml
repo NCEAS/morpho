@@ -2,7 +2,7 @@
 <root>
 <MetaCatServletURL>http://dev.nceas.ucsb.edu/metadata/servlet/metacat</MetaCatServletURL>
 <local_dtd_directory>./catalog</local_dtd_directory>
-<local_xml_directory>./xmlfiles</local_xml_directory>
+<local_xml_directory>./heather</local_xml_directory>
 <searchlocal>true</searchlocal>
 <searchnetwork>false</searchnetwork>
 <pathquery_config>
