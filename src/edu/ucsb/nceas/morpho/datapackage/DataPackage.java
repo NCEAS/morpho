@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2002-08-12 23:11:44 $'
- * '$Revision: 1.56 $'
+ *     '$Date: 2002-08-13 16:01:00 $'
+ * '$Revision: 1.57 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -81,7 +81,8 @@ import org.apache.xalan.xpath.xml.XMLParserLiaison;
 import org.apache.xalan.xpath.xml.FormatterToXML;
 import org.apache.xalan.xpath.xml.TreeWalker;
 
-import com.arbortext.catalog.*;
+import com.arbortext.catalog.Catalog;
+import com.arbortext.catalog.CatalogEntityResolver;
 
 /**
  * class that represents a data package.
@@ -100,15 +101,15 @@ public class DataPackage
   /**
    * used to signify that this package is located on a metacat server
    */
-  public static final String METACAT = "metacat";
+  public static final String METACAT  = "metacat";
   /**
    * used to signify that this package is located locally
    */
-  public static final String LOCAL = "local";
+  public static final String LOCAL    = "local";
   /**
    * used to signify that this package is stored on metacat and locally.
    */
-  public static final String BOTH = "localmetacat";
+  public static final String BOTH     = "localmetacat";
   
   /**
    * Create a new data package object with an id, location and associated
@@ -132,82 +133,53 @@ public class DataPackage
     config          = framework.getConfiguration();
     
     framework.debug(11, "Creating new DataPackage Object");
-    framework.debug(11, "id: " + identifier);
+    framework.debug(11, "id: " + this.id);
     framework.debug(11, "location: " + location);
-    
-    /*if(relations != null)
-    { //if the relations are provided don't reparse the document
-      triples = new TripleCollection(relations);
-    }
-    else
-    I'm not relying on the relations right now because I think they are not
-    always returned correctly from metacat.
-    */
-    { //since the relations were not provided we need to parse them out of
-      //the document.
-      File triplesFile;
-      try
-      {
-        if(location.equals(METACAT))
-        {
-          MetacatDataStore mds = new MetacatDataStore(framework);
-          triplesFile = mds.openFile(identifier);
-        }
-        else
-        {
-          FileSystemDataStore fsds = new FileSystemDataStore(framework);
-          triplesFile = fsds.openFile(identifier);
-        }
-      }
-      catch(Exception e)
-      {
-        framework.debug(0, "Error in DataPackage.DataPackage: " + 
-                           e.getMessage());
-        e.printStackTrace();
-        return;
-      }
-      
-      triples = new TripleCollection(triplesFile, framework);
-    }
     
     if(location.equals(METACAT))
     {
-      framework.debug(11, "opening metacat file");
-      MetacatDataStore mds = new MetacatDataStore(framework);
-      try
+      try 
       {
-        tripleFile = mds.openFile(identifier);
-        FileReader tripleFileReader = new FileReader(tripleFile);
-        TripleCollection triples = new TripleCollection(tripleFileReader);
+        framework.debug(11, "opening metacat file");
+        MetacatDataStore mds = new MetacatDataStore(framework);
+        tripleFile = mds.openFile(this.id);
+        framework.debug(11, "file opened");
       }
       catch(FileNotFoundException fnfe)
       {
+        framework.debug(0,"Error in DataPackage constructor: file not found: "
+                                                          +fnfe.getMessage());
         fnfe.printStackTrace();
+        return;
       }
       catch(CacheAccessException cae)
       {
+        framework.debug(0,"Error in DataPackage constructor: cache problem: "
+                                                          +cae.getMessage());
         cae.printStackTrace();
+        return;
       }
     }
-    else
+    else //not metacat
     {
-      framework.debug(11, "opening local file");
-      FileSystemDataStore fsds = new FileSystemDataStore(framework);
-      try
+      try 
       {
-        File resourcefile = fsds.openFile(identifier);
+        framework.debug(11, "opening local file");
+        FileSystemDataStore fsds = new FileSystemDataStore(framework);
+        tripleFile = fsds.openFile(this.id);
         framework.debug(11, "file opened");
-        tripleFile = resourcefile;
       }
       catch(FileNotFoundException fnfe)
       {
+        framework.debug(0,"Error in DataPackage constructor: file not found: "
+                                                          +fnfe.getMessage());
         fnfe.printStackTrace();
-      }
-      catch(Exception e)
-      {
-        e.printStackTrace();
+        return;
       }
     }
+    //create a collection holding the triples
+    triples = new TripleCollection(tripleFile, framework);
+    
     parseTripleFile();
   }
   
@@ -282,8 +254,7 @@ public class DataPackage
     try
     {
       ConfigXML config = framework.getConfiguration();
-      String catalogPath = //config.getConfigDirectory() + File.separator +
-                                        config.get("local_catalog_path", 0);
+      String catalogPath = config.get("local_catalog_path", 0);
       doc = PackageUtil.getDoc(tripleFile, catalogPath);
       tripleFileDom = doc;
     }
@@ -296,17 +267,17 @@ public class DataPackage
     }
     
     NodeList originatorNodeList = null;
-    NodeList titleNodeList = null;
-    NodeList altTitleNodeList = null;
+    NodeList titleNodeList      = null;
+    NodeList altTitleNodeList   = null;
     String originatorPath = config.get("originatorPath", 0);
     String titlePath = config.get("titlePath", 0);
     String altTitlePath = config.get("altTitlePath", 0);
     try
     {
       //find where the triples go in the file
-      originatorNodeList = XPathAPI.selectNodeList(doc, originatorPath);
-      titleNodeList = XPathAPI.selectNodeList(doc, titlePath);
-      altTitleNodeList = XPathAPI.selectNodeList(doc, altTitlePath);
+      originatorNodeList  = XPathAPI.selectNodeList(doc, originatorPath);
+      titleNodeList       = XPathAPI.selectNodeList(doc, titlePath);
+      altTitleNodeList    = XPathAPI.selectNodeList(doc, altTitlePath);
       
       if(titleNodeList.getLength() == 0)
       {
@@ -1798,7 +1769,7 @@ public class DataPackage
   }
 
   
-private File getFileType(String id, String typeString) {
+  private File getFileType(String id, String typeString) {
     MetacatDataStore mds = new MetacatDataStore(framework);
     FileSystemDataStore fsds = new FileSystemDataStore(framework);
     ConfigXML config = framework.getConfiguration();
@@ -1861,7 +1832,5 @@ private File getFileType(String id, String typeString) {
         subfile = null;
       }
       return subfile;
-}
-  
-  
+  }
 }
