@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: berkley $'
- *     '$Date: 2001-09-24 16:41:24 $'
- * '$Revision: 1.9 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2001-10-30 22:22:11 $'
+ * '$Revision: 1.10 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -531,7 +531,8 @@ public class PackageUtil
     {
       FileReader fr = new FileReader(xmlFile);
       int c = fr.read();
-      while(fr.ready() && c != -1)
+//DFH        while(fr.ready() && c != -1)
+        while(c != -1)
       {
         sb.append((char)c);
         c = fr.read();
