@@ -1,12 +1,20 @@
 <packageWizard size="500x500">
   <specs triplesFile="Resource">
-    <spec name="Resource" path="./lib/frames/resource.xml" idtag="/dataset/identifier" 
+    <spec name="Resource" 
+          path="./lib/frames/resource.xml" 
+          idtag="/dataset/identifier" 
           triplestag="/dataset/triples"/>
-    <spec name="Entity" path="./lib/frames/entity.xml" idtag="/table-entity/identifier" />
+    <spec name="Entity" 
+          path="./lib/frames/entity.xml" 
+          idtag="/table-entity/identifier" 
+          relatedTo="DATAFILE" />
+    <spec name="Attribute" 
+          path="./lib/frames/attribute.xml" 
+          idtag="/attribute/identifier"
+          relatedTo="Entity"/>
   </specs>
   
-  <frame name="Entity"/>
-  <!--get entity info, assign id to it, create triple in the TriplesFile file-->
-  <!--get other metadata, assign id to it, create triple in the TriplesFile file-->
-
+  <frame name="Entity" description="Data entered here should describe the enties in your dataset." />
+  <frame name="Attribute" description="Enter metadata about the attributes in your entity."/>
+  
 </packageWizard>

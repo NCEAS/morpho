@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-05-29 22:50:19 $'
- * '$Revision: 1.1 $'
+ *     '$Date: 2001-05-30 22:32:50 $'
+ * '$Revision: 1.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -153,10 +153,17 @@ public class PackageWizardShellParser extends DefaultHandler
       if(initFlag)
       { //the first time through, we need to add the triplesFile to frames
         frames.addElement(frameObjects.get(mainframe));
+        Hashtable h = new Hashtable();
+        h.put("GETDATA", "");
+        frames.addElement(h);
         initFlag = false;
       }
       
       String name = atts.getValue(0);
+      String description = atts.getValue(1);
+      Hashtable g = (Hashtable)frameObjects.remove(name);
+      g.put("description", description);
+      frameObjects.put(name, g);
       frames.addElement(frameObjects.get(name));
     }
   }

@@ -1,0 +1,37 @@
+<?xml version="1.0"?>
+<wizard size="210x500" dtd="eml-entity.dtd" doctype="-//NCEAS//eml-entity2.0//EN">
+  <group label="Entity Information" field="table-entity" type="panel" size="205x400">
+    <textbox label="abc" field="abc" size="10"/>
+    <textbox label="cba" field="cba" size="10"/>
+    <group label="xyz" field="xyz" size="200x400">
+      <group field="laksjf" size="190x100">
+       <textbox label="m" field="cb" size="10"/>
+      <textbox label="clkj" field="c" size="10"/>
+      </group>
+      <group field="@test1" size="190x100">
+        <textbox label="test1" field="FIELDVALUE" size="10"/>
+        <textbox label="att1" field="att" size="10"/>
+        <textbox label="att2" field="att2" size="10"/>
+      </group>
+      <group field="@test2" size="190x100">
+        <textbox label="test1" field="FIELDVALUE" size="10"/>
+        <textbox label="att1" field="att" size="10" repeatable="yes"/>
+        <textbox label="att2" field="att2" size="10"/>
+      </group> 
+      <textbox label="m" field="ca" size="10" repeatable="yes"/>
+      <textbox label="clkj" field="123cba" size="10"/>
+    </group>
+    <group field="a" size="200x50">
+      <textbox label="m" field="cba" size="10"/>
+      <textbox label="clkj" field="cba" size="10" repeatable="yes"/>
+      <combobox label="Case Sensitive" field="yesorno" size="10" defaulttext="no" repeatable="yes">
+          <item name="No" value="no" />
+          <item name="Yes" value="yesasd"/>
+          <item name="Yes" value="yesfd"/>
+          <item name="Yes" value="yes345"/>
+          <item name="Yes" value="yeshkl"/>
+        </combobox>
+    </group>
+
+  </group>
+</wizard>

@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-05-29 22:50:18 $'
- * '$Revision: 1.20 $'
+ *     '$Date: 2001-05-30 22:32:50 $'
+ * '$Revision: 1.21 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -125,6 +125,11 @@ public class PackageWizard extends javax.swing.JFrame
     createMenu(contentPane);
     docPanel.element = doc;
     createPanel(doc, contentPane, docPanel);
+  }
+  
+  public void setVisible(boolean visible)
+  {
+    mainTabbedPane.setVisible(visible);
   }
   
   /**

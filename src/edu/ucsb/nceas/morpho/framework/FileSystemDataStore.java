@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-05-14 22:05:53 $'
- * '$Revision: 1.6 $'
+ *     '$Date: 2001-05-30 22:32:50 $'
+ * '$Revision: 1.7 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -103,11 +103,12 @@ public class FileSystemDataStore extends DataStore
         }
       }
       
-      FileWriter writer = new FileWriter(savefile); 
-      while(file.ready())
+      FileWriter writer = new FileWriter(savefile);
+      int c = file.read();
+      while(file.ready() && c != -1)
       {
-        writer.write(file.read()); //write out everything in the reader
-
+        writer.write(c); //write out everything in the reader
+        c = file.read();
       }
       writer.flush();
       writer.close();

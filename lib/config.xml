@@ -60,7 +60,7 @@
 <packageWizardConfig>./lib/frames/packagewizard.xml</packageWizardConfig>
 <accessionNumber>
   <scope>USERNAME</scope>
-  <lastId>3</lastId>
+  <lastId>0</lastId>
   <separator>.</separator>
 </accessionNumber>
 <customFrames>
