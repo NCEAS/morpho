@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2002-08-24 00:41:34 $'
- * '$Revision: 1.3 $'
+ *     '$Date: 2002-10-26 08:08:33 $'
+ * '$Revision: 1.4 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,6 +32,7 @@ import edu.ucsb.nceas.morpho.util.Log;
 
 import edu.ucsb.nceas.morpho.plugins.metadisplay.History;
 
+import java.util.Properties;
 
 /**
  * A JUnit test for testing the metadisplay plugin.
@@ -43,6 +44,17 @@ public class HistoryTest extends TestCase
     private static final String         ID2 = "2.2";
     private static final String         ID3 = "3.3";
     private static final String         ID4 = "4.4";
+    
+    private static final Properties     testProps = new Properties();
+    
+    private History bogus = new History();
+    
+    static{
+    
+        testProps.setProperty("Prop1", "val1");
+        testProps.setProperty("Prop2", "val2");
+        testProps.setProperty("Prop3", "val3");
+    } 
     
     /**
     * Constructor to build the test
@@ -70,11 +82,10 @@ public class HistoryTest extends TestCase
     public void testHistory()
     {
         System.err.println("constructor test");
-        History bogus = new History();
         assertNotNull(bogus);
         System.err.println("History() object created OK...");
         
-        history = new History(ID1);
+        history = new History( bogus.getNewHistoryItemInstance(ID1, testProps) );
         assertNotNull(history);
         System.err.println("History(ID1) object created OK...");
     }
@@ -82,17 +93,19 @@ public class HistoryTest extends TestCase
     public void testAdd()
     {
         //...on existing History:
-        history.add(ID2);
+        assertNotNull(history);
+        assertNotNull(bogus);
+        history.add(bogus.getNewHistoryItemInstance(ID2, testProps));
         System.err.println("added ID2");
-        history.add(ID3);
+        history.add(bogus.getNewHistoryItemInstance(ID3, testProps));
         System.err.println("added ID3");
-        history.add(ID4);
+        history.add(bogus.getNewHistoryItemInstance(ID4, testProps));
         System.err.println("added ID4");
 
         //on a new, empty History:
-        History bogus = new History();
+        History bogus2 = new History();
         try {
-            bogus.add(ID2);
+            bogus2.add(bogus.getNewHistoryItemInstance(ID2, testProps));
         } catch (Exception e) {
             fail("Exception doing add() on a new, empty History"+e);
             e.printStackTrace();
@@ -111,10 +124,10 @@ public class HistoryTest extends TestCase
         }
 
         //on a new, empty History:
-        History bogus = new History();
+        History bogus3 = new History();
         try {
             System.err.println("empty history toString() gives:\n"
-                                                            +bogus.toString());
+                                                            +bogus3.toString());
         } catch (Exception e) {
             fail("Exception doing add() on a new, empty History"+e);
             e.printStackTrace();
@@ -125,12 +138,12 @@ public class HistoryTest extends TestCase
     {
         System.err.println("testing previewPrevious()...");
         //...on existing History:
-        assertEquals(ID4,history.previewPrevious());
+        assertEquals(ID4,history.previewPreviousID());
         
         //on a new, empty History:
-        History bogus = new History();
+        History bogus4 = new History();
         try {
-            assertNull(bogus.previewPrevious());
+            assertNull(bogus4.previewPreviousID());
         } catch (Exception e) {
             fail("Exception doing assertNull() on a new, empty History"+e);
             e.printStackTrace();
@@ -142,12 +155,12 @@ public class HistoryTest extends TestCase
         System.err.println("testing deletePrevious()...");
         //...on existing History:
         history.deletePrevious();
-        assertEquals(ID3,history.previewPrevious());
+        assertEquals(ID3,history.previewPreviousID());
         
         //on a new, empty History:
-        History bogus = new History();
+        History bogus5 = new History();
         try {
-            bogus.deletePrevious();
+            bogus5.deletePrevious();
         } catch (Exception e) {
             fail("Exception doing deletePrevious on a new, empty History"+e);
             e.printStackTrace();
@@ -158,14 +171,16 @@ public class HistoryTest extends TestCase
     {
         System.err.println("testing getPrevious()...");
         //...on existing History:
-        assertEquals(ID3,history.getPrevious());
-        assertEquals(ID2,history.getPrevious());
-        assertEquals(ID1,history.previewPrevious());
+//        assertEquals(ID3,history.getPrevious());
+//        assertEquals(ID2,history.getPrevious());
+        history.getPrevious();
+        history.getPrevious();
+        assertEquals(ID1,history.previewPreviousID());
         
         //on a new, empty History:
-        History bogus = new History();
+        History bogus6 = new History();
         try {
-            assertNull(bogus.getPrevious());
+            assertNull(bogus6.getPrevious());
         } catch (Exception e) {
             fail("Exception doing assertNull() on a new, empty History"+e);
             e.printStackTrace();
