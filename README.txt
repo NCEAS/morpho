@@ -14,8 +14,9 @@ Contributors: Matt Jones (jones@nceas.ucsb.edu)
               Mark Schildhauer (schild@nceas.ucsb.edu)
               Eric Fegraus (fegraus@nceas.ucsb.edu)
 
-This is Morpho, a data management application for managing ecological data.  Morpho allows researchers to describe their data using a comprehensive
-and flexible metadata specification, and to share their data publicly or to specific collaborators over the Knowledge Netwrok for Biocomplexity system. Although Morpho can be used without an account on the KNB, it is free and simple to obtain one: just register at http://knb.ecoinformatics.org.
+This is Morpho, a data management application for managing ecological data.  Morpho allows researchers to describe their data using a comprehensive and flexible metadata specification, and to share their data publicly or to specific collaborators over the Knowledge Netwrok for Biocomplexity system. Although Morpho can be used without an account on the KNB, it is free and simple to obtain one: just register at
+
+ http://knb.ecoinformatics.org.
 
 Morpho's main features include:
   1. Flexible metadata creation and editing
@@ -31,7 +32,7 @@ INSTALLATION
 1. Uninstall old versions of Morpho.
 Windows may get confused when there are multiple versions of Morpho installed, so we recommend that you uninstall previous version using the Windows control panel "Add/Remove Programs" before proceeding with the installation.
 
-2. Download the new version, along with Java. Morpho is a Java application. One thus needs to have a Java Virtual  Machine (JVM) installed on the machine running Morpho, preferably  version 1.3 or later.  Morpho can be downloaded with Java for your  convenience, or it can be obtained from Sun (http://java.sun.com). With Java the Morpho distribution is a much larger download, so if you already have Java 1.3 or later installed, its better to download the Morpho-only distribution. [Note: Java 1.4 has now been released by Sun. Morpho appears to work with this new release, but has not been exhaustively tested.]
+2. Download the new version, along with Java. Morpho is a Java application. One thus needs to have a Java Virtual  Machine (JVM) installed on the machine running Morpho, preferably  version 1.3 or later.  Morpho can be downloaded with Java for your convenience, or it can be obtained from Sun (http://java.sun.com). With Java the Morpho distribution is a much larger download, so if you already have Java 1.3 or later installed, its better to download the Morpho-only distribution. [Note: Java 1.4 has now been released by Sun. Morpho appears to work with this new release, but has not been exhaustively tested.]
 
 3. Run the installer application
 Download the installation executable and run it on your desired platform. For windows this requires simply double-clicking on the executable file that you downloaded, but may vary depending on your operating system.
@@ -40,11 +41,11 @@ STARTING MORPHO
 ---------------
 Once Morpho has been installed, it can be launched using a shortcut, as follows:
 
-    Windows:   Select the "morpho" shortcut found under the windows
-               "Start menu". (You can also use the "morpho.bat" file
-               found in the main Morpho directory.)
+    Windows:   Select the "morpho" shortcut found under the windows "Start menu". (You can also use the "morpho.bat" file found in the main Morpho directory.)
+
     Macintosh: Double click on the morpho icon.
-    Linux:     Run the "morpho" shell script from the instalation directory
+
+    Linux: Run the "morpho" shell script from the instalation directory
 
 If this is the first time you have launched Morpho, you will see a "New Profile" dialog box.  Profiles are Morpho's way of keeping your data separate from other people's data on your computer in case more than one person uses Morpho on your computer.  Simply fill in the forms and the profile will be created for you.
 
