@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-12-05 00:25:14 $'
- * '$Revision: 1.5 $'
+ *     '$Date: 2003-11-26 18:39:41 $'
+ * '$Revision: 1.6 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -210,6 +210,13 @@ public class MetacatDataStore extends DataStore implements DataStoreInterface
     return saveFile(name, file, dp, "update", true);
   }
   
+   public File saveFile(String name, Reader file) 
+              throws MetacatUploadException
+  {
+    return saveFile(name, file, null, "update", true);
+  }
+ 
+  
   public File saveFile(String name, Reader file, 
                        DataPackage dp, boolean checkforaccessfile) 
               throws MetacatUploadException
@@ -249,7 +256,7 @@ public class MetacatDataStore extends DataStore implements DataStoreInterface
       }*/
       //System.out.println(fileText.toString());
       
-      
+// assume id already inserted!!! - DFH      
       //save a temp file so that the id can be put in the file.
       StringWriter sw = new StringWriter();
       File tempfile = new File(tempdir + "/metacat.noid");
@@ -265,12 +272,13 @@ public class MetacatDataStore extends DataStore implements DataStoreInterface
       bfw.flush();
       bfw.close();
       bfile.close();
-      String filetext = insertIdInFile(tempfile, name); //put the id in
+//      String filetext = insertIdInFile(tempfile, name); //put the id in
       
-      if(filetext == null)
-      {
-        filetext = sw.toString();
-      }
+//      if(filetext == null)
+//      {
+//        filetext = sw.toString();
+//      }
+      String filetext = sw.toString();
       
       Log.debug(30, "filelength is:"+filetext.length());
       if (filetext.length()==0) return null;
