@@ -4,6 +4,7 @@
   <contextNode name="package">
     <entityParent>/eml:eml/dataset</entityParent> 
     <entities>(/eml:eml/dataset/dataTable)|(/eml:eml/dataset/spatialRaster)|(/eml:eml/dataset/spatialVector)|(/eml:eml/dataset/otherEntity)</entities> 
+    <parties>(/eml:eml/dataset/creator)|(/eml:eml/dataset/metadataProvider)|(/eml:eml/dataset/associatedParty)|(/eml:eml/dataset/contact)|(/eml:eml/dataset/publisher)|(/eml:eml/dataset/project/personnel)</parties>
     <title>/eml:eml/dataset/title</title>
     <author>/eml:eml/dataset/creator/individualName/surName</author>
     <accessionNumber>/eml:eml/@packageId</accessionNumber>
