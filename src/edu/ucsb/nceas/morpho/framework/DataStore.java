@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-06-13 22:21:27 $'
- * '$Revision: 1.6 $'
+ *     '$Date: 2001-07-05 14:57:24 $'
+ * '$Revision: 1.7 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -94,4 +94,5 @@ public abstract class DataStore implements DataStoreInterface
            throws Exception;
   abstract public File newFile(String name, Reader file, boolean publicAccess)
            throws Exception;
+  abstract public void deleteFile(String name) throws Exception;
 }

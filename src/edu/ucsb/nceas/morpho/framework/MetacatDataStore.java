@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-07-03 20:46:16 $'
- * '$Revision: 1.17 $'
+ *     '$Date: 2001-07-05 14:57:24 $'
+ * '$Revision: 1.18 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -355,6 +355,15 @@ public class MetacatDataStore extends DataStore
     
     return null;
   }
+  
+  /**
+   * deletes a file from metacat
+   * @param name the name of the file to delete
+   */
+   public void deleteFile(String name)
+   {
+     
+   }
   
   /**
    * Test method

@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-05-14 22:05:53 $'
- * '$Revision: 1.5 $'
+ *     '$Date: 2001-07-05 14:57:24 $'
+ * '$Revision: 1.6 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -59,4 +59,9 @@ public interface DataStoreInterface
    */
   public File newFile(String name, Reader file, boolean publicAccess)
          throws Exception;
+  
+  /**
+   * Deletes the file with an id of name
+   */
+  public void deleteFile(String name) throws Exception;
 }

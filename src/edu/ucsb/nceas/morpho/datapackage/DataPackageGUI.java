@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-07-03 20:46:16 $'
- * '$Revision: 1.36 $'
+ *     '$Date: 2001-07-05 14:57:23 $'
+ * '$Revision: 1.37 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -181,6 +181,7 @@ public class DataPackageGUI extends javax.swing.JFrame
                                " to the cache.");
             return;
           }
+          
           NodeList nl = PackageUtil.getPathContent(xmlfile, "//entityName", 
                                                    framework);
           //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -517,8 +518,6 @@ public class DataPackageGUI extends javax.swing.JFrame
           { 
             actionPerformed(new ActionEvent(this, 0, "EditEntity"));
             return;
-            //item = (String)entityFileList.getSelectedValue();
-            //item = item + "(" + (String)listValueHash.get(item) + ")";
           }
         }
         else
@@ -583,6 +582,30 @@ public class DataPackageGUI extends javax.swing.JFrame
     else if(command.equals("Remove"))
     {
       ClientFramework.debug(9, "Removing-doesn't work yet!");
+      /*
+      item = "";
+      if(otherFileList.getSelectedIndex() == -1)
+      {
+        if(entityFileList.getSelectedIndex() == -1)
+        { //nothing is selected, give an error and return
+          ClientFramework.debug(1, "You must select an item to edit.");
+          return;
+        }
+        else
+        { 
+          item = (String)entityFileList.getSelectedValue();
+          item = item + "(" + (String)listValueHash.get(item) + ")";
+        }
+      }
+      else
+      {
+        item = (String)otherFileList.getSelectedValue();
+      }
+      //get the id of the file that is to be removed.
+      String id = item.substring(item.indexOf("(")+1, item.indexOf(")"));
+      
+      //remove the file.
+      */
     }
     else if(command.equals("EditEntity"))
     {

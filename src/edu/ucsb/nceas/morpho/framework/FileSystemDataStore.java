@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-06-14 17:03:47 $'
- * '$Revision: 1.14 $'
+ *     '$Date: 2001-07-05 14:57:24 $'
+ * '$Revision: 1.15 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -184,4 +184,13 @@ public class FileSystemDataStore extends DataStore
     }
     ClientFramework.debug(20, "done");
   }
+  
+  /**
+   * deletes a file from the local file system
+   * @param name the name of the file to delete
+   */
+   public void deleteFile(String name)
+   {
+     
+   }
 }
