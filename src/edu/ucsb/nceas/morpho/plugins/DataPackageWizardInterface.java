@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: sambasiv $'
- *     '$Date: 2004-02-04 02:25:50 $'
- * '$Revision: 1.11 $'
+ *   '$Author: sgarg $'
+ *     '$Date: 2004-02-24 20:49:04 $'
+ * '$Revision: 1.12 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,7 +29,8 @@
 package edu.ucsb.nceas.morpho.plugins;
 
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.AbstractWizardPage;
-
+import java.util.List;
+import java.util.ArrayList;
 /**
  *  Interface for Data Package Wizard Plugin
  */
@@ -63,14 +64,17 @@ public interface DataPackageWizardInterface {
   public static final String DATA_FORMAT        = "DATA_FORMAT";
   public static final String ENTITY             = "ENTITY";
   public static final String ATTRIBUTE_PAGE     = "ATTRIBUTE_PAGE";
-	public static final String CODE_IMPORT_PAGE   = "CODE_IMPORT_PAGE";
-	public static final String PARTY_PAGE         = "PARTY_PAGE";
+  public static final String CODE_IMPORT_PAGE   = "CODE_IMPORT_PAGE";
+  public static final String PARTY_PAGE         = "PARTY_PAGE";
   public static final String ACCESS             = "ACCESS";
   public static final String ACCESS_PAGE        = "ACCESS_PAGE";
   public static final String SUMMARY            = "SUMMARY";
-	public static final String CODE_IMPORT_SUMMARY= "CODE_IMPORT_SUMMARY";
-	public static final String CODE_DEFINITION   	= "CODE_DEFINITION";
+  public static final String CODE_IMPORT_SUMMARY= "CODE_IMPORT_SUMMARY";
+  public static final String CODE_DEFINITION   	= "CODE_DEFINITION";
 
+  public static List responsiblePartyList = new ArrayList();   // Used for 
+                        // keeping track of parties being added to this DP 
+  
   /**
    *  method to start the Package wizard
    *
