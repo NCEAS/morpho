@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2001-10-29 23:31:36 $'
- * '$Revision: 1.3 $'
+ *   '$Author: tao $'
+ *     '$Date: 2002-08-07 00:07:35 $'
+ * '$Revision: 1.3.8.1 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -45,7 +45,7 @@ public class HeadResultSet extends ResultSet
 {
   /** Store the most recent revision in a vector */
   private Vector headResultsVector = null;
-
+  
   /**
    * Construct a HeadResultSet instance given a query object and a
    * InputStream that represents an XML encoding of the results.
@@ -88,7 +88,7 @@ public class HeadResultSet extends ResultSet
   /**
    * Determine the value of a column by its row and column index
    */
-  public Object getValueAt(int row, int col)
+  /*public Object getValueAt(int row, int col)
   {
     Object value = null;
     try {
@@ -102,7 +102,7 @@ public class HeadResultSet extends ResultSet
       value = emptyString;
     }
     return value;
-  }
+  }*/
 
   /**
    * Open a given row index of the result set using a delegated handler class
@@ -139,7 +139,7 @@ public class HeadResultSet extends ResultSet
     for (int i=0; i<resultsVector.size(); i++) {
       // Get the row, and its docid, parse out the rev #
       Vector rowVector = (Vector)resultsVector.elementAt(i);
-      String docid = (String)rowVector.elementAt(numHeaders+2);
+      String docid = (String)rowVector.elementAt(DOCIDINDEX);
       String family = docid.substring(0, docid.lastIndexOf("."));
       String rev = docid.substring(docid.lastIndexOf(".")+1);
       Integer currentRev = new Integer(rev);
