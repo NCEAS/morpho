@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-05-09 16:47:01 $'
- * '$Revision: 1.3 $'
+ *     '$Date: 2001-05-16 22:48:43 $'
+ * '$Revision: 1.4 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,7 +27,8 @@
  */
 
 package edu.ucsb.nceas.morpho.datapackage.wizard;
- 
+
+import edu.ucsb.nceas.morpho.framework.*;
 import javax.swing.*;
 import javax.swing.border.*; 
 import java.io.*;
@@ -63,6 +64,56 @@ public class PackageWizard extends javax.swing.JFrame
     initComponents();
     pack();
     setSize(width, height);
+  }
+  
+  public PackageWizard(ClientFramework framework, Container contentPane, 
+                       String framename)
+  {
+    try
+    {
+      //get configuration information
+      ConfigXML config = framework.getConfiguration();
+      Vector frameNameV = config.get("frameName");
+      Vector frameLocationV = config.get("frameConfigFile");
+      Vector mainFrameV = config.get("mainFrame");
+      String mainFrame = (String)mainFrameV.elementAt(0);
+      Vector saxparserV = config.get("saxparser");
+      String saxparser = (String)saxparserV.elementAt(0);
+      Hashtable frames = new Hashtable();
+      
+      for(int i=0; i<frameNameV.size(); i++)
+      {
+        frames.put((String)frameNameV.elementAt(i), 
+                   (String)frameLocationV.elementAt(i));
+      }
+      
+      //
+      //File mainFile = new File((String)frames.get(mainFrame));
+      if(!frames.containsKey(mainFrame))
+      {
+        framework.debug(1, "The frame name provided to PackageWizard is not " +
+                           "a valid frame name as described in config.xml");
+        framework.debug(1, "The valid names are: " + frames.toString());
+        return;
+      }
+      
+      File mainFile = new File((String)frames.get(mainFrame));
+      FileReader xml = new FileReader(mainFile);
+      pwp = new PackageWizardParser(xml, saxparser);
+      doc = pwp.getDoc();
+      
+      mainTabbedPane = new JTabbedPane();
+      contentPane.add(mainTabbedPane);
+      docPanel = new JPanelWrapper();
+      //createMenu(contentPane);
+      docPanel.element = doc;
+      createPanel(doc, contentPane, docPanel);
+    }
+    catch(Exception e)
+    {
+      framework.debug(9, "error initializing custom frame");
+      e.printStackTrace();
+    }
   }
   
   /**
@@ -575,7 +626,7 @@ public class PackageWizard extends javax.swing.JFrame
         if(tempElement.attributes.containsKey("type") && 
           ((String)tempElement.attributes.get("type")).equals("panel"))
         {
-          tempPanel.setLayout(new GridLayout(0,1));
+          tempPanel.setLayout(new GridLayout(0,1)/*FlowLayout()*/);
           parentPanel.children.addElement(tempPanel);
           mainTabbedPane.addTab((String)tempElement.attributes.get("label"), 
                                 tempPanel);
@@ -623,7 +674,7 @@ public class PackageWizard extends javax.swing.JFrame
             tempPanel.add(new JPanel());
           }
           
-          tempPanel.setLayout(new GridLayout(0,2));
+          tempPanel.setLayout(new GridLayout(0,2)/*FlowLayout()*/);
           if(prevIndex == null)
           {
             parentPanel.children.addElement(tempPanel);
@@ -907,7 +958,7 @@ public class PackageWizard extends javax.swing.JFrame
 			      "org.apache.xerces.parsers.SAXParser");
       //System.out.println("Doc is: " );
       //pwp.printDoc(pwp.getDoc());
-      new PackageWizard().show ();
+      new PackageWizard().show();
     }
     catch(Exception e)
     {

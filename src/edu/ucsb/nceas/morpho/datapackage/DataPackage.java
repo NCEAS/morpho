@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-05-10 21:15:20 $'
- * '$Revision: 1.8 $'
+ *     '$Date: 2001-05-16 22:48:43 $'
+ * '$Revision: 1.9 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -46,6 +46,11 @@ public class DataPackage
   public DataPackage(String location, String identifier, Vector relations, 
                      ClientFramework framework)
   {
+    //-open file named identifier
+    //-read the triples out of it, create a triplesCollection
+    //-start caching the files referenced in the triplesCollection
+    //-respond to any request from the user to open a specific file
+    
     framework.debug(9, "Creating new DataPackage Object");
     framework.debug(9, "id: " + identifier);
     framework.debug(9, "location: " + location);
@@ -54,7 +59,20 @@ public class DataPackage
     {
       framework.debug(9, "opening metacat file");
       MetacatDataStore mds = new MetacatDataStore(framework);
-      
+      try
+      {
+        File tripleFile = mds.openFile(identifier);
+        FileReader tripleFileReader = new FileReader(tripleFile);
+        TripleCollection triples = new TripleCollection(tripleFileReader);
+      }
+      catch(FileNotFoundException fnfe)
+      {
+        
+      }
+      catch(CacheAccessException cae)
+      {
+        
+      }
     }
     else if(location.equals("local"))
     {
