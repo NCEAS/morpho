@@ -6,9 +6,9 @@
  *             National Center for Ecological Analysis and Synthesis
  *    Release: @release@
  *
- *   '$Author: sambasiv $'
- *     '$Date: 2004-02-12 22:25:58 $'
- * '$Revision: 1.15 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2004-02-14 00:06:21 $'
+ * '$Revision: 1.16 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -107,7 +107,7 @@ public class AttributePage extends AbstractWizardPage {
 
   private String measurementScale;
 
-  private final String xPathRoot = AttributeSettings.Attribute_xPath;
+  private String xPathRoot = AttributeSettings.Attribute_xPath;
 
   private JTextArea attribDefinitionField;
 
@@ -194,6 +194,10 @@ public class AttributePage extends AbstractWizardPage {
 
     initNames();
     init();
+  }
+  
+  public void setXPathRoot(String xpr) {
+    xPathRoot = xpr;
   }
 
   private void initNames() {
@@ -700,54 +704,54 @@ public class AttributePage extends AbstractWizardPage {
 
 	///// check for Nominal
 	
-  Object o1 = map.get( AttributeSettings.Nominal_xPath+"/enumeratedDomain[1]/codeDefinition[1]/code");
+  Object o1 = map.get( xPathRoot+AttributeSettings.Nominal_xPath_rel+"/enumeratedDomain[1]/codeDefinition[1]/code");
   if(o1 != null) return "Nominal";
-	boolean b1 = map.containsKey( AttributeSettings.Nominal_xPath+"/enumeratedDomain[1]/entityCodeList/entityReference");
+	boolean b1 = map.containsKey( xPathRoot+AttributeSettings.Nominal_xPath_rel+"/enumeratedDomain[1]/entityCodeList/entityReference");
 	if(b1) return "Nominal";
-  o1 = map.get(AttributeSettings.Nominal_xPath+"/textDomain[1]/definition");
+  o1 = map.get(xPathRoot+AttributeSettings.Nominal_xPath_rel+"/textDomain[1]/definition");
   if(o1 != null) return "Nominal";
-	o1 = map.get( AttributeSettings.Nominal_xPath+"/enumeratedDomain/codeDefinition/code");
+	o1 = map.get( xPathRoot+AttributeSettings.Nominal_xPath_rel+"/enumeratedDomain/codeDefinition/code");
   if(o1 != null) return "Nominal";
-	b1 = map.containsKey( AttributeSettings.Nominal_xPath+"/enumeratedDomain/entityCodeList/entityReference");
+	b1 = map.containsKey( xPathRoot+AttributeSettings.Nominal_xPath_rel+"/enumeratedDomain/entityCodeList/entityReference");
 	
 	if(b1) return "Nominal";
-  o1 = map.get(AttributeSettings.Nominal_xPath+"/textDomain/definition");
+  o1 = map.get(xPathRoot+AttributeSettings.Nominal_xPath_rel+"/textDomain/definition");
   if(o1 != null) return "Nominal";
 
 	///// check for Ordinal
 	
-  o1 = map.get( AttributeSettings.Ordinal_xPath+"/enumeratedDomain[1]/codeDefinition[1]/code");
+  o1 = map.get( xPathRoot+AttributeSettings.Ordinal_xPath_rel+"/enumeratedDomain[1]/codeDefinition[1]/code");
   if(o1 != null) return "Ordinal";
-	b1 = map.containsKey( AttributeSettings.Ordinal_xPath+"/enumeratedDomain[1]/entityCodeList/entityReference");
+	b1 = map.containsKey( xPathRoot+AttributeSettings.Ordinal_xPath_rel+"/enumeratedDomain[1]/entityCodeList/entityReference");
 	if(b1) return "Ordinal";
-  o1 = map.get(AttributeSettings.Ordinal_xPath+"/textDomain[1]/definition");
+  o1 = map.get(xPathRoot+AttributeSettings.Ordinal_xPath_rel+"/textDomain[1]/definition");
   if(o1 != null) return "Ordinal";
-	o1 = map.get( AttributeSettings.Ordinal_xPath+"/enumeratedDomain/codeDefinition/code");
+	o1 = map.get( xPathRoot+AttributeSettings.Ordinal_xPath_rel+"/enumeratedDomain/codeDefinition/code");
   if(o1 != null) return "Ordinal";
-	b1 = map.containsKey( AttributeSettings.Ordinal_xPath+"/enumeratedDomain/entityCodeList/entityReference");
+	b1 = map.containsKey( xPathRoot+AttributeSettings.Ordinal_xPath_rel+"/enumeratedDomain/entityCodeList/entityReference");
 	if(b1) return "Ordinal";
-  o1 = map.get(AttributeSettings.Ordinal_xPath+"/textDomain/definition");
+  o1 = map.get(xPathRoot+AttributeSettings.Ordinal_xPath_rel+"/textDomain/definition");
   if(o1 != null) return "Ordinal";
 
 	///// check for Ratio
 	
-  o1 = map.get(AttributeSettings.Ratio_xPath+"/unit/standardUnit");
+  o1 = map.get(xPathRoot+AttributeSettings.Ratio_xPath_rel+"/unit/standardUnit");
   if(o1 != null) return "Ratio";
-  o1 = map.get(AttributeSettings.Ratio_xPath+"/numericDomain/numberType");
+  o1 = map.get(xPathRoot+AttributeSettings.Ratio_xPath_rel+"/numericDomain/numberType");
   if(o1 != null) return "Ratio";
 
 	///// check for Interval
 	
-  o1 = map.get(AttributeSettings.Interval_xPath+"/unit/standardUnit");
+  o1 = map.get(xPathRoot+AttributeSettings.Interval_xPath_rel+"/unit/standardUnit");
   if(o1 != null) return "Interval";
-  o1 = map.get(AttributeSettings.Interval_xPath+"/numericDomain/numberType");
+  o1 = map.get(xPathRoot+AttributeSettings.Interval_xPath_rel+"/numericDomain/numberType");
   if(o1 != null) return "Interval";
 
 	///// check for DateTime
 	
-  o1 = map.get(AttributeSettings.DateTime_xPath+"/formatString");
+  o1 = map.get(xPathRoot+AttributeSettings.DateTime_xPath_rel+"/formatString");
   if(o1 != null) return "Datetime";
-  o1 = map.get(AttributeSettings.DateTime_xPath+"/dateTimePrecision");
+  o1 = map.get(xPathRoot+AttributeSettings.DateTime_xPath_rel+"/dateTimePrecision");
   if(o1 != null) return "Datetime";
 	
   return "";
@@ -766,8 +770,8 @@ public class AttributePage extends AbstractWizardPage {
    *   this map are absolute xPath and not the relative xPaths
    */
   public void setPageData(OrderedMap map) {
-
-
+//Log.debug(1, "map: "+map);
+    
 		 String name = (String)map.get(xPathRoot + "/attributeName[1]");
 		 if(name != null)
 			 map = stripIndexOneFromMapKeys(map);
