@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2002-09-19 02:11:52 $'
- * '$Revision: 1.27 $'
+ *     '$Date: 2002-09-19 15:17:54 $'
+ * '$Revision: 1.28 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1182,8 +1182,10 @@ public class AddMetadataWizard extends JFrame
     String location = dataPackage.getLocation();
     this.dataPackage = newpackage;                                         
 
+    DataPackagePlugin dataPlugin = new DataPackagePlugin(morpho);
+    dataPlugin.openDataPackage(location, newpackage.getID(), null);
     // Show the new package
-    try 
+    /*try 
     {
       ServiceController services = ServiceController.getInstance();
       ServiceProvider provider = 
@@ -1194,7 +1196,7 @@ public class AddMetadataWizard extends JFrame
     catch (ServiceNotHandledException snhe) 
     {
        Log.debug(6, snhe.getMessage());
-    }
+    }*/
    
     /*
     DataPackageGUI dpg = new DataPackageGUI(morpho, newpackage);
