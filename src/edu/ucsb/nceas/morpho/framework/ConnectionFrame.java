@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2001-04-24 02:29:27 $'
- * '$Revision: 1.13.2.1 $'
+ *     '$Date: 2001-04-25 01:10:36 $'
+ * '$Revision: 1.13.2.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -122,7 +122,6 @@ public class ConnectionFrame extends javax.swing.JFrame
     //}}
   
     //{{REGISTER_LISTENERS
-    SymItem lSymItem = new SymItem();
     SymAction lSymAction = new SymAction();
     connectButton.addActionListener(lSymAction);
     DisconnectButton.addActionListener(lSymAction);
@@ -212,23 +211,19 @@ public class ConnectionFrame extends javax.swing.JFrame
   //}}
 
 
-  class SymItem implements java.awt.event.ItemListener
-  {
-    public void itemStateChanged(java.awt.event.ItemEvent event)
-    {
-    }
-  }
-
   class SymAction implements java.awt.event.ActionListener
   {
     public void actionPerformed(java.awt.event.ActionEvent event)
     {
       Object object = event.getSource();
       if (object == connectButton)
+      {
         connectButton_actionPerformed(event);
+      }
       else if (object == DisconnectButton)
+      {
         DisconnectButton_actionPerformed(event);
-      
+      }
     }
   }
 
@@ -238,43 +233,47 @@ public class ConnectionFrame extends javax.swing.JFrame
     ActivityLabel.invalidate();
     JPanel2.validate();
     JPanel2.paint(JPanel2.getGraphics());
-     ConnectionResultsTextArea.setText("Working...");
+    ConnectionResultsTextArea.setText("Working...");
      
-   Thread worker = new Thread() {
-      public void run() {
-
+    Thread worker = new Thread() 
+    {
+      public void run() 
+      {
         if (container!=null) {
-            container.setUserName(NameTextField.getText());
-            container.setPassword(PWTextField.getText());
+          container.setUserName(NameTextField.getText());
+          container.setPassword(PWTextField.getText());
         }
 
-        final String res = container.LogIn();
+        final boolean connected = container.logIn();
                                            
-        SwingUtilities.invokeLater(new Runnable() {
-        public void run() {
-        if (res.indexOf("success")>=0) {
-    dispose();
-        } else {
-          System.err.println(res);
-          ConnectionResultsTextArea.setText(res);
-          ActivityLabel.setIcon(still);
-    // a failure to login should result in username being set to 'public'
-          if (container!=null) {
-            container.setUserName("public");
-            container.setPassword("none");
+        SwingUtilities.invokeLater(new Runnable() 
+        {
+          public void run() 
+          {
+            if (connected) {
+              dispose();
+            } else {
+              ConnectionResultsTextArea.setText("Login failed.  " + 
+                    "Please check the Caps Lock key and try again.");
+              ActivityLabel.setIcon(still);
+              // a failure to login should result in 
+              // username being set to 'public'
+              // Actually, it shouldn't :-( so they can try again
+              //if (container!=null) {
+                //container.setUserName("public");
+                //container.setPassword("none");
+              //}
+            }
           }
-        }
-        }
-            });
-        
-    } // end of run
-   };
-   worker.start();
+        });
+      }
+    };
+    worker.start();
   }
   
   void DisconnectButton_actionPerformed(java.awt.event.ActionEvent event)
   {
-    container.LogOut();
+    container.logOut();
     DisconnectButton.setEnabled(false);
   }
   

@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2001-04-24 02:29:26 $'
- * '$Revision: 1.31.2.12 $'
+ *     '$Date: 2001-04-25 01:10:36 $'
+ * '$Revision: 1.31.2.13 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -523,6 +523,9 @@ public class ClientFramework extends javax.swing.JFrame
     };
     cutItemAction.putValue(Action.SHORT_DESCRIPTION, 
                   "Cut the selection and put it on the Clipboard");
+    // This is null in the unit testing framework
+    URL cutURL = getClass().getResource("cut.gif");
+    debug(9, cutURL.toString());
     cutItemAction.putValue(Action.SMALL_ICON, 
                     new ImageIcon(getClass().getResource("cut.gif")));
     cutItemAction.setEnabled(false);
@@ -665,7 +668,7 @@ public class ClientFramework extends javax.swing.JFrame
       // If the confirmation was affirmative, handle exiting.
       if (reply == JOptionPane.YES_OPTION)
       {
-	LogOut();
+	logOut();
 	this.setVisible(false);	// hide the Frame
 	this.dispose();		// free the system resources
 	System.exit(0);		// close the application
@@ -752,7 +755,7 @@ public class ClientFramework extends javax.swing.JFrame
   /**
    * Log into metacat
    */
-  public String LogIn()
+  public boolean logIn()
   {
     String res = null;
 
@@ -780,19 +783,23 @@ public class ClientFramework extends javax.swing.JFrame
       res = sw.toString();
       sw.close();
       debug(5, res);
-      connected = true;
+      if (res.indexOf("<login>") != -1) {
+        connected = true;
+      } else {
+        connected = false;
+      }
     }
     catch(Exception e)
     {
       debug(1, "Error logging into system");
     }
-    return res;
+    return connected;
   }
 
   /**
    * Log out of metacat
    */
-  public void LogOut()
+  public void logOut()
   {
     Properties prop = new Properties();
     prop.put("action", "logout");
@@ -817,7 +824,7 @@ public class ClientFramework extends javax.swing.JFrame
       sw.close();
       debug(5, res);
       connected = false;
-      JOptionPane.showMessageDialog(this, "Connection closed.");
+      //JOptionPane.showMessageDialog(this, "Connection closed.");
     }
     catch(Exception e)
     {
