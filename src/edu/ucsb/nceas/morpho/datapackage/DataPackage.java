@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-07-10 21:06:00 $'
- * '$Revision: 1.25 $'
+ *     '$Date: 2001-07-25 20:16:23 $'
+ * '$Revision: 1.26 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -499,5 +499,107 @@ public class DataPackage
   public String getIdentifier()
   {
     return this.identifier;
+  }
+  
+  /**
+   * returns a vector containing a distinct set of all of the file ids that make
+   * up this package
+   */
+  public Vector getAllIdentifiers()
+  {
+    Vector v = new Vector();
+    Vector trips = triples.getCollection();
+    for(int i=0; i<trips.size(); i++)
+    {
+      String sub = ((Triple)trips.elementAt(i)).getSubject();
+      String obj = ((Triple)trips.elementAt(i)).getObject();
+      if(!v.contains(sub.trim()))
+      {
+        v.add(sub.trim());
+      }
+      
+      if(!v.contains(obj.trim()))
+      {
+        v.add(obj.trim());
+      }
+    }
+    return v;
+  }
+  
+  /**
+   * Uploads a local package to metacat
+   */
+  public void upload()
+  {
+    ClientFramework.debug(20, "Uploading package.");
+    
+    if(!location.equals(DataPackage.BOTH) && 
+      !location.equals(DataPackage.METACAT))
+    { //if it is not already on metacat, send it there.
+      Vector ids = this.getAllIdentifiers();
+      System.out.println("ids: " + ids.toString());
+      Hashtable files = new Hashtable();
+      FileSystemDataStore fsds = new FileSystemDataStore(framework);
+      MetacatDataStore mds = new MetacatDataStore(framework);
+      for(int i=0; i<ids.size(); i++)
+      { //get a file pointer to each of the files in the package
+        String id = (String)ids.elementAt(i);
+        try
+        {
+          files.put(id, fsds.openFile(id));
+        }
+        catch(FileNotFoundException fnfe)
+        {
+          framework.debug(0, "There is an error in this package, a file is " + 
+                          "missing.  Missing file: " + id);
+        }
+      }
+      
+      System.out.println("files: " + files.toString());
+      Enumeration keys = files.keys();
+      while(keys.hasMoreElements())
+      { //send each file to metacat.  it's type needs to be checked to see
+        //if it is metadata or data
+        String key = (String)keys.nextElement();
+        //get the file
+        File f = (File)files.get(key);
+        String beginFile = "";
+        //check its type
+        try
+        {
+          FileInputStream fis = new FileInputStream(f);
+          for(int i=0; i<10; i++)
+          { //read 10 bytes of the file
+            //if they contain the text '<?xml' assume that it is a metadata file
+            //this is a bad assumption but it works for now...
+            beginFile += (char)fis.read();
+          }
+        }
+        catch(Exception e)
+        {
+          framework.debug(0, "Error reading file in package.");
+        }
+        
+        try
+        {
+          framework.debug(20, "Uploading " + key);
+          if(beginFile.indexOf("<?xml") != -1)
+          { //its an xml file
+            
+            mds.newFile(key, new FileReader(f), true);
+          }
+          else
+          { //its a data file
+            mds.newDataFile(key, f);
+          }
+        }
+        catch(Exception e)
+        {
+          framework.debug(0, "Error uploading " + key + " to metacat: " + 
+                          e.getMessage());
+          e.printStackTrace();
+        }
+      }
+    }
   }
 }
