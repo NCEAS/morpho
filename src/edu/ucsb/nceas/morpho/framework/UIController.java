@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: tao $'
- *     '$Date: 2002-09-26 20:19:11 $'
- * '$Revision: 1.17 $'
+ *   '$Author: brooke $'
+ *     '$Date: 2002-09-26 21:09:56 $'
+ * '$Revision: 1.18 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -309,10 +309,14 @@ public class UIController
         guiActionClones.remove(action);
         for (int i=0; i< cloneList.size(); i++) {
             GUIAction clone = (GUIAction)cloneList.elementAt(i);
-            MorphoFrame window = 
-                (MorphoFrame)actionCloneWindowAssociation.get(clone);
+            MorphoFrame window = getMorphoFrameContainingGUIAction(clone);
             window.removeGuiAction(clone);
         }
+    }
+    
+    public static MorphoFrame getMorphoFrameContainingGUIAction(GUIAction action) 
+    {
+        return (MorphoFrame)actionCloneWindowAssociation.get(action);
     }
 
     /**
