@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2004-03-24 02:14:18 $'
- * '$Revision: 1.31 $'
+ *   '$Author: sambasiv $'
+ *     '$Date: 2004-04-09 18:28:51 $'
+ * '$Revision: 1.32 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,7 +28,9 @@
 
 package edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages;
 
+import edu.ucsb.nceas.morpho.datapackage.AbstractDataPackage;
 import edu.ucsb.nceas.morpho.framework.AbstractUIPage;
+import edu.ucsb.nceas.morpho.framework.UIController;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.CustomList;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WidgetFactory;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardPageSubPanelAPI;
@@ -73,6 +75,7 @@ public class IntervalRatioPanel extends JPanel implements WizardPageSubPanelAPI 
   private JTextField precisionField;
   private JComboBox  numberTypePickList;
   private CustomList boundsList;
+	private CustomUnitPanel customPanel = null;
 
   // note - order must match numberEMLVals array!
   private String[] numberTypesDisplayVals = new String[] {
@@ -463,10 +466,21 @@ public class IntervalRatioPanel extends JPanel implements WizardPageSubPanelAPI 
   public OrderedMap getPanelData(String xPathRoot) {
 
     returnMap.clear();
-
-    returnMap.put(  xPathRoot + "/unit/standardUnit",
-                    unitsPickList.getSelectedUnit().trim());
-
+		String type = this.unitsPickList.getSelectedType().trim();
+		String unit = unitsPickList.getSelectedUnit().trim();
+		if(WizardSettings.isNewUnit(type, unit)) {
+			if(customPanel != null) {
+				String SIUnit = this.unitsPickList.getSelectedSIUnit();
+				WizardSettings.addNewUnit(type, unit, SIUnit);
+				OrderedMap map = customPanel.getPanelData(xPathRoot + "/additionalMetadata/ANY");
+				returnMap.putAll(map);
+				returnMap.put(  xPathRoot + "/unit/customUnit", unit);
+			}
+		} else {
+			
+			returnMap.put(  xPathRoot + "/unit/standardUnit", unit);
+		}
+		
     returnMap.put(  xPathRoot + "/precision",
                     precisionField.getText().trim());
 
@@ -673,7 +687,7 @@ public class IntervalRatioPanel extends JPanel implements WizardPageSubPanelAPI 
      return Arrays.binarySearch(unitsOfThisType, unitType);
    }
 
-}
+
 
 
 
@@ -699,7 +713,7 @@ class UnitsPickList extends JPanel {
   private JButton newUnit;
   private JLabel unitTypeLabel;
   private JPanel parentPanel;
-  private CustomUnitPanel customPanel = null;
+  
   private JDialog customUnitDialog = null;
 
   private UnitTypesListItem[] unitTypesListItems;
@@ -733,8 +747,8 @@ class UnitsPickList extends JPanel {
 
           unitsList.setModel(
                       ((UnitTypesListItem)(e.getItem())).getComboBoxModel() );
-          String utype = ((UnitTypesListItem)unitTypesList.getSelectedItem()).toString();
-          String preftype = WizardSettings.getPreferredType(utype.toLowerCase());
+          String utype = ((UnitTypesListItem)unitTypesList.getSelectedItem()).getOriginalUnitType();
+          String preftype = WizardSettings.getPreferredType(utype);
           if (preftype!=null) {
             unitsList.setSelectedItem(preftype);
           } else {
@@ -821,64 +835,59 @@ class UnitsPickList extends JPanel {
 
     if(!customPanel.validateUserInput())
       return;
-
-    OrderedMap map = customPanel.getPanelData("");
-
-    String type = getUnitTypeOfNewUnit(map);
-    String[] newUnits = getNewUnits(map);
+		String xPath = "/additionalMetadata/ANY";
+    OrderedMap map = customPanel.getPanelData(xPath);
+		
+    String type = getUnitTypeOfNewUnit(map, xPath);
+    String newUnit = getNewUnit(map, xPath);
+		String SIUnit = getSIUnit(map, xPath);
     String stdType = WizardSettings.getStandardFormOfUnitType(type);
-    if(isNewType(map)) {
-
-      UnitTypesListItem item = new UnitTypesListItem(stdType, newUnits);
+    if(isNewType(map, xPath)) {
+			UnitTypesListItem item = new UnitTypesListItem(stdType, newUnit);
       UnitTypesListItem[] newArray = new UnitTypesListItem[unitTypesListItems.length + 1];
       WizardSettings.insertObjectIntoArray(unitTypesListItems, item, newArray);
       unitTypesListItems = newArray;
       unitTypesList.setModel(new DefaultComboBoxModel(unitTypesListItems));
-
+			this.unitTypesList.setSelectedItem(item);
+			this.unitsList.setSelectedItem(newUnit);
+			this.unitsList.hidePopup();
+			
     } else {
-
-      // add units to existing type
-      UnitTypesListItem item = new UnitTypesListItem(stdType, newUnits);
+			// add units to existing type
+      UnitTypesListItem item = new UnitTypesListItem(stdType, newUnit);
       int idx = Arrays.binarySearch(unitTypesListItems, item);
       if(idx >=0 && idx < unitTypesListItems.length)
-        unitTypesListItems[idx].addUnits(newUnits);
-    }
-
+        unitTypesListItems[idx].addUnit(newUnit);
+			this.unitTypesList.setSelectedItem(item);
+			this.unitsList.setSelectedItem(newUnit);
+			this.unitsList.hidePopup();
+		}
+		
     customUnitDialog.setVisible(false);
     return;
   }
 
-  private String getUnitTypeOfNewUnit( OrderedMap map) {
+  private String getUnitTypeOfNewUnit( OrderedMap map, String xPath) {
 
-    String t = (String) map.get("/unitList/unitType[1]/@name");
-    if(t != null)
-      return t;
-    return (String) map.get("/unitList/unit[1]/@unitType");
-
+    String t = (String) map.get(xPath + "/unitList/unit[1]/@unitType");
+    return t;
   }
 
-  private String[] getNewUnits(OrderedMap map) {
+  private String getNewUnit(OrderedMap map, String xPath) {
 
-    Object o1 = map.get("/unitList/unit[1]/@name");
-    String u1 = (String)o1;
+    String unit = (String) map.get(xPath + "/unitList/unit[1]/@name");
+    return unit;
+	}
+	
+	private String getSIUnit(OrderedMap map, String xPath) {
+		
+		return (String)map.get(xPath + "/unitList/unit[1]/@parentSI");
+	}
+	
+	
+  private boolean isNewType(OrderedMap map, String xPath) {
 
-    Object o2 = map.get("/unitList/unit[2]/@name");
-    if(o2 == null) {
-      // only 1 unit
-      String[] ret = new String[1];
-      ret[0] = u1;
-      return ret;
-    }
-    String[] ret = new String[2];
-    ret[0] = u1;
-    ret[1] = (String)o2;
-    return ret;
-
-  }
-
-  private boolean isNewType(OrderedMap map) {
-
-    String t = (String) map.get("/unitList/unitType[1]/@name");
+    String t = (String) map.get(xPath + "/unitList/unitType[1]/@name");
     if(t != null)
       return true;
     else
@@ -886,13 +895,28 @@ class UnitsPickList extends JPanel {
 
 
   }
-  public String getSelectedUnit() {
+	
+	public String getSelectedUnit() {
 
     Object selItem = unitsList.getSelectedItem();
     if (selItem==null) return "";
     return selItem.toString();
   }
+	
+	public String getSelectedType() {
 
+    Object selItem = this.unitTypesList.getSelectedItem();
+    if (selItem==null) return "";
+    return selItem.toString();
+  }
+	
+	public String getSelectedSIUnit() {
+
+    Object selItem = this.unitTypesList.getSelectedItem();
+    if (selItem==null) return "";
+		return WizardSettings.getPreferredType(((UnitTypesListItem)selItem).getOriginalUnitType());
+  }
+	
   public void setSelectedUnit(int unitPos, int typePos) {
     unitTypesList.setSelectedIndex(unitPos);
     unitsList.setEnabled(true);
@@ -954,6 +978,8 @@ class UnitsPickList extends JPanel {
   }
 }
 
+}
+
 //******************************************************************************
 //******************************************************************************
 //******************************************************************************
@@ -971,6 +997,16 @@ class UnitTypesListItem  implements Comparable{
   private String        unitTypeDisplayString;
   private String[]			unitsOfThisType;
 
+	public UnitTypesListItem(String unitType, String oneUnitOfThisType) {
+			
+			this.unitType = unitType;
+			String[] units = new String[1];
+			units[0] = oneUnitOfThisType;
+			this.unitsOfThisType = units;
+			unitTypeDisplayString = WizardSettings.getDisplayFormOfUnitType(unitType);
+      model = new DefaultComboBoxModel(unitsOfThisType);
+    }
+	
   public UnitTypesListItem(String unitType, String[] unitsOfThisType) {
 
     this.unitType = unitType;
@@ -983,12 +1019,10 @@ class UnitTypesListItem  implements Comparable{
 
   public String toString() { return unitTypeDisplayString; }
 
-  public void addUnits(String[] newUnits) {
+  public void addUnit(String newUnit) {
 
     String[] newArr = new String[unitsOfThisType.length + 1];
-    for(int i=0; i < newUnits.length; i++) {
-      WizardSettings.insertObjectIntoArray(unitsOfThisType, newUnits[i], newArr);
-    }
+    WizardSettings.insertObjectIntoArray(unitsOfThisType, newUnit, newArr);
     unitsOfThisType = newArr;
     model = new DefaultComboBoxModel(unitsOfThisType);
   }
@@ -997,4 +1031,8 @@ class UnitTypesListItem  implements Comparable{
 
     return unitTypeDisplayString.compareTo( ((UnitTypesListItem)o).toString());
   }
+	
+	public String getOriginalUnitType() {
+		return this.unitType;
+	}
 }

@@ -6,9 +6,9 @@
  *             National Center for Ecological Analysis and Synthesis
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2004-03-24 02:14:18 $'
- * '$Revision: 1.22 $'
+ *   '$Author: sambasiv $'
+ *     '$Date: 2004-04-09 18:28:51 $'
+ * '$Revision: 1.23 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,14 +28,24 @@
 package edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages;
 
 import edu.ucsb.nceas.morpho.Morpho;
+import edu.ucsb.nceas.morpho.datapackage.AbstractDataPackage;
 import edu.ucsb.nceas.morpho.framework.ConfigXML;
 import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
 import edu.ucsb.nceas.morpho.framework.AbstractUIPage;
+import edu.ucsb.nceas.morpho.framework.UIController;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WidgetFactory;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardPageSubPanelAPI;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardSettings;
 import edu.ucsb.nceas.morpho.util.Log;
 import edu.ucsb.nceas.utilities.OrderedMap;
+import edu.ucsb.nceas.utilities.XMLUtilities;
+
+import org.apache.xerces.dom.DOMImplementationImpl;
+import org.w3c.dom.DOMImplementation;
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
+import javax.xml.transform.TransformerException;
+
 
 import java.io.File;
 import java.util.ArrayList;
@@ -711,10 +721,59 @@ public class AttributePage extends AbstractUIPage {
         ((WizardPageSubPanelAPI)currentPanel).getPanelData(
                             xPath+"/measurementScale/"+measurementScale) );
     }
+		if(measurementScale.equalsIgnoreCase("Interval") || measurementScale.equalsIgnoreCase("Ratio")) {
+			
+			boolean p = returnMap.containsKey(xPath+"/measurementScale/"+measurementScale + "/additionalMetadata/ANY/unitList/unit[1]/@name");
+			if(p) {
+				OrderedMap map = new OrderedMap();
+				Iterator it = returnMap.keySet().iterator();
+				while(it.hasNext()) {
+					String key = (String)it.next();
+					int idx = key.indexOf("/additionalMetadata");
+					if(idx > 0) {
+						map.put(key.substring(idx), (String)returnMap.get(key));
+						it.remove();
+					}
+				}
+				insertIntoDOMTree(map);
+			} 
+		}
     return returnMap;
   }
 
-
+	private void insertIntoDOMTree(OrderedMap map) {
+		
+		AbstractDataPackage adp = UIController.getInstance().getCurrentAbstractDataPackage();
+		DOMImplementation impl = DOMImplementationImpl.getDOMImplementation();
+		Document doc = impl.createDocument("", "additionalMetadata", null);
+		
+		Node metadataRoot = doc.getDocumentElement();
+		
+		try {
+			XMLUtilities.getXPathMapAsDOMTree(map, metadataRoot);
+			
+		}
+		catch (TransformerException w) {
+			Log.debug(5, "Unable to add addtmetadata details to package!");
+			Log.debug(15, "TransformerException (" + w + ") calling "
+			+ "XMLUtilities.getXPathMapAsDOMTree(map, metadataRoot) with \n"
+			+ "map = " + map
+			+ " and methodRoot = " + metadataRoot);
+			w.printStackTrace();
+			return;
+		}
+		
+		// add to the datapackage
+		Node check = adp.insertSubtree("additionalMetadata", metadataRoot, 0);
+		
+		if (check != null) {
+			Log.debug(45, "added new method details to package...");
+		} else {
+			Log.debug(45, "cldnt added new method details to package...");
+		}
+		
+		
+	}
 
   private String findMeasurementScale(OrderedMap map) {
 

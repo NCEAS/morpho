@@ -358,7 +358,7 @@ public class WidgetFactory {
 
   // ***************************************************************************
 
-  private static Dimension getDimForNumberOfLines(int numberOfLines) {
+  public static Dimension getDimForNumberOfLines(int numberOfLines) {
 
     double width = WizardSettings.WIZARD_CONTENT_SINGLE_LINE_DIMS.getWidth();
     double height = numberOfLines
@@ -410,7 +410,7 @@ public class WidgetFactory {
   public static JDialog makeContainerDialog(JPanel centerPanel, ActionListener okListener, ActionListener cancelListener, String okCaption, String cancelCaption)
   {
 
-    JDialog dialog = new JDialog();
+    JDialog dialog = new JDialog(WizardContainerFrame.getDialogParent());
     Container c = dialog.getContentPane();
     c.setLayout(new BorderLayout());
 

@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: sambasiv $'
- *     '$Date: 2004-03-19 20:31:19 $'
- * '$Revision: 1.2 $'
+ *     '$Date: 2004-04-09 18:28:51 $'
+ * '$Revision: 1.3 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -71,11 +71,14 @@ import javax.swing.BoxLayout;
 import javax.swing.JCheckBox;
 import javax.swing.JOptionPane;
 import javax.swing.JComboBox;
+import javax.swing.JRadioButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JDialog;
 import javax.swing.JTextField;
+import javax.swing.JTextArea;
 import javax.swing.JButton;
+import javax.swing.JScrollPane;
 import javax.swing.JDialog;
 import javax.swing.border.EmptyBorder;
 import javax.swing.AbstractAction;
@@ -84,36 +87,74 @@ import javax.swing.AbstractAction;
 public class CustomUnitPanel extends JPanel implements WizardPageSubPanelAPI 
 {
 	
-	private static final String TOP_LABEL_STRING = "Enter the type, definition and name of the new unit. You can either select an existing Unit Type or create a new Unit Type by defining it in terms of the fundamental unit types.";
+	private static final String TOP_LABEL_STRING = "Enter a name and an optional description for your custom unit.";
+	
+	private static final String CATEGORY_HEAD_LABEL = "What category does the new unit belong to?";
+	
+	
+	private final String[] categoryLabels = {	"One of the existing unit types", 
+																						"A new custom unit type"};
+																						
+	private final Color disabledBackgroundColor = new Color(192, 192, 192);
 	
 	private JLabel typeNameLabel;
 	private JComboBox typeNameComboBox;
-	private static final String TYPE_NAME_LABEL = WizardSettings.HTML_NO_TABLE_OPENING + "Select the category that the unit belongs to. You can also define a new category if needed." + WizardSettings.HTML_NO_TABLE_CLOSING; 
+	private static final String UNIT_TYPE_LABEL = "Select the unit type that the new unit belongs to";
 	
-	private JLabel typeDefnLabel;
-	private CustomList typeDefnList;
-	private static final String TYPE_DEFN_LABEL = WizardSettings.HTML_NO_TABLE_OPENING + "Define the unit category as a product of the basic unit types available. Specify the unit type and the power it is raised to. <br>" + 
-	WizardSettings.HTML_EXAMPLE_FONT_OPENING + "e.g:&nbsp; for a unit type like 'velocity', which is given by meterPerSecond, the definition would be - <br>" + "Unit = Length &nbsp;&nbsp;&nbsp; Power = 1 <br>Unit = Time &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Power = -1" + WizardSettings.HTML_EXAMPLE_FONT_CLOSING + WizardSettings.HTML_NO_TABLE_CLOSING;
+	private JLabel existingTypeDefnLabel;
+	private CustomList existingTypeDefnList;
+	private static final String EXISTING_TYPE_DEFN_LABEL = WizardSettings.HTML_NO_TABLE_OPENING + "Definition for the selected unit category. It is represented as a product of the basic unit types and an exponential (power) factor.<br>" + WizardSettings.HTML_EXAMPLE_FONT_CLOSING + WizardSettings.HTML_NO_TABLE_CLOSING;
+	
+	
+	private JLabel newTypeNameLabel;
+	private JTextField newTypeNameField;
+	private static final String NEW_TYPE_NAME_HEADER_LABEL = "Enter the name of the new unit type";
+	
+	private JLabel newTypeDefnLabel;
+	private CustomList newTypeDefnList;
+	private static final String NEW_TYPE_DEFN_HEADER_LABEL = "Provide a definition for this custom unit, in terms of the basic unit types shown, and an exponential (power) factor";
+	
+	private static final String NEW_TYPE_DEFN_EXPL_LABEL = WizardSettings.HTML_NO_TABLE_OPENING + WizardSettings.HTML_EXAMPLE_FONT_OPENING + 
+	"e.g:&nbsp; for a unit type like 'velocity', which is given by meterPerSecond, the definition would be - <br>" + "Unit = Length &nbsp;&nbsp;&nbsp; Power = 1 <br>Unit = Time &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Power = -1" + WizardSettings.HTML_EXAMPLE_FONT_CLOSING + WizardSettings.HTML_NO_TABLE_CLOSING;
 	
 	private JLabel unitNameLabel;
 	private JTextField unitNameField;
 	private static final String UNIT_NAME_LABEL = WizardSettings.HTML_NO_TABLE_OPENING + "Specify the name of the unit. " + WizardSettings.HTML_EXAMPLE_FONT_OPENING + "e.g:&nbsp; meterPerSecond" + WizardSettings.HTML_EXAMPLE_FONT_CLOSING + WizardSettings.HTML_NO_TABLE_CLOSING;
 	
-	private JLabel SIunitNameLabel;
-	private JTextField SIunitNameField;
+	private JLabel unitDescLabel;
+	private JTextArea unitDescField;
+	private static final String UNIT_DEFN_LABEL = WizardSettings.HTML_NO_TABLE_OPENING + "Provide a description of the unit. " + WizardSettings.HTML_EXAMPLE_FONT_OPENING + "e.g:&nbsp; SI unit of velocity" + WizardSettings.HTML_EXAMPLE_FONT_CLOSING + WizardSettings.HTML_NO_TABLE_CLOSING;
+	
+	private JLabel existingSIunitNameLabel;
+	private JTextField existingSIunitNameField;
+	private static final String EXISTING_SI_UNIT_NAME_LABEL = WizardSettings.HTML_NO_TABLE_OPENING + "SI unit for the selected unit category. " + WizardSettings.HTML_NO_TABLE_CLOSING;
+	
+	private JLabel newSIunitNameLabel;
+	private JComboBox newSIunitNameBox;
+	private static final String NEW_SI_UNIT_HEADER_LABEL = "Choose the SI unit for this unit type and optionally define the multiplier to convert the new unit to the chosen SI unit";
+	
 	private static final String SI_UNIT_NAME_LABEL = WizardSettings.HTML_NO_TABLE_OPENING + "Specify the SI unit for this Unit Type. " + WizardSettings.HTML_EXAMPLE_FONT_OPENING + "e.g:&nbsp; meter" + WizardSettings.HTML_EXAMPLE_FONT_CLOSING + WizardSettings.HTML_NO_TABLE_CLOSING;
 	
-	private JLabel unitFactorLabel;
-	private JTextField unitFactorField;
-	private static final String UNIT_FACTOR_LABEL = WizardSettings.HTML_NO_TABLE_OPENING + "Define the multiplier to convert the given unit to the SI unit. " + WizardSettings.HTML_EXAMPLE_FONT_OPENING + "e.g:&nbsp; 1" + WizardSettings.HTML_EXAMPLE_FONT_CLOSING + WizardSettings.HTML_NO_TABLE_CLOSING;
+	private JLabel existingUnitFactorLabel;
+	private JTextField existingUnitFactorField;
+	private JLabel newUnitFactorLabel;
+	private JTextField newUnitFactorField;
+	private static final String UNIT_FACTOR_LABEL = WizardSettings.HTML_NO_TABLE_OPENING + //"Define the multiplier to convert this unit to the SI unit. " +
+	WizardSettings.HTML_EXAMPLE_FONT_OPENING + "e.g:&nbsp; 0.001" + WizardSettings.HTML_EXAMPLE_FONT_CLOSING + WizardSettings.HTML_NO_TABLE_CLOSING;
 	
-	private JLabel unitDescLabel;
-	private JTextField unitDescField;
 	
 	private String[] unitTypes;
 	private String[] basicUnitTypes;
 	private String currentUnitTypeSelected = "";
 	private JPanel parentPanel;
+	
+	private int currentCategorySelection = -1;
+	private JPanel existingTypePanel;
+	private JPanel newTypePanel = new JPanel();
+	private JPanel categoryRadioPanel;
+	private JLabel categoryLabel;
+	private JPanel centerPanel = new JPanel();
+	private JPanel middleExistingTypePanel;
 	
 	CustomUnitPanel(JPanel parent) {
 		
@@ -124,10 +165,9 @@ public class CustomUnitPanel extends JPanel implements WizardPageSubPanelAPI
 	private void init() {
 		
 		String[] tempUnitTypes = WizardSettings.getUnitDictionaryUnitTypes();
-		
-		
 		basicUnitTypes = WizardSettings.getUnitDictionaryBasicUnitTypes();
 		createDisplayString(basicUnitTypes);
+		String[] SIUnits = WizardSettings.getSIUnits();
 		
 		unitTypes = new String[tempUnitTypes.length + 1];
 		unitTypes[0] = "";
@@ -136,172 +176,345 @@ public class CustomUnitPanel extends JPanel implements WizardPageSubPanelAPI
 		
 		tempUnitTypes = null;
 		
-		typeNameLabel = WidgetFactory.makeLabel("Unit Type", true);
-		typeNameComboBox = new JComboBox(unitTypes);
-		typeNameComboBox.addItemListener( new ItemListener() {
-			public void itemStateChanged(ItemEvent ie) {
-				String selItem = (String)ie.getItem();
-				if(currentUnitTypeSelected.equals(selItem))
-					return;
-				currentUnitTypeSelected = selItem;
-				setDefnListValue();
-			}
-		}); 
-		typeNameComboBox.setEditable(true);
-		
-		typeDefnLabel = WidgetFactory.makeLabel("Unit Type Defintion", false);
-		JComboBox cbox = new JComboBox(basicUnitTypes);
-		cbox.setEditable(false);
-		JTextField jtf = new JTextField("1");
-		Object[] colObjects = new Object[2];
-		colObjects[0] = cbox;
-		colObjects[1] = jtf;
-		String[] colHeaders = new String[] {"Unit", "Power"};
-		double[] colWidths = new double[] {75.0, 25.0};
-		typeDefnList = new CustomList(colHeaders, colObjects, -1, true, false, false, true, true, true);
-		typeDefnList.setColumnWidthPercentages(colWidths);
-		typeDefnList.setListButtonDimensions(WizardSettings.LIST_BUTTON_DIMS_SMALL);
-		
-		unitNameLabel = WidgetFactory.makeLabel("Unit Name", true);
-		unitNameField = WidgetFactory.makeOneLineTextField();
-		
-		SIunitNameLabel = WidgetFactory.makeLabel("SI Unit", true);
-		SIunitNameField = WidgetFactory.makeOneLineTextField();
-		
-		unitFactorLabel = WidgetFactory.makeLabel("Multiplication Factor", false);
-		unitFactorField = WidgetFactory.makeOneLineTextField();
-		
-		unitDescLabel = WidgetFactory.makeLabel("Description", false);
-		unitDescField = WidgetFactory.makeOneLineTextField();
-		
 		setLayout(new BorderLayout());
 		
-		JLabel topLabel = WidgetFactory.makeHTMLLabel(TOP_LABEL_STRING, 2);
-		this.add(topLabel, BorderLayout.NORTH);
+		//////////////////
+		//// top Panel
+		JPanel topPanel = WidgetFactory.makeVerticalPanel(-1);
+		this.add(topPanel, BorderLayout.NORTH);
 		
-		////////////////
+		//// top label
+		JLabel topLabel = getLabel(TOP_LABEL_STRING, false);
+		topPanel.add(topLabel);
+		topPanel.add(WidgetFactory.makeDefaultSpacer());
 		
-		JPanel centerPanel = new JPanel();
-		centerPanel.setLayout(new BoxLayout(centerPanel, BoxLayout.Y_AXIS));
-		centerPanel.add(WidgetFactory.makeDefaultSpacer());
-		
-		JPanel typeNamePanel = WidgetFactory.makePanel();
-		typeNamePanel.add(typeNameLabel);
-		JPanel typeNameGrid = new JPanel(new GridLayout(1,2));
-		JPanel outerComboboxPanel = WidgetFactory.makeVerticalPanel(2);
-		outerComboboxPanel.add(Box.createGlue());
-		outerComboboxPanel.add(typeNameComboBox);
-		outerComboboxPanel.add(Box.createGlue());
-		typeNameGrid.add(outerComboboxPanel);
-		typeNameGrid.add(getLabel(TYPE_NAME_LABEL));
-		typeNamePanel.add(typeNameGrid);
-		
-		centerPanel.add(typeNamePanel);
-		centerPanel.add(WidgetFactory.makeDefaultSpacer());
-		
-		/////////////////
-		
-		JPanel typeDefnPanel = WidgetFactory.makePanel();
-		typeDefnPanel.add(typeDefnLabel);
-		JPanel typeDefnGrid = new JPanel(new GridLayout(1,2));
-		typeDefnGrid.add(typeDefnList);
-		typeDefnGrid.add(getLabel(TYPE_DEFN_LABEL));
-		typeDefnPanel.add(typeDefnGrid);
-		centerPanel.add(typeDefnPanel);
-		centerPanel.add(WidgetFactory.makeDefaultSpacer());
-		
-		/////////////////
-		
+		//// unit name
+		unitNameLabel = WidgetFactory.makeLabel("Unit Name:", true);
+		unitNameField = WidgetFactory.makeOneLineTextField();
 		JPanel unitNamePanel = WidgetFactory.makePanel();
 		unitNamePanel.add(unitNameLabel);
 		JPanel unitNameGrid = new JPanel(new GridLayout(1,2));
 		unitNameGrid.add(unitNameField);
 		unitNameGrid.add(getLabel(UNIT_NAME_LABEL));
 		unitNamePanel.add(unitNameGrid);
-		centerPanel.add(unitNamePanel);
-		centerPanel.add(WidgetFactory.makeDefaultSpacer());
+		topPanel.add(unitNamePanel);
+		topPanel.add(WidgetFactory.makeDefaultSpacer());
+		
+		//// unit description
+		unitDescLabel = WidgetFactory.makeLabel("Description:", false);
+		unitDescField = WidgetFactory.makeTextArea("", 3, true);
+		JPanel unitDescPanel = WidgetFactory.makePanel();
+		unitDescPanel.add(unitDescLabel);
+		JPanel unitDescGrid = new JPanel(new GridLayout(1,2));
+		unitDescGrid.add(new JScrollPane(unitDescField));
+		unitDescGrid.add(getLabel(UNIT_DEFN_LABEL));
+		unitDescPanel.add(unitDescGrid);
+		topPanel.add(unitDescPanel);
+		topPanel.add(WidgetFactory.makeDefaultSpacer());
+		
+		////////////////
+		//// center Panel
+		
+		centerPanel.setLayout(new BoxLayout(centerPanel, BoxLayout.Y_AXIS));
+		this.add(centerPanel, BorderLayout.CENTER);
+		
+		//// category question
+		JPanel categoryPanel = WidgetFactory.makeVerticalPanel(-1);
+    categoryLabel = getLabel(CATEGORY_HEAD_LABEL, true);
+		ActionListener categoryListener = new ActionListener() {
+			public void actionPerformed(ActionEvent ae) {
+				
+				if(ae.getActionCommand().equals(categoryLabels[0])) {
+					if(currentCategorySelection == 0) return;
+					if(currentCategorySelection == 1) centerPanel.remove(newTypePanel);
+					centerPanel.add(existingTypePanel);
+					centerPanel.setMaximumSize(centerPanel.getPreferredSize());
+					centerPanel.setMinimumSize(centerPanel.getPreferredSize());
+					currentCategorySelection = 0;
+					refreshUI();
+				} else {
+					if(currentCategorySelection == 1) return;
+					if(currentCategorySelection == 0) centerPanel.remove(existingTypePanel);
+					centerPanel.add(newTypePanel);
+					centerPanel.setMaximumSize(centerPanel.getPreferredSize());
+					centerPanel.setMinimumSize(centerPanel.getPreferredSize());
+					currentCategorySelection = 1;
+					refreshUI();
+				}
+			}
+		};
+		categoryRadioPanel = WidgetFactory.makeRadioPanel(categoryLabels, -1, categoryListener);
+		categoryPanel.add(categoryLabel);
+		categoryPanel.add(categoryRadioPanel);
+		categoryPanel.setMaximumSize(categoryPanel.getPreferredSize());
+    categoryPanel.setMinimumSize(categoryPanel.getPreferredSize());
+
+		centerPanel.add(categoryPanel);
 		
 		/////////////////
+		//// existing unit type panel
+		
+		existingTypePanel = WidgetFactory.makeVerticalPanel(-1);
+		JLabel unitTypeLabel = getLabel(UNIT_TYPE_LABEL, true);
+		existingTypePanel.add(WidgetFactory.makeDefaultSpacer());
+		existingTypePanel.add(unitTypeLabel);
+		
+		// type name combobox
+		typeNameLabel = WidgetFactory.makeLabel("Unit Type:", true);
+		typeNameComboBox = new JComboBox(unitTypes);
+		typeNameComboBox.addItemListener( new ItemListener() {
+			public void itemStateChanged(ItemEvent ie) {
+				String selItem = (String)ie.getItem();
+				if(currentUnitTypeSelected.equals(selItem))
+					return;
+				if(currentUnitTypeSelected.trim().length() == 0) {
+					existingTypePanel.add(middleExistingTypePanel);
+					existingTypePanel.add(Box.createGlue());
+					existingTypePanel.setMaximumSize(existingTypePanel.getPreferredSize());
+					existingTypePanel.setMinimumSize(existingTypePanel.getPreferredSize());
+					refreshUI();
+					
+				} else if (selItem.length() == 0) {
+					existingTypePanel.remove(middleExistingTypePanel);
+					existingTypePanel.setMaximumSize(existingTypePanel.getPreferredSize());
+					existingTypePanel.setMinimumSize(existingTypePanel.getPreferredSize());
+					refreshUI();
+				}
+				if(selItem.length() > 0) existingTypeNameChanged(selItem);
+				currentUnitTypeSelected = selItem;
+			}
+		}); 
+		JPanel typeNamePanel = WidgetFactory.makePanel();
+		typeNamePanel.add(typeNameLabel);
+		JPanel typeNameGrid = new JPanel(new GridLayout(1,2));
+		typeNameGrid.add(typeNameComboBox);
+		typeNameGrid.add(getLabel(""));
+		typeNamePanel.add(typeNameGrid);
+		
+		existingTypePanel.add(typeNamePanel);
+		existingTypePanel.add(WidgetFactory.makeDefaultSpacer());
+		
+		existingTypePanel.setMaximumSize(existingTypePanel.getPreferredSize());
+		existingTypePanel.setMinimumSize(existingTypePanel.getPreferredSize());
+		
+		/////////////////
+		// existing type middle Panel - appears after the user selects a type
+		middleExistingTypePanel = WidgetFactory.makeVerticalPanel(-1);
+		
+		// defn for existing types
+		
+		String[] colHeaders = new String[] {"Unit", "Power"};
+		double[] colWidths = new double[] {75.0, 25.0};
+		Object[] existingColObjects = new Object[2];
+		JTextField text1 = new JTextField();
+		JTextField text2 = new JTextField();
+		text1.setBackground(this.disabledBackgroundColor);
+		text2.setBackground(this.disabledBackgroundColor);
+		text1.setEditable(false);
+		text2.setEditable(false);
+		existingColObjects[0] = text1;
+		existingColObjects[1] = text2;
+		existingTypeDefnList = new CustomList(colHeaders, existingColObjects, -1, false, false, false, false, false, false);
+		existingTypeDefnList.setColumnWidthPercentages(colWidths);
+		existingTypeDefnList.setListButtonDimensions(WizardSettings.LIST_BUTTON_DIMS_SMALL);
+		existingTypeDefnList.setEnabled(false);
+		existingTypeDefnList.setBackground(this.disabledBackgroundColor);
+		existingTypeDefnList.setMaximumSize(WidgetFactory.getDimForNumberOfLines(4));
+		existingTypeDefnList.setPreferredSize(WidgetFactory.getDimForNumberOfLines(4));
+		//existingTypeDefnList.setMinimumSize(WidgetFactory.getDimForNumberOfLines(4));
+		
+		JPanel typeDefnPanel = WidgetFactory.makePanel();
+		existingTypeDefnLabel = WidgetFactory.makeLabel("Unit Type Defintion:", false);
+		typeDefnPanel.add(existingTypeDefnLabel);
+		JPanel typeDefnGrid = new JPanel(new GridLayout(1,2));
+		typeDefnGrid.add(existingTypeDefnList);
+		typeDefnGrid.add(getLabel(EXISTING_TYPE_DEFN_LABEL));
+		typeDefnPanel.add(typeDefnGrid);
+		middleExistingTypePanel.add(typeDefnPanel);
+		middleExistingTypePanel.add(WidgetFactory.makeDefaultSpacer());
+		middleExistingTypePanel.add(Box.createGlue());
+		
+		/////////////////
+		// SI unit for existing panel
 		
 		JPanel SIunitNamePanel = WidgetFactory.makePanel();
-		SIunitNamePanel.add(SIunitNameLabel);
+		existingSIunitNameLabel = WidgetFactory.makeLabel("SI Unit:", false);
+		existingSIunitNameField = WidgetFactory.makeOneLineTextField();
+		existingSIunitNameField.setEditable(false);
+		existingSIunitNameField.setBackground(disabledBackgroundColor);
+		SIunitNamePanel.add(existingSIunitNameLabel);
 		JPanel SIunitNameGrid = new JPanel(new GridLayout(1,2));
-		SIunitNameGrid.add(SIunitNameField);
-		SIunitNameGrid.add(getLabel(SI_UNIT_NAME_LABEL));
+		SIunitNameGrid.add(existingSIunitNameField);
+		SIunitNameGrid.add(getLabel(EXISTING_SI_UNIT_NAME_LABEL));
 		SIunitNamePanel.add(SIunitNameGrid);
-		centerPanel.add(SIunitNamePanel);
-		centerPanel.add(WidgetFactory.makeDefaultSpacer());
+		middleExistingTypePanel.add(SIunitNamePanel);
+		middleExistingTypePanel.add(WidgetFactory.makeDefaultSpacer());
+		middleExistingTypePanel.add(Box.createGlue());
 		
 		/////////////////
 		
 		JPanel unitFactorPanel = WidgetFactory.makePanel();
-		unitFactorPanel.add(unitFactorLabel);
+		existingUnitFactorLabel = WidgetFactory.makeLabel("Multiplier:", false);
+		existingUnitFactorField = WidgetFactory.makeOneLineTextField();
+		unitFactorPanel.add(existingUnitFactorLabel);
 		JPanel unitFactorGrid = new JPanel(new GridLayout(1,2));
-		unitFactorGrid.add(unitFactorField);
+		unitFactorGrid.add(existingUnitFactorField);
 		unitFactorGrid.add(getLabel(UNIT_FACTOR_LABEL));
 		unitFactorPanel.add(unitFactorGrid);
-		centerPanel.add(unitFactorPanel);
-		centerPanel.add(WidgetFactory.makeDefaultSpacer());
+		middleExistingTypePanel.add(unitFactorPanel);
+		middleExistingTypePanel.add(WidgetFactory.makeDefaultSpacer());
+		middleExistingTypePanel.add(Box.createGlue());
 		
 		/////////////////
+		/////////////////
+		// new type Panel
 		
-		JPanel unitDescPanel = WidgetFactory.makePanel();
-		unitDescPanel.add(unitDescLabel);
-		JPanel unitDescGrid = new JPanel(new GridLayout(1,2));
-		unitDescGrid.add(unitDescField);
-		unitDescGrid.add(new JLabel(""));
-		unitDescPanel.add(unitDescGrid);
-		centerPanel.add(unitDescPanel);
-		centerPanel.add(WidgetFactory.makeDefaultSpacer());
+		newTypePanel = WidgetFactory.makeVerticalPanel(-1);
+		JLabel newUnitTypeLabel = getLabel(NEW_TYPE_NAME_HEADER_LABEL, true);
+		newTypePanel.add(WidgetFactory.makeDefaultSpacer());
+		newTypePanel.add(newUnitTypeLabel);
+		newTypePanel.add(WidgetFactory.makeHalfSpacer());
+		newTypePanel.add(Box.createGlue());
+		
+		//////////////////
+		//// new type name textfield
+		
+		newTypeNameLabel = WidgetFactory.makeLabel("Unit Type:", true);
+		newTypeNameField = WidgetFactory.makeOneLineTextField();
+		JPanel newTypeNamePanel = WidgetFactory.makePanel();
+		newTypeNamePanel.add(newTypeNameLabel);
+		JPanel newTypeNameGrid = new JPanel(new GridLayout(1,2));
+		newTypeNameGrid.add(newTypeNameField);
+		newTypeNameGrid.add(getLabel(""));
+		newTypeNamePanel.add(newTypeNameGrid);
+		newTypePanel.add(newTypeNamePanel);
+		//newTypePanel.add(WidgetFactory.makeDefaultSpacer());
+		newTypePanel.add(WidgetFactory.makeHalfSpacer());
+		newTypePanel.add(Box.createGlue());
 		
 		/////////////////
+		//// new type defn customlist
+		Object[] newColObjects = new Object[2];
+		JComboBox basicTypeCombobox = new JComboBox(basicUnitTypes);
+		basicTypeCombobox.setEditable(false);
+		JTextField jtf = new JTextField("1");
+		newColObjects[0] = basicTypeCombobox;
+		newColObjects[1] = jtf;
+		newTypeDefnList = new CustomList(colHeaders, newColObjects, -1, true, false, false, true, false, false);
+		newTypeDefnList.setColumnWidthPercentages(colWidths);
+		newTypeDefnList.setListButtonDimensions(WizardSettings.LIST_BUTTON_DIMS_SMALL);
+		newTypeDefnList.setMaximumSize(WidgetFactory.getDimForNumberOfLines(4));
+		newTypeDefnList.setPreferredSize(WidgetFactory.getDimForNumberOfLines(4));
+		newTypeDefnList.fireAddAction();
 		
+		JPanel newTypeDefnTopPanel = WidgetFactory.makeVerticalPanel(-1);
+		JLabel newUnitDefnTopLabel = getLabel(NEW_TYPE_DEFN_HEADER_LABEL, true);
+		newTypeDefnTopPanel.add(newUnitDefnTopLabel);
+		newTypeDefnTopPanel.add(WidgetFactory.makeHalfSpacer());
+		
+		JPanel newTypeDefnPanel = WidgetFactory.makePanel();
+		newTypeDefnLabel = WidgetFactory.makeLabel("Unit Type Defintion:", true);
+		newTypeDefnPanel.add(newTypeDefnLabel);
+		JPanel newTypeDefnGrid = new JPanel(new GridLayout(1,2));
+		newTypeDefnGrid.add(newTypeDefnList);
+		newTypeDefnGrid.add(getLabel(NEW_TYPE_DEFN_EXPL_LABEL));
+		newTypeDefnPanel.add(newTypeDefnGrid);
+		
+		newTypeDefnTopPanel.add(newTypeDefnPanel);
+		newTypePanel.add(newTypeDefnTopPanel);
+		//newTypePanel.add(WidgetFactory.makeDefaultSpacer());
+		newTypePanel.add(WidgetFactory.makeHalfSpacer());
+		newTypePanel.add(Box.createGlue());
+		
+		/////////////////
+		//// SI unit for new panel
+		
+		JPanel newSIunitNameTopPanel = WidgetFactory.makeVerticalPanel(-1);
+		JLabel newSIUnitNameTopLabel = getLabel(NEW_SI_UNIT_HEADER_LABEL, true);
+		newSIunitNameTopPanel.add(newSIUnitNameTopLabel);
+		newSIunitNameTopPanel.add(WidgetFactory.makeHalfSpacer());
+		
+		JPanel newSIunitNamePanel = WidgetFactory.makePanel();
+		newSIunitNameLabel = WidgetFactory.makeLabel("SI Unit:", true);
+		newSIunitNameBox = new JComboBox(SIUnits);
+		newSIunitNamePanel.add(newSIunitNameLabel);
+		JPanel newSIunitNameGrid = new JPanel(new GridLayout(1,2));
+		newSIunitNameGrid.add(newSIunitNameBox);
+		newSIunitNameGrid.add(getLabel(EXISTING_SI_UNIT_NAME_LABEL));
+		newSIunitNamePanel.add(newSIunitNameGrid);
+		newSIunitNameTopPanel.add(newSIunitNamePanel);
+		newTypePanel.add(newSIunitNameTopPanel);
+		//newTypePanel.add(WidgetFactory.makeDefaultSpacer());
+		newTypePanel.add(WidgetFactory.makeHalfSpacer());
+		newTypePanel.add(Box.createGlue());
+		
+		/////////////////
+		//// multiplier field for new type panel
+		
+		JPanel newUnitFactorPanel = WidgetFactory.makePanel();
+		newUnitFactorLabel = WidgetFactory.makeLabel("Multiplier:", false);
+		newUnitFactorField = WidgetFactory.makeOneLineTextField();
+		newUnitFactorPanel.add(newUnitFactorLabel);
+		JPanel newUnitFactorGrid = new JPanel(new GridLayout(1,2));
+		newUnitFactorGrid.add(newUnitFactorField);
+		newUnitFactorGrid.add(getLabel(UNIT_FACTOR_LABEL));
+		newUnitFactorPanel.add(newUnitFactorGrid);
+		newTypePanel.add(newUnitFactorPanel);
+		//newTypePanel.add(WidgetFactory.makeDefaultSpacer());
+		newTypePanel.add(WidgetFactory.makeHalfSpacer());
+		newTypePanel.add(Box.createGlue());
+		
+		
+		/////////////////
+		//centerPanel.add(Box.createGlue());
 		this.add(centerPanel, BorderLayout.CENTER);
 		
 	}
 	
-	private void setDefnListValue() {
+	private void refreshUI() {
 		
-		typeDefnList.removeAllRows();
-		String unitType = (String)typeNameComboBox.getSelectedItem();
+		centerPanel.validate();
+    centerPanel.repaint();
+  }
+	
+	private void existingTypeNameChanged(String selItem) {
+		
+		setDefnListValue(selItem);
+	}
+	
+	private void setDefnListValue(String unitType) {
+		
 		if(unitType.trim().equals("")) return;
+		existingTypeDefnList.removeAllRows();
 		
+		existingSIunitNameField.setText(WizardSettings.getPreferredType( WizardSettings.getStandardFormOfUnitType(unitType) ));
+			
 		// check if its a basic unit type.. if so, nothing to be done
 		List bTypes = Arrays.asList(basicUnitTypes);
 		if(bTypes.contains(unitType)) {
 			
-			SIunitNameField.setText(WizardSettings.getPreferredType(unitType.toLowerCase()));
-			typeDefnList.setEnabled(false);
-			SIunitNameField.setEditable(false);
 			return;
 		}
 		
 		List types = Arrays.asList(unitTypes);
 		if(types.contains(unitType)) { 
-			SIunitNameField.setText(WizardSettings.getPreferredType(unitType.toLowerCase()));
-			SIunitNameField.setEditable(false);
-			typeDefnList.setEnabled(false);
+			
 			// retreive the defn from the emlUnitDictionary file
 			List defns = WizardSettings.getDefinitionsForUnitType(unitType);
 			if(defns == null || defns.size() == 0) {
 				Log.debug(12, " Got defn = " + defns);
 				return;
 			}
-			typeDefnList.setEnabled(true);
 			Log.debug(12, " Got defn = " + defns.size());
 			Iterator it = defns.iterator();
 			while(it.hasNext()) {
 				List row = (List)it.next();
-				typeDefnList.addRow(row);
+				existingTypeDefnList.addRow(row);
 			}
-			typeDefnList.setEnabled(false);
 			
-		} else {
-			
-			SIunitNameField.setText("");
-			SIunitNameField.setEditable(true);
-			typeDefnList.setEnabled(true);
 		}
+		existingTypeDefnList.scrollToRow(0);
+		existingTypeDefnList.setSelectedRows(new int[]{});
 		return;
 	}
 	
@@ -328,6 +541,22 @@ public class CustomUnitPanel extends JPanel implements WizardPageSubPanelAPI
     return label;
   }
 	
+	private JLabel getLabel(String text, boolean hilite) {
+		
+		text = WizardSettings.HTML_TABLE_LABEL_OPENING + text + WizardSettings.HTML_TABLE_LABEL_CLOSING;
+		JLabel label = new JLabel(text);
+		label.setAlignmentX(1.0f);
+    label.setFont(WizardSettings.WIZARD_CONTENT_FONT);
+		Dimension dim = WidgetFactory.getDimForNumberOfLines(1);
+		label.setMaximumSize(dim);
+		label.setMinimumSize(dim);
+		label.setPreferredSize(dim);
+		label.setBorder(BorderFactory.createMatteBorder(0,1,0,1, (Color)null));
+		if (hilite) label.setForeground(WizardSettings.WIZARD_CONTENT_REQD_TEXT_COLOR);
+    else label.setForeground(WizardSettings.WIZARD_CONTENT_TEXT_COLOR);
+    
+		return label;
+	}
 	
 	/** 
    *  The action to be executed when the panel is displayed. May be empty
@@ -335,7 +564,18 @@ public class CustomUnitPanel extends JPanel implements WizardPageSubPanelAPI
   public void onLoadAction() {
 		
 	}
-
+	
+	private int getSelectedRadioIndex(JPanel radioPanel) {
+		
+		Container c = (Container)(radioPanel.getComponent(1));
+		int cnt = c.getComponentCount();
+		for(int i = 0; i<cnt; i++) {
+			JRadioButton jrb = (JRadioButton)c.getComponent(i);
+			if(jrb.isSelected()) return i;
+		}
+		return -1;
+	}
+	
   /** 
    *  checks that the user has filled in required fields - if not, highlights 
    *  labels to draw attention to them
@@ -345,89 +585,69 @@ public class CustomUnitPanel extends JPanel implements WizardPageSubPanelAPI
    */
   public boolean validateUserInput() {
 		
-		String typeName = (String)typeNameComboBox.getSelectedItem();
-		if(typeName == null || typeName.trim().equals("")) {
-			WidgetFactory.hiliteComponent(typeNameLabel);
-		}
-		WidgetFactory.unhiliteComponent(typeNameLabel);
-		
-		if(typeDefnList.isEnabled()) {
-		List defnRows = this.typeDefnList.getListOfRowLists();
-		if(defnRows != null && defnRows.size() > 0) {
-			
-			List units = new ArrayList();
-			Iterator it = defnRows.iterator();
-			int cnt = 0;
-			while(it.hasNext()) {
-				List row = (List)it.next();
-				String unit = (String)row.get(0);
-				if(units.contains(unit)) {
-					WidgetFactory.hiliteComponent(typeDefnLabel);
-					JOptionPane.showMessageDialog(this, "Units cannot be repeated. Accumulate all terms with same unit into one term", "Error", JOptionPane.ERROR_MESSAGE);
-					typeDefnList.editCellAt(cnt, 0);
-					return false;
-				}
-				units.add(unit);
-				try {
-					double pwr = Double.parseDouble((String)row.get(1));
-				} catch(Exception e) {
-					WidgetFactory.hiliteComponent(typeDefnLabel);
-					JOptionPane.showMessageDialog(this, "Power of a unit should be a number", "Error", JOptionPane.ERROR_MESSAGE);
-					typeDefnList.editCellAt(cnt, 1);
-					return false;
-				}
-				cnt++;
-			}
-		} else {
-			WidgetFactory.hiliteComponent(typeDefnLabel);
-			return false;
-		}
-
-		}
-		WidgetFactory.unhiliteComponent(typeDefnLabel);
-		
 		String unitName = this.unitNameField.getText();
 		if(unitName.trim().equals("")) {
-			
 			WidgetFactory.hiliteComponent(unitNameLabel);
+			this.unitNameField.requestFocus();
 			return false;
-		}
-		
-		String[] existingUnits = WizardSettings.getUnitDictionaryUnitsOfType(typeName);
-		if(existingUnits != null && existingUnits.length > 0) {
-			List list = Arrays.asList(existingUnits);
-			if(list.contains(unitName)) {
-				WidgetFactory.hiliteComponent(unitNameLabel);
-				JOptionPane.showMessageDialog(this, "The specified unit type already has a unit by the same name", "Error", JOptionPane.ERROR_MESSAGE);
-				return false;
-			}
 		}
 		WidgetFactory.unhiliteComponent(unitNameLabel);
 		
-		if(typeDefnList.isEnabled()) {
-			String SIunitName = this.SIunitNameField.getText();
-			if(SIunitName.trim().equals("")) {
-				
-				WidgetFactory.hiliteComponent(SIunitNameLabel);
-				return false;
-			}
+		int category = getSelectedRadioIndex(this.categoryRadioPanel);
+		if(category == -1) {
+			WidgetFactory.hiliteComponent(categoryLabel);
+			return false;
 		}
-		WidgetFactory.unhiliteComponent(SIunitNameLabel);
+		WidgetFactory.unhiliteComponent(categoryLabel);
 		
-		String factor = this.unitFactorField.getText();
-		if(!factor.trim().equals("")) {
+		if(category == 0) {
 			
-			try {
-				double f = Double.parseDouble(factor);
-			} catch(Exception e) {
-				WidgetFactory.hiliteComponent(unitFactorLabel);
-				JOptionPane.showMessageDialog(this, "The multiplication factor can only be a number", "Error", JOptionPane.ERROR_MESSAGE);
+			String type = (String)this.typeNameComboBox.getSelectedItem();
+			if(type.trim().equals("")) {
+				WidgetFactory.hiliteComponent(this.typeNameLabel);
 				return false;
 			}
-		}
-		WidgetFactory.unhiliteComponent(unitFactorLabel);
+			WidgetFactory.unhiliteComponent(this.typeNameLabel);
+			
+			return true;
 		
-		return true;
+		} else {
+			
+			String unitType = this.newTypeNameField.getText();
+			if(unitType.trim().equals("")) {
+				WidgetFactory.hiliteComponent(this.newTypeNameLabel);
+				this.newTypeNameField.requestFocus();
+				return false;
+			}
+			WidgetFactory.unhiliteComponent(this.newTypeNameLabel);
+			
+			List rows = this.newTypeDefnList.getListOfRowLists();
+			if(rows == null || rows.size() == 0) {
+				WidgetFactory.hiliteComponent(this.newTypeDefnLabel);
+				return false;
+			}
+			int cnt = -1;
+			Iterator it = rows.iterator();
+			while(it.hasNext()) {
+				cnt++;
+				List row = (List)it.next();
+				String power = (String)row.get(1);
+				try {
+					Double.parseDouble(power);
+				} catch(Exception e) {
+					if(power.trim().length() > 0) {
+						JOptionPane.showMessageDialog(this, "Power of a unit in the definition list has to be a number", "Error", JOptionPane.ERROR_MESSAGE);
+					}
+					WidgetFactory.hiliteComponent(this.newTypeDefnLabel);
+					this.newTypeDefnList.editCellAt(cnt, 1);
+					return false;
+				}
+			}
+			WidgetFactory.unhiliteComponent(this.newTypeDefnLabel);
+			
+			return true;
+		}
+		
 	}
 
   /** 
@@ -446,49 +666,59 @@ public class CustomUnitPanel extends JPanel implements WizardPageSubPanelAPI
   public OrderedMap getPanelData(String xPathRoot) {
 		
 		OrderedMap map = new OrderedMap();
+		String unit = this.unitNameField.getText();
+		String desc = this.unitDescField.getText();
+		 
+		xPathRoot += "/unitList";
 		
-		String xpath = "/unitList";
+		int category = this.getSelectedRadioIndex(this.categoryRadioPanel);
 		
-		String unitType = (String) this.typeNameComboBox.getSelectedItem();
-		if(typeDefnList.isEnabled()) {
-			// new unit type
-			map.put(xpath + "/unitType[1]/@id", unitType);
-			map.put(xpath + "/unitType[1]/@name", unitType);
-			List rows = this.typeDefnList.getListOfRowLists();
-			Iterator it = rows.iterator();
+		if(category == 0) { // existing unit type
+			
+			map.put(xPathRoot + "/unit[1]/@id", unit);
+			map.put(xPathRoot + "/unit[1]/@name", unit);
+			map.put(xPathRoot + "/unit[1]/description", desc);
+			
+			String type = (String)this.typeNameComboBox.getSelectedItem();
+			String multiplier = this.existingUnitFactorField.getText();
+			String SIUnit = this.existingSIunitNameField.getText();
+			if(multiplier.trim().equals("")) multiplier = "";
+						
+			map.put(xPathRoot + "/unit[1]/@unitType", type);
+			map.put(xPathRoot + "/unit[1]/@parentSI", SIUnit);
+			map.put(xPathRoot + "/unit[1]/@multiplerToSI", multiplier);
+			
+		} else { //new type
+			
+			String type = (String)this.newTypeNameField.getText();
+			map.put(xPathRoot + "/unitType[1]/@id", type);
+			map.put(xPathRoot + "/unitType[1]/@name", type);
+			
+			List defns = this.newTypeDefnList.getListOfRowLists();
+			Iterator it = defns.iterator();
 			int cnt = 1;
 			while(it.hasNext()) {
-				List row = (List) it.next();
-				map.put(xpath + "/unitType[1]/dimension[" + cnt +"]/@name", (String) row.get(0));
-				map.put(xpath + "/unitType[1]/dimension[" + cnt +"]/@power", (String) row.get(1));
+				List row = (List)it.next();
+				String name = (String)row.get(0);
+				String power = (String)row.get(1);
+				map.put(xPathRoot + "/unitType[1]/dimension[" + cnt + "]/@name", name);
+				if(!power.equals("1")) map.put(xPathRoot + "/unitType[1]/dimension[" + cnt + "]/@power", power);
 				cnt++;
 			}
+			
+			map.put(xPathRoot + "/unit[1]/@id", unit);
+			map.put(xPathRoot + "/unit[1]/@name", unit);
+			map.put(xPathRoot + "/unit[1]/description", desc);
+			
+			String multiplier = this.newUnitFactorField.getText();
+			String SIUnit = (String)this.newSIunitNameBox.getSelectedItem();
+			if(multiplier.trim().equals("")) multiplier = "";
+			
+			map.put(xPathRoot + "/unit[1]/@unitType", type);
+			map.put(xPathRoot + "/unit[1]/@parentSI", SIUnit);
+			map.put(xPathRoot + "/unit[1]/@multiplerToSI", multiplier);
+			
 		}
-		
-		String unitName = this.unitNameField.getText();
-		String factor = this.unitFactorField.getText();
-		if(factor.trim().equals(""))
-			factor = "1";
-		String desc = this.unitDescField.getText();
-		String SIunitName = this.SIunitNameField.getText();
-		
-		int cnt = 1;
-		//create SI unit first if necessary
-		if(typeDefnList.isEnabled() && !SIunitName.equals(unitName)) {
-			map.put(xpath + "/unit[" + cnt +"]/@id", SIunitName);
-			map.put(xpath + "/unit[" + cnt +"]/@name", SIunitName);
-			map.put(xpath + "/unit[" + cnt +"]/@unitType", unitType);
-			map.put(xpath + "/unit[" + cnt +"]/@multiplierToSI", "1");
-			map.put(xpath + "/unit[" + cnt +"]/description", desc);
-			cnt++;
-		}
-		
-		map.put(xpath + "/unit[" + cnt +"]/@id", unitName);
-		map.put(xpath + "/unit[" + cnt +"]/@name", unitName);
-		map.put(xpath + "/unit[" + cnt +"]/@unitType", unitType);
-		map.put(xpath + "/unit[" + cnt +"]/@multiplierToSI", factor);
-		map.put(xpath + "/unit[" + cnt +"]/description", desc);
-		
 		
 		return map;
 	}
