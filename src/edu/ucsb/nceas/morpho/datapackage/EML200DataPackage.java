@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-11-25 23:19:21 $'
- * '$Revision: 1.10 $'
+ *     '$Date: 2003-11-26 18:40:55 $'
+ * '$Revision: 1.11 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -71,7 +71,13 @@ public  class EML200DataPackage extends AbstractDataPackage
       }
       if((location.equals(AbstractDataPackage.METACAT))||
                  (location.equals(AbstractDataPackage.BOTH))) {
-                   
+        MetacatDataStore mds = new MetacatDataStore(morpho);  
+      Log.debug(1,"AccessionNum: "+getAccessionNumber());
+      try{
+        mds.saveFile(getAccessionNumber(),sr);
+      } catch(Exception e) {
+          Log.debug(5,"Problem with saving to metacat in EML200DataPackage!");
+        }
       }
   }
   
