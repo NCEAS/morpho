@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-12-09 19:06:08 $'
- * '$Revision: 1.73 $'
+ *     '$Date: 2003-12-09 21:56:24 $'
+ * '$Revision: 1.74 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -488,7 +488,7 @@ public class DataViewContainerPanel extends javax.swing.JPanel
       packageMetadataPanel.removeAll();
       packageMetadataPanel.add(BorderLayout.CENTER,toppanel);
     }
-    if (entityItems==null) {
+    if ((entityItems==null)||(entityItems.size()==0)) {
       Log.debug(20, "EntityItems vector is null");
       vertSplit.removeAll();
       vertSplit.add(packageMetadataPanel);
@@ -657,6 +657,10 @@ public class DataViewContainerPanel extends javax.swing.JPanel
         md.useTransformerProperty( 
                               XMLTransformer.SUPPRESS_TRIPLES_OBJECTS_XSLPROP, 
                               suppressBuff.toString());
+      }
+      else {  // there is no data to display!
+        moreLabel.setText("<html><a href=\".\"><b>less</b></a></html>");
+        vertSplit.setDividerLocation(1.0);
       }
       try{
 //        mdcomponent = md.getDisplayComponent( dp.getID(), dp,  
