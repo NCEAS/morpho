@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2004-03-19 00:39:35 $'
- * '$Revision: 1.86 $'
+ *   '$Author: sgarg $'
+ *     '$Date: 2004-03-22 19:27:20 $'
+ * '$Revision: 1.87 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -355,6 +355,36 @@ public class DataPackagePlugin
                             true, GUIAction.EVENT_LOCAL);
     controller.addGuiAction(addTaxonomicCovAction);
 
+    i++;
+    GUIAction addMethodAction = new GUIAction(
+        "Add Method Information...",
+        null, new AddMethodCommand());
+    addMethodAction.setToolTipText("Add method information");
+    addMethodAction.setMenuItemPosition(i);
+    addMethodAction.setMenu("Documentation", DOCUMENTATIONMENUPOSITION);
+    addMethodAction.setEnabledOnStateChange(
+        StateChangeEvent.CREATE_EDITABLE_ENTITY_DATAPACKAGE_FRAME,
+        true, GUIAction.EVENT_LOCAL);
+    addMethodAction.setEnabledOnStateChange(
+        StateChangeEvent.CREATE_DATAPACKAGE_FRAME,
+        true, GUIAction.EVENT_LOCAL);
+    controller.addGuiAction(addMethodAction);
+
+    i++;
+    GUIAction addAccessAction = new GUIAction(
+        "Add Access Information...",
+        null, new AddAccessCommand());
+    addAccessAction.setToolTipText("Add access information");
+    addAccessAction.setMenuItemPosition(i);
+    addAccessAction.setMenu("Documentation", DOCUMENTATIONMENUPOSITION);
+    addAccessAction.setEnabledOnStateChange(
+        StateChangeEvent.CREATE_EDITABLE_ENTITY_DATAPACKAGE_FRAME,
+        true, GUIAction.EVENT_LOCAL);
+    addAccessAction.setEnabledOnStateChange(
+        StateChangeEvent.CREATE_DATAPACKAGE_FRAME,
+        true, GUIAction.EVENT_LOCAL);
+    controller.addGuiAction(addAccessAction);
+
     // For data menu
     i = 0; // postition for menu item in data menu
 
@@ -566,6 +596,8 @@ public class DataPackagePlugin
     addGeographicCovAction.setEnabled(false);
     addTemporalCovAction.setEnabled(false);
     addTaxonomicCovAction.setEnabled(false);
+    addMethodAction.setEnabled(false);
+    addAccessAction.setEnabled(false);
     sortBySelectedColumn.setEnabled(false);
     insertRowAfter.setEnabled(false);
     insertRowBefore.setEnabled(false);
