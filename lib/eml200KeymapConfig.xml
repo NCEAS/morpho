@@ -1,24 +1,25 @@
-<?xml version="1.0"?>  
+<?xml version="1.0"?>
 <xpathKeyMap schemaGrammar="eml2.0.0">
 <!-- element name is key, element value is Xpath for this grammar -->
   <contextNode name="package">
-    <entityParent>/eml:eml/dataset</entityParent> 
-    <entities>(/eml:eml/dataset/dataTable)|(/eml:eml/dataset/spatialRaster)|(/eml:eml/dataset/spatialVector)|(/eml:eml/dataset/otherEntity)</entities> 
+    <entityParent>/eml:eml/dataset</entityParent>
+    <entities>(/eml:eml/dataset/dataTable)|(/eml:eml/dataset/spatialRaster)|(/eml:eml/dataset/spatialVector)|(/eml:eml/dataset/otherEntity)</entities>
     <parties>(/eml:eml/dataset/creator)|(/eml:eml/dataset/metadataProvider)|(/eml:eml/dataset/associatedParty)|(/eml:eml/dataset/contact)|(/eml:eml/dataset/publisher)|(/eml:eml/dataset/project/personnel)</parties>
     <title>/eml:eml/dataset/title</title>
     <author>/eml:eml/dataset/creator/individualName/surName</author>
     <accessionNumber>/eml:eml/@packageId</accessionNumber>
     <keywords>/eml:eml/dataset/keywordSet/keyword</keywords>
-    <coverage>/eml:eml/dataset/coverage</coverage>  
-    <project>/eml:eml/dataset/project</project> 
-    <intellectualRights>/eml:eml/dataset/intellectualRights</intellectualRights> 
-    <access>/eml:eml/dataset/access</access> 
-    <geographicCoverage>/eml:eml/dataset/coverage/geographicCoverage</geographicCoverage>   
-    <temporalCoverage>/eml:eml/dataset/coverage/temporalCoverage</temporalCoverage>   
-    <taxonomicCoverage>/eml:eml/dataset/coverage/taxonomicCoverage</taxonomicCoverage>   
+    <coverage>/eml:eml/dataset/coverage</coverage>
+    <methods>/eml:eml/dataset/methods</methods>
+    <project>/eml:eml/dataset/project</project>
+    <intellectualRights>/eml:eml/dataset/intellectualRights</intellectualRights>
+    <access>/eml:eml/dataset/access</access>
+    <geographicCoverage>/eml:eml/dataset/coverage/geographicCoverage</geographicCoverage>
+    <temporalCoverage>/eml:eml/dataset/coverage/temporalCoverage</temporalCoverage>
+    <taxonomicCoverage>/eml:eml/dataset/coverage/taxonomicCoverage</taxonomicCoverage>
   </contextNode>
   <!-- Xpaths for entity values are defined as relative to top node of entity -->
-  <contextNode name="entity"> 
+  <contextNode name="entity">
     <name>entityName</name>
     <numRecords>numberOfRecords</numRecords>
     <entityDescription>entityDescription</entityDescription >
@@ -26,21 +27,21 @@
     <attributeParent>attributeList</attributeParent>
     <attributes>attributeList/attribute</attributes>
   </contextNode>
-  <contextNode name="attribute"> 
+  <contextNode name="attribute">
     <name>attributeName</name>
     <dataType>storageType</dataType>
-    <numberType>measurementScale/interval/numericDomain/numberType|measurementScale/ratio/numericDomain/numberType</numberType> 
+    <numberType>measurementScale/interval/numericDomain/numberType|measurementScale/ratio/numericDomain/numberType</numberType>
     <isText>count(measurementScale/nominal|measurementScale/ordinal)!=0</isText>
     <isDate>count(measurementScale/datetime)!=0</isDate>
     <unit>measurementScale/interval/unit/standardUnit|measurementScale/ratio/unit/standardUnit|measurementScale/interval/unit/customUnit|measurementScale/ratio/unit/customUnit</unit>
   </contextNode>
-  <contextNode name="physical"> 
+  <contextNode name="physical">
     <name>objectName</name>
     <fieldDelimiter>dataFormat/textFormat/simpleDelimited/fieldDelimiter</fieldDelimiter>
     <numberHeaderLines>dataFormat/textFormat/numHeaderLines</numberHeaderLines>
     <size>size</size>
     <format>dataFormat/externallyDefinedFormat/formatName</format>
-    <isText>count(dataFormat/textFormat)!=0</isText>  
+    <isText>count(dataFormat/textFormat)!=0</isText>
     <distribution>distribution</distribution>
     <compressionMethod>compressionMethod</compressionMethod>
     <encodingMethod>encodingMethod</encodingMethod>
@@ -67,7 +68,12 @@
     <prevNode>/eml:eml/dataset/associatedParty</prevNode>
     <prevNode>/eml:eml/dataset/metadataProvider</prevNode>
     <prevNode>/eml:eml/dataset/creator</prevNode>
-  </insertionList>   
+  </insertionList>
+  <insertionList name="methods">
+    <prevNode>/eml:eml/dataset/pubPlace</prevNode>
+    <prevNode>/eml:eml/dataset/publisher</prevNode>
+    <prevNode>/eml:eml/dataset/contact</prevNode>
+  </insertionList>
   <insertionList name="project">
     <prevNode>/eml:eml/dataset/methods</prevNode>
     <prevNode>/eml:eml/dataset/pubPlace</prevNode>
@@ -91,6 +97,6 @@
     <prevNode>/eml:eml/dataset/associatedParty</prevNode>
     <prevNode>/eml:eml/dataset/metadataProvider</prevNode>
     <prevNode>/eml:eml/dataset/creator</prevNode>
-  </insertionList>   
+  </insertionList>
 
 </xpathKeyMap>
