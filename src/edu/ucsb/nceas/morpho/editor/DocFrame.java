@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-06-21 08:53:21 $'
- * '$Revision: 1.40 $'
+ *     '$Date: 2001-06-25 21:18:24 $'
+ * '$Revision: 1.41 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -115,6 +115,11 @@ public class DocFrame extends javax.swing.JFrame
     javax.swing.JMenuItem ReplacemenuItem;
     javax.swing.JMenuItem PastemenuItem;
     
+    //* Morpho/Metacat id of the document being displayed */
+    String id = null;
+    
+    //* location sting from Morpho/Metacat */
+    String location = null;
     
     /**
     * This constructor builds the contents of the DocFrame Display
@@ -128,7 +133,7 @@ public class DocFrame extends javax.swing.JFrame
 		// what Visual Cafe can generate, or Visual Cafe may be unable to back
 		// parse your Java file into its visual environment.
 		//{{INIT_CONTROLS
-		setTitle("Morpho - Editor");
+	//	setTitle("Morpho - Editor");
 		setDefaultCloseOperation(javax.swing.JFrame.DO_NOTHING_ON_CLOSE);
 		getContentPane().setLayout(new BorderLayout(0,0));
 		setSize(630,452);
@@ -255,61 +260,6 @@ public class DocFrame extends javax.swing.JFrame
 	{
 		this();
 		setTitle(sTitle);
-/*		XMLTextString = doctext;
-		putXMLintoTree(treeModel, XMLTextString);
-        tree.setSelectionRow(0);
-
-		// now want to possibly merge the input document with a formatting document
-		// and set the 'editor' and 'help' fields for each node
-		// use the root node name as a key
-		rootNode = (DefaultMutableTreeNode)treeModel.getRoot();
-        String rootname = ((NodeInfo)rootNode.getUserObject()).getName();
-        rootname = rootname+".xml";
-		file = new File("./lib", rootname);
-		DefaultMutableTreeNode frootNode = new DefaultMutableTreeNode("froot");
-		DefaultTreeModel ftreeModel = new DefaultTreeModel(frootNode);
-		String fXMLString = "";
-		boolean formatflag = true;
-        try{
-            FileReader in = new FileReader(file);
-            StringWriter out = new StringWriter();
-            int c;
-            while ((c = in.read()) != -1) {
-                out.write(c);
-            }
-            in.close();
-            out.close();
-            fXMLString = out.toString();
-        }
-	    catch(Exception e){formatflag = false;}	
-		
-		if (formatflag) {
-		    putXMLintoTree(ftreeModel,fXMLString);
-		    frootNode = (DefaultMutableTreeNode)ftreeModel.getRoot();
-		    treeUnion(rootNode,frootNode);
-		}
-    
-    
-        if (dtdfile!=null) {
-		    dtdtree = new DTDTree(dtdfile);
-		    dtdtree.setRootElementName(rootnodeName);
-		    dtdtree.parseDTD();
-		
-	        rootNode = (DefaultMutableTreeNode)treeModel.getRoot();
-
-	        // the treeUnion method will 'merge' the input document with
-	        // a template XML document created using the DTD parser from the DTD doc
-		    treeUnion(rootNode,dtdtree.rootNode);
-            // treeTrim will remove nodes in the input that are not in the DTD
-            // remove the following line if this is not wanted
-            treeTrim(rootNode,dtdtree.rootNode);
-		}
-		
-		
-		treeModel.reload();
-		tree.setModel(treeModel);
-        tree.setSelectionRow(0);
-   */     
 	}
 	
 	public DocFrame(File file)
@@ -321,6 +271,7 @@ public class DocFrame extends javax.swing.JFrame
 	public DocFrame(ClientFramework cf, String sTitle, String doctext) 
 	{
 	    this();
+	    setTitle("Morpho Editor");
 	    this.framework = cf;
 	    counter++;
 	    setName("Morpho Editor"+counter);
@@ -381,6 +332,26 @@ public class DocFrame extends javax.swing.JFrame
 	    
 	}
 	
+	/** this version of the constructor is needed so that each DocFrame can 'remember' the
+	  * id and location parameters used to create it
+	  */
+	public DocFrame(ClientFramework cf, String sTitle, String doctext, String id, String location) {
+	  this(cf, sTitle, doctext);
+	  if (id!=null) {
+	    setTitle("Morpho Editor:"+id+" - "+location);
+	    setName("Morpho Editor"+counter+":"+id);
+	  }
+	  this.id = id;
+	  this.location = location;
+	}
+	
+	public String getIdString() {
+	  return id;
+	}
+	
+	public String getLocationString() {
+	  return location;
+	}
 	
 	public void setFile(File f) {
 	    file = f;

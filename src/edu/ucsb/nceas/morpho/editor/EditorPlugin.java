@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-06-20 17:56:06 $'
- * '$Revision: 1.7 $'
+ *     '$Date: 2001-06-25 21:18:24 $'
+ * '$Revision: 1.8 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -152,6 +152,8 @@ public class EditorPlugin implements PluginInterface, ServiceProvider, EditorInt
   public void fireEditingCompleteEvent(DocFrame doc, String xmlString) 
   {
     if (docframes.containsKey(doc)) {
+      location = doc.getLocationString();
+      id = doc.getIdString();
       EditingCompleteListener list = (EditingCompleteListener)docframes.get(doc); 
       list.editingCompleted(xmlString, this.id, this.location);
     }
@@ -166,7 +168,7 @@ public class EditorPlugin implements PluginInterface, ServiceProvider, EditorInt
 
   public void openEditor(String xmlText, String id, String location, 
                          EditingCompleteListener listener) {
-    DocFrame editorframe = new DocFrame(framework, "Morpho Editor", xmlText);
+    DocFrame editorframe = new DocFrame(framework, "Morpho Editor", xmlText, id, location);
     editorframe.setController(this);
     editorframe.setVisible(true);
     this.id = id;
