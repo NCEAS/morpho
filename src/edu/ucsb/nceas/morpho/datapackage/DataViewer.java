@@ -5,8 +5,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2004-04-06 01:27:05 $'
- * '$Revision: 1.114 $'
+ *     '$Date: 2004-04-06 22:20:40 $'
+ * '$Revision: 1.115 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -644,6 +644,7 @@ public class DataViewer extends javax.swing.JPanel
           // get format, recordDelimiter, field delimiter
           // in general, get all info need to read a record
           this.format = adp.getPhysicalFormat(entityIndex, 0);
+          if ((format.trim()).length()<1) missing_metadata_flag = true;
               // assume that we always use the first physical object
           Log.debug(20, "format: "+format);
           this.field_delimiter = adp.getPhysicalFieldDelimiter(entityIndex, 0);
