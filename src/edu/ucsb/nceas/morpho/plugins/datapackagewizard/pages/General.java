@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2004-01-28 23:58:34 $'
- * '$Revision: 1.8 $'
+ *   '$Author: sgarg $'
+ *     '$Date: 2004-03-03 01:39:36 $'
+ * '$Revision: 1.9 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -132,9 +132,10 @@ public class General extends AbstractWizardPage{
    *  The action to be executed when the page is displayed. May be empty
    */
   public void onLoadAction() {
-
     WidgetFactory.unhiliteComponent(titleLabel);
-    titleField.requestFocus();
+    if(titleField.getText().length() == 0){
+      titleField.requestFocus();
+    }
   }
 
 
@@ -143,7 +144,6 @@ public class General extends AbstractWizardPage{
    *
    */
   public void onRewindAction() {
-
   }
 
 

@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2004-01-28 23:58:34 $'
- * '$Revision: 1.9 $'
+ *   '$Author: sgarg $'
+ *     '$Date: 2004-03-03 01:39:36 $'
+ * '$Revision: 1.10 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -116,8 +116,6 @@ public class UsageRights extends AbstractWizardPage{
    *  The action to be executed when the page is displayed. May be empty
    */
   public void onLoadAction() {
-
-    usageField.requestFocus();
   }
 
 
