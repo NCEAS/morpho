@@ -9,7 +9,7 @@
  *  Authors: Dan Higgins
  *
  *  
- *     Version: '$Id: ExternalQuery.java,v 1.9 2001-01-09 00:32:09 higgins Exp $'
+ *     Version: '$Id: ExternalQuery.java,v 1.10 2001-02-09 23:27:44 higgins Exp $'
  */
 
 /*
@@ -158,6 +158,9 @@ public JTable getTable() {
       if (localName.equalsIgnoreCase("param")) {
         paramName = atts.getValue("name");
       }
+      else {
+        paramName = null;
+      }
       elementStack.push(localName);
       if (localName.equals("document")) {
             docid = "";
@@ -177,7 +180,6 @@ public JTable getTable() {
   
     public void endElement (String uri, String localName,
                             String qName) throws SAXException {
-                                
       if (localName.equals("relation")) {
         String[] rel = new String[3];
         rel[0] = relationtype;
@@ -210,7 +212,6 @@ public JTable getTable() {
     }
   
     public void characters(char ch[], int start, int length) {
-  
       String inputString = new String(ch, start, length);
       String currentTag = (String)elementStack.peek();
       if (currentTag.equals("docid")) {
@@ -226,7 +227,12 @@ public JTable getTable() {
           doctitle = inputString;
       }
       if (currentTag.equals("param")) {
-          params.put(paramName, inputString);  
+          String val = inputString;
+          if (params.containsKey(paramName)) {  // key already in hash table 2/9/01 DFH
+              String cur = (String)params.get(paramName);
+              val = cur + "; " + val;
+          }
+          params.put(paramName, val);  
       }
       if (currentTag.equals("relationtype")) {
           relationtype = inputString;

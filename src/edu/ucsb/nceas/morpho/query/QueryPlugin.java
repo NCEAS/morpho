@@ -5,7 +5,7 @@
  *              National Center for Ecological Analysis and Synthesis
  *     Authors: Dan Higgins
  *
- *     Version: '$Id: QueryPlugin.java,v 1.39 2001-02-02 23:18:31 higgins Exp $'
+ *     Version: '$Id: QueryPlugin.java,v 1.40 2001-02-09 23:27:44 higgins Exp $'
  */
 
 package edu.ucsb.nceas.querybean;
@@ -1199,13 +1199,13 @@ public void getOwnerDocs(String name) {
 	    if (OrButton2.isSelected()) op = "or";
 	    if (TextValue11.getText().length()>0) {
 	        if (TitleCheckBox.isSelected()) {
-	            paths[0] = "/eml-dataset/title[contains(text(),\""+TextValue11.getText()+"\")]";
+	            paths[0] = "//title[contains(text(),\""+TextValue11.getText()+"\")]";
 	        }
 	        if (AbstractCheckBox.isSelected()) {
-	            paths[1] = "/eml-dataset/abstract/paragraph[contains(text(),\""+TextValue11.getText()+"\")]";
+	            paths[1] = "//abstrtact[contains(text(),\""+TextValue11.getText()+"\")]";
 	        }
 	        if (KeyWordsCheckBox.isSelected()) {
-	            paths[2] = "/eml-dataset/keyword_info/keyword[contains(text(),\""+TextValue11.getText()+"\")]";
+	            paths[2] = "//keyword[contains(text(),\""+TextValue11.getText()+"\")]";
 	        }
 	    
 	        if (AllCheckBox.isSelected()) {
@@ -1215,7 +1215,7 @@ public void getOwnerDocs(String name) {
 	        }
 	    }
 	    if (TextValue22.getText().length()>0) {
-            paths[3] = "/eml-dataset/originator/party/party_individual/surname[(contains(text(),\""+TextValue22.getText()+"\"))]";
+            paths[3] = "//surName[(contains(text(),\""+TextValue22.getText()+"\"))]";
 	    }
         QueryStringTextArea.setText("Query generated on:"+new Date().toString());
         
@@ -1291,7 +1291,7 @@ public void getOwnerDocs(String name) {
 		    }
 		    if (AbstractCheckBox.isSelected()) {
 		   //     pqx.add_queryterm(TextValue11.getText(),"/eml-dataset/abstract/paragraph","contains",true);
-		        pqx.add_queryterm(TextValue11.getText(),"paragraph","contains",true);
+		        pqx.add_queryterm(TextValue11.getText(),"abstract","contains",true);
 		    }
 		    if (KeyWordsCheckBox.isSelected()) {
 		   //     pqx.add_queryterm(TextValue11.getText(),"/eml-dataset/keyword_info/keyword","contains",true);
@@ -1304,7 +1304,7 @@ public void getOwnerDocs(String name) {
 //		pqx.end_querygroup();
 		if ((TextChoices22.isVisible())&&(TextValue22.getText().length()>0)) {
 		    pqx.add_querygroup(op);
-		    pqx.add_queryterm(TextValue22.getText(),"/eml-dataset/originator/party/party_individual/surname","contains",true);
+		    pqx.add_queryterm(TextValue22.getText(),"surName","contains",true);
 //		    pqx.end_querygroup();
 		}
 		pqx.end_query();
