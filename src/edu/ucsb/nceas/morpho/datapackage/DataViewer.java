@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2002-09-18 18:01:06 $'
- * '$Revision: 1.48 $'
+ *     '$Date: 2002-09-18 23:53:03 $'
+ * '$Revision: 1.49 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1053,11 +1053,12 @@ public class DataViewer extends javax.swing.JPanel
 		{
 			Object object = event.getSource();
 			if (object == createNewDatatable) {
-        AddMetadataWizard amw = new AddMetadataWizard(morpho, true, dp);
-        amw.setVisible(true);
         MorphoFrame thisFrame = (UIController.getInstance()).getCurrentActiveWindow();
         thisFrame.setVisible(false);
-        thisFrame.dispose();
+        AddMetadataWizard amw = new AddMetadataWizard(morpho, true, 
+                                                      dp,thisFrame);
+        amw.setVisible(true);
+        //thisFrame.dispose();
       }
       else if ((object == sortBySelectedColumn)||(object == sortBySelectedColumn1)) {
         int sel = table.getSelectedColumn();
