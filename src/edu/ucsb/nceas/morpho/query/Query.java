@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2001-05-08 01:46:49 $'
- * '$Revision: 1.6 $'
+ *     '$Date: 2001-05-09 16:44:56 $'
+ * '$Revision: 1.7 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -62,8 +62,10 @@ import org.xml.sax.helpers.DefaultHandler;
  */
 public class Query extends DefaultHandler {
  
-  // Query data structures
+  /** The string representation of the pathquery (XML format) */
   private String queryString;
+
+  // Query data structures used temporarily during XML parsing
   private boolean containsExtendedSQL=false;
   private String meta_file_id;
   private String queryTitle;
@@ -527,9 +529,11 @@ public class Query extends DefaultHandler {
    * This should become a way to get the XML serialization of the query.
    */
   public String toString() {
-    return "meta_file_id=" + meta_file_id + "\n" + query;
+    //return "meta_file_id=" + meta_file_id + "\n" + query;
+    return queryString;
   }
 
+  /** Send the query to metacat, get back the XML resultset */
   private InputStream queryMetacat()
   {
     InputStream queryResult = null;

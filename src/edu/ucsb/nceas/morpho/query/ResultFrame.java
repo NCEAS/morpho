@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2001-05-08 18:32:54 $'
- * '$Revision: 1.1 $'
+ *     '$Date: 2001-05-09 16:44:57 $'
+ * '$Revision: 1.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -73,7 +73,7 @@ public class ResultFrame extends JFrame
     setBackground(Color.white);
 
     // Create the result panel and add it to the frame
-    resultDisplayPanel = new ResultPanel(results, fontSize);
+    resultDisplayPanel = new ResultPanel(results, true, true, fontSize);
     getContentPane().setLayout(new BorderLayout());
     getContentPane().add(resultDisplayPanel, BorderLayout.CENTER);
 

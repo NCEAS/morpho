@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2001-05-07 21:14:08 $'
- * '$Revision: 1.7 $'
+ *     '$Date: 2001-05-09 16:44:57 $'
+ * '$Revision: 1.8 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,14 +26,19 @@
 
 package edu.ucsb.nceas.morpho.query;
 
-import java.io.InputStream;
-
-import javax.swing.table.AbstractTableModel;
-import javax.swing.ImageIcon;
+import edu.ucsb.nceas.morpho.framework.*;
 
 import java.io.*;
+import java.io.InputStream;
+
+import java.util.Hashtable;
+import java.util.Stack;
 import java.util.Vector;
-import edu.ucsb.nceas.morpho.framework.*;
+
+import javax.swing.*;
+import javax.swing.ImageIcon;
+import javax.swing.table.*;
+import javax.swing.table.AbstractTableModel;
 
 import org.w3c.dom.*;
 
@@ -46,10 +51,6 @@ import org.xml.sax.SAXParseException;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.XMLReaderFactory;
 import org.xml.sax.helpers.DefaultHandler;
-import javax.swing.*;
-import javax.swing.table.*;
-import java.util.Stack;
-import java.util.Hashtable;
 
 /**
  * A ResultSet encapsulates the list of results returned from either a
@@ -125,7 +126,9 @@ public class ResultSet extends AbstractTableModel implements ContentHandler
 
     if (source.equals("local")) {
       isLocal = true;
+      isMetacat = false;
     } else if (source.equals("metacat")) {
+      isLocal = false;
       isMetacat = true;
     }
 

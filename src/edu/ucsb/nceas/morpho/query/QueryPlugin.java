@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2001-05-08 18:32:54 $'
- * '$Revision: 1.57 $'
+ *     '$Date: 2001-05-09 16:44:57 $'
+ * '$Revision: 1.58 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -44,7 +44,7 @@ import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.table.TableModel;
 
-public class QueryPlugin implements PluginInterface
+public class QueryPlugin implements PluginInterface, ConnectionListener
 {
   /** A reference to the container framework */
   private ClientFramework framework = null;
@@ -85,15 +85,19 @@ public class QueryPlugin implements PluginInterface
     loadConfigurationParameters();
 
     // Create the tabbed pane for the owner queries
+    createOwnerPanel();
+/*
     ownerQuery = new Query(getOwnerQuery(), framework);
     ResultSet results = ownerQuery.execute();
-    ownerPanel = new ResultPanel(results);
-    ownerPanel.setName("My Data");
-
-    // Add the content pane, menus, and toolbars
+    ownerPanel = new ResultPanel(results, true, false);
     framework.setMainContentPane(ownerPanel);
+*/
+    // Add the menus and toolbars
     framework.addMenu("Search", new Integer(3), menuActions);
     framework.addToolbarActions(toolbarActions);
+
+    // Listen for changes to the connection status
+    framework.addConnectionListener(this);
   }
 
   /**
@@ -101,7 +105,7 @@ public class QueryPlugin implements PluginInterface
    */
   private void initializeActions() {
     // Set up the menus for the application
-    menuActions = new Action[3];
+    menuActions = new Action[1];
     Action searchItemAction = new AbstractAction("Search...") {
       public void actionPerformed(ActionEvent e) {
         handleSearchAction();
@@ -111,33 +115,9 @@ public class QueryPlugin implements PluginInterface
     searchItemAction.putValue("menuPosition", new Integer(0));
     menuActions[0] = searchItemAction;
 
-    Action reviseItemAction = new AbstractAction("Revise...") {
-      public void actionPerformed(ActionEvent e) {
-        framework.debug(1, "Action fired: Revise Search :-)");
-      }
-    };
-    reviseItemAction.putValue(Action.SHORT_DESCRIPTION, 
-                              "Revise current search");
-    reviseItemAction.putValue("menuPosition", new Integer(1));
-    menuActions[1] = reviseItemAction;
-
-    Action refreshItemAction = new AbstractAction("Refresh") {
-      public void actionPerformed(ActionEvent e) {
-        framework.debug(1, "Action fired: Refresh Search :-)");
-      }
-    };
-    refreshItemAction.putValue(Action.SHORT_DESCRIPTION, 
-                              "Refresh search results");
-    refreshItemAction.putValue("menuPosition", new Integer(2));
-    refreshItemAction.putValue(Action.DEFAULT, 
-                               ClientFramework.SEPARATOR_PRECEDING);
-    menuActions[2] = refreshItemAction;
-
     // Set up the toolbar for the application
-    toolbarActions = new Action[3];
+    toolbarActions = new Action[1];
     toolbarActions[0] = searchItemAction;
-    toolbarActions[1] = reviseItemAction;
-    toolbarActions[2] = refreshItemAction;
   }
 
   /**
@@ -193,5 +173,53 @@ public class QueryPlugin implements PluginInterface
     Query testQuery = new Query(getOwnerQuery(), framework);
     ResultSet testResults = testQuery.execute();
     ResultFrame rf = new ResultFrame(framework, testResults);
+  }
+
+  /**
+   * Implement the ConnectionListener interface so we know when to 
+   * refresh queries.
+   */
+  public void usernameChanged(String newUsername)
+  {
+    framework.debug(9, "New username: " + newUsername);
+    refreshOwnerPanel();
+  }
+
+  /**
+   * Implement the ConnectionListener interface so we know when to 
+   * refresh queries.
+   */
+  public void connectionChanged(boolean connected)
+  {
+    framework.debug(9, "Connection changed: " + 
+                    (new Boolean(connected)).toString());
+    refreshOwnerPanel();
+  }
+
+  /**
+   * Create the owner panel with the appropriate query
+   */
+  private void createOwnerPanel()
+  {
+    // Create the tabbed pane for the owner queries
+    ownerQuery = new Query(getOwnerQuery(), framework);
+    framework.debug(9, ownerQuery.toString());
+    ResultSet results = ownerQuery.execute();
+    ownerPanel = new ResultPanel(results, true, false);
+
+    // Add the content pane, menus, and toolbars
+    framework.setMainContentPane(ownerPanel);
+  }
+
+  /**
+   * Refresh the owner panel after the username has changed
+   */
+  private void refreshOwnerPanel()
+  {
+    // Create the tabbed pane for the owner queries
+    ownerQuery = new Query(getOwnerQuery(), framework);
+    framework.debug(9, ownerQuery.toString());
+    ResultSet results = ownerQuery.execute();
+    ownerPanel.setResults(results);
   }
 }
