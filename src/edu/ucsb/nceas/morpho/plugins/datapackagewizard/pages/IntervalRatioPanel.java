@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2003-10-06 21:25:19 $'
- * '$Revision: 1.14 $'
+ *   '$Author: sambasiv $'
+ *     '$Date: 2003-10-22 00:16:58 $'
+ * '$Revision: 1.15 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,6 +33,7 @@ import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WidgetFactory;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardSettings;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.DialogSubPanelAPI;
 
+
 import edu.ucsb.nceas.morpho.util.Log;
 
 import edu.ucsb.nceas.utilities.OrderedMap;
@@ -51,6 +52,8 @@ import javax.swing.JCheckBox;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Vector;
+import java.util.Enumeration;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -497,6 +500,83 @@ class IntervalRatioPanel extends JPanel implements DialogSubPanelAPI {
     }
     return returnMap;
   }
+  
+  /** 
+   *  sets the Data in the IntervalRatio Panel. This is called by the setData() function 
+   *  of AttributeDialog.
+   
+   *  @param  xPathRoot - this is the relative xPath of the current attribute
+   *
+   *  @param  map - Data is passed as OrderedMap of xPath-value pairs. xPaths in this map 
+   *		    are absolute xPath and not the relative xPaths
+   *
+   **/
+   
+  public void setPanelData( String xPathRoot, OrderedMap map) {
+	  
+	String unit = (String)map.get( xPathRoot + "/unit/standardUnit");
+	if(unit != null && !unit.equals(""))
+		unitsPickList.setSelectedUnit(unit);
+	
+    	String precision = (String)map.get(  xPathRoot + "/precision");
+	if(precision != null)
+		precisionField.setText(precision);
+	
+	String type = (String)map.get( xPathRoot + "/numericDomain/numberType");
+	if(type != null)
+		numberTypePickList.setSelectedItem(type);
+	
+	int index = 1;
+	while(true) {
+		List row = new ArrayList();
+		String min = (String)map.get(xPathRoot + "/numericDomain/bounds[" +index+ "]/minimum");
+		if(min != null) {
+			row.add(min);
+			Boolean  excl = (Boolean)map.get(xPathRoot + "/numericDomain/bounds[" +index+ "]/minimum/@exclusive");
+			if(excl != null)
+				row.add(excl);
+			else
+				row.add(new Boolean(false));
+		}
+		else {
+			row.add("");
+			row.add(new Boolean(false));
+		}
+		String max = (String)map.get(xPathRoot + "/numericDomain/bounds[" +index+ "]/maximum");
+		if(max != null) {
+			row.add(max);
+			Boolean  excl = (Boolean)map.get(xPathRoot + "/numericDomain/bounds[" +index+ "]/maximum/@exclusive");
+			if(excl != null)
+				row.add(excl);
+			else
+				row.add(new Boolean(false));
+		}
+		else {
+			row.add("");
+			row.add(new Boolean(false));
+		}
+		if(min == null && max == null)
+			break;
+		else
+			boundsList.addRow(row);
+		index++;
+	}
+	return;
+  }
+  
+  /** Function to get the number Type
+  *
+  *  @return  the index of the number type pick list
+  	      0 - Natural
+	      1 - Whole
+	      2 - Integer
+	      3 - Real
+  */
+  
+  public int getNumberTypeSelectedIndex() {
+	  return numberTypePickList.getSelectedIndex();
+  }
+	     
 }
 
 
@@ -593,6 +673,10 @@ class UnitsPickList extends JPanel {
     return selItem.toString();
   }
   
+  public void setSelectedUnit(String unit) {
+	  unitsList.setSelectedItem(unit);
+	  return;
+  }
   
   private UnitTypesListItem[] getUnitTypesArray() {
   
@@ -622,6 +706,31 @@ class UnitsPickList extends JPanel {
     list.setFont(WizardSettings.WIZARD_CONTENT_FONT);
     list.setForeground(WizardSettings.WIZARD_CONTENT_TEXT_COLOR);
     list.setEditable(false);
+  }
+  
+  public void setData(int unitTypeIndex, int unitIndex) {
+	
+	UnitTypesListItem[] listItemsArray = getUnitTypesArray();
+	if(listItemsArray == null) return;
+	int length = listItemsArray.length;
+	if(length < unitTypeIndex ) return;
+	
+	ItemListener[] itemListeners = unitTypesList.getItemListeners();
+	for(int i =0; i<itemListeners.length; i++)
+		unitTypesList.removeItemListener(itemListeners[i]);
+	unitTypesList.setSelectedIndex(unitTypeIndex);
+	unitsList.setModel( listItemsArray[unitTypeIndex].getComboBoxModel());
+        unitsList.setEnabled(true);
+	for(int i =0; i<itemListeners.length; i++)
+		unitTypesList.addItemListener(itemListeners[i]);
+	return;	  
+  }
+  
+  public void getData(int[] indicesArray) {
+	  
+	  indicesArray[0] = unitTypesList.getSelectedIndex();
+	  indicesArray[1] = unitsList.getSelectedIndex();
+	  return;
   }
 }
 

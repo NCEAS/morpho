@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2003-09-26 00:43:13 $'
- * '$Revision: 1.6 $'
+ *   '$Author: sambasiv $'
+ *     '$Date: 2003-10-22 00:16:58 $'
+ * '$Revision: 1.7 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -42,6 +42,7 @@ import java.awt.Container;
 
 import edu.ucsb.nceas.morpho.framework.ConfigXML;
 import edu.ucsb.nceas.morpho.framework.TextImportWizard;
+import edu.ucsb.nceas.morpho.framework.TextImportWizardEml2;
 import edu.ucsb.nceas.morpho.framework.TextImportListener;
 import edu.ucsb.nceas.morpho.util.Log;
 import edu.ucsb.nceas.morpho.Morpho;
@@ -65,7 +66,10 @@ public class ImportWizard extends     AbstractWizardPage
   private final String IMPORT_WIZ_TITLE = "Text Import Wizard";
   
   private OrderedMap resultsMap;
-  private TextImportWizard importWiz;
+  
+  // TextImportWizardEml2 is the new Text Import Wizard for EML2.0.0 standard. 
+  // The old TextImportWizard is however still retained in the module
+  private TextImportWizardEml2 importWiz;
   
   private TextImportListener listener;
   private boolean importCompletedOK = false;
@@ -94,8 +98,8 @@ public class ImportWizard extends     AbstractWizardPage
 
       String fileTextName = ((DataLocation)locationPage).getImportFilePath();
                 
-      importWiz = new TextImportWizard(fileTextName, this);
-
+      importWiz = new TextImportWizardEml2(fileTextName, this);
+  
       importWiz.setVisible(false);
       
       final JFrame parent = WizardContainerFrame.frame;

@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2003-10-01 18:22:42 $'
- * '$Revision: 1.15 $'
+ *   '$Author: sambasiv $'
+ *     '$Date: 2003-10-22 00:16:58 $'
+ * '$Revision: 1.16 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,8 +33,11 @@ import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WidgetFactory;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardPopupDialog;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardSettings;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.DialogSubPanelAPI;
-
+import edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.NominalOrdinalPanel;
 import edu.ucsb.nceas.morpho.util.Log;
+import edu.ucsb.nceas.morpho.Morpho;
+import edu.ucsb.nceas.morpho.framework.ConfigXML;
+
 
 import edu.ucsb.nceas.utilities.OrderedMap;
 
@@ -50,6 +53,8 @@ import javax.swing.JScrollPane;
 import javax.swing.SwingConstants;
 import javax.swing.BorderFactory;
 import javax.swing.JCheckBox;
+import javax.swing.JOptionPane;
+import javax.swing.JRadioButton;
 
 import java.util.List;
 import java.util.ArrayList;
@@ -63,13 +68,16 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.io.File;
 
 
-
-class AttributeDialog extends WizardPopupDialog {
+public class AttributeDialog extends WizardPopupDialog {
 
   public static final int BORDERED_PANEL_TOT_ROWS = 9;
   public static final int DOMAIN_NUM_ROWS = 8;
+  
+  private final String CONFIG_KEY_STYLESHEET_LOCATION = "stylesheetLocation";
+  private final String CONFIG_KEY_MCONFJAR_LOC   = "morphoConfigJarLocation";
   
   private JTextField attribNameField;
   
@@ -78,6 +86,9 @@ class AttributeDialog extends WizardPopupDialog {
   private JLabel attribDefinitionLabel;
   private JLabel measScaleLabel;
   private JPanel currentPanel;
+  
+  // to be visible in setData() function call
+  private JPanel radioPanel;
       
   private JPanel nominalPanel;
   private JPanel ordinalPanel;
@@ -131,11 +142,6 @@ class AttributeDialog extends WizardPopupDialog {
           +WizardSettings.HTML_NO_TABLE_CLOSING
         };
 
-//  private final String[] textEnumPicklistVals
-//                      = { "Enumerated values (belong to a pre-defined list)", 
-//                          "Text values (free-form or matching a pattern)"     };
-//
-//                                        
 
   private final String[] measScaleElemNames = new String[5];
 
@@ -155,6 +161,15 @@ class AttributeDialog extends WizardPopupDialog {
     initNames();
     init();
     this.setVisible(true);
+  }
+  
+  public AttributeDialog(JFrame parent, boolean showNow) { 
+  
+    super(parent); 
+    
+    initNames();
+    init();
+    this.setVisible(showNow);
   }
   
   private void initNames() {
@@ -230,7 +245,7 @@ class AttributeDialog extends WizardPopupDialog {
     middlePanel.add(attribDefinitionPanel);
  
     middlePanel.add(WidgetFactory.makeDefaultSpacer());
-  
+    
     ////
     ActionListener listener = new ActionListener() {
       
@@ -277,8 +292,8 @@ class AttributeDialog extends WizardPopupDialog {
                                 
     middlePanel.add(measScaleLabel);
     
-    JPanel radioPanel = WidgetFactory.makeRadioPanel(buttonsText, -1, listener);
-
+    radioPanel = WidgetFactory.makeRadioPanel(buttonsText, -1, listener);
+    
     middlePanel.add(radioPanel);
     
     currentPanel  = getEmptyPanel();
@@ -296,6 +311,24 @@ class AttributeDialog extends WizardPopupDialog {
   private void setMeasurementScale(String scale) {
 
     this.measurementScale = scale;
+  }
+  
+  /** Function to retrive the current measurementScale of the Attribute
+  *
+  *   @return  the measurement scale as a String
+  **/
+  
+  public String getMeasurementScale() {
+	return this.measurementScale;	  
+  }
+  
+  /** Function to retrive the current measurement scale panel
+  *	
+  *   @return  the current panel as a JPanel
+  */
+  
+  public JPanel getCurrentMeasurementScalePanel() {
+	  return currentPanel;
   }
 
   private void setMeasurementScaleUI(JPanel panel) {
@@ -477,7 +510,386 @@ class AttributeDialog extends WizardPopupDialog {
         ((DialogSubPanelAPI)currentPanel).getPanelData(
                             xPathRoot+"/measurementScale/"+measurementScale) );
     }
-
+    
     return returnMap;
   }
+  
+  /** 
+   *  sets the Data in the Attribute Dialog fields. This is called from the TextImportWizard
+   *  when it wants to set some information it has already guessed from the given data file.
+   *	
+   *  Any data in the AttributeDialog can be set through this method. The TextImportWizard 
+   *  however sets only the "Attribute Name", "Measurement Scale", "Number Type" and the 
+   *  "Enumeration Code Definitions"
+   *
+   *  @param  xPathRoot - this is the relative xPath of the current attribute
+   *
+   *  @param  map - Data is passed as OrderedMap of xPath-value pairs. xPaths in this map 
+   *		    are absolute xPath and not the relative xPaths
+   *
+   *  @param  mScale - The guessed measurement scale. The appropriate radioButton is 
+   *			selected and that Panel is displayed
+   *
+   *
+   */
+   
+  public void setPageData(String xPathRoot, OrderedMap map, String mScale) {
+	
+	String name = (String)map.get(xPathRoot + "/attributeName");
+	if(name != null)
+		attribNameField.setText(name);
+	String defn = (String)map.get(xPathRoot + "/attributeDefinition");
+	if(defn != null)
+		attribDefinitionField.setText(defn);
+	
+	((NominalOrdinalPanel)nominalPanel).setPanelData(xPathRoot+ "/measurementScale/nominal/nonNumericDomain", map);
+	((NominalOrdinalPanel)ordinalPanel).setPanelData(xPathRoot+ "/measurementScale/ordinal/nonNumericDomain", map);
+	((IntervalRatioPanel)intervalPanel).setPanelData(xPathRoot+ "/measurementScale/interval", map);
+	((IntervalRatioPanel)ratioPanel).setPanelData(xPathRoot+ "/measurementScale/ratio", map);
+	((DateTimePanel)dateTimePanel).setPanelData(xPathRoot+ "/measurementScale/datetime", map);
+	
+	if(mScale == null || mScale.equals(""))
+		return;
+	
+	measurementScale = mScale;
+	
+	int componentNum = -1;
+	if(measurementScale.equalsIgnoreCase("nominal")) {
+		  setMeasurementScaleUI(nominalPanel);
+		  setMeasurementScale(measScaleElemNames[0]);
+		  componentNum = 0;
+	}
+	else if(measurementScale.equalsIgnoreCase("ordinal")) {
+		  setMeasurementScaleUI(ordinalPanel);
+		  setMeasurementScale(measScaleElemNames[1]);
+		  componentNum = 1;
+	}
+	if(measurementScale.equalsIgnoreCase("interval")) {
+		  setMeasurementScaleUI(intervalPanel);
+		  setMeasurementScale(measScaleElemNames[2]);
+		  componentNum = 2;
+	}
+	if(measurementScale.equalsIgnoreCase("ratio")) {
+		setMeasurementScaleUI(ratioPanel);
+		setMeasurementScale(measScaleElemNames[3]);
+		componentNum = 3;
+	}
+	if(measurementScale.equalsIgnoreCase("datetime")) {
+		setMeasurementScaleUI(dateTimePanel);
+		setMeasurementScale(measScaleElemNames[4]);
+		componentNum = 4;;
+	}
+	  
+	//selects the appropriate radio button
+	  
+	if(componentNum != -1) {
+		JRadioButton jrb = (JRadioButton)(radioPanel.getComponent(componentNum));
+		jrb.setSelected(true);
+	}
+	return;
+  }
+  
+  /** 
+   *  gets the HTML representation of the attribute values
+   *  The HTML text references the entity.css file 
+   *
+   *  @return   the HTML text describes the attribute values
+   */
+   
+  public String getText() {
+	String text = "<html> <head> <link href=\"" + getFullStylePath() + "/entity.css\" type=\"text/css\" rel=\"stylesheet\"> </head> ";
+	text += "<body>";
+	text += "<table border=\"0\" cellpadding=\"5\" cellspacing=\"0\" width=\"100%\" cols = \"5\"> ";
+	
+	
+	// First row - Name:
+	text += "<tr>";
+	text += "<td class=\"highlight\"  width = \"35%\" > Name: </td>";
+	text += "<td class=\"secondCol\" width=\"65%\" colspan=\"4\">" + this.attribNameField.getText() + "</td>";
+	text += "</tr>";
+	
+	// Second row - Definition:
+	text += "<tr>";
+	text += "<td class=\"highlight\"  width = \"35%\" > Definition: </td>";
+	text += "<td class=\"secondCol\" width=\"65%\" colspan=\"4\">" + this.attribDefinitionField.getText() + "</td>";
+	text += "</tr>";	
+	
+	String scale = measurementScale;
+	int index = -1;
+	if(measurementScale.equalsIgnoreCase("Nominal") || measurementScale.equalsIgnoreCase("Ordinal")) {
+		index = ((NominalOrdinalPanel)currentPanel).getDomainPickListSelectedIndex();
+		if(index == 0) scale += "; Enumerated values";
+		else scale += "; Text values";
+	}
+
+	// Third row - Measurement Scale:	
+	text += "<tr>";
+	text += "<td class = \"highlight\"  width = \"35%\" > Measurement Scale: </td>";
+	text += "<td class = \"secondCol\" width=\"65%\" colspan=\"4\"> " + scale + "</td>";
+	text += "</tr>";
+	
+	OrderedMap map = getPageData(AttributeSettings.Attribute_xPath);
+	
+	// Nominal measurement scale
+	if(measurementScale.equalsIgnoreCase("Nominal") || measurementScale.equalsIgnoreCase("Ordinal")) {
+		
+		String mainXPath;
+		if (measurementScale.equalsIgnoreCase("Nominal")) mainXPath = AttributeSettings.Nominal_xPath;
+		else mainXPath = AttributeSettings.Ordinal_xPath;
+		//Enumerated values
+		if(index == 0) { 
+			text += "<tr>";
+			text += "<td class = \"tablehead\" > Definitions: </td>" ;
+			
+			String table="";
+			
+			table += "<td class = \"tablehead\" >Code </td>";
+			table += "<td class = \"tablehead\" >Definition </td>";
+			table += "<td class = \"tablehead\" colspan=\"2\">Source </td>";
+			table += "</tr>";
+			
+			int i = 1;
+			String enumPath = "/enumeratedDomain[1]/codeDefinition[";
+			while(true) {
+				Object o = map.get(mainXPath + enumPath + i + "]/code" );
+				if(o == null) break;
+				String e1 = (String) o;
+				String e2 = (String) map.get(mainXPath + enumPath + i + "]/definition" );
+				o = map.get(mainXPath + enumPath + i + "]/source" );
+				String e3;
+				if( o == null) e3 ="";
+				else e3 = (String) o;
+				table += "<tr>";
+				table += "<td class = \"highlight\"> </td>";
+				table += "<td >" + e1 + "</td> <td  >" + e2 + "</td> <td colspan=\"2\">" + e3 + "</td>";
+				table += "</tr>";
+				i++;
+			}
+			
+			text += table;
+			
+			
+		}	
+		// Text values
+		else if (index == 1) {
+			String textPath = "/textDomain[1]/";
+			String data  = (String) map.get( mainXPath + textPath + "definition");
+			text += "<tr>";
+			text += "<td class =\"highlight\"  width = \"35%\"> Definition: </td>";
+			text += "<td class =\"secondCol\" width=\"65%\" colspan=\"4\"> " +  data + "</td>";
+			text += "</tr>";
+			
+			Object o = map.get(mainXPath + textPath + "source");
+			if(o != null) {
+				text += "<tr>";
+				text += "<td class =\"highlight\"  width = \"35%\"> Source: </td>";
+				text += "<td class=\"secondCol\" width=\"65%\" colspan=\"4\"> " + (String)o + "</td>";
+				text += "</tr>";
+			}
+			int i = 1;
+			
+			while(true) {
+				Object o1 = map.get(mainXPath + textPath + "pattern[" + i + "]");
+				if(o1 ==null) break;
+				text += "<tr>";
+				if(i==1) {
+					text += "<td class=\"highlight\"  width = \"35%\" valign =\"top\"> Patterns: </td>";
+				} else {
+					text += "<td class =\"highlight\"></td>";
+				}
+				
+				text += "<td class = \"secondCol\" width=\"65%\" colspan=\"4\">" + (String)o1 + "</td>";
+				text += "</tr>";
+				i++;
+			}
+			
+		} // end of else if
+		
+	} // end of Nomimal/Ordinal
+	
+	// Interval / Ratio measurement scales
+	
+	if(measurementScale.equalsIgnoreCase("Interval") || measurementScale.equalsIgnoreCase("Ratio")) {
+		
+		String mainXPath;
+		if(measurementScale.equalsIgnoreCase("Interval")) mainXPath = AttributeSettings.Interval_xPath;
+		else mainXPath = AttributeSettings.Ratio_xPath;
+		
+		String unit = (String) map.get(mainXPath + "/unit/standardUnit");
+		
+		text += "<tr>";
+		text += "<td class = \"highlight\"  width = \"35%\" > Standard Unit: </td>";
+		text += "<td class = \"secondCol\" width=\"65%\" colspan=\"4\"> " + unit + "</td>";
+		text += "</tr>";
+		
+		String precision = (String) map.get(mainXPath + "/precision");
+		
+		text += "<tr>";
+		text += "<td class = \"highlight\"  width = \"35%\"> Precision: </td>";
+		text += "<td class = \"secondCol\" width=\"65%\" colspan=\"4\">" + precision + "</td>";
+		text += "</tr>";
+		
+		String numberType = (String) map.get(mainXPath + "/numericDomain/numberType");
+		
+		text += "<tr>";
+		text += "<td class = \"highlight\"  width = \"35%\"> Number Type: </td>";
+		text += "<td class = \"secondCol\" width=\"65%\" colspan=\"4\">" + numberType + "</td>";
+		text += "</tr>";
+		
+		Object o1 = map.get(mainXPath + "/numericDomain/bounds[1]/minimum");
+		Object o2 = map.get(mainXPath + "/numericDomain/bounds[1]/maximum");
+		// add Bounds
+		if(o1 != null || o2 != null) {
+			
+			
+			
+			
+			
+			int pos = 1;
+			while(true) {
+				Object ob1 = map.get(mainXPath + "/numericDomain/bounds[" + pos + "]/minimum");
+				Object ob2 = map.get(mainXPath + "/numericDomain/bounds[" + pos + "]/maximum");
+				if(ob1 == null && ob2 == null) break;
+				String e1,e2;
+				if(ob1 == null) e1 = ""; else e1 = (String)ob1;
+				if(ob2 == null) e2 = ""; else e2 = (String)ob2;
+				
+				Object ob3 = map.get(mainXPath + "/numericDomain/bounds[" + pos + "]/minimum/@exclusive");
+				Object ob4 = map.get(mainXPath + "/numericDomain/bounds[" + pos + "]/maximum/@exclusive");
+				String e3,e4;
+				if(ob3 == null || ((String)ob3).equalsIgnoreCase("false")) e3 = "(incl)"; else e3 = "(excl)";
+				if(ob4 == null || ((String)ob4).equalsIgnoreCase("false")) e4 = "(incl)"; else e4 = "(excl)";
+				
+				text += "<tr>";
+				if(pos == 1) {
+					text += "<td class = \"highlight\"  width = \"35%\"> Bounds: </td>";
+				} else {
+					text += "<td class= \"highlight\"> </td>";
+				}
+				text += "<td>min: " + e1 + "</td>";
+				text += "<td>" + e3 + "</td>";
+				text += "<td>max: " + e2 + "</td>";
+				text += "<td>" + e4 + "</td>";
+				text += "</tr>";
+				pos++;
+			}
+		} // end of adding bounds
+		
+	} // end of Interval/Ratio
+	
+	if(measurementScale.equalsIgnoreCase("Datetime")) {
+	
+		String mainXPath = AttributeSettings.DateTime_xPath;
+		
+		String format = (String) map.get(mainXPath + "/formatString");
+		String precision = (String) map.get(mainXPath + "/dateTimePrecision");
+		text += "<tr>";
+		text += "<td class = \"highlight\"  width = \"35%\" > Format: </td>";
+		text += "<td class = \"secondCol\" width=\"65%\" colspan=\"4\"> " + format + "</td>";
+		text += "</tr>";
+		
+		text += "<tr>";
+		text += "<td class = \"highlight\"  width = \"35%\" > Precision: </td>";
+		text += "<td class = \"secondCol\" width=\"65%\" colspan=\"4\"> " + precision + "</td>";
+		text += "</tr>";
+		
+		Object o1 = map.get(mainXPath + "/dateTimeDomain/bounds[1]/minimum");
+		Object o2 = map.get(mainXPath + "/dateTimeDomain/bounds[1]/maximum");
+		// add Bounds
+		if(o1 != null || o2 != null) {
+			
+			int pos = 1;
+			while(true) {
+				Object ob1 = map.get(mainXPath + "/dateTimeDomain/bounds[" + pos + "]/minimum");
+				Object ob2 = map.get(mainXPath + "/dateTimeDomain/bounds[" + pos + "]/maximum");
+				if(ob1 == null && ob2 == null) break;
+				String e1,e2;
+				if(ob1 == null) e1 = ""; else e1 = (String)ob1;
+				if(ob2 == null) e2 = ""; else e2 = (String)ob2;
+				
+				Object ob3 = map.get(mainXPath + "/dateTimeDomain/bounds[" + pos + "]/minimum/@exclusive");
+				Object ob4 = map.get(mainXPath + "/dateTimeDomain/bounds[" + pos + "]/maximum/@exclusive");
+				String e3,e4;
+				if(ob3 == null || ((String)ob3).equalsIgnoreCase("false")) e3 = "(incl)"; else e3 = "(excl)";
+				if(ob4 == null || ((String)ob4).equalsIgnoreCase("false")) e4 = "(incl)"; else e4 = "(excl)";
+				
+				text += "<tr>";
+				if(pos == 1) {
+					text += "<td class = \"highlight\" > Bounds: </td>";
+				} else {
+					text += "<td class=\"highlight\"></td>";
+				}
+				text += "<td class=\"secondCol\">min: " + e1 + "</td>";
+				text += "<td class=\"secondCol\">" + e3 + "</td>";
+				text += "<td class=\"secondCol\">max: " + e2 + "</td>";
+				text += "<td class=\"secondCol\">" + e4 + "</td>";
+				text += "</tr>";
+				pos++;
+			}
+			
+		} // end of adding bounds
+		
+	} // end of DateTime
+	
+	text += "</table>";
+	text += "</body>";
+	text += "</html>";
+	
+	Log.debug(15,text);
+	return text;
+	
+  } // end of function - getText()
+  
+  
+  private String getFullStylePath()    {
+	String FULL_STYLE_PATH = null;
+	ConfigXML config = Morpho.getConfiguration();
+        if (FULL_STYLE_PATH==null) {
+            StringBuffer pathBuff = new StringBuffer();
+            pathBuff.append("jar:file:");
+            pathBuff.append(new File("").getAbsolutePath());
+            pathBuff.append("/");
+            pathBuff.append(config.get(CONFIG_KEY_MCONFJAR_LOC, 0));
+            pathBuff.append("!/");
+            pathBuff.append(config.get(CONFIG_KEY_STYLESHEET_LOCATION, 0));
+            FULL_STYLE_PATH = pathBuff.toString();
+            pathBuff = null;
+        }
+        return FULL_STYLE_PATH;
+   }
+    
+  
+  /** 
+   *  function to check if all necessary data has been entered by the user. This is called 
+   *  by the TextImportWizard when the 'Finish' button is hit
+   *
+   *  @return   true - if the user has entered all required information
+   * 		false - if any necessary info is missing
+   */
+   
+  public boolean hasAllInfo() {
+	 
+	 if(attribNameField.getText().length() == 0) return false;
+	 if(attribDefinitionField.getText().length() == 0) return false;
+	 if(measurementScale == null) return false;
+	 
+	 if(measurementScale.equalsIgnoreCase("Nominal") || measurementScale.equalsIgnoreCase("Ordinal") ) {
+		if(! ((NominalOrdinalPanel)currentPanel).validateUserInput() ) 
+			return false;
+	 }
+	 
+ 	 if(measurementScale.equalsIgnoreCase("Interval") || measurementScale.equalsIgnoreCase("Ratio") ) {
+		if(! ((IntervalRatioPanel)currentPanel).validateUserInput() ) 
+			return false;
+	 }
+	 
+	 if(measurementScale.equalsIgnoreCase("Datetime")) {
+		 if (! ((DateTimePanel) currentPanel).validateUserInput()) 
+			 return false;
+	 }
+	 return true;
+  }
+   
+  
+  
 }

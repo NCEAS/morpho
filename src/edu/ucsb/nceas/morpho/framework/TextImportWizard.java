@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2003-10-02 17:59:57 $'
- * '$Revision: 1.58 $'
+ *   '$Author: sambasiv $'
+ *     '$Date: 2003-10-22 00:16:57 $'
+ * '$Revision: 1.59 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -44,8 +44,9 @@ import edu.ucsb.nceas.morpho.util.Log;
 import edu.ucsb.nceas.morpho.util.XMLUtil;
 import edu.ucsb.nceas.morpho.datapackage.wizard.PackageWizard;
 import edu.ucsb.nceas.morpho.datapackage.ColumnMetadataEditPanel;
-
+import edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.AttributeDialog;
 import edu.ucsb.nceas.utilities.*;
+
 /**
  * 'Text Import Wizard' is modeled after
  * the text import wizard in Excel. Its  purpose is to automatically 
@@ -68,6 +69,7 @@ public class TextImportWizard extends javax.swing.JFrame
   * (when a new column is created)and is reused here
   */
  ColumnMetadataEditPanel cmePanel = null;
+ Vector attributeDialogs;
  
   /**
   * a global reference to the table used to display the data that is
@@ -191,7 +193,8 @@ public class TextImportWizard extends javax.swing.JFrame
     cmePanel = new ColumnMetadataEditPanel();
     cmePanel.setTextImportWizard(this);
     cmePanel.setPreferredSize(new Dimension(300, 4000));
-
+    attributeDialogs = new Vector();
+    
 		//{{INIT_CONTROLS
 		setTitle("Text Import Wizard");
 		setDefaultCloseOperation(javax.swing.JFrame.DO_NOTHING_ON_CLOSE);
@@ -816,6 +819,7 @@ public void startImport(String file) {
 	    buildTable(colTitles, vec);
 	    colDataInfo = new Vector();   // vector of ColumnData objects
 	    for (int k=0;k<numcols;k++) {
+		    		    
 	      ColumnData cd = new ColumnData(k);
 	      colDataInfo.addElement(cd);
 	      cd.colType = guessColFormat(k);
@@ -1916,7 +1920,6 @@ public void startImport(String file) {
     if (labelsInStartingLine) temp = 1;
     int numrecs = nlines_actual - startingLine +1 + temp;
 	  String numRecords = (new Integer(numrecs)).toString();
-    om.put(header + "numberOfRecords", XMLUtil.normalize(numRecords));
     return om;
   }
 

@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2003-10-06 21:25:19 $'
- * '$Revision: 1.25 $'
+ *   '$Author: sambasiv $'
+ *     '$Date: 2003-10-22 00:16:58 $'
+ * '$Revision: 1.26 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -604,6 +604,16 @@ public class CustomList extends JPanel {
 //    if (table.getRowCount() < 1) addFirstRowBack();
     table.tableChanged(getTableModelEvent());
     table.clearSelection();
+  }
+  
+  /**
+   *  removes all the rows from the list
+   *  
+   */
+  public void removeAllRows() {
+	  for(int i = 0; table.getRowCount() > 0 && i<10;i++)
+		  model.removeRow(0);
+	  
   }
 
 

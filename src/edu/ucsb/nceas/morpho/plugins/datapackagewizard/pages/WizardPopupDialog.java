@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2003-09-06 04:20:38 $'
- * '$Revision: 1.3 $'
+ *   '$Author: sambasiv $'
+ *     '$Date: 2003-10-22 00:16:58 $'
+ * '$Revision: 1.4 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -48,6 +48,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener ;
 
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WidgetFactory;
+
 
 public abstract class WizardPopupDialog extends JDialog {
 

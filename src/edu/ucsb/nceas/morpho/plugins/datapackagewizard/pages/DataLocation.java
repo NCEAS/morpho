@@ -1,5 +1,4 @@
-/**
- *  '$RCSfile: DataLocation.java,v $'
+/*  '$RCSfile: DataLocation.java,v $'
  *    Purpose: A class that handles xml messages passed by the 
  *             package wizard
  *  Copyright: 2000 Regents of the University of California and the
@@ -7,9 +6,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2003-10-03 00:25:18 $'
- * '$Revision: 1.15 $'
+ *   '$Author: sambasiv $'
+ *     '$Date: 2003-10-22 00:16:58 $'
+ * '$Revision: 1.16 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by

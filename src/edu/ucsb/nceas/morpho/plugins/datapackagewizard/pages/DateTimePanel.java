@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2003-10-06 21:25:19 $'
- * '$Revision: 1.9 $'
+ *   '$Author: sambasiv $'
+ *     '$Date: 2003-10-22 00:16:58 $'
+ * '$Revision: 1.10 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,6 +33,7 @@ import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WidgetFactory;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardSettings;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.DialogSubPanelAPI;
 
+
 import edu.ucsb.nceas.morpho.util.Log;
 
 import edu.ucsb.nceas.utilities.OrderedMap;
@@ -51,6 +52,8 @@ import javax.swing.JCheckBox;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Vector;
+import java.util.Enumeration;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -356,5 +359,68 @@ class DateTimePanel extends JPanel implements DialogSubPanelAPI {
       }
     }
     return returnMap;
+  
   }
+  
+  /** 
+   *  sets the Data in the DataTime Panel. This is called by the setData() function 
+   *  of AttributeDialog.
+   
+   *  @param  xPathRoot - this is the relative xPath of the current attribute
+   *
+   *  @param  map - Data is passed as OrderedMap of xPath-value pairs. xPaths in this map 
+   *		    are absolute xPath and not the relative xPaths
+   *
+   **/
+   
+  public void setPanelData(String xPathRoot, OrderedMap map) {
+	  
+	  
+	  String format = (String)map.get(xPathRoot + "/formatString");
+	  if(format != null)
+		  formatStringField.setText(format);
+	  
+	  String precision = (String)map.get(xPathRoot + "/dateTimePrecision");
+	  if(precision != null)
+		  precisionField.setText(precision);
+	  
+	  int index = 1;
+	  while(true) {
+		  List row = new ArrayList();
+		  String min = (String)map.get(xPathRoot + "/dateTimeDomain/bounds[" +index+ "]/minimum");
+		  if(min != null) {
+			  row.add(min);
+			  Boolean  excl = (Boolean)map.get(xPathRoot + "/dateTimeDomain/bounds[" +index+ "]/minimum/@exclusive");
+			  if(excl != null)
+				  row.add(excl);
+			  else
+				  row.add(new Boolean(false));
+		  }
+		  else {
+			  row.add("");
+			  row.add(new Boolean(false));
+		  }
+		  String max = (String)map.get(xPathRoot + "/dateTimeDomain/bounds[" +index+ "]/maximum");
+		  if(max != null) {
+			  row.add(max);
+			  Boolean  excl = (Boolean)map.get(xPathRoot + "/dateTimeDomain/bounds[" +index+ "]/maximum/@exclusive");
+			  if(excl != null)
+				  row.add(excl);
+			  else
+				  row.add(new Boolean(false));
+		  }  
+		  else {
+			  row.add("");
+			  row.add(new Boolean(false));
+		  }
+		  if(min == null && max == null)
+			  break;
+		  else
+			  boundsList.addRow(row);
+		  index++;
+	  }
+	  
+	  return;
+  }
+  
 }
