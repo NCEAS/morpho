@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-12-10 23:05:18 $'
- * '$Revision: 1.15 $'
+ *     '$Date: 2004-01-22 19:00:52 $'
+ * '$Revision: 1.16 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -239,6 +239,13 @@ public class ExportCommand implements Command
    */
   private void exportDataset(String id)
   {
+    if (location==null) {
+      location = getLocation();
+    }
+    if ((location.trim()).equals("")) {
+      Log.debug(3, "Sorry, Package must be saved before it can be exported!");
+      return;
+    }
     String curdir = System.getProperty("user.dir");
     JFileChooser filechooser = new JFileChooser(curdir);
 //    filechooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
@@ -268,9 +275,6 @@ public class ExportCommand implements Command
 
     if (result==JFileChooser.APPROVE_OPTION) {
       //now we know where to export the files to, so export them.
-      if (location==null) {
-        location = getLocation();
-      }
        //export it.
       dataPackage.export(id, exportDir.toString(), location);
     }
