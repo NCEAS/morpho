@@ -6,9 +6,9 @@
  *             National Center for Ecological Analysis and Synthesis
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2004-02-09 18:53:29 $'
- * '$Revision: 1.14 $'
+ *   '$Author: sambasiv $'
+ *     '$Date: 2004-02-12 22:25:58 $'
+ * '$Revision: 1.15 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -855,6 +855,7 @@ public class AttributePage extends AbstractWizardPage {
 				 newKey += key.substring(0,pos);
 				 key = key.substring(pos + 3);
 			 }
+			 newKey += key;
 			 newMap.put(newKey, val);
 		 }
 		 return newMap;

@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2004-01-07 02:02:17 $'
- * '$Revision: 1.17 $'
+ *   '$Author: sambasiv $'
+ *     '$Date: 2004-02-12 22:25:58 $'
+ * '$Revision: 1.18 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -281,8 +281,9 @@ class DateTimePanel extends JPanel implements WizardPageSubPanelAPI {
     boundsList.deleteEmptyRows( CustomList.AND,
                                 new short[] { CustomList.EMPTY_STRING_TRIM,
                                               CustomList.IGNORE,
-                                              CustomList.EMPTY_STRING_TRIM,
-                                              CustomList.IGNORE             } );
+																							CustomList.IGNORE,
+																							CustomList.IGNORE,
+                                              CustomList.EMPTY_STRING_TRIM } );
 
     if (formatStringField.getText().trim().equals("")) {
 

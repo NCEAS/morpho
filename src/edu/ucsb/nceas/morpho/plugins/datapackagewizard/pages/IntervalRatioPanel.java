@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: sambasiv $'
- *     '$Date: 2004-01-08 22:52:33 $'
- * '$Revision: 1.25 $'
+ *     '$Date: 2004-02-12 22:25:58 $'
+ * '$Revision: 1.26 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -39,6 +39,7 @@ import edu.ucsb.nceas.utilities.OrderedMap;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Arrays;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -340,8 +341,9 @@ public class IntervalRatioPanel extends JPanel implements WizardPageSubPanelAPI 
     boundsList.deleteEmptyRows( CustomList.AND,
                                 new short[] { CustomList.EMPTY_STRING_TRIM,
                                               CustomList.IGNORE,
-                                              CustomList.EMPTY_STRING_TRIM,
-                                              CustomList.IGNORE             } );
+																							CustomList.IGNORE,
+																							CustomList.IGNORE,
+                                              CustomList.EMPTY_STRING_TRIM } );
 
     if (unitsPickList.getSelectedUnit().trim().equals("")) {
 
@@ -369,7 +371,7 @@ public class IntervalRatioPanel extends JPanel implements WizardPageSubPanelAPI 
     }
     WidgetFactory.unhiliteComponent(numberTypeLabel);
 
-    if (!containsOnlyNumericValues(boundsList, 0, 2)) {
+    if (!containsOnlyNumericValues(boundsList, 0, 4)) {
 
       WidgetFactory.hiliteComponent(boundsLabel);
 
@@ -486,13 +488,13 @@ public class IntervalRatioPanel extends JPanel implements WizardPageSubPanelAPI 
 
     xPathRoot = xPathRoot + "/numericDomain/bounds[";
     int index = 0;
+		boundsList.fireEditingStopped();
     List rowLists = boundsList.getListOfRowLists();
     String nextMin = null;
     String nextMax = null;
     Object nextExcl = null;
 
-
-    for (Iterator it = rowLists.iterator(); it.hasNext(); ) {
+		for (Iterator it = rowLists.iterator(); it.hasNext(); ) {
 
       Object nextRowObj = it.next();
       if (nextRowObj==null) continue;
@@ -530,13 +532,14 @@ public class IntervalRatioPanel extends JPanel implements WizardPageSubPanelAPI 
           if (nextExcl!=null && ((String)nextExcl).equals("<") ) {
 
             returnMap.put(xPathRoot + index + "]/maximum/@exclusive", "true");
-
+						
           } else {
 
             returnMap.put(xPathRoot + index + "]/maximum/@exclusive", "false");
+						
           }
         }
-      }
+      } 
     }
     return returnMap;
   }
@@ -552,74 +555,93 @@ public class IntervalRatioPanel extends JPanel implements WizardPageSubPanelAPI 
    *
    **/
 
-  public void setPanelData( String xPathRoot, OrderedMap map) {
+	 public void setPanelData( String xPathRoot, OrderedMap map) {
+		 
+		 String unit = (String)map.get( xPathRoot + "/unit/standardUnit");
+		 
+		 if(unit != null && !unit.equals("")) {
+			 String[] unitTypesArray = WizardSettings.getUnitDictionaryUnitTypes();
+			 int totUnitTypes = unitTypesArray.length;
+			 String[] unitsOfThisType = null;
+			 
+			 for (int i=0; i < totUnitTypes; i++) {
+				 
+				 unitsOfThisType
+				 = WizardSettings.getUnitDictionaryUnitsOfType(unitTypesArray[i]);
+				 int pos = -1;
+				 if((pos = isPresentInList(unit, unitsOfThisType)) >= 0) {
+					 unitsPickList.setSelectedUnit(i+1, pos);
+					 break;
+				 }
+			 }
+		 }
+		 
+		 String precision = (String)map.get(  xPathRoot + "/precision");
+		 if(precision != null)
+			 precisionField.setText(precision);
+		 
+		 String type = (String)map.get( xPathRoot + "/numericDomain/numberType");
+		 if(type != null)
+			 numberTypePickList.setSelectedItem(type);
+		 
+		 int index = 1;
+		 
+		 while(true) {
+			 List row = new ArrayList();
+			 Object min = map.get(xPathRoot + "/numericDomain/bounds[" +index+ "]/minimum");
+			 if(index ==1 && min == null)
+				 min = map.get(xPathRoot + "/numericDomain/bounds/minimum");
+				 if(min != null) {
+					 row.add((String)min);
+					 Object  excl = map.get(xPathRoot + "/numericDomain/bounds[" +index+ "]/minimum/@exclusive");
+					 if(index == 1 && excl == null)
+						 excl = map.get(xPathRoot + "/numericDomain/bounds/minimum/@exclusive");
+					 
+					 if(excl != null && ((String)excl).equals("true"))
+						 row.add("<");
+					 else
+						 row.add("<=");
+					 
+				 }
+				 else {
+					 row.add("");
+					 row.add("<");
+				 }
+				 row.add("value");
+				 Object max = (String)map.get(xPathRoot + "/numericDomain/bounds[" +index+ "]/maximum");
+				 if(index ==1 && max == null)
+					 max = map.get(xPathRoot + "/numericDomain/bounds/maximum");
+					 if(max != null) {
+						 Object excl = map.get(xPathRoot + "/numericDomain/bounds[" +index+ "]/maximum/@exclusive");
+						 if(index == 1 && excl == null)
+							 excl = map.get(xPathRoot + "/numericDomain/bounds/maximum/@exclusive");
+						 if(excl != null && ((String)excl).equals("true"))
+							 row.add("<");
+						 else
+							 row.add("<=");
+						 
+						 row.add((String)max);
+					 }
+					 else {
+						 row.add("<");
+						 row.add("");
+					 }
+					 if(min == null && max == null)
+						 break;
+					 else
+						 boundsList.addRow(row);
+					 index++;
+		 }
+		 boundsList.fireEditingStopped();
+		 return;
+	 }
 
-	String unit = (String)map.get( xPathRoot + "/unit/standardUnit");
-	
-	if(unit != null && !unit.equals(""))
-		unitsPickList.setSelectedUnit(unit);
-
-	
-  String precision = (String)map.get(  xPathRoot + "/precision");
-	if(precision != null)
-		precisionField.setText(precision);
-
-	String type = (String)map.get( xPathRoot + "/numericDomain/numberType");
-	if(type != null)
-		numberTypePickList.setSelectedItem(type);
-
-	int index = 1;
-	while(true) {
-		List row = new ArrayList();
-		String min = (String)map.get(xPathRoot + "/numericDomain/bounds[" +index+ "]/minimum");
-		if(index ==1 && min == null)
-			min = (String)map.get(xPathRoot + "/numericDomain/bounds/minimum");
-		if(min != null) {
-			row.add(min);
-			String  excl = (String)map.get(xPathRoot + "/numericDomain/bounds[" +index+ "]/minimum/@exclusive");
-			if(index == 1 && excl == null)
-				excl = (String)map.get(xPathRoot +
-						"/numericDomain/bounds/minimum/@exclusive");
-			if(excl.equals("true"))
-				row.add("<");
-			else
-				row.add("<=");
-
-
-		}
-		else {
-			row.add("");
-			row.add("<");
-		}
-		row.add("value");
-		String max = (String)map.get(xPathRoot + "/numericDomain/bounds[" +index+ "]/maximum");
-		if(index ==1 && max == null)
-			max = (String)map.get(xPathRoot + "/numericDomain/bounds/maximum");
-		if(max != null) {
-			String  excl = (String)map.get(xPathRoot + "/numericDomain/bounds[" +index+ "]/maximum/@exclusive");
-			if(index == 1 && excl == null)
-				excl = (String)map.get(xPathRoot +
-						"/numericDomain/bounds/maximum/@exclusive");
-			if(excl.equals("true"))
-				row.add("<");
-			else
-				row.add("<=");
-
-			row.add(max);
-		}
-		else {
-			row.add("<");
-			row.add("");
-		}
-		if(min == null && max == null)
-			break;
-		else
-			boundsList.addRow(row);
-		index++;
-	}
-	return;
-  }
-
+	 private int isPresentInList(String unitType, String[] unitsOfThisType) {
+		 
+		 // Assuming that the units of a particular type are arranged in alphabetical order
+		 // if not, a linear search needs to be done instead of the binary search
+		 return Arrays.binarySearch(unitsOfThisType, unitType);
+	 }
 
 }
 
@@ -669,7 +691,8 @@ class UnitsPickList extends JPanel {
           unitsList.setModel(
                       ((UnitTypesListItem)(e.getItem())).getComboBoxModel() );
           unitsList.setSelectedIndex(0);
-          unitsList.showPopup();
+					if(unitsList.isShowing())
+						unitsList.showPopup();
         }
       });
 
@@ -716,9 +739,10 @@ class UnitsPickList extends JPanel {
     return selItem.toString();
   }
 
-  public void setSelectedUnit(String unit) {
-	  unitsList.setSelectedItem(unit);
+  public void setSelectedUnit(int unitPos, int typePos) {
+	  unitTypesList.setSelectedIndex(unitPos);
 		unitsList.setEnabled(true);
+		unitsList.setSelectedIndex(typePos);
 	  return;
   }
 

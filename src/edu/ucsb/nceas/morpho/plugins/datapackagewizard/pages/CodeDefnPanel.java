@@ -351,7 +351,7 @@ public class CodeDefnPanel extends JPanel implements WizardPageSubPanelAPI {
 				names.add(adp.getEntityName(i));
 			}
 		} else {
-			Log.debug(15, "Error - Unable to get the AbstractDataPackage in CodeImportPanel. ");
+			Log.debug(45, "Error - Unable to get the AbstractDataPackage in CodeImportPanel. ");
 		}
 
 		int cnt = names.size();

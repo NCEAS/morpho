@@ -6,8 +6,8 @@
 *    Release: @release@
 *
 *   '$Author: sambasiv $'
-*     '$Date: 2003-12-29 22:18:33 $'
-* '$Revision: 1.3 $'
+*     '$Date: 2004-02-12 22:25:58 $'
+* '$Revision: 1.4 $'
 *
 * This program is free software; you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -207,7 +207,7 @@ public class PrintFrame extends JFrame implements ActionListener, HyperlinkListe
 			Rectangle componentBounds = mComponent.getBounds(null);
 			double scaleX = format.getImageableWidth() /componentBounds.width;
 			double scaleY = format.getImageableHeight() /componentBounds.height;
-			System.out.println("Scale: " + scaleX + " " + scaleY);
+			
 			if (scaleX < 1 || scaleY < 1) {
 				if (useSymmetricScaling) {
 					if (scaleX < scaleY) {
@@ -236,7 +236,6 @@ public class PrintFrame extends JFrame implements ActionListener, HyperlinkListe
 		
 		public int print(Graphics graphics, PageFormat pageFormat, int pageIndex) throws PrinterException {
 			
-			System.out.println("in print function - ");
 			Graphics2D g2 = (Graphics2D) graphics;
 			g2.translate(pageFormat.getImageableX(), pageFormat.getImageableY());
 			Rectangle componentBounds = mComponent.getBounds(null);

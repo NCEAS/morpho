@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2004-02-09 21:08:57 $'
- * '$Revision: 1.60 $'
+ *   '$Author: sambasiv $'
+ *     '$Date: 2004-02-12 22:25:58 $'
+ * '$Revision: 1.61 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -604,8 +604,7 @@ public abstract class AbstractDataPackage extends MetadataObject
    */
   public int getEntityIndex(String entName) {
     String temp = "";
-		System.out.println("in getEntityIndex");
-    if ( (entityArray == null)) {
+		if ( (entityArray == null)) {
       return -1;
     }
 		
@@ -940,7 +939,7 @@ public abstract class AbstractDataPackage extends MetadataObject
       }
       Node[] attr = XMLUtilities.getNodeListAsNodeArray(attributeNodes);
       for (int i=0;i<attr.length;i++) {
-        attr[i] = getReferencedNode(attr[i]);
+				attr[i] = getReferencedNode(attr[i]);
       }
       return attr;
     }

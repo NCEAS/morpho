@@ -7,8 +7,8 @@
 *    Release: @release@
 *
 *   '$Author: sambasiv $'
-*     '$Date: 2004-02-06 19:46:02 $'
-* '$Revision: 1.18 $'
+*     '$Date: 2004-02-12 22:25:58 $'
+* '$Revision: 1.19 $'
 *
 * This program is free software; you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -736,8 +736,7 @@ class NominalOrdinalPanel extends JPanel implements WizardPageSubPanelAPI {
 		enumDefinitionList.deleteEmptyRows( CustomList.AND,
 		new short[] {
 			CustomList.EMPTY_STRING_TRIM,
-			CustomList.EMPTY_STRING_TRIM,
-		CustomList.IGNORE  } );
+			CustomList.EMPTY_STRING_TRIM } );
 		
 		List rowLists = enumDefinitionList.getListOfRowLists();
 		
