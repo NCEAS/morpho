@@ -5,9 +5,9 @@
  *    Authors: @tao@
  *    Release: @release@
  *
- *   '$Author: tao $'
- *     '$Date: 2002-08-21 18:35:34 $'
- * '$Revision: 1.6 $'
+ *   '$Author: brooke $'
+ *     '$Date: 2002-08-22 20:42:52 $'
+ * '$Revision: 1.7 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,6 +26,7 @@
 package edu.ucsb.nceas.morpho.query;
 
 import edu.ucsb.nceas.morpho.framework.ConfigXML;
+import edu.ucsb.nceas.morpho.framework.UIController;
 import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.util.Command;
 import edu.ucsb.nceas.morpho.util.GUIAction;
@@ -64,7 +65,9 @@ public class OpenDialogBoxCommand implements Command
   public void execute()
   {
     OpenDialogBox open = null;
-    open = new OpenDialogBox(morpho, ownerQuery);
+    open 
+        = new OpenDialogBox(UIController.getInstance().getCurrentActiveWindow(), 
+                                                            morpho, ownerQuery);
     // Set the open dialog box modal true
     open.setModal(true);
     open.setVisible(true);
