@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: sambasiv $'
- *     '$Date: 2004-02-04 02:25:50 $'
- * '$Revision: 1.3 $'
+ *   '$Author: sgarg $'
+ *     '$Date: 2004-03-04 03:49:06 $'
+ * '$Revision: 1.4 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -80,6 +80,10 @@ public class WizardPopupDialog extends JDialog {
     initMiddlePanel();
     initBottomPanel();
     initButtons();
+
+    /* onLoadAction() should be called for the wizardPage which is being loaded
+     */
+    this.wizardPage.onLoadAction();
   }
 
   /**
@@ -102,7 +106,7 @@ public class WizardPopupDialog extends JDialog {
    *  resets location and dimensions to original values
    */
   public void resetBounds() {
-		
+
 		int xcoord, ycoord;
 		if(parent == null) {
 			xcoord = ycoord = 50;
