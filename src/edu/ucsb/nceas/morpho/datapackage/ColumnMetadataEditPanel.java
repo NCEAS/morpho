@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-08-28 16:14:56 $'
- * '$Revision: 1.4 $'
+ *     '$Date: 2002-08-28 23:07:13 $'
+ * '$Revision: 1.5 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -554,19 +554,20 @@ public class ColumnMetadataEditPanel extends javax.swing.JPanel //implements jav
     }
     else if (textButton.isSelected()) {
       attribute.append("<textDomain>\n");  
-        temp = "<minimum>"+normalize(minimumTextField.getText())+"</minimum>\n";
-        attribute.append(temp);
-        temp = "<maximum>"+normalize(maximumTextField.getText())+"</maximum>\n";
-        attribute.append(temp);
-      attribute.append("</textDomain>\n");  
-    }
-    else if (numButton.isSelected()) {
-      attribute.append("<numericDomain>\n");  
         temp = "<definition>"+normalize(textDefinitionTextField.getText())+"</definition>\n";
         attribute.append(temp);
         temp = "<pattern>"+normalize(textPatternTextField.getText())+"</pattern>\n";
         attribute.append(temp);
         temp = "<source>"+normalize(textSourceTextField.getText())+"</source>\n";
+        attribute.append(temp);
+      attribute.append("</textDomain>\n");  
+    }
+    else if (numButton.isSelected()) {
+      attribute.append("<numericDomain>\n");  
+        temp = "<minimum>"+normalize(minimumTextField.getText())+"</minimum>\n";
+        attribute.append(temp);
+        temp = "<maximum>"+normalize(maximumTextField.getText())+"</maximum>\n";
+        attribute.append(temp);
         attribute.append(temp);
       attribute.append("</numericDomain>\n");  
     }
@@ -693,12 +694,104 @@ public class ColumnMetadataEditPanel extends javax.swing.JPanel //implements jav
     newAttrRoot.appendChild(temp);
 
     temp = doc.createElement("attributeLabel");
-    newText = doc.createTextNode(normalize(definitionTextArea.getText()));
+    newText = doc.createTextNode(normalize(labelTextField.getText()));
     temp.appendChild(newText);
     newAttrRoot.appendChild(temp);
     
-    // now find the 'index'th attribute and insert the new branch there
+    temp = doc.createElement("attributeDefinition");
+    newText = doc.createTextNode(normalize(definitionTextArea.getText()));
+    temp.appendChild(newText);
+    newAttrRoot.appendChild(temp);
+   
+    temp = doc.createElement("unit");
+    newText = doc.createTextNode(normalize(unitTextField.getText()));
+    temp.appendChild(newText);
+    newAttrRoot.appendChild(temp);
+
+    temp = doc.createElement("dataType");
+    newText = doc.createTextNode(normalize(typeComboBox.getSelectedItem().toString()));
+    temp.appendChild(newText);
+    newAttrRoot.appendChild(temp);
     
+    Node domainNode = doc.createElement("attributeDomain");
+    newAttrRoot.appendChild(domainNode);
+    if (enumButton.isSelected()) {
+      for (int j=0;j<pv.size();j++) {
+        String[] rec = (String[])pv.elementAt(j);
+        if (rec[0].length()>0) {
+          Node enumNode = doc.createElement("enumeratedDomain");
+          domainNode.appendChild(enumNode);
+          
+          temp = doc.createElement("code");
+          newText = doc.createTextNode(normalize(rec[0]));
+          temp.appendChild(newText);
+          enumNode.appendChild(temp);      
+
+          temp = doc.createElement("definition");
+          newText = doc.createTextNode(normalize(rec[1]));
+          temp.appendChild(newText);
+          enumNode.appendChild(temp);      
+        
+          temp = doc.createElement("source");
+          newText = doc.createTextNode(normalize(rec[2]));
+          temp.appendChild(newText);
+          enumNode.appendChild(temp);      
+        }
+      }
+    }
+    else if (textButton.isSelected()) {
+      Node textNode = doc.createElement("textDomain");
+      domainNode.appendChild(textNode);
+
+      temp = doc.createElement("definition");
+      newText = doc.createTextNode(normalize(textDefinitionTextField.getText()));
+      temp.appendChild(newText);
+      textNode.appendChild(temp);      
+
+      temp = doc.createElement("pattern");
+      newText = doc.createTextNode(normalize(textPatternTextField.getText()));
+      temp.appendChild(newText);
+      textNode.appendChild(temp);      
+
+      temp = doc.createElement("source");
+      newText = doc.createTextNode(normalize(textSourceTextField.getText()));
+      temp.appendChild(newText);
+      textNode.appendChild(temp);      
+    }
+    else if (numButton.isSelected()) {
+      Node numericNode = doc.createElement("numericDomain");
+      domainNode.appendChild(numericNode);
+      
+      temp = doc.createElement("minimum");
+      newText = doc.createTextNode(normalize(minimumTextField.getText()));
+      temp.appendChild(newText);
+      numericNode.appendChild(temp);      
+
+      temp = doc.createElement("maximum");
+      newText = doc.createTextNode(normalize(maximumTextField.getText()));
+      temp.appendChild(newText);
+      numericNode.appendChild(temp);      
+      
+    }
+
+    temp = doc.createElement("missingValueCode");
+    newText = doc.createTextNode(normalize(missingValueTextField.getText()));
+    temp.appendChild(newText);
+    newAttrRoot.appendChild(temp);
+    
+    temp = doc.createElement("precision");
+    newText = doc.createTextNode(normalize(precisionTextField.getText()));
+    temp.appendChild(newText);
+    newAttrRoot.appendChild(temp);
+    
+     // --------------------------------
+    // now find the 'index'th attribute and insert the new branch there
+    NodeList nl = doc.getElementsByTagName("attribute");
+    // nl should not contain all the 'Attribute' nodes
+    int cnt = index;
+    if (cnt > nl.getLength()) cnt=nl.getLength();
+    Node nextNode = nl.item(cnt);
+    root.insertBefore(newAttrRoot, nextNode);
   }
     
 }
