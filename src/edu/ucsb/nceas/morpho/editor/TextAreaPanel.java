@@ -1,5 +1,5 @@
 /**
- *       Name: LockedPanel.java
+ *       Name: TextAreaPanel.java
  *    Purpose: Example dynamic editor class for XMLPanel
  *  Copyright: 2000 Regents of the University of California and the
  *             National Center for Ecological Analysis and Synthesis
@@ -8,7 +8,7 @@
  *
  *   '$Author: higgins $'
  *     '$Date: 2001-06-14 22:09:43 $'
- * '$Revision: 1.2 $'
+ * '$Revision: 1.1 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,12 +31,12 @@ import javax.swing.*;
 import javax.swing.tree.*;
 import java.util.*;
 
-public class LockedPanel extends JPanel
+public class TextAreaPanel extends JPanel
 {  
     
   DefaultMutableTreeNode nd = null;  
     
-  public LockedPanel(DefaultMutableTreeNode node) { 
+  public TextAreaPanel(DefaultMutableTreeNode node) { 
         nd = node;
         JPanel jp = this;
         jp.setLayout(new BoxLayout(jp,BoxLayout.Y_AXIS));
@@ -45,17 +45,21 @@ public class LockedPanel extends JPanel
         jp1.setLayout(new BoxLayout(jp1,BoxLayout.Y_AXIS));
         jp1.setAlignmentX(Component.LEFT_ALIGNMENT);
         JPanel jp2 = new JPanel();
-        jp2.setLayout(new BoxLayout(jp2,BoxLayout.Y_AXIS));
+        jp2.setLayout(new BorderLayout(0,0));
         jp2.setAlignmentX(Component.LEFT_ALIGNMENT);
         jp1.setMaximumSize(new Dimension(600,30));
-        jp2.setMaximumSize(new Dimension(600,30));
+        jp2.setMaximumSize(new Dimension(620,200));
+        jp2.setMinimumSize(new Dimension(600,200));
+        jp2.setPreferredSize(new Dimension(600,200));
+        JScrollPane jsp = new JScrollPane();
+        jp2.add(BorderLayout.CENTER,jsp);
         jp.add(jp1);
         jp.add(jp2);
-		NodeInfo info = (NodeInfo)(nd.getUserObject());
+		    NodeInfo info = (NodeInfo)(nd.getUserObject());
         JLabel jl = new JLabel(info.name);
         jl.setForeground(java.awt.Color.black);
-		jl.setFont(new Font("Dialog", Font.PLAIN, 12));
-		jl.setVisible(true);
+		    jl.setFont(new Font("Dialog", Font.PLAIN, 12));
+		    jl.setVisible(true);
         jp1.add(jl);
 
 
@@ -71,22 +75,53 @@ public class LockedPanel extends JPanel
         String txt ="";
         while(nodes.hasMoreElements()) {
             DefaultMutableTreeNode nd1 = (DefaultMutableTreeNode)(nodes.nextElement());
-		    NodeInfo info1 = (NodeInfo)(nd1.getUserObject());
-		    if ((info1.name).equals("#PCDATA")) {
-		        txt = info1.getPCValue();
+		        NodeInfo info1 = (NodeInfo)(nd1.getUserObject());
+		        if ((info1.name).equals("#PCDATA")) {
+		          txt = info1.getPCValue();
             }
             if (txt.length()>0) {
-                JTextField jtf1 = new JTextField();
-                jtf1.setEditable(false);
-                jtf1.setMaximumSize(new Dimension(600,30));
-                jtf1.setPreferredSize(new Dimension(600,30));
-                jp2.add(jtf1);
+                JTextArea jta = new JTextArea();
+                jta.setLineWrap(true);
+                jta.setWrapStyleWord(true);
+                jsp.getViewport().add(jta);
                 if (txt.equals("text")) { txt = " "; }
-                jtf1.setText(txt);
+                jta.setText(txt);
             }
         }
     }
     
-    
+class dfhAction implements java.awt.event.ActionListener
+{
+		public void actionPerformed(java.awt.event.ActionEvent event)
+		{
+			Object object = event.getSource();
+			if (object instanceof JTextField)
+				{
+		            NodeInfo info = (NodeInfo)(nd.getUserObject());
+                    info.setPCValue(((JTextField)object).getText());
+				}
+		}
+}
+
+	class dfhFocus extends java.awt.event.FocusAdapter
+	{
+		public void focusLost(java.awt.event.FocusEvent event)
+		{
+			Object object = event.getSource();
+			if (object instanceof JTextField)
+				{
+		        NodeInfo info = (NodeInfo)(nd.getUserObject());
+                info.setPCValue(((JTextField)object).getText());
+				}
+		}
+		
+		public void focusGained(java.awt.event.FocusEvent event)
+		{
+			Object object = event.getSource();
+			if (object instanceof JTextField)
+				{
+				}
+		}
+	}
     
 }
