@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-02-08 22:42:00 $'
- * '$Revision: 1.86 $'
+ *     '$Date: 2002-02-08 23:13:34 $'
+ * '$Revision: 1.87 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1715,6 +1715,9 @@ private Vector sameParent(Vector list) {
             NodeInfo inputni = (NodeInfo)input.getUserObject();
             NodeInfo templateni = (NodeInfo)template.getUserObject();
             inputni.setCardinality(templateni.getCardinality());
+            if (templateni.getCardinality().equals("NOT SELECTED")) {
+                inputni.setCardinality("SELECTED");      
+            }
             if (templateni.getHelp()!=null) {
               inputni.setHelp(templateni.getHelp());
             }
