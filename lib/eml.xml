@@ -234,7 +234,7 @@
                 </references>
             </CHOICE75>
           </distribution>
-          <coverage scope="document" system="" id="" minOccurs="0" maxOccurs="1" help="This field si a container for the spatial, temporal and taxonomic coverages that apply to various resources, often dataset resources. Please see the individual descriptions of the sub fields for more detail.">
+          <coverage scope="document" system="" id="" minOccurs="0" maxOccurs="1" help="This field is a container for the spatial, temporal and taxonomic coverages that apply to various resources, often dataset resources. Please see the individual descriptions of the sub fields for more detail.">
             <CHOICE85 minOccurs="1" maxOccurs="1" help="">
               <CHOICE86 minOccurs="1" maxOccurs="unbounded" help="">
                 <geographicCoverage scope="document" system="" id="" minOccurs="1" maxOccurs="1" help="Geographic Coverage is a container for spatial information about a a project, a resource, or an entity within a resource.">
@@ -265,7 +265,7 @@
                       </references>
                   </CHOICE87>
                 </geographicCoverage>
-                <temporalCoverage scope="document" system="" id="" minOccurs="1" maxOccurs="1" help="This field specifies temporal coverage, and allows coverages to be a single point in time, multiple points in time, or a range of dates. Dates can be expressed in tems of both calander dates and geologic dating systems.">
+                <temporalCoverage editor="edu.ucsb.nceas.morpho.editor.TempCovPanel" scope="document" system="" id="" minOccurs="1" maxOccurs="1" help="This field specifies temporal coverage, and allows coverages to be a single point in time, multiple points in time, or a range of dates. Dates can be expressed in tems of both calander dates and geologic dating systems.">
                   <CHOICE90 minOccurs="1" maxOccurs="1" help="">
                     <CHOICE91 minOccurs="1" maxOccurs="1" help="">
                       <singleDateTime minOccurs="1" maxOccurs="unbounded" help="The SingleDateTimeType field is intended to describe a single date and time for an event. There is a choice between two options: a calendar date with a time, or a geologic age.">
