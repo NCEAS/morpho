@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2002-09-13 18:20:00 $'
- * '$Revision: 1.6 $'
+ *     '$Date: 2002-09-13 20:08:47 $'
+ * '$Revision: 1.7 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -223,13 +223,13 @@ public class SynchronizeDialog extends JDialog
     
      // Create icon box
     Box iconBox = Box.createHorizontalBox();
-    JLabel localLabel = new JLabel("Local", localIcon, SwingConstants.TRAILING);
+    JLabel localLabel = new JLabel("Local", localIcon, SwingConstants.RIGHT);
     //localLabel.setText("Local");
-    localLabel.setVerticalTextPosition(SwingConstants.BOTTOM);
+    localLabel.setHorizontalTextPosition(SwingConstants.RIGHT);
     JLabel networkLabel = new JLabel("Network", networkIcon, 
-                                                      SwingConstants.TRAILING );
+                                                      SwingConstants.RIGHT );
     //networkLabel.setText("Network");
-    networkLabel.setVerticalTextPosition(SwingConstants.BOTTOM);
+    networkLabel.setHorizontalTextPosition(SwingConstants.RIGHT);
     JLabel arrowLabel = new JLabel(arrowIcon);
     
     iconBox.add(Box.createHorizontalGlue());
