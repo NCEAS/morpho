@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2004-03-29 17:44:20 $'
- * '$Revision: 1.161 $'
+ *     '$Date: 2004-03-29 18:15:18 $'
+ * '$Revision: 1.162 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -2926,15 +2926,17 @@ Log.debug(20, xmlout);
   }
   
   /**
-   * method carried out when 'Revert' button is clicked
-   * This method shold revert to the DOM intially parsed when
-   * this frame was opened
+   * method carried out when 'Cancel' button is clicked
    *
-   * @param event  Revert button clicked event
+   * @param event  Cancel button clicked event
    */
   void CancelButton_actionPerformed(java.awt.event.ActionEvent event)
   { 
-    initDoc(morpho, docnode, id, location);
+    // hide the Frame
+    this.setVisible(false);
+    // free the system resources
+    this.dispose();
+    System.gc();
   }
   
   /**
