@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2002-04-10 00:06:25 $'
- * '$Revision: 1.6.6.1 $'
+ *     '$Date: 2002-05-06 16:20:14 $'
+ * '$Revision: 1.6.6.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,6 +27,7 @@
  */
 package edu.ucsb.nceas.morpho.datapackage.wizard;
 
+import edu.ucsb.nceas.morpho.framework.ClientFramework;
 import java.sql.*;
 import java.util.Stack;
 import java.util.Vector;
@@ -49,6 +50,8 @@ import org.xml.sax.helpers.AttributesImpl;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.XMLReaderFactory;
 import org.xml.sax.InputSource;
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
 
 /** 
  * A Class implementing callback bethods for the SAX parser to
@@ -105,6 +108,9 @@ public class PackageWizardShellParser extends DefaultHandler
     try 
     {
       // Get an instance of the parser
+      //SAXParserFactory spfactory = SAXParserFactory.newInstance();
+      //SAXParser saxp = spfactory.newSAXParser();
+      //parser = saxp.getXMLReader();
       parser = XMLReaderFactory.createXMLReader(parserName);
       // Set the ContentHandler to this instance
       parser.setContentHandler(this);
@@ -113,8 +119,9 @@ public class PackageWizardShellParser extends DefaultHandler
     } 
     catch (Exception e) 
     {
-       System.err.println("Error in PackageWizardParser.initializeParser " + 
-                           e.toString());
+       ClientFramework.debug(4,
+               "Error in PackageWizardShellParser.initializeParser\n" + 
+               e.toString());
        e.printStackTrace();
     }
     return parser;

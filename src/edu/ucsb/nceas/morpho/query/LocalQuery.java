@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2002-04-10 00:06:25 $'
- * '$Revision: 1.52.2.1 $'
+ *     '$Date: 2002-05-06 16:20:14 $'
+ * '$Revision: 1.52.2.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -202,7 +202,9 @@ public class LocalQuery
     Vector package_IDs = new Vector();
     Node root;
     long starttime, curtime, fm;
+    ClientFramework.debug(10, "(3.0) Creating DOM parser...");
     DOMParser parser = new DOMParser();
+    ClientFramework.debug(10, "(3.1) DOM parser created...");
     // first set up the catalog system for handling locations of DTDs
     CatalogEntityResolver cer = new CatalogEntityResolver();
     String catalogPath = //config.getConfigDirectory() + File.separator +
@@ -259,7 +261,9 @@ public class LocalQuery
             continue;
           }
           try {
+            ClientFramework.debug(10, "(3.2) Starting parse...");
             parser.parse(in);
+            ClientFramework.debug(10, "(3.3) Ended parse...");
           } catch(Exception e1) {
             // Either this isn't an XML doc, or its broken, so skip it
             ClientFramework.debug(20,"Parsing error: " + filename);

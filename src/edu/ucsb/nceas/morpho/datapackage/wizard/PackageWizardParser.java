@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2002-05-01 17:04:01 $'
- * '$Revision: 1.6.4.1 $'
+ *     '$Date: 2002-05-06 16:20:14 $'
+ * '$Revision: 1.6.4.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,6 +27,7 @@
  */
 package edu.ucsb.nceas.morpho.datapackage.wizard;
 
+import edu.ucsb.nceas.morpho.framework.ClientFramework;
 import java.sql.*;
 import java.util.Stack;
 import java.util.Vector;
@@ -112,8 +113,9 @@ public class PackageWizardParser extends DefaultHandler
     } 
     catch (Exception e) 
     {
-       System.err.println("Error in PackageWizardParser.initializeParser " + 
-                           e.toString());
+       ClientFramework.debug(4, 
+               "Error in PackageWizardParser.initializeParser\n" + 
+               e.toString());
        e.printStackTrace();
     }
     return parser;

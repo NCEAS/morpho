@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2002-04-10 00:06:25 $'
- * '$Revision: 1.16.4.1 $'
+ *     '$Date: 2002-05-06 16:20:14 $'
+ * '$Revision: 1.16.4.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -55,6 +55,8 @@ import org.xml.sax.SAXParseException;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.XMLReaderFactory;
 import org.xml.sax.helpers.DefaultHandler;
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
 
 /**
  * A Class that represents a structured query, and can be 
@@ -355,6 +357,9 @@ public class Query extends DefaultHandler {
     try {
 
       // Get an instance of the parser
+      //SAXParserFactory spfactory = SAXParserFactory.newInstance();
+      //SAXParser saxp = spfactory.newSAXParser();
+      //parser = saxp.getXMLReader();
       parser = XMLReaderFactory.createXMLReader(parserName);
 
       // Set the ContentHandler to this instance
@@ -760,6 +765,7 @@ public class Query extends DefaultHandler {
   /** Send the query to metacat, get back the XML resultset */
   private InputStream queryMetacat()
   {
+    framework.debug(10, "(2.1) Executing metacat query...");
     InputStream queryResult = null;
 
     Properties prop = new Properties();
@@ -776,6 +782,7 @@ public class Query extends DefaultHandler {
       framework.debug(1, w.getMessage());
     }
 
+    framework.debug(10, "(2.4) Done Executing metacat query...");
     return queryResult;
   }
 
@@ -793,16 +800,20 @@ public class Query extends DefaultHandler {
 
     // TODO: Run these queries in parallel threads
 
+    framework.debug(10, "(1) Executing result set...");
     // if appropriate, query metacat
     ResultSet metacatResults = null;
     if (searchMetacat) {
+      framework.debug(10, "(2) Executing metacat query...");
       metacatResults = new HeadResultSet(this, "metacat", 
                                      queryMetacat(), framework);
     }
 
+    framework.debug(10, "(2.5) Executing result set...");
     // if appropriate, query locally
     ResultSet localResults = null;
     if (searchLocal) {
+      framework.debug(10, "(3) Executing local query...");
       LocalQuery lq = new LocalQuery(this, framework);
       localResults = lq.execute();
     }

@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2002-04-08 03:57:19 $'
- * '$Revision: 1.26 $'
+ *   '$Author: jones $'
+ *     '$Date: 2002-05-06 16:20:14 $'
+ * '$Revision: 1.26.2.1 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -52,6 +52,8 @@ import org.xml.sax.SAXParseException;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.XMLReaderFactory;
 import org.xml.sax.helpers.DefaultHandler;
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
 
 /**
  * A ResultSet encapsulates the list of results returned from either a
@@ -132,6 +134,7 @@ public class ResultSet extends AbstractTableModel implements ContentHandler
   public ResultSet(Query query, String source, InputStream resultsXMLStream,
                    ClientFramework cf)
   {
+    framework.debug(10, "(2.41) Creating result set ...");
     this.savedQuery = query;
     this.framework = cf;
 
@@ -182,6 +185,7 @@ public class ResultSet extends AbstractTableModel implements ContentHandler
     /*headers[cnt+4] = "Document Name";*/
     /*headers[cnt+5] = "Document Type";*/
 
+    framework.debug(10, "(2.42) Creating result set ...");
     // Parse the incoming XML stream and extract the data
     String parserName = "org.apache.xerces.parsers.SAXParser";
     XMLReader parser = null;
@@ -189,12 +193,20 @@ public class ResultSet extends AbstractTableModel implements ContentHandler
     // Set up the SAX document handlers for parsing
     try {
       // Get an instance of the parser
-      parser = XMLReaderFactory.createXMLReader(parserName);
+      SAXParserFactory spfactory = SAXParserFactory.newInstance();
+      SAXParser saxp = spfactory.newSAXParser();
+      parser = saxp.getXMLReader();
+      //parser = XMLReaderFactory.createXMLReader(parserName);
+      framework.debug(10, "(2.43) Creating result set ...");
       // Set the ContentHandler to this instance
       parser.setContentHandler(this);
       parser.parse(new InputSource(resultsXMLStream));
+      framework.debug(10, "(2.44) Creating result set ...");
     } catch (Exception e) {
-      framework.debug(6, e.toString());
+      framework.debug(10, "(2.431) Exception creating result set ...");
+      framework.debug(6, "(2.432) " + e.toString());
+      framework.debug(10, "(2.433) Exception is: " + e.getClass().getName());
+      e.printStackTrace();
     }
   }
 
