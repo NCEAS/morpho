@@ -7,8 +7,8 @@
   *  For Details: http://www.nceas.ucsb.edu/
   *
   *   '$Author: brooke $'
-  *     '$Date: 2002-10-24 16:34:20 $'
-  * '$Revision: 1.4 $'
+  *     '$Date: 2002-10-24 18:45:12 $'
+  * '$Revision: 1.5 $'
   * 
   * This program is free software; you can redistribute it and/or modify
   * it under the terms of the GNU General Public License as published by
@@ -223,11 +223,24 @@
   <xsl:template name="renderTriple">
     <tr><td width="{$firstColWidth}" class="{$firstColStyle}">
       <xsl:text>&#160;</xsl:text></td><td width="{$secondColWidth}" class="{$secondColStyle}">
-      <a><xsl:attribute name="href"><xsl:value-of select="$tripleURI" /><xsl:value-of select="./subject"/><xsl:value-of select="$href_path_extension" /></xsl:attribute><xsl:value-of select="./subject"/></a>
-         <xsl:text> &#160;&#160;</xsl:text>
-         <xsl:value-of select="./relationship"/>
-         <xsl:text> &#160;&#160;</xsl:text>
-      <a><xsl:attribute name="href"><xsl:value-of select="$tripleURI" /><xsl:value-of select="./object"/></xsl:attribute><xsl:value-of select="./object"/></a>
+      <a><xsl:attribute name="href"><xsl:value-of select="$tripleURI" />
+          <xsl:value-of select="./subject"/><xsl:value-of select="$href_path_extension" />
+          </xsl:attribute><xsl:value-of select="./subject"/>
+      </a>
+      <xsl:text> &#160;&#160;</xsl:text>
+      <xsl:value-of select="./relationship"/>
+      <xsl:text> &#160;&#160;</xsl:text>
+      <a><xsl:attribute name="href"><xsl:value-of select="$tripleURI" />
+          <xsl:choose>
+            <xsl:when test="normalize-space($package_index_name)!='' and normalize-space($package_id)!='' and normalize-space(./object)=normalize-space($package_id)">
+                <xsl:value-of select="normalize-space($package_index_name)"/>
+            </xsl:when>
+            <xsl:otherwise>
+                <xsl:value-of select="./object"/>
+            </xsl:otherwise>
+          </xsl:choose>
+          <xsl:value-of select="$href_path_extension" /></xsl:attribute><xsl:value-of select="./object"/>
+      </a>
     </td></tr>
     </xsl:template>
   

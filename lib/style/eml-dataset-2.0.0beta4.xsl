@@ -7,8 +7,8 @@
   *  For Details: http://www.nceas.ucsb.edu/
   *
   *   '$Author: brooke $'
-  *     '$Date: 2002-10-24 16:34:20 $'
-  * '$Revision: 1.4 $'
+  *     '$Date: 2002-10-24 18:45:12 $'
+  * '$Revision: 1.5 $'
   * 
   * This program is free software; you can redistribute it and/or modify
   * it under the terms of the GNU General Public License as published by
@@ -35,15 +35,15 @@
 
   <xsl:param name="qformat">export</xsl:param>
 
-  <xsl:param name="stylePath"></xsl:param>
+  <xsl:param name="stylePath">.</xsl:param>
 
   <xsl:param name="tripleURI"></xsl:param>
  
-  <xsl:param name="href_path_extension">.TEST_EXTENSION</xsl:param>
+  <xsl:param name="href_path_extension"></xsl:param>
 
-  <xsl:param name="package_id">TEST_PKG_ID</xsl:param>
+  <xsl:param name="package_id"></xsl:param>
 
-  <xsl:param name="package_index_name">TEST_PKG_NAME</xsl:param>
+  <xsl:param name="package_index_name"></xsl:param>
 
   <xsl:template match="/">
     <html>
@@ -72,11 +72,24 @@
         <ul>
           <xsl:for-each select="//triple">
             <li>
-              <a><xsl:attribute name="href"><xsl:value-of select="$tripleURI" /><xsl:value-of select="./subject"/><xsl:value-of select="$href_path_extension" /></xsl:attribute><xsl:value-of select="./subject"/></a>
-                 <xsl:text> &#160;&#160;</xsl:text>
-                 <xsl:value-of select="./relationship"/>
-                 <xsl:text> &#160;&#160;</xsl:text>
-              <a><xsl:attribute name="href"><xsl:value-of select="$tripleURI" /><xsl:value-of select="./object"/></xsl:attribute><xsl:value-of select="./object"/></a>
+              <a><xsl:attribute name="href"><xsl:value-of select="$tripleURI" />
+                  <xsl:value-of select="./subject"/><xsl:value-of select="$href_path_extension" />
+                  </xsl:attribute><xsl:value-of select="./subject"/>
+              </a>
+              <xsl:text> &#160;&#160;</xsl:text>
+              <xsl:value-of select="./relationship"/>
+              <xsl:text> &#160;&#160;</xsl:text>
+              <a><xsl:attribute name="href"><xsl:value-of select="$tripleURI" />
+                  <xsl:choose>
+                    <xsl:when test="normalize-space($package_index_name)!='' and normalize-space($package_id)!='' and normalize-space(./object)=normalize-space($package_id)">
+                        <xsl:value-of select="normalize-space($package_index_name)"/>
+                    </xsl:when>
+                    <xsl:otherwise>
+                        <xsl:value-of select="./object"/>
+                    </xsl:otherwise>
+                  </xsl:choose>
+                  <xsl:value-of select="$href_path_extension" /></xsl:attribute><xsl:value-of select="./object"/>
+              </a>
             </li>
           </xsl:for-each>
         </ul>

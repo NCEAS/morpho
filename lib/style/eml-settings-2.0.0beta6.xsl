@@ -7,8 +7,8 @@
   *  For Details: http://www.nceas.ucsb.edu/
   *
   *   '$Author: brooke $'
-  *     '$Date: 2002-10-24 16:34:20 $'
-  * '$Revision: 1.3 $'
+  *     '$Date: 2002-10-24 18:45:12 $'
+  * '$Revision: 1.4 $'
   * 
   * This program is free software; you can redistribute it and/or modify
   * it under the terms of the GNU General Public License as published by
@@ -153,13 +153,13 @@
   <xsl:param name="subHeaderStyle" select="'tablehead'"/>
   
 <!--    the width for the first column (but see note above) -->
-  <xsl:param name="firstColWidth" select="'15%'"/>
+  <xsl:param name="firstColWidth" select="'18%'"/>
   
 <!-- the style for the first column -->
   <xsl:param name="firstColStyle" select="'highlight'"/>
   
 <!--    the width for the second column (but see note above) -->
-  <xsl:param name="secondColWidth" select="'85%'"/>
+  <xsl:param name="secondColWidth" select="'82%'"/>
   
 <!-- the style for the second column -->
   <xsl:param name="secondColStyle" select="''"/>  
