@@ -6,9 +6,9 @@
 *             National Center for Ecological Analysis and Synthesis
 *    Release: @release@
 *
-*   '$Author: sambasiv $'
-*     '$Date: 2004-04-29 00:08:41 $'
-* '$Revision: 1.29 $'
+*   '$Author: cjones $'
+*     '$Date: 2004-06-23 21:14:42 $'
+* '$Revision: 1.30 $'
 *
 * This program is free software; you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -94,12 +94,24 @@ public class AttributePage extends AbstractUIPage {
 	private final String CONFIG_KEY_STYLESHEET_LOCATION = "stylesheetLocation";
 	private final String CONFIG_KEY_MCONFJAR_LOC   = "morphoConfigJarLocation";
 	
+        // optional xml attributes to the <attribute> tag
+        // should be changed to widgets in future revisions
+	private String attribIDField = "";
+	private String attribScopeField = "";
+	private String attribSystemField = "";
+
+        //required name and definition, optional label and storage type
 	private JTextField attribNameField;
 	private JTextField attribLabelField;
+	private JTextArea attribDefinitionField;
+	private JTextField storageTypeField;
+	private String storageTypeTypeSystemField = "";
 	
+        // ID, scope, and system are unused, so no labels here
 	private JLabel attribNameLabel;
 	private JLabel attribLabelLabel;
 	private JLabel attribDefinitionLabel;
+        // storage type is unused, so no label here
 	private JLabel measScaleLabel;
 	private JPanel currentPanel;
 	
@@ -119,7 +131,6 @@ public class AttributePage extends AbstractUIPage {
 	
 	private String xPathRoot = AttributeSettings.Attribute_xPath;
 	
-	private JTextArea attribDefinitionField;
 	
 	final String ATTRIB_NAME_HELP
 	= WizardSettings.HTML_NO_TABLE_OPENING
@@ -200,7 +211,6 @@ public class AttributePage extends AbstractUIPage {
 	
 	private final Dimension HELP_DIALOG_SIZE = new Dimension(400, 500);
 	
-	private String storageType = "";
 	
 	public AttributePage() {
 		
@@ -265,6 +275,7 @@ public class AttributePage extends AbstractUIPage {
 		attribNameLabel = WidgetFactory.makeLabel("Name:", true, WizardSettings.WIZARD_CONTENT_LABEL_DIMS);
 		attribNamePanel.add(attribNameLabel);
 		attribNameField = WidgetFactory.makeOneLineTextField();
+		storageTypeField = WidgetFactory.makeOneLineTextField();
 		attribNamePanel.add(attribNameField);
 		JLabel attribNameHelpLabel = getLabel(this.ATTRIB_NAME_HELP);
 		namePanel.add(attribNamePanel);
@@ -711,6 +722,24 @@ public class AttributePage extends AbstractUIPage {
 		
 		returnMap.clear();
 		
+                // handle <attribute id="" scope="" system="" >
+		String attribID = attribIDField.trim();
+		if (attribID!=null && !attribID.equals("")) {
+		  returnMap.put(xPath + "/@id", attribID);
+		}
+		
+		String attribScope = attribScopeField.trim();
+		if (attribScope!=null && !attribScope.equals("")) {
+		  returnMap.put(xPath + "/@scope", attribScope);
+		}
+		
+		String attribSystem = attribSystemField.trim();
+		if (attribSystem!=null && !attribSystem.equals("")) {
+		  returnMap.put(xPath + "/@system", attribSystem);
+		}
+
+		
+                // then handle the elements
 		String attribName = attribNameField.getText().trim();
 		if (attribName!=null && !attribName.equals("")) {
 			returnMap.put(xPath + "/attributeName", attribName);
@@ -726,8 +755,14 @@ public class AttributePage extends AbstractUIPage {
 			returnMap.put(xPath + "/attributeDefinition", attribDef);
 		}
 		
+		String storageType = storageTypeField.getText().trim();
 		if(storageType !=null && !storageType.equals("")) {
 			returnMap.put(xPath + "/storageType", storageType);
+		}
+		
+		String storageTypeTypeSystem = storageTypeTypeSystemField.trim();
+		if (storageTypeTypeSystem!=null && !storageTypeTypeSystem.equals("")) {
+		  returnMap.put(xPath + "/storageType/@typeSystem", storageTypeTypeSystem);
 		}
 		
 		if (measurementScale!=null && !measurementScale.equals("")) {
@@ -886,13 +921,27 @@ public class AttributePage extends AbstractUIPage {
 		
 		if (_xPathRoot!=null && _xPathRoot.trim().length() > 0) this.xPathRoot = _xPathRoot;
 		
+                // future enhancements to this AttributePage dialog should map
+                // the following 3 xml attributes to appropriate widgets
+		String id = (String)map.get(xPathRoot + "/@id");
+                if ( id != null ) {
+                attribIDField = id.toString();
 		map.remove(xPathRoot + "/@id");
+                }
+		String scope = (String)map.get(xPathRoot + "/@scope");
+                if ( scope != null ) {
+                attribScopeField = scope.toString();
 		map.remove(xPathRoot + "/@scope");
+                }
+		String system = (String)map.get(xPathRoot + "/@system");
+                if ( system != null ) {
+                attribSystemField = system.toString();
+		map.remove(xPathRoot + "/@system");
+                }
 		
 		String name = (String)map.get(xPathRoot + "/attributeName[1]");
 		if(name != null)
 			map = stripIndexOneFromMapKeys(map);
-		
 		String mScale = findMeasurementScale(map);
 		
 		//String xPathRoot = AttributeSettings.Attribute_xPath;
@@ -913,61 +962,72 @@ public class AttributePage extends AbstractUIPage {
 			map.remove(xPathRoot + "/attributeDefinition");
 		}
 		
-		storageType = (String)map.get(xPathRoot + "/storageType");
-		if(storageType == null) storageType = "";
-		else      map.remove(xPathRoot + "/storageType");
+                // in future versions of this Attribute Page dialog, storageType
+                // should be handled with an appropriate widget.
+		String storageType = (String)map.get(xPathRoot + "/storageType");
+		if(storageType != null) {
+                  map.remove(xPathRoot + "/storageType");
+		}
 		
+                // in future versions of this Attribute Page dialog, the
+                // typeSystem attribute to the storageType element
+                // should be handled with an appropriate widget.
+		String storageTypeTypeSystem = (String)map.get(xPathRoot + "/storageType/@typeSystem");
+		if(storageTypeTypeSystem != null) {
+                  storageTypeTypeSystemField = storageTypeTypeSystem.toString();
+                  map.remove(xPathRoot + "/storageType/@typeSystem");
+		}
+
 		if(mScale == null || mScale.equals("")) return false;
 		
 		measurementScale = mScale;
 		
+                //depending on the type of measurement scale, populate the
+                //appropriate panel with the data, ensuring that each panel can
+                //handle each map member passed to it
 		int componentNum = -1;
 		if(measurementScale.equalsIgnoreCase("nominal")) {
 			setMeasurementScaleUI(nominalPanel);
 			setMeasurementScale(measScaleElemNames[0]);
 			componentNum = 0;
+	                ((NominalOrdinalPanel)nominalPanel).setPanelData(
+	                xPathRoot + "/measurementScale/nominal/nonNumericDomain", map);
 		}
 		else if(measurementScale.equalsIgnoreCase("ordinal")) {
 			setMeasurementScaleUI(ordinalPanel);
 			setMeasurementScale(measScaleElemNames[1]);
 			componentNum = 1;
+	                ((NominalOrdinalPanel)ordinalPanel).setPanelData(
+	                xPathRoot + "/measurementScale/ordinal/nonNumericDomain", map);
 		}
 		if(measurementScale.equalsIgnoreCase("interval")) {
 			setMeasurementScaleUI(intervalPanel);
 			setMeasurementScale(measScaleElemNames[2]);
 			componentNum = 2;
+	                ((IntervalRatioPanel)intervalPanel).setPanelData(
+	                xPathRoot + "/measurementScale/interval", map);
 		}
 		if(measurementScale.equalsIgnoreCase("ratio")) {
 			setMeasurementScaleUI(ratioPanel);
 			setMeasurementScale(measScaleElemNames[3]);
 			componentNum = 3;
+	                ((IntervalRatioPanel)ratioPanel).setPanelData(
+	                xPathRoot + "/measurementScale/ratio", map);
 		}
 		if(measurementScale.equalsIgnoreCase("datetime")) {
 			setMeasurementScaleUI(dateTimePanel);
 			setMeasurementScale(measScaleElemNames[4]);
 			componentNum = 4;;
+	                ((DateTimePanel)dateTimePanel).setPanelData(
+	                xPathRoot + "/measurementScale/datetime", map);
 		}
+
 		//selects the appropriate radio button
-		
 		if (componentNum != -1) {
-			
 			Container c = (Container)(radioPanel.getComponent(1));
 			JRadioButton jrb = (JRadioButton)c.getComponent(componentNum);
 			jrb.setSelected(true);
-			
 		}
-		
-		//ensure sub-panels can handle everything in their respective maps...
-		((NominalOrdinalPanel)nominalPanel).setPanelData(
-		xPathRoot + "/measurementScale/nominal/nonNumericDomain", map);
-		((NominalOrdinalPanel)ordinalPanel).setPanelData(
-		xPathRoot + "/measurementScale/ordinal/nonNumericDomain", map);
-		((IntervalRatioPanel)intervalPanel).setPanelData(
-		xPathRoot + "/measurementScale/interval", map);
-		((IntervalRatioPanel)ratioPanel).setPanelData(
-		xPathRoot + "/measurementScale/ratio", map);
-		((DateTimePanel)dateTimePanel).setPanelData(
-		xPathRoot + "/measurementScale/datetime", map);
 		
 		refreshUI();
 		
