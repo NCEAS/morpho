@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-07-26 17:32:00 $'
- * '$Revision: 1.16 $'
+ *     '$Date: 2001-07-30 23:19:31 $'
+ * '$Revision: 1.17 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -267,7 +267,7 @@ public class EntityGUI extends javax.swing.JFrame
     });
     attributeList.setPreferredSize(new Dimension(180, 1000)); 
     //attributeList.setMaximumSize(new Dimension(180, 1000));
-    attributeList.setVisibleRowCount(17);
+    attributeList.setVisibleRowCount(14);
     attributeList.setBorder(BorderFactory.createCompoundBorder(
                             BorderFactory.createLineBorder(Color.black),
                             BorderFactory.createLoweredBevelBorder()));
