@@ -1,53 +1,140 @@
 <?xml version="1.0"?>
-<project name="dtclient" default="buildAll" basedir=".">
+<!-- 
+  * build.xml
+  *
+  *      Authors: Matt Jones
+  *    Copyright: 2000 Regents of the University of California and the
+  *               National Center for Ecological Analysis and Synthesis
+  *  For Details: http://www.nceas.ucsb.edu/
+  *    File Info: '$Id: build.xml,v 1.6 2000-08-19 00:19:11 jones Exp $'
+  *
+  *  Build file for the Ant cross-platform build system for metacat
+  *  See http://jakarta.apache.org for details on Ant
+  *
+  * usage: ant [compile|jar|install|jdoc]
+--> 
+<project name="metacat" default="jar" basedir=".">
    <target name="init">
-      <property name="classesdir" value="./classes" />
+      <property name="installdir" value="/opt/tomcat/webapps/metadata" />
+      <property name="name" value="dmanclient"/>
+      <property name="Name" value="Data Management Client"/>
+      <property name="release" value="0.00"/>
+
+      <filter token="release" value="${release}"/>
+
+      <property name="srcdir" value="./src" />
       <property name="libdir" value="./lib" />
-      <property name="dtclient.home" value="edu/ucsb/nceas/dtclient" />
-      <property name="metaedit.home" value="edu/ucsb/nceas/metaedit" />
-      <property name="querybean.home" value="edu/ucsb/nceas/querybean" />
-      <property name="src.dtclient.home" value="src/edu/ucsb/nceas/dtclient" />
-      <property name="src.metaedit.home" value="src/edu/ucsb/nceas/metaedit" />
-      <property name="src.querybean.home" value="src/edu/ucsb/nceas/querybean" />
-      <property name="src.arbortext.home"  value="src/com/arbortext/catalog"  />
-      <property name="src.sym.home.awt"  value="src/com/symantec/itools/awt"  />
-      <property name="src.sym.home.swing"  value="src/com/symantec/itools/javax/swing"  />
-      <mkdir dir="classes" />
+
+      <property name="build.dir" value="./build"/>
+      <property name="build.src" value="${build.dir}/src"/>
+      <property name="build.dest" value="${build.dir}/classes"/>
+      <property name="build.docs" value="${build.dir}/docs/html"/>
+      <property name="build.samples" value="${build.dir}/samples"/>
+      <property name="build.tests" value="${build.dir}/tests"/>
+      <property name="build.data" value="${build.dir}/data"/>
+      <property name="build.javadocs" value="${build.dir}/docs/apiDocs"/>
+
+      <property name="xml4j" 
+                value="${libdir}/xml4j.jar" />
+      <property name="xerces" 
+                value="${libdir}/xerces.jar" />
+      <property name="xalan" 
+                value="${libdir}/xalan.jar" />
+      <property name="sym" 
+                value="${libdir}/sym.jar" />
+      <property name="cpath" 
+                value="${xml4j}:${xerces}:${xalan}:${build.dest}:${sym}"/>
+      <property name="package.home" value="edu/ucsb/nceas" />
+
    </target>
    
-   <target name="compileCat" depends="init">
-       <javac srcdir="${src.arbortext.home}" destdir="${classesdir}" />
+   <target name="prepare" depends="init">
+      <mkdir dir="${build.dir}"/>
+      <mkdir dir="${build.src}"/>
+      <mkdir dir="${build.dest}"/>
+
+      <copydir src="${srcdir}" 
+               dest="${build.src}" 
+               filtering="yes"
+               excludes="**/CVS* **/.#* "/>
    </target>
 
-   <target name="compileSymAwt" depends="init">
-       <javac srcdir="${src.sym.home.awt}" destdir="${classesdir}" />
-   </target>
-      
-   <target name="compileSymSwing" depends="init">
-       <javac srcdir="${src.sym.home.swing}" destdir="${classesdir}" />
+   <target name="catalog" depends="prepare">
+
+      <copydir src="${srcdir}" 
+               dest="${build.src}" 
+               filtering="yes"
+               includes="com/**"
+               excludes="**/CVS* **/.#* "/>
+      <javac srcdir="${build.src}" 
+             destdir="${build.dest}" 
+             includes="com/**" /> 
    </target>
 
-   <target name="compileQueryBean" depends="init">
-       <javac srcdir="${src.querybean.home}" destdir="${classesdir}" classpath="lib/xerces.jar;lib/xalan.jar;lib/sym.jar;lib/catalog.jar" />
-   </target>
+   <target name="querybean" depends="catalog">
 
-   <target name="compileMdeBean" depends="init">
-       <javac srcdir="${src.metaedit.home}" destdir="${classesdir}" classpath="lib/xml4j.jar;lib/xerces.jar;lib/sym.jar;lib/catalog.jar" />
-       <copydir src="${src.metaedit.home}/images/" dest="${classesdir}/${metaedit.home}" />
-  </target>
-
-   <target name="compileClient" depends="init,compileCat,compileQueryBean,compileMdeBean">
-       <javac srcdir="${src.dtclient.home}" destdir="${classesdir}" classpath="lib/xerces.jar;lib/xalan.jar;lib/sym.jar" /> 
-       <copydir src="${src.dtclient.home}/images/" dest="${classesdir}/${dtclient.home}" />
+      <copydir src="${srcdir}" 
+               dest="${build.src}" 
+               filtering="yes"
+               includes="edu/ucsb/nceas/querybean/**"
+               excludes="**/CVS* **/.#* "/>
+      <javac srcdir="${build.src}" 
+             destdir="${build.dest}" 
+             classpath="${cpath}"
+             includes="src/edu/ucsb/nceas/querybean/**" /> 
    </target> 
- 
-   <target name="buildAll" depends="compileClient">
-       <delete file="dmanclient.jar" />
-       <jar jarfile="lib/dmanclient.jar" basedir="${classesdir}"  />
-   </target>
+
+   <target name="metaedit" depends="querybean">
+
+      <copydir src="${srcdir}" 
+               dest="${build.src}" 
+               filtering="yes"
+               includes="edu/ucsb/nceas/metaedit/**"
+               excludes="**/CVS* **/.#* "/>
+      <javac srcdir="${build.src}" 
+             destdir="${build.dest}" 
+             classpath="${xml4j}:${cpath}"
+             includes="src/edu/ucsb/nceas/metaedit/**" /> 
+   </target> 
+
+   <target name="compile" depends="prepare">
+
+      <javac srcdir="${build.src}" 
+             destdir="${build.dest}" 
+             classpath="${cpath}" /> 
+   </target> 
+
+   <target name="jar" depends="compile">
+       <delete file="${build.dir}/${name}.jar" />
+       <copydir src="${srcdir}/${package.home}/metaedit/images" 
+                dest="${build.dest}/${package.home}/metaedit" />
+       <copydir src="${srcdir}/${package.home}/dtclient/images" 
+                dest="${build.dest}/${package.home}/dtclient" />
+       <jar jarfile="${build.dir}/${name}.jar" basedir="${build.dest}" />
+   </target> 
+
+   <target name="install" depends="jar">
+       <copyfile src="${build.dir}/${name}.jar" 
+                 dest="${libdir}/${name}.jar" />
+       <echo message="Install complete. Use the dmanclient script to run it." />
+   </target> 
 
    <target name="clean" depends="init">
-       <delete file="lib/dmanclient.jar" />
-       <deltree dir="${classesdir}" />
+       <deltree dir="${build.dir}" />
    </target>
+
+   <target name="jdoc" depends="init">
+       <mkdir dir="${build.javadocs}" />
+       <javadoc packagenames="edu.ucsb.nceas"
+           sourcepath="src"
+           destdir="${build.javadocs}"
+           author="true"
+           version="true"
+           use="true"
+           windowtitle="${Name} API"
+           doctitle="&lt;h1&gt;${Name}&lt;/h1&gt;"
+           bottom="&lt;i&gt;Copyright &#169; 2000 National Center for Ecological Analysis and Synthesis. All Rights Reserved.&lt;/i&gt;"
+       />
+   </target>
+
 </project>
