@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2002-09-13 23:04:57 $'
- * '$Revision: 1.8 $'
+ *     '$Date: 2002-09-18 15:02:10 $'
+ * '$Revision: 1.9 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -112,8 +112,9 @@ public class HTMLPanel extends JEditorPane implements HyperlinkListener
 	 */
 	public void setHTML(String html)
 	{
-        Log.debug(50, "\nHTMLPanel.setHTML() received HTML: \n"+html+"\n");
+        Log.debug(51, "\nHTMLPanel.setHTML() received HTML: \n"+html+"\n");
         html = stripHTMLMetaTags(html);
+        Log.debug(50,"\nHTMLPanel.setHTML() displaying cleaned up HTML:\n"+html);
 
         try {
             this.setText(html);
