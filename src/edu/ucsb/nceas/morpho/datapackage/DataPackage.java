@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: tao $'
- *     '$Date: 2002-11-01 00:33:36 $'
- * '$Revision: 1.92 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2002-12-12 00:35:07 $'
+ * '$Revision: 1.93 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -144,6 +144,7 @@ public class DataPackage implements XMLFactoryInterface
     initTriplesCollection();
     //parse triples file and get basic information (title, Originators etc)
     parseTripleFile();
+ //   checkTriplesForAccess();
   }
 
 
@@ -2045,5 +2046,49 @@ public class DataPackage implements XMLFactoryInterface
         subfile = null;
       }
       return subfile;
+  }
+  
+  public void checkTriplesForAccess() {
+    String accessId = null;
+    try{
+      accessId = getAccessId();
+    }
+    catch (Exception e) {}
+    Vector ids = getAllIdentifiers();
+  Log.debug(1, "triples check beginning: access id: "+accessId);
+    Vector missingIds = new Vector();
+    String temp = "";
+    if (accessId!=null) {
+      for (int i=0;i<ids.size();i++) {
+        String obj = (String)ids.elementAt(i);
+        temp = temp + obj + "::";
+        if (!subjectAndObjectCheck(accessId, obj)) {
+          missingIds.addElement(obj);
+        }
+      }
+    }
+    else {
+      // case where there is no access control file for package
+      Log.debug(1, "No access file in package!!!!");
+    }
+  Log.debug(1, "Number of modules without access triple: "+ missingIds.size()+ temp);
+  }
+  
+  /* should return true if a triple exists with the indicated
+   * subject and object
+   */
+  private boolean subjectAndObjectCheck(String sub, String obj) {
+    boolean res = false;
+    TripleCollection tc = getTriples();
+    Vector triples = tc.getCollection();
+    for (int i=0;i<triples.size();i++) {
+      Triple tpl = (Triple)triples.elementAt(i);
+      if ((sub.equals(tpl.getSubject())) &&
+      (obj.equals(tpl.getObject()))) {
+        res = true;
+        return res;
+      }
+    }
+    return res;
   }
 }
