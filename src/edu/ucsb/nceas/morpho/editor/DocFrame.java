@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-10-04 20:41:13 $'
- * '$Revision: 1.115 $'
+ *     '$Date: 2003-10-06 18:49:35 $'
+ * '$Revision: 1.116 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -810,12 +810,33 @@ public class DocFrame extends javax.swing.JFrame
     treeModel = putDOMintoTree(docnode);
     rootNode = (DefaultMutableTreeNode)treeModel.getRoot();
     setAllNodesAsSelected(rootNode);
+//    setTopOfTree(docnode, "/eml:eml/dataset/dataTable");
     treeModel.reload();
     tree.setModel(treeModel);
 
     tree.expandRow(1);
     tree.expandRow(2);
     tree.setSelectionRow(0);
+  }
+  
+  /**
+   *  This method will reset the treeModel rootnode, thus changing
+   *  the node displayed at the top of the tree
+   *
+   *  NOTE: this only works if the treemodel was created from
+   *  a DOM since it uses XPath to search the DOM and then
+   *  looks up the equivalent JTree node
+   */
+  public void setTopOfTree(Node rootNode, String path) {
+    Node nd = null;
+    DOMTree.Model model = (DOMTree.Model)treeModel;
+    try{
+      nd = XMLUtilities.getNodeWithXPath(rootNode, path);
+    } catch (Exception w) {Log.debug(1,"Exception evaluation path");}
+    if (nd!=null) {
+      DefaultMutableTreeNode tn = (DefaultMutableTreeNode)model.getInvNode(nd);
+      treeModel.setRoot(tn);
+    }
   }
   
   /**
