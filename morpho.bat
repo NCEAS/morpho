@@ -3,9 +3,9 @@ REM #
 REM # script for launching morpho from windows systems
 REM #
 REM # '$RCSfile: morpho.bat,v $'
-REM # '$Author: brooke $'
-REM # '$Date: 2002-09-25 18:27:35 $'
-REM # '$Revision: 1.18 $'
+REM # '$Author: cjones $'
+REM # '$Date: 2002-09-26 01:57:51 $'
+REM # '$Revision: 1.19 $'
 
 SET  XMLP=lib\xercesImpl.jar
 SET   API=lib\xml-apis.jar

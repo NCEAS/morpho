@@ -5,9 +5,9 @@
  *    Authors: @tao@
  *    Release: @release@
  *
- *   '$Author: tao $'
- *     '$Date: 2002-09-11 23:02:53 $'
- * '$Revision: 1.12 $'
+ *   '$Author: cjones $'
+ *     '$Date: 2002-09-26 01:57:53 $'
+ * '$Revision: 1.13 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,6 +34,7 @@ import edu.ucsb.nceas.morpho.util.Command;
 import edu.ucsb.nceas.morpho.util.Log;
 import edu.ucsb.nceas.morpho.util.SortableJTable;
 import java.awt.Component;
+import java.awt.event.ActionEvent;
 import javax.swing.JDialog;
 
 /**
@@ -92,7 +93,7 @@ public class RefreshCommand implements Command
   /**
    * execute refresh command
    */    
-  public void execute()
+  public void execute(ActionEvent event)
   {
     ResultPanel resultPane = null;
     if (specifyOpenDialog)

@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: tao $'
- *     '$Date: 2002-09-25 21:09:23 $'
- * '$Revision: 1.13 $'
+ *   '$Author: cjones $'
+ *     '$Date: 2002-09-26 01:57:53 $'
+ * '$Revision: 1.14 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,6 +27,8 @@
 package edu.ucsb.nceas.morpho.framework;
 
 import edu.ucsb.nceas.morpho.Morpho;
+import edu.ucsb.nceas.morpho.util.Command;
+import edu.ucsb.nceas.morpho.util.GUIAction;
 import edu.ucsb.nceas.morpho.util.Log;
 import java.awt.Container;
 import java.awt.Component;
@@ -56,7 +58,16 @@ public class UIController
     private static UIController controller;
     private static Morpho morpho;
     private static MorphoFrame currentActiveWindow;
+
+    /** A hash of cloned GUIActions keyed on the original GUIAction */
+    private static Hashtable guiActionClones;
+
+    /** A hash of windows keyed on its Window menu GUIAction */
     private static Hashtable windowList;
+
+    /** A hash of windows keyed on an associated GUIAction clone */
+    private static Hashtable actionCloneWindowAssociation;
+
     private static Vector orderedMenuList;
     private static Hashtable orderedMenuActions;
     private static Vector toolbarList;
@@ -80,6 +91,9 @@ public class UIController
     {
         this.morpho = morpho;
         windowList = new Hashtable();
+        actionCloneWindowAssociation = new Hashtable();
+        guiActionClones = new Hashtable();
+
         orderedMenuList = new Vector();
         orderedMenuActions = new Hashtable();
         toolbarList = new Vector();
@@ -180,8 +194,7 @@ public class UIController
       if (getCurrentActiveWindow()==null) {
           setCurrentActiveWindow(window);
       }
-     
-    }//updateWindow
+    }
       
     /**
      * This method is called to de-register a Window that
@@ -195,10 +208,10 @@ public class UIController
         Log.debug(50, "Removing window.");
 
         // Look up the Action for this window
-        Action currentAction = null;
+        GUIAction currentAction = null;
         Enumeration keys = windowList.keys();
         while (keys.hasMoreElements()) {
-            currentAction = (Action)keys.nextElement();
+            currentAction = (GUIAction)keys.nextElement();
             MorphoFrame savedWindow = 
                 (MorphoFrame)windowList.get(currentAction);
             if (savedWindow == window) {
@@ -208,13 +221,8 @@ public class UIController
             }
         } 
         
-        // Remove the action from the menu vector in orderedMenuActions
-        Vector windowMenuActions = (Vector)orderedMenuActions.get("Window");
-        try {
-            windowMenuActions.remove(currentAction);
-        } catch(NullPointerException npe) {
-            Log.debug(20, "Window already removed from menu.");
-        }
+        // Remove the action from the GUIAction list
+        removeGuiAction(currentAction);
         
         // If the window is the currentActiveWindow, change it
         if (getCurrentActiveWindow()==window) {
@@ -232,8 +240,49 @@ public class UIController
         if (windowList.isEmpty()) {
             morpho.exitApplication();
         }
+    }
 
-        updateWindowMenus();
+    /**
+     * Add a menu item and optionally a toolbar button by registering
+     * an instance of GUIAction.  The GUIAction will be cloned once for
+     * each of the MorphoFrame instances that currently exist or that are
+     * created.
+     *
+     * @param action the GUIAction instance describing the menu item
+     */
+    public void addGuiAction(GUIAction action)
+    {
+        // for each window, clone the action, add it to the vector of
+        // clones for this GUIAction, add it to the clone/window
+        // association hash, and send the clone to the window
+        Vector cloneList = new Vector();
+        guiActionClones.put(action, cloneList);
+        Enumeration windows = windowList.elements();
+        while (windows.hasMoreElements()) {
+            MorphoFrame window = (MorphoFrame)windows.nextElement();
+            GUIAction clone = action.cloneAction();
+            cloneList.addElement(clone);
+            actionCloneWindowAssociation.put(clone, window);
+            window.addGuiAction(clone);
+        }
+    }
+
+    /**
+     * Remove a menu item and its toolbar button for a particular
+     * instance of GUIAction.  
+     *
+     * @param action the GUIAction instance to be removed
+     */
+    public void removeGuiAction(GUIAction action)
+    {
+        Vector cloneList = (Vector)guiActionClones.get(action);
+        guiActionClones.remove(action);
+        for (int i=0; i< cloneList.size(); i++) {
+            GUIAction clone = (GUIAction)cloneList.elementAt(i);
+            MorphoFrame window = 
+                (MorphoFrame)actionCloneWindowAssociation.get(clone);
+            window.removeGuiAction(clone);
+        }
     }
 
     /**
@@ -260,6 +309,8 @@ public class UIController
     public void addMenu(String menuName, Integer menuPosition, 
                         Action[] menuActions)
     {
+        /* MBJ NOT NEEDED
+         
         Vector currentActions = null;
         // Check if the menu exists already here, otherwise create it
         if (orderedMenuList.contains(menuName)) {
@@ -300,6 +351,7 @@ public class UIController
         }
 
         updateWindowMenus();
+        */
     }
     
     /**
@@ -311,6 +363,7 @@ public class UIController
      */
     public void removeMenuItem(String menuName, int index)
     {
+        /* MBJ NOT NEEDED
         Log.debug(50, "Removing menu item: " + menuName + " (" + index + ")");
         // Check if the menu exists, and if so, remove the item
         if (orderedMenuList.contains(menuName)) {
@@ -318,6 +371,7 @@ public class UIController
             currentActions.remove(index);
             updateWindowMenus();
         }
+        */
     }
     
     /**
@@ -328,6 +382,7 @@ public class UIController
      */
     public void removeAllMenuItems(String menuName)
     {
+        /* MBJ NOT NEEDED
         Log.debug(50, "Removing menu item: " + menuName);
         // Check if the menu exists, and if so, remove the item
         if (orderedMenuList.contains(menuName)) {
@@ -335,6 +390,7 @@ public class UIController
             currentActions.removeAllElements();
             updateWindowMenus();
         }
+        */
     }
 
    /**
@@ -344,6 +400,7 @@ public class UIController
     */
     public void addToolbarActions(Action[] toolbarActions)
     {
+        /* MBJ NOT NEEDED
         if (toolbarActions != null) {
             for (int j=0; j < toolbarActions.length; j++) {
                 Action currentAction = toolbarActions[j];
@@ -351,6 +408,7 @@ public class UIController
             }
             updateWindowToolbars();
         }
+        */
     }
 
     /**
@@ -413,20 +471,35 @@ public class UIController
      */
     private void registerWindow(MorphoFrame window)
     {
+        // clone all of the existing GUIActions for this new window
+        Enumeration actionList = guiActionClones.keys();
+        while (actionList.hasMoreElements()) {
+            GUIAction action = (GUIAction)actionList.nextElement();
+            GUIAction clone = action.cloneAction();
+            Vector cloneList = (Vector)guiActionClones.get(action);
+            cloneList.addElement(clone);
+            actionCloneWindowAssociation.put(clone, window);
+            window.addGuiAction(clone);
+        }
+
+        // add a new menu item for this window by greating a GUIAction for it
         String title = window.getTitle();
-        Action windowAction = new AbstractAction(title) {
-            public void actionPerformed(ActionEvent e) {
+        Command command = new Command() {
+            public void execute(ActionEvent e) {
                 JMenuItem source = (JMenuItem)e.getSource();
                 Action firedAction = source.getAction();
-                MorphoFrame window1 = (MorphoFrame)windowList.get(firedAction);
+                GUIAction original = 
+                    ((GUIAction)firedAction).getOriginalAction();
+                MorphoFrame window1 = 
+                    (MorphoFrame)windowList.get(original);
                 window1.toFront();
             }
         };
-        windowAction.putValue(Action.SHORT_DESCRIPTION, "Select Window");
-        windowList.put(windowAction, window);
-        Vector windowMenuActions = (Vector)orderedMenuActions.get("Window");
-        windowMenuActions.addElement(windowAction);
-        updateWindowMenus();
+        GUIAction action = new GUIAction(title, null, command);
+        action.setMenu("Window", 5);
+        action.setToolTipText("Select Window");
+        windowList.put(action, window);
+        addGuiAction(action);
     }
 
     /**
@@ -477,8 +550,9 @@ public class UIController
     /**
      * Create a new menubar for use in a window
      */
-    protected static JMenuBar createMenuBar()
+    private static JMenuBar createMenuBar()
     {
+        /*
         Log.debug(50, "Creating menu bar for window...");
         JMenuBar newMenuBar = new JMenuBar();
         for (int j=0; j < orderedMenuList.size(); j++) {
@@ -490,6 +564,8 @@ public class UIController
             createMenuItems(menuName, currentMenu);
         }
         return newMenuBar;
+        */
+        return null;
     }
 
     /**

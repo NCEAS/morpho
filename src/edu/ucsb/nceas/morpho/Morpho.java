@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: tao $'
- *     '$Date: 2002-09-25 17:30:52 $'
- * '$Revision: 1.11 $'
+ *   '$Author: cjones $'
+ *     '$Date: 2002-09-26 01:57:53 $'
+ * '$Revision: 1.12 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -46,7 +46,11 @@ import edu.ucsb.nceas.morpho.plugins.PluginInterface;
 import edu.ucsb.nceas.morpho.plugins.ServiceController;
 import edu.ucsb.nceas.morpho.plugins.ServiceProvider;
 import edu.ucsb.nceas.morpho.plugins.ServiceNotHandledException;
+import edu.ucsb.nceas.morpho.util.Command;
+import edu.ucsb.nceas.morpho.util.GUIAction;
 import edu.ucsb.nceas.morpho.util.Log;
+import edu.ucsb.nceas.morpho.util.StateChangeMonitor;
+import edu.ucsb.nceas.morpho.util.StateChangeEvent;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -1021,60 +1025,86 @@ public class Morpho
         UIController controller = UIController.getInstance();
 
         // FILE MENU ACTIONS
-        fileMenuActions = new Action[4];
+        Command connectCommand = new Command() {
+            public void execute(ActionEvent e) {
+                establishConnection();
+            }
+        };
+        GUIAction connectItemAction = 
+            new GUIAction("Login", null, connectCommand);
+        connectItemAction.setToolTipText("Login");
+        connectItemAction.putValue("menuPosition", new Integer(0));
+        connectItemAction.setSeparatorPosition(SEPARATOR_PRECEDING);
+        connectItemAction.setMenu("File", 0);
+        controller.addGuiAction(connectItemAction);
 
-        Action exitItemAction =
-            new AbstractAction("Exit")
-            {
-                public void actionPerformed(ActionEvent e)
-                {
-                    exitApplication();
-                }
-            };
+        Command profileCommand = new Command() {
+            public void execute(ActionEvent e) {
+                createNewProfile();
+            }
+        };
+        GUIAction profileItemAction = 
+            new GUIAction("New profile...", null, profileCommand);
+        profileItemAction.setToolTipText("New Profile");
+        profileItemAction.putValue("menuPosition", new Integer(1));
+        profileItemAction.setMenu("File", 0);
+        controller.addGuiAction(profileItemAction);
+
+        Command switchCommand = new Command() {
+            public void execute(ActionEvent e) {
+                switchProfile();
+            }
+        };
+        GUIAction switchItemAction =
+            new GUIAction("Switch profile...", null, switchCommand);
+        switchItemAction.setToolTipText("Switch Profile");
+        switchItemAction.putValue("menuPosition", new Integer(2));
+        switchItemAction.setMenu("File", 0);
+        switchItemAction.setEnabledOnStateChange("DISABLE", false);
+        switchItemAction.setEnabledOnStateChange("ENABLE", true);
+        controller.addGuiAction(switchItemAction);
+
+        Command enableCommand = new Command() {
+            public void execute(ActionEvent e) {
+                StateChangeMonitor monitor = StateChangeMonitor.getInstance();
+                monitor.notifyStateChange(new StateChangeEvent(this, "ENABLE"));
+            }
+        };
+        GUIAction enableItemAction =
+            new GUIAction("Enable", null, enableCommand);
+        enableItemAction.setToolTipText("Enable");
+        enableItemAction.putValue("menuPosition", new Integer(3));
+        enableItemAction.setMenu("File", 0);
+        controller.addGuiAction(enableItemAction);
+
+        Command disableCommand = new Command() {
+            public void execute(ActionEvent e) {
+                StateChangeMonitor monitor = StateChangeMonitor.getInstance();
+                monitor.notifyStateChange(new StateChangeEvent(this, "DISABLE"));
+            }
+        };
+        GUIAction disableItemAction =
+            new GUIAction("Disable", null, disableCommand);
+        disableItemAction.setToolTipText("Disable");
+        disableItemAction.putValue("menuPosition", new Integer(4));
+        disableItemAction.setMenu("File", 0);
+        controller.addGuiAction(disableItemAction);
+
+        Command exitCommand = new Command() {
+            public void execute(ActionEvent event) {
+                exitApplication();
+            }
+        };
+        GUIAction exitItemAction = new GUIAction("Exit", null, exitCommand);
         exitItemAction.putValue(Action.ACCELERATOR_KEY,
                 KeyStroke.getKeyStroke("control Q"));
-        exitItemAction.putValue(Action.SHORT_DESCRIPTION, "Exit Morpho");
-        exitItemAction.putValue(Action.DEFAULT, SEPARATOR_PRECEDING);
+        exitItemAction.setToolTipText("Exit Morpho");
+        exitItemAction.setSeparatorPosition(SEPARATOR_PRECEDING);
         exitItemAction.putValue("menuPosition", new Integer(-1));
-        fileMenuActions[0] = exitItemAction;
+        exitItemAction.setMenu("File", 0);
+        controller.addGuiAction(exitItemAction);
 
-        Action connectItemAction =
-            new AbstractAction("Login...")
-            {
-                public void actionPerformed(ActionEvent e)
-                {
-                    establishConnection();
-                }
-            };
-        connectItemAction.putValue(Action.SHORT_DESCRIPTION, "Login");
-        connectItemAction.putValue("menuPosition", new Integer(0));
-        connectItemAction.putValue(Action.DEFAULT, SEPARATOR_PRECEDING);
-        fileMenuActions[1] = connectItemAction;
-
-        Action profileItemAction =
-            new AbstractAction("New profile...")
-            {
-                public void actionPerformed(ActionEvent e)
-                {
-                    createNewProfile();
-                }
-            };
-        profileItemAction.putValue(Action.SHORT_DESCRIPTION, "New Profile");
-        profileItemAction.putValue("menuPosition", new Integer(1));
-        fileMenuActions[2] = profileItemAction;
-
-        Action switchItemAction =
-            new AbstractAction("Switch profile...")
-            {
-                public void actionPerformed(ActionEvent e)
-                {
-                    switchProfile();
-                }
-            };
-        switchItemAction.putValue(Action.SHORT_DESCRIPTION, "Switch Profile");
-        switchItemAction.putValue("menuPosition", new Integer(2));
-        fileMenuActions[3] = switchItemAction;
-
+/*
         controller.addMenu("File", new Integer(0), fileMenuActions);
 
         // EDIT MENU ACTIONS
@@ -1203,6 +1233,7 @@ public class Morpho
         containerToolbarActions[1] = copyItemAction;
         containerToolbarActions[2] = pasteItemAction;
         controller.addToolbarActions(containerToolbarActions);
+*/
     }
 
     /** Create a new connection to metacat */

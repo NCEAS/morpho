@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: tao $'
- *     '$Date: 2002-09-24 23:49:55 $'
- * '$Revision: 1.88 $'
+ *   '$Author: cjones $'
+ *     '$Date: 2002-09-26 01:57:53 $'
+ * '$Revision: 1.89 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -123,7 +123,9 @@ public class QueryPlugin implements PluginInterface, ConnectionListener,
   private void initializeActions() {
     // Set up the search menus for the application
     menuActions = new Action[NUMBEROFACTIONINSEARCH];
-   
+
+    UIController controller = UIController.getInstance();
+
     // Action for search
     GUIAction searchItemAction = new GUIAction("Search...", null,
                                         new SearchCommand(null, morpho));
@@ -131,6 +133,9 @@ public class QueryPlugin implements PluginInterface, ConnectionListener,
            getResource("/toolbarButtonGraphics/general/Search16.gif")));
     searchItemAction.setToolTipText("Search for data");
     searchItemAction.setMenuItemPosition(0);
+    searchItemAction.setMenu("Search", 3);
+    searchItemAction.setToolbarPosition(2);
+    controller.addGuiAction(searchItemAction);
     
     //searchItemAction.setSeparatorPosition(Morpho.SEPARATOR_FOLLOWING);
     // Action for refresh
@@ -141,6 +146,9 @@ public class QueryPlugin implements PluginInterface, ConnectionListener,
            getResource("/toolbarButtonGraphics/general/Refresh16.gif")));
     refreshItemAction.setToolTipText("Refresh...");
     refreshItemAction.setMenuItemPosition(1);
+    refreshItemAction.setMenu("Search", 3);
+    refreshItemAction.setToolbarPosition(3);
+    controller.addGuiAction(refreshItemAction);
     
     //refreshItemAction.setSeparatorPosition(Morpho.SEPARATOR_FOLLOWING);
     // Action for save query
@@ -151,6 +159,9 @@ public class QueryPlugin implements PluginInterface, ConnectionListener,
            getResource("/toolbarButtonGraphics/general/Save16.gif")));
     saveQueryItemAction.setToolTipText("Save search");
     saveQueryItemAction.setMenuItemPosition(2);
+    saveQueryItemAction.setMenu("Search", 3);
+    saveQueryItemAction.setToolbarPosition(4);
+    controller.addGuiAction(saveQueryItemAction);
         
     // RevisedSearch action
     GUIAction reviseSearchItemAction = new GUIAction("Revise Search", null,
@@ -160,6 +171,11 @@ public class QueryPlugin implements PluginInterface, ConnectionListener,
     reviseSearchItemAction.setToolTipText("Revise search");
     reviseSearchItemAction.setMenuItemPosition(3);
     reviseSearchItemAction.setSeparatorPosition(Morpho.SEPARATOR_FOLLOWING);
+    reviseSearchItemAction.setMenu("Search", 3);
+    reviseSearchItemAction.setToolbarPosition(5);
+    controller.addGuiAction(reviseSearchItemAction);
+    controller.removeGuiAction(reviseSearchItemAction);
+
     // Put actions into array which will be added into search menu
     menuActions[0] = searchItemAction;
     menuActions[1] = refreshItemAction;
@@ -176,6 +192,9 @@ public class QueryPlugin implements PluginInterface, ConnectionListener,
                   getResource("/toolbarButtonGraphics/general/Open16.gif")));
     openDialogBoxAction.setMenuItemPosition(0);
     openDialogBoxAction.setToolTipText("Open...");
+    openDialogBoxAction.setMenu("File", 1);
+    openDialogBoxAction.setToolbarPosition(1);
+    controller.addGuiAction(openDialogBoxAction);
         
     // Synchronize action
     GUIAction synchronizeAction = new GUIAction("Synchronize...", null,
@@ -183,6 +202,9 @@ public class QueryPlugin implements PluginInterface, ConnectionListener,
     synchronizeAction.setMenuItemPosition(6);
     synchronizeAction.setToolTipText("Synchronize...");
     synchronizeAction.setSeparatorPosition(Morpho.SEPARATOR_FOLLOWING);
+    synchronizeAction.setMenu("File", 1);
+    //synchronizeAction.setToolbarPosition(1);
+    controller.addGuiAction(synchronizeAction);
     
     // DeleteDialogAction
     GUIAction deleteDialogAction = new GUIAction("Delete...", null,
@@ -190,12 +212,18 @@ public class QueryPlugin implements PluginInterface, ConnectionListener,
     deleteDialogAction.setMenuItemPosition(8);
     deleteDialogAction.setToolTipText("Delete...");
     deleteDialogAction.setSeparatorPosition(Morpho.SEPARATOR_FOLLOWING);
+    deleteDialogAction.setMenu("File", 1);
+    //deleteDialogAction.setToolbarPosition(1);
+    controller.addGuiAction(deleteDialogAction);
     
     // Export action
     GUIAction exportAction = new GUIAction("Export...", null, 
                             new ExportCommand(null, ExportCommand.REGULAR));
     exportAction.setMenuItemPosition(10);
     exportAction.setToolTipText("Export data package...");
+    exportAction.setMenu("File", 1);
+    //exportAction.setToolbarPosition(1);
+    controller.addGuiAction(exportAction);
     
     // Export to zip action
     GUIAction exportZipAction = new GUIAction("Export to Zip...", null,
@@ -203,6 +231,9 @@ public class QueryPlugin implements PluginInterface, ConnectionListener,
     exportZipAction.setMenuItemPosition(11);
     exportZipAction.setToolTipText("Export data package into zip file...");
     exportZipAction.setSeparatorPosition(Morpho.SEPARATOR_FOLLOWING);
+    exportZipAction.setMenu("File", 1);
+    //exportZipAction.setToolbarPosition(1);
+    controller.addGuiAction(exportZipAction);
     
      // Set up the toolbar for the application
     toolbarActions = new Action[5];
@@ -221,9 +252,6 @@ public class QueryPlugin implements PluginInterface, ConnectionListener,
     fileMenuActions[4] = exportZipAction;
   }
 
-
-
- 
   /**
    * Implement the ConnectionListener interface so we know when to 
    * refresh queries.
@@ -245,8 +273,6 @@ public class QueryPlugin implements PluginInterface, ConnectionListener,
     refresh();
   }
 
- 
-
   /** 
    * This method is called to refresh a query when a change is made that should
    * be propogated to the query result screens.
@@ -254,7 +280,7 @@ public class QueryPlugin implements PluginInterface, ConnectionListener,
   public void refresh()
   {
     RefreshCommand refresh = new RefreshCommand();
-    refresh.execute();
+    refresh.execute(null);
   }
   
   /**
@@ -268,5 +294,4 @@ public class QueryPlugin implements PluginInterface, ConnectionListener,
     SaveQueryCommand.loadSavedQueries(newMorpho);
   }//updateSaveQuery
    
-
 }

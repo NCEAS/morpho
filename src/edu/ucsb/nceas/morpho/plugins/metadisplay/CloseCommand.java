@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2002-08-28 01:02:42 $'
- * '$Revision: 1.1 $'
+ *   '$Author: cjones $'
+ *     '$Date: 2002-09-26 01:57:53 $'
+ * '$Revision: 1.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,6 +33,7 @@ import  edu.ucsb.nceas.morpho.plugins.MetaDisplayInterface;
 
 import  edu.ucsb.nceas.morpho.plugins.metadisplay.MetaDisplay;
 
+import java.awt.event.ActionEvent;
 
 public class CloseCommand implements Command {
 
@@ -46,7 +47,7 @@ public class CloseCommand implements Command {
     /**
      * execute this object's command
      */    
-    public void execute() 
+    public void execute(ActionEvent event) 
     {
         Log.debug(50,"CloseCommand.execute() called. Firing EDIT_BEGIN_EVENT...");
         controller.fireActionEvent( MetaDisplayInterface.EDIT_BEGIN_EVENT,

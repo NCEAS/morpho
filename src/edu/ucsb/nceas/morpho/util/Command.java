@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2002-08-01 00:15:37 $'
- * '$Revision: 1.1 $'
+ *   '$Author: cjones $'
+ *     '$Date: 2002-09-26 01:57:54 $'
+ * '$Revision: 1.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,13 +26,14 @@
 
 package edu.ucsb.nceas.morpho.util;
 
+import java.awt.event.ActionEvent;
 
 public interface Command {
 
   /**
    * execute this object's command
    */    
-  public void execute();
+  public void execute(ActionEvent event);
 
   /**
    * could also have undo functionality; disabled for now

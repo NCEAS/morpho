@@ -3,9 +3,9 @@
 # Shell script for launching morpho from unix systems
 #
 # '$RCSfile: morpho,v $'
-# '$Author: brooke $'
-# '$Date: 2002-09-17 21:28:40 $'
-# '$Revision: 1.15 $'
+# '$Author: cjones $'
+# '$Date: 2002-09-26 01:57:51 $'
+# '$Revision: 1.16 $'
 
 XMLP=./lib/xercesImpl.jar
 API=./lib/xmlParserAPIs.jar

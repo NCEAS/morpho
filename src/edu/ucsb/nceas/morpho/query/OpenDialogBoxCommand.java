@@ -5,9 +5,9 @@
  *    Authors: @tao@
  *    Release: @release@
  *
- *   '$Author: tao $'
- *     '$Date: 2002-09-10 21:24:49 $'
- * '$Revision: 1.10 $'
+ *   '$Author: cjones $'
+ *     '$Date: 2002-09-26 01:57:53 $'
+ * '$Revision: 1.11 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,6 +32,7 @@ import edu.ucsb.nceas.morpho.framework.UIController;
 import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.util.Command;
 import edu.ucsb.nceas.morpho.util.GUIAction;
+import java.awt.event.ActionEvent;
 import java.util.Vector;
 import javax.swing.JDialog;
 
@@ -63,7 +64,7 @@ public class OpenDialogBoxCommand implements Command
   /**
    * execute cancel command
    */    
-  public void execute()
+  public void execute(ActionEvent event)
   {
     // create ownerQuery depend on the suiation when it executed
     ownerQuery = new Query(getOwnerQuery(), morpho);   

@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: tao $'
- *     '$Date: 2002-09-12 01:01:54 $'
- * '$Revision: 1.62 $'
+ *   '$Author: cjones $'
+ *     '$Date: 2002-09-26 01:57:53 $'
+ * '$Revision: 1.63 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -328,7 +328,7 @@ public class ResultPanel extends JPanel
   { 
     // Create a open pakcag command
     OpenPackageCommand open = new OpenPackageCommand(dialog);
-    open.execute();
+    open.execute(null);
   }// doDoubleClickOpen
 
   /**
@@ -506,7 +506,7 @@ public class ResultPanel extends JPanel
   {
     // create an instance of SortTableCommmand
     SortTableCommand sortCommand = new SortTableCommand(table, index, order);
-    sortCommand.execute();
+    sortCommand.execute(null);
   }//sortTable
 
   class PopupListener extends MouseAdapter {

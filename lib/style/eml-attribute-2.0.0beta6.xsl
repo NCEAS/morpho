@@ -5,9 +5,9 @@
   *               National Center for Ecological Analysis and Synthesis
   *  For Details: http://www.nceas.ucsb.edu/
   *
-  *   '$Author: brooke $'
-  *     '$Date: 2002-09-16 22:21:14 $'
-  * '$Revision: 1.1 $'
+  *   '$Author: cjones $'
+  *     '$Date: 2002-09-26 01:57:52 $'
+  * '$Revision: 1.2 $'
   * 
   * This program is free software; you can redistribute it and/or modify
   * it under the terms of the GNU General Public License as published by

@@ -5,9 +5,9 @@
  *    Authors: @tao@
  *    Release: @release@
  *
- *   '$Author: tao $'
- *     '$Date: 2002-08-28 18:21:09 $'
- * '$Revision: 1.2 $'
+ *   '$Author: cjones $'
+ *     '$Date: 2002-09-26 01:57:53 $'
+ * '$Revision: 1.3 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -37,6 +37,7 @@ import edu.ucsb.nceas.morpho.plugins.ServiceProvider;
 import edu.ucsb.nceas.morpho.plugins.ServiceNotHandledException;
 import edu.ucsb.nceas.morpho.util.Command;
 import edu.ucsb.nceas.morpho.util.Log;
+import java.awt.event.ActionEvent;
 import java.io.File;
 import javax.swing.JDialog;
 import javax.swing.JFileChooser;
@@ -89,7 +90,7 @@ public class OpenPreviousVersionCommand implements Command
   /**
    * execute delete local package command
    */    
-  public void execute()
+  public void execute(ActionEvent event)
   {
      // If dialog is null, get resultPanel from dialog
     if (dialog != null)

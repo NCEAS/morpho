@@ -5,9 +5,9 @@
  *    Authors: @tao@
  *    Release: @release@
  *
- *   '$Author: tao $'
- *     '$Date: 2002-09-06 18:01:04 $'
- * '$Revision: 1.6 $'
+ *   '$Author: cjones $'
+ *     '$Date: 2002-09-26 01:57:53 $'
+ * '$Revision: 1.7 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -39,6 +39,7 @@ import edu.ucsb.nceas.morpho.util.Command;
 import edu.ucsb.nceas.morpho.util.GUIAction;
 import edu.ucsb.nceas.morpho.util.Log;
 
+import java.awt.event.ActionEvent;
 import java.io.IOException;
 import java.io.File;
 import java.io.FileReader;
@@ -81,7 +82,7 @@ public class SaveQueryCommand implements Command
   /**
    * execute savequery command
    */    
-  public void execute()
+  public void execute(ActionEvent event)
   {
     morphoFrame = UIController.getInstance().getCurrentActiveWindow();
     // make sure the morphoFrame is not null

@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: tao $'
- *     '$Date: 2002-09-24 00:59:06 $'
- * '$Revision: 1.2 $'
+ *   '$Author: cjones $'
+ *     '$Date: 2002-09-26 01:57:54 $'
+ * '$Revision: 1.3 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
