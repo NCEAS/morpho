@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-11-20 20:40:20 $'
- * '$Revision: 1.5 $'
+ *     '$Date: 2003-11-24 23:18:05 $'
+ * '$Revision: 1.6 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,6 +30,9 @@ import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.util.Log;
 import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
 import edu.ucsb.nceas.morpho.datastore.CacheAccessException;
+import edu.ucsb.nceas.morpho.framework.ConfigXML;
+import edu.ucsb.nceas.morpho.datastore.MetacatDataStore;
+import edu.ucsb.nceas.morpho.datastore.FileSystemDataStore;
 
 import edu.ucsb.nceas.utilities.*;
 
@@ -59,6 +62,12 @@ public  class EML2Beta6DataPackage extends AbstractDataPackage
   private TripleCollection  triples;
   private File              tripleFile;
 
+  
+  public EML2Beta6DataPackage() {
+    morpho = Morpho.thisStaticInstance;  
+    fileSysDataStore = new FileSystemDataStore(morpho);
+    metacatDataStore = new MetacatDataStore(morpho);
+  }
   
   public void serialize() {
     
