@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2002-09-05 22:01:47 $'
- * '$Revision: 1.1 $'
+ *     '$Date: 2002-09-10 23:24:50 $'
+ * '$Revision: 1.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -64,6 +64,14 @@ public class CellComparator implements Comparator
       // Get the objects need be compared from vectors
       Object obj1 = vector1.elementAt(indexOfRow);
       Object obj2 = vector2.elementAt(indexOfRow);
+      
+      //If obj1 or obj2 is null, it would go to any instance
+      if (obj1 == null && obj2 == null) return  0;
+      if (obj1 == null && ascending)    return -1;
+      if (obj1 == null && !ascending)   return  1;
+      if (obj2 == null && !ascending)   return -1;
+      if (obj2 == null && ascending)    return  1;
+      
       // for element is String
       if (obj1 instanceof String && obj2 instanceof String )
       {
@@ -73,11 +81,11 @@ public class CellComparator implements Comparator
         if (ascending)
         {
           // for ascending
-          returnValue = str1.compareTo(str2);
+          returnValue = str1.compareToIgnoreCase(str2);
         }//if
         else
         {
-          returnValue = str2.compareTo(str1);
+          returnValue = str2.compareToIgnoreCase(str1);
         }//else
       }//if
       // for element is image icon
@@ -131,22 +139,22 @@ public class CellComparator implements Comparator
        // boolean1 = true and boolean2 = false;
        if (boolean1)
        {
-         returnValue =-1;
+         returnValue = 1;
        }
        else// boolean1 = false and boolean2 = true
        {
-         returnValue = 1;
+         returnValue = -1;
        }
      }//else if
      else if (!ascending)
      {
        if (boolean1)
        {
-         returnValue = 1;
+         returnValue = -1;
        }
        else
        {
-         returnValue = -1;
+         returnValue =  1;
        }
      }//else if
      
