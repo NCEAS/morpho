@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2002-09-12 03:07:22 $'
- * '$Revision: 1.14 $'
+ *     '$Date: 2002-09-13 23:06:37 $'
+ * '$Revision: 1.15 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -45,6 +45,9 @@ import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.MalformedURLException;
 
+import java.util.Properties;
+import java.util.Enumeration;
+
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.FactoryConfigurationError;
@@ -52,14 +55,15 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import javax.xml.transform.Source;
 import javax.xml.transform.Transformer;
+import javax.xml.transform.URIResolver;
 import javax.xml.transform.ErrorListener;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerConfigurationException;
 
 import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamSource;
 
+import javax.xml.transform.stream.StreamSource;
 import javax.xml.transform.stream.StreamResult;
 
 import org.w3c.dom.Document;
@@ -87,6 +91,7 @@ public class XMLTransformer
     private final String CONFIG_KEY_GENERIC_STYLESHEET  = "genericStylesheet";
     private final String GENERIC_STYLESHEET;
     
+    private final  Properties       transformerProperties;
     private final  ClassLoader      classLoader;
     private static XMLTransformer   instance;
     private static String           latestDocID;
@@ -100,6 +105,7 @@ public class XMLTransformer
         this.config = Morpho.getConfiguration();
         GENERIC_STYLESHEET = config.get(CONFIG_KEY_GENERIC_STYLESHEET, 0);
         classLoader = this.getClass().getClassLoader();
+        transformerProperties = new Properties();
         initEntityResolver();
     }
     
@@ -254,6 +260,15 @@ public class XMLTransformer
             e.printStackTrace(new PrintWriter(outputWriter));
         }
         transformer.setErrorListener(new CustomErrorListener());
+        transformer.setURIResolver(new CustomURIResolver());
+        
+        Enumeration propertyNames = getTransformerPropertyNames();
+
+        while (propertyNames.hasMoreElements()) {
+            
+            String nextProp = (String)propertyNames.nextElement();
+            transformer.setParameter(nextProp, getTransformerProperty(nextProp));
+        }
 
         try {
             Log.debug(50,"XMLTransformer doing transformer.transform...");
@@ -375,7 +390,104 @@ public class XMLTransformer
         return this.entityResolver;
     }
     
+    /**
+     *  adds a name/value pair to the <code>Properties</code> object containing  
+     *  the properties to be set for the transformer 
+     *
+     *  @param key        the key to be used
+     *
+     *  @param value      the corresponding value to be set
+     */
+    public void addTransformerProperty(String key, String value) 
+    {
+        if (key==null || value==null) return;
+        this.transformerProperties.setProperty(key, value);
+    }
+
+    /**
+     *  Gets an <code>Enumeration</code> containing the names (keys of all the 
+     *  properties to be set for the transformer 
+     *
+     *  @return             an <code>Enumeration</code> containing the names
+     */
+    public Enumeration getTransformerPropertyNames() 
+    {
+        return this.transformerProperties.propertyNames();
+    }
     
+    /**
+     *  Gets the <code>String</code> value of the Property corresponding to the 
+     *  key passed in
+     *
+     *  @return             the <code>String</code> value of the Property 
+     *                      corresponding to the key passed in
+     */
+    public String getTransformerProperty(String key) 
+    {
+        if (key==null) return null;
+        return this.transformerProperties.getProperty(key);
+    }
+    
+ 
+    
+    private void throwIOException(Throwable e, String type) throws IOException 
+    {
+        String msg 
+            = "\nXMLTransformer.doTransform(): getting DOM document. "
+                +"Nested "+type+" = "+e.getMessage()+"\n";
+        e.printStackTrace();
+        Log.debug(12, msg);
+        IOException ioe = new IOException(msg);
+        ioe.fillInStackTrace();
+        throw ioe;
+    }
+
+    //returns a new Reader to access the generic default stylesheet
+    private Reader getStyleSheetReader(String docType) throws IOException
+    {
+        try {
+            getXSLTResolverService();
+        } catch(ServiceNotHandledException ee) {
+          Log.debug(0, "Error acquiring XSLT Resolver plugin: " + ee);
+          ee.printStackTrace();
+          return new InputStreamReader(
+                          classLoader.getResourceAsStream(GENERIC_STYLESHEET));
+        }
+        Reader xsltReader = null;
+        try {
+            xsltReader = resolver.getXSLTStylesheetReader(docType);
+        } catch (DocumentNotFoundException d) {
+            String msg 
+                = "XMLTransformer.getStyleSheetReader(): "
+                    +"Nested DocumentNotFoundException = "+d.getMessage()+"\n";
+            d.printStackTrace();
+            Log.debug(12, msg);
+            IOException ioe = new IOException(msg);
+            ioe.fillInStackTrace();
+            throw ioe;
+        }
+        return xsltReader;
+    }  
+    
+    private XSLTResolverInterface getXSLTResolverService() 
+                                              throws ServiceNotHandledException
+    {
+        if (resolver==null) {
+            ServiceController services = ServiceController.getInstance();
+            ServiceProvider provider = 
+                      services.getServiceProvider(XSLTResolverInterface.class);
+            resolver = (XSLTResolverInterface)provider;
+        }
+        return resolver;
+    }
+
+
+////////////////////////////////////////////////////////////////////////////////
+//////////////            I N N E R   C L A S S E S          ///////////////////
+////////////////////////////////////////////////////////////////////////////////
+
+
+
     class CustomErrorHandler implements ErrorHandler
     {   
         public void error(SAXParseException exception) throws SAXException
@@ -434,6 +546,26 @@ public class XMLTransformer
         }
     }
 
+    
+    class CustomURIResolver implements URIResolver 
+    {
+        public Source resolve(String href, String base) 
+                                      throws TransformerException
+        {
+            Source resolution = null;
+            Log.debug(50,"\n\n~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~");
+            Log.debug(50,"CustomURIResolver.resolve() received href="+href
+                                                        +" and base="+base);
+            Log.debug(50,"~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~\n\n");
+
+            Log.debug(50,"\n\n~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~");
+            Log.debug(50,"CustomURIResolver.resolve() returning "+resolution);
+            Log.debug(50,"~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~\n\n");
+            return resolution;
+        }
+    }
+
+
 
     class InnerCatalog extends Catalog 
     {
@@ -446,57 +578,7 @@ public class XMLTransformer
             return resolution;
         }
     }
-    
-    private void throwIOException(Throwable e, String type) throws IOException 
-    {
-        String msg 
-            = "\nXMLTransformer.doTransform(): getting DOM document. "
-                +"Nested "+type+" = "+e.getMessage()+"\n";
-        e.printStackTrace();
-        Log.debug(12, msg);
-        IOException ioe = new IOException(msg);
-        ioe.fillInStackTrace();
-        throw ioe;
-    }
-
-    //returns a new Reader to access the generic default stylesheet
-    private Reader getStyleSheetReader(String docType) throws IOException
-    {
-        try {
-            getXSLTResolverService();
-        } catch(ServiceNotHandledException ee) {
-          Log.debug(0, "Error acquiring XSLT Resolver plugin: " + ee);
-          ee.printStackTrace();
-          return new InputStreamReader(
-                          classLoader.getResourceAsStream(GENERIC_STYLESHEET));
-        }
-        Reader xsltReader = null;
-        try {
-            xsltReader = resolver.getXSLTStylesheetReader(docType);
-        } catch (DocumentNotFoundException d) {
-            String msg 
-                = "XMLTransformer.getStyleSheetReader(): "
-                    +"Nested DocumentNotFoundException = "+d.getMessage()+"\n";
-            d.printStackTrace();
-            Log.debug(12, msg);
-            IOException ioe = new IOException(msg);
-            ioe.fillInStackTrace();
-            throw ioe;
-        }
-        return xsltReader;
-    }  
-    
-    private XSLTResolverInterface getXSLTResolverService() 
-                                              throws ServiceNotHandledException
-    {
-        if (resolver==null) {
-            ServiceController services = ServiceController.getInstance();
-            ServiceProvider provider = 
-                      services.getServiceProvider(XSLTResolverInterface.class);
-            resolver = (XSLTResolverInterface)provider;
-        }
-        return resolver;
-    }
+ 
 }
 
 
