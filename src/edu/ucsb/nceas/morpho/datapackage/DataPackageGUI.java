@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-03-02 00:02:31 $'
- * '$Revision: 1.76 $'
+ *     '$Date: 2002-05-09 16:13:38 $'
+ * '$Revision: 1.77 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1022,6 +1022,61 @@ public class DataPackageGUI extends javax.swing.JFrame
     {
       localloc = true;
     }
+  
+    try
+    { 
+      if(localloc)
+      { //save the file locally
+        if(id.trim().equals(dataPackage.getID().trim()))
+        { //we just edited the package file itself
+          String oldid = id;
+          newid = a.incRev(id);
+          File f = fsds.saveTempFile(oldid, new StringReader(xmlString));
+          String newPackageFile = a.incRevInTriples(f, oldid, newid);
+          fsds.saveFile(newid, new StringReader(newPackageFile));
+          newPackageId = newid;
+        }
+        else
+        { //we edited a file in the package
+          Vector newids = new Vector();
+          Vector oldids = new Vector();
+          String oldid = id;
+          newid = a.incRev(id);
+          fsds.saveFile(newid, new StringReader(xmlString));
+          newPackageId = a.incRev(dataPackage.getID());
+          oldids.addElement(oldid);
+          oldids.addElement(dataPackage.getID());
+          newids.addElement(newid);
+          newids.addElement(newPackageId);
+          //increment the package files id in the triples
+          String newPackageFile = a.incRevInTriples(dataPackage.getTriplesFile(), 
+                                                    oldids, 
+                                                    newids);
+          System.out.println("oldid: " + oldid + " newid: " + newid);          
+          fsds.saveFile(newPackageId, new StringReader(newPackageFile)); 
+        }
+      }
+      
+      DataPackage newPackage = new DataPackage(location, newPackageId, null,
+                                                 framework);
+
+      // Refresh the query results after the edit is completed
+      try {
+        ServiceProvider provider = 
+                      framework.getServiceProvider(QueryRefreshInterface.class);
+        ((QueryRefreshInterface)provider).refresh();
+      } catch (ServiceNotHandledException snhe) {
+        framework.debug(6, snhe.getMessage());
+      }
+
+    }
+    catch(Exception e)
+    {
+      framework.debug(0, "Error saving file locally"+ id + " to " + location +
+                         "--message: " + e.getMessage());
+      framework.debug(11, "File: " + xmlString);
+      e.printStackTrace();
+    }
     
     try
     {
@@ -1101,63 +1156,11 @@ public class DataPackageGUI extends javax.swing.JFrame
       e.printStackTrace();
     }
     
-    try
-    { 
-      if(localloc)
-      { //save the file locally
-        if(id.trim().equals(dataPackage.getID().trim()))
-        { //we just edited the package file itself
-          String oldid = id;
-          newid = a.incRev(id);
-          File f = fsds.saveTempFile(oldid, new StringReader(xmlString));
-          String newPackageFile = a.incRevInTriples(f, oldid, newid);
-          fsds.saveFile(newid, new StringReader(newPackageFile));
-          newPackageId = newid;
-        }
-        else
-        { //we edited a file in the package
-          Vector newids = new Vector();
-          Vector oldids = new Vector();
-          String oldid = id;
-          newid = a.incRev(id);
-          fsds.saveFile(newid, new StringReader(xmlString));
-          newPackageId = a.incRev(dataPackage.getID());
-          oldids.addElement(oldid);
-          oldids.addElement(dataPackage.getID());
-          newids.addElement(newid);
-          newids.addElement(newPackageId);
-          //increment the package files id in the triples
-          String newPackageFile = a.incRevInTriples(dataPackage.getTriplesFile(), 
-                                                    oldids, 
-                                                    newids);
-          System.out.println("oldid: " + oldid + " newid: " + newid);          
-          fsds.saveFile(newPackageId, new StringReader(newPackageFile)); 
-        }
-      }
-      
-      DataPackage newPackage = new DataPackage(location, newPackageId, null,
-                                                 framework);
-
-      // Refresh the query results after the edit is completed
-      try {
-        ServiceProvider provider = 
-                      framework.getServiceProvider(QueryRefreshInterface.class);
-        ((QueryRefreshInterface)provider).refresh();
-      } catch (ServiceNotHandledException snhe) {
-        framework.debug(6, snhe.getMessage());
-      }
-
+    
       this.dispose();
       DataPackageGUI newgui = new DataPackageGUI(framework, newPackage);
       newgui.show();
-    }
-    catch(Exception e)
-    {
-      framework.debug(0, "Error saving file locally"+ id + " to " + location +
-                         "--message: " + e.getMessage());
-      framework.debug(11, "File: " + xmlString);
-      e.printStackTrace();
-    }
+    
   }
   
   public void editingCanceled(String xmlString, String id, String location)
