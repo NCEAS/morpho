@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: jones $'
- *     '$Date: 2002-05-10 18:44:50 $'
- * '$Revision: 1.7 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2002-05-14 17:05:00 $'
+ * '$Revision: 1.8 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -66,7 +66,9 @@ public class PackageWizardShellParser extends DefaultHandler
   private boolean initFlag = false;
   private Hashtable descriptions = new Hashtable();
   private String descname = "";
-  private boolean startflag = false;
+  private boolean startflag = false; 
+
+  private String desc = "";
   
   /**
    * @param xml a Reader object that reprents a stream of XML
@@ -170,6 +172,8 @@ public class PackageWizardShellParser extends DefaultHandler
     {
       descname = (String)atts.getValue(0);
       startflag = true;
+      desc = "";
+      System.out.println("TEST-DFH");
     }
   }
   
@@ -177,9 +181,17 @@ public class PackageWizardShellParser extends DefaultHandler
   {
     if(startflag && currentTag.equals("description"))
     {
-      String desc = new String(ch, start, length);
+      desc = desc + (new String(ch, start, length));
+    }
+  }    
+
+
+  public void endElement(String uri, String localName, String qName) throws SAXException  
+  {   
+    if(startflag && currentTag.equals("description"))  { 
+      
       descriptions.put(descname, desc);
-      startflag = false;
+      startflag = false;              
     }
   }
   
