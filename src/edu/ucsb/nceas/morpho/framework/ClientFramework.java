@@ -6,7 +6,7 @@
  *              National Center for Ecological Analysis and Synthesis
  *     Authors: Dan Higgins
  *
- *     Version: '$Id: ClientFramework.java,v 1.19 2000-09-29 00:40:08 jones Exp $'
+ *     Version: '$Id: ClientFramework.java,v 1.20 2000-09-29 05:44:56 jones Exp $'
  */
 
 package edu.ucsb.nceas.dtclient;
@@ -27,6 +27,7 @@ import java.io.*;
 import java.util.*;
 import java.net.URL;
 import java.lang.reflect.*;
+import java.lang.ClassCastException;
 import com.symantec.itools.javax.swing.borders.LineBorder;
 
 //import edu.ucsb.nceas.querybean.*;
@@ -39,16 +40,21 @@ public class ClientFramework extends javax.swing.JFrame
     String userName = "public";
     String passWord = "none";
     static boolean log_file = false; // redirects standard out and err streams
-    String 	xmlcatalogfile = null;
+    String xmlcatalogfile = null;
     String MetaCatServletURL = null;
     PropertyResourceBundle options = null;
     boolean connected = false;
+    edu.ucsb.nceas.querybean.LocalQuery lq = null;
+    Hashtable menuList = null;
 
-	edu.ucsb.nceas.querybean.LocalQuery lq = null;
-//	String[] searchmode = {"contains","contains-not","is","is-not","starts-with","ends-with"};
+    // String[] searchmode = {"contains","contains-not","is","is-not","starts-with","ends-with"};
     JTable table;
-	public ClientFramework()
-	{
+
+    public ClientFramework()
+    {
+      // Create the list of menus for use by the framework and plugins
+      menuList = new Hashtable();
+
 	    try{
 //      Example of loading icon as resource - DFH 
 		ImageIcon xxx = new ImageIcon(getClass().getResource("new.gif"));
@@ -215,18 +221,6 @@ public class ClientFramework extends javax.swing.JFrame
 		UnderConstruction.setForeground(java.awt.Color.red);
 		UnderConstruction.setFont(new Font("Dialog", Font.BOLD, 20));
 		UnderConstruction.setBounds(0,0,739,459);
-		EditorPanel2.setLayout(new BorderLayout(0,0));
-		JTabbedPane1.add(EditorPanel2);
-		//MBJSIZE//EditorPanel2.setBounds(2,27,739,459);
-		EditorPanel2.setVisible(false);
-		EditorPanel2.add(BorderLayout.CENTER,editorBean2);
-		//MBJSIZE//editorBean2.setBounds(0,0,693,414);
-		JTabbedPane1.setSelectedComponent(QueryPanel);
-		JTabbedPane1.setSelectedIndex(1);
-		JTabbedPane1.setTitleAt(0,"Edit Document");
-		JTabbedPane1.setTitleAt(1,"Search Document");
-		JTabbedPane1.setTitleAt(2,"Browse Data");
-		JTabbedPane1.setTitleAt(3,"Demo Editor");
 		//$$ lineBorder1.move(240,481);
 		//$$ stringListModel1.move(72,406);
 		//$$ stringComboBoxModel1.move(48,481);
@@ -317,6 +311,23 @@ public class ClientFramework extends javax.swing.JFrame
 		helpMenu.add(aboutItem);
 		//}}
 
+                // Update the menu list withthe statically created menus
+                menuList.put("File", fileMenu);
+                menuList.put("Edit", editMenu);
+                menuList.put("Windows", WindowsMenu);
+                menuList.put("Help", helpMenu);
+
+                // Set the tab titles -- these should be dynamically set
+                // from the client.properties rather than hardcoded
+		JTabbedPane1.setSelectedComponent(QueryPanel);
+		JTabbedPane1.setSelectedIndex(1);
+		JTabbedPane1.setTitleAt(0,"Edit Document");
+		JTabbedPane1.setTitleAt(1,"Search Document");
+		JTabbedPane1.setTitleAt(2,"Browse Data");
+
+                // Load all of the plugins, their menus, and toolbars
+                loadPlugins();
+
 		//{{INIT_MENUS
 		//}}
 
@@ -359,6 +370,82 @@ public class ClientFramework extends javax.swing.JFrame
     queryBean1.setEditor(mdeBean1);
 	queryBean1.setTabbedPane(JTabbedPane1);	
 	}
+
+  /**
+   * Load all of the plugins specified in the configuration file as
+   * new tabs in the main components pane.  This routine also loads the
+   * menus and toolboxes for the plugins.
+   */
+  private void loadPlugins() {
+
+    // Dynamically load the plugins and their associated
+    // menus and toolbars
+
+    // First, create the new bean plugin
+    try {
+      PluginInterface plugin = (PluginInterface)
+        createObject("edu.ucsb.nceas.editor.EditorBean");
+
+      // Create a panel to contain the plugin
+      JPanel pluginPanel = new JPanel();
+      pluginPanel.setLayout(new BorderLayout(0,0));
+      JTabbedPane1.add(pluginPanel);
+      pluginPanel.setVisible(false);
+      pluginPanel.add(BorderLayout.CENTER,(Container)plugin);
+  
+      // Set the tab title (should get dynamically from the client.properties
+      JTabbedPane1.setTitleAt(3,"Demo Editor");
+
+      // Get the list of menus from the plugin components
+      String menus[] = plugin.registerMenus();
+  
+      // Loop through the menus and create them
+      for (int i=0; i < menus.length; i++) {
+        String currentMenuName = menus[i];
+  
+        JMenu currentMenu = null;
+        // Check if the menu exists already here
+        if (menuList.containsKey(currentMenuName)) {
+          currentMenu = (JMenu)menuList.get(currentMenuName);
+        } else {
+          currentMenu = new JMenu(); 
+          currentMenu.setText(currentMenuName);
+          currentMenu.setActionCommand(currentMenuName);
+          //currentMenu.setMnemonic((int)'H');
+          JMenuBar1.add(currentMenu);
+          menuList.put(currentMenuName, currentMenu);
+        }
+  
+        // Get the menu items (Actions) and add them to the menus
+        Action menuActions[] = 
+          plugin.registerMenuActions(currentMenuName);
+        for (int j=0; j < menuActions.length; j++) {
+          Action currentAction = menuActions[j];
+          if (currentMenuName.equals("File")) {
+            // Insert File menu items above the "Exit" item and separator
+            int pos = currentMenu.getMenuComponentCount() - 2;
+            if (pos < 0) {
+              pos = 0;
+            }
+            currentMenu.insert(currentAction, pos);
+          } else {
+            // Append everything else at the bottom of the menu
+            currentMenu.add(currentAction);
+          }
+        }
+      }
+
+      // Get the toolbar Actions and add them to the toolbar
+      Action toolbarActions[] = plugin.registerToolbarActions();
+      for (int j=0; j < toolbarActions.length; j++) {
+        Action currentAction = toolbarActions[j];
+        JToolBar1.add(currentAction);
+      }
+
+    } catch (ClassCastException cce) {
+      System.err.println("Error loading plugin: wrong class!");
+    }
+  }
 
     /**
      * Creates a new instance of JFrame1 with the given title.
@@ -477,7 +564,6 @@ public class ClientFramework extends javax.swing.JFrame
 	javax.swing.JPanel EditorPanel = new javax.swing.JPanel();
 	javax.swing.JPanel QueryPanel = new javax.swing.JPanel();
 	javax.swing.JPanel DataViewerPanel = new javax.swing.JPanel();
-	javax.swing.JPanel EditorPanel2 = new javax.swing.JPanel();
 	javax.swing.JTextArea JTextArea1 = new javax.swing.JTextArea();
 	javax.swing.JLabel UnderConstruction = new javax.swing.JLabel();
 	com.symantec.itools.javax.swing.borders.LineBorder lineBorder1 = new com.symantec.itools.javax.swing.borders.LineBorder();
@@ -509,7 +595,6 @@ public class ClientFramework extends javax.swing.JFrame
     
 	edu.ucsb.nceas.querybean.AbstractQueryBean queryBean1 = (edu.ucsb.nceas.querybean.AbstractQueryBean)createObject("edu.ucsb.nceas.querybean.QueryBean");
 
-	edu.ucsb.nceas.metaedit.AbstractMdeBean editorBean2 = (edu.ucsb.nceas.metaedit.AbstractMdeBean)createObject("edu.ucsb.nceas.editor.EditorBean");
 	//{{DECLARE_MENUS
 	//}}
 

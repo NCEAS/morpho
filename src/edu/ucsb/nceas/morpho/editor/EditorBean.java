@@ -5,56 +5,85 @@ import javax.swing.*;
 import java.awt.event.*;
 import java.io.*;
 
-import edu.ucsb.nceas.metaedit.*;
+import edu.ucsb.nceas.dtclient.PluginInterface;
 
-public class EditorBean extends AbstractMdeBean
+public class EditorBean extends Container implements PluginInterface
 {
   Editor me;
+  Action[] menuActions = null;
+  Action[] toolbarActions = null;
+
   public EditorBean()
   {
     //{{INIT_CONTROLS
     setLayout(new BorderLayout(0,0));
-    //setSize(750,450);
     //}}
     me = new Editor();
     me.setVisible(true);
     me.invalidate();
     add(BorderLayout.CENTER,me);
     setVisible(true);
+   
+    initializeActions();
   }
 
-/*
-  public void openDocument() {
-    me.openDocument();   
+  /**
+   * This method is called on component initialization to generate a list
+   * of the names of the menus, in display order, that the component wants
+   * added to the framework.  If a menu already exists (from another component
+   * or the framework itself), the order will be determined by the earlier
+   * registration of the menu.
+   */
+  public String[] registerMenus() {
+    String menuList[] = new String[2];
+    menuList[0] = "File";
+    menuList[1] = "Test";
+    return menuList;
   }
-  public void openDocument(File f) {
-    me.openDocument(f);   
+
+  /**
+   * The plugin must return the Actions that should be associated 
+   * with a particular menu. They will be appended onto the bottom of the menu
+   * in most cases.
+   */
+  public Action[] registerMenuActions(String menu) {
+    Action actionList[] = null;
+    if (menu.equals("Test") || menu.equals("File")) {
+      actionList = menuActions;
+    }
+    return actionList;
   }
-  public void newDocument() {
-    me.newDocument();   
+
+  /**
+   * The plugin must return the list of Actions to be associated with the
+   * toolbar for the framework. 
+   */ 
+  public Action[] registerToolbarActions() {
+    return toolbarActions;;
   }
-  public void saveDocument() {
-    me.currentDocument.save();  
+
+  /**
+   * Set up the actions for menus and toolbars
+   */
+  private void initializeActions() {
+    // Set up the menus for the application
+    menuActions = new Action[1];
+    Action testItemAction = new AbstractAction("Test Me") {
+      public void actionPerformed(ActionEvent e) {
+        System.out.println("Action fired: Test Me :-)");
+      }
+    };
+    menuActions[0] = testItemAction;
+
+    // Set up the toolbar for the application
+    toolbarActions = new Action[1];
+    Action testToolbarAction = new AbstractAction("Wow") {
+      public void actionPerformed(ActionEvent e) {
+        System.out.println("Action fired: Wow :-)");
+      }
+    };
+    toolbarActions[0] = testToolbarAction;
   }
-  public void saveDocumentAs() {
-    me.currentDocument.saveAs();   
-  }
-  public void saveDocumentToDatabase() {
-    me.currentDocument.saveToDatabase();   
-  }
-  public void previewXMLFile() {
-    me.previewXMLFile();   
-  }
-  public void showOptions() {
-    me.showOptions(); 
-  }
-  public void set_eChoiceVisible(boolean flg) {
-    me.eChoice.setVisible(flg); 
-  }
-  public void set_inputer(boolean flg) {
-    me.inputer.setVisible(flg); 
-  }
-*/   
 
   public static void main(String argv[])
   {
@@ -77,120 +106,21 @@ public class EditorBean extends AbstractMdeBean
         setSize(700,450);
         editorBean = new EditorBean();
         getContentPane().add(BorderLayout.CENTER,editorBean);
+
         // Create a menu bar and add it to the top edge of the frame
         JMenuBar menuBar;
         menuBar = new JMenuBar();
-        //Container cp = getContentPane();
-        //getRootPane().setMenuBar(menuBar);
 
-        // Add the menus to the menubar
-        JMenu menu;
-        JMenuItem item;
-        JCheckBoxMenuItem checkBoxMenuItem;
+        // Need to dynamically create the menus here based on the Actions
+        // NOT YET IMPLEMENTED -- COPY CODE FROM ClientFramework
 
-        // FILE menu
-        menu = new JMenu("File");
-        // ADD ACCELERATOR KEYS FOR EACH OF THE MENUS
-        item = new JMenuItem("New...");
-        item.addActionListener(this);
-        menu.add(item);
-    
-        item = new JMenuItem("Open...");
-        item.addActionListener(this);
-        menu.add(item);
-    
-        item = new JMenuItem("Save...");
-        menu.add(item);
-        item.addActionListener(this);
-    
-        item = new JMenuItem("Save As...");
-        menu.add(item);
-        item.addActionListener(this);
-    
-        item = new JMenuItem("Save to Database...");
-        menu.add(item);
-        item.addActionListener(this);
-    
-        item = new JMenuItem("Preview XML...");
-        menu.add(item);
-        item.addActionListener(this);
-    
-        menu.add(new JSeparator());
-        item = new JMenuItem("Quit");
-        menu.add(item);
-        item.addActionListener(this);
-        menuBar.add(menu);
-
-        // EDIT menu
-        menu = new JMenu("Edit");
-        // ADD CUT/COPY/PASTE PLACEHOLDERS, DISABLED
-        menu.add(new JSeparator());
-        item = new JMenuItem("Find");
-        item.setEnabled(false);
-        menu.add(item);
-        item.addActionListener(this);
-        menu.add(new JSeparator());
-        item = new JMenuItem("Options...");
-        menu.add(item);
-        item.addActionListener(this);
-        menuBar.add(menu);
-    
-        // WINDOW menu
-        menu = new JMenu("Window");
-        checkBoxMenuItem = new JCheckBoxMenuItem("Element Choice");
-        checkBoxMenuItem.setState(true);
-        menu.add(checkBoxMenuItem);
-        checkBoxMenuItem.addActionListener(this);
-        menuBar.add(menu);
-        checkBoxMenuItem = new JCheckBoxMenuItem("Element Text");
-        checkBoxMenuItem.setState(true);
-        menu.add(checkBoxMenuItem);
-        checkBoxMenuItem.addActionListener(this);
-        menuBar.add(menu);
-    
-        // HELP menu
-        menu = new JMenu("Help");
-        item = new JMenuItem("About...");
-        item.setEnabled(false);
-        menu.add(item);
-        item.addActionListener(this);
-        menuBar.add(menu);
+        // Add the menubar to the window
         getContentPane().add(BorderLayout.NORTH,menuBar);
       }
       
       public void actionPerformed (ActionEvent event) {
         if(event.getActionCommand().equals("Quit")) {
           System.exit(0);
-        }  else if (event.getActionCommand().equals("Open...")) {
-          editorBean.openDocument();
-        } else if (event.getActionCommand().equals("New...")) {
-          editorBean.newDocument();
-        } else if (event.getActionCommand().equals("Save...")) {
-          editorBean.saveDocument();
-        } else if (event.getActionCommand().equals("Save As...")) {
-          editorBean.saveDocumentAs();
-        } else if (event.getActionCommand().equals("Save to Database...")) {
-          System.err.println("Saving to database...");
-          editorBean.saveDocumentToDatabase();
-        } else if (event.getActionCommand().equals("Preview XML...")) {
-          editorBean.previewXMLFile();
-        } else if (event.getActionCommand().equals("Options...")) {
-          editorBean.showOptions();
-        } else if (event.getActionCommand().equals("About...")) {
-          // Function yet to be implemented.
-          // doAboutMenu();
-        } else if (event.getActionCommand().equals("Element Choice")) {
-          if (((JCheckBoxMenuItem)(event.getSource())).getSelectedObjects() == null) {
-            editorBean.set_eChoiceVisible(false);
-          } else {
-            editorBean.set_eChoiceVisible(true);
-          }
-        } else if(event.getActionCommand().equals("Element Text")) {
-          if (((JCheckBoxMenuItem)(event.getSource())).getSelectedObjects() == null) {
-            editorBean.set_inputer(false);
-          } else {
-            editorBean.set_inputer(true);
-          }
         }
       }
     }
