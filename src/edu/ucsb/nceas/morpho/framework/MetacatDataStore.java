@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: berkley $'
- *     '$Date: 2001-11-30 17:20:08 $'
- * '$Revision: 1.29 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2002-02-14 22:23:03 $'
+ * '$Revision: 1.30 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -101,10 +101,12 @@ public class MetacatDataStore extends DataStore implements DataStoreInterface
       try
       {
         writer = new FileWriter(localfile);
+        BufferedWriter bwriter = new BufferedWriter(writer);
         InputStream metacatInput = framework.getMetacatInputStream(props);
         InputStreamReader metacatInputReader = new InputStreamReader(metacatInput);
+        BufferedReader bmetacatInputReader = new BufferedReader(metacatInputReader);
         int x = 1;
-        while(!metacatInputReader.ready())
+/*        while(!bmetacatInputReader.ready())
         { //this is a stall to wait until the input stream is ready to read
           //there is probably a better way to do this.
           x++;
@@ -114,31 +116,32 @@ public class MetacatDataStore extends DataStore implements DataStoreInterface
             break;
           }
         }
-        
-        int c = metacatInputReader.read();
+*/        
+        int c = bmetacatInputReader.read();
         while(c != -1)
         {
-          writer.write(c);
-          c = metacatInputReader.read();
+          bwriter.write(c);
+          c = bmetacatInputReader.read();
         }
-        writer.flush();
-        writer.close();
+        bwriter.flush();
+        bwriter.close();
         
         reader = new FileReader(localfile);
-        c = reader.read();
+        BufferedReader breader = new BufferedReader(reader);
+        c = breader.read();
         while(c != -1)
         {
           response.append((char)c);
-          c = reader.read();
+          c = breader.read();
         }
         String responseStr = response.toString();
         //ClientFramework.debug(11, "==========================responseStr: " + 
         //                      responseStr/*.substring(22,29)*/);
         if(responseStr.indexOf("<error>") != -1)
         {//metacat reported some error
-          writer.close();
-          reader.close();
-          metacatInputReader.close();
+          bwriter.close();
+          breader.close();
+          bmetacatInputReader.close();
           metacatInput.close();
           if(!localfile.delete())
           {
@@ -156,9 +159,9 @@ public class MetacatDataStore extends DataStore implements DataStoreInterface
                                           response.toString());
         }
         
-        writer.close();
-        reader.close();
-        metacatInputReader.close();
+        bwriter.close();
+        breader.close();
+        bmetacatInputReader.close();
         metacatInput.close();
         
         return localfile;
@@ -214,6 +217,7 @@ public class MetacatDataStore extends DataStore implements DataStoreInterface
     StringBuffer messageBuf = new StringBuffer();
     String accessFileId = null;
 
+    BufferedReader bfile = new BufferedReader(file);
     try
     {
       /*
@@ -230,15 +234,16 @@ public class MetacatDataStore extends DataStore implements DataStoreInterface
       StringWriter sw = new StringWriter();
       File tempfile = new File(tempdir + "/metacat.noid");
       FileWriter fw = new FileWriter(tempfile);
-      int c = file.read();
+      BufferedWriter bfw = new BufferedWriter(fw);
+      int c = bfile.read();
       while(c != -1)
       {
-        fw.write(c); //write out everything in the reader
+        bfw.write(c); //write out everything in the reader
         sw.write(c);
-        c = file.read();
+        c = bfile.read();
       }
-      fw.flush();
-      fw.close();
+      bfw.flush();
+      bfw.close();
       String filetext = insertIdInFile(tempfile, name); //put the id in
       
       if(filetext == null)
@@ -259,12 +264,13 @@ public class MetacatDataStore extends DataStore implements DataStoreInterface
       InputStream metacatInput = null;
       metacatInput = framework.getMetacatInputStream(prop, true);
       InputStreamReader metacatInputReader = new InputStreamReader(metacatInput);
+      BufferedReader bmetacatInputReader = new BufferedReader(metacatInputReader);
       
-      int d = metacatInputReader.read();
+      int d = bmetacatInputReader.read();
       while(d != -1)
       {
         messageBuf.append((char)d);
-        d = metacatInputReader.read();
+        d = bmetacatInputReader.read();
       }
       
       String message = messageBuf.toString();
@@ -272,7 +278,7 @@ public class MetacatDataStore extends DataStore implements DataStoreInterface
       
       if(message.indexOf("<error>") != -1)
       {//there was an error
-        metacatInputReader.close();
+        bmetacatInputReader.close();
         metacatInput.close();
         throw new MetacatUploadException(message);
       }
@@ -282,13 +288,13 @@ public class MetacatDataStore extends DataStore implements DataStoreInterface
         String docid = parseIdFromMessage(message);
         try
         {
-          metacatInputReader.close();
+          bmetacatInputReader.close();
           metacatInput.close();
           return openFile(docid);
         }
         catch(Exception ee)
         {
-          metacatInputReader.close();
+          bmetacatInputReader.close();
           metacatInput.close();
           ee.printStackTrace();
           return null;
@@ -359,13 +365,14 @@ public class MetacatDataStore extends DataStore implements DataStoreInterface
 
       InputStreamReader returnStream = 
                         new InputStreamReader(metacatInput);
+      BufferedReader breturnStream = new BufferedReader(returnStream);                  
       StringWriter sw = new StringWriter();
       int len;
       char[] characters = new char[512];
-      while ((len = returnStream.read(characters, 0, 512)) != -1) {
+      while ((len = breturnStream.read(characters, 0, 512)) != -1) {
         sw.write(characters, 0, len);
       }
-      returnStream.close();
+      breturnStream.close();
       String response = sw.toString();
       sw.close();
   
@@ -395,14 +402,14 @@ public class MetacatDataStore extends DataStore implements DataStoreInterface
     InputStream metacatInput = null;
     metacatInput = framework.getMetacatInputStream(prop, true);
     InputStreamReader metacatInputReader = new InputStreamReader(metacatInput);
-    
+    BufferedReader bmetacatInputReader = new BufferedReader(metacatInputReader);
     try
     {
-      int d = metacatInputReader.read();
+      int d = bmetacatInputReader.read();
       while(d != -1)
       {
         messageBuf.append((char)d);
-        d = metacatInputReader.read();
+        d = bmetacatInputReader.read();
       }
     }
     catch(IOException ioe)
@@ -419,7 +426,7 @@ public class MetacatDataStore extends DataStore implements DataStoreInterface
     { //there was an error
       try
       {
-        metacatInputReader.close();
+        bmetacatInputReader.close();
         metacatInput.close();
       }
       catch(Exception e)
@@ -430,7 +437,7 @@ public class MetacatDataStore extends DataStore implements DataStoreInterface
     { //the operation worked
       try
       {
-        metacatInputReader.close();
+        bmetacatInputReader.close();
         metacatInput.close();
       }
       catch(Exception e)
