@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2002-08-23 20:11:12 $'
- * '$Revision: 1.7 $'
+ *   '$Author: tao $'
+ *     '$Date: 2002-08-30 01:20:56 $'
+ * '$Revision: 1.8 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,6 +26,7 @@
 
 package edu.ucsb.nceas.morpho.util;
 
+import edu.ucsb.nceas.morpho.framework.UIController;
 import javax.swing.Icon;
 import javax.swing.AbstractAction;
 import java.awt.event.ActionEvent;
@@ -85,8 +86,35 @@ public class GUIAction extends AbstractAction {
     public void setSmallIcon(Icon smallIcon) {
         super.putValue(AbstractAction.SMALL_ICON, smallIcon);
     }
+   
+    /** 
+     *  sets the action pull right submenu
+     *
+     *  @param flag true of false the action is sub menu
+     */
+    public void setSubMenu(boolean flag) {
+        if (flag)
+        {
+          super.putValue(UIController.PULL_RIGHT_MENU, UIController.YES);
+        }
+    }
     
     /** 
+     *  sets the action path for sub menu or sub menuitem.
+     *  Note: sub menu and sub menuitem for this sub menu has same path
+     *  for example In file menu, it has a submenu delete and delete has
+     *  3 menuitems - delete local, delete network and delete both.
+     *  The path for delete submenu is "file/delete", the path for the 3 
+     *  menuitems is "file/delete" too.
+     *
+     *  @param path the su
+     */
+    public void setSubMenuPath(String path) {
+          super.putValue(UIController.MENU_PATH, path);
+     
+    }
+   
+   /** 
      *  sets the menu item position for this action
      *
      *  @param position the position of memu item
