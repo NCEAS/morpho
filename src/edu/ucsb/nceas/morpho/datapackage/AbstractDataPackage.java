@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2004-04-07 10:26:19 $'
- * '$Revision: 1.92 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2004-04-09 03:15:51 $'
+ * '$Revision: 1.93 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -822,7 +822,7 @@ public abstract class AbstractDataPackage extends MetadataObject
           NodeList temp = XMLUtilities.getNodeListWithXPath(metadataNode, path);
           if ((temp!=null)&&(temp.getLength()>0)) {
             Log.debug(40, "found: "+path);
-            Node prevNode = temp.item(0);
+            Node prevNode = temp.item(temp.getLength()-1);
             Document doc = prevNode.getOwnerDocument();
             Node nextNode = prevNode.getNextSibling();
             Node par = prevNode.getParentNode();
