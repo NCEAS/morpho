@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2002-08-27 23:44:11 $'
- * '$Revision: 1.2 $'
+ *     '$Date: 2002-08-28 18:17:24 $'
+ * '$Revision: 1.3 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -62,12 +62,7 @@ public class LocalToNetworkCommand implements Command
   public LocalToNetworkCommand(OpenDialogBox box)
   {
     dialog = box;
-    if (dialog != null)
-    {
-      // This command will apply to a dialog
-      morphoFrame = dialog.getParentFrame();
-      resultPane = dialog.getResultPanel();
-    }
+   
   }//LocalToNetworkCommand
   
  
@@ -76,7 +71,13 @@ public class LocalToNetworkCommand implements Command
    */    
   public void execute()
   {
-    if (dialog == null)
+    if (dialog != null)
+    {
+      // This command will apply to a dialog
+      morphoFrame = dialog.getParentFrame();
+      resultPane = dialog.getResultPanel();
+    }
+    else
     {
       // If the command would not applyto a dialog, moreFrame will be set to be
       // current active morphoFrame
@@ -146,7 +147,7 @@ public class LocalToNetworkCommand implements Command
                "for this package will be changed.  Are you sure you want to \n"+
                "proceed with the upload?";
               int choice = JOptionPane.YES_OPTION;
-              choice = JOptionPane.showConfirmDialog(null, message, 
+              choice = JOptionPane.showConfirmDialog(box, message, 
                                  "Morpho", 
                                  JOptionPane.YES_NO_CANCEL_OPTION,
                                  JOptionPane.WARNING_MESSAGE);
