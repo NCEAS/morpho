@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-11-25 23:19:21 $'
- * '$Revision: 1.27 $'
+ *     '$Date: 2003-12-01 22:57:25 $'
+ * '$Revision: 1.28 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -269,6 +269,13 @@ public abstract class AbstractDataPackage extends MetadataObject
   */
   public String getLocation() {
     return location;
+  }
+
+ /**
+  *  Method to set the location
+  */
+  public void setLocation(String location) {
+    this.location = location;
   }
 
  /**
@@ -1035,6 +1042,74 @@ public abstract class AbstractDataPackage extends MetadataObject
     }
     return temp;
   }
+  
+  /*
+   * This method loops through all the entities in a package and checks for
+   * url references to data files (i.e. data external to the data package).
+   * Both metatcat and local file stores are checked to see if the data has
+   * already been saved. If not, the temp directory is checked. Note that it
+   * is assumed that the data file has been assigned an id and stored in the
+   * temp directory if it has not been saved to one of the stores
+   */
+  public void serializeData() {
+    File dataFile = null;
+    Morpho morpho = Morpho.thisStaticInstance;
+    FileSystemDataStore fds = new FileSystemDataStore(morpho);
+    MetacatDataStore mds = new MetacatDataStore(morpho); 
+//Log.debug(1, "About to check entityArray!");        
+    if (entityArray==null) return;  // there is no data!
+    for (int i=0;i<entityArray.length;i++) {
+      String urlinfo = getDistributionUrl(i, 0,0);
+      int indx2 = urlinfo.indexOf("//");
+      if (indx2>-1) urlinfo = urlinfo.substring(indx2+2);
+      if (urlinfo.length()==0) return;
+      // if we reach here, urlinfo should be the id in a string
+      try{ 
+        if ((location.equals(LOCAL))||(location.equals(BOTH))) {
+          dataFile = fds.openFile(urlinfo);            
+        }
+        else if (location.equals(METACAT)) {
+          dataFile = mds.openFile(urlinfo);            
+        }
+      }
+      catch (FileNotFoundException fnf) {
+        // if the datfile has NOT been located, a FileNotFoundException will be thrown.
+        // this indicates that the datafile with the url has NOT been saved
+        // the datafile should be stored in the profile temp dir
+//Log.debug(1, "FileNotFoundException");
+        ConfigXML profile = morpho.getProfile();
+        String separator = profile.get("separator", 0);
+        separator = separator.trim();
+        String temp = new String();
+        temp = urlinfo.substring(0, urlinfo.indexOf(separator));
+        temp += "/" + urlinfo.substring(urlinfo.indexOf(separator) + 1, urlinfo.length());
+        try{ 
+          dataFile = fds.openTempFile(temp); 
+          InputStream dfis = new FileInputStream(dataFile);   
+          if ((location.equals(LOCAL))||(location.equals(BOTH))) {
+//Log.debug(1, "ready to save: urlinfo: "+urlinfo);
+            fds.saveDataFile(urlinfo, dfis);
+            // the temp file has been saved; thus delete
+            dfis.close();
+            dataFile.delete();
+          }
+          else if ((location.equals(METACAT))||(location.equals(BOTH))) {
+//            mds.newDataFile(temp, dataFile);
+            // the temp file has been saved; thus delete
+//            dataFile.delete();
+           }
+        }
+        catch (Exception ex) {
+          Log.debug(5,"Some problem while writing data files has occurred!");
+        }
+      }
+      catch (Exception q) {
+        // some other problem has occured
+        Log.debug(5,"Some problem with saving data files has occurred!");
+      }
+    }
+  }
+  
   
   /**
    *  This method displays a summary of Package information by
