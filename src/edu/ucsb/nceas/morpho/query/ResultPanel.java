@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2002-08-08 00:15:14 $'
- * '$Revision: 1.40.4.3 $'
+ *     '$Date: 2002-08-09 01:13:32 $'
+ * '$Revision: 1.40.4.4 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -129,6 +129,7 @@ public class ResultPanel extends JPanel
    * the panel has reset and refresh buttons.
    *
    * @param results the result listing to display
+   * @param myMediator the mediaor passed from frame to control table
    */
   public ResultPanel(ResultSet results, ResultPanelAndFrameMediator myMediator)
   {
@@ -141,6 +142,7 @@ public class ResultPanel extends JPanel
    * @param results the result listing to display
    * @param showRefresh boolean true if the Refresh button should appear
    * @param showRevise boolean true if the Revise button should appear
+   * @param myMediator the mediaor passed from frame to control table
    */
   public ResultPanel(ResultSet results, boolean showRefresh, 
                  boolean showRevise, ResultPanelAndFrameMediator myMediator)
@@ -155,6 +157,7 @@ public class ResultPanel extends JPanel
    * @param showRefresh boolean true if the Refresh button should appear
    * @param showRevise boolean true if the Revise button should appear
    * @param fontSize the fontsize for the cells of the table
+   * @param myMediator the mediaor passed from frame to control table
    */
   public ResultPanel(ResultSet results, boolean showRefresh,
        boolean showRevise, int fontSize, ResultPanelAndFrameMediator myMediator)
@@ -165,8 +168,12 @@ public class ResultPanel extends JPanel
     this.hasReviseButton = showRevise;
     this.framework = results.getFramework();
     this.mediator = myMediator;
-    // Register result panel to mediator
-    mediator.registerResultPanel(this);
+    // If the panel don't need a mediator, null will be passed here
+    if (mediator != null)
+    {
+      // Register result panel to mediator
+      mediator.registerResultPanel(this);
+    }
 
     try {
         bfly = new javax.swing.ImageIcon(getClass().getResource("Btfly.gif"));
@@ -240,6 +247,12 @@ public class ResultPanel extends JPanel
  
       // Set up the results table
       table = new SortableJTable(results);
+      for (int i=0; i<table.getColumnCount(); i++)
+      {
+        System.out.println("column class: "+table.getColumnClass(i).getName());
+        
+      }
+      
       // Set resize model
       table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
       // Set horizontal line off
@@ -251,6 +264,7 @@ public class ResultPanel extends JPanel
       //table.setRowHeight((int)(stringRenderer.getPreferredSize().height));
       table.setRowHeight(results.getRowHeight());
       table.setDefaultRenderer(String.class, stringRenderer);
+      table.setDefaultRenderer(javax.swing.ImageIcon.class, new ImageRenderer());
      
       // Create the scroll pane and add the table to it. 
       JScrollPane scrollPane = new JScrollPane(table);
@@ -693,8 +707,13 @@ public class ResultPanel extends JPanel
       table.setRowSelectionInterval(selrow, selrow);
       Vector resultV = results.getResultsVector();
       Vector rowV = (Vector)resultV.elementAt(selrow);
-      // If select a row, open button will enable
-      mediator.enableOpenButton();
+      
+      // If the panel need a mediator
+      if (mediator != null)
+      {
+        // If select a row, open button will enable
+        mediator.enableOpenButton();
+      }
     
       /*//System.out.println("resultsV: " + resultV.toString());
       for(int i=0; i<resultV.size(); i++)
