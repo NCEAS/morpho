@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-04-03 16:36:07 $'
- * '$Revision: 1.32 $'
+ *     '$Date: 2002-04-21 04:08:49 $'
+ * '$Revision: 1.33 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -828,6 +828,7 @@ public void startImport(String file) {
 //        JTable table = new JTable(vec, title);
         JTable table = new JTable(linesTM);
 		    table.setFont(new Font("MonoSpaced", Font.PLAIN, 14));
+		   (table.getTableHeader()).setReorderingAllowed(false);
 		    TableColumn column = null;
 		    column = table.getColumnModel().getColumn(0);
 		    column.setPreferredWidth(40);

@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-04-08 03:19:02 $'
- * '$Revision: 1.14 $'
+ *     '$Date: 2002-04-21 04:08:03 $'
+ * '$Revision: 1.15 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -663,6 +663,8 @@ public class DataViewer extends javax.swing.JFrame
       table.setColumnSelectionAllowed(true);
       table.setRowSelectionAllowed(false);
       table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+	  (table.getTableHeader()).setReorderingAllowed(false);
+      
       
       ListSelectionModel colSM = table.getColumnModel().getSelectionModel();
           colSM.addListSelectionListener(new ListSelectionListener() {
