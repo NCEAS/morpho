@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-06-12 16:17:07 $'
- * '$Revision: 1.34 $'
+ *     '$Date: 2002-06-12 20:40:15 $'
+ * '$Revision: 1.35 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -262,6 +262,9 @@ public class MetacatDataStore extends DataStore implements DataStoreInterface
       {
         filetext = sw.toString();
       }
+      
+      ClientFramework.debug(30, "filelength is:"+filetext.length());
+      if (filetext.length()==0) return null;
       
       Properties prop = new Properties();
       prop.put("action", action);
