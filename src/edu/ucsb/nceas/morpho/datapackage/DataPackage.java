@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: tao $'
- *     '$Date: 2002-08-28 17:18:48 $'
- * '$Revision: 1.67 $'
+ *   '$Author: brooke $'
+ *     '$Date: 2002-08-30 16:14:50 $'
+ * '$Revision: 1.68 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,6 +34,7 @@ import edu.ucsb.nceas.morpho.datastore.MetacatDataStore;
 import edu.ucsb.nceas.morpho.datastore.FileSystemDataStore;
 import edu.ucsb.nceas.morpho.datastore.CacheAccessException;
 import edu.ucsb.nceas.morpho.datastore.MetacatUploadException;
+import edu.ucsb.nceas.morpho.plugins.XMLFactoryInterface;
 import edu.ucsb.nceas.morpho.plugins.DocumentNotFoundException;
 import edu.ucsb.nceas.morpho.util.Log;
 
@@ -89,7 +90,7 @@ import com.arbortext.catalog.CatalogEntityResolver;
 /**
  * class that represents a data package.
  */
-public class DataPackage 
+public class DataPackage implements XMLFactoryInterface
 {
   private ConfigXML         config;
   private Morpho            morpho;
@@ -237,15 +238,25 @@ public class DataPackage
    * @param     identifier                  the unique identifier needed to 
    *                                        locate the desired sub-element. 
    * @return    a <code>java.io.Reader</code> to allow direct read access 
-   *                                        to the source
-   * @throws    DocumentNotFoundException   if document cannot be found
-   * @throws    FileNotFoundException       if document cannot succesfully be 
-   *                                        opened and a Reader returned
+   *
+   *  @throws DocumentNotFoundException if id does not point to a document, or
+   *          if requested document exists but cannot be accessed.
    */
-  public Reader openAsReader(String identifier) 
-                        throws  DocumentNotFoundException, FileNotFoundException 
+  public Reader openAsReader(String identifier) throws DocumentNotFoundException
   {
-    return new FileReader(openAsFile(identifier));
+    FileReader reader = null;
+    try {
+        reader = new FileReader(openAsFile(identifier));
+    } catch (IOException ioe) {
+        Log.debug(12, "Error instantiating reader "+ioe.getMessage());
+        DocumentNotFoundException dnfe =  new DocumentNotFoundException(
+         "DataPackage.openAsReader() - Nested IOException " + ioe);
+        dnfe.fillInStackTrace();
+        throw dnfe;
+    }
+
+
+    return reader;
   }
   
     /**
