@@ -6,9 +6,9 @@
   *               National Center for Ecological Analysis and Synthesis
   *  For Details: http://www.nceas.ucsb.edu/
   *
-  *   '$Author: brooke $'
-  *     '$Date: 2002-09-28 03:29:14 $'
-  * '$Revision: 1.3 $'
+  *   '$Author: tao $'
+  *     '$Date: 2002-10-03 22:08:56 $'
+  * '$Revision: 1.4 $'
   * 
   * This program is free software; you can redistribute it and/or modify
   * it under the terms of the GNU General Public License as published by
@@ -59,7 +59,7 @@
       <xsl:apply-templates select="./title" mode="resource"/>
       <tr><td class="{$subHeaderStyle}" colspan="2">Personnel:</td></tr>
       <xsl:for-each select="personnel">
-          <xsl:apply-templates select="./" mode="party"/>
+          <xsl:apply-templates select="." mode="party"/>
       </xsl:for-each>
       <xsl:apply-templates select="./temporalCov"/>
       <xsl:apply-templates select="./geographicCov"/>

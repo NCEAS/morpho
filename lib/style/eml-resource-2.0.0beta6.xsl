@@ -6,9 +6,9 @@
   *               National Center for Ecological Analysis and Synthesis
   *  For Details: http://www.nceas.ucsb.edu/
   *
-  *   '$Author: cjones $'
-  *     '$Date: 2002-09-26 01:57:52 $'
-  * '$Revision: 1.2 $'
+  *   '$Author: tao $'
+  *     '$Date: 2002-10-03 22:08:56 $'
+  * '$Revision: 1.3 $'
   * 
   * This program is free software; you can redistribute it and/or modify
   * it under the terms of the GNU General Public License as published by
@@ -85,13 +85,13 @@
   <xsl:template match="originator[1]" mode="resource">
     <tr class="{$subHeaderStyle}"><td colspan="2">
       <xsl:text>Data Set Owner(s):</xsl:text></td></tr>
-      <xsl:apply-templates select="./" mode="party"/>
+      <xsl:apply-templates select="." mode="party"/>
       <tr><td width="{$firstColWidth}" class="{$firstColStyle}">&#160;</td>
         <td width="{$secondColWidth}" class="{$secondColStyle}">&#160;</td></tr>
   </xsl:template>
 
   <xsl:template match="originator" mode="resource">
-      <xsl:apply-templates select="./" mode="party"/>
+      <xsl:apply-templates select="." mode="party"/>
       <tr><td width="{$firstColWidth}" class="{$firstColStyle}">&#160;</td>
         <td width="{$secondColWidth}" class="{$secondColStyle}">&#160;</td></tr>
   </xsl:template>
