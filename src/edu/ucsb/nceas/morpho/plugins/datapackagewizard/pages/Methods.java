@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2004-03-20 00:44:55 $'
- * '$Revision: 1.8 $'
+ *   '$Author: sgarg $'
+ *     '$Date: 2004-03-20 02:12:22 $'
+ * '$Revision: 1.9 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -49,10 +49,11 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
-import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 import edu.ucsb.nceas.morpho.util.UISettings;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardContainerFrame;
+import java.awt.Dimension;
+import javax.swing.JComponent;
 
 public class Methods
     extends AbstractUIPage {
@@ -65,13 +66,16 @@ public class Methods
   private final String subtitle = "";
   private final String xPathRoot = "/eml:eml/dataset/methods";
   private final String pageNumber = "12";
+  private final String EMPTY_STRING = "";
 
   private JTextArea studyArea;
   private JTextArea sampleArea;
-  private JLabel titleLabel;
   private JLabel studyLabel;
   private JLabel sampleLabel;
-  private JTextField titleField;
+  private JLabel warningLabel;
+  private JPanel warningPanel;
+
+  private static final Dimension PARTY_FULL_LABEL_DIMS = new Dimension(700, 20);
 
   private final String[] colNames = {
       "Method step title", "Method step description"};
@@ -146,6 +150,19 @@ public class Methods
 
     vbox.add(samplePanel);
     vbox.add(WidgetFactory.makeDefaultSpacer());
+
+    warningPanel = WidgetFactory.makePanel(1);
+    warningLabel = WidgetFactory.makeLabel(
+        "Warning: at least one of the three "
+        + "entries is required: Last Name, Position Name or Organization", true);
+    warningPanel.add(warningLabel);
+    warningPanel.setVisible(false);
+    setPrefMinMaxSizes(warningLabel, PARTY_FULL_LABEL_DIMS);
+    warningPanel.setBorder(new javax.swing.border.EmptyBorder(0,
+        12 * WizardSettings.PADDING,
+        0, 8 * WizardSettings.PADDING));
+
+    vbox.add(warningPanel);
 
     initActions();
   }
@@ -229,6 +246,16 @@ public class Methods
   }
 
   /**
+   *  The action sets prefered Min and Max Sizes for the Components
+   *
+   *  @return
+   */
+  private void setPrefMinMaxSizes(JComponent component, Dimension dims) {
+    WidgetFactory.setPrefMaxSizes(component, dims);
+    component.setMinimumSize(dims);
+  }
+
+  /**
    *  The action to be executed when the page is displayed. May be empty
    */
   public void onLoadAction() {
@@ -251,6 +278,34 @@ public class Methods
    */
   public boolean onAdvanceAction() {
 
+    if (methodsList.getRowCount() == 0 &&
+        (studyArea.getText().trim().compareTo("") != 0 ||
+         sampleArea.getText().trim().compareTo("") != 0)) {
+      // method is requried
+      warningLabel.setText("Method steps are required if you provide either a "
+                           +"study extent or smapling description");
+      warningPanel.setVisible(true);
+      return false;
+    }
+
+    if ( (studyArea.getText().trim().compareTo("") == 0 &&
+          sampleArea.getText().trim().compareTo("") != 0)) {
+
+      warningLabel.setText("Study extent is required if you provide "
+                           +"sampling description");
+      warningPanel.setVisible(true);
+      return false;
+    }
+    if ( (studyArea.getText().trim().compareTo("") != 0 &&
+          sampleArea.getText().trim().compareTo("") == 0)) {
+
+      warningLabel.setText("Sampling description is required if you provide "
+                           +"study extent");
+      warningPanel.setVisible(true);
+      return false;
+    }
+
+    warningPanel.setVisible(false);
     return true;
   }
 
@@ -277,7 +332,7 @@ public class Methods
     MethodsPage nextMethodsPage = null;
 
     List rowLists = methodsList.getListOfRowLists();
-    if (rowLists == null) {
+    if (rowLists != null && rowLists.isEmpty()) {
       return null;
     }
 
@@ -290,10 +345,10 @@ public class Methods
 
       nextRowList = (List) nextRowObj;
       //column 2 is user object - check it exists and isn't null:
-      if (nextRowList.size() < 1) {
+      if (nextRowList.size() < 3) {
         continue;
       }
-      nextUserObject = nextRowList.get(1);
+      nextUserObject = nextRowList.get(2);
       if (nextUserObject == null) {
         continue;
       }
@@ -307,12 +362,12 @@ public class Methods
     }
 
     String study = studyArea.getText().trim();
-    if (study != null) {
+    if (study != null && !study.equals(EMPTY_STRING)) {
       returnMap.put(xPathRoot + "/sampling/studyExtent/description/para", study);
     }
 
     String sample = sampleArea.getText().trim();
-    if (sample != null) {
+    if (sample != null &&!sample.equals(EMPTY_STRING)) {
       returnMap.put(xPathRoot + "/sampling/samplingDescription/para", sample);
     }
 

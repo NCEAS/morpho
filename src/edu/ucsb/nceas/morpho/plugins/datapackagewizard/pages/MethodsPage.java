@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2004-03-20 00:44:55 $'
- * '$Revision: 1.4 $'
+ *   '$Author: sgarg $'
+ *     '$Date: 2004-03-20 02:12:22 $'
+ * '$Revision: 1.5 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -45,6 +45,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.JScrollPane;
+import java.util.StringTokenizer;
 
 public class MethodsPage
     extends AbstractUIPage {
@@ -114,7 +115,7 @@ public class MethodsPage
     middlePanel.add(WidgetFactory.makeHalfSpacer());
 
     JPanel descPanel = WidgetFactory.makePanel(25);
-    descLabel = WidgetFactory.makeLabel("Description:", false);
+    descLabel = WidgetFactory.makeLabel("Description:", true);
     descPanel.add(descLabel);
 
     descField = WidgetFactory.makeTextArea("", 14, true);
@@ -141,21 +142,13 @@ public class MethodsPage
    */
   public boolean onAdvanceAction() {
 
-    String title = titleField.getText().trim();
     String desc = descField.getText().trim();
 
-    if (title.compareTo(EMPTY_STRING) == 0 && desc.compareTo(EMPTY_STRING) == 0) {
-      WidgetFactory.hiliteComponent(titleLabel);
+    if (desc.compareTo(EMPTY_STRING) == 0) {
       WidgetFactory.hiliteComponent(descLabel);
-
       return false;
     }
-
-    WidgetFactory.unhiliteComponent(titleLabel);
-    titleLabel.setForeground(java.awt.Color.black);
     WidgetFactory.unhiliteComponent(descLabel);
-    descLabel.setForeground(java.awt.Color.black);
-
     return true;
   }
 
@@ -210,14 +203,19 @@ public class MethodsPage
 
     String title = titleField.getText().trim();
 
-    if (title!=null) {
-      if (title.length()<1) return null;
+    if (title!=null && !title.equals(EMPTY_STRING)) {
       returnMap.put(xPathRoot + "/title", title);
     }
 
     String desc = descField.getText().trim();
     if (desc != null && !desc.equals(EMPTY_STRING)) {
-      returnMap.put(xPathRoot + "/para", desc);
+
+      StringTokenizer st = new StringTokenizer(desc, "\n\n");
+      int count = 0;
+      while(st.hasMoreTokens()){
+        count++;
+        returnMap.put(xPathRoot + "/para[" + count + "]", st.nextToken());
+      }
     }
 
     return returnMap;
