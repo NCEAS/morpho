@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-02-05 21:57:16 $'
- * '$Revision: 1.27 $'
+ *     '$Date: 2002-02-14 20:57:16 $'
+ * '$Revision: 1.28 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -488,6 +488,7 @@ public class ResultPanel extends JPanel
         try
         {
           dataPackage.upload(docid, false);
+          refreshQuery();
         }
         catch(MetacatUploadException mue)
         {
@@ -526,6 +527,7 @@ public class ResultPanel extends JPanel
       { //download the current selection to the local disk
         ClientFramework.debug(20, "Downloading package.");
         dataPackage.download(docid);
+        refreshQuery();
       }
 			else if (object == deleteLocalMenu)
 		  { //delete the local package
@@ -540,6 +542,7 @@ public class ResultPanel extends JPanel
         if(choice == JOptionPane.YES_OPTION)
         {
           dataPackage.delete(docid, DataPackage.LOCAL);
+          refreshQuery();
         }
       }
 			else if (object == deleteMetacatMenu)
@@ -556,6 +559,8 @@ public class ResultPanel extends JPanel
         if(choice == JOptionPane.YES_OPTION)
         {
           dataPackage.delete(docid, DataPackage.METACAT);
+          refreshQuery();
+          
         }
       }
 			else if (object == deleteAllMenu)
@@ -572,6 +577,7 @@ public class ResultPanel extends JPanel
         if(choice == JOptionPane.YES_OPTION)
         {
           dataPackage.delete(docid, DataPackage.BOTH);
+          refreshQuery();
         }
       }
       else if (object == exportMenu)
@@ -584,7 +590,7 @@ public class ResultPanel extends JPanel
         ClientFramework.debug(20, "Exporting dataset to zip file");
         exportDatasetToZip(docid);
       }
-      refreshQuery();
+//      refreshQuery();
       getParent().invalidate();
       getParent().repaint();
 		}
