@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-12-18 20:32:54 $'
- * '$Revision: 1.107 $'
+ *     '$Date: 2002-12-18 23:04:24 $'
+ * '$Revision: 1.108 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -2711,8 +2711,13 @@ public class DocFrame extends javax.swing.JFrame
                             selectedNode.getUserObject()).getName();
                         String savenodename = ((NodeInfo)
                             nodeCopy.getUserObject()).getName();
-                        if (nodename.equals(savenodename)) {
+                        String card = ((NodeInfo)
+                            nodeCopy.getUserObject()).getCardinality();
+                        if ((nodename.equals(savenodename))&&
+                                 (!card.equals("ONE"))) {
                             PastemenuItem.setEnabled(true);
+                        }
+                        if (nodename.equals(savenodename)) {
                             ReplacemenuItem.setEnabled(true);
                         }
                     }
@@ -2867,49 +2872,6 @@ public class DocFrame extends javax.swing.JFrame
     dbval.validateString(xml);
     return dbval.returnErrors();
   }
-/*
-  public String validate(String xml) {
-    Log.debug(11,"DocFrame: validating output using Metacat");
-    String res = "oops!";
-    Properties props = new Properties();
-    props.put("action", "validate");
-    props.put("valtext", xml);
-    props.put("qformat", "xml");
-    if (!morpho.getNetworkStatus()) {
-      Log.debug(11, "Could not check validity due to lack of network connection");  
-      int opt = JOptionPane.showConfirmDialog(null,
-                 "Could not check validity due to lack of network connection", 
-                 "Do you want to Continue?",
-                 JOptionPane.YES_NO_OPTION);
-      if (opt == JOptionPane.YES_OPTION) {
-        return "<valid />";           
-      }
-      else {
-       return "Could not check validity due to lack of network connection";
-      }
-    }
-    try {
-        StringWriter sos = new StringWriter();
-        InputStream metacatResponseStream = morpho.getMetacatInputStream(props);
-        Morpho.connectionBusy = true;
-      
-        int c = metacatResponseStream.read();
-        while (c!=-1) {
-          sos.write(c);
-          c = metacatResponseStream.read();
-        }
-        sos.flush();
-        sos.close();
-        metacatResponseStream.close();
-        res = sos.toString();
-        Morpho.connectionBusy = true;
-    }
-    catch (Exception e) {
-        Morpho.connectionBusy = true;
-        res = "Problem validating using Metacat";
-    }
-    return res;
-  }
-*/
+
 }
 
