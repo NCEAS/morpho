@@ -5,8 +5,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-12-18 19:09:34 $'
- * '$Revision: 1.94 $'
+ *     '$Date: 2003-12-19 19:24:32 $'
+ * '$Revision: 1.95 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -624,7 +624,12 @@ public class DataViewer extends javax.swing.JPanel
           this.field_delimiter = adp.getPhysicalFieldDelimiter(entityIndex, 0);
           this.delimiter_string = getDelimiterString();
           Log.debug(20, "delimiter_string: "+delimiter_string);
-          this.numHeaderLines = adp.getPhysicalNumberHeaderLines(entityIndex, 0);          
+          String nhl = adp.getPhysicalNumberHeaderLines(entityIndex, 0);
+          if (nhl.length()>0) {
+            this.numHeaderLines = nhl; 
+          } else {
+            this.numHeaderLines = "0"; 
+          }
           Log.debug(20, "numHeaderLines: "+numHeaderLines);
           }
           // get entity info (number of records, etc)

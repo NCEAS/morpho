@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-12-18 19:08:44 $'
- * '$Revision: 1.40 $'
+ *     '$Date: 2003-12-19 19:24:32 $'
+ * '$Revision: 1.41 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1137,7 +1137,7 @@ public abstract class AbstractDataPackage extends MetadataObject
           "/xpathKeyMap/contextNode[@name='physical']/distribution")).getNodeValue();
       NodeList distributionlNodes = XMLUtilities.getNodeListWithXPath(physNodes[physicalIndex],distributionXpath);
       if (distributionlNodes==null) {
-        Log.debug(1,"distributionList is null!");
+        Log.debug(20,"distributionList is null!");
         return null;
       }
       return XMLUtilities.getNodeListAsNodeArray(distributionlNodes);      
@@ -1156,6 +1156,7 @@ public abstract class AbstractDataPackage extends MetadataObject
   public String getDistributionInlineData(int entityIndex, int physicalIndex, int distIndex) {
     String temp = "";
     Node[] distNodes = getDistributionArray(entityIndex, physicalIndex);
+    if (distNodes==null) return temp;
     if (distIndex>distNodes.length-1) return temp;
     Node distNode = distNodes[distIndex];
     String distXpath = "";
@@ -1181,6 +1182,7 @@ public abstract class AbstractDataPackage extends MetadataObject
   public String getDistributionUrl(int entityIndex, int physicalIndex, int distIndex) {
     String temp = "";
     Node[] distNodes = getDistributionArray(entityIndex, physicalIndex);
+    if (distNodes==null) return temp;
     if (distIndex>distNodes.length-1) return temp;
     Node distNode = distNodes[distIndex];
     String distXpath = "";
@@ -1204,6 +1206,7 @@ public abstract class AbstractDataPackage extends MetadataObject
   public void setDistributionUrl(int entityIndex, int physicalIndex, int distIndex, String urlS) {
     String temp = "";
     Node[] distNodes = getDistributionArray(entityIndex, physicalIndex);
+    if (distNodes==null) return;
     if (distIndex>distNodes.length-1) return;
     Node distNode = distNodes[distIndex];
     String distXpath = "";

@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-12-18 19:09:34 $'
- * '$Revision: 1.82 $'
+ *     '$Date: 2003-12-19 19:24:32 $'
+ * '$Revision: 1.83 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -719,7 +719,7 @@ public class DataViewContainerPanel extends javax.swing.JPanel
     lastTabSelected = index;
     String dataId = null;
       if (adp==null) {
-        Log.debug(1, "Both dp and adp are null! No data package");
+        Log.debug(1, "adp is null! No data package");
         return;
       }
       String inline = adp.getDistributionInlineData(index, 0,0);
@@ -737,11 +737,6 @@ public class DataViewContainerPanel extends javax.swing.JPanel
             (encMethod.indexOf("Base 64")>-1)||(encMethod.indexOf("base 64")>-1)) {
           // is Base64
 
-          // test --- first encode
-          // byte[] decodedData1 = inline.getBytes();
-          // String temp = Base64.encode(decodedData1);
-          // Log.debug(1, "temp: "+temp);
-          // byte[] decodedData = Base64.decode(temp);
 
           byte[] decodedData = Base64.decode(inline);
           ByteArrayInputStream bais = new ByteArrayInputStream(decodedData);
@@ -755,7 +750,8 @@ public class DataViewContainerPanel extends javax.swing.JPanel
           StringReader sr2 = new StringReader(inline);
           displayFile = fds2.saveTempDataFile(adp.getAccessionNumber(), sr2);
         }
-      } else {
+      } else if (adp.getDistributionUrl(index, 0,0).length()>0) {
+        // this is the case where there is a url link to the data
         String urlinfo = adp.getDistributionUrl(index, 0,0);
         // assumed that urlinfo is of the form 'protocol://systemname/localid/other'
         // protocol is probably 'ecogrid'; system name is 'knb'
@@ -818,38 +814,41 @@ public class DataViewContainerPanel extends javax.swing.JPanel
           q.printStackTrace();
         }
       }
+      else if (adp.getDistributionArray(index, 0)==null) {
+        // case where there is no distribution data in the package
+        Log.debug(1, "This entity has NO distribution information!");
+      }
       dv = new DataViewer(morpho, "DataFile: ", null);  // file is null for now
       dv.setAbstractDataPackage(adp);
       dv.setEntityIndex(index);
-//      File testFile = new File("C:/Documents and Settings/higgins/.morpho/profiles/higgins/data/jscientist/3.1");
+
       dv.setDataFile(displayFile);
     
-    dv.init();
-//    dv.getEntityInfo();  // this is already done in init
-    lastPV = dv.getPV();
-    JPanel tablePanel = null;
-    if (dv.getShowDataView())
-    {
-      tablePanel = dv.DataViewerPanel;
-    }
-    else
-    {
-      tablePanel = new JPanel();
-      tablePanel.add(BorderLayout.NORTH, Box.createVerticalStrut(80));
-      String text = null;
-      if (dataId.equals("") || dataId == null)
+      dv.init();
+      lastPV = dv.getPV();
+      JPanel tablePanel = null;
+      if (dv.getShowDataView())
       {
-        text = "Either there is no data file, or format of data "+
-               "file was not recongnized!";
+        tablePanel = dv.DataViewerPanel;
       }
       else
       {
-        text = "Data in data file "+ dataId+" cannot be read!";
+        tablePanel = new JPanel();
+        tablePanel.add(BorderLayout.NORTH, Box.createVerticalStrut(80));
+        String text = null;
+        if (dataId.equals("") || dataId == null)
+        {
+          text = "Either there is no data file, or format of data "+
+               "file was not recongnized!";
+        }
+        else
+        {
+          text = "Data in data file "+ dataId+" cannot be read!";
+        }
+        JLabel warning = new JLabel(text);
+       warning.setForeground(UISettings.ALERT_TEXT_COLOR);
+        tablePanel.add(BorderLayout.CENTER, warning);
       }
-      JLabel warning = new JLabel(text);
-      warning.setForeground(UISettings.ALERT_TEXT_COLOR);
-      tablePanel.add(BorderLayout.CENTER, warning);
-    }
 
     tablePanel.setOpaque(true);
     tablePanel.setBackground(UISettings.NONEDITABLE_BACKGROUND_COLOR);
