@@ -5,7 +5,7 @@
  *              National Center for Ecological Analysis and Synthesis
  *     Authors: Dan Higgins
  *
- *     Version: '$Id: QueryBean.java,v 1.3 2000-08-03 23:01:42 higgins Exp $'
+ *     Version: '$Id: QueryBean.java,v 1.4 2000-08-03 23:13:01 higgins Exp $'
  */
 
 package edu.ucsb.nceas.querybean;
@@ -1587,7 +1587,7 @@ private String getPath(String type, String match){
 // this method is called by external full text search routines	
 public void searchFor(String searchText) {
     QueryChoiceTabs.setSelectedIndex(0);
-    TextMatch1.setSelectedIndex(0);
+ //   TextMatch1.setSelectedIndex(0);
     TextValue11.setText(searchText);
     simplequery_submitToDatabase(searchText);
     SearchButton_actionPerformed(null);
