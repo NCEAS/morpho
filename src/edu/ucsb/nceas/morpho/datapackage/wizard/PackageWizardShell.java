@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-10-15 16:49:41 $'
- * '$Revision: 1.44 $'
+ *     '$Date: 2001-10-17 20:00:55 $'
+ * '$Revision: 1.45 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -593,7 +593,7 @@ public class PackageWizardShell extends javax.swing.JFrame
            relationship.indexOf("\\") != -1)
         { //strip out the path info
           int slashindex = relationship.lastIndexOf("/") + 1;
-          if(slashindex == -1)
+          if(slashindex == 0)
           {
             slashindex = relationship.lastIndexOf("\\") + 1;
           }
