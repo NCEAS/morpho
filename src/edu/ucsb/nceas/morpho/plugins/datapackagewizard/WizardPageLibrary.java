@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2004-03-17 21:13:00 $'
- * '$Revision: 1.25 $'
+ *   '$Author: sambasiv $'
+ *     '$Date: 2004-03-30 20:36:06 $'
+ * '$Revision: 1.26 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -64,6 +64,7 @@ public class WizardPageLibrary {
     if(pageID.equals(DataPackageWizardInterface.PARTY_PAGE)) return new PartyPage();
     if(pageID.equals(DataPackageWizardInterface.ACCESS_PAGE)) return new AccessPage();
     if(pageID.equals(DataPackageWizardInterface.TEMPORAL_PAGE)) return new TemporalPage();
+		if(pageID.equals(DataPackageWizardInterface.TAXONOMIC)) return new Taxonomic();
     if(pageID.equals(DataPackageWizardInterface.GEOGRAPHIC_PAGE)) return new GeographicPage();
     if(pageID.equals(DataPackageWizardInterface.CODE_IMPORT_PAGE)) return new CodeImportPage(container);
     if(pageID.equals(DataPackageWizardInterface.CODE_DEFINITION)) return new CodeDefinition(container);
@@ -120,7 +121,6 @@ public class WizardPageLibrary {
     pages.put(DataPackageWizardInterface.ENTITY,             new Entity(container));
     pages.put(DataPackageWizardInterface.ACCESS,             new Access());
     pages.put(DataPackageWizardInterface.GEOGRAPHIC,         new Geographic());
-    pages.put(DataPackageWizardInterface.TAXONOMIC,          new Taxonomic());
     pages.put(DataPackageWizardInterface.TEMPORAL,           new Temporal());
     pages.put(DataPackageWizardInterface.METHODS,            new Methods());
     pages.put(DataPackageWizardInterface.SUMMARY,            new Summary(container));

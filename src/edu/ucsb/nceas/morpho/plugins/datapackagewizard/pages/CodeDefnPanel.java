@@ -991,12 +991,13 @@ public class CodeDefnPanel extends JPanel implements WizardPageSubPanelAPI {
               cnt++;
               int idx = -1;
               if((idx = colIndices.indexOf(new Integer(cnt))) >  -1) {
-                row.add(token);
+								row.add(token);
                 int lastIdx = colIndices.lastIndexOf(new Integer(cnt));
                 while(idx < lastIdx) {
                   idx = colIndices.indexOf(new Integer(cnt), idx +1);
-                  if(idx > -1)
+                  if(idx > -1) {
                     row.add(token);
+									}
                 }
               }
               if(idx == colIndices.size() -1) break;
@@ -1006,12 +1007,13 @@ public class CodeDefnPanel extends JPanel implements WizardPageSubPanelAPI {
                 cnt++;
                 int idx = -1;
                 if((idx = colIndices.indexOf(new Integer(cnt))) >  -1) {
-                  row.add("");
+									row.add("");
                   int lastIdx = colIndices.lastIndexOf(new Integer(cnt));
                   while(idx < lastIdx) {
                     idx = colIndices.indexOf(new Integer(cnt), idx +1);
-                    if(idx > -1)
-                      row.add("");
+                    if(idx > -1) {
+											row.add("");
+										}
                   }
                 }
                 if(idx == colIndices.size() -1) break;

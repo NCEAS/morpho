@@ -149,6 +149,18 @@ public class CustomTable extends JPanel {
 		table.setExtraColumnHeaderInfo(colIdx, info);
 		return;
 	}
+	
+	public int getHeaderHeight() {
+		
+		TableColumnModel columnModel = table.getColumnModel();
+		TableColumn column = columnModel.getColumn(0);
+		CustomHeaderRenderer chr = (CustomHeaderRenderer)column.getHeaderRenderer();
+		return (int)chr.getTableCellRendererComponent(table, "", false, false, 0, 0).getSize().getHeight();
+                                               
+		//return chr.getHeight();
+		
+	}
+	
 }
 
 class ColumnarTable extends JTable {

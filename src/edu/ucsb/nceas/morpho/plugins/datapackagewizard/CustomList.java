@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: sgarg $'
- *     '$Date: 2004-03-24 22:55:02 $'
- * '$Revision: 1.44 $'
+ *   '$Author: sambasiv $'
+ *     '$Date: 2004-03-30 20:36:06 $'
+ * '$Revision: 1.45 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -41,7 +41,13 @@ import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Insets;
+import java.awt.Point;
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
+import java.util.EventListener;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -222,7 +228,8 @@ public class CustomList
     table = new CustomJTable(this, rowsData, colNamesVec, columnEditors);
     model = (DefaultTableModel) (table.getModel());
     table.setColumnSelectionAllowed(false);
-    table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+		table.setRowSelectionAllowed(true);
+		table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
     table.setShowHorizontalLines(false);
     table.setShowVerticalLines(true);
 
@@ -253,6 +260,7 @@ public class CustomList
         setColumnSizes(scrollPane.getViewport().getSize().getWidth());
       }
     });
+		
     this.add(scrollPane, BorderLayout.CENTER);
 
     this.setBorder(new EmptyBorder(0, 0, //WizardSettings.PADDING,
@@ -816,7 +824,10 @@ public class CustomList
   public void addRow(List rowList) {
 
     int row = getSelectedRowIndex();
-
+		
+		if(table.getRowCount() == 0)
+			row = -1;
+		
     if (row < 0) {
 
       row = model.getRowCount();
