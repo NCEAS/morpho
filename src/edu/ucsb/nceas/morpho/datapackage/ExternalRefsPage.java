@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2004-04-07 00:00:21 $'
- * '$Revision: 1.11 $'
+ *   '$Author: tao $'
+ *     '$Date: 2004-04-07 01:55:47 $'
+ * '$Revision: 1.12 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -43,8 +43,14 @@ import java.util.Vector;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Vector;
 
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
@@ -85,6 +91,7 @@ public class ExternalRefsPage extends AbstractUIPage
   private static final int        BOTTOMGAP = 8;
   private static final int       BIGSIDEGAP = 16;
   private static final int     SMALLSIDEGAP = 8;
+  private static final int        LABELTOOM = 10;
 
   ExternalRefsPage(ReferencesHandler referenceHandler)
   {
@@ -123,19 +130,28 @@ public class ExternalRefsPage extends AbstractUIPage
                                (TOPGAP, BIGSIDEGAP, BOTTOMGAP, SMALLSIDEGAP));
     packageListPanel.setLayout(new BorderLayout());
     JLabel selectPackageLabel = new JLabel(SELECTPACKAGE);
+    selectPackageLabel.setBorder(BorderFactory.createEmptyBorder
+                               (0, 0, LABELTOOM, 0));
     packageListPanel.add(selectPackageLabel, BorderLayout.NORTH);
     dataPackageTable = new SortableJTable();
-    doQueryAndPopulateDialog();
+
+
+
     JScrollPane scroll = new JScrollPane(dataPackageTable);
+    Dimension scrollDimension = scroll.getPreferredSize();
+    doQueryAndPopulateDialog(new Double(scrollDimension.getWidth()).intValue());
     scroll.getViewport().setBackground(Color.white);
     packageListPanel.add(scroll, BorderLayout.CENTER);
 
     this.add(packageListPanel, BorderLayout.WEST);
 
+
     // right panel is the reference id panel
     JPanel refsPanel = new JPanel();
     String selectRefsString = "2) Select a previous entry from this data package";
     JLabel selectedRefsLabel = new JLabel(selectRefsString);
+    selectedRefsLabel.setBorder(BorderFactory.createEmptyBorder
+                               (0, 0, LABELTOOM, 0));
     refsPanel.setBorder(BorderFactory.createEmptyBorder(
                         TOPGAP, SMALLSIDEGAP, BOTTOMGAP, BIGSIDEGAP));
     refsPanel.setLayout(new BorderLayout());
@@ -213,7 +229,12 @@ public class ExternalRefsPage extends AbstractUIPage
          dataVector.add(rowDataVector);
        }
      }
-     //new data model for table
+     // sort dataVector
+     if (!dataVector.isEmpty())
+     {
+       Collections.sort(dataVector, new ReferenceComparator());
+     }
+      //new data model for table
      DefaultTableModel referenceIdModel = new DefaultTableModel();
      referenceIdModel.setDataVector(dataVector, refIDTableCloumnName);
      referenceIdTable.setModel(referenceIdModel);
@@ -226,7 +247,7 @@ public class ExternalRefsPage extends AbstractUIPage
    *
    * @return boolean
    */
-  private boolean doQueryAndPopulateDialog()
+  private boolean doQueryAndPopulateDialog(final int width)
   {
 
     final QueryRefreshInterface queryPlugin = getQueryPlugin();
@@ -250,7 +271,7 @@ public class ExternalRefsPage extends AbstractUIPage
       //Runs on the event-dispatching thread.
       public void finished()
       {
-        setQueryResults(resultsModel);
+        setQueryResults(resultsModel, width);
       }
     };
     worker.start(); //required for SwingWorker 3
@@ -290,10 +311,11 @@ public class ExternalRefsPage extends AbstractUIPage
    * @param model AbstractTableModel to be used as basis of query results
    * listing (shows all packages owned by current user on local system)
    */
-  private void setQueryResults(ColumnSortableTableModel model)
+  private void setQueryResults(ColumnSortableTableModel model, int width)
   {
 
     dataPackageTable.setModel(model);
+    setTableColumnSize(width, dataPackageTable);
     dataPackageTable.validate();
     dataPackageTable.repaint();
   }
@@ -301,9 +323,9 @@ public class ExternalRefsPage extends AbstractUIPage
   /*
    * Method to setup table's column size
    */
-  private void setTableCloumnSize(int width, JTable table)
+  private void setTableColumnSize(int width, JTable table)
   {
-    double [] columnWidth = {0.65, 0.35};
+    double [] columnWidth = {0.75, 0.25};
     // column object
     TableColumn column = null;
     // Minimum factor for MinWidth
@@ -516,5 +538,21 @@ public class ExternalRefsPage extends AbstractUIPage
       "ExternalRefsPage -> setPageData() method not implemented!");
   }
 
+  // new class for sorting the reference id
+  class ReferenceComparator implements Comparator
+  {
+
+    public int compare(Object object1, Object object2)
+    {
+      int results = -1;
+      Vector vector1 = (Vector) object1;
+      Vector vector2 = (Vector) object2;
+      ReferenceMapping mapping1 = (ReferenceMapping) vector1.elementAt(0);
+      ReferenceMapping mapping2 = (ReferenceMapping) vector2.elementAt(0);
+      String surrogate1 = mapping1.toString();
+      String surrogate2 = mapping2.toString();
+      return (surrogate1.compareToIgnoreCase(surrogate2));
+    }
+  }
 
 }
