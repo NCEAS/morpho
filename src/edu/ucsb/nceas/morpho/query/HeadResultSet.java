@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2002-08-13 00:21:04 $'
- * '$Revision: 1.3.8.2 $'
+ *     '$Date: 2002-08-14 00:13:43 $'
+ * '$Revision: 1.3.8.3 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -41,10 +41,12 @@ import java.util.Vector;
  * local query or a Metacat query, but only presents the most recent revision
  * of a document as part of the Table Model. 
  */
-public class HeadResultSet extends ResultSet
+public class HeadResultSet extends ResultSet 
 {
   /** Store the most recent revision in a vector */
   private Vector headResultsVector = null;
+  
+ 
   
   /**
    * Construct a HeadResultSet instance given a query object and a
@@ -67,6 +69,7 @@ public class HeadResultSet extends ResultSet
   {
     super(query, source, vec, cf);
     consolidateResults();
+   
   }
 
 
@@ -86,9 +89,6 @@ public class HeadResultSet extends ResultSet
   }
 
   /**
-   * Determine the value of a column by its row and column index
-   */
-    /**
    * Determine the value of a column by its row and column index
    */
   public Object getValueAt(int row, int col)
@@ -113,7 +113,7 @@ public class HeadResultSet extends ResultSet
         else
         {
           // If there isnot local, value is empty String
-          value = "";
+          value = blankIcon;
         }//else
       }//if
       
@@ -130,35 +130,24 @@ public class HeadResultSet extends ResultSet
         else
         {
           // If there isnot local, value is empty String
-          value = "";
+          value = blankIcon;
         }//else
       }//if
          
     } catch (ArrayIndexOutOfBoundsException aioobe) {
+      
       String emptyString = "";
       value = null;
     } catch (NullPointerException npe) {
+      
       String emptyString = "";
       value = emptyString;
     }
+    
     return value;
   }
   
-  /*public Object getValueAt(int row, int col)
-  {
-    Object value = null;
-    try {
-      Vector rowVector = (Vector)headResultsVector.elementAt(row);
-      value = rowVector.elementAt(col);
-    } catch (ArrayIndexOutOfBoundsException aioobe) {
-      String emptyString = "";
-      value = null;
-    } catch (NullPointerException npe) {
-      String emptyString = "";
-      value = emptyString;
-    }
-    return value;
-  }*/
+ 
 
   /**
    * Open a given row index of the result set using a delegated handler class
@@ -227,6 +216,7 @@ public class HeadResultSet extends ResultSet
       while (enum.hasMoreElements()) {
           headResultsVector.addElement(enum.nextElement());
       }
+     
   }
   
    /**
@@ -243,6 +233,6 @@ public class HeadResultSet extends ResultSet
     // sort the result vector
     Collections.sort(headResultsVector,
                     new CellComparator(resultColIndex, ascending));
-   
+ 
   }//sortColumn
 }
