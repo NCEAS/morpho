@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-06-04 23:14:22 $'
- * '$Revision: 1.13 $'
+ *     '$Date: 2001-06-05 17:47:14 $'
+ * '$Revision: 1.14 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -138,9 +138,9 @@ public class DocFrame extends javax.swing.JFrame
 		SaveXML.setText("Save XML...");
 		SaveXML.setActionCommand("Save XML...");
 		ControlPanel.add(SaveXML);
-		JButton1.setText("jbutton");
-		JButton1.setActionCommand("jbutton");
-		ControlPanel.add(JButton1);
+		EditingExit.setText("Exit Editing");
+		EditingExit.setActionCommand("jbutton");
+		ControlPanel.add(EditingExit);
 		saveFileDialog.setMode(FileDialog.SAVE);
 		saveFileDialog.setTitle("Save");
 		//$$ saveFileDialog.move(0,306);
@@ -174,7 +174,7 @@ public class DocFrame extends javax.swing.JFrame
 		SaveXML.addActionListener(lSymAction);
 		SymWindow aSymWindow = new SymWindow();
 		this.addWindowListener(aSymWindow);
-		JButton1.addActionListener(lSymAction);
+		EditingExit.addActionListener(lSymAction);
 		//}}
 		DeletemenuItem.addActionListener(lSymAction);
 		DupmenuItem.addActionListener(lSymAction);
@@ -305,7 +305,7 @@ public class DocFrame extends javax.swing.JFrame
 	javax.swing.JButton DTDParse = new javax.swing.JButton();
 	javax.swing.JButton TestButton = new javax.swing.JButton();
 	javax.swing.JButton SaveXML = new javax.swing.JButton();
-	javax.swing.JButton JButton1 = new javax.swing.JButton();
+	javax.swing.JButton EditingExit = new javax.swing.JButton();
 	java.awt.FileDialog saveFileDialog = new java.awt.FileDialog(this);
 	//}}
 
@@ -349,8 +349,8 @@ class SymAction implements java.awt.event.ActionListener {
 				TestButton_actionPerformed(event);
 			else if (object == SaveXML)
 				SaveXML_actionPerformed(event);
-			else if (object == JButton1)
-				JButton1_actionPerformed(event);
+			else if (object == EditingExit)
+				EditingExit_actionPerformed(event);
 		}
 }
 
@@ -645,6 +645,30 @@ void reload_actionPerformed(java.awt.event.ActionEvent event)
 	  }
 	  catch (Exception e) {}
 	}
+
+/*
+ * write the tree starting at the indicated node to a file 'fn'
+ */
+	String writeXMLString (DefaultMutableTreeNode node) {
+      tempStack = new Stack();
+	    start = new StringBuffer();
+	    write_loop(node);
+	    String str1 = start.toString();
+	    
+	    String doctype = "";
+	    if (publicIDString!=null) {
+	      String rootNodeName = ((NodeInfo)node.getUserObject()).getName();
+	      String temp = "";
+	      if (publicIDString!=null) temp = "\""+publicIDString+"\"";
+	      String temp1 = "";
+	      if (systemIDString!=null) temp1 = "\"file:///"+systemIDString+"\"";
+	      doctype = "<!DOCTYPE "+rootNodeName+" PUBLIC "+temp+" "+temp1+">\n";
+	    }
+	    str1 = "<?xml version=\"1.0\"?>\n"+doctype+str1;
+	    
+  return str1;
+	}
+	
 	
 	/*
 	 * recursive routine to create xml output
@@ -919,8 +943,10 @@ void mergeNodes(DefaultMutableTreeNode input, DefaultMutableTreeNode template) {
 	
 	
 
-	void JButton1_actionPerformed(java.awt.event.ActionEvent event)
+	void EditingExit_actionPerformed(java.awt.event.ActionEvent event)
 	{
-		controller.fireEditingCompleteEvent(this, XMLTextString);
+		this.hide();
+	  String xmlout = writeXMLString(rootNode);
+		controller.fireEditingCompleteEvent(this, xmlout);
 	}
 }

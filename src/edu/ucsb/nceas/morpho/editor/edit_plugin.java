@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-06-04 23:14:22 $'
- * '$Revision: 1.3 $'
+ *     '$Date: 2001-06-05 17:47:13 $'
+ * '$Revision: 1.4 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -48,7 +48,7 @@ import com.symantec.itools.javax.swing.icons.ImageIcon;
 /**
  * A basic JFC 1.1 based application.
  */
-public class edit_plugin extends javax.swing.JFrame implements EditingCompleteListener
+public class edit_plugin extends javax.swing.JFrame implements EditingCompleteListener, PluginInterface
 {
   
   /** A reference to the container framework */
@@ -343,7 +343,7 @@ public class edit_plugin extends javax.swing.JFrame implements EditingCompleteLi
 
 	void DisplayButton_actionPerformed(java.awt.event.ActionEvent event)
 	{
-	  DocFrame newdoc = null;
+/*	  DocFrame newdoc = null;
 		String xmltext = JTextArea1.getText();
 		if (!xmltext.equals("")) {
 		  if (framework!=null) {
@@ -355,6 +355,16 @@ public class edit_plugin extends javax.swing.JFrame implements EditingCompleteLi
 		  }
 		    newdoc.setVisible(true);
 		}
+*/
+    try {
+      ServiceProvider provider = 
+                      framework.getServiceProvider(EditorInterface.class);
+      EditorInterface editor = (EditorInterface)provider;
+      editor.openEditor(JTextArea1.getText(), this);
+    } catch (ServiceNotHandledException snhe) {
+      framework.debug(6, snhe.getMessage());
+    }
+
 
 //      EditorPlugin epi = new EditorPlugin();
 //		  String xmltext = JTextArea1.getText();
@@ -380,10 +390,18 @@ public class edit_plugin extends javax.swing.JFrame implements EditingCompleteLi
 	}
 	
 	
-	
+//---------------------------
+
+  public void initialize(ClientFramework cf) {
+    framework = cf;
+    setVisible(true);
+  }
+
+
 //---------------------------
 
 public void editingCompleted(String xmlString) {
+  JTextArea1.setText(xmlString);
   JOptionPane.showMessageDialog(null, "Editing Completed!!!", "Alert", JOptionPane.INFORMATION_MESSAGE);
 }
 
