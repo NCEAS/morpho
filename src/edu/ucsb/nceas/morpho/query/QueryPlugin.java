@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2002-09-11 23:02:10 $'
- * '$Revision: 1.87 $'
+ *     '$Date: 2002-09-24 23:49:55 $'
+ * '$Revision: 1.88 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -146,14 +146,14 @@ public class QueryPlugin implements PluginInterface, ConnectionListener,
     // Action for save query
     SaveQueryCommand saveCommand = new SaveQueryCommand(morpho);
     GUIAction saveQueryItemAction = 
-                    new GUIAction("Save search", null, saveCommand);
+                    new GUIAction("Save Search", null, saveCommand);
     saveQueryItemAction.setSmallIcon(new ImageIcon(getClass().
            getResource("/toolbarButtonGraphics/general/Save16.gif")));
     saveQueryItemAction.setToolTipText("Save search");
     saveQueryItemAction.setMenuItemPosition(2);
         
     // RevisedSearch action
-    GUIAction reviseSearchItemAction = new GUIAction("Revise search", null,
+    GUIAction reviseSearchItemAction = new GUIAction("Revise Search", null,
                                             new ReviseSearchCommand(morpho));
     reviseSearchItemAction.setSmallIcon(new ImageIcon(getClass().
            getResource("revisesearch16.gif")));
