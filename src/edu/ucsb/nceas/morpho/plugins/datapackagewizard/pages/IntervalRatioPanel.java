@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: sambasiv $'
- *     '$Date: 2004-02-12 22:25:58 $'
- * '$Revision: 1.26 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2004-02-19 20:06:00 $'
+ * '$Revision: 1.27 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -690,7 +690,13 @@ class UnitsPickList extends JPanel {
 
           unitsList.setModel(
                       ((UnitTypesListItem)(e.getItem())).getComboBoxModel() );
-          unitsList.setSelectedIndex(0);
+          String utype = ((UnitTypesListItem)unitTypesList.getSelectedItem()).getUnitTypeDisplayString();
+          String preftype = WizardSettings.getPreferredType(utype.toLowerCase());
+          if (preftype!=null) {
+            unitsList.setSelectedItem(preftype);
+          } else {
+            unitsList.setSelectedIndex(0);
+          }
 					if(unitsList.isShowing())
 						unitsList.showPopup();
         }
@@ -828,7 +834,7 @@ class UnitTypesListItem  {
   public String toString() { return unitTypeDisplayString; }
 
 
-  private String getUnitTypeDisplayString() {
+  public String getUnitTypeDisplayString() {
 
     if (unitType==null || unitType.trim().equals("")) return "";
 
