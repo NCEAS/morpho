@@ -1,4 +1,5 @@
 <?xml version="1.0"?>
+
 <locationList><location> <name>ACM Wilderness Field Station</name>
  <description>ACM Wilderness Field Station</description>
  <north>47.995</north>
@@ -93,9 +94,9 @@
  <location> <name>Bahamas Environmental Research Center</name>
  <description>Bahamas Environmental Research Center</description>
  <north>-78.000</north>
- <west>25 0 0</west>
+ <west>25.0</west>
  <south>-78.000</south>
- <east>25 0 0</east>
+ <east>25.0</east>
  </location>
  <location> <name>Ball State Field Station and Evironmental Ed Center</name>
  <description>Ball State Field Station and Evironmental Ed Center</description>
@@ -128,9 +129,9 @@
  <location> <name>Baruch Marine Field Laboratory</name>
  <description>Baruch Marine Field Laboratory</description>
  <north>-79.193</north>
- <west>33 21 03</west>
+ <west>33.350833</west>
  <south>-79.193</south>
- <east>33 21 03</east>
+ <east>33.350833</east>
  </location>
  <location> <name>Bath Field Station</name>
  <description>Bath Field Station</description>
@@ -155,10 +156,10 @@
  </location>
  <location> <name>Bimini Biological Field Station</name>
  <description>Bimini Biological Field Station</description>
- <north>25 42 0</north>
- <west>-79 18 0</west>
- <south>25 42 0</south>
- <east>-79 18 0</east>
+ <north>25.7</north>
+ <west>-79.3</west>
+ <south>25.7</south>
+ <east>-79.3</east>
  </location>
  <location> <name>Black Rock Forest</name>
  <description>Black Rock Forest</description>
@@ -302,10 +303,10 @@
  </location>
   <location> <name>Cedar Mountain Science Center</name>
  <description>Cedar Mountain Science Center</description>
- <north>37 35 42</north>
- <west>-113 6 0</west>
- <south>37 35 42</south>
- <east>-113 6 0</east>
+ <north>37.595</north>
+ <west>-113.1</west>
+ <south>37.595</south>
+ <east>-113.1</east>
  </location>
  <location> <name>Cedar Point Biological Station</name>
  <description>Cedar Point Biological Station</description>
@@ -324,9 +325,9 @@
  <location> <name>Chapala Ecology Station</name>
  <description>Chapala Ecology Station</description>
  <north>-102.000</north>
- <west>21 0 0</west>
+ <west>21.0</west>
  <south>-102.000</south>
- <east>21 0 0</east>
+ <east>21.0</east>
  </location>
  <location><name>Chickering American River Reserve UCNRS</name>
  <description>Chickering American River Reserve UCNRS</description>
@@ -548,9 +549,9 @@
  <location> <name>Field Research Station</name>
  <description>Field Research Station</description>
  <north>-122.290</north>
- <west>37 11 0</west>
+ <west>37.183333</west>
  <south>-122.290</south>
- <east>37 11 0</east>
+ <east>37.183333</east>
  </location>
  <location> <name>Flathead Lake Biological Station</name>
  <description>Flathead Lake Biological Station</description>
@@ -576,9 +577,9 @@
  <location> <name>Forfar Field Station - Andros Island</name>
  <description>Forfar Field Station - (ndros Island</description>
  <north>-78.000</north>
- <west>25 0 0</west>
+ <west>25.0</west>
  <south>-78.000</south>
- <east>25 0 0</east>
+ <east>25.0</east>
  </location>
  <location><name>Fort Ord Natural Reserve UCNRS</name>
  <description>Fort Ord Natural Reserve UCNRS</description>
@@ -786,9 +787,9 @@
  <location> <name>Illinois River Biological Station</name>
  <description>Illinois River Biological Station</description>
  <north>-90.022</north>
- <west>40 21 10</west>
+ <west>40.352778</west>
  <south>-90.022</south>
- <east>40 21 10</east>
+ <east>40.352778</east>
  </location>
  <location> <name>Indiana Univ Research and Training Preserve</name>
  <description>Indiana Univ Research and Training Preserve</description>
@@ -834,10 +835,10 @@
  </location>
  <location> <name>Institute of Neurobiology</name>
  <description>Institute of Neurobiology</description>
- <north>18 28 06</north>
- <west>-66 06 22</west>
- <south>18 28 06</south>
- <east>-66 06 22</east>
+ <north>18.468333</north>
+ <west>-66.106111</west>
+ <south>18.468333</south>
+ <east>-66.106111</east>
  </location>
  <location> <name>Intercultural Center for Study of Deserts and Oceans</name>
  <description>Intercultural Center for Study of Deserts and Oceans</description>
@@ -1115,9 +1116,9 @@
  <location> <name>LUMCON Marine Center-Cocodrie</name>
  <description>LUMCON Marine Center-Cocodrie</description>
  <north>-90.661</north>
- <west>29 14 49</west>
+ <west>29.246944</west>
  <south>-90.661</south>
- <east>29 14 49</east>
+ <east>29.246944</east>
  </location>
  <location><name>Luquillo Experimental Forest LTER (LUQ)</name>
  <description>Luquillo Experimental Forest LTER (LUQ)</description>
