@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-10-15 19:20:43 $'
- * '$Revision: 1.17 $'
+ *     '$Date: 2003-11-04 20:47:26 $'
+ * '$Revision: 1.18 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -228,7 +228,7 @@ public abstract class AbstractDataPackage extends MetadataObject
       NodeList entityNodes = XMLUtilities.getNodeListWithXPath(metadataNode,entityXpath);
       //  NodeList entityNodes = XPathAPI.selectNodeList(metadataNode,entityXpath);
       if (entityNodes==null) {
-        Log.debug(1,"entityList is null!");
+        Log.debug(20,"entityList is null!");
         entityArray = null;
       } else {
         entityArray = XMLUtilities.getNodeListAsNodeArray(entityNodes);

@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-10-15 21:14:15 $'
- * '$Revision: 1.62 $'
+ *     '$Date: 2003-11-04 20:47:26 $'
+ * '$Revision: 1.63 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -362,7 +362,12 @@ public class DataViewContainerPanel extends javax.swing.JPanel
     packagePanel.setLayout(new BorderLayout(5,5));
     
     entityItems = new Vector();
-    int numEnts = (adp.getEntityArray()).length;
+    int numEnts = 0;
+    if (adp.getEntityArray()==null) {
+      numEnts = 0;
+    } else {
+      numEnts = (adp.getEntityArray()).length;
+    }
     for (int k=0;k<numEnts;k++) {
       entityItems.addElement(adp.getEntityName(k));
     }
@@ -592,11 +597,11 @@ public class DataViewContainerPanel extends javax.swing.JPanel
                             StateChangeEvent.CREATE_ENTITY_DATAPACKAGE_FRAME));
       }//else
       if (dp!=null) {
-        initDPMetaView(true);
+//        initDPMetaView(true);
       }
     } else {
       moreLabel.setEnabled(false);
-      initDPMetaView(false);
+//      initDPMetaView(false);
     }
   }
 

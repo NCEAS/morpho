@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-10-15 21:12:36 $'
- * '$Revision: 1.19 $'
+ *     '$Date: 2003-11-04 20:47:26 $'
+ * '$Revision: 1.20 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -126,7 +126,12 @@ public class DataPackageFactory
       }
       catch (Exception w) {Log.debug(20,"Problem opening file!");}
     } else { // must be on metacat only
-      
+      MetacatDataStore mds = new MetacatDataStore(morpho);
+      try{
+        File file = mds.openFile(docid);
+        in = new FileReader(file);
+      }
+      catch (Exception e) {Log.debug(20,"Problem opening file from Metacat!");}
     }
     AbstractDataPackage dp = null;
     String type = getDocTypeInfo(in);
@@ -145,7 +150,6 @@ public class DataPackageFactory
     }
 
 
-    dp.load(location, docid, morpho);
 
 //    dp.showPackageSummary();
    
