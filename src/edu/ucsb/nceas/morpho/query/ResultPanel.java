@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-04-30 20:39:34 $'
- * '$Revision: 1.37 $'
+ *     '$Date: 2002-05-09 16:11:25 $'
+ * '$Revision: 1.38 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1004,8 +1004,6 @@ private void doDeleteLocal() {
           bflyLabel.setIcon(flapping);
           threadCount++;
           
-          Hashtable ht = new Hashtable();
-          ht.put("test",null);
           
           String docid = selectedId;
           DataPackageInterface dataPackage;
