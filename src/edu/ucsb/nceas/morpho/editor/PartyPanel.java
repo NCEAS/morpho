@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2004-03-02 23:05:02 $'
- * '$Revision: 1.12 $'
+ *     '$Date: 2004-03-03 19:26:05 $'
+ * '$Revision: 1.13 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -157,6 +157,7 @@ public class PartyPanel extends JPanel
   }
 
   void saveAction() {
+    if (!awp2.onAdvanceAction()) return;
     Document doc = domNode.getOwnerDocument();
     try{
 //        Log.debug(1, "InDOM: "+ XMLUtilities.getDOMTreeAsString(domNode));
