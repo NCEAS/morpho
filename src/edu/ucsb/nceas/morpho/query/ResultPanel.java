@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2002-08-27 23:52:07 $'
- * '$Revision: 1.54 $'
+ *     '$Date: 2002-08-29 00:54:41 $'
+ * '$Revision: 1.55 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -247,7 +247,7 @@ public class ResultPanel extends JPanel
       popup = new JPopupMenu();
       // Create a openPackage action
       GUIAction openAction = new GUIAction("Open Package", null,
-                            new OpenPackageCommand(this));
+                            new OpenPackageCommand(dialog));
       openMenu = new JMenuItem(openAction);
       popup.add(openMenu);
       
@@ -309,20 +309,7 @@ public class ResultPanel extends JPanel
       exportToZipMenu = new JMenuItem(exportToZipAction);
       popup.add(exportToZipMenu);
       
-      /*MenuAction menuhandler = new MenuAction();
-      openMenu.addActionListener(menuhandler);
-      uploadMenu.addActionListener(menuhandler);
-      downloadMenu.addActionListener(menuhandler);
-      deleteLocalMenu.addActionListener(menuhandler);
-      deleteMetacatMenu.addActionListener(menuhandler);
-      deleteAllMenu.addActionListener(menuhandler);
-      refreshMenu.addActionListener(menuhandler);
-      exportMenu.addActionListener(menuhandler);
-      exportToZipMenu.addActionListener(menuhandler);
-      openPreviousVersion.addActionListener(menuhandler);*/
-      
-
-      
+    
       MouseListener popupListener = new PopupListener();
       table.addMouseListener(popupListener);
       
@@ -347,8 +334,8 @@ public class ResultPanel extends JPanel
   private void doDoubleClickOpen()
   { 
     // Create a open pakcag command
-    OpenPackageCommand open = new OpenPackageCommand(this);
-             open.execute();
+    OpenPackageCommand open = new OpenPackageCommand(dialog);
+    open.execute();
   }// doDoubleClickOpen
 
   /**
@@ -517,19 +504,7 @@ public class ResultPanel extends JPanel
     }
   } 
 
-  /**
-   * Open a result record when the user double-clicks on the table.  If
-   * multiple rows are selected, open them all.
-   */
-  private void openResultRecord(JTable table) {
-   
-    int[] selectedRows = table.getSelectedRows();
-
-    for (int i = 0; i < selectedRows.length; i++) {
-     
-      results.openResultRecord(selectedRows[i]);
-    }
-  }
+  
 
   class PopupListener extends MouseAdapter {
     // on the Mac, popups are triggered on mouse pressed, while mouseReleased triggers them
@@ -615,184 +590,6 @@ public class ResultPanel extends JPanel
     
   }	
 
-  /**
-   * Revise the query by loading it into the QueryDialog GUI
-   */
-  public void reviseQuery()
-  {
-  
-  } 
-
-  /**
-   * Refresh the results by running the query again to produce a new ResulSet
-   */
-  public void refreshQuery()
-  {
-    Query query = results.getQuery();
-    ResultSet newResults = query.execute();
-    setResults(newResults);
-  } 
-
-  /**
-   * Save a query in the user's profile so they can run it again later. It
-   * will show up in the "Search" menu sp they can execute it.
-   */
-  public void saveQuery()
-  {
-   
-  }
-
-  /**
-   * Set the ResultSet (usually as a result of refreshing or revising a Query)
-   */
-  public void setResults(ResultSet newResults) 
-  {
-    this.results = newResults;
-
-    // Notify the frame of any title changes
-    String newTitle = results.getQuery().getQueryTitle();
-    Container parent = getRootPane().getParent();
-    if (parent instanceof MorphoFrame) {
-      MorphoFrame rsf = (MorphoFrame)parent;
-      rsf.setTitle(newTitle);
-    }
  
-    // Notify the JTable that the TableModel changed a bunch!
-    table.setModel(results);
-    //initTableColumnSize(table, results, 775);
-    initTableColumnSize(table, results, (int)preferredSize.getWidth());
-  }
-
-
-
-  /**
-   * Add a new menu item to the Search menu for the query
-   *
-   * @param query the query to be added to the Search menu
-   */
-  private void addQueryToMenu(final Query query)
-  {
- 
-  }
-  
-
-  
-
-
-private void doUpload() {
-
-
-  
-}
- 
-  
-private void doDownload() {
-  final SwingWorker worker = new SwingWorker() {
-        public Object construct() {
-          //bflyLabel.setIcon(flapping);
-          threadCount++;
- 
-          String docid = selectedId;
-          DataPackageInterface dataPackage;
-          try 
-          {
-            ServiceController services = ServiceController.getInstance();
-            ServiceProvider provider = 
-                     services.getServiceProvider(DataPackageInterface.class);
-            dataPackage = (DataPackageInterface)provider;
-          } 
-          catch (ServiceNotHandledException snhe) 
-          {
-            Log.debug(6, "Error in upload");
-            return null;
-          }
-          
-          
-        //download the current selection to the local disk
-        Log.debug(20, "Downloading package.");
-        dataPackage.download(docid);
-        refreshQuery();
-          
-          return null;  
-        }
-
-        //Runs on the event-dispatching thread.
-        public void finished() {
-          threadCount--;
-          if (threadCount<1) {
-           //recordCountLabel.setText(results.getRowCount() + " data packages");    
-           //bflyLabel.setIcon(bfly);
-          }
-        }
-    };
-    worker.start();  //required for SwingWorker 3
-}
-
-
-
-  public void doOpenDataPackage() {
-   
-  final SwingWorker worker = new SwingWorker() {
-        public Object construct() {
-          //bflyLabel.setIcon(flapping);
-          threadCount++;
-          
-          String docid = selectedId;
-          DataPackageInterface dataPackage;
-          try 
-          {
-            ServiceController services = ServiceController.getInstance();
-            ServiceProvider provider = 
-                     services.getServiceProvider(DataPackageInterface.class);
-            dataPackage = (DataPackageInterface)provider;
-          } 
-          catch (ServiceNotHandledException snhe) 
-          {
-            Log.debug(6, "Error in doOpenDataPackage");
-            return null;
-          }
-          
-			  //do open
-          Log.debug(20, "Opening package!.");
-          openResultRecord(table);
-        
-          return null;  
-        }
-
-        //Runs on the event-dispatching thread.
-        public void finished() {
-          threadCount--;
-          if (threadCount<1) {
-           //recordCountLabel.setText(results.getRowCount() + " data packages");    
-           //bflyLabel.setIcon(bfly);
-          }
-        }
-    };
-    worker.start();  //required for SwingWorker 3
-}
- 
-  
-private void doRefreshQuery() {
-  final SwingWorker worker = new SwingWorker() {
-        public Object construct() {
-          //bflyLabel.setIcon(flapping);
-          threadCount++;
-          refreshQuery();
-        
-          return null;  
-        }
-
-        //Runs on the event-dispatching thread.
-        public void finished() {
-          threadCount--;
-          if (threadCount<1) {
-           //recordCountLabel.setText(results.getRowCount() + " data packages");    
-           //bflyLabel.setIcon(bfly);
-          }
-        }
-    };
-    worker.start();  //required for SwingWorker 3
-}
-  
   
 }
