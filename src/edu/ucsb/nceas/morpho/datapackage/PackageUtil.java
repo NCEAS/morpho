@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-11-01 18:50:03 $'
- * '$Revision: 1.13 $'
+ *     '$Date: 2001-11-16 19:53:18 $'
+ * '$Revision: 1.14 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -534,10 +534,10 @@ public class PackageUtil
 //DFH        while(fr.ready() && c != -1)
         while(c != -1)
       {
-//        sb.append((char)c);
+        sb.append((char)c);
         c = fr.read();
       }
-      sb.append((char)c);
+//      sb.append((char)c);
       fr.close();
       return sb.toString();
     }
