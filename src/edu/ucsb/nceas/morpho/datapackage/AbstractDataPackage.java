@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-12-06 19:35:57 $'
- * '$Revision: 1.33 $'
+ *     '$Date: 2003-12-08 17:38:37 $'
+ * '$Revision: 1.34 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1541,7 +1541,7 @@ public abstract class AbstractDataPackage extends MetadataObject
 	
 	public Document openAsDom(String id) {
 		// ignore the id and just return the dom for this instance
-		return this.doc;
+		return (this.getMetadataNode()).getOwnerDocument();
 	}
 }
 

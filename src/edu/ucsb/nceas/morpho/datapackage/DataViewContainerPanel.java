@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-12-06 19:35:57 $'
- * '$Revision: 1.69 $'
+ *     '$Date: 2003-12-08 17:38:37 $'
+ * '$Revision: 1.70 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -663,7 +663,7 @@ public class DataViewContainerPanel extends javax.swing.JPanel
                                               new MetaViewListener(vertSplit));
       }
       catch (Exception m) {
-        Log.debug(5, "Unable to display MetaData:\n"+m.getMessage()); 
+        Log.debug(5, "Unable to display Datapackage MetaData:\n"+m.getMessage()); 
         // can't display requested ID, so just display empty viewer:
         try{
 //          if (dp!=null) {

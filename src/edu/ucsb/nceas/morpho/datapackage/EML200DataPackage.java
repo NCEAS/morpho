@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-12-05 23:25:25 $'
- * '$Revision: 1.13 $'
+ *     '$Date: 2003-12-08 17:38:37 $'
+ * '$Revision: 1.14 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -119,6 +119,7 @@ public  class EML200DataPackage extends AbstractDataPackage
     }
     if (doc==null) Log.debug(1, "doc is NULL!");
     metadataNode = doc.getDocumentElement();  // the root Node
+    this.doc = doc;  // set the MetadataObject doc
     try{
       metadataPathNode = XMLUtilities.getXMLAsDOMTreeRootNode("/lib/eml200KeymapConfig.xml");
     }
