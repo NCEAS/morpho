@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2002-10-28 18:44:06 $'
- * '$Revision: 1.23 $'
+ *   '$Author: brooke $'
+ *     '$Date: 2002-10-28 21:44:55 $'
+ * '$Revision: 1.24 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -93,6 +93,10 @@ public class Morpho
     /** Constant of initial morpho frame name */
     public static final String INITIALFRAMENAME = "Morpho";
 
+    /** if windows, need to increase widthof JSplitPane divider, 
+        otherwise max/min arrows don't render properly */
+    private static final Integer DIVIDER_THICKNESS_FOR_MSWINDOWS=new Integer(8);
+    
     // redirects standard out and err streams
     static boolean log_file = false;
 
@@ -1463,16 +1467,19 @@ public class Morpho
                 } else if (lnf.equalsIgnoreCase("windows")) {
                     UIManager.setLookAndFeel(
                         "com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
+                        maybeSetMSWindowsJSplitPaneDividerThickness();
                 } else if (lnf.equalsIgnoreCase("motif")) {
                     UIManager.setLookAndFeel(
                         "com.sun.java.swing.plaf.motif.MotifLookAndFeel");
                 } else {
                     UIManager.setLookAndFeel(
                         UIManager.getSystemLookAndFeelClassName());
+                        maybeSetMSWindowsJSplitPaneDividerThickness();
                 }
             } else {
                 UIManager.setLookAndFeel(
                     UIManager.getSystemLookAndFeelClassName());
+                    maybeSetMSWindowsJSplitPaneDividerThickness();
             }
 
         } catch (Exception e) {
@@ -1480,6 +1487,13 @@ public class Morpho
         }
     }
 
+    private static void maybeSetMSWindowsJSplitPaneDividerThickness() {
+
+        if (UIManager.getSystemLookAndFeelClassName().indexOf(
+                                                "WindowsLookAndFeel")<0) return;
+        UIManager.getLookAndFeelDefaults().put("SplitPane.dividerSize",
+                                               DIVIDER_THICKNESS_FOR_MSWINDOWS);
+    }
     /**
      * Attempts to connect a socket, returns null if it is not successful
      * returns the connected socket if it is successful.
