@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2002-08-16 20:39:10 $'
- * '$Revision: 1.1.2.10 $'
+ *     '$Date: 2002-08-16 21:54:28 $'
+ * '$Revision: 1.1.2.11 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,6 +32,11 @@ import edu.ucsb.nceas.itis.Itis;
 import edu.ucsb.nceas.itis.ItisException;
 import edu.ucsb.nceas.itis.Taxon;
 
+//import edu.ucsb.nceas.morpho.plugins.ServiceProvider;
+import edu.ucsb.nceas.morpho.plugins.ServiceController;
+//import edu.ucsb.nceas.morpho.plugins.Beep;
+//import edu.ucsb.nceas.morpho.plugins.ServiceNotHandledException;
+//import edu.ucsb.nceas.morpho.plugins.BeepService;
 import edu.ucsb.nceas.morpho.framework.*;
 import edu.ucsb.nceas.morpho.util.Log;
 
@@ -810,7 +815,7 @@ public class Morpho
                 }
 
                 // Set up the Service Controller
-                // not implemented yet
+                ServiceController services = ServiceController.getInstance();
 
                 // Set up the User Interface controller (UIController)
                 UIController controller = UIController.initialize(morpho);
@@ -824,6 +829,23 @@ public class Morpho
                 // make the Morpho visible.
                 sf.dispose();
 
+/*
+    // Set up a test service
+    Beep beeper = new Beep();
+    beeper.initialize();
+    Action testServiceAction = new AbstractAction("Test Service") {
+      public void actionPerformed(ActionEvent e) {
+        testService();
+      }
+    };
+    testServiceAction.putValue(Action.SHORT_DESCRIPTION, "Test");
+    testServiceAction.putValue(Action.DEFAULT, SEPARATOR_PRECEDING);
+    testServiceAction.putValue("menuPosition", new Integer(2));
+    Action[] testActions = new Action[1];
+    testActions[0] = testServiceAction;
+    controller.addToolbarActions(testActions);
+*/
+    
                 // Create a blank frame as a placeholder until a plugin takes over
                 MorphoFrame initialFrame = controller.addWindow("Morpho");
                 initialFrame.setVisible(true);
@@ -834,7 +856,19 @@ public class Morpho
             System.exit(1);
         }
     }
-
+/*
+    public static void testService()
+    {
+    try {
+        ServiceController services = ServiceController.getInstance();
+        ServiceProvider provider = 
+                   services.getServiceProvider(BeepService.class);
+        ((BeepService)provider).beep();
+      } catch (ServiceNotHandledException snhe) {
+        Log.debug(6, snhe.getMessage());
+      }
+    }
+*/    
     /**
      * Set up a SAX parser for reading an XML document
      *
