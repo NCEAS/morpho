@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: sambasiv $'
- *     '$Date: 2004-02-06 19:46:02 $'
- * '$Revision: 1.21 $'
+ *   '$Author: sgarg $'
+ *     '$Date: 2004-02-24 20:54:11 $'
+ * '$Revision: 1.22 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -37,6 +37,7 @@ import edu.ucsb.nceas.utilities.XMLUtilities;
 import edu.ucsb.nceas.morpho.plugins.DataPackageWizardListener;
 import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardPageLibrary;
+import edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.PartyMainPage;
 import edu.ucsb.nceas.morpho.plugins.PluginInterface;
 import edu.ucsb.nceas.morpho.plugins.ServiceController;
 import edu.ucsb.nceas.morpho.plugins.ServiceExistsException;
@@ -99,6 +100,8 @@ public class DataPackageWizardPlugin implements PluginInterface,
   public void startPackageWizard(DataPackageWizardListener listener) {
     startWizardAtPage(WizardSettings.PACKAGE_WIZ_FIRST_PAGE_ID, true, listener,
                       "New Datapackage Wizard");
+	responsiblePartyList.clear();
+	PartyMainPage.RESPONSIBLE_PARTY_REFERENCE_COUNT = 0;
   }
 
 
