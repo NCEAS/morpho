@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2003-09-04 04:27:14 $'
- * '$Revision: 1.3 $'
+ *     '$Date: 2003-09-04 23:41:11 $'
+ * '$Revision: 1.4 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,7 +31,9 @@ package edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardSettings;
 
 import java.util.List;
+import java.util.Iterator;
 
+import javax.swing.JPanel;
 import javax.swing.JLabel;
 import javax.swing.Action;
 import javax.swing.JFrame;
@@ -58,15 +60,12 @@ public class PartyCreator extends AbstractWizardPage{
   public final String subtitle   = "Creators";
   
   private final String[] colNames =  {"Party", "Role", "Address"};
-  private final Object[] editors  =   null; //makes non-editable
+  private final Object[] editors  =   null; //makes non-directly-editable
 
+  private JLabel minRequiredLabel;
   private CustomList creatorList;
-  private PartyDialog partyDialog;
-  
-  public PartyCreator() {
     
-    init();
-  }
+  public PartyCreator() { init(); }
   
   /** 
    * initialize method does frame-specific design - i.e. adding the widgets that 
@@ -83,9 +82,22 @@ public class PartyCreator extends AbstractWizardPage{
       +"<br></br></p>", 3);
     this.add(desc, BorderLayout.NORTH);
     
+    JPanel vPanel = WidgetFactory.makeVerticalPanel(6);
+    
+    minRequiredLabel = WidgetFactory.makeLabel(
+                              "A minimum of 1 creator must be defined:", true, 
+                              WizardSettings.WIZARD_CONTENT_TEXTFIELD_DIMS);
+    vPanel.add(minRequiredLabel);
+    
     creatorList = WidgetFactory.makeList(colNames, editors, 4,
                                     true, true, false, true, true, true );
-    this.add(creatorList);
+
+    vPanel.add(WidgetFactory.makeDefaultSpacer());
+
+    vPanel.add(creatorList);
+    
+    this.add(vPanel, BorderLayout.CENTER);
+    
     initActions();
   }
 
@@ -102,43 +114,57 @@ public class PartyCreator extends AbstractWizardPage{
         public void actionPerformed(ActionEvent e) {
       
           Log.debug(45, "\nPartyCreator: CustomAddAction called");
-          showPartyDialog();
+          showNewPartyDialog();
+        }
+      });
+  
+    creatorList.setCustomEditAction( 
+      
+      new AbstractAction() {
+    
+        public void actionPerformed(ActionEvent e) {
+      
+          Log.debug(45, "\nPartyCreator: CustomEditAction called");
+          showEditPartyDialog();
         }
       });
   }
   
-  private void showPartyDialog() {
+  private void showNewPartyDialog() {
     
-    int row = creatorList.getSelectedRow();
-    Log.debug(45, "\nPartyCreator: showPartyDialog() BEFORE - thinks selected row = "+row);
-    if (row < 0) return;
-    
-    partyDialog 
+    PartyDialog partyDialog 
             = new PartyDialog(WizardContainerFrame.frame, PartyDialog.CREATOR);
-            
-    Log.debug(45, "\nPartyCreator: showPartyDialog() AFTER - thinks selected row = "+row);
-    Log.debug(45, "\nPartyCreator: showPartyDialog() thinks partyDialog.USER_RESPONSE = "+partyDialog.USER_RESPONSE);
-
-    Log.debug(45, "\nPartyCreator: showPartyDialog() doing creatorList.removeRow("+row+")");
-    creatorList.removeRow(row);
 
     if (partyDialog.USER_RESPONSE==PartyDialog.OK_OPTION) {
     
-//      List newRow = (List)(creatorList.getListOfRowLists().get(row));
-//      newRow = partyDialog.getSurrogate();
-      
-      //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-      //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-      //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-      //need to create an addrow(List) method for list
-      //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-      //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-      //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
-//      Log.debug(45, "\nPartyCreator: showPartyDialog() newRow = "+newRow);
+      List newRow = partyDialog.getSurrogate();
+      newRow.add(partyDialog);
+      creatorList.addRow(newRow);
     }
+    WidgetFactory.unhiliteComponent(minRequiredLabel);
   }
   
+
+  private void showEditPartyDialog() {
+    
+    List selRowList = creatorList.getSelectedRowList();
+    if (selRowList==null || selRowList.size() < 4) return;
+    
+    Object dialogObj = selRowList.get(3);
+    if (dialogObj==null || !(dialogObj instanceof PartyDialog)) return;
+    PartyDialog editPartyDialog = (PartyDialog)dialogObj;
+
+    editPartyDialog.resetBounds();
+    editPartyDialog.setVisible(true);
+    
+    if (partyDialog.USER_RESPONSE==PartyDialog.OK_OPTION) {
+    
+      List newRow = partyDialog.getSurrogate();
+      newRow.add(partyDialog);
+      creatorList.replaceSelectedRow(newRow);
+    }
+  }
+
   
   /** 
    *  The action to be executed when the page is displayed. May be empty
@@ -153,7 +179,8 @@ public class PartyCreator extends AbstractWizardPage{
    *
    */
   public void onRewindAction() {
-    
+  
+    WidgetFactory.unhiliteComponent(minRequiredLabel);
   }
   
   
@@ -165,7 +192,15 @@ public class PartyCreator extends AbstractWizardPage{
    *  @return boolean true if wizard should advance, false if not 
    *          (e.g. if a required field hasn't been filled in)
    */
-  public boolean onAdvanceAction() { return true; }
+  public boolean onAdvanceAction() { 
+  
+    if (creatorList.getRowCount() < 1) {
+    
+      WidgetFactory.hiliteComponent(minRequiredLabel);
+      return false;
+    }
+    return true; 
+  }
   
 
   /** 
@@ -175,13 +210,44 @@ public class PartyCreator extends AbstractWizardPage{
    *  @return   data the Map object that contains all the
    *            key/value paired settings for this particular wizard page
    */
+  
+  private OrderedMap returnMap = new OrderedMap();
+  //
   public OrderedMap getPageData() {
   
-    return null;
+    returnMap.clear();
+    
+    int index = 1;
+    Object  nextRowObj      = null;
+    List    nextRowList     = null;
+    Object  nextUserObject  = null;
+    OrderedMap  nextNVPMap  = null;
+    PartyDialog nextPartyDialog = null;
+    
+    List rowLists = creatorList.getListOfRowLists();
+    
+    if (rowLists==null) return null;
+    
+    for (Iterator it = rowLists.iterator(); it.hasNext(); ) {
+    
+      nextRowObj = it.next();
+      if (nextRowObj==null) continue;
+      
+      nextRowList = (List)nextRowObj;
+      //column 3 is user object - check it exists and isn't null:
+      if (nextRowList.size()<4)     continue;
+      nextUserObject = nextRowList.get(3);
+      if (nextUserObject==null) continue;
+      
+      nextPartyDialog = (PartyDialog)nextUserObject;
+      
+      nextNVPMap = nextPartyDialog.getPageData("/eml:eml/dataset/creator["
+                                                                +(index++)+"]");
+      returnMap.putAll(nextNVPMap);
+    }
+    return returnMap;
   }
-  
-  
-  
+
 
   /** 
    *  gets the unique ID for this wizard page

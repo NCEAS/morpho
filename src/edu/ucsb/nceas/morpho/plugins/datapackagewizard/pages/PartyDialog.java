@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2003-09-04 01:05:00 $'
- * '$Revision: 1.2 $'
+ *     '$Date: 2003-09-04 23:41:11 $'
+ * '$Revision: 1.3 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -83,7 +83,7 @@ public class PartyDialog extends WizardPopupDialog {
   public PartyDialog(JFrame parent, short role) {
     
     super(parent);
-    init();
+    
     this.role = role;
     
     switch (role) {
@@ -98,6 +98,7 @@ public class PartyDialog extends WizardPopupDialog {
         roleString = "Associated Party";
         break;
     }
+    init();
     this.setVisible(true);
   }
   
