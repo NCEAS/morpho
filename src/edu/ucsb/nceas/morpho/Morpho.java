@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: tao $'
- *     '$Date: 2002-11-21 01:34:46 $'
- * '$Revision: 1.29 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2002-12-04 22:50:49 $'
+ * '$Revision: 1.30 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -128,13 +128,18 @@ public class Morpho
      * The polling interval, in milliSeconds, between attempts to verify that
      * MetaCat is available over the network
      */
-    private final static int METACAT_PING_INTERVAL = 5000;
+    private final static int METACAT_PING_INTERVAL = 30000;
 
     /** The hardcoded XML configuration file */
     private static String configFile = "config.xml";
     private static String profileFileName = "currentprofile.xml";
     private static boolean debug = true;
     private static int debug_level = 9;
+    
+    /** flag set to indicate that connection to metacat is busy
+     *  used by doPing to avoid thread problem
+     */
+    private static boolean connectionBusy = false;
 
     /**
      * Creates a new instance of Morpho
@@ -175,13 +180,11 @@ public class Morpho
         startPing();
         finishPing(true);
 
-// Timer disabled (DFH) to avoid threading problem which stops downloads of
-// large data sets        
         //start a Timer to check periodically whether metacat remains available
         //over the network...
- //       Timer timer = new Timer(METACAT_PING_INTERVAL, pingActionListener);
- //       timer.setRepeats(true);
- //       timer.start();
+        Timer timer = new Timer(METACAT_PING_INTERVAL, pingActionListener);
+        timer.setRepeats(true);
+        timer.start();
     }
 
     /**
@@ -293,8 +296,8 @@ public class Morpho
      * @param prop  the properties to be sent to Metacat
      * @return      InputStream as returned by Metacat
      */
-    public InputStream getMetacatInputStream(Properties prop)
-    {
+    synchronized public InputStream getMetacatInputStream(Properties prop)
+    {   connectionBusy = true;
         InputStream returnStream = null;
         // Now contact metacat and send the request
 
@@ -338,6 +341,7 @@ public class Morpho
                 }
             }
         }
+        connectionBusy = false;
         return returnStream;
     }
 
@@ -1339,7 +1343,7 @@ public class Morpho
      */
     private void doPing(final boolean isStartUp)
     {
-
+      if (!connectionBusy) {
         final SwingWorker sbUpdater =
             new SwingWorker()
             {
@@ -1357,6 +1361,7 @@ public class Morpho
                 }
             };
         sbUpdater.start();
+      }
     }
 
     /**
