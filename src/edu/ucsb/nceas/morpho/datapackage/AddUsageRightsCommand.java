@@ -5,9 +5,9 @@
  *    Authors: Saurabh Garg
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2004-03-24 02:14:18 $'
- * '$Revision: 1.4 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2004-03-25 21:21:44 $'
+ * '$Revision: 1.5 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -79,6 +79,7 @@ public class AddUsageRightsCommand implements Command {
 
       try {
         insertUsage();
+        UIController.showNewPackage(adp);
       } catch (Exception w) {
         Log.debug(20, "Exception trying to modify usage DOM");
       }
