@@ -16,6 +16,23 @@
   <saxparser>org.apache.xerces.parsers.SAXParser</saxparser>
   <packageWizardConfig>./lib/frames/packagewizard.xml</packageWizardConfig>
   <tempDir>./tmp</tempDir>
+  <entityEditorPaths>
+    <entityNamePath>//entityName</entityNamePath>
+    <entityDescPath>//entityDescription</entityDescPath>
+    <entityNumrecPath>//numberOfRecords</entityNumrecPath>
+    <entityCaseSensPath>//caseSensitive</entityCaseSensPath>
+    <entityOrientationPath>//orientation</entityOrientationPath>
+    <attributeNamePath>/eml-attribute/attribute/attributeName</attributeNamePath>
+    <attributeNameNode>attributeName</attributeNameNode>
+  </entityEditorPaths>
+  <packageEditorPaths>
+    <datasetIdPath>/dataset/identifier</datasetIdPath>
+    <datasetShortNamePath>/dataset/shortName</datasetShortNamePath>
+    <datasetTitlePath>/dataset/title</datasetTitlePath>
+    <datasetAbstractPath>/dataset/abstract</datasetAbstractPath>
+    <datasetKeywordPath>/dataset/keywordSet/keyword</datasetKeywordPath>
+    <datasetOriginatorPath>/dataset/originator</datasetOriginatorPath>
+  </packageEditorPaths>
   <packageEditor>
     <paths>
       <titlePath>/dataset/title</titlePath>
@@ -60,6 +77,18 @@
       <editexisting>yes</editexisting>
       <visible>no</visible>
       <idpath>/eml-attribute/identifier</idpath>
+    </file>
+    <file>
+      <name>Variable</name>
+      <label>Field Description</label>
+      <xmlfiletype>-//NCEAS//eml-variable//EN</xmlfiletype>
+      <rootnode>eml-variable</rootnode>
+      <tooltip>Information about the fields (columns) in your data tables.</tooltip>
+      <relatedto>-//NCEAS//eml-entity-2.0//EN</relatedto>
+      <displaypath>//variable-name</displaypath>
+      <editexisting>yes</editexisting>
+      <visible>no</visible>
+      <idpath>/eml-variable/meta_file_id</idpath>
     </file>
     <file>
       <name>Access</name>

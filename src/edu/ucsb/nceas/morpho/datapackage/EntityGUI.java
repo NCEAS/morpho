@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-09-21 18:41:27 $'
- * '$Revision: 1.18 $'
+ *     '$Date: 2001-09-21 20:27:13 $'
+ * '$Revision: 1.19 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -60,14 +60,13 @@ public class EntityGUI extends javax.swing.JFrame
 {
   private static final String htmlBegin = "<html><p><font color=black>";
   private static final String htmlEnd = "</font></p></html>";
-  private static final String namePath = "//entityName";
-  private static final String descPath = "//entityDescription";
-  private static final String numrecPath = "//numberOfRecords";
-  private static final String caseSensPath = "//caseSensitive";
-  private static final String orientationPath = "//orientation";
-  private static final String attributeNamePath = 
-                                       "/eml-attribute/attribute/attributeName";
-  private static final String attributeNameNode = "attributeName";
+  private String namePath;
+  private String descPath;
+  private String numrecPath;
+  private String caseSensPath;
+  private String orientationPath;
+  private String attributeNamePath;
+  private String attributeNameNode;
   
   private ClientFramework framework;
   private ConfigXML config;
@@ -100,12 +99,21 @@ public class EntityGUI extends javax.swing.JFrame
   public EntityGUI(DataPackage dp, String id, String location, 
                    DataPackageGUI parent, ClientFramework cf)
   {
+    config = cf.getConfiguration();
+    
+    namePath = config.get("entityNamePath", 0);
+    descPath = config.get("entityDescPath", 0);
+    numrecPath = config.get("entityNumrecPath", 0);
+    caseSensPath = config.get("entityCaseSensPath", 0);
+    orientationPath = config.get("entityOrientationPath", 0);
+    attributeNamePath = config.get("attributeNamePath", 0);
+    attributeNameNode = config.get("attirbuteNameNode", 0);
+    
     this.parent = parent;
     this.location = location;
     this.framework = cf;
     this.dataPackage = dp;
     this.entityId = id;
-    config = framework.getConfiguration();
     contentPane = getContentPane();
     setTitle("Table Editor");
     BoxLayout box = new BoxLayout(contentPane, BoxLayout.Y_AXIS);

@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-07-30 23:40:44 $'
- * '$Revision: 1.53 $'
+ *     '$Date: 2001-09-21 20:27:13 $'
+ * '$Revision: 1.54 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -94,7 +94,7 @@ public class DataPackageGUI extends javax.swing.JFrame
     Dimension screenDim = Toolkit.getDefaultToolkit().getScreenSize();
     Rectangle frameDim = getBounds();
     setLocation((screenDim.width - frameDim.width) / 2 ,
-                (screenDim.height - frameDim.height) /2);
+                (screenDim.height - frameDim.height) / 2);
   }
   
   /**
@@ -195,14 +195,10 @@ public class DataPackageGUI extends javax.swing.JFrame
             return;
           }
           
-          NodeList nl = PackageUtil.getPathContent(xmlfile, "//entityName", 
+          String entityNamePath = config.get("entityNamePath", 0);
+          
+          NodeList nl = PackageUtil.getPathContent(xmlfile, entityNamePath, 
                                                    framework);
-          //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-          //note that the path here is hardwired to the entityName tag
-          //this is just because I can't figure out a good way to get it
-          //from the config file at this point.  this should be changed
-          //for the release!
-          //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
           Node n = nl.item(0);
           String s = n.getFirstChild().getNodeValue().trim();
           spacecount += " ";
@@ -312,12 +308,12 @@ public class DataPackageGUI extends javax.swing.JFrame
    */
   private JPanel createBasicInfoPanel()
   {
-    String idPath = "/dataset/identifier";
-    String shortNamePath = "/dataset/shortName";
-    String titlePath = "/dataset/title";
-    String abstractPath = "/dataset/abstract";
-    String keywordPath = "/dataset/keywordSet/keyword";
-    String originatorPath = "/dataset/originator";
+    String idPath = config.get("datasetIdPath", 0);
+    String shortNamePath = config.get("datasetShortNamePath", 0);
+    String titlePath = config.get("datasetTitlePath", 0);
+    String abstractPath = config.get("datasetAbstractPath", 0);
+    String keywordPath = config.get("datasetKeywordPath", 0);
+    String originatorPath = config.get("datasetOriginatorPath", 0);
     
     //layout the big main panel
     JPanel textpanel = new JPanel();
