@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-05-24 23:39:18 $'
- * '$Revision: 1.6 $'
+ *     '$Date: 2001-05-25 22:42:02 $'
+ * '$Revision: 1.7 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -76,6 +76,10 @@ public class DocFrame extends javax.swing.JFrame
     DefaultMutableTreeNode selectedNode;
     public JTree tree;
     StringBuffer sb; 
+    
+    Catalog myCatalog;
+    String dtdfile;
+    int numlevels = 9;
     
     javax.swing.JMenuItem DeletemenuItem;
     javax.swing.JMenuItem DupmenuItem;
@@ -285,7 +289,7 @@ void putXMLintoTree() {
             
     String xmlcatalogfile = local_dtd_directory+"/catalog"; 
     try {
-      Catalog myCatalog = new Catalog();
+      myCatalog = new Catalog();
       myCatalog.loadSystemCatalogs();
       myCatalog.parseCatalog(xmlcatalogfile);
       cer.setCatalog(myCatalog);
@@ -299,18 +303,29 @@ void putXMLintoTree() {
       parser = XMLReaderFactory.createXMLReader(parserName);
       XMLDisplayHandler mh = new XMLDisplayHandler(treeModel);
       parser.setContentHandler(mh);
+      parser.setProperty("http://xml.org/sax/properties/lexical-handler",mh);
+      
 	    parser.setEntityResolver(cer);
 	    InputSource is = new InputSource(sr);
-      if (is.getPublicId()!=null) {
-        doctype = is.getPublicId();
-      }
-      else if (is.getSystemId()!=null) {
-        doctype = is.getSystemId();
-	    }
+
       parser.parse(is);
       DefaultMutableTreeNode rt = (DefaultMutableTreeNode)treeModel.getRoot();
-      doctype = ((NodeInfo)rt.getUserObject()).toString();
+      if (mh.getPublicId()!=null) {
+        doctype = mh.getPublicId();
+      }
+      else if (mh.getSystemId()!=null) {
+        doctype = mh.getSystemId(); 
+      }
+      else {
+        doctype = ((NodeInfo)rt.getUserObject()).toString();
+      }
       System.out.println("doctype = " + doctype);
+      String temp = myCatalog.resolvePublic(doctype,null);
+      if (temp.startsWith("file:/")) {
+        temp = temp.substring(6,temp.length());
+      }
+      System.out.println("cat out: "+temp);
+      dtdfile = temp;
       } 
       catch (Exception e) { 
         System.err.println(e.toString());
@@ -476,8 +491,126 @@ void reload_actionPerformed(java.awt.event.ActionEvent event)
 
 	void DTDParse_actionPerformed(java.awt.event.ActionEvent event)
 	{
-		DTDTree dtdtree = new DTDTree("./catalog/resource.dtd");
+		DTDTree dtdtree = new DTDTree(dtdfile);
 		dtdtree.parseDTD();
 		tree.setModel(dtdtree.treeModel);
 	}
+	
+/* -----------------------------------------------
+	 * code for combining the content of two DefaultMutableTreeNode trees
+	 * inputTree is modified based on content of template tree
+	 * template may be based on DTD and thus provides info like cardinality
+	 * It is assumed that nodes use NodeInfo user objects
+	 */
+	 
+/*
+ * modify input tree by adding info in template
+ * input and template are root nodes of trees
+ * input tree will be modified using template
+ */
+void treeUnion(DefaultMutableTreeNode input, DefaultMutableTreeNode template) {
+  // first check to see if root nodes have same names
+  if (!compareNodes(input, template)) {
+    System.out.println( "Root nodes do not match!!!");
+  }
+  else {
+    // root nodes match, so start comparing children
+    Vector nextLevelInputNodes;
+    Vector nextLevelTemplateNodes;
+    Vector currentLevelInputNodes = new Vector();
+    currentLevelInputNodes.addElement(input);
+    Vector currentLevelTemplateNodes = new Vector();
+    currentLevelTemplateNodes.addElement(template);
+    for (int j=0;j<numlevels;j++) {
+      nextLevelInputNodes = new Vector();
+      for (Enumeration enum = currentLevelInputNodes.elements();enum.hasMoreElements();) {
+        DefaultMutableTreeNode nd = (DefaultMutableTreeNode)enum.nextElement();
+        for (Enumeration qq = nd.children();qq.hasMoreElements();) {
+          DefaultMutableTreeNode nd1 = (DefaultMutableTreeNode)qq.nextElement();
+          nextLevelInputNodes.addElement(nd1);
+        }
+      }
+      nextLevelTemplateNodes = new Vector();
+      for (Enumeration enum1 = currentLevelTemplateNodes.elements();enum1.hasMoreElements();) {
+        DefaultMutableTreeNode ndt = (DefaultMutableTreeNode)enum1.nextElement();
+        for (Enumeration qq1 = ndt.children();qq1.hasMoreElements();) {
+          DefaultMutableTreeNode ndt1 = (DefaultMutableTreeNode)qq1.nextElement();
+          nextLevelTemplateNodes.addElement(ndt1);
+        }
+      }
+      currentLevelInputNodes = nextLevelInputNodes;
+      currentLevelTemplateNodes = nextLevelTemplateNodes;
+      // now have a list of all elements in input and template trees at the level being processed
+      
+    }  // end levels loop
+  } //end else
+}
+  
+
+/*
+ * merge the children of the input nodes
+ *
+ */
+void childUnion(Vector inputs, DefaultMutableTreeNode template) {
+  Enumeration templateChildren = inputs.elements();
+  while (templateChildren.hasMoreElements()) {
+    DefaultMutableTreeNode templateChild = (DefaultMutableTreeNode)templateChildren.nextElement();
+    Vector matchNodes = getMatches(templateChild,inputs);
+    for (int i=0;i<matchNodes.size();i++) {
+      mergeNodes((DefaultMutableTreeNode)matchNodes.elementAt(i),templateChild); 
+    }
+    if (matchNodes.size()==0) {
+      inputs.add(templateChild);  
+    }
+  }
+}
+
+/*
+ * return a Vector containing all the nodes in a Vector that match 'match'
+ */
+Vector getMatches(DefaultMutableTreeNode match, Vector vec) {
+  Vector matches = new Vector();
+  Enumeration enum = vec.elements();
+  while (enum.hasMoreElements()) {
+    DefaultMutableTreeNode tn = (DefaultMutableTreeNode)enum.nextElement();
+    if ( compareNodes(tn,match)) {
+      matches.addElement(tn);  
+    }
+  }
+  return matches;
+}
+
+	 /*
+ * return a Vector containing all the child nodes of nd2 that do not match 'match'
+ */
+Vector getMisses(DefaultMutableTreeNode match, DefaultMutableTreeNode nd2) {
+  Vector misses = new Vector();
+  Enumeration children = nd2.children();
+  while (children.hasMoreElements()) {
+    DefaultMutableTreeNode child = (DefaultMutableTreeNode)children.nextElement();
+    if ( !compareNodes(child,match)) {
+      misses.addElement(child);  
+    }
+  }
+  return misses;
+}
+
+	 
+boolean compareNodes(DefaultMutableTreeNode node1, DefaultMutableTreeNode node2) {
+  boolean ret = false;
+  NodeInfo node1ni = (NodeInfo)node1.getUserObject();
+  NodeInfo node2ni =  (NodeInfo)node2.getUserObject();
+  if (node1ni.getName().equals(node2ni.getName())) ret = true;
+  return ret;
+}
+
+
+void mergeNodes(DefaultMutableTreeNode input, DefaultMutableTreeNode template) {
+  if (compareNodes(input,template)) {
+    NodeInfo inputni = (NodeInfo)input.getUserObject();
+    NodeInfo templateni = (NodeInfo)template.getUserObject();
+    inputni.setCardinality(templateni.getCardinality());
+  }
+}
+//------------------------------------------------------------	 
 }

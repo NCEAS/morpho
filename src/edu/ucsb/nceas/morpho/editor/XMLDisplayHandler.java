@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-05-24 23:39:18 $'
- * '$Revision: 1.4 $'
+ *     '$Date: 2001-05-25 22:42:02 $'
+ * '$Revision: 1.5 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -46,6 +46,8 @@ class XMLDisplayHandler extends DefaultHandler implements LexicalHandler {
 	private Stack stack;
 	private DefaultTreeModel treeModel;
 	private int nodeCount;
+	String publicId;
+	String systemId;
 
 	// Constructor
 	public XMLDisplayHandler (DefaultTreeModel treeModel) {
@@ -55,6 +57,14 @@ class XMLDisplayHandler extends DefaultHandler implements LexicalHandler {
 		stack = new Stack ();
 	}
 	
+	public String getPublicId() {
+	  return publicId;  
+	}
+	
+	public String getSystemId() {
+	  return systemId;  
+	}
+
   public void startElement (String uri, String localName,
                               String qName, Attributes atts)
            throws SAXException {
@@ -116,15 +126,8 @@ class XMLDisplayHandler extends DefaultHandler implements LexicalHandler {
    /** SAX Handler that receives notification of DOCTYPE. Sets the DTD */
    public void startDTD(String name, String publicId, String systemId) 
                throws SAXException {
-//     docname = name;
-//     doctype = publicId;
-//     systemid = systemId;
-
-//System.out.println("Start DTD");
-//System.out.println("DOCNAME: " + docname);
-//System.out.println("DOCTYPE: " + doctype);
-//System.out.println("  SYSID: " + systemid);
-
+      this.publicId = publicId;
+      this.systemId = systemId;
    }
 
    /** 
