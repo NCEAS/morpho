@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2001-06-11 02:13:38 $'
- * '$Revision: 1.3 $'
+ *     '$Date: 2001-06-11 17:01:12 $'
+ * '$Revision: 1.4 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -452,15 +452,15 @@ public class ProfileDialog extends JDialog
 
           // Create a metacat user 
   
-          // Get rid of the dialog
-          setVisible(false);
-          dispose();
-   
           // Log into metacat
           framework.setProfile(profile);
           framework.setPassword(passwordField.getText());
           framework.logIn();
 
+          // Get rid of the dialog
+          setVisible(false);
+          dispose();
+   
         } catch (IOException ioe) {
           currentScreen = 0;
           layoutScreen();
