@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-05-17 20:03:42 $'
- * '$Revision: 1.2 $'
+ *     '$Date: 2001-05-17 21:32:43 $'
+ * '$Revision: 1.3 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -174,7 +174,7 @@ public class QueryDialog extends javax.swing.JDialog
 
 	public QueryDialog()
 	{
-		this((Frame)null, (ConfigXML)null);
+		this((Frame)null, new ConfigXML("lib/config.xml"));
 	}
 
 	public QueryDialog(String sTitle)

@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: jones $'
- *     '$Date: 2001-05-09 17:01:28 $'
- * '$Revision: 1.59 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2001-05-17 21:32:43 $'
+ * '$Revision: 1.60 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -166,9 +166,19 @@ public class QueryPlugin implements PluginInterface, ConnectionListener
     // Test the ResultFrame by creating one. This should be
     // replaced by code that opens the QueryDialog and then
     // it would create the ResultFrame
-    Query testQuery = new Query(getOwnerQuery(), framework);
-    ResultSet testResults = testQuery.execute();
-    ResultFrame rf = new ResultFrame(framework, testResults);
+    //DFH Query testQuery = new Query(getOwnerQuery(), framework);
+    //DFH ResultSet testResults = testQuery.execute();
+    //DFH ResultFrame rf = new ResultFrame(framework, testResults);
+    try {
+	// QueryDialog Create and show as non-modal
+	{
+	  QueryDialog QueryDialog1 = new QueryDialog();
+	  QueryDialog1.setModal(false);
+	  QueryDialog1.show();
+	}
+     } catch (java.lang.Exception e) {
+     }
+
   }
 
   /**
