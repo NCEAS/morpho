@@ -1,5 +1,5 @@
 /**
- *  '$RCSfile: PartyCreator.java,v $'
+ *  '$RCSfile: PartyPage.java,v $'
  *    Purpose: A class that handles xml messages passed by the 
  *             package wizard
  *  Copyright: 2000 Regents of the University of California and the
@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2003-09-05 22:29:54 $'
- * '$Revision: 1.5 $'
+ *     '$Date: 2003-09-06 01:36:34 $'
+ * '$Revision: 1.1 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -52,21 +52,83 @@ import edu.ucsb.nceas.morpho.util.Log;
 
 import edu.ucsb.nceas.utilities.OrderedMap;
 
-public class PartyCreator extends AbstractWizardPage{
+public class PartyPage extends AbstractWizardPage{
 
-  public final String pageID     = WizardPageLibrary.PARTY_CREATOR;
-  public final String nextPageID = WizardPageLibrary.USAGE_RIGHTS;
+  public String pageID;
+  public String nextPageID;
+  
   public final String title      = "Dataset Associated Parties:";
-  public final String subtitle   = "Creators";
+  
+  public String subtitle;
+  public String description;
+  public String xPathRoot;
   
   private final String[] colNames =  {"Party", "Role", "Address"};
   private final Object[] editors  =   null; //makes non-directly-editable
 
-  private JLabel minRequiredLabel;
-  private CustomList creatorList;
+  private JLabel      minRequiredLabel;
+  private CustomList  partiesList;
+  private boolean     oneOrMoreRequired;
     
-  public PartyCreator() { init(); }
+  public PartyPage(short role) { 
+
+    initRole(role);
+    init(); 
+  }
   
+  private void initRole(short role) { 
+  
+    switch (role) {
+  
+      case PartyDialog.CREATOR:
+      
+        oneOrMoreRequired = true;
+        pageID     = WizardPageLibrary.PARTY_CREATOR;
+        nextPageID = WizardPageLibrary.PARTY_CONTACT;
+        subtitle = "Creators";
+        xPathRoot = "/eml:eml/dataset/creator[";
+        description =
+        "<p>CREATOR: The full name of the person, organization or position who "
+        +"created the resource.  The list of creators for a resource represent "
+        +"the people and organizations who should be cited for the resource"
+        +"<br></br></p>";
+        break;
+        
+      case PartyDialog.CONTACT:
+
+        oneOrMoreRequired = true;
+        pageID     = WizardPageLibrary.PARTY_CONTACT;
+        nextPageID = WizardPageLibrary.PARTY_ASSOCIATED;
+        subtitle = "Contacts";
+        xPathRoot = "/eml:eml/dataset/contact[";
+        description =
+         "<p>CONTACT:  contains contact information for this dataset. This is "
+        +"the person or institution to contact with questions about the use or "
+        +"interpretation of a data set."
+        +"<br></br></p>";
+        break;
+        
+      case PartyDialog.ASSOCIATED:
+
+        oneOrMoreRequired = false;
+        pageID     = WizardPageLibrary.PARTY_ASSOCIATED;
+        nextPageID = WizardPageLibrary.USAGE_RIGHTS;
+        subtitle = "Associated Parties";
+        xPathRoot = "/eml:eml/dataset/associatedParty[";
+        description =
+         "<p>ASSOCIATED PARTY: the full names of other people, organizations, "
+        +"or positions who should be associated with the resource. These "
+        +"parties might play various roles in the creation or maintenance of "
+        +"the resource, and these roles should be indicated in the \"role\" "
+        +"element.<br></br></p>";
+        break;
+        
+      default:
+        Log.debug(5, "Unrecognized role parameter passed to PartyPage: "+role);
+        return;
+    }
+  }
+
   /** 
    * initialize method does frame-specific design - i.e. adding the widgets that 
    are displayed only in this frame (doesn't include prev/next buttons etc)
@@ -75,26 +137,24 @@ public class PartyCreator extends AbstractWizardPage{
     
     this.setLayout(new BorderLayout());
   
-    JLabel desc = WidgetFactory.makeHTMLLabel(
-      "<p>CREATOR: The full name of the person, organization or position who "
-      +"created the resource.  The list of creators for a resource represent "
-      +"the people and organizations who should be cited for the resource"
-      +"<br></br></p>", 3);
+    JLabel desc = WidgetFactory.makeHTMLLabel(description, 3);
     this.add(desc, BorderLayout.NORTH);
     
     JPanel vPanel = WidgetFactory.makeVerticalPanel(6);
     
-    minRequiredLabel = WidgetFactory.makeLabel(
-                              "A minimum of 1 creator must be defined:", true, 
-                              WizardSettings.WIZARD_CONTENT_TEXTFIELD_DIMS);
-    vPanel.add(minRequiredLabel);
-    
-    creatorList = WidgetFactory.makeList(colNames, editors, 4,
+    if (oneOrMoreRequired) {
+      minRequiredLabel = WidgetFactory.makeLabel(
+                                "One or more "+subtitle+" must be defined:", true, 
+                                WizardSettings.WIZARD_CONTENT_TEXTFIELD_DIMS);
+      vPanel.add(minRequiredLabel);
+    }
+        
+    partiesList = WidgetFactory.makeList(colNames, editors, 4,
                                     true, true, false, true, true, true );
 
     vPanel.add(WidgetFactory.makeDefaultSpacer());
 
-    vPanel.add(creatorList);
+    vPanel.add(partiesList);
     
     this.add(vPanel, BorderLayout.CENTER);
     
@@ -107,24 +167,24 @@ public class PartyCreator extends AbstractWizardPage{
    */
   private void initActions() {
   
-    creatorList.setCustomAddAction( 
+    partiesList.setCustomAddAction( 
       
       new AbstractAction() {
     
         public void actionPerformed(ActionEvent e) {
       
-          Log.debug(45, "\nPartyCreator: CustomAddAction called");
+          Log.debug(45, "\nPartyPage: CustomAddAction called");
           showNewPartyDialog();
         }
       });
   
-    creatorList.setCustomEditAction( 
+    partiesList.setCustomEditAction( 
       
       new AbstractAction() {
     
         public void actionPerformed(ActionEvent e) {
       
-          Log.debug(45, "\nPartyCreator: CustomEditAction called");
+          Log.debug(45, "\nPartyPage: CustomEditAction called");
           showEditPartyDialog();
         }
       });
@@ -139,7 +199,7 @@ public class PartyCreator extends AbstractWizardPage{
     
       List newRow = partyDialog.getSurrogate();
       newRow.add(partyDialog);
-      creatorList.addRow(newRow);
+      partiesList.addRow(newRow);
     }
     WidgetFactory.unhiliteComponent(minRequiredLabel);
   }
@@ -147,7 +207,7 @@ public class PartyCreator extends AbstractWizardPage{
 
   private void showEditPartyDialog() {
     
-    List selRowList = creatorList.getSelectedRowList();
+    List selRowList = partiesList.getSelectedRowList();
     
     if (selRowList==null || selRowList.size() < 4) return;
     
@@ -163,7 +223,7 @@ public class PartyCreator extends AbstractWizardPage{
     
       List newRow = editPartyDialog.getSurrogate();
       newRow.add(editPartyDialog);
-      creatorList.replaceSelectedRow(newRow);
+      partiesList.replaceSelectedRow(newRow);
     }
   }
 
@@ -182,7 +242,7 @@ public class PartyCreator extends AbstractWizardPage{
    */
   public void onRewindAction() {
   
-    WidgetFactory.unhiliteComponent(minRequiredLabel);
+    if (oneOrMoreRequired) WidgetFactory.unhiliteComponent(minRequiredLabel);
   }
   
   
@@ -196,7 +256,7 @@ public class PartyCreator extends AbstractWizardPage{
    */
   public boolean onAdvanceAction() { 
   
-    if (creatorList.getRowCount() < 1) {
+    if (oneOrMoreRequired && partiesList.getRowCount() < 1) {
     
       WidgetFactory.hiliteComponent(minRequiredLabel);
       return false;
@@ -226,7 +286,7 @@ public class PartyCreator extends AbstractWizardPage{
     OrderedMap  nextNVPMap  = null;
     PartyDialog nextPartyDialog = null;
     
-    List rowLists = creatorList.getListOfRowLists();
+    List rowLists = partiesList.getListOfRowLists();
     
     if (rowLists==null) return null;
     
@@ -243,13 +303,11 @@ public class PartyCreator extends AbstractWizardPage{
       
       nextPartyDialog = (PartyDialog)nextUserObject;
       
-      nextNVPMap = nextPartyDialog.getPageData("/eml:eml/dataset/creator["
-                                                                +(index++)+"]");
+      nextNVPMap = nextPartyDialog.getPageData(xPathRoot + (index++) + "]");
       returnMap.putAll(nextNVPMap);
     }
     return returnMap;
   }
-
 
   /** 
    *  gets the unique ID for this wizard page
