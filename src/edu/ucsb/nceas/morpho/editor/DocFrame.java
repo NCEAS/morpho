@@ -1,4 +1,4 @@
-/**
+/**setSelectedNodes
  *        Name: DocFrame.java
  *  Copyright: 2000 Regents of the University of California and the
  *              National Center for Ecological Analysis and Synthesis
@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-02-28 05:02:20 $'
- * '$Revision: 1.91 $'
+ *     '$Date: 2002-03-11 03:55:21 $'
+ * '$Revision: 1.92 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -540,6 +540,7 @@ public class DocFrame extends javax.swing.JFrame
            }
       
     }
+	setSelectedNodes(rootNode);
 	
 	if (!templateFlag) {
 		treeModel.reload();
@@ -1350,6 +1351,61 @@ class SymTreeSelection implements javax.swing.event.TreeSelectionListener
     }
  }
 	
+/* 
+ * makes sure that nodes with text data in leaves a 'selected' if a
+ * choice node appears in path to root
+ */
+ void setSelectedNodes(DefaultMutableTreeNode node) {
+    DefaultMutableTreeNode parentNode = null;
+    DefaultMutableTreeNode tempNode = null;
+    DefaultMutableTreeNode curNode = node.getFirstLeaf();
+    Vector leafs = new Vector();
+    leafs.addElement(curNode);
+    while (curNode!=null) {
+      curNode = curNode.getNextLeaf();
+      if (curNode!=null) {
+        leafs.addElement(curNode);
+      }
+    }
+    Enumeration enum = leafs.elements();
+    while (enum.hasMoreElements()) {
+      curNode = (DefaultMutableTreeNode)enum.nextElement();
+      NodeInfo ni = (NodeInfo)curNode.getUserObject();
+      if (ni.name.equals("#PCDATA")) {         // is a text node
+        String pcdata = ni.getPCValue();
+        if (pcdata.trim().length()>0) {        // has non-blank text data
+          parentNode = (DefaultMutableTreeNode)curNode.getParent();
+          // first build Vector of nodes from current leaf to root
+          Vector path2root = new Vector();
+          path2root.addElement(curNode);
+          while (parentNode!=null) {
+            path2root.addElement(parentNode);
+            parentNode = (DefaultMutableTreeNode)parentNode.getParent();
+          }
+          // now go from the root toward the leaf, setting selected nodes
+          DefaultMutableTreeNode cNode;
+          for (int i=path2root.size()-1;i>-1;i--) {
+            cNode = (DefaultMutableTreeNode)path2root.elementAt(i);
+            NodeInfo cni = (NodeInfo)cNode.getUserObject();
+            if (cni.isChoice()) { //cni.setSelected(true);
+                for (Enumeration eee = (cNode.getParent()).children();eee.hasMoreElements();) {
+                    DefaultMutableTreeNode nnn = (DefaultMutableTreeNode)eee.nextElement();
+                    NodeInfo ni1 = (NodeInfo)nnn.getUserObject();
+                    if (ni1.getName().equals(cni.getName())) {
+                    ni1.setSelected(true);
+                    }
+                    else {
+                        ni1.setSelected(false);
+                    }
+                }
+            }
+          }	        
+        }  // end 'if (pcdata...'
+      }
+    }
+ }
+	
+	
 // returns true if this node has any descendents with non-empty text leaves
 boolean hasNonEmptyTextLeaves(DefaultMutableTreeNode node) {
   boolean res = false;
@@ -1466,6 +1522,7 @@ void expandTreeToLevel(JTree jt, int level) {
                     for (int m=0;m<choiceParentHits.size();m++) {
                         DefaultMutableTreeNode workingInstanceNode = (DefaultMutableTreeNode)choiceParentHits.elementAt(m);
                         DefaultMutableTreeNode specCopyClone = (DefaultMutableTreeNode)(specCopy.clone());
+                        specCopyClone.setUserObject(((NodeInfo)specCopy.getUserObject()).cloneNodeInfo());
                         Enumeration kids = workingInstanceNode.children(); 
                         Vector kidsVec = new Vector();
                         int cindex = -1;
@@ -1619,17 +1676,7 @@ void expandTreeToLevel(JTree jt, int level) {
   }
 
 
-/** reverse the order of items in a stack
- */
- private void reverseStack(Stack st) {
-    Vector temp = new Vector();
-    while (!st.empty()) {
-      temp.addElement(st.pop());
-    }
-    for (int i=0;i<temp.size();i++) {
-      st.push(temp.elementAt(i)); 
-    }
- }
+
 
 /** given a vector to nodes with the same name, return those with the same parent
   * (first set)
@@ -1841,7 +1888,7 @@ private Vector sameParent(Vector list) {
                             DefaultMutableTreeNode sib = (DefaultMutableTreeNode)penum.nextElement();
                             ((NodeInfo)sib.getUserObject()).setSelected(false);                        }
                     }
-                    ((NodeInfo)parent.getUserObject()).setSelected(true);  
+                   ((NodeInfo)parent.getUserObject()).setSelected(true);  
                 }
                 Enumeration enum = parent.children();
                 while (enum.hasMoreElements()) {

@@ -1,13 +1,13 @@
 /**
  *        Name: DTDTree.java
  *  Copyright: 2000 Regents of the University of California and the
- *              National Center for Ecological Analysis and Synthesis
+ *              National Center for Ecological Analysis and Synthesisz
  *    Authors: @higgins@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-02-28 05:01:11 $'
- * '$Revision: 1.21 $'
+ *     '$Date: 2002-03-11 03:55:21 $'
+ * '$Revision: 1.22 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
