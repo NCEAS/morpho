@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: jones $'
- *     '$Date: 2002-08-06 21:10:39 $'
- * '$Revision: 1.7 $'
+ *   '$Author: tao $'
+ *     '$Date: 2002-08-27 16:47:13 $'
+ * '$Revision: 1.8 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -40,6 +40,19 @@ import java.util.Vector;
  */
 public interface DataPackageInterface
 {
+  
+  /**
+   * used to signify that this package is located on a metacat server
+   */
+  public static final String METACAT  = "metacat";
+  /**
+   * used to signify that this package is located locally
+   */
+  public static final String LOCAL    = "local";
+  /**
+   * used to signify that this package is stored on metacat and locally.
+   */
+  public static final String BOTH     = "localmetacat";
 
   /** 
    * This method is called to open a data package that resides either
