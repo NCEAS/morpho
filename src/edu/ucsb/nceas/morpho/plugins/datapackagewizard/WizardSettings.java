@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2003-09-10 04:22:36 $'
- * '$Revision: 1.9 $'
+ *     '$Date: 2003-09-11 17:58:13 $'
+ * '$Revision: 1.10 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -55,10 +55,13 @@ public class WizardSettings {
 
   protected static final int WIZARD_HEIGHT  = 600;
 
-  protected static final int DIALOG_WIDTH  = 3*WIZARD_WIDTH/4;
+  private   static final int DIALOG_SMALLER_THAN_WIZARD_BY = 30;
 
-  protected static final int DIALOG_HEIGHT  = 3*WIZARD_HEIGHT/4;
-  
+  protected static final int DIALOG_WIDTH  
+                          = WIZARD_WIDTH - DIALOG_SMALLER_THAN_WIZARD_BY;
+
+  protected static final int DIALOG_HEIGHT  
+                          = WIZARD_HEIGHT - DIALOG_SMALLER_THAN_WIZARD_BY;
 
   protected static final String FIRST_PAGE_ID = WizardPageLibrary.INTRODUCTION;
   
@@ -69,8 +72,7 @@ public class WizardSettings {
   
   protected static final int PADDING = 5;
 
-  protected static final Dimension DEFAULT_SPACER_DIMS
-                                      = new Dimension(15, 15);
+  protected static final Dimension DEFAULT_SPACER_DIMS = new Dimension(15, 15);
 
   
   protected static final Font  TITLE_FONT          

@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2003-09-10 04:22:36 $'
- * '$Revision: 1.2 $'
+ *     '$Date: 2003-09-11 17:58:13 $'
+ * '$Revision: 1.3 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -176,7 +176,7 @@ public class Entity extends AbstractWizardPage{
         public void actionPerformed(ActionEvent e) {
       
           Log.debug(45, "\nEntity: CustomAddAction called");
-          showNewEntityDialog();
+          showNewAttributeDialog();
         }
       });
   
@@ -187,43 +187,43 @@ public class Entity extends AbstractWizardPage{
         public void actionPerformed(ActionEvent e) {
       
           Log.debug(45, "\nEntity: CustomEditAction called");
-          showEditEntityDialog();
+          showEditAttributeDialog();
         }
       });
   }
   
-  private void showNewEntityDialog() {
+  private void showNewAttributeDialog() {
     
-    EntityDialog entityDialog = new EntityDialog(WizardContainerFrame.frame);
+    AttributeDialog attributeDialog = new AttributeDialog(WizardContainerFrame.frame);
 
-    if (entityDialog.USER_RESPONSE==WizardPopupDialog.OK_OPTION) {
+    if (attributeDialog.USER_RESPONSE==WizardPopupDialog.OK_OPTION) {
     
-      List newRow = entityDialog.getSurrogate();
-      newRow.add(entityDialog);
+      List newRow = attributeDialog.getSurrogate();
+      newRow.add(attributeDialog);
       attributeList.addRow(newRow);
     }
     WidgetFactory.unhiliteComponent(attributesLabel);
   }
   
 
-  private void showEditEntityDialog() {
+  private void showEditAttributeDialog() {
     
     List selRowList = attributeList.getSelectedRowList();
     
-    if (selRowList==null || selRowList.size() < 3) return;
+    if (selRowList==null || selRowList.size() < 4) return;
     
-    Object dialogObj = selRowList.get(2);
+    Object dialogObj = selRowList.get(3);
     
-    if (dialogObj==null || !(dialogObj instanceof EntityDialog)) return;
-    EntityDialog editEntityDialog = (EntityDialog)dialogObj;
+    if (dialogObj==null || !(dialogObj instanceof AttributeDialog)) return;
+    AttributeDialog editAttributeDialog = (AttributeDialog)dialogObj;
 
-    editEntityDialog.resetBounds();
-    editEntityDialog.setVisible(true);
+    editAttributeDialog.resetBounds();
+    editAttributeDialog.setVisible(true);
     
-    if (editEntityDialog.USER_RESPONSE==EntityDialog.OK_OPTION) {
+    if (editAttributeDialog.USER_RESPONSE==AttributeDialog.OK_OPTION) {
     
-      List newRow = editEntityDialog.getSurrogate();
-      newRow.add(editEntityDialog);
+      List newRow = editAttributeDialog.getSurrogate();
+      newRow.add(editAttributeDialog);
       attributeList.replaceSelectedRow(newRow);
     }
   }
@@ -296,7 +296,7 @@ public class Entity extends AbstractWizardPage{
     List    nextRowList     = null;
     Object  nextUserObject  = null;
     OrderedMap  nextNVPMap  = null;
-    EntityDialog nextEntityDialog = null;
+    AttributeDialog nextAttributeDialog = null;
     
     List rowLists = attributeList.getListOfRowLists();
     
@@ -313,9 +313,9 @@ public class Entity extends AbstractWizardPage{
       nextUserObject = nextRowList.get(3);
       if (nextUserObject==null) continue;
       
-      nextEntityDialog = (EntityDialog)nextUserObject;
+      nextAttributeDialog = (AttributeDialog)nextUserObject;
       
-      nextNVPMap = nextEntityDialog.getPageData(xPathRoot 
+      nextNVPMap = nextAttributeDialog.getPageData(xPathRoot 
                                 + "/attributeList/attribute["+(index++) + "]");
       returnMap.putAll(nextNVPMap);
     }
@@ -357,259 +357,4 @@ public class Entity extends AbstractWizardPage{
    *  this is te last page
    */
   public String getNextPageID() { return nextPageID; }
-}
-
-
-
-
-////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////
-//                        D I A L O G    C L A S S
-////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////
-
-
-class EntityDialog extends WizardPopupDialog {
-
-  private JTextField attribNameField;
-  private JTextField measScaleField;
-  
-  private JLabel kwLabel;
-  private JLabel attribNameLabel;
-  private JLabel attribDefinitionLabel;
-  private JLabel measScaleLabel;
-  
-  private String measurementScale;
-  
-  private JTextArea attribDefinitionField;
-  private final String[] buttonsText = new String[] {
-      "Nominal",
-      "Ordinal",
-      "Interval",
-      "Ratio",
-      "DateTime"
-    };
-  
-  public EntityDialog(JFrame parent) { 
-  
-    super(parent); 
-    
-    init();
-    this.setVisible(true);
-  }
-  
-  /** 
-   * initialize method does frame-specific design - i.e. adding the widgets that 
-   are displayed only in this frame (doesn't include prev/next buttons etc)
-   */
-  private void init() {
-    
-    middlePanel.setLayout(new BoxLayout(middlePanel, BoxLayout.Y_AXIS));
-    
-    middlePanel.add(WidgetFactory.makeDefaultSpacer());
-    
-    middlePanel.add(WidgetFactory.makeHTMLLabel(
-              "<font size=\"4\"><b>Define Column or Attribute:</b></font>", 1));
-    
-    middlePanel.add(WidgetFactory.makeDefaultSpacer());
-    
-    ////
-    JPanel attribNamePanel = WidgetFactory.makePanel(1);
-    attribNameLabel = WidgetFactory.makeLabel("Attribute name:", true);
-    attribNamePanel.add(attribNameLabel);
-    attribNameField = WidgetFactory.makeOneLineTextField();
-    attribNamePanel.add(attribNameField);
-    middlePanel.add(attribNamePanel);
-        
-    middlePanel.add(WidgetFactory.makeDefaultSpacer());
-
-    
-    ////////////////////////////////////////////////////////////////////////////
-    
-    middlePanel.add(WidgetFactory.makeHTMLLabel(
-    "Enter a paragraph that gives a precise definition of the attribute or "
-    +"table-column. Explain the contents of the attribute fully so that a data "
-    +"user could interpret the attribute accurately.<br></br>"
-    +"<font color=\"666666\">&nbsp;&nbsp;[Example(s):&nbsp;&nbsp;&nbsp;"
-    +"\"spden\" is the number of individuals of all macro invertebrate species "
-    +"found in the plot]</font>", 3));
-
-    JPanel attribDefinitionPanel = WidgetFactory.makePanel();
-
-    attribDefinitionLabel = WidgetFactory.makeLabel("Definition", true);
-    attribDefinitionLabel.setVerticalAlignment(SwingConstants.TOP);
-    attribDefinitionLabel.setAlignmentY(SwingConstants.TOP);
-    attribDefinitionPanel.add(attribDefinitionLabel);
-    
-    attribDefinitionField = WidgetFactory.makeTextArea("", 4, true);
-    JScrollPane jscrl = new JScrollPane(attribDefinitionField);
-    attribDefinitionPanel.add(jscrl);
-    middlePanel.add(attribDefinitionPanel);
- 
-  
-    ////
-    measScaleLabel = WidgetFactory.makeLabel(
-                                "Select and define a Measurement Scale:", true, 
-                                WizardSettings.WIZARD_CONTENT_TEXTFIELD_DIMS);
-    middlePanel.add(measScaleLabel);
-    
-    JPanel measScalePanel = WidgetFactory.makePanel(5);
-    measScaleField = WidgetFactory.makeOneLineTextField();
-    measScalePanel.add(measScaleField);
-    middlePanel.add(measScalePanel);
-    
-    final JPanel instance = middlePanel;
-    
-    ActionListener listener = new ActionListener() {
-      
-      public void actionPerformed(ActionEvent e) {
-        
-        Log.debug(45, "got radiobutton command: "+e.getActionCommand());
-
-        //undo any hilites:
-        
-        if (e.getActionCommand().equals(buttonsText[0])) {
-          
-//          instance.remove(currentPanel);
-//          currentPanel = inlinePanel;
-//          distribXPath = INLINE_XPATH;
-//          instance.add(inlinePanel, BorderLayout.CENTER);
-
-          setMeasurementScale("/nominal");
-                    
-        } else if (e.getActionCommand().equals(buttonsText[1])) {
-        
-          setMeasurementScale("/ordinal");
-                  
-          
-        } else if (e.getActionCommand().equals(buttonsText[2])) {
-        
-          setMeasurementScale("/interval");
-                  
-          
-        } else if (e.getActionCommand().equals(buttonsText[3])) {
-        
-          setMeasurementScale("/ratio");
-                  
-        } else if (e.getActionCommand().equals(buttonsText[3])) {
-        
-          setMeasurementScale("/dateTime");
-                    
-        }
-        instance.validate();
-        instance.repaint();
-      }
-    };
-    
-    
-    JPanel radioPanel = WidgetFactory.makeRadioPanel(buttonsText, -1, listener);
-    
-    middlePanel.add(radioPanel);
-      
-    middlePanel.add(WidgetFactory.makeDefaultSpacer());
-
-  } 
-  
-  private void setMeasurementScale(String scale) {
-  
-    this.measurementScale = scale;
-  }
-  
-  
-  /** 
-   *  The action to be executed when the "OK" button is pressed. If no onAdvance 
-   *  processing is required, implementation must return boolean true.
-   *
-   *  @return boolean true if dialog should close and return to wizard, false 
-   *          if not (e.g. if a required field hasn't been filled in)
-   */
-  public boolean onAdvanceAction() {
-   
-    if (attribNameField.getText().trim().equals("")) {
-  
-      WidgetFactory.hiliteComponent(attribNameLabel);
-      attribNameField.requestFocus();
-      return false;
-    }
-    WidgetFactory.unhiliteComponent(attribNameLabel);
-    
-    if (attribDefinitionField.getText().trim().equals("")) {
-  
-      WidgetFactory.hiliteComponent(attribDefinitionLabel);
-      attribDefinitionField.requestFocus();
-      return false;
-    }
-    WidgetFactory.unhiliteComponent(attribDefinitionLabel);
-
-    return true; 
-  }
-
-
-  /**
-   *  @return a List contaiing 2 String elements - one for each column of the 
-   *  2-col list in which this surrogate is displayed
-   *
-   */
-  public List getSurrogate() {
-
-    WidgetFactory.unhiliteComponent(attribDefinitionLabel);
-    
-    List surrogate = new ArrayList();
-    
-    //attribName (first column) surrogate:
-    String attribName   = attribNameField.getText().trim();
-    if (attribName==null) attribName = "";
-    surrogate.add(attribName);
-
-    
-    //attribDefinition (second column) surrogate:
-    String attribDefinition   = attribDefinitionField.getText().trim();
-    if (attribDefinition==null) attribDefinition = "";
-    surrogate.add(attribDefinition);
-    
-    
-    //measurementScale (third column) surrogate:
-//    String measurementScale   = measurementScaleField.getText().trim();
-    String measurementScale   = "";
-    if (measurementScale==null) measurementScale = "";
-    surrogate.add(measurementScale);
-    
-    return surrogate;
-  }
-
-
-  /** 
-   *  gets the Map object that contains all the key/value paired
-   *
-   *  @param    xPathRoot the string xpath to which this dialog's xpaths will be 
-   *            appended when making name/value pairs.  For example, in the 
-   *            xpath: /eml:eml/dataset/keywordSet[2]/keywordThesaurus, the 
-   *            root would be /eml:eml/dataset/keywordSet[2]
-   *            NOTE - MUST NOT END WITH A SLASH, BUT MAY END WITH AN INDEX IN 
-   *            SQUARE BRACKETS []
-   *
-   *  @return   data the Map object that contains all the
-   *            key/value paired settings for this particular wizard page
-   */
-  private OrderedMap returnMap = new OrderedMap();
-  //
-  public OrderedMap getPageData(String xPathRoot) {
-  
-    returnMap.clear();
-
-    String attribName = attribNameField.getText().trim();
-    if (attribName!=null && !attribName.equals("")) {
-      returnMap.put(xPathRoot + "/attributeName", attribName);
-    }
-    
-
-    String attribDef = attribDefinitionField.getText().trim();
-    if (attribDef!=null && !attribDef.equals("")) {
-      returnMap.put(xPathRoot + "/attributeDefinition", attribDef);
-    }
-    
-    return returnMap;
-  }
 }
