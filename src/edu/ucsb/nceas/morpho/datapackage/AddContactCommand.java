@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: sgarg $'
- *     '$Date: 2005-01-27 16:27:15 $'
- * '$Revision: 1.1 $'
+ *     '$Date: 2005-01-27 20:24:45 $'
+ * '$Revision: 1.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -68,6 +68,7 @@ public class AddContactCommand
   public void execute(ActionEvent event) {
 
     adp = UIController.getInstance().getCurrentAbstractDataPackage();
+    exsitingContactRoot = adp.getSubtrees(DATAPACKAGE_CONTACT_GENERIC_NAME);
 
     if (showContactDialog()) {
 
@@ -80,7 +81,31 @@ public class AddContactCommand
         w.printStackTrace();
         Log.debug(5, "Unable to add contact details!");
       }
+    }else {
+      //gets here if user has pressed "cancel" on dialog... ////////////////////
+
+      //Restore project subtree to state it was in when we started...
+      adp.deleteAllSubtrees(DATAPACKAGE_CONTACT_GENERIC_NAME);
+      if (!exsitingContactRoot.isEmpty()) {
+        Object nextXPathObj = null;
+
+        int count = this.exsitingContactRoot.size();
+        DOMImplementation impl = DOMImplementationImpl.getDOMImplementation();
+        for(int i = count-1; i>-1; i--){
+          contactRoot = (Node)exsitingContactRoot.get(i);
+          Node check = adp.insertSubtree(DATAPACKAGE_CONTACT_GENERIC_NAME,
+              contactRoot, 0);
+          if (check != null) {
+            Log.debug(45, "added new creator details to package...");
+          } else {
+            Log.debug(5,
+                "** ERROR: Unable to add new creator details to package **");
+          }
+
+        }
+      }
     }
+
   }
 
   private boolean showContactDialog() {
@@ -165,9 +190,11 @@ public class AddContactCommand
     Log.debug(45, "\n insertContact() Got contact details from "
         + "contact page -\n" + map.toString());
 
-    if (map == null || map.isEmpty()) {
+    if (map == null) {
       Log.debug(5, "Unable to get contact details from input!");
       return;
+    } else if (map.isEmpty()){
+      Log.debug(45, "Deleting all contact details!");
     }
 
     DOMImplementation impl = DOMImplementationImpl.getDOMImplementation();
@@ -233,6 +260,7 @@ public class AddContactCommand
     }
   }
 
+  private List exsitingContactRoot;
   private Node contactRoot;
   private AbstractDataPackage adp;
   private AbstractUIPage contactPage;

@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: sgarg $'
- *     '$Date: 2005-01-27 16:27:15 $'
- * '$Revision: 1.1 $'
+ *     '$Date: 2005-01-27 20:24:45 $'
+ * '$Revision: 1.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -56,7 +56,8 @@ public class AddAdditionalPartyCommand
     implements Command {
 
   //generic name for lookup in eml listings
-  private final String DATAPACKAGE_ADDITIONALPARTY_GENERIC_NAME = "additionalParty";
+  private final String DATAPACKAGE_ASSOCIATED_PARTY_GENERIC_NAME
+      = "associatedParty";
 
   public AddAdditionalPartyCommand() {}
 
@@ -68,6 +69,8 @@ public class AddAdditionalPartyCommand
   public void execute(ActionEvent event) {
 
     adp = UIController.getInstance().getCurrentAbstractDataPackage();
+    exsitingAssociatedPartyRoot =
+        adp.getSubtrees(DATAPACKAGE_ASSOCIATED_PARTY_GENERIC_NAME);
 
     if (showAdditionalPartyDialog()) {
 
@@ -80,7 +83,32 @@ public class AddAdditionalPartyCommand
         w.printStackTrace();
         Log.debug(5, "Unable to add additionalParty details!");
       }
+    } else {
+      //gets here if user has pressed "cancel" on dialog... ////////////////////
+
+      //Restore project subtree to state it was in when we started...
+      adp.deleteAllSubtrees(DATAPACKAGE_ASSOCIATED_PARTY_GENERIC_NAME);
+      if (!exsitingAssociatedPartyRoot.isEmpty()) {
+        Object nextXPathObj = null;
+
+        int count = exsitingAssociatedPartyRoot.size();
+        DOMImplementation impl = DOMImplementationImpl.getDOMImplementation();
+        for (int i = count - 1; i > -1; i--) {
+          associatedPartyRoot = (Node) exsitingAssociatedPartyRoot.get(i);
+          Node check = adp.insertSubtree(
+              DATAPACKAGE_ASSOCIATED_PARTY_GENERIC_NAME,
+              associatedPartyRoot, 0);
+          if (check != null) {
+            Log.debug(45, "added new creator details to package...");
+          } else {
+            Log.debug(5,
+                "** ERROR: Unable to add new creator details to package **");
+          }
+
+        }
+      }
     }
+
   }
 
   private boolean showAdditionalPartyDialog() {
@@ -102,12 +130,13 @@ public class AddAdditionalPartyCommand
       return false;
     }
 
-    additionalPartyPage = dpwPlugin.getPage(
+    associatedPartyPage = dpwPlugin.getPage(
         DataPackageWizardInterface.PARTY_ASSOCIATED_PAGE);
 
     OrderedMap existingValuesMap = new OrderedMap();
 
-    List additionalPartyList = adp.getSubtrees(DATAPACKAGE_ADDITIONALPARTY_GENERIC_NAME);
+    List additionalPartyList = adp.getSubtrees(
+        DATAPACKAGE_ASSOCIATED_PARTY_GENERIC_NAME);
 
     if (!additionalPartyList.isEmpty()) {
       Iterator listIt = additionalPartyList.iterator();
@@ -124,9 +153,10 @@ public class AddAdditionalPartyCommand
           nextTempObj = tempIt.next();
           nextTempString = (String) nextTempObj;
           if (nextTempString != null) {
-            existingValuesMap.put("/" + DATAPACKAGE_ADDITIONALPARTY_GENERIC_NAME + "["
+            existingValuesMap.put("/"
+                + DATAPACKAGE_ASSOCIATED_PARTY_GENERIC_NAME + "["
                 + count + "]" + nextTempString.substring(
-                DATAPACKAGE_ADDITIONALPARTY_GENERIC_NAME.length() + 1,
+                DATAPACKAGE_ASSOCIATED_PARTY_GENERIC_NAME.length() + 1,
                 nextTempString.length()),
                 tempMap.get(nextTempObj));
           }
@@ -135,16 +165,16 @@ public class AddAdditionalPartyCommand
       }
     }
 
-    Log.debug(45, "sending previous data to additionalPartyPage -\n\n"
+    Log.debug(45, "sending previous data to associatedPartyPage -\n\n"
         + existingValuesMap);
 
     boolean pageCanHandleAllData
-        = additionalPartyPage.setPageData(existingValuesMap, null);
+        = associatedPartyPage.setPageData(existingValuesMap, null);
 
     ModalDialog dialog = null;
     if (pageCanHandleAllData) {
 
-      dialog = new ModalDialog(additionalPartyPage,
+      dialog = new ModalDialog(associatedPartyPage,
           UIController.getInstance().
           getCurrentActiveWindow(),
           UISettings.POPUPDIALOG_WIDTH,
@@ -152,7 +182,7 @@ public class AddAdditionalPartyCommand
     } else {
 
       UIController.getInstance().launchEditorAtSubtreeForCurrentFrame(
-          DATAPACKAGE_ADDITIONALPARTY_GENERIC_NAME, 0);
+          DATAPACKAGE_ASSOCIATED_PARTY_GENERIC_NAME, 0);
       return false;
     }
 
@@ -161,18 +191,21 @@ public class AddAdditionalPartyCommand
 
   private void insertAdditionalParty() {
 
-    OrderedMap map = additionalPartyPage.getPageData("/additionalParty[");
-    Log.debug(45, "\n insertAdditionalParty() Got additionalParty details from "
+    OrderedMap map = associatedPartyPage.getPageData("/associatedParty[");
+    Log.debug(45,
+        "\n insertAdditionalParty() Got additionalParty details from "
         + "additionalParty page -\n" + map.toString());
 
-    if (map == null || map.isEmpty()) {
+    if (map == null) {
       Log.debug(5, "Unable to get additionalParty details from input!");
       return;
+    } else if (map.isEmpty()) {
+      Log.debug(45, "Deleting all associated party details!");
     }
 
     DOMImplementation impl = DOMImplementationImpl.getDOMImplementation();
     //delete old title from datapackage
-    adp.deleteAllSubtrees(DATAPACKAGE_ADDITIONALPARTY_GENERIC_NAME);
+    adp.deleteAllSubtrees(DATAPACKAGE_ASSOCIATED_PARTY_GENERIC_NAME);
 
     Iterator additionalPartyIt = map.keySet().iterator();
     Object nextXPathObj = null;
@@ -187,12 +220,14 @@ public class AddAdditionalPartyCommand
       nextXPath = (String) nextXPathObj;
 
       String temp = nextXPath.substring(
-          DATAPACKAGE_ADDITIONALPARTY_GENERIC_NAME.length() + 2, nextXPath.length());
+          DATAPACKAGE_ASSOCIATED_PARTY_GENERIC_NAME.length()
+          + 2, nextXPath.length());
       temp = temp.substring(0, temp.indexOf("]"));
       nextXPath = nextXPath.replaceFirst(temp, "1");
 
       if (additionalPartySetMap.containsKey(temp)) {
-        OrderedMap additionalPartyMap = (OrderedMap) additionalPartySetMap.get(temp);
+        OrderedMap additionalPartyMap = (OrderedMap) additionalPartySetMap.get(
+            temp);
         additionalPartyMap.put(nextXPath, map.get(nextXPathObj));
       } else {
         OrderedMap additionalPartyMap = new OrderedMap();
@@ -204,25 +239,28 @@ public class AddAdditionalPartyCommand
     Iterator additionalPartySetIt = additionalPartySetMap.keySet().iterator();
     while (additionalPartySetIt.hasNext()) {
       nextXPathObj = additionalPartySetIt.next();
-      OrderedMap additionalPartyMap = (OrderedMap) additionalPartySetMap.get(nextXPathObj);
-      Document doc = impl.createDocument("", "additionalParty", null);
-      additionalPartyRoot = doc.getDocumentElement();
+      OrderedMap additionalPartyMap = (OrderedMap) additionalPartySetMap.get(
+          nextXPathObj);
+      Document doc = impl.createDocument("", "associatedParty", null);
+      associatedPartyRoot = doc.getDocumentElement();
 
       try {
-        XMLUtilities.getXPathMapAsDOMTree(additionalPartyMap, additionalPartyRoot);
+        XMLUtilities.getXPathMapAsDOMTree(additionalPartyMap,
+            associatedPartyRoot);
       }
       catch (TransformerException w) {
         Log.debug(5, "Unable to add additionalParty details to package!");
         Log.debug(15, "TransformerException (" + w + ") calling "
-            + "XMLUtilities.getXPathMapAsDOMTree(map, additionalPartyRoot) with \n"
+            +
+            "XMLUtilities.getXPathMapAsDOMTree(map, associatedPartyRoot) with \n"
             + "map = " + map
-            + " and additionalPartyRoot = " + additionalPartyRoot);
+            + " and associatedPartyRoot = " + associatedPartyRoot);
         return;
       }
 
       // add to the datapackage
-      Node check = adp.insertSubtree(DATAPACKAGE_ADDITIONALPARTY_GENERIC_NAME,
-          additionalPartyRoot,
+      Node check = adp.insertSubtree(DATAPACKAGE_ASSOCIATED_PARTY_GENERIC_NAME,
+          associatedPartyRoot,
           0);
       if (check != null) {
         Log.debug(45, "added new additionalParty details to package...");
@@ -233,7 +271,8 @@ public class AddAdditionalPartyCommand
     }
   }
 
-  private Node additionalPartyRoot;
+  private List exsitingAssociatedPartyRoot;
+  private Node associatedPartyRoot;
   private AbstractDataPackage adp;
-  private AbstractUIPage additionalPartyPage;
+  private AbstractUIPage associatedPartyPage;
 }

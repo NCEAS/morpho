@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: sgarg $'
- *     '$Date: 2005-01-27 16:27:15 $'
- * '$Revision: 1.1 $'
+ *     '$Date: 2005-01-27 20:24:45 $'
+ * '$Revision: 1.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -68,6 +68,7 @@ public class AddCreatorCommand
   public void execute(ActionEvent event) {
 
     adp = UIController.getInstance().getCurrentAbstractDataPackage();
+    exsitingCreatorRoot = adp.getSubtrees(DATAPACKAGE_CREATOR_GENERIC_NAME);
 
     if (showCreatorDialog()) {
 
@@ -80,11 +81,33 @@ public class AddCreatorCommand
         w.printStackTrace();
         Log.debug(5, "Unable to add creator details!");
       }
+    } else {
+      //gets here if user has pressed "cancel" on dialog... ////////////////////
+
+      //Restore project subtree to state it was in when we started...
+      adp.deleteAllSubtrees(DATAPACKAGE_CREATOR_GENERIC_NAME);
+      if (!exsitingCreatorRoot.isEmpty()) {
+        Object nextXPathObj = null;
+
+        int count = this.exsitingCreatorRoot.size();
+        DOMImplementation impl = DOMImplementationImpl.getDOMImplementation();
+        for(int i = count-1; i>-1; i--){
+          creatorRoot = (Node)exsitingCreatorRoot.get(i);
+          Node check = adp.insertSubtree(DATAPACKAGE_CREATOR_GENERIC_NAME,
+              creatorRoot, 0);
+          if (check != null) {
+            Log.debug(45, "added new creator details to package...");
+          } else {
+            Log.debug(5,
+                "** ERROR: Unable to add new creator details to package **");
+          }
+
+        }
+      }
     }
   }
 
   private boolean showCreatorDialog() {
-
     ServiceController sc;
     DataPackageWizardInterface dpwPlugin = null;
     try {
@@ -118,13 +141,15 @@ public class AddCreatorCommand
 
       while (listIt.hasNext()) {
         nextObj = listIt.next();
-        OrderedMap tempMap = XMLUtilities.getDOMTreeAsXPathMap( (Node) nextObj);
+        OrderedMap tempMap = XMLUtilities.getDOMTreeAsXPathMap( (Node)
+            nextObj);
         Iterator tempIt = tempMap.keySet().iterator();
         while (tempIt.hasNext()) {
           nextTempObj = tempIt.next();
           nextTempString = (String) nextTempObj;
           if (nextTempString != null) {
-            existingValuesMap.put("/" + DATAPACKAGE_CREATOR_GENERIC_NAME + "["
+            existingValuesMap.put("/" + DATAPACKAGE_CREATOR_GENERIC_NAME +
+                "["
                 + count + "]" + nextTempString.substring(
                 DATAPACKAGE_CREATOR_GENERIC_NAME.length() + 1,
                 nextTempString.length()),
@@ -165,9 +190,11 @@ public class AddCreatorCommand
     Log.debug(45, "\n insertCreator() Got creator details from "
         + "creator page -\n" + map.toString());
 
-    if (map == null || map.isEmpty()) {
+    if (map == null) {
       Log.debug(5, "Unable to get creator details from input!");
       return;
+    } else if (map.isEmpty()) {
+      Log.debug(45, "Deleting all creator details!");
     }
 
     DOMImplementation impl = DOMImplementationImpl.getDOMImplementation();
@@ -233,6 +260,7 @@ public class AddCreatorCommand
     }
   }
 
+  private List exsitingCreatorRoot;
   private Node creatorRoot;
   private AbstractDataPackage adp;
   private AbstractUIPage creatorPage;
