@@ -1,12 +1,12 @@
 <!--         
-       '$RCSfile: eml-project-2.0.1.dtd,v $'
+       '$RCSfile: eml-project-2.0.0.beta4e.dtd,v $'
        Copyright: 2000 Regents of the University of California and the
                   National Center for Ecological Analysis and Synthesis
      For Details: http://knb.ecoinformatics.org/
 
         '$Author: higgins $'
-          '$Date: 2001-10-10 18:19:22 $'
-      '$Revision: 1.2 $'
+          '$Date: 2001-10-20 20:29:13 $'
+      '$Revision: 1.1 $'
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by

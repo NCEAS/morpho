@@ -1,11 +1,11 @@
 <!--         
-       '$RCSfile: eml-software-2.0.1.dtd,v $'
+       '$RCSfile: eml-protocol-2.0.0.beta4e.dtd,v $'
        Copyright: 2000 Regents of the University of California and the
                   National Center for Ecological Analysis and Synthesis
      For Details: http://knb.ecoinformatics.org/
 
         '$Author: higgins $'
-          '$Date: 2001-10-03 21:45:07 $'
+          '$Date: 2001-10-20 20:29:14 $'
       '$Revision: 1.1 $'
 
     This program is free software; you can redistribute it and/or modify
@@ -22,7 +22,15 @@
     along with this program; if not, write to the Free Software
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 -->
- 
+
+<!ELEMENT eml-protocol (identifier+, protocol+)>
+<!ELEMENT identifier (#PCDATA)>
+<!ATTLIST identifier system CDATA #IMPLIED>
+<!ELEMENT protocol (method*, processingStep*, qualityControl*)>
+<!ELEMENT method (paragraph*, citation*)>
+<!ELEMENT processingStep (paragraph*, citation*)>
+<!ELEMENT qualityControl (paragraph*, citation*)> 
+<!ELEMENT paragraph (#PCDATA)> 
 
 <!ELEMENT individualName (salutation*, givenName*, surName)>
 <!ELEMENT salutation (#PCDATA)>
@@ -53,8 +61,6 @@
 <!ELEMENT role (#PCDATA)>
 
 <!-- common fields -->
-<!ELEMENT identifier (#PCDATA)>
-<!ATTLIST identifier system CDATA "">
 <!ELEMENT shortName (#PCDATA)>
 <!ELEMENT title (#PCDATA)>
 <!ELEMENT originator ((individualName|organizationName|positionName)+,
@@ -76,16 +82,37 @@
 <!ELEMENT relationship (#PCDATA)>
 <!ELEMENT object (#PCDATA)>
 
-<!-- The software branch -->
-<!ELEMENT software (identifier+, shortName?, title+,
-                     originator+, pubdate?, pubplace?, series?, abstract?, 
-                     keywordSet*, additionalInfo?, rights*, triple*, 
-                     versionNumber?, sourceModule?, binaryFile?, location?, 
-                     programmingLanguage?)>
+<!-- The literature branch -->
 
-<!ELEMENT versionNumber (#PCDATA)>
-<!ELEMENT sourceModule (#PCDATA)>
-<!ELEMENT binaryFile (#PCDATA)>
-<!ELEMENT location (#PCDATA)>
-<!ELEMENT programmingLanguage (#PCDATA)>
+<!ELEMENT citation (identifier+, shortName?, title+,
+                     originator+, pubdate?, pubplace?, series?, abstract?, 
+                     keywordSet*, additionalInfo?, rights*, triple*,
+ ISBN?, ISSN?, (article | book | chapter | manuscript | report | thesis))>
+<!ELEMENT ISBN (#PCDATA)>
+<!ELEMENT ISSN (#PCDATA)>
+<!ELEMENT article (jounal, volume, issue?, pageRange)>
+<!ELEMENT book (edition?, totalPages?, totalFigures?, totalTables?, volume?)>
+<!ELEMENT chapter (chapterNumber?, bookEditor, bookTitle, publisher, pageRange?, edition?, volume?)>
+<!ELEMENT manuscript (pubInfo, Location)>
+<!ELEMENT report (institution, reportNumber)>
+<!ELEMENT thesis (degree, pubInfo, totalPages, degreeInstitution)>
+<!ELEMENT jounal (#PCDATA)>
+<!ELEMENT volume (#PCDATA)>
+<!ELEMENT issue (#PCDATA)>
+<!ELEMENT pageRange (#PCDATA)>
+<!ELEMENT edition (#PCDATA)>
+<!ELEMENT totalPages (#PCDATA)>
+<!ELEMENT totalFigures (#PCDATA)>
+<!ELEMENT totalTables (#PCDATA)>
+<!ELEMENT chapterNumber (#PCDATA)>
+<!ELEMENT bookEditor (#PCDATA)>
+<!ELEMENT bookTitle (#PCDATA)>
+<!ELEMENT publisher (#PCDATA)>
+<!ELEMENT pubInfo (#PCDATA)>
+<!ELEMENT Location (#PCDATA)>
+<!ELEMENT institution (#PCDATA)>
+<!ELEMENT reportNumber (#PCDATA)>
+<!ELEMENT degree (#PCDATA)>
+<!ELEMENT degreeInstitution (#PCDATA)>
+
 <!-- EOF -->

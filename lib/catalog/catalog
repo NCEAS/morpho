@@ -1,151 +1,59 @@
 OVERRIDE YES
-PUBLIC "eml-dataset" "eml-dataset.dtd"
-PUBLIC "-//NCEAS//eml-dataset//EN" "eml-dataset.dtd"
-PUBLIC "-//ecoinformatics.org//eml-dataset//EN" "eml-dataset.dtd"
-SYSTEM "urn:nceas:test-eml-dataset" "eml-dataset.dtd"
-SYSTEM "eml-dataset.dtd" "eml-dataset.dtd"
+PUBLIC "-//NCEAS//eml-dataset//EN" "eml-dataset-2.0.0.beta4e.dtd"
+PUBLIC "-//ecoinformatics.org//eml-dataset//2.0.0beta4//EN" "eml-dataset-2.0.0.beta4e.dtd"
+SYSTEM "eml-dataset.dtd" "eml-dataset-2.0.0.beta4e.dtd"
 
 OVERRIDE YES
-PUBLIC "eml-context" "eml-context.dtd"
-PUBLIC "-//NCEAS//eml-context//EN" "eml-context.dtd"
-PUBLIC "-//ecoinformatics.org//eml-context//EN" "eml-context.dtd"
-SYSTEM "urn:nceas:test-eml-context" "eml-context.dtd"
-SYSTEM "eml-context.dtd" "eml-context.dtd"
+PUBLIC "-//NCEAS//eml-access//EN" "eml-access-2.0.0.beta4e.dtd"
+PUBLIC "-//ecoinformatics.org//eml-access//2.0.0beta4//EN" "eml-access-2.0.0.beta4e.dtd"
+SYSTEM "eml-access.dtd" "eml-access-2.0.0.beta4e.dtd"
 
 OVERRIDE YES
-PUBLIC "eml-access" "eml-access.dtd"
-PUBLIC "-//NCEAS//eml-access//EN" "eml-access.dtd"
-PUBLIC "-//ecoinformatics.org//eml-access//EN" "eml-access.dtd"
-SYSTEM "urn:nceas:test-eml-access" "eml-access.dtd"
-SYSTEM "eml-access.dtd" "eml-access.dtd"
+PUBLIC "-//NCEAS//eml-software//EN" "eml-software-2.0.0.beta4e.dtd"
+PUBLIC "-//ecoinformatics.org//eml-software//2.0.0beta4//EN" "eml-software-2.0.0.beta4e.dtd"
+SYSTEM "eml-software.dtd" "eml-software-2.0.0.beta4e.dtd"
 
 OVERRIDE YES
-PUBLIC "eml-file" "eml-file.dtd"
-PUBLIC "-//NCEAS//eml-file//EN" "eml-file.dtd"
-PUBLIC "-//ecoinformatics.org//eml-file//EN" "eml-file.dtd"
-SYSTEM "urn:nceas:test-eml-file" "eml-file.dtd"   
-SYSTEM "eml-file.dtd" "eml-file.dtd"
+PUBLIC "-//NCEAS//eml-entity//EN" "eml-entity-2.0.0.beta4e.dtd"
+PUBLIC "-//ecoinformatics.org//eml-entity//2.0.0beta4//EN" "eml-entity-2.0.0.beta4e.dtd"
+SYSTEM "eml-entity.dtd" "eml-entity-2.0.0.beta4e.dtd"
 
 OVERRIDE YES
-PUBLIC "eml-software" "eml-software.dtd"
-PUBLIC "-//NCEAS//eml-software//EN" "eml-software.dtd"
-PUBLIC "-//ecoinformatics.org//eml-software//EN" "eml-software.dtd"
-SYSTEM "urn:nceas:test-eml-software" "eml-software.dtd"   
-SYSTEM "eml-software.dtd" "eml-software.dtd"
+PUBLIC "-//NCEAS//eml-distribution//EN" "eml-distribution-2.0.0.beta4e.dtd"
+PUBLIC "-//ecoinformatics.org//eml-distribution//2.0.0beta4//EN" "eml-distribution-2.0.0.beta4e.dtd"
+SYSTEM "eml-distribution.dtd" "eml-distribution-2.0.0.beta4e.dtd"
 
 OVERRIDE YES
-PUBLIC "eml-status" "eml-status.dtd"
-PUBLIC "-//NCEAS//eml-status//EN" "eml-status.dtd"
-PUBLIC "-//ecoinformatics.org//eml-status//EN" "eml-status.dtd"
-SYSTEM "urn:nceas:test-eml-status" "eml-status.dtd"   
-SYSTEM "eml-status.dtd" "eml-status.dtd"
-
-OVERRIDE YES                
-PUBLIC "resource" "resource.dtd"
-PUBLIC "-//NCEAS//resource//EN" "resource.dtd"
-PUBLIC "-//ecoinformatics.org//resource//EN" "resource.dtd"
-SYSTEM "resource.dtd" "resource.dtd"
-
-OVERRIDE YES                
-PUBLIC "package" "package.dtd"
-PUBLIC "-//NCEAS//package//EN" "resource.dtd"
-PUBLIC "-//ecoinformatics.org//package//EN" "resource.dtd"
-SYSTEM "package.dtd" "package.dtd"
+PUBLIC "-//NCEAS//eml-physical//EN" "eml-physical-2.0.0.beta4e.dtd"
+PUBLIC "-//ecoinformatics.org//eml-physical//2.0.0beta4//EN" "eml-physical-2.0.0.beta4e.dtd"
+SYSTEM "eml-physical.dtd" "eml-physical-2.0.0.beta4e.dtd"
 
 OVERRIDE YES
-PUBLIC "eml-supplement" "eml-supplement.dtd"
-PUBLIC "-//NCEAS//eml-supplement//EN" "eml-supplement.dtd"
-PUBLIC "-//ecoinformatics.org//eml-supplement//EN" "eml-supplement.dtd"
-SYSTEM "urn:nceas:test-eml-supplement" "eml-supplement.dtd"   
-SYSTEM "eml-supplement" "eml-supplement"
+PUBLIC "-//NCEAS//eml-project//EN" "eml-project-2.0.0.beta4e.dtd"
+PUBLIC "-//ecoinformatics.org//eml-project//2.0.0beta4//EN" "eml-project-2.0.0.beta4e.dtd"
+SYSTEM "eml-project.dtd" "eml-project-2.0.0.beta4e.dtd"
 
 OVERRIDE YES
-PUBLIC "eml-variable" "eml-variable.dtd"
-PUBLIC "-//NCEAS//eml-variable//EN" "eml-variable.dtd"
-PUBLIC "-//ecoinformatics.org//eml-variable//EN" "eml-variable.dtd"
-SYSTEM "urn:nceas:test-eml-variable" "eml-variable.dtd" 
-SYSTEM "eml-variable.dtd" "eml-variable.dtd"
+PUBLIC "-//NCEAS//eml-protocol//EN" "eml-protocol-2.0.0.beta4e.dt"
+PUBLIC "-//ecoinformatics.org//eml-protocol//2.0.0beta4//EN" "eml-protocol-2.0.0.beta4e.dtd"
+SYSTEM "eml-protocol.dtd" "eml-protocol-2.0.0.beta4e.dtd"
 
 OVERRIDE YES
-PUBLIC "eml-dataset-2.0" "eml-dataset-2.0.1.dtd"
-PUBLIC "-//NCEAS//eml-dataset-2.0//EN" "eml-dataset-2.0.1.dtd"
-PUBLIC "-//ecoinformatics.org//eml-dataset-2.0//EN" "eml-dataset-2.0.1.dtd"
-SYSTEM "urn:nceas:test-eml-dataset-2.0" "eml-dataset-2.0.1.dtd" 
-SYSTEM "eml-dataset-2.0.dtd" "eml-dataset-2.0.1.dtd"
+PUBLIC "-//NCEAS//eml-literature//EN" "eml-literature-2.0.0.beta4e.dtd"
+PUBLIC "-//ecoinformatics.org//eml-literature//2.0.0beta4//EN" "eml-literature-2.0.0.beta4e.dtd"
+SYSTEM "eml-literature.dtd" "eml-literature-2.0.0.beta4e.dtd"
 
 OVERRIDE YES
-PUBLIC "eml-entity-2.0" "eml-entity-2.0.1.dtd"
-PUBLIC "-//NCEAS//eml-entity-2.0//EN" "eml-entity-2.0.1.dtd"
-PUBLIC "-//ecoinformatics.org//eml-entity-2.0//EN" "eml-entity-2.0.1.dtd"
-SYSTEM "urn:nceas:test-eml-entity-2.0" "eml-entity-2.0.1.dtd" 
-SYSTEM "eml-entity-2.0.dtd" "eml-entity-2.0.1.dtd"
+PUBLIC "-//NCEAS//eml-attribute//EN" "eml-attribute-2.0.0.beta4e.dtd"
+PUBLIC "-//ecoinformatics.org//eml-attribute//2.0.0beta4//EN" "eml-attribute-2.0.0.beta4e.dtd"
+SYSTEM "eml-attribute.dtd" "eml-attribute-2.0.0.beta4e.dtd"
 
 OVERRIDE YES
-PUBLIC "eml-access-2.0" "eml-access-2.0.1.dtd"
-PUBLIC "-//NCEAS//eml-access-2.0//EN" "eml-access-2.0.1.dtd"
-PUBLIC "-//ecoinformatics.org//eml-access-2.0//EN" "eml-access-2.0.1.dtd"
-SYSTEM "urn:nceas:test-eml-access-2.0" "eml-access-2.0.1.dtd"
-SYSTEM "eml-access-2.0.dtd" "eml-access-2.0.1.dtd"
-
+PUBLIC "-//NCEAS//eml-constraint//EN" "eml-constraint-2.0.0.beta4e.dtd"
+PUBLIC "-//ecoinformatics.org//eml-constraint//2.0.0beta4//EN" "eml-constraint-2.0.0.beta4e.dtd"
+SYSTEM "eml-constraint.dtd" "eml-constraint-2.0.0.beta4e.dtd"
+                                                                  
 OVERRIDE YES
-PUBLIC "eml-software-2.0" "eml-software-2.0.1.dtd"
-PUBLIC "-//NCEAS//eml-software-2.0//EN" "eml-software-2.0.1.dtd"
-PUBLIC "-//ecoinformatics.org//eml-software-2.0//EN" "eml-software-2.0.1.dtd"
-SYSTEM "urn:nceas:test-eml-software-2.0" "eml-software-2.0.1.dtd"
-SYSTEM "eml-software-2.0.dtd" "eml-software-2.0.1.dtd"
-
-OVERRIDE YES
-PUBLIC "eml-distribution-2.0" "eml-distribution-2.0.1.dtd"
-PUBLIC "-//NCEAS//eml-distribution-2.0//EN" "eml-distribution-2.0.1.dtd"
-PUBLIC "-//ecoinformatics.org//eml-distribution-2.0//EN" "eml-distribution-2.0.1.dtd"
-SYSTEM "urn:nceas:test-eml-distribution-2.0" "eml-distribution-2.0.1.dtd"
-SYSTEM "eml-distribution-2.0.dtd" "eml-distribution-2.0.1.dtd"
-
-OVERRIDE YES
-PUBLIC "eml-party-2.0" "eml-party-2.0.dtd"
-PUBLIC "-//NCEAS//eml-party-2.0//EN" "eml-party-2.0.dtd"
-PUBLIC "-//ecoinformatics.org//eml-party-2.0//EN" "eml-party-2.0.dtd"
-SYSTEM "urn:nceas:test-eml-party-2.0" "eml-party-2.0.dtd"
-SYSTEM "eml-party-2.0.dtd" "eml-party-2.0.dtd"
-
-OVERRIDE YES
-PUBLIC "eml-physical-2.0" "eml-physical-2.0.1.dtd"
-PUBLIC "-//NCEAS//eml-physical-2.0//EN" "eml-physical-2.0.1.dtd"
-PUBLIC "-//ecoinformatics.org//eml-physical-2.0//EN" "eml-physical-2.0.1.dtd"
-SYSTEM "urn:nceas:test-eml-physical-2.0" "eml-physical-2.0.1.dtd"
-SYSTEM "eml-physical-2.0.dtd" "eml-physical-2.0.1.dtd"
-
-OVERRIDE YES
-PUBLIC "eml-project-2.0" "eml-project-2.0.1.dtd"
-PUBLIC "-//NCEAS//eml-project-2.0//EN" "eml-project-2.0.1.dtd"
-PUBLIC "-//ecoinformatics.org//eml-project-2.0//EN" "eml-project-2.0.1.dtd"
-SYSTEM "urn:nceas:test-eml-project-2.0" "eml-project-2.0.1.dtd"
-SYSTEM "eml-project-2.0.dtd" "eml-project-2.0.1.dtd"
-
-OVERRIDE YES
-PUBLIC "eml-protocol-2.0" "eml-protocol-2.0.1.dtd"
-PUBLIC "-//NCEAS//eml-protocol-2.0//EN" "eml-protocol-2.0.1.dtd"
-PUBLIC "-//ecoinformatics.org//eml-protocol-2.0//EN" "eml-protocol-2.0.1.dtd"
-SYSTEM "urn:nceas:test-eml-protocol-2.0" "eml-protocol-2.0.1.dtd"
-SYSTEM "eml-protocol-2.0.dtd" "eml-protocol-2.0.1.dtd"
-
-OVERRIDE YES
-PUBLIC "eml-literature-2.0" "eml-literature-2.0.1.dtd"
-PUBLIC "-//NCEAS//eml-literature-2.0//EN" "eml-literature-2.0.1.dtd"
-PUBLIC "-//ecoinformatics.org//eml-literature-2.0//EN" "eml-literature-2.0.1.dtd"
-SYSTEM "urn:nceas:test-eml-literature-2.0" "eml-literature-2.0.1.dtd"
-SYSTEM "eml-literature-2.0.dtd" "eml-literature-2.0.1.dtd"
-
-OVERRIDE YES
-PUBLIC "eml-attribute-2.0" "eml-attribute-2.0.1.dtd"
-PUBLIC "-//NCEAS//eml-attribute-2.0//EN" "eml-attribute-2.0.1.dtd"
-PUBLIC "-//ecoinformatics.org//eml-attribute-2.0//EN" "eml-attribute-2.0.1.dtd"
-SYSTEM "urn:nceas:test-eml-attribute-2.0" "eml-attribute-2.0.1.dtd"
-SYSTEM "eml-attribute-2.0.dtd" "eml-attribute-2.0.1.dtd"
-
-OVERRIDE YES
-PUBLIC "eml-constraint-2.0" "eml-constraint-2.0.1.dtd"
-PUBLIC "-//NCEAS//eml-constraint-2.0//EN" "eml-constraint-2.0.1.dtd"
-PUBLIC "-//ecoinformatics.org//eml-constraint-2.0//EN" "eml-constraint-2.0.1.dtd"
-SYSTEM "urn:nceas:test-eml-constraint-2.0" "eml-constraint-2.0.1.dtd"
-SYSTEM "eml-constraint-2.0.dtd" "eml-constraint-2.0.1.dtd"
+PUBLIC "-//NCEAS//eml-coverage//EN" "eml-coverage-2.0.0.beta4e.dtd"
+PUBLIC "-//ecoinformatics.org//eml-coverage//2.0.0beta4//EN" "eml-coverage-2.0.0.beta4e.dtd"
+SYSTEM "eml-coverage.dtd" "eml-coverage-2.0.0.beta4e.dtd"

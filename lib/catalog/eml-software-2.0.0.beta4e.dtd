@@ -1,11 +1,11 @@
 <!--         
-       '$RCSfile: eml-software-2.0.dtd,v $'
+       '$RCSfile: eml-software-2.0.0.beta4e.dtd,v $'
        Copyright: 2000 Regents of the University of California and the
                   National Center for Ecological Analysis and Synthesis
      For Details: http://knb.ecoinformatics.org/
 
-        '$Author: berkley $'
-          '$Date: 2001-07-06 20:32:03 $'
+        '$Author: higgins $'
+          '$Date: 2001-10-20 20:29:14 $'
       '$Revision: 1.1 $'
 
     This program is free software; you can redistribute it and/or modify
@@ -22,6 +22,7 @@
     along with this program; if not, write to the Free Software
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 -->
+ 
 
 <!ELEMENT individualName (salutation*, givenName*, surName)>
 <!ELEMENT salutation (#PCDATA)>
@@ -47,6 +48,10 @@
 <!-- Note that the domain for role is not expressed in the DTD -->
 <!ELEMENT role (#PCDATA)>
 
+
+<!-- entity to conglomerate these fields into one name -->
+<!ELEMENT role (#PCDATA)>
+
 <!-- common fields -->
 <!ELEMENT identifier (#PCDATA)>
 <!ATTLIST identifier system CDATA "">
@@ -65,20 +70,22 @@
 <!ELEMENT keywordThesaurus (#PCDATA)>
 <!ELEMENT additionalInfo (paragraph+)>
 <!ELEMENT paragraph (#PCDATA)>
+<!ELEMENT rights (paragraph+)>
 <!ELEMENT triple (subject, relationship, object)>
 <!ELEMENT subject (#PCDATA)>
 <!ELEMENT relationship (#PCDATA)>
 <!ELEMENT object (#PCDATA)>
 
 <!-- The software branch -->
-<!ELEMENT software (identifier+, shortName?, title+, originator+, pubdate?, series?,
-                    abstract?, keywordSet*, additionalInfo?, versionNumber?, 
-                    sourceModule?, binaryFile?,
-                    location?, programmingLanguage?)>
+<!ELEMENT software (identifier+, shortName?, title+,
+                     originator+, pubdate?, pubplace?, series?, abstract?, 
+                     keywordSet*, additionalInfo?, rights*, triple*, 
+                     versionNumber?, sourceModule?, binaryFile?, location?, 
+                     programmingLanguage?)>
+
 <!ELEMENT versionNumber (#PCDATA)>
 <!ELEMENT sourceModule (#PCDATA)>
 <!ELEMENT binaryFile (#PCDATA)>
 <!ELEMENT location (#PCDATA)>
 <!ELEMENT programmingLanguage (#PCDATA)>
-
 <!-- EOF -->
