@@ -879,5 +879,4 @@ public DefaultMutableTreeNode deepNodeCopy(DefaultMutableTreeNode node) {
 			 
 	}
 	
-	
 }

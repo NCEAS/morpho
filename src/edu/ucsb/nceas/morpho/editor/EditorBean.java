@@ -126,4 +126,6 @@ public class EditorBean extends Container implements PluginInterface
     }
     new DriverFrame().show();
   }
+  
+  public void setContainer(Object o) {}
 }
