@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2002-08-09 23:46:14 $'
- * '$Revision: 1.1.2.1 $'
+ *     '$Date: 2002-08-13 00:22:13 $'
+ * '$Revision: 1.1.2.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,8 +29,13 @@ import edu.ucsb.nceas.morpho.util.ColumnSortableTableModel;
 import edu.ucsb.nceas.morpho.util.SortableJTable;
 import java.awt.Component;
 import java.awt.event.*;
+import java.awt.Font;
+import java.awt.FontMetrics;
+import java.awt.Graphics;
 import java.awt.Point;
 import java.util.*;
+import javax.swing.JComponent;
+import javax.swing.JLabel;
 import javax.swing.JTable;
 import javax.swing.event.*;
 import javax.swing.table.*;
@@ -40,7 +45,7 @@ import javax.swing.table.*;
  */
 public class ToolTippedSortableJTable extends SortableJTable
 {
- 
+  
  /**
   * Constructor of ToolTippedSortableJTable
   * @param model ColumnSortableTableModel
@@ -48,7 +53,7 @@ public class ToolTippedSortableJTable extends SortableJTable
   public ToolTippedSortableJTable(ColumnSortableTableModel model)
   {
     super(model);
-    
+  
   }
 
   /**
@@ -96,10 +101,11 @@ public class ToolTippedSortableJTable extends SortableJTable
       TableColumn column = this.getColumnModel().getColumn(hitColumnIndex);
       // Get the width of the column
       widthOfCell = column.getWidth();
+     
       // Caculate the length of string in the cell
-      
-      // if width of cell is shoter than the stirng return the tip
-      if (widthOfCell < 200)
+      widthOfString = caculateStringLength(tip);
+      // if width of cell is shoter than width of tip rendered by table renderer
+      if (widthOfCell <= (widthOfString+2))
       {
         return tip;
       }//if
@@ -114,9 +120,26 @@ public class ToolTippedSortableJTable extends SortableJTable
   /**
    * Caculate the length of String
    */
-  private int caculateStringLength(int numberOfCharacter)
+  private int caculateStringLength(String str)
   {
-    return 0; 
+    // Store the width of string
+    int width = 0;
+    
+    // if Str is not null or empty, caculate the width
+    if ( str != null || !str.equals(""))
+    {
+      // Font for string
+      Font font 
+      =((DefaultTableCellRenderer) getDefaultRenderer(String.class)).getFont();
+      // Get FontMatrices base the lable
+      FontMetrics metrics = getFontMetrics(font);
+      // Get width of the string base on this FontMetrics
+      width = metrics.stringWidth(str);
+      
+    }//if
+    
+    return width;
+      
   }//caculateStringLenth
   
 
