@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-10-01 19:26:24 $'
- * '$Revision: 1.7 $'
+ *     '$Date: 2003-10-02 18:22:44 $'
+ * '$Revision: 1.8 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -128,6 +128,7 @@ public  class EML200DataPackage extends AbstractDataPackage
     catch (Exception w) {
       Log.debug(4, "Problem with getting Nodelist");
     }
+    if (authorNodes==null) return "";  // no authors
     int numAuthors = authorNodes.getLength();
     
     String surName = "";
