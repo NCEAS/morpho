@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2004-03-24 02:14:18 $'
- * '$Revision: 1.29 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2004-03-25 18:26:30 $'
+ * '$Revision: 1.30 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -49,6 +49,9 @@ import edu.ucsb.nceas.morpho.plugins.ServiceController;
 import edu.ucsb.nceas.morpho.plugins.ServiceProvider;
 import org.w3c.dom.Document;
 import edu.ucsb.nceas.morpho.datapackage.DataViewContainerPanel;
+import edu.ucsb.nceas.morpho.plugins.ServiceNotHandledException;
+import edu.ucsb.nceas.morpho.datapackage.AccessionNumber;
+
 
 /**
  * The UIController handles the state of the morpho menu and toolbars so
@@ -967,4 +970,45 @@ public class UIController
             windowYcoord -= UISettings.WINDOW_CASCADE_Y_OFFSET;
         }
    }
+   
+  /**
+   *  method to display the new package after changes have been made
+   */
+  public static void showNewPackage(AbstractDataPackage adp) {
+    String location = adp.getLocation();
+    if (!location.equals("")) {
+      // if location is "", then id should be current
+      // otherwise try to increment version
+      try{
+        String id = adp.getAccessionNumber();
+        AccessionNumber an = new AccessionNumber(morpho);
+        String newid = an.incRev(id);
+        adp.setAccessionNumber(newid);
+        adp.setLocation("");
+      }
+      catch (Exception www) {
+        AccessionNumber an = new AccessionNumber(morpho);
+        String nextid = an.getNextId();
+        adp.setAccessionNumber(nextid);
+      }
+    }
+      MorphoFrame morphoFrame = UIController.getInstance().getCurrentActiveWindow();
+      morphoFrame.setVisible(false);
+    
+      try {
+        ServiceController services = ServiceController.getInstance();
+        ServiceProvider provider = 
+                services.getServiceProvider(DataPackageInterface.class);
+        DataPackageInterface dataPackage = (DataPackageInterface)provider;
+        dataPackage.openNewDataPackage(adp, null);
+        UIController controller = UIController.getInstance();
+        controller.removeWindow(morphoFrame);
+        morphoFrame.dispose();
+      }
+      catch (ServiceNotHandledException snhe) {
+        Log.debug(6, snhe.getMessage());
+        morphoFrame.setVisible(true);
+      }
+}
+   
 }
