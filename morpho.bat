@@ -1,0 +1,1 @@
+java -cp .;lib/xerces.jar;lib/xalan.jar;lib/xml4j.jar;lib/sym.jar;lib/morpho.jar edu.ucsb.nceas.morpho.framework.ClientFramework
