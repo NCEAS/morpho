@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2004-01-26 23:59:55 $'
- * '$Revision: 1.25 $'
+ *     '$Date: 2004-01-27 21:33:15 $'
+ * '$Revision: 1.26 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -62,6 +62,7 @@ public  class EML200DataPackage extends AbstractDataPackage
     Morpho morpho = Morpho.thisStaticInstance;
     String temp = XMLUtilities.getDOMTreeAsString(getMetadataNode(), false);
     StringReader sr = new StringReader(temp);
+    StringReader sr1 = new StringReader(temp);
       if((location.equals(AbstractDataPackage.LOCAL))||
                  (location.equals(AbstractDataPackage.BOTH))) {
         FileSystemDataStore fsds = new FileSystemDataStore(morpho);
@@ -87,7 +88,7 @@ public  class EML200DataPackage extends AbstractDataPackage
               (existsFlag && updateFlag)
               )
           {
-            mds.saveFile(getAccessionNumber(),sr);
+            mds.saveFile(getAccessionNumber(),sr1);
           } // exists on metacat; thus update
           else
           {
@@ -96,13 +97,13 @@ public  class EML200DataPackage extends AbstractDataPackage
               String temp_an = getAccessionNumber();
               setAccessionNumber(temp2+".1");
               String tempout = XMLUtilities.getDOMTreeAsString(getMetadataNode(), false);
-              StringReader sr1 = new StringReader(tempout);
-              mds.newFile(temp2+".1",sr1);
+              StringReader sr2 = new StringReader(tempout);
+              mds.newFile(temp2+".1",sr2);
               setAccessionNumber(temp_an);
             }
             // the basic package now exists,
             if (updateFlag) {
-              mds.saveFile(getAccessionNumber(),sr);
+              mds.saveFile(getAccessionNumber(),sr1);
             }
           }// not currently on metacat
         } catch (MetacatUploadException mue) {

@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2004-01-26 21:51:20 $'
- * '$Revision: 1.55 $'
+ *     '$Date: 2004-01-27 21:33:15 $'
+ * '$Revision: 1.56 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1552,108 +1552,160 @@ public abstract class AbstractDataPackage extends MetadataObject
     MetacatDataStore mds = new MetacatDataStore(morpho);
     //Log.debug(1, "About to check entityArray!");
     if (entityArray == null) {
+      Log.debug(30, "Entity array is null!");
       return; // there is no data!
     }
     for (int i = 0; i < entityArray.length; i++) {
-      String urlinfo = getDistributionUrl(i, 0, 0);
-      // assumed that urlinfo is of the form 'protocol://systemname/localid/other'
-      // protocol is probably 'ecogrid'; system name is 'knb'
-      // we just want the local id here
-      int indx2 = urlinfo.indexOf("//");
-      if (indx2 > -1) {
-        urlinfo = urlinfo.substring(indx2 + 2);
-        // now start should be just past the '//'
+      String urlinfo = getUrlInfo(i);
+      // urlinfo should be the id in a string
+      if (location.equals(LOCAL))  {
+        handleLocal(urlinfo);
       }
-      indx2 = urlinfo.indexOf("/");
-      if (indx2 > -1) {
-        urlinfo = urlinfo.substring(indx2 + 1);
-        //now should be past the system name
+      else if (location.equals(METACAT)) {
+        handleMetacat(urlinfo, i);
       }
-      indx2 = urlinfo.indexOf("/");
-      if (indx2 > -1) {
-        urlinfo = urlinfo.substring(0, indx2);
-        // should have trimmed 'other'
-      }
-      if (urlinfo.length() == 0) {
-        return;
-      }
-      // if we reach here, urlinfo should be the id in a string
-      try {
-        if ( (location.equals(LOCAL)) || (location.equals(BOTH))) {
-          dataFile = fds.openFile(urlinfo);
-        }
-        else if (location.equals(METACAT)) {
-          dataFile = mds.openFile(urlinfo);
-        }
-      }
-      catch (FileNotFoundException fnf) {
-        // if the datfile has NOT been located, a FileNotFoundException will be thrown.
-        // this indicates that the datafile with the url has NOT been saved
-        // the datafile should be stored in the profile temp dir
-        //Log.debug(1, "FileNotFoundException");
-        ConfigXML profile = morpho.getProfile();
-        String separator = profile.get("separator", 0);
-        separator = separator.trim();
-        String temp = new String();
-        temp = urlinfo.substring(0, urlinfo.indexOf(separator));
-        temp += "/" +
-            urlinfo.substring(urlinfo.indexOf(separator) + 1, urlinfo.length());
-        try {
-          dataFile = fds.openTempFile(temp);
-          InputStream dfis = new FileInputStream(dataFile);
-          if ( (location.equals(LOCAL)) || (location.equals(BOTH))) {
-            //Log.debug(1, "ready to save: urlinfo: "+urlinfo);
-            fds.saveDataFile(urlinfo, dfis);
-            // the temp file has been saved; thus delete
-            dfis.close();
-            dataFile.delete();
-          }
-          else if ( (location.equals(METACAT)) || (location.equals(BOTH))) {
-						try{
-              mds.newDataFile(temp, dataFile);
-              // the temp file has been saved; thus delete
-              dataFile.delete();
-						} catch (MetacatUploadException mue) {
-              // if we reach here, most likely there has been a problem saving the datafile
-              // on metacat because the id is already in use
-              // so, get a new id
-              AccessionNumber an = new AccessionNumber(morpho);
-              String newid = an.getNextId();
-              // now try saving with the new id
-              try{ 
-                mds.newDataFile(newid, dataFile);
-                dataFile.delete();
-                // newDataFile must have worked; thus update the package
-                setDistributionUrl(i, 0, 0, newid);
-                String newPackageId = an.getNextId();
-                setAccessionNumber(newPackageId);
-                serialize(AbstractDataPackage.METACAT);
-                if(location.equals(BOTH)) {  // save new package locally
-                  serialize(AbstractDataPackage.LOCAL);
-                }
-              } catch (MetacatUploadException mue1) {
-							  Log.debug(5, "Problem saving data to metacat\n"+
-							             mue1.getMessage());
-							  throw new MetacatUploadException("ERROR SAVING DATA TO METACAT! "
-							            +mue1.getMessage());						 
-						  }
-            }
-          }
-        } 
-        catch (Exception qq) {
-          // some other problem has occured
-          Log.debug(5, "Some problem with saving data files has occurred!");
-          qq.printStackTrace();
-      }
-
-      }
-      catch (Exception q) {
-        // some other problem has occured
-        Log.debug(5, "Some problem with saving data files has occurred!");
-        q.printStackTrace();
+      else if (location.equals(BOTH)) {
+        handleBoth(urlinfo, i);
       }
     }
   }
+
+
+  private void handleLocal(String urlinfo) {
+    File dataFile = null;
+    Morpho morpho = Morpho.thisStaticInstance;
+    FileSystemDataStore fds = new FileSystemDataStore(morpho);
+    try {
+      dataFile = fds.openFile(urlinfo);
+    } catch (FileNotFoundException fnf) {
+      // if the datfile has NOT been located, a FileNotFoundException will be thrown.
+      // this indicates that the datafile with the url has NOT been saved
+      // the datafile should be stored in the profile temp dir
+      //Log.debug(1, "FileNotFoundException");
+      ConfigXML profile = morpho.getProfile();
+      String separator = profile.get("separator", 0);
+      separator = separator.trim();
+      String temp = new String();
+      temp = urlinfo.substring(0, urlinfo.indexOf(separator));
+      temp += "/" +
+            urlinfo.substring(urlinfo.indexOf(separator) + 1, urlinfo.length());
+      try {
+        dataFile = fds.openTempFile(temp);
+        InputStream dfis = new FileInputStream(dataFile);
+          //Log.debug(1, "ready to save: urlinfo: "+urlinfo);
+          fds.saveDataFile(urlinfo, dfis);
+          // the temp file has been saved; thus delete
+          dfis.close();
+//          dataFile.delete();
+      }catch (Exception qq) {
+        // some other problem has occured
+        Log.debug(5, "Some problem with saving local data files has occurred!");
+        qq.printStackTrace();
+      }//end catch     
+    }
+  }
+
+  private void handleMetacat(String urlinfo, int entityIndex) {
+    File dataFile = null;
+    Morpho morpho = Morpho.thisStaticInstance;
+    FileSystemDataStore fds = new FileSystemDataStore(morpho);
+    MetacatDataStore mds = new MetacatDataStore(morpho);
+    try {
+      dataFile = mds.openFile(urlinfo);
+    }
+    catch (FileNotFoundException fnf) {
+      // if the datfile has NOT been located, a FileNotFoundException will be thrown.
+      // this indicates that the datafile with the url has NOT been saved
+      // the datafile should be stored in the profile temp dir
+      //Log.debug(1, "FileNotFoundException");
+      ConfigXML profile = morpho.getProfile();
+      String separator = profile.get("separator", 0);
+      separator = separator.trim();
+      String temp = new String();
+      temp = urlinfo.substring(0, urlinfo.indexOf(separator));
+      temp = temp + "/" +
+          urlinfo.substring(urlinfo.indexOf(separator) + 1, urlinfo.length());
+      try {
+        dataFile = fds.openTempFile(temp);
+        InputStream dfis = new FileInputStream(dataFile);
+				try{
+          mds.newDataFile(urlinfo, dataFile);
+            // the temp file has been saved; thus delete
+          dataFile.delete();
+				} catch (MetacatUploadException mue) {
+          // if we reach here, most likely there has been a problem saving the datafile
+          // on metacat because the id is already in use
+          // so, get a new id
+          AccessionNumber an = new AccessionNumber(morpho);
+          String newid = an.getNextId();
+          // now try saving with the new id
+          try{ 
+            mds.newDataFile(newid, dataFile);
+            dataFile.delete();
+            // newDataFile must have worked; thus update the package
+            setDistributionUrl(entityIndex, 0, 0, newid);
+            String newPackageId = an.getNextId();
+            setAccessionNumber(newPackageId);
+            serialize(AbstractDataPackage.METACAT);
+            if(location.equals(BOTH)) {  // save new package locally
+              serialize(AbstractDataPackage.LOCAL);
+            }
+          } catch (MetacatUploadException mue1) {
+				    Log.debug(5, "Problem saving data to metacat\n"+
+							             mue1.getMessage());
+						throw new MetacatUploadException("ERROR SAVING DATA TO METACAT! "
+							            +mue1.getMessage());						 
+				  }
+        } 
+      } 
+      catch (Exception qq) {
+        // some other problem has occured
+        Log.debug(5, "Some problem with saving data files has occurred!");
+        qq.printStackTrace();
+      }
+    }
+    catch (Exception ww) {
+        // some other problem has occured
+        Log.debug(5, "Some other problem with saving data files has occurred!");
+        ww.printStackTrace();
+    }
+  }
+  
+  
+  private void handleBoth(String urlinfo, int entityIndex) {
+    File dataFile = null;
+    Morpho morpho = Morpho.thisStaticInstance;
+    FileSystemDataStore fds = new FileSystemDataStore(morpho);
+    MetacatDataStore mds = new MetacatDataStore(morpho);
+    handleLocal(urlinfo);
+    handleMetacat(urlinfo, entityIndex);
+  }
+  
+  private String getUrlInfo(int entityIndex) {
+    String urlinfo = getDistributionUrl(entityIndex, 0, 0);
+    // assumed that urlinfo is of the form 'protocol://systemname/localid/other'
+    // protocol is probably 'ecogrid'; system name is 'knb'
+    // we just want the local id here
+    int indx2 = urlinfo.indexOf("//");
+    if (indx2 > -1) {
+      urlinfo = urlinfo.substring(indx2 + 2);
+      // now start should be just past the '//'
+    }
+    indx2 = urlinfo.indexOf("/");
+    if (indx2 > -1) {
+    urlinfo = urlinfo.substring(indx2 + 1);
+    //now should be past the system name
+    }
+    indx2 = urlinfo.indexOf("/");
+    if (indx2 > -1) {
+      urlinfo = urlinfo.substring(0, indx2);
+      // should have trimmed 'other'
+    }
+    if (urlinfo.length() == 0) {
+      return "";
+    }
+    return urlinfo;
+}
 
   /**
    * exports a package to a given path
