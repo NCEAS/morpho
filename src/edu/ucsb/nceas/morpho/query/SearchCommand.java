@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2002-08-22 00:09:08 $'
- * '$Revision: 1.8 $'
+ *     '$Date: 2002-08-23 23:57:38 $'
+ * '$Revision: 1.9 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -93,7 +93,7 @@ public class SearchCommand implements Command
   /**
    * Run the search query
    */
-  private void doQuery(final MorphoFrame resultWindow, final Query query) 
+  public static void doQuery(final MorphoFrame resultWindow, final Query query) 
   {
   
     final SwingWorker worker = new SwingWorker() 
