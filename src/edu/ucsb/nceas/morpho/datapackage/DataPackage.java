@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2002-10-24 17:04:38 $'
- * '$Revision: 1.81 $'
+ *   '$Author: tao $'
+ *     '$Date: 2002-10-24 17:09:35 $'
+ * '$Revision: 1.82 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1229,23 +1229,41 @@ public class DataPackage implements XMLFactoryInterface
     {
       String packagePath = path + "/" + id + ".package";
       String sourcePath = packagePath + "/metadata";
+      String dataPath = packagePath + "/data";
       File savedir = new File(packagePath);
       File savedirSub = new File(sourcePath);
+      File savedirDataSub = new File(dataPath);
       savedir.mkdirs(); //create the new directories
       savedirSub.mkdirs();
-      
+      savedirDataSub.mkdirs();
+      Hashtable dataFileNameMap = getMapBetweenDataIdAndDataFileName();
       Vector files = getAllIdentifiers();
       for(int i=0; i<files.size(); i++)
-      { //save one file at a time
-        File f = new File(sourcePath + "/" + (String)files.elementAt(i));
+      { 
+        //save one file at a time
+        // Get docid for the vector
+        String docid = (String)files.elementAt(i);
+        // Get the hasth table between docid and data file name
+        File f = null;
+        // if it is data file user filename to replace docid
+        if ( dataFileNameMap.containsKey(docid))
+        {
+          String dataFile = (String)dataFileNameMap.get(docid);
+          f = new File(dataPath + "/" + dataFile);
+        }
+        else
+        {
+          // for metadata file
+          f = new File(sourcePath + "/" + docid);
+        }
         File openfile = null;
         if(localloc)
         { //get the file locally and save it
-          openfile = fileSysDataStore.openFile((String)files.elementAt(i));
+          openfile = fileSysDataStore.openFile(docid);
         }
         else if(metacatloc)
         { //get the file from metacat
-          openfile = metacatDataStore.openFile((String)files.elementAt(i));
+          openfile = metacatDataStore.openFile(docid);
         }
         
         fileV.addElement(openfile);
@@ -1324,27 +1342,15 @@ public class DataPackage implements XMLFactoryInterface
           htmldoc[i].append(datafileid);
           htmldoc[i].append("</h2>");
 
-          Vector triplesV = triples.getCollection();
           htmldoc[i].append("<a href=\"");
           String dataFileName = null;
+          dataFileName = (String)dataFileNameMap.get(datafileid); 
+          htmldoc[i].append("./data/").append(dataFileName).append("\">");
+          htmldoc[i].append("Data File: ");
+          htmldoc[i].append(dataFileName).append("</a><br>");
           
-          for(int j=0; j<triplesV.size(); j++) {
-            Triple triple = (Triple)triplesV.elementAt(j);
-            String relationship = triple.getRelationship();
-            String subject = triple.getSubject();
-            if(subject.trim().equals(datafileid.trim())) {
-              if(relationship.indexOf("isDataFileFor") != -1) { 
-                //get the name of the data file.
-                int lparenindex = relationship.indexOf("(");
-                dataFileName = relationship.substring(lparenindex + 1, 
-                                                      relationship.length() - 1);
-                htmldoc[i].append("./metadata/").append(datafileid).append("\">");
-                htmldoc[i].append("Data File: ");
-                htmldoc[i].append(dataFileName).append("</a><br>");
-              }
-            }
-            htmldoc[i].append("<br><hr><br>");
-          }
+          htmldoc[i].append("<br><hr><br>");
+          
           htmldoc[i].append("</body></html>");      
         }   //end if...else for xml or data file
         
@@ -1402,6 +1408,41 @@ public class DataPackage implements XMLFactoryInterface
     }
     String scope = path.substring(secondToLastSep+1, lastSep);
     return scope + "." + num;
+  }
+  
+  /*
+   * Method to get the map between data docid to data file name (oringinal)
+   */
+  private Hashtable getMapBetweenDataIdAndDataFileName()
+  {
+    Hashtable map = new Hashtable();
+    Vector triplesV = triples.getCollection();
+    int i = 1;
+    String dataFileName = null;
+    for(int j=0; j<triplesV.size(); j++) 
+    {
+      Triple triple = (Triple)triplesV.elementAt(j);
+      String relationship = triple.getRelationship();
+      String subject = triple.getSubject();
+      if(relationship.indexOf("isDataFileFor") != -1) 
+      {
+        //get the name of the data file.
+        int lparenindex = relationship.indexOf("(");
+        dataFileName = relationship.substring(lparenindex + 1, 
+                                                     relationship.length() - 1);
+        if (dataFileName != null)
+        {
+          // check file name if conflic
+          if (map.containsValue(dataFileName))
+          {
+            dataFileName = dataFileName+i;
+            i++;
+          }//if
+          map.put(subject, dataFileName);
+        }//if
+      }//if
+    }//for
+    return map;
   }
   
  /** 
