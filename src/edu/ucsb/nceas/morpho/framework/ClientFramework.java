@@ -6,7 +6,7 @@
  *              National Center for Ecological Analysis and Synthesis
  *     Authors: Dan Higgins
  *
- *     Version: '$Id: ClientFramework.java,v 1.25 2000-10-10 18:20:43 higgins Exp $'
+ *     Version: '$Id: ClientFramework.java,v 1.26 2000-10-13 17:35:54 higgins Exp $'
  */
 
 package edu.ucsb.nceas.dtclient;
@@ -52,7 +52,7 @@ public class ClientFramework extends javax.swing.JFrame
 	        String cwd = (String)System.getProperty("user.dir");
 	        mdeprops.put("mdehome",cwd);
             FileOutputStream out = new FileOutputStream("mde.cfg");
-            mdeprops.store(out, "--set mdehome=settocwd to set to current directory--");
+            mdeprops.save(out, "--set mdehome=settocwd to set to current directory--");
             out.close();
         }
       }
