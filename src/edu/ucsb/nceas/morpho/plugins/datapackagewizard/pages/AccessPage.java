@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: sgarg $'
- *     '$Date: 2004-02-24 17:38:09 $'
- * '$Revision: 1.2 $'
+ *     '$Date: 2004-03-09 00:42:21 $'
+ * '$Revision: 1.3 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,6 +33,7 @@ import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.AbstractWizardPage;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WidgetFactory;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardSettings;
+
 import edu.ucsb.nceas.morpho.util.Log;
 import edu.ucsb.nceas.utilities.OrderedMap;
 
@@ -41,11 +42,19 @@ import java.util.List;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.BorderLayout;
 
 import javax.swing.BoxLayout;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JTree;
+import javax.swing.tree.TreeSelectionModel;
+import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.JTextField;
+import javax.swing.JScrollPane;
+
+import javax.swing.event.TreeSelectionEvent;
+import javax.swing.event.TreeSelectionListener;
 
 public class AccessPage extends AbstractWizardPage {
 
@@ -54,14 +63,18 @@ public class AccessPage extends AbstractWizardPage {
   private final String pageNumber = "";
   private final String title      = "Access Page";
   private final String subtitle   = "";
-
   private final String EMPTY_STRING = "";
+
+
   private JPanel middlePanel;
+  private JPanel topPanel;
+  private JPanel leftPanel;
   private JTextField dnField;
   private JLabel dnLabel;
   private JLabel descLabel;
   private String userAccessType   = new String("Allow");
   private String userAccess       = new String("Read");
+  private JTree accessTree;
 
   private final String[] accessTypeText = new String[] {
     "Allow",
@@ -87,21 +100,41 @@ public class AccessPage extends AbstractWizardPage {
    */
   private void init() {
 
-    middlePanel = new JPanel();
-    this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+    this.setLayout(new BorderLayout());
 
-    middlePanel.setLayout(new BoxLayout(middlePanel, BoxLayout.Y_AXIS));
-    middlePanel.add(WidgetFactory.makeDefaultSpacer());
-
+    topPanel = new JPanel();
+    topPanel.setLayout(new BoxLayout(topPanel, BoxLayout.Y_AXIS));
+    topPanel.add(WidgetFactory.makeDefaultSpacer());
+    topPanel.setBorder(new javax.swing.border.EmptyBorder(0,
+        4*WizardSettings.PADDING,0,0));
     JLabel desc = WidgetFactory.makeHTMLLabel(
                       "<font size=\"4\"><b>Define Access:</b></font>", 1);
-    middlePanel.add(desc);
+    topPanel.add(desc);
+
+    this.add(topPanel, BorderLayout.NORTH);
+
+    JScrollPane treeView = createTree();
+    leftPanel = new JPanel();
+    if(treeView != null){
+      leftPanel.add(treeView);
+    } else {
+      leftPanel.add(WidgetFactory.makeLabel("Unable to retrieve access tree"
+                                                +" from server", true,
+                                                new java.awt.Dimension(220,100)));
+    }
+    leftPanel.setBorder(new javax.swing.border.EmptyBorder(10*WizardSettings.PADDING,
+        4*WizardSettings.PADDING,8*WizardSettings.PADDING,4*WizardSettings.PADDING));
+    this.add(leftPanel, BorderLayout.WEST);
+
+
+    middlePanel = new JPanel();
+    middlePanel.setLayout(new BoxLayout(middlePanel, BoxLayout.Y_AXIS));
 
     middlePanel.add(WidgetFactory.makeDefaultSpacer());
     middlePanel.add(WidgetFactory.makeDefaultSpacer());
 
     JPanel dnPanel = WidgetFactory.makePanel(1);
-    dnLabel = WidgetFactory.makeLabel("Enter User DN:", false);
+    dnLabel = WidgetFactory.makeLabel("User DN:", false);
     dnPanel.add(dnLabel);
     dnField = WidgetFactory.makeOneLineTextField();
     dnPanel.add(dnField);
@@ -130,9 +163,10 @@ public class AccessPage extends AbstractWizardPage {
     typeRadioOuterPanel.add(typeRadioPanel);
     descLabel = WidgetFactory.makeHTMLLabel(
         "<p><b>Choose access type:</b> Choose to allow or deny the user the "
-        +"below defined permission.</p>", 1);
+        +"below defined permission.</p>", 2);
     middlePanel.add(descLabel);
     middlePanel.add(typeRadioOuterPanel);
+
 
     ActionListener accessListener = new ActionListener() {
       public void actionPerformed(ActionEvent e) {
@@ -162,11 +196,36 @@ public class AccessPage extends AbstractWizardPage {
     middlePanel.setBorder(new javax.swing.border.EmptyBorder(0,4*WizardSettings.PADDING,
         37*WizardSettings.PADDING,8*WizardSettings.PADDING));
 
-    this.add(middlePanel);
+    this.add(middlePanel, BorderLayout.CENTER);
   }
 
 
-  /**
+  private JScrollPane createTree(){
+
+    if(Access.accessTreeNode != null){
+      accessTree = new JTree(Access.accessTreeNode);
+
+      accessTree.getSelectionModel().setSelectionMode(
+                                TreeSelectionModel.SINGLE_TREE_SELECTION);
+
+      accessTree.addTreeSelectionListener(new TreeSelectionListener(){
+        public void valueChanged(TreeSelectionEvent e) {
+          DefaultMutableTreeNode node = (DefaultMutableTreeNode)
+                      accessTree.getLastSelectedPathComponent();
+
+
+          dnField.setText(((AccessTreeNodeObject)node.getUserObject()).getDN());
+        }
+      });
+      JScrollPane treeView = new JScrollPane(accessTree);
+
+      return treeView;
+    }
+
+    return null;
+  }
+
+   /**
    *  The action to be executed when the "OK" button is pressed. If no onAdvance
    *  processing is required, implementation must return boolean true.
    *

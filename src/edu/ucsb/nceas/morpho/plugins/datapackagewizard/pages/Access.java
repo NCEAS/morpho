@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: sgarg $'
- *     '$Date: 2004-03-04 03:51:15 $'
- * '$Revision: 1.12 $'
+ *     '$Date: 2004-03-09 00:42:21 $'
+ * '$Revision: 1.13 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,6 +28,7 @@
 
 package edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages;
 
+import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.util.Log;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.CustomList;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardSettings;
@@ -51,6 +52,18 @@ import java.awt.event.ActionEvent;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.Properties;
+import java.util.StringTokenizer;
+
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import javax.swing.JTree;
+import javax.swing.tree.DefaultMutableTreeNode;
+
+import javax.xml.parsers.DocumentBuilder;
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 public class Access extends AbstractWizardPage {
 
@@ -75,6 +88,16 @@ public class Access extends AbstractWizardPage {
   private final String[] colNames =  {"User", "Permissions"};
   private final Object[] editors  =   null;
   private CustomList  accessList;
+
+
+  private Morpho morpho;
+  private InputStream queryResult;
+  private Document doc;
+  private Node tempNode;
+  private AccessTreeNodeObject nodeObject = null;
+  private DefaultMutableTreeNode tempTreeNode = null;
+
+  public static DefaultMutableTreeNode accessTreeNode = null;
 
   public Access() {
     init();
@@ -167,6 +190,10 @@ public class Access extends AbstractWizardPage {
 
   private void showNewAccessDialog() {
 
+    if(accessTreeNode == null){
+      accessTreeNode = createTree();
+    }
+
     AccessPage accessPage = (AccessPage)WizardPageLibrary.getPage(DataPackageWizardInterface.ACCESS_PAGE);
     WizardPopupDialog wpd = new WizardPopupDialog(accessPage, WizardContainerFrame.frame, false);
     wpd.setVisible(true);
@@ -181,6 +208,10 @@ public class Access extends AbstractWizardPage {
 
 
   private void showEditAccessDialog() {
+
+    if(accessTreeNode == null){
+      accessTreeNode = createTree();
+    }
 
     List selRowList = accessList.getSelectedRowList();
 
@@ -203,6 +234,132 @@ public class Access extends AbstractWizardPage {
       accessList.replaceSelectedRow(newRow);
     }
   }
+
+   private DefaultMutableTreeNode createTree(){
+
+       DefaultMutableTreeNode top =
+           new DefaultMutableTreeNode("Access Tree                        ");
+
+
+       Properties prop = new Properties();
+       prop.put("action", "getprincipals");
+
+       morpho = Morpho.thisStaticInstance;
+
+       try{
+         queryResult = morpho.getMetacatInputStream(prop);
+       } catch(Exception w) {
+         Log.debug(1, "Error in retrieving User list from Metacat server.");
+         Log.debug(1, w.getMessage());
+       }
+
+       if(queryResult != null){
+         parseResult(queryResult, top);
+
+         return top;
+       }
+
+       return null;
+     }
+
+
+  private void parseResult(InputStream queryResult, DefaultMutableTreeNode top){
+    DocumentBuilder parser = Morpho.createDomParser();
+
+    try {
+      doc = parser.parse(queryResult);
+    }
+    catch (Exception e) {
+      Log.debug(10, "(2.431) Exception parsing result set from Metacat...");
+      Log.debug(10, e.toString());
+    }
+
+    NodeList nl = doc.getElementsByTagName("authSystem");
+    makeTree(nl, top);
+  }
+
+  DefaultMutableTreeNode makeTree(NodeList nl, DefaultMutableTreeNode top){
+    for (int count = 0; count < nl.getLength(); count++) {
+      tempNode = nl.item(count);
+      boolean done = false;
+
+      while (!done) {
+        if (tempNode.getNodeName().compareTo("authSystem") == 0) {
+          nodeObject = new AccessTreeNodeObject(
+                tempNode.getAttributes().getNamedItem("URI").getNodeValue(),
+                WizardSettings.ACCESS_PAGE_AUTHSYS);
+
+          tempTreeNode = new DefaultMutableTreeNode();
+          tempTreeNode.setUserObject(nodeObject);
+
+          tempTreeNode = makeTree(tempNode.getChildNodes(), tempTreeNode);
+
+          top.add(tempTreeNode);
+          done = true;
+        } else if (tempNode.getNodeName().compareTo("group") == 0) {
+          DefaultMutableTreeNode tempUserNode = null;
+
+          NodeList nl2 = tempNode.getChildNodes();
+          nodeObject = null;
+
+          for (int i = 0; i < nl2.getLength(); i++) {
+            Node node = nl2.item(i);
+            if (node.getNodeName().compareTo("groupname") == 0) {
+              nodeObject = new AccessTreeNodeObject(node.getFirstChild().getNodeValue(),
+                                              WizardSettings.ACCESS_PAGE_GROUP);
+
+              tempTreeNode = new DefaultMutableTreeNode();
+              tempTreeNode.setUserObject(nodeObject);
+
+            } else if (node.getNodeName().compareTo("user") == 0) {
+              NodeList nl3 = node.getChildNodes();
+              nodeObject = null;
+
+              for (int j = 0; j < nl3.getLength(); j++) {
+                Node node1 = nl3.item(j);
+                if (node1.getNodeName().compareTo("username") == 0) {
+                   nodeObject = new AccessTreeNodeObject(
+                      node1.getFirstChild().getNodeValue(),
+                      WizardSettings.ACCESS_PAGE_USER);
+                }
+
+              }
+              tempUserNode = new DefaultMutableTreeNode();
+              tempUserNode.setUserObject(nodeObject);
+              tempTreeNode.add(tempUserNode);
+            }
+        }
+
+          top.add(tempTreeNode);
+          done = true;
+        } else if (tempNode.getNodeName().compareTo("user") == 0) {
+          NodeList nl2 = tempNode.getChildNodes();
+          nodeObject = null;
+
+          for (int i = 0; i < nl2.getLength(); i++) {
+            Node node = nl2.item(i);
+            if(node.getNodeName().compareTo("username") == 0){
+              nodeObject = new AccessTreeNodeObject(
+                                   node.getFirstChild().getNodeValue(),
+                                   WizardSettings.ACCESS_PAGE_USER);
+            }
+          }
+
+          tempTreeNode = new DefaultMutableTreeNode();
+          tempTreeNode.setUserObject(nodeObject);
+
+          top.add(tempTreeNode);
+          done = true;
+        } else if(tempNode.hasChildNodes()){
+          tempNode = tempNode.getFirstChild();
+        } else {
+            done = true;
+        }
+      }
+    }
+    return top;
+  }
+
 
   /**
    *  The action to be executed when the page is displayed. May be empty
@@ -329,4 +486,5 @@ public class Access extends AbstractWizardPage {
   public String getPageNumber() { return pageNumber; }
 
   public void setPageData(OrderedMap data) { }
+
 }

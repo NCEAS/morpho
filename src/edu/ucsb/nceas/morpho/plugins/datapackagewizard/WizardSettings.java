@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: sambasiv $'
- *     '$Date: 2004-03-06 01:29:24 $'
- * '$Revision: 1.49 $'
+ *   '$Author: sgarg $'
+ *     '$Date: 2004-03-09 00:41:12 $'
+ * '$Revision: 1.50 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -227,6 +227,17 @@ public class WizardSettings {
   protected static final String OK_BUTTON_TEXT      = "OK";
 
   public static String NUMBER_OF_STEPS              = "14";
+
+  /* Three variables defined below are used by AccessPage Screen
+   */
+
+  public static final int ACCESS_PAGE_AUTHSYS       = 1;
+
+  public static final int ACCESS_PAGE_GROUP         = 2;
+
+  public static final int ACCESS_PAGE_USER          = 3;
+
+
 
   protected static final String NEW_EML200_DOCUMENT_TEXT =
   "<eml:eml "
