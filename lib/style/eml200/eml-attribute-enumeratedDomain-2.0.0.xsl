@@ -6,8 +6,8 @@
   *  For Details: http://www.nceas.ucsb.edu/
   *
   *   '$Author: sgarg $'
-  *     '$Date: 2003-12-10 20:04:28 $'
-  * '$Revision: 1.4 $'
+  *     '$Date: 2004-03-24 00:03:23 $'
+  * '$Revision: 1.5 $'
   *
   * This program is free software; you can redistribute it and/or modify
   * it under the terms of the GNU General Public License as published by
@@ -33,10 +33,15 @@
   <xsl:output method="html" encoding="iso-8859-1"
               doctype-public="-//W3C//DTD HTML 4.01 Transitional//EN"
               doctype-system="http://www.w3.org/TR/html4/loose.dtd"
-              indent="yes" />  
+              indent="yes" />
 
    <xsl:template name="nonNumericDomain">
-     <xsl:param name="nondomainfirstColStyle"/>
+      <xsl:param name="docid"/>
+      <xsl:param name="displaymodule"/>
+      <xsl:param name="entitytype"/>
+      <xsl:param name="entityindex"/>
+      <xsl:param name="attributeindex"/>
+      <xsl:param name="nondomainfirstColStyle"/>
      <table xsl:use-attribute-sets="cellspacing" class="{$tabledefaultStyle}" width="100%">
         <xsl:choose>
          <xsl:when test="references!=''">
