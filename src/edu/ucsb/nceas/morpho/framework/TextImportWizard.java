@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-12-04 00:01:37 $'
- * '$Revision: 1.44 $'
+ *     '$Date: 2002-12-04 05:09:29 $'
+ * '$Revision: 1.45 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1099,11 +1099,28 @@ public void startImport(String file) {
   void insertEnumButton_actionPerformed(java.awt.event.ActionEvent event) {
     int selectedCol = table.getSelectedColumn();
     ColumnData cd = (ColumnData)colDataInfo.elementAt(selectedCol);
- //   for (int i = 0; i<cd.colUniqueItemsList.size();i++) {
-      cd.enumCodeVector = cd.colUniqueItemsList;
-      cd.enumDefinitionVector = cd.colUniqueItemsList;
-      cd.enumSourceVector = cd.colUniqueItemsList;
- //   }
+    cd.enumCodeVector = cd.colUniqueItemsList;
+    
+    if (cd.enumDefinitionVector==null) {
+      cd.enumDefinitionVector = new Vector();
+    }
+    if (cd.enumDefinitionVector.size()!=cd.colUniqueItemsList.size()){
+      cd.enumDefinitionVector = new Vector();
+      for (int i=0;i<cd.colUniqueItemsList.size();i++) {
+        cd.enumDefinitionVector.addElement("");
+      }
+    }
+
+    if (cd.enumSourceVector==null) {
+      cd.enumSourceVector = new Vector();
+    }
+    if (cd.enumSourceVector.size()!=cd.colUniqueItemsList.size()){
+      cd.enumSourceVector = new Vector();
+      for (int i=0;i<cd.colUniqueItemsList.size();i++) {
+        cd.enumSourceVector.addElement("");
+      }
+    }
+    cmePanel.setColumnData(cd);
   }
   
   
