@@ -6,7 +6,7 @@
  *              National Center for Ecological Analysis and Synthesis
  *     Authors: Dan Higgins
  *
- *     Version: '$Id: LocalQuery.java,v 1.10 2000-11-20 17:44:38 higgins Exp $'
+ *     Version: '$Id: LocalQuery.java,v 1.11 2000-11-20 23:27:08 higgins Exp $'
  */
 
 package edu.ucsb.nceas.querybean;
@@ -29,6 +29,8 @@ import java.util.Vector;
 import java.util.PropertyResourceBundle;
 import java.util.Hashtable;
 
+import edu.ucsb.nceas.dtclient.*;
+
 public class LocalQuery extends Thread 
 {
     
@@ -47,11 +49,31 @@ public class LocalQuery extends Thread
     String Haltname;
     boolean stopFlag = false;
     boolean AndResultFlag;
+    Vector returnFields;
     
     static {dom_collection = new Hashtable();}
     
 public LocalQuery() {
     this(null);
+    ConfigXML config = new ConfigXML("config.xml");
+    returnFields = config.get("returnfield");
+    int cnt;
+    if (returnFields==null) {
+        cnt = 0;
+    }
+    else {
+        cnt = returnFields.size();
+    }
+    
+    headers = new String[4+cnt];  // assume at least 4 fields returned
+    headers[0] = "Doc ID";
+    headers[1] = "Document Name";
+    headers[2] = "Document Type";
+    headers[3] = "Document Title";
+    for (int i=0;i<cnt;i++) {
+        headers[4+i] = getLastPathElement((String)returnFields.elementAt(i));
+    }
+    
         dtm = new DefaultTableModel(headers,0);
         RSTable = new JTable(dtm);
     PropertyResourceBundle options = (PropertyResourceBundle)PropertyResourceBundle.getBundle("client");  // DFH
@@ -67,6 +89,24 @@ public LocalQuery() {
 	}
 
 public LocalQuery(String xpathstring) {
+    ConfigXML config = new ConfigXML("config.xml");
+    returnFields = config.get("returnfield");
+    int cnt;
+    if (returnFields==null) {
+        cnt = 0;
+    }
+    else {
+        cnt = returnFields.size();
+    }
+    
+    headers = new String[4+cnt];  // assume at least 4 fields returned
+    headers[0] = "Doc ID";
+    headers[1] = "Document Name";
+    headers[2] = "Document Type";
+    headers[3] = "Document Title";
+    for (int i=0;i<cnt;i++) {
+        headers[4+i] = getLastPathElement((String)returnFields.elementAt(i));
+    }
         dtm = new DefaultTableModel(headers,0);
         RSTable = new JTable(dtm);
     PropertyResourceBundle options = (PropertyResourceBundle)PropertyResourceBundle.getBundle("client");  // DFH
@@ -80,6 +120,24 @@ public LocalQuery(String xpathstring) {
 }
 
 public LocalQuery(String xpathstring, JButton button) {
+    ConfigXML config = new ConfigXML("config.xml");
+    returnFields = config.get("returnfield");
+    int cnt;
+    if (returnFields==null) {
+        cnt = 0;
+    }
+    else {
+        cnt = returnFields.size();
+    }
+    
+    headers = new String[4+cnt];  // assume at least 4 fields returned
+    headers[0] = "Doc ID";
+    headers[1] = "Document Name";
+    headers[2] = "Document Type";
+    headers[3] = "Document Title";
+    for (int i=0;i<cnt;i++) {
+        headers[4+i] = getLastPathElement((String)returnFields.elementAt(i));
+    }
     Halt = button;
         dtm = new DefaultTableModel(headers,0);
         RSTable = new JTable(dtm);
@@ -94,6 +152,24 @@ public LocalQuery(String xpathstring, JButton button) {
 }
     
 public LocalQuery(String[] xpathstrings, boolean and_flag, JButton button) {
+    ConfigXML config = new ConfigXML("config.xml");
+    returnFields = config.get("returnfield");
+    int cnt;
+    if (returnFields==null) {
+        cnt = 0;
+    }
+    else {
+        cnt = returnFields.size();
+    }
+    
+    headers = new String[4+cnt];  // assume at least 4 fields returned
+    headers[0] = "Doc ID";
+    headers[1] = "Document Name";
+    headers[2] = "Document Type";
+    headers[3] = "Document Title";
+    for (int i=0;i<cnt;i++) {
+        headers[4+i] = getLastPathElement((String)returnFields.elementAt(i));
+    }
     Halt = button;
         dtm = new DefaultTableModel(headers,0);
         RSTable = new JTable(dtm);
@@ -385,5 +461,20 @@ void queryAll()
             }
         }
    }
+  
+   
+// use to get the last element in a path string
+   private String getLastPathElement(String str) {
+        String last = "";
+        int ind = str.lastIndexOf("/");
+        if (ind==-1) {
+           last = str;     
+        }
+        else {
+           last = str.substring(ind+1);     
+        }
+        return last;
+   }
+   
    
 }

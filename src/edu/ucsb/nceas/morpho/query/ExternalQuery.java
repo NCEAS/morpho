@@ -9,7 +9,7 @@
  *  Authors: Dan Higgins
  *
  *  
- *     Version: '$Id: ExternalQuery.java,v 1.4 2000-11-20 17:44:38 higgins Exp $'
+ *     Version: '$Id: ExternalQuery.java,v 1.5 2000-11-20 23:27:08 higgins Exp $'
  */
 
 /*
@@ -24,6 +24,8 @@
 package edu.ucsb.nceas.querybean;
 
 import java.io.*;
+import java.util.Vector;
+import edu.ucsb.nceas.dtclient.*;
 
 import org.w3c.dom.*;
 
@@ -54,9 +56,28 @@ public class ExternalQuery implements ContentHandler
     String doctitle;
     String paramName;
     Hashtable params;
+    Vector returnFields; // return field path names
     
 public ExternalQuery(InputStream is) {
     this.is = is;
+    ConfigXML config = new ConfigXML("config.xml");
+    returnFields = config.get("returnfield");
+    int cnt;
+    if (returnFields==null) {
+        cnt = 0;
+    }
+    else {
+        cnt = returnFields.size();
+    }
+    
+    headers = new String[4+cnt];  // assume at least 4 fields returned
+    headers[0] = "Doc ID";
+    headers[1] = "Document Name";
+    headers[2] = "Document Type";
+    headers[3] = "Document Title";
+    for (int i=0;i<cnt;i++) {
+        headers[4+i] = getLastPathElement((String)returnFields.elementAt(i));
+    }
     dtm = new DefaultTableModel(headers,0);
     RSTable = new JTable(dtm);
 
@@ -99,7 +120,18 @@ public JTable getTable() {
     public void endElement (String uri, String localName,
                             String qName) throws SAXException {
       if (localName.equals("document")) {
-      String[] row = {docid, docname, doctype, doctitle};
+        int cnt = 0;
+        if (returnFields!=null) cnt = returnFields.size();
+        String[] row = new String[4+cnt];
+ //     String[] row = {docid, docname, doctype, doctitle};
+        row[0] = docid;
+        row[1] = docname;
+        row[2] = doctype;
+        row[3] = doctitle;
+        for (int i=0;i<cnt;i++) {
+            row[4+i] = (String)(params.get(returnFields.elementAt(i)));   
+        }
+        
       dtm.addRow(row);
       }
       String leaving = (String)elementStack.pop();
@@ -140,6 +172,22 @@ public JTable getTable() {
    public void setDocumentLocator (Locator locator) { }
 
 
+// use to get the last element in a path string
+   private String getLastPathElement(String str) {
+        String last = "";
+        int ind = str.lastIndexOf("/");
+        if (ind==-1) {
+           last = str;     
+        }
+        else {
+           last = str.substring(ind+1);     
+        }
+        return last;
+   }
+   
+   
+   
+   
 }
 
 
