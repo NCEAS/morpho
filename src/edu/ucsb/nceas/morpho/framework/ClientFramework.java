@@ -6,7 +6,7 @@
  *              National Center for Ecological Analysis and Synthesis
  *     Authors: Dan Higgins
  *
- *     Version: '$Id: ClientFramework.java,v 1.9 2000-08-11 22:25:40 higgins Exp $'
+ *     Version: '$Id: ClientFramework.java,v 1.10 2000-08-25 23:34:50 higgins Exp $'
  */
 
 package edu.ucsb.nceas.dtclient;
@@ -27,6 +27,7 @@ import java.io.*;
 import java.util.*;
 import java.net.URL;
 import java.lang.reflect.*;
+import com.symantec.itools.javax.swing.borders.LineBorder;
 
 //import edu.ucsb.nceas.querybean.*;
 //import edu.ucsb.nceas.metaedit.*;
@@ -174,15 +175,21 @@ public class ClientFramework extends javax.swing.JFrame
 		QueryPanel.setVisible(false);
 		QueryPanel.add(BorderLayout.CENTER,queryBean1);
 		queryBean1.setBounds(0,0,693,414);
-		DataViewerPanel.setLayout(new FlowLayout(FlowLayout.CENTER,5,5));
+		DataViewerPanel.setLayout(new BorderLayout(0,0));
 		JTabbedPane1.add(DataViewerPanel);
 		DataViewerPanel.setBounds(2,27,693,414);
 		DataViewerPanel.setVisible(false);
+		UnderConstruction.setText("Under Construction!!!");
+		UnderConstruction.setHorizontalAlignment(SwingConstants.CENTER);
+		DataViewerPanel.add(UnderConstruction);
+		UnderConstruction.setForeground(java.awt.Color.red);
+		UnderConstruction.setFont(new Font("Dialog", Font.BOLD, 20));
+		UnderConstruction.setBounds(0,0,20,40);
 		JTabbedPane1.setSelectedComponent(QueryPanel);
 		JTabbedPane1.setSelectedIndex(1);
-		JTabbedPane1.setTitleAt(0,"MetaData Editor");
-		JTabbedPane1.setTitleAt(1,"MetaData Query");
-		JTabbedPane1.setTitleAt(2,"Data Viewer");
+		JTabbedPane1.setTitleAt(0,"Data Documentation");
+		JTabbedPane1.setTitleAt(1,"Search");
+		JTabbedPane1.setTitleAt(2,"Browse");
 		//$$ lineBorder1.move(240,481);
 		//$$ stringListModel1.move(72,406);
 		//$$ stringComboBoxModel1.move(48,481);
@@ -401,10 +408,9 @@ public class ClientFramework extends javax.swing.JFrame
 	javax.swing.JPanel JPanel1 = new javax.swing.JPanel();
 	javax.swing.JTabbedPane JTabbedPane1 = new javax.swing.JTabbedPane();
 	javax.swing.JPanel EditorPanel = new javax.swing.JPanel();
-//	edu.ucsb.nceas.metaedit.mdeBean mdeBean1 = new edu.ucsb.nceas.metaedit.mdeBean();
 	javax.swing.JPanel QueryPanel = new javax.swing.JPanel();
-//	edu.ucsb.nceas.querybean.QueryBean queryBean1 = new edu.ucsb.nceas.querybean.QueryBean();
 	javax.swing.JPanel DataViewerPanel = new javax.swing.JPanel();
+	javax.swing.JLabel UnderConstruction = new javax.swing.JLabel();
 	com.symantec.itools.javax.swing.borders.LineBorder lineBorder1 = new com.symantec.itools.javax.swing.borders.LineBorder();
 	javax.swing.JMenuBar JMenuBar1 = new javax.swing.JMenuBar();
 	javax.swing.JMenu fileMenu = new javax.swing.JMenu();
