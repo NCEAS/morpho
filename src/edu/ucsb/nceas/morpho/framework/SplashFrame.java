@@ -112,7 +112,10 @@ public class SplashFrame extends javax.swing.JFrame
 	public SplashFrame(boolean showLoading)
 	{
 		this();
-		if(showLoading) {LoadingLabel.setVisible(showLoading);}
+		if(showLoading) {
+		    LoadingLabel.setVisible(showLoading);
+		    CloseButton.setText("Loading - Please Wait");
+		    }
 	}
 	public SplashFrame(String sTitle, boolean showLoading)
 	{

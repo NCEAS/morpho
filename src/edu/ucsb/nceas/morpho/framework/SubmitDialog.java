@@ -6,7 +6,7 @@
  *              National Center for Ecological Analysis and Synthesis
  *     Authors: Dan Higgins
  *
- *     Version: '$Id: SubmitDialog.java,v 1.5 2000-10-02 22:58:35 higgins Exp $'
+ *     Version: '$Id: SubmitDialog.java,v 1.6 2000-10-04 18:44:37 higgins Exp $'
  */
 
 package edu.ucsb.nceas.dtclient;
@@ -426,6 +426,10 @@ public class SubmitDialog extends javax.swing.JDialog implements ContentHandler
 
 	void SelectFileButton_actionPerformed(java.awt.event.ActionEvent event)
 	{
+	    
+	    globalidTextBox.setText("");
+	    localidTextBox.setText("");
+	    ServerRadioButton.setSelected(true);
 		StringBuffer txt = new StringBuffer();
 		try {
 			// saveFileDialog Show the FileDialog
@@ -880,16 +884,29 @@ void InsertButton_actionPerformed(java.awt.event.ActionEvent event)
 	            JOptionPane.showMessageDialog(this,"Both global and local id parameters must be present!");
 	        }
 	        else {
+		        StringBuffer txt = new StringBuffer();
 	            try {
+	            
+		        if(CurrentCheckBox.isSelected()) {   // use the xml doc currently being edited
+		            String temp = container.mdeBean1.getSaveString();
+		            if ((temp==null)||(temp.length()==0)) {
+		                JOptionPane.showMessageDialog(this,"Unable to obtain current XML document!");
+		                return;
+		            }
+		            txt.append(temp);
+		        }
+		        else{
+	            
 		            String file = DocumentTextBox.getText();
 		            FileReader fr = new FileReader(file);
 		            int x;
-		            StringBuffer txt = new StringBuffer();
 		            while((x=fr.read())!=-1) {
 		                txt.append((char)x);
 		            }
 		            fr.close();
-	                
+		        
+	            
+	            }
                     //System.err.println("Trying: " + container.MetaCatServletURL);
 		            URL url = new URL(container.MetaCatServletURL);
 		            HttpMessage msg = new HttpMessage(url);
@@ -919,11 +936,10 @@ void InsertButton_actionPerformed(java.awt.event.ActionEvent event)
             String global = documentID.substring(0,documentID.indexOf(":"));
             String local =  documentID.substring(documentID.indexOf(":")+1,documentID.length());
             boolean change_flag = false;
-            if (globalidTextBox.getText().equals(global)) change_flag=true;
-            if (localidTextBox.getText().equals(local)) change_flag=true;
+            if (!globalidTextBox.getText().equals(global)) change_flag=true;
+            if (!localidTextBox.getText().equals(local)) change_flag=true;
             globalidTextBox.setText(global);
             localidTextBox.setText(local);
-            InsertButton_actionPerformed(null); // insert returned id into document
             String message = "Success. The docid is " + documentID + ".";
             if (change_flag) {
                 message = message + " New docid provided by server!";

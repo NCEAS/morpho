@@ -6,7 +6,7 @@
  *              National Center for Ecological Analysis and Synthesis
  *     Authors: Dan Higgins
  *
- *     Version: '$Id: ConnectionFrame.java,v 1.8 2000-09-29 22:53:42 higgins Exp $'
+ *     Version: '$Id: ConnectionFrame.java,v 1.9 2000-10-04 18:44:37 higgins Exp $'
  */
 
 package edu.ucsb.nceas.dtclient;
@@ -217,10 +217,15 @@ public class ConnectionFrame extends javax.swing.JFrame
 	void RegisteredUserRadioButton_itemStateChanged(java.awt.event.ItemEvent event)
 	{
 		if(RegisteredUserRadioButton.isSelected()) {
+           PropertyResourceBundle options = (PropertyResourceBundle)PropertyResourceBundle.getBundle("client");  // DFH
+		   String username =(String)options.handleGetObject("username");
+		   String password =(String)options.handleGetObject("password");
 		   Name.setEnabled(true);
 		   Password.setEnabled(true);
 		   NameTextField.setEnabled(true);
 		   PWTextField.setEnabled(true);
+		   if (username!=null) {NameTextField.setText(username);}
+		   if (password!=null) {PWTextField.setText(password);}
 		}
 		else {
 		   Name.setEnabled(false);

@@ -6,7 +6,7 @@
  *              National Center for Ecological Analysis and Synthesis
  *     Authors: Dan Higgins
  *
- *     Version: '$Id: ClientFramework.java,v 1.23 2000-10-03 23:21:55 higgins Exp $'
+ *     Version: '$Id: ClientFramework.java,v 1.24 2000-10-04 18:44:37 higgins Exp $'
  */
 
 package edu.ucsb.nceas.dtclient;
@@ -164,6 +164,7 @@ public class ClientFramework extends javax.swing.JFrame
 		JToolBar1.add(JToolBarSeparator4);
 		JToolBarSeparator4.setBounds(408,9,10,5);
 		ToolBarSearchText.setColumns(12);
+		ToolBarSearchText.setText("%");
 		JToolBar1.add(ToolBarSearchText);
 		ToolBarSearchText.setFont(new Font("Dialog", Font.PLAIN, 12));
 		ToolBarSearchText.setBounds(418,2,132,32);
