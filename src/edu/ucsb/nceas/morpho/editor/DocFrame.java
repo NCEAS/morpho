@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-02-21 16:37:53 $'
- * '$Revision: 1.90 $'
+ *     '$Date: 2002-02-28 05:02:20 $'
+ * '$Revision: 1.91 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -348,7 +348,7 @@ public class DocFrame extends javax.swing.JFrame
     //Create the popup menu.
     javax.swing.JPopupMenu popup = new JPopupMenu();
 		
-		rootNode = newNode("Configuration");
+		rootNode = newNode("Working...!!!");
 		treeModel = new DefaultTreeModel(rootNode);
 
     tree = new JTree(treeModel);
