@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: jones $'
- *     '$Date: 2002-08-06 21:10:39 $'
- * '$Revision: 1.80 $'
+ *   '$Author: brooke $'
+ *     '$Date: 2002-08-12 20:50:48 $'
+ * '$Revision: 1.81 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,6 +27,7 @@
 package edu.ucsb.nceas.morpho.datapackage;
 
 import edu.ucsb.nceas.morpho.framework.*;
+import edu.ucsb.nceas.morpho.framework.DocumentNotFoundException;
 import edu.ucsb.nceas.morpho.datastore.FileSystemDataStore;
 import edu.ucsb.nceas.morpho.datastore.MetacatDataStore;
 import edu.ucsb.nceas.morpho.datastore.CacheAccessException;
@@ -752,56 +753,34 @@ public class DataPackageGUI extends javax.swing.JFrame
       }
       
       String id = item.substring(item.indexOf("(")+1, item.indexOf(")"));
-      //System.out.println("id: " + id);
-      File xmlFile;
-      try
-      {
-        FileSystemDataStore fsds = new FileSystemDataStore(framework);
-        xmlFile = fsds.openFile(id);
-      }
-      catch(Exception eee)
-      {
-        try
-        {
-          MetacatDataStore mds = new MetacatDataStore(framework);
-          xmlFile = mds.openFile(id);
-        }
-        catch(Exception eeee)
-        {
-          framework.debug(0, "Error opening selected file: " + 
-                             eeee.getMessage());
-          return;
-        }
-      }
-      
+
       StringBuffer sb = new StringBuffer();
-      try
-      {
-        FileReader fr = new FileReader(xmlFile);
-        int c = fr.read();
-//DFH        while(fr.ready() && c != -1)
-        while(c != -1)
-        {
-          sb.append((char)c);
-          c = fr.read();
+      Reader reader = null;
+      try {
+        reader = dataPackage.open(id);
+        char[] buff = new char[4096];
+        int numCharsRead;
+      
+        while ((numCharsRead = reader.read( buff, 0, buff.length ))!=-1) {
+            sb.append(buff, 0, numCharsRead);
         }
-//        sb.append((char)c);
-        fr.close();
-      }
-      catch(Exception eeeee)
-      {
-        framework.debug(0, "Error reading file : " + id + " " + 
-                           eeeee.getMessage());
+      } catch (DocumentNotFoundException dnfe) {
+        framework.debug(0, "Error finding file : "+id+" "+dnfe.getMessage());
         return;
+      } catch (IOException ioe) {
+        framework.debug(0, "Error reading file : "+id+" "+ioe.getMessage());
+      } finally {
+        try { reader.close();
+        } catch (IOException ce) {  
+          framework.debug(12, "Error closing Reader : "+id+" "+ce.getMessage());
+        }
       }
       editor.openEditor(sb.toString(), id, location, this);
-    }
-    else if(command.equals("Add"))
-    {
-      //ClientFramework.debug(9, "Adding-doesn't work yet!");
-      AddMetadataWizard npmw = new AddMetadataWizard(framework,
-                                                                   false, 
-                                                                   dataPackage);
+      
+    } else if(command.equals("Add")) {
+    
+      AddMetadataWizard npmw 
+                        = new AddMetadataWizard(framework, false, dataPackage);
       this.dispose();                                                          
       npmw.show();
       npmw.setName("New Description Wizard:" + dataPackage.getID());
