@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-11-21 22:33:45 $'
- * '$Revision: 1.3 $'
+ *     '$Date: 2003-11-24 19:00:26 $'
+ * '$Revision: 1.4 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -39,6 +39,7 @@ import edu.ucsb.nceas.morpho.plugins.ServiceController;
 import edu.ucsb.nceas.morpho.plugins.ServiceProvider;
 import edu.ucsb.nceas.morpho.plugins.ServiceNotHandledException;
 import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
+import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.WindowAdapter;
@@ -74,9 +75,21 @@ public class CreateNewDataPackageCommand implements Command
   public void execute(ActionEvent event)
   {   
     Log.debug(20, "Action fired: New Data Package");
-    DataPackageWizardPlugin plugin = new DataPackageWizardPlugin();
-    //plugin.initialize(Morpho.thisStaticInstance);
-    plugin.startWizard(
+    DataPackageWizardInterface dpw = null;
+    try 
+      {
+        ServiceController services = ServiceController.getInstance();
+        ServiceProvider provider = 
+           services.getServiceProvider(DataPackageWizardInterface.class);
+        dpw = (DataPackageWizardInterface)provider;
+      }
+      catch (ServiceNotHandledException snhe) 
+      {
+        Log.debug(6, snhe.getMessage());
+      }
+
+
+      dpw.startWizard(
       new DataPackageWizardListener() {
       
         public void wizardComplete(Node newDOM) {
