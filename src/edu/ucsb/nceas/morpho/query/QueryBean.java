@@ -5,7 +5,7 @@
  *              National Center for Ecological Analysis and Synthesis
  *     Authors: Dan Higgins
  *
- *     Version: '$Id: QueryBean.java,v 1.36 2001-01-08 19:08:18 higgins Exp $'
+ *     Version: '$Id: QueryBean.java,v 1.37 2001-01-09 00:32:09 higgins Exp $'
  */
 
 package edu.ucsb.nceas.querybean;
@@ -682,8 +682,10 @@ public class QueryBean extends AbstractQueryBean
 		//}}
 
 
-		//QueryChoiceTabs.add(Extra);
-		TestSearch = new JButton("SpecialSearch");
+		QueryChoiceTabs.add(Extra);
+		Extra.setVisible(false);
+		TestSearch = new JButton("Show My Documents");
+		TestSearch.setToolTipText("This button will search the catalog and display all documents belonging to the user");
 		TestSearch.setActionCommand("SpecialSearch");
 		TestSearch.addActionListener(lSymAction);
 		Extra.add(TestSearch);
@@ -996,14 +998,15 @@ public class QueryBean extends AbstractQueryBean
 
     void TestSearch_actionPerformed(java.awt.event.ActionEvent event)
     {
+        System.out.println("Current user: "+userName);
         String searchtext = "<?xml version=\"1.0\"?>\n";
         searchtext = searchtext + "<pathquery version=\"1.0\">\n";
-        searchtext = searchtext + "<owner>higgins</owner>\n";
+        searchtext = searchtext + "<owner>"+userName+"</owner>\n";
         searchtext = searchtext + "<querygroup operator=\"UNION\">\n";
         searchtext = searchtext + "<queryterm casesensitive=\"true\" searchmode=\"contains\">\n";
         searchtext = searchtext + "<value>%</value>\n";
         searchtext = searchtext + "</queryterm></querygroup></pathquery>";
-	    squery_submitToDatabase(searchtext);
+	    squery_submitToDatabase_all(searchtext);
         
     }
 
@@ -1471,17 +1474,6 @@ public void searchFor(String searchText) {
         HttpMessage msg = new HttpMessage(url);
         InputStream in = msg.sendPostMessage(prop);
 
-  /*      StringBuffer txt = new StringBuffer();
-		    int x;
-		    try {
-		    while((x=in.read())!=-1) {
-		        txt.append((char)x);
-		    }
-		    }
-		    catch (Exception e) {}
-		    String txt1 = txt.toString();
-		    System.out.println(txt1);
-*/
         
         ExternalQuery rq = new ExternalQuery(in);
         RSFrame rs = new RSFrame("Results of Catalog Search");
@@ -1502,6 +1494,43 @@ public void searchFor(String searchText) {
 	  }
       catch (Exception w) {System.out.println("Error in submitting structured query");}
 	}
+
+// this method varies from squery_submitToDatabase only in setting the ExternalQuery class to
+// build a table that shows all return columns
+	public void squery_submitToDatabase_all(String queryXML) {
+	  Properties prop = new Properties();
+        prop.put("action","squery");
+        prop.put("query",queryXML);
+        
+        String respType = "xml";
+		prop.put("qformat",respType);
+      try {
+        System.err.println("Trying: " + MetaCatServletURL);
+        URL url = new URL(MetaCatServletURL);
+        HttpMessage msg = new HttpMessage(url);
+        InputStream in = msg.sendPostMessage(prop);
+
+        
+        ExternalQuery rq = new ExternalQuery(in,0);  // the difference is here!
+        RSFrame rs = new RSFrame("Results of Catalog Search");
+            rs.setEditor(mde);
+            rs.setTabbedPane(tabbedPane);
+            rs.setTabbedPane(tabbedPane);
+            rs.setVisible(true);
+            rs.local=false;
+                JTable ttt = rq.getTable();
+                TableModel tm = ttt.getModel();
+                rs.JTable1.setModel(tm);
+                rs.JTable1.setColumnModel(ttt.getColumnModel());
+                rs.relations = rq.getRelations();
+                rs.pack();
+ 
+		    in.close();
+
+	  }
+      catch (Exception w) {System.out.println("Error in submitting structured query");}
+	}
+
 
 	public void simplequery_submitToDatabase(String query) {
 	  Properties prop = new Properties();
@@ -1608,10 +1637,12 @@ public void LogOut() {
             QueryChoiceTabs.add(DocumentTypePanel);
             QueryChoiceTabs.add(JPanel11);
             QueryChoiceTabs.add(JPanel12);
+            QueryChoiceTabs.add(Extra);
 		    QueryChoiceTabs.setTitleAt(1,"All Text");
 		    QueryChoiceTabs.setTitleAt(2,"Guided Search");
 		    QueryChoiceTabs.setTitleAt(3,"Taxonomic");
 		    QueryChoiceTabs.setTitleAt(4,"Spatial");
+		    QueryChoiceTabs.setTitleAt(5,"My Documents");
            
         }
         else {
@@ -1619,6 +1650,7 @@ public void LogOut() {
            QueryChoiceTabs.remove(DocumentTypePanel);
            QueryChoiceTabs.remove(JPanel11);
            QueryChoiceTabs.remove(JPanel12);
+           QueryChoiceTabs.remove(Extra);
         }
     }
 

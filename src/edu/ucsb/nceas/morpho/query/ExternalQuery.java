@@ -9,7 +9,7 @@
  *  Authors: Dan Higgins
  *
  *  
- *     Version: '$Id: ExternalQuery.java,v 1.8 2000-12-28 19:13:44 higgins Exp $'
+ *     Version: '$Id: ExternalQuery.java,v 1.9 2001-01-09 00:32:09 higgins Exp $'
  */
 
 /*
@@ -66,6 +66,47 @@ public class ExternalQuery implements ContentHandler
     Vector relationsVector; 
     
     Vector returnFields; // return field path names
+    int num_cols_to_remove = 3;
+    
+public ExternalQuery(InputStream is, int cols) {
+    relations = new Hashtable(); 
+    this.is = is;
+    ConfigXML config = new ConfigXML("config.xml");
+    returnFields = config.get("returnfield");
+    int cnt;
+    if (returnFields==null) {
+        cnt = 0;
+    }
+    else {
+        cnt = returnFields.size();
+    }
+    
+    headers = new String[4+cnt];  // assume at least 4 fields returned
+    headers[0] = "Doc ID";
+    headers[1] = "Document Name";
+    headers[2] = "Document Type";
+    headers[3] = "Document Title";
+    for (int i=0;i<cnt;i++) {
+        headers[4+i] = getLastPathElement((String)returnFields.elementAt(i));
+    }
+    dtm = new DefaultTableModel(headers,0);
+    RSTable = new JTable(dtm);
+    TableColumnModel tcm = RSTable.getColumnModel();
+    removeFirstNColumns(tcm,cols);
+    String parserName = "org.apache.xerces.parsers.SAXParser";
+    XMLReader parser = null;
+
+    // Set up the SAX document handlers for parsing
+    try {
+          // Get an instance of the parser
+          parser = XMLReaderFactory.createXMLReader(parserName);
+          // Set the ContentHandler to this instance
+          parser.setContentHandler(this);
+          parser.parse(new InputSource(is));
+        } catch (Exception e) {
+           System.err.println(e.toString());
+        }
+}   
     
 public ExternalQuery(InputStream is) {
     relations = new Hashtable(); 
@@ -91,7 +132,7 @@ public ExternalQuery(InputStream is) {
     dtm = new DefaultTableModel(headers,0);
     RSTable = new JTable(dtm);
     TableColumnModel tcm = RSTable.getColumnModel();
-    removeFirstNColumns(tcm,3);
+    removeFirstNColumns(tcm,num_cols_to_remove);
     String parserName = "org.apache.xerces.parsers.SAXParser";
     XMLReader parser = null;
 
