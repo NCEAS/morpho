@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-04-02 18:46:12 $'
- * '$Revision: 1.1 $'
+ *     '$Date: 2003-04-22 16:40:28 $'
+ * '$Revision: 1.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -78,8 +78,10 @@ public class XMLUtil
                 }
             }
         }
-
-        return str.toString();
+        String temp = str.toString();
+        temp = temp.trim();
+        if (temp.length()<1) temp = " ";
+        return temp;
 
     } // normalize(String):String
 }
