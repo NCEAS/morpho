@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2002-09-02 16:54:26 $'
- * '$Revision: 1.4 $'
+ *     '$Date: 2002-09-11 15:55:44 $'
+ * '$Revision: 1.5 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -140,25 +140,108 @@ public class MetaDisplayTestResources
 
 // * * * * * * *      S T A T I C   T E S T    D A T A     * * * * * * * * * * *
 
+
     public static final String TEST_XML_DOC_1 =
-        "<html><head></head>\n<body bgcolor=\"#ff0000\">\n"
-        +"<h1>TEST DOCUMENT 1</h1><br>"
-        +"<a href=\""+TEST_DOC_2+"\">test link</a></body></html>";
+          "<?xml version=\"1.0\"?>"
+        + "<!DOCTYPE eml-attribute "
+        + "PUBLIC \"-//ecoinformatics.org//eml-attribute-2.0.0beta6//EN\" "
+        + "\"file://jar:file:/C:/DEV/ecoinfo/MORPHO_ROOT/CVS_SOURCE/morpho/lib/"
+        + "morpho-config.jar!/catalog/eml-attribute-2.0.0.beta6e.dtd\">"
+        + "<eml-attribute>"
+        + "<identifier>"+TEST_DOC_1+"</identifier>"
+        + "<attribute>"
+        + "  <attributeName>field 1</attributeName>"
+        + "  <attributeLabel>label for attribute 1</attributeLabel>"
+        + "  <attributeDefinition>none whatsoever</attributeDefinition>"
+        + "  <unit>cm</unit>"
+        + "  <dataType>integer</dataType>"
+        + "  <attributeDomain>"
+        + "      <numericDomain>"
+        + "        <minimum>2</minimum>"
+        + "        <maximum>222</maximum>"
+        + "      </numericDomain>"
+        + "  </attributeDomain>"
+        + "  <missingValueCode>~</missingValueCode>"
+        + "  <precision>5</precision>"
+        + "</attribute>"
+        + "</eml-attribute>";
 
     public static final String TEST_XML_DOC_2 =
-        "<html><head></head>\n<body bgcolor=\"#00ff00\">\n"
-        +"<h1>TEST DOCUMENT 2</h1><br>"
-        +"<a href=\""+TEST_DOC_3+"\">test link</a></body></html>";
-
+          "<?xml version=\"1.0\"?>"
+        + "<!DOCTYPE eml-attribute "
+        + "PUBLIC \"-//ecoinformatics.org//eml-attribute-2.0.0beta6//EN\" "
+        + "\"file://jar:file:/C:/DEV/ecoinfo/MORPHO_ROOT/CVS_SOURCE/morpho/lib/"
+        + "morpho-config.jar!/catalog/eml-attribute-2.0.0.beta6e.dtd\">"
+        + "<eml-attribute>"
+        + "<identifier>"+TEST_DOC_2+"</identifier>"
+        + "<attribute>"
+        + "  <attributeName>field 1</attributeName>"
+        + "  <attributeLabel>label for attribute 1</attributeLabel>"
+        + "  <attributeDefinition>none whatsoever</attributeDefinition>"
+        + "  <unit>cm</unit>"
+        + "  <dataType>integer</dataType>"
+        + "  <attributeDomain>"
+        + "      <numericDomain>"
+        + "        <minimum>2</minimum>"
+        + "        <maximum>222</maximum>"
+        + "      </numericDomain>"
+        + "  </attributeDomain>"
+        + "  <missingValueCode>~</missingValueCode>"
+        + "  <precision>5</precision>"
+        + "</attribute>"
+        + "</eml-attribute>";
+        
     public static final String TEST_XML_DOC_3 =
-        "<html><head></head>\n<body bgcolor=\"#ffff00\">\n"
-        +"<h1>TEST DOCUMENT 3</h1><br>"
-        +"<a href=\""+TEST_DOC_4+"\">test link</a></body></html>";
+          "<?xml version=\"1.0\"?>"
+        + "<!DOCTYPE eml-attribute "
+        + "PUBLIC \"-//ecoinformatics.org//eml-attribute-2.0.0beta6//EN\" "
+        + "\"file://jar:file:/C:/DEV/ecoinfo/MORPHO_ROOT/CVS_SOURCE/morpho/lib/"
+        + "morpho-config.jar!/catalog/eml-attribute-2.0.0.beta6e.dtd\">"
+        + "<eml-attribute>"
+        + "<identifier>"+TEST_DOC_3+"</identifier>"
+        + "<attribute>"
+        + "  <attributeName>field 1</attributeName>"
+        + "  <attributeLabel>label for attribute 1</attributeLabel>"
+        + "  <attributeDefinition>none whatsoever</attributeDefinition>"
+        + "  <unit>cm</unit>"
+        + "  <dataType>integer</dataType>"
+        + "  <attributeDomain>"
+        + "      <numericDomain>"
+        + "        <minimum>2</minimum>"
+        + "        <maximum>222</maximum>"
+        + "      </numericDomain>"
+        + "  </attributeDomain>"
+        + "  <missingValueCode>~</missingValueCode>"
+        + "  <precision>5</precision>"
+        + "</attribute>"
+        + "</eml-attribute>";
+
 
     public static final String TEST_XML_DOC_4 =
-        "<html><head></head>\n<body bgcolor=\"#0000ff\">\n"
-        +"<h1>TEST DOCUMENT 4</h1><br>"
-        +"<a href=\""+TEST_DOC_1+"\">test link</a></body></html>";
+          "<?xml version=\"1.0\"?>"
+        + "<!DOCTYPE eml-attribute "
+        + "PUBLIC \"-//ecoinformatics.org//eml-attribute-2.0.0beta6//EN\" "
+        + "\"file://jar:file:/C:/DEV/ecoinfo/MORPHO_ROOT/CVS_SOURCE/morpho/lib/"
+        + "morpho-config.jar!/catalog/eml-attribute-2.0.0.beta6e.dtd\">"
+        + "<eml-attribute>"
+        + "<identifier>"+TEST_DOC_4+"</identifier>"
+        + "<attribute>"
+        + "  <attributeName>field 1</attributeName>"
+        + "  <attributeLabel>label for attribute 1</attributeLabel>"
+        + "  <attributeDefinition>none whatsoever</attributeDefinition>"
+        + "  <unit>cm</unit>"
+        + "  <dataType>integer</dataType>"
+        + "  <attributeDomain>"
+        + "      <numericDomain>"
+        + "        <minimum>2</minimum>"
+        + "        <maximum>222</maximum>"
+        + "      </numericDomain>"
+        + "  </attributeDomain>"
+        + "  <missingValueCode>~</missingValueCode>"
+        + "  <precision>5</precision>"
+        + "</attribute>"
+        + "</eml-attribute>";
+
 }
  
 
@@ -183,6 +266,11 @@ class XMLFactoryAdapter implements XMLFactoryInterface
 
 
 // K E E P    T H I S :::::::::::
+
+//        "<html><head></head>\n<body bgcolor=\"#00ff00\">\n"
+//        +"<h1>TEST DOCUMENT 2</h1><br>"
+//        +"<a href=\""+TEST_DOC_3+"\">test link</a></body></html>";
+
 
 
     //    private static final String TEST_XML_DOC_1 =
