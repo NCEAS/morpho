@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: jones $'
- *     '$Date: 2002-08-19 21:10:33 $'
- * '$Revision: 1.21 $'
+ *   '$Author: tao $'
+ *     '$Date: 2002-08-28 17:17:39 $'
+ * '$Revision: 1.22 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,6 +28,7 @@ package edu.ucsb.nceas.morpho.datapackage;
 
 import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.framework.ConfigXML;
+import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
 import edu.ucsb.nceas.morpho.framework.EditingCompleteListener;
 import edu.ucsb.nceas.morpho.framework.EditorInterface;
 import edu.ucsb.nceas.morpho.framework.QueryRefreshInterface;
@@ -1200,14 +1201,14 @@ public class AddMetadataWizard extends JFrame
     FileSystemDataStore fsds = new FileSystemDataStore(morpho);
     File packageFile = dataPackage.getTriplesFile();
     
-    if(location.equals(DataPackage.LOCAL) || 
-       location.equals(DataPackage.BOTH))
+    if(location.equals(DataPackageInterface.LOCAL) || 
+       location.equals(DataPackageInterface.BOTH))
     {
       locLocal = true;
     }
     
-    if(location.equals(DataPackage.METACAT) || 
-       location.equals(DataPackage.BOTH))
+    if(location.equals(DataPackageInterface.METACAT) || 
+       location.equals(DataPackageInterface.BOTH))
     {
       locMetacat = true;
     }
@@ -1526,14 +1527,14 @@ public class AddMetadataWizard extends JFrame
     FileSystemDataStore fsds = new FileSystemDataStore(morpho);
     File packageFile = dataPackage.getTriplesFile();
     
-    if(location.equals(DataPackage.LOCAL) || 
-       location.equals(DataPackage.BOTH))
+    if(location.equals(DataPackageInterface.LOCAL) || 
+       location.equals(DataPackageInterface.BOTH))
     {
       locLocal = true;
     }
     
-    if(location.equals(DataPackage.METACAT) || 
-       location.equals(DataPackage.BOTH))
+    if(location.equals(DataPackageInterface.METACAT) || 
+       location.equals(DataPackageInterface.BOTH))
     {
       locMetacat = true;
     }
