@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2002-09-11 21:54:54 $'
- * '$Revision: 1.11 $'
+ *     '$Date: 2002-09-11 23:11:08 $'
+ * '$Revision: 1.12 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,8 +34,8 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.io.PrintWriter;
-import java.io.PipedReader;
-import java.io.PipedWriter;
+import java.io.CharArrayWriter;
+//import java.io.PipedWriter;
 import java.io.InputStreamReader;
 
 import java.net.URL;
@@ -229,9 +229,12 @@ public class XMLTransformer extends DefaultHandler
                         +"\n    Source = "       +source            
                         +"\n    xslStyleSheet = "+xslStyleSheet); 
         
-        PipedReader returnReader = new PipedReader();
-        PipedWriter pipedWriter  = new PipedWriter();
-        returnReader.connect(pipedWriter);
+//        PipedReader returnReader = new PipedReader();
+//        PipedWriter outputWriter  = new PipedWriter();
+//        returnReader.connect(outputWriter);
+
+        CharArrayWriter outputWriter  = new CharArrayWriter();
+
 
         TransformerFactory tFactory = TransformerFactory.newInstance();
         Transformer transformer = null;
@@ -244,8 +247,8 @@ public class XMLTransformer extends DefaultHandler
                     +"Nested TransformerConfigurationException="+e.getMessage();
             e.printStackTrace();
             Log.debug(12, msg);
-            pipedWriter.write(msg.toCharArray(),0,msg.length());
-            e.printStackTrace(new PrintWriter(pipedWriter));
+            outputWriter.write(msg.toCharArray(),0,msg.length());
+            e.printStackTrace(new PrintWriter(outputWriter));
         }
         
         transformer.setErrorListener(new CustomErrorListener());
@@ -254,7 +257,7 @@ public class XMLTransformer extends DefaultHandler
             Log.debug(50,"XMLTransformer doing transformer.transform...");
 
             transformer.transform(  source,
-                                    new StreamResult(pipedWriter));
+                                    new StreamResult(outputWriter));
             Log.debug(50,"XMLTransformer DONE transformer.transform!");            
         } catch (TransformerException e) {
             String msg
@@ -262,21 +265,23 @@ public class XMLTransformer extends DefaultHandler
                                 +" Nested TransformerException="+e.getMessage();
             e.printStackTrace();
             Log.debug(12, msg);
-            pipedWriter.write(msg.toCharArray(),0,msg.length());
-            e.printStackTrace(new PrintWriter(pipedWriter));
+            outputWriter.write(msg.toCharArray(),0,msg.length());
+            e.printStackTrace(new PrintWriter(outputWriter));
         } catch (Exception e) {
             String msg
                 = "XMLTransformer.transform(): Unrecognized Error transforming"
                                 +" document: "+e.getMessage();
             e.printStackTrace();
             Log.debug(12, msg);
-            pipedWriter.write(msg.toCharArray(),0,msg.length());
-            e.printStackTrace(new PrintWriter(pipedWriter));
+            outputWriter.write(msg.toCharArray(),0,msg.length());
+            e.printStackTrace(new PrintWriter(outputWriter));
         } finally {
-            pipedWriter.flush();
-            pipedWriter.close();
+            outputWriter.flush();
+            outputWriter.close();
         }
-        return returnReader;
+        return new StringReader(outputWriter.toString());
+        
+//        return returnReader;
     }
 
 
@@ -314,24 +319,6 @@ public class XMLTransformer extends DefaultHandler
         }
         this.entityResolver = (EntityResolver)catalogEntResolver;
     }
-
-    
-    //  Create a SAXSource to enable the transformer to access the Reader
-    //  - Necessary because we need to set the entity resolver for this source, 
-    //  which isn't possible if we just use a StreamSource to read the Reader
-//    private SAXSource getAsSAXSource(Reader xmlDocReader) throws SAXException
-//    {   
-//        InputSource source = new InputSource(xmlDocReader);
-//        SAXSource saxSource = new SAXSource(source);
-//        XMLReader xmlReader = XMLReaderFactory.createXMLReader(
-//                                    config.get(CONFIG_KEY_SAX_PARSER_NAME, 0));
-//        xmlReader.setFeature("http://xml.org/sax/features/validation",true);
-//        xmlReader.setContentHandler(this);
-//        xmlReader.setEntityResolver(getEntityResolver());
-//        xmlReader.setErrorHandler(new CustomErrorHandler());
-//        saxSource.setXMLReader(xmlReader);
-//        return saxSource;
-//    }
 
     
     //  Create a DOM Document to enable the transformer to access the Reader
@@ -473,6 +460,28 @@ public class XMLTransformer extends DefaultHandler
     }
 
 }
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+//////////////             S P A R E    P A R T S            ///////////////////
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+    
+    //  Create a SAXSource to enable the transformer to access the Reader
+    //  - Necessary because we need to set the entity resolver for this source, 
+    //  which isn't possible if we just use a StreamSource to read the Reader
+//    private SAXSource getAsSAXSource(Reader xmlDocReader) throws SAXException
+//    {   
+//        InputSource source = new InputSource(xmlDocReader);
+//        SAXSource saxSource = new SAXSource(source);
+//        XMLReader xmlReader = XMLReaderFactory.createXMLReader(
+//                                    config.get(CONFIG_KEY_SAX_PARSER_NAME, 0));
+//        xmlReader.setFeature("http://xml.org/sax/features/validation",true);
+//        xmlReader.setContentHandler(this);
+//        xmlReader.setEntityResolver(getEntityResolver());
+//        xmlReader.setErrorHandler(new CustomErrorHandler());
+//        saxSource.setXMLReader(xmlReader);
+//        return saxSource;
+//    }
 
 
     /**
