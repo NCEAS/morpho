@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: cjones $'
- *     '$Date: 2002-09-26 01:57:53 $'
- * '$Revision: 1.91 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2002-10-28 19:54:08 $'
+ * '$Revision: 1.92 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -509,7 +509,7 @@ public class DataPackageGUI extends javax.swing.JFrame
                   htmlize(abstractS, "Abstract");
     
     referenceLabel = referenceLabel + "<b><i>" + title + "</i></b><br>" +
-           "<b>KNB Accession Number " + id + "</b>  Keywords: " + keywords; 
+           "<b>Accession Number " + id + "</b>  Keywords: " + keywords; 
     
     String originators = "<br><b>Originator(s)</b><br>";
     String name = "";
