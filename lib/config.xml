@@ -53,4 +53,9 @@
     <localdoctypedtd>eml-variable.dtd</localdoctypedtd>
 </localdoctypes>
 <saxparser>org.apache.xerces.parsers.SAXParser</saxparser>
-<username>berkley</username></root>
+<username>berkley</username>
+<accessionNumber>
+  <scope>12345</scope>
+  <lastId>0</lastId>
+</accessionNumber>
+</root>
