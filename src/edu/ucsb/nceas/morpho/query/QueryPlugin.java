@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2002-08-27 00:06:01 $'
- * '$Revision: 1.85 $'
+ *     '$Date: 2002-09-11 00:38:26 $'
+ * '$Revision: 1.86 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -89,7 +89,7 @@ public class QueryPlugin implements PluginInterface, ConnectionListener,
   {
     this.morpho = morpho;
     this.config = morpho.getConfiguration();
-    loadConfigurationParameters();
+    //loadConfigurationParameters();
    
     // Create the menus and toolbar actions, will register later
     initializeActions(); 
@@ -176,6 +176,33 @@ public class QueryPlugin implements PluginInterface, ConnectionListener,
                   getResource("/toolbarButtonGraphics/general/Open16.gif")));
     openDialogBoxAction.setMenuItemPosition(0);
     openDialogBoxAction.setToolTipText("Open...");
+        
+    // Synchronize action
+    GUIAction synchronizeAction = new GUIAction("Synchronize...", null,
+                          new OpenSynchronizeDialogCommand());
+    synchronizeAction.setMenuItemPosition(6);
+    synchronizeAction.setToolTipText("Synchronize...");
+    synchronizeAction.setSeparatorPosition(Morpho.SEPARATOR_FOLLOWING);
+    
+    // DeleteDialogAction
+    GUIAction deleteDialogAction = new GUIAction("Delete...", null,
+                                          new OpenDeleteDialogCommand());
+    deleteDialogAction.setMenuItemPosition(8);
+    deleteDialogAction.setToolTipText("Delete...");
+    deleteDialogAction.setSeparatorPosition(Morpho.SEPARATOR_FOLLOWING);
+    
+    // Export action
+    GUIAction exportAction = new GUIAction("Export...", null, 
+                            new ExportCommand(null, ExportCommand.REGULAR));
+    exportAction.setMenuItemPosition(10);
+    exportAction.setToolTipText("Export data package...");
+    
+    // Export to zip action
+    GUIAction exportZipAction = new GUIAction("Export to Zip...", null,
+                             new ExportCommand(null, ExportCommand.ZIP));
+    exportZipAction.setMenuItemPosition(11);
+    exportZipAction.setToolTipText("Export data package into zip file...");
+    exportZipAction.setSeparatorPosition(Morpho.SEPARATOR_FOLLOWING);
     
      // Set up the toolbar for the application
     toolbarActions = new Action[5];
@@ -186,19 +213,15 @@ public class QueryPlugin implements PluginInterface, ConnectionListener,
     toolbarActions[4] = reviseSearchItemAction;
     
     //Set up action for file menu
-    fileMenuActions = new Action[1];
-    fileMenuActions[0]=openDialogBoxAction;
-   
+    fileMenuActions = new Action[5];
+    fileMenuActions[0] = openDialogBoxAction;
+    fileMenuActions[1] = synchronizeAction;
+    fileMenuActions[2] = deleteDialogAction;
+    fileMenuActions[3] = exportAction;
+    fileMenuActions[4] = exportZipAction;
   }
 
 
-
-  /**
-   * Load the configuration parameters that we need
-   */
-  private void loadConfigurationParameters()
-  {
-  }
 
  
   /**
@@ -208,7 +231,7 @@ public class QueryPlugin implements PluginInterface, ConnectionListener,
   public void usernameChanged(String newUsername)
   {
     Log.debug(20, "New username: " + newUsername);
-    refreshOwnerPanel();
+    refresh();
   }
 
   /**
@@ -219,18 +242,10 @@ public class QueryPlugin implements PluginInterface, ConnectionListener,
   {
     Log.debug(20, "Connection changed: " + 
                     (new Boolean(connected)).toString());
-    refreshOwnerPanel();
+    refresh();
   }
 
  
-
-  /**
-   * Refresh the owner panel after the username has changed
-   */
-  private void refreshOwnerPanel()
-  {
- 
-  }
 
   /** 
    * This method is called to refresh a query when a change is made that should
@@ -238,7 +253,8 @@ public class QueryPlugin implements PluginInterface, ConnectionListener,
    */ 
   public void refresh()
   {
-  
+    RefreshCommand refresh = new RefreshCommand(null);
+    refresh.execute();
   }
   
   /**
