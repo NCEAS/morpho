@@ -5,9 +5,9 @@
  *    Authors: @tao@
  *    Release: @release@
  *
- *   '$Author: cjones $'
- *     '$Date: 2002-09-26 01:57:53 $'
- * '$Revision: 1.9 $'
+ *   '$Author: tao $'
+ *     '$Date: 2002-10-01 21:51:00 $'
+ * '$Revision: 1.10 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -54,6 +54,9 @@ public class DeleteCommand implements Command
   /** A reference to the MorphoFrame */
    private MorphoFrame morphoFrame = null;
    
+  /** A String indicating the morpho frame' type*/
+   String morphoFrameType = null;
+   
   /** A refernce to the ResultPanel */
    private ResultPanel resultPane = null;
    
@@ -89,25 +92,41 @@ public class DeleteCommand implements Command
  
   /** flag for if the delete command come from a open dialog */
   private boolean comeFromOpenDialog = false;
+  
+  DataPackageInterface dataPackage = null;
+  
+  /** Title string for blank window*/
+  private String BLANK = "Blank";
+  /** index for blank window */
+  private static int index = 1;
   /**
    * Constructor of DeleteCommand
    * @param myOpenDialog the open dialog which will be applied delete action 
    * @param myDeleteDialog a delete dialog need to be destroied
    * @param myFrame the parent frame of delete dialog or parent of open dialog
+   * @param frameType the parent frame's type, search result or datapackage
    * @param selectId the id of data package need to be deleted
    * @param myState which deletion will happend, local, network or both
    * @param myInLocal if the datapackage has a local copy
    * @param myInNetwork if the datapackage has a network copy
    */
   public DeleteCommand(OpenDialogBox myOpenDialog, JDialog myDeleteDialog, 
-                      MorphoFrame myFrame, String myState, String selectId,  
-                      boolean myInLocal, boolean myInNetwork)
+                      MorphoFrame myFrame, String frameType,  String myState, 
+                      String selectId, boolean myInLocal, boolean myInNetwork)
   {
     if ( myOpenDialog != null)
     { 
       openDialog = myOpenDialog;
       comeFromOpenDialog = true;
+      // this come from a open dialog, so we can selt morphoFrameType = null
+      morphoFrameType = null;
     }
+    else
+    {
+      // this come from a morpho frame, we need to know it's type
+      morphoFrameType = frameType;
+    }
+    
     deleteDialog = myDeleteDialog;
     morphoFrame = myFrame;
     selectDocId = selectId;
@@ -160,8 +179,7 @@ public class DeleteCommand implements Command
           deleteDialog.dispose();
           deleteDialog = null;
         }
-      
-        doDelete(selectDocId, openDialog, morphoFrame);
+        doDelete(selectDocId, openDialog);
       }
    
   }//execute
@@ -170,8 +188,7 @@ public class DeleteCommand implements Command
    * Using SwingWorket class to delete a local package
    *
    */
- private void doDelete(final String docid, final OpenDialogBox open, 
-                                                      final MorphoFrame frame) 
+ private void doDelete(final String docid, final OpenDialogBox open) 
  {
   final SwingWorker worker = new SwingWorker() 
   {
@@ -181,11 +198,10 @@ public class DeleteCommand implements Command
         boolean refreshFlag = false;
         public Object construct() 
         {
-          if (frame!=null)
+          if (morphoFrame!=null)
           {
-            frame.setBusy(true);
+            morphoFrame.setBusy(true);
           }
-          DataPackageInterface dataPackage;
           // Create a refresh command finished
           RefreshCommand refresh = null;
           if (comeFromOpenDialog)
@@ -194,7 +210,7 @@ public class DeleteCommand implements Command
           }
           else
           {
-            refresh = new RefreshCommand(frame);
+            refresh = new RefreshCommand(morphoFrame);
           }
           
           try 
@@ -225,7 +241,8 @@ public class DeleteCommand implements Command
           }
           else
           {
-            choice = JOptionPane.showConfirmDialog(frame, message, 
+            // For morpho frame
+            choice = JOptionPane.showConfirmDialog(morphoFrame, message, 
                                "Morpho", 
                                JOptionPane.YES_NO_CANCEL_OPTION,
                                JOptionPane.WARNING_MESSAGE);
@@ -233,22 +250,77 @@ public class DeleteCommand implements Command
                                
           if(choice == JOptionPane.YES_OPTION)
           {
-            dataPackage.delete(docid, state);
-            refreshFlag = true;
-            refresh.execute(null);
+            // this is for open dialg box or search result frame
+            if ( comeFromOpenDialog || (morphoFrameType != null &&
+                  morphoFrameType.equals(morphoFrame.SEARCHRESULTFRAME)))
+            {
+              
+              dataPackage.delete(docid, state);
+              refreshFlag = true;
+              refresh.execute(null);
+            }
+            else if (morphoFrameType != null &&
+                     morphoFrameType.equals(morphoFrame.DATAPACKAGEFRAME))
+            {
+              //Fore data package frame
+              morphoFrame.setBusy(true);
+              refreshFlag = true;
+              dataPackage.delete(docid, state);
+              refreshDataPackageFrame();
+              
+            }
           }
          
            return null;  
           
         }
-
+        
+        /*
+         * Method to refresh a open datackage 
+         */
+        private void refreshDataPackageFrame()
+        {
+          // Distroy old frame
+          UIController.getInstance().removeWindow(morphoFrame);
+          morphoFrame.dispose();
+          morphoFrame = null;
+          // if pakcage have local and network copy and not delete both
+          // reopen the package
+          if ( inLocal && inNetwork && !state.equals(DataPackageInterface.BOTH))
+          {
+           
+            // the location of data package after deleting
+            String location = null;
+            if (state.equals(DataPackageInterface.LOCAL))
+            {
+              location = DataPackageInterface.METACAT;
+            }
+            else
+            {
+              location = DataPackageInterface.LOCAL;
+            }
+            dataPackage.openDataPackage(location, selectDocId, null, null);
+            
+          }
+          else
+          {
+            // create a new blank frame
+            String title = BLANK + index;
+            MorphoFrame newFrame = UIController.getInstance().addWindow(title);
+            newFrame.setVisible(true);
+            index++;
+            
+          } 
+          //
+        }
+        
         //Runs on the event-dispatching thread.
         public void finished() 
         {
-          if (frame!=null && !refreshFlag)
+          if (morphoFrame!=null && !refreshFlag)
           {
             // Refresh will stop butterfly flapping. So here we don't need
-            frame.setBusy(false);
+            morphoFrame.setBusy(false);
           }
         }
     };//final
