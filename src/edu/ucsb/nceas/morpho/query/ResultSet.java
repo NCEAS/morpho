@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2002-08-14 00:20:09 $'
- * '$Revision: 1.30.4.5 $'
+ *     '$Date: 2002-08-14 16:07:55 $'
+ * '$Revision: 1.30.4.6 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -251,14 +251,19 @@ public class ResultSet extends AbstractTableModel implements ContentHandler,
 
     localIcon 
       = new ImageIcon(getClass().getResource("localscreen.gif"));
+    localIcon.setDescription(ImageRenderer.LOCALTOOLTIP);
     metacatIcon 
       = new ImageIcon(getClass().getResource("net.gif"));
+    metacatIcon.setDescription(ImageRenderer.METACATTOOLTIP);
     blankIcon 
       = new ImageIcon(getClass().getResource("blank.gif"));
+    blankIcon.setDescription(ImageRenderer.BLANK);
     packageIcon
       = new ImageIcon(getClass().getResource("localscreen.gif"));
+    packageIcon.setDescription(ImageRenderer.PACKAGETOOLTIP);   
     packageDataIcon
       = new ImageIcon(getClass().getResource("net.gif"));
+    packageDataIcon.setDescription(ImageRenderer.PACKAGEDATATOOLTIP);
     /*bothIcon 
       = new ImageIcon(getClass().getResource("local+network-metadata.gif"));
     localDataIcon   
@@ -714,7 +719,8 @@ public class ResultSet extends AbstractTableModel implements ContentHandler,
           ImageIcon currentIcon 
             = (ImageIcon)originalRow.elementAt(PACKAGEICONINDEX);
        
-          if ((currentIcon.toString()).equals(packageDataIcon.toString())) {
+          if ((currentIcon.getDescription()).
+                          equals(packageDataIcon.getDescription())) {
             //originalRow.setElementAt(bothDataIcon, 0);
            
             originalRow.setElementAt(packageDataIcon, PACKAGEICONINDEX);
