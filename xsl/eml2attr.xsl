@@ -14,10 +14,32 @@
     <xsl:param name="attb6ID"/>
     <xsl:variable name="attb6" select="document(concat($packageDir,$attb6ID))"/>
     <attributeList>
+      <!-- first handle case if there is NO attribute information (since it is required)     -->  
+      <xsl:if test="count($attb6/eml-attribute/attribute)=0">
+        <xsl:element name="attribute">
+          <xsl:element name="attributeName">
+            <xsl:value-of select="'N/A'"/>
+          </xsl:element>
+          <xsl:element name="attributeDefinition">
+            <xsl:value-of select="'N/A'"/>
+          </xsl:element>
+          <xsl:element name="measurementScale">
+             <xsl:element name="nominal">
+               <xsl:element name="nonNumericDomain">
+                 <xsl:element name="textDomain">
+                   <xsl:element name="definition">
+                     <xsl:value-of select="'not available'"/>
+                    </xsl:element>
+                  </xsl:element>
+                </xsl:element>  
+              </xsl:element>  
+          </xsl:element>
+        </xsl:element>
+      </xsl:if>
       <xsl:for-each select="$attb6/eml-attribute/attribute">
         <xsl:element name="attribute">
         
-          <xsl:element name="attributeName">
+          <xsl:element name="attributeName"> 
             <xsl:value-of select="./attributeName"/>
           </xsl:element>
           
@@ -48,7 +70,8 @@
           
           <xsl:element name="measurementScale">
      <!-- must determine which of 5 measurementScales to create -->
-           <xsl:if test="((./attributeDomain/textDomain) and (./attributeDomain/textDomain=''))">
+          <xsl:choose>
+           <xsl:when test="((./attributeDomain/textDomain) and (./attributeDomain/textDomain=''))">
              <xsl:element name="nominal">
                <xsl:element name="nonNumericDomain">
                  <xsl:element name="textDomain">
@@ -58,10 +81,11 @@
                   </xsl:element>
                 </xsl:element>  
               </xsl:element>  
-           </xsl:if>
+           </xsl:when>
      
-            <xsl:if test="((./attributeDomain/enumeratedDomain!='')or(./attributeDomain/textDomain!=''))">
-              <xsl:if test="./dataType='Date'"> <!-- need other string checks for time, etc here -->
+            <xsl:when test="((./attributeDomain/enumeratedDomain!='')or(./attributeDomain/textDomain!=''))">
+             <xsl:choose>
+              <xsl:when test="./dataType='Date'"> <!-- need other string checks for time, etc here -->
                 <xsl:element name="datetime">
                   <xsl:element name="formatString">
                     <xsl:value-of select="'YYY-MM-DD'"/><!-- this is an arbitrary choice -->  
@@ -76,8 +100,8 @@
                      </xsl:element>
                   </xsl:element>
                 </xsl:element>
-              </xsl:if>
-              <xsl:if test="./dataType!='Date'"> <!-- need other string checks for time, etc here -->
+              </xsl:when>
+              <xsl:when test="./dataType!='Date'"> <!-- need other string checks for time, etc here -->
                 <xsl:element name="nominal">
                   <xsl:element name="nonNumericDomain">
                    <xsl:choose>
@@ -122,14 +146,27 @@
                     </xsl:choose> 
                   </xsl:element>
                 </xsl:element>
-              </xsl:if>
+              </xsl:when>
               <!-- don't see how to determine if data is ordinal !! -->
-            </xsl:if>
+              <xsl:otherwise>
+              <xsl:element name="nominal">
+                <xsl:element name="nonNumericDomain">
+                  <xsl:element name="textDomain">
+                    <xsl:element name="definition">
+                      <xsl:value-of select="'any text'"/>
+                    </xsl:element>
+                  </xsl:element>
+                </xsl:element>
+              </xsl:element>
+              </xsl:otherwise>
+             </xsl:choose> 
+            </xsl:when>
             
-            <xsl:if test="./attributeDomain/numericDomain">
+            <xsl:when test="./attributeDomain/numericDomain">
             <!-- must be ratio or interval -->
             <!-- may have case where minimum exist but has no data -->
-              <xsl:if test="(./attributeDomain/numericDomain/minimum='')">
+             <xsl:choose>
+              <xsl:when test="(./attributeDomain/numericDomain/minimum='')">
                 <xsl:element name="interval">
                   <xsl:element name="unit">
                       <xsl:call-template name="getUnit">
@@ -164,8 +201,8 @@
                     </xsl:element>
                   </xsl:element>
                 </xsl:element>
-              </xsl:if>
-              <xsl:if test="((./attributeDomain/numericDomain/minimum!='')and((./attributeDomain/numericDomain/minimum)&gt;=0.0))">
+              </xsl:when>
+              <xsl:when test="((./attributeDomain/numericDomain/minimum!='')and((./attributeDomain/numericDomain/minimum)&gt;=0.0))">
                 <xsl:element name="ratio">
                   <xsl:element name="unit">
                       <xsl:call-template name="getUnit">
@@ -200,8 +237,8 @@
                     </xsl:element>
                   </xsl:element>
                 </xsl:element>
-              </xsl:if>
-              <xsl:if test="((./attributeDomain/numericDomain/minimum!='')and((./attributeDomain/numericDomain/minimum)&lt;0.0))">
+              </xsl:when>
+              <xsl:when test="((./attributeDomain/numericDomain/minimum!='')and((./attributeDomain/numericDomain/minimum)&lt;0.0))">
                 <xsl:element name="interval">
                   <xsl:element name="unit">
                       <xsl:call-template name="getUnit">
@@ -235,8 +272,34 @@
                     </xsl:element>
                   </xsl:element>
                 </xsl:element>
-              </xsl:if>
-            </xsl:if>
+              </xsl:when>
+              <xsl:otherwise>
+              <xsl:element name="nominal">
+                <xsl:element name="nonNumericDomain">
+                  <xsl:element name="textDomain">
+                    <xsl:element name="definition">
+                      <xsl:value-of select="'any text'"/>
+                    </xsl:element>
+                  </xsl:element>
+                </xsl:element>
+              </xsl:element>
+              </xsl:otherwise>
+              
+             </xsl:choose> 
+            </xsl:when> 
+            <!-- do the otherwise when cannot figure out the measurement Scale -->
+            <xsl:otherwise>
+              <xsl:element name="nominal">
+                <xsl:element name="nonNumericDomain">
+                  <xsl:element name="textDomain">
+                    <xsl:element name="definition">
+                      <xsl:value-of select="'any text'"/>
+                    </xsl:element>
+                  </xsl:element>
+                </xsl:element>
+              </xsl:element>
+            </xsl:otherwise>
+           </xsl:choose> 
           </xsl:element>
           <xsl:if test="$attb6/eml-attribute/attribute/missingValueCode!=''">
             <xsl:for-each select="./missingValueCode">
