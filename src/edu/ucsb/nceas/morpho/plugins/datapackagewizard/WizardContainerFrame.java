@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2003-07-30 19:44:01 $'
- * '$Revision: 1.5 $'
+ *     '$Date: 2003-08-03 17:33:44 $'
+ * '$Revision: 1.6 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -246,6 +246,7 @@ public class WizardContainerFrame extends JFrame {
         cancelAction();
       }
     });
+    this.getRootPane().setDefaultButton(nextFinishButton);
   }
 
   /** 

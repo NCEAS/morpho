@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2003-07-28 19:08:19 $'
- * '$Revision: 1.1 $'
+ *     '$Date: 2003-08-03 17:33:44 $'
+ * '$Revision: 1.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -79,11 +79,11 @@ public class WizardPageLibrary {
 
     pages = new HashMap();
     
-    pages.put(PAGE01_ID,  new WizPage01());
-    pages.put(PAGE02_ID,  new WizPage02());
-//    pages.put(PAGE03_ID,  new WizPage03());
+    pages.put(PAGE01_ID,  new Introduction());
+    pages.put(PAGE02_ID,  new General());
+    pages.put(PAGE03_ID,  new Keywords());
 //    pages.put(PAGE04_ID,  new WizPage04());
-//    pages.put(PAGE05_ID,  new WizPage05());
+    pages.put(PAGE05_ID,  new PartyIntro());
 //    pages.put(PAGE06_ID,  new WizPage06());
 //    pages.put(PAGE07_ID,  new WizPage07());
 //    pages.put(PAGE08_ID,  new WizPage08());
