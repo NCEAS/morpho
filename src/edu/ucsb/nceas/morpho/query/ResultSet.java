@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2001-11-20 17:51:38 $'
- * '$Revision: 1.24 $'
+ *   '$Author: jones $'
+ *     '$Date: 2001-12-08 07:13:35 $'
+ * '$Revision: 1.25 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -118,6 +118,12 @@ public class ResultSet extends AbstractTableModel implements ContentHandler
   private ImageIcon metacatIcon = null;
   /** The icon for representing both local and metacat storage. */
   private ImageIcon bothIcon = null;
+  /** The icon for representing local storage with data. */
+  private ImageIcon localDataIcon = null;
+  /** The icon for representing metacat storage with data. */
+  private ImageIcon metacatDataIcon = null;
+  /** The icon for representing both local and metacat storage with data. */
+  private ImageIcon bothDataIcon = null;
 
   /**
    * Construct a ResultSet instance given a query object and a
@@ -141,7 +147,14 @@ public class ResultSet extends AbstractTableModel implements ContentHandler
 
     localIcon = new ImageIcon( getClass().getResource("local-metadata.gif"));
     metacatIcon = new ImageIcon( getClass().getResource("network-metadata.gif"));
-    bothIcon = new ImageIcon( getClass().getResource("local+network-metadata.gif"));
+    bothIcon = new ImageIcon( 
+            getClass().getResource("local+network-metadata.gif"));
+    localDataIcon = new ImageIcon( 
+            getClass().getResource("local-metadata+data.gif"));
+    metacatDataIcon = new ImageIcon( 
+            getClass().getResource("network-metadata+data.gif"));
+    bothDataIcon = new ImageIcon( 
+            getClass().getResource("local+network-metadata+data.gif"));
 
     this.framework = framework;
     this.config = framework.getConfiguration();   
@@ -363,7 +376,22 @@ public class ResultSet extends AbstractTableModel implements ContentHandler
       Vector row = new Vector();
 
       // Display the right icon for the data package
-      row.addElement(metacatIcon);
+      boolean hasData = false;
+      Enumeration tripleEnum = tripleList.elements();
+      while (tripleEnum.hasMoreElements()) {
+          Hashtable currentTriple = (Hashtable)tripleEnum.nextElement();
+          if (currentTriple.containsKey("relationship")) {
+              String rel = (String)currentTriple.get("relationship");
+              if (rel.indexOf("isDataFileFor") != -1) {
+                  hasData = true;
+              }
+          }
+      }
+      if (hasData) {
+        row.addElement(metacatDataIcon);
+      } else {
+        row.addElement(metacatIcon);
+      }
 
       // Then display requested fields in requested order
       for (int i=0; i < cnt; i++) {
@@ -592,7 +620,14 @@ public class ResultSet extends AbstractTableModel implements ContentHandler
         if (docidList.containsKey(currentDocid)) {
           int rowIndex = ((Integer)docidList.get(currentDocid)).intValue();
           Vector originalRow = (Vector)resultsVector.elementAt(rowIndex);
-          originalRow.setElementAt(bothIcon, 0);
+
+          // Determine which icon to use based on the current setting
+          ImageIcon currentIcon = (ImageIcon)originalRow.elementAt(0);
+          if (currentIcon == metacatDataIcon) {
+            originalRow.setElementAt(bothDataIcon, 0);
+          } else {
+            originalRow.setElementAt(bothIcon, 0);
+          }
           originalRow.setElementAt(new Boolean(true), numColumns+5);
           originalRow.setElementAt(new Boolean(true), numColumns+6);
         } else {

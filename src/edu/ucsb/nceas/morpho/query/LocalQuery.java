@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2001-11-20 17:51:38 $'
- * '$Revision: 1.48 $'
+ *   '$Author: jones $'
+ *     '$Date: 2001-12-08 07:13:35 $'
+ * '$Revision: 1.49 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -82,6 +82,15 @@ public class LocalQuery
    */
   private static Hashtable dataPackage_collection; 
   
+  /**
+   * hash table with docids as key and a Vector of package IDs
+   * key is the docid of the package document
+   * value is a Vector of the triples for that package
+   * the vector of triples contains a Hash for each table, with the keys
+   * 'subject', 'relationship', and 'object'
+   */
+  private static Hashtable packageTriples; 
+  
   /** A reference to the container framework */
   private ClientFramework framework = null;
 
@@ -120,13 +129,15 @@ public class LocalQuery
     
   /** The folder icon for representing local storage. */
   private ImageIcon localIcon = null;
+  /** The folder icon for representing local storage with data. */
+  private ImageIcon localDataIcon = null;
     
   // create these static caches when class is first loaded
   static {
     dom_collection = new Hashtable();
     doctype_collection = new Hashtable();
     dataPackage_collection = new Hashtable();
-    //buildPackageList();    
+    packageTriples = new Hashtable();
   }
     
   /**
@@ -140,6 +151,8 @@ public class LocalQuery
     this.savedQuery = query;
   
     localIcon = new ImageIcon( getClass().  getResource("local-metadata.gif"));
+    localDataIcon = new ImageIcon( 
+            getClass().  getResource("local-metadata+data.gif"));
   
     this.framework = framework;
     this.config = framework.getConfiguration();   
@@ -322,9 +335,32 @@ public class LocalQuery
                       docid.substring(firstSep+1, docid.length());
     File fn = new File(datadir, filename);
     String fullfilename = fn.getPath();
+
+    // Get the triples for this package
+    Vector tripleList = (Vector)packageTriples.get(docid);
+
+    // Create the result row
     Vector rss = new Vector();
-    // add icon
-    rss.addElement(localIcon);
+
+    // Display the right icon for the data package
+    boolean hasData = false;
+    if (tripleList != null) {
+        Enumeration tripleEnum = tripleList.elements();
+        while (tripleEnum.hasMoreElements()) {
+            Hashtable currentTriple = (Hashtable)tripleEnum.nextElement();
+            if (currentTriple.containsKey("relationship")) {
+                String rel = (String)currentTriple.get("relationship");
+                if (rel.indexOf("isDataFileFor") != -1) {
+                    hasData = true;
+                }
+            }
+        }
+    }
+    if (hasData) {
+        rss.addElement(localDataIcon);
+    } else {
+        rss.addElement(localIcon);
+    }
 
     for (int i=0;i<returnFields.size();i++) {
       String fieldName = (String)returnFields.elementAt(i);  
@@ -343,10 +379,12 @@ public class LocalQuery
     rss.addElement(thisDoctype);                          // doctype
     rss.addElement(new Boolean(true));                    // isLocal
     rss.addElement(new Boolean(false));                   // isMetacat
-    // need to add the triple list vector, but the current
-    // data structure differs from the one in ResultSet so need
-    // to decide on a common structure
-    //rss.addElement(new Vector());                       // tripleList
+    // Note that this tripleList does not contain the types of the
+    // subject and objects identified inthe triple, so it differs
+    // from the tripleList generated for metacat results
+    if (tripleList != null) {
+        rss.addElement(tripleList);                       // tripleList
+    }
 
     return rss;
   }
@@ -605,19 +643,30 @@ public class LocalQuery
   */
   private void addToPackageList(Node docNode, String packageDocid) {
     String subject = "";
+    String relationship = "";
     String object = "";
     Node currentNode = null;
     NodeList nl = null;
     String xpathExpression = "//triple";
-    
+
+    // Initialize a new list of triples for this package
+    Vector tripleList = new Vector();
     
     try{
       nl = XPathAPI.selectNodeList(docNode, xpathExpression);
     } catch (Exception ee) {
       ClientFramework.debug(6, "Error in building PackageList!");  
     }
+
+    // Check if we got a match for triple nodes
     if ((nl!=null)&&(nl.getLength()>0)) {
+      // Loop across all of the triple nodes
       for (int m=0;m<nl.getLength();m++) {
+
+        // Create a hash to contain the triple information in this triple
+        Hashtable triple = new Hashtable();  
+
+        // Look for the subject, object, and relationship nodes
         NodeList nlchildren = (nl.item(m)).getChildNodes();
         for (int n=0;n<nlchildren.getLength();n++) {
           if (nlchildren.item(n).getNodeType()!=Node.TEXT_NODE) {
@@ -625,47 +674,63 @@ public class LocalQuery
             {
               currentNode = nlchildren.item(n).getFirstChild();
               subject = currentNode.getNodeValue().trim();
+              triple.put("subject", subject);
+            }
+            if ((nlchildren.item(n)).getLocalName().equalsIgnoreCase("relationship"))
+            {
+              currentNode = nlchildren.item(n).getFirstChild();
+              relationship = currentNode.getNodeValue().trim();   
+              triple.put("relationship", relationship);
             }
             if ((nlchildren.item(n)).getLocalName().equalsIgnoreCase("object"))
             {
               currentNode = nlchildren.item(n).getFirstChild();
               object = currentNode.getNodeValue().trim();   
+              triple.put("object", object);
             }
           }
         }
+
+        // Add the triple to the tripleList for this package
+        tripleList.add(triple);
+
         // add the packageDocid itself
         if (dataPackage_collection.containsKey(packageDocid)) {    
           // already in collection
           // don't do anything
-        }
-        else {  // new
+        } else {  // new
           Vector vec = new Vector();
           vec.addElement(packageDocid); 
           dataPackage_collection.put(packageDocid, vec);
         }
+
         // add subject to the collection
         if (dataPackage_collection.containsKey(subject)) {    
           // already in collection
           Vector curvec = (Vector)dataPackage_collection.get(subject);
           curvec.addElement(packageDocid);
-        }
-        else {  // new
+        } else {  // new
           Vector vec = new Vector();
           vec.addElement(packageDocid); 
           dataPackage_collection.put(subject, vec);
         }
+        
         // add object to the collection
         if (dataPackage_collection.containsKey(object)) {    
           // already in collection
           Vector curvec = (Vector)dataPackage_collection.get(object);
           curvec.addElement(packageDocid);
-        }
-        else {  // new
+        } else {  // new
           Vector vec = new Vector();
           vec.addElement(packageDocid); 
           dataPackage_collection.put(object, vec);
         }
       }
+    }
+
+    // Add the tripleList to the static cache of tripleLists
+    if (!packageTriples.containsKey(packageDocid)) {
+      packageTriples.put(packageDocid, tripleList);
     }
   }
 }
