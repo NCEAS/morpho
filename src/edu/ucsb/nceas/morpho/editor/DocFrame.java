@@ -5,9 +5,9 @@
  *    Authors: @higgins@
  *    Release: @release@
  *
- *   '$Author: jones $'
- *     '$Date: 2002-05-10 18:44:50 $'
- * '$Revision: 1.96 $'
+ *   '$Author: brooke $'
+ *     '$Date: 2002-06-10 22:30:12 $'
+ * '$Revision: 1.97 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -200,16 +200,18 @@ public class DocFrame extends javax.swing.JFrame
 		getContentPane().add(BorderLayout.CENTER, NestedPanelScrollPanel);
 		TopPanel.setLayout(new BorderLayout(0,0));
 		getContentPane().add(BorderLayout.NORTH, TopPanel);
-		TopPanel.setBackground(new java.awt.Color(204,204,204));
+//      Next 3 Color settings Commented by MB 061002 - caused parts of UI not to  
+//      match when L&F set to match OS native L&F
+//		TopPanel.setBackground(new java.awt.Color(204,204,204));
 		TopLabelPanel.setLayout(new FlowLayout(FlowLayout.CENTER,5,5));
 		TopPanel.add(BorderLayout.CENTER, TopLabelPanel);
-		TopLabelPanel.setBackground(new java.awt.Color(204,204,204));
+//		TopLabelPanel.setBackground(new java.awt.Color(204,204,204));
 		headLabel.setText("Working...!!!");
 		TopLabelPanel.add(headLabel);
 		TopPanel.add(BorderLayout.WEST, logoLabel);
 		ControlPanel.setLayout(new BorderLayout(0,0));
 		getContentPane().add(BorderLayout.SOUTH, ControlPanel);
-		ControlPanel.setBackground(new java.awt.Color(204,204,204));
+//		ControlPanel.setBackground(new java.awt.Color(204,204,204));
 		ButtonPanel.setLayout(new FlowLayout(FlowLayout.CENTER,5,5));
 		ControlPanel.add(BorderLayout.EAST, ButtonPanel);
 		CancelButton.setText("Cancel");
