@@ -8,8 +8,8 @@
 *    Release: @release@
 *
 *   '$Author: sambasiv $'
-*     '$Date: 2004-03-31 04:46:47 $'
-* '$Revision: 1.13 $'
+*     '$Date: 2004-03-31 21:01:06 $'
+* '$Revision: 1.14 $'
 *
 * This program is free software; you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -223,8 +223,7 @@ public class Taxonomic extends AbstractUIPage {
     };
     taxonList.setCustomAddAction(addAction);
     taxonList.setCustomEditAction(editAction);
-    //taxonList.fireAddAction();
-		
+    
 		JPanel taxonPanel = new JPanel(new BorderLayout());
 		taxonPanel.setLayout(new BoxLayout(taxonPanel, BoxLayout.Y_AXIS));
 		
@@ -261,7 +260,7 @@ public class Taxonomic extends AbstractUIPage {
     JLabel headLabel = WidgetFactory.makeHTMLLabel(heading, 2, false);
 		
 		Box headPanel = Box.createVerticalBox();
-		headPanel.add(headLabel);//, BorderLayout.NORTH);
+		headPanel.add(headLabel);
 		headPanel.add(Box.createVerticalGlue());
 		
 		JPanel importPanel = new JPanel(new BorderLayout());

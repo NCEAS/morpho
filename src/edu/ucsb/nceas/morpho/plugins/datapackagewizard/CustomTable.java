@@ -119,6 +119,16 @@ public class CustomTable extends JPanel {
 		table.addPopupListener(l);
 	}
 	
+	public int getColumnCount() {
+		
+		return table.getColumnCount();
+	}
+	
+	public int getRowCount() {
+		
+		return table.getRowCount();
+	}
+	
 	public List getColumnData(int colIdx) {
 		
 		return table.getColumnData(colIdx);
@@ -153,6 +163,7 @@ public class CustomTable extends JPanel {
 	public int getHeaderHeight() {
 		
 		TableColumnModel columnModel = table.getColumnModel();
+		if(columnModel.getColumnCount() < 1) return 0;
 		TableColumn column = columnModel.getColumn(0);
 		CustomHeaderRenderer chr = (CustomHeaderRenderer)column.getHeaderRenderer();
 		return (int)chr.getTableCellRendererComponent(table, "", false, false, 0, 0).getSize().getHeight();
@@ -462,7 +473,6 @@ class CustomHeaderRenderer extends DefaultTableCellRenderer {
 	public void setColumnHeader(Vector colHeader) {
 		
 		int size = colHeader.size();
-		System.out.println("in table: current header size = " + headerValues.size() + " , new header size =  " + colHeader.size());
 		headerValues = colHeader;
 		return;
 	}

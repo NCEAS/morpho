@@ -8,8 +8,8 @@
 *    Release: @release@
 *
 *   '$Author: sambasiv $'
-*     '$Date: 2004-03-30 20:36:06 $'
-* '$Revision: 1.5 $'
+*     '$Date: 2004-03-31 21:01:06 $'
+* '$Revision: 1.6 $'
 *
 * This program is free software; you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -103,7 +103,8 @@ public class TaxonImportPanel extends JPanel implements WizardPageSubPanelAPI
   private String[] importChoiceText = {"Import all values", "Import only the values used in the dataset"};
 
   private int selectedImportChoice = 0;
-
+	private boolean displayTable = true; 
+	
   TaxonImportPanel() {
 
     super();
@@ -112,7 +113,7 @@ public class TaxonImportPanel extends JPanel implements WizardPageSubPanelAPI
 
   private void init() {
 
-
+		displayTable = true;
     setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
     ////////////////
@@ -128,10 +129,14 @@ public class TaxonImportPanel extends JPanel implements WizardPageSubPanelAPI
     ///////////////////
 
     table = getCustomTable();
-    if(table == null)
-      Log.debug(45, "CustomTable is null");
-    else
-      table.addPopupListener(new PopupHandler());
+    if(table == null || table.getColumnCount() == 0) {
+     
+		 Log.debug(45, "CustomTable is empty, hence not displaying it");
+		 displayTable = false;
+		} else {
+     
+		 table.addPopupListener(new PopupHandler());
+		}
     JPanel tablePanel = new JPanel();
     tablePanel.setLayout(new BorderLayout());
     if(table != null)
@@ -141,7 +146,6 @@ public class TaxonImportPanel extends JPanel implements WizardPageSubPanelAPI
 		
 		int ht = table.getHeaderHeight();
 		
-		System.out.println("Height of header is " + ht);
 		if(ht < 100)
 			ht = 100;
 		
@@ -163,12 +167,24 @@ public class TaxonImportPanel extends JPanel implements WizardPageSubPanelAPI
 		
 		sideLabelPanel.add(sidePanel, BorderLayout.WEST);
 		
-    add(sideLabelPanel);
+		JPanel emptyPanel = new JPanel(new BorderLayout());
+		JLabel emptyHeaderLabel = WidgetFactory.makeHTMLLabel("<b>No columns to import</b>", 1, false);
+		JLabel emptyExplLabel = WidgetFactory.makeHTMLLabel("You can import only columns of type <i>Text</i> or <i>Enumerated</i>, i.e. they should be either Nominal or Ordinal", 2, false);
+		JPanel topEmptyPanel = new JPanel();
+		topEmptyPanel.setLayout(new BoxLayout(topEmptyPanel, BoxLayout.Y_AXIS));
+		topEmptyPanel.add(emptyHeaderLabel);
+		topEmptyPanel.add(emptyExplLabel);
+		emptyPanel.add(topEmptyPanel, BorderLayout.NORTH);
+		
+		if(displayTable) add(sideLabelPanel);
+		else add(emptyPanel);
     add(WidgetFactory.makeDefaultSpacer());
 
     ///////////////////
     JLabel choiceLabel = WidgetFactory.makeHTMLLabel("What data should be imported from these columns? ", 1, true);
-    add(choiceLabel);
+		if(displayTable) {
+			add(choiceLabel);
+		}
 
     ActionListener listener = new ActionListener() {
 
@@ -184,8 +200,10 @@ public class TaxonImportPanel extends JPanel implements WizardPageSubPanelAPI
     };
 
     radioPanel = WidgetFactory.makeRadioPanel(importChoiceText, 0, listener);
-
-    add(radioPanel);
+		
+		if(displayTable) {
+			add(radioPanel);
+		}
     add(WidgetFactory.makeDefaultSpacer());
 
     ////////////////////
@@ -210,9 +228,15 @@ public class TaxonImportPanel extends JPanel implements WizardPageSubPanelAPI
   }
 
   public List getListOfImportedTaxa() {
-
+		
+		List result = new ArrayList();
+		
+		if(!displayTable) {
+			return result;
+		}
+		
     int[] cols = table.getSelectedColumns();
-    List result = new ArrayList();
+    
 
     int ecnt = adp.getEntityCount();
     File entityFiles[] = new File[ecnt];

@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: sambasiv $'
- *     '$Date: 2004-03-31 04:49:41 $'
- * '$Revision: 1.47 $'
+ *     '$Date: 2004-03-31 21:01:06 $'
+ * '$Revision: 1.48 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1761,7 +1761,6 @@ class CustomJTable
 			
 			if(fireListener) {
 				
-				System.out.print("my firing  at " + col + " - ");
 				if(editors[col] != null) {
 					if(editors[col] instanceof JTextField) {
 						
