@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2003-12-21 06:08:13 $'
- * '$Revision: 1.16 $'
+ *     '$Date: 2003-12-22 02:59:46 $'
+ * '$Revision: 1.17 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -124,8 +124,10 @@ public class ImportWizard extends     AbstractWizardPage
 
   private void cleanUp() {
 
-    mainWizFrame.setBounds(importWizFrame.getX(),     importWizFrame.getY(),
+    if (importWizFrame!=null) {
+      mainWizFrame.setBounds(importWizFrame.getX(),     importWizFrame.getY(),
                         importWizFrame.getWidth(), importWizFrame.getHeight());
+    }
 
     mainWizFrame.setVisible(true);
 

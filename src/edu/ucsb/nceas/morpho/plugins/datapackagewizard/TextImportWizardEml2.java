@@ -4,9 +4,9 @@
  *              National Center for Ecological Analysis and Synthesis
  *    Release: @release@
  *
- *   '$Author: sambasiv $'
- *     '$Date: 2003-12-22 02:26:38 $'
- * '$Revision: 1.6 $'
+ *   '$Author: brooke $'
+ *     '$Date: 2003-12-22 02:59:46 $'
+ * '$Revision: 1.7 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -538,7 +538,7 @@ public class TextImportWizardEml2 extends JFrame {
   void TextImportWizard_windowClosing(java.awt.event.WindowEvent event) {
     try {
       CancelButton_actionPerformed(null);
-    } catch (Exception e) {}
+    } catch (Exception e) { e.printStackTrace(); }
   }
 
 
@@ -672,7 +672,7 @@ public class TextImportWizardEml2 extends JFrame {
       JOptionPane.showMessageDialog(this, "Selected File is NOT a text file!",
                                     "Message",
                                     JOptionPane.INFORMATION_MESSAGE, null);
-      this.CancelButton_actionPerformed(null);
+      CancelButton_actionPerformed(null);
     }
   }
 
@@ -1540,6 +1540,9 @@ public class TextImportWizardEml2 extends JFrame {
     if (listener != null) {
       listener.importCanceled();
     }
+    this.setVisible(false);
+    this.dispose();
+
   }
 
 
