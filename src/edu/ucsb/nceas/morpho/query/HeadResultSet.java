@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2002-08-14 16:47:56 $'
- * '$Revision: 1.4 $'
+ *     '$Date: 2002-08-16 18:17:25 $'
+ * '$Revision: 1.5 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -183,13 +183,23 @@ public class HeadResultSet extends ResultSet
     Hashtable maxRevRow = new Hashtable();
     for (int i=0; i<resultsVector.size(); i++) {
       // Get the row, and its docid, parse out the rev #
-      Vector rowVector = (Vector)resultsVector.elementAt(i);
-      String docid = (String)rowVector.elementAt(DOCIDINDEX);
-      String family = docid.substring(0, docid.lastIndexOf("."));
-      String rev = docid.substring(docid.lastIndexOf(".")+1);
-      Integer currentRev = new Integer(rev);
-      Integer maxRev = (Integer)maxRevHash.get(family);
-      
+      Vector rowVector = null;
+      String docid = null;
+      String family = null;
+      String rev = null;
+      Integer currentRev = null;
+      Integer maxRev = null;
+      try
+      {
+        rowVector = (Vector)resultsVector.elementAt(i);
+        docid = (String)rowVector.elementAt(DOCIDINDEX);
+        family = docid.substring(0, docid.lastIndexOf("."));
+        rev = docid.substring(docid.lastIndexOf(".")+1);
+        currentRev = new Integer(rev);
+        maxRev = (Integer)maxRevHash.get(family);
+      }
+      catch (Exception e)
+      {}
       int currentRevint = 0;
       int maxRevint = 0;
       if (currentRev!=null) {
