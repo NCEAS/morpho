@@ -6,9 +6,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2004-04-07 10:26:20 $'
- * '$Revision: 1.40 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2004-04-09 22:35:59 $'
+ * '$Revision: 1.41 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -598,6 +598,9 @@ public class PartyPage extends AbstractUIPage {
             // and remove reference id string
             instance.setEditable(true);
             referencesNodeIDString = null;
+            // (Dan Higgins - 4/9/04) not sure the previous line is needed,
+            // but the following one is to avoid reuse of the id in the copied party 
+            referenceIdString = null;
             editingOriginalRef = false;
 
           } else {
