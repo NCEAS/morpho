@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2004-03-29 06:04:36 $'
- * '$Revision: 1.105 $'
+ *   '$Author: tao $'
+ *     '$Date: 2004-04-02 23:14:47 $'
+ * '$Revision: 1.106 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,6 +34,7 @@ import edu.ucsb.nceas.morpho.plugins.PluginInterface;
 import edu.ucsb.nceas.morpho.plugins.ServiceController;
 import edu.ucsb.nceas.morpho.plugins.ServiceExistsException;
 import edu.ucsb.nceas.morpho.plugins.ServiceProvider;
+import edu.ucsb.nceas.morpho.util.ColumnSortableTableModel;
 import edu.ucsb.nceas.morpho.util.Command;
 import edu.ucsb.nceas.morpho.util.GUIAction;
 import edu.ucsb.nceas.morpho.util.Log;
@@ -387,11 +388,11 @@ public class QueryPlugin implements PluginInterface, ConnectionListener,
    * @return AbstractTableModel containing results
    * (@see edu.ucsb.nceas.morpho.query.ResultSet)
    */
-  public AbstractTableModel doOwnerQueryForCurrentUser() {
+  public ColumnSortableTableModel doOwnerQueryForCurrentUser() {
 
     OpenDialogBoxCommand odbCmd = new OpenDialogBoxCommand(morpho);
     Query ownerQuery = new Query(odbCmd.getOwnerQuery(), morpho);
-    return (AbstractTableModel)(ownerQuery.execute());
+    return (ColumnSortableTableModel)(ownerQuery.execute());
   }
 
 

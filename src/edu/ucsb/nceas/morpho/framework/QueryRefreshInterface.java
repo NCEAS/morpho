@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2004-03-29 06:04:36 $'
- * '$Revision: 1.4 $'
+ *   '$Author: tao $'
+ *     '$Date: 2004-04-02 23:14:47 $'
+ * '$Revision: 1.5 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,6 +27,7 @@
 package edu.ucsb.nceas.morpho.framework;
 
 import edu.ucsb.nceas.morpho.util.Command;
+import edu.ucsb.nceas.morpho.util.ColumnSortableTableModel;
 import edu.ucsb.nceas.morpho.Morpho;
 import javax.swing.table.AbstractTableModel;
 
@@ -39,6 +40,15 @@ import javax.swing.table.AbstractTableModel;
  */
 public interface QueryRefreshInterface
 {
+  //Constant for column name:
+  public static final String HASDATA      = " ";
+  public static final String TITLE        = "Title";
+  public static final String DOCID        = "Document ID";
+  public static final String SURNAME      = "Surname";
+  public static final String KEYWORDS     = "Keywords";
+  public static final String LASTMODIFIED = "Last Modified";
+  public static final String LOCAL        ="Local";
+  public static final String NET          ="Net";
 
 
   /**
@@ -86,6 +96,6 @@ public interface QueryRefreshInterface
    * @return AbstractTableModel containing results
    * (@see edu.ucsb.nceas.morpho.query.ResultSet)
    */
-  public AbstractTableModel doOwnerQueryForCurrentUser();
+  public ColumnSortableTableModel doOwnerQueryForCurrentUser();
 
 }

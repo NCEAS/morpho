@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2004-04-02 18:56:03 $'
- * '$Revision: 1.2 $'
+ *     '$Date: 2004-04-02 23:14:47 $'
+ * '$Revision: 1.3 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,6 +31,8 @@ import edu.ucsb.nceas.morpho.framework.QueryRefreshInterface;
 import edu.ucsb.nceas.morpho.framework.SwingWorker;
 import edu.ucsb.nceas.morpho.plugins.ServiceController;
 import edu.ucsb.nceas.morpho.plugins.ServiceNotHandledException;
+import edu.ucsb.nceas.morpho.util.ColumnSortableTableModel;
+import edu.ucsb.nceas.morpho.util.SortableJTable;
 import edu.ucsb.nceas.morpho.util.Log;
 
 import edu.ucsb.nceas.utilities.OrderedMap;
@@ -51,7 +53,8 @@ public class ExternalRefsPage extends AbstractUIPage
 {
 
 
-  private JTable table;
+  private SortableJTable table;
+  private ColumnSortableTableModel resultsModel;
   private ReferenceSelectionEvent event;
   private String refID;
   private String currentDataPackageID;
@@ -80,7 +83,7 @@ public class ExternalRefsPage extends AbstractUIPage
 
     this.setLayout(new BorderLayout());
 
-    table = new JTable();
+    table = new SortableJTable();
     doQueryAndPopulateDialog();
     JScrollPane scroll = new JScrollPane(table);
     scroll.getViewport().setBackground(Color.white);
@@ -113,7 +116,7 @@ public class ExternalRefsPage extends AbstractUIPage
 
     final SwingWorker worker = new SwingWorker() {
 
-      private AbstractTableModel resultsModel;
+
 
       public Object construct() {
 
@@ -166,7 +169,7 @@ public class ExternalRefsPage extends AbstractUIPage
    * @param model AbstractTableModel to be used as basis of query results
    * listing (shows all packages owned by current user on local system)
    */
-  public void setQueryResults(AbstractTableModel model)
+  public void setQueryResults(ColumnSortableTableModel model)
   {
 
     table.setModel(model);

@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2002-10-02 20:31:30 $'
- * '$Revision: 1.8 $'
+ *     '$Date: 2004-04-02 23:14:47 $'
+ * '$Revision: 1.9 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -37,20 +37,20 @@ import java.util.Vector;
 /**
  * A HeadResultSet encapsulates the list of results returned from either a
  * local query or a Metacat query, but only presents the most recent revision
- * of a document as part of the Table Model. 
+ * of a document as part of the Table Model.
  */
-public class HeadResultSet extends ResultSet 
+public class HeadResultSet extends ResultSet
 {
   /** Store the most recent revision in a vector */
   private Vector headResultsVector = null;
-  
- 
-  
+
+
+
   /**
    * Construct a HeadResultSet instance given a query object and a
    * InputStream that represents an XML encoding of the results.
    */
-  public HeadResultSet(Query query, String source, 
+  public HeadResultSet(Query query, String source,
                        InputStream resultsXMLStream, Morpho morpho)
   {
     super(query, source, resultsXMLStream, morpho);
@@ -62,12 +62,12 @@ public class HeadResultSet extends ResultSet
    * Construct a HeadResultSet instance from a vector of vectors;
    * for use with LocalQuery
    */
-  public HeadResultSet(Query query, String source, 
+  public HeadResultSet(Query query, String source,
                        Vector vec, Morpho morpho)
   {
     super(query, source, vec, morpho);
     consolidateResults();
-   
+
   }
 
 
@@ -78,7 +78,7 @@ public class HeadResultSet extends ResultSet
   {
     return headResultsVector.size();
   }
-  
+
   /**
    *  get the resultsVector
    */
@@ -94,13 +94,13 @@ public class HeadResultSet extends ResultSet
     Object value = null;
     try {
       Vector rowVector = (Vector)headResultsVector.elementAt(row);
-      // The oder of header is different to resultsVector, so we need a 
+      // The oder of header is different to resultsVector, so we need a
       // conversion
       value = rowVector.elementAt(lookupResultsVectorIndex(col));
-      
+
       // Add icon rather than ture or false value to col6 and col7
       if (col == 6)
-      { 
+      {
         // cast value to Boolean object
         Boolean isLocally = (Boolean)value;
         if (isLocally.booleanValue())
@@ -114,10 +114,10 @@ public class HeadResultSet extends ResultSet
           value = blankIcon;
         }//else
       }//if
-      
+
       // Add icon for col6 and col7
       if (col == 7)
-      { 
+      {
         // cast value to Boolean object
         Boolean isNet = (Boolean)value;
         if (isNet.booleanValue())
@@ -131,21 +131,21 @@ public class HeadResultSet extends ResultSet
           value = blankIcon;
         }//else
       }//if
-         
+
     } catch (ArrayIndexOutOfBoundsException aioobe) {
-      
+
       String emptyString = "";
       value = null;
     } catch (NullPointerException npe) {
-      
+
       String emptyString = "";
       value = emptyString;
     }
-    
+
     return value;
   }
-  
- 
+
+
 
   /**
    * Open a given row index of the result set using a delegated handler class
@@ -171,10 +171,10 @@ public class HeadResultSet extends ResultSet
 
   /**
    * Consolidate the results Vector to produce a new Vector with only the
-   * most recent revision of each document in the Vector. Warning: this 
+   * most recent revision of each document in the Vector. Warning: this
    * implementation doesn't preserve sort order of the results
    */
-  private void consolidateResults() 
+  private void consolidateResults()
   {
     int numHeaders = getColumnCount();
     Hashtable maxRevHash = new Hashtable();
@@ -216,7 +216,7 @@ public class HeadResultSet extends ResultSet
         maxRevRow.put(family, rowVector);
       }
     }
-   
+
     // Create the new consolidated vector of rows
 //DFH    headResultsVector = new Vector(maxRevRow.values());
       headResultsVector = new Vector();
@@ -224,9 +224,9 @@ public class HeadResultSet extends ResultSet
       while (enum.hasMoreElements()) {
           headResultsVector.addElement(enum.nextElement());
       }
-     
+
   }
-  
+
    /**
    * Method implements from SortTableModel. To make sure a col can be sort
    * or not. We decide it always be sortable.
@@ -237,7 +237,7 @@ public class HeadResultSet extends ResultSet
   {
     boolean sort = false;
     boolean ascending = false;
-    
+
     // look up sort and ascending
     if (order.equals(SortableJTable.ASCENDING))
     {
@@ -262,6 +262,6 @@ public class HeadResultSet extends ResultSet
       Collections.sort(headResultsVector,
                     new CellComparator(resultColIndex, ascending));
     }
- 
+
   }//sortColumn
 }

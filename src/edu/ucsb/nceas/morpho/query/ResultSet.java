@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2004-03-30 23:08:30 $'
- * '$Revision: 1.43 $'
+ *   '$Author: tao $'
+ *     '$Date: 2004-04-02 23:14:47 $'
+ * '$Revision: 1.44 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,6 +29,7 @@ package edu.ucsb.nceas.morpho.query;
 import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.framework.ConfigXML;
 import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
+import edu.ucsb.nceas.morpho.framework.QueryRefreshInterface;
 import edu.ucsb.nceas.morpho.plugins.ServiceController;
 import edu.ucsb.nceas.morpho.plugins.ServiceProvider;
 import edu.ucsb.nceas.morpho.plugins.ServiceNotHandledException;
@@ -354,6 +355,14 @@ public class ResultSet extends AbstractTableModel implements ContentHandler,
     return morpho;
   }
 
+  public void setHeader(String [] anotherHeader)
+  {
+    headers = new String[anotherHeader.length];
+    for (int i= 0; i < headers.length; i++)
+    {
+      headers[i] = anotherHeader[i];
+    }
+  }
 
   /**
    * Lookup an array to find resultsVector index for header index
@@ -369,10 +378,36 @@ public class ResultSet extends AbstractTableModel implements ContentHandler,
    */
   protected int lookupResultsVectorIndex(int headerIndex)
   {
-    // Array to store the resultSVectorIndex
-    int [] lookupArray = {PACKAGEICONINDEX, TITLEINDEX, DOCIDINDEX,SURNAMEINDEX,
-                  KEYWORDSINDEX, UPDATEDATEINDEX, ISLOCALINDEX, ISMETACATINDEX};
-    return lookupArray[headerIndex];
+    // get the column name (head)
+    String head = headers[headerIndex];
+    // A hash table to store mapping between column name and resultSVector Index
+    Hashtable mapColumnNameAndVectorIndex = new Hashtable();
+    mapColumnNameAndVectorIndex.put(
+                  QueryRefreshInterface.HASDATA, new Integer(PACKAGEICONINDEX));
+    mapColumnNameAndVectorIndex.put(
+                  QueryRefreshInterface.TITLE, new Integer(TITLEINDEX));
+    mapColumnNameAndVectorIndex.put(
+                  QueryRefreshInterface.DOCID, new Integer(DOCIDINDEX));
+    mapColumnNameAndVectorIndex.put(
+                  QueryRefreshInterface.SURNAME, new Integer(SURNAMEINDEX));
+    mapColumnNameAndVectorIndex.put(
+                  QueryRefreshInterface.KEYWORDS, new Integer(KEYWORDSINDEX));
+    mapColumnNameAndVectorIndex.put(
+               QueryRefreshInterface.LASTMODIFIED, new Integer(UPDATEDATEINDEX));
+    mapColumnNameAndVectorIndex.put(
+                  QueryRefreshInterface.LOCAL, new Integer(ISLOCALINDEX));
+    mapColumnNameAndVectorIndex.put(
+                  QueryRefreshInterface.NET, new Integer(ISMETACATINDEX));
+    // lookup the hashtable
+    int vectorIndex = -1;
+    Object obj = mapColumnNameAndVectorIndex.get(head);
+    if (obj != null)
+    {
+       Integer value = (Integer)obj;
+       vectorIndex = value.intValue();
+    }
+    Log.debug(30, "the index of vector is " + vectorIndex);
+    return vectorIndex;
 
   }//lookupResultsVectorIndex
 
@@ -410,30 +445,16 @@ public class ResultSet extends AbstractTableModel implements ContentHandler,
     cnt = 3;
     int numberFixedHeaders = 5;
     headers = new String[numberFixedHeaders+cnt];
-    headers[0] = " "; // This is for the first package icon column;
-                      // *NOTE* we *must* use a space here, *NOT* an empty
-                      // string ("") - otherwise header height is set too
-                      // small in windows L&F
-    // This is for Title
-    //headers[1] = getLastPathElement((String)returnFields.elementAt(0));
-    headers[1] = "Title";
-    headers[2] = "Document ID";// This for third column header
+    headers[0] = QueryRefreshInterface.HASDATA;
+    headers[1] = QueryRefreshInterface.TITLE;
+    headers[2] = QueryRefreshInterface.DOCID;// This for third column header
     // SurName
-    headers[3] = "Surname";
+    headers[3] = QueryRefreshInterface.SURNAME;
     // Keyworkds
-    headers[4] = "Keywords";
-    // This is for surname and keywords
-    /*if (cnt != 0)
-    {
-      for (int i=1;i<cnt;i++)
-      {
-        headers[2+i] = getLastPathElement((String)returnFields.elementAt(i));
-      }
-    }*/
-    // This is for last modeidfied
-    headers[5]="Last Modified";
-    headers[6]="Local";
-    headers[7]="Net";
+    headers[4] = QueryRefreshInterface.KEYWORDS;
+    headers[5]= QueryRefreshInterface.LASTMODIFIED;
+    headers[6]= QueryRefreshInterface.LOCAL;
+    headers[7]= QueryRefreshInterface.NET;
   }
 
   /**

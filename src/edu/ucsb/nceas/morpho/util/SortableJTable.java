@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: jones $'
- *     '$Date: 2002-09-26 05:34:39 $'
- * '$Revision: 1.6 $'
+ *   '$Author: tao $'
+ *     '$Date: 2004-04-02 23:14:48 $'
+ * '$Revision: 1.7 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -40,7 +40,7 @@ public class SortableJTable extends JTable implements MouseListener
   // Constant string
   public static final String ASCENDING = "ascending";
   public static final String DECENDING = "decending";
-  public static final String NONORDERED = "nonodered"; 
+  public static final String NONORDERED = "nonodered";
   // Flag for the table sorted or not
   private boolean sorted;
   // Index of column which to be sorted
@@ -49,7 +49,15 @@ public class SortableJTable extends JTable implements MouseListener
   private String orderOfSortedColumn;
   // Header of table
   private JTableHeader tableHeader;
-  
+
+  /**
+   * Default constructor
+   */
+  public SortableJTable()
+  {
+    super();
+  }
+
  /**
   * Constructor of SortableJTable
   * @param model ColumnSortableTableModel
@@ -57,16 +65,35 @@ public class SortableJTable extends JTable implements MouseListener
   public SortableJTable(ColumnSortableTableModel model)
   {
     super(model);
+    init();
+  }
+
+  /*
+   * Init the sorted table
+   */
+  private void init()
+  {
     // initialize of unsorted table
-    sorted = false;
-    indexOfSortedColumn = -1;
-    orderOfSortedColumn = NONORDERED;
-    // set talbeHeader
-    tableHeader = getTableHeader();
-    // Set table header renderer
-    tableHeader.setDefaultRenderer(new SortableTableHeaderCellRenderer());
-    // Add mouse listener to table header
-    tableHeader.addMouseListener(this);
+   sorted = false;
+   indexOfSortedColumn = -1;
+   orderOfSortedColumn = NONORDERED;
+   // set talbeHeader
+   tableHeader = getTableHeader();
+   // Set table header renderer
+   tableHeader.setDefaultRenderer(new SortableTableHeaderCellRenderer());
+   // Add mouse listener to table header
+   tableHeader.addMouseListener(this);
+
+  }
+
+  /**
+   * Overwrite the setModel in Jtable
+   * @param model ColumnSortableTableModel
+   */
+  public void setModel(ColumnSortableTableModel model)
+  {
+    super.setModel(model);
+    init();
   }
 
   /**
@@ -76,7 +103,7 @@ public class SortableJTable extends JTable implements MouseListener
   {
     return sorted;
   }
-  
+
   /**
    * Set the table sorted or not
    * @param myStorted the table status want assign
@@ -85,24 +112,24 @@ public class SortableJTable extends JTable implements MouseListener
   {
     sorted = mySorted;
   }
-  
+
   /**
    * Get the index of Sorted column
    */
   public int getIndexOfSortedColumn()
   {
     return indexOfSortedColumn;
-  } 
-  
+  }
+
   /**
-   * Set the index of sorted column 
-   * @param myIndex the index of sorted column 
+   * Set the index of sorted column
+   * @param myIndex the index of sorted column
    */
   public void setIndexOfSortedColumn(int myIndex)
   {
     indexOfSortedColumn = myIndex;
   }
-  
+
   /**
    * Get the sorted table oder statuts
    */
@@ -110,21 +137,21 @@ public class SortableJTable extends JTable implements MouseListener
   {
     return orderOfSortedColumn;
   }
-   
+
   /**
-   * Set the order of sorted column 
-   * @param myOrder the order of sorted column 
+   * Set the order of sorted column
+   * @param myOrder the order of sorted column
    */
   public void setOrderOfSortedColumn(String myOrder)
   {
     orderOfSortedColumn = myOrder;
   }
-   
-  
+
+
   /**
    * Mouse click event handler
    */
-  public void mouseClicked(MouseEvent event) 
+  public void mouseClicked(MouseEvent event)
   {
     // a sort table command
     SortTableCommand sortCommand = null;
@@ -141,7 +168,7 @@ public class SortableJTable extends JTable implements MouseListener
     else
     {
       // If this column already sorted, change order.
-      if (indexOfSortedColumn == index && 
+      if (indexOfSortedColumn == index &&
                               orderOfSortedColumn.equals(ASCENDING))
       {
         order= DECENDING;
@@ -159,6 +186,6 @@ public class SortableJTable extends JTable implements MouseListener
   public void mousePressed(MouseEvent event) {}
   public void mouseEntered(MouseEvent event) {}
   public void mouseExited(MouseEvent event) {}
-  
+
 }
 
