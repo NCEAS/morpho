@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2002-08-24 00:41:34 $'
- * '$Revision: 1.4 $'
+ *     '$Date: 2002-08-26 23:48:18 $'
+ * '$Revision: 1.5 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,16 +28,17 @@ package edu.ucsb.nceas.morpho.plugins.metadisplay;
 
 import java.io.IOException;
 
+import java.awt.Color;
+
+import javax.swing.border.EmptyBorder;
 import javax.swing.JEditorPane;
 import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
 
-import java.awt.Color;
-
 import edu.ucsb.nceas.morpho.util.Log;
 
 import edu.ucsb.nceas.morpho.plugins.MetaDisplayInterface;
-
+import edu.ucsb.nceas.morpho.plugins.DocumentNotFoundException;
 
 
 /**
@@ -50,6 +51,9 @@ import edu.ucsb.nceas.morpho.plugins.MetaDisplayInterface;
 public class HTMLPanel extends JEditorPane implements HyperlinkListener
 {
 //  * * * * * * * C L A S S    V A R I A B L E S * * * * * * *
+
+	private static final String DEFAULT_HTML =
+	     "<html><head></head>\n<body bgcolor=\"#ffffff\">&nbsp;</body></html>";
 
     private MetaDisplayInterface  controller;
 
@@ -67,49 +71,45 @@ public class HTMLPanel extends JEditorPane implements HyperlinkListener
      *  constructor
      *
      */
-    public HTMLPanel(String html) throws IOException {
+    public HTMLPanel(String html) throws IOException 
+    {
         super();
-        this.setContentType("text/html");
         init();
         addHyperlinkListener(this);
-        setEditable(false);
     }
 
-    public void hyperlinkUpdate(HyperlinkEvent e) {
-        try {
-            Log.debug(50,"hyperlinkUpdate called; eventType="+e.getEventType());
-            if ( e.getEventType() == HyperlinkEvent.EventType.ACTIVATED ) {
-                Log.debug(50,"eventType=ACTIVATED; description="
-                                      +e.getDescription()+"; url="+e.getURL());
-                controller.display(e.getDescription());
+    public void hyperlinkUpdate(HyperlinkEvent e) 
+    {
+        Log.debug(50,"hyperlinkUpdate called; eventType=" + e.getEventType());
+        if ( e.getEventType() == HyperlinkEvent.EventType.ACTIVATED ) {
+            Log.debug(50,"eventType=ACTIVATED; description="
+                                  +e.getDescription()+"; url="+e.getURL());
+            try {
+                    controller.display(e.getDescription());
+            } catch (DocumentNotFoundException ex) {
+                Log.debug(12,"HTMLPanel.hyperlinkUpdate(): "
+                    +"DocumentNotFoundException from HyperlinkEvent: "
+                                  + e.getEventType() + "; exception is: "+ex);
+                ex.printStackTrace(System.err);
             }
-        } catch (Exception ex) {
-            Log.debug(12,"HTMLPanel.hyperlinkUpdate(): "
-                            +"Exception trying to dispatch HyperlinkEvent:"+ex);
-            ex.printStackTrace(System.err);
         }
     }
 
     private void init()
     {
-        this.setBackground(Color.gray);
-        this.setOpaque(true);
+        this.setBorder(new EmptyBorder(0,0,0,0));
+        this.setBackground(Color.white);
+        this.setContentType("text/html");
+        this.setEditable(false);
     }
 
 	/**
-	 *  get a reference to the embedded HeaderPanel object
+	 *  set the HTML content
 	 *
-     *  @return  a reference to the embedded HeaderPanel object
+     *  @param  the HTML String defining the content to be displayed
 	 */
 	public void setHTML(String html)
 	{
         this.setText(html);
 	}
-    
-    
-	private static final String DEFAULT_HTML =
-	     "<html><head></head>\n<body bgcolor=\"#dddddd\">\n"
-	    +"<h3>no data</h3></body></html>";
-	    
-    
 }

@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2002-08-21 03:26:06 $'
- * '$Revision: 1.2 $'
+ *     '$Date: 2002-08-26 23:48:18 $'
+ * '$Revision: 1.3 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -152,5 +152,17 @@ public interface MetaDisplayInterface
      *  @param listener
      */
     public void removeActionListener(ActionListener listener);
+    
+    /**
+     *  method to redisplay the previous metadata document from History, by 
+     *  re-obtaining the latest instance of the XML document from the 
+     *  XMLFactoryInterface and re-styling it
+     *
+     *  @throws DocumentNotFoundException   if id for previous metadata document 
+     *                                      does not point to an actual document
+     *                                      or document cannot be accessed.
+     */
+    public void displayPrevious() throws DocumentNotFoundException;
+    
 }
 

@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2002-08-24 00:41:34 $'
- * '$Revision: 1.3 $'
+ *     '$Date: 2002-08-26 23:48:18 $'
+ * '$Revision: 1.4 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -76,6 +76,7 @@ public class MetaDisplayUITest extends TestCase
      */
     public void testSetHTML()
     {
+        assertNotNull(testUI);
         try {
             testUI.setHTML(MetaDisplayTestResources.TEST_XML_DOC_1);
         } catch (Exception e) {

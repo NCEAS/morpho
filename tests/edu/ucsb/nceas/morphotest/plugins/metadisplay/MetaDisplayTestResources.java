@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2002-08-24 00:35:26 $'
- * '$Revision: 1.1 $'
+ *     '$Date: 2002-08-26 23:48:18 $'
+ * '$Revision: 1.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -40,6 +40,8 @@ import junit.framework.TestCase;
 import edu.ucsb.nceas.morpho.plugins.MetaDisplayInterface;
 import edu.ucsb.nceas.morpho.plugins.XMLFactoryInterface;
 import edu.ucsb.nceas.morpho.plugins.DocumentNotFoundException;
+
+import edu.ucsb.nceas.morpho.plugins.metadisplay.MetaDisplay;
 
 import edu.ucsb.nceas.morpho.exception.NullArgumentException;
 
@@ -163,6 +165,7 @@ class MetaDisplayAdapter implements MetaDisplayInterface
     public void display(String identifier, Reader XMLDocument) 
                                             throws  NullArgumentException, 
                                                     DocumentNotFoundException {}
+    public void displayPrevious() throws DocumentNotFoundException {}
     public void redisplay() throws DocumentNotFoundException {}
     public void addActionListener(ActionListener    listener) {}
     public void removeActionListener(ActionListener listener) {}

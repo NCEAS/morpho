@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2002-08-24 00:41:34 $'
- * '$Revision: 1.6 $'
+ *     '$Date: 2002-08-26 23:48:18 $'
+ * '$Revision: 1.7 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -57,14 +57,14 @@ public class MetaDisplayUI extends JPanel
     private final int TOTAL_WIDTH     = 400;
     private final int TOTAL_HEIGHT    = 600;
     
-    private final int PADDING   = 10;
+    private final int PADDING   = 0;
 
-    private final int HEADER_HEIGHT    = 100;
+    private final int HEADER_HEIGHT    = 55;
     private final int HEADER_WIDTH     = TOTAL_WIDTH - 2 * PADDING;
 
     private final Dimension OVERALL_DIMS 
         = new Dimension(TOTAL_WIDTH, TOTAL_HEIGHT);
-    private final Dimension HEADER_DIMS 
+    protected final Dimension HEADER_DIMS 
         = new Dimension(HEADER_WIDTH, HEADER_HEIGHT);
     private final Dimension HTML_DIMS   
         = new Dimension(HEADER_WIDTH, TOTAL_HEIGHT - HEADER_HEIGHT - 3*PADDING);

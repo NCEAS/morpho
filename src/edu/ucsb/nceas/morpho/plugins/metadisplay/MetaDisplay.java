@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2002-08-24 00:41:34 $'
- * '$Revision: 1.7 $'
+ *     '$Date: 2002-08-26 23:48:18 $'
+ * '$Revision: 1.8 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -226,6 +226,21 @@ public class MetaDisplay implements MetaDisplayInterface
         fireActionEvent(MetaDisplayInterface.NAVIGATION_EVENT,getIdentifier());
     }
                                           
+    /**
+     *  method to redisplay the previous metadata document from History, by 
+     *  re-obtaining the latest instance of the XML document from the 
+     *  XMLFactoryInterface and re-styling it
+     *
+     *  @throws DocumentNotFoundException   if id for previous metadata document 
+     *                                      does not point to an actual document
+     *                                      or document cannot be accessed.
+     */
+    public void displayPrevious() throws DocumentNotFoundException 
+    {
+        display(history.getPrevious());
+    }
+    
+
     /**
      *  method to redisplay the current metadata, by re-obtaining the latest 
      *  instance of the XML document from the XMLFactoryInterface and re-styling 
