@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-03-11 03:55:21 $'
- * '$Revision: 1.22 $'
+ *     '$Date: 2002-05-09 17:22:27 $'
+ * '$Revision: 1.23 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -257,14 +257,15 @@ private void DTDItems(DTDItem item, Vector vec, boolean flg) {
   if (item == null) return;
 
   if (item instanceof DTDAny)  {
-    NodeInfo ni = new NodeInfo("Any");
+    NodeInfo ni = new NodeInfo("#PCDATA");
+    ni.setPCValue(" ");
     ni.setCardinality(getCardinality(item));
     vec.addElement(ni);
   }
   else if (item instanceof DTDEmpty) {
-    NodeInfo ni = new NodeInfo("Empty");
-    ni.setCardinality(getCardinality(item));
-    vec.addElement(ni);
+//    NodeInfo ni = new NodeInfo("Empty");
+//    ni.setCardinality(getCardinality(item));
+//   vec.addElement(ni);
   }
   else if (item instanceof DTDName) {
     NodeInfo ni = new NodeInfo(((DTDName) item).value);
