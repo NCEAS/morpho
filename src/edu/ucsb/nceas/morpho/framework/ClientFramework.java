@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2001-07-27 18:57:46 $'
- * '$Revision: 1.68 $'
+ *   '$Author: jones $'
+ *     '$Date: 2001-09-06 20:16:53 $'
+ * '$Revision: 1.69 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,6 +25,9 @@
  */
 
 package edu.ucsb.nceas.morpho.framework;
+
+import edu.ucsb.nceas.itis.Itis;
+import edu.ucsb.nceas.itis.Taxon;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -77,7 +80,7 @@ public class ClientFramework extends javax.swing.JFrame
   private Vector connectionRegistry = null;
   private boolean pluginsLoaded = false;
   private String sessionCookie = null;
-  
+  private Itis itis;  
 
   // Used by addNotify
   boolean frameSizeAdjusted = false;
@@ -1191,6 +1194,33 @@ public class ClientFramework extends javax.swing.JFrame
       }
     }
   } 
+
+  /**
+   * Look up the synonyms of a taxon from ITIS, and return the list of names
+   *
+   * @param taxonName
+   * @return vector of the names of synonym taxa
+   */
+  public Vector getTaxonSynonyms(String taxonName)
+  {
+    // Initialize the itis query system the first time through
+    if (itis == null) {
+      itis = new Itis();
+    }
+
+    Vector synonymList = new Vector();
+
+    // Look up the name we were passed
+    ClientFramework.debug(20, "Searching ITIS for synonyms of: " + taxonName);
+    long newTsn = itis.findTaxonTsn(taxonName);
+    Vector synonyms = itis.getSynonymTsnList(newTsn);
+    for (int i=0; i < synonyms.size(); i++) {
+      long synonymTsn = ((Long)synonyms.get(i)).longValue();
+      Taxon synonymTaxon = itis.getTaxon(synonymTsn);
+      synonymList.add(synonymTaxon.getScientificName());
+    }
+    return synonymList;
+  }
 
   /**
    * Print debugging messages based on severity level, where severity level 1

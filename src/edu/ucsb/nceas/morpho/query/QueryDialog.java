@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2001-09-06 01:25:52 $'
- * '$Revision: 1.20 $'
+ *     '$Date: 2001-09-06 20:16:53 $'
+ * '$Revision: 1.21 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -110,6 +110,15 @@ public class QueryDialog extends JDialog
 
   /** A static document counter for new untitled documents */
   private static int untitledCounter = 0;
+
+  /** Determine whether the subject screen is used */
+  boolean buildSubject = false;
+
+  /** Determine whether the taxon screen is used */
+  boolean buildTaxon = false;
+
+  /** Determine whether the spatial screen is used */
+  boolean buildSpatial = false;
 
   //{{DECLARE_CONTROLS
   private JTabbedPane queryTabs = new JTabbedPane();
@@ -339,7 +348,7 @@ public class QueryDialog extends JDialog
     String includeSynonymsString = profile.get("includesynonyms", 0);
     includeSynonyms = (new Boolean(includeSynonymsString)).booleanValue();
     includeItisSynonymsCheckBox.setSelected(includeSynonyms);
-    //optionsListPanel.add(includeItisSynonymsCheckBox);
+    optionsListPanel.add(includeItisSynonymsCheckBox);
     optionsListPanel.add(Box.createVerticalGlue());
     saveDefaultsButton.setText("Save Default Options");
     saveDefaultsButton.setActionCommand("Save Default Options");
@@ -547,10 +556,6 @@ public class QueryDialog extends JDialog
     newQuery.setQueryGroup(rootQG);
 
     // Determine which parts of the query we should build
-    boolean buildSubject = false;
-    boolean buildTaxon = false;
-    boolean buildSpatial = false;
-
     if (allTabsCheckBox.isSelected()) {
       buildSubject = true;
       buildTaxon = true;
@@ -559,9 +564,15 @@ public class QueryDialog extends JDialog
       int tabIndex = queryTabs.getSelectedIndex();
       if (0 == tabIndex) {
         buildSubject = true;
+        buildTaxon = false;
+        buildSpatial = false;
       } else if (1 == tabIndex) {
+        buildSubject = false;
         buildTaxon = true;
+        buildSpatial = false;
       } else if (2 == tabIndex) {
+        buildSubject = false;
+        buildTaxon = false;
         buildSpatial = true;
       } 
     }
@@ -654,6 +665,7 @@ public class QueryDialog extends JDialog
     String value = "*";
     String mode = "contains";
     caseSensitive = caseSensitiveCheckBox.isSelected();
+    includeSynonyms = includeItisSynonymsCheckBox.isSelected();
 
     // Add a query group for the overall Taxon tab
     if (taxonOrRadioButton.isSelected()) {
@@ -668,29 +680,59 @@ public class QueryDialog extends JDialog
     while (enum.hasMoreElements())
     {
       TaxonTermPanel taxonTermPanel = (TaxonTermPanel)enum.nextElement();
+      QueryGroup parentGroup;
 
-      // Create a separate QG for each taxonPanel (always INTERSECT)
-      // This is needed because the taxon queries are really composed of
-      // two query terms, one which matches the rank, and the other that
-      // matches the taxonomic phrase, combined using AND
-      QueryGroup termGroup = new QueryGroup("INTERSECT");
-      taxonGroup.addChild(termGroup);
+      if (includeSynonyms) {
+        parentGroup = new QueryGroup("UNION");
+        taxonGroup.addChild(parentGroup);
+      } else {
+        parentGroup = taxonGroup;
+      }
 
-      // Create the QueryTerm for the taxon Rank
-      value = taxonTermPanel.getTaxonRank();
-      path = taxonRankSearchPath;
-      QueryTerm rankTerm = new QueryTerm(true, "equals", value, path);
-      termGroup.addChild(rankTerm);
+      QueryGroup termGroup = buildTaxonTerm(taxonTermPanel.getTaxonRank(),
+                                            taxonTermPanel.getValue(),
+                                            taxonTermPanel.getSearchMode());
+      parentGroup.addChild(termGroup);
 
-      // Create the QueryTerm for the taxon value phrase
-      value = taxonTermPanel.getValue();
-      mode = taxonTermPanel.getSearchMode();
-      path = taxonValueSearchPath;
-      QueryTerm valueTerm = new QueryTerm(caseSensitive, mode, value, path);
-      termGroup.addChild(valueTerm);
+      Vector synonymList;
+      if (includeSynonyms) {
+        synonymList = framework.getTaxonSynonyms(taxonTermPanel.getValue());
+        for (int i=0; i<synonymList.size(); i++) {
+          ClientFramework.debug(20, "Adding synonym to query: " + synonymList.get(i));
+          QueryGroup synonymGroup = buildTaxonTerm(taxonTermPanel.getTaxonRank(),
+                                                   (String)synonymList.get(i),
+                                                   taxonTermPanel.getSearchMode());
+          parentGroup.addChild(synonymGroup);
+        }
+      }
     }
 
     return taxonGroup;
+  }
+
+  /**
+   * Create a separate QG for each taxonPanel (always INTERSECT)
+   * This is needed because the taxon queries are really composed of
+   * two query terms, one which matches the rank, and the other that
+   * matches the taxonomic phrase, combined using AND
+   */
+  private QueryGroup buildTaxonTerm(String taxonRank, String taxonValue, String mode)
+  {
+    String path;
+
+    QueryGroup termGroup = new QueryGroup("INTERSECT");
+
+    // Create the QueryTerm for the taxon Rank
+    path = taxonRankSearchPath;
+    QueryTerm rankTerm = new QueryTerm(true, "equals", taxonRank, path);
+    termGroup.addChild(rankTerm);
+
+    // Create the QueryTerm for the taxon value phrase
+    path = taxonValueSearchPath;
+    QueryTerm valueTerm = new QueryTerm(caseSensitive, mode, taxonValue, path);
+    termGroup.addChild(valueTerm);
+
+    return termGroup;
   }
 
   /**
@@ -779,8 +821,16 @@ public class QueryDialog extends JDialog
     queryTitleTF.setText(query.getQueryTitle());
     // Now refill all of the screen widgets with the query info
     QueryGroup rootGroup = savedQuery.getQueryGroup();
+    buildSubject = false;
+    buildTaxon = false;
+    buildSpatial = false;
     repopulateSubjectSearchTab(rootGroup);
     repopulateTaxonSearchTab(rootGroup);
+    if ((buildSubject && buildTaxon) ||
+        (buildSubject && buildSpatial) ||
+        (buildTaxon && buildSpatial)) {
+      allTabsCheckBox.setSelected(true);
+    }
   }
 
   /**
@@ -891,6 +941,7 @@ public class QueryDialog extends JDialog
         queryChoicesPanel.add(tq);
         textPanels.addElement(tq);
       }
+      buildSubject = true;
     } else {
       SubjectTermPanel defaultPanel = new SubjectTermPanel();
       defaultPanel.setAllState(true);
@@ -927,30 +978,71 @@ public class QueryDialog extends JDialog
     // Find the group with the taxon info by testing if the expected 
     // pathquery structure is in place 
     // (pathquery/QueryGroup/QueryGroup/QueryTerm,QueryTerm)
+    // or, including synonyms,
+    // (pathquery/QueryGroup/QueryGroup/QueryGroup/QueryTerm,QueryTerm)
     QueryGroup taxonGroup = null;
     boolean foundTaxonGroup = false;
+    boolean hasSynonymStructure = false;
     while (rootChildren.hasMoreElements()) {
-      // test if this is the taxon group
-      QueryGroup tempTaxonGroup = (QueryGroup)rootChildren.nextElement();
+      // test if this is the taxon group using the normal, no-synonyms structure
+      QueryGroup tempTaxonGroup = (QueryGroup)rootChildren.nextElement(); // level 2
+      ClientFramework.debug(20, "Repopulating taxon query: level 2");
       Enumeration tempTaxonChildren = tempTaxonGroup.getChildren();
       try {
-        QueryGroup tempTermsGroup = 
-                   (QueryGroup)tempTaxonChildren.nextElement();
+        QueryGroup tempTermsGroup =
+                   (QueryGroup)tempTaxonChildren.nextElement();           // level 3
+        ClientFramework.debug(20, "Repopulating taxon query: level 3");
         Enumeration tempQTList = tempTermsGroup.getChildren();
-        QueryTerm tempQT = (QueryTerm)tempQTList.nextElement();
+        QueryTerm tempQT = (QueryTerm)tempQTList.nextElement();           // level 4
+        ClientFramework.debug(20, "Repopulating taxon query: level 4 rank");
         String path = tempQT.getPathExpression();
         if ((path != null) && path.equals(taxonRankSearchPath)) {
-          tempQT = (QueryTerm)tempQTList.nextElement();
+          tempQT = (QueryTerm)tempQTList.nextElement();                   // level 4
+          ClientFramework.debug(20, "Repopulating taxon query: level 4 value");
           path = tempQT.getPathExpression();
           if (path.equals(taxonValueSearchPath)) {
+            ClientFramework.debug(20, "Found regular taxon query.");
             foundTaxonGroup = true;
+            hasSynonymStructure = false;
             taxonGroup = tempTaxonGroup;
             break;
           }
         }
       } catch (ClassCastException cce) {
-        // Not the taxon group
-        foundTaxonGroup = false;
+        // Not the taxon group using normal structure, so test using synonym structure
+        ClientFramework.debug(20, cce.getMessage());
+        ClientFramework.debug(20, "Not a regular taxon query, testing for synonyms...");
+        tempTaxonChildren = tempTaxonGroup.getChildren();
+        try {
+          QueryGroup tempSynonymGroup =
+                     (QueryGroup)tempTaxonChildren.nextElement();           // level 3
+          ClientFramework.debug(20, "Repopulating taxon query: level 3");
+          Enumeration tempSynonymChildren = tempSynonymGroup.getChildren();
+          QueryGroup tempTermsGroup =
+                     (QueryGroup)tempSynonymChildren.nextElement();         // level 4
+          ClientFramework.debug(20, "Repopulating taxon query: level 4");
+          Enumeration tempQTList = tempTermsGroup.getChildren();
+          QueryTerm tempQT = (QueryTerm)tempQTList.nextElement();           // level 5
+          ClientFramework.debug(20, "Repopulating taxon query: level 5 rank");
+          String path = tempQT.getPathExpression();
+          if ((path != null) && path.equals(taxonRankSearchPath)) {
+            tempQT = (QueryTerm)tempQTList.nextElement();                   // level 5
+            ClientFramework.debug(20, "Repopulating taxon query: level 5 value");
+            path = tempQT.getPathExpression();
+            if (path.equals(taxonValueSearchPath)) {
+              ClientFramework.debug(20, "Found taxon query with synonyms.");
+              foundTaxonGroup = true;
+              hasSynonymStructure = true;
+              taxonGroup = tempTaxonGroup;
+              break;
+            }
+          }
+        } catch (ClassCastException cce2) {
+          // Not the taxon group
+          ClientFramework.debug(20, cce2.getMessage());
+          ClientFramework.debug(20, "Not a taxon query.");
+          foundTaxonGroup = false;
+        }
       }
     }
 
@@ -975,7 +1067,14 @@ public class QueryDialog extends JDialog
         try {
           // Process each taxon query group and make a taxon panel out of it
           // By getting the params out of the contained QueryTerms
-          QueryGroup termsGroup = (QueryGroup)taxonChildren.nextElement();
+          QueryGroup termsGroup;
+          if (hasSynonymStructure) {
+            QueryGroup synonymGroup = (QueryGroup)taxonChildren.nextElement();
+            Enumeration synonymChildren = synonymGroup.getChildren();
+            termsGroup = (QueryGroup)synonymChildren.nextElement();
+          } else {
+            termsGroup = (QueryGroup)taxonChildren.nextElement();
+          }
   
           Enumeration qtList = termsGroup.getChildren();
     
@@ -1007,6 +1106,7 @@ public class QueryDialog extends JDialog
         taxonChoicesPanel.add(termPanel);
         taxonPanels.addElement(termPanel);
       }
+      buildTaxon = true;
     } else {
       TaxonTermPanel defaultPanel = new TaxonTermPanel();
       taxonChoicesPanel.add(defaultPanel);
