@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2004-04-06 23:25:32 $'
- * '$Revision: 1.8 $'
+ *     '$Date: 2004-04-06 23:28:06 $'
+ * '$Revision: 1.9 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -96,7 +96,13 @@ public class ExternalRefsPage extends AbstractUIPage
   ExternalRefsPage(ReferencesHandler referenceHandler)
   {
     this.referenceHandler = referenceHandler;
-    this.displayName = referenceHandler.getGenericName();
+    this.displayName = this.referenceHandler.getDisplayName();
+    if ( displayName == null)
+    {
+      this.displayName = referenceHandler.getGenericName();
+    }
+    // add the displayName into the column name vector in reference id
+    refIDTableCloumnName.add(displayName);
     init();
     addingMouseListenerForSearchResultTable();
    }
@@ -139,8 +145,7 @@ public class ExternalRefsPage extends AbstractUIPage
     packageListPanel.add(scroll, BorderLayout.CENTER);
 
     this.add(packageListPanel, BorderLayout.WEST);
-    // add the displayName into the column name vector in reference id
-    refIDTableCloumnName.add(displayName);
+
     // right panel is the reference id panel
     JPanel refsPanel = new JPanel();
     String selectRefsString = "2) Select a " + displayName +
