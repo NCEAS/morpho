@@ -9,8 +9,8 @@
   *     Authors: Matt Jones
   *
   *    '$Author: sgarg $'
-  *      '$Date: 2003-12-11 03:45:51 $'
-  *  '$Revision: 1.2 $'
+  *      '$Date: 2004-03-23 21:31:33 $'
+  *  '$Revision: 1.3 $'
   *
   * This program is free software; you can redistribute it and/or modify
   * it under the terms of the GNU General Public License as published by
@@ -73,6 +73,7 @@ a {
 }
 
 .highlight  {
+	margin: 0.5px 0.5px 0.5px 0.5px; 
     background-color: #c9dcf0;
     font-size: 10px; 
 }
