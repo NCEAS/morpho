@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: tao $'
- *     '$Date: 2004-03-26 01:56:12 $'
- * '$Revision: 1.42 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2004-03-30 23:08:30 $'
+ * '$Revision: 1.43 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -229,7 +229,8 @@ public class ResultSet extends AbstractTableModel implements ContentHandler,
     this.morpho       = morpho;
     this.config       = morpho.getConfiguration();
     ConfigXML profile = morpho.getProfile();
-    returnFields      = profile.get("returnfield");
+//    returnFields      = profile.get("returnfield");
+    returnFields      = config.get("returnfield");
 
     if (source.equals("local")) {
       isLocal = true;
