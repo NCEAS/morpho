@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2002-08-20 00:38:01 $'
- * '$Revision: 1.1 $'
+ *     '$Date: 2002-08-21 18:10:12 $'
+ * '$Revision: 1.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,6 +28,8 @@ package edu.ucsb.nceas.morphotest.plugins;
 
 import edu.ucsb.nceas.morphotest.plugins.metadisplay.*;
 
+import edu.ucsb.nceas.morpho.util.Log;
+
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
@@ -41,6 +43,7 @@ public class MetaDisplayPluginTestSuite extends TestCase {
 
     public MetaDisplayPluginTestSuite(String name) {
         super(name);
+        Log.getLog().setDebugLevel(50);
     }
 
     public static Test suite() {

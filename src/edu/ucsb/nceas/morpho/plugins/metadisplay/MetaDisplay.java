@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2002-08-21 03:26:06 $'
- * '$Revision: 1.3 $'
+ *     '$Date: 2002-08-21 18:10:12 $'
+ * '$Revision: 1.4 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -127,7 +127,7 @@ public class MetaDisplay implements MetaDisplayInterface
         //add ActionListener to list
         addActionListener(listener);
         
-        Reader reader = factory.openAsReader(identifier);
+        Reader reader = factory.openAsReader(getIdentifier());
 
         display.setHTML(getAsString(reader));
         return display;
@@ -136,9 +136,9 @@ public class MetaDisplay implements MetaDisplayInterface
     //
     private String getAsString(Reader reader) throws DocumentNotFoundException
     {
-        String doc = null;
+        StringBuffer docBuff = null;
         try {
-            doc = IOUtil.getAsStringBuffer(reader).toString();
+            docBuff = IOUtil.getAsStringBuffer(reader);
         } catch (IOException ioe) {
             Log.debug(12, "Error reading reader "+ioe.getMessage());
             DocumentNotFoundException dnfe =  new DocumentNotFoundException(
@@ -146,7 +146,12 @@ public class MetaDisplay implements MetaDisplayInterface
             dnfe.fillInStackTrace();
             throw dnfe;
         }
-        return doc;
+        if (docBuff==null) {
+            Log.debug(12, 
+            "getAsString() got NULL buffer from IOUtil.getAsStringBuffer()");
+            return "";
+        }
+        return docBuff.toString();
     }
     
     
@@ -175,7 +180,7 @@ public class MetaDisplay implements MetaDisplayInterface
             dnfe.fillInStackTrace();
             throw dnfe;
         }
-        Reader reader = factory.openAsReader(identifier);
+        Reader reader = factory.openAsReader(getIdentifier());
         display.setHTML(getAsString(reader));
     }
   
@@ -193,21 +198,22 @@ public class MetaDisplay implements MetaDisplayInterface
      *  @param XMLDocument  a Reader for the character-based XML document
      * 
      *  @throws NullArgumentException if id not provided.
-     *  @throws DocumentNotFoundException if Reader cannot be read.
+     *  @throws DocumentNotFoundException if Reader isn't null but can't be read
      */
     public void display(String identifier, Reader XMLDocument) 
                                             throws  NullArgumentException, 
                                                     DocumentNotFoundException
     {
-        if (XMLDocument==null) {
-            DocumentNotFoundException dnfe =  new DocumentNotFoundException(
-                    "MetaDisplay.display() - received NULL XMLDocument Reader");
-            dnfe.fillInStackTrace();
-            throw dnfe;
-        }
         //set ID and add to history
         setIdentifier(identifier);
-        display.setHTML(getAsString(XMLDocument));
+        
+        if (XMLDocument==null) {
+            Log.debug(12,"MetaDisplay.display() received NULL XML Factory - "
+                                                  +"displaying blank document");
+            display.setHTML(getAsString(XMLDocument));
+        } else {
+            display.setHTML(getAsString(XMLDocument));
+        }
     }
                                           
     /**
@@ -295,14 +301,16 @@ public class MetaDisplay implements MetaDisplayInterface
     //sets ID and adds it to history
 	private void setIdentifier(String identifier) throws NullArgumentException
 	{
-        if (identifier == null || identifier.trim().equals("")) {
+        if (identifier != null && !identifier.trim().equals("")) {
+            //add current (i.e. older) ID to hisory:
+		    history.add(this.identifier);
+		    //...and make the new ID the current one:
+		    this.identifier = identifier;
+		} else  {
 		    NullArgumentException nae 
 		        = new NullArgumentException("identifier must have a value");
 		    nae.fillInStackTrace();
 		    throw nae;
-		} else  {
-		    this.identifier = identifier;
-            history.add(this.identifier);
 		}
 	}
 }
