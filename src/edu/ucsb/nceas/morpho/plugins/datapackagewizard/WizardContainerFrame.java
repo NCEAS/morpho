@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2004-04-02 01:09:57 $'
- * '$Revision: 1.55 $'
+ *     '$Date: 2004-04-02 05:05:04 $'
+ * '$Revision: 1.56 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -69,6 +69,7 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
 import org.w3c.dom.Node;
+import edu.ucsb.nceas.morpho.datapackage.DataPackageFactory;
 
 /**
  *  provides a top-level container for AbstractUIPage objects. The top (title) panel
@@ -109,7 +110,7 @@ public class WizardContainerFrame
       }
     });
     toBeImportedCount = 0;
-    tempDataPackage = new EML200DataPackage();
+    tempDataPackage = DataPackageFactory.getDataPackage(getNewEmptyDataPackageDOM());
     UIController.getInstance().setWizardIsRunning(tempDataPackage);
   }
 
@@ -493,7 +494,6 @@ public class WizardContainerFrame
     }
     else {
       rootNode = domToReturn;
-
     }
     listener.wizardComplete(rootNode);
 
@@ -673,20 +673,8 @@ public class WizardContainerFrame
     // next, create a DOM from the OrderedMap...
     ////////////////////////////////////////////////////////////////////////////
 
-    Node rootNode = null;
-
     //create a new empty DOM document to be populated by the wizard values:
-    try {
-      rootNode = XMLUtilities.getXMLReaderAsDOMTreeRootNode(
-          new StringReader(WizardSettings.NEW_EML200_DOCUMENT_TEXT));
-    }
-    catch (Exception e) {
-      e.printStackTrace();
-      Log.debug(5, "unexpected error trying to create new XML document "
-                + "at start of wizard\n");
-      cancelAction();
-      return null;
-    }
+    Node rootNode = getNewEmptyDataPackageDOM();
 
     //now populate it...
     try {
@@ -708,6 +696,27 @@ public class WizardContainerFrame
     Log.debug(49, XMLUtilities.getDOMTreeAsString(rootNode));
     return rootNode;
   }
+
+
+  //create a new empty DOM document to be populated by the wizard values:
+  private Node getNewEmptyDataPackageDOM() {
+
+    Node rootNode = null;
+
+    try {
+      rootNode = XMLUtilities.getXMLReaderAsDOMTreeRootNode(
+          new StringReader(WizardSettings.NEW_EML200_DOCUMENT_TEXT));
+    } catch (Exception e) {
+      e.printStackTrace();
+      Log.debug(5, "unexpected error trying to create new XML document");
+      cancelAction();
+      return null;
+    }
+    return rootNode;
+  }
+
+
+
 
   private final String ID_ATTR_XPATH = "/@id";
   private final StringBuffer tempBuff = new StringBuffer();
