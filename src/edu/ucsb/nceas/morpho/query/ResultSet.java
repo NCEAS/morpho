@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: tao $'
- *     '$Date: 2004-04-03 04:29:07 $'
- * '$Revision: 1.45 $'
+ *   '$Author: brooke $'
+ *     '$Date: 2004-04-07 01:04:05 $'
+ * '$Revision: 1.46 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -435,7 +435,6 @@ public class ResultSet extends AbstractTableModel implements ContentHandler,
       Integer value = (Integer)obj;
       vectorIndex = value.intValue();
    }
-   Log.debug(30, "the index of vector is " + vectorIndex + " for " + headName);
    return vectorIndex;
 
  }//lookupResultsVectorIndex
