@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-06-08 21:47:14 $'
- * '$Revision: 1.20 $'
+ *     '$Date: 2001-06-08 22:24:42 $'
+ * '$Revision: 1.21 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -111,6 +111,7 @@ public class DocFrame extends javax.swing.JFrame
     javax.swing.JMenuItem AttrmenuItem;
     javax.swing.JMenuItem CopymenuItem;
     javax.swing.JMenuItem ReplacemenuItem;
+    javax.swing.JMenuItem PastemenuItem;
     
     
  /**
@@ -167,12 +168,6 @@ public class DocFrame extends javax.swing.JFrame
 //    popup.add(CMmenuItem);
     CardmenuItem = new JMenuItem("One Element Allowed");
  
-    CopymenuItem = new JMenuItem("Copy Node & Children");
-    popup.add(CopymenuItem);
-    ReplacemenuItem = new JMenuItem("Replace Selected Node from Clipboard");
-    //ReplacemenuItem.setEnabled(false);
-    popup.add(ReplacemenuItem);
-    popup.add(new JSeparator());
     popup.add(CardmenuItem);
     popup.add(new JSeparator());
     DupmenuItem = new JMenuItem("Duplicate");
@@ -182,7 +177,15 @@ public class DocFrame extends javax.swing.JFrame
     popup.add(new JSeparator());
     AttrmenuItem = new JMenuItem("Edit Attributes");
     popup.add(AttrmenuItem);
-	
+    popup.add(new JSeparator());
+    CopymenuItem = new JMenuItem("Copy Node & Children");
+    popup.add(CopymenuItem);
+    ReplacemenuItem = new JMenuItem("Replace Selected Node from Clipboard");
+    ReplacemenuItem.setEnabled(false);
+    popup.add(ReplacemenuItem);
+    PastemenuItem = new JMenuItem("Paste as Sibling to Selected Node"); 
+	  popup.add(PastemenuItem);
+	  
 		//{{REGISTER_LISTENERS
 		SymAction lSymAction = new SymAction();
 		SymChange lSymChange = new SymChange();
@@ -199,6 +202,7 @@ public class DocFrame extends javax.swing.JFrame
 		AttrmenuItem.addActionListener(lSymAction);
 		CopymenuItem.addActionListener(lSymAction);
 		ReplacemenuItem.addActionListener(lSymAction);
+		PastemenuItem.addActionListener(lSymAction);
     //Create the popup menu.
     javax.swing.JPopupMenu popup = new JPopupMenu();
 		
@@ -369,6 +373,8 @@ class SymAction implements java.awt.event.ActionListener {
 				Copy_actionPerformed(event);
 			else if (object == ReplacemenuItem)
 				Replace_actionPerformed(event);
+			else if (object == PastemenuItem)
+				Paste_actionPerformed(event);
 			else if (object == reload)
 				reload_actionPerformed(event);
 			else if (object == DTDParse)
@@ -470,7 +476,7 @@ void putXMLintoTree() {
 	    DefaultMutableTreeNode node = null;
 	    if (ob!=null) {node =(DefaultMutableTreeNode)ob;}
          selectedNode = node;
-
+         
          NodeInfo ni = (NodeInfo)node.getUserObject();
          
          if ((ni.getCardinality().equals("NOT SELECTED"))
@@ -524,14 +530,26 @@ void putXMLintoTree() {
 
     private void maybeShowPopup(MouseEvent e) {
       if ((e.isPopupTrigger())||(trigger)) {
+        
+	      PastemenuItem.setEnabled(false);
+	      ReplacemenuItem.setEnabled(false);
+        
         trigger = false;
         TreePath selPath = tree.getPathForLocation(e.getX(), e.getY());
         tree.setSelectionPath(selPath);
         if (selectedNode!=null) {
+	      // simple node comparison
+	        if (nodeCopy!=null) {
+	          String nodename = ((NodeInfo)selectedNode.getUserObject()).getName();
+	          String savenodename = ((NodeInfo)nodeCopy.getUserObject()).getName();
+	          if (nodename.equals(savenodename)) {
+	            PastemenuItem.setEnabled(true);
+	            ReplacemenuItem.setEnabled(true);
+	          } 
+          }
+          
           NodeInfo ni = (NodeInfo)selectedNode.getUserObject();
           CardmenuItem.setText("Number: "+ni.getCardinality());
-//          String temp = (String)ni.attr.get("copyNode");
-//          if ((temp!=null)&&(temp.equalsIgnoreCase("false"))){
           if (ni.getCardinality().equalsIgnoreCase("ONE")) {
             DupmenuItem.setEnabled(false);
             DeletemenuItem.setEnabled(false);
@@ -585,6 +603,29 @@ void Copy_actionPerformed(java.awt.event.ActionEvent event) {
     nodeCopy = deepNodeCopy(node); 
   }
 }
+
+void Paste_actionPerformed(java.awt.event.ActionEvent event) {
+  TreePath tp = tree.getSelectionPath();
+	if (tp!=null) {
+	  Object ob = tp.getLastPathComponent();
+	  DefaultMutableTreeNode node = (DefaultMutableTreeNode)ob;
+	  DefaultMutableTreeNode localcopy = deepNodeCopy(nodeCopy);
+	  // simple node comparison
+	  String nodename = ((NodeInfo)node.getUserObject()).getName();
+	  if (nodeCopy!=null) {
+	    String savenodename = ((NodeInfo)localcopy.getUserObject()).getName();
+	    if (nodename.equals(savenodename)) {
+	      DefaultMutableTreeNode parent = (DefaultMutableTreeNode)node.getParent(); 
+	      int indx = parent.getIndex(node);
+	      parent.insert(localcopy, indx+1);
+	      tree.expandPath(tp);
+	      treeModel.reload(parent);
+	      tree.setSelectionPath(tp);
+	    }
+	  }
+  }
+}
+
 void Replace_actionPerformed(java.awt.event.ActionEvent event) {
   TreePath tp = tree.getSelectionPath();
 	if (tp!=null) {
