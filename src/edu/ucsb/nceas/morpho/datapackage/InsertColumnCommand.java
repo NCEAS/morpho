@@ -5,9 +5,9 @@
  *    Authors: @tao@
  *    Release: @release@
  *
- *   '$Author: tao $'
- *     '$Date: 2002-09-27 03:53:58 $'
- * '$Revision: 1.1 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2002-10-18 23:30:19 $'
+ * '$Revision: 1.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -109,7 +109,8 @@ public class InsertColumnCommand implements Command
          Morpho morph=dataView.getMorpho();
          Document attributeDocoumnet=dataView.getAttributeDoc();
          Vector columnLabels=dataView.getColumnLabels();
-         String fieldDelimiter=dataView.getFieldDelimiter();
+//         String fieldDelimiter=dataView.getFieldDelimiter();
+         String fieldDelimiter= vector.getFieldDelimiter();
          JPanel tablePanel=dataView.getTablePanel();
          insertColumn(jtable, ptmodel, vector, morph, attributeDocoumnet,
                       columnLabels, fieldDelimiter, tablePanel);
