@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2002-08-16 16:49:01 $'
- * '$Revision: 1.2 $'
+ *     '$Date: 2002-09-06 01:30:46 $'
+ * '$Revision: 1.3 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,22 +24,30 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 package edu.ucsb.nceas.morpho.util;
-import java.awt.*;
-import java.awt.event.*;
-import java.util.*;
-import javax.swing.*;
-import javax.swing.event.*;
-import javax.swing.table.*;
+
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import javax.swing.JTable;
+import javax.swing.table.JTableHeader;
+import javax.swing.table.TableColumnModel;
 
 /**
  * A classs represent sortable table
  */
 public class SortableJTable extends JTable implements MouseListener
 {
-  // Index of column which need to be sorted
-  protected int sortedColumnIndex = -1;
-  // a column sorted by ascending or not
-  protected boolean sortedColumnAscending = true;
+  // Constant string
+  public static final String ASCENDING = "ascending";
+  public static final String DECENDING = "decending";
+  public static final String NONORDERED = "nonodered"; 
+  // Flag for the table sorted or not
+  private boolean sorted;
+  // Index of column which to be sorted
+  private int indexOfSortedColumn;
+  // Order of sorted cloumn
+  private String orderOfSortedColumn;
+  // Header of table
+  private JTableHeader tableHeader;
   
  /**
   * Constructor of SortableJTable
@@ -48,72 +56,112 @@ public class SortableJTable extends JTable implements MouseListener
   public SortableJTable(ColumnSortableTableModel model)
   {
     super(model);
-    initSortHeader();
+    // initialize of unsorted table
+    sorted = false;
+    indexOfSortedColumn = -1;
+    orderOfSortedColumn = NONORDERED;
+    // set talbeHeader
+    tableHeader = getTableHeader();
+    // Set table header renderer
+    tableHeader.setDefaultRenderer(new SortableTableHeaderCellRenderer());
+    // Add mouse listener to table header
+    tableHeader.addMouseListener(this);
   }
 
   /**
-  * Constructor of SortableJTable
-  * @param model ColumnSortableTableModel
-  * @param colModel colModel for table
-  */
-  public SortableJTable(ColumnSortableTableModel model,
-    TableColumnModel colModel)
-  {
-    super(model, colModel);
-    initSortHeader();
-  }
-
-  /**
-   * Initialize sortable
-   * set header renderer as SortableTableHeaderCellRender
-   * add mouseListener to the header 
+   * Get the table if sorted or not
    */
-  private void initSortHeader()
+  public boolean getSorted()
   {
-    JTableHeader header = getTableHeader();
-    header.setDefaultRenderer(new SortableTableHeaderCellRenderer());
-    header.addMouseListener(this);
+    return sorted;
+  }
+  
+  /**
+   * Set the table sorted or not
+   * @param myStorted the table status want assign
+   */
+  public void setSorted(boolean mySorted)
+  {
+    sorted = mySorted;
   }
   
   /**
    * Get the index of Sorted column
    */
-  public int getSortedColumnIndex()
+  public int getIndexOfSortedColumn()
   {
-    return sortedColumnIndex;
+    return indexOfSortedColumn;
   } 
+  
+  /**
+   * Set the index of sorted column 
+   * @param myIndex the index of sorted column 
+   */
+  public void setIndexOfSortedColumn(int myIndex)
+  {
+    indexOfSortedColumn = myIndex;
+  }
   
   /**
    * Get the sorted table oder statuts
    */
-  public boolean isSortedColumnAscending()
+  public String getOrderOfSortedColumn()
   {
-    return sortedColumnAscending;
+    return orderOfSortedColumn;
   }
+   
+  /**
+   * Set the order of sorted column 
+   * @param myOrder the order of sorted column 
+   */
+  public void setOrderOfSortedColumn(String myOrder)
+  {
+    orderOfSortedColumn = myOrder;
+  }
+   
   
   /**
    * Mouse click event handler
    */
   public void mouseClicked(MouseEvent event) 
   {
-    TableColumnModel colModel = getColumnModel();
-    int index = colModel.getColumnIndexAtX(event.getX());
-    int modelIndex = colModel.getColumn(index).getModelIndex();
+    // Get columnModel
+    TableColumnModel columnModel = getColumnModel();
+    // Get the index in the table (dispaly)
+    int index = columnModel.getColumnIndexAtX(event.getX());
+    // Get modelIndex in table model
+    int modelIndex = columnModel.getColumn(index).getModelIndex();
+    // Get table model
     ColumnSortableTableModel model = (ColumnSortableTableModel)getModel();
-  
-     // toggle ascension, if already sorted
-     if (sortedColumnIndex == index)
-     {
-        sortedColumnAscending = !sortedColumnAscending;
-     }
-     sortedColumnIndex = index;
-     // Sort table
-     model.sortTableByColumn(modelIndex, sortedColumnAscending);
-     validate();
+    
+    // If not sorted
+    if (!sorted)
+    {
+      // The first time is ascending sort
+      orderOfSortedColumn = ASCENDING;
+    }
+    else
+    {
+      // toggle order, if this column sorted
+      if (indexOfSortedColumn == index && 
+                              orderOfSortedColumn.equals(ASCENDING))
+      {
+        orderOfSortedColumn = DECENDING;
+      }
+      else
+      {
+        orderOfSortedColumn = ASCENDING;
+      }
+    }//else
+    // set index of sorted column
+    indexOfSortedColumn = index;
+    // set sorted true
+    sorted = true;
+    // Sort table
+    model.sortTableByColumn(modelIndex, orderOfSortedColumn);
+    validate();
   }
-  public void mouseReleased(MouseEvent event)
-  {}
-  
+  public void mouseReleased(MouseEvent event){}
   public void mousePressed(MouseEvent event) {}
   public void mouseEntered(MouseEvent event) {}
   public void mouseExited(MouseEvent event) {}
