@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2002-08-22 00:02:45 $'
- * '$Revision: 1.3 $'
+ *     '$Date: 2002-08-26 00:46:36 $'
+ * '$Revision: 1.4 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,21 +34,35 @@ import javax.swing.JDialog;
  */
 public class OpenPackageCommand implements Command 
 {
-  /** A reference to the JDialogBox */
-  private OpenDialogBox open = null;
-  
+    
   /** A reference to the resultPanel */
    private ResultPanel resultPanel = null;
+  
+  /** A reference to the dialog */
+   private OpenDialogBox open = null;
+   
+  /** A refernce to the MorphoFrame (for butterfly) */
+   private MorphoFrame frame = null;
+   
   /**
    * Constructor of SearcCommand
    * @param myResultPanel the result panel which the openpackage 
-   * @param box the open dialog box which has the open button
-   * command will apply
    */
-  public OpenPackageCommand(ResultPanel myResultPanel, OpenDialogBox box)
+  public OpenPackageCommand(ResultPanel myResultPanel)
   {
     resultPanel = myResultPanel;
-    open = box;
+    open = resultPanel.getDialog();
+    // if Resulpanel's parent is morphoframe, frame value will be set the parent
+    // of resultpanel
+    if ( open == null)
+    {
+      frame = UIController.getInstance().getCurrentActiveWindow();
+    }
+    else
+    {
+      //ResultPanel is in oepn dialog box, frame will be the parent of dialog 
+      frame =open.getParentFrame();
+    }
   }//OpenPackageCommand
   
   
@@ -57,19 +71,43 @@ public class OpenPackageCommand implements Command
    */    
   public void execute()
   {
-     resultPanel.doOpenDataPackage();
-     // close the openDialogBox
-     if ( open != null)
-     {
-       open.setVisible(false);
-       open.dispose();
-       open = null;
-     }
+     doOpenPackage(resultPanel,frame, open);
+     open = null;
+    
   }//execute
 
- 
   /**
-   * could also have undo functionality; disabled for now
+   * Using SwingWorket class to open a package
+   *
+   */
+  private void doOpenPackage(final ResultPanel results, 
+        final MorphoFrame morphoFrame, final OpenDialogBox box)
+  {
+    final SwingWorker worker = new SwingWorker()
+    {
+      public Object construct()
+      {
+        morphoFrame.setBusy(true);
+        resultPanel.doOpenDataPackage();
+        return null;
+      }//constructor
+      
+      public void finished()
+      {
+         // close the openDialogBox
+        if ( box!= null)
+        {
+          box.setVisible(false);
+          box.dispose();
+        }
+        morphoFrame.setBusy(false);
+      }//finish
+    };//final
+    worker.start();
+    
+  }//doOpenPakcage
+   /**
+    * could also have undo functionality; disabled for now
    */ 
   // public void undo();
 
