@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2002-09-09 22:39:30 $'
- * '$Revision: 1.15 $'
+ *   '$Author: brooke $'
+ *     '$Date: 2002-09-12 18:12:55 $'
+ * '$Revision: 1.16 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -220,7 +220,15 @@ public class DataViewContainerPanel extends javax.swing.JPanel
       mdcomponent = md.getDisplayComponent(dp.getID(), dp, null);
     }
     catch (Exception m) {
-      Log.debug(20, "Unable to get metadisplay component"); 
+      Log.debug(5, "Unable to display MetaData:\n"+m.getMessage()); 
+      // can't display requested ID, so just display empty viewer:
+      try{
+        mdcomponent = md.getBlankDisplayComponent(dp, null);
+      }
+      catch (Exception e) {
+        Log.debug(15, "Error showing blank MetaData view:\n"+e.getMessage()); 
+        e.printStackTrace();
+      }
     }
     packagePanel.add(BorderLayout.CENTER, mdcomponent);
 // ------------------==End Test of MetaDisplay-------------------------
@@ -280,12 +288,12 @@ public class DataViewContainerPanel extends javax.swing.JPanel
        
       JPanel currentEntityMetadataPanel = (JPanel)currentEntityPanel.getRightComponent();
       
-      JPanel entityInfoPanel = new JPanel();
-      entityInfoPanel.setLayout(new BorderLayout(0,0));
-      entityInfoPanel.add(BorderLayout.CENTER, entityEdit.entityPanel);
-      entityInfoPanel.add(BorderLayout.NORTH, new JLabel("Entity Information"));
-      JPanel entityEditControls = new JPanel();
-      entityEditControls.add(entityEdit.editEntityButton);
+//      JPanel entityInfoPanel = new JPanel();
+//      entityInfoPanel.setLayout(new BorderLayout(0,0));
+//      entityInfoPanel.add(BorderLayout.CENTER, entityEdit.entityPanel);
+//      entityInfoPanel.add(BorderLayout.NORTH, new JLabel("Entity Information"));
+//      JPanel entityEditControls = new JPanel();
+//      entityEditControls.add(entityEdit.editEntityButton);
       // ---------------------end_setup
       
       // this is where entity metadata is inserted !!!!!!!!!!!!!!!!
@@ -298,9 +306,18 @@ public class DataViewContainerPanel extends javax.swing.JPanel
         mdcomponent = md.getDisplayComponent(id, dp, null);
       }
       catch (Exception m) {
-        Log.debug(20, "Unable to get metadisplay component"); 
+        Log.debug(5, "Unable to display MetaData:\n"+m.getMessage()); 
+        // can't display requested ID, so just display empty viewer:
+        try{
+          mdcomponent = md.getBlankDisplayComponent(dp, null);
+        }
+        catch (Exception e) {
+          Log.debug(15, "Error showing blank MetaData view:\n"+e.getMessage()); 
+          e.printStackTrace();
+        }
       }
       currentEntityMetadataPanel.add(BorderLayout.CENTER, mdcomponent);
+
 // ------------------==End Test of MetaDisplay-------------------------
 
 //      currentEntityMetadataPanel.add(BorderLayout.CENTER, entityInfoPanel);                                     
