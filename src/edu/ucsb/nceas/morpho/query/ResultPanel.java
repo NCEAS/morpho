@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-04-08 18:12:55 $'
- * '$Revision: 1.34 $'
+ *     '$Date: 2002-04-10 23:08:29 $'
+ * '$Revision: 1.35 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -249,7 +249,7 @@ public class ResultPanel extends JPanel
       popup = new JPopupMenu();
       popup.add(openMenu);
       openPreviousVersion.setEnabled(false);
- //   popup.add(openPreviousVersion);
+      popup.add(openPreviousVersion);
       
       popup.add(refreshMenu);
       popup.add(new JSeparator());
@@ -541,6 +541,8 @@ public class ResultPanel extends JPanel
     // on the PC; use the trigger flag to record a trigger, but do not show popup until the
     // mouse released event (DFH)
     boolean trigger = false;
+    String docid = "";
+    
     public void mousePressed(MouseEvent e) 
     {
       //select the clicked row first
@@ -562,11 +564,10 @@ public class ResultPanel extends JPanel
         //System.out.println();
       }
       System.out.println("\nrow: " + selrow + " rowV: " + rowV.toString());*/
-      String id = (String)rowV.elementAt(6);
+      docid = (String)rowV.elementAt(6);
       localLoc = ((Boolean)rowV.elementAt(9)).booleanValue();
       metacatLoc = ((Boolean)rowV.elementAt(10)).booleanValue();
-      selectedId = id;
-
+      ClientFramework.debug(30, "selectedId is: "+docid);
       if (e.isPopupTrigger()) 
       {
         trigger = true;
@@ -582,7 +583,7 @@ public class ResultPanel extends JPanel
     {
       if(e.isPopupTrigger() || trigger) 
       {     
-        int vers = getNumberOfPrevVersions(selectedRow);
+        int vers = getNumberOfPrevVersions();
         System.out.println("Number of versions: "+vers);
         
         uploadMenu.setEnabled(localLoc && !metacatLoc);
@@ -596,6 +597,16 @@ public class ResultPanel extends JPanel
         
       }
     }
+    
+    private int getNumberOfPrevVersions() {
+      int prevVersions = 0;
+      int iii = docid.lastIndexOf(".");
+      String ver = docid.substring(iii+1,docid.length());
+      prevVersions = (new Integer(ver)).intValue();
+      prevVersions = prevVersions - 1;
+      return prevVersions;
+    }
+    
   }	
 
   /**
@@ -797,15 +808,6 @@ public class ResultPanel extends JPanel
     return list;
   }
   
-private int getNumberOfPrevVersions(int row) {
-    int prevVersions = 0;
-    String docid = results.getDocIdOfRecord(row);
-    int iii = docid.lastIndexOf(".");
-    String ver = docid.substring(iii+1,docid.length());
-    prevVersions = (new Integer(ver)).intValue();
-    prevVersions = prevVersions - 1;
-    return prevVersions;
-}
 
 
 private void doUpload() {
