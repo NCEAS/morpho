@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2004-01-20 19:38:12 $'
- * '$Revision: 1.5 $'
+ *     '$Date: 2004-04-08 16:42:52 $'
+ * '$Revision: 1.6 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -135,9 +135,14 @@ public class LiveMapPanel extends JPanel
   final static int TOOL_TYPE_Y  = 2;
   final static int TOOL_TYPE_XY = 3;
 
+  double n = 45.0;
+  double w = -90.0;
+  double s = -45.0;
+  double e = 90.0;
+
 
   MediaTracker tracker;
-  MapCanvas map;
+  static MapCanvas map;
   MapGrid grid;
   MapTool [] toolArray = new MapTool[1];
   MapRegion [] regionArray = new MapRegion[0];
@@ -154,7 +159,7 @@ public class LiveMapPanel extends JPanel
   JRadioButton boxTool;
   JRadioButton ptTool;
 
-  Image img_0;
+  static Image img_0;
   int imgSizeX = IMAGE_SIZE_X;
   int imgSizeY = IMAGE_SIZE_Y;
   int tool_type=TOOL_TYPE_XY;
@@ -164,33 +169,31 @@ public class LiveMapPanel extends JPanel
   public void init() {     
 
     String img = "java_0_world_234k.jpg";
-//    String img = "us_contour.jpg";
     String img_x_domain = "-180 180";
     String img_y_domain = "-90 90";
-//    String img_x_domain = "-125 -65";
-//    String img_y_domain = "25 50";
     String toolType = "XY";
     String tool_x_range = "-180 180";
     String tool_y_range = "-90 90";
-    img_0 = img_0 = getToolkit().getImage(
+    
+    if (img_0==null) {
+      img_0 = getToolkit().getImage(
               getClass().getResource("java_0_world_234k.jpg"));
-//              getClass().getResource("us_contour.jpg"));
    
-    tracker = new MediaTracker(this);
-    tracker.addImage(img_0, 1);
+      tracker = new MediaTracker(this);
+      tracker.addImage(img_0, 1);
 
-    try {
-      tracker.waitForID(1);
-    } catch (InterruptedException e) {
-      System.out.println("Caught InterruptedException while loading image.");
-      //EHC: throw exception ?
-      return;
+      try {
+        tracker.waitForID(1);
+      } catch (InterruptedException e) {
+        System.out.println("Caught InterruptedException while loading image.");
+        //EHC: throw exception ?
+        return;
+      }
+      if (tracker.isErrorID(1)) {
+        System.out.println("Error loading image...");
+        return;
+      }
     }
-    if (tracker.isErrorID(1)) {
-      System.out.println("Error loading image...");
-      return;
-    }
-
 
 
 /* 1.0 ----------------------V-------------------------- */
@@ -427,7 +430,9 @@ public class LiveMapPanel extends JPanel
   
 
     // map canvas: change size
-    map = new MapCanvas(img_0,imgSizeX,imgSizeY,toolArray,grid);
+    if (map==null) {
+      map = new MapCanvas(img_0,imgSizeX,imgSizeY,toolArray,grid);
+    }
     map.setToolArray(toolArray);
 
 
@@ -509,7 +514,7 @@ public class LiveMapPanel extends JPanel
  if (entryPanel==null) System.out.println("entryPanel is null!");
 
     //1.1 
-    add(map, "Center");
+    addMap();
     //1.1 
     add(BorderLayout.EAST, entryPanel);    
     //add("Center", map);      // 1.0   
@@ -521,7 +526,23 @@ public class LiveMapPanel extends JPanel
 
   }
 
-
+  /**
+   *  This method adds the (now) static map variable to its location in the center of the panel
+   *  'map' and 'img_0' have been made static so that they are shared between instances of the
+   *  class to avoid the large amount of memory needed when large map images are used and there
+   *  are multiple instances. (e.g. many geographic regions to be displayed for a data package).
+   *  This means that users of LiveMapPanel need to add the 'map' object when they are displayed
+   *  and possibly remove it when they are closed.
+   */
+  public void addMap() {
+    remove(map);
+    add(map,"Center");
+    setBoundingBoxToSaved();
+  }
+  
+  public void removeMap() {
+    remove(map);
+  }
 
   /*
    * We need this in order to get the frame so we can change the cursor.
@@ -630,6 +651,10 @@ public class LiveMapPanel extends JPanel
 // added by DFH
   public void setBoundingBox(double top, double left, double bottom, double right) {
     try{
+      n = top;
+      w = left;
+      s = bottom;
+      e = right;
       map.getTool().setUserBounds(left, right, bottom, top);
       map.center_tool(1.0);
     } catch (Exception w) {
@@ -637,6 +662,10 @@ public class LiveMapPanel extends JPanel
     }
 	  map.repaint();
 	  set_strings();  
+  }
+  
+  public void setBoundingBoxToSaved() {
+    setBoundingBox(n, w, s, e);
   }
  
  public double getNorth() {
