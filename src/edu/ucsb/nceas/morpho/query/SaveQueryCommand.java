@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2002-08-23 00:22:36 $'
- * '$Revision: 1.3 $'
+ *     '$Date: 2002-08-23 17:12:51 $'
+ * '$Revision: 1.4 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -124,7 +124,7 @@ public class SaveQueryCommand implements Command
    *
    * @param query the query to be added to the Search menu
    */
-  private void addQueryToMenu(final Query query)
+  private static void addQueryToMenu(final Query query)
   {
     // See if the query list is null, and initialize it if so
     if (savedQueriesList == null) {
@@ -161,7 +161,7 @@ public class SaveQueryCommand implements Command
       savedSearchItemAction.putValue(Action.SHORT_DESCRIPTION, 
                             "Execute saved search");
       menuActions[0] = savedSearchItemAction;
-      UIController.getInstance().addMenu("Search", new Integer(4), menuActions);
+      UIController.getInstance().addMenu("Search", new Integer(-1), menuActions);
       savedQueriesList.put(query.getIdentifier(), savedSearchItemAction);
     } else {
       // The menu already exists, so update its title and query object
@@ -178,6 +178,16 @@ public class SaveQueryCommand implements Command
    */
   public void loadSavedQueries()
   {
+    loadSavedQueries(morpho);
+  }
+  
+  /**
+   * Load the saved queries into the Search menu so that the user can launch
+   * any queries they saved from previosu sessions.
+   * @param myMorpho the Morpho controls the saved queries
+   */
+  public static void loadSavedQueries(Morpho myMorpho)
+  {
     Log.debug(20, "Loading saved queries...");
     // See if the query list is null, and initialize it if so
     if (savedQueriesList == null) {
@@ -187,7 +197,14 @@ public class SaveQueryCommand implements Command
     // Make sure the list is empty (because this may be called when the
     // profile is being switched)
     if (!savedQueriesList.isEmpty()) {
-      for (int i = savedQueriesList.size()+1; i > 1; i--) {
+      // QueryPlugin.NUMBEROFACTIONINSEARCH is exclude the saved quries in 
+      // search menu. So the total number in search menu is saved queris size
+      // plus QueryPlugin.NUMBEROFACTIONINSEARCH(search, refresh ...)
+      int numOfItemInSearch =
+                savedQueriesList.size()+QueryPlugin.NUMBEROFACTIONINSEARCH;
+      
+      for(int i=numOfItemInSearch-1;i>QueryPlugin.NUMBEROFACTIONINSEARCH-1; i--) 
+      {
         // Clear the search menu too 
         UIController.getInstance().removeMenuItem("Search", i);
       }
@@ -195,14 +212,15 @@ public class SaveQueryCommand implements Command
     }
 
     // Look in the profile queries directory and load any pathquery docs
-    ConfigXML config = morpho.getConfiguration();
-    ConfigXML profile = morpho.getProfile();
+    ConfigXML config = myMorpho.getConfiguration();
+    ConfigXML profile = myMorpho.getProfile();
     String queriesDirName = config.getConfigDirectory() + File.separator +
                             config.get("profile_directory", 0) +
                             File.separator +
                             config.get("current_profile", 0) +
                             File.separator +
-                            profile.get("queriesdir", 0); 
+                            profile.get("queriesdir", 0);
+   
     File queriesDir = new File(queriesDirName);
     if (queriesDir.exists()) {
 //DFH      File[] queriesList = queriesDir.listFiles();
@@ -212,7 +230,7 @@ public class SaveQueryCommand implements Command
         if (queryFile.isFile()) {
           try {
             FileReader xml = new FileReader(queryFile);
-            Query newQuery = new Query(xml, morpho);
+            Query newQuery = new Query(xml, myMorpho);
             addQueryToMenu(newQuery);
           } catch (FileNotFoundException fnf) {
             Log.debug(9, "Poof. The query disappeared.");
@@ -224,7 +242,7 @@ public class SaveQueryCommand implements Command
   }
   
   /** List the file in a dir */
-  private File[] listFiles(File dir) 
+  private static File[] listFiles(File dir) 
   {
     String[] fileStrings = dir.list();
     int len = fileStrings.length;
