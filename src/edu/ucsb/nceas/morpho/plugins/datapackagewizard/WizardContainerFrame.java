@@ -7,9 +7,9 @@
  *    Authors: Matthew Brooke
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2003-12-15 20:28:32 $'
- * '$Revision: 1.25 $'
+ *   '$Author: sgarg $'
+ *     '$Date: 2003-12-16 23:21:02 $'
+ * '$Revision: 1.26 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -209,7 +209,7 @@ public class WizardContainerFrame extends JFrame {
 
 
   private void initContentPane() {
-
+    this.setIconImage(edu.ucsb.nceas.morpho.util.UISettings.FRAME_AND_TASKBAR_ICON);
     contentPane = this.getContentPane();
     contentPane.setLayout(new BorderLayout());
   }
@@ -258,6 +258,7 @@ public class WizardContainerFrame extends JFrame {
     bottomPanel.setLayout(new BoxLayout(bottomPanel, BoxLayout.X_AXIS));
     bottomPanel.add(Box.createHorizontalGlue());
     bottomPanel.setOpaque(false);
+    bottomPanel.setBorder(new EmptyBorder(PADDING/2,0,0,0));
 
     bottomBorderPanel.setBorder(
                   BorderFactory.createMatteBorder(2, 0, 0, 0, WizardSettings.TOP_PANEL_BG_COLOR));
@@ -449,7 +450,7 @@ public class WizardContainerFrame extends JFrame {
     Log.debug(45, wizData.toString());
 
     ////////////////////////////////////////////////////////////////////////////
-    // this is the end of the page processing - wizData OrderedMap should now 
+    // this is the end of the page processing - wizData OrderedMap should now
     // contain all values in correct order
     ////////////////////////////////////////////////////////////////////////////
 
@@ -490,14 +491,14 @@ public class WizardContainerFrame extends JFrame {
       return;
     }
 
-    
+
     Log.debug(49, "\n\n********** Wizard finished: DOM:");
     Log.debug(49, XMLUtilities.getDOMTreeAsString(rootNode));
-    
+
     listener.wizardComplete(rootNode);
-    
+
     // now clean up
-    doCleanUp();    
+    doCleanUp();
   }
 
 
@@ -645,21 +646,21 @@ public class WizardContainerFrame extends JFrame {
   private void cancelAction() {
     this.setVisible(false);
     listener.wizardCanceled();
-    
+
     // now clean up
-    doCleanUp();    
-    
+    doCleanUp();
+
   }
 
   private void doCleanUp() {
-  
+
     //clear out pageStack
     pageStack.clear();
-    
+
     //clear all page objects (re-init??)
     pageLib.reInitialize();
   }
-    
+
   /**
    *  sets the main title for this page
    *  @param newTitle the page title

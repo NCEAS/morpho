@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: sgarg $'
- *     '$Date: 2003-12-12 03:05:36 $'
- * '$Revision: 1.5 $'
+ *     '$Date: 2003-12-16 23:21:02 $'
+ * '$Revision: 1.6 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -38,9 +38,12 @@ import javax.swing.JTextArea;
 import javax.swing.SwingConstants;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.border.EmptyBorder;
 
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.AbstractWizardPage;
 import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
+import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardSettings;
+
 
 
 public class UsageRights extends AbstractWizardPage{
@@ -50,8 +53,8 @@ public class UsageRights extends AbstractWizardPage{
   private final String pageID     = DataPackageWizardInterface.USAGE_RIGHTS;
   private final String nextPageID = DataPackageWizardInterface.ACCESS;
   private final String pageNumber = "9";
-  private final String title      = "General Dataset Information:";
-  private final String subtitle   = "Usage Rights";
+  private final String title      = "Usage Rights";
+  private final String subtitle   = "";
 
   // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
@@ -78,11 +81,11 @@ public class UsageRights extends AbstractWizardPage{
       +"data package.</b> Each Data Package may have intellectual rights "
       +"associated with the dataset.  You may declare that the data package is "
       +"in now in the public domain, or that there are certain ethical "
-      +"restrictions in using the data.", 2);
+      +"restrictions in using the data.", 3);
     vbox.add(desc);
 
     vbox.add(WidgetFactory.makeDefaultSpacer());
-    //vbox.add(WidgetFactory.makeDefaultSpacer());
+    vbox.add(WidgetFactory.makeDefaultSpacer());
 
     //JLabel titleDesc = WidgetFactory.makeHTMLLabel(
     //    "", 2);
@@ -99,8 +102,12 @@ public class UsageRights extends AbstractWizardPage{
     JScrollPane jscrl = new JScrollPane(usageField);
 
     usagePanel.add(jscrl);
+    usagePanel.setBorder(new javax.swing.border.EmptyBorder(0,0,0,5*WizardSettings.PADDING));
+
     vbox.add(usagePanel);
 
+    vbox.add(WidgetFactory.makeDefaultSpacer());
+    vbox.add(WidgetFactory.makeDefaultSpacer());
     vbox.add(WidgetFactory.makeDefaultSpacer());
 
   }

@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: sgarg $'
- *     '$Date: 2003-12-12 03:05:35 $'
- * '$Revision: 1.2 $'
+ *     '$Date: 2003-12-16 23:21:02 $'
+ * '$Revision: 1.3 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -87,8 +87,8 @@ public class CustomPickList extends JPanel {
       String row  = name + ", " + role;
       partiesPickList.addItem(row);
     }
-//    partiesPickList.setBorder(new EmptyBorder(0,WizardSettings.COMPONENT_PADDING,
-  //                                      0, 10 * WizardSettings.COMPONENT_PADDING));
+//    partiesPickList.setBorder(new EmptyBorder(0,WizardSettings.PADDING,
+  //                                      0, 10 * WizardSettings.PADDING));
 
     this.add(partiesPickList, BorderLayout.CENTER);
 

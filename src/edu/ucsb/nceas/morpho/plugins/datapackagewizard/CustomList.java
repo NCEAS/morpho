@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: sambasiv $'
- *     '$Date: 2003-12-16 21:08:35 $'
- * '$Revision: 1.31 $'
+ *   '$Author: sgarg $'
+ *     '$Date: 2003-12-16 23:21:02 $'
+ * '$Revision: 1.32 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -123,7 +123,7 @@ public class CustomList extends JPanel {
   private Action customEditAction;
   private Action customDuplicateAction;
   private Action customDeleteAction;
-	
+
 	private double[] columnWidthPercentages;
   ////////////
 
@@ -231,7 +231,7 @@ public class CustomList extends JPanel {
 		double equalP = 100.0/table.getColumnCount();
 		for(int i = 0; i < table.getColumnCount(); i++)
 			columnWidthPercentages[i] = equalP;
-		
+
     scrollPane = new JScrollPane(table);
     scrollPane.setVerticalScrollBarPolicy(
                             ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
@@ -248,10 +248,9 @@ public class CustomList extends JPanel {
     });
     this.add(scrollPane, BorderLayout.CENTER);
 
-    this.setBorder(new EmptyBorder(0, 0, 
-													//WizardSettings.COMPONENT_PADDING,
-                                       2*WizardSettings.COMPONENT_PADDING, 0));
-                                       //WizardSettings.COMPONENT_PADDING));
+    this.setBorder(new EmptyBorder(0, 0,													//WizardSettings.PADDING,
+                                       2*WizardSettings.PADDING, 0));
+                                       //WizardSettings.PADDING));
 
     addAction = new AddAction(table, this);
 //    addAction.addRowNoCustomAction();
@@ -351,12 +350,12 @@ public class CustomList extends JPanel {
     //final double  fraction  = 1d/((double)(table.getColumnCount()));
     final double  minFactor = 0.5;
     final double  maxFactor = 2;
-		
+
     for (int i = 0; i < table.getColumnCount(); i++) {
 
       TableColumn column = table.getColumnModel().getColumn(i);
 			double fraction = columnWidthPercentages[i]/100;
-			
+
       int preferredWidth = (int)(tableWidth*fraction) - 1;
       int headerWidth = getHeaderWidth(i, column);
       if (preferredWidth < headerWidth) preferredWidth = headerWidth;
@@ -366,33 +365,34 @@ public class CustomList extends JPanel {
       column.setMaxWidth((int)(preferredWidth*maxFactor));
     }
   }
-	
+
 	/**
    *  Sets the relative widths of each column in the columnList. This is used when unequally sized
-	 *	columns are needed. Input is an array of doubles containing the percentage width of 
+	 *	columns are needed. Input is an array of doubles containing the percentage width of
 	 *  each column. The length of the array must equal the number of columns in the customList and
 	 *	the sum of the percentages must equal 100.
    *
 	 *	@param columnWidths the array of doubles representing the percentage widths of the columns
    *
    */
-	 
+
 	public void setColumnWidthPercentages(double columnWidths[]) 	{
 		int i;
 		int len = columnWidths.length;
-		
+
 		if(len != table.getColumnCount()) {
-			Log.debug(50, "CustomList.setColumnWidthPercentages: Length of array passed is not equal to the number of columns"); 
+			Log.debug(50, "CustomList.setColumnWidthPercentages: "+
+                                  "Length of array passed is notequal to the number of columns");
 			return;
 		}
-		
 		double sum = 0;
-		for(i = 0; i< len; i++)  
+		for(i = 0; i< len; i++)
 			sum += columnWidths[i];
-		
+
 		// total percentage must sum to 100 %.
 		if(sum != 100.0) {
-			Log.debug(50, "CustomList.setColumnWidthPercentages: Sum of the column width percentages is not equal to 100%");
+			Log.debug(50, "CustomList.setColumnWidthPercentages: "+
+                                  "Sum of the column width percentages is not equal to 100%");
 			return;
 		}
 		this.columnWidthPercentages = columnWidths;
@@ -424,56 +424,44 @@ public class CustomList extends JPanel {
 
     Box buttonBox = Box.createVerticalBox();
 
-    buttonBox.setBorder(new EmptyBorder(0,WizardSettings.COMPONENT_PADDING,
-                                        WizardSettings.COMPONENT_PADDING,
-                                        WizardSettings.COMPONENT_PADDING));
+    buttonBox.setBorder(new EmptyBorder(0,2*WizardSettings.PADDING,
+                                        WizardSettings.PADDING,
+                                        WizardSettings.PADDING));
 
     if (showAddButton) {
-
       addButton      = new JButton(addAction);
       addButton.setFont(WizardSettings.WIZARD_CONTENT_FONT);
       buttonBox.add(addButton);
-      buttonBox.add(WidgetFactory.makeHalfSpacer());
     }
 
     if (showEditButton) {
-
       editButton     = new JButton(new EditAction(table, this));
       editButton.setFont(WizardSettings.WIZARD_CONTENT_FONT);
       buttonBox.add(editButton);
-      buttonBox.add(WidgetFactory.makeHalfSpacer());
     }
 
     if (showDuplicateButton) {
-
       duplicateButton = new JButton(new DuplicateAction(table, this));
       duplicateButton.setFont(WizardSettings.WIZARD_CONTENT_FONT);
       buttonBox.add(duplicateButton);
-      buttonBox.add(WidgetFactory.makeHalfSpacer());
     }
 
     if (showDeleteButton) {
-
       deleteButton   = new JButton(new DeleteAction(table, this));
       deleteButton.setFont(WizardSettings.WIZARD_CONTENT_FONT);
       buttonBox.add(deleteButton);
-      buttonBox.add(WidgetFactory.makeHalfSpacer());
     }
 
     if (showMoveUpButton) {
-
       moveUpButton   = new JButton(new MoveUpAction(table, this));
       moveUpButton.setFont(WizardSettings.WIZARD_CONTENT_FONT);
       buttonBox.add(moveUpButton);
-      buttonBox.add(WidgetFactory.makeHalfSpacer());
     }
 
     if (showMoveDownButton) {
-
       moveDownButton = new JButton(new MoveDownAction(table, this));
       moveDownButton.setFont(WizardSettings.WIZARD_CONTENT_FONT);
       buttonBox.add(moveDownButton);
-      buttonBox.add(WidgetFactory.makeHalfSpacer());
     }
 
     setListButtonDimensions(WizardSettings.LIST_BUTTON_DIMS);
@@ -1148,9 +1136,9 @@ class DeleteAction extends AbstractAction {
     Log.debug(45, "CustomList DELETE action");
     int[] rows = table.getSelectedRows();
     if (rows.length == 0) return;
-		
+
     parentList.fireEditingStopped();
-		
+
 		for(int i = 0; i< rows.length; i++)
 			parentList.removeRow(rows[i] - i);
 
@@ -1187,9 +1175,9 @@ class MoveUpAction extends AbstractAction {
     Log.debug(45, "CustomList MOVE UP action");
     int rows[] = table.getSelectedRows();
     if (rows.length == 0) return;
-    
+
 		parentList.fireEditingStopped();
-		
+
 		for(int i = 0; i < rows.length; i++)
 			model.moveRow(rows[i], rows[i], rows[i] - 1);
     table.tableChanged(parentList.getTableModelEvent());
@@ -1217,9 +1205,9 @@ class MoveDownAction extends AbstractAction {
     Log.debug(45, "CustomList MOVE DOWN action");
     int rows[] = table.getSelectedRows();
     if (rows.length < 0) return;
-		
+
     parentList.fireEditingStopped();
-		
+
 		for (int i = rows.length-1 ; i >= 0; i--)
 			model.moveRow(rows[i], rows[i], rows[i] + 1);
     table.tableChanged(parentList.getTableModelEvent());

@@ -20,6 +20,7 @@ import javax.swing.JTextField;
 import javax.swing.JComponent;
 import javax.swing.BorderFactory;
 import javax.swing.SwingConstants;
+import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JButton;
 import java.util.List;
@@ -240,8 +241,6 @@ public class WidgetFactory {
     setPrefMaxSizes(radioPanel, getDimForNumberOfLines(5*totalButtons/4));
     return radioPanel;
   }
-
-
 
 
   public static JPanel makeCheckBoxPanel(String[] boxesText,

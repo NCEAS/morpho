@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: sgarg $'
- *     '$Date: 2003-12-12 03:05:36 $'
- * '$Revision: 1.7 $'
+ *     '$Date: 2003-12-16 23:21:02 $'
+ * '$Revision: 1.8 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -45,8 +45,8 @@ public class PartyIntro extends AbstractWizardPage{
 
   public final String pageID     = DataPackageWizardInterface.PARTY_INTRO;
   public final String nextPageID = DataPackageWizardInterface.PARTY_CREATOR;
-  public final String title      = "General Data Package Information:";
-  public final String subtitle   = "People and Organizations";
+  public final String title      = "People and Organizations";
+  public final String subtitle   = "";
   public final String pageNumber = "4";
 
   public PartyIntro() {
@@ -73,7 +73,7 @@ public class PartyIntro extends AbstractWizardPage{
     +"<li><b>Other associated people or organizations:</b> These are people or "
     +"organizations that are in some way responsible for the data. They may have "
     +"assisted in collecting or maintaining the data or they may be the "
-    +"'orginator' of a data package and/or a 'metadata provider'.<br></br></li>", 13);
+    +"'orginator' of a data package or a 'metadata provider'.<br></br></li>", 13);
 
     this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
     this.add(desc);

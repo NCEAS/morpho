@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: sgarg $'
- *     '$Date: 2003-12-12 03:05:36 $'
- * '$Revision: 1.18 $'
+ *     '$Date: 2003-12-16 23:21:02 $'
+ * '$Revision: 1.19 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -49,6 +49,7 @@ import javax.swing.JTextField;
 import javax.swing.JPanel;
 import javax.swing.AbstractAction;
 import javax.swing.JComboBox;
+import javax.swing.border.EmptyBorder;
 
 import java.util.Map;
 import java.util.List;
@@ -66,8 +67,8 @@ public class Keywords extends AbstractWizardPage{
 
   private final String pageID     = DataPackageWizardInterface.KEYWORDS;
   private final String nextPageID = DataPackageWizardInterface.PARTY_INTRO;
-  private final String title      = "General Dataset Information:";
-  private final String subtitle   = "Keyword Sets";
+  private final String title      = "Keywords";
+  private final String subtitle   = "";
   private final String xPathRoot  = "/eml:eml/dataset/keywordSet[";
   private final String pageNumber  = "3";
 
@@ -101,14 +102,16 @@ public class Keywords extends AbstractWizardPage{
       +"one to associate a data package with an authoritative definition. "
       +"Thesauri may also be used for internal categorization.", 3);
     vbox.add(desc1);
-
-    vbox.add(WidgetFactory.makeDefaultSpacer());
     vbox.add(WidgetFactory.makeDefaultSpacer());
 
     keywordsList = WidgetFactory.makeList(colNames, editors, 4,
                                     true, true, false, true, true, true );
 
+    keywordsList.setBorder(new EmptyBorder(0,WizardSettings.PADDING,
+                             WizardSettings.PADDING, 2*WizardSettings.PADDING));
+
     vbox.add(keywordsList);
+    vbox.add(WidgetFactory.makeDefaultSpacer());
 
     initActions();
   }

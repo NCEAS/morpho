@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2003-12-15 20:28:32 $'
- * '$Revision: 1.38 $'
+ *   '$Author: sgarg $'
+ *     '$Date: 2003-12-16 23:21:02 $'
+ * '$Revision: 1.39 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -129,12 +129,12 @@ public class WizardSettings {
   // x-dimension is ignored:
   protected static final Dimension TOP_PANEL_DIMS = new Dimension(100,60);
 
-  protected static final int PADDING = 5;
+  public static final int PADDING = 5;
 
   public static final Dimension DEFAULT_SPACER_DIMS = new Dimension(15, 15);
 
   protected static final Font  TITLE_FONT
-  = new Font("Sans-Serif", Font.BOLD,  12);
+  = new Font("Sans-Serif", Font.BOLD,  13);
 
   protected static final Color TITLE_TEXT_COLOR
   = new Color(255,255,255);
@@ -218,8 +218,6 @@ public class WizardSettings {
   protected static final String OK_BUTTON_TEXT      = "OK";
 
   public static String NUMBER_OF_STEPS              = "11";
-
-  public static int COMPONENT_PADDING               = 5;
 
   protected static final String NEW_EML200_DOCUMENT_TEXT =
   "<eml:eml "

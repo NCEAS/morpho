@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: sgarg $'
- *     '$Date: 2003-12-12 03:05:36 $'
- * '$Revision: 1.9 $'
+ *     '$Date: 2003-12-16 23:21:02 $'
+ * '$Revision: 1.10 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -83,7 +83,7 @@ public class Summary extends AbstractWizardPage {
     "<p>You can press the \""+WizardSettings.FINISH_BUTTON_TEXT+"\" button to "
     +"create your new data, or you can use the \""
     +WizardSettings.PREV_BUTTON_TEXT+"\" button to return to previous pages "
-    +"and change your settings.</p>", 2);
+    +"and change the information you have added.</p>", 2);
     this.add(desc3);
   }
 

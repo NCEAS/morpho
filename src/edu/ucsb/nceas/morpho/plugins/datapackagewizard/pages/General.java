@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: sgarg $'
- *     '$Date: 2003-12-12 03:05:35 $'
- * '$Revision: 1.6 $'
+ *     '$Date: 2003-12-16 23:21:02 $'
+ * '$Revision: 1.7 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -41,6 +41,7 @@ import javax.swing.JScrollPane;
 
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.AbstractWizardPage;
 import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
+import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardSettings;
 
 
 public class General extends AbstractWizardPage{
@@ -49,7 +50,7 @@ public class General extends AbstractWizardPage{
 
   private final String pageID     = DataPackageWizardInterface.GENERAL;
   private final String nextPageID = DataPackageWizardInterface.KEYWORDS;
-  private final String title      = "General Dataset Package Information:";
+  private final String title      = "General Dataset Package Information";
   private final String subtitle   = "Title and Abstract";
   public final String pageNumber  = "2";
 
@@ -72,7 +73,7 @@ public class General extends AbstractWizardPage{
     this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
     JPanel vbox = this;
 
-    vbox.add(WidgetFactory.makeDefaultSpacer());
+    vbox.add(WidgetFactory.makeHalfSpacer());
 
     JLabel titleDesc = WidgetFactory.makeHTMLLabel(
         "<b>Enter the title of the data package.</b> The title field provides a "
@@ -83,15 +84,15 @@ public class General extends AbstractWizardPage{
 
     JPanel titlePanel = WidgetFactory.makePanel(1);
 
-    titleLabel = WidgetFactory.makeLabel("Title", true);
+    titleLabel = WidgetFactory.makeLabel(" Title:", true);
     titlePanel.add(titleLabel);
 
     titleField = WidgetFactory.makeOneLineTextField();
     titlePanel.add(titleField);
 
+    titlePanel.setBorder(new javax.swing.border.EmptyBorder(0,0,0,5*WizardSettings.PADDING));
     vbox.add(titlePanel);
 
-    vbox.add(WidgetFactory.makeDefaultSpacer());
     vbox.add(WidgetFactory.makeDefaultSpacer());
 
     ////////////////////////////////////////////////////////////////////////////
@@ -105,7 +106,7 @@ public class General extends AbstractWizardPage{
 
     JPanel abstractPanel = WidgetFactory.makePanel();
 
-    JLabel absLabel = WidgetFactory.makeLabel("Abstract", false);
+    JLabel absLabel = WidgetFactory.makeLabel(" Abstract:", false);
     absLabel.setVerticalAlignment(SwingConstants.TOP);
     absLabel.setAlignmentY(SwingConstants.TOP);
     abstractPanel.add(absLabel);
@@ -113,8 +114,11 @@ public class General extends AbstractWizardPage{
     absField = WidgetFactory.makeTextArea("", 15, true);
     JScrollPane jscrl = new JScrollPane(absField);
     abstractPanel.add(jscrl);
+
+    abstractPanel.setBorder(new javax.swing.border.EmptyBorder(0,0,0,5*WizardSettings.PADDING));
     vbox.add(abstractPanel);
 
+    vbox.add(WidgetFactory.makeDefaultSpacer());
     vbox.add(WidgetFactory.makeDefaultSpacer());
 
   }

@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: sgarg $'
- *     '$Date: 2003-12-12 03:05:35 $'
- * '$Revision: 1.2 $'
+ *     '$Date: 2003-12-16 23:21:02 $'
+ * '$Revision: 1.3 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -93,7 +93,7 @@ public class Access extends AbstractWizardPage {
         "<p><b>Allow public viewing access to your dataset?</b> Access to your "
         +"data can be controlled using this screen. By default, "
         +"read and write access is given to your username and read-only access is "
-        +"given to the public. This can be changed using this screen.</p>", 3);
+        +"given to the public. Do you want to give read access to public?</p>", 3);
 
     topBox.add(desc);
 

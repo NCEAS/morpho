@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: sgarg $'
- *     '$Date: 2003-12-12 03:05:36 $'
- * '$Revision: 1.12 $'
+ *     '$Date: 2003-12-16 23:21:02 $'
+ * '$Revision: 1.13 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,8 +33,7 @@ import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardSettings;
 import java.util.Map;
 
 import javax.swing.JLabel;
-
-import java.awt.BorderLayout;
+import javax.swing.BoxLayout;
 
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.AbstractWizardPage;
 import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
@@ -64,36 +63,27 @@ public class Introduction extends AbstractWizardPage {
    */
   private void init() {
 
+    this.add(WidgetFactory.makeDefaultSpacer());
+
     JLabel desc = WidgetFactory.makeHTMLLabel(
     "<p>If you do not have a basic understanding of metadata and "
     +"related concepts you should start by reading the <a>Ecological Metadata "
     +"Language(EML) Guide</a>. It provides background information on metadata "
     +"and contains metadata creation examples. This wizard creates a <i>Data "
-    +"Package</i> that consists of metadata that describes your data and the "
+    +"Package</i> that consists of the metadata that describes your data and the "
     +"data itself. The wizard uses a subset of EML to describe your data. If "
-    +"additional metadata are needed to adequately document your data use "
+    +"additional metadata are needed to adequately document your data, use "
     +"<i>Morpho's EML Editor</i>. Before beginning you should have your data "
     +"(electronic or hardcopy format), and the following types of metadata "
     +"information in front of you: </p><br></br>"
-    +"<li><b>General Information</b> <br></br>Information such as title, abstract, "
-    +"keywords, people and/or organizations responsible for the data and "
-    +"data usage rights.<br></br></li>"
-    +"<li><b>Geographic and Temporal Information</b> <br></br>Data location descriptions, "
-    +"geographic coordinates and temporal information that describes when the data were "
-    +"collected.<br></br></li>"
-    +"<li><b>Taxonomic Information:</b> <br></br>Information such as species names and "
-    +"taxonomic level.<br></br></li>"
-    +"<li><b>Methods:</b> <br></br>A description of the steps taken to collect the data, "
-    +"sampling designs, electronic and computer equipment used, etc. <br></br></li>"
-    +"<li><b>Data Table Information</b> <br></br>The data table is the data file that "
-    +"contains your data. The wizard only allows you to document one table initially. "
-    +"More tables can be added later. You should have information regarding the "
-    +"structure of your data file, e.g. measurement units, definitions for codes "
-    +"and abbreviations, values used for \"No Data\", etc. This wizard is not "
-    +"meant for RDBMS files.<br></br></li></ul>", 10);
+    +"<li><b>Title and abstract</b><br></br> <br></br></li>"
+    +"<li><b>Keywords</b> <br></br> <br></br></li>"
+    +"<li><b>People and Organizations</b><br></br> <br></br></li>"
+    +"<li><b>Project Information</b><br></br> <br></br></li>"
+    +"<li><b>Data Usage Rights</b><br></br> <br></br></li></ul>", 20);
 
-    this.setLayout(new BorderLayout());
-    this.add(desc, BorderLayout.CENTER);
+    this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+    this.add(desc);
   }
 
 

@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: sgarg $'
- *     '$Date: 2003-12-12 03:05:36 $'
- * '$Revision: 1.5 $'
+ *     '$Date: 2003-12-16 23:21:02 $'
+ * '$Revision: 1.6 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -38,6 +38,7 @@ import javax.swing.JLabel;
 import javax.swing.Action;
 import javax.swing.JFrame;
 import javax.swing.AbstractAction;
+import javax.swing.border.EmptyBorder;
 
 import java.awt.event.ActionEvent;
 import java.awt.BorderLayout;
@@ -63,7 +64,7 @@ public class PartyMainPage extends AbstractWizardPage{
 
   private final String[] colNames =  {"Party", "Role", "Address"};
   private final Object[] editors  =   null; //makes non-directly-editable
-  public final String title      = "Dataset Associated Parties:";
+  public final String title      = "Dataset Associated Parties";
   public final short role;
 
   public String subtitle;
@@ -174,6 +175,8 @@ public class PartyMainPage extends AbstractWizardPage{
 
     partiesList = WidgetFactory.makeList(colNames, editors, 4,
                                     true, true, false, true, true, true );
+    partiesList.setBorder(new EmptyBorder(0,WizardSettings.PADDING,
+                             WizardSettings.PADDING, 2*WizardSettings.PADDING));
 
     vPanel.add(WidgetFactory.makeDefaultSpacer());
 
