@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-03-26 18:50:10 $'
- * '$Revision: 1.112 $'
+ *     '$Date: 2003-04-01 18:28:00 $'
+ * '$Revision: 1.113 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1591,7 +1591,7 @@ public class DataPackage implements XMLFactoryInterface
       EMLConvert.doTransform("metadata/"+id);
     }
     catch (Exception ee) {
-        System.out.println("Error in EMLConvert.export(): " + ee.getMessage());
+        System.out.println("Error in EMLConvert: " + ee.getMessage());
         ee.printStackTrace();
     }
     // now delete the temp files

@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-03-26 18:50:10 $'
- * '$Revision: 1.2 $'
+ *     '$Date: 2003-04-01 18:28:00 $'
+ * '$Revision: 1.3 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -121,8 +121,14 @@ public class EMLConvert
       // Cast the TransformerFactory to SAXTransformerFactory.
       SAXTransformerFactory saxTFactory = ((SAXTransformerFactory) tFactory);	  
       // Create a TransformerHandler for each stylesheet.
-      TransformerHandler tHandler1 = saxTFactory.newTransformerHandler(new StreamSource("xsl/triple_info.xsl"));
-      TransformerHandler tHandler2 = saxTFactory.newTransformerHandler(new StreamSource("xsl/emlb6toeml2.xsl")); 
+      
+      // files created since using a string for the new StreamSourece objects
+      // does not work correctly if there is a space in the path!
+      File f1 = new File("./xsl/triple_info.xsl");
+      File f2 = new File("./xsl/emlb6toeml2.xsl");
+      
+      TransformerHandler tHandler1 = saxTFactory.newTransformerHandler(new StreamSource(f1));
+      TransformerHandler tHandler2 = saxTFactory.newTransformerHandler(new StreamSource(f2)); 
       
       Transformer tr = tHandler1.getTransformer(); 
       getPathInfo(datasetID);
