@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-11-07 18:08:45 $'
- * '$Revision: 1.11 $'
+ *     '$Date: 2001-11-07 20:12:42 $'
+ * '$Revision: 1.12 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1670,11 +1670,11 @@ public void startImport(String file) {
 	  XMLBuffer.append("    <identifier> </identifier>\n");
 	  for (int i=0;i<colTitles.size();i++) {
 	    XMLBuffer.append("    <attribute>\n");
-	    XMLBuffer.append("        <attributeName> "+colTitles.elementAt(i)+"</attributeName>\n");
-	    XMLBuffer.append("        <attributeLabel> "+colTitles.elementAt(i)+"</attributeLabel>\n");
-	    XMLBuffer.append("        <attributeDefinition>"+colTitles.elementAt(i)+"</attributeDefinition>\n");
-	    XMLBuffer.append("        <unit> "+units.elementAt(i)+"</unit>\n");
-	    XMLBuffer.append("        <dataType> "+colTypes.elementAt(i)+"</dataType>\n");
+	    XMLBuffer.append("        <attributeName> "+normalize(colTitles.elementAt(i))+"</attributeName>\n");
+	    XMLBuffer.append("        <attributeLabel> "+normalize(colTitles.elementAt(i))+"</attributeLabel>\n");
+	    XMLBuffer.append("        <attributeDefinition>"+normalize(colTitles.elementAt(i))+"</attributeDefinition>\n");
+	    XMLBuffer.append("        <unit> "+normalize(units.elementAt(i))+"</unit>\n");
+	    XMLBuffer.append("        <dataType> "+normalize(colTypes.elementAt(i))+"</dataType>\n");
 	    XMLBuffer.append("        <attributeDomain>\n");
 	    XMLBuffer.append("             <rangeDomain>\n");
 	    XMLBuffer.append("                <minimum> </minimum>\n");
@@ -1700,12 +1700,12 @@ public void startImport(String file) {
 	  XMLBuffer.append("<!DOCTYPE table-entity PUBLIC \"-//ecoinformatics.org//eml-entity-2.0.0beta4//EN\" \"eml-entity.dtd\">\n");
 	  XMLBuffer.append("<table-entity>\n");
 	  XMLBuffer.append("    <identifier> </identifier>\n");
-	  XMLBuffer.append("    <entityName> "+TableNameTextField.getText()+"</entityName>\n");
-	  XMLBuffer.append("    <entityDescription> "+TableDescriptionTextField.getText()+"</entityDescription>\n");
+	  XMLBuffer.append("    <entityName> "+normalize(TableNameTextField.getText())+"</entityName>\n");
+	  XMLBuffer.append("    <entityDescription> "+normalize(TableDescriptionTextField.getText())+"</entityDescription>\n");
 	  XMLBuffer.append("    <orientation columnorrow=\"columnmajor\"></orientation>\n");
 	  XMLBuffer.append("    <caseSensitive yesorno=\"no\"></caseSensitive>\n");
 	  String numRecords = (new Integer(nlines - startingLine + 1)).toString();
-	  XMLBuffer.append("    <numberOfRecords> "+numRecords+"</numberOfRecords>\n");
+	  XMLBuffer.append("    <numberOfRecords> "+normalize(numRecords)+"</numberOfRecords>\n");
 	  XMLBuffer.append("</table-entity>\n");
 	  return XMLBuffer.toString();
 	}
@@ -1751,4 +1751,55 @@ public void startImport(String file) {
       listener.importCanceled();
     }
 	}
+	
+	
+    /** Normalizes the given string. */
+    private String normalize(Object ss) {
+        String s = "";
+        s = (String)ss;
+        StringBuffer str = new StringBuffer();
+
+        int len = (s != null) ? s.length() : 0;
+        for (int i = 0; i < len; i++) {
+            char ch = s.charAt(i);
+            switch (ch) {
+                case '<': {
+                    str.append("&lt;");
+                    break;
+                }
+                case '>': {
+                    str.append("&gt;");
+                    break;
+                }
+                case '&': {
+                    str.append("&amp;");
+                    break;
+                }
+                case '"': {
+                    str.append("&quot;");
+                    break;
+                }
+                case '\r':
+		case '\t':
+                case '\n': {
+                    if (false) {
+                        str.append("&#");
+                        str.append(Integer.toString(ch));
+                        str.append(';');
+                        break;
+                    }
+                    // else, default append char
+			break;
+                }
+                default: {
+                    str.append(ch);
+                }
+            }
+        }
+
+        return str.toString();
+
+    } // normalize(String):String
+	
+	
 }
