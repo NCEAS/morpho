@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: sgarg $'
- *     '$Date: 2004-01-23 19:27:49 $'
- * '$Revision: 1.13 $'
+ *     '$Date: 2004-02-24 17:38:09 $'
+ * '$Revision: 1.14 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -110,11 +110,11 @@ public class Project extends AbstractWizardPage {
       public void itemStateChanged(ItemEvent e) {
         Log.debug(45, "got radiobutton command: "+e.getStateChange());
         onLoadAction();
-        if (e.getStateChange() == e.DESELECTED) {
+        if (e.getStateChange() == ItemEvent.DESELECTED) {
           instance.remove(currentPanel);
           currentPanel = noDataPanel;
           instance.add(noDataPanel, BorderLayout.CENTER);
-        } else if (e.getStateChange() == e.SELECTED) {
+        } else if (e.getStateChange() == ItemEvent.SELECTED) {
           instance.remove(currentPanel);
           currentPanel = dataPanel;
           instance.add(dataPanel, BorderLayout.CENTER);

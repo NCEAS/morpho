@@ -7,9 +7,9 @@
  *    Authors: Saurabh Garg
  *    Release: @release@
  *
- *   '$Author: sambasiv $'
- *     '$Date: 2004-02-06 19:48:35 $'
- * '$Revision: 1.6 $'
+ *   '$Author: sgarg $'
+ *     '$Date: 2004-02-24 17:38:10 $'
+ * '$Revision: 1.7 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -50,7 +50,6 @@ import java.awt.Dimension;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
-import javax.swing.border.EmptyBorder;
 import javax.swing.JComponent;
 import javax.swing.BoxLayout;
 import javax.swing.JLabel;
