@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2003-08-08 21:18:03 $'
- * '$Revision: 1.4 $'
+ *     '$Date: 2003-08-28 22:36:46 $'
+ * '$Revision: 1.5 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -35,11 +35,15 @@ import edu.ucsb.nceas.morpho.util.Log;
 
 import java.util.EventObject;
 import java.util.Vector;
+import java.util.List;
+import java.util.Arrays;
 
 import java.awt.Component;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 
+import javax.swing.JComboBox;
+import javax.swing.JCheckBox;
 import javax.swing.Box;
 import javax.swing.AbstractAction;
 import javax.swing.JTable;
@@ -86,9 +90,12 @@ public class CustomList extends JPanel {
   private boolean showMoveUpButton;
   private boolean showMoveDownButton;
   
+  protected static  AddAction       addAction;
   private static  TableModelEvent tableModelEvent;
+  
 
-  public CustomList(String[] colNames, int displayRows, boolean showAddButton, 
+  public CustomList(String[] colNames, Object[] columnEditors, int displayRows, 
+                    boolean showAddButton, 
                     boolean showEditButton,       boolean showDeleteButton, 
                     boolean showMoveUpButton,     boolean showMoveDownButton) { 
   
@@ -98,22 +105,24 @@ public class CustomList extends JPanel {
     this.showMoveUpButton   = showMoveUpButton;
     this.showMoveDownButton = showMoveDownButton;
     
-    init(colNames, displayRows); 
+    init(colNames, displayRows, columnEditors); 
   }
     
-  private void init(String[] colNames, int displayRows) { 
+  private void init(String[] colNames, int displayRows, 
+                                                      Object[] columnEditors) { 
   
     this.setLayout(new BorderLayout());
 
-    initList(colNames, displayRows);
+    
+    initList(colNames, displayRows, columnEditors);
     
     initButtons();
     doEnablesDisables(0);
   }
   
-  private void initList(String[] colNames, int displayRows) {
+  private void initList(String[] colNames, int displayRows, 
+                                                      Object[] columnEditors) {
     
-
     Vector colNamesVec = new Vector(colNames.length);
     
     for (int i=0; i<colNames.length; i++) {
@@ -122,10 +131,10 @@ public class CustomList extends JPanel {
     }
     
     Vector rowsData = new Vector();
-    Vector row0Data = new Vector(2);
-    row0Data.add("");
-    row0Data.add("");
-    rowsData.add(row0Data);
+//    Vector row0Data = new Vector(2);
+//    row0Data.add("");
+//    row0Data.add("");
+//    rowsData.add(row0Data);
     
     table = new CustomJTable(rowsData, colNamesVec);
          
@@ -147,7 +156,12 @@ public class CustomList extends JPanel {
 
     tableModelEvent = new TableModelEvent(table.getModel());
       
-    table.editCellAt(0, 0, new EventObject(table.getValueAt(0, 0)));
+    addAction = new AddAction(table);
+    addAction.actionPerformed(null);
+
+    if (table.getComponentAt(0, 0)!=null) {
+      table.editCellAt(0, 0, new EventObject(table.getComponentAt(0, 0)));
+    }
     table.setRowSelectionInterval(0, 0);
       
     table.getSelectionModel().addListSelectionListener(
@@ -162,6 +176,45 @@ public class CustomList extends JPanel {
           doEnablesDisables(lsModel.getMaxSelectionIndex());
         }
       });
+      
+    for (int i=0; i<columnEditors.length; i++) {
+    
+      Object editor = columnEditors[i];
+      TableColumn column = table.getColumnModel().getColumn(i);
+      
+      // if editor null, make non-editable:
+      if (editor==null) {
+      
+        Log.debug(45, "\nNULL Column Editor; making column "+i+" non-editable");
+        table.makeColumnNotEditable(i);
+        
+      } else {
+        
+        Log.debug(45, "\nsetting Column "+i+" Editor = "+editor);
+        if (editor instanceof JTextField) {
+        
+          Log.debug(45, "(JTextField)");
+          column.setCellEditor(new DefaultCellEditor((JTextField)editor));
+          
+        } else if (editor instanceof JCheckBox) {
+        
+          Log.debug(45, "(JCheckBox)");
+          column.setCellEditor(new DefaultCellEditor((JCheckBox)editor));
+
+        } else if (editor instanceof JComboBox) {
+        
+          Log.debug(45, "(JComboBox)");
+          column.setCellEditor(new DefaultCellEditor((JComboBox)editor));
+          
+        } else {
+          
+          Log.debug(45, "(NOT RECOGNIZED)");
+          //do nothing for now. do we need other editor types??
+        }
+        
+      }
+    }
+    
   }
   
   
@@ -214,7 +267,7 @@ public class CustomList extends JPanel {
 
     if (showAddButton) {
       
-      addButton      = new JButton(new AddAction(table));
+      addButton      = new JButton(addAction);
       WidgetFactory.setPrefMaxSizes(addButton, WizardSettings.LIST_BUTTON_DIMS);
       addButton.setFont(WizardSettings.WIZARD_CONTENT_FONT);
       buttonBox.add(addButton);
@@ -283,6 +336,24 @@ public class CustomList extends JPanel {
                                         && selRow < (table.getRowCount() - 1));
   }
   
+  
+  /**
+   *  returns a <code>java.util.List</code> containing elements that are also 
+   *  <code>java.util.List</code> objects, each of which represents a row from 
+   *  the list. Therefore, element 0 in the return List will contain a List that 
+   *  has the first row objects in it, and so on.  Each row element will contain
+   *  the objects used to poopulate the list's (table-)model, so the minimum 
+   *  number of entries in a row will be zero, and the max number will equal the 
+   *  number of columns in the list
+   *
+   *  @return a <code>java.util.List</code> containing elements that are also 
+   *    <code>java.util.List</code> objects, each of which represents a row from 
+   *    the list
+   */
+  public List getListOfRowLists() {
+  
+    return ((List)( (DefaultTableModel)( table.getModel()) ).getDataVector() );
+  }
 }
   
   
@@ -316,8 +387,10 @@ class AddAction extends AbstractAction {
     }
     table.tableChanged(CustomList.getTableModelEvent());
     Component comp = table.getComponentAt(row, 0);
-    table.editCellAt(row, 0, new EventObject(comp));
-    comp.requestFocus();
+    if (comp!=null) {
+      table.editCellAt(row, 0, new EventObject(comp));
+      comp.requestFocus();
+    }
     table.setRowSelectionInterval(row, row);
   }
 }
@@ -376,7 +449,7 @@ class DeleteAction extends AbstractAction {
   private void addFirstRowBack() {
   
     if (addAction==null) addAction = new AddAction(table);
-    addAction.actionPerformed(null);
+    CustomList.addAction.actionPerformed(null);
   }
 }
 
@@ -436,13 +509,14 @@ class MoveDownAction extends AbstractAction {
 
 class CustomJTable extends JTable  {
 
-    EditableStringRenderer    editableStringRenderer 
-                                    = new EditableStringRenderer();
+//    EditableStringRenderer    editableStringRenderer 
+//                                    = new EditableStringRenderer();
     DefaultTableCellRenderer  defaultRenderer 
                                     = new DefaultTableCellRenderer();
     
     DefaultCellEditor         defaultCellEditor 
                                     = new DefaultCellEditor(new JTextField());
+    boolean[] columnsEditableFlags;
     
     public CustomJTable(Vector rowVect, Vector colNamesVec) {
     
@@ -450,7 +524,11 @@ class CustomJTable extends JTable  {
       
       super.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
       defaultCellEditor.setClickCountToStart(1);
-      this.setRowHeight((int)(editableStringRenderer.getPreferredSize().height));
+      
+      columnsEditableFlags = new boolean[colNamesVec.size()];
+      Arrays.fill(columnsEditableFlags, true);
+      
+//      this.setRowHeight((int)(editableStringRenderer.getPreferredSize().height));
     }
     
     //override super
@@ -465,16 +543,6 @@ class CustomJTable extends JTable  {
     }
 
     //override super
-    public TableCellEditor getCellEditor(int row, int col) {
-
-        Class colClass = getModel().getColumnClass(col);
-//        Log.debug(45, "getCellEditor(): colClass.getName() = "+colClass.getName());
-        // can test for surrogates here////
-        
-        return defaultCellEditor;
-    }
-
-    //override super
     public boolean getDragEnabled() { return false; }
 
     //override super
@@ -482,7 +550,19 @@ class CustomJTable extends JTable  {
     
       return super.getSelectionModel().getMaxSelectionIndex();
     }
+    
+    public void makeColumnNotEditable(int col) {
+    
+      columnsEditableFlags[col] = false;
+    }
+    
+    public boolean isCellEditable(int row, int col) { 
+    
+      return columnsEditableFlags[col]; 
+    }
+    
 }
+
 
 
 

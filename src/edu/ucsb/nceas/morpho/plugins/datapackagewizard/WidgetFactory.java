@@ -20,6 +20,7 @@ import javax.swing.JTextField;
 import javax.swing.JComponent;
 import javax.swing.BorderFactory;
 import javax.swing.SwingConstants;
+import javax.swing.JComboBox;
 
 public class WidgetFactory {
   
@@ -58,6 +59,7 @@ public class WidgetFactory {
   
   }
 
+  
 
   public static JLabel makeLabel(String text, boolean hiliteRequired) {
 
@@ -240,17 +242,45 @@ public class WidgetFactory {
     setPrefMaxSizes(cbPanel, getDimForNumberOfLines(5*totalBoxes/4));
     return cbPanel;
   }
+
   
   
-  public static CustomList makeList(String[] colNames, int displayRows, 
+  public static JComboBox makePickList(String[] listValues, boolean isEditable,
+                                    int selectedIndex, ItemListener listener) {
+
+    if (listValues==null) listValues = new String[] { "" };
+
+    JComboBox comboBox = new JComboBox(listValues);
+    
+    int totalBoxes = listValues.length;
+    
+    comboBox.setFont(WizardSettings.WIZARD_CONTENT_FONT);
+    comboBox.setForeground(WizardSettings.WIZARD_CONTENT_TEXT_COLOR);
+    //boxes[i].setActionCommand(listValues[i]);
+    comboBox.addItemListener(listener);
+    comboBox.setEditable(isEditable);
+    if (selectedIndex > -1 && selectedIndex < comboBox.getItemCount()) {
+    
+      comboBox.setSelectedIndex(selectedIndex);
+    }
+    
+    setPrefMaxSizes(comboBox, WizardSettings.WIZARD_CONTENT_SINGLE_LINE_DIMS);
+    return comboBox;
+  }
+
+  
+  
+  public static CustomList makeList(String[] colNames, 
+                                    Object[] colTemplates,
+                                    int displayRows, 
                                     boolean showAddButton, 
                                     boolean showEditButton,       
                                     boolean showDeleteButton, 
                                     boolean showMoveUpButton,     
                                     boolean showMoveDownButton) {
 
-    return new CustomList(colNames, displayRows, showAddButton, showEditButton,       
-                        showDeleteButton, showMoveUpButton, showMoveDownButton);
+    return new CustomList(colNames, colTemplates, displayRows, showAddButton,       
+        showEditButton, showDeleteButton, showMoveUpButton, showMoveDownButton);
   }
   
 

@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2003-08-07 19:36:04 $'
- * '$Revision: 1.3 $'
+ *     '$Date: 2003-08-28 22:36:46 $'
+ * '$Revision: 1.4 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,9 +30,14 @@ package edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages;
 
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WidgetFactory;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardSettings;
+import edu.ucsb.nceas.morpho.plugins.datapackagewizard.CustomList;
 
 import edu.ucsb.nceas.morpho.util.Log;
 import edu.ucsb.nceas.utilities.OrderedMap;
+
+import java.util.Map;
+import java.util.List;
+import java.util.Iterator;
 
 import java.awt.BorderLayout;
 
@@ -41,6 +46,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 
+import javax.swing.JComboBox;
 import javax.swing.Box;
 import javax.swing.JLabel;
 import javax.swing.JCheckBox;
@@ -109,13 +115,18 @@ public class DataFormat extends AbstractWizardPage{
     "semicolon",
     "other"
   };
+
+  private String[] pickListVals = new String[] { 
+    "Fixed-Width", 
+    "Delimited" 
+  };
   
   private String delim_tab       = null;
   private String delim_comma     = null;
   private String delim_space     = null;
   private String delim_semicolon = null;
   private boolean delim_other    = false;
-  
+  private CustomList list;
     
   // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
   
@@ -255,10 +266,6 @@ public class DataFormat extends AbstractWizardPage{
   
   // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
   
-//  private JLabel      fileNameLabelOnline;
-//  private JTextField  fileNameFieldOnline;
-//  private JLabel      urlLabelOnline;
-//  private JTextField  urlFieldOnline;
   
   
   private JPanel getComplexTextPanel() {
@@ -273,51 +280,31 @@ public class DataFormat extends AbstractWizardPage{
               "Define the delimited fields and/or fixed width fields "
               +"that describe how the data is structured:", 1));
   
+ 
+    JComboBox pickList = WidgetFactory.makePickList(pickListVals, false, 1, 
+    
+        new ItemListener() {
+        
+          public void itemStateChanged(ItemEvent e) {
+
+            Log.debug(45, "got PickList state changed; src = "
+                                          +e.getSource().getClass().getName());
+          }
+        });
+    
+    Object[] colTemplates = new Object[] { pickList, new JTextField() };
+
     String[] colNames = new String[] { 
       "Fixed-Width or Delimited?", 
       "Width or Delimiter Character:" 
     };
-    panel.add(WidgetFactory.makeList(colNames, 4, true, false,       
-                                                            true, true, true));
+    
+                                    
+    list = WidgetFactory.makeList(colNames, colTemplates, 4,
+                                  true, false, true, true, true);
+    
+    panel.add(list);
   
-//    ////
-//    JPanel fileNamePanel = WidgetFactory.makePanel(1);
-//    
-//    fileNameLabelOnline = WidgetFactory.makeLabel("File Name:", true);
-//
-//    fileNamePanel.add(fileNameLabelOnline);
-//    
-//    fileNameFieldOnline = WidgetFactory.makeOneLineTextField();
-//    fileNamePanel.add(fileNameFieldOnline);
-//    
-//    panel.add(fileNamePanel);
-//    
-//    panel.add(WidgetFactory.makeDefaultSpacer());
-//    
-//    ////
-//    JPanel urlPanel = WidgetFactory.makePanel(1);
-//    
-//    urlLabelOnline = WidgetFactory.makeLabel("URL:", true);
-//
-//    urlPanel.add(urlLabelOnline);
-//    
-//    urlFieldOnline = WidgetFactory.makeOneLineTextField();
-//    urlPanel.add(urlFieldOnline);
-//    
-//    panel.add(urlPanel);
-//    
-//    panel.add(WidgetFactory.makeDefaultSpacer());
-//    
-//    panel.add(WidgetFactory.makeHTMLLabel(
-//      "How would you like to enter the information describing "
-//      +"the format and structure of the data?", 1));
-//  
-//    panel.add(getOrientationRadioPanel());
-//    
-//    panel.add(WidgetFactory.makeDefaultSpacer());
-//    
-//    panel.add(Box.createGlue());
-//    
     return panel;
   }
   
@@ -349,19 +336,7 @@ public class DataFormat extends AbstractWizardPage{
         
     panel.add(WidgetFactory.makeDefaultSpacer());
     panel.add(Box.createGlue());
-
-
-//    
-//    panel.add(WidgetFactory.makeHTMLLabel(
-//      "How would you like to enter the information describing "
-//      +"the format and structure of the data?", 1));
-//  
-//    panel.add(getOrientationRadioPanel());
-//    
-//    panel.add(WidgetFactory.makeDefaultSpacer());
-//    
-//    panel.add(Box.createGlue());
-  
+ 
     return panel;
   }
   
@@ -446,7 +421,10 @@ public class DataFormat extends AbstractWizardPage{
       }
     
 
-//    } else if (formatXPath==COMPLEX_TEXT_XPATH) {
+    } else if (formatXPath==COMPLEX_TEXT_XPATH) {
+    
+
+      //NEED TO CALL getListAsNVP() and check for empty map - if so - prompt
 
     } else if (formatXPath==PROPRIETARY_XPATH) {
 
@@ -466,6 +444,32 @@ public class DataFormat extends AbstractWizardPage{
     return true;
   }
   
+  
+  private OrderedMap listResultsMap = new OrderedMap();
+  //
+  private OrderedMap getListAsNVP() {
+  
+    listResultsMap.clear();
+    
+    List rowLists = list.getListOfRowLists();
+    String fixedDelimStr = null;
+  
+    for (Iterator it = rowLists.iterator(); it.hasNext();) {
+  
+      List nextRow = (List)(it.next());
+      
+ /////////////////////////
+ // NEED TO CHECK FOR AND ELIMINATE EMPTY ROWS!!
+ ///////////////     
+      if (nextRow.get(0).equals(pickListVals[0])) fixedDelimStr = "textFixed/fieldWidth";
+      else fixedDelimStr = "textDelimited/fieldDelimiter";
+      
+      listResultsMap.put(COMPLEX_TEXT_XPATH + fixedDelimStr, nextRow.get(1));
+    }
+    return listResultsMap;
+
+  }
+
   
   /**
    *  gets the OrderedMap object that contains all the key/value paired
@@ -544,7 +548,9 @@ public class DataFormat extends AbstractWizardPage{
       }
                                          
     
-//    } else if (formatXPath==COMPLEX_TEXT_XPATH)  {
+    } else if (formatXPath==COMPLEX_TEXT_XPATH)  {
+    
+      returnMap = getListAsNVP();
 
     } else if (formatXPath==PROPRIETARY_XPATH)  {
 
