@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-02-05 21:59:08 $'
- * '$Revision: 1.45 $'
+ *     '$Date: 2002-03-05 20:43:03 $'
+ * '$Revision: 1.46 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1487,6 +1487,69 @@ public class DataPackage
         }
       }
     return datafile;
+  } 
+
+
+  public String getDataFileID(String entityID) {
+    String dataFileID = "";
+    boolean localloc = false;
+    boolean metacatloc = false;
+    if(location.equals(DataPackage.BOTH))
+    {
+      localloc = true;
+      metacatloc = true;
+    }
+    else if(location.equals(DataPackage.METACAT))
+    {
+      metacatloc = true;
+    }
+    else if(location.equals(DataPackage.LOCAL))
+    {
+      localloc = true;
+    }
+      Vector triplesV = triples.getCollection();
+      // first find out if there are ANY data files
+      for(int i=0; i<triplesV.size(); i++)
+      {
+        Triple triple = (Triple)triplesV.elementAt(i);
+        String relationship = triple.getRelationship();
+        FileSystemDataStore fsds = new FileSystemDataStore(framework);
+        MetacatDataStore mds = new MetacatDataStore(framework);
+        if(relationship.indexOf("isDataFileFor") != -1)
+        {
+          String dFileID = triple.getSubject();
+          // now see if entity file points to this data file
+          for (int j=0; j<triplesV.size();j++) {
+            Triple tripleA = (Triple)triplesV.elementAt(j);
+            if ((tripleA.getSubject().equals(entityID))&&(tripleA.getObject().equals(dFileID))) {
+              if(localloc)
+              { //get the file locally and save it
+                try {
+                  dataFileID = dFileID;
+                }
+                catch(Exception e)
+                {
+                  System.out.println("Error in DataPackage.getDataFile(): " + e.getMessage());
+                  e.printStackTrace();
+                }
+              }
+              else if(metacatloc)
+              { //get the file from metacat
+                try {
+                  dataFileID = dFileID;
+                }
+                catch(Exception e)
+                {
+                  System.out.println("Error in DataPackage.getDataFile(): " + e.getMessage());
+                  e.printStackTrace();
+                }
+              }
+                            
+            }
+          }
+        }
+      }
+    return dataFileID;
   } 
 
   private File[] listFiles(File dir) {
