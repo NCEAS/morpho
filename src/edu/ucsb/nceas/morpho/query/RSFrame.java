@@ -5,7 +5,7 @@
  *              National Center for Ecological Analysis and Synthesis
  *     Authors: Dan Higgins
  *
- *     Version: '$Id: RSFrame.java,v 1.2 2000-08-31 16:40:15 higgins Exp $'
+ *     Version: '$Id: RSFrame.java,v 1.3 2000-08-31 23:06:05 higgins Exp $'
  */
 
 
@@ -24,10 +24,12 @@ import java.net.URL;
 
 public class RSFrame extends javax.swing.JFrame
 {
+    edu.ucsb.nceas.metaedit.AbstractMdeBean mde;
+    JTabbedPane tab;
     MouseListener popupListener;
     
     JMenuItem ShowmenuItem;
-    JMenuItem DeletemenuItem;
+    JMenuItem SavemenuItem;
     JMenuItem EditmenuItem;
     
     public boolean local = true;
@@ -97,9 +99,10 @@ public class RSFrame extends javax.swing.JFrame
 		ShowmenuItem.addActionListener(lSymAction);
         popup.add(ShowmenuItem);
 		EditmenuItem = new JMenuItem("Edit Document");
+		EditmenuItem.addActionListener(lSymAction);
         popup.add(EditmenuItem);
-		DeletemenuItem = new JMenuItem("Delete Document");
-        popup.add(DeletemenuItem);
+		SavemenuItem = new JMenuItem("Save Document");
+        popup.add(SavemenuItem);
 		
 		
     try {
@@ -173,6 +176,13 @@ public class RSFrame extends javax.swing.JFrame
 	*/	
 	}
 
+
+    public void setEditor (edu.ucsb.nceas.metaedit.AbstractMdeBean mde) {
+       this.mde = mde; 
+    }
+    public void setTabbedPane (JTabbedPane tp) {
+       this.tab = tp; 
+    }
     public void setLocal(boolean loc) {
         local = loc;
     }
@@ -244,6 +254,8 @@ public class RSFrame extends javax.swing.JFrame
 			Object object = event.getSource();
 			if (object == ShowmenuItem) 
 				ShowMenuItem_actionPerformed(event);
+	        else if (object == EditmenuItem)
+	            EditMenuItem_actionPerformed(event);
 		}
 	}
 
@@ -274,18 +286,87 @@ public class RSFrame extends javax.swing.JFrame
 		    
 		        InputStream in = msg.sendPostMessage(prop);
 		        String message_sent = MetaCatServletURL+msg.getArgString();
-		    
+		        
+//		        File tmp = new File("tmp/");
+//		        if (!tmp.exists()) {
+//		            tmp.mkdir();
+//		        }
+//		        File temp = new File("tmp/temp.xml");
+//		        FileWriter fw = new FileWriter(temp);
 		        StringBuffer txt = new StringBuffer();
 		        int x;
 		        try {
 		        while((x=in.read())!=-1) {
 		             txt.append((char)x);
+//		             fw.write(x);
 		            }
+//		            fw.close();
+//		            if (mde!=null) {
+//		                mde.openDocument(temp);
+//		                tab.setSelectedIndex(0);
+//		            }
+//		            else {System.out.println("mde is null in RSFrame class");}
 		        }
 		        catch (Exception f) {}
 		        String txt1 = txt.toString();
 		        DocFrame df = new DocFrame("Selected Document", txt1);
                 df.setVisible(true);
+		        in.close();
+		        }
+		        catch (Exception ee) {
+		           ee.printStackTrace();
+		        }                        
+	   }
+	}
+	void EditMenuItem_actionPerformed(java.awt.event.ActionEvent event)
+	{
+	   int selectedRow = JTable1.getSelectedRow();
+	   if (local) {
+	    if (selectedRow>-1) {
+            String filename = (String)JTable1.getModel().getValueAt(selectedRow, 0);
+            File temp = new File(filename);
+		            if (mde!=null) {
+		                mde.openDocument(temp);
+		                tab.setSelectedIndex(0);
+		            }
+		            else {System.out.println("mde is null in RSFrame class");}
+	    }
+	   }
+	   else {
+            String qtext1 = (String)JTable1.getModel().getValueAt(selectedRow, 0);
+                    // assumes that docid is in first column of table
+	        String respType = "xml";
+	        try {
+		        URL url = new URL(MetaCatServletURL);
+		        HttpMessage msg = new HttpMessage(url);
+		        Properties prop = new Properties();
+		        prop.put("action","getdocument");
+		        prop.put("docid",qtext1);
+		        prop.put("qformat",respType);
+		    
+		    
+		        InputStream in = msg.sendPostMessage(prop);
+		        String message_sent = MetaCatServletURL+msg.getArgString();
+		        
+		        File tmp = new File("tmp/");
+		        if (!tmp.exists()) {
+		            tmp.mkdir();
+		        }
+		        File temp = new File("tmp/temp.xml");
+		        FileWriter fw = new FileWriter(temp);
+		        int x;
+		        try {
+		        while((x=in.read())!=-1) {
+		             fw.write(x);
+		            }
+		            fw.close();
+		            if (mde!=null) {
+		                mde.openDocument(temp);
+		                tab.setSelectedIndex(0);
+		            }
+		            else {System.out.println("mde is null in RSFrame class");}
+		        }
+		        catch (Exception f) {}
 		        in.close();
 		        }
 		        catch (Exception ee) {

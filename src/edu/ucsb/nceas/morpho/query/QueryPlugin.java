@@ -5,7 +5,7 @@
  *              National Center for Ecological Analysis and Synthesis
  *     Authors: Dan Higgins
  *
- *     Version: '$Id: QueryPlugin.java,v 1.14 2000-08-31 16:40:15 higgins Exp $'
+ *     Version: '$Id: QueryPlugin.java,v 1.15 2000-08-31 23:06:05 higgins Exp $'
  */
 
 package edu.ucsb.nceas.querybean;
@@ -55,6 +55,12 @@ import org.apache.xalan.xpath.xml.*;
 //public class QueryBean extends java.awt.Container 
 public class QueryBean extends AbstractQueryBean 
 {
+    // reference to bean needed to hand off file to editor
+    edu.ucsb.nceas.metaedit.AbstractMdeBean mde = null; 
+    
+    // Tabbed panel that contains the QueryBean
+    JTabbedPane tabbedPane = null;
+    
     String userName = "anonymous";
     String passWord = "none";
     boolean searchlocal = true;
@@ -69,7 +75,7 @@ public class QueryBean extends AbstractQueryBean
     MouseListener popupListener;
     
     JMenuItem ShowmenuItem;
-    JMenuItem DeletemenuItem;
+    JMenuItem SavemenuItem;
     JMenuItem EditmenuItem;
     
 	public QueryBean() 
@@ -687,9 +693,10 @@ public class QueryBean extends AbstractQueryBean
 		ShowmenuItem.addActionListener(lSymAction);
         popup.add(ShowmenuItem);
 		EditmenuItem = new JMenuItem("Edit Document");
+		EditmenuItem.addActionListener(lSymAction);
         popup.add(EditmenuItem);
-		DeletemenuItem = new JMenuItem("Delete Document");
-        popup.add(DeletemenuItem);
+		SavemenuItem = new JMenuItem("Save Document");
+        popup.add(SavemenuItem);
 
 		invalidate();
 		setVisible(true);
@@ -960,6 +967,8 @@ public class QueryBean extends AbstractQueryBean
 				SearchButton_actionPerformed(event);
 			else if (object == ShowmenuItem) 
 				ShowMenuItem_actionPerformed(event);
+			else if (object == EditmenuItem) 
+				EditMenuItem_actionPerformed(event);
 			if (object == SearchButton1)
 				SearchButton1_actionPerformed(event);
 			
@@ -978,6 +987,19 @@ public class QueryBean extends AbstractQueryBean
 	   }
 	}
 
+	void EditMenuItem_actionPerformed(java.awt.event.ActionEvent event)
+	{
+	   int selectedRow = table.getSelectedRow();
+	    if (selectedRow>-1) {
+            String filename = (String)table.getModel().getValueAt(selectedRow, 0);
+            File temp = new File(filename);
+		            if (mde!=null) {
+		                mde.openDocument(temp);
+		                tabbedPane.setSelectedIndex(0);
+		            }
+		            else {System.out.println("mde is null in RSFrame class");}
+	    }
+ 	}
 
 	void MoreButton_actionPerformed(java.awt.event.ActionEvent event)
 	{
@@ -1400,6 +1422,8 @@ public void searchFor(String searchText) {
         
         ExternalQuery rq = new ExternalQuery(in);
         RSFrame rs = new RSFrame("Results of Search");
+            rs.setEditor(mde);
+            rs.setTabbedPane(tabbedPane);
             rs.setVisible(true);
             rs.local=false;
                 JTable ttt = rq.getTable();
@@ -1517,5 +1541,12 @@ public void LogOut() {
 	void NetworkCheckBox1_itemStateChanged(java.awt.event.ItemEvent event)
 	{
 		searchnetwork = NetworkCheckBox1.isSelected();
+	}
+	
+	public void setEditor (edu.ucsb.nceas.metaedit.AbstractMdeBean mde) {
+	    this.mde = mde;
+	}
+	public void setTabbedPane (JTabbedPane tp) {
+	    tabbedPane = tp;
 	}
 }
