@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-05-10 04:06:26 $'
- * '$Revision: 1.1 $'
+ *     '$Date: 2001-05-10 15:36:02 $'
+ * '$Revision: 1.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -41,18 +41,18 @@ public class MetacatDataStore implements DataStoreInterface
     this.framework = cf;
   }
   
-  public void openFile(String name)
+  public File openFile(String name)
   {
-  
+    return new File(name);
   }
   
-  public void saveFile(String name)
+  public void saveFile(String name, File file)
   {
     
   }
   
-  public void newFile(String name)
+  public File newFile(String name)
   {
-  
+    return new File(name);
   }
 }

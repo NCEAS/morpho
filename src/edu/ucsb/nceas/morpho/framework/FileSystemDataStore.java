@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-05-10 04:01:15 $'
- * '$Revision: 1.1 $'
+ *     '$Date: 2001-05-10 15:36:02 $'
+ * '$Revision: 1.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -42,19 +42,31 @@ public class FileSystemDataStore implements DataStoreInterface
     this.framework = cf;
   }
   
-  public void openFile(String name)
+  /**
+   * opens a file with the given name.  the name should be in the form
+   * scope.accnum where the scope is unique to this machine.  The file will
+   * be opened from the &lt;local_xml_directory&gt;/&lt;scope&gt;/ directory 
+   * where the filename is the accnum.
+   * Example: name=johnson2343.13223
+   *          local_xml_directory=/usr/local/morpho/data
+   *          complete file path=/usr/local/morpho/data/johnson2343/13223
+   */
+  public File openFile(String name)
   {
-    //ConfigXML config = framework.getConfiguration();
-    //String datadir = config.get("local_xml_directory");
+    ConfigXML config = framework.getConfiguration();
+    Vector datadirV = config.get("local_xml_directory");
+    String datadir = (String)datadirV.elementAt(0);
+    framework.debug(9, "opening files from: " + datadir);
+    return new File(name);
   }
   
-  public void saveFile(String name)
+  public void saveFile(String name, File file)
   {
     
   }
   
-  public void newFile(String name)
+  public File newFile(String name)
   {
-  
+    return new File(name);
   }
 }
