@@ -56,3 +56,9 @@ PUBLIC "-//NCEAS//eml-variable//EN" "eml-variable.dtd"
 SYSTEM "urn:nceas:test-eml-variable" "eml-variable.dtd" 
 SYSTEM "eml-variable.dtd" "eml-variable.dtd"
 
+OVERRIDE YES
+PUBLIC "eml-dataset-2.0" "eml-dataset-2.0.dtd"
+PUBLIC "-//NCEAS//eml-dataset-2.0//EN" "eml-dataset-2.0.dtd"
+SYSTEM "urn:nceas:test-eml-dataset-2.0" "eml-dataset-2.0.dtd" 
+SYSTEM "eml-dataset-2.0.dtd" "eml-dataset-2.0.dtd"
+
