@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2002-08-27 17:20:01 $'
- * '$Revision: 1.13 $'
+ *     '$Date: 2002-09-06 23:22:14 $'
+ * '$Revision: 1.14 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,6 +32,7 @@ import edu.ucsb.nceas.morpho.framework.SwingWorker;
 import edu.ucsb.nceas.morpho.framework.UIController;
 import edu.ucsb.nceas.morpho.util.Command;
 import edu.ucsb.nceas.morpho.util.Log;
+import edu.ucsb.nceas.morpho.util.SortableJTable;
 import javax.swing.JDialog;
 
 /**
@@ -90,7 +91,6 @@ public class SearchCommand implements Command
         {
           MorphoFrame resultWindow = UIController.getInstance().addWindow(
                 query.getQueryTitle());
-          resultWindow.setBusy(true);
           resultWindow.setVisible(true);
           doQuery(resultWindow, query);
         }//if
@@ -109,19 +109,21 @@ public class SearchCommand implements Command
         ResultSet results;
         public Object construct() 
         {
+          resultWindow.setBusy(true);
           results = query.execute();
-        
+          // null means the resultpanel would NOT be setted to a Jdialog
+          ResultPanel resultDisplayPanel = new ResultPanel(
+          null,results, 12, null, resultWindow.getDefaultContentAreaSize());
+          resultDisplayPanel.setVisible(true);
+          // sort the result panel
+          resultDisplayPanel.sortTable(5, SortableJTable.DECENDING);
+          resultWindow.setMainContentPane(resultDisplayPanel);
           return null;  
         }
 
         //Runs on the event-dispatching thread.
         public void finished() 
         {
-          // null means the resultpanel would NOT be setted to a Jdialog
-          ResultPanel resultDisplayPanel = new ResultPanel(
-          null,results, 12, null, resultWindow.getDefaultContentAreaSize());
-          resultDisplayPanel.setVisible(true);
-          resultWindow.setMainContentPane(resultDisplayPanel);
           resultWindow.setMessage(results.getRowCount() + " data sets found");
           resultWindow.setBusy(false);
          
