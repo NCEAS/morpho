@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-03-25 20:19:23 $'
- * '$Revision: 1.11 $'
+ *     '$Date: 2002-03-26 23:07:13 $'
+ * '$Revision: 1.12 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -162,27 +162,13 @@ public class DataViewer extends javax.swing.JFrame
 		getContentPane().setLayout(new BorderLayout(0,0));
 		setSize(755,483);
 		setVisible(false);
-		getContentPane().add(BorderLayout.CENTER,TabbedViewPanel);
-		TextPanel.setLayout(new BorderLayout(0,0));
-		TabbedViewPanel.add(TextPanel);
-		TextPanel.setBounds(2,24,750,421);
-		TextPanel.setVisible(false);
-		JScrollPane1.setOpaque(true);
-		TextPanel.add(BorderLayout.CENTER,JScrollPane1);
-		JScrollPane1.getViewport().add(DataTextArea);
-		DataTextArea.setBounds(0,0,747,418);
 		TablePanel.setLayout(new BorderLayout(0,0));
-		TabbedViewPanel.add(TablePanel);
-		TablePanel.setBounds(2,24,750,421);
-		TablePanel.setVisible(false);
-		TablePanel.add(BorderLayout.CENTER,DataScrollPanel);
-		TabbedViewPanel.setSelectedComponent(TextPanel);
-		TabbedViewPanel.setTitleAt(0,"Text View");
-		TabbedViewPanel.setTitleAt(1,"Table View");
+		getContentPane().add(BorderLayout.CENTER,TablePanel);
+		TablePanel.add(BorderLayout.CENTER, DataScrollPanel);
 		ControlPanel.setLayout(new BorderLayout(0,0));
-		getContentPane().add(BorderLayout.SOUTH,ControlPanel);
+		getContentPane().add(BorderLayout.SOUTH, ControlPanel);
 		JPanel1.setLayout(new FlowLayout(FlowLayout.RIGHT,5,5));
-		ControlPanel.add(BorderLayout.CENTER,JPanel1);
+		ControlPanel.add(BorderLayout.CENTER, JPanel1);
 		DataIDLabel.setText("Data ID: ");
 		DataIDLabel.setNextFocusableComponent(CancelButton);
 		JPanel1.add(DataIDLabel);
@@ -193,7 +179,7 @@ public class DataViewer extends javax.swing.JFrame
 		UpdateButton.setActionCommand("Update");
 		JPanel1.add(UpdateButton);
 		JPanel2.setLayout(new FlowLayout(FlowLayout.LEFT,5,5));
-		ControlPanel.add(BorderLayout.WEST,JPanel2);
+		ControlPanel.add(BorderLayout.WEST, JPanel2);
 		ImportNewButton.setText("Import New Data...");
 		ImportNewButton.setActionCommand("Import New Data...");
 		JPanel2.add(ImportNewButton);
@@ -202,14 +188,12 @@ public class DataViewer extends javax.swing.JFrame
 
 		//{{INIT_MENUS
 		//}}
-		DataTextArea.setEditable(false);
 	
 		//{{REGISTER_LISTENERS
 		SymAction lSymAction = new SymAction();
 		CancelButton.addActionListener(lSymAction);
 		UpdateButton.addActionListener(lSymAction);
 		//}}
-		TabbedViewPanel.setSelectedIndex(1);
 		
 	}
 
@@ -287,6 +271,10 @@ public class DataViewer extends javax.swing.JFrame
         {
           String s = fieldDelimiterList.item(0).getFirstChild().getNodeValue();
           this.field_delimiter = s;
+          if (s.trim().length()<1) {
+            framework.debug(30, "field delimiter is unknown!");
+            missing_metadata_flag = true; 
+          }
         }
                                                      
       }
@@ -337,6 +325,8 @@ public class DataViewer extends javax.swing.JFrame
         // try displaying as text since don't know what else to do 
         
         // add text display here!!!
+        framework.debug(30, "attempting to display as text");
+        buildTextDisplay();
       }
       else { 
         boolean text_flag = false;
@@ -352,9 +342,18 @@ public class DataViewer extends javax.swing.JFrame
         else if (format.indexOf("Asci")>-1) {
           text_flag=true;
         }
+        else if (format.indexOf("ASCI")>-1) {
+          text_flag=true;
+        }
         
         boolean image_flag = false;
         if (format.indexOf("image")>-1){
+          image_flag=true;
+        }
+        else if (format.indexOf("Image")>-1){
+          image_flag=true;
+        }
+        else if (format.indexOf("IMAGE")>-1){
           image_flag=true;
         }
         else if (format.indexOf("gif")>-1) {
@@ -474,10 +473,6 @@ public class DataViewer extends javax.swing.JFrame
 	boolean frameSizeAdjusted = false;
 
 	//{{DECLARE_CONTROLS
-	javax.swing.JTabbedPane TabbedViewPanel = new javax.swing.JTabbedPane();
-	javax.swing.JPanel TextPanel = new javax.swing.JPanel();
-	javax.swing.JScrollPane JScrollPane1 = new javax.swing.JScrollPane();
-	javax.swing.JTextArea DataTextArea = new javax.swing.JTextArea();
 	javax.swing.JPanel TablePanel = new javax.swing.JPanel();
 	javax.swing.JScrollPane DataScrollPanel = new javax.swing.JScrollPane();
 	javax.swing.JPanel ControlPanel = new javax.swing.JPanel();
@@ -608,6 +603,21 @@ public class DataViewer extends javax.swing.JFrame
     }            
 
 
+    /**
+     * builds a TextArea to display the data as a text file
+     */
+     private void buildTextDisplay() {
+        JTextArea ta = new JTextArea();
+        ta.setEditable(false);
+        parseFile();
+        for (int i=0;i<nlines;i++) {
+            ta.append(lines[i]+"\n");   
+        }
+        ta.setCaretPosition(0);
+        DataScrollPanel.getViewport().removeAll();
+        DataScrollPanel.getViewport().add(ta);
+        
+     }
 
 	/**
 	 * builds JTable from input data and includes event code for handling clicks on
@@ -633,67 +643,6 @@ public class DataViewer extends javax.swing.JFrame
                   
                   ListSelectionModel lsm =
                       (ListSelectionModel)e.getSource();
-           /*       if (lsm.isSelectionEmpty()) {
-                      //no columns are selected
-                  } else {
-                      selectedCol = lsm.getMinSelectionIndex();
-                      //selectedCol is selected
-                      ColumnData cd = (ColumnData)colDataInfo.elementAt(selectedCol);
-                      EnumCheckBox.setSelected(cd.useEnumerationList);
-                      int numUnique =  cd.colNumUniqueItems;
-                      String str = "There are "+numUnique+" unique item(s) in this column";
-                      NumUniqueLabel.setText(str);
-                      if (cd.colType.equals("Floating Point")) {
-                        String dmin = Double.toString(cd.colMin);
-                        String dmax = Double.toString(cd.colMax);
-                        String daver = Double.toString(cd.colAverage);
-                        MinMaxLabel.setText("Min:"+ dmin +"  Max:" + dmax + "  Aver:" +daver);
-                        MinTextField.setText(dmin);
-                        MaxTextField.setText(dmax);
-                      } 
-                      else if ((cd.colType.equals("Integers"))) {
-                        String min = Integer.toString((int)cd.colMin);
-                        String max = Integer.toString((int)cd.colMax);
-                        String aver = Double.toString(cd.colAverage);
-                        MinMaxLabel.setText("Min:"+ min +"  Max:" + max + "  Aver:" +aver);   
-                        MinTextField.setText(min);
-                        MaxTextField.setText(max);
-                     }
-                      else {
-                        MinMaxLabel.setText("");
-                        MinTextField.setText("");
-                        MaxTextField.setText("");
-                      }
-                      String[] headers = new String[2];
-                      headers[0] = "Code";
-                      headers[1] = "Definition";
-                      DefaultTableModel dtm = new DefaultTableModel(headers,0);
-                      String[] row = new String[2];
-                      for (int j=0;j<cd.colUniqueItemsList.size();j++) {
-                        row[0] = (String)cd.colUniqueItemsList.elementAt(j);
-                        row[1] = (String)cd.colUniqueItemsDefs.elementAt(j);
-                        dtm.addRow(row);
-                      }
-                      for (int i=0;i<20;i++) {
-                        row[0] = "";
-                        row[1] = "";
-                        dtm.addRow(row);
-                      }
-                      
-            //          JList uniq = new JList(cd.colUniqueItemsList);
-            //          JTable uniq = new JTable(dtm);
-                      uniq.setModel(dtm);
-                      UniqueItemsScroll.getViewport().removeAll();
-                      UniqueItemsScroll.getViewport().add(uniq);
-                      ColumnUnitTextField.setText(cd.colUnits);
-                      ColumnNameTextField.setText(cd.colName);
-                      ColumnLabelTextField.setText(cd.colTitle);
-                      String colType = cd.colType;
-                      DataTypeList.setSelectedValue(colType, true);
-                      ColumnDefTextArea.setText(cd.colDefinition);
-                     
-                  }
-          */        
               }
           });
       
