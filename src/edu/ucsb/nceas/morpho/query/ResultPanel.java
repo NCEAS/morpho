@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2002-08-21 00:31:42 $'
- * '$Revision: 1.48 $'
+ *     '$Date: 2002-08-22 00:07:24 $'
+ * '$Revision: 1.49 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -750,31 +750,7 @@ public class ResultPanel extends JPanel
    */
   public void reviseQuery()
   {
-    
-    // Save the original identifier
-    String identifier = results.getQuery().getIdentifier();
-
-    // QueryDialog Create and show as modal
-    MorphoFrame rsf = null;
-    QueryDialog queryDialog1 = null;
-    Container parent = getRootPane().getParent();
-    if (parent instanceof MorphoFrame) {
-      rsf = (MorphoFrame)parent;
-      queryDialog1 = new QueryDialog(rsf, morpho);
-    } else {
-      queryDialog1 = new QueryDialog(morpho);
-    }
-    queryDialog1.setQuery(results.getQuery());
-    queryDialog1.setModal(true);
-    queryDialog1.show();
-    if (queryDialog1.isSearchStarted()) {
-      Query query = queryDialog1.getQuery();
-      if (query != null) {
-        query.setIdentifier(identifier);
-        ResultSet newResults = query.execute();
-        setResults(newResults);
-      }
-    }
+  
   } 
 
   /**
