@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: sgarg $'
- *     '$Date: 2004-04-13 01:09:32 $'
- * '$Revision: 1.21 $'
+ *     '$Date: 2004-04-13 19:31:26 $'
+ * '$Revision: 1.22 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,12 +29,15 @@
 package edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages;
 
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
+import java.util.Vector;
 import javax.xml.parsers.DocumentBuilder;
 
 import java.awt.BorderLayout;
@@ -74,12 +77,6 @@ import edu.ucsb.nceas.morpho.util.HyperlinkButton;
 import edu.ucsb.nceas.morpho.util.Log;
 import edu.ucsb.nceas.morpho.util.ProgressBarThread;
 import edu.ucsb.nceas.utilities.OrderedMap;
-import java.util.Vector;
-import java.io.FileOutputStream;
-import java.io.OutputStream;
-import javax.swing.table.TableCellRenderer;
-import javax.swing.ListSelectionModel;
-import javax.swing.DefaultListSelectionModel;
 
 public class AccessPage
     extends AbstractUIPage {
@@ -110,9 +107,11 @@ public class AccessPage
   public JTreeTable treeTable = null;
   private QueryMetacatThread queryMetacat = null;
   private boolean queryMetacatCancelled;
+  private String userDN = null;
   private String userName = null;
   private String userEmail = null;
   private String userOrg = null;
+  private boolean alreadyGeneratedfromDocumentationMenu = false;
 
   private final String[] accessTypeText = new String[] {
       "  Allow",
@@ -203,6 +202,8 @@ public class AccessPage
         getMetacatURLString()) == 0) {
 
       displayTree(Access.accessTreeNode);
+    } else {
+      generateAccessTree();
     }
   }
 
@@ -514,6 +515,9 @@ public class AccessPage
     panel.add(dnLabel);
     dnField = WidgetFactory.makeOneLineTextField();
     dnField.setBackground(java.awt.Color.white);
+    if(userDN != null){
+      dnField.setText(userDN);
+    }
     panel.add(dnField);
     panel.setBorder(new javax.swing.border.EmptyBorder(
         0, WizardSettings.PADDING,
@@ -665,6 +669,7 @@ public class AccessPage
     accessTreePane = null;
 
     // clear out any other components on the screen...
+    dnField = null;
     middlePanel.removeAll();
 
     if (treeNode != null) {
@@ -672,10 +677,7 @@ public class AccessPage
       accessTreePane = new JScrollPane(treeTable);
       accessTreePane.setPreferredSize(new java.awt.Dimension(500, 500));
 
-      if (userName != null &&
-          dnField.getText().trim().compareTo(EMPTY_STRING) != 0) {
-
-        String dn = dnField.getText().trim();
+      if (userDN !=null) {
 
         int rowCount = treeTable.getRowCount();
         for (int count = rowCount; count > 0; count--) {
@@ -689,32 +691,21 @@ public class AccessPage
           Object o = treeTable.getValueAt(count, 0);
           if (o instanceof AccessTreeNodeObject) {
             AccessTreeNodeObject nodeOb = (AccessTreeNodeObject) o;
-            if ((nodeOb.nodeType == WizardSettings.ACCESS_PAGE_GROUP ||
+            if ( (nodeOb.nodeType == WizardSettings.ACCESS_PAGE_GROUP ||
                 nodeOb.nodeType == WizardSettings.ACCESS_PAGE_USER) &&
-                nodeOb.getDN().compareTo(dn)==0) {
+                nodeOb.getDN().compareTo(userDN) == 0) {
               treeTable.setRowSelectionInterval(count, count);
-              treeTable.scrollRectToVisible(treeTable.getCellRect(count, 0, true));
-              Log.debug(10, nodeOb.getDN() + "---" + dn);
+              treeTable.scrollRectToVisible(treeTable.getCellRect( ( (count - 5 >
+                  0) ? count - 5 : 0), 0, true));
               dnFound = true;
-           }
+            }
           }
         }
-          //tc.getTableCellRendererComponent(treeTable, )
-        //  String orgName = treeTable.getValueAt(count, 0) + "";
-
-          //Log.debug(10, treeTable.getValueAt(count, 0) + "");
-
-
-        //treeTable.getValueAt(1,0)
-        // treeTable.getCellRenderer()
-        //treeTable.getComponent(1);
-        //  treeTable.ge
-//        treeTable.getColgetColumn(0);
-
-        //      treeTable.
-
-      } else
-        dnField = null;
+        if (!dnFound) {
+          displayDNPanel();
+          return;
+        }
+      }
     }
 
     if (accessTreePane != null) {
@@ -762,7 +753,8 @@ public class AccessPage
     return Access.accessTreeNode;
   }
 
-  DefaultMutableTreeNode createSubTree(NodeList nl, DefaultMutableTreeNode top) {
+  DefaultMutableTreeNode createSubTree(NodeList nl,
+      DefaultMutableTreeNode top) {
     Node tempNode;
     AccessTreeNodeObject nodeObject = null;
     DefaultMutableTreeNode tempTreeNode = null;
@@ -778,7 +770,7 @@ public class AccessPage
               tempNode.getAttributes().getNamedItem("URI").getNodeValue(),
               WizardSettings.ACCESS_PAGE_AUTHSYS);
 
-          if(tempNode.getAttributes().getNamedItem("organization") != null){
+          if (tempNode.getAttributes().getNamedItem("organization") != null) {
             nodeObject.setOrganization(tempNode.getAttributes().getNamedItem(
                 "organization").getNodeValue());
           }
@@ -804,7 +796,8 @@ public class AccessPage
             if (node.getNodeName().compareTo("groupname") == 0) {
               groupNodeObject.setDN(node.getFirstChild().getNodeValue());
             } else if (node.getNodeName().compareTo("description") == 0) {
-              groupNodeObject.setDescription(node.getFirstChild().getNodeValue());
+              groupNodeObject.setDescription(node.getFirstChild().
+                  getNodeValue());
             } else if (node.getNodeName().compareTo("user") == 0) {
               NodeList nl3 = node.getChildNodes();
               nodeObject = new AccessTreeNodeObject(
@@ -819,7 +812,8 @@ public class AccessPage
                 } else if (node1.getNodeName().compareTo("email") == 0) {
                   nodeObject.setEmail(node1.getFirstChild().getNodeValue());
                 } else if (node1.getNodeName().compareTo("organization") == 0) {
-                  if(node1.getFirstChild().getNodeValue().compareTo("null") != 0){
+                  if (node1.getFirstChild().getNodeValue().compareTo("null") !=
+                      0) {
                     nodeObject.setOrganization(node1.getFirstChild().
                         getNodeValue());
                   } else {
@@ -866,7 +860,7 @@ public class AccessPage
             } else if (node1.getNodeName().compareTo("email") == 0) {
               nodeObject.setEmail(node1.getFirstChild().getNodeValue());
             } else if (node1.getNodeName().compareTo("organization") == 0) {
-              if(node1.getFirstChild().getNodeValue().compareTo("null") != 0){
+              if (node1.getFirstChild().getNodeValue().compareTo("null") != 0) {
                 nodeObject.setOrganization(node1.getFirstChild().
                     getNodeValue());
               } else {
@@ -912,12 +906,8 @@ public class AccessPage
    *          if not (e.g. if a required field hasn't been filled in)
    */
   public boolean onAdvanceAction() {
-    // if (dnField.getText().trim().equals(EMPTY_STRING)) {
-    //   WidgetFactory.hiliteComponent(dnLabel);
-    //   return false;
-    // }
-
     if (dnField == null) {
+
       int[] i = treeTable.getSelectedRows();
       if (i.length == 0) {
         warnLabel.setText("Warning: Invalid input. Please make a selection.");
@@ -930,6 +920,12 @@ public class AccessPage
           if (nodeOb.nodeType == WizardSettings.ACCESS_PAGE_GROUP ||
               nodeOb.nodeType == WizardSettings.ACCESS_PAGE_USER) {
             warnLabel.setText(EMPTY_STRING);
+
+            if(userDN != null){
+              alreadyGeneratedfromDocumentationMenu = true;
+              userDN = nodeOb.getDN();
+            }
+
             return true;
           } else {
             warnLabel.setText(
@@ -941,9 +937,14 @@ public class AccessPage
     } else {
       if (dnField.getText().trim().compareTo(EMPTY_STRING) != 0) {
         warnLabel.setText(EMPTY_STRING);
+        if(userDN != null){
+          alreadyGeneratedfromDocumentationMenu = true;
+          userDN = dnField.getText().trim();
+        }
         return true;
       } else {
-        warnLabel.setText("Warning: Distinguished Name field can not be empty.");
+        warnLabel.setText(
+            "Warning: Distinguished Name field can not be empty.");
       }
     }
     return false;
@@ -998,7 +999,7 @@ public class AccessPage
               } else {
                 sub_surrogate.add(EMPTY_STRING);
               }
-             if (nodeOb.getEmail() != null &&
+              if (nodeOb.getEmail() != null &&
                   nodeOb.getEmail().compareTo(EMPTY_STRING) != 0) {
                 sub_surrogate.add(" " + nodeOb.getEmail().trim());
               } else {
@@ -1033,7 +1034,6 @@ public class AccessPage
       }
       // Get access given to the user
       sub_surrogate.add(" " + userAccessType + "   " + userAccess.trim());
-//      sub_surrogate.add(" " + dnField.getText().trim());
       surrogate.add(sub_surrogate);
     }
 
@@ -1107,23 +1107,24 @@ public class AccessPage
    */
 
   public void onLoadAction() {
-    //   if (userName != null) { // only do this if
-    if (Access.accessTreeNode == null ||
-        Access.accessTreeMetacatServerName.compareTo(Morpho.
-        thisStaticInstance.
-        getMetacatURLString()) != 0) {
-      /**
-       * accessTreePane is null... so we have to generate Access.accessTreeNode
-       */
-      generateAccessTree();
-    } else if (userName != null && Access.accessTreeNode != null &&
-        Access.accessTreeMetacatServerName.compareTo(Morpho.
-        thisStaticInstance.
-        getMetacatURLString()) == 0) {
+    if (userDN != null && !alreadyGeneratedfromDocumentationMenu) {
+    // only do this if
+      if (Access.accessTreeNode == null ||
+          Access.accessTreeMetacatServerName.compareTo(Morpho.
+          thisStaticInstance.
+          getMetacatURLString()) != 0) {
+        /**
+         * accessTreePane is null... so we have to generate Access.accessTreeNode
+         */
+        generateAccessTree();
+      } else if (userName != null && Access.accessTreeNode != null &&
+          Access.accessTreeMetacatServerName.compareTo(Morpho.
+          thisStaticInstance.
+          getMetacatURLString()) == 0) {
 
-      displayTree(Access.accessTreeNode);
+        displayTree(Access.accessTreeNode);
+      }
     }
-    // }
   }
 
   /**
@@ -1186,13 +1187,12 @@ public class AccessPage
       this.xPathRoot = xPathRoot;
     }
 
-    displayDNPanel();
     int access = 0;
 
     if (xPathRoot.indexOf("allow") > -1) {
-      typeComboBox.setSelectedIndex(0);
+      userAccessType = "  Allow";
     } else {
-      typeComboBox.setSelectedIndex(1);
+      userAccessType = "  Deny ";
     }
 
     List toDeleteList = new ArrayList();
@@ -1202,7 +1202,6 @@ public class AccessPage
     Object nextValObj = null;
     String nextVal = null;
 
-    List accessList = new ArrayList();
 
     while (keyIt.hasNext()) {
 
@@ -1243,11 +1242,9 @@ public class AccessPage
         toDeleteList.add(nextXPathObj);
       } else if (nextXPath.startsWith("principal") ||
           nextXPath.startsWith("/principal")) {
-        if (dnField.getText().trim().compareTo(EMPTY_STRING) == 0) {
-          dnField.setText( (String) nextValObj);
-
+        if (userDN == null) {
+          userDN = (String) nextValObj;
           ConfigXML accessXML = null;
-
           try {
             accessXML = new ConfigXML(accessListFilePath);
 
@@ -1284,11 +1281,11 @@ public class AccessPage
 
     Log.debug(45, "Access type found to be" + access);
     if (access == 3) {
-      accessComboBox.setSelectedIndex(1);
+      userAccess = "Read & Write";
     } else if (access == 7) {
-      accessComboBox.setSelectedIndex(2);
+      userAccess = "Read, Write & Change Permissions";
     } else if (access == 8) {
-      accessComboBox.setSelectedIndex(3);
+      userAccess = "All";
     }
 
     //remove entries we have used from map:
@@ -1306,6 +1303,7 @@ public class AccessPage
           + map);
     }
 
+    displayDNPanel();
     return returnVal;
   }
 }
@@ -1435,8 +1433,9 @@ class QueryMetacatThread
     try {
       queryResult = null;
       //if (morpho.isConnected()) {
-      queryResult = morpho.getMetacatInputStream(prop);
-
+      if (morpho.getNetworkStatus()){
+        queryResult = morpho.getMetacatInputStream(prop);
+      }
       if (!accessPage.isQueryMetacatCancelled()) {
         accessPage.parseInputStream(queryResult);
       }
