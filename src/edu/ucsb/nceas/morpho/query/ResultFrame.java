@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2001-05-09 16:44:57 $'
- * '$Revision: 1.2 $'
+ *     '$Date: 2001-05-29 23:37:12 $'
+ * '$Revision: 1.3 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -67,7 +67,7 @@ public class ResultFrame extends JFrame
     super();
     this.framework = cf;
 
-    setTitle(results.getQuery().getQueryTitle());
+    super.setTitle(results.getQuery().getQueryTitle());
     setName(results.getQuery().getQueryTitle());
     setSize(700,600);
     setBackground(Color.white);
@@ -106,5 +106,16 @@ public class ResultFrame extends JFrame
       if (object == ResultFrame.this)
         closeFrame();
     }
+  }
+ 
+  /**
+   * Override setTitle to update the name and framework menus as well
+   */
+  public void setTitle(String title) 
+  {
+    super.setTitle(title);
+    setName(title);
+    framework.removeWindow(this);
+    framework.addWindow(this);
   }
 }

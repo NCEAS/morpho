@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2001-05-26 02:00:26 $'
- * '$Revision: 1.10 $'
+ *     '$Date: 2001-05-29 23:37:13 $'
+ * '$Revision: 1.11 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -290,12 +290,19 @@ public class ResultPanel extends JPanel
   public void setResults(ResultSet newResults) 
   {
     this.results = newResults;
-    titleLabel.setText(results.getQuery().getQueryTitle());
-    // MBJ -- Implementation problem - 25May2001
-    // Need to notify the frame and queryplugin of any title changes
-    // here, but currently this isn't possible -- need some redesign
-    // so that we can get a reference to the ResultFrame to do this
-    
+
+    // Notify the frame of any title changes
+    String newTitle = results.getQuery().getQueryTitle();
+    titleLabel.setText(newTitle);
+    Container parent = getRootPane().getParent();
+    if (parent instanceof ResultFrame) {
+      ResultFrame rsf = (ResultFrame)parent;
+      rsf.setTitle(newTitle);
+    } else {
+      framework.debug(9, "Parent instance of: " + parent.getClass().getName());
+    }
+ 
+    // Update the record count
     recordCountLabel.setText(results.getRowCount() + " data sets");
 
     // Notify the JTable that the TableModel changed a bunch!
