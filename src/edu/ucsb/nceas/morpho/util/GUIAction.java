@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2002-08-15 00:19:37 $'
- * '$Revision: 1.2 $'
+ *     '$Date: 2002-08-15 00:21:59 $'
+ * '$Revision: 1.3 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -98,7 +98,6 @@ public class GUIAction extends AbstractAction {
     /** 
      *  Get the menu item position for this action
      *
-     *  @param position the position of memu item
      */
     public int getMenuItemPosition() {
         Integer position = (Integer) super.getValue("menuPosition");
@@ -115,9 +114,8 @@ public class GUIAction extends AbstractAction {
     }
     
     /** 
-     *  Get the menu item position for this action
+     *  Get the separator position for this action
      *
-     *  @param position the position of memu item
      */
     public String getSeparatorPosition() {
         String position = (String) super.getValue(DEFAULT);
