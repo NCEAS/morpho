@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: berkley $'
- *     '$Date: 2001-05-09 20:29:28 $'
- * '$Revision: 1.9 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2001-05-15 17:56:56 $'
+ * '$Revision: 1.10 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -66,6 +66,9 @@ public class ResultSet extends AbstractTableModel implements ContentHandler
 {
   /** store a private copy of the Query run to create this resultset */
   private Query savedQuery = null;
+
+  /** store a private copy of the LocalQuery run to create this resultset */
+  private LocalQuery savedLocalQuery = null;
 
   /** Store each row of the result set as a row in a Vector */
   private Vector resultsVector = null;
@@ -174,6 +177,27 @@ public class ResultSet extends AbstractTableModel implements ContentHandler
     } catch (Exception e) {
       framework.debug(9, e.toString());
     }
+  }
+
+
+  /**
+   * Construct a ResultSet instance from a vector of vectors;
+   * for use with LocalQuery
+   */
+  public ResultSet(LocalQuery query, String source, Vector vec,
+                   ClientFramework cf)
+  {
+    this.savedLocalQuery = query;
+    this.framework = cf;
+
+    if (source.equals("local")) {
+      isLocal = true;
+      isMetacat = false;
+    } else if (source.equals("metacat")) {
+      isLocal = false;
+      isMetacat = true;
+    }
+    this.resultsVector = vec;
   }
 
   /**
