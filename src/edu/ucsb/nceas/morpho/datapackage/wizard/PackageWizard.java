@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-05-17 23:30:28 $'
- * '$Revision: 1.6 $'
+ *     '$Date: 2001-05-18 17:06:38 $'
+ * '$Revision: 1.7 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -755,6 +755,12 @@ public class PackageWizard extends javax.swing.JFrame
         Integer size = new Integer((String)tempElement.attributes.get("size"));
         JButton button = null;
         boolean required = false;
+        String defaultText = null;
+        
+        if(tempElement.attributes.containsKey("defaulttext"))
+        {
+          defaultText = (String)tempElement.attributes.get("defaulttext");
+        }
         
         if(tempElement.attributes.containsKey("repeatable"))
         { //if the text box is repeatable, make the label into a button
@@ -792,9 +798,13 @@ public class PackageWizard extends javax.swing.JFrame
                       insertindex = j;
                     }
                   }
-                  JPanel labelAndText = new JPanel();
-                  labelAndText.add(newLabel);
-                  labelAndText.add(newtextfield);
+                  
+                  if(tempElement.attributes.containsKey("defaulttext"))
+                  {
+                    String defaultText = (String)
+                                     tempElement.attributes.get("defaulttext");
+                    newtextfield.setText(defaultText);
+                  }
                   
                   parentPanel.add(newLabel, insertindex + 1);
                   parentPanel.add(newtextfield, insertindex + 2);
@@ -833,6 +843,7 @@ public class PackageWizard extends javax.swing.JFrame
         { //add just the label if it is not repeatable
           parentPanel.add(label);
         }
+        textfield.setText(defaultText);
         parentPanel.add(textfield);
       }
       else if(tempElement.name.equals("combobox"))
@@ -893,6 +904,13 @@ public class PackageWizard extends javax.swing.JFrame
                     }
                   }
                   
+                  if(newtempElement.attributes.containsKey("defaulttext"))
+                  {
+                    String defaultText = (String)
+                                         newtempElement.attributes.get("defaulttext");
+                    combofield.setSelectedItem(defaultText);
+                  }
+                  
                   parentPanel.add(newLabel, insertindex + 1);
                   parentPanel.add(newcombofield, insertindex + 2);
                   contentPane.repaint();
@@ -932,6 +950,14 @@ public class PackageWizard extends javax.swing.JFrame
         {
           parentPanel.add(label);
         }
+        
+        if(tempElement.attributes.containsKey("defaulttext"))
+        {
+          String defaultText = (String)
+                               tempElement.attributes.get("defaulttext");
+          combofield.setSelectedItem(defaultText);
+        }
+        
         parentPanel.add(combofield);
       }
       
@@ -955,6 +981,17 @@ public class PackageWizard extends javax.swing.JFrame
         createPanel(tempElement, contentPane, parentPanel);
       }
     }
+  }
+  
+  /**
+   * This method opens an xml file, parses it and attempts to match it's 
+   * paths to the config file that was provided to this PackageWizard object.
+   * when a matching path is found, the defaulttext attribute in the config
+   * file is set to match the content in the xmlfile at the same path.
+   */
+  public void openFile(Reader xmlfile)
+  {
+    
   }
   
   /**
