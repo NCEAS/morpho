@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-07-24 22:52:27 $'
- * '$Revision: 1.11 $'
+ *     '$Date: 2001-12-07 16:58:36 $'
+ * '$Revision: 1.12 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -118,8 +118,8 @@ class XMLDisplayHandler extends DefaultHandler implements LexicalHandler {
 		    DefaultMutableTreeNode newNode = new DefaultMutableTreeNode (ni);
 		    DefaultMutableTreeNode parentNode = (DefaultMutableTreeNode) stack.peek();
 		    parentNode.add (newNode);
-//		    ni.attr.put("Value", text);
-        ni.setPCValue(text);
+            ni.setPCValue(text);
+            text = "";
 		    treeModel.reload();
 		    nodeCount++;
 		  }
@@ -137,17 +137,6 @@ class XMLDisplayHandler extends DefaultHandler implements LexicalHandler {
     	text = text + new String (ch, start, length);
     	text = text.trim();
     	text = text.replace('\n', ' ');
-/*    	if (text.length()>0) {
-		    NodeInfo ni = new NodeInfo("#PCDATA");
-		    DefaultMutableTreeNode newNode = new DefaultMutableTreeNode (ni);
-		    DefaultMutableTreeNode parentNode = (DefaultMutableTreeNode) stack.peek();
-		    parentNode.add (newNode);
-//		    ni.attr.put("Value", text);
-        ni.setPCValue(text);
-		    treeModel.reload();
-		    nodeCount++;
-		  }
-*/		  
     }
 
    public void startDocument() throws SAXException { 
