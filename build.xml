@@ -6,7 +6,7 @@
   *    Copyright: 2000 Regents of the University of California and the
   *               National Center for Ecological Analysis and Synthesis
   *  For Details: http://www.nceas.ucsb.edu/
-  *    File Info: '$Id: build.xml,v 1.94 2004-04-09 01:06:53 tao Exp $'
+  *    File Info: '$Id: build.xml,v 1.95 2004-04-09 21:51:31 tao Exp $'
   *
   *  Build file for the Ant cross-platform build system for metacat
   *  See http://jakarta.apache.org for details on Ant
@@ -204,6 +204,7 @@
       <copy todir="${java.help.doc.dir}" filtering="no">
         <fileset dir="${docuserdir}">
           <include name="**/*.html" />
+          <include name="**/*.htm"/>
           <include name="**/*.jpg" />
           <include name="**/*.gif" />
           <include name="*.css" />
