@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: sambasiv $'
- *     '$Date: 2004-04-14 20:29:00 $'
- * '$Revision: 1.37 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2004-04-20 00:00:40 $'
+ * '$Revision: 1.38 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -47,7 +47,7 @@ import edu.ucsb.nceas.utilities.XMLUtilities;
 import java.util.Iterator;
 import java.util.List;
 import java.io.StringReader;
-
+import javax.swing.JOptionPane;
 import javax.xml.transform.TransformerException;
 
 import org.apache.xerces.dom.DOMImplementationImpl;
@@ -97,11 +97,21 @@ public class DataPackageWizardPlugin implements PluginInterface,
    *                  back when the Package Wizard has finished
    */
   public void startPackageWizard(DataPackageWizardListener listener) {
+    
+    boolean isRunning = UIController.getInstance().isWizardRunning();
+    if (isRunning) {
+      JOptionPane.showConfirmDialog(null,
+        "Sorry, only one instance of the Data Package Wizard can be running at a time!",
+                                   "Wizard already running", 
+                                   JOptionPane.DEFAULT_OPTION,
+                                   JOptionPane.WARNING_MESSAGE);
+      return;
+    }
 		
 		AbstractDataPackage tempDataPackage = DataPackageFactory.getDataPackage(
       getNewEmptyDataPackageDOM(WizardSettings.TEMP_REFS_EML200_DOCUMENT_TEXT));
 		if(tempDataPackage == null) return;
-		
+    		
     UIController.getInstance().setWizardIsRunning(tempDataPackage);
 		
     startWizardAtPage(WizardSettings.PACKAGE_WIZ_FIRST_PAGE_ID, true, listener,
