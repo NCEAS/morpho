@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: berkley $'
- *     '$Date: 2001-06-28 20:38:51 $'
- * '$Revision: 1.11 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2001-07-13 17:29:00 $'
+ * '$Revision: 1.11.2.1 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by

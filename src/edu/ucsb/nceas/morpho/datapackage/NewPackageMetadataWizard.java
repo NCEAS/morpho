@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: berkley $'
- *     '$Date: 2001-07-10 22:23:10 $'
- * '$Revision: 1.15 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2001-07-13 17:28:58 $'
+ * '$Revision: 1.15.2.1 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -615,7 +615,7 @@ public class NewPackageMetadataWizard extends JFrame
         while(keys.hasMoreElements())
         {
           String name = (String)relatedFiles.get(keys.nextElement());
-          listvec.add(name);
+          listvec.addElement(name);
         }
         relatedFileList = new JList(listvec);
         relatedFileList.setVisibleRowCount(5);

@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: berkley $'
- *     '$Date: 2001-07-09 23:17:02 $'
- * '$Revision: 1.36 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2001-07-13 17:28:58 $'
+ * '$Revision: 1.36.2.1 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -56,7 +56,9 @@ public class PackageWizard extends javax.swing.JFrame
   private String globalDtd;
   private String globalDoctype;
   private String globalRoot;
-  
+
+  public static final int EXIT_ON_CLOSE = 3;
+
   /**
    * constructor which initializes the window based on the paramater values
    * in the wizard tag of the xml configuration document.
@@ -419,7 +421,8 @@ public class PackageWizard extends javax.swing.JFrame
             
             for(int j=elements.size()-1; j>=diff; j--)
             { //print out any end tags that need to be closed.
-              String endTag = (String)elements.remove(j);
+              String endTag = (String)elements.elementAt(j);
+              elements.removeElementAt(j); //DFH
               if(!endTag.equals(elements.elementAt(elements.size()-1)))
               { //make sure that the endTag is not on the end of the elements
                 //vector.  if it is it is not time to print it yet.
@@ -440,7 +443,8 @@ public class PackageWizard extends javax.swing.JFrame
           {
             for(int j=elements.size()-1; j>=diff; j--)
             { //end the overlapping tags.
-              String endTag = (String)elements.remove(j);  
+              String endTag = (String)elements.elementAt(j); 
+              elements.removeElementAt(j);
               //System.out.println(spaces + "</" + endTag+ ">");
               if(endTag.equals("ENDEMPTY"))
               {
@@ -549,11 +553,12 @@ public class PackageWizard extends javax.swing.JFrame
           
           for(int j=diff+1; j<elements.size(); j++)
           { //remove any extra attributes that we have already used.
-            elements.remove(j);
+            elements.removeElementAt(j);
           }
           
           //add the end tag
-          String attributeEndTag = (String)elements.remove(diff);
+          String attributeEndTag = (String)elements.elementAt(diff);
+          elements.removeElementAt(diff);
           //remove the @ sign
           attributeEndTag = attributeEndTag.substring(1, 
                                                       attributeEndTag.length());
@@ -618,7 +623,8 @@ public class PackageWizard extends javax.swing.JFrame
           
           for(int j=elements.size()-1; j>=diff; j--)
           { //print out any end tags that need to be closed.
-            String endTag = (String)elements.remove(j);
+            String endTag = (String)elements.elementAt(j);
+            elements.removeElementAt(j);
             if(!endTag.equals(elements.elementAt(elements.size()-1)))
             { //make sure that the endTag is not on the end of the elements
               //vector.  if it is it is not time to print it yet.
@@ -668,7 +674,8 @@ public class PackageWizard extends javax.swing.JFrame
           //doc.append("diff<elements.size()-1\n");
           for(int j=elements.size()-1; j>=diff; j--)
           { //end the overlapping tags.
-            String endTag = (String)elements.remove(j);  
+            String endTag = (String)elements.elementAt(j);
+            elements.removeElementAt(j);
             //System.out.println(spaces + "</" + endTag+ ">");
             if(endTag.equals("ENDEMPTY"))
             {
@@ -712,7 +719,8 @@ public class PackageWizard extends javax.swing.JFrame
     { //print out the remainder of the elements vector to finish off the
       //document
       //System.out.println(spaces + "</" + elements.remove(i) + ">");
-      String endTag = (String)elements.remove(i);
+      String endTag = (String)elements.elementAt(i);
+      elements.removeElementAt(i);
       if(endTag.equals("ENDEMPTY"))
       {
         doc.append("/>\n");
@@ -1203,9 +1211,9 @@ public class PackageWizard extends javax.swing.JFrame
                   
                   if(tempElement.attributes.containsKey("defaulttext"))
                   {
-                    String defaultText = (String)
+                    String defaultText1 = (String)
                                      tempElement.attributes.get("defaulttext");
-                    newtextfield.setText(defaultText);
+                    newtextfield.setText(defaultText1);
                   }
                   JPanel layoutpanel = new JPanel();
                   BorderLayout bl = new BorderLayout();

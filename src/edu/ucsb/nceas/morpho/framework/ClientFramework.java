@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: berkley $'
- *     '$Date: 2001-07-05 21:50:19 $'
- * '$Revision: 1.62 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2001-07-13 17:29:00 $'
+ * '$Revision: 1.62.2.1 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,7 +30,11 @@ import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
 import java.io.*;
-import java.util.*;
+import java.util.Vector;
+import java.util.Hashtable;
+import java.util.Enumeration;
+import java.util.Properties;
+import java.util.Date;
 import java.net.URL;
 import java.lang.reflect.*;
 import java.lang.ClassCastException;
@@ -64,7 +68,7 @@ public class ClientFramework extends javax.swing.JFrame
   private ConfigXML profile;
   private boolean connected = false;
   private Hashtable menuList = null;
-  private TreeMap menuOrder = null;
+  private Vector menuOrder = null;
   private Action[] fileMenuActions = null;
   private Action[] editMenuActions = null;
   private Action[] helpMenuActions = null;
@@ -110,7 +114,7 @@ public class ClientFramework extends javax.swing.JFrame
 
     // Create the list of menus for use by the framework and plugins
     menuList = new Hashtable();
-    menuOrder = new TreeMap();
+    menuOrder = new Vector();
 
     // Create the hash for services
     servicesRegistry = new Hashtable();
@@ -179,12 +183,20 @@ public class ClientFramework extends javax.swing.JFrame
 
       // After all plugins have a chance to add their menus, create the
       // menu bar so that the menus are created in the right order
-      Set menusInOrder = menuOrder.entrySet();
-      Iterator it = menusInOrder.iterator();
-      while (it.hasNext()) {
-        JMenu currentMenu = (JMenu)((Map.Entry)it.next()).getValue();
+ 
+      Enumeration enum = menuOrder.elements();
+      while (enum.hasMoreElements()) {
+        JMenu currentMenu = (JMenu)enum.nextElement();
         morphoMenuBar.add(currentMenu);
       }
+      
+      
+//      Set menusInOrder = menuOrder.entrySet();
+//      Iterator it = menusInOrder.iterator();
+//      while (it.hasNext()) {
+//        JMenu currentMenu = (JMenu)((Map.Entry)it.next()).getValue();
+//        morphoMenuBar.add(currentMenu);
+//      }
       
       pluginsLoaded = true;
     }
@@ -246,8 +258,14 @@ public class ClientFramework extends javax.swing.JFrame
       currentMenu.setText(menuName);
       currentMenu.setActionCommand(menuName);
       menuList.put(menuName, currentMenu);
-      menuOrder.put(menuPosition, currentMenu);
-
+//      menuOrder.put(menuPosition, currentMenu);   //DFH
+      int pos = menuPosition.intValue()-1;
+      if (pos>=menuOrder.size()) {
+        menuOrder.addElement(currentMenu);  
+      }
+      else {
+        menuOrder.insertElementAt(currentMenu, pos);
+      }
       // After the initial plugin loading, menus can only be appended
       // to the end of the menu bar
       if (pluginsLoaded) {
@@ -277,7 +295,7 @@ public class ClientFramework extends javax.swing.JFrame
           }
           currentItem = currentMenu.insert(currentAction, menuPos);
           currentItem.setAccelerator(
-                   (KeyStroke)currentAction.getValue(Action.ACCELERATOR_KEY));
+                   (KeyStroke)currentAction.getValue("AcceleratorKey"));
           if (hasDefaultSep != null &&
             hasDefaultSep.equals(SEPARATOR_FOLLOWING)) {
             menuPos++;
@@ -291,7 +309,7 @@ public class ClientFramework extends javax.swing.JFrame
           }
           currentItem = currentMenu.add(currentAction);
           currentItem.setAccelerator(
-                   (KeyStroke)currentAction.getValue(Action.ACCELERATOR_KEY));
+                   (KeyStroke)currentAction.getValue("AcceleratorKey"));
           if (hasDefaultSep != null &&
             hasDefaultSep.equals(SEPARATOR_FOLLOWING)) {
             currentMenu.addSeparator();
@@ -349,7 +367,8 @@ public class ClientFramework extends javax.swing.JFrame
   public void addWindow(JFrame window)
   {
     String windowName = window.getName();
-    if (!windowsRegistry.containsValue(window)) {
+//    if (!windowsRegistry.containsValue(window)) {
+    if (!windowsRegistry.contains(window)) {
       debug(20, "Adding window: " + windowName);
       Action windowAction = new AbstractAction(windowName) {
         public void actionPerformed(ActionEvent e) {
@@ -474,7 +493,7 @@ public class ClientFramework extends javax.swing.JFrame
         exitApplication();
       }
     };
-    exitItemAction.putValue(Action.ACCELERATOR_KEY, 
+    exitItemAction.putValue("AcceleratorKey", 
                             KeyStroke.getKeyStroke("control Q"));
     exitItemAction.putValue(Action.SHORT_DESCRIPTION, "Exit Morpho");
     exitItemAction.putValue(Action.DEFAULT, SEPARATOR_PRECEDING);
@@ -508,7 +527,7 @@ public class ClientFramework extends javax.swing.JFrame
         debug(9, "Cut is not yet implemented.");
       }
     };
-    cutItemAction.putValue(Action.ACCELERATOR_KEY, 
+    cutItemAction.putValue("AcceleratorKey", 
                             KeyStroke.getKeyStroke("control X"));
     cutItemAction.putValue(Action.SHORT_DESCRIPTION, 
                   "Cut the selection and put it on the Clipboard");
@@ -524,7 +543,7 @@ public class ClientFramework extends javax.swing.JFrame
         debug(9, "Copy is not yet implemented.");
       }
     };
-    copyItemAction.putValue(Action.ACCELERATOR_KEY, 
+    copyItemAction.putValue("AcceleratorKey", 
                             KeyStroke.getKeyStroke("control C"));
     copyItemAction.putValue(Action.SHORT_DESCRIPTION, 
                   "Copy the selection and put it on the Clipboard");
@@ -540,7 +559,7 @@ public class ClientFramework extends javax.swing.JFrame
         debug(9, "Paste is not yet implemented.");
       }
     };
-    pasteItemAction.putValue(Action.ACCELERATOR_KEY, 
+    pasteItemAction.putValue("AcceleratorKey", 
                             KeyStroke.getKeyStroke("control P"));
     pasteItemAction.putValue(Action.SHORT_DESCRIPTION, 
                   "Paste the selection.");
@@ -565,7 +584,6 @@ public class ClientFramework extends javax.swing.JFrame
     prefsItemAction.putValue("menuPosition", new Integer(5));
     prefsItemAction.setEnabled(false);
     editMenuActions[3] = prefsItemAction;
-
     addMenu("Edit", new Integer(2), editMenuActions);
 
     addMenu("Window", new Integer(6));
@@ -1121,7 +1139,7 @@ public class ClientFramework extends javax.swing.JFrame
   {
     if (!connectionRegistry.contains(listener)) {
       debug(20, "Adding listener: " + listener.toString());
-      connectionRegistry.add(listener);
+      connectionRegistry.addElement(listener);
     }
   }
 
@@ -1133,7 +1151,7 @@ public class ClientFramework extends javax.swing.JFrame
   {
     for (int i=0; i < connectionRegistry.size(); i++) {
       ConnectionListener listener = 
-                         (ConnectionListener)connectionRegistry.get(i);
+                         (ConnectionListener)connectionRegistry.elementAt(i);
       if (listener != null) {
         listener.connectionChanged(isConnected());
       }
@@ -1148,7 +1166,7 @@ public class ClientFramework extends javax.swing.JFrame
   {
     for (int i=0; i < connectionRegistry.size(); i++) {
       ConnectionListener listener = 
-                         (ConnectionListener)connectionRegistry.get(i);
+                         (ConnectionListener)connectionRegistry.elementAt(i);
       if (listener != null) {
         listener.usernameChanged(getUserName());
       }

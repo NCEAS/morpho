@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: jones $'
- *     '$Date: 2001-06-13 03:11:24 $'
- * '$Revision: 1.6 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2001-07-13 17:29:03 $'
+ * '$Revision: 1.6.2.1 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -57,7 +57,7 @@ public class QueryGroup
    * @param qgroup the query group to be added to the list of terms
    */
   public void addChild(QueryGroup qgroup) {
-    children.add((Object)qgroup); 
+    children.addElement((Object)qgroup); 
   }
 
   /**
@@ -66,7 +66,7 @@ public class QueryGroup
    * @param qterm the query term to be added to the list of terms
    */
   public void addChild(QueryTerm qterm) {
-    children.add((Object)qterm); 
+    children.addElement((Object)qterm); 
   }
 
   /**

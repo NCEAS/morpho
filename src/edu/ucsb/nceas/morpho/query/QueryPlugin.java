@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: jones $'
- *     '$Date: 2001-06-14 03:36:52 $'
- * '$Revision: 1.67 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2001-07-13 17:29:03 $'
+ * '$Revision: 1.67.2.1 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -126,13 +126,13 @@ public class QueryPlugin implements PluginInterface, ConnectionListener
     Vector returnDoctypeList = profile.get("returndoc");
     for (int i=0; i < returnDoctypeList.size(); i++) {
       searchtext.append("<returndoctype>");
-      searchtext.append((String)returnDoctypeList.get(i));
+      searchtext.append((String)returnDoctypeList.elementAt(i));
       searchtext.append("</returndoctype>\n");
     }
     Vector returnFieldList = profile.get("returnfield");
     for (int i=0; i < returnFieldList.size(); i++) {
       searchtext.append("<returnfield>");
-      searchtext.append((String)returnFieldList.get(i));
+      searchtext.append((String)returnFieldList.elementAt(i));
       searchtext.append("</returnfield>\n");
     }
     searchtext.append("<owner>" + framework.getUserName() + "</owner>\n");

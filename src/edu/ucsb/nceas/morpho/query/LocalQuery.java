@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-06-26 21:36:16 $'
- * '$Revision: 1.44 $'
+ *     '$Date: 2001-07-13 17:29:02 $'
+ * '$Revision: 1.44.2.1 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -211,7 +211,8 @@ public class LocalQuery
     for (int i=0;i<filevector.size();i++) {
       File currentfile = (File)filevector.elementAt(i);
       String filename = currentfile.getPath();
-      String docid = currentfile.getParentFile().getName() + separator +
+      File parentFile = new File(currentfile.getParent());
+      String docid = parentFile.getName() + separator +
                      currentfile.getName();
       // skips subdirectories
       if (currentfile.isFile()) {
@@ -522,7 +523,7 @@ public class LocalQuery
           Vector original = (Vector)combined.clone();
           combined = new Vector();
           for (int i = 0; i < currentResults.size(); i++) {
-            Object obj = currentResults.get(i);
+            Object obj = currentResults.elementAt(i);
             if (original.contains(obj)) {
               combined.addElement(obj);
             } else {

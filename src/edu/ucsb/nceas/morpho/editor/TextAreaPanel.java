@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-07-10 18:32:15 $'
- * '$Revision: 1.5 $'
+ *     '$Date: 2001-07-13 17:29:00 $'
+ * '$Revision: 1.5.2.1 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by

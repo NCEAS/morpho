@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-07-12 22:06:02 $'
- * '$Revision: 1.60 $'
+ *     '$Date: 2001-07-13 17:28:59 $'
+ * '$Revision: 1.60.2.1 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -723,7 +723,7 @@ class SymTreeSelection implements javax.swing.event.TreeSelectionListener
             OutputScrollPanel.repaint();
          }
          
-         int width = this.getWidth() - DocControlPanel.getDividerLocation() - 40;
+         int width = this.WIDTH - DocControlPanel.getDividerLocation() - 40;
          XMLPanels xp = new XMLPanels(node, width);
          xp.setTreeModel(treeModel);
          xp.setContainer(this);
@@ -1189,7 +1189,7 @@ class SymTreeSelection implements javax.swing.event.TreeSelectionListener
                     // needed to handle case when some elements have text data and others with
                     // same name are blank
                     DefaultMutableTreeNode mergeParent = (DefaultMutableTreeNode)tempnode.getParent();
-                    currentLevelInputNodes.remove(mergeParent);
+                    currentLevelInputNodes.removeElement(mergeParent);
                 }
                 // Here we need to add nodes that are 'missing'
                 // go to parent of tnode; find matching nodes in input at same level; add children
@@ -1245,7 +1245,7 @@ class SymTreeSelection implements javax.swing.event.TreeSelectionListener
                                           while (qq.hasMoreElements()) {
                                             nd2 = (DefaultMutableTreeNode)qq.nextElement();
                                             nwnode.insert(nd2, indx1);
-                                            nextLevelInputNodes.remove(nd2);
+                                            nextLevelInputNodes.removeElement(nd2);
                                           }
                                         }
                                     }
@@ -1475,6 +1475,23 @@ private Vector sameParent(Vector list) {
             NodeInfo templateni = (NodeInfo)template.getUserObject();
             inputni.setCardinality(templateni.getCardinality());
     
+            // special case - template has editor and help info
+            String editor = (String)(templateni.attr).get("editor");
+            if (editor!=null) {
+                inputni.setEditor(editor);
+                templateni.attr.remove("editor");
+            }
+            String rooteditor = (String)(templateni.attr).get("rooteditor");
+            if (rooteditor!=null) {
+                inputni.setRootEditor(rooteditor);
+                templateni.attr.remove("rooteditor");
+            }
+            String help = (String)(templateni.attr).get("help");
+            if (help!=null) {
+                inputni.setHelp(help); 
+                templateni.attr.remove("help");
+            }
+            
             // copy attribute to input tree
             Enumeration attrlist = templateni.attr.keys();
             while (attrlist.hasMoreElements()) {
@@ -1483,26 +1500,8 @@ private Vector sameParent(Vector list) {
                 inputni.attr.put(key,templateni.attr.get(key));
               }
             }
-            
-            String editor = (String)(inputni.attr).get("editor");
-            if (editor!=null) {
-                inputni.setEditor(editor);
-                inputni.attr.remove("editor");
-            }
-            String rooteditor = (String)(inputni.attr).get("rooteditor");
-            if (rooteditor!=null) {
-                inputni.setRootEditor(rooteditor);
-                inputni.attr.remove(rooteditor);
-            }
-            String help = (String)(inputni.attr).get("help");
-            if (help!=null) {
-                inputni.setHelp(help); 
-                inputni.attr.remove("help");
-            }
-            
         }
     }
-
 	
     /** Normalizes the given string. */
     private String normalize(String s) {
@@ -1623,7 +1622,7 @@ class SymWindow extends java.awt.event.WindowAdapter {
 
 	void DocFrame_componentResized(java.awt.event.ComponentEvent event)
 	{
-    int width = this.getWidth() - DocControlPanel.getDividerLocation() - 40;
+    int width = this.WIDTH - DocControlPanel.getDividerLocation() - 40;
     XMLPanels xp = new XMLPanels(selectedNode, width);
     xp.setTreeModel(treeModel);
     xp.setContainer(this);

@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-06-19 22:13:26 $'
- * '$Revision: 1.18 $'
+ *     '$Date: 2001-07-13 17:29:03 $'
+ * '$Revision: 1.18.2.1 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -135,7 +135,7 @@ public class ResultPanel extends JPanel
       // Set up the Header panel with a title and refresh/revise buttons
       titleLabel = new JLabel(results.getQuery().getQueryTitle());
       titleLabel.setForeground(Color.black);
-      titleLabel.setFont(new Font(null, Font.BOLD, 18));
+      titleLabel.setFont(new Font("Dialog", Font.BOLD, 18));  //DFH
       Box headerBox = Box.createHorizontalBox();
       headerBox.setBackground(Color.white);
       headerBox.add(Box.createHorizontalStrut(8));
@@ -143,7 +143,7 @@ public class ResultPanel extends JPanel
       headerBox.add(Box.createHorizontalGlue());
       recordCountLabel = new JLabel(results.getRowCount() + " data packages");
       recordCountLabel.setForeground(Color.black);
-      recordCountLabel.setFont(new Font(null, Font.BOLD, 18));
+      recordCountLabel.setFont(new Font("Dialog", Font.BOLD, 18));  //DFH
       headerBox.add(recordCountLabel);
       headerBox.add(Box.createHorizontalStrut(4));
       refreshButton = new JButton("Refresh", new ImageIcon( getClass().
@@ -189,7 +189,7 @@ public class ResultPanel extends JPanel
       table = new JTable(results);
       WrappedTextRenderer stringRenderer = new WrappedTextRenderer(fontSize);
       stringRenderer.setRows(5);
-      table.setRowHeight((int)(stringRenderer.getPreferredSize().getHeight()));
+      table.setRowHeight((int)(stringRenderer.getPreferredSize().height));
       //table.setRowHeight(results.getRowHeight());
       table.setDefaultRenderer(String.class, stringRenderer);
       initColumnSizes(table, results);
@@ -405,9 +405,9 @@ public class ResultPanel extends JPanel
                             profile.get("queriesdir", 0); 
     File queriesDir = new File(queriesDirName);
     if (queriesDir.exists()) {
-      File[] queriesList = queriesDir.listFiles();
+      String[] queriesList = queriesDir.list();
       for (int n=0; n < queriesList.length; n++) {
-        File queryFile = queriesList[n];
+        File queryFile = new File(queriesList[n]);
         if (queryFile.isFile()) {
           try {
             FileReader xml = new FileReader(queryFile);
@@ -429,6 +429,7 @@ public class ResultPanel extends JPanel
    */
   private void addQueryToMenu(Query query)
   {
+/*
     // See if the query list is null, and initialize it if so
     if (savedQueriesList == null) {
       savedQueriesList = new Hashtable();
@@ -463,5 +464,6 @@ public class ResultPanel extends JPanel
       savedQueryAction.putValue(Action.NAME, query.getQueryTitle());
       savedQueryAction.putValue("SAVED_QUERY_OBJ", query);
     }
+*/
   }
 }

@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-07-10 18:32:15 $'
- * '$Revision: 1.10 $'
+ *     '$Date: 2001-07-13 17:28:59 $'
+ * '$Revision: 1.10.2.1 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -95,7 +95,7 @@ public class DTDTree
             rootElement = elem; 
           }
         }
-        elementnames.add(elem.name);
+        elementnames.addElement(elem.name);
 			}
 			DTDElement elem;
 			if (dtd.rootElement!=null) {

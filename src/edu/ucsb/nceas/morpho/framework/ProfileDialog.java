@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: jones $'
- *     '$Date: 2001-06-15 09:17:29 $'
- * '$Revision: 1.10 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2001-07-13 17:29:01 $'
+ * '$Revision: 1.10.2.1 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -478,9 +478,9 @@ public class ProfileDialog extends JDialog
           tokens.put("SCOPE", username);
           String samplePath = config.get("samples_directory", 0);
           File sampleDir = new File(samplePath);
-          File[] samplesList = sampleDir.listFiles();
+          String[] samplesList = sampleDir.list();
           for (int n=0; n < samplesList.length; n++) {
-            File srcFile = samplesList[n];
+            File srcFile = new File(samplesList[n]);
             if (srcFile.isFile()) {
               String destDirName = dataPath + File.separator + username;
               File destDir = new File(destDirName);

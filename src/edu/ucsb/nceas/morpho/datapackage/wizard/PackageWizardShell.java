@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: berkley $'
- *     '$Date: 2001-07-06 16:48:43 $'
- * '$Revision: 1.31 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2001-07-13 17:28:59 $'
+ * '$Revision: 1.31.2.1 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,10 +33,11 @@ import edu.ucsb.nceas.morpho.datapackage.*;
 import javax.swing.*;
 import javax.swing.border.*; 
 import java.io.*;
-import java.util.*;
+import java.util.Vector;
 import java.lang.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.util.Hashtable;
 
 import org.apache.xerces.parsers.DOMParser;
 import org.apache.xalan.xpath.xml.FormatterToXML;
@@ -252,7 +253,8 @@ public class PackageWizardShell extends javax.swing.JFrame
           JPanel framePanel = new JPanel();
           WizardFrameContainer wfc = new WizardFrameContainer(framePanel);
           wfc.description = new String(activeContainer.description);
-          wfc.attributes = new Hashtable(activeContainer.attributes);
+//DFH          wfc.attributes = new Hashtable(activeContainer.attributes);
+          wfc.attributes = activeContainer.attributes;
           activeContainer.attributes.remove("repeatable");
           PackageWizard pw = new PackageWizard(framework, framePanel, 
                                             (String)wfc.attributes.get("path"));
@@ -261,7 +263,7 @@ public class PackageWizardShell extends javax.swing.JFrame
           
           wizardFrame.removeAll();
           frameWizardIndex++;
-          frameWizards.add(frameWizardIndex, wfc);
+          frameWizards.insertElementAt(wfc, frameWizardIndex); //DFH??
           wizardFrame.add(wfc.panel);
           changeDescription(wfc.description);
           //show();
@@ -324,7 +326,7 @@ public class PackageWizardShell extends javax.swing.JFrame
               
               if(item != null && !item.equals("InitialDescription"))
               {
-                listContent.add(item);
+                listContent.addElement(item);
               }
             }
           }

@@ -6,9 +6,9 @@
  *    Authors: Matt Jones
  *    Release: @release@
  *
- *   '$Author: jones $'
- *     '$Date: 2001-06-13 03:11:24 $'
- * '$Revision: 1.2 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2001-07-13 17:29:02 $'
+ * '$Revision: 1.2.2.1 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -220,7 +220,7 @@ public class BasicNode {
 
     /** Add a child node to this node */
     public void addChildNode(BasicNode child) { 
-      this.children.add(child);
+      this.children.addElement(child);
     }
 
     /** Get the an enumeration of the children of this node */

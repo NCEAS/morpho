@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: jones $'
- *     '$Date: 2001-06-15 09:02:35 $'
- * '$Revision: 1.15 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2001-07-13 17:29:02 $'
+ * '$Revision: 1.15.2.1 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -449,16 +449,16 @@ public class Query extends DefaultHandler {
     } else if (currentTag.equals("pathexpr")) {
       currentPathexpr = inputString;
     } else if (currentTag.equals("returndoctype")) {
-      returnDocList.add(inputString);
+      returnDocList.addElement(inputString);
     } else if (currentTag.equals("filterdoctype")) {
-      filterDocList.add(inputString);
+      filterDocList.addElement(inputString);
     } else if (currentTag.equals("returnfield")) {
-      returnFieldList.add(inputString);
+      returnFieldList.addElement(inputString);
       containsExtendedSQL = true;
     } else if (currentTag.equals("owner")) {
-      ownerList.add(inputString);
+      ownerList.addElement(inputString);
     } else if (currentTag.equals("site")) {
-      siteList.add(inputString);
+      siteList.addElement(inputString);
     }
   }
 
@@ -837,7 +837,7 @@ public class Query extends DefaultHandler {
       queriesDir.mkdirs();
     }
     File queryFile = new File(queriesDir, getIdentifier());
-    boolean isNew = queryFile.createNewFile();
+//    boolean isNew = queryFile.createNewFile();
     FileWriter output = new FileWriter(queryFile);
     output.write(this.toXml());
     output.close();
