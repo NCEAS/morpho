@@ -6,8 +6,8 @@
   *  For Details: http://www.nceas.ucsb.edu/
   *
   *   '$Author: brooke $'
-  *     '$Date: 2002-10-30 22:28:52 $'
-  * '$Revision: 1.8 $'
+  *     '$Date: 2002-10-30 22:32:30 $'
+  * '$Revision: 1.9 $'
   * 
   * This program is free software; you can redistribute it and/or modify
   * it under the terms of the GNU General Public License as published by
@@ -43,7 +43,7 @@
         <table class="tabledefault" width="100%"><!-- width needed for NN4 - doesn't recognize width in css -->
         
         <tr><td class="{$subHeaderStyle}" colspan="2">
-            Attribute structure description (Column <xsl:value-of select="$selected_attribute"/>)<br />
+            Attribute structure description<br />
             (Identifier: <xsl:value-of select="eml-attribute/identifier"/>
             <xsl:if test="normalize-space(./@system)!=''">
               ; &#160;Catalog System:<xsl:value-of select="./@system"/>
