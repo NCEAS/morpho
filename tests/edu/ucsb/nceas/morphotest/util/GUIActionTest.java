@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2002-09-26 21:44:39 $'
- * '$Revision: 1.2 $'
+ *     '$Date: 2002-09-26 22:04:18 $'
+ * '$Revision: 1.3 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -212,11 +212,20 @@ public class GUIActionTest extends TestCase
         action.setEnabledOnStateChange(state1, false, false);
         action.setEnabledOnStateChange(state2, true, false);
 
-        GUIAction[] toolbarActions = new GUIAction[1];
-        toolbarActions[0] = action;
+        action.setMenuItemPosition(2);
+        action.setToolbarPosition(1);
+        action.setMenu("Window", 0);
+
         UIController controller = UIController.initialize(morpho);
+//        UIController controller = UIController.getInstance();
+
+        controller.addGuiAction(action);
+        
+//        GUIAction[] toolbarActions = new GUIAction[1];
+//        toolbarActions[0] = action;
 //        controller.addToolbarActions(toolbarActions);
 //        controller.addMenu("Window", new Integer(5));
+
         MorphoFrame test = controller.addWindow("Test Window");
         test.setVisible(true);
 
