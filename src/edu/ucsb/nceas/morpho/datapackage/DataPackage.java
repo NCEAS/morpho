@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-02-13 00:45:05 $'
- * '$Revision: 1.107 $'
+ *     '$Date: 2003-02-14 23:00:23 $'
+ * '$Revision: 1.108 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1772,7 +1772,8 @@ public class DataPackage implements XMLFactoryInterface
           for (int j=0; j<triplesV.size();j++) {
             Triple tripleA = (Triple)triplesV.elementAt(j);
             if ((tripleA.getSubject().equals(entityID))&&(tripleA.getObject().equals(dataFileID))) {
-              result = true;  
+              result = true; 
+              return dataFileName;
             }
           }
         }
@@ -1995,6 +1996,11 @@ public class DataPackage implements XMLFactoryInterface
               { //get the file locally and save it
                 try {
                   datafile = fileSysDataStore.openFile(dataFileID);
+                  if (!entity2DataFile.contains(entityID)) {
+                    entity2DataFile.put(entityID, datafile);
+                  }
+                  return datafile;
+
                 }
                 catch(Exception e)
                 {
@@ -2006,6 +2012,10 @@ public class DataPackage implements XMLFactoryInterface
               { //get the file from metacat
                 try {
                   datafile = metacatDataStore.openFile(dataFileID);
+                  if (!entity2DataFile.contains(entityID)) {
+                    entity2DataFile.put(entityID, datafile);
+                  }
+                  return datafile;
                 }
                 catch(Exception e)
                 {
@@ -2015,11 +2025,6 @@ public class DataPackage implements XMLFactoryInterface
               }
             }
           }
-        }
-      }
-      if (datafile!=null) {
-        if (!entity2DataFile.contains(entityID)) {
-          entity2DataFile.put(entityID, datafile);
         }
       }
     return datafile;
@@ -2036,21 +2041,6 @@ public class DataPackage implements XMLFactoryInterface
    */
   public String getDataFileID(String entityID) {
     String dataFileID = "";
-    boolean localloc = false;
-    boolean metacatloc = false;
-    if(location.equals(DataPackageInterface.BOTH))
-    {
-      localloc = true;
-      metacatloc = true;
-    }
-    else if(location.equals(DataPackageInterface.METACAT))
-    {
-      metacatloc = true;
-    }
-    else if(location.equals(DataPackageInterface.LOCAL))
-    {
-      localloc = true;
-    }
       Vector triplesV = triples.getCollection();
       // first find out if there are ANY data files
       for(int i=0; i<triplesV.size(); i++)
@@ -2064,28 +2054,16 @@ public class DataPackage implements XMLFactoryInterface
           for (int j=0; j<triplesV.size();j++) {
             Triple tripleA = (Triple)triplesV.elementAt(j);
             if ((tripleA.getSubject().equals(entityID))&&(tripleA.getObject().equals(dFileID))) {
-              if(localloc)
-              { //get the file locally and save it
-                try {
+               try {
                   dataFileID = dFileID;
+                  return dataFileID;
                 }
                 catch(Exception e)
                 {
                   System.out.println("Error in DataPackage.getDataFile(): " + e.getMessage());
                   e.printStackTrace();
                 }
-              }
-              else if(metacatloc)
-              { //get the file from metacat
-                try {
-                  dataFileID = dFileID;
-                }
-                catch(Exception e)
-                {
-                  System.out.println("Error in DataPackage.getDataFile(): " + e.getMessage());
-                  e.printStackTrace();
-                }
-              }
+              
                             
             }
           }
