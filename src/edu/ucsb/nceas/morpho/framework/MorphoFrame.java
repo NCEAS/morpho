@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2002-12-09 23:18:40 $'
- * '$Revision: 1.14 $'
+ *     '$Date: 2002-12-12 01:04:34 $'
+ * '$Revision: 1.15 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -467,22 +467,8 @@ public class MorphoFrame extends JFrame
     {
         Log.debug(50,"Screen size (w,h): ("+UISettings.CLIENT_SCREEN_WIDTH+", " 
                                            +UISettings.CLIENT_SCREEN_HEIGHT+")");
-        // determine default window size
-        double windowWidth;
-        double windowHeight;
-        if (UISettings.CLIENT_SCREEN_WIDTH >= UISettings.MAX_WINDOW_WIDTH) {
-            windowWidth = UISettings.MAX_WINDOW_WIDTH;
-        } else {
-            windowWidth = UISettings.CLIENT_SCREEN_WIDTH;
-        }
-        if (UISettings.CLIENT_SCREEN_HEIGHT >= UISettings.MAX_WINDOW_HEIGHT) {
-            windowHeight = UISettings.MAX_WINDOW_HEIGHT    
-                                                  - UISettings.TASKBAR_HEIGHT;
-        } else {
-            windowHeight = UISettings.CLIENT_SCREEN_HEIGHT 
-                                                  - UISettings.TASKBAR_HEIGHT;
-        }
-
+        double windowWidth  = UISettings.DEFAULT_WINDOW_WIDTH;
+        double windowHeight = UISettings.DEFAULT_WINDOW_HEIGHT;
         // determine default content size
         Insets insets = getInsets();
         Log.debug(50, "Insets (t, b, l, r): (" + insets.top + ", " +
