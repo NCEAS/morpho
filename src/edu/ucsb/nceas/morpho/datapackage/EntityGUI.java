@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: tao $'
- *     '$Date: 2002-09-03 18:11:35 $'
- * '$Revision: 1.48 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2002-09-08 22:46:32 $'
+ * '$Revision: 1.49 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -864,8 +864,6 @@ public class EntityGUI extends javax.swing.JPanel
         dv.setAttributeFile(fattribute);
         dv.setEntityFile(entityFile);
         dv.setDataPackage(this.dataPackage);
-        dv.setParent(this);
-        dv.setGrandParent(this.parent);
         
         dv.init();
         dv.parseFile();

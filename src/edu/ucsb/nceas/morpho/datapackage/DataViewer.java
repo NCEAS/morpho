@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-09-07 16:56:32 $'
- * '$Revision: 1.39 $'
+ *     '$Date: 2002-09-08 22:46:32 $'
+ * '$Revision: 1.40 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -39,6 +39,7 @@ import java.util.StringTokenizer;
 import java.util.Date;
 import java.util.Enumeration;
 import java.awt.event.*;
+import java.util.Stack;
 
 
 //import org.apache.xalan.xpath.xml.FormatterToXML;
@@ -106,6 +107,9 @@ public class DataViewer extends javax.swing.JPanel
 
   // The following instances of JMenu are apparently needed to make a
   // menus that appears in both the menu bar and in a popup menu
+  // (JComponents all have a single 'parent'. This means that the components
+  // cannot be reused (because they have only one parent container)
+  // One thus needs to duplicate the menu items for the Menu and Popup
   private JMenuItem createNewDatatable1 = new JMenuItem("Create New Datatable...");
   private JMenuItem sortBySelectedColumn1 = new JMenuItem("Sort by Selected Column");
   private JMenuItem insertRowAfter1 = new JMenuItem("insert Row After Selected Row");
@@ -277,7 +281,10 @@ public class DataViewer extends javax.swing.JPanel
     
   DataViewer thisRef;
 
-	public DataViewer()
+	/*
+   * No argument contstructor that builds basic gui
+   */
+  public DataViewer()
 	{
 		setLayout(new BorderLayout(0,0));
 //    setSize(755,483);
@@ -313,13 +320,15 @@ public class DataViewer extends javax.swing.JPanel
     
 	  thisRef = this;
 	
-		//{{REGISTER_LISTENERS
+// REGISTER_LISTENERS for Cancel and Update buttons that
+// appear at bottom of DataViewer table. These buttons
+// 'Cancel' or 'Update' changes made in the data table  
 		SymAction lSymAction = new SymAction();
 		CancelButton.addActionListener(lSymAction);
 		UpdateButton.addActionListener(lSymAction);
-    //}}
+    
 	
-    //Build the popup menu for the right click functionality
+//Build the popup menu for the right click functionality
     popup = new JPopupMenu();
     popup.add(createNewDatatable);
     popup.add(new JSeparator());
@@ -358,6 +367,9 @@ public class DataViewer extends javax.swing.JPanel
     updateDataMenu();
 	}
 
+    /*
+     * contructor with Morpho and Window title info
+     */
     public DataViewer(Morpho morpho, String sTitle)
     {
         this();
@@ -375,6 +387,9 @@ public class DataViewer extends javax.swing.JPanel
         separator = separator.trim();
     }
 
+    /*
+     * contructor which includes data to be display as a String
+     */
     public DataViewer(String sTitle, String dataID, String dataString)
     {
         this();
@@ -382,6 +397,9 @@ public class DataViewer extends javax.swing.JPanel
         this.dataString = dataString;
     }
     
+    /*
+     * contructor which includes data to be display as a File
+     */
     public DataViewer(Morpho morpho, String sTitle, File dataFile)
     {
         this();
@@ -404,6 +422,11 @@ public class DataViewer extends javax.swing.JPanel
       return pv;  
     }
     
+    /*
+     * Initialization code which collects information about the data
+     * from various metadata modules associated with the entity to
+     * be displayed
+     */
     public void init() {
       missing_metadata_flag = false;
       if (physicalFile==null) {
@@ -955,7 +978,7 @@ public class DataViewer extends javax.swing.JPanel
     table.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 	  (table.getTableHeader()).setReorderingAllowed(false);
     table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-
+    
     table.registerKeyboardAction (new TableCopyAction(),
                           KeyStroke.getKeyStroke("ctrl C"),
                           JComponent.WHEN_FOCUSED);
@@ -965,7 +988,6 @@ public class DataViewer extends javax.swing.JPanel
     table.registerKeyboardAction (new TableCutAction(),
                           KeyStroke.getKeyStroke("ctrl X"),
                           JComponent.WHEN_FOCUSED);
-      
       
     DataScrollPanel.getViewport().removeAll();
     DataScrollPanel.getViewport().add(table);
@@ -985,7 +1007,6 @@ public class DataViewer extends javax.swing.JPanel
 		{
 			Object object = event.getSource();
 			if (object == createNewDatatable) {
-        Log.debug(1, "Test");
         AddMetadataWizard amw = new AddMetadataWizard(morpho, true, dp);
         amw.setVisible(true);
         MorphoFrame thisFrame = (UIController.getInstance()).getCurrentActiveWindow();
@@ -1154,8 +1175,21 @@ public class DataViewer extends javax.swing.JPanel
 
 	void CancelButton_actionPerformed(java.awt.event.ActionEvent event)
 	{
+// following is simply a test to see if the Log function in the
+// PresistentTableModel works
+/*    
+		Stack st = ptm.getLogStack();
+    while (!st.empty()) {
+      String[] temp = (String[])st.pop();
+      String tmp = temp[0]+";"+temp[1]+";"+temp[2]+";"+temp[3]+
+                              ";"+temp[4]+";"+temp[5];
+      System.out.println(tmp);
+      System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+   }
+// the init() function will create a new PersistentTableVector, thus
+// destroying the Log
+*/   
 		this.init();
-			 
 	}
 	
 	/* 
@@ -1257,10 +1291,17 @@ public class DataViewer extends javax.swing.JPanel
   }
   
   private void showColumnMetadataEditPanel() {
+    int newCompWidth = 400;
+    int newCompHeight = 650;
     MorphoFrame mf = UIController.getInstance().getCurrentActiveWindow();
+    Point curLoc = mf.getLocationOnScreen();
+    Dimension dim = mf.getSize();
+    int newx = curLoc.x +dim.width/2;
+    int newy = curLoc.y+dim.height/2;
     columnDialog = new JDialog(mf,true);
     columnDialog.getContentPane().setLayout(new BorderLayout(0,0));
-    columnDialog.setSize(400,650);
+    columnDialog.setSize(newCompWidth,newCompHeight);
+    columnDialog.setLocation(newx-newCompWidth/2, newy-newCompHeight/2);
     cmep = new ColumnMetadataEditPanel();
     columnDialog.getContentPane().add(BorderLayout.CENTER, cmep);
     controlPanel = new JPanel();

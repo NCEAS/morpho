@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-09-05 21:55:02 $'
- * '$Revision: 1.5 $'
+ *     '$Date: 2002-09-08 22:46:32 $'
+ * '$Revision: 1.6 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,13 +25,15 @@
  */
 
  /**
- *  A tableModel that uses PersistentVector for disk-based storage. This should allow for very large tables
- */
+  *  A tableModel that uses PersistentVector for disk-based storage. 
+  * This should allow for very large tables
+  */
  
 package edu.ucsb.nceas.morpho.datapackage;
 import javax.swing.table.*;
 import java.util.Vector;
 import java.util.Collections;
+import java.util.Stack;
 import java.util.Comparator;
 import java.util.StringTokenizer;
 import javax.swing.event.*;
@@ -40,83 +42,94 @@ import java.lang.Class;
 
 public class PersistentTableModel extends javax.swing.table.AbstractTableModel
 {
-    PersistentVector pv;
-    Vector colNames = null;
+  PersistentVector pv;
+  Vector colNames = null;
     
-    String delimiter = "\t";
+  String delimiter = "\t";
     
-    String field_delimiter = "#x09";
+  String field_delimiter = "#x09";
     
-    // first row of data (allow for comments preceeding data)
-    int firstRow = 0;
+// first row of data (allow for comments preceeding data)
+  int firstRow = 0;
     
-    public PersistentTableModel(PersistentVector perV) {
-        super();
-        pv = perV;
-    }
+  /*
+   * a stack for saving model changes.
+   * onntent of stack is an array St[] of strings
+   * St[0] = row; St[1] = col; St[2] = old cell value
+   * St[3] = new cell value; St[4] = description; St[5] = user annotation
+   */
+  Stack changeLogStack;
+  /*
+   * flag to set whether or not changes are saved.
+   */
+  boolean logFlag = false;
+    
+  public PersistentTableModel(PersistentVector perV) {
+    super();
+    pv = perV;
+    changeLogStack = new Stack();
+  }
 
-    public PersistentTableModel(PersistentVector perV, Vector colNames) {
-        super();
-        pv = perV;
-        this.colNames = colNames;
-    }
+  public PersistentTableModel(PersistentVector perV, Vector colNames) {
+    super();
+    pv = perV;
+    this.colNames = colNames;
+    changeLogStack = new Stack();
+  }
         
-    public PersistentVector getPersistentVector() {
-      return pv; 
-    }
+  public PersistentVector getPersistentVector() {
+    return pv; 
+  }
     
-    public void setPersistentVector(PersistentVector pv) {
-      this.pv = pv;
-    }
+  public void setPersistentVector(PersistentVector pv) {
+    this.pv = pv;
+  }
     
-    public void setFieldDelimiter(String s) {
-      this.field_delimiter = s.trim();
-    }
+  public void setFieldDelimiter(String s) {
+    this.field_delimiter = s.trim();
+  }
     
-    public void saveAsFile(String fileName) {
-      pv.writeObjects(fileName);
-    }
+  public void saveAsFile(String fileName) {
+    pv.writeObjects(fileName);
+  }
     
-    public String getColumnName(int col) {
-      String colName = (String)colNames.elementAt(col);
-        return colName;
-    }
+  public String getColumnName(int col) {
+    String colName = (String)colNames.elementAt(col);
+    return colName;
+  }
     
-    public boolean isCellEditable(int rowindex, int colindex) {
-      return true;
-    }
+  public boolean isCellEditable(int rowindex, int colindex) {
+    return true;
+  }
     
-    public int getColumnCount()
-    {
-      int numCols = 0;
-      if (colNames!=null) {
-        numCols = colNames.size();  
-      }
-      else {
-        String[] firstRecord = (String[])pv.elementAt(firstRow);
-        numCols = firstRecord.length;
-      }
-      return numCols;
+  public int getColumnCount() {
+    int numCols = 0;
+    if (colNames!=null) {
+      numCols = colNames.size();  
     }
+    else {
+      String[] firstRecord = (String[])pv.elementAt(firstRow);
+      numCols = firstRecord.length;
+    }
+    return numCols;
+  }
 
-    public int getRowCount()
-    {
-        return pv.size();
-    }
+  public int getRowCount() {
+    return pv.size();
+  }
 
-    public Object getValueAt(int rowIndex, int columnIndex)
-    {
-        Object ocell;
-            Object obj = pv.elementAt(rowIndex);
-            String[] record = (String[])obj;
-            if (record.length>columnIndex) {
-                ocell = record[columnIndex];
-            }
-            else {
-                ocell = "";
-            }
-            return (" "+ocell);
+  public Object getValueAt(int rowIndex, int columnIndex) {
+    Object ocell;
+    Object obj = pv.elementAt(rowIndex);
+    String[] record = (String[])obj;
+    if (record.length>columnIndex) {
+      ocell = record[columnIndex];
     }
+    else {
+      ocell = "";
+    }
+    return (" "+ocell);
+  }
 
 	/**
 	 * converts an array to a vector
@@ -140,7 +153,7 @@ public class PersistentTableModel extends javax.swing.table.AbstractTableModel
 	}
   
   /**
-	* converts an vector to an array
+	* converts a vector to an array
 	*/ 
   private String[] columnValuesAsArray(Vector vec) {
     String[] res = new String[vec.size()];
@@ -227,31 +240,41 @@ public class PersistentTableModel extends javax.swing.table.AbstractTableModel
   
   public void setValueAt(Object obj, int row, int col) {
     String[] rowA = (String[])pv.elementAt(row);
+    String currentValue = rowA[col];
     rowA[col] = ((String)obj).trim();
-//    System.out.println("Setting value to: "+rowA[col]);
     pv.setElementAt(rowA, row);
-  }
- 
-/* 
-  private void setColumnValues(int rowIndex, Object recordVals) {
-    pv.setElementAt((String)recordVals, rowIndex);  
+    pushLogValues(row, col, currentValue,rowA[col], "new cell entry", "");
   }
   
-  private String setColumnValue(int rowIndex, int colIndex, Object val) {
-    String recordString = "";
-    Object obj = pv.elementAt(rowIndex);
-    String record = (String)obj;
-    Vector vals = getColumnValues(record);
- //   System.out.println("val = "+val);
-    vals.setElementAt(val, colIndex);
-    for (int i=0;i<vals.size();i++) {
-      recordString = recordString + (String)vals.elementAt(i) + delimiter;
+  public Stack getLogStack() {
+    return changeLogStack;  
+  }
+  
+  public void setLogStack(Stack st) {
+    changeLogStack = st;  
+  }
+  
+  public void clearLogStack() {
+    changeLogStack = new Stack(); 
+  }
+  
+  public void setLogFlag(boolean bol) {
+     logFlag = bol; 
+  }
+  
+  private void pushLogValues(int row, int col, String oldVal, String newVal,
+                       String desc, String annotation) {
+    if (logFlag) {                     
+      String[] log = new String[6];
+      log[0] = (new Integer(row)).toString();
+      log[1] = (new Integer(col)).toString();
+      log[2] = oldVal;
+      log[3] = newVal;
+      log[4] = desc;
+      log[5] = annotation;
+      changeLogStack.push(log);
     }
-    recordString = recordString.substring(0,recordString.length()-1);
-    return recordString;
   }
-  */
-  
   /**
    *  add a row to the end of the data
    *  vec is assumed to be a Vector of strings
@@ -263,10 +286,11 @@ public class PersistentTableModel extends javax.swing.table.AbstractTableModel
       record[i] = (String)vec.elementAt(i);
     }
     pv.addElement(record);
+    pushLogValues(getRowCount(), -1, "N/A", "N/A", "added new row at end of data","");
     fireTableRowsInserted(pv.size(),pv.size());
   }
   
-   /**
+  /**
    *  insert a row at indicated position
    *  vec is assumed to be a Vector of strings
    */
@@ -277,15 +301,17 @@ public class PersistentTableModel extends javax.swing.table.AbstractTableModel
       record[i] = (String)vec.elementAt(i);
     }
     pv.insertElementAt(record, row);
+    pushLogValues(row, -1, "N/A", "N/A", "added new row at"+row,"");
     fireTableRowsInserted(row,row);
   }
 
-   /**
+  /**
    *  delete a row at indicated position
    *  vec is assumed to be a Vector of strings
    */
   public void deleteRow(int row) {
     pv.removeElementAt(row);
+    pushLogValues(row, -1, "N/A", "N/A", "deleted row at"+row,"");
     fireTableRowsDeleted(row,row);
   }
 
@@ -306,10 +332,11 @@ public class PersistentTableModel extends javax.swing.table.AbstractTableModel
     pv.delete();
     pv = newpv;  
     pv.setFieldDelimiter("#x09");
+    pushLogValues(-1, getColumnCount(), "N/A", "N/A", "added column at end","");
     fireTableStructureChanged();
   }
   
-  /**
+ /**
   *  add a column after the last current column
   *  new column is filled with spaces
   */
@@ -327,6 +354,7 @@ public class PersistentTableModel extends javax.swing.table.AbstractTableModel
     pv = newpv;  
     pv.setFieldDelimiter("#x09");
     fireTableStructureChanged();
+    pushLogValues(-1, colnum, "N/A", "N/A", "added column at "+colnum,"");
   }
   
   /**
@@ -345,6 +373,7 @@ public class PersistentTableModel extends javax.swing.table.AbstractTableModel
     pv.delete();
     pv = newpv;  
     pv.setFieldDelimiter("#x09");
+    pushLogValues(-1, col, "N/A", "N/A", "deleted column","");
     fireTableStructureChanged();   
    }
 }
