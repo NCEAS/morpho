@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2002-10-31 23:47:26 $'
- * '$Revision: 1.91 $'
+ *     '$Date: 2002-11-01 00:33:36 $'
+ * '$Revision: 1.92 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1497,7 +1497,7 @@ public class DataPackage implements XMLFactoryInterface
           // check file name if conflic
           if (map.containsValue(dataFileName))
           {
-            dataFileName = dataFileName+i;
+            dataFileName =appendFileNameNumber(dataFileName, i);
             i++;
           }//if
           map.put(subject, dataFileName);
@@ -1505,6 +1505,39 @@ public class DataPackage implements XMLFactoryInterface
       }//if
     }//for
     return map;
+  }
+  
+  /*
+   * A method to append file name a number, not in extension
+   */
+  private String appendFileNameNumber(String fileName, int number)
+  {
+    int index = -1;
+    String dot = ".";
+    String extension = null;
+    String prefix = null;
+    if (fileName == null || fileName.equals(""))
+    {
+      fileName = ""+number;
+      return fileName;
+    }
+    int size = fileName.length();
+    index = fileName.lastIndexOf(dot);
+    
+    if (index == -1)
+    {
+      // no extension
+      fileName = fileName+number;
+      return fileName;
+    }
+    else
+    {
+      extension = fileName.substring(index+1, size);
+      prefix = fileName.substring(0, index);
+      fileName = prefix + number + dot + extension;
+      return fileName;
+    }
+    
   }
   
   /*
