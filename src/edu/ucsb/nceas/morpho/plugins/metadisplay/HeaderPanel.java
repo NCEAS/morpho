@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2002-09-28 00:42:24 $'
- * '$Revision: 1.11 $'
+ *     '$Date: 2002-09-28 06:14:11 $'
+ * '$Revision: 1.12 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -118,7 +118,7 @@ public class HeaderPanel extends JPanel
         //add title text label
         titleTextLabel = new JLabel(TITLEBAR_INIT_TEXT);
         titleTextLabel.setForeground(UISettings.TITLE_TEXT_COLOR);
-        titleTextLabel.setFont(UISettings.TITLE_FONT);
+        titleTextLabel.setFont(UISettings.SUBPANEL_TITLE_FONT);
         titleTextLabel.setHorizontalAlignment(SwingConstants.CENTER);
         titleBar.add(titleTextLabel, BorderLayout.CENTER);
         
@@ -132,6 +132,8 @@ public class HeaderPanel extends JPanel
         closeButton.setFocusPainted(false);
         closeButton.setFont(UISettings.BUTTON_FONT);
         titleBar.add(closeButton, BorderLayout.EAST);
+        closeButton.setEnabled(false);  //hack for now, since dataviewer not 
+                                        //listening to close events
     }
 
     //the pathbar contains the actual component that displays the path itself, 

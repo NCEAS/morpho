@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: jones $'
- *     '$Date: 2002-08-16 23:19:50 $'
- * '$Revision: 1.2 $'
+ *   '$Author: brooke $'
+ *     '$Date: 2002-09-28 06:14:11 $'
+ * '$Revision: 1.3 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -44,7 +44,7 @@ import javax.swing.JPanel;
 public class ProgressIndicator extends JPanel
 {
     private static final int BORDER_WIDTH = 4;
-    
+    private static final int RIGHT_ALIGN_OFFSET = 2;
     private ImageIcon busyIcon;
     private ImageIcon notBusyIcon;
     private JLabel imageLabel;  
@@ -76,7 +76,7 @@ public class ProgressIndicator extends JPanel
         innerPanel.add(imageLabel);
         
         verticalBox.add(Box.createVerticalStrut(BORDER_WIDTH));
-        add(Box.createHorizontalStrut(BORDER_WIDTH));
+        add(Box.createHorizontalStrut(BORDER_WIDTH + RIGHT_ALIGN_OFFSET));
         
         setBounds(100, 100,
                   (int)getPreferredSize().getWidth(),

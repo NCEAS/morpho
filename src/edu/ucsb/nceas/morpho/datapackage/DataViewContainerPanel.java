@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2002-09-28 00:26:49 $'
- * '$Revision: 1.27 $'
+ *     '$Date: 2002-09-28 06:14:11 $'
+ * '$Revision: 1.28 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -46,6 +46,7 @@ import edu.ucsb.nceas.morpho.plugins.ServiceExistsException;
 import edu.ucsb.nceas.morpho.plugins.ServiceProvider;
 import edu.ucsb.nceas.morpho.plugins.ServiceNotHandledException;
 import edu.ucsb.nceas.morpho.util.Log;
+import edu.ucsb.nceas.morpho.util.UISettings;
 import edu.ucsb.nceas.morpho.util.StateChangeEvent;
 import edu.ucsb.nceas.morpho.util.StateChangeListener;
 import edu.ucsb.nceas.morpho.util.StateChangeMonitor;
@@ -127,10 +128,9 @@ public class DataViewContainerPanel extends javax.swing.JPanel
 
   private static MetaDisplayFactoryInterface metaDisplayFactory = null;
   
-  private static final Color BACKGROUND = new Color(237, 237, 237);
-  private static final Color RED = Color.red;
+  private ActionListener mdHideListener;
   
-  private static final int DEFAULTWIDTHOFMETADATAPANEL = 675;
+  private static final int METADATA_PANEL_DEFAULT_WIDTH = 675;
   /*
    * no parameter constuctor for DataViewContainerPanel.
    * Some basic gui setup
@@ -180,21 +180,24 @@ public class DataViewContainerPanel extends javax.swing.JPanel
 // the following code builds the datapackage summary at the top of
 // the DataViewContainerPanel
     JLabel refLabel = new JLabel("<html>"+dpgui.referenceLabel+"</html>");
+    refLabel.setBackground(UISettings.NONEDITABLE_BACKGROUND_COLOR);
+    refLabel.setOpaque(true);
     refLabel.setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
     JPanel refPanel = new JPanel();
     refPanel.setPreferredSize(new Dimension(5000,50));
-    Border margin = BorderFactory.createEmptyBorder(2,2,2,2);
-    Border lineBorder = BorderFactory.createLineBorder(Color.black);
-    refPanel.setBorder(new CompoundBorder(margin, lineBorder));
-    refPanel.setLayout(new BorderLayout(5,5));
+    refPanel.setBorder(BorderFactory.createEmptyBorder(0,0,0,0));
+    refPanel.setLayout(new BorderLayout(0,0));
     refPanel.add(BorderLayout.CENTER, refLabel);
-    refLabel.setFont(new Font("Dialog", Font.PLAIN, 12));
+    refLabel.setFont(UISettings.TITLE_CITATION_FONT);
     JPanel locationPanel = new JPanel();
     locationPanel.setLayout(new BorderLayout(0,0));
     Border lineBorder1 = BorderFactory.createLineBorder(Color.black);
-    Border margin1 = BorderFactory.createEmptyBorder(5,5,5,5);
+    Border margin1 = BorderFactory.createEmptyBorder(4,2,4,2); //top,lft,bot,rgt
     Border inner = new CompoundBorder(lineBorder1,margin1);
-    locationPanel.setBorder(new CompoundBorder(margin,inner));
+    locationPanel.setPreferredSize(new Dimension(51,50));
+    locationPanel.setBorder(inner);
+    locationPanel.setBackground(UISettings.NONEDITABLE_BACKGROUND_COLOR);
+    locationPanel.setOpaque(true);
     ImageIcon localIcon 
       = new ImageIcon(getClass().getResource("local-package-small.png"));
     ImageIcon metacatIcon 
@@ -202,9 +205,15 @@ public class DataViewContainerPanel extends javax.swing.JPanel
     ImageIcon blankIcon 
       = new ImageIcon(getClass().getResource("blank.gif"));
     JLabel localLabel = new JLabel("local");
+    localLabel.setBackground(UISettings.NONEDITABLE_BACKGROUND_COLOR);
+    localLabel.setOpaque(true);
+    localLabel.setFont(UISettings.TITLE_LOCATION_FONT);
     localLabel.setIcon(localIcon);
     localLabel.setToolTipText("Package is stored locally");
     JLabel netLabel = new JLabel("net");
+    netLabel.setBackground(UISettings.NONEDITABLE_BACKGROUND_COLOR);
+    netLabel.setFont(UISettings.TITLE_LOCATION_FONT);
+    netLabel.setOpaque(true);
     netLabel.setIcon(metacatIcon);
     netLabel.setToolTipText("Package is stored on the network");
     String location = dp.getLocation();
@@ -347,7 +356,7 @@ public class DataViewContainerPanel extends javax.swing.JPanel
 //      currentEntityMetadataPanel.add(BorderLayout.SOUTH, entityEditControls);                                     
 //      currentEntityMetadataPanel.setMaximumSize(new Dimension(200,4000));
 
-      currentEntityPanel.setDividerLocation(DEFAULTWIDTHOFMETADATAPANEL);
+      currentEntityPanel.setDividerLocation(METADATA_PANEL_DEFAULT_WIDTH);
       
       // create a tabbed component instance
       TabbedContainer component = new TabbedContainer();
@@ -483,12 +492,12 @@ public class DataViewContainerPanel extends javax.swing.JPanel
       tablePanel.add(BorderLayout.NORTH, Box.createVerticalStrut(80));
       String text = "Data in data file "+ id +" cannot be read!";
       JLabel warning = new JLabel(text);
-      warning.setForeground(RED);
+      warning.setForeground(UISettings.ALERT_TEXT_COLOR);
       tablePanel.add(BorderLayout.CENTER, warning);
     }
     
     tablePanel.setOpaque(true);
-    tablePanel.setBackground(BACKGROUND);
+    tablePanel.setBackground(UISettings.NONEDITABLE_BACKGROUND_COLOR);
     //JSplitPane EntireDataPanel = (JSplitPane)(tabbedEntitiesPanel.getComponentAt(index));
     //JPanel currentDataPanel = (JPanel)EntireDataPanel.getLeftComponent();
     TabbedContainer compn = 
@@ -497,7 +506,7 @@ public class DataViewContainerPanel extends javax.swing.JPanel
     JPanel currentDataPanel = (JPanel)entireDataPane.getLeftComponent();
     currentDataPanel.setLayout(new BorderLayout(0,0));
     currentDataPanel.add(BorderLayout.CENTER,tablePanel);
-    currentDataPanel.setBackground(BACKGROUND);
+    currentDataPanel.setBackground(UISettings.NONEDITABLE_BACKGROUND_COLOR);
     
   }
   

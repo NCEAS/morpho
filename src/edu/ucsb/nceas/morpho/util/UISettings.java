@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2002-09-26 02:44:13 $'
- * '$Revision: 1.1 $'
+ *     '$Date: 2002-09-28 06:14:11 $'
+ * '$Revision: 1.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -51,19 +51,25 @@ public class UISettings
     // * * * *  D E F A U L T   F O N T S  &  T E X T - C O L O R S   * * * * * 
 
     //                                       "null" means use default font...
-    public static final Font TITLE_FONT  = new Font(null, Font.BOLD, 12);
-    public static final Font BUTTON_FONT = new Font(null, Font.BOLD, 11);
-    
-    public static final Color TITLE_TEXT_COLOR       = Color.white;
-    public static final Color BACKBUTTON_TEXT_COLOR  = new Color(0, 198, 255);
-    public static final Color CLOSEBUTTON_TEXT_COLOR = BACKBUTTON_TEXT_COLOR;
-    public static final Color EDITBUTTON_TEXT_COLOR  = new Color(0, 255, 0);
+    public static final Font SUBPANEL_TITLE_FONT   
+                                          = new Font("Dialog", Font.BOLD, 12);
+    public static final Font BUTTON_FONT  = new Font("Dialog", Font.BOLD, 11);
+    public static final Font TITLE_CITATION_FONT 
+                                          = new Font("Dialog", Font.PLAIN, 12);
+    public static final Font TITLE_LOCATION_FONT 
+                                          = new Font("Dialog", Font.PLAIN, 9);
+                                          
+    public static final Color TITLE_TEXT_COLOR        = Color.white;
+    public static final Color BACKBUTTON_TEXT_COLOR   = new Color(0, 198, 255);
+    public static final Color CLOSEBUTTON_TEXT_COLOR  = BACKBUTTON_TEXT_COLOR;
+    public static final Color EDITBUTTON_TEXT_COLOR   = new Color(0, 255, 0);
+    public static final Color ALERT_TEXT_COLOR        = Color.red;
     
     // * * * * * *  D E F A U L T   D I M E N S I O N S  * * * * * * * * * * * * 
     
-    public  static final int FOCUS_BORDER_WIDTH        = 4;
+    public  static final int FOCUS_BORDER_WIDTH       = 4;
 
-    private static final int TITLEBAR_HEIGHT           = 27;
+    private static final int TITLEBAR_HEIGHT          = 27;
     public static final int TITLEBAR_TOP_PADDING      = 0;
     public static final int TITLEBAR_SIDES_PADDING    = 0;
     public static final int TITLEBAR_BOTTOM_PADDING   = 2;
@@ -74,7 +80,7 @@ public class UISettings
     
                                            
     //ignored by Borderlayout, but needed to create Dimension:
-    private static final int DUMMY_WIDTH               = 100;
+    private static final int DUMMY_WIDTH              = 100;
 
     public static final Dimension TITLEBAR_DIMS 
                                   = new Dimension(DUMMY_WIDTH,TITLEBAR_HEIGHT);
@@ -95,6 +101,9 @@ public class UISettings
 
     public static final Color FOCUSED_BORDER_COLOR = new Color(115,147,196);
     public static final Color UNFOCUSED_BORDER_COLOR = Color.gray;
+    
+    public static final Color NONEDITABLE_BACKGROUND_COLOR  
+                                                  = new Color(237, 237, 237);
     
     /**
      *  private constructor - no instantiation, since all methods static

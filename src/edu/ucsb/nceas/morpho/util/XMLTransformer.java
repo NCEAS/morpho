@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: cjones $'
- *     '$Date: 2002-09-26 01:57:54 $'
- * '$Revision: 1.20 $'
+ *   '$Author: brooke $'
+ *     '$Date: 2002-09-28 06:14:11 $'
+ * '$Revision: 1.21 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -445,7 +445,7 @@ public class XMLTransformer
     private void throwIOException(Throwable e, String type) throws IOException 
     {
         String msg 
-            = "\nXMLTransformer.doTransform(): getting DOM document. "
+            = "\nXMLTransformer - IOException. "
                 +"Nested "+type+" = "+e.getMessage()+"\n";
         e.printStackTrace();
         Log.debug(12, msg);
@@ -520,7 +520,11 @@ public class XMLTransformer
         private void handleException(SAXParseException exception,
                                         String errMessage) throws SAXException
         {
-            Log.debug(9, "XMLTransformer$CustomErrorHandler: " 
+            //do popup
+            Log.debug(2, "Error reading documentation files;\n"
+                                                      + exception.getMessage());
+            //send more info to log
+            Log.debug(12, "XMLTransformer$CustomErrorHandler: " 
                                     + errMessage+": " + exception.getMessage());
             exception.fillInStackTrace();
             throw ((SAXException)exception);
@@ -551,7 +555,11 @@ public class XMLTransformer
         private void handleException(TransformerException exception,
                                 String errMessage) throws TransformerException
         {
-            Log.debug(9, "\n* * * XMLTransformer$CustomErrorListener: " 
+            //do popup
+            Log.debug(2, "Error reading documentation files;\n"
+                                                      + exception.getMessage());
+            //send more info to log
+            Log.debug(12, "\n* * * XMLTransformer$CustomErrorListener: " 
                                     + errMessage+": " + exception.getMessage());
             exception.fillInStackTrace();
             throw ((TransformerException)exception);

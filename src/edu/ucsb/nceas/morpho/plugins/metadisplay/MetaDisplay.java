@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2002-09-26 02:45:48 $'
- * '$Revision: 1.23 $'
+ *     '$Date: 2002-09-28 06:14:11 $'
+ * '$Revision: 1.24 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -223,9 +223,15 @@ public class MetaDisplay implements MetaDisplayInterface,
         //keep a temp backup of current (outgoing) ID:
         String oldID = this.identifier; //the global one, not the local one
         
-        //display mew ID, and in the process, set it to be the current ID:
-        displayThisID(identifier);  //the local one
-        
+        try {
+            //display mew ID, and in the process, set it to be the current ID:
+            displayThisID(identifier);  //the local one
+        } catch (DocumentNotFoundException dnfe) {
+            //reset ID to it's original value before exception occurred:
+            setIDBackTo(oldID);
+            updateBackButtonStatus();
+            throw dnfe;
+        }
         //If new ID wasn't valid, we wouldn't have got this far, so we're OK...
         //add outgoing (i.e. older) ID to hisory:
         history.add(oldID);
@@ -263,11 +269,17 @@ public class MetaDisplay implements MetaDisplayInterface,
         setIdentifier(identifier);
         
         if (XMLDocument==null) {
-            Log.debug(12,"MetaDisplay.display() received NULL XML Factory - "
+            Log.debug(12,"MetaDisplay.display() received NULL XML Document - "
                                                   +"displaying blank document");
-            ui.setHTML(getAsString(XMLDocument));
+            ui.setHTML(BLANK_HTML_PAGE);
         } else {
-            ui.setHTML(getAsString(XMLDocument));
+            try {
+                doTransform(XMLDocument);
+            } catch (DocumentNotFoundException dnfe) {
+                //reset ID
+                setIDBackTo(oldID);
+                throw dnfe;
+            }
         }
         fireActionEvent(MetaDisplayInterface.NAVIGATION_EVENT,getIdentifier());
         
@@ -287,9 +299,18 @@ public class MetaDisplay implements MetaDisplayInterface,
      */
     public void displayPrevious() throws DocumentNotFoundException 
     {
-        //display mew ID, and in the process, set it to be the current ID, but
-        //DO NOT add it to the History!
-        displayThisID(history.getPrevious()); 
+        //keep a temp backup of current (outgoing) ID:
+        String oldID = this.identifier; //the global one, not the local one
+        try {
+            //display previous ID from History, and in the process, set it to be the 
+            //current ID, but DO NOT re-add it to the History!
+            displayThisID(history.getPrevious()); 
+        } catch (DocumentNotFoundException dnfe) {
+            //reset ID to it's original value before exception occurred:
+            setIDBackTo(oldID);
+            updateBackButtonStatus();
+            throw dnfe;
+        }
         updateBackButtonStatus();
     }
     
@@ -486,7 +507,6 @@ public class MetaDisplay implements MetaDisplayInterface,
 	private void displayThisID(String ID) throws DocumentNotFoundException
 	{
 	    Reader xmlReader = null;
-	    String oldID = this.identifier; //the global one, not the local one
 	    try  {
 	        setIdentifier(ID);
 	    } catch (NullArgumentException nae) {
@@ -501,19 +521,15 @@ public class MetaDisplay implements MetaDisplayInterface,
 	    try  {
 	        xmlReader = factory.openAsReader(ID);
 	    } catch (DocumentNotFoundException dnfe) {
-	    
-	        //reset ID to it's original value before exception occurred:
-	        setIDBackTo(oldID);
 	        
 	        Log.debug(12, "DocumentNotFoundException getting Reader for ID: "
 	                                        +ID+"; "+dnfe.getMessage());
 	        dnfe.fillInStackTrace();
 	        throw dnfe;
 	    }
-	    fireActionEvent(MetaDisplayInterface.NAVIGATION_EVENT,getIdentifier());
-
 	    Reader resultReader = doTransform(xmlReader);
-	    String htmlDoc = getAsString(resultReader);
+      String htmlDoc = getAsString(resultReader);
+	    fireActionEvent(MetaDisplayInterface.NAVIGATION_EVENT,getIdentifier());
       ui.setHTML(htmlDoc);
 	}
 
@@ -536,7 +552,6 @@ public class MetaDisplay implements MetaDisplayInterface,
 	    Log.debug(50, "doTransform returning Reader: " + result
                                                 +" for ID: " + this.identifier);
 	    return result;
-//        return xml;
 	}    
 
     
