@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: tao $'
- *     '$Date: 2002-09-03 18:11:35 $'
- * '$Revision: 1.23 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2002-09-05 21:55:59 $'
+ * '$Revision: 1.24 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -240,12 +240,12 @@ public class AddMetadataWizard extends JFrame
     buttonPanel.add(cancelButton);
     buttonPanel.add(Box.createHorizontalStrut(8));
     previousButton = new JButton("Previous", new ImageIcon(
-        cl.getResource("/toolbarButtonGraphics/navigation/Back16.gif")));
+        getClass().getResource("/toolbarButtonGraphics/navigation/Back16.gif")));
     previousButton.setHorizontalTextPosition(SwingConstants.RIGHT);
     buttonPanel.add(previousButton);
     buttonPanel.add(Box.createHorizontalStrut(8));
     forwardIcon = new ImageIcon(
-        cl.getResource("/toolbarButtonGraphics/navigation/Forward16.gif"));
+        getClass().getResource("/toolbarButtonGraphics/navigation/Forward16.gif"));
     nextButton = new JButton("Next", forwardIcon);
     nextButton.setHorizontalTextPosition(SwingConstants.LEFT);
     nextButton.setEnabled(true);
@@ -1162,13 +1162,29 @@ public class AddMetadataWizard extends JFrame
   }
   
   
-  
   private void refreshPackage(String dataPackageId) {
     //refresh the package wizard view
     DataPackage newpackage = new DataPackage(dataPackage.getLocation(),
                                              dataPackageId, null,
                                              morpho);
+    String location = dataPackage.getLocation();
     this.dataPackage = newpackage;                                         
+
+    // Show the new package
+    try 
+    {
+      ServiceController services = ServiceController.getInstance();
+      ServiceProvider provider = 
+                      services.getServiceProvider(DataPackageInterface.class);
+      DataPackageInterface dataPackage = (DataPackageInterface)provider;
+      dataPackage.openDataPackage(location, newpackage.getID(), null);
+    }
+    catch (ServiceNotHandledException snhe) 
+    {
+       Log.debug(6, snhe.getMessage());
+    }
+   
+    /*
     DataPackageGUI dpg = new DataPackageGUI(morpho, newpackage);
     dpg.show();
     dpg.setName("Package Editor:" + newpackage.getID());
@@ -1183,7 +1199,7 @@ public class AddMetadataWizard extends JFrame
     } catch (ServiceNotHandledException snhe) {
       Log.debug(6, snhe.getMessage());
     }
-    
+ */   
   }
   
   /**

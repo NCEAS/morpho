@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-09-05 18:17:42 $'
- * '$Revision: 1.33 $'
+ *     '$Date: 2002-09-05 21:55:59 $'
+ * '$Revision: 1.34 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -231,6 +231,7 @@ public class DataViewer extends javax.swing.JPanel
 	 */
   String entityDescription = "";
   
+  TableCutAction tcuta;
   TableCopyAction tca;
   TablePasteAction tpa;
   
@@ -255,9 +256,13 @@ public class DataViewer extends javax.swing.JPanel
 		ButtonControlPanel.add(DataIDLabel);
 		CancelButton.setText("Cancel");
 		CancelButton.setActionCommand("Cancel");
+    String canceltext = "Removes all changes since last Update";
+    CancelButton.setToolTipText(canceltext);
 		ButtonControlPanel.add(CancelButton);
 		UpdateButton.setText("Update");
 		UpdateButton.setActionCommand("Update");
+    String updatetext = "Saves all data changes to new version of the Data Package";
+    UpdateButton.setToolTipText(updatetext);
 		ButtonControlPanel.add(UpdateButton);
     
     headerLabel = new JLabel("DataTitle");
@@ -578,6 +583,7 @@ public class DataViewer extends javax.swing.JPanel
           if ((column_labels!=null)&&(column_labels.size()>0)) {
             if ((field_delimiter.trim().length()>0)) {
               buildTable();
+              tcuta.setSource(table);
               tca.setSource(table);
               tpa.setTarget(table);
               MouseListener popupListener = new PopupListener();
@@ -936,7 +942,12 @@ public class DataViewer extends javax.swing.JPanel
 		{
 			Object object = event.getSource();
 			if (object == createNewDatatable) {
-        
+        Log.debug(1, "Test");
+        AddMetadataWizard amw = new AddMetadataWizard(framework, true, dp);
+        amw.setVisible(true);
+        MorphoFrame thisFrame = (UIController.getInstance()).getCurrentActiveWindow();
+        thisFrame.setVisible(false);
+        thisFrame.dispose();
       }
       else if ((object == sortBySelectedColumn)||(object == sortBySelectedColumn1)) {
         int sel = table.getSelectedColumn();
@@ -1118,9 +1129,18 @@ public class DataViewer extends javax.swing.JPanel
       
       menu = mb.getMenu(1);  // the "Edit" menu
       menu.removeAll();
-      JMenuItem cutMenuItem = new JMenuItem("Cut", new ImageIcon(getClass().
+
+      JMenuItem cutMenuItem = new JMenuItem("Cut");
+      tcuta = new TableCutAction(table);
+      tcuta.putValue(Action.ACCELERATOR_KEY,
+                KeyStroke.getKeyStroke("control C"));
+      tcuta.putValue(Action.SHORT_DESCRIPTION,
+                "Cut the selection and put it on the Clipboard");
+      tcuta.putValue(Action.SMALL_ICON,
+                new ImageIcon(getClass().
                 getResource("/toolbarButtonGraphics/general/Cut16.gif")));
-      cutMenuItem.setEnabled(false);
+      cutMenuItem.setAction(tcuta);
+
       JMenuItem copyMenuItem = new JMenuItem("Copy");
       tca = new TableCopyAction(table);
       tca.putValue(Action.ACCELERATOR_KEY,
@@ -1390,6 +1410,7 @@ public class DataViewer extends javax.swing.JPanel
                                                  
       thisFrame = (UIController.getInstance()).getCurrentActiveWindow();
       thisFrame.setVisible(false);
+      thisFrame.dispose();
       }
       catch (Exception www) {}
   
