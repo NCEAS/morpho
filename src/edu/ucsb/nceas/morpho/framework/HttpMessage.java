@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: jones $'
- *     '$Date: 2001-07-19 18:03:59 $'
- * '$Revision: 1.12 $'
+ *   '$Author: berkley $'
+ *     '$Date: 2001-07-24 16:46:27 $'
+ * '$Revision: 1.13 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -131,7 +131,6 @@ public class HttpMessage
       String value = args.getProperty(name);
       opts[i] = new NVPair(name, value);
     }
-
     // Prepare the data files
     len = fileNames.size();
     NVPair[] data = new NVPair[len];
@@ -147,16 +146,16 @@ public class HttpMessage
 
     // Set some addition request headers
     ((HttpURLConnection)con).setRequestMethod("POST");
+    String ctype = myform.getContentType();
+    ((HttpURLConnection)con).setRequestProperty("Content-Type", ctype + "\r\n");
     long contentLength = myform.getLength();
     ((HttpURLConnection)con).setRequestProperty("Content-Length",
              new Long(contentLength).toString());
-    String ctype = myform.getContentType();
-    ((HttpURLConnection)con).setRequestProperty("Content-Type", ctype + "\r\n");
 
     // Open the output stream and write the encoded data to it
     out = con.getOutputStream();
     myform.writeEncodedMultipartForm(out);
-
+    
     // close the connection and return the response stream
     InputStream res = closePostConnection();
     return res;
@@ -209,12 +208,9 @@ public class HttpMessage
    */
   private InputStream closePostConnection() throws IOException
   {
-    // Close the output stream
-    out.close();
-
     // Open the response stream
-    InputStream response = con.getInputStream();
-
+    InputStream response;
+    response = con.getInputStream();
     // Read any cookies in the response
     String temp = con.getHeaderField("Set-Cookie");
     if (temp != null) {
@@ -224,7 +220,7 @@ public class HttpMessage
         cookie = cookie.substring(0, k);
       }
     }
-
+    out.close();
     // Return the response stream
     return response;
   }

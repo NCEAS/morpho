@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: jones $'
- *     '$Date: 2001-07-19 18:03:59 $'
- * '$Revision: 1.64 $'
+ *   '$Author: berkley $'
+ *     '$Date: 2001-07-24 16:46:27 $'
+ * '$Revision: 1.65 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -821,8 +821,8 @@ public class ClientFramework extends javax.swing.JFrame
     {
       //FileInputStream data = new FileInputStream(file);
 
-      ClientFramework.debug(20, "Sending data to: " + metacatURL);
-      URL url = new URL(metacatURL);
+      ClientFramework.debug(20, "Sending data to: |" + metacatURL + "|");
+      URL url = new URL(metacatURL.trim());
       HttpMessage msg = new HttpMessage(url);
       Properties args = new Properties();
       args.put("action", "upload");
@@ -832,10 +832,11 @@ public class ClientFramework extends javax.swing.JFrame
       String filename = file.getAbsolutePath();
       ClientFramework.debug(20, "Sending data file: " + filename);
       dataStreams.put("datafile", filename);
-
+      
       returnStream = msg.sendPostData(args, dataStreams);
     } catch(Exception e) {
-      ClientFramework.debug(1, "Fatal error sending binary data to Metacat.");
+      ClientFramework.debug(1, "Fatal error sending binary data to Metacat: " + 
+                            e.getMessage());
       e.printStackTrace(System.err);
     }
     return returnStream;
@@ -856,6 +857,16 @@ public class ClientFramework extends javax.swing.JFrame
   {
     InputStream returnStream = null;
     // Now contact metacat and send the request
+    
+    /*
+     * Note:  The reason that there are three try statements all executing
+     * the same code is that there is a problem with the initial connection
+     * using the HTTPClient protocol handler.  These try statements make sure
+     * that a connection is made because it gives each connection a 2nd and
+     * 3rd chance to work before throwing an error.  
+     * THIS IS A TOTAL HACK.  THIS NEEDS TO BE LOOKED INTO AFTER THE BETA1
+     * RELEASE OF MORPHO!!!  cwb (7/24/01)
+     */
     try
     {
       debug(20, "Sending data to: " + metacatURL);
@@ -866,8 +877,30 @@ public class ClientFramework extends javax.swing.JFrame
     }
     catch(Exception e)
     {
-      debug(1, "Fatal error sending data to Metacat.");
-      e.printStackTrace(System.err);
+      try
+      {
+        debug(20, "Sending data (again) to : " + metacatURL);
+        URL url = new URL(metacatURL);
+        HttpMessage msg = new HttpMessage(url);
+        returnStream = msg.sendPostMessage(prop);
+        sessionCookie = msg.getCookie();
+      }
+      catch(Exception e2)
+      {
+        try
+        {
+          debug(20, "Sending data (again)(again) to: " + metacatURL);
+          URL url = new URL(metacatURL);
+          HttpMessage msg = new HttpMessage(url);
+          returnStream = msg.sendPostMessage(prop);
+          sessionCookie = msg.getCookie();
+        }
+        catch(Exception e3)
+        {
+          debug(1, "Fatal error sending data to Metacat: " + e3.getMessage());
+          e.printStackTrace(System.err);
+        }
+      }
     }
     return returnStream;
   }
