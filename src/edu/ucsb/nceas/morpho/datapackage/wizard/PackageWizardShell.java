@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2001-10-29 23:34:47 $'
- * '$Revision: 1.54 $'
+ *   '$Author: berkley $'
+ *     '$Date: 2001-10-30 17:24:54 $'
+ * '$Revision: 1.55 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -63,7 +63,7 @@ import com.arbortext.catalog.*;
  * that are put in the left most pane.
  */
 public class PackageWizardShell extends javax.swing.JFrame
-                                implements ActionListener
+                                implements ActionListener, TextImportListener
 {
   private ClientFramework framework;
   private int frameWizardIndex = 0;
@@ -93,6 +93,8 @@ public class PackageWizardShell extends javax.swing.JFrame
   private JCheckBox publicAccessCheckBox;
   private JButton saveToMetacatButton;
   private JButton cancelButton = new JButton();
+  private JRadioButton simpleDataRButton;
+  private JRadioButton importDataRButton;
   
   private String getDataDescription;
   private String finishDescription;
@@ -175,6 +177,14 @@ public class PackageWizardShell extends javax.swing.JFrame
       wfc.attributes = frame;
       if(frame.containsKey("GETDATA"))
       { //this field is built when the wizard need to get a data file
+        JLabel toplabel = new JLabel("<html>Choose a data file to " +
+                                     "include " +
+                                     "in your package.<br>  If you do not " +
+                                     "wish " +
+                                     "to include a data file, leave the box " +
+                                     "enpty and<br> click the 'next' button." +
+                                     "</html>");
+        toplabel.setPreferredSize(new Dimension(20,100));                             
         framePanel.setLayout(new BoxLayout(framePanel,BoxLayout.Y_AXIS));
         
         JPanel container1 = new JPanel();
@@ -183,14 +193,18 @@ public class PackageWizardShell extends javax.swing.JFrame
         fileTextField = new JTextField();
         fileTextField.setColumns(25);
         
-        JButton parseTextButton = new JButton("Get Information from Text-Based Table...");
-        parseTextButton.addActionListener(this);
-        JLabel parseLabel = new JLabel();
-        parseLabel.setText("<html>If your dataset is a 'table' in a text format <br>"
-                + "you can extract information about the table<br> from the table itself.<br> "
-                + "Click on this button to start the process.");
         
+        ButtonGroup bg = new ButtonGroup();
+        simpleDataRButton = new JRadioButton("Manually enter data file " +
+                                             "descriptions.");
+        importDataRButton = new JRadioButton("Automatically generate " +
+                                             "data file descriptions " +
+                                             "(ASCII files only)");
+        simpleDataRButton.setSelected(true);
+        bg.add(importDataRButton);
+        bg.add(simpleDataRButton);
         
+        framePanel.add(toplabel);
         container1.add(fileTextField);
         container1.add(chooseFileButton);
         
@@ -198,8 +212,13 @@ public class PackageWizardShell extends javax.swing.JFrame
         framePanel.add(Box.createRigidArea(new Dimension(0, 60)));
 
 
-        framePanel.add(parseTextButton);
-        framePanel.add(parseLabel);
+        //framePanel.add(parseTextButton);
+        //framePanel.add(parseLabel);
+        framePanel.add(simpleDataRButton);
+        framePanel.add(importDataRButton);
+        
+        //framePanel.setPreferredSize(new Dimension(450,300));
+        framePanel.setAlignmentY(Component.LEFT_ALIGNMENT);
         
         wfc.textfield = fileTextField;
         wfc.type = "GETDATA";
@@ -208,7 +227,8 @@ public class PackageWizardShell extends javax.swing.JFrame
       else if(frame.containsKey("InitialDescription"))
       { //this is the frame that is first displayed with the initial instructions
         String initdesc = (String)descriptions.get("InitialDescription");
-        JLabel initdescLabel = new JLabel("<html><font color=000000>" + initdesc + "</font></html>");
+        JLabel initdescLabel = new JLabel("<html><font color=000000>" + 
+                                           initdesc + "</font></html>");
         initdescLabel.setForeground(Color.black); 
         initdescLabel.setFont(new Font("Dialog", Font.BOLD, 12));
         initdescLabel.setPreferredSize(new Dimension(400, 400));
@@ -247,7 +267,6 @@ public class PackageWizardShell extends javax.swing.JFrame
    */
   private void handleNextAction()
   { //go forward a frame
-    //System.out.println("atts: " + activeContainer.attributes.toString());
     if(activeContainer.attributes.containsKey("repeatable"))
     { //certain frames can be repeated.  this handles adding them dynamically
       String repeatable = (String)activeContainer.attributes.get("repeatable");
@@ -307,7 +326,6 @@ public class PackageWizardShell extends javax.swing.JFrame
     if(frameWizardIndex == frameWizards.size()-1)
     { //we are at the end of the frames so we need to build the finish
       //frame and prepare to exit the wizard
-      
       //-save the last frame's data
       //-display the finish frame
       File f = activeContainer.getFile(true);
@@ -359,8 +377,6 @@ public class PackageWizardShell extends javax.swing.JFrame
       }
       
       donePanel = new JPanel();
-      openCheckBox = new JCheckBox("Open new package in package " +
-                                             "editor?", true);
       saveToMetacatCheckBox = new JCheckBox("Save package to Metacat?", true);
       publicAccessCheckBox = new JCheckBox("Package should be publicly " +
                                            "readable (on Metacat)?", true);
@@ -397,6 +413,30 @@ public class PackageWizardShell extends javax.swing.JFrame
         return;
       }
       
+      String prevFrameType = ((WizardFrameContainer)
+                             frameWizards.elementAt(frameWizardIndex)).type;
+      if(prevFrameType.equals("GETDATA") && 
+        importDataRButton.isSelected()   &&
+        !fileTextField.getText().equals(""))
+      {
+        int entitynum = frameWizardIndex + 1;
+        int attributenum = frameWizardIndex + 2;
+        WizardFrameContainer wfc1 = (WizardFrameContainer)frameWizards.elementAt(entitynum);
+        WizardFrameContainer wfc2 = (WizardFrameContainer)frameWizards.elementAt(attributenum);
+        PackageWizard pw1 = wfc1.wizard;
+        PackageWizard pw2 = wfc2.wizard;
+        
+        
+        TextImportWizard tiw = new TextImportWizard(fileTextField.getText(), this);
+        //the TextImport wizard has reference to PackageWizards so it can save the
+        // XML text it generates
+        tiw.setEntityWizard(pw1);
+        tiw.setAttributeWizard(pw2);
+        tiw.setVisible(true);
+        this.setVisible(false);
+        return;
+      }
+      
       wizardFrame.removeAll();
       wizardFrame.invalidate();
       frameWizardIndex++;
@@ -408,16 +448,20 @@ public class PackageWizardShell extends javax.swing.JFrame
       
       String test = null;
       
-      if (frameWizardIndex>1) {
+      if (frameWizardIndex>1) 
+      {
         PackageWizard nextPW = nextContainer.wizard;
-        if (nextPW!=null) {
+        if (nextPW!=null) 
+        {
           test = nextPW.getXMLString();   
         }
       }
-      if (test==null) {
+      if (test==null) 
+      {
         wizardFrame.add(nextContainer.panel);
       }
-      else {
+      else 
+      {
         // if an XML string in the PackageWizard for this frame is not null, then
         // it has been set by anothe class (probably the TextImportWizard)
         // Then just show that information has already been set.
@@ -640,7 +684,6 @@ public class PackageWizardShell extends javax.swing.JFrame
       if(wfc.attributes.containsKey("relatedTo"))
       {
         String relation = (String)wfc.attributes.get("relatedTo");
-        //System.out.println("relation: " + relation);
         Vector v = (Vector)tripleNames.get(relation);
         for(int j=0; j<v.size(); j++)
         {
@@ -663,7 +706,6 @@ public class PackageWizardShell extends javax.swing.JFrame
           {
             t = new Triple(id, relationship, rel);
           }
-          //System.out.println("triple: " + t.toString());
           tc.addTriple(t);
         }
       }
@@ -916,7 +958,7 @@ public class PackageWizardShell extends javax.swing.JFrame
       fileTextField.setText(datafile.getAbsolutePath());
     }
     else if(command.equals("Get Information from Text-Based Table..."))
-    {
+    {/*
       // this code is very specific to the current configuration of the Package Wizard
       // it should be generalized at some point
       // e.g. the two ints defined below depend on the entity and attribute wizards following
@@ -935,7 +977,7 @@ public class PackageWizardShell extends javax.swing.JFrame
       tiw.setEntityWizard(pw1);
       tiw.setAttributeWizard(pw2);
       tiw.setVisible(true);
-    }
+    */}
     else if(command.equals("Finish"))
     {
       handleFinishAction();
@@ -1110,7 +1152,6 @@ public class PackageWizardShell extends javax.swing.JFrame
     }
     sb.append("</acl>");
     String aclString = sb.toString();
-    //System.out.println(aclString);
     StringReader aclReader = new StringReader(aclString);
     FileSystemDataStore localDataStore = new FileSystemDataStore(framework);
     File file = localDataStore.saveFile(id, aclReader);
@@ -1239,5 +1280,94 @@ public class PackageWizardShell extends javax.swing.JFrame
         }
       }
     }
+  }
+  
+  public void importComplete()
+  {
+    frameWizardIndex += 2;
+    WizardFrameContainer nextContainer = (WizardFrameContainer)
+                                         frameWizards.elementAt(frameWizardIndex);  
+    //activeContainer = nextContainer;
+    //changeDescription(nextContainer.description);
+    
+    //we are at the end of the frames so we need to build the finish
+    //frame and prepare to exit the wizard
+    //-save the last frame's data
+    //-display the finish frame
+    wizardFrame.removeAll();
+    wizardFrame.invalidate();
+    frameWizardIndex++;
+    changeDescription(finishDescription);
+    Vector listContent = new Vector();
+    for(int i=0; i<frameWizards.size(); i++)
+    { //build the summary list box
+      WizardFrameContainer wfcont = (WizardFrameContainer)
+                                                    frameWizards.elementAt(i);
+      String id = wfcont.id;
+      Hashtable atts = wfcont.attributes;
+      String name = (String)atts.get("name");
+      String item = name;
+      if(name == null)
+      {
+        name = "Data File";
+        item = wfcont.originalDataFilePath;
+      }
+      else if(!name.equals("InitialDescription") && !name.equals("IGNORE"))
+      {
+        if(wfcont.attributes.containsKey("displayNamePath"))
+        {
+          String namePath = (String)wfcont.attributes.get("displayNamePath");
+          if(wfcont.file == null)
+          {
+            wfcont.getFile(true);
+          }
+          NodeList namelist = PackageUtil.getPathContent(wfcont.file, 
+                                                         namePath, framework);
+          
+          for(int j=0; j<namelist.getLength(); j++)
+          {
+            Node itemnode = namelist.item(j);
+            item = (String)itemnode.getFirstChild().getNodeValue().trim();
+            
+            if(item != null && !item.equals("InitialDescription"))
+            {
+              listContent.add(item);
+            }
+          }
+        }
+      }
+    }
+    
+    donePanel = new JPanel();
+    saveToMetacatCheckBox = new JCheckBox("Save package to Metacat?", true);
+    publicAccessCheckBox = new JCheckBox("Package should be publicly " +
+                                         "readable (on Metacat)?", true);
+    //saveToMetacatButton = new JButton("Save To Metacat");
+    JList idlist = new JList(listContent);
+    idlist.setPreferredSize(new Dimension(100,1000));
+    JLabel listLabel = new JLabel("You are creating the following package " +
+                                  "members: ");
+    donePanel.setLayout(new BoxLayout(donePanel, BoxLayout.Y_AXIS));
+    donePanel.add(Box.createRigidArea(new Dimension(0,90)));
+    donePanel.add(Box.createVerticalGlue());
+    donePanel.add(listLabel);
+    donePanel.add(new JScrollPane(idlist));
+    donePanel.add(Box.createRigidArea(new Dimension(0,20)));
+    donePanel.add(saveToMetacatCheckBox);
+    donePanel.add(Box.createRigidArea(new Dimension(0,20)));
+    donePanel.add(publicAccessCheckBox);
+    //donePanel.add(Box.createRigidArea(new Dimension(0,20)));
+    //donePanel.add(openCheckBox);
+    wizardFrame.add(donePanel);
+    wizardFrame.validate();
+    next.setText("Finish");
+    next.setIcon(null);
+    
+    this.setVisible(true);
+  }
+  
+  public void importCanceled()
+  {
+    this.setVisible(true);
   }
 }
