@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<wizard size="400x400" dtd="eml-entity-2.0.0.beta4e.dtd" doctype="-//ecoinformatics.org//eml-entity//2.0.0beta4//EN">
+<wizard size="400x400" dtd="eml-entity-2.0.0.beta4e.dtd" doctype="-//ecoinformatics.org//eml-entity-2.0.0beta4//EN">
   <group label="Table Information" field="table-entity" type="panel">
     <group layout="flow" size="380x300">
     <group size="370x50">

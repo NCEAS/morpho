@@ -18,7 +18,7 @@
   <packageWizardConfig>./lib/frames/packagewizard.xml</packageWizardConfig>
   <tempDir>./tmp</tempDir>
   <accessFileType>
-    -//ecoinformatics.org//eml-access//2.0.0beta4//EN
+    -//ecoinformatics.org//eml-access-2.0.0beta4//EN
   </accessFileType>
   <entityEditorPaths>
     <entityNamePath>//entityName</entityNamePath>
@@ -46,9 +46,9 @@
       <altTitlePath>/dataset/shortName</altTitlePath>
     </paths>
     <listdoctypes>
-      <entitydoctype>-//ecoinformatics.org//eml-entity//2.0.0beta4//EN</entitydoctype>
-      <resourcedoctype>-//ecoinformatics.org//eml-dataset//2.0.0beta4//EN</resourcedoctype>
-      <attributedoctype>-//ecoinformatics.org//eml-attribute//2.0.0beta4//EN</attributedoctype>
+      <entitydoctype>-//ecoinformatics.org//eml-entity-2.0.0beta4//EN</entitydoctype>
+      <resourcedoctype>-//ecoinformatics.org//eml-dataset-2.0.0beta4//EN</resourcedoctype>
+      <attributedoctype>-//ecoinformatics.org//eml-attribute-2.0.0beta4//EN</attributedoctype>
     </listdoctypes>
   </packageEditor>
   <customFrames>
@@ -64,7 +64,7 @@
     <file>
       <name>Entity</name>
       <label>Table Description</label>
-      <xmlfiletype>-//ecoinformatics.org//eml-entity//2.0.0beta4//EN</xmlfiletype>
+      <xmlfiletype>-//ecoinformatics.org//eml-entity-2.0.0beta4//EN</xmlfiletype>
       <rootnode>table-entity</rootnode>
       <tooltip>Information about the data tables in data set.</tooltip>
       <relatedto>DATAFILE</relatedto>
@@ -75,10 +75,10 @@
     <file>
       <name>Attribute</name>
       <label>Field Description</label>
-      <xmlfiletype>-//ecoinformatics.org//eml-attribute//2.0.0beta4//EN</xmlfiletype>
+      <xmlfiletype>-//ecoinformatics.org//eml-attribute-2.0.0beta4//EN</xmlfiletype>
       <rootnode>eml-attribute</rootnode>
       <tooltip>Information about the fields (columns) in your data tables.</tooltip>
-      <relatedto>-//ecoinformatics.org//eml-entity//2.0.0beta4//EN</relatedto>
+      <relatedto>-//ecoinformatics.org//eml-entity-2.0.0beta4//EN</relatedto>
       <displaypath>//attributeName</displaypath>
       <editexisting>yes</editexisting>
       <visible>no</visible>
@@ -99,7 +99,7 @@
     <file>
       <name>Access</name>
       <label>Access Permissions</label>
-      <xmlfiletype>-//ecoinformatics.org//eml-access//2.0.0beta4//EN</xmlfiletype>
+      <xmlfiletype>-//ecoinformatics.org//eml-access-2.0.0beta4//EN</xmlfiletype>
       <rootnode>acl</rootnode>
       <tooltip>Access control information for this data package.</tooltip>
       <displaypath>FIXED:Access Permisions</displaypath>
@@ -109,7 +109,7 @@
     <file>
       <name>Software</name>
       <label>Software Description</label>
-      <xmlfiletype>-//ecoinformatics.org//eml-software//2.0.0beta4//EN</xmlfiletype>
+      <xmlfiletype>-//ecoinformatics.org//eml-software-2.0.0beta4//EN</xmlfiletype>
       <rootnode>software</rootnode>
       <tooltip>Description of any software created or used in the creation of this data package.</tooltip>
       <displaypath>//shortName</displaypath>
@@ -119,7 +119,7 @@
     <file>
       <name>Resource</name>
       <label>Package Head</label>
-      <xmlfiletype>-//ecoinformatics.org//eml-dataset//2.0.0beta4//EN</xmlfiletype>
+      <xmlfiletype>-//ecoinformatics.org//eml-dataset-2.0.0beta4//EN</xmlfiletype>
       <rootnode>dataset</rootnode>
       <editexisting>no</editexisting>
       <idpath>/dataset/identifier</idpath>
@@ -128,7 +128,7 @@
     <file>
       <name>Distribution</name>
       <label>Distribution Information</label>
-      <xmlfiletype>-//ecoinformatics.org//eml-distribution//2.0.0beta4//EN</xmlfiletype>
+      <xmlfiletype>-//ecoinformatics.org//eml-distribution-2.0.0beta4//EN</xmlfiletype>
       <rootnode>eml-distribution</rootnode>
       <tooltip>Description of how this data package can be distributed either electronically or otherwise.</tooltip>
       <displaypath>FIXED:Distribution Information</displaypath>
@@ -138,18 +138,18 @@
     <file>
       <name>Physical</name>
       <label>Physical Object Description</label>
-      <xmlfiletype>-//ecoinformatics.org//eml-physical//2.0.0beta4//EN</xmlfiletype>
+      <xmlfiletype>-//ecoinformatics.org//eml-physical-2.0.0beta4//EN</xmlfiletype>
       <rootnode>eml-physical</rootnode>
       <tooltip>Description of the physical form of a data file.</tooltip>
       <displaypath>FIXED:Physical Information</displaypath>
       <editexisting>no</editexisting>
       <idpath>/eml-physical/identifier</idpath>
-      <relatedto>-//ecoinformatics.org//eml-entity//2.0.0beta4//EN</relatedto>
+      <relatedto>-//ecoinformatics.org//eml-entity-2.0.0beta4//EN</relatedto>
     </file>
     <file>
       <name>Project</name>
       <label>Project Description (Warning: Very Slow)</label>
-      <xmlfiletype>-//ecoinformatics.org//eml-project//2.0.0beta4//EN</xmlfiletype>
+      <xmlfiletype>-//ecoinformatics.org//eml-project-2.0.0beta4//EN</xmlfiletype>
       <rootnode>eml-project</rootnode>
       <tooltip>Description of the overall project that collected the data.</tooltip>
       <displaypath>FIXED:Project Information</displaypath>
@@ -159,7 +159,7 @@
     <file>
       <name>Literature</name>
       <label>Literature Description (Citation)</label>
-      <xmlfiletype>-//ecoinformatics.org//eml-literature//2.0.0beta4//EN</xmlfiletype>
+      <xmlfiletype>-//ecoinformatics.org//eml-literature-2.0.0beta4//EN</xmlfiletype>
       <rootnode>citation</rootnode>
       <tooltip>Description of literature</tooltip>
       <displaypath>FIXED:Literature Information</displaypath>
@@ -169,7 +169,7 @@
     <file>
       <name>Constraint</name>
       <label>Constraint Description</label>
-      <xmlfiletype>-//ecoinformatics.org//eml-constraint//2.0.0beta4//EN</xmlfiletype>
+      <xmlfiletype>-//ecoinformatics.org//eml-constraint-2.0.0beta4//EN</xmlfiletype>
       <rootnode>eml-constraint</rootnode>
       <tooltip>Description of constaints</tooltip>
       <displaypath>FIXED:Constraint Information</displaypath>
@@ -179,7 +179,7 @@
     <file>
       <name>Protocol</name>
       <label>Protocol Description</label>
-      <xmlfiletype>-//ecoinformatics.org//eml-protocol//2.0.0beta4//EN</xmlfiletype>
+      <xmlfiletype>-//ecoinformatics.org//eml-protocol-2.0.0beta4//EN</xmlfiletype>
       <rootnode>eml-protocol</rootnode>
       <tooltip>Description of protocols</tooltip>
       <displaypath>FIXED:Protocol Information</displaypath>

@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <wizard size="460x400" dtd="eml-dataset-2.0.0.beta4e.dtd" 
-        doctype="-//ecoinformatics.org//eml-dataset//2.0.0beta4//EN">
+        doctype="-//ecoinformatics.org//eml-dataset-2.0.0beta4//EN">
   <group label="Base Information" field="dataset" type="panel">
     <group >
       <textbox label="Identifier" field="identifier" size="10" allowNull="no" 

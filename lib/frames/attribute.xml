@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <wizard size="460x400" dtd="eml-attribute-2.0.0.beta4e.dtd" 
-        doctype="-//ecoinformatics.org//eml-attribute//2.0.0beta4//EN">
+        doctype="-//ecoinformatics.org//eml-attribute-2.0.0beta4//EN">
   <group label="Field Information" type="panel">
     <group field="eml-attribute">
       <textbox field="identifier" size="10" allowNull="no" 
