@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2001-05-05 01:29:55 $'
- * '$Revision: 1.5 $'
+ *     '$Date: 2001-05-07 17:26:10 $'
+ * '$Revision: 1.6 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -77,12 +77,18 @@ public class ResultSet extends AbstractTableModel implements ContentHandler
   private Vector relationsVector; 
 
   /**
-   * a list of the desired return fields fromthe configuration file. 
+   * a list of the desired return fields from the configuration file. 
    *
    * NOTE: This info should really come from the query so that it can 
    * vary by query.
    */
   private Vector returnFields; // return field path names
+
+  /** Flag indicating whether the results are from a local query */
+  private boolean isLocal = false;
+
+  /** Flag indicating whether the results are from a metacat query */
+  private boolean isMetacat = false;
 
   // this group of variables are temporary vars that are used while 
   // parsing the XML stream.  Ultimately the data ends up in the
@@ -108,9 +114,15 @@ public class ResultSet extends AbstractTableModel implements ContentHandler
    * Construct a ResultSet instance given a query object and a
    * InputStream that represents an XML encoding of the results.
    */
-  public ResultSet(Query query, InputStream resultsXMLStream)
+  public ResultSet(Query query, String source, InputStream resultsXMLStream)
   {
     this.savedQuery = query;
+
+    if (source.equals("local")) {
+      isLocal = true;
+    } else if (source.equals("metacat")) {
+      isMetacat = true;
+    }
 
     resultsVector = new Vector();
     relations = new Hashtable(); 
@@ -302,6 +314,8 @@ public class ResultSet extends AbstractTableModel implements ContentHandler
       row.add(docid);
       row.add(docname);
       row.add(doctype);
+      row.add(new Boolean(isLocal));
+      row.add(new Boolean(isMetacat));
 
       if (relationsVector.size() > 0) {
         relations.put(docid, relationsVector);
@@ -417,5 +431,43 @@ public class ResultSet extends AbstractTableModel implements ContentHandler
    */
   public Query getQuery() {
     return savedQuery; 
+  }
+
+  /**
+   * Open a given row of the result set using a delegated handler class
+   */
+  public void openResultRecord(int row)
+  {
+    System.err.println("Opening row: " + row);
+    int numHeaders = headers.length;
+    String docid = null;
+    boolean openLocal = false;
+    boolean openMetacat = false;
+    try {
+      Vector rowVector = (Vector)resultsVector.get(row);
+      docid = (String)rowVector.get(numHeaders+2);
+      openLocal = ((Boolean)rowVector.get(numHeaders+5)).booleanValue();
+      openMetacat = ((Boolean)rowVector.get(numHeaders+6)).booleanValue();
+    } catch (ArrayIndexOutOfBoundsException aioobe) {
+      docid = null;
+    } catch (NullPointerException npe) {
+      docid = null;
+    }
+    if (openLocal) {
+      System.err.println("Opening local copy of " + docid);
+    } else if (openMetacat) {
+      System.err.println("Opening metacat copy of " + docid);
+    } else {
+      System.err.println("ERROR: Neither local nor metacat copy " +
+                         "available for " + docid);
+    }
+  }
+
+  /**
+   * Merge a ResultSet onto this one using the docid as the join column
+   */
+  public void merge(ResultSet r2)
+  {
+    System.err.println("Merge is not yet implemented!");
   }
 }

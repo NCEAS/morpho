@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2001-05-05 01:29:55 $'
- * '$Revision: 1.3 $'
+ *     '$Date: 2001-05-07 17:26:10 $'
+ * '$Revision: 1.4 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -76,7 +76,7 @@ public class ResultPanel extends JPanel
       add(headerPanel, BorderLayout.NORTH);
   
       // Set up the results table
-      JTable table = new JTable(results);
+      final JTable table = new JTable(results);
       WrappedTextRenderer stringRenderer = new WrappedTextRenderer(fontSize);
       stringRenderer.setRows(5);
       table.setRowHeight((int)(stringRenderer.getPreferredSize().getHeight()));
@@ -90,15 +90,16 @@ public class ResultPanel extends JPanel
       //Add the scroll pane to this Panel.
       add(scrollPane, BorderLayout.CENTER);
       
-      /*
-        table.addMouseListener(new MouseAdapter()
+      // Listen for mouse events to see if the user double-clicks
+      table.addMouseListener(new MouseAdapter()
+      {
+        public void mouseClicked(MouseEvent e)
         {
-          public void mouseClicked(MouseEvent e)
-          {
-            printDebugData(table);
+          if (2 == e.getClickCount()) {
+            openResultRecord(table);
           }
-        });
-      */
+        }
+      });
     }
   }
 
@@ -135,4 +136,16 @@ public class ResultPanel extends JPanel
       }
     }
   } 
+
+  /**
+   * Open a result record when the user double-clicks on the table.  If
+   * multiple rows are selected, open them all.
+   */
+  private void openResultRecord(JTable table) {
+    int[] selectedRows = table.getSelectedRows();
+
+    for (int i = 0; i < selectedRows.length; i++) {
+      results.openResultRecord(selectedRows[i]);
+    }
+  }
 }
