@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-10-14 18:05:07 $'
- * '$Revision: 1.4 $'
+ *     '$Date: 2002-12-05 00:25:14 $'
+ * '$Revision: 1.5 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -114,6 +114,10 @@ public class MetacatDataStore extends DataStore implements DataStoreInterface
 //        BufferedWriter bwriter = new BufferedWriter(writer);
         BufferedOutputStream bfos = new BufferedOutputStream(fos);
         InputStream metacatInput = morpho.getMetacatInputStream(props);
+        // set here because previous line call to getMetacatInputStream will set
+        // to false
+        Morpho.connectionBusy = true;
+
 //        InputStreamReader metacatInputReader = new InputStreamReader(metacatInput);
 //        BufferedReader bmetacatInputReader = new BufferedReader(metacatInputReader);
         BufferedInputStream bmetacatInputStream = new BufferedInputStream(metacatInput);
@@ -178,13 +182,14 @@ public class MetacatDataStore extends DataStore implements DataStoreInterface
         breader.close();
         bmetacatInputStream.close();
         metacatInput.close();
-        
+        Morpho.connectionBusy = false;
         return localfile;
       }
       catch(Exception e)
       {
         e.printStackTrace();
-        return null;
+       Morpho.connectionBusy = false;
+       return null;
       }
     }
   }
@@ -282,6 +287,10 @@ public class MetacatDataStore extends DataStore implements DataStoreInterface
       
       InputStream metacatInput = null;
       metacatInput = morpho.getMetacatInputStream(prop, true);
+      // set here because previous line call to getMetacatInputStream will set
+      // to false
+      Morpho.connectionBusy = true;
+      
       InputStreamReader metacatInputReader = new InputStreamReader(metacatInput);
       BufferedReader bmetacatInputReader = new BufferedReader(metacatInputReader);
       
@@ -309,6 +318,7 @@ public class MetacatDataStore extends DataStore implements DataStoreInterface
         {
           bmetacatInputReader.close();
           metacatInput.close();
+          Morpho.connectionBusy = false;
           return openFile(docid);
         }
         catch(Exception ee)
@@ -316,11 +326,13 @@ public class MetacatDataStore extends DataStore implements DataStoreInterface
           bmetacatInputReader.close();
           metacatInput.close();
           ee.printStackTrace();
+          Morpho.connectionBusy = false;
           return null;
         }
       }
       else
       {//something weird happened.
+        Morpho.connectionBusy = false;
         throw new Exception("unexpected error in edu.ucsb.nceas.morpho." +
                             ".datastore.MetacatDataStore.saveFile(): " + message);
       } 
@@ -332,6 +344,7 @@ public class MetacatDataStore extends DataStore implements DataStoreInterface
       //Log.debug(4, "Error in MetacatDataStore.saveFile(): " + 
       //                    e.getMessage());
       //e.printStackTrace();
+      Morpho.connectionBusy = false;
       throw new MetacatUploadException(e.getMessage());
     }
   }
@@ -423,6 +436,7 @@ public class MetacatDataStore extends DataStore implements DataStoreInterface
     
     InputStream metacatInput = null;
     metacatInput = morpho.getMetacatInputStream(prop, true);
+    Morpho.connectionBusy = true;
     InputStreamReader metacatInputReader = new InputStreamReader(metacatInput);
     BufferedReader bmetacatInputReader = new BufferedReader(metacatInputReader);
     try
@@ -438,6 +452,7 @@ public class MetacatDataStore extends DataStore implements DataStoreInterface
     {
       Log.debug(0, "Error deleting file from metacat: " + 
                             ioe.getMessage());
+      Morpho.connectionBusy = false;
       return false;
     }
     
@@ -453,6 +468,7 @@ public class MetacatDataStore extends DataStore implements DataStoreInterface
       }
       catch(Exception e)
       {}
+      Morpho.connectionBusy = false;
       return false;
     }
     else if(message.indexOf("<success>") != -1)
@@ -464,10 +480,12 @@ public class MetacatDataStore extends DataStore implements DataStoreInterface
       }
       catch(Exception e)
       {}
+      Morpho.connectionBusy = false;
       return true;
     }
     else
     {//something weird happened.
+      Morpho.connectionBusy = false;
       return false;
     } 
   }
