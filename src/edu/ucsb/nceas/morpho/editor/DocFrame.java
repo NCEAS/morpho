@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2004-03-29 18:15:18 $'
- * '$Revision: 1.162 $'
+ *     '$Date: 2004-03-29 18:32:22 $'
+ * '$Revision: 1.163 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -347,13 +347,12 @@ public class DocFrame extends javax.swing.JFrame
     OpenButton.setVisible(false);  
     
     ButtonPanel.add(OpenButton);
-    CancelButton.setText("Cancel");
-    CancelButton.setActionCommand("Cancel");
-    ButtonPanel.add(CancelButton);
-//    EditingExit.setText("Save Changes");
     EditingExit.setText("OK");
     EditingExit.setActionCommand("OK");
     ButtonPanel.add(EditingExit);
+    CancelButton.setText("Cancel");
+    CancelButton.setActionCommand("Cancel");
+    ButtonPanel.add(CancelButton);
     NotesPanel.setLayout(new GridLayout(2, 2, 6, 0));
     ControlPanel.add(BorderLayout.WEST, NotesPanel);
     JLabel1.setText("required; repeatable (ONE to MANY)");
