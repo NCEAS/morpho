@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: jones $'
- *     '$Date: 2002-10-23 20:28:43 $'
- * '$Revision: 1.22 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2003-12-22 20:59:16 $'
+ * '$Revision: 1.23 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -53,7 +53,10 @@ public class SplashFrame extends javax.swing.JFrame
                                      "Eric Fegraus",
                                      "Matthew Brooke",
                                      "Jing Tao",
-                                     "Christy Bowles" };
+                                     "Christy Bowles",
+                                     "Saurabh Garg",
+                                     "Perumal Sambasivam"
+                                    };
   private static String[] orgs = { 
                  "National Center for Ecological Analysis and Synthesis",
                  "Long Term Ecological Research Network Office",
