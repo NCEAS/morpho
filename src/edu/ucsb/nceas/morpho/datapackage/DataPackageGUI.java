@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-12-09 22:05:12 $'
- * '$Revision: 1.94 $'
+ *     '$Date: 2002-12-16 20:00:59 $'
+ * '$Revision: 1.95 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -512,7 +512,7 @@ public class DataPackageGUI extends javax.swing.JFrame
     
     titleRefLabel = title;
     accessionRefLabel = "Accession Number " + id;
-    keywordsRefLabel = "Keywords: " + keywords;
+    keywordsRefLabel = " Keywords: " + keywords;
     
     String originators = "<br><b>Originator(s)</b><br>";
     String name = "";
