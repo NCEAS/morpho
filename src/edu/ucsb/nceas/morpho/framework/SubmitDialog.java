@@ -6,7 +6,7 @@
  *              National Center for Ecological Analysis and Synthesis
  *     Authors: Dan Higgins
  *
- *     Version: '$Id: SubmitDialog.java,v 1.11 2001-01-19 20:58:11 higgins Exp $'
+ *     Version: '$Id: SubmitDialog.java,v 1.12 2001-01-19 23:20:24 higgins Exp $'
  */
 
 package edu.ucsb.nceas.dtclient;
@@ -273,7 +273,7 @@ public class SubmitDialog extends javax.swing.JDialog implements ContentHandler
 	    container = cf;
 	    userName = cf.userName;
 	    passWord = cf.passWord;
-	    this.setModal(true);
+	    this.setModal(false);
 		//now save current xml doc as file and get id
 	    String temp = container.mdeBean1.getSaveString();
 		    System.out.println("temp string created");

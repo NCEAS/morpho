@@ -6,7 +6,7 @@
  *              National Center for Ecological Analysis and Synthesis
  *     Authors: Dan Higgins
  *
- *     Version: '$Id: SubmitDataDialog.java,v 1.7 2001-01-19 20:57:52 higgins Exp $'
+ *     Version: '$Id: SubmitDataDialog.java,v 1.8 2001-01-19 23:20:24 higgins Exp $'
  */
 
 package edu.ucsb.nceas.dtclient;
@@ -275,7 +275,7 @@ public class SubmitDataDialog extends javax.swing.JDialog implements ContentHand
 	    container = cf;
 	    userName = cf.userName;
 	    passWord = cf.passWord;
-	    this.setModal(true);
+	    this.setModal(false);
 	    
 	}
 
@@ -959,6 +959,12 @@ public String insertIntoMetacat(String filename) {
 		}
 		if (selection==2) {            //metacat (catalog) document
 		    FileMetadataTextField.setText("");
+		    if (!container.userName.equals("public")) {
+		        container.queryBean1.getOwnerDocs(container.userName);
+		    }
+		    else{
+		        JOptionPane.showMessageDialog(this,"Must be connected as named user!");    
+		    }
 		}
 		if (selection==3) {            // do NOT submit
 		    FileMetadataTextField.setText("");
@@ -987,6 +993,12 @@ public String insertIntoMetacat(String filename) {
 		}
 		if (selection==2) {            //metacat (catalog) document
 		    ResourceMetadataTextField.setText("");
+		    if (!container.userName.equals("public")) {
+		        container.queryBean1.getOwnerDocs(container.userName);
+		    }
+		    else{
+		        JOptionPane.showMessageDialog(this,"Must be connected as named user!");    
+		    }
 		}
 		if (selection==3) {            // do NOT submit
 		    ResourceMetadataTextField.setText("");
@@ -1017,6 +1029,12 @@ public String insertIntoMetacat(String filename) {
 		}
 		if (selection==2) {            //metacat (catalog) document
 		    PackageNameTextField.setText("");
+		    if (!container.userName.equals("public")) {
+		        container.queryBean1.getOwnerDocs(container.userName);
+		    }
+		    else{
+		        JOptionPane.showMessageDialog(this,"Must be connected as named user!");    
+		    }
 		}
 		if (selection==3) {            // do NOT submit
 		    PackageNameTextField.setText("");
