@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2002-10-01 00:24:58 $'
- * '$Revision: 1.43 $'
+ *     '$Date: 2002-10-01 17:08:41 $'
+ * '$Revision: 1.44 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -607,4 +607,88 @@ public class DataPackagePlugin
     identifier = accession.getNextId();
     return identifier;
   }
-}
+  
+  /**
+   * Method to get docid from a given morpho frame
+   *
+   * @param morphoFrame  the morphoFrame which contains a datapackage
+   */
+  public String getDocIdFromMorphoFrame(MorphoFrame morphoFrame)
+  {
+    String docid = null;
+    DataPackage data = getDataPackageFromMorphoFrame(morphoFrame);
+    if (data != null)
+    {
+      docid = data.getID();
+    }
+    Log.debug(50, "docid is: "+ docid);
+    return docid;
+  }
+  
+  /**
+   * Method to determine a data package which in a morpho frame if is in local
+   *
+   * @param morphoFrame  the morpho frame containing the data package
+   */
+  public boolean isDataPackageInLocal(MorphoFrame morphoFrame)
+  {
+    boolean flagInLocal = false;
+    DataPackage data = getDataPackageFromMorphoFrame(morphoFrame);
+    if (data != null)
+    {
+      String location = data.getLocation();
+      if (location.equals(DataPackageInterface.LOCAL) || 
+         location.equals(DataPackageInterface.BOTH))
+      {
+        flagInLocal = true;
+        Log.debug(50, "docid is in local");
+      }//if
+    }//if
+    return flagInLocal;
+  }
+  
+  /**
+   * Method to determine a data package which in a morpho frame if is in network
+   *
+   * @param morphoFrame  the morpho frame containing the data package
+   */
+  public boolean isDataPackageInNetwork(MorphoFrame morphoFrame)
+  {
+    boolean flagInNetwork = false;
+    DataPackage data = getDataPackageFromMorphoFrame(morphoFrame);
+    if (data != null)
+    {
+      String location = data.getLocation();
+      if (location.equals(DataPackageInterface.METACAT) || 
+         location.equals(DataPackageInterface.BOTH))
+      {
+        flagInNetwork = true;
+        Log.debug(50, "docid is in network");
+      }//if
+    }//if
+    return flagInNetwork;
+  }
+  
+  /*
+   * Method to get pakcage in a given morphoFrame. If the morpho frame doesn't
+   * contain a datapackage, null will be returned
+   */
+  private DataPackage getDataPackageFromMorphoFrame(MorphoFrame morphoFrame)
+  {
+    DataPackage data = null;
+    DataViewContainerPanel resultPane = null;
+    
+    if (morphoFrame != null)
+    {
+       resultPane = AddDocumentationCommand.
+                          getDataViewContainerPanelFromMorphoFrame(morphoFrame);
+    }//if
+    
+    // make sure resulPanel is not null
+    if (resultPane != null)
+    {
+       data = resultPane.getDataPackage();
+    }//if
+    return data;
+  }//getDataPackageFromMorphoFrame
+}//DataPackagePlugin
