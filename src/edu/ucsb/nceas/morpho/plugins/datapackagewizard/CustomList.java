@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2003-10-04 03:47:44 $'
- * '$Revision: 1.23 $'
+ *     '$Date: 2003-10-04 04:45:14 $'
+ * '$Revision: 1.24 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -281,7 +281,7 @@ public class CustomList extends JPanel {
           if (editor instanceof JTextField) {
         
             Log.debug(45, "(JTextField)");
-            DefaultCellEditor cellEd = new DefaultCellEditor((JTextField)editor);
+            DefaultCellEditor cellEd = new DefaultCellEditor(new JTextField());
             cellEd.setClickCountToStart(1);
             column.setCellEditor(cellEd);
           
@@ -780,9 +780,35 @@ class AddAction extends AbstractAction {
 
         TableCellEditor cellEditor 
                           = table.getColumnModel().getColumn(i).getCellEditor();
-                          
-        if (cellEditor!=null) newRowList.add(cellEditor.getCellEditorValue());
-        else newRowList.add("");
+        String cellVal = (cellEditor!=null)? 
+                          String.valueOf(cellEditor.getCellEditorValue()) : "";
+        String colClassName = table.getColumnClass(i).getName();
+          
+//        newRowList.add(cellEditor.getCellEditorValue());
+
+System.err.println("\n AddAction setting Column "+i+" cellVal = "+cellVal);
+System.err.println("\n AddAction colClassName = "+colClassName);
+          
+        if (colClassName.equals("javax.swing.JTextField")) {
+
+          Log.debug(45, "\nAddAction - (JTextField)");
+          newRowList.add("");
+        
+        } else if (colClassName.equals("javax.swing.JCheckBox")) {
+
+          Log.debug(45, "\nAddAction - (JCheckBox)");
+          newRowList.add(cellVal);
+          
+        } else if (colClassName.equals("javax.swing.JComboBox")) {
+
+          Log.debug(45, "\nAddAction - (JComboBox)");
+          newRowList.add(cellVal);
+        
+        } else {
+        
+          Log.debug(45, "\nAddAction - NOT RECOGNIZED");
+          newRowList.add("");
+        }
       }
       parentList.addRow(newRowList);
     
@@ -1063,10 +1089,12 @@ class CustomJTable extends JTable  {
     //override super
     public Class getColumnClass(int col) {
     
-      Class colClass = "".getClass();
+      Class colClass = java.lang.String.class;
+      
       if (editors[col]!=null) colClass = editors[col].getClass();
-      Log.debug(45, "\nCustomJTable.getColumnClass("
-                                              +col+"): " + colClass.getName());
+      
+      Log.debug(45, "\nCustomJTable.getColumnClass("+col+"): " 
+                                                          + colClass.getName());
       return colClass;
     }
 
