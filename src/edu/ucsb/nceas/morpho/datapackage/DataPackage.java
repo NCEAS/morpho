@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2002-08-13 20:31:09 $'
- * '$Revision: 1.61 $'
+ *     '$Date: 2002-08-14 00:27:17 $'
+ * '$Revision: 1.62 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -205,12 +205,10 @@ public class DataPackage
   }
   
   
-  // * * * stub - need to replace * * * 
   //check if identifier actually points to a valid 
   //sub-element (module, subtree etc)
   private boolean idExists(String identifier) {
-    // * * * stub - need to replace * * * 
-    return true;;
+    return getAllIdentifiers().contains(identifier);
   }
   
   /**
@@ -243,18 +241,6 @@ public class DataPackage
     }
     return new FileReader(elementSrcFile);
   }
-//    try {
-//      subElement = fileSysDataStore.openFile(identifier);
-//    } catch(Exception ex1) {
-//      try {
-//        subElement = metacatDataStore.openFile(identifier);
-//      } catch(Exception ex2) {
-//        throw new DocumentNotFoundException("DataPackage.open(): Error opening "
-//                  + "selected file (CacheAccessException): "+ ex2.getMessage());
-//      }
-//    }
-
-
 
   /**
    * returns the dom representation of the triple file.
