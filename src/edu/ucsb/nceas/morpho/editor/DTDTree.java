@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-02-15 21:54:34 $'
- * '$Revision: 1.18 $'
+ *     '$Date: 2002-02-26 17:36:18 $'
+ * '$Revision: 1.18.2.1 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -198,7 +198,7 @@ private Vector getChildren(NodeInfo ni, DefaultMutableTreeNode parentNode) {
       DTDItems(items[i],vec2,true);
     }
     boolean first = true;
-//    if ((ni.getCardinality().equalsIgnoreCase("ONE"))) {
+    if ((ni.getCardinality().equalsIgnoreCase("ONE"))) {
       for (Enumeration e = vec2.elements() ; e.hasMoreElements() ;) {
         NodeInfo node = (NodeInfo)(e.nextElement());
         if (first) {
@@ -216,17 +216,17 @@ private Vector getChildren(NodeInfo ni, DefaultMutableTreeNode parentNode) {
         parentNode.add(newNode);
         vec1.addElement(newNode);
       }
-/*    }
+    }
     else {
       for (Enumeration e = vec2.elements() ; e.hasMoreElements() ;) {
         NodeInfo node = (NodeInfo)(e.nextElement());
-//        node.setCardinality("ZERO to MANY");
+        node.setCardinality(ni.getCardinality());
 		DefaultMutableTreeNode newNode = new DefaultMutableTreeNode(node);
         parentNode.add(newNode);
         vec1.addElement(newNode);
       }
     }
-*/
+
   }
   else {
     elem = (DTDElement)dtd.elements.get(name);
