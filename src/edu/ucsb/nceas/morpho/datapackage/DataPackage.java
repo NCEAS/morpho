@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2002-08-14 21:00:29 $'
- * '$Revision: 1.63 $'
+ *     '$Date: 2002-08-16 00:29:19 $'
+ * '$Revision: 1.64 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -50,6 +50,7 @@ import java.io.FileReader;
 import java.io.StringWriter;
 import java.io.StringReader;
 import java.io.BufferedReader;
+import java.io.InputStream;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStreamReader;
@@ -212,20 +213,18 @@ public class DataPackage
     return getAllIdentifiers().contains(identifier);
   }
   
-  /**
-   * Open a sub-element of this datapackage (for example, a Module, or a 
-   * sub-tree), given its String identifier.
-   * @param     identifier                  the unique identifier needed to 
-   *                                        locate the desired sub-element. 
-   * @return    a <code>java.io.Reader</code> to allow direct read access 
-   *                                        to the source
-   * @throws    DocumentNotFoundException   if document cannot be found
-   * @throws    FileNotFoundException       if document cannot succesfully be 
-   *                                        opened and a Reader returned
-   */
-  public Reader open(String identifier) 
-                      throws  DocumentNotFoundException, FileNotFoundException {
-    
+  
+  // Given a String identifier which points to a sub-element of this datapackage 
+  // (for example, a Module, or a sub-tree), verify that it exists, and if so 
+  // retrieve it from either metacat or local storage
+  // @param     identifier                  the unique identifier needed to 
+  //                                        locate the desired sub-element. 
+  // @return    a <code>java.io.File</code> 
+  // @throws    DocumentNotFoundException   if document cannot be found
+  // @throws    FileNotFoundException       if document cannot succesfully be 
+  //                                        opened and a Reader returned
+  private File openAsFile(String identifier) throws  DocumentNotFoundException  
+  {
     //first check if this identifier points to a 
     //valid sub-element (module or subtree)
     if (idExists(identifier)==false)  {
@@ -240,7 +239,41 @@ public class DataPackage
       throw new DocumentNotFoundException("DataPackage.open(): "
                             +"Error opening element with ID: "+identifier);
     }
-    return new FileReader(elementSrcFile);
+    return elementSrcFile;
+  }
+  
+  /**
+   * Open a sub-element of this datapackage (for example, a Module, or a 
+   * sub-tree), given its String identifier.
+   * @param     identifier                  the unique identifier needed to 
+   *                                        locate the desired sub-element. 
+   * @return    a <code>java.io.Reader</code> to allow direct read access 
+   *                                        to the source
+   * @throws    DocumentNotFoundException   if document cannot be found
+   * @throws    FileNotFoundException       if document cannot succesfully be 
+   *                                        opened and a Reader returned
+   */
+  public Reader openAsReader(String identifier) 
+                        throws  DocumentNotFoundException, FileNotFoundException 
+  {
+    return new FileReader(openAsFile(identifier));
+  }
+  
+    /**
+   * Open a sub-element of this datapackage (for example, a Module, or a 
+   * sub-tree), given its String identifier.
+   * @param     identifier                  the unique identifier needed to 
+   *                                        locate the desired sub-element. 
+   * @return    a <code>java.io.InputStream</code> to allow direct read access 
+   *                                        to the source
+   * @throws    DocumentNotFoundException   if document cannot be found
+   * @throws    FileNotFoundException       if document cannot succesfully be 
+   *                                        opened and an InputStream returned
+   */
+  public InputStream openAsInputStream(String identifier) 
+                        throws  DocumentNotFoundException, FileNotFoundException 
+  {
+    return new FileInputStream(openAsFile(identifier));
   }
 
   /**
