@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-05-21 22:05:47 $'
- * '$Revision: 1.1 $'
+ *     '$Date: 2001-05-22 22:04:32 $'
+ * '$Revision: 1.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -60,6 +60,8 @@ public class PackageWizardOpenFileParser extends DefaultHandler
   private String path = new String();
   private Vector paths = new Vector();
   private Hashtable pathcontent = new Hashtable();
+  private StringBuffer configFile = new StringBuffer();
+  private Vector configFileV = new Vector();
   boolean instart = true;
   
   /**
@@ -139,13 +141,28 @@ public class PackageWizardOpenFileParser extends DefaultHandler
   { //add the path and the content to the hash
     String content = new String(ch, start, length);
     if(instart && !content.trim().equals(""))
-    {
+    { //here we add a text box
+      StringBuffer newline = new StringBuffer();
+      
+      newline.append("<textbox field=\"").append(currentTag.trim());
+      newline.append("\" defaulttext=\"").append(content.trim()).append("\"/>\n");
+      configFile.append(newline.toString());
+      configFileV.addElement(newline.toString());
+      
       while(pathcontent.containsKey(path))
       {
         path += " ";
       }
       //System.out.println("path: " + path + "| content: " + content + "|");
       pathcontent.put(path, content.trim());
+    }
+    else if(instart && content.trim().equals(""))
+    { //here we add a group
+      StringBuffer newline = new StringBuffer();
+      newline.append("<group field=\"").append(currentTag.trim());
+      newline.append("\">\n");
+      configFile.append(newline.toString());
+      configFileV.addElement(newline.toString());
     }
     
     if(instart)
@@ -162,6 +179,43 @@ public class PackageWizardOpenFileParser extends DefaultHandler
   public Vector getPaths()
   {
     return paths;
+  }
+  
+  public String getConfigFile()
+  {
+    return configFile.toString();  
+  }
+  
+  public Vector getConfigFileV()
+  {
+    return configFileV;
+  }
+  
+  public String getField(String line)
+  {
+    int fieldindex = line.indexOf("field") + 7;
+    String name = line.substring(fieldindex, line.indexOf("\"", fieldindex+1));
+    return name;
+  }
+  
+  public String addAttributes(String line, Hashtable atts)
+  {
+    String attributes = new String();
+    Enumeration keys = atts.keys();
+    while(keys.hasMoreElements())
+    {
+      String key = (String)keys.nextElement();
+      if(!key.equals("defaulttext") && !key.equals("field"))
+      attributes += key + "=\"" + atts.get(key) + "\" ";
+    }
+    //System.out.println("attributes: " + attributes);
+    //System.out.println("line: " + line);
+    
+    int endindex = line.indexOf("/>");
+    String tempString = line.substring(0, endindex);
+    tempString += " " + attributes + "/>";
+    System.out.println("newline: " + tempString);
+    return tempString;
   }
   
   public static void main(String[] args)

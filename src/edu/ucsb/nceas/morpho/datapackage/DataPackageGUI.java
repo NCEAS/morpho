@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-05-21 22:05:14 $'
- * '$Revision: 1.5 $'
+ *     '$Date: 2001-05-22 22:04:32 $'
+ * '$Revision: 1.6 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -64,73 +64,57 @@ public class DataPackageGUI extends javax.swing.JFrame
    */
   private void initComponents()
   {
-    //this.setDefaultCloseOperation(EXIT_ON_CLOSE);  
     contentPane.setLayout(new FlowLayout());
-    
-    JPanel mainPanel = new JPanel();
-    //mainPanel.setLayout(new GridLayout(1,1));
-    
-    Vector frameNameV = config.get("frameName");
-    Vector frameLocationV = config.get("frameConfigFile");
-    Vector mainFrameV = config.get("mainFrame");
-    String mainFrame = (String)mainFrameV.elementAt(0);
-    Hashtable frames = new Hashtable();
-    
-    for(int i=0; i<frameNameV.size(); i++)
-    {
-      frames.put((String)frameNameV.elementAt(i), 
-                 (String)frameLocationV.elementAt(i));
-    }
-    
-    if(!frames.containsKey(mainFrame))
-    {
-      framework.debug(1, "The frame name provided to PackageWizard is not " +
-                         "a valid frame name as described in config.xml");
-      framework.debug(1, "The valid names are: " + frames.toString());
-      return;
-    }
-    String framefile = (String)frames.get(mainFrame);
-    
-    final PackageWizard pw;
-    FileReader freader = null;
-    try
-    {
-      //create the package wizard frame and open the datapackage's main file
-      //if it exists.
-      freader = new FileReader(dataPackage.getTripleFile());
-      
-      //pw.openFile(new FileReader(dataPackage.getTripleFile()));
-    }
-    catch(FileNotFoundException fnfe)
-    {
-      framework.debug(1, "the file requested could not be found");
-      
-    }
-    
-    if(freader != null)
-    {
-      pw = new PackageWizard(framework, mainPanel, framefile, freader);
-    }
-    else
-    {
-      pw = new PackageWizard(framework, mainPanel, framefile);
-    }
-    
-    JButton saveButton = new JButton("save");
-    saveButton.addActionListener(
-      new ActionListener() 
-      {
-        public void actionPerformed(ActionEvent e) 
-        { 
-          System.out.println(pw.getXML());
-        }
-      }
-    );
     JPanel listPanel = createListPanel();
+    Vector orig = new Vector();
+    orig.addElement("Joe Smith");
+    orig.addElement("Jim Bo");
+    orig.addElement("Julie Andrews");
     
-    contentPane.add(saveButton);
-    contentPane.add(mainPanel);
+    JPanel basicInfoPanel = createBasicInfoPanel("knb.1", "some title", 
+                                                 "some alt title", orig);
+    
+    contentPane.add(basicInfoPanel);
     contentPane.add(listPanel);
+  }
+  
+  private JPanel createBasicInfoPanel(String identifier, String title, 
+                                      String altTitle, Vector originator)
+  {
+    JPanel panel = new JPanel();
+    JLabel identifierL = new JLabel("Identifier: ");
+    JLabel titleL = new JLabel("Title: ");
+    JLabel altTitleL = new JLabel("Alternate Title: ");
+    JLabel originatorL = new JLabel("Data Originator: ");
+    
+    JPanel tempPanel = new JPanel();
+    tempPanel.add(identifierL);
+    tempPanel.add(new JLabel(identifier));
+    panel.add(tempPanel);
+    
+    tempPanel = new JPanel();
+    tempPanel.add(titleL);
+    tempPanel.add(new JLabel(title));
+    panel.add(tempPanel);
+    
+    tempPanel = new JPanel();
+    tempPanel.add(altTitleL);
+    tempPanel.add(new JLabel(altTitle));
+    panel.add(tempPanel);
+    
+    tempPanel = new JPanel();
+    tempPanel.add(originatorL);
+    JPanel tempPanel2 = new JPanel();
+    tempPanel2.setLayout(new BoxLayout(tempPanel2, BoxLayout.Y_AXIS));
+    for(int i=0; i<originator.size(); i++)
+    {
+      String person = (String)originator.elementAt(i);
+      tempPanel2.add(new JLabel(person));
+    }
+    tempPanel.add(tempPanel2);
+    panel.add(tempPanel);
+    
+    return panel;
   }
   
   private JPanel createListPanel()

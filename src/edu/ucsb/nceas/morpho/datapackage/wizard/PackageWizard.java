@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-05-21 22:05:14 $'
- * '$Revision: 1.8 $'
+ *     '$Date: 2001-05-22 22:04:32 $'
+ * '$Revision: 1.9 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -129,8 +129,8 @@ public class PackageWizard extends javax.swing.JFrame
       
       //get the config file and parse it
       File mainFile = new File(framefile);
-      FileReader xml = new FileReader(mainFile);
-      pwp = new PackageWizardParser(xml, saxparser);
+      FileReader xmlConfig = new FileReader(mainFile);
+      pwp = new PackageWizardParser(xmlConfig, saxparser);
       doc = pwp.getDoc();
       Hashtable wizardAtts = doc.attributes;
       String size = (String)wizardAtts.get("size");
@@ -142,8 +142,8 @@ public class PackageWizard extends javax.swing.JFrame
       docPanel = new JPanelWrapper();
       docPanel.element = doc;
       //create the content of the initial frame
-      openFile(doc, xmlfile);
-      createPanel(doc, contentPane, docPanel);
+      XMLElement newdoc = openFile(doc, xmlfile);
+      createPanel(newdoc, contentPane, docPanel);
     }
     catch(Exception e)
     {
@@ -158,50 +158,55 @@ public class PackageWizard extends javax.swing.JFrame
    * when a matching path is found, the defaulttext attribute in the config
    * file is set to match the content in the xmlfile at the same path.
    */
-  private void openFile(XMLElement doc, Reader xmlfile)
+  private XMLElement openFile(XMLElement doc, Reader xmlfile)
   {
-    //basic alrogithm:
-    //-parse all paths from xmlfile
-    //-create hashtable of paths -> content
-    //-look at all paths created from config file, compare the 
-    // hashtable keys with the paths from the config file.  
-    //-if a match is found, take the content of the xmlfile hash and
-    // add it as a defaulttext attribute to the config file path.
-    if(xmlfile == null)
-    {
-      framework.debug(1, "no xml file to open");
-      return;
-    }
-    
     PackageWizardOpenFileParser parser = 
                          new PackageWizardOpenFileParser(xmlfile, saxparser);
-    Hashtable contenthash = parser.getHash();
-    Vector contentpaths = parser.getPaths();
+    String configFile = parser.getConfigFile();
+    Hashtable fieldEnum = new Hashtable();
+    createFieldEnum(new XMLElement(doc), fieldEnum);
     
-    printHashtable(contenthash);
-    printVector(contentpaths);
-    addContent(doc, "", contenthash, contentpaths);
+    //look at each element in configFile and try to match it to an enumeration in 
+    //fieldEnum
+    Vector configFileV = parser.getConfigFileV();
+    System.out.println("configfile");
+    printVector(configFileV);
+    System.out.println("fieldenum");
+    printHashtable(fieldEnum);
+    for(int i=0; i<configFileV.size(); i++)
+    {
+      String line = (String)configFileV.elementAt(i);
+      String lineField = parser.getField(line);
+      //if line.field matches a field in fieldEnum then take all of the attributes
+      //from fieldEnum and put them into the line in the configFile.
+      //if line.field does not match any field in fieldEnum then delete it from 
+      //configFile
+      if(fieldEnum.containsKey(lineField))
+      { //take attributes from fieldEnum and put them in the line
+        Hashtable fieldEnumAtts = (Hashtable)fieldEnum.get(lineField);
+        String tagtype = (String)fieldEnumAtts.get("type");
+        String linetagtype = line.substring(1, line.indexOf(" ", 1));
+        System.out.println("tagtype: " + tagtype + " linetagtype: " + linetagtype); 
+        if(tagtype.trim().equals(linetagtype.trim()))
+        {
+          line = parser.addAttributes(line, fieldEnumAtts);
+          configFileV.remove(i);
+          configFileV.add(i, line);
+        }
+        else
+        {
+          configFileV.remove(i);
+        }
+      }
+      else
+      { //remove the line from configFile
+        configFileV.remove(i);
+      }
+      
+    }
     
-  }
-  
-  private void printVector(Vector v)
-  {
-    for(int i=0; i<v.size(); i++)
-    {
-      System.out.println("|" + v.elementAt(i).toString() + "|");
-    }
-  }
-  
-  private void printHashtable(Hashtable h)
-  {
-    Enumeration keys = h.keys();
-    while(keys.hasMoreElements())
-    {
-      String key = (String)keys.nextElement();
-      System.out.print(key + "| : |" );
-      System.out.print(h.get(key) + "|");
-      System.out.println();
-    }
+    printVector(configFileV);
+    return new XMLElement();
   }
   
   /**
@@ -210,8 +215,7 @@ public class PackageWizard extends javax.swing.JFrame
    * attempts to find the path in XMLElement e and add content to it's 
    * defaulttext attribute.
    */
-  private void addContent(XMLElement e, String currentPath, Hashtable content, 
-                          Vector pathlist)
+  private void createFieldEnum(XMLElement e, Hashtable fieldEnum)
   {
     for(int i=0; i<e.content.size(); i++)
     {
@@ -220,35 +224,24 @@ public class PackageWizard extends javax.swing.JFrame
       
       if(tempElement.name.equals("group"))
       {
-        //if group has a field associated with it, then append path
-        if(tempElement.attributes.containsKey("field"))
-        {
-          String field = (String)tempElement.attributes.get("field");
-          currentPath += "/" + field;
-          System.out.println("path: " + currentPath);
-          //System.out.println("in group: " + currentPath);
-        }
-        
+        tempElement.attributes.put("type", "group");
       }
-      else if(tempElement.name.equals("textbox") ||
-              tempElement.name.equals("combobox"))
+      else if(tempElement.name.equals("textbox"))
       { 
-        String currentNode = (String)tempElement.attributes.get(new String("field"));
-        String path = currentPath + "/" + currentNode;
-        System.out.println("path: " + path);
-        //-check the path, if it is in the hashtable add the defaulttext
-        // attribute to the attributes hash.
-        
-        if(content.containsKey(path))
-        {
-          //System.out.println("content changed to: " + content.get(path));
-          //System.out.println("e.attributes: ");
-          tempElement.attributes.put("defaulttext", content.get(path));
-          //printHashtable(e.attributes);
-        }
+        tempElement.attributes.put("type", "textbox");
+      }
+      else if(tempElement.name.equals("combobox"))
+      {
+        tempElement.attributes.put("type", "combobox");
       }
       
-      addContent(tempElement, currentPath, content, pathlist);
+      if(tempElement.attributes.containsKey("field"))
+      {
+        fieldEnum.put(tempElement.attributes.get("field"), 
+                      tempElement.attributes);
+      }
+      
+      createFieldEnum(tempElement, fieldEnum);
     }
   }
   
@@ -1130,6 +1123,26 @@ public class PackageWizard extends javax.swing.JFrame
         //                    parentPanel.element.attributes.toString());
         createPanel(tempElement, contentPane, parentPanel);
       }
+    }
+  }
+  
+  private void printVector(Vector v)
+  {
+    for(int i=0; i<v.size(); i++)
+    {
+      System.out.println(v.elementAt(i).toString().trim());
+    }
+  }
+  
+  private void printHashtable(Hashtable h)
+  {
+    Enumeration keys = h.keys();
+    while(keys.hasMoreElements())
+    {
+      String key = (String)keys.nextElement();
+      System.out.print(key + " : " );
+      System.out.print(h.get(key));
+      System.out.println();
     }
   }
   
