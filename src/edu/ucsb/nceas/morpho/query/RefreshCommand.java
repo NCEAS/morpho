@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2002-08-21 00:31:05 $'
- * '$Revision: 1.2 $'
+ *     '$Date: 2002-08-22 00:05:02 $'
+ * '$Revision: 1.3 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -51,21 +51,14 @@ public class RefreshCommand implements Command
     
   }//SearchCommand
   
-  /**
-   * Set a morphoFrame to it
-   *
-   * @param myMorphoFrame the morpho frame will be set to this object
-   */
-  public void setMorphoFrame(MorphoFrame myFrame)
-  {
-    morphoFrame = myFrame;
-  }//setMorphoFrame
+
   
   /**
    * execute cancel command
    */    
   public void execute()
   {
+    morphoFrame = UIController.getInstance().getCurrentActiveWindow();
     // make sure the morphoFrame is not null
     if ( morphoFrame == null)
     {
