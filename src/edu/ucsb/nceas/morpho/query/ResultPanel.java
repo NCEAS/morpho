@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2002-09-04 00:17:06 $'
- * '$Revision: 1.58 $'
+ *     '$Date: 2002-09-04 23:29:45 $'
+ * '$Revision: 1.59 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -108,9 +108,7 @@ public class ResultPanel extends JPanel
   private JMenuItem synchronizeMenu = null;
   private JMenuItem uploadMenu = null;
   private JMenuItem downloadMenu = null;
-  private JMenuItem deleteLocalMenu = null;
-  private JMenuItem deleteMetacatMenu = null;
-  private JMenuItem deleteAllMenu = null;
+  private JMenuItem deleteMenu = null;
   private JMenuItem refreshMenu = null;
   private JMenuItem exportMenu = null;
   private JMenuItem exportToZipMenu = null;
@@ -261,7 +259,7 @@ public class ResultPanel extends JPanel
       
         // Create a refresh action
         GUIAction refreshAction = new GUIAction("Refresh", null, 
-                               new RefreshCommand(dialog));
+                               new RefreshCommand(null));
         refreshMenu = new JMenuItem(refreshAction);
         popup.add(refreshMenu);
       
@@ -273,38 +271,15 @@ public class ResultPanel extends JPanel
         synchronizeMenu = new JMenuItem(synchronizeAction);
         popup.add(synchronizeMenu);
       
-        // Create a new JMenu SynChronize...
-        //JMenu synchronize = new JMenu("Synchronize...");
-        // Create a upload action and add it to synchronize
-        //GUIAction uploadAction = new GUIAction("Local to network", null,
-                                //new LocalToNetworkCommand(dialog));
-        //uploadMenu = new JMenuItem(uploadAction);
-        //synchronize.add(uploadMenu);
-        // Create a download action
-        //GUIAction downloadAction = new GUIAction("Network to Local", null,
-                       //new NetworkToLocalCommand(dialog));
-        //downloadMenu = new JMenuItem(downloadAction);
-        //synchronize.add(downloadMenu);
-      
-        // Add synchronize to pop
-        //popup.add(synchronize);
+     
         popup.add(new JSeparator());
       
-        // Create a new JMenu Delete
-        JMenu delete = new JMenu("Delete...");
-        GUIAction deleteLocalAction = new GUIAction("Local", null,
-                         new DeleteCommand(dialog, DataPackageInterface.LOCAL));
-        deleteLocalMenu = new JMenuItem(deleteLocalAction);
-        delete.add(deleteLocalMenu);
-        GUIAction deleteNetworkAction = new GUIAction("Network", null,
-                       new DeleteCommand(dialog, DataPackageInterface.METACAT));
-        deleteMetacatMenu = new JMenuItem(deleteNetworkAction);
-        delete.add(deleteMetacatMenu);
-        GUIAction deleteBothAction = new GUIAction("Both", null,
-                       new DeleteCommand(dialog, DataPackageInterface.BOTH));
-        deleteAllMenu = new JMenuItem(deleteBothAction);
-        delete.add(deleteAllMenu);
-        popup.add(delete);
+        // Create a action to open a delete dialog
+        GUIAction openDeleteDialogAction = new GUIAction("Delete...", null,
+                                         new OpenDeleteDialogCommand());
+        deleteMenu = new JMenuItem(openDeleteDialogAction);
+        popup.add(deleteMenu);                             
+        
         popup.add(new JSeparator());
       
         // Create export
@@ -577,10 +552,9 @@ public class ResultPanel extends JPanel
                       ((localLoc && !metacatLoc)||(metacatLoc && !localLoc));
         //uploadMenu.setEnabled(localLoc && !metacatLoc);
         //downloadMenu.setEnabled(metacatLoc && !localLoc);
-        deleteLocalMenu.setEnabled(localLoc);
-        deleteMetacatMenu.setEnabled(metacatLoc);
-        deleteAllMenu.setEnabled(metacatLoc && localLoc);
-        
+        // delete menu always enable
+        deleteMenu.setEnabled(true);
+       
 	      trigger = false;
         popup.show(e.getComponent(), e.getX(), e.getY());
         
