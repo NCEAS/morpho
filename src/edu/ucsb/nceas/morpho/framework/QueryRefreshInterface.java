@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: tao $'
- *     '$Date: 2002-08-23 17:14:52 $'
- * '$Revision: 1.2 $'
+ *   '$Author: brooke $'
+ *     '$Date: 2002-12-11 01:05:05 $'
+ * '$Revision: 1.3 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -39,6 +39,18 @@ import edu.ucsb.nceas.morpho.Morpho;
 public interface QueryRefreshInterface
 {
 
+
+  /**
+   * Denotes an instance of the OpenDataPackageCommand object
+   */
+  public static final int OPEN_DATAPACKAGE_COMMAND = 20;
+
+  /**
+   * Denotes an instance of the SearchCommand object
+   */
+  public static final int SEARCH_COMMAND           = 30;
+
+
   /** 
    * This method is called to refresh the main query when a change is 
    * made that should be propogated to the query result screens.
@@ -53,4 +65,18 @@ public interface QueryRefreshInterface
    */
   public void updateSavedQueryMenuItems(Morpho newMorpho);
    
+  /**
+   * return an instance of a Command object, identified by one of the integer 
+   * constants defined above
+   *
+   * @param commandIdentifier   integer constant identifying the command 
+   *                            Options include:<ul>
+   *                            <li>OPEN_DATAPACKAGE_COMMAND</li>
+   *                            <li>SEARCH_COMMAND</li>
+   *                            </ul>
+   * @throws ommandNotFoundException if Command not found
+   */
+  public Command getCommandObject(int commandIdentifier) 
+                                                throws ClassNotFoundException;
+  
 }

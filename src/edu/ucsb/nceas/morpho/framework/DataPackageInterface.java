@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: tao $'
- *     '$Date: 2002-10-02 20:28:27 $'
- * '$Revision: 1.14 $'
+ *   '$Author: brooke $'
+ *     '$Date: 2002-12-11 01:04:52 $'
+ * '$Revision: 1.15 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,6 +27,7 @@
 package edu.ucsb.nceas.morpho.framework;
 
 import edu.ucsb.nceas.morpho.datastore.MetacatUploadException;
+import edu.ucsb.nceas.morpho.util.Command;
 import edu.ucsb.nceas.morpho.Morpho;
 import javax.swing.Action;
 import java.awt.Component;
@@ -53,6 +54,11 @@ public interface DataPackageInterface
    * used to signify that this package is stored on metacat and locally.
    */
   public static final String BOTH     = "localmetacat";
+
+  /**
+   * Denotes an instance of the CreateNewDataPackageCommand object
+   */
+  public static final int NEW_DATAPACKAGE_COMMAND  = 10;
 
   /** 
    * This method is called to open a data package that resides either
@@ -146,5 +152,18 @@ public interface DataPackageInterface
    * @param morphoFrame  the morpho frame containing the data package
    */
   public boolean isDataPackageInNetwork(MorphoFrame morphoFrame);
+
+  /**
+   * return an instance of a Command object, identified by one of the integer 
+   * constants defined above
+   *
+   * @param commandIdentifier   integer constant identifying the command 
+   *                            Currently only one option:<ul>
+   *                            <li>NEW_DATAPACKAGE_COMMAND</li>
+   *                            </ul>
+   * @throws ommandNotFoundException if Command not found
+   */
+  public Command getCommandObject(int commandIdentifier) 
+                                                throws ClassNotFoundException;
   
 }
