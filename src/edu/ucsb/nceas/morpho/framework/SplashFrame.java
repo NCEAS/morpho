@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2001-05-08 17:43:09 $'
- * '$Revision: 1.15 $'
+ *     '$Date: 2001-05-23 23:08:02 $'
+ * '$Revision: 1.16 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -38,18 +38,46 @@ import javax.swing.event.*;
 public class SplashFrame extends javax.swing.JFrame
 {
   // Used by addNotify
-  boolean frameSizeAdjusted = false;
+  private boolean frameSizeAdjusted = false;
 
+  // the version number
+  private static String version = "Version 0.0.0 Alpha 3";
+  private static String[] coders = { "Matt Jones",
+                                     "Dan Higgins",
+                                     "Chad Berkley",
+                                     "Jivka Bojilova",
+                                     "Chris Jones",
+                                     "Rudolf Nottrott" };
+  private static String[] orgs = { 
+                 "National Center for Ecological Analysis and Synthesis",
+                 "Long Term Ecological Research Network Office",
+                 "San Diego Supercomputer Center",
+                 "Texas Tech University" };
+
+  private static String credit = 
+                  "This material is based upon work supported\n" +
+                  "by the National Science Foundation under Grant\n" +
+                  "No. DEB99-80154 and Grant No. DBI99-04777. Also\n" +
+                  "supported by the National Center for Ecological\n" +
+                  "Analysis and Synthesis, a Center funded by\n" +
+                  "NSF (Grant No. DEB-94-21535), the University of\n" +
+                  "California - Santa Barbara, and the State of\n" +
+                  "California. Any opinions, findings and conclusions\n" +
+                  "or recommendations expressed in this material are\n" +
+                  "those of the author(s) and do not necessarily\n" +
+                  "reflect the views of the National Science Foundation\n" +
+                  "(NSF).\n\nThis software is named after the Morpho\n" +
+                  "butterfly which is common in South America. The\n" +
+                  "apparent color of this butterfly is highly dependent\n" +
+                  "on the angle of viewing, with the most common color\n" +
+                  "being blue.";
   //{{DECLARE_CONTROLS
-  javax.swing.JPanel JPanel3 = new javax.swing.JPanel();
-  javax.swing.JPanel JPanel1 = new javax.swing.JPanel();
-  javax.swing.JLabel LoadingLabel = new javax.swing.JLabel();
-  javax.swing.JLabel JLabel3 = new javax.swing.JLabel();
-  javax.swing.JLabel JLabel1 = new javax.swing.JLabel();
-  javax.swing.JScrollPane JScrollPane1 = new javax.swing.JScrollPane();
-  javax.swing.JTextArea JTextArea1 = new javax.swing.JTextArea();
-  javax.swing.JLabel JLabel8 = new javax.swing.JLabel();
-  javax.swing.JButton CloseButton = new javax.swing.JButton();
+  javax.swing.JLabel loadingLabel = new javax.swing.JLabel();
+  javax.swing.JLabel titleLabel = new javax.swing.JLabel();
+  javax.swing.JLabel subTitleLabel = new javax.swing.JLabel();
+  javax.swing.JLabel versionLabel = new javax.swing.JLabel();
+  javax.swing.JButton closeButton = new javax.swing.JButton();
+  javax.swing.JButton fundingButton = new javax.swing.JButton();
   //}}
 
   javax.swing.ImageIcon BFlyIcon = new javax.swing.ImageIcon();
@@ -63,85 +91,129 @@ public class SplashFrame extends javax.swing.JFrame
   {
     //{{INIT_CONTROLS
     setDefaultCloseOperation(javax.swing.JFrame.DISPOSE_ON_CLOSE);
-    getContentPane().setLayout(new BorderLayout(0, 0));
+    //getContentPane().setLayout(new BorderLayout(0, 0));
+    getContentPane().setLayout(
+                     new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
     getContentPane().setBackground(java.awt.Color.white);
-    setSize(427, 355);
+    setSize(450, 380);
+
     // Center the Frame
     Dimension screenDim = Toolkit.getDefaultToolkit().getScreenSize();
     Rectangle frameDim = getBounds();
     setLocation((screenDim.width - frameDim.width) / 2,
                 (screenDim.height - frameDim.height) / 2);
     setVisible(false);
-    JPanel3.setLayout(new BorderLayout(0, 0));
-    JPanel3.setBackground(java.awt.Color.white);
-    getContentPane().add(BorderLayout.CENTER, JPanel3);
-    JPanel3.setBounds(0, 0, 427, 330);
-    JPanel1.setLayout(new BorderLayout(0, 0));
-    JPanel1.setBackground(java.awt.Color.white);
-    JPanel3.add(BorderLayout.NORTH, JPanel1);
-    JPanel1.setBounds(0, 0, 427, 74);
-    LoadingLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-    LoadingLabel.setText("Now Loading!!! ... Please Wait");
-    JPanel1.add(BorderLayout.NORTH, LoadingLabel);
-    LoadingLabel.setForeground(java.awt.Color.red);
-    LoadingLabel.setFont(new Font("Dialog", Font.BOLD, 14));
-    LoadingLabel.setBounds(0, 0, 427, 16);
-    LoadingLabel.setVisible(false);
-    JLabel3.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-    JLabel3.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-    JLabel3.setText("Morpho");
-    JPanel1.add(BorderLayout.CENTER, JLabel3);
-    JLabel3.setForeground(java.awt.Color.blue);
-    JLabel3.setFont(new Font("Dialog", Font.BOLD | Font.ITALIC, 36));
-    JLabel3.setBounds(0, 16, 427, 42);
-    JLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-    JLabel1.setText("Data Management for Ecologists");
-    JPanel1.add(BorderLayout.SOUTH, JLabel1);
-    JLabel1.setForeground(java.awt.Color.black);
-    JLabel1.setFont(new Font("Dialog", Font.BOLD, 14));
-    JLabel1.setBounds(0, 58, 427, 16);
-    JScrollPane1.setOpaque(true);
-    JPanel3.add(BorderLayout.CENTER, JScrollPane1);
-    JScrollPane1.setBounds(0, 74, 427, 241);
-    JTextArea1.setEditable(false);
-    JTextArea1.setWrapStyleWord(true);
-    JTextArea1.setLineWrap(true);
-    JScrollPane1.getViewport().add(JTextArea1);
-    JTextArea1.setBounds(0, 0, 409, 300);
-    JTextArea1.setText("This material is based upon work supported " +
-                  "by the National Science Foundation under Grant " +
-                  "No. DEB99-80154 and Grant No. DBI99-04777. Also " +
-                  "supported by the National Center for Ecological " +
-                  "Analysis and Synthesis, a Center funded by " +
-                  "NSF (Grant #DEB-94-21535),the University of " +
-                  "California - Santa Barbara, and the State of " +
-                  "California. Any opinions, findings and conclusions " +
-                  "or recommendations expressed in this material are " +
-                  "those of the author(s) and do not necessarily " +
-                  "reflect the views of the National Science Foundation " +
-                  "(NSF).\n\n Participating organizations include the " +
-                  "National Center for Ecological Analysis and " +
-                  "Synthesis (NCEAS), the Long Term Ecological Research " +
-                  "Network (LTER), Texas Tech University, and the San " +
-                  "Diego Supercomputer Center\n\n Participating " +
-                  "individuals include Matt Jones, Dan Higgins, Jivka " +
-                  "Bojilova, Chad Berkley, Ruldolf Nottrott, and " +
-                  "others\n\nThis software is named after the Morpho " +
-                  "butterfly which is common in South America. The " +
-                  "apparent color of this butterfly is highly dependent " +
-                  "on the angle of viewing, with the most common color " +
-                  "being blue.");
-    JLabel8.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-    JLabel8.setText("Version 0.90 - Jan 2001");
-    JLabel8.setBackground(java.awt.Color.white);
-    JPanel3.add(BorderLayout.SOUTH, JLabel8);
-    JLabel8.setForeground(java.awt.Color.black);
-    JLabel8.setFont(new Font("Dialog", Font.PLAIN, 12));
-    JLabel8.setBounds(0, 315, 427, 15);
-    CloseButton.setText("Close");
-    CloseButton.setActionCommand("Close");
-    getContentPane().add(BorderLayout.SOUTH, CloseButton);
-    CloseButton.setBounds(0, 330, 427, 25);
+
+    getContentPane().add(Box.createVerticalStrut(8));
+
+    loadingLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+    loadingLabel.setText("Morpho is loading...");
+    loadingLabel.setForeground(java.awt.Color.red);
+    loadingLabel.setFont(new Font("Dialog", Font.BOLD, 14));
+    loadingLabel.setVisible(false);
+    getContentPane().add(loadingLabel);
+
+    Box titleBox = Box.createHorizontalBox();
+    titleBox.setBackground(Color.white);
+    titleBox.add(Box.createHorizontalStrut(8));
+    titleBox.add(Box.createHorizontalGlue());
+    BFlyIcon = new ImageIcon(getClass().getResource("Morphoblue.gif"));
+    JLabel imageLabel = new JLabel();
+    imageLabel.setIcon(BFlyIcon);
+    titleBox.add(imageLabel);
+    titleBox.add(Box.createHorizontalStrut(8));
+
+    Box subTitleBox = Box.createVerticalBox();
+    subTitleBox.setBackground(Color.white);
+    subTitleBox.add(Box.createVerticalStrut(8));
+    subTitleBox.add(Box.createVerticalGlue());
+    titleLabel.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+    titleLabel.setText("Morpho");
+    titleLabel.setForeground(java.awt.Color.blue);
+    titleLabel.setFont(new Font("Dialog", Font.BOLD | Font.ITALIC, 36));
+    subTitleBox.add(titleLabel);
+    subTitleBox.add(Box.createVerticalStrut(4));
+
+    subTitleLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+    subTitleLabel.setText("Data Management for Ecologists");
+    subTitleLabel.setForeground(java.awt.Color.black);
+    subTitleLabel.setFont(new Font("Dialog", Font.BOLD, 14));
+    subTitleBox.add(subTitleLabel);
+    subTitleBox.add(Box.createVerticalGlue());
+    subTitleBox.add(Box.createVerticalStrut(8));
+    //getContentPane().add(subTitleLabel);
+
+    titleBox.add(subTitleBox);
+    titleBox.add(Box.createHorizontalGlue());
+    titleBox.add(Box.createHorizontalStrut(8));
+    getContentPane().add(titleBox);
+
+    getContentPane().add(Box.createVerticalStrut(8));
+
+    Box contributorsBox = Box.createVerticalBox();
+    JLabel contributorsLabel = new JLabel("Contributors:");
+    contributorsLabel.setForeground(java.awt.Color.black);
+    contributorsLabel.setFont(new Font("Dialog", Font.BOLD, 12));
+    contributorsBox.add(contributorsLabel);
+    for (int i = 0; i < coders.length; i++) {
+      JLabel coderLabel = new JLabel();
+      coderLabel.setBackground(java.awt.Color.white);
+      coderLabel.setForeground(java.awt.Color.black);
+      coderLabel.setFont(new Font("Dialog", Font.PLAIN, 12));
+      coderLabel.setText("    " + coders[i]);
+      contributorsBox.add(coderLabel);
+    }
+
+    Box orgBox = Box.createVerticalBox();
+    JLabel orgLabel = new JLabel("Sponsoring Organizations:");
+    orgLabel.setForeground(java.awt.Color.black);
+    orgLabel.setFont(new Font("Dialog", Font.BOLD, 12));
+    orgBox.add(orgLabel);
+    for (int i = 0; i < orgs.length; i++) {
+      JLabel instLabel = new JLabel();
+      instLabel.setBackground(java.awt.Color.white);
+      instLabel.setForeground(java.awt.Color.black);
+      instLabel.setFont(new Font("Dialog", Font.PLAIN, 12));
+      instLabel.setText("    " + orgs[i]);
+      orgBox.add(instLabel);
+    }
+
+    Box creditsBox = Box.createHorizontalBox();
+    creditsBox.setBackground(Color.white);
+    creditsBox.add(Box.createHorizontalStrut(8));
+    creditsBox.add(contributorsBox);
+    creditsBox.add(Box.createHorizontalStrut(8));
+    creditsBox.add(Box.createHorizontalGlue());
+    creditsBox.add(orgBox);
+    creditsBox.add(Box.createHorizontalStrut(8));
+    getContentPane().add(creditsBox);
+
+    getContentPane().add(Box.createVerticalStrut(8));
+    getContentPane().add(Box.createVerticalGlue());
+
+    versionLabel.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+    versionLabel.setText(version);
+    versionLabel.setBackground(java.awt.Color.white);
+    versionLabel.setForeground(java.awt.Color.black);
+    versionLabel.setFont(new Font("Dialog", Font.BOLD, 12));
+
+    fundingButton.setText("Credits...");
+    fundingButton.setActionCommand("Credits...");
+
+    closeButton.setText("Close");
+    closeButton.setActionCommand("Close");
+
+    Box footerBox = Box.createHorizontalBox();
+    footerBox.setBackground(Color.white);
+    footerBox.add(Box.createHorizontalStrut(8));
+    footerBox.add(versionLabel);
+    footerBox.add(Box.createHorizontalGlue());
+    footerBox.add(fundingButton);
+    footerBox.add(Box.createHorizontalStrut(8));
+    footerBox.add(closeButton);
+    footerBox.add(Box.createHorizontalStrut(8));
+    getContentPane().add(footerBox);
+    getContentPane().add(Box.createVerticalStrut(8));
     //}}
 
     //{{INIT_MENUS
@@ -149,25 +221,11 @@ public class SplashFrame extends javax.swing.JFrame
 
     //{{REGISTER_LISTENERS
     SymAction lSymAction = new SymAction();
-    CloseButton.addActionListener(lSymAction);
+    closeButton.addActionListener(lSymAction);
+    fundingButton.addActionListener(lSymAction);
     ClickListener mouseClicks = new ClickListener();
     addMouseListener((MouseListener)mouseClicks);
     //}}
-
-    //      Example of loading icon as resource - DFH 
-    try
-    {
-      //NCEASIcon = new ImageIcon(getClass().getResource("NCEASlogo.gif"));
-      //NSFIcon = new ImageIcon(getClass().getResource("nsf_logo.gif"));
-      //BFlyIcon = new ImageIcon(getClass().getResource("morphoTitle.gif"));
-      BFlyIcon = new ImageIcon(getClass().getResource("Morphoblue.gif"));
-      JLabel3.setIcon(BFlyIcon);
-      JLabel3.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
-    }
-    catch(Exception e)
-    {
-      System.out.println("Could not load icons!");
-    }
   }
 
   /**
@@ -192,8 +250,8 @@ public class SplashFrame extends javax.swing.JFrame
     this();
     if (showLoading)
     {
-      LoadingLabel.setVisible(showLoading);
-      CloseButton.setText("Loading - Please Wait");
+      loadingLabel.setVisible(showLoading);
+      closeButton.setEnabled(false);
     }
   }
 
@@ -210,7 +268,8 @@ public class SplashFrame extends javax.swing.JFrame
     setTitle(sTitle);
     if (showLoading)
     {
-      LoadingLabel.setVisible(showLoading);
+      loadingLabel.setVisible(showLoading);
+      closeButton.setEnabled(false);
     }
   }
 
@@ -222,8 +281,6 @@ public class SplashFrame extends javax.swing.JFrame
    */
   public void setVisible(boolean b)
   {
-    //if (b)
-    //setLocation(50, 50);
     super.setVisible(b);
   }
 
@@ -266,17 +323,28 @@ public class SplashFrame extends javax.swing.JFrame
     public void actionPerformed(java.awt.event.ActionEvent event)
     {
       Object object = event.getSource();
-      if (object == CloseButton)
-        CloseButton_actionPerformed(event);
+      if (object == closeButton) {
+        closeButton_actionPerformed(event);
+      } else if (object == fundingButton) {
+        fundingButton_actionPerformed(event);
+      }
     }
   }
 
   /**
    * Implements the close action to close the window.
    */
-  void CloseButton_actionPerformed(java.awt.event.ActionEvent event)
+  void closeButton_actionPerformed(java.awt.event.ActionEvent event)
   {
     this.dispose();
+  }
+
+  /**
+   * Opens a new dialog with funding information
+   */
+  void fundingButton_actionPerformed(java.awt.event.ActionEvent event)
+  {
+	JOptionPane.showMessageDialog(null, credit);
   }
 
      // Listen for mouse clicks in the window and close the window and
@@ -288,7 +356,7 @@ public class SplashFrame extends javax.swing.JFrame
        */
       public void mouseClicked(MouseEvent e)
       {
-        CloseButton_actionPerformed(null);
+        closeButton_actionPerformed(null);
       }
     }
 
