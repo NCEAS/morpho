@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: sambasiv $'
- *     '$Date: 2004-04-19 15:12:42 $'
- * '$Revision: 1.92 $'
+ *   '$Author: sgarg $'
+ *     '$Date: 2005-01-26 23:25:58 $'
+ * '$Revision: 1.93 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -287,7 +287,7 @@ public class DataPackagePlugin
 
 
     i++;
-		GUIAction viewDocumentation = new GUIAction("View Documentation...", null,
+    GUIAction viewDocumentation = new GUIAction("View Documentation...", null,
                                           new ViewDocumentationCommand());
     viewDocumentation.setToolTipText("View Documentation as HTML...");
     viewDocumentation.setMenuItemPosition(i);
@@ -301,7 +301,78 @@ public class DataPackagePlugin
                             false, GUIAction.EVENT_LOCAL);
     controller.addGuiAction(viewDocumentation);
 
-		i++;
+    i++;
+    GUIAction addTitleAbstractAction = new GUIAction(
+        "Title & Abstract...",
+        null, new AddTitleAbstractCommand());
+    addTitleAbstractAction.setToolTipText("Title & Abstract...");
+    addTitleAbstractAction.setMenuItemPosition(i);
+    addTitleAbstractAction.setMenu(METADATA_MENU_LABEL, DOCUMENTATIONMENUPOSITION);
+    addTitleAbstractAction.setEnabledOnStateChange(
+        StateChangeEvent.CREATE_EDITABLE_ENTITY_DATAPACKAGE_FRAME,
+        true, GUIAction.EVENT_LOCAL);
+    addTitleAbstractAction.setEnabledOnStateChange(
+        StateChangeEvent.CREATE_DATAPACKAGE_FRAME,
+        true, GUIAction.EVENT_LOCAL);
+    controller.addGuiAction(addTitleAbstractAction);
+
+    i++;
+    GUIAction addKeywordAction = new GUIAction("Keyword...",
+        null, new AddKeywordCommand());
+    addKeywordAction.setToolTipText("Keyword...");
+    addKeywordAction.setMenuItemPosition(i);
+    addKeywordAction.setMenu(METADATA_MENU_LABEL, DOCUMENTATIONMENUPOSITION);
+    addKeywordAction.setEnabledOnStateChange(
+        StateChangeEvent.CREATE_EDITABLE_ENTITY_DATAPACKAGE_FRAME,
+        true, GUIAction.EVENT_LOCAL);
+    addKeywordAction.setEnabledOnStateChange(
+        StateChangeEvent.CREATE_DATAPACKAGE_FRAME,
+        true, GUIAction.EVENT_LOCAL);
+    controller.addGuiAction(addKeywordAction);
+
+    i++;
+    GUIAction addCreatorAction = new GUIAction("Creator...",
+        null, new AddCreatorCommand());
+    addCreatorAction.setToolTipText("Creator...");
+    addCreatorAction.setMenuItemPosition(i);
+    addCreatorAction.setMenu(METADATA_MENU_LABEL, DOCUMENTATIONMENUPOSITION);
+    addCreatorAction.setEnabledOnStateChange(
+        StateChangeEvent.CREATE_EDITABLE_ENTITY_DATAPACKAGE_FRAME,
+        true, GUIAction.EVENT_LOCAL);
+    addCreatorAction.setEnabledOnStateChange(
+        StateChangeEvent.CREATE_DATAPACKAGE_FRAME,
+        true, GUIAction.EVENT_LOCAL);
+    controller.addGuiAction(addCreatorAction);
+
+    i++;
+    GUIAction addContactAction = new GUIAction("Contact...",
+        null, new AddContactCommand());
+    addContactAction.setToolTipText("Contact...");
+    addContactAction.setMenuItemPosition(i);
+    addContactAction.setMenu(METADATA_MENU_LABEL, DOCUMENTATIONMENUPOSITION);
+    addContactAction.setEnabledOnStateChange(
+        StateChangeEvent.CREATE_EDITABLE_ENTITY_DATAPACKAGE_FRAME,
+        true, GUIAction.EVENT_LOCAL);
+    addContactAction.setEnabledOnStateChange(
+        StateChangeEvent.CREATE_DATAPACKAGE_FRAME,
+        true, GUIAction.EVENT_LOCAL);
+    controller.addGuiAction(addContactAction);
+
+    i++;
+    GUIAction addAdditionalPartyAction = new GUIAction("Additional Party...",
+        null, new AddAdditionalPartyCommand());
+    addAdditionalPartyAction.setToolTipText("Additional Party...");
+    addAdditionalPartyAction.setMenuItemPosition(i);
+    addAdditionalPartyAction.setMenu(METADATA_MENU_LABEL, DOCUMENTATIONMENUPOSITION);
+    addAdditionalPartyAction.setEnabledOnStateChange(
+        StateChangeEvent.CREATE_EDITABLE_ENTITY_DATAPACKAGE_FRAME,
+        true, GUIAction.EVENT_LOCAL);
+    addAdditionalPartyAction.setEnabledOnStateChange(
+        StateChangeEvent.CREATE_DATAPACKAGE_FRAME,
+        true, GUIAction.EVENT_LOCAL);
+    controller.addGuiAction(addAdditionalPartyAction);
+
+    i++;
     GUIAction addResearchProjectAction = new GUIAction(
         "Research Project...",
         null, new AddResearchProjectCommand());
@@ -320,7 +391,7 @@ public class DataPackagePlugin
     GUIAction addUsageRightsAction = new GUIAction(
         "Usage Rights...",
         null, new AddUsageRightsCommand());
-    addUsageRightsAction.setToolTipText("usage rights");
+    addUsageRightsAction.setToolTipText("Usage Rights...");
     addUsageRightsAction.setMenuItemPosition(i);
     addUsageRightsAction.setMenu(METADATA_MENU_LABEL, DOCUMENTATIONMENUPOSITION);
     addUsageRightsAction.setEnabledOnStateChange(
@@ -335,7 +406,7 @@ public class DataPackagePlugin
     i++;
     GUIAction addGeographicCovAction = new GUIAction("Geographic Coverage...",
                                            null, new AddGeographicCovCommand());
-    addGeographicCovAction.setToolTipText("geographic coverage");
+    addGeographicCovAction.setToolTipText("Geographic Coverage...");
     addGeographicCovAction.setMenuItemPosition(i);
     addGeographicCovAction.setMenu(METADATA_MENU_LABEL, DOCUMENTATIONMENUPOSITION);
     addGeographicCovAction.setEnabledOnStateChange(
@@ -349,7 +420,7 @@ public class DataPackagePlugin
     i++;
     GUIAction addTemporalCovAction = new GUIAction("Temporal Coverage...",
                                            null, new AddTemporalCovCommand());
-    addTemporalCovAction.setToolTipText("temporal coverage...");
+    addTemporalCovAction.setToolTipText("Temporal Coverage...");
     addTemporalCovAction.setMenuItemPosition(i);
     addTemporalCovAction.setMenu(METADATA_MENU_LABEL, DOCUMENTATIONMENUPOSITION);
     addTemporalCovAction.setEnabledOnStateChange(
@@ -363,7 +434,7 @@ public class DataPackagePlugin
     i++;
     GUIAction addTaxonomicCovAction = new GUIAction("Taxonomic Coverage...",
                                            null, new AddTaxonomicCovCommand());
-    addTaxonomicCovAction.setToolTipText("taxonomic coverage");
+    addTaxonomicCovAction.setToolTipText("Taxonomic Coverage...");
     addTaxonomicCovAction.setMenuItemPosition(i);
     addTaxonomicCovAction.setMenu(METADATA_MENU_LABEL, DOCUMENTATIONMENUPOSITION);
     addTaxonomicCovAction.setEnabledOnStateChange(
@@ -378,7 +449,7 @@ public class DataPackagePlugin
     GUIAction addMethodAction = new GUIAction(
         "Methods...",
         null, new AddMethodCommand());
-    addMethodAction.setToolTipText("methods");
+    addMethodAction.setToolTipText("Methods...");
     addMethodAction.setMenuItemPosition(i);
     addMethodAction.setMenu(METADATA_MENU_LABEL, DOCUMENTATIONMENUPOSITION);
     addMethodAction.setEnabledOnStateChange(
@@ -611,6 +682,11 @@ public class DataPackagePlugin
 		viewDocumentation.setEnabled(false);
     createNewDatatable.setEnabled(false);
     deleteDatatable.setEnabled(false);
+    addTitleAbstractAction.setEnabled(false);
+    addKeywordAction.setEnabled(false);
+    addCreatorAction.setEnabled(false);
+    addContactAction.setEnabled(false);
+    addAdditionalPartyAction.setEnabled(false);
     addResearchProjectAction.setEnabled(false);
     addUsageRightsAction.setEnabled(false);
     addGeographicCovAction.setEnabled(false);
