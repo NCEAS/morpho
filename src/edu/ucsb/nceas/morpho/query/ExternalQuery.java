@@ -9,7 +9,7 @@
  *  Authors: Dan Higgins
  *
  *  
- *     Version: '$Id: ExternalQuery.java,v 1.7 2000-12-19 23:46:23 higgins Exp $'
+ *     Version: '$Id: ExternalQuery.java,v 1.8 2000-12-28 19:13:44 higgins Exp $'
  */
 
 /*
@@ -152,7 +152,10 @@ public JTable getTable() {
         row[0] = docid;
         row[1] = docname;
         row[2] = doctype;
-        row[3] = doctitle;
+        if (!doctitle.equals("")) {
+            row[3] = doctitle;
+        }
+        else { row[3] = docid;}  // for cases where there is no doctitle
         for (int i=0;i<cnt;i++) {
             row[4+i] = (String)(params.get(returnFields.elementAt(i)));   
         }
