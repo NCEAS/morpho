@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-09-30 19:54:56 $'
- * '$Revision: 1.14 $'
+ *     '$Date: 2003-10-01 19:26:24 $'
+ * '$Revision: 1.15 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -52,6 +52,15 @@ import java.io.*;
 /**
  * class that represents a data package. This class is abstract. Specific datapackages
  * e.g. eml2, beta6., etc extend this abstact class
+ *
+ * actually, only the load and serialize methods are abstract.
+ * A number of other concrete utlity methods are included in this class.
+ * Note that this class extends the MetadataObject class. The essense of
+ * this class is thus the DOM metadataNode (which contains references to all the Nodes
+ * in the DOM and the metadataPathNode. The metadataPathNode references an XML structure
+ * which maps generic DataPackage information to specific paths for the grammar being
+ * considered. Thus, handling changes in the grammar of eml2, for example, should just 
+ * require one to create a new map from generic nodes to the new specific ones. 
  */
 public abstract class AbstractDataPackage extends MetadataObject
 {
@@ -64,11 +73,22 @@ public abstract class AbstractDataPackage extends MetadataObject
   
   protected Node[] entityArray; 
 
-  abstract void serialize();
+  /**
+   *  This abstract method turns the datapackage into a form (e.g. string) that can
+   *  be saved in the file system or metacat. Actual implementation is done in classes
+   *  specific to grammar
+   */
+  abstract public void serialize();
   
-  abstract void load(String location, String identifier, Morpho morpho);
+  /**
+   *  This abstract method loads a datapackage from metacat or the local file
+   *  system based on an identifier. Basic action is to create a DOM and assign it
+   *  to the underlying MetadataObject. Actual implementation is done in classes
+   *  specific to grammar
+   */
+  abstract public void load(String location, String identifier, Morpho morpho);
   
-    /**
+  /**
    * used to signify that this package is located on a metacat server
    */
   public static final String METACAT  = "metacat";
@@ -185,8 +205,12 @@ public abstract class AbstractDataPackage extends MetadataObject
     return temp;
   }
   
-  
-  
+  /*
+   *  This method finds all the entities in the package and builds an array of 
+   *  'entity' nodes in the package dom. One could create an 'Entity' class descending from
+   *  Metadata object, but this offers no obvious advantage over simply saving this node array
+   *  as one of the members of AbstractDataPackage
+   */
   public void getEntityArray() {
     String entityXpath = "";
     try{
@@ -207,6 +231,10 @@ public abstract class AbstractDataPackage extends MetadataObject
     }
   }
 
+  /**
+   *  This method retrieves entityName information, given the index of the entity
+   *  in the entityNode array
+   */
   public String getEntityName(int entNum) {
     String temp = "";
     if ((entityArray==null)||(entityArray.length<(entNum)+1)) {
@@ -228,6 +256,10 @@ public abstract class AbstractDataPackage extends MetadataObject
     return temp;
   }
 
+  /**
+   *  This method retrieves the number of records in thr entity,
+   *  given the index of the entity in the entityNode array
+   */
   public String getEntityNumRecords(int entNum) {
     String temp = "";
     if ((entityArray==null)||(entityArray.length<(entNum)+1)) {
@@ -249,6 +281,10 @@ public abstract class AbstractDataPackage extends MetadataObject
     return temp;
   }
 
+  /**
+   *  This method retrieves the entity Description,
+   *  given the index of the entity in the entityNode array
+   */
   public String getEntityDescription(int entNum) {
     String temp = "";
     if ((entityArray==null)||(entityArray.length<(entNum)+1)) {
@@ -270,6 +306,12 @@ public abstract class AbstractDataPackage extends MetadataObject
     return temp;
   }
 
+  /**
+   *  This method creates an array of attribute Nodes for
+   *  the indexed entity in the entityNode array.
+   *  Note that the attribute array is created as needed rather
+   *  than stored as a class member.
+   */
   public Node[] getAttributeArray(int entityIndex) {
     if(entityIndex>(entityArray.length-1)){
       Log.debug(1, "entity index > number of entities");
@@ -293,6 +335,11 @@ public abstract class AbstractDataPackage extends MetadataObject
     return null;
   }
 
+  /*
+   *  This method retreives the attribute name at attributeIndex for
+   *  the given entityIndex. i.e. getAttributeName(0,1) would return
+   *  the first attribute name for the zeroth entity (indices are ) based)
+   */
   public String getAttributeName(int entityIndex, int attributeIndex) {
     String temp = "";
     if ((entityArray==null)||(entityArray.length<(entityIndex)+1)) {
@@ -316,6 +363,11 @@ public abstract class AbstractDataPackage extends MetadataObject
     return temp;
   }
   
+  /*
+   *  This method retreives the attribute datatype at attributeIndex for
+   *  the given entityIndex. i.e. getAttributeDataType(0,1) would return
+   *  the first attribute datatype for the zeroth entity (indices are 0 based)
+   */
   public String getAttributeDataType(int entityIndex, int attributeIndex) {
     String temp = "";
     if ((entityArray==null)||(entityArray.length<(entityIndex)+1)) {
@@ -368,6 +420,11 @@ public abstract class AbstractDataPackage extends MetadataObject
     return temp;
   }
 
+  /*
+   *  This method retreives the attribute unit at attributeIndex for
+   *  the given entityIndex. i.e. getAttributeUnit(0,1) would return
+   *  the first attribute unit for the zeroth entity (indices are ) based)
+   */
   public String getAttributeUnit(int entityIndex, int attributeIndex) {
     String temp = "";
     if ((entityArray==null)||(entityArray.length<(entityIndex)+1)) {
@@ -392,7 +449,12 @@ public abstract class AbstractDataPackage extends MetadataObject
     return temp;
   }
   
-  
+  /*
+   *  This method creates an array of Nodes which contain 'physical'
+   *  information for the indexed entity. [Note that usually there
+   *  would only be a single 'physical' node in the dom, but multiple
+   *  physical representations of an entity are allowed in eml2, for example]
+   */
   public Node[] getPhysicalArray(int entityIndex) {
     if(entityIndex>(entityArray.length-1)){
       Log.debug(1, "entity index > number of entities");
@@ -415,6 +477,10 @@ public abstract class AbstractDataPackage extends MetadataObject
     return null;
   }
 
+  /**
+   *  This method returns the name of indexed physical object for the
+   *  indicated entity index.
+   */
   public String getPhysicalName(int entityIndex, int physicalIndex) {
     String temp = "";
     if ((entityArray==null)||(entityArray.length<(entityIndex)+1)) {
@@ -439,6 +505,12 @@ public abstract class AbstractDataPackage extends MetadataObject
     return temp;
   }
   
+  /**
+   *  This method returns the physocal format. Note that only text
+   *  formats are displayed by Morpho. The format is for the physical
+   *  object identified by 'physicalIndex' of the entity with the
+   *  indicated 'entityIndex'
+   */
   public String getPhysicalFormat(int entityIndex, int physicalIndex) {
     String temp = "";
     if ((entityArray==null)||(entityArray.length<(entityIndex)+1)) {
@@ -476,7 +548,12 @@ public abstract class AbstractDataPackage extends MetadataObject
     return temp;
   }
   
-    public String getPhysicalFieldDelimiter(int entityIndex, int physicalIndex) {
+  /**
+   *  This method returns the FieldDelimiter for the indexed entity and
+   *  physical object. An empty string is returned when there is no
+   *  meaningful fieldDelimiter (e.g. not a text format)
+   */
+  public String getPhysicalFieldDelimiter(int entityIndex, int physicalIndex) {
     String temp = "";
     if ((entityArray==null)||(entityArray.length<(entityIndex)+1)) {
       return "No such entity!";
@@ -500,7 +577,12 @@ public abstract class AbstractDataPackage extends MetadataObject
     return temp;
   }
   
-    public String getPhysicalNumberHeaderLines(int entityIndex, int physicalIndex) {
+  /**
+   *  This method returns the number of header lines for the indexed entity and
+   *  physical object. An empty string is returned when there is no
+   *  meaningful numHeaderLines (e.g. not a text format)
+   */
+  public String getPhysicalNumberHeaderLines(int entityIndex, int physicalIndex) {
     String temp = "";
     if ((entityArray==null)||(entityArray.length<(entityIndex)+1)) {
       return "No such entity!";
@@ -524,6 +606,14 @@ public abstract class AbstractDataPackage extends MetadataObject
     return temp;
   }
 
+  /**
+   *  This method creates an array of 'distribution' nodes, following
+   *  the eml2 model of a subtree with information about the distribution
+   *  of the actual data being characterized by the metadata.
+   *  Multiple distribution subtrees are allowed in eml2; thus a Node
+   *  array is returned (although usually only one distribution node is
+   *  expected). Characterized by the entity and physical indicesS
+   */
   public Node[] getDistributionArray(int entityIndex, int physicalIndex) {
     Node[] physNodes = getPhysicalArray(entityIndex);
     if (physNodes==null) return null;
@@ -548,6 +638,11 @@ public abstract class AbstractDataPackage extends MetadataObject
     return null;
   }
   
+  /**
+   *  This method returns 'inline' data as a String for the indexed entity,
+   *  physical object, and distribution object. Usually one would try to avoid
+   *  large inline data collections because it will make DOMs hard to handle
+   */
   public String getDistributionInlineData(int entityIndex, int physicalIndex, int distIndex) {
     String temp = "";
     Node[] distNodes = getDistributionArray(entityIndex, physicalIndex);
@@ -567,7 +662,12 @@ public abstract class AbstractDataPackage extends MetadataObject
     }
     return temp;
   }
-  
+
+  /**
+   *  This method returns the url for data as a String for the indexed entity,
+   *  physical object, and distribution object. Returns an empty string if there
+   *  is no url pointing to the data, or data is not referenced.
+   */  
   public String getDistributionUrl(int entityIndex, int physicalIndex, int distIndex) {
     String temp = "";
     Node[] distNodes = getDistributionArray(entityIndex, physicalIndex);
@@ -588,18 +688,27 @@ public abstract class AbstractDataPackage extends MetadataObject
     return temp;
   }
   
+  /**
+   *  This method displays a summary of Package information by
+   *  calling the various utility methods defined in this class.
+   *  Primary use is for debugging.
+   */
   public void showPackageSummary() {
+    boolean sizelimit = true; // set to false to display all attributes
     StringBuffer sb = new StringBuffer();
     sb.append("Title: "+getTitle()+"\n");
     sb.append("AccessionNumber: "+getAccessionNumber()+"\n");
     sb.append("Author: "+getAuthor()+"\n");
+    sb.append("keywords: "+getKeywords()+"\n");
     getEntityArray();
     if (entityArray!=null) {
       for (int i=0;i<entityArray.length;i++) {
         sb.append("   entity "+i+" name: "+getEntityName(i)+"\n");
         sb.append("   entity "+i+" numRecords: "+getEntityNumRecords(i)+"\n");
         sb.append("   entity "+i+" description: "+getEntityDescription(i)+"\n");
-        for (int j=0;j<getAttributeArray(i).length;j++) {
+        int maxattr = getAttributeArray(i).length;
+        if (maxattr>8) maxattr=8;
+        for (int j=0;j<maxattr;j++) {
           sb.append("      entity "+i+" attribute "+j+"--- name: "+getAttributeName(i,j)+"\n");
           sb.append("      entity "+i+" attribute "+j+"--- unit: "+getAttributeUnit(i,j)+"\n");
           sb.append("      entity "+i+" attribute "+j+"--- dataType: "+getAttributeDataType(i,j)+"\n");

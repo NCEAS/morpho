@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-09-30 19:54:56 $'
- * '$Revision: 1.16 $'
+ *     '$Date: 2003-10-01 19:26:24 $'
+ * '$Revision: 1.17 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -40,7 +40,7 @@ import java.util.Hashtable;
 import java.util.StringTokenizer;
 import java.io.*;
 import edu.ucsb.nceas.morpho.Morpho;
-
+import edu.ucsb.nceas.morpho.datastore.*;
 import edu.ucsb.nceas.morpho.util.Log;
 import edu.ucsb.nceas.utilities.*;
 
@@ -97,7 +97,7 @@ public class DataPackageFactory
   }
   
    /**
-   *  Create a new Datapackage given an id of a metadata stream
+   *  Create a new Datapackage given a docid of a metadata stream
    *  location is given by 2 booleans
    */
   public static AbstractDataPackage getDataPackage(String docid, boolean metacat, boolean local) {
@@ -106,12 +106,46 @@ public class DataPackageFactory
     // then create the appropriate subclass of AbstractDataPackage and return it.
     
     // temporary stub!!!
-    AbstractDataPackage dp = new EML200DataPackage();
-    
+//    AbstractDataPackage dp = new EML200DataPackage();
+    morpho = Morpho.thisStaticInstance;  
+    if (morpho==null)  {
+      Morpho.createMorphoInstance();
+      morpho = Morpho.thisStaticInstance;  
+    }
     String location = null;
     if (metacat && !local) location = AbstractDataPackage.METACAT;
     if (!metacat && local) location = AbstractDataPackage.LOCAL;
     if (metacat && local) location = AbstractDataPackage.BOTH;
+    
+    Reader in = null;
+    if ((location.equals(AbstractDataPackage.LOCAL))
+               ||(location.equals(AbstractDataPackage.BOTH))) {
+      FileSystemDataStore fsds = new FileSystemDataStore(morpho); 
+     try {          
+        File file = fsds.openFile(docid);
+        in = new FileReader(file);
+      }
+      catch (Exception w) {Log.debug(20,"Problem opening file!");}
+    } else { // must be on metacat only
+      
+    }
+    AbstractDataPackage dp = null;
+    String type = getDocTypeInfo(in);
+    Log.debug(40,"DocTypeInfo: " + type);
+    if (type.equals("eml:eml")) {
+      Log.debug(20,"Creating new eml2.0.0 package");
+      dp = new EML200DataPackage();
+      Log.debug(40,"loading new eml2.0.0 DOM");
+      dp.load(location,docid,morpho);
+    }
+    else if (type.indexOf("eml-dataset-2.0.0beta6")>-1) {
+      Log.debug(20,"Creating new eml2Beta6 package");
+      dp = new EML2Beta6DataPackage();
+      Log.debug(40,"loading new eml2Beta6 DOM");
+      dp.load(location,docid,morpho);
+    }
+
+
     dp.load(location, docid, morpho);
 
     dp.showPackageSummary();
@@ -154,7 +188,7 @@ public class DataPackageFactory
    */
   private static String getDocTypeInfo(Reader in) {
     String temp = getSchemaLine(in,2);
-    Log.debug(1,"line is:"+temp);
+//    Log.debug(1,"line is:"+temp);
     // this should return a line of text which is either the DOCTYPE declaraton or the root node
     if (temp.indexOf("DOCTYPE")>-1) {
       // get PUBLIC and/or SYSRWM values
@@ -188,7 +222,6 @@ public class DataPackageFactory
       // should correlate NS declarations with NS abbreviation in root node element name
       // for now, just return the root node name
       docType = temp1;
-      Log.debug(1,"temp1: "+temp1);
     }
     return docType;
   }
@@ -252,7 +285,11 @@ public class DataPackageFactory
     } catch (Exception e) {Log.debug(6, "Error in getSchemaLine!");}
     return secondLine;
   }
-  
+  /**
+   *  This is a static main method configured to test the class by
+   *  creating a datapackage from a 'test' file with the id
+   *  "jscientist.7.1".
+   */
   static public void main(String args[]) {
     try{
       Morpho.createMorphoInstance();

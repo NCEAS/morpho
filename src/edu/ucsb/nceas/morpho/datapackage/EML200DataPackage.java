@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-09-19 04:16:58 $'
- * '$Revision: 1.6 $'
+ *     '$Date: 2003-10-01 19:26:24 $'
+ * '$Revision: 1.7 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -58,11 +58,12 @@ import edu.ucsb.nceas.utilities.*;
  */
 public  class EML200DataPackage extends AbstractDataPackage
 {
-  void serialize() {
-    
+  public void serialize() {
+    String temp = XMLUtilities.getDOMTreeAsString(getMetadataNode(), false);
+    System.out.print(temp);
   }
   
-  void load(String location, String identifier, Morpho morpho) {
+  public void load(String location, String identifier, Morpho morpho) {
     this.location   = location;
     this.id         = identifier;
     this.config     = Morpho.getConfiguration();

@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-09-10 22:47:07 $'
- * '$Revision: 1.2 $'
+ *     '$Date: 2003-10-01 19:26:24 $'
+ * '$Revision: 1.3 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,11 +34,11 @@ import edu.ucsb.nceas.morpho.Morpho;
  */
 public  class EML2Beta6DataPackage extends AbstractDataPackage
 {
-  void serialize() {
+  public void serialize() {
     
   }
   
-  void load(String location, String identifier, Morpho morpho) {
+  public void load(String location, String identifier, Morpho morpho) {
     
   }
 
