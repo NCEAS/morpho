@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-10-15 16:49:09 $'
- * '$Revision: 1.3 $'
+ *     '$Date: 2001-10-16 17:51:15 $'
+ * '$Revision: 1.4 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1636,6 +1636,14 @@ public void startImport(String file) {
 	    XMLBuffer.append("        <attributeDefinition>"+colTitles.elementAt(i)+"</attributeDefinition>\n");
 	    XMLBuffer.append("        <unit> "+units.elementAt(i)+"</unit>\n");
 	    XMLBuffer.append("        <dataType> "+colTypes.elementAt(i)+"</dataType>\n");
+	    XMLBuffer.append("        <attributeDomain>\n");
+	    XMLBuffer.append("             <rangeDomain>\n");
+	    XMLBuffer.append("                <minimum> </minimum>\n");
+	    XMLBuffer.append("                <maximum> </maximum>\n");
+	    XMLBuffer.append("             </rangeDomain>\n");
+	    XMLBuffer.append("        </attributeDomain>\n");
+	    XMLBuffer.append("        <missingValueCode> </missingValueCode>\n");
+	    XMLBuffer.append("        <precision> </precision>\n");
 	    XMLBuffer.append("    </attribute>\n");
     }	  
 	  XMLBuffer.append("</eml-attribute>\n");
@@ -1655,8 +1663,8 @@ public void startImport(String file) {
 	  XMLBuffer.append("    <identifier> </identifier>\n");
 	  XMLBuffer.append("    <entityName> "+TableNameTextField.getText()+"</entityName>\n");
 	  XMLBuffer.append("    <entityDescription> "+TableDescriptionTextField.getText()+"</entityDescription>\n");
-	  XMLBuffer.append("    <orientation columnorrow=\"columnmajor\"> </orientation>\n");
-	  XMLBuffer.append("    <caseSensitive yesorno=\"no\"> </caseSensitive>\n");
+	  XMLBuffer.append("    <orientation columnorrow=\"columnmajor\"></orientation>\n");
+	  XMLBuffer.append("    <caseSensitive yesorno=\"no\"></caseSensitive>\n");
 	  String numRecords = (new Integer(nlines - startingLine + 1)).toString();
 	  XMLBuffer.append("    <numberOfRecords> "+numRecords+"</numberOfRecords>\n");
 	  XMLBuffer.append("</table-entity>\n");
