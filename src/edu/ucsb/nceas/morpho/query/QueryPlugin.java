@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2002-08-22 00:03:36 $'
- * '$Revision: 1.80 $'
+ *     '$Date: 2002-08-22 15:34:27 $'
+ * '$Revision: 1.81 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -149,8 +149,7 @@ public class QueryPlugin implements PluginInterface, ConnectionListener,
            getResource("/toolbarButtonGraphics/general/Save16.gif")));
     saveQueryItemAction.setToolTipText("Save search");
     saveQueryItemAction.setMenuItemPosition(2);
-    saveQueryItemAction.setSeparatorPosition(Morpho.SEPARATOR_FOLLOWING);
-    
+        
     // RevisedSearch action
     GUIAction reviseSearchItemAction = new GUIAction("Revise search", null,
                                             new ReviseSearchCommand(morpho));
@@ -158,7 +157,7 @@ public class QueryPlugin implements PluginInterface, ConnectionListener,
            getResource("/toolbarButtonGraphics/general/Search16.gif")));
     reviseSearchItemAction.setToolTipText("Revise search");
     reviseSearchItemAction.setMenuItemPosition(4);
-    
+    reviseSearchItemAction.setSeparatorPosition(Morpho.SEPARATOR_FOLLOWING);
     // Put actions into array which will be added into search menu
     menuActions[0] = searchItemAction;
     menuActions[1] = refreshItemAction;
