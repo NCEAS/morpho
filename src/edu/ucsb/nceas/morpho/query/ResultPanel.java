@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2004-04-12 22:52:10 $'
- * '$Revision: 1.69.2.2 $'
+ *     '$Date: 2004-04-13 01:31:50 $'
+ * '$Revision: 1.69.2.3 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -346,6 +346,34 @@ public class ResultPanel extends JPanel implements StoreStateChangeEvent
   }//getResultSet
 
   /**
+   * Set the result set for ResultPanel and repaint table
+   */
+  public void setResultSet(ResultSet result)
+  {
+     Vector newVector = result.getResultsVector();
+     resetResultsVector(newVector);
+  }//setResultSet
+
+ /**
+  * A method to reset a vector as result, repaint table
+  * @param newResultVector Vector
+  */
+  public void resetResultsVector (Vector newResultVector)
+  {
+    results.setResultsVector(newResultVector);
+    updateTable();
+  }
+
+  /*
+   * Update the table model and repaint table after results changed
+   */
+  private void updateTable()
+  {
+    table.resetModel(results);
+    results.fireTableDataChanged();
+  }
+
+  /**
    * Get the Jable
    */
   public SortableJTable getJTable()
@@ -410,17 +438,7 @@ public class ResultPanel extends JPanel implements StoreStateChangeEvent
     return vers;
   }
 
-  /**
-   * A method to reset a vector as result, repaint table
-   * @param newResultVector Vector
-   */
-  public void resetResultsVector (Vector newResultVector)
-  {
 
-    results.setResultsVector(newResultVector);
-    table.resetModel(results);
-    results.fireTableDataChanged();
-  }
   /*
    * This method picks column sizes depend on the length of talbe and the
    * value for every column in an array.

@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2004-04-12 22:52:10 $'
- * '$Revision: 1.20.2.2 $'
+ *     '$Date: 2004-04-13 01:31:50 $'
+ * '$Revision: 1.20.2.3 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -843,11 +843,6 @@ public class Query extends DefaultHandler {
  public void displaySearchResult(MorphoFrame frame, ResultPanel resultPanle)
  {
 
-   // query local first, it is faster
-   ResultSet localResults = null;
-   // if appropriate, query metacat
-   ResultSet metacatResults = null;
-
    if (!searchLocal)
    {
      Log.debug(30, "(3) Executing metacat query...");
@@ -857,7 +852,7 @@ public class Query extends DefaultHandler {
    else if (!searchMetacat)
    {
      Log.debug(30, "(2) Executing local query...");
-
+     doLocalSearchDisplay(frame, resultPanle, morpho);
 
    }//else if
    else
@@ -920,16 +915,50 @@ public class Query extends DefaultHandler {
        //Runs on the event-dispatching thread.
        public void finished()
        {
-         System.out.println("the size of vector "+ resultDisplayPanel.getResultSet().getResultsVector().size());
          resultWindow.setMessage(resultDisplayPanel.getResultSet().getRowCount()
                                  + " data sets found");
-         System.out.println("set the bufferfly to false");
          resultWindow.setBusy(false);
 
        }
    };
    worker.start();  //required for SwingWorker 3
 
+ }
+
+ /*
+  * Method to display local search result
+  */
+ private void doLocalSearchDisplay(final MorphoFrame resultWindow,
+                                   final ResultPanel resultDisplayPanel,
+                                   final Morpho morpho)
+ {
+   final Query query = this;
+   final SwingWorker worker = new SwingWorker()
+   {
+        public Object construct()
+       {
+         resultWindow.setBusy(true);
+         LocalQuery lq = new LocalQuery(query, morpho);
+         HeadResultSet localResults = (HeadResultSet)lq.execute();
+         resultDisplayPanel.setResultSet(localResults);
+         resultDisplayPanel.sortTable(5, SortableJTable.DECENDING);
+         StateChangeMonitor.getInstance().notifyStateChange(
+                         new StateChangeEvent(
+                                 resultDisplayPanel,
+                                 StateChangeEvent.CREATE_SEARCH_RESULT_FRAME));
+         return null;
+       }
+
+       //Runs on the event-dispatching thread.
+       public void finished()
+       {
+         resultWindow.setMessage(resultDisplayPanel.getResultSet().getRowCount()
+                                 + " data sets found");
+         resultWindow.setBusy(false);
+
+       }
+   };
+   worker.start();  //required for SwingWorker 3
  }
 
 
