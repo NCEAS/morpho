@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2004-02-23 22:45:58 $'
- * '$Revision: 1.24 $'
+ *     '$Date: 2004-03-27 21:25:30 $'
+ * '$Revision: 1.25 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -127,6 +127,7 @@ public class NodeInfo implements Serializable
     choice_flag = false;
     selected_flag = false;
     checkbox_flag = false;
+    setCardinality("ZERO to MANY");
  }
  
   public String toString() {
@@ -165,26 +166,24 @@ public class NodeInfo implements Serializable
   
   public void setCardinality(String card) {
     this.cardinality = card;
-       
-  if(card.equalsIgnoreCase("ONE")) {
-    setIcon("red.gif");    
-  }
-  if(card.equalsIgnoreCase("OPTIONAL")) {
-    setIcon("yellow.gif");    
-  }
-  if(card.equalsIgnoreCase("ZERO to MANY")) {
-    setIcon("green.gif");    
-  }
-  if(card.equalsIgnoreCase("ONE to MANY")) {
-    setIcon("blue.gif");    
-  }
-  if (choice_flag && selected_flag) {
-    setIcon("sel.gif");  
-  }
-  if (choice_flag && !selected_flag) {
-    setIcon("unsel.gif");
-  }
-  
+    if(card.equalsIgnoreCase("ONE")) {
+      setIcon("red.gif");    
+    }
+    if(card.equalsIgnoreCase("OPTIONAL")) {
+      setIcon("yellow.gif");    
+    }
+    if(card.equalsIgnoreCase("ZERO to MANY")) {
+      setIcon("green.gif");    
+    }
+    if(card.equalsIgnoreCase("ONE to MANY")) {
+      setIcon("blue.gif");    
+    }
+    if (choice_flag && selected_flag) {
+      setIcon("sel.gif");  
+    }
+    if (choice_flag && !selected_flag) {
+      setIcon("unsel.gif");
+    }
   }
   
   
