@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2004-03-27 21:42:06 $'
- * '$Revision: 1.24 $'
+ *     '$Date: 2004-04-04 20:13:03 $'
+ * '$Revision: 1.25 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -558,7 +558,7 @@ public class MorphoFrame extends JFrame
                  "Save ?", JOptionPane.YES_NO_OPTION);
            if (res==JOptionPane.YES_OPTION) {
              //save here
-             SavePackageCommand spc = new SavePackageCommand(dvcp.getAbstractDataPackage());
+             SavePackageCommand spc = new SavePackageCommand(dvcp.getAbstractDataPackage(), false);
              spc.execute(null);
              return;
 //             Log.debug(1, "Save here!");
