@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-08-20 23:17:20 $'
- * '$Revision: 1.2 $'
+ *     '$Date: 2003-09-09 22:34:29 $'
+ * '$Revision: 1.3 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,12 +26,19 @@
 
 package edu.ucsb.nceas.morpho.datapackage;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.transform.TransformerException;
+import org.apache.xpath.XPathAPI;
 import org.w3c.dom.Attr;
-import org.w3c.dom.Node;
+import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.Document;
-import org.w3c.dom.DocumentType;
-import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
+import org.xml.sax.InputSource;
+import com.arbortext.catalog.*;
+import java.io.*;
 
 import org.xml.sax.InputSource;
 
@@ -41,12 +48,22 @@ import java.util.Vector;
 import java.util.Hashtable;
 
 import edu.ucsb.nceas.morpho.util.Log;
+import edu.ucsb.nceas.morpho.Morpho;
 
 /**
  * class that represents a data package.
  */
 public class MetadataObject
 {
+  /**
+   * Document node of the in-memory DOM structure
+   */
+  static private Document doc;
+  /**
+   * root node of the in-memory DOM structure
+   */
+  static private Node root;
+  
   /**
    *   A DOM Node is the basic datastructure. This may be the root of a DOM or it
    *   may be the top level node of a subtree. Working with the Node allows several
@@ -171,5 +188,40 @@ public class MetadataObject
     }
   }
 
+  static public void main(String args[]) {
+
+    DocumentBuilder parser = Morpho.createDomParser();
+    InputSource in;
+    FileInputStream fs;
+    try
+    {
+      fs = new FileInputStream("test.xml");
+      in = new InputSource(fs);
+
+      doc = parser.parse(in);
+      fs.close();
+    } catch(Exception e1) {
+      Log.debug(4, "Parsing threw: " + e1.toString());
+      e1.printStackTrace();
+    }
+    root = doc.getDocumentElement();
+    try{
+      NodeList nl = XPathAPI.selectNodeList(root, args[0]);
+//      if (nl.getLength() == 0)  Log.debug(1,"NodeLIst has zero length");
+        Log.debug(1,"Number of nodes: "+nl.getLength());
+          // for now, just get first node value
+        Node n = nl.item(0);
+        Node child = n.getFirstChild();
+        if (child != null) {
+          String s = child.getNodeValue();
+          s = s.trim();
+          Log.debug(1,"Value is: "+s);
+        } else {
+          Log.debug(1,"No value!!!");
+        }
+        } catch (Exception e) {
+          Log.debug(5, "error in XPath node selection in MetadataObject");
+        }
+  }
   
 }

@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-08-22 18:56:58 $'
- * '$Revision: 1.4 $'
+ *     '$Date: 2003-09-09 22:34:29 $'
+ * '$Revision: 1.5 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -64,8 +64,8 @@ public class DataPackageFactory
     
     // temporary stub!!!
     AbstractDataPackage dp = null;
-    Log.debug(1,"DocTypeInfo: " + getDocTypeInfo(in));
     String type = getDocTypeInfo(in);
+    Log.debug(1,"DocTypeInfo: " + type);
     if (type.equals("eml:eml")) {
       dp = new EML200DataPackage();
     }
@@ -99,6 +99,7 @@ public class DataPackageFactory
    */
   private static String getDocTypeInfo(Reader in) {
     String temp = getSchemaLine(in,2);
+    Log.debug(1,"line is:"+temp);
     // this should return a line of text which is either the DOCTYPE declaraton or the root node
     if (temp.indexOf("DOCTYPE")>-1) {
       // get PUBLIC and/or SYSRWM values
@@ -132,6 +133,7 @@ public class DataPackageFactory
       // should correlate NS declarations with NS abbreviation in root node element name
       // for now, just return the root node name
       docType = temp1;
+      Log.debug(1,"temp1: "+temp1);
     }
     return docType;
   }
