@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2004-03-25 19:51:34 $'
- * '$Revision: 1.9 $'
+ *     '$Date: 2004-04-05 18:32:45 $'
+ * '$Revision: 1.10 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -195,8 +195,12 @@ public class AddGeographicCovCommand implements Command {
     for (int i=0;i<geoList.getLength();i++) {
        // create a new GeographicPage and add surrogate to list
        OrderedMap geoMap = XMLUtilities.getDOMTreeAsXPathMap(geoList.item(i));
-//  Log.debug(1, "geoMap: "+geoMap);
-       boolean flag = geographicPage.setPageData(geoMap, "");
+       boolean flag = true;
+      if (i==0) {
+         flag = geographicPage.setPageData(geoMap, "removeAllRows");
+      } else {
+         flag = geographicPage.setPageData(geoMap, "");
+      }
        if (!flag) res = false;
     }
     return res;

@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2004-03-31 16:48:45 $'
- * '$Revision: 1.23 $'
+ *     '$Date: 2004-04-05 18:32:03 $'
+ * '$Revision: 1.24 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -184,7 +184,6 @@ public class Geographic extends AbstractUIPage{
    *  The action to be executed when the page is displayed. May be empty
    */
   public void onLoadAction() {
-    geographicspanList.removeAllRows();
   }
 
 
@@ -308,6 +307,9 @@ public class Geographic extends AbstractUIPage{
 
 // assume that 'data' is an orderedMap for a single geographicCov subtree
   public boolean setPageData(OrderedMap data, String xPathRoot) { 
+    if (xPathRoot.equals("removeAllRows")) {
+      geographicspanList.removeAllRows();
+    }
     boolean res = true;
     GeographicPage geographicPage = (GeographicPage)WizardPageLibrary.getPage(DataPackageWizardInterface.GEOGRAPHIC_PAGE);
     boolean flag = geographicPage.setPageData(data, "/geographicCoverage");

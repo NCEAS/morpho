@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2004-03-25 19:51:34 $'
- * '$Revision: 1.13 $'
+ *     '$Date: 2004-04-05 18:32:45 $'
+ * '$Revision: 1.14 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -198,8 +198,12 @@ public class AddTemporalCovCommand implements Command {
     for (int i=0;i<tempList.getLength();i++) {
        // create a new TemporalPage and add surrogate to list
        OrderedMap tempMap = XMLUtilities.getDOMTreeAsXPathMap(tempList.item(i));
-//  Log.debug(1, "tempMap: "+tempMap);
-       boolean flag = temporalPage.setPageData(tempMap, "");
+       boolean flag = true; 
+       if (i==0) {
+         flag = temporalPage.setPageData(tempMap, "removeAllRows");
+      } else {
+         flag = temporalPage.setPageData(tempMap, "");
+      }
        if (!flag) res = false;
     }
     return res;

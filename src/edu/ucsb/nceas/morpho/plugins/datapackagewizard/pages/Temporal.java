@@ -7,9 +7,9 @@
  *    Authors: Saurabh Garg
  *    Release: @release@
  *
- *   '$Author: sambasiv $'
- *     '$Date: 2004-04-02 21:57:25 $'
- * '$Revision: 1.24 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2004-04-05 18:32:03 $'
+ * '$Revision: 1.25 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -202,7 +202,6 @@ public class Temporal extends AbstractUIPage{
    *  The action to be executed when the page is displayed. May be empty
    */
   public void onLoadAction() {
-    timespanList.removeAllRows();
   }
 
 
@@ -333,6 +332,9 @@ public class Temporal extends AbstractUIPage{
 
  // assume that 'data' is an orderedMap for a single temporalCov subtree
   public boolean setPageData(OrderedMap data, String xPathRoot) { 
+    if (xPathRoot.equals("removeAllRows")) {
+      timespanList.removeAllRows();
+    }
     boolean res = true;
     TemporalPage temporalPage = (TemporalPage)WizardPageLibrary.getPage(DataPackageWizardInterface.TEMPORAL_PAGE);
 		data.remove("/temporalCoverage/@scope");
