@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2004-02-02 21:58:56 $'
- * '$Revision: 1.140 $'
+ *     '$Date: 2004-02-03 23:15:46 $'
+ * '$Revision: 1.141 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -91,7 +91,7 @@ public class DocFrame extends javax.swing.JFrame
   /* flag to indicate whether XML attribute values should appear as
    * child nodes in the tree 
    */
-  public boolean xmlAttributesInTreeFlag = false;
+  public boolean xmlAttributesInTreeFlag = true;
     
   /** number of level of expansion of the initial JTree  */
   int exp_level = 5;
@@ -213,7 +213,6 @@ public class DocFrame extends javax.swing.JFrame
   javax.swing.JLabel JLabel3 = new javax.swing.JLabel();
   javax.swing.JLabel JLabel4 = new javax.swing.JLabel();
   javax.swing.JComboBox choiceCombo = new javax.swing.JComboBox();
-  javax.swing.JCheckBox attrInTree = new javax.swing.JCheckBox();
   
   //Create the popup menu.
   javax.swing.JPopupMenu popup = new JPopupMenu();
@@ -242,10 +241,6 @@ public class DocFrame extends javax.swing.JFrame
     TreeChoicePanel.add(test);
     TreeChoicePanel.add(choiceCombo);
     choiceCombo.setVisible(true);
-    attrInTree.setSelected(xmlAttributesInTreeFlag);
-    attrInTree.setText("Attrs?");
-    attrInTree.addItemListener(new SymItemListener());
-    TreeChoicePanel.add(attrInTree);
     TreeControlPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 1, 1));
     OutputScrollPanelContainer.add(BorderLayout.SOUTH, TreeControlPanel);
     TrimTreeButton.setText("Trim");
@@ -1706,6 +1701,7 @@ public class DocFrame extends javax.swing.JFrame
         while (keys.hasMoreElements()) {
           String str = (String)(keys.nextElement());
           String val = (String)((ni.attr).get(str));
+          val = val.trim();
           if (!(str.equals("minOccurs")) && (!(str.equals("maxOccurs")))
             && (!str.equals("editor"))
             && (!str.equals("help"))
@@ -3183,25 +3179,6 @@ public class DocFrame extends javax.swing.JFrame
           setTopOfTree(rootNode, sel);
         }
       }
-      else if (object == attrInTree) {
-        if (attrInTree.isSelected()) {
-          xmlAttributesInTreeFlag = true;
-          addXMLAttributeNodes(rootNode);
-          treeModel.setRoot(rootNode);
-          treeModel.reload();
-          tree.setModel(treeModel);
-          tree.expandRow(1);
-          tree.setSelectionRow(0);
-        } else {
-          xmlAttributesInTreeFlag = false;
-          removeAttributeNodes(rootNode);
-          treeModel.setRoot(rootNode);
-          treeModel.reload();
-          tree.setModel(treeModel);
-          tree.expandRow(1);
-          tree.setSelectionRow(0);
-        }
-      }
     }
   }
   
@@ -3526,11 +3503,12 @@ public class DocFrame extends javax.swing.JFrame
                (!keyName.equalsIgnoreCase("maxOccurs")) &&
                (!keyName.equalsIgnoreCase("editor")) &&
                (!keyName.equalsIgnoreCase("help")) &&
+               (!keyName.startsWith("xmlns")) &&
                (!(keyName.indexOf("schemaLocation")>-1)) &&
                (!(keyName.equals("")))               
              )
           {
-             if ((value==null)||(value.length()==0)) value = " ";
+             if ((value==null)||(value.length()==0)) value = "";
             NodeInfo newni = new NodeInfo(keyName);
             newni.setXMLAttribute(true);
             newni.setCardinality("ONE");
