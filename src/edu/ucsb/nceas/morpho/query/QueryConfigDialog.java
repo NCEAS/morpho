@@ -5,7 +5,7 @@
  *              National Center for Ecological Analysis and Synthesis
  *     Authors: Dan Higgins
  *
- *     Version: '$Id: QueryConfigDialog.java,v 1.2 2000-11-22 23:12:58 higgins Exp $'
+ *     Version: '$Id: QueryConfigDialog.java,v 1.3 2000-12-15 17:44:54 higgins Exp $'
  */
 /*
 		A basic implementation of the JDialog class.
@@ -142,29 +142,10 @@ public class QueryConfigDialog extends javax.swing.JDialog
 		AllButton2.setActionCommand("All");
 		JPanel11.add(AllButton2, new com.symantec.itools.awt.GridBagConstraintsD(0,0,1,1,1.0,0.0,java.awt.GridBagConstraints.CENTER,java.awt.GridBagConstraints.NONE,new Insets(20,0,0,0),0,0));
 		AllButton2.setBounds(0,89,49,25);
-		docidCheckbox.setText("docID");
-		docidCheckbox.setActionCommand("docID");
-		JPanel20.add(docidCheckbox);
-		docidCheckbox.setBounds(0,0,57,23);
-		docnameCheckbox.setSelected(true);
-		docnameCheckbox.setText("docName");
-		docnameCheckbox.setActionCommand("docName");
-		JPanel20.add(docnameCheckbox);
-		docnameCheckbox.setBounds(0,23,79,23);
-		doctypeCheckbox.setSelected(true);
-		doctypeCheckbox.setText("docType");
-		doctypeCheckbox.setActionCommand("docType");
-		JPanel20.add(doctypeCheckbox);
-		doctypeCheckbox.setBounds(0,46,73,23);
-		doctitleCheckbox.setSelected(true);
-		doctitleCheckbox.setText("docTitle");
-		doctitleCheckbox.setActionCommand("docTitle");
-		JPanel20.add(doctitleCheckbox);
-		doctitleCheckbox.setBounds(0,69,70,23);
 		ClearButton.setText("Clear");
 		ClearButton.setActionCommand("Clear");
 		JPanel20.add(ClearButton);
-		ClearButton.setBounds(0,92,65,25);
+		ClearButton.setBounds(0,0,65,25);
 		FieldtypePanel.setLayout(new BorderLayout(0,0));
 		JTabbedPane1.add(FieldtypePanel);
 		FieldtypePanel.setBounds(2,27,668,368);
@@ -217,7 +198,7 @@ public class QueryConfigDialog extends javax.swing.JDialog
 		JPanel18.setBounds(59,0,311,353);
 		JPanel19.setLayout(new BorderLayout(0,0));
 		JPanel18.add(BorderLayout.CENTER,JPanel19);
-		JPanel19.setBounds(0,0,232,353);
+		JPanel19.setBounds(0,0,246,353);
 		JScrollPane6.setOpaque(true);
 		JPanel19.add(BorderLayout.WEST,JScrollPane6);
 		JScrollPane6.setBounds(0,0,259,353);
@@ -226,8 +207,7 @@ public class QueryConfigDialog extends javax.swing.JDialog
 		JPanel20.setAlignmentX(0.0F);
 		JPanel20.setLayout(new BoxLayout(JPanel20,BoxLayout.Y_AXIS));
 		JPanel18.add(BorderLayout.EAST, JPanel20);
-		JPanel20.setBounds(232,0,79,353);
-		docidCheckbox.setSelected(true);
+		JPanel20.setBounds(246,0,65,353);
 		JTabbedPane1.setSelectedComponent(DoctypePanel);
 		JTabbedPane1.setSelectedIndex(0);
 		JTabbedPane1.setTitleAt(0,"Set Query DocTypes");
@@ -417,10 +397,6 @@ public class QueryConfigDialog extends javax.swing.JDialog
 	javax.swing.JScrollPane JScrollPane6 = new javax.swing.JScrollPane();
 	javax.swing.JList ReturnFieldList = new javax.swing.JList();
 	javax.swing.JPanel JPanel20 = new javax.swing.JPanel();
-	javax.swing.JCheckBox docidCheckbox = new javax.swing.JCheckBox();
-	javax.swing.JCheckBox docnameCheckbox = new javax.swing.JCheckBox();
-	javax.swing.JCheckBox doctypeCheckbox = new javax.swing.JCheckBox();
-	javax.swing.JCheckBox doctitleCheckbox = new javax.swing.JCheckBox();
 	javax.swing.JButton ClearButton = new javax.swing.JButton();
 	javax.swing.JPanel JPanel9 = new javax.swing.JPanel();
 	javax.swing.JButton OKButton = new javax.swing.JButton();

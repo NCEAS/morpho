@@ -9,7 +9,7 @@
  *  Authors: Dan Higgins
  *
  *  
- *     Version: '$Id: ExternalQuery.java,v 1.5 2000-11-20 23:27:08 higgins Exp $'
+ *     Version: '$Id: ExternalQuery.java,v 1.6 2000-12-15 17:44:54 higgins Exp $'
  */
 
 /*
@@ -80,7 +80,8 @@ public ExternalQuery(InputStream is) {
     }
     dtm = new DefaultTableModel(headers,0);
     RSTable = new JTable(dtm);
-
+    TableColumnModel tcm = RSTable.getColumnModel();
+    removeFirstNColumns(tcm,3);
     String parserName = "org.apache.xerces.parsers.SAXParser";
     XMLReader parser = null;
 
@@ -185,6 +186,20 @@ public JTable getTable() {
         return last;
    }
    
+  private void removeTableColumn( TableColumnModel tcm, int index) {
+        int cnt = tcm.getColumnCount();
+        if (index<cnt) {
+            TableColumn tc = tcm.getColumn(index);
+            tcm.removeColumn(tc);
+        }
+  }
+  
+  private void removeFirstNColumns(TableColumnModel tcm, int n) {
+        // n is the number of leading columns to remove
+        for (int i=0;i<n;i++) {
+            removeTableColumn(tcm,0);
+        }
+  }
    
    
    

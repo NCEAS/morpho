@@ -5,7 +5,7 @@
  *              National Center for Ecological Analysis and Synthesis
  *     Authors: Dan Higgins
  *
- *     Version: '$Id: QueryBean.java,v 1.29 2000-12-14 16:19:22 higgins Exp $'
+ *     Version: '$Id: QueryBean.java,v 1.30 2000-12-15 17:44:54 higgins Exp $'
  */
 
 package edu.ucsb.nceas.querybean;
@@ -1371,6 +1371,7 @@ public void searchFor(String searchText) {
                 JTable ttt = table;
                 TableModel tm = ttt.getModel();
                 rs.JTable1.setModel(tm);
+                rs.JTable1.setColumnModel(ttt.getColumnModel());
                 rs.pack();
                 lq.start();
   }
@@ -1387,6 +1388,7 @@ public void searchFor(String searchText) {
             if (table!=null) {
                 TableModel tm = table.getModel();
                 rs.JTable1.setModel(tm);
+                rs.JTable1.setColumnModel(table.getColumnModel());
                 rs.pack();
             }
         DetachCheckBox.setSelected(false);
@@ -1402,6 +1404,7 @@ public void searchFor(String searchText) {
             if (table!=null) {
                 TableModel tm = table.getModel();
                 rs.JTable1.setModel(tm);
+                rs.JTable1.setColumnModel(table.getColumnModel());
                 rs.pack();
             }
         DetachCheckBox1.setSelected(false);
@@ -1454,6 +1457,7 @@ public void searchFor(String searchText) {
                 JTable ttt = rq.getTable();
                 TableModel tm = ttt.getModel();
                 rs.JTable1.setModel(tm);
+                rs.JTable1.setColumnModel(ttt.getColumnModel());
                 rs.pack();
  
 		    in.close();

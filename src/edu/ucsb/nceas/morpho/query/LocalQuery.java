@@ -6,7 +6,7 @@
  *              National Center for Ecological Analysis and Synthesis
  *     Authors: Dan Higgins
  *
- *     Version: '$Id: LocalQuery.java,v 1.14 2000-11-28 00:20:34 higgins Exp $'
+ *     Version: '$Id: LocalQuery.java,v 1.15 2000-12-15 17:44:54 higgins Exp $'
  */
 
 package edu.ucsb.nceas.querybean;
@@ -56,6 +56,7 @@ public class LocalQuery extends Thread
     Vector doctypes2bsearched;
     Vector dt2bReturned;
     String currentDoctype;
+    int numcolsdelete = 3;
     
     static {
         dom_collection = new Hashtable();
@@ -89,6 +90,9 @@ public LocalQuery() {
     
         dtm = new DefaultTableModel(headers,0);
         RSTable = new JTable(dtm);
+        TableColumnModel tcm = RSTable.getColumnModel();
+        removeFirstNColumns(tcm,numcolsdelete);
+        
  //   PropertyResourceBundle options = (PropertyResourceBundle)PropertyResourceBundle.getBundle("client");  // DFH
  //   local_dtd_directory =(String)options.handleGetObject("local_dtd_directory");     // DFH
  //   local_xml_directory =(String)options.handleGetObject("local_xml_directory");     // DFH
@@ -126,6 +130,9 @@ public LocalQuery(String xpathstring) {
     }
         dtm = new DefaultTableModel(headers,0);
         RSTable = new JTable(dtm);
+        TableColumnModel tcm = RSTable.getColumnModel();
+        removeFirstNColumns(tcm,numcolsdelete);
+
 //    PropertyResourceBundle options = (PropertyResourceBundle)PropertyResourceBundle.getBundle("client");  // DFH
 //    local_dtd_directory =(String)options.handleGetObject("local_dtd_directory");     // DFH
 //    local_xml_directory =(String)options.handleGetObject("local_xml_directory");     // DFH
@@ -162,6 +169,9 @@ public LocalQuery(String xpathstring, JButton button) {
     Halt = button;
         dtm = new DefaultTableModel(headers,0);
         RSTable = new JTable(dtm);
+        TableColumnModel tcm = RSTable.getColumnModel();
+        removeFirstNColumns(tcm,numcolsdelete);
+
 //    PropertyResourceBundle options = (PropertyResourceBundle)PropertyResourceBundle.getBundle("client");  // DFH
 //    local_dtd_directory =(String)options.handleGetObject("local_dtd_directory");     // DFH
 //    local_xml_directory =(String)options.handleGetObject("local_xml_directory");     // DFH
@@ -198,6 +208,9 @@ public LocalQuery(String[] xpathstrings, boolean and_flag, JButton button) {
     Halt = button;
         dtm = new DefaultTableModel(headers,0);
         RSTable = new JTable(dtm);
+        TableColumnModel tcm = RSTable.getColumnModel();
+        removeFirstNColumns(tcm,numcolsdelete);
+
 //    PropertyResourceBundle options = (PropertyResourceBundle)PropertyResourceBundle.getBundle("client");  // DFH
 //    local_dtd_directory =(String)options.handleGetObject("local_dtd_directory");     // DFH
 //    local_xml_directory =(String)options.handleGetObject("local_xml_directory");     // DFH
@@ -646,6 +659,21 @@ void queryAll()
         }
         return last;
    }
-   
+ 
+  
+  private void removeTableColumn( TableColumnModel tcm, int index) {
+        int cnt = tcm.getColumnCount();
+        if (index<cnt) {
+            TableColumn tc = tcm.getColumn(index);
+            tcm.removeColumn(tc);
+        }
+  }
+  
+  private void removeFirstNColumns(TableColumnModel tcm, int n) {
+        // n is the number of leading columns to remove
+        for (int i=0;i<n;i++) {
+            removeTableColumn(tcm,0);
+        }
+  }
    
 }
