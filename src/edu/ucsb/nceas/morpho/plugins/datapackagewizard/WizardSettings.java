@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2003-09-24 04:40:38 $'
- * '$Revision: 1.17 $'
+ *     '$Date: 2003-09-25 19:28:22 $'
+ * '$Revision: 1.18 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -252,7 +252,7 @@ public class WizardSettings {
    *
    *  @return String array containing all the unitTypes in the unitdictionary
    */
-  private static final String UNIT_TYPES_XPATH    = "/stmml:unitList/unitType";
+  private static final String UNIT_TYPES_XPATH    = "/stmml:unitList/unitType/@id";
   private static final String UNIT_TYPES_NAME_ATT = "@name";
   private static final String UNIT_TYPES_EXCLUDE  = "dimension";
   private static Map          unitDictionaryNVPs;
@@ -291,29 +291,47 @@ public class WizardSettings {
       return new String[] {"IOException!"};
     }
     
-    unitDictionaryNVPs = XMLUtilities.getDOMTreeAsXPathMap(udRootNode);
     
-    if (unitDictionaryNVPs==null) {
-      Log.debug(1,"Fatal error - can't find unit dictionary!");
-      return new String[] {"ERROR!"};
-    }    
     List returnList = new ArrayList();
-    Object nextObj  = null;
-    String nextStr  = null;
     
-    for (Iterator it = unitDictionaryNVPs.keySet().iterator(); it.hasNext(); ) {
     
-      nextObj = it.next();
-      if (nextObj==null) continue;
-      nextStr = (String)nextObj;
+    NodeList unitTypesNodeList = null;
+    try {
+    
+      unitTypesNodeList = XMLUtilities.getNodeListWithXPath(udRootNode, UNIT_TYPES_XPATH);
+      System.err.println("IS IT A NODESET? unitTypesNodeList = "+unitTypesNodeList);
       
-      if ( (nextStr.indexOf(UNIT_TYPES_XPATH) == 0) 
-                  && (nextStr.indexOf(UNIT_TYPES_NAME_ATT) > 0) 
-                              && (nextStr.indexOf(UNIT_TYPES_EXCLUDE) < 0) ) {
-
-        returnList.add((String)(unitDictionaryNVPs.get(nextStr)));
-      }
+    } catch (Exception ioe) {
+    
+      ioe.printStackTrace();
+      return new String[] {"Exception!"};
     }
+    
+    
+//    unitDictionaryNVPs = XMLUtilities.getDOMTreeAsXPathMap(udRootNode);
+//    
+//    if (unitDictionaryNVPs==null) {
+//      Log.debug(1,"Fatal error - can't find unit dictionary!");
+//      return new String[] {"ERROR!"};
+//    }    
+//    Object nextObj  = null;
+//    String nextStr  = null;
+//    
+//    for (Iterator it = unitDictionaryNVPs.keySet().iterator(); it.hasNext(); ) {
+//    
+//      nextObj = it.next();
+//      if (nextObj==null) continue;
+//      nextStr = (String)nextObj;
+//      
+//      if ( (nextStr.indexOf(UNIT_TYPES_XPATH) == 0) 
+//                  && (nextStr.indexOf(UNIT_TYPES_NAME_ATT) > 0) 
+//                              && (nextStr.indexOf(UNIT_TYPES_EXCLUDE) < 0) ) {
+//
+//        returnList.add((String)(unitDictionaryNVPs.get(nextStr)));
+//      }
+//    }
+
+
     String[] returnArray = new String[returnList.size()];
 
     returnArray = (String[])(returnList.toArray(returnArray));
