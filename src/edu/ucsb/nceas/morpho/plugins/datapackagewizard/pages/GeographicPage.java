@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2004-03-31 17:24:06 $'
- * '$Revision: 1.13 $'
+ *     '$Date: 2004-04-08 16:53:57 $'
+ * '$Revision: 1.14 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -479,6 +479,7 @@ public class GeographicPage extends AbstractUIPage {
    *  The action to be executed when the page is displayed. May be empty
    */
   public void onLoadAction() {
+    lmp.addMap();
   }
 
 
@@ -499,6 +500,7 @@ public class GeographicPage extends AbstractUIPage {
    *          (e.g. if a required field hasn't been filled in)
    */
   public boolean onAdvanceAction() {
+    lmp.removeMap();
     if (covDescField.getText().trim().equals("")) {
       WidgetFactory.hiliteComponent(covDescLabel);
       covDescField.requestFocus();
