@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2002-09-26 21:44:39 $'
- * '$Revision: 1.19 $'
+ *     '$Date: 2002-09-27 21:00:20 $'
+ * '$Revision: 1.20 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -315,16 +315,54 @@ public class UIController
     }
     
     /**
-     * return the MorphoFrame that contains the GUIAction provided
+     * return the MorphoFrame that contains the GUIAction clone provided
      *
-     * @param action      the GUIAction for which the parent MorphoFrame will be 
-     *                    returned
+     * @param clone       the GUIAction clone for which the parent MorphoFrame  
+     *                    will be returned
      * @return            the MorphoFrame which is the parent of this GUIAction
      */
-    public static MorphoFrame getMorphoFrameContainingGUIAction(GUIAction action) 
+    public static MorphoFrame getMorphoFrameContainingGUIAction(GUIAction clone) 
     {
-        if (action==null || actionCloneWindowAssociation==null) return null;
-        return (MorphoFrame)actionCloneWindowAssociation.get(action);
+        if (clone==null || actionCloneWindowAssociation==null) return null;
+        return (MorphoFrame)actionCloneWindowAssociation.get(clone);
+    }
+
+    /**
+     *  This method can be used if you have the original GUIAction instance and 
+     *  want to get the existing clone of it that was put into a particular 
+     *  MorphoFrame by UIController.
+     .
+     *
+     * @param action      the GUIAction whose clone is sought
+     * @param frame       the MorphoFrame in which the clone is nested
+     * @return            the GUIAction object that is a clone of the passed 
+     *                    GUIAction, and that is nested inside the passed 
+     *                    MorphoFrame
+     */
+    public static GUIAction getGUIActionCloneUsedByMorphoFrame(GUIAction action, 
+                                                              MorphoFrame frame) 
+    {
+        if (action==null || frame==null) return null;
+        
+        //given the action, get its list of clones 
+
+        //guiActionClones is a hashtable where each key is the original 
+        //GUIAction instance, and its corresponding value is a Vector of clones
+        Vector cloneList = (Vector)guiActionClones.get(action);
+        
+        //cloneList therefore holds all possible clones of the passed GUIAction
+        for (int i=0; i< cloneList.size(); i++) {
+            GUIAction clone = (GUIAction)cloneList.elementAt(i);
+            //actionCloneWindowAssociation is a hash each clone (the keys) and the 
+            //window that holds it (the values)
+            
+            //therefore check each clone in turn to see if it belongs to 
+            //passed MorphoFrame:
+            if ((MorphoFrame)actionCloneWindowAssociation.get(clone)==frame) {
+                return clone;
+            }
+        }
+        return null;
     }
 
     /**
