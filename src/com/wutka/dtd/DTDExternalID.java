@@ -5,7 +5,7 @@ import java.io.*;
 /** Represents an external ID in an entity declaration
  *
  * @author Mark Wutka
- * @version $Revision: 1.1 $ $Date: 2000-08-22 19:14:29 $ by $Author: higgins $
+ * @version $Revision: 1.2 $ $Date: 2001-01-15 02:21:26 $ by $Author: higgins $
  */
 public abstract class DTDExternalID implements DTDOutput
 {

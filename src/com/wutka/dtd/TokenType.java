@@ -3,7 +3,7 @@ package com.wutka.dtd;
 /** Enumerated value representing the type of a token
  *
  * @author Mark Wutka
- * @version $Revision: 1.1 $ $Date: 2000-08-22 19:14:28 $ by $Author: higgins $
+ * @version $Revision: 1.2 $ $Date: 2001-01-15 02:21:25 $ by $Author: higgins $
  */
 class TokenType
 {

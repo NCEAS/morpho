@@ -6,7 +6,7 @@ import java.util.*;
 /** Example program to read a DTD and print out its object model
  *
  * @author Mark Wutka
- * @version $Revision: 1.1 $ $Date: 2000-08-22 19:14:28 $ by $Author: higgins $
+ * @version $Revision: 1.2 $ $Date: 2001-01-15 02:21:25 $ by $Author: higgins $
  */
 
 class Tokenize
@@ -15,9 +15,7 @@ class Tokenize
 	{
 		try
 		{
-			FileReader reader = new FileReader(args[0]);
-
-            DTDParser parser = new DTDParser(new BufferedReader(reader), true);
+            DTDParser parser = new DTDParser(new File(args[0]), true);
 
 // Parse the DTD and ask the parser to guess the root element 
             DTD dtd = parser.parse(true);

@@ -8,7 +8,7 @@ import java.util.*;
  * #PCDATA followed by a list of pipe-separated names.
  *
  * @author Mark Wutka
- * @version $Revision: 1.1 $ $Date: 2000-08-22 19:14:29 $ by $Author: higgins $
+ * @version $Revision: 1.2 $ $Date: 2001-01-15 02:21:26 $ by $Author: higgins $
  */
 public class DTDMixed extends DTDContainer
 {
