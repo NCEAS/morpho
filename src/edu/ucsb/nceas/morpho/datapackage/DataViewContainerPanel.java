@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2002-10-30 20:46:13 $'
- * '$Revision: 1.38 $'
+ *     '$Date: 2002-10-30 21:06:54 $'
+ * '$Revision: 1.39 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -530,7 +530,6 @@ public class DataViewContainerPanel extends javax.swing.JPanel
     if (event.getChangedState().equals(StateChangeEvent.METAVIEWER_HISTORY_BACK)
             && dv!=null && tabbedEntitiesPanel!=null && dv.getDataTable()!=null)
     {
-        if ((Container)(event.getSource()).)
         // Get new ID displayed in metaviewer
         TabbedContainer container = 
            (TabbedContainer)tabbedEntitiesPanel.getComponentAt(lastTabSelected);
