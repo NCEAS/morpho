@@ -5,9 +5,9 @@
  *    Authors: @tao@
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2002-09-11 21:53:30 $'
- * '$Revision: 1.11 $'
+ *   '$Author: tao $'
+ *     '$Date: 2002-09-11 23:02:53 $'
+ * '$Revision: 1.12 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -37,7 +37,7 @@ import java.awt.Component;
 import javax.swing.JDialog;
 
 /**
- * Class to handle search command
+ * Class to handle refresh command
  */
 public class RefreshCommand implements Command 
 {
@@ -47,46 +47,77 @@ public class RefreshCommand implements Command
   /** A reference to a dialog */
   private OpenDialogBox dialog = null;
   
-  /** A flag to indicate if refresh morpho is specified */
-  private boolean specify = false;
+  /** A flag to indicate if a morpho frame is specified  need to be refresh */
+  private boolean specifyMorpho = false;
   
-    
+  /** A flag to indicate if a OpenDialog is specified need to be refresh */
+  private boolean specifyOpenDialog = false;
+  
   /**
-   * Constructor of SearcCommand
-   * @param specify a morphoframe need to be refreshed
+   * Constructor of refreshCommand
+   * There is no parameter, means it will refresh current active morpho frame
+   */
+  public RefreshCommand()
+  {
+ 
+  }//RefreshCommand
+  
+  /**
+   * Constructor of RefreshCommand
+   * @param box specify a morphoframe need to be refreshed
    */
   public RefreshCommand(MorphoFrame box)
   {
     if (box != null)
     {
       morphoFrame = box;
-      specify = true;
+      specifyMorpho = true;
     }
-  }//SearchCommand
+  }//RefreshCommand
   
-
+ /**
+   * Constructor of RefreshCommand
+   * @param myOpenDialog specify a Open dialog need to be refreshed
+   */
+  public RefreshCommand(OpenDialogBox myOpenDialog)
+  {
+    if (myOpenDialog != null)
+    {
+      dialog = myOpenDialog;
+      specifyOpenDialog = true;
+    }
+  }//RefreshCommand
+  
   
   /**
-   * execute cancel command
+   * execute refresh command
    */    
   public void execute()
   {
     ResultPanel resultPane = null;
-    if (!specify)
+    if (specifyOpenDialog)
+    {
+      // for a dialog
+      morphoFrame = dialog.getParentFrame();
+      resultPane = dialog.getResultPanel();
+      
+    }//if
+    else if (specifyMorpho)
+    {
+      // for a specify morpho frame
+      resultPane = getResultPanelFromMorphoFrame(morphoFrame);
+    }//else if
+    else
     {
       // If not sepcify a frame, moreFrame will be set to be
       // current active morphoFrame
       morphoFrame = UIController.getInstance().getCurrentActiveWindow();
-      
-    }
-    
-    // make sure the morphoFrame is not null
-    if ( morphoFrame == null)
-    {
-       Log.debug(5, "Morpho frame was null so I could refresh it!");
-    }//if
-    
-    resultPane = getResultPanelFromMorphoFrame(morphoFrame);
+      if (morphoFrame != null)
+      {
+         resultPane = getResultPanelFromMorphoFrame(morphoFrame);
+      }//if
+    }//else
+ 
     // make sure resulPanel is not null
     if ( resultPane != null)
     {
@@ -100,12 +131,12 @@ public class RefreshCommand implements Command
         index = table.getIndexOfSortedColumn();
         order = table.getOrderOfSortedColumn();
       }
-    
+ 
       Query myQuery = null;
       myQuery = resultPane.getResultSet().getQuery();
       if (myQuery != null)
       {
-        doQuery(myQuery, sorted, index, order);
+        doQuery(myQuery, specifyOpenDialog, sorted, index, order);
       }//if
     }//if
   
@@ -115,8 +146,8 @@ public class RefreshCommand implements Command
   /**
    * Run the search query again 
    */
-  private void doQuery(final Query query, final boolean sort, final int index, 
-                                        final String order) 
+  private void doQuery(final Query query, final boolean forOpenDialog, 
+                        final boolean sort, final int index, final String order) 
   {
   
     final SwingWorker worker = new SwingWorker() 
@@ -129,17 +160,32 @@ public class RefreshCommand implements Command
           results = query.execute();
           
           // The size of resultpanel for morpho frame
-          resultDisplayPanel = new ResultPanel(
-              null, results, 12, null, morphoFrame.getDefaultContentAreaSize());
-          // if the table alread sort the new resul panel should be sorted too
-          if (sort)
+          if (!forOpenDialog)
           {
-            resultDisplayPanel.sortTable(index, order);
-          }
-          resultDisplayPanel.setVisible(true); 
-          morphoFrame.setMainContentPane(resultDisplayPanel);
-          morphoFrame.setMessage(results.getRowCount() + " data sets found");
-          
+            resultDisplayPanel = new ResultPanel(
+              null, results, 12, null, morphoFrame.getDefaultContentAreaSize());
+            // if the table alread sort the new resul panel should be sorted too
+            if (sort)
+            {
+              resultDisplayPanel.sortTable(index, order);
+            }
+            resultDisplayPanel.setVisible(true); 
+            morphoFrame.setMainContentPane(resultDisplayPanel);
+            morphoFrame.setMessage(results.getRowCount() + " data sets found");
+          }//if
+          else
+          {
+            // size for open dialog
+            resultDisplayPanel = new ResultPanel(dialog, results, null);
+            // if the table alread sort the new resul panel should be sorted too
+            if (sort)
+            {
+              resultDisplayPanel.sortTable(index, order);
+            }
+            resultDisplayPanel.setVisible(true); 
+            dialog.setResultPanel(resultDisplayPanel);
+          }//esle
+        
           return null;  
         }
 
