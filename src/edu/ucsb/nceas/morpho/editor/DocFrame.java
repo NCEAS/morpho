@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-03-11 19:54:49 $'
- * '$Revision: 1.93 $'
+ *     '$Date: 2002-03-13 15:45:13 $'
+ * '$Revision: 1.94 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1979,7 +1979,7 @@ private Vector sameParent(Vector list) {
         String res = str.toString();
         res = res.trim();
         if (res.length()==0) res = " ";
-        return str.toString();
+        return res;
 
     } // normalize(String):String
 	
