@@ -1,0 +1,44 @@
+<?xml version="1.0"?>
+<!DOCTYPE dataset PUBLIC "-//NCEAS//eml-dataset-2.0//EN" "file:////C:/work/dmanclient/lib/catalog/eml-dataset-2.0.dtd">
+
+<dataset editor="edu.ucsb.nceas.morpho.editor.LockedPanel" help="The container for fields describing a dataset resource.">
+  <identifier  help="The unique identifier of this metadata file or object."></identifier>
+  <shortName help="A short name that describes the resource, sometimes a filename."></shortName>
+  <title help="A brief description of the resource, providing enough detail to differentiate it from other similar resources."></title>
+  <originator help="The 'originator' element provides the full name of the person, organization, or position associated with the resource.">
+      <individualName help="The full name of the person being described">
+        <salutation>text</salutation>
+        <givenName>text</givenName>
+        <surName>berkley</surName>
+      </individualName>
+    <address help="The full address information for a given responsible party entry.">
+      <deliveryPoint help="The delivery point field is used for the physical address for postal communication."></deliveryPoint>
+      <city help="The city field is used for the city name of the contact associated with a particular resource."></city>
+      <administrativeArea></administrativeArea>
+      <postalCode></postalCode>
+      <country>USA</country>
+    </address>
+    <phone phonetype="voice"></phone>
+    <electronicMailAddress>text</electronicMailAddress>
+    <onlineLink></onlineLink>
+    <role>originator</role>
+  </originator>
+  <pubdate>text</pubdate>
+  <pubplace>text</pubplace>
+  <series>text</series>
+  <abstract>
+    <paragraph>text</paragraph>
+  </abstract>
+  <keywordSet>
+    <keyword help="keyword" keywordType=""></keyword>
+    <keywordThesaurus></keywordThesaurus>
+  </keywordSet>
+  <additionalInfo>
+    <paragraph>text</paragraph>
+  </additionalInfo>
+  <triple>
+    <subject></subject>
+    <relationship></relationship>
+    <object></object>
+  </triple>
+</dataset>
