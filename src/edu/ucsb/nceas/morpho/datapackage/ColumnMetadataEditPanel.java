@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-12-04 18:04:12 $'
- * '$Revision: 1.16 $'
+ *     '$Date: 2003-01-06 22:26:41 $'
+ * '$Revision: 1.17 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1133,8 +1133,16 @@ public class ColumnMetadataEditPanel extends javax.swing.JPanel //implements jav
     colData.colType = getDataType();
     colData.colMissingValue = getMissingValue();
     colData.colPrecision = getPrecision();
-    colData.colMin = (new Double(getMinimum())).doubleValue();
-    colData.colMax = (new Double(getMaximum())).doubleValue();
+    try{
+      Double Dmin = new Double(getMinimum());
+      if (Dmin!=null) {
+        colData.colMin = (Dmin).doubleValue();
+      }
+      Double Dmax = new Double(getMaximum());
+      if (Dmax!=null) {
+        colData.colMax = (new Double(getMaximum())).doubleValue();
+      }
+    } catch (Exception ee) {}  
     colData.colTextDefinition = getTextDefinition();
     colData.colTextPattern = getTextPattern();
     if (numButton.isSelected()) {
