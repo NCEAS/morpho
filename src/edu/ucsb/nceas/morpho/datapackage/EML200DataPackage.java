@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2004-01-26 21:51:20 $'
- * '$Revision: 1.24 $'
+ *     '$Date: 2004-01-26 23:59:55 $'
+ * '$Revision: 1.25 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -62,7 +62,6 @@ public  class EML200DataPackage extends AbstractDataPackage
     Morpho morpho = Morpho.thisStaticInstance;
     String temp = XMLUtilities.getDOMTreeAsString(getMetadataNode(), false);
     StringReader sr = new StringReader(temp);
-    StringReader sr1 = new StringReader(temp);
       if((location.equals(AbstractDataPackage.LOCAL))||
                  (location.equals(AbstractDataPackage.BOTH))) {
         FileSystemDataStore fsds = new FileSystemDataStore(morpho);
@@ -94,7 +93,12 @@ public  class EML200DataPackage extends AbstractDataPackage
           {
             if (!existsFlag) {
               // .1 version does not currently exist on metacat; try to create it
+              String temp_an = getAccessionNumber();
+              setAccessionNumber(temp2+".1");
+              String tempout = XMLUtilities.getDOMTreeAsString(getMetadataNode(), false);
+              StringReader sr1 = new StringReader(tempout);
               mds.newFile(temp2+".1",sr1);
+              setAccessionNumber(temp_an);
             }
             // the basic package now exists,
             if (updateFlag) {
