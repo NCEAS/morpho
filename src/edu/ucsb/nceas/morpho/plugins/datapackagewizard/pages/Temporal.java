@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2004-03-25 19:52:46 $'
- * '$Revision: 1.21 $'
+ *     '$Date: 2004-03-31 19:50:40 $'
+ * '$Revision: 1.22 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -92,9 +92,9 @@ public class Temporal extends AbstractUIPage{
     vbox.add(WidgetFactory.makeDefaultSpacer());
 
     JLabel desc = WidgetFactory.makeHTMLLabel(
-      "<b>Enter information about Temporal Coverage.</b> You can specify "
-      +"temporal coverage, and this can be a single point in time, multiple "
-      +"points in time, or a range of dates.", 3);
+      "<b>Enter information about temporal coverage.</b> Temporsl coverage "
+      +"can be specified as a single point in time, multiple points in time, "
+      +"or a range thereof. ", 3);
     vbox.add(desc);
     vbox.add(WidgetFactory.makeDefaultSpacer());
     vbox.add(WidgetFactory.makeDefaultSpacer());
