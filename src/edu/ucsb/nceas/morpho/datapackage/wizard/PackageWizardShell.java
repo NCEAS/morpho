@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-06-01 17:24:43 $'
- * '$Revision: 1.6 $'
+ *     '$Date: 2001-06-01 21:27:16 $'
+ * '$Revision: 1.7 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,6 +29,7 @@
 package edu.ucsb.nceas.morpho.datapackage.wizard;
 
 import edu.ucsb.nceas.morpho.framework.*;
+import edu.ucsb.nceas.morpho.datapackage.*;
 import javax.swing.*;
 import javax.swing.border.*; 
 import java.io.*;
@@ -37,23 +38,30 @@ import java.lang.*;
 import java.awt.*;
 import java.awt.event.*;
 
+import org.apache.xerces.parsers.DOMParser;
+import org.apache.xalan.xpath.xml.FormatterToXML;
+import org.apache.xalan.xpath.xml.TreeWalker;
+import org.w3c.dom.Attr;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.NodeList;
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
+import org.xml.sax.InputSource;
+
 public class PackageWizardShell extends javax.swing.JFrame
                                 implements ActionListener
 {
   private ClientFramework framework;
-  private PackageWizard visiblePackageWizard;
   private int frameWizardIndex = 0;
-  private int currentFrame = 0;
   private int tempIdCounter = 0;
   private Vector frames;
-  private Vector previousFrames = new Vector();
   private Vector frameWizards = new Vector();
   private Hashtable frameObjects;
-  private boolean getdataFlag = false;
-  private boolean lastFrameFlag = false;
-  private boolean getdataVisibleFlag = false;
-  private boolean previousFlag = false;
   private WizardFrameContainer activeContainer;
+  private TripleCollection triples = new TripleCollection();
+  private String triplesFile;
   
   //visual components
   private Container contentPane;
@@ -67,7 +75,7 @@ public class PackageWizardShell extends javax.swing.JFrame
   private JPanel donePanel = new JPanel();
   private JCheckBox openCheckBox;
   private JButton saveToMetacatButton;
-  private JPanel activeWizardPanel = new JPanel();
+  
   
   public PackageWizardShell()
   {
@@ -126,6 +134,7 @@ public class PackageWizardShell extends javax.swing.JFrame
     //and have it draw itself into the topWizardFrame
     
     frames = pwsp.getFrames();
+    triplesFile = pwsp.getMainFrame();
     System.out.println("frames: " + frames);
     for(int i=0; i<frames.size(); i++)
     {
@@ -293,22 +302,93 @@ public class PackageWizardShell extends javax.swing.JFrame
   private void handleFinishAction()
   { //write out all of the files to their proper homes with proper ids
     //open the new package in the package editor if the check box is true
+    
+    //add the triples and IDs here /////////////////////////////////////////
+    String triplesTag = "/triples";
+    for(int i=0; i<frameWizards.size(); i++)
+    { //create the triplesCollection
+      WizardFrameContainer wfc = (WizardFrameContainer)frameWizards.elementAt(i);
+      if(wfc.attributes.containsKey("relatedTo"))
+      {
+        String relation = (String) wfc.attributes.get("relatedTo");
+        String name = (String) wfc.attributes.get("name");
+        triples.addTriple(new Triple(name, "isRelatedTo", relation));
+      }
+      if(wfc.attributes.containsKey("triplesTag"))
+      {
+        triplesTag = (String)wfc.attributes.get("triplesTag");
+      }
+    }
+    
+    System.out.println("triples: " + triples.toString());
+    
+    
     for(int i=0; i<frameWizards.size(); i++)
     {
       WizardFrameContainer wfc = (WizardFrameContainer)
                                   frameWizards.elementAt(i);
+      String name = (String)wfc.attributes.get("name");
+      
       File f = wfc.getFile(false);
       if(f == null)
       {
         return;
       }
       
+      if(name != null && name.equals(triplesFile))
+      { //put the triples in the triples file.
+        System.out.println("putting triples in triple file: " + name);
+        DOMParser parser = new DOMParser();
+        InputSource in;
+        FileInputStream fs;
+        try
+        {
+          fs = new FileInputStream(f);
+          in = new InputSource(fs);
+        }
+        catch(FileNotFoundException fnf)
+        {
+          fnf.printStackTrace();
+          return;
+        }
+        try
+        {
+          System.out.println("--------------parsing-----------");
+          parser.parse(in);
+          fs.close();
+        }
+        catch(Exception e1)
+        {
+          System.err.println("file: " + f.getPath() + " : parse threw: " + 
+                             e1.toString());
+          //e1.printStackTrace();
+        }
+        Document doc = parser.getDocument();
+        NodeList tripleNodeList = triples.getNodeList();
+        /*try
+        {
+          NodeList nl = XPathAPI.selectNodeList(doc, triplesTag);
+        }
+        catch(SAXException se)
+        {
+          System.err.println("file: " + f.getPath() + " : parse threw: " + 
+                             se.toString());
+        }*/
+        for(int j=0; j<tripleNodeList.getLength(); j++)
+        {
+          doc.importNode(tripleNodeList.item(j), true);
+        }
+        
+      }
+      
       framework.debug(9, "saving file: " + wfc.id);
     }
+    
     
     if(openCheckBox.isSelected())
     {
       //open the package in the package editor
+      System.out.println("opening the package in the package editor");
     }
     
     this.hide();

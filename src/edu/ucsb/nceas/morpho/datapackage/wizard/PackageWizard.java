@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-05-30 22:32:50 $'
- * '$Revision: 1.21 $'
+ *     '$Date: 2001-06-01 21:27:16 $'
+ * '$Revision: 1.22 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -857,6 +857,16 @@ public class PackageWizard extends javax.swing.JFrame
             String size = (String)tempElement.attributes.get("size");
             tempPanel.setPreferredSize(parseSize(size));
           }
+          
+          if(tempElement.attributes.containsKey("visible"))
+          {
+            String visible = (String)tempElement.attributes.get("visible");
+            if(visible.equals("no"))
+            {
+              tempPanel.setVisible(false);
+            }
+          }
+          
           //tempPanel.setLayout(new /*GridLayout(0,1)*/FlowLayout());
           BoxLayout box = new BoxLayout(tempPanel, BoxLayout.Y_AXIS);
           //if you want to change the layout of the tabbed pane change it here
@@ -949,8 +959,20 @@ public class PackageWizard extends javax.swing.JFrame
             parentPanel.children.insertElementAt(tempPanel, prevIndex.intValue()+1);
           }
           
-          parentPanel.add(new JScrollPane(tempPanel));
-          //add the panel in a scroll pane in case it's too big.
+          if(tempElement.attributes.containsKey("visible"))
+          {
+            String visible = (String)tempElement.attributes.get("visible");
+            if(visible.equals("no"))
+            {
+              tempPanel.setVisible(false);
+              parentPanel.add(tempPanel);
+            }
+          }
+          else
+          {
+            parentPanel.add(new JScrollPane(tempPanel));
+            //add the panel in a scroll pane in case it's too big.
+          }
         }
       }
       else if(tempElement.name.equals("textbox"))
@@ -1090,6 +1112,16 @@ public class PackageWizard extends javax.swing.JFrame
           //parentPanel.add(label);
           layoutpanel.add(label);
         }
+        
+        if(tempElement.attributes.containsKey("visible"))
+        {
+          String visible = (String)tempElement.attributes.get("visible");
+          if(visible.equals("no"))
+          {
+            layoutpanel.setVisible(false);
+          }
+        }
+       
         textfield.setText(defaultText);
         //parentPanel.add(textfield);
         layoutpanel.add(textfield);

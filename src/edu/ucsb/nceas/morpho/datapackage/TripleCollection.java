@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-05-07 17:36:28 $'
- * '$Revision: 1.3 $'
+ *     '$Date: 2001-06-01 21:27:16 $'
+ * '$Revision: 1.4 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,6 +25,18 @@
  */
 
 package edu.ucsb.nceas.morpho.datapackage;
+
+import org.apache.xerces.parsers.DOMParser;
+import org.apache.xalan.xpath.xml.FormatterToXML;
+import org.apache.xalan.xpath.xml.TreeWalker;
+import org.w3c.dom.Attr;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.NodeList;
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
+import org.xml.sax.InputSource;
 
 import java.util.*;
 import java.io.*;
@@ -186,6 +198,26 @@ public class TripleCollection
       sb.append(((Triple)triples.elementAt(i)).toXML());
     }
     return sb.toString();
+  }
+  
+  public NodeList getNodeList()
+  {
+    DOMParser parser = new DOMParser();
+    InputSource in;
+
+    in = new InputSource(new StringReader(toXML()));
+    try
+    {
+      parser.parse(in);
+    }
+    catch(Exception e1)
+    {
+      System.err.println("triples: parse threw: " + 
+                         e1.toString());
+      //e1.printStackTrace();
+    }
+    Document doc = parser.getDocument();
+    return doc.getElementsByTagName("triple");
   }
   
   /**

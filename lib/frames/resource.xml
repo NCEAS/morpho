@@ -1,19 +1,19 @@
 <?xml version="1.0"?>
-<wizard size="590x430" dtd="eml-resource.dtd" doctype="-//NCEAS//eml-resource2.0//EN">
+<wizard size="590x430" dtd="/home/berkley/mdstandards/eml/eml-dataset.dtd" doctype="-//NCEAS//eml-resource2.0//EN">
   <group label="Base Information" field="dataset" type="panel">
     <group size="480x100" layout="flow">
       <textbox label="Identifier" field="identifier" size="10" allowNull="no" editable="no" defaulttext="knb.1" />
       <textbox label="Short Name" field="shortName" size="10" />
-      <textbox label="Title" field="title" size="10" allowNull="no"/>
+      <textbox label="Title" field="title" size="10" allowNull="no" defaulttext="test title" />
     </group>
     
     <group label="Originator Information" type="panel" size="500x400">
-      <group label="Originator" repeatable="yes" size="400x400" field="originator">
+      <group label="Originator" repeatable="yes" size="400x400" field="originator" allowNull="no">
         <group>
-        <group label="Idenfication Information" repeatable="yes" allowNull="no" > 
+        <group label="Identification Information" repeatable="yes" allowNull="no" > 
           <textbox label="Salutation" field="individualName/salutation" size="5" repeatable="yes"/>
           <textbox label="Given Name" field="individualName/givenName" size="10" repeatable="yes"/>
-          <textbox label="Sur Name" field="individualName/surName" size="10" allowNull="no"/>
+          <textbox label="Sur Name" field="individualName/surName" size="10" allowNull="no" defaulttext="berkley"/>
           
           <textbox label="Organization" field="organizationName" size="10" repeatable="yes"/>
           <textbox label="Position" field="positionName" size="10" />
@@ -49,6 +49,10 @@
           <item value="editor"/>
         </combobox>
       </group>
+    </group>
+    
+    <group field="triples" visible="no">
+      <textbox field="triple"/>
     </group>
   </group>
 </wizard>

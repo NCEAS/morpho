@@ -10,8 +10,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-05-29 17:30:01 $'
- * '$Revision: 1.3 $'
+ *     '$Date: 2001-06-01 21:27:16 $'
+ * '$Revision: 1.4 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -40,11 +40,11 @@
                 type  (panel | pathgrouping) "pathgrouping" 
                 <!--a panel group will create a new tab in the tabbed pane,
                     a pathgrouping panel simply adds a new path to the nesting-->
-                repeatable (yes | no) "no" <!--makes this panel repeatable-->
-                layout     (flow | box) "box"> <!--chooses the layout manager
+                repeatable (yes  | no)  "no" <!--makes this panel repeatable-->
+                layout     (flow | box) "box" <!--chooses the layout manager
                                                    for the contents of this 
                                                    panel. -->
-
+                visible    (yes  | no)  "yes"> <!--make this group's panel invisible-->
 <!ELEMENT textbox>
 <!ATTLIST textbox label       (#PCDATA) <!--the label for the text box-->
                   field       (#PCDATA) <!--the field that the text box defines-->
@@ -56,9 +56,10 @@
                                                    edit the content of this 
                                                    textbox-->
                   repeatable  (yes | no) "no" <!--is this text box repeatable?-->
-                  allowNull   (yes | no) "yes"> <!--can this text box be left 
+                  allowNull   (yes | no) "yes" <!--can this text box be left 
                                                     with empty content-->
-
+                  visible     (yes | no) "yes"> <!--make this text box invisible--> 
+                  
 <!ELEMENT combobox (item+)>
 <!ATTLIST combobox label       (#PCDATA)  <!--same as textbox fields-->
                    field       (#PCDATA)
