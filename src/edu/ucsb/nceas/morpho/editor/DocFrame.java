@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-12-17 19:15:33 $'
- * '$Revision: 1.73 $'
+ *     '$Date: 2001-12-26 19:57:08 $'
+ * '$Revision: 1.74 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1176,17 +1176,44 @@ class SymTreeSelection implements javax.swing.event.TreeSelectionListener
             parentNode = (DefaultMutableTreeNode)parentNode.getParent();
             if (parentNode!=null) {
 	            if ((card.equals("ZERO to MANY"))||(card.equals("OPTIONAL"))||(card.equals("NOT SELECTED")) ) {
-	              NodeInfo nip = (NodeInfo)parentNode.getUserObject();
+	              if (!hasNonEmptyTextLeaves(tempNode)) {
 	                parentNode.remove(tempNode);
 	                parentNode = null;
+	              }
 	            }
-	        }
-	      }  // end while
+	          }
+	        }  // end while
         }
       }
     }
  }
 	
+// returns true if this node has any descendents with non-empty text leaves
+boolean hasNonEmptyTextLeaves(DefaultMutableTreeNode node) {
+  boolean res = false;
+  DefaultMutableTreeNode parentNode = null;
+  DefaultMutableTreeNode curNode = node.getFirstLeaf();
+  Vector leafs = new Vector();
+  leafs.addElement(curNode);
+  while (curNode!=null) {
+    curNode = curNode.getNextLeaf();
+    if (curNode!=null) {
+      leafs.addElement(curNode);
+    }
+  }
+  Enumeration enum = leafs.elements();
+  while (enum.hasMoreElements()) {
+    curNode = (DefaultMutableTreeNode)enum.nextElement();
+    NodeInfo ni = (NodeInfo)curNode.getUserObject();
+    if (ni.name.equals("#PCDATA")) {         // is a text node
+      String pcdata = ni.getPCValue();
+      if (pcdata.trim().length()>0) {        // has text data
+        return true;
+      }
+    }
+  }
+  return res;
+}
 
 void expandTreeToLevel(JTree jt, int level) {
     DefaultMutableTreeNode childNode;
