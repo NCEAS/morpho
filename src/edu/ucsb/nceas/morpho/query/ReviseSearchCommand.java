@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2002-08-22 00:09:48 $'
- * '$Revision: 1.1 $'
+ *     '$Date: 2002-08-22 22:59:30 $'
+ * '$Revision: 1.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -84,7 +84,7 @@ public class ReviseSearchCommand implements Command
       // Get  result set of the result panel
       ResultSet results = resultPane.getResultSet();
       // Save the original identifier
-      String identifier = results.getQuery().getIdentifier();
+      String identifier = results.getQuery().getQueryTitle();
 
       // QueryDialog Create and show as modal
       QueryDialog queryDialog1 = null;
@@ -96,6 +96,7 @@ public class ReviseSearchCommand implements Command
       if (queryDialog1.isSearchStarted()) 
       {
         Query query = queryDialog1.getQuery();
+        String currentIdentifier = query.getQueryTitle();
         if (query != null) 
         {
           //query.setIdentifier(identifier);
@@ -108,13 +109,13 @@ public class ReviseSearchCommand implements Command
           
           // If the user change the identifier of the query
           // we need change the title of the frame and update window menu
-          String currentIdentifier = query.getIdentifier();
-          if ( currentIdentifier != null && currentIdentifier.equals("") 
-                           && !currentIdentifier.equals(identifier))
+          if ( currentIdentifier != null && !currentIdentifier.equals("") 
+                          && !currentIdentifier.equals(identifier))
           {
-            // Change the title of the frame
-            morphoFrame.setTitle(currentIdentifier);
-            // Update the windows menu
+            
+            // Change the title of the frame and update the windows menu
+            UIController.getInstance().
+                          updateWindow(morphoFrame, currentIdentifier);
           }
           morphoFrame.setBusy(false);
         }
