@@ -203,10 +203,10 @@
   <org_tag>o</org_tag>
   <ldapbase>dc=ecoinformatics,dc=org</ldapbase>
   <lookAndFeel></lookAndFeel>
-  <stylesheetLocation>style</stylesheetLocation>
+  <stylesheetLocation>style/eml200</stylesheetLocation>
   <genericStylesheet>style/generic.xsl</genericStylesheet>
   <doctype_xslt_mappings>
-      <doctype>"eml://ecoinformatics.org/eml-2.0.0"</doctype>
+      <doctype>eml://ecoinformatics.org/eml-2.0.0</doctype>
       <xslt>style/eml200/eml-2.0.0.xsl</xslt>
       <doctype>-//ecoinformatics.org//eml-access-2.0.0beta6//EN</doctype>
       <xslt>style/eml-access-2.0.0beta6.xsl</xslt>
