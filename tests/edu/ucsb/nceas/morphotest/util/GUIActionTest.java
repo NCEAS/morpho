@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: jones $'
- *     '$Date: 2002-09-02 20:49:47 $'
- * '$Revision: 1.1 $'
+ *   '$Author: brooke $'
+ *     '$Date: 2002-09-26 21:44:39 $'
+ * '$Revision: 1.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -44,6 +44,8 @@ import junit.framework.TestSuite;
 
 import java.io.File;
 import java.io.IOException;
+
+import java.awt.event.ActionEvent;
 
 /**
  * A JUnit test for testing the GUIAction menu and toolbar system
@@ -114,14 +116,14 @@ public class GUIActionTest extends TestCase
         assertTrue(monitor != null);
 
         Command command1 = new Command() {
-            public void execute() {
-                Log.debug(20, "Test command executed.");
+            public void execute(ActionEvent e) {
+                Log.debug(20, "Test command executed. ActionEvent = "+e);
             }
         };
 
         GUIAction action = new GUIAction("Test", null, command1);
-        action.setEnabledOnStateChange(state1, false);
-        action.setEnabledOnStateChange(state2, true);
+        action.setEnabledOnStateChange(state1, false, false);
+        action.setEnabledOnStateChange(state2, true, false);
 
         // Post the first state change and test if the enabled state changed
         monitor.notifyStateChange(event1);
@@ -141,22 +143,22 @@ public class GUIActionTest extends TestCase
         assertTrue(monitor != null);
 
         Command command1 = new Command() {
-            public void execute() {
-                Log.debug(9, "Command 1 executed.");
+            public void execute(ActionEvent e) {
+                Log.debug(9, "Command 1 executed. ActionEvent = "+e);
             }
         };
         assertTrue(command1 != null);
 
         Command command2 = new Command() {
-            public void execute() {
-                Log.debug(9, "Command 2 executed.");
+            public void execute(ActionEvent e) {
+                Log.debug(9, "Command 2 executed. ActionEvent = "+e);
             }
         };
         assertTrue(command2 != null);
 
         GUIAction action = new GUIAction("Test", null, command2);
-        action.setCommandOnStateChange(state1, command1);
-        action.setCommandOnStateChange(state2, command2);
+        action.setCommandOnStateChange(state1, command1, false);
+        action.setCommandOnStateChange(state2, command2, false);
 
         // Post the first state change and test if the command changed
         monitor.notifyStateChange(event1);
@@ -191,30 +193,30 @@ public class GUIActionTest extends TestCase
         assertTrue(monitor != null);
 
         Command command1 = new Command() {
-            public void execute() {
-                Log.debug(9, "Command 1 executed.");
+            public void execute(ActionEvent e) {
+                Log.debug(9, "Command 1 executed. ActionEvent = "+e);
             }
         };
         assertTrue(command1 != null);
 
         Command command2 = new Command() {
-            public void execute() {
-                Log.debug(9, "Command 2 executed.");
+            public void execute(ActionEvent e) {
+                Log.debug(9, "Command 2 executed. ActionEvent = "+e);
             }
         };
         assertTrue(command2 != null);
 
         GUIAction action = new GUIAction("Test", null, command2);
-        action.setCommandOnStateChange(state1, command1);
-        action.setCommandOnStateChange(state2, command2);
-        action.setEnabledOnStateChange(state1, false);
-        action.setEnabledOnStateChange(state2, true);
+        action.setCommandOnStateChange(state1, command1, false);
+        action.setCommandOnStateChange(state2, command2, false);
+        action.setEnabledOnStateChange(state1, false, false);
+        action.setEnabledOnStateChange(state2, true, false);
 
         GUIAction[] toolbarActions = new GUIAction[1];
         toolbarActions[0] = action;
         UIController controller = UIController.initialize(morpho);
-        controller.addToolbarActions(toolbarActions);
-        controller.addMenu("Window", new Integer(5));
+//        controller.addToolbarActions(toolbarActions);
+//        controller.addMenu("Window", new Integer(5));
         MorphoFrame test = controller.addWindow("Test Window");
         test.setVisible(true);
 

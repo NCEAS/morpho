@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2002-09-26 21:09:56 $'
- * '$Revision: 1.18 $'
+ *     '$Date: 2002-09-26 21:44:39 $'
+ * '$Revision: 1.19 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -314,8 +314,16 @@ public class UIController
         }
     }
     
+    /**
+     * return the MorphoFrame that contains the GUIAction provided
+     *
+     * @param action      the GUIAction for which the parent MorphoFrame will be 
+     *                    returned
+     * @return            the MorphoFrame which is the parent of this GUIAction
+     */
     public static MorphoFrame getMorphoFrameContainingGUIAction(GUIAction action) 
     {
+        if (action==null || actionCloneWindowAssociation==null) return null;
         return (MorphoFrame)actionCloneWindowAssociation.get(action);
     }
 

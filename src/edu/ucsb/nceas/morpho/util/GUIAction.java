@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2002-09-26 21:11:11 $'
- * '$Revision: 1.13 $'
+ *     '$Date: 2002-09-26 21:44:39 $'
+ * '$Revision: 1.14 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,6 +33,7 @@ import edu.ucsb.nceas.morpho.framework.MorphoFrame;
 import javax.swing.Icon;
 import javax.swing.AbstractAction;
 import java.awt.Component;
+import java.awt.MenuComponent;
 import java.awt.event.ActionEvent;
 import java.util.Enumeration;
 import java.util.Hashtable;
@@ -391,8 +392,26 @@ public class GUIAction extends AbstractAction implements StateChangeListener
     //returns true if event originated in same MorphoFrame as this GUIAction
     private boolean isLocalEvent(StateChangeEvent event) 
     {
-        return ( getMorphoFrameAncestor((Component)event.getSource()) 
-                            == UIController.getMorphoFrameContainingGUIAction(this) );
+        Object source = event.getSource();
+        
+        if (source==null) {
+            Log.debug(50, "GUIAction.isLocalEvent: got event with NULL source");
+            return false;
+        }
+        
+        MorphoFrame eventAncestor = null;
+        
+        if (source instanceof Component) {
+            eventAncestor = getMorphoFrameAncestor((Component)source);
+            
+        } else if (source instanceof MenuComponent) {
+            
+            eventAncestor = getMorphoFrameAncestor(
+                        (Component)( ( (MenuComponent)source ).getParent()) );
+        }           
+        MorphoFrame thisAncestor
+                        = UIController.getMorphoFrameContainingGUIAction(this);
+        return ( eventAncestor==thisAncestor );
     }
 
     /**
