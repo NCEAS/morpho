@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: sgarg $'
- *     '$Date: 2003-12-22 18:03:53 $'
- * '$Revision: 1.7 $'
+ *     '$Date: 2003-12-23 19:07:20 $'
+ * '$Revision: 1.8 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -337,10 +337,6 @@ public class Project extends AbstractWizardPage {
         returnMap.put(xPathRoot + "title", titleField.getText().trim());
       }
 
-      if ( !(fundingField.getText().trim().equals("")) ) {
-        returnMap.put(xPathRoot + "funding/patra", fundingField.getText().trim());
-      }
-
       int index = 1;
       Object  nextRowObj      = null;
       List    nextRowList     = null;
@@ -369,6 +365,9 @@ public class Project extends AbstractWizardPage {
         returnMap.putAll(nextNVPMap);
       }
 
+      if ( !(fundingField.getText().trim().equals("")) ) {
+        returnMap.put(xPathRoot + "funding/para", fundingField.getText().trim());
+      }
     }
     return returnMap;
   }

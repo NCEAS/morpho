@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: sgarg $'
- *     '$Date: 2003-12-22 18:03:53 $'
- * '$Revision: 1.4 $'
+ *     '$Date: 2003-12-23 19:07:19 $'
+ * '$Revision: 1.5 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -169,7 +169,8 @@ public class Access extends AbstractWizardPage {
     returnMap.clear();
 
     if(publicReadAccess){
-/*    returnMap.put(xPathRoot + "../@order", "denyFirst"); */
+      returnMap.put(xPathRoot + "@authSystem", "knb");
+      returnMap.put(xPathRoot + "@order", "denyFirst");
       returnMap.put(xPathRoot + "allow[1]/principal", "public");
       returnMap.put(xPathRoot + "allow[1]/permission", "read");
     }

@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: sgarg $'
- *     '$Date: 2003-12-22 18:03:53 $'
- * '$Revision: 1.28 $'
+ *     '$Date: 2003-12-23 19:07:19 $'
+ * '$Revision: 1.29 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -386,6 +386,16 @@ public class WizardContainerFrame extends JFrame {
                                       XMLUtilities.normalize(titleObj));
     }
 
+//CREATOR:
+    if (PARTY_CREATOR>=0)       {
+      addPageDataToResultsMap((WizardPage)(pagesList.get(PARTY_CREATOR)),wizData);
+    }
+
+//ASSOCIATED PARTY:
+    if (PARTY_ASSOCIATED>=0)    {
+      addPageDataToResultsMap((WizardPage)(pagesList.get(PARTY_ASSOCIATED)),wizData);
+    }
+
 //ABSTRACT:
     if (generalMap!=null)       {
 
@@ -400,14 +410,9 @@ public class WizardContainerFrame extends JFrame {
       addPageDataToResultsMap((WizardPage)(pagesList.get(KEYWORDS)),wizData);
     }
 
-//CREATOR:
-    if (PARTY_CREATOR>=0)       {
-      addPageDataToResultsMap((WizardPage)(pagesList.get(PARTY_CREATOR)),wizData);
-    }
-
-//ASSOCIATED PARTY:
-    if (PARTY_ASSOCIATED>=0)    {
-      addPageDataToResultsMap((WizardPage)(pagesList.get(PARTY_ASSOCIATED)),wizData);
+//INTELLECTUAL RIGHTS:
+    if (USAGE_RIGHTS>=0)        {
+      addPageDataToResultsMap((WizardPage)(pagesList.get(USAGE_RIGHTS)),wizData);
     }
 
 //CONTACT:
@@ -418,11 +423,6 @@ public class WizardContainerFrame extends JFrame {
 //PROJECT:
     if (PROJECT>=0)        {
       addPageDataToResultsMap((WizardPage)(pagesList.get(PROJECT)),wizData);
-    }
-
-//INTELLECTUAL RIGHTS:
-    if (USAGE_RIGHTS>=0)        {
-      addPageDataToResultsMap((WizardPage)(pagesList.get(USAGE_RIGHTS)),wizData);
     }
 
 //ACCESS:
