@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: sgarg $'
- *     '$Date: 2004-03-04 03:51:46 $'
- * '$Revision: 1.10 $'
+ *     '$Date: 2004-03-17 19:37:47 $'
+ * '$Revision: 1.11 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -50,8 +50,8 @@ public class General extends AbstractWizardPage{
 
   private final String pageID     = DataPackageWizardInterface.GENERAL;
   private final String nextPageID = DataPackageWizardInterface.KEYWORDS;
-  private final String title      = "General Data Package Information";
-  private final String subtitle   = "Title and Abstract";
+  private final String title      = "Title and Abstract";
+  private final String subtitle   = "";
   public final String pageNumber  = "2";
 
   // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *

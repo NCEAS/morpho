@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: sgarg $'
- *     '$Date: 2003-12-30 17:08:47 $'
- * '$Revision: 1.14 $'
+ *     '$Date: 2004-03-17 19:37:47 $'
+ * '$Revision: 1.15 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -63,24 +63,32 @@ public class Introduction extends AbstractWizardPage {
 
     JLabel desc = WidgetFactory.makeHTMLLabel(
     "<p>If you do not have a basic understanding of metadata and "
-    +"related concepts you should start by reading the <a>Ecological Metadata "
+    +"related concepts, you should start by reading the <a>Ecological Metadata "
     +"Language (EML) Guide</a>. It provides background information on metadata "
-    +"and contains metadata creation examples. This wizard creates a <i>Data "
+    +"and contains metadata creation examples.</p><p>This wizard creates a <i>Data "
     +"Package</i> that consists of the metadata that describes your data and the "
     +"data itself. The wizard uses a subset of EML to describe your data. If "
     +"additional metadata are needed to adequately document your data, use "
     +"<i>Morpho's EML Editor</i>. Before beginning you should have your data "
-    +"(electronic or hardcopy format), and the following types of metadata "
-    +"information in front of you: </p><br></br>"
-    +"<li><b>Title and abstract</b><br></br> <br></br></li>"
-    +"<li><b>Keywords</b> <br></br> <br></br></li>"
-    +"<li><b>People and Organizations</b><br></br> <br></br></li>"
-    +"<li><b>Project Information</b><br></br> <br></br></li>"
-    +"<li><b>Data Usage Rights</b><br></br> <br></br></li></ul>", 20);
+    +"(electronic or hardcopy format). You can provide following types of "
+    +"information using this wizard: </p>"
+    +"<li><b>Title and abstract</b><br></br></li>"
+    +"<li><b>Keywords</b><br></br></li>"
+    +"<li><b>People and Organizations</b><br></br></li>"
+    +"<li><b>Data Usage Rights</b><br></br></li>"
+    +"<li><b>Project Information</b><br></br></li>"
+    +"<li><b>Coverage Details</b><br></br></li>"
+    +"<li><b>Methods</b><br></br></li>"
+    +"<li><b>Access Control</b><br></br></li></ul>"
+    +"<p><b>Note:</b> You will be required to provide title of your data "
+    +"package and information about people and organizations related to your "
+    +"data package. Rest of the information is optional but helps in adequately "
+    +"documenting your data package.</p>", 22);
 
     this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
     this.add(desc);
   }
+
 
 
   /**
