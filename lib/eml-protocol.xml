@@ -10,6 +10,11 @@ help="eml-protocol is a set of fields that contains method, processing, and qual
   <protocol>
     <method
     help="The method field allows for repeated paragraphs of text that describe the methodology for a project, experiment, or particular data table. Likewise, a literature citation may be provided that describes the methodology that was employed.">
+          
+          <paragraph 
+          help="This field is intended for text that gives a brief overview of the method."
+           editor="edu.ucsb.nceas.morpho.editor.TextAreaPanel">
+          </paragraph>
 
       <citation
       help="The literature element contains general information about a literature resource that is being documented, or a piece of literature that is being cited in support of a given resource, such as a dataset. It contains subelements that are specific to a literature resource such as a book, a journal article, a thesis, etc. It extends the generic resource elements with literature specific fields.">
@@ -129,7 +134,7 @@ help="eml-protocol is a set of fields that contains method, processing, and qual
         <abstract
         help="This field provides a container for one or more paragraph fields that give a brief overview of the resource that is being documented.">
 
-          <paragraph
+          <paragraph 
           help="This field is intended for the text of an abstract that gives a brief overview of the resource. There may be one or more paragraphs within the abstract."
            editor="edu.ucsb.nceas.morpho.editor.TextAreaPanel">
           </paragraph>
@@ -612,6 +617,11 @@ help="eml-protocol is a set of fields that contains method, processing, and qual
 
     <processingStep
     help="Step defines the quality control or quality assurance procedures that were applied to the corresponding data file. For example, a shell-script that 'greps' for an alpha-character within a datafile that is supposed to contain only numeric characters">
+
+          <paragraph 
+          help="This field is intended to give a brief overview of the processing step."
+           editor="edu.ucsb.nceas.morpho.editor.TextAreaPanel">
+          </paragraph>
 
       <citation
       help="The literature element contains general information about a literature resource that is being documented, or a piece of literature that is being cited in support of a given resource, such as a dataset. It contains subelements that are specific to a literature resource such as a book, a journal article, a thesis, etc. It extends the generic resource elements with literature specific fields.">
