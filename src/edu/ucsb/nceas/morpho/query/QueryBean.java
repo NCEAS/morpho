@@ -5,7 +5,7 @@
  *              National Center for Ecological Analysis and Synthesis
  *     Authors: Dan Higgins
  *
- *     Version: '$Id: QueryBean.java,v 1.12 2000-08-23 17:31:50 higgins Exp $'
+ *     Version: '$Id: QueryBean.java,v 1.13 2000-08-25 23:36:48 higgins Exp $'
  */
 
 package edu.ucsb.nceas.querybean;
@@ -49,14 +49,15 @@ import org.apache.xalan.xslt.XSLTInputSource;
 import org.apache.xalan.xslt.XSLTResultTarget;
 import org.apache.xalan.xslt.XSLTProcessor;
 import org.apache.xalan.xpath.xml.*;
-import edu.ucsb.nceas.querybean.DataGuideBean;
+//import edu.ucsb.nceas.querybean.DataGuideBean;
 
 //public class QueryBean extends java.awt.Container 
 public class QueryBean extends AbstractQueryBean 
 {
     String userName = "anonymous";
     String passWord = "none";
-    boolean localonly = false;
+    boolean searchlocal = true;
+    boolean searchnetwork = true;
     String 	xmlcatalogfile = null;
     String MetaCatServletURL = null;
     PropertyResourceBundle options;
@@ -111,11 +112,18 @@ public class QueryBean extends AbstractQueryBean
 		SearchButton.setActionCommand("Search");
 		QueryControls.add(SearchButton);
 		SearchButton.setBounds(0,0,75,25);
-		LocalCheckBox.setText("Local Only?");
-		LocalCheckBox.setActionCommand("Local Only?");
+		LocalCheckBox.setSelected(true);
+		LocalCheckBox.setText("Search Local");
+		LocalCheckBox.setActionCommand("Search Local");
 		QueryControls.add(LocalCheckBox);
 		LocalCheckBox.setFont(new Font("Dialog", Font.PLAIN, 12));
 		LocalCheckBox.setBounds(0,0,21,40);
+		NetworkCheckBox.setSelected(true);
+		NetworkCheckBox.setText("Search Network");
+		NetworkCheckBox.setActionCommand("Search Network");
+		QueryControls.add(NetworkCheckBox);
+		NetworkCheckBox.setFont(new Font("Dialog", Font.PLAIN, 12));
+		NetworkCheckBox.setBounds(0,0,21,40);
 		{
 			String[] tempString = new String[8];
 			tempString[0] = "eml-access";
@@ -357,11 +365,18 @@ public class QueryBean extends AbstractQueryBean
 		SearchButton1.setActionCommand("Search");
 		QueryControls1.add(SearchButton1);
 		SearchButton1.setBounds(0,0,75,25);
-		LocalCheckBox1.setText("Local Only?");
-		LocalCheckBox1.setActionCommand("Local Only?");
+		LocalCheckBox1.setSelected(true);
+		LocalCheckBox1.setText("Search Local");
+		LocalCheckBox1.setActionCommand("Search Local");
 		QueryControls1.add(LocalCheckBox1);
 		LocalCheckBox1.setFont(new Font("Dialog", Font.PLAIN, 12));
 		LocalCheckBox1.setBounds(0,0,21,40);
+		NetworkCheckBox1.setSelected(true);
+		NetworkCheckBox1.setText("Search Network");
+		NetworkCheckBox1.setActionCommand("Search Network");
+		QueryControls1.add(NetworkCheckBox1);
+		NetworkCheckBox1.setFont(new Font("Dialog", Font.PLAIN, 12));
+		NetworkCheckBox1.setBounds(0,0,21,40);
 		QueryChoicesPanel11.setLayout(new BorderLayout(0,0));
 		RefineQueryPanel1.add(BorderLayout.CENTER, QueryChoicesPanel11);
 		QueryChoicesPanel11.setBounds(96,0,545,257);
@@ -599,14 +614,32 @@ public class QueryBean extends AbstractQueryBean
 		QueryChoiceTabs.add(JPanel11);
 		JPanel11.setBounds(2,27,724,462);
 		JPanel11.setVisible(false);
-		JPanel12.setLayout(new FlowLayout(FlowLayout.CENTER,5,5));
+		UnderConstruction.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+		UnderConstruction.setText("Under Construction!!!");
+		JPanel11.add(UnderConstruction);
+		UnderConstruction.setForeground(java.awt.Color.red);
+		UnderConstruction.setFont(new Font("Dialog", Font.BOLD, 20));
+		UnderConstruction.setBounds(0,0,20,40);
+		JPanel12.setLayout(new BorderLayout(0,0));
 		QueryChoiceTabs.add(JPanel12);
 		JPanel12.setBounds(2,27,724,462);
 		JPanel12.setVisible(false);
-		JPanel1.setLayout(new FlowLayout(FlowLayout.CENTER,5,5));
+		UnderConstruction1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+		UnderConstruction1.setText("Under Construction!!!");
+		JPanel12.add(BorderLayout.CENTER,UnderConstruction1);
+		UnderConstruction1.setForeground(java.awt.Color.red);
+		UnderConstruction1.setFont(new Font("Dialog", Font.BOLD, 20));
+		UnderConstruction1.setBounds(0,0,20,40);
+		JPanel1.setLayout(new BorderLayout(0,0));
 		QueryChoiceTabs.add(JPanel1);
 		JPanel1.setBounds(0,0,20,40);
 		JPanel1.setVisible(false);
+		UnderConstruction2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+		UnderConstruction2.setText("Under Construction!!!");
+		JPanel1.add(BorderLayout.CENTER,UnderConstruction2);
+		UnderConstruction2.setForeground(java.awt.Color.red);
+		UnderConstruction2.setFont(new Font("Dialog", Font.BOLD, 20));
+		UnderConstruction2.setBounds(0,0,20,40);
 		QueryChoiceTabs.setSelectedComponent(ThematicPanel);
 		QueryChoiceTabs.setSelectedIndex(0);
 		QueryChoiceTabs.setTitleAt(0,"Thematic");
@@ -638,6 +671,9 @@ public class QueryBean extends AbstractQueryBean
 		SearchButton1.addActionListener(lSymAction);
 		LocalCheckBox.addItemListener(lSymItem);
 		LocalCheckBox1.addItemListener(lSymItem);
+		DetachCheckBox1.addItemListener(lSymItem);
+		NetworkCheckBox.addItemListener(lSymItem);
+		NetworkCheckBox1.addItemListener(lSymItem);
 		//}}
 		invalidate();
 		setVisible(true);
@@ -645,11 +681,34 @@ public class QueryBean extends AbstractQueryBean
       options = (PropertyResourceBundle)PropertyResourceBundle.getBundle("client");
       xmlcatalogfile = (String)options.handleGetObject("xmlcatalogfile");
       MetaCatServletURL = (String)options.handleGetObject("MetaCatServletURL");
+      String searchlocalstring = (String)options.handleGetObject("searchlocal");
+      if (searchlocalstring.equalsIgnoreCase("true")) {
+        searchlocal = true;
+        LocalCheckBox.setSelected(true);
+        LocalCheckBox1.setSelected(true);
+      }
+      if (searchlocalstring.equalsIgnoreCase("false")) {
+        searchlocal = false; 
+        LocalCheckBox.setSelected(false);
+        LocalCheckBox1.setSelected(false);
+      }
+      String searchnetworkstring = (String)options.handleGetObject("searchnetwork");
+      if (searchnetworkstring.equalsIgnoreCase("true")) {
+        searchnetwork = true; 
+        NetworkCheckBox.setSelected(true);
+        NetworkCheckBox1.setSelected(true);
+      }
+      if (searchnetworkstring.equalsIgnoreCase("false")) {
+        searchnetwork = false; 
+        NetworkCheckBox.setSelected(false);
+        NetworkCheckBox1.setSelected(false);
+      }
+      
     }
     catch (Exception e) {System.out.println("Could not locate properties file!");}
 		
 	}
-
+    DataGuideBean dataGuideBean1 = new DataGuideBean(this);
 	//{{DECLARE_CONTROLS
 	javax.swing.JPanel TopQueryPanel = new javax.swing.JPanel();
 	javax.swing.JTabbedPane QueryChoiceTabs = new javax.swing.JTabbedPane();
@@ -659,6 +718,7 @@ public class QueryBean extends AbstractQueryBean
 	javax.swing.JPanel QueryControls = new javax.swing.JPanel();
 	javax.swing.JButton SearchButton = new javax.swing.JButton();
 	javax.swing.JCheckBox LocalCheckBox = new javax.swing.JCheckBox();
+	javax.swing.JCheckBox NetworkCheckBox = new javax.swing.JCheckBox();
 	javax.swing.JPanel QueryChoicesPanel1 = new javax.swing.JPanel();
 	javax.swing.JPanel ChoicesPanel2 = new javax.swing.JPanel();
 	javax.swing.JPanel TextChoices11 = new javax.swing.JPanel();
@@ -692,6 +752,7 @@ public class QueryBean extends AbstractQueryBean
 	javax.swing.JPanel QueryControls1 = new javax.swing.JPanel();
 	javax.swing.JButton SearchButton1 = new javax.swing.JButton();
 	javax.swing.JCheckBox LocalCheckBox1 = new javax.swing.JCheckBox();
+	javax.swing.JCheckBox NetworkCheckBox1 = new javax.swing.JCheckBox();
 	javax.swing.JPanel QueryChoicesPanel11 = new javax.swing.JPanel();
 	javax.swing.JScrollPane ChoicesScrollPane1 = new javax.swing.JScrollPane();
 	javax.swing.JPanel JPanel7 = new javax.swing.JPanel();
@@ -737,7 +798,6 @@ public class QueryBean extends AbstractQueryBean
 	javax.swing.JScrollPane RSScrollPane1 = new javax.swing.JScrollPane();
 	javax.swing.JPanel DocumentTypePanel = new javax.swing.JPanel();
 	javax.swing.JPanel Query2 = new javax.swing.JPanel();
-	edu.ucsb.nceas.querybean.DataGuideBean dataGuideBean1 = new edu.ucsb.nceas.querybean.DataGuideBean(this);
 	javax.swing.JPanel RS_Panel2 = new javax.swing.JPanel();
 	javax.swing.JPanel JPanel34 = new javax.swing.JPanel();
 	javax.swing.JPanel JPanel35 = new javax.swing.JPanel();
@@ -750,8 +810,11 @@ public class QueryBean extends AbstractQueryBean
 	javax.swing.JCheckBox JCheckBox13 = new javax.swing.JCheckBox();
 	javax.swing.JScrollPane RSScrollPane2 = new javax.swing.JScrollPane();
 	javax.swing.JPanel JPanel11 = new javax.swing.JPanel();
+	javax.swing.JLabel UnderConstruction = new javax.swing.JLabel();
 	javax.swing.JPanel JPanel12 = new javax.swing.JPanel();
+	javax.swing.JLabel UnderConstruction1 = new javax.swing.JLabel();
 	javax.swing.JPanel JPanel1 = new javax.swing.JPanel();
+	javax.swing.JLabel UnderConstruction2 = new javax.swing.JLabel();
 	com.symantec.itools.javax.swing.models.StringListModel DocTypeListModel = new com.symantec.itools.javax.swing.models.StringListModel();
 	com.symantec.itools.javax.swing.models.StringComboBoxModel MatchTypesModel = new com.symantec.itools.javax.swing.models.StringComboBoxModel();
 	com.symantec.itools.javax.swing.models.StringComboBoxModel MatchTypesModel2 = new com.symantec.itools.javax.swing.models.StringComboBoxModel();
@@ -817,6 +880,12 @@ public class QueryBean extends AbstractQueryBean
 				LocalCheckBox_itemStateChanged(event);
 			else if (object == LocalCheckBox1)
 				LocalCheckBox1_itemStateChanged(event);
+			else if (object == DetachCheckBox1)
+				DetachCheckBox1_itemStateChanged(event);
+			else if (object == NetworkCheckBox)
+				NetworkCheckBox_itemStateChanged(event);
+			else if (object == NetworkCheckBox1)
+				NetworkCheckBox1_itemStateChanged(event);
 			
 		}
 	}
@@ -888,7 +957,12 @@ public class QueryBean extends AbstractQueryBean
 	}
 
 	void SearchButton1_actionPerformed(java.awt.event.ActionEvent event)
-	{
+	{  
+		searchlocal = LocalCheckBox1.isSelected();
+		searchnetwork = NetworkCheckBox1.isSelected();
+	    
+	    
+	    if (searchlocal) {
 	    if (SearchButton1.getText().equalsIgnoreCase("Halt")) {
 	        if (lq!=null) {
 	            lq.setStopFlag();
@@ -997,7 +1071,8 @@ public class QueryBean extends AbstractQueryBean
 //		     lq.queryAll();
             lq.start();
 		} 
-		if(!localonly) {
+	}
+		if(searchnetwork) {
 	        String temp = create_XMLQuery();
 	        LogIn();
 	        squery_submitToDatabase(temp);
@@ -1008,7 +1083,10 @@ public class QueryBean extends AbstractQueryBean
 
 	void SearchButton_actionPerformed(java.awt.event.ActionEvent event)
 	{
-   //      simplequery_submitToDatabase("%NCEAS%");
+		searchlocal = LocalCheckBox.isSelected();
+		searchnetwork = NetworkCheckBox.isSelected();
+	    
+      if (searchlocal) {
 	    if (SearchButton.getText().equalsIgnoreCase("Halt")) {
 	        if (lq!=null) {
 	            lq.setStopFlag();
@@ -1094,7 +1172,8 @@ public class QueryBean extends AbstractQueryBean
 //		     lq.queryAll();
             lq.start();
 		} 
-		if(!localonly) {
+	  }
+		if(searchnetwork) {
 	        String temp = create_XMLQuery();
 	        LogIn();
 	        squery_submitToDatabase(temp);
@@ -1250,7 +1329,20 @@ public void searchFor(String searchText) {
         DetachCheckBox.setSelected(false);
         }
     }
-	
+	void DetachCheckBox1_itemStateChanged(java.awt.event.ItemEvent event)
+	{
+        if(DetachCheckBox1.isSelected()) {
+            RSFrame rs = new RSFrame("Results of Search");
+            rs.setVisible(true);
+            if (table!=null) {
+                TableModel tm = table.getModel();
+                rs.JTable1.setModel(tm);
+                rs.pack();
+            }
+        DetachCheckBox1.setSelected(false);
+        }
+	}
+ 	
     public void getConfigData() {
 		// Get the configuration file information
     try {
@@ -1388,11 +1480,22 @@ public void LogOut() {
 
 	void LocalCheckBox_itemStateChanged(java.awt.event.ItemEvent event)
 	{
-		localonly = LocalCheckBox.isSelected();
+		searchlocal = LocalCheckBox.isSelected();
 	}
 
 	void LocalCheckBox1_itemStateChanged(java.awt.event.ItemEvent event)
 	{
-		localonly = LocalCheckBox1.isSelected();
+		searchlocal = LocalCheckBox1.isSelected();
+	}
+
+
+	void NetworkCheckBox_itemStateChanged(java.awt.event.ItemEvent event)
+	{
+		searchnetwork = NetworkCheckBox.isSelected();
+	}
+
+	void NetworkCheckBox1_itemStateChanged(java.awt.event.ItemEvent event)
+	{
+		searchnetwork = NetworkCheckBox1.isSelected();
 	}
 }
