@@ -4,6 +4,7 @@
 <plugin>edu.ucsb.nceas.morpho.datapackage.DataPackagePlugin</plugin>
 <plugin>edu.ucsb.nceas.morpho.editor.EditorPlugin</plugin>
 <MetaCatServletURL>http://dev.nceas.ucsb.edu/jones/servlet/metacat</MetaCatServletURL>
+<profile_directory>./profiles</profile_directory>
 <local_dtd_directory>./lib/catalog</local_dtd_directory>
 <local_catalog_path>./lib/catalog/catalog</local_catalog_path>
 <local_xml_directory>./XMLworkFolder</local_xml_directory>
