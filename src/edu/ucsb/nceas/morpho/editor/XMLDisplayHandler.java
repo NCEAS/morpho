@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-05-25 22:42:02 $'
- * '$Revision: 1.5 $'
+ *     '$Date: 2001-05-31 22:43:00 $'
+ * '$Revision: 1.6 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -106,7 +106,8 @@ class XMLDisplayHandler extends DefaultHandler implements LexicalHandler {
 		    DefaultMutableTreeNode newNode = new DefaultMutableTreeNode (ni);
 		    DefaultMutableTreeNode parentNode = (DefaultMutableTreeNode) stack.peek();
 		    parentNode.add (newNode);
-		    ni.attr.put("Value", text);
+//		    ni.attr.put("Value", text);
+        ni.setPCValue(text);
 		    treeModel.reload();
 		    nodeCount++;
 		  }

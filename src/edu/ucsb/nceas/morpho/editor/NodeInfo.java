@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-05-24 23:39:18 $'
- * '$Revision: 1.9 $'
+ *     '$Date: 2001-05-31 22:43:00 $'
+ * '$Revision: 1.10 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -56,6 +56,9 @@ public class NodeInfo implements Serializable
     // iconName is string used to get icon from icons Hashtable
     String iconName;
     
+    // value that is returned for PCDATA
+    String PCDataValue;
+    
     // allowed values - ONE, ZERO to MANY, ONE to MANY, OPTIONAL
     String cardinality = "ONE"; 
         
@@ -78,14 +81,15 @@ public class NodeInfo implements Serializable
  
   public String toString() {
     if (name.equalsIgnoreCase("#PCDATA")) {
-      return ((String)attr.get("Value"));
+ //     return ((String)attr.get("Value"));
+      return PCDataValue;
     }
     else {return name;}
   }
   
   public void setCardinality(String card) {
     this.cardinality = card;
-/*       
+       
   if(card.equalsIgnoreCase("ONE")) {
     setIcon("greensq.gif");    
   }
@@ -104,9 +108,16 @@ public class NodeInfo implements Serializable
   if(card.equalsIgnoreCase("NOT SELECTED")) {
     setIcon("unsel.gif");    
   }
- */       
+        
   }
   
+  public void setPCValue(String val) {
+    PCDataValue = val; 
+  }
+  
+  public String getPCValue() {
+    return PCDataValue; 
+  }
   public String getCardinality() {
     return cardinality;    
   }

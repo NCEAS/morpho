@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-05-23 18:40:39 $'
- * '$Revision: 1.8 $'
+ *     '$Date: 2001-05-31 22:43:00 $'
+ * '$Revision: 1.9 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -212,7 +212,7 @@ public class XMLPanels extends Component
             DefaultMutableTreeNode nd = (DefaultMutableTreeNode)(nodes.nextElement());
 		    NodeInfo info1 = (NodeInfo)(nd.getUserObject());
 		    if ((info1.name).equals("#PCDATA")) {
-		        txt = (String)(info1.attr).get("Value");
+		        txt = info1.getPCValue();
          }
             if (txt.length()>0) {
             JTextField jtf1 = new JTextField();
@@ -260,7 +260,7 @@ class dfhAction implements java.awt.event.ActionListener
 				{
 				    DefaultMutableTreeNode nd = (DefaultMutableTreeNode)nodeMap.get(object);
 		            NodeInfo info = (NodeInfo)(nd.getUserObject());
-                    info.attr.put("Value",((JTextField)object).getText());
+                    info.setPCValue(((JTextField)object).getText());
 		//		    System.out.println(((JTextField)object).getText());
 				    if (treeModel!=null) {
 				        treeModel.reload();
@@ -278,7 +278,7 @@ class dfhAction implements java.awt.event.ActionListener
 				{
 				    DefaultMutableTreeNode nd = (DefaultMutableTreeNode)nodeMap.get(object);
 		            NodeInfo info = (NodeInfo)(nd.getUserObject());
-                    info.attr.put("Value",((JTextField)object).getText());
+                    info.setPCValue(((JTextField)object).getText());
 //				    System.out.println(((JTextField)object).getText());
 				    if (treeModel!=null) {
 				        treeModel.reload();
@@ -310,7 +310,7 @@ class dfhAction implements java.awt.event.ActionListener
 				{
 				    DefaultMutableTreeNode nd = (DefaultMutableTreeNode)nodeMap.get(object);
 		            NodeInfo info = (NodeInfo)(nd.getUserObject());
-				    ((JTextField)object).setText((String)info.attr.get("Value"));				    
+				    ((JTextField)object).setText((info.getPCValue());				    
 	//			    System.out.println(((JTextField)object).getText());
 				}
 		}

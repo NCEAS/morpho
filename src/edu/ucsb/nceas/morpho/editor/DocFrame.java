@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-05-30 22:06:27 $'
- * '$Revision: 1.9 $'
+ *     '$Date: 2001-05-31 22:43:00 $'
+ * '$Revision: 1.10 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -70,6 +70,9 @@ public class DocFrame extends javax.swing.JFrame
      */
     String doctype = null;
     
+    String publicIDString = null;
+    String systemIDString = null;
+    
     // various global variables
     public DefaultTreeModel treeModel;
     public DefaultMutableTreeNode rootNode;
@@ -77,11 +80,16 @@ public class DocFrame extends javax.swing.JFrame
     DefaultMutableTreeNode selectedNode;
     public JTree tree;
     StringBuffer sb; 
+    StringBuffer start;
+    Stack tempStack;
     
     Catalog myCatalog;
     String dtdfile;
     int numlevels = 9;
     
+//    javax.swing.JMenuItem CMmenuItem;
+    javax.swing.JMenuItem menuItem;
+    javax.swing.JMenuItem CardmenuItem;
     javax.swing.JMenuItem DeletemenuItem;
     javax.swing.JMenuItem DupmenuItem;
     
@@ -116,6 +124,12 @@ public class DocFrame extends javax.swing.JFrame
 		TestButton.setText("Test");
 		TestButton.setActionCommand("Test");
 		ControlPanel.add(TestButton);
+		SaveXML.setText("Save XML...");
+		SaveXML.setActionCommand("Save XML...");
+		ControlPanel.add(SaveXML);
+		saveFileDialog.setMode(FileDialog.SAVE);
+		saveFileDialog.setTitle("Save");
+		//$$ saveFileDialog.move(0,306);
 		//}}
 		JSplitPane DocControlPanel = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT
 		       , OutputScrollPanel, NestedPanelScrollPanel);
@@ -126,6 +140,12 @@ public class DocFrame extends javax.swing.JFrame
 
 		//{{INIT_MENUS
 		//}}
+//    CMmenuItem = new JMenuItem("Content Model = ");
+//    popup.add(CMmenuItem);
+    CardmenuItem = new JMenuItem("One Element Allowed");
+ 
+    popup.add(CardmenuItem);
+    popup.add(new JSeparator());
     DupmenuItem = new JMenuItem("Duplicate");
     popup.add(DupmenuItem);
     DeletemenuItem = new JMenuItem("Delete");
@@ -137,6 +157,7 @@ public class DocFrame extends javax.swing.JFrame
 		reload.addActionListener(lSymAction);
 		DTDParse.addActionListener(lSymAction);
 		TestButton.addActionListener(lSymAction);
+		SaveXML.addActionListener(lSymAction);
 		//}}
 		DeletemenuItem.addActionListener(lSymAction);
 		DupmenuItem.addActionListener(lSymAction);
@@ -162,6 +183,8 @@ public class DocFrame extends javax.swing.JFrame
 	
 		MouseListener popupListener = new PopupListener();
     tree.addMouseListener(popupListener);
+    
+    
 	}
 
 	/**
@@ -186,6 +209,15 @@ public class DocFrame extends javax.swing.JFrame
 		XMLTextString = doctext;
 		putXMLintoTree();
     tree.setSelectionRow(0);
+    
+		dtdtree = new DTDTree(dtdfile);
+		dtdtree.parseDTD();
+		
+	  rootNode = (DefaultMutableTreeNode)treeModel.getRoot();
+		treeUnion(rootNode,dtdtree.rootNode);
+		treeModel.reload();
+		tree.setModel(treeModel);
+    
 	}
 	
 	public DocFrame(File file)
@@ -244,6 +276,8 @@ public class DocFrame extends javax.swing.JFrame
 	javax.swing.JButton reload = new javax.swing.JButton();
 	javax.swing.JButton DTDParse = new javax.swing.JButton();
 	javax.swing.JButton TestButton = new javax.swing.JButton();
+	javax.swing.JButton SaveXML = new javax.swing.JButton();
+	java.awt.FileDialog saveFileDialog = new java.awt.FileDialog(this);
 	//}}
 
 	//{{DECLARE_MENUS
@@ -284,6 +318,8 @@ class SymAction implements java.awt.event.ActionListener {
 				DTDParse_actionPerformed(event);
 			else if (object == TestButton)
 				TestButton_actionPerformed(event);
+			else if (object == SaveXML)
+				SaveXML_actionPerformed(event);
 		}
 }
 
@@ -320,6 +356,7 @@ void putXMLintoTree() {
       DefaultMutableTreeNode rt = (DefaultMutableTreeNode)treeModel.getRoot();
       if (mh.getPublicId()!=null) {
         doctype = mh.getPublicId();
+        publicIDString = doctype;
       }
       else if (mh.getSystemId()!=null) {
         doctype = mh.getSystemId(); 
@@ -334,6 +371,7 @@ void putXMLintoTree() {
       }
       System.out.println("cat out: "+temp);
       dtdfile = temp;
+      systemIDString = temp;
       } 
       catch (Exception e) { 
         System.err.println(e.toString());
@@ -365,6 +403,22 @@ void putXMLintoTree() {
 	    DefaultMutableTreeNode node = null;
 	    if (ob!=null) {node =(DefaultMutableTreeNode)ob;}
          selectedNode = node;
+
+         NodeInfo ni = (NodeInfo)node.getUserObject();
+         
+         if ((ni.getCardinality().equals("NOT SELECTED"))
+                  ||(ni.getCardinality().equals("SELECTED"))) {
+            for (Enumeration eee = (node.getParent()).children();eee.hasMoreElements();) {
+                DefaultMutableTreeNode nnn = (DefaultMutableTreeNode)eee.nextElement();
+                NodeInfo ni1 = (NodeInfo)nnn.getUserObject();
+                ni1.setCardinality("NOT SELECTED");
+            }
+            ni.setCardinality("SELECTED");
+            tree.invalidate();
+            OutputScrollPanel.repaint();
+         }
+         
+         
          XMLPanels xp = new XMLPanels(node);
          xp.setTreeModel(treeModel);
          NestedPanelScrollPanel.getViewport().add(xp.topPanel);
@@ -403,20 +457,27 @@ void putXMLintoTree() {
         tree.setSelectionPath(selPath);
         if (selectedNode!=null) {
           NodeInfo ni = (NodeInfo)selectedNode.getUserObject();
-          String temp = (String)ni.attr.get("copyNode");
-          if ((temp!=null)&&(temp.equalsIgnoreCase("false"))){
-            DupmenuItem.setEnabled(false);   
+          CardmenuItem.setText("Number: "+ni.getCardinality());
+//          String temp = (String)ni.attr.get("copyNode");
+//          if ((temp!=null)&&(temp.equalsIgnoreCase("false"))){
+          if (ni.getCardinality().equalsIgnoreCase("ONE")) {
+            DupmenuItem.setEnabled(false);
+            DeletemenuItem.setEnabled(false);
           }
           else {
             DupmenuItem.setEnabled(true); 
+            DeletemenuItem.setEnabled(true);
           }
-          temp = (String)ni.attr.get("deleteNode");
-          if ((temp!=null)&&(temp.equalsIgnoreCase("false"))){
-            DeletemenuItem.setEnabled(false);   
+          if (ni.getCardinality().equalsIgnoreCase("OPTIONAL")) {
+            DupmenuItem.setEnabled(false);
           }
-          else {
-            DeletemenuItem.setEnabled(true); 
-          }
+//          temp = (String)ni.attr.get("deleteNode");
+//          if ((temp!=null)&&(temp.equalsIgnoreCase("false"))){
+//            DeletemenuItem.setEnabled(false);   
+//          }
+//          else {
+//            DeletemenuItem.setEnabled(true); 
+//          }
         }
         popup.show(e.getComponent(), e.getX(), e.getY());
       }
@@ -453,8 +514,11 @@ void Dup_actionPerformed(java.awt.event.ActionEvent event) {
 	  DefaultMutableTreeNode par = (DefaultMutableTreeNode)node.getParent();
 	  int iii = par.getIndex(node);
 	  DefaultMutableTreeNode newnode = deepNodeCopy(node);
+	  if (((NodeInfo)newnode.getUserObject()).getCardinality().equalsIgnoreCase("SELECTED")) {
+	     ((NodeInfo)newnode.getUserObject()).setCardinality("NOT SELECTED");
+	  }
 	  tree.expandPath(tp);
-	  par.insert(newnode,iii);
+	  par.insert(newnode,iii+1);
 	  treeModel.reload(par);
 	}
 }
@@ -478,8 +542,16 @@ void Del_actionPerformed(java.awt.event.ActionEvent event) {
         }
       }
     }
-    if ((parent != null)&&(cnt>1)) {
-      treeModel.removeNodeFromParent(currentNode);
+    if ((parent != null)) {
+      if (cnt>1) {
+        treeModel.removeNodeFromParent(currentNode);
+      }
+      else {
+        if ((ni.getCardinality().equalsIgnoreCase("OPTIONAL")) 
+        || (ni.getCardinality().equalsIgnoreCase("ZERO to MANY")) ) {
+          treeModel.removeNodeFromParent(currentNode);
+        }
+      }
       return;
     }
   } 
@@ -499,10 +571,84 @@ void reload_actionPerformed(java.awt.event.ActionEvent event)
 
 	void DTDParse_actionPerformed(java.awt.event.ActionEvent event)
 	{
-		dtdtree = new DTDTree(dtdfile);
-		dtdtree.parseDTD();
+//		dtdtree = new DTDTree(dtdfile);
+//		dtdtree.parseDTD();
 		tree.setModel(dtdtree.treeModel);
 	}
+
+/*
+ * write the tree starting at the indicated node to a file 'fn'
+ */
+	void writeXML (DefaultMutableTreeNode node, String fn) {
+	  File outputFile = new File(fn);
+	  try {
+	    FileWriter out = new FileWriter(outputFile);
+      tempStack = new Stack();
+	    start = new StringBuffer();
+	    write_loop(node);
+	    String str1 = start.toString();
+	    
+	    String doctype = "";
+	    if (publicIDString!=null) {
+	      String rootNodeName = ((NodeInfo)node.getUserObject()).getName();
+	      String temp = "";
+	      if (publicIDString!=null) temp = "\""+publicIDString+"\"";
+	      String temp1 = "";
+	      if (systemIDString!=null) temp1 = "\"file:///"+systemIDString+"\"";
+	      doctype = "<!DOCTYPE "+rootNodeName+" PUBLIC "+temp+" "+temp1+">\n";
+	    }
+	    str1 = "<?xml version=\"1.0\"?>\n"+doctype+str1;
+	    
+	    out.write(str1);
+	    out.close();
+	  }
+	  catch (Exception e) {}
+	}
+	
+	/*
+	 * recursive routine to create xml output
+	 */
+	void write_loop (DefaultMutableTreeNode node) {
+	  String name;
+	  String end;
+	  NodeInfo ni = (NodeInfo)node.getUserObject();
+	  name = ni.name;
+	  if (!((ni.getCardinality()).equals("NOT SELECTED"))) {
+	    // completely ignore NOT SELECTED nodes AND their children
+	    if (!name.equals("(CHOICE)")) {
+	      // ignore (CHOICE) nodes but process their children
+	      start.append("<"+name+" ");  
+	    
+	      Enumeration keys = ni.attr.keys();
+	      while (keys.hasMoreElements()) {
+	        String str = (String)(keys.nextElement());
+	        String val = (String)ni.attr.get(str);
+	      }
+	      start.append(">\n");
+	      if (ni.getPCValue()!=null) {   // text node info
+	        start.append(ni.getPCValue());
+	      }
+	      end = "</"+name+">\n";
+	      tempStack.push(end);
+	    }
+	  //}
+	  Enumeration enum = node.children();
+	  while (enum.hasMoreElements()) {  // process child nodes 
+	    DefaultMutableTreeNode nd = (DefaultMutableTreeNode)(enum.nextElement());
+	    NodeInfo ni1 = (NodeInfo)nd.getUserObject();
+	    if (ni1.name.equals("#PCDATA")) {
+	      start.append(ni1.getPCValue());
+	    }
+	    else {
+	      write_loop(nd);
+	    }
+	  }
+	    if (!name.equals("(CHOICE)")) {
+	      start.append((String)(tempStack.pop()));
+	    }
+	  }
+	}
+	
 	
 /* -----------------------------------------------
 	 * code for combining the content of two DefaultMutableTreeNode trees
@@ -694,4 +840,16 @@ void mergeNodes(DefaultMutableTreeNode input, DefaultMutableTreeNode template) {
 		treeUnion(rootNode,dtdtree.rootNode);
 	}
 	
+
+	void SaveXML_actionPerformed(java.awt.event.ActionEvent event)
+	{
+			saveFileDialog.setVisible(true);
+			String file = saveFileDialog.getFile();
+			if (file!=null) {
+			  file = saveFileDialog.getDirectory()+file;
+	      rootNode = (DefaultMutableTreeNode)treeModel.getRoot();
+		    writeXML(rootNode,file);
+		  }
+			 
+	}
 }

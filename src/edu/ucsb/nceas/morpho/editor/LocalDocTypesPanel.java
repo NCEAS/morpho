@@ -9,8 +9,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-05-23 18:40:39 $'
- * '$Revision: 1.3 $'
+ *     '$Date: 2001-05-31 22:43:00 $'
+ * '$Revision: 1.4 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -144,7 +144,7 @@ public class LocalDocTypesPanel extends JPanel implements TableModelListener
         DefaultMutableTreeNode nd = (DefaultMutableTreeNode)(nodes.nextElement());
 		NodeInfo info1 = (NodeInfo)(nd.getUserObject());
 		if ((info1.name).equals("#PCDATA")) {
-		    txt = (String)(info1.attr).get("Value");
+		    txt = info1.getPCValue();
         }
         if (txt.length()>0) {
             NodeInfo info2 = (NodeInfo)(node.getUserObject());
@@ -200,7 +200,7 @@ public class LocalDocTypesPanel extends JPanel implements TableModelListener
 				{
 				    DefaultMutableTreeNode nd = (DefaultMutableTreeNode)nodeMap.get(object);
 		            NodeInfo info = (NodeInfo)(nd.getUserObject());
-                    info.attr.put("Value",((JTextField)object).getText());
+                    info.setPCValue(((JTextField)object).getText());
 //				    System.out.println(((JTextField)object).getText());
 //				    if (treeModel!=null) {
 //				        treeModel.reload();
@@ -238,7 +238,7 @@ public void TableDataToNodes() {
 		    newNode.add(newNode0);
 		    
 		    NodeInfo tx0 = new NodeInfo("#PCDATA");
-		    tx0.attr.put("Value", c0);
+		    tx0.setPCValue(c0);
 		    DefaultMutableTreeNode newNode2 = new DefaultMutableTreeNode (tx0);
 		    newNode0.add(newNode2);
 		    
@@ -247,7 +247,7 @@ public void TableDataToNodes() {
 		    newNode.add(newNode1);
 
 		    NodeInfo tx1 = new NodeInfo("#PCDATA");
-		    tx1.attr.put("Value", c1);
+		    tx1.setPCValue(c1);
 		    DefaultMutableTreeNode newNode3 = new DefaultMutableTreeNode (tx1);
 		    newNode1.add(newNode3);
         }

@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-05-23 18:40:40 $'
- * '$Revision: 1.3 $'
+ *     '$Date: 2001-05-31 22:43:00 $'
+ * '$Revision: 1.4 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -342,7 +342,7 @@ public class DFHPanel extends JPanel
         DefaultMutableTreeNode nd = (DefaultMutableTreeNode)(nodes.nextElement());
 		NodeInfo info1 = (NodeInfo)(nd.getUserObject());
 		if ((info1.name).equals("#PCDATA")) {
-		    txt = (String)(info1.attr).get("Value");
+		    txt = info1.getPCValue();
         }
         if (txt.length()>0) {
             NodeInfo info2 = (NodeInfo)(node.getUserObject());
@@ -398,7 +398,7 @@ public class DFHPanel extends JPanel
 				{
 				    DefaultMutableTreeNode nd = (DefaultMutableTreeNode)nodeMap.get(object);
 		            NodeInfo info = (NodeInfo)(nd.getUserObject());
-                    info.attr.put("Value",((JTextField)object).getText());
+                    info.setPCValue(((JTextField)object).getText());
 //				    System.out.println(((JTextField)object).getText());
 //				    if (treeModel!=null) {
 //				        treeModel.reload();
