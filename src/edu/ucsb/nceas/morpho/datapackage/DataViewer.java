@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-05-07 23:25:15 $'
- * '$Revision: 1.81 $'
+ *     '$Date: 2003-08-07 17:41:38 $'
+ * '$Revision: 1.82 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -688,7 +688,7 @@ public class DataViewer extends javax.swing.JPanel
 
       }
       if (attributeFile==null) {
-          Log.debug(15, "Attribute information about the data is missing!");
+          Log.debug(1, "Attribute information about the data is missing!");
           missing_metadata_flag = true;
       } else {
         // build a DOM represntation of the attribute file
