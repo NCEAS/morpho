@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-12-09 18:21:38 $'
- * '$Revision: 1.72 $'
+ *     '$Date: 2003-12-09 19:06:08 $'
+ * '$Revision: 1.73 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -876,8 +876,18 @@ public class DataViewContainerPanel extends javax.swing.JPanel
         }
       } else {
         String urlinfo = adp.getDistributionUrl(index, 0,0);
+        // assumed that urlinfo is of the form 'protocol://systemname/localid/other'
+        // protocol is probably 'ecogrid'; system name is 'knb'
+        // we just want the local id here
         int indx2 = urlinfo.indexOf("//");
         if (indx2>-1) urlinfo = urlinfo.substring(indx2+2);
+        // now start should be just past the '//'
+        indx2 = urlinfo.indexOf("/");
+        if (indx2>-1) urlinfo = urlinfo.substring(indx2+1);
+        //now should be past the system name
+        indx2 = urlinfo.indexOf("/");
+        if (indx2>-1) urlinfo = urlinfo.substring(0,indx2);
+        // should have trimmed 'other'
         if (urlinfo.length()==0) return;
         // if we reach here, urlinfo should be the id in a string
         try{ 

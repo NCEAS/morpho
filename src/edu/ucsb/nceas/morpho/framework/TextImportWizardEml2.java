@@ -4,9 +4,9 @@
 *              National Center for Ecological Analysis and Synthesis
 *    Release: @release@
 *
-*   '$Author: sambasiv $'
-*     '$Date: 2003-11-19 01:42:19 $'
-* '$Revision: 1.4 $'
+*   '$Author: higgins $'
+*     '$Date: 2003-12-09 19:06:35 $'
+* '$Revision: 1.5 $'
 *
 * This program is free software; you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -1931,7 +1931,7 @@ public class TextImportWizardEml2 extends javax.swing.JFrame
     
     if (dataAsFile) {
       String id = saveDataFileAsTemp(filename);
-		  om.put(header+"physical/distribution/online/"+"url", "ecogrid://"+id);
+		  om.put(header+"physical/distribution/online/"+"url", "ecogrid://knb/"+id);
     }
     else { // put data inline
       String encoded = encodeAsBase64(new File(filename));   

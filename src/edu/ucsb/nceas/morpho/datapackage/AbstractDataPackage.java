@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-12-08 17:38:37 $'
- * '$Revision: 1.34 $'
+ *     '$Date: 2003-12-09 19:06:08 $'
+ * '$Revision: 1.35 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1200,8 +1200,18 @@ public abstract class AbstractDataPackage extends MetadataObject
     if (entityArray==null) return;  // there is no data!
     for (int i=0;i<entityArray.length;i++) {
       String urlinfo = getDistributionUrl(i, 0,0);
+      // assumed that urlinfo is of the form 'protocol://systemname/localid/other'
+      // protocol is probably 'ecogrid'; system name is 'knb'
+      // we just want the local id here
       int indx2 = urlinfo.indexOf("//");
       if (indx2>-1) urlinfo = urlinfo.substring(indx2+2);
+      // now start should be just past the '//'
+      indx2 = urlinfo.indexOf("/");
+      if (indx2>-1) urlinfo = urlinfo.substring(indx2+1);
+      //now should be past the system name
+      indx2 = urlinfo.indexOf("/");
+      if (indx2>-1) urlinfo = urlinfo.substring(0,indx2);
+      // should have trimmed 'other'
       if (urlinfo.length()==0) return;
       // if we reach here, urlinfo should be the id in a string
       try{ 
