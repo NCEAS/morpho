@@ -113,7 +113,6 @@
 <!ELEMENT altmin (#PCDATA)>
 <!ELEMENT almax (#PCDATA)>
 <!ELEMENT altunits (#PCDATA)>
-<!ELEMENT cntinfo ANY>
 <!ELEMENT salutation (#PCDATA)>
 <!ELEMENT givenName (#PCDATA)>
 <!ELEMENT surName (#PCDATA)>
