@@ -6,7 +6,7 @@
  *              National Center for Ecological Analysis and Synthesis
  *     Authors: Dan Higgins
  *
- *     Version: '$Id: ClientFramework.java,v 1.2 2000-07-28 17:38:21 higgins Exp $'
+ *     Version: '$Id: ClientFramework.java,v 1.3 2000-08-02 23:11:16 higgins Exp $'
  */
 
 package edu.ucsb.nceas.dtclient;
@@ -59,62 +59,6 @@ public class ClientFramework extends javax.swing.JFrame
 		getContentPane().setLayout(new BorderLayout(0,0));
 		setSize(698,480);
 		setVisible(false);
-		try {
-			newIcon.setImageLocation(symantec.itools.net.RelativeURL.getURL("images/new.gif"));
-		}
-		catch (java.net.MalformedURLException error) { }
-		//$$ newIcon.move(144,312);
-		try {
-			openIcon.setImageLocation(symantec.itools.net.RelativeURL.getURL("images/open.gif"));
-		}
-		catch (java.net.MalformedURLException error) { }
-		//$$ openIcon.move(120,312);
-		try {
-			saveIcon.setImageLocation(symantec.itools.net.RelativeURL.getURL("images/save.gif"));
-		}
-		catch (java.net.MalformedURLException error) { }
-		//$$ saveIcon.move(96,312);
-		try {
-			saveserverIcon.setImageLocation(symantec.itools.net.RelativeURL.getURL("images/saveserver.gif"));
-		}
-		catch (java.net.MalformedURLException error) { }
-		//$$ saveserverIcon.move(0,0);
-		try {
-			cutIcon.setImageLocation(symantec.itools.net.RelativeURL.getURL("images/cut.gif"));
-		}
-		catch (java.net.MalformedURLException error) { }
-		//$$ cutIcon.move(72,312);
-		try {
-			copyIcon.setImageLocation(symantec.itools.net.RelativeURL.getURL("images/copy.gif"));
-		}
-		catch (java.net.MalformedURLException error) { }
-		//$$ copyIcon.move(48,312);
-		try {
-			pasteIcon.setImageLocation(symantec.itools.net.RelativeURL.getURL("images/paste.gif"));
-		}
-		catch (java.net.MalformedURLException error) { }
-		//$$ pasteIcon.move(24,312);
-		try {
-			aboutIcon.setImageLocation(symantec.itools.net.RelativeURL.getURL("images/about.gif"));
-		}
-		catch (java.net.MalformedURLException error) { }
-		//$$ aboutIcon.move(0,312);
-		try {
-			findIcon.setImageLocation(symantec.itools.net.RelativeURL.getURL("images/Find16.gif"));
-		}
-		catch (java.net.MalformedURLException error) { }
-		//$$ findIcon.move(192,312);
-		try {
-			NCEASIcon.setImageLocation(symantec.itools.net.RelativeURL.getURL("images/NCEASlogo.gif"));
-		}
-		catch (java.net.MalformedURLException error) { }
-		//$$ NCEASIcon.move(264,481);
-		try {
-			NSFIcon.setImageLocation(symantec.itools.net.RelativeURL.getURL("images/nsf_logo.gif"));
-		}
-		catch (java.net.MalformedURLException error) { }
-		//$$ NSFIcon.move(264,481);
-		//$$ imageIcon1.move(264,481);
 		saveFileDialog.setMode(FileDialog.SAVE);
 		saveFileDialog.setTitle("Save");
 		//$$ saveFileDialog.move(24,336);
@@ -291,24 +235,6 @@ public class ClientFramework extends javax.swing.JFrame
 		aboutItem.setActionCommand("About...");
 		aboutItem.setMnemonic((int)'A');
 		helpMenu.add(aboutItem);
-		cutButton.setIcon(cutIcon);
-		//$$ stringTreeModel1.move(216,481);
-		//$$ stringComboBoxModel3.move(96,481);
-		aboutItem.setIcon(aboutIcon);
-		newItem.setIcon(newIcon);
-		openButton.setIcon(openIcon);
-		cutItem.setIcon(cutIcon);
-		saveButton.setIcon(saveIcon);
-		saveserverButton.setIcon(saveserverIcon);
-		pasteItem.setIcon(pasteIcon);
-		copyButton.setIcon(copyIcon);
-		saveItem.setIcon(saveIcon);
-		queryButton.setIcon(findIcon);
-		copyItem.setIcon(copyIcon);
-		aboutButton.setIcon(aboutIcon);
-		openItem.setIcon(openIcon);
-		pasteButton.setIcon(pasteIcon);
-		newButton.setIcon(newIcon);
 		//}}
 
 		//{{INIT_MENUS
@@ -335,7 +261,33 @@ public class ClientFramework extends javax.swing.JFrame
 		PreviewXML.addActionListener(lSymAction);
 		OptionsMenuItem.addActionListener(lSymAction);
 		//}}
-		
+//      Example of loading icon as resource - DFH 
+     try {
+		ImageIcon xxx = new ImageIcon(getClass().getResource("new.gif"));
+		newButton.setIcon(xxx);
+		newItem.setIcon(xxx);
+		xxx = new ImageIcon(getClass().getResource("open.gif"));
+		openButton.setIcon(xxx);
+		openItem.setIcon(xxx);
+		xxx = new ImageIcon(getClass().getResource("save.gif"));
+		saveButton.setIcon(xxx);
+		saveItem.setIcon(xxx);
+		xxx = new ImageIcon(getClass().getResource("cut.gif"));
+		cutButton.setIcon(xxx);
+		cutItem.setIcon(xxx);
+		xxx = new ImageIcon(getClass().getResource("copy.gif"));
+		copyButton.setIcon(xxx);
+		copyItem.setIcon(xxx);
+		xxx = new ImageIcon(getClass().getResource("paste.gif"));
+		pasteButton.setIcon(xxx);
+		pasteItem.setIcon(xxx);
+		xxx = new ImageIcon(getClass().getResource("about.gif"));
+		aboutButton.setIcon(xxx);
+		aboutItem.setIcon(xxx);
+		xxx = new ImageIcon(getClass().getResource("saveserver.gif"));
+		saveserverButton.setIcon(xxx);
+	 }
+	 catch (Exception e) {System.out.println("Error in loading icons - ClientFramework");}
 		// Get the configuration file information
     try {
       options = (PropertyResourceBundle)PropertyResourceBundle.getBundle("client");
@@ -418,17 +370,6 @@ public class ClientFramework extends javax.swing.JFrame
 	boolean frameSizeAdjusted = false;
 
 	//{{DECLARE_CONTROLS
-	com.symantec.itools.javax.swing.icons.ImageIcon newIcon = new com.symantec.itools.javax.swing.icons.ImageIcon();
-	com.symantec.itools.javax.swing.icons.ImageIcon openIcon = new com.symantec.itools.javax.swing.icons.ImageIcon();
-	com.symantec.itools.javax.swing.icons.ImageIcon saveIcon = new com.symantec.itools.javax.swing.icons.ImageIcon();
-	com.symantec.itools.javax.swing.icons.ImageIcon saveserverIcon = new com.symantec.itools.javax.swing.icons.ImageIcon();
-	com.symantec.itools.javax.swing.icons.ImageIcon cutIcon = new com.symantec.itools.javax.swing.icons.ImageIcon();
-	com.symantec.itools.javax.swing.icons.ImageIcon copyIcon = new com.symantec.itools.javax.swing.icons.ImageIcon();
-	com.symantec.itools.javax.swing.icons.ImageIcon pasteIcon = new com.symantec.itools.javax.swing.icons.ImageIcon();
-	com.symantec.itools.javax.swing.icons.ImageIcon aboutIcon = new com.symantec.itools.javax.swing.icons.ImageIcon();
-	com.symantec.itools.javax.swing.icons.ImageIcon findIcon = new com.symantec.itools.javax.swing.icons.ImageIcon();
-	com.symantec.itools.javax.swing.icons.ImageIcon NCEASIcon = new com.symantec.itools.javax.swing.icons.ImageIcon();
-	com.symantec.itools.javax.swing.icons.ImageIcon NSFIcon = new com.symantec.itools.javax.swing.icons.ImageIcon();
 	java.awt.FileDialog saveFileDialog = new java.awt.FileDialog(this);
 	java.awt.FileDialog openFileDialog = new java.awt.FileDialog(this);
 	javax.swing.JPanel JPanel2 = new javax.swing.JPanel();
