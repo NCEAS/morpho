@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-07-27 22:09:55 $'
- * '$Revision: 1.19 $'
+ *     '$Date: 2001-08-31 22:40:02 $'
+ * '$Revision: 1.20 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -55,6 +55,9 @@ import javax.swing.event.TableModelEvent;
 import javax.swing.table.TableColumn;
 import javax.swing.JPopupMenu;
 import javax.swing.JSeparator;
+import javax.swing.JFileChooser;
+
+
 
 /**
  * Display a ResultSet in a table view in a panel that can be
@@ -94,8 +97,12 @@ public class ResultPanel extends JPanel
   private JMenuItem deleteMetacatMenu = new JMenuItem("Delete Metacat Copy");
   private JMenuItem deleteAllMenu = new JMenuItem("Delete Both Copies");
   private JMenuItem refreshMenu = new JMenuItem("Refresh");
+  private JMenuItem exportMenu = new JMenuItem("Export...");
   /**a string to keep track of the selected row's id*/
   private String selectedId = "";
+  /**the location of the data package*/
+  boolean metacatLoc = false;
+  boolean localLoc = false;
   
   /**
    * Construct a new ResultPanel and display the result set.  By default
@@ -225,6 +232,8 @@ public class ResultPanel extends JPanel
       popup.add(deleteLocalMenu);
       popup.add(deleteMetacatMenu);
       popup.add(deleteAllMenu);
+      popup.add(new JSeparator());
+      popup.add(exportMenu);
       
       MenuAction menuhandler = new MenuAction();
       openMenu.addActionListener(menuhandler);
@@ -234,6 +243,7 @@ public class ResultPanel extends JPanel
       deleteMetacatMenu.addActionListener(menuhandler);
       deleteAllMenu.addActionListener(menuhandler);
       refreshMenu.addActionListener(menuhandler);
+      exportMenu.addActionListener(menuhandler);
       
       MouseListener popupListener = new PopupListener();
       table.addMouseListener(popupListener);
@@ -319,6 +329,56 @@ public class ResultPanel extends JPanel
   }
   
   /**
+   * exports the datapackage to a different location
+   * @param id the id of the datapackage to export
+   */
+  private void exportDataset(String id)
+  {
+    JFileChooser filechooser = new JFileChooser();
+    filechooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+    filechooser.setDialogTitle("Export Datapackage");
+    filechooser.setApproveButtonText("Export");
+    filechooser.setApproveButtonMnemonic('E');
+    filechooser.setApproveButtonToolTipText("Choose a directory to export " +
+                                            "this Datapackage to.");
+    filechooser.updateUI();
+    File exportDir;
+    filechooser.showSaveDialog(this);
+    exportDir = filechooser.getSelectedFile();
+    //now we know where to export the files to, so export them.
+    DataPackageInterface dataPackage;
+    try 
+    {
+      ServiceProvider provider = 
+                   framework.getServiceProvider(DataPackageInterface.class);
+      dataPackage = (DataPackageInterface)provider;
+    } 
+    catch (ServiceNotHandledException snhe) 
+    {
+      framework.debug(6, snhe.getMessage());
+      return;
+    }
+    
+    String location = "";
+    //figure out where this thing is.
+    if(metacatLoc && localLoc)
+    {
+      location = DataPackage.BOTH;
+    }
+    else if(metacatLoc && !localLoc)
+    {
+      location = DataPackage.METACAT;
+    }
+    else if(!metacatLoc && localLoc)
+    {
+      location = DataPackage.LOCAL;
+    }
+    
+    //export it.
+    dataPackage.export(selectedId, exportDir.toString(), location);
+  }
+  
+  /**
    * Event handler for the right click popup menu
    */
   class MenuAction implements java.awt.event.ActionListener 
@@ -369,6 +429,10 @@ public class ResultPanel extends JPanel
         ClientFramework.debug(20, "Deleting both copies of the package.");
         dataPackage.delete(docid, DataPackage.BOTH);
       }
+      else if (object == exportMenu)
+      {
+        exportDataset(docid);
+      }
       
       refreshQuery();
 		}
@@ -379,8 +443,6 @@ public class ResultPanel extends JPanel
     // on the PC; use the trigger flag to record a trigger, but do not show popup until the
     // mouse released event (DFH)
     boolean trigger = false;
-    boolean metacatLoc = false;
-    boolean localLoc = false;
     public void mousePressed(MouseEvent e) 
     {
       //select the clicked row first

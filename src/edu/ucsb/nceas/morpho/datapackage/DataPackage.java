@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-07-27 22:09:55 $'
- * '$Revision: 1.28 $'
+ *     '$Date: 2001-08-31 22:40:01 $'
+ * '$Revision: 1.29 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -755,6 +755,176 @@ public class DataPackage
       {
         mds.deleteFile((String)v.elementAt(i));
       }
+    }
+  }
+  
+  /**
+   * exports a package to a given path
+   * @param path the path to which this package should be exported.
+   */
+  public void export(String path)
+  {
+    ClientFramework.debug(20, "exporting....................................");
+    ClientFramework.debug(20, "path: " + path);
+    ClientFramework.debug(20, "id: " + id);
+    ClientFramework.debug(20, "location: " + location);
+    Vector fileV = new Vector(); //vector of all files in the package
+    boolean localloc = false;
+    boolean metacatloc = false;
+    if(location.equals(DataPackage.BOTH))
+    {
+      localloc = true;
+      metacatloc = true;
+    }
+    else if(location.equals(DataPackage.METACAT))
+    {
+      metacatloc = true;
+    }
+    else if(location.equals(DataPackage.LOCAL))
+    {
+      localloc = true;
+    }
+    
+    //get a list of the files and save them to the new location. if the file
+    //is a data file, save it with its original name.
+    try
+    {
+      FileSystemDataStore fsds = new FileSystemDataStore(framework);
+      MetacatDataStore mds = new MetacatDataStore(framework);
+      String packagePath = path + "/" + id + ".package";
+      String sourcePath = packagePath + "/source";
+      File savedir = new File(packagePath);
+      File savedirSub = new File(sourcePath);
+      savedir.mkdirs(); //create the new directories
+      savedirSub.mkdirs();
+      
+      Vector files = getAllIdentifiers();
+      for(int i=0; i<files.size(); i++)
+      { //save one file at a time
+        File f = new File(sourcePath + "/" + (String)files.elementAt(i));
+        File openfile = null;
+        f.createNewFile();
+        if(localloc)
+        { //get the file locally and save it
+          openfile = fsds.openFile((String)files.elementAt(i));
+        }
+        else if(metacatloc)
+        { //get the file from metacat
+          openfile = mds.openFile((String)files.elementAt(i));
+        }
+        
+        fileV.addElement(openfile);
+        FileInputStream fis = new FileInputStream(openfile);
+        FileOutputStream fos = new FileOutputStream(f);
+        int c = fis.read();
+        while(c != -1)
+        { //copy the files to the source directory
+          fos.write(c);
+          c = fis.read();
+        }
+        fos.flush();
+        fis.close();
+        fos.close();
+      }
+      
+      //copy the data file to the root of the package with its original name
+      //if there is a data file
+      Vector triplesV = triples.getCollection();
+      String dataFileName = null;
+      String dataFileId = null;
+      for(int i=0; i<triplesV.size(); i++)
+      {
+        Triple triple = (Triple)triplesV.elementAt(i);
+        String relationship = triple.getRelationship();
+        if(relationship.indexOf("isDataFileFor") != -1)
+        {
+          int lparenindex = relationship.indexOf("(");
+          dataFileName = relationship.substring(lparenindex + 1, 
+                                                relationship.length() - 1);
+          dataFileId = triple.getSubject();
+          File datafile = new File(sourcePath + "/" + dataFileId);
+          File realdatafile = new File(packagePath + "/" + dataFileName);
+          realdatafile.createNewFile();
+          FileInputStream fis = new FileInputStream(datafile);
+          FileOutputStream fos = new FileOutputStream(realdatafile);
+          int c = fis.read();
+          while(c != -1)
+          { //copy the data file with its real name
+            fos.write(c);
+            c = fis.read();
+          }
+        }
+      }
+      /*
+      //create a generic html file from all of the metadata
+      String htmlhead = "<html><head><title>Data Package Summary</title></head>";
+      htmlhead += "<body><table>";
+      String html = "";
+      for(int i=0; i<fileV.size(); i++)
+      {
+        FileInputStream fis = new FileInputStream((File)fileV.elementAt(i));
+        String header = "";
+        for(int j=0; j<10; j++)
+        {
+          header += (char)fis.read();
+        }
+        fis.close();
+        System.out.println("==========================header: " + header);
+        if(header.indexOf("<?xml") != -1)
+        { //this is an xml file so we can transform it.
+          String catalogPath = config.get("local_catalog_path", 0);
+          Document convdoc = PackageUtil.getDoc((File)fileV.elementAt(i), 
+                                                 catalogPath);  
+          html += "--\n" + dft(convdoc, html, 0);
+        }
+      }
+      htmlhead += html;
+      htmlhead += "\n</table></body></html>";
+      System.out.println(htmlhead);*/
+    }
+    catch(Exception e)
+    {
+      System.out.println("Error in DataPackage.export(): " + e.getMessage());
+      e.printStackTrace();
+    }
+  }
+  
+  /**
+   * method to do a depth first traversal of a dom tree and return an html rep
+   * of the tree in a table.
+   */
+  private String dft(Node n, String html, int depth)
+  {
+    short nodetype = n.getNodeType();
+    System.out.println("nodetype: " + nodetype);
+    try
+    {
+    if(n.getFirstChild().getNodeValue() != null)
+    {
+      
+      String retstr = "<tr><td>";
+      for(int i=0; i<depth; i++)
+      {
+        retstr += "&nbsp;";
+      }
+      retstr += n.getNodeName() + "</td><td>";
+      retstr += n.getFirstChild().getNodeValue();
+      retstr += "</td></tr>";
+      html += retstr;
+    }
+    }
+    catch(Exception e){}
+    
+    Node firstchild = n.getFirstChild();
+    if(firstchild == null)
+    {
+      System.out.println("returning null");
+      return html;
+    }
+    else
+    {
+      System.out.println("recursing");
+      return dft(firstchild, html, depth++);
     }
   }
 }

@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-07-27 22:09:55 $'
- * '$Revision: 1.14 $'
+ *     '$Date: 2001-08-31 22:40:01 $'
+ * '$Revision: 1.15 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -201,5 +201,18 @@ public class DataPackagePlugin
   {
     DataPackage dp = new DataPackage(location, docid, null, framework);
     dp.delete(location);
+  }
+  
+  /**
+   * Exports the package.
+   * @param docid the id of the package to export
+   * @param path the directory to which the package should be exported.
+   * @param location the location where the package is now: LOCAL, METACAT or 
+   * BOTH
+   */
+  public void export(String docid, String path, String location)
+  {
+    DataPackage dp = new DataPackage(location, docid, null, framework);
+    dp.export(path);
   }
 }

@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-07-26 17:32:00 $'
- * '$Revision: 1.39 $'
+ *     '$Date: 2001-08-31 22:40:01 $'
+ * '$Revision: 1.40 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -533,12 +533,41 @@ public class PackageWizardShell extends javax.swing.JFrame
     {//put ids in the triples
       WizardFrameContainer wfc = (WizardFrameContainer)
                                  frameWizards.elementAt(i);
+      String relationship = "isRelatedTo";
       String id = wfc.id;
       String name = (String)wfc.attributes.get("name");
       if(name == null)
-      {
+      {//add a triple linking the data file to the package (if there is a 
+       //data file)
         name = "DATAFILE";
+        relationship = wfc.textfield.getText();
+        if(relationship.indexOf("/") != -1 || 
+           relationship.indexOf("\\") != -1)
+        { //strip out the path info
+          int slashindex = relationship.lastIndexOf("/") + 1;
+          if(slashindex == -1)
+          {
+            slashindex = relationship.lastIndexOf("\\") + 1;
+          }
+          
+          relationship = relationship.substring(slashindex, 
+                                                relationship.length());
+          relationship = "isDataFileFor(" + relationship + ")";
+        }
+        
+        for(int k=0; k<frameWizards.size(); k++)
+        {
+          WizardFrameContainer wfc2 = (WizardFrameContainer)
+                                     frameWizards.elementAt(k);
+          if(((String)wfc2.attributes.get("name")).equals(triplesFile))
+          {
+            Triple t = new Triple(id, relationship, wfc2.id);
+            tc.addTriple(t);
+            break;
+          }
+        } 
       }
+      
       if(wfc.attributes.containsKey("relatedTo"))
       {
         String relation = (String)wfc.attributes.get("relatedTo");
@@ -556,20 +585,22 @@ public class PackageWizardShell extends javax.swing.JFrame
                                          frameWizards.elementAt(k);
               if(((String)wfc2.attributes.get("name")).equals(triplesFile))
               {
-                t = new Triple(id, "isRelatedTo", wfc2.id);
+                t = new Triple(id, relationship, wfc2.id);
                 break;
               }
             }
           }
           else
           {
-            t = new Triple(id, "isRelatedTo", rel);
+            t = new Triple(id, relationship, rel);
           }
           //System.out.println("triple: " + t.toString());
           tc.addTriple(t);
         }
       }
     }
+    
+    
     
     //add acl triples
     if (aclTriples!=null) {

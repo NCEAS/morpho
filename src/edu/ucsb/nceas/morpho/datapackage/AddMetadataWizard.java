@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-07-24 21:11:00 $'
- * '$Revision: 1.2 $'
+ *     '$Date: 2001-08-31 22:40:01 $'
+ * '$Revision: 1.3 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -728,11 +728,25 @@ public class AddMetadataWizard extends JFrame
   
   private void handleAddDataFile(boolean locLocal, boolean locMetacat, 
                                  String newid)
-  { //add a data file here whenever metacat supports it.
+  { //add a data file here 
     AccessionNumber a = new AccessionNumber(framework);
     FileSystemDataStore fsds = new FileSystemDataStore(framework);
     //relate the new data file to the package itself
-    Triple t = new Triple(newid, "isRelatedTo", dataPackage.getID());
+    String relationship = fileTextField.getText();
+    if(relationship.indexOf("/") != -1 || 
+       relationship.indexOf("\\") != -1)
+    { //strip out the path info
+      int slashindex = relationship.lastIndexOf("/") + 1;
+      if(slashindex == -1)
+      {
+        slashindex = relationship.lastIndexOf("\\") + 1;
+      }
+      
+      relationship = relationship.substring(slashindex, 
+                                            relationship.length());
+      relationship = "isDataFileFor(" + relationship + ")";
+    }
+    Triple t = new Triple(newid, relationship, dataPackage.getID());
     TripleCollection triples = new TripleCollection();
     triples.addTriple(t);
     File packageFile = dataPackage.getTriplesFile();
