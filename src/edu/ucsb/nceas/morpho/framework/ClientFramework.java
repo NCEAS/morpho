@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2001-10-23 22:05:11 $'
- * '$Revision: 1.78 $'
+ *     '$Date: 2001-10-23 23:10:09 $'
+ * '$Revision: 1.79 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1248,6 +1248,7 @@ public class ClientFramework extends javax.swing.JFrame
     config.save();
     establishConnection();
     setLastID(scope);
+    fireConnectionChangedEvent();
   } 
 
   /**
