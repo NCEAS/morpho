@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-12-16 18:38:13 $'
- * '$Revision: 1.8 $'
+ *     '$Date: 2003-12-30 19:58:13 $'
+ * '$Revision: 1.9 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -246,24 +246,23 @@ public class SaveDialog extends JDialog
   void executeButton_actionPerformed(java.awt.event.ActionEvent event)
 	{
     Morpho morpho = Morpho.thisStaticInstance;
-    String loc = adp.getLocation();
-    if ((loc.equals(AbstractDataPackage.METACAT))||
-          (loc.equals(AbstractDataPackage.LOCAL))||
-          (loc.equals(AbstractDataPackage.BOTH))) {  
-      // package exists, so just increment version number        
-      String id = adp.getAccessionNumber();
-      AccessionNumber an = new AccessionNumber(morpho);
-      String newid = an.incRev(id);
-      adp.setAccessionNumber(newid);
+    String location = adp.getLocation();
+    
+    if (!location.equals("")) {
+      // if location is "", then id should be current
+      // otherwise try to increment version
+      try{
+        String id = adp.getAccessionNumber();
+        AccessionNumber an = new AccessionNumber(morpho);
+        String newid = an.incRev(id);
+        adp.setAccessionNumber(newid);
+      }
+      catch (Exception www) {
+        AccessionNumber an = new AccessionNumber(morpho);
+        String nextid = an.getNextId();
+        adp.setAccessionNumber(nextid);
+      }
     }
-    else { 
-      Log.debug(50, "inside else"); 
-      // a new package, so get a new id
-      AccessionNumber an = new AccessionNumber(morpho);
-      String nextid = an.getNextId();
-      adp.setAccessionNumber(nextid);
-    }
-
     if ((localLoc.isSelected())&&(networkLoc.isSelected())) {
       adp.serialize(AbstractDataPackage.BOTH);
       adp.setLocation(AbstractDataPackage.BOTH);
