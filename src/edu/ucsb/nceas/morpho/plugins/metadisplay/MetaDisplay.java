@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2002-10-25 01:02:17 $'
- * '$Revision: 1.28 $'
+ *     '$Date: 2002-10-26 08:07:00 $'
+ * '$Revision: 1.29 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -35,6 +35,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import java.util.Vector;
+import java.util.Iterator;
+import java.util.Properties;
 import java.util.Enumeration;
 
 import javax.swing.JLabel;
@@ -81,6 +83,7 @@ public class MetaDisplay implements MetaDisplayInterface,
     private         XMLFactoryInterface     factory;
     private         String                  identifier;
     private         String                  FULL_STYLE_PATH;
+    private         Properties              currentTransformProps;
     
     /**
      *  constructor
@@ -220,19 +223,22 @@ public class MetaDisplay implements MetaDisplayInterface,
 
         //keep a temp backup of current (outgoing) ID:
         String oldID = this.identifier; //the global one, not the local one
-        
+        Properties oldProps = clonePropertiesObject(currentTransformProps);
         try {
             //display mew ID, and in the process, set it to be the current ID:
             displayThisID(identifier);  //the local one
         } catch (DocumentNotFoundException dnfe) {
             //reset ID to it's original value before exception occurred:
             setIDBackTo(oldID);
+            currentTransformProps = oldProps;
             updateBackButtonStatus();
             throw dnfe;
         }
         //If new ID wasn't valid, we wouldn't have got this far, so we're OK...
         //add outgoing (i.e. older) ID to hisory:
-        history.add(oldID);
+        Log.debug(50,"in display() - adding props to History: "+oldProps);
+        history.add(new HistoryItem(oldID, oldProps));
+        Log.debug(50,history.toString());
         updateBackButtonStatus();
     }
     
@@ -262,6 +268,7 @@ public class MetaDisplay implements MetaDisplayInterface,
                                                                   +identifier);
         //keep a temp backup of current (outgoing) ID:
         String oldID = this.identifier; //the global one, not the local one
+        Properties oldProps = clonePropertiesObject(currentTransformProps);
         
         //set ID
         setIdentifier(identifier);
@@ -276,6 +283,7 @@ public class MetaDisplay implements MetaDisplayInterface,
             } catch (DocumentNotFoundException dnfe) {
                 //reset ID
                 setIDBackTo(oldID);
+                currentTransformProps = oldProps;
                 throw dnfe;
             }
         }
@@ -283,7 +291,9 @@ public class MetaDisplay implements MetaDisplayInterface,
         
         //If new ID wasn't valid, we wouldn't have got this far, so we're OK...
         //add ID to hisory:
-        history.add(oldID);
+        Log.debug(50,"in display() - adding props to History: "+oldProps);
+        history.add(new HistoryItem(oldID, oldProps));
+        Log.debug(50,history.toString());
     }
                                           
     /**
@@ -298,14 +308,20 @@ public class MetaDisplay implements MetaDisplayInterface,
     public void displayPrevious() throws DocumentNotFoundException 
     {
         //keep a temp backup of current (outgoing) ID:
-        String oldID = this.identifier; //the global one, not the local one
+        String oldID = this.identifier;
+        Properties oldProps = clonePropertiesObject(currentTransformProps);
         try {
             //display previous ID from History, and in the process, set it to be the 
             //current ID, but DO NOT re-add it to the History!
-            displayThisID(history.getPrevious()); 
+            HistoryItem prev = history.getPrevious();
+            Log.debug(50,"in displayPrevious() - setting prev TransfmrProps="
+                                                    +prev.transformProperties);
+            transformer.setTransformerProperties(prev.transformProperties);
+            displayThisID(prev.identifier); 
         } catch (DocumentNotFoundException dnfe) {
             //reset ID to it's original value before exception occurred:
             setIDBackTo(oldID);
+            transformer.setTransformerProperties(oldProps);
             updateBackButtonStatus();
             throw dnfe;
         }
@@ -533,6 +549,9 @@ public class MetaDisplay implements MetaDisplayInterface,
         String htmlDoc = getAsString(resultReader);
 	      fireActionEvent(MetaDisplayInterface.NAVIGATION_EVENT,getIdentifier());
         ui.setHTML(htmlDoc);
+        currentTransformProps = transformer.getCurrentTransformerProperties();
+	      Log.debug(50,"in displayThisID() - used TransfmrProps="
+	                                                      +currentTransformProps);
         transformer.removeAllTransformerProperties();
 	  }
 
@@ -584,7 +603,7 @@ public class MetaDisplay implements MetaDisplayInterface,
     
     private void updateBackButtonStatus() 
     {
-        if (getHistory().previewPrevious()==null) {
+        if (getHistory().previewPreviousID()==null) {
             ui.getHeader().setBackButtonEnabled(false);
         } else {
             ui.getHeader().setBackButtonEnabled(true);
@@ -623,6 +642,21 @@ public class MetaDisplay implements MetaDisplayInterface,
             pathBuff = null;
         }
         return FULL_STYLE_PATH;
+    }
+    
+    private Properties clonePropertiesObject(Properties propsToClone)
+    {
+        if (propsToClone==null) return null;
+        if (propsToClone.isEmpty()) return new Properties();
+        Properties returnProps = new Properties();
+        Iterator keys = propsToClone.keySet().iterator();
+        String nextKey = null;
+        while (keys.hasNext()) {
+            nextKey = String.valueOf(keys.next());
+            returnProps.setProperty(String.valueOf(nextKey),
+                                    propsToClone.getProperty(nextKey));
+        }
+        return returnProps;
     }
 }
 
