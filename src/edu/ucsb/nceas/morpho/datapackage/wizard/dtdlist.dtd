@@ -1,9 +1,0 @@
-<!ELEMENT dtdlist (dtd+)>
-<!ELEMENT dtd (#PCDATA)>
-<!ATTLIST dtd name         (#PCDATA)
-              repeatable   (yes | no) "no"
-              configfile   (#PCDATA)
-              relatedto    (#PCDATA)>
-
-
-
