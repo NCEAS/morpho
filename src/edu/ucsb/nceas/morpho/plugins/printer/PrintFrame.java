@@ -6,8 +6,8 @@
 *    Release: @release@
 *
 *   '$Author: sambasiv $'
-*     '$Date: 2004-04-05 22:00:30 $'
-* '$Revision: 1.5 $'
+*     '$Date: 2004-04-23 22:43:05 $'
+* '$Revision: 1.6 $'
 *
 * This program is free software; you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -285,7 +285,6 @@ public class PrintFrame extends JFrame implements ActionListener, HyperlinkListe
 			setPrintable(painter);
 			setPageFormat(format);
 			setSize(width, height);
-			setPageFormat(PrinterJob.getPrinterJob().defaultPage());
 		}
 		
 		protected PageableComponent() {
@@ -355,8 +354,9 @@ public class PrintFrame extends JFrame implements ActionListener, HyperlinkListe
 			if (pageIndex >= mNumPages) {
 				throw new IndexOutOfBoundsException();
 			}
-			mFormat = PrinterJob.getPrinterJob().defaultPage();
-			
+			if(mFormat == null) {
+				mFormat = PrinterJob.getPrinterJob().defaultPage();
+			}
 			
 			double originX = (pageIndex % mNumPagesX) * mFormat.getImageableWidth();
 			double originY = (pageIndex / mNumPagesX) * mFormat.getImageableHeight();

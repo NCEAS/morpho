@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: sambasiv $'
- *     '$Date: 2004-04-05 22:00:30 $'
- * '$Revision: 1.4 $'
+ *     '$Date: 2004-04-23 22:43:05 $'
+ * '$Revision: 1.5 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -206,19 +206,24 @@ public class PrinterPlugin implements       PrinterInterface,
 			return res;
 		}
 		
-		private String appendTrailingSpace(String html)
+		private String addTitleTag(String html)
 		{
 			int pos;
-			pos = html.indexOf("<tail>");
-			if(pos != -1)
-				return html;
-			pos = html.indexOf("</html>");
-			if(pos == -1)
-				return html;
-			String init = html.substring(0, pos);
-			init += "\n<tail>\n</tail>\n </html>\n";
+			pos = html.indexOf("<title>");
+			if(pos != -1) return html;
+			pos = html.indexOf("</head>");
+			String init = "";
+			if(pos != -1) {
+				init = html.substring(0, pos);
+				init += "<title></title>";
+				init += html.substring(pos);
+			} else {
+				pos = html.indexOf("<body>");
+				init = html.substring(0, pos);
+				init += "<head><title></title></head>";
+				init += html.substring(pos);
+			}
 			return init;
-			
 		}
 		
 		
@@ -263,7 +268,7 @@ public class PrinterPlugin implements       PrinterInterface,
 		private String processHTMLString(String displayString) {
 			displayString = stripHTMLMetaTags(displayString);
 			displayString = stripComments(displayString);
-			displayString = appendTrailingSpace(displayString);
+			displayString = addTitleTag(displayString);
 			return displayString;
 		}
 		
