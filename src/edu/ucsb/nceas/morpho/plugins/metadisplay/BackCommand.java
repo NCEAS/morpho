@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: cjones $'
- *     '$Date: 2002-09-26 01:57:53 $'
- * '$Revision: 1.3 $'
+ *   '$Author: brooke $'
+ *     '$Date: 2002-10-30 01:29:58 $'
+ * '$Revision: 1.4 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,6 +28,8 @@ package edu.ucsb.nceas.morpho.plugins.metadisplay;
 
 import  edu.ucsb.nceas.morpho.util.Log;
 import  edu.ucsb.nceas.morpho.util.Command;
+import  edu.ucsb.nceas.morpho.util.StateChangeEvent;
+import  edu.ucsb.nceas.morpho.util.StateChangeMonitor;
 
 import  edu.ucsb.nceas.morpho.plugins.metadisplay.MetaDisplay;
 import  edu.ucsb.nceas.morpho.plugins.DocumentNotFoundException;
@@ -55,6 +57,10 @@ public class BackCommand implements Command {
         } catch (DocumentNotFoundException dnfe) {
             Log.debug(2,"Error accessing previous document: "+dnfe.getMessage());
             dnfe.printStackTrace();
+            return;
         }
+        StateChangeMonitor.getInstance().notifyStateChange(
+                new StateChangeEvent(null, 
+                                     StateChangeEvent.METAVIEWER_HISTORY_BACK));
     }
 }
