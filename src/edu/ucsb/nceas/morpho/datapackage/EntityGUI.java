@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-12-03 21:47:10 $'
- * '$Revision: 1.33 $'
+ *     '$Date: 2002-01-24 22:08:26 $'
+ * '$Revision: 1.34 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -811,16 +811,18 @@ public class EntityGUI extends javax.swing.JFrame
         try{
           if (f!=null) {
             FileReader fis = new FileReader(f);
+            BufferedReader bfis = new BufferedReader(fis);
             StringWriter sw = new StringWriter();
-            int c = fis.read();
+            BufferedWriter bsw = new BufferedWriter(sw);
+            int c = bfis.read();
             while(c != -1)
             { //copy the files to the source directory
-              sw.write(c);
-              c = fis.read();
+              bsw.write(c);
+              c = bfis.read();
             }
-            sw.flush();
-            fis.close();
-            sw.close();
+            bsw.flush();
+            bfis.close();
+            bsw.close();
             dataString = sw.toString();
           }
         }
