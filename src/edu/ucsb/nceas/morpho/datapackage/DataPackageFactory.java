@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-11-12 19:50:33 $'
- * '$Revision: 1.21 $'
+ *     '$Date: 2003-11-13 21:51:46 $'
+ * '$Revision: 1.22 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -298,7 +298,9 @@ public class DataPackageFactory
    */
   static public void main(String args[]) {
     Node attrRoot = null;
+    Node entRoot = null;
     OrderedMap om = new OrderedMap();
+    OrderedMap om1 = new OrderedMap();
     AbstractDataPackage adp = null;
     try{
       Morpho.createMorphoInstance();
@@ -306,30 +308,46 @@ public class DataPackageFactory
       adp.showPackageSummary();
       
       // now let us test the add attribute
-      om.put("attribute"+"[0]/"+"attributeName","TestAttributeName");
-      om.put("attribute"+"[0]/"+"attributeLabel","TestAttibuteLabel");
-      om.put("attribute"+"[-0]/"+"attributeDefinition","Test Attribute Definition");
+      om.put("/attribute/"+"attributeName","TestAttributeName");
+      om.put("/attribute/"+"attributeLabel","TestAttibuteLabel");
+      om.put("/attribute/"+"attributeDefinition","Test Attribute Definition");
       // set measurementScale 
-      om.put("attribute"+"[0]/"+"measurementScale/interval/"
+      om.put("/attribute/"+"measurementScale/interval/"
               +"unit/standardUnit","meters");
-      om.put("attribute"+"[0]/"+"measurementScale/interval/numericDomain/"
+      om.put("/attribute/"+"measurementScale/interval/numericDomain/"
               +"numberType","floating point");
-      om.put("attribute"+"[0]/"+"measurementScale/interval/numericDomain/"
+      om.put("/attribute/"+"measurementScale/interval/numericDomain/"
               +"bounds/minimum","0.0");
-      om.put("attribute"+"[0]/"+"measurementScale/interval/numericDomain/"
+      om.put("/attribute/"+"measurementScale/interval/numericDomain/"
               +"bounds/maximum","1.0");
+      //  create ordermap elements for a new entity
+      om1.put("/dataTable/entityName", "TestEntityName");
+      om1.put("/dataTable/attributeList/attribute", "attribute1");
+              
     } catch (Exception w) {Log.debug(5, "problem creating ordered map!");}
-      try{        
+    
+    try{        
         DOMImplementation impl = DOMImplementationImpl.getDOMImplementation();
- Log.debug(1, "DOMImplementationImpl"+ om);    
-        Document doc = impl.createDocument(null, "attribute", null);
- Log.debug(1, "createDocument");    
+        Document doc = impl.createDocument("", "attribute", null);
         attrRoot = doc.getDocumentElement();
- Log.debug(1, "getDocumentElement:"+attrRoot);    
+        attrRoot.appendChild(doc.createElement("attributeName"));
+ Log.debug(1, "getDocumentElement:"+XMLUtilities.getDOMTreeAsString(attrRoot));    
         XMLUtilities.getXPathMapAsDOMTree(om, attrRoot);
+ Log.debug(1, "after_getXPathMapAsDOMTree:"+XMLUtilities.getDOMTreeAsString(attrRoot));    
+ 
+        Document doc1 = impl.createDocument("", "dataTable", null);
+        entRoot = doc1.getDocumentElement();
+        entRoot.appendChild(doc1.createElement("entityName"));
+ Log.debug(1, "getDocumentElement:"+XMLUtilities.getDOMTreeAsString(entRoot));    
+        XMLUtilities.getXPathMapAsDOMTree(om1, entRoot);
+ Log.debug(1, "after_getXPathMapAsDOMTree:"+XMLUtilities.getDOMTreeAsString(entRoot));    
+
       }
       catch (Exception e) {Log.debug(5, "problem creating DOM tree!"+ e);}
-  Log.debug(1, "attrRoot: "+attrRoot);    
+      
+      adp.insertEntity(entRoot,3);
+      adp.insertAttribute(0,attrRoot,1);
+      
        Log.debug(1,"AbstractDataPackage complete - Will now show in an XML Editor..");
        Node domnode = adp.getMetadataNode();
        DocFrame df = new DocFrame();
