@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-06-06 22:39:15 $'
- * '$Revision: 1.12 $'
+ *     '$Date: 2001-06-08 22:16:48 $'
+ * '$Revision: 1.13 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -384,7 +384,7 @@ public class PackageWizardShell extends javax.swing.JFrame
     //add the triples to the triples file
     //open the new package in the package editor if the check box is true
     Vector packageFiles = new Vector();
-    String triplesTag = "/triples";
+    String triplesTag = "//triple";
     for(int i=0; i<frameWizards.size(); i++)
     { //find the triplesTag
       WizardFrameContainer wfc = (WizardFrameContainer)frameWizards.elementAt(i);
@@ -459,7 +459,7 @@ public class PackageWizardShell extends javax.swing.JFrame
         {
           String rel = (String)v.elementAt(j);
           Triple t = new Triple(id, "isRelatedTo", rel);
-          System.out.println("triple: " + t.toString());
+          //System.out.println("triple: " + t.toString());
           tc.addTriple(t);
         }
       }
@@ -478,6 +478,7 @@ public class PackageWizardShell extends javax.swing.JFrame
       if(name != null && name.equals(triplesFile))
       { //put the triples in the triples file.
         File f = wfc.getFile(false);
+
         if(f == null)
         {
           return;
@@ -533,18 +534,22 @@ public class PackageWizardShell extends javax.swing.JFrame
         //get the DOM rep of the document without triples
         doc = parser.getDocument();
         DocumentTypeImpl dt = (DocumentTypeImpl)doc.getDoctype();
+        
         //System.out.println("DOCTYPES " + dt.getPublicId() + " " + 
-        //                    dt.getSystemId());
+        //                  dt.getSystemId());
         String publicid = dt.getPublicId();
         String systemid = dt.getSystemId();
         String nameid = dt.getName();
         NodeList tripleNodeList = triples.getNodeList();
         NodeList docTriplesNodeList = null;
         
+        //System.out.println("Document: " + print(doc.getDocumentElement()));
+        
         try
         {
           //find where the triples go in the file
-          docTriplesNodeList = XPathAPI.selectNodeList(doc, triplesTag); 
+          docTriplesNodeList = XPathAPI.selectNodeList(doc, triplesTag);
+          //System.out.println("docTriples: " + docTriplesNodeList.getLength());
         }
         catch(SAXException se)
         {
@@ -557,7 +562,33 @@ public class PackageWizardShell extends javax.swing.JFrame
         { //add the triples to the appropriate position in the file
           Node n = doc.importNode(tripleNodeList.item(j), true);
           Node triplesNode = docTriplesNodeList.item(0);
-          triplesNode.appendChild(n);
+          Node parent = triplesNode.getParentNode();
+          parent.appendChild(n);
+        }
+        
+        NodeList newtriples = null;
+        try
+        {
+          //find where the triples go in the file
+          newtriples = XPathAPI.selectNodeList(doc, triplesTag);
+          //System.out.println("docTriples: " + docTriplesNodeList.getLength());
+        }
+        catch(SAXException se)
+        {
+          System.err.println("file: " + f.getPath() + " : parse threw: " + 
+                             se.toString());
+        }
+        
+        for(int j=0; j<newtriples.getLength(); j++)
+        { //find the blank template triple node and remove it
+          System.out.println("j: " + j);
+          Node n = newtriples.item(j);
+          if(!n.getFirstChild().getNodeName().equals("subject"))
+          {
+            System.out.println("deleting triple node.");
+            Node parent = n.getParentNode();
+            parent.removeChild(n);
+          }
         }
         
         //write out the tiples file
@@ -585,8 +616,19 @@ public class PackageWizardShell extends javax.swing.JFrame
     {
       //save the package to metacat here
       System.out.println("saving the package to metacat (not really)");
-      /*
-      ????????????This doesn't work and I don't know why???????????????????
+      
+      if(!framework.isConnected())
+      {
+        int choice = JOptionPane.showConfirmDialog(null, 
+                               "You must be logged in to upload to Metacat." +
+                               "ADD FUNCTIONALITY TO ALLOW A USER TO LOGIN HERE", 
+                               "Package Wizard", 
+                               JOptionPane.YES_NO_CANCEL_OPTION,
+                               JOptionPane.WARNING_MESSAGE);
+        return;
+      }
+      
+      //????????????This doesn't work and I don't know why???????????????????
       for(int i=0; i<packageFiles.size(); i++)
       {
         MetacatDataStore mds = new MetacatDataStore(framework);
@@ -594,7 +636,7 @@ public class PackageWizardShell extends javax.swing.JFrame
         String id = (String)v.elementAt(0);
         File f = (File)v.elementAt(1);
         String type = (String)v.elementAt(2);
-        System.out.println("id: " + id + " type: " + type);
+        //System.out.println("id: " + id + " type: " + type);
         
         FileReader fr;
         try
@@ -612,6 +654,7 @@ public class PackageWizardShell extends javax.swing.JFrame
           }
           else
           { //this is an xml file
+            //send it to metacat
             mds.newFile(id, fr, publicAcc);
           }
           fr.close();
@@ -633,7 +676,7 @@ public class PackageWizardShell extends javax.swing.JFrame
           return;
         }
       }
-      */
+      
     }
     
     if(openCheckBox.isSelected())
@@ -643,8 +686,8 @@ public class PackageWizardShell extends javax.swing.JFrame
       String location = DataPackage.LOCAL;
       String identifier = wfc.id;
       Vector relations = triples.getCollection();
-      framework.debug(9, "location: " + location + " identifier: " + 
-                      identifier + " relations: " + relations.toString());
+      //framework.debug(9, "location: " + location + " identifier: " + 
+      //                identifier + " relations: " + relations.toString());
       DataPackage dp = new DataPackage(location, identifier, 
                                      relations, framework);
       DataPackageGUI gui = new DataPackageGUI(framework, dp);

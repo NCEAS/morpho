@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-06-06 17:36:41 $'
- * '$Revision: 1.24 $'
+ *     '$Date: 2001-06-08 22:16:47 $'
+ * '$Revision: 1.25 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -957,7 +957,8 @@ public class PackageWizard extends javax.swing.JFrame
           else
           { //if an item is repeated it has to be inserted next to the element
             //that created it.
-            parentPanel.children.insertElementAt(tempPanel, prevIndex.intValue()+1);
+            parentPanel.children.insertElementAt(tempPanel, 
+                                                 prevIndex.intValue()+1);
           }
           
           if(tempElement.attributes.containsKey("visible"))
@@ -1061,6 +1062,9 @@ public class PackageWizard extends javax.swing.JFrame
                   JPanel layoutpanel = new JPanel();
                   layoutpanel.add(newLabel);
                   layoutpanel.add(newtextfield);
+                  //Dimension d = parentPanel2.getSize();
+                  //parentPanel2.setSize(d.width, d.height + 10);
+                  //System.out.println("new size: " + d.width + "x" + d.height);
                   parentPanel2.add(layoutpanel, insertindex + 1);
                   //parentPanel.add(newLabel, insertindex + 1);
                   //parentPanel.add(newtextfield, insertindex + 2);

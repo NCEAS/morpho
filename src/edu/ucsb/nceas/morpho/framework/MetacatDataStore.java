@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-05-16 16:37:24 $'
- * '$Revision: 1.6 $'
+ *     '$Date: 2001-06-08 22:16:48 $'
+ * '$Revision: 1.7 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -68,7 +68,7 @@ public class MetacatDataStore extends DataStore
     
     if(localfile.exists())
     { //if the file is cached locally, read it from the hard drive
-      debug(9, "getting cached file");
+      System.out.println("getting cached file");
       return localfile;
     }
     else
@@ -79,7 +79,7 @@ public class MetacatDataStore extends DataStore
       //-throw exception if file is an error and delete file
       //-return the file pointer if the file is not an error
       
-      debug(9, "getting file from Metacat");
+      System.out.println("getting file from Metacat");
       Properties props = new Properties();
       props.setProperty("action", "read");
       props.setProperty("docid", name);
@@ -92,7 +92,7 @@ public class MetacatDataStore extends DataStore
       }
       catch(Exception ee)
       {
-        ee.printStackTrace();
+        ee.printStackTrace(System.out);
       }
       
       try
@@ -210,8 +210,17 @@ public class MetacatDataStore extends DataStore
       prop.put("public", access);
       prop.put("doctext", fileText.toString());
       prop.put("docid", name);
+      System.out.println("sending docid: " + name + " to metacat");
+      System.out.println("action: " + action);
+      System.out.println("access: " + access);
+      System.out.println("file: " + fileText.toString());
       
-      InputStream metacatInput = framework.getMetacatInputStream(prop);
+      InputStream metacatInput = null;
+      metacatInput = framework.getMetacatInputStream(prop, true);
+      if(metacatInput == null)
+      {
+        System.out.println("the stream is closed!!!!!!!!!!!!!!!");
+      }
       InputStreamReader metacatInputReader = new InputStreamReader(metacatInput);
       
       while(metacatInputReader.ready())
@@ -220,10 +229,12 @@ public class MetacatDataStore extends DataStore
       }
       
       String message = messageBuf.toString();
-      System.out.println(message);
+      System.out.println("message from server: " + message);
       
       if(message.indexOf("<error>") != -1)
       {//there was an error
+        metacatInputReader.close();
+        metacatInput.close();
         throw new MetacatUploadException(message);
       }
       else if(message.indexOf("<success>") != -1)
@@ -232,10 +243,14 @@ public class MetacatDataStore extends DataStore
         String docid = parseIdFromMessage(message);
         try
         {
+          metacatInputReader.close();
+          metacatInput.close();
           return openFile(docid);
         }
         catch(Exception ee)
         {
+          metacatInputReader.close();
+          metacatInput.close();
           ee.printStackTrace();
           return null;
         }
@@ -248,6 +263,10 @@ public class MetacatDataStore extends DataStore
     }
     catch(Exception e)
     {
+      //metacatInputReader.close();
+      //metacatInput.close();
+      System.out.println("Error in MetacatDataStore.saveFile(): " + 
+                          e.getMessage());
       e.printStackTrace();
       return null;
     }

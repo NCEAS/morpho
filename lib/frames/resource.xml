@@ -10,44 +10,36 @@
                defaulttext="test title" />
     </group>
   
-    <group label="Originator" repeatable="yes" field="originator" allowNull="no">
-      <group>
-      <group label="Identification Information" repeatable="yes" allowNull="no" 
-             size="400x150" layout="flow"> 
-        <textbox label="Salutation" field="individualName/salutation" size="5" 
-                 repeatable="yes"/>
-        <textbox label="Given Name" field="individualName/givenName" size="10" 
-                 repeatable="yes"/>
-        <textbox label="Sur Name" field="individualName/surName" size="10" 
-                 allowNull="no" defaulttext="berkley"/>
-        
-        <textbox label="Organization" field="organizationName" size="10" 
-                 repeatable="yes"/>
-        <textbox label="Position" field="positionName" size="10" />
-      </group>
-      </group>
+    <group label="Originator" repeatable="yes" field="originator" allowNull="no"
+           layout="flow" size="480x400"> 
+      <textbox label="Salutation" field="individualName/salutation" size="5" 
+               repeatable="yes"/>
+      <textbox label="Given Name" field="individualName/givenName" size="10" 
+               repeatable="yes"/>
+      <textbox label="Sur Name" field="individualName/surName" size="10" 
+               allowNull="no" defaulttext="berkley"/>
       
+      <textbox label="Organization" field="organizationName" size="10" 
+               repeatable="yes"/>
+      <textbox label="Address" field="address/deliveryPoint" size="10" 
+               repeatable="yes"/>
+      <textbox label="City" field="address/city" size="10" />
+      <textbox label="State" field="address/administrativeArea" size="10" />
+      <textbox label="ZIP" field="address/postalCode" size="10" />
+      <textbox label="Country" field="address/country" size="10" defaulttext="USA"/>
       <group>
-      <group label="Contact Information" field="contactInfo" repeatable="yes" 
-             size="400x200" layout="flow">
-        <textbox label="Voice Phone" field="phone/voice" size="10" />
-        <textbox label="Fax" field="phone/facsimile" size="10" />
-        <textbox label="Address" field="address/deliveryPoint" size="10" />
-        <textbox label="City" field="address/city" size="10" />
-        <textbox label="State" field="address/administrativeArea" size="10" />
-        <textbox label="ZIP" field="address/postalCode" size="10" />
-        <textbox label="Email address" field="address/electronicMailAddress" 
-                 size="10" />
-        <textbox label="Web Site" field="onlineResource/linkage/URL" size="10" 
-                 allowNull="no" repeatable="yes" 
-                 defaulttext="knb.ecoinformatics.org"/>
-        <textbox label="Contact Instructions" field="contactInstructions" 
-                 size="30" />
+      <group field="@phone" label="Phone">
+        <textbox label="Phone Number" field="FIELDVALUE" size="10"/>
+        <textbox label="Phone Type" field="phonetype" size="10" defaulttext="voice"/>
       </group>
       </group>
-      
-      <combobox label="Originators Role" field="roleCode" size="10" 
-                allowNull="no" repeatable="yes" defaulttext="originator">
+      <textbox label="Email address" field="electronicMailAddress" 
+               size="10" />
+      <textbox label="Web Site" field="onlineLink" size="10" 
+               allowNull="no" repeatable="yes" 
+               defaulttext="http://knb.ecoinformatics.org"/>
+      <combobox label="Originators Role" field="role" size="10" 
+              allowNull="no" repeatable="yes" defaulttext="originator">
         <item value="contentProvider"/>
         <item value="custodianSteward"/>
         <item value="owner"/>
@@ -63,8 +55,7 @@
       </combobox>
     </group>
     
-    <group field="triples" visible="no">
-      <textbox field="triple"/>
-    </group>
+    <textbox field="triple" visible="false"/>
+    
   </group>
 </wizard>
