@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-05-31 22:43:00 $'
- * '$Revision: 1.9 $'
+ *     '$Date: 2001-06-05 21:07:54 $'
+ * '$Revision: 1.10 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -62,6 +62,9 @@ public class XMLPanels extends Component
  public DefaultMutableTreeNode doc;
 // public MyDefaultTreeModel treeModel = null;
  public DefaultTreeModel treeModel = null;
+ public JTree tree = null;
+ 
+ public DocFrame container = null;
  
  // nodeMap will store the tree node associated with each textfield
  Hashtable nodeMap;
@@ -87,6 +90,13 @@ public class XMLPanels extends Component
         treeModel = tm;
     }
     
+    public void setTree(JTree tree) {
+      this.tree = tree;
+    }
+    
+    public void setContainer(DocFrame df) {
+      container = df; 
+    }
     /**
      */
     void init(){
@@ -277,11 +287,11 @@ class dfhAction implements java.awt.event.ActionListener
 			if (object instanceof JTextField)
 				{
 				    DefaultMutableTreeNode nd = (DefaultMutableTreeNode)nodeMap.get(object);
-		            NodeInfo info = (NodeInfo)(nd.getUserObject());
-                    info.setPCValue(((JTextField)object).getText());
+		        NodeInfo info = (NodeInfo)(nd.getUserObject());
+            info.setPCValue(((JTextField)object).getText());
 //				    System.out.println(((JTextField)object).getText());
 				    if (treeModel!=null) {
-				        treeModel.reload();
+//				        treeModel.reload();
 				    }
 				}
 		}
@@ -294,6 +304,13 @@ class dfhAction implements java.awt.event.ActionListener
 				    int dist = pixelsFromTop((JComponent)object);
 	//			    System.out.println("Distance = "+dist);
 				    topPanel.scrollRectToVisible(new Rectangle(0,dist,50,50));
+				    DefaultMutableTreeNode nd = (DefaultMutableTreeNode)nodeMap.get(object);
+				    if (container!=null) {
+				      container.setTreeValueFlag(false);
+				      TreePath tp = new TreePath(nd.getPath());
+				      tree.setSelectionPath(tp);
+				      tree.scrollPathToVisible(tp);
+				    }
 				}
 		}
 	}

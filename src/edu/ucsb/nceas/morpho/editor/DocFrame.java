@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-06-05 17:47:14 $'
- * '$Revision: 1.14 $'
+ *     '$Date: 2001-06-05 21:07:54 $'
+ * '$Revision: 1.15 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -96,6 +96,8 @@ public class DocFrame extends javax.swing.JFrame
     Catalog myCatalog;
     String dtdfile;
     int numlevels = 9;
+    
+    boolean treeValueFlag = true;
     
 //    javax.swing.JMenuItem CMmenuItem;
     javax.swing.JMenuItem menuItem;
@@ -236,6 +238,7 @@ public class DocFrame extends javax.swing.JFrame
 		}
 		treeModel.reload();
 		tree.setModel(treeModel);
+    tree.setSelectionRow(0);
     
 	}
 	
@@ -417,6 +420,10 @@ void putXMLintoTree() {
 	    DefaultMutableTreeNode node = new DefaultMutableTreeNode(ni);
 	    return node;
 	}
+
+	public void setTreeValueFlag(boolean flg) {
+	 treeValueFlag = flg; 
+	}
 	
 	class SymTreeSelection implements javax.swing.event.TreeSelectionListener
 	{
@@ -430,6 +437,7 @@ void putXMLintoTree() {
 
 	 void tree_valueChanged(javax.swing.event.TreeSelectionEvent event)
 	{
+	  if (treeValueFlag) {
 	    TreePath tp = event.getNewLeadSelectionPath();
 	    if (tp!=null) {
 	    Object ob = tp.getLastPathComponent();
@@ -454,10 +462,15 @@ void putXMLintoTree() {
          
          XMLPanels xp = new XMLPanels(node);
          xp.setTreeModel(treeModel);
+         xp.setContainer(this);
+         xp.setTree(tree);
          NestedPanelScrollPanel.getViewport().add(xp.topPanel);
          xp.invalidate();
          NestedPanelScrollPanel.repaint();
+      }
 		}
+		treeValueFlag = true;
+		
 	}  
 
 	class SymChange implements javax.swing.event.ChangeListener
@@ -553,6 +566,7 @@ void Dup_actionPerformed(java.awt.event.ActionEvent event) {
 	  tree.expandPath(tp);
 	  par.insert(newnode,iii+1);
 	  treeModel.reload(par);
+	  tree.setSelectionPath(tp);
 	}
 }
 
