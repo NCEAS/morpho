@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: sgarg $'
- *     '$Date: 2003-12-30 17:08:47 $'
- * '$Revision: 1.12 $'
+ *   '$Author: brooke $'
+ *     '$Date: 2004-01-05 23:04:04 $'
+ * '$Revision: 1.13 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,17 +28,15 @@
 
 package edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages;
 
+import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
+import edu.ucsb.nceas.morpho.plugins.datapackagewizard.AbstractWizardPage;
+import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WidgetFactory;
+import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardContainerFrame;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardSettings;
-
-import javax.swing.JLabel;
+import edu.ucsb.nceas.utilities.OrderedMap;
 
 import javax.swing.BoxLayout;
-
-import edu.ucsb.nceas.morpho.plugins.datapackagewizard.AbstractWizardPage;
-import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
-import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WidgetFactory;
-import edu.ucsb.nceas.utilities.OrderedMap;
-import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardContainerFrame;
+import javax.swing.JLabel;
 
 public class Summary extends AbstractWizardPage {
 
@@ -51,6 +49,7 @@ public class Summary extends AbstractWizardPage {
 
   private JLabel desc1;
   private JLabel desc2;
+  private JLabel desc4;
   private WizardContainerFrame mainWizFrame;
 
   public Summary(WizardContainerFrame mainWizFrame) {
@@ -85,8 +84,30 @@ public class Summary extends AbstractWizardPage {
     "<p>You can press the \""+WizardSettings.FINISH_BUTTON_TEXT+"\" button, "
     +"or you can use the \""+WizardSettings.PREV_BUTTON_TEXT
     +"\" button to return to previous pages "
-    +"and change the information you have added.", 2);
+    +"and change the information you have added.</p>", 2);
     this.add(desc3);
+
+    desc4 = WidgetFactory.makeHTMLLabel("", 2);
+    this.add(desc4);
+  }
+
+  private String getLastParagraph() {
+
+    String ID = mainWizFrame.getFirstPageID();
+
+    if (ID!=null && ID.equals(DataPackageWizardInterface.INTRODUCTION)) {
+
+      return "<p>After you press \""
+        + WizardSettings.FINISH_BUTTON_TEXT + "\", you "
+        +"will see your new package information displayed in the Morpho main "
+        +"screen.  If you want to add data tables to your package, you can do "
+        +"so by selecting the \"Create New Datatable\" option on the \"Data\" "
+        + "menu</p>";
+
+    } else {
+
+      return "";
+    }
   }
 
   private String getProductName() {
@@ -113,6 +134,9 @@ public class Summary extends AbstractWizardPage {
                   +this.getDataLocation()
                   +"</b></p><br></br>"
                   +WizardSettings.HTML_TABLE_LABEL_CLOSING);
+
+    desc4 .setText( WizardSettings.HTML_TABLE_LABEL_OPENING
+                  +getLastParagraph()+WizardSettings.HTML_TABLE_LABEL_CLOSING);
   }
 
   private String getDataLocation() {
