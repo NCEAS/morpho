@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2004-03-19 01:23:57 $'
- * '$Revision: 1.22 $'
+ *   '$Author: brooke $'
+ *     '$Date: 2004-03-22 18:44:04 $'
+ * '$Revision: 1.23 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -64,6 +64,7 @@ import javax.swing.JPanel;
 import javax.swing.JToolBar;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
+import edu.ucsb.nceas.morpho.datapackage.AbstractDataPackage;
 
 /**
  * The MorphoFrame is a Window in the Morpho application containing the standard
@@ -257,6 +258,28 @@ public class MorphoFrame extends JFrame
       }
 
       return null;
+    }
+
+
+    /**
+     * Get AbstractDataPackage represented by this frame, if it exists. If this
+     * morphFrame doesn't contain an AbstractDataPackage, null will be returned
+     *
+     * @return AbstractDataPackage represented by this frame, if it exists. If
+     *         this morphFrame doesn't contain an AbstractDataPackage, null will
+     *         be returned
+     */
+    public AbstractDataPackage getAbstractDataPackage() {
+
+      DataViewContainerPanel dataViewContainerPanel
+          = this.getDataViewContainerPanel();
+
+      if (dataViewContainerPanel == null) {
+        Log.debug(20, "MorphoFrame.getAbstractDataPackage() - "
+                  +"dataViewContainerPanel==null, returning NULL");
+        return null;
+      }
+      return dataViewContainerPanel.getAbstractDataPackage();
     }
 
 
@@ -540,7 +563,7 @@ public class MorphoFrame extends JFrame
       comp = null;
       System.gc();
     }
-    
+
     /*
      *  returns a flag indicating wheter this window is 'dirty'
      *  i.e. has information that needs to be saved
@@ -553,9 +576,9 @@ public class MorphoFrame extends JFrame
          String loc = dvcp.getPackageLocation();
          if (loc.equals("")) {
            return true;
-         } 
+         }
       }
-      return false;   
+      return false;
     }
 
     /**

@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2004-03-19 01:23:57 $'
- * '$Revision: 1.27 $'
+ *   '$Author: brooke $'
+ *     '$Date: 2004-03-22 18:44:04 $'
+ * '$Revision: 1.28 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -44,12 +44,13 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.KeyStroke;
+import edu.ucsb.nceas.morpho.datapackage.AbstractDataPackage;
 
 /**
  * The UIController handles the state of the morpho menu and toolbars so
- * that they are synchronized across the various plugins.  This is a 
+ * that they are synchronized across the various plugins.  This is a
  * singleton class because only one instance is ever needed.  Plugins that need
- * a new frame for a window should call UIController.newWindow().  The single 
+ * a new frame for a window should call UIController.newWindow().  The single
  * instance of UIController can be obtained statically using getInstance().
  *
  * @author   jones
@@ -72,7 +73,7 @@ public class UIController
     private static Vector orderedMenuList;
     private static Hashtable orderedMenuActions;
     private static Vector toolbarList;
-    // A hashtable to store the pair: submenu-path, 
+    // A hashtable to store the pair: submenu-path,
     // such as synchronize - file/synchroize
     private static Hashtable subMenuAndPath;
     private static int count = 0; // count create how many frames
@@ -81,7 +82,7 @@ public class UIController
     private static int windowXcoordUpperBound, windowYcoordUpperBound;
     private static int WIN_CASCADE_MOD_X;
     private static int WIN_CASCADE_MOD_Y;
-    
+
     // Constants
     public static final String SEPARATOR_PRECEDING = "separator_preceding";
     public static final String SEPARATOR_FOLLOWING = "separator_following";
@@ -107,7 +108,7 @@ public class UIController
     }
 
     /**
-     * Initialize the single instance of the UIController, 
+     * Initialize the single instance of the UIController,
      * creating it if needed.
      */
     public static UIController initialize(Morpho morpho)
@@ -120,7 +121,7 @@ public class UIController
 
     /**
      * Get the single instance of the UIController, creating it if needed.
-     * If the controller has not yet been created yet (using the 
+     * If the controller has not yet been created yet (using the
      * method "initialize(Morpho)", then this method returns null.
      *
      * @returns the single instance of the UIController
@@ -150,10 +151,10 @@ public class UIController
         registerWindow(window);
 
         updateStatusBar(window.getStatusBar());
-        
+
         // If initial  window morpho in the window list, remove it
-        
-/*  leave the startup screen - request from reviewers!  Feb 2004     
+
+/*  leave the startup screen - request from reviewers!  Feb 2004
         if ( count == 1)// create the second frame
         {
           Enumeration frameList = windowList.elements();
@@ -169,10 +170,10 @@ public class UIController
 
           }
         }
-*/        
+*/
         setCurrentActiveWindow(window);
         setWindowLocation(window);
-				window.toFront();
+        window.toFront();
         count++;
         return window;
     }
@@ -182,9 +183,9 @@ public class UIController
     private void setWindowLocation(MorphoFrame window)
     {
         if (count==0) {
-        
+
             initWindowCoords(window);
-            
+
             Log.debug(45,"UIController.initWindowCoords(): windowXcoordUpperBound="
                                                        +windowXcoordUpperBound);
             Log.debug(45,"UIController.initWindowCoords(): windowYcoordUpperBound="
@@ -194,19 +195,19 @@ public class UIController
             Log.debug(45,"UIController.initWindowCoords(): WIN_CASCADE_MOD_Y="
                                                             +WIN_CASCADE_MOD_Y);
         }
-        
 
-        // don't do this if this is the first window after the welcome screen, 
+
+        // don't do this if this is the first window after the welcome screen,
         // because we need to replace the welcome screen at the same location...
         if (count!=1) {
             if (WIN_CASCADE_MOD_X > 0) {
-                windowXcoord = windowXcoordUpperBound 
-                    + ((  windowXcoord - windowXcoordUpperBound 
+                windowXcoord = windowXcoordUpperBound
+                    + ((  windowXcoord - windowXcoordUpperBound
                     + UISettings.WINDOW_CASCADE_X_OFFSET) % WIN_CASCADE_MOD_X);
             }
             if (WIN_CASCADE_MOD_Y > 0) {
-                windowYcoord = windowYcoordUpperBound 
-                    + ((  windowYcoord - windowYcoordUpperBound 
+                windowYcoord = windowYcoordUpperBound
+                    + ((  windowYcoord - windowYcoordUpperBound
                     + UISettings.WINDOW_CASCADE_Y_OFFSET) % WIN_CASCADE_MOD_Y);
             }
         }
@@ -215,34 +216,34 @@ public class UIController
                                                             +windowYcoord+")");
         window.setLocation(windowXcoord,windowYcoord);
     }
-    
+
     /**
      * This method is called by plugins to update window that is an
-     * instance of MorphoFrame.  
+     * instance of MorphoFrame.
      *
      * @param window the window will be given new name
      * @param title the new name will give to window
      */
     public void updateWindow(MorphoFrame window, String title)
-    { 
+    {
       // Get title from old frame
       String oldTitle = window.getTitle();
       if ((title == null) || (title.equals(oldTitle))) {
           return;
       }
-      
+
       // Remove the frame from window list
       removeWindow(window);
       // Set frame new title
       window.setTitle(title);
-      
+
       registerWindow(window);
 
       if (getCurrentActiveWindow()==null) {
           setCurrentActiveWindow(window);
       }
     }
-      
+
     /**
      * This method is called to de-register a Window that
      * the plugin has created.  The window is removed from the "Windows"
@@ -258,7 +259,7 @@ public class UIController
             morpho.exitApplication();
         }
     }
-    
+
     /*
      * A method to remove a winodw and the method without checking window list
      * if it is empty
@@ -272,18 +273,18 @@ public class UIController
         Enumeration keys = windowList.keys();
         while (keys.hasMoreElements()) {
             currentAction = (GUIAction)keys.nextElement();
-            MorphoFrame savedWindow = 
+            MorphoFrame savedWindow =
                 (MorphoFrame)windowList.get(currentAction);
             if (savedWindow == window) {
                 break;
             } else {
                 currentAction = null;
             }
-        } 
-        
+        }
+
         // Remove the action from the GUIAction list
         removeGuiAction(currentAction);
-        
+
         // If the window is the currentActiveWindow, change it
         if (getCurrentActiveWindow()==window) {
             setCurrentActiveWindow(null);
@@ -316,10 +317,10 @@ public class UIController
         } catch(NullPointerException npe2) {
             Log.debug(20, "Window already removed from registry.");
         }
-        
+
 
     }
-    
+
     /**
      * Method to remove all windows in window list
      */
@@ -336,7 +337,7 @@ public class UIController
       // set count 0
       count = 0;
     }
-    
+
     /*
      * remove all 'clean' frames and return a vector of 'dirty' frames
      */
@@ -354,7 +355,7 @@ public class UIController
           frame = null;
         }
       }
-    count = res.size();  
+    count = res.size();
     return res;
     }
 /*
@@ -381,7 +382,7 @@ public class UIController
         guiActionClones.remove(action);
         for (int i=0; i< cloneList.size(); i++) {
             GUIAction clone = (GUIAction)cloneList.elementAt(i);
-            MorphoFrame window = 
+            MorphoFrame window =
                 (MorphoFrame)actionCloneWindowAssociation.get(clone);
             window.removeGuiAction(clone);
         }
@@ -415,7 +416,7 @@ public class UIController
 
     /**
      * Remove a menu item and its toolbar button for a particular
-     * instance of GUIAction.  
+     * instance of GUIAction.
      *
      * @param action the GUIAction instance to be removed
      */
@@ -429,50 +430,50 @@ public class UIController
             window.removeGuiAction(clone);
         }
     }
-    
+
     /**
      * return the MorphoFrame that contains the GUIAction clone provided
      *
-     * @param clone       the GUIAction clone for which the parent MorphoFrame  
+     * @param clone       the GUIAction clone for which the parent MorphoFrame
      *                    will be returned
      * @return            the MorphoFrame which is the parent of this GUIAction
      */
-    public static MorphoFrame getMorphoFrameContainingGUIAction(GUIAction clone) 
+    public static MorphoFrame getMorphoFrameContainingGUIAction(GUIAction clone)
     {
         if (clone==null || actionCloneWindowAssociation==null) return null;
         return (MorphoFrame)actionCloneWindowAssociation.get(clone);
     }
 
     /**
-     *  This method can be used if you have the original GUIAction instance and 
-     *  want to get the existing clone of it that was put into a particular 
+     *  This method can be used if you have the original GUIAction instance and
+     *  want to get the existing clone of it that was put into a particular
      *  MorphoFrame by UIController.
      .
      *
      * @param action      the GUIAction whose clone is sought
      * @param frame       the MorphoFrame in which the clone is nested
-     * @return            the GUIAction object that is a clone of the passed 
-     *                    GUIAction, and that is nested inside the passed 
+     * @return            the GUIAction object that is a clone of the passed
+     *                    GUIAction, and that is nested inside the passed
      *                    MorphoFrame
      */
-    public static GUIAction getGUIActionCloneUsedByMorphoFrame(GUIAction action, 
-                                                              MorphoFrame frame) 
+    public static GUIAction getGUIActionCloneUsedByMorphoFrame(GUIAction action,
+                                                              MorphoFrame frame)
     {
         if (action==null || frame==null) return null;
-        
-        //given the action, get its list of clones 
 
-        //guiActionClones is a hashtable where each key is the original 
+        //given the action, get its list of clones
+
+        //guiActionClones is a hashtable where each key is the original
         //GUIAction instance, and its corresponding value is a Vector of clones
         Vector cloneList = (Vector)guiActionClones.get(action);
-        
+
         //cloneList therefore holds all possible clones of the passed GUIAction
         for (int i=0; i< cloneList.size(); i++) {
             GUIAction clone = (GUIAction)cloneList.elementAt(i);
-            //actionCloneWindowAssociation is a hash each clone (the keys) and the 
+            //actionCloneWindowAssociation is a hash each clone (the keys) and the
             //window that holds it (the values)
-            
-            //therefore check each clone in turn to see if it belongs to 
+
+            //therefore check each clone in turn to see if it belongs to
             //passed MorphoFrame:
             if ((MorphoFrame)actionCloneWindowAssociation.get(clone)==frame) {
                 return clone;
@@ -499,7 +500,7 @@ public class UIController
     {
         Enumeration windows = windowList.elements();
         while (windows.hasMoreElements()) {
-            StatusBar statusBar = 
+            StatusBar statusBar =
                 ((MorphoFrame)windows.nextElement()).getStatusBar();
             updateStatusBar(statusBar);
         }
@@ -514,7 +515,7 @@ public class UIController
     {
         currentActiveWindow = window;
     }
-    
+
     /**
      * get currently active window
      *
@@ -524,7 +525,30 @@ public class UIController
     {
         return currentActiveWindow;
     }
-    
+
+
+
+    /**
+     * get AbstractDataPackage from currently active window
+     *
+     *  @return  the AbstractDataPackage from the currently active MorphoFrame
+     * window; returns null if current window is null, or if current window does
+     * not contain an AbstractDataPackage
+     */
+    public AbstractDataPackage getCurrentAbstractDataPackage() {
+
+      MorphoFrame morphoFrame = this.getCurrentActiveWindow();
+
+      if (morphoFrame == null) {
+
+        Log.debug(20, "UIController.getCurrentAbstractDataPackage() - "
+                  +"morphoFrame==null, returning NULL");
+        return null;
+      }
+      return morphoFrame.getAbstractDataPackage();
+    }
+
+
     /**
      * get Morpho
      */
@@ -563,9 +587,9 @@ public class UIController
             public void execute(ActionEvent e) {
                 JMenuItem source = (JMenuItem)e.getSource();
                 Action firedAction = source.getAction();
-                GUIAction original = 
+                GUIAction original =
                     ((GUIAction)firedAction).getOriginalAction();
-                MorphoFrame window1 = 
+                MorphoFrame window1 =
                     (MorphoFrame)windowList.get(original);
                 window1.toFront();
             }
@@ -585,7 +609,7 @@ public class UIController
     private void updateStatusBar(StatusBar statusBar)
     {
         statusBar.setConnectStatus(morpho.getNetworkStatus());
-        statusBar.setLoginStatus(morpho.isConnected() && 
+        statusBar.setLoginStatus(morpho.isConnected() &&
                 morpho.getNetworkStatus());
         statusBar.setSSLStatus(morpho.getSslStatus());
     }
@@ -617,12 +641,12 @@ public class UIController
     private static void createMenuItems(String menuName, JMenu currentMenu)
     {
         Vector currentActions = (Vector)orderedMenuActions.get(menuName);
-        registerActionToMenu(currentMenu, currentActions); 
+        registerActionToMenu(currentMenu, currentActions);
         Log.debug(50, "Creating menu items for: " + menuName + " (" +
                 currentActions.size() + " actions)");
-       
+
     }
-    
+
      /**
      * Create new menu items for a particular menu
      */
@@ -635,14 +659,14 @@ public class UIController
             Action currentAction = (Action)currentActions.elementAt(j);
 
             JMenuItem currentItem = null;
-            String hasDefaultSep = 
+            String hasDefaultSep =
             (String)currentAction.getValue(Action.DEFAULT);
-            Integer itemPosition = 
+            Integer itemPosition =
                 (Integer)currentAction.getValue("menuPosition");
-            int menuPos = 
+            int menuPos =
                 (itemPosition != null) ? itemPosition.intValue() : -1;
 
-            menuPos = -1; 
+            menuPos = -1;
             if (menuPos >= 0) {
                 // Insert menus at the specified position
                 Log.debug(50, "Inserting Action as menu item.");
@@ -650,7 +674,7 @@ public class UIController
                 if (menuPos > menuCount) {
                     menuPos = menuCount;
                 }
-            
+
                 if (hasDefaultSep != null &&
                     hasDefaultSep.equals(SEPARATOR_PRECEDING)) {
                     currentMenu.insertSeparator(menuPos++);
@@ -682,7 +706,7 @@ public class UIController
             }
         }
     }
-    
+
     /**
      * Register a array actions to a menu. This method using recursion to handle
      * pull right submenu.
@@ -698,7 +722,7 @@ public class UIController
       {
         return;
       }
-      for (int j=0; j < actions.size(); j++) 
+      for (int j=0; j < actions.size(); j++)
       {
         Action currentAction = (Action)actions.elementAt(j);
          // To check the action if it is a pull right menu
@@ -754,15 +778,15 @@ public class UIController
            continue;
          }//if
        }//else
-          
+
        String hasDefaultSep = (String)currentAction.getValue(Action.DEFAULT);
        Integer itemPosition = (Integer)currentAction.getValue("menuPosition");
-      
+
        int menuPos = (itemPosition != null) ? itemPosition.intValue() : -1;
-      
-       //menuPos = -1; 
-      
-       if (menuPos >= 0) 
+
+       //menuPos = -1;
+
+       if (menuPos >= 0)
        {
          // Insert menus at the specified position
          Log.debug(50, "Inserting Action as menu item.");
@@ -770,7 +794,7 @@ public class UIController
          if (menuPos > menuCount) {
             menuPos = menuCount;
          }
-         if (hasDefaultSep != null && hasDefaultSep.equals(SEPARATOR_PRECEDING)) 
+         if (hasDefaultSep != null && hasDefaultSep.equals(SEPARATOR_PRECEDING))
          {
            currentMenu.insertSeparator(menuPos);
            menuPos++;
@@ -781,7 +805,7 @@ public class UIController
            registerActionToMenu(currentPullRightMenu, subMenuActions);
            // Add submenu to the menu
            currentItem =currentMenu.insert(currentPullRightMenu, menuPos);
-           
+
          }
          else
          {
@@ -790,7 +814,7 @@ public class UIController
                     (KeyStroke)currentAction.getValue(
                     Action.ACCELERATOR_KEY));
          }
-         if (hasDefaultSep != null && hasDefaultSep.equals(SEPARATOR_FOLLOWING)) 
+         if (hasDefaultSep != null && hasDefaultSep.equals(SEPARATOR_FOLLOWING))
          {
            menuPos++;
            currentMenu.insertSeparator(menuPos);
@@ -800,7 +824,7 @@ public class UIController
       {
          // Append everything else at the bottom of the menu
          Log.debug(50, "Appending Action as menu item.");
-         if (hasDefaultSep != null && hasDefaultSep.equals(SEPARATOR_PRECEDING)) 
+         if (hasDefaultSep != null && hasDefaultSep.equals(SEPARATOR_PRECEDING))
          {
            currentMenu.addSeparator();
          }
@@ -809,7 +833,7 @@ public class UIController
            registerActionToMenu(currentPullRightMenu, subMenuActions);
            // Add submenu to the menu
            currentItem = currentMenu.add(currentPullRightMenu);
-           
+
          }
          else
          {
@@ -818,14 +842,14 @@ public class UIController
                     (KeyStroke)currentAction.getValue(
                     Action.ACCELERATOR_KEY));
          }
-         if (hasDefaultSep != null && hasDefaultSep.equals(SEPARATOR_FOLLOWING)) 
+         if (hasDefaultSep != null && hasDefaultSep.equals(SEPARATOR_FOLLOWING))
          {
            currentMenu.addSeparator();
          }
       }//else
     }//for
   }//registerActionToMenu
-  
+
    /**
     * Check a sub menu path already in the subMenuAndPath hashtable
     */
@@ -833,7 +857,7 @@ public class UIController
    {
        boolean flag = false;
        Enumeration menuPath = subMenuAndPath.elements();
-       while (menuPath.hasMoreElements()) 
+       while (menuPath.hasMoreElements())
        {
             String existedPath = (String)menuPath.nextElement();
             if (existedPath.equals(path))
@@ -844,23 +868,23 @@ public class UIController
        }//if
        return flag;
    }//isSubMenuPathExisted
-   
-   
-   
+
+
+
    //initialize values for window locations
-   private void initWindowCoords(MorphoFrame frame) 
+   private void initWindowCoords(MorphoFrame frame)
    {
         int xQttyTopLeft, yQttyTopLeft, qttyTopLeft;
         int xQttyLoRt,    yQttyLoRt,    qttyLoRt;
         int fWidth  = frame.getWidth();
         int fHeight = frame.getHeight();
-               
+
         windowXcoord = ((UISettings.CLIENT_SCREEN_WIDTH  - fWidth) / 2);
-        windowYcoord = ((UISettings.CLIENT_SCREEN_HEIGHT 
+        windowYcoord = ((UISettings.CLIENT_SCREEN_HEIGHT
                        - UISettings.TASKBAR_HEIGHT - fHeight) / 2);
 
         // UPPER LEFT LIMIT:
-        //how many frames can we fit between centered frame and 
+        //how many frames can we fit between centered frame and
         //top left of screen?
         xQttyTopLeft = windowXcoord/UISettings.WINDOW_CASCADE_X_OFFSET;
         yQttyTopLeft = windowYcoord/UISettings.WINDOW_CASCADE_Y_OFFSET;
@@ -868,13 +892,13 @@ public class UIController
         qttyTopLeft  = (xQttyTopLeft > yQttyTopLeft)? yQttyTopLeft : xQttyTopLeft;
 
         //so these are the top-leftmost coords for any window:
-        windowXcoordUpperBound = windowXcoord 
+        windowXcoordUpperBound = windowXcoord
                     - (qttyTopLeft * UISettings.WINDOW_CASCADE_X_OFFSET);
-        windowYcoordUpperBound = windowYcoord 
+        windowYcoordUpperBound = windowYcoord
                     - (qttyTopLeft * UISettings.WINDOW_CASCADE_Y_OFFSET);
-       
+
         // LOWER RIGHT LIMIT:
-        //how many frames can we fit between centered frame and 
+        //how many frames can we fit between centered frame and
         //bottom right of screen (minus task-bar area)?
         int loRightXcoord = windowXcoord + fWidth;
         int loRightYcoord = windowYcoord + fHeight;
@@ -886,10 +910,10 @@ public class UIController
         qttyLoRt  = (xQttyLoRt > yQttyLoRt)? yQttyLoRt : xQttyLoRt;
 
         int modInt = qttyTopLeft + qttyLoRt;
-        
+
         WIN_CASCADE_MOD_X = modInt * UISettings.WINDOW_CASCADE_X_OFFSET;
         WIN_CASCADE_MOD_Y = modInt * UISettings.WINDOW_CASCADE_Y_OFFSET;
-        
+
         //do this because algorithm will add cascade offset next:
         if (WIN_CASCADE_MOD_X > 0) {
             windowXcoord -= UISettings.WINDOW_CASCADE_X_OFFSET;
