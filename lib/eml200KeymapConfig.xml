@@ -5,6 +5,10 @@
     <entityParent>/eml:eml/dataset</entityParent>
     <entities>(/eml:eml/dataset/dataTable)|(/eml:eml/dataset/spatialRaster)|(/eml:eml/dataset/spatialVector)|(/eml:eml/dataset/otherEntity)</entities>
     <parties>(/eml:eml/dataset/creator)|(/eml:eml/dataset/metadataProvider)|(/eml:eml/dataset/associatedParty)|(/eml:eml/dataset/contact)|(/eml:eml/dataset/publisher)|(/eml:eml/dataset/project/personnel)</parties>
+    <creator>/eml:eml/dataset/creator</creator>
+    <contact>/eml:eml/dataset/contact</contact>
+    <associatedParty>/eml:eml/dataset/creator</associatedParty>
+    <personnel>/eml:eml/dataset/project/personnel</personnel>
     <title>/eml:eml/dataset/title</title>
     <author>/eml:eml/dataset/creator/individualName/surName</author>
     <accessionNumber>/eml:eml/@packageId</accessionNumber>
@@ -68,6 +72,9 @@
     <prevNode>/eml:eml/dataset/associatedParty</prevNode>
     <prevNode>/eml:eml/dataset/metadataProvider</prevNode>
     <prevNode>/eml:eml/dataset/creator</prevNode>
+  </insertionList>
+  <insertionList name="creator">
+    <prevNode>/eml:eml/dataset/title</prevNode>
   </insertionList>
   <insertionList name="methods">
     <prevNode>/eml:eml/dataset/pubPlace</prevNode>
