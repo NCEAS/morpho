@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2004-04-28 15:39:32 $'
- * '$Revision: 1.43 $'
+ *   '$Author: sgarg $'
+ *     '$Date: 2004-10-13 21:41:35 $'
+ * '$Revision: 1.44 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -291,7 +291,6 @@ public  class EML200DataPackage extends AbstractDataPackage
     while (e.hasMoreElements()) {
       String curid = (String)e.nextElement();
       try{
-Log.debug(2,"AAAA");
         File datafile = mds.openDataFile(curid);
         FileReader fr = new FileReader(datafile);
         fds.saveFile(curid, fr);
@@ -486,16 +485,16 @@ Log.debug(2,"AAAA");
     String temp = "";
     if ( (entityArray == null) || (entityArray.length < (entityIndex) + 1)) {
       Log.debug(20, "No such entity!");
-      return ret;    
+      return ret;
     }
     Node[] physicals = getPhysicalArray(entityIndex);
     if ( (physicals == null) || (physicals.length < 1)) {
       Log.debug(20, "no physicals!");
-      return ret;   
+      return ret;
     }
     if (physicalIndex > (physicals.length - 1)) {
       Log.debug(20, "physical index too large!!");
-      return ret;  
+      return ret;
     }
     Node physical = physicals[physicalIndex];
     try{
