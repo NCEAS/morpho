@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2002-08-30 16:46:16 $'
- * '$Revision: 1.11 $'
+ *     '$Date: 2002-09-25 17:32:19 $'
+ * '$Revision: 1.12 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -63,6 +63,7 @@ public class UIController
     // A hashtable to store the pair: submenu-path, 
     // such as synchronize - file/synchroize
     private static Hashtable subMenuAndPath;
+    private static int count = 0; // count create how many frames
 
     // Constants
     public static final String SEPARATOR_PRECEDING = "separator_preceding";
@@ -135,6 +136,22 @@ public class UIController
         if (getCurrentActiveWindow()==null) {
             setCurrentActiveWindow(window);
         }
+        // If initial  window morpho in the window list, remove it
+        if ( count == 1)// create the second frame
+        {
+          Enumeration frameList = windowList.elements();
+          while (frameList.hasMoreElements())
+          {
+            MorphoFrame frame = (MorphoFrame)frameList.nextElement();
+            if ((frame.getTitle()).equals(Morpho.INITIALFRAMENAME))
+            {
+              removeWindow(frame);
+              frame.dispose();
+              frame = null;
+            }
+          }
+        }
+        count++;
         return window;
     }
     
