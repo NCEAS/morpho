@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2004-03-22 22:00:55 $'
- * '$Revision: 1.30 $'
+ *     '$Date: 2004-03-30 21:51:56 $'
+ * '$Revision: 1.31 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -344,7 +344,7 @@ public  class EML200DataPackage extends AbstractDataPackage
       Node rootNode = getMetadataNode();
 		  NodeList refs2 = XMLUtilities.getNodeListWithXPath(rootNode, "//*[@id='"+refID+"']");
 		  // there should be a single node with the id (otherwise doc is eml invalid)
-      Node referencedNode = refs2.item(0);
+      Node referencedNode = (refs2.item(0)).cloneNode(true);
       // 'referencedNode' is the first order reference
       // next line calls to see if further references occur								 
       refdNode = getReferencedNode(referencedNode);
