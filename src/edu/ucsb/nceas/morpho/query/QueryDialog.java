@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2001-05-24 18:52:12 $'
- * '$Revision: 1.7 $'
+ *     '$Date: 2001-05-25 16:02:27 $'
+ * '$Revision: 1.8 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -39,9 +39,8 @@ import edu.ucsb.nceas.morpho.framework.*;
 
 /**
  * Dialog which collects search information from user
- * to be used to create pathQuery XML document.
+ * to be used to create a Query
  * 
- * @author higgins
  */
 public class QueryDialog extends javax.swing.JDialog
 {
@@ -236,6 +235,7 @@ public class QueryDialog extends javax.swing.JDialog
           new ConfigXML("./lib/config.xml")))).setVisible(true);
   }
 
+  /** Used by visual cafe -- but why? */
   public void addNotify()
   {
     // Record the size of the window prior to calling parents addNotify.
@@ -255,35 +255,42 @@ public class QueryDialog extends javax.swing.JDialog
   }
 
   // Used by addNotify
-  boolean frameSizeAdjusted = false;
+  private boolean frameSizeAdjusted = false;
 
   //{{DECLARE_CONTROLS
-  javax.swing.JPanel QueryPanel = new javax.swing.JPanel();
-  javax.swing.JTabbedPane QueryTabs = new javax.swing.JTabbedPane();
-  javax.swing.JPanel SubjectTextPanel = new javax.swing.JPanel();
-  javax.swing.JScrollPane QueryScrollPanel = new javax.swing.JScrollPane();
-  javax.swing.JPanel Query = new javax.swing.JPanel();
-  javax.swing.JPanel QueryChoicesPanel = new javax.swing.JPanel();
-  javax.swing.JPanel SubjectTextControlsPanel = new javax.swing.JPanel();
-  javax.swing.JPanel MoreLessControlsPanel = new javax.swing.JPanel();
-  javax.swing.JRadioButton AndRadioButton = new javax.swing.JRadioButton();
-  javax.swing.JRadioButton OrRadioButton = new javax.swing.JRadioButton();
-  javax.swing.JButton MoreButton = new javax.swing.JButton();
-  javax.swing.JButton LessButton = new javax.swing.JButton();
-  javax.swing.JCheckBox OtherTabsCheckBox = new javax.swing.JCheckBox();
-  javax.swing.JPanel TaxonomicPanel = new javax.swing.JPanel();
-  javax.swing.JPanel Spatial = new javax.swing.JPanel();
-  javax.swing.JPanel QueryNamePanel = new javax.swing.JPanel();
-  javax.swing.JLabel QueryTitleLabel = new javax.swing.JLabel();
-  javax.swing.JTextField QueryTitleTF = new javax.swing.JTextField();
-  javax.swing.JPanel SearchChoicePanel = new javax.swing.JPanel();
-  javax.swing.JCheckBox CatalogSearchCheckBox = new javax.swing.JCheckBox();
-  javax.swing.JCheckBox LocalSearchCheckBox = new javax.swing.JCheckBox();
-  javax.swing.JButton ExecuteButton = new javax.swing.JButton();
+  private javax.swing.JPanel QueryPanel = new javax.swing.JPanel();
+  private javax.swing.JTabbedPane QueryTabs = new javax.swing.JTabbedPane();
+  private javax.swing.JPanel SubjectTextPanel = new javax.swing.JPanel();
+  private javax.swing.JScrollPane QueryScrollPanel = 
+                      new javax.swing.JScrollPane();
+  private javax.swing.JPanel Query = new javax.swing.JPanel();
+  private javax.swing.JPanel QueryChoicesPanel = new javax.swing.JPanel();
+  private javax.swing.JPanel SubjectTextControlsPanel = 
+                      new javax.swing.JPanel();
+  private javax.swing.JPanel MoreLessControlsPanel = new javax.swing.JPanel();
+  private javax.swing.JRadioButton AndRadioButton = 
+                      new javax.swing.JRadioButton();
+  private javax.swing.JRadioButton OrRadioButton = 
+                      new javax.swing.JRadioButton();
+  private javax.swing.JButton MoreButton = new javax.swing.JButton();
+  private javax.swing.JButton LessButton = new javax.swing.JButton();
+  private javax.swing.JCheckBox OtherTabsCheckBox = new javax.swing.JCheckBox();
+  private javax.swing.JPanel TaxonomicPanel = new javax.swing.JPanel();
+  private javax.swing.JPanel Spatial = new javax.swing.JPanel();
+  private javax.swing.JPanel QueryNamePanel = new javax.swing.JPanel();
+  private javax.swing.JLabel QueryTitleLabel = new javax.swing.JLabel();
+  private javax.swing.JTextField QueryTitleTF = new javax.swing.JTextField();
+  private javax.swing.JPanel SearchChoicePanel = new javax.swing.JPanel();
+  private javax.swing.JCheckBox CatalogSearchCheckBox = 
+                      new javax.swing.JCheckBox();
+  private javax.swing.JCheckBox LocalSearchCheckBox = 
+                      new javax.swing.JCheckBox();
+  private javax.swing.JButton ExecuteButton = new javax.swing.JButton();
   //}}
 
 
-  class SymAction implements java.awt.event.ActionListener
+  /** Class to listen for ActionEvents */
+  private class SymAction implements java.awt.event.ActionListener
   {
     public void actionPerformed(java.awt.event.ActionEvent event)
     {
@@ -297,7 +304,10 @@ public class QueryDialog extends javax.swing.JDialog
     }
   }
 
-  void MoreButton_actionPerformed(java.awt.event.ActionEvent event)
+  /**
+   * Performs actions associated with pressing the "More" button
+   */
+  private void MoreButton_actionPerformed(java.awt.event.ActionEvent event)
   {
     TextQueryTermPanel tq = new TextQueryTermPanel();
       QueryChoicesPanel.add(tq);
@@ -307,7 +317,10 @@ public class QueryDialog extends javax.swing.JDialog
       SubjectTextPanel.validate();
   }
 
-  void LessButton_actionPerformed(java.awt.event.ActionEvent event)
+  /**
+   * Performs actions associated with pressing the "Less" button
+   */
+  private void LessButton_actionPerformed(java.awt.event.ActionEvent event)
   {
     Component comp = (Component) textPanels.lastElement();
       QueryChoicesPanel.remove(comp);
@@ -318,7 +331,10 @@ public class QueryDialog extends javax.swing.JDialog
       SubjectTextPanel.validate();
   }
 
-  class SymItem implements java.awt.event.ItemListener
+  /**
+   * Class that listens for state changes
+   */
+  private class SymItem implements java.awt.event.ItemListener
   {
     public void itemStateChanged(java.awt.event.ItemEvent event)
     {
@@ -330,7 +346,10 @@ public class QueryDialog extends javax.swing.JDialog
     }
   }
 
-  void AndRadioButton_itemStateChanged(java.awt.event.ItemEvent event)
+  /**
+   * Performs actions associated with a state change for the "And" button
+   */
+  private void AndRadioButton_itemStateChanged(java.awt.event.ItemEvent event)
   {
     if (AndRadioButton.isSelected())
     {
@@ -338,7 +357,10 @@ public class QueryDialog extends javax.swing.JDialog
     }
   }
 
-  void OrRadioButton_itemStateChanged(java.awt.event.ItemEvent event)
+  /**
+   * Performs actions associated with a state change for the "Or" button
+   */
+  private void OrRadioButton_itemStateChanged(java.awt.event.ItemEvent event)
   {
     if (OrRadioButton.isSelected())
     {
