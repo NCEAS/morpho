@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-03-28 23:39:59 $'
- * '$Revision: 1.33 $'
+ *     '$Date: 2002-06-12 16:17:07 $'
+ * '$Revision: 1.34 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -71,13 +71,18 @@ public class MetacatDataStore extends DataStore implements DataStoreInterface
     File localfile = new File(cachedir + "/" + path); //the path to the file
     File localdir = new File(cachedir + "/" + dirs); //the dir part of the path
     
-    if(localfile.exists())
+    if((localfile.exists())&&(localfile.length()>0))
     { //if the file is cached locally, read it from the hard drive
       framework.debug(11, "MetacatDataStore: getting cached file");
       return localfile;
     }
     else
-    { //if the file is not cached, get it from metacat and cache it.
+    { // if the filelength is zero, delete it
+      if (localfile.length()==0) {
+        localfile.delete();
+      }
+      
+      //if the file is not cached, get it from metacat and cache it.
       //-get file from metacat
       //-write file to cache directory
       //-reread file to check for errors
@@ -367,26 +372,29 @@ public class MetacatDataStore extends DataStore implements DataStoreInterface
   public void newDataFile(String id, File file) throws MetacatUploadException
   {
     try {
-      InputStream metacatInput = null;;
-      metacatInput = framework.sendDataFile(id, file);
+      if (file.length()>0) {
+        System.out.println("id:"+id+"  filelength:"+file.length());
+        InputStream metacatInput = null;;
+        metacatInput = framework.sendDataFile(id, file);
 
-      InputStreamReader returnStream = 
-                        new InputStreamReader(metacatInput);
-      BufferedReader breturnStream = new BufferedReader(returnStream);                  
-      StringWriter sw = new StringWriter();
-      int len;
-      char[] characters = new char[512];
-      while ((len = breturnStream.read(characters, 0, 512)) != -1) {
-        sw.write(characters, 0, len);
-      }
-      breturnStream.close();
-      String response = sw.toString();
-      sw.close();
+        InputStreamReader returnStream = 
+               new InputStreamReader(metacatInput);
+        BufferedReader breturnStream = new BufferedReader(returnStream);                  
+        StringWriter sw = new StringWriter();
+        int len;
+        char[] characters = new char[512];
+        while ((len = breturnStream.read(characters, 0, 512)) != -1) {
+          sw.write(characters, 0, len);
+        }
+        breturnStream.close();
+        String response = sw.toString();
+        sw.close();
   
-      if (response.indexOf("<error>") != -1) {
-        throw new MetacatUploadException(response);
-      } else {
-        ClientFramework.debug(20, response);
+        if (response.indexOf("<error>") != -1) {
+          throw new MetacatUploadException(response);
+        } else {
+          ClientFramework.debug(20, response);
+        }
       }
     } catch (Exception e) {
       throw new MetacatUploadException(e.getMessage());
