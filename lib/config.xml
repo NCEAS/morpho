@@ -21,7 +21,13 @@
   <saxparser>org.apache.xerces.parsers.SAXParser</saxparser>
   <packageWizardConfig>frames/packagewizard.xml</packageWizardConfig>
   <tempDir>tmp</tempDir>
-  <morphoConfigJarLocation>lib/morpho-config.jar</morphoConfigJarLocation>
+  <morphoConfigJarLocation>lib/morpho-config.jar</morphoConfigJarLocation> 
+  <northBCSearchPath>northBoundingCoordinate</northBCSearchPath>
+  <westBCSearchPath>westBoundingCoordinate</westBCSearchPath>
+  <southBCSearchPath>southBoundingCoordinate</southBCSearchPath>
+  <eastBCSearchPath>eastBoundingCoordinate</eastBCSearchPath>
+  <taxonRankSearchPath>taxonomicClassification/taxonRankName</taxonRankSearchPath>
+  <taxonValueSearchPath>taxonomicClassification/taxonRankValue</taxonValueSearchPath>
   <accessFileType>
     -//ecoinformatics.org//eml-access-2.0.0beta6//EN
   </accessFileType>
