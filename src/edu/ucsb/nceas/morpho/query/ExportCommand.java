@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2002-08-27 16:46:03 $'
- * '$Revision: 1.1 $'
+ *     '$Date: 2002-08-27 23:42:15 $'
+ * '$Revision: 1.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -80,44 +80,31 @@ public class ExportCommand implements Command
   public ExportCommand(OpenDialogBox box, String myFormat)
   {
     dialog = box;
-    // Get morphoframe and resultPanel depends on this command apply to
-    if (dialog == null)
+    // Decide export format
+    if (myFormat.equals(ZIP))
     {
-      // If the command would not applyto a dialog, moreFrame will be set to be
-      // current active morphoFrame
-      morphoFrame = UIController.getInstance().getCurrentActiveWindow();
-      resultPane = RefreshCommand.getResultPanelFromMorphoFrame(morphoFrame);
+      // zip format
+      format = ZIP;
+       
     }
+    else if (myFormat.equals(REGULAR))
+    {
+       // regular format
+       format = REGULAR;
+    } 
     else
+    {
+        Log.debug(20, "Unkown export format!");
+     }
+    // Get morphoframe and resultPanel if dialog is not null
+    if (dialog != null)
     {
       // This command will apply to a dialog
       morphoFrame = dialog.getParentFrame();
       resultPane = dialog.getResultPanel();
-    }
     
-    if (resultPane != null)
-    {
-      selectDocId = resultPane.getSelectedId();
-      metacatLoc = resultPane.getMetacatLocation();
-      localLoc = resultPane.getLocalLocation();
-      // Decide export format
-      if (myFormat.equals(ZIP))
-      {
-        // zip format
-        format = ZIP;
-       
-      }
-      else if (myFormat.equals(REGULAR))
-      {
-        // regular format
-        format = REGULAR;
-      } 
-      else
-      {
-        Log.debug(20, "Unkown export format!");
-      }
-    }//if
-   
+    }
+  
   }//LocalToNetworkCommand
   
  
@@ -126,13 +113,29 @@ public class ExportCommand implements Command
    */    
   public void execute()
   {
-      // Make sure selected a id, and there is local pacakge
+   
+    // If dialog is null, this means the resulpanel is in a morphoframe
+    if (dialog == null)
+    {
+      // current active morphoFrame
+      morphoFrame = UIController.getInstance().getCurrentActiveWindow();
+      resultPane = RefreshCommand.getResultPanelFromMorphoFrame(morphoFrame);
+    } 
+    
+    if (resultPane != null)
+    {
+      
+      selectDocId = resultPane.getSelectedId();
+      metacatLoc = resultPane.getMetacatLocation();
+      localLoc = resultPane.getLocalLocation();
+       // Make sure selected a id, and there is local pacakge
       if ( selectDocId != null && !selectDocId.equals(""))
       {
-        doExport(selectDocId, morphoFrame);
-      }
-   
-    
+          
+          doExport(selectDocId, morphoFrame);
+      }//if
+    }//if
+
   }//execute
 
   /**
