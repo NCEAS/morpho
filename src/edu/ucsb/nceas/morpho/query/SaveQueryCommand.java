@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2002-08-21 00:32:27 $'
- * '$Revision: 1.1 $'
+ *     '$Date: 2002-08-22 00:06:27 $'
+ * '$Revision: 1.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -72,15 +72,6 @@ public class SaveQueryCommand implements Command
     this.morpho = morpho;
   }//SearchCommand
   
-  /**
-   * Set a MorphoFrame to the object
-   *
-   * @param myFrame
-   */
-  public void setMorphoFrame(MorphoFrame myFrame)
-  {
-    this.morphoFrame = myFrame;
-  }// setMorphoFrame
   
   
   /**
@@ -88,6 +79,7 @@ public class SaveQueryCommand implements Command
    */    
   public void execute()
   {
+    morphoFrame = UIController.getInstance().getCurrentActiveWindow();
     // make sure the morphoFrame is not null
     if ( morphoFrame == null)
     {
