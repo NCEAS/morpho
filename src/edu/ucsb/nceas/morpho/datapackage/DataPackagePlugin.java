@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-08-22 22:30:43 $'
- * '$Revision: 1.21 $'
+ *     '$Date: 2002-08-23 00:10:34 $'
+ * '$Revision: 1.22 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -39,6 +39,7 @@ import edu.ucsb.nceas.morpho.plugins.ServiceExistsException;
 import edu.ucsb.nceas.morpho.plugins.ServiceProvider;
 import edu.ucsb.nceas.morpho.plugins.ServiceNotHandledException;
 import edu.ucsb.nceas.morpho.util.Log;
+import edu.ucsb.nceas.morpho.util.GUIAction;
 
 import java.awt.event.ActionEvent;
 import java.awt.BorderLayout;
@@ -67,6 +68,7 @@ public class DataPackagePlugin
 
   /** Store our menus and toolbars */
   private Action[] menuActions = null;
+  private Action[] dataMenuActions = null;
   private Action[] toolbarActions = null;
 
   /**
@@ -93,6 +95,7 @@ public class DataPackagePlugin
     // Add menus, and toolbars
     UIController controller = UIController.getInstance();
     controller.addMenu("File", new Integer(1), menuActions);
+    controller.addMenu("Data", new Integer(4), dataMenuActions);
     controller.addToolbarActions(toolbarActions);
 
     // Register Services
@@ -116,6 +119,36 @@ public class DataPackagePlugin
    */
   private void initializeActions() 
   {
+    dataMenuActions = new Action[9];
+    GUIAction createNewDatatable = new GUIAction("Create New Datatable...", null, null);
+    GUIAction sortBySelectedColumn = new GUIAction("Sort by Selected Column", null, null);
+    GUIAction insertRowAfter = new GUIAction("insert Row After Selected Row", null, null);
+    GUIAction insertRowBefore = new GUIAction("insert Row Before Selected Row", null, null);
+    GUIAction deleteRow = new GUIAction("Delete Selected Row", null, null);
+    GUIAction insertColumnBefore = new GUIAction("insert Column Before Selected Column", null, null);
+    GUIAction insertColumnAfter = new GUIAction("insert Column After Selected Column", null, null);
+    GUIAction deleteColumn = new GUIAction("Delete Selected Column", null, null);
+    GUIAction editColumnMetadata = new GUIAction("Edit Column Metadata", null, null);
+    
+    createNewDatatable.setEnabled(false);
+    sortBySelectedColumn.setEnabled(false);
+    insertRowAfter.setEnabled(false);
+    insertRowBefore.setEnabled(false);
+    deleteRow.setEnabled(false);
+    insertColumnBefore.setEnabled(false);
+    insertColumnAfter.setEnabled(false);
+    deleteColumn.setEnabled(false);
+    editColumnMetadata.setEnabled(false);
+    
+    dataMenuActions[0] = createNewDatatable;
+    dataMenuActions[1] = sortBySelectedColumn;
+    dataMenuActions[2] = insertRowAfter;
+    dataMenuActions[3] = insertRowBefore;
+    dataMenuActions[4] = deleteRow;
+    dataMenuActions[5] = insertColumnBefore;
+    dataMenuActions[6] = insertColumnAfter;
+    dataMenuActions[7] = deleteColumn;
+    dataMenuActions[8] = editColumnMetadata;
     // Set up the menus for the application
     menuActions = new Action[1];
     Action newItemAction = new AbstractAction("New Data Package") 
