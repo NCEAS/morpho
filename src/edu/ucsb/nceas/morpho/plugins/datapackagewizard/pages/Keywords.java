@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2004-03-24 02:14:18 $'
- * '$Revision: 1.31 $'
+ *   '$Author: berkley $'
+ *     '$Date: 2004-04-05 23:48:41 $'
+ * '$Revision: 1.32 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -91,10 +91,10 @@ public class Keywords
         "<b>Enter the keywords.</b> A data package may have multiple keywords "
         + "associated with it to enable "
         +
-        "easy searching and categorizing.  In addition, one to many keywords "
+        "easy searching and categorization.  In addition, one or more keywords "
         +
         "may be associated with a &quot;keyword thesaurus&quot;, which allows "
-        + "one to associate a data package with an authoritative definition. "
+        + "the association of a data package with an authoritative definition. "
         + "Thesauri may also be used for internal categorization.", 3);
     vbox.add(desc1);
     vbox.add(WidgetFactory.makeDefaultSpacer());

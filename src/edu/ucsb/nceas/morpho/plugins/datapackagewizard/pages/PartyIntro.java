@@ -6,9 +6,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2004-04-01 02:37:16 $'
- * '$Revision: 1.15 $'
+ *   '$Author: berkley $'
+ *     '$Date: 2004-04-05 23:48:41 $'
+ * '$Revision: 1.16 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -57,21 +57,20 @@ public class PartyIntro extends AbstractUIPage{
     this.add(WidgetFactory.makeDefaultSpacer());
 
     JLabel desc = WidgetFactory.makeHTMLLabel(
-        "<p><b>Identify the people and organizations responsible for the data.</b> "
-        + "In the next few screens, you will need to provide the following "
+        "<p><b>Identify the people and organizations responsible for the "
+        + "data.</b> "
+        + "In the next few screens you will need to provide the following "
         + "information:</p><br></br>"
-        +
-        "<li><b>Owner:</b> The person or organization who are credited for creating "
-        + "the data. This may be a person, organization name or position name.<br></br></li>"
-        + "<li><b>Contact:</b> The primary contact is a person or organization to contact "
-        + "with questions about the use or interpretation of a data package.<br></br></li>"
-        +
-        "<li><b>Other associated people or organizations:</b> These are people or "
-        +
-        "organizations that are in some way responsible for the data. They may have "
-        + "assisted in collecting or maintaining the data or they may be the "
-        +
-        "'orginator' of a data package or a 'metadata provider'.<br></br></li>",
+        + "<li><b>Owner:</b> The person or organization who is credited with "
+        + "creating the data. <br></br></li>"
+        + "<li><b>Contact:</b> The primary person or organization to contact "
+        + "with questions regarding the use or interpretation of the data "
+        + "package.  <br></br></li>"
+        + "<li><b>Associated parties:</b> These are people or organizations "
+        + "that are in some way responsible for the data.  They may have "
+        + "assisted in collection of or maintenance of the data or "
+        + "they may have created documentation for the "
+        + "data.<br></br></li>",
         13);
 
     this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));

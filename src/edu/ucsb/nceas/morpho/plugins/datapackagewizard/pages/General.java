@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2004-03-29 19:31:25 $'
- * '$Revision: 1.16 $'
+ *   '$Author: berkley $'
+ *     '$Date: 2004-04-05 23:48:41 $'
+ * '$Revision: 1.17 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -78,7 +78,7 @@ public class General extends AbstractUIPage{
     JLabel titleDesc = WidgetFactory.makeHTMLLabel(
         "<b>Enter the title of the data package.</b> The title field provides a "
       +"description of the data that is long enough to differentiate it from "
-      +"other similar data. e.g. vernal pool amphibian density data, Isla Vista, "
+      +"other similar data. e.g. Vernal Pool Amphibian Density Data, Isla Vista, "
       +"CA USA, 1990-1996", 3);
     vbox.add(titleDesc);
 
@@ -100,8 +100,8 @@ public class General extends AbstractUIPage{
     JLabel absDesc = WidgetFactory.makeHTMLLabel(
     "<b>Enter an abstract that describes the data package.</b> This abstract is "
     +"a paragraph or more that describes the particular data that are being "
-    +"documented. Describe the objectives of the study, key aspects of the study "
-    +"design or methods.", 3);
+    +"documented. You may want to describe the objectives, key aspects,"
+    +"design or methods of the study.", 3);
     vbox.add(absDesc);
 
     JPanel abstractPanel = WidgetFactory.makePanel();
