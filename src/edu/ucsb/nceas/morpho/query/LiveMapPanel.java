@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2004-04-08 16:42:52 $'
- * '$Revision: 1.6 $'
+ *     '$Date: 2004-04-13 02:31:26 $'
+ * '$Revision: 1.7 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -655,6 +655,14 @@ public class LiveMapPanel extends JPanel
       w = left;
       s = bottom;
       e = right;
+      if (w==e) {  // to avoid display problem, round
+        if (e<0.0) {
+          e=.999*e;
+        } else {
+          e=1.001*e;
+        }
+        right = e;
+      }
       map.getTool().setUserBounds(left, right, bottom, top);
       map.center_tool(1.0);
     } catch (Exception w) {
