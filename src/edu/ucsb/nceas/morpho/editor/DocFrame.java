@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-06-01 23:11:20 $'
- * '$Revision: 1.12 $'
+ *     '$Date: 2001-06-04 23:14:22 $'
+ * '$Revision: 1.13 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -59,7 +59,17 @@ import edu.ucsb.nceas.morpho.framework.*;
  */
 public class DocFrame extends javax.swing.JFrame
 {
+    /** counter for name */
+    public static int counter = 0;
+  
+    /** A reference to the container framework */
+  private ClientFramework framework = null;
+
+  /** The configuration options object reference from the framework */
     ConfigXML config;
+  
+    EditorPlugin controller = null;
+  
     File file;
     
     /* the string representation of the XML being displayed */
@@ -111,10 +121,9 @@ public class DocFrame extends javax.swing.JFrame
 		setSize(600,305);
 		setVisible(false);
 		getContentPane().add(OutputScrollPanel);
-		getContentPane().add(BorderLayout.CENTER,NestedPanelScrollPanel);
-		
-		getContentPane().add(BorderLayout.NORTH, ControlPanel);
+		getContentPane().add(BorderLayout.CENTER, NestedPanelScrollPanel);
 		ControlPanel.setLayout(new FlowLayout(FlowLayout.LEFT,5,5));
+		getContentPane().add(BorderLayout.NORTH, ControlPanel);
 		reload.setText("Reload Tree");
 		reload.setActionCommand("Reload Tree");
 		ControlPanel.add(reload);
@@ -129,6 +138,9 @@ public class DocFrame extends javax.swing.JFrame
 		SaveXML.setText("Save XML...");
 		SaveXML.setActionCommand("Save XML...");
 		ControlPanel.add(SaveXML);
+		JButton1.setText("jbutton");
+		JButton1.setActionCommand("jbutton");
+		ControlPanel.add(JButton1);
 		saveFileDialog.setMode(FileDialog.SAVE);
 		saveFileDialog.setTitle("Save");
 		//$$ saveFileDialog.move(0,306);
@@ -160,6 +172,9 @@ public class DocFrame extends javax.swing.JFrame
 		DTDParse.addActionListener(lSymAction);
 		TestButton.addActionListener(lSymAction);
 		SaveXML.addActionListener(lSymAction);
+		SymWindow aSymWindow = new SymWindow();
+		this.addWindowListener(aSymWindow);
+		JButton1.addActionListener(lSymAction);
 		//}}
 		DeletemenuItem.addActionListener(lSymAction);
 		DupmenuItem.addActionListener(lSymAction);
@@ -229,6 +244,15 @@ public class DocFrame extends javax.swing.JFrame
 	    this();
 	    this.file = file;
 	}
+
+	public DocFrame(ClientFramework cf, String sTitle, String doctext) 
+	{
+	    this(sTitle, doctext);
+	    this.framework = cf;
+	    counter++;
+	    setName("XMLEditor"+counter);
+	}
+	
 	
 	public void setFile(File f) {
 	    file = f;
@@ -281,6 +305,7 @@ public class DocFrame extends javax.swing.JFrame
 	javax.swing.JButton DTDParse = new javax.swing.JButton();
 	javax.swing.JButton TestButton = new javax.swing.JButton();
 	javax.swing.JButton SaveXML = new javax.swing.JButton();
+	javax.swing.JButton JButton1 = new javax.swing.JButton();
 	java.awt.FileDialog saveFileDialog = new java.awt.FileDialog(this);
 	//}}
 
@@ -324,6 +349,8 @@ class SymAction implements java.awt.event.ActionListener {
 				TestButton_actionPerformed(event);
 			else if (object == SaveXML)
 				SaveXML_actionPerformed(event);
+			else if (object == JButton1)
+				JButton1_actionPerformed(event);
 		}
 }
 
@@ -865,5 +892,35 @@ void mergeNodes(DefaultMutableTreeNode input, DefaultMutableTreeNode template) {
 		    writeXML(rootNode,file);
 		  }
 			 
+	}
+
+	class SymWindow extends java.awt.event.WindowAdapter
+	{
+		public void windowClosed(java.awt.event.WindowEvent event)
+		{
+			Object object = event.getSource();
+			if (object == DocFrame.this)
+				DocFrame_windowClosed(event);
+		}
+	}
+
+	void DocFrame_windowClosed(java.awt.event.WindowEvent event)
+	{
+			  if (framework!=null) {
+			    framework.removeWindow(this);  
+			  }
+		    	this.setVisible(false);    // hide the Frame
+	//	    	this.dispose();            // free the system resources
+	}
+	
+	public void setController(EditorPlugin con) {
+	    this.controller = con;
+	}
+	
+	
+
+	void JButton1_actionPerformed(java.awt.event.ActionEvent event)
+	{
+		controller.fireEditingCompleteEvent(this, XMLTextString);
 	}
 }

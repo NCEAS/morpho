@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-05-31 22:43:00 $'
- * '$Revision: 1.3 $'
+ *     '$Date: 2001-06-04 23:14:22 $'
+ * '$Revision: 1.4 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -62,7 +62,6 @@ public class DTDTree
     this.DTDFileName = dtdname;  
   
 		//{{INIT_CONTROLS
-		//$$ DTDTree1.move(0,0);
 		//}}
 	}
   
@@ -279,4 +278,6 @@ private String getCardinality(DTDItem item) {
 return "ONE";
 }
   
+	//{{DECLARE_CONTROLS
+	//}}
 }
