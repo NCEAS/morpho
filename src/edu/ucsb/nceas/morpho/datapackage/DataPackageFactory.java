@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-08-21 22:58:46 $'
- * '$Revision: 1.3 $'
+ *     '$Date: 2003-08-22 18:56:58 $'
+ * '$Revision: 1.4 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -37,6 +37,7 @@ import org.xml.sax.InputSource;
 
 import java.util.Vector;
 import java.util.Hashtable;
+import java.util.StringTokenizer;
 import java.io.*;
 
 import edu.ucsb.nceas.morpho.util.Log;
@@ -51,6 +52,8 @@ public class DataPackageFactory
    */
   static private String docType = null;
   
+  
+  
   /**
    *  Create a new Datapackage given a Reader to a metadata stream
    *  location is given by 2 booleans
@@ -60,8 +63,15 @@ public class DataPackageFactory
     // then create the appropriate subclass of AbstractDataPackage and return it.
     
     // temporary stub!!!
+    AbstractDataPackage dp = null;
     Log.debug(1,"DocTypeInfo: " + getDocTypeInfo(in));
-    AbstractDataPackage dp = new EML200DataPackage();
+    String type = getDocTypeInfo(in);
+    if (type.equals("eml:eml")) {
+      dp = new EML200DataPackage();
+    }
+    else if (type.indexOf("eml-dataset-2.0.0beta6")>-1) {
+      dp = new EML2Beta6DataPackage();
+    }
     return dp;
   }
   
@@ -89,7 +99,41 @@ public class DataPackageFactory
    */
   private static String getDocTypeInfo(Reader in) {
     String temp = getSchemaLine(in,2);
-    return temp;
+    // this should return a line of text which is either the DOCTYPE declaraton or the root node
+    if (temp.indexOf("DOCTYPE")>-1) {
+      // get PUBLIC and/or SYSRWM values
+      if(temp.indexOf("PUBLIC")>-1) {
+        temp = temp.substring(temp.indexOf("PUBLIC"));
+        StringTokenizer st = new StringTokenizer(temp," ");
+        if(st.countTokens()>1) {
+          String temp1 = st.nextToken(); // should be 'PUBLIC'
+          temp1 = st.nextToken();
+          docType = temp1;
+        }
+      }
+      else if(temp.indexOf("SYSTEM")>-1){
+        temp = temp.substring(temp.indexOf("SYSTEM"));
+        StringTokenizer st = new StringTokenizer(temp," ");
+        if(st.countTokens()>1) {
+          String temp1 = st.nextToken(); // should be 'SYSTEM'
+          temp1 = st.nextToken();
+          docType = temp1;
+        }
+      }
+    }
+    else {
+      // assume that this is the root node and look for NS information
+      StringTokenizer st = new StringTokenizer(temp," ");
+      String temp1 = st.nextToken();
+      
+      // collect all the NS declarations
+      Vector ns_vec = new Vector();
+      int start = -1;
+      // should correlate NS declarations with NS abbreviation in root node element name
+      // for now, just return the root node name
+      docType = temp1;
+    }
+    return docType;
   }
 
   
