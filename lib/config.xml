@@ -1,13 +1,13 @@
 <?xml version="1.0"?>
 <root>
-<plugin>edu.ucsb.nceas.editor.EditorBean</plugin>
+<plugin>edu.ucsb.nceas.querybean.QueryBean</plugin>
 <MetaCatServletURL>http://dev.nceas.ucsb.edu:8090/knb/servlet/metacat</MetaCatServletURL>
 <local_dtd_directory>./catalog</local_dtd_directory>
 <local_xml_directory>./XMLworkFolder</local_xml_directory>
 <searchlocal>true</searchlocal>
 <searchnetwork>true</searchnetwork>
 <debug_level>9</debug_level>
-<log_file>true</log_file>
+<log_file>false</log_file>
 <searchnetwork>true</searchnetwork>
 <searchlocal>true</searchlocal>
 <pathquery_config>
