@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2004-03-19 23:15:35 $'
- * '$Revision: 1.67 $'
+ *   '$Author: brooke $'
+ *     '$Date: 2004-03-22 06:53:13 $'
+ * '$Revision: 1.68 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -449,7 +449,7 @@ public abstract class AbstractDataPackage extends MetadataObject
 
 
   /**
-   * returns root Node of subtree identified by genericName String and int
+   * returns cloned root Node of subtree identified by genericName String and int
    * index; returns null if not found
    *
    * @param genericName String
@@ -465,6 +465,10 @@ public abstract class AbstractDataPackage extends MetadataObject
       nodelist = XMLUtilities.getNodeListWithXPath(metadataNode,
           genericNamePath);
       if ((nodelist == null)||(nodelist.getLength()==0)) {
+
+        Log.debug(50, "AbstractDataPackage.getSubtree() - no nodes found of "
+                  +"type \n /xpathKeyMap/contextNode[@name='package']/"
+                  + genericName +"\n returning NULL");
         return null;
       }
       else {
@@ -473,14 +477,33 @@ public abstract class AbstractDataPackage extends MetadataObject
           Node deepClone = (nodelist.item(index)).cloneNode(true);
           return deepClone;
         } else {
+
+          Log.debug(50, "AbstractDataPackage.getSubtree() - index was "
+                    +"greater than number of available nodes; returning NULL");
           return null;
         }
-      }    
+      }
     } catch (Exception e) {
       Log.debug(50, "Exception in getSubtree!");
     }
     return null;
   }
+
+
+  /**
+   * returns cloned root Node of subtree identified by the passed unique String
+   * refID; returns null if not found
+   *
+   * @param refID unique String refID
+   * @return  cloned root Node of subtree, or null if refID not found
+   */
+  public Node getSubtreeAtReference(String refID) {
+
+    throw new UnsupportedOperationException(
+      "AbstractDataPackage.getSubtreeAtReference(String refID) not yet implemented!");
+  }
+
+
 
     /**
    * returns root Node of subtree identified by genericName String and int
@@ -509,7 +532,7 @@ public abstract class AbstractDataPackage extends MetadataObject
         } else {
           return null;
         }
-      }    
+      }
     } catch (Exception e) {
       Log.debug(50, "Exception in getSSubtreeNoClone!");
     }
@@ -581,7 +604,7 @@ public abstract class AbstractDataPackage extends MetadataObject
         }
       } else {
         stn = getSubtreeNoClone(genericName, index);
-          subTreeNodeParent.insertBefore(newSubtree,stn);  
+          subTreeNodeParent.insertBefore(newSubtree,stn);
       }
       return newSubtree;
     }
@@ -621,7 +644,7 @@ public abstract class AbstractDataPackage extends MetadataObject
         } else {
           return null;
         }
-      }    
+      }
     } catch (Exception e) {
       Log.debug(50, "Exception in deleteSubtree!");
     }
