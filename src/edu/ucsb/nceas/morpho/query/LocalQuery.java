@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-01-21 19:41:58 $'
- * '$Revision: 1.62 $'
+ *     '$Date: 2003-02-13 00:47:21 $'
+ * '$Revision: 1.63 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -73,7 +73,7 @@ public class LocalQuery
    * every time an XPath search is carried out. key is filename which should
    * match document id.
    */
-  private static Hashtable dom_collection;
+  public static Hashtable dom_collection;
 
   /**
    * The query on which this LocalQuery is based.
