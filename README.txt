@@ -1,7 +1,7 @@
 Morpho: XML Metadata Client
 ---------------------------
 
-Version: 1.0.2 - January 25, 2002
+Version: 1.0.3 - February 4, 2002
 
 Feedback and bugs to: knb-software@nceas.ucsb.edu
                       http://bugzilla.ecoinformatics.org
@@ -115,7 +115,11 @@ in the text field.
 ---
 Version 1.0.2 of Morpho is another bug-fix. In particular, problems in handling
 large data files have been fixed and non-scrolling lists have been corrected
-to scroll properly
+to scroll properly    
+---
+Version 1.0.3 of Morpho fixes several errors in the Morpho editor which caused
+invalid XML documents to be created. These caused problems when documents were
+edited and then submitted to Metacat.
 
 Legalese
 --------
