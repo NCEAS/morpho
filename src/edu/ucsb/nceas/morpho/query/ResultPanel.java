@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2002-09-04 23:29:45 $'
- * '$Revision: 1.59 $'
+ *     '$Date: 2002-09-06 23:20:08 $'
+ * '$Revision: 1.60 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,7 +28,6 @@ package edu.ucsb.nceas.morpho.query;
 
 import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.datastore.MetacatUploadException;
-import edu.ucsb.nceas.morpho.datapackage.*;
 import edu.ucsb.nceas.morpho.framework.ConfigXML;
 import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
 import edu.ucsb.nceas.morpho.framework.MorphoFrame;
@@ -333,7 +332,7 @@ public class ResultPanel extends JPanel
   /** 
    * Get the Jable
    */
-  public JTable getJTable()
+  public SortableJTable getJTable()
   {
     return table;
   }//getJTable
@@ -488,7 +487,17 @@ public class ResultPanel extends JPanel
     }
   } 
 
-  
+  /**
+   * Method to sort the table in result panel
+   * @param index the index of column need to be sort
+   * @param order the order need to be sort
+   */
+  public void sortTable(int index, String order)
+  {
+    // create an instance of SortTableCommmand
+    SortTableCommand sortCommand = new SortTableCommand(table, index, order);
+    sortCommand.execute();
+  }//sortTable
 
   class PopupListener extends MouseAdapter {
     // on the Mac, popups are triggered on mouse pressed, while mouseReleased triggers them
