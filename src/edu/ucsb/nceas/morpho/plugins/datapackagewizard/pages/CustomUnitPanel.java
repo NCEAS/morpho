@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: sambasiv $'
- *     '$Date: 2004-04-09 18:28:51 $'
- * '$Revision: 1.3 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2004-04-14 20:24:11 $'
+ * '$Revision: 1.4 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -437,6 +437,7 @@ public class CustomUnitPanel extends JPanel implements WizardPageSubPanelAPI
 		JPanel newSIunitNamePanel = WidgetFactory.makePanel();
 		newSIunitNameLabel = WidgetFactory.makeLabel("SI Unit:", true);
 		newSIunitNameBox = new JComboBox(SIUnits);
+    newSIunitNameBox.setEditable(true);
 		newSIunitNamePanel.add(newSIunitNameLabel);
 		JPanel newSIunitNameGrid = new JPanel(new GridLayout(1,2));
 		newSIunitNameGrid.add(newSIunitNameBox);
