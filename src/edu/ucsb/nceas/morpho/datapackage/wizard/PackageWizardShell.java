@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2002-12-23 20:52:56 $'
- * '$Revision: 1.81 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2002-12-26 19:33:06 $'
+ * '$Revision: 1.82 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -932,7 +932,7 @@ public class PackageWizardShell extends javax.swing.JFrame
     String identifier = wfc.id;
     Vector relations = triples.getCollection();
     DataPackage dp = new DataPackage(location, identifier, 
-                                   relations, morpho);
+                                   relations, morpho, true);
                                    
     if(saveToMetacatCheckBox.isSelected())
     {

@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-12-24 15:29:43 $'
- * '$Revision: 1.100 $'
+ *     '$Date: 2002-12-26 19:32:54 $'
+ * '$Revision: 1.101 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,6 +28,8 @@ package edu.ucsb.nceas.morpho.datapackage;
 
 import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.framework.ConfigXML;
+import edu.ucsb.nceas.morpho.framework.MorphoFrame;
+import edu.ucsb.nceas.morpho.framework.UIController;
 import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
 import edu.ucsb.nceas.morpho.datastore.MetacatDataStore;
 import edu.ucsb.nceas.morpho.datastore.FileSystemDataStore;
@@ -118,7 +120,7 @@ public class DataPackage implements XMLFactoryInterface
    * @param morpho: reference to the main Morpho application.
    */
   public DataPackage(String location, String identifier, Vector relations, 
-                     Morpho morpho)
+                     Morpho morpho, boolean accessCheckFlag)
   {
     //-open file named identifier
     //-read the triples out of it, create a triplesCollection
@@ -148,7 +150,9 @@ public class DataPackage implements XMLFactoryInterface
     initTriplesCollection();
     //parse triples file and get basic information (title, Originators etc)
     parseTripleFile();
-    checkTriplesForAccess();
+    if (accessCheckFlag) {
+      checkTriplesForAccess();
+    }
   }
 
 
@@ -997,7 +1001,7 @@ public class DataPackage implements XMLFactoryInterface
     }
     //create a new package
     DataPackage dp = new DataPackage(this.location, newPackageId, null, 
-                                     morpho);
+                                     morpho, false);
     this.delete(this.location);
     return dp;
   }

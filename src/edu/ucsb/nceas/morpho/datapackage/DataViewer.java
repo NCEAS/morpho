@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-10-25 22:07:36 $'
- * '$Revision: 1.76 $'
+ *     '$Date: 2002-12-26 19:32:54 $'
+ * '$Revision: 1.77 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1434,7 +1434,7 @@ public class DataViewer extends javax.swing.JPanel
     }
     
     DataPackage newPackage = new DataPackage(location, newPackageId, null,
-                                                 morpho);
+                                           morpho, true);
 
     MorphoFrame thisFrame = (UIController.getInstance()).getCurrentActiveWindow();
     
@@ -1759,7 +1759,7 @@ public class DataViewer extends javax.swing.JPanel
         }
       }
       newPackage = new DataPackage(location, newPackageId, null,
-                                                 morpho);
+                                               morpho, true);
                                                  
       thisFrame = (UIController.getInstance()).getCurrentActiveWindow();
       }

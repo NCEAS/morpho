@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-09-08 22:46:32 $'
- * '$Revision: 1.49 $'
+ *     '$Date: 2002-12-26 19:32:54 $'
+ * '$Revision: 1.50 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -545,7 +545,7 @@ public class EntityGUI extends javax.swing.JPanel
       }
       
       DataPackage newPackage = new DataPackage(location, packageId, null,
-                                               morpho);
+                                               morpho, true);
       //this.dispose();
       //parent.dispose();
       
@@ -665,7 +665,7 @@ public class EntityGUI extends javax.swing.JPanel
       }
       
       DataPackage newPackage = new DataPackage(location, newPackageId, null,
-                                                 morpho);
+                                                 morpho, true);
   //    this.dispose();
   //    parent.dispose();
       

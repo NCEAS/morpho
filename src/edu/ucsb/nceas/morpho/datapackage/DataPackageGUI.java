@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-12-16 20:00:59 $'
- * '$Revision: 1.95 $'
+ *     '$Date: 2002-12-26 19:32:54 $'
+ * '$Revision: 1.96 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -946,7 +946,7 @@ public class DataPackageGUI extends javax.swing.JFrame
       //refresh the PE
       this.dispose();
       DataPackage newpack = new DataPackage(location, newPackageId, null, 
-                                            morpho);
+                                            morpho, true);
       DataPackageGUI dpg = new DataPackageGUI(morpho, newpack);
 
       /* Not needed because owner query no longer exists to be refreshed
@@ -1182,7 +1182,7 @@ public class DataPackageGUI extends javax.swing.JFrame
     }
     
       DataPackage newPackage = new DataPackage(location, newPackageId, null,
-                                                 morpho);
+                                                 morpho, true);
 
       /* Not needed because owner query no longer exists
       // Refresh the query results after the edit is completed

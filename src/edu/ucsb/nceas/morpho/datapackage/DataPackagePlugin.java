@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2002-12-11 01:04:09 $'
- * '$Revision: 1.49 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2002-12-26 19:32:54 $'
+ * '$Revision: 1.50 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -447,7 +447,7 @@ public class DataPackagePlugin
     Log.debug(11, "DataPackage: Got service request to open: " + 
                     identifier + " from " + location + ".");
     DataPackage dp = new DataPackage(location, identifier, 
-                                     relations, morpho);
+                                     relations, morpho, true);
     //Log.debug(11, "location: " + location + " identifier: " + identifier +
     //                " relations: " + relations.toString());
     final DataPackageGUI gui = new DataPackageGUI(morpho, dp);
@@ -551,7 +551,7 @@ public class DataPackagePlugin
   public String upload(String docid, boolean updateIds) 
               throws MetacatUploadException
   {
-    DataPackage dp = new DataPackage(DataPackageInterface.LOCAL, docid, null, morpho);
+    DataPackage dp = new DataPackage(DataPackageInterface.LOCAL, docid, null, morpho, true);
     DataPackage newDp = dp.upload(updateIds);
     return newDp.getID();
   }
@@ -563,7 +563,7 @@ public class DataPackagePlugin
    */
   public void download(String docid)
   {
-    DataPackage dp = new DataPackage(DataPackageInterface.METACAT, docid, null, morpho);
+    DataPackage dp = new DataPackage(DataPackageInterface.METACAT, docid, null, morpho, true);
     dp.download();
   }
   
@@ -573,7 +573,7 @@ public class DataPackagePlugin
    */
   public void delete(String docid, String location)
   {
-    DataPackage dp = new DataPackage(location, docid, null, morpho);
+    DataPackage dp = new DataPackage(location, docid, null, morpho, false);
     dp.delete(location);
   }
   
@@ -586,7 +586,7 @@ public class DataPackagePlugin
    */
   public void export(String docid, String path, String location)
   {
-    DataPackage dp = new DataPackage(location, docid, null, morpho);
+    DataPackage dp = new DataPackage(location, docid, null, morpho, false);
     dp.export(path);
   }
   
@@ -599,7 +599,7 @@ public class DataPackagePlugin
    */
   public void exportToZip(String docid, String path, String location)
   {
-    DataPackage dp = new DataPackage(location, docid, null, morpho);
+    DataPackage dp = new DataPackage(location, docid, null, morpho, false);
     try
     {
       dp.exportToZip(path);

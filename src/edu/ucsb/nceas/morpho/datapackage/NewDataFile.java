@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-11-01 02:41:31 $'
- * '$Revision: 1.11 $'
+ *     '$Date: 2002-12-26 19:32:54 $'
+ * '$Revision: 1.12 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -266,7 +266,7 @@ public class NewDataFile extends javax.swing.JDialog
     //refresh the package editor that this wizard came from.
     DataPackage newpackage = new DataPackage(dataPackage.getLocation(),
                                              dataPackageId, null,
-                                             morpho);
+                                             morpho, true);
     this.dataPackage = newpackage;
     
     MorphoFrame thisFrame = (UIController.getInstance()).getCurrentActiveWindow();

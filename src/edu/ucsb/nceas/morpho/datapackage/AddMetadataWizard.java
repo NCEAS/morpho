@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-11-01 04:53:17 $'
- * '$Revision: 1.36 $'
+ *     '$Date: 2002-12-26 19:32:54 $'
+ * '$Revision: 1.37 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1208,7 +1208,7 @@ public class AddMetadataWizard extends JFrame
     //refresh the package wizard view
     DataPackage newpackage = new DataPackage(dataPackage.getLocation(),
                                              dataPackageId, null,
-                                             morpho);
+                                             morpho, false);
     String location = dataPackage.getLocation();
     this.dataPackage = newpackage;                                         
 
@@ -1404,7 +1404,7 @@ public class AddMetadataWizard extends JFrame
     //refresh the package editor that this wizard came from.
     DataPackage newpackage = new DataPackage(dataPackage.getLocation(),
                                              dataPackageId, null,
-                                             morpho);
+                                             morpho, false);
     this.dataPackage = newpackage;
     
     MorphoFrame thisFrame = (UIController.getInstance()).getCurrentActiveWindow();
