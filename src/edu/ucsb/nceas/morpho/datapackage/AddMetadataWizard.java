@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2002-09-18 23:51:30 $'
- * '$Revision: 1.25 $'
+ *     '$Date: 2002-09-19 01:20:14 $'
+ * '$Revision: 1.26 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1168,6 +1168,13 @@ public class AddMetadataWizard extends JFrame
   
   
   private void refreshPackage(String dataPackageId) {
+    
+    //Destory the old package frame
+    if (packageFrame != null)
+    {
+      packageFrame.dispose();
+      packageFrame = null;
+    }
     //refresh the package wizard view
     DataPackage newpackage = new DataPackage(dataPackage.getLocation(),
                                              dataPackageId, null,
