@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-05-30 22:32:50 $'
- * '$Revision: 1.3 $'
+ *     '$Date: 2001-05-31 16:46:33 $'
+ * '$Revision: 1.4 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -42,17 +42,25 @@ public class PackageWizardShell extends javax.swing.JFrame
 {
   private ClientFramework framework;
   private PackageWizard visiblePackageWizard;
-  private JPanel descriptionPanel;
-  private JTextArea descriptionText;
-  private JPanel wizardFrame;
   private Vector frames;
   private int framesIndex = 0;
   private Vector previousFrames = new Vector();
   private boolean getdataFlag = false;
   private Hashtable frameObjects;
   private boolean lastFrameFlag = false;
+  private boolean getdataVisibleFlag = false;
+  
+  //visual components
+  private JPanel descriptionPanel;
+  private JTextArea descriptionText;
+  private JPanel wizardFrame;
   private JButton previous;
   private JButton next;
+  private JTextField fileTextField = new JTextField();
+  private JPanel getFilePanel = new JPanel();
+  private JPanel donePanel = new JPanel();
+  private JCheckBox openCheckBox;
+  private JButton saveToMetacatButton;
   
   public PackageWizardShell()
   {
@@ -86,8 +94,8 @@ public class PackageWizardShell extends javax.swing.JFrame
       File xmlfile = new File(wizardFile);
       FileReader xml = new FileReader(xmlfile);
       pwsp = new PackageWizardShellParser(xml, saxparser);
-      System.out.println("frames: " + pwsp.getFrames().toString());
-      System.out.println("mainframe: " + pwsp.getMainFrame());
+      //System.out.println("frames: " + pwsp.getFrames().toString());
+      //System.out.println("mainframe: " + pwsp.getMainFrame());
     }
     catch(Exception e)
     {
@@ -160,11 +168,6 @@ public class PackageWizardShell extends javax.swing.JFrame
    */
   public void actionPerformed(ActionEvent e) 
   {
-    /*
-      1) Display mainframe
-      2) Display GETDATA form
-      3) Display next frame in list
-    */
     String command = e.getActionCommand();
     String paramString = e.paramString();
     Hashtable contentReps = new Hashtable();
@@ -181,11 +184,17 @@ public class PackageWizardShell extends javax.swing.JFrame
     { 
       //get the data from the current frame and display the next one
       
+      if(getdataVisibleFlag)
+      { //if the get data screen is visible, make it invisible
+        getFilePanel.setVisible(false);
+        getdataVisibleFlag = false;
+      }
+      
       //save the current frame
       //in case the user presses the previous button.
-      WizardFrame prevFrame = new WizardFrame(visiblePackageWizard); 
+      WizardFrame prevFrame = new WizardFrame(visiblePackageWizard);
       if(!getdataFlag)
-      {
+      { 
         String xml = visiblePackageWizard.getXML();
         if(xml == null)
         { //the user pressed the 'no' button on the 'are you sure you want
@@ -198,6 +207,34 @@ public class PackageWizardShell extends javax.swing.JFrame
         prevFrame.id = id;
         prevFrame.file = localDataStore.saveFile(id, xmlReader, false);
         previousFrames.addElement(prevFrame);
+      }
+      else
+      {
+        File datafile = new File(fileTextField.getText());
+        File f = null;
+        FileReader fr = null;
+        try
+        {
+          fr = new FileReader(datafile);
+        }
+        catch(FileNotFoundException fnfe)
+        {
+          JOptionPane.showConfirmDialog(this,
+                                 "The file you selected was not found.",
+                                 "File Not Found", 
+                                 JOptionPane.OK_CANCEL_OPTION,
+                                 JOptionPane.WARNING_MESSAGE);
+          return;
+        }
+        
+        String id = framework.getNextId();
+        framework.debug(9, "data file id generated: " + id);
+        f = localDataStore.saveFile(id, fr, false);
+        WizardFrame wf = new WizardFrame(getFilePanel);
+        wf.file = f;
+        wf.id = id;
+        previousFrames.addElement(wf);
+        getdataFlag = false;
       }
       
       visiblePackageWizard.setVisible(false); //make current wizard invisible
@@ -224,16 +261,22 @@ public class PackageWizardShell extends javax.swing.JFrame
                           "your metadata to describe.");
         
         JButton showOpenDialog = new JButton("Choose File");
-        showOpenDialog.setPreferredSize(new Dimension(200, 100));
+        
+        //showOpenDialog.setPreferredSize(new Dimension(200, 100));
         //add an icon to the button here!
         showOpenDialog.addActionListener(this);
-        wizardFrame.add(showOpenDialog);
+        fileTextField.setColumns(25);
+        getFilePanel.add(fileTextField);
+        getFilePanel.add(showOpenDialog);
+        wizardFrame.add(getFilePanel);
         getdataFlag = true;
+        getdataVisibleFlag = true;
       }
       else
       { //show next frame in the frames vector
         if(getdataFlag)
         {//hide the getdata screen
+          System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1");
           wizardFrame.removeAll();
           getdataFlag = false;
         }
@@ -247,43 +290,68 @@ public class PackageWizardShell extends javax.swing.JFrame
         PackageWizard pw = new PackageWizard(framework, wizardFrame, path);
         visiblePackageWizard = pw;
         String description = (String)nextFrame.get("description");
-        System.out.println("description: " + description);
         changeDescription(description);
       }
     }
     else if(command.equals("Choose File"))
     {
+      File datafile;
       filechooser.showOpenDialog(this);
-      //get the file that the user chose, assign it an id and cache it
-      File datafile = filechooser.getSelectedFile();
-      File f = null;
-      FileReader fr = null;
-      try
-      {
-        fr = new FileReader(datafile);
-      }
-      catch(FileNotFoundException fnfe)
-      {
-        JOptionPane.showConfirmDialog(this,
-                               "The file you selected was not found.",
-                               "File Not Found", 
-                               JOptionPane.OK_CANCEL_OPTION,
-                               JOptionPane.WARNING_MESSAGE);
-        return;
-      }
-      
-      String id = framework.getNextId();
-      framework.debug(9, "data file id generated: " + id);
-      f = localDataStore.saveFile(id, fr, false);
-      WizardFrame wf = new WizardFrame(wizardFrame);
-      wf.file = f;
-      wf.id = id;
-      previousFrames.addElement(wf);
+      datafile = filechooser.getSelectedFile();
+      fileTextField.setText(datafile.getAbsolutePath());
     }
     else if(command.equals("Finish"))
     {
-      System.out.println("we're finishing");
-      //work on finishing up the package now.--------------------!!!!!!!
+      //-Change the button to 'Done'
+      //-save the last frame's data
+      //-make the last frame invisible and save it
+      //-make a frame that has a button to save the package to Metacat
+      
+      changeDescription("Click 'Save to Metacat' if you would like to save " +
+                        "your new package to a Metacat server.  Check the " +
+                        "box if you would like your new package opened in " + 
+                        "the package editor.");
+      
+      String xml = visiblePackageWizard.getXML();
+      if(xml == null)
+      { //the user pressed the 'no' button on the 'are you sure you want
+        //to create an invalid document' dialog
+        return;
+      }
+      
+      //change the buttons
+      next.setText("Done");
+      previous.setVisible(false);
+      
+      //save the last frames data
+      WizardFrame prevFrame = new WizardFrame(visiblePackageWizard);
+      StringReader xmlReader = new StringReader(xml);
+      String id = framework.getNextId();
+      prevFrame.id = id;
+      prevFrame.file = localDataStore.saveFile(id, xmlReader, false);
+      previousFrames.addElement(prevFrame);
+      visiblePackageWizard.setVisible(false);
+      
+      //create the new frame with the metacat save button and a check box
+      //asking if the user wants to open the new package in the package
+      //editor
+      donePanel = new JPanel();
+      openCheckBox = new JCheckBox("Open new package in package " +
+                                             "editor?", true);
+      saveToMetacatButton = new JButton("Save To Metacat");
+      donePanel.setLayout(new BoxLayout(donePanel, BoxLayout.Y_AXIS));
+      donePanel.add(Box.createRigidArea(new Dimension(0,150)));
+      donePanel.add(Box.createVerticalGlue());
+      donePanel.add(saveToMetacatButton);
+      donePanel.add(Box.createRigidArea(new Dimension(0,20)));
+      donePanel.add(openCheckBox);
+      wizardFrame.add(donePanel);
+    }
+    else if(command.equals("Done"))
+    {
+      //-open up the package editor with the new package in it
+      System.out.println("Done");
+      this.setVisible(false);
     }
   }
   
