@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-12-06 19:34:36 $'
- * '$Revision: 1.8 $'
+ *     '$Date: 2004-01-05 17:06:22 $'
+ * '$Revision: 1.9 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -162,7 +162,7 @@ public class MetaDisplayPlugin implements   PluginInterface,
                reader = new StringReader(
                     "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
                     +"<eml:eml packageId=\"eml.1.1\" system=\"knb\" "
-                    +"xmlns:ds=\"eml://ecoinformatics.org/dataset-2.0.0\" "
+//                    +"xmlns:ds=\"eml://ecoinformatics.org/dataset-2.0.0\" "
                     +"xmlns:eml=\"eml://ecoinformatics.org/eml-2.0.0\" " 
                     +"xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" "
                     +"xsi:schemaLocation=\"eml://ecoinformatics.org/eml-2.0.0 eml.xsd\"> "

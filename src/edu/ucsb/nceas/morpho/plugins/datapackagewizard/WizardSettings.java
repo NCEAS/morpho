@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2003-12-24 08:27:12 $'
- * '$Revision: 1.42 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2004-01-05 17:05:54 $'
+ * '$Revision: 1.43 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -233,7 +233,7 @@ public class WizardSettings {
   +"   packageId=\"\" system=\"knb\" "
   +"   xmlns:eml=\"eml://ecoinformatics.org/eml-2.0.0\" "
   +"   xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" "
-  +"   xmlns:ds=\"eml://ecoinformatics.org/dataset-2.0.0\" "
+//  +"   xmlns:ds=\"eml://ecoinformatics.org/dataset-2.0.0\" "
   +"   xsi:schemaLocation=\"eml://ecoinformatics.org/eml-2.0.0 eml.xsd\"> "
   +"   <dataset/> "
   +"</eml:eml>";
