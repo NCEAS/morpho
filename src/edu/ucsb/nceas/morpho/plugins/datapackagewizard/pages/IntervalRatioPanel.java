@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2004-03-17 21:13:01 $'
- * '$Revision: 1.28 $'
+ *   '$Author: sambasiv $'
+ *     '$Date: 2004-03-19 18:11:52 $'
+ * '$Revision: 1.29 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -35,6 +35,7 @@ import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardPageSubPanelAPI;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardSettings;
 import edu.ucsb.nceas.morpho.util.Log;
 import edu.ucsb.nceas.utilities.OrderedMap;
+import edu.ucsb.nceas.utilities.XMLUtilities;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -43,6 +44,7 @@ import java.util.Arrays;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Point;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -58,9 +60,12 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JDialog;
 import javax.swing.JTextField;
 
-
+import javax.xml.parsers.*;
+import org.w3c.dom.*;
+import org.apache.xerces.dom.DOMImplementationImpl;
 
 public class IntervalRatioPanel extends JPanel implements WizardPageSubPanelAPI {
 
@@ -96,6 +101,8 @@ public class IntervalRatioPanel extends JPanel implements WizardPageSubPanelAPI 
                     };
 
   private JButton addButton, delButton;
+	
+	private AbstractUIPage parentPage;
 //////////////////////////////////////////////////
 //
 //from eml-entity.xsd:
@@ -139,7 +146,8 @@ public class IntervalRatioPanel extends JPanel implements WizardPageSubPanelAPI 
    */
   public IntervalRatioPanel(AbstractUIPage page) {
 
-    super();
+		super();
+		this.parentPage = page;
     init();
   }
 
@@ -158,15 +166,16 @@ public class IntervalRatioPanel extends JPanel implements WizardPageSubPanelAPI 
     //this.setMaximumSize(dims);
 
     ////////////////////////
-    unitsPickList = new UnitsPickList();
-
+		unitsPickListLabel    = WidgetFactory.makeLabel("Standard Unit:", true, WizardSettings.WIZARD_CONTENT_LABEL_DIMS);
+    unitsPickList = new UnitsPickList(parentPage, unitsPickListLabel);
+		/*
     JPanel pickListPanel = WidgetFactory.makePanel();
-    unitsPickListLabel    = WidgetFactory.makeLabel("Standard Unit:", true, WizardSettings.WIZARD_CONTENT_LABEL_DIMS);
+    
     pickListPanel.add(unitsPickListLabel);
     pickListPanel.add(unitsPickList);
-
+		*/
     this.add(Box.createGlue());
-    this.add(pickListPanel);
+    this.add(unitsPickList);
 
     ////////////////////////
 
@@ -666,16 +675,29 @@ class UnitsPickList extends JPanel {
   private final JComboBox unitTypesList  = new JComboBox();
   private final JComboBox unitsList      = new JComboBox();
   private final String UNITLIST_DEFAULT  = "- Select a Unit Type -";
-
-  public UnitsPickList() {
-
+	private JButton newUnit;
+	private JLabel unitTypeLabel;
+	private JPanel parentPanel;
+	private CustomUnitPanel customPanel = null;
+	private JDialog customUnitDialog = null;
+	
+	private UnitTypesListItem[] unitTypesListItems;
+	
+	public static final int CUSTOM_UNIT_PANEL_WIDTH = 700;
+  public static final int CUSTOM_UNIT_PANEL_HEIGHT = 500;
+	
+  public UnitsPickList(JPanel parent, JLabel unitTypeLabel) {
+		
+		this.parentPanel = parent;
+		this.unitTypeLabel = unitTypeLabel;
     init();
   }
 
 
   private void init() {
 
-    unitTypesList.setModel(new DefaultComboBoxModel(getUnitTypesArray()));
+		unitTypesListItems = getUnitTypesArray();
+    unitTypesList.setModel(new DefaultComboBoxModel(unitTypesListItems));
 
     unitTypesList.addItemListener(
       new ItemListener() {
@@ -690,7 +712,7 @@ class UnitsPickList extends JPanel {
 
           unitsList.setModel(
                       ((UnitTypesListItem)(e.getItem())).getComboBoxModel() );
-          String utype = ((UnitTypesListItem)unitTypesList.getSelectedItem()).getUnitTypeDisplayString();
+          String utype = ((UnitTypesListItem)unitTypesList.getSelectedItem()).toString();
           String preftype = WizardSettings.getPreferredType(utype.toLowerCase());
           if (preftype!=null) {
             unitsList.setSelectedItem(preftype);
@@ -706,10 +728,11 @@ class UnitsPickList extends JPanel {
     unitTypesList.setSelectedIndex(0);
 
     JPanel unitTypesPanel = WidgetFactory.makePanel();
+		unitTypesPanel.add(unitTypeLabel);
     unitTypesPanel.add(unitTypesList);
+    /*unitTypesPanel.add(WidgetFactory.makeDefaultSpacer());
     unitTypesPanel.add(WidgetFactory.makeDefaultSpacer());
-    unitTypesPanel.add(WidgetFactory.makeDefaultSpacer());
-    unitTypesPanel.add(WidgetFactory.makeDefaultSpacer());
+    unitTypesPanel.add(WidgetFactory.makeDefaultSpacer());*/
 
     ///////////////////////
     unitsList.addItemListener(
@@ -723,12 +746,42 @@ class UnitsPickList extends JPanel {
       });
     setUI(unitsList);
 
+		newUnit = new JButton("Define new unit");
+		newUnit.addActionListener( new ActionListener() {
+			
+			public void actionPerformed(ActionEvent ae) {
+				
+				ActionListener okAction = new ActionListener() {
+					public void actionPerformed(ActionEvent ae) {
+						customUnitOKAction();
+					}
+				};
+				ActionListener cancelAction = new ActionListener() {
+					public void actionPerformed(ActionEvent ae) {
+						customUnitDialog.setVisible(false);
+					}
+				};
+				customPanel = new CustomUnitPanel(parentPanel);
+				customUnitDialog = WidgetFactory.makeContainerDialog(customPanel, okAction, cancelAction);
+				customUnitDialog.setTitle("New Unit Definition");
+				Point loc = parentPanel.getLocationOnScreen();
+				int wd = parentPanel.getWidth();
+				int ht = parentPanel.getHeight();
+				int dwd = CUSTOM_UNIT_PANEL_WIDTH;
+				int dht = CUSTOM_UNIT_PANEL_HEIGHT;
+				customUnitDialog.setLocation( (int)loc.getX() + wd/2 - dwd/2, (int)loc.getY() + ht/2 - dht/2);
+				customUnitDialog.setSize(dwd, dht);
+				customUnitDialog.setVisible(true);
+			}
+		});
+		
     JPanel unitsPanel = WidgetFactory.makePanel();
     unitsPanel.add(unitsList);
     unitsPanel.add(WidgetFactory.makeDefaultSpacer());
+    unitsPanel.add(newUnit);
     unitsPanel.add(WidgetFactory.makeDefaultSpacer());
-    unitsPanel.add(WidgetFactory.makeDefaultSpacer());
-
+		unitsPanel.setBorder(BorderFactory.createEmptyBorder(0, 10, 0, 0));
+		
     ///////////////////////
     this.setLayout(new GridLayout(1,2));
     this.setPreferredSize(WizardSettings.WIZARD_CONTENT_SINGLE_LINE_DIMS);
@@ -738,6 +791,79 @@ class UnitsPickList extends JPanel {
     unitsList.setEnabled(false);
   }
 
+	private void customUnitOKAction() {
+		
+		if(customPanel == null) {
+			customUnitDialog.setVisible(false);
+			return;
+		}
+		
+		if(!customPanel.validateUserInput())
+			return;
+		
+		OrderedMap map = customPanel.getPanelData("");
+		
+		String type = getUnitTypeOfNewUnit(map);
+		String[] newUnits = getNewUnits(map);
+		if(isNewType(map)) {
+			
+			UnitTypesListItem item = new UnitTypesListItem(type, newUnits);
+			UnitTypesListItem[] newArray = new UnitTypesListItem[unitTypesListItems.length + 1];
+			WizardSettings.insertObjectIntoArray(unitTypesListItems, item, newArray);
+			unitTypesListItems = newArray;
+			unitTypesList.setModel(new DefaultComboBoxModel(unitTypesListItems));
+			
+		} else {
+			
+			// add units to existing type
+			UnitTypesListItem item = new UnitTypesListItem(type, newUnits);
+			int idx = Arrays.binarySearch(unitTypesListItems, item);
+			if(idx >=0 && idx < unitTypesListItems.length)
+				unitTypesListItems[idx].addUnits(newUnits);
+		}
+		
+		customUnitDialog.setVisible(false);
+		return;
+	}
+	
+	private String getUnitTypeOfNewUnit( OrderedMap map) {
+		
+		String t = (String) map.get("/unitList/unitType[1]/@name");
+		if(t != null)
+			return t;
+		return (String) map.get("/unitList/unit[1]/@unitType");
+		
+	}
+	
+	private String[] getNewUnits(OrderedMap map) {
+		
+		Object o1 = map.get("/unitList/unit[1]/@name");
+		String u1 = (String)o1;
+		
+		Object o2 = map.get("/unitList/unit[2]/@name");
+		if(o2 == null) {
+			// only 1 unit
+			String[] ret = new String[1];
+			ret[0] = u1;
+			return ret;
+		}
+		String[] ret = new String[2];
+		ret[0] = u1;
+		ret[1] = (String)o2;
+		return ret;
+		
+	}
+	
+	private boolean isNewType(OrderedMap map) {
+		
+		String t = (String) map.get("/unitList/unitType[1]/@name");
+		if(t != null)
+			return true;
+		else
+			return false;
+		
+		
+	}
   public String getSelectedUnit() {
 
     Object selItem = unitsList.getSelectedItem();
@@ -816,16 +942,18 @@ class UnitsPickList extends JPanel {
  *  in the eml unit dictionary). Has a toString() method that returns an
  *  appropriate entry for the drop-down list.
  */
-class UnitTypesListItem  {
+class UnitTypesListItem  implements Comparable{
 
   private ComboBoxModel model;
   private String        unitType;
   private String        unitTypeDisplayString;
-
+	private String[]			unitsOfThisType;
+	
   public UnitTypesListItem(String unitType, String[] unitsOfThisType) {
 
     this.unitType = unitType;
-    unitTypeDisplayString = getUnitTypeDisplayString();
+    unitTypeDisplayString = WizardSettings.getUnitTypeDisplayString(unitType);
+		this.unitsOfThisType = unitsOfThisType;
     model = new DefaultComboBoxModel(unitsOfThisType);
   }
 
@@ -833,35 +961,18 @@ class UnitTypesListItem  {
 
   public String toString() { return unitTypeDisplayString; }
 
-
-  public String getUnitTypeDisplayString() {
-
-    if (unitType==null || unitType.trim().equals("")) return "";
-
-    StringBuffer buff = new StringBuffer();
-
-    final char SPACE = ' ';
-
-    int length = unitType.length();
-
-    char[] originalUnitTypeChars      = new char[length];
-    unitType.getChars(0, length, originalUnitTypeChars, 0);
-
-    char[] upperCaseUnitTypeChars = new char[length];
-    unitType.toUpperCase().getChars(0, length, upperCaseUnitTypeChars, 0);
-
-    //make first char uppercase:
-    buff.append(upperCaseUnitTypeChars[0]);
-
-    for (int i=1; i<length; i++) {
-
-      //if it's an uppercase letter, add a space before it:
-      if (originalUnitTypeChars[i]==upperCaseUnitTypeChars[i]) {
-
-        buff.append(SPACE);
-      }
-      buff.append(originalUnitTypeChars[i]);
-    }
-    return buff.toString();
-  }
+	public void addUnits(String[] newUnits) {
+		
+		String[] newArr = new String[unitsOfThisType.length + 1];
+		for(int i=0; i < newUnits.length; i++) {
+			WizardSettings.insertObjectIntoArray(unitsOfThisType, newUnits[i], newArr);
+		}
+		unitsOfThisType = newArr;
+		model = new DefaultComboBoxModel(unitsOfThisType);
+	}
+  
+	public int compareTo(Object o) {
+		
+		return unitTypeDisplayString.compareTo( ((UnitTypesListItem)o).toString());
+	}
 }

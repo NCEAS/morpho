@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2004-03-18 00:23:33 $'
- * '$Revision: 1.54 $'
+ *   '$Author: sambasiv $'
+ *     '$Date: 2004-03-19 18:11:52 $'
+ * '$Revision: 1.55 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -45,6 +45,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.StringTokenizer;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -63,10 +64,16 @@ import edu.ucsb.nceas.morpho.util.UISettings;
 
 public class WizardSettings {
 
-  private static final String UNIT_TYPES_XPATH
+  private static final String ALL_UNIT_TYPES_XPATH
                                       = "/stmml:unitList/stmml:unitType/@name";
+
+	public static final String BASIC_UNIT_TYPES_XPATH 
+	          = "/stmml:unitList/stmml:unitType/@name[string(.)=string(../dimension/@name)]";	
+	
+	private static String[] basicUnitTypes = {"length", "time", "mass", "charge", "temperature", "amount", "luminosity", "dimensionless", "angle"};
   private static Node udRootNode = null;
-  private static String[] unitDictionaryUnitTypesArray;
+  private static String[] unitDictionaryUnitTypesArray = null;
+	private static String[] unitDictionaryBasicUnitTypesArray = null;
 
   private static Node[] unitsNodeArray = null;
   private static final String UNITS_XPATH    = "/stmml:unitList/stmml:unit";
@@ -351,6 +358,20 @@ public class WizardSettings {
   }
 
 
+  /**
+   *  from the eml unit dictionary, gets only the fundamental unitTypes 
+   *
+   *  @return String array containing the fundamental unitTypes in the unitdictionary
+   */
+  public static String[] getUnitDictionaryBasicUnitTypes() {
+		
+		return basicUnitTypes;
+		/*if (unitDictionaryBasicUnitTypesArray == null) {
+			unitDictionaryBasicUnitTypesArray = getUnitTypesWithXPath(BASIC_UNIT_TYPES_XPATH);
+		}
+		return unitDictionaryBasicUnitTypesArray;
+		*/
+	}
 
   /**
    *  from the eml unit dictionary, gets all the unitTypes (both fundamental
@@ -359,59 +380,65 @@ public class WizardSettings {
    *  @return String array containing all the unitTypes in the unitdictionary
    */
   public static String[] getUnitDictionaryUnitTypes() {
-
-    if (unitDictionaryUnitTypesArray==null) {
-
-      Reader reader = null;
-      try {
-        File unitDict = new File("./xsl/eml-unitDictionary.xml");
-        reader = new FileReader(unitDict);
-//        reader = IOUtil.getResourceAsInputStreamReader(EML_UNIT_DICTIONARY_PATH);
-// above change to use a FileReader was made to get this code to work on a Mac;
-// Use of getResourceAsInputStreamReader(EML_UNIT_DICTIONARY_PATH) seems to work fine on Windows!
-// DFH - Mar 2004
-      } catch (Exception e) {
-
-        e.printStackTrace();
-        Log.debug(12,"Exception: <"+e+"> trying to open unit dictionary file.\n"
-        +"\nClasspath was: \n"+System.getProperty("java.class.path")+"\n");
-        reader = null;
-      }
-
-      if (reader==null) {
-
-        Log.debug(1,"Can't find unit dictionary file at: "+EML_UNIT_DICTIONARY_PATH);
-        return new String[]{"ERROR"};
-      }
-
-      try {
-        udRootNode = XMLUtilities.getXMLReaderAsDOMTreeRootNode(reader);
-
-      } catch (IOException ioe) {
-        Log.debug(12,"Exception getting unit dictionary RootNode: "+ioe);
-        ioe.printStackTrace();
-        return new String[] {"IOException!"};
-      }
-
-      Node[] unitTypesNodeArray = null;
-
-      unitTypesNodeArray = getNodeArrayWithXPath(udRootNode, UNIT_TYPES_XPATH);
-
-      if (unitTypesNodeArray==null) {
-        Log.debug(1,"Fatal error - unitTypesNodeArray == NULL");
-        return new String[] {"ERROR!!"};
-      }
-
-      final int totUnitTypes      = unitTypesNodeArray.length;
-      unitDictionaryUnitTypesArray  = new String[totUnitTypes];
-
-      for (int i=0; i<totUnitTypes; i++) {
-
-        unitDictionaryUnitTypesArray[i] = unitTypesNodeArray[i].getNodeValue();
-      }
-      Arrays.sort(unitDictionaryUnitTypesArray);
+		
+		if (unitDictionaryUnitTypesArray==null) {
+			unitDictionaryUnitTypesArray = getUnitTypesWithXPath(ALL_UNIT_TYPES_XPATH);
     }
-    return unitDictionaryUnitTypesArray;
+		return unitDictionaryUnitTypesArray;
+	}
+	
+	private static String[] getUnitTypesWithXPath(String unitXPath) {
+		
+		Reader reader = null;
+		try {
+			File unitDict = new File("./xsl/eml-unitDictionary.xml");
+			reader = new FileReader(unitDict);
+			//        reader = IOUtil.getResourceAsInputStreamReader(EML_UNIT_DICTIONARY_PATH);
+			// above change to use a FileReader was made to get this code to work on a Mac;
+			// Use of getResourceAsInputStreamReader(EML_UNIT_DICTIONARY_PATH) seems to work fine on Windows!
+			// DFH - Mar 2004
+		} catch (Exception e) {
+			
+			e.printStackTrace();
+			Log.debug(12,"Exception: <"+e+"> trying to open unit dictionary file.\n"
+			+"\nClasspath was: \n"+System.getProperty("java.class.path")+"\n");
+			reader = null;
+		}
+		
+		if (reader==null) {
+			
+			Log.debug(1,"Can't find unit dictionary file at: "+EML_UNIT_DICTIONARY_PATH);
+			return new String[]{"ERROR"};
+		}
+		
+		try {
+			udRootNode = XMLUtilities.getXMLReaderAsDOMTreeRootNode(reader);
+			
+		} catch (IOException ioe) {
+			Log.debug(12,"Exception getting unit dictionary RootNode: "+ioe);
+			ioe.printStackTrace();
+			return new String[] {"IOException!"};
+		}
+		
+		Node[] unitTypesNodeArray = null;
+		
+		unitTypesNodeArray = getNodeArrayWithXPath(udRootNode, unitXPath);
+		
+		if (unitTypesNodeArray==null) {
+			Log.debug(1,"Fatal error - unitTypesNodeArray == NULL");
+			return new String[] {"ERROR!!"};
+		}
+		
+		final int totUnitTypes      = unitTypesNodeArray.length;
+		String[] unitTypesArray  = new String[totUnitTypes];
+		
+		for (int i=0; i<totUnitTypes; i++) {
+			
+			unitTypesArray[i] = unitTypesNodeArray[i].getNodeValue();
+		}
+		Arrays.sort(unitTypesArray);
+		
+		return unitTypesArray;
   }
 
 
@@ -530,7 +557,173 @@ public class WizardSettings {
     }
     return returnArray;
   }
+	
+	/**
+   *  returns the display string for a given unit Type. Display string has 
+	 *	words with the first letter capitalized. For example, for the unit type
+	 * 	currentDensity, it would return the string "Current Density"
+   *
+   *  @param  unitType the String representation of the unitType to look for
+   *
+   *  @return display String for the given unit type
+   */
+	 
+	public static String getUnitTypeDisplayString(String unitType) {
 
+    if (unitType==null || unitType.trim().equals("")) return "";
+
+    StringBuffer buff = new StringBuffer();
+
+    final char SPACE = ' ';
+
+    int length = unitType.length();
+
+    char[] originalUnitTypeChars      = new char[length];
+    unitType.getChars(0, length, originalUnitTypeChars, 0);
+
+    char[] upperCaseUnitTypeChars = new char[length];
+    unitType.toUpperCase().getChars(0, length, upperCaseUnitTypeChars, 0);
+
+    //make first char uppercase:
+    buff.append(upperCaseUnitTypeChars[0]);
+
+    for (int i=1; i<length; i++) {
+
+      //if it's an uppercase letter, add a space before it:
+      if (originalUnitTypeChars[i]==upperCaseUnitTypeChars[i]) {
+
+        buff.append(SPACE);
+      }
+      buff.append(originalUnitTypeChars[i]);
+    }
+    return buff.toString();
+  }
+	
+	private static String getOriginalUnitString(String unitType) {
+		
+		StringTokenizer st = new StringTokenizer(unitType, " ");
+		String result = "";
+		int cnt = 0;
+		while(st.hasMoreTokens()) {
+			if(cnt == 0)
+				result += st.nextToken().toLowerCase();
+			else
+				result+= st.nextToken();
+			cnt++;
+		}
+		return result;
+	}
+	
+	public static void insertObjectIntoArray( Object[] arr, Object value, Object[] newArr) {
+		
+		int idx = Arrays.binarySearch(arr, value);
+		int pos = -(idx + 1);
+		int i = 0;
+		for(i = 0 ;i < pos; i++)
+			newArr[i] = arr[i];
+		newArr[i] = value;
+		for(int j = pos; j < arr.length;j++)
+			newArr[j+1] = arr[j]; 
+		
+		return;
+	}
+	
+	/**
+   *  returns the definition for a given unit type as a list of terms. Each
+	 *	term is a 2-element list consisting of a Fundamental unit type and the
+	 *	power that it is raised to
+   *
+   *  @param  unitType the String representation of the unitType to look for
+   *
+   *  @return List of lists of the basic units and powers, that define this unit
+   */
+	 
+	public static List getDefinitionsForUnitType(String unitType) {
+		
+		Reader reader = null;
+		try {
+			File unitDict = new File("./xsl/eml-unitDictionary.xml");
+			reader = new FileReader(unitDict);
+			//        reader = IOUtil.getResourceAsInputStreamReader(EML_UNIT_DICTIONARY_PATH);
+			// above change to use a FileReader was made to get this code to work on a Mac;
+			// Use of getResourceAsInputStreamReader(EML_UNIT_DICTIONARY_PATH) seems to work fine on Windows!
+			// DFH - Mar 2004
+		} catch (Exception e) {
+			
+			e.printStackTrace();
+			Log.debug(12,"Exception: <"+e+"> trying to open unit dictionary file.\n"
+			+"\nClasspath was: \n"+System.getProperty("java.class.path")+"\n");
+			reader = null;
+		}
+		
+		if (reader==null) {
+			
+			Log.debug(1,"Can't find unit dictionary file at: "+EML_UNIT_DICTIONARY_PATH);
+			return null;
+		}
+		
+		Node rootNode;
+		try {
+			rootNode = XMLUtilities.getXMLReaderAsDOMTreeRootNode(reader);
+			
+		} catch (IOException ioe) {
+			Log.debug(12,"Exception getting unit dictionary RootNode: "+ioe);
+			ioe.printStackTrace();
+			return null;
+		}
+		
+		unitType = getOriginalUnitString(unitType);
+		Node unitTypeNode = null;
+		String unitTypeXPath = "/stmml:unitList/stmml:unitType[@name='" + unitType + "']";
+		try {
+			SunitTypeNode = XMLUtilities.getNodeWithXPath(rootNode, unitTypeXPath);
+		} catch (Exception te) {
+			Log.debug(12, "Exception retreving the given unitType node");
+			return null;
+		}
+		
+		if (unitTypeNode==null) {
+			Log.debug(12, "Got no nodes for the given unit type");
+			return null;
+		}
+		
+		List result = new ArrayList();
+		NodeList children = unitTypeNode.getChildNodes();
+		Log.debug(12, "children got = " + children.getLength());
+		for(int i = 0; i < children.getLength(); i++) {
+			
+			String name = "";
+			String power = "";
+			Node child = children.item(i);
+			NamedNodeMap attrs = child.getAttributes();
+			if(attrs == null)
+				continue;
+			Node nameAttr = attrs.getNamedItem("name");
+			if(nameAttr != null)
+				name = nameAttr.getNodeValue();
+			else
+				continue;
+			Node powerAttr = attrs.getNamedItem("power");
+			if(powerAttr != null)
+				power = powerAttr.getNodeValue();
+			else
+				power = "1";
+			
+			List row = new ArrayList();
+			row.add(getUnitTypeDisplayString(name));
+			row.add(power);
+			result.add(row);
+		}
+		
+		try {
+			if(reader != null)
+				reader.close();
+		}
+		catch(Exception e) {}
+		return result;
+	}
+	
+	
   /**
    *  returns the preferred unit for each unitType; to be used for
    *  setting the default unit type

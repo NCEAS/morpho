@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: sambasiv $'
- *     '$Date: 2004-03-16 23:58:48 $'
- * '$Revision: 1.42 $'
+ *     '$Date: 2004-03-19 18:11:52 $'
+ * '$Revision: 1.43 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -126,6 +126,7 @@ public class CustomList extends JPanel {
   private Action customDuplicateAction;
   private Action customDeleteAction;
 
+	private boolean enabled = true;
 	private double[] columnWidthPercentages;
 	private JPanel buttonBox;
   ////////////
@@ -798,9 +799,11 @@ public class CustomList extends JPanel {
    *
    */
   public void removeAllRows() {
+		model = (DefaultTableModel)table.getModel();
 	  for(; table.getRowCount() > 0 ;)
 		  model.removeRow(0);
-
+		table.tableChanged(getTableModelEvent());
+    model = (DefaultTableModel)table.getModel();
   }
 
 
@@ -1133,6 +1136,34 @@ public class CustomList extends JPanel {
 		if(col >= table.getColumnCount() || col < 0)
 			return;
 		table.editCellAt(row, col);
+	}
+	
+	public void setEnabled(boolean enabled) {
+		
+		this.enabled = enabled;
+		
+		table.setEnabled(enabled);
+		if(!enabled) {
+			
+			if(showAddButton)
+				addButton.setEnabled(enabled);
+			if(showEditButton)
+				editButton.setEnabled(enabled);
+			if(showDuplicateButton)
+				duplicateButton.setEnabled(enabled);
+			if(showDeleteButton)
+				deleteButton.setEnabled(enabled);
+			if(showMoveUpButton)
+				moveUpButton.setEnabled(enabled);
+			if(showMoveDownButton)
+				moveDownButton.setEnabled(enabled);
+		} else {
+			doEnablesDisables(table.getSelectedRows());
+		}
+	}
+	
+	public boolean isEnabled() {
+		return enabled;
 	}
 }
 
