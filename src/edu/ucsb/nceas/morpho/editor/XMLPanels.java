@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-06-11 21:55:45 $'
- * '$Revision: 1.11 $'
+ *     '$Date: 2001-06-14 00:10:44 $'
+ * '$Revision: 1.12 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -172,7 +172,6 @@ public class XMLPanels extends Component
     }
     
     JPanel getDataPanel(DefaultMutableTreeNode node) {
-//        JPanel jp = new JPanel(new BorderLayout(0,0));
         JPanel jp = new JPanel();
         jp.setLayout(new BoxLayout(jp,BoxLayout.Y_AXIS));
         jp.setAlignmentX(Component.LEFT_ALIGNMENT);
@@ -184,17 +183,14 @@ public class XMLPanels extends Component
         jp2.setAlignmentX(Component.LEFT_ALIGNMENT);
         jp1.setMaximumSize(new Dimension(600,30));
         jp2.setMaximumSize(new Dimension(600,30));
-//        jp.add(BorderLayout.NORTH,jp1);
-//        jp.add(BorderLayout.CENTER,jp2);
         jp.add(jp1);
         jp.add(jp2);
 		NodeInfo info = (NodeInfo)(node.getUserObject());
         JLabel jl = new JLabel(info.name);
+        jl.setForeground(java.awt.Color.black);
+		jl.setFont(new Font("Dialog", Font.PLAIN, 12));
         jp1.add(jl);
- //       JTextField jtf1 = new JTextField();
- //       jp2.add(BorderLayout.CENTER,jtf1);
- 
-//        if (node.getNodeType()==Node.ELEMENT_NODE) {
+
       StringBuffer name = new StringBuffer();
       if (info.getHelp()!=null) {
         name.append(info.getHelp()); 
@@ -228,7 +224,7 @@ public class XMLPanels extends Component
             jp2.add(jtf1);
             nodeMap.put(jtf1,nd);  // for use in saving changes to text
             jtf1.addFocusListener(new dfhFocus());
-            if (txt.equals("text")) { txt = ""; }
+            if (txt.equals("text")) { txt = " "; }
             jtf1.setText(txt);
             }
          }
