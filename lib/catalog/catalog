@@ -115,3 +115,10 @@ PUBLIC "eml-literature-2.0" "eml-literature-2.0.dtd"
 PUBLIC "-//NCEAS//eml-literature-2.0//EN" "eml-literature-2.0.dtd"
 SYSTEM "urn:nceas:test-eml-literature-2.0" "eml-literature-2.0.dtd"
 SYSTEM "eml-literature-2.0.dtd" "eml-literature-2.0.dtd"
+
+OVERRIDE YES
+PUBLIC "eml-attribute-2.0" "eml-attribute-2.0.dtd"
+PUBLIC "-//NCEAS//eml-attribute-2.0//EN" "eml-attribute-2.0.dtd"
+SYSTEM "urn:nceas:test-eml-attribute-2.0" "eml-attribute-2.0.dtd"
+SYSTEM "eml-attribute-2.0.dtd" "eml-attribute-2.0.dtd"
+
