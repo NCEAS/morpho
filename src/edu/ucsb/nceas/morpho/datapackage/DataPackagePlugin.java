@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2002-09-19 02:12:36 $'
- * '$Revision: 1.26 $'
+ *     '$Date: 2002-09-24 17:28:53 $'
+ * '$Revision: 1.27 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -224,7 +224,7 @@ public class DataPackagePlugin
     DataViewContainerPanel dvcp = new DataViewContainerPanel(dp, gui);
     dvcp.setFramework(morpho);
 
-    dvcp.setEntityItems(gui.entityitems);
+    dvcp.setEntityItems(gui.getEntityitems());
     dvcp.setListValueHash(gui.listValueHash);
     dvcp.init();
 
