@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2004-04-26 17:21:29 $'
- * '$Revision: 1.39 $'
+ *   '$Author: sgarg $'
+ *     '$Date: 2005-01-27 20:23:09 $'
+ * '$Revision: 1.40 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -280,10 +280,10 @@ public class DataPackageWizardPlugin implements PluginInterface,
       return false;
     }
     // if pageList is empty, don't need to do anything
-    if (pageList.size() < 1) {
-      Log.debug(15, "deleteExistingAndAddPageDataToDOM() Got empty pageList - returning true");
-      return true;
-    }
+    //if (pageList.size() < 1) {
+    //  Log.debug(15, "deleteExistingAndAddPageDataToDOM() Got empty pageList - returning true");
+    //  return true;
+    //}
 
     //ensure root xpath starts with a slash...
     rootXPath = rootXPath.trim();
