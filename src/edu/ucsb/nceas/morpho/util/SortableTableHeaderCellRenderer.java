@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2002-08-14 16:47:56 $'
- * '$Revision: 1.2 $'
+ *     '$Date: 2002-09-06 01:29:42 $'
+ * '$Revision: 1.3 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,9 +24,15 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 package edu.ucsb.nceas.morpho.util;
-import java.awt.*;
-import javax.swing.*;
-import javax.swing.table.*;
+
+import java.awt.Component;
+import java.awt.Font;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.ImageIcon;
+import javax.swing.JTable;
+import javax.swing.SwingConstants;
+import javax.swing.UIManager;
+//import javax.swing.table.*;
 
 /**
  * The class for Renderer of sortable table header cell
@@ -34,11 +40,11 @@ import javax.swing.table.*;
 public class SortableTableHeaderCellRenderer extends DefaultTableCellRenderer
 {
   // The icon for nonsorted in table header cell
-  private Icon NONSORTED = null;
+  private ImageIcon NONSORTED = null;
   // The icon for ascending order in table header cell
-  private  Icon ASCENDING = null;  
+  private  ImageIcon ASCENDING = null;  
   // The icon for decending order in table header cell
-  private  Icon DECENDING = null;
+  private  ImageIcon DECENDING = null;
     
   // Font size                 
   private static final int FONTSIZE = 12;
@@ -67,27 +73,61 @@ public class SortableTableHeaderCellRenderer extends DefaultTableCellRenderer
   public Component getTableCellRendererComponent( JTable table, Object value, 
                           boolean isSelected,boolean hasFocus, int row, int col)
   {
-    int index = -1;
-    boolean ascending = true;
+    // Index of sorted column
+    int indexOfSortedColumn = -1;
+    // sorted or not
+    boolean sorted = false;
+    // order of sorting
+    String order = null;
+    SortableJTable sortTable = null;
+    ImageIcon shownIcon = null;
+    // Set icon for sorted column
     if (table instanceof SortableJTable)
-    {
-      SortableJTable sortTable = (SortableJTable)table;
-      index = sortTable.getSortedColumnIndex();
-      ascending = sortTable.isSortedColumnAscending();
-    }
-    if (table != null)
-    {
-      JTableHeader header = table.getTableHeader();
-      if (header != null)
+    { 
+      // Casting
+      sortTable = (SortableJTable)table;
+      // Get sorted or not
+      sorted = sortTable.getSorted();
+      // If not sorted
+      if (!sorted)
       {
-        setForeground(header.getForeground());
-        setBackground(header.getBackground());
-        setFont(header.getFont());
+        setIcon(NONSORTED);
       }
+      else
+      {
+         // Get index of sortedColumn
+        indexOfSortedColumn = sortTable.getIndexOfSortedColumn();
+        // Get order of sorted
+        order = sortTable.getOrderOfSortedColumn();
+        if (order.equals(SortableJTable.ASCENDING))
+        {
+          shownIcon = ASCENDING;
+        }
+        else
+        {
+          shownIcon = DECENDING;
+        }
+        // set icon
+        if (col == indexOfSortedColumn)
+        {
+          setIcon(shownIcon);
+        }
+        else
+        {
+          setIcon(NONSORTED);
+        }
+      }//else
+    }//if 
+    // Set text for header
+    if (value == null)
+    {
+      setText("");
     }
-    Icon icon = ascending ? ASCENDING : DECENDING;
-    setIcon(col == index ? icon : NONSORTED);
-    setText((value == null) ? "" : value.toString());
+    else
+    {
+      setText(value.toString());
+    }
+    // SetBorder
     setBorder(UIManager.getBorder("TableHeader.cellBorder"));
     return this;
   }
