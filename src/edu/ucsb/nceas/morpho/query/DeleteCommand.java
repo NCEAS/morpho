@@ -5,9 +5,9 @@
  *    Authors: @tao@
  *    Release: @release@
  *
- *   '$Author: tao $'
- *     '$Date: 2002-10-02 20:29:20 $'
- * '$Revision: 1.12 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2003-10-14 05:14:55 $'
+ * '$Revision: 1.13 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -296,7 +296,7 @@ public class DeleteCommand implements Command
             {
               location = DataPackageInterface.LOCAL;
             }
-            dataPackage.openDataPackage(location, selectDocId, null, null);
+            dataPackage.openDataPackage(location, selectDocId, null, null, null);
             
           }
           else

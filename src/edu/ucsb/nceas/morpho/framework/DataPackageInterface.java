@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-03-25 21:50:48 $'
- * '$Revision: 1.16 $'
+ *     '$Date: 2003-10-14 05:13:46 $'
+ * '$Revision: 1.17 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -69,7 +69,8 @@ public interface DataPackageInterface
    * @param coordinator the coordinator for butterfly flapping
    */
   public void openDataPackage(String location, String identifier, 
-                    Vector relations, ButterflyFlapCoordinator coordinator);
+                    Vector relations, ButterflyFlapCoordinator coordinator,
+                    String doctype);
   /**
    * This method is called to upload a datapackage that is currently stored
    * locally to metacat and return a new id or orignal id.

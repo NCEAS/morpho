@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-10-10 22:01:10 $'
- * '$Revision: 1.39 $'
+ *     '$Date: 2003-10-14 05:14:55 $'
+ * '$Revision: 1.40 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -719,7 +719,7 @@ public class ResultSet extends AbstractTableModel implements ContentHandler,
       ServiceProvider provider = 
                       services.getServiceProvider(DataPackageInterface.class);
       DataPackageInterface dataPackage = (DataPackageInterface)provider;
-      dataPackage.openDataPackage(location, docid, rowTriples, null);
+      dataPackage.openDataPackage(location, docid, rowTriples, null, null);
     } catch (ServiceNotHandledException snhe) {
       Log.debug(6, snhe.getMessage());
     }

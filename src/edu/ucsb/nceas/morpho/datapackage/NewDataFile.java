@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-12-26 19:32:54 $'
- * '$Revision: 1.12 $'
+ *     '$Date: 2003-10-14 05:12:29 $'
+ * '$Revision: 1.13 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -278,7 +278,7 @@ public class NewDataFile extends javax.swing.JDialog
       ServiceProvider provider = 
                       services.getServiceProvider(DataPackageInterface.class);
       DataPackageInterface dataPackage = (DataPackageInterface)provider;
-      dataPackage.openDataPackage(location, newpackage.getID(), null, null);
+      dataPackage.openDataPackage(location, newpackage.getID(), null, null, null);
     }
     catch (ServiceNotHandledException snhe) 
     {

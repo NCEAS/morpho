@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-09-12 15:51:05 $'
- * '$Revision: 1.86 $'
+ *     '$Date: 2003-10-14 05:13:17 $'
+ * '$Revision: 1.87 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1021,7 +1021,7 @@ public class PackageWizardShell extends javax.swing.JFrame
        ServiceProvider provider = 
                       services.getServiceProvider(DataPackageInterface.class);
        DataPackageInterface dataPackage = (DataPackageInterface)provider;
-       dataPackage.openDataPackage(location, dp.getID(), null, null);
+       dataPackage.openDataPackage(location, dp.getID(), null, null, null);
     }
     catch (ServiceNotHandledException snhe) 
     {

@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: cjones $'
- *     '$Date: 2002-09-26 01:57:53 $'
- * '$Revision: 1.4 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2003-10-14 05:12:29 $'
+ * '$Revision: 1.5 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -173,7 +173,7 @@ public class OpenPreviousDialog extends javax.swing.JDialog
       else {
         location = "metacat";
       }
-      dataPackage.openDataPackage(location, temp, null, null);
+      dataPackage.openDataPackage(location, temp, null, null, null);
 		this.setVisible(false);
 	  this.dispose();		 
 	}

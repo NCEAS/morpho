@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-10-13 20:31:55 $'
- * '$Revision: 1.59 $'
+ *     '$Date: 2003-10-14 05:12:29 $'
+ * '$Revision: 1.60 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1208,7 +1208,7 @@ public class DataViewContainerPanel extends javax.swing.JPanel
       ServiceProvider provider = 
                       services.getServiceProvider(DataPackageInterface.class);
       DataPackageInterface dataPackage = (DataPackageInterface)provider;
-      dataPackage.openDataPackage(location, newPackageId, null, null);
+      dataPackage.openDataPackage(location, newPackageId, null, null, null);
     }
     catch (ServiceNotHandledException snhe) 
     {

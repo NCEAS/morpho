@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-10-13 21:27:53 $'
- * '$Revision: 1.11 $'
+ *     '$Date: 2003-10-14 05:14:55 $'
+ * '$Revision: 1.12 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -139,7 +139,7 @@ public class OpenPackageCommand implements Command, ButterflyFlapCoordinator
           ServiceProvider provider = 
                       services.getServiceProvider(DataPackageInterface.class);
           DataPackageInterface dataPackage = (DataPackageInterface)provider;
-          dataPackage.openDataPackage(location, docid, null, command);
+          dataPackage.openDataPackage(location, docid, null, command, doctype);
         }
         catch (ServiceNotHandledException snhe) 
         {

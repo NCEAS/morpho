@@ -5,9 +5,9 @@
  *    Authors: @tao@
  *    Release: @release@
  *
- *   '$Author: tao $'
- *     '$Date: 2002-10-02 20:32:10 $'
- * '$Revision: 1.8 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2003-10-14 05:14:55 $'
+ * '$Revision: 1.9 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -259,7 +259,7 @@ public class LocalToNetworkCommand implements Command
         {
           // the location of data package after synchronize
           String location = DataPackageInterface.BOTH;
-          dataPackage.openDataPackage(location, selectDocId, null, null);
+          dataPackage.openDataPackage(location, selectDocId, null, null, null);
           
           // Distroy old frame
           UIController.getInstance().removeWindow(frame);

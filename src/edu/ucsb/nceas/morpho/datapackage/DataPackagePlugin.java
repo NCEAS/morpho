@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-03-25 21:50:23 $'
- * '$Revision: 1.53 $'
+ *     '$Date: 2003-10-14 05:12:29 $'
+ * '$Revision: 1.54 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -443,16 +443,32 @@ public class DataPackagePlugin
   }
 
   public void openDataPackage(String location, String identifier, 
-                       Vector relations, ButterflyFlapCoordinator coordinator)
+                       Vector relations, ButterflyFlapCoordinator coordinator,
+                       String doctype)
   {
+    DataPackage dp = null;
+    AbstractDataPackage adp = null;
+    DataPackageGUI gui = null;
     Log.debug(11, "DataPackage: Got service request to open: " + 
                     identifier + " from " + location + ".");
-    DataPackage dp = new DataPackage(location, identifier, 
+    if ((doctype!=null)&&(doctype.indexOf("eml://ecoinformatics.org/eml-2.0.0")>-1)) {
+      boolean metacat = false;
+      boolean local = false;
+      if ((location.equals(DataPackageInterface.METACAT))||
+               (location.equals(DataPackageInterface.BOTH))) metacat = true;
+      if ((location.equals(DataPackageInterface.LOCAL))||
+               (location.equals(DataPackageInterface.BOTH))) local = true;
+      adp = DataPackageFactory.getDataPackage(identifier, metacat, local);
+    } else {
+      dp = new DataPackage(location, identifier, 
                                      relations, morpho, true);
+    }
     //Log.debug(11, "location: " + location + " identifier: " + identifier +
     //                " relations: " + relations.toString());
     
-    final DataPackageGUI gui = new DataPackageGUI(morpho, dp);
+    if (dp!=null) {
+      gui = new DataPackageGUI(morpho, dp);
+    }
 
     long starttime = System.currentTimeMillis();
     final MorphoFrame packageWindow = UIController.getInstance().addWindow(
@@ -491,11 +507,16 @@ public class DataPackagePlugin
  
     long starttime1 = System.currentTimeMillis();
  
-    DataViewContainerPanel dvcp = new DataViewContainerPanel(dp, gui);
+    DataViewContainerPanel dvcp = null;
+    if (adp!=null) {
+      dvcp = new DataViewContainerPanel(adp);
+    } else {
+      dvcp = new DataViewContainerPanel(dp, gui);
+    }
     dvcp.setFramework(morpho);
 
-    dvcp.setEntityItems(gui.getEntityitems());
-    dvcp.setListValueHash(gui.listValueHash);
+//    dvcp.setEntityItems(gui.getEntityitems());
+//    dvcp.setListValueHash(gui.listValueHash);
     dvcp.init();
     long stoptime1 = System.currentTimeMillis();
     Log.debug(20,"DVCP startUp time: "+(stoptime1-starttime1));
@@ -510,7 +531,8 @@ public class DataPackagePlugin
     
     // Create another evnets too
     StateChangeMonitor monitor = StateChangeMonitor.getInstance();
-    String packageLocation = dp.getLocation();
+//    String packageLocation = dp.getLocation();
+    String packageLocation = location;
     if (packageLocation.equals(DataPackageInterface.BOTH))
     {
       // open a synchronize package
@@ -528,7 +550,7 @@ public class DataPackagePlugin
                  StateChangeEvent.CREATE_DATAPACKAGE_FRAME_UNSYNCHRONIZED));
     }
     
-    if (dp.hasMutipleVersions())
+    if ((dp!=null)&&(dp.hasMutipleVersions()))
     {
       // open a mutiple versions package
       monitor.notifyStateChange(
