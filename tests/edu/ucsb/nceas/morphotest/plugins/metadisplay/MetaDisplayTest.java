@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2002-08-24 00:41:34 $'
- * '$Revision: 1.5 $'
+ *     '$Date: 2002-09-02 16:54:26 $'
+ * '$Revision: 1.6 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -120,7 +120,7 @@ public class MetaDisplayTest extends TestCase
         System.err.println("testing getDisplay with null listener..."); 
         getDisplay_null_listener();
     }
-    
+
 
     /** 
      *  Test the display(String id) and display(String id, Reader xmldoc) 

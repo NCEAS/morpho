@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2002-08-28 22:30:14 $'
- * '$Revision: 1.3 $'
+ *     '$Date: 2002-09-02 16:54:26 $'
+ * '$Revision: 1.4 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,11 +29,17 @@ package edu.ucsb.nceas.morphotest.plugins.metadisplay;
 import java.io.Reader;
 import java.io.StringReader;
 
+import java.awt.Dimension;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.Color;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.awt.BorderLayout;
 
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 
 import junit.framework.TestCase;
 
@@ -59,11 +65,15 @@ public class MetaDisplayTestResources
     public static final JFrame                  frame;
     public static final XMLFactoryAdapter       factory;
     public static final MetaDisplay             metaDisplay;
+    static final JLabel topArea;
+    static final JLabel dataArea;
     
     static
     {
-        frame = new JFrame("MetaDisplayTest");
-        frame.setBounds(200,200,200,200);
+        frame = new JFrame("MetaDisplay Test");
+        topArea = new JLabel("Top Area");
+        dataArea = new JLabel("Data Area");
+        initFrame();
         factory = new XMLFactoryAdapter();
         metaDisplay = new MetaDisplay();
         try {
@@ -73,11 +83,24 @@ public class MetaDisplayTestResources
         }
     }    
 
-    public static void clearJFrame() {
-    } 
 
     private MetaDisplayTestResources() {}
 
+    public static void initFrame() {
+        frame.setBounds(100,100,700,700);
+        frame.addWindowListener(new WindowAdapter() {
+        public void windowClosing(WindowEvent event) { System.exit(0); }});
+        frame.getContentPane().setLayout(new BorderLayout(5,5));
+        topArea.setBackground(Color.darkGray);
+        topArea.setOpaque(true);
+        topArea.setPreferredSize(new Dimension(100,200));
+        dataArea.setBackground(Color.darkGray);
+        dataArea.setOpaque(true);
+        dataArea.setPreferredSize(new Dimension(500,500));
+        frame.getContentPane().add(topArea, BorderLayout.NORTH);
+        frame.getContentPane().add(dataArea, BorderLayout.WEST);
+    } 
+    
     public static void displayInJFrame(Component comp, 
                                           int secondsDelay, TestCase caller)
     {
@@ -86,7 +109,9 @@ public class MetaDisplayTestResources
                                         +"received NULL Component to display!");
         }
         frame.getContentPane().removeAll();
-        frame.getContentPane().add(comp);
+        frame.getContentPane().add(topArea, BorderLayout.NORTH);
+        frame.getContentPane().add(dataArea, BorderLayout.WEST);
+        frame.getContentPane().add(comp, BorderLayout.EAST);
         frame.pack();
         frame.show();
         doSleep(secondsDelay);
