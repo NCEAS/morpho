@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2004-04-05 17:25:21 $'
- * '$Revision: 1.60 $'
+ *     '$Date: 2004-04-05 20:28:01 $'
+ * '$Revision: 1.61 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -481,13 +481,9 @@ public class WizardContainerFrame
     Log.debug(45, "nextFinishAction called");
 
     // if the page's onAdvanceAction() returns false, don't advance...
-    if (! (getCurrentPage().onAdvanceAction())) {
-      return;
-    }
+    if (! (getCurrentPage().onAdvanceAction())) return;
 
-    if (getCurrentPage().getNextPageID() == null) {
-      return;
-    }
+    if (getCurrentPage().getNextPageID() == null) return;
 
     // * * * N E X T * * *
 
@@ -930,8 +926,6 @@ public class WizardContainerFrame
 
     this.setVisible(false);
 
-    UIController.getInstance().setWizardNotRunning();
-
     listener.wizardCanceled();
 
     // now clean up
@@ -940,6 +934,8 @@ public class WizardContainerFrame
 
 
   private void doCleanUp() {
+
+    UIController.getInstance().setWizardNotRunning();
 
     //clear out pageStack
     pageStack.clear();

@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2004-04-05 07:06:52 $'
- * '$Revision: 1.14 $'
+ *     '$Date: 2004-04-05 20:28:01 $'
+ * '$Revision: 1.15 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -92,6 +92,8 @@ public class AddResearchProjectCommand implements Command {
 
     if (backupSubtreeAndShowProjectDialog()) {
 
+      //gets here if user has pressed "OK" on dialog... ////////////////////////
+
       final MorphoFrame frame
           = UIController.getInstance().getCurrentActiveWindow();
 
@@ -113,9 +115,6 @@ public class AddResearchProjectCommand implements Command {
                 pagesList, PROJECT_SUBTREE_NODENAME,
                 DATAPACKAGE_PROJECT_GENERIC_NAME);
 
-            //update package display in main frame...
-            UIController.showNewPackage(adp);
-
           } catch (Exception w) {
             Log.debug(15, "Exception trying to modify project DOM: " + w);
             w.printStackTrace();
@@ -130,12 +129,13 @@ public class AddResearchProjectCommand implements Command {
           if (frame!=null) {
             frame.setBusy(false);
             frame.setEnabled(true);
+
+            //update package display in main frame...
+            UIController.showNewPackage(adp);
           }
         }
       };
       worker.start();
-
-      //gets here if user has pressed "OK" on dialog... ////////////////////////
 
     } else {
       //gets here if user has pressed "cancel" on dialog... ////////////////////
@@ -195,14 +195,14 @@ public class AddResearchProjectCommand implements Command {
 
       //there was already a project subtree in the datapackage, so read it...
 
-      Log.debug(45, "No project subtree in the datapackage, so adding one...");
+      Log.debug(45, "Found project subtree in the datapackage; reading...");
 
       existingValuesMap = XMLUtilities.getDOMTreeAsXPathMap(existingProjectRoot);
     }
 
     //show project dialog:
-
-    Log.debug(45, "sending previous data to projectPage -\n\n" + existingValuesMap);
+    Log.debug(45, "sending previous data to projectPage -\n\n"
+              + existingValuesMap);
 
     boolean pageCanHandleAllData
         = projectPage.setPageData(existingValuesMap, PROJECT_SUBTREE_NODENAME);
