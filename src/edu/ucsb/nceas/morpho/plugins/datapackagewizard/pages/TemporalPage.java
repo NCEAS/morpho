@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2004-03-16 22:40:22 $'
- * '$Revision: 1.9 $'
+ *     '$Date: 2004-03-16 23:37:56 $'
+ * '$Revision: 1.10 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -69,7 +69,6 @@ public class TemporalPage extends AbstractWizardPage {
   private final String title      = "Access Page";
   private final String subtitle   = "";
 
-  private final String EMPTY_STRING = "";
   private JPanel topPanel;
   private JLabel descLabel;
 
@@ -102,7 +101,7 @@ public class TemporalPage extends AbstractWizardPage {
 
   private final String xPathRoot  = "/eml:eml/dataset/coverage/temporalCoverage";
 
-  private static final Dimension PANEL_DIMS = new Dimension(325,280);
+  private static final Dimension PANEL_DIMS = new Dimension(325,350);
   private static final int YYYYMMDD = 8;
   private static final int ALL = 4;
   private static final int MONTH_YEAR = 2;
@@ -123,8 +122,6 @@ public class TemporalPage extends AbstractWizardPage {
 
     topPanel = new JPanel();
     topPanel.setLayout(new BoxLayout(topPanel, BoxLayout.Y_AXIS));
-    topPanel.add(WidgetFactory.makeDefaultSpacer());
-
     JLabel desc = WidgetFactory.makeHTMLLabel(
                       "<font size=\"4\"><b>Define Temporal Coverage:</b></font>", 1);
     topPanel.add(desc);
@@ -151,21 +148,15 @@ public class TemporalPage extends AbstractWizardPage {
     JPanel typeRadioOuterPanel = WidgetFactory.makePanel(2);
     JPanel typeRadioPanel = WidgetFactory.makeRadioPanel(timeTypeText, 0, accessTypeListener);
 
-    typeRadioPanel.setBorder(
-      new javax.swing.border.EmptyBorder(0, 4*WizardSettings.PADDING, 0, 0));
-
+    typeRadioOuterPanel.add(WidgetFactory.makeLabel("", false));
     typeRadioOuterPanel.add(typeRadioPanel);
 
-    topPanel.add(WidgetFactory.makeDefaultSpacer());
     topPanel.add(WidgetFactory.makeDefaultSpacer());
 
     descLabel = WidgetFactory.makeHTMLLabel(
         "<p><b>Choose date type:</b>", 1);
     topPanel.add(descLabel);
     topPanel.add(typeRadioOuterPanel);
-
-    topPanel.setBorder(
-      new javax.swing.border.EmptyBorder(0, 4*WizardSettings.PADDING, 0, 0));
 
     this.add(topPanel, BorderLayout.NORTH);
 
@@ -192,6 +183,8 @@ public class TemporalPage extends AbstractWizardPage {
 
     singleTimeCalendar = new JCalendar();
     singleTimeCalendar.setVisible(true);
+    singleTimeCalendar.setFont(WizardSettings.WIZARD_CONTENT_FONT);
+    singleTimeCalendar.getMonthChooser().setFont(WizardSettings.WIZARD_CONTENT_FONT);
 
     JPanel singlePanel = getDateTimePanel("Enter date:", "Time",
                                           singleTimeTF, singleTimeCalendar);
@@ -321,7 +314,7 @@ public class TemporalPage extends AbstractWizardPage {
         = WidgetFactory.makeRadioPanel(timeText, 2, dayTypeListener);
 
     typeRadioContainer.add(typeRadioPanel);
-    typeRadioContainer.add(WidgetFactory.makeDefaultSpacer());
+    typeRadioContainer.add(Box.createGlue());
 
     panel.add(typeRadioContainer, BorderLayout.NORTH);
 
