@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2002-08-09 01:13:32 $'
- * '$Revision: 1.40.4.4 $'
+ *     '$Date: 2002-08-09 23:42:34 $'
+ * '$Revision: 1.40.4.5 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -75,7 +75,7 @@ public class ResultPanel extends JPanel
   /** A reference to the mediator */
   private ResultPanelAndFrameMediator mediator = null;
   /** The table used to display the results */
-  SortableJTable table = null;
+  ToolTippedSortableJTable table = null;
   /** Indicate whether the refresh button should appear */
   private boolean hasRefreshButton = false;
   /** Indicate whether the revise button should appear */
@@ -246,7 +246,7 @@ public class ResultPanel extends JPanel
       add(headerPanel, BorderLayout.NORTH);
  
       // Set up the results table
-      table = new SortableJTable(results);
+      table = new ToolTippedSortableJTable(results);
       for (int i=0; i<table.getColumnCount(); i++)
       {
         System.out.println("column class: "+table.getColumnClass(i).getName());
@@ -259,8 +259,9 @@ public class ResultPanel extends JPanel
       table.setShowHorizontalLines(false);
       table.setShowVerticalLines(false);
       
-      WrappedTextRenderer stringRenderer = new WrappedTextRenderer(fontSize);
-      stringRenderer.setRows(5);
+      ToolTippedTextRenderer stringRenderer = 
+                                        new ToolTippedTextRenderer(fontSize);
+      //stringRenderer.setRows(5);
       //table.setRowHeight((int)(stringRenderer.getPreferredSize().height));
       table.setRowHeight(results.getRowHeight());
       table.setDefaultRenderer(String.class, stringRenderer);
@@ -879,7 +880,7 @@ public class ResultPanel extends JPanel
 
     // Notify the JTable that the TableModel changed a bunch!
     table.setModel(results);
-    initColumnSizes(table, results);
+    initTableColumnSize(table, results, 775);
   }
 
   /**
