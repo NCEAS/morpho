@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2003-09-19 18:42:51 $'
- * '$Revision: 1.10 $'
+ *     '$Date: 2003-09-20 01:11:33 $'
+ * '$Revision: 1.11 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -55,6 +55,7 @@ import java.awt.AWTEvent;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener ;
 
+import java.util.Vector;
 import java.util.Stack;
 import java.util.Iterator;
 
@@ -336,35 +337,22 @@ public class WizardContainerFrame extends JFrame {
   private void doFinish() {
   
     this.setVisible(false);
-  
-    Iterator pagesIterator = pageStack.iterator();
-    
+
+    //results Map:
     OrderedMap wizData = new OrderedMap();
-    OrderedMap nextPgData  = new OrderedMap();
-    String nextKey = null;
-    String nextVal = null;
   
-    while (pagesIterator.hasNext()) {
-
-      nextPgData = ((WizardPage)(pagesIterator.next())).getPageData();
+    //NOTE: the order of pages on the stack is *not* the same as the order 
+    //of writing data to the DOM. We therefore convert the Stack to a Vector and 
+    //access the pages non-sequentially in a feat of hard-coded madness:
+    //
+    Vector pagesVector = (Vector)pageStack;
     
-      if (nextPgData==null) continue;
+  
+//    extractData(
+//      ((WizardPage)(pagesVector.get(pageLib.getPage(
+//                                        WizardPageLibrary.PARTY_CREATOR)))), 
+//      wizData);
     
-      Iterator  it = nextPgData.keySet().iterator();
-    
-      if (it==null) continue;
-
-      while (it.hasNext()) {
-
-        nextKey = (String)it.next();
-
-        if (nextKey==null || nextKey.trim().equals("")) continue;
-
-        nextVal = (String)nextPgData.get(nextKey);
-        wizData.put(nextKey, nextVal);
-      
-      } // end while
-    }
     Log.debug(45, "\n\n********** Wizard finished: NVPs:");
     Log.debug(45, wizData.toString());
 
@@ -403,6 +391,33 @@ public class WizardContainerFrame extends JFrame {
     Log.debug(45, XMLUtilities.getDOMTreeAsString(rootNode));
   }
   
+
+  private void extractData(WizardPage nextPage, OrderedMap resultsMap) {
+  
+    String nextKey = null;
+    String nextVal = null;
+    
+    OrderedMap nextPgData = nextPage.getPageData();
+
+    if (nextPgData==null) return;
+
+    Iterator  it = nextPgData.keySet().iterator();
+
+    if (it==null) return;
+
+    while (it.hasNext()) {
+
+      nextKey = (String)it.next();
+
+      if (nextKey==null || nextKey.trim().equals("")) continue;
+
+      nextVal = (String)nextPgData.get(nextKey);
+      resultsMap.put(nextKey, nextVal);
+  
+    } // end while
+  }
+
+
   
   /** 
    *  The action to be executed when the "Prev" button is pressed

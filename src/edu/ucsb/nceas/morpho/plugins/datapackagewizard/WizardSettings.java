@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2003-09-18 21:59:40 $'
- * '$Revision: 1.15 $'
+ *     '$Date: 2003-09-20 01:11:33 $'
+ * '$Revision: 1.16 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,6 +28,7 @@
 
 package edu.ucsb.nceas.morpho.plugins.datapackagewizard;
 
+import edu.ucsb.nceas.morpho.util.Log;
 import edu.ucsb.nceas.utilities.IOUtil;
 import edu.ucsb.nceas.utilities.XMLUtilities;
 
@@ -45,6 +46,7 @@ import java.util.Arrays;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import java.io.File;
 import java.io.Reader;
 import java.io.IOException;
 
@@ -258,6 +260,13 @@ public class WizardSettings {
   /////////////
   public static String[] getUnitDictionaryUnitTypes() { 
   
+    if (!((new File(EML_UNIT_DICTIONARY_PATH)).exists())) {
+    
+      Log.debug(1, "ATTENTION! Cannot find unit dictionary file at: "
+                                                    +EML_UNIT_DICTIONARY_PATH);
+      return new String[]{" "};
+    } 
+    
     Reader reader 
               = IOUtil.getResourceAsInputStreamReader(EML_UNIT_DICTIONARY_PATH);
     
@@ -274,6 +283,10 @@ public class WizardSettings {
     
     unitDictionaryNVPs = XMLUtilities.getDOMTreeAsXPathMap(udRootNode);
     
+    if (unitDictionaryNVPs==null) {
+      Log.debug(1,"Fatal error - can't find unit dictionary!");
+      return new String[] {"ERROR!"};
+    }    
     List returnList = new ArrayList();
     Object nextObj  = null;
     String nextStr  = null;
@@ -322,6 +335,8 @@ public class WizardSettings {
     Object nextValObj   = null;
     String nextValueStr = null;
     
+    
+    if (unitDictionaryNVPs==null) return new String[] {"ERROR!"};
     
     for (Iterator it = unitDictionaryNVPs.keySet().iterator(); it.hasNext(); ) {
     

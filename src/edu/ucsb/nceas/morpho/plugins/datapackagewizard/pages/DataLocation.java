@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2003-09-19 18:42:51 $'
- * '$Revision: 1.9 $'
+ *     '$Date: 2003-09-20 01:11:33 $'
+ * '$Revision: 1.10 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,6 +29,8 @@
 package edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages;
 
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WidgetFactory;
+import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardContainerFrame;
+
 import edu.ucsb.nceas.morpho.util.Log;
 import edu.ucsb.nceas.utilities.OrderedMap;
 
@@ -37,7 +39,7 @@ import java.io.File;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Color;
-import java.awt.FlowLayout;
+import java.awt.GridLayout;
 
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
@@ -67,6 +69,13 @@ public class DataLocation extends AbstractWizardPage {
   
   private final String title      = "Data File Information:";
   private final String subtitle   = "Location";
+  private final String INIT_FILE_LOCATOR_TEXT 
+                                  = "   use button to select a file -->";
+  private final String FILE_LOCATOR_IMPORT_DESC 
+        = "<html>Use the \"locate\" button to locate the data file on your computer:</html>";
+  private final String FILE_LOCATOR_BYHAND_DESC 
+        = "<html>Enter the filename of your data file. "
+                                    +"You do not need to enter its full path:</html>";
   
   // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
@@ -82,9 +91,6 @@ public class DataLocation extends AbstractWizardPage {
                   = "/eml:eml/dataset/datatable/physical/distribution/offline";
   private final String NODATA_XPATH  = "";
 
-  private String fileNameInline = "FILENAME FROM IMPORT WIZARD GOES HERE";
-  private String dataInline     = "INLINE DATA FROM IMPORT WIZARD GOES HERE";
-  
   private String inlineNextPageID  = WizardPageLibrary.TEXT_IMPORT_WIZARD;
   private String onlineNextPageID  = WizardPageLibrary.DATA_FORMAT;
   private String offlineNextPageID = WizardPageLibrary.TEXT_IMPORT_WIZARD;
@@ -95,18 +101,17 @@ public class DataLocation extends AbstractWizardPage {
   private JPanel noDataPanel;
   private JPanel currentPanel;
   private JLabel radioLabel;
-  
   private String importFilePath;
   
   private final String[] buttonsText = new String[] {
-      "Import the data into your new package file",
-      "Link to online data using a URL",
-      "Enter information about the data, but do not make the data itself available",
-      "Do not describe or include any data at this time"
+      "INLINE  - Import the data into your new package file",
+      "ONLINE  - Link to online data using a URL",
+      "OFFLINE - Enter information about the data, but do not make the data itself available",
+      "NO DATA - Do not describe or include any data at this time"
     };
   
   private final String[] genHandButtonsText = new String[] {
-      "Generate the information automatically from the online data file (ASCII files only)",
+      "Generate the information automatically from a data file (ASCII files only)",
       "Enter the information by hand"
     };
 
@@ -168,7 +173,6 @@ public class DataLocation extends AbstractWizardPage {
           currentPanel = offlinePanel;
           distribXPath = OFFLINE_XPATH;
           instance.add(offlinePanel, BorderLayout.CENTER);
-          fileNameFieldOffline.requestFocus();
           
         } else if (e.getActionCommand().equals(buttonsText[3])) {
         
@@ -202,88 +206,20 @@ public class DataLocation extends AbstractWizardPage {
 
   // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
   
-  private JLabel  fileNameLabelInline;
-  private JLabel  fileNameFieldInline;
-
+  FileLocatorWidget  fileLocatorWidgetInline;
+  
   private JPanel getInlinePanel() {
     
     JPanel panel =  new JPanel(new BorderLayout());
   
     WidgetFactory.addTitledBorder(panel, buttonsText[0]);
   
-//    panel.add(WidgetFactory.makeDefaultSpacer());
-
-    panel.add(WidgetFactory.makeHTMLLabel(
-      "Locate your data file:", 1), BorderLayout.NORTH);
-
-      
-    ////
-    JPanel fileNamePanel = WidgetFactory.makePanel();
-    fileNamePanel.setLayout(new BorderLayout());
-    fileNamePanel.setMaximumSize(WizardSettings.WIZARD_CONTENT_SINGLE_LINE_DIMS);
-//    fileNamePanel.setLayout(new BoxLayout(fileNamePanel, BoxLayout.X_AXIS));
-fileNamePanel.setOpaque(true);
-fileNamePanel.setBackground(Color.green);
-    
-    fileNameLabelInline = WidgetFactory.makeLabel("File Name:", true);
-
-    fileNamePanel.add(fileNameLabelInline, BorderLayout.EAST);
+    fileLocatorWidgetInline = new FileLocatorWidget(FILE_LOCATOR_IMPORT_DESC, 
+                                                    INIT_FILE_LOCATOR_TEXT);
   
-    fileNameFieldInline = WidgetFactory.makeLabel("", true);
-    fileNameFieldInline.setText("use button to select a file -->");
-fileNameFieldInline.setOpaque(true);
-fileNameFieldInline.setBackground(Color.yellow);
-
-    fileNamePanel.add(fileNameFieldInline, BorderLayout.CENTER);
-
-    JButton fileButton = WidgetFactory.makeJButton("locate...", 
-    
-            new ActionListener() {
-            
-              public void actionPerformed(ActionEvent e) {
-              
-                final JFileChooser fc = new JFileChooser();
-                fc.setDialogTitle("Select a data file to import...");
-                String userdir = System.getProperty("user.dir");
-                fc.setCurrentDirectory(new File(userdir));
-                int returnVal = fc.showOpenDialog(instance);
-                File file = null;
-                if (returnVal == JFileChooser.APPROVE_OPTION) {
-                  
-                  file = fc.getSelectedFile();
-                  
-                  if (file!=null) {
-                  
-                    setImportFilePath(file.getAbsolutePath());
-                    fileNameFieldInline.setText(getImportFilePath());
-                  }
-                }
-              }
-            });
+    panel.add(fileLocatorWidgetInline, BorderLayout.NORTH);
   
-    fileNamePanel.add(fileButton, BorderLayout.EAST);
-    
-fileButton.setOpaque(true);
-fileButton.setBackground(Color.blue);
-  
-    panel.add(fileNamePanel, BorderLayout.CENTER);
-  
-//    panel.add(WidgetFactory.makeDefaultSpacer());
-//  
-//    panel.add(Box.createGlue());
-
     return panel;
-  }
-  
-  private void setImportFilePath(String filePath) {
-  
-    this.importFilePath = filePath;
-  }
-  
-  
-  private String getImportFilePath() {
-  
-    return this.importFilePath;
   }
   
   // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -329,12 +265,6 @@ fileButton.setBackground(Color.blue);
     
     panel.add(WidgetFactory.makeDefaultSpacer());
     
-//    panel.add(WidgetFactory.makeHTMLLabel(
-//      "How would you like to enter the information describing "
-//      +"the format and structure of the data?", 1));
-//  
-//    panel.add(getGeneratedOrByHandRadioPanel());
-    
     panel.add(WidgetFactory.makeDefaultSpacer());
     
     panel.add(Box.createGlue());
@@ -345,40 +275,62 @@ fileButton.setBackground(Color.blue);
   
   // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
   
-  private JLabel      fileNameLabelOffline;
-  private JTextField  fileNameFieldOffline; 
+  private FileLocatorWidget fileLocatorWidgetOffline;
   
   private JPanel getOfflinePanel() {
     
     JPanel panel = WidgetFactory.makeVerticalPanel(7);
-    
     WidgetFactory.addTitledBorder(panel, buttonsText[2]);
-    
-    panel.add(WidgetFactory.makeDefaultSpacer());
   
-    ////
-    JPanel fileNamePanel = WidgetFactory.makePanel(1);
-    
-    fileNameLabelOffline = WidgetFactory.makeLabel("File Name:", true);
-
-    fileNamePanel.add(fileNameLabelOffline);
-    
-    fileNameFieldOffline = WidgetFactory.makeOneLineTextField();
-    fileNamePanel.add(fileNameFieldOffline);
-    
-    panel.add(fileNamePanel);
-        
     panel.add(WidgetFactory.makeDefaultSpacer());
     
-    panel.add(WidgetFactory.makeLabel(
+    panel.add(WidgetFactory.makeHTMLLabel(
       "How would you like to enter the information describing "
-      +"the format and structure of the data?", true, new Dimension(500,30)));
+      +"the format and structure of the data?", 2));
+
+    panel.add(
+      WidgetFactory.makeRadioPanel(genHandButtonsText, 0, 
+        new ActionListener() {
+    
+          public void actionPerformed(ActionEvent e) {
+      
+            if (e.getActionCommand().equals(genHandButtonsText[0])) {
+        
+              setNextPageID(WizardPageLibrary.TEXT_IMPORT_WIZARD);
+              fileLocatorWidgetOffline.getTextArea().setText(INIT_FILE_LOCATOR_TEXT);
+              fileLocatorWidgetOffline.setDescription(FILE_LOCATOR_IMPORT_DESC);
+              fileLocatorWidgetOffline.getTextArea().setEnabled(false);
+              fileLocatorWidgetOffline.getTextArea().setEditable(false);
+              fileLocatorWidgetOffline.setImportFilePath(null);
+        
+            } else if (e.getActionCommand().equals(genHandButtonsText[1])) {
+      
+              setNextPageID(WizardPageLibrary.DATA_FORMAT);
+              fileLocatorWidgetOffline.getTextArea().setText("");
+              fileLocatorWidgetOffline.setDescription(FILE_LOCATOR_BYHAND_DESC);
+              fileLocatorWidgetOffline.getTextArea().setEnabled(true);
+              fileLocatorWidgetOffline.getTextArea().setEditable(true);
+              fileLocatorWidgetOffline.setImportFilePath(null);
+            }
+          }
+        }));
+
+    ///////////////////////////////////////////
+
+    JPanel panel2 =  new JPanel(new BorderLayout());
   
-    panel.add(getGeneratedOrByHandRadioPanel());
+  
+    fileLocatorWidgetOffline = new FileLocatorWidget(FILE_LOCATOR_IMPORT_DESC, 
+                                                     INIT_FILE_LOCATOR_TEXT);
+  
+    panel2.add(fileLocatorWidgetOffline, BorderLayout.NORTH);
     
-    panel.add(WidgetFactory.makeDefaultSpacer());
+    ///////////////////////////////////////////
     
+    panel.add(panel2);
+ 
     panel.add(Box.createGlue());
+
   
     return panel;
   }
@@ -403,9 +355,10 @@ fileButton.setBackground(Color.blue);
   public void onLoadAction() {
 
     WidgetFactory.unhiliteComponent(radioLabel);
+    WidgetFactory.unhiliteComponent(fileLocatorWidgetInline.getLabel());
     WidgetFactory.unhiliteComponent(fileNameLabelOnline);
     WidgetFactory.unhiliteComponent(urlLabelOnline);
-    WidgetFactory.unhiliteComponent(fileNameLabelOffline);
+    WidgetFactory.unhiliteComponent(fileLocatorWidgetOffline.getLabel());
     
   }
   
@@ -435,7 +388,17 @@ fileButton.setBackground(Color.blue);
     } else if (distribXPath==INLINE_XPATH) {
 //  I N L I N E  /////////////////////////////////////
 
+      if (fileLocatorWidgetInline.getImportFilePath()==null) {
+      
+        WidgetFactory.hiliteComponent(fileLocatorWidgetInline.getLabel());
+        fileLocatorWidgetInline.getButton().requestFocus();
+        return false;
+      }
+      WidgetFactory.unhiliteComponent(fileLocatorWidgetInline.getLabel());
       WizardSettings.setSummaryText(WizardSettings.SUMMARY_TEXT_INLINE);
+
+      this.importFilePath = fileLocatorWidgetInline.getImportFilePath();
+
       nextPageID = inlineNextPageID;
 
     } else if (distribXPath==ONLINE_XPATH) {
@@ -447,6 +410,7 @@ fileButton.setBackground(Color.blue);
         fileNameFieldOnline.requestFocus();
         return false;
       }
+      WidgetFactory.unhiliteComponent(fileNameLabelOnline);
     
       if (urlFieldOnline.getText().trim().equals("")) {
       
@@ -455,6 +419,7 @@ fileButton.setBackground(Color.blue);
 
         return false;
       }
+      WidgetFactory.unhiliteComponent(urlLabelOnline);
       WizardSettings.setSummaryText(WizardSettings.SUMMARY_TEXT_ONLINE);
       WizardSettings.setDataLocation(urlFieldOnline.getText().trim());
 
@@ -463,16 +428,33 @@ fileButton.setBackground(Color.blue);
     } else if (distribXPath==OFFLINE_XPATH) {
 //  O F F L I N E  ///////////////////////////////////
     
-    
-      if (fileNameFieldOffline.getText().trim().equals("")) {
+System.err.println("//  O F F L I N E  ///////////////////////////////////offlineNextPageID="+offlineNextPageID);
+      //entered by hand:    
+      if (offlineNextPageID.equals(WizardPageLibrary.DATA_FORMAT)) {
       
-        WidgetFactory.hiliteComponent(fileNameLabelOffline);
-        fileNameFieldOffline.requestFocus();
+System.err.println("//  O F F L I N E  ////entered by hand:");
+        String userText = fileLocatorWidgetOffline.getTextArea().getText();
+        if (userText!=null) userText = userText.trim();
+        if (userText.equals("")) userText = null;
+        fileLocatorWidgetOffline.setImportFilePath(userText);
+System.err.println("//  O F F L I N E  ////userText: "+userText);
+        
+      }
+System.err.println("//  O F F L I N E  ////fileLocatorWidgetOffline.getImportFilePath(): "
+                                        +fileLocatorWidgetOffline.getImportFilePath());
+      
+      if (fileLocatorWidgetOffline.getImportFilePath()==null) {
+    
+        WidgetFactory.hiliteComponent(fileLocatorWidgetOffline.getLabel());
+        fileLocatorWidgetOffline.getButton().requestFocus();
 
         return false;
       }
+      WidgetFactory.unhiliteComponent(fileLocatorWidgetOffline.getLabel());
       WizardSettings.setSummaryText(WizardSettings.SUMMARY_TEXT_OFFLINE);
-    
+      
+      this.importFilePath = fileLocatorWidgetOffline.getImportFilePath();
+      
       nextPageID = offlineNextPageID;
 
     } else if (distribXPath==NODATA_XPATH) {
@@ -506,10 +488,8 @@ fileButton.setBackground(Color.blue);
     } else if (distribXPath==INLINE_XPATH)  {
 //  I N L I N E  /////////////////////////////////////
   
-  
-    returnMap.put(OBJECTNAME_XPATH, fileNameInline);
-    returnMap.put(distribXPath, dataInline);
-    
+      //nothing needs doing - inport wizard gets these values
+      
     } else if (distribXPath==ONLINE_XPATH)  {
 //  O N L I N E  /////////////////////////////////////
     
@@ -519,32 +499,15 @@ fileButton.setBackground(Color.blue);
     } else if (distribXPath==OFFLINE_XPATH)  {
 //  O F F L I N E  ///////////////////////////////////
     
-      returnMap.put(OBJECTNAME_XPATH, fileNameFieldOffline.getText().trim());
+      if (offlineNextPageID==WizardPageLibrary.DATA_FORMAT) {
+        //entered by hand:    
+        returnMap.put(OBJECTNAME_XPATH, getImportFileNameOnly());
+      } else {
+        //entered by import wizard:
+        //nothing needs doing - inport wizard gets these values
+      }
     }
     return returnMap;
-  }
-  
-  
-  
-  private JPanel getGeneratedOrByHandRadioPanel() {
-  
-    return WidgetFactory.makeRadioPanel(genHandButtonsText, 0, 
-      new ActionListener() {
-    
-        public void actionPerformed(ActionEvent e) {
-      
-          Log.debug(45, "got radiobutton command: "+e.getActionCommand());
-      
-          if (e.getActionCommand().equals(genHandButtonsText[0])) {
-        
-            setNextPageID(WizardPageLibrary.TEXT_IMPORT_WIZARD);
-        
-          } else if (e.getActionCommand().equals(genHandButtonsText[1])) {
-      
-            setNextPageID(WizardPageLibrary.DATA_FORMAT);
-          }
-        }
-      });
   }
   
   
@@ -588,4 +551,128 @@ fileButton.setBackground(Color.blue);
    */
   public String getNextPageID() { return nextPageID; }
 
+  /**
+   *  Returns the full path of the data file that the user has elected to import
+   *  - may be null if not set
+   *
+   *  @return the full String path of the data file that the user has elected to 
+   *  import. May be null if not set
+   */
+  
+  public String  getImportFilePath() { return this.importFilePath; }
+  
+  /**
+   *  Returns only the filename of the data file that the user has elected to 
+   *  import, not it's full path. May be null if importFilePath not set
+   *
+   *  @return only the filename of the data file that the user has elected to 
+   *  import, not it's full path. May be null if importFilePath not set
+   */
+  
+  private String  getImportFileNameOnly() { 
+  
+    int trimIndex = getImportFilePath().lastIndexOf("/");
+    
+    if (trimIndex < 0) return getImportFilePath();
+    
+    return getImportFilePath().substring(trimIndex);
+  }
+  
+}
+
+
+class FileLocatorWidget extends JPanel {
+
+  private JLabel     fileNameLabel;
+  private JLabel     descLabel;
+  private JTextField fileNameField;
+  private JButton    fileNameButton;
+  private String     importFilePath;
+  
+  public FileLocatorWidget(String descText, String initialText) {
+  
+    super();
+    init();
+    if (initialText==null) initialText = "";
+    fileNameField.setText(initialText);
+    setDescription(descText);
+  }
+  
+  private void init() {
+  
+    this.setLayout(new GridLayout(3,1));
+    
+    this.add(WidgetFactory.makeDefaultSpacer());
+
+    descLabel = WidgetFactory.makeHTMLLabel("", 1);
+    this.add(descLabel);
+     
+    ////
+    JPanel fileNamePanel = WidgetFactory.makePanel();
+    fileNamePanel.setLayout(new BorderLayout());
+    fileNamePanel.setMaximumSize(WizardSettings.WIZARD_CONTENT_SINGLE_LINE_DIMS);
+    
+    fileNameLabel = WidgetFactory.makeLabel("File Name:", true);
+
+    fileNameLabel.setBackground(Color.lightGray);
+    fileNamePanel.add(fileNameLabel, BorderLayout.WEST);
+  
+    fileNameField = WidgetFactory.makeOneLineTextField();
+    fileNameField.setEnabled(false);
+    fileNameField.setEditable(false);
+    fileNameField.setDisabledTextColor(
+                                      WizardSettings.WIZARD_CONTENT_TEXT_COLOR);
+    fileNamePanel.add(fileNameField, BorderLayout.CENTER);
+
+    fileNameButton = WidgetFactory.makeJButton("locate...", 
+    
+            new ActionListener() {
+            
+              public void actionPerformed(ActionEvent e) {
+              
+                final JFileChooser fc = new JFileChooser();
+                fc.setDialogTitle("Select a data file to import...");
+                String userdir = System.getProperty("user.dir");
+                fc.setCurrentDirectory(new File(userdir));
+                int returnVal = fc.showOpenDialog(WizardContainerFrame.frame);
+                File file = null;
+                if (returnVal == JFileChooser.APPROVE_OPTION) {
+                  
+                  file = fc.getSelectedFile();
+                  
+                  if (file!=null) {
+                  
+                    setImportFilePath(file.getAbsolutePath());
+                    fileNameField.setText(getImportFilePath());
+                  }
+                }
+              }
+            });
+  
+    fileNamePanel.add(fileNameButton, BorderLayout.EAST);
+
+    this.add(fileNamePanel);
+  }
+  
+  protected JLabel  getLabel()  { return this.fileNameLabel;  }
+  
+  protected JButton getButton() { return this.fileNameButton; }
+
+  protected JTextField getTextArea() { return this.fileNameField; }
+  
+  protected String  getImportFilePath() { return this.importFilePath; }
+
+  protected void setDescription(String desc) {
+  
+    if (desc==null) desc = "";
+    descLabel.setText(desc);
+  }
+  
+  protected void setImportFilePath(String filePath) {
+  
+    this.importFilePath = filePath;
+  }
+  
+  
+  
 }

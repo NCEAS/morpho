@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2003-09-11 23:44:22 $'
- * '$Revision: 1.4 $'
+ *     '$Date: 2003-09-20 01:11:33 $'
+ * '$Revision: 1.5 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -68,7 +68,7 @@ public class Entity extends AbstractWizardPage{
   private final String nextPageID = WizardPageLibrary.SUMMARY;
   private final String title      = "Data Information:";
   private final String subtitle   = "Table (Entity)";
-  private final String xPathRoot  = "/eml:eml/dataset/dataTable[1]";
+  private final String xPathRoot  = "/eml:eml/dataset/dataTable";
   
   private final String[] colNames =  {"Attribute Name", 
                                       "Attribute Definition", 
