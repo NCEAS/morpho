@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2002-12-12 02:35:45 $'
- * '$Revision: 1.12 $'
+ *     '$Date: 2002-12-13 06:01:29 $'
+ * '$Revision: 1.13 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -146,14 +146,14 @@ public class UISettings
      *  the initial screen
      */
     public static final Dimension INIT_SCRN_LEFT_PANELS_LABELDIMS  
-                                                    = new Dimension(130, 20);
+                                                    = new Dimension(120, 20);
 
     /**
      *  size of the "Change Profile" and "Password" picklists (JComboBoxes) on 
      *  the left side of the initial screen
      */
     public static final Dimension INIT_SCRN_LEFT_PANELS_PICKLISTDIMS  
-                                                    = new Dimension(140, 20);
+                                                    = new Dimension(130, 20);
     
     /**
      *  Width in pixels for each of 3 panels on the left side of initial screen
@@ -170,12 +170,6 @@ public class UISettings
     public static final Dimension INIT_SCRN_LEFT_PANELS_TITLE_DIMS 
                             = new Dimension(INIT_SCRN_LEFT_PANELS_WIDTH,18);
                                                         
-    
-    /**
-     *  Preferred overall dims in pixels for main initial screen
-     */
-    public static final Dimension INIT_SCRN_MAIN_DIMS = new Dimension(735, 400);
-    
     
     // * * * *  D E F A U L T   F O N T S  &  T E X T - C O L O R S   * * * * * 
 
@@ -194,7 +188,7 @@ public class UISettings
      *  html opening tags for font on hyperlink urls
      */
     public static final String HYPERLINK_FONT_HTML_OPENTAGS
-                        = "<html><p align=\"left\" style=\"color: #0000d2; "
+                        = "<html><p style=\"color: #0000d2; align: left; "
                             +"font-family: Verdana, Arial, Helvetica, sans-serif; "
                             +"font-size: 9px;\">&nbsp;";
     /**
@@ -208,15 +202,15 @@ public class UISettings
      *  html opening tags for font on hyperlink urls during mouseover 
      */
     public static final String HYPERLINK_FONT_OVER_HTML_OPENTAGS 
-                      = "<html><p align=\"left\" style=\"color: #00d200; "
-                          +"font-family: Verdana, Arial, Helvetica, sans-serif; "
-                          +"font-size: 9px;\">&nbsp;<a href=\"#\">";
-
+                        = "<html><a href=\"#\" style=\"color: #ee5500; "
+                            +"font-family: Verdana, Arial, Helvetica, sans-serif; "
+                            +"font-size: 9px; align: left;\">&nbsp;";
+ 
     /**
      *  html closing tags for font on hyperlink urls during mouseover 
      */
     public static final String HYPERLINK_FONT_OVER_HTML_CLOSETAGS 
-                                                    = "</a></p></html>";
+                                                    = "</a></html>";
 
     
     /**
@@ -224,9 +218,6 @@ public class UISettings
      *  left of the initial screen
      */
     public static final String INIT_SCR_PANEL_TITLE_HILITE_FONT_OPEN 
-//                    = "<span style=\"color: #d2ffad; text-align: left;"
-//                        +"font-family: Verdana, Arial, Helvetica, sans-serif; "
-//                        +"font-size: 9px; font-weight: bold;\">";
                     = "<font color=\"#d2ffad\"><b>";
 
 
@@ -243,9 +234,9 @@ public class UISettings
      *  left of the initial screen
      */
     public static final String INIT_SCR_PANEL_LITE_FONT_OPEN 
-                    = "<html><p align=\"left\" style=\"color: #666666; "
+                    = "<html><p style=\"color: #666666; "
                         +"font-family: Verdana, Arial, Helvetica, sans-serif; "
-                        +"font-size: 8px;\">";
+                        +"font-size: 8px; align: left;\">";
 
     /**
      *  closing html tags for light-value text in panels to the  
@@ -358,6 +349,11 @@ public class UISettings
     public static final Icon NEW_PROFILE_ICON_ROLLOVER 
             = getAsImageIcon("/edu/ucsb/nceas/morpho/framework/login_no.gif");
 
+    public static final Icon LOGOUT_ICON 
+            = getAsImageIcon("/edu/ucsb/nceas/morpho/framework/login_yes.gif");
+
+    public static final Icon LOGOUT_ICON_ROLLOVER 
+            = getAsImageIcon("/edu/ucsb/nceas/morpho/framework/login_yes.gif");
 
     
     // * * * * * * * * * *    T E X T   L A B E L S    * * * * * * * * * * * * *
@@ -369,23 +365,22 @@ public class UISettings
      *  the initial screen
      */
     public static final String INIT_SCRN_PANELS_PROFILE_TITLE_TEXT_OPEN
-                    = "<html><p align=\"left\" style=\"color: #ffffff; "
+                    = "<html><p style=\"color: #ffffff; "
                         +"font-family: Verdana, Arial, Helvetica, sans-serif; "
-                        +"font-size: 9px;\">&nbsp;"
+                        +"font-size: 9px; align: left;\">&nbsp;"
                         +"Current profile:"
                         +"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
-                        +"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+                        +"&nbsp;&nbsp;&nbsp;";
     
     /**
      *  html tags and text for title bar on the "Login" panel to the left of  
      *  the initial screen
      */
     public static final String INIT_SCRN_PANELS_LOGIN_TITLE_TEXT_OPEN
-                    = "<html><p align=\"left\" style=\"color: #ffffff; "
+                    = "<html><p style=\"color: #ffffff; "
                         +"font-family: Verdana, Arial, Helvetica, sans-serif; "
-                        +"font-size: 9px;\">&nbsp;"
+                        +"font-size: 9px; align: left;\">&nbsp;"
                         +"Network Status:"
-                        +"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
                         +"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
                         +"&nbsp;&nbsp;&nbsp;";
     
@@ -394,9 +389,9 @@ public class UISettings
      *  the initial screen
      */
     public static final String INIT_SCRN_PANELS_DATA_TITLE_TEXT_OPEN 
-                    = "<html><p align=\"left\" style=\"color: #ffffff; "
+                    = "<html><p style=\"color: #ffffff; "
                         +"font-family: Verdana, Arial, Helvetica, sans-serif; "
-                        +"font-size: 9px;\">&nbsp;"
+                        +"font-size: 9px; align: left;\">&nbsp;"
                         +"Work with your data...";
                         
     /**
@@ -417,16 +412,19 @@ public class UISettings
     
     public static final String NEW_PROFILE_LINK_TEXT 
                                     = "Create a new profile...";
+ 
+    public static final String LOGOUT_LINK_TEXT 
+                                 = "<b>Logout</b> from network...";
                                 
     public static final String CHANGE_PROFILE_LABEL_TEXT 
-                    = "<html><p align=\"left\" style=\"color: #000000; "
+                    = "<html><p style=\"color: #000000; align: left; "
                         +"font-family: Verdana, Arial, Helvetica, sans-serif; "
                         +"font-size: 9px;\">&nbsp;"
                         +"<b>Change profile:</b></p></html>";
 
                                     
     public static final String PASSWORD_LABEL_TEXT 
-                    = "<html><p align=\"left\" style=\"color: #000000; "
+                    = "<html><p style=\"color: #000000; align: left; "
                         +"font-family: Verdana, Arial, Helvetica, sans-serif; "
                         +"font-size: 9px;\">&nbsp;"
                         +"Password:</p></html>";
@@ -435,19 +433,30 @@ public class UISettings
                     = "If you do not choose to login, you will "
                         +"be able to access only \"public\" network "
                         +"files as a Guest User";
+
+    public static final String INIT_SCR_LOGGED_IN_MESSAGE 
+                    = "You are logged into the network, and may "
+                        +"work with all files for which you have "
+                        +"access priviliges ";
     
     public static final String INIT_SCR_LOGIN_BUTTON_TEXT 
-                    = "<html><p align=\"left\" style=\"color: #000000; "
+                    = "<html><p style=\"color: #000000; "
                         +"font-family: Verdana, Arial, Helvetica, sans-serif; "
-                        +"font-size: 9px;\">"
+                        +"font-size: 9px; align: left;\">"
                         +"login</p></html>";
 
     public static final String INIT_SCR_LOGIN_HEADER 
-                    = "<html><p align=\"left\" style=\"color: #000000; "
+                    = "<html><p style=\"color: #000000; align: left; "
                         +"font-family: Verdana, Arial, Helvetica, sans-serif; "
                         +"font-size: 9px;font-weight: bold;\">"
                         +"Login to network using current profile:"
                         +"</p></html>";
+ 
+    public static final String INIT_SCR_LOGGED_IN_STATUS 
+                    = "Logged In";
+
+    public static final String INIT_SCR_LOGGEDOUT_STATUS 
+                    = "NOT Logged In";
 
 
     // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
