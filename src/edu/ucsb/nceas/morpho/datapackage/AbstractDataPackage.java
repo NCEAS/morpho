@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2004-03-18 18:07:25 $'
- * '$Revision: 1.65 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2004-03-19 22:41:04 $'
+ * '$Revision: 1.66 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -454,12 +454,66 @@ public abstract class AbstractDataPackage extends MetadataObject
    *
    * @param genericName String
    * @param index int
-   * @return  root Node of subtree, or null if not found
+   * @return  cloned root Node of subtree, or null if not found
    */
   public Node getSubtree(String genericName, int index) {
+    NodeList nodelist = null;
+    String genericNamePath = "";
+    try{
+      genericNamePath = (XMLUtilities.getTextNodeWithXPath(getMetadataPath(),
+          "/xpathKeyMap/contextNode[@name='package']/"+ genericName)).getNodeValue();
+      nodelist = XMLUtilities.getNodeListWithXPath(metadataNode,
+          genericNamePath);
+      if ((nodelist == null)||(nodelist.getLength()==0)) {
+        return null;
+      }
+      else {
+        if (index<nodelist.getLength()) {
+          // create a deep cloned version
+          Node deepClone = (nodelist.item(index)).cloneNode(true);
+          return deepClone;
+        } else {
+          return null;
+        }
+      }    
+    } catch (Exception e) {
+      Log.debug(50, "Exception in getSubtree!");
+    }
+    return null;
+  }
 
-    throw new UnsupportedOperationException(
-      "AbstractDataPackage.getSubtree(String genericName, int index) not yet implemented!");
+    /**
+   * returns root Node of subtree identified by genericName String and int
+   * index; returns null if not found
+   *
+   * @param genericName String
+   * @param index int
+   * @return  uncloned root Node of subtree, or null if not found
+   */
+  public Node getSubtreeNoClone(String genericName, int index) {
+    NodeList nodelist = null;
+    String genericNamePath = "";
+    try{
+      genericNamePath = (XMLUtilities.getTextNodeWithXPath(getMetadataPath(),
+          "/xpathKeyMap/contextNode[@name='package']/"+ genericName)).getNodeValue();
+      nodelist = XMLUtilities.getNodeListWithXPath(metadataNode,
+          genericNamePath);
+      if ((nodelist == null)||(nodelist.getLength()==0)) {
+        return null;
+      }
+      else {
+        if (index<nodelist.getLength()) {
+          // create a deep cloned version
+          Node unClone = nodelist.item(index);
+          return unClone;
+        } else {
+          return null;
+        }
+      }    
+    } catch (Exception e) {
+      Log.debug(50, "Exception in getSSubtreeNoClone!");
+    }
+    return null;
   }
 
 
@@ -477,9 +531,64 @@ public abstract class AbstractDataPackage extends MetadataObject
    * found, so caller can determine whether insertion was successful
    */
   public Node insertSubtree(String genericName, Node subtreeRootNode, int index) {
-
-    throw new UnsupportedOperationException(
-      "AbstractDataPackage.insertSubtree(String genericName, Node subtreeRootNode, int index) not yet implemented!");
+    Document thisDom = getMetadataNode().getOwnerDocument();
+    Node newSubtree = thisDom.importNode(subtreeRootNode, true); // 'true' imports children
+    Node subTreeNode = getSubtreeNoClone(genericName, 0);
+    if (subTreeNode == null) {  // no current subtree node
+      try{
+        NodeList insertionList = XMLUtilities.getNodeListWithXPath(getMetadataPath(),
+            "/xpathKeyMap/insertionList[@name='"+genericName+"']/prevNode");
+        for (int i=0;i<insertionList.getLength();i++) {
+          Node nd = insertionList.item(i);
+          String path = (nd.getFirstChild()).getNodeValue();
+          NodeList temp = XMLUtilities.getNodeListWithXPath(metadataNode, path);
+          if ((temp!=null)&&(temp.getLength()>0)) {
+            Log.debug(40, "found: "+path);
+            Node prevNode = temp.item(0);
+            Document doc = prevNode.getOwnerDocument();
+            Node nextNode = prevNode.getNextSibling();
+            Node par = prevNode.getParentNode();
+            if (nextNode==null) { // no next sibling
+              par.appendChild(newSubtree);
+            } else {
+              par.insertBefore(newSubtree, nextNode);
+            }
+            return newSubtree;
+          }
+        } //
+      }
+      catch (Exception w) {
+        Log.debug(1, "Error in 'insertSubtree method in AbstractDataPackage");
+      }
+    } else {  // node exists
+      Node subTreeNodeParent = subTreeNode.getParentNode();
+      if (subTreeNodeParent==null) return null;
+      // find out how many nodes already exist
+      Node stn = subTreeNode;
+      int count = 0;
+      while(stn !=  null) {
+        count++;
+        stn = getSubtreeNoClone(genericName, count);
+      }
+      count--;
+      if (count<index) {
+        stn = getSubtreeNoClone(genericName, count);
+        subTreeNodeParent.insertBefore(newSubtree,stn);        
+        // just append if index is larger than current list
+      } else {
+        stn = getSubtreeNoClone(genericName, index);
+        Node nextNode = stn.getNextSibling();
+        if (nextNode!=null) {
+          subTreeNodeParent.insertBefore(newSubtree,nextNode);  
+        } else {
+          subTreeNodeParent.appendChild(newSubtree);
+        }
+      }
+      return newSubtree;
+    }
+    return null;
+//    throw new UnsupportedOperationException(
+//      "AbstractDataPackage.insertSubtree(String genericName, Node subtreeRootNode, int index) not yet implemented!");
   }
 
 
@@ -495,9 +604,34 @@ public abstract class AbstractDataPackage extends MetadataObject
    * caller can determine whether insertion was successful
    */
   public Node deleteSubtree(String genericName, int index) {
+    NodeList nodelist = null;
+    String genericNamePath = "";
+    try{
+      genericNamePath = (XMLUtilities.getTextNodeWithXPath(getMetadataPath(),
+          "/xpathKeyMap/contextNode[@name='package']/"+ genericName)).getNodeValue();
+      nodelist = XMLUtilities.getNodeListWithXPath(metadataNode,
+          genericNamePath);
+      if ((nodelist == null)||(nodelist.getLength()==0)) {
+        return null;
+      }
+      else {
+        if (index<nodelist.getLength()) {
+          // create a deep cloned version
+          Node node = nodelist.item(index);
+          Node parnode = node.getParentNode();
+          if (parnode==null) return null;
+          return parnode.removeChild(node);
+        } else {
+          return null;
+        }
+      }    
+    } catch (Exception e) {
+      Log.debug(50, "Exception in deleteSubtree!");
+    }
+    return null;
 
-    throw new UnsupportedOperationException(
-      "AbstractDataPackage.deleteSubtree(String genericName, int index) not yet implemented!");
+//    throw new UnsupportedOperationException(
+//      "AbstractDataPackage.deleteSubtree(String genericName, int index) not yet implemented!");
   }
 
 

@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2004-03-09 22:22:02 $'
- * '$Revision: 1.36 $'
+ *     '$Date: 2004-03-19 22:41:04 $'
+ * '$Revision: 1.37 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -398,7 +398,16 @@ public class DataPackageFactory
       adp.insertCoverage(elem);
       
       adp.showPackageSummary();
-      
+
+      Node node = adp.getSubtree("intellectualRights",0);
+      String val = node.getFirstChild().getNodeValue();
+      Log.debug(1, "node: "+val);
+      node.getFirstChild().setNodeValue("No Rights for YOU!");
+//      Node delNode = adp.deleteSubtree("intellectualRights",0);
+//      Log.debug(1, "delNode: "+delNode);
+      Node insNode = adp.insertSubtree("intellectualRights", node, 3);
+      Log.debug(1,"insNode: "+insNode);
+/*      
       // now let us test the add attribute
       om.put("/attribute/"+"attributeName","TestAttributeName");
       om.put("/attribute/"+"attributeLabel","TestAttibuteLabel");
@@ -416,10 +425,10 @@ public class DataPackageFactory
       //  create ordermap elements for a new entity
       om1.put("/dataTable/entityName", "TestEntityName");
       om1.put("/dataTable/attributeList/attribute/attributeName", "attributeOne");
-              
+*/              
     } catch (Exception w) {Log.debug(5, "problem creating ordered map!");}
     
-    try{        
+/*    try{        
  
       entityObject = new Entity("dataTable", om1);
       attributeObject = new Attribute(om);
@@ -448,7 +457,9 @@ Log.debug(1, "referenced node: "+attrnode);
     catch (Exception w) {
       Log.debug(50, "exception in getting entity description" + w.toString());
     }
-Log.debug(1, "AttrName: "+temp);			
+Log.debug(1, "AttrName: "+temp);
+
+*/			
       Log.debug(1,"AbstractDataPackage complete - Will now show in an XML Editor..");
       Node domnode = adp.getMetadataNode();
       DocFrame df = new DocFrame();
