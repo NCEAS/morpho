@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2004-04-04 20:13:03 $'
- * '$Revision: 1.25 $'
+ *   '$Author: brooke $'
+ *     '$Date: 2004-04-14 22:58:13 $'
+ * '$Revision: 1.26 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -88,6 +88,8 @@ public class MorphoFrame extends JFrame
     private ProgressIndicator indicator;
     private Component contentComponent;
     private Dimension contentAreaSize;
+    private Dimension jToolBarDims;
+    private int toolbarHeight;
     private final MorphoFrame instance;
     private static int menuBarHeight = 0;
     private boolean busyFlag =false;
@@ -139,7 +141,7 @@ public class MorphoFrame extends JFrame
         toolbarActions = new TreeMap();
         int indicatorHeight = (int)indicator.getSize().getHeight();
         int menuHeight = getMenuHeight();
-        int toolbarHeight = indicatorHeight - menuHeight;
+        toolbarHeight = indicatorHeight - menuHeight;
         Log.debug(50, "(indicator, menu, tool) = (" + indicatorHeight + "," +
                 menuHeight + "," + toolbarHeight + ")");
         morphoToolbar = new JToolBar();
@@ -201,7 +203,7 @@ public class MorphoFrame extends JFrame
    */
   public static MorphoFrame getHiddenInstance() {
         MorphoFrame window = new MorphoFrame();
-				window.setVisible(false);
+        window.setVisible(false);
         window.calculateDefaultSizes();
         window.addDefaultContentArea();
         return window;
@@ -307,6 +309,19 @@ public class MorphoFrame extends JFrame
         this.setJMenuBar(newMenuBar);
         this.getLayeredPane().invalidate();
     }
+
+
+
+    /**
+     * get the tool bar.
+     *
+     * @return JToolBar
+     */
+    public JToolBar getJToolBar() {
+
+      return this.morphoToolbar;
+    }
+
 
     /**
      * Add a GUIAction to the menu and toolbar for this frame.
@@ -463,6 +478,19 @@ public class MorphoFrame extends JFrame
     }
 
     /**
+     * Returns the size of the toolbar
+     *
+     * @return Dimension
+     */
+    public Dimension getJToolBarDims() {
+
+      calculateDefaultSizes();
+      return jToolBarDims;
+    }
+
+
+
+    /**
      * Get the StatusBar to update its status
      *
      * @returns the StatusBar instance for this window
@@ -614,6 +642,12 @@ public class MorphoFrame extends JFrame
         double contentHeight = windowHeight - insets.top - insets.bottom -
             indicatorHeight - statusHeight;
         contentAreaSize = new Dimension((int)contentWidth, (int)contentHeight);
+
+       jToolBarDims = new Dimension(this.getBounds().width
+                                    - insets.left - insets.right
+                                    - indicator.getSize().width,
+                                    morphoToolbar.getBounds().height);
+
         Log.debug(50, "Content size (w, h): (" + contentAreaSize.getWidth() +
                 ", " + contentAreaSize.getHeight() + ")");
     }

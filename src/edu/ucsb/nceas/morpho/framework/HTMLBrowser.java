@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2004-04-14 20:59:18 $'
- * '$Revision: 1.3 $'
+ *     '$Date: 2004-04-14 22:58:13 $'
+ * '$Revision: 1.4 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -53,6 +53,12 @@ import javax.swing.text.html.HTMLFrameHyperlinkEvent;
 import javax.swing.JFrame;
 import edu.ucsb.nceas.morpho.util.UISettings;
 import edu.ucsb.nceas.morpho.util.Log;
+import javax.swing.JToolBar;
+import edu.ucsb.nceas.morpho.util.GUIAction;
+import edu.ucsb.nceas.morpho.util.Command;
+import javax.swing.Action;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 
 
 /**
@@ -82,14 +88,15 @@ public class HTMLBrowser {
   private boolean frameSizeAdjusted = false;
 
   private MorphoFrame frame;
+  private JToolBar toolBar;
 
   private JEditorPane HTMLPane = new JEditorPane();
 
-  private JButton backButton = new JButton();
+  private Action backAction;
 
-  private JTextField URLTextField = new JTextField();
+  private JTextField urlTextField = new JTextField();
 
-  private JButton loadButton = new JButton();
+  private Action loadAction;
 
 
   /**
@@ -116,11 +123,9 @@ public class HTMLBrowser {
   public HTMLBrowser(MorphoFrame frame) {
 
     this.frame = frame;
-    frame.setSize((int)UISettings.DEFAULT_WINDOW_WIDTH,
-                  (int)UISettings.DEFAULT_WINDOW_HEIGHT);
+
     JPanel mainPanel = new JPanel();
     JScrollPane JScrollPane1 = new JScrollPane();
-    JPanel controlsPanel = new JPanel();
 
     frame.setTitle("");
 
@@ -133,47 +138,126 @@ public class HTMLBrowser {
     mainPanel.add(BorderLayout.CENTER, JScrollPane1);
 
     HTMLPane.setEditable(false);
-    controlsPanel.setLayout(new BorderLayout(5, 5));
-    mainPanel.add(BorderLayout.NORTH, controlsPanel);
 
-    backButton.setText("< Back");
-    controlsPanel.add(BorderLayout.WEST, backButton);
-    URLTextField.setText("");
-    URLTextField.setColumns(40);
-    controlsPanel.add(BorderLayout.CENTER, URLTextField);
-    loadButton.setText("Go");
-    controlsPanel.add(BorderLayout.EAST, loadButton);
+    toolBar = frame.getJToolBar();
+    toolBar.removeAll();
 
-    //REGISTER_LISTENERS
-    ButtonAction lButtonAction = new ButtonAction();
-    loadButton.addActionListener(lButtonAction);
-    backButton.addActionListener(lButtonAction);
+    backAction = new GUIAction("< Back", null, new Command() {
+
+      public void execute(ActionEvent e) {
+
+        if (pageList.isEmpty()) return;
+        pageList.pop();
+        Object url = pageList.pop();
+        loadNewPage(url);
+      }
+    });
+
+    loadAction = new GUIAction("Go", null, new Command() {
+
+       public void execute(ActionEvent e) {
+
+         String url = urlTextField.getText();
+         pageList.push(url);
+         try {
+           loadNewPage(url);
+         } catch (Exception ex) {
+           ex.printStackTrace();
+           Log.debug(1, "Cannot open page: "+url);
+         }
+       }
+     });
+
+    backAction.setEnabled(false);
+
+    toolBar.add(backAction);
+
+    toolBar.addSeparator();
+
+    toolBar.add(urlTextField);
+
+    toolBar.addSeparator();
+
+    toolBar.add(loadAction);
+
+    urlTextField.setText("");
+
+    setTextFieldDims();
 
     pageList = new Stack();
 
     // Listener for hypertext events
     HTMLPane.addHyperlinkListener(new HyperlinkListener() {
+
       public void hyperlinkUpdate(HyperlinkEvent evt) {
+
         // Ignore hyperlink events if the frame is busy
         if (loadingPage == true) {
           return;
         }
+
         if (evt.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
+
           JEditorPane sp = (JEditorPane)evt.getSource();
+
           if (evt instanceof HTMLFrameHyperlinkEvent) {
+
             HTMLDocument doc = (HTMLDocument)sp.getDocument();
             doc.processHTMLFrameHyperlinkEvent((HTMLFrameHyperlinkEvent)evt);
+
           } else {
+
             loadNewPage(evt.getURL());
           }
         } else if (evt.getEventType() == HyperlinkEvent.EventType.ENTERED) {
+
           HTMLPane.setCursor(handCursor);
+
         } else if (evt.getEventType() == HyperlinkEvent.EventType.EXITED) {
+
           HTMLPane.setCursor(defaultCursor);
         }
       }
     });
+    enableActions();
+    frame.setSize((int)UISettings.DEFAULT_WINDOW_WIDTH,
+                  (int)UISettings.DEFAULT_WINDOW_HEIGHT);
+
+    frame.addComponentListener(
+        new ComponentAdapter() {
+      public void componentResized(ComponentEvent e) {
+        setTextFieldDims();
+      }
+    });
   }
+
+
+  private void enableActions() {
+
+    backAction.setEnabled(!pageList.isEmpty());
+  }
+
+
+  private void setTextFieldDims() {
+
+    Dimension toolBarDims = frame.getJToolBarDims();
+    int toolBarWidth = toolBarDims.width;
+    int toolBarHeight = toolBarDims.height;
+    int backButtonWidth = toolBar.getComponent(0).getWidth();
+    int dividerWidth = toolBar.getComponent(1).getWidth();
+    int goButtonWidth = toolBar.getComponent(4).getWidth();
+
+    int textFieldWidth = toolBarWidth - backButtonWidth
+                         - 2*dividerWidth - goButtonWidth - 10;
+    Dimension textFieldDims = new Dimension(textFieldWidth, toolBarHeight);
+    urlTextField.setPreferredSize(textFieldDims);
+    urlTextField.setMaximumSize(textFieldDims);
+
+    urlTextField.invalidate();
+    frame.validate();
+    frame.repaint();
+  }
+
 
   /**
    *
@@ -193,13 +277,14 @@ public class HTMLBrowser {
       if (url==null) throw new java.lang.IllegalArgumentException("URL IS NULL!");
       pageList.push(url);
       HTMLPane.setPage(url);
-      URLTextField.setText(url.toString());
+      urlTextField.setText(url.toString());
 
     } catch (Exception e) {
       e.printStackTrace();
-      Log.debug(1, "Cannot load page: "+url);
+      Log.debug(1, "Cannot open page: "+url);
     } finally {
       HTMLPane.setCursor(defaultCursor);
+      enableActions();
     }
   }
 
@@ -239,35 +324,6 @@ public class HTMLBrowser {
 //                  insets.top + insets.bottom + size.height + menuBarHeight);
 //  }
 
-
-
-  class ButtonAction implements ActionListener {
-    public void actionPerformed(ActionEvent event) {
-      Object object = event.getSource();
-      if (object == loadButton)
-        loadButton_actionPerformed(event);
-      else if (object == backButton)
-        backButton_actionPerformed(event);
-
-    }
-  }
-
-  void loadButton_actionPerformed(ActionEvent event) {
-    String url = URLTextField.getText();
-    pageList.push(url);
-    try {
-      HTMLPane.setPage(url);
-    } catch (Exception e) {
-      System.out.println("Problem loading URL");
-    }
-  }
-
-
-  void backButton_actionPerformed(ActionEvent event) {
-    pageList.pop();
-    Object url = pageList.pop();
-    loadNewPage(url);
-  }
 
 
 
