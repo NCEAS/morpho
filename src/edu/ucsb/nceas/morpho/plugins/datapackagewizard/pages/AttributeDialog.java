@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2003-09-18 22:57:00 $'
- * '$Revision: 1.8 $'
+ *     '$Date: 2003-09-18 23:37:59 $'
+ * '$Revision: 1.9 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -330,29 +330,10 @@ class AttributeDialog extends WizardPopupDialog {
   // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
   
   
-  private JPanel getRatioPanel() {
+  private DateTimePanel getDateTimePanel() {
 
-    JPanel panel = WidgetFactory.makeVerticalPanel(BORDERED_PANEL_TOT_ROWS);
-    
-    WidgetFactory.addTitledBorder(panel, measScaleElemNames[3]);
-    
-    panel.add(WidgetFactory.makeDefaultSpacer());
-    ////
-    return panel;
-  }
-    
-  
-  // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-  
-  
-  private JPanel getDateTimePanel() {
-
-    JPanel panel = WidgetFactory.makeVerticalPanel(BORDERED_PANEL_TOT_ROWS);
-    
-    WidgetFactory.addTitledBorder(panel, measScaleElemNames[4]);
-    
-    panel.add(WidgetFactory.makeDefaultSpacer());
-    ////
+    DateTimePanel panel = new DateTimePanel(this);
+    WidgetFactory.addTitledBorder(panel, measScaleElemNames[MEASUREMENTSCALE_DATETIME]);
     return panel;
   }
     

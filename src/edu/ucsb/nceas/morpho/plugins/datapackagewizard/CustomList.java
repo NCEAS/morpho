@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2003-09-18 21:59:40 $'
- * '$Revision: 1.13 $'
+ *     '$Date: 2003-09-18 23:37:59 $'
+ * '$Revision: 1.14 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -319,7 +319,7 @@ public class CustomList extends JPanel {
       TableColumn column = table.getColumnModel().getColumn(i);
       
       int preferredWidth = (int)(tableWidth*fraction) - 3;
-      if (preferredWidth < 100) preferredWidth = 100;
+      if (preferredWidth < 80) preferredWidth = 80;
 
       column.setPreferredWidth(preferredWidth);
       column.setMinWidth((int)(preferredWidth*minFactor));
