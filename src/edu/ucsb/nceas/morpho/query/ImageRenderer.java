@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2002-08-14 00:14:43 $'
- * '$Revision: 1.1.2.3 $'
+ *     '$Date: 2002-08-14 16:05:56 $'
+ * '$Revision: 1.1.2.4 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,6 +32,7 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Insets;
 import javax.swing.Icon;
+import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JTable;
 import javax.swing.SwingConstants;
@@ -45,6 +46,9 @@ public class ImageRenderer extends DefaultTableCellRenderer
  
   public static final String LOCALTOOLTIP = "Stored on my computer";
   public static final String METACATTOOLTIP = "Stored on network";
+  public static final String BLANK = "Blank";
+  public static final String PACKAGETOOLTIP = "Documentation only";
+  public static final String PACKAGEDATATOOLTIP = "Data & documentation";
   /**
    * Create the renderer with appropriate formatting options set
    */
@@ -64,30 +68,47 @@ public class ImageRenderer extends DefaultTableCellRenderer
     = (JLabel)super.getTableCellRendererComponent( table, value, 
                                             isSelected, hasFocus, row, column);
    // Make sure it is a icon cell
-   if (!(value instanceof Icon)) 
+   if (!(value instanceof ImageIcon)) 
    {
     
     return comp;
    }//if
    // Set the icon to the label
-   comp.setIcon((Icon)value);
+   ImageIcon valueIcon = (ImageIcon)value;
+   comp.setIcon(valueIcon);
    // Set text is empty
    comp.setText("");
    // Set icon in the center
    comp.setHorizontalAlignment(SwingConstants.CENTER);
-   if (value.equals(ResultSet.localIcon))
+   if ((valueIcon.getDescription())
+                                .equals((ResultSet.localIcon).getDescription()))
    {
      // Add tooltip for localIcon
      comp.setToolTipText(LOCALTOOLTIP);
    }//if
-   else if (value.equals(ResultSet.metacatIcon))
+   else if ((valueIcon.getDescription())
+                          .equals((ResultSet.metacatIcon).getDescription()))
    {
      // Add tooltip for metacat icon
      comp.setToolTipText(METACATTOOLTIP);
    }//else
-   else if (value.equals(ResultSet.blankIcon))
+   else if ((valueIcon.getDescription())
+                                .equals((ResultSet.blankIcon).getDescription()))
    {
+     // Add null to blank icon
      comp.setToolTipText(null);
+   }//else
+   else if ((valueIcon.getDescription())
+                              .equals((ResultSet.packageIcon).getDescription()))
+   {
+     // Add tool tip for package icon
+     comp.setToolTipText(PACKAGETOOLTIP);
+   }//else
+   else if ((valueIcon.getDescription())
+                         .equals((ResultSet.packageDataIcon).getDescription()))
+   {
+     // Add tool tip for package data icon
+     comp.setToolTipText(PACKAGEDATATOOLTIP);
    }//else
    
    
