@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2002-08-20 21:06:57 $'
- * '$Revision: 1.6 $'
+ *     '$Date: 2002-08-22 00:02:08 $'
+ * '$Revision: 1.7 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -166,7 +166,7 @@ public class OpenDialogBox extends JDialog
     
     // Open button
     GUIAction openAction = new GUIAction("Open", null, 
-                                          new OpenPackageCommand(ownerPanel));    
+                                  new OpenPackageCommand(ownerPanel, this));    
     openButton = new JButton(openAction);   
     // Registor open button to mediator
     mediator.registerOpenButton(openButton);
