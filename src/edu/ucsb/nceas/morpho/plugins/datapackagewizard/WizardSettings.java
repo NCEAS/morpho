@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2003-09-26 00:43:13 $'
- * '$Revision: 1.19 $'
+ *     '$Date: 2003-09-26 04:03:39 $'
+ * '$Revision: 1.20 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -246,17 +246,16 @@ public class WizardSettings {
   public static String getDataLocation() { return dataLocation; }
   
   
+  /////////////
+  private static final String UNIT_TYPES_XPATH 
+                                      = "/stmml:unitList/stmml:unitType/@name";
+  private static Node udRootNode = null;
   /**
    *  from the eml unit dictionary, gets all the unitTypes (both fundamental 
    *  and derived) 
    *
    *  @return String array containing all the unitTypes in the unitdictionary
    */
-  private static final String UNIT_TYPES_XPATH    = "/stmml:unitList/unitType/@id";
-  private static final String UNIT_TYPES_NAME_ATT = "@name";
-  private static final String UNIT_TYPES_EXCLUDE  = "dimension";
-  private static Map          unitDictionaryNVPs;
-  /////////////
   public static String[] getUnitDictionaryUnitTypes() { 
 
     Reader reader = null;
@@ -268,78 +267,63 @@ public class WizardSettings {
     
       e.printStackTrace();
       Log.debug(12,"Exception: <"+e+"> trying to open unit dictionary file.\n"
-           +"\nClasspath was: ---------------------------------------------\n"
-                                   +System.getProperty("java.class.path")+"\n");
+             +"\nClasspath was: \n"+System.getProperty("java.class.path")+"\n");
       reader = null;
     }
     
     if (reader==null) {
     
-      Log.debug(1, "ATTENTION! Cannot find unit dictionary file at: "
-                                                    +EML_UNIT_DICTIONARY_PATH);
-      return new String[]{" "};
+      Log.debug(1,"Can't find unit dictionary file at: "+EML_UNIT_DICTIONARY_PATH);
+      return new String[]{"ERROR"};
     } 
     
-    Node udRootNode = null;
     try {
-    
       udRootNode = XMLUtilities.getXMLReaderAsDOMTreeRootNode(reader);
       
     } catch (IOException ioe) {
-    
+      Log.debug(12,"Exception getting unit dictionary RootNode: "+ioe);
       ioe.printStackTrace();
       return new String[] {"IOException!"};
     }
     
-    
-    List returnList = new ArrayList();
-    
-    
     NodeList unitTypesNodeList = null;
     try {
-    
-      unitTypesNodeList = XMLUtilities.getNodeListWithXPath(udRootNode, UNIT_TYPES_XPATH);
-      System.err.println("IS IT A NODESET? unitTypesNodeList = "+unitTypesNodeList);
-      
+      unitTypesNodeList = XMLUtilities.getNodeListWithXPath(udRootNode, 
+                                                            UNIT_TYPES_XPATH);
     } catch (Exception ioe) {
-    
+      Log.debug(12,"Exception getting unitTypesNodeList: "+ioe);
       ioe.printStackTrace();
       return new String[] {"Exception!"};
     }
     
+    if (unitTypesNodeList==null) {
+      Log.debug(1,"Fatal error - unitTypesNodeList == NULL");
+      return new String[] {"ERROR!"};
+    }    
     
-//    unitDictionaryNVPs = XMLUtilities.getDOMTreeAsXPathMap(udRootNode);
-//    
-//    if (unitDictionaryNVPs==null) {
-//      Log.debug(1,"Fatal error - can't find unit dictionary!");
-//      return new String[] {"ERROR!"};
-//    }    
-//    Object nextObj  = null;
-//    String nextStr  = null;
-//    
-//    for (Iterator it = unitDictionaryNVPs.keySet().iterator(); it.hasNext(); ) {
-//    
-//      nextObj = it.next();
-//      if (nextObj==null) continue;
-//      nextStr = (String)nextObj;
-//      
-//      if ( (nextStr.indexOf(UNIT_TYPES_XPATH) == 0) 
-//                  && (nextStr.indexOf(UNIT_TYPES_NAME_ATT) > 0) 
-//                              && (nextStr.indexOf(UNIT_TYPES_EXCLUDE) < 0) ) {
-//
-//        returnList.add((String)(unitDictionaryNVPs.get(nextStr)));
-//      }
-//    }
+    Node[] unitTypesNodeArray 
+                      = XMLUtilities.getNodeListAsNodeArray(unitTypesNodeList);
+    
+    if (unitTypesNodeArray==null) {
+      Log.debug(1,"Fatal error - unitTypesNodeArray == NULL");
+      return new String[] {"ERROR!!"};
+    }    
 
-
-    String[] returnArray = new String[returnList.size()];
-
-    returnArray = (String[])(returnList.toArray(returnArray));
+    final int totUnitTypes      = unitTypesNodeArray.length;
+    final String[] returnArray  = new String[totUnitTypes];
+    
+    for (int i=0; i<totUnitTypes; i++) {
+    
+      returnArray[i] = unitTypesNodeArray[i].getNodeValue();
+    }
     Arrays.sort(returnArray);
     return returnArray;
   }
 
   
+  private static Node[] unitsNodeArray = null;
+  private static final String UNITS_XPATH    = "/stmml:unitList/stmml:unit";
+  //
   /**
    *  from the eml unit dictionary, gets all the units of the given unitType 
    *
@@ -348,63 +332,115 @@ public class WizardSettings {
    *  @return String array containing all the units in the unitdictionary that 
    *          have the given unitType
    */
-  private static final String UNITS_XPATH    = "/stmml:unitList/unit";
-  private static final String UNITS_TYPE_ATT = "@unitType";
-  private static final String UNITS_PRNT_ATT = "@parentSI";
-  private static final String UNITS_EXCLUDE  = "description";
-  private static final String UNITS_NAME_ATT = "@name";
+//  private static final String UNITS_TYPE_ATT = "@unitType";
+//  private static final String UNITS_PRNT_ATT = "@parentSI";
+//  private static final String UNITS_EXCLUDE  = "description";
+//  private static final String UNITS_NAME_ATT = "@name";
   //////// 
   public static String[] getUnitDictionaryUnitsOfType(String UnitType) { 
   
+    // ensure xml DOM has already been created...
+    if (udRootNode==null) getUnitDictionaryUnitTypes();
+    
+    //0. init - get node array containing all <unit> elements - do only once!
+    if (unitsNodeArray==null) {
+    
+      NodeList unitsNodeList = null;
+      try {
+        unitsNodeList = XMLUtilities.getNodeListWithXPath(udRootNode, 
+                                                          UNITS_XPATH);
+      } catch (Exception ioe) {
+        Log.debug(12,"Exception getting unitsNodeList: "+ioe);
+        ioe.printStackTrace();
+        return new String[] {"Exception!"};
+      }
+      if (unitsNodeList==null) {
+        Log.debug(1,"Fatal error - unitsNodeList == NULL");
+        return new String[] {"ERROR!"};
+      }    
+    
+      unitsNodeArray = XMLUtilities.getNodeListAsNodeArray(unitsNodeList);
+    
+      if (unitsNodeArray==null) {
+        Log.debug(1,"Fatal error - unitTypesNodeArray == NULL");
+        return new String[] {"ERROR!!"};
+      }    
+    }
+
 
     List returnList     = new ArrayList();
-    Object nextKeyObj   = null;
-    String nextKeyStr   = null;
-    Object nextValObj   = null;
-    String nextValueStr = null;
-    
-    
-    if (unitDictionaryNVPs==null) return new String[] {"ERROR!"};
-    
-    for (Iterator it = unitDictionaryNVPs.keySet().iterator(); it.hasNext(); ) {
-    
-      nextKeyObj = it.next();
-      if (nextKeyObj==null) continue;
-      nextKeyStr = (String)nextKeyObj;
-      
-      int unitTypeIndex = nextKeyStr.indexOf(UNITS_TYPE_ATT);
-      int parentSIIndex = nextKeyStr.indexOf(UNITS_PRNT_ATT);
-      int trimIndex = -1;
-      
-      if (unitTypeIndex>0) {
-      
-        trimIndex = unitTypeIndex;
-        
-      } else if (parentSIIndex>0) {
-      
-        trimIndex = parentSIIndex;
-      }
-      
-      if ( (nextKeyStr.indexOf(UNITS_XPATH) == 0) && (trimIndex > 0)
-                              && (nextKeyStr.indexOf(UNITS_EXCLUDE) < 0) ) {
 
-        nextValObj = unitDictionaryNVPs.get(nextKeyStr);
-        
-        if (nextValObj==null) continue;
-        
-        nextValueStr = (String)nextValObj;
-        
-        if (nextValueStr.equals(UnitType)) {
-        
-          nextKeyStr = nextKeyStr.substring(0, trimIndex);
-          returnList.add((String)(unitDictionaryNVPs.get(
-                                                nextKeyStr + UNITS_NAME_ATT)));
-        }
-      }
-    }
+    //-- on calling this method with a unitType: --
+    //
+    //1. for each unit element node, get list of attribute nodes;
+    //   - if attributes contains an attrib node called unitType, check if 
+    //     its value==requested unitType. 
+    //   - if so, get value of attrib called "name" and add this to results List  
+    //   
+    //2. Now results list has all units in it that have the requested unitType. 
+    //   - Repeat loop thru' unit element nodes...
+    //   - if results List already contains node attribute "name", continue
+    //   - else if attributes list has *NO* untiType attrib, but *HAS* a parentSI 
+    //     attrib, check if resultsList contains parentSI. If so, get value of 
+    //     attrib called "name" and add this to results List
+    //
+  
+  
+  
+  
+  
+  
+  
     String[] returnArray = new String[returnList.size()];
+    
+    
+    
 
-    returnArray = (String[])(returnList.toArray(returnArray));
+//    Object nextKeyObj   = null;
+//    String nextKeyStr   = null;
+//    Object nextValObj   = null;
+//    String nextValueStr = null;
+//    
+//    
+//    if (unitDictionaryNVPs==null) return new String[] {"ERROR!"};
+//    
+//    for (Iterator it = unitDictionaryNVPs.keySet().iterator(); it.hasNext(); ) {
+//    
+//      nextKeyObj = it.next();
+//      if (nextKeyObj==null) continue;
+//      nextKeyStr = (String)nextKeyObj;
+//      
+//      int unitTypeIndex = nextKeyStr.indexOf(UNITS_TYPE_ATT);
+//      int parentSIIndex = nextKeyStr.indexOf(UNITS_PRNT_ATT);
+//      int trimIndex = -1;
+//      
+//      if (unitTypeIndex>0) {
+//      
+//        trimIndex = unitTypeIndex;
+//        
+//      } else if (parentSIIndex>0) {
+//      
+//        trimIndex = parentSIIndex;
+//      }
+//      
+//      if ( (nextKeyStr.indexOf(UNITS_XPATH) == 0) && (trimIndex > 0)
+//                              && (nextKeyStr.indexOf(UNITS_EXCLUDE) < 0) ) {
+//
+//        nextValObj = unitDictionaryNVPs.get(nextKeyStr);
+//        
+//        if (nextValObj==null) continue;
+//        
+//        nextValueStr = (String)nextValObj;
+//        
+//        if (nextValueStr.equals(UnitType)) {
+//        
+//          nextKeyStr = nextKeyStr.substring(0, trimIndex);
+//          returnList.add((String)(unitDictionaryNVPs.get(
+//                                                nextKeyStr + UNITS_NAME_ATT)));
+//        }
+//      }
+//    }
+
     Arrays.sort(returnArray);
     return returnArray;
   }
