@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2002-12-11 00:58:50 $'
- * '$Revision: 1.8 $'
+ *     '$Date: 2002-12-11 06:20:44 $'
+ * '$Revision: 1.9 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -162,11 +162,33 @@ public class UISettings
                                         +" size=\"1\" color=\"#ffffff\">&nbsp;";
 
     /**
-     *  html style for font on hyperlink urls
+     *  html opening tags for font on hyperlink urls
      */
-    public static final String HYPERLINK_FONT_HTML 
-        = "<font face=\"Verdana, Arial, Helvetica, sans-serif\" "
-                                        +" size=\"1\" color=\"#0000d2\">&nbsp;";
+    public static final String HYPERLINK_FONT_HTML_OPENTAGS
+                    = "<html><p align=\"left\">"
+                        +"<font face=\"Verdana, Arial, Helvetica, sans-serif\" "
+                            +" size=\"1\" color=\"#0000d2\">&nbsp;";
+    /**
+     *  html closing tags for font on hyperlink urls
+     */
+    public static final String HYPERLINK_FONT_HTML_CLOSETAGS 
+                                                    = "</font></p></html>";
+
+    
+    /**
+     *  html opening tags for font on hyperlink urls during mouseover 
+     */
+    public static final String HYPERLINK_FONT_OVER_HTML_OPENTAGS 
+                    = "<html><p align=\"left\">"
+                        +"<font face=\"Verdana, Arial, Helvetica, sans-serif\" "
+                          +" size=\"1\" color=\"#00d200\">&nbsp;<a href=\"#\">";
+
+    /**
+     *  html closing tags for font on hyperlink urls during mouseover 
+     */
+    public static final String HYPERLINK_FONT_OVER_HTML_CLOSETAGS 
+                                                    = "</a></font></p></html>";
+
 
 
     public static final Color TITLE_TEXT_COLOR        = Color.white;
@@ -208,9 +230,9 @@ public class UISettings
      *  background color of the main part of the initial screen
      */
     public static final Color INIT_SCRN_MAIN_BG_COLOR = new Color(0,153,203);
-    
 
-    
+
+
     // * * * * * *  D E F A U L T   I M A G E S   &   I C O N S  * * * * * * * *
     
     public static final Image FRAME_AND_TASKBAR_ICON 
@@ -219,10 +241,19 @@ public class UISettings
     public static final Icon NEW_DATAPACKAGE_ICON 
             = getAsImageIcon("/toolbarButtonGraphics/general/New16.gif");
 
+    public static final Icon NEW_DATAPACKAGE_ICON_ROLLOVER 
+            = getAsImageIcon("/toolbarButtonGraphics/general/New16.gif");
+
     public static final Icon OPEN_DATAPACKAGE_ICON 
             = getAsImageIcon("/toolbarButtonGraphics/general/Open16.gif");
 
+    public static final Icon OPEN_DATAPACKAGE_ICON_ROLLOVER 
+            = getAsImageIcon("/toolbarButtonGraphics/general/Open16.gif");
+
     public static final Icon SEARCH_ICON 
+            = getAsImageIcon("/toolbarButtonGraphics/general/Search16.gif");
+
+    public static final Icon SEARCH_ICON_ROLLOVER 
             = getAsImageIcon("/toolbarButtonGraphics/general/Search16.gif");
 
     public static final Icon REFRESH_ICON 
@@ -231,7 +262,7 @@ public class UISettings
     public static final Icon SAVE_ICON 
             = getAsImageIcon("/toolbarButtonGraphics/general/Save16.gif");
                   
-              
+
     
     /////////////////////////////////////////////
     
@@ -257,7 +288,7 @@ public class UISettings
     
     public static final String NEW_DATAPACKAGE_LINK_TEXT 
                                     = "Create a <b>new</b> data package...";
-    
+
     public static final String OPEN_DATAPACKAGE_LINK_TEXT 
                                     = "Open an <b>existing</b> data package...";
     
