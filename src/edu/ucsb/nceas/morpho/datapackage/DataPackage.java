@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-05-16 22:48:43 $'
- * '$Revision: 1.9 $'
+ *     '$Date: 2001-05-17 23:30:28 $'
+ * '$Revision: 1.10 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,6 +34,14 @@ import java.io.*;
 public class DataPackage 
 {
   TripleCollection triples = new TripleCollection();
+  
+  /**
+   * create a nonnull, yet contentless dataPackage object
+   */
+  public DataPackage()
+  {
+    
+  }
   
   /**
    * Create a new data package object with an id, location and associated

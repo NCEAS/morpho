@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-05-17 17:59:08 $'
- * '$Revision: 1.5 $'
+ *     '$Date: 2001-05-17 23:30:28 $'
+ * '$Revision: 1.6 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -55,57 +55,44 @@ public class PackageWizard extends javax.swing.JFrame
     doc = pwp.getDoc();
     Hashtable wizardAtts = doc.attributes;
     String size = (String)wizardAtts.get("size");
-    //System.out.println("width: " + width + " height: " + height);
-    //System.out.println("name: " + (String)wizardAtts.get("dtd"));
     setTitle((String)wizardAtts.get("dtd"));
     initComponents();
     pack();
     setSize(parseSize(size));
   }
   
+  /**
+   * constructor which creates a package wizard frame in the given contentPane
+   * using the given framefile (xml configuration file).
+   * @param framework: the framework in which this wizard is created
+   * @param contentPane: the Container in which this wizard is created
+   * @param framefile: the configuration file used to create this wizard
+   */
   public PackageWizard(ClientFramework framework, Container contentPane, 
-                       String framename)
+                       String framefile)
   {
     try
     {
       //get configuration information
       ConfigXML config = framework.getConfiguration();
-      Vector frameNameV = config.get("frameName");
-      Vector frameLocationV = config.get("frameConfigFile");
-      Vector mainFrameV = config.get("mainFrame");
-      String mainFrame = (String)mainFrameV.elementAt(0);
       Vector saxparserV = config.get("saxparser");
       String saxparser = (String)saxparserV.elementAt(0);
-      Hashtable frames = new Hashtable();
       
-      for(int i=0; i<frameNameV.size(); i++)
-      {
-        frames.put((String)frameNameV.elementAt(i), 
-                   (String)frameLocationV.elementAt(i));
-      }
-      
-      //
-      //File mainFile = new File((String)frames.get(mainFrame));
-      if(!frames.containsKey(mainFrame))
-      {
-        framework.debug(1, "The frame name provided to PackageWizard is not " +
-                           "a valid frame name as described in config.xml");
-        framework.debug(1, "The valid names are: " + frames.toString());
-        return;
-      }
-      
-      File mainFile = new File((String)frames.get(mainFrame));
+      //get the config file and parse it
+      File mainFile = new File(framefile);
       FileReader xml = new FileReader(mainFile);
       pwp = new PackageWizardParser(xml, saxparser);
       doc = pwp.getDoc();
+      Hashtable wizardAtts = doc.attributes;
+      String size = (String)wizardAtts.get("size");
       
+      //create the initial tabbed pane
       mainTabbedPane = new JTabbedPane();
-      mainTabbedPane.setPreferredSize(new Dimension(500,400));
-      //mainTabbedPane.setLayout(new FlowLayout());
+      mainTabbedPane.setPreferredSize(parseSize(size));
       contentPane.add(mainTabbedPane);
       docPanel = new JPanelWrapper();
-      //createMenu(contentPane);
       docPanel.element = doc;
+      //create the content of the initial frame
       createPanel(doc, contentPane, docPanel);
     }
     catch(Exception e)
@@ -122,9 +109,6 @@ public class PackageWizard extends javax.swing.JFrame
   {
     Container contentPane = getContentPane();
     this.setDefaultCloseOperation(EXIT_ON_CLOSE);  
-    //contentPane.setLayout(/*new BoxLayout(contentPane, BoxLayout.Y_AXIS)*/
-    //                       /*new GridLayout(5,0)*/);
-    
     mainTabbedPane = new JTabbedPane();
     contentPane.add(mainTabbedPane);
     docPanel = new JPanelWrapper();
@@ -160,7 +144,45 @@ public class PackageWizard extends javax.swing.JFrame
   }
   
   /**
-   * handles the actions from the menus.  
+   * gets the xml produced from the wizard
+   */
+  public String getXML()
+  {
+    int choice = JOptionPane.YES_OPTION;
+    Stack fieldStack = new Stack();
+    Vector pathReps = new Vector();
+    Hashtable contentReps = new Hashtable();
+    pathReps = createDocument(docPanel, pathReps, "");
+    Hashtable content = createContentHash(docPanel, contentReps, "");
+    if(content.containsKey("MISSINGREQUIREDELEMENTS"))
+    {
+      if(((String)content.get("MISSINGREQUIREDELEMENTS")).equals("true"))
+      { //tell the user that there are missing required fields.
+        choice = JOptionPane.showConfirmDialog(null, 
+                             "This package may be invalid because certain \n" + 
+                             "fields are marked as 'required' but are not " +
+                             "filled in.\n" +
+                             "Are you sure you want to save now?", 
+                             "Invalid Document", 
+                             JOptionPane.YES_NO_CANCEL_OPTION,
+                             JOptionPane.WARNING_MESSAGE);
+      }
+    }
+    if(choice == JOptionPane.YES_OPTION)
+    { //only save the document if it is valid or if the user wants an invalid
+      //document
+      StringBuffer xmldoc = createDocumentContent(pathReps, content);
+      return xmldoc.toString();
+    }
+    else
+    {
+      return null;
+    }
+  }
+  
+  /**
+   * handles the actions from the menus if this package wizard is 
+   * run in stand alone mode.  
    */
   public void actionPerformed(ActionEvent e) 
   {
@@ -204,6 +226,9 @@ public class PackageWizard extends javax.swing.JFrame
     }
   }
 
+  /**
+   * not used in this implementation
+   */
   public void itemStateChanged(ItemEvent e) 
   {
   
@@ -598,6 +623,12 @@ public class PackageWizard extends javax.swing.JFrame
     return paths; //return the paths
   }
   
+  /**
+   * The method goes through the XMLElement doc and creates from it the panel
+   * and text element structure.  It also builds a tree out of the J*
+   * elements so that the structure of the document can be recreated.  
+   * in this method a prevIndex is not required.
+   */
   private void createPanel(XMLElement e, final Container contentPane, 
                            final JPanelWrapper parentPanel)
   {
@@ -620,12 +651,15 @@ public class PackageWizard extends javax.swing.JFrame
       
       if(tempElement.name.equals("group"))
       {//add a new path or panel
+       //this part of the if statement builds all of the containers that
+       //the text and combo boxes will be contained in.  It encases them
+       //in scroll panes in case they are too big for the screen.
         JButton button = null;
         tempPanel.element = tempElement;
         
         if(tempElement.attributes.containsKey("type") && 
           ((String)tempElement.attributes.get("type")).equals("panel"))
-        {
+        { //go here if we are building a new tab.
           if(tempElement.attributes.containsKey("size"))
           {
             String size = (String)tempElement.attributes.get("size");
@@ -633,6 +667,7 @@ public class PackageWizard extends javax.swing.JFrame
           }
           //tempPanel.setLayout(new /*GridLayout(0,1)*/FlowLayout());
           BoxLayout box = new BoxLayout(tempPanel, BoxLayout.Y_AXIS);
+          //if you want to change the layout of the tabbed pane change it here
           tempPanel.setLayout(box);
           parentPanel.children.addElement(tempPanel);
           JScrollPane tempScrollPane = new JScrollPane(tempPanel);
@@ -640,7 +675,7 @@ public class PackageWizard extends javax.swing.JFrame
                                 tempScrollPane);
         }
         else
-        {
+        { //go here if we are building a panel that is not tabbed.
           tempPanel.setBorder(BorderFactory.createCompoundBorder(
                               BorderFactory.createTitledBorder(
                               (String)tempElement.attributes.get("label")),
@@ -653,6 +688,9 @@ public class PackageWizard extends javax.swing.JFrame
             if(repeatable.equals("YES"))
             {
               button = new JButton("Repeat");
+              //if an element is repeatable, we put the label into a button
+              //and add an action listener to reproduce the element when the
+              //button is pressed
               button.addActionListener(
                 new ActionListener() 
                 {
@@ -683,31 +721,35 @@ public class PackageWizard extends javax.swing.JFrame
           }
           
           if(tempElement.attributes.containsKey("size"))
-          {
+          { //if the config file has a size attribute then set it here
+            //if it doesn't then let the layout manager choose the size
+            //of the panel
             String size = (String)tempElement.attributes.get("size");
-            //tempPanel.setPreferredSize(parseSize(size));
+            tempPanel.setPreferredSize(parseSize(size));
           }
           
           //tempPanel.setLayout(new /*GridLayout(0,2)*/FlowLayout());
           BoxLayout box = new BoxLayout(tempPanel, BoxLayout.Y_AXIS);
+          //layout management for internal panels
           tempPanel.setLayout(box);
           if(prevIndex == null)
-          {
+          { //add this group as a child of it's parent for later reconstruction.
             parentPanel.children.addElement(tempPanel);
           }
           else
-          {
+          { //if an item is repeated it has to be inserted next to the element
+            //that created it.
             parentPanel.children.insertElementAt(tempPanel, prevIndex.intValue()+1);
           }
           
           parentPanel.add(new JScrollPane(tempPanel));
+          //add the panel in a scroll pane in case it's too big.
         }
       }
       else if(tempElement.name.equals("textbox"))
       {//add a new text box
         final JTextFieldWrapper textfield = new JTextFieldWrapper();
         textfield.element = tempElement;
-        textfield.setPreferredSize(new Dimension(10, 20));
         final JLabel label = new JLabel(
                                  (String)tempElement.attributes.get("label"));
         Integer size = new Integer((String)tempElement.attributes.get("size"));
@@ -756,7 +798,6 @@ public class PackageWizard extends javax.swing.JFrame
                   
                   parentPanel.add(newLabel, insertindex + 1);
                   parentPanel.add(newtextfield, insertindex + 2);
-                  //parentPanel.add(labelAndText /*,insertindex + 1*/);
                   contentPane.repaint();
                 }
               }
@@ -777,19 +818,19 @@ public class PackageWizard extends javax.swing.JFrame
         {
           label.setForeground(Color.red);
         }
+        //set the user defined size of the text field
         textfield.setColumns(size.intValue());
         parentPanel.children.addElement(textfield);
         
         if(button != null)
-        {
+        { //if this item is repeatable add the button
           JPanel layoutpanel = new JPanel();
           button.add(label);
-          //layoutpanel.setLayout(new FlowLayout(FlowLayout.LEFT));
           layoutpanel.add(button);
           parentPanel.add(button);
         }
         else
-        {
+        { //add just the label if it is not repeatable
           parentPanel.add(label);
         }
         parentPanel.add(textfield);
@@ -842,8 +883,9 @@ public class PackageWizard extends javax.swing.JFrame
                   
                   int numcomponents = parentPanel.getComponentCount();
                   int insertindex = numcomponents;
+                  
                   for(int j=0; j<numcomponents; j++)
-                  {
+                  { //add the combo box in the correct position
                     Component nextcomp = parentPanel.getComponent(j);
                     if(nextcomp == combofield)
                     {
@@ -870,6 +912,7 @@ public class PackageWizard extends javax.swing.JFrame
           }
         }
         
+        //make this combobox a child of the parent frame
         parentPanel.children.addElement(combofield);
         
         if(required)
