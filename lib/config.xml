@@ -2,6 +2,7 @@
 <root>
 <plugin>edu.ucsb.nceas.morpho.query.QueryPlugin</plugin>
 <plugin>edu.ucsb.nceas.morpho.datapackage.DataPackagePlugin</plugin>
+<plugin>edu.ucsb.nceas.morpho.editor.EditorPlugin</plugin>
 <MetaCatServletURL>http://dev.nceas.ucsb.edu/jones/servlet/metacat</MetaCatServletURL>
 <local_dtd_directory>./lib/catalog</local_dtd_directory>
 <local_xml_directory>./XMLworkFolder</local_xml_directory>
