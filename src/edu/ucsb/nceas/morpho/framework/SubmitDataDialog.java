@@ -6,7 +6,7 @@
  *              National Center for Ecological Analysis and Synthesis
  *     Authors: Dan Higgins
  *
- *     Version: '$Id: SubmitDataDialog.java,v 1.5 2001-01-12 00:47:05 higgins Exp $'
+ *     Version: '$Id: SubmitDataDialog.java,v 1.6 2001-01-15 02:23:49 higgins Exp $'
  */
 
 package edu.ucsb.nceas.dtclient;
@@ -370,12 +370,12 @@ public class SubmitDataDialog extends javax.swing.JDialog implements ContentHand
         pack.append("<relation>\n");
         pack.append("<subject>"+"metacat://dev.nceas.ucsb.edu:8090/metacat?docid="+subj1+"</subject>\n");
         pack.append("<relationship>"+rel1+"</relationship>\n");
-        pack.append("<object>"+obj1+"</object>\n");
+        pack.append("<object>"+"metacatdata://dev.nceas.ucsb.edu:8090/metacat?docid="+obj1+"</object>\n");
         pack.append("</relation>\n");
         pack.append("<relation>\n");
         pack.append("<subject>"+"metacat://dev.nceas.ucsb.edu:8090/metacat?docid="+subj2+"</subject>\n");
         pack.append("<relationship>"+rel2+"</relationship>\n");
-        pack.append("<object>"+obj2+"</object>\n");
+        pack.append("<object>"+"metacatdata://dev.nceas.ucsb.edu:8090/metacat?docid="+obj2+"</object>\n");
         pack.append("</relation>\n");
         pack.append("</package>\n");
         
