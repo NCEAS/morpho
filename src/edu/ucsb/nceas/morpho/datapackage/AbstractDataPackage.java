@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-12-10 18:22:37 $'
- * '$Revision: 1.37 $'
+ *     '$Date: 2003-12-10 18:36:17 $'
+ * '$Revision: 1.38 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -456,7 +456,7 @@ public abstract class AbstractDataPackage extends MetadataObject
           "/xpathKeyMap/contextNode[@name='entity']/numRecords")).getNodeValue();
       NodeList eNodes = XPathAPI.selectNodeList(entity, entityNumRecordsXpath);
       if (eNodes==null) return "eNodes is null !";
-      Node child = eNodes.item(entNum).getFirstChild();
+      Node child = eNodes.item(0).getFirstChild();
       temp = child.getNodeValue();
     }
     catch (Exception w) {
@@ -481,7 +481,7 @@ public abstract class AbstractDataPackage extends MetadataObject
           "/xpathKeyMap/contextNode[@name='entity']/numRecords")).getNodeValue();
       NodeList eNodes = XPathAPI.selectNodeList(entity, entityNumRecordsXpath);
       if (eNodes==null) return;
-      Node child = eNodes.item(entNum).getFirstChild();
+      Node child = eNodes.item(0).getFirstChild();
       child.setNodeValue(numRecS);
     }
     catch (Exception w) {
@@ -505,7 +505,7 @@ public abstract class AbstractDataPackage extends MetadataObject
           "/xpathKeyMap/contextNode[@name='entity']/entityDescription")).getNodeValue();
       NodeList eNodes = XPathAPI.selectNodeList(entity, entityXpath);
       if (eNodes==null) return "eNodes is null !";
-      Node child = eNodes.item(entNum).getFirstChild();
+      Node child = eNodes.item(0).getFirstChild();
       temp = child.getNodeValue();
     }
     catch (Exception w) {
