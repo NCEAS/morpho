@@ -7,8 +7,8 @@
   *  For Details: http://www.nceas.ucsb.edu/
   *
   *   '$Author: sgarg $'
-  *     '$Date: 2003-12-22 22:06:39 $'
-  * '$Revision: 1.8 $'
+  *     '$Date: 2003-12-24 01:15:04 $'
+  * '$Revision: 1.9 $'
   *
   * This program is free software; you can redistribute it and/or modify
   * it under the terms of the GNU General Public License as published by
@@ -228,16 +228,16 @@
   <xsl:param name="borderStyle" select="'bordered'"/>
 
 <!-- the style for the even col in attributes table -->
-  <xsl:param name="colevenStyle" select="'coleven'"/>
+  <xsl:param name="colevenStyle" select="'roweven'"/>
 
 <!-- the style for the inner even col in attributes table -->
-  <xsl:param name="innercolevenStyle" select="'innercoleven'"/>
+  <xsl:param name="innercolevenStyle" select="'roweven'"/>
 
 <!-- the style for the odd col in attributes table -->
-  <xsl:param name="coloddStyle" select="'colodd'"/>
+  <xsl:param name="coloddStyle" select="'rowodd'"/>
 
 <!-- the style for the inner odd col in attributes table -->
-  <xsl:param name="innercoloddStyle" select="'innercolodd'"/>
+  <xsl:param name="innercoloddStyle" select="'rowodd'"/>
 
 
 <!-- the default alignment style for the wrapper around the main tables -->
