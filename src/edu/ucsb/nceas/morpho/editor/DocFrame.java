@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-05-29 23:35:18 $'
- * '$Revision: 1.8 $'
+ *     '$Date: 2001-05-30 22:06:27 $'
+ * '$Revision: 1.9 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -519,6 +519,7 @@ void reload_actionPerformed(java.awt.event.ActionEvent event)
 void treeUnion(DefaultMutableTreeNode input, DefaultMutableTreeNode template) {
   DefaultMutableTreeNode tNode;
   DefaultMutableTreeNode nd2;
+  DefaultMutableTreeNode pqw;
   DefaultMutableTreeNode qw = null;
   // first check to see if root nodes have same names
   if (!compareNodes(input, template)) {
@@ -574,7 +575,7 @@ void treeUnion(DefaultMutableTreeNode input, DefaultMutableTreeNode template) {
               newnode = deepNodeCopy(tNode);
  //             newnode = (DefaultMutableTreeNode)tNode.clone();
               ind.insert(newnode,index);
-              nextLevelInputNodes.addElement(newnode);
+//              nextLevelInputNodes.addElement(newnode);
             }
             
           if (((NodeInfo)tNode.getUserObject()).getName().equals("(CHOICE)")) {
@@ -587,22 +588,31 @@ void treeUnion(DefaultMutableTreeNode input, DefaultMutableTreeNode template) {
               Enumeration ww = newnode.children();
               while (ww.hasMoreElements()) {
                 qw = (DefaultMutableTreeNode)ww.nextElement();
-                if (compareNodes(nd1,qw)) {
+                if (simpleCompareNodes(nd1,qw)) {
                   indx1 = newnode.getIndex(qw);
                   newnode.remove(qw);
                 }
               }
-              Vector choice_hits = getMatches(nd1, nextLevelInputNodes);
+              Vector choice_hits = simpleGetMatches(nd1, nextLevelInputNodes);
               Enumeration qq = choice_hits.elements();
               while (qq.hasMoreElements()) {
                 nd2 = (DefaultMutableTreeNode)qq.nextElement();
                 newnode.insert(nd2, indx1);
-                nextLevelInputNodes.addElement(nd2);
               }
             }
           }
             
         }
+     // recalculate nextLevelInput  
+      nextLevelInputNodes = new Vector();
+      for (Enumeration enumrecalc = currentLevelInputNodes.elements();enumrecalc.hasMoreElements();) {
+        DefaultMutableTreeNode ndrecalc = (DefaultMutableTreeNode)enumrecalc.nextElement();
+        for (Enumeration qqrecalc = ndrecalc.children();qqrecalc.hasMoreElements();) {
+          DefaultMutableTreeNode nd1recalc = (DefaultMutableTreeNode)qqrecalc.nextElement();
+          nextLevelInputNodes.addElement(nd1recalc);
+        }
+      }
+
       }
       currentLevelInputNodes = nextLevelInputNodes;
       currentLevelTemplateNodes = nextLevelTemplateNodes;
@@ -626,9 +636,31 @@ Vector getMatches(DefaultMutableTreeNode match, Vector vec) {
   return matches;
 }
 
+Vector simpleGetMatches(DefaultMutableTreeNode match, Vector vec) {
+  Vector matches = new Vector();
+  Enumeration enum = vec.elements();
+  while (enum.hasMoreElements()) {
+    DefaultMutableTreeNode tn = (DefaultMutableTreeNode)enum.nextElement();
+    if ( simpleCompareNodes(tn,match)) {
+      matches.addElement(tn);  
+    }
+  }
+  return matches;
+}
 
 	 
 boolean compareNodes(DefaultMutableTreeNode node1, DefaultMutableTreeNode node2) {
+  boolean ret = false;
+  String node1Str = pathToString(node1);
+  String node2Str = pathToString(node2);
+  if (node1Str.equals(node2Str)) ret = true;
+//  NodeInfo node1ni = (NodeInfo)node1.getUserObject();
+//  NodeInfo node2ni =  (NodeInfo)node2.getUserObject();
+//  if (node1ni.getName().equals(node2ni.getName())) ret = true;
+  return ret;
+}
+
+boolean simpleCompareNodes(DefaultMutableTreeNode node1, DefaultMutableTreeNode node2) {
   boolean ret = false;
   NodeInfo node1ni = (NodeInfo)node1.getUserObject();
   NodeInfo node2ni =  (NodeInfo)node2.getUserObject();
@@ -636,6 +668,16 @@ boolean compareNodes(DefaultMutableTreeNode node1, DefaultMutableTreeNode node2)
   return ret;
 }
 
+
+String pathToString(DefaultMutableTreeNode node) {
+  StringBuffer sb = new StringBuffer();
+  TreeNode[] tset = node.getPath();
+  for (int i=0;i<tset.length;i++) {
+    String temp = ((NodeInfo)((DefaultMutableTreeNode)tset[i]).getUserObject()).getName();
+    sb.append(temp+"/");
+  }
+  return sb.toString();
+}
 
 void mergeNodes(DefaultMutableTreeNode input, DefaultMutableTreeNode template) {
   if (compareNodes(input,template)) {
