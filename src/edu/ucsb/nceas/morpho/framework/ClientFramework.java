@@ -6,7 +6,7 @@
  *              National Center for Ecological Analysis and Synthesis
  *     Authors: Dan Higgins
  *
- *     Version: '$Id: ClientFramework.java,v 1.29 2000-12-27 22:59:10 higgins Exp $'
+ *     Version: '$Id: ClientFramework.java,v 1.30 2001-02-02 23:17:55 higgins Exp $'
  */
 
 package edu.ucsb.nceas.dtclient;
@@ -216,6 +216,7 @@ public class ClientFramework extends javax.swing.JFrame
 		LocalSearchCheckBox.setBounds(647,11,87,21);
 		CatalogSearchCheckBox.setToolTipText("When selected, catalog on remote server is searched during queries");
 		CatalogSearchCheckBox.setText("Catalog Search");
+		CatalogSearchCheckBox.setSelected(true);
 		CatalogSearchCheckBox.setActionCommand("Catalog Search");
 		JToolBar1.add(CatalogSearchCheckBox);
 		CatalogSearchCheckBox.setFont(new Font("Dialog", Font.PLAIN, 10));
@@ -541,6 +542,19 @@ JTabbedPane1.setSelectedComponent(EditorPanel);
 		    */
             SplashFrame sf = new SplashFrame(true);
             sf.setVisible(true);
+         Date expiration = new Date(101,5,1);
+         Date warning = new Date(101,4,1);
+         Date now = new Date();
+         if (now.after(expiration)) {
+             System.out.println("This beta version of Morpho has expired! See http://knb.ecoinformatics.org/ for a newer version.");
+             JOptionPane.showMessageDialog(null,"This beta version of Morpho has expired! See http://knb.ecoinformatics.org/ for a newer version.");
+             System.exit(1);
+         }
+         else {
+            if (now.after(warning)) {
+                System.out.println("This beta version of Morpho will expire on May 1, 2001. See http://knb.ecoinformatics.org/ for a newer version.");
+                JOptionPane.showMessageDialog(null,"This beta version of Morpho will expire on May 1, 2001. See http://knb.ecoinformatics.org/ for a newer version.");   
+            }
 			//Create a new instance of our application's frame, and make it visible.
 			ClientFramework clf = new ClientFramework();
 			clf.setVisible(true);
@@ -562,6 +576,7 @@ JTabbedPane1.setSelectedComponent(EditorPanel);
             System.setErr(errPrintStream);
             System.setOut(errPrintStream);
             }
+         }
  
 		} 
 		catch (Throwable t) {
