@@ -46,12 +46,12 @@ date with a time, or a geologic age.">
       offsets. Times may be expressed in two ways: 
       1) UTC (Coordinated Universal Time, also known as 
       Greenwich Mean Time, or GMT), with a special UTC 
-      designator ("Z"), 2) local time, together with a time zone
+      designator (&quot;Z&quot;), 2) local time, together with a time zone
       offset in hours and minutes. A time zone offset of 
-      "+hh:mm" indicates that the date/time uses a local time 
-      zone which is "hh" hours and "mm" minutes ahead of UTC. A
-      time zone offset of "-hh:mm" indicates that the date/time
-      uses a local time zone which is "hh" hours and "mm" 
+      &quot;+hh:mm&quot; indicates that the date/time uses a local time 
+      zone which is &quot;hh&quot; hours and &quot;mm&quot; minutes ahead of UTC. A
+      time zone offset of &quot;-hh:mm&quot; indicates that the date/time
+      uses a local time zone which is &quot;hh&quot; hours and &quot;mm&quot; 
       minutes behind UTC.">
 
 </time>
@@ -135,12 +135,12 @@ date with a time, or a geologic age.">
       offsets. Times may be expressed in two ways: 
       1) UTC (Coordinated Universal Time, also known as 
       Greenwich Mean Time, or GMT), with a special UTC 
-      designator ("Z"), 2) local time, together with a time zone
+      designator (&quot;Z&quot;), 2) local time, together with a time zone
       offset in hours and minutes. A time zone offset of 
-      "+hh:mm" indicates that the date/time uses a local time 
-      zone which is "hh" hours and "mm" minutes ahead of UTC. A
-      time zone offset of "-hh:mm" indicates that the date/time
-      uses a local time zone which is "hh" hours and "mm" 
+      &quot;+hh:mm&quot; indicates that the date/time uses a local time 
+      zone which is &quot;hh&quot; hours and &quot;mm&quot; minutes ahead of UTC. A
+      time zone offset of &quot;-hh:mm&quot; indicates that the date/time
+      uses a local time zone which is &quot;hh&quot; hours and &quot;mm&quot; 
       minutes behind UTC.">
 
 </time>
@@ -223,12 +223,12 @@ alternative to the standard calendar dates provided by ISO 8601.">
           offsets. Times may be expressed in two ways: 
           1) UTC (Coordinated Universal Time, also known as 
           Greenwich Mean Time, or GMT), with a special UTC 
-          designator ("Z"), 2) local time, together with a time zone
+          designator (&quot;Z&quot;), 2) local time, together with a time zone
           offset in hours and minutes. A time zone offset of 
-          "+hh:mm" indicates that the date/time uses a local time 
-          zone which is "hh" hours and "mm" minutes ahead of UTC. A
-          time zone offset of "-hh:mm" indicates that the date/time
-          uses a local time zone which is "hh" hours and "mm" 
+          &quot;+hh:mm&quot; indicates that the date/time uses a local time 
+          zone which is &quot;hh&quot; hours and &quot;mm&quot; minutes ahead of UTC. A
+          time zone offset of &quot;-hh:mm&quot; indicates that the date/time
+          uses a local time zone which is &quot;hh&quot; hours and &quot;mm&quot; 
           minutes behind UTC.">
 </begtime>
 <enddate help="The end date field is used to express the last date 
@@ -250,12 +250,12 @@ alternative to the standard calendar dates provided by ISO 8601.">
           offsets. Times may be expressed in two ways: 
           1) UTC (Coordinated Universal Time, also known as 
           Greenwich Mean Time, or GMT), with a special UTC 
-          designator ("Z"), 2) local time, together with a time zone
+          designator (&quot;Z&quot;), 2) local time, together with a time zone
           offset in hours and minutes. A time zone offset of 
-          "+hh:mm" indicates that the date/time uses a local time 
-          zone which is "hh" hours and "mm" minutes ahead of UTC. A
-          time zone offset of "-hh:mm" indicates that the date/time
-          uses a local time zone which is "hh" hours and "mm" 
+          &quot;+hh:mm&quot; indicates that the date/time uses a local time 
+          zone which is &quot;hh&quot; hours and &quot;mm&quot; minutes ahead of UTC. A
+          time zone offset of &quot;-hh:mm&quot; indicates that the date/time
+          uses a local time zone which is &quot;hh&quot; hours and &quot;mm&quot; 
           minutes behind UTC.">
 </endtime>
 
