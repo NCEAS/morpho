@@ -6,9 +6,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2004-04-11 17:40:13 $'
- * '$Revision: 1.43 $'
+ *   '$Author: brooke $'
+ *     '$Date: 2004-04-14 00:28:29 $'
+ * '$Revision: 1.44 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -85,9 +85,6 @@ public class PartyPage extends AbstractUIPage {
   private static final Dimension PARTY_HALF_LABEL_DIMS = new Dimension(350, 20);
 
   private static final Dimension PARTY_FULL_LABEL_DIMS = new Dimension(700, 20);
-
-  // xpath for the this page
-//  private String rootXPath = "/eml:eml/dataset/creator[1]";
 
   private String backupXPath;
 
@@ -189,7 +186,7 @@ public class PartyPage extends AbstractUIPage {
   private String referencesNodeIDString;
 
   private boolean editingAllowed = true;
-  private boolean isCreatorOrContact = false;
+  private boolean rolePicklistShouldBeHidden = false;
   //
   private final String[] checkBoxArray
       = new String[] { "Do you want to edit the above information?" };
@@ -599,7 +596,7 @@ public class PartyPage extends AbstractUIPage {
             instance.setEditable(true);
             referencesNodeIDString = null;
             // (Dan Higgins - 4/9/04) not sure the previous line is needed,
-            // but the following one is to avoid reuse of the id in the copied party 
+            // but the following one is to avoid reuse of the id in the copied party
             referenceIdString = null;
             editingOriginalRef = false;
 
@@ -651,13 +648,19 @@ public class PartyPage extends AbstractUIPage {
 
       roleString = "Owner";
       backupXPath = "/creator";
-      isCreatorOrContact = true;
+      rolePicklistShouldBeHidden = true;
 
     } else if (role.equals(DataPackageWizardInterface.PARTY_CONTACT)) {
 
       roleString = "Contact";
       backupXPath = "/contact";
-      isCreatorOrContact = true;
+      rolePicklistShouldBeHidden = true;
+
+    } else if (role.equals(DataPackageWizardInterface.PARTY_CITATION_AUTHOR)) {
+
+      roleString = "Author";
+      backupXPath = "/creator";
+      rolePicklistShouldBeHidden = true;
 
     } else if (role.equals(DataPackageWizardInterface.PARTY_ASSOCIATED)) {
 
@@ -668,20 +671,15 @@ public class PartyPage extends AbstractUIPage {
 
       roleString = "Personnel";
       backupXPath = "/personnel";
-			
-    } else if (role.equals(DataPackageWizardInterface.PARTY_CITATION_AUTHOR)) {
-			
-			roleString = "Author";
-			backupXPath = "/creator";
-			isCreatorOrContact = true;
-		}
+    }
     //set display name for external refs dialog...
     referencesHandler.setDisplayName(roleString);
 
-    if (isCreatorOrContact) return;
+    if (rolePicklistShouldBeHidden) return;
 
     ////////////////////////////////////////////////////////////////////
-    // gets here only if role is *not* PARTY_CREATOR or PARTY_CONTACT...
+    // gets here only if role is *not* PARTY_CREATOR, CITATION_AUTHOR
+    // or PARTY_CONTACT...
     ////////////////////////////////////////////////////////////////////
     rolePanel.add(roleLabel);
     rolePickList = WidgetFactory.makePickList(ROLE_ARRAY, true, 0,
@@ -698,9 +696,6 @@ public class PartyPage extends AbstractUIPage {
    */
   public void setEditable(boolean editable) {
 
-    //if (rolePickList != null) {
-    //  rolePickList.setEditable(editable);
-    //}
     salutationField.setEditable(editable);
     firstNameField.setEditable(editable);
     lastNameField.setEditable(editable);
@@ -719,11 +714,6 @@ public class PartyPage extends AbstractUIPage {
 
     checkBoxPanel.setVisible(!editable && editingAllowed);
   }
-
-
-//  protected String getRootXPath() {
-//    return this.rootXPath;
-//  }
 
 
   /**
@@ -904,7 +894,7 @@ public class PartyPage extends AbstractUIPage {
 
     this.setEditable(!this.isReference());
     editingOriginalRef = false;
-    Log.debug(45, "PartyPage.onAdvanceAction() - isReference() = "+isReference());
+    Log.debug(45, "PartyPage.onLoadAction() - isReference() = "+isReference());
   }
 
 
@@ -1593,7 +1583,7 @@ public class PartyPage extends AbstractUIPage {
   private boolean addAndSetRole(String role) {
 
     if (rolePickList==null) return false;
-    if (isCreatorOrContact) return true;
+    if (rolePicklistShouldBeHidden) return true;
 
     //quick way to check if role string is already in list:
     //first select it...

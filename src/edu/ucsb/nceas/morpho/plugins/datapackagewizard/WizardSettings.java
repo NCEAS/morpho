@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: sambasiv $'
- *     '$Date: 2004-04-09 18:28:51 $'
- * '$Revision: 1.63 $'
+ *   '$Author: brooke $'
+ *     '$Date: 2004-04-14 00:28:29 $'
+ * '$Revision: 1.64 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -73,9 +73,9 @@ public class WizardSettings {
   private static String[] basicUnitTypes = {"length", "time", "mass", "charge", "temperature", "amount", "luminosity", "dimensionless", "angle"};
   private static Node udRootNode = null;
   private static String[] unitDictionaryUnitTypesArray = null;
-	private static String[] customUnitDictionaryUnitTypesArray = null;
+  private static String[] customUnitDictionaryUnitTypesArray = null;
   private static String[] unitDictionaryBasicUnitTypesArray = null;
-	private static String[] existingSIUnits = null;
+  private static String[] existingSIUnits = null;
 
   private static Node[] unitsNodeArray = null;
   private static final String UNITS_XPATH    = "/stmml:unitList/stmml:unit";
@@ -85,7 +85,7 @@ public class WizardSettings {
   private static List unitsList      = new ArrayList();
   private static List unitsRemainderList  = new ArrayList();
   private static Map  unitDictionaryUnitsCacheMap = new HashMap();
-	private static Map  customUnitDictionaryUnitsCacheMap = new HashMap();
+  private static Map  customUnitDictionaryUnitsCacheMap = new HashMap();
 
   private static Map  unitPreferenceMap = new HashMap();
 
@@ -96,7 +96,7 @@ public class WizardSettings {
     Thread initThread = new Thread() {
 
       public void run() {
-				customUnitDictionaryUnitTypesArray = new String[0];
+        customUnitDictionaryUnitTypesArray = new String[0];
         String[] temp = getUnitDictionaryOriginalUnitTypes();
         for (int i=0; i<temp.length; i++) {
           getUnitDictionaryUnitsOfType(temp[i]);
@@ -271,10 +271,15 @@ public class WizardSettings {
   +"   <dataset> "
   +"   <title> </title> "
   +"   <creator> </creator>"
+  +"   <coverage><taxonomicCoverage><taxonomicSystem><classificationSystem>"
+  +"                             <classificationSystemCitation><title> </title>"
+  +"            </classificationSystemCitation> </classificationSystem>"
+  +"            </taxonomicSystem> </taxonomicCoverage></coverage>"
   +"   <project><title> </title></project>"
   +"   </dataset> "
   +"</eml:eml>";
 
+//  /////
 
   /*
    * these values denote the location of the data:
@@ -378,25 +383,25 @@ public class WizardSettings {
     return UISettings.getUniqueID();
   }
 
-	/**
-   *  from the eml unit dictionary, gets all the units that are the SI units of some 
-	 *	unit tpye
+  /**
+   *  from the eml unit dictionary, gets all the units that are the SI units of some
+   *	unit tpye
    *
    *  @return String array containing the SI units in the unitdictionary
    */
   public static String[] getSIUnits() {
-		
-		if(existingSIUnits != null) return existingSIUnits;
-		String[] unitTypes = getUnitDictionaryUnitTypes();
-		existingSIUnits = new String[unitTypes.length];
-		for(int i = 0; i < unitTypes.length; i++) {
-			getUnitDictionaryUnitsOfType(unitTypes[i]);
-			existingSIUnits[i] = getPreferredType(unitTypes[i]);
-		}
-		Arrays.sort(existingSIUnits);
-		return existingSIUnits;
-	}
-	
+
+    if(existingSIUnits != null) return existingSIUnits;
+    String[] unitTypes = getUnitDictionaryUnitTypes();
+    existingSIUnits = new String[unitTypes.length];
+    for(int i = 0; i < unitTypes.length; i++) {
+      getUnitDictionaryUnitsOfType(unitTypes[i]);
+      existingSIUnits[i] = getPreferredType(unitTypes[i]);
+    }
+    Arrays.sort(existingSIUnits);
+    return existingSIUnits;
+  }
+
   /**
    *  from the eml unit dictionary, gets only the fundamental unitTypes
    *
@@ -423,23 +428,23 @@ public class WizardSettings {
     if (unitDictionaryUnitTypesArray==null) {
       unitDictionaryUnitTypesArray = getUnitTypesWithXPath(ALL_UNIT_TYPES_XPATH);
     }
-		String newArr[] = new String[unitDictionaryUnitTypesArray.length + customUnitDictionaryUnitTypesArray.length];
-		int i;
-		for(i = 0; i<unitDictionaryUnitTypesArray.length; i++)
-			newArr[i] = unitDictionaryUnitTypesArray[i];
-		for(int j = 0; j < customUnitDictionaryUnitTypesArray.length; j++)
-			newArr[i++] = customUnitDictionaryUnitTypesArray[j];
+    String newArr[] = new String[unitDictionaryUnitTypesArray.length + customUnitDictionaryUnitTypesArray.length];
+    int i;
+    for(i = 0; i<unitDictionaryUnitTypesArray.length; i++)
+      newArr[i] = unitDictionaryUnitTypesArray[i];
+    for(int j = 0; j < customUnitDictionaryUnitTypesArray.length; j++)
+      newArr[i++] = customUnitDictionaryUnitTypesArray[j];
     return newArr;
   }
-	
-	private static String[] getUnitDictionaryOriginalUnitTypes() {
+
+  private static String[] getUnitDictionaryOriginalUnitTypes() {
 
     if (unitDictionaryUnitTypesArray==null) {
       unitDictionaryUnitTypesArray = getUnitTypesWithXPath(ALL_UNIT_TYPES_XPATH);
     }
     return unitDictionaryUnitTypesArray;
   }
-	
+
   private static String[] getUnitTypesWithXPath(String unitXPath) {
 
     Reader reader = null;
@@ -560,12 +565,12 @@ public class WizardSettings {
               String parentSIVal2 = ((Attr)parentSIAttrNode2).getValue();
               unitPreferenceMap.put(unitType.toLowerCase(), parentSIVal2);
             } else {
-							Attr nameAttr = (Attr)attribNNMap.getNamedItem("name");
-							if(nameAttr != null) {
-								String val = nameAttr.getValue().trim();
-								if(val.length() > 0) unitPreferenceMap.put(unitType.toLowerCase(), val);
-							}
-						}
+              Attr nameAttr = (Attr)attribNNMap.getNamedItem("name");
+              if(nameAttr != null) {
+                String val = nameAttr.getValue().trim();
+                if(val.length() > 0) unitPreferenceMap.put(unitType.toLowerCase(), val);
+              }
+            }
 
           }
         } else {  //  add unit node to unitsRemainderList
@@ -596,15 +601,15 @@ public class WizardSettings {
 
               String parentSIVal = ((Attr)parentSIAttrNode).getValue();
               unitPreferenceMap.put(unitType.toLowerCase(), parentSIVal);
-							addAttributeNameToList(attribNNMap, unitsReturnList);
-						}
-					} else {
-						Attr nameAttr = (Attr)attribNNMap.getNamedItem("name");
-						if(nameAttr != null) {
-							String val = nameAttr.getValue().trim();
-							if(val.length() > 0) unitPreferenceMap.put(unitType.toLowerCase(), val);
-						}
-					}
+              addAttributeNameToList(attribNNMap, unitsReturnList);
+            }
+          } else {
+            Attr nameAttr = (Attr)attribNNMap.getNamedItem("name");
+            if(nameAttr != null) {
+              String val = nameAttr.getValue().trim();
+              if(val.length() > 0) unitPreferenceMap.put(unitType.toLowerCase(), val);
+            }
+          }
         }
       }
 
@@ -798,61 +803,61 @@ public class WizardSettings {
    *  setting the default unit type
    */
   public static String getPreferredType(String unitType) {
-		
-		if(unitType == null) return null;
+
+    if(unitType == null) return null;
     String res = (String)(unitPreferenceMap.get(unitType.toLowerCase()));
-		return res;
+    return res;
   }
-	
-	public static boolean isNewUnit(String type, String unit) {
-		
-		boolean newT = unitDictionaryUnitsCacheMap.containsKey(type);
-		if(newT) {
-			String[] units = (String[])unitDictionaryUnitsCacheMap.get(type);
-			if(Arrays.binarySearch(units, unit) >= 0) return false;
-			else return true;
-		} else {
-			String[] units = (String[])customUnitDictionaryUnitsCacheMap.get(type);
-			if(units == null) return true;
-			if(Arrays.binarySearch(units, unit) >= 0) return false;
-			else return true;
-		}
-	}
-	
-	public static void addNewUnit(String unitType, String unit, String SIUnit) {
-		
-		int idx = Arrays.binarySearch(unitDictionaryUnitTypesArray, unitType);
-		if(idx < 0) {
-			idx = Arrays.binarySearch(customUnitDictionaryUnitTypesArray, unitType);
-			if(idx < 0) {
-				String[] newArray = new String[customUnitDictionaryUnitTypesArray.length + 1];
-				insertObjectIntoArray(customUnitDictionaryUnitTypesArray, unitType, newArray);
-				customUnitDictionaryUnitTypesArray = newArray;
-				String units[] = new String[1];
-				units[0] = unit;
-				customUnitDictionaryUnitsCacheMap.put(unitType, units);
-				unitPreferenceMap.put(unitType.toLowerCase(), SIUnit);
-			} else {
-				String[] units = (String[]) customUnitDictionaryUnitsCacheMap.get(unitType);
-				int idx1 = Arrays.binarySearch(units, unit);
-				if(idx1 >= 0) return;
-				String[] newUnitArr = new String[units.length + 1];
-				insertObjectIntoArray(units, unit, newUnitArr);
-				customUnitDictionaryUnitsCacheMap.put(unitType, newUnitArr);
-			}
-			
-		} else {
-			
-			String[] units = (String[]) unitDictionaryUnitsCacheMap.get(unitType);
-			int idx1 = Arrays.binarySearch(units, unit);
-			if(idx1 >= 0) return;
-			String[] newUnitArr = new String[units.length + 1];
-			insertObjectIntoArray(units, unit, newUnitArr);
-			unitDictionaryUnitsCacheMap.put(unitType, newUnitArr);
-		}
-		
-	}
-	
+
+  public static boolean isNewUnit(String type, String unit) {
+
+    boolean newT = unitDictionaryUnitsCacheMap.containsKey(type);
+    if(newT) {
+      String[] units = (String[])unitDictionaryUnitsCacheMap.get(type);
+      if(Arrays.binarySearch(units, unit) >= 0) return false;
+      else return true;
+    } else {
+      String[] units = (String[])customUnitDictionaryUnitsCacheMap.get(type);
+      if(units == null) return true;
+      if(Arrays.binarySearch(units, unit) >= 0) return false;
+      else return true;
+    }
+  }
+
+  public static void addNewUnit(String unitType, String unit, String SIUnit) {
+
+    int idx = Arrays.binarySearch(unitDictionaryUnitTypesArray, unitType);
+    if(idx < 0) {
+      idx = Arrays.binarySearch(customUnitDictionaryUnitTypesArray, unitType);
+      if(idx < 0) {
+        String[] newArray = new String[customUnitDictionaryUnitTypesArray.length + 1];
+        insertObjectIntoArray(customUnitDictionaryUnitTypesArray, unitType, newArray);
+        customUnitDictionaryUnitTypesArray = newArray;
+        String units[] = new String[1];
+        units[0] = unit;
+        customUnitDictionaryUnitsCacheMap.put(unitType, units);
+        unitPreferenceMap.put(unitType.toLowerCase(), SIUnit);
+      } else {
+        String[] units = (String[]) customUnitDictionaryUnitsCacheMap.get(unitType);
+        int idx1 = Arrays.binarySearch(units, unit);
+        if(idx1 >= 0) return;
+        String[] newUnitArr = new String[units.length + 1];
+        insertObjectIntoArray(units, unit, newUnitArr);
+        customUnitDictionaryUnitsCacheMap.put(unitType, newUnitArr);
+      }
+
+    } else {
+
+      String[] units = (String[]) unitDictionaryUnitsCacheMap.get(unitType);
+      int idx1 = Arrays.binarySearch(units, unit);
+      if(idx1 >= 0) return;
+      String[] newUnitArr = new String[units.length + 1];
+      insertObjectIntoArray(units, unit, newUnitArr);
+      unitDictionaryUnitsCacheMap.put(unitType, newUnitArr);
+    }
+
+  }
+
   /**
    *  given an entityType, returns an <code>OrderedMap<code> whose keys contain
    *  the human-readable display names for all the allowable MIME types (for the

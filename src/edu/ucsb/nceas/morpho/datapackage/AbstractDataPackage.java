@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: sambasiv $'
- *     '$Date: 2004-04-13 01:00:58 $'
- * '$Revision: 1.94 $'
+ *   '$Author: brooke $'
+ *     '$Date: 2004-04-14 00:28:29 $'
+ * '$Revision: 1.95 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -816,6 +816,12 @@ public abstract class AbstractDataPackage extends MetadataObject
       try{
         NodeList insertionList = XMLUtilities.getNodeListWithXPath(getMetadataPath(),
             "/xpathKeyMap/insertionList[@name='"+genericName+"']/prevNode");
+        if (insertionList==null) {
+          Log.debug(15, "\n** Error in AbstractDataPackage insertSubtree():\n"
+                    +"XMLUtilities.getNodeListWithXPath() returned NULL "
+                    +"for xpath: /xpathKeyMap/insertionList[@name='"
+                    +genericName+"']/prevNode");
+        }
         for (int i=0;i<insertionList.getLength();i++) {
           Node nd = insertionList.item(i);
           String path = (nd.getFirstChild()).getNodeValue();
@@ -1594,17 +1600,17 @@ public abstract class AbstractDataPackage extends MetadataObject
     parent.removeChild(attrNode);
   }
 
-	public Node appendAdditionalMetadata(Node addtMetadata) {
+  public Node appendAdditionalMetadata(Node addtMetadata) {
     Document thisDom = getMetadataNode().getOwnerDocument();
-		Node rootNode = thisDom.getDocumentElement();
+    Node rootNode = thisDom.getDocumentElement();
     Node newMetadataNode = thisDom.importNode(addtMetadata, true); // 'true' imports children
-		if(rootNode == null) {
-			return null;
-		}
-		return rootNode.appendChild(newMetadataNode);
-		
-	}
-	
+    if(rootNode == null) {
+      return null;
+    }
+    return rootNode.appendChild(newMetadataNode);
+
+  }
+
   /**
    *  This method inserts an attribute at the indexed position
    *  in the indexed entity
