@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: jones $'
- *     '$Date: 2002-08-16 23:19:50 $'
- * '$Revision: 1.2 $'
+ *   '$Author: tao $'
+ *     '$Date: 2002-08-22 00:01:04 $'
+ * '$Revision: 1.3 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -54,7 +54,7 @@ public class UIController
 {
     private static UIController controller;
     private static Morpho morpho;
-
+    private static MorphoFrame currentActiveWindow;
     private static Hashtable windowList;
     private static Vector orderedMenuList;
     private static Hashtable orderedMenuActions;
@@ -134,6 +134,7 @@ public class UIController
         updateWindowMenus();
         window.addToolbarActions(toolbarList);
 
+        if (getCurrentActiveWindow()==null) setCurrentActiveWindow(window);
         return window;
     }
 
@@ -170,6 +171,9 @@ public class UIController
             Log.debug(20, "Window already removed from menu.");
         }
         
+        // If the window is the currentActiveWindow, change it
+        if (getCurrentActiveWindow()==window) setCurrentActiveWindow(null);
+
         // Remove the window from the windowList
         try {
             windowList.remove(currentAction);
@@ -291,11 +295,37 @@ public class UIController
     public void refreshWindows()
     {
         Enumeration windows = windowList.elements();
+        MorphoFrame tempFrame = null;
         while (windows.hasMoreElements()) {
-            ((Container)windows.nextElement()).validate();
+            tempFrame = (MorphoFrame)windows.nextElement();
+            tempFrame.validate();
+            if (tempFrame.equals(getCurrentActiveWindow())) {
+                tempFrame.setEnabled(true);
+            } else {
+                tempFrame.setEnabled(false);
+            }
         }
     }
 
+    /**
+     * set currently active window
+     *
+     *  @param window the currently active MorphoFrame window
+     */
+    public void setCurrentActiveWindow(MorphoFrame window)
+    {
+        currentActiveWindow = window;
+    }
+    
+    /**
+     * get currently active window
+     *
+     *  @return  the currently active MorphoFrame window
+     */
+    public MorphoFrame getCurrentActiveWindow()
+    {
+        return currentActiveWindow;
+    }
     /**
      * Update the menu bar by rebuilding it when a new menu is added
      * to the list.
