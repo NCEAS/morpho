@@ -14,4 +14,5 @@ public abstract class AbstractQueryBean extends Container
 	public void setSearchLocal(boolean sl) {}
 	public void setSearchNetwork(boolean sn) {}
 	public void setExpertMode(boolean ex) {}
+	public void getOwnerDocs(String user) {}
 }

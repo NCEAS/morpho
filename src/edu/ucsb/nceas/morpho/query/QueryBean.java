@@ -5,7 +5,7 @@
  *              National Center for Ecological Analysis and Synthesis
  *     Authors: Dan Higgins
  *
- *     Version: '$Id: QueryBean.java,v 1.37 2001-01-09 00:32:09 higgins Exp $'
+ *     Version: '$Id: QueryBean.java,v 1.38 2001-01-19 23:19:47 higgins Exp $'
  */
 
 package edu.ucsb.nceas.querybean;
@@ -999,16 +999,20 @@ public class QueryBean extends AbstractQueryBean
     void TestSearch_actionPerformed(java.awt.event.ActionEvent event)
     {
         System.out.println("Current user: "+userName);
+        getOwnerDocs(userName);
+    }
+
+public void getOwnerDocs(String name) {
         String searchtext = "<?xml version=\"1.0\"?>\n";
         searchtext = searchtext + "<pathquery version=\"1.0\">\n";
-        searchtext = searchtext + "<owner>"+userName+"</owner>\n";
+        searchtext = searchtext + "<owner>"+name+"</owner>\n";
         searchtext = searchtext + "<querygroup operator=\"UNION\">\n";
         searchtext = searchtext + "<queryterm casesensitive=\"true\" searchmode=\"contains\">\n";
         searchtext = searchtext + "<value>%</value>\n";
         searchtext = searchtext + "</queryterm></querygroup></pathquery>";
 	    squery_submitToDatabase_all(searchtext);
-        
-    }
+}
+
 
 	void ShowMenuItem_actionPerformed(java.awt.event.ActionEvent event)
 	{
