@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2003-12-22 20:55:08 $'
- * '$Revision: 1.84 $'
+ *   '$Author: sgarg $'
+ *     '$Date: 2003-12-23 20:49:27 $'
+ * '$Revision: 1.85 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -342,7 +342,7 @@ public class DataViewContainerPanel extends javax.swing.JPanel
       netLabel.setText("");
       netLabel.setIcon(blankIcon);
     }
-    else if (location.equals(DataPackageInterface.BOTH)){ 
+    else if (location.equals(DataPackageInterface.BOTH)){
 
     }
     else {  // not yet saved anywhere
@@ -799,7 +799,7 @@ public class DataViewContainerPanel extends javax.swing.JPanel
                 // now try metacat
                 try{
                   MetacatDataStore mds = new MetacatDataStore(morpho);
-                  displayFile = mds.openFile(urlinfo);                  
+                  displayFile = mds.openFile(urlinfo);
                 }
                 catch (Exception q3) {
                   // give up!
@@ -826,7 +826,7 @@ public class DataViewContainerPanel extends javax.swing.JPanel
       dv.setEntityIndex(index);
 
       dv.setDataFile(displayFile);
-    
+
       dv.init();
       lastPV = dv.getPV();
       JPanel tablePanel = null;
@@ -914,7 +914,6 @@ public class DataViewContainerPanel extends javax.swing.JPanel
 //    String id = (String)listValueHash.get(item);
     String id = getEntityIDForThisEntityName(item);
     String identifier = meta.getIdentifier();
-    Log.debug(10, ""+lastTabSelected + " " + selectedColIndex);
     try
     {
       meta.useTransformerProperty(XMLTransformer.SELECTED_DISPLAY_XSLPROP,
@@ -1110,7 +1109,7 @@ public class DataViewContainerPanel extends javax.swing.JPanel
       dataPackageInt.openNewDataPackage(newadp, null);
       uicontroller.removeWindow(morphoFrame);
       morphoFrame.dispose();
-      
+
     } catch (Exception e) {
         Log.debug(5, "Exception in converting edited XML to DOM!");
     }
