@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: jones $'
- *     '$Date: 2002-08-29 23:41:31 $'
- * '$Revision: 1.1 $'
+ *   '$Author: brooke $'
+ *     '$Date: 2002-09-28 00:26:50 $'
+ * '$Revision: 1.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -93,7 +93,7 @@ public class StateChangeMonitorTest extends TestCase
    */
   public void testListener()
   {
-        StateChangeEvent event = new StateChangeEvent(this, state); 
+        StateChangeEvent event = new StateChangeEvent(null, state); 
         assertTrue(event != null);
 
         ListenerAdapter listener = new ListenerAdapter();
@@ -110,7 +110,7 @@ public class StateChangeMonitorTest extends TestCase
         assertTrue(listener.lastSource == this);
 
         // Post an event for which we are not listening
-        StateChangeEvent event2 = new StateChangeEvent(this, state2); 
+        StateChangeEvent event2 = new StateChangeEvent(null, state2); 
         assertTrue(event2 != null);
 
         monitor.notifyStateChange(event2);

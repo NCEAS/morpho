@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2002-09-27 23:08:03 $'
- * '$Revision: 1.93 $'
+ *     '$Date: 2002-09-28 00:26:49 $'
+ * '$Revision: 1.94 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -136,9 +136,9 @@ public class QueryPlugin implements PluginInterface, ConnectionListener,
     refreshItemAction.setEnabledOnStateChange(
                             StateChangeEvent.CREATE_SEARCH_RESULT_FRAME, 
                             true, GUIAction.EVENT_LOCAL);
-    refreshItemAction.setEnabledOnStateChange(
-                            StateChangeEvent.CREATE_ENTITY_DATAPACKAGE_FRAME, 
-                            false, GUIAction.EVENT_LOCAL);
+//    refreshItemAction.setEnabledOnStateChange(
+//                            StateChangeEvent.CREATE_ENTITY_DATAPACKAGE_FRAME, 
+//                            false, GUIAction.EVENT_LOCAL);
     refreshItemAction.setEnabledOnStateChange(
                             StateChangeEvent.CREATE_NOENTITY_DATAPACKAGE_FRAME, 
                             false, GUIAction.EVENT_LOCAL);
@@ -159,9 +159,9 @@ public class QueryPlugin implements PluginInterface, ConnectionListener,
     saveQueryItemAction.setEnabledOnStateChange(
                             StateChangeEvent.CREATE_SEARCH_RESULT_FRAME, 
                             true, GUIAction.EVENT_LOCAL);
-    saveQueryItemAction.setEnabledOnStateChange(
-                            StateChangeEvent.CREATE_ENTITY_DATAPACKAGE_FRAME, 
-                            false, GUIAction.EVENT_LOCAL);
+//    saveQueryItemAction.setEnabledOnStateChange(
+//                            StateChangeEvent.CREATE_ENTITY_DATAPACKAGE_FRAME, 
+//                            false, GUIAction.EVENT_LOCAL);
     saveQueryItemAction.setEnabledOnStateChange(
                             StateChangeEvent.CREATE_NOENTITY_DATAPACKAGE_FRAME, 
                             false, GUIAction.EVENT_LOCAL);
@@ -181,9 +181,9 @@ public class QueryPlugin implements PluginInterface, ConnectionListener,
     reviseSearchItemAction.setEnabledOnStateChange(
                             StateChangeEvent.CREATE_SEARCH_RESULT_FRAME, 
                             true, GUIAction.EVENT_LOCAL);
-    reviseSearchItemAction.setEnabledOnStateChange(
-                            StateChangeEvent.CREATE_ENTITY_DATAPACKAGE_FRAME, 
-                            false, GUIAction.EVENT_LOCAL);
+//    reviseSearchItemAction.setEnabledOnStateChange(
+//                            StateChangeEvent.CREATE_ENTITY_DATAPACKAGE_FRAME, 
+//                            false, GUIAction.EVENT_LOCAL);
     reviseSearchItemAction.setEnabledOnStateChange(
                             StateChangeEvent.CREATE_NOENTITY_DATAPACKAGE_FRAME, 
                             false, GUIAction.EVENT_LOCAL);
