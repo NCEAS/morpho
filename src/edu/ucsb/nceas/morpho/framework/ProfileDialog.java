@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: jones $'
- *     '$Date: 2001-10-24 07:22:54 $'
- * '$Revision: 1.15 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2001-10-29 23:33:23 $'
+ * '$Revision: 1.16 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -569,7 +569,8 @@ public class ProfileDialog extends JDialog
           tokens.put("SCOPE", profileName);
           String samplePath = config.get("samples_directory", 0);
           File sampleDir = new File(samplePath);
-          File[] samplesList = sampleDir.listFiles();
+//DFH          File[] samplesList = sampleDir.listFiles();
+          File[] samplesList = listFiles(sampleDir);
           for (int n=0; n < samplesList.length; n++) {
             File srcFile = samplesList[n];
             if (srcFile.isFile()) {
@@ -610,4 +611,17 @@ public class ProfileDialog extends JDialog
       JOptionPane.showMessageDialog(this, messageText);      
     }
   }
+  
+  private File[] listFiles(File dir) {
+    String[] fileStrings = dir.list();
+    int len = fileStrings.length;
+    File[] list = new File[len];
+    for (int i=0; i<len; i++) {
+        list[i] = new File(dir, fileStrings[i]);    
+    }
+    return list;
+  }
+  
+  
+  
 }

@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: berkley $'
- *     '$Date: 2001-10-22 20:31:22 $'
- * '$Revision: 1.26 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2001-10-29 23:33:23 $'
+ * '$Revision: 1.27 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -85,14 +85,17 @@ public class MetacatDataStore extends DataStore implements DataStoreInterface
       
       framework.debug(11,"MetacatDataStore: getting file from Metacat");
       Properties props = new Properties();
-      props.setProperty("action", "read");
-      props.setProperty("docid", name);
-      props.setProperty("qformat", "xml");
+//      props.setProperty("action", "read");
+//      props.setProperty("docid", name);
+//      props.setProperty("qformat", "xml");
+      props.put("action", "read");
+      props.put("docid", name);
+      props.put("qformat", "xml");
       
       try
       {
         localdir.mkdirs(); //create any directories
-        localfile.createNewFile(); //create the file
+//DFH        localfile.createNewFile(); //create the file
       }
       catch(Exception ee)
       {
@@ -255,7 +258,7 @@ public class MetacatDataStore extends DataStore implements DataStoreInterface
       //save a temp file so that the id can be put in the file.
       StringWriter sw = new StringWriter();
       File tempfile = new File(tempdir + "/metacat.noid");
-      tempfile.createNewFile();
+//DFH      tempfile.createNewFile();
       FileWriter fw = new FileWriter(tempfile);
       int c = file.read();
       while(c != -1)

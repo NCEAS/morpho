@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: jones $'
- *     '$Date: 2001-10-23 23:10:09 $'
- * '$Revision: 1.79 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2001-10-29 23:33:23 $'
+ * '$Revision: 1.80 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -71,7 +71,8 @@ public class ClientFramework extends javax.swing.JFrame
   private ConfigXML profile;
   private boolean connected = false;
   private Hashtable menuList = null;
-  private TreeMap menuOrder = null;
+ //DFH private TreeMap menuOrder = null;
+  private Hashtable menuOrder = null;
   private Action[] fileMenuActions = null;
   private Action[] editMenuActions = null;
   private Action[] helpMenuActions = null;
@@ -117,7 +118,8 @@ public class ClientFramework extends javax.swing.JFrame
 
     // Create the list of menus for use by the framework and plugins
     menuList = new Hashtable();
-    menuOrder = new TreeMap();
+//DFH    menuOrder = new TreeMap();
+    menuOrder = new Hashtable();
 
     // Create the hash for services
     servicesRegistry = new Hashtable();
@@ -186,10 +188,18 @@ public class ClientFramework extends javax.swing.JFrame
 
       // After all plugins have a chance to add their menus, create the
       // menu bar so that the menus are created in the right order
-      Set menusInOrder = menuOrder.entrySet();
-      Iterator it = menusInOrder.iterator();
-      while (it.hasNext()) {
-        JMenu currentMenu = (JMenu)((Map.Entry)it.next()).getValue();
+   //-----------------------------------------   
+//DFH      Set menusInOrder = menuOrder.entrySet();
+//DFH      Iterator it = menusInOrder.iterator();
+//DFH      while (it.hasNext()) {
+//DFH        JMenu currentMenu = (JMenu)((Map.Entry)it.next()).getValue();
+//DFH        morphoMenuBar.add(currentMenu);
+//DFH      }
+   //-----------------------------------------   
+      Vector sortedmenus = sortValues(menuOrder);
+      Enumeration qqq = sortedmenus.elements();
+      while (qqq.hasMoreElements()) {
+        JMenu currentMenu = (JMenu)qqq.nextElement();
         morphoMenuBar.add(currentMenu);
       }
       
@@ -283,8 +293,8 @@ public class ClientFramework extends javax.swing.JFrame
             currentMenu.insertSeparator(menuPos++);
           }
           currentItem = currentMenu.insert(currentAction, menuPos);
-          currentItem.setAccelerator(
-                   (KeyStroke)currentAction.getValue(Action.ACCELERATOR_KEY));
+//DFH          currentItem.setAccelerator(
+//DFH                   (KeyStroke)currentAction.getValue(Action.ACCELERATOR_KEY));
           if (hasDefaultSep != null &&
             hasDefaultSep.equals(SEPARATOR_FOLLOWING)) {
             menuPos++;
@@ -297,8 +307,8 @@ public class ClientFramework extends javax.swing.JFrame
             currentMenu.addSeparator();
           }
           currentItem = currentMenu.add(currentAction);
-          currentItem.setAccelerator(
-                   (KeyStroke)currentAction.getValue(Action.ACCELERATOR_KEY));
+//DFH          currentItem.setAccelerator(
+//DFH                   (KeyStroke)currentAction.getValue(Action.ACCELERATOR_KEY));
           if (hasDefaultSep != null &&
             hasDefaultSep.equals(SEPARATOR_FOLLOWING)) {
             currentMenu.addSeparator();
@@ -356,7 +366,8 @@ public class ClientFramework extends javax.swing.JFrame
   public void addWindow(JFrame window)
   {
     String windowName = window.getName();
-    if (!windowsRegistry.containsValue(window)) {
+//DFH    if (!windowsRegistry.containsValue(window)) {
+    if (!windowsRegistry.contains(window)) {
       debug(20, "Adding window: " + windowName);
       Action windowAction = new AbstractAction(windowName) {
         public void actionPerformed(ActionEvent e) {
@@ -481,8 +492,8 @@ public class ClientFramework extends javax.swing.JFrame
         exitApplication();
       }
     };
-    exitItemAction.putValue(Action.ACCELERATOR_KEY, 
-                            KeyStroke.getKeyStroke("control Q"));
+//DFH    exitItemAction.putValue(Action.ACCELERATOR_KEY, 
+//DFH                            KeyStroke.getKeyStroke("control Q"));
     exitItemAction.putValue(Action.SHORT_DESCRIPTION, "Exit Morpho");
     exitItemAction.putValue(Action.DEFAULT, SEPARATOR_PRECEDING);
     exitItemAction.putValue("menuPosition", new Integer(-1));
@@ -525,8 +536,8 @@ public class ClientFramework extends javax.swing.JFrame
         debug(9, "Cut is not yet implemented.");
       }
     };
-    cutItemAction.putValue(Action.ACCELERATOR_KEY, 
-                            KeyStroke.getKeyStroke("control X"));
+//DFH    cutItemAction.putValue(Action.ACCELERATOR_KEY, 
+//DFH                            KeyStroke.getKeyStroke("control X"));
     cutItemAction.putValue(Action.SHORT_DESCRIPTION, 
                   "Cut the selection and put it on the Clipboard");
     cutItemAction.putValue(Action.SMALL_ICON, 
@@ -541,8 +552,8 @@ public class ClientFramework extends javax.swing.JFrame
         debug(9, "Copy is not yet implemented.");
       }
     };
-    copyItemAction.putValue(Action.ACCELERATOR_KEY, 
-                            KeyStroke.getKeyStroke("control C"));
+//DFH    copyItemAction.putValue(Action.ACCELERATOR_KEY, 
+//DFH                            KeyStroke.getKeyStroke("control C"));
     copyItemAction.putValue(Action.SHORT_DESCRIPTION, 
                   "Copy the selection and put it on the Clipboard");
     copyItemAction.putValue(Action.SMALL_ICON, 
@@ -557,8 +568,8 @@ public class ClientFramework extends javax.swing.JFrame
         debug(9, "Paste is not yet implemented.");
       }
     };
-    pasteItemAction.putValue(Action.ACCELERATOR_KEY, 
-                            KeyStroke.getKeyStroke("control P"));
+//DFH    pasteItemAction.putValue(Action.ACCELERATOR_KEY, 
+//DFH                            KeyStroke.getKeyStroke("control P"));
     pasteItemAction.putValue(Action.SHORT_DESCRIPTION, 
                   "Paste the selection.");
     pasteItemAction.putValue(Action.SMALL_ICON, 
@@ -1169,7 +1180,7 @@ public class ClientFramework extends javax.swing.JFrame
   {
     if (!connectionRegistry.contains(listener)) {
       debug(20, "Adding listener: " + listener.toString());
-      connectionRegistry.add(listener);
+      connectionRegistry.addElement(listener);
     }
   }
 
@@ -1181,7 +1192,7 @@ public class ClientFramework extends javax.swing.JFrame
   {
     for (int i=0; i < connectionRegistry.size(); i++) {
       ConnectionListener listener = 
-                         (ConnectionListener)connectionRegistry.get(i);
+                         (ConnectionListener)connectionRegistry.elementAt(i);
       if (listener != null) {
         listener.connectionChanged(isConnected());
       }
@@ -1196,7 +1207,7 @@ public class ClientFramework extends javax.swing.JFrame
   {
     for (int i=0; i < connectionRegistry.size(); i++) {
       ConnectionListener listener = 
-                         (ConnectionListener)connectionRegistry.get(i);
+                         (ConnectionListener)connectionRegistry.elementAt(i);
       if (listener != null) {
         listener.usernameChanged(getUserName());
       }
@@ -1295,9 +1306,9 @@ public class ClientFramework extends javax.swing.JFrame
         try {
           Vector synonyms = itis.getSynonymTsnList(newTsn);
           for (int i=0; i < synonyms.size(); i++) {
-            long synonymTsn = ((Long)synonyms.get(i)).longValue();
+            long synonymTsn = ((Long)synonyms.elementAt(i)).longValue();
             Taxon synonymTaxon = itis.getTaxon(synonymTsn);
-            synonymList.add(synonymTaxon.getScientificName());
+            synonymList.addElement(synonymTaxon.getScientificName());
           }
         } catch (ItisException ie) {
           ClientFramework.debug(20, "Problem with ITIS lookup for: " + taxonName);
@@ -1541,5 +1552,25 @@ public class ClientFramework extends javax.swing.JFrame
       }
     }
   }
+ 
+// takes a hashtable where the key is an Integer and returns a Vector of hashtable values sorted by 
+// key values
+// this is a quick hack!!! DFH
+ private Vector sortValues(Hashtable hash) {
+    // assume that there are no more that 20 values in the hash
+    // and return only the first 20 (i.e. 0 - 19
+    Vector sorted = new Vector();
+    for (int i=0;i<20;i++) {
+        Integer iii = new Integer(i);
+        Enumeration www = hash.keys();
+        while (www.hasMoreElements()) {
+            Object thiskey = www.nextElement();
+            if (iii.equals(thiskey))  {
+                sorted.addElement(hash.get(thiskey));  
+            }
+        }
+    }
+ return sorted;   
+ }
   
 }
