@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: sgarg $'
- *     '$Date: 2004-03-18 02:43:49 $'
- * '$Revision: 1.13 $'
+ *   '$Author: brooke $'
+ *     '$Date: 2004-03-19 00:39:35 $'
+ * '$Revision: 1.14 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -39,6 +39,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import java.util.Iterator;
 
 
 
@@ -51,6 +52,9 @@ public class UsageRights extends AbstractUIPage{
   private final String pageNumber = "9";
   private final String title      = "Usage Rights";
   private final String subtitle   = "";
+
+  private final String USAGE_ROOT        = "intellectualRights[1]/";
+  private final String PARA_REL_XPATH     = USAGE_ROOT + "para[1]";
 
   // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
@@ -208,5 +212,47 @@ public class UsageRights extends AbstractUIPage{
    */
   public String getPageNumber() { return pageNumber; }
 
-  public void setPageData(OrderedMap data) { }
+
+
+
+  private OrderedMap hiddenFieldsMap = new OrderedMap();
+
+  public void setPageData(OrderedMap data) {
+
+    if (data == null || data.isEmpty())return;
+
+    hiddenFieldsMap.clear();
+
+    Iterator it = data.keySet().iterator();
+    Object nextXPathObj = null;
+    String nextXPath = null;
+    Object nextValObj = null;
+    String nextVal = null;
+
+    while (it.hasNext()) {
+
+      nextXPathObj = it.next();
+      if (nextXPathObj == null)continue;
+      nextXPath = (String)nextXPathObj;
+
+      nextValObj = data.get(nextXPathObj);
+      nextVal = (nextValObj == null) ? "" : ((String)nextValObj).trim();
+
+      // remove everything up to and including the last occurrence of
+      // USAGE_ROOT to get relative xpaths, in case we're handling a
+      // project elsewhere in the tree...
+      nextVal = nextVal.substring(nextVal.lastIndexOf(USAGE_ROOT)
+                                  + USAGE_ROOT.length());
+
+      if (nextXPath.equalsIgnoreCase(PARA_REL_XPATH)) {
+
+        usageField.setText(nextVal);
+
+      } else {
+
+        hiddenFieldsMap.put(nextXPathObj, nextValObj);
+      }
+    }
+
+  }
 }

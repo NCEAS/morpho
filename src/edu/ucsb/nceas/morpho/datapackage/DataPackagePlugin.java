@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2004-03-18 06:03:17 $'
- * '$Revision: 1.85 $'
+ *     '$Date: 2004-03-19 00:39:35 $'
+ * '$Revision: 1.86 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -298,6 +298,22 @@ public class DataPackagePlugin
     controller.addGuiAction(addResearchProjectAction);
 
     i++;
+    GUIAction addUsageRightsAction = new GUIAction(
+        "Add Usage Rights Information...",
+        null, new AddUsageRightsCommand());
+    addUsageRightsAction.setToolTipText("Add usage rights information");
+    addUsageRightsAction.setMenuItemPosition(i);
+    addUsageRightsAction.setMenu("Documentation", DOCUMENTATIONMENUPOSITION);
+    addUsageRightsAction.setEnabledOnStateChange(
+        StateChangeEvent.CREATE_EDITABLE_ENTITY_DATAPACKAGE_FRAME,
+        true, GUIAction.EVENT_LOCAL);
+    addUsageRightsAction.setEnabledOnStateChange(
+        StateChangeEvent.CREATE_DATAPACKAGE_FRAME,
+        true, GUIAction.EVENT_LOCAL);
+    controller.addGuiAction(addUsageRightsAction);
+
+
+    i++;
     GUIAction addGeographicCovAction = new GUIAction("Add Geographic Information...",
                                            null, new AddGeographicCovCommand());
     addGeographicCovAction.setToolTipText("Add geographic coverage information");
@@ -546,6 +562,7 @@ public class DataPackagePlugin
     createNewDatatable.setEnabled(false);
     deleteDatatable.setEnabled(false);
     addResearchProjectAction.setEnabled(false);
+    addUsageRightsAction.setEnabled(false);
     addGeographicCovAction.setEnabled(false);
     addTemporalCovAction.setEnabled(false);
     addTaxonomicCovAction.setEnabled(false);

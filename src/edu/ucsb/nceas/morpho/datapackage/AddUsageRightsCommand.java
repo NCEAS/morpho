@@ -1,13 +1,13 @@
 /**
- *  '$RCSfile: AddResearchProjectCommand.java,v $'
+ *  '$RCSfile: AddUsageRightsCommand.java,v $'
  *  Copyright: 2000 Regents of the University of California and the
  *              National Center for Ecological Analysis and Synthesis
  *    Authors: Saurabh Garg
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2004-03-19 00:39:35 $'
- * '$Revision: 1.4 $'
+ *     '$Date: 2004-03-19 00:41:20 $'
+ * '$Revision: 1.1 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -49,13 +49,13 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 
 /**
- * Class to handle add project command
+ * Class to handle add usage command
  */
-public class AddResearchProjectCommand implements Command {
+public class AddUsageRightsCommand implements Command {
 
-  private final String DATAPACKAGE_PROJECT_GENERIC_NAME = "project";
+  private final String DATAPACKAGE_RIGHTS_GENERIC_NAME = "intellectualRights";
 
-  public AddResearchProjectCommand() {}
+  public AddUsageRightsCommand() {}
 
 
   /**
@@ -74,52 +74,52 @@ public class AddResearchProjectCommand implements Command {
       adp = resultPane.getAbstractDataPackage();
 
     } else {
-      Log.debug(5, "Unable to open project details!");
-      Log.debug(20, "AddResearchProjectCommand - morphoFrame==null");
+      Log.debug(5, "Unable to open usage details!");
+      Log.debug(20, "AddUsageRightsCommand - morphoFrame==null");
       return;
     }
 
     // make sure resulPanel is not null
     if (resultPane==null) return;
 
-    if (showProjectDialog()) {
+    if (showUsageDialog()) {
 
       try {
-        insertProject();
+        insertUsage();
       } catch (Exception w) {
-        Log.debug(20, "Exception trying to modify project DOM");
+        Log.debug(20, "Exception trying to modify usage DOM");
       }
     }
   }
 
 
-  private boolean showProjectDialog() {
+  private boolean showUsageDialog() {
 
     ServiceController sc;
     DataPackageWizardInterface dpwPlugin = null;
     try {
       sc = ServiceController.getInstance();
-      dpwPlugin = (DataPackageWizardInterface) sc.getServiceProvider(
+      dpwPlugin = (DataPackageWizardInterface)sc.getServiceProvider(
           DataPackageWizardInterface.class);
 
     } catch (ServiceNotHandledException se) {
 
-        Log.debug(6, se.getMessage());
+      Log.debug(6, se.getMessage());
     }
 
     if (dpwPlugin == null) return false;
 
-    projectPage = dpwPlugin.getPage(DataPackageWizardInterface.PROJECT);
+    usagePage = dpwPlugin.getPage(DataPackageWizardInterface.USAGE_RIGHTS);
 
     OrderedMap existingValuesMap = null;
-    projectRoot = adp.getSubtree(DATAPACKAGE_PROJECT_GENERIC_NAME, 0);
+    usageRoot = adp.getSubtree(DATAPACKAGE_RIGHTS_GENERIC_NAME, 0);
 
-    if (projectRoot!=null) {
-      existingValuesMap = XMLUtilities.getDOMTreeAsXPathMap(projectRoot);
+    if (usageRoot!=null) {
+      existingValuesMap = XMLUtilities.getDOMTreeAsXPathMap(usageRoot);
     }
-    projectPage.setPageData(existingValuesMap);
+    usagePage.setPageData(existingValuesMap);
 
-    ModalDialog dialog = new ModalDialog(projectPage,
+    ModalDialog dialog = new ModalDialog(usagePage,
                             UIController.getInstance().getCurrentActiveWindow(),
                             UISettings.POPUPDIALOG_WIDTH,
                             UISettings.POPUPDIALOG_HEIGHT);
@@ -128,49 +128,49 @@ public class AddResearchProjectCommand implements Command {
   }
 
 
-  private void insertProject() {
+  private void insertUsage() {
 
-    OrderedMap map = projectPage.getPageData("/");
+    OrderedMap map = usagePage.getPageData("/");
 
-Log.debug(5, "got project details from Project page -\n\n" + map.toString());
+Log.debug(5, "got usage details from usage page -\n\n" + map.toString());
 
     if (map==null || map.isEmpty()) {
-      Log.debug(5, "Unable to get project details from input!");
+      Log.debug(5, "Unable to get usage details from input!");
       return;
     }
-    if (projectRoot==null) {
+    if (usageRoot==null) {
       DOMImplementation impl = DOMImplementationImpl.getDOMImplementation();
-      Document doc = impl.createDocument("", "project", null);
+      Document doc = impl.createDocument("", "intellectualRights", null);
 
-      projectRoot = doc.getDocumentElement();
+      usageRoot = doc.getDocumentElement();
 
     } else {
 
-      XMLUtilities.removeAllChildren(projectRoot);
+      XMLUtilities.removeAllChildren(usageRoot);
     }
 
     try {
-      XMLUtilities.getXPathMapAsDOMTree(map, projectRoot);
+      XMLUtilities.getXPathMapAsDOMTree(map, usageRoot);
 
     } catch (TransformerException w) {
-      Log.debug(5, "Unable to add project details to package!");
+      Log.debug(5, "Unable to add usage details to package!");
       Log.debug(20, "TransformerException (" + w + ") calling "
-                +"XMLUtilities.getXPathMapAsDOMTree(map, projectRoot) with \n"
+                +"XMLUtilities.getXPathMapAsDOMTree(map, usageRoot) with \n"
                 +"map = " + map
-                +" and projectRoot = " + projectRoot);
+                +" and usageRoot = " + usageRoot);
       w.printStackTrace();
     }
     // add to the datapackage
-    adp.insertSubtree(DATAPACKAGE_PROJECT_GENERIC_NAME, projectRoot, 0);
+    adp.insertSubtree(DATAPACKAGE_RIGHTS_GENERIC_NAME, usageRoot, 0);
 
-Log.debug(5, "added project details to package -\n\n"
-        + XMLUtilities.getDOMTreeAsString(projectRoot));
+Log.debug(5, "added usage details to package -\n\n"
+        + XMLUtilities.getDOMTreeAsString(usageRoot));
   }
 
 
-  private Node projectRoot;
+  private Node usageRoot;
   private AbstractDataPackage adp;
   private MorphoFrame morphoFrame;
   private DataViewContainerPanel resultPane;
-  private AbstractUIPage projectPage;
+  private AbstractUIPage usagePage;
 }
