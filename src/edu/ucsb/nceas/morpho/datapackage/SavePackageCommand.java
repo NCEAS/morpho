@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-11-24 23:19:44 $'
- * '$Revision: 1.2 $'
+ *     '$Date: 2003-11-25 23:20:14 $'
+ * '$Revision: 1.3 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -45,6 +45,9 @@ import javax.swing.JDialog;
  */
 public class SavePackageCommand implements Command 
 {
+  /* Referrence to  morphoframe */
+  private MorphoFrame morphoFrame = null;
+
   /** A reference to the AbstractDataPackage to be saved */
   private AbstractDataPackage adp = null;
   
@@ -72,7 +75,17 @@ public class SavePackageCommand implements Command
    */    
   public void execute(ActionEvent event)
   {
-      new SaveDialog();
+    DataViewContainerPanel dvcp = null;
+    morphoFrame = UIController.getInstance().getCurrentActiveWindow();
+    if (morphoFrame != null)
+    {
+       dvcp = AddDocumentationCommand.
+                          getDataViewContainerPanelFromMorphoFrame(morphoFrame);
+    }//if
+    if (dvcp!=null) {
+      adp = dvcp.getAbstractDataPackage();
+    }
+    new SaveDialog(adp);
     
   }//execute
 

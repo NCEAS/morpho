@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-11-24 23:19:44 $'
- * '$Revision: 1.1 $'
+ *     '$Date: 2003-11-25 23:20:14 $'
+ * '$Revision: 1.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -99,17 +99,17 @@ public class SaveDialog extends JDialog
   private boolean inNetwork = false;
 
   
+  /** the AbstractDataPackage object to be saved  */
+  AbstractDataPackage adp = null;
+  
+  
   /**
    * Construct a new instance of the dialog where parent is morphoframe
    *
-   * @param myParent  The parent frame for this dialog
-   * @param frameType the frame is result search result frame or data package
-   * @param mySelecteDocId the selected docid
-   * @param myInLocal if the datapackage is in local
-   * @param myInNetwork if the datapackage is in network
    */
-  public SaveDialog()
+  public SaveDialog(AbstractDataPackage adp)
   {
+    this.adp = adp;
     morphoFrame = UIController.getInstance().getCurrentActiveWindow();
     initialize(morphoFrame);
  
@@ -117,7 +117,7 @@ public class SaveDialog extends JDialog
   
 
   
-  /** Method to initialize export dialog */
+  /** Method to initialize save dialog */
   private void initialize(Window parent)
   {
      // Set OpenDialog size depent on parent size
@@ -208,6 +208,9 @@ public class SaveDialog extends JDialog
     // Add the margin between controlButtonPanel to the bottom line
     bottomBox.add(Box.createVerticalStrut(10));
     
+		SymAction lSymAction = new SymAction();
+		executeButton.addActionListener(lSymAction);
+		cancelButton.addActionListener(lSymAction);
     
     setVisible(true);
    
@@ -219,21 +222,72 @@ public class SaveDialog extends JDialog
    }//enableExecuteButton
  
 
-  /** Class to listen for ItemEvents */
-  private class RadioButtonListener implements ItemListener 
-  {
-    private JDialog dialogs = null;
-       
-    public RadioButtonListener(JDialog myDialog)
-    {
-      dialogs = myDialog;
-    }
+	class SymAction implements java.awt.event.ActionListener
+	{
+		public void actionPerformed(java.awt.event.ActionEvent event)
+		{
+			Object object = event.getSource();
+			if (object == executeButton) {
+				executeButton_actionPerformed(event);
+      }
+      else if (object == cancelButton) {
+        cancelButton_actionPerformed(event);
+      }
+		}
+	}
+  
+  void cancelButton_actionPerformed(java.awt.event.ActionEvent event)
+	{
+		this.setVisible(false);
+		this.dispose();
+	}
+
+  void executeButton_actionPerformed(java.awt.event.ActionEvent event)
+	{
+    Morpho morpho = Morpho.thisStaticInstance;
+    String loc = adp.getLocation();
+    Log.debug(1,"Location (inside Save): "+loc);
+    if ((loc.equals(AbstractDataPackage.METACAT))||
+          (loc.equals(AbstractDataPackage.LOCAL))||
+          (loc.equals(AbstractDataPackage.BOTH))) {  
+      // package exists, so just increment version number        
+      String id = adp.getAccessionNumber();
+      AccessionNumber an = new AccessionNumber(morpho);
+      String newid = an.incRev(id);
+    Log.debug(1, "New ID: "+newid); 
+    adp.setAccessionNumber(newid);
+      if((loc.equals(AbstractDataPackage.LOCAL))||(loc.equals(AbstractDataPackage.BOTH))) {
+        //save locally
+    Log.debug(1, "inside save local"); 
+        adp.serialize(AbstractDataPackage.LOCAL);
+      }
+      if((loc.equals(AbstractDataPackage.METACAT))||(loc.equals(AbstractDataPackage.BOTH))) {
+        //save to metacat
+    Log.debug(1, "inside save metacat"); 
+        adp.serialize(AbstractDataPackage.METACAT);
+      }
     
-    public void itemStateChanged(ItemEvent event) 
-    {
-      Object obj = event.getItemSelectable();
-      enableExecuteButton(obj, dialogs);
-    }//itemStateChagned
-  }//RadioButtonListener
+    }
+    else { 
+    Log.debug(1, "inside else"); 
+      // a new package, so get a new id
+      if ((localLoc.isSelected())&&(networkLoc.isSelected())) {
+          
+      }
+      else if (localLoc.isSelected()) {
+
+      }
+      else if (networkLoc.isSelected()) {
+        
+      }
+      else {
+        Log.debug(1, "No location for saving is selected!");
+        return;
+      }
+   }
+		this.setVisible(false);
+		this.dispose();
+	}
+
  
 }//ExportDialog
