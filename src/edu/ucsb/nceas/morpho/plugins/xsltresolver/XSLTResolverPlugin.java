@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: cjones $'
- *     '$Date: 2002-09-26 01:57:53 $'
- * '$Revision: 1.9 $'
+ *   '$Author: brooke $'
+ *     '$Date: 2003-10-14 21:24:04 $'
+ * '$Revision: 1.10 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -110,7 +110,9 @@ public class XSLTResolverPlugin implements  XSLTResolverInterface,
      *  If no suitable stylesheet can be returned, a DocumentNotFoundException 
      *  is thrown
      *
-     *  @param docType unique DOCTYPE used to determine the stylesheet to return 
+     *  @param identifier - unique identifier used to determine the stylesheet 
+     *                to return (e.g. DOCTYPE for DTD-defined XML, or 
+     *                schemaLocation or rootnode namespace for XSD-defined XML) 
      *
      *  @return       a Reader for the character-based XSLT stylesheet. If a 
      *                stylesheet corresponding to the DOCID cannot be found, 
@@ -118,24 +120,24 @@ public class XSLTResolverPlugin implements  XSLTResolverInterface,
      *
      *  @throws DocumentNotFoundException if no suitable stylesheet is available
      */
-    public Reader getXSLTStylesheetReader(String docType)
+    public Reader getXSLTStylesheetReader(String identifier)
                                               throws DocumentNotFoundException
     {
-        Log.debug(50, "\nXSLTResolver got: "+docType);
+        Log.debug(50, "\nXSLTResolver got: "+identifier);
         Reader rdr = null;
-        String xslPathString = getFromMappings(docType);
+        String xslPathString = getFromMappings(identifier);
         if (xslPathString==null || xslPathString.trim().equals("")) {
         
             rdr =  new InputStreamReader(
                             classLoader.getResourceAsStream(GENERIC_STYLESHEET));
             Log.debug(50, "getXSLTStylesheetReader() failed to find valid "
-                            +"stylesheet for docType: "+docType
+                            +"stylesheet for identifier: "+identifier
                             +"\n returning default: "+GENERIC_STYLESHEET);
         } else {
             rdr =  new InputStreamReader(
                             classLoader.getResourceAsStream(xslPathString));
             Log.debug(50, "getXSLTStylesheetReader() found a value for the "
-                            +"stylesheet for docType: "+docType
+                            +"stylesheet for identifier: "+identifier
                             +"\n returning: "+xslPathString);
         }
         Log.debug(50, "\nXSLTResolver returning Reader: "+rdr);
