@@ -5,8 +5,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2004-04-02 22:27:25 $'
- * '$Revision: 1.110 $'
+ *     '$Date: 2004-04-02 23:21:57 $'
+ * '$Revision: 1.111 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1144,8 +1144,8 @@ public class DataViewer extends javax.swing.JPanel
       for (int ii=0;ii<column_labels.size();ii++) {
         row[ii] = "";
       }
-      // arbitrarily create 50 empty rows !
-      pv.initEmpty(row, 50);
+      // arbitrarily create 10 empty rows !
+      pv.initEmpty(row, 10);
       pv.setFieldDelimiter(field_delimiter);
     }
     else {
