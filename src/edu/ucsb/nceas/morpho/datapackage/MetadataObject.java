@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-11-25 23:15:10 $'
- * '$Revision: 1.8 $'
+ *     '$Date: 2003-12-11 21:21:08 $'
+ * '$Revision: 1.9 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -171,7 +171,8 @@ public class MetadataObject
             return ret;
           }
         } catch (Exception e) {
-          Log.debug(5, "error in XPath node selection in MetadataObject");
+          Log.debug(5, "error in XPath node selection in MetadataObject (getGenericValue)"+
+          "--- genericName: "+genericName);
         }
       }
     }
@@ -199,7 +200,7 @@ public class MetadataObject
             return ret;
           }
         } catch (Exception e) {
-          Log.debug(5, "error in XPath node selection in MetadataObject");
+          Log.debug(5, "error in XPath node selection in MetadataObject (getXPathValue)");
         }
       }
     return ret;  
