@@ -5,9 +5,9 @@
  *    Authors: @tao@
  *    Release: @release@
  *
- *   '$Author: tao $'
- *     '$Date: 2002-10-01 17:09:17 $'
- * '$Revision: 1.8 $'
+ *   '$Author: brooke $'
+ *     '$Date: 2002-10-24 21:59:34 $'
+ * '$Revision: 1.9 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -247,7 +247,9 @@ public class ExportCommand implements Command
     }
    
     
-    exportDir = filechooser.getCurrentDirectory();
+//    exportDir = filechooser.getCurrentDirectory();
+    exportDir = filechooser.getSelectedFile();
+
     if (result==JFileChooser.APPROVE_OPTION) {
       //now we know where to export the files to, so export them.
 
