@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2003-12-15 20:28:32 $'
- * '$Revision: 1.14 $'
+ *     '$Date: 2003-12-17 05:14:13 $'
+ * '$Revision: 1.15 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -98,7 +98,7 @@ public class ImportWizard extends     AbstractWizardPage
 
       AbstractWizardPage locationPage
           = WizardPageLibrary.getPage(DataPackageWizardInterface.DATA_LOCATION);
-      String fileTextName = ((DataLocation)locationPage).getImportFilePath();
+      String fileTextName = ((DataLocation)locationPage).getImportFileURL();
       short dataLocation  = ((DataLocation)locationPage).getDataLocation();
 
       importWizFrame = new TextImportWizardEml2(fileTextName, this, dataLocation);
