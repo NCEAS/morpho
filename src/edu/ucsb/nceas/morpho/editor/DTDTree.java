@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2002-05-10 18:44:50 $'
- * '$Revision: 1.24 $'
+ *     '$Date: 2002-08-19 21:55:42 $'
+ * '$Revision: 1.25 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,7 +26,7 @@
 
 package edu.ucsb.nceas.morpho.editor;
 
-import edu.ucsb.nceas.morpho.framework.ClientFramework;
+import edu.ucsb.nceas.morpho.util.Log;
 import com.wutka.dtd.*;
 import java.util.*;
 import javax.swing.tree.*;
@@ -122,8 +122,8 @@ public class DTDTree
 	    treeModel = new DefaultTreeModel(rootTreeNode);
 	  }
 	  catch (Exception e) {
-      ClientFramework.debug(10, "Problem while parsing DTD: " + e.getMessage());
-      ClientFramework.debug(10, e.getClass().getName());
+      Log.debug(10, "Problem while parsing DTD: " + e.getMessage());
+      Log.debug(10, e.getClass().getName());
     }
 	}
 

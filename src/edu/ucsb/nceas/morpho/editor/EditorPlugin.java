@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2002-02-21 16:37:53 $'
- * '$Revision: 1.22 $'
+ *   '$Author: jones $'
+ *     '$Date: 2002-08-19 21:55:42 $'
+ * '$Revision: 1.23 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,7 +26,17 @@
 
 package edu.ucsb.nceas.morpho.editor;
 
-import edu.ucsb.nceas.morpho.framework.*;
+import edu.ucsb.nceas.morpho.Morpho;
+import edu.ucsb.nceas.morpho.framework.ConfigXML;
+import edu.ucsb.nceas.morpho.framework.EditingCompleteListener;
+import edu.ucsb.nceas.morpho.framework.EditorInterface;
+import edu.ucsb.nceas.morpho.framework.SwingWorker;
+import edu.ucsb.nceas.morpho.framework.UIController;
+import edu.ucsb.nceas.morpho.plugins.PluginInterface;
+import edu.ucsb.nceas.morpho.plugins.ServiceController;
+import edu.ucsb.nceas.morpho.plugins.ServiceProvider;
+import edu.ucsb.nceas.morpho.plugins.ServiceExistsException;
+import edu.ucsb.nceas.morpho.util.Log;
 
 import java.awt.Component;
 import java.awt.event.ActionEvent;
@@ -40,7 +50,7 @@ import javax.swing.ImageIcon;
 public class EditorPlugin implements PluginInterface, ServiceProvider, EditorInterface {
 
   /** A reference to the container framework */
-  private ClientFramework framework = null;
+  private Morpho morpho = null;
 
   /** The configuration options object reference from the framework */
   private ConfigXML config = null;
@@ -86,33 +96,32 @@ public class EditorPlugin implements PluginInterface, ServiceProvider, EditorInt
   }
 
   /** 
-   * The plugin must store a reference to the ClientFramework 
+   * The plugin must store a reference to Morpho 
    * in order to be able to call the services available through 
    * the framework.  This is also the time to register menus
    * and toolbars with the framework.
    */
-  public void initialize(ClientFramework cf) {
-    this.framework = cf;
-    this.config = framework.getConfiguration();
+  public void initialize(Morpho morpho) {
+    this.morpho = morpho;
+    this.config = morpho.getConfiguration();
     loadConfigurationParameters();
+
     // Add the menus and toolbars
-    
- //Comment out the following line to remove the Editor menu from the ClientFramework
-//    framework.addMenu("Editor", new Integer(4), menuActions);
-    framework.addToolbarActions(toolbarActions);
+    UIController.getInstance().addToolbarActions(toolbarActions);
 
     editingCompleteRegistry = new Vector();
 
     // Register Services
     try 
     {
-      framework.addService(EditorInterface.class, this);
-      framework.debug(20, "Service added: EditorInterface.");
+      ServiceController services = ServiceController.getInstance();
+      services.addService(EditorInterface.class, this);
+      Log.debug(20, "Service added: EditorInterface.");
     } 
     catch (ServiceExistsException see) 
     {
-      framework.debug(6, "Service registration failed: EditorInterface.");
-      framework.debug(6, see.toString());
+      Log.debug(6, "Service registration failed: EditorInterface.");
+      Log.debug(6, see.toString());
     }
 
   }
@@ -178,38 +187,38 @@ public class EditorPlugin implements PluginInterface, ServiceProvider, EditorInt
   }
   
   public void openEditor(String xmlText) {
-    DocFrame editorframe = new DocFrame(framework, "Working...", xmlText, false);
+    DocFrame editorframe = new DocFrame(morpho, "Working...", xmlText, false);
     editorframe.setController(this);
 //    editorframe.setVisible(true);
-    editorframe.initDoc(framework, xmlText, false);
-    framework.addWindow(editorframe);
+    editorframe.initDoc(morpho, xmlText, false);
+    //MBJ framework.addWindow(editorframe);
   }
 
   public void openEditor(String xmlText, String id, String location, 
                          EditingCompleteListener listener) {
-    DocFrame editorframe = new DocFrame(framework, "Working...", xmlText, id, location);
+    DocFrame editorframe = new DocFrame(morpho, "Working...", xmlText, id, location);
     editorframe.setController(this);
 //    editorframe.setVisible(true);
-    editorframe.initDoc(framework, xmlText, false);
+    editorframe.initDoc(morpho, xmlText, false);
     this.id = id;
     this.location = location;
-    if (framework!=null) {
-      framework.addWindow(editorframe);
-    }
+    //MBJ if (framework!=null) {
+      //MBJ framework.addWindow(editorframe);
+    //MBJ }
     docframes.put(editorframe, listener);
   }
 
   public void openEditor(String xmlText, String id, String location, 
                          EditingCompleteListener listener, boolean template) {
-    DocFrame editorframe = new DocFrame(framework, "Working...", xmlText, id, location, template );
+    DocFrame editorframe = new DocFrame(morpho, "Working...", xmlText, id, location, template );
     editorframe.setController(this);
  //   editorframe.setVisible(true);
-    editorframe.initDoc(framework, xmlText, false);
+    editorframe.initDoc(morpho, xmlText, false);
     this.id = id;
     this.location = location;
-    if (framework!=null) {
-      framework.addWindow(editorframe);
-    }
+    //MBJ if (framework!=null) {
+      //MBJ framework.addWindow(editorframe);
+    //MBJ }
     docframes.put(editorframe, listener);
   }
   
@@ -221,16 +230,16 @@ public class EditorPlugin implements PluginInterface, ServiceProvider, EditorInt
   public void openEditor(String xmlText, String id, String location,
                          String nodeName, String nodeValue,
                          EditingCompleteListener listener) {
-    DocFrame editorframe = new DocFrame(framework, "Working...", xmlText, id, location,
+    DocFrame editorframe = new DocFrame(morpho, "Working...", xmlText, id, location,
                           nodeName, nodeValue);
     editorframe.setController(this);
   //  editorframe.setVisible(true);
-    editorframe.initDoc(framework, xmlText, false);
+    editorframe.initDoc(morpho, xmlText, false);
     this.id = id;
     this.location = location;
-    if (framework!=null) {
-      framework.addWindow(editorframe);
-    }
+    //MBJ if (framework!=null) {
+      //MBJ framework.addWindow(editorframe);
+    //MBJ }
     docframes.put(editorframe, listener);
   }
 

@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2002-08-19 21:10:33 $'
- * '$Revision: 1.84 $'
+ *     '$Date: 2002-08-19 21:55:42 $'
+ * '$Revision: 1.85 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,7 +30,7 @@ import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.framework.ConfigXML;
 import edu.ucsb.nceas.morpho.framework.EditingCompleteListener;
 import edu.ucsb.nceas.morpho.framework.EditorInterface;
-import edu.ucsb.nceas.morpho.framework.QueryRefreshInterface;
+//import edu.ucsb.nceas.morpho.framework.QueryRefreshInterface;
 import edu.ucsb.nceas.morpho.framework.XPathAPI;
 import edu.ucsb.nceas.morpho.plugins.DocumentNotFoundException;
 import edu.ucsb.nceas.morpho.plugins.ServiceController;
@@ -908,6 +908,8 @@ public class DataPackageGUI extends javax.swing.JFrame
       DataPackage newpack = new DataPackage(location, newPackageId, null, 
                                             morpho);
       DataPackageGUI dpg = new DataPackageGUI(morpho, newpack);
+
+      /* Not needed because owner query no longer exists to be refreshed
       // Refresh the query results after the edit is completed
       try {
         ServiceController services = ServiceController.getInstance();
@@ -917,6 +919,7 @@ public class DataPackageGUI extends javax.swing.JFrame
       } catch (ServiceNotHandledException snhe) {
         Log.debug(6, snhe.getMessage());
       }
+      */
 
       dpg.show();
     }
@@ -1117,8 +1120,8 @@ public class DataPackageGUI extends javax.swing.JFrame
                                  "Please refresh your query screen, " + 
                                  "open the package again and " +
                                  "re-enter your changes.");
-        try 
-        {
+      /* Not needed because owner query no longer exists
+        try {
         ServiceController services = ServiceController.getInstance();
         ServiceProvider provider = 
                       services.getServiceProvider(QueryRefreshInterface.class);
@@ -1128,6 +1131,7 @@ public class DataPackageGUI extends javax.swing.JFrame
         {
           Log.debug(6, snhe.getMessage());
         }
+      */
         this.dispose();
         return;
       }
@@ -1140,6 +1144,7 @@ public class DataPackageGUI extends javax.swing.JFrame
       DataPackage newPackage = new DataPackage(location, newPackageId, null,
                                                  morpho);
 
+      /* Not needed because owner query no longer exists
       // Refresh the query results after the edit is completed
       try {
         ServiceController services = ServiceController.getInstance();
@@ -1149,6 +1154,7 @@ public class DataPackageGUI extends javax.swing.JFrame
       } catch (ServiceNotHandledException snhe) {
         Log.debug(6, snhe.getMessage());
       }
+      */
     
       this.dispose();
       DataPackageGUI newgui = new DataPackageGUI(morpho, newPackage);

@@ -5,9 +5,9 @@
  *    Authors: @higgins@
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2002-06-10 22:30:12 $'
- * '$Revision: 1.97 $'
+ *   '$Author: jones $'
+ *     '$Date: 2002-08-19 21:55:42 $'
+ * '$Revision: 1.98 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,6 +26,11 @@
 
 package edu.ucsb.nceas.morpho.editor;
 
+import edu.ucsb.nceas.morpho.Morpho;
+import edu.ucsb.nceas.morpho.framework.ConfigXML;
+import edu.ucsb.nceas.morpho.framework.SwingWorker;
+import edu.ucsb.nceas.morpho.framework.UIController;
+import edu.ucsb.nceas.morpho.util.Log;
 
 import java.awt.*;
 import javax.swing.*;
@@ -47,8 +52,6 @@ import java.util.Hashtable;
 import org.xml.sax.*;
 import org.xml.sax.helpers.*;
 import java.util.*;
-import edu.ucsb.nceas.morpho.framework.*;
-
 
 /**
  * DocFrame is a container for an XML editor which
@@ -90,7 +93,7 @@ public class DocFrame extends javax.swing.JFrame
     public static int counter = 0;
   
     /** A reference to the container framework */
-    private ClientFramework framework = null;
+    private Morpho morpho = null;
 
     /** The configuration options object reference from the framework */
     ConfigXML config;
@@ -407,37 +410,20 @@ public class DocFrame extends javax.swing.JFrame
    *   This constructor actual handles the creation of a tree and panel for displaying
    *   and editing the information is an XML document, as represented in the String 'doctext'
    */
-	public DocFrame(ClientFramework cf, String sTitle, String doctext, boolean flag) 
+	public DocFrame(Morpho morpho, String sTitle, String doctext, boolean flag) 
 	{
 	  this();
-
-/*	  final ClientFramework fcf = cf;
-	  final String fdoctext = doctext;
-	  final boolean fflag = flag;
-	  
-	  long startTime = System.currentTimeMillis();
-	  long curTime = System.currentTimeMillis();
-	  while ((curTime-startTime)>5000) {
-	    curTime = System.currentTimeMillis(); 
-	  }
-	  
-	  SwingUtilities.invokeLater(new Runnable() {
-			    public void run() {
-	                initDoc(fcf, fdoctext, fflag);    
-			    }
-			  });
-*/
 	}
 	
-	public void initDoc(ClientFramework cf, String doctext, boolean flag) {
-          final ClientFramework fcf = cf;
+	public void initDoc(Morpho finalMorpho, String doctext, boolean flag) {
+          final Morpho fMorpho = finalMorpho;
 	        final String fdoctext = doctext;
 	        final boolean fflag = flag;
 
     final SwingWorker worker = new SwingWorker() {
         public Object construct() {
 	        
-          initDocInner(fcf, fdoctext, fflag);
+          initDocInner(fMorpho, fdoctext, fflag);
           return null;  
         }
 
@@ -453,29 +439,12 @@ public class DocFrame extends javax.swing.JFrame
     };
     worker.start();  //required for SwingWorker 3
 	  
-	  
-/*	  
-    final ClientFramework fcf = cf;
-	  final String fdoctext = doctext;
-	  final boolean fflag = flag;
-
-	  try{
-	    Thread.sleep(300);  
-	  }
-	  catch(Exception w) {}
-	  
-	  SwingUtilities.invokeLater(new Runnable() {
-			    public void run() {
-	                initDocInner(fcf, fdoctext, fflag);    
-			    }
-			  });
-*/			  
 	}
 	
-	public void initDocInner(ClientFramework cf, String doctext, boolean flag) {
+	public void initDocInner(Morpho morpho, String doctext, boolean flag) {
 	  DefaultMutableTreeNode frootNode = null;
 //	  this.templateFlag = flag;
-	  this.framework = cf;
+	  this.morpho = morpho;
 	  counter++;
 	  setName("Morpho Editor"+counter);
 		XMLTextString = doctext;
@@ -594,8 +563,8 @@ public class DocFrame extends javax.swing.JFrame
 	/** this version of the constructor is needed so that each DocFrame can 'remember' the
 	  * id and location parameters used to create it
 	  */
-	public DocFrame(ClientFramework cf, String sTitle, String doctext, String id, String location) {
-	  this(cf, sTitle, doctext, false);
+	public DocFrame(Morpho morpho, String sTitle, String doctext, String id, String location) {
+	  this(morpho, sTitle, doctext, false);
 	  if (id!=null) {
 	    setTitle("Working...");
 	    setName("Morpho Editor"+counter+":"+id);
@@ -607,8 +576,8 @@ public class DocFrame extends javax.swing.JFrame
 	/** this version of the constructor is needed so that each DocFrame can 'remember' the
 	  * id and location parameters used to create it; includes template flag
 	  */
-	public DocFrame(ClientFramework cf, String sTitle, String doctext, String id, String location, boolean templFlag) {
-	  this(cf, sTitle, doctext, templFlag);
+	public DocFrame(Morpho morpho, String sTitle, String doctext, String id, String location, boolean templFlag) {
+	  this(morpho, sTitle, doctext, templFlag);
 	  if (id!=null) {
 	    setTitle("Working...");
 	    setName("Morpho Editor"+counter+":"+id);
@@ -621,9 +590,9 @@ public class DocFrame extends javax.swing.JFrame
 /** this version allows one to create a new DocFrame and set the initially selected
  *  nodename/nodetext
  */
-	public DocFrame(ClientFramework cf, String sTitle, String doctext, String id, String location,
+	public DocFrame(Morpho morpho, String sTitle, String doctext, String id, String location,
 	                       String nodeName, String nodeValue) {
-    this(cf, sTitle, doctext, id, location);
+    this(morpho, sTitle, doctext, id, location);
     if (nodeValue!=null) {
       selectMatchingNode(rootNode, nodeName, nodeValue);
     }
@@ -753,7 +722,7 @@ class SymAction implements java.awt.event.ActionListener {
     void putXMLintoTree(DefaultTreeModel tm, String xmlText) {
         if (xmlText!=null) {
         CatalogEntityResolver cer = new CatalogEntityResolver();
-        config = framework.getConfiguration();
+        config = morpho.getConfiguration();
         String local_dtd_directory = config.getConfigDirectory() + File.separator +
                                                     config.get("local_dtd_directory",0);     
         String catalogPath = //config.getConfigDirectory() + File.separator +
@@ -771,7 +740,7 @@ class SymAction implements java.awt.event.ActionListener {
             cer.setCatalog(myCatalog);
         }
         catch (Exception e) {
-          ClientFramework.debug(10, "Problem creating Catalog (772)!\n" +
+          Log.debug(10, "Problem creating Catalog (772)!\n" +
                   e.getMessage());
         }
         try {
@@ -779,7 +748,7 @@ class SymAction implements java.awt.event.ActionListener {
             XMLReader parser = null;
             // Get an instance of the parser
             XMLDisplayHandler mh = new XMLDisplayHandler(tm);
-            parser = ClientFramework.createSaxParser((ContentHandler)mh,  null);
+            parser = Morpho.createSaxParser((ContentHandler)mh,  null);
             parser.setProperty("http://xml.org/sax/properties/lexical-handler",mh);
 	        parser.setEntityResolver(cer);
 	        InputSource is = new InputSource(sr);
@@ -966,7 +935,7 @@ class SymTreeSelection implements javax.swing.event.TreeSelectionListener
 	
     public DefaultMutableTreeNode deepNodeCopy(DefaultMutableTreeNode node) {
       if (node==null) {
-        ClientFramework.debug(20, "Attempt to clone a null node!");
+        Log.debug(20, "Attempt to clone a null node!");
         return null;
       }      
         DefaultMutableTreeNode newnode = null; 
@@ -982,14 +951,14 @@ class SymTreeSelection implements javax.swing.event.TreeSelectionListener
             newnode = (DefaultMutableTreeNode)os.readObject();
         }
         catch (Exception e) {
-            ClientFramework.debug(20, "Exception in creating copy of node!");
+            Log.debug(20, "Exception in creating copy of node!");
         }
         return newnode;
     }
     
     public void deepNodeCopyFile(DefaultMutableTreeNode node) {
       if (node==null) {
-        ClientFramework.debug(20, "Attempt to clone a null node!");
+        Log.debug(20, "Attempt to clone a null node!");
       }      
         DefaultMutableTreeNode newnode = null; 
         try{
@@ -1001,7 +970,7 @@ class SymTreeSelection implements javax.swing.event.TreeSelectionListener
         
         }
         catch (Exception e) {
-            ClientFramework.debug(20, "Exception in creating copy of node!");
+            Log.debug(20, "Exception in creating copy of node!");
         }
     }
 
@@ -1518,7 +1487,7 @@ void expandTreeToLevel(JTree jt, int level) {
         DefaultMutableTreeNode qw = null;
         // first check to see if root nodes have same names
         if (!compareNodes(input, template)) {
-          ClientFramework.debug(20, "Root nodes do not match!!!");
+          Log.debug(20, "Root nodes do not match!!!");
         }
         else {
             // root nodes match
@@ -1775,7 +1744,7 @@ private Vector sameParent(Vector list) {
         DefaultMutableTreeNode parNode;
         // first check to see if root nodes have same names
         if (!compareNodes(input, template)) {
-            ClientFramework.debug(20, "Root nodes do not match!!!");
+            Log.debug(20, "Root nodes do not match!!!");
         }
         else {
             // root nodes match, so start comparing children
@@ -2047,9 +2016,9 @@ class SymWindow extends java.awt.event.WindowAdapter {
 		rootNode = (DefaultMutableTreeNode)treeModel.getRoot();
 	  String xmlout = writeXMLString(rootNode);
 		controller.fireEditingCompleteEvent(this, xmlout);
-		if (framework!=null) {
-		  framework.removeWindow(this);  
-		}
+		//MBJ if (framework!=null) {
+		  //MBJ framework.removeWindow(this);  
+		//MBJ }
 		this.dispose();            // free the system resources
 	}
 
@@ -2064,9 +2033,9 @@ class SymWindow extends java.awt.event.WindowAdapter {
       // If the confirmation was affirmative, handle exiting.
         if (reply == JOptionPane.YES_OPTION) {
 */
-        if (framework!=null) {
-			    framework.removeWindow(this);  
-			  }
+        //MBJ if (framework!=null) {
+			    //MBJ framework.removeWindow(this);  
+			  //MBJ }
 		    controller.fireEditingCanceledEvent(this, XMLTextString);
 		    this.setVisible(false);    // hide the Frame
 		    this.dispose();            // free the system resources
@@ -2076,9 +2045,9 @@ class SymWindow extends java.awt.event.WindowAdapter {
 
 	void CancelButton_actionPerformed(java.awt.event.ActionEvent event)
 	{
-			  if (framework!=null) {
-			    framework.removeWindow(this);  
-			  }
+			  //MBJ if (framework!=null) {
+			    //MBJ framework.removeWindow(this);  
+			  //MBJ }
 		    controller.fireEditingCanceledEvent(this, XMLTextString);
 			  
 		    this.setVisible(false);    // hide the Frame
