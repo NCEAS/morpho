@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-02-22 23:54:43 $'
- * '$Revision: 1.29 $'
+ *     '$Date: 2002-02-26 22:14:35 $'
+ * '$Revision: 1.30 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -168,7 +168,6 @@ public class TextImportWizard extends javax.swing.JFrame
 		// what Visual Cafe can generate, or Visual Cafe may be unable to back
 		// parse your Java file into its visual environment.
 		//{{INIT_CONTROLS
-		setJMenuBar(JMenuBar1);
 		setTitle("Text Import Wizard");
 		setDefaultCloseOperation(javax.swing.JFrame.DO_NOTHING_ON_CLOSE);
 		getContentPane().setLayout(new BorderLayout(0,0));
@@ -180,35 +179,19 @@ public class TextImportWizard extends javax.swing.JFrame
 		openFileDialog.setMode(FileDialog.LOAD);
 		openFileDialog.setTitle("Open");
 		//$$ openFileDialog.move(0,336);
-		JPanel2.setLayout(new FlowLayout(FlowLayout.LEFT,0,0));
-		getContentPane().add(BorderLayout.NORTH, JPanel2);
-		JToolBar1.setAlignmentY(0.222222F);
-		JPanel2.add(JToolBar1);
-		openButton.setText("Open Data File");
-		openButton.setActionCommand("Open Data File");
-		openButton.setDefaultCapable(false);
-		openButton.setToolTipText("Open an existing document");
-		openButton.setMnemonic((int)'O');
-		JToolBar1.add(openButton);
-		PasteDataButton.setText("Paste Data");
-		PasteDataButton.setActionCommand("Paste Data");
-		PasteDataButton.setDefaultCapable(false);
-		PasteDataButton.setToolTipText("Click Here to Enter Data from Clipboard");
-		JToolBar1.add(PasteDataButton);
-		ShowResultsButton.setText("Show Results of Data Scan");
-		ShowResultsButton.setActionCommand("Show Results");
-		ShowResultsButton.setDefaultCapable(false);
-		JToolBar1.add(ShowResultsButton);
 		JPanel1.setLayout(new GridLayout(2,1,0,4));
 		getContentPane().add(BorderLayout.CENTER, JPanel1);
 		ControlsPanel.setLayout(new CardLayout(0,0));
 		JPanel1.add(ControlsPanel);
 		Step1ControlsPanel.setAlignmentY(0.0F);
 		Step1ControlsPanel.setAlignmentX(0.0F);
-		Step1ControlsPanel.setLayout(new GridLayout(7,1,0,0));
+		Step1ControlsPanel.setLayout(new GridLayout(7,1,0,10));
 		ControlsPanel.add("card1", Step1ControlsPanel);
 		JPanel17.setLayout(new FlowLayout(FlowLayout.CENTER,5,5));
 		Step1ControlsPanel.add(JPanel17);
+		JLabel17.setText("This set of screens will create metadata based on the content of the specified data file");
+		JPanel17.add(JLabel17);
+		JLabel17.setForeground(java.awt.Color.black);
 		JPanel6.setAlignmentY(0.473684F);
 		JPanel6.setAlignmentX(0.0F);
 		JPanel6.setLayout(new BoxLayout(JPanel6,BoxLayout.X_AXIS));
@@ -277,8 +260,9 @@ public class TextImportWizard extends javax.swing.JFrame
 		Step2ControlsPanel.setVisible(false);
 		JPanel8.setLayout(new FlowLayout(FlowLayout.CENTER,5,5));
 		Step2ControlsPanel.add(JPanel8);
-		JLabel5.setText("  ");
+		JLabel5.setText("If the columns indicated in the table are incorrect, try changing the assumed delimiter(s)");
 		JPanel8.add(JLabel5);
+		JLabel5.setForeground(java.awt.Color.black);
 		JPanel9.setLayout(new FlowLayout(FlowLayout.LEFT,5,5));
 		Step2ControlsPanel.add(JPanel9);
 		JLabel8.setText("  Delimiters: ");
@@ -390,7 +374,7 @@ public class TextImportWizard extends javax.swing.JFrame
 		ColumnDefTextArea.setWrapStyleWord(true);
 		ColumnDefTextArea.setAlignmentX(0.0F);
 		JScrollPane2.getViewport().add(ColumnDefTextArea);
-		ColumnDefTextArea.setBounds(0,0,-90,15);
+		ColumnDefTextArea.setBounds(0,0,272,90);
 		JPanel16.setLayout(new BorderLayout(0,0));
 		JPanel14.add(JPanel16);
 		JLabel10.setText("Data Type:           ");
@@ -401,14 +385,14 @@ public class TextImportWizard extends javax.swing.JFrame
 		JPanel16.add(BorderLayout.CENTER, JScrollPane1);
 		DataTypeList.setVisibleRowCount(4);
 		JScrollPane1.getViewport().add(DataTypeList);
-		DataTypeList.setBounds(0,0,0,0);
+		DataTypeList.setBounds(0,0,181,105);
 		JPanel24.setLayout(new BorderLayout(0,0));
 		JPanel14.add(JPanel24);
 		JPanel26.setLayout(new BorderLayout(0,0));
 		JPanel24.add(BorderLayout.CENTER, JPanel26);
 		JPanel26.add(BorderLayout.CENTER, UniqueItemsScroll);
 		UniqueItemsScroll.getViewport().add(uniq);
-		uniq.setBounds(0,0,-204,0);
+		uniq.setBounds(0,0,158,0);
 		JPanel27.setLayout(new GridLayout(3,1,0,0));
 		JPanel26.add(BorderLayout.WEST, JPanel27);
 		JLabel14.setText("Unique Item List:");
@@ -435,53 +419,33 @@ public class TextImportWizard extends javax.swing.JFrame
 		DataPanel.setLayout(new BorderLayout(0,0));
 		JPanel1.add(DataPanel);
 		DataPanel.add(BorderLayout.CENTER, DataScrollPanel);
-		ButtonsPanel.setLayout(new FlowLayout(FlowLayout.RIGHT,5,5));
+		ButtonsPanel.setLayout(new BorderLayout(0,0));
 		getContentPane().add(BorderLayout.SOUTH, ButtonsPanel);
+		JPanelLeft.setLayout(new FlowLayout(FlowLayout.LEFT,5,5));
+		ButtonsPanel.add(BorderLayout.WEST,JPanelLeft);
+		ShowResultsButton.setText("Show Results of Data Scan");
+		ShowResultsButton.setActionCommand("Show Results");
+		ShowResultsButton.setDefaultCapable(false);
+		JPanelLeft.add(ShowResultsButton);
+		JPanelCenter.setLayout(new FlowLayout(FlowLayout.RIGHT,5,5));
+		ButtonsPanel.add(BorderLayout.CENTER,JPanelCenter);
 		StepNumberLabel.setText("Step #1 of 3");
-		ButtonsPanel.add(StepNumberLabel);
+		JPanelCenter.add(StepNumberLabel);
 		StepNumberLabel.setForeground(java.awt.Color.black);
 		CancelButton.setText("Cancel");
 		CancelButton.setActionCommand("Cancel");
-		ButtonsPanel.add(CancelButton);
+		JPanelCenter.add(CancelButton);
 		BackButton.setText("< Back");
 		BackButton.setActionCommand("< Back");
 		BackButton.setEnabled(false);
-		ButtonsPanel.add(BackButton);
+		JPanelCenter.add(BackButton);
 		NextButton.setText("Next >");
 		NextButton.setActionCommand("Next >");
-		ButtonsPanel.add(NextButton);
+		JPanelCenter.add(NextButton);
 		FinishButton.setText("Finish");
 		FinishButton.setActionCommand("Finish");
 		FinishButton.setEnabled(false);
-		ButtonsPanel.add(FinishButton);
-		//$$ JMenuBar1.move(168,312);
-		fileMenu.setText("File");
-		fileMenu.setActionCommand("File");
-		fileMenu.setMnemonic((int)'F');
-		JMenuBar1.add(fileMenu);
-		openItem.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
-		openItem.setText("Open...");
-		openItem.setActionCommand("Open...");
-		openItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_O, java.awt.Event.CTRL_MASK));
-		openItem.setMnemonic((int)'O');
-		fileMenu.add(openItem);
-		save_eml_table_entity.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
-		save_eml_table_entity.setEnabled(false);
-		save_eml_table_entity.setText(" Save Table Entity Information...");
-		save_eml_table_entity.setActionCommand("Save");
-		save_eml_table_entity.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, java.awt.Event.CTRL_MASK));
-		save_eml_table_entity.setMnemonic((int)'S');
-		fileMenu.add(save_eml_table_entity);
-		save_eml_attribute.setEnabled(false);
-		save_eml_attribute.setText("Save Attribute Information...");
-		save_eml_attribute.setActionCommand("Save As...");
-		save_eml_attribute.setMnemonic((int)'A');
-		fileMenu.add(save_eml_attribute);
-		fileMenu.add(JSeparator1);
-		exitItem.setText("Exit");
-		exitItem.setActionCommand("Exit");
-		exitItem.setMnemonic((int)'X');
-		fileMenu.add(exitItem);
+		JPanelCenter.add(FinishButton);
 		DataTypeList.setSelectedIndex(0);
 		//}}
 
@@ -492,10 +456,6 @@ public class TextImportWizard extends javax.swing.JFrame
 		SymWindow aSymWindow = new SymWindow();
 		this.addWindowListener(aSymWindow);
 		SymAction lSymAction = new SymAction();
-		openItem.addActionListener(lSymAction);
-		save_eml_table_entity.addActionListener(lSymAction);
-		exitItem.addActionListener(lSymAction);
-		openButton.addActionListener(lSymAction);
 		NextButton.addActionListener(lSymAction);
 		BackButton.addActionListener(lSymAction);
 		FinishButton.addActionListener(lSymAction);
@@ -513,9 +473,7 @@ public class TextImportWizard extends javax.swing.JFrame
 		SpaceCheckBox.addItemListener(lSymItem);
 		SemicolonCheckBox.addItemListener(lSymItem);
 		OtherCheckBox.addItemListener(lSymItem);
-		PasteDataButton.addActionListener(lSymAction);
 		ColumnUnitTextField.addActionListener(lSymAction);
-		save_eml_attribute.addActionListener(lSymAction);
 		CancelButton.addActionListener(lSymAction);
 		ColumnLabelTextField.addActionListener(lSymAction);
 		ColumnDefTextArea.addFocusListener(aSymFocus);
@@ -652,15 +610,11 @@ public class TextImportWizard extends javax.swing.JFrame
 	//{{DECLARE_CONTROLS
 	java.awt.FileDialog saveFileDialog = new java.awt.FileDialog(this);
 	java.awt.FileDialog openFileDialog = new java.awt.FileDialog(this);
-	javax.swing.JPanel JPanel2 = new javax.swing.JPanel();
-	javax.swing.JToolBar JToolBar1 = new javax.swing.JToolBar();
-	javax.swing.JButton openButton = new javax.swing.JButton();
-	javax.swing.JButton PasteDataButton = new javax.swing.JButton();
-	javax.swing.JButton ShowResultsButton = new javax.swing.JButton();
 	javax.swing.JPanel JPanel1 = new javax.swing.JPanel();
 	javax.swing.JPanel ControlsPanel = new javax.swing.JPanel();
 	javax.swing.JPanel Step1ControlsPanel = new javax.swing.JPanel();
 	javax.swing.JPanel JPanel17 = new javax.swing.JPanel();
+	javax.swing.JLabel JLabel17 = new javax.swing.JLabel();
 	javax.swing.JPanel JPanel6 = new javax.swing.JPanel();
 	javax.swing.JLabel JLabel3 = new javax.swing.JLabel();
 	javax.swing.JTextField TableNameTextField = new javax.swing.JTextField();
@@ -733,18 +687,14 @@ public class TextImportWizard extends javax.swing.JFrame
 	javax.swing.JPanel DataPanel = new javax.swing.JPanel();
 	javax.swing.JScrollPane DataScrollPanel = new javax.swing.JScrollPane();
 	javax.swing.JPanel ButtonsPanel = new javax.swing.JPanel();
+	javax.swing.JPanel JPanelLeft = new javax.swing.JPanel();
+	javax.swing.JButton ShowResultsButton = new javax.swing.JButton();
+	javax.swing.JPanel JPanelCenter = new javax.swing.JPanel();
 	javax.swing.JLabel StepNumberLabel = new javax.swing.JLabel();
 	javax.swing.JButton CancelButton = new javax.swing.JButton();
 	javax.swing.JButton BackButton = new javax.swing.JButton();
 	javax.swing.JButton NextButton = new javax.swing.JButton();
 	javax.swing.JButton FinishButton = new javax.swing.JButton();
-	javax.swing.JMenuBar JMenuBar1 = new javax.swing.JMenuBar();
-	javax.swing.JMenu fileMenu = new javax.swing.JMenu();
-	javax.swing.JMenuItem openItem = new javax.swing.JMenuItem();
-	javax.swing.JMenuItem save_eml_table_entity = new javax.swing.JMenuItem();
-	javax.swing.JMenuItem save_eml_attribute = new javax.swing.JMenuItem();
-	javax.swing.JSeparator JSeparator1 = new javax.swing.JSeparator();
-	javax.swing.JMenuItem exitItem = new javax.swing.JMenuItem();
 	//}}
 
 	//{{DECLARE_MENUS
@@ -818,14 +768,6 @@ public class TextImportWizard extends javax.swing.JFrame
 		public void actionPerformed(java.awt.event.ActionEvent event)
 		{
 			Object object = event.getSource();
-			if (object == openItem)
-				openItem_actionPerformed(event);
-			else if (object == save_eml_table_entity)
-				save_eml_table_entity_actionPerformed(event);
-			else if (object == exitItem)
-				exitItem_actionPerformed(event);
-			if (object == openButton)
-				openButton_actionPerformed(event);
 			if (object == NextButton)
 				NextButton_actionPerformed(event);
 			else if (object == BackButton)
@@ -838,13 +780,9 @@ public class TextImportWizard extends javax.swing.JFrame
 				ColumnNameTextField_actionPerformed(event);
 			else if (object == StartingLineTextField)
 				StartingLineTextField_actionPerformed(event);
-			else if (object == PasteDataButton)
-				PasteDataButton_actionPerformed(event);
-			else if (object == ColumnUnitTextField)
+			if (object == ColumnUnitTextField)
 				ColumnUnitTextField_actionPerformed(event);
-			else if (object == save_eml_attribute)
-				saveEmlAttribute_actionPerformed(event);
-			else if (object == CancelButton)
+			if (object == CancelButton)
 				CancelButton_actionPerformed(event);
 			else if (object == ColumnLabelTextField)
 				ColumnLabelTextField_actionPerformed(event);
@@ -852,49 +790,6 @@ public class TextImportWizard extends javax.swing.JFrame
 				MinTextField_actionPerformed(event);
 			else if (object == MaxTextField)
 				MaxTextField_actionPerformed(event);
-		}
-	}
-
-	/**
-	 * return most frequent number of occurances of indicated substring
-	 * 
-	 * @param event
-	 */
-	void openItem_actionPerformed(java.awt.event.ActionEvent event)
-	{
-		// to do: code goes here.
-			 
-		openItem_actionPerformed_Interaction1(event);
-	}
-
-	/**
-	 * reads input data file and creates a table of 'lines'
-	 * 
-	 * @param event
-	 */
-	void openItem_actionPerformed_Interaction1(java.awt.event.ActionEvent event) {
-		try {
-			// openFileDialog Show the FileDialog
-			openFileDialog.setVisible(true);
-			String file = openFileDialog.getFile();
-			if (file!=null) {
-			  file = openFileDialog.getDirectory()+file;
-			  filename = file;
-			  startImport(file);
-/*        TableNameTextField.setText(filename);
-        parsefile(file);
-        createLinesTable();
-		    resultsBuffer = new StringBuffer();
-		    stepNumber = 1;
-		    StepNumberLabel.setText("Step # "+stepNumber);
-		    CardLayout cl = (CardLayout)ControlsPanel.getLayout();
-		    cl.show(ControlsPanel, "card"+stepNumber);
-		    BackButton.setEnabled(false);
-		    FinishButton.setEnabled(false);
-		    NextButton.setEnabled(true);
- */
-			}
-		} catch (Exception e) {
 		}
 	}
 
@@ -940,83 +835,6 @@ public void startImport(String file) {
         DataScrollPanel.getViewport().add(table);
     
   }
-
-	void save_eml_table_entity_actionPerformed(java.awt.event.ActionEvent event)
-	{
-		// to do: code goes here.
-			 
-		save_eml_table_entity_actionPerformed_Interaction1(event);
-	}
-
-	void save_eml_table_entity_actionPerformed_Interaction1(java.awt.event.ActionEvent event) {
-		try {
-			// saveFileDialog Show the FileDialog
-			saveFileDialog.setFile("table_entity.xml");
-			saveFileDialog.setVisible(true);
-		String filepath = saveFileDialog.getDirectory()+saveFileDialog.getFile();
-		System.out.println(filepath);
-		String table_entityString = createXMLEntityString();
-		StringReader in = new StringReader(table_entityString);
-		FileWriter out = new FileWriter(filepath);
-        int c;
-
-        while ((c = in.read()) != -1)
-           out.write(c);
-
-        in.close();
-        out.close();
-		} catch (Exception e) {}
-	}
- 
-	void exitItem_actionPerformed(java.awt.event.ActionEvent event)
-	{
-		// to do: code goes here.
-			 
-		exitItem_actionPerformed_Interaction1(event);
-	}
-
-	void exitItem_actionPerformed_Interaction1(java.awt.event.ActionEvent event) {
-		try {
-			this.exitApplication();
-		} catch (Exception e) {
-		}
-	}
-
-	void openButton_actionPerformed(java.awt.event.ActionEvent event)
-	{
-		// to do: code goes here.
-			 
-		openButton_actionPerformed_Interaction1(event);
-	}
-
-	/**
-	 * reads input data file and creates a table of 'lines'
-	 * 
-	 * @param event
-	 */
-	void openButton_actionPerformed_Interaction1(java.awt.event.ActionEvent event) {
-		try {
-			// openFileDialog Show the FileDialog
-			openFileDialog.setVisible(true);
-			String file = openFileDialog.getFile();
-			if (file!=null) {
-			  file = openFileDialog.getDirectory()+file;
-			  filename = file;
-        TableNameTextField.setText(filename);
-        parsefile(file);
-        createLinesTable();
-		      resultsBuffer = new StringBuffer();
-		      stepNumber = 1;
-		      StepNumberLabel.setText("Step #"+stepNumber+" of 3");
-		      CardLayout cl = (CardLayout)ControlsPanel.getLayout();
-		      cl.show(ControlsPanel, "card"+stepNumber);
-		      BackButton.setEnabled(false);
-		      FinishButton.setEnabled(false);
-		      NextButton.setEnabled(true);
-			}
-		} catch (Exception e) {
-		}
-	}
 	
     /**
      * parses data input file into an array of lines (Strings)
@@ -1420,8 +1238,6 @@ public void startImport(String file) {
 //	  resultsBuffer.append("\n\n");
 //	  resultsBuffer.append(createXMLAttributeString());
 	  
-	  save_eml_table_entity.setEnabled(true);
-	  save_eml_attribute.setEnabled(true);
 	  String tempS = "Click on 'Show Results' button to see results, including XML files.";
 	  if (entityWizard!=null) {
 	    tempS = tempS + " Information will automatically be added to the Data Package under construction.";
@@ -1447,24 +1263,6 @@ public void startImport(String file) {
     }
     this.dispose();
 	}
- 
-  void PasteDataButton_actionPerformed(java.awt.event.ActionEvent event)
- {
-   String s = "";
-    Clipboard cb = Toolkit.getDefaultToolkit().getSystemClipboard();
-    Transferable content = cb.getContents(this);
-    try {
-      s =(String)content.getTransferData(DataFlavor.stringFlavor);
-      System.out.println(s);
-    }
-    catch (Throwable exc) {
-      System.err.println("Clipboard Problem!");
-    }
-
-    TableNameTextField.setText("Data from Clipboard");
-    parseString(s);
-    createLinesTable();
-  }
 
 
  
@@ -2144,28 +1942,6 @@ public void startImport(String file) {
       XMLBuffer.append("</eml-physical>\n");
 	  return XMLBuffer.toString();
     }
-
-
-	void saveEmlAttribute_actionPerformed(java.awt.event.ActionEvent event)
-	{
-		try {
-			// saveFileDialog Show the FileDialog
-			saveFileDialog.setFile("table_attributes.xml");
-			saveFileDialog.setVisible(true);
-		String filepath = saveFileDialog.getDirectory()+saveFileDialog.getFile();
-		System.out.println(filepath);
-		String table_entityString = createXMLAttributeString();
-		StringReader in = new StringReader(table_entityString);
-		FileWriter out = new FileWriter(filepath);
-        int c;
-
-        while ((c = in.read()) != -1)
-           out.write(c);
-
-        in.close();
-        out.close();
-		} catch (Exception e) {}
-	}
 
 	void CancelButton_actionPerformed(java.awt.event.ActionEvent event)
 	{
