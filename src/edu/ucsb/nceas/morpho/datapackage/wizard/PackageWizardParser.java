@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-05-03 16:16:55 $'
- * '$Revision: 1.2 $'
+ *     '$Date: 2001-05-04 16:25:55 $'
+ * '$Revision: 1.3 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -109,6 +109,7 @@ public class PackageWizardParser extends DefaultHandler
     {
        System.err.println("Error in PackageWizardParser.initializeParser " + 
                            e.toString());
+       e.printStackTrace();
     }
     return parser;
   }
@@ -310,6 +311,12 @@ public class PackageWizardParser extends DefaultHandler
   {
     //get the document name, parse it then output the
     //the doc object as text.
+    if(args.length == 0)
+    {
+      System.out.println("usage: PackageWizardParser <xml_file>");
+      return;
+    }
+    
     String filename = args[0];
     System.out.println("Parsing " + args[0]);
     try
