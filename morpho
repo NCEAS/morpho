@@ -3,9 +3,24 @@
 # Shell script for launching morpho from unix systems
 #
 # '$RCSfile: morpho,v $'
-# '$Author: tao $'
-# '$Date: 2002-10-26 00:02:36 $'
-# '$Revision: 1.18 $'
+# '$Author: brooke $'
+# '$Date: 2002-10-28 17:32:17 $'
+# '$Revision: 1.19 $'
+
+if ! ls $JAVA_HOME/bin/ | grep -q java; then
+ echo ----------------------------------------------------------------------
+ echo ----------------------------------------------------------------------
+ echo ---------------------------- N O T E ---------------------------------
+ echo ---- YOU MUST SET THE JAVA_HOME ENVIRONMENT VARIABLE TO POINT TO -----
+ echo --- YOUR JDK OR JRE INSTALLATION DIRECTORY BEFORE RUNNING MORPHO! ----
+ echo ----- Note that Morpho may not work correctly with non-SUN JVMs, -----
+ echo --------------------- such as gcj or kafee. --------------------------
+ echo ----------------------------------------------------------------------
+ echo ----------------------------------------------------------------------
+ exit
+fi
+
+
 
 XMLP=./lib/xercesImpl.jar
 API=./lib/xmlParserAPIs.jar
@@ -21,10 +36,10 @@ JSE=./lib/jsse.jar
 JCE=./lib/jcert.jar
 JNE=./lib/jnet.jar  
 LAF=./lib/kunststoff.jar
-CPATH=$XMLP:$API:$XALAN:$DMC:$CFG:$JLF:$HTP:$ITS:$JSE:$JCE:$JNE:$LAF
+CPATH=$JAVA_HOME/jre/lib/rt.jar:$XMLP:$API:$XALAN:$DMC:$CFG:$JLF:$HTP:$ITS:$JSE:$JCE:$JNE:$LAF
 echo "----------------------------------"
 
-java -version
+$JAVA_HOME/bin/java -version
 
 echo "----------------------------------"
-java -Xmx512m -Xss1m -cp $CPATH edu.ucsb.nceas.morpho.Morpho
+$JAVA_HOME/bin/java -Xmx512m -Xss1m -cp $CPATH edu.ucsb.nceas.morpho.Morpho
