@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2004-04-05 18:32:03 $'
- * '$Revision: 1.24 $'
+ *     '$Date: 2004-04-05 22:25:06 $'
+ * '$Revision: 1.25 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -312,7 +312,9 @@ public class Geographic extends AbstractUIPage{
     }
     boolean res = true;
     GeographicPage geographicPage = (GeographicPage)WizardPageLibrary.getPage(DataPackageWizardInterface.GEOGRAPHIC_PAGE);
-    boolean flag = geographicPage.setPageData(data, "/geographicCoverage");
+		data.remove("/geographicCoverage/@scope");
+		data.remove("/geographicCoverage/@id");
+   boolean flag = geographicPage.setPageData(data, "/geographicCoverage");
     if(!flag) res = false;
     List newRow = geographicPage.getSurrogate();
     newRow.add(geographicPage);
