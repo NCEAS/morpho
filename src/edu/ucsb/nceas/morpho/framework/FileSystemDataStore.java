@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-01-29 21:54:21 $'
- * '$Revision: 1.27 $'
+ *     '$Date: 2002-03-26 19:28:39 $'
+ * '$Revision: 1.28 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -93,6 +93,16 @@ public class FileSystemDataStore extends DataStore
   }
   
   public File saveTempDataFile(String name, Reader file)
+  {
+    return saveDataFile(name, file, tempdir, null);
+  }
+
+  public File saveDataFile(String name, InputStream file)
+  {
+    return saveDataFile(name, file, datadir, null);
+  }
+  
+  public File saveTempDataFile(String name, InputStream file)
   {
     return saveDataFile(name, file, tempdir, null);
   }
@@ -206,6 +216,10 @@ public class FileSystemDataStore extends DataStore
   public File newFile(String name, Reader file)
   {
     return saveFile(name, file, datadir, null);
+  }
+  
+  public File newDataFile(String name, InputStream is) {
+    return saveDataFile(name, is, datadir, null);
   }
   
   /**
@@ -325,6 +339,52 @@ public class FileSystemDataStore extends DataStore
       }
       bwriter.flush();
       bwriter.close();
+      return savefile;
+    }
+    catch(Exception e)
+    {
+      e.printStackTrace();
+      return null;
+    }
+  }
+
+ /**
+  *  A variant of saveFile designed for use with Data Files.
+  *  This avoids the writing of files to Strings that is in saveFile
+  *  and allows for very large data files. (i.e. no file is put entirely
+  *  in memory) This version uses an InputStream rather than a Reader to
+  *  avoid problems with binary file corruption
+  */
+  public File saveDataFile(String name, InputStream file, String rootDir, DataPackage dp)
+  {
+    try
+    {
+      String path = parseId(name);
+      String dirs = path.substring(0, path.lastIndexOf("/"));
+      File savefile = new File(rootDir + "/" + path); //the path to the file
+      File savedir = new File(rootDir + "/" + dirs); //the dir part of the path
+      if(!savefile.exists())
+      {//if the file isn't there create it.
+        try
+        {
+          savedir.mkdirs(); //create any directories
+        }
+        catch(Exception ee)
+        {
+          ee.printStackTrace();
+        }
+      }
+      
+      BufferedInputStream bfile = new BufferedInputStream(file);
+      BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(savefile));
+      int d = bfile.read();
+      while(d != -1)
+      {
+        bos.write(d); //write out everything in the reader
+        d = bfile.read();
+      }
+      bos.flush();
+      bos.close();
       return savefile;
     }
     catch(Exception e)
