@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-07-02 23:06:57 $'
- * '$Revision: 1.15 $'
+ *     '$Date: 2001-07-06 17:29:05 $'
+ * '$Revision: 1.16 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -127,29 +127,31 @@ public class XMLPanels extends Component
         if (doc == null) { return; }
         String temp = info.getEditor();
         if (temp!=null) {
-        try {
-          Object[] Args = new Object[] {doc};
-          Class[] ArgsClass = new Class[] {DefaultMutableTreeNode.class};
-          Class componentDefinition = Class.forName(temp);
-          Constructor ArgsConstructor = componentDefinition.getConstructor(ArgsClass);
-          Object obj = createObject(ArgsConstructor,Args);
+          try {
+            Object[] Args = new Object[] {doc};
+            Class[] ArgsClass = new Class[] {DefaultMutableTreeNode.class};
+            Class componentDefinition = Class.forName(temp);
+            Constructor ArgsConstructor = componentDefinition.getConstructor(ArgsClass);
+            Object obj = createObject(ArgsConstructor,Args);
             
-          // obj should be a component that can be added to a container (e.g. a descendent
-          // of JPanel) with a constructor that takes a node as an argument
-          if (obj!=null) {
-            topPanel.add((Component)obj);    
+            // obj should be a component that can be added to a container (e.g. a descendent
+            // of JPanel) with a constructor that takes a node as an argument
+            if (obj!=null) {
+              topPanel.add((Component)obj);    
+            }
+          } 
+          catch (ClassNotFoundException e) {
+            System.out.println(e);
+          } 
+          catch (NoSuchMethodException e) {
+            System.out.println(e);
           }
-        } 
-        catch (ClassNotFoundException e) {
-          System.out.println(e);
-        } 
-        catch (NoSuchMethodException e) {
-          System.out.println(e);
         }
-        }
-        else{
+        info.setEditor(null); // so it is not repeated
+//        else{
           doPanels(doc,topPanel);
-        }
+        info.setEditor(temp);  // reset for next time
+//        }
     }
     
     void doPanels(DefaultMutableTreeNode node, JPanel panel) {

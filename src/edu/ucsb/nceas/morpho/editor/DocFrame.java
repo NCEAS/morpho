@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-07-05 19:12:28 $'
- * '$Revision: 1.51 $'
+ *     '$Date: 2001-07-06 17:29:06 $'
+ * '$Revision: 1.52 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1021,6 +1021,11 @@ class SymTreeSelection implements javax.swing.event.TreeSelectionListener
 	      tempStack.push(end);
 	    }
 	  Enumeration enum = node.children();
+	  if (!enum.hasMoreElements()) {
+	      start.append(start1.toString());
+	      start1 = new StringBuffer();
+	      textnode = true;
+	  }
 	  while (enum.hasMoreElements()) {  // process child nodes 
 	    DefaultMutableTreeNode nd = (DefaultMutableTreeNode)(enum.nextElement());
 	    NodeInfo ni1 = (NodeInfo)nd.getUserObject();
@@ -1093,6 +1098,7 @@ class SymTreeSelection implements javax.swing.event.TreeSelectionListener
      */
     void treeUnion(DefaultMutableTreeNode input, DefaultMutableTreeNode template) {
         Stack tempStack;
+        Vector tempVector;
         DefaultMutableTreeNode tNode;
         DefaultMutableTreeNode nd2;
         DefaultMutableTreeNode pqw;
@@ -1135,16 +1141,22 @@ class SymTreeSelection implements javax.swing.event.TreeSelectionListener
                 tNode = (DefaultMutableTreeNode)enum.nextElement();
                 Vector hits = getMatches(tNode, nextLevelInputNodes);
                 // merge hits with template node
+                tempVector = (Vector)currentLevelInputNodes.clone();
                 Enumeration en1 = hits.elements();
                 while (en1.hasMoreElements()) {
                     DefaultMutableTreeNode tempnode = (DefaultMutableTreeNode)en1.nextElement();
                     mergeNodes(tempnode, tNode);  
+                    // now remove the merged node parent
+                    // needed to handle case when some elements have text data and others with
+                    // same name are blank
+                    DefaultMutableTreeNode mergeParent = (DefaultMutableTreeNode)tempnode.getParent();
+                    currentLevelInputNodes.remove(mergeParent);
                 }
                 // Here we need to add nodes that are 'missing'
                 // go to parent of tnode; find matching nodes in input at same level; add children
                 DefaultMutableTreeNode newnode = null;
                 tempStack = new Stack();
-                if (hits.size()==0) {
+          //      if (hits.size()==0) {
                     DefaultMutableTreeNode ptNode = (DefaultMutableTreeNode)tNode.getParent();
                     int index = ptNode.getIndex(tNode);
                     Vector parent_hits = getMatches(ptNode, currentLevelInputNodes);
@@ -1201,7 +1213,9 @@ class SymTreeSelection implements javax.swing.event.TreeSelectionListener
                             }
                         }
                     }
-                }
+     //           } // end if hits.size==0
+                // put removed elements back
+                currentLevelInputNodes = tempVector;
                 // recalculate nextLevelInput  
                 nextLevelInputNodes = new Vector();
                 for (Enumeration enumrecalc = currentLevelInputNodes.elements();enumrecalc.hasMoreElements();) {
