@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2004-04-27 19:02:27 $'
- * '$Revision: 1.42 $'
+ *     '$Date: 2004-04-28 15:39:32 $'
+ * '$Revision: 1.43 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -105,7 +105,8 @@ public  class EML200DataPackage extends AbstractDataPackage
               // .1 version does not currently exist on metacat; try to create it
               String temp_an = getAccessionNumber();
               setAccessionNumber(temp2+".1");
-              String tempout = XMLUtilities.getDOMTreeAsString(getMetadataNode(), false);
+//              String tempout = XMLUtilities.getDOMTreeAsString(getMetadataNode(), false);
+              String tempout = XMLUtil.getDOMTreeAsString(getMetadataNode().getOwnerDocument());
               StringReader sr2 = new StringReader(tempout);
               mds.newFile(temp2+".1",sr2);
               setAccessionNumber(temp_an);
