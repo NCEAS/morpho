@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2004-03-18 00:23:33 $'
- * '$Revision: 1.16 $'
+ *     '$Date: 2004-03-26 00:00:58 $'
+ * '$Revision: 1.17 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -75,8 +75,6 @@ public interface DataPackageWizardInterface {
   public static final String CODE_IMPORT_SUMMARY= "CODE_IMPORT_SUMMARY";
   public static final String CODE_DEFINITION   	= "CODE_DEFINITION";
 
-  public static List responsiblePartyList = new ArrayList();   // Used for
-                        // keeping track of parties being added to this DP
 
   /**
    *  method to start the Package wizard
