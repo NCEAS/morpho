@@ -7,8 +7,8 @@
 <searchnetwork>false</searchnetwork>
 <pathquery_config>
     <doctypes_searched><doctype>any</doctype></doctypes_searched>
-    <doctypes_returned><returndoc>-//NCEAS//resource//EN</returndoc><returndoc>-//NCEAS//eml-dataset//EN</returndoc><returndoc>eml-dataset</returndoc></doctypes_returned>
-    <fields_returned><returnfield>resource/dataset/keywordInfo/keyword</returnfield><returnfield>eml-dataset/dataset/keywordInfo/keyword</returnfield></fields_returned>
+    <doctypes_returned><returndoc>any</returndoc></doctypes_returned>
+    <fields_returned><returnfield>/eml-dataset/keyword_info/keyword</returnfield></fields_returned>
 
     <doctypes_searched_default>
         <doctype_default>any</doctype_default>

@@ -6,7 +6,7 @@
   *    Copyright: 2000 Regents of the University of California and the
   *               National Center for Ecological Analysis and Synthesis
   *  For Details: http://www.nceas.ucsb.edu/
-  *    File Info: '$Id: build.xml,v 1.9 2000-09-26 15:05:36 higgins Exp $'
+  *    File Info: '$Id: build.xml,v 1.10 2000-11-30 19:48:06 higgins Exp $'
   *
   *  Build file for the Ant cross-platform build system for metacat
   *  See http://jakarta.apache.org for details on Ant
@@ -43,7 +43,7 @@
       <property name="sym" 
                 value="${libdir}/sym.jar" />
       <property name="cpath" 
-                value="${xml4j}:${xerces}:${xalan}:${build.dest}:${sym}"/>
+                value="${xerces}:${xalan}:${xml4j}:${build.dest}:${sym}"/>
       <property name="package.home" value="edu/ucsb/nceas" />
 
    </target>
