@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-07-06 19:00:14 $'
- * '$Revision: 1.1 $'
+ *     '$Date: 2001-12-28 04:45:50 $'
+ * '$Revision: 1.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -48,7 +48,7 @@ public class VariablePanel extends JPanel
 		setAlignmentX(0.0F);
 		setLayout(new BorderLayout(0,0));
 		setSize(0,0);
-		JLabel1.setText("<html>This is a list of all variables in the document</html>");
+		JLabel1.setText("<html>This is a list of all attributes in the document</html>");
 		JLabel1.setAlignmentY(0.0F);
 		add(BorderLayout.NORTH,JLabel1);
 		JScrollPane1.setOpaque(true);
@@ -66,7 +66,7 @@ public class VariablePanel extends JPanel
 	  while (enum.hasMoreElements()) {
 	    nd = (DefaultMutableTreeNode)enum.nextElement();
 	    NodeInfo ni = (NodeInfo)nd.getUserObject();
-	    if (ni.getName().equals("variable_name")) {
+	    if (ni.getName().equals("attributeName")) {
         //now check if there are child TEXT nodes
         Enumeration nodes = nd.children();
         // loop over child node
