@@ -6,7 +6,7 @@
   *    Copyright: 2000 Regents of the University of California and the
   *               National Center for Ecological Analysis and Synthesis
   *  For Details: http://www.nceas.ucsb.edu/
-  *    File Info: '$Id: build.xml,v 1.57 2002-10-24 01:59:43 jones Exp $'
+  *    File Info: '$Id: build.xml,v 1.58 2002-10-26 00:02:06 tao Exp $'
   *
   *  Build file for the Ant cross-platform build system for metacat
   *  See http://jakarta.apache.org for details on Ant
@@ -74,7 +74,7 @@
       <property name="morpho" 
                 value="${libdir}/${name}.jar" />
       <property name="jlf" 
-                value="${libdir}/jlfgr-1_0.jar" />
+                value="${libdir}/shippedIcons.jar" />
       <property name="itisjar"
                 value="${libdir}/itislib.jar" />
       <property name="jsse"
@@ -232,7 +232,7 @@
       <copy file="./lib/table-entity.xml" todir="${morpho.lib}"/>
       <copy file="./lib/default-profile.xml" todir="${morpho.lib}"/>
       <copy file="./lib/itislib.jar" todir="${morpho.lib}"/>
-      <copy file="./lib/jlfgr-1_0.jar" todir="${morpho.lib}"/>
+      <copy file="./lib/shippedIcons.jar" todir="${morpho.lib}"/>
       <copy file="./lib/morpho.jar" todir="${morpho.lib}"/>
       <copy file="./lib/xalan.jar" todir="${morpho.lib}"/>
       <copy file="./lib/xerces.jar" todir="${morpho.lib}"/> 

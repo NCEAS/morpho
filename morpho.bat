@@ -1,9 +1,9 @@
 @echo off
 REM # 
 REM # '$RCSfile: morpho.bat,v $'
-REM # '$Author: brooke $'
-REM # '$Date: 2002-09-26 02:50:20 $'
-REM # '$Revision: 1.20 $'
+REM # '$Author: tao $'
+REM # '$Date: 2002-10-26 00:03:14 $'
+REM # '$Revision: 1.21 $'
 REM # 
 REM #  Script for launching morpho from windows systems
 REM #
@@ -14,7 +14,7 @@ SET   API=lib\xml-apis.jar
 SET XALAN=lib\xalan.jar
 SET   DMC=lib\morpho.jar
 SET   CFG=lib\morpho-config.jar
-SET   JLF=lib\jlfgr-1_0.jar
+SET   JLF=lib\shippedIcons.jar
 SET   HTP=lib\httpclient.jar
 SET   ITS=lib\itislib.jar
 SET   JSE=lib\jsse.jar
