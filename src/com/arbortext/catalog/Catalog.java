@@ -1288,6 +1288,7 @@ public class Catalog {
      * forward slashes.
      */
     private String fixSlashes (String sysid) {
+        sysid.replace(':', '/');   //DFH - for the Mac
 	return sysid.replace('\\', '/');
     }
 
