@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: sgarg $'
- *     '$Date: 2004-01-23 01:10:26 $'
- * '$Revision: 1.11 $'
+ *     '$Date: 2004-01-23 19:23:48 $'
+ * '$Revision: 1.12 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -558,6 +558,8 @@ public class PartyPage extends AbstractWizardPage {
       WidgetFactory.unhiliteComponent(lastNameLabel);
       WidgetFactory.unhiliteComponent(organizationLabel);
       WidgetFactory.unhiliteComponent(positionNameLabel);
+      warningPanel.setVisible(false);
+      WidgetFactory.unhiliteComponent(warningLabel);
       return true;
 
     } else {
