@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-03-19 19:10:29 $'
- * '$Revision: 1.47 $'
+ *     '$Date: 2002-03-20 20:30:55 $'
+ * '$Revision: 1.48 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1419,6 +1419,68 @@ public class DataPackage
     return resultString;
   }
   
+  public File getPhysicalFile(String entityID) {
+    File physicalfile = null;
+    boolean localloc = false;
+    boolean metacatloc = false;
+    if(location.equals(DataPackage.BOTH))
+    {
+      localloc = true;
+      metacatloc = true;
+    }
+    else if(location.equals(DataPackage.METACAT))
+    {
+      metacatloc = true;
+    }
+    else if(location.equals(DataPackage.LOCAL))
+    {
+      localloc = true;
+    }
+    // assume that entity is the object;
+    // ie eml-physical is related to entity
+    Vector triplesV = triples.getCollectionByObject(entityID) ;
+    for (int i=0;i<triplesV.size();i++) {
+        Triple triple = (Triple)triplesV.elementAt(i);
+        String sub = triple.getSubject();
+         physicalfile = getFileType(sub, "physical");
+         if (physicalfile!=null) return physicalfile;
+         
+    }
+    
+    return physicalfile;
+  }
+  
+  public File getAttributeFile(String entityID) {
+    File attributefile = null;
+    boolean localloc = false;
+    boolean metacatloc = false;
+    if(location.equals(DataPackage.BOTH))
+    {
+      localloc = true;
+      metacatloc = true;
+    }
+    else if(location.equals(DataPackage.METACAT))
+    {
+      metacatloc = true;
+    }
+    else if(location.equals(DataPackage.LOCAL))
+    {
+      localloc = true;
+    }
+    // assume that entity is the object;
+    // ie eml-attribute is related to entity
+    Vector triplesV = triples.getCollectionByObject(entityID) ;
+    for (int i=0;i<triplesV.size();i++) {
+        Triple triple = (Triple)triplesV.elementAt(i);
+        String sub = triple.getSubject();
+         attributefile = getFileType(sub, "attribute");
+         if (attributefile!=null) return attributefile;
+    }
+
+    
+    return attributefile;
+  }
+
   public File getDataFile(String entityID) {
     File datafile = null;
     boolean localloc = false;
@@ -1564,5 +1626,71 @@ public class DataPackage
     }
     return list;
   }
+
+  
+private File getFileType(String id, String typeString) {
+    MetacatDataStore mds = new MetacatDataStore(framework);
+    FileSystemDataStore fsds = new FileSystemDataStore(framework);
+    ConfigXML config = framework.getConfiguration();
+    String catalogPath = config.get("local_catalog_path", 0);
+    File subfile;
+    String name = "unknown";
+      try
+      {
+        //try to open the file locally, if it isn't here then try to get
+        //it from metacat
+        subfile = fsds.openFile(id.trim());
+      }
+      catch(FileNotFoundException fnfe)
+      {
+        try
+        {
+          subfile = mds.openFile(id.trim());
+        }
+        catch(FileNotFoundException fnfe2)
+        {
+          framework.debug(0, "File " + id + " not found locally or " +
+                             "on metacat.");
+          return null;
+        }
+        catch(CacheAccessException cae)
+        {
+          framework.debug(0, "The cache could not be accessed in " +
+                             "DataPackage.getRelatedFiles.");
+          return null;
+        }
+      }
+      
+      try
+      { 
+        FileReader fr = new FileReader(subfile);
+        String xmlString = "";
+        for(int j=0; j<5; j++)
+        {
+          xmlString += (char)fr.read();
+        }
+        
+        if(xmlString.equals("<?xml"))
+        { //we are dealing with an xml file here.
+          Document subDoc = PackageUtil.getDoc(subfile, catalogPath);
+          DocumentTypeImpl dt = (DocumentTypeImpl)subDoc.getDoctype();
+          name = dt.getPublicId();
+        }
+        else
+        { //this is a data file not an xml file
+          name = "Data File";
+        } 
+      }
+      catch (Exception ww) {}
+      System.out.println("Name: "+name);
+      if (name.indexOf(typeString)>-1)   // i.e. PublicId contains typeString
+      {
+        return subfile;
+      } else {
+        subfile = null;
+      }
+      return subfile;
+}
+  
   
 }
