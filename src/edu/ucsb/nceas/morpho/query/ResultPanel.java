@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2002-08-30 01:22:31 $'
- * '$Revision: 1.56 $'
+ *     '$Date: 2002-08-31 00:30:43 $'
+ * '$Revision: 1.57 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -105,7 +105,7 @@ public class ResultPanel extends JPanel
   /**menu items for the popup menu*/
   private JMenuItem openMenu = null;
   private JMenuItem openPreviousVersion = null;
-
+  private JMenuItem synchronizeMenu = null;
   private JMenuItem uploadMenu = null;
   private JMenuItem downloadMenu = null;
   private JMenuItem deleteLocalMenu = null;
@@ -266,20 +266,27 @@ public class ResultPanel extends JPanel
       
       popup.add(new JSeparator());
       
+      // Create a action to open a synchronize dialog
+      GUIAction synchronizeAction = new GUIAction("Synchronize...", null,
+                                    new OpenSynchronizeDialogCommand());
+      synchronizeMenu = new JMenuItem(synchronizeAction);
+      popup.add(synchronizeMenu);
+      
       // Create a new JMenu SynChronize...
-      JMenu synchronize = new JMenu("Synchronize...");
+      //JMenu synchronize = new JMenu("Synchronize...");
       // Create a upload action and add it to synchronize
-      GUIAction uploadAction = new GUIAction("Local to network", null,
-                                new LocalToNetworkCommand(dialog));
-      uploadMenu = new JMenuItem(uploadAction);
-      synchronize.add(uploadMenu);
+      //GUIAction uploadAction = new GUIAction("Local to network", null,
+                                //new LocalToNetworkCommand(dialog));
+      //uploadMenu = new JMenuItem(uploadAction);
+      //synchronize.add(uploadMenu);
       // Create a download action
-      GUIAction downloadAction = new GUIAction("Network to Local", null,
-                       new NetworkToLocalCommand(dialog));
-      downloadMenu = new JMenuItem(downloadAction);
-      synchronize.add(downloadMenu);
+      //GUIAction downloadAction = new GUIAction("Network to Local", null,
+                       //new NetworkToLocalCommand(dialog));
+      //downloadMenu = new JMenuItem(downloadAction);
+      //synchronize.add(downloadMenu);
+      
       // Add synchronize to pop
-      popup.add(synchronize);
+      //popup.add(synchronize);
       popup.add(new JSeparator());
       
       // Create a new JMenu Delete
@@ -560,8 +567,10 @@ public class ResultPanel extends JPanel
           openPreviousVersion.setEnabled(false);
         }
         
-        uploadMenu.setEnabled(localLoc && !metacatLoc);
-        downloadMenu.setEnabled(metacatLoc && !localLoc);
+        synchronizeMenu.setEnabled
+                      ((localLoc && !metacatLoc)||(metacatLoc && !localLoc));
+        //uploadMenu.setEnabled(localLoc && !metacatLoc);
+        //downloadMenu.setEnabled(metacatLoc && !localLoc);
         deleteLocalMenu.setEnabled(localLoc);
         deleteMetacatMenu.setEnabled(metacatLoc);
         deleteAllMenu.setEnabled(metacatLoc && localLoc);
