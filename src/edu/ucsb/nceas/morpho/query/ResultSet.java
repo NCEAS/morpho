@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: jones $'
- *     '$Date: 2001-06-15 09:02:35 $'
- * '$Revision: 1.21 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2001-07-11 16:39:33 $'
+ * '$Revision: 1.22 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -393,6 +393,7 @@ public class ResultSet extends AbstractTableModel implements ContentHandler
   public void characters(char ch[], int start, int length) 
   {
     String inputString = new String(ch, start, length);
+    inputString = inputString.trim(); // added by higgins to remove extra white space 7/11/01
     String currentTag = (String)elementStack.peek();
     if (currentTag.equals("docid")) {
       docid = inputString;
