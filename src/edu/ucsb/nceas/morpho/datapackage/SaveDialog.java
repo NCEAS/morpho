@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2004-04-05 21:46:14 $'
- * '$Revision: 1.18 $'
+ *     '$Date: 2004-04-07 16:52:36 $'
+ * '$Revision: 1.19 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -347,25 +347,7 @@ public class SaveDialog extends JDialog
 	  this.dispose();
      
     if (!problem) {
-      MorphoFrame morphoFrame = UIController.getInstance().getCurrentActiveWindow();
-      morphoFrame.setVisible(false);
-    
-      try {
-        ServiceController services = ServiceController.getInstance();
-        ServiceProvider provider = 
-                services.getServiceProvider(DataPackageInterface.class);
-        DataPackageInterface dataPackage = (DataPackageInterface)provider;
-        if (showPackageFlag) {
-          dataPackage.openNewDataPackage(adp, null);
-        }
-        UIController controller = UIController.getInstance();
-        controller.removeWindow(morphoFrame);
-        morphoFrame.dispose();
-      }
-      catch (ServiceNotHandledException snhe) {
-        Log.debug(6, snhe.getMessage());
-        morphoFrame.setVisible(true);
-      }
+      UIController.showNewPackage(adp);
 	  }
 
 	}
