@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2002-09-25 15:30:35 $'
- * '$Revision: 1.52 $'
+ *     '$Date: 2002-09-25 21:07:24 $'
+ * '$Revision: 1.53 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -396,7 +396,8 @@ public class DataViewer extends javax.swing.JPanel
         ConfigXML profile = morpho.getProfile();
         String profileDirName = config.getConfigDirectory() + 
                                 File.separator +
-                                config.get("profile_directory", 0) + 
+                                config.get("profile_directory", 0) +
+                                File.separator + 
                                 config.get("current_profile", 0);
         datadir = profileDirName + File.separator + profile.get("datadir", 0);
         tempdir = profileDirName + File.separator + profile.get("tempdir", 0);
