@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2001-05-24 18:50:37 $'
- * '$Revision: 1.9 $'
+ *     '$Date: 2001-05-26 02:00:26 $'
+ * '$Revision: 1.10 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -265,10 +265,12 @@ public class ResultPanel extends JPanel
     queryDialog1.setQuery(results.getQuery());
     queryDialog1.setModal(true);
     queryDialog1.show();
-    Query query = queryDialog1.getQuery();
-    if (query != null) {
-      ResultSet newResults = query.execute();
-      setResults(newResults);
+    if (queryDialog1.isSearchStarted()) {
+      Query query = queryDialog1.getQuery();
+      if (query != null) {
+        ResultSet newResults = query.execute();
+        setResults(newResults);
+      }
     }
   } 
 
@@ -283,12 +285,17 @@ public class ResultPanel extends JPanel
   } 
 
   /**
-   * Set the ResultSet (usually as a result of refreshing or revising a Query
+   * Set the ResultSet (usually as a result of refreshing or revising a Query)
    */
   public void setResults(ResultSet newResults) 
   {
     this.results = newResults;
     titleLabel.setText(results.getQuery().getQueryTitle());
+    // MBJ -- Implementation problem - 25May2001
+    // Need to notify the frame and queryplugin of any title changes
+    // here, but currently this isn't possible -- need some redesign
+    // so that we can get a reference to the ResultFrame to do this
+    
     recordCountLabel.setText(results.getRowCount() + " data sets");
 
     // Notify the JTable that the TableModel changed a bunch!

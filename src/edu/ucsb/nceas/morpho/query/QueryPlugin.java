@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2001-05-23 07:07:49 $'
- * '$Revision: 1.62 $'
+ *     '$Date: 2001-05-26 02:00:26 $'
+ * '$Revision: 1.63 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -169,10 +169,12 @@ public class QueryPlugin implements PluginInterface, ConnectionListener
     QueryDialog queryDialog1 = new QueryDialog(framework);
     queryDialog1.setModal(true);
     queryDialog1.show();
-    Query query = queryDialog1.getQuery();
-    if (query != null) {
-      ResultSet rs = query.execute();
-      ResultFrame rsf = new ResultFrame(framework, rs);
+    if (queryDialog1.isSearchStarted()) {
+      Query query = queryDialog1.getQuery();
+      if (query != null) {
+        ResultSet rs = query.execute();
+        ResultFrame rsf = new ResultFrame(framework, rs);
+      }
     }
   }
 
