@@ -65,7 +65,7 @@
   <mainFrame>Resource</mainFrame>
   <frame>
     <frameName>Resource</frameName>
-    <frameConfigFile>./frames/resource.xml</frameConfigFile>
+    <frameConfigFile>./lib/frames/resource.xml</frameConfigFile>
   </frame>
 </customFrames>
 </root>
