@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2001-05-24 18:50:37 $'
- * '$Revision: 1.15 $'
+ *     '$Date: 2001-05-30 23:00:26 $'
+ * '$Revision: 1.16 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -283,13 +283,9 @@ public class ResultSet extends AbstractTableModel implements ContentHandler
     } catch (ArrayIndexOutOfBoundsException aioobe) {
       String emptyString = "";
       value = null;
-      //framework.debug(9, "No such row or column: row: " + row +
-                         //" col: " + col);
     } catch (NullPointerException npe) {
       String emptyString = "";
       value = emptyString;
-      //framework.debug(9, "Error getting value at: row: " + row +
-                         //" col: " + col);
     }
     return value;
   }
@@ -308,7 +304,6 @@ public class ResultSet extends AbstractTableModel implements ContentHandler
         currentClass = Class.forName("java.lang.String");
       } catch (ClassNotFoundException cnfe) {
       }
-      //framework.debug(9, "Error getting class for col: " + c);
     }
     return currentClass;
   }
@@ -574,14 +569,12 @@ public class ResultSet extends AbstractTableModel implements ContentHandler
         String currentDocid = (String)row.get(numColumns+2);
         // if docids match, change the icon and location flags
         if (docidList.containsKey(currentDocid)) {
-          framework.debug(9, "Merging row: " + currentDocid);
           int rowIndex = ((Integer)docidList.get(currentDocid)).intValue();
           Vector originalRow = (Vector)resultsVector.get(rowIndex);
           originalRow.set(0, bothIcon);
           originalRow.set(numColumns+5, new Boolean(true));
           originalRow.set(numColumns+6, new Boolean(true));
         } else {
-          framework.debug(9, "Adding row: " + currentDocid);
           resultsVector.addElement(row);
         }
       }

@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2001-05-30 18:59:52 $'
- * '$Revision: 1.35 $'
+ *     '$Date: 2001-05-30 23:00:26 $'
+ * '$Revision: 1.36 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -507,16 +507,10 @@ public class LocalQuery
       if (child instanceof QueryTerm) {
         String xpath = QueryTermToXPath((QueryTerm)child);
         currentResults = executeXPathQuery(xpath);
-        ClientFramework.debug(9, "QT res count: " + currentResults.size()); 
       } else {  // QueryGroup
         currentResults = executeLocal((QueryGroup)child);
-        ClientFramework.debug(9, "QG res count: " + currentResults.size()); 
       }
  
-      if (currentResults==null) {
-        ClientFramework.debug(9, "current is null!");
-      }
-
       if ((currentResults==null) &&
           (qg.getOperator().equalsIgnoreCase("intersect"))) {
         // exit loop since one the results sets is null
@@ -529,26 +523,13 @@ public class LocalQuery
         if (combined == null) {
           combined = (Vector)currentResults.clone(); // 1st time
         } else {
-          ClientFramework.debug(9, "Intersecting results...");
           Vector original = (Vector)combined.clone();
-          ClientFramework.debug(9, "Original res count: " + original.size()); 
-          ClientFramework.debug(9, "Current res count: " + currentResults.size()); 
-          for (int i = 0; i < original.size(); i++) {
-            ClientFramework.debug(9, "Original res contains: " + original.get(i));
-          }
-          for (int i = 0; i < currentResults.size(); i++) {
-            ClientFramework.debug(9, "Current res contains: " + 
-                            currentResults.get(i));
-          }
           combined = new Vector();
           for (int i = 0; i < currentResults.size(); i++) {
-            ClientFramework.debug(9, "Made it in loop.");
             Object obj = currentResults.get(i);
             if (original.contains(obj)) {
               combined.addElement(obj);
-              ClientFramework.debug(9, "Match.");
             } else {
-              ClientFramework.debug(9, "Mismatch.");
             }
           }
         }
@@ -566,7 +547,6 @@ public class LocalQuery
         }
       }
     }
-    ClientFramework.debug(9, "Returning res count: " + combined.size()); 
     return combined;
   }   
 
