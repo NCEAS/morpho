@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2002-09-17 20:30:14 $'
- * '$Revision: 1.47 $'
+ *     '$Date: 2002-09-18 18:01:06 $'
+ * '$Revision: 1.48 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -280,7 +280,9 @@ public class DataViewer extends javax.swing.JPanel
     
     
   DataViewer thisRef;
-
+  
+  // Display data view or not
+  private boolean showDataView = true;
 
 	/*
    * No argument contstructor that builds basic gui
@@ -424,6 +426,14 @@ public class DataViewer extends javax.swing.JPanel
     public PersistentVector getPV() {
       return pv;  
     }
+    
+    /**
+     * Method to get the show data view
+     */
+    public boolean getShowDataView()
+    {
+      return showDataView;
+    }//getShowDataView
     
     /*
      * Initialization code which collects information about the data
@@ -670,7 +680,9 @@ public class DataViewer extends javax.swing.JPanel
           }
         }
         else {
-          Log.debug(9, "Unable to display data!");
+          //Log.debug(9, "Unable to display data!");
+          // Couldn't show data view
+          showDataView = false;
         }
       }
       
