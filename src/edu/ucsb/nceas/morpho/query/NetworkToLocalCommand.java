@@ -5,9 +5,9 @@
  *    Authors: @tao@
  *    Release: @release@
  *
- *   '$Author: tao $'
- *     '$Date: 2002-09-12 01:00:02 $'
- * '$Revision: 1.6 $'
+ *   '$Author: jones $'
+ *     '$Date: 2002-09-15 19:34:00 $'
+ * '$Revision: 1.6.2.1 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,9 +23,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
-
 package edu.ucsb.nceas.morpho.query;
-
 
 import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
 import edu.ucsb.nceas.morpho.framework.MorphoFrame;
@@ -36,6 +34,7 @@ import edu.ucsb.nceas.morpho.plugins.ServiceProvider;
 import edu.ucsb.nceas.morpho.plugins.ServiceNotHandledException;
 import edu.ucsb.nceas.morpho.util.Command;
 import edu.ucsb.nceas.morpho.util.Log;
+import java.awt.event.ActionEvent;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 
@@ -93,7 +92,7 @@ public class NetworkToLocalCommand implements Command
   /**
    * execute open package command
    */    
-  public void execute()
+  public void execute(ActionEvent event)
   {
        // Make sure selected a id, and there no package in metacat
     if (selectDocId != null && !selectDocId.equals("") && !inLocal && inNetwork)
@@ -153,7 +152,7 @@ public class NetworkToLocalCommand implements Command
           Log.debug(20, "Downloading package.");
           dataPackage.download(docid);
           refreshFlag = true;
-          refresh.execute();
+          refresh.execute(null);
           
           return null;  
           

@@ -5,9 +5,9 @@
  *    Authors: @tao@
  *    Release: @release@
  *
- *   '$Author: tao $'
- *     '$Date: 2002-09-06 23:22:14 $'
- * '$Revision: 1.14 $'
+ *   '$Author: jones $'
+ *     '$Date: 2002-09-15 19:34:00 $'
+ * '$Revision: 1.14.2.1 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,6 +33,7 @@ import edu.ucsb.nceas.morpho.framework.UIController;
 import edu.ucsb.nceas.morpho.util.Command;
 import edu.ucsb.nceas.morpho.util.Log;
 import edu.ucsb.nceas.morpho.util.SortableJTable;
+import java.awt.event.ActionEvent;
 import javax.swing.JDialog;
 
 /**
@@ -59,11 +60,10 @@ public class SearchCommand implements Command
    
   }//SearchCommand
   
-  
   /**
    * execute cancel command
    */    
-  public void execute()
+  public void execute(ActionEvent event)
   {
     // Hide and destory the dialogBox
     MorphoFrame morphoFrame = null;
@@ -138,3 +138,4 @@ public class SearchCommand implements Command
   // public void undo();
 
 }//class CancelCommand
+

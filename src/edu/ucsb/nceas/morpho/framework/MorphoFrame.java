@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: tao $'
- *     '$Date: 2002-09-05 18:21:11 $'
- * '$Revision: 1.7 $'
+ *   '$Author: jones $'
+ *     '$Date: 2002-09-15 19:34:00 $'
+ * '$Revision: 1.7.4.1 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,16 +26,34 @@
 
 package edu.ucsb.nceas.morpho.framework;
 
+import edu.ucsb.nceas.morpho.util.GUIAction;
 import edu.ucsb.nceas.morpho.util.Log;
-import java.awt.*;
-import java.awt.event.*;
-import java.io.*;
-import java.lang.ClassCastException;
-import java.lang.reflect.*;
-import java.net.*;
-import java.net.URL;
-import java.util.*;
-import javax.swing.*;
+
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Container;
+import java.awt.Dimension;
+import java.awt.Insets;
+import java.awt.Toolkit;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.util.Vector;
+import javax.swing.Action;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLayeredPane;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.JPanel;
+import javax.swing.JToolBar;
+import javax.swing.KeyStroke;
 
 /**
  * The MorphoFrame is a Window in the Morpho application containing the standard
@@ -48,6 +66,8 @@ import javax.swing.*;
  */
 public class MorphoFrame extends JFrame
 {
+    private JMenuBar menuBar;
+    private Vector orderedMenuList;
     private JToolBar morphoToolbar;
     private StatusBar statusBar;
     private ProgressIndicator indicator;
@@ -91,6 +111,11 @@ public class MorphoFrame extends JFrame
         }
         indicator = new ProgressIndicator(bfly, flapping);
         layeredPane.add(indicator, JLayeredPane.DEFAULT_LAYER);
+
+        // Set up the menu bar
+        orderedMenuList = new Vector();
+        menuBar = new JMenuBar();
+        setMenuBar(menuBar);
 
         // Set up the toolbar
         int indicatorHeight = (int)indicator.getSize().getHeight();
@@ -141,8 +166,10 @@ public class MorphoFrame extends JFrame
     
     private int getMenuHeight() {
         if (menuBarHeight <= 0) {
-            menuBarHeight 
-             = (int)UIController.createMenuBar().getPreferredSize().getHeight();
+            JMenuBar testBar = new JMenuBar();
+            JMenu testMenu = new JMenu("Test");
+            testBar.add(testMenu);
+            menuBarHeight = (int)testBar.getPreferredSize().getHeight();
         }
         return menuBarHeight;
     }    
@@ -197,6 +224,132 @@ public class MorphoFrame extends JFrame
     {
         this.setJMenuBar(newMenuBar);
         this.getLayeredPane().invalidate();
+    }
+
+    /**
+     * Add a GUIAction to the menu and toolbar for this frame. 
+     * If the menu already exists, the actions are added to it.
+     *
+     * @param action the action to be added to the menus and toolbar
+     */
+    public void addGuiAction(GUIAction action)
+    {
+        String menuName = action.getMenuName();
+        int menuPosition = action.getMenuPosition();
+        JMenu currentMenu = null;
+        boolean menuExists = false;
+        // Check if a menu already exists
+        for (int i=0; i<orderedMenuList.size(); i++) {
+            currentMenu = (JMenu)orderedMenuList.elementAt(i);
+            if (currentMenu != null ) {
+                String currentMenuName = currentMenu.getText();
+                if (currentMenuName.equals(menuName)) {
+                    menuExists = true;
+                    break;
+                }
+            }
+        }
+        
+        // If not, add a new menu with that name in the right position
+        if (!menuExists) {
+            currentMenu = new JMenu(menuName);
+            if (menuPosition > orderedMenuList.size()) {
+                menuPosition = orderedMenuList.size();
+            }
+            orderedMenuList.insertElementAt(currentMenu, menuPosition);
+            // Rebuild a new menu bar
+            JMenuBar newBar = new JMenuBar();
+            for (int i=0; i<orderedMenuList.size(); i++) {
+                JMenu menu = (JMenu)orderedMenuList.elementAt(i);
+                newBar.add(menu);
+            }
+            setMenuBar(newBar);
+        }
+        
+        // add the action to the menu in which it belongs
+        int menuPos = action.getMenuItemPosition();
+        JMenuItem currentItem = null;
+        String hasDefaultSep = action.getSeparatorPosition();
+        if (menuPos >= 0) {
+            // Insert menus at the specified position
+            int menuCount = currentMenu.getItemCount();
+            if (menuPos > menuCount) {
+                menuPos = menuCount;
+            }
+            if (hasDefaultSep != null &&
+                hasDefaultSep.equals(UIController.SEPARATOR_PRECEDING)) {
+                currentMenu.insertSeparator(menuPos++);
+            }
+            // MBJ not completed yet -- menu item order not working
+            currentItem = currentMenu.insert(action, menuPos);
+            currentItem.setAccelerator(
+                    (KeyStroke)action.getValue(Action.ACCELERATOR_KEY));
+            if (hasDefaultSep != null &&
+                hasDefaultSep.equals(UIController.SEPARATOR_FOLLOWING)) {
+                menuPos++;
+                currentMenu.insertSeparator(menuPos);
+            }
+        } else {
+            // Append everything else at the bottom of the menu
+            if (hasDefaultSep != null &&
+                hasDefaultSep.equals(UIController.SEPARATOR_PRECEDING)) {
+                currentMenu.addSeparator();
+            }
+            currentItem = currentMenu.add(action);
+            currentItem.setAccelerator(
+                (KeyStroke)action.getValue(Action.ACCELERATOR_KEY));
+            if (hasDefaultSep != null &&
+                hasDefaultSep.equals(UIController.SEPARATOR_FOLLOWING)) {
+                currentMenu.addSeparator();
+            }
+        }
+
+        // add the action to the toolbar if its position > 0
+        // MBJ not completed yet -- need to control order based on position
+        int toolbarPosition = action.getToolbarPosition();
+        if (toolbarPosition >= 0) {
+            int componentCount = morphoToolbar.getComponentCount();
+            JButton toolButton = morphoToolbar.add(action);
+            String toolTip  = action.getToolTipText();
+            if (toolTip != null) {
+                toolButton.setToolTipText(toolTip);
+            }
+        }
+    }
+    
+    /**
+     * Remove a GUIAction from the menu and toolbar for this frame. 
+     *
+     * @param action the action to be removed from the menus and toolbar
+     */
+    public void removeGuiAction(GUIAction action)
+    {
+        // Remove the action from the menus
+        for (int i=0; i<orderedMenuList.size(); i++) {
+            JMenu currentMenu = (JMenu)orderedMenuList.elementAt(i);
+            if (currentMenu != null ) {
+                for (int j=0; j<currentMenu.getItemCount(); j++) {
+                    JMenuItem currentItem = currentMenu.getItem(j);
+                    if (currentItem != null) {
+                        GUIAction currentAction = 
+                            (GUIAction)currentItem.getAction();
+                        if (currentAction == action) {
+                            currentMenu.remove(currentItem);
+                        }
+                    }
+                }
+            }
+        }
+        
+        // Remove the action from the toolbar if present
+        Component[] buttons = morphoToolbar.getComponents();
+        for (int i=0; i<buttons.length; i++) {
+            JButton toolButton = (JButton)buttons[i];
+            GUIAction currentAction = (GUIAction)toolButton.getAction();
+            if (currentAction == action) {
+                morphoToolbar.remove(toolButton);
+            }
+        }
     }
 
     /**

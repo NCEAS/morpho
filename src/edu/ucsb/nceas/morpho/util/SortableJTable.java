@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: tao $'
- *     '$Date: 2002-09-06 22:11:33 $'
- * '$Revision: 1.4 $'
+ *   '$Author: jones $'
+ *     '$Date: 2002-09-15 19:34:01 $'
+ * '$Revision: 1.4.2.1 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -153,7 +153,7 @@ public class SortableJTable extends JTable implements MouseListener
     }//else
     //create instance of SortTableCommand
     sortCommand = new SortTableCommand(this, index, order);
-    sortCommand.execute();
+    sortCommand.execute(null);
   }
   public void mouseReleased(MouseEvent event){}
   public void mousePressed(MouseEvent event) {}

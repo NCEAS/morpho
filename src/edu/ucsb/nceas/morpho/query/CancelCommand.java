@@ -5,9 +5,9 @@
  *    Authors: @tao@
  *    Release: @release@
  *
- *   '$Author: tao $'
- *     '$Date: 2002-08-26 21:08:31 $'
- * '$Revision: 1.5 $'
+ *   '$Author: jones $'
+ *     '$Date: 2002-09-15 19:34:00 $'
+ * '$Revision: 1.5.4.1 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,6 +29,7 @@ package edu.ucsb.nceas.morpho.query;
 import edu.ucsb.nceas.morpho.util.Command;
 import edu.ucsb.nceas.morpho.util.Log;
 import java.awt.Window;
+import java.awt.event.ActionEvent;
 
 /**
  * Class to handle cancel command
@@ -51,7 +52,7 @@ public class CancelCommand implements Command
   /**
    * execute cancel command
    */    
-  public void execute()
+  public void execute(ActionEvent event)
   {
      window.setVisible(false);
      // Destory the object
