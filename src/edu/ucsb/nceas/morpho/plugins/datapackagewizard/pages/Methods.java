@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: sgarg $'
- *     '$Date: 2004-03-25 01:31:30 $'
- * '$Revision: 1.11 $'
+ *     '$Date: 2004-03-30 21:35:46 $'
+ * '$Revision: 1.12 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -54,6 +54,7 @@ import edu.ucsb.nceas.morpho.util.UISettings;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardContainerFrame;
 import java.awt.Dimension;
 import javax.swing.JComponent;
+import java.util.ArrayList;
 
 public class Methods
     extends AbstractUIPage {
@@ -64,9 +65,19 @@ public class Methods
   private final String nextPageID = DataPackageWizardInterface.ACCESS;
   private final String title = "Methods and Sampling";
   private final String subtitle = "";
-  private final String xPathRoot = "/eml:eml/dataset/methods";
   private final String pageNumber = "12";
   private final String EMPTY_STRING = "";
+
+  private final String METHOD_ROOT = "methods/";
+  private final String XPATH_ROOT = "/eml:eml/dataset[1]/" + METHOD_ROOT;
+
+  private final String STUDY_REL_XPATH =
+      "sampling[1]/studyExtent[1]/description[1]/para[1]";
+  private final String SAMPLING_REL_XPATH =
+      "sampling[1]/samplingDescription[1]/para[1]";
+  private final String METHODSTEP_REL_XPATH = "methodStep[";
+
+  private String xPathRoot = METHOD_ROOT;
 
   private JTextArea studyArea;
   private JTextArea sampleArea;
@@ -75,7 +86,7 @@ public class Methods
   private JLabel warningLabel;
   private JPanel warningPanel;
 
-  private static final Dimension PARTY_FULL_LABEL_DIMS = new Dimension(700, 20);
+  private static final Dimension FULL_LABEL_DIMS = new Dimension(700, 20);
 
   private final String[] colNames = {
       "Method Step Title", "Method Step Description", "Instrumentation"};
@@ -157,7 +168,7 @@ public class Methods
         + "entries is required: Last Name, Position Name or Organization", true);
     warningPanel.add(warningLabel);
     warningPanel.setVisible(false);
-    setPrefMinMaxSizes(warningLabel, PARTY_FULL_LABEL_DIMS);
+    setPrefMinMaxSizes(warningLabel, FULL_LABEL_DIMS);
     warningPanel.setBorder(new javax.swing.border.EmptyBorder(0,
         12 * WizardSettings.PADDING,
         0, 8 * WizardSettings.PADDING));
@@ -283,7 +294,7 @@ public class Methods
          sampleArea.getText().trim().compareTo("") != 0)) {
       // method is requried
       warningLabel.setText("Method steps are required if you provide either a "
-                           +"study extent or smapling description");
+                           + "study extent or smapling description");
       warningPanel.setVisible(true);
       return false;
     }
@@ -292,7 +303,7 @@ public class Methods
           sampleArea.getText().trim().compareTo("") != 0)) {
 
       warningLabel.setText("Study extent is required if you provide "
-                           +"sampling description");
+                           + "sampling description");
       warningPanel.setVisible(true);
       return false;
     }
@@ -300,7 +311,7 @@ public class Methods
           sampleArea.getText().trim().compareTo("") == 0)) {
 
       warningLabel.setText("Sampling description is required if you provide "
-                           +"study extent");
+                           + "study extent");
       warningPanel.setVisible(true);
       return false;
     }
@@ -321,6 +332,19 @@ public class Methods
 
   //
   public OrderedMap getPageData() {
+    return getPageData(XPATH_ROOT);
+  }
+
+  /**
+   * gets the Map object that contains all the key/value paired settings for
+   * this particular wizard page
+   *
+   * @param rootXPath the root xpath to prepend to all the xpaths returned by
+   *   this method
+   * @return data the Map object that contains all the key/value paired
+   *   settings for this particular wizard page
+   */
+  public OrderedMap getPageData(String rootXPath) {
 
     returnMap.clear();
 
@@ -333,7 +357,7 @@ public class Methods
 
     List rowLists = methodsList.getListOfRowLists();
     if (rowLists != null && rowLists.isEmpty()) {
-      return null;
+      return returnMap;
     }
 
     for (Iterator it = rowLists.iterator(); it.hasNext(); ) {
@@ -356,37 +380,21 @@ public class Methods
       nextMethodsPage = (MethodsPage) nextUserObject;
 
       nextNVPMap = nextMethodsPage.getPageData(
-          "/eml:eml/dataset/methods/methodStep[" + (index++) +
-          "]");
+          rootXPath + "methodStep[" + (index++) + "]");
       returnMap.putAll(nextNVPMap);
     }
 
     String study = studyArea.getText().trim();
     if (study != null && !study.equals(EMPTY_STRING)) {
-      returnMap.put(xPathRoot + "/sampling/studyExtent/description/para", study);
+      returnMap.put(rootXPath + STUDY_REL_XPATH, study);
     }
 
     String sample = sampleArea.getText().trim();
-    if (sample != null &&!sample.equals(EMPTY_STRING)) {
-      returnMap.put(xPathRoot + "/sampling/samplingDescription/para", sample);
+    if (sample != null && !sample.equals(EMPTY_STRING)) {
+      returnMap.put(rootXPath + SAMPLING_REL_XPATH, sample);
     }
 
     return returnMap;
-  }
-
-  /**
-   * gets the Map object that contains all the key/value paired settings for
-   * this particular wizard page
-   *
-   * @param rootXPath the root xpath to prepend to all the xpaths returned by
-   *   this method
-   * @return data the Map object that contains all the key/value paired
-   *   settings for this particular wizard page
-   */
-  public OrderedMap getPageData(String rootXPath) {
-
-    throw new UnsupportedOperationException(
-        "getPageData(String rootXPath) Method Not Implemented");
   }
 
   // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -439,5 +447,169 @@ public class Methods
     return pageNumber;
   }
 
-    public boolean setPageData(OrderedMap data, String xPathRoot) { return false; }
+  // resets all fields to blank
+  private void resetBlankData() {
+
+    studyArea.setText("");
+    sampleArea.setText("");
+    methodsList.removeAllRows();
+
+  }
+
+  public boolean setPageData(OrderedMap map, String _xPathRoot) {
+
+    if (_xPathRoot != null && _xPathRoot.trim().length() > 0) {
+      this.xPathRoot = _xPathRoot;
+    }
+
+    if (map == null || map.isEmpty()) {
+      this.resetBlankData();
+      return true;
+    }
+
+    List toDeleteList = new ArrayList();
+    Iterator keyIt = map.keySet().iterator();
+    Object nextXPathObj = null;
+    String nextXPath = null;
+    Object nextValObj = null;
+    String nextVal = null;
+
+    List methodstepList = new ArrayList();
+
+    while (keyIt.hasNext()) {
+
+      nextXPathObj = keyIt.next();
+      if (nextXPathObj == null) {
+        continue;
+      }
+      nextXPath = (String) nextXPathObj;
+
+      nextValObj = map.get(nextXPathObj);
+      nextVal = (nextValObj == null) ? "" : ( (String) nextValObj).trim();
+
+      Log.debug(10, "Methods:  nextXPath = " + nextXPath
+                + "\n nextVal   = " + nextVal);
+
+      // remove everything up to and including the last occurrence of
+      // this.xPathRoot to get relative xpaths, in case we're handling a
+      // project elsewhere in the tree...
+      nextXPath = nextXPath.substring(nextXPath.lastIndexOf(this.xPathRoot)
+                                      + this.xPathRoot.length());
+
+      Log.debug(10, "Methods: TRIMMED nextXPath   = " + nextXPath);
+
+      if (nextXPath.startsWith(SAMPLING_REL_XPATH)) {
+
+        sampleArea.setText(nextVal);
+        toDeleteList.add(nextXPathObj);
+
+      }
+      else if (nextXPath.startsWith(STUDY_REL_XPATH)) {
+
+        studyArea.setText(nextVal);
+        toDeleteList.add(nextXPathObj);
+
+      }
+      else if (nextXPath.startsWith(METHODSTEP_REL_XPATH)) {
+
+        Log.debug(45, ">>>>>>>>>> adding to methodstepList: nextXPathObj="
+                  + nextXPathObj + "; nextValObj=" + nextValObj);
+        addToMethodStep(nextXPathObj, nextValObj, methodstepList);
+        toDeleteList.add(nextXPathObj);
+      }
+    }
+
+    Iterator persIt = methodstepList.iterator();
+    Object nextStepMapObj = null;
+    OrderedMap nextStepMap = null;
+    int methodPredicate = 1;
+
+    methodsList.removeAllRows();
+    boolean partyRetVal = true;
+
+    while (persIt.hasNext()) {
+
+      nextStepMapObj = persIt.next();
+      if (nextStepMapObj == null) {
+        continue;
+      }
+      nextStepMap = (OrderedMap) nextStepMapObj;
+      if (nextStepMap.isEmpty()) {
+        continue;
+      }
+
+      MethodsPage nextStep = (MethodsPage) WizardPageLibrary.getPage(
+          DataPackageWizardInterface.METHODS_PAGE);
+
+      boolean checkParty = nextStep.setPageData(nextStepMap,
+                                                 this.xPathRoot
+                                                 + METHODSTEP_REL_XPATH
+                                                 + (methodPredicate++) + "]/");
+
+      if (!checkParty) {
+        partyRetVal = false;
+      }
+      List newRow = nextStep.getSurrogate();
+      newRow.add(nextStep);
+
+      methodsList.addRow(newRow);
+    }
+    //check party return valuse...
+    if (!partyRetVal) {
+
+      Log.debug(20, "Project.setPageData - Party sub-class returned FALSE");
+    }
+
+    //remove entries we have used from map:
+    Iterator dlIt = toDeleteList.iterator();
+    while (dlIt.hasNext()) {
+      map.remove(dlIt.next());
+
+      //if anything left in map, then it included stuff we can't handle...
+    }
+    boolean returnVal = map.isEmpty();
+
+    if (!returnVal) {
+
+      Log.debug(20, "Project.setPageData returning FALSE! Map still contains:"
+                + map);
+    }
+    return (returnVal && partyRetVal);
+
+  }
+
+  private void addToMethodStep(Object nextPersonnelXPathObj,
+                             Object nextPersonnelVal, List methodstepList) {
+
+      if (nextPersonnelXPathObj == null)return;
+      String nextPersonnelXPath = (String) nextPersonnelXPathObj;
+      int predicate = getFirstPredicate(nextPersonnelXPath, METHODSTEP_REL_XPATH);
+
+  // NOTE predicate is 1-relative, but List indices are 0-relative!!!
+      if (predicate >= methodstepList.size()) {
+
+        for (int i = methodstepList.size(); i <= predicate; i++) {
+          methodstepList.add(new OrderedMap());
+        }
+      }
+
+      if (predicate < methodstepList.size()) {
+        Object nextMapObj = methodstepList.get(predicate);
+        OrderedMap nextMap = (OrderedMap) nextMapObj;
+        nextMap.put(nextPersonnelXPathObj, nextPersonnelVal);
+      }
+      else {
+        Log.debug(15,
+            "**** ERROR - Project.addToPersonnel() - predicate > methodstepList.size()");
+      }
+    }
+
+    private int getFirstPredicate(String xpath, String firstSegment) {
+
+      String tempXPath
+          = xpath.substring(xpath.indexOf(firstSegment) + firstSegment.length());
+
+      return Integer.parseInt(
+          tempXPath.substring(0, tempXPath.indexOf("]")));
+    }
 }

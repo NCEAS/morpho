@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: sgarg $'
- *     '$Date: 2004-03-25 01:31:30 $'
- * '$Revision: 1.7 $'
+ *     '$Date: 2004-03-30 21:35:46 $'
+ * '$Revision: 1.8 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -46,6 +46,8 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.JScrollPane;
 import java.util.StringTokenizer;
+import edu.ucsb.nceas.utilities.XMLUtilities;
+import java.util.Iterator;
 
 public class MethodsPage
     extends AbstractUIPage {
@@ -64,7 +66,7 @@ public class MethodsPage
   private JLabel instLabel;
   private JTextArea instField;
   private JTextField titleField;
-  private final String xPathRoot =
+  private String xPathRoot =
       "/eml:eml/dataset/methods/methodStep/description/section";
 
   public MethodsPage() {
@@ -230,7 +232,7 @@ public class MethodsPage
 
     String title = titleField.getText().trim();
 
-    if (title!=null && !title.equals(EMPTY_STRING)) {
+    if (title != null && !title.equals(EMPTY_STRING)) {
       returnMap.put(xPathRoot + "/description/section/title", title);
     }
 
@@ -239,9 +241,10 @@ public class MethodsPage
 
       StringTokenizer st = new StringTokenizer(desc, "\n");
       int count = 0;
-      while(st.hasMoreTokens()){
+      while (st.hasMoreTokens()) {
         count++;
-        returnMap.put(xPathRoot + "/description/section/para[" + count + "]", st.nextToken());
+        returnMap.put(xPathRoot + "/description/section/para[" + count + "]",
+                      st.nextToken());
       }
     }
 
@@ -250,9 +253,10 @@ public class MethodsPage
 
       StringTokenizer st = new StringTokenizer(inst, "\n");
       int count = 0;
-      while(st.hasMoreTokens()){
+      while (st.hasMoreTokens()) {
         count++;
-        returnMap.put(xPathRoot + "/instrumentation[" + count + "]", st.nextToken());
+        returnMap.put(xPathRoot + "/instrumentation[" + count + "]",
+                      st.nextToken());
       }
     }
 
@@ -322,5 +326,118 @@ public class MethodsPage
     return pageNumber;
   }
 
-    public boolean setPageData(OrderedMap data, String xPathRoot) { return false; }
+  public boolean setPageData(OrderedMap map, String xPathRoot) {
+    Log.debug(45,
+              "MethodsPage.setPageData() called with xPathRoot = " + xPathRoot
+              + "\n Map = \n" + map);
+
+    if (xPathRoot != null && xPathRoot.trim().length() > 0) {
+      this.xPathRoot = xPathRoot;
+    }
+
+    String xpathRootNoPredicates
+        = XMLUtilities.removeAllPredicates(this.xPathRoot);
+
+    while (xpathRootNoPredicates.endsWith("/")) {
+      xpathRootNoPredicates
+          = xpathRootNoPredicates.substring(0,
+                                            xpathRootNoPredicates.length() - 1);
+    }
+    Log.debug(45,
+              "MethodsPage.setPageData() XMLUtilities.removeAllPredicates(xPathRoot) = "
+              + xpathRootNoPredicates);
+
+    map = removeAllButLastPredicatesFromMapKeys(map);
+
+    Log.debug(45,
+              "PartyPage.setPageData() after removeAllButLastPredicatesFromMapKeys. map = \n"
+              + map);
+
+    List toDeleteList = new ArrayList();
+    Iterator keyIt = map.keySet().iterator();
+    Object nextXPathObj = null;
+    String nextXPath = null;
+    Object nextValObj = null;
+    String nextVal = null;
+
+    while (keyIt.hasNext()) {
+
+      nextXPathObj = keyIt.next();
+      if (nextXPathObj == null) {
+        continue;
+      }
+      nextXPath = (String) nextXPathObj;
+
+      nextValObj = map.get(nextXPathObj);
+      nextVal = (nextValObj == null) ? "" : ( (String) nextValObj).trim();
+
+      Log.debug(10, "MethodsPage:  nextXPath = " + nextXPath
+                + "\n nextVal   = " + nextVal);
+
+      if (nextXPath.startsWith("/methods/methodStep/description/section/para[")) {
+        String prevVal = descField.getText();
+        if (prevVal.compareTo("") != 0) {
+          nextVal = prevVal + "\n\n" + nextVal;
+        }
+        descField.setText(nextVal);
+        toDeleteList.add(nextXPathObj);
+      }
+      else if (nextXPath.startsWith("/methods/methodStep/description/section/title[1]")) {
+
+        titleField.setText(nextVal);
+        toDeleteList.add(nextXPathObj);
+
+      }
+      else if (nextXPath.startsWith("/methods/methodStep/instrumentation[")) {
+        String prevVal = instField.getText();
+        if (prevVal.compareTo("") != 0) {
+          nextVal = prevVal + "\n\n" + nextVal;
+        }
+        instField.setText(nextVal);
+        toDeleteList.add(nextXPathObj);
+      }
+    }
+
+    //remove entries we have used from map:
+    Iterator dlIt = toDeleteList.iterator();
+    while (dlIt.hasNext()) {
+      map.remove(dlIt.next());
+    }
+
+    //if anything left in map, then it included stuff we can't handle...
+    boolean returnVal = map.isEmpty();
+
+    if (!returnVal) {
+      Log.debug(20,
+                "PartyPage.setPageData returning FALSE! Map still contains:"
+                + map);
+    }
+    return returnVal;
+  }
+
+  private OrderedMap removeAllButLastPredicatesFromMapKeys(OrderedMap map) {
+
+    OrderedMap newMap = new OrderedMap();
+    Iterator it = map.keySet().iterator();
+    while (it.hasNext()) {
+      String key = (String) it.next();
+      String val = (String) map.get(key);
+      String firstPart = null;
+      String lastPart = null;
+
+      int lastOpenBracketIndex = key.lastIndexOf("[");
+
+      if (lastOpenBracketIndex > -1 && lastOpenBracketIndex < key.length()) {
+
+        firstPart = key.substring(0, lastOpenBracketIndex);
+        //keep last predicate in xpath
+        lastPart = key.substring(lastOpenBracketIndex);
+      }
+
+      firstPart = XMLUtilities.removeAllPredicates(firstPart);
+
+      newMap.put(firstPart + lastPart, val);
+    }
+    return newMap;
+  }
 }

@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: sgarg $'
- *     '$Date: 2004-03-22 19:27:20 $'
- * '$Revision: 1.1 $'
+ *     '$Date: 2004-03-30 21:34:33 $'
+ * '$Revision: 1.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,7 +28,6 @@ package edu.ucsb.nceas.morpho.datapackage;
 
 import edu.ucsb.nceas.morpho.framework.AbstractUIPage;
 import edu.ucsb.nceas.morpho.framework.ModalDialog;
-import edu.ucsb.nceas.morpho.framework.MorphoFrame;
 import edu.ucsb.nceas.morpho.framework.UIController;
 import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
 import edu.ucsb.nceas.morpho.plugins.ServiceController;
@@ -39,8 +38,7 @@ import edu.ucsb.nceas.morpho.util.UISettings;
 import edu.ucsb.nceas.utilities.OrderedMap;
 import edu.ucsb.nceas.utilities.XMLUtilities;
 
-import java.util.Iterator;
-import java.util.Set;
+import javax.xml.transform.TransformerException;
 
 import java.awt.event.ActionEvent;
 
@@ -52,20 +50,16 @@ import org.w3c.dom.Node;
 /**
  * Class to handle add method command
  */
-public class AddMethodCommand implements Command {
+public class AddMethodCommand
+    implements Command {
 
-  /* Flag if need to add coverage info*/
-  private boolean infoAddFlag = false;
+  //generic name for lookup in eml listings
+  private final String DATAPACKAGE_METHOD_GENERIC_NAME = "methods";
 
-  /* Referrence to  morphoframe */
-  private MorphoFrame morphoFrame = null;
+  //generic name for lookup in eml listings
+  private final String METHOD_SUBTREE_NODENAME = "/methods/";
 
-  private DataViewContainerPanel resultPane;
-  private AbstractUIPage methodPage;
-
-  public AddMethodCommand() {
-  }
-
+  public AddMethodCommand() {}
 
   /**
    * execute add command
@@ -74,79 +68,120 @@ public class AddMethodCommand implements Command {
    */
   public void execute(ActionEvent event) {
 
-    resultPane = null;
-    morphoFrame = UIController.getInstance().getCurrentActiveWindow();
+    adp = UIController.getInstance().getCurrentAbstractDataPackage();
 
-    if (morphoFrame != null) {
-      resultPane =  morphoFrame.getDataViewContainerPanel();
-    }
+    if (showMethodDialog()) {
 
-    // make sure resulPanel is not null
-    if (resultPane != null) {
-
-      showMethodDialog();
-      if (infoAddFlag) {
-
-        try {
-          insertNewMethod();
-        }
-        catch (Exception w) {
-          Log.debug(20, "Exception trying to modify method DOM");
-        }
+      try {
+        insertMethod();
+        UIController.showNewPackage(adp);
       }
-
+      catch (Exception w) {
+        Log.debug(15, "Exception trying to modify method DOM: " + w);
+        w.printStackTrace();
+        Log.debug(5, "Unable to add method details!");
+      }
     }
   }
 
-
-  private void showMethodDialog() {
+  private boolean showMethodDialog() {
 
     ServiceController sc;
     DataPackageWizardInterface dpwPlugin = null;
-
     try {
       sc = ServiceController.getInstance();
       dpwPlugin = (DataPackageWizardInterface) sc.getServiceProvider(
           DataPackageWizardInterface.class);
+
     }
     catch (ServiceNotHandledException se) {
+
       Log.debug(6, se.getMessage());
+      se.printStackTrace();
+    }
+    if (dpwPlugin == null) {
+      return false;
     }
 
-    if (dpwPlugin == null) {
+    methodPage = dpwPlugin.getPage(DataPackageWizardInterface.METHODS);
+
+    OrderedMap existingValuesMap = null;
+    methodRoot = adp.getSubtree(DATAPACKAGE_METHOD_GENERIC_NAME, 0);
+
+    if (methodRoot != null) {
+      existingValuesMap = XMLUtilities.getDOMTreeAsXPathMap(methodRoot);
+    }
+    Log.debug(45,
+              "sending previous data to methodPage -\n\n" + existingValuesMap);
+
+    boolean pageCanHandleAllData
+        = methodPage.setPageData(existingValuesMap, METHOD_SUBTREE_NODENAME);
+
+    ModalDialog dialog = null;
+    if (pageCanHandleAllData) {
+
+      dialog = new ModalDialog(methodPage,
+                               UIController.getInstance().
+                               getCurrentActiveWindow(),
+                               UISettings.POPUPDIALOG_WIDTH,
+                               UISettings.POPUPDIALOG_HEIGHT);
+    }
+    else {
+
+      UIController.getInstance().launchEditorAtSubtreeForCurrentFrame(
+          DATAPACKAGE_METHOD_GENERIC_NAME, 0);
+      return false;
+    }
+
+    return (dialog.USER_RESPONSE == ModalDialog.OK_OPTION);
+  }
+
+  private void insertMethod() {
+
+    OrderedMap map = methodPage.getPageData(METHOD_SUBTREE_NODENAME);
+
+    Log.debug(45, "\n insertMethod() Got method details from Methods page -\n"
+              + map.toString());
+
+    if (map == null || map.isEmpty()) {
+      Log.debug(5, "Unable to get method details from input!");
       return;
     }
 
-    methodPage = dpwPlugin.getPage(
-        DataPackageWizardInterface.METHODS);
-    ModalDialog wpd = new ModalDialog(methodPage,
-                                UIController.getInstance().getCurrentActiveWindow(),
-                                UISettings.POPUPDIALOG_WIDTH,
-                                UISettings.POPUPDIALOG_HEIGHT, false);
+    DOMImplementation impl = DOMImplementationImpl.getDOMImplementation();
+    Document doc = impl.createDocument("", "methods", null);
 
-    wpd.setSize(UISettings.POPUPDIALOG_WIDTH, UISettings.POPUPDIALOG_HEIGHT);
-    wpd.setVisible(true);
+    methodRoot = doc.getDocumentElement();
 
-    if (wpd.USER_RESPONSE == ModalDialog.OK_OPTION) {
-      infoAddFlag = true;
+    try {
+      XMLUtilities.getXPathMapAsDOMTree(map, methodRoot);
+
+    }
+    catch (TransformerException w) {
+      Log.debug(5, "Unable to add method details to package!");
+      Log.debug(15, "TransformerException (" + w + ") calling "
+                + "XMLUtilities.getXPathMapAsDOMTree(map, methodRoot) with \n"
+                + "map = " + map
+                + " and methodRoot = " + methodRoot);
+      w.printStackTrace();
+      return;
+    }
+    //delete old method from datapackage
+    adp.deleteSubtree(DATAPACKAGE_METHOD_GENERIC_NAME, 0);
+
+    // add to the datapackage
+    Node check = adp.insertSubtree(DATAPACKAGE_METHOD_GENERIC_NAME, methodRoot,
+                                   0);
+
+    if (check != null) {
+      Log.debug(45, "added new method details to package...");
     }
     else {
-      infoAddFlag = false;
+      Log.debug(5, "** ERROR: Unable to add new method details to package **");
     }
-
-    return;
   }
 
-  private Node covRoot;
-  private Set mapSet;
-  private Iterator mapSetIt;
-  private Object key;
-  private OrderedMap map, newMap;
-  AbstractDataPackage adp;
-
-  private void insertNewMethod() {
-
-    return;
-  }
-
+  private Node methodRoot;
+  private AbstractDataPackage adp;
+  private AbstractUIPage methodPage;
 }
