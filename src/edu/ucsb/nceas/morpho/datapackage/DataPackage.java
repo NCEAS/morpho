@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2002-12-12 00:35:07 $'
- * '$Revision: 1.93 $'
+ *   '$Author: brooke $'
+ *     '$Date: 2002-12-12 18:14:34 $'
+ * '$Revision: 1.94 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -41,7 +41,9 @@ import edu.ucsb.nceas.morpho.util.XMLTransformer;
 
 import java.util.Vector;
 import java.util.Hashtable;
+import java.util.Properties;
 import java.util.Enumeration;
+import java.util.StringTokenizer;
 
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
@@ -231,6 +233,8 @@ public class DataPackage implements XMLFactoryInterface
   }
   
   /**
+   *  ----------------- REQUIRED BY XMLFactoryInterface  -----------------------
+   *
    * Open a sub-element of this datapackage (for example, a Module, or a 
    * sub-tree), given its String identifier.
    * @param     identifier                  the unique identifier needed to 
@@ -240,8 +244,35 @@ public class DataPackage implements XMLFactoryInterface
    *  @throws DocumentNotFoundException if id does not point to a document, or
    *          if requested document exists but cannot be accessed.
    */
+  Properties params = new Properties();
+  
   public Reader openAsReader(String identifier) throws DocumentNotFoundException
   {
+    int             paramIndex, eqIndex;
+    String          paramString, nextToken;
+    StringTokenizer tokenizer;
+    
+    //if it contains a question mark, look for "name=val" pairs:
+    paramIndex = identifier.indexOf("?");
+    if (paramIndex>=0) {
+      params.clear();
+      paramString = identifier.substring(1 + paramIndex);
+      tokenizer   = new StringTokenizer(paramString,"&");
+      while (tokenizer.hasMoreTokens()) {
+        nextToken = tokenizer.nextToken();
+        eqIndex   = nextToken.indexOf("=");
+        //split on "=" and put name, value into Properties object
+        if (eqIndex>=0) {
+          params.setProperty( nextToken.substring(0,  eqIndex),
+                              nextToken.substring(1 + eqIndex) );
+          Log.debug(44,"DataPackage.openAsReader() got uri params: "+nextToken);
+        }
+      }
+      //strip params from end so next part of method can 
+      //open file denoted by "identifier"
+      identifier = identifier.substring(0,paramIndex);
+    }
+    
     FileReader reader = null;
     try {
         reader = new FileReader(openAsFile(identifier));

@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2002-09-13 18:56:33 $'
- * '$Revision: 1.5 $'
+ *     '$Date: 2002-12-12 18:14:34 $'
+ * '$Revision: 1.6 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,6 +25,9 @@
  */
 
 package edu.ucsb.nceas.morpho.plugins.metadisplay;
+
+import java.util.List;
+import java.util.ArrayList;
 
 import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.plugins.MetaDisplayInterface;
@@ -47,6 +50,8 @@ public class MetaDisplayPlugin implements   PluginInterface,
                                             ServiceProvider,
                                             MetaDisplayFactoryInterface
 {
+
+    private static List displayList;
     /**
      *  Required by PluginInterface; called automatically at runtime
      *
@@ -54,7 +59,6 @@ public class MetaDisplayPlugin implements   PluginInterface,
      */
     public void initialize(Morpho morpho)
     {
-
         try 
         {
           ServiceController services = ServiceController.getInstance();
@@ -67,11 +71,12 @@ public class MetaDisplayPlugin implements   PluginInterface,
                     "Service registration failed: MetaDisplayFactoryInterface");
           Log.debug(6, see.toString());
         }
+        displayList = new ArrayList();
     }
      
     
     /**
-    *   Required by MetaDisplayFactoryInterface:
+     *  Required by MetaDisplayFactoryInterface:
      *  Returns a new instance of an object that implements the 
      *  <code>MetaDisplayInterface</code>
      *
@@ -80,6 +85,29 @@ public class MetaDisplayPlugin implements   PluginInterface,
      */
     public MetaDisplayInterface getInstance() 
     {
-        return new MetaDisplay();
+        MetaDisplay display = new MetaDisplay();
+        displayList.add(display);
+        return display;
     }
+    
+    
+    /**
+     *  Required by MetaDisplayFactoryInterface:
+     *  Returns a reference to an existing object that implements the 
+     *  <code>MetaDisplayInterface</code>. The object is identified by the int
+     *  index assigned to it in the getInstance() method at the time of creation
+     *
+     *  @param displayNum   int index assigned to the object in the 
+     *                      getInstance() method at the time of creation
+     *
+     *  @return             reference to an existing object that implements the 
+     *                      <code>MetaDisplayInterface</code> identified by 
+     *                      displayNum.  Returns NULL if displayNum out of range
+     */
+    public MetaDisplayInterface getMetaDisplay(int displayNum)
+    {
+        if (displayList.size() < displayNum+1) return null;
+        return (MetaDisplayInterface)(displayList.get(displayNum));
+    }
+    
 }

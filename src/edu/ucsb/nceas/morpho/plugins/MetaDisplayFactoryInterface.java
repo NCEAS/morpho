@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2002-08-19 18:49:12 $'
- * '$Revision: 1.1 $'
+ *     '$Date: 2002-12-12 18:14:34 $'
+ * '$Revision: 1.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -37,11 +37,28 @@ public interface MetaDisplayFactoryInterface
     
     /**
      *  Return a new instance of an object that implements the 
-     *  <code>MetaDisplayInterface</code>
+     *  <code>MetaDisplayInterface</code>.  Implementing code should assign this 
+     *  instance an integer identifier for internal use - 
+     *  @see getMetaDisplay(int displayNum)
      *
      *  @return     new instance of an object that implements the 
      *              <code>MetaDisplayInterface</code>
      */
     public MetaDisplayInterface getInstance();
+    
+    /**
+     *  Return a reference to an existing object that implements the 
+     *  <code>MetaDisplayInterface</code>. The object is identified by the int
+     *  index assigned to it in the getInstance() method at the time of creation
+     *
+     *  @param displayNum   int index assigned to the object in the 
+     *                      getInstance() method at the time of creation
+     *
+     *  @return             reference to an existing object that implements the 
+     *                      <code>MetaDisplayInterface</code> identified by 
+     *                      displayNum.  Returns NULL if displayNum out of range
+     */
+    public MetaDisplayInterface getMetaDisplay(int displayNum);
+    
 }
 
