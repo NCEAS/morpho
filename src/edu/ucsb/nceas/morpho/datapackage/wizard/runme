@@ -1,1 +1,0 @@
-java -cp ~/project/jar/xerces.jar:~/project/jar/xmlparserv2.jar:./ PackageWizard $1
