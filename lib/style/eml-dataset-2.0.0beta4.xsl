@@ -6,9 +6,9 @@
   *               National Center for Ecological Analysis and Synthesis
   *  For Details: http://www.nceas.ucsb.edu/
   *
-  *   '$Author: cjones $'
-  *     '$Date: 2002-09-26 01:57:52 $'
-  * '$Revision: 1.2 $'
+  *   '$Author: brooke $'
+  *     '$Date: 2002-10-23 22:39:32 $'
+  * '$Revision: 1.3 $'
   * 
   * This program is free software; you can redistribute it and/or modify
   * it under the terms of the GNU General Public License as published by
@@ -39,10 +39,7 @@
     <html>
       <head>
         <link rel="stylesheet" type="text/css" 
-              href="@style-path@/{$qformat}.css" />
-<!--
-              href="@style-path@/default.css" />
--->
+              href="/default.css" />
       </head>
       <body>
         <center>
@@ -66,11 +63,18 @@
         <ul>
           <xsl:for-each select="//triple">
             <li>
+              <a><xsl:attribute name="href"><xsl:value-of select="./subject"/></xsl:attribute><xsl:value-of select="./subject"/></a>
+                 <xsl:text> &#160;&#160;</xsl:text>
+                 <xsl:value-of select="./relationship"/>
+                 <xsl:text> &#160;&#160;</xsl:text>
+              <a><xsl:attribute name="href"><xsl:value-of select="./object"/></xsl:attribute><xsl:value-of select="./object"/></a>
+<!--
              <a><xsl:attribute name="href"><![CDATA[@html-path@/servlet/metacat?action=read&qformat=@default-style@&docid=]]><xsl:value-of select="./subject"/></xsl:attribute><xsl:value-of select="./subject"/></a>
              <xsl:text> </xsl:text>
              <xsl:value-of select="./relationship"/>
              <xsl:text> </xsl:text>
              <a><xsl:attribute name="href"><![CDATA[@html-path@/servlet/metacat?action=read&qformat=@default-style@&docid=]]><xsl:value-of select="./object"/></xsl:attribute><xsl:value-of select="./object"/></a>
+-->
             </li>
           </xsl:for-each>
         </ul>
