@@ -5,7 +5,7 @@
  *              National Center for Ecological Analysis and Synthesis
  *     Authors: Dan Higgins
  *
- *     Version: '$Id: DocFrame.java,v 1.12 2000-10-04 15:39:29 higgins Exp $'
+ *     Version: '$Id: DocFrame.java,v 1.13 2000-12-14 16:19:22 higgins Exp $'
  */
 
 
@@ -29,10 +29,12 @@ import javax.swing.tree.*;
 import org.xml.sax.*;
 import org.xml.sax.helpers.*;
 import java.util.Hashtable;
+import edu.ucsb.nceas.dtclient.*;
 
 
 public class DocFrame extends javax.swing.JFrame
 {
+    ConfigXML config;
     File file;
     String XMLTextString;
     String doctype = null;
@@ -46,8 +48,9 @@ public class DocFrame extends javax.swing.JFrame
     static {
         ht = new Hashtable();
         ht.put("eml-dataset" , "eml-dataset-display.xsl");
-//        ht.put("eml-file" , "eml-file-display.xsl");
-//        ht.put("eml-variable" , "eml-variable-display.xsl");
+        ht.put("eml-file" , "eml-file-display.xsl");
+        ht.put("eml-variable" , "eml-variable-display.xsl");
+        ht.put("resource", "resource.xsl");
 //        ht.put("eml-access" , "eml-dataset-display.xsl");
         
     }
@@ -138,7 +141,8 @@ public class DocFrame extends javax.swing.JFrame
 		XMLTextString = doctext;
 		XMLText.setText(doctext);
 		putXMLintoTree();
-        JTabbedPane1.setSelectedIndex(2);
+        JTabbedPane1.setSelectedIndex(1);
+        tree.setSelectionRow(0);
 	}
 	
 	public DocFrame(File file)
@@ -219,8 +223,9 @@ public void writeInfo() {
         XMLTextString = out.toString();
     XMLText.setText(out.toString());
 		putXMLintoTree();
-        JTabbedPane1.setSelectedIndex(2);
-    
+        JTabbedPane1.setSelectedIndex(1);
+        tree.setSelectionRow(0);
+        
     }
 	catch (Exception e) {;}
     
@@ -236,9 +241,12 @@ public void writeInfo() {
 	void TransformToHTML()
 	{
                 CatalogEntityResolver cer = new CatalogEntityResolver();
-            	PropertyResourceBundle options = (PropertyResourceBundle)PropertyResourceBundle.getBundle("client");  // DFH
-            	String local_dtd_directory =(String)options.handleGetObject("local_dtd_directory");     // DFH
-            	String local_xml_directory =(String)options.handleGetObject("local_xml_directory");     // DFH
+		        config = new ConfigXML("config.xml");
+		        String local_dtd_directory = config.get("local_dtd_directory",0);
+		        String local_xml_directory = config.get("local_xml_directory",0);
+//            	PropertyResourceBundle options = (PropertyResourceBundle)PropertyResourceBundle.getBundle("client");  // DFH
+//            	String local_dtd_directory =(String)options.handleGetObject("local_dtd_directory");     // DFH
+//            	String local_xml_directory =(String)options.handleGetObject("local_xml_directory");     // DFH
             
             	String xmlcatalogfile = local_dtd_directory+"/catalog"; 
                // String xmlcatalogfile = "./catalog/catalog"; 

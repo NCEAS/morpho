@@ -5,7 +5,7 @@
  *              National Center for Ecological Analysis and Synthesis
  *     Authors: Dan Higgins
  *
- *     Version: '$Id: RSFrame.java,v 1.6 2000-10-05 17:34:41 higgins Exp $'
+ *     Version: '$Id: RSFrame.java,v 1.7 2000-12-14 16:19:22 higgins Exp $'
  */
 
 
@@ -281,7 +281,7 @@ public class RSFrame extends javax.swing.JFrame
 		        URL url = new URL(MetaCatServletURL);
 		        HttpMessage msg = new HttpMessage(url);
 		        Properties prop = new Properties();
-		        prop.put("action","getdocument");
+		        prop.put("action","read");
 		        prop.put("docid",qtext1);
 		        prop.put("qformat",respType);
 		    

@@ -5,7 +5,7 @@
  *              National Center for Ecological Analysis and Synthesis
  *     Authors: Dan Higgins
  *
- *     Version: '$Id: QueryBean.java,v 1.28 2000-11-30 19:43:43 higgins Exp $'
+ *     Version: '$Id: QueryBean.java,v 1.29 2000-12-14 16:19:22 higgins Exp $'
  */
 
 package edu.ucsb.nceas.querybean;
@@ -703,10 +703,13 @@ public class QueryBean extends AbstractQueryBean
 		invalidate();
 		setVisible(true);
     try {
-      options = (PropertyResourceBundle)PropertyResourceBundle.getBundle("client");
-      String local_dtd_directory =(String)options.handleGetObject("local_dtd_directory");     // DFH
+		ConfigXML config = new ConfigXML("config.xml");
+		String local_dtd_directory = config.get("local_dtd_directory",0);
+		MetaCatServletURL = config.get("MetaCatServletURL", 0);
+//      options = (PropertyResourceBundle)PropertyResourceBundle.getBundle("client");
+//      String local_dtd_directory =(String)options.handleGetObject("local_dtd_directory");     // DFH
       xmlcatalogfile = local_dtd_directory+"/catalog"; 
-      MetaCatServletURL = (String)options.handleGetObject("MetaCatServletURL");
+//      MetaCatServletURL = (String)options.handleGetObject("MetaCatServletURL");
 /*      String searchlocalstring = (String)options.handleGetObject("searchlocal");
       if (searchlocalstring.equalsIgnoreCase("true")) {
         searchlocal = true;
