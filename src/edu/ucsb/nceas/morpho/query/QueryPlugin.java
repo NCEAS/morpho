@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2002-08-20 21:10:49 $'
- * '$Revision: 1.79 $'
+ *     '$Date: 2002-08-22 00:03:36 $'
+ * '$Revision: 1.80 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -120,25 +120,52 @@ public class QueryPlugin implements PluginInterface, ConnectionListener,
    */
   private void initializeActions() {
     // Set up the search menus for the application
-    menuActions = new Action[1];
-  
+    menuActions = new Action[4];
+   
+    // Action for search
     GUIAction searchItemAction = new GUIAction("Search...", null,
-              new SearchCommand(null, morpho));
+                                        new SearchCommand(null, morpho));
     searchItemAction.setSmallIcon(new ImageIcon(getClass().
            getResource("/toolbarButtonGraphics/general/Search16.gif")));
     searchItemAction.setToolTipText("Search for data");
     searchItemAction.setMenuItemPosition(0);
-    searchItemAction.setSeparatorPosition(Morpho.SEPARATOR_FOLLOWING);
-    /*searchItemAction.putValue(Action.SMALL_ICON, 
-                    new ImageIcon(getClass().
-           getResource("/toolbarButtonGraphics/general/Search16.gif")));
-    searchItemAction.putValue(Action.SHORT_DESCRIPTION, "Search for data");
-    searchItemAction.putValue("menuPosition", new Integer(0));
-    searchItemAction.putValue(Action.DEFAULT, 
-                             Morpho.SEPARATOR_FOLLOWING);*/
-    menuActions[0] = searchItemAction;
     
-    // Create a onwer query
+    //searchItemAction.setSeparatorPosition(Morpho.SEPARATOR_FOLLOWING);
+    // Action for refresh
+    RefreshCommand refreshCommand = new RefreshCommand();
+    GUIAction refreshItemAction = 
+                    new GUIAction("Refresh", null, refreshCommand);
+    refreshItemAction.setSmallIcon(new ImageIcon(getClass().
+           getResource("/toolbarButtonGraphics/general/Refresh16.gif")));
+    refreshItemAction.setToolTipText("Refresh...");
+    refreshItemAction.setMenuItemPosition(1);
+    
+    //refreshItemAction.setSeparatorPosition(Morpho.SEPARATOR_FOLLOWING);
+    // Action for save query
+    SaveQueryCommand saveCommand = new SaveQueryCommand(morpho);
+    GUIAction saveQueryItemAction = 
+                    new GUIAction("Save search", null, saveCommand);
+    saveQueryItemAction.setSmallIcon(new ImageIcon(getClass().
+           getResource("/toolbarButtonGraphics/general/Save16.gif")));
+    saveQueryItemAction.setToolTipText("Save search");
+    saveQueryItemAction.setMenuItemPosition(2);
+    saveQueryItemAction.setSeparatorPosition(Morpho.SEPARATOR_FOLLOWING);
+    
+    // RevisedSearch action
+    GUIAction reviseSearchItemAction = new GUIAction("Revise search", null,
+                                            new ReviseSearchCommand(morpho));
+    reviseSearchItemAction.setSmallIcon(new ImageIcon(getClass().
+           getResource("/toolbarButtonGraphics/general/Search16.gif")));
+    reviseSearchItemAction.setToolTipText("Revise search");
+    reviseSearchItemAction.setMenuItemPosition(4);
+    
+    // Put actions into array which will be added into search menu
+    menuActions[0] = searchItemAction;
+    menuActions[1] = refreshItemAction;
+    menuActions[2] = saveQueryItemAction;
+    menuActions[3] = reviseSearchItemAction;
+    
+    // Open dialog box action
     GUIAction openDialogBoxAction = new GUIAction("Open", null, 
                           new OpenDialogBoxCommand(morpho));
     openDialogBoxAction.setSmallIcon( new ImageIcon(getClass().
@@ -147,9 +174,12 @@ public class QueryPlugin implements PluginInterface, ConnectionListener,
     openDialogBoxAction.setToolTipText("Open...");
     
      // Set up the toolbar for the application
-    toolbarActions = new Action[2];
+    toolbarActions = new Action[5];
     toolbarActions[0] = openDialogBoxAction;
     toolbarActions[1] = searchItemAction;
+    toolbarActions[2] = refreshItemAction;
+    toolbarActions[3] = saveQueryItemAction;
+    toolbarActions[4] = reviseSearchItemAction;
     
     //Set up action for file menu
     fileMenuActions = new Action[1];
