@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2002-09-26 18:15:51 $'
- * '$Revision: 1.16 $'
+ *     '$Date: 2002-09-26 20:19:11 $'
+ * '$Revision: 1.17 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -144,10 +144,7 @@ public class UIController
         registerWindow(window);
 
         updateStatusBar(window.getStatusBar());
-
-        if (getCurrentActiveWindow()==null) {
-            setCurrentActiveWindow(window);
-        }
+        
         // If initial  window morpho in the window list, remove it
         if ( count == 1)// create the second frame
         {
@@ -163,6 +160,11 @@ public class UIController
             }
           }
         }
+        
+        if (getCurrentActiveWindow()==null) {
+            setCurrentActiveWindow(window);
+        }
+      
         count++;
         return window;
     }
