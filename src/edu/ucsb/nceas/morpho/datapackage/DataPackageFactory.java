@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-11-13 21:51:46 $'
- * '$Revision: 1.22 $'
+ *     '$Date: 2003-11-18 22:51:06 $'
+ * '$Revision: 1.23 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -302,6 +302,8 @@ public class DataPackageFactory
     OrderedMap om = new OrderedMap();
     OrderedMap om1 = new OrderedMap();
     AbstractDataPackage adp = null;
+    Entity entityObject = null;
+    Attribute attributeObject = null;
     try{
       Morpho.createMorphoInstance();
       adp = DataPackageFactory.getDataPackage("jscientist.7.1", false, true);
@@ -335,18 +337,21 @@ public class DataPackageFactory
         XMLUtilities.getXPathMapAsDOMTree(om, attrRoot);
  Log.debug(1, "after_getXPathMapAsDOMTree:"+XMLUtilities.getDOMTreeAsString(attrRoot));    
  
-        Document doc1 = impl.createDocument("", "dataTable", null);
-        entRoot = doc1.getDocumentElement();
-        entRoot.appendChild(doc1.createElement("entityName"));
- Log.debug(1, "getDocumentElement:"+XMLUtilities.getDOMTreeAsString(entRoot));    
+ //       Document doc1 = impl.createDocument("", "dataTable", null);
+ //       entRoot = doc1.getDocumentElement();
+        entityObject = new Entity("dataTable", om1);
+        entRoot = entityObject.getNode();
+        attributeObject = new Attribute(om);
+//        entRoot.appendChild(doc1.createElement("entityName"));
+// Log.debug(1, "getDocumentElement:"+XMLUtilities.getDOMTreeAsString(entRoot));    
         XMLUtilities.getXPathMapAsDOMTree(om1, entRoot);
  Log.debug(1, "after_getXPathMapAsDOMTree:"+XMLUtilities.getDOMTreeAsString(entRoot));    
 
       }
       catch (Exception e) {Log.debug(5, "problem creating DOM tree!"+ e);}
       
-      adp.insertEntity(entRoot,3);
-      adp.insertAttribute(0,attrRoot,1);
+      adp.insertEntity(entityObject, 3);
+      adp.insertAttribute(0, attributeObject,1);
       
        Log.debug(1,"AbstractDataPackage complete - Will now show in an XML Editor..");
        Node domnode = adp.getMetadataNode();
