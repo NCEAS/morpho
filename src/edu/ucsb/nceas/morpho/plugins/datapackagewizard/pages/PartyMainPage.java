@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2004-04-07 00:06:27 $'
- * '$Revision: 1.34 $'
+ *     '$Date: 2004-04-07 06:07:08 $'
+ * '$Revision: 1.35 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,6 +27,8 @@
 
 package edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages;
 
+import edu.ucsb.nceas.morpho.datapackage.AbstractDataPackage;
+import edu.ucsb.nceas.morpho.datapackage.ReferencesHandler;
 import edu.ucsb.nceas.morpho.framework.AbstractUIPage;
 import edu.ucsb.nceas.morpho.framework.ModalDialog;
 import edu.ucsb.nceas.morpho.framework.UIController;
@@ -52,10 +54,6 @@ import javax.swing.AbstractAction;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
-import edu.ucsb.nceas.morpho.datapackage.AbstractDataPackage;
-import org.w3c.dom.Node;
-import edu.ucsb.nceas.utilities.XMLUtilities;
-import org.w3c.dom.Element;
 
 public class PartyMainPage
     extends AbstractUIPage {
@@ -327,9 +325,8 @@ public class PartyMainPage
     }
   }
 
-  /**
-   * A method to show new Party Page Dialog
-   */
+
+
   private void deleteParty(CustomList list) {
 
     if (list==null) {
@@ -338,64 +335,26 @@ public class PartyMainPage
     }
     AbstractDataPackage adp
         = UIController.getInstance().getCurrentAbstractDataPackage();
-    if (adp==null) {
+    if (adp == null) {
       Log.debug(15, "\npackage from UIController is null");
       Log.debug(5, "ERROR: cannot delete!");
       return;
     }
+    Log.debug(45, "BEFORE: adp=" + adp);
     List[] deletedRows = list.getSelectedRows();
     int userObjIdx = deletedRows[0].size() - 1;
 
     for (int i = 0; i < deletedRows.length; i++) {
 
       PartyPage page = (PartyPage)(deletedRows[i].get(userObjIdx));
-      String refID = page.getRefID();
 
-      //get a list of nodes that reference this subtree (refer-ers)
-      List referencers = adp.getSubtreesThatReference(refID);
-
-      if (referencers!=null && referencers.size() > 0) {
-
-        //get the subtree to be deleted, at this refID (the refer-ee)
-        Node deletedSubtree = adp.getSubtreeAtReference(refID);
-        if (deletedSubtree == null) {
-          Log.debug(15,
-                    "\nadp.getSubtreeAtReference(" + refID + ") returned null");
-          Log.debug(5, "ERROR: cannot delete!");
-          return;
-        }
-
-        //and use (subtree to be deleted) to replace the subtree at the first
-        //refer-er
-        Node firstReferer = null;
-        int idx = 0;
-        while (firstReferer == null && idx < referencers.size()) {
-          firstReferer = (Node)referencers.get(idx++);
-        }
-        Node[] deletedKids
-            = XMLUtilities.getNodeListAsNodeArray(deletedSubtree.getChildNodes());
-
-        Node[] firstRefererKids
-            = XMLUtilities.getNodeListAsNodeArray(firstReferer.getChildNodes());
-
-        //remove first referer children
-        for (int indx = 0; indx < firstRefererKids.length; indx++) {
-          firstReferer.removeChild(firstRefererKids[indx]);
-        }
-
-        //add (subtree to be deleted) children:
-        for (int index = 0; index < deletedKids.length; index++) {
-          firstReferer.appendChild(deletedKids[index]);
-        }
-
-        ((Element)deletedSubtree).setAttribute("id", "");
-        ((Element)firstReferer  ).setAttribute("id", refID);
-
-        deletedSubtree.getParentNode().removeChild(deletedSubtree);
-      }
+      ReferencesHandler.deleteOriginalReferenceSubtree(adp, page.getRefID());
     }
-    //update datapackage...
-    updateDPRefs();
+    Log.debug(45, "AFTER: adp=" + adp);
+
+    //Do not update datapackage as we do for add/edit, because we've already
+    //manipulated the DOM directly
+
     if (oneOrMoreRequired)WidgetFactory.unhiliteComponent(minRequiredLabel);
   }
 

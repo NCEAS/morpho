@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2004-04-06 23:14:38 $'
- * '$Revision: 1.37 $'
+ *   '$Author: brooke $'
+ *     '$Date: 2004-04-07 06:07:08 $'
+ * '$Revision: 1.38 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -344,6 +344,7 @@ public  class EML200DataPackage extends AbstractDataPackage
     Node refdNode = null;
     try{
       refdNode = getSubtreeAtReferenceNoClone(refID);
+      if (refdNode==null) return null;
       Node deepClone = refdNode.cloneNode(true);
       DOMImplementation impl = DOMImplementationImpl.getDOMImplementation();
       Document doc = impl.createDocument("", "tempRoot", null);
@@ -361,35 +362,40 @@ public  class EML200DataPackage extends AbstractDataPackage
 
 
   /**
-   * returns a List of subtrees that reference (the subtree identified by) the
-   * passed refID.
-   * More formally, returns a List of subtree root Nodes, where each subtree root
-   * Node contains a "references" child-node, and the content String of the
-   * references child-node matches the unique String refID passed to this method;
-   * returns an empty List if none found. Should never return null;
+   * returns a List of pointers to subtrees that reference (the subtree
+   * identified by) the passed refID.
+   * More formally, returns a List of pointers to subtree root Nodes, where each
+   * subtree root Node contains a "references" child-node, and the content
+   * String of the references child-node matches the unique String refID passed
+   * to this method; returns an empty List if none found. Should never return
+   * null;
    *
    * @param refID unique String refID
-   * @return List of subtrees that reference the subtree identified by the
-   * passed refID. Returns an empty List if none found. Should never return null;
+   * @return List of pointers to subtrees that reference the subtree identified
+   * by the passed refID. Returns an empty List if none found. Should never
+   * return null;
    */
   public List getSubtreesThatReference(String refID) {
     List returnList = new ArrayList();
     try {
-      String refpath = "references";
+      String refpath = "//*/references";
       NodeList refs = XMLUtilities.getNodeListWithXPath(metadataNode, refpath);
-      while ((refs!=null)&&(refs.getLength()>0)) {
-        for (int i=0;i<refs.getLength();i++) {
-          Node nd = refs.item(i);
-          String val = (nd.getFirstChild()).getNodeValue();
-          val = val.trim();
-          if (val.equals(refID.trim())) {
-            returnList.add(nd.getParentNode());
-          }
+      if (refs == null || refs.getLength() < 1) {
+        Log.debug(12,
+       "getSubtreesThatReference() found no subtrees that reference " + refID);
+        return returnList;
+      }
+      for (int i = 0; i < refs.getLength(); i++) {
+        Node nd = refs.item(i);
+        String val = (nd.getFirstChild()).getNodeValue();
+        val = val.trim();
+        if (val.equals(refID.trim())) {
+          returnList.add(nd.getParentNode());
         }
       }
-    }
-    catch (Exception w) {
-      Log.debug(2, "Problem in 'getSubtreesThatReference.");
+    } catch (Exception w) {
+      w.printStackTrace();
+      Log.debug(12, "Problem in 'getSubtreesThatReference. "+w);
     }
     return returnList;
   }
@@ -447,7 +453,7 @@ public  class EML200DataPackage extends AbstractDataPackage
    * @param refID unique String refID
    * @return  pointer to root Node of subtree, or null if refID not found
    */
-  private Node getSubtreeAtReferenceNoClone(String refID) {
+  public Node getSubtreeAtReferenceNoClone(String refID) {
 
     try{
       Node rootNode = getMetadataNode();

@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2004-04-06 22:21:54 $'
- * '$Revision: 1.16 $'
+ *     '$Date: 2004-04-07 06:07:08 $'
+ * '$Revision: 1.17 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,32 +27,31 @@
 package edu.ucsb.nceas.morpho.datapackage;
 
 import edu.ucsb.nceas.morpho.Morpho;
-import edu.ucsb.nceas.morpho.util.Log;
-import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
 import edu.ucsb.nceas.morpho.datastore.CacheAccessException;
-import edu.ucsb.nceas.morpho.framework.ConfigXML;
-import edu.ucsb.nceas.morpho.datastore.MetacatDataStore;
 import edu.ucsb.nceas.morpho.datastore.FileSystemDataStore;
+import edu.ucsb.nceas.morpho.datastore.MetacatDataStore;
 import edu.ucsb.nceas.morpho.datastore.MetacatUploadException;
+import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
+import edu.ucsb.nceas.morpho.util.Log;
+import edu.ucsb.nceas.utilities.XMLUtilities;
 
-import edu.ucsb.nceas.utilities.*;
-
-import java.util.Vector;
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.util.Hashtable;
-import java.io.*;
-import javax.swing.*;
-import org.xml.sax.InputSource;
+import java.util.List;
+import java.util.Vector;
 
 import javax.xml.parsers.DocumentBuilder;
-import javax.xml.transform.TransformerException;
 
-import org.w3c.dom.Attr;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 import org.w3c.dom.Document;
 import org.w3c.dom.DocumentType;
-import org.w3c.dom.NamedNodeMap;
-import java.util.List;
+import org.w3c.dom.Node;
+import org.xml.sax.InputSource;
 
 /**
  * class that represents a data package. This class is abstract. Specific datapackages
@@ -281,9 +280,12 @@ public class EML2Beta6DataPackage extends AbstractDataPackage
     return map;
   }
 
-    /**
+
+  /**
    * returns a vector containing a distinct set of all of the file ids that make
    * up this package
+   *
+   * @return Vector
    */
   public Vector getAllIdentifiers()
   {
@@ -386,8 +388,12 @@ public class EML2Beta6DataPackage extends AbstractDataPackage
     }
   }
 
+
   /**
    * get the id of the access doc for the indicated id
+   *
+   * @param id String
+   * @return String
    */
   public String getAccessFileId(String id) {
     File accessfile = null;
@@ -485,10 +491,14 @@ public class EML2Beta6DataPackage extends AbstractDataPackage
       return subfile;
   }
 
-    /**
-   *  This method follows the pointer stored in 'references' node to return the
-   *  DOM node referred to by 'references'
-   *  This is really specific to eml2; thus just returns input
+
+  /**
+   * This method follows the pointer stored in 'references' node to return the
+   * DOM node referred to by 'references' This is really specific to eml2; thus
+   * just returns input
+   *
+   * @param node Node
+   * @return Node
    */
   public Node getReferencedNode(Node node) {
     return node;
@@ -504,6 +514,21 @@ public class EML2Beta6DataPackage extends AbstractDataPackage
   public Node getSubtreeAtReference(String refID) {
     return null;
   }
+
+  /**
+   * returns pointer to root Node of subtree identified by the passed unique
+   * String refID; returns null if not found
+   *
+   * @param refID unique String refID
+   * @return  pointer to root Node of subtree, or null if refID not found
+   */
+  public Node getSubtreeAtReferenceNoClone(String refID) {
+
+    throw new java.lang.UnsupportedOperationException(
+      "EML2Beta6DataPackage - method not implemented - "
+     +"getSubtreeAtReferenceNoClone()");
+  }
+
 
 
 
@@ -527,17 +552,20 @@ public class EML2Beta6DataPackage extends AbstractDataPackage
 
 
   /**
-   * returns a List of subtrees that reference (the subtree identified by) the
-   * passed refID.
-   * More formally, returns a List of subtree root Nodes, where each subtree root
-   * Node contains a "references" child-node, and the content String of the
-   * references child-node matches the unique String refID passed to this method;
-   * returns an empty List if none found. Should never return null;
+   * returns a List of pointers to subtrees that reference (the subtree
+   * identified by) the passed refID.
+   * More formally, returns a List of pointers to subtree root Nodes, where each
+   * subtree root Node contains a "references" child-node, and the content
+   * String of the references child-node matches the unique String refID passed
+   * to this method; returns an empty List if none found. Should never return
+   * null;
    *
    * @param refID unique String refID
-   * @return List of subtrees that reference the subtree identified by the
-   * passed refID. Returns an empty List if none found. Should never return null;
+   * @return List of pointers to subtrees that reference the subtree identified
+   * by the passed refID. Returns an empty List if none found. Should never
+   * return null;
    */
+
   public List getSubtreesThatReference(String refID) {
 
     throw new java.lang.UnsupportedOperationException(

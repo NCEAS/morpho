@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2004-04-07 00:00:21 $'
- * '$Revision: 1.38 $'
+ *     '$Date: 2004-04-07 06:07:08 $'
+ * '$Revision: 1.39 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -174,9 +174,10 @@ public class PartyPage extends AbstractUIPage {
         "/individualName/givenName",
         " ",
         "/individualName/surName",
-        " - (",
-        "/role",
-        ")"
+        " ",
+        "/organizationName",
+        " ",
+        "/positionName",
   };
 
   private boolean backupExists = false;
@@ -579,9 +580,9 @@ public class PartyPage extends AbstractUIPage {
           JOptionPane optPane = new JOptionPane();
           optPane.setOptions(optionArray);
           optPane.setMessage(
-              "Do you want to :\nedit the original entry (and therefore change "
+              "Do you want to :\nEdit the original entry (and therefore change "
               +"all entries that refer to the original), or \n"
-              +"create a copy of the original and edit that?");
+              +"Create a copy of the original and edit that?");
           optPane.createDialog(instance, "Select an option...").show();
           Object selectedValue = optPane.getValue();
 
@@ -759,6 +760,7 @@ public class PartyPage extends AbstractUIPage {
       } else {
 
         WidgetFactory.hiliteComponent(roleLabel);
+        rolePickList.requestFocus();
         return false;
       }
     }
@@ -775,6 +777,7 @@ public class PartyPage extends AbstractUIPage {
 
       if (!lastNameOK) {
         WidgetFactory.hiliteComponent(lastNameLabel);
+        lastNameLabel.requestFocus();
         warningLabel.setText("Warning: If you provide a salutation and/or "
                              + "first name, a last name must also be provided");
 
@@ -1231,8 +1234,7 @@ public class PartyPage extends AbstractUIPage {
 
   public boolean setPageData(OrderedMap map, String rootXPath) {
 
-    Log.debug(45,
-              "PartyPage.setPageData() called with rootXPath = " + rootXPath
+    Log.debug(45,"PartyPage.setPageData() called with rootXPath = " + rootXPath
               + "\n Map = \n" + map);
 
     if (rootXPath != null && rootXPath.trim().length() > 0) {
@@ -1247,11 +1249,20 @@ public class PartyPage extends AbstractUIPage {
 
     if (map == null) return true;
 
+    String xpathRootNoPredicates = XMLUtilities.removeAllPredicates(rootXPath);
+
+    Log.debug(45, "PartyPage.setPageData() xpathRootNoPredicates = "
+              + xpathRootNoPredicates);
+
+    map = keepOnlyLastPredicateInKeys(map);
+
+    //do role first, since it applies even if this is a reference
+    getRoleFromMapAndRemove(map, xpathRootNoPredicates);
+
 
     // check if it's a reference:
-    String ref = (String)map.get(rootXPath + "/references[1]");
-
-    if (ref==null) ref = (String)map.get(rootXPath + "/references");
+    String ref = (String)map.get(xpathRootNoPredicates + "/references[1]");
+    if (ref==null) ref = (String)map.get(xpathRootNoPredicates + "/references");
 
     Log.debug(45, "/references ref = ("+ref+")");
 
@@ -1264,23 +1275,26 @@ public class PartyPage extends AbstractUIPage {
         referencesNodeIDString = ref;
 
         //NOTE - rootXPath needs changing to match referenced node's xpath
-        int index = 0;
         for (Iterator it = map.keySet().iterator(); it.hasNext(); ) {
-          if (index++ > 1) break;
           rootXPath = (String)it.next();
-        }
-        //strip leading slash(es)
-        while (rootXPath.startsWith("/")) rootXPath = rootXPath.substring(1);
+          //strip leading slash(es)
+          while (rootXPath.startsWith("/"))rootXPath = rootXPath.substring(1);
 
-        int firstSlashIdx = rootXPath.indexOf("/");
-        if (firstSlashIdx > -1) {
-          rootXPath = rootXPath.substring(0, firstSlashIdx);
-        }
-        rootXPath = "/" + rootXPath;
-        Log.debug(45,
-           "PartyPage.setPageData() got a referenced party; new rootXPath = "
-           + rootXPath);
+          int firstSlashIdx = rootXPath.indexOf("/");
+          if (firstSlashIdx > -1) {
+            rootXPath = rootXPath.substring(0, firstSlashIdx);
+          }
+          rootXPath = "/" + rootXPath;
+          xpathRootNoPredicates = XMLUtilities.removeAllPredicates(rootXPath);
+          Log.debug(45,
+            "PartyPage.setPageData() got a referenced party; new rootXPath = "
+               + xpathRootNoPredicates);
 
+          break;
+        }
+
+        map = keepOnlyLastPredicateInKeys(map);
+        getRoleFromMapAndRemove(map, xpathRootNoPredicates);
       } else {
 
         Log.debug(15,
@@ -1289,14 +1303,6 @@ public class PartyPage extends AbstractUIPage {
         return false;
       }
     }
-
-    String xpathRootNoPredicates
-        = XMLUtilities.removeAllPredicates(rootXPath);
-
-    Log.debug(45, "PartyPage.setPageData() xpathRootNoPredicates = "
-              + xpathRootNoPredicates);
-
-    map = keepOnlyLastPredicateInKeys(map);
 
     Log.debug(45, "PartyPage.setPageData() - map with only last predicates: \n"
               + map);
@@ -1308,14 +1314,6 @@ public class PartyPage extends AbstractUIPage {
     } else {
 
       referenceIdString = this.getRefID();
-    }
-
-    //role
-    if (rolePickList!=null) {
-      String role = (String)map.get(xpathRootNoPredicates + "/role[1]");
-      if (role != null) {
-        if (addAndSetRole(role)) map.remove(xpathRootNoPredicates + "/role[1]");
-      }
     }
 
     String nextVal = (String)map.get(xpathRootNoPredicates
@@ -1442,6 +1440,18 @@ public class PartyPage extends AbstractUIPage {
   }
 
 
+  private void getRoleFromMapAndRemove(OrderedMap map, String xpathRootNoPredicates) {
+
+    if (rolePickList != null) {
+      String role = (String)map.get(xpathRootNoPredicates + "/role[1]");
+      if (role != null) {
+        if (addAndSetRole(role))map.remove(xpathRootNoPredicates + "/role[1]");
+      }
+    }
+  }
+
+
+
   private OrderedMap keepOnlyLastPredicateInKeys(OrderedMap map) {
 
     OrderedMap newMap = new OrderedMap();
@@ -1498,6 +1508,19 @@ public class PartyPage extends AbstractUIPage {
     Node referencedPartyNode = abs.getSubtreeAtReference(ref);
 
     if (referencedPartyNode != null) {
+
+      //first get rid of role node, since this shouldn't be part of reference
+      Node[] children = XMLUtilities.getNodeListAsNodeArray(
+          referencedPartyNode.getChildNodes());
+
+      for (int idx = 0; idx < children.length; idx++) {
+
+        if (children[idx].getNodeName().equals("role")) {
+
+          children[idx].getParentNode().removeChild(children[idx]);
+        }
+      }
+
       mapForRefID = XMLUtilities.getDOMTreeAsXPathMap(referencedPartyNode);
     } else {
       Log.debug(45,

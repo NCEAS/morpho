@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2004-04-07 00:00:21 $'
- * '$Revision: 1.18 $'
+ *     '$Date: 2004-04-07 06:07:08 $'
+ * '$Revision: 1.19 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -50,6 +50,7 @@ import javax.swing.JComboBox;
 import org.apache.xerces.dom.DOMImplementationImpl;
 import org.w3c.dom.DOMImplementation;
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
 public class ReferencesHandler {
@@ -104,9 +105,11 @@ public class ReferencesHandler {
     this.surrogateXPaths = surrogateXPaths;
   }
 
+
   /**
    * Method to set displayName for the ExternalRefsDialog
-   * @param String displayName for the ExternalRefsDialog
+   *
+   * @param displayName displayName for the ExternalRefsDialog
    */
   public void setDisplayName(String displayName) {
     this.displayName = displayName;
@@ -354,7 +357,7 @@ public class ReferencesHandler {
    * @return Node the replacement subtree, or null if original subtree not found,
    * or if any of the input parameters are invalid
    */
-  public Node updateOriginalReferenceSubtree(AbstractDataPackage adp,
+  public static Node updateOriginalReferenceSubtree(AbstractDataPackage adp,
                                              String subtreeID,
                                              OrderedMap newData) {
 
@@ -420,6 +423,81 @@ public class ReferencesHandler {
     }
     return referencedSubtree;
   }
+
+
+  /**
+   * deletes referenced subtree and transfers its children to te first subtree
+   * that references it (if any)
+   *
+   * @param adp CustomList
+   * @param subtreeID String
+   * @return Node pointer to the new subtree, or null if unsuccessful
+   */
+  public static Node deleteOriginalReferenceSubtree(AbstractDataPackage adp,
+                                             String subtreeID) {
+
+    Log.debug(45, "deleteOriginalReferenceSubtree() Got subtreeID="+subtreeID);
+    if (subtreeID == null || subtreeID.trim().length()<1) {
+      Log.debug(15, "\n** ERROR - subtreeID is NULL/blank!");
+      return null;
+    }
+    if (adp == null) {
+      Log.debug(15, "\n** ERROR - AbstractDataPackage map is NULL!");
+      return null;
+    }
+
+
+    //get a list of nodes that reference this subtree (refer-ers)
+    List referencers = adp.getSubtreesThatReference(subtreeID);
+
+    if (referencers == null || referencers.size() < 1) {
+      Log.debug(15,
+        "deleteOriginalReferenceSubtree() found no subtrees that reference id: "
+        +subtreeID);
+      return null;
+    }
+
+    //get the subtree to be deleted, at this refID (the refer-ee)
+    Node deletedSubtree = adp.getSubtreeAtReferenceNoClone(subtreeID);
+    if (deletedSubtree == null) {
+      Log.debug(15,"adp.getSubtreeAtReference(" + subtreeID + ") returned null");
+      Log.debug(5, "ERROR: cannot delete!");
+      return null;
+    }
+
+    //and use (subtree to be deleted) to replace the subtree at the first
+    //refer-er
+    Node firstReferer = null;
+    int idx = 0;
+    //ensure we get a non-null entry
+    while (firstReferer == null && idx < referencers.size()) {
+      firstReferer = (Node)referencers.get(idx++);
+    }
+
+    Node[] firstRefererKids
+        = XMLUtilities.getNodeListAsNodeArray(firstReferer.getChildNodes());
+
+    //remove first referer children
+    for (int indx = 0; indx < firstRefererKids.length; indx++) {
+      firstReferer.removeChild(firstRefererKids[indx]);
+    }
+
+    Node[] deletedKids
+        = XMLUtilities.getNodeListAsNodeArray(deletedSubtree.getChildNodes());
+
+    //add (subtree to be deleted) children:
+    for (int index = 0; index < deletedKids.length; index++) {
+      firstReferer.appendChild(deletedKids[index]);
+    }
+
+    ((Element)deletedSubtree).setAttribute("id", "");
+    ((Element)firstReferer).setAttribute("id", subtreeID);
+
+    deletedSubtree.getParentNode().removeChild(deletedSubtree);
+
+    return firstReferer;
+  }
+
 
 
 
@@ -506,10 +584,10 @@ public class ReferencesHandler {
   }
 
 
-  OrderedMap returnMap = new OrderedMap();
+  private static OrderedMap returnMap = new OrderedMap();
   //
-  // newRoot MUST start with a slash, and MUUST NOT end with a slash!
-  private OrderedMap replaceXPathRootWith(OrderedMap map, String newRoot) {
+  // newRoot MUST start with a slash, and MUST NOT end with a slash!
+  private static OrderedMap replaceXPathRootWith(OrderedMap map, String newRoot) {
 
     boolean firstLoop = true;
     String xpathRoot = null;
