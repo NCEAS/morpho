@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2003-09-24 19:27:39 $'
- * '$Revision: 1.12 $'
+ *     '$Date: 2003-09-26 00:57:21 $'
+ * '$Revision: 1.13 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -317,17 +317,21 @@ public class DataLocation extends AbstractWizardPage {
 
     ///////////////////////////////////////////
 
-    JPanel panel2 =  new JPanel(new BorderLayout());
+    JPanel fileLocatorPanel =  new JPanel(new BorderLayout());
   
   
     fileLocatorWidgetOffline = new FileLocatorWidget(FILE_LOCATOR_IMPORT_DESC, 
                                                      INIT_FILE_LOCATOR_TEXT);
   
-    panel2.add(fileLocatorWidgetOffline, BorderLayout.NORTH);
+    fileLocatorPanel.add(fileLocatorWidgetOffline, BorderLayout.NORTH);
     
+    
+
+
+
     ///////////////////////////////////////////
     
-    panel.add(panel2);
+    panel.add(fileLocatorPanel);
  
     panel.add(Box.createGlue());
 
@@ -567,7 +571,7 @@ public class DataLocation extends AbstractWizardPage {
   
   private String  getImportFileNameOnly() { 
   
-    int trimIndex = getImportFilePath().lastIndexOf("/");
+    int trimIndex = getImportFilePath().lastIndexOf(File.separator);
     
     if (trimIndex < 0) return getImportFilePath();
     
@@ -668,7 +672,4 @@ class FileLocatorWidget extends JPanel {
   
     this.importFilePath = filePath;
   }
-  
-  
-  
 }
