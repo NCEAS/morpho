@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-04-01 19:52:21 $'
- * '$Revision: 1.4 $'
+ *     '$Date: 2003-07-14 17:51:12 $'
+ * '$Revision: 1.5 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -136,7 +136,7 @@ public class EMLConvert
       getPathInfo(datasetID);
       if (path.length()>0) {
          if (!path.startsWith("file://")) {
-            path = "file://" + path;
+            path = "file:///" + path;
          }
          MyURIResolver.setDataDefault(path);
       }
