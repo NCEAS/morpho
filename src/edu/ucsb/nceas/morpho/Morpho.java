@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2002-12-16 21:40:16 $'
- * '$Revision: 1.40 $'
+ *     '$Date: 2002-12-16 22:23:31 $'
+ * '$Revision: 1.41 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -230,7 +230,12 @@ public class Morpho
     public void setProfile(ConfigXML newProfile)
     {
         setProfileDontLogin(newProfile, false);
-        if (!initialFrame.isShowing()) establishConnection();
+        
+        if (initialFrame==null) {
+            establishConnection();
+        } else if(!initialFrame.isShowing()) {
+            establishConnection();
+        }
         fireConnectionChangedEvent();
     }
 
