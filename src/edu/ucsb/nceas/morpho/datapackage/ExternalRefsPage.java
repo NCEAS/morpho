@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2004-04-01 21:31:19 $'
- * '$Revision: 1.1 $'
+ *   '$Author: tao $'
+ *     '$Date: 2004-04-02 18:56:03 $'
+ * '$Revision: 1.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,6 +27,12 @@
 package edu.ucsb.nceas.morpho.datapackage;
 
 import edu.ucsb.nceas.morpho.framework.AbstractUIPage;
+import edu.ucsb.nceas.morpho.framework.QueryRefreshInterface;
+import edu.ucsb.nceas.morpho.framework.SwingWorker;
+import edu.ucsb.nceas.morpho.plugins.ServiceController;
+import edu.ucsb.nceas.morpho.plugins.ServiceNotHandledException;
+import edu.ucsb.nceas.morpho.util.Log;
+
 import edu.ucsb.nceas.utilities.OrderedMap;
 import edu.ucsb.nceas.utilities.XMLUtilities;
 
@@ -41,7 +47,8 @@ import javax.swing.table.AbstractTableModel;
 
 import org.w3c.dom.Node;
 
-public class ExternalRefsPage extends AbstractUIPage {
+public class ExternalRefsPage extends AbstractUIPage
+{
 
 
   private JTable table;
@@ -49,27 +56,32 @@ public class ExternalRefsPage extends AbstractUIPage {
   private String refID;
   private String currentDataPackageID;
   private Node referencedSubtree;
+  private QueryRefreshInterface queryRefreshInterface;
 
-
-  ExternalRefsPage() {
+  ExternalRefsPage()
+  {
     init();
   }
 
-  protected void setReferenceSelectionEvent(ReferenceSelectionEvent event) {
+  protected void setReferenceSelectionEvent(ReferenceSelectionEvent event)
+  {
 
     this.event = event;
   }
 
-  protected void setCurrentDataPackageID(String currentDataPackageID) {
+  protected void setCurrentDataPackageID(String currentDataPackageID)
+  {
 
     this.currentDataPackageID = currentDataPackageID;
   }
 
-  private void init() {
+  private void init()
+  {
 
     this.setLayout(new BorderLayout());
 
     table = new JTable();
+    doQueryAndPopulateDialog();
     JScrollPane scroll = new JScrollPane(table);
     scroll.getViewport().setBackground(Color.white);
     this.add(scroll, BorderLayout.WEST);
@@ -84,6 +96,69 @@ public class ExternalRefsPage extends AbstractUIPage {
   }
 
 
+
+
+  /**
+   * Run the local search query
+   *
+   * @return boolean
+   */
+  private boolean doQueryAndPopulateDialog()
+  {
+
+    final QueryRefreshInterface queryPlugin = getQueryPlugin();
+
+    if (queryPlugin == null) return false;
+
+
+    final SwingWorker worker = new SwingWorker() {
+
+      private AbstractTableModel resultsModel;
+
+      public Object construct() {
+
+        resultsModel = queryPlugin.doOwnerQueryForCurrentUser();
+
+        return null;
+      }
+
+
+      //Runs on the event-dispatching thread.
+      public void finished()
+      {
+        setQueryResults(resultsModel);
+      }
+    };
+    worker.start(); //required for SwingWorker 3
+    return true;
+  }//doQuery
+
+
+  private QueryRefreshInterface getQueryPlugin()
+  {
+
+    if (queryRefreshInterface == null)
+    {
+
+      ServiceController sc;
+      //QueryRefreshInterface queryRefreshInterface = null;
+      try
+      {
+        sc = ServiceController.getInstance();
+        queryRefreshInterface = (QueryRefreshInterface)sc.getServiceProvider(
+            QueryRefreshInterface.class);
+      }
+      catch (ServiceNotHandledException se)
+      {
+        Log.debug(6, se.getMessage());
+        se.printStackTrace();
+      }
+    }
+    return queryRefreshInterface;
+  }
+
+
+
   /**
    * sets the AbstractTableModel to be used as the basis of the query results
    * listing (shows all packages owned by current user on local system)
@@ -91,7 +166,8 @@ public class ExternalRefsPage extends AbstractUIPage {
    * @param model AbstractTableModel to be used as basis of query results
    * listing (shows all packages owned by current user on local system)
    */
-  public void setQueryResults(AbstractTableModel model) {
+  public void setQueryResults(AbstractTableModel model)
+  {
 
     table.setModel(model);
     table.validate();
@@ -104,7 +180,8 @@ public class ExternalRefsPage extends AbstractUIPage {
    *
    *  @return   the unique ID String for this UI page
    */
-  public String getPageID() {
+  public String getPageID()
+  {
     throw new UnsupportedOperationException(
       "ExternalRefsPage -> getPageID() method not implemented!");
   }
@@ -115,7 +192,8 @@ public class ExternalRefsPage extends AbstractUIPage {
    *
    *  @return   the String title for this UI page
    */
-  public String getTitle() {
+  public String getTitle()
+  {
     throw new UnsupportedOperationException(
       "ExternalRefsPage -> getTitle() method not implemented!");
   }
@@ -127,7 +205,8 @@ public class ExternalRefsPage extends AbstractUIPage {
    *
    *  @return   the String subtitle for this UI page
    */
-  public String getSubtitle() {
+  public String getSubtitle()
+  {
     throw new UnsupportedOperationException(
       "ExternalRefsPage -> getSubtitle() method not implemented!");
   }
@@ -141,7 +220,8 @@ public class ExternalRefsPage extends AbstractUIPage {
    *  @return the String ID of the page that the user will see next, or null if
    *  this is te last page
    */
-  public String getNextPageID() {
+  public String getNextPageID()
+  {
     throw new UnsupportedOperationException(
       "ExternalRefsPage -> getNextPageID() method not implemented!");
   }
@@ -153,7 +233,8 @@ public class ExternalRefsPage extends AbstractUIPage {
    *
    *  @return the serial number of the page
    */
-  public String getPageNumber() {
+  public String getPageNumber()
+  {
     throw new UnsupportedOperationException(
       "ExternalRefsPage -> getPageNumber() method not implemented!");
   }
@@ -180,7 +261,8 @@ public class ExternalRefsPage extends AbstractUIPage {
    *  @return boolean true if wizard should advance, false if not
    *          (e.g. if a required field hasn't been filled in)
    */
-  public boolean onAdvanceAction() {
+  public boolean onAdvanceAction()
+  {
 
     if (refID==null) return false;
 
@@ -198,7 +280,8 @@ public class ExternalRefsPage extends AbstractUIPage {
    *  @return   data the Map object that contains all the
    *            key/value paired settings for this particular UI page
    */
-  public OrderedMap getPageData()  {
+  public OrderedMap getPageData()
+  {
     throw new UnsupportedOperationException(
       "ExternalRefsPage -> getPageData() method not implemented!");
   }
@@ -213,7 +296,8 @@ public class ExternalRefsPage extends AbstractUIPage {
    * @return data the Map object that contains all the key/value paired
    *   settings for this particular UI page
    */
-  public OrderedMap getPageData(String rootXPath) {
+  public OrderedMap getPageData(String rootXPath)
+  {
     throw new UnsupportedOperationException(
       "ExternalRefsPage -> getPageData(rootXPath) method not implemented!");
   }
@@ -235,7 +319,8 @@ public class ExternalRefsPage extends AbstractUIPage {
    * still complete its work and fill out all the UI values, even if it is
    * returning false</em>
    */
-  public boolean setPageData(OrderedMap data, String rootXPath) {
+  public boolean setPageData(OrderedMap data, String rootXPath)
+  {
     throw new UnsupportedOperationException(
       "ExternalRefsPage -> setPageData() method not implemented!");
   }
