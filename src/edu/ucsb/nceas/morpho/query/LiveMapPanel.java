@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2004-01-16 23:15:54 $'
- * '$Revision: 1.4 $'
+ *     '$Date: 2004-01-20 19:38:12 $'
+ * '$Revision: 1.5 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -172,7 +172,6 @@ public class LiveMapPanel extends JPanel
     String toolType = "XY";
     String tool_x_range = "-180 180";
     String tool_y_range = "-90 90";
-
     img_0 = img_0 = getToolkit().getImage(
               getClass().getResource("java_0_world_234k.jpg"));
 //              getClass().getResource("us_contour.jpg"));
