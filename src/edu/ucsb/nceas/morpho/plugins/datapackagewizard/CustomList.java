@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2004-01-07 00:39:43 $'
- * '$Revision: 1.35 $'
+ *     '$Date: 2004-01-08 00:33:30 $'
+ * '$Revision: 1.36 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -71,6 +71,7 @@ import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
+import javax.swing.BoxLayout;
 
 
 /**
@@ -125,7 +126,7 @@ public class CustomList extends JPanel {
   private Action customDeleteAction;
 
 	private double[] columnWidthPercentages;
-	private Box buttonBox;
+	private JPanel buttonBox;
   ////////////
 
   /**
@@ -220,7 +221,6 @@ public class CustomList extends JPanel {
     table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
     table.setShowHorizontalLines(false);
     table.setShowVerticalLines(true);
-		table.setFocusable(false);
 
     // The last column is never displayed, but is used to hold a pointer to any
     // Object the user wants to associate with the row
@@ -438,7 +438,8 @@ public class CustomList extends JPanel {
 
   private void initButtons() {
 
-    buttonBox = Box.createVerticalBox();
+    buttonBox = new JPanel();
+    buttonBox.setLayout(new BoxLayout(buttonBox, BoxLayout.Y_AXIS));
 
 		boolean buttonPresent = false;
 

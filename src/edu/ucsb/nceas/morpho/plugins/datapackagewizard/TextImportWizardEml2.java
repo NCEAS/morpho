@@ -5,8 +5,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2004-01-07 02:02:17 $'
- * '$Revision: 1.12 $'
+ *     '$Date: 2004-01-08 00:33:30 $'
+ * '$Revision: 1.13 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -696,7 +696,7 @@ public class TextImportWizardEml2 extends JFrame {
 
         ad = (AttributePage)WizardPageLibrary.getPage(
             DataPackageWizardInterface.ATTRIBUTE_PAGE);
-        ad.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+        ad.setBorder(BorderFactory.createLineBorder(Color.black));
 
         columnAttributes.add(ad);
 
