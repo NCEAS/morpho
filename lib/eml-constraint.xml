@@ -34,6 +34,7 @@ help="Describes the relational integrity constraints of a relational database. T
 
       <attributeName>
       </attributeName>
+    </key>
 
       <referencedEntityId
       help="This field contains the id of the entity to which a foreign key refers, otherwise known as the parent-entity or parent-table.">
@@ -45,6 +46,7 @@ help="Describes the relational integrity constraints of a relational database. T
 
         <attributeName>
         </attributeName>
+      </referencedKey>
 
         <cardinality
         help="Indicates the cardinality (zero, one, many) of a foreign key constraint.">
@@ -55,8 +57,6 @@ help="Describes the relational integrity constraints of a relational database. T
         help="A SQL statement to be used as the condition for a check constraint. Generally this provides a means for constraining the values within and among entities.">
 
         </checkCondition>
-      </referencedKey>
-    </key>
   </constraint>
 </eml-constraint>
 
