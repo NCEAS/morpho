@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: sgarg $'
- *     '$Date: 2004-02-24 20:56:01 $'
- * '$Revision: 1.13 $'
+ *     '$Date: 2004-03-03 01:42:04 $'
+ * '$Revision: 1.14 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -76,9 +76,9 @@ public class PartyMainPage extends AbstractWizardPage{
     initRole();
     init();
 
-	// A empty row is added to responsiblePartyList if none exists. 
-	// This is done so that the dropdown list on PartyPage has 
-	// no entry as the first option 
+	// A empty row is added to responsiblePartyList if none exists.
+	// This is done so that the dropdown list on PartyPage has
+	// no entry as the first option
     if(WidgetFactory.responsiblePartyList.size() == 0){
       List newRow = new ArrayList();
       newRow.add("");
@@ -91,8 +91,8 @@ public class PartyMainPage extends AbstractWizardPage{
 
 
   /**
-   *  Initiates various parameters of PartyMainPage based on value 
-   *  of variable role. 
+   *  Initiates various parameters of PartyMainPage based on value
+   *  of variable role.
    *
    *  @return void
    */
@@ -235,7 +235,7 @@ public class PartyMainPage extends AbstractWizardPage{
 
 
   /**
-   *  
+   *
    */
   private void showNewPartyDialog() {
 
@@ -248,10 +248,10 @@ public class PartyMainPage extends AbstractWizardPage{
       newRow.add(partyPage);
       partiesList.addRow(newRow);
       if(!partyPage.isReference){
-		DataPackageWizardInterface.responsiblePartyList.add(newRow);
-      	if(!partyPage.referDiffDP){
-	        WidgetFactory.responsiblePartyList.add(newRow);
-		}
+        DataPackageWizardInterface.responsiblePartyList.add(newRow);
+        if(!partyPage.referDiffDP){
+          WidgetFactory.responsiblePartyList.add(newRow);
+        }
       }
     }
 
@@ -260,7 +260,7 @@ public class PartyMainPage extends AbstractWizardPage{
 
 
   /**
-   *  
+   *
    */
   private void showEditPartyDialog() {
 
@@ -283,7 +283,7 @@ public class PartyMainPage extends AbstractWizardPage{
       partiesList.replaceSelectedRow(newRow);
       if(!editPartyPage.isReference){
         WidgetFactory.responsiblePartyList.add(newRow);
-		DataPackageWizardInterface.responsiblePartyList.add(newRow);
+        DataPackageWizardInterface.responsiblePartyList.add(newRow);
       }
     }
   }
@@ -293,6 +293,7 @@ public class PartyMainPage extends AbstractWizardPage{
    *  The action to be executed when the page is displayed. May be empty
    */
   public void onLoadAction() {
+    if (oneOrMoreRequired && partiesList.getListOfRowLists().isEmpty()) showNewPartyDialog();
    // partiesPickList.getList();
   }
 
@@ -335,8 +336,8 @@ public class PartyMainPage extends AbstractWizardPage{
    */
 
   private OrderedMap returnMap = new OrderedMap();
-  
-  
+
+
   public OrderedMap getPageData() {
 
     returnMap.clear();
@@ -377,7 +378,7 @@ public class PartyMainPage extends AbstractWizardPage{
 
   /**
    *  Checks if the list contains a PartyPage similar to the PartyPage
-   *  passed in the parameters. 
+   *  passed in the parameters.
    */
   private boolean listContains(List rowLists, PartyPage page){
     if (rowLists==null) return false;

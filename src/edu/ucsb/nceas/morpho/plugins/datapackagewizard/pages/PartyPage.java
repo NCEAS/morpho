@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: sgarg $'
- *     '$Date: 2004-02-24 20:56:01 $'
- * '$Revision: 1.15 $'
+ *     '$Date: 2004-03-03 01:42:04 $'
+ * '$Revision: 1.16 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -422,14 +422,25 @@ public class PartyPage extends AbstractWizardPage {
           instance.setEditable(false);
 
         } else if (e.getStateChange() == ItemEvent.SELECTED) {
-          int reply =  JOptionPane.showConfirmDialog(instance,
-                    "The changes you make here will be reflected in the "
-                    +"entry that you made earlier. Do you want to continue?",
-                    "Do you want to continue?", JOptionPane.YES_NO_OPTION);
+          Object[] optionArray
+                            = new String[]{ "Edit previous entry",
+                                            "Copy and edit the previous Entry",
+                                            "Cancel"};
+          JOptionPane optPane = new JOptionPane();
+          optPane.setOptions(optionArray);
+          optPane.setMessage("Do you want to edit the previous entry or do you "
+                             +"want to create a clone of the previous ent and edit that?");
+          optPane.createDialog(instance, "Select an option...").show();
+          Object selectedValue = optPane.getValue();
 
-          if(reply == JOptionPane.YES_OPTION){
+          if(selectedValue == optionArray[0]){
             instance.setEditable(true);
             editReference = true;
+          } else if(selectedValue == optionArray[1]){
+            instance.setEditable(true);
+            editReference = false;
+            isReference = false;
+            referedIdString = null;
           } else {
             JCheckBox source = (JCheckBox)e.getSource();
             source.setSelected(false);
@@ -475,7 +486,7 @@ public class PartyPage extends AbstractWizardPage {
 			isReference = false;
 			referDiffDP = true;
 			referedIdString = null;
-			
+
 			instance.setEditable(true);
 			instance.setValue(referedPage);
 
@@ -509,14 +520,14 @@ public class PartyPage extends AbstractWizardPage {
 
 
   private PartyPage partyInSameDP(PartyPage referedPage){
-  	
+
   	List dpList = DataPackageWizardInterface.responsiblePartyList;
-  	
+
 	Iterator it = dpList.iterator();
 	while(it.hasNext()) {
 		List row = (List) it.next();
 		PartyPage page = (PartyPage)row.get(3);
-		
+
 		if(referedPage.getsalutationFieldText().equals(page.getsalutationFieldText()) &&
 		referedPage.getfirstNameFieldText().equals(page.getfirstNameFieldText()) &&
 		referedPage.getlastNameFieldText().equals(page.getlastNameFieldText()) &&
@@ -534,7 +545,7 @@ public class PartyPage extends AbstractWizardPage {
 		referedPage.geturlFieldText().equals(page.geturlFieldText())){
 			return page;
 		}
-	}				
+	}
   	return null;
   }
 
@@ -757,11 +768,8 @@ public class PartyPage extends AbstractWizardPage {
 
 
   public void setEditValue(){
-    Log.debug(10, "on Load called");
 
     if(isReference && referedPage != null){
-
-      Log.debug(10, "on Load inside");
 
       String nextText = referedPage.salutationField.getText().trim();
       salutationField.setText(nextText);
