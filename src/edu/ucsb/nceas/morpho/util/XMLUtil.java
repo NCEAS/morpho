@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-05-28 18:56:08 $'
- * '$Revision: 1.3 $'
+ *     '$Date: 2003-06-02 16:18:16 $'
+ * '$Revision: 1.4 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -78,6 +78,9 @@ public class XMLUtil
                       if (ch==13) {
                         str.append(ch);
                       }
+                      if (ch==9) {
+                        str.append(ch);
+                      }  
                       // otherwise skip
                     }
                     else {
