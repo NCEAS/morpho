@@ -1,0 +1,171 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD html 4.0//EN">
+<html>
+
+<head>
+  <title>The Knowledge Network for Biocomplexity</title>
+  <link rel="stylesheet" type="text/css" href="default.css">
+</head>
+
+<body>
+
+<table class="tabledefault">
+<tr><td rowspan="2"><img src="./images/KNBLogo.gif"></td>
+<td colspan="7">
+<div class="title">Morpho</div>
+<div class="subtitle">User Guide</div>
+</td>
+</tr>
+<tr>
+  <td><a href="." class="toollink"> KNB Home </a></td>
+  <td><a href="../../data.html" class="toollink"> Data </a></td>
+  <td><a href="../../people.html" class="toollink"> People </a></td>
+  <td><a href="../../informatics" class="toollink"> Informatics </a></td>
+  <td><a href="../../biodiversity" class="toollink"> Biocomplexity </a></td>
+  <td><a href="../../education" class="toollink"> Education </a></td>
+  <td><a href="../../software" class="toollink"> Software </a></td>
+</tr>
+</table>
+<hr>
+<p>&nbsp;</p>
+
+<!-- put text after this -->
+<table border="0" cellpadding="4" cellspacing="0" width="100%"
+       class="tablepanel">
+  <tr class="tablehead">
+    <td><b>What is a package?</b></td>
+  </tr>
+  <tr>
+    <td rowspan="2" width="50%">
+    <p>Packages are the logical unit that Morpho uses to represent your data
+    files and their descriptions (metadata).  Morpho provides an easy 
+    interface for you to access your data and its descriptions.  There are two
+    major components of Morpho that deal with packages; the Package Wizard which
+    guides you in creating a new package and the Package Editor, which helps you
+    manipulate existing packages.  Each of these interfaces are described in 
+    detail below.  The links in the text will take you to a visual representation
+    of the step being described.</p>
+  </tr>
+</table>
+<table border="0" cellpadding="4" cellspacing="0" width="100%"
+       class="tablepanel">
+  <tr class="tablehead">
+    <td><b>Creating a new package</b></td>
+  </tr>
+  <tr>
+    <td rowspan="2" width="50%">
+    <b>Adding basic information</b>
+    <p>When you begin to
+    create a package, you will use the Package Wizard to get started entering
+    basic descriptions.  To <a href="packagesteps.html#newpackage">begin creating</a>
+    your new package, select the 'File' menu and select 'New Data Package'.  The 
+    <a href="packagesteps.html#pwopen">initial screen</a>
+    of the Package Wizard should then be displayed.</p>
+    <p>After reading the initial instructions of the Package Wizard, click
+    the 'Next' button.  You will then be presented with the 
+    <a href="packagesteps.html#pwscreen1">
+    basic information
+    screen</a>.  In this screen enter all of the contact information for each 
+    person who had a part in collecting the data file that you are describing.
+    Also enter the title of the dataset and any keywords that apply to this
+    dataset.</p>
+    <p>Some fields in the package wizard are repeatable, that is, you may add a 
+    copy of the same field if you need to describe more than one of the same type
+    of information.  Sometimes, a group of fields can also be repeated as a unit.
+    If a single field is repeatable, its label will be displayed as a button.  If
+    you click the button, the field will repeat.  If a group of fields is repeatable,
+    a 'Repeat' button will be displayed at the top of the group.  Clicking the 
+    'Repeat' button will duplicate the entire group of fields.</p>
+    <p>The Package Wizard alerts you to fields that are required by coloring
+    their label <font color=red>red</font>.  If you do not fill in a field
+    those label is colored red, you will receive a warning message.  If you still
+    do not fill in this field, you may have problems uploading your metadata
+    to the Metacat server (if you have one).</p>
+    <p>When you are done entering your basic information, click the 'Next' button.</p>
+    <b>Adding a data file</b>
+    <p>The next screen of the Package Wizard asks you to locate your 
+    <a href="packagesteps.html#pwscreen2">data file</a>.
+    You can do this by either clicking the 'Browse' button and navigating to your
+    data file, or you can type the full path into the text box.  If you do not want
+    to include your data file in a package and just wish to create data descriptions
+    (metadata) leave the text box blank and click next.</p>
+    <b>Adding table information</b>
+    <p>The next screen displayed in the wizard is the 
+    <a href="packagesteps.html#pwscreen3">table description form</a>.  Enter
+    the description of your data table here.  If you have more than one table
+    in your data file, enter information for only one of them here.  You can add
+    additional tables later using the Package Editor.</p>
+    <b>Describing variables in your table</b>
+    <p>The next screen displayed in the wizard is the 
+    <a href="packagesteps.html#pwscreen4">field description form</a>.  Describe
+    each of the fields in the previously described table.  To add more than one
+    variable, use the 'Repeat' button at the top of the 'Field Information' group.</p>
+    <b>Finishing up</b>
+    <p>The <a href="packagesteps.html#pwscreen5">final screen</a> of the 
+    Package Wizard gives you a summary of what you are
+    creating and asks you some questions about putting your package onto your
+    Metacat server.  The box at the top
+    of the screen lists the items that are going to be in your package.  
+    Selecting the 'Save package
+    to Metacat' checkbox will upload the package to your Metacat server (if you
+    have one).  If you uncheck the checkbox labeled 'Package should be publicly
+    readable (on Metacat)' your package will not be accessible to anyone but 
+    yourself.  Note that publicly accessible packages are read-only to anyone
+    but yourself.  When you are satisfied with your new package, click 
+    'Finish' and the new package will be created.</p>
+    <p>Upon successful completion of the wizard process, the Package Editor
+    will be opened with your new package being displayed.  Go on to the next
+    section for a complete description of the Package Editor</p>
+  </tr>
+</table>
+<table border="0" cellpadding="4" cellspacing="0" width="100%"
+       class="tablepanel">
+  <tr class="tablehead">
+    <td><b>Editing an existing package</b></td>
+  </tr>
+  <tr>
+    <td rowspan="2" width="50%">
+    <b>Package Editor</b>
+    <p>The <a href="editorsteps.html">Package Editor</a> allows you to 
+    manipulate an existing data package.  The editor is divided into two parts.
+    The top of the window gives a summary of the basic information provided
+    with each package.  To edit this basic information, click the 'Edit' button
+    in the upper right part of the window.</p>
+    <p>The bottom part of the screen describes the components that exist in 
+    the package.  The 'Table Descriptions' box shows all of the tables for which
+    there is a description.  Double clicking on a table description will bring
+    up the Table Editor (described later) for editing the table and field
+    information.</p>
+    <p>The 'Other Information' box shows a list of all of the descriptions
+    that are do not describe table information.  This includes access control, 
+    distribution, software and physical file descriptions.  Double clicking
+    on any of these descriptions will allow you to edit it.</p>
+    <p>The 'Remove' button at the bottom will remove any description from
+    the package.  The 'Edit' button performs the same action as double clicking
+    on a description (i.e. it opens an editor for the description).  The 'Add'
+    button opens the 'Add New Description' wizard which guides you through
+    adding new descriptions or data files to your package.</p>
+    <b>Add New Description Wizard</b>
+    <p>The <a href="editorsteps.html#newdesc">New Description Wizard</a>
+    allows other you to add information to your
+    package to more accurately describe your dataset.  The wizard also allows
+    you to add a data file to your package.  You may add as many data files to 
+    your package as you wish.</p>
+    <p>The first question that the wizard asks is what type of information
+    you would like to add.  Select whether you would like to add a new
+    data file or a new description file.</p>
+    <p>If you choose to add a new data file, you will be given an area to 
+    type the path to your data file.  You may also browse to the data file.  If 
+    you choose to add a new description file you will be presented with a 
+    <a href="editorsteps.html#desclist">list</a>
+    of types of descriptions that you can add.  Once you select the type of
+    description you wish to add, click the 'Next' button.  You will then be
+    presented with the form to create the new description.  Once you are done
+    entering your description, click the 'Save Changes' button on the data
+    entry form.  You will then be shown the 'Finish' screen of the wizard where
+    you can complete the process of adding your new description.  Click the 
+    'Finish' button to add the new description and refresh your Package Editor.
+    </p>
+  </tr>
+</table>
+</body>
+</html>
