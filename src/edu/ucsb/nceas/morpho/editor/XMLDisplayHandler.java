@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-07-03 21:45:09 $'
- * '$Revision: 1.10 $'
+ *     '$Date: 2001-07-24 22:52:27 $'
+ * '$Revision: 1.11 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -49,6 +49,13 @@ class XMLDisplayHandler extends DefaultHandler implements LexicalHandler {
 	String docname;
 	String publicId;
 	String systemId;
+	
+  // 'text' is declared globally, set to an empty string in startElement, and actually put into
+  // a tree node in endelement due the possibility of text actually being returned in
+  // several successive 'characters' methods rather than a single method invocation;
+  // this technique allows the text to be concatenated into a single text node
+	
+	String text = "";
 
 	// Constructor
 	public XMLDisplayHandler (DefaultTreeModel treeModel) {
@@ -73,6 +80,11 @@ class XMLDisplayHandler extends DefaultHandler implements LexicalHandler {
   public void startElement (String uri, String localName,
                               String qName, Attributes atts)
            throws SAXException {
+     // 'text' is declared globally, set to an empty string in startElement, and actually put into
+     // a tree node in endelement due the possibility of text actually being returned in
+     // several successive 'characters' methods rather than a single method invocation;
+     // this technique allows the text to be concatenated into a single text node
+    text = "";
 		//  Create new Node
 		NodeInfo ni = new NodeInfo(localName);
 		for (int i=0;i<atts.getLength();i++) {
@@ -97,16 +109,10 @@ class XMLDisplayHandler extends DefaultHandler implements LexicalHandler {
   
     public void endElement (String uri, String localName,
                             String qName) throws SAXException {
-		  if (nodeCount>1) {
-		    stack.pop ();
-		  }
-    }
-  
-    public void characters(char ch[], int start, int length) {
-		// Set Text of Node on top of Stack
-    	String text = new String (ch, start, length);
-    	text = text.trim();
-    	text = text.replace('\n', ' ');
+     // 'text' is declared globally, set to an empty string in startElement, and actually put into
+     // a tree node in endelement due the possibility of text actually being returned in
+     // several successive 'characters' methods rather than a single method invocation;
+     // this technique allows the text to be concatenated into a single text node
     	if (text.length()>0) {
 		    NodeInfo ni = new NodeInfo("#PCDATA");
 		    DefaultMutableTreeNode newNode = new DefaultMutableTreeNode (ni);
@@ -117,6 +123,31 @@ class XMLDisplayHandler extends DefaultHandler implements LexicalHandler {
 		    treeModel.reload();
 		    nodeCount++;
 		  }
+		  if (nodeCount>1) {
+		    stack.pop ();
+		  }
+    }
+  
+    public void characters(char ch[], int start, int length) {
+     // 'text' is declared globally, set to an empty string in startElement, and actually put into
+     // a tree node in endelement due the possibility of text actually being returned in
+     // several successive 'characters' methods rather than a single method invocation;
+     // this technique allows the text to be concatenated into a single text node
+		// Set Text of Node on top of Stack
+    	text = text + new String (ch, start, length);
+    	text = text.trim();
+    	text = text.replace('\n', ' ');
+/*    	if (text.length()>0) {
+		    NodeInfo ni = new NodeInfo("#PCDATA");
+		    DefaultMutableTreeNode newNode = new DefaultMutableTreeNode (ni);
+		    DefaultMutableTreeNode parentNode = (DefaultMutableTreeNode) stack.peek();
+		    parentNode.add (newNode);
+//		    ni.attr.put("Value", text);
+        ni.setPCValue(text);
+		    treeModel.reload();
+		    nodeCount++;
+		  }
+*/		  
     }
 
    public void startDocument() throws SAXException { 
