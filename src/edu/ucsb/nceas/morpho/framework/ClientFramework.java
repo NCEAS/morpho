@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-07-24 16:46:27 $'
- * '$Revision: 1.65 $'
+ *     '$Date: 2001-07-26 20:59:24 $'
+ * '$Revision: 1.66 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -833,7 +833,37 @@ public class ClientFramework extends javax.swing.JFrame
       ClientFramework.debug(20, "Sending data file: " + filename);
       dataStreams.put("datafile", filename);
       
-      returnStream = msg.sendPostData(args, dataStreams);
+      /*
+       * Note:  The reason that there are three try statements all executing
+       * the same code is that there is a problem with the initial connection
+       * using the HTTPClient protocol handler.  These try statements make sure
+       * that a connection is made because it gives each connection a 2nd and
+       * 3rd chance to work before throwing an error.  
+       * THIS IS A TOTAL HACK.  THIS NEEDS TO BE LOOKED INTO AFTER THE BETA1
+       * RELEASE OF MORPHO!!!  cwb (7/24/01)
+       */
+      try
+      {
+        returnStream = msg.sendPostData(args, dataStreams);
+      }
+      catch(Exception ee)
+      {
+        try
+        {
+          returnStream = msg.sendPostData(args, dataStreams);
+        }
+        catch(Exception eee)
+        {
+          try
+          {
+            returnStream = msg.sendPostData(args, dataStreams);
+          }
+          catch(Exception eeee)
+          {
+            throw new Exception(eeee.getMessage());
+          }
+        }
+      }
     } catch(Exception e) {
       ClientFramework.debug(1, "Fatal error sending binary data to Metacat: " + 
                             e.getMessage());
