@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: tao $'
- *     '$Date: 2002-10-01 00:21:45 $'
- * '$Revision: 1.63 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2002-10-01 18:15:58 $'
+ * '$Revision: 1.64 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1789,7 +1789,7 @@ public class DataViewer extends javax.swing.JPanel
      * Mouse click event handler
      */
     private boolean trigger = false;
-    public void mousePressed(MouseEvent event) 
+    public void mouseClicked(MouseEvent event) 
     {
       TableColumnModel colModel = table.getColumnModel();
       int index = colModel.getColumnIndexAtX(event.getX());
@@ -1833,7 +1833,7 @@ public class DataViewer extends javax.swing.JPanel
       }
     }
     //public void mouseReleased(MouseEvent event){}
-    public void mouseClicked(MouseEvent event) {}
+    public void mousePressed(MouseEvent event) {}
     public void mouseEntered(MouseEvent event) {}
     public void mouseExited(MouseEvent event) {}    
   }
