@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2002-10-25 01:02:17 $'
- * '$Revision: 1.7 $'
+ *     '$Date: 2002-10-30 01:27:28 $'
+ * '$Revision: 1.8 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -224,5 +224,15 @@ public interface MetaDisplayInterface
      *  made available to the actual XSL stylesheets as <xsl:param> values 
      */
     public void useTransformerProperty(String key, String value);
+    
+	  /**
+	   *  Get the <code>String</code> identifier associated with the 
+     *  currently-displayed metadata
+	   *
+	   *  @return identifier  <code>String</code> identifier associated with the 
+     *                      currently-displayed metadata
+	   *
+	   */
+	  public String getIdentifier();
 }
 

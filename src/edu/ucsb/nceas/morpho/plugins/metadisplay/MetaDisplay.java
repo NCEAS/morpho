@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2002-10-26 08:07:00 $'
- * '$Revision: 1.29 $'
+ *     '$Date: 2002-10-30 01:27:28 $'
+ * '$Revision: 1.30 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -503,11 +503,6 @@ public class MetaDisplay implements MetaDisplayInterface,
           }
 	  }
 
-	  protected String getIdentifier()
-	  {
-		  return this.identifier;
-	  }
-
 
 	  protected History getHistory()
 	  {
@@ -589,6 +584,20 @@ public class MetaDisplay implements MetaDisplayInterface,
 		      throw nae;
 		  }
 	  }
+    
+	  /**
+	   *  Get the <code>String</code> identifier associated with the 
+     *  currently-displayed metadata
+	   *
+	   *  @return identifier  <code>String</code> identifier associated with the 
+     *                      currently-displayed metadata
+	   *
+	   */
+	  public String getIdentifier() 
+	  {
+	      return this.identifier;
+	  }
+
     
     //reset ID to it's original value before exception occurred:
     private void setIDBackTo(String oldID) 
