@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-01-08 19:45:27 $'
- * '$Revision: 1.79 $'
+ *     '$Date: 2002-01-09 16:59:57 $'
+ * '$Revision: 1.80 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1356,7 +1356,7 @@ void expandTreeToLevel(JTree jt, int level) {
                     DefaultMutableTreeNode templParent = (DefaultMutableTreeNode)tNode.getParent();
                     DefaultMutableTreeNode specCopy = (DefaultMutableTreeNode)tNode.clone();
                     // for now, ignore nested (CHOICE) nodes
-                    Vector choiceParentHits = simpleGetMatches(templParent, currentLevelInputNodes);
+                    Vector choiceParentHits = getMatches(templParent, currentLevelInputNodes);
                     for (int m=0;m<choiceParentHits.size();m++) {
                         DefaultMutableTreeNode workingInstanceNode = (DefaultMutableTreeNode)choiceParentHits.elementAt(m);
                         DefaultMutableTreeNode specCopyClone = (DefaultMutableTreeNode)(specCopy.clone());
