@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2004-02-09 05:56:40 $'
- * '$Revision: 1.33 $'
+ *     '$Date: 2004-02-09 18:55:56 $'
+ * '$Revision: 1.34 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -430,7 +430,8 @@ public class DataPackageFactory
 			Node[] ndarry = adp.getAttributeArray(0);
 			Node nd1 = ndarry[1];
       Node attrnode = adp.getReferencedNode(ndarry[1]);
-			
+
+Log.debug(1, "referenced node: "+attrnode);			
     Node attribute = attrnode;
     String temp = "";
     try {

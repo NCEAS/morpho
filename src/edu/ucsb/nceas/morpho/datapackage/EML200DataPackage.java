@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2004-02-09 05:56:40 $'
- * '$Revision: 1.27 $'
+ *     '$Date: 2004-02-09 18:55:55 $'
+ * '$Revision: 1.28 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -260,6 +260,7 @@ public  class EML200DataPackage extends AbstractDataPackage
 
 		try {
       serialize(AbstractDataPackage.METACAT);
+      this.setLocation(AbstractDataPackage.METACAT);
       serializeData();
 		} 
 		catch (MetacatUploadException mcue) {
@@ -322,7 +323,7 @@ public  class EML200DataPackage extends AbstractDataPackage
 				     // if refs is non-zero in length, we repeat
 			} // end while
 		} catch (Exception w) {
-			Log.debug(5, "Exception trying to follow references!");
+			Log.debug(25, "Exception trying to follow references!");
 		}
 		return referencedNode;
 	}

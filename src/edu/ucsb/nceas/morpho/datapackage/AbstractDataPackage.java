@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2004-02-09 05:56:40 $'
- * '$Revision: 1.58 $'
+ *     '$Date: 2004-02-09 18:55:55 $'
+ * '$Revision: 1.59 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1774,6 +1774,7 @@ public abstract class AbstractDataPackage extends MetadataObject
     Morpho morpho = Morpho.thisStaticInstance;
     FileSystemDataStore fds = new FileSystemDataStore(morpho);
     MetacatDataStore mds = new MetacatDataStore(morpho);
+    getEntityArray();
     //Log.debug(1, "About to check entityArray!");
     if (entityArray == null) {
       Log.debug(30, "Entity array is null!");
