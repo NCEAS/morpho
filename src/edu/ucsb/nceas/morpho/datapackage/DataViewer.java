@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-01-08 08:12:40 $'
- * '$Revision: 1.78 $'
+ *     '$Date: 2003-01-08 09:04:16 $'
+ * '$Revision: 1.79 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1711,10 +1711,7 @@ public class DataViewer extends javax.swing.JPanel
 
       if(metacatloc)
       { //save it to metacat
-        oldid = dataID;
-        newid = a.incRev(dataID);
-        try{
-
+       try{
           mds.newDataFile(newid, tempfile);
           
           mds.saveFile(newAttrFileId, frAttr, dp);  // new attribute file
