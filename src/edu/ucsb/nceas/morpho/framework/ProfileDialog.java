@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-10-29 23:33:23 $'
- * '$Revision: 1.16 $'
+ *     '$Date: 2002-04-02 18:41:30 $'
+ * '$Revision: 1.17 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -338,6 +338,7 @@ public class ProfileDialog extends JDialog
       JTextField[] textFields = {profileNameField, firstNameField,
                         lastNameField};
       addLabelTextRows(labels, textFields, gridbag, screenPanel);
+      firstNameField.requestFocus();
     } else if (1 == currentScreen) {
       String helpText = "<html><p>Enter your Metacat account information. " +
                         "This will allow you to log in to Metacat " +
@@ -365,16 +366,18 @@ public class ProfileDialog extends JDialog
       orgLabel.setHorizontalAlignment(SwingConstants.RIGHT);
       otherOrgLabel.setHorizontalAlignment(SwingConstants.RIGHT);
       userIdField.setColumns(15);
-      String[] organizations = {"NCEAS", "LTER", "NRS", "PISCO", "MARINE"};
+      String[] organizations = {"unaffiliated", "NCEAS", "LTER", "NRS", "PISCO", "MARINE"};
       orgList = new JList(organizations);
       orgList.setSelectionMode(1);
       orgList.setVisibleRowCount(3);
+      orgList.setSelectedIndex(0);
       JScrollPane orgScrollPane = new JScrollPane(orgList);
       otherOrgField.setColumns(15);
       JLabel[] labels = {usernameLabel, orgLabel, otherOrgLabel};
       JComponent[] components = {userIdField,
                             orgScrollPane, otherOrgField};
       addLabelTextRows(labels, components, gridbag, screenPanel);
+      userIdField.requestFocus();
     } else if (2 == currentScreen) {
       String helpText = "<html><p>Enter miscellaneous profile options.  This " +
                         "includes the prefix you wish to use to " +
@@ -392,6 +395,7 @@ public class ProfileDialog extends JDialog
       JLabel[] labels = {scopeLabel};
       JTextField[] textFields = {scopeField};
       addLabelTextRows(labels, textFields, gridbag, screenPanel);
+      scopeField.requestFocus();
     }
 
     // Set button states properly
