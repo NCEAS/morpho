@@ -5,9 +5,9 @@
  *    Authors: @tao@
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2003-12-15 20:28:31 $'
- * '$Revision: 1.7 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2004-01-09 16:51:41 $'
+ * '$Revision: 1.8 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -92,7 +92,11 @@ public class CreateNewDataPackageCommand implements Command
           AbstractDataPackage adp = DataPackageFactory.getDataPackage(newDOM);
           Log.debug(30,"AbstractDataPackage complete - Will now show in an XML Editor..");
           Node domnode = adp.getMetadataNode();
-
+          
+          Morpho morpho = Morpho.thisStaticInstance;
+          AccessionNumber an = new AccessionNumber(morpho);
+          adp.setAccessionNumber(an.getNextId());
+          
           try {
             ServiceController services = ServiceController.getInstance();
             ServiceProvider provider = 
