@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-12-03 03:44:09 $'
- * '$Revision: 1.14 $'
+ *     '$Date: 2001-12-05 19:37:22 $'
+ * '$Revision: 1.15 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -471,6 +471,7 @@ public class AddMetadataWizard extends JFrame
     }
     else if(2 == currentScreen)
     {
+      boolean eeFlag = false;  
       if(createNew.isSelected())
       { //open the editor and handle the editing complete action
         
@@ -497,6 +498,7 @@ public class AddMetadataWizard extends JFrame
               if(editexisting.toUpperCase().equals("YES"))
               { //if editexisting is yes, then we send the existing document
                 //of this type to the editor instead of a blank doc.
+                eeFlag = true;
                 Hashtable existingDocs = dataPackage.getRelatedFiles();
                 if(existingDocs.containsKey(doctype))
                 { //get the id and open the file
@@ -532,7 +534,12 @@ public class AddMetadataWizard extends JFrame
           }
         }
         EditorInterface editor = PackageUtil.getEditor(framework);
-        editor.openEditor(dummydoc, null, null, this);
+        if (eeFlag) {
+            editor.openEditor(dummydoc, null, null, this);
+        }
+        else {
+            editor.openEditor(dummydoc, null, null, this, true);
+        }
         this.hide();
       }
       else if (existingFile.isSelected())
