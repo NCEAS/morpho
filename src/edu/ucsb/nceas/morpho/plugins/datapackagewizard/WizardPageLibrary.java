@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: sgarg $'
- *     '$Date: 2004-01-09 05:51:54 $'
- * '$Revision: 1.19 $'
+ *     '$Date: 2004-01-09 23:03:50 $'
+ * '$Revision: 1.20 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -58,6 +58,7 @@ public class WizardPageLibrary {
     if(pageID.equals(DataPackageWizardInterface.KEYWORDS_PAGE)) return new KeywordsPage();
     if(pageID.equals(DataPackageWizardInterface.PARTY_PAGE)) return new PartyPage();
     if(pageID.equals(DataPackageWizardInterface.ACCESS_PAGE)) return new AccessPage();
+    if(pageID.equals(DataPackageWizardInterface.TEMPORAL_PAGE)) return new TemporalPage();
     if (containsPageID(pageID)) return (AbstractWizardPage)pages.get(pageID);
 
     return null;

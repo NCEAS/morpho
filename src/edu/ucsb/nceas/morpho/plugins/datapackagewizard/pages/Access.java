@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: sgarg $'
- *     '$Date: 2004-01-09 05:51:54 $'
- * '$Revision: 1.8 $'
+ *     '$Date: 2004-01-09 23:03:50 $'
+ * '$Revision: 1.9 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -148,8 +148,8 @@ public class Access extends AbstractWizardPage {
 
         public void actionPerformed(ActionEvent e) {
 
-          Log.debug(45, "\nKeywords: CustomAddAction called");
-          showNewKeywordsDialog();
+          Log.debug(45, "\nAccess: CustomAddAction called");
+          showNewAccessDialog();
         }
       });
 
@@ -159,13 +159,13 @@ public class Access extends AbstractWizardPage {
 
         public void actionPerformed(ActionEvent e) {
 
-          Log.debug(45, "\nKeywords: CustomEditAction called");
-          showEditKeywordsDialog();
+          Log.debug(45, "\nAccess: CustomEditAction called");
+          showEditAccessDialog();
         }
       });
   }
 
-  private void showNewKeywordsDialog() {
+  private void showNewAccessDialog() {
 
     AccessPage accessPage = (AccessPage)WizardPageLibrary.getPage(DataPackageWizardInterface.ACCESS_PAGE);
     WizardPopupDialog wpd = new WizardPopupDialog(accessPage, WizardContainerFrame.frame, false);
@@ -180,7 +180,7 @@ public class Access extends AbstractWizardPage {
   }
 
 
-  private void showEditKeywordsDialog() {
+  private void showEditAccessDialog() {
 
     List selRowList = accessList.getSelectedRowList();
 
@@ -189,17 +189,17 @@ public class Access extends AbstractWizardPage {
     Object dialogObj = selRowList.get(2);
 
     if (dialogObj==null || !(dialogObj instanceof AccessPage)) return;
-    AccessPage editKeywordsPage = (AccessPage)dialogObj;
+    AccessPage editAccessPage = (AccessPage)dialogObj;
 
-    WizardPopupDialog wpd = new WizardPopupDialog(editKeywordsPage, WizardContainerFrame.frame, false);
+    WizardPopupDialog wpd = new WizardPopupDialog(editAccessPage, WizardContainerFrame.frame, false);
     wpd.resetBounds();
     wpd.setVisible(true);
 
 
     if (wpd.USER_RESPONSE==WizardPopupDialog.OK_OPTION) {
 
-      List newRow = editKeywordsPage.getSurrogate();
-      newRow.add(editKeywordsPage);
+      List newRow = editAccessPage.getSurrogate();
+      newRow.add(editAccessPage);
       accessList.replaceSelectedRow(newRow);
     }
   }
@@ -233,11 +233,11 @@ public class Access extends AbstractWizardPage {
 
 
   /**
-   *  gets the Map object that contains all the key/value paired
+   *  gets the Map object that contains all the access/value paired
    *  settings for this particular wizard page
    *
    *  @return   data the Map object that contains all the
-   *            key/value paired settings for this particular wizard page
+   *            access/value paired settings for this particular wizard page
    */
   private OrderedMap returnMap = new OrderedMap();
 

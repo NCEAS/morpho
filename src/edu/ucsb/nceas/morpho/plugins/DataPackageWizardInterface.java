@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: sgarg $'
- *     '$Date: 2004-01-09 05:51:54 $'
- * '$Revision: 1.8 $'
+ *     '$Date: 2004-01-09 23:03:50 $'
+ * '$Revision: 1.9 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -55,6 +55,7 @@ public interface DataPackageWizardInterface {
   public static final String GEOGRAPHIC         = "GEOGRAPHIC";
   public static final String TAXONOMIC          = "TAXONOMIC";
   public static final String TEMPORAL           = "TEMPORAL";
+  public static final String TEMPORAL_PAGE      = "TEMPORAL_PAGE";
   public static final String USAGE_RIGHTS       = "USAGE_RIGHTS";
   public static final String DATA_LOCATION      = "DATA_LOCATION";
   public static final String TEXT_IMPORT_WIZARD = "TEXT_IMPORT_WIZARD";
