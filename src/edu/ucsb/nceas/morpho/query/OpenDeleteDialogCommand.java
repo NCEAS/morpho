@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2002-09-04 23:26:39 $'
- * '$Revision: 1.1 $'
+ *     '$Date: 2002-09-11 23:00:19 $'
+ * '$Revision: 1.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -38,33 +38,54 @@ import javax.swing.JDialog;
  */
 public class OpenDeleteDialogCommand implements Command 
 {
-  
+  /** A reference to OpenDialogBox */
+  private OpenDialogBox openDialog = null;
 
   /**
-   * Constructor of SearchCommand
-   *
-   * @param morpho the Morpho app to which the cancel command will apply
+   * Constructor of OpenDeleteDialogCommand
    */
   public OpenDeleteDialogCommand()
   {
    
   }//OpenDialogBoxCommand
   
-  
+  /**
+   * Constructor of OpenDeleteDialogCommand
+   *
+   * @param myDialog the open dialog box will be applied this command
+   */
+  public OpenDeleteDialogCommand(OpenDialogBox myDialog)
+  {
+    openDialog = myDialog;
+  }//OpenDialogBoxCommand
   /**
    * execute cancel command
    */    
   public void execute()
   {
-    MorphoFrame frame = UIController.getInstance().getCurrentActiveWindow();
-    if ( frame != null)
+    ResultPanel resultPane = null;
+    MorphoFrame frame  = null;
+    boolean parentIsOpenDialog = false;
+    // Get result panle from open dialog if open dialog is not null
+    if ( openDialog != null)
     {
-       ResultPanel resultPane = 
-                 RefreshCommand.getResultPanelFromMorphoFrame(frame);
-    
-       // make sure the resultPane is not null
-      if ( resultPane != null)
+      resultPane = openDialog.getResultPanel();
+      frame = openDialog.getParentFrame();
+      parentIsOpenDialog = true;
+    }
+    else
+    {
+      // Get result panel from current active frame
+      frame = UIController.getInstance().getCurrentActiveWindow();
+      if ( frame != null)
       {
+        resultPane = RefreshCommand.getResultPanelFromMorphoFrame(frame);
+      }//if
+    }//else
+    
+    // make sure the resultPane is not null
+    if ( resultPane != null)
+    {
         String selectDocId = resultPane.getSelectedId();
         boolean inNetwork = resultPane.getMetacatLocation();
         boolean inLocal = resultPane.getLocalLocation();
@@ -73,12 +94,20 @@ public class OpenDeleteDialogCommand implements Command
         if ( selectDocId != null && !selectDocId.equals(""))
         {
           // Show synchronize dialog
-          DeleteDialog dialog = 
-                new DeleteDialog(frame, selectDocId, inLocal, inNetwork);
-          dialog.setModal(true);
-          dialog.setVisible(true);
+          DeleteDialog deleteDialog = null;
+          if (parentIsOpenDialog)
+          {
+            deleteDialog = 
+           new DeleteDialog(openDialog, frame, selectDocId, inLocal, inNetwork);
+          }
+          else
+          {
+            deleteDialog = new DeleteDialog(frame, selectDocId, inLocal, inNetwork);
+          }
+          deleteDialog.setModal(true);
+          deleteDialog.setVisible(true);
         }
-      }
+     
     }//if
       
     
