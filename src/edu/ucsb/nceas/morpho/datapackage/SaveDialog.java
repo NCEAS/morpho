@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2004-03-31 23:33:09 $'
- * '$Revision: 1.14 $'
+ *     '$Date: 2004-04-01 19:09:57 $'
+ * '$Revision: 1.15 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -198,7 +198,7 @@ public class SaveDialog extends JDialog
     Box controlButtonsBox = Box.createHorizontalBox();
     controlButtonsBox.add(Box.createHorizontalGlue());
     
-    // Diable the execute action
+    // Save button
     executeButton = new JButton("Save");   
     controlButtonsBox.add(executeButton);
     controlButtonsBox.add(Box.createHorizontalStrut(PADDINGWIDTH));
@@ -217,6 +217,31 @@ public class SaveDialog extends JDialog
 		executeButton.addActionListener(lSymAction);
 		cancelButton.addActionListener(lSymAction);
     
+    String location = adp.getLocation();
+    if (location.equals("")) {  // never been saved
+      localLoc.setEnabled(true);
+      networkLoc.setEnabled(true);
+      localLoc.setSelected(true);
+      networkLoc.setSelected(false);
+    }
+    else if (location.equals(AbstractDataPackage.LOCAL)) {
+      localLoc.setEnabled(false);
+      networkLoc.setEnabled(true);
+      localLoc.setSelected(true);
+      networkLoc.setSelected(true);
+    }
+    else if (location.equals(AbstractDataPackage.METACAT)) {
+      localLoc.setEnabled(true);
+      networkLoc.setEnabled(false);
+      localLoc.setSelected(true);
+      networkLoc.setSelected(true);
+    }
+    else if (location.equals(AbstractDataPackage.BOTH)) {
+      localLoc.setEnabled(false);
+      networkLoc.setEnabled(false);
+      localLoc.setSelected(false);
+      networkLoc.setSelected(false);
+    }
     setVisible(true);
    
   }
@@ -256,30 +281,34 @@ public class SaveDialog extends JDialog
 		boolean problem = false;
     Morpho morpho = Morpho.thisStaticInstance;
     String location = adp.getLocation();
-    try{
-      String id = adp.getAccessionNumber();
-      AccessionNumber an = new AccessionNumber(morpho);
-      String newid = an.incRev(id);
-      adp.setAccessionNumber(newid);
-    }
-    catch (Exception www) {
-      AccessionNumber an = new AccessionNumber(morpho);
-      String nextid = an.getNextId();
-      adp.setAccessionNumber(nextid);
+    if (location.equals("")) { // only update version if new
+      try{
+        String id = adp.getAccessionNumber();
+        AccessionNumber an = new AccessionNumber(morpho);
+        String newid = an.incRev(id);
+        adp.setAccessionNumber(newid);
+      }
+      catch (Exception www) {
+        // no valid accession number; thus create one
+        AccessionNumber an = new AccessionNumber(morpho);
+        String nextid = an.getNextId();
+        adp.setAccessionNumber(nextid);
+      }
     }
     
 		try{
-      if ((localLoc.isSelected())&&(networkLoc.isSelected())) {
+      if ((localLoc.isSelected())&&(localLoc.isEnabled())
+          &&(networkLoc.isSelected())&&(networkLoc.isEnabled())) {
         adp.serialize(AbstractDataPackage.BOTH);
         adp.setLocation(AbstractDataPackage.BOTH);
         adp.serializeData();
       }
-      else if (localLoc.isSelected()) {
+      else if ((localLoc.isSelected())&&(localLoc.isEnabled())) {
         adp.serialize(AbstractDataPackage.LOCAL);
         adp.setLocation(AbstractDataPackage.LOCAL);
         adp.serializeData();
       }
-      else if (networkLoc.isSelected()) {
+      else if ((networkLoc.isSelected())&&(networkLoc.isEnabled())) {
         adp.serialize(AbstractDataPackage.METACAT);
         adp.setLocation(AbstractDataPackage.METACAT);
         adp.serializeData();
