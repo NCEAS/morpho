@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-05-24 21:06:31 $'
- * '$Revision: 1.12 $'
+ *     '$Date: 2001-05-25 15:06:08 $'
+ * '$Revision: 1.13 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,6 +28,7 @@
 
 package edu.ucsb.nceas.morpho.datapackage.wizard;
 
+import com.hss.easylay.*;
 import edu.ucsb.nceas.morpho.framework.*;
 import javax.swing.*;
 import javax.swing.border.*; 
@@ -906,9 +907,6 @@ public class PackageWizard extends javax.swing.JFrame
           
           if(button != null)
           {
-            JPanel layoutpanel = new JPanel();
-            layoutpanel.add(button);
-            tempPanel.add(layoutpanel);
             tempPanel.add(new JPanel());
           }
           
@@ -921,9 +919,12 @@ public class PackageWizard extends javax.swing.JFrame
           }
           
           //tempPanel.setLayout(new /*GridLayout(0,2)*/FlowLayout());
-          BoxLayout box = new BoxLayout(tempPanel, BoxLayout.Y_AXIS);
+          //BoxLayout box = new BoxLayout(tempPanel, BoxLayout.Y_AXIS);
           //layout management for internal panels
-          tempPanel.setLayout(box);
+          //tempPanel.setLayout(box);
+          EasyLayout elayout = new EasyLayout(tempPanel);
+          tempPanel.setLayout(elayout);
+          
           if(prevIndex == null)
           { //add this group as a child of it's parent for later reconstruction.
             parentPanel.children.addElement(tempPanel);
@@ -934,8 +935,20 @@ public class PackageWizard extends javax.swing.JFrame
             parentPanel.children.insertElementAt(tempPanel, 
                                                  prevIndex.intValue()+1);
           }
+
+          try
+          {          
+            EasyLayout parentLayout = (EasyLayout)parentPanel.getLayout();
+            parentLayout.setContainerSize(1000,1000);
+            parentLayout.add(new JScrollPane(tempPanel), new ELR(parentPanel, ELR.SOUTH, ELR.CENTER, 10));
+          }
+          catch(Exception cce)
+          {
+            parentPanel.add(new JScrollPane(tempPanel));
+          }
           
-          parentPanel.add(new JScrollPane(tempPanel));
+          //eLayout.add(textfield, new ELR(button, ELR.EAST, ELR.CENTER, 10));
+          //parentPanel.add(new JScrollPane(tempPanel));
           //add the panel in a scroll pane in case it's too big.
         }
       }
@@ -1036,19 +1049,25 @@ public class PackageWizard extends javax.swing.JFrame
         textfield.setColumns(size.intValue());
         parentPanel.children.addElement(textfield);
         
+        EasyLayout eLayout = (EasyLayout)parentPanel.getLayout();
+        
         if(button != null)
         { //if this item is repeatable add the button
-          JPanel layoutpanel = new JPanel();
           button.add(label);
-          layoutpanel.add(button);
-          parentPanel.add(button);
+          System.out.println("adding button");
+          eLayout.add(button, new ELR(75,30 + (i*50)));
+          eLayout.add(textfield, new ELR(button, ELR.EAST, ELR.CENTER, 10));
+          //parentPanel.add(button);
         }
         else
         { //add just the label if it is not repeatable
-          parentPanel.add(label);
+          System.out.println("adding label");
+          eLayout.add(label, new ELR(75,30 + (i*50)));
+          eLayout.add(textfield, new ELR(label, ELR.EAST, ELR.CENTER, 10));
+          //parentPanel.add(label);
         }
         textfield.setText(defaultText);
-        parentPanel.add(textfield);
+        //parentPanel.add(textfield);
       }
       else if(tempElement.name.equals("combobox"))
       {//add a new combo box with it's enumerated items
@@ -1150,11 +1169,13 @@ public class PackageWizard extends javax.swing.JFrame
           JPanel layoutpanel = new JPanel();
           //layoutpanel.setLayout(new FlowLayout(FlowLayout.LEFT));
           button.add(label);
+          System.out.println("button adding");
           layoutpanel.add(button);
           parentPanel.add(button);
         }
         else
         {
+          System.out.println("button adding");
           parentPanel.add(label);
         }
         
