@@ -5,9 +5,9 @@
  *             National Center for Ecological Analysis and Synthesis
  *    Release: @release@
  *
- *   '$Author: sgarg $'
- *     '$Date: 2004-04-20 21:42:07 $'
- * '$Revision: 1.17 $'
+ *   '$Author: brooke $'
+ *     '$Date: 2004-04-21 21:32:08 $'
+ * '$Revision: 1.18 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -175,12 +175,14 @@ public class CitationPage extends AbstractUIPage {
 //    authorList.setListButtonDimensions(WizardSettings.LIST_BUTTON_DIMS_SMALL);
     authorList.setCustomAddAction(new AbstractAction() {
       public void actionPerformed(ActionEvent e) {
+        updateDOMFromListOfPages();
         showNewAuthorPartyDialog();
       }
     });
 
     authorList.setCustomEditAction(new AbstractAction() {
       public void actionPerformed(ActionEvent e) {
+        updateDOMFromListOfPages();
         showEditAuthorPartyDialog();
       }
     });

@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2004-04-21 18:56:56 $'
- * '$Revision: 1.41 $'
+ *     '$Date: 2004-04-21 21:32:08 $'
+ * '$Revision: 1.42 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -242,6 +242,7 @@ public class Project extends AbstractUIPage {
         new AbstractAction() {
       public void actionPerformed(ActionEvent e) {
         Log.debug(45, "\nResearchProjInfo: CustomAddAction called");
+        updateDOMFromListOfPages();
         showNewPartyDialog();
       }
     });
@@ -250,6 +251,7 @@ public class Project extends AbstractUIPage {
         new AbstractAction() {
       public void actionPerformed(ActionEvent e) {
         Log.debug(45, "\nResearchProjInfo: CustomEditAction called");
+        updateDOMFromListOfPages();
         showEditPartyDialog();
       }
     });
@@ -684,9 +686,9 @@ public class Project extends AbstractUIPage {
                   +nextXPathObj+"; nextValObj="+nextValObj);
         addToPersonnel(nextXPathObj, nextValObj, personnelList);
         toDeleteList.add(nextXPathObj);
-        
+
       } else if (nextXPath.startsWith("@scope")) {
-        
+
         //get rid of scope attribute, if it exists
         toDeleteList.add(nextXPathObj);
       }

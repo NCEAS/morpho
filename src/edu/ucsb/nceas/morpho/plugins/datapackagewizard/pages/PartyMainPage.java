@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2004-04-15 04:48:14 $'
- * '$Revision: 1.40 $'
+ *     '$Date: 2004-04-21 21:32:08 $'
+ * '$Revision: 1.41 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -217,6 +217,7 @@ public class PartyMainPage
       public void actionPerformed(ActionEvent e) {
 
         Log.debug(45, "\nPartyPage: CustomAddAction called");
+        updateDOMFromListOfPages();
         showNewPartyDialog();
       }
     });
@@ -228,6 +229,7 @@ public class PartyMainPage
       public void actionPerformed(ActionEvent e) {
 
         Log.debug(45, "\nPartyPage: CustomEditAction called");
+        updateDOMFromListOfPages();
         showEditPartyDialog();
       }
     });
@@ -418,6 +420,7 @@ public class PartyMainPage
 
     //Do not update datapackage as we do for add/edit, because we've already
     //manipulated the DOM directly
+    //updateDOMFromListOfPages();
 
     if (oneOrMoreRequired)WidgetFactory.unhiliteComponent(minRequiredLabel);
     updateListFromDOM();
