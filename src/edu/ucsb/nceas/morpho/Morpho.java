@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2002-08-30 18:13:21 $'
- * '$Revision: 1.7 $'
+ *   '$Author: brooke $'
+ *     '$Date: 2002-09-04 18:12:58 $'
+ * '$Revision: 1.8 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -93,7 +93,7 @@ public class Morpho
     private String userName = "public";
     private String passWord = "none";
     private String metacatURL = null;
-    private ConfigXML config;
+    private static ConfigXML config;
     private ConfigXML profile;
     private boolean connected = false;
     private boolean networkStatus = false;
@@ -432,7 +432,7 @@ public class Morpho
      *
      * @return   ConfigXML the configuration object
      */
-    public ConfigXML getConfiguration()
+    public static ConfigXML getConfiguration()
     {
         return config;
     }
