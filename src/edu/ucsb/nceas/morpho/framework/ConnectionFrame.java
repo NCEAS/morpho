@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2002-04-02 18:46:37 $'
- * '$Revision: 1.31 $'
+ *   '$Author: brooke $'
+ *     '$Date: 2002-04-16 02:03:49 $'
+ * '$Revision: 1.32 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -106,6 +106,7 @@ public class ConnectionFrame extends javax.swing.JDialog
     Password.setForeground(java.awt.Color.black);
     Password.setFont(new Font("Dialog", Font.PLAIN, 12));
     PWTextField.setColumns(21);
+    addKeyListenerToComponent(PWTextField);
     JPanel4.add(PWTextField);
     ActivityLabel.setDoubleBuffered(true);
     ActivityLabel.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
@@ -117,24 +118,30 @@ public class ConnectionFrame extends javax.swing.JDialog
     getContentPane().add(BorderLayout.SOUTH,JPanel1);
     connectButton.setText("Login");
     connectButton.setActionCommand("OK");
-    connectButton.setMnemonic(KeyEvent.VK_ENTER);
+    connectButton.setMnemonic(KeyEvent.VK_L);
+    addKeyListenerToComponent(connectButton);
     JPanel1.add(connectButton);
+    connectButton.isDefaultButton();
     DisconnectButton.setText("Logout");
     DisconnectButton.setActionCommand("Disconnect");
+    DisconnectButton.setMnemonic(KeyEvent.VK_O);
+    addKeyListenerToComponent(DisconnectButton);
     DisconnectButton.setEnabled(false);
     JPanel1.add(DisconnectButton);
     CancelButton.setText("Skip Login");
     CancelButton.setActionCommand("Cancel");
-    CancelButton.setMnemonic(KeyEvent.VK_ESCAPE);
+    CancelButton.setMnemonic(KeyEvent.VK_S);
+    addKeyListenerToComponent(CancelButton);
     CancelButton.setEnabled(true);
     JPanel1.add(CancelButton);
+
     //}}
 
     //{{INIT_MENUS
     //}}
   
     //{{REGISTER_LISTENERS
-    this.addKeyListener(keyPressListener);
+        
     SymAction lSymAction = new SymAction();
     connectButton.addActionListener(lSymAction);
     DisconnectButton.addActionListener(lSymAction);
@@ -215,6 +222,21 @@ public class ConnectionFrame extends javax.swing.JDialog
   //{{DECLARE_MENUS
   //}}
 
+ 
+  /**
+   * Adds listener to passed Component object
+   */
+  private void addKeyListenerToComponent(Component component){
+    if (component!=null) {
+          component.addKeyListener(keyPressListener);
+    } else {
+      ClientFramework.debug(10,
+            "ConnectionFrame.addKeyListenerToComponent() - received NULL arg");
+      return;
+    }
+  }
+  
+  
   /**
    * Listens for key events coming from the dialog.  responds to escape and 
    * enter buttons.  escape toggles the cancel button and enter toggles the
@@ -222,21 +244,21 @@ public class ConnectionFrame extends javax.swing.JDialog
    */
   class KeyPressActionListener extends java.awt.event.KeyAdapter
   {
-    public KeyPressActionListener()
-    {
-      
-    }
+    public KeyPressActionListener() { }
     
     public void keyPressed(KeyEvent e)
     {
-      if(e.getKeyCode() == KeyEvent.VK_ENTER)
-      {
-        java.awt.event.ActionEvent event = new 
+      if(e.getKeyCode() == KeyEvent.VK_ENTER) {
+        
+        //if enter was pressed whilst a button was in focus, just click it
+        if (e.getSource() instanceof JButton){
+          ((JButton)e.getSource()).doClick();
+        } else {
+          java.awt.event.ActionEvent event = new 
                              java.awt.event.ActionEvent(connectButton, 0, "OK");
-        connectButton_actionPerformed(event);
-      }
-      else if(e.getKeyCode() == KeyEvent.VK_ESCAPE)
-      {
+          connectButton_actionPerformed(event);
+        }
+      } else if(e.getKeyCode() == KeyEvent.VK_ESCAPE) {
         dispose();
       }
     }
