@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-06-07 17:45:24 $'
- * '$Revision: 1.17 $'
+ *     '$Date: 2001-06-12 23:09:36 $'
+ * '$Revision: 1.18 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -540,8 +540,8 @@ public class ResultSet extends AbstractTableModel implements ContentHandler
     try {
       ServiceProvider provider = 
                       framework.getServiceProvider(DataPackageInterface.class);
-      DataPackageInterface dataStore = (DataPackageInterface)provider;
-      dataStore.openDataPackage(location, docid, rowTriples);
+      DataPackageInterface dataPackage = (DataPackageInterface)provider;
+      dataPackage.openDataPackage(location, docid, rowTriples);
     } catch (ServiceNotHandledException snhe) {
       framework.debug(6, snhe.getMessage());
     }

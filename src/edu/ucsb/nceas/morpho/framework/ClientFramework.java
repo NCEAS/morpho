@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: jones $'
- *     '$Date: 2001-06-12 21:00:42 $'
- * '$Revision: 1.50 $'
+ *   '$Author: berkley $'
+ *     '$Date: 2001-06-12 23:09:36 $'
+ * '$Revision: 1.51 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -995,7 +995,7 @@ public class ClientFramework extends javax.swing.JFrame
     }
     else
     {
-      return identifier; 
+      return identifier + ".1"; 
     }
   }
 

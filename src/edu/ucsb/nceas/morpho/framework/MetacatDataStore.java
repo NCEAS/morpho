@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-06-08 22:16:48 $'
- * '$Revision: 1.7 $'
+ *     '$Date: 2001-06-12 23:09:36 $'
+ * '$Revision: 1.8 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -68,7 +68,7 @@ public class MetacatDataStore extends DataStore
     
     if(localfile.exists())
     { //if the file is cached locally, read it from the hard drive
-      System.out.println("getting cached file");
+      framework.debug(9, "MetacatDataStore: getting cached file");
       return localfile;
     }
     else
@@ -79,7 +79,7 @@ public class MetacatDataStore extends DataStore
       //-throw exception if file is an error and delete file
       //-return the file pointer if the file is not an error
       
-      System.out.println("getting file from Metacat");
+      framework.debug(9,"MetacatDataStore: getting file from Metacat");
       Properties props = new Properties();
       props.setProperty("action", "read");
       props.setProperty("docid", name);
@@ -120,7 +120,7 @@ public class MetacatDataStore extends DataStore
           response.append((char)reader.read());
         }
         String responseStr = response.toString();
-        //System.out.println("responseStr: " + responseStr/*.substring(22,29)*/);
+        System.out.println("responseStr: " + responseStr/*.substring(22,29)*/);
         if(responseStr.indexOf("<error>") != -1)
         {//metacat reported some error
           writer.close();
@@ -172,7 +172,7 @@ public class MetacatDataStore extends DataStore
   public File saveFile(String name, Reader file, boolean publicAccess) 
               throws MetacatUploadException
   {
-    return saveFile(name, file, publicAccess, "update");
+    return saveFile(incRev(name, true), file, publicAccess, "update");
   }
   
   /**
@@ -200,9 +200,11 @@ public class MetacatDataStore extends DataStore
     
     try
     {
-      while(file.ready())
+      int c = file.read();
+      while(file.ready() && c != -1)
       {
-        fileText.append((char)file.read());
+        fileText.append((char)c);
+        c = file.read();
       }
       
       Properties prop = new Properties();
@@ -212,15 +214,15 @@ public class MetacatDataStore extends DataStore
       prop.put("docid", name);
       System.out.println("sending docid: " + name + " to metacat");
       System.out.println("action: " + action);
-      System.out.println("access: " + access);
+      System.out.println("public access: " + access);
       System.out.println("file: " + fileText.toString());
+      //framework.debug(9,"sending docid: " + name + " to metacat");
+      //framework.debug(9,"action: " + action);
+      //framework.debug(9,"public access: " + access);
+      //framework.debug(9,"file: " + fileText.toString());
       
       InputStream metacatInput = null;
       metacatInput = framework.getMetacatInputStream(prop, true);
-      if(metacatInput == null)
-      {
-        System.out.println("the stream is closed!!!!!!!!!!!!!!!");
-      }
       InputStreamReader metacatInputReader = new InputStreamReader(metacatInput);
       
       while(metacatInputReader.ready())
@@ -229,7 +231,7 @@ public class MetacatDataStore extends DataStore
       }
       
       String message = messageBuf.toString();
-      System.out.println("message from server: " + message);
+      //System.out.println("message from server: " + message);
       
       if(message.indexOf("<error>") != -1)
       {//there was an error
@@ -282,7 +284,7 @@ public class MetacatDataStore extends DataStore
   public File newFile(String name, Reader file, boolean publicAccess)
          throws MetacatUploadException
   {
-    return saveFile(name, file, publicAccess, "insert");
+    return saveFile(incRev(name, false), file, publicAccess, "insert");
   }
   
   /**

@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-06-08 22:16:47 $'
- * '$Revision: 1.14 $'
+ *     '$Date: 2001-06-12 23:09:35 $'
+ * '$Revision: 1.15 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -338,6 +338,7 @@ public class DataPackageGUI extends javax.swing.JFrame
                                JOptionPane.WARNING_MESSAGE);
         if(choice == JOptionPane.YES_OPTION)
         {
+          System.out.println("saving file with public access");
           mds.saveFile(id, new StringReader(xmlString), true);
         }
         else

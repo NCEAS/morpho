@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: jones $'
- *     '$Date: 2001-06-11 02:13:37 $'
- * '$Revision: 1.9 $'
+ *   '$Author: berkley $'
+ *     '$Date: 2001-06-12 23:09:36 $'
+ * '$Revision: 1.10 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -73,12 +73,12 @@ public class FileSystemDataStore extends DataStore
   
   public File saveFile(String name, Reader file, boolean publicAccess)
   {
-    return saveFile(name, file, publicAccess, datadir);
+    return saveFile(incRev(name, true), file, publicAccess, datadir);
   }
   
   public File saveTempFile(String name, Reader file)
   {
-    return saveFile(name, file, false, tempdir);
+    return saveFile(incRev(name, true), file, false, tempdir);
   }
   
   /**
@@ -143,7 +143,7 @@ public class FileSystemDataStore extends DataStore
    */
   public File newFile(String name, Reader file, boolean publicAccess)
   {
-    return saveFile(name, file, publicAccess);
+    return saveFile(incRev(name, false), file, publicAccess);
   }
   
   /**

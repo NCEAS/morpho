@@ -12,7 +12,7 @@
         </combobox>
       </group>
       
-      <group field="@casesSensitive" size="50x40">
+      <group field="@caseSensitive" size="50x40">
         <combobox label="Case Sensitive" field="yesorno" size="10" defaulttext="no">
           <item name="No" value="no" />
           <item name="Yes" value="yes"/>

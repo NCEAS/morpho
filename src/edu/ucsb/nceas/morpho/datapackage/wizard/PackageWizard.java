@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-06-08 22:16:47 $'
- * '$Revision: 1.25 $'
+ *     '$Date: 2001-06-12 23:09:35 $'
+ * '$Revision: 1.26 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -350,6 +350,7 @@ public class PackageWizard extends javax.swing.JFrame
         }
         
         boolean continueFlag = false;
+        boolean emptyflag = true;
         
 /////////this if statemen deals entirely with tags that have attributes////////
         if(attFlag)
@@ -359,6 +360,7 @@ public class PackageWizard extends javax.swing.JFrame
           //doc.append("elements size: " + (elements.size()-1) + "\n");
           //doc.append("elements: " + elements.toString() + "\n");
           //doc.append("pathVec: " + pathVec.toString() + "\n");
+          
           if(diff == elements.size()-1)
           { //first print out the end tag for the last element.
             String e = (String)elements.elementAt(diff);
@@ -377,7 +379,14 @@ public class PackageWizard extends javax.swing.JFrame
               { //make sure that the endTag is not on the end of the elements
                 //vector.  if it is it is not time to print it yet.
                 //System.out.println(spaces + "</" + endTag+ ">");
-                doc.append(spaces + "</" + endTag.trim() + ">\n");
+                if(endTag.equals("ENDEMPTY"))
+                {
+                  doc.append("/>\n");
+                }
+                else
+                {
+                  doc.append(spaces + "</" + endTag.trim() + ">\n");
+                }
                 spaces = spaces.substring(0, spaces.length() - 2);
               }
             }
@@ -401,6 +410,7 @@ public class PackageWizard extends javax.swing.JFrame
           i++;
           elements = pathVec;
           pathVec = (Vector)vStack.elementAt(i);
+          
           while(attributeTag.indexOf("@") != -1)
           { //while there is an @ sign in the name of the parent tag, we need
             //to take the next tags and make them into attributes
@@ -408,6 +418,7 @@ public class PackageWizard extends javax.swing.JFrame
             if(attribute.equals("FIELDVALUE"))
             { //the FIELDVALUE attribute is a keyword that tells you which
               //text box to take the value of the actual tag from
+              emptyflag = false;
               String keyPath = "";
               for(int k=0; k<pathVec.size(); k++)
               {
@@ -469,8 +480,16 @@ public class PackageWizard extends javax.swing.JFrame
             }
           }
           
-          doc.append(">\n"); //end the tag and add the content that was saved
-                             //from before
+          if(emptyflag)
+          {
+            //doc.append("/>\n");
+          }
+          else
+          {
+            doc.append(">\n"); //end the tag and add the content that was saved
+                               //from before
+          }
+          
           if(tagContent != "")
           {
             doc.append(spaces + "  " + tagContent + "\n");
@@ -486,7 +505,15 @@ public class PackageWizard extends javax.swing.JFrame
           //remove the @ sign
           attributeEndTag = attributeEndTag.substring(1, 
                                                       attributeEndTag.length());
-          elements.addElement(attributeEndTag);
+          if(!emptyflag)
+          {
+            elements.addElement(attributeEndTag);
+          }
+          else
+          {
+            elements.addElement("ENDEMPTY");
+          }
+          
           attFlag = false;
           
           if(continueFlag)
@@ -544,7 +571,14 @@ public class PackageWizard extends javax.swing.JFrame
             { //make sure that the endTag is not on the end of the elements
               //vector.  if it is it is not time to print it yet.
               //System.out.println(spaces + "</" + endTag+ ">");
-              doc.append(spaces + "</" + endTag.trim() + ">\n");
+              if(endTag.equals("ENDEMPTY"))
+              {
+                doc.append("/>\n");
+              }
+              else
+              {
+                doc.append(spaces + "</" + endTag.trim() + ">\n");
+              }
               spaces = spaces.substring(0, spaces.length() - 2);
             }
           }
@@ -584,7 +618,14 @@ public class PackageWizard extends javax.swing.JFrame
           { //end the overlapping tags.
             String endTag = (String)elements.remove(j);  
             //System.out.println(spaces + "</" + endTag+ ">");
-            doc.append(spaces + "</" + endTag.trim() + ">\n");
+            if(endTag.equals("ENDEMPTY"))
+            {
+              doc.append("/>\n");
+            }
+            else
+            {
+              doc.append(spaces + "</" + endTag.trim() + ">\n");
+            }
             spaces = spaces.substring(0, spaces.length() - 2);
           }
           for(int j=diff; j<pathVec.size(); j++)
@@ -619,8 +660,15 @@ public class PackageWizard extends javax.swing.JFrame
     { //print out the remainder of the elements vector to finish off the
       //document
       //System.out.println(spaces + "</" + elements.remove(i) + ">");
-      String endTag = (String)elements.remove(i); 
-      doc.append(spaces + "</" + endTag.trim() + ">\n");
+      String endTag = (String)elements.remove(i);
+      if(endTag.equals("ENDEMPTY"))
+      {
+        doc.append("/>\n");
+      }
+      else
+      {
+        doc.append(spaces + "</" + endTag.trim() + ">\n");
+      }
       spaces = spaces.substring(0, spaces.length() - 2);
     }
     return doc;
@@ -1124,6 +1172,7 @@ public class PackageWizard extends javax.swing.JFrame
           if(visible.equals("no"))
           {
             layoutpanel.setVisible(false);
+            textfield.setVisible(false);
           }
         }
        
@@ -1400,42 +1449,6 @@ public class PackageWizard extends javax.swing.JFrame
         "instantiated for a combobox or a textbox but not both");
       }
     }
-    /*
-    public JFieldWrapper(String label, JComboBoxWrapper combobox)
-    {
-      if(textbox == null)
-      {
-        this.label = new JLabel(label);
-        this.combobox = combobox;
-      }
-      else
-      {
-         //error because either combobox or text box needs to be null
-        System.out.println("error2 in JFieldWrapper: this class can only be " +
-        "instantiated for a combobox or a textbox but not both");
-      }
-    
-      public JPanel getWrappedElement()
-      {
-        JPanel tempPanel = new JPanel();
-        tempPanel.add(this.label);
-        if(textbox == null && combobox != null)
-        {
-          tempPanel.add(this.combobox);
-        }
-        else if(textbox != null && combobox == null)
-        {
-          tempPanel.add(this.textbox);
-        }
-        else
-        {
-          //error because either combobox or text box needs to be null
-          System.out.println("error3 in JFieldWrapper: this class can only be " +
-          "instantiated for a combobox or a textbox but not both");
-        }
-      }
-    }
-    */
   }
   
   /**

@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-06-08 16:23:52 $'
- * '$Revision: 1.15 $'
+ *     '$Date: 2001-06-12 23:09:35 $'
+ * '$Revision: 1.16 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -166,9 +166,8 @@ public class DataPackage
       {
         e.printStackTrace();
       }
-      
-      parseTripleFile();
     }
+    parseTripleFile();
   }
   
   /**
@@ -219,8 +218,11 @@ public class DataPackage
     NodeList titleNodeList = null;
     NodeList altTitleNodeList = null;
     String originatorPath = config.get("originatorPath", 0);
+    //System.out.println("originatorPath: " + originatorPath);
     String titlePath = config.get("titlePath", 0);
+    //System.out.println("titlePath: " + titlePath);
     String altTitlePath = config.get("altTitlePath", 0);
+    //System.out.println("alttitlePath: " + altTitlePath);
     try
     {
       //find where the triples go in the file

@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: jones $'
- *     '$Date: 2001-06-11 02:13:37 $'
- * '$Revision: 1.4 $'
+ *   '$Author: berkley $'
+ *     '$Date: 2001-06-12 23:09:36 $'
+ * '$Revision: 1.5 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -65,6 +65,41 @@ public abstract class DataStore implements DataStoreInterface
     framework.debug(code, message);
   }
   
+  /**
+   * parses id and adds a revision number to it.  if there is already a revision
+   * number it adds one to it and returns the new id.  if addOne is true and the
+   * then one is added to the existing revision number 
+   */
+  protected String incRev(String id, boolean addOne)
+  {
+    ConfigXML config = framework.getConfiguration();
+    String sep = config.get("separator", 0);
+    int count = 0;
+    for(int i=0; i<id.length(); i++)
+    {
+      if(id.charAt(i) == sep.trim().charAt(0))
+      {
+        count++;
+      }
+    }
+    
+    if(count == 1)
+    {
+      return id + ".1";
+    }
+    
+    int revIndex = id.lastIndexOf(".");
+    String revNumStr = id.substring(revIndex + 1, id.length());
+    Integer revNum = new Integer(revNumStr);
+    int rev = revNum.intValue();
+    if(addOne)
+    {
+      rev++;
+    }
+    return id.substring(0, revIndex) + "." + rev;
+  }
+  
+  
   /** 
    * Parses a dotted notation id into a file path.  johnson2343.13223 becomes
    * johnson2343/13223.  Revision numbers are left on the end so
@@ -84,7 +119,7 @@ public abstract class DataStore implements DataStoreInterface
     int afterDocidIndex = docidIndex + 6;
     String docid = message.substring(afterDocidIndex, 
                                      message.indexOf("<", afterDocidIndex));
-    debug(0, "docid: " + docid);
+    debug(9, "docid in parseIdFromMessage: " + docid);
     return docid;
   }
   

@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-06-08 22:16:48 $'
- * '$Revision: 1.13 $'
+ *     '$Date: 2001-06-12 23:09:36 $'
+ * '$Revision: 1.14 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -286,7 +286,7 @@ public class PackageWizardShell extends javax.swing.JFrame
       donePanel = new JPanel();
       openCheckBox = new JCheckBox("Open new package in package " +
                                              "editor?", true);
-      saveToMetacatCheckBox = new JCheckBox("Save package to Metacat?", true);
+      saveToMetacatCheckBox = new JCheckBox("Save package to Metacat?", false);
       publicAccessCheckBox = new JCheckBox("Package should be publicly " +
                                            "readable (on Metacat)?", true);
       //saveToMetacatButton = new JButton("Save To Metacat");
@@ -483,11 +483,12 @@ public class PackageWizardShell extends javax.swing.JFrame
         {
           return;
         }
-        Vector fileVec = new Vector();
+        
+        /*Vector fileVec = new Vector();
         fileVec.addElement(wfc.id);
         fileVec.addElement(f);
         fileVec.addElement(wfc.type);
-        packageFiles.addElement(fileVec);
+        packageFiles.addElement(fileVec);*/
         
         DOMParser parser = new DOMParser();
         InputSource in;
@@ -581,11 +582,9 @@ public class PackageWizardShell extends javax.swing.JFrame
         
         for(int j=0; j<newtriples.getLength(); j++)
         { //find the blank template triple node and remove it
-          System.out.println("j: " + j);
           Node n = newtriples.item(j);
           if(!n.getFirstChild().getNodeName().equals("subject"))
           {
-            System.out.println("deleting triple node.");
             Node parent = n.getParentNode();
             parent.removeChild(n);
           }
@@ -606,32 +605,16 @@ public class PackageWizardShell extends javax.swing.JFrame
       }
     }
     
-    if(openCheckBox.isSelected())
-    {
-      //open the package in the package editor
-      System.out.println("opening the package in the package editor (not really");
-    }
-    
     if(saveToMetacatCheckBox.isSelected())
     {
       //save the package to metacat here
-      System.out.println("saving the package to metacat (not really)");
+      framework.debug(9, "saving the package to metacat");
       
-      if(!framework.isConnected())
+      //System.out.println("packageFiles: size: " + packageFiles.size());
+      //System.out.println("packageFiles: " + packageFiles.toString());
+      MetacatDataStore mds = new MetacatDataStore(framework);
+      for(int i=packageFiles.size()-1; i>=0; i--)
       {
-        int choice = JOptionPane.showConfirmDialog(null, 
-                               "You must be logged in to upload to Metacat." +
-                               "ADD FUNCTIONALITY TO ALLOW A USER TO LOGIN HERE", 
-                               "Package Wizard", 
-                               JOptionPane.YES_NO_CANCEL_OPTION,
-                               JOptionPane.WARNING_MESSAGE);
-        return;
-      }
-      
-      //????????????This doesn't work and I don't know why???????????????????
-      for(int i=0; i<packageFiles.size(); i++)
-      {
-        MetacatDataStore mds = new MetacatDataStore(framework);
         Vector v = (Vector)packageFiles.elementAt(i);
         String id = (String)v.elementAt(0);
         File f = (File)v.elementAt(1);
@@ -655,7 +638,7 @@ public class PackageWizardShell extends javax.swing.JFrame
           else
           { //this is an xml file
             //send it to metacat
-            mds.newFile(id, fr, publicAcc);
+            mds.newFile(id , fr, publicAcc);
           }
           fr.close();
         }
@@ -729,12 +712,6 @@ public class PackageWizardShell extends javax.swing.JFrame
     else if(command.equals("Finish"))
     {
       handleFinishAction();
-    }
-    else if(command.equals("Done"))
-    {
-      //-open up the package editor with the new package in it
-      System.out.println("Done");
-      this.setVisible(false);
     }
   }
   
