@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-09-16 21:59:28 $'
- * '$Revision: 1.7 $'
+ *     '$Date: 2003-09-17 23:33:01 $'
+ * '$Revision: 1.8 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -108,6 +108,19 @@ public class DataPackageFactory
     if (!metacat && local) location = AbstractDataPackage.LOCAL;
     if (metacat && local) location = AbstractDataPackage.BOTH;
     dp.load(location, docid, morpho);
+/*      try{
+        Node textNode = XMLUtilities.getTextNodeWithXPath(dp.getMetadataPath(),"/xpathKeyMap/contextNode[@name='package']/title");
+        String test = textNode.getNodeValue();
+        Log.debug(1,"test:"+test);
+        String temp = dp.getGenericValue("/xpathKeyMap/contextNode[@name='package']/title");
+        Log.debug(1,"temp:"+temp);
+      }
+      catch (Exception w) {
+        Log.debug(1,"exception");
+      }
+*/
+   Log.debug(1,"Title: "+dp.getTitle());
+   Log.debug(1,"Author: "+dp.getAuthor());
     return dp;    
   }
 
@@ -235,11 +248,8 @@ public class DataPackageFactory
   
   static public void main(String args[]) {
     try{
-      File f = new File("test.xml");
-      FileReader in = new FileReader(f);
       Morpho.createMorphoInstance();
-      DataPackageFactory.getDataPackage(in, false, true);
-      in.close();
+      DataPackageFactory.getDataPackage("jscientist.7.1", false, true);
       System.exit(0);
     } catch (Exception w) {}
   }

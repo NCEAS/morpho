@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-09-16 21:59:28 $'
- * '$Revision: 1.5 $'
+ *     '$Date: 2003-09-17 23:33:01 $'
+ * '$Revision: 1.6 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -141,20 +141,20 @@ public class MetadataObject
   
   public String getGenericValue(String genericName) {
     Node value = null;
-    if (getMetadataPath()!=null) Log.debug(1, "MetadataPath is not null");
     try{
-      Log.debug(1, "genericName: "+genericName);
+      Log.debug(20, "genericName: "+genericName);
       value = XMLUtilities.getTextNodeWithXPath(getMetadataPath(), genericName);
+      if (value==null) return "";
     }
     catch (Exception e) {
       Log.debug(1, "Error in getGenericValue: "+e.toString());
     }
-    String ret = null;
+    String ret = "";
     if (value!=null) {
       // value is an XPath
       String path = value.getNodeValue();
       if ((path!=null)&&(path.length()>1)) {
-        Log.debug(1,"path: "+path);
+        Log.debug(30,"path: "+path);
         try{
           // metadataNode is the context node
           NodeList nl = XPathAPI.selectNodeList(metadataNode, path);
@@ -164,6 +164,7 @@ public class MetadataObject
           Node child = n.getFirstChild();
           if (child != null) {
             String s = child.getNodeValue();
+            if (s==null) return "";
             s = s.trim();
             return s;
           } else {

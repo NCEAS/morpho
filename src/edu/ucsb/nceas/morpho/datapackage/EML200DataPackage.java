@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-09-16 21:59:28 $'
- * '$Revision: 1.3 $'
+ *     '$Date: 2003-09-17 23:33:01 $'
+ * '$Revision: 1.4 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -63,53 +63,45 @@ public  class EML200DataPackage extends AbstractDataPackage
   }
   
   void load(String location, String identifier, Morpho morpho) {
-    Log.debug(1, "loading new DataPackage Object");
     this.location   = location;
     this.id         = identifier;
     this.config     = Morpho.getConfiguration();
 
-    Log.debug(1, "Creating new DataPackage Object");
-    Log.debug(1, "id: " + this.id);
-    Log.debug(1, "location: " + location);
+    Log.debug(20, "Creating new DataPackage Object");
+    Log.debug(20, "id: " + this.id);
+    Log.debug(20, "location: " + location);
     
     morpho = Morpho.thisStaticInstance;
     
     fileSysDataStore  = new FileSystemDataStore(morpho);
     metacatDataStore  = new MetacatDataStore(morpho);
-    Log.debug(1, "DataStores have been created!");
     File packagefile;
     try {
       packagefile = getFileWithID(this.id);
      } catch (Throwable t) {
-      Log.debug(1, "in catch");
       //already handled in getFileWithID() method, 
       //so just abandon this instance:
       return;
     }
-    Log.debug(1, "Position 1");
     
     DocumentBuilder parser = Morpho.createDomParser();
     InputSource in;
     FileInputStream fs;
-    Log.debug(1, "Position 2");
     Document doc = null;
     try
     {
     if (packagefile==null) Log.debug(1, "packagefile is NULL!");
       fs = new FileInputStream(packagefile);
       in = new InputSource(fs);
-    if (in==null) Log.debug(1, "in is NULL!");
 
       doc = parser.parse(in);
       fs.close();
-     Log.debug(1, "Position 3");
    } catch(Exception e1) {
       Log.debug(4, "Parsing threw: " + e1.toString());
       e1.printStackTrace();
     }
     if (doc==null) Log.debug(1, "doc is NULL!");
     metadataNode = doc.getDocumentElement();  // the root Node
-     Log.debug(1, "Position 4");
     try{
       metadataPathNode = XMLUtilities.getXMLAsDOMTreeRootNode("/lib/eml200KeymapConfig.xml");
     }
@@ -119,5 +111,21 @@ public  class EML200DataPackage extends AbstractDataPackage
     }
   }
   
+  /**
+   *  override method in AbstractDataPackage to get all authors and combine name fields
+   */
+  public String getAuthor() {
+    String temp = "";
+    String surNameXpath = "/eml:eml/dataset/creator/individualName/surName";
+    String givenNameXpath = "/eml:eml/dataset/creator/individualName/givenName";
+    String salutationXpath = "/eml:eml/dataset/creator/individualName/salutation";
+    
+    String surName = getGenericValue(surNameXpath);
+    String givenName = getGenericValue(givenNameXpath);
+    String salutation = getGenericValue(salutationXpath);
+    
+    temp = salutation + " " + givenName + " " + surName;
+    return temp;
+  }
 }
 

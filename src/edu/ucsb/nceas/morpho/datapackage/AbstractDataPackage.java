@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-09-10 22:47:07 $'
- * '$Revision: 1.2 $'
+ *     '$Date: 2003-09-17 23:33:01 $'
+ * '$Revision: 1.3 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -105,6 +105,20 @@ public abstract class AbstractDataPackage extends MetadataObject
     return dataPkgFile;  
   }
 
-
+  /**
+   *  convenience method to get the DataPackage title
+   */
+  public String getTitle() {
+    String temp = getGenericValue("/xpathKeyMap/contextNode[@name='package']/title");
+    return temp;
+  }
+  /**
+   *  convenience method to get the DataPackage author
+   */
+  public String getAuthor() {
+    String temp = "";
+    temp = getGenericValue("/xpathKeyMap/contextNode[@name='package']/author");    
+    return temp;
+  }
 }
 
