@@ -6,7 +6,7 @@
   *    Copyright: 2000 Regents of the University of California and the
   *               National Center for Ecological Analysis and Synthesis
   *  For Details: http://www.nceas.ucsb.edu/
-  *    File Info: '$Id: build.xml,v 1.24 2001-06-22 22:48:58 jones Exp $'
+  *    File Info: '$Id: build.xml,v 1.25 2001-07-19 18:03:56 jones Exp $'
   *
   *  Build file for the Ant cross-platform build system for metacat
   *  See http://jakarta.apache.org for details on Ant
@@ -41,6 +41,7 @@
       <property name="morpho.lib.frames" value="${morpho.lib}/frames"/>
       <property name="morpho.lib.sampledata" value="${morpho.lib}/sampledata"/>
       <property name="morpho.lib.style" value="${morpho.lib}/style"/>
+      <property name="morpho.lib.HTTPClient" value="${morpho.lib}/HTTPClient"/>
       <property name="morpho.src" value="${morpho.dir}/src"/>
       
 
@@ -62,8 +63,10 @@
                 value="${libdir}/jlfgr-1_0.jar" />
       <property name="itisjar"
                 value="${libdir}/itislib.jar" />
+      <property name="httpclient" 
+                value="lib/httpclient.jar" />
       <property name="cpath" 
-                value="${xerces}:${xalan}:${xml4j}:${build.dest}:${sym}:${dtd}:${junit}:${jlf}:${itislib}"/>
+                value="${xerces}:${xalan}:${xml4j}:${build.dest}:${sym}:${dtd}:${junit}:${jlf}:${itislib}:${httpclient}"/>
       <property name="package.home" value="edu/ucsb/nceas" />
 
    </target>
@@ -84,6 +87,10 @@
    </target>
 
    <target name="compile" depends="itis,prepare">
+
+      <jar jarfile="lib/httpclient.jar">
+        <fileset dir="lib" includes="HTTPClient/**/*.class"/>
+      </jar>
 
       <javac srcdir="${srcdir}" 
              destdir="${build.dest}" 
@@ -151,6 +158,7 @@
       <copy file="./lib/morpho.jar" todir="${morpho.lib}"/>
       <copy file="./lib/xalan.jar" todir="${morpho.lib}"/>
       <copy file="./lib/xerces.jar" todir="${morpho.lib}"/> 
+      <copy file="./lib/httpclient.jar" todir="${morpho.lib}"/> 
        
       <delete file="./lib/morpho-${release}.zip"/>
       <zip zipfile="./lib/morpho-${release}.zip" basedir="${dist.dir}"/>
@@ -165,6 +173,10 @@
       <mkdir dir="${morpho.src}"/>
       <copy todir="${morpho.src}">
         <fileset dir="./src"/>
+      </copy>
+      <mkdir dir="${morpho.lib.HTTPClient}"/>
+      <copy todir="${morpho.lib.HTTPClient}">
+        <fileset dir="./lib/HTTPClient"/>
       </copy>
 
       <delete file="./lib/morpho-src-${release}.zip"/>
@@ -200,6 +212,7 @@
            classpath="${cpath}:${morpho}"
            fork="yes" >
        <arg value="-Xmx128m"/>
+       <jvmarg line="-Djava.protocol.handler.pkgs=HTTPClient"/>
      </java>
    </target>
    
@@ -211,11 +224,12 @@
      </java>
    </target>
    
-   <target name="Query" depends="install">
-     <java classname="edu.ucsb.nceas.morpho.query.Query"
+   <target name="mdstore" depends="install">
+     <java classname="edu.ucsb.nceas.morpho.framework.MetacatDataStore"
            classpath="${cpath}:${morpho}"
            fork="yes">
-           <arg file="lib/ownerquery.xml"/>
+       <arg line="jones some-password h.1.1 build.xml data.1.1 morpho.bat"/>
+       <jvmarg line="-Djava.protocol.handler.pkgs=HTTPClient"/>
      </java>
    </target>
    

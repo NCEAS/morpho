@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2001-06-13 03:11:23 $'
- * '$Revision: 1.11 $'
+ *     '$Date: 2001-07-19 18:03:59 $'
+ * '$Revision: 1.12 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,111 +30,232 @@ import java.io.*;
 import java.net.*;
 import java.util.*;
 
+import HTTPClient.NVPair;
+
 public class HttpMessage
 {
-  public String contype;
   private URL servlet = null;
   private String argString = null;
   private static String cookie = null;
+  private OutputStream out = null;
+  private URLConnection con = null;
 
   public HttpMessage(URL servlet)
   {
     this.servlet = servlet;
   }
 
-  // Performs a GET request to the previously given servlet
-  // with no query string
+  /**
+   * Performs a GET request to the previously given servlet
+   * with no query string
+   */
   public InputStream sendGetMessage() throws IOException
   {
     return sendGetMessage(null);
   }
 
-  //Performs a GET request to the previously given servlet
-  // Builds a query string from the supplied Properties list.
+  /**
+   * Performs a GET request to the previously given servlet
+   * Builds a query string from the supplied Properties list.
+   */
   public InputStream sendGetMessage(Properties args) throws IOException
   {
     argString = "";//default
 
-    if (args != null)
-    {
+    if (args != null) {
       argString = "?" + toEncodedString(args);
     }
     URL url = new URL(servlet.toExternalForm() + argString);
 
     // turn off caching
-    URLConnection con = url.openConnection();
+    con = url.openConnection();
     con.setUseCaches(false);
-    contype = con.getContentType();
 
     return con.getInputStream();
   }
 
-  //Performs a POST request to the previously given servlet
-  //with no query string
+  /**
+   * Open a new post connection, preparing the request headers, including cookies
+   */
+  private void openPostConnection() throws IOException
+  {
+    // Open the connection
+    con = servlet.openConnection();
+
+    // Write any cookies in the request
+    if (cookie != null) {
+      int k = cookie.indexOf(";");
+      if (k > 0) {
+        cookie = cookie.substring(0, k);
+      }
+      con.setRequestProperty("Cookie", cookie);
+    }
+
+    // add so Metacat can determine where requests come from
+    con.setRequestProperty("User-Agent", "Morpho/" + ClientFramework.VERSION);
+
+    // prepare for both input and output
+    con.setDoInput(true);
+    con.setDoOutput(true);
+    // turn off caching
+    con.setUseCaches(false);
+  }
+
+  /**
+   * Sends post data using multipart/form-data encoding. This method can send 
+   * large data files because the files are streamed directly from disk to the
+   * HttpURLConnection.  Assuming that we are using the HTTClient or another
+   * similar library that provides a streaming HttpURLConnection, then the
+   * data is sent to the connection as it is read from disk (in contrast to the
+   * default Sun HttpURLConnection that reads the whole data stream into memory
+   * before sending it.
+   *
+   * @param args a property file containing the name-value pairs that are to be
+   *             sent to the server
+   * @param fileNames a property file containing the name for a formfield 
+   *                  that represents a file and the filename (as the property value)
+   * @return the response stream that comes from the server
+   * @exception IOException If any file operation fails.
+   */
+  public InputStream sendPostData(Properties args, Properties fileNames) 
+                     throws IOException
+  {
+    openPostConnection();
+
+    // Prepare the parameters
+    int len = args.size();
+    NVPair[] opts = new NVPair[len];
+    Enumeration names = args.propertyNames();
+    for (int i=0; i<len; i++) {
+      String name = (String)names.nextElement();
+      String value = args.getProperty(name);
+      opts[i] = new NVPair(name, value);
+    }
+
+    // Prepare the data files
+    len = fileNames.size();
+    NVPair[] data = new NVPair[len];
+    Enumeration dataNames = fileNames.propertyNames();
+    for (int i=0; i<len; i++) {
+      String name = (String)dataNames.nextElement();
+      String value = fileNames.getProperty(name);
+      data[i] = new NVPair(name, value);
+    }
+
+    // Create the multipart/form-data form object
+    MultipartForm myform = new MultipartForm(opts, data);
+
+    // Set some addition request headers
+    ((HttpURLConnection)con).setRequestMethod("POST");
+    long contentLength = myform.getLength();
+    ((HttpURLConnection)con).setRequestProperty("Content-Length",
+             new Long(contentLength).toString());
+    String ctype = myform.getContentType();
+    ((HttpURLConnection)con).setRequestProperty("Content-Type", ctype + "\r\n");
+
+    // Open the output stream and write the encoded data to it
+    out = con.getOutputStream();
+    myform.writeEncodedMultipartForm(out);
+
+    // close the connection and return the response stream
+    InputStream res = closePostConnection();
+    return res;
+  }
+
+  /**
+   * Sends post data using url encoding.  This method is used most of the time
+   * and is for typical paramameter lists where the data is not extensive.
+   *
+   * @param args a property file containing the name-value pairs that are to be
+   *             sent to the server
+   * @return the response stream that comes from the server
+   * @exception IOException If any file operation fails.
+   */
+  public InputStream sendPostData(Properties args) throws IOException
+  {
+    openPostConnection();
+    out = new DataOutputStream(con.getOutputStream());
+    Enumeration names = args.propertyNames();
+    while (names.hasMoreElements()) {
+      String name = (String)names.nextElement();
+      String value = args.getProperty(name);
+      sendNameValuePair(name, value);
+      if (names.hasMoreElements()) {
+        ((DataOutputStream)out).writeBytes("&");
+        out.flush();
+      }
+    }
+    InputStream res = closePostConnection();
+    return res;
+  }
+
+  /**
+   * Utility method to URL encode and send a single name-value pair
+   */
+  private void sendNameValuePair(String name, String data) throws IOException
+  {
+    ClientFramework.debug(15, "Name: " + name + " => " + data);
+    ((DataOutputStream)out).writeBytes(URLEncoder.encode(name));
+    ((DataOutputStream)out).writeBytes("=");
+    ((DataOutputStream)out).writeBytes(URLEncoder.encode(data));
+    out.flush();
+  }
+
+  /**
+   * Clean up the post connection, save any cookies, close the output stream
+   *
+   * @return the response stream that comes from the server
+   * @exception IOException If any file operation fails.
+   */
+  private InputStream closePostConnection() throws IOException
+  {
+    // Close the output stream
+    out.close();
+
+    // Open the response stream
+    InputStream response = con.getInputStream();
+
+    // Read any cookies in the response
+    String temp = con.getHeaderField("Set-Cookie");
+    if (temp != null) {
+      cookie = temp;
+      int k = cookie.indexOf(";");
+      if (k > 0) {
+        cookie = cookie.substring(0, k);
+      }
+    }
+
+    // Return the response stream
+    return response;
+  }
+
+  /**
+   * Performs a POST request with no query parameters
+   */
   public InputStream sendPostMessage() throws IOException
   {
     return sendPostMessage(null);
   }
 
-  //Builds post data from the supplied properties list
+  /**
+   * Sends post data using url encoding.  This method is used most of the time
+   * and is for typical paramameter lists where the data is not extensive.
+   *
+   * @param args a property file containing the name-value pairs that are to be
+   *             sent to the server
+   * @return the response stream that comes from the server
+   * @exception IOException If any file operation fails.
+   * @see #sendPostData(Properties args)
+   * @deprecated Replaced by #sendPostData(Properties args)
+   */
   public InputStream sendPostMessage(Properties args) throws IOException
   {
-    argString = "";//default
-    if (args != null)
-    {
-      argString = toEncodedString(args);
-    }
-    URLConnection con = servlet.openConnection();
-    if (cookie != null)
-    {
-      int k = cookie.indexOf(";");
-      if (k > 0)
-      {
-        cookie = cookie.substring(0, k);
-      }
-      con.setRequestProperty("Cookie", cookie);
-      // add 10/26/00 by DFH so Metacat can determine where request come from
-      con.setRequestProperty("User-Agent", "MORPHO");
-    }
-    //prepare for both input and output
-    con.setDoInput(true);
-    con.setDoOutput(true);
-    //turn off caching
-    con.setUseCaches(false);
-
-    //work around a Netscape bug
-    //con.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-    //Write the arguments as post data
-    DataOutputStream out = new DataOutputStream(con.getOutputStream());
-    out.writeBytes(argString);
-    out.flush();
-    contype = con.getContentType();
-    String temp = con.getHeaderField("Set-Cookie");
-    if (temp != null)
-    {
-      cookie = temp;
-      int k = cookie.indexOf(";");
-      if (k > 0)
-      {
-        cookie = cookie.substring(0, k);
-      }
-    }
-    out.close();
-
-    return con.getInputStream();
+    return sendPostData(args);
   }
 
-  public String getArgString()
-  {
-    String argString1 = argString;
-    if (!argString1.startsWith("?"))
-    {
-      argString1 = "?" + argString1;
-    }
-    return argString1;
-  }
-
-  //Converts a Properties list to a URL-encoded query string    
+  /**
+   * Converts a Properties list to a URL-encoded query string    
+   */
   private String toEncodedString(Properties args)
   {
     StringBuffer buf = new StringBuffer();

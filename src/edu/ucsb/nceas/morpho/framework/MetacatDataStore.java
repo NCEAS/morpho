@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: berkley $'
- *     '$Date: 2001-07-10 22:07:20 $'
- * '$Revision: 1.20 $'
+ *   '$Author: jones $'
+ *     '$Date: 2001-07-19 18:03:59 $'
+ * '$Revision: 1.21 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -35,8 +35,7 @@ import java.awt.*;
 /**
  * implements and the DataStoreInterface for accessing files on the Metacat
  */
-public class MetacatDataStore extends DataStore
-                              implements DataStoreInterface
+public class MetacatDataStore extends DataStore implements DataStoreInterface
 {
   private ClientFramework framework;
   
@@ -311,67 +310,41 @@ public class MetacatDataStore extends DataStore
   }
   
   /**
-   * method to create a new data file on metacat.  
-   * NOTE: THIS METHOD DOES NOT WORK YET because metacat does not support
-   * sending an id with the data file.
+   * method to create a new data file on metacat.  This method uploads the
+   * given file with the given id.  It does nothing to control access or
+   * link the file into packages -- those items are handled by the metadata
+   * documents that are created on metacat.
+   *
+   * @param id the identifier to use for this file (e.g., knb.1.1).  It should be
+   *           revision '1' because data files cannot be updated on metacat
+   * @param file the file to upload to metacat
    */
-  public File newDataFile(String name, Reader file, boolean publicAccess)
-                          throws MetacatUploadException
+  public void newDataFile(String id, File file) throws MetacatUploadException
   {
-    InputStream metacatInput;
-    InputStreamReader portReader;
-    StringBuffer messageBuf;
-    String access = "no";
-    if(publicAccess)
-    {
-      access = "yes";
-    }
-    
-    Properties prop = new Properties();
-    prop.put("action", "getdataport");
-    prop.put("public", access);
-    prop.put("docid", name);
-    
-    try
-    {
-      metacatInput = framework.getMetacatInputStream(prop, true);
-      portReader = new InputStreamReader(metacatInput);
-      messageBuf = new StringBuffer();
-      int c = portReader.read();
-      while(c != -1)
-      {
-        messageBuf.append((char)c);
-        c = portReader.read();
+    try {
+      InputStream metacatInput = null;;
+      metacatInput = framework.sendDataFile(id, file);
+
+      InputStreamReader returnStream = 
+                        new InputStreamReader(metacatInput);
+      StringWriter sw = new StringWriter();
+      int len;
+      char[] characters = new char[512];
+      while ((len = returnStream.read(characters, 0, 512)) != -1) {
+        sw.write(characters, 0, len);
       }
-      portReader.close();
-      metacatInput.close();
-    }
-    catch(Exception e)
-    {
+      returnStream.close();
+      String response = sw.toString();
+      sw.close();
+  
+      if (response.indexOf("<error>") != -1) {
+        throw new MetacatUploadException(response);
+      } else {
+        ClientFramework.debug(20, response);
+      }
+    } catch (Exception e) {
       throw new MetacatUploadException(e.getMessage());
     }
-    
-    String message = messageBuf.toString();
-    ClientFramework.debug(11, "message from server: " + message);
-    
-    if(message.indexOf("<error>") != -1)
-    {//there was an error
-      throw new MetacatUploadException(message);
-    }
-    else if(message.indexOf("<port>") != -1)
-    {//the operation worked
-      
-      String cookie = framework.getSessionCookie();
-      int i1 = cookie.indexOf("JSESSIONID=");
-      int i2 = cookie.indexOf(":", i1);
-      //get just the session id
-      cookie = cookie.substring(i1, i2);
-      //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!//
-      ///this isn't done!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!//
-      //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!//
-    }
-    
-    return null;
   }
   
   /**
@@ -443,21 +416,37 @@ public class MetacatDataStore extends DataStore
    */
   public static void main(String[] args)
   {
-    String id = args[0];
+    String username = args[0];
+    String password = args[1];
     try
     {
-      File f = new File(args[1]);
-      FileReader fr = new FileReader(f);
-      
-      ClientFramework cf = new ClientFramework(new ConfigXML("./lib/config.xml"));
-      cf.setUserName("berkley");
-      cf.setPassword("");
+      ClientFramework.debug(20, "Initializing mds test...");
+      ConfigXML config = new ConfigXML("./lib/config.xml");
+      ClientFramework cf = new ClientFramework(config);
+      String profileDir = config.get("profile_directory", 0);
+      String profileName = profileDir + File.separator + username + 
+                           File.separator + username + ".xml";
+      ConfigXML profile = new ConfigXML(profileName);
+      cf.setProfile(profile);
+      cf.setPassword(password);
       cf.logIn();
       MetacatDataStore mds = new MetacatDataStore(cf);
     
+      // Test metadata (xml) upload
+      ClientFramework.debug(20, "Testing metadata upload...");
+      String id = args[2];
+      File f = new File(args[3]);
+      FileReader fr = new FileReader(f);
       //File metacatfile = mds.newFile(id, fr, true);
-      File metacatfile = mds.saveFile(id, fr, true);
-      ClientFramework.debug(20, "file done");
+      //File metacatfile = mds.saveFile(id, fr, true);
+      //ClientFramework.debug(20, "XML file uploaded!");
+
+      // Test data file upload too
+      ClientFramework.debug(20, "Testing data upload...");
+      id = args[4];
+      f = new File(args[5]);
+      mds.newDataFile(id, f);
+      ClientFramework.debug(20, "Data file uploaded!");
     }
     catch(Exception e)
     {

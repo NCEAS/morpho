@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2001-05-25 01:55:14 $'
- * '$Revision: 1.19 $'
+ *     '$Date: 2001-07-19 18:03:59 $'
+ * '$Revision: 1.20 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -41,7 +41,7 @@ public class SplashFrame extends javax.swing.JFrame
   private boolean frameSizeAdjusted = false;
 
   // the version number
-  private static String version = "Version 0.0.0 Alpha 3";
+  //private static String version = "Version 0.0.0 Alpha 3";
   private static String[] coders = { "Matt Jones",
                                      "Dan Higgins",
                                      "Chad Berkley",
@@ -197,7 +197,7 @@ public class SplashFrame extends javax.swing.JFrame
     getContentPane().add(Box.createVerticalGlue());
 
     versionLabel.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-    versionLabel.setText(version);
+    versionLabel.setText(ClientFramework.VERSION);
     versionLabel.setBackground(java.awt.Color.white);
     versionLabel.setForeground(java.awt.Color.black);
     versionLabel.setFont(new Font("Dialog", Font.BOLD, 12));
