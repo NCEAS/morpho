@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2004-04-07 10:26:19 $'
- * '$Revision: 1.36 $'
+ *   '$Author: sambasiv $'
+ *     '$Date: 2004-04-14 20:29:00 $'
+ * '$Revision: 1.37 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,6 +33,7 @@ import edu.ucsb.nceas.morpho.datapackage.AbstractDataPackage;
 import edu.ucsb.nceas.morpho.datapackage.DataPackageFactory;
 import edu.ucsb.nceas.morpho.editor.DocFrame;
 import edu.ucsb.nceas.morpho.framework.AbstractUIPage;
+import edu.ucsb.nceas.morpho.framework.UIController;
 import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
 import edu.ucsb.nceas.morpho.plugins.DataPackageWizardListener;
 import edu.ucsb.nceas.morpho.plugins.PluginInterface;
@@ -45,6 +46,7 @@ import edu.ucsb.nceas.utilities.XMLUtilities;
 
 import java.util.Iterator;
 import java.util.List;
+import java.io.StringReader;
 
 import javax.xml.transform.TransformerException;
 
@@ -95,11 +97,32 @@ public class DataPackageWizardPlugin implements PluginInterface,
    *                  back when the Package Wizard has finished
    */
   public void startPackageWizard(DataPackageWizardListener listener) {
-
+		
+		AbstractDataPackage tempDataPackage = DataPackageFactory.getDataPackage(
+      getNewEmptyDataPackageDOM(WizardSettings.TEMP_REFS_EML200_DOCUMENT_TEXT));
+		if(tempDataPackage == null) return;
+		
+    UIController.getInstance().setWizardIsRunning(tempDataPackage);
+		
     startWizardAtPage(WizardSettings.PACKAGE_WIZ_FIRST_PAGE_ID, true, listener,
                       "New Data Package Wizard");
+	  
   }
+	
+	private Node getNewEmptyDataPackageDOM(String DocText) {
 
+    Node rootNode = null;
+
+    try {
+      rootNode = XMLUtilities.getXMLReaderAsDOMTreeRootNode(
+          new StringReader(DocText));
+    } catch (Exception e) {
+      e.printStackTrace();
+      Log.debug(5, "unexpected error trying to create new XML document");
+      return null;
+    }
+    return rootNode;
+  }
 
   /**
    *  Required by DataPackageWizardInterface:

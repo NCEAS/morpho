@@ -5,9 +5,9 @@
  *    Authors: Perumal Sambasivam
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2004-04-14 04:59:56 $'
- * '$Revision: 1.14 $'
+ *   '$Author: sambasiv $'
+ *     '$Date: 2004-04-14 20:29:00 $'
+ * '$Revision: 1.15 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -146,8 +146,9 @@ public class AddTaxonomicCovCommand implements Command {
 
     //OrderedMap map = taxonomicPage.getPageData("/coverage/taxonomicCoverage[1]");
     AbstractDataPackage adp = UIController.getInstance().getCurrentAbstractDataPackage();
-    Node covRoot = null;
-
+		Node covRoot = null;
+		
+		if(adp == null) return;
     try {
       DOMImplementation impl = DOMImplementationImpl.getDOMImplementation();
       Document doc = impl.createDocument("", "coverage", null);
@@ -275,7 +276,7 @@ public class AddTaxonomicCovCommand implements Command {
 
     boolean pageCanHandleAllData
         = taxonomicPage.setPageData(existingValuesMap,
-                                    TAXONOMIC_COVERAGE_SUBTREE_NODENAME);
+                                    "/" + TAXONOMIC_COVERAGE_SUBTREE_NODENAME);
 
     return pageCanHandleAllData;
   }

@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: sambasiv $'
- *     '$Date: 2004-04-12 19:07:12 $'
- * '$Revision: 1.62 $'
+ *     '$Date: 2004-04-14 20:29:00 $'
+ * '$Revision: 1.63 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -87,7 +87,7 @@ public class WizardContainerFrame
   private InputMap imap;
   private ActionMap amap;
 
-  private AbstractDataPackage tempDataPackage;
+  
 
 
   /**
@@ -109,9 +109,7 @@ public class WizardContainerFrame
       }
     });
     toBeImportedCount = 0;
-    tempDataPackage = DataPackageFactory.getDataPackage(
-      getNewEmptyDataPackageDOM(WizardSettings.TEMP_REFS_EML200_DOCUMENT_TEXT));
-    UIController.getInstance().setWizardIsRunning(tempDataPackage);
+    
   }
 
   /**
