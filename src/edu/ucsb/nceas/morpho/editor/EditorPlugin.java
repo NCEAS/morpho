@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-12-13 16:49:34 $'
- * '$Revision: 1.20 $'
+ *     '$Date: 2001-12-13 22:09:38 $'
+ * '$Revision: 1.21 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -157,6 +157,7 @@ public class EditorPlugin implements PluginInterface, ServiceProvider, EditorInt
       location = doc.getLocationString();
       id = doc.getIdString();
       EditingCompleteListener list = (EditingCompleteListener)docframes.get(doc); 
+      docframes.remove(doc);
       list.editingCompleted(xmlString, this.id, this.location);
     }
   }
@@ -171,6 +172,7 @@ public class EditorPlugin implements PluginInterface, ServiceProvider, EditorInt
       location = doc.getLocationString();
       id = doc.getIdString();
       EditingCompleteListener list = (EditingCompleteListener)docframes.get(doc); 
+      docframes.remove(doc);
       list.editingCanceled(xmlString, this.id, this.location);
     }
   }
