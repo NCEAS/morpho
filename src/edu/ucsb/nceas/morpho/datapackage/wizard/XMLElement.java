@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-05-02 22:47:59 $'
- * '$Revision: 1.1 $'
+ *     '$Date: 2001-05-03 16:16:55 $'
+ * '$Revision: 1.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,7 +26,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-//package edu.ucsb.nceas.datapackage.wizard;
+package edu.ucsb.nceas.morpho.datapackage.wizard;
 
 import java.io.*;
 import java.util.*;

@@ -1,2 +1,0 @@
-javac -classpath ~/project/jar/xerces.jar:~/project/jar/xmlparserv2.jar:./ PackageWizard.java
-
