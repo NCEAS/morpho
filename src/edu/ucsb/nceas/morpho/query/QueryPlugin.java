@@ -5,7 +5,7 @@
  *              National Center for Ecological Analysis and Synthesis
  *     Authors: Dan Higgins
  *
- *     Version: '$Id: QueryPlugin.java,v 1.23 2000-10-03 23:21:08 higgins Exp $'
+ *     Version: '$Id: QueryPlugin.java,v 1.24 2000-10-04 18:43:22 higgins Exp $'
  */
 
 package edu.ucsb.nceas.querybean;
@@ -1365,6 +1365,8 @@ public void searchFor(String searchText) {
 	{
         if(DetachCheckBox.isSelected()) {
             RSFrame rs = new RSFrame("Results of Search");
+            rs.setEditor(mde);
+            rs.setTabbedPane(tabbedPane);
             rs.setVisible(true);
             if (table!=null) {
                 TableModel tm = table.getModel();
@@ -1378,6 +1380,8 @@ public void searchFor(String searchText) {
 	{
         if(DetachCheckBox1.isSelected()) {
             RSFrame rs = new RSFrame("Results of Search");
+            rs.setEditor(mde);
+            rs.setTabbedPane(tabbedPane);
             rs.setVisible(true);
             if (table!=null) {
                 TableModel tm = table.getModel();
@@ -1428,6 +1432,7 @@ public void searchFor(String searchText) {
         RSFrame rs = new RSFrame("Results of Catalog Search");
             rs.setEditor(mde);
             rs.setTabbedPane(tabbedPane);
+            rs.setTabbedPane(tabbedPane);
             rs.setVisible(true);
             rs.local=false;
                 JTable ttt = rq.getTable();
@@ -1454,6 +1459,8 @@ public void searchFor(String searchText) {
         InputStream in = msg.sendPostMessage(prop);
         ExternalQuery rq = new ExternalQuery(in);
         RSFrame rs = new RSFrame("Results of Catalog Search");
+        rs.setEditor(mde);
+        rs.setTabbedPane(tabbedPane);
             rs.setVisible(true);
             rs.local=false;
                 JTable ttt = rq.getTable();
