@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2002-09-06 17:05:42 $'
- * '$Revision: 1.4 $'
+ *     '$Date: 2002-09-12 01:04:52 $'
+ * '$Revision: 1.5 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -41,6 +41,7 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Frame;
 import java.awt.Insets;
+import java.awt.Window;
 
 
 import javax.swing.Box;
@@ -58,7 +59,7 @@ import javax.swing.WindowConstants;
 import javax.swing.SwingConstants;
 
 /**
- * A dialog box for user to open a datapakcage
+ * A dialog box for user to synchronize data package
  */
 public class SynchronizeDialog extends JDialog
 {
@@ -86,17 +87,72 @@ public class SynchronizeDialog extends JDialog
       +"  If you are copying from local to network, you may be"
       + "prompted to renumber   the Data Package";
 
+  /** A reference to morpho frame */
+  private MorphoFrame morphoFrame = null;
+  
+  /** A reference to open dialog */
+  private OpenDialogBox openDialog = null;
+  
+  /** A flag indicate if it come from a open dialog */
+  private boolean comeFromOpen = false;
+  
+  /** Docid need to be synchronized */
+  private String docid = null;
+  
+  /** flag to indicate selected data package has local copy */
+  private boolean inLocal = false;
+  
+  /** flag to indicate selected data package has local copy */
+  private boolean inNetwork = false;
   
   /**
-   * Construct a new instance of the synchonize dialog
+   * Construct a new instance of the synchronize dialog which's parent is
+   * morpho frame
    *
    * @param parent  The parent frame for this dialog
+   * @param myDocid the docid need to be synchronized
+   * @param myInLocal if the docid is in local
+   * @param myInNetwork if the docid is in Network
    */
-  public SynchronizeDialog(MorphoFrame parent, String docid, boolean inLocal,
-                                                          boolean inNetwork)
+  public SynchronizeDialog(MorphoFrame parent, String myDocid, 
+                                        boolean myInLocal, boolean myInNetwork)
   {
     super(parent);
-   
+    morphoFrame = parent;
+    this.docid = myDocid;
+    this.inLocal = myInLocal;
+    this.inNetwork = myInNetwork;
+    initialize(morphoFrame);
+  
+  }
+
+  /**
+   * Construct a new instance of the synchronize dialog which's parent is
+   * a open dialog
+   *
+   * @param open  the parent (open dialog) of this synchronize dialog
+   * @param frame  the parent frame for open dialog
+   * @param myDocid  the docid need to be synchronized
+   * @param myInLocal  if the docid is in local
+   * @param myInNetwork  if the docid is in Network
+   */
+  public SynchronizeDialog(OpenDialogBox open,MorphoFrame frame, String myDocid, 
+                                        boolean myInLocal, boolean myInNetwork)
+  {
+    super(open);
+    openDialog = open;
+    morphoFrame = frame;
+    this.docid = myDocid;
+    this.inLocal = myInLocal;
+    this.inNetwork = myInNetwork;
+    initialize(openDialog);
+  
+  }
+
+  
+  /** A method to initialize synchronize dialog */
+  private void initialize(Window parent)
+  {
     // Set OpenDialog size depent on parent size
     int parentWidth = parent.getWidth();
     int parentHeight = parent.getHeight();
@@ -151,8 +207,8 @@ public class SynchronizeDialog extends JDialog
     {
      
       arrowIcon = new ImageIcon(getClass().getResource("rightarrow.gif"));
-      executeAction = new GUIAction("Execute", null, 
-            new LocalToNetworkCommand(this, parent, docid, inLocal, inNetwork)); 
+      executeAction = new GUIAction("Execute", null, new LocalToNetworkCommand
+                    (openDialog, this, morphoFrame, docid, inLocal, inNetwork)); 
       warningMessage = WARNING;
     }
     // down load 
@@ -160,8 +216,8 @@ public class SynchronizeDialog extends JDialog
     {
       
       arrowIcon = new ImageIcon(getClass().getResource("leftarrow.gif"));
-      executeAction = new GUIAction("Execute", null, 
-            new NetworkToLocalCommand(this, parent, docid, inLocal, inNetwork));
+      executeAction = new GUIAction("Execute", null, new NetworkToLocalCommand
+                   (openDialog, this, morphoFrame, docid, inLocal, inNetwork));
       warningMessage = "";
     }
     
@@ -230,9 +286,6 @@ public class SynchronizeDialog extends JDialog
     getContentPane().add(BorderLayout.SOUTH, bottomPadding);
     
     setVisible(false);
-   
   }
-
- 
  
 }
