@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: jones $'
- *     '$Date: 2001-06-20 01:36:49 $'
- * '$Revision: 1.59 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2001-06-20 17:15:30 $'
+ * '$Revision: 1.60 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1094,12 +1094,12 @@ public class ClientFramework extends javax.swing.JFrame
       // Create a new instance of our application's frame
       ClientFramework clf = new ClientFramework(config);
 
-      Date expiration = new Date(101, 12, 1);
-      Date warning = new Date(101, 11, 1);
+      Date expiration = new Date(101, 7, 1);
+      Date warning = new Date(101, 6, 15);
       Date now = new Date();
       if (now.after(expiration))
       {
-        clf.debug(1, "This beta version of Morpho has expired! " +
+        clf.debug(1, "This Alpha version of Morpho has expired! " +
            "See http://knb.ecoinformatics.org/ for a newer version.");
            JOptionPane.showMessageDialog(null,
            "This beta version of Morpho has expired!\n" +
@@ -1110,11 +1110,11 @@ public class ClientFramework extends javax.swing.JFrame
       {
         if (now.after(warning))
         {
-          clf.debug(1, "This beta version of Morpho will expire on " +
-            "Dec 1, 2001. See http://knb.ecoinformatics.org/ for a " +
+          clf.debug(1, "This Alpha version of Morpho will expire on " +
+            "Aug 1, 2001. See http://knb.ecoinformatics.org/ for a " +
             "newer version.");
           JOptionPane.showMessageDialog(null,
-            "This beta version of Morpho will expire on Dec 1, 2001.\n" +
+            "This Alpha version of Morpho will expire on Aug 1, 2001.\n" +
             "See http://knb.ecoinformatics.org/ for a newer version.");
         }
 
