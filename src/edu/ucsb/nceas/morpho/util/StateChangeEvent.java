@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2002-09-28 00:25:02 $'
- * '$Revision: 1.6 $'
+ *   '$Author: tao $'
+ *     '$Date: 2002-09-29 01:28:44 $'
+ * '$Revision: 1.7 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -68,12 +68,19 @@ public class StateChangeEvent extends ChangeEvent
      */
     public static String CREATE_NOENTITY_DATAPACKAGE_FRAME 
         = "createNoEntityDataPackageFrame";
+   
+   /**
+     *  Public constant to denote that a datapackage CONTAINING ENTITIES 
+     *  has been opened
+     */
+    public static String CREATE_ENTITY_DATAPACKAGE_FRAME 
+        = "createNoEntityDataPackageFrame";
 
     /**
      *  Public constant to denote that a datapackage CONTAINING ONE OR MORE 
      *  ASCII ENTITIES has been opened
      */
-    public static String CREATE_TEXTENTITY_DATAPACKAGE_FRAME 
+    public static String CREATE_EDITABLE_ENTITY_DATAPACKAGE_FRAME 
         = "createTextEntityDataPackageFrame";
      
     /**
