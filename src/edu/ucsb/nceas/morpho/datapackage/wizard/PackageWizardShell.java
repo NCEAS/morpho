@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-12-26 20:00:39 $'
- * '$Revision: 1.83 $'
+ *     '$Date: 2003-02-13 20:46:08 $'
+ * '$Revision: 1.84 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -391,9 +391,9 @@ public class PackageWizardShell extends javax.swing.JFrame
       if (startingFrame>0) 
       {
         Vector filesVec = handleFinishAddData();
+        addMetaWiz.addingNewDataWizardCompleted(filesVec);
         this.hide();
         this.dispose();
-        addMetaWiz.addingNewDataWizardCompleted(filesVec);
         return;
       }
       
@@ -1424,9 +1424,9 @@ public class PackageWizardShell extends javax.swing.JFrame
       }
     }
     Vector filesVec = handleFinishAddData();
+    addMetaWiz.addingNewDataWizardCompleted(filesVec);
     this.hide();
     this.dispose();
-    addMetaWiz.addingNewDataWizardCompleted(filesVec);
   }
   
   private void newImportComplete()
