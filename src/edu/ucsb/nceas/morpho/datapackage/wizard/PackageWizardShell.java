@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-04-02 18:47:26 $'
- * '$Revision: 1.85 $'
+ *     '$Date: 2003-09-12 15:51:05 $'
+ * '$Revision: 1.86 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -65,6 +65,7 @@ import org.w3c.dom.NodeList;
 import org.w3c.dom.DocumentType;
 import org.xml.sax.SAXException;
 import org.xml.sax.InputSource;
+import edu.ucsb.nceas.utilities.*;
 
 import com.arbortext.catalog.*;
 
@@ -1397,7 +1398,10 @@ public class PackageWizardShell extends javax.swing.JFrame
     }
   }
   
-  public void importComplete() {
+  public void importComplete(OrderedMap om) {
+    if (om!=null) {
+      Log.debug(10,"Ordered Map:\n"+om.toString());
+    }
     if (startingFrame==0) {
       newImportComplete();  
     }
