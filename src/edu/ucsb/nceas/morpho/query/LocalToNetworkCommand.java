@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2002-09-05 18:29:57 $'
- * '$Revision: 1.5 $'
+ *     '$Date: 2002-09-12 00:58:44 $'
+ * '$Revision: 1.6 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -45,8 +45,11 @@ import javax.swing.JOptionPane;
 public class LocalToNetworkCommand implements Command 
 {
     
-  /** A reference to the dialog */
-   private JDialog dialog = null;
+  /** A reference to the synchronize dialog */
+   private JDialog synchronizeDialog = null;
+ 
+  /** A reference to the open dialog */
+   private OpenDialogBox openDialog = null;
    
   /** A reference to the MorphoFrame */
    private MorphoFrame morphoFrame = null;
@@ -62,19 +65,27 @@ public class LocalToNetworkCommand implements Command
   
   /** flag to indicate selected data package has local copy */
   private boolean inNetwork = false;
-    
+  
+  /** flag to indiecate synchronize will apply to a open dialog*/
+  private boolean comeFromOpenDialog = false;
   /**
    * Constructor of LocalToNetworkCommand in dialog
+   * @param myOpenDialog the open dialog which will be applied synchronize
    * @param dialog a synchronize dialog need to be destroied
    * @param myFrame the parent frame of synchronize dialog
    * @param selectId the id of data package need to be synchronized
    * @param myInLocal if the datapackage has a local copy
    * @param myInNetwork if the datapackage has a network copy
    */
-  public LocalToNetworkCommand(JDialog box, MorphoFrame myFrame, 
-                      String selectId, boolean myInLocal, boolean myInNetwork)
+  public LocalToNetworkCommand(OpenDialogBox myOpenDialog, JDialog box, 
+   MorphoFrame myFrame, String selectId, boolean myInLocal, boolean myInNetwork)
   {
-    dialog = box;
+    if (myOpenDialog != null)
+    {
+      openDialog = myOpenDialog;
+      comeFromOpenDialog = true;
+    }
+    synchronizeDialog = box;
     morphoFrame = myFrame;
     selectDocId = selectId;
     inLocal = myInLocal;
@@ -89,14 +100,14 @@ public class LocalToNetworkCommand implements Command
   {
     if (selectDocId != null && !selectDocId.equals("") && !inNetwork && inLocal)
     {
-        // If dialog is null, destory it.
-        if (dialog != null)
+        // If synchronize dialog is null, destory it.
+        if (synchronizeDialog != null)
         {
-          dialog.setVisible(false);
-          dialog.dispose();
-          dialog = null;
+          synchronizeDialog.setVisible(false);
+          synchronizeDialog.dispose();
+          synchronizeDialog = null;
         }
-        doUpload(selectDocId, morphoFrame);
+        doUpload(selectDocId, openDialog, comeFromOpenDialog, morphoFrame);
     }
    
   }//execute
@@ -105,7 +116,8 @@ public class LocalToNetworkCommand implements Command
    * Using SwingWorket class to open a package
    *
    */
- private void doUpload(final String docid, final MorphoFrame frame) 
+ private void doUpload(final String docid, final OpenDialogBox open, 
+                                 final boolean hasOpen, final MorphoFrame frame) 
  {
   final SwingWorker worker = new SwingWorker() 
   {
@@ -117,7 +129,16 @@ public class LocalToNetworkCommand implements Command
           frame.setBusy(true);
           DataPackageInterface dataPackage;
           // Create a refresh command 
-          RefreshCommand refresh = new RefreshCommand(frame);
+          RefreshCommand refresh = null; 
+          if (hasOpen)
+          {
+            refresh = new RefreshCommand(open);
+          }
+          else
+          {
+            refresh = new RefreshCommand(frame);
+          }
+          
           try 
           {
             ServiceController services = ServiceController.getInstance();
@@ -151,10 +172,22 @@ public class LocalToNetworkCommand implements Command
                "for this package will be changed.  Are you sure you want to \n"+
                "proceed with the upload?";
               int choice = JOptionPane.YES_OPTION;
-              choice = JOptionPane.showConfirmDialog(frame, message, 
+              // JOptionPane has different parent depend it has open or not
+              if (hasOpen)
+              {
+                choice = JOptionPane.showConfirmDialog(open, message, 
                                  "Morpho", 
                                  JOptionPane.YES_NO_CANCEL_OPTION,
                                  JOptionPane.WARNING_MESSAGE);
+              }
+              else
+              {
+                choice = JOptionPane.showConfirmDialog(frame, message, 
+                                 "Morpho", 
+                                 JOptionPane.YES_NO_CANCEL_OPTION,
+                                 JOptionPane.WARNING_MESSAGE);
+              }
+              
               if(choice == JOptionPane.YES_OPTION)
               {
                 try
