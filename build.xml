@@ -6,7 +6,7 @@
   *    Copyright: 2000 Regents of the University of California and the
   *               National Center for Ecological Analysis and Synthesis
   *  For Details: http://www.nceas.ucsb.edu/
-  *    File Info: '$Id: build.xml,v 1.93 2004-04-09 00:36:52 tao Exp $'
+  *    File Info: '$Id: build.xml,v 1.94 2004-04-09 01:06:53 tao Exp $'
   *
   *  Build file for the Ant cross-platform build system for metacat
   *  See http://jakarta.apache.org for details on Ant
@@ -22,7 +22,6 @@
       <property name="storepass" value="your-pw-goes-here"/>
       <property name="muser" value="uid=jones,o=NCEAS,dc=ecoinformatics,dc=org"/>
       <property name="mpass" value="your-pw-goes-here"/>
-      <property name="cvsroot" value=":ext:tao@cvs.ecoinformatics.org:/cvs" />
       <property name="eml-module" value="eml" />
       <property name="eml-tag" value="RELEASE_EML_2_0_0" />
       <property name="eml.doc.dir" value="docs/eml-2.0.0" />
@@ -133,7 +132,23 @@
        -->
    </target>
 
-   <target name="emldoc" depends="prepare">
+   <target name="cvsprepare" depends="prepare">
+      <property environment="env"/>
+      <condition property="not.has.cvsroot">
+        <equals arg1="${env.CVSROOT}" arg2="$${env.CVSROOT}"/>
+      </condition>
+   </target>
+
+  <target name="cvsrootfromenv" depends="cvsprepare" unless="not.has.cvsroot">
+    <property name="cvsroot" value="${env.CVSROOT}"/>
+  </target>
+
+  <target name="cvsrootfrominput" depends="cvsprepare" if="not.has.cvsroot">
+    <input message="Please input your cvs user name: " addproperty="cvsusername"/>
+    <property name="cvsroot" value=":ext:${cvsusername}@cvs.ecoinformatics.org:/cvs"/>
+  </target>
+
+   <target name="emldoc" depends="cvsrootfromenv, cvsrootfrominput">
      <!-- checkout eml moduel -->
      <echo>Enter CVS password: </echo>
      <cvs cvsRoot="${cvsroot}"
@@ -162,7 +177,7 @@
    </target>
 
 
-   <target name="utils_update" depends="prepare">
+   <target name="utils_update" depends="cvsrootfromenv, cvsrootfrominput">
      <!-- checkout utilities moduel -->
      <echo>Enter CVS password: </echo>
      <cvs cvsRoot="${cvsroot}"
@@ -174,7 +189,7 @@
    </target>
 
 
-   <target name="eml_update" depends="prepare">
+   <target name="eml_update" depends="cvsrootfromenv, cvsrootfrominput">
      <!-- checkout utilities moduel -->
      <echo>Enter CVS password: </echo>
      <cvs cvsRoot="${cvsroot}"
