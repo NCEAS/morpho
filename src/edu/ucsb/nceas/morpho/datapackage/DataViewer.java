@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-03-04 23:03:22 $'
- * '$Revision: 1.3 $'
+ *     '$Date: 2002-03-05 23:46:31 $'
+ * '$Revision: 1.4 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -36,8 +36,16 @@ import java.util.Vector;
 import java.util.StringTokenizer;
 import java.util.Date;
 import java.util.Enumeration;
+import edu.ucsb.nceas.morpho.framework.*;
+
 public class DataViewer extends javax.swing.JFrame
 {
+    ClientFramework framework;
+    ConfigXML config;
+    String datadir;
+    String separator;
+    String cachedir;
+    String tempdir;
     String dataString = "";
     String dataID = "";
 	/**
@@ -70,6 +78,11 @@ public class DataViewer extends javax.swing.JFrame
 	 * vector of vectors with table data
 	 */
 	Vector vec;
+	
+	/**
+	 * The DataPackage that contains the data
+	 */
+	 DataPackage dp;
 
   // starting line
   int startingLine = 1;
@@ -126,11 +139,28 @@ public class DataViewer extends javax.swing.JFrame
 		//{{INIT_MENUS
 		//}}
 		DataTextArea.setEditable(false);
+	
+		//{{REGISTER_LISTENERS
+		SymAction lSymAction = new SymAction();
+		CancelButton.addActionListener(lSymAction);
+		UpdateButton.addActionListener(lSymAction);
+		//}}
 	}
 
-	public DataViewer(String sTitle)
+	public DataViewer(ClientFramework framework, String sTitle)
 	{
 		this();
+		this.framework = framework;
+    config = framework.getConfiguration();
+    ConfigXML profile = framework.getProfile();
+    String profileDirName = config.get("profile_directory", 0) + 
+                            File.separator +
+                            config.get("current_profile", 0);
+    datadir = profileDirName + File.separator + profile.get("datadir", 0);
+    tempdir = profileDirName + File.separator + profile.get("tempdir", 0);
+    cachedir = profileDirName + File.separator + profile.get("cachedir", 0);
+    separator = profile.get("separator", 0);
+    separator = separator.trim();
 		setTitle(sTitle);
 	}
 
@@ -140,6 +170,10 @@ public class DataViewer extends javax.swing.JFrame
         setTitle(sTitle);
         this.dataID = dataID;
         this.dataString = dataString;
+    }
+    
+    public void setDataPackage(DataPackage dp) {
+        this.dp = dp;
     }
     
     public void setDataString(String dataString) {
@@ -152,6 +186,7 @@ public class DataViewer extends javax.swing.JFrame
 	    parseDelimited();
         
     }
+    
     
     public void setDataID(String dataID) {
         this.dataID = dataID;
@@ -493,4 +528,127 @@ public class DataViewer extends javax.swing.JFrame
 
 	//{{DECLARE_MENUS
 	//}}
+
+	class SymAction implements java.awt.event.ActionListener
+	{
+		public void actionPerformed(java.awt.event.ActionEvent event)
+		{
+			Object object = event.getSource();
+			if (object == CancelButton)
+				CancelButton_actionPerformed(event);
+			else if (object == UpdateButton)
+				UpdateButton_actionPerformed(event);
+		}
+	}
+
+	void CancelButton_actionPerformed(java.awt.event.ActionEvent event)
+	{
+		this.hide();
+		this.dispose();
+			 
+	}
+
+	void UpdateButton_actionPerformed(java.awt.event.ActionEvent event)
+	{ 
+	  if (dp!=null) {
+        framework.debug(20, "beginning of data file update");
+        AccessionNumber a = new AccessionNumber(framework);
+        FileSystemDataStore fsds = new FileSystemDataStore(framework);
+        //System.out.println(xmlString);
+  
+        boolean metacatloc = false;
+        boolean localloc = false;
+        boolean bothloc = false;
+        String newid = "";
+        String location = dp.getLocation();
+        String newPackageId = "";
+        if(location.equals(DataPackage.BOTH))
+        {
+            metacatloc = true;
+            localloc = true;
+        }
+        else if(location.equals(DataPackage.METACAT))
+        {
+            metacatloc = true;
+        }
+        else if(location.equals(DataPackage.LOCAL))
+        {
+            localloc = true;
+        }
+        
+      if(localloc)
+      { //save it locally
+        try{
+          Vector newids = new Vector();
+          Vector oldids = new Vector();
+          String oldid = dataID;
+          newid = a.incRev(dataID);
+//          System.out.println("newid= "+newid);
+          fsds.saveFile(newid, new StringReader(dataString));
+          newPackageId = a.incRev(dp.getID());
+          oldids.addElement(oldid);
+          oldids.addElement(dp.getID());
+          newids.addElement(newid);
+          newids.addElement(newPackageId);
+          //increment the package files id in the triples
+          String newPackageFile = a.incRevInTriples(dp.getTriplesFile(), 
+                                                    oldids, 
+                                                    newids);
+          System.out.println("oldid: " + oldid + " newid: " + newid);          
+          fsds.saveFile(newPackageId, new StringReader(newPackageFile)); 
+        }
+        catch (Exception e) {
+            framework.debug(20, "error in local update of data file");    
+        }
+      }
+      if(metacatloc)
+      { //save it to metacat
+        MetacatDataStore mds = new MetacatDataStore(framework);
+        String oldid = dataID;
+        newid = a.incRev(dataID);
+  //      newid = a.getNextId();
+        System.out.println("oldid: " + oldid + " newid: " + newid);          
+        
+        try{
+          // save to a temporary file
+          StringReader sr = new StringReader(dataString);
+          File tempfile = new File(tempdir + "/metacat.noid");
+          FileWriter fw = new FileWriter(tempfile);
+          BufferedWriter bfw = new BufferedWriter(fw);
+          int c = sr.read();
+          while(c != -1)
+          {
+            bfw.write(c); //write out everything in the reader
+            c = sr.read();
+          }
+          bfw.flush();
+          bfw.close();
+          
+          mds.newDataFile(newid, tempfile);
+          System.out.println("new data file added:newid="+newid);
+          newPackageId = a.incRev(dp.getID());
+          Vector newids = new Vector();
+          Vector oldids = new Vector();
+          oldids.addElement(oldid);
+          oldids.addElement(dp.getID());
+          newids.addElement(newid);
+          newids.addElement(newPackageId);
+          System.out.println("ready to increment triples");
+          
+          //increment the package files id in the triples
+          String newPackageFile = a.incRevInTriples(dp.getTriplesFile(), 
+                                                    oldids, 
+                                                    newids);
+          System.out.println("oldid: " + oldid + " newid: " + newid);          
+          mds.saveFile(newPackageId, new StringReader(newPackageFile), dp); 
+        }
+        catch (Exception e) {
+            framework.debug(20, "error in metacat update of data file"+e.getMessage());    
+        }
+      }
+      
+        
+        
+	  }		 
+	}
 }
