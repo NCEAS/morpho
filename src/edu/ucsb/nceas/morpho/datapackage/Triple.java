@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-05-03 18:23:18 $'
- * '$Revision: 1.3 $'
+ *     '$Date: 2001-05-04 15:23:36 $'
+ * '$Revision: 1.4 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -57,6 +57,15 @@ public class Triple
     this.subject = subject;
     this.relationship = relationship;
     this.object = object;
+  }
+  
+  /**
+   * Copy constructor.  creates a new triple object that is a copy of the given
+   * triple
+   */
+  public Triple(Triple t)
+  {
+    
   }
 
   /**

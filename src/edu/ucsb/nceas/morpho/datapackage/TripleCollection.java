@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-05-03 18:56:12 $'
- * '$Revision: 1.1 $'
+ *     '$Date: 2001-05-04 15:23:36 $'
+ * '$Revision: 1.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,6 +27,7 @@
 package edu.ucsb.nceas.morpho.datapackage;
 
 import java.util.*;
+import java.io.*;
 
 /**
  * This class implements a collection of triples which make up all of the
@@ -39,6 +40,14 @@ public class TripleCollection
    * Default Constructor
    */
   public TripleCollection()
+  {
+    
+  }
+  
+  /**
+   * read an xml file, build the collection from any triples in the xml file.
+   */
+  public TripleCollection(Reader xml)
   {
     
   }
