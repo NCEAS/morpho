@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!ELEMENT eml-attribute (identifier+, attribute+)>
+<!ELEMENT identifier (#PCDATA)>
+<!ATTLIST identifier system CDATA #IMPLIED>
+<!ELEMENT attribute (attributeName, attributeLabel*, attributeDefinition, unit?, dataType?, attributeDomain, missingValueCode*, precision?)>
+<!ELEMENT attributeName (#PCDATA)>
+<!ELEMENT attributeLabel (#PCDATA)>
+<!ELEMENT attributeDefinition (#PCDATA)>
+<!ELEMENT unit (#PCDATA)>
+<!ELEMENT dataType (#PCDATA)>
+<!ELEMENT attributeDomain ((enumeratedDomain | textDomain)+ | numericDomain+)>
+<!ELEMENT missingValueCode (#PCDATA)>
+<!ELEMENT precision (#PCDATA)>
+<!ELEMENT enumeratedDomain (code, definition, source?)>
+<!ELEMENT textDomain (definition, pattern*, source?)>
+<!ELEMENT numericDomain (minimum?, maximum?)>
+<!ELEMENT code (#PCDATA)>
+<!ELEMENT definition (#PCDATA)>
+<!ELEMENT source (#PCDATA)>
+<!ELEMENT pattern (#PCDATA)>
+<!ELEMENT minimum (#PCDATA)>
+<!ELEMENT maximum (#PCDATA)>

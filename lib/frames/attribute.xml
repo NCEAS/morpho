@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <wizard size="460x400" dtd="eml-attribute-2.0.0.beta4e.dtd" 
-        doctype="-//ecoinformatics.org//eml-attribute-2.0.0beta4//EN">
+        doctype="-//ecoinformatics.org//eml-attribute-2.0.0beta6//EN">
   <group label="Field Information" type="panel">
     <group field="eml-attribute">
       <textbox field="identifier" size="10" allowNull="no" 
@@ -14,7 +14,7 @@
                  tooltip="The measuring units encoded in this field"/>
         <group>
         <group field="attributeDomain" repeatable="no">
-          <group label="Numeric Range" field="rangeDomain" repeatable="yes"
+          <group label="Numeric Range" field="numericDomain" repeatable="yes"
                   size="50x120">
           <textbox label="Minimum" field="minimum" size="15"
                    tooltip="The minimum numerical range of this field"/>

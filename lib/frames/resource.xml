@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
-<wizard size="460x400" dtd="eml-dataset-2.0.0.beta4e.dtd" 
-        doctype="-//ecoinformatics.org//eml-dataset-2.0.0beta4//EN">
+<wizard size="460x400" dtd="eml-dataset-2.0.0.beta6e.dtd" 
+        doctype="-//ecoinformatics.org//eml-dataset-2.0.0beta6//EN">
   <group label="Base Information" field="dataset" type="panel">
     <group >
       <textbox label="Identifier" field="identifier" size="10" allowNull="no" 
@@ -12,7 +12,7 @@
     </group>
   
     <group label="Originator" repeatable="yes" field="originator" allowNull="no">
-      <group  label="Name and Organization">
+      <group  label="Name">
       <textbox label="Salutation" field="individualName/salutation" size="15"
                tooltip="Dr., Ms., Mr., etc."/>
       <textbox label="First Name" field="individualName/givenName" size="15"
@@ -20,9 +20,9 @@
       <textbox label="Last Name" field="individualName/surName" size="15" 
                allowNull="no" tooltip="Sur name"/>
       
-      <textbox label="Organization" field="organizationName" size="15" 
+      <!--<textbox label="Organization" field="organizationName" size="15" 
                repeatable="yes" 
-               tooltip="The name of the organization to which this data package is attributed"/>
+               tooltip="The name of the organization to which this data package is attributed"/>-->
       </group>
       <group  label="Address Information">
       <textbox label="Address" field="address/deliveryPoint" size="15" 

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!ELEMENT eml-physical (identifier+, format, characterEncoding?, size?, authentication*, compressionMethod?, encodingMethod?, numHeaderLines?, recordDelimiter?, maxRecordLength?, quoteCharacter*, literalCharacter*, (fieldStartColumn?, (fieldWidth | fieldDelimiter))*)>
+<!ELEMENT identifier (#PCDATA)>
+<!ATTLIST identifier system CDATA #IMPLIED>
+<!ELEMENT format (#PCDATA)>
+<!ELEMENT characterEncoding (#PCDATA)>
+<!ELEMENT size (#PCDATA)>
+<!ATTLIST size unit CDATA #REQUIRED>
+<!ELEMENT authentication (#PCDATA)>
+<!ATTLIST authentication method CDATA #IMPLIED>
+<!ELEMENT compressionMethod (#PCDATA)>
+<!ELEMENT encodingMethod (#PCDATA)>
+<!ELEMENT numHeaderLines (#PCDATA)>
+<!ELEMENT recordDelimiter (#PCDATA)>
+<!ELEMENT maxRecordLength (#PCDATA)>
+<!ELEMENT quoteCharacter (#PCDATA)>
+<!ELEMENT literalCharacter (#PCDATA)>
+<!ELEMENT fieldStartColumn (#PCDATA)>
+<!ELEMENT fieldWidth (#PCDATA)>
+<!ELEMENT fieldDelimiter (#PCDATA)>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!ELEMENT eml-constraint (identifier+, constraint+)>
+<!ELEMENT identifier (#PCDATA)>
+<!ATTLIST identifier system CDATA #IMPLIED>
+<!ELEMENT constraint (constraintType, constraintName?, constraintDescription?, entityId?, key?, referencedEntityId?, referencedKey?, cardinality?, checkCondition?)>
+<!ELEMENT constraintType (#PCDATA)>
+<!ELEMENT constraintName (#PCDATA)>
+<!ELEMENT constraintDescription (#PCDATA)>
+<!ELEMENT entityId (#PCDATA)>
+<!ELEMENT key (attributeName+)>
+<!ELEMENT referencedEntityId (#PCDATA)>
+<!ELEMENT referencedKey (attributeName+)>
+<!ELEMENT cardinality (#PCDATA)>
+<!ELEMENT checkCondition (#PCDATA)>
