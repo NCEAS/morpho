@@ -7,8 +7,8 @@
 *    Release: @release@
 *
 *   '$Author: sambasiv $'
-*     '$Date: 2004-04-20 00:51:35 $'
-* '$Revision: 1.28 $'
+*     '$Date: 2004-04-29 00:08:41 $'
+* '$Revision: 1.29 $'
 *
 * This program is free software; you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -631,7 +631,21 @@ public class AttributePage extends AbstractUIPage {
 		}
 		WidgetFactory.unhiliteComponent(measScaleLabel);
 		
-		return ((WizardPageSubPanelAPI)currentPanel).validateUserInput();
+		boolean valid = ((WizardPageSubPanelAPI)currentPanel).validateUserInput();
+		if(!valid) return false;
+		return true;
+		
+		/*
+		if(this.isImportNeeded()) {
+			
+			AbstractDataPackage adp = UIController.getInstance().getCurrentAbstractDataPackage();
+			if(adp == null) {
+				Log.debug(10, "Error trying to import codes for this attribute - in AttributePage");
+				return true;
+			}
+			
+		}*/
+	
 	}
 	
 	
@@ -873,6 +887,7 @@ public class AttributePage extends AbstractUIPage {
 		if (_xPathRoot!=null && _xPathRoot.trim().length() > 0) this.xPathRoot = _xPathRoot;
 		
 		map.remove(xPathRoot + "/@id");
+		map.remove(xPathRoot + "/@scope");
 		
 		String name = (String)map.get(xPathRoot + "/attributeName[1]");
 		if(name != null)

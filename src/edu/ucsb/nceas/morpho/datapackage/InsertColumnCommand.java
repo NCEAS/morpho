@@ -6,8 +6,8 @@
 *    Release: @release@
 *
 *   '$Author: sambasiv $'
-*     '$Date: 2004-04-26 14:16:46 $'
-* '$Revision: 1.19 $'
+*     '$Date: 2004-04-29 00:08:40 $'
+* '$Revision: 1.20 $'
 *
 * This program is free software; you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -31,13 +31,12 @@ import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
 import edu.ucsb.nceas.morpho.framework.ModalDialog;
 import edu.ucsb.nceas.morpho.framework.MorphoFrame;
 import edu.ucsb.nceas.morpho.framework.UIController;
+import edu.ucsb.nceas.morpho.framework.AbstractUIPage;
 import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
 import edu.ucsb.nceas.morpho.plugins.DataPackageWizardListener;
 import edu.ucsb.nceas.morpho.plugins.ServiceController;
 import edu.ucsb.nceas.morpho.plugins.ServiceNotHandledException;
 import edu.ucsb.nceas.morpho.plugins.ServiceProvider;
-import edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.AttributePage;
-import edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.CodeImportPage;
 import edu.ucsb.nceas.morpho.util.Command;
 import edu.ucsb.nceas.morpho.util.Log;
 import edu.ucsb.nceas.morpho.util.UISettings;
@@ -85,7 +84,7 @@ public class InsertColumnCommand implements Command
 
   private DataViewContainerPanel resultPane;
 
-  private AttributePage attributePage;
+  private AbstractUIPage attributePage;
   private DataViewer dataView;
   private OrderedMap map = null;
   private String mScale;
@@ -317,7 +316,7 @@ public class InsertColumnCommand implements Command
     }
     if(dpwPlugin == null) return;
 
-    attributePage = (AttributePage)dpwPlugin.getPage(DataPackageWizardInterface.ATTRIBUTE_PAGE);
+    attributePage = dpwPlugin.getPage(DataPackageWizardInterface.ATTRIBUTE_PAGE);
     ModalDialog wpd
         = new ModalDialog(attributePage,
                                 UIController.getInstance().getCurrentActiveWindow(),
@@ -340,8 +339,9 @@ public class InsertColumnCommand implements Command
 
       columnName = getColumnName(map, xPath );
       mScale = getMeasurementScale(map, xPath);
-
-      if(attributePage.isImportNeeded()) {
+			boolean toImport = isImportNeeded(map, xPath, mScale);
+			
+      if(toImport) {
         String entityName = adp.getEntityName(entityIndex);
 
         adp.addAttributeForImport(entityName, columnName, mScale, map, "/attribute", false);
@@ -365,7 +365,18 @@ public class InsertColumnCommand implements Command
     return;
   }
 
-
+	private boolean isImportNeeded(OrderedMap map, String xPath, String mScale) {
+		
+		mScale = mScale.toLowerCase();
+		if(!(mScale.equals("nominal") || mScale.equals("ordinal"))) return false;
+		String path = xPath + "/measurementScale/" + mScale + "/nonNumericDomain/enumeratedDomain[1]/entityCodeList/entityReference";
+		boolean present = map.containsKey(path);
+		if(!present) return false;
+		String o = (String)map.get(path);
+		if(o == null || o.trim().equals("")) return true;
+		return false;
+	}
+	
   private void setUpDelimiterEditor()
   {
     //Set up the editor for the integer and string cells.

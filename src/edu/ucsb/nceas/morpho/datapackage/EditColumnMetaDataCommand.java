@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: sambasiv $'
- *     '$Date: 2004-04-26 14:16:46 $'
- * '$Revision: 1.16 $'
+ *     '$Date: 2004-04-29 00:08:40 $'
+ * '$Revision: 1.17 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,6 +26,7 @@
 
 package edu.ucsb.nceas.morpho.datapackage;
 
+import edu.ucsb.nceas.morpho.framework.AbstractUIPage;
 import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
 import edu.ucsb.nceas.morpho.framework.ModalDialog;
 import edu.ucsb.nceas.morpho.framework.MorphoFrame;
@@ -35,8 +36,6 @@ import edu.ucsb.nceas.morpho.plugins.DataPackageWizardListener;
 import edu.ucsb.nceas.morpho.plugins.ServiceController;
 import edu.ucsb.nceas.morpho.plugins.ServiceNotHandledException;
 import edu.ucsb.nceas.morpho.plugins.ServiceProvider;
-import edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.AttributePage;
-import edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.CodeImportPage;
 import edu.ucsb.nceas.morpho.util.Command;
 import edu.ucsb.nceas.morpho.util.Log;
 import edu.ucsb.nceas.morpho.util.StateChangeEvent;
@@ -148,80 +147,102 @@ public class EditColumnMetaDataCommand implements Command
     }
     if(dpwPlugin == null) return;
 
-    AttributePage attributePage = (AttributePage)dpwPlugin.getPage(DataPackageWizardInterface.ATTRIBUTE_PAGE);
-    attributePage.setPageData(map, null);
-    String firstKey = (String)map.keySet().iterator().next();
-
-    ModalDialog wpd = new ModalDialog(attributePage,
-                                UIController.getInstance().getCurrentActiveWindow(),
-                                UISettings.POPUPDIALOG_WIDTH,
-                                UISettings.POPUPDIALOG_HEIGHT
-                                , false);
-    attributePage.refreshUI();
-    wpd.setSize(UISettings.POPUPDIALOG_WIDTH, UISettings.POPUPDIALOG_FOR_ATTR_HEIGHT);
-    wpd.validate();
-    wpd.setVisible(true);
-
-
-
-    if (wpd.USER_RESPONSE == ModalDialog.OK_OPTION) {
-      adp.setLocation("");
-      resultPane.saveDataChanges();  // needed to flag datatable changes
-      map = attributePage.getPageData(xPath);
-      if(entityIndex == -1) {
-        Log.debug(10, "Unable to get the Index of the current Entity, in EditColumnMetaData.");
-        return;
-      }
-
-      columnName = getColumnName(map, xPath );
-      mScale = getMeasurementScale(map, xPath);
-
-      if(attributePage.isImportNeeded()) {
-        String entityName = adp.getEntityName(entityIndex);
-
-        adp.addAttributeForImport(entityName, columnName, mScale, map, "/attribute", false);
-        DataPackageWizardListener dpwListener = new DataPackageWizardListener () {
-          public void wizardComplete(Node newDOM) {
-
-            modifyAttribute();
-            try
-            {
-              ServiceController services = ServiceController.getInstance();
-              ServiceProvider provider =
-              services.getServiceProvider(DataPackageInterface.class);
-              DataPackageInterface dataPackageInt = (DataPackageInterface)provider;
-              dataPackageInt.openNewDataPackage(adp, null);
-            }
-            catch (ServiceNotHandledException snhe)
-            {
-              Log.debug(6, snhe.getMessage());
-            }
-            UIController controller = UIController.getInstance();
-            morphoFrame.setVisible(false);
-            controller.removeWindow(morphoFrame);
-            morphoFrame.dispose();
-          }
-          public void wizardCanceled() {
-
-            return;
-          }
-        };
-        dpwPlugin.startCodeDefImportWizard(dpwListener);
-
-      } else { // if import is not needed
-
-        modifyAttribute();
-      }
-
-    } // end of if USER_RESPONSE == OK_OPTION
+    AbstractUIPage attributePage = dpwPlugin.getPage(DataPackageWizardInterface.ATTRIBUTE_PAGE);
+    boolean canHandleAllData = attributePage.setPageData(map, "");
+		
+		if(canHandleAllData) {
+			
+			ModalDialog wpd = new ModalDialog(attributePage,
+												UIController.getInstance().getCurrentActiveWindow(),
+												UISettings.POPUPDIALOG_WIDTH,
+												UISettings.POPUPDIALOG_HEIGHT
+												, false);
+			
+			wpd.setSize(UISettings.POPUPDIALOG_WIDTH, UISettings.POPUPDIALOG_FOR_ATTR_HEIGHT);
+			wpd.validate();
+			wpd.setVisible(true);
+			
+			if (wpd.USER_RESPONSE == ModalDialog.OK_OPTION) {
+				adp.setLocation("");
+				resultPane.saveDataChanges();  // needed to flag datatable changes
+				map = attributePage.getPageData(xPath);
+				if(entityIndex == -1) {
+					Log.debug(10, "Unable to get the Index of the current Entity, in EditColumnMetaData.");
+					return;
+				}
+				
+				columnName = getColumnName(map, xPath );
+				mScale = getMeasurementScale(map, xPath);
+				boolean toImport = isImportNeeded(map, xPath, mScale);
+				if(toImport) {
+					String entityName = adp.getEntityName(entityIndex);
+					
+					adp.addAttributeForImport(entityName, columnName, mScale, map, "/attribute", false);
+					DataPackageWizardListener dpwListener = new DataPackageWizardListener () {
+						public void wizardComplete(Node newDOM) {
+							
+							modifyAttribute();
+							try
+							{
+								ServiceController services = ServiceController.getInstance();
+								ServiceProvider provider =
+								services.getServiceProvider(DataPackageInterface.class);
+								DataPackageInterface dataPackageInt = (DataPackageInterface)provider;
+								dataPackageInt.openNewDataPackage(adp, null);
+							}
+							catch (ServiceNotHandledException snhe)
+							{
+								Log.debug(6, snhe.getMessage());
+							}
+							UIController controller = UIController.getInstance();
+							morphoFrame.setVisible(false);
+							controller.removeWindow(morphoFrame);
+							morphoFrame.dispose();
+						}
+						public void wizardCanceled() {
+							
+							return;
+						}
+					};
+					dpwPlugin.startCodeDefImportWizard(dpwListener);
+					
+				} else { // if import is not needed
+					
+					modifyAttribute();
+				}
+				
+			} // end of if USER_RESPONSE == OK_OPTION
+			
+		} else {
+			
+			if(entityIndex < 0) entityIndex = 0;
+			if(attrIndex < 0) attrIndex = 0;
+			
+			UIController.getInstance().launchEditorAtSubtreeForCurrentFrame(
+          "dataTable["+entityIndex+"]/attribute-", attrIndex);
+		}
 
   } // end of execute
-
+	
+	private boolean isImportNeeded(OrderedMap map, String xPath, String mScale) {
+		
+		mScale = mScale.toLowerCase();
+		if(!(mScale.equals("nominal") || mScale.equals("ordinal"))) return false;
+		String path = xPath + "/measurementScale/" + mScale + "/nonNumericDomain/enumeratedDomain[1]/entityCodeList/entityReference";
+		boolean present = map.containsKey(path);
+		if(!present) return false;
+		String o = (String)map.get(path);
+		if(o == null || o.trim().equals("")) return true;
+		return false;
+	}
+	
   private void modifyAttribute()
   {
 
     // get the ID of old attribute and set it for the new one
-    map.put("/attribute/@id", adp.getAttributeID(entityIndex, attrIndex));
+		String oldID = adp.getAttributeID(entityIndex, attrIndex);
+		if(oldID == null || oldID.trim().equals("")) oldID = UISettings.getUniqueID();
+    map.put("/attribute/@id", oldID);
 
     Attribute attr = new Attribute(map);
     adp.insertAttribute(entityIndex, attr, attrIndex);

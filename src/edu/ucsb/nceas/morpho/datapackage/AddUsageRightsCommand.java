@@ -5,9 +5,9 @@
  *    Authors: Saurabh Garg
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2004-03-25 21:21:44 $'
- * '$Revision: 1.5 $'
+ *   '$Author: sambasiv $'
+ *     '$Date: 2004-04-29 00:08:40 $'
+ * '$Revision: 1.6 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -50,7 +50,6 @@ import org.w3c.dom.Node;
 import edu.ucsb.nceas.morpho.framework.EditorInterface;
 import edu.ucsb.nceas.morpho.plugins.ServiceProvider;
 import edu.ucsb.nceas.morpho.framework.EditingCompleteListener;
-import edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.UsageRights;
 
 /**
  * Class to handle add usage command
@@ -104,7 +103,7 @@ public class AddUsageRightsCommand implements Command {
 
     if (dpwPlugin == null)return false;
 
-    usagePage = (UsageRights)dpwPlugin.getPage(DataPackageWizardInterface.
+    usagePage = dpwPlugin.getPage(DataPackageWizardInterface.
                                                USAGE_RIGHTS);
 
     OrderedMap existingValuesMap = null;
@@ -188,7 +187,6 @@ public class AddUsageRightsCommand implements Command {
   private AbstractDataPackage adp;
   private MorphoFrame morphoFrame;
   private DataViewContainerPanel dataViewContainerPanel;
-  private UsageRights usagePage;
+  private AbstractUIPage usagePage;
 
-//  private AbstractUIPage usagePage;
 }
