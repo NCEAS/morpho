@@ -6,9 +6,9 @@
   *               National Center for Ecological Analysis and Synthesis
   *  For Details: http://www.nceas.ucsb.edu/
   *
-  *   '$Author: higgins $'
-  *     '$Date: 2003-12-03 23:27:09 $'
-  * '$Revision: 1.3 $'
+  *   '$Author: sgarg $'
+  *     '$Date: 2003-12-10 20:04:28 $'
+  * '$Revision: 1.4 $'
   *
   * This program is free software; you can redistribute it and/or modify
   * it under the terms of the GNU General Public License as published by
@@ -33,7 +33,10 @@
   <!--<xsl:import href="eml-party-2.0.0.xsl"/>
   <xsl:import href="eml-distribution-2.0.0.xsl"/>
   <xsl:import href="eml-coverage-2.0.0.xsl"/>-->
-  <xsl:output method="html" encoding="iso-8859-1"/>
+  <xsl:output method="html" encoding="iso-8859-1"
+              doctype-public="-//W3C//DTD HTML 4.01 Transitional//EN"
+              doctype-system="http://www.w3.org/TR/html4/loose.dtd"
+              indent="yes" />
 
   <!-- This module is for resouce and it is self-contained (it is table)-->
   <xsl:template name="resource">
@@ -150,14 +153,14 @@
           <xsl:with-param name="docid" select="$docid"/>
         </xsl:call-template>
       </xsl:for-each>
-    </table>
 
-    <xsl:for-each select="coverage">
-      <xsl:call-template name="resourcecoverage">
+      <xsl:for-each select="coverage">
+       <xsl:call-template name="resourcecoverage">
           <xsl:with-param name="resfirstColStyle" select="$resfirstColStyle"/>
           <xsl:with-param name="ressubHeaderStyle" select="$ressubHeaderStyle"/>
-      </xsl:call-template>
-    </xsl:for-each>
+       </xsl:call-template>
+      </xsl:for-each>
+    </table>
 
   </xsl:template>
 

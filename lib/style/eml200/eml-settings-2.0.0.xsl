@@ -7,8 +7,8 @@
   *  For Details: http://www.nceas.ucsb.edu/
   *
   *   '$Author: sgarg $'
-  *     '$Date: 2003-12-09 17:19:42 $'
-  * '$Revision: 1.4 $'
+  *     '$Date: 2003-12-10 20:04:28 $'
+  * '$Revision: 1.5 $'
   *
   * This program is free software; you can redistribute it and/or modify
   * it under the terms of the GNU General Public License as published by
@@ -58,7 +58,7 @@
     */
 -->
 
-  <xsl:param name="qformat">default</xsl:param>
+  <xsl:param name="qformat">knb</xsl:param>
 
 
 <!--
@@ -67,7 +67,7 @@
     *   value is dataset
     */
 -->
-  <xsl:param name="displaymodule">dataset</xsl:param>
+  <xsl:param name="displaymodule">entity</xsl:param>
 
 
 <!--
@@ -75,7 +75,7 @@
     *   To show the links for the Entities in the dataset display module.
     */
 -->
-  <xsl:param name="withEntityLinks">0</xsl:param>
+  <xsl:param name="withEntityLinks">1</xsl:param>
 
 
 <!--
@@ -83,7 +83,7 @@
     *   To show the link for Additional Metadata in the dataset display module.
     */
 -->
-  <xsl:param name="withAdditionalMetadataLink">0</xsl:param>
+  <xsl:param name="withAdditionalMetadataLink">1</xsl:param>
 
 
 <!--
@@ -91,7 +91,7 @@
     *   To show the link for the Original XML in the dataset display module.
     */
 -->
-  <xsl:param name="withOriginalXMLLink">0</xsl:param>
+  <xsl:param name="withOriginalXMLLink">1</xsl:param>
 
 
 <!--
@@ -99,7 +99,7 @@
     *   To show the Attributes table in the entity display.
     */
 -->
-  <xsl:param name="withAttributes">0</xsl:param>
+  <xsl:param name="withAttributes">1</xsl:param>
 
 
 <!--
@@ -114,7 +114,7 @@
     */
 -->
 
-    <xsl:param name="stylePath">lib/style/eml200/</xsl:param>
+    <xsl:param name="stylePath">.</xsl:param>
 
 
 <!--
@@ -129,7 +129,7 @@
     */
 -->
 
-    <xsl:param name="styleCommonPath">.</xsl:param>
+    <xsl:param name="styleCommonPath">@style-common-path@</xsl:param>
 
 
 <!--the docid of xml which is processed-->
@@ -137,7 +137,7 @@
 <!-- type of entity, data table or spacial raster or others-->
     <xsl:param name="entitytype"></xsl:param>
 <!-- the index of entity in same entity type -->
-    <xsl:param name="entityindex"/>
+    <xsl:param name="entityindex">3</xsl:param>
 <!-- the index of attribute in same entity -->
     <xsl:param name="attributeindex"/>
 <!-- the index of physical part in entity part-->
@@ -149,7 +149,7 @@
 <!-- the index of attribute in attribute list-->
     <xsl:param name="attributeindex"/>
 <!-- the index of additional metadata-->
-    <xsl:param name="additionalmetadataindex"/>
+    <xsl:param name="additionalmetadataindex">1</xsl:param>
 <!-- attribute set to get rid of cell spacing-->
     <xsl:attribute-set name="cellspacing">
       <xsl:attribute name="cellpadding">0</xsl:attribute>
@@ -205,18 +205,18 @@
 <!--    the style for major rows containing subsection titles etc. -->
   <xsl:param name="subHeaderStyle" select="'tablehead'"/>
 
-<!--    the style for major rows containing links, such as additional metadata, 
+<!--    the style for major rows containing links, such as additional metadata,
         original xml file etc. -->
   <xsl:param name="linkedHeaderStyle" select="'linkedHeaderStyle'"/>
 
 <!--    the width for the first column (but see note above) -->
-  <xsl:param name="firstColWidth" select="'15%'"/>
+  <xsl:param name="firstColWidth" select="'20%'"/>
 
 <!-- the style for the first column -->
   <xsl:param name="firstColStyle" select="'highlight'"/>
 
 <!--    the width for the second column (but see note above) -->
-  <xsl:param name="secondColWidth" select="'85%'"/>
+  <xsl:param name="secondColWidth" select="'80%'"/>
 
 <!-- the style for the second column -->
   <xsl:param name="secondColStyle" select="'secondCol'"/>

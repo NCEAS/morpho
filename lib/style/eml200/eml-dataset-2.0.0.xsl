@@ -6,9 +6,9 @@
   *               National Center for Ecological Analysis and Synthesis
   *  For Details: http://www.nceas.ucsb.edu/
   *
-  *   '$Author: higgins $'
-  *     '$Date: 2003-12-03 23:27:09 $'
-  * '$Revision: 1.3 $'
+  *   '$Author: sgarg $'
+  *     '$Date: 2003-12-10 20:04:28 $'
+  * '$Revision: 1.4 $'
   *
   * This program is free software; you can redistribute it and/or modify
   * it under the terms of the GNU General Public License as published by
@@ -32,7 +32,10 @@
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0">
 
 
-  <xsl:output method="html" encoding="iso-8859-1"/>
+  <xsl:output method="html" encoding="iso-8859-1"
+              doctype-public="-//W3C//DTD HTML 4.01 Transitional//EN"
+              doctype-system="http://www.w3.org/TR/html4/loose.dtd"
+              indent="yes" />
 
   <xsl:template match="dataset" mode="dataset">
     <table xsl:use-attribute-sets="cellspacing" class="{$tabledefaultStyle}" width="100%">
@@ -268,6 +271,8 @@
         <xsl:text>Data Tables, Images, and Other Entities:</xsl:text>
      </td></tr>
    </xsl:if>
+ <xsl:choose>
+   <xsl:when test="$displaymodule!='printall'">
     <xsl:for-each select="dataTable">
       <xsl:call-template name="entityurl">
         <xsl:with-param name="type">dataTable</xsl:with-param>
@@ -310,6 +315,88 @@
         <xsl:with-param name="index" select="position()"/>
       </xsl:call-template>
    </xsl:for-each>
+   </xsl:when>
+   <xsl:otherwise>
+    <xsl:for-each select="dataTable">
+     <xsl:for-each select="../.">
+     <tr><td class="{$subHeaderStyle}" colspan="2">
+        <xsl:text>Data Table:</xsl:text>
+     </td></tr>
+     <tr><td>
+      <xsl:call-template name="chooseentity">
+        <xsl:with-param name="entitytype">dataTable</xsl:with-param>
+        <xsl:with-param name="entityindex" select="position()"/>
+      </xsl:call-template>
+     </td></tr>
+     </xsl:for-each>
+   </xsl:for-each>
+   <xsl:for-each select="spatialRaster">
+     <xsl:for-each select="../.">
+     <tr><td class="{$subHeaderStyle}" colspan="2">
+        <xsl:text>Spatial Raster:</xsl:text>
+     </td></tr>
+     <tr><td>
+     <xsl:call-template name="chooseentity">
+        <xsl:with-param name="entitytype">spatialRaster</xsl:with-param>
+        <xsl:with-param name="entityindex" select="position()"/>
+      </xsl:call-template>
+     </td></tr>
+   </xsl:for-each>
+   </xsl:for-each>
+   <xsl:for-each select="spatialVector">
+     <xsl:for-each select="../.">
+     <tr><td class="{$subHeaderStyle}" colspan="2">
+        <xsl:text>Spatial Vector:</xsl:text>
+     </td></tr>
+     <tr><td>
+      <xsl:call-template name="chooseentity">
+        <xsl:with-param name="entitytype">spatialVector</xsl:with-param>
+        <xsl:with-param name="entityindex" select="position()"/>
+      </xsl:call-template>
+     </td></tr>
+   </xsl:for-each>
+   </xsl:for-each>
+   <xsl:for-each select="storedProcedure">
+     <xsl:for-each select="../.">
+     <tr><td class="{$subHeaderStyle}" colspan="2">
+        <xsl:text>Stored Procedure:</xsl:text>
+     </td></tr>
+     <tr><td>
+     <xsl:call-template name="chooseentity">
+        <xsl:with-param name="entitytype">storedProcedure</xsl:with-param>
+        <xsl:with-param name="entityindex" select="position()"/>
+      </xsl:call-template>
+     </td></tr>
+   </xsl:for-each>
+   </xsl:for-each>
+   <xsl:for-each select="view">
+     <xsl:for-each select="../.">
+     <tr><td class="{$subHeaderStyle}" colspan="2">
+        <xsl:text>View:</xsl:text>
+     </td></tr>
+     <tr><td>
+      <xsl:call-template name="chooseentity">
+        <xsl:with-param name="entitytype">view</xsl:with-param>
+        <xsl:with-param name="entityindex" select="position()"/>
+      </xsl:call-template>
+     </td></tr>
+   </xsl:for-each>
+   </xsl:for-each>
+   <xsl:for-each select="otherEntity">
+     <xsl:for-each select="../.">
+     <tr><td class="{$subHeaderStyle}" colspan="2">
+        <xsl:text>Other Entity:</xsl:text>
+     </td></tr>
+     <tr><td>
+      <xsl:call-template name="chooseentity">
+        <xsl:with-param name="entitytype">otherEntity</xsl:with-param>
+        <xsl:with-param name="entityindex" select="position()"/>
+      </xsl:call-template>
+     </td></tr>
+   </xsl:for-each>
+   </xsl:for-each>
+   </xsl:otherwise>
+   </xsl:choose>
   </xsl:template>
 
   <xsl:template name="entityurl">

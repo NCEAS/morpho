@@ -5,9 +5,9 @@
   *               National Center for Ecological Analysis and Synthesis
   *  For Details: http://www.nceas.ucsb.edu/
   *
-  *   '$Author: higgins $'
-  *     '$Date: 2003-12-03 23:27:09 $'
-  * '$Revision: 1.2 $'
+  *   '$Author: sgarg $'
+  *     '$Date: 2003-12-10 20:04:28 $'
+  * '$Revision: 1.3 $'
   *
   * This program is free software; you can redistribute it and/or modify
   * it under the terms of the GNU General Public License as published by
@@ -31,7 +31,10 @@
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0">
 
 
- <xsl:output method="html" encoding="iso-8859-1"/>
+ <xsl:output method="html" encoding="iso-8859-1"
+              doctype-public="-//W3C//DTD HTML 4.01 Transitional//EN"
+              doctype-system="http://www.w3.org/TR/html4/loose.dtd"
+              indent="yes" />
 
  <xsl:template name="method">
   <xsl:param name="methodfirstColStyle"/>
@@ -41,7 +44,7 @@
      <tr><td width="{$firstColWidth}" class="{$methodfirstColStyle}">
           <b>Step<xsl:text> </xsl:text><xsl:value-of select="position()"/>:</b>
          </td>
-         <td width="${secondColWidth}" class="{$secondColStyle}">
+         <td width="{$secondColWidth}" class="{$secondColStyle}">
            &#160;
          </td>
      </tr>
@@ -60,7 +63,7 @@
       <tr><td width="{$firstColWidth}" class="{$methodfirstColStyle}">
           <b>Quality Control Step<xsl:text> </xsl:text><xsl:value-of select="position()"/>:</b>
          </td>
-         <td width="${secondColWidth}" class="{$secondColStyle}">
+         <td width="{$secondColWidth}" class="{$secondColStyle}">
            &#160;
          </td>
      </tr>
@@ -108,7 +111,7 @@
      <tr><td width="{$firstColWidth}" class="{$methodfirstColStyle}">
          Sampling Description:
          </td>
-         <td width="${secondColWidth}">
+         <td width="{$secondColWidth}">
           <xsl:call-template name="text">
            <xsl:with-param name="textfirstColStyle" select="$methodfirstColStyle"/>
          </xsl:call-template>
@@ -124,7 +127,7 @@
       <tr><td width="{$firstColWidth}" class="{$methodfirstColStyle}">
          Sampling Citation:
          </td>
-         <td width="${secondColWidth}">
+         <td width="{$secondColWidth}">
            <xsl:call-template name="citation">
             <xsl:with-param name="citationfirstColStyle" select="$methodfirstColStyle"/>
             <xsl:with-param name="citationsubHeaderStyle" select="$methodsubHeaderStyle"/>
@@ -141,7 +144,7 @@
         <tr><td width="{$firstColWidth}" class="{$methodfirstColStyle}">
          Sampling Coverage:
          </td>
-         <td width="${secondColWidth}">
+         <td width="{$secondColWidth}">
             <xsl:call-template name="coverage">
             </xsl:call-template>
          </td>
@@ -151,7 +154,7 @@
       <tr><td width="{$firstColWidth}" class="{$methodfirstColStyle}">
          Sampling Area And Frequency:
          </td>
-         <td width="${secondColWidth}" >
+         <td width="{$secondColWidth}" >
            <xsl:call-template name="text">
               <xsl:with-param name="textfirstColStyle" select="$methodfirstColStyle"/>
            </xsl:call-template>
@@ -166,7 +169,7 @@
       <tr><td width="{$firstColWidth}" class="{$methodfirstColStyle}">
          Sampling Unit Reference:
          </td>
-         <td width="${secondColWidth}" class="{$secondColStyle}">
+         <td width="{$secondColWidth}" class="{$secondColStyle}">
           <xsl:value-of select="."/>
          </td>
       </tr>
@@ -175,7 +178,7 @@
       <tr><td width="{$firstColWidth}" class="{$methodfirstColStyle}">
          Sampling Unit Location:
          </td>
-         <td width="${secondColWidth}">
+         <td width="{$secondColWidth}">
             <xsl:call-template name="coverage">
           </xsl:call-template>
          </td>

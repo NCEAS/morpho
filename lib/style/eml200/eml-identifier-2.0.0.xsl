@@ -6,9 +6,9 @@
   *               National Center for Ecological Analysis and Synthesis
   *  For Details: http://www.nceas.ucsb.edu/
   *
-  *   '$Author: higgins $'
-  *     '$Date: 2003-12-03 23:27:09 $'
-  * '$Revision: 1.3 $'
+  *   '$Author: sgarg $'
+  *     '$Date: 2003-12-10 20:04:28 $'
+  * '$Revision: 1.4 $'
   *
   * This program is free software; you can redistribute it and/or modify
   * it under the terms of the GNU General Public License as published by
@@ -31,12 +31,18 @@
 -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0">
 
-    <xsl:output method="html" encoding="iso-8859-1"/>
-    
+    <xsl:output method="html" encoding="iso-8859-1"
+              doctype-public="-//W3C//DTD HTML 4.01 Transitional//EN"
+              doctype-system="http://www.w3.org/TR/html4/loose.dtd"
+              indent="yes" />
+
     <xsl:template name="identifier">
         <xsl:param name="packageID"/>
         <xsl:param name="system"/>
         <xsl:if test="normalize-space(.)">
+        <tr><td colspan="2">
+	<table xsl:use-attribute-sets="cellspacing" width="100%"
+                                        class="{$mainContainerTableStyle}">
            <tr><td width="{$firstColWidth}" class="{$firstColStyle}">
             Identifier:</td><td width="{$secondColWidth}" class="{$secondColStyle}">
              <xsl:value-of select="$packageID"/></td></tr>
@@ -45,7 +51,9 @@
                   Catalog System:</td><td width="{$secondColWidth}" class="{$secondColStyle}">
                   <xsl:value-of select="$system"/></td></tr>
              </xsl:if>
+         </table>
+         </td></tr>
         </xsl:if>
     </xsl:template>
-    
+
  </xsl:stylesheet>
