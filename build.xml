@@ -6,7 +6,7 @@
   *    Copyright: 2000 Regents of the University of California and the
   *               National Center for Ecological Analysis and Synthesis
   *  For Details: http://www.nceas.ucsb.edu/
-  *    File Info: '$Id: build.xml,v 1.13 2001-05-03 16:54:30 berkley Exp $'
+  *    File Info: '$Id: build.xml,v 1.14 2001-05-03 17:16:20 jones Exp $'
   *
   *  Build file for the Ant cross-platform build system for metacat
   *  See http://jakarta.apache.org for details on Ant
@@ -15,10 +15,9 @@
 --> 
 <project name="metacat" default="install" basedir=".">
    <target name="init">
-      <property name="installdir" value="/opt/tomcat/webapps/metadata" />
-      <property name="name" value="dmanclient"/>
-      <property name="Name" value="Data Management Client"/>
-      <property name="release" value="0.00"/>
+      <property name="name" value="morpho"/>
+      <property name="Name" value="Morpho Data Management Client"/>
+      <property name="release" value="1.0alpha2"/>
 
       <filter token="release" value="${release}"/>
 
@@ -45,7 +44,7 @@
       <property name="dtd" 
                 value="${libdir}/dtdparser111.jar" />
       <property name="morpho" 
-                value="${libdir}/dmanclient.jar" />
+                value="${libdir}/${name}.jar" />
      <property name="junit" 
                value="/usr/local/devtools/junit3.6/junit.jar" />
       <property name="cpath" 
