@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: sgarg $'
- *     '$Date: 2004-12-14 22:29:15 $'
- * '$Revision: 1.18 $'
+ *     '$Date: 2005-01-26 23:33:21 $'
+ * '$Revision: 1.19 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -42,6 +42,10 @@ import javax.swing.JScrollPane;
 import edu.ucsb.nceas.morpho.framework.AbstractUIPage;
 import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardSettings;
+import edu.ucsb.nceas.utilities.Log;
+import java.util.List;
+import java.util.Iterator;
+import java.util.ArrayList;
 
 
 public class General extends AbstractUIPage{
@@ -52,7 +56,11 @@ public class General extends AbstractUIPage{
   private final String nextPageID = DataPackageWizardInterface.KEYWORDS;
   private final String title      = "Title and Abstract";
   private final String subtitle   = "";
-  public final String pageNumber  = "2";
+  public  final String pageNumber = "2";
+
+  private       String xPathRoot  = "/eml:eml/dataset/";
+  private final String TITLE_REL_XPATH = "/title";
+  private final String ABSTRACT_REL_XPATH = "/abstract/para[1]";
 
   // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
@@ -203,8 +211,17 @@ public class General extends AbstractUIPage{
    */
   public OrderedMap getPageData(String rootXPath) {
 
-    throw new UnsupportedOperationException(
-      "getPageData(String rootXPath) Method Not Implemented");
+    returnMap.clear();
+
+    returnMap.put(rootXPath + "/title[1]", titleField.getText().trim());
+
+    if ( !(absField.getText().trim().equals("")) ) {
+
+      returnMap.put(rootXPath + "/abstract/para[1]",
+          absField.getText().trim());
+    }
+    return returnMap;
+
   }
 
 
@@ -239,11 +256,75 @@ public class General extends AbstractUIPage{
   public String getNextPageID() { return nextPageID; }
 
   /**
-     *  Returns the serial number of the page
-     *
-     *  @return the serial number of the page
-     */
+    *  Returns the serial number of the page
+    *
+    *  @return the serial number of the page
+    */
   public String getPageNumber() { return pageNumber; }
 
-  public boolean setPageData(OrderedMap data, String xPathRoot) { return false; }
+  /**
+    *  Resets all fields to blank
+    */
+  private void resetBlankData() {
+      this.titleField.setText("");
+      this.absField.setText("");
+  }
+
+  public boolean setPageData(OrderedMap map, String _xPathRoot) {
+
+    if (_xPathRoot != null && _xPathRoot.trim().length() > 0) {
+      this.xPathRoot = _xPathRoot;
+    }
+
+    if (map == null || map.isEmpty()) {
+      this.resetBlankData();
+      return true;
+    }
+
+    List toDeleteList = new ArrayList();
+    Iterator keyIt = map.keySet().iterator();
+    Object nextXPathObj = null;
+    String nextXPath = null;
+    Object nextValObj = null;
+    String nextVal = null;
+
+    while (keyIt.hasNext()) {
+
+      nextXPathObj = keyIt.next();
+      if (nextXPathObj == null) {
+        continue;
+      }
+      nextXPath = (String) nextXPathObj;
+
+      nextValObj = map.get(nextXPathObj);
+      nextVal = (nextValObj == null) ? "" : ( (String) nextValObj).trim();
+
+      Log.debug(45, "General:  nextXPath = " + nextXPath
+          + "\n nextVal   = " + nextVal);
+
+      if (nextXPath.startsWith(TITLE_REL_XPATH)) {
+        titleField.setText(nextVal);
+        toDeleteList.add(nextXPathObj);
+      }
+      else if (nextXPath.startsWith(ABSTRACT_REL_XPATH)) {
+        absField.setText(nextVal);
+        toDeleteList.add(nextXPathObj);
+      }
+    }
+
+    Iterator dlIt = toDeleteList.iterator();
+    while (dlIt.hasNext()) {
+      map.remove(dlIt.next());
+
+      //if anything left in map, then it included stuff we can't handle...
+    }
+    boolean returnVal = map.isEmpty();
+
+    if (!returnVal) {
+
+      Log.debug(20, "Project.setPageData returning FALSE! Map still contains:"
+          + map);
+    }
+    return returnVal;
+  }
 }

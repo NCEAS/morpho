@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2004-03-24 02:14:18 $'
- * '$Revision: 1.11 $'
+ *   '$Author: sgarg $'
+ *     '$Date: 2005-01-26 23:33:21 $'
+ * '$Revision: 1.12 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -50,6 +50,7 @@ import javax.swing.BoxLayout;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardPageLibrary;
 
 public class KeywordsPage extends AbstractUIPage {
 
@@ -65,22 +66,35 @@ public class KeywordsPage extends AbstractUIPage {
   private JLabel kwLabel;
   private CustomList kwList;
   private JPanel middlePanel;
+  private JPanel radioPanel;
 
   private final String[] buttonsText = new String[] {
     "These keywords are not chosen from a predefined list:",
     "These keywords are chosen from a predefined list:"
   };
 
-  /* Commenting out code for removing KeywordType from the screen...
-   * private final String[] kwTypeArray
-   *                         = new String[]{ EMPTY_STRING,
-   *                                         "place",
-   *                                         "stratum",
-   *                                         "taxonomic",
-   *                                         "temporal",
-   *                                         "theme" };
-   */
-  private final String xPathRoot  = "/eml:eml/dataset/keywordSet[1]";
+  private     String xPathRoot  = "/eml:eml/dataset/keywordSet[1]";
+  private final String KEYWORD_REL_XPATH = "keyword[";
+  private final String THESAURUS_REL_XPATH = "keywordThesaurus[1]";
+
+  ////
+  private ActionListener listener = new ActionListener() {
+
+    public void actionPerformed(ActionEvent e) {
+      Log.debug(45, "got radiobutton command: "+e.getActionCommand());
+
+      onLoadAction();
+
+      if (e.getActionCommand().equals(buttonsText[0])) {
+        thesaurusField.setVisible(false);
+        thesaurusLabel.setVisible(false);
+        thesaurusField.setText("");
+      } else if (e.getActionCommand().equals(buttonsText[1])) {
+        thesaurusField.setVisible(true);
+        thesaurusLabel.setVisible(true);
+      }
+    }
+  };
 
   public KeywordsPage() {
     init();
@@ -117,26 +131,7 @@ public class KeywordsPage extends AbstractUIPage {
     middlePanel.add(kwPanel);
 
     ////
-    ActionListener listener = new ActionListener() {
-
-      public void actionPerformed(ActionEvent e) {
-        Log.debug(45, "got radiobutton command: "+e.getActionCommand());
-
-        onLoadAction();
-
-        if (e.getActionCommand().equals(buttonsText[0])) {
-          thesaurusField.setVisible(false);
-          thesaurusLabel.setVisible(false);
-          thesaurusField.setText("");
-        } else if (e.getActionCommand().equals(buttonsText[1])) {
-          thesaurusField.setVisible(true);
-          thesaurusLabel.setVisible(true);
-        }
-      }
-    };
-
-    ////
-    JPanel radioPanel = WidgetFactory.makeRadioPanel(buttonsText, 0, listener);
+    radioPanel = WidgetFactory.makeRadioPanel(buttonsText, 0, listener);
     middlePanel.add(WidgetFactory.makeDefaultSpacer());
     middlePanel.add(radioPanel);
 
@@ -367,5 +362,85 @@ public class KeywordsPage extends AbstractUIPage {
      */
   public String getPageNumber() { return pageNumber; }
 
-  public boolean setPageData(OrderedMap data, String xPathRoot) { return false; }
+  // resets all fields to blank
+  private void resetBlankData() {
+    radioPanel.removeAll();
+    radioPanel.add((JPanel)WidgetFactory.makeRadioPanel(buttonsText, 0, listener));
+    thesaurusField.setText("");
+    kwList.removeAllRows();
+
+  }
+  public boolean setPageData(OrderedMap map, String _xPathRoot) {
+
+    if (_xPathRoot != null && _xPathRoot.trim().length() > 0) {
+      this.xPathRoot = _xPathRoot;
+    }
+
+    if (map == null || map.isEmpty()) {
+      resetBlankData();
+      return true;
+    }
+
+    List toDeleteList = new ArrayList();
+    Iterator keyIt = map.keySet().iterator();
+    Object nextXPathObj = null;
+    String nextXPath = null;
+    Object nextValObj = null;
+    String nextVal = null;
+
+    List keywordList = new ArrayList();
+
+    while (keyIt.hasNext()) {
+
+      nextXPathObj = keyIt.next();
+      if (nextXPathObj == null) {
+        continue;
+      }
+      nextXPath = (String) nextXPathObj;
+
+      nextValObj = map.get(nextXPathObj);
+      nextVal = (nextValObj == null) ? "" : ( (String) nextValObj).trim();
+
+      Log.debug(45, "Keyword:  nextXPath = " + nextXPath
+          + "\n nextVal   = " + nextVal);
+
+      if (nextXPath.indexOf(KEYWORD_REL_XPATH) > -1) {
+        Log.debug(45, ">>>>>>>>>> adding to kwList: nextXPathObj="
+            + nextXPathObj + "; nextValObj=" + nextValObj);
+        List newRow = new ArrayList();
+        newRow.add(nextVal);
+        kwList.addRow(newRow);
+        toDeleteList.add(nextXPathObj);
+      } else if (nextXPath.indexOf(THESAURUS_REL_XPATH) > -1) {
+
+        Log.debug(45, ">>>>>>>>>> adding to thesaurus: nextXPathObj="
+            + nextXPathObj + "; nextValObj=" + nextValObj);
+
+        radioPanel.removeAll();
+        radioPanel.add((JPanel)WidgetFactory.makeRadioPanel(buttonsText, 1,
+            listener));
+        thesaurusField.setVisible(true);
+        thesaurusField.setEnabled(true);
+        thesaurusField.setText(nextVal);
+        toDeleteList.add(nextXPathObj);
+      }
+
+    }
+
+    //remove entries we have used from map:
+    Iterator dlIt = toDeleteList.iterator();
+    while (dlIt.hasNext()) {
+      map.remove(dlIt.next());
+
+      //if anything left in map, then it included stuff we can't handle...
+    }
+    boolean returnVal = map.isEmpty();
+
+    if (!returnVal) {
+
+      Log.debug(20, "Keyword.setPageData returning FALSE! Map still contains:"
+          + map);
+    }
+    return (returnVal);
+  }
 }

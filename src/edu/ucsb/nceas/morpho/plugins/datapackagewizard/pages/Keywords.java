@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: berkley $'
- *     '$Date: 2004-04-05 23:48:41 $'
- * '$Revision: 1.32 $'
+ *   '$Author: sgarg $'
+ *     '$Date: 2005-01-26 23:33:21 $'
+ * '$Revision: 1.33 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -51,6 +51,7 @@ import javax.swing.border.EmptyBorder;
 import edu.ucsb.nceas.morpho.util.UISettings;
 import edu.ucsb.nceas.morpho.framework.UIController;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardContainerFrame;
+import java.util.ArrayList;
 
 public class Keywords
     extends AbstractUIPage {
@@ -61,7 +62,8 @@ public class Keywords
   private final String nextPageID = DataPackageWizardInterface.PARTY_INTRO;
   private final String title = "Keywords";
   private final String subtitle = "";
-  private final String xPathRoot = "/eml:eml/dataset/keywordSet[";
+  private final String KEYWORDSET_REL_XPATH = "/keywordSet[";
+  private String xPathRoot = "/eml:eml/dataset/keywordSet[";
   private final String pageNumber = "3";
 
   private final String[] colNames = {
@@ -94,17 +96,18 @@ public class Keywords
         "easy searching and categorization.  In addition, one or more keywords "
         +
         "may be associated with a &quot;keyword thesaurus&quot;, which allows "
-        + "the association of a data package with an authoritative definition. "
+        +
+        "the association of a data package with an authoritative definition. "
         + "Thesauri may also be used for internal categorization.", 3);
     vbox.add(desc1);
     vbox.add(WidgetFactory.makeDefaultSpacer());
 
     keywordsList = WidgetFactory.makeList(colNames, editors, 4,
-                                          true, true, false, true, true, true);
+        true, true, false, true, true, true);
 
     keywordsList.setBorder(new EmptyBorder(0, WizardSettings.PADDING,
-                                           WizardSettings.PADDING,
-                                           2 * WizardSettings.PADDING));
+        WizardSettings.PADDING,
+        2 * WizardSettings.PADDING));
 
     vbox.add(keywordsList);
     vbox.add(WidgetFactory.makeDefaultSpacer());
@@ -145,9 +148,9 @@ public class Keywords
     KeywordsPage keywordsPage = (KeywordsPage) WizardPageLibrary.getPage(
         DataPackageWizardInterface.KEYWORDS_PAGE);
     ModalDialog wpd = new ModalDialog(keywordsPage,
-                                      WizardContainerFrame.getDialogParent(),
-                                      UISettings.POPUPDIALOG_WIDTH,
-                                      UISettings.POPUPDIALOG_HEIGHT, false);
+        WizardContainerFrame.getDialogParent(),
+        UISettings.POPUPDIALOG_WIDTH,
+        UISettings.POPUPDIALOG_HEIGHT, false);
     wpd.setVisible(true);
 
     if (wpd.USER_RESPONSE == ModalDialog.OK_OPTION) {
@@ -174,9 +177,9 @@ public class Keywords
     KeywordsPage editKeywordsPage = (KeywordsPage) dialogObj;
 
     ModalDialog wpd = new ModalDialog(editKeywordsPage,
-                                      WizardContainerFrame.getDialogParent(),
-                                      UISettings.POPUPDIALOG_WIDTH,
-                                      UISettings.POPUPDIALOG_HEIGHT, false);
+        WizardContainerFrame.getDialogParent(),
+        UISettings.POPUPDIALOG_WIDTH,
+        UISettings.POPUPDIALOG_HEIGHT, false);
     wpd.resetBounds();
     wpd.setVisible(true);
 
@@ -226,7 +229,19 @@ public class Keywords
 
   //
   public OrderedMap getPageData() {
+    return getPageData(xPathRoot);
+  }
 
+  /**
+   * gets the Map object that contains all the key/value paired settings for
+   * this particular wizard page
+   *
+   * @param rootXPath the root xpath to prepend to all the xpaths returned by
+   *   this method
+   * @return data the Map object that contains all the key/value paired
+   *   settings for this particular wizard page
+   */
+  public OrderedMap getPageData(String rootXPath) {
     returnMap.clear();
 
     int index = 1;
@@ -261,25 +276,10 @@ public class Keywords
 
       nextKeywordsPage = (KeywordsPage) nextUserObject;
 
-      nextNVPMap = nextKeywordsPage.getPageData(xPathRoot + (index++) + "]");
+      nextNVPMap = nextKeywordsPage.getPageData(rootXPath + (index++) + "]");
       returnMap.putAll(nextNVPMap);
     }
     return returnMap;
-  }
-
-  /**
-   * gets the Map object that contains all the key/value paired settings for
-   * this particular wizard page
-   *
-   * @param rootXPath the root xpath to prepend to all the xpaths returned by
-   *   this method
-   * @return data the Map object that contains all the key/value paired
-   *   settings for this particular wizard page
-   */
-  public OrderedMap getPageData(String rootXPath) {
-
-    throw new UnsupportedOperationException(
-        "getPageData(String rootXPath) Method Not Implemented");
   }
 
   // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -332,5 +332,140 @@ public class Keywords
     return pageNumber;
   }
 
-    public boolean setPageData(OrderedMap data, String xPathRoot) { return false; }
+  public boolean setPageData(OrderedMap map, String _xPathRoot) {
+    if (_xPathRoot != null && _xPathRoot.trim().length() > 0) {
+      this.xPathRoot = _xPathRoot;
+    }
+
+    if (map == null || map.isEmpty()) {
+      keywordsList.removeAllRows();
+      return true;
+    }
+
+    List toDeleteList = new ArrayList();
+    Iterator keyIt = map.keySet().iterator();
+    Object nextXPathObj = null;
+    String nextXPath = null;
+    Object nextValObj = null;
+    String nextVal = null;
+
+    List keywordList = new ArrayList();
+
+    while (keyIt.hasNext()) {
+
+      nextXPathObj = keyIt.next();
+      if (nextXPathObj == null) {
+        continue;
+      }
+      nextXPath = (String) nextXPathObj;
+
+      nextValObj = map.get(nextXPathObj);
+      nextVal = (nextValObj == null) ? "" : ( (String) nextValObj).trim();
+
+      Log.debug(45, "Keyword:  nextXPath = " + nextXPath
+          + "\n nextVal   = " + nextVal);
+
+      if (nextXPath.startsWith(KEYWORDSET_REL_XPATH)) {
+
+        Log.debug(45, ">>>>>>>>>> adding to keywordsetList: nextXPathObj="
+            + nextXPathObj + "; nextValObj=" + nextValObj);
+        addToKeywordSet(nextXPathObj, nextValObj, keywordList);
+        toDeleteList.add(nextXPathObj);
+      }
+    }
+
+    Iterator persIt = keywordList.iterator();
+    Object nextStepMapObj = null;
+    OrderedMap nextStepMap = null;
+    int keywordPredicate = 1;
+
+    keywordsList.removeAllRows();
+    boolean keywordRetVal = true;
+
+    while (persIt.hasNext()) {
+
+      nextStepMapObj = persIt.next();
+      if (nextStepMapObj == null) {
+        continue;
+      }
+      nextStepMap = (OrderedMap) nextStepMapObj;
+
+      if (nextStepMap.isEmpty()) {
+        continue;
+      }
+
+      KeywordsPage nextStep = (KeywordsPage) WizardPageLibrary.getPage(
+          DataPackageWizardInterface.KEYWORDS_PAGE);
+
+      boolean checkMethod = nextStep.setPageData(nextStepMap,
+          this.xPathRoot + KEYWORDSET_REL_XPATH + (keywordPredicate++) + "]/");
+
+      if (!checkMethod) {
+        keywordRetVal = false;
+      }
+      List newRow = nextStep.getSurrogate();
+      newRow.add(nextStep);
+
+      this.keywordsList.addRow(newRow);
+    }
+
+    //check method return valuse...
+    if (!keywordRetVal) {
+
+      Log.debug(20, "Keyword.setPageData - Method sub-class returned FALSE");
+    }
+
+    //remove entries we have used from map:
+    Iterator dlIt = toDeleteList.iterator();
+    while (dlIt.hasNext()) {
+      map.remove(dlIt.next());
+
+      //if anything left in map, then it included stuff we can't handle...
+    }
+    boolean returnVal = map.isEmpty();
+
+    if (!returnVal) {
+
+      Log.debug(20, "Keyword.setPageData returning FALSE! Map still contains:"
+          + map);
+    }
+    return (returnVal && keywordRetVal);
+  }
+
+  private void addToKeywordSet(Object nextPersonnelXPathObj,
+      Object nextPersonnelVal, List keywordList) {
+
+    if (nextPersonnelXPathObj == null) {
+      return;
+    }
+    String nextPersonnelXPath = (String) nextPersonnelXPathObj;
+    int predicate = getFirstPredicate(nextPersonnelXPath, KEYWORDSET_REL_XPATH);
+
+    // NOTE predicate is 1-relative, but List indices are 0-relative!!!
+    if (predicate >= keywordList.size()) {
+      for (int i = keywordList.size(); i <= predicate; i++) {
+        keywordList.add(new OrderedMap());
+      }
+    }
+
+    if (predicate < keywordList.size()) {
+      Object nextMapObj = keywordList.get(predicate);
+      OrderedMap nextMap = (OrderedMap) nextMapObj;
+      nextMap.put(nextPersonnelXPathObj, nextPersonnelVal);
+    } else {
+      Log.debug(15,
+          "**** ERROR - KeywordsaddToKeywordSet() - predicate >"
+          + " keywordSet.size()");
+    }
+  }
+
+  private int getFirstPredicate(String xpath, String firstSegment) {
+
+    String tempXPath
+        = xpath.substring(xpath.indexOf(firstSegment) + firstSegment.length());
+
+    return Integer.parseInt(
+        tempXPath.substring(0, tempXPath.indexOf("]")));
+  }
+
 }
