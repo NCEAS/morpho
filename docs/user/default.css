@@ -1,16 +1,16 @@
  /*
   *   '$RCSfile: default.css,v $'
-  *     Purpose: Default style sheet for KNB project web pages 
-  *              Using this stylesheet rather than placing styles directly in 
-  *              the KNB web documents allows us to globally change the 
+  *     Purpose: Default style sheet for KNB project web pages
+  *              Using this stylesheet rather than placing styles directly in
+  *              the KNB web documents allows us to globally change the
   *              formatting styles of the entire site in one easy place.
   *   Copyright: 2000 Regents of the University of California and the
   *               National Center for Ecological Analysis and Synthesis
   *     Authors: Matt Jones
   *
-  *    '$Author: fegraus $'
-  *      '$Date: 2001-12-15 02:03:59 $'
-  *  '$Revision: 1.2 $'
+  *    '$Author: berkley $'
+  *      '$Date: 2004-04-15 06:40:50 $'
+  *  '$Revision: 1.3 $'
   *
   * This program is free software; you can redistribute it and/or modify
   * it under the terms of the GNU General Public License as published by
@@ -27,10 +27,10 @@
   * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
   */
 
-body { 
-    color: black; 
+body {
+    color: black;
     background: white;
-    font-size: 1em; 
+    font-size: 1em;
     font-family: Arial,Helvetica,sans-serif; }
 a {
     color: green;
@@ -40,7 +40,7 @@ a.toollink {
     text-decoration: none; }
 a.sitelink {
     color: green;
-    text-decoration: none; 
+    text-decoration: none;
     font-weight: bold; }
 .logo {
     background: #ccccff;
@@ -51,19 +51,19 @@ a.sitelink {
     margin-top: 0.5em;
     margin-bottom: 0.5em;
     padding: 0.5em;
-    font-size: 2em; 
+    font-size: 2em;
     font-weight: bold; }
 .tabledefault {
     background: white;
     color: black;
     width: 100%;
-    font-size: 1em; 
+    font-size: 1em;
     left-padding: 0.25em;
     right-padding: 0.25em; }
 .tablepanel {
     background: #eeeeee;
     color: black;
-    font-size: 1em; 
+    font-size: 1em;
     left-padding: 0.25em;
     right-padding: 0.25em; }
 .tablehead {
@@ -77,15 +77,15 @@ a.sitelink {
     background: #dddddd;
     vertical-align: baseline;
     color: black;
-    font-size: 1.2em; 
+    font-size: 1.2em;
     font-weight: bold; }
-.title { 
-    color: black; 
+.title {
+    color: black;
     margin-top: 1em;
-    font-size: 1.5em; 
+    font-size: 1.5em;
     font-weight: bold; }
-.subtitle { 
-    color: black; 
+.subtitle {
+    color: black;
     margin-top: 0.5em;
     margin-left: 3em;
     font-weight: bold;
@@ -108,41 +108,41 @@ a.sitelink {
     font-family: Arial,Helvetica,sans-serif;
     font-size: 1em;
     font-weight: bold;
-    color: green; 
+    color: green;
     margin-left: 0.25em; }
-.instright { 
-    color: black; 
+.instright {
+    color: black;
     text-align: right;
     vertical-align: middle;
     padding: 1em;
-    font-size: 1em; 
+    font-size: 1em;
     font-weight: bold; }
-.instleft { 
-    color: black; 
+.instleft {
+    color: black;
     text-align: left;
     vertical-align: middle;
     padding: 1em;
-    font-size: 1em; 
+    font-size: 1em;
     font-weight: bold; }
-p { 
+p {
     margin: 0.25em; }
-.required { 
+.required {
     color: red; }
-.emphasis { 
+.emphasis {
     color: red; }
-p.label { 
-    color: black; 
+p.label {
+    color: black;
     font-weight: bold; }
-p.contact { 
-    color: black; 
+p.contact {
+    color: black;
     padding: 1em;
-    font-size: 0.75em; 
+    font-size: 0.75em;
     font-weight: normal;
     font-style: italic; }
 p.header {
-    color: black; 
+    color: black;
     padding: 1em;
-    font-size: 0.75em; 
+    font-size: 0.75em;
     font-weight: bold; }
 img.logoright {
     padding: 0.5em;
@@ -157,8 +157,10 @@ img.logoleft {
 .rowodd {
     background: white; }
 .highlight  {
-    background-color: #dddddd; 
-    font-size: -1; }
+    background-color: #dddddd;
+    color: black;
+    font-size: 9px;
+    }
 .plaintext {
     color: black;
     font-weight: normal;
