@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2001-06-13 03:11:24 $'
- * '$Revision: 1.41 $'
+ *     '$Date: 2001-06-13 18:54:54 $'
+ * '$Revision: 1.42 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -200,7 +200,6 @@ public class LocalQuery
     parser.setEntityResolver(cer);
     // set start time variable
     starttime = System.currentTimeMillis();
-    StringWriter sw = new StringWriter();
 
     File xmldir = new File(datadir);
     Vector filevector = new Vector();
@@ -266,18 +265,21 @@ public class LocalQuery
             // corresponding dataPackage
             if (nl != null && nl.getLength()>0) {
               try {
-                Vector ids = getPackageID(docid);
-                Enumeration q = ids.elements();
-                while (q.hasMoreElements()) {
-                  Object id = q.nextElement();
-                  // don't repeat elements
-                  if (!package_IDs.contains(id)) {
-                    package_IDs.addElement(id);
+                // If this docid is in any packages, record those package ids
+                if (dataPackage_collection.containsKey(docid)) {
+                  Vector ids = (Vector)dataPackage_collection.get(docid);
+                  Enumeration q = ids.elements();
+                  while (q.hasMoreElements()) {
+                    Object id = q.nextElement();
+                    // don't repeat elements
+                    if (!package_IDs.contains(id)) {
+                      package_IDs.addElement(id);
+                    }
                   }
                 }
               } catch (Exception rogue) {
-                ClientFramework.debug(1, "Rogue exception: ");
-                ClientFramework.debug(1, rogue.getMessage());
+                ClientFramework.debug(1, "Fatal error: " +
+                                         "failed getting package list.");
               }
             }
           }
@@ -592,26 +594,16 @@ public class LocalQuery
   }
    
  /** 
-  * routine to get the package(s) that any document is contained in 
-  * returns a vector since a document can be in multiple packages
-  * current just returns itself
-  */
-  private Vector getPackageID(String docid) {
-    Vector ret = (Vector)dataPackage_collection.get(docid);
-    return ret;
-  }
-
- /** 
   * build hashtable of package elements called by buildPackageList
   */
-  private void addToPackageList(Node nd, String fn) {
+  private void addToPackageList(Node docNode, String packageDocid) {
     String subject = "";
     String object = "";
-    Node root = nd;
+    Node currentNode = null;
     NodeList nl = null;
     String xpathExpression = "//triple";
     try{
-      nl = XPathAPI.selectNodeList(root, xpathExpression);
+      nl = XPathAPI.selectNodeList(docNode, xpathExpression);
     } catch (Exception ee) {
       ClientFramework.debug(6, "Error in building PackageList!");  
     }
@@ -622,13 +614,13 @@ public class LocalQuery
           if (nlchildren.item(n).getNodeType()!=Node.TEXT_NODE) {
             if ((nlchildren.item(n)).getLocalName().equalsIgnoreCase("subject"))
             {
-              nd = nlchildren.item(n).getFirstChild();
-              subject = nd.getNodeValue().trim();
+              currentNode = nlchildren.item(n).getFirstChild();
+              subject = currentNode.getNodeValue().trim();
             }
             if ((nlchildren.item(n)).getLocalName().equalsIgnoreCase("object"))
             {
-              nd = nlchildren.item(n).getFirstChild();
-              object = nd.getNodeValue().trim();   
+              currentNode = nlchildren.item(n).getFirstChild();
+              object = currentNode.getNodeValue().trim();   
             }
           }
         }
@@ -636,22 +628,22 @@ public class LocalQuery
         if (dataPackage_collection.containsKey(subject)) {    
           // already in collection
           Vector curvec = (Vector)dataPackage_collection.get(subject);
-          curvec.addElement(fn);
+          curvec.addElement(packageDocid);
         }
         else {  // new
           Vector vec = new Vector();
-          vec.addElement(fn); 
+          vec.addElement(packageDocid); 
           dataPackage_collection.put(subject, vec);
         }
         // add object to the collection
         if (dataPackage_collection.containsKey(object)) {    
           // already in collection
           Vector curvec = (Vector)dataPackage_collection.get(object);
-          curvec.addElement(fn);
+          curvec.addElement(packageDocid);
         }
         else {  // new
           Vector vec = new Vector();
-          vec.addElement(fn); 
+          vec.addElement(packageDocid); 
           dataPackage_collection.put(object, vec);
         }
       }
