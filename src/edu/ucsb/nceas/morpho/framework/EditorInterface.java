@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2001-06-04 23:12:37 $'
- * '$Revision: 1.1 $'
+ *   '$Author: berkley $'
+ *     '$Date: 2001-06-08 15:26:42 $'
+ * '$Revision: 1.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -50,6 +50,8 @@ public interface EditorInterface
    * xmltext and an editingCompletedListener to be notified when
    * the editing is completed
    */
- public void openEditor(String xmltext, EditingCompleteListener listener);
+ public void openEditor(String xmltext, String id, 
+                        EditingCompleteListener listener);
+                        
    
 }

@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-06-07 22:29:13 $'
- * '$Revision: 1.9 $'
+ *     '$Date: 2001-06-08 15:26:41 $'
+ * '$Revision: 1.10 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -294,7 +294,7 @@ public class DataPackageGUI extends javax.swing.JFrame
         return;
       }
       
-      editor.openEditor(sb.toString(), this);
+      editor.openEditor(sb.toString(), id, this);
     }
     else if(command.equals("Add"))
     {
@@ -306,9 +306,10 @@ public class DataPackageGUI extends javax.swing.JFrame
     }
   }
   
-  public void editingCompleted(String xmlString)
+  public void editingCompleted(String xmlString, String id)
   {
-    System.out.println("editing complete: " + xmlString);
+    System.out.println("editing complete: id: " + id + "\n" + xmlString);
+    
   }
   
   public static void main(String[] args)

@@ -7,9 +7,9 @@
  *    Authors: Dan Higgins
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2001-06-05 17:47:13 $'
- * '$Revision: 1.4 $'
+ *   '$Author: berkley $'
+ *     '$Date: 2001-06-08 15:26:42 $'
+ * '$Revision: 1.5 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -360,7 +360,7 @@ public class edit_plugin extends javax.swing.JFrame implements EditingCompleteLi
       ServiceProvider provider = 
                       framework.getServiceProvider(EditorInterface.class);
       EditorInterface editor = (EditorInterface)provider;
-      editor.openEditor(JTextArea1.getText(), this);
+      editor.openEditor(JTextArea1.getText(), null, this);
     } catch (ServiceNotHandledException snhe) {
       framework.debug(6, snhe.getMessage());
     }
@@ -400,7 +400,7 @@ public class edit_plugin extends javax.swing.JFrame implements EditingCompleteLi
 
 //---------------------------
 
-public void editingCompleted(String xmlString) {
+public void editingCompleted(String xmlString, String id) {
   JTextArea1.setText(xmlString);
   JOptionPane.showMessageDialog(null, "Editing Completed!!!", "Alert", JOptionPane.INFORMATION_MESSAGE);
 }
