@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2002-08-27 23:21:04 $'
- * '$Revision: 1.66 $'
+ *   '$Author: tao $'
+ *     '$Date: 2002-08-28 17:18:48 $'
+ * '$Revision: 1.67 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,6 +29,7 @@ package edu.ucsb.nceas.morpho.datapackage;
 import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.framework.XPathAPI;
 import edu.ucsb.nceas.morpho.framework.ConfigXML;
+import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
 import edu.ucsb.nceas.morpho.datastore.MetacatDataStore;
 import edu.ucsb.nceas.morpho.datastore.FileSystemDataStore;
 import edu.ucsb.nceas.morpho.datastore.CacheAccessException;
@@ -103,18 +104,7 @@ public class DataPackage
   private final FileSystemDataStore fileSysDataStore;
   private final MetacatDataStore    metacatDataStore;
 
-    /**
-   * used to signify that this package is located on a metacat server
-   */
-  public static final String METACAT  = "metacat";
-  /**
-   * used to signify that this package is located locally
-   */
-  public static final String LOCAL    = "local";
-  /**
-   * used to signify that this package is stored on metacat and locally.
-   */
-  public static final String BOTH     = "localmetacat";
+ 
   
   /**
    * Create a new data package object with an id, location and associated
@@ -163,7 +153,7 @@ public class DataPackage
   private File getFileWithID(String ID) throws Throwable {
     
     File returnFile = null;
-    if(location.equals(METACAT)) {
+    if(location.equals(DataPackageInterface.METACAT)) {
       try {
         Log.debug(11, "opening metacat file");
         dataPkgFile = metacatDataStore.openFile(ID);
@@ -604,8 +594,8 @@ public class DataPackage
       File f;
       try
       {
-        if(location.equals(DataPackage.LOCAL) || 
-           location.equals(DataPackage.BOTH))
+        if(location.equals(DataPackageInterface.LOCAL) || 
+           location.equals(DataPackageInterface.BOTH))
         { //open the file locally
           f = fileSysDataStore.openFile((String)fileids.elementAt(i));
         }
@@ -710,8 +700,8 @@ public class DataPackage
   {
     Log.debug(20, "Uploading package.");
     
-    if(!location.equals(DataPackage.BOTH) && 
-      !location.equals(DataPackage.METACAT))
+    if(!location.equals(DataPackageInterface.BOTH) && 
+      !location.equals(DataPackageInterface.METACAT))
     { //if it is not already on metacat, send it there.
       Vector ids = this.getAllIdentifiers();
       Hashtable files = new Hashtable();
@@ -976,8 +966,8 @@ public class DataPackage
   {
     Log.debug(20, "Downloading package.");
     
-    if(!location.equals(DataPackage.BOTH) && 
-      !location.equals(DataPackage.LOCAL))
+    if(!location.equals(DataPackageInterface.BOTH) && 
+      !location.equals(DataPackageInterface.LOCAL))
     { //if it is not already on the local disk, get it and put it there.
       Vector ids = this.getAllIdentifiers();
       Hashtable files = new Hashtable();
@@ -1071,20 +1061,20 @@ public class DataPackage
   /**
    * Deletes the package from the specified location
    * @param locattion the location of the package that you want to delete
-   * use either DataPackage.BOTH, DataPackage.METACAT or DataPackage.LOCAL 
+   * use either DataPackageInterface.BOTH, DataPackageInterface.METACAT or DataPackageInterface.LOCAL 
    */
   public void delete(String location)
   {
     Vector v = this.getAllIdentifiers();
     boolean metacatLoc = false;
     boolean localLoc = false;
-    if(location.equals(DataPackage.METACAT) || 
-       location.equals(DataPackage.BOTH))
+    if(location.equals(DataPackageInterface.METACAT) || 
+       location.equals(DataPackageInterface.BOTH))
     {
       metacatLoc = true;
     }
-    if(location.equals(DataPackage.LOCAL) ||
-       location.equals(DataPackage.BOTH))
+    if(location.equals(DataPackageInterface.LOCAL) ||
+       location.equals(DataPackageInterface.BOTH))
     {
       localLoc = true;
     }
@@ -1195,16 +1185,16 @@ public class DataPackage
     Vector fileV = new Vector(); //vector of all files in the package
     boolean localloc = false;
     boolean metacatloc = false;
-    if(location.equals(DataPackage.BOTH))
+    if(location.equals(DataPackageInterface.BOTH))
     {
       localloc = true;
       metacatloc = true;
     }
-    else if(location.equals(DataPackage.METACAT))
+    else if(location.equals(DataPackageInterface.METACAT))
     {
       metacatloc = true;
     }
-    else if(location.equals(DataPackage.LOCAL))
+    else if(location.equals(DataPackageInterface.LOCAL))
     {
       localloc = true;
     }
@@ -1494,16 +1484,16 @@ public class DataPackage
     File physicalfile = null;
     boolean localloc = false;
     boolean metacatloc = false;
-    if(location.equals(DataPackage.BOTH))
+    if(location.equals(DataPackageInterface.BOTH))
     {
       localloc = true;
       metacatloc = true;
     }
-    else if(location.equals(DataPackage.METACAT))
+    else if(location.equals(DataPackageInterface.METACAT))
     {
       metacatloc = true;
     }
-    else if(location.equals(DataPackage.LOCAL))
+    else if(location.equals(DataPackageInterface.LOCAL))
     {
       localloc = true;
     }
@@ -1525,16 +1515,16 @@ public class DataPackage
     File attributefile = null;
     boolean localloc = false;
     boolean metacatloc = false;
-    if(location.equals(DataPackage.BOTH))
+    if(location.equals(DataPackageInterface.BOTH))
     {
       localloc = true;
       metacatloc = true;
     }
-    else if(location.equals(DataPackage.METACAT))
+    else if(location.equals(DataPackageInterface.METACAT))
     {
       metacatloc = true;
     }
-    else if(location.equals(DataPackage.LOCAL))
+    else if(location.equals(DataPackageInterface.LOCAL))
     {
       localloc = true;
     }
@@ -1559,16 +1549,16 @@ public class DataPackage
     File accessfile = null;
     boolean localloc = false;
     boolean metacatloc = false;
-    if(location.equals(DataPackage.BOTH))
+    if(location.equals(DataPackageInterface.BOTH))
     {
       localloc = true;
       metacatloc = true;
     }
-    else if(location.equals(DataPackage.METACAT))
+    else if(location.equals(DataPackageInterface.METACAT))
     {
       metacatloc = true;
     }
-    else if(location.equals(DataPackage.LOCAL))
+    else if(location.equals(DataPackageInterface.LOCAL))
     {
       localloc = true;
     }
@@ -1594,16 +1584,16 @@ public class DataPackage
     File datafile = null;
     boolean localloc = false;
     boolean metacatloc = false;
-    if(location.equals(DataPackage.BOTH))
+    if(location.equals(DataPackageInterface.BOTH))
     {
       localloc = true;
       metacatloc = true;
     }
-    else if(location.equals(DataPackage.METACAT))
+    else if(location.equals(DataPackageInterface.METACAT))
     {
       metacatloc = true;
     }
-    else if(location.equals(DataPackage.LOCAL))
+    else if(location.equals(DataPackageInterface.LOCAL))
     {
       localloc = true;
     }
@@ -1654,16 +1644,16 @@ public class DataPackage
     String dataFileID = "";
     boolean localloc = false;
     boolean metacatloc = false;
-    if(location.equals(DataPackage.BOTH))
+    if(location.equals(DataPackageInterface.BOTH))
     {
       localloc = true;
       metacatloc = true;
     }
-    else if(location.equals(DataPackage.METACAT))
+    else if(location.equals(DataPackageInterface.METACAT))
     {
       metacatloc = true;
     }
-    else if(location.equals(DataPackage.LOCAL))
+    else if(location.equals(DataPackageInterface.LOCAL))
     {
       localloc = true;
     }
