@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2002-09-27 17:25:52 $'
- * '$Revision: 1.16 $'
+ *     '$Date: 2002-09-27 18:46:20 $'
+ * '$Revision: 1.17 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -108,6 +108,7 @@ public class GUIAction extends AbstractAction implements StateChangeListener
         clone.setEnabled(isEnabled());
         clone.setSeparatorPosition(getSeparatorPosition());
         clone.setMenu(getMenuName(), getMenuPosition());
+        clone.setAcceleratorKey(getAcceleratorKey());
         // Clone the enabled list
         Enumeration enabledKeys = enabledList.keys();
         while (enabledKeys.hasMoreElements()) {
@@ -197,16 +198,37 @@ public class GUIAction extends AbstractAction implements StateChangeListener
     
     /**
      * set a accelerator key for this action
-     * @param key  the accelerator key
+     * @param keyString  the accelerator key string
      */
-    public void setAcceleratorKey(String key)
+    public void setAcceleratorKeyString(String keyString)
+    {
+      if (keyString != null)
+      {
+        super.putValue(AbstractAction.ACCELERATOR_KEY,
+                       KeyStroke.getKeyStroke(keyString));
+      }
+    }
+    
+    /**
+     * Method to get accelerator key
+     */
+    public KeyStroke getAcceleratorKey()
+    {
+      return (KeyStroke)super.getValue(AbstractAction.ACCELERATOR_KEY);
+    }
+    
+    /**
+     * Method to set accelerator key
+     * @Param key the accelerator key
+     */
+    public void setAcceleratorKey(KeyStroke key)
     {
       if (key != null)
       {
-        super.putValue(AbstractAction.ACCELERATOR_KEY,
-                       KeyStroke.getKeyStroke(key));
+        super.putValue(AbstractAction.ACCELERATOR_KEY, key);
       }
-    }
+    }//
+     
     /** 
      *  sets the action pull right submenu
      *
