@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2002-09-28 00:26:49 $'
- * '$Revision: 1.94 $'
+ *   '$Author: tao $'
+ *     '$Date: 2002-09-28 00:40:13 $'
+ * '$Revision: 1.95 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -140,7 +140,7 @@ public class QueryPlugin implements PluginInterface, ConnectionListener,
 //                            StateChangeEvent.CREATE_ENTITY_DATAPACKAGE_FRAME, 
 //                            false, GUIAction.EVENT_LOCAL);
     refreshItemAction.setEnabledOnStateChange(
-                            StateChangeEvent.CREATE_NOENTITY_DATAPACKAGE_FRAME, 
+                            StateChangeEvent.CREATE_DATAPACKAGE_FRAME, 
                             false, GUIAction.EVENT_LOCAL);
     controller.addGuiAction(refreshItemAction);
     
@@ -163,7 +163,7 @@ public class QueryPlugin implements PluginInterface, ConnectionListener,
 //                            StateChangeEvent.CREATE_ENTITY_DATAPACKAGE_FRAME, 
 //                            false, GUIAction.EVENT_LOCAL);
     saveQueryItemAction.setEnabledOnStateChange(
-                            StateChangeEvent.CREATE_NOENTITY_DATAPACKAGE_FRAME, 
+                            StateChangeEvent.CREATE_DATAPACKAGE_FRAME, 
                             false, GUIAction.EVENT_LOCAL);
     controller.addGuiAction(saveQueryItemAction);
         
@@ -185,7 +185,7 @@ public class QueryPlugin implements PluginInterface, ConnectionListener,
 //                            StateChangeEvent.CREATE_ENTITY_DATAPACKAGE_FRAME, 
 //                            false, GUIAction.EVENT_LOCAL);
     reviseSearchItemAction.setEnabledOnStateChange(
-                            StateChangeEvent.CREATE_NOENTITY_DATAPACKAGE_FRAME, 
+                            StateChangeEvent.CREATE_DATAPACKAGE_FRAME, 
                             false, GUIAction.EVENT_LOCAL);
     controller.addGuiAction(reviseSearchItemAction);
 
