@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2004-04-06 06:32:42 $'
- * '$Revision: 1.13 $'
+ *     '$Date: 2004-04-06 18:29:59 $'
+ * '$Revision: 1.14 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -59,7 +59,7 @@ public class ReferencesHandler {
 
   private final String EXT_DIALOG_DROPDOWN_ITEM = "Select from a different data package";
 
-
+  private String displayName;
   private String genericName;
   private String[] surrogateXPaths;
   private ModalDialog externalRefsDialog;
@@ -99,8 +99,25 @@ public class ReferencesHandler {
    */
   public ReferencesHandler(String genericName, String[] surrogateXPaths) {
 
+    this.displayName = genericName;
     this.genericName = genericName;
     this.surrogateXPaths = surrogateXPaths;
+  }
+
+  /**
+   * Method to set displayName for the ExternalRefsDialog
+   * @param String displayName for the ExternalRefsDialog
+   */
+  public void setDisplayName(String displayName) {
+    this.displayName = displayName;
+  }
+
+  /**
+   * Method to get displayName for the ExternalRefsDialog
+   * @return String displayName for the ExternalRefsDialog
+   */
+  public String getDisplayName() {
+    return this.displayName;
   }
 
   /**
@@ -109,7 +126,7 @@ public class ReferencesHandler {
    */
   public String getGenericName()
   {
-    return genericName;
+    return this.genericName;
   }
 
 
