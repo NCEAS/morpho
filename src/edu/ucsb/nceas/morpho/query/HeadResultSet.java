@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2002-08-07 00:07:35 $'
- * '$Revision: 1.3.8.1 $'
+ *     '$Date: 2002-08-13 00:21:04 $'
+ * '$Revision: 1.3.8.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,9 +27,9 @@
 package edu.ucsb.nceas.morpho.query;
 
 import edu.ucsb.nceas.morpho.framework.*;
-
+import edu.ucsb.nceas.morpho.util.*;
 import java.io.InputStream;
-
+import java.util.Collections;
 import java.util.Enumeration;
 //DFH import java.util.HashMap;
 import java.util.Hashtable;
@@ -88,6 +88,62 @@ public class HeadResultSet extends ResultSet
   /**
    * Determine the value of a column by its row and column index
    */
+    /**
+   * Determine the value of a column by its row and column index
+   */
+  public Object getValueAt(int row, int col)
+  {
+    Object value = null;
+    try {
+      Vector rowVector = (Vector)headResultsVector.elementAt(row);
+      // The oder of header is different to resultsVector, so we need a 
+      // conversion
+      value = rowVector.elementAt(lookupResultsVectorIndex(col));
+      
+      // Add icon rather than ture or false value to col6 and col7
+      if (col == 6)
+      { 
+        // cast value to Boolean object
+        Boolean isLocally = (Boolean)value;
+        if (isLocally.booleanValue())
+        {
+          // If is local, the value will be a local icon
+          value = localIcon;
+        }//if
+        else
+        {
+          // If there isnot local, value is empty String
+          value = "";
+        }//else
+      }//if
+      
+      // Add icon for col6 and col7
+      if (col == 7)
+      { 
+        // cast value to Boolean object
+        Boolean isNet = (Boolean)value;
+        if (isNet.booleanValue())
+        {
+          // If is local, the value will be a local icon
+          value = metacatIcon;
+        }//if
+        else
+        {
+          // If there isnot local, value is empty String
+          value = "";
+        }//else
+      }//if
+         
+    } catch (ArrayIndexOutOfBoundsException aioobe) {
+      String emptyString = "";
+      value = null;
+    } catch (NullPointerException npe) {
+      String emptyString = "";
+      value = emptyString;
+    }
+    return value;
+  }
+  
   /*public Object getValueAt(int row, int col)
   {
     Object value = null;
@@ -172,4 +228,21 @@ public class HeadResultSet extends ResultSet
           headResultsVector.addElement(enum.nextElement());
       }
   }
+  
+   /**
+   * Method implements from SortTableModel. To make sure a col can be sort
+   * or not. We decide it always be sortable.
+   * @param col, the index of column which need to be sorted
+   * @param ascending, the sort order
+   */
+  public void sortTableByColumn(int col, boolean ascending)
+  {
+   
+   //look up index in result vector
+    int resultColIndex = lookupResultsVectorIndex(col);
+    // sort the result vector
+    Collections.sort(headResultsVector,
+                    new CellComparator(resultColIndex, ascending));
+   
+  }//sortColumn
 }
