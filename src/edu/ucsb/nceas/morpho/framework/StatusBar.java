@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2002-05-22 22:22:29 $'
- * '$Revision: 1.3 $'
+ *     '$Date: 2002-06-06 21:35:56 $'
+ * '$Revision: 1.4 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -40,7 +40,7 @@ import javax.swing.ToolTipManager;
 /**
  *  A graphical status bar for displaying information about network and login 
  *  status.  Tells the user whether Metacat is reachable over the network, 
- *  whether the user is logged into metacat, and wheter the connection to 
+ *  whether the user is logged into metacat, and whether the connection to 
  *  Metacat is via SSL or insecure HTTP
  */
 public class StatusBar extends JPanel
@@ -73,8 +73,10 @@ public class StatusBar extends JPanel
   private final String SSL_NO_TEXT 
                                 = "NOT using secure connection";
   
-  //color of status bar text message 
-  private final Color TEXT_COLOR = new Color(102,102,153);
+  //color and font for status bar text message 
+  private final Color TEXT_COLOR  = new Color(102,102,153);
+  
+  private final Font TEXT_FONT    = new Font("Dialog", Font.PLAIN , 12);
 
   //width of padding space between icons
   private static final int PADDING  = 5;
@@ -85,7 +87,6 @@ public class StatusBar extends JPanel
    *  private Constructor - singleton class - we want only one StatusBar  
    *  instance to exist, since they should all show the same status
    *
-   *  @throws     java.lang.Exception if a null argument is received
    */
   private StatusBar() { initializeComponents(); }
 
@@ -95,7 +96,6 @@ public class StatusBar extends JPanel
    *
    *  @return     a pointer to the single instance of the StatusBar
    *
-   *  @throws     java.lang.Exception if a null argument is received
    */ 
   public static StatusBar getInstance() {
     
@@ -125,7 +125,7 @@ public class StatusBar extends JPanel
     sslStatusLabel     = new JLabel();
 
     messageLabel.setForeground( TEXT_COLOR );
-    messageLabel.setFont(new Font("Dialog", Font.PLAIN , 12));
+    messageLabel.setFont(TEXT_FONT);
 
     setConnectStatus(false);
     setLoginStatus(false);
