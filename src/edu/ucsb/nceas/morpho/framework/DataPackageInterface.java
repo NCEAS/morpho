@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: cjones $'
- *     '$Date: 2002-09-26 01:57:53 $'
- * '$Revision: 1.12 $'
+ *   '$Author: tao $'
+ *     '$Date: 2002-10-01 17:06:59 $'
+ * '$Revision: 1.13 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -125,4 +125,26 @@ public interface DataPackageInterface
    * @param morpho the morpho file
    */
   public String getNextId(Morpho morpho);
+  
+  /**
+   * Method to get docid from a given morpho frame
+   *
+   * @param morphoFrame  the morphoFrame which contains a datapackage
+   */
+  public String getDocIdFromMorphoFrame(MorphoFrame morphoFrame);
+  
+  /**
+   * Method to determine a data package which in a morpho frame if is in local
+   *
+   * @param morphoFrame  the morpho frame containing the data package
+   */
+  public boolean isDataPackageInLocal(MorphoFrame morphoFrame);
+  
+  /**
+   * Method to determine a data package which in a morpho frame if is in network
+   *
+   * @param morphoFrame  the morpho frame containing the data package
+   */
+  public boolean isDataPackageInNetwork(MorphoFrame morphoFrame);
+  
 }
