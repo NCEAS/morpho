@@ -5,7 +5,7 @@
  *              National Center for Ecological Analysis and Synthesis
  *     Authors: Dan Higgins
  *
- *     Version: '$Id: QueryPlugin.java,v 1.20 2000-09-25 20:01:36 higgins Exp $'
+ *     Version: '$Id: QueryPlugin.java,v 1.21 2000-09-28 23:43:47 higgins Exp $'
  */
 
 package edu.ucsb.nceas.querybean;
@@ -999,8 +999,6 @@ public class QueryBean extends AbstractQueryBean
 
 	void SearchButton1_actionPerformed(java.awt.event.ActionEvent event)
 	{  
-	    
-	    
 	    if (searchlocal) {
 	    if (SearchButton1.getText().equalsIgnoreCase("Halt")) {
 	        if (lq!=null) {
