@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2002-09-29 05:08:41 $'
- * '$Revision: 1.41 $'
+ *     '$Date: 2002-09-29 20:59:05 $'
+ * '$Revision: 1.42 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -150,7 +150,7 @@ public class DataPackagePlugin
                             false, GUIAction.EVENT_LOCAL);
     copy.setEnabledOnStateChange(
                             StateChangeEvent.CREATE_NOENTITY_DATAPACKAGE_FRAME, 
-                            false, GUIAction.EVENT_LOCAL);
+                            false, GUIAction.EVENT_GLOBAL);
     copy.setEnabledOnStateChange(
                    StateChangeEvent.CREATE_NONEDITABLE_ENTITY_DATAPACKAGE_FRAME, 
                    false, GUIAction.EVENT_GLOBAL);
@@ -172,7 +172,7 @@ public class DataPackagePlugin
                             false, GUIAction.EVENT_LOCAL);
     cut.setEnabledOnStateChange(
                             StateChangeEvent.CREATE_NOENTITY_DATAPACKAGE_FRAME, 
-                            false, GUIAction.EVENT_LOCAL);
+                            false, GUIAction.EVENT_GLOBAL);
     cut.setEnabledOnStateChange(
                    StateChangeEvent.CREATE_NONEDITABLE_ENTITY_DATAPACKAGE_FRAME, 
                    false, GUIAction.EVENT_GLOBAL);
@@ -193,7 +193,7 @@ public class DataPackagePlugin
                             false, GUIAction.EVENT_LOCAL);
     paste.setEnabledOnStateChange(
                             StateChangeEvent.CREATE_NOENTITY_DATAPACKAGE_FRAME, 
-                            false, GUIAction.EVENT_LOCAL);
+                            false, GUIAction.EVENT_GLOBAL);
     paste.setEnabledOnStateChange(
                    StateChangeEvent.CREATE_NONEDITABLE_ENTITY_DATAPACKAGE_FRAME, 
                    false, GUIAction.EVENT_GLOBAL);
@@ -249,7 +249,7 @@ public class DataPackagePlugin
                             false, GUIAction.EVENT_LOCAL);
     sortBySelectedColumn.setEnabledOnStateChange(
                             StateChangeEvent.CREATE_NOENTITY_DATAPACKAGE_FRAME, 
-                            false, GUIAction.EVENT_LOCAL);
+                            false, GUIAction.EVENT_GLOBAL);
     sortBySelectedColumn.setEnabledOnStateChange(
                    StateChangeEvent.CREATE_NONEDITABLE_ENTITY_DATAPACKAGE_FRAME, 
                    false, GUIAction.EVENT_GLOBAL);
@@ -269,7 +269,7 @@ public class DataPackagePlugin
                             false, GUIAction.EVENT_LOCAL);
     insertRowAfter.setEnabledOnStateChange(
                             StateChangeEvent.CREATE_NOENTITY_DATAPACKAGE_FRAME, 
-                            false, GUIAction.EVENT_LOCAL);
+                            false, GUIAction.EVENT_GLOBAL);
     insertRowAfter.setEnabledOnStateChange(
                    StateChangeEvent.CREATE_NONEDITABLE_ENTITY_DATAPACKAGE_FRAME, 
                    false, GUIAction.EVENT_GLOBAL);
@@ -289,7 +289,7 @@ public class DataPackagePlugin
                             false, GUIAction.EVENT_LOCAL);
     insertRowBefore.setEnabledOnStateChange(
                             StateChangeEvent.CREATE_NOENTITY_DATAPACKAGE_FRAME, 
-                            false, GUIAction.EVENT_LOCAL);
+                            false, GUIAction.EVENT_GLOBAL);
     insertRowBefore.setEnabledOnStateChange(
                    StateChangeEvent.CREATE_NONEDITABLE_ENTITY_DATAPACKAGE_FRAME, 
                    false, GUIAction.EVENT_GLOBAL);
@@ -310,7 +310,7 @@ public class DataPackagePlugin
                             false, GUIAction.EVENT_LOCAL);
     deleteRow.setEnabledOnStateChange(
                             StateChangeEvent.CREATE_NOENTITY_DATAPACKAGE_FRAME, 
-                            false, GUIAction.EVENT_LOCAL);
+                            false, GUIAction.EVENT_GLOBAL);
     deleteRow.setEnabledOnStateChange(
                    StateChangeEvent.CREATE_NONEDITABLE_ENTITY_DATAPACKAGE_FRAME, 
                    false, GUIAction.EVENT_GLOBAL);
@@ -330,7 +330,7 @@ public class DataPackagePlugin
                             false, GUIAction.EVENT_LOCAL);
     insertColumnAfter.setEnabledOnStateChange(
                             StateChangeEvent.CREATE_NOENTITY_DATAPACKAGE_FRAME, 
-                            false, GUIAction.EVENT_LOCAL);
+                            false, GUIAction.EVENT_GLOBAL);
     insertColumnAfter.setEnabledOnStateChange(
                    StateChangeEvent.CREATE_NONEDITABLE_ENTITY_DATAPACKAGE_FRAME, 
                    false, GUIAction.EVENT_GLOBAL);
@@ -351,7 +351,7 @@ public class DataPackagePlugin
                             false, GUIAction.EVENT_LOCAL);
     insertColumnBefore.setEnabledOnStateChange(
                             StateChangeEvent.CREATE_NOENTITY_DATAPACKAGE_FRAME, 
-                            false, GUIAction.EVENT_LOCAL);
+                            false, GUIAction.EVENT_GLOBAL);
     insertColumnBefore.setEnabledOnStateChange(
                    StateChangeEvent.CREATE_NONEDITABLE_ENTITY_DATAPACKAGE_FRAME, 
                    false, GUIAction.EVENT_GLOBAL);
@@ -372,7 +372,7 @@ public class DataPackagePlugin
                             false, GUIAction.EVENT_LOCAL);
     deleteColumn.setEnabledOnStateChange(
                             StateChangeEvent.CREATE_NOENTITY_DATAPACKAGE_FRAME, 
-                            false, GUIAction.EVENT_LOCAL);
+                            false, GUIAction.EVENT_GLOBAL);
     deleteColumn.setEnabledOnStateChange(
                    StateChangeEvent.CREATE_NONEDITABLE_ENTITY_DATAPACKAGE_FRAME, 
                    false, GUIAction.EVENT_GLOBAL);
