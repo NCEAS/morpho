@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2002-12-16 21:43:49 $'
- * '$Revision: 1.7 $'
+ *     '$Date: 2002-12-16 22:43:27 $'
+ * '$Revision: 1.8 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -93,8 +93,9 @@ public class InitialScreen extends JPanel
     
     
     
-    private boolean prevLoginStatus = true; //initially set to true so login  
-                                            //panel will be updated - see
+    private boolean prevLoginStatus = !Morpho.isConnected(); 
+                                            // initially set opposite so login  
+                                            // panel will be updated - see
                                             // updateLoginStatus() method 
     
     public InitialScreen(Morpho morpho, MorphoFrame parentFrame)
@@ -451,7 +452,7 @@ public class InitialScreen extends JPanel
                         +UISettings.INIT_SCR_PANEL_LITE_FONT_CLOSE);
 
         //if no change, don't need to update panel
-        if (morpho.isConnected() == prevLoginStatus) return;
+        if (morpho.isConnected()==prevLoginStatus) return;
 
         if (morpho.isConnected()) {
             loginPanel.clearRow3();
