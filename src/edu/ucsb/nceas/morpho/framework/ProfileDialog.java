@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2002-05-10 18:44:50 $'
- * '$Revision: 1.19 $'
+ *     '$Date: 2002-08-08 00:11:29 $'
+ * '$Revision: 1.19.6.1 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,6 +26,8 @@
 
 package edu.ucsb.nceas.morpho.framework;
 
+import edu.ucsb.nceas.morpho.Morpho;
+
 import java.net.*;
 import java.io.*;
 import java.util.*;
@@ -40,7 +42,7 @@ import javax.swing.*;
 public class ProfileDialog extends JDialog
 {
   ConfigXML config;
-  ClientFramework framework = null;
+  Morpho framework = null;
   /** the total number of screens to be processed */
   int numScreens;
   /** the screen currently displaying (indexed from 0 to numScreens-1) */
@@ -68,16 +70,19 @@ public class ProfileDialog extends JDialog
    *
    * @param cont the container framework that created this ProfileDialog
    */
-  public ProfileDialog(ClientFramework cont) {
+  public ProfileDialog(Morpho cont) {
     this(cont, true);
   }
 
   /**
    * Construct the dialog
    */
-  public ProfileDialog(ClientFramework cont, boolean modal)
+  public ProfileDialog(Morpho cont, boolean modal)
   {
+    /*
     super((Frame)cont, modal);
+    */
+    super();
     framework = cont;
 
     numScreens = 3;
@@ -236,7 +241,7 @@ public class ProfileDialog extends JDialog
         addKeyListenerToComponent(components[i]);
       }
     } else {
-      ClientFramework.debug(10, 
+      Morpho.debug(10, 
             "ProfileDialog.addKeyListenerToComponents() - received null array");
       return;
     }
@@ -249,7 +254,7 @@ public class ProfileDialog extends JDialog
     if (component!=null) {
           component.addKeyListener(keyPressListener);
     } else {
-      ClientFramework.debug(10,
+      Morpho.debug(10,
               "ProfileDialog.addKeyListenerToComponent() - received NULL arg");
       return;
     }
@@ -482,10 +487,10 @@ public class ProfileDialog extends JDialog
 
     String org = (String)orgList.getSelectedValue();
     if (null == org) {
-        ClientFramework.debug(20, "org was initially null");
+        Morpho.debug(20, "org was initially null");
         org = otherOrgField.getText();
         if ((null == org) || (org.equals(""))) {
-            ClientFramework.debug(20, "second org was null");
+            Morpho.debug(20, "second org was null");
             fieldsAreValid = false;
         }
     }
@@ -640,7 +645,7 @@ public class ProfileDialog extends JDialog
               destDir.mkdirs();
               String destName = destDirName + File.separator + 
                                 srcFile.getName();
-              ClientFramework.debug(20, destName);
+              Morpho.debug(20, destName);
               FileUtils.copy(srcFile.getAbsolutePath(), destName, tokens);
             }
           }
