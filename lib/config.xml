@@ -1,0 +1,46 @@
+<?xml version="1.0"?>
+<root>
+<MetaCatServletURL>http://dev.nceas.ucsb.edu/metadata/servlet/metacat</MetaCatServletURL>
+<local_dtd_directory>./catalog</local_dtd_directory>
+<local_xml_directory>./xmlfiles</local_xml_directory>
+<searchlocal>true</searchlocal>
+<searchnetwork>false</searchnetwork>
+<pathquery_config>
+    <doctypes_searched><doctype>any</doctype></doctypes_searched>
+    <doctypes_returned><returndoc>-//NCEAS//resource//EN</returndoc><returndoc>-//NCEAS//eml-dataset//EN</returndoc><returndoc>eml-dataset</returndoc></doctypes_returned>
+    <fields_returned><returnfield>resource/dataset/keywordInfo/keyword</returnfield><returnfield>eml-dataset/dataset/keywordInfo/keyword</returnfield></fields_returned>
+
+    <doctypes_searched_default>
+        <doctype_default>any</doctype_default>
+   </doctypes_searched_default>
+    <doctypes_returned_default>
+        <returndoc_default>-//NCEAS//resource//EN</returndoc_default>
+        <returndoc_default>-//NCEAS//eml-dataset//EN</returndoc_default>
+        <returndoc_default>eml-dataset</returndoc_default>
+    </doctypes_returned_default>
+    <fields_returned_default>
+        <returnfield_default>resource/dataset/keywordInfo/keyword</returnfield_default>
+        <returnfield_default>eml-dataset/dataset/keywordInfo/keyword</returnfield_default>
+    </fields_returned_default>
+</pathquery_config>
+<localdoctypes>
+    <localdoctypename>resource</localdoctypename>
+    <localdoctypedtd>resource.dtd</localdoctypedtd>
+    <localdoctypename>eml-dataset</localdoctypename>
+    <localdoctypedtd>eml-dataset.dtd</localdoctypedtd>
+    <localdoctypename>eml-access</localdoctypename>
+    <localdoctypedtd>eml-access.dtd</localdoctypedtd>
+    <localdoctypename>eml-context</localdoctypename>
+    <localdoctypedtd>eml-context.dtd</localdoctypedtd>
+    <localdoctypename>eml-file</localdoctypename>
+    <localdoctypedtd>eml-file.dtd</localdoctypedtd>
+    <localdoctypename>eml-status</localdoctypename>
+    <localdoctypedtd>eml-status.dtd</localdoctypedtd>
+    <localdoctypename>eml-software</localdoctypename>
+    <localdoctypedtd>eml-software.dtd</localdoctypedtd>
+    <localdoctypename>eml-supplement</localdoctypename>
+    <localdoctypedtd>eml-supplement.dtd</localdoctypedtd>
+    <localdoctypename>eml-variable</localdoctypename>
+    <localdoctypedtd>eml-variable.dtd</localdoctypedtd>
+</localdoctypes>
+</root>
