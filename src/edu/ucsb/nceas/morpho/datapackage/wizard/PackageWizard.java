@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2002-03-15 21:59:39 $'
- * '$Revision: 1.48 $'
+ *   '$Author: jones $'
+ *     '$Date: 2002-05-10 18:44:50 $'
+ * '$Revision: 1.49 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -51,7 +51,6 @@ public class PackageWizard extends javax.swing.JFrame
   JTabbedPane mainTabbedPane;
   JPanel mainFrame = new JPanel();
   JPanelWrapper docPanel;
-  private String saxparser;
   private ClientFramework framework;
   private String globalDtd;
   private String globalDoctype;
@@ -92,15 +91,17 @@ public class PackageWizard extends javax.swing.JFrame
     try
     {
       this.framework = framework;
-      //get configuration information
-      ConfigXML config = framework.getConfiguration();
-      Vector saxparserV = config.get("saxparser");
-      saxparser = (String)saxparserV.elementAt(0);
       
-      //get the config file and parse it
-      File mainFile = new File(framefile);
-      FileReader xml = new FileReader(mainFile);
-      pwp = new PackageWizardParser(xml, saxparser);
+      //File mainFile = new File(framefile);
+      //FileReader xml = new FileReader(mainFile);
+      ClassLoader cl = this.getClass().getClassLoader();
+      InputStream is = cl.getResourceAsStream(framefile);
+      if (is == null) {
+          framework.debug(10, "Null input stream returned " + 
+                              "for frame resource (1).");
+      }
+      BufferedReader xml = new BufferedReader(new InputStreamReader(is));
+      pwp = new PackageWizardParser(xml);
       doc = pwp.getDoc();
       globalDtd = pwp.getDtd();
       globalDoctype = pwp.getDoctype();
@@ -1835,8 +1836,7 @@ public class PackageWizard extends javax.swing.JFrame
     try
     {
       FileReader xml = new FileReader(new File(filename));
-      pwp = new PackageWizardParser(xml, 
-			      "org.apache.xerces.parsers.SAXParser");
+      pwp = new PackageWizardParser(xml);
       //System.out.println("Doc is: " );
       //pwp.printDoc(pwp.getDoc());
       new PackageWizard().show();

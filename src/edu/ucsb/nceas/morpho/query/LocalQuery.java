@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2002-03-12 19:19:24 $'
- * '$Revision: 1.52 $'
+ *   '$Author: jones $'
+ *     '$Date: 2002-05-10 18:44:50 $'
+ * '$Revision: 1.53 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,7 +27,7 @@
 package edu.ucsb.nceas.morpho.query;
 
 import java.io.*;
-import org.apache.xerces.parsers.DOMParser;
+import javax.xml.parsers.DocumentBuilder;
 import org.apache.xalan.xpath.xml.FormatterToXML;
 import org.apache.xalan.xpath.xml.TreeWalker;
 import org.w3c.dom.Document;
@@ -36,6 +36,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import com.arbortext.catalog.*;
+import java.net.URL;
 import java.util.Vector;
 import java.util.Hashtable;
 import java.util.Enumeration;
@@ -160,7 +161,8 @@ public class LocalQuery
     loadConfigurationParameters();
       
     datadir = datadir.trim();
-    xmlcatalogfile = local_dtd_directory.trim()+"/catalog"; 
+    xmlcatalogfile = config.getConfigDirectory() + File.separator + 
+                              local_dtd_directory.trim()+"/catalog"; 
   }
 
   /**
@@ -200,13 +202,22 @@ public class LocalQuery
     Vector package_IDs = new Vector();
     Node root;
     long starttime, curtime, fm;
-    DOMParser parser = new DOMParser();
+    ClientFramework.debug(30, "(3.0) Creating DOM parser...");
+    DocumentBuilder parser = framework.createDomParser();
+    ClientFramework.debug(30, "(3.1) DOM parser created...");
     // first set up the catalog system for handling locations of DTDs
     CatalogEntityResolver cer = new CatalogEntityResolver();
+    String catalogPath = //config.getConfigDirectory() + File.separator +
+                                                    config.get("local_catalog_path",0);     
+
     try {
       Catalog myCatalog = new Catalog();
       myCatalog.loadSystemCatalogs();
-      myCatalog.parseCatalog(xmlcatalogfile);
+      ClassLoader cl = Thread.currentThread().getContextClassLoader();
+      URL catalogURL = cl.getResource(catalogPath);
+        
+      myCatalog.parseCatalog(catalogURL.toString());
+      //myCatalog.parseCatalog(xmlcatalogfile);
       cer.setCatalog(myCatalog);
     } catch (Exception e) {
       ClientFramework.debug(6,"Problem creating Catalog!" + e.toString());
@@ -233,14 +244,14 @@ public class LocalQuery
       if (currentfile.isFile()) {
         // checks to see if doc has already been placed in DOM cache
         // if so, no need to parse again
-//        ClientFramework.debug(30,"current id: "+docid);
+        //ClientFramework.debug(10,"current id: "+docid);
         if (dom_collection.containsKey(docid)){
           root = ((Document)dom_collection.get(docid)).getDocumentElement();
           if (doctype_collection.containsKey(docid)) {
             currentDoctype = ((String)doctype_collection.get(docid));   
           }
         } else {
- //         ClientFramework.debug(30,"parsing "+docid);
+          //ClientFramework.debug(10,"parsing "+docid);
           InputSource in;
           try {
             in = new InputSource(new FileInputStream(filename));
@@ -249,8 +260,11 @@ public class LocalQuery
                                " threw: " + fnf.toString());
             continue;
           }
+          Document current_doc = null;
           try {
-            parser.parse(in);
+            ClientFramework.debug(30, "(3.2) Starting parse...");
+            current_doc = parser.parse(in);
+            ClientFramework.debug(30, "(3.3) Ended parse...");
           } catch(Exception e1) {
             // Either this isn't an XML doc, or its broken, so skip it
             ClientFramework.debug(20,"Parsing error: " + filename);
@@ -260,8 +274,7 @@ public class LocalQuery
 
           // Get the documentElement from the parser, which is what 
           // the selectNodeList method expects
-          Document current_doc = parser.getDocument();
-          root = parser.getDocument().getDocumentElement();
+          root = current_doc.getDocumentElement();
           dom_collection.put(docid,current_doc);
           String temp = getDocTypeFromDOM(current_doc);
           if (temp==null) temp = root.getNodeName();
@@ -610,8 +623,9 @@ public class LocalQuery
   {
     ConfigXML profile = framework.getProfile();
     currentProfile = config.get("current_profile", 0);
-    profileDir = config.get("profile_directory", 0) + File.separator +
-                 currentProfile;
+    profileDir = config.getConfigDirectory() + File.separator +
+                       config.get("profile_directory", 0) + File.separator +
+                       currentProfile;
     datadir = profileDir + File.separator + profile.get("datadir", 0);
     String searchLocalString = profile.get("searchlocal", 0);
     //searchLocal = (new Boolean(searchLocalString)).booleanValue();

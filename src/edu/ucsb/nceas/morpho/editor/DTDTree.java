@@ -5,9 +5,9 @@
  *    Authors: @higgins@
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2002-05-09 17:22:27 $'
- * '$Revision: 1.23 $'
+ *   '$Author: jones $'
+ *     '$Date: 2002-05-10 18:44:50 $'
+ * '$Revision: 1.24 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,11 +26,12 @@
 
 package edu.ucsb.nceas.morpho.editor;
 
-
+import edu.ucsb.nceas.morpho.framework.ClientFramework;
 import com.wutka.dtd.*;
 import java.util.*;
 import javax.swing.tree.*;
 import java.io.*;
+import java.net.URL;
 
 /**
  * class for creating a treeModel based on structure defined 
@@ -87,8 +88,11 @@ public class DTDTree
    */
 	public void parseDTD() {
 		try {
-			FileReader reader = new FileReader(DTDFileName);
-      DTDParser parser = new DTDParser(new BufferedReader(reader));
+      URL dtdUrl = new URL(DTDFileName);
+			//Reader reader = new FileReader(dtdUrl.openStream());
+      //DTDParser parser = new DTDParser(new BufferedReader(reader));
+      DTDParser parser = new DTDParser(new BufferedReader(
+                                      new InputStreamReader(dtdUrl.openStream())));
       dtd = parser.parse(true);
       elementnames = new Vector();
       Enumeration e = dtd.elements.elements();
@@ -117,7 +121,10 @@ public class DTDTree
 	    buildTree(rootTreeNode);
 	    treeModel = new DefaultTreeModel(rootTreeNode);
 	  }
-	  catch (Exception e) {}
+	  catch (Exception e) {
+      ClientFramework.debug(10, "Problem while parsing DTD: " + e.getMessage());
+      ClientFramework.debug(10, e.getClass().getName());
+    }
 	}
 
 

@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: berkley $'
- *     '$Date: 2001-10-19 16:14:48 $'
- * '$Revision: 1.8 $'
+ *   '$Author: jones $'
+ *     '$Date: 2002-05-10 18:44:50 $'
+ * '$Revision: 1.9 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,7 +31,7 @@ import edu.ucsb.nceas.morpho.framework.*;
 import java.io.*;
 import java.util.*;
 
-import org.apache.xerces.parsers.DOMParser;
+import javax.xml.parsers.DocumentBuilder;
 import org.apache.xalan.xpath.xml.FormatterToXML;
 import org.apache.xalan.xpath.xml.TreeWalker;
 import org.w3c.dom.Attr;
@@ -43,7 +43,6 @@ import org.w3c.dom.NodeList;
 import org.w3c.dom.DocumentType;
 import org.xml.sax.SAXException;
 import org.xml.sax.InputSource;
-import org.apache.xerces.dom.DocumentTypeImpl;
 
 import com.arbortext.catalog.*;
 
@@ -155,7 +154,7 @@ public class AccessionNumber
   public String incRevInTriples(File xmlfile, Vector oldid, Vector newid)
   {
     System.out.println("oldid: " + oldid.toString() + " newid: " + newid.toString());
-    DOMParser parser = new DOMParser();
+    DocumentBuilder parser = framework.createDomParser();
     Document doc;
     InputSource in;
     FileInputStream fs;
@@ -165,7 +164,8 @@ public class AccessionNumber
     try
     {
       ConfigXML config = framework.getConfiguration();
-      String catalogPath = config.get("local_catalog_path", 0);
+      String catalogPath = //config.getConfigDirectory() + File.separator +
+                                       config.get("local_catalog_path", 0);
       doc = PackageUtil.getDoc(xmlfile, catalogPath);
     }
     catch (Exception e)

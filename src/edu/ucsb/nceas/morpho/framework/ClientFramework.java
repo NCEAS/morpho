@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2002-04-02 17:54:34 $'
- * '$Revision: 1.89 $'
+ *   '$Author: jones $'
+ *     '$Date: 2002-05-10 18:44:50 $'
+ * '$Revision: 1.90 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -39,6 +39,14 @@ import java.net.URL;
 import java.lang.reflect.*;
 import java.lang.ClassCastException;
 import java.net.*;
+import org.xml.sax.ContentHandler;
+import org.xml.sax.ErrorHandler;
+import org.xml.sax.XMLReader;
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 
 import com.sun.net.ssl.internal.ssl.*;
 /**
@@ -55,7 +63,7 @@ public class ClientFramework extends javax.swing.JFrame
   public static String VERSION = "0.0.0";
 
   /** The hardcoded XML configuration file */
-  private static String configFile = "lib/config.xml";
+  private static String configFile = "config.xml";
 
   /** Constant to indicate a spearator should precede an action */
   public static String SEPARATOR_PRECEDING = "separator_preceding";
@@ -749,7 +757,8 @@ public class ClientFramework extends javax.swing.JFrame
   {
     logOut();
     String currentProfile = config.get("current_profile", 0);
-    String profileDirName = config.get("profile_directory", 0);
+    String profileDirName = config.getConfigDirectory() + File.separator + 
+                                          config.get("profile_directory", 0);
     File profileDir = new File(profileDirName);
     String profilesList[] = null;
     int selection = 0;
@@ -1296,7 +1305,8 @@ public class ClientFramework extends javax.swing.JFrame
    */
   public void setProfile(String newProfileName)
   {
-    String profileDir = config.get("profile_directory", 0);
+    String profileDir = config.getConfigDirectory() + File.separator +
+                                 config.get("profile_directory", 0);
     String currentProfile = config.get("current_profile", 0);
     if (!newProfileName.equals(currentProfile)) {
       String newProfilePath = profileDir + File.separator + newProfileName + 
@@ -1420,9 +1430,51 @@ public class ClientFramework extends javax.swing.JFrame
       // add provider for SSL support
       java.security.Security.addProvider(new com.sun.net.ssl.internal.ssl.Provider());
       
+      // Make sure the config directory exists
+      File configurationFile = null;
+      File configDir = null;
+      //try {
+        configDir = new File(ConfigXML.getConfigDirectory());
+        if (!configDir.exists()) {
+          if (!configDir.mkdir()) {
+            ClientFramework.debug(1, "Failed to create config directory");
+            System.exit(0);
+          }
+        }
+      //} catch (IOException ioe) {
+        //ClientFramework.debug(1, "Error creating config dir: " + ioe.getMessage());
+        //System.exit(0);
+      //}
+      
+      // Make sure the config file has been copied to the proper directory
+      try {
+        configurationFile = new File(configDir, configFile);
+        if (configurationFile.createNewFile() || configurationFile.length() == 0) {
+          FileOutputStream out = new FileOutputStream(configurationFile);
+          ClassLoader cl = Thread.currentThread().getContextClassLoader();
+          InputStream configInput = cl.getResourceAsStream(configFile);
+          if (configInput == null) {
+            ClientFramework.debug(1, "Could not find default configuration file.");
+            System.exit(0);
+          }
+          byte buf[] = new byte[4096];
+          int len = 0;
+          while ((len = configInput.read(buf, 0, 4096)) != -1) {
+            out.write(buf, 0, len);
+          }
+          configInput.close();
+          out.close();
+        }
+      } catch (IOException ioe) {
+        ClientFramework.debug(1, "Error copying config: " + ioe.getMessage());
+        ClientFramework.debug(1, ioe.getClass().getName());
+        ioe.printStackTrace(System.err);
+        System.exit(0);
+      }
+      
       // Open the configuration file
-      ConfigXML config = new ConfigXML(configFile);
-
+      //ConfigXML config = new ConfigXML(configFile);
+      ConfigXML config = new ConfigXML(configurationFile.getAbsolutePath());
       // Create a new instance of our application's frame
       ClientFramework clf = new ClientFramework(config);
 
@@ -1460,7 +1512,8 @@ public class ClientFramework extends javax.swing.JFrame
 
 
         // Load the current profile and log in
-        String profileDir = config.get("profile_directory", 0);
+        String profileDir = ConfigXML.getConfigDirectory() + File.separator +
+                                     config.get("profile_directory", 0);
         String currentProfile = config.get("current_profile", 0);
         //String scope = null;
         if (currentProfile == null) {
@@ -1637,4 +1690,86 @@ public class ClientFramework extends javax.swing.JFrame
     return this.versionFlag;   
  }
   
+  /**
+   * Set up a SAX parser for reading an XML document
+   *
+   * @param contentHandler object to be used for parsing the content
+   * @param errorHandler object to be used for handling errors
+   * @return a SAX XMLReader object for parsing
+   */
+  public static XMLReader createSaxParser(ContentHandler contentHandler, 
+          ErrorHandler errorHandler) 
+  {
+    XMLReader parser = null;
+
+    // Set up the SAX document handlers for parsing
+    try {
+
+      // Get an instance of the parser
+      SAXParserFactory spfactory = SAXParserFactory.newInstance();
+      SAXParser saxp = spfactory.newSAXParser();
+      parser = saxp.getXMLReader();
+
+      if (parser != null) {
+          parser.setFeature("http://xml.org/sax/features/namespaces", true);
+          ClientFramework.debug(30, "Parser created is: " +
+                  parser.getClass().getName());
+      } else {
+          ClientFramework.debug(9, "Unable to create SAX parser!");
+      }
+
+      // Set the ContentHandler to the provided object
+      if (null != contentHandler) {
+        parser.setContentHandler(contentHandler);
+      } else {
+        ClientFramework.debug(3, 
+                "No content handler for SAX parser!");
+      }
+
+      // Set the error Handler to the provided object
+      if (null != errorHandler) {
+        parser.setErrorHandler(errorHandler);
+      }
+
+    } catch (Exception e) {
+       ClientFramework.debug(1, "Failed to create SAX parser:\n" + 
+               e.toString());
+    }
+
+    return parser;
+  }
+
+  /**
+   * Set up a DOM parser for reading an XML document
+   *
+   * @return a DOM parser object for parsing
+   */
+  public static DocumentBuilder createDomParser() 
+  {
+    DocumentBuilder parser = null;
+
+    try {
+        //ClassLoader cl = Thread.currentThread().getContextClassLoader();
+        ClassLoader cl = ClientFramework.class.getClassLoader();
+        ClientFramework.debug(30, "Current ClassLoader is: " +
+                cl.getClass().getName());
+        Thread t = Thread.currentThread();
+        t.setContextClassLoader(cl);
+        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        factory.setNamespaceAware(true);
+        parser = factory.newDocumentBuilder();
+        if (parser != null) {
+            ClientFramework.debug(30, "Parser created is: " +
+                    parser.getClass().getName());
+        } else {
+            ClientFramework.debug(9, "Unable to create DOM parser!");
+        }
+    } catch (ParserConfigurationException pce) {
+            ClientFramework.debug(9, "Exception while creating DOM parser!");
+            ClientFramework.debug(10, pce.getMessage());
+    }
+
+    return parser;
+  }
+
 }

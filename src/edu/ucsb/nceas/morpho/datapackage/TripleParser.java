@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: berkley $'
- *     '$Date: 2001-09-07 20:28:08 $'
- * '$Revision: 1.4 $'
+ *   '$Author: jones $'
+ *     '$Date: 2002-05-10 18:44:50 $'
+ * '$Revision: 1.5 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,6 +27,8 @@
  */
 package edu.ucsb.nceas.morpho.datapackage;
 
+import edu.ucsb.nceas.morpho.framework.ClientFramework;
+
 import java.sql.*;
 import java.util.Stack;
 import java.util.Vector;
@@ -40,6 +42,8 @@ import java.io.IOException;
 import java.io.Reader;
 
 import org.xml.sax.Attributes;
+import org.xml.sax.ContentHandler;
+import org.xml.sax.ErrorHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 import org.xml.sax.ext.DeclHandler;
@@ -63,19 +67,20 @@ public class TripleParser extends DefaultHandler
   String tag = "";
   boolean instart = true;
   
-  public TripleParser(Reader xml, String parserName)
+  public TripleParser(Reader xml)
   {
-    doInit(xml, parserName, null);
+    doInit(xml, null);
   }
   
-  public TripleParser(Reader xml, String parserName, CatalogEntityResolver cer)
+  public TripleParser(Reader xml, CatalogEntityResolver cer)
   {
-    doInit(xml, parserName, cer);
+    doInit(xml, cer);
   }
   
-  private void doInit(Reader xml, String parserName, CatalogEntityResolver cer)
+  private void doInit(Reader xml, CatalogEntityResolver cer)
   {
-    XMLReader parser = initializeParser(parserName);
+    XMLReader parser = ClientFramework.createSaxParser((ContentHandler)this, 
+            (ErrorHandler)this);
     if (parser == null) 
     {
       System.err.println("SAX parser not instantiated properly.");
@@ -100,28 +105,6 @@ public class TripleParser extends DefaultHandler
       System.out.println("IO Exception: ");
       ioe.printStackTrace(System.out);
     }
-  }
-  
-  private XMLReader initializeParser(String parserName) 
-  {
-    XMLReader parser = null;
-    // Set up the SAX document handlers for parsing
-    try 
-    {
-      // Get an instance of the parser
-      parser = XMLReaderFactory.createXMLReader(parserName);
-      // Set the ContentHandler to this instance
-      parser.setContentHandler(this);
-      // Set the error Handler to this instance
-      parser.setErrorHandler(this);
-    } 
-    catch (Exception e) 
-    {
-       System.err.println("Error in TripleParser.initializeParser " + 
-                           e.toString());
-       e.printStackTrace();
-    }
-    return parser;
   }
   
   public void startElement(String uri, String localName, String qName, 
@@ -196,8 +179,7 @@ public class TripleParser extends DefaultHandler
       //while(xml.ready())
       //  System.out.print((char)xml.read());
 
-      TripleParser tp = new TripleParser(xml, 
-			      "org.apache.xerces.parsers.SAXParser");
+      TripleParser tp = new TripleParser(xml);
       System.out.println("Triples are:" );
       System.out.println(tp.getTriples().toString());
     }

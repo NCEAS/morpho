@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2002-04-10 23:08:29 $'
- * '$Revision: 1.27 $'
+ *   '$Author: jones $'
+ *     '$Date: 2002-05-10 18:44:50 $'
+ * '$Revision: 1.28 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -132,6 +132,7 @@ public class ResultSet extends AbstractTableModel implements ContentHandler
   public ResultSet(Query query, String source, InputStream resultsXMLStream,
                    ClientFramework cf)
   {
+    framework.debug(30, "(2.41) Creating result set ...");
     this.savedQuery = query;
     this.framework = cf;
 
@@ -182,19 +183,22 @@ public class ResultSet extends AbstractTableModel implements ContentHandler
     /*headers[cnt+4] = "Document Name";*/
     /*headers[cnt+5] = "Document Type";*/
 
+    framework.debug(30, "(2.42) Creating result set ...");
     // Parse the incoming XML stream and extract the data
-    String parserName = "org.apache.xerces.parsers.SAXParser";
     XMLReader parser = null;
 
     // Set up the SAX document handlers for parsing
     try {
       // Get an instance of the parser
-      parser = XMLReaderFactory.createXMLReader(parserName);
+      parser = framework.createSaxParser((ContentHandler)this, null);
+      framework.debug(30, "(2.43) Creating result set ...");
       // Set the ContentHandler to this instance
-      parser.setContentHandler(this);
       parser.parse(new InputSource(resultsXMLStream));
+      framework.debug(30, "(2.44) Creating result set ...");
     } catch (Exception e) {
-      framework.debug(6, e.toString());
+      framework.debug(30, "(2.431) Exception creating result set ...");
+      framework.debug(6, "(2.432) " + e.toString());
+      framework.debug(30, "(2.433) Exception is: " + e.getClass().getName());
     }
   }
 

@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: berkley $'
- *     '$Date: 2002-02-27 18:49:55 $'
- * '$Revision: 1.9 $'
+ *   '$Author: jones $'
+ *     '$Date: 2002-05-10 18:44:50 $'
+ * '$Revision: 1.10 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,7 +28,7 @@ package edu.ucsb.nceas.morpho.datapackage;
 
 import edu.ucsb.nceas.morpho.framework.*;
 
-import org.apache.xerces.parsers.DOMParser;
+import javax.xml.parsers.DocumentBuilder;
 import org.apache.xalan.xpath.xml.FormatterToXML;
 import org.apache.xalan.xpath.xml.TreeWalker;
 import org.w3c.dom.Attr;
@@ -52,6 +52,7 @@ import java.io.*;
 public class TripleCollection
 {
   private Vector triples = new Vector();
+  private ClientFramework framework = null;
   /**
    * Default Constructor
    */
@@ -65,11 +66,13 @@ public class TripleCollection
    */
    public TripleCollection(File triplesFile, ClientFramework framework)
    {
+       this.framework = framework;
      Document doc;
      try
      {
        ConfigXML config = framework.getConfiguration();
-       String catalogPath = config.get("local_catalog_path", 0);
+       String catalogPath = //config.getConfigDirectory() + File.separator +
+                                        config.get("local_catalog_path", 0);
        doc = PackageUtil.getDoc(triplesFile, catalogPath);
      }
      catch(Exception e)
@@ -140,8 +143,7 @@ public class TripleCollection
    */
   public TripleCollection(Reader xml)
   {
-    TripleParser tp = new TripleParser(xml, 
-                                       "org.apache.xerces.parsers.SAXParser");
+    TripleParser tp = new TripleParser(xml);
     this.triples = tp.getTriples().getCollection();
   }
   
@@ -150,9 +152,7 @@ public class TripleCollection
    */
   public TripleCollection(Reader xml, CatalogEntityResolver cer)
   {
-    TripleParser tp = new TripleParser(xml, 
-                                       "org.apache.xerces.parsers.SAXParser",
-                                       cer);
+    TripleParser tp = new TripleParser(xml, cer);
     this.triples = tp.getTriples().getCollection();
   }
   
@@ -302,12 +302,13 @@ public class TripleCollection
   
   public NodeList getNodeList()
   {
-    DOMParser parser = new DOMParser();
+    DocumentBuilder parser = framework.createDomParser();
     InputSource in;
     in = new InputSource(new StringReader(toXML("triples")));
+    Document doc = null;
     try
     {
-      parser.parse(in);
+      doc = parser.parse(in);
     }
     catch(Exception e1)
     {
@@ -315,7 +316,6 @@ public class TripleCollection
                          e1.toString());
       //e1.printStackTrace();
     }
-    Document doc = parser.getDocument();
     return doc.getElementsByTagName("triple");
   }
   

@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: berkley $'
- *     '$Date: 2001-12-11 00:23:35 $'
- * '$Revision: 1.6 $'
+ *   '$Author: jones $'
+ *     '$Date: 2002-05-10 18:44:50 $'
+ * '$Revision: 1.7 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,6 +27,7 @@
  */
 package edu.ucsb.nceas.morpho.datapackage.wizard;
 
+import edu.ucsb.nceas.morpho.framework.ClientFramework;
 import java.sql.*;
 import java.util.Stack;
 import java.util.Vector;
@@ -37,8 +38,11 @@ import java.util.Hashtable;
 import java.io.FileReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.Reader;
 
 import org.xml.sax.Attributes;
+import org.xml.sax.ContentHandler;
+import org.xml.sax.ErrorHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 import org.xml.sax.ext.DeclHandler;
@@ -67,13 +71,13 @@ public class PackageWizardParser extends DefaultHandler
   
   /**
    * @param xml a FileReader object that reprents a stream of XML
-   * @param parserName the fully specifified parser name to be used in 
    * processing
    */
   
-  public PackageWizardParser(FileReader xml, String parserName)
+  public PackageWizardParser(Reader xml)
   {
-    XMLReader parser = initializeParser(parserName);
+    XMLReader parser = ClientFramework.createSaxParser((ContentHandler)this, 
+            (ErrorHandler)this);
     if (parser == null) 
     {
       System.err.println("SAX parser not instantiated properly.");
@@ -94,28 +98,6 @@ public class PackageWizardParser extends DefaultHandler
       System.out.println("IO Exception: ");
       ioe.printStackTrace(System.out);
     }
-  }
-  
-  private XMLReader initializeParser(String parserName) 
-  {
-    XMLReader parser = null;
-    // Set up the SAX document handlers for parsing
-    try 
-    {
-      // Get an instance of the parser
-      parser = XMLReaderFactory.createXMLReader(parserName);
-      // Set the ContentHandler to this instance
-      parser.setContentHandler(this);
-      // Set the error Handler to this instance
-      parser.setErrorHandler(this);
-    } 
-    catch (Exception e) 
-    {
-       System.err.println("Error in PackageWizardParser.initializeParser " + 
-                           e.toString());
-       e.printStackTrace();
-    }
-    return parser;
   }
   
   /**
@@ -372,8 +354,7 @@ public class PackageWizardParser extends DefaultHandler
       //while(xml.ready())
       //  System.out.print((char)xml.read());
 
-      PackageWizardParser pwp = new PackageWizardParser(xml, 
-			      "org.apache.xerces.parsers.SAXParser");
+      PackageWizardParser pwp = new PackageWizardParser(xml);
       System.out.println("Doc is: " );
       pwp.printDoc(pwp.getDoc());
     }

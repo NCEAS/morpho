@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2002-03-26 19:29:28 $'
- * '$Revision: 1.65 $'
+ *   '$Author: jones $'
+ *     '$Date: 2002-05-10 18:44:50 $'
+ * '$Revision: 1.66 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -35,22 +35,21 @@ import javax.swing.border.*;
 import java.io.*;
 import java.util.*;
 import java.lang.*;
+import java.net.URL;
 import java.awt.*;
 import java.awt.event.*;
 
-import org.apache.xerces.parsers.DOMParser;
+import javax.xml.parsers.DocumentBuilder;
 import org.apache.xalan.xpath.xml.FormatterToXML;
 import org.apache.xalan.xpath.xml.TreeWalker;
 import org.w3c.dom.Attr;
 import org.w3c.dom.NamedNodeMap;
-import org.w3c.dom.NodeList;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.DocumentType;
 import org.xml.sax.SAXException;
 import org.xml.sax.InputSource;
-import org.apache.xerces.dom.DocumentTypeImpl;
 
 import com.arbortext.catalog.*;
 
@@ -149,8 +148,6 @@ public class PackageWizardShell extends javax.swing.JFrame
   private void initComponents()
   {
     config = framework.getConfiguration();
-    Vector saxparserV = config.get("saxparser");
-    String saxparser = (String)saxparserV.elementAt(0);
     Vector packageWizardConfigV = config.get("packageWizardConfig");
     String wizardFile = (String)packageWizardConfigV.elementAt(0);
     
@@ -159,9 +156,15 @@ public class PackageWizardShell extends javax.swing.JFrame
     
     try
     {
-      File xmlfile = new File(wizardFile);
-      FileReader xml = new FileReader(xmlfile);
-      pwsp = new PackageWizardShellParser(xml, saxparser);
+      //File xmlfile = new File(wizardFile);
+      //FileReader xml = new FileReader(xmlfile);
+      ClassLoader cl = this.getClass().getClassLoader();
+      InputStream is = cl.getResourceAsStream(wizardFile);
+      if (is == null) {
+          framework.debug(10, "Null input stream returned for resource.");
+      }
+      BufferedReader xml = new BufferedReader(new InputStreamReader(is));
+      pwsp = new PackageWizardShellParser(xml);
     }
     catch(Exception e)
     {
@@ -630,14 +633,7 @@ public class PackageWizardShell extends javax.swing.JFrame
     }
     
     // Now create an AccessControl XML document for the dataset
-/*<<<<<<< PackageWizardShell.java
-    AccessionNumber aa = new AccessionNumber(framework);
-    String newid = aa.getNextId();
-    File aclFile = getACLFile(newid);
-    aclid = newid;
-=======*/
     File aclFile = getACLFile(aclID);
-
     
     Vector fvec = new Vector();
     fvec.addElement(aclID);
@@ -800,7 +796,7 @@ public class PackageWizardShell extends javax.swing.JFrame
           return;
         }
         
-        DOMParser parser = new DOMParser();
+        DocumentBuilder parser = framework.createDomParser();
         InputSource in;
         FileInputStream fs;
         
@@ -811,7 +807,11 @@ public class PackageWizardShell extends javax.swing.JFrame
           myCatalog.loadSystemCatalogs();
           ConfigXML config = framework.getConfiguration();
           String catalogPath = config.get("local_catalog_path", 0);
-          myCatalog.parseCatalog(catalogPath);
+          ClassLoader cl = Thread.currentThread().getContextClassLoader();
+          URL catalogURL = cl.getResource(catalogPath);
+        
+          myCatalog.parseCatalog(catalogURL.toString());
+         // myCatalog.parseCatalog(catalogPath);
           cer.setCatalog(myCatalog);
         } 
         catch (Exception e) 
@@ -834,16 +834,14 @@ public class PackageWizardShell extends javax.swing.JFrame
         }
         try
         {
-          parser.parse(in);
+          doc = parser.parse(in);
           fs.close();
         }
         catch(Exception e1)
         {
-          System.err.println("File: " + f.getPath() + " : parse threw: " + 
+          System.err.println("File: " + f.getPath() + " : parse threw (8): " + 
                              e1.toString());
         }
-        //get the DOM rep of the document without triples
-        doc = parser.getDocument();
         NodeList tripleNodeList = triples.getNodeList();
         NodeList docTriplesNodeList = null;
         
@@ -854,7 +852,7 @@ public class PackageWizardShell extends javax.swing.JFrame
         }
         catch(SAXException se)
         {
-          System.err.println("file: " + f.getPath() + " : parse threw: " + 
+          System.err.println("File: " + f.getPath() + " : parse threw (9): " + 
                              se.toString());
         }
         
@@ -875,7 +873,7 @@ public class PackageWizardShell extends javax.swing.JFrame
         }
         catch(SAXException se)
         {
-          System.err.println("file: " + f.getPath() + " : parse threw: " + 
+          System.err.println("File: " + f.getPath() + " : parse threw (10): " + 
                              se.toString());
         }
         

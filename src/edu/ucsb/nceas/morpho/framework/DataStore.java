@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: berkley $'
- *     '$Date: 2001-10-22 20:31:22 $'
- * '$Revision: 1.14 $'
+ *   '$Author: jones $'
+ *     '$Date: 2002-05-10 18:44:50 $'
+ * '$Revision: 1.15 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,7 +31,6 @@ import edu.ucsb.nceas.morpho.datapackage.*;
 import java.io.*;
 import java.util.*;
 
-import org.apache.xerces.parsers.DOMParser;
 import org.apache.xalan.xpath.xml.FormatterToXML;
 import org.apache.xalan.xpath.xml.TreeWalker;
 import org.w3c.dom.Attr;
@@ -43,7 +42,6 @@ import org.w3c.dom.NodeList;
 import org.w3c.dom.DocumentType;
 import org.xml.sax.SAXException;
 import org.xml.sax.InputSource;
-import org.apache.xerces.dom.DocumentTypeImpl;
 
 import com.arbortext.catalog.*;
 
@@ -68,7 +66,8 @@ public abstract class DataStore implements DataStoreInterface
     this.framework = cf;
     config = framework.getConfiguration();
     ConfigXML profile = framework.getProfile();
-    String profileDirName = config.get("profile_directory", 0) + 
+    String profileDirName = config.getConfigDirectory() + File.separator +
+                            config.get("profile_directory", 0) + 
                             File.separator +
                             config.get("current_profile", 0);
     datadir = profileDirName + File.separator + profile.get("datadir", 0);
@@ -117,7 +116,8 @@ public abstract class DataStore implements DataStoreInterface
    */
   protected String insertIdInFile(File file, String id)
   {
-    String catalogPath = config.get("local_catalog_path", 0);
+    String catalogPath = //config.getConfigDirectory() + File.separator +
+                                     config.get("local_catalog_path", 0);
     Document doc;
     try
     {
@@ -131,7 +131,7 @@ public abstract class DataStore implements DataStoreInterface
             e.getMessage());
       return null;
     }
-    DocumentTypeImpl dt = (DocumentTypeImpl)doc.getDoctype();
+    DocumentType dt = doc.getDoctype();
     String doctype = dt.getPublicId();
     Hashtable docatts = PackageUtil.getConfigFileTypeAttributes(framework, 
                                                                 "xmlfiletype");

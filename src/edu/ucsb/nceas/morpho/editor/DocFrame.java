@@ -5,9 +5,9 @@
  *    Authors: @higgins@
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2002-04-02 17:57:14 $'
- * '$Revision: 1.95 $'
+ *   '$Author: jones $'
+ *     '$Date: 2002-05-10 18:44:50 $'
+ * '$Revision: 1.96 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -491,14 +491,16 @@ public class DocFrame extends javax.swing.JFrame
 //    if (!helpTrees.containsKey(rootname)) {
     if (true) {
       rootname = rootname+".xml";
-		  file = new File("./lib", rootname);
 		  frootNode = new DefaultMutableTreeNode("froot");
 		  DefaultTreeModel ftreeModel = new DefaultTreeModel(frootNode);
 		  String fXMLString = "";
 		  boolean formatflag = true;
 		  
       try{
-        BufferedReader in = new BufferedReader(new FileReader(file));
+        //MBJ//BufferedReader in = new BufferedReader(new FileReader(file));
+        ClassLoader cl = this.getClass().getClassLoader();
+        BufferedReader in = new BufferedReader(new InputStreamReader(
+                                         cl.getResourceAsStream(rootname)));
         StringWriter out = new StringWriter();
         int c;
         while ((c = in.read()) != -1) {
@@ -750,26 +752,33 @@ class SymAction implements java.awt.event.ActionListener {
         if (xmlText!=null) {
         CatalogEntityResolver cer = new CatalogEntityResolver();
         config = framework.getConfiguration();
-        String local_dtd_directory =config.get("local_dtd_directory",0);     
+        String local_dtd_directory = config.getConfigDirectory() + File.separator +
+                                                    config.get("local_dtd_directory",0);     
+        String catalogPath = //config.getConfigDirectory() + File.separator +
+                                                    config.get("local_catalog_path",0);     
             
         String xmlcatalogfile = local_dtd_directory+"/catalog"; 
        try {
             myCatalog = new Catalog();
             myCatalog.loadSystemCatalogs();
-            myCatalog.parseCatalog(xmlcatalogfile);
+            ClassLoader cl = Thread.currentThread().getContextClassLoader();
+            URL catalogURL = cl.getResource(catalogPath);
+        
+            myCatalog.parseCatalog(catalogURL.toString());
+            //myCatalog.parseCatalog(xmlcatalogfile);
             cer.setCatalog(myCatalog);
         }
-        catch (Exception e) {System.out.println("Problem creating Catalog!");}
+        catch (Exception e) {
+          ClientFramework.debug(10, "Problem creating Catalog (772)!\n" +
+                  e.getMessage());
+        }
         try {
             StringReader sr = new StringReader(xmlText);
-            String parserName = "org.apache.xerces.parsers.SAXParser";
             XMLReader parser = null;
             // Get an instance of the parser
-            parser = XMLReaderFactory.createXMLReader(parserName);
             XMLDisplayHandler mh = new XMLDisplayHandler(tm);
-            parser.setContentHandler(mh);
+            parser = ClientFramework.createSaxParser((ContentHandler)mh,  null);
             parser.setProperty("http://xml.org/sax/properties/lexical-handler",mh);
-      
 	        parser.setEntityResolver(cer);
 	        InputSource is = new InputSource(sr);
 
@@ -786,15 +795,16 @@ class SymAction implements java.awt.event.ActionListener {
                 doctype = ((NodeInfo)rt.getUserObject()).toString();
             }
             rootnodeName = mh.getDocname();
-            System.out.println("doctype = " + doctype);
+            if (rootnodeName == null) {
+              rootnodeName = ((DefaultMutableTreeNode)tm.getRoot()).toString();
+            }
             String temp = myCatalog.resolvePublic(doctype,null);
             if (temp!=null) {
                 if (temp.startsWith("file:")) {
                      temp = temp.substring(5,temp.length());
                 }
-            System.out.println("cat out: "+temp);
-            dtdfile = temp;
-            systemIDString = temp;
+                dtdfile = temp;
+                systemIDString = temp;
             }
         } 
         catch (Exception e) { 
@@ -954,7 +964,7 @@ class SymTreeSelection implements javax.swing.event.TreeSelectionListener
 	
     public DefaultMutableTreeNode deepNodeCopy(DefaultMutableTreeNode node) {
       if (node==null) {
-        System.out.println("Attempt to clone a null node!");
+        ClientFramework.debug(20, "Attempt to clone a null node!");
         return null;
       }      
         DefaultMutableTreeNode newnode = null; 
@@ -970,14 +980,14 @@ class SymTreeSelection implements javax.swing.event.TreeSelectionListener
             newnode = (DefaultMutableTreeNode)os.readObject();
         }
         catch (Exception e) {
-            System.out.println("Exception in creating copy of node!");
+            ClientFramework.debug(20, "Exception in creating copy of node!");
         }
         return newnode;
     }
     
     public void deepNodeCopyFile(DefaultMutableTreeNode node) {
       if (node==null) {
-        System.out.println("Attempt to clone a null node!");
+        ClientFramework.debug(20, "Attempt to clone a null node!");
       }      
         DefaultMutableTreeNode newnode = null; 
         try{
@@ -989,7 +999,7 @@ class SymTreeSelection implements javax.swing.event.TreeSelectionListener
         
         }
         catch (Exception e) {
-            System.out.println("Exception in creating copy of node!");
+            ClientFramework.debug(20, "Exception in creating copy of node!");
         }
     }
 
@@ -1506,7 +1516,7 @@ void expandTreeToLevel(JTree jt, int level) {
         DefaultMutableTreeNode qw = null;
         // first check to see if root nodes have same names
         if (!compareNodes(input, template)) {
-        System.out.println( "Root nodes do not match!!!");
+          ClientFramework.debug(20, "Root nodes do not match!!!");
         }
         else {
             // root nodes match
@@ -1763,7 +1773,7 @@ private Vector sameParent(Vector list) {
         DefaultMutableTreeNode parNode;
         // first check to see if root nodes have same names
         if (!compareNodes(input, template)) {
-            System.out.println( "Root nodes do not match!!!");
+            ClientFramework.debug(20, "Root nodes do not match!!!");
         }
         else {
             // root nodes match, so start comparing children

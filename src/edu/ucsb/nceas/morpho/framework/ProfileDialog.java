@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2002-04-16 02:01:55 $'
- * '$Revision: 1.18 $'
+ *   '$Author: jones $'
+ *     '$Date: 2002-05-10 18:44:50 $'
+ * '$Revision: 1.19 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -504,7 +504,8 @@ public class ProfileDialog extends JDialog
   {
     if (validateFieldContents()) {
       // Create a profile directory
-      String profileDirName = config.get("profile_directory", 0);
+      String profileDirName = config.getConfigDirectory() + File.separator + 
+                                            config.get("profile_directory", 0);
       File profileDirFile = new File(profileDirName);
       if (!profileDirFile.exists()) {
         if (!profileDirFile.mkdir()) {
@@ -559,7 +560,18 @@ public class ProfileDialog extends JDialog
         try {
           // Copy default profile to the new directory
           String defaultProfile = config.get("default_profile", 0);
-          FileUtils.copy(defaultProfile, profileFileName);
+          //FileUtils.copy(defaultProfile, profileFileName);
+          ClassLoader cl = this.getClass().getClassLoader();
+          InputStreamReader in = new InputStreamReader(
+                                      cl.getResourceAsStream(defaultProfile));
+          FileWriter out = new FileWriter(new File(profileFileName));
+          int len;
+          char[] buffer =  new char[512];
+          while ((len = in.read(buffer)) != -1) {
+            out.write(buffer, 0, len);
+          }
+          in.close();
+          out.close();
 
           // Store the collected information in the profile
           ConfigXML profile = new ConfigXML(profileFileName);
@@ -616,6 +628,9 @@ public class ProfileDialog extends JDialog
           String samplePath = config.get("samples_directory", 0);
           File sampleDir = new File(samplePath);
 //DFH          File[] samplesList = sampleDir.listFiles();
+          /* 
+          // MBJ commented out because samples are now in the -config.jar file
+          // Need to reimplement from the jar file
           File[] samplesList = listFiles(sampleDir);
           for (int n=0; n < samplesList.length; n++) {
             File srcFile = samplesList[n];
@@ -629,6 +644,7 @@ public class ProfileDialog extends JDialog
               FileUtils.copy(srcFile.getAbsolutePath(), destName, tokens);
             }
           }
+          */
            
           // Create a metacat user
  

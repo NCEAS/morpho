@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2001-10-29 23:31:35 $'
- * '$Revision: 1.16 $'
+ *   '$Author: jones $'
+ *     '$Date: 2002-05-10 18:44:50 $'
+ * '$Revision: 1.17 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -49,6 +49,8 @@ import javax.swing.JTable;
 import javax.swing.table.TableModel;
 
 import org.xml.sax.Attributes;
+import org.xml.sax.ContentHandler;
+import org.xml.sax.ErrorHandler;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
@@ -118,7 +120,9 @@ public class Query extends DefaultHandler {
     queryStack   = new Stack();
 
     // Initialize the parser and read the queryspec
-    XMLReader parser = initializeParser();
+    XMLReader parser = ClientFramework.createSaxParser((ContentHandler)this, 
+            (ErrorHandler)this);
+
     if (parser == null) {
       framework.debug(1, "SAX parser not instantiated properly.");
     }
@@ -346,31 +350,6 @@ public class Query extends DefaultHandler {
   }
 
   /**
-   * Set up the SAX parser for reading the XML serialized query
-   */
-  private XMLReader initializeParser() {
-    XMLReader parser = null;
-
-    // Set up the SAX document handlers for parsing
-    try {
-
-      // Get an instance of the parser
-      parser = XMLReaderFactory.createXMLReader(parserName);
-
-      // Set the ContentHandler to this instance
-      parser.setContentHandler(this);
-
-      // Set the error Handler to this instance
-      parser.setErrorHandler(this);
-
-    } catch (Exception e) {
-       framework.debug(1, "Error in Query.initializeParser " + e.toString());
-    }
-
-    return parser;
-  }
-
-  /**
    * callback method used by the SAX Parser when the start tag of an 
    * element is detected. Used in this context to parse and store
    * the query information in class variables.
@@ -392,6 +371,7 @@ public class Query extends DefaultHandler {
       QueryGroup currentGroup = new QueryGroup(
                                 currentNode.getAttribute("operator"));
       if (rootQG == null) {
+        ClientFramework.debug(30, "Created root query group.");
         rootQG = currentGroup;
       } else {
         QueryGroup parentGroup = (QueryGroup)queryStack.peek();
@@ -760,6 +740,7 @@ public class Query extends DefaultHandler {
   /** Send the query to metacat, get back the XML resultset */
   private InputStream queryMetacat()
   {
+    framework.debug(30, "(2.1) Executing metacat query...");
     InputStream queryResult = null;
 
     Properties prop = new Properties();
@@ -776,6 +757,8 @@ public class Query extends DefaultHandler {
       framework.debug(1, w.getMessage());
     }
 
+    framework.debug(30, "(2.3) Metacat output is:\n" + queryResult);
+    framework.debug(30, "(2.4) Done Executing metacat query...");
     return queryResult;
   }
 
@@ -793,16 +776,20 @@ public class Query extends DefaultHandler {
 
     // TODO: Run these queries in parallel threads
 
+    framework.debug(30, "(1) Executing result set...");
     // if appropriate, query metacat
     ResultSet metacatResults = null;
     if (searchMetacat) {
+      framework.debug(30, "(2) Executing metacat query...");
       metacatResults = new HeadResultSet(this, "metacat", 
                                      queryMetacat(), framework);
     }
 
+    framework.debug(30, "(2.5) Executing result set...");
     // if appropriate, query locally
     ResultSet localResults = null;
     if (searchLocal) {
+      framework.debug(30, "(3) Executing local query...");
       LocalQuery lq = new LocalQuery(this, framework);
       localResults = lq.execute();
     }
@@ -827,7 +814,8 @@ public class Query extends DefaultHandler {
   public void save() throws IOException
   {
     ConfigXML profile = framework.getProfile();
-    String queriesDirName = config.get("profile_directory", 0) +
+    String queriesDirName = config.getConfigDirectory() + File.separator +
+                            config.get("profile_directory", 0) +
                             File.separator +
                             config.get("current_profile", 0) +
                             File.separator +

@@ -6,18 +6,18 @@
   <plugin>edu.ucsb.nceas.morpho.editor.EditorPlugin</plugin>
   <plugin>edu.ucsb.nceas.morpho.framework.ToolPlugin</plugin>
   <metacat_url>http://metacat.nceas.ucsb.edu/knb/servlet/metacat</metacat_url>
-  <profile_directory>./profiles</profile_directory>
-  <samples_directory>./lib/sampledata</samples_directory>
-  <default_profile>./lib/default-profile.xml</default_profile>
-  <local_dtd_directory>./lib/catalog</local_dtd_directory>
-  <local_catalog_path>./lib/catalog/catalog</local_catalog_path>
+  <profile_directory>profiles</profile_directory>
+  <samples_directory>sampledata</samples_directory>
+  <default_profile>default-profile.xml</default_profile>
+  <local_dtd_directory>catalog</local_dtd_directory>
+  <local_catalog_path>catalog/catalog</local_catalog_path>
   <debug_level>9</debug_level>
   <log_file>true</log_file>
   <triplesTag>//triple</triplesTag>
   <saxparser>org.apache.xerces.parsers.SAXParser</saxparser>
-  <packageWizardConfig>./lib/frames/packagewizard.xml</packageWizardConfig>
-  <tempDir>./tmp</tempDir>
-  <genericStylesheet>lib/style/generic.xsl</genericStylesheet>
+  <packageWizardConfig>frames/packagewizard.xml</packageWizardConfig>
+  <tempDir>tmp</tempDir>
+  <genericStylesheet>style/generic.xsl</genericStylesheet>
   <accessFileType>
     -//ecoinformatics.org//eml-access-2.0.0beta6//EN
   </accessFileType>
@@ -62,9 +62,9 @@
     <mainFrame>Resource</mainFrame>
     <frame>
       <frameName>Resource</frameName>
-      <frameConfigFile>./lib/frames/resource.xml</frameConfigFile>
+      <frameConfigFile>frames/resource.xml</frameConfigFile>
       <frameName>Entity</frameName>
-      <frameConfigFile>./lib/frames/entity.xml</frameConfigFile>
+      <frameConfigFile>frames/entity.xml</frameConfigFile>
     </frame>
   </customFrames>
   <newxmlfiletypes>

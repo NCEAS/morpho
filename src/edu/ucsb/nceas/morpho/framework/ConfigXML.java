@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: berkley $'
- *     '$Date: 2001-06-28 20:38:51 $'
- * '$Revision: 1.11 $'
+ *   '$Author: jones $'
+ *     '$Date: 2002-05-10 18:44:50 $'
+ * '$Revision: 1.12 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,7 +26,7 @@
 
 package edu.ucsb.nceas.morpho.framework;
 
-import org.apache.xerces.parsers.DOMParser;
+import javax.xml.parsers.DocumentBuilder;
 import org.apache.xalan.xpath.xml.FormatterToXML;
 import org.apache.xalan.xpath.xml.TreeWalker;
 import org.w3c.dom.Attr;
@@ -79,7 +79,8 @@ public class ConfigXML
    */
   private PrintWriter out;
 
-
+  private static final String configDirectory = ".morpho";
+  
   /**
    * String passed to the creator is the XML config file name
    * 
@@ -89,7 +90,7 @@ public class ConfigXML
   {
     this.fileName = filename;
 
-    DOMParser parser = new DOMParser();
+    DocumentBuilder parser = ClientFramework.createDomParser();
     File XMLConfigFile = new File(filename);
     InputSource in;
     FileInputStream fs;
@@ -98,17 +99,39 @@ public class ConfigXML
 
     try
     {
-      parser.parse(in);
+      doc = parser.parse(in);
       fs.close();
     } catch(Exception e1) {
       ClientFramework.debug(4, "Parsing " + filename + " threw: " + 
                             e1.toString());
       e1.printStackTrace();
     }
-    doc = parser.getDocument();
     root = doc.getDocumentElement();
   }
 
+   /**
+   * String passed to the creator is the XML config file name
+   * 
+   * @param input stream containing the XML configuration data
+   */
+  public ConfigXML(InputStream configStream) throws FileNotFoundException
+  {
+    DocumentBuilder parser = ClientFramework.createDomParser();
+    InputSource in;
+    in = new InputSource(configStream);
+
+    try
+    {
+      doc = parser.parse(in);
+      configStream.close();
+    } catch(Exception e1) {
+      ClientFramework.debug(4, "Parsing config file threw: " + 
+                            e1.toString());
+      e1.printStackTrace();
+    }
+    root = doc.getDocumentElement();
+  }
+  
   /**
    * Gets the value(s) corresponding to a key string (i.e. the 
    * value(s) for a named parameter.
@@ -646,5 +669,14 @@ public class ConfigXML
       System.err.println(se.toString());
       return null;
     }
+  }
+  
+  /**
+   * Determine the home directory in which configuration files should be located
+   * 
+   * @returns String name of the path to the configuration directory
+   */
+  public static String getConfigDirectory() {
+    return System.getProperty("user.home") + File.separator + configDirectory;
   }
 }

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<jnlp spec="1.0+" 
+      codebase="http://knb.ecoinformatics.org/software/dist/morpho" 
+      href="morpho.jnlp"> 
+        <information> 
+          <title>Morpho</title> 
+          <vendor>Knowledge Network for Biocomplexity</vendor> 
+          <homepage href="http://knb.ecoinformatics.org/software/morpho"/> 
+          <description>Morpho can be used to manage ecological data and metadata</description> 
+          <icon href="morpho.gif"/> 
+          <offline-allowed/> 
+        </information>
+        <security>
+          <all-permissions/>
+        </security>
+        <resources> 
+          <j2se version="1.4"/> 
+          <j2se version="1.3"/> 
+          <jar href="morpho.jar"/> 
+          <jar href="morpho-config.jar"/> 
+          <jar href="xercesImpl.jar"/> 
+          <jar href="xmlParserAPIs.jar"/> 
+          <jar href="xalan.jar"/> 
+          <jar href="jlfgr-1_0.jar"/> 
+          <jar href="httpclient.jar"/> 
+          <jar href="itislib.jar"/> 
+          <jar href="jcert.jar"/>
+          <jar href="jnet.jar"/>
+          <jar href="jsse.jar"/>
+          <jar href="dtdparser111.jar"/>
+        </resources>
+        <application-desc main-class="edu.ucsb.nceas.morpho.framework.ClientFramework"/>
+</jnlp>
