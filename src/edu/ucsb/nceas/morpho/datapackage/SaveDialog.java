@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-11-25 23:20:14 $'
- * '$Revision: 1.2 $'
+ *     '$Date: 2003-11-26 21:51:41 $'
+ * '$Revision: 1.3 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -255,7 +255,7 @@ public class SaveDialog extends JDialog
       AccessionNumber an = new AccessionNumber(morpho);
       String newid = an.incRev(id);
     Log.debug(1, "New ID: "+newid); 
-    adp.setAccessionNumber(newid);
+      adp.setAccessionNumber(newid);
       if((loc.equals(AbstractDataPackage.LOCAL))||(loc.equals(AbstractDataPackage.BOTH))) {
         //save locally
     Log.debug(1, "inside save local"); 
@@ -271,14 +271,23 @@ public class SaveDialog extends JDialog
     else { 
     Log.debug(1, "inside else"); 
       // a new package, so get a new id
+      AccessionNumber an = new AccessionNumber(morpho);
+      String nextid = an.getNextId();
+    Log.debug(1, "New ID: "+nextid); 
+      adp.setAccessionNumber(nextid);
+
       if ((localLoc.isSelected())&&(networkLoc.isSelected())) {
-          
+    Log.debug(1, "inside save both"); 
+        adp.serialize(AbstractDataPackage.LOCAL);
+        adp.serialize(AbstractDataPackage.METACAT);
       }
       else if (localLoc.isSelected()) {
-
+    Log.debug(1, "inside save local"); 
+        adp.serialize(AbstractDataPackage.LOCAL);
       }
       else if (networkLoc.isSelected()) {
-        
+    Log.debug(1, "inside save metacat"); 
+        adp.serialize(AbstractDataPackage.METACAT);
       }
       else {
         Log.debug(1, "No location for saving is selected!");
