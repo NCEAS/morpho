@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-02-03 18:20:16 $'
- * '$Revision: 1.84 $'
+ *     '$Date: 2002-02-08 21:01:14 $'
+ * '$Revision: 1.85 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -169,48 +169,47 @@ public class DocFrame extends javax.swing.JFrame
 		// what Visual Cafe can generate, or Visual Cafe may be unable to back
 		// parse your Java file into its visual environment.
 		//{{INIT_CONTROLS
-	//	setTitle("Morpho - Editor");
 		setDefaultCloseOperation(javax.swing.JFrame.DO_NOTHING_ON_CLOSE);
 		getContentPane().setLayout(new BorderLayout(0,0));
 		setSize(643,452);
 		setVisible(false);
 		OutputScrollPanelContainer.setLayout(new BorderLayout(0,0));
+		getContentPane().add(OutputScrollPanelContainer);
 		OutputScrollPanelContainer.add(BorderLayout.CENTER, OutputScrollPanel);
 		TreeControlPanel.setLayout(new FlowLayout(FlowLayout.LEFT,1,1));
 		OutputScrollPanelContainer.add(BorderLayout.SOUTH, TreeControlPanel);
-		TreeControlPanel.add(TrimTreeButton);
 		TrimTreeButton.setText("Trim");
-		TrimTreeButton.setToolTipText("Remove all optional nodes that contain no text.");
 		TrimTreeButton.setActionCommand("Trim");
-		TreeControlPanel.add(UntrimTreeButton);
-		UntrimTreeButton.setEnabled(false);
+		TrimTreeButton.setToolTipText("Remove all optional nodes that contain no text.");
+		TreeControlPanel.add(TrimTreeButton);
 		UntrimTreeButton.setText("Undo");
-		UntrimTreeButton.setToolTipText("Restore optional nodes without text.");
 		UntrimTreeButton.setActionCommand("Undo");
-		TreeControlPanel.add(ExpandTreeButton);
+		UntrimTreeButton.setToolTipText("Restore optional nodes without text.");
+		UntrimTreeButton.setEnabled(false);
+		TreeControlPanel.add(UntrimTreeButton);
 		ExpandTreeButton.setText("+");
-		ExpandTreeButton.setToolTipText("Expand Tree levels displayed");
 		ExpandTreeButton.setActionCommand("+");
-		TreeControlPanel.add(ContractTreeButton);
+		ExpandTreeButton.setToolTipText("Expand Tree levels displayed");
+		TreeControlPanel.add(ExpandTreeButton);
 		ContractTreeButton.setText("-");
-		ContractTreeButton.setToolTipText("Contract Tree levels displayed");
 		ContractTreeButton.setActionCommand("-");
-		getContentPane().add(OutputScrollPanelContainer);
+		ContractTreeButton.setToolTipText("Contract Tree levels displayed");
+		TreeControlPanel.add(ContractTreeButton);
 		getContentPane().add(BorderLayout.CENTER, NestedPanelScrollPanel);
 		TopPanel.setLayout(new BorderLayout(0,0));
-		getContentPane().add(BorderLayout.NORTH,TopPanel);
+		getContentPane().add(BorderLayout.NORTH, TopPanel);
 		TopPanel.setBackground(new java.awt.Color(204,204,204));
 		TopLabelPanel.setLayout(new FlowLayout(FlowLayout.CENTER,5,5));
-		TopPanel.add(BorderLayout.CENTER,TopLabelPanel);
+		TopPanel.add(BorderLayout.CENTER, TopLabelPanel);
 		TopLabelPanel.setBackground(new java.awt.Color(204,204,204));
 		headLabel.setText("Morpho Editor");
 		TopLabelPanel.add(headLabel);
-		TopPanel.add(BorderLayout.WEST,logoLabel);
+		TopPanel.add(BorderLayout.WEST, logoLabel);
 		ControlPanel.setLayout(new BorderLayout(0,0));
 		getContentPane().add(BorderLayout.SOUTH, ControlPanel);
 		ControlPanel.setBackground(new java.awt.Color(204,204,204));
 		ButtonPanel.setLayout(new FlowLayout(FlowLayout.CENTER,5,5));
-		ControlPanel.add(BorderLayout.EAST,ButtonPanel);
+		ControlPanel.add(BorderLayout.EAST, ButtonPanel);
 		CancelButton.setText("Cancel");
 		CancelButton.setActionCommand("Cancel");
 		ButtonPanel.add(CancelButton);
@@ -218,7 +217,7 @@ public class DocFrame extends javax.swing.JFrame
 		EditingExit.setActionCommand("jbutton");
 		ButtonPanel.add(EditingExit);
 		NotesPanel.setLayout(new GridLayout(2,2,6,0));
-		ControlPanel.add(BorderLayout.WEST,NotesPanel);
+		ControlPanel.add(BorderLayout.WEST, NotesPanel);
 		JLabel1.setText("required; repeatable (ONE to MANY)");
 		NotesPanel.add(JLabel1);
 		JLabel1.setBackground(java.awt.Color.black);
@@ -1250,6 +1249,10 @@ boolean hasNonEmptyTextLeaves(DefaultMutableTreeNode node) {
     DefaultMutableTreeNode curNode = (DefaultMutableTreeNode)enum.nextElement();
     if (curNode.isLeaf()) {
       NodeInfo ni = (NodeInfo)curNode.getUserObject();
+      String card = ni.getCardinality();
+      if ((card.equals("ONE"))||(card.equals("ONE to MANY"))) {
+        return true; 
+      }
       if (ni.name.equals("#PCDATA")) {         // is a text node
         String pcdata = ni.getPCValue();
         if (pcdata.trim().length()>0) {        // has text data
