@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2002-12-11 06:22:21 $'
- * '$Revision: 1.1 $'
+ *     '$Date: 2002-12-12 00:39:00 $'
+ * '$Revision: 1.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,14 +31,17 @@ import java.awt.Component;
 import java.awt.BorderLayout;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowAdapter;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.swing.Box;
 import javax.swing.JPanel;
 import javax.swing.JLabel;
-//import javax.swing.ImageIcon;
+import javax.swing.JComboBox;
 
 import edu.ucsb.nceas.morpho.Morpho;
 
+import edu.ucsb.nceas.morpho.framework.MorphoFrame;
 import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
 import edu.ucsb.nceas.morpho.framework.QueryRefreshInterface;
 
@@ -61,11 +64,9 @@ import edu.ucsb.nceas.morpho.plugins.ServiceNotHandledException;
  *  for package)
  */
 public class InitialScreen extends JPanel 
-//                                         implements MouseListener,
-//                                                    ChangeListener, 
+//                                         implements ChangeListener, 
 //                                                    StateChangeListener, 
 //                                                    StoreStateChangeEvent,
-//                                                    EditingCompleteListener
 {
 
     private final Morpho morpho;
@@ -92,29 +93,37 @@ public class InitialScreen extends JPanel
         
         Box leftPanelContainer = Box.createVerticalBox();
         
-        LeftPanel profilePanel = new LeftPanel(wrapTitleHTML("Current Profile: "),
-                                    UISettings.INIT_SCRN_PROFILE_PANEL_HEIGHT);
-        LeftPanel loginPanel  = new LeftPanel(wrapTitleHTML("Network Status:"), 
-                                    UISettings.INIT_SCRN_LOGIN_PANEL_HEIGHT);
-        LeftPanel dataPanel   = new LeftPanel(wrapTitleHTML("Work With Your Data..."), 
-                                    UISettings.INIT_SCRN_DATA_PANEL_HEIGHT);
-
+        LeftPanel profilePanel = new LeftPanel(
+                            UISettings.INIT_SCRN_PANELS_PROFILE_TITLE_TEXT_OPEN
+                           +UISettings.INIT_SCR_PANEL_TITLE_HILITE_FONT_OPEN
+                           +morpho.getCurrentProfileName()
+                           +UISettings.INIT_SCR_PANEL_TITLE_HILITE_FONT_CLOSE
+                           +UISettings.INIT_SCRN_PANELS_TITLE_CLOSE,
+                            UISettings.INIT_SCRN_PROFILE_PANEL_HEIGHT);
+        LeftPanel loginPanel   = new LeftPanel(
+                            UISettings.INIT_SCRN_PANELS_LOGIN_TITLE_TEXT_OPEN
+                            +UISettings.INIT_SCRN_PANELS_TITLE_CLOSE,
+                            UISettings.INIT_SCRN_LOGIN_PANEL_HEIGHT);
+        LeftPanel dataPanel    = new LeftPanel( 
+                            UISettings.INIT_SCRN_PANELS_DATA_TITLE_TEXT_OPEN
+                            +UISettings.INIT_SCRN_PANELS_TITLE_CLOSE,
+                            UISettings.INIT_SCRN_DATA_PANEL_HEIGHT);
         leftPanelContainer.add(
             Box.createVerticalStrut(UISettings.INIT_SCRN_LEFT_PANELS_PADDING));
         leftPanelContainer.add(profilePanel);
-        leftPanelContainer.add(
-            Box.createVerticalStrut(UISettings.INIT_SCRN_LEFT_PANELS_PADDING));
+        leftPanelContainer.add(Box.createVerticalStrut(
+                                    UISettings.INIT_SCRN_LEFT_PANELS_PADDING));
         leftPanelContainer.add(loginPanel);
-        leftPanelContainer.add(
-            Box.createVerticalStrut(UISettings.INIT_SCRN_LEFT_PANELS_PADDING));
+        leftPanelContainer.add(Box.createVerticalStrut(
+                                    UISettings.INIT_SCRN_LEFT_PANELS_PADDING));
         leftPanelContainer.add(dataPanel);
         leftPanelContainer.add(Box.createVerticalGlue());
         
-        leftPanelLayoutBox.add(
-            Box.createHorizontalStrut(UISettings.INIT_SCRN_LEFT_PANELS_PADDING));
+        leftPanelLayoutBox.add(Box.createHorizontalStrut(
+                                    UISettings.INIT_SCRN_LEFT_PANELS_PADDING));
         leftPanelLayoutBox.add(leftPanelContainer);
-        leftPanelLayoutBox.add(
-            Box.createHorizontalStrut(UISettings.INIT_SCRN_LEFT_PANELS_PADDING));
+        leftPanelLayoutBox.add(Box.createHorizontalStrut(
+                                    UISettings.INIT_SCRN_LEFT_PANELS_PADDING));
             
         this.add(leftPanelLayoutBox, BorderLayout.WEST);
         
@@ -123,13 +132,92 @@ public class InitialScreen extends JPanel
         populateDataPanel(dataPanel);
     }
     
-    private void populateProfilePanel(LeftPanel panel) 
+    private void populateProfilePanel(final LeftPanel panel) 
     {
+        // ROW 1 ///////////////////////////////////////////////////////////////
+        
+        final JLabel currentProfileLDAPLabel = new JLabel();
+        updateLDAPLabel(currentProfileLDAPLabel);
+        panel.addToRow1(currentProfileLDAPLabel);
+        panel.addToRow1(Box.createHorizontalGlue());
+        
+        // ROW 2 ///////////////////////////////////////////////////////////////
+        
+        //LABEL:
+        JLabel changeProfileLabel = new JLabel(
+                                    UISettings.CHANGE_PROFILE_LABEL_TEXT);
+        changeProfileLabel.setPreferredSize(
+                                    UISettings.INIT_SCRN_LEFT_PANELS_LABELDIMS);
+        changeProfileLabel.setMinimumSize(
+                                    UISettings.INIT_SCRN_LEFT_PANELS_LABELDIMS);
+        changeProfileLabel.setMaximumSize(
+                                    UISettings.INIT_SCRN_LEFT_PANELS_LABELDIMS);
+        panel.addToRow2(changeProfileLabel);
+        
+        //PICKLIST:
+        String[] profileStrings =  morpho.getProfilesList();
+        
+        final JComboBox profilePicker = new JComboBox(profileStrings);
+        
+        for (int sel = 0; sel < profileStrings.length; sel++) {
+            if (morpho.getCurrentProfileName().equals(profileStrings[sel])) {
+                profilePicker.setSelectedIndex(sel);
+                break;
+            }
+        }
+
+        panel.addToRow2(profilePicker);
+        profilePicker.setPreferredSize(
+                                UISettings.INIT_SCRN_LEFT_PANELS_PICKLISTDIMS);
+                                
+        
+        profilePicker.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                morpho.setProfileDontLogin(
+                                    (String)profilePicker.getSelectedItem());
+                panel.setTitle(
+                         UISettings.INIT_SCRN_PANELS_PROFILE_TITLE_TEXT_OPEN
+                        +UISettings.INIT_SCR_PANEL_TITLE_HILITE_FONT_OPEN
+                        +morpho.getCurrentProfileName()
+                        +UISettings.INIT_SCR_PANEL_TITLE_HILITE_FONT_CLOSE
+                        +UISettings.INIT_SCRN_PANELS_TITLE_CLOSE);
+                        updateLDAPLabel(currentProfileLDAPLabel);
+            }
+        });
+
+        panel.addToRow2(Box.createHorizontalGlue());
+
+        // ROW 3 ///////////////////////////////////////////////////////////////
+        Command newProfileCmd = new Morpho.CreateNewProfileCommand();
+        
+        GUIAction newProfileAction 
+                    = new GUIAction(UISettings.NEW_PROFILE_LINK_TEXT,
+                                    UISettings.NEW_PROFILE_ICON, newProfileCmd);
+        newProfileAction.setRolloverSmallIcon(
+                                    UISettings.NEW_PROFILE_ICON_ROLLOVER);
+        panel.addToRow3( new HyperlinkButton(newProfileAction));
+        panel.addToRow3(Box.createHorizontalGlue());
     }
     
     private void populateLoginPanel(LeftPanel panel) 
     {
+        // ROW 1 ///////////////////////////////////////////////////////////////
+
+
+        // ROW 2 ///////////////////////////////////////////////////////////////
+
+
+        // ROW 3 ///////////////////////////////////////////////////////////////
     }
+    
+    private void updateLDAPLabel(JLabel label) 
+    {
+        label.setText(  UISettings.INIT_SCR_PANEL_LITE_FONT_OPEN
+                        +morpho.getUserName()
+                        +UISettings.INIT_SCR_PANEL_LITE_FONT_CLOSE);
+    }
+    
+    
     
     private void populateDataPanel(LeftPanel panel) 
     {
@@ -180,6 +268,7 @@ public class InitialScreen extends JPanel
                 +"while getting SEARCH_COMMAND: " + cnfe.getMessage());
         }
         
+        // ROW 1 ///////////////////////////////////////////////////////////////
         GUIAction newAction 
                     = new GUIAction(UISettings.NEW_DATAPACKAGE_LINK_TEXT,
                                     UISettings.NEW_DATAPACKAGE_ICON, newPkgCmd);
@@ -188,6 +277,7 @@ public class InitialScreen extends JPanel
         panel.addToRow1(new HyperlinkButton(newAction));
         panel.addToRow1(Box.createHorizontalGlue());
 
+        // ROW 2 ///////////////////////////////////////////////////////////////
         GUIAction openAction 
                     = new GUIAction(UISettings.OPEN_DATAPACKAGE_LINK_TEXT,
                                     UISettings.OPEN_DATAPACKAGE_ICON,openPkgCmd);
@@ -196,6 +286,7 @@ public class InitialScreen extends JPanel
         panel.addToRow2(new HyperlinkButton(openAction));
         panel.addToRow2(Box.createHorizontalGlue());
 
+        // ROW 3 ///////////////////////////////////////////////////////////////
         GUIAction searchAction 
                     = new GUIAction(UISettings.SEARCH_LINK_TEXT,
                                     UISettings.SEARCH_ICON, searchCmd);
@@ -206,22 +297,22 @@ public class InitialScreen extends JPanel
     }
 
 
-    //convenience method to add HTML tags to the passed text    
-    // <html>**UISettings.INIT_SCRN_LEFT_PANELS_TITLE_FONT_HTML** 
-    // (e.g. <font color="#ffffff" size="2">)
-    // **textToWrap**
-    // </font></html>    
-    StringBuffer buff = new StringBuffer();
-    //
-    private String wrapTitleHTML(String textToWrap) {
-
-       buff.delete(0,buff.length());
-       buff.append("<html><p align=\"left\">");
-       buff.append(UISettings.INIT_SCRN_LEFT_PANELS_TITLE_FONT_HTML);
-       buff.append(textToWrap);
-       buff.append("</font></p></html>");
-       return buff.toString();
-    }
+//    //convenience method to add HTML tags to the passed text    
+//    // <html>**UISettings.INIT_SCRN_LEFT_PANELS_TITLE_FONT_HTML** 
+//    // (e.g. <font color="#ffffff" size="2">)
+//    // **textToWrap**
+//    // </font></html>    
+//    StringBuffer buff = new StringBuffer();
+//    //
+//    private String wrapTitleHTML(String textToWrap) {
+//
+//       buff.delete(0,buff.length());
+//       buff.append("<html><p align=\"left\">");
+//       buff.append(UISettings.INIT_SCRN_LEFT_PANELS_TITLE_FONT_HTML);
+//       buff.append(textToWrap);
+//       buff.append("</font></p></html>");
+//       return buff.toString();
+//    }
 
     
     private void addRightPicture() 
