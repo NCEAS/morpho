@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-03-04 15:27:24 $'
- * '$Revision: 1.31 $'
+ *     '$Date: 2002-03-19 17:56:04 $'
+ * '$Revision: 1.32 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -126,11 +126,14 @@ public class MetacatDataStore extends DataStore implements DataStoreInterface
         bwriter.flush();
         bwriter.close();
         
+        // just look for error in first 1000 bytes - DFH
+        int cnt = 0;
         reader = new FileReader(localfile);
         BufferedReader breader = new BufferedReader(reader);
         c = breader.read();
-        while(c != -1)
+        while((c != -1)&&(cnt<1000))
         {
+          cnt++;  
           response.append((char)c);
           c = breader.read();
         }
