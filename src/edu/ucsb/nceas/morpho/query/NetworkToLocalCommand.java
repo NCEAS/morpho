@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2002-08-31 00:29:50 $'
- * '$Revision: 1.4 $'
+ *     '$Date: 2002-09-05 18:32:40 $'
+ * '$Revision: 1.5 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -50,19 +50,32 @@ public class NetworkToLocalCommand implements Command
    
   /** A reference to the MorphoFrame */
    private MorphoFrame morphoFrame = null;
-   
-  /** A refernce to the ResultPanel */
-   private ResultPanel resultPane = null;
+ 
+  /** selected docid to synchronize */
+  String selectDocId = null;
   
+  /** flag to indicate selected data package has local copy */
+  private boolean inLocal = false;
+  
+  /** flag to indicate selected data package has local copy */
+  private boolean inNetwork = false;
     
   /**
    * Constructor of NetworkToLocalCommand in dialog
-   * @param dialog a upload command will be happened at this dialog 
+   * @param dialog a synchronize dialog need to be destroied
+   * @param myFrame the parent frame of synchronize dialog
+   * @param selectId the id of data package need to be synchronized
+   * @param myInLocal if the datapackage has a local copy
+   * @param myInNetwork if the datapackage has a network copy
    */
-  public NetworkToLocalCommand(JDialog box)
+  public NetworkToLocalCommand(JDialog box, MorphoFrame myFrame, 
+                      String selectId, boolean myInLocal, boolean myInNetwork)
   {
     dialog = box;
-   
+    morphoFrame = myFrame;
+    selectDocId = selectId;
+    inLocal = myInLocal;
+    inNetwork = myInNetwork;   
   }//LocalToNetworkCommand
   
  
@@ -71,22 +84,9 @@ public class NetworkToLocalCommand implements Command
    */    
   public void execute()
   {
-   
-    // If the command would not applyto a dialog, moreFrame will be set to be
-    // current active morphoFrame
-    morphoFrame = UIController.getInstance().getCurrentActiveWindow();
-    resultPane = RefreshCommand.getResultPanelFromMorphoFrame(morphoFrame);
-   
-    // make sure the resultPane is not null
-    if ( resultPane != null)
+       // Make sure selected a id, and there no package in metacat
+    if (selectDocId != null && !selectDocId.equals("") && !inLocal && inNetwork)
     {
-      String selectDocId = resultPane.getSelectedId();
-      boolean inNetwork = resultPane.getMetacatLocation();
-      boolean inLocal = resultPane.getLocalLocation();
-      
-      // Make sure selected a id, and there no package in metacat
-      if ( selectDocId != null && !selectDocId.equals("") && !inLocal)
-      {
         if (dialog != null)
         {
           dialog.setVisible(false);
@@ -94,9 +94,8 @@ public class NetworkToLocalCommand implements Command
           dialog = null;
         }
         doDownload(selectDocId, morphoFrame);
-      }
-    }//if
-    
+    }
+  
   }//execute
 
   /**
@@ -107,12 +106,16 @@ public class NetworkToLocalCommand implements Command
  {
   final SwingWorker worker = new SwingWorker() 
   {
+        // A variable to indicate it reach refresh command or not
+        // This is for butterfly flapping, if reach refresh, butterfly will
+        // stop flapping by refresh        
+        boolean refreshFlag = false;        
         public Object construct() 
         {
           frame.setBusy(true);
           DataPackageInterface dataPackage;
           // Create a refresh command 
-          RefreshCommand refresh = new RefreshCommand(null);
+          RefreshCommand refresh = new RefreshCommand(frame);
           try 
           {
             ServiceController services = ServiceController.getInstance();
@@ -128,6 +131,7 @@ public class NetworkToLocalCommand implements Command
           //download the current selection to the local disk
           Log.debug(20, "Downloading package.");
           dataPackage.download(docid);
+          refreshFlag = true;
           refresh.execute();
           
           return null;  
@@ -137,8 +141,11 @@ public class NetworkToLocalCommand implements Command
         //Runs on the event-dispatching thread.
         public void finished() 
         {
-          // Stop butterfly
-          frame.setBusy(false);
+          // refresh will Stop butterfly, so here we don't need.
+          if (!refreshFlag)
+          {
+            frame.setBusy(false);
+          }
         }
     };//final
     worker.start();  //required for SwingWorker 3
