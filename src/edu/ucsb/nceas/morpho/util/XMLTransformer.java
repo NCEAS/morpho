@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2003-10-10 22:34:16 $'
- * '$Revision: 1.26 $'
+ *     '$Date: 2003-10-14 21:22:24 $'
+ * '$Revision: 1.27 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,6 +28,8 @@ package edu.ucsb.nceas.morpho.util;
 
 import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.framework.ConfigXML;
+
+import edu.ucsb.nceas.utilities.XMLUtilities;
 
 import edu.ucsb.nceas.morpho.plugins.XSLTResolverInterface;
 import edu.ucsb.nceas.morpho.plugins.ServiceProvider;
@@ -68,6 +70,7 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.transform.stream.StreamResult;
 
+import org.w3c.dom.Element;
 import org.w3c.dom.Document;
 
 import org.xml.sax.InputSource;
@@ -159,6 +162,29 @@ public class XMLTransformer
     public static final String HREF_PATH_EXTENSION_XSLPROP 
                                                 = "href_path_extension";
   
+  
+    /**
+     *  used by the transform() method to get the schemaLocation (if one has 
+     *  been defined) from the Document root node
+     */
+    public static final String NAMESPACE_FOR_SCHEMA_LOCATION 
+                                = "http://www.w3.org/2001/XMLSchema-instance";
+    
+    /**
+     *  used by the transform() method to get the schemaLocation (if one has 
+     *  been defined) from the Document root node
+     */
+    public static final String ATTRIB_NAME_FOR_SCHEMA_LOCATION 
+                                = "schemaLocation";   
+    
+    /**
+     *  used by the transform() method to get the schemaLocation (if one has 
+     *  been defined) from the Document root node
+     */
+    public static final String ID_TO_GET_GENERIC_STYLESHEET 
+                                = "unidentified";   
+  
+  
 
 //  * * * * * * * C L A S S    V A R I A B L E S * * * * * * *
 
@@ -173,7 +199,6 @@ public class XMLTransformer
     private static XSLTResolverInterface  resolver;
 
     private Properties              transformerProperties;
-    private EntityResolver          entityResolver;
     private ConfigXML               config;
 
     private XMLTransformer() 
@@ -191,7 +216,6 @@ public class XMLTransformer
         t.setContextClassLoader(classLoader);        
         
         transformerProperties = new Properties();
-        initEntityResolver();
     }
 
     /**
@@ -286,16 +310,53 @@ public class XMLTransformer
      *                      the (character-based) results of styling the XML 
      *                      document
      *
-     *  @throws IOException if there are problems reading the Reader
+     *  @throws IOException if there are problems transforming the Document
      */
     public Reader transform(Document domDoc) throws IOException
     {
         Log.debug(50,"XMLTransformer.transform(Reader xmlDocReader) called");            
         validateInputParam(domDoc,        "XML DOM Document");
         
-        return transform( domDoc, 
-                        getStyleSheetReader(domDoc.getDoctype().getPublicId()));
+        Element rootNode = domDoc.getDocumentElement();
+        Log.debug(50,"domDoc is: "+XMLUtilities.getDOMTreeAsString(rootNode));
+
+        String identifier = null;
+        
+        //first try to get public DOCTYPE:
+        if (domDoc.getDoctype()!=null) {
+          identifier = domDoc.getDoctype().getPublicId();
+          Log.debug(50,"getPublicId() gives: "+identifier);
+        }        
+        //if this is null, then try to get schemaLocation:
+        if (identifier==null || identifier.trim().equals("")) {
+          identifier = rootNode.getAttributeNS(NAMESPACE_FOR_SCHEMA_LOCATION, 
+                                               ATTRIB_NAME_FOR_SCHEMA_LOCATION);
+          // since schema location string may contain multiple substrings 
+          // separated by spaces, we take only the first of these substrings:
+          identifier = identifier.trim().substring(0, identifier.indexOf(" "));
+          Log.debug(50,"getAttributeNS schemaLocation is: "+identifier);
+        }
+        
+        //if this is null, then try to get namespace of root node:
+        if (identifier==null || identifier.trim().equals("")) {
+        
+          identifier = rootNode.getNamespaceURI();
+          Log.debug(50,"rootNode.getNamespaceURI() gives: "+identifier);
+        }
+                                
+        //finally, if this is null, use generic stylesheet:
+        if (identifier==null || identifier.trim().equals("")) {
+        
+          identifier = ID_TO_GET_GENERIC_STYLESHEET;
+          Log.debug(50,"no identifier - requesting generic stylesheet");
+        }
+                                    
+        
+        return transform( domDoc, getStyleSheetReader(identifier));
     }
+    
+    
+    
     /**
      *  Uses the stylesheet provided, to apply XSLT to the XML DOM Document 
      *  provided
@@ -400,32 +461,12 @@ public class XMLTransformer
             throw exception;
         }
     }
-    
-
-    //initialize entity resolver class variable 
-    private void initEntityResolver() 
-    {
-        CatalogEntityResolver catalogEntResolver = new CatalogEntityResolver();
-        try {
-            Catalog catalog = new InnerCatalog();
-            catalog.loadSystemCatalogs();
-            String catalogPath = config.get(CONFIG_KEY_LOCAL_CATALOG_PATH, 0);
-            ClassLoader cl = Thread.currentThread().getContextClassLoader();
-            URL catalogURL = cl.getResource(catalogPath);
-
-            catalog.parseCatalog(catalogURL.toString());
-            catalogEntResolver.setCatalog(catalog);
-        } catch (Exception e) {
-            Log.debug(9,"XMLTransformer: error creating Catalog "+e.toString());
-        }
-        this.entityResolver = (EntityResolver)catalogEntResolver;
-    }
 
     
     //returns a new DOMSource based on the passed DOM Document
     private DOMSource getAsDOMSource(Document domDoc)
     {
-        return new DOMSource(domDoc, domDoc.getDoctype().getSystemId());
+        return new DOMSource(domDoc); //, domDoc.getDoctype().getSystemId());
     }
     
 
@@ -442,39 +483,14 @@ public class XMLTransformer
 
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         factory.setNamespaceAware(true);
-        factory.setValidating(true);
+        factory.setValidating(false);
         
         DocumentBuilder docBuilder = factory.newDocumentBuilder();
-        docBuilder.setEntityResolver(getEntityResolver());
         docBuilder.setErrorHandler(new CustomErrorHandler());
         
         return docBuilder.parse(source);
     }
 
-    
-    /**
-     *  Sets the <code>EntityResolver</code> for the XML parser that will be 
-     *  used by this transformer.  This is used to resolve PUBLIC and SYSTEM 
-     *  DOCIDs
-     *
-     *  @param resolver     the <code>EntityResolver</code> to be used
-     */
-    public void setEntityResolver(EntityResolver resolver) 
-    {
-        this.entityResolver = resolver;
-    }
-
-    /**
-     *  Gets the <code>EntityResolver</code> from the XML parser that will be 
-     *  used by this transformer.  This is used to resolve PUBLIC and SYSTEM 
-     *  DOCIDs
-     *
-     *  @return             the <code>EntityResolver</code> to be used
-     */
-    public EntityResolver getEntityResolver() 
-    {
-        return this.entityResolver;
-    }
     
     /**
      *  adds a name/value pair to the <code>Properties</code> object containing  
@@ -593,8 +609,8 @@ public class XMLTransformer
         throw ioe;
     }
 
-    //returns a new Reader to access the generic default stylesheet
-    private Reader getStyleSheetReader(String docType) throws IOException
+    //returns a new Reader to access the stylesheet
+    private Reader getStyleSheetReader(String identifier) throws IOException
     {
         try {
             getXSLTResolverService();
@@ -606,7 +622,7 @@ public class XMLTransformer
         }
         Reader xsltReader = null;
         try {
-            xsltReader = resolver.getXSLTStylesheetReader(docType);
+            xsltReader = resolver.getXSLTStylesheetReader(identifier);
         } catch (DocumentNotFoundException d) {
             String msg 
                 = "XMLTransformer.getStyleSheetReader(): "
