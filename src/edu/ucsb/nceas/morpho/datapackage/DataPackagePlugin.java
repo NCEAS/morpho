@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-08-21 22:23:02 $'
- * '$Revision: 1.20 $'
+ *     '$Date: 2002-08-22 22:30:43 $'
+ * '$Revision: 1.21 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -173,37 +173,22 @@ public class DataPackagePlugin
     final DataPackageGUI gui = new DataPackageGUI(morpho, dp);
     
 
-    MorphoFrame resultWindow = UIController.getInstance().addWindow(
+    MorphoFrame packageWindow = UIController.getInstance().addWindow(
                 "Data Package");
+    packageWindow.setVisible(true);
     
     DataViewContainerPanel dvcp = new DataViewContainerPanel(dp, gui);
     dvcp.setFramework(morpho);
 
-//    dvcp.setTopPanel(packagePanel);
     dvcp.setEntityItems(gui.entityitems);
     dvcp.setListValueHash(gui.listValueHash);
     dvcp.init();
 
-    dvcp.setVisible(true);
-    resultWindow.setMainContentPane(dvcp);
-    resultWindow.setVisible(true);
-/*
-    gui.addWindowListener(new WindowAdapter()
-    {
-      public void windowClosed(WindowEvent e)
-      {
-        //MBJ framework.removeWindow(gui);
-      }
-      
-      public void windowClosing(WindowEvent e)
-      {
-        //MBJ framework.removeWindow(gui);
-      }
-    });
-    gui.setName("Package Editor: " + dp.getID());
-    //MBJ framework.addWindow(gui);
-    gui.show();
-  */  
+    dvcp.setSize(packageWindow.getDefaultContentAreaSize());
+    dvcp.setPreferredSize(packageWindow.getDefaultContentAreaSize());
+//    dvcp.setVisible(true);
+    packageWindow.setMainContentPane(dvcp);
+
   }
   
   /**

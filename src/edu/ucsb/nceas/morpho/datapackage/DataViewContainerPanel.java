@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-08-22 01:37:50 $'
- * '$Revision: 1.3 $'
+ *     '$Date: 2002-08-22 22:30:43 $'
+ * '$Revision: 1.4 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -76,6 +76,7 @@ public class DataViewContainerPanel extends javax.swing.JPanel implements javax.
   JSplitPane entityPanel;
   JPanel entityMetadataPanel;
   JPanel currentDataPanel;
+  JSplitPane vertSplit;
   
   Vector entityItems;
   JFrame dpv;
@@ -107,10 +108,10 @@ public class DataViewContainerPanel extends javax.swing.JPanel implements javax.
     tabbedEntitiesPanel = new JTabbedPane(SwingConstants.BOTTOM);
    tabbedEntitiesPanel.addChangeListener(this);
     
-    JSplitPane vertSplit = new JSplitPane(JSplitPane.VERTICAL_SPLIT,packageMetadataPanel,tabbedEntitiesPanel);
+    vertSplit = new JSplitPane(JSplitPane.VERTICAL_SPLIT,packageMetadataPanel,tabbedEntitiesPanel);
     vertSplit.setOneTouchExpandable(true);
     this.add(BorderLayout.CENTER,vertSplit);
-    vertSplit.setDividerLocation(34);
+    vertSplit.setDividerLocation(42);
     this.setVisible(true);
  
   }
@@ -121,17 +122,22 @@ public class DataViewContainerPanel extends javax.swing.JPanel implements javax.
     this.dp = dp;
     JPanel packagePanel = new JPanel();
     packagePanel.setLayout(new BorderLayout(0,0));
-    JLabel refLabel = new JLabel("<html>XXX"+dpgui.referenceLabel+"</html>");
+    JLabel refLabel = new JLabel("<html>"+dpgui.referenceLabel+"</html>");
+    JPanel refPanel = new JPanel();
+    refPanel.setBorder(BorderFactory.createLineBorder(Color.black));
+    refPanel.setLayout(new FlowLayout(FlowLayout.LEFT,5,5));
+    refPanel.add(refLabel);
     refLabel.setFont(new Font("Dialog", Font.PLAIN, 12));
     packagePanel.add(BorderLayout.CENTER,dpgui.basicInfoPanel);
     packagePanel.add(BorderLayout.EAST,dpgui.listPanel);
-    packagePanel.add(BorderLayout.NORTH,refLabel);
+    packagePanel.add(BorderLayout.NORTH,refPanel);
     this.framework = dpgui.morpho;
     this.toppanel = packagePanel;
     this.entityItems = dpgui.entityitems;
     
     this.listValueHash = dpgui.listValueHash;
     this.setVisible(true);
+
   }
  
   
