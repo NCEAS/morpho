@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-06-14 00:10:44 $'
- * '$Revision: 1.12 $'
+ *     '$Date: 2001-06-15 23:13:09 $'
+ * '$Revision: 1.13 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -101,6 +101,9 @@ public class XMLPanels extends Component
      */
     void init(){
         topPanel = new JPanel();
+//        topPanel.setPreferredSize(new Dimension(400,30));
+//        topPanel.setMinimumSize(new Dimension(400,300));
+        topPanel.setMaximumSize(new Dimension(300,30));
         NodeInfo info = (NodeInfo)(doc.getUserObject());
         topPanel.setBorder(BorderFactory.createCompoundBorder(
             BorderFactory.createTitledBorder(info.name),
@@ -181,8 +184,8 @@ public class XMLPanels extends Component
         JPanel jp2 = new JPanel();
         jp2.setLayout(new BoxLayout(jp2,BoxLayout.Y_AXIS));
         jp2.setAlignmentX(Component.LEFT_ALIGNMENT);
-        jp1.setMaximumSize(new Dimension(600,30));
-        jp2.setMaximumSize(new Dimension(600,30));
+        jp1.setMaximumSize(new Dimension(300,25));
+        jp2.setMaximumSize(new Dimension(300,25));
         jp.add(jp1);
         jp.add(jp2);
 		NodeInfo info = (NodeInfo)(node.getUserObject());
@@ -219,8 +222,8 @@ public class XMLPanels extends Component
          }
             if (txt.length()>0) {
             JTextField jtf1 = new JTextField();
-            jtf1.setMaximumSize(new Dimension(600,30));
-            jtf1.setPreferredSize(new Dimension(600,30));
+            jtf1.setMaximumSize(new Dimension(300,19));
+            jtf1.setPreferredSize(new Dimension(300,19));
             jp2.add(jtf1);
             nodeMap.put(jtf1,nd);  // for use in saving changes to text
             jtf1.addFocusListener(new dfhFocus());

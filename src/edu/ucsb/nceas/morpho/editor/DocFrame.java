@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-06-14 23:14:02 $'
- * '$Revision: 1.33 $'
+ *     '$Date: 2001-06-15 23:13:09 $'
+ * '$Revision: 1.34 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -129,34 +129,28 @@ public class DocFrame extends javax.swing.JFrame
 		setTitle("Morpho - Editor");
 		setDefaultCloseOperation(javax.swing.JFrame.DO_NOTHING_ON_CLOSE);
 		getContentPane().setLayout(new BorderLayout(0,0));
-		setSize(600,305);
+		setSize(630,452);
 		setVisible(false);
 		getContentPane().add(OutputScrollPanel);
 		getContentPane().add(BorderLayout.CENTER, NestedPanelScrollPanel);
 		TopPanel.setLayout(new BorderLayout(0,0));
 		getContentPane().add(BorderLayout.NORTH,TopPanel);
-		TopPanel.setBackground(java.awt.Color.white);
+		TopPanel.setBackground(new java.awt.Color(204,204,204));
 		TopLabelPanel.setLayout(new FlowLayout(FlowLayout.CENTER,5,5));
 		TopPanel.add(BorderLayout.CENTER,TopLabelPanel);
-		TopLabelPanel.setBackground(java.awt.Color.white);
+		TopLabelPanel.setBackground(new java.awt.Color(204,204,204));
 		headLabel.setText("Morpho Editor");
 		TopLabelPanel.add(headLabel);
 		TopPanel.add(BorderLayout.WEST,logoLabel);
 		ControlPanel.setLayout(new FlowLayout(FlowLayout.RIGHT,5,5));
 		getContentPane().add(BorderLayout.SOUTH, ControlPanel);
 		ControlPanel.setBackground(new java.awt.Color(204,204,204));
-		SaveXML.setText("Save XML...");
-		SaveXML.setActionCommand("Save XML...");
-		ControlPanel.add(SaveXML);
 		CancelButton.setText("Cancel");
 		CancelButton.setActionCommand("Cancel");
 		ControlPanel.add(CancelButton);
 		EditingExit.setText("Save Changes");
 		EditingExit.setActionCommand("jbutton");
 		ControlPanel.add(EditingExit);
-		saveFileDialog.setMode(FileDialog.SAVE);
-		saveFileDialog.setTitle("Save");
-		//$$ saveFileDialog.move(24,312);
 		//}}
     ImageIcon head = new ImageIcon(
                          getClass().getResource("smallheader-bg.gif"));
@@ -177,7 +171,7 @@ public class DocFrame extends javax.swing.JFrame
 		       , OutputScrollPanel, NestedPanelScrollPanel);
 		     
 		DocControlPanel.setOneTouchExpandable(true);
-        DocControlPanel.setDividerLocation(250); 
+        DocControlPanel.setDividerLocation(200); 
         getContentPane().add(BorderLayout.CENTER, DocControlPanel);
 
 		//{{INIT_MENUS
@@ -204,7 +198,6 @@ public class DocFrame extends javax.swing.JFrame
 	  
 		//{{REGISTER_LISTENERS
 		SymAction lSymAction = new SymAction();
-		SaveXML.addActionListener(lSymAction);
 		SymWindow aSymWindow = new SymWindow();
 		this.addWindowListener(aSymWindow);
 		EditingExit.addActionListener(lSymAction);
@@ -436,10 +429,8 @@ public class DocFrame extends javax.swing.JFrame
 	javax.swing.JLabel headLabel = new javax.swing.JLabel();
 	javax.swing.JLabel logoLabel = new javax.swing.JLabel();
 	javax.swing.JPanel ControlPanel = new javax.swing.JPanel();
-	javax.swing.JButton SaveXML = new javax.swing.JButton();
 	javax.swing.JButton CancelButton = new javax.swing.JButton();
 	javax.swing.JButton EditingExit = new javax.swing.JButton();
-	java.awt.FileDialog saveFileDialog = new java.awt.FileDialog(this);
 	//}}
 
 	//{{DECLARE_MENUS
@@ -465,9 +456,7 @@ class SymAction implements java.awt.event.ActionListener {
 			else if (object == PastemenuItem)
 				Paste_actionPerformed(event);
 			
-			if (object == SaveXML)
-				SaveXML_actionPerformed(event);
-			else if (object == EditingExit)
+			if (object == EditingExit)
 				EditingExit_actionPerformed(event);
 			else if (object == CancelButton)
 				CancelButton_actionPerformed(event);
@@ -1006,7 +995,8 @@ class SymTreeSelection implements javax.swing.event.TreeSelectionListener
                         DefaultMutableTreeNode ind = (DefaultMutableTreeNode)en2.nextElement();
                         newnode = deepNodeCopy(tNode);
                         trimSpecialAttributes(newnode);
-                        ind.insert(newnode,index);
+                        int index1 = findDuplicateIndex(nextLevelInputNodes,index);
+                        ind.insert(newnode,index1);
                     }
             
                     if (((NodeInfo)tNode.getUserObject()).getName().equals("(CHOICE)")) {
@@ -1050,6 +1040,25 @@ class SymTreeSelection implements javax.swing.event.TreeSelectionListener
         }  // end levels loop
   } //end else
 }
+
+/** input tree can have duplicate node, while DTDParser tree only has single copy
+ *  of each node. Need to determine index in tree with duplicates that corresponds
+ *  to index in tree without duplicates
+ *  vec is a vector with duplicates
+ */
+ private int findDuplicateIndex(Vector vec, int indx) {
+    int dupcount = 0;
+    int uniquecount = 0;
+    if (indx==0) return 0;
+    DefaultMutableTreeNode oldnd = (DefaultMutableTreeNode)vec.elementAt(0);
+    while ((uniquecount<indx)&&(dupcount<(vec.size()-1))) {
+      dupcount++;
+      DefaultMutableTreeNode nd = (DefaultMutableTreeNode)vec.elementAt(dupcount);
+      if (!simpleCompareNodes(oldnd, nd)) { uniquecount++; }
+      oldnd = nd;
+    }
+    return dupcount;
+ }
 
     /** treeTrim is designed to remove any nodes in the input that do not match the 
      * the nodes in the template tree; i.e. the goal is to remove undesirable nodes
@@ -1193,18 +1202,6 @@ class SymTreeSelection implements javax.swing.event.TreeSelectionListener
         }
     }
 	
-
-	void SaveXML_actionPerformed(java.awt.event.ActionEvent event)
-	{
-	    saveFileDialog.setVisible(true);
-	    String file = saveFileDialog.getFile();
-	    if (file!=null) {
-		    file = saveFileDialog.getDirectory()+file;
-	        rootNode = (DefaultMutableTreeNode)treeModel.getRoot();
-		    writeXML(rootNode,file);
-		}
-	}
-	
     /** Normalizes the given string. */
     private String normalize(String s) {
         StringBuffer str = new StringBuffer();
@@ -1270,28 +1267,33 @@ class SymWindow extends java.awt.event.WindowAdapter {
 
 	void EditingExit_actionPerformed(java.awt.event.ActionEvent event)
 	{
-		this.hide();
+		this.setVisible(false);    // hide the Frame
 		rootNode = (DefaultMutableTreeNode)treeModel.getRoot();
-	    String xmlout = writeXMLString(rootNode);
+	  String xmlout = writeXMLString(rootNode);
 		controller.fireEditingCompleteEvent(this, xmlout);
+		if (framework!=null) {
+		  framework.removeWindow(this);  
+		}
+		this.dispose();            // free the system resources
 	}
 
 	void DocFrame_windowClosing(java.awt.event.WindowEvent event)
 	{
     // Show a confirmation dialog
-        int reply = JOptionPane.showConfirmDialog(this,
+ /*       int reply = JOptionPane.showConfirmDialog(this,
 						"Do you really want to exit without saving changes?",
 						"Editor - Exit",
 						JOptionPane.YES_NO_OPTION,
 						JOptionPane.QUESTION_MESSAGE);
       // If the confirmation was affirmative, handle exiting.
         if (reply == JOptionPane.YES_OPTION) {
-			  if (framework!=null) {
+*/
+        if (framework!=null) {
 			    framework.removeWindow(this);  
 			  }
 		    	this.setVisible(false);    // hide the Frame
-	//	    	this.dispose();            // free the system resources
-	  }
+		    	this.dispose();            // free the system resources
+//	  }
 	}
 	
 

@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-06-14 22:09:43 $'
- * '$Revision: 1.2 $'
+ *     '$Date: 2001-06-15 23:13:09 $'
+ * '$Revision: 1.3 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -47,8 +47,8 @@ public class LockedPanel extends JPanel
         JPanel jp2 = new JPanel();
         jp2.setLayout(new BoxLayout(jp2,BoxLayout.Y_AXIS));
         jp2.setAlignmentX(Component.LEFT_ALIGNMENT);
-        jp1.setMaximumSize(new Dimension(600,30));
-        jp2.setMaximumSize(new Dimension(600,30));
+        jp1.setMaximumSize(new Dimension(350,25));
+        jp2.setMaximumSize(new Dimension(350,25));
         jp.add(jp1);
         jp.add(jp2);
 		NodeInfo info = (NodeInfo)(nd.getUserObject());
@@ -78,8 +78,8 @@ public class LockedPanel extends JPanel
             if (txt.length()>0) {
                 JTextField jtf1 = new JTextField();
                 jtf1.setEditable(false);
-                jtf1.setMaximumSize(new Dimension(600,30));
-                jtf1.setPreferredSize(new Dimension(600,30));
+                jtf1.setMaximumSize(new Dimension(350,19));
+                jtf1.setPreferredSize(new Dimension(350,19));
                 jp2.add(jtf1);
                 if (txt.equals("text")) { txt = " "; }
                 jtf1.setText(txt);

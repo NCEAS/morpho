@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: jones $'
- *     '$Date: 2001-06-13 03:11:23 $'
- * '$Revision: 1.4 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2001-06-15 23:13:09 $'
+ * '$Revision: 1.5 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -107,7 +107,7 @@ public class EditorPlugin implements PluginInterface, ServiceProvider, EditorInt
     menuActions = new Action[1];
     Action openItemAction = new AbstractAction("Open Editor") {
       public void actionPerformed(ActionEvent e) {
-        edit_plugin editframe = new edit_plugin(framework,"Editor");
+        EditorController editframe = new EditorController(framework,"Editor Controller");
         editframe.setVisible(true);
         framework.addWindow(editframe);
       }
