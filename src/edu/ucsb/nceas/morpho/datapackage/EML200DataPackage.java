@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2004-04-07 06:07:08 $'
- * '$Revision: 1.38 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2004-04-13 21:09:28 $'
+ * '$Revision: 1.39 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -113,7 +113,7 @@ public  class EML200DataPackage extends AbstractDataPackage
             }
           }// not currently on metacat
         } catch (MetacatUploadException mue) {
-            Log.debug(5,"MetacatUpload Exeption in EML200DataPackage!\n"
+            Log.debug(20,"MetacatUpload Exception in EML200DataPackage!\n"
                        +mue.getMessage());
             throw mue;
         } catch(Exception e) {
