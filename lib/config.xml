@@ -57,6 +57,7 @@
       <relatedto>-//NCEAS//eml-entity-2.0//EN</relatedto>
       <displaypath>//variable_name</displaypath>
       <editexisting>yes</editexisting>
+      <visible>no</visible>
     </file>
     <file>
       <name>Access</name>
@@ -64,7 +65,7 @@
       <xmlfiletype>-//NCEAS//eml-access-2.0//EN</xmlfiletype>
       <rootnode>acl</rootnode>
       <tooltip>Access control information for this data package.</tooltip>
-      <displaypath>//principal</displaypath>
+      <displaypath>FIXED:Access Permisions</displaypath>
       <editexisting>yes</editexisting>
     </file>
     <file>
@@ -73,14 +74,9 @@
       <xmlfiletype>-//NCEAS//eml-software-2.0//EN</xmlfiletype>
       <rootnode>software</rootnode>
       <tooltip>Description of any software created or used in the creation of this data package.</tooltip>
-      <displaypath>//title</displaypath>
+      <displaypath>FIXED: Software Description</displaypath>
       <editexisting>no</editexisting>
     </file>
-    <file>
-      <name>DATAFILE</name>
-      <label>DATAFILE</label>
-      <relatedto>-//NCEAS//eml-entity-2.0//EN</relatedto>
-    </file>
   </newxmlfiletypes>
-  <current_profile></current_profile>
+  <current_profile></current_profile> 
 </config>

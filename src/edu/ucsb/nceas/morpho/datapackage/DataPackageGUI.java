@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-07-05 22:50:37 $'
- * '$Revision: 1.42 $'
+ *     '$Date: 2001-07-06 23:07:26 $'
+ * '$Revision: 1.43 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -70,6 +70,7 @@ public class DataPackageGUI extends javax.swing.JFrame
   private String id = null;
   private JButton editBaseInfoButton = new JButton();
   private Hashtable listValueHash = new Hashtable();
+  private Hashtable fileAttributes = new Hashtable();
   
   public DataPackageGUI(ClientFramework framework, DataPackage dp)
   {
@@ -99,6 +100,10 @@ public class DataPackageGUI extends javax.swing.JFrame
    */
   private void initComponents()
   {
+    //get the xml file attributes from the config file
+    fileAttributes = PackageUtil.getConfigFileTypeAttributes(framework, 
+                                                             "xmlfiletype");
+    
     contentPane.setLayout(new FlowLayout());
     Vector orig = new Vector();
     String title = "No Title Provided";
@@ -211,8 +216,38 @@ public class DataPackageGUI extends javax.swing.JFrame
         for(int i=0; i<v.size(); i++)
         {
           String eleid = (String)v.elementAt(i);
-          String s = key + " (" + eleid + ")";
-          otheritems.addElement(s);
+          Hashtable h = (Hashtable)fileAttributes.get(key);
+          String displayName = (String)h.get("displaypath");
+          if(displayName.indexOf("FIXED:") != -1)
+          {
+            displayName = displayName.substring(displayName.indexOf(":") + 1, 
+                                                displayName.length());
+            String s = displayName.trim() + " (" + eleid + ")";
+            otheritems.addElement(s);
+          }
+          else
+          { //read the file to get the display text from the file
+            File f;
+            try
+            {
+              f = PackageUtil.openFile(eleid, framework);
+            }
+            catch(Exception e)
+            {
+              ClientFramework.debug(0, "File from package not found: " + 
+                                    e.getMessage());
+              e.printStackTrace();
+              return;
+            }
+            NodeList nl = PackageUtil.getPathContent(f, displayName, framework);
+            for(int j=0; j<nl.getLength(); j++)
+            {
+              Node n = nl.item(j);
+              String nodeContent = n.getFirstChild().getNodeValue();
+              String s = nodeContent + " (" + eleid + ")";
+              otheritems.addElement(s);
+            }
+          }
         }
       }
     }

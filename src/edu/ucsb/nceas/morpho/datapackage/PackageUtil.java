@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-07-05 18:04:32 $'
- * '$Revision: 1.6 $'
+ *     '$Date: 2001-07-06 23:07:27 $'
+ * '$Revision: 1.7 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -747,5 +747,70 @@ public class PackageUtil
     String docString = PackageUtil.printDoctype(doc);
     docString += PackageUtil.print(doc.getDocumentElement());
     return docString;
+  }
+  
+  /**
+   * gets the file types from the config file and hashes them by a specified
+   * attribute
+   * @param framework the client framework that is currently active
+   * @param hashby a key from the attributes to hash the table by.  note
+   * that this must be one of the required fields or else the hashtable 
+   * will try to hash values to null
+   */
+  public static Hashtable getConfigFileTypeAttributes(ClientFramework framework,
+                                                      String hashby)
+  {
+    Hashtable returnhash = new Hashtable();
+    NodeList filetypes = 
+          framework.getConfiguration().getPathContent("//newxmlfiletypes/file");
+    for(int i=0; i<filetypes.getLength(); i++)
+    {
+      Node n = filetypes.item(i);
+      NodeList children = n.getChildNodes();
+      Hashtable h = new Hashtable();
+      for(int j=0; j<children.getLength(); j++)
+      {
+        Node n2 = children.item(j);
+        String nodename = n2.getNodeName();
+        if(nodename.equals("label"))
+        {
+          h.put("label", n2.getFirstChild().getNodeValue());
+        }
+        else if(nodename.equals("xmlfiletype"))
+        {
+          h.put("xmlfiletype", n2.getFirstChild().getNodeValue());
+        }
+        else if(nodename.equals("tooltip"))
+        {
+          h.put("tooltip", n2.getFirstChild().getNodeValue());
+        }
+        else if(nodename.equals("name"))
+        {
+          h.put("name", n2.getFirstChild().getNodeValue());
+        }
+        else if(nodename.equals("relatedto"))
+        {
+          h.put("relatedto", n2.getFirstChild().getNodeValue());
+        }
+        else if(nodename.equals("rootnode"))
+        {
+          h.put("rootnode", n2.getFirstChild().getNodeValue());
+        }
+        else if(nodename.equals("displaypath"))
+        {
+          h.put("displaypath", n2.getFirstChild().getNodeValue());
+        }
+        else if(nodename.equals("editexisting"))
+        {
+          h.put("editexisting", n2.getFirstChild().getNodeValue());
+        }
+        else if(nodename.equals("visible"))
+        {
+          h.put("visible", n2.getFirstChild().getNodeValue());
+        }
+      }
+      returnhash.put(h.get(hashby), h);
+    }
+    return returnhash;
   }
 }

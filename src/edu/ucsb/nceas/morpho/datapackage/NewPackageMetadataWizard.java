@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-07-06 18:45:15 $'
- * '$Revision: 1.12 $'
+ *     '$Date: 2001-07-06 23:07:27 $'
+ * '$Revision: 1.13 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -134,58 +134,7 @@ public class NewPackageMetadataWizard extends JFrame
     group1.add(existingFile);
     
     //parse the config file and create the new file buttons
-    NodeList filetypes = config.getPathContent("//newxmlfiletypes/file");
-    for(int i=0; i<filetypes.getLength(); i++)
-    {
-      Node n = filetypes.item(i);
-      NodeList children = n.getChildNodes();
-      Hashtable h = new Hashtable();
-      for(int j=0; j<children.getLength(); j++)
-      {
-        Node n2 = children.item(j);
-        String nodename = n2.getNodeName();
-        if(nodename.equals("label"))
-        {
-          h.put("label", n2.getFirstChild().getNodeValue());
-        }
-        else if(nodename.equals("xmlfiletype"))
-        {
-          h.put("xmlfiletype", n2.getFirstChild().getNodeValue());
-        }
-        else if(nodename.equals("tooltip"))
-        {
-          h.put("tooltip", n2.getFirstChild().getNodeValue());
-        }
-        else if(nodename.equals("name"))
-        {
-          h.put("name", n2.getFirstChild().getNodeValue());
-        }
-        else if(nodename.equals("relatedto"))
-        {
-          h.put("relatedto", n2.getFirstChild().getNodeValue());
-        }
-        else if(nodename.equals("rootnode"))
-        {
-          h.put("rootnode", n2.getFirstChild().getNodeValue());
-        }
-        else if(nodename.equals("displaypath"))
-        {
-          h.put("displaypath", n2.getFirstChild().getNodeValue());
-        }
-        else if(nodename.equals("editexisting"))
-        {
-          h.put("editexisting", n2.getFirstChild().getNodeValue());
-        }
-      }
-      if(((String)h.get("name")).equals("DATAFILE"))
-      {
-        relateDataFileTo = (String)h.get("relatedto");
-      }
-      else
-      {
-        newXMLFileAtts.put((String)h.get("label"), h);
-      }
-    }
+    newXMLFileAtts = PackageUtil.getConfigFileTypeAttributes(framework, "label");
     
     Enumeration keys = newXMLFileAtts.keys();
     ButtonGroup newRadioButtons = new ButtonGroup();
@@ -198,6 +147,15 @@ public class NewPackageMetadataWizard extends JFrame
       }
       Hashtable h = (Hashtable)newXMLFileAtts.get(key);
       JRadioButton b = new JRadioButton((String)h.get("label"));
+      if(h.containsKey("visible"))
+      {
+        String visible = (String)h.get("visible");
+        if(visible.equals("no"))
+        {
+          b.setVisible(false);
+        }
+      }
+      
       b.setToolTipText((String)h.get("tooltip"));
       newRadioButtons.add(b);
       radioButtons.addElement(b);

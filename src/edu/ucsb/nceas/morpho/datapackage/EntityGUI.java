@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-07-05 22:50:37 $'
- * '$Revision: 1.12 $'
+ *     '$Date: 2001-07-06 23:07:27 $'
+ * '$Revision: 1.13 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -70,6 +70,7 @@ public class EntityGUI extends javax.swing.JFrame
   private static final String attributeNameNode = "variable_name";
   
   private ClientFramework framework;
+  private ConfigXML config;
   private Container contentPane;
   private DataPackage dataPackage;
   private String entityId;
@@ -104,6 +105,7 @@ public class EntityGUI extends javax.swing.JFrame
     this.framework = cf;
     this.dataPackage = dp;
     this.entityId = id;
+    config = framework.getConfiguration();
     contentPane = getContentPane();
     setTitle("Table Editor");
     BoxLayout box = new BoxLayout(contentPane, BoxLayout.Y_AXIS);
@@ -388,12 +390,95 @@ public class EntityGUI extends javax.swing.JFrame
                               location);
     AccessionNumber a = new AccessionNumber(framework);
     boolean metacatpublic = false;
-    FileSystemDataStore fsds = new FileSystemDataStore(framework);
-    //System.out.println(xmlString);
-  
+    boolean newfile = false;
     boolean metacatloc = false;
     boolean localloc = false;
     boolean bothloc = false;
+    FileSystemDataStore fsds = new FileSystemDataStore(framework);
+    
+    if(id == null)
+    { //this is a new file so we need to assign it an id and put a triple
+      //in the triples file
+      id = a.getNextId();
+      location = dataPackage.getLocation();
+      //create the triple
+      Triple t = new Triple(id, "isRelatedTo", entityId);
+      TripleCollection tc = new TripleCollection();
+      tc.addTriple(t);
+      String packageFile = PackageUtil.addTriplesToTriplesFile(tc, 
+                                                   dataPackage, 
+                                                   framework);
+      String packageId = a.incRev(dataPackage.getID());
+      File f = fsds.saveTempFile("tmp.0", new StringReader(packageFile));
+      packageFile = a.incRevInTriples(f, dataPackage.getID(), packageId);
+      
+      if(location.equals(DataPackage.BOTH))
+      {
+        metacatloc = true;
+        localloc = true;
+      }
+      else if(location.equals(DataPackage.METACAT))
+      {
+        metacatloc = true;
+      }
+      else if(location.equals(DataPackage.LOCAL))
+      {
+        localloc = true;
+      }
+      
+      if(metacatloc)
+      { //save the files to metacat
+        try
+        {
+          MetacatDataStore mds = new MetacatDataStore(framework);
+          int choice = JOptionPane.showConfirmDialog(null, 
+                               "Do you wish to make this file publicly readable "+ 
+                               "(Searchable) on Metacat?", 
+                               "Package Editor", 
+                               JOptionPane.YES_NO_CANCEL_OPTION,
+                               JOptionPane.WARNING_MESSAGE);
+          if(choice == JOptionPane.YES_OPTION)
+          {
+            metacatpublic = true;
+          }
+          mds.newFile(id, new StringReader(xmlString), metacatpublic);
+          mds.saveFile(packageId, new StringReader(packageFile), metacatpublic);
+        }
+        catch(Exception e)
+        {
+          framework.debug(0, "Error saving to metacat: " + e.getMessage());
+          e.printStackTrace();
+        }
+      }
+      
+      if(localloc)
+      { //save the files locally
+        try
+        {
+          fsds.newFile(id, new StringReader(xmlString), false);
+          fsds.saveFile(packageId, new StringReader(packageFile), false);
+        }
+        catch(Exception e)
+        {
+          framework.debug(0, "Error saving package locally: " + e.getMessage());
+          e.printStackTrace();
+        }
+      }
+      
+      DataPackage newPackage = new DataPackage(location, packageId, null,
+                                               framework);
+      this.dispose();
+      parent.dispose();
+      
+      DataPackageGUI newgui = new DataPackageGUI(framework, newPackage);
+      EntityGUI newEntitygui;
+      newEntitygui = new EntityGUI(newPackage, entityId, location, newgui, 
+                                   framework);
+      newgui.show();
+      newEntitygui.show();
+      return;
+    }
+    
     String newid = "";
     String newPackageId = "";
     if(location.equals(DataPackage.BOTH))
@@ -596,24 +681,28 @@ public class EntityGUI extends javax.swing.JFrame
     {
       editAttribute = true;
       String selectedItem = (String)attributeList.getSelectedValue();
-      if(selectedItem == null)
-      {
-        ClientFramework.debug(0, "You must select an attribute to edit." +
-                              " If there are no attributes in the list, " +
-                              "you must first add a field description " +
-                              "using the 'add' button in the Package " +
-                              "Editor.");
-        return;
-      }
       File f;
       String id = (String)attributeHash.get(selectedItem);
       if(id == null)
       {
-        ClientFramework.debug(0, "You must select an attribute to edit." +
+        /*ClientFramework.debug(0, "You must select an attribute to edit." +
                               " If there are no attributes in the list, " +
                               "you must first add a field description " +
                               "using the 'add' button in the Package " +
                               "Editor.");
+        return;*/
+        //create a new variable file
+        Hashtable fileatts = PackageUtil.getConfigFileTypeAttributes(framework, 
+                                                                "xmlfiletype");
+        String attributedoctype = config.get("attributedoctype", 0);
+        Hashtable attributeAtts = (Hashtable)fileatts.get(attributedoctype);
+        String root = (String)attributeAtts.get("rootnode");
+        String dummydoc = "<?xml version=\"1.0\"?>\n";
+        dummydoc += "<!DOCTYPE " + root + " PUBLIC \"" + attributedoctype + 
+                    "\" \"" + root + ".dtd\">\n";
+        dummydoc += "<" + root + ">" + "</" + root + ">";
+        EditorInterface editor = PackageUtil.getEditor(framework);
+        editor.openEditor(dummydoc, null, null, this);
         return;
       }
       
