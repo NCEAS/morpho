@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2004-01-21 21:28:47 $'
- * '$Revision: 1.2 $'
+ *     '$Date: 2004-02-09 23:46:19 $'
+ * '$Revision: 1.3 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -57,6 +57,8 @@ import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Vector;
+import javax.swing.event.ListSelectionListener;
+import javax.swing.event.ListSelectionEvent;
 import edu.ucsb.nceas.morpho.framework.ConfigXML;
 
 
@@ -75,6 +77,8 @@ public class GeographicPage extends AbstractWizardPage {
   private JLabel regionSelectionLabel;
   private JList regionList;
   private LiveMapPanel lmp;
+  
+  private boolean deleteFlag = false;
 
   private final String xPathRoot  = "/eml:eml/dataset/coverage/geographicCoverage";
 
@@ -91,7 +95,7 @@ public class GeographicPage extends AbstractWizardPage {
    */
   private void init() {
     this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-    JPanel vbox = this;
+    final JPanel vbox = this;
 
 //DFH    vbox.add(WidgetFactory.makeHalfSpacer());
 
@@ -142,7 +146,7 @@ public class GeographicPage extends AbstractWizardPage {
 
   ////////////////////////////////////////////////////////////////////////////
 
-    JPanel regionPanel = new JPanel();
+    final JPanel regionPanel = new JPanel();
     regionPanel.setLayout(new GridLayout(1,2));
     JPanel regionSelectionPanel = WidgetFactory.makePanel(4);
 
@@ -161,6 +165,9 @@ public class GeographicPage extends AbstractWizardPage {
     regionList.setFont(WizardSettings.WIZARD_CONTENT_FONT);
     regionList.setForeground(WizardSettings.WIZARD_CONTENT_TEXT_COLOR);
     regionList.setSelectedIndex(0);
+    regionList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+    ListSelectionModel lsm = regionList.getSelectionModel();
+    lsm.addListSelectionListener(new RegionSelectionHandler());
     JScrollPane jscr2 = new JScrollPane(regionList);
     regionSelectionPanel.add(jscr2);
 
@@ -182,6 +189,7 @@ public class GeographicPage extends AbstractWizardPage {
         double s = (new Double(getSouth(selection))).doubleValue();
         double e = (new Double(getEast(selection))).doubleValue();
         lmp.setBoundingBox(n, w, s, e);
+        covDescField.setText(getDescription(selection));
       }
     });
 
@@ -220,8 +228,8 @@ public class GeographicPage extends AbstractWizardPage {
             Log.debug(1, "Sorry, but a Name must be entered.");
           } else {
             // create new location here
-          
-            addLocation(inputName, descText, lmp.getNorth(), lmp.getWest(), 
+            addLocation(inputName, (covDescField.getText()).trim(), 
+                                lmp.getNorth(), lmp.getWest(), 
                                 lmp.getSouth(), lmp.getEast());
             model.addElement(inputName);
           }
@@ -239,10 +247,13 @@ public class GeographicPage extends AbstractWizardPage {
     deleteButton.setFocusPainted(false);
     deleteButton.addActionListener( new ActionListener() {
       public void actionPerformed(ActionEvent ae) {
+        deleteFlag = true;
         int selindex = regionList.getSelectedIndex();
         model.remove(selindex);
         locationsXML.removeNode("location", selindex);
         locationsXML.save();
+        regionList.setSelectedIndex(0);
+        deleteFlag = false;
       }
     });
 
@@ -274,12 +285,54 @@ public class GeographicPage extends AbstractWizardPage {
     regionPanel.add(regionSelectionPanel);
     regionPanel.add(buttonPanel);
 
-    vbox.add(regionPanel);
+//    vbox.add(regionPanel);
 
-    vbox.add(WidgetFactory.makeDefaultSpacer());
+//    vbox.add(WidgetFactory.makeDefaultSpacer());
     
+  ////////////////////////////////////////////////////////////////////////////
+
+//    vbox.add(WidgetFactory.makeDefaultSpacer());
+  
+    final JLabel listDesc = WidgetFactory.makeHTMLLabel(
+        "<p><b>Show List of Regions</b> A list of pre-defined geographic regions"
+       +" (bounding boxes) can be displayed by clicking the button below. You can "
+       +"select from the list, or add the current selection shown on the map to the list. "
+       +"</p>", 3);
+    vbox.add(listDesc);
+    
+    final JPanel listButtonPanel = new JPanel();
+    JButton showListButton = new JButton("Show Region List");
+    showListButton.setEnabled(true);
+    showListButton.setFont(WizardSettings.WIZARD_CONTENT_FONT);
+    showListButton.setFocusPainted(false);
+    showListButton.addActionListener( new ActionListener() {
+      public void actionPerformed(ActionEvent ae) {
+        vbox.remove(listDesc);
+        vbox.remove(listButtonPanel);
+        vbox.add(regionPanel);
+        vbox.validate();
+      }
+    });
+    listButtonPanel.add(showListButton);
+    vbox.add(listButtonPanel);
+    
+//    vbox.add(WidgetFactory.makeDefaultSpacer());
+
   }
 
+  class RegionSelectionHandler implements ListSelectionListener {
+    public void valueChanged(ListSelectionEvent eee) {
+      if (deleteFlag) return;
+      String selection = (String)regionList.getSelectedValue();
+//      Log.debug(1,"Selection: "+selection);
+      double n = (new Double(getNorth(selection))).doubleValue();
+      double w = (new Double(getWest(selection))).doubleValue();
+      double s = (new Double(getSouth(selection))).doubleValue();
+      double e = (new Double(getEast(selection))).doubleValue();
+      lmp.setBoundingBox(n, w, s, e);      
+      covDescField.setText(getDescription(selection));
+    }
+  }
   
   /**
    *  gets info for location list from file
@@ -323,6 +376,14 @@ public class GeographicPage extends AbstractWizardPage {
     String res = "";
     if (locationsXML!=null) {
      Vector vec = locationsXML.getValuesForPath("location/name[.='"+locname+"']/../east");
+     res = (String)vec.firstElement();
+    }
+    return res;
+  }
+  private String getDescription(String locname) {
+    String res = "";
+    if (locationsXML!=null) {
+     Vector vec = locationsXML.getValuesForPath("location/name[.='"+locname+"']/../description");
      res = (String)vec.firstElement();
     }
     return res;
