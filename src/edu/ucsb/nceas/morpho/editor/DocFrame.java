@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2004-02-03 23:59:29 $'
- * '$Revision: 1.142 $'
+ *     '$Date: 2004-02-05 22:40:00 $'
+ * '$Revision: 1.143 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -70,6 +70,17 @@ public class DocFrame extends javax.swing.JFrame
   public DefaultMutableTreeNode rootNode;
   public DTDTree dtdtree;
   public JTree tree;
+
+
+  /**
+   *   cached copy of template tree
+   */
+  static DefaultMutableTreeNode frootNode = null;
+
+  /**
+   *   used with cached template to see if new template tree is needed
+   */
+  static String templateRootName = "";
   
   /**
    *   the DOM node passed in which contains a parsed XML document
@@ -145,6 +156,13 @@ public class DocFrame extends javax.swing.JFrame
    * should not trigger update events
    */
   boolean treeValueFlag = true;
+  
+  /**
+   * if true, this flag will cause the display of missing subtrees by
+   * merging from the template tree
+   * if false, only those subtrees already in the template are displayed
+   */
+  boolean mergeMissingFlag = false;
 
   /** determines whether node containing no text are saved when output
    * is written
@@ -190,6 +208,7 @@ public class DocFrame extends javax.swing.JFrame
 
   javax.swing.JPanel OutputScrollPanelContainer = new javax.swing.JPanel();
   javax.swing.JScrollPane OutputScrollPanel = new javax.swing.JScrollPane();
+  javax.swing.JPanel ControlsPanel = new javax.swing.JPanel();
   javax.swing.JPanel TreeChoicePanel = new javax.swing.JPanel();
   javax.swing.JPanel TreeControlPanel = new javax.swing.JPanel();
   javax.swing.JButton TrimTreeButton = new javax.swing.JButton();
@@ -228,10 +247,9 @@ public class DocFrame extends javax.swing.JFrame
     getContentPane().setLayout(new BorderLayout(0, 0));
     setSize(800, 600);
     setVisible(false);
+    ControlsPanel.setLayout(new BorderLayout(0, 0));
     OutputScrollPanelContainer.setLayout(new BorderLayout(0, 0));
     getContentPane().add(OutputScrollPanelContainer);
-    OutputScrollPanelContainer.add(BorderLayout.CENTER, OutputScrollPanel);
-    OutputScrollPanelContainer.add(BorderLayout.NORTH, TreeChoicePanel);
     JLabel test = new JLabel("Choice: ");
     String[] choices = {"eml", "dataset", "access", "creator", "contact", "keywordSet",
             "dataTable", "attributeList"};
@@ -242,16 +260,20 @@ public class DocFrame extends javax.swing.JFrame
     TreeChoicePanel.add(choiceCombo);
     choiceCombo.setVisible(true);
     TreeControlPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 1, 1));
-    OutputScrollPanelContainer.add(BorderLayout.SOUTH, TreeControlPanel);
+    ControlsPanel.add(BorderLayout.NORTH, TreeControlPanel);
+    ControlsPanel.add(BorderLayout.SOUTH, TreeChoicePanel);
+		OutputScrollPanelContainer.add(BorderLayout.NORTH, ControlsPanel);
+    OutputScrollPanelContainer.add(BorderLayout.CENTER, OutputScrollPanel);
     TrimTreeButton.setText("Trim");
     TrimTreeButton.setActionCommand("Trim");
     TrimTreeButton.setToolTipText("Remove all optional nodes that contain no text.");
-    TreeControlPanel.add(TrimTreeButton);
-    UntrimTreeButton.setText("Undo");
-    UntrimTreeButton.setActionCommand("Undo");
-    UntrimTreeButton.setToolTipText("Restore optional nodes without text.");
-    UntrimTreeButton.setEnabled(false);
+		TrimTreeButton.setEnabled(false);
+    UntrimTreeButton.setText("Show All");
+    UntrimTreeButton.setActionCommand("Show All");
+    UntrimTreeButton.setToolTipText("Show all possible elements.");
+    UntrimTreeButton.setEnabled(true);
     TreeControlPanel.add(UntrimTreeButton);
+    TreeControlPanel.add(TrimTreeButton);
     ExpandTreeButton.setText("+");
     ExpandTreeButton.setActionCommand("+");
     ExpandTreeButton.setToolTipText("Expand Tree levels displayed");
@@ -381,7 +403,7 @@ public class DocFrame extends javax.swing.JFrame
     popup.add(DeletemenuItem);
     popup.add(new JSeparator());
     AttrmenuItem = new JMenuItem("Edit Attributes");
-//    popup.add(AttrmenuItem);
+    popup.add(AttrmenuItem);
 //  this menu item is not added to menu because all attributes should now appear in the tree
 //  leave code for possibile use in debugging (to see attributes trimmed from tree)
     popup.add(new JSeparator());
@@ -732,7 +754,11 @@ public class DocFrame extends javax.swing.JFrame
     setName("Morpho Editor" + counter);
     XMLTextString = doctext;
     // the following line put the xml instance into a JTree
+    rootNode = newNode("Morpho Editor");
+    treeModel = new DefaultTreeModel(rootNode);
     putXMLintoTree(treeModel, XMLTextString);
+    NodeInfo ni = (NodeInfo)(((DefaultMutableTreeNode)(treeModel.getRoot())).getUserObject());
+    
     // if templateFlag is true, don't bother merging the instance
     // with the template; reset the flag for next time
     if (templateFlag) {
@@ -837,7 +863,6 @@ public class DocFrame extends javax.swing.JFrame
     this.id = id;
     this.location = loc;
     this.docnode = docnode;
-    DefaultMutableTreeNode frootNode = null;
     setName("Morpho Editor");
     treeModel = putDOMintoTree(docnode);
     rootNode = (DefaultMutableTreeNode)treeModel.getRoot();
@@ -863,7 +888,12 @@ public class DocFrame extends javax.swing.JFrame
       tree.setSelectionRow(0);
       return;
     }
-    
+    boolean formatflag = true;
+
+    rootNode = (DefaultMutableTreeNode)treeModel.getRoot();
+    String rname = ((NodeInfo)rootNode.getUserObject()).getName();
+         // check for changes in the root name indicating need for new template
+   if((frootNode==null)||(!rname.equals(templateRootName))) { 
     // now want to possibly merge the input document with a formatting/template document
     // and set the 'editor' and 'help' fields for each node
     // use the root node name as a key
@@ -871,15 +901,14 @@ public class DocFrame extends javax.swing.JFrame
     // the next line sets all the nodes from the instance as selected
     // this is for initial CHOICES in the merged tree
     String rootname = ((NodeInfo)rootNode.getUserObject()).getName();
+    templateRootName = rootname;
     // arbitrary assumption that the formatting document has the rootname +
     // ".xml" as a file name; the formatting document is XML with the same
     // tree structure as the document being formatted; 'help' and 'editor' attributes
     // are used to set help and editor strings for nodes
     rootname = rootname + ".xml";
     frootNode = new DefaultMutableTreeNode("froot");
-    DefaultTreeModel ftreeModel = new DefaultTreeModel(frootNode);
     String fXMLString = "";
-    boolean formatflag = true;
 
     try {
       ClassLoader cl = this.getClass().getClassLoader();
@@ -896,11 +925,9 @@ public class DocFrame extends javax.swing.JFrame
       out.flush();
       out.close();
       fXMLString = out.toString();
-    
-    // if catch is called, then we don't have a valid template
-    } catch (Exception e) {formatflag = false;}
-    if (formatflag) {
+
       // put the template/formatting xml into a tree
+      DefaultTreeModel ftreeModel = new DefaultTreeModel(frootNode);
       putXMLintoTree(ftreeModel, fXMLString);
       frootNode = (DefaultMutableTreeNode)ftreeModel.getRoot();
       // formatting info has now been put into a JTree which is merged with
@@ -908,6 +935,15 @@ public class DocFrame extends javax.swing.JFrame
       // first remove all the nodes with visLevel>0 to simplify the display
       // (the '0' value should be a parameter)
       removeNodesVisLevel(frootNode, 0);//
+
+    // if catch is called, then we don't have a valid template
+    } catch (Exception e) {
+      formatflag = false;
+      frootNode = null;
+    }
+   } // this code block is skippped when frootNode is not null !
+   
+    if (formatflag) {
       
       treeUnion(rootNode, frootNode);
 
@@ -915,11 +951,11 @@ public class DocFrame extends javax.swing.JFrame
       setChoiceNodes(rootNode);
       setSelectedNodes(rootNode);
       setLeafNodes(rootNode);
-    }
       
       if (xmlAttributesInTreeFlag) {
         addXMLAttributeNodes(rootNode);
       }
+    }
       
     treeModel.reload();
     tree.setModel(treeModel);
@@ -1973,7 +2009,7 @@ public class DocFrame extends javax.swing.JFrame
       Log.debug(20, "Root nodes do not match!!!");
     } else {
       // root nodes match
-      mergeNodes(input, template);
+      //mergeNodes(input, template);  // not needed ? (see mergeData method near end)--- DFH
       //so start comparing children
       Vector nextLevelInputNodes;
       Vector nextLevelTemplateNodes;
@@ -2053,7 +2089,9 @@ public class DocFrame extends javax.swing.JFrame
     // Next 2 lines are loops over instance to speed up the merging of data
     // and the additon of subtrees into the instance.
     mergeData(input, template);
-    mergingMissingSubtrees(input, template);
+    if (mergeMissingFlag) {
+      mergingMissingSubtrees(input, template);
+    }
   }
 
   /**
@@ -2543,6 +2581,7 @@ public class DocFrame extends javax.swing.JFrame
     treeModel = (DefaultTreeModel)tree.getModel();
     rootNode = (DefaultMutableTreeNode)treeModel.getRoot();
     String xmlout = writeXMLString(rootNode);
+Log.debug(20, xmlout);
   /*
   // the following code for checking for empty leaf nodes is
   // commented out because of problems with eml-attribute documents
@@ -2728,7 +2767,7 @@ public class DocFrame extends javax.swing.JFrame
    */
   void NewButton_actionPerformed(java.awt.event.ActionEvent event)
   {
-    templateFlag = true; // set to avoid merging new doc with itself!
+    templateFlag = false; // set to avoid merging new doc with itself!
     logoLabel.setIcon((ImageIcon)icons.get("Btfly4.gif"));
     headLabel.setText("Working...");
     openfile = new File("./lib/eml.xml");
@@ -2808,16 +2847,19 @@ public class DocFrame extends javax.swing.JFrame
    */
   void TrimTreeButton_actionPerformed(java.awt.event.ActionEvent event)
   {
+    logoLabel.setIcon((ImageIcon)icons.get("Btfly4.gif"));
+    headLabel.setText("Working...");
+    // the changes to headLabel and logo label DO NOT appear
+    // need to figure out how to force screen update
     treeModel = (DefaultTreeModel)tree.getModel();
     rootNode = (DefaultMutableTreeNode)treeModel.getRoot();
-    if (fullTree == null) {
-      fullTree = deepNodeCopy(rootNode);
-    }
     trimNoInfoNodes(rootNode);
-    UntrimTreeButton.setEnabled(true);
+    TrimTreeButton.setEnabled(false);
     treeModel.reload();
     tree.expandRow(1);
     tree.setSelectionRow(0);
+    headLabel.setText("Morpho Editor");
+    logoLabel.setIcon((ImageIcon)icons.get("logo-icon.gif"));
   }
 
   /**
@@ -2828,11 +2870,14 @@ public class DocFrame extends javax.swing.JFrame
    */
   void UntrimTreeButton_actionPerformed(java.awt.event.ActionEvent event)
   {
-    treeModel = new DefaultTreeModel(fullTree);
-    tree.setModel(treeModel);
-    ((DefaultTreeModel)tree.getModel()).reload();
-    tree.expandRow(1);
-    tree.setSelectionRow(0);
+    logoLabel.setIcon((ImageIcon)icons.get("Btfly4.gif"));
+    headLabel.setText("Working...");
+    treeModel = (DefaultTreeModel)tree.getModel();
+    rootNode = (DefaultMutableTreeNode)treeModel.getRoot();
+    String xmlout = writeXMLString(rootNode);
+    mergeMissingFlag = true;
+    initDoc(null, xmlout);
+    TrimTreeButton.setEnabled(true);
   }
 
   /**
