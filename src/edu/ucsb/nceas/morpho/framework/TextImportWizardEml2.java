@@ -4,9 +4,9 @@
 *              National Center for Ecological Analysis and Synthesis
 *    Release: @release@
 *
-*   '$Author: sambasiv $'
-*     '$Date: 2003-10-30 20:05:17 $'
-* '$Revision: 1.2 $'
+*   '$Author: higgins $'
+*     '$Date: 2003-11-07 18:37:33 $'
+* '$Revision: 1.3 $'
 *
 * This program is free software; you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -43,6 +43,7 @@ import javax.swing.AbstractAction;
 
 import edu.ucsb.nceas.morpho.util.Log;
 import edu.ucsb.nceas.morpho.util.XMLUtil;
+import edu.ucsb.nceas.morpho.util.Base64;
 import edu.ucsb.nceas.morpho.datapackage.wizard.PackageWizard;
 import edu.ucsb.nceas.morpho.datapackage.ColumnMetadataEditPanel;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.AttributeDialog;
@@ -55,8 +56,9 @@ import edu.ucsb.nceas.utilities.OrderedMap;
 import edu.ucsb.nceas.morpho.plugins.metadisplay.HTMLPanel;
 import edu.ucsb.nceas.morpho.plugins.metadisplay.MetaDisplay;
 import edu.ucsb.nceas.morpho.util.UISettings;
-
-
+import edu.ucsb.nceas.morpho.datastore.*;
+import edu.ucsb.nceas.morpho.datapackage.AccessionNumber;
+import edu.ucsb.nceas.morpho.Morpho;
 
 /**
 * 'Text Import Wizard' is modeled after
@@ -126,7 +128,7 @@ public class TextImportWizardEml2 extends javax.swing.JFrame
 	*/
 	String[] lines; 
 	String filename;
-	
+	String shortFilename;
 	/**
 	* selected column variable
 	*/
@@ -211,7 +213,16 @@ public class TextImportWizardEml2 extends javax.swing.JFrame
                         "REAL  (+/- fractions & non-fractions: -1/2, 3.14..)" 
                     };
 	
-	public TextImportWizardEml2(String dataFileName, TextImportListener listener)
+	/*
+   * this boolean determines how data is stored and referenced
+   * if true, a copy of the data file is given a new accession number (id)
+   * and copied to the temp file directory of the current profile
+   * online url is set to "ecogrid://[id]
+   * Otherwise, the data is inserted 'inline' in the XML DOM
+   */
+  boolean dataAsFile = true;
+  
+  public TextImportWizardEml2(String dataFileName, TextImportListener listener)
 	{
 		this.listener = listener;
 		cmePanel = new ColumnMetadataEditPanelEml2();
@@ -455,6 +466,7 @@ public class TextImportWizardEml2 extends javax.swing.JFrame
 					File ff = new File(dataFileName);
 					TableNameTextField.setText(ff.getName());
 					filename = dataFileName; 
+					shortFilename = ff.getName(); 
 					parsefile(filename);
 					createLinesTable();
 					resultsBuffer = new StringBuffer();
@@ -1819,7 +1831,7 @@ public class TextImportWizardEml2 extends javax.swing.JFrame
 		om.put(header + "entityName", XMLUtil.normalize(TableNameTextField.getText()));
 		om.put(header + "entityDescription", XMLUtil.normalize(TableDescriptionTextField.getText()));
 		// physical NV pairs are inserted here
-		om.put(header+"physical/"+"objectName",filename);
+		om.put(header+"physical/"+"objectName",shortFilename);
 		long filesize = (new File(filename)).length();
 		String filesizeString = (new Long(filesize)).toString();
 		om.put(header+"physical/"+"size",filesizeString);
@@ -1831,7 +1843,15 @@ public class TextImportWizardEml2 extends javax.swing.JFrame
 		om.put(header+"physical/dataFormat/textFormat/"+"attributeOrientation", "column");    
 		String delimit = getDelimiterStringAsText();
 		om.put(header+"physical/dataFormat/textFormat/simpleDelimited/"+"fieldDelimiter", delimit);
-		om.put(header+"physical/distribution/online/"+"url", "file://"+filename);
+    
+    if (dataAsFile) {
+      String id = saveDataFileAsTemp(filename);
+		  om.put(header+"physical/distribution/online/"+"url", "ecogrid://"+id);
+    }
+    else { // put data inline
+      String encoded = encodeAsBase64(new File(filename));   
+		  om.put(header+"physical/distribution/inline", encoded);
+    }
 		
 		Enumeration e = columnAttributes.elements();
 		int index = 1;
@@ -1846,9 +1866,54 @@ public class TextImportWizardEml2 extends javax.swing.JFrame
 		int numrecs = nlines_actual - startingLine +1 + temp;
 		String numRecords = (new Integer(numrecs)).toString();
 		om.put(header + "numberOfRecords", XMLUtil.normalize(numRecords));
+    
+    
 		return om;
 	}
 	
+  /*
+   * create a new id,
+   * assign id to the data file and save a copy with that id as the
+   * name
+   */
+  private String saveDataFileAsTemp(String fn) {
+    AccessionNumber an = new AccessionNumber(Morpho.thisStaticInstance);
+    String id = an.getNextId();
+    File f = new File(fn);
+    FileSystemDataStore fds = new FileSystemDataStore(Morpho.thisStaticInstance);
+    try { 
+      File res = fds.saveTempDataFile(id, new FileReader(f));
+    }
+    catch (Exception w) {Log.debug(1, "error in TIW saving temp data file!");}
+    return id;
+  }
+  
+  /*
+   *  this method converts the input file to a byte array and then
+   *  encodes it as a Base64 string
+   */
+  private String encodeAsBase64(File f) {
+    byte[] b = null;
+    long len = f.length();
+    if (len>200000) { // choice of 200000 is arbitrary - DFH
+      Log.debug(1, "Data file is too long to be put 'inline'!");
+      return null;
+    }
+    try {
+      FileReader fsr = new FileReader(f);
+      ByteArrayOutputStream baos = new ByteArrayOutputStream();
+      int chr = 0;
+      while ((chr = fsr.read()) != -1) {
+        baos.write(chr);
+      }
+      fsr.close();
+      baos.close();
+      b = baos.toByteArray();
+    } catch (Exception e) {Log.debug(1, "Problem encoding data as Base64!");}
+    String enc = Base64.encode(b);
+    return enc;
+  }
+  
 	void CancelButton_actionPerformed(java.awt.event.ActionEvent event)
 	{
 		this.setVisible(false);
