@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2004-02-09 23:46:19 $'
- * '$Revision: 1.3 $'
+ *     '$Date: 2004-02-18 18:21:08 $'
+ * '$Revision: 1.4 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -46,6 +46,7 @@ import org.w3c.dom.NodeList;
 
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
+import java.util.Iterator;
 import javax.swing.*;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -80,7 +81,7 @@ public class GeographicPage extends AbstractWizardPage {
   
   private boolean deleteFlag = false;
 
-  private final String xPathRoot  = "/eml:eml/dataset/coverage/geographicCoverage";
+  private String xPathRoot  = "/eml:eml/dataset/coverage/geographicCoverage";
 
   private ConfigXML locationsXML = null;
   
@@ -319,6 +320,10 @@ public class GeographicPage extends AbstractWizardPage {
 //    vbox.add(WidgetFactory.makeDefaultSpacer());
 
   }
+  
+  public void setXPathRoot(String xpath) {
+    xPathRoot = xpath; 
+  }
 
   class RegionSelectionHandler implements ListSelectionListener {
     public void valueChanged(ListSelectionEvent eee) {
@@ -552,7 +557,51 @@ public class GeographicPage extends AbstractWizardPage {
      */
   public String getPageNumber() { return pageNumber; }
 
-  public void setPageData(OrderedMap data) { }
+  public void setPageData(OrderedMap map) { 
+    double n = 89.0;
+    double w = -179.0;
+    double s = -89.0;
+    double e = 179.0;
+	  String name = (String)map.get(xPathRoot + "/geographicDescription[1]");
+		if(name != null) map = stripIndexOneFromMapKeys(map);
+    
+    name = (String)map.get(xPathRoot + "/geographicDescription");
+    if (name!=null) {
+      covDescField.setText(name);
+    }
+    
+    name = (String)map.get(xPathRoot + "/boundingCoordinates/northBoundingCoordinate");
+    if (name!=null) {
+      Double N = new Double(name);
+      if (N!=null) {
+        n = N.doubleValue();
+      }
+    }
+    name = (String)map.get(xPathRoot + "/boundingCoordinates/westBoundingCoordinate");
+    if (name!=null) {
+      Double W = new Double(name);
+      if (W!=null) {
+        w = W.doubleValue();
+      }
+    }
+    name = (String)map.get(xPathRoot + "/boundingCoordinates/southBoundingCoordinate");
+    if (name!=null) {
+      Double S = new Double(name);
+      if (S!=null) {
+        s = S.doubleValue();
+      }
+    }
+    name = (String)map.get(xPathRoot + "/boundingCoordinates/eastBoundingCoordinate");
+    if (name!=null) {
+      Double E = new Double(name);
+      if (E!=null) {
+        e = E.doubleValue();
+      }
+    }
+    if ((e==w)&&(n==s)) lmp.setTool("PT");
+    lmp.setBoundingBox(n, w, s, e);
+  
+  }
   
   private JLabel getLabel(String text) {
     if (text==null) text="";
@@ -601,5 +650,28 @@ public class GeographicPage extends AbstractWizardPage {
     frame.setVisible(true);
 
   }
+
+  	 private OrderedMap stripIndexOneFromMapKeys(OrderedMap map) {
+
+		 OrderedMap newMap = new OrderedMap();
+		 Iterator it = map.keySet().iterator();
+		 while(it.hasNext()) {
+			 String key = (String) it.next();
+			 String val = (String)map.get(key);
+			 int pos;
+			 if((pos = key.indexOf("[1]")) < 0) {
+				 newMap.put(key, val);
+				 continue;
+			 }
+			 String newKey = "";
+			 for(;pos != -1; pos = key.indexOf("[1]")){
+				 newKey += key.substring(0,pos);
+				 key = key.substring(pos + 3);
+			 }
+			 newKey += key;
+			 newMap.put(newKey, val);
+		 }
+		 return newMap;
+	 }
 
 }
