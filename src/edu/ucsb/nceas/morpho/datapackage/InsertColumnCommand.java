@@ -6,8 +6,8 @@
 *    Release: @release@
 *
 *   '$Author: sambasiv $'
-*     '$Date: 2004-04-29 00:08:40 $'
-* '$Revision: 1.20 $'
+*     '$Date: 2004-04-29 00:55:16 $'
+* '$Revision: 1.21 $'
 *
 * This program is free software; you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -188,7 +188,10 @@ public class InsertColumnCommand implements Command
     String newHeader = columnName;
     if (newHeader.trim().length()==0) newHeader = "New Column";
     String unit = getUnit(map, xPath);
-    newHeader = "<html><font face=\"Courier\"><center><small>"+ mScale+
+		String sType = (String)map.get(xPath + "/storageType");
+		if(sType == null) sType = mScale;
+		
+    newHeader = "<html><font face=\"Courier\"><center><small>"+ sType+
     "<br>"+unit +"</small><br><b>"+
     newHeader+"</b></center></font></html>";
     if (beforeFlag)

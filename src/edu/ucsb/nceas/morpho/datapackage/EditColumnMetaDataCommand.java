@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: sambasiv $'
- *     '$Date: 2004-04-29 00:08:40 $'
- * '$Revision: 1.17 $'
+ *     '$Date: 2004-04-29 00:55:16 $'
+ * '$Revision: 1.18 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -249,9 +249,11 @@ public class EditColumnMetaDataCommand implements Command
 		adp.deleteAttribute(entityIndex, attrIndex + 1);
 
     String unit = getUnit(map, xPath);
-
+		String sType = (String)map.get(xPath + "/storageType");
+		if(sType == null) sType = mScale;
+		
     // modify the
-    String newHeader = "<html><font face=\"Courier\"><center><small>"+ mScale +
+    String newHeader = "<html><font face=\"Courier\"><center><small>"+ sType +
     "</small><br><small>"+unit +"</small><br><b>"+
     columnName +"</b></center></font></html>";
     if(dataView != null) {
