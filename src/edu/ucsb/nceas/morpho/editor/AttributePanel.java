@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2004-02-17 21:39:16 $'
- * '$Revision: 1.4 $'
+ *     '$Date: 2004-02-27 00:14:33 $'
+ * '$Revision: 1.5 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,6 +29,8 @@ package edu.ucsb.nceas.morpho.editor;
 import java.util.Enumeration;
 
 import java.awt.Component;
+import java.awt.*;
+import java.util.Vector;
 import java.awt.Dimension;
 import java.awt.event.FocusAdapter;
 import javax.swing.BoxLayout;
@@ -38,6 +40,7 @@ import javax.swing.JPanel;
 import javax.swing.JButton;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.JRadioButton;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.JTree;
 import java.awt.event.ActionEvent;
@@ -70,6 +73,9 @@ import org.apache.xerces.dom.DOMImplementationImpl;
  */
 public class AttributePanel extends JPanel
 {
+  
+  SymFocus aSymFocus = new SymFocus();
+  AbstractWizardPage awp2;
 
   public AttributePanel(DefaultMutableTreeNode node) {
     final DefaultMutableTreeNode fnode = node;
@@ -79,7 +85,8 @@ public class AttributePanel extends JPanel
     jp.setMaximumSize(new Dimension(800,600));
     final AbstractWizardPage awp = WizardPageLibrary.getPage(DataPackageWizardInterface.ATTRIBUTE_PAGE);
     jp.add(awp);
-     
+    awp2 = awp;
+    setFocusLostForAllSubcomponents(awp); 
     DocFrame df = DocFrame.currentDocFrameInstance;
     final Node domNode = df.writeToDOM(node);
     // domNode is now the DOM tree equivalent of the original JTree subtree in node
@@ -145,5 +152,53 @@ public class AttributePanel extends JPanel
     
   }
 
+
+	class SymFocus extends java.awt.event.FocusAdapter
+	{
+		public void focusLost(java.awt.event.FocusEvent event)
+		{
+			Object object = event.getSource();
+      if (object instanceof JRadioButton) {
+        Log.debug(10, "RadioButton");
+        setFocusLostForAllSubcomponents(awp2);
+      }
+			System.out.println("Focus lost: "+object);   
+		}
+	}
+
+	public void setFocusLostForAllSubcomponents(Container panel) {
+	    Vector ret = getAllComponents(panel);
+		System.out.println("Total number of components: "+ret.size());
+		for (int i=0; i<ret.size();i++) {
+		  Component temp = (Component)(ret.elementAt(i));
+      temp.removeFocusListener(aSymFocus);
+		  temp.addFocusListener(aSymFocus);   
+		}
+	}
+	
+	public Vector getAllComponents(Container panel) {
+	  Vector ret = new Vector();  
+	  Component[] cont = panel.getComponents();
+	  // this is the loop over the top level container;
+	  // containers within this container may hold additional components
+	  for (int i=0;i<cont.length;i++) {
+	    ret.addElement(cont[i]);
+	  }
+	  getChildComponents(cont, ret);
+	  return ret;
+	}
+	
+	private void getChildComponents(Component[] comps, Vector vec) {
+	  for (int i=0;i<comps.length;i++) {
+	    Component[] innercomp = ((Container)comps[i]).getComponents();
+	    for (int j=0;j<innercomp.length;j++) {
+	      vec.addElement(innercomp[j]);
+	    }
+	    if (innercomp.length>0) {
+	      getChildComponents(innercomp, vec);
+	    }
+	  }
+	}
+  
 }
 
