@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-12-30 18:29:08 $'
- * '$Revision: 1.102 $'
+ *     '$Date: 2003-01-09 00:52:30 $'
+ * '$Revision: 1.103 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -785,16 +785,29 @@ public class DataPackage implements XMLFactoryInterface
       }
       
       Enumeration keys = files.keys();
-      while(keys.hasMoreElements())
+      // we need to send the access file FIRST; thus create a keysVec vector and
+      // put the access file id first so that order can be maintained
+      Vector keysVec = new Vector();
+      String accessKey = this.getAccessFileIdForDataPackage();
+      keysVec.addElement(accessKey);
+
+      while (keys.hasMoreElements()) {
+        String key = (String)keys.nextElement();
+        if (!key.equals(accessKey)) {
+          keysVec.addElement(key);
+        }
+      }
+      Enumeration keysVecEnum = keysVec.elements();
+      while(keysVecEnum.hasMoreElements())
       { //send each file to metacat.  it's type needs to be checked to see
         //if it is metadata or data
-        String key = (String)keys.nextElement();
+        String key = (String)keysVecEnum.nextElement();
         //get the file
         File f = (File)files.get(key);
 
         try
         {
-          Log.debug(20, "Uploading " + key);
+          Log.debug(1, "Uploading " + key);
           AccessionNumber a = new AccessionNumber(morpho);
           Vector idVec = a.getParts(key);
           String scope = (String)idVec.elementAt(0);
