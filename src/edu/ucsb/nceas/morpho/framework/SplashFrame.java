@@ -13,7 +13,7 @@ public class SplashFrame extends javax.swing.JFrame
 		//{{INIT_CONTROLS
 		getContentPane().setLayout(new BorderLayout(0,0));
 		getContentPane().setBackground(java.awt.Color.white);
-		setSize(427,266);
+		setSize(427,355);
 		/* Center the Frame */
 		Dimension screenDim = Toolkit.getDefaultToolkit().getScreenSize();
 		Rectangle frameDim = getBounds();
@@ -23,7 +23,7 @@ public class SplashFrame extends javax.swing.JFrame
 		setVisible(false);
 		JPanel3.setLayout(new BorderLayout(0,0));
 		getContentPane().add(BorderLayout.CENTER,JPanel3);
-		JPanel3.setBounds(0,0,427,241);
+		JPanel3.setBounds(0,0,427,330);
 		JPanel1.setLayout(new BorderLayout(0,0));
 		JPanel3.add(BorderLayout.NORTH,JPanel1);
 		JPanel1.setBounds(0,0,427,60);
@@ -42,12 +42,12 @@ public class SplashFrame extends javax.swing.JFrame
 		JLabel1.setBounds(0,44,427,16);
 		JScrollPane1.setOpaque(true);
 		JPanel3.add(BorderLayout.CENTER,JScrollPane1);
-		JScrollPane1.setBounds(0,60,427,166);
+		JScrollPane1.setBounds(0,60,427,255);
 		JTextArea1.setEditable(false);
 		JTextArea1.setWrapStyleWord(true);
 		JTextArea1.setLineWrap(true);
 		JScrollPane1.getViewport().add(JTextArea1);
-		JTextArea1.setBounds(0,0,424,163);
+		JTextArea1.setBounds(0,0,424,252);
 		String temp = "This material is based upon work supported by ";
 		temp = temp + "the National Science Foundation under Grant No. DEB99-80154 and ";
 		temp = temp + "Grant No. DBI99-04777. Also supported by the National Center for Ecological Analysis ";
@@ -62,17 +62,20 @@ public class SplashFrame extends javax.swing.JFrame
         temp = temp + "Texas Tech University, and the San Diego Supercomputer Center";
 		temp = temp + "\n\n Participating individuals include Matt Jones, Dan Higgins, Jivka Bojilova, Chad Berkley, ";
 		temp = temp + "Ruldolf Nottrott, and others";
+		temp = temp + "\n\nThis software is named after the Morpho butterfly which is common in ";
+		temp = temp + "South America. The apparent color of this butterfly is highly dependent on the angle of ";
+		temp = temp + "viewing, with the most common color being blue.";
 		JTextArea1.setText(temp);
 		JLabel8.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
 		JLabel8.setText("Version 0.75 - Sept 2000");
 		JPanel3.add(BorderLayout.SOUTH,JLabel8);
 		JLabel8.setForeground(java.awt.Color.black);
 		JLabel8.setFont(new Font("Dialog", Font.PLAIN, 12));
-		JLabel8.setBounds(0,226,427,15);
+		JLabel8.setBounds(0,315,427,15);
 		CloseButton.setText("Close");
 		CloseButton.setActionCommand("Close");
 		getContentPane().add(BorderLayout.SOUTH,CloseButton);
-		CloseButton.setBounds(0,241,427,25);
+		CloseButton.setBounds(0,330,427,25);
 		//}}
 
 		//{{INIT_MENUS

@@ -6,7 +6,7 @@
  *              National Center for Ecological Analysis and Synthesis
  *     Authors: Dan Higgins
  *
- *     Version: '$Id: ClientFramework.java,v 1.16 2000-09-26 15:08:01 higgins Exp $'
+ *     Version: '$Id: ClientFramework.java,v 1.17 2000-09-27 15:47:30 higgins Exp $'
  */
 
 package edu.ucsb.nceas.dtclient;
@@ -389,6 +389,14 @@ public class ClientFramework extends javax.swing.JFrame
 			sf.dispose();
 			ConnectionFrame cf = new ConnectionFrame(clf);
 			cf.setVisible(true);
+            PropertyResourceBundle options = (PropertyResourceBundle)PropertyResourceBundle.getBundle("client");  // DFH
+            String log_file_setting =(String)options.handleGetObject("log_file");     // DFH
+			if (log_file_setting!=null)
+			{ if(log_file_setting.equalsIgnoreCase("true")) {
+			    log_file=true;
+			  }
+			  else {log_file=false; }
+			}
 			if (log_file) {
             FileOutputStream err = new FileOutputStream("stderr.log");
             // Constructor PrintStream(OutputStream) has been deprecated.

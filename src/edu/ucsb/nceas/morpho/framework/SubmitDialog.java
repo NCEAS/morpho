@@ -6,7 +6,7 @@
  *              National Center for Ecological Analysis and Synthesis
  *     Authors: Dan Higgins
  *
- *     Version: '$Id: SubmitDialog.java,v 1.1 2000-09-15 20:59:33 higgins Exp $'
+ *     Version: '$Id: SubmitDialog.java,v 1.2 2000-09-27 15:47:30 higgins Exp $'
  */
 
 package edu.ucsb.nceas.dtclient;
@@ -641,6 +641,10 @@ public void ReplaceFile(String file_in, String tag, String newid) {
 	                String newID = globalidTextBox.getText()+":"+localidTextBox.getText();
 		            ReplaceFile(DocumentTextBox.getText(),idtagTextField.getText(),newID);
 		        }
+		    else {
+		        // this is where the returned id should be put into the current document.
+		        JOptionPane.showMessageDialog(this,"Currently, you must save the current xml document as a file and then enter the id number shown here! ");
+		    }
 		}
 		else {
 		        JOptionPane.showMessageDialog(null, "A file must first be selected.", "Alert", JOptionPane.INFORMATION_MESSAGE);
