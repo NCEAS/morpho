@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2002-08-15 18:30:40 $'
- * '$Revision: 1.3 $'
+ *     '$Date: 2002-08-15 23:43:01 $'
+ * '$Revision: 1.4 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -76,8 +76,11 @@ public class OpenDialogBox extends JDialog
 
   /** the reference to mediator */
   private ResultPanelAndFrameMediator mediator = null;
+  
+  /** the reference to the owner query */
+  private Query ownerQuery = null;
+  
  
-
   //{{DECLARE_CONTROLS
   private JButton openButton = null;
   private JButton cancelButton = null;
@@ -93,9 +96,9 @@ public class OpenDialogBox extends JDialog
    *
    * @param framework A reference to the client framework 
    */
-  public OpenDialogBox(ClientFramework framework)
+  public OpenDialogBox(ClientFramework framework, Query myQuery)
   {
-    this((Frame)framework, framework);
+    this((Frame)framework, framework, myQuery);
   }
   
   /**
@@ -104,12 +107,14 @@ public class OpenDialogBox extends JDialog
    * @param parent The parent frame for this dialog
    * @param framework A reference to the client framework 
    */
-  public OpenDialogBox(Frame parent, ClientFramework framework)
+  public OpenDialogBox(Frame parent, ClientFramework framework, Query myQuery)
   {
     super(parent);
     this.framework = framework;
     this.config = framework.getConfiguration();
     this.mediator = new ResultPanelAndFrameMediator();
+    this.ownerQuery = myQuery;
+  
     
     setSize(800, 600);
     setTitle("Open");
@@ -184,7 +189,7 @@ public class OpenDialogBox extends JDialog
     // Add a keyPressActionListener
     this.addKeyListener(new KeyPressActionListener());
     setVisible(false);
-    String str = getOwnerQuery();
+   
   }
 
  
@@ -219,46 +224,11 @@ public class OpenDialogBox extends JDialog
    */
   private void createOwnerPanel()
   {
-    // Create the tabbed pane for the owner queries
-    Query ownerQuery = new Query(getOwnerQuery(), framework);
     results = ownerQuery.execute();
     ownerPanel = new ResultPanel(results, false, false, mediator);
     
    }// createOwnerPanel
   
-   /**
-   * Construct a query suitable for getting the owner documents
-   */
-  private String getOwnerQuery()
-  {
-    ConfigXML profile = framework.getProfile();
-    StringBuffer searchtext = new StringBuffer();
-    searchtext.append("<?xml version=\"1.0\"?>\n");
-    searchtext.append("<pathquery version=\"1.0\">\n");
-    String lastname = profile.get("lastname", 0);
-    String firstname = profile.get("firstname", 0);
-    searchtext.append("<querytitle>My Data (" + firstname + " " + lastname);
-    searchtext.append(")</querytitle>\n");
-    Vector returnDoctypeList = profile.get("returndoc");
-    for (int i=0; i < returnDoctypeList.size(); i++) {
-      searchtext.append("<returndoctype>");
-      searchtext.append((String)returnDoctypeList.elementAt(i));
-      searchtext.append("</returndoctype>\n");
-    }
-    Vector returnFieldList = profile.get("returnfield");
-    for (int i=0; i < returnFieldList.size(); i++) {
-      searchtext.append("<returnfield>");
-      searchtext.append((String)returnFieldList.elementAt(i));
-      searchtext.append("</returnfield>\n");
-    }
-    searchtext.append("<owner>" + framework.getUserName() + "</owner>\n");
-    searchtext.append("<querygroup operator=\"UNION\">\n");
-    searchtext.append("<queryterm casesensitive=\"true\" ");
-    searchtext.append("searchmode=\"contains\">\n");
-    searchtext.append("<value>%</value>\n");
-    searchtext.append("</queryterm></querygroup></pathquery>");
-    return searchtext.toString();
-  }
   
 
   
@@ -325,8 +295,8 @@ public class OpenDialogBox extends JDialog
         e.printStackTrace(System.err);
       }
       clf.setProfile(profile);
-      OpenDialogBox open = new OpenDialogBox(clf);
-      open.setVisible(true);
+      //OpenDialogBox open = new OpenDialogBox(clf);
+      //open.setVisible(true);
     
   }
  
