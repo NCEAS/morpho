@@ -1,7 +1,7 @@
 Morpho: XML Metadata Client  
 ---------------------------
 
-Version: 1.2.0
+Version: 1.3.0
 
 Feedback and bugs to: morpho-dev@ecoinformatics.org
                       http://bugzilla.ecoinformatics.org
@@ -72,13 +72,22 @@ Known Bugs and Feature Requests
 -------------------------------
 See http://bugzilla.ecoinformatics.org where we maintain a comprehensive list of the know issues with Morpho, and a list ofthe new features that have been requested.  Submit reports of new bugs to this address as well.
 
-There is a known problem with downloading very large datafiles (with more than ~500,000 records) from the network with Moprho 1.2.0.
+There is a known problem with downloading very large datafiles (with more than ~500,000 records) from the network with Moprho 1.2.0. 
+
+The large dataset problem has been fixed in Morpho 1.3.0.
 
 
 Version History
 -------------------------------
 
 ***
+Version 1.3
+
+Several changes to the visual interface have been made in this version. The initial screen that appears when Morpho is first launched has been substantially changed. In addition, the text import wizard that is used to collect metadata from existing data sets has been extensively modified. In addition, spatial query functionality has been implemented using a map-based interface to 'draw' a bounding box. (Data packages with geographic entries indicating that the data is related to regions within this bounding box are returned.) The Help system has also been modified to provide search capability and additional information on eml elements.
+
+Older datasets may have some metadata modules which are not explicitly associated with an access control module through 'triples' in the dataset module. In this case, only the owner has access to these modules. When these packages are opened by the owner, a dialog will appear notifying the owner. The dialog also provides the option to 'correct' the package and provide an access control associaton for all modules in the package. This will make all pieces of the package available according to the rules in the access control module. (This is the default for any newly created packages.)
+
+*** 
 Version 1.2
 
 Version 1.2 represent a substantial change in the visual interface from previous versions. A 'datacentric' view of datapackages is shown. This view includes a tabular display of a data table along with descriptive information about the data. The data and descriptions are contained in resizable panels. The user can thus enlarge parts of the window of special interest as desired. Menus have also been redesigned and, in some cases, renamed. Rather than presenting a default list of 'owner documents', the default window is empty and the user needs to use the "Open" menu or toolbar button to get a list of user owned documents as is customary in most applications.
