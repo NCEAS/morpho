@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2004-01-23 17:31:09 $'
- * '$Revision: 1.10 $'
+ *     '$Date: 2004-01-25 22:04:35 $'
+ * '$Revision: 1.11 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -70,10 +70,9 @@ public  class EML2Beta6DataPackage extends AbstractDataPackage
     metacatDataStore = new MetacatDataStore(morpho);
   }
   
-  public boolean serialize(String location) {
+  public void serialize(String location) throws MetacatUploadException {
     // this method should serialize the ENTIRE package by
     // going though all the modules referenced in the triples!
-    return false;
   }
   
   public void load(String location, String identifier, Morpho morpho) {
@@ -122,7 +121,7 @@ public  class EML2Beta6DataPackage extends AbstractDataPackage
     }
   }
 
-    public AbstractDataPackage upload(String id) throws MetacatUploadException {
+    public AbstractDataPackage upload(String id, boolean updatePackageIds) throws MetacatUploadException {
     
     return this;
   }

@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2004-01-23 21:46:05 $'
- * '$Revision: 1.22 $'
+ *     '$Date: 2004-01-25 22:04:35 $'
+ * '$Revision: 1.23 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -53,9 +53,12 @@ import org.xml.sax.InputSource;
  */
 public  class EML200DataPackage extends AbstractDataPackage
 {
+	
+	
   // serialize to the indicated location
-  public boolean serialize(String location) {
-    boolean resflag = true;
+  public void serialize(String location) 
+	      throws MetacatUploadException
+	{
     Morpho morpho = Morpho.thisStaticInstance;
     String temp = XMLUtilities.getDOMTreeAsString(getMetadataNode(), false);
     StringReader sr = new StringReader(temp);
@@ -86,17 +89,13 @@ public  class EML200DataPackage extends AbstractDataPackage
             mds.newFile(getAccessionNumber(),sr);
           }// not currently on metacat
         } catch (MetacatUploadException mue) {
-          Log.debug(5,"MetacatUpload Exeption in EML200DataPackage!\n"
+            Log.debug(5,"MetacatUpload Exeption in EML200DataPackage!\n"
                        +mue.getMessage());
-          resflag = false;
-          return resflag;
+					  throw mue;						 
         } catch(Exception e) {
           Log.debug(5,"Problem with saving to metacat in EML200DataPackage!");
-          resflag = false;
-          return resflag;
         }
-      }
-    return resflag;  
+      }  
   }
 
   /*
@@ -221,24 +220,40 @@ public  class EML200DataPackage extends AbstractDataPackage
     return temp;
   }
 
-  public AbstractDataPackage upload(String id) throws MetacatUploadException {
+  public AbstractDataPackage upload(String id, boolean updatePackageId) 
+	                                              throws MetacatUploadException {
     Morpho morpho = Morpho.thisStaticInstance;
     load(AbstractDataPackage.LOCAL, id, morpho);
-    boolean res = serialize(AbstractDataPackage.METACAT);
-    if (!res) {
-        throw new MetacatUploadException("error in uploading!");
-    }
-    boolean res1 = serializeData();
-    if (!res) {
-        throw new MetacatUploadException("error in uploading!");
-    }
+		String nextid = id;
+		if (updatePackageId) {
+      AccessionNumber an = new AccessionNumber(morpho);
+			nextid = an.getNextId();
+			this.setAccessionNumber(nextid);
+			    // serialize locally with the new id
+			serialize(AbstractDataPackage.LOCAL);
+    }  																							
+
+		try {
+      serialize(AbstractDataPackage.METACAT);
+      serializeData();
+		} 
+		catch (MetacatUploadException mcue) {
+      throw mcue;
+		}
+		catch (Exception w) {
+			Log.debug(5, "error in uploading!");
+		}
     return this;
   }
 
   public AbstractDataPackage download(String id) {
     Morpho morpho = Morpho.thisStaticInstance;
     //load(AbstractDataPackage.METACAT, id, Morpho.thisStaticInstance);
-    serialize(AbstractDataPackage.LOCAL);
+		try {
+      serialize(AbstractDataPackage.LOCAL);
+		} catch (Exception w) {
+        Log.debug(5,"Exception serializing local package in 'download'");			
+		}
     // now download the associated data files
     Vector idlist = getAssociatedDataFiles();
     Enumeration e = idlist.elements();

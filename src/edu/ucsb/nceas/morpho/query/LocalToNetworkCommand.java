@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-10-14 05:14:55 $'
- * '$Revision: 1.9 $'
+ *     '$Date: 2004-01-25 22:05:13 $'
+ * '$Revision: 1.10 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -191,8 +191,7 @@ public class LocalToNetworkCommand implements Command
               String message="A conflict has been found in one or more of the "+ 
                "identifiers \nin your package.  It is possible that you or \n" + 
                "someone else has made a change on the server that has not \n" +
-               "been reflected on your local copy. If you proceed, you may \n" +
-              "overwrite package information. If you proceed the identifier \n"+
+               "been reflected on your local copy. If you proceed the identifier \n"+
                "for this package will be changed.  Are you sure you want to \n"+
                "proceed with the upload?";
               int choice = JOptionPane.YES_OPTION;

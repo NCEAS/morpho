@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: sgarg $'
- *     '$Date: 2004-01-13 21:59:30 $'
- * '$Revision: 1.72 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2004-01-25 22:04:35 $'
+ * '$Revision: 1.73 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -722,7 +722,7 @@ public class DataPackagePlugin
 //    return newDp.getID();
     AbstractDataPackage adp = DataPackageFactory.getDataPackage(docid, false, true);
                       // metacat flag is false; local is true
-    AbstractDataPackage newadp = adp.upload(docid);
+    AbstractDataPackage newadp = adp.upload(docid, updateIds);
     return newadp.getPackageId();
   }
 

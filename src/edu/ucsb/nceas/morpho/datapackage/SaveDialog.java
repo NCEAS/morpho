@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2004-01-23 21:46:05 $'
- * '$Revision: 1.10 $'
+ *     '$Date: 2004-01-25 22:04:35 $'
+ * '$Revision: 1.11 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -37,6 +37,7 @@ import edu.ucsb.nceas.morpho.framework.UIController;
 import edu.ucsb.nceas.morpho.plugins.ServiceController;
 import edu.ucsb.nceas.morpho.plugins.ServiceProvider;
 import edu.ucsb.nceas.morpho.plugins.ServiceNotHandledException;
+import edu.ucsb.nceas.morpho.datastore.MetacatUploadException;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
@@ -245,9 +246,9 @@ public class SaveDialog extends JDialog
 
   void executeButton_actionPerformed(java.awt.event.ActionEvent event)
 	{
+		boolean problem = false;
     Morpho morpho = Morpho.thisStaticInstance;
     String location = adp.getLocation();
-    boolean result = true;
     if (!location.equals("")) {
       // if location is "", then id should be current
       // otherwise try to increment version
@@ -263,47 +264,63 @@ public class SaveDialog extends JDialog
         adp.setAccessionNumber(nextid);
       }
     }
-    if ((localLoc.isSelected())&&(networkLoc.isSelected())) {
-      result = adp.serialize(AbstractDataPackage.BOTH);
-      adp.setLocation(AbstractDataPackage.BOTH);
-      adp.serializeData();
-    }
-    else if (localLoc.isSelected()) {
-      result = adp.serialize(AbstractDataPackage.LOCAL);
-      adp.setLocation(AbstractDataPackage.LOCAL);
-      adp.serializeData();
-    }
-    else if (networkLoc.isSelected()) {
-      result = adp.serialize(AbstractDataPackage.METACAT);
-      adp.setLocation(AbstractDataPackage.METACAT);
-      adp.serializeData();
-    }
-    else {
-      Log.debug(1, "No location for saving is selected!");
-      return;
-    }
-	this.setVisible(false);
-	this.dispose();
-
-  if (!result) return;
-  
-  MorphoFrame morphoFrame = UIController.getInstance().getCurrentActiveWindow();
-  morphoFrame.setVisible(false);
+		try{
+      if ((localLoc.isSelected())&&(networkLoc.isSelected())) {
+        adp.serialize(AbstractDataPackage.BOTH);
+        adp.setLocation(AbstractDataPackage.BOTH);
+        adp.serializeData();
+      }
+      else if (localLoc.isSelected()) {
+        adp.serialize(AbstractDataPackage.LOCAL);
+        adp.setLocation(AbstractDataPackage.LOCAL);
+        adp.serializeData();
+      }
+      else if (networkLoc.isSelected()) {
+        adp.serialize(AbstractDataPackage.METACAT);
+        adp.setLocation(AbstractDataPackage.METACAT);
+        adp.serializeData();
+      }  
+      else {
+        Log.debug(1, "No location for saving is selected!");
+		  }
+		} catch (MetacatUploadException mue) {
+			  String errormsg = mue.getMessage();
+				if (errormsg.indexOf("ERROR SAVING DATA TO METACAT")>-1) {
+					// error in saving data file
+				}
+				else if (errormsg.indexOf("is already in use")>-1) {
+					// metadata insert error
+				}
+				else if (errormsg.indexOf("Document not found for Accession number")>-1) {
+					// error in updating data file
+				}
+					
+			  Log.debug(5, "Problem Saving\n"+mue.getMessage());
+				problem = true;
+		}
+		
+	  this.setVisible(false);
+	  this.dispose();
+     
+    if (!problem) {
+      MorphoFrame morphoFrame = UIController.getInstance().getCurrentActiveWindow();
+      morphoFrame.setVisible(false);
     
-  try {
-    ServiceController services = ServiceController.getInstance();
-    ServiceProvider provider = 
+      try {
+        ServiceController services = ServiceController.getInstance();
+        ServiceProvider provider = 
                 services.getServiceProvider(DataPackageInterface.class);
-    DataPackageInterface dataPackage = (DataPackageInterface)provider;
-    dataPackage.openNewDataPackage(adp, null);
-    UIController controller = UIController.getInstance();
-    controller.removeWindow(morphoFrame);
-    morphoFrame.dispose();
-  }
-  catch (ServiceNotHandledException snhe) {
-      Log.debug(6, snhe.getMessage());
-      morphoFrame.setVisible(true);
-  }
+        DataPackageInterface dataPackage = (DataPackageInterface)provider;
+        dataPackage.openNewDataPackage(adp, null);
+        UIController controller = UIController.getInstance();
+        controller.removeWindow(morphoFrame);
+        morphoFrame.dispose();
+      }
+      catch (ServiceNotHandledException snhe) {
+        Log.debug(6, snhe.getMessage());
+        morphoFrame.setVisible(true);
+      }
+	  }
 
 	}
 
