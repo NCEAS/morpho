@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<wizard size="500x500" dtd="eml-resource.dtd" doctype="-//NCEAS//eml-resource2.0//EN">
+<wizard size="590x430" dtd="eml-resource.dtd" doctype="-//NCEAS//eml-resource2.0//EN">
   <group label="Base Information" field="dataset" type="panel">
     <group size="480x100" layout="flow">
       <textbox label="Identifier" field="identifier" size="10" allowNull="no" editable="no" defaulttext="knb.1" />
@@ -7,8 +7,8 @@
       <textbox label="Title" field="title" size="10" allowNull="no"/>
     </group>
     
-    <group label="Originator Information" type="panel" size="480x500">
-      <group label="Originator" repeatable="yes" size="470x490" field="originator">
+    <group label="Originator Information" type="panel" size="500x400">
+      <group label="Originator" repeatable="yes" size="400x400" field="originator">
         <group>
         <group label="Idenfication Information" repeatable="yes" allowNull="no" > 
           <textbox label="Salutation" field="individualName/salutation" size="5" repeatable="yes"/>
@@ -19,6 +19,7 @@
           <textbox label="Position" field="positionName" size="10" />
         </group>
         </group>
+        
         <group>
         <group label="Contact Information" field="contactInfo" repeatable="yes" type="pathgrouping" >
           <textbox label="Voice Phone" field="phone/voice" size="10" />

@@ -57,6 +57,7 @@
 </localdoctypes>
 <saxparser>org.apache.xerces.parsers.SAXParser</saxparser>
 <username>jones</username>
+<packageWizardConfig>./lib/frames/packagewizard.xml</packageWizardConfig>
 <accessionNumber>
   <scope>username</scope>
   <lastId>0</lastId>

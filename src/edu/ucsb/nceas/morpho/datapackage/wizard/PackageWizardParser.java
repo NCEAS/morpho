@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-05-04 16:25:55 $'
- * '$Revision: 1.3 $'
+ *     '$Date: 2001-05-29 22:50:18 $'
+ * '$Revision: 1.4 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -60,6 +60,10 @@ public class PackageWizardParser extends DefaultHandler
   private XMLElement groupObj;
   private XMLElement textObj;
   private Stack groupStack = new Stack();
+  private String doctype = null;
+  private String dtd = null;
+  private String root = null;
+  private boolean rootFlag = true;
   
   /**
    * @param xml a FileReader object that reprents a stream of XML
@@ -168,6 +172,15 @@ public class PackageWizardParser extends DefaultHandler
           //into the hashtable of the groupObj
           String locName = atts.getLocalName(i);
           String val = atts.getValue(i);
+          if(locName.equals("doctype"))
+          {
+            doctype = val;
+          }
+          else if(locName.equals("dtd"))
+          {
+            dtd = val;
+          }
+          
           groupObj.attributes.put(locName, val);
         }
         groupStack.push(groupObj);
@@ -185,6 +198,11 @@ public class PackageWizardParser extends DefaultHandler
           //into the hashtable of the groupObj
           String locName = atts.getLocalName(i);
           String val = atts.getValue(i);
+          if(locName.equals("field") && rootFlag)
+          {
+            root = val;
+            rootFlag = false;
+          }
           groupObj.attributes.put(locName, val);
         }
         groupStack.push(groupObj);
@@ -285,6 +303,32 @@ public class PackageWizardParser extends DefaultHandler
   public XMLElement getDoc()
   {
     return doc;  
+  }
+  
+  /**
+   * Returns the path to the dtd that this config file represents 
+   */
+  public String getDtd()
+  {
+    return dtd;
+  }
+  
+  /**
+   * Returns the public identifier of the doctype that this config file 
+   * represents
+   */
+  public String getDoctype()
+  {
+    return doctype;
+  }
+  
+  /**
+   * Returns the public identifier of the doctype that this config file 
+   * represents
+   */
+  public String getRoot()
+  {
+    return root;
   }
   
   /**

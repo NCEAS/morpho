@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-05-29 17:12:29 $'
- * '$Revision: 1.19 $'
+ *     '$Date: 2001-05-29 22:50:18 $'
+ * '$Revision: 1.20 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -47,6 +47,9 @@ public class PackageWizard extends javax.swing.JFrame
   JPanelWrapper docPanel;
   private String saxparser;
   private ClientFramework framework;
+  private String globalDtd;
+  private String globalDoctype;
+  private String globalRoot;
   
   /**
    * constructor which initializes the window based on the paramater values
@@ -86,6 +89,10 @@ public class PackageWizard extends javax.swing.JFrame
       FileReader xml = new FileReader(mainFile);
       pwp = new PackageWizardParser(xml, saxparser);
       doc = pwp.getDoc();
+      globalDtd = pwp.getDtd();
+      globalDoctype = pwp.getDoctype();
+      globalRoot = pwp.getRoot();
+      
       Hashtable wizardAtts = doc.attributes;
       String size = (String)wizardAtts.get("size");
       
@@ -102,42 +109,6 @@ public class PackageWizard extends javax.swing.JFrame
     {
       framework.debug(9, "error initializing custom frame");
       e.printStackTrace();
-    }
-  }
-  
-  /**
-   * This method, given a document map (a list of all of the paths in the 
-   * document) and a hashtable keying these paths against their textual content,
-   * attempts to find the path in XMLElement e and add content to it's 
-   * defaulttext attribute.
-   */
-  private void createFieldEnum(XMLElement e, Hashtable fieldEnum)
-  {
-    for(int i=0; i<e.content.size(); i++)
-    {
-      final XMLElement tempElement = (XMLElement)e.content.elementAt(i);
-      final int tempi = i;
-      
-      if(tempElement.name.equals("group"))
-      {
-        tempElement.attributes.put("type", "group");
-      }
-      else if(tempElement.name.equals("textbox"))
-      { 
-        tempElement.attributes.put("type", "textbox");
-      }
-      else if(tempElement.name.equals("combobox"))
-      {
-        tempElement.attributes.put("type", "combobox");
-      }
-      
-      if(tempElement.attributes.containsKey("field"))
-      {
-        fieldEnum.put(tempElement.attributes.get("field"), 
-                      tempElement.attributes);
-      }
-      
-      createFieldEnum(tempElement, fieldEnum);
     }
   }
   
@@ -212,7 +183,10 @@ public class PackageWizard extends javax.swing.JFrame
     { //only save the document if it is valid or if the user wants an invalid
       //document
       StringBuffer xmldoc = createDocumentContent(pathReps, content); //IMPORTANT
-      return xmldoc.toString();
+      String doctype = "<?xml version=\"1.0\"?>\n<!DOCTYPE " + globalRoot;
+      doctype += " PUBLIC \"" + globalDoctype + "\" \"" + globalDtd + "\">";
+      doctype += "\n" + xmldoc.toString();
+      return doctype;
     }
     else
     {
@@ -697,13 +671,14 @@ public class PackageWizard extends javax.swing.JFrame
           {
             allowNullS = (String)jtfw.element.attributes.get("allowNull");
             allowNullS = allowNullS.toUpperCase();
-            if(allowNullS.equals("FALSE"))
+            if(allowNullS.equals("NO"))
             {
               allowNullB = false;
             }
           }
           
           String jtfwContent = jtfw.getText();
+          
           if(jtfwContent.equals("") && !allowNullB)
           {
             paths.put("MISSINGREQUIREDELEMENTS", "true");
@@ -729,7 +704,7 @@ public class PackageWizard extends javax.swing.JFrame
           {
             allowNullS = (String)jcbw.element.attributes.get("allowNull");
             allowNullS = allowNullS.toUpperCase();
-            if(allowNullS.equals("FALSE"))
+            if(allowNullS.equals("NO"))
             {
               allowNullB = false;
             }
