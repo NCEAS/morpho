@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2004-03-20 00:44:55 $'
- * '$Revision: 1.20 $'
+ *     '$Date: 2004-03-22 06:58:15 $'
+ * '$Revision: 1.21 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -51,6 +51,12 @@ import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WidgetFactory;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardSettings;
 import edu.ucsb.nceas.morpho.util.Log;
 import edu.ucsb.nceas.utilities.OrderedMap;
+import edu.ucsb.nceas.morpho.framework.MorphoFrame;
+import edu.ucsb.nceas.morpho.datapackage.DataViewContainerPanel;
+import edu.ucsb.nceas.morpho.datapackage.AbstractDataPackage;
+import edu.ucsb.nceas.morpho.framework.UIController;
+import org.w3c.dom.Node;
+import edu.ucsb.nceas.utilities.XMLUtilities;
 
 
 public class PartyPage extends AbstractUIPage {
@@ -75,6 +81,8 @@ public class PartyPage extends AbstractUIPage {
 
   // xpath for the this page
   private String xPathRoot = "/eml:eml/dataset/creator[1]";
+
+  private final String NAME_ROLE_SEPARATOR = ", ";
 
   // variables to descrive role
   private short role;
@@ -213,7 +221,7 @@ public class PartyPage extends AbstractUIPage {
 
     final PartyPage instance = this;
 
-    // create itemlistener for
+    // create itemlistener for references list
 
     ItemListener ilistener = new ItemListener() {
       public void itemStateChanged(ItemEvent e) {
@@ -306,6 +314,7 @@ public class PartyPage extends AbstractUIPage {
     String listValues[] = {};
     listCombo = WidgetFactory.makePickList(listValues, false, 0,
                                            ilistener);
+
     listPanel.add(listCombo);
     middlePanel.add(listPanel);
 
@@ -617,7 +626,7 @@ public class PartyPage extends AbstractUIPage {
       String role = (String) rowList.get(1);
       String row = "";
       if (name != "") {
-        row = name + ", " + role;
+        row = name + NAME_ROLE_SEPARATOR + role;
       }
       listCombo.addItem(row);
     }
@@ -688,7 +697,7 @@ public class PartyPage extends AbstractUIPage {
       urlField.setText("");
     }
     else {
-      // if Page is no null - copy all teh values.
+      // if Page is no null - copy all the values.
       if (rolePickList != null) {
         rolePickList.addItem(Page.getRole());
         rolePickList.setSelectedItem(Page.getRole());
@@ -766,7 +775,7 @@ public class PartyPage extends AbstractUIPage {
     if (role == ASSOCIATED || role == PERSONNEL) {
       currentRole = (String) rolePickList.getSelectedItem();
 
-      if (notNullAndNotEmpty(currentRole.trim())) {
+      if (notNullAndNotEmpty(currentRole)) {
 
         WidgetFactory.unhiliteComponent(roleLabel);
 
@@ -1205,7 +1214,8 @@ public class PartyPage extends AbstractUIPage {
 
     //role (second column) surrogate:
     if (role == ASSOCIATED || role == PERSONNEL) {
-      surrogate.add(roleString + " (" + currentRole.trim() + ")");
+      surrogate.add(roleString + " ("
+                    +  ((String) rolePickList.getSelectedItem()).trim() + ")");
     }
     else {
       surrogate.add(roleString);
@@ -1270,7 +1280,7 @@ public class PartyPage extends AbstractUIPage {
   // NOTE - assumes string has already been trimmed
   // of leading & trailing whitespace
   private boolean notNullAndNotEmpty(String arg) {
-    return (arg != null && ! (arg.equals("")));
+    return (arg != null && !(arg.equals("")));
   }
 
   /**
@@ -1388,11 +1398,11 @@ public class PartyPage extends AbstractUIPage {
     }
 
     if (role == ASSOCIATED || role == PERSONNEL) {
-      nextText = currentRole.trim();
-      if (notNullAndNotEmpty(nextText)) {
+
+      if (currentRole!=null && currentRole.trim().length() > 0) {
+        nextText = currentRole.trim();
         returnMap.put(xPathRoot + "/role", nextText);
       }
-
     }
 
     return returnMap;
@@ -1401,70 +1411,128 @@ public class PartyPage extends AbstractUIPage {
 
   public void setPageData(OrderedMap map, String _xPathRoot) {
 
+Log.debug(45, "PartyPage.setPageData() called with _xPathRoot = "+_xPathRoot
+              +"\n Map = \n"+map);
+
+// ultimately, we need to be able to get a list of available refs from
+// datapackage and display them. For now, just hide picklist
+    listCombo.setVisible(false);
+
+    radioPanel.setVisible(false);
+
+
     if (_xPathRoot!=null && _xPathRoot.trim().length() > 0) this.xPathRoot = _xPathRoot;
+
+    String xpathRootNoPredicates = stripPredicates(this.xPathRoot);
+
+    while (xpathRootNoPredicates.endsWith("/")) {
+      xpathRootNoPredicates
+          = xpathRootNoPredicates.substring(0,xpathRootNoPredicates.length()-1);
+    }
+Log.debug(45, "PartyPage.setPageData() stripPredicates(xPathRoot) = "+xpathRootNoPredicates);
 
     OrderedMap map2 = map;
     map = stripIndexOneFromMapKeys(map);
 
-    String name = (String) map.get(xPathRoot + "/individualName/salutation");
+Log.debug(45, "PartyPage.setPageData() after stripIndexOneFromMapKeys. map = \n"+map);
+
+    // check if it's a reference:
+    String ref = (String)map.get(xpathRootNoPredicates + "/references");
+    if (notNullAndNotEmpty(ref)) {
+
+      //get party details from AbstractDataPackage...
+      AbstractDataPackage abs = getAbstractDataPackage();
+      if (abs == null) {
+
+        Log.debug(45,
+                  "*** ERROR - PartyPage.setPageData() can't get AbstractDataPkg");
+        return;
+      }
+      Node referencedPartyNode = abs.getSubtreeAtReference(ref);
+
+      if (referencedPartyNode != null) {
+        map = XMLUtilities.getDOMTreeAsXPathMap(referencedPartyNode);
+      } else {
+
+        Log.debug(45,
+                  "*** ERROR - PartyPage.setPageData() can't get referenced party");
+        return;
+      }
+      Log.debug(45, "Got referenced map " + map);
+
+      this.setEditable(false);
+
+      radioPanel.setVisible(true);
+    }
+
+    //role
+    if (role == ASSOCIATED || role == PERSONNEL) {
+      String role = (String) map.get(xpathRootNoPredicates + "/role");
+         if (role != null) {
+           rolePickList.addItem(role);
+           rolePickList.setSelectedItem(role);
+        }
+    }
+
+    String name = (String) map.get(xpathRootNoPredicates + "/individualName/salutation");
     if (name != null) {
       salutationField.setText(name);
     }
-    name = (String) map.get(xPathRoot + "/individualName/givenName");
+    name = (String) map.get(xpathRootNoPredicates + "/individualName/givenName");
     if (name != null) {
       firstNameField.setText(name);
     }
-    name = (String) map.get(xPathRoot + "/individualName/surName");
+    name = (String) map.get(xpathRootNoPredicates + "/individualName/surName");
     if (name != null) {
       lastNameField.setText(name);
     }
-    name = (String) map.get(xPathRoot + "/organizationName");
+    name = (String) map.get(xpathRootNoPredicates + "/organizationName");
     if (name != null) {
       organizationField.setText(name);
     }
-    name = (String) map.get(xPathRoot + "/positionName");
+    name = (String) map.get(xpathRootNoPredicates + "/positionName");
     if (name != null) {
       positionNameField.setText(name);
     }
-    name = (String) map.get(xPathRoot + "/address/deliveryPoint");
+    name = (String) map.get(xpathRootNoPredicates + "/address/deliveryPoint");
     if (name != null) {
       address1Field.setText(name);
     }
-    name = (String) map2.get(xPathRoot + "/address[1]/deliveryPoint[2]");
+    name = (String) map2.get(xpathRootNoPredicates + "/address[1]/deliveryPoint[2]");
     if (name != null) {
       address2Field.setText(name);
     }
-    name = (String) map.get(xPathRoot + "/address/city");
+    name = (String) map.get(xpathRootNoPredicates + "/address/city");
     if (name != null) {
       cityField.setText(name);
     }
-    name = (String) map.get(xPathRoot + "/address/administrativeArea");
+    name = (String) map.get(xpathRootNoPredicates + "/address/administrativeArea");
     if (name != null) {
       stateField.setText(name);
     }
-    name = (String) map.get(xPathRoot + "/address/postalCode");
+    name = (String) map.get(xpathRootNoPredicates + "/address/postalCode");
     if (name != null) {
       zipField.setText(name);
     }
-    name = (String) map.get(xPathRoot + "/address/country");
+    name = (String) map.get(xpathRootNoPredicates + "/address/country");
     if (name != null) {
       countryField.setText(name);
     }
-    name = (String) map2.get(xPathRoot + "/phone[1]");
-    String type = (String) map2.get(xPathRoot + "/phone[1]/@phonetype");
+    name = (String) map2.get(xpathRootNoPredicates + "/phone[1]");
+    String type = (String) map2.get(xpathRootNoPredicates + "/phone[1]/@phonetype");
     if ( (name != null) && (type.equals("voice"))) {
       phoneField.setText(name);
     }
-    name = (String) map2.get(xPathRoot + "/phone[2]");
-    type = (String) map2.get(xPathRoot + "/phone[2]/@phonetype");
+    name = (String) map2.get(xpathRootNoPredicates + "/phone[2]");
+    type = (String) map2.get(xpathRootNoPredicates + "/phone[2]/@phonetype");
     if ( (name != null) && (type.equals("fax"))) {
       faxField.setText(name);
     }
-    name = (String) map.get(xPathRoot + "/electronicMailAddress");
+    name = (String) map.get(xpathRootNoPredicates + "/electronicMailAddress");
     if (name != null) {
       emailField.setText(name);
     }
-    name = (String) map.get(xPathRoot + "/onlineUrl");
+    name = (String) map.get(xpathRootNoPredicates + "/onlineUrl");
     if (name != null) {
       urlField.setText(name);
     }
@@ -1473,25 +1541,55 @@ public class PartyPage extends AbstractUIPage {
 
   private OrderedMap stripIndexOneFromMapKeys(OrderedMap map) {
 
-     OrderedMap newMap = new OrderedMap();
-     Iterator it = map.keySet().iterator();
-     while(it.hasNext()) {
-       String key = (String) it.next();
-       String val = (String)map.get(key);
-       int pos;
-       if((pos = key.indexOf("[1]")) < 0) {
-         newMap.put(key, val);
-         continue;
-       }
-       String newKey = "";
-       for(;pos != -1; pos = key.indexOf("[1]")){
-         newKey += key.substring(0,pos);
-         key = key.substring(pos + 3);
-       }
-       newKey += key;
-       newMap.put(newKey, val);
-     }
-     return newMap;
-   }
+    OrderedMap newMap = new OrderedMap();
+    Iterator it = map.keySet().iterator();
+    while(it.hasNext()) {
+      String key = (String) it.next();
+      String val = (String)map.get(key);
+      newMap.put(stripPredicates(key), val);
+    }
+    return newMap;
+  }
+
+
+  private StringBuffer strippedXPathBuff = new StringBuffer();
+  //
+  private String stripPredicates(String xpath) {
+
+    int pos;
+    if ((pos = xpath.indexOf("[")) < 0) return xpath;
+
+    strippedXPathBuff.delete(0, strippedXPathBuff.length());
+
+    for (; pos != -1; pos = xpath.indexOf("[")) {
+      strippedXPathBuff.append(xpath.substring(0, pos));
+      pos = 1 + xpath.indexOf("]");
+      if (pos < 1) pos = xpath.length();
+      xpath = xpath.substring(pos);
+    }
+    strippedXPathBuff.append(xpath);
+
+    return strippedXPathBuff.toString();
+  }
+
+
+  private AbstractDataPackage getAbstractDataPackage() {
+
+    MorphoFrame morphoFrame = UIController.getInstance().getCurrentActiveWindow();
+
+    if (morphoFrame == null) {
+
+      Log.debug(20, "PartyPage setPageData() - morphoFrame==null");
+      return null;
+    }
+    DataViewContainerPanel dataViewContainerPanel = morphoFrame.
+                                                    getDataViewContainerPanel();
+    if (dataViewContainerPanel == null) {
+
+      Log.debug(20, "PartyPage setPageData() - dataViewContainerPanel==null");
+      return null;
+    }
+    return dataViewContainerPanel.getAbstractDataPackage();
+  }
 
 }

@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2004-03-20 00:44:55 $'
- * '$Revision: 1.5 $'
+ *     '$Date: 2004-03-22 06:58:15 $'
+ * '$Revision: 1.6 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -53,7 +53,11 @@ import org.w3c.dom.Node;
  */
 public class AddResearchProjectCommand implements Command {
 
+  //generic name for lookup in eml listings
   private final String DATAPACKAGE_PROJECT_GENERIC_NAME = "project";
+
+  //generic name for lookup in eml listings
+  private final String PROJECT_SUBTREE_NODENAME = "/project/";
 
   public AddResearchProjectCommand() {}
 
@@ -123,7 +127,7 @@ public class AddResearchProjectCommand implements Command {
     }
     Log.debug(45, "sending previous data to projectPage -\n\n" + existingValuesMap);
 
-    projectPage.setPageData(existingValuesMap, null);
+    projectPage.setPageData(existingValuesMap, PROJECT_SUBTREE_NODENAME);
 
     ModalDialog dialog = new ModalDialog(projectPage,
                             UIController.getInstance().getCurrentActiveWindow(),
@@ -136,7 +140,7 @@ public class AddResearchProjectCommand implements Command {
 
   private void insertProject() {
 
-    OrderedMap map = projectPage.getPageData("/");
+    OrderedMap map = projectPage.getPageData(PROJECT_SUBTREE_NODENAME);
 
 Log.debug(45, "got project details from Project page -\n\n" + map.toString());
 

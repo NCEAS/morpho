@@ -6,9 +6,9 @@
  *    Authors: Saurabh Garg
  *    Release: @release@
  *
- *   '$Author: sgarg $'
- *     '$Date: 2004-03-20 02:09:44 $'
- * '$Revision: 1.23 $'
+ *   '$Author: brooke $'
+ *     '$Date: 2004-03-22 06:58:15 $'
+ * '$Revision: 1.24 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -41,6 +41,7 @@ import edu.ucsb.nceas.morpho.util.Log;
 import edu.ucsb.nceas.morpho.util.UISettings;
 import edu.ucsb.nceas.utilities.OrderedMap;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -55,7 +56,6 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
-import java.util.ArrayList;
 
 public class Project extends AbstractUIPage {
 
@@ -77,6 +77,7 @@ public class Project extends AbstractUIPage {
   private final String FUNDING_REL_XPATH   = "funding[1]/para[1]";
   private final String PERSONNEL_REL_XPATH = "personnel[";
 
+  private String xPathRoot = PROJECT_ROOT;
 
   private final String[] buttonsText = new String[] {
       "This project is part of a larger, umbrella research project"
@@ -344,8 +345,9 @@ public class Project extends AbstractUIPage {
 
   public OrderedMap getPageData(String rootXPath) {
 
-    if (rootXPath==null) rootXPath = "";
+    if (rootXPath==null) rootXPath = XPATH_ROOT;
     rootXPath = rootXPath.trim();
+    if (rootXPath.length() < 1) rootXPath = XPATH_ROOT;
     if (!rootXPath.endsWith("/")) rootXPath += "/";
 
     returnMap.clear();
@@ -452,8 +454,7 @@ public class Project extends AbstractUIPage {
 
   public void setPageData(OrderedMap data, String _xPathRoot) {
 
-    //if (_xPathRoot!=null && _xPathRoot.trim().length() > 0) this.xPathRoot = _xPathRoot;
-
+    if (_xPathRoot!=null && _xPathRoot.trim().length() > 0) this.xPathRoot = _xPathRoot;
 
     if (data == null || data.isEmpty())return;
 
@@ -466,6 +467,8 @@ public class Project extends AbstractUIPage {
     Object nextValObj = null;
     String nextVal = null;
 
+    List personnelList = new ArrayList();
+
     while (it.hasNext()) {
 
       nextXPathObj = it.next();
@@ -475,18 +478,15 @@ public class Project extends AbstractUIPage {
       nextValObj = data.get(nextXPathObj);
       nextVal = (nextValObj == null) ? "" : ((String)nextValObj).trim();
 
-      Log.debug(45, " nextXPath = " + nextXPath + "\n nextVal   = " + nextVal);
+      Log.debug(45, "Project:  nextXPath = " + nextXPath + "\n nextVal   = " + nextVal);
 
       // remove everything up to and including the last occurrence of
-      // PROJECT_ROOT to get relative xpaths, in case we're handling a
+      // this.xPathRoot to get relative xpaths, in case we're handling a
       // project elsewhere in the tree...
-      nextXPath = nextXPath.substring(nextXPath.lastIndexOf(PROJECT_ROOT)
-                                      + PROJECT_ROOT.length());
+      nextXPath = nextXPath.substring(nextXPath.lastIndexOf(this.xPathRoot)
+                                      + this.xPathRoot.length());
 
-      Log.debug(45, " TRIMMED nextXPath   = " + nextXPath);
-      Log.debug(45, " TITLE_REL_XPATH     = " + TITLE_REL_XPATH);
-      Log.debug(45, " FUNDING_REL_XPATH   = " + FUNDING_REL_XPATH);
-      Log.debug(45, " PERSONNEL_REL_XPATH = " + PERSONNEL_REL_XPATH);
+      Log.debug(45, "Project: TRIMMED nextXPath   = " + nextXPath);
 
       if (nextXPath.startsWith(TITLE_REL_XPATH)) {
 
@@ -498,77 +498,41 @@ public class Project extends AbstractUIPage {
 
       } else if (nextXPath.startsWith(PERSONNEL_REL_XPATH)) {
 
-        personnelMap.put(nextXPath, nextValObj);
-
+        Log.debug(15,">>>>>>>>>> adding to personnelList: nextXPathObj="+nextXPathObj+"; nextValObj="+nextValObj);
+        addToPersonnel(nextXPathObj, nextValObj, personnelList);
       } else {
 
         hiddenFieldsMap.put(nextXPathObj, nextValObj);
       }
     }
 
-    // now we have all personnel in one map, need to sort them out, create a new
-    // party object for each, and add it to the list
-    Object nextPersonnelXPathObj = null;
-    String nextPersonnelXPath = null;
-    Object nextPersonnelValObj = null;
-    String nextPersonnelVal = null;
-    List personnelList = new ArrayList();
-    // NOTE predicate is 1-relative, but List indices are 0-relative!!!
-    //add a dummy entry for index 0
-    personnelList.add(null);
+    Iterator itp2 = personnelList.iterator();
+    Object nextPersonnelMapObj = null;
+    OrderedMap nextPersonnelMap = null;
+    int partyPredicate = 1;
 
-    Iterator itp = personnelMap.keySet().iterator();
+    partiesList.removeAllRows();
 
-    while (itp.hasNext()) {
+    while (itp2.hasNext()) {
 
-      nextPersonnelXPathObj = itp.next();
-      if (nextPersonnelXPathObj == null)continue;
-      nextPersonnelXPath = (String)nextPersonnelXPathObj;
+      nextPersonnelMapObj = itp2.next();
+      if (nextPersonnelMapObj == null) continue;
+      nextPersonnelMap = (OrderedMap)nextPersonnelMapObj;
+      if (nextPersonnelMap.isEmpty()) continue;
 
-      nextPersonnelValObj = data.get(nextXPathObj);
-      nextPersonnelVal = (nextPersonnelValObj == null) ? ""
-                         : ((String)nextPersonnelValObj).trim();
+      PartyPage nextParty = (PartyPage)WizardPageLibrary.getPage(
+          DataPackageWizardInterface.PARTY_PAGE);
 
-      int predicate = getFirstPredicate(nextPersonnelXPath, PERSONNEL_REL_XPATH);
+      nextParty.setRole(PartyPage.PERSONNEL);
 
-Log.debug(50, "predicate = "+predicate);
-      // NOTE predicate is 1-relative, but List indices are 0-relative!!!
-      if (predicate > personnelList.size()-1) {
+      nextParty.setPageData(nextPersonnelMap, this.xPathRoot
+                            + PERSONNEL_REL_XPATH + (partyPredicate++) + "]/");
 
-Log.debug(50, "predicate > personnelList.size()-1 -- adding entries -- \npersonnelList.size() BEFORE = "+personnelList.size());
+      List newRow = nextParty.getSurrogate();
+      newRow.add(nextParty);
 
-        for (int i=1; i < (predicate - personnelList.size()); i++) {
-          personnelList.add(null);
-        }
-Log.debug(50, "personnelList.size() AFTER = "+personnelList.size());
-      }
-      if (personnelList.get(predicate) == null) {
-
-        Log.debug(50, "personnelList.get("+predicate+") = NULL - creating new map");
-
-        //new predicate - create map for this predicate number and add to list
-        OrderedMap partyMap = new OrderedMap();
-//        partyMap.add();
-      }
+      partiesList.addRow(newRow);
     }
-
-//
-//    Iterator itp2 = personnelMap.keySet().iterator();
-//
-//    while (itp2.hasNext()) {
-//
-//      nextPersonnelXPathObj = itp2.next();
-//      if (nextPersonnelXPathObj == null)continue;
-//      nextPersonnelXPath = (String)nextPersonnelXPathObj;
-//
-//      nextPersonnelValObj = data.get(nextXPathObj);
-//      nextPersonnelVal = (nextPersonnelValObj == null) ? ""
-//                         : ((String)nextPersonnelValObj).trim();
-//
-//      int predicate = getFirstPredicate(nextPersonnelXPath, PERSONNEL_REL_XPATH);
-//
-//      if (predicate > largestPredicate) largestPredicate = predicate;
-//    }
   }
 
 
@@ -580,6 +544,39 @@ Log.debug(50, "personnelList.size() AFTER = "+personnelList.size());
     return Integer.parseInt(
         tempXPath.substring(0, tempXPath.indexOf("]")));
   }
+
+
+  private void addToPersonnel(Object nextPersonnelXPathObj,
+                              Object nextPersonnelVal, List personnelList) {
+
+    if (nextPersonnelXPathObj == null) return;
+    String nextPersonnelXPath = (String)nextPersonnelXPathObj;
+    int predicate = getFirstPredicate(nextPersonnelXPath, PERSONNEL_REL_XPATH);
+//Log.debug(45, "~~~~~~~~~~~ predicate="+predicate+"; personnelList.size()="+personnelList.size());
+// NOTE predicate is 1-relative, but List indices are 0-relative!!!
+    if (predicate >= personnelList.size()) {
+
+//Log.debug(45, "~~~~~~~~~~~ predicate >= personnelList.size(); making list bigger...");
+      for (int i = personnelList.size(); i <= predicate; i++) {
+        personnelList.add(new OrderedMap());
+//Log.debug(45, "~~~~~~~~~~~ added "+1);
+      }
+//Log.debug(45, "~~~~~~~~~~~ personnelList.size() now = "+personnelList.size());
+    }
+//Log.debug(45, "~~~~~~~~~~~ predicate="+predicate+"; personnelList.size()="+personnelList.size());
+
+    if (predicate < personnelList.size()) {
+      Object nextMapObj = personnelList.get(predicate);
+      OrderedMap nextMap = (OrderedMap)nextMapObj;
+//Log.debug(45,"~~~~~~~~~~~ adding to map: nextPersonnelXPathObj="
+//                +nextPersonnelXPathObj+"; nextPersonnelVal="+nextPersonnelVal);
+      nextMap.put(nextPersonnelXPathObj, nextPersonnelVal);
+    } else {
+
+      Log.debug(15,"**** ERROR - Project.addToPersonnel() - predicate > personnelList.size()");
+    }
+  }
+
 }
 
 
