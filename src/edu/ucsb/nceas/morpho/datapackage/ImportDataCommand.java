@@ -5,9 +5,9 @@
  *    Authors: @tao@
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2003-12-11 06:41:05 $'
- * '$Revision: 1.7 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2003-12-12 06:00:57 $'
+ * '$Revision: 1.8 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -42,6 +42,9 @@ import edu.ucsb.nceas.morpho.util.Log;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import javax.swing.JDialog;
+
+import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
+
 
 import org.w3c.dom.Node;
 import edu.ucsb.nceas.utilities.XMLUtilities;
@@ -131,6 +134,20 @@ public class ImportDataCommand implements Command
 
               Log.debug(30,"Adding Entity object to AbstractDataPackage..");
               adp.addEntity(entity);
+// ---DFH							
+    try 
+    {
+      ServiceController services = ServiceController.getInstance();
+      ServiceProvider provider = 
+                      services.getServiceProvider(DataPackageInterface.class);
+      DataPackageInterface dataPackageInt = (DataPackageInterface)provider;
+      dataPackageInt.openNewDataPackage(adp, null);
+    }
+    catch (ServiceNotHandledException snhe) 
+    {
+       Log.debug(6, snhe.getMessage());
+    }
+							
             }
   
             public void wizardCanceled() {
