@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2002-09-13 21:21:12 $'
- * '$Revision: 1.43 $'
+ *     '$Date: 2002-09-13 22:57:49 $'
+ * '$Revision: 1.44 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1599,7 +1599,7 @@ public class DataViewer extends javax.swing.JPanel
           FileReader frPhy = null;
           FileReader frEnt = null;
          try{
-            ptm.getPersistentVector().writeObjects(tempdir + "/" + "tempdata");
+           //ptm.getPersistentVector().writeObjects(tempdir + "/" + "tempdata");
             tempfile = new File(tempdir + "/" + "tempdata");
             fr = new FileReader(tempfile);
           }
