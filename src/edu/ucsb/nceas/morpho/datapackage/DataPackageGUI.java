@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-11-29 22:36:05 $'
- * '$Revision: 1.68 $'
+ *     '$Date: 2001-11-30 15:50:55 $'
+ * '$Revision: 1.69 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -339,10 +339,6 @@ public class DataPackageGUI extends javax.swing.JFrame
     editBaseInfoButton = new JButton("Edit");
     editBaseInfoButton.addActionListener(this);
     editBaseInfoButton.setActionCommand("Edit Basic Information");
-    //the button to upload the package to metacat
-    JButton uploadButton = new JButton("Upload");
-    uploadButton.addActionListener(this);
-    uploadButton.setActionCommand("upload");
     //the top label
     JLabel headerLabel = new JLabel(htmlBegin + 
                                     "<font size=4>Basic Package Information" +
@@ -352,7 +348,6 @@ public class DataPackageGUI extends javax.swing.JFrame
     headerPanel.add(headerLabel);
     headerPanel.add(Box.createHorizontalGlue());
     headerPanel.add(editBaseInfoButton);
-    //headerPanel.add(uploadButton);
     headerPanel.setBackground(Color.white);
     
     Document doc = dataPackage.getTripleFileDom();
@@ -915,33 +910,6 @@ public class DataPackageGUI extends javax.swing.JFrame
       EntityGUI entityEdit = new EntityGUI(dataPackage, id, location, this, 
                                            framework);
       entityEdit.show();
-    }
-    else if(command.equals("upload"))
-    {
-      if(dataPackage.getLocation().equals(DataPackage.BOTH) ||
-         dataPackage.getLocation().equals(DataPackage.METACAT))
-      {
-        ClientFramework.debug(0, "The package is already uploaded.");
-      }
-      else
-      {
-        dataPackage.upload();
-        this.dispose();
-        DataPackage newdp = new DataPackage(DataPackage.BOTH, 
-                                            dataPackage.getID(),
-                                            null,
-                                            framework);
-        DataPackageGUI dpg = new DataPackageGUI(framework, newdp);
-        // Refresh the query results after the edit is completed
-        try {
-          ServiceProvider provider = 
-                 framework.getServiceProvider(QueryRefreshInterface.class);
-          ((QueryRefreshInterface)provider).refresh();
-        } catch (ServiceNotHandledException snhe) {
-          framework.debug(6, snhe.getMessage());
-        }
-        dpg.show();
-      }
     }
   }
   
