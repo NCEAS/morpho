@@ -62,9 +62,9 @@
     <mainFrame>Resource</mainFrame>
     <frame>
       <frameName>Resource</frameName>
-      <frameConfigFile>./lib/frames/resource.xml</frameConfigFile>
+      <frameConfigFile>frames/resource.xml</frameConfigFile>
       <frameName>Entity</frameName>
-      <frameConfigFile>./lib/frames/entity.xml</frameConfigFile>
+      <frameConfigFile>frames/entity.xml</frameConfigFile>
     </frame>
   </customFrames>
   <newxmlfiletypes>

@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2002-04-10 00:06:25 $'
- * '$Revision: 1.65.2.1 $'
+ *     '$Date: 2002-05-01 16:44:25 $'
+ * '$Revision: 1.65.2.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -163,8 +163,11 @@ public class PackageWizardShell extends javax.swing.JFrame
       //File xmlfile = new File(wizardFile);
       //FileReader xml = new FileReader(xmlfile);
       ClassLoader cl = this.getClass().getClassLoader();
-      BufferedReader xml = new BufferedReader(new InputStreamReader(
-                                            cl.getResourceAsStream(wizardFile)));
+      InputStream is = cl.getResourceAsStream(wizardFile);
+      if (is == null) {
+          framework.debug(10, "Null input stream returned for resource.");
+      }
+      BufferedReader xml = new BufferedReader(new InputStreamReader(is));
       pwsp = new PackageWizardShellParser(xml, saxparser);
     }
     catch(Exception e)
