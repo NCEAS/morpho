@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2002-12-18 01:00:08 $'
- * '$Revision: 1.52 $'
+ *     '$Date: 2002-12-18 17:48:24 $'
+ * '$Revision: 1.53 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -79,7 +79,16 @@ public class DataViewContainerPanel extends javax.swing.JPanel
                         StoreStateChangeEvent,
                         EditingCompleteListener
 {
-
+  /**
+   * top-panel metaviewer default title at startup
+   */
+  private static final String TOP_METAVIEW_TITLE = "Data Package Documentation";
+    
+  /**
+   * top-panel metaviewer default title at startup
+   */
+  private static final String RIGHT_METAVIEW_TITLE = "Entity/Attribute";
+    
   /**
    * The DataPackage that contains the data
    */
@@ -408,6 +417,7 @@ public class DataViewContainerPanel extends javax.swing.JPanel
 // --------- E N T I T Y / A T T R I B U T E   M e t a D i s p l a y -----------
       MetaDisplayInterface md = getMetaDisplayInstance();
       md.addEditingCompleteListener(this);
+      md.setTitle(RIGHT_METAVIEW_TITLE);
       Component mdcomponent = null;
       try{
         mdcomponent = md.getDisplayComponent(id, dp, 
@@ -485,6 +495,7 @@ public class DataViewContainerPanel extends javax.swing.JPanel
 // -------------- D A T A P A C K A G E   M e t a D i s p l a y ----------------
       MetaDisplayInterface md = getMetaDisplayInstance();
       md.addEditingCompleteListener(this);
+      md.setTitle(TOP_METAVIEW_TITLE);
       Component mdcomponent = null;
   
       if (hasData) {
@@ -934,11 +945,10 @@ public class DataViewContainerPanel extends javax.swing.JPanel
                 Log.debug(50,"HORIZONAL_SPLIT, closedPosition="+closedPosition);
               }
               entitySplitPane.setDividerLocation(closedPosition);
-
       }
     }
   }
-  
+
   public void editingCompleted(String xmlString, String id, String location) {
 
     Log.debug(11, "editing complete: id: " + id + " location: " + location);
