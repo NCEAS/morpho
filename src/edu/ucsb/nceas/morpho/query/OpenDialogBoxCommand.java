@@ -5,9 +5,9 @@
  *    Authors: @tao@
  *    Release: @release@
  *
- *   '$Author: cjones $'
- *     '$Date: 2002-09-26 01:57:53 $'
- * '$Revision: 1.11 $'
+ *   '$Author: brooke $'
+ *     '$Date: 2002-12-18 01:02:22 $'
+ * '$Revision: 1.12 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -94,6 +94,7 @@ public class OpenDialogBoxCommand implements Command
         {
           // set frame butterfly flapping
           morphoFrame.setBusy(true);
+          morphoFrame.setEnabled(false);
           open = new OpenDialogBox(morphoFrame, morpho, ownerQuery);
           return null;  
         }
@@ -101,6 +102,7 @@ public class OpenDialogBoxCommand implements Command
         //Runs on the event-dispatching thread.
         public void finished() 
         {
+          morphoFrame.setEnabled(true);
           morphoFrame.setBusy(false);
           // Set the open dialog box modal true
           open.setModal(true);

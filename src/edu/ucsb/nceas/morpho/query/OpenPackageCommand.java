@@ -5,9 +5,9 @@
  *    Authors: @tao@
  *    Release: @release@
  *
- *   '$Author: cjones $'
- *     '$Date: 2002-09-26 01:57:53 $'
- * '$Revision: 1.8 $'
+ *   '$Author: brooke $'
+ *     '$Date: 2002-12-18 01:02:22 $'
+ * '$Revision: 1.9 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -128,7 +128,8 @@ public class OpenPackageCommand implements Command, ButterflyFlapCoordinator
     {
       public Object construct()
       {
-        morphoFrame.setBusy(true);
+        startFlap();
+        
         try 
         {
           ServiceController services = ServiceController.getInstance();
@@ -146,7 +147,7 @@ public class OpenPackageCommand implements Command, ButterflyFlapCoordinator
       
       public void finished()
       {
-        morphoFrame.setBusy(false);
+        stopFlap();
       }//finish
     };//final
     worker.start();
@@ -159,6 +160,7 @@ public class OpenPackageCommand implements Command, ButterflyFlapCoordinator
   public void startFlap()
   {
     frame.setBusy(true);
+    frame.setEnabled(false);
   }
   
   /**
@@ -166,6 +168,7 @@ public class OpenPackageCommand implements Command, ButterflyFlapCoordinator
    */
   public void stopFlap()
   {
+    frame.setEnabled(true);
     frame.setBusy(false);
   }  
    /**
