@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-12-26 19:32:54 $'
- * '$Revision: 1.101 $'
+ *     '$Date: 2002-12-30 18:29:08 $'
+ * '$Revision: 1.102 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -2129,7 +2129,7 @@ public class DataPackage implements XMLFactoryInterface
     }
     else {
       // case where there is no access control file for package
-      Log.debug(1, "No access file in package!!!!");
+      Log.debug(11, "No access file in package!!!!");
     }
     if (missingIds.size()>0) {
       int choice = JOptionPane.showConfirmDialog(null, 
