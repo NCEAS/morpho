@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-11-20 20:12:48 $'
- * '$Revision: 1.29 $'
+ *     '$Date: 2004-02-06 18:37:01 $'
+ * '$Revision: 1.30 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -730,25 +730,25 @@ public class QueryDialog extends JDialog
     
     value = (new Double(liveMap.getTop()).toString());
     mode = "less-than";
-    path = "northbc";
+    path = "northBoundingCoordinate";
     QueryTerm maxLat = new QueryTerm(caseSensitive, mode, value, path);
     boundingBoxGroup.addChild(maxLat);
 
     value = (new Double(liveMap.getBottom()).toString());
     mode = "greater-than";
-    path = "northbc";
+    path = "northBoundingCoordinate";
     QueryTerm minLat = new QueryTerm(caseSensitive, mode, value, path);
     boundingBoxGroup.addChild(minLat);
 
     value = (new Double(liveMap.getRight()).toString());
     mode = "less-than";
-    path = "westbc";
+    path = "westBoundingCoordinate";
     QueryTerm maxLong = new QueryTerm(caseSensitive, mode, value, path);
     boundingBoxGroup.addChild(maxLong);
 
     value = (new Double(liveMap.getLeft()).toString());
     mode = "greater-than";
-    path = "westbc";
+    path = "westBoundingCoordinate";
     QueryTerm minLong = new QueryTerm(caseSensitive, mode, value, path);
     boundingBoxGroup.addChild(minLong);
 
