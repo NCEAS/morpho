@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-06-19 20:39:35 $'
- * '$Revision: 1.39 $'
+ *     '$Date: 2001-06-21 08:53:21 $'
+ * '$Revision: 1.40 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1006,7 +1006,12 @@ class SymTreeSelection implements javax.swing.event.TreeSelectionListener
                             tempStack.push(newnode);
                         }
                         int index1 = findDuplicateIndex(nextLevelInputNodes,index);
-                        ind.insert(newnode,index1);
+                        if (index1>=ind.getChildCount()) {
+                            ind.add(newnode);    
+                        }
+                        else {
+                            ind.insert(newnode,index1);
+                        }
                     }
             
                     if (((NodeInfo)tNode.getUserObject()).getName().equals("(CHOICE)")) {
@@ -1092,17 +1097,24 @@ private Vector sameParent(Vector list) {
  private int findDuplicateIndex(Vector vec, int indx) {
     int dupcount = 0;
     int uniquecount = 0;
+    int cnt = 0;
     if (indx==0) return 0;
+    if (indx>=(vec.size())) return indx;
     DefaultMutableTreeNode oldnd = (DefaultMutableTreeNode)vec.elementAt(0);
-    while ((uniquecount<indx)&&(dupcount<(vec.size()-1))) {
-      dupcount++;
-      DefaultMutableTreeNode nd = (DefaultMutableTreeNode)vec.elementAt(dupcount);
-      if (!simpleCompareNodes(oldnd, nd)) { uniquecount++; }
+    while ((uniquecount<indx)&&(cnt<(vec.size()-1))) {
+      cnt++;  
+      DefaultMutableTreeNode nd = (DefaultMutableTreeNode)vec.elementAt(cnt);
+      if (!simpleCompareNodes(oldnd, nd)) { 
+        uniquecount++; 
+      }
+      else {
+        dupcount++;
+      }
       oldnd = nd;
     }
-    return dupcount;
+    return (indx+dupcount);
  }
-
+ 
     /** treeTrim is designed to remove any nodes in the input that do not match the 
      * the nodes in the template tree; i.e. the goal is to remove undesirable nodes
      * from the input tree
