@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2001-05-30 17:52:09 $'
- * '$Revision: 1.47 $'
+ *     '$Date: 2001-06-07 01:33:33 $'
+ * '$Revision: 1.48 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -420,7 +420,7 @@ public class ClientFramework extends javax.swing.JFrame
    */
   private void initializeActions() {
     // FILE MENU ACTIONS
-    fileMenuActions = new Action[2];
+    fileMenuActions = new Action[3];
 
     Action exitItemAction = new AbstractAction("Exit") {
       public void actionPerformed(ActionEvent e) {
@@ -440,6 +440,16 @@ public class ClientFramework extends javax.swing.JFrame
     connectItemAction.putValue(Action.SHORT_DESCRIPTION, "Log In");
     connectItemAction.putValue("menuPosition", new Integer(0));
     fileMenuActions[1] = connectItemAction;
+
+    Action profileItemAction = new AbstractAction("New profile...") {
+      public void actionPerformed(ActionEvent e) {
+        createNewProfile();
+      }
+    };
+    profileItemAction.putValue(Action.SHORT_DESCRIPTION, "New Profile");
+    profileItemAction.putValue("menuPosition", new Integer(1));
+    fileMenuActions[2] = profileItemAction;
+
     addMenu("File", new Integer(1), fileMenuActions);
 
     // EDIT MENU ACTIONS
@@ -582,6 +592,10 @@ public class ClientFramework extends javax.swing.JFrame
     {
       // Beep
       Toolkit.getDefaultToolkit().beep();
+/*
+      // MBJ -- This dialog isn;t needed.  Really need to check for dirty
+      // documents and exit quickly if nothing is to be done.
+
       // Show a confirmation dialog
       int reply = JOptionPane.showConfirmDialog(this,
 						"Do you really want to exit?",
@@ -591,12 +605,15 @@ public class ClientFramework extends javax.swing.JFrame
       // If the confirmation was affirmative, handle exiting.
       if (reply == JOptionPane.YES_OPTION)
       {
+*/
         logOut();
         config.save();
         this.setVisible(false);	// hide the Frame
         this.dispose();		// free the system resources
         System.exit(0);		// close the application
+/*
       }
+*/
     }
     catch(Exception e)
     {
@@ -610,6 +627,15 @@ public class ClientFramework extends javax.swing.JFrame
   {
     ConnectionFrame cf = new ConnectionFrame(this);
     cf.setVisible(true);
+  }
+
+  /** 
+   * Create a new profile
+   */
+  private void createNewProfile()
+  {
+    ProfileDialog dialog = new ProfileDialog(this);
+    dialog.setVisible(true);
   }
 
   /** Listen for window closing events */
