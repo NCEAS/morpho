@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-06-19 22:00:18 $'
- * '$Revision: 1.20 $'
+ *     '$Date: 2001-06-19 22:38:09 $'
+ * '$Revision: 1.21 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -312,8 +312,12 @@ public class PackageWizardShell extends javax.swing.JFrame
             item = (String)itemnode.getFirstChild().getNodeValue().trim();
           }
         }
+        else
+        {
+          item = null;
+        }
         
-        if(!item.equals("InitialDescription"))
+        if(item != null && !item.equals("InitialDescription"))
         {
           listContent.add(item);
         }
@@ -451,6 +455,7 @@ public class PackageWizardShell extends javax.swing.JFrame
       {
         continue;
       }
+    
       Vector fileVec = new Vector();
       fileVec.addElement(wfc.id);
       fileVec.addElement(f);
@@ -507,7 +512,24 @@ public class PackageWizardShell extends javax.swing.JFrame
         for(int j=0; j<v.size(); j++)
         {
           String rel = (String)v.elementAt(j);
-          Triple t = new Triple(id, "isRelatedTo", rel);
+          Triple t = new Triple();
+          if(rel.equals("NULLDATAFILE"))
+          {
+            for(int k=0; k<frameWizards.size(); k++)
+            {
+              WizardFrameContainer wfc2 = (WizardFrameContainer)
+                                         frameWizards.elementAt(k);
+              if(((String)wfc2.attributes.get("name")).equals(triplesFile))
+              {
+                t = new Triple(id, "isRelatedTo", wfc2.id);
+                break;
+              }
+            }
+          }
+          else
+          {
+            t = new Triple(id, "isRelatedTo", rel);
+          }
           //System.out.println("triple: " + t.toString());
           tc.addTriple(t);
         }
@@ -1246,32 +1268,42 @@ public class PackageWizardShell extends javax.swing.JFrame
           id = a.getNextId();
         }
 
-        file = new File(textfield.getText());
-        originalDataFilePath = textfield.getText();
-        FileReader fr = null;
-        try
+        String filepath = textfield.getText().trim();
+        if(!filepath.equals(""))
         {
-          fr = new FileReader(file);
-        }
-        catch(FileNotFoundException fnfe)
-        {
-          JOptionPane.showConfirmDialog(panel,
-                                 "The file you selected was not found.",
-                                 "File Not Found", 
-                                 JOptionPane.OK_CANCEL_OPTION,
-                                 JOptionPane.WARNING_MESSAGE);
-          return null;
-        }
-        
-        if(temp)
-        {
-          file = localDataStore.saveTempFile(id, fr);
+          file = new File(filepath);
+          originalDataFilePath = textfield.getText();
+          FileReader fr = null;
+          try
+          {
+            fr = new FileReader(file);
+          }
+          catch(FileNotFoundException fnfe)
+          {
+            JOptionPane.showConfirmDialog(panel,
+                                   "The file you selected was not found.",
+                                   "File Not Found", 
+                                   JOptionPane.OK_CANCEL_OPTION,
+                                   JOptionPane.WARNING_MESSAGE);
+            return null;
+          }
+          
+          if(temp)
+          {
+            file = localDataStore.saveTempFile(id, fr);
+          }
+          else
+          {
+            file = localDataStore.saveFile(id, fr, false);
+          }
+          return this.file;
         }
         else
         {
-          file = localDataStore.saveFile(id, fr, false);
+          file = new File("NULLDATAFILE");
+          id = "NULLDATAFILE";
+          return this.file;
         }
-        return this.file;
       }
     }
   }
