@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2004-04-14 00:28:29 $'
- * '$Revision: 1.95 $'
+ *     '$Date: 2004-04-14 04:59:56 $'
+ * '$Revision: 1.96 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -821,6 +821,7 @@ public abstract class AbstractDataPackage extends MetadataObject
                     +"XMLUtilities.getNodeListWithXPath() returned NULL "
                     +"for xpath: /xpathKeyMap/insertionList[@name='"
                     +genericName+"']/prevNode");
+          return null;
         }
         for (int i=0;i<insertionList.getLength();i++) {
           Node nd = insertionList.item(i);

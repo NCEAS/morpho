@@ -6,9 +6,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2004-04-11 17:40:13 $'
- * '$Revision: 1.38 $'
+ *   '$Author: brooke $'
+ *     '$Date: 2004-04-14 04:59:56 $'
+ * '$Revision: 1.39 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -343,7 +343,6 @@ public class PartyMainPage
 
         boolean checkParty = nextPage.setPageData(
             map, "/" + DATAPACKAGE_PARTY_GENERIC_NAME);
-Log.debug(1, "HALT:" + "\n Map = \n" + map);            
       }
     }
   }

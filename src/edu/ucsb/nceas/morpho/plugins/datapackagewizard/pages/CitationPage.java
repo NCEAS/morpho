@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2004-04-14 00:41:31 $'
- * '$Revision: 1.11 $'
+ *     '$Date: 2004-04-14 04:59:56 $'
+ * '$Revision: 1.12 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -256,9 +256,7 @@ public class CitationPage extends AbstractUIPage {
       }
     };
 
-    citationTypeLabel = WidgetFactory.makeLabel(
-                                //"Select and define a Measurement Scale:"
-                                "Category:", true,
+    citationTypeLabel = WidgetFactory.makeLabel("Category:", true,
                                 WizardSettings.WIZARD_CONTENT_LABEL_DIMS);
 
     radioPanel = WidgetFactory.makeRadioPanel(typeElemNames, -1, listener);
@@ -675,28 +673,28 @@ public class CitationPage extends AbstractUIPage {
     return ((WizardPageSubPanelAPI)currentPanel).validateUserInput();
   }
 
-  private boolean isDate(String s) {
-    DateFormat dateFormat;
-    Date dt;
-    dateFormat = DateFormat.getDateInstance(DateFormat.SHORT);
-    boolean res = true;
-    try {
-      dt = dateFormat.parse(s);
-    } catch (Exception w) {
-      try {
-        dateFormat = DateFormat.getDateInstance(DateFormat.MEDIUM);
-        dt = dateFormat.parse(s);
-      } catch (Exception w1) {
-        try {
-          dateFormat = DateFormat.getDateInstance(DateFormat.LONG);
-          dt = dateFormat.parse(s);
-        } catch (Exception w2) {
-          res = false;
-        }
-      }
-    }
-    return res;
-  }
+//  private boolean isDate(String s) {
+//    DateFormat dateFormat;
+//    Date dt;
+//    dateFormat = DateFormat.getDateInstance(DateFormat.SHORT);
+//    boolean res = true;
+//    try {
+//      dt = dateFormat.parse(s);
+//    } catch (Exception w) {
+//      try {
+//        dateFormat = DateFormat.getDateInstance(DateFormat.MEDIUM);
+//        dt = dateFormat.parse(s);
+//      } catch (Exception w1) {
+//        try {
+//          dateFormat = DateFormat.getDateInstance(DateFormat.LONG);
+//          dt = dateFormat.parse(s);
+//        } catch (Exception w2) {
+//          res = false;
+//        }
+//      }
+//    }
+//    return res;
+//  }
 
   /**
    *  @return a List contaiing 2 String elements - one for each column of the

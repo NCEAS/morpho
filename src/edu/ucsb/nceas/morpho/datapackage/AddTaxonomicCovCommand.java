@@ -5,9 +5,9 @@
  *    Authors: Perumal Sambasivam
  *    Release: @release@
  *
- *   '$Author: sambasiv $'
- *     '$Date: 2004-04-12 02:37:24 $'
- * '$Revision: 1.13 $'
+ *   '$Author: brooke $'
+ *     '$Date: 2004-04-14 04:59:56 $'
+ * '$Revision: 1.14 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -55,19 +55,17 @@ import org.w3c.dom.NodeList;
  */
 public class AddTaxonomicCovCommand implements Command {
 
-  /* Flag if need to add coverage info*/
-  private boolean infoAddFlag = false;
-
-  /* Referrence to  morphoframe */
-  private MorphoFrame morphoFrame = null;
-
-  private DataViewContainerPanel resultPane;
   private AbstractUIPage taxonomicPage;
-  private DataViewer dataView;
-	private OrderedMap map;
-	
+
+
+  private OrderedMap existingValuesMap;
+
+  private final String TAXONOMIC_COVERAGE_SUBTREE_NODENAME =
+      "taxonomicCoverage";
+
   public AddTaxonomicCovCommand() {
-		map = new OrderedMap();
+
+    existingValuesMap = null;
   }
 
 
@@ -77,10 +75,10 @@ public class AddTaxonomicCovCommand implements Command {
    * @param event ActionEvent
    */
   public void execute(ActionEvent event) {
-		
-		
+
+
     showTaxonomicDialog();
-		
+
   }
 
 
@@ -101,79 +99,185 @@ public class AddTaxonomicCovCommand implements Command {
     if (dpwPlugin == null) {
       return;
     }
-		
-		
-    taxonomicPage = dpwPlugin.getPage(
-        DataPackageWizardInterface.TAXONOMIC);
-				
-		 boolean pageCanHandleAllData = insertCurrentData();
-    
-		if (pageCanHandleAllData) {
-			
-			ModalDialog wpd = new ModalDialog(taxonomicPage,
+
+
+    taxonomicPage = dpwPlugin.getPage(DataPackageWizardInterface.TAXONOMIC);
+
+     boolean pageCanHandleAllData = backupAndDisplayCurrentData();
+
+    if (pageCanHandleAllData) {
+
+      ModalDialog wpd = new ModalDialog(taxonomicPage,
                                 UIController.getInstance().getCurrentActiveWindow(),
                                 UISettings.WIZARD_WIDTH,
                                 UISettings.WIZARD_HEIGHT, false);
-																
-			wpd.setSize(UISettings.WIZARD_WIDTH, UISettings.WIZARD_HEIGHT);
-			wpd.setVisible(true);
-			
-			if (wpd.USER_RESPONSE == ModalDialog.OK_OPTION) {
-				
-				insertTaxonomicNode();
-			}
-			
-		} else {
-			
-			UIController.getInstance().launchEditorAtSubtreeForCurrentFrame(
+
+      wpd.setSize(UISettings.WIZARD_WIDTH, UISettings.WIZARD_HEIGHT);
+      wpd.setVisible(true);
+
+      if (wpd.USER_RESPONSE == ModalDialog.OK_OPTION) {
+
+        insertTaxonomicNode(
+          taxonomicPage.getPageData("/coverage/taxonomicCoverage[1]"));
+
+      } else {
+
+        //gets here if user has pressed "cancel" on dialog... ////////////////////
+
+        AbstractDataPackage adp = UIController.getInstance().
+                                  getCurrentAbstractDataPackage();
+
+        //Restore project subtree to state it was in when we started...
+
+        adp.removeTaxonomicNodes();
+        if (existingValuesMap != null) insertTaxonomicNode(existingValuesMap);
+      }
+
+    } else {
+
+      UIController.getInstance().launchEditorAtSubtreeForCurrentFrame(
           "coverage", 0);
-		}
+    }
 
     return;
   }
-	
-	private void insertTaxonomicNode() {
-		
-		OrderedMap map = taxonomicPage.getPageData("/coverage/taxonomicCoverage[1]");
-		AbstractDataPackage adp = UIController.getInstance().getCurrentAbstractDataPackage();
-		Node covRoot = null;
-		
-		try {
-			DOMImplementation impl = DOMImplementationImpl.getDOMImplementation();
-			Document doc = impl.createDocument("", "coverage", null);
-			
-			covRoot = doc.getDocumentElement();
-			XMLUtilities.getXPathMapAsDOMTree(map, covRoot);
-			NodeList kids = covRoot.getChildNodes();
-			adp.removeTaxonomicNodes();
-			for (int i=0;i<kids.getLength();i++) {
-				Node kid = kids.item(i);
-				adp.insertCoverage(kid);          
-			}
-		}
-		catch (Exception w) {
-			Log.debug(5, "Unable to add OrderMap elements to DOM");
-			w.printStackTrace();
-		}
-		
-		UIController.showNewPackage(adp);
-		
-	}
-	private boolean insertCurrentData() {
-    
-		AbstractDataPackage adp = UIController.getInstance().getCurrentAbstractDataPackage();
-		
-		if(adp == null) return false;
-    NodeList taxonList = adp.getTaxonomicNodeList();
-		
-    if (taxonList==null) return true;
-    for (int i=0;i<taxonList.getLength();i++) {
-			 OrderedMap taxonMap = XMLUtilities.getDOMTreeAsXPathMap(taxonList.item(i));
-       boolean flag = taxonomicPage.setPageData(taxonMap, "");
-       if (!flag) {
-				 return false;
-			 }
+
+  private void insertTaxonomicNode(OrderedMap map) {
+
+    //OrderedMap map = taxonomicPage.getPageData("/coverage/taxonomicCoverage[1]");
+    AbstractDataPackage adp = UIController.getInstance().getCurrentAbstractDataPackage();
+    Node covRoot = null;
+
+    try {
+      DOMImplementation impl = DOMImplementationImpl.getDOMImplementation();
+      Document doc = impl.createDocument("", "coverage", null);
+
+      covRoot = doc.getDocumentElement();
+      XMLUtilities.getXPathMapAsDOMTree(map, covRoot);
+      NodeList kids = covRoot.getChildNodes();
+      adp.removeTaxonomicNodes();
+      for (int i=0;i<kids.getLength();i++) {
+        Node kid = kids.item(i);
+        adp.insertCoverage(kid);
+      }
     }
-    return true;
+    catch (Exception w) {
+      Log.debug(5, "Unable to add OrderMap elements to DOM");
+      w.printStackTrace();
+    }
+
+    UIController.showNewPackage(adp);
+
   }
+
+
+//	private boolean insertCurrentDatazz() {
+//
+//		AbstractDataPackage adp = UIController.getInstance().getCurrentAbstractDataPackage();
+//
+//		if(adp == null) return false;
+//    NodeList taxonList = adp.getTaxonomicNodeList();
+//
+//    if (taxonList==null) {
+//      Log.debug(45, "\n no taxon data in datapackage yet");
+//
+//      return true;
+//    }
+//    int totTaxa = taxonList.getLength();
+//
+//    if (totTaxa!=1) Log.debug(45, "More than 1 taxon definition found!!!!");
+//
+//     OrderedMap taxonMap = XMLUtilities.getDOMTreeAsXPathMap(taxonList.item(0));
+//     boolean flag = taxonomicPage.setPageData(taxonMap, "");
+//     if (!flag) return false;
+//
+//    return true;
+//  }
+
+
+  private OrderedMap getTaxonSubtreeMap(AbstractDataPackage adp) {
+
+    NodeList taxonList = adp.getTaxonomicNodeList();
+
+    if (taxonList==null) {
+      Log.debug(45, "\n no taxon data in datapackage yet");
+
+      return null;
+    }
+    int totTaxa = taxonList.getLength();
+
+    if (totTaxa!=1) Log.debug(45, "More than 1 taxon definition found!!!!");
+
+     return XMLUtilities.getDOMTreeAsXPathMap(taxonList.item(0));
+  }
+
+
+
+  private boolean backupAndDisplayCurrentData() {
+
+    AbstractDataPackage adp = UIController.getInstance().
+                              getCurrentAbstractDataPackage();
+
+    if (adp == null) return false;
+
+    //backup subtree so it can be restored if user hits cancel:
+    existingValuesMap = getTaxonSubtreeMap(adp);
+
+    if (existingValuesMap == null) {
+
+      //there wasn't a project subtree in the datapackage, so add one
+      //(required for writing references) - if user hits cancel, we'll
+      //delete it again
+
+      Log.debug(45, "No taxon subtree in the datapackage, so adding one...");
+
+      DOMImplementation impl = DOMImplementationImpl.getDOMImplementation();
+      Document doc = impl.createDocument(
+          "", TAXONOMIC_COVERAGE_SUBTREE_NODENAME, null);
+
+      //need to add in a dummy title node under:
+      // taxonomicCoverage/taxonomicSystem/classificationSystem/classificationSystemCitation/
+      //so dan's insertion stuff works...
+      Node blankTaxonRoot = doc.getDocumentElement();
+      Node sysNode = doc.createElement("taxonomicSystem");
+      blankTaxonRoot.appendChild(sysNode);
+      Node classNode = doc.createElement("classificationSystem");
+      sysNode.appendChild(classNode);
+      Node citeNode = doc.createElement("classificationSystemCitation");
+      classNode.appendChild(citeNode);
+      Node titleNode = doc.createElement("title");
+      citeNode.appendChild(titleNode);
+
+      Log.debug(45,
+                "\n\nblankTaxonRoot: " + XMLUtilities.getDOMTreeAsString(blankTaxonRoot));
+
+      try {
+        adp.insertCoverage(blankTaxonRoot);
+
+        Log.debug(45, "\n\nadp after insertion of blank taxon subtree: " + adp);
+
+      } catch (Throwable t) {
+        Log.debug(45, "** ERROR: AddTaxonomicCovCommand, "
+                  + "trying to add blankTaxonRoot: "+t);
+        t.printStackTrace();
+        return false;
+      }
+
+    } else {
+
+      //there was already a project subtree in the datapackage, so read it...
+
+      Log.debug(45, "Found project subtree in the datapackage; reading...");
+    }
+
+    Log.debug(45, "sending previous data to projectPage -\n\n"
+              + existingValuesMap);
+
+    boolean pageCanHandleAllData
+        = taxonomicPage.setPageData(existingValuesMap,
+                                    TAXONOMIC_COVERAGE_SUBTREE_NODENAME);
+
+    return pageCanHandleAllData;
+  }
+
 }

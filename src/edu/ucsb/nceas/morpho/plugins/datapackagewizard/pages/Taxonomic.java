@@ -7,9 +7,9 @@
 *    Authors: Saurabh Garg
 *    Release: @release@
 *
-*   '$Author: sambasiv $'
-*     '$Date: 2004-04-12 21:18:17 $'
-* '$Revision: 1.22 $'
+*   '$Author: brooke $'
+*     '$Date: 2004-04-14 04:59:56 $'
+* '$Revision: 1.23 $'
 *
 * This program is free software; you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -29,66 +29,59 @@
 package edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages;
 
 
-import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
 import edu.ucsb.nceas.morpho.framework.AbstractUIPage;
 import edu.ucsb.nceas.morpho.framework.ModalDialog;
-import edu.ucsb.nceas.morpho.framework.UIController;
-import edu.ucsb.nceas.morpho.util.UISettings;
-import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WidgetFactory;
+import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.CustomList;
-import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardSettings;
-import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardPageSubPanelAPI;
+import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WidgetFactory;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardContainerFrame;
-
-import edu.ucsb.nceas.utilities.OrderedMap;
-import edu.ucsb.nceas.utilities.XMLUtilities;
+import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardPageSubPanelAPI;
+import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardSettings;
+import edu.ucsb.nceas.morpho.util.Command;
 import edu.ucsb.nceas.morpho.util.GUIAction;
 import edu.ucsb.nceas.morpho.util.HyperlinkButton;
-import edu.ucsb.nceas.morpho.util.Command;
 import edu.ucsb.nceas.morpho.util.Log;
+import edu.ucsb.nceas.morpho.util.UISettings;
+import edu.ucsb.nceas.utilities.OrderedMap;
+import edu.ucsb.nceas.utilities.XMLUtilities;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.List;
+import java.util.StringTokenizer;
+import java.util.Vector;
 
 import java.awt.BorderLayout;
-import java.awt.FlowLayout;
-import java.awt.GridLayout;
-import java.awt.Dimension;
 import java.awt.Color;
-import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.Point;
-import javax.swing.Box;
-import javax.swing.BoxLayout;
-import javax.swing.JButton;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JDialog;
-import javax.swing.JComponent;
-import javax.swing.JTextField;
-import javax.swing.JCheckBox;
-import javax.swing.JComboBox;
-import javax.swing.JOptionPane;
-import javax.swing.border.EmptyBorder;
-import javax.swing.BorderFactory;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
-import java.awt.event.FocusAdapter;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-import java.awt.event.KeyAdapter;
-import javax.swing.Action;
+
 import javax.swing.AbstractAction;
+import javax.swing.Action;
+import javax.swing.BorderFactory;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
 import javax.swing.InputVerifier;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
+import javax.swing.JComponent;
+import javax.swing.JDialog;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
 
-import java.util.List;
-import java.util.Vector;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.StringTokenizer;
-import java.util.TreeSet;
-
-import org.w3c.dom.*;
 import org.apache.xerces.dom.DOMImplementationImpl;
+import org.w3c.dom.DOMImplementation;
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 public class Taxonomic extends AbstractUIPage {
 
@@ -124,16 +117,6 @@ public class Taxonomic extends AbstractUIPage {
   private CustomList taxonList;
   // CustomList listing the classsification citations
   private CustomList classList;
-
-  // Pick list to select the table from which the taxon data has to be imported
-  private JComboBox importTableComboBox;
-  // Pick list to select the column in the table whose data has to be imported
-  private JComboBox importColComboBox;
-
-  private JTextField classSystemTextField;
-  private JTextField classNameTextField;
-  private JPanel classPanel;
-  private JCheckBox classCheckBox;
 
   private JDialog importTaxaDialog = null;
   private TaxonImportPanel taxonImportPanel = null;
@@ -341,11 +324,11 @@ public class Taxonomic extends AbstractUIPage {
                                 UISettings.POPUPDIALOG_WIDTH,
                                 UISettings.POPUPDIALOG_HEIGHT);
     if (wpd.USER_RESPONSE == ModalDialog.OK_OPTION) {
-			int rowNum = this.classList.getRowCount();
-			List row = citationPage.getSurrogate();
-			OrderedMap map = citationPage.getPageData("/classificationSystemCitation[1]");
-			row.add(map);
-			this.classList.addRow(row);
+      int rowNum = this.classList.getRowCount();
+      List row = citationPage.getSurrogate();
+      OrderedMap map = citationPage.getPageData("/classificationSystemCitation[1]");
+      row.add(map);
+      this.classList.addRow(row);
     }
 
   }
@@ -358,10 +341,10 @@ public class Taxonomic extends AbstractUIPage {
 
     List row = this.classList.getSelectedRowList();
     OrderedMap map = (OrderedMap) row.get(3);
-		OrderedMap copyMap = (OrderedMap)map.clone();
+    OrderedMap copyMap = (OrderedMap)map.clone();
 
     CitationPage citationPage = new CitationPage();
-		citationPage.setPageData(copyMap, "/classificationSystemCitation[1]");
+    citationPage.setPageData(copyMap, "/classificationSystemCitation[1]");
 
     ModalDialog wpd = new ModalDialog(citationPage,
                                 WizardContainerFrame.getDialogParent(),
@@ -604,34 +587,34 @@ public class Taxonomic extends AbstractUIPage {
   *          (e.g. if a required field hasn't been filled in)
   */
   public boolean onAdvanceAction() {
-		
-		List rows = this.classList.getListOfRowLists();
-		if(rows != null && rows.size() > 0){
-			
-			// there must be some taxon data, since citations are there.
-			
-			List data = this.taxonList.getListOfRowLists();
-			int len = data.size();
-			if(len > 0) {
-				for(int i = 0; i < len; i++) {
-					List row = (List)data.get(i);
-					if(row.size() < 7) continue;
-					TaxonHierarchy th = (TaxonHierarchy)row.get(6);
-					Vector taxonLevels = th.getAllTaxons();
-					for(int j = 0; j < taxonLevels.size(); j++) {
-						
-						TaxonLevel level = (TaxonLevel)taxonLevels.get(j);
-						String tRank = level.getRank();
-						String tName = level.getName();
-						if(tRank.trim().equals("") || tName.trim().equals("")) continue;
-						else return true;
-					}
-				}
-			}
-			
-			JOptionPane.showMessageDialog(Taxonomic.this, "You must enter the Taxonomic information along with the Citation details!", "Error", JOptionPane.ERROR_MESSAGE);
+
+    List rows = this.classList.getListOfRowLists();
+    if(rows != null && rows.size() > 0){
+
+      // there must be some taxon data, since citations are there.
+
+      List data = this.taxonList.getListOfRowLists();
+      int len = data.size();
+      if(len > 0) {
+        for(int i = 0; i < len; i++) {
+          List row = (List)data.get(i);
+          if(row.size() < 7) continue;
+          TaxonHierarchy th = (TaxonHierarchy)row.get(6);
+          Vector taxonLevels = th.getAllTaxons();
+          for(int j = 0; j < taxonLevels.size(); j++) {
+
+            TaxonLevel level = (TaxonLevel)taxonLevels.get(j);
+            String tRank = level.getRank();
+            String tName = level.getName();
+            if(tRank.trim().equals("") || tName.trim().equals("")) continue;
+            else return true;
+          }
+        }
+      }
+
+      JOptionPane.showMessageDialog(Taxonomic.this, "You must enter the Taxonomic information along with the Citation details!", "Error", JOptionPane.ERROR_MESSAGE);
       return false;
-		}
+    }
     return true;
   }
 
@@ -663,24 +646,24 @@ public class Taxonomic extends AbstractUIPage {
     OrderedMap result = new OrderedMap();
 
     // adding the taxonomic System info
-		
-		List rows = this.classList.getListOfRowLists();
+
+    List rows = this.classList.getListOfRowLists();
     if(rows != null && rows.size() > 0){
 
       for(int i = 0; i < rows.size(); i++) {
 
         List row = (List) rows.get(i);
         OrderedMap map = (OrderedMap)row.get(3);
-				Iterator it = map.keySet().iterator();
+        Iterator it = map.keySet().iterator();
         while(it.hasNext()) {
           String k = (String)it.next();
           String newKey = rootXPath + "/taxonomicSystem[1]/classificationSystem[" +(i+1)+ "]" +  k;
           result.put(newKey, (String)map.get(k));
         }
-				
-			}
-			result.put(rootXPath + "/taxonomicSystem[1]/identifierName[1]/organizationName[1]", "Unknown");
-			result.put(rootXPath + "/taxonomicSystem[1]/taxonomicProcedures[1]", "Unknown");
+
+      }
+      result.put(rootXPath + "/taxonomicSystem[1]/identifierName[1]/organizationName[1]", "Unknown");
+      result.put(rootXPath + "/taxonomicSystem[1]/taxonomicProcedures[1]", "Unknown");
 
     }
 
@@ -690,10 +673,10 @@ public class Taxonomic extends AbstractUIPage {
       String k = (String)it1.next();
       Log.debug(45, k + "--" + (String)result.get(k));
     }
-		
-		// now adding the taxonomic Classification info
-		
-		List data = this.taxonList.getListOfRowLists();
+
+    // now adding the taxonomic Classification info
+
+    List data = this.taxonList.getListOfRowLists();
     int len = data.size();
     TaxonHierarchy[] hierarchies = new TaxonHierarchy[len];
 
@@ -713,7 +696,7 @@ public class Taxonomic extends AbstractUIPage {
       for(int i = 0; i < taxonLevels.size(); i++) {
 
         TaxonLevel level = (TaxonLevel)taxonLevels.get(i);
-				String tRank = level.getRank();
+        String tRank = level.getRank();
         String tName = level.getName();
         if(tRank.trim().equals("") || tName.trim().equals("")) continue;
 
@@ -795,7 +778,7 @@ public class Taxonomic extends AbstractUIPage {
       }
     }
 
-    
+
 
     return result;
 
@@ -840,18 +823,23 @@ public class Taxonomic extends AbstractUIPage {
   */
   public String getPageNumber() { return pageNumber; }
 
+
   /**
-   *  sets the fields in the waird page using the Map object
-   *  that contains all the key/value paired
+   * sets the fields in the waird page using the Map object that contains all
+   * the key/value paired
    *
-   *  @param   data the Map object that contains all the
-   *            key/value paired settings for this particular wizard page
+   * @param data the Map object that contains all the key/value paired settings
+   *   for this particular wizard page
+   * @param _xPathRoot String
+   * @return boolean
    */
   public boolean setPageData(OrderedMap data, String _xPathRoot) {
 
     //this.taxonList.removeAllRows();
     Node covRoot;
     boolean result = true;
+
+    if (data==null || data.isEmpty()) return true;
 
     data.remove(_xPathRoot + "/taxonomicCoverage/@scope");
     data.remove(_xPathRoot + "/taxonomicCoverage/@id");
@@ -862,8 +850,8 @@ public class Taxonomic extends AbstractUIPage {
 
       covRoot = doc.getDocumentElement();
       XMLUtilities.getXPathMapAsDOMTree(data, covRoot);
-			result = traverseTree(covRoot, new TaxonHierarchy(new Vector()));
-			if(!result) return false;
+      result = traverseTree(covRoot, new TaxonHierarchy(new Vector()));
+      if(!result) return false;
       else {
         removeAllKeysStartingWith(_xPathRoot + "/taxonomicCoverage/taxonomicClassification", data);
       }
@@ -872,47 +860,47 @@ public class Taxonomic extends AbstractUIPage {
       Log.debug(10, "Invalid orderedmap - " + e);
       return false;
     }
-		
-		
+
+
 
     int size = data.keySet().size();
     String[] keys = new String[size];
     keys = (String[])data.keySet().toArray(keys);
     int pos = 1;
-		for(int cnt = 0; cnt < size; cnt++) {
+    for(int cnt = 0; cnt < size; cnt++) {
 
       String key = keys[cnt];
-			int idx = key.indexOf("/taxonomicSystem[1]/classificationSystem[" + pos + "]");
+      int idx = key.indexOf("/taxonomicSystem[1]/classificationSystem[" + pos + "]");
       if( idx > -1) {
-				
-				OrderedMap map = new OrderedMap();
-				OrderedMap subMap = new OrderedMap();
-				
+
+        OrderedMap map = new OrderedMap();
+        OrderedMap subMap = new OrderedMap();
+
         int idx2 = key.substring(idx).indexOf("/classificationSystemCitation");
         map.put(key.substring(idx + idx2), data.get(key));
-				subMap.put(key, data.get(key));
-				
-				cnt++;
+        subMap.put(key, data.get(key));
+
+        cnt++;
         for(;cnt < size; cnt++) {
 
           key = keys[cnt];
           int newidx = key.indexOf("/taxonomicSystem[1]/classificationSystem[" + pos + "]");
           if( newidx > -1) {
             int citidx = key.substring(newidx).indexOf("/classificationSystemCitation");
-						map.put(key.substring(citidx + newidx), data.get(key));
-						subMap.put(key, data.get(key));
+            map.put(key.substring(citidx + newidx), data.get(key));
+            subMap.put(key, data.get(key));
           } else {
             cnt--;
             break;
           }
         }
-				
-				OrderedMap map1 = (OrderedMap)map.clone();
+
+        OrderedMap map1 = (OrderedMap)map.clone();
         CitationPage cpage = new CitationPage();
         boolean flag = cpage.setPageData(map, "/classificationSystemCitation[1]");
         if(!flag) {
-					return false;
-				}
+          return false;
+        }
         List row = cpage.getSurrogate();
         if(row.size() == 0)
           break;
@@ -921,69 +909,73 @@ public class Taxonomic extends AbstractUIPage {
         this.classList.addRow(row);
         pos++;
       } else if (key.indexOf("identifierName") > -1) {
-				data.remove(key);
-			} else if (key.indexOf("taxonomicProcedures") > -1) {
-				data.remove(key);
-			}
+        data.remove(key);
+      } else if (key.indexOf("taxonomicProcedures") > -1) {
+        data.remove(key);
+      }
 
     }
-		
+
     this.taxonList.editCellAt(0, 2);
 
     if(data.keySet().size() > 0) return false;
     else return true;
   }
 
+
   private boolean traverseTree(Node root, TaxonHierarchy hier) {
 
     boolean toReturn = true;
-    if(root == null) {
+    if (root == null) {
       return true;
     }
 
+    Log.debug(40, "Traversing - " + root.getNodeName());
+
     NodeList children = root.getChildNodes();
-    if(children.getLength() == 0) {
+    if (children.getLength() == 0) {
+      Log.debug(40, "no children - returning true");
       return true;
     }
-    Log.debug(40, "Traversing - " + root.getNodeName());
+
     TaxonLevel level = null;
     boolean middleNodePresent = false;
     boolean endNodePresent = false;
-    for(int i = 0; i < children.getLength(); i++) {
+    for (int i = 0; i < children.getLength(); i++) {
 
       Node child = children.item(i);
       String name = child.getNodeName();
-      if(name.equals("taxonomicClassification")) {
+      if (name.equals("taxonomicClassification")) {
         traverseTree(child, (TaxonHierarchy)hier.clone());
         middleNodePresent = true;
       }
 
-      else if(name.equals("taxonRankName")) {
+      else if (name.equals("taxonRankName")) {
         String rankName = child.getFirstChild().getNodeValue();
         String rankVal = "";
         Node value = child.getNextSibling();
-        if(value!=null && value.getNodeName().equals("taxonRankValue")) {
+        if (value != null && value.getNodeName().equals("taxonRankValue")) {
           rankVal = value.getFirstChild().getNodeValue();
           i++;
         }
-				String cns[] = null;
+        String cns[] = null;
         Node curr = value;
         List cn = new ArrayList();
         int cnt = 0;
-        while(true) {
+        while (true) {
           Node cnNode = curr.getNextSibling();
-          if(cnNode!=null && cnNode.getNodeName().equals("commonName")) {
+          if (cnNode != null && cnNode.getNodeName().equals("commonName")) {
 
             String val = cnNode.getFirstChild().getNodeValue();
-						cn.add(val);
+            cn.add(val);
             cnt++;
             i++;
           } else {
             break;
           }
-					curr = cnNode;
+          curr = cnNode;
         }
-        if(cnt > 0) {
+        if (cnt > 0) {
           cns = new String[cnt];
           cns = (String[])cn.toArray(cns);
         }
@@ -991,15 +983,15 @@ public class Taxonomic extends AbstractUIPage {
         hier.addTaxon(level);
         endNodePresent = true;
 
-      } else if(name.equals("taxonomicSystem")) {
-				
-			} else {
-				toReturn = false;
+      } else if (name.equals("taxonomicSystem")) {
+
+      } else {
+        toReturn = false;
       }
 
     }
 
-    if((!middleNodePresent) && endNodePresent) {
+    if ((!middleNodePresent) && endNodePresent) {
       ParentTaxaPanel panel = new ParentTaxaPanel();
       panel.setHierarchy(hier);
       List list = panel.getSurrogate();
@@ -1201,9 +1193,9 @@ public class Taxonomic extends AbstractUIPage {
     List row = (List)Taxonomic.this.taxonList.getSelectedRowList();
     TaxonHierarchy currHier = (TaxonHierarchy) row.get(6);
     int currcount = currHier.getLevelCount();
-		
+
     TaxonLevel currLevel = currHier.getTaxonAtLevel(currcount - 1);
-		String[] cns = this.parseCommonNames(newName);
+    String[] cns = this.parseCommonNames(newName);
     currLevel.setCommonNames(cns);
     commonNameCounter--;
     return true;
