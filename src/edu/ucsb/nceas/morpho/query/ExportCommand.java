@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-12-04 22:55:39 $'
- * '$Revision: 1.14 $'
+ *     '$Date: 2003-12-10 23:05:18 $'
+ * '$Revision: 1.15 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -443,6 +443,9 @@ public class ExportCommand implements Command
       else if(!metacatLoc && localLoc)
       {
         location = DataPackageInterface.LOCAL;
+      }
+      else {
+        location = "";
       }
       return location;
    }
