@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2004-02-05 22:40:00 $'
- * '$Revision: 1.143 $'
+ *     '$Date: 2004-02-05 23:50:33 $'
+ * '$Revision: 1.144 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -250,11 +250,12 @@ public class DocFrame extends javax.swing.JFrame
     ControlsPanel.setLayout(new BorderLayout(0, 0));
     OutputScrollPanelContainer.setLayout(new BorderLayout(0, 0));
     getContentPane().add(OutputScrollPanelContainer);
-    JLabel test = new JLabel("Choice: ");
+    JLabel test = new JLabel("Find: ");
     String[] choices = {"eml", "dataset", "access", "creator", "contact", "keywordSet",
             "dataTable", "attributeList"};
     choiceCombo = new JComboBox(choices);
     choiceCombo.setVisible(false);
+    choiceCombo.setEditable(true);
     choiceCombo.addItemListener(new SymItemListener());
     TreeChoicePanel.add(test);
     TreeChoicePanel.add(choiceCombo);
@@ -1031,6 +1032,30 @@ public class DocFrame extends javax.swing.JFrame
       tree.setSelectionRow(0);
     }
   }
+
+  /**
+   *  Searches the tree for a node that contains the 'name'
+   *  Then selects the node found
+   */
+   private void findNode(DefaultMutableTreeNode treeNode, String name) {
+    Enumeration enum = treeNode.preorderEnumeration();
+    while (enum.hasMoreElements()) {
+      DefaultMutableTreeNode nd = (DefaultMutableTreeNode)enum.nextElement();
+      NodeInfo ni = (NodeInfo)nd.getUserObject();
+      String nodeName = (ni.getName()).trim();
+      if (nodeName.indexOf(name)>-1) {
+        Object[] path = nd.getPath();
+        TreePath tp = new TreePath(path);
+        tree.scrollPathToVisible(tp);
+        tree.makeVisible(tp);
+        tree.setSelectionPath(tp);
+        return;
+      }
+    }
+    // no node was found
+    String msg = "Sorry, could not locate a node containing '"+name+"'";
+    JOptionPane.showMessageDialog(this, msg, "alert", JOptionPane.INFORMATION_MESSAGE);
+  }     
   
   /**
    * Creates a new DefaultMutableTreeNode with the special
@@ -3226,7 +3251,7 @@ Log.debug(20, xmlout);
           tree.setSelectionRow(0);
         }
         else {
-          setTopOfTree(rootNode, sel);
+          findNode(rootNode, sel);
         }
       }
     }
