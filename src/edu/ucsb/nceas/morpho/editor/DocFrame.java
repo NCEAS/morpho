@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2004-02-05 23:50:33 $'
- * '$Revision: 1.144 $'
+ *     '$Date: 2004-02-06 17:26:30 $'
+ * '$Revision: 1.145 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -252,11 +252,12 @@ public class DocFrame extends javax.swing.JFrame
     getContentPane().add(OutputScrollPanelContainer);
     JLabel test = new JLabel("Find: ");
     String[] choices = {"eml", "dataset", "access", "creator", "contact", "keywordSet",
-            "dataTable", "attributeList"};
+            "dataTable", "attributeList", "abstract", "geographicCoverage",
+            "temporalCoverage", "taxonomicCoverage", "methods", "project",
+            "entityName", "physical", "spatialRaster", "spatialVector"};
     choiceCombo = new JComboBox(choices);
     choiceCombo.setVisible(false);
     choiceCombo.setEditable(true);
-    choiceCombo.addItemListener(new SymItemListener());
     TreeChoicePanel.add(test);
     TreeChoicePanel.add(choiceCombo);
     choiceCombo.setVisible(true);
@@ -427,6 +428,7 @@ public class DocFrame extends javax.swing.JFrame
     SymAction lSymAction = new SymAction();
     SymWindow aSymWindow = new SymWindow();
     this.addWindowListener(aSymWindow);
+    choiceCombo.addActionListener(lSymAction);
     EditingExit.addActionListener(lSymAction);
     CancelButton.addActionListener(lSymAction);
     OpenButton.addActionListener(lSymAction);
@@ -3183,9 +3185,7 @@ Log.debug(20, xmlout);
         Addtext_actionPerformed(event);
       } else if (object == NewWindowItem) {
         NewWindow_actionPerformed(event);
-      }
-
-      if (object == EditingExit) {
+      } else if (object == EditingExit) {
         EditingExit_actionPerformed(event);
       } else if (object == CancelButton) {
         CancelButton_actionPerformed(event);
@@ -3201,7 +3201,10 @@ Log.debug(20, xmlout);
         ExpandTreeButton_actionPerformed(event);
       } else if (object == ContractTreeButton) {
         ContractTreeButton_actionPerformed(event);
-      } 
+      } else if (object == choiceCombo) {
+        choiceCombo_actionPerformed(event); 
+      }
+      
     }
   }
 
@@ -3227,35 +3230,21 @@ Log.debug(20, xmlout);
     }
   }
 
-  /**
-   * handles valueChanged events for the comboBox
-   *
-   * @author   higgins
-   */
-  class SymItemListener implements java.awt.event.ItemListener
+  public void choiceCombo_actionPerformed(java.awt.event.ActionEvent event)
   {
-    /**
-     * handles valueChanged events
-     *
-     */
-    public void itemStateChanged(java.awt.event.ItemEvent event)
-    {
-      Object object = event.getSource();
-      if (object == choiceCombo) {
-        String sel = (String)choiceCombo.getSelectedItem();
-        if (sel.equals("eml")) {
-          treeModel.setRoot(rootNode);
-          treeModel.reload();
-          tree.setModel(treeModel);
-          tree.expandRow(1);
-          tree.setSelectionRow(0);
-        }
-        else {
-          findNode(rootNode, sel);
-        }
+      String sel = (String)choiceCombo.getSelectedItem();
+       if (sel.equals("eml")) {
+        treeModel.setRoot(rootNode);
+        treeModel.reload();
+        tree.setModel(treeModel);
+        tree.expandRow(1);
+        tree.setSelectionRow(0);
       }
-    }
+      else {
+        findNode(rootNode, sel);
+      }
   }
+
   
 
   /**
