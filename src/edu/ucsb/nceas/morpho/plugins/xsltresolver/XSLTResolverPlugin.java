@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2002-09-17 21:59:15 $'
- * '$Revision: 1.6 $'
+ *     '$Date: 2002-09-18 18:21:06 $'
+ * '$Revision: 1.7 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -63,7 +63,15 @@ public class XSLTResolverPlugin implements  XSLTResolverInterface,
 
     public XSLTResolverPlugin()
     {
-        classLoader = this.getClass().getClassLoader();
+        Log.debug(30, "XSLTResolverPlugin: ClassLoader *would* have been: " 
+                            + this.getClass().getClassLoader().getClass().getName());
+        
+        classLoader = Morpho.class.getClassLoader();
+        Log.debug(30, "XSLTResolverPlugin: ...but from Morpho, setting ClassLoader to: " 
+                                                + classLoader.getClass().getName());
+        Thread t = Thread.currentThread();
+        t.setContextClassLoader(classLoader);        
+
         this.config = Morpho.getConfiguration();
         GENERIC_STYLESHEET = config.get(CONFIG_KEY_GENERIC_STYLESHEET, 0);
         mappings = new Hashtable();

@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2002-09-17 21:59:15 $'
- * '$Revision: 1.17 $'
+ *     '$Date: 2002-09-18 18:21:06 $'
+ * '$Revision: 1.18 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -105,8 +105,17 @@ public class XMLTransformer
     private XMLTransformer() 
     {
         this.config = Morpho.getConfiguration();
-        GENERIC_STYLESHEET = config.get(CONFIG_KEY_GENERIC_STYLESHEET, 0);
-        classLoader = this.getClass().getClassLoader();
+        GENERIC_STYLESHEET = config.get(CONFIG_KEY_GENERIC_STYLESHEET, 0); 
+        
+        Log.debug(30, "XMLTransformer: ClassLoader *would* have been: " 
+                            + this.getClass().getClassLoader().getClass().getName());
+        
+        classLoader = Morpho.class.getClassLoader();
+        Log.debug(30, "XMLTransformer: ...but from Morpho, setting ClassLoader to: " 
+                                                + classLoader.getClass().getName());
+        Thread t = Thread.currentThread();
+        t.setContextClassLoader(classLoader);        
+        
         transformerProperties = new Properties();
         initEntityResolver();
     }
@@ -210,7 +219,8 @@ public class XMLTransformer
         Log.debug(50,"XMLTransformer.transform(Reader xmlDocReader) called");            
         validateInputParam(domDoc,        "XML DOM Document");
         
-        return transform(domDoc, getStyleSheetReader(domDoc.getDoctype().getPublicId()));
+        return transform( domDoc, 
+                        getStyleSheetReader(domDoc.getDoctype().getPublicId()));
     }
     /**
      *  Uses the stylesheet provided, to apply XSLT to the XML DOM Document 
