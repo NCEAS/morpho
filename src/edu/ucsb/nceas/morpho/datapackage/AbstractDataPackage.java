@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-12-02 19:27:40 $'
- * '$Revision: 1.29 $'
+ *     '$Date: 2003-12-03 23:23:38 $'
+ * '$Revision: 1.30 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -147,6 +147,8 @@ import edu.ucsb.nceas.morpho.framework.ConfigXML;
 import edu.ucsb.nceas.morpho.datastore.MetacatDataStore;
 import edu.ucsb.nceas.morpho.datastore.FileSystemDataStore;
 import edu.ucsb.nceas.morpho.util.Log;
+import edu.ucsb.nceas.morpho.util.IOUtil;
+import edu.ucsb.nceas.morpho.util.XMLTransformer;
 import edu.ucsb.nceas.morpho.datastore.CacheAccessException;
 
 import org.apache.xpath.XPathAPI;
@@ -165,6 +167,7 @@ import org.apache.xpath.objects.XObject;
 import edu.ucsb.nceas.utilities.*;
 
 import java.io.*;
+import java.util.Vector;
 /**
  * class that represents a data package. This class is abstract. Specific datapackages
  * e.g. eml2, beta6., etc extend this abstact class
@@ -188,6 +191,14 @@ public abstract class AbstractDataPackage extends MetadataObject
   protected MetacatDataStore  metacatDataStore;
   
   protected Entity[] entityArray; 
+  
+  private final String              HTMLEXTENSION = ".html";
+  private final String              METADATAHTML = "metadata";
+  private final String CONFIG_KEY_STYLESHEET_LOCATION = "stylesheetLocation";
+  private final String CONFIG_KEY_MCONFJAR_LOC   = "morphoConfigJarLocation";
+  private final String EXPORTSYLE ="export";
+  private final String EXPORTSYLEEXTENSION =".css";
+
 
   /**
    *  This abstract method turns the datapackage into a form (e.g. string) that can
@@ -1201,9 +1212,9 @@ public abstract class AbstractDataPackage extends MetadataObject
             dataFile.delete();
           }
           else if ((location.equals(METACAT))||(location.equals(BOTH))) {
-//            mds.newDataFile(temp, dataFile);
+            mds.newDataFile(temp, dataFile);
             // the temp file has been saved; thus delete
-//            dataFile.delete();
+            dataFile.delete();
            }
         }
         catch (Exception ex) {
@@ -1215,6 +1226,142 @@ public abstract class AbstractDataPackage extends MetadataObject
         Log.debug(5,"Some problem with saving data files has occurred!");
       }
     }
+  }
+  
+  /**
+   * exports a package to a given path
+   * @param path the path to which this package should be exported.
+   */
+  public void export(String path)
+  {
+    Log.debug(20, "exporting...");
+    Log.debug(20, "path: " + path);
+    Log.debug(20, "id: " + id);
+    Log.debug(20, "location: " + location);
+    File f = null;
+    Vector fileV = new Vector(); //vector of all files in the package
+    boolean localloc = false;
+    boolean metacatloc = false;
+    if(location.equals(BOTH))
+    {
+      localloc = true;
+      metacatloc = true;
+    }
+    else if(location.equals(METACAT))
+    {
+      metacatloc = true;
+    }
+    else if(location.equals(LOCAL))
+    {
+      localloc = true;
+    }
+    else {
+      Log.debug(1, "Package has not been saved! Unable to export!");
+      return;
+    }
+    
+    //  get a list of the files and save them to the new location. if the file
+    //  is a data file, save it with its original name.
+    //  With the use of AbstractDataPackage, there is only a single metadata doc
+    //  and we will use the DOM; may be multiple data files, however
+   
+    String packagePath = path + "/" + id + ".package";
+    String sourcePath = packagePath + "/metadata";
+    String dataPath = packagePath + "/data";
+    File savedir = new File(packagePath);
+    File savedirSub = new File(sourcePath);
+    File savedirDataSub = new File(dataPath);
+    savedir.mkdirs(); //create the new directories
+    savedirSub.mkdirs();
+    StringBuffer[] htmldoc = new StringBuffer[2]; //DFH
+    
+    // for metadata file
+    f = new File(sourcePath + "/" + id);
+    File openfile = null;
+    try{
+      if(localloc) { //get the file locally and save it
+        openfile = fileSysDataStore.openFile(id);
+      }
+      else if(metacatloc) { //get the file from metacat
+          openfile = metacatDataStore.openFile(id);
+      }
+      FileInputStream fis = new FileInputStream(openfile);
+      BufferedInputStream bfis = new BufferedInputStream(fis);
+      FileOutputStream fos = new FileOutputStream(f);
+      BufferedOutputStream bfos = new BufferedOutputStream(fos);
+      int c = bfis.read();
+      while(c != -1) { //copy the files to the source directory
+        bfos.write(c);
+        c = bfis.read();
+      }
+      bfos.flush();
+      bfis.close();
+      bfos.close();
+
+      // for html
+      Reader        xmlInputReader  = null;
+      Reader        result          = null;
+      StringBuffer  tempPathBuff    = new StringBuffer();
+      xmlInputReader = new FileReader(openfile);
+            
+      XMLTransformer transformer = XMLTransformer.getInstance();
+      // add some property for style sheet
+      transformer.removeAllTransformerProperties();
+      transformer.addTransformerProperty(
+                    XMLTransformer.HREF_PATH_EXTENSION_XSLPROP, HTMLEXTENSION);
+      transformer.addTransformerProperty(
+                    XMLTransformer.PACKAGE_ID_XSLPROP,          id);
+      transformer.addTransformerProperty(
+                    XMLTransformer.PACKAGE_INDEX_NAME_XSLPROP,  METADATAHTML);
+      transformer.addTransformerProperty(
+                    XMLTransformer.DEFAULT_CSS_XSLPROP,         EXPORTSYLE);
+      transformer.addTransformerProperty(
+                    XMLTransformer.ENTITY_CSS_XSLPROP,          EXPORTSYLE);
+      transformer.addTransformerProperty(
+                    XMLTransformer.CSS_PATH_XSLPROP,            ".");
+      try {
+        result = transformer.transform(xmlInputReader);
+      } catch (IOException e) {
+        e.printStackTrace();
+        Log.debug(9,"Unexpected Error Styling Document: "+e.getMessage());
+        e.fillInStackTrace();
+        throw e;
+      } finally {
+          xmlInputReader.close();
+      }
+      transformer.removeAllTransformerProperties();
+            
+      try {
+        htmldoc[0] = IOUtil.getAsStringBuffer(result, true); 
+        //"true" closes Reader after reading
+      } catch (IOException e) {
+        e.printStackTrace();
+        Log.debug(9,"Unexpected Error Reading Styled Document: "
+                                                   +e.getMessage());
+        e.fillInStackTrace();
+        throw e;
+      }
+      
+        tempPathBuff.delete(0,tempPathBuff.length());
+        
+        tempPathBuff.append(packagePath);
+        tempPathBuff.append("/");
+        tempPathBuff.append(METADATAHTML);
+        tempPathBuff.append(HTMLEXTENSION);
+        saveToFile(htmldoc[0], new File(tempPathBuff.toString()));
+
+    } catch (Exception w) {
+        w.printStackTrace();
+        Log.debug(9,"Unexpected Error Reading Styled Document: "
+                                                   +w.getMessage());
+    }
+  }
+
+  //save the StringBuffer to the File path specified
+  private void saveToFile(StringBuffer buff, File outputFile) throws IOException
+  {
+    FileWriter fileWriter = new FileWriter(outputFile);
+    IOUtil.writeToWriter(buff, fileWriter, true);
   }
   
   

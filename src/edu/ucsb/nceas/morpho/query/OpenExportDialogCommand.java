@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-04-04 22:27:57 $'
- * '$Revision: 1.2 $'
+ *     '$Date: 2003-12-03 23:24:34 $'
+ * '$Revision: 1.3 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -100,7 +100,6 @@ public class OpenExportDialogCommand implements Command
         selectDocId = resultPane.getSelectedId();
         inNetwork = resultPane.getMetacatLocation();
         inLocal = resultPane.getLocalLocation();
-  
         // Make sure selected a id, and there no package in metacat
         if (openDialog==null) {
           // Show export dialog

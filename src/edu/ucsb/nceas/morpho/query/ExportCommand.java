@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-03-26 18:48:49 $'
- * '$Revision: 1.12 $'
+ *     '$Date: 2003-12-03 23:24:34 $'
+ * '$Revision: 1.13 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,6 +28,8 @@ package edu.ucsb.nceas.morpho.query;
 
 
 import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
+import edu.ucsb.nceas.morpho.datapackage.DataPackage;
+import edu.ucsb.nceas.morpho.datapackage.AbstractDataPackage;
 import edu.ucsb.nceas.morpho.framework.MorphoFrame;
 import edu.ucsb.nceas.morpho.framework.SwingWorker;
 import edu.ucsb.nceas.morpho.framework.UIController;
@@ -81,6 +83,7 @@ public class ExportCommand implements Command
   /** DataPackage in local */
   boolean localLoc = false;
   
+  String location = null;
   
     
   /**
@@ -155,8 +158,6 @@ public class ExportCommand implements Command
     {
       
       selectDocId = resultPane.getSelectedId();
-      metacatLoc = resultPane.getMetacatLocation();
-      localLoc = resultPane.getLocalLocation();
        // Make sure selected a id, and there is local pacakge
       if ( selectDocId != null && !selectDocId.equals(""))
       {
@@ -208,11 +209,13 @@ public class ExportCommand implements Command
           }
           else if (format.equals(ZIP))
           {
-            exportDatasetToZip(docid);
+            //exportDatasetToZip(docid);
+            Log.debug(1, "Not yet converted for eml2!");
           }
           else if (format.equals(TOEML2))
           {
-            exportDatasetToEml2(docid);
+            //exportDatasetToEml2(docid);
+            Log.debug(1, "No longer applicable!!!");
           }
           return null;  
           
@@ -266,8 +269,9 @@ public class ExportCommand implements Command
 
     if (result==JFileChooser.APPROVE_OPTION) {
       //now we know where to export the files to, so export them.
-
-      String location = getLocation();
+      if (location==null) {
+        location = getLocation();
+      }
        //export it.
       dataPackage.export(id, exportDir.toString(), location);
     }

@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-11-24 23:19:44 $'
- * '$Revision: 1.58 $'
+ *     '$Date: 2003-12-03 23:23:38 $'
+ * '$Revision: 1.59 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -725,8 +725,22 @@ public class DataPackagePlugin
    */
   public void export(String docid, String path, String location)
   {
-    DataPackage dp = new DataPackage(location, docid, null, morpho, false);
-    dp.export(path);
+//    DataPackage dp = new DataPackage(location, docid, null, morpho, false);
+//    dp.export(path);
+    boolean local = false;
+    boolean metacat = false;
+    if (location.equals(AbstractDataPackage.LOCAL)) {
+      local = true;
+    }
+    else if (location.equals(AbstractDataPackage.METACAT)) {
+      metacat = true;
+    }
+    else if (location.equals(AbstractDataPackage.BOTH)) {
+      local = true;
+      metacat = true;
+    }
+    AbstractDataPackage adp = DataPackageFactory.getDataPackage(docid, metacat, local);
+    adp.export(path);
   }
 
   /**
@@ -809,6 +823,10 @@ public class DataPackagePlugin
     {
       docid = data.getID();
     }
+    else {
+      AbstractDataPackage adp = getAbstractDataPackageFromMorphoFrame(morphoFrame);
+      docid = adp.getPackageId();
+    }
     Log.debug(50, "docid is: "+ docid);
     return docid;
   }
@@ -820,18 +838,25 @@ public class DataPackagePlugin
    */
   public boolean isDataPackageInLocal(MorphoFrame morphoFrame)
   {
+    String location = null;
     boolean flagInLocal = false;
-    DataPackage data = getDataPackageFromMorphoFrame(morphoFrame);
-    if (data != null)
-    {
-      String location = data.getLocation();
+     DataViewContainerPanel dvcp = AddDocumentationCommand.
+                               getDataViewContainerPanelFromMorphoFrame(morphoFrame);
+     DataPackage dataPackage = dvcp.getDataPackage();
+     AbstractDataPackage adp = dvcp.getAbstractDataPackage();
+     if (dataPackage!=null) {
+       location = dataPackage.getLocation();
+     }
+     else if (adp!=null) {
+       location = adp.getLocation();
+     }
+    
       if (location.equals(DataPackageInterface.LOCAL) || 
          location.equals(DataPackageInterface.BOTH))
       {
         flagInLocal = true;
         Log.debug(50, "docid is in local");
       }//if
-    }//if
     return flagInLocal;
   }
   
@@ -842,23 +867,30 @@ public class DataPackagePlugin
    */
   public boolean isDataPackageInNetwork(MorphoFrame morphoFrame)
   {
+    String location = null;
     boolean flagInNetwork = false;
-    DataPackage data = getDataPackageFromMorphoFrame(morphoFrame);
-    if (data != null)
-    {
-      String location = data.getLocation();
+     DataViewContainerPanel dvcp = AddDocumentationCommand.
+                               getDataViewContainerPanelFromMorphoFrame(morphoFrame);
+     DataPackage dataPackage = dvcp.getDataPackage();
+     AbstractDataPackage adp = dvcp.getAbstractDataPackage();
+     if (dataPackage!=null) {
+       location = dataPackage.getLocation();
+     }
+     else if (adp!=null) {
+       location = adp.getLocation();
+     }
+
       if (location.equals(DataPackageInterface.METACAT) || 
          location.equals(DataPackageInterface.BOTH))
       {
         flagInNetwork = true;
         Log.debug(50, "docid is in network");
       }//if
-    }//if
     return flagInNetwork;
   }
   
   /*
-   * Method to get pakcage in a given morphoFrame. If the morpho frame doesn't
+   * Method to get package in a given morphoFrame. If the morpho frame doesn't
    * contain a datapackage, null will be returned
    */
   private DataPackage getDataPackageFromMorphoFrame(MorphoFrame morphoFrame)
@@ -876,6 +908,29 @@ public class DataPackagePlugin
     if (resultPane != null)
     {
        data = resultPane.getDataPackage();
+    }//if
+    return data;
+  }//getDataPackageFromMorphoFrame
+
+  /*
+   * Method to get package in a given morphoFrame. If the morpho frame doesn't
+   * contain a datapackage, null will be returned
+   */
+  private AbstractDataPackage getAbstractDataPackageFromMorphoFrame(MorphoFrame morphoFrame)
+  {
+    AbstractDataPackage data = null;
+    DataViewContainerPanel resultPane = null;
+    
+    if (morphoFrame != null)
+    {
+       resultPane = AddDocumentationCommand.
+                          getDataViewContainerPanelFromMorphoFrame(morphoFrame);
+    }//if
+    
+    // make sure resulPanel is not null
+    if (resultPane != null)
+    {
+       data = resultPane.getAbstractDataPackage();
     }//if
     return data;
   }//getDataPackageFromMorphoFrame
