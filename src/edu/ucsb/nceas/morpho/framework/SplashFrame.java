@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2001-05-24 02:23:38 $'
- * '$Revision: 1.18 $'
+ *     '$Date: 2001-05-25 01:55:14 $'
+ * '$Revision: 1.19 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -349,20 +349,19 @@ public class SplashFrame extends javax.swing.JFrame
    */
   void fundingButton_actionPerformed(java.awt.event.ActionEvent event)
   {
-	JOptionPane.showMessageDialog(null, credit);
+    JOptionPane.showMessageDialog(null, credit);
   }
 
-     // Listen for mouse clicks in the window and close the window and
-     // close the window upon a click.
-    private class ClickListener extends MouseAdapter
+  // Listen for mouse clicks in the window and close the window and
+  // close the window upon a click.
+  private class ClickListener extends MouseAdapter
+  {
+    /**
+     * Upon mouse clicks close the window
+     */
+    public void mouseClicked(MouseEvent e)
     {
-      /**
-       * Upon mouse clicks close the window
-       */
-      public void mouseClicked(MouseEvent e)
-      {
-        closeButton_actionPerformed(null);
-      }
+      closeButton_actionPerformed(null);
     }
-
+  }
 }
