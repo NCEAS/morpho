@@ -63,6 +63,12 @@
       <textbox label="Keyword" field="keyword" size="15" repeatable="yes"/>
       <textbox label="Keyword Thesaurus" field="keywordThesaurus" size="15" repeatable="yes"/>
     </group>
+    <group field="additionalInfo">
+      <textbox label="Additional Information" field="paragraph" size="15" multiline="yes" tooltip="Any additional information pertinent to this data package."/>
+    </group>
+    <group field="rights">
+      <textbox label="Rights" field="paragraph" size="15" multiline="yes" tooltip="Rights regarding usage and licensing of this resource."/>
+    </group>
     <textbox field="triple" visible="no"/>
   </group>
 </wizard>
