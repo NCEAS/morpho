@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2001-06-13 20:10:16 $'
- * '$Revision: 1.9 $'
+ *     '$Date: 2001-06-15 09:17:29 $'
+ * '$Revision: 1.10 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -78,7 +78,7 @@ public class ProfileDialog extends JDialog
 
     framework = cont;
 
-    numScreens = 2;
+    numScreens = 1;
     currentScreen = 0;
 
     setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -276,11 +276,8 @@ public class ProfileDialog extends JDialog
     if (0 == currentScreen) {
       String helpText = "<html><p>Enter your first and last name, " +
                         "a username of your choosing, your organization, " +
-                        "your desired password, and " +
-                        "the same password again (for verification).</p>" +
-                        "<p>This information will be used to store your " +
-                        "data on your computer in a location that is " +
-                        "distinct from other Morpho users.</p></html>";
+                        "your desired password, and the same password " +
+                        "again (for verification).</p></html>";
       helpLabel.setText(helpText);
 
       screenPanel.setBorder(BorderFactory.createTitledBorder(
