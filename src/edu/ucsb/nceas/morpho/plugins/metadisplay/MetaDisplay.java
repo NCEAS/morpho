@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2002-08-28 22:33:56 $'
- * '$Revision: 1.10 $'
+ *     '$Date: 2002-08-30 16:16:30 $'
+ * '$Revision: 1.11 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -118,23 +118,6 @@ public class MetaDisplay implements MetaDisplayInterface
         addActionListener(listener);
         
         display(identifier);
-//
-//        try  {
-//            setIdentifier(identifier);
-//        } catch (NullArgumentException nae) {
-//            Log.debug(12, "NullArgumentException setting identifier: "
-//                                            +identifier+"; "+nae.getMessage());
-//            DocumentNotFoundException dnfe 
-//                =  new DocumentNotFoundException("Nested NullArgumentException:"
-//                                                                          +nae);
-//            dnfe.fillInStackTrace();
-//            throw dnfe;
-//        }
-        
-//        Reader reader = factory.openAsReader(getIdentifier());
-//
-//        ui.setHTML(getAsString(reader));
-//        fireActionEvent(MetaDisplayInterface.NAVIGATION_EVENT,getIdentifier());
 
         return ui;
     }
@@ -175,20 +158,6 @@ public class MetaDisplay implements MetaDisplayInterface
     public void display(String identifier) throws DocumentNotFoundException
     {
         Log.debug(50, "display(String identifier) called; id = "+identifier);
-//        try  {
-//            setIdentifier(identifier);
-//        } catch (NullArgumentException nae) {
-//            Log.debug(12, "NullArgumentException setting identifier: "
-//                                            +identifier+"; "+nae.getMessage());
-//            DocumentNotFoundException dnfe 
-//                =  new DocumentNotFoundException("Nested NullArgumentException:"
-//                                                                          +nae);
-//            dnfe.fillInStackTrace();
-//            throw dnfe;
-//        }
-//        Reader reader = factory.openAsReader(getIdentifier());
-//        fireActionEvent(MetaDisplayInterface.NAVIGATION_EVENT,getIdentifier());
-//        display.setHTML(getAsString(reader));
 
         //keep a temp backup of current (outgoing) ID:
         String oldID = this.identifier; //the global one, not the local one

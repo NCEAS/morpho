@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2002-08-28 01:04:36 $'
- * '$Revision: 1.8 $'
+ *     '$Date: 2002-08-30 16:16:30 $'
+ * '$Revision: 1.9 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,10 +31,15 @@ import java.io.IOException;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.BorderLayout;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 import javax.swing.JPanel;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
+import javax.swing.JComponent;
 import javax.swing.border.Border;
 import javax.swing.BorderFactory;
 
@@ -74,26 +79,35 @@ public class MetaDisplayUI extends JPanel
                                             - HEADER_HEIGHT - 2*BORDER_WIDTH);
                                             
     private static final Color FOCUSED_BORDER_COLOR = new Color(115,147,196);
+    private static final Color UNFOCUSED_BORDER_COLOR = Color.gray;
     private static final Border focusedBorder 
                 = BorderFactory.createMatteBorder(  BORDER_WIDTH, BORDER_WIDTH, 
                                                     BORDER_WIDTH, BORDER_WIDTH,
                                                     FOCUSED_BORDER_COLOR );
 
+    private static final Border unfocusedBorder 
+                = BorderFactory.createMatteBorder(  BORDER_WIDTH, BORDER_WIDTH, 
+                                                    BORDER_WIDTH, BORDER_WIDTH,
+                                                    UNFOCUSED_BORDER_COLOR );
+    
     /**
      *  constructor
      *
      */
-    public MetaDisplayUI(MetaDisplay controller) {
-    
+    public MetaDisplayUI(MetaDisplay controller) 
+    {
         this.controller = controller;
+        //init final vars:
         this.header     = new HeaderPanel(controller);
         try {
-            htmlPanel = new HTMLPanel(controller);
+            this.htmlPanel = new HTMLPanel(controller);
         } catch (IOException ioe) {
             Log.debug(5, "Error trying to create MetaData display pane: "+ioe);
             ioe.printStackTrace();
         }
+        ////
         initLayout();
+        initFocusBorder();
     }
 
     private void initLayout()
@@ -101,23 +115,39 @@ public class MetaDisplayUI extends JPanel
         header.setPreferredSize(HEADER_DIMS);
         htmlPanel.setPreferredSize(HTML_DIMS);
         this.setOpaque(true);
-        this.setBorder(focusedBorder);
         this.setLayout(new BorderLayout());
-//        this.add(Box.createHorizontalStrut(PADDING),BorderLayout.WEST);
         Box centerPanel = Box.createVerticalBox();
         this.add(centerPanel, BorderLayout.CENTER) ;
-//        this.add(Box.createHorizontalStrut(PADDING),BorderLayout.EAST);
 
-//        centerPanel.add(Box.createVerticalStrut(PADDING));
         centerPanel.add(header);
-//        centerPanel.add(Box.createVerticalStrut(PADDING));
         centerPanel.add(htmlPanel);
-//        centerPanel.add(Box.createVerticalStrut(PADDING));
         
         this.setMinimumSize(OVERALL_DIMS);
         this.setPreferredSize(OVERALL_DIMS);
     }
 
+    public boolean isFocusTraversable() 
+    {
+        return true;
+    }
+    
+    private void initFocusBorder()
+    {
+        this.setBorder(focusedBorder);
+        final JComponent instance = this;
+//        this.addMouseListener( new MouseAdapter() {
+//            public void mouseClicked(MouseEvent e) {
+//                Log.debug(50,"mouseClicked in MetaDisplayUI");
+//                instance.setBorder(focusedBorder);
+//            }
+//        });
+        this.addFocusListener( new FocusAdapter() {
+            public void focusGained(FocusEvent e) {
+                Log.debug(50,"mouseClicked in MetaDisplayUI");
+                instance.setBorder(focusedBorder);
+            }
+        });
+    }
 
 	
 	/**

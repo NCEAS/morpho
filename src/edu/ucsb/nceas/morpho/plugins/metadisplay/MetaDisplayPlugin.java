@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: jones $'
- *     '$Date: 2002-08-19 22:34:46 $'
- * '$Revision: 1.3 $'
+ *   '$Author: brooke $'
+ *     '$Date: 2002-08-30 16:16:30 $'
+ * '$Revision: 1.4 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -61,7 +61,7 @@ public class MetaDisplayPlugin implements   PluginInterface,
           services.addService(MetaDisplayInterface.class, this);
           Log.debug(20, "Service added: MetaDisplayFactoryInterface.");
         } 
-        catch (ServiceExistsException see) 
+        catch (ServiceExistsException see)
         {
           Log.debug(6, 
                     "Service registration failed: MetaDisplayFactoryInterface");
