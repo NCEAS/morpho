@@ -323,5 +323,5 @@ public class CodeDefinition extends AbstractUIPage {
      */
   public String getPageNumber() { return pageNumber; }
 
-  public void setPageData(OrderedMap data) { }
+  public void setPageData(OrderedMap data, String _xPathRoot) {}
 }

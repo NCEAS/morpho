@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2004-03-18 02:21:40 $'
- * '$Revision: 1.11 $'
+ *     '$Date: 2004-03-20 00:44:55 $'
+ * '$Revision: 1.12 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -148,7 +148,7 @@ public class EditColumnMetaDataCommand implements Command
     if(dpwPlugin == null) return;
 
     AttributePage attributePage = (AttributePage)dpwPlugin.getPage(DataPackageWizardInterface.ATTRIBUTE_PAGE);
-    attributePage.setPageData(map);
+    attributePage.setPageData(map, null);
     String firstKey = (String)map.keySet().iterator().next();
 
     ModalDialog wpd = new ModalDialog(attributePage,

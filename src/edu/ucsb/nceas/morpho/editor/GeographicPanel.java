@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2004-03-17 21:13:00 $'
- * '$Revision: 1.4 $'
+ *     '$Date: 2004-03-20 00:44:55 $'
+ * '$Revision: 1.5 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,41 +26,28 @@
  */
 package edu.ucsb.nceas.morpho.editor;
 
-import java.util.Enumeration;
+import edu.ucsb.nceas.morpho.framework.AbstractUIPage;
+import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
+import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardPageLibrary;
+import edu.ucsb.nceas.utilities.Log;
+import edu.ucsb.nceas.utilities.OrderedMap;
+import edu.ucsb.nceas.utilities.XMLUtilities;
 
 import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.event.FocusAdapter;
-import javax.swing.BoxLayout;
-import javax.swing.JComponent;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JButton;
-import javax.swing.JTextArea;
-import javax.swing.JTextField;
-import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.JTree;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import edu.ucsb.nceas.morpho.editor.DocFrame;
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JPanel;
+import javax.swing.JTree;
+import javax.swing.tree.DefaultMutableTreeNode;
 
-import edu.ucsb.nceas.utilities.*;
-
-import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
-import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WidgetFactory;
-import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardPageLibrary;
-
-import edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.GeographicPage;
-import edu.ucsb.nceas.morpho.framework.AbstractUIPage;
-
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.NamedNodeMap;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.w3c.dom.DOMImplementation;
 import org.apache.xerces.dom.DOMImplementationImpl;
+import org.w3c.dom.DOMImplementation;
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
 
 /**
  * AttributePanel is an example of a special panel editor for
@@ -90,8 +77,7 @@ public class GeographicPanel extends JPanel
     // so that when data from the panel is merged back, information is not lost.
     final OrderedMap om = XMLUtilities.getDOMTreeAsXPathMap(domNode);
 
-    ((GeographicPage)awp).setXPathRoot("/geographicCoverage");
-    awp.setPageData(om);
+    awp.setPageData(om, "/geographicCoverage");
 
     JPanel controlsPanel = new JPanel();
     JButton saveButton = new JButton("Save");
@@ -129,7 +115,7 @@ public class GeographicPanel extends JPanel
     JButton cancelButton = new JButton("Cancel");
     cancelButton.addActionListener( new ActionListener() {
       public void actionPerformed(ActionEvent ae) {
-        awp.setPageData(om);
+        awp.setPageData(om, "/geographicCoverage");
       }
     });
     controlsPanel.add(saveButton);

@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2004-03-17 21:13:00 $'
- * '$Revision: 1.16 $'
+ *     '$Date: 2004-03-20 00:44:55 $'
+ * '$Revision: 1.17 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,48 +26,33 @@
  */
 package edu.ucsb.nceas.morpho.editor;
 
-import java.util.Enumeration;
+import edu.ucsb.nceas.morpho.framework.AbstractUIPage;
+import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
+import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardPageLibrary;
+import edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.PartyPage;
+import edu.ucsb.nceas.utilities.Log;
+import edu.ucsb.nceas.utilities.OrderedMap;
+import edu.ucsb.nceas.utilities.XMLUtilities;
+
+import java.util.Vector;
 
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
-import java.awt.event.FocusAdapter;
-import javax.swing.BoxLayout;
-import javax.swing.JComponent;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JButton;
-import javax.swing.JTextArea;
-import javax.swing.JTextField;
-import javax.swing.JRadioButton;
-import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.JTree;
-import javax.swing.tree.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Vector;
+import java.awt.event.FocusAdapter;
 
-
-import edu.ucsb.nceas.morpho.editor.DocFrame;
-
-import edu.ucsb.nceas.utilities.*;
-
-import java.util.Iterator;
-
-import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
-import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WidgetFactory;
-import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardPageLibrary;
-
-import edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.PartyPage;
-import edu.ucsb.nceas.morpho.framework.AbstractUIPage;
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JPanel;
+import javax.swing.JRadioButton;
+import javax.swing.JTree;
+import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.TreePath;
 
 import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.w3c.dom.DOMImplementation;
-import org.apache.xerces.dom.DOMImplementationImpl;
 
 /**
  * PartyPanel is an example of a special panel editor for
@@ -107,8 +92,7 @@ public class PartyPanel extends JPanel
     final OrderedMap om = XMLUtilities.getDOMTreeAsXPathMap(domNode);
     NodeInfo ni = (NodeInfo)node.getUserObject();
     nname = ni.getName();
-    ((PartyPage)awp).setXPathRoot("/"+nname);
-    awp.setPageData(om);
+    awp.setPageData(om, "/"+nname);
 
     JPanel controlsPanel = new JPanel();
     JButton saveButton = new JButton("Save");
@@ -145,7 +129,7 @@ public class PartyPanel extends JPanel
     JButton cancelButton = new JButton("Cancel");
     cancelButton.addActionListener( new ActionListener() {
       public void actionPerformed(ActionEvent ae) {
-        awp.setPageData(om);
+        awp.setPageData(om, "/"+nname);
       }
     });
     controlsPanel.add(saveButton);

@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2004-03-17 21:13:01 $'
- * '$Revision: 1.19 $'
+ *     '$Date: 2004-03-20 00:44:55 $'
+ * '$Revision: 1.20 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1398,11 +1398,11 @@ public class PartyPage extends AbstractUIPage {
     return returnMap;
   }
 
-  public void setXPathRoot(String xpath) {
-    xPathRoot = xpath;
-  }
 
-  public void setPageData(OrderedMap map) {
+  public void setPageData(OrderedMap map, String _xPathRoot) {
+
+    if (_xPathRoot!=null && _xPathRoot.trim().length() > 0) this.xPathRoot = _xPathRoot;
+
     OrderedMap map2 = map;
     map = stripIndexOneFromMapKeys(map);
 

@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2004-03-19 00:06:53 $'
- * '$Revision: 1.21 $'
+ *     '$Date: 2004-03-20 00:44:55 $'
+ * '$Revision: 1.22 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -55,6 +55,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
+import java.util.ArrayList;
 
 public class Project extends AbstractUIPage {
 
@@ -69,12 +70,12 @@ public class Project extends AbstractUIPage {
   private JPanel noDataPanel;
   private JPanel currentPanel;
 
-  private final String XPATH_ROOT          = "/eml:eml/dataset[1]/";
+  private final String PROJECT_ROOT        = "project/";
+  private final String XPATH_ROOT          = "/eml:eml/dataset[1]/" + PROJECT_ROOT;
 
-  private final String PROJECT_ROOT        = "project[1]/";
-  private final String TITLE_REL_XPATH     = PROJECT_ROOT + "title[1]";
-  private final String FUNDING_REL_XPATH   = PROJECT_ROOT + "funding[1]/para[1]";
-  private final String PERSONNEL_REL_XPATH = PROJECT_ROOT + "personnel[";
+  private final String TITLE_REL_XPATH     = "title[1]";
+  private final String FUNDING_REL_XPATH   = "funding[1]/para[1]";
+  private final String PERSONNEL_REL_XPATH = "personnel[";
 
 
   private final String[] buttonsText = new String[] {
@@ -445,50 +446,147 @@ public class Project extends AbstractUIPage {
 
 
   private OrderedMap hiddenFieldsMap = new OrderedMap();
+  private OrderedMap personnelMap = new OrderedMap();
 
-  public void setPageData(OrderedMap data) {
+  public void setPageData(OrderedMap data, String _xPathRoot) {
 
-    if (data==null || data.isEmpty()) return;
+    //if (_xPathRoot!=null && _xPathRoot.trim().length() > 0) this.xPathRoot = _xPathRoot;
+
+
+    if (data == null || data.isEmpty())return;
 
     hiddenFieldsMap.clear();
+    personnelMap.clear();
 
     Iterator it = data.keySet().iterator();
     Object nextXPathObj = null;
-    String nextXPath    = null;
-    Object nextValObj   = null;
-    String nextVal      = null;
+    String nextXPath = null;
+    Object nextValObj = null;
+    String nextVal = null;
 
-    while (it.hasNext()){
+    while (it.hasNext()) {
 
       nextXPathObj = it.next();
-      if (nextXPathObj==null) continue;
+      if (nextXPathObj == null)continue;
       nextXPath = (String)nextXPathObj;
 
       nextValObj = data.get(nextXPathObj);
-      nextVal = (nextValObj==null)? "" : ((String)nextValObj).trim();
+      nextVal = (nextValObj == null) ? "" : ((String)nextValObj).trim();
+
+      Log.debug(45, " nextXPath = " + nextXPath + "\n nextVal   = " + nextVal);
 
       // remove everything up to and including the last occurrence of
       // PROJECT_ROOT to get relative xpaths, in case we're handling a
       // project elsewhere in the tree...
-      nextVal = nextVal.substring(nextVal.lastIndexOf(PROJECT_ROOT)
-                                  + PROJECT_ROOT.length());
+      nextXPath = nextXPath.substring(nextXPath.lastIndexOf(PROJECT_ROOT)
+                                      + PROJECT_ROOT.length());
 
-      if (nextXPath.equalsIgnoreCase(TITLE_REL_XPATH)) {
+      Log.debug(45, " TRIMMED nextXPath   = " + nextXPath);
+      Log.debug(45, " TITLE_REL_XPATH     = " + TITLE_REL_XPATH);
+      Log.debug(45, " FUNDING_REL_XPATH   = " + FUNDING_REL_XPATH);
+      Log.debug(45, " PERSONNEL_REL_XPATH = " + PERSONNEL_REL_XPATH);
+
+      if (nextXPath.startsWith(TITLE_REL_XPATH)) {
 
         titleField.setText(nextVal);
 
-      } else if (nextXPath.equalsIgnoreCase(FUNDING_REL_XPATH)) {
+      } else if (nextXPath.startsWith(FUNDING_REL_XPATH)) {
 
         fundingField.setText(nextVal);
 
-      } else if (nextXPath.equalsIgnoreCase(PERSONNEL_REL_XPATH)) {
+      } else if (nextXPath.startsWith(PERSONNEL_REL_XPATH)) {
 
-        titleField.setText(nextVal);
+        personnelMap.put(nextXPath, nextValObj);
 
       } else {
 
         hiddenFieldsMap.put(nextXPathObj, nextValObj);
       }
     }
+
+    // now we have all personnel in one map, need to sort them out, create a new
+    // party object for each, and add it to the list
+    Object nextPersonnelXPathObj = null;
+    String nextPersonnelXPath = null;
+    Object nextPersonnelValObj = null;
+    String nextPersonnelVal = null;
+    List personnelList = new ArrayList();
+    // NOTE predicate is 1-relative, but List indices are 0-relative!!!
+    //add a dummy entry for index 0
+    personnelList.add(null);
+
+    Iterator itp = personnelMap.keySet().iterator();
+
+    while (itp.hasNext()) {
+
+      nextPersonnelXPathObj = itp.next();
+      if (nextPersonnelXPathObj == null)continue;
+      nextPersonnelXPath = (String)nextPersonnelXPathObj;
+
+      nextPersonnelValObj = data.get(nextXPathObj);
+      nextPersonnelVal = (nextPersonnelValObj == null) ? ""
+                         : ((String)nextPersonnelValObj).trim();
+
+      int predicate = getFirstPredicate(nextPersonnelXPath, PERSONNEL_REL_XPATH);
+
+Log.debug(50, "predicate = "+predicate);
+      // NOTE predicate is 1-relative, but List indices are 0-relative!!!
+      if (predicate > personnelList.size()-1) {
+
+Log.debug(50, "predicate > personnelList.size()-1 -- adding entries -- \npersonnelList.size() BEFORE = "+personnelList.size());
+
+        for (int i=1; i < (predicate - personnelList.size()); i++) {
+          personnelList.add(null);
+        }
+Log.debug(50, "personnelList.size() AFTER = "+personnelList.size());
+      }
+      if (personnelList.get(predicate) == null) {
+
+        Log.debug(50, "personnelList.get("+predicate+") = NULL - creating new map");
+
+        //new predicate - create map for this predicate number and add to list
+        OrderedMap partyMap = new OrderedMap();
+//        partyMap.add();
+      }
+    }
+
+//
+//    Iterator itp2 = personnelMap.keySet().iterator();
+//
+//    while (itp2.hasNext()) {
+//
+//      nextPersonnelXPathObj = itp2.next();
+//      if (nextPersonnelXPathObj == null)continue;
+//      nextPersonnelXPath = (String)nextPersonnelXPathObj;
+//
+//      nextPersonnelValObj = data.get(nextXPathObj);
+//      nextPersonnelVal = (nextPersonnelValObj == null) ? ""
+//                         : ((String)nextPersonnelValObj).trim();
+//
+//      int predicate = getFirstPredicate(nextPersonnelXPath, PERSONNEL_REL_XPATH);
+//
+//      if (predicate > largestPredicate) largestPredicate = predicate;
+//    }
+  }
+
+
+  private int getFirstPredicate(String xpath, String firstSegment) {
+
+    String tempXPath
+        = xpath.substring(xpath.indexOf(firstSegment) + firstSegment.length());
+
+    return Integer.parseInt(
+        tempXPath.substring(0, tempXPath.indexOf("]")));
   }
 }
+
+
+
+
+
+
+
+
+
+
+

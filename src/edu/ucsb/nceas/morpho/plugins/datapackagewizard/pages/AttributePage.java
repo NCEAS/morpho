@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2004-03-17 21:13:01 $'
- * '$Revision: 1.20 $'
+ *     '$Date: 2004-03-20 00:44:55 $'
+ * '$Revision: 1.21 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -196,10 +196,6 @@ public class AttributePage extends AbstractUIPage {
 
     initNames();
     init();
-  }
-
-  public void setXPathRoot(String xpr) {
-    xPathRoot = xpr;
   }
 
   private void initNames() {
@@ -790,8 +786,10 @@ public class AttributePage extends AbstractUIPage {
    * @param map - Data is passed as OrderedMap of xPath-value pairs. xPaths in
    *   this map are absolute xPath and not the relative xPaths
    */
-  public void setPageData(OrderedMap map) {
-//Log.debug(1, "map: "+map);
+  public void setPageData(OrderedMap map, String _xPathRoot) {
+
+    if (_xPathRoot!=null && _xPathRoot.trim().length() > 0) this.xPathRoot = _xPathRoot;
+
 
      String name = (String)map.get(xPathRoot + "/attributeName[1]");
      if(name != null)

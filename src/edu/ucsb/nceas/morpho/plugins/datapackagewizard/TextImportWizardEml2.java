@@ -4,9 +4,9 @@
  *              National Center for Ecological Analysis and Synthesis
  *    Release: @release@
  *
- *   '$Author: sambasiv $'
- *     '$Date: 2004-03-11 02:54:42 $'
- * '$Revision: 1.17 $'
+ *   '$Author: brooke $'
+ *     '$Date: 2004-03-20 00:44:55 $'
+ * '$Revision: 1.18 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -104,10 +104,10 @@ public class TextImportWizardEml2 extends JFrame {
    * being referenced by this text import process
    */
   private JTable table;
-	
-	/**
-   * 	a global reference to the table used to display the lines read from the file 
-	 *	this is the table that is displayed on the first screen of the TIW
+
+  /**
+   * 	a global reference to the table used to display the lines read from the file
+   *	this is the table that is displayed on the first screen of the TIW
    */
   private JTable linesTable = null;
 
@@ -177,8 +177,8 @@ public class TextImportWizardEml2 extends JFrame {
    * vector containing AttributePage objects
    */
   private Vector columnAttributes;
-	
-	private boolean[] needToSetPageData;
+
+  private boolean[] needToSetPageData;
 
   /**
    * vector of vectors with table data
@@ -200,8 +200,8 @@ public class TextImportWizardEml2 extends JFrame {
 
   private short distribution = WizardSettings.ONLINE;
 
-	private WizardContainerFrame mainWizFrame;
-	
+  private WizardContainerFrame mainWizFrame;
+
   /**
    * constructor
    *
@@ -215,8 +215,8 @@ public class TextImportWizardEml2 extends JFrame {
     this.listener = listener;
     this.dataFile = file;
     this.shortFilename = dataFile.getName();
-		this.mainWizFrame = container;
-		
+    this.mainWizFrame = container;
+
     setDistribution(distribution);
 
     initControls();
@@ -488,7 +488,7 @@ public class TextImportWizardEml2 extends JFrame {
     SpaceCheckBox.addItemListener(lSymItem);
     SemicolonCheckBox.addItemListener(lSymItem);
     OtherCheckBox.addItemListener(lSymItem);
-	ConsecutiveCheckBox.addItemListener(lSymItem);
+  ConsecutiveCheckBox.addItemListener(lSymItem);
   }
 
   private void setDistribution(short distribution) {
@@ -580,30 +580,30 @@ public class TextImportWizardEml2 extends JFrame {
    * creates a JTable based on lines in input
    */
   void createLinesTable() {
-		
-		if(linesTable == null) {
-			
-			Vector listOfRows = new Vector();
-			for (int i = 0; i < nlines; i++) {
-				Vector row = new Vector();
-				row.add(new String().valueOf(i + 1));
-				row.add(lines[i]);
-				listOfRows.add(row);
-			}
-			Vector title = new Vector();
-			title.add("#");
-			title.add("Lines in " + dataFile.getName());
-			UneditableTableModel linesTM = new UneditableTableModel(listOfRows, title);
-			linesTable = new JTable(linesTM);
-			linesTable.setFont(new Font("MonoSpaced", Font.PLAIN, 14));
-			(linesTable.getTableHeader()).setReorderingAllowed(false);
-			
-			TableColumn column = null;
-			column = linesTable.getColumnModel().getColumn(0);
-			column.setPreferredWidth(40);
-			column.setMaxWidth(40);
-		}
-		DataScrollPanel.getViewport().removeAll();
+
+    if(linesTable == null) {
+
+      Vector listOfRows = new Vector();
+      for (int i = 0; i < nlines; i++) {
+        Vector row = new Vector();
+        row.add(new String().valueOf(i + 1));
+        row.add(lines[i]);
+        listOfRows.add(row);
+      }
+      Vector title = new Vector();
+      title.add("#");
+      title.add("Lines in " + dataFile.getName());
+      UneditableTableModel linesTM = new UneditableTableModel(listOfRows, title);
+      linesTable = new JTable(linesTM);
+      linesTable.setFont(new Font("MonoSpaced", Font.PLAIN, 14));
+      (linesTable.getTableHeader()).setReorderingAllowed(false);
+
+      TableColumn column = null;
+      column = linesTable.getColumnModel().getColumn(0);
+      column.setPreferredWidth(40);
+      column.setMaxWidth(40);
+    }
+    DataScrollPanel.getViewport().removeAll();
     DataScrollPanel.getViewport().add(linesTable);
 
   }
@@ -642,10 +642,10 @@ public class TextImportWizardEml2 extends JFrame {
               temp+="\n";
               linesList.add(temp);
             } /*else {
-							// we can stop reading the remaining lines. we dont need the actual number of
-							// lines present
-							break;
-						}*/
+              // we can stop reading the remaining lines. we dont need the actual number of
+              // lines present
+              break;
+            }*/
           }
         }
       } catch (IOException e) {
@@ -705,29 +705,29 @@ public class TextImportWizardEml2 extends JFrame {
         for (int i = start; i < nlines; i++) {
           vec1 = getColumnValues(lines[i]);
           boolean missing = false;
-					int currSize = vec1.size();
+          int currSize = vec1.size();
           while (currSize < numcols) {
             vec1.addElement("");
-						currSize++;
+            currSize++;
             missing = true;
           }
           vec.addElement(vec1);
         }
-				
-      	buildTable();
-			}
-			if(!hasReturnedFromScreen2) {
-				
-				columnAttributes = new Vector();
-				needToSetPageData = new boolean[numcols];
-				Arrays.fill(needToSetPageData, true);
-				
-			}
-		}
-		DataScrollPanel.getViewport().removeAll();
+
+        buildTable();
+      }
+      if(!hasReturnedFromScreen2) {
+
+        columnAttributes = new Vector();
+        needToSetPageData = new boolean[numcols];
+        Arrays.fill(needToSetPageData, true);
+
+      }
+    }
+    DataScrollPanel.getViewport().removeAll();
     DataScrollPanel.getViewport().add(table);
-		hasReturnedFromScreen2 = false;
-	}
+    hasReturnedFromScreen2 = false;
+  }
 
 
   /**
@@ -742,7 +742,7 @@ public class TextImportWizardEml2 extends JFrame {
     table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
     table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
     fullColumnModel = table.getColumnModel();
-    
+
   }
 
 
@@ -822,21 +822,21 @@ public class TextImportWizardEml2 extends JFrame {
     int test = delim.indexOf(token);
     if (test > -1) {
       result = true;
-    } 
+    }
     return result;
   }
 
 
   void NextButton_actionPerformed(java.awt.event.ActionEvent event) {
     if (stepNumber >= 3) {
-			AttributePage attrd = (AttributePage)columnAttributes.elementAt(
+      AttributePage attrd = (AttributePage)columnAttributes.elementAt(
           stepNumber - 3);
       if (!attrd.onAdvanceAction())
         return;
     }
 
     stepNumber++;
-    
+
     if (fullColumnModel != null
         && stepNumber == (fullColumnModel.getColumnCount() + 2))
       FinishButton.setEnabled(true);
@@ -850,9 +850,9 @@ public class TextImportWizardEml2 extends JFrame {
     cl.show(ControlsPanel, "card" + stepNumber);
 
     if (stepNumber == 2) {
-			parseDelimited();
-			table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-		}
+      parseDelimited();
+      table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+    }
     if (stepNumber >= 3) {
       TableColumnModel model = new DefaultTableColumnModel();
       model.addColumn(fullColumnModel.getColumn(stepNumber - 3));
@@ -869,19 +869,19 @@ public class TextImportWizardEml2 extends JFrame {
       DataPanel.setVisible(false);
       StepNumberLabel.setText("Step #" + stepNumber + " of "
                               + (fullColumnModel.getColumnCount() + 2));
-			
-			int attrNum = stepNumber - 3;
-			if(attrNum >= columnAttributes.size()) {
-				AttributePage ad = (AttributePage)WizardPageLibrary.getPage(
-					DataPackageWizardInterface.ATTRIBUTE_PAGE);
-				ad.setBorder(BorderFactory.createLineBorder(Color.black));
-				columnAttributes.add(ad);
-			}
+
+      int attrNum = stepNumber - 3;
+      if(attrNum >= columnAttributes.size()) {
+        AttributePage ad = (AttributePage)WizardPageLibrary.getPage(
+          DataPackageWizardInterface.ATTRIBUTE_PAGE);
+        ad.setBorder(BorderFactory.createLineBorder(Color.black));
+        columnAttributes.add(ad);
+      }
       if(needToSetPageData[attrNum]) {
-				fillAttributePageData(attrNum);
-				needToSetPageData[attrNum] = false;
-			}
-			AttributePage attrd = (AttributePage)columnAttributes.elementAt(attrNum);
+        fillAttributePageData(attrNum);
+        needToSetPageData[attrNum] = false;
+      }
+      AttributePage attrd = (AttributePage)columnAttributes.elementAt(attrNum);
       MainDisplayPanel.remove(MainDisplayPanel.getComponent(1));
       MainDisplayPanel.add(attrd, BorderLayout.CENTER);
       attrd.refreshUI();
@@ -899,80 +899,80 @@ public class TextImportWizardEml2 extends JFrame {
     }
   }
 
-	private void fillAttributePageData(int attrNum) {
-		
-		AttributePage ad = (AttributePage)columnAttributes.elementAt(attrNum);
-		String type = guessColFormat(attrNum);
-		OrderedMap map = ad.getPageData(AttributeSettings.Attribute_xPath);
-		map.put(AttributeSettings.AttributeName_xPath, colTitles.elementAt(attrNum));
-					
-		// either nominal/ordinal  . We guess as  nominal
-		if (type.equals("text")) {
-			
-			Vector unique = getUniqueColValues(attrNum);
-			Enumeration en = unique.elements();
-			int pos = 1;
-			while (en.hasMoreElements()) {
-				String elem = (String)en.nextElement();
-				String path = AttributeSettings.Nominal_xPath
-				+ "/enumeratedDomain[1]/codeDefinition[" + pos
-				+ "]/code";
-				map.put(path, elem);
-				path = AttributeSettings.Ordinal_xPath
-				+ "/enumeratedDomain[1]/codeDefinition[" + pos + "]/code";
-				map.put(path, elem);
-				pos++;
-			}
-			ad.setPageData(map);
-		}
-		
-		else if (type.equals("float")) {
-			String numberTypePath = AttributeSettings.Interval_xPath
-			+ "/numericDomain/numberType";
-			map.put(numberTypePath, numberTypesArray[3]);
-			numberTypePath = AttributeSettings.Ratio_xPath
-			+ "/numericDomain/numberType";
-			map.put(numberTypePath, numberTypesArray[3]);
-			ad.setPageData(map);
-		}
-		
-		else if (type.equals("integer")) {
-			
-			String numType = guessNumberType(attrNum);
-			
-			if (numType.equals("Natural")) {
-				String numberTypePath = AttributeSettings.Interval_xPath
-				+ "/numericDomain/numberType";
-				map.put(numberTypePath, numberTypesArray[0]);
-				numberTypePath = AttributeSettings.Ratio_xPath
-				+ "/numericDomain/numberType";
-				map.put(numberTypePath, numberTypesArray[0]);
-			} else if (numType.equals("Whole")) {
-				String numberTypePath = AttributeSettings.Interval_xPath
-				+ "/numericDomain/numberType";
-				map.put(numberTypePath, numberTypesArray[1]);
-				numberTypePath = AttributeSettings.Ratio_xPath
-				+ "/numericDomain/numberType";
-				map.put(numberTypePath, numberTypesArray[1]);
-			} else if (numType.equals("Integer")) {
-				String numberTypePath = AttributeSettings.Interval_xPath
-				+ "/numericDomain/numberType";
-				map.put(numberTypePath, numberTypesArray[2]);
-				numberTypePath = AttributeSettings.Ratio_xPath
-				+ "/numericDomain/numberType";
-				map.put(numberTypePath, numberTypesArray[2]);
-			}
-			ad.setPageData(map);
-		} else if (type.equals("date")) {
-			map.put(AttributeSettings.DateTime_xPath + "/dateTimePrecision",
-			new String("0"));
-			ad.setPageData(map);
-		}
-		
-		
-	}
-	
-	
+  private void fillAttributePageData(int attrNum) {
+
+    AttributePage ad = (AttributePage)columnAttributes.elementAt(attrNum);
+    String type = guessColFormat(attrNum);
+    OrderedMap map = ad.getPageData(AttributeSettings.Attribute_xPath);
+    map.put(AttributeSettings.AttributeName_xPath, colTitles.elementAt(attrNum));
+
+    // either nominal/ordinal  . We guess as  nominal
+    if (type.equals("text")) {
+
+      Vector unique = getUniqueColValues(attrNum);
+      Enumeration en = unique.elements();
+      int pos = 1;
+      while (en.hasMoreElements()) {
+        String elem = (String)en.nextElement();
+        String path = AttributeSettings.Nominal_xPath
+        + "/enumeratedDomain[1]/codeDefinition[" + pos
+        + "]/code";
+        map.put(path, elem);
+        path = AttributeSettings.Ordinal_xPath
+        + "/enumeratedDomain[1]/codeDefinition[" + pos + "]/code";
+        map.put(path, elem);
+        pos++;
+      }
+      ad.setPageData(map, null);
+    }
+
+    else if (type.equals("float")) {
+      String numberTypePath = AttributeSettings.Interval_xPath
+      + "/numericDomain/numberType";
+      map.put(numberTypePath, numberTypesArray[3]);
+      numberTypePath = AttributeSettings.Ratio_xPath
+      + "/numericDomain/numberType";
+      map.put(numberTypePath, numberTypesArray[3]);
+      ad.setPageData(map, null);
+    }
+
+    else if (type.equals("integer")) {
+
+      String numType = guessNumberType(attrNum);
+
+      if (numType.equals("Natural")) {
+        String numberTypePath = AttributeSettings.Interval_xPath
+        + "/numericDomain/numberType";
+        map.put(numberTypePath, numberTypesArray[0]);
+        numberTypePath = AttributeSettings.Ratio_xPath
+        + "/numericDomain/numberType";
+        map.put(numberTypePath, numberTypesArray[0]);
+      } else if (numType.equals("Whole")) {
+        String numberTypePath = AttributeSettings.Interval_xPath
+        + "/numericDomain/numberType";
+        map.put(numberTypePath, numberTypesArray[1]);
+        numberTypePath = AttributeSettings.Ratio_xPath
+        + "/numericDomain/numberType";
+        map.put(numberTypePath, numberTypesArray[1]);
+      } else if (numType.equals("Integer")) {
+        String numberTypePath = AttributeSettings.Interval_xPath
+        + "/numericDomain/numberType";
+        map.put(numberTypePath, numberTypesArray[2]);
+        numberTypePath = AttributeSettings.Ratio_xPath
+        + "/numericDomain/numberType";
+        map.put(numberTypePath, numberTypesArray[2]);
+      }
+      ad.setPageData(map, null);
+    } else if (type.equals("date")) {
+      map.put(AttributeSettings.DateTime_xPath + "/dateTimePrecision",
+      new String("0"));
+      ad.setPageData(map, null);
+    }
+
+
+  }
+
+
   void BackButton_actionPerformed(java.awt.event.ActionEvent event) {
     stepNumber--;
     if (stepNumber == 2) {
@@ -992,8 +992,8 @@ public class TextImportWizardEml2 extends JFrame {
       MainDisplayPanel.repaint();
 
     }
-    if (stepNumber < 2){ 
-			table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+    if (stepNumber < 2){
+      table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
       saveScreen1Settings();
       hasReturnedFromScreen2 = true;
     }
@@ -1051,92 +1051,92 @@ public class TextImportWizardEml2 extends JFrame {
 
     // info should be null if all fields are not blank
     if (!ad.onAdvanceAction()) return;
-		
-		int attrsToBeImported = mainWizFrame.getAttributeImportCount();
-		
-		Iterator it = columnAttributes.iterator();
-		int cnt = 0;
-		boolean importNeeded = false;
-		
-		int currentEntityID;
-		String entityName = TableNameTextField.getText();
-		List colNames = new ArrayList();
-		while(it.hasNext()) {
-			ad = (AttributePage) it.next();
-			OrderedMap map1 = ad.getPageData(AttributeSettings.Attribute_xPath);
-			String colName = getColumnName(map1, AttributeSettings.Attribute_xPath);
-			
-			if(ad.isImportNeeded()) {
-				
-				String mScale = getMeasurementScale(map1, AttributeSettings.Attribute_xPath);
-				mainWizFrame.addAttributeForImport(entityName, colName, mScale, map1, AttributeSettings.Attribute_xPath, true);
-				importNeeded = true;
-			}
-			colNames.add(colName);
-			cnt++;
-			map1 = null;
-		}
-		
-		mainWizFrame.setLastImportedEntity(entityName);
-		mainWizFrame.setLastImportedAttributes(colNames);
-		if(vec != null)
-			mainWizFrame.setLastImportedDataSet(vec);
-		else {
-			mainWizFrame.setLastImportedDataSet(((UneditableTableModel)table.getModel()).getDataVector());
-		}
-		
-		String prevPageID = mainWizFrame.getPreviousPageID();
-		
-		if(attrsToBeImported > 0) {
-			if(listener != null)
-				((ImportWizard)listener).nextPageID = DataPackageWizardInterface.CODE_DEFINITION;
-		} else if(importNeeded) {
-			if(listener != null)
-			((ImportWizard)listener).nextPageID=DataPackageWizardInterface.CODE_IMPORT_SUMMARY;
-		} else {
-			if(listener != null)
-				((ImportWizard)listener).nextPageID = DataPackageWizardInterface.SUMMARY;
-		}
-		
-		
+
+    int attrsToBeImported = mainWizFrame.getAttributeImportCount();
+
+    Iterator it = columnAttributes.iterator();
+    int cnt = 0;
+    boolean importNeeded = false;
+
+    int currentEntityID;
+    String entityName = TableNameTextField.getText();
+    List colNames = new ArrayList();
+    while(it.hasNext()) {
+      ad = (AttributePage) it.next();
+      OrderedMap map1 = ad.getPageData(AttributeSettings.Attribute_xPath);
+      String colName = getColumnName(map1, AttributeSettings.Attribute_xPath);
+
+      if(ad.isImportNeeded()) {
+
+        String mScale = getMeasurementScale(map1, AttributeSettings.Attribute_xPath);
+        mainWizFrame.addAttributeForImport(entityName, colName, mScale, map1, AttributeSettings.Attribute_xPath, true);
+        importNeeded = true;
+      }
+      colNames.add(colName);
+      cnt++;
+      map1 = null;
+    }
+
+    mainWizFrame.setLastImportedEntity(entityName);
+    mainWizFrame.setLastImportedAttributes(colNames);
+    if(vec != null)
+      mainWizFrame.setLastImportedDataSet(vec);
+    else {
+      mainWizFrame.setLastImportedDataSet(((UneditableTableModel)table.getModel()).getDataVector());
+    }
+
+    String prevPageID = mainWizFrame.getPreviousPageID();
+
+    if(attrsToBeImported > 0) {
+      if(listener != null)
+        ((ImportWizard)listener).nextPageID = DataPackageWizardInterface.CODE_DEFINITION;
+    } else if(importNeeded) {
+      if(listener != null)
+      ((ImportWizard)listener).nextPageID=DataPackageWizardInterface.CODE_IMPORT_SUMMARY;
+    } else {
+      if(listener != null)
+        ((ImportWizard)listener).nextPageID = DataPackageWizardInterface.SUMMARY;
+    }
+
+
     if (listener != null) listener.importComplete(createEml2NVPairs());
 
     this.dispose();
   }
-	
-	private String getColumnName(OrderedMap map, String xPath) {
-		
-		Object o1 = map.get(xPath + "/attributeName");
-		if(o1 == null) return "";
-		else return (String) o1;                       
-	}
-	
-	private String getMeasurementScale(OrderedMap map, String xPath) {
-		
-		Object o1 = map.get(xPath + "/measurementScale/nominal/nonNumericDomain/enumeratedDomain[1]/codeDefinition[1]/code");
-		if(o1 != null) return "Nominal";
-		boolean b1 = map.containsKey(xPath + "/measurementScale/nominal/nonNumericDomain/enumeratedDomain[1]/entityCodeList/entityReference");
-		if(b1) return "Nominal";
-		o1 = map.get(xPath + "/measurementScale/nominal/nonNumericDomain/textDomain[1]/definition");
-		if(o1 != null) return "Nominal";
-		
-		o1 = map.get(xPath + "/measurementScale/ordinal/nonNumericDomain/enumeratedDomain[1]/codeDefinition[1]/code");
-		if(o1 != null) return "Ordinal";
-		b1 = map.containsKey(xPath + "/measurementScale/ordinal/nonNumericDomain/enumeratedDomain[1]/entityCodeList/entityReference");
-		if(b1) return "Ordinal";
-		o1 = map.get(xPath + "/measurementScale/ordinal/nonNumericDomain/textDomain[1]/definition");
-		if(o1 != null) return "Ordinal";
-		
-		o1 = map.get(xPath + "/measurementScale/interval/unit/standardUnit");
-		if(o1 != null) return "Interval";
-		o1 = map.get(xPath + "/measurementScale/ratio/unit/standardUnit");
-		if(o1 != null) return "Ratio";
-		
-		o1 = map.get(xPath + "/measurementScale/datetime/formatString");
-		if(o1 != null) return "Datetime";
-		
-		return "";
-	}
+
+  private String getColumnName(OrderedMap map, String xPath) {
+
+    Object o1 = map.get(xPath + "/attributeName");
+    if(o1 == null) return "";
+    else return (String) o1;
+  }
+
+  private String getMeasurementScale(OrderedMap map, String xPath) {
+
+    Object o1 = map.get(xPath + "/measurementScale/nominal/nonNumericDomain/enumeratedDomain[1]/codeDefinition[1]/code");
+    if(o1 != null) return "Nominal";
+    boolean b1 = map.containsKey(xPath + "/measurementScale/nominal/nonNumericDomain/enumeratedDomain[1]/entityCodeList/entityReference");
+    if(b1) return "Nominal";
+    o1 = map.get(xPath + "/measurementScale/nominal/nonNumericDomain/textDomain[1]/definition");
+    if(o1 != null) return "Nominal";
+
+    o1 = map.get(xPath + "/measurementScale/ordinal/nonNumericDomain/enumeratedDomain[1]/codeDefinition[1]/code");
+    if(o1 != null) return "Ordinal";
+    b1 = map.containsKey(xPath + "/measurementScale/ordinal/nonNumericDomain/enumeratedDomain[1]/entityCodeList/entityReference");
+    if(b1) return "Ordinal";
+    o1 = map.get(xPath + "/measurementScale/ordinal/nonNumericDomain/textDomain[1]/definition");
+    if(o1 != null) return "Ordinal";
+
+    o1 = map.get(xPath + "/measurementScale/interval/unit/standardUnit");
+    if(o1 != null) return "Interval";
+    o1 = map.get(xPath + "/measurementScale/ratio/unit/standardUnit");
+    if(o1 != null) return "Ratio";
+
+    o1 = map.get(xPath + "/measurementScale/datetime/formatString");
+    if(o1 != null) return "Datetime";
+
+    return "";
+  }
 
 
   /*
@@ -1211,21 +1211,21 @@ public class TextImportWizardEml2 extends JFrame {
   private int mostFrequent(String subS) {
     int maxcnt = 500; // arbitrary limit of 500 occurances
     int[] freq = new int[maxcnt];
-		int mostfreq = 0;
+    int mostfreq = 0;
     int mostfreqindex = 0;
-		
+
     for (int i = 0; i < nlines; i++) {
       int cnt = charCount(lines[i], subS);
       if (cnt > maxcnt - 1)cnt = maxcnt - 1;
       freq[cnt]++;
-			if(freq[cnt] > mostfreq) {
-				mostfreq = freq[cnt];
+      if(freq[cnt] > mostfreq) {
+        mostfreq = freq[cnt];
         mostfreqindex = cnt;
-			}
+      }
     }
-    
+
     int tot = nlines;
-		
+
     /*for (int j = 0; j < maxcnt; j++) {
       tot = tot + freq[j];
       if (freq[j] > mostfreq) {
@@ -1235,9 +1235,9 @@ public class TextImportWizardEml2 extends JFrame {
     }*/
     // establish a threshold; if less than, then return 0
     if ((100 * mostfreq / tot) < 80) {
-			mostfreqindex = 0;
-		}
-		
+      mostfreqindex = 0;
+    }
+
     return mostfreqindex;
   }
 
@@ -1248,13 +1248,13 @@ public class TextImportWizardEml2 extends JFrame {
    * @return String
    */
   private String guessDelimiter() {
-		parseOn = false;
-		TabCheckBox.setSelected(false);
+    parseOn = false;
+    TabCheckBox.setSelected(false);
     CommaCheckBox.setSelected(false);
     SpaceCheckBox.setSelected(false);
     SemicolonCheckBox.setSelected(false);
     OtherCheckBox.setSelected(false);
-		if (mostFrequent("\t") > 0) {
+    if (mostFrequent("\t") > 0) {
       TabCheckBox.setSelected(true);
       parseOn = true;
       return "tab";
@@ -1277,10 +1277,10 @@ public class TextImportWizardEml2 extends JFrame {
       parseOn = true;
       return "colon";
     } else {
-			SpaceCheckBox.setSelected(true);
-			parseOn = true;
-			return "unknown";
-		}
+      SpaceCheckBox.setSelected(true);
+      parseOn = true;
+      return "unknown";
+    }
   }
 
 
@@ -1449,22 +1449,22 @@ public class TextImportWizardEml2 extends JFrame {
      int res;
      int cnt = 0;
      int maxcnt = 2000; // only check this many bytes to avoid performance problems
-		 FileInputStream in = null;
+     FileInputStream in = null;
      try {
        in = new FileInputStream(file);
        while (((res = in.read()) > -1) && (cnt < maxcnt)) {
          cnt++;
          if (res == 0) {
-					 text = false;
-					 break;
-				 }
+           text = false;
+           break;
+         }
        }
-			 in.close();
+       in.close();
      } catch (Exception e) { e.printStackTrace(); }
-		 finally {
-			 try { in.close(); } 
-			 catch (IOException e) {}
-		 }
+     finally {
+       try { in.close(); }
+       catch (IOException e) {}
+     }
      return text;
    }
 

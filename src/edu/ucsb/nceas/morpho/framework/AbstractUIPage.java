@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2004-03-18 00:23:33 $'
- * '$Revision: 1.2 $'
+ *     '$Date: 2004-03-20 00:44:55 $'
+ * '$Revision: 1.3 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,9 +28,9 @@
 
 package edu.ucsb.nceas.morpho.framework;
 
+import edu.ucsb.nceas.utilities.OrderedMap;
 
 import javax.swing.JPanel;
-import edu.ucsb.nceas.utilities.OrderedMap;
 
 
 /**
@@ -132,7 +132,11 @@ public abstract class AbstractUIPage extends JPanel {
    *
    *  @param   data the Map object that contains all the
    *            key/value paired settings for this particular wizard page
+   *  @param   rootXPath the String that represents the "root" of the XPath to
+   *           the content of this widget, INCLUDING PREDICATES.
+   * example - if this is a "Party" widget, being used for the second "Creator"
+   * entry in a list, then xPathRoot = "/eml:eml/dataset[1]/creator[2]
    */
-  public abstract void setPageData(OrderedMap data);
+  public abstract void setPageData(OrderedMap data, String rootXPath);
 
 }

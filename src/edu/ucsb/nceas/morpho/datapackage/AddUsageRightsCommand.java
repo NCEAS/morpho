@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2004-03-19 00:41:20 $'
- * '$Revision: 1.1 $'
+ *     '$Date: 2004-03-20 00:44:55 $'
+ * '$Revision: 1.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -65,22 +65,24 @@ public class AddUsageRightsCommand implements Command {
    */
   public void execute(ActionEvent event) {
 
-    resultPane = null;
+    dataViewContainerPanel = null;
     morphoFrame = UIController.getInstance().getCurrentActiveWindow();
 
-    if (morphoFrame != null) {
+    if (morphoFrame == null) {
 
-      resultPane = morphoFrame.getDataViewContainerPanel();
-      adp = resultPane.getAbstractDataPackage();
-
-    } else {
-      Log.debug(5, "Unable to open usage details!");
       Log.debug(20, "AddUsageRightsCommand - morphoFrame==null");
+      Log.debug(5, "Unable to open usage details!");
       return;
     }
+    dataViewContainerPanel = morphoFrame.getDataViewContainerPanel();
 
-    // make sure resulPanel is not null
-    if (resultPane==null) return;
+    if (dataViewContainerPanel==null) {
+
+      Log.debug(20, "AddUsageRightsCommand - dataViewContainerPanel==null");
+      Log.debug(5, "Unable to open usage details!");
+      return;
+    }
+    adp = dataViewContainerPanel.getAbstractDataPackage();
 
     if (showUsageDialog()) {
 
@@ -117,7 +119,7 @@ public class AddUsageRightsCommand implements Command {
     if (usageRoot!=null) {
       existingValuesMap = XMLUtilities.getDOMTreeAsXPathMap(usageRoot);
     }
-    usagePage.setPageData(existingValuesMap);
+    usagePage.setPageData(existingValuesMap, null);
 
     ModalDialog dialog = new ModalDialog(usagePage,
                             UIController.getInstance().getCurrentActiveWindow(),
@@ -132,7 +134,7 @@ public class AddUsageRightsCommand implements Command {
 
     OrderedMap map = usagePage.getPageData("/");
 
-Log.debug(5, "got usage details from usage page -\n\n" + map.toString());
+Log.debug(45, "got usage details from usage page -\n\n" + map.toString());
 
     if (map==null || map.isEmpty()) {
       Log.debug(5, "Unable to get usage details from input!");
@@ -163,7 +165,7 @@ Log.debug(5, "got usage details from usage page -\n\n" + map.toString());
     // add to the datapackage
     adp.insertSubtree(DATAPACKAGE_RIGHTS_GENERIC_NAME, usageRoot, 0);
 
-Log.debug(5, "added usage details to package -\n\n"
+Log.debug(45, "added usage details to package -\n\n"
         + XMLUtilities.getDOMTreeAsString(usageRoot));
   }
 
@@ -171,6 +173,6 @@ Log.debug(5, "added usage details to package -\n\n"
   private Node usageRoot;
   private AbstractDataPackage adp;
   private MorphoFrame morphoFrame;
-  private DataViewContainerPanel resultPane;
+  private DataViewContainerPanel dataViewContainerPanel;
   private AbstractUIPage usagePage;
 }

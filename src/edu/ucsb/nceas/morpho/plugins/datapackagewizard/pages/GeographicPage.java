@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2004-03-17 21:13:01 $'
- * '$Revision: 1.7 $'
+ *     '$Date: 2004-03-20 00:44:55 $'
+ * '$Revision: 1.8 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -304,9 +304,6 @@ public class GeographicPage extends AbstractUIPage {
 
   }
 
-  public void setXPathRoot(String xpath) {
-    xPathRoot = xpath;
-  }
 
   class RegionSelectionHandler implements ListSelectionListener {
     public void valueChanged(ListSelectionEvent eee) {
@@ -555,7 +552,10 @@ public class GeographicPage extends AbstractUIPage {
      */
   public String getPageNumber() { return pageNumber; }
 
-  public void setPageData(OrderedMap map) {
+  public void setPageData(OrderedMap map, String _xPathRoot) {
+
+    if (_xPathRoot!=null && _xPathRoot.trim().length() > 0) this.xPathRoot = _xPathRoot;
+
     double n = 89.0;
     double w = -179.0;
     double s = -89.0;

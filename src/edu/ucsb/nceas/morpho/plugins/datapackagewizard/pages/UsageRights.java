@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2004-03-19 00:39:35 $'
- * '$Revision: 1.14 $'
+ *     '$Date: 2004-03-20 00:44:55 $'
+ * '$Revision: 1.15 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -53,8 +53,9 @@ public class UsageRights extends AbstractUIPage{
   private final String title      = "Usage Rights";
   private final String subtitle   = "";
 
-  private final String USAGE_ROOT        = "intellectualRights[1]/";
-  private final String PARA_REL_XPATH     = USAGE_ROOT + "para[1]";
+  private final String USAGE_ROOT      = "intellectualRights/";
+  private final String XPATH_ROOT      = "/eml:eml/dataset[1]/" + USAGE_ROOT;
+  private final String PARA_REL_XPATH  = "para[1]";
 
   // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
@@ -147,14 +148,7 @@ public class UsageRights extends AbstractUIPage{
 
   public OrderedMap getPageData() {
 
-    returnMap.clear();
-
-    if ( !(usageField.getText().trim().equals("")) ) {
-
-      returnMap.put("/eml:eml/dataset/intellectualRights/para[1]",
-                    usageField.getText().trim());
-    }
-    return returnMap;
+    return getPageData(XPATH_ROOT);
   }
 
 
@@ -170,10 +164,18 @@ public class UsageRights extends AbstractUIPage{
    */
   public OrderedMap getPageData(String rootXPath) {
 
-    throw new UnsupportedOperationException(
-      "getPageData(String rootXPath) Method Not Implemented");
-  }
+    if (rootXPath==null) rootXPath = "";
+    rootXPath = rootXPath.trim();
+    if (!rootXPath.endsWith("/")) rootXPath += "/";
 
+    returnMap.clear();
+
+    if ( !(usageField.getText().trim().equals("")) ) {
+
+       returnMap.put(rootXPath + PARA_REL_XPATH, usageField.getText().trim());
+    }
+    return returnMap;
+  }
 
   /**
    *  gets the unique ID for this wizard page
@@ -217,7 +219,10 @@ public class UsageRights extends AbstractUIPage{
 
   private OrderedMap hiddenFieldsMap = new OrderedMap();
 
-  public void setPageData(OrderedMap data) {
+  public void setPageData(OrderedMap data, String _xPathRoot) {
+
+//    if (_xPathRoot!=null && _xPathRoot.trim().length() > 0) this.xPathRoot = _xPathRoot;
+
 
     if (data == null || data.isEmpty())return;
 
@@ -232,19 +237,19 @@ public class UsageRights extends AbstractUIPage{
     while (it.hasNext()) {
 
       nextXPathObj = it.next();
-      if (nextXPathObj == null)continue;
+      if (nextXPathObj == null) continue;
       nextXPath = (String)nextXPathObj;
 
       nextValObj = data.get(nextXPathObj);
-      nextVal = (nextValObj == null) ? "" : ((String)nextValObj).trim();
+      nextVal = (nextValObj == null)? "" : ((String)nextValObj).trim();
 
       // remove everything up to and including the last occurrence of
       // USAGE_ROOT to get relative xpaths, in case we're handling a
       // project elsewhere in the tree...
-      nextVal = nextVal.substring(nextVal.lastIndexOf(USAGE_ROOT)
+      nextXPath = nextXPath.substring(nextXPath.lastIndexOf(USAGE_ROOT)
                                   + USAGE_ROOT.length());
 
-      if (nextXPath.equalsIgnoreCase(PARA_REL_XPATH)) {
+      if (nextXPath.startsWith(PARA_REL_XPATH)) {
 
         usageField.setText(nextVal);
 

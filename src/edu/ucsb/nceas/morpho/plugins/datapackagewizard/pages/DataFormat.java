@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2004-03-18 00:23:33 $'
- * '$Revision: 1.28 $'
+ *     '$Date: 2004-03-20 00:44:55 $'
+ * '$Revision: 1.29 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -923,5 +923,5 @@ public class DataFormat extends AbstractUIPage{
    */
   public String getNextPageID() { return nextPageID; }
 
-  public void setPageData(OrderedMap data) { }
+  public void setPageData(OrderedMap data, String _xPathRoot) {}
 }
