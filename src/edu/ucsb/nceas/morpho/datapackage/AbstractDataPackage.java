@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-12-10 18:36:17 $'
- * '$Revision: 1.38 $'
+ *     '$Date: 2003-12-12 21:10:02 $'
+ * '$Revision: 1.39 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -533,13 +533,9 @@ public abstract class AbstractDataPackage extends MetadataObject
    *  available position
    */
   public void addEntity(Entity entity) {
-
     if (entityArray==null) { 
-    
       insertEntity(entity, 0);
-    
     } else {
-    
       insertEntity(entity, entityArray.length); 
     }
   }  
@@ -584,7 +580,9 @@ public abstract class AbstractDataPackage extends MetadataObject
 			Node entityPar = null;
       String temp = "";
 			try {
-        temp = getGenericValue("/xpathKeyMap/contextNode[@name='package']/entityParent"); 
+        Node tempNode = XMLUtilities.getTextNodeWithXPath(getMetadataPath(),
+                               "/xpathKeyMap/contextNode[@name='package']/entityParent"); 
+        temp = tempNode.getNodeValue();
 			  entityPar = XMLUtilities.getNodeWithXPath(getMetadataNode(), temp);
 			} catch (Exception w) {
 				Log.debug(20, "Error adding new entity!");

@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-12-12 06:00:57 $'
- * '$Revision: 1.8 $'
+ *     '$Date: 2003-12-12 21:10:02 $'
+ * '$Revision: 1.9 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -47,6 +47,8 @@ import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
 
 
 import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+
 import edu.ucsb.nceas.utilities.XMLUtilities;
 
 /**
@@ -127,27 +129,52 @@ public class ImportDataCommand implements Command
           
               Log.debug(45, "\n\n********** Entity Wizard finished: DOM:");
               Log.debug(45, XMLUtilities.getDOMTreeAsString(newDOM, false));
-
               Log.debug(30,"Entity Wizard complete - creating Entity object..");
-            
-              Entity entity = new Entity(newDOM);
+
+// DFH --- Note: newDOM is root node (eml:eml), not the entity node              
+              Node entNode = null;             
+              String entityXpath = "";
+              try{
+                entityXpath = (XMLUtilities.getTextNodeWithXPath(adp.getMetadataPath(), 
+                       "/xpathKeyMap/contextNode[@name='package']/entities")).getNodeValue();
+                NodeList entityNodes = XMLUtilities.getNodeListWithXPath(newDOM,
+                         entityXpath);
+                entNode = entityNodes.item(0);
+              }
+              catch (Exception w) {
+                Log.debug(5, "Error in trying to get entNode in ImportDataCommand");
+              }
+                
+                
+                //              Entity entity = new Entity(newDOM);
+              Entity entity = new Entity(entNode);
 
               Log.debug(30,"Adding Entity object to AbstractDataPackage..");
               adp.addEntity(entity);
-// ---DFH							
-    try 
-    {
-      ServiceController services = ServiceController.getInstance();
-      ServiceProvider provider = 
+
+       // ---DFH			
+              Morpho morpho = Morpho.thisStaticInstance;
+              AccessionNumber an = new AccessionNumber(morpho);
+              String curid = adp.getAccessionNumber();
+              String newid = an.incRev(curid);
+              adp.setAccessionNumber(newid);
+              adp.setLocation("");  // we've changed it and not yet saved
+              try 
+              {
+                ServiceController services = ServiceController.getInstance();
+                ServiceProvider provider = 
                       services.getServiceProvider(DataPackageInterface.class);
-      DataPackageInterface dataPackageInt = (DataPackageInterface)provider;
-      dataPackageInt.openNewDataPackage(adp, null);
-    }
-    catch (ServiceNotHandledException snhe) 
-    {
-       Log.debug(6, snhe.getMessage());
-    }
-							
+                DataPackageInterface dataPackageInt = (DataPackageInterface)provider;
+                dataPackageInt.openNewDataPackage(adp, null);
+              }
+              catch (ServiceNotHandledException snhe) 
+              {
+                Log.debug(6, snhe.getMessage());
+              }
+							morphoFrame.setVisible(false);
+              UIController controller = UIController.getInstance();
+              controller.removeWindow(morphoFrame);
+              morphoFrame.dispose();
             }
   
             public void wizardCanceled() {
