@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-10-11 18:50:21 $'
- * '$Revision: 1.1 $'
+ *     '$Date: 2001-10-31 17:25:58 $'
+ * '$Revision: 1.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -45,7 +45,7 @@ public class TextImportResultsFrame extends javax.swing.JFrame
 		//{{INIT_CONTROLS
 		setTitle("Results");
 		getContentPane().setLayout(new BorderLayout(0,0));
-		setSize(405,305);
+		setSize(600,305);
 		setVisible(false);
 		JPanel1.setLayout(new FlowLayout(FlowLayout.CENTER,5,5));
 		getContentPane().add(BorderLayout.SOUTH,JPanel1);

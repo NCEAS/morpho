@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-10-31 08:24:34 $'
- * '$Revision: 1.9 $'
+ *     '$Date: 2001-10-31 17:25:58 $'
+ * '$Revision: 1.10 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -160,7 +160,7 @@ public class TextImportWizard extends javax.swing.JFrame
 		setTitle("Text Import Wizard");
 		setDefaultCloseOperation(javax.swing.JFrame.DO_NOTHING_ON_CLOSE);
 		getContentPane().setLayout(new BorderLayout(0,0));
-		setSize(493,403);
+		setSize(630,420);
 		setVisible(false);
 		saveFileDialog.setMode(FileDialog.SAVE);
 		saveFileDialog.setTitle("Save");
@@ -1188,7 +1188,15 @@ public void startImport(String file) {
 	  }
     //JOptionPane.showMessageDialog(this, tempS,
     //"Message",JOptionPane.INFORMATION_MESSAGE, null);
-    
+    //----------
+		try {
+			// ResultsFrame Create and show the ResultsFrame
+			TextImportResultsFrame rf = new TextImportResultsFrame();
+			rf.ResultsTextArea.setText(resultsBuffer.toString());
+			rf.setVisible(true);
+		} catch (java.lang.Exception e) {
+		}
+    //----------
 	  finishFlag = true;
     if(listener != null)
     {
