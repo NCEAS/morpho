@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: sgarg $'
- *     '$Date: 2004-04-11 19:54:57 $'
- * '$Revision: 1.31 $'
+ *     '$Date: 2004-04-11 22:18:43 $'
+ * '$Revision: 1.32 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -207,7 +207,7 @@ public class Access
     List selRowList = accessList.getSelectedRowList();
 
     if (selRowList == null || selRowList.size() < 5) {
-      Log.debug(10, selRowList.size() + "");
+      Log.debug(45, selRowList.size() + "");
       return;
     }
 
@@ -289,6 +289,19 @@ public class Access
   private OrderedMap returnMap = new OrderedMap();
 
   public OrderedMap getPageData() {
+    return getPageData(xPathRoot);
+  }
+
+  /**
+   * gets the Map object that contains all the key/value paired settings for
+   * this particular wizard page
+   *
+   * @param rootXPath the root xpath to prepend to all the xpaths returned by
+   *   this method
+   * @return data the Map object that contains all the key/value paired
+   *   settings for this particular wizard page
+   */
+  public OrderedMap getPageData(String rootXPath) {
 
     returnMap.clear();
 
@@ -301,11 +314,11 @@ public class Access
     AccessPage nextAccessPage = null;
 
     if (publicReadAccess) {
-      returnMap.put(xPathRoot + AUTHSYSTEM_REL_XPATH, AUTHSYSTEM_VALUE);
-      returnMap.put(xPathRoot + ORDER_REL_XPATH, ORDER_VALUE);
-      returnMap.put(xPathRoot + "allow[" + (allowIndex) + "]/principal",
+      returnMap.put(rootXPath + AUTHSYSTEM_REL_XPATH, AUTHSYSTEM_VALUE);
+      returnMap.put(rootXPath + ORDER_REL_XPATH, ORDER_VALUE);
+      returnMap.put(rootXPath + "allow[" + (allowIndex) + "]/principal",
           "public");
-      returnMap.put(xPathRoot + "allow[" + (allowIndex++) + "]/permission",
+      returnMap.put(rootXPath + "allow[" + (allowIndex++) + "]/permission",
           "read");
     }
 
@@ -337,10 +350,10 @@ public class Access
 
       nextAccessPage = (AccessPage) nextUserObject;
       if (nextAccessPage.accessIsAllow) {
-        nextNVPMap = nextAccessPage.getPageData(xPathRoot + "allow[" +
+        nextNVPMap = nextAccessPage.getPageData(rootXPath + "allow[" +
             (allowIndex++) + "]");
       } else {
-        nextNVPMap = nextAccessPage.getPageData(xPathRoot + "deny[" +
+        nextNVPMap = nextAccessPage.getPageData(rootXPath + "deny[" +
             (denyIndex++) + "]");
       }
 
@@ -348,21 +361,6 @@ public class Access
     }
 
     return returnMap;
-  }
-
-  /**
-   * gets the Map object that contains all the key/value paired settings for
-   * this particular wizard page
-   *
-   * @param rootXPath the root xpath to prepend to all the xpaths returned by
-   *   this method
-   * @return data the Map object that contains all the key/value paired
-   *   settings for this particular wizard page
-   */
-  public OrderedMap getPageData(String rootXPath) {
-
-    throw new UnsupportedOperationException(
-        "getPageData(String rootXPath) Method Not Implemented");
   }
 
   /**
@@ -416,6 +414,8 @@ public class Access
   private void resetBlankData() {
     accessList.removeAllRows();
   }
+
+  OrderedMap publicMap = null;
 
   public boolean setPageData(OrderedMap map, String xPathRoot) {
 
@@ -498,7 +498,7 @@ public class Access
         continue;
       }
       nextStepMap = (OrderedMap) nextStepMapObj;
-      if (nextStepMap.isEmpty()) {
+      if (nextStepMap.isEmpty() || nextStepMap == publicMap) {
         continue;
       }
 
@@ -506,16 +506,19 @@ public class Access
           DataPackageWizardInterface.ACCESS_PAGE);
 
       boolean checkAccess = nextStep.setPageData(nextStepMap,
-          this.xPathRoot
+          this.xPathRoot + "allow[" +
           + (accessPredicate++) + "]/");
 
       if (!checkAccess) {
         accessAllowRetVal = false;
       }
-      List newRow = nextStep.getSurrogate();
-      newRow.add(nextStep);
-
-      accessList.addRow(newRow);
+      List newRows = nextStep.getSurrogate();
+      Iterator itRow = newRows.iterator();
+      while(itRow.hasNext()){
+        List newRow = (ArrayList)itRow.next();
+        newRow.add(nextStep);
+        accessList.addRow(newRow);
+      }
     }
 
     while (denyIt.hasNext()) {
@@ -525,7 +528,7 @@ public class Access
         continue;
       }
       nextStepMap = (OrderedMap) nextStepMapObj;
-      if (nextStepMap.isEmpty()) {
+      if (nextStepMap.isEmpty() || nextStepMap == publicMap) {
         continue;
       }
 
@@ -533,16 +536,19 @@ public class Access
           DataPackageWizardInterface.ACCESS_PAGE);
 
       boolean checkAccess = nextStep.setPageData(nextStepMap,
-          this.xPathRoot
+          this.xPathRoot + "deny[" +
           + (accessPredicate++) + "]/");
 
       if (!checkAccess) {
         accessDenyRetVal = false;
       }
-      List newRow = nextStep.getSurrogate();
-      newRow.add(nextStep);
-
-      accessList.addRow(newRow);
+      List newRows = nextStep.getSurrogate();
+      Iterator itRow = newRows.iterator();
+      while(itRow.hasNext()){
+        List newRow = (ArrayList)itRow.next();
+        newRow.add(nextStep);
+        accessList.addRow(newRow);
+      }
     }
 
     //check access return valuse...
@@ -550,6 +556,9 @@ public class Access
       Log.debug(20, "Access.setPageData - Access sub-class returned FALSE");
     }
 
+    if(publicMap != null){
+      // TODO parse publicMap to set public access radio buttons...
+    }
     //remove entries we have used from map:
     Iterator dlIt = toDeleteList.iterator();
     while (dlIt.hasNext()) {
@@ -589,6 +598,11 @@ public class Access
       Object nextMapObj = accessstepList.get(predicate);
       OrderedMap nextMap = (OrderedMap) nextMapObj;
       nextMap.put(nextPersonnelXPathObj, nextPersonnelVal);
+
+      if(((String)nextPersonnelVal).compareTo("public") == 0){
+        publicMap = nextMap;
+      }
+
     } else {
       Log.debug(15,
           "**** ERROR - Access.addToAccess() - predicate > accessstepList.size()");

@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: sgarg $'
- *     '$Date: 2004-04-11 19:54:57 $'
- * '$Revision: 1.18 $'
+ *     '$Date: 2004-04-11 22:18:43 $'
+ * '$Revision: 1.19 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -118,7 +118,7 @@ public class AccessPage
   };
 
   public boolean accessIsAllow = true;
-  private final String xPathRoot = "/eml:eml/dataset/access";
+  private String xPathRoot = "/eml:eml/dataset/access";
 
   public void setQueryMetacatCancelled(boolean queryMetacatCancelled) {
     this.queryMetacatCancelled = queryMetacatCancelled;
@@ -981,14 +981,16 @@ public class AccessPage
    */
 
   public void onLoadAction() {
-    if (Access.accessTreeNode != null &&
-        Access.accessTreeMetacatServerName.compareTo(Morpho.thisStaticInstance.
-        getMetacatURLString()) == 0) {
-    } else {
-      /**
-       * accessTreePane is null... so we have to generate Access.accessTreeNode
-       */
-      generateAccessTree();
+    if(dnField == null){  // only do this if
+      if (Access.accessTreeNode == null ||
+          Access.accessTreeMetacatServerName.compareTo(Morpho.
+          thisStaticInstance.
+          getMetacatURLString()) != 0) {
+        /**
+         * accessTreePane is null... so we have to generate Access.accessTreeNode
+         */
+        generateAccessTree();
+      }
     }
   }
 
@@ -1043,8 +1045,107 @@ public class AccessPage
     return queryMetacatCancelled;
   }
 
-  public boolean setPageData(OrderedMap data, String xPathRoot) {
-    return true;
+  public boolean setPageData(OrderedMap map, String xPathRoot) {
+    Log.debug(45,
+        "AccessPage.setPageData() called with xPathRoot = " + xPathRoot
+        + "\n Map = \n" + map);
+
+    if (xPathRoot != null && xPathRoot.trim().length() > 0) {
+      this.xPathRoot = xPathRoot;
+    }
+
+    displayDNPanel();
+    int access = 0;
+
+    if (xPathRoot.indexOf("allow") > -1) {
+      typeComboBox.setSelectedIndex(0);
+    } else {
+      typeComboBox.setSelectedIndex(1);
+    }
+
+    List toDeleteList = new ArrayList();
+    Iterator keyIt = map.keySet().iterator();
+    Object nextXPathObj = null;
+    String nextXPath = null;
+    Object nextValObj = null;
+    String nextVal = null;
+
+    List accessList = new ArrayList();
+
+    while (keyIt.hasNext()) {
+
+      nextXPathObj = keyIt.next();
+      if (nextXPathObj == null) {
+        continue;
+      }
+      nextXPath = (String) nextXPathObj;
+
+      nextValObj = map.get(nextXPathObj);
+      nextVal = (nextValObj == null) ? "" : ( (String) nextValObj).trim();
+
+      Log.debug(45, "Access:  nextXPath = " + nextXPath
+          + "\n nextVal   = " + nextVal);
+
+      // remove everything up to and including the last occurrence of
+      // this.xPathRoot to get relative xpaths, in case we're handling a
+      // project elsewhere in the tree...
+      nextXPath = nextXPath.substring(nextXPath.lastIndexOf(this.xPathRoot)
+          + this.xPathRoot.length() + 1);
+
+      Log.debug(45, "Access: TRIMMED nextXPath   = " + nextXPath);
+
+      if (nextXPath.startsWith("permission")) {
+        String value = (String) nextValObj;
+        if (value.compareTo("read") == 0) {
+          access = access | 1;
+        } else if (value.compareTo("write") == 0) {
+          access = access | 2;
+        } else if (value.compareTo("changePermission") == 0) {
+          access = access | 4;
+        } else if (value.compareTo("all") == 0) {
+          access = access | 8;
+        } else {
+          Log.debug(20, "Unknown access type received in setPageData() in " +
+              "AccessPage.java");
+        }
+        toDeleteList.add(nextXPathObj);
+      } else if (nextXPath.startsWith("principal")) {
+        if (dnField.getText().trim().compareTo(EMPTY_STRING) == 0) {
+          dnField.setText( (String) nextValObj);
+        } else {
+          Log.debug(10, "AccessPage.setPageData returning FALSE! Principal "
+              + "contains multiple DNs. Multiple are not "
+              + "supported in Access Wizard screen yet.");
+          return false;
+        }
+        toDeleteList.add(nextXPathObj);
+      }
+    }
+
+    Log.debug(45, "Access type found to be" + access);
+    if (access == 3) {
+      accessComboBox.setSelectedIndex(1);
+    } else if (access == 7) {
+      accessComboBox.setSelectedIndex(2);
+    } else if (access == 8) {
+      accessComboBox.setSelectedIndex(3);
+    }
+
+    //remove entries we have used from map:
+    Iterator dlIt = toDeleteList.iterator();
+    while (dlIt.hasNext()) {
+      map.remove(dlIt.next());
+    }
+
+    //if anything left in map, then it included stuff we can't handle...
+    boolean returnVal = map.isEmpty();
+
+    if (!returnVal) {
+      Log.debug(10, "AccessPage.setPageData returning FALSE! Map still contains:"
+          + map);
+    }
+
+    return returnVal;
   }
 }
 
@@ -1175,7 +1276,7 @@ class QueryMetacatThread
       //if (morpho.isConnected()) {
       queryResult = morpho.getMetacatInputStream(prop);
 
-      if(!accessPage.isQueryMetacatCancelled()){
+      if (!accessPage.isQueryMetacatCancelled()) {
         accessPage.parseInputStream(queryResult);
       }
     }
@@ -1198,9 +1299,7 @@ class QueryMetacatThread
     }
   }
 
-
 }
-
 
 /**
  *
