@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2001-05-16 22:32:57 $'
- * '$Revision: 1.43 $'
+ *   '$Author: berkley $'
+ *     '$Date: 2001-05-18 15:55:02 $'
+ * '$Revision: 1.44 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -156,7 +156,7 @@ public class ClientFramework extends javax.swing.JFrame
     initializeActions();
 
     // Load all of the plugins, their menus, and toolbars
- // DFHtemp   loadPlugins();
+    loadPlugins();
   }
 
   /**
@@ -174,7 +174,7 @@ public class ClientFramework extends javax.swing.JFrame
       for (Enumeration q = plugins.elements(); q.hasMoreElements();)
       {
         // Start by creating the new bean plugin
-	PluginInterface plugin = (PluginInterface)
+	      PluginInterface plugin = (PluginInterface)
 	                createObject((String) (q.nextElement()));
 
         // Set a reference to the framework in the Plugin
@@ -586,11 +586,11 @@ public class ClientFramework extends javax.swing.JFrame
       // If the confirmation was affirmative, handle exiting.
       if (reply == JOptionPane.YES_OPTION)
       {
-	logOut();
+        logOut();
         config.save();
-	this.setVisible(false);	// hide the Frame
-	this.dispose();		// free the system resources
-	System.exit(0);		// close the application
+        this.setVisible(false);	// hide the Frame
+        this.dispose();		// free the system resources
+        System.exit(0);		// close the application
       }
     }
     catch(Exception e)
@@ -746,7 +746,7 @@ public class ClientFramework extends javax.swing.JFrame
       char[] characters = new char[512];
       while ((len = returnStream.read(characters, 0, 512)) != -1)
       {
-	sw.write(characters, 0, len);
+        sw.write(characters, 0, len);
       }
       returnStream.close();
       response = sw.toString();
@@ -974,12 +974,12 @@ public class ClientFramework extends javax.swing.JFrame
       Date now = new Date();
       if (now.after(expiration))
       {
-	clf.debug(1, "This beta version of Morpho has expired! " +
+        clf.debug(1, "This beta version of Morpho has expired! " +
            "See http://knb.ecoinformatics.org/ for a newer version.");
-	JOptionPane.showMessageDialog(null,
+           JOptionPane.showMessageDialog(null,
            "This beta version of Morpho has expired!\n" +
            "See http://knb.ecoinformatics.org/ for a newer version.");
-	System.exit(1);
+           System.exit(1);
       }
       else
       {
