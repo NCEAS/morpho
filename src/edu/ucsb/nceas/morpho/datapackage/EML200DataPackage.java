@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-12-08 17:38:37 $'
- * '$Revision: 1.14 $'
+ *     '$Date: 2003-12-11 21:22:22 $'
+ * '$Revision: 1.15 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -87,7 +87,6 @@ public  class EML200DataPackage extends AbstractDataPackage
     Log.debug(20, "Creating new DataPackage Object");
     Log.debug(20, "id: " + this.id);
     Log.debug(20, "location: " + location);
-    
     morpho = Morpho.thisStaticInstance;
     
     fileSysDataStore  = new FileSystemDataStore(morpho);
@@ -168,7 +167,7 @@ public  class EML200DataPackage extends AbstractDataPackage
   }
   
   public AbstractDataPackage download(String id) {
-    load(AbstractDataPackage.METACAT, id, Morpho.thisStaticInstance);
+    //load(AbstractDataPackage.METACAT, id, Morpho.thisStaticInstance);
     serialize(AbstractDataPackage.LOCAL);
     return this;
   }
