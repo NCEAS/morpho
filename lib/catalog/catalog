@@ -143,3 +143,9 @@ PUBLIC "-//ecoinformatics.org//eml-attribute-2.0//EN" "eml-attribute-2.0.1.dtd"
 SYSTEM "urn:nceas:test-eml-attribute-2.0" "eml-attribute-2.0.1.dtd"
 SYSTEM "eml-attribute-2.0.dtd" "eml-attribute-2.0.1.dtd"
 
+OVERRIDE YES
+PUBLIC "eml-constraint-2.0" "eml-constraint-2.0.1.dtd"
+PUBLIC "-//NCEAS//eml-constraint-2.0//EN" "eml-constraint-2.0.1.dtd"
+PUBLIC "-//ecoinformatics.org//eml-constraint-2.0//EN" "eml-constraint-2.0.1.dtd"
+SYSTEM "urn:nceas:test-eml-constraint-2.0" "eml-constraint-2.0.1.dtd"
+SYSTEM "eml-constraint-2.0.dtd" "eml-constraint-2.0.1.dtd"
