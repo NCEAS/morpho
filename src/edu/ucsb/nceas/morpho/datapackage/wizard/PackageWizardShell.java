@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-06-20 18:27:29 $'
- * '$Revision: 1.22 $'
+ *     '$Date: 2001-06-20 18:43:05 $'
+ * '$Revision: 1.23 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -475,7 +475,7 @@ public class PackageWizardShell extends javax.swing.JFrame
                                   frameWizards.elementAt(i);
       String id = wfc.id;
       String name = (String)wfc.attributes.get("name");
-      if(name == null)
+      if(name == null || name.equals("IGNORE"))
       {
         name = "DATAFILE";
       }
@@ -510,6 +510,7 @@ public class PackageWizardShell extends javax.swing.JFrame
       if(wfc.attributes.containsKey("relatedTo"))
       {
         String relation = (String)wfc.attributes.get("relatedTo");
+        System.out.println("relation: " + relation);
         Vector v = (Vector)tripleNames.get(relation);
         for(int j=0; j<v.size(); j++)
         {
@@ -1289,7 +1290,7 @@ public class PackageWizardShell extends javax.swing.JFrame
           file = new File(filepath);
           originalDataFilePath = textfield.getText();
           FileReader fr = null;
-          attributes.put("name", originalDataFilePath);
+          attributes.remove("name");
           try
           {
             fr = new FileReader(file);
