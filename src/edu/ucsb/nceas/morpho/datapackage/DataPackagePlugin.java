@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: jones $'
- *     '$Date: 2003-01-08 18:21:31 $'
- * '$Revision: 1.51 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2003-02-19 19:09:23 $'
+ * '$Revision: 1.52 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -451,9 +451,10 @@ public class DataPackagePlugin
                                      relations, morpho, true);
     //Log.debug(11, "location: " + location + " identifier: " + identifier +
     //                " relations: " + relations.toString());
-    final DataPackageGUI gui = new DataPackageGUI(morpho, dp);
     
+    final DataPackageGUI gui = new DataPackageGUI(morpho, dp);
 
+    long starttime = System.currentTimeMillis();
     final MorphoFrame packageWindow = UIController.getInstance().addWindow(
                 "Data Package: "+identifier);
     packageWindow.setBusy(true);
@@ -485,13 +486,19 @@ public class DataPackagePlugin
     {
       coordinator.stopFlap();
     }
-    
+    long stoptime = System.currentTimeMillis();
+    Log.debug(20,"ViewContainer startUp time: "+(stoptime-starttime));
+ 
+    long starttime1 = System.currentTimeMillis();
+ 
     DataViewContainerPanel dvcp = new DataViewContainerPanel(dp, gui);
     dvcp.setFramework(morpho);
 
     dvcp.setEntityItems(gui.getEntityitems());
     dvcp.setListValueHash(gui.listValueHash);
     dvcp.init();
+    long stoptime1 = System.currentTimeMillis();
+    Log.debug(20,"DVCP startUp time: "+(stoptime1-starttime1));
 
     dvcp.setSize(packageWindow.getDefaultContentAreaSize());
     dvcp.setPreferredSize(packageWindow.getDefaultContentAreaSize());

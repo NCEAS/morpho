@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-02-19 18:09:20 $'
- * '$Revision: 1.55 $'
+ *     '$Date: 2003-02-19 19:09:23 $'
+ * '$Revision: 1.56 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -384,8 +384,7 @@ public class DataViewContainerPanel extends javax.swing.JPanel
       return;
     }
     entityFile = new File[entityItems.size()];
-//    for (int i=0;i<entityItems.size();i++) {
-    for (int i=0;i<1;i++) {
+    for (int i=0;i<entityItems.size();i++) {
       JSplitPane currentEntityPanel = createEntityPanel();
       
       String item = (String)entityItems.elementAt(i);
