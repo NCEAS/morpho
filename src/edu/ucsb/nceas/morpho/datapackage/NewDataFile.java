@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2003-12-15 20:28:31 $'
- * '$Revision: 1.14 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2003-12-30 17:11:51 $'
+ * '$Revision: 1.15 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -409,8 +409,7 @@ public class NewDataFile extends javax.swing.JDialog
       
       try
       { //save the new package file
-        mds.saveFile(dataPackageId, new FileReader(newDPTempFile), 
-                     dataPackage);
+        mds.saveFile(dataPackageId, new FileReader(newDPTempFile));
       }
       catch(MetacatUploadException mue)
       {

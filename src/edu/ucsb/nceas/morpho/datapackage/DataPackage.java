@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-12-06 19:35:57 $'
- * '$Revision: 1.116 $'
+ *     '$Date: 2003-12-30 17:11:51 $'
+ * '$Revision: 1.117 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -857,11 +857,11 @@ public class DataPackage implements XMLFactoryInterface
               File g = fileSysDataStore.openFile(accnum);
               if(i == 1)
               {
-                metacatDataStore.newFile(accnum, new FileReader(g), this);
+                metacatDataStore.newFile(accnum, new FileReader(g));
               }
               else
               {
-                metacatDataStore.saveFile(accnum, new FileReader(g), this);
+                metacatDataStore.saveFile(accnum, new FileReader(g));
               }
             }
           }
@@ -2454,7 +2454,7 @@ public class DataPackage implements XMLFactoryInterface
       MetacatDataStore mds = new MetacatDataStore(morpho);
       try
       {
-        mds.saveFile(dataPackageId, new FileReader(newDPTempFile), this);
+        mds.saveFile(dataPackageId, new FileReader(newDPTempFile));
       }
       catch(Exception e)
       {
