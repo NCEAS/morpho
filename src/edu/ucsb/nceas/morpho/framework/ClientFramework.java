@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2001-04-23 21:58:06 $'
- * '$Revision: 1.31.2.9 $'
+ *     '$Date: 2001-04-23 23:10:40 $'
+ * '$Revision: 1.31.2.10 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -262,17 +262,20 @@ public class ClientFramework extends javax.swing.JFrame
   public void addWindow(JFrame window)
   {
     String windowName = window.getName();
-    if (!windowsRegistry.containsKey(window)) {
+    if (!windowsRegistry.containsValue(window)) {
       debug(7, "Adding window: " + windowName);
       Action windowAction = new AbstractAction(windowName) {
         public void actionPerformed(ActionEvent e) {
           debug(9, "Selected window.");
+          JMenuItem source = (JMenuItem)e.getSource();
+          JFrame window = (JFrame)windowsRegistry.get(source);
+          window.toFront();
         }
       };
       windowAction.putValue(Action.SHORT_DESCRIPTION, "Select Window");
       JMenu windowMenu = (JMenu)menuList.get("Window");
       JMenuItem windowMenuItem = windowMenu.add(windowAction);
-      windowsRegistry.put(window, windowMenuItem);
+      windowsRegistry.put(windowMenuItem, window);
     }
   }
 
@@ -285,11 +288,23 @@ public class ClientFramework extends javax.swing.JFrame
    */
   public void removeWindow(JFrame window)
   {
-    debug(7, "Removing window.");
-    JMenuItem windowMenuItem = (JMenuItem)windowsRegistry.get(window);
+    debug(9, "Removing window.");
+    JMenuItem menuItem = null;
     JMenu windowMenu = (JMenu)menuList.get("Window");
-    windowMenu.remove(windowMenuItem);
-    windowsRegistry.remove(window);
+    Enumeration keys = windowsRegistry.keys();
+    while (keys.hasMoreElements())
+    {
+      menuItem = (JMenuItem)keys.nextElement();
+      JFrame savedWindow = (JFrame)windowsRegistry.get(menuItem);
+      if (savedWindow == window)
+      {
+        break;
+      } else {
+        menuItem = null;
+      }
+    } 
+    windowMenu.remove(menuItem);
+    windowsRegistry.remove(menuItem);
   }
 
   /**
