@@ -61,7 +61,7 @@ public class AccessTreeModel
 
   // Names of the columns.
   static protected String[] cNames = {
-      "Name", "Email/Description"};
+      "Name", "Email / Description / Distinguished Name"};
 
   // Types of the columns.
   static protected Class[] cTypes = {
@@ -127,25 +127,48 @@ public class AccessTreeModel
           (AccessTreeNodeObject) treeNode.getUserObject();
       switch (column) {
         case 0:
-          return treeNodeObject.toString();
+          return treeNodeObject;
         case 1:
           if (treeNodeObject.nodeType == WizardSettings.ACCESS_PAGE_GROUP) {
-            return "  " + treeNodeObject.getDescription();
-          } else if (treeNodeObject.nodeType ==
-              WizardSettings.ACCESS_PAGE_USER) {
-            return "  " + treeNodeObject.getEmail();
-          } else {
+            if (treeNodeObject.getDescription() != null) {
+              return "  " + treeNodeObject.getDescription();
+            }
+            if (treeNodeObject.getDN() != null) {
+             return "  " + treeNodeObject.getDN();
+           }
             return "";
           }
-      }
-      } else {
-        switch (column) {
-          case 0:
-            return treeNode.toString();
-          case 1:
+          else if (treeNodeObject.nodeType ==
+                   WizardSettings.ACCESS_PAGE_USER) {
+            if (treeNodeObject.getEmail() != null) {
+              return "  " + treeNodeObject.getEmail();
+            }
+            if (treeNodeObject.getDN() != null) {
+             return "  " + treeNodeObject.getDN();
+           }
             return "";
-        }
+          }
+          else {
+            return "";
+          }
+        case 2:
+          if (treeNodeObject.nodeType == WizardSettings.ACCESS_PAGE_GROUP ||
+              treeNodeObject.nodeType == WizardSettings.ACCESS_PAGE_USER) {
+            if (treeNodeObject.getDN() != null) {
+              return "  " + treeNodeObject.getDN();
+            }
+          }
+          return "";
       }
-      return null;
     }
+    else {
+      switch (column) {
+        case 0:
+          return treeNode.toString();
+        case 1:
+          return "";
+      }
+    }
+    return null;
   }
+}

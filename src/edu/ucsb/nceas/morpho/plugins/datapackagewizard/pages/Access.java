@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: sgarg $'
- *     '$Date: 2004-04-06 03:16:15 $'
- * '$Revision: 1.26 $'
+ *     '$Date: 2004-04-06 18:00:32 $'
+ * '$Revision: 1.27 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -197,9 +197,13 @@ public class Access
 
     if (wpd.USER_RESPONSE == ModalDialog.OK_OPTION) {
 
-      List newRow = accessPage.getSurrogate();
-      newRow.add(accessPage);
-      accessList.addRow(newRow);
+      List newRows = accessPage.getSurrogate();
+      Iterator itRow = newRows.iterator();
+      while(itRow.hasNext()){
+        List newRow = (ArrayList)itRow.next();
+        newRow.add(accessPage);
+        accessList.addRow(newRow);
+      }
     }
   }
 
@@ -208,6 +212,7 @@ public class Access
     List selRowList = accessList.getSelectedRowList();
 
     if (selRowList == null || selRowList.size() < 5) {
+      Log.debug(10, selRowList.size() + "");
       return;
     }
 
@@ -227,9 +232,13 @@ public class Access
 
     if (wpd.USER_RESPONSE == ModalDialog.OK_OPTION) {
 
-      List newRow = editAccessPage.getSurrogate();
-      newRow.add(editAccessPage);
-      accessList.replaceSelectedRow(newRow);
+      List newRows = editAccessPage.getSurrogate();
+      Iterator itRow = newRows.iterator();
+      while(itRow.hasNext()){
+        List newRow = (ArrayList)itRow.next();
+        newRow.add(editAccessPage);
+        accessList.replaceSelectedRow(newRow);
+      }
     }
   }
 
@@ -308,24 +317,39 @@ public class Access
 
       nextRowList = (List) nextRowObj;
       //column 2 is user object - check it exists and isn't null:
-      if (nextRowList.size() < 5) {
+      if (nextRowList.size() < 6) {
         continue;
       }
-      nextUserObject = nextRowList.get(4);
+      nextUserObject = nextRowList.get(5);
       if (nextUserObject == null) {
         continue;
       }
 
       nextAccessPage = (AccessPage) nextUserObject;
-
+      String xpath = null;
       if (nextAccessPage.accessIsAllow) {
-        nextNVPMap = nextAccessPage.getPageData(xPathRoot + "allow[" +
-            (allowIndex++) + "]");
+        xpath = xPathRoot + "allow[" + (allowIndex++) + "]";
       } else {
-        nextNVPMap = nextAccessPage.getPageData(xPathRoot + "deny[" +
-            (denyIndex++) + "]");
+        xpath = xPathRoot + "deny[" + (denyIndex++) + "]";
       }
-      returnMap.putAll(nextNVPMap);
+
+      returnMap.put(xpath + "/principal", nextRowList.get(4).toString());
+
+      if (nextAccessPage.userAccess.compareTo("Read") == 0) {
+        returnMap.put(xpath + "/permission", "read");
+      }
+      else if (nextAccessPage.userAccess.compareTo("Read & Write") == 0) {
+        returnMap.put(xpath + "/permission[1]", "read");
+        returnMap.put(xpath + "/permission[2]", "write");
+      }
+      else if (nextAccessPage.userAccess.compareTo("Read, Write & Change Permissions") == 0) {
+        returnMap.put(xpath + "/permission[1]", "read");
+        returnMap.put(xpath + "/permission[2]", "write");
+        returnMap.put(xpath + "/permission[3]", "changePermission");
+      }
+      else if (nextAccessPage.userAccess.compareTo("All") == 0) {
+        returnMap.put(xPathRoot + "/permission", "all");
+      }
     }
 
     return returnMap;
