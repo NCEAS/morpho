@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-12-02 22:28:16 $'
- * '$Revision: 1.14 $'
+ *     '$Date: 2002-12-04 00:01:11 $'
+ * '$Revision: 1.15 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -426,18 +426,27 @@ public class ColumnMetadataEditPanel extends javax.swing.JPanel //implements jav
       colData.numChoice =false;
       colData.textChoice = false;
 			if (object == enumButton) {
+        if (tiw!=null) {
+          tiw.showInsertEnumPanel(true);
+        }
         colData.enumChoice = true; 
         textPanel.setVisible(false);
         numPanel.setVisible(false);
         enumPanel.setVisible(true);
       }
       else if(object == textButton) {
+        if (tiw!=null) {
+          tiw.showInsertEnumPanel(false);
+        }
         colData.textChoice = true; 
         textPanel.setVisible(true);
         numPanel.setVisible(false);
         enumPanel.setVisible(false);
       }
       else if(object == numButton){
+        if (tiw!=null) {
+          tiw.showInsertEnumPanel(false);
+        }
         colData.numChoice = true; 
         textPanel.setVisible(false);
         numPanel.setVisible(true);

@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-11-27 01:04:11 $'
- * '$Revision: 1.2 $'
+ *     '$Date: 2002-12-04 00:01:37 $'
+ * '$Revision: 1.3 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -46,9 +46,9 @@ public class ColumnData
 	    public int colNumUniqueItems;
       public String colMissingValue;
       public String colPrecision;
-      public String colTextDefinition;
-      public String colTextPattern;
-      public String colTextSource;
+      public String colTextDefinition = "";
+      public String colTextPattern = "";
+      public String colTextSource = "";
 	    public double colMin = 0.0;
 	    public double colMax = 0.0;
 	    public double colAverage = 0.0;

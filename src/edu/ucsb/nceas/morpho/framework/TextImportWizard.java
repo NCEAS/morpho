@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-12-02 22:27:58 $'
- * '$Revision: 1.43 $'
+ *     '$Date: 2002-12-04 00:01:37 $'
+ * '$Revision: 1.44 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -340,7 +340,14 @@ public class TextImportWizard extends javax.swing.JFrame
     BottomColSummaryPanel.setLayout(new BorderLayout(0,0));
     BottomColSummaryPanel.add(BorderLayout.NORTH, new JLabel("Unique Items List"));
     BottomColSummaryPanel.add(BorderLayout.CENTER, UniqueItemsScrollPane);
+    BottomColSummaryPanel.add(BorderLayout.EAST, insertEnumPanel);
+    insertEnumPanel.setBorder(BorderFactory.createEmptyBorder(0,5,0,0));
+    insertEnumPanel.setLayout(new BoxLayout(insertEnumPanel,BoxLayout.Y_AXIS));
+    insertEnumLabel.setText("<html>Click to add <br>unique items <br>to enumeration</html>");
+    insertEnumPanel.add(insertEnumLabel);
+    insertEnumPanel.add(insertEnumButton);
     UniqueItemsScrollPane.getViewport().add(UniqueItemsList);
+    insertEnumPanel.setVisible(false);
 		Step3ControlsPanel.add(BorderLayout.CENTER, ColDataSummaryPanel);
     
     //------------------------------------------------
@@ -401,6 +408,7 @@ public class TextImportWizard extends javax.swing.JFrame
 		SemicolonCheckBox.addItemListener(lSymItem);
 		OtherCheckBox.addItemListener(lSymItem);
 		CancelButton.addActionListener(lSymAction);
+    insertEnumButton.addActionListener(lSymAction);
 		//}}
 		
 		resultsBuffer = new StringBuffer();
@@ -584,6 +592,9 @@ public class TextImportWizard extends javax.swing.JFrame
 	javax.swing.JList UniqueItemsList = new javax.swing.JList();
   javax.swing.JPanel TopColSummaryPanel = new JPanel();
   javax.swing.JPanel BottomColSummaryPanel = new JPanel();
+  javax.swing.JButton insertEnumButton = new JButton("Insert");
+  javax.swing.JPanel insertEnumPanel = new JPanel();
+  javax.swing.JLabel insertEnumLabel = new JLabel();
   
 //}}
 
@@ -653,6 +664,10 @@ public class TextImportWizard extends javax.swing.JFrame
 		}
 	}
   
+  public void showInsertEnumPanel(boolean b) {
+     insertEnumPanel.setVisible(b);
+  }
+  
   public void resetColumnHeader(String newColHeader) {
     int selectedCol = table.getSelectedColumn();
     if ((selectedCol>-1)&&(colTitles.size()>0)) {
@@ -680,9 +695,13 @@ public class TextImportWizard extends javax.swing.JFrame
 				ShowResultsButton_actionPerformed(event);
 			else if (object == CancelButton)
 				CancelButton_actionPerformed(event);
+      else if (object == insertEnumButton)
+        insertEnumButton_actionPerformed(event);
 		}
 	}
 
+  
+  
 public void startImport(String file) {
         TableNameTextField.setText(file);
         parsefile(file);
@@ -986,7 +1005,7 @@ public void startImport(String file) {
 //                      DataTypeList.setSelectedValue(colType, true);
 //                      ColumnDefTextArea.setText(cd.colDefinition);
                       ColDataSummaryLabel.setText("<html>"+str+"</html>");
-                      
+                      showInsertEnumPanel(cd.enumChoice); 
                       cmePanel.setColumnData(cd);
                      
                   }
@@ -1077,7 +1096,17 @@ public void startImport(String file) {
 	    return result;
 	}
 	
-
+  void insertEnumButton_actionPerformed(java.awt.event.ActionEvent event) {
+    int selectedCol = table.getSelectedColumn();
+    ColumnData cd = (ColumnData)colDataInfo.elementAt(selectedCol);
+ //   for (int i = 0; i<cd.colUniqueItemsList.size();i++) {
+      cd.enumCodeVector = cd.colUniqueItemsList;
+      cd.enumDefinitionVector = cd.colUniqueItemsList;
+      cd.enumSourceVector = cd.colUniqueItemsList;
+ //   }
+  }
+  
+  
 	void NextButton_actionPerformed(java.awt.event.ActionEvent event)
 	{
 		stepNumber++;
@@ -1101,7 +1130,13 @@ public void startImport(String file) {
 		}
 		else {
 		    ColumnDataPanel.setVisible(false);
-	    }
+	  }
+    if (stepNumber>=table.getColumnCount()+2) {
+      NextButton.setEnabled(false);
+    }
+    else {
+      NextButton.setEnabled(true);      
+    }
 	}
 
 	void BackButton_actionPerformed(java.awt.event.ActionEvent event)
@@ -1780,23 +1815,35 @@ public void startImport(String file) {
 	    XMLBuffer.append("        <unit> "+normalize(cd.colUnits)+"</unit>\n");
 	    XMLBuffer.append("        <dataType> "+normalize(cd.colType)+"</dataType>\n");
 	    XMLBuffer.append("        <attributeDomain>\n");
-	    if (cd.colType.equals("Integers")||(cd.colType.equals("Floating Point"))) {
+      if (cd.numChoice) {
 	        XMLBuffer.append("             <numericDomain>\n");
 	        XMLBuffer.append("                <minimum>"+cd.colMin +"</minimum>\n");
 	        XMLBuffer.append("                <maximum>"+cd.colMax +"</maximum>\n");
 	        XMLBuffer.append("             </numericDomain>\n");
 	    }
-	    else if(cd.useEnumerationList) {
-	        for (int k=0;k<cd.colUniqueItemsList.size();k++) {
+      else if(cd.enumChoice) {
+	        for (int k=0;k<cd.enumCodeVector.size();k++) {
 	            XMLBuffer.append("             <enumeratedDomain>\n");
-	            XMLBuffer.append("                <code>"+(String)cd.colUniqueItemsList.elementAt(k)+"</code>\n");
-	            XMLBuffer.append("                <definition>"+(String)cd.colUniqueItemsDefs.elementAt(k)+"</definition>\n");
+	            XMLBuffer.append("                <code>"+(String)cd.enumCodeVector.elementAt(k)+"</code>\n");
+	            XMLBuffer.append("                <definition>"+(String)cd.enumDefinitionVector.elementAt(k)+"</definition>\n");
+	            XMLBuffer.append("                <source>"+(String)cd.enumSourceVector.elementAt(k)+"</source>\n");
 	            XMLBuffer.append("             </enumeratedDomain>\n");
 	        }
 	    }
 	    else {
 	        XMLBuffer.append("             <textDomain>\n");
-	        XMLBuffer.append("                <definition>*</definition>\n");
+          if (cd.colTextDefinition.length()>0) {
+            XMLBuffer.append("                <definition>"+cd.colTextDefinition+"</definition>\n");
+          }
+          else{
+	          XMLBuffer.append("                <definition>any text</definition>\n");
+          }
+          if (cd.colTextPattern.length()>0) {
+            XMLBuffer.append("                <definition>"+cd.colTextPattern+"</definition>\n");
+          }
+          if (cd.colTextSource.length()>0) {
+            XMLBuffer.append("                <definition>"+cd.colTextSource+"</definition>\n");
+          }
 	        XMLBuffer.append("             </textDomain>\n");
 	    }
 	    XMLBuffer.append("        </attributeDomain>\n");
