@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2004-02-17 03:21:37 $'
- * '$Revision: 1.149 $'
+ *     '$Date: 2004-02-17 18:53:09 $'
+ * '$Revision: 1.150 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -253,6 +253,14 @@ public class DocFrame extends javax.swing.JFrame
     setDefaultCloseOperation(javax.swing.JFrame.DO_NOTHING_ON_CLOSE);
     getContentPane().setLayout(new BorderLayout(0, 0));
     setSize(800, 600);
+    // following changes initial window size if using a bigger screen
+    Toolkit tk = Toolkit.getDefaultToolkit();
+    Dimension ddd = tk.getScreenSize();
+    if (ddd.width>800) {
+      int dh = 8*ddd.height/10;
+      int dw = 8*ddd.width/10;
+      setSize(dw, dh);
+    }
     setVisible(false);
 		final DocFrame df = this;
 		// Register window listeners
@@ -1279,7 +1287,7 @@ public class DocFrame extends javax.swing.JFrame
                 DefaultMutableTreeNode nnn = (DefaultMutableTreeNode)eee.nextElement();
                 NodeInfo ni1 = (NodeInfo)nnn.getUserObject();
                 if ((ni1.getName().equals(cni.getName()))||
-                  (ni1.getName().startsWith("attribute")))
+                  (ni1.getName().startsWith("attribute-")))
                      // 'attribute' check needed for eml2
                 {
                   ni1.setSelected(true);
@@ -1480,13 +1488,13 @@ public class DocFrame extends javax.swing.JFrame
       DefaultMutableTreeNode localcopy = deepNodeCopy(nodeCopy);
       // simple node comparison
       String nodename = ((NodeInfo)node.getUserObject()).getName();
-      if (nodename.startsWith("attribute")) nodename = "attribute";
+      if (nodename.startsWith("attribute-")) nodename = "attribute";
       if (controller != null) {
         nodeCopy = (DefaultMutableTreeNode)controller.getClipboardObject();
       }
       if (nodeCopy != null) {
         String savenodename = ((NodeInfo)localcopy.getUserObject()).getName();
-        if (savenodename.startsWith("attribute")) savenodename = "attribute";
+        if (savenodename.startsWith("attribute-")) savenodename = "attribute";
         if (nodename.equals(savenodename)) {
           DefaultMutableTreeNode parent = (DefaultMutableTreeNode)node.getParent();
           int indx = parent.getIndex(node);
@@ -1544,10 +1552,10 @@ public class DocFrame extends javax.swing.JFrame
       DefaultMutableTreeNode localcopy = deepNodeCopy(nodeCopy);
       // simple node comparison
       String nodename = ((NodeInfo)node.getUserObject()).getName();
-      if (nodename.startsWith("attribute")) nodename = "attribute";
+      if (nodename.startsWith("attribute-")) nodename = "attribute";
       if (nodeCopy != null) {
         String savenodename = ((NodeInfo)localcopy.getUserObject()).getName();
-        if (savenodename.startsWith("attribute")) savenodename = "attribute";
+        if (savenodename.startsWith("attribute-")) savenodename = "attribute";
         if (nodename.equals(savenodename)) {
           DefaultMutableTreeNode parent = (DefaultMutableTreeNode)node.getParent();
           int indx = parent.getIndex(node);
@@ -1623,6 +1631,7 @@ public class DocFrame extends javax.swing.JFrame
                 (currentSelection.getLastPathComponent());
       NodeInfo ni = (NodeInfo)currentNode.getUserObject();
       String curNodeName = ni.getName();
+      if (curNodeName.startsWith("attribute-")) curNodeName = "attribute";
       int cnt = 0;
       MutableTreeNode parent = (MutableTreeNode)(currentNode.getParent());
       if (parent != null) {
@@ -1631,6 +1640,7 @@ public class DocFrame extends javax.swing.JFrame
           DefaultMutableTreeNode cn = (DefaultMutableTreeNode)eee.nextElement();
           NodeInfo ni1 = (NodeInfo)cn.getUserObject();
           String name = ni1.getName();
+          if (name.startsWith("attribute-")) name = "attribute";          
           if (name.equals(curNodeName)) {
             cnt++;
           }
@@ -3490,7 +3500,8 @@ Log.debug(20, xmlout);
         // causes the attributes to be shown with radio buttons
         // This can result in inadvertent data loss if viewed in the editor.
         // (in most places, there is a choice between a sequence and 'references').
-        ni.setCheckboxFlag(true);
+//        ni.setCheckboxFlag(true);
+// no need to set the CheckboxFlag when the references nodes are trimmed ! DFH
         Enumeration attr_kids = node.breadthFirstEnumeration();
         while(attr_kids.hasMoreElements()) {  // attributes children
           DefaultMutableTreeNode node1 = (DefaultMutableTreeNode)attr_kids.nextElement();
@@ -3805,6 +3816,11 @@ Log.debug(20, xmlout);
 			Enumeration kids = parent.children();
 			while (kids.hasMoreElements()) {
 				DefaultMutableTreeNode cnd = (DefaultMutableTreeNode)kids.nextElement();
+        // kid nodes are set to be choice nodes (choice between kids and references)
+        // thus, remove this setting when removing 'references'
+        NodeInfo ni_cnd = (NodeInfo)cnd.getUserObject();
+        ni_cnd.setChoice(false);
+        ni_cnd.setSelected(ni_cnd.isSelected()); // forces icon update
 				grandparent.add(cnd);
 			}
 		}
