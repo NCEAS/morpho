@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-01-02 23:45:09 $'
- * '$Revision: 1.86 $'
+ *     '$Date: 2002-03-08 00:11:45 $'
+ * '$Revision: 1.87 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -709,7 +709,7 @@ public class ClientFramework extends javax.swing.JFrame
       {
 */
         this.setVisible(false);        // hide the Frame
-        logOut();
+        logOutExit();
         config.save();
         this.dispose();                // free the system resources
         System.exit(0);                // close the application
@@ -1123,6 +1123,25 @@ public class ClientFramework extends javax.swing.JFrame
       fireConnectionChangedEvent();
     }
   }
+
+  /**
+   * Log out of metacat when exiting
+   */
+  public void logOutExit()
+  {
+    if (connected) {
+      passWord = "none";   // get rid of existing password info
+      Properties prop = new Properties();
+      prop.put("action", "logout");
+      prop.put("qformat", "xml");
+  
+      String response = getMetacatString(prop);
+      HttpMessage.setCookie(null);
+      connected = false;
+
+    }
+  }
+
 
   /**
    * Set the username associated with this framework
