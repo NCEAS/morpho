@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-05-04 16:26:37 $'
- * '$Revision: 1.2 $'
+ *     '$Date: 2001-05-07 17:36:28 $'
+ * '$Revision: 1.3 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -58,10 +58,10 @@ public class TripleParser extends DefaultHandler
 {
   private Triple triple;
   private TripleCollection collection = new TripleCollection();
-  String tag="";
+  String tag = "";
   boolean instart = true;
   
-  public TripleParser(FileReader xml, String parserName)
+  public TripleParser(Reader xml, String parserName)
   {
     XMLReader parser = initializeParser(parserName);
     if (parser == null) 

@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-05-04 15:23:36 $'
- * '$Revision: 1.2 $'
+ *     '$Date: 2001-05-07 17:36:28 $'
+ * '$Revision: 1.3 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -45,11 +45,21 @@ public class TripleCollection
   }
   
   /**
+   * Copy constructor.  instantiate this object from the given TripleCollection
+   */
+  public TripleCollection(TripleCollection tc)
+  {
+    this.triples = tc.getCollection();
+  }
+  
+  /**
    * read an xml file, build the collection from any triples in the xml file.
    */
   public TripleCollection(Reader xml)
   {
-    
+    TripleParser tp = new TripleParser(xml, 
+                                       "org.apache.xerces.parsers.SAXParser");
+    this.triples = tp.getTriples().getCollection();
   }
   
   /**
@@ -66,6 +76,14 @@ public class TripleCollection
   public void addTriple(Triple triple)
   {
     this.triples.addElement(triple);
+  }
+  
+  /**
+   * returns true if the collection contains triple, false otherwise
+   */
+  public boolean containsTriple(Triple triple)
+  {
+    return triples.remove(triple);
   }
   
   /**
@@ -111,7 +129,7 @@ public class TripleCollection
     for(int i=0; i<triples.size(); i++)
     {
       Triple trip = new Triple((Triple)triples.elementAt(i));
-      if(trip.getSubject().equals(relationship))
+      if(trip.getRelationship().equals(relationship))
       {
         trips.addElement(trip);
       }
@@ -128,12 +146,79 @@ public class TripleCollection
     for(int i=0; i<triples.size(); i++)
     {
       Triple trip = new Triple((Triple)triples.elementAt(i));
-      if(trip.getSubject().equals(object))
+      if(trip.getObject().equals(object))
       {
         trips.addElement(trip);
       }
     }
     return trips;
+  }
+  
+  /**
+   * return a vector of Triple objects that represent this collection.
+   */
+  public Vector getCollection()
+  {
+    return this.triples;
+  }
+  
+  /**
+   * returns a string representation of this collection in xml format.
+   * the xml looks like this:
+   * <pre>
+   * &lt;triple&gt;&lt;subject&gt;some content 1&lt;/subject&gt;
+   * &lt;relationship&gt;some content 2&lt;/relationship&gt;&lt;object&gt;
+   * some content 3&lt;/object&gt;&lt;/triple&gt;&lt;triple&gt;
+   * &lt;subject&gt;some content 1&lt;/subject&gt;&lt;relationship&gt;
+   * some content 2&lt;/relationship&gt;&lt;object&gt;some content 3
+   * &lt;/object&gt;&lt;/triple&gt;
+   * .....
+   * &lt;triple&gt;&lt;subject&gt;some content 1&lt;/subject&gt;
+   * &lt;relationship&gt;some content 2&lt;/relationship&gt;&lt;object&gt;
+   * some content 3&lt;/object&gt;&lt;/triple&gt;
+   * </pre>
+   */
+  public String toXML()
+  {
+    StringBuffer sb = new StringBuffer();
+    for(int i=0; i<triples.size(); i++)
+    {
+      sb.append(((Triple)triples.elementAt(i)).toXML());
+    }
+    return sb.toString();
+  }
+  
+  /**
+   * returns a nicely formatted string representation of this collection in xml
+   * the xml looks like this:
+   * <pre>
+   * &lt;triple&gt;
+   *   &lt;subject&gt;some content 1&lt;/subject&gt;
+   *   &lt;relationship&gt;some content 2&lt;/relationship&gt;
+   *   &lt;object&gt;some content 3&lt;/object&gt;
+   * &lt;/triple&gt;
+   * &lt;triple&gt;
+   *   &lt;subject&gt;some content 1&lt;/subject&gt;
+   *   &lt;relationship&gt;some content 2&lt;/relationship&gt;
+   *   &lt;object&gt;some content 3&lt;/object&gt;
+   * &lt;/triple&gt;
+   * .....
+   * &lt;triple&gt;
+   *   &lt;subject&gt;some content 1&lt;/subject&gt;
+   *   &lt;relationship&gt;some content 2&lt;/relationship&gt;
+   *   &lt;object&gt;some content 3&lt;/object&gt;
+   * &lt;/triple&gt;
+   * </pre>
+   * without the formatting (i.e. no indents or extra spaces)
+   */
+  public String toFormatedXML()
+  {
+    StringBuffer sb = new StringBuffer();
+    for(int i=0; i<triples.size(); i++)
+    {
+      sb.append(((Triple)triples.elementAt(i)).toFormatedXML());
+    }
+    return sb.toString();
   }
   
   /**
@@ -154,5 +239,67 @@ public class TripleCollection
     }
     sb.append("]");
     return sb.toString();
+  }
+  
+  public static void main(String[] args)
+  {
+    if(args.length == 0)
+    {
+      System.out.println("usage: TripleCollection <xml_file>");
+      return;
+    }
+    
+    String filename = args[0];
+    
+    try
+    {
+      FileReader xml = new FileReader(new File(filename));
+      TripleCollection tc = new TripleCollection(xml);
+      System.out.println("Triples are:" );
+      System.out.println(tc.toString());
+      //test the getCollectionBy methods
+      Vector v = tc.getCollectionBySubject("1.s");
+      System.out.println(v.toString());
+      v = tc.getCollectionByObject("2.o");
+      System.out.println(v.toString());
+      v = tc.getCollectionByRelationship("1.r");
+      System.out.println(v.toString());
+      //test addTriple
+      Triple t = new Triple("3.s", "3.r", "3.o");
+      tc.addTriple(t);
+      System.out.println(tc.toString());
+      //test removeTriple
+      Triple u = tc.removeTriple(t);
+      System.out.println(u.toString());
+      System.out.println(tc.toString());
+      Triple x = new Triple();
+      u = tc.removeTriple(x);
+      if(u != null)
+        System.out.println(u.toString());
+      else
+        System.out.println("u == null");
+      System.out.println(tc.toString());
+      //check containsTriple
+      tc.addTriple(t);
+      if(tc.containsTriple(t))
+        System.out.println("it's there");
+      else
+        System.out.println("it's not");
+      tc.removeTriple(t);
+      if(tc.containsTriple(t))
+        System.out.println("it's there");
+      else
+        System.out.println("it's not");
+      //test toXML
+      tc.addTriple(t);
+      System.out.println(tc.toXML());
+      System.out.println(tc.toFormatedXML());
+    }
+    catch(Exception e)
+    {
+      System.out.println("error in main");
+      e.printStackTrace(System.out);
+    }
+    System.out.println("Done with " + args[0]);
   }
 }

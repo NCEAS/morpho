@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: berkley $'
- *     '$Date: 2001-05-04 16:26:37 $'
- * '$Revision: 1.5 $'
+ *     '$Date: 2001-05-07 17:36:28 $'
+ * '$Revision: 1.6 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -129,6 +129,48 @@ public class Triple
     triple.addElement(this.object);
     return triple;
   }
+  
+  /**
+   * return this triple in xml format.  The xml looks like: 
+   * <pre>
+   * &lt;triple&gt;&lt;subject&gt;some content 1&lt;/subject&gt;
+   * &lt;relationship&gt;some content 2&lt;/relationship&gt;
+   * &lt;object&gt;some content 3&lt;/object&gt;&lt;/triple&gt;
+   * </pre>
+   */
+   public String toXML()
+   {
+     StringBuffer sb = new StringBuffer();
+     sb.append("<triple>");
+     sb.append("<subject>").append(this.subject).append("</subject>");
+     sb.append("<relationship>").append(this.relationship).append("</relationship>");
+     sb.append("<object>").append(this.object).append("</object>");
+     sb.append("</triple>");
+     return sb.toString();
+   }
+   
+   /**
+   * return this triple in xml format with easy to read formatting.  
+   * The xml looks like: 
+   * <pre>
+   * &lt;triple&gt;
+   *   &lt;subject&gt;some content 1&lt;/subject&gt;
+   *   &lt;relationship&gt;some content 2&lt;/relationship&gt;
+   *   &lt;object&gt;some content 3&lt;/object&gt;
+   * &lt;/triple&gt;
+   * </pre>
+   */
+   public String toFormatedXML()
+   {
+     StringBuffer sb = new StringBuffer();
+     sb.append("<triple>\n");
+     sb.append("  <subject>").append(this.subject).append("</subject>\n");
+     sb.append("  <relationship>").append(this.relationship);
+     sb.append("</relationship>\n");
+     sb.append("  <object>").append(this.object).append("</object>\n");
+     sb.append("</triple>\n");
+     return sb.toString();
+   }
 
   /**
    * return this triple as a string
