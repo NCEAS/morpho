@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2002-09-27 20:57:48 $'
- * '$Revision: 1.17 $'
+ *     '$Date: 2002-09-27 23:08:03 $'
+ * '$Revision: 1.18 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1066,31 +1066,31 @@ public class Morpho
                                                         GUIAction.EVENT_LOCAL);
         controller.addGuiAction(switchItemAction);
 
-        Command enableCommand = new Command() {
-            public void execute(ActionEvent e) {
-                StateChangeMonitor monitor = StateChangeMonitor.getInstance();
-                monitor.notifyStateChange(new StateChangeEvent(this, "ENABLE"));
-            }
-        };
-        GUIAction enableItemAction =
-            new GUIAction("Enable", null, enableCommand);
-        enableItemAction.setToolTipText("Enable");
-        enableItemAction.putValue("menuPosition", new Integer(3));
-        enableItemAction.setMenu("File", 0);
-        controller.addGuiAction(enableItemAction);
-
-        Command disableCommand = new Command() {
-            public void execute(ActionEvent e) {
-                StateChangeMonitor monitor = StateChangeMonitor.getInstance();
-                monitor.notifyStateChange(new StateChangeEvent(this, "DISABLE"));
-            }
-        };
-        GUIAction disableItemAction =
-            new GUIAction("Disable", null, disableCommand);
-        disableItemAction.setToolTipText("Disable");
-        disableItemAction.putValue("menuPosition", new Integer(4));
-        disableItemAction.setMenu("File", 0);
-        controller.addGuiAction(disableItemAction);
+//        Command enableCommand = new Command() {
+//            public void execute(ActionEvent e) {
+//                StateChangeMonitor monitor = StateChangeMonitor.getInstance();
+//                monitor.notifyStateChange(new StateChangeEvent(this, "ENABLE"));
+//            }
+//        };
+//        GUIAction enableItemAction =
+//            new GUIAction("Enable", null, enableCommand);
+//        enableItemAction.setToolTipText("Enable");
+//        enableItemAction.putValue("menuPosition", new Integer(3));
+//        enableItemAction.setMenu("File", 0);
+//        controller.addGuiAction(enableItemAction);
+//
+//        Command disableCommand = new Command() {
+//            public void execute(ActionEvent e) {
+//                StateChangeMonitor monitor = StateChangeMonitor.getInstance();
+//                monitor.notifyStateChange(new StateChangeEvent(this, "DISABLE"));
+//            }
+//        };
+//        GUIAction disableItemAction =
+//            new GUIAction("Disable", null, disableCommand);
+//        disableItemAction.setToolTipText("Disable");
+//        disableItemAction.putValue("menuPosition", new Integer(4));
+//        disableItemAction.setMenu("File", 0);
+//        controller.addGuiAction(disableItemAction);
 
         Command exitCommand = new Command() {
             public void execute(ActionEvent event) {

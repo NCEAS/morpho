@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2002-09-27 22:14:01 $'
- * '$Revision: 1.4 $'
+ *     '$Date: 2002-09-27 23:08:03 $'
+ * '$Revision: 1.5 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -35,10 +35,13 @@ import javax.swing.event.ChangeEvent;
 public class StateChangeEvent extends ChangeEvent
 {
     
-    
+//////////////////////////////////////////////////////////////////////////////// 
 //////////////////////////////////////////////////////////////////////////////// 
 //      PUBLIC STATIC STATE CHANGE EVENT TYPE CONSTANTS
 //////////////////////////////////////////////////////////////////////////////// 
+//////////////////////////////////////////////////////////////////////////////// 
+
+
 
 
     /**
@@ -47,26 +50,65 @@ public class StateChangeEvent extends ChangeEvent
     public static String SELECT_DATATABLE_COLUMN 
                                       = "selectDataTableColumn";
 
+                                      
+                                      
     /**
      *  Public constant to denote that a datapackage CONTAINING ONE OR MORE 
      *  ENTITIES has been opened
      */
     public static String CREATE_ENTITY_DATAPACKAGE_FRAME 
-                                      = "createEntityDataPackageFrame";
+        = "createEntityDataPackageFrame";
  
     /**
      *  Public constant to denote that a datapackage CONTAINING NO ENTITIES OR 
      *  DATA has been opened
      */
     public static String CREATE_NOENTITY_DATAPACKAGE_FRAME 
-                                      = "createNoEntityDataPackageFrame";
+        = "createNoEntityDataPackageFrame";
+
+    /**
+     *  Public constant to denote that a datapackage has been opened, but that 
+     *  no previous versions of the selected package are available 
+     */
+    public static String CREATE_DATAPACKAGE_FRAME_NO_VERSIONS
+        = "createEntityDataPackageFrameNoPrevVersionAvailable";
+                                   
+    /**
+     *  Public constant to denote that a datapackage has been opened, and that 
+     *  previous versions of the selected package *are* available 
+     */
+    public static String CREATE_DATAPACKAGE_FRAME_VERSIONS
+        = "createEntityDataPackageFrameVersionAvailable";
  
+    /**
+     *  Public constant to denote that a datapackage has been opened, and that 
+     *  the local and network versions of the package are *not* in sync 
+     */
+    public static String CREATE_DATAPACKAGE_FRAME_UNSYNCRONIZED 
+        = "unsynchronizedCreateDataPackageFrame";
+
+    /**
+     *  Public constant to denote that a datapackage has been opened, and that 
+     *  the local and network versions of the package *are* in sync 
+     */
+    public static String CREATE_DATAPACKAGE_FRAME_SYNCRONIZED 
+        = "synchronizedCreateDataPackageFrame";
+
+
+          
+          
     /**
      *  Public constant to denote that a search result frame has been opened
      */
     public static String CREATE_SEARCH_RESULT_FRAME 
-                                      = "createRearchResultFrame";
-  
+        = "createRearchResultFrame";  
+
+    /**
+     *  Public constant to denote that an entry in a search result frame has 
+     *  been selected, 
+     */
+    public static String SEARCH_RESULT_SELECTED 
+        = "searchResultSelected";
 
     /**
      *  Public constant to denote that an entry in a search result frame has 
@@ -74,7 +116,7 @@ public class StateChangeEvent extends ChangeEvent
      *  package are *not* in sync 
      */
     public static String SEARCH_RESULT_SELECTED_UNSYNCRONIZED 
-                                      = "unsynchronizedSearchResultSelected";
+        = "unsynchronizedSearchResultSelected";
  
     /**
      *  Public constant to denote that an entry in a search result frame has 
@@ -82,11 +124,28 @@ public class StateChangeEvent extends ChangeEvent
      *  package *are* in sync 
      */
     public static String SEARCH_RESULT_SELECTED_SYNCRONIZED 
-                                      = "synchronizedSearchResultSelected";
+        = "synchronizedSearchResultSelected";
 
+    /**
+     *  Public constant to denote that an entry in a search result frame has 
+     *  been selected, and that no previous versions of the selected package 
+     *  are available 
+     */
+    public static String SEARCH_RESULT_SELECTED_NO_VERSIONS 
+        = "searchResultSelectedNoPrevVersionAvailable";
+
+    /**
+     *  Public constant to denote that an entry in a search result frame has 
+     *  been selected, and that previous versions of the selected package *are*
+     *  available 
+     */
+    public static String SEARCH_RESULT_SELECTED_VERSIONS
+        = "searchResultSelectedVersionAvailable";
+ 
     
 //////////////////////////////////////////////////////////////////////////////// 
 //////////////////////////////////////////////////////////////////////////////// 
+
     private String changedState;
 
     /**

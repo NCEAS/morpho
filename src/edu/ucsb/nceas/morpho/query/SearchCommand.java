@@ -5,9 +5,9 @@
  *    Authors: @tao@
  *    Release: @release@
  *
- *   '$Author: cjones $'
- *     '$Date: 2002-09-26 01:57:53 $'
- * '$Revision: 1.15 $'
+ *   '$Author: brooke $'
+ *     '$Date: 2002-09-27 23:08:03 $'
+ * '$Revision: 1.16 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,6 +33,9 @@ import edu.ucsb.nceas.morpho.framework.UIController;
 import edu.ucsb.nceas.morpho.util.Command;
 import edu.ucsb.nceas.morpho.util.Log;
 import edu.ucsb.nceas.morpho.util.SortableJTable;
+import edu.ucsb.nceas.morpho.util.StateChangeEvent;
+import edu.ucsb.nceas.morpho.util.StateChangeMonitor;
+
 import java.awt.event.ActionEvent;
 import javax.swing.JDialog;
 
@@ -118,6 +121,10 @@ public class SearchCommand implements Command
           // sort the result panel
           resultDisplayPanel.sortTable(5, SortableJTable.DECENDING);
           resultWindow.setMainContentPane(resultDisplayPanel);
+          StateChangeMonitor.getInstance().notifyStateChange(
+                          new StateChangeEvent( 
+                                  resultDisplayPanel, 
+                                  StateChangeEvent.CREATE_SEARCH_RESULT_FRAME));
           return null;  
         }
 

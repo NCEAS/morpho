@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: brooke $'
- *     '$Date: 2002-09-27 22:14:01 $'
- * '$Revision: 1.25 $'
+ *     '$Date: 2002-09-27 23:08:03 $'
+ * '$Revision: 1.26 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -287,6 +287,10 @@ public class DataViewContainerPanel extends javax.swing.JPanel
       Log.debug(20, "EntityItems vector is null");
       vertSplit.removeAll();
       vertSplit.add(packageMetadataPanel);
+      StateChangeMonitor.getInstance().notifyStateChange(
+                      new StateChangeEvent( 
+                          vertSplit, 
+                          StateChangeEvent.CREATE_NOENTITY_DATAPACKAGE_FRAME));
       return;
     }
     entityFile = new File[entityItems.size()];
@@ -361,6 +365,7 @@ public class DataViewContainerPanel extends javax.swing.JPanel
       File f = dp.getDataFile(id);
       String dataString = "";
     }
+    
     if ((entityItems!=null) && (entityItems.size()>0)) 
     {
       setDataViewer(0);
@@ -369,6 +374,9 @@ public class DataViewContainerPanel extends javax.swing.JPanel
       StateChangeMonitor stateMonitor = StateChangeMonitor.getInstance();
       stateMonitor.addStateChangeListener
                                 (StateChangeEvent.SELECT_DATATABLE_COLUMN,this);
+                                
+      stateMonitor.notifyStateChange( new StateChangeEvent( vertSplit, 
+                            StateChangeEvent.CREATE_ENTITY_DATAPACKAGE_FRAME));
     }
   }
 

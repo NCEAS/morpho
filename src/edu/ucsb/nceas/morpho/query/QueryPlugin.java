@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: tao $'
- *     '$Date: 2002-09-27 21:05:52 $'
- * '$Revision: 1.92 $'
+ *   '$Author: brooke $'
+ *     '$Date: 2002-09-27 23:08:03 $'
+ * '$Revision: 1.93 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -132,6 +132,16 @@ public class QueryPlugin implements PluginInterface, ConnectionListener,
     refreshItemAction.setMenuItemPosition(1);
     refreshItemAction.setMenu("Search", 2);
     refreshItemAction.setToolbarPosition(3);
+    refreshItemAction.setEnabled(false);  //default
+    refreshItemAction.setEnabledOnStateChange(
+                            StateChangeEvent.CREATE_SEARCH_RESULT_FRAME, 
+                            true, GUIAction.EVENT_LOCAL);
+    refreshItemAction.setEnabledOnStateChange(
+                            StateChangeEvent.CREATE_ENTITY_DATAPACKAGE_FRAME, 
+                            false, GUIAction.EVENT_LOCAL);
+    refreshItemAction.setEnabledOnStateChange(
+                            StateChangeEvent.CREATE_NOENTITY_DATAPACKAGE_FRAME, 
+                            false, GUIAction.EVENT_LOCAL);
     controller.addGuiAction(refreshItemAction);
     
     //refreshItemAction.setSeparatorPosition(Morpho.SEPARATOR_FOLLOWING);
@@ -145,6 +155,16 @@ public class QueryPlugin implements PluginInterface, ConnectionListener,
     saveQueryItemAction.setMenuItemPosition(2);
     saveQueryItemAction.setMenu("Search", 2);
     saveQueryItemAction.setToolbarPosition(4);
+    saveQueryItemAction.setEnabled(false);  //default
+    saveQueryItemAction.setEnabledOnStateChange(
+                            StateChangeEvent.CREATE_SEARCH_RESULT_FRAME, 
+                            true, GUIAction.EVENT_LOCAL);
+    saveQueryItemAction.setEnabledOnStateChange(
+                            StateChangeEvent.CREATE_ENTITY_DATAPACKAGE_FRAME, 
+                            false, GUIAction.EVENT_LOCAL);
+    saveQueryItemAction.setEnabledOnStateChange(
+                            StateChangeEvent.CREATE_NOENTITY_DATAPACKAGE_FRAME, 
+                            false, GUIAction.EVENT_LOCAL);
     controller.addGuiAction(saveQueryItemAction);
         
     // RevisedSearch action
@@ -157,6 +177,16 @@ public class QueryPlugin implements PluginInterface, ConnectionListener,
     reviseSearchItemAction.setSeparatorPosition(Morpho.SEPARATOR_FOLLOWING);
     reviseSearchItemAction.setMenu("Search", 2);
     reviseSearchItemAction.setToolbarPosition(5);
+    reviseSearchItemAction.setEnabled(false);  //default
+    reviseSearchItemAction.setEnabledOnStateChange(
+                            StateChangeEvent.CREATE_SEARCH_RESULT_FRAME, 
+                            true, GUIAction.EVENT_LOCAL);
+    reviseSearchItemAction.setEnabledOnStateChange(
+                            StateChangeEvent.CREATE_ENTITY_DATAPACKAGE_FRAME, 
+                            false, GUIAction.EVENT_LOCAL);
+    reviseSearchItemAction.setEnabledOnStateChange(
+                            StateChangeEvent.CREATE_NOENTITY_DATAPACKAGE_FRAME, 
+                            false, GUIAction.EVENT_LOCAL);
     controller.addGuiAction(reviseSearchItemAction);
 
     // Load user saved the query to search menu too
@@ -174,12 +204,12 @@ public class QueryPlugin implements PluginInterface, ConnectionListener,
     controller.addGuiAction(openDialogBoxAction);
     
     // Open a data package action
-    GUIAction openPackageAction = new GUIAction("Open Package", null,
-                            new OpenPackageCommand(null));
-    openPackageAction.setMenuItemPosition(6);
-    openPackageAction.setToolTipText("Open a package...");
-    openPackageAction.setMenu("File", 0);
-    controller.addGuiAction(openPackageAction);
+//    GUIAction openPackageAction = new GUIAction("Open Package", null,
+//                            new OpenPackageCommand(null));
+//    openPackageAction.setMenuItemPosition(6);
+//    openPackageAction.setToolTipText("Open a package...");
+//    openPackageAction.setMenu("File", 0);
+//    controller.addGuiAction(openPackageAction);
     
     // Create a OpenPreviousVersion action
     GUIAction openPreviousAction = new GUIAction("Open Previous Version",null,
