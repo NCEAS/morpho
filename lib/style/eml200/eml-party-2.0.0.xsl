@@ -7,8 +7,8 @@
   *  For Details: http://www.nceas.ucsb.edu/
   *
   *   '$Author: sgarg $'
-  *     '$Date: 2003-12-10 20:04:28 $'
-  * '$Revision: 1.4 $'
+  *     '$Date: 2004-03-24 00:01:58 $'
+  * '$Revision: 1.5 $'
   *
   * This program is free software; you can redistribute it and/or modify
   * it under the terms of the GNU General Public License as published by
@@ -34,7 +34,7 @@
   <xsl:output method="html" encoding="iso-8859-1"
               doctype-public="-//W3C//DTD HTML 4.01 Transitional//EN"
               doctype-system="http://www.w3.org/TR/html4/loose.dtd"
-              indent="yes" />  
+              indent="yes" />
 
   <!-- This module is for party member and it is self contained-->
 
@@ -182,9 +182,14 @@
           <td width="{$secondColWidth}">
             <table xsl:use-attribute-sets="cellspacing" class="{$tablepartyStyle}" width="100%">
               <tr><td width="100%" class="{$secondColStyle}">
-                    <a><xsl:attribute name="href">mailto:<xsl:value-of select="."/></xsl:attribute><xsl:value-of select="./entityName"/>
+                 <xsl:if test="$withHTMLLinks='1'">
+                   <a><xsl:attribute name="href">mailto:<xsl:value-of select="."/></xsl:attribute><xsl:value-of select="./entityName"/>
                     <xsl:value-of select="."/></a>
-                   </td>
+                 </xsl:if>
+                 <xsl:if test="$withHTMLLinks='0'">
+                   <xsl:value-of select="."/>
+                 </xsl:if>
+                </td>
               </tr>
             </table>
           </td>
@@ -202,9 +207,14 @@
           <td width="{$secondColWidth}">
              <table xsl:use-attribute-sets="cellspacing" class="{$tablepartyStyle}" width="100%">
                <tr><td width="100%" class="{$secondColStyle}">
+                   <xsl:if test="$withHTMLLinks='1'">
                      <a><xsl:attribute name="href">http://<xsl:value-of select="."/></xsl:attribute><xsl:value-of select="./entityName"/>
                      <xsl:value-of select="."/></a>
-                    </td>
+	            </xsl:if>
+        	    <xsl:if test="$withHTMLLinks='0'">
+                     <xsl:value-of select="."/>
+                    </xsl:if>
+                 </td>
                </tr>
              </table>
            </td>
