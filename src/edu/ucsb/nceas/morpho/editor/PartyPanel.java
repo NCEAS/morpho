@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-10-21 22:39:47 $'
- * '$Revision: 1.1 $'
+ *     '$Date: 2003-10-22 02:40:17 $'
+ * '$Revision: 1.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -109,6 +109,7 @@ public class PartyPanel extends JPanel
     lastNamePanel.add(lastNameLabel);
     lastNameField = WidgetFactory.makeOneLineTextField();
     lastNameField.setText(getValue(nd, "surName"));
+    lastNameField.addFocusListener(new dfhFocus());
     lastNamePanel.add(lastNameField);
     panel.add(lastNamePanel);
     
@@ -251,37 +252,32 @@ public class PartyPanel extends JPanel
     
 class dfhAction implements java.awt.event.ActionListener
 {
-		public void actionPerformed(java.awt.event.ActionEvent event)
-		{
-			Object object = event.getSource();
-			if (object instanceof JTextArea)
-				{
-		            NodeInfo info = (NodeInfo)(nd1.getUserObject());
-                    info.setPCValue(((JTextArea)object).getText());
-				}
-		}
+  public void actionPerformed(java.awt.event.ActionEvent event)
+    {
+      Object object = event.getSource();
+      if (object instanceof JTextArea) {
+        NodeInfo info = (NodeInfo)(nd1.getUserObject());
+        info.setPCValue(((JTextArea)object).getText());
+      }
+    }
 }
 
-	class dfhFocus extends java.awt.event.FocusAdapter
-	{
-		public void focusLost(java.awt.event.FocusEvent event)
-		{
-			Object object = event.getSource();
-			if (object instanceof JTextArea)
-				{
-		        NodeInfo info = (NodeInfo)(nd1.getUserObject());
-		        String val = ((JTextArea)object).getText();
-            info.setPCValue(" "+val.trim());
-				}
-		}
+class dfhFocus extends java.awt.event.FocusAdapter {
+  public void focusLost(java.awt.event.FocusEvent event)
+    {
+      Object object = event.getSource();
+      if (object == lastNameField) {
+        String val = lastNameField.getText();
+        setValue(nd, "surName", val);	      
+      }
+    }
 		
-		public void focusGained(java.awt.event.FocusEvent event)
-		{
-			Object object = event.getSource();
-			if (object instanceof JTextArea)
-				{
-				}
-		}
-	}
+  public void focusGained(java.awt.event.FocusEvent event)
+    {
+      Object object = event.getSource();
+      if (object instanceof JTextArea) {
+      }
+    }
+}
     
 }
