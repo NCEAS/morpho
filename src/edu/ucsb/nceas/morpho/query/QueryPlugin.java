@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: jones $'
- *     '$Date: 2001-05-26 02:00:26 $'
- * '$Revision: 1.63 $'
+ *     '$Date: 2001-05-30 22:24:32 $'
+ * '$Revision: 1.64 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,20 +30,11 @@ import edu.ucsb.nceas.morpho.framework.*;
 
 import java.awt.Component;
 import java.awt.event.ActionEvent;
-import java.io.InputStream;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.util.Hashtable;
-import java.util.Properties;
 import java.util.Vector;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.ImageIcon;
-import javax.swing.JTabbedPane;
-import javax.swing.JTable;
-import javax.swing.table.TableModel;
 
 public class QueryPlugin implements PluginInterface, ConnectionListener
 {
