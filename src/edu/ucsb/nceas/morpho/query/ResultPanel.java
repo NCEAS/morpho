@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2002-08-25 23:29:06 $'
- * '$Revision: 1.50 $'
+ *     '$Date: 2002-08-26 00:45:43 $'
+ * '$Revision: 1.51 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -85,7 +85,7 @@ public class ResultPanel extends JPanel
   /** A reference to the mediator */
   private ResultPanelAndFrameMediator mediator = null;
   /** A reference to a dialog box if the panel will be set into a open dialog */
-  private JDialog dialog = null;
+  private OpenDialogBox dialog = null;
   /** The table used to display the results */
   ToolTippedSortableJTable table = null;
   /** Button used to trigger a re-execution of the query */
@@ -103,7 +103,7 @@ public class ResultPanel extends JPanel
   /**popup menu for right clicks*/
   private JPopupMenu popup;
   /**menu items for the popup menu*/
-  private JMenuItem openMenu = new JMenuItem("Open");
+  private JMenuItem openMenu = null;
   private JMenuItem openPreviousVersion = new JMenuItem("Open Previous Version");
 
   private JMenuItem uploadMenu = new JMenuItem("Upload to Metacat");
@@ -135,12 +135,12 @@ public class ResultPanel extends JPanel
    * Construct a new ResultPanel and display the result set.  By default
    * the panel has reset and refresh buttons.
    *
-   * @param dialog the dialog the result will be set to. If it is null, the
-   *                result panel would be set to a dialog
+   * @param dialog the dialog the resultpanel will be set to. If it is null, 
+   *               the result panel would be set to a dialog
    * @param results the result listing to display
    * @param myMediator the mediaor passed from frame to control table
    */
-  public ResultPanel(JDialog dialog, ResultSet results, 
+  public ResultPanel(OpenDialogBox dialog, ResultSet results, 
                                         ResultPanelAndFrameMediator myMediator)
   {
     this(dialog, results, 12, myMediator, new Dimension(775,500));
@@ -150,13 +150,13 @@ public class ResultPanel extends JPanel
    * Construct a new ResultPanel and display the result set.  By default
    * the panel has reset and refresh buttons.
    *
-   * @param dialog the dialog the result will be set to. If it is null, the
-   *                result panel would be set to a dialog
+   * @param dialog the dialog the resultpanel will be set to. If it is null, 
+   *               the result panel would be set to a dialog
    * @param results the result listing to display
    * @param myMediator the mediaor passed from frame to control table
    * @param preferredSize the specific size of the panel
    */
-  public ResultPanel(JDialog dialog, ResultSet results, 
+  public ResultPanel(OpenDialogBox dialog, ResultSet results, 
               ResultPanelAndFrameMediator myMediator, Dimension preferredSize)
   {
     this(dialog, results, 12, myMediator, preferredSize);
@@ -166,13 +166,13 @@ public class ResultPanel extends JPanel
   /**
    * Construct a new ResultPanel and display the result set
    *
-   ** @param dialog the dialog the result will be set to. If it is null, the
-   *                result panel would be set to a dialog
+   * @param dialog the dialog the resultpanel will be set to. If it is null, 
+   *               the result panel would be set to a dialog
    * @param results the result listing to display
    * @param fontSize the fontsize for the cells of the table
    * @param myMediator the mediaor passed from frame to control table
    */
-  public ResultPanel(JDialog dialog, ResultSet results, int fontSize, 
+  public ResultPanel(OpenDialogBox dialog, ResultSet results, int fontSize, 
             ResultPanelAndFrameMediator myMediator, Dimension preferredSize)
   {
     super();
@@ -245,7 +245,12 @@ public class ResultPanel extends JPanel
     
       //Build the popup menu for the right click functionality
       popup = new JPopupMenu();
+      // Create a openPackage action
+      GUIAction openAction = new GUIAction("Open Package", null,
+                            new OpenPackageCommand(this));
+      openMenu = new JMenuItem(openAction);
       popup.add(openMenu);
+      
       openPreviousVersion.setEnabled(false);
       popup.add(openPreviousVersion);
       
@@ -262,7 +267,7 @@ public class ResultPanel extends JPanel
       popup.add(exportToZipMenu);
       
       MenuAction menuhandler = new MenuAction();
-      openMenu.addActionListener(menuhandler);
+      //openMenu.addActionListener(menuhandler);
       uploadMenu.addActionListener(menuhandler);
       downloadMenu.addActionListener(menuhandler);
       deleteLocalMenu.addActionListener(menuhandler);
@@ -285,13 +290,23 @@ public class ResultPanel extends JPanel
         {
           if (2 == e.getClickCount()) 
           {
- //           openResultRecord(table);
-            doOpenDataPackage();
+             //doOpenDataPackage();
+             // Using OpenPackageCommand to open package
+             doDoubleClickOpen();
           }
         }
       });
     }
   }
+  /**
+   * Double click to open a package
+   */
+  private void doDoubleClickOpen()
+  { 
+    // Create a open pakcag command
+    OpenPackageCommand open = new OpenPackageCommand(this);
+             open.execute();
+  }// doDoubleClickOpen
 
   /**
    * Get the result set from ResultPanel
@@ -299,7 +314,16 @@ public class ResultPanel extends JPanel
   public ResultSet getResultSet()
   {
     return results;
-  }//
+  }//getResultSet
+  
+  /** 
+   * Get the dialog from ResultPanle
+   */
+  public OpenDialogBox getDialog()
+  {
+    return dialog;
+  }//getDialog
+  
   /*
    * This method picks column sizes depend on the length of talbe and the 
    * value for every column in an array.
