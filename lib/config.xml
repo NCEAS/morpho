@@ -103,7 +103,7 @@
       <xmlfiletype>-//ecoinformatics.org//eml-access-2.0.0beta4//EN</xmlfiletype>
       <rootnode>acl</rootnode>
       <tooltip>Access control information for this data package.</tooltip>
-      <displaypath>FIXED:Access Permisions</displaypath>
+      <displaypath>FIXED:Access Permissions</displaypath>
       <editexisting>yes</editexisting>
       <idpath>/acl/identifier</idpath>
     </file>
