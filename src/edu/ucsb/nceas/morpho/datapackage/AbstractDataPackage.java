@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2003-09-29 23:41:39 $'
- * '$Revision: 1.12 $'
+ *     '$Date: 2003-09-30 17:04:41 $'
+ * '$Revision: 1.13 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -544,6 +544,45 @@ public abstract class AbstractDataPackage extends MetadataObject
     return null;
   }
   
+  public String getDistributionInlineData(int entityIndex, int physicalIndex, int distIndex) {
+    String temp = "";
+    Node[] distNodes = getDistributionArray(entityIndex, physicalIndex);
+    if (distIndex>distNodes.length-1) return temp;
+    Node distNode = distNodes[distIndex];
+    String distXpath = "";
+    try {
+      distXpath = (XMLUtilities.getTextNodeWithXPath(getMetadataPath(), 
+          "/xpathKeyMap/contextNode[@name='distribution']/inline")).getNodeValue();
+      NodeList aNodes = XPathAPI.selectNodeList(distNode, distXpath);
+      if (aNodes==null) return "aNodes is null !";
+      Node child = aNodes.item(0).getFirstChild();  // get first ?; (only 1?)
+      temp = child.getNodeValue().trim();
+    }
+    catch (Exception w) {
+      Log.debug(20,"exception in getting distribution inline data: "+w.toString());
+    }
+    return temp;
+  }
+  
+  public String getDistributionUrl(int entityIndex, int physicalIndex, int distIndex) {
+    String temp = "";
+    Node[] distNodes = getDistributionArray(entityIndex, physicalIndex);
+    if (distIndex>distNodes.length-1) return temp;
+    Node distNode = distNodes[distIndex];
+    String distXpath = "";
+    try {
+      distXpath = (XMLUtilities.getTextNodeWithXPath(getMetadataPath(), 
+          "/xpathKeyMap/contextNode[@name='distribution']/url")).getNodeValue();
+      NodeList aNodes = XPathAPI.selectNodeList(distNode, distXpath);
+      if (aNodes==null) return "aNodes is null !";
+      Node child = aNodes.item(0).getFirstChild();  // get first ?; (only 1?)
+      temp = child.getNodeValue().trim();
+    }
+    catch (Exception w) {
+      Log.debug(20,"exception in getting distribution url: "+w.toString());
+    }
+    return temp;
+  }
   
   public void showPackageSummary() {
     StringBuffer sb = new StringBuffer();
@@ -566,6 +605,8 @@ public abstract class AbstractDataPackage extends MetadataObject
         sb.append("   entity "+i+" physical "+k+"--- format: "+getPhysicalFormat(i,k)+"\n");
         sb.append("   entity "+i+" physical "+k+"--- fieldDelimiter: "+getPhysicalFieldDelimiter(i,k)+"\n");
         sb.append("   entity "+i+" physical "+k+"--- numHeaderLines: "+getPhysicalNumberHeaderLines(i,k)+"\n");
+        sb.append("      entity "+i+" physical "+k+"------ inline: "+getDistributionInlineData(i,k,0)+"\n");
+        sb.append("      entity "+i+" physical "+k+"------ url: "+getDistributionUrl(i,k,0)+"\n");
       }
     }
     Log.debug(1,sb.toString());
