@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2002-09-03 18:11:35 $'
- * '$Revision: 1.88 $'
+ *     '$Date: 2002-09-18 23:52:17 $'
+ * '$Revision: 1.89 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -808,12 +808,12 @@ public class DataPackageGUI extends javax.swing.JFrame
       
     } else if(command.equals("Add")) {
     
-      AddMetadataWizard npmw 
-                        = new AddMetadataWizard(morpho, false, dataPackage);
+      //AddMetadataWizard npmw 
+                        //= new AddMetadataWizard(morpho, false, dataPackage);
       this.dispose();                                                          
-      npmw.show();
-      npmw.setName("New Description Wizard:" + dataPackage.getID());
-      //MBJ framework.addWindow(npmw);
+      //npmw.show();
+      //npmw.setName("New Description Wizard:" + dataPackage.getID());
+    
     }
     else if(command.equals("Remove"))
     {
