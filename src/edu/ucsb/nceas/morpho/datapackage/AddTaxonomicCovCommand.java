@@ -5,9 +5,9 @@
  *    Authors: Perumal Sambasivam
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2004-03-18 00:23:33 $'
- * '$Revision: 1.6 $'
+ *   '$Author: sambasiv $'
+ *     '$Date: 2004-03-30 20:35:19 $'
+ * '$Revision: 1.7 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -38,6 +38,16 @@ import edu.ucsb.nceas.morpho.util.Log;
 
 import java.awt.event.ActionEvent;
 import edu.ucsb.nceas.morpho.util.UISettings;
+import edu.ucsb.nceas.utilities.OrderedMap;
+import edu.ucsb.nceas.utilities.XMLUtilities;
+
+import java.util.Iterator;
+
+import org.apache.xerces.dom.DOMImplementationImpl;
+import org.w3c.dom.DOMImplementation;
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 
 /**
@@ -54,8 +64,10 @@ public class AddTaxonomicCovCommand implements Command {
   private DataViewContainerPanel resultPane;
   private AbstractUIPage taxonomicPage;
   private DataViewer dataView;
-
+	private OrderedMap map;
+	
   public AddTaxonomicCovCommand() {
+		map = new OrderedMap();
   }
 
 
@@ -65,9 +77,10 @@ public class AddTaxonomicCovCommand implements Command {
    * @param event ActionEvent
    */
   public void execute(ActionEvent event) {
-
+		
+		
     showTaxonomicDialog();
-
+		
   }
 
 
@@ -88,9 +101,12 @@ public class AddTaxonomicCovCommand implements Command {
     if (dpwPlugin == null) {
       return;
     }
-
+		
+		
     taxonomicPage = dpwPlugin.getPage(
         DataPackageWizardInterface.TAXONOMIC);
+		taxonomicPage.setPageData(map, "/coverage/taxonomicCoverage");
+		
     ModalDialog wpd = new ModalDialog(taxonomicPage,
                                 UIController.getInstance().getCurrentActiveWindow(),
                                 UISettings.POPUPDIALOG_WIDTH,
@@ -100,7 +116,35 @@ public class AddTaxonomicCovCommand implements Command {
     wpd.setVisible(true);
 
     if (wpd.USER_RESPONSE == ModalDialog.OK_OPTION) {
+			
+			map = taxonomicPage.getPageData("/coverage/taxonomicCoverage");
+			Iterator it = map.keySet().iterator();
+			while(it.hasNext()) {
+				String k = (String)it.next();
+				System.out.println(k + " - " + (String)map.get(k));
+			}
+			AbstractDataPackage adp = UIController.getInstance().getCurrentAbstractDataPackage();
+			Node covRoot = null;
+			try {
+				DOMImplementation impl = DOMImplementationImpl.getDOMImplementation();
+				Document doc = impl.createDocument("", "coverage", null);
+				
+				covRoot = doc.getDocumentElement();
+				XMLUtilities.getXPathMapAsDOMTree(map, covRoot);
+				// now the covRoot node may have a number of temporalCoverage children
+				NodeList kids = covRoot.getChildNodes();
+				for (int i=0;i<kids.getLength();i++) {
+					Node kid = kids.item(i);
+					adp.insertCoverage(kid);          
+					System.out.println("Insetrting child " + i);
+				}
+			}
+			catch (Exception w) {
+				Log.debug(5, "Unable to add OrderMap elements to DOM");
+				w.printStackTrace();
+			}
 
+			//taxonomicPage.setPageData(map, "/coverage/taxonomicCoverage");
     }
     else {
 

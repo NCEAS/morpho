@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2004-03-26 00:00:58 $'
- * '$Revision: 1.17 $'
+ *   '$Author: sambasiv $'
+ *     '$Date: 2004-03-30 20:35:19 $'
+ * '$Revision: 1.18 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -74,6 +74,7 @@ public interface DataPackageWizardInterface {
   public static final String SUMMARY            = "SUMMARY";
   public static final String CODE_IMPORT_SUMMARY= "CODE_IMPORT_SUMMARY";
   public static final String CODE_DEFINITION   	= "CODE_DEFINITION";
+	public static final String CITATION_PAGE	   	= "CITATION";
 
 
   /**
