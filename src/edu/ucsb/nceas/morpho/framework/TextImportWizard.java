@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-12-19 22:05:32 $'
- * '$Revision: 1.21 $'
+ *     '$Date: 2001-12-19 23:03:11 $'
+ * '$Revision: 1.22 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1971,24 +1971,23 @@ public void startImport(String file) {
 	    XMLBuffer.append("        <dataType> "+normalize(cd.colType)+"</dataType>\n");
 	    XMLBuffer.append("        <attributeDomain>\n");
 	    if (cd.colType.equals("Integers")||(cd.colType.equals("Floating Point"))) {
-	        XMLBuffer.append("             <rangeDomain>\n");
+	        XMLBuffer.append("             <numericDomain>\n");
 	        XMLBuffer.append("                <minimum>"+cd.colMin +"</minimum>\n");
 	        XMLBuffer.append("                <maximum>"+cd.colMax +"</maximum>\n");
-	        XMLBuffer.append("             </rangeDomain>\n");
+	        XMLBuffer.append("             </numericDomain>\n");
 	    }
 	    else if(cd.useEnumerationList) {
 	        for (int k=0;k<cd.colUniqueItemsList.size();k++) {
 	            XMLBuffer.append("             <enumeratedDomain>\n");
 	            XMLBuffer.append("                <code>"+(String)cd.colUniqueItemsList.elementAt(k)+"</code>\n");
-	            XMLBuffer.append("                <definition> </definition>\n");
+	            XMLBuffer.append("                <definition>TBD</definition>\n");
 	            XMLBuffer.append("             </enumeratedDomain>\n");
 	        }
 	    }
 	    else {
-	        XMLBuffer.append("             <enumeratedDomain>\n");
-	        XMLBuffer.append("                <code> </code>\n");
-	        XMLBuffer.append("                <definition> </definition>\n");
-	        XMLBuffer.append("             </enumeratedDomain>\n");
+	        XMLBuffer.append("             <textDomain>\n");
+	        XMLBuffer.append("                <definition>*</definition>\n");
+	        XMLBuffer.append("             </textDomain>\n");
 	    }
 	    XMLBuffer.append("        </attributeDomain>\n");
 	    XMLBuffer.append("        <missingValueCode> </missingValueCode>\n");
