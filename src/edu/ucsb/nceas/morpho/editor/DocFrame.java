@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-07-10 20:28:57 $'
- * '$Revision: 1.57 $'
+ *     '$Date: 2001-07-10 23:30:30 $'
+ * '$Revision: 1.58 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -159,16 +159,49 @@ public class DocFrame extends javax.swing.JFrame
 		headLabel.setText("Morpho Editor");
 		TopLabelPanel.add(headLabel);
 		TopPanel.add(BorderLayout.WEST,logoLabel);
-		ControlPanel.setLayout(new FlowLayout(FlowLayout.RIGHT,5,5));
+		ControlPanel.setLayout(new BorderLayout(0,0));
 		getContentPane().add(BorderLayout.SOUTH, ControlPanel);
 		ControlPanel.setBackground(new java.awt.Color(204,204,204));
+		ButtonPanel.setLayout(new FlowLayout(FlowLayout.CENTER,5,5));
+		ControlPanel.add(BorderLayout.EAST,ButtonPanel);
 		CancelButton.setText("Cancel");
 		CancelButton.setActionCommand("Cancel");
-		ControlPanel.add(CancelButton);
+		ButtonPanel.add(CancelButton);
 		EditingExit.setText("Save Changes");
 		EditingExit.setActionCommand("jbutton");
-		ControlPanel.add(EditingExit);
+		ButtonPanel.add(EditingExit);
+		NotesPanel.setLayout(new GridLayout(2,2,6,0));
+		ControlPanel.add(BorderLayout.WEST,NotesPanel);
+		JLabel1.setText("required; repeatable (ONE to MANY)");
+		NotesPanel.add(JLabel1);
+		JLabel1.setBackground(java.awt.Color.black);
+		JLabel1.setForeground(java.awt.Color.black);
+		JLabel1.setFont(new Font("Dialog", Font.PLAIN, 10));
+		JLabel2.setText("required (ONE)");
+		NotesPanel.add(JLabel2);
+		JLabel2.setBackground(java.awt.Color.black);
+		JLabel2.setForeground(java.awt.Color.black);
+		JLabel2.setFont(new Font("Dialog", Font.PLAIN, 10));
+		JLabel3.setText("optional; repeatable (ZERO to MANY)");
+		NotesPanel.add(JLabel3);
+		JLabel3.setBackground(java.awt.Color.black);
+		JLabel3.setForeground(java.awt.Color.black);
+		JLabel3.setFont(new Font("Dialog", Font.PLAIN, 10));
+		JLabel4.setText("optional (ZERO to ONE)");
+		NotesPanel.add(JLabel4);
+		JLabel4.setBackground(java.awt.Color.black);
+		JLabel4.setForeground(java.awt.Color.black);
+		JLabel4.setFont(new Font("Dialog", Font.PLAIN, 10));
 		//}}
+    ImageIcon plus = new ImageIcon(getClass().getResource("blue.gif"));
+		JLabel1.setIcon(plus);
+    ImageIcon square = new ImageIcon(getClass().getResource("red.gif"));
+		JLabel2.setIcon(square);
+    ImageIcon astr = new ImageIcon(getClass().getResource("green.gif"));
+		JLabel3.setIcon(astr);
+    ImageIcon qu = new ImageIcon(getClass().getResource("yellow.gif"));
+		JLabel4.setIcon(qu);
+		
     ImageIcon head = new ImageIcon(
                          getClass().getResource("smallheader-bg.gif"));
     ImageIcon logoIcon = 
@@ -545,8 +578,14 @@ public class DocFrame extends javax.swing.JFrame
 	javax.swing.JLabel headLabel = new javax.swing.JLabel();
 	javax.swing.JLabel logoLabel = new javax.swing.JLabel();
 	javax.swing.JPanel ControlPanel = new javax.swing.JPanel();
+	javax.swing.JPanel ButtonPanel = new javax.swing.JPanel();
 	javax.swing.JButton CancelButton = new javax.swing.JButton();
 	javax.swing.JButton EditingExit = new javax.swing.JButton();
+	javax.swing.JPanel NotesPanel = new javax.swing.JPanel();
+	javax.swing.JLabel JLabel1 = new javax.swing.JLabel();
+	javax.swing.JLabel JLabel2 = new javax.swing.JLabel();
+	javax.swing.JLabel JLabel3 = new javax.swing.JLabel();
+	javax.swing.JLabel JLabel4 = new javax.swing.JLabel();
 	//}}
 
 	//{{DECLARE_MENUS

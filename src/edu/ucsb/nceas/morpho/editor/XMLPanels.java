@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2001-07-06 17:29:05 $'
- * '$Revision: 1.16 $'
+ *     '$Date: 2001-07-10 23:30:30 $'
+ * '$Revision: 1.17 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -66,6 +66,8 @@ public class XMLPanels extends Component
  
  public DocFrame container = null;
  
+ // create default panel if true
+ private boolean defaultPanel = true;
  
  // nodeMap will store the tree node associated with each textfield
  Hashtable nodeMap;
@@ -126,7 +128,7 @@ public class XMLPanels extends Component
          // is there anything to do?
         if (doc == null) { return; }
         String temp = info.getEditor();
-        if (temp!=null) {
+ /*       if (temp!=null) {
           try {
             Object[] Args = new Object[] {doc};
             Class[] ArgsClass = new Class[] {DefaultMutableTreeNode.class};
@@ -147,11 +149,10 @@ public class XMLPanels extends Component
             System.out.println(e);
           }
         }
-        info.setEditor(null); // so it is not repeated
-//        else{
+*/
+ //       info.setEditor(null); // so it is not repeated
           doPanels(doc,topPanel);
-        info.setEditor(temp);  // reset for next time
-//        }
+ //       info.setEditor(temp);  // reset for next time
     }
     
     void doPanels(DefaultMutableTreeNode node, JPanel panel) {
@@ -180,7 +181,7 @@ public class XMLPanels extends Component
           System.out.println(e);
         }
       }
-      else{
+      else {
         panel.add(getDataPanel(node));
         // iterate over children of this node
         Enumeration nodes = node.children();
@@ -200,7 +201,6 @@ public class XMLPanels extends Component
           }
         }
       }
-        
     }
     
     
