@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2001-10-23 17:52:24 $'
- * '$Revision: 1.35 $'
+ *   '$Author: jones $'
+ *     '$Date: 2001-10-24 17:45:31 $'
+ * '$Revision: 1.36 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -262,10 +262,13 @@ public class DataPackage
     for(int i=0; i<originatorNodeList.getLength(); i++)
     {
       Node n = originatorNodeList.item(i);
-      String s = n.getFirstChild().getNodeValue();
-      if(!v.contains(s.trim()))
-      {
-        v.addElement(s.trim());
+      Node child = n.getFirstChild();
+      if (null != child) {
+        String s = child.getNodeValue();
+        if(!v.contains(s.trim()))
+        {
+          v.addElement(s.trim());
+        }
       }
     }
     docAtts.put("originator", v);
