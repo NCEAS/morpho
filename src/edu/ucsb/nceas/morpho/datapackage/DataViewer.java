@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2002-09-08 22:46:32 $'
- * '$Revision: 1.40 $'
+ *     '$Date: 2002-09-09 16:34:40 $'
+ * '$Revision: 1.41 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -552,9 +552,9 @@ public class DataViewer extends javax.swing.JPanel
        if(attributeNamesList != null && attributeNamesList.getLength() != 0)
         {
           column_labels = new Vector(); 
-          String unitString = "";
-          String dataTypeString = "";
           for (int i=0;i<attributeNamesList.getLength();i++) {
+            String unitString = "";
+            String dataTypeString = "";
             String temp = attributeNamesList.item(i).getFirstChild().getNodeValue();
             // attribute Name is a required node; we want the associated
             // unit and dataType node values, which are NOT required
