@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: sambasiv $'
- *     '$Date: 2003-12-16 01:29:18 $'
- * '$Revision: 1.29 $'
+ *     '$Date: 2003-12-16 20:39:15 $'
+ * '$Revision: 1.30 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -123,6 +123,8 @@ public class CustomList extends JPanel {
   private Action customEditAction;
   private Action customDuplicateAction;
   private Action customDeleteAction;
+	
+	private double[] columnWidthPercentages;
   ////////////
 
   /**
@@ -225,7 +227,11 @@ public class CustomList extends JPanel {
     columnModel.removeColumn(columnModel.getColumn(table.getColumnCount() - 1));
 
     /////////////////////////////////
-
+		columnWidthPercentages = new double[table.getColumnCount()];
+		double equalP = 100.0/table.getColumnCount();
+		for(int i = 0; i < table.getColumnCount(); i++)
+			columnWidthPercentages[i] = equalP;
+		
     scrollPane = new JScrollPane(table);
     scrollPane.setVerticalScrollBarPolicy(
                             ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
@@ -342,14 +348,15 @@ public class CustomList extends JPanel {
 
   private void setColumnSizes(double tableWidth) {
 
-    final double  fraction  = 1d/((double)(table.getColumnCount()));
+    //final double  fraction  = 1d/((double)(table.getColumnCount()));
     final double  minFactor = 0.5;
     final double  maxFactor = 2;
-
+		
     for (int i = 0; i < table.getColumnCount(); i++) {
 
       TableColumn column = table.getColumnModel().getColumn(i);
-
+			double fraction = columnWidthPercentages[i]/100;
+			
       int preferredWidth = (int)(tableWidth*fraction) - 1;
       int headerWidth = getHeaderWidth(i, column);
       if (preferredWidth < headerWidth) preferredWidth = headerWidth;
@@ -359,38 +366,37 @@ public class CustomList extends JPanel {
       column.setMaxWidth((int)(preferredWidth*maxFactor));
     }
   }
-
-	public void setColumnWidthPercentages(double columnWidths[])
-	{
-		final double  minFactor = 0.5;
-    final double  maxFactor = 2;
+	
+	/**
+   *  Sets the relative widths of each column in the columnList. This is used when unequally sized
+	 *	columns are needed. Input is an array of doubles containing the percentage width of 
+	 *  each column. The length of the array must equal the number of columns in the customList and
+	 *	the sum of the percentages must equal 100.
+   *
+	 *	@param columnWidths the array of doubles representing the percentage widths of the columns
+   *
+   */
+	 
+	public void setColumnWidthPercentages(double columnWidths[]) 	{
 		int i;
 		int len = columnWidths.length;
+		
 		if(len != table.getColumnCount()) {
-			System.out.println("lengths not equals");
+			Log.debug(50, "CustomList.setColumnWidthPercentages: Length of array passed is not 
+								equal to the number of columns"); 
 			return;
 		}
-			
+		
 		double sum = 0;
 		for(i = 0; i< len; i++)  
 			sum += columnWidths[i];
 		
 		// total percentage must sum to 100 %.
 		if(sum != 100.0) {
-			System.out.println("Sum not equal to 100%");
+			Log.debug(50, "CustomList.setColumnWidthPercentages: Sum of the column width percentages is not equal to 100%");
 			return;
 		}
-		
-		double totalWidth = scrollPane.getViewport().getSize().getWidth();
-		for(i=0; i < len; i++)
-		{
-			TableColumn column = table.getColumnModel().getColumn(i);
-			int width = (int) (((double)columnWidths[i] / 100.0) * totalWidth);
-			System.out.println("Setting width of column " + i + " = " + width +" , totalwidth =" + totalWidth);
-			column.setPreferredWidth(width);
-			column.setMinWidth((int)width);
-      column.setMaxWidth((int)width);
-		}
+		this.columnWidthPercentages = columnWidths;
 	}
 
   private int getHeaderWidth(int colNumber, TableColumn column) {
