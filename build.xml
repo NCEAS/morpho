@@ -6,7 +6,7 @@
   *    Copyright: 2000 Regents of the University of California and the
   *               National Center for Ecological Analysis and Synthesis
   *  For Details: http://www.nceas.ucsb.edu/
-  *    File Info: '$Id: build.xml,v 1.102 2004-04-29 20:06:26 higgins Exp $'
+  *    File Info: '$Id: build.xml,v 1.103 2005-05-09 23:03:28 sgarg Exp $'
   *
   *  Build file for the Ant cross-platform build system for metacat
   *  See http://jakarta.apache.org for details on Ant
@@ -87,6 +87,8 @@
                 value="${libdir}/sym.jar" />
       <property name="dtd"
                 value="${libdir}/dtdparser111.jar" />
+      <property name="dom"
+                value="${libdir}/dom4j.jar" />
       <property name="morpho"
                 value="${libdir}/${name}.jar" />
       <property name="jlf"
@@ -116,7 +118,7 @@
       <property name="index"
                 value="${libdir}/jhindexer.jar"/>
       <property name="cpath"
-                value="lib/jsse.jar:lib/jcert.jar:lib/jnet.jar:${xerces}:${apis}:${kunststoff}:${xalan}:${xml4j}:${build.dest}:${sym}:${dtd}:${jlf}:${itisjar}:${httpclient}:${lmap}:${morpho-config}:${jhelp}:${utilities}"/>
+	      value="lib/jsse.jar:lib/jcert.jar:lib/jnet.jar:${xerces}:${apis}:${kunststoff}:${xalan}:${xml4j}:${build.dest}:${sym}:${dtd}:${dom}:${jlf}:${itisjar}:${httpclient}:${lmap}:${morpho-config}:${jhelp}:${utilities}"/>
       <property name="package.home" value="edu/ucsb/nceas" />
 
    </target>
@@ -303,7 +305,7 @@
       </copy>
       -->
       <jar jarfile="${build.dir}/${name}.jar" basedir="${build.dest}"
-           includes="${package.home}/${name}/** com/**" />
+	      includes="${package.home}/${name}/** com/** edu/tesc/**" />
       <jar jarfile="${build.dir}/${name}-config.jar" basedir="${libdir}"
            excludes="*.jar,HTTPClient/**,SchemaParser/**,LiveMap/**,*.zip,*.gz"/>
    </target>
