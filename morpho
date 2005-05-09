@@ -3,9 +3,9 @@
 # Shell script for launching morpho from unix systems
 #
 # '$RCSfile: morpho,v $'
-# '$Author: brooke $'
-# '$Date: 2003-09-24 05:07:42 $'
-# '$Revision: 1.27 $'
+# '$Author: sgarg $'
+# '$Date: 2005-05-09 23:06:34 $'
+# '$Revision: 1.28 $'
 
 if ! ls $JAVA_HOME/bin/ | grep -q java; then
  echo ----------------------------------------------------------------------
@@ -40,8 +40,9 @@ JNE=./lib/jnet.jar
 LAF=./lib/kunststoff.jar 
 LMP=./lib/liveMap.jar 
 UTL=./lib/utilities.jar
+DOM=./lib/dom4j.jar
 
-CPATH=.:$JAVA_HOME/jre/lib/rt.jar:$LMP:$XMLP:$API:$XALAN:$DMC:$CFG:$JLF:$HTP:$ITS:$JSE:$JCE:$JNE:$LAF:$UTL:$JHELP:$HELP
+CPATH=.:$JAVA_HOME/jre/lib/rt.jar:$LMP:$XMLP:$API:$XALAN:$DMC:$CFG:$JLF:$HTP:$ITS:$JSE:$JCE:$JNE:$LAF:$UTL:$DOM:$JHELP:$HELP
 echo "----------------------------------"
 
 $JAVA_HOME/bin/java -version
