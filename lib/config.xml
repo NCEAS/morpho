@@ -9,6 +9,7 @@
   <plugin>edu.ucsb.nceas.morpho.plugins.xsltresolver.XSLTResolverPlugin</plugin>
   <plugin>edu.ucsb.nceas.morpho.plugins.datapackagewizard.DataPackageWizardPlugin</plugin>
   <plugin>edu.ucsb.nceas.morpho.plugins.printer.PrinterPlugin</plugin>
+  <plugin>edu.tesc.scidb.morpho.plugins.ImportMSAccessPlugin</plugin>
   <metacat_url>http://metacat.nceas.ucsb.edu/knb/servlet/metacat</metacat_url>
   <profile_directory>profiles</profile_directory>
   <samples_directory>./lib/sampledata</samples_directory>
@@ -34,6 +35,7 @@
   <returndoc>-//NCEAS//eml-dataset-2.0//EN</returndoc>
   <returndoc>-//NCEAS//resource//EN</returndoc>
   <returndoc>eml://ecoinformatics.org/eml-2.0.0</returndoc> 
+  <returndoc>eml://ecoinformatics.org/eml-2.0.1</returndoc>
   <returnfield>dataset/title</returnfield>
   <returnfield>individualName/surName</returnfield>
   <returnfield>keyword</returnfield> 
