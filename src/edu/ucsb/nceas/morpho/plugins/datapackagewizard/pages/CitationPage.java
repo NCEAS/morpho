@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: sgarg $'
- *     '$Date: 2004-12-14 22:29:15 $'
- * '$Revision: 1.22 $'
+ *     '$Date: 2005-05-09 22:08:40 $'
+ * '$Revision: 1.23 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -220,7 +220,6 @@ public class CitationPage extends AbstractUIPage {
       public void actionPerformed(ActionEvent e) {
 
         Log.debug(45, "got radiobutton command: "+e.getActionCommand());
-
         //undo any hilites:
 
         if (e.getActionCommand().equals(typeElemNames[0])) {
@@ -271,6 +270,7 @@ public class CitationPage extends AbstractUIPage {
     articlePanel  = getArticlePanel();
     reportPanel = getReportPanel();
 
+    this.setCitationType("");
     refreshUI();
   }
 
@@ -470,7 +470,6 @@ public class CitationPage extends AbstractUIPage {
   }
 
   private void setCitationType(String type) {
-
     this.citationType = type;
   }
 
@@ -678,6 +677,7 @@ public class CitationPage extends AbstractUIPage {
       WidgetFactory.hiliteComponent(citationTypeLabel);
       return false;
     }
+
     WidgetFactory.unhiliteComponent(citationTypeLabel);
 
     return ((WizardPageSubPanelAPI)currentPanel).validateUserInput();
@@ -1343,7 +1343,7 @@ class ReportPanel extends JPanel  implements WizardPageSubPanelAPI{
 
     // Publisher (Organization)
     JPanel publisherPanel = WidgetFactory.makePanel(1);
-    publisherLabel = WidgetFactory.makeLabel("Publisher:", false);
+    publisherLabel = WidgetFactory.makeLabel("Publisher:", true);
     publisherPanel.add(publisherLabel);
     publisherField = WidgetFactory.makeOneLineTextField();
     publisherPanel.add(publisherField);
@@ -1355,7 +1355,7 @@ class ReportPanel extends JPanel  implements WizardPageSubPanelAPI{
 
     // Report Number
     JPanel numberPanel = WidgetFactory.makePanel(1);
-    numberLabel = WidgetFactory.makeLabel("Report Number:", false);
+    numberLabel = WidgetFactory.makeLabel("Report Number:", true);
     numberPanel.add(numberLabel);
     numberField = WidgetFactory.makeOneLineTextField();
     numberPanel.add(numberField);
@@ -1386,6 +1386,24 @@ class ReportPanel extends JPanel  implements WizardPageSubPanelAPI{
    */
 
   public boolean validateUserInput() {
+    String text = publisherField.getText();
+    String numText = numberField.getText();
+
+    if(text.trim().equals("")) {
+      WidgetFactory.hiliteComponent(publisherLabel);
+      publisherField.requestFocus();
+      return false;
+    } else {
+      WidgetFactory.unhiliteComponent(publisherLabel);
+    }
+
+    if(numText.trim().equals("")) {
+      WidgetFactory.hiliteComponent(numberLabel);
+      numberField.requestFocus();
+      return false;
+    } else {
+      WidgetFactory.unhiliteComponent(numberLabel);
+    }
 
     return true;
   }
