@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: berkley $'
- *     '$Date: 2004-04-08 17:02:09 $'
- * '$Revision: 1.23 $'
+ *   '$Author: sgarg $'
+ *     '$Date: 2005-05-18 22:32:46 $'
+ * '$Revision: 1.24 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -94,12 +94,7 @@ public class Summary extends AbstractUIPage {
     if(desc2!=null && WizardSettings.getSummaryText()!=null)
       this.add(desc2);
 
-    JLabel desc3 = WidgetFactory.makeHTMLLabel(
-        "<p>You can press the \"" + WizardSettings.FINISH_BUTTON_TEXT
-        + "\" button, "
-        + "or you can use the \"" + WizardSettings.PREV_BUTTON_TEXT
-        + "\" button to return to previous pages "
-        + "and change the information you have added.</p>", 2);
+    JLabel desc3 = WidgetFactory.makeHTMLLabel(getSecondParagraph(), 2);
     this.add(desc3);
 
     desc4 = WidgetFactory.makeHTMLLabel("", 2);
@@ -114,6 +109,29 @@ public class Summary extends AbstractUIPage {
 
     this.add(Box.createVerticalGlue());
   }
+
+  private String getSecondParagraph(){
+    String ID = mainWizFrame.getFirstPageID();
+
+    if (ID==null) return "";
+
+    if (ID.equals(DataPackageWizardInterface.INTRODUCTION)) {
+
+      return "<p>You can press the \"" + WizardSettings.FINISH_BUTTON_TEXT
+        + "\" button, "
+        + "or you can use the \"" + WizardSettings.PREV_BUTTON_TEXT
+        + "\" button to return to previous pages "
+        + "and change the information you have added.</p>";
+
+    } else if (ID.equals(DataPackageWizardInterface.DATA_LOCATION)) {
+
+      return "<p>You can press the \"" + WizardSettings.FINISH_BUTTON_TEXT
+        + "\" button to add the data table to your package.</p>";
+
+    }
+    return "";
+  }
+
 
   private String getLastParagraph() {
 
@@ -168,6 +186,13 @@ public class Summary extends AbstractUIPage {
                   +getLastParagraph()+WizardSettings.HTML_TABLE_LABEL_CLOSING);
 
     updateShowMeButton();
+
+    String ID = mainWizFrame.getFirstPageID();
+
+    if (ID==null) return;
+    if (ID.equals(DataPackageWizardInterface.DATA_LOCATION)) {
+      mainWizFrame.setButtonsStatus(false, false, true);
+    }
 
   }
 
