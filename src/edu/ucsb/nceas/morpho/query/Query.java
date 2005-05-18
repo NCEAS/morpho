@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: tao $'
- *     '$Date: 2004-04-19 20:44:50 $'
- * '$Revision: 1.23 $'
+ *   '$Author: sgarg $'
+ *     '$Date: 2005-05-18 22:21:33 $'
+ * '$Revision: 1.24 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -433,6 +433,18 @@ public class Query extends DefaultHandler {
     String currentTag = currentNode.getTagName();
     if (currentTag.equals("meta_file_id")) {
       meta_file_id = inputString;
+    } else if (currentTag.equals("local_search")) {
+      if(inputString.equals("true")){
+        this.searchLocal = true;
+      } else {
+        this.searchLocal = false;
+      }
+    } else if (currentTag.equals("network_search")) {
+      if(inputString.equals("true")){
+        this.searchMetacat = true;
+      } else {
+        this.searchMetacat = false;
+      }
     } else if (currentTag.equals("querytitle")) {
       queryTitle = inputString;
     } else if (currentTag.equals("value")) {
@@ -540,6 +552,12 @@ public class Query extends DefaultHandler {
     if (meta_file_id != null) {
       self.append("  <meta_file_id>"+meta_file_id+"</meta_file_id>\n");
     }
+
+    // Local Search
+    self.append("  <local_search>"+this.searchLocal+"</local_search>\n");
+
+    // Metacat Search
+    self.append("  <network_search>"+this.searchMetacat+"</network_search>\n");
 
     // The query title
     if (queryTitle != null) {
