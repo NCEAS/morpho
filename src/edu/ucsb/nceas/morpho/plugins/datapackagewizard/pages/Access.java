@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: sgarg $'
- *     '$Date: 2004-12-16 02:45:29 $'
- * '$Revision: 1.36 $'
+ *     '$Date: 2005-05-20 17:38:02 $'
+ * '$Revision: 1.37 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -74,7 +74,7 @@ public class Access
   private boolean publicReadAccess = true;
   private final String[] buttonsText = new String[] {
       "Yes, give read-only access to public.",
-      "No, don't give read-only access to public."
+      "No."
   };
 
   private final String ALLOW_REL_XPATH = "allow[";
@@ -109,8 +109,8 @@ public class Access
     vBox.add(WidgetFactory.makeDefaultSpacer());
 
     JLabel desc = WidgetFactory.makeHTMLLabel(
-        "<p><b>Would you like to allow the public to read your dataset?</b>"
-        + "</p>", 3);
+        "<p><b>Would you like the allow the public to read your data package?"
+        + "</b></p>", 3);
 
     vBox.add(desc);
 
@@ -321,13 +321,16 @@ public class Access
           "public");
       returnMap.put(rootXPath + "allow[" + (allowIndex++) + "]/permission",
           "read");
-    } else {
-      returnMap.put(rootXPath + AUTHSYSTEM_REL_XPATH, AUTHSYSTEM_VALUE);
-      returnMap.put(rootXPath + ORDER_REL_XPATH, ORDER_VALUE);
-      returnMap.put(rootXPath + "deny[" + (denyIndex) + "]/principal",
-          "public");
-      returnMap.put(rootXPath + "deny[" + (denyIndex++) + "]/permission",
-          "read");
+   // } else {
+      // REMOVE THIS ///////////////////////
+   //   returnMap.put(rootXPath + AUTHSYSTEM_REL_XPATH, AUTHSYSTEM_VALUE);
+   //   returnMap.put(rootXPath + ORDER_REL_XPATH, ORDER_VALUE);
+   //   returnMap.put(rootXPath + "deny[" + (denyIndex) + "]/principal",
+   //       "public");
+   //   returnMap.put(rootXPath + "deny[" + (denyIndex++) + "]/permission",
+   //       "read");
+
+      ///////////////////////////////
     }
 
     List rowLists = accessList.getListOfRowLists();
@@ -432,7 +435,20 @@ public class Access
     }
 
     if (map == null || map.isEmpty()) {
+
+      // remove all access rules
       this.resetBlankData();
+
+      // set public read access to no
+      JPanel innerPanel = ( (JPanel) (radioPanel.getComponent(1)));
+      JRadioButton allowReadAccess = ( (JRadioButton)
+          (innerPanel.getComponent(0)));
+      JRadioButton denyReadAccess = ( (JRadioButton)
+          (innerPanel.getComponent(1)));
+      allowReadAccess.setSelected(false);
+      denyReadAccess.setSelected(true);
+      publicReadAccess = false;
+
       return true;
     }
 
@@ -488,7 +504,7 @@ public class Access
         toDeleteList.add(nextXPathObj);
 
       } else if (nextXPath.startsWith("@scope")) {
-         
+
         //get rid of scope attribute, if it exists
         toDeleteList.add(nextXPathObj);
       }
@@ -635,6 +651,15 @@ public class Access
             + publicMap);
       }
 
+    } else {
+      JPanel innerPanel = ( (JPanel) (radioPanel.getComponent(1)));
+      JRadioButton allowReadAccess = ( (JRadioButton) (innerPanel.
+          getComponent(0)));
+      JRadioButton denyReadAccess = ( (JRadioButton) (innerPanel.
+          getComponent(1)));
+        allowReadAccess.setSelected(false);
+        denyReadAccess.setSelected(true);
+        publicReadAccess = false;
     }
 
     return (returnVal && accessAllowRetVal && accessDenyRetVal);
