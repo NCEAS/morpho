@@ -407,7 +407,29 @@ public class WidgetFactory {
                         at the bottom
   */
 
-  public static JDialog makeContainerDialog(JPanel centerPanel, ActionListener okListener, ActionListener cancelListener, String okCaption, String cancelCaption)
+  public static JDialog makeContainerDialog(JPanel centerPanel, ActionListener okListener, ActionListener cancelListener, String okCaption, String cancelCaption){
+
+    return makeContainerDialog(centerPanel, okListener, cancelListener, "OK", "Cancel", true, true);
+  }
+
+  /**
+    Function that creates a container dialog for a given panel. The container provides
+    the 'OK' and 'Cancel' buttons at the bottom of the container . The listeners for the
+    'OK' and 'Cancel' button are provided as parameters. The labels for the buttons are
+    also provided.
+
+    @param centerPanel - the JPanel that is to displayed in this dialog
+    @param okListener  - the ActionListener for the 'OK' button
+    @param cancelListener  - the ActionListener for the 'Cancel' button
+    @param okCaption  - the label for the 'OK' button
+    @param cancelCaption  - the label for the 'Cancel' button
+    @param enableOk  - enable the 'OK' button
+    @param enableCancel  - enable the 'Cancel' button
+    @return JDialog 	- returns a JDialog that contains the centerPanel and a button panel
+                        at the bottom
+  */
+
+  public static JDialog makeContainerDialog(JPanel centerPanel, ActionListener okListener, ActionListener cancelListener, String okCaption, String cancelCaption, boolean enableOk, boolean enableCancel)
   {
 
     JDialog dialog = new JDialog(WizardContainerFrame.getDialogParent());
@@ -430,11 +452,13 @@ public class WidgetFactory {
     okButton.addActionListener(okListener);
     okButton.setForeground(WizardSettings.BUTTON_TEXT_COLOR);
     okButton.setFont(WizardSettings.BUTTON_FONT);
+    okButton.setEnabled(enableOk);
 
     JButton cancelButton = new JButton(cancelCaption);
     cancelButton.addActionListener(cancelListener);
     cancelButton.setForeground(WizardSettings.BUTTON_TEXT_COLOR);
     cancelButton.setFont(WizardSettings.BUTTON_FONT);
+    cancelButton.setEnabled(enableCancel);
 
     buttonsPanel.add(okButton);
     buttonsPanel.add(Box.createHorizontalStrut(WizardSettings.PADDING));
@@ -445,7 +469,7 @@ public class WidgetFactory {
     return dialog;
   }
 
- 
+
   public static JDialog makeContainerDialogNoParent(JPanel centerPanel, ActionListener okListener, ActionListener cancelListener) {
 
     return makeContainerDialogNoParent(centerPanel, okListener, cancelListener, "OK", "Cancel");
@@ -457,7 +481,7 @@ public class WidgetFactory {
     the 'OK' and 'Cancel' buttons at the bottom of the container . The listeners for the
     'OK' and 'Cancel' button are provided as parameters. The labels for the buttons are
     also provided.
-    
+
     This 'NoParent' version creates a dialog with no parent
     Added so that custom unit will not have window ordering problem
     (Dan Higgins - 4/14/2004)
@@ -510,6 +534,6 @@ public class WidgetFactory {
     return dialog;
   }
 
-  
+
 }
 
