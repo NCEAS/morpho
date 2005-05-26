@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: sgarg $'
- *     '$Date: 2005-05-20 17:38:02 $'
- * '$Revision: 1.37 $'
+ *     '$Date: 2005-05-26 18:31:12 $'
+ * '$Revision: 1.38 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -621,7 +621,7 @@ public class Access
         }
         nextXPath = (String) nextXPathObj;
 
-        nextValObj = map.get(nextXPathObj);
+        nextValObj = publicMap.get(nextXPathObj);
         nextVal = (nextValObj == null) ? "" : ( (String) nextValObj).trim();
 
         if (nextVal.compareTo("read") == 0) {
