@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: sgarg $'
- *     '$Date: 2004-12-14 22:29:15 $'
- * '$Revision: 1.25 $'
+ *     '$Date: 2005-05-26 18:48:21 $'
+ * '$Revision: 1.26 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -93,11 +93,11 @@ public class Introduction extends AbstractUIPage {
     +"<li><b>Title and abstract</b><br></br></li>"
     +"<li><b>Keywords</b><br></br></li>"
     +"<li><b>People and Organizations</b><br></br></li>"
-    +"<li><b>Data Usage Rights</b><br></br></li>"
-    +"<li><b>Project Information</b><br></br></li>"
+    +"<li><b>Usage Rights</b><br></br></li>"
+    +"<li><b>Research Project Information</b><br></br></li>"
     +"<li><b>Coverage Details</b><br></br></li>"
-    +"<li><b>Methods</b><br></br></li>"
-    +"<li><b>Access Control</b></li></ul>"
+    +"<li><b>Methods and Sampling</b><br></br></li>"
+    +"<li><b>Access Information</b></li></ul>"
     +"<p><b>Note:</b> Required information includes the title and personnel "
     +"information for your dataset.  The rest of the information collected here "
     +"is optional, however it is highly recommended that you fill in as much as "
