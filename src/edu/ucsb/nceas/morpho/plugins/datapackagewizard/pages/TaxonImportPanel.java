@@ -7,9 +7,9 @@
 *    Authors: Perumal Sambasivam
 *    Release: @release@
 *
-*   '$Author: sambasiv $'
-*     '$Date: 2004-04-29 22:24:31 $'
-* '$Revision: 1.8 $'
+*   '$Author: sgarg $'
+*     '$Date: 2005-05-26 20:12:34 $'
+* '$Revision: 1.9 $'
 *
 * This program is free software; you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -103,8 +103,8 @@ public class TaxonImportPanel extends JPanel implements WizardPageSubPanelAPI
   private String[] importChoiceText = {"Import all values", "Import only the values used in the dataset"};
 
   private int selectedImportChoice = 0;
-	private boolean displayTable = true; 
-	
+	public boolean displayTable = true;
+
   TaxonImportPanel() {
 
     super();
@@ -129,14 +129,14 @@ public class TaxonImportPanel extends JPanel implements WizardPageSubPanelAPI
     ///////////////////
 		// height of the labels on the left side
 		int ht = 100;
-		
+
     table = getCustomTable();
     if(table == null || table.getColumnCount() == 0) {
-     
+
 		 Log.debug(45, "CustomTable is empty, hence not displaying it");
 		 displayTable = false;
 		} else {
-     
+
 		 table.addPopupListener(new PopupHandler());
 		}
     JPanel tablePanel = new JPanel();
@@ -148,7 +148,7 @@ public class TaxonImportPanel extends JPanel implements WizardPageSubPanelAPI
 		}
 		JPanel sideLabelPanel = new JPanel(new BorderLayout());
 		sideLabelPanel.add(tablePanel, BorderLayout.CENTER);
-		
+
 		JPanel subLabelPanel = new JPanel();
 		subLabelPanel.setLayout(new BoxLayout(subLabelPanel, BoxLayout.Y_AXIS));
 		subLabelPanel.add(getLabel(""));
@@ -159,14 +159,14 @@ public class TaxonImportPanel extends JPanel implements WizardPageSubPanelAPI
 		subLabelPanel.setMaximumSize(new Dimension(LABEL_WIDTH, ht));
 		subLabelPanel.setMinimumSize(new Dimension(LABEL_WIDTH, ht));
 		subLabelPanel.setPreferredSize(new Dimension(LABEL_WIDTH, ht));
-		
+
 		JPanel sidePanel = new JPanel(new BorderLayout());
 		sidePanel.add(subLabelPanel, BorderLayout.NORTH);
 		sidePanel.add(new JLabel(""), BorderLayout.CENTER);
 		sidePanel.add(Box.createVerticalGlue(), BorderLayout.SOUTH);
-		
+
 		sideLabelPanel.add(sidePanel, BorderLayout.WEST);
-		
+
 		JPanel emptyPanel = new JPanel(new BorderLayout());
 		JLabel emptyHeaderLabel = WidgetFactory.makeHTMLLabel("<b>No columns to import</b>", 1, false);
 		JLabel emptyExplLabel = WidgetFactory.makeHTMLLabel("You can import only columns of type <i>Text</i> or <i>Enumerated</i>, i.e. they should be either Nominal or Ordinal", 2, false);
@@ -175,7 +175,7 @@ public class TaxonImportPanel extends JPanel implements WizardPageSubPanelAPI
 		topEmptyPanel.add(emptyHeaderLabel);
 		topEmptyPanel.add(emptyExplLabel);
 		emptyPanel.add(topEmptyPanel, BorderLayout.NORTH);
-		
+
 		if(displayTable) add(sideLabelPanel);
 		else add(emptyPanel);
     add(WidgetFactory.makeDefaultSpacer());
@@ -200,7 +200,7 @@ public class TaxonImportPanel extends JPanel implements WizardPageSubPanelAPI
     };
 
     radioPanel = WidgetFactory.makeRadioPanel(importChoiceText, 0, listener);
-		
+
 		if(displayTable) {
 			add(radioPanel);
 		}
@@ -210,7 +210,7 @@ public class TaxonImportPanel extends JPanel implements WizardPageSubPanelAPI
 
     return;
   }
-	
+
 	private JLabel getLabel(String text) {
 
     if (text==null) text="";
@@ -223,20 +223,20 @@ public class TaxonImportPanel extends JPanel implements WizardPageSubPanelAPI
 		label.setMinimumSize(new Dimension(LABEL_WIDTH, LABEL_HEIGHT));
 		label.setPreferredSize(new Dimension(LABEL_WIDTH, LABEL_HEIGHT));
 		//label.setBorder(BorderFactory.createMatteBorder(1, 0, 0, 0, WizardSettings.TOP_PANEL_BG_COLOR));
-		
+
     return label;
   }
 
   public List getListOfImportedTaxa() {
-		
+
 		List result = new ArrayList();
-		
+
 		if(!displayTable) {
 			return result;
 		}
-		
+
     int[] cols = table.getSelectedColumns();
-    
+
 
     int ecnt = adp.getEntityCount();
     File entityFiles[] = new File[ecnt];
@@ -253,9 +253,9 @@ public class TaxonImportPanel extends JPanel implements WizardPageSubPanelAPI
       if(header.size() == 4)
         taxonClass = (String)header.get(3);
       List colData = table.getColumnData(cols[i]);
-			
+
       if(isText(header) || selectedImportChoice == 0) { // import all value
-				
+
 				colData = removeRedundantData(colData);
         Iterator it = colData.iterator();
         while(it.hasNext()) {
@@ -356,7 +356,7 @@ public class TaxonImportPanel extends JPanel implements WizardPageSubPanelAPI
     if(type.indexOf("Text") > -1) return true;
     return false;
   }
-	
+
   private CustomTable getCustomTable() {
 
     if(adp == null)
@@ -418,7 +418,7 @@ public class TaxonImportPanel extends JPanel implements WizardPageSubPanelAPI
 				char measScale[]  = new char[colsToExtract.size()];
 				Vector enumCols = new Vector();
 				Vector textCols = new Vector();
-				
+
 				for(int k = 0; k < colsToExtract.size(); k++) {
 					int col = ((Integer)colsToExtract.get(k)).intValue();
 					maps[k] = XMLUtilities.getDOMTreeAsXPathMap(attributes[col]);
@@ -430,7 +430,7 @@ public class TaxonImportPanel extends JPanel implements WizardPageSubPanelAPI
 						enumCols.add(new Integer(col));
 					}
 				}
-				
+
         List data = getCodeDefinitionsFromAttributes(maps, measScale, enumCols);
         if(data.size() > 0) {
           addColumnsToRowData(rowData, data);
@@ -445,10 +445,10 @@ public class TaxonImportPanel extends JPanel implements WizardPageSubPanelAPI
 						typeNames.add("[ Definition ]");
 					}
 				}
-				
+
 				List textData = getTextValuesFromAttributes(i, textCols);
 				if(textData.size() > 0) {
-					
+
 					addColumnsToRowData(rowData, textData);
 					Iterator it = textCols.iterator();
 					while(it.hasNext()) {
@@ -469,7 +469,7 @@ public class TaxonImportPanel extends JPanel implements WizardPageSubPanelAPI
   }
 
 	List getTextValuesFromAttributes(int entityIndex, Vector textCols) {
-		
+
 		Morpho morpho = resultPane.getFramework();
 		File entityFile = CodeDefnPanel.getEntityFile(morpho, adp, entityIndex);
 		String numHeaders = adp.getPhysicalNumberHeaderLines(entityIndex, 0);
@@ -479,28 +479,28 @@ public class TaxonImportPanel extends JPanel implements WizardPageSubPanelAPI
 				numHeaderLines = Integer.parseInt(numHeaders);
 			}
 		} catch(Exception e) {}
-		
+
 		String field_delimiter = adp.getPhysicalFieldDelimiter(entityIndex, 0);
 		String delimiter = getDelimiterString(field_delimiter);
 		boolean ignoreConsecutiveDelimiters = adp.ignoreConsecutiveDelimiters(entityIndex, 0);
 		List rowData = CodeDefnPanel.getColumnValues(entityFile, textCols, numHeaderLines, delimiter, ignoreConsecutiveDelimiters, -1);
 		return rowData;
 	}
-	
+
 	private List getCodeDefinitionsFromAttributes(OrderedMap[] maps, char[] measScale, Vector cols) {
-		
+
     List res = new ArrayList();
 		int cnt = 1;
 		while(true) {
-			
+
 			List row = new ArrayList();
 			boolean dataPresent = false;
 			for(int i =0; i < maps.length; i++) {
-				
+
 				if(!cols.contains(new Integer(i))) continue;
 				if(maps[i] == null) continue;
 				Object o = null;
-				
+
 				if(measScale[i] == 'N') {
 					o = maps[i].get(nominal_xPath + "/enumeratedDomain[1]/codeDefinition["+ cnt + "]/code[1]");
 				} else if(measScale[i] == 'O'){
@@ -519,7 +519,7 @@ public class TaxonImportPanel extends JPanel implements WizardPageSubPanelAPI
 					row.add(defn);
 					dataPresent = true;
 				}
-				
+
 			}
       if(!dataPresent)
         break;
@@ -532,7 +532,7 @@ public class TaxonImportPanel extends JPanel implements WizardPageSubPanelAPI
 
 
   public static void addColumnsToRowData(Vector rowData, List data) {
-		
+
 		if(data.size() == 0)
       return;
     if(rowData.size() == 0) {
@@ -544,30 +544,30 @@ public class TaxonImportPanel extends JPanel implements WizardPageSubPanelAPI
     int dcnt = data.size();
     int cols = ((Vector)rowData.get(0)).size();
     int dcols = ((List)data.get(0)).size();
-		
+
 		for(int i=0;i<cnt; i++) {
 
       Vector row = (Vector)rowData.get(i);
       if(i < dcnt) {
         row.addAll((List)data.get(i));
-				
+
       } else {
         for(int j = 0;j<dcols;j++)
           row.add("");
-				
+
       }
-			
+
     }
     if( cnt < dcnt) {
       for(int l = cnt; l < dcnt; l++) {
         Vector newRow = new Vector();
         for(int k = 0; k < cols; k++) {
           newRow.add("");
-					
+
 				}
         newRow.addAll((List)data.get(l));
         rowData.add(newRow);
-				
+
       }
     }
 
@@ -581,7 +581,7 @@ public class TaxonImportPanel extends JPanel implements WizardPageSubPanelAPI
 		if(o1 != null) return 'n';
 		boolean b1 = map.containsKey(xPath + "/measurementScale[1]/nominal[1]/nonNumericDomain[1]/enumeratedDomain[1]/entityCodeList[1]/entityReference[1]");
     if(b1) return 'R';
-		
+
 		o1 = map.get(xPath + "/measurementScale[1]/ordinal[1]/nonNumericDomain[1]/enumeratedDomain[1]/codeDefinition[1]/code[1]");
     if(o1 != null) return 'O';
 		o1 = map.get(xPath + "/measurementScale[1]/ordinal[1]/nonNumericDomain[1]/textDomain[1]/definition[1]");

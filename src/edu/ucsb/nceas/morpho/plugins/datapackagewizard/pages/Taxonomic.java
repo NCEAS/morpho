@@ -7,9 +7,9 @@
 *    Authors: Saurabh Garg
 *    Release: @release@
 *
-*   '$Author: sambasiv $'
-*     '$Date: 2004-04-29 22:24:31 $'
-* '$Revision: 1.30 $'
+*   '$Author: sgarg $'
+*     '$Date: 2005-05-26 20:12:34 $'
+* '$Revision: 1.31 $'
 *
 * This program is free software; you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -105,6 +105,18 @@ public class Taxonomic extends AbstractUIPage {
     + "edit button.  Note that the field 'Higher Level Taxa' is dynamically "
     + "generated from your entries and is not manually editable.</p>";
 
+  private final String headingNoImportTable
+    = "<p><b>Enter information about the Taxonomic Coverage. </b>"
+    + "By default, you may enter information on Genus and Species.  If you "
+    + "would like to enter information at another classification rank or "
+    + "would like to change the default classification rank, click the "
+    + "edit button.  Note that the field 'Higher Level Taxa' is dynamically "
+    + "generated from your entries and is not manually editable.</p>"
+    + "<br><p>If your information about the taxonomic coverage is extensive "
+    + "(e.g., an extensive list of species), you can import this information "
+    + "in the form of a table. See the Frequently Asked Questions section of "
+    + "the Morpho User Guide to find out how to do this</p>";
+
   // column titles for the customlist in the main-page
   private String colNames[] = {"Higher Level Taxa", "Rank", "Name",
   "Rank", "Name", "Common Name(s)"};
@@ -156,7 +168,7 @@ public class Taxonomic extends AbstractUIPage {
 				return true;
 			}
     });
-		
+
 		colObjects[2].setInputVerifier(new InputVerifier() {
       public boolean verify(JComponent input) {
 				return Taxonomic.this.verifyTaxonName(Taxonomic.this, (JTextField)input, 2);
@@ -189,7 +201,7 @@ public class Taxonomic extends AbstractUIPage {
 				return true;
 			}
     });
-		
+
 		//colObjects[2].setInputVerifier(new TaxonNameVerifier(this, 2));
     //colObjects[3].setInputVerifier(new NewTaxonRankVerifier(this, 3));
     //colObjects[4].setInputVerifier(new TaxonNameVerifier(this, 4));
@@ -305,23 +317,35 @@ public class Taxonomic extends AbstractUIPage {
 
       }
     });
+
+    taxonImportPanel = new TaxonImportPanel();
+    boolean displayTable = taxonImportPanel.displayTable;
+    taxonImportPanel = null;
+
     JButton importButton = new HyperlinkButton(action);
     importButton.setPreferredSize(UISettings.INIT_SCR_LINKBUTTON_DIMS);
     importButton.setMinimumSize(UISettings.INIT_SCR_LINKBUTTON_DIMS);
     importButton.setMaximumSize(UISettings.INIT_SCR_LINKBUTTON_DIMS);
-    JLabel headLabel = WidgetFactory.makeHTMLLabel(heading, 3, false);
+    JLabel headLabel = null;
+    if(displayTable == false){
+      headLabel = WidgetFactory.makeHTMLLabel(headingNoImportTable, 6, false);
+    } else {
+      headLabel = WidgetFactory.makeHTMLLabel(heading, 3, false);
+    }
 
     Box headPanel = Box.createVerticalBox();
     headPanel.add(headLabel);
     headPanel.add(Box.createVerticalGlue());
 
-    JPanel importPanel = new JPanel(new BorderLayout());
-    importPanel.add(Box.createGlue(), BorderLayout.NORTH);
-    importPanel.add(importButton, BorderLayout.WEST);
-    importPanel.add(Box.createGlue(), BorderLayout.SOUTH);
+    if(displayTable){
+      JPanel importPanel = new JPanel(new BorderLayout());
+      importPanel.add(Box.createGlue(), BorderLayout.NORTH);
+      importPanel.add(importButton, BorderLayout.WEST);
+      importPanel.add(Box.createGlue(), BorderLayout.SOUTH);
 
-    headPanel.add(importPanel);
-    headPanel.add(Box.createVerticalGlue());
+      headPanel.add(importPanel);
+      headPanel.add(Box.createVerticalGlue());
+    }
 
     taxonPanel.setLayout(new BorderLayout());
     taxonPanel.add(taxonList, BorderLayout.CENTER);//, BorderLayout.CENTER);
@@ -381,7 +405,7 @@ public class Taxonomic extends AbstractUIPage {
       OrderedMap map = citationPage.getPageData("/classificationSystemCitation[1]");
       row.add(map);
       this.classList.addRow(row);
-			
+
     }
 		this.refreshCitationList();
   }
@@ -404,11 +428,11 @@ public class Taxonomic extends AbstractUIPage {
                                 UISettings.POPUPDIALOG_WIDTH,
                                 UISettings.POPUPDIALOG_HEIGHT);
     if (wpd.USER_RESPONSE == ModalDialog.OK_OPTION) {
-			
+
 			row = citationPage.getSurrogate();
       row.add(citationPage.getPageData("/classificationSystemCitation[1]"));
       this.classList.replaceSelectedRow(row);
-			
+
     }
 		this.refreshCitationList();
   }
@@ -622,14 +646,14 @@ public class Taxonomic extends AbstractUIPage {
     // create the first row when the page is loaded, if there are no rows already
     if(this.taxonList.getRowCount() == 0) TaxonListAddAction();
 		refreshCitationList();
-		
+
   }
-	
-	private void refreshCitationList() { 
-		
+
+	private void refreshCitationList() {
+
 		List rows = this.classList.getListOfRowLists();
 		for(int i = 0; i < rows.size(); i++) {
-			
+
 			List row = (List)rows.get(i);
 			if(row.size() < 4) continue;
 			OrderedMap map = (OrderedMap) row.get(3);
@@ -660,7 +684,7 @@ public class Taxonomic extends AbstractUIPage {
   *          (e.g. if a required field hasn't been filled in)
   */
   public boolean onAdvanceAction() {
-		
+
 		taxonList.fireEditingStopped();
 		taxonList.selectAndEditCell(0, 0);
     List rows = this.classList.getListOfRowLists();
@@ -754,12 +778,12 @@ public class Taxonomic extends AbstractUIPage {
     List data = this.taxonList.getListOfRowLists();
     int len = data.size();
 		List validHierarchies = new ArrayList();
-    
+
     for(int i = 0; i < len; i++) {
-			
+
 			List row = (List)data.get(i);
 			TaxonHierarchy th = (TaxonHierarchy)row.get(6);
-			
+
 			if(!th.isValidHierarchy()) {
 				continue;
 			}
@@ -771,7 +795,7 @@ public class Taxonomic extends AbstractUIPage {
 			if(rank2.trim().length() > 0) {
 				if(!this.isValidTaxonName(rank2)) continue;
 			}
-			
+
 			String name1 = (String)row.get(2);
 			if(name1.trim().length() > 0) {
 				if(!this.isValidTaxonName(name1)) continue;
@@ -785,15 +809,15 @@ public class Taxonomic extends AbstractUIPage {
 				if(!this.validateCommonNames(cn)) continue;
 			}
 			validHierarchies.add(th);
-			
+
     }
 		len = validHierarchies.size();
 		TaxonHierarchy[] hierarchies = new TaxonHierarchy[len];
 		for(int i = 0; i < len; i++)
 			hierarchies[i] = (TaxonHierarchy)validHierarchies.get(i);
-		
+
 		//hierarchies = (TaxonHierarchy[])validHierarchies.toArray(hierarchies);
-		
+
     Arrays.sort(hierarchies);
 
     String lastAddedPrefix = "";
@@ -941,7 +965,7 @@ public class Taxonomic extends AbstractUIPage {
    * @return boolean
    */
 	 // _xPathRoot *should* end in "taxonomicCoverage"
-	 
+
   public boolean setPageData(OrderedMap data, String _xPathRoot) {
 
     //this.taxonList.removeAllRows();
@@ -949,10 +973,10 @@ public class Taxonomic extends AbstractUIPage {
     boolean result = true;
 
     if (data==null || data.isEmpty()) return true;
-		
+
     data.remove(_xPathRoot + "/@scope");
     data.remove(_xPathRoot + "/@id");
-		
+
     try {
       DOMImplementation impl = DOMImplementationImpl.getDOMImplementation();
       Document doc = impl.createDocument("", "taxonomicCoverage", null);
@@ -1115,7 +1139,7 @@ public class Taxonomic extends AbstractUIPage {
       List list = panel.getSurrogate();
       list.add(hier);
       this.taxonList.addRow(list);
-			
+
     }
     return toReturn;
 
@@ -1204,7 +1228,7 @@ public class Taxonomic extends AbstractUIPage {
     validateTaxonCounter++;
     boolean error = false;
 
-    
+
     int rowIdx = Taxonomic.this.taxonList.getSelectedRowIndex();
 
     if(newText == null) {
@@ -1224,9 +1248,9 @@ public class Taxonomic extends AbstractUIPage {
     TaxonHierarchy hier = null;
     if(selRow.size() > 5)
       hier = (TaxonHierarchy)selRow.get(6);
-		
+
 		if(hier == null) return true;
-		
+
     int currcnt = hier.getLevelCount();
     if(pos == 1) {
 
@@ -1250,8 +1274,8 @@ public class Taxonomic extends AbstractUIPage {
       }
 
     } else if(pos == 3) {
-			
-			int parentLen = 0; 
+
+			int parentLen = 0;
 			String cn[]= parseCommonNames((String)selRow.get(0));
 			if(cn != null) parentLen = cn.length;
 			String prevRank = (String)selRow.get(1);
