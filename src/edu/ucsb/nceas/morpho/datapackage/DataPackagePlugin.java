@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: sgarg $'
- *     '$Date: 2005-01-27 23:27:26 $'
- * '$Revision: 1.96 $'
+ *     '$Date: 2005-05-26 18:43:30 $'
+ * '$Revision: 1.97 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -332,9 +332,9 @@ public class DataPackagePlugin
     controller.addGuiAction(addKeywordAction);
 
     i++;
-    GUIAction addCreatorAction = new GUIAction("Creator...",
+    GUIAction addCreatorAction = new GUIAction("Owners...",
         null, new AddCreatorCommand());
-    addCreatorAction.setToolTipText("Add, edit or delete Creators...");
+    addCreatorAction.setToolTipText("Add, edit or delete Owners...");
     addCreatorAction.setMenuItemPosition(i);
     addCreatorAction.setMenu(METADATA_MENU_LABEL, DOCUMENTATIONMENUPOSITION);
     addCreatorAction.setEnabledOnStateChange(
@@ -346,7 +346,7 @@ public class DataPackagePlugin
     controller.addGuiAction(addCreatorAction);
 
     i++;
-    GUIAction addContactAction = new GUIAction("Contact...",
+    GUIAction addContactAction = new GUIAction("Contacts...",
         null, new AddContactCommand());
     addContactAction.setToolTipText("Add, edit or delete Contacts...");
     addContactAction.setMenuItemPosition(i);
@@ -360,7 +360,7 @@ public class DataPackagePlugin
     controller.addGuiAction(addContactAction);
 
     i++;
-    GUIAction addAdditionalPartyAction = new GUIAction("Associated Party...",
+    GUIAction addAdditionalPartyAction = new GUIAction("Associated Parties...",
         null, new AddAdditionalPartyCommand());
     addAdditionalPartyAction.setToolTipText(
         "Add, edit or delete Associated Parties...");
@@ -464,7 +464,7 @@ public class DataPackagePlugin
 
     i++;
     GUIAction addAccessAction = new GUIAction(
-        "Access Permissions...",
+        "Access Information...",
         null, new AddAccessCommand());
     addAccessAction.setToolTipText("Add, edit or delete Access Permissions...");
     addAccessAction.setMenuItemPosition(i);
