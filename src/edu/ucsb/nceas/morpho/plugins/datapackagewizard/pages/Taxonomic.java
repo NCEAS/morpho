@@ -8,8 +8,8 @@
 *    Release: @release@
 *
 *   '$Author: sgarg $'
-*     '$Date: 2005-05-26 20:12:34 $'
-* '$Revision: 1.31 $'
+*     '$Date: 2005-05-26 21:51:47 $'
+* '$Revision: 1.32 $'
 *
 * This program is free software; you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -115,7 +115,7 @@ public class Taxonomic extends AbstractUIPage {
     + "<br><p>If your information about the taxonomic coverage is extensive "
     + "(e.g., an extensive list of species), you can import this information "
     + "in the form of a table. See the Frequently Asked Questions section of "
-    + "the Morpho User Guide to find out how to do this</p>";
+    + "the Morpho User Guide to find out how to do this.</p>";
 
   // column titles for the customlist in the main-page
   private String colNames[] = {"Higher Level Taxa", "Rank", "Name",
