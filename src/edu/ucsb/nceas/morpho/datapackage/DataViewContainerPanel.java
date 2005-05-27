@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: sgarg $'
- *     '$Date: 2005-01-21 02:03:18 $'
- * '$Revision: 1.105 $'
+ *     '$Date: 2005-05-27 19:58:41 $'
+ * '$Revision: 1.106 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -731,7 +731,8 @@ public class DataViewContainerPanel extends javax.swing.JPanel
     AbstractDataPackage tempAdp = null;
     Entity[] entArray = null;
     try{
-      tempAdp = DataPackageFactory.getDataPackage(adp.id, metacat, local);
+      tempAdp = DataPackageFactory.getDataPackage(adp.getAccessionNumber(),
+          metacat, local);
       entArray = tempAdp.getEntityArray();
     }catch(Exception e){
       Log.debug(20,"Unable to read the file in RevertCommand.java");
