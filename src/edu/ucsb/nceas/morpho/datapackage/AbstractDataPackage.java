@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: sgarg $'
- *     '$Date: 2005-01-26 23:23:36 $'
- * '$Revision: 1.106 $'
+ *     '$Date: 2005-05-27 16:47:29 $'
+ * '$Revision: 1.107 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -3208,7 +3208,11 @@ public abstract class AbstractDataPackage extends MetadataObject
       }
       // now copy dataFile
       try{
-        String fosname = path + "/" + origFileName;
+        String dataPath = path + "/" + urlinfo;
+        File saveDatadir = new File(dataPath);
+        saveDatadir.mkdirs(); //create the new directory
+
+        String fosname = dataPath + "/" + origFileName;
         FileInputStream fis = new FileInputStream(dataFile);
         FileOutputStream fos = new FileOutputStream(fosname);
         BufferedInputStream bis = new BufferedInputStream(fis);
