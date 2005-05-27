@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: sgarg $'
- *     '$Date: 2005-05-27 19:37:10 $'
- * '$Revision: 1.5 $'
+ *     '$Date: 2005-05-27 21:23:49 $'
+ * '$Revision: 1.6 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -116,9 +116,7 @@ public class RevertCommand implements Command
             }
           }
 
-          if (tempEntityIndex > -1 &&
-              tempAdp.getAttributeCountForAnEntity(tempEntityIndex) !=
-              adp.getAttributeCountForAnEntity(entityIndex)) {
+          if (tempEntityIndex > -1) {
               // column has been added or deleted
               adp.deleteEntity(entityIndex);
               adp.insertEntity(entArray[tempEntityIndex], entityIndex);
