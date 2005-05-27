@@ -5,9 +5,9 @@
  *    Authors: @tao@
  *    Release: @release@
  *
- *   '$Author: tao $'
- *     '$Date: 2004-04-19 20:44:50 $'
- * '$Revision: 1.17 $'
+ *   '$Author: sgarg $'
+ *     '$Date: 2005-05-27 15:51:28 $'
+ * '$Revision: 1.18 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -70,6 +70,7 @@ public class OpenDialogBoxCommand implements Command
   {
     // create ownerQuery depend on the suiation when it executed
     ownerQuery = new Query(getOwnerQuery(), morpho);
+    ownerQuery.setSearchLocal(true);
     // Get the current morphoFrame. Maybe change get open dialog parent
     MorphoFrame frame =
                     UIController.getInstance().getCurrentActiveWindow();

@@ -6,9 +6,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2005-02-22 23:21:51 $'
- * '$Revision: 1.34 $'
+ *   '$Author: sgarg $'
+ *     '$Date: 2005-05-27 15:51:28 $'
+ * '$Revision: 1.35 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -282,8 +282,8 @@ public class QueryDialog extends JDialog
     titlePanel.add(Box.createHorizontalGlue());
     JPanel searchChoicePanel = new JPanel();
     searchChoicePanel.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
-    catalogSearchCheckBox.setText("Catalog Search");
-    catalogSearchCheckBox.setActionCommand("Catalog Search");
+    catalogSearchCheckBox.setText("Network Search");
+    catalogSearchCheckBox.setActionCommand("Network Search");
     catalogSearchCheckBox.setSelected(searchMetacat);
     searchChoicePanel.add(catalogSearchCheckBox);
     localSearchCheckBox.setText("Local Search");
@@ -597,7 +597,7 @@ public class QueryDialog extends JDialog
     Object object = event.getItemSelectable();
 
     if (event.getStateChange() == ItemEvent.DESELECTED) {
-      String messageText = "You must select at least one of \"Catalog Search\"\n" +
+      String messageText = "You must select at least one of \"Network Search\"\n" +
                            "or \"Local Search\". You can not deselect both.\n";
       if (object == catalogSearchCheckBox &&
           localSearchCheckBox.isSelected() == false) {
