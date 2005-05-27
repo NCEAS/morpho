@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: sgarg $'
- *     '$Date: 2005-01-21 02:03:18 $'
- * '$Revision: 1.4 $'
+ *     '$Date: 2005-05-27 19:37:10 $'
+ * '$Revision: 1.5 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -94,21 +94,41 @@ public class RevertCommand implements Command
 
       AbstractDataPackage tempAdp = null;
       Entity[] entArray = null;
-      try{
-        tempAdp = DataPackageFactory.getDataPackage(adp.id, metacat, local);
-        entArray = tempAdp.getEntityArray();
-      }catch(Exception e){
-        Log.debug(20,"Unable to read the file in RevertCommand.java");
-      }
-
       DataViewer dv = dvcp.getCurrentDataViewer();
       int entityIndex = dv.getEntityIndex();
 
-      if(tempAdp!=null && tempAdp.getAttributeCountForAnEntity(entityIndex)!=
-          adp.getAttributeCountForAnEntity(entityIndex)){
-        // column has been added or deleted
-        adp.deleteEntity(entityIndex);
-        adp.insertEntity(entArray[entityIndex], entityIndex);
+      try {
+        tempAdp = DataPackageFactory.getDataPackage(adp.getAccessionNumber(),
+            metacat, local);
+      } catch(Exception e){
+        Log.debug(5,"Check if the datapackage was saved.");
+      }
+
+      try{
+        if(tempAdp!=null){
+          String entityId = adp.getEntityID(entityIndex);
+          int tempEntityIndex = -1;
+          entArray = tempAdp.getEntityArray();
+          for(int count=0; count < entArray.length; count++){
+            if (tempAdp.getEntityID(count).equals(entityId)) {
+              tempEntityIndex = count;
+              break;
+            }
+          }
+
+          if (tempEntityIndex > -1 &&
+              tempAdp.getAttributeCountForAnEntity(tempEntityIndex) !=
+              adp.getAttributeCountForAnEntity(entityIndex)) {
+              // column has been added or deleted
+              adp.deleteEntity(entityIndex);
+              adp.insertEntity(entArray[tempEntityIndex], entityIndex);
+          } else {
+            throw (new Exception());
+          }
+        }
+
+       }catch(Exception e){
+        Log.debug(5,"Unable to revert entity to saved version. Check if the entity was saved.");
       }
       dv.init();
     }

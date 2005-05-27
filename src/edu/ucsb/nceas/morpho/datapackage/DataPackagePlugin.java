@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: sgarg $'
- *     '$Date: 2005-05-26 18:43:30 $'
- * '$Revision: 1.97 $'
+ *     '$Date: 2005-05-27 19:37:10 $'
+ * '$Revision: 1.98 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -155,7 +155,8 @@ public class DataPackagePlugin
     controller.addGuiAction(saveAction);
 
 
-    GUIAction revertTab = new GUIAction("Revert Tab", null, new RevertCommand());
+    GUIAction revertTab = new GUIAction("Revert Entity to Saved Version",
+        null, new RevertCommand());
     revertTab.setToolTipText("Revert to original data shown in current tab");
     revertTab.setMenuItemPosition(0);
     revertTab.setMenu(EDIT_MENU_LABEL, EDITMENUPOSITION);
@@ -174,7 +175,8 @@ public class DataPackagePlugin
                    false, GUIAction.EVENT_LOCAL);
     controller.addGuiAction(revertTab);
 
-    GUIAction revertAll = new GUIAction("Revert All Tabs", null, new RevertAllCommand());
+    GUIAction revertAll = new GUIAction("Revert Entities to Saved Version",
+        null, new RevertAllCommand());
     revertAll.setToolTipText("Revert to original data shown in all tabs");
     revertAll.setMenuItemPosition(1);
     revertAll.setMenu(EDIT_MENU_LABEL, EDITMENUPOSITION);
