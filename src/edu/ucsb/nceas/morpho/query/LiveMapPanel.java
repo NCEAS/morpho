@@ -6,9 +6,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2004-04-19 23:33:09 $'
- * '$Revision: 1.8 $'
+ *   '$Author: sgarg $'
+ *     '$Date: 2005-06-09 17:35:16 $'
+ * '$Revision: 1.9 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,7 +23,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
- 
+
  *  The LiveMap software used here
  *  was developed by the Thermal Modeling and Analysis
  *  Project(TMAP) of the National Oceanographic and Atmospheric
@@ -58,7 +58,7 @@
  *  CONNECTION WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE.
  *
  */
-package edu.ucsb.nceas.morpho.query; 
+package edu.ucsb.nceas.morpho.query;
 
 import java.io.*;
 import java.util.StringTokenizer;
@@ -84,7 +84,7 @@ import java.awt.TextField;
 import java.awt.Button;
 import java.awt.Choice;
 import java.awt.Frame;
-import java.awt.Panel; 
+import java.awt.Panel;
 
 import javax.swing.*;
 
@@ -107,12 +107,12 @@ public class LiveMapPanel extends JPanel
   boolean toolFlag = false;
 
 	public LiveMapPanel()
-	{    
+	{
       super();
 	    init();
 
 	}
-  
+
   public LiveMapPanel(boolean flag) {
       super();
       toolFlag = flag;
@@ -123,7 +123,7 @@ public class LiveMapPanel extends JPanel
         map.selectTool(map.getSelected());
       }
 	}
-    
+
 
   final static int IMAGE_SIZE_X = 450;  // 450
   final static int IMAGE_SIZE_Y = 225;  // 225
@@ -155,7 +155,7 @@ public class LiveMapPanel extends JPanel
 
   JButton zoom_in;
   JButton zoom_out;
-  
+
   JRadioButton boxTool;
   JRadioButton ptTool;
 
@@ -163,10 +163,10 @@ public class LiveMapPanel extends JPanel
   int imgSizeX = IMAGE_SIZE_X;
   int imgSizeY = IMAGE_SIZE_Y;
   int tool_type=TOOL_TYPE_XY;
-  boolean need_to_center = false;    
+  boolean need_to_center = false;
 
- 
-  public void init() {     
+
+  public void init() {
 
     String img = "java_0_world_234k.jpg";
     String img_x_domain = "-180 180";
@@ -174,11 +174,11 @@ public class LiveMapPanel extends JPanel
     String toolType = "XY";
     String tool_x_range = "-180 180";
     String tool_y_range = "-90 90";
-    
+
     if (img_0==null) {
       img_0 = getToolkit().getImage(
               getClass().getResource("java_0_world_234k.jpg"));
-   
+
       tracker = new MediaTracker(this);
       tracker.addImage(img_0, 1);
 
@@ -200,7 +200,7 @@ public class LiveMapPanel extends JPanel
 
     GridBagLayout gridbag = new GridBagLayout();
     GridBagConstraints c = new GridBagConstraints();
-    JPanel entryPanel = new JPanel(); 
+    JPanel entryPanel = new JPanel();
     entryPanel.setLayout(gridbag);
 
     // lat and lon text fields
@@ -226,9 +226,9 @@ public class LiveMapPanel extends JPanel
     South.addFocusListener(tffocus);
     East.addFocusListener(tffocus);
     West.addFocusListener(tffocus);
-    
-    
-    
+
+
+
     c.gridx = 1;
     c.gridy = 0;
     c.gridwidth = 2;
@@ -263,7 +263,7 @@ public class LiveMapPanel extends JPanel
     c.insets.bottom = 4;
     gridbag.setConstraints(posPanel, c);
     entryPanel.add(posPanel);
- 
+
     // Zoom Panel
     zoom_in = new JButton("Zoom In");
     zoom_out = new JButton("Zoom Out");
@@ -303,14 +303,14 @@ public class LiveMapPanel extends JPanel
       public void actionPerformed(ActionEvent ae) {
         if (boxTool.isSelected()) {
           setTool("XY");
-        } 
+        }
       }
     });
     ptTool.addActionListener( new ActionListener() {
       public void actionPerformed(ActionEvent ae) {
         if (ptTool.isSelected()) {
           setTool("PT");
-        } 
+        }
       }
     });
 
@@ -383,7 +383,7 @@ public class LiveMapPanel extends JPanel
 
 //------------------------------------------------------------
 // 3) Set the Domain on the MapGrid
-// 4) Set the Ranges in the MapTools and Converters 
+// 4) Set the Ranges in the MapTools and Converters
 
 
     //
@@ -427,7 +427,7 @@ public class LiveMapPanel extends JPanel
 
 //------------------------------------------------------------
 // 5) Create a map canvas
-  
+
 
     // map canvas: change size
     if (map==null) {
@@ -505,19 +505,19 @@ public class LiveMapPanel extends JPanel
     map.setRegionArray(regionArray);
 
     set_strings();
-    
- 
+
+
   //  setBackground(Color.gray);
-    setLayout( new BorderLayout() );  
+    setLayout( new BorderLayout() );
 
  if (map==null) System.out.println("map is null!");
  if (entryPanel==null) System.out.println("entryPanel is null!");
 
-    //1.1 
+    //1.1
     addMap();
-    //1.1 
-    add(BorderLayout.EAST, entryPanel);    
-    //add("Center", map);      // 1.0   
+    //1.1
+    add(BorderLayout.EAST, entryPanel);
+    //add("Center", map);      // 1.0
     //add("East", entryPanel); // 1.0
     setVisible(true);
     // register listeners
@@ -539,7 +539,7 @@ public class LiveMapPanel extends JPanel
     add(map,"Center");
     setBoundingBoxToSaved();
   }
-  
+
   public void removeMap() {
     remove(map);
   }
@@ -653,7 +653,7 @@ public class LiveMapPanel extends JPanel
     }
     return super.action(ev, arg);
   }
- 
+
 // added by DFH
   public void setBoundingBox(double top, double left, double bottom, double right) {
     try{
@@ -661,7 +661,8 @@ public class LiveMapPanel extends JPanel
       w = left;
       s = bottom;
       e = right;
-      if (w==e) {  // to avoid display problem, round
+      if (w==e  && tool_type!=TOOL_TYPE_PT ) {
+          // to avoid display problem, round
         if (e<0.0) {
           e=.999*e;
         } else {
@@ -675,40 +676,40 @@ public class LiveMapPanel extends JPanel
       Log.debug(9, "error in setting Bounding Box in LiveMapPanel!");
     }
 	  map.repaint();
-	  set_strings();  
+	  set_strings();
   }
-  
+
   public void setBoundingBoxToSaved() {
     setBoundingBox(n, w, s, e);
   }
- 
+
  public double getNorth() {
    double ret = 0.0;
    ret = YConvert.toDouble(North.getText());
    return ret;
  }
- 
+
  public double getWest() {
    double ret = 0.0;
    ret = XConvert.toDouble(West.getText());
    return ret;
  }
- 
+
  public double getSouth() {
    double ret = 0.0;
    ret = YConvert.toDouble(South.getText());
    return ret;
  }
- 
+
  public double getEast() {
    double ret = 0.0;
    ret = XConvert.toDouble(East.getText());
    return ret;
  }
- 
- 
- 
- 
+
+
+
+
 /* 1.0 ----------------------V-------------------------- */
 
   public boolean handleEvent(Event evt) {
@@ -742,7 +743,7 @@ public class LiveMapPanel extends JPanel
 
     return super.handleEvent(evt);
   }
- 
+
 /* 1.0 ----------------------^-------------------------- */
 
   public void set_strings() {
@@ -770,8 +771,8 @@ public class LiveMapPanel extends JPanel
     }
 
   }
- 
-//1.0 method: 
+
+//1.0 method:
   public boolean mouseUp(Event evt, int x, int y) {
     set_strings();
     return true;
@@ -813,7 +814,7 @@ public class LiveMapPanel extends JPanel
 	  double right = XConvert.toDouble(East.getText());
     return right;
   }
-  
+
   /**
    * Replace a tool in the toolArray.
    * @param i index of the tool in the toolArray
@@ -940,7 +941,8 @@ public class LiveMapPanel extends JPanel
 	      left = right;
 	      right = old_left;
 	    }
-      if (left==right) {  // to avoid display problem, round
+      if (left==right && tool_type!=TOOL_TYPE_PT ) {
+          // to avoid display problem, round
         if (right<0.0) {
           right=.999*right;
         } else {
@@ -963,17 +965,17 @@ public class LiveMapPanel extends JPanel
 	  }
   }
 
-  
+
 	class tfAction implements java.awt.event.ActionListener
 	{
 		public void actionPerformed(java.awt.event.ActionEvent event)
-		{ 
+		{
       Object target = event.getSource();
       doTextFieldEdit(target);
     }
   }
 
-  
+
 
  class tfFocus extends java.awt.event.FocusAdapter
 	{
@@ -984,4 +986,4 @@ public class LiveMapPanel extends JPanel
 		}
 	}
 
-} 
+}
