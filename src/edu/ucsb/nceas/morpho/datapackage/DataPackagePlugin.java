@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: sgarg $'
- *     '$Date: 2005-05-27 20:12:35 $'
- * '$Revision: 1.99 $'
+ *     '$Date: 2005-06-13 18:27:48 $'
+ * '$Revision: 1.100 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -153,6 +153,23 @@ public class DataPackagePlugin
                       StateChangeEvent.CREATE_ENTITY_DATAPACKAGE_FRAME,
                       true, GUIAction.EVENT_LOCAL);
     controller.addGuiAction(saveAction);
+
+    // Save dialog box action
+    GUIAction saveCopyAction = new GUIAction("Save Copy...",
+                                              UISettings.SAVE_ICON,
+                                              new SavePackageCopyCommand());
+    saveCopyAction.setMenuItemPosition(5);
+    saveCopyAction.setToolTipText("Save a Local Copy of Datapackage...");
+    saveCopyAction.setMenu(FILE_MENU_LABEL, 0);
+    saveCopyAction.setToolbarPosition(2);
+    saveCopyAction.setEnabled(false);
+    saveCopyAction.setEnabledOnStateChange(
+                      StateChangeEvent.CREATE_DATAPACKAGE_FRAME,
+                      true, GUIAction.EVENT_LOCAL);
+    saveCopyAction.setEnabledOnStateChange(
+                      StateChangeEvent.CREATE_ENTITY_DATAPACKAGE_FRAME,
+                      true, GUIAction.EVENT_LOCAL);
+    controller.addGuiAction(saveCopyAction);
 
 
     GUIAction revertTab = new GUIAction("Revert Entity to Saved Version",
