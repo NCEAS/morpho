@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: tao $'
- *     '$Date: 2004-04-06 23:25:32 $'
- * '$Revision: 1.111 $'
+ *   '$Author: sgarg $'
+ *     '$Date: 2005-06-13 18:25:24 $'
+ * '$Revision: 1.112 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -105,7 +105,7 @@ public class QueryPlugin implements PluginInterface, ConnectionListener,
     searchItemAction.setToolTipText("Search for data");
     searchItemAction.setMenuItemPosition(0);
     searchItemAction.setMenu("Search", 2);
-    searchItemAction.setToolbarPosition(2);
+    searchItemAction.setToolbarPosition(4);
     controller.addGuiAction(searchItemAction);
 
     //searchItemAction.setSeparatorPosition(Morpho.SEPARATOR_FOLLOWING);
@@ -116,7 +116,7 @@ public class QueryPlugin implements PluginInterface, ConnectionListener,
     refreshItemAction.setToolTipText("Refresh...");
     refreshItemAction.setMenuItemPosition(1);
     refreshItemAction.setMenu("Search", 2);
-    refreshItemAction.setToolbarPosition(3);
+    refreshItemAction.setToolbarPosition(5);
     refreshItemAction.setEnabled(false);  //default
     refreshItemAction.setEnabledOnStateChange(
                             StateChangeEvent.CREATE_SEARCH_RESULT_FRAME,
@@ -137,7 +137,7 @@ public class QueryPlugin implements PluginInterface, ConnectionListener,
     saveQueryItemAction.setToolTipText("Save search");
     saveQueryItemAction.setMenuItemPosition(2);
     saveQueryItemAction.setMenu("Search", 2);
-    saveQueryItemAction.setToolbarPosition(4);
+    saveQueryItemAction.setToolbarPosition(6);
     saveQueryItemAction.setEnabled(false);  //default
     saveQueryItemAction.setEnabledOnStateChange(
                             StateChangeEvent.CREATE_SEARCH_RESULT_FRAME,
@@ -159,7 +159,7 @@ public class QueryPlugin implements PluginInterface, ConnectionListener,
     reviseSearchItemAction.setMenuItemPosition(3);
     reviseSearchItemAction.setSeparatorPosition(Morpho.SEPARATOR_FOLLOWING);
     reviseSearchItemAction.setMenu("Search", 2);
-    reviseSearchItemAction.setToolbarPosition(5);
+    reviseSearchItemAction.setToolbarPosition(7);
     reviseSearchItemAction.setEnabled(false);  //default
     reviseSearchItemAction.setEnabledOnStateChange(
                             StateChangeEvent.CREATE_SEARCH_RESULT_FRAME,
@@ -182,7 +182,7 @@ public class QueryPlugin implements PluginInterface, ConnectionListener,
     openDialogBoxAction.setMenuItemPosition(2);
     openDialogBoxAction.setToolTipText("Open...");
     openDialogBoxAction.setMenu("File", 0);
-    openDialogBoxAction.setToolbarPosition(1);
+    openDialogBoxAction.setToolbarPosition(3);
     controller.addGuiAction(openDialogBoxAction);
 
     // Open a data package action
@@ -220,7 +220,7 @@ public class QueryPlugin implements PluginInterface, ConnectionListener,
     // Synchronize action
     GUIAction synchronizeAction = new GUIAction("Synchronize...", null,
                           new OpenSynchronizeDialogCommand());
-    synchronizeAction.setMenuItemPosition(12);
+    synchronizeAction.setMenuItemPosition(13);
     synchronizeAction.setToolTipText("Synchronize...");
     synchronizeAction.setSeparatorPosition(Morpho.SEPARATOR_FOLLOWING);
     synchronizeAction.setMenu("File", 0);
@@ -266,7 +266,7 @@ public class QueryPlugin implements PluginInterface, ConnectionListener,
     GUIAction exportAction = new GUIAction("Export...", null,
 //                            new ExportCommand(null, ExportCommand.REGULAR));
                              new OpenExportDialogCommand());
-    exportAction.setMenuItemPosition(14);
+    exportAction.setMenuItemPosition(16);
     exportAction.setToolTipText("Export data package...");
     exportAction.setMenu("File", 0);
     exportAction.setEnabledOnStateChange(
