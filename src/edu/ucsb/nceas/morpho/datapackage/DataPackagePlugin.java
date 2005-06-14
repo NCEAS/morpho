@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: sgarg $'
- *     '$Date: 2005-06-13 18:27:48 $'
- * '$Revision: 1.100 $'
+ *     '$Date: 2005-06-14 22:02:56 $'
+ * '$Revision: 1.101 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -155,11 +155,11 @@ public class DataPackagePlugin
     controller.addGuiAction(saveAction);
 
     // Save dialog box action
-    GUIAction saveCopyAction = new GUIAction("Save Copy...",
+    GUIAction saveCopyAction = new GUIAction("Save Duplicate...",
                                               UISettings.SAVE_ICON,
                                               new SavePackageCopyCommand());
     saveCopyAction.setMenuItemPosition(5);
-    saveCopyAction.setToolTipText("Save a Local Copy of Datapackage...");
+    saveCopyAction.setToolTipText("Duplicate this datapackage and save locally...");
     saveCopyAction.setMenu(FILE_MENU_LABEL, 0);
     saveCopyAction.setToolbarPosition(2);
     saveCopyAction.setEnabled(false);
