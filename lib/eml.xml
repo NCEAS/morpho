@@ -4347,7 +4347,7 @@
                           </para>
                   </additionalInfo>
                   <attributeList id="" minOccurs="1" maxOccurs="1" help="This complexType defines the structure of the attributeList element. The content model is a choice between one or more attribute elements, and references. References links to an attribute list defined elsewhere.">
-                    <CHOICE441 minOccurs="1" maxOccurs="1" help="">
+                    <CHOICE441 minOccurs="1" maxOccurs="unbounded" help="">
                       <attribute scope="document" system="" id="" minOccurs="1" maxOccurs="unbounded" help="Type definition for the content of an attribute (variable) that can be part of an entity.">
                         <CHOICE442 minOccurs="1" maxOccurs="1" help="">
                           <SEQUENCE443 minOccurs="1" maxOccurs="1" help="">
@@ -5884,7 +5884,7 @@
                           </para>
                   </additionalInfo>
                   <attributeList id="" minOccurs="1" maxOccurs="1" help="This complexType defines the structure of the attributeList element. The content model is a choice between one or more attribute elements, and references. References links to an attribute list defined elsewhere.">
-                    <CHOICE463 minOccurs="1" maxOccurs="1" help="">
+                    <CHOICE463 minOccurs="1" maxOccurs="unbounded" help="">
                       <attribute scope="document" system="" id="" minOccurs="1" maxOccurs="unbounded" help="Type definition for the content of an attribute (variable) that can be part of an entity.">
                         <CHOICE464 minOccurs="1" maxOccurs="1" help="">
                           <SEQUENCE465 minOccurs="1" maxOccurs="1" help="">
