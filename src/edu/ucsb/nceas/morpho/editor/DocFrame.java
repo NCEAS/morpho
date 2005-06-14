@@ -5,9 +5,9 @@
  *    Authors: @higgins@
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2005-02-22 23:21:51 $'
- * '$Revision: 1.166 $'
+ *   '$Author: sgarg $'
+ *     '$Date: 2005-06-14 01:23:07 $'
+ * '$Revision: 1.167 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -970,7 +970,12 @@ public class DocFrame extends javax.swing.JFrame
 
     setAttributeNames(rootNode);
     setChoiceNodes(rootNode);
-    setAllNodesAsSelected(rootNode);
+    Enumeration enumeration = rootNode.depthFirstEnumeration();
+    while (enumeration.hasMoreElements()) {
+      DefaultMutableTreeNode node = (DefaultMutableTreeNode)enumeration.nextElement();
+      NodeInfo nif = (NodeInfo)node.getUserObject();
+      nif.setSelected(false);
+    }
     setSelectedNodes(rootNode);
   }
 
