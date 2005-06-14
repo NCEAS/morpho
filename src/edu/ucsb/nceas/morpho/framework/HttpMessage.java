@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2003-10-10 22:11:40 $'
- * '$Revision: 1.16 $'
+ *   '$Author: sgarg $'
+ *     '$Date: 2005-06-14 22:07:03 $'
+ * '$Revision: 1.17 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -44,7 +44,7 @@ import HTTPClient.NVPair;
  *   before this class looks at them. This the cookie handler included here
  *   will never be called!   DFH - October 2003
  */
- 
+
 public class HttpMessage
 {
   private URL servlet = null;
@@ -94,7 +94,7 @@ public class HttpMessage
   {
     // Open the connection
     con = servlet.openConnection();
-    Log.debug(20, "HTTP Handler class is: " + 
+    Log.debug(20, "HTTP Handler class is: " +
             con.getClass().getName());
 
     // Write any cookies in the request
@@ -117,7 +117,7 @@ public class HttpMessage
   }
 
   /**
-   * Sends post data using multipart/form-data encoding. This method can send 
+   * Sends post data using multipart/form-data encoding. This method can send
    * large data files because the files are streamed directly from disk to the
    * HttpURLConnection.  Assuming that we are using the HTTClient or another
    * similar library that provides a streaming HttpURLConnection, then the
@@ -127,12 +127,12 @@ public class HttpMessage
    *
    * @param args a property file containing the name-value pairs that are to be
    *             sent to the server
-   * @param fileNames a property file containing the name for a formfield 
+   * @param fileNames a property file containing the name for a formfield
    *                  that represents a file and the filename (as the property value)
    * @return the response stream that comes from the server
    * @exception IOException If any file operation fails.
    */
-  public InputStream sendPostData(Properties args, Properties fileNames) 
+  public InputStream sendPostData(Properties args, Properties fileNames)
                      throws IOException
   {
     openPostConnection();
@@ -162,7 +162,7 @@ public class HttpMessage
     // Set some addition request headers
     ((HttpURLConnection)con).setRequestMethod("POST");
     String ctype = myform.getContentType();
-    ((HttpURLConnection)con).setRequestProperty("Content-Type", ctype + "\r\n");
+    ((HttpURLConnection)con).setRequestProperty("Content-Type", ctype);
     long contentLength = myform.getLength();
     ((HttpURLConnection)con).setRequestProperty("Content-Length",
              new Long(contentLength).toString());
@@ -170,7 +170,7 @@ public class HttpMessage
     // Open the output stream and write the encoded data to it
     out = con.getOutputStream();
     myform.writeEncodedMultipartForm(out);
-    
+
     // close the connection and return the response stream
     InputStream res = closePostConnection();
     return res;
@@ -265,7 +265,7 @@ public class HttpMessage
   }
 
   /**
-   * Converts a Properties list to a URL-encoded query string    
+   * Converts a Properties list to a URL-encoded query string
    */
   private String toEncodedString(Properties args)
   {
