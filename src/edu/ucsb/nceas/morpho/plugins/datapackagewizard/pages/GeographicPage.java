@@ -7,9 +7,9 @@
  *    Authors: Saurabh Garg
  *    Release: @release@
  *
- *   '$Author: tao $'
- *     '$Date: 2004-04-14 23:17:58 $'
- * '$Revision: 1.17 $'
+ *   '$Author: sgarg $'
+ *     '$Date: 2005-06-17 22:57:03 $'
+ * '$Revision: 1.18 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -95,6 +95,11 @@ public class GeographicPage extends AbstractUIPage {
   private String xPathRoot  = "/eml:eml/dataset/coverage/geographicCoverage";
 
   private ConfigXML locationsXML = null;
+
+  double north = -1000;
+  double west = -1000;
+  double south = -1000;
+  double east = -1000;
 
   // use to indicate that text in the ooverage Description field has been changed by user
   private boolean covDescFieldChangedFlag = false;
@@ -202,7 +207,7 @@ public class GeographicPage extends AbstractUIPage {
     selectButton.addActionListener( new ActionListener() {
       public void actionPerformed(ActionEvent ae) {
         String selection = (String)regionList.getSelectedValue();
-//        Log.debug(1,"Selection: "+selection);
+        // Log.debug(1,"Selection: "+selection);
         double n = (new Double(getNorth(selection))).doubleValue();
         double w = (new Double(getWest(selection))).doubleValue();
         double s = (new Double(getSouth(selection))).doubleValue();
@@ -374,7 +379,7 @@ public class GeographicPage extends AbstractUIPage {
     public void valueChanged(ListSelectionEvent eee) {
       boolean setTextFlag = true;
       if (deleteFlag) return;
-      // if this event come from sort command, do nothing except set 
+      // if this event come from sort command, do nothing except set
       // the indicator false
       if (eventFromSortCommand)
       {
@@ -563,6 +568,9 @@ public class GeographicPage extends AbstractUIPage {
    */
   public void onLoadAction() {
     lmp.addMap();
+    if(north>-1000){
+      lmp.setBoundingBox(north, west, south, east);
+    }
   }
 
 
@@ -583,6 +591,10 @@ public class GeographicPage extends AbstractUIPage {
    *          (e.g. if a required field hasn't been filled in)
    */
   public boolean onAdvanceAction() {
+    north = lmp.getNorth();
+    west  = lmp.getWest();
+    east  = lmp.getEast();
+    south = lmp.getSouth();
     if (covDescField.getText().trim().equals("")) {
       WidgetFactory.hiliteComponent(covDescLabel);
       covDescField.requestFocus();
@@ -615,16 +627,16 @@ public class GeographicPage extends AbstractUIPage {
                     covDescField.getText().trim());
 
     returnMap.put(xPathRoot + "/boundingCoordinates/westBoundingCoordinate" ,
-                    (new Double(lmp.getWest())).toString());
+                    (new Double(west)).toString());
 
     returnMap.put(xPathRoot + "/boundingCoordinates/eastBoundingCoordinate" ,
-                    (new Double(lmp.getEast())).toString());
+                    (new Double(east)).toString());
 
     returnMap.put(xPathRoot + "/boundingCoordinates/northBoundingCoordinate" ,
-                    (new Double(lmp.getNorth())).toString());
+                    (new Double(north)).toString());
 
     returnMap.put(xPathRoot + "/boundingCoordinates/southBoundingCoordinate" ,
-                    (new Double(lmp.getSouth())).toString());
+                    (new Double(south)).toString());
 
 
                     return returnMap;
@@ -673,10 +685,6 @@ public class GeographicPage extends AbstractUIPage {
 
     if (_xPathRoot!=null && _xPathRoot.trim().length() > 0) this.xPathRoot = _xPathRoot;
 
-    double n = 89.0;
-    double w = -179.0;
-    double s = -89.0;
-    double e = 179.0;
     String name = (String)map.get(_xPathRoot + "/geographicDescription[1]");
     if(name != null) {
       map = stripIndexOneFromMapKeys(map);
@@ -694,7 +702,7 @@ public class GeographicPage extends AbstractUIPage {
     if (name!=null) {
       Double N = new Double(name);
       if (N!=null) {
-        n = N.doubleValue();
+        north = N.doubleValue();
       }
       map.remove(xPathRoot + "/boundingCoordinates/northBoundingCoordinate");
     }
@@ -703,7 +711,7 @@ public class GeographicPage extends AbstractUIPage {
     if (name!=null) {
       Double W = new Double(name);
       if (W!=null) {
-        w = W.doubleValue();
+        west = W.doubleValue();
       }
       map.remove(xPathRoot + "/boundingCoordinates/westBoundingCoordinate");
     }
@@ -712,7 +720,7 @@ public class GeographicPage extends AbstractUIPage {
     if (name!=null) {
       Double S = new Double(name);
       if (S!=null) {
-        s = S.doubleValue();
+        south = S.doubleValue();
       }
       map.remove(xPathRoot + "/boundingCoordinates/southBoundingCoordinate");
     }
@@ -721,13 +729,13 @@ public class GeographicPage extends AbstractUIPage {
     if (name!=null) {
       Double E = new Double(name);
       if (E!=null) {
-        e = E.doubleValue();
+        east = E.doubleValue();
       }
       map.remove(xPathRoot + "/boundingCoordinates/eastBoundingCoordinate");
     }
 
-    if ((e==w)&&(n==s)) lmp.setTool("PT");
-    lmp.setBoundingBox(n, w, s, e);
+    if ((east==west)&&(north==south)) lmp.setTool("PT");
+    lmp.setBoundingBox(north, west, south, east);
 
     //if anything left in map, then it included stuff we can't handle...
      boolean returnVal = map.isEmpty();

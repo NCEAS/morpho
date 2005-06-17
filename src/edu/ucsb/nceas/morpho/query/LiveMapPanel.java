@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: sgarg $'
- *     '$Date: 2005-06-09 17:35:16 $'
- * '$Revision: 1.9 $'
+ *     '$Date: 2005-06-17 22:57:04 $'
+ * '$Revision: 1.10 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -504,8 +504,7 @@ public class LiveMapPanel extends JPanel
 
     map.setRegionArray(regionArray);
 
-    set_strings();
-
+    set_strings(false);
 
   //  setBackground(Color.gray);
     setLayout( new BorderLayout() );
@@ -646,7 +645,7 @@ public class LiveMapPanel extends JPanel
       } finally {
 
 	map.repaint();
-	set_strings();
+	set_strings(true);
 
       }
 
@@ -676,7 +675,7 @@ public class LiveMapPanel extends JPanel
       Log.debug(9, "error in setting Bounding Box in LiveMapPanel!");
     }
 	  map.repaint();
-	  set_strings();
+	  set_strings(true);
   }
 
   public void setBoundingBoxToSaved() {
@@ -746,7 +745,7 @@ public class LiveMapPanel extends JPanel
 
 /* 1.0 ----------------------^-------------------------- */
 
-  public void set_strings() {
+  public void set_strings(boolean saveCoordinates) {
     XText.setRange(grid.domain_X[LO],grid.domain_X[HI]);
     YText.setRange(grid.domain_Y[LO],grid.domain_Y[HI]);
 
@@ -754,17 +753,32 @@ public class LiveMapPanel extends JPanel
       if ( tool_type == TOOL_TYPE_PT || tool_type == TOOL_TYPE_X ) {
         North.setText(YText.toString(map.getTool().user_Y[PT]));
         South.setText(YText.toString(map.getTool().user_Y[PT]));
+        if(saveCoordinates){
+          n = map.getTool().user_Y[PT];
+          s = map.getTool().user_Y[PT];
+        }
       } else {
         North.setText(YText.toString(map.getTool().user_Y[HI]));
         South.setText(YText.toString(map.getTool().user_Y[LO]));
+        if (saveCoordinates) {
+          n = map.getTool().user_Y[HI];
+          s = map.getTool().user_Y[LO];
+        }
       }
-
       if ( tool_type == TOOL_TYPE_PT || tool_type == TOOL_TYPE_Y ) {
         East.setText(XText.toString(map.getTool().user_X[PT]));
         West.setText(XText.toString(map.getTool().user_X[PT]));
+        if(saveCoordinates){
+          e = map.getTool().user_X[PT];
+          w = map.getTool().user_X[PT];
+        }
       } else {
         East.setText(XText.toString(map.getTool().user_X[HI]));
         West.setText(XText.toString(map.getTool().user_X[LO]));
+        if (saveCoordinates) {
+          e = map.getTool().user_X[HI];
+          w = map.getTool().user_X[LO];
+        }
       }
     } catch (IllegalArgumentException e) {
       System.out.println("During set_strings(): " + e);
@@ -774,7 +788,7 @@ public class LiveMapPanel extends JPanel
 
 //1.0 method:
   public boolean mouseUp(Event evt, int x, int y) {
-    set_strings();
+    set_strings(true);
     return true;
   }
 
@@ -869,7 +883,7 @@ public class LiveMapPanel extends JPanel
 
     map.newToolFromOld(i, newTool, oldTool);
     map.repaint();
-    set_strings();
+    set_strings(true);
   }
 
   void doTextFieldEdit(Object target) {
@@ -960,7 +974,7 @@ public class LiveMapPanel extends JPanel
       } finally {
 
 	    map.repaint();
-	    set_strings();
+	    set_strings(true);
 		  }
 	  }
   }
