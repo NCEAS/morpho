@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: sgarg $'
- *     '$Date: 2004-12-14 22:29:50 $'
- * '$Revision: 1.22 $'
+ *     '$Date: 2005-06-20 22:13:32 $'
+ * '$Revision: 1.23 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -405,6 +405,9 @@ public class UISettings
 
     public static final Icon SAVE_ICON
             = getAsImageIcon("/toolbarButtonGraphics/general/Save16.gif");
+
+    public static final Icon DUPLICATE_ICON
+            = getAsImageIcon("/toolbarButtonGraphics/general/Duplicate16.gif");
 
     public static final Icon SAVE_QUERY_ICON
             = getAsImageIcon("/toolbarButtonGraphics/general/SaveAs16.gif");

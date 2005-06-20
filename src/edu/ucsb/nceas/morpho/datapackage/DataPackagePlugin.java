@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: sgarg $'
- *     '$Date: 2005-06-14 22:02:56 $'
- * '$Revision: 1.101 $'
+ *     '$Date: 2005-06-20 22:14:27 $'
+ * '$Revision: 1.102 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -156,7 +156,7 @@ public class DataPackagePlugin
 
     // Save dialog box action
     GUIAction saveCopyAction = new GUIAction("Save Duplicate...",
-                                              UISettings.SAVE_ICON,
+                                              UISettings.DUPLICATE_ICON,
                                               new SavePackageCopyCommand());
     saveCopyAction.setMenuItemPosition(5);
     saveCopyAction.setToolTipText("Duplicate this datapackage and save locally...");
