@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: sgarg $'
- *     '$Date: 2005-06-14 01:23:07 $'
- * '$Revision: 1.167 $'
+ *     '$Date: 2005-06-20 19:33:42 $'
+ * '$Revision: 1.168 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1845,7 +1845,7 @@ public class DocFrame extends javax.swing.JFrame
    * @param node  top level node
    * @return      xml string
    */
-  public String writeXMLString(DefaultMutableTreeNode node)
+  public String writeXMLString(DefaultMutableTreeNode node, boolean returnError)
   {
     // make a copy since we are modifying before saving
     DefaultMutableTreeNode clone = deepNodeCopy(node);
@@ -1853,7 +1853,10 @@ public class DocFrame extends javax.swing.JFrame
     tempStack = new Stack();
     start = new StringBuffer();
     if (trimFlag) {
-      trimNoInfoNodes(clone);
+      String errorString = trimNoInfoNodes(clone);
+      if(errorString != null && returnError){
+        return errorString;
+      }
     }
     saveAttributeValues(clone);
     write_loop(clone, 0);
@@ -1883,7 +1886,7 @@ public class DocFrame extends javax.swing.JFrame
    *   returns the root node of the DOM
    */
   public Node writeToDOM(DefaultMutableTreeNode node) {
-    String xml = writeXMLString(node);
+    String xml = writeXMLString(node, false);
     StringReader sr = new StringReader(xml);
     Node DOMOut = null;
     try{
@@ -2036,11 +2039,12 @@ public class DocFrame extends javax.swing.JFrame
    *
    * @param node  Description of Parameter
    */
-  void trimNoInfoNodes(DefaultMutableTreeNode node)
+  String trimNoInfoNodes(DefaultMutableTreeNode node)
   {
     DefaultMutableTreeNode parentNode = null;
     DefaultMutableTreeNode tempNode = null;
     DefaultMutableTreeNode curNode = node.getFirstLeaf();
+    String errorString = "";
     Vector leafs = new Vector();
     leafs.addElement(curNode);
     while (curNode != null) {
@@ -2068,12 +2072,26 @@ public class DocFrame extends javax.swing.JFrame
           }
           // now go from the root toward the leaf, trimming branches
           DefaultMutableTreeNode cNode;
-          for (int i = path2root.size() - 1; i > -1; i--) {
+
+          for (int i = path2root.size() - 1; i > -1
+              && curNode.getRoot()==node; i--) {
             cNode = (DefaultMutableTreeNode)path2root.elementAt(i);
             NodeInfo cni = (NodeInfo)cNode.getUserObject();
             String card = cni.getCardinality();
-            // if node is not required, perhaps trim it
-            if ((card.equals("ZERO to MANY")) ||
+
+            if((cni.isCheckbox() || cni.isChoice()) && !cni.isSelected()){
+                String pathToRoot = "";
+                pathToRoot = cNode.toString() + pathToRoot;
+                while (parentNode != null) {
+                  pathToRoot = parentNode.toString() + "/" + pathToRoot;
+                  parentNode = (DefaultMutableTreeNode) parentNode.getParent();
+                }
+                tempNode = cNode;
+                parentNode = (DefaultMutableTreeNode) cNode.getParent();
+                if (parentNode != null) {
+                  parentNode.remove(tempNode);
+                }
+              } else if ((card.equals("ZERO to MANY")) ||
                 (card.equals("OPTIONAL"))) {
               // first see if there are nonempty sub-branches
 
@@ -2103,19 +2121,73 @@ public class DocFrame extends javax.swing.JFrame
                   multipleFlag  = true;
                 }
               }
-              if ((!hasNonEmptyTextLeaves(cNode))&&(multipleFlag)) {
-                tempNode = cNode;
-                parentNode = (DefaultMutableTreeNode)cNode.getParent();
-                if (parentNode != null) {
-                  parentNode.remove(tempNode);
+              if (!hasNonEmptyTextLeaves(cNode)) {
+                if (multipleFlag) {
+                  tempNode = cNode;
+                  parentNode = (DefaultMutableTreeNode) cNode.getParent();
+                  if (parentNode != null) {
+                    parentNode.remove(tempNode);
+                  }
+                } else if(cNode.getRoot() == node) {
+                  String pathToRoot = "";
+                  pathToRoot = cNode.toString() + pathToRoot;
+                  while (parentNode != null) {
+                    pathToRoot = parentNode.toString() + "/" + pathToRoot;
+                    parentNode = (DefaultMutableTreeNode) parentNode.getParent();
+                  }
+
+                  if(errorString.equals(""))
+                    errorString = errorString + "\n\t\t" + pathToRoot;
+                  else
+                    errorString = errorString + ",\n\t\t" + pathToRoot;
+                  break;
                 }
+              }
+            }
+            else if (card.equals("ONE")&& !cni.isXMLAttribute()) {
+              // if the parent has all childrens with no text
+              // then it can be elminated, otherwise an error should
+              // be sent back
+              parentNode = (DefaultMutableTreeNode)cNode.getParent();
+              boolean generateError = false;
+              if (parentNode != null){
+                Enumeration childEnum = parentNode.children();
+                while (childEnum.hasMoreElements()) {
+                  DefaultMutableTreeNode childNode =
+                      (DefaultMutableTreeNode) childEnum.nextElement();
+                  NodeInfo childInfo = (NodeInfo)childNode.getUserObject();
+                  if (childNode != cNode && !childInfo.isXMLAttribute()
+                      && !childInfo.checkbox_flag && !childInfo.choice_flag
+                     && hasNonEmptyTextLeaves(childNode)) {
+                    generateError = true;
+                  }
+                }
+              }
+
+              if (generateError && !hasNonEmptyTextLeaves(cNode)) {
+                  String pathToRoot = "";
+                  pathToRoot = cNode.toString() + pathToRoot;
+                  while (parentNode != null) {
+                    pathToRoot = parentNode.toString() + "/" + pathToRoot;
+                    parentNode = (DefaultMutableTreeNode) parentNode.getParent();
+                  }
+                  if(errorString.equals(""))
+                    errorString = errorString + "\n\t\t" + pathToRoot;
+                  else
+                    errorString = errorString + ",\n\t\t" + pathToRoot;
+                  break;
               }
             }
           }
         }
+
         // end 'if (pcdata...'
       }
     }
+    if(!errorString.equals(""))
+      return errorString;
+
+    return null;
   }
 
   /**
@@ -2803,8 +2875,14 @@ public class DocFrame extends javax.swing.JFrame
   {
     treeModel = (DefaultTreeModel)tree.getModel();
     rootNode = (DefaultMutableTreeNode)treeModel.getRoot();
-    String xmlout = writeXMLString(rootNode);
-Log.debug(20, xmlout);
+    String xmlout = writeXMLString(rootNode, true);
+    if(xmlout.indexOf("<?xml version=\"1.0\"?>")<0){
+      Log.debug(5, "Unable to trim following nodes: " + xmlout +
+          "\nPlease check if all the required values are entered "
+         + "and that there are no empty fields");
+      return;
+    }
+      Log.debug(20, xmlout);
   /*
   // the following code for checking for empty leaf nodes is
   // commented out because of problems with eml-attribute documents
@@ -3101,7 +3179,7 @@ Log.debug(20, xmlout);
     headLabel.setText("Working...");
     treeModel = (DefaultTreeModel)tree.getModel();
     rootNode = (DefaultMutableTreeNode)treeModel.getRoot();
-    String xmlout = writeXMLString(rootNode);
+    String xmlout = writeXMLString(rootNode, false);
     mergeMissingFlag = true;
     removeReferencesFlag = false;
     initDoc(null, xmlout);
