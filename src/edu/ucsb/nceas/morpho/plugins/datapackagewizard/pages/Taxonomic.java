@@ -8,8 +8,8 @@
 *    Release: @release@
 *
 *   '$Author: sgarg $'
-*     '$Date: 2005-05-26 21:51:47 $'
-* '$Revision: 1.32 $'
+*     '$Date: 2005-06-21 17:42:18 $'
+* '$Revision: 1.33 $'
 *
 * This program is free software; you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -120,6 +120,12 @@ public class Taxonomic extends AbstractUIPage {
   // column titles for the customlist in the main-page
   private String colNames[] = {"Higher Level Taxa", "Rank", "Name",
   "Rank", "Name", "Common Name(s)"};
+
+  // selectedRowIdx is used to store the value of the selected row.
+  // this is used because if a row is edited using the edit button, after edit
+  // is completed, none of the rows are selected. this results in a
+  // null pointer exception. hence to avoid that this variable is used.
+  private int selectedRowIdx = 0;
 
   // column titles for the classification CustomList
   private final String[] classColNames = {"Citation Title", "Creator", "Citation Type"};
@@ -487,13 +493,13 @@ public class Taxonomic extends AbstractUIPage {
   private void TaxonListEditAction() {
 
     List row = taxonList.getSelectedRowList();
+    selectedRowIdx = Taxonomic.this.taxonList.getSelectedRowIndex();
     if(row.size() < 7 ) return;
     Object o = row.get(6);
     if(o == null || !(o instanceof TaxonHierarchy)) return;
     final TaxonHierarchy hier = (TaxonHierarchy)o;
 
     String parent = ((String)row.get(0)).trim();
-    int numParents = getHierarchy(parent).size();
     Vector allTaxons = hier.getAllTaxons();
     TaxonHierarchy newHier = new TaxonHierarchy(new Vector());
 
@@ -774,10 +780,31 @@ public class Taxonomic extends AbstractUIPage {
     }
 
     // now adding the taxonomic Classification info
-
     List data = this.taxonList.getListOfRowLists();
     int len = data.size();
-		List validHierarchies = new ArrayList();
+
+    // Remove all the empty taxon levels...
+    for(int i = len - 1; i > -1; i--) {
+      List row = (List) data.get(i);
+      TaxonHierarchy th = (TaxonHierarchy) row.get(6);
+      Vector taxonLevels = th.getAllTaxons();
+      boolean removeTaxonLevel = true;
+      for (int j = 0; j < taxonLevels.size(); j++) {
+        TaxonLevel level = (TaxonLevel) taxonLevels.get(j);
+        String tRank = level.getRank();
+        String tName = level.getName();
+        if (tRank.trim().equals("") || tName.trim().equals(""))continue;
+        else {
+          removeTaxonLevel = false;
+        }
+      }
+      if (removeTaxonLevel) {
+        data.remove(i);
+      }
+    }
+
+    len = data.size();
+    List validHierarchies = new ArrayList();
 
     for(int i = 0; i < len; i++) {
 
@@ -803,6 +830,8 @@ public class Taxonomic extends AbstractUIPage {
 			String name2 = (String)row.get(4);
 			if(name2.trim().length() > 0) {
 				if(!this.isValidTaxonName(name2)) continue;
+                                TaxonLevel tempLevel = th.getTaxonAtRank(rank2);
+                                tempLevel.setName(name2);
 			}
 			String cn = (String)row.get(5);
 			if(cn.trim().length() > 0) {
@@ -843,29 +872,31 @@ public class Taxonomic extends AbstractUIPage {
         }
       }
 
+      TaxonHierarchy prevHier = null;
 
-      TaxonHierarchy prevHier = hierarchies[0];
+      if(!result.isEmpty()){
+        prevHier = hierarchies[0];
+      }
+
       for(int i = 1; i < len; i++) {
+        int cmp = -1;
+        if(prevHier != null){
+          cmp = hierarchies[i].compareTo(prevHier);
+          if (cmp == 0)continue;
+        }
 
-
-        int cmp = hierarchies[i].compareTo(prevHier);
-        if(cmp == 0) continue;
         if(cmp < 0) {
-
           Log.debug(10, "Error in getPageData! Sorting not correct");
         } else {
 
-          //cmp--;
           prevHier = hierarchies[i];
           int start = 0;
-          int temp = 0;
           int idx = -1;
-          while(temp < cmp) {
+        //  while(temp < cmp) {
             idx = lastAddedPrefix.indexOf("taxonomicClassification", start);
-            if(idx == -1) break;
+         //   if(idx == -1) break;
             start = idx + new String("taxonomicClassification").length();
-            temp++;
-          }
+        //  }
 
           String currPrefix = lastAddedPrefix.substring(0, start);
 
@@ -887,7 +918,7 @@ public class Taxonomic extends AbstractUIPage {
           currPrefix += "[" + currPosition + "]";
 
           Vector newTaxonLevels = hierarchies[i].getAllTaxons();
-          for(int k = temp - 1; k < newTaxonLevels.size(); k++) {
+          for(int k = 0; k < newTaxonLevels.size(); k++) {
 
             TaxonLevel level = (TaxonLevel)newTaxonLevels.get(k);
             String tRank = level.getRank();
@@ -1380,6 +1411,10 @@ public class Taxonomic extends AbstractUIPage {
     }
     taxonNameCounter++;
     int rowIdx = Taxonomic.this.taxonList.getSelectedRowIndex();
+    if(rowIdx < 0){
+      rowIdx = selectedRowIdx;
+    }
+
     String newName = ((JTextField)jc).getText();
     if(!isValidTaxonName(newName)) {
       JOptionPane.showMessageDialog(parent, "Invalid characters in the taxon name. Only letters, digits and spaces are allowed.", "Error", JOptionPane.ERROR_MESSAGE);
@@ -1393,6 +1428,9 @@ public class Taxonomic extends AbstractUIPage {
     }
 
     List row = Taxonomic.this.taxonList.getSelectedRowList();
+    if(row == null){
+      row = (List)Taxonomic.this.taxonList.getListOfRowLists().get(selectedRowIdx);
+    }
     TaxonHierarchy currHier = (TaxonHierarchy)row.get(6);
     int currcount = currHier.getLevelCount();
 
