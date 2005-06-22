@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: berkley $'
- *     '$Date: 2004-04-08 19:22:39 $'
- * '$Revision: 1.22 $'
+ *   '$Author: sgarg $'
+ *     '$Date: 2005-06-22 22:55:37 $'
+ * '$Revision: 1.23 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -74,6 +74,7 @@ class DateTimePanel extends JPanel implements WizardPageSubPanelAPI {
 
   private JButton addButton, delButton;
 
+  private String dateTimeDomainID = "";
   // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
 
@@ -342,6 +343,11 @@ class DateTimePanel extends JPanel implements WizardPageSubPanelAPI {
 
     returnMap.put(  xPathRoot + "/dateTimeDomain", "");
 
+    String id = dateTimeDomainID.trim();
+    if (id!=null && !id.equals("")) {
+      returnMap.put(xPathRoot + "/dateTimeDomain/@id", id);
+    }
+
     xPathRoot = xPathRoot + "/dateTimeDomain/bounds[";
 
     int index = 0;
@@ -424,6 +430,12 @@ class DateTimePanel extends JPanel implements WizardPageSubPanelAPI {
     if (precision != null) {
       precisionField.setText(precision);
       map.remove(xPathRoot + "/dateTimePrecision");
+    }
+
+    String id = (String)map.get(xPathRoot + "/dateTimeDomain/@id");
+    if ( id != null ) {
+      dateTimeDomainID = id.toString();
+      map.remove(xPathRoot + "/dateTimeDomain/@id");
     }
 
     int index = 1;

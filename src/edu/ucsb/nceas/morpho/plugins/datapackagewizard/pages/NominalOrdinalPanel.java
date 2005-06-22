@@ -6,9 +6,9 @@
 *    Authors: Chad Berkley
 *    Release: @release@
 *
-*   '$Author: cjones $'
-*     '$Date: 2004-06-24 00:08:37 $'
-* '$Revision: 1.33 $'
+*   '$Author: sgarg $'
+*     '$Date: 2005-06-22 22:55:38 $'
+* '$Revision: 1.34 $'
 *
 * This program is free software; you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -123,6 +123,9 @@ class NominalOrdinalPanel extends JPanel implements WizardPageSubPanelAPI {
 
   private final String EMPTY_STRING = "";
 
+  // placeholder for storing value of  nonNumericDomain/@id
+  private String nonNumericDomainID = "";
+
   private AbstractUIPage wizardPage;
 
   private JComboBox domainPickList;
@@ -172,26 +175,26 @@ class NominalOrdinalPanel extends JPanel implements WizardPageSubPanelAPI {
     ItemListener listener = new ItemListener() {
 
       public void itemStateChanged(ItemEvent e) {
-      
+
         String value = e.getItem().toString();
         Log.debug(45, "PickList state changed: " +value);
-      
+
         if (value.equals(textEnumPicklistVals[0])) { //enumerated
-        
+
           Log.debug(45,
           nomOrdDisplayNames+"/enumeratedDomain selected");
           setTextEnumSubPanel(ENUMERATED_DOMAIN);
           helpTextLabel.setText(ENUM_HELP);
-        
+
         } else if (value.equals(textEnumPicklistVals[1])) { //text
-        
+
           Log.debug(45,
           nomOrdDisplayNames+"/textDomain selected");
           setTextEnumSubPanel(TEXT_DOMAIN);
           helpTextLabel.setText(TEXT_HELP);
-        
+
         }
-      
+
       }
     };
 
@@ -355,9 +358,9 @@ class NominalOrdinalPanel extends JPanel implements WizardPageSubPanelAPI {
 
         String value = e.getItem().toString();
         Log.debug(45, "CodeLocationPickList state changed: " +value);
-        
+
         if (value.equals(codeLocationPicklistVals[0])) { //user-defined
-        
+
           if(codeLocationValue == CODES_IMPORTED) {
             tablePanel.setVisible(false);
             enumPanel.remove(importedDefinitionList);
@@ -365,9 +368,9 @@ class NominalOrdinalPanel extends JPanel implements WizardPageSubPanelAPI {
             enumPanel.invalidate();
           }
           codeLocationValue = CODES_DEFINED_HERE;
-        
+
         } else if (value.equals(codeLocationPicklistVals[1])) { //imported
-        
+
           if(codeLocationValue == CODES_DEFINED_HERE) {
             tablePanel.setVisible(true);
             enumPanel.remove(enumDefinitionList);
@@ -624,11 +627,16 @@ class NominalOrdinalPanel extends JPanel implements WizardPageSubPanelAPI {
   public OrderedMap getPanelData(String xPathRoot) {
 
     returnMap.clear();
-    
+
+    String id = nonNumericDomainID.trim();
+    if (id!=null && !id.equals("")) {
+      returnMap.put(xPathRoot + "/nonNumericDomain/@id", id);
+    }
+
     // handle <enumeratedDomain enforced="" >
     String enforced = enforcedField.trim();
     if (enforced !=null && !enforced.equals("")) {
-      returnMap.put( xPathRoot + 
+      returnMap.put( xPathRoot +
       "/nonNumericDomain/enumeratedDomain[1]/@enforced", enforced);
     }
 
@@ -669,7 +677,7 @@ class NominalOrdinalPanel extends JPanel implements WizardPageSubPanelAPI {
 
         Object nextRowObj = it.next();
         if (nextRowObj==null) continue;
-        
+
         List nextRow = (List)nextRowObj;
         if (nextRow.size() < 1) continue;
         nextStr = (String) nextRow.get(0);
@@ -678,7 +686,7 @@ class NominalOrdinalPanel extends JPanel implements WizardPageSubPanelAPI {
         nomOrdBuff.append("textDomain[1]/pattern[");
         nomOrdBuff.append(index++);
         nomOrdBuff.append("]");
-        
+
         returnMap.put(nomOrdBuff.toString(), nextStr);
       }
 
@@ -789,13 +797,20 @@ class NominalOrdinalPanel extends JPanel implements WizardPageSubPanelAPI {
   **/
 
   public void setPanelData(String xPathRoot, OrderedMap map) {
-    
+
     Log.debug(50, "datapackagewizard: NominalOrdinalPanel.setPanelData() " +
       "called with xPathRoot = " + xPathRoot);
 
     // future enhancements to the NominalOrdinalPanel dialog should map
     // the following xml attribute to an appropriate widget, and should also
     // handle multiple enumeratedDomains
+
+    String id = (String)map.get(xPathRoot + "/@id");
+    if ( id != null ) {
+      nonNumericDomainID = id.toString();
+      map.remove(xPathRoot + "/@id");
+    }
+
     String enforced = (String)map.get(xPathRoot + "/enumeratedDomain[1]/@enforced");
     if ( enforced != null && !enforced.equals("") ) {
       enforcedField = enforced.toString();
@@ -863,7 +878,7 @@ class NominalOrdinalPanel extends JPanel implements WizardPageSubPanelAPI {
         codeLocationValue = CODES_DEFINED_HERE;
         codeLocationPickList.setSelectedItem(codeLocationPicklistVals[0]);
         domainPickList.setSelectedItem(this.textEnumPicklistVals[0]);
-        
+
         return;
       }
     }
