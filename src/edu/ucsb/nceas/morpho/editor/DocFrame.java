@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: sgarg $'
- *     '$Date: 2005-06-20 19:33:42 $'
- * '$Revision: 1.168 $'
+ *     '$Date: 2005-06-28 19:14:46 $'
+ * '$Revision: 1.169 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1377,7 +1377,7 @@ public class DocFrame extends javax.swing.JFrame
    *
    * @param node  The new SelectedNodes value
    */
-  void setSelectedNodes(DefaultMutableTreeNode node)
+  public void setSelectedNodes(DefaultMutableTreeNode node)
   {
     DefaultMutableTreeNode parentNode = null;
     DefaultMutableTreeNode tempNode = null;
@@ -1569,7 +1569,7 @@ public class DocFrame extends javax.swing.JFrame
               ni1.setSelected(false);
             }
           }
-
+          tree.repaint();
           tree.invalidate();
 //DFH         OutputScrollPanel.repaint();
         }
@@ -2157,7 +2157,7 @@ public class DocFrame extends javax.swing.JFrame
                       (DefaultMutableTreeNode) childEnum.nextElement();
                   NodeInfo childInfo = (NodeInfo)childNode.getUserObject();
                   if (childNode != cNode && !childInfo.isXMLAttribute()
-                      && !childInfo.checkbox_flag && !childInfo.choice_flag
+                      && !childInfo.isCheckbox() && !childInfo.isChoice()
                      && hasNonEmptyTextLeaves(childNode)) {
                     generateError = true;
                   }
