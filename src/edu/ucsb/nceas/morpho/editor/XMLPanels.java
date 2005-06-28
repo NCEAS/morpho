@@ -6,9 +6,9 @@
  *    Authors: Dan Higgins
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2005-02-22 23:21:51 $'
- * '$Revision: 1.43 $'
+ *   '$Author: sgarg $'
+ *     '$Date: 2005-06-28 19:13:35 $'
+ * '$Revision: 1.44 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -369,7 +369,29 @@ class dfhAction implements java.awt.event.ActionListener
     {
       Object object = event.getSource();
       if (object instanceof JTextField) {
-        DefaultMutableTreeNode nd = (DefaultMutableTreeNode)nodeMap.get(object);
+
+        DefaultMutableTreeNode nd = (DefaultMutableTreeNode) nodeMap.get(object);
+
+        JTextField textField = (JTextField) object;
+        if(!textField.getText().trim().equals("")){
+          DefaultMutableTreeNode parentNode = (DefaultMutableTreeNode) nd.
+              getParent();
+          NodeInfo cni = null;
+          while (parentNode != null) {
+            cni = (NodeInfo) parentNode.getUserObject();
+
+            if ( (cni.isCheckbox() || cni.isChoice()) && !cni.isSelected()) {
+              cni.setSelected(true);
+            }
+            parentNode = (DefaultMutableTreeNode) parentNode.getParent();
+          }
+          if(container != null){
+            container.setSelectedNodes( (DefaultMutableTreeNode) nd.getRoot());
+          }
+          if(tree != null){
+            tree.repaint();
+          }
+        }
         NodeInfo info = (NodeInfo)(nd.getUserObject());
 //        info.setPCValue(" "+((JTextField)object).getText());
         String temp = ((JTextField)object).getText().trim();
