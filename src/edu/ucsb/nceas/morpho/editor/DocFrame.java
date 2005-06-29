@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: sgarg $'
- *     '$Date: 2005-06-29 17:00:52 $'
- * '$Revision: 1.170 $'
+ *     '$Date: 2005-06-29 20:14:37 $'
+ * '$Revision: 1.171 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1206,12 +1206,14 @@ public class DocFrame extends javax.swing.JFrame
      }
      int cnt = -1;
      Enumeration enumeration = startNode.preorderEnumeration();
+     boolean foundNode = false;
      while (enumeration.hasMoreElements()) {
        DefaultMutableTreeNode nd = (DefaultMutableTreeNode)enumeration.nextElement();
        NodeInfo ni = (NodeInfo)nd.getUserObject();
        String nodeName = (ni.getName()).trim();
        if (nodeName.indexOf(newName)>-1) {
          cnt++;
+         foundNode = true;
          if (cnt == n) {
            Object[] path = nd.getPath();
            TreePath tp = new TreePath(path);
@@ -1222,10 +1224,18 @@ public class DocFrame extends javax.swing.JFrame
          }
        }
      }
-     // no node was found
-     String msg = "Sorry, could not locate a node containing '"+name+"'";
-     JOptionPane.showMessageDialog(this, msg, "alert", JOptionPane.INFORMATION_MESSAGE);
-     findNodeCount = 0;
+
+     if(foundNode){
+       // more nodes were not found - execute findNode again and search for the
+       findNode(treeNode, name, 0);
+     } else {
+         // no node was found
+       String msg = "Sorry, could not locate a node containing '" + name +
+           "'";
+       JOptionPane.showMessageDialog(this, msg, "alert",
+           JOptionPane.INFORMATION_MESSAGE);
+     }
+       findNodeCount = 0;
 
   }
 
@@ -2066,10 +2076,15 @@ public class DocFrame extends javax.swing.JFrame
           // first build Vector of nodes from current leaf to root
           Vector path2root = new Vector();
           path2root.addElement(curNode);
+          String pathToRoot = "";
+          pathToRoot = curNode.toString() + pathToRoot;
+
           while (parentNode != null) {
             path2root.addElement(parentNode);
+            pathToRoot = parentNode.toString() + "/" + pathToRoot;
             parentNode = (DefaultMutableTreeNode)parentNode.getParent();
           }
+
           // now go from the root toward the leaf, trimming branches
           DefaultMutableTreeNode cNode;
 
@@ -2080,7 +2095,6 @@ public class DocFrame extends javax.swing.JFrame
             String card = cni.getCardinality();
 
             if((cni.isCheckbox() || cni.isChoice()) && !cni.isSelected()){
-                String pathToRoot = "";
                 pathToRoot = cNode.toString() + pathToRoot;
                 while (parentNode != null) {
                   pathToRoot = parentNode.toString() + "/" + pathToRoot;
@@ -2129,13 +2143,6 @@ public class DocFrame extends javax.swing.JFrame
                     parentNode.remove(tempNode);
                   }
                 } else if(cNode.getRoot() == node) {
-                  String pathToRoot = "";
-                  pathToRoot = cNode.toString() + pathToRoot;
-                  while (parentNode != null) {
-                    pathToRoot = parentNode.toString() + "/" + pathToRoot;
-                    parentNode = (DefaultMutableTreeNode) parentNode.getParent();
-                  }
-
                   if(errorString.equals(""))
                     errorString = errorString + "\n\t\t" + pathToRoot;
                   else
@@ -2165,21 +2172,15 @@ public class DocFrame extends javax.swing.JFrame
               }
 
               if (generateError && !hasNonEmptyTextLeaves(cNode)) {
-                  String pathToRoot = "";
-                  pathToRoot = cNode.toString() + pathToRoot;
-                  while (parentNode != null) {
-                    pathToRoot = parentNode.toString() + "/" + pathToRoot;
-                    parentNode = (DefaultMutableTreeNode) parentNode.getParent();
-                  }
                   if(errorString.equals(""))
                     errorString = errorString + "\n\t\t" + pathToRoot;
                   else
                     errorString = errorString + ",\n\t\t" + pathToRoot;
                   break;
+                }
               }
             }
           }
-        }
 
         // end 'if (pcdata...'
       }
@@ -2878,7 +2879,7 @@ public class DocFrame extends javax.swing.JFrame
     String xmlout = writeXMLString(rootNode, true);
     if(xmlout.indexOf("<?xml version=\"1.0\"?>")<0){
       Log.debug(5, "Unable to trim following nodes: " + xmlout +
-          "\nPlease check if all the required values are entered "
+          "\n\nPlease check if all the required values are entered "
          + "and that there are no empty fields");
       return;
     }
@@ -3480,9 +3481,7 @@ public class DocFrame extends javax.swing.JFrame
       } else if (object == ContractTreeButton) {
         ContractTreeButton_actionPerformed(event);
       } else if (object == choiceCombo) {
-        if(event.getActionCommand().equals("comboBoxChanged")){
-          choiceCombo_actionPerformed(event);
-        }
+        choiceCombo_actionPerformed(event);
       }
 
     }
