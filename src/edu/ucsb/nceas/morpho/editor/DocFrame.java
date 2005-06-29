@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: sgarg $'
- *     '$Date: 2005-06-28 19:14:46 $'
- * '$Revision: 1.169 $'
+ *     '$Date: 2005-06-29 17:00:52 $'
+ * '$Revision: 1.170 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -3480,7 +3480,9 @@ public class DocFrame extends javax.swing.JFrame
       } else if (object == ContractTreeButton) {
         ContractTreeButton_actionPerformed(event);
       } else if (object == choiceCombo) {
-        choiceCombo_actionPerformed(event);
+        if(event.getActionCommand().equals("comboBoxChanged")){
+          choiceCombo_actionPerformed(event);
+        }
       }
 
     }
