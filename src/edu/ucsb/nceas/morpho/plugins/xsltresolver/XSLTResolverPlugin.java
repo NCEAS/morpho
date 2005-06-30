@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: sambasiv $'
- *     '$Date: 2004-04-05 21:58:20 $'
- * '$Revision: 1.11 $'
+ *   '$Author: sgarg $'
+ *     '$Date: 2005-06-30 16:22:43 $'
+ * '$Revision: 1.12 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -53,7 +53,7 @@ import edu.ucsb.nceas.morpho.util.Log;
  *  Plugin that provides a service to resolve DOCTYPES to XSLT stylesheets
  */
 public class XSLTResolverPlugin implements  XSLTResolverInterface,
-                                            PluginInterface, 
+                                            PluginInterface,
                                             ServiceProvider
 {
 
@@ -61,10 +61,16 @@ public class XSLTResolverPlugin implements  XSLTResolverInterface,
     private final String CONFIG_KEY_DOCTYPE_TO_XSLT = "doctype_xslt_mappings";
     private final String CONFIG_KEY_DOCTYPE         = "doctype";
     private final String CONFIG_KEY_XSLT            = "xslt";
-                                            
+
+    private final String CONFIG_KEY_GENERIC_LOCATION = "genericStylesheetLocation";
+    private final String CONFIG_KEY_DOCTYPE_TO_LOCATIONS
+                                                    = "doctype_xslt_location_mappings";
+    private final String CONFIG_KEY_LOCATIONS       = "location";
+
     private final String    GENERIC_STYLESHEET;
     private final ConfigXML config;
-    private       Hashtable mappings;
+    private       Hashtable xslt_mappings;
+    private       Hashtable location_mappings;
 
     private final ClassLoader classLoader;
 
@@ -72,13 +78,13 @@ public class XSLTResolverPlugin implements  XSLTResolverInterface,
     {
         classLoader = Morpho.class.getClassLoader();
         Thread t = Thread.currentThread();
-        t.setContextClassLoader(classLoader);        
+        t.setContextClassLoader(classLoader);
 
         this.config = Morpho.getConfiguration();
         GENERIC_STYLESHEET = config.get(CONFIG_KEY_GENERIC_STYLESHEET, 0);
         initDoctypeToXSLTMappings();
     }
-    
+
     /**
      *  Required by PluginInterface; called automatically at runtime
      *
@@ -86,37 +92,37 @@ public class XSLTResolverPlugin implements  XSLTResolverInterface,
      */
     public void initialize(Morpho morpho)
     {
-        try 
+        try
         {
           ServiceController services = ServiceController.getInstance();
           services.addService(XSLTResolverInterface.class, this);
           Log.debug(20, "Service added: XSLTResolverInterface.");
-        } 
+        }
         catch (ServiceExistsException see)
         {
           Log.debug(6, "Service registration failed: XSLTResolverInterface");
           Log.debug(6, see.toString());
         }
     }
-     
-    
+
+
     /**
      *  Required by XSLTResolverInterface:
-     *  method to return a Reader object, which will provide access to a 
-     *  character-based XSLT stylesheet. The stylesheet to be returned is 
-     *  determined based on the unique DOCID String identifier passed to this 
-     *  method.  If a stylesheet corresponding to the DOCID cannot be found, 
-     *  a default or generic stylesheet may be returned.  
-     *  If no suitable stylesheet can be returned, a DocumentNotFoundException 
+     *  method to return a Reader object, which will provide access to a
+     *  character-based XSLT stylesheet. The stylesheet to be returned is
+     *  determined based on the unique DOCID String identifier passed to this
+     *  method.  If a stylesheet corresponding to the DOCID cannot be found,
+     *  a default or generic stylesheet may be returned.
+     *  If no suitable stylesheet can be returned, a DocumentNotFoundException
      *  is thrown
      *
-     *  @param identifier - unique identifier used to determine the stylesheet 
-     *                to return (e.g. DOCTYPE for DTD-defined XML, or 
-     *                schemaLocation or rootnode namespace for XSD-defined XML) 
+     *  @param identifier - unique identifier used to determine the stylesheet
+     *                to return (e.g. DOCTYPE for DTD-defined XML, or
+     *                schemaLocation or rootnode namespace for XSD-defined XML)
      *
-     *  @return       a Reader for the character-based XSLT stylesheet. If a 
-     *                stylesheet corresponding to the DOCID cannot be found, 
-     *                a default or generic stylesheet may be returned. 
+     *  @return       a Reader for the character-based XSLT stylesheet. If a
+     *                stylesheet corresponding to the DOCID cannot be found,
+     *                a default or generic stylesheet may be returned.
      *
      *  @throws DocumentNotFoundException if no suitable stylesheet is available
      */
@@ -125,9 +131,9 @@ public class XSLTResolverPlugin implements  XSLTResolverInterface,
     {
         Log.debug(50, "\nXSLTResolver got: "+identifier);
         Reader rdr = null;
-        String xslPathString = getFromMappings(identifier);
+        String xslPathString = getFromMappings(xslt_mappings, identifier);
         if (xslPathString==null || xslPathString.trim().equals("")) {
-        
+
             rdr =  new InputStreamReader(
                             classLoader.getResourceAsStream(GENERIC_STYLESHEET));
             Log.debug(50, "getXSLTStylesheetReader() failed to find valid "
@@ -144,30 +150,64 @@ public class XSLTResolverPlugin implements  XSLTResolverInterface,
         return rdr;
     }
 
+    /**
+     *  Required by XSLTResolverInterface:
+     *  method to return a String, which will contain the name of the dir
+     *  which conatins the XSLT stylesheets. The dir to be returned is
+     *  determined based on the unique DOCID String identifier passed to this
+     *  method.  If a stylesheet corresponding to the DOCID cannot be found,
+     *  a default or generic stylesheet may be returned.
+     *
+     *  @param identifier - unique identifier used to determine the stylesheet
+     *                to return (e.g. DOCTYPE for DTD-defined XML, or
+     *                schemaLocation or rootnode namespace for XSD-defined XML)
+     *
+     *  @return       a String, which will contain the name of the dir
+     *                which conatins the XSLT stylesheets. If a
+     *                stylesheet corresponding to the DOCID cannot be found,
+     *                a default or generic stylesheet may be returned.
+     *
+     */
+     public String getXSLTStylesheetLocation(String identifier)
+     {
+        Log.debug(50, "\ngetXSLTStylesheetLocation got: "+identifier);
+        String xslPathString = getFromMappings(location_mappings, identifier);
+        if (xslPathString==null || xslPathString.trim().equals("")) {
+          xslPathString = config.get(CONFIG_KEY_GENERIC_LOCATION, 0);
+        }
+        Log.debug(50, "\ngetXSLTStylesheetLocation returning: "+xslPathString);
+        return xslPathString;
+    }
+
     // gets the doctype-to-xslt mappings from the config file and adds them to
     //the mappings hashtable
     private void initDoctypeToXSLTMappings()
     {
-        mappings = config.getHashtable( CONFIG_KEY_DOCTYPE_TO_XSLT, 
-                                        CONFIG_KEY_DOCTYPE, 
+        xslt_mappings = config.getHashtable( CONFIG_KEY_DOCTYPE_TO_XSLT,
+                                        CONFIG_KEY_DOCTYPE,
                                         CONFIG_KEY_XSLT );
+
+        location_mappings = config.getHashtable( CONFIG_KEY_DOCTYPE_TO_LOCATIONS,
+                                        CONFIG_KEY_DOCTYPE,
+                                        CONFIG_KEY_LOCATIONS );
+
     }
-    
-    //trims whitespace, checks for null and empty strings, checks to see if 
+
+    //trims whitespace, checks for null and empty strings, checks to see if
     //already in HashTable, and if so, returns value for this key
-    private String getFromMappings(String key)
+    private String getFromMappings(Hashtable mappings, String key)
     {
         Log.debug(50,"XSLTResolverPlugin.getFromMappings() got key="+key);
-                                                            
+
         if ( key==null || key.equals("")) {
-        
+
             Log.debug(12,"ALERT: XSLTResolverPlugin.getFromMappings(): got key="
                                                                           +key);
         } else if (!mappings.containsKey(key)) {
-        
+
             Log.debug(12,"ALERT: XSLTResolverPlugin.getFromMappings():"
                                                    +" could not find key="+key);
-        } else { 
+        } else {
             String xslt = (String)mappings.get(key);
             Log.debug(50,"XSLTResolverPlugin.getFromMappings() value = "+xslt);
             return xslt;
