@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <config>
-  <version>1.5.1</version>
+  <version>1.6-RC1</version>
   <dataLocationInlineOnline>online</dataLocationInlineOnline>
   <plugin>edu.ucsb.nceas.morpho.query.QueryPlugin</plugin>
   <plugin>edu.ucsb.nceas.morpho.datapackage.DataPackagePlugin</plugin>
@@ -229,9 +229,18 @@
   <organization>UCNRS</organization>
   <organization>PISCO</organization>
   <lookAndFeel></lookAndFeel>
-  <stylesheetLocation>style/eml200</stylesheetLocation>
   <genericStylesheet>style/generic.xsl</genericStylesheet>
+  <genericStylesheetLocation>style/generic.xsl</genericStylesheetLocation>
+  <emlCSSLocation>style</emlCSSLocation>
+  <doctype_xslt_location_mappings>
+      <doctype>eml://ecoinformatics.org/eml-2.0.1</doctype>
+      <location>style/eml201</location>
+      <doctype>eml://ecoinformatics.org/eml-2.0.0</doctype>
+      <location>style/eml200</location>
+  </doctype_xslt_location_mappings>
   <doctype_xslt_mappings>
+      <doctype>eml://ecoinformatics.org/eml-2.0.1</doctype>
+      <xslt>style/eml201/eml-2.0.1.xsl</xslt>
       <doctype>eml://ecoinformatics.org/eml-2.0.0</doctype>
       <xslt>style/eml200/eml-2.0.0.xsl</xslt>
       <doctype>-//ecoinformatics.org//eml-access-2.0.0beta6//EN</doctype>
