@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: sambasiv $'
- *     '$Date: 2004-06-02 22:41:30 $'
- * '$Revision: 1.70 $'
+ *   '$Author: sgarg $'
+ *     '$Date: 2005-06-30 16:27:20 $'
+ * '$Revision: 1.71 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -268,6 +268,36 @@ public class WizardSettings {
   +"   xmlns:eml=\"eml://ecoinformatics.org/eml-2.0.0\" "
   +"   xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" "
   +"   xsi:schemaLocation=\"eml://ecoinformatics.org/eml-2.0.0 eml.xsd\"> "
+  +"   <dataset> "
+  +"   <title> </title> "
+  +"   <creator> </creator>"
+  +"   <coverage><taxonomicCoverage><taxonomicSystem><classificationSystem>"
+  +"                             <classificationSystemCitation><title> </title>"
+  +"            </classificationSystemCitation> </classificationSystem>"
+  +"            </taxonomicSystem> </taxonomicCoverage></coverage>"
+  +"   <project><title> </title></project>"
+  +"   </dataset> "
+  +"</eml:eml>";
+
+  protected static final String NEW_EML201_DOCUMENT_TEXT =
+  "<eml:eml "
+  +"   packageId=\"\" system=\"knb\" "
+  +"   xmlns:eml=\"eml://ecoinformatics.org/eml-2.0.1\" "
+  +"   xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" "
+//  +"   xmlns:ds=\"eml://ecoinformatics.org/dataset-2.0.1\" "
+  +"   xsi:schemaLocation=\"eml://ecoinformatics.org/eml-2.0.1 eml.xsd\"> "
+  +"   <dataset> "
+  +"   <title> </title> "
+  +"   <creator> </creator>"
+  +"   </dataset> "
+  +"</eml:eml>";
+
+  protected static final String TEMP_REFS_EML201_DOCUMENT_TEXT =
+  "<eml:eml "
+  +"   packageId=\"\" system=\"knb\" "
+  +"   xmlns:eml=\"eml://ecoinformatics.org/eml-2.0.1\" "
+  +"   xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" "
+  +"   xsi:schemaLocation=\"eml://ecoinformatics.org/eml-2.0.1 eml.xsd\"> "
   +"   <dataset> "
   +"   <title> </title> "
   +"   <creator> </creator>"
@@ -693,7 +723,7 @@ public class WizardSettings {
 
     int idx = Arrays.binarySearch(arr, value);
 		int pos = 0;
-		if(idx >= 0) pos = idx; 
+		if(idx >= 0) pos = idx;
     else pos = -(idx + 1);
     int i = 0;
     for(i = 0 ;i < pos; i++)
@@ -811,10 +841,10 @@ public class WizardSettings {
     String res = (String)(unitPreferenceMap.get(unitType.toLowerCase()));
     return res;
   }
-	
-	
+
+
   public static boolean isCustomUnit(String type, String unit) {
-	
+
 		type = getStandardFormOfUnitType(type);
     boolean newT = unitDictionaryUnitsCacheMap.containsKey(type);
     if(newT) {
@@ -825,7 +855,7 @@ public class WizardSettings {
 			return true;
 		}
 	}
-	
+
 	  /**
    *  given an entityType, returns an <code>OrderedMap<code> whose keys contain
    *  the human-readable display names for all the allowable MIME types (for the

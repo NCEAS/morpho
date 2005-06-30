@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: sgarg $'
- *     '$Date: 2005-01-27 20:23:09 $'
- * '$Revision: 1.40 $'
+ *     '$Date: 2005-06-30 16:27:20 $'
+ * '$Revision: 1.41 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -113,7 +113,7 @@ public class DataPackageWizardPlugin implements PluginInterface,
     }
 
     AbstractDataPackage tempDataPackage = DataPackageFactory.getDataPackage(
-      getNewEmptyDataPackageDOM(WizardSettings.TEMP_REFS_EML200_DOCUMENT_TEXT));
+      getNewEmptyDataPackageDOM(WizardSettings.TEMP_REFS_EML201_DOCUMENT_TEXT));
     if(tempDataPackage == null) return;
 
     UIController.getInstance().setWizardIsRunning(tempDataPackage);

@@ -7,9 +7,9 @@
  *    Authors: Matthew Brooke
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2004-04-26 18:58:12 $'
- * '$Revision: 1.66 $'
+ *   '$Author: sgarg $'
+ *     '$Date: 2005-06-30 16:27:20 $'
+ * '$Revision: 1.67 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -705,7 +705,7 @@ public class WizardContainerFrame
     ////////////////////////////////////////////////////////////////////////////
 
     //create a new empty DOM document to be populated by the wizard values:
-    Node rootNode = getNewEmptyDataPackageDOM(WizardSettings.NEW_EML200_DOCUMENT_TEXT);
+    Node rootNode = getNewEmptyDataPackageDOM(WizardSettings.NEW_EML201_DOCUMENT_TEXT);
 
     //now populate it...
     try {
