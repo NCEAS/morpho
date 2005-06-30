@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: sgarg $'
- *     '$Date: 2005-06-30 02:06:47 $'
- * '$Revision: 1.172 $'
+ *     '$Date: 2005-06-30 16:04:45 $'
+ * '$Revision: 1.173 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -3528,12 +3528,10 @@ public class DocFrame extends javax.swing.JFrame
         // second id in the tree is shown instead of the first one
         // below code tries to work around this problem. - SG
         if (sel.equals(lastFoundString)) {
-          if(previousEvent.equals("comboBoxChanged")
-              && event.getActionCommand().equals("comboBoxEdited")){
+          if(previousEvent.equals("comboBoxEdited") && event.getActionCommand().equals("comboBoxEdited")){
             findNodeCount++;
-            previousEvent = "";
           } else {
-            previousEvent = "comboBoxChanged";
+            findNodeCount = 0;
           }
         }
         else {
@@ -3541,6 +3539,7 @@ public class DocFrame extends javax.swing.JFrame
         }
         findNode(rootNode, sel, findNodeCount);
         lastFoundString = sel;
+        previousEvent = event.getActionCommand();
       }
   }
 
