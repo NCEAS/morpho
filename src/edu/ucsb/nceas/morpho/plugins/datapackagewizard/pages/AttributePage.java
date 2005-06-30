@@ -7,8 +7,8 @@
 *    Release: @release@
 *
 *   '$Author: sgarg $'
-*     '$Date: 2005-05-03 21:11:22 $'
-* '$Revision: 1.33 $'
+*     '$Date: 2005-06-30 16:28:16 $'
+* '$Revision: 1.34 $'
 *
 * This program is free software; you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -91,7 +91,7 @@ public class AttributePage extends AbstractUIPage {
   public static final int BORDERED_PANEL_TOT_ROWS = 7;
   public static final int DOMAIN_NUM_ROWS = 8;
 
-  private final String CONFIG_KEY_STYLESHEET_LOCATION = "stylesheetLocation";
+  private final String CONFIG_KEY_CSS_LOCATION = "emlCSSLocation";
   private final String CONFIG_KEY_MCONFJAR_LOC   = "morphoConfigJarLocation";
 
   // optional xml attributes to the <attribute> tag
@@ -1462,7 +1462,7 @@ public class AttributePage extends AbstractUIPage {
       pathBuff.append("/");
       pathBuff.append(config.get(CONFIG_KEY_MCONFJAR_LOC, 0));
       pathBuff.append("!/");
-      pathBuff.append(config.get(CONFIG_KEY_STYLESHEET_LOCATION, 0));
+      pathBuff.append(config.get(CONFIG_KEY_CSS_LOCATION, 0));
       FULL_STYLE_PATH = pathBuff.toString();
       pathBuff = null;
     }
