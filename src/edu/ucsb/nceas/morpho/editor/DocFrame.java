@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: sgarg $'
- *     '$Date: 2005-06-29 20:14:37 $'
- * '$Revision: 1.171 $'
+ *     '$Date: 2005-06-30 02:06:47 $'
+ * '$Revision: 1.172 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -3483,7 +3483,6 @@ public class DocFrame extends javax.swing.JFrame
       } else if (object == choiceCombo) {
         choiceCombo_actionPerformed(event);
       }
-
     }
   }
 
@@ -3509,6 +3508,7 @@ public class DocFrame extends javax.swing.JFrame
     }
   }
 
+  private String previousEvent = "";
   public void choiceCombo_actionPerformed(java.awt.event.ActionEvent event)
   {
       String sel = (String)choiceCombo.getSelectedItem();
@@ -3520,8 +3520,21 @@ public class DocFrame extends javax.swing.JFrame
         tree.setSelectionRow(0);
       }
       else {
+        // hack to work around two events being generated
+        // when the user types something into the comboBox
+        // both, comboBoxEdited and comboBoxChanged are
+        // generated when a user types something into the combobox
+        // and hits enter. hence if a user is looking for id, the
+        // second id in the tree is shown instead of the first one
+        // below code tries to work around this problem. - SG
         if (sel.equals(lastFoundString)) {
-          findNodeCount++;
+          if(previousEvent.equals("comboBoxChanged")
+              && event.getActionCommand().equals("comboBoxEdited")){
+            findNodeCount++;
+            previousEvent = "";
+          } else {
+            previousEvent = "comboBoxChanged";
+          }
         }
         else {
           findNodeCount = 0;
