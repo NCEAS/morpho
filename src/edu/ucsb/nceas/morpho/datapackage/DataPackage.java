@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: sambasiv $'
- *     '$Date: 2004-04-05 21:58:19 $'
- * '$Revision: 1.118 $'
+ *   '$Author: sgarg $'
+ *     '$Date: 2005-06-30 16:16:55 $'
+ * '$Revision: 1.119 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -106,17 +106,17 @@ public class DataPackage implements XMLFactoryInterface
   private final MetacatDataStore    metacatDataStore;
   private final String              HTMLEXTENSION = ".html";
   private final String              METADATAHTML = "metadata";
-  private final String CONFIG_KEY_STYLESHEET_LOCATION = "stylesheetLocation";
+  private final String CONFIG_KEY_CSS_LOCATION = "emlCSSLocation";
   private final String CONFIG_KEY_MCONFJAR_LOC   = "morphoConfigJarLocation";
   private final String EXPORTSYLE ="export";
   private final String EXPORTSYLEEXTENSION =".css";
-  
+
   Hashtable entity2PhysicalFile;
   Hashtable entity2AttributeFile;
   Hashtable entity2DataFile;
-  
-  
-  
+
+
+
   /**
    * Create a new data package object with an id, location and associated
    * relations.
@@ -126,7 +126,7 @@ public class DataPackage implements XMLFactoryInterface
    * @param relations: a vector of all relations in this package.
    * @param morpho: reference to the main Morpho application.
    */
-  public DataPackage(String location, String identifier, Vector relations, 
+  public DataPackage(String location, String identifier, Vector relations,
                      Morpho morpho, boolean accessCheckFlag)
   {
     entity2PhysicalFile = new Hashtable();
@@ -140,20 +140,20 @@ public class DataPackage implements XMLFactoryInterface
     this.location   = location;
     this.id         = identifier;
     this.config     = morpho.getConfiguration();
-    
+
     Log.debug(11, "Creating new DataPackage Object");
     Log.debug(11, "id: " + this.id);
     Log.debug(11, "location: " + location);
-    
-    
+
+
     fileSysDataStore  = new FileSystemDataStore(morpho);
     metacatDataStore  = new MetacatDataStore(morpho);
-    
+
     //read the file containing the triples - usually the datapackage file:
     try {
       tripleFile = getFileWithID(this.id);
     } catch (Throwable t) {
-      //already handled in getFileWithID() method, 
+      //already handled in getFileWithID() method,
       //so just abandon this instance:
       return;
     }
@@ -169,14 +169,14 @@ public class DataPackage implements XMLFactoryInterface
 
   // util to read the file from either FileSystemDataStore or MetacatDataStore
   private File getFileWithID(String ID) throws Throwable {
-    
+
     File returnFile = null;
     if(location.equals(DataPackageInterface.METACAT)) {
       try {
         Log.debug(11, "opening metacat file");
         dataPkgFile = metacatDataStore.openFile(ID);
         Log.debug(11, "metacat file opened");
-      
+
       } catch(FileNotFoundException fnfe) {
 
         Log.debug(0,"Error in DataPackage.getFileFromDataStore(): "
@@ -185,7 +185,7 @@ public class DataPackage implements XMLFactoryInterface
         throw fnfe.fillInStackTrace();
 
       } catch(CacheAccessException cae) {
-    
+
         Log.debug(0,"Error in DataPackage.getFileFromDataStore(): "
                                 +"metacat cache problem: "+cae.getMessage());
         cae.printStackTrace();
@@ -196,43 +196,43 @@ public class DataPackage implements XMLFactoryInterface
         Log.debug(11, "opening local file");
         dataPkgFile = fileSysDataStore.openFile(ID);
         Log.debug(11, "local file opened");
-      
+
       } catch(FileNotFoundException fnfe) {
-    
+
         Log.debug(0,"Error in DataPackage.getFileFromDataStore(): "
                                 +"local file not found: "+fnfe.getMessage());
         fnfe.printStackTrace();
         throw fnfe.fillInStackTrace();
       }
     }
-    return dataPkgFile;  
+    return dataPkgFile;
   }
-   
+
   //initialize the global "triples" variable to hold the collection of triples
   private void initTriplesCollection()  {
     triples = new TripleCollection(tripleFile, morpho);
   }
-  
-  
-  //check if identifier actually points to a valid 
+
+
+  //check if identifier actually points to a valid
   //sub-element (module, subtree etc)
   private boolean idExists(String identifier) {
     return getAllIdentifiers().contains(identifier);
   }
-  
-  
-  // Given a String identifier which points to a sub-element of this datapackage 
-  // (for example, a Module, or a sub-tree), verify that it exists, and if so 
+
+
+  // Given a String identifier which points to a sub-element of this datapackage
+  // (for example, a Module, or a sub-tree), verify that it exists, and if so
   // retrieve it from either metacat or local storage
-  // @param     identifier                  the unique identifier needed to 
-  //                                        locate the desired sub-element. 
-  // @return    a <code>java.io.File</code> 
+  // @param     identifier                  the unique identifier needed to
+  //                                        locate the desired sub-element.
+  // @return    a <code>java.io.File</code>
   // @throws    DocumentNotFoundException   if document cannot be found, or
-  //                                        if document cannot succesfully be 
+  //                                        if document cannot succesfully be
   //                                        opened and a Reader returned
-  private File openAsFile(String identifier) throws  DocumentNotFoundException  
+  private File openAsFile(String identifier) throws  DocumentNotFoundException
   {
-    //first check if this identifier points to a 
+    //first check if this identifier points to a
     //valid sub-element (module or subtree)
     if (idExists(identifier)==false)  {
       throw new DocumentNotFoundException("DataPackage.open(): "
@@ -248,27 +248,27 @@ public class DataPackage implements XMLFactoryInterface
     }
     return elementSrcFile;
   }
-  
+
   /**
    *  ----------------- REQUIRED BY XMLFactoryInterface  -----------------------
    *
-   * Open a sub-element of this datapackage (for example, a Module, or a 
+   * Open a sub-element of this datapackage (for example, a Module, or a
    * sub-tree), given its String identifier.
-   * @param     identifier                  the unique identifier needed to 
-   *                                        locate the desired sub-element. 
-   * @return    a <code>java.io.Reader</code> to allow direct read access 
+   * @param     identifier                  the unique identifier needed to
+   *                                        locate the desired sub-element.
+   * @return    a <code>java.io.Reader</code> to allow direct read access
    *
    *  @throws DocumentNotFoundException if id does not point to a document, or
    *          if requested document exists but cannot be accessed.
    */
   Properties params = new Properties();
-  
+
   public Reader openAsReader(String identifier) throws DocumentNotFoundException
   {
     int             paramIndex, eqIndex;
     String          paramString, nextToken;
     StringTokenizer tokenizer;
-    
+
     //if it contains a question mark, look for "name=val" pairs:
     paramIndex = identifier.indexOf("?");
     if (paramIndex>=0) {
@@ -285,11 +285,11 @@ public class DataPackage implements XMLFactoryInterface
           Log.debug(44,"DataPackage.openAsReader() got uri params: "+nextToken);
         }
       }
-      //strip params from end so next part of method can 
+      //strip params from end so next part of method can
       //open file denoted by "identifier"
       identifier = identifier.substring(0,paramIndex);
     }
-    
+
     FileReader reader = null;
     try {
         reader = new FileReader(openAsFile(identifier));
@@ -312,20 +312,20 @@ public class DataPackage implements XMLFactoryInterface
 	public Document openAsDom(String id) {
 		return null;
 	}
-	
+
     /**
-   * Open a sub-element of this datapackage (for example, a Module, or a 
+   * Open a sub-element of this datapackage (for example, a Module, or a
    * sub-tree), given its String identifier.
-   * @param     identifier                  the unique identifier needed to 
-   *                                        locate the desired sub-element. 
-   * @return    a <code>java.io.InputStream</code> to allow direct read access 
+   * @param     identifier                  the unique identifier needed to
+   *                                        locate the desired sub-element.
+   * @return    a <code>java.io.InputStream</code> to allow direct read access
    *                                        to the source
    * @throws    DocumentNotFoundException   if document cannot be found
-   * @throws    FileNotFoundException       if document cannot succesfully be 
+   * @throws    FileNotFoundException       if document cannot succesfully be
    *                                        opened and an InputStream returned
    */
-  public InputStream openAsInputStream(String identifier) 
-                        throws  DocumentNotFoundException, FileNotFoundException 
+  public InputStream openAsInputStream(String identifier)
+                        throws  DocumentNotFoundException, FileNotFoundException
   {
     return new FileInputStream(openAsFile(identifier));
   }
@@ -339,7 +339,7 @@ public class DataPackage implements XMLFactoryInterface
   }
 
   /**
-   * parses the triples file and pulls out the basic information (title, 
+   * parses the triples file and pulls out the basic information (title,
    * altTitle, Originators)
    */
   private void parseTripleFile()
@@ -378,7 +378,7 @@ public class DataPackage implements XMLFactoryInterface
       originatorNodeList  = XPathAPI.selectNodeList(doc, originatorPath);
       titleNodeList       = XPathAPI.selectNodeList(doc, titlePath);
       altTitleNodeList    = XPathAPI.selectNodeList(doc, altTitlePath);
-      
+
       if(titleNodeList.getLength() == 0)
       {
         titleNodeList = XPathAPI.selectNodeList(doc, "//title");
@@ -388,7 +388,7 @@ public class DataPackage implements XMLFactoryInterface
     {
       System.err.println("parseTripleFile : parse threw: " + se.toString());
     }
-    
+
     Vector v = new Vector();
     for(int i=0; i<originatorNodeList.getLength(); i++)
     {
@@ -403,7 +403,7 @@ public class DataPackage implements XMLFactoryInterface
       }
     }
     docAtts.put("originator", v);
-    
+
     v = new Vector();
     for(int i=0; i<titleNodeList.getLength(); i++)
     {
@@ -415,7 +415,7 @@ public class DataPackage implements XMLFactoryInterface
       }
     }
     docAtts.put("title", v);
-    
+
     v = new Vector();
     for(int i=0; i<altTitleNodeList.getLength(); i++)
     {
@@ -428,7 +428,7 @@ public class DataPackage implements XMLFactoryInterface
     }
     docAtts.put("altTitle", v);
   }
-  
+
   /**
    * returns a hashtable of the related files taken from the triples.  These
    * are organized so that the key of the hashtable is the type of metadata
@@ -440,7 +440,7 @@ public class DataPackage implements XMLFactoryInterface
     Hashtable filesHash = new Hashtable();
 //    ConfigXML config = morpho.getConfiguration();
     String catalogPath = config.get("local_catalog_path", 0);
-    
+
     for(int i=0; i<tripleVec.size(); i++)
     {
       Triple t = (Triple)tripleVec.elementAt(i);
@@ -453,7 +453,7 @@ public class DataPackage implements XMLFactoryInterface
       {
         continue;
       }
-      
+
       try
       {
         //try to open the file locally, if it isn't here then try to get
@@ -479,7 +479,7 @@ public class DataPackage implements XMLFactoryInterface
           return null;
         }
       }
-      
+
       try
       { //get the subject files
         FileReader fr = new FileReader(subfile);
@@ -488,7 +488,7 @@ public class DataPackage implements XMLFactoryInterface
         {
           xmlString += (char)fr.read();
         }
-        
+
         String name;
         if(xmlString.equals("<?xml"))
         { //we are dealing with an xml file here.
@@ -500,7 +500,7 @@ public class DataPackage implements XMLFactoryInterface
         { //this is a data file not an xml file
           name = "Data File";
         }
-        
+
         Vector v;
         if(filesHash.containsKey(name))
         {
@@ -510,7 +510,7 @@ public class DataPackage implements XMLFactoryInterface
         {
           v = new Vector();
         }
-        
+
         if(!v.contains(subject))
         {
           v.addElement(subject);
@@ -523,7 +523,7 @@ public class DataPackage implements XMLFactoryInterface
         Log.debug(10, "error in DataPackage.getRelatedFiles():(subjects) "
                                                               + e.getMessage());
       }
-      
+
       //now parse the object files
       try
       {
@@ -550,7 +550,7 @@ public class DataPackage implements XMLFactoryInterface
           return null;
         }
       }
-      
+
       try
       { //object files
         FileReader fr = new FileReader(objfile);
@@ -559,20 +559,20 @@ public class DataPackage implements XMLFactoryInterface
         {
           xmlString += (char)fr.read();
         }
-        
+
         String name;
         if(xmlString.equals("<?xml"))
         { //we are dealing with a data file here.
           Document objDoc = PackageUtil.getDoc(objfile, catalogPath);
           DocumentType dt = objDoc.getDoctype();
           name = dt.getPublicId();
-          
+
         }
         else
         { //this is a data file not an xml file
           name = "Data File";
         }
-        
+
         Vector v;
         if(filesHash.containsKey(name))
         {
@@ -582,7 +582,7 @@ public class DataPackage implements XMLFactoryInterface
         {
           v = new Vector();
         }
-        
+
         if(!v.contains(object))
         {
           v.addElement(object);
@@ -592,16 +592,16 @@ public class DataPackage implements XMLFactoryInterface
       }
       catch(Exception e)
       {
-        Log.debug(10, "error in DataPackage.getRelatedFiles():objects " + 
+        Log.debug(10, "error in DataPackage.getRelatedFiles():objects " +
                            e.getMessage());
       }
     }
     return filesHash;
   }
-  
-  
+
+
   /**
-   * returns the location of the data package.  Either this.METACAT or 
+   * returns the location of the data package.  Either this.METACAT or
    * this.LOCAL.
    */
   public String getLocation()
@@ -611,14 +611,14 @@ public class DataPackage implements XMLFactoryInterface
 
   /**
    * returns a hashtable of vectors with the basic values in it.  Currently,
-   * the basic values for the package editor are title, altTitle and 
+   * the basic values for the package editor are title, altTitle and
    * originators
    */
   public Hashtable getAttributes()
   {
     return docAtts;
   }
-  
+
   /**
    * gets the triplesCollection created by this object
    */
@@ -626,7 +626,7 @@ public class DataPackage implements XMLFactoryInterface
   {
     return triples;
   }
-  
+
   /**
    * gets the file that contains the package information.
    */
@@ -634,7 +634,7 @@ public class DataPackage implements XMLFactoryInterface
   {
     return tripleFile;
   }
-  
+
   /**
    * returns the id of the head of this package (i.e. the resource file)
    */
@@ -642,7 +642,7 @@ public class DataPackage implements XMLFactoryInterface
   {
     return this.id;
   }
-  
+
   /**
    * Method to determine if the this pakcage has mutiple versions
    */
@@ -659,7 +659,7 @@ public class DataPackage implements XMLFactoryInterface
       }
       return flag;
   }
-    
+
   /**
    * returns the access file's id from the package
    * @return returns the accession number of the access file or null if there
@@ -676,7 +676,7 @@ public class DataPackage implements XMLFactoryInterface
       File f;
       try
       {
-        if(location.equals(DataPackageInterface.LOCAL) || 
+        if(location.equals(DataPackageInterface.LOCAL) ||
            location.equals(DataPackageInterface.BOTH))
         { //open the file locally
           f = fileSysDataStore.openFile((String)fileids.elementAt(i));
@@ -695,11 +695,11 @@ public class DataPackage implements XMLFactoryInterface
       {
         throw cae;
       }
-      
+
       String catalogpath = //config.getConfigDirectory() + File.separator +
                                        config.get("local_catalog_path",0);
       String publicid = null;
-      
+
       try
       {
         FileInputStream fis = new FileInputStream(f);
@@ -735,7 +735,7 @@ public class DataPackage implements XMLFactoryInterface
     throw new FileNotFoundException("The package did not contain an access file " +
                                 "(DataPackage.getAccessId()");
   }
-  
+
   /**
    * returns a vector containing a distinct set of all of the file ids that make
    * up this package
@@ -752,13 +752,13 @@ public class DataPackage implements XMLFactoryInterface
       {
         v.addElement(sub.trim());
       }
-      
+
       if(!v.contains(obj.trim()))
       {
         v.addElement(obj.trim());
       }
     }
-    // often access control needs to be first 
+    // often access control needs to be first
     // so lets go ahead and put it 1st in this vector
     String accessID = getAccessFileIdForDataPackage();
     accessID = accessID.trim();
@@ -769,10 +769,10 @@ public class DataPackage implements XMLFactoryInterface
       // now put it at start of vector
       v.insertElementAt(accessID,0);
     }
-    
+
     return v;
   }
-  
+
   /**
    * uploads the package with the default of automatically updating the ids
    * when a conflict occurs.
@@ -781,22 +781,22 @@ public class DataPackage implements XMLFactoryInterface
   {
     return upload(true);
   }
-  
-  
+
+
   /**
    * Uploads a local package to metacat
    * @return the package that was uploaded.  Note that this may have a different
    * id from the one that was told to upload.
    * @param updateIds if this is true, the upload will automatically update
    * the ids of all of the package documents if an id conflict is found.  if
-   * it is false, a MetacatUploadException will be raised when an id conflict 
+   * it is false, a MetacatUploadException will be raised when an id conflict
    * occurs
    */
   public DataPackage upload(boolean updateIds) throws MetacatUploadException
   {
     Log.debug(20, "Uploading package.");
-    
-    if(!location.equals(DataPackageInterface.BOTH) && 
+
+    if(!location.equals(DataPackageInterface.BOTH) &&
       !location.equals(DataPackageInterface.METACAT))
     { //if it is not already on metacat, send it there.
       Vector ids = this.getAllIdentifiers();
@@ -810,11 +810,11 @@ public class DataPackage implements XMLFactoryInterface
         }
         catch(FileNotFoundException fnfe)
         {
-          Log.debug(0, "There is an error in this package, a file is " + 
+          Log.debug(0, "There is an error in this package, a file is " +
                           "missing.  Missing file: " + id);
         }
       }
-      
+
       Enumeration keys = files.keys();
       // we need to send the access file FIRST; thus create a keysVec vector and
       // put the access file id first so that order can be maintained
@@ -847,8 +847,8 @@ public class DataPackage implements XMLFactoryInterface
           String sep = (String)idVec.elementAt(3);
           Integer revI = new Integer(rev);
           int revi = revI.intValue();
-          
-          if (!isDataFile(key)) 
+
+          if (!isDataFile(key))
           { //its an xml file
             for(int i=1; i<=revi; i++)
             { //we have to put all of the old versions in metacat first so that
@@ -878,8 +878,8 @@ public class DataPackage implements XMLFactoryInterface
           String accNumMess2 = "is already in use.";
           String accNumMess3 = "unique constraint";
           String accNumMess4 = "violated";
-          if((message.indexOf(accNumMess1) != -1 && 
-             message.indexOf(accNumMess2) != -1) || 
+          if((message.indexOf(accNumMess1) != -1 &&
+             message.indexOf(accNumMess2) != -1) ||
              (message.indexOf(accNumMess3) != -1 &&
              message.indexOf(accNumMess4) != -1) ||
              message.indexOf("null") != -1)
@@ -895,7 +895,7 @@ public class DataPackage implements XMLFactoryInterface
           }
           else
           {
-            //Log.debug(0, "Error uploading " + key + " to metacat: " + 
+            //Log.debug(0, "Error uploading " + key + " to metacat: " +
             //                e.getMessage());
             //e.printStackTrace();
             throw new MetacatUploadException(e.getMessage());
@@ -905,7 +905,7 @@ public class DataPackage implements XMLFactoryInterface
     }
     return this;
   }
-  
+
   /**
    * find the next unused id then give each file in the package a new id
    * starting with the next unused one.  All of the ids within the package
@@ -924,11 +924,11 @@ public class DataPackage implements XMLFactoryInterface
       String fileId = (String)fileIds.elementAt(i);
       StringBuffer sb = new StringBuffer();
       if(!fileId.equals(this.id))
-      { //we want to save the package file for last so we can update all 
+      { //we want to save the package file for last so we can update all
         //of the ids in the triples.
         newId = accNum.getNextId();
         updatedIds.put(fileId, newId); //keep a record of what we changed
-        
+
         if (!isDataFile(fileId)) {  // not a datafile; string use OK
           try
           {
@@ -949,7 +949,7 @@ public class DataPackage implements XMLFactoryInterface
           }
           String fileString = sb.toString();
           fileString = replaceTextInString(fileString, fileId, newId);
-      
+
           //save the file
           fileSysDataStore.newFile(newId, new StringReader(fileString)); //new local file
           try
@@ -963,9 +963,9 @@ public class DataPackage implements XMLFactoryInterface
                         mue.getMessage());
           }
         }
-      
+
         else {  // it is a datafile
-      
+
           //save the file
           File f = null;
           try {
@@ -973,12 +973,12 @@ public class DataPackage implements XMLFactoryInterface
             FileInputStream fis = new FileInputStream(f);
             fileSysDataStore.newDataFile(newId, fis); //new local file
             fis.close();
-            
+
           }
           catch (Exception w) {
             Log.debug(0, "Problem writing new local data file");
           }
-          
+
           try
           {
             metacatDataStore.newDataFile(newId, f); //new metacat file
@@ -992,7 +992,7 @@ public class DataPackage implements XMLFactoryInterface
         }
       }
     } // end loop over files in package
-    
+
     // now deal with the package file itself
     StringBuffer sb = new StringBuffer();
     try
@@ -1016,7 +1016,7 @@ public class DataPackage implements XMLFactoryInterface
       Log.debug(0, "Error reading package file in DataPackage." +
                       "incrementPackageIds(): " + ioe.getMessage());
     }
-    
+
     String packageFileString = sb.toString();
     //update the triples file
     Enumeration oldids = updatedIds.keys();
@@ -1045,12 +1045,12 @@ public class DataPackage implements XMLFactoryInterface
                         mue.getMessage());
     }
     //create a new package
-    DataPackage dp = new DataPackage(this.location, newPackageId, null, 
+    DataPackage dp = new DataPackage(this.location, newPackageId, null,
                                      morpho, false);
     this.delete(this.location);
     return dp;
   }
-  
+
   /**
    * replaces s1 with s2 in text and returns the new string
    */
@@ -1058,9 +1058,9 @@ public class DataPackage implements XMLFactoryInterface
   {
     int s1Index = text.indexOf(s1);
     while(s1Index != -1)
-    { 
+    {
       String begin = text.substring(0, s1Index);
-      String end = text.substring(s1Index + s1.length(), 
+      String end = text.substring(s1Index + s1.length(),
                                         text.length());
       begin += s2; //add the new text
       //put the strings back together again.
@@ -1069,15 +1069,15 @@ public class DataPackage implements XMLFactoryInterface
     }
     return text;
   }
-  
+
   /**
    * Downloads a metacat package to the local disk
    */
   public void download()
   {
     Log.debug(20, "Downloading package.");
-    
-    if(!location.equals(DataPackageInterface.BOTH) && 
+
+    if(!location.equals(DataPackageInterface.BOTH) &&
       !location.equals(DataPackageInterface.LOCAL))
     { //if it is not already on the local disk, get it and put it there.
       Vector ids = this.getAllIdentifiers();
@@ -1091,7 +1091,7 @@ public class DataPackage implements XMLFactoryInterface
         }
         catch(FileNotFoundException fnfe)
         {
-          Log.debug(0, "There is an error in this package, a file is " + 
+          Log.debug(0, "There is an error in this package, a file is " +
                           "missing.  Missing file: " + id);
         }
         catch(CacheAccessException cae)
@@ -1099,7 +1099,7 @@ public class DataPackage implements XMLFactoryInterface
           Log.debug(0, "The cache is locked.  Unlock it to continue.");
         }
       }
-      
+
       Enumeration keys = files.keys();
       while(keys.hasMoreElements())
       { //get each file from metacat.  it's type needs to be checked to see
@@ -1124,7 +1124,7 @@ public class DataPackage implements XMLFactoryInterface
         {
           Log.debug(0, "Error reading file in package.");
         }
-        
+
         try
         {
           Log.debug(20, "Downloading " + key);
@@ -1136,7 +1136,7 @@ public class DataPackage implements XMLFactoryInterface
           String sep = (String)idVec.elementAt(3);
           Integer revI = new Integer(rev);
           int revi = revI.intValue();
-          
+
           if(beginFile.indexOf("<?xml") != -1)
           { //its an xml file
             for(int i=1; i<=revi; i++)
@@ -1161,25 +1161,25 @@ public class DataPackage implements XMLFactoryInterface
         }
         catch(Exception e)
         {
-          Log.debug(0, "Error downloading " + key + " from metacat: " + 
+          Log.debug(0, "Error downloading " + key + " from metacat: " +
                           e.getMessage());
           e.printStackTrace();
         }
       }
     }
   }
-  
+
   /**
    * Deletes the package from the specified location
    * @param locattion the location of the package that you want to delete
-   * use either DataPackageInterface.BOTH, DataPackageInterface.METACAT or DataPackageInterface.LOCAL 
+   * use either DataPackageInterface.BOTH, DataPackageInterface.METACAT or DataPackageInterface.LOCAL
    */
   public void delete(String location)
   {
     Vector v = this.getAllIdentifiers();
     boolean metacatLoc = false;
     boolean localLoc = false;
-    if(location.equals(DataPackageInterface.METACAT) || 
+    if(location.equals(DataPackageInterface.METACAT) ||
        location.equals(DataPackageInterface.BOTH))
     {
       metacatLoc = true;
@@ -1189,14 +1189,14 @@ public class DataPackage implements XMLFactoryInterface
     {
       localLoc = true;
     }
-    
+
     for(int i=0; i<v.size(); i++)
     { //loop through and delete all of the files in the package
       try{
         if(localLoc)
         {
           String delfile = (String)v.elementAt(i);
-          String rev = delfile.substring(delfile.lastIndexOf(".")+1, 
+          String rev = delfile.substring(delfile.lastIndexOf(".")+1,
                                        delfile.length());
           int revi = (new Integer(rev)).intValue();
           for(int j=1; j<=revi; j++)
@@ -1207,7 +1207,7 @@ public class DataPackage implements XMLFactoryInterface
             LocalQuery.removeFromCache(acc + "." + j);
           }
         }
-      
+
         if(metacatLoc)
         {
           metacatDataStore.deleteFile((String)v.elementAt(i));
@@ -1218,7 +1218,7 @@ public class DataPackage implements XMLFactoryInterface
       }
     }
   }
-  
+
   /**
    * Exports a package to a zip file at the given path
    * @param path the path to export the zip file to
@@ -1290,7 +1290,7 @@ public class DataPackage implements XMLFactoryInterface
       for(int i=0; i<sourcefiles.length; i++)
       {
         File f = sourcefiles[i];
-        
+
         ZipEntry ze = new ZipEntry(packdir + "/" + f.getName());
         ze.setSize(f.length());
         zos.putNextEntry(ze);
@@ -1311,7 +1311,7 @@ public class DataPackage implements XMLFactoryInterface
       throw e;
     }
   }
-    
+
   /**
    * exports a package to a given path
    * @param path the path to which this package should be exported.
@@ -1338,10 +1338,10 @@ public class DataPackage implements XMLFactoryInterface
     {
       localloc = true;
     }
-    
+
     //get a list of the files and save them to the new location. if the file
     //is a data file, save it with its original name.
-   
+
     String packagePath = path + "/" + id + ".package";
     String sourcePath = packagePath + "/metadata";
     String dataPath = packagePath + "/data";
@@ -1354,7 +1354,7 @@ public class DataPackage implements XMLFactoryInterface
     Vector files = getAllIdentifiers();
     StringBuffer[] htmldoc = new StringBuffer[files.size()];
     for(int i=0; i<files.size(); i++)
-    { 
+    {
       try
       {
        //save one file at a time
@@ -1384,7 +1384,7 @@ public class DataPackage implements XMLFactoryInterface
         { //get the file from metacat
           openfile = metacatDataStore.openFile(docid);
         }
-        
+
         fileV.addElement(openfile);
         FileInputStream fis = new FileInputStream(openfile);
         BufferedInputStream bfis = new BufferedInputStream(fis);
@@ -1399,19 +1399,19 @@ public class DataPackage implements XMLFactoryInterface
         bfos.flush();
         bfis.close();
         bfos.close();
-      
+
         // for html
         Reader        xmlInputReader  = null;
         Reader        result          = null;
         StringBuffer  tempPathBuff    = new StringBuffer();
-              
+
         if (!dataFileNameMap.containsKey(docid))
         { //this is an xml file so we can transform it.
-          //transform each file individually then concatenate all of the 
+          //transform each file individually then concatenate all of the
           //transformations .
-         
+
             xmlInputReader = new FileReader(openfile);
-            
+
             XMLTransformer transformer = XMLTransformer.getInstance();
             // add some property for style sheet
             transformer.removeAllTransformerProperties();
@@ -1438,9 +1438,9 @@ public class DataPackage implements XMLFactoryInterface
                 xmlInputReader.close();
             }
             transformer.removeAllTransformerProperties();
-            
+
             try {
-              htmldoc[i] = IOUtil.getAsStringBuffer(result, true); 
+              htmldoc[i] = IOUtil.getAsStringBuffer(result, true);
               //"true" closes Reader after reading
             } catch (IOException e) {
               e.printStackTrace();
@@ -1449,7 +1449,7 @@ public class DataPackage implements XMLFactoryInterface
               e.fillInStackTrace();
               throw e;
             }
-        } else { 
+        } else {
           //this is a data file so we should link to it in the html
           htmldoc[i] = new StringBuffer("<html><head></head><body>");
           htmldoc[i].append("<h2>Data File: ");
@@ -1463,14 +1463,14 @@ public class DataPackage implements XMLFactoryInterface
           htmldoc[i].append("./data/").append(dataFileName).append("\">");
           htmldoc[i].append("Data File: ");
           htmldoc[i].append(dataFileName).append("</a><br>");
-          
+
           htmldoc[i].append("<br><hr><br>");
-          
-          htmldoc[i].append("</body></html>");      
+
+          htmldoc[i].append("</body></html>");
         }   //end if...else for xml or data file
-        
+
         tempPathBuff.delete(0,tempPathBuff.length());
-        
+
         tempPathBuff.append(packagePath);
         tempPathBuff.append("/");
         if (id.equals(docid))
@@ -1483,17 +1483,17 @@ public class DataPackage implements XMLFactoryInterface
         }
         tempPathBuff.append(HTMLEXTENSION);
         saveToFile(htmldoc[i], new File(tempPathBuff.toString()));
-        
+
       }
       catch(Exception e)
       {
         System.out.println("Error in DataPackage.export(): " + e.getMessage());
         e.printStackTrace();
       }
-    }//for 
+    }//for
     // export style sheet
-    exportStyleSheet(packagePath);    
-    
+    exportStyleSheet(packagePath);
+
   }
 
 
@@ -1523,10 +1523,10 @@ public class DataPackage implements XMLFactoryInterface
     {
       localloc = true;
     }
-    
+
     //get a list of the files and save them to the new location. if the file
     //is a data file, save it with its original name.
-   
+
 //    String packagePath = path + "/" + id + ".package";
 //    String sourcePath = packagePath + "/metadata";
     String sourcePath = "metadata";
@@ -1540,7 +1540,7 @@ public class DataPackage implements XMLFactoryInterface
     Vector files = getAllIdentifiers();
     StringBuffer[] htmldoc = new StringBuffer[files.size()];
     for(int i=0; i<files.size(); i++)
-    { 
+    {
       try
       {
        //save one file at a time
@@ -1570,7 +1570,7 @@ public class DataPackage implements XMLFactoryInterface
         { //get the file from metacat
           openfile = metacatDataStore.openFile(docid);
         }
-        
+
         if (f!=null) {
           fileV.addElement(openfile);
           FileInputStream fis = new FileInputStream(openfile);
@@ -1593,7 +1593,7 @@ public class DataPackage implements XMLFactoryInterface
         System.out.println("Error in DataPackage.exportToEml2(): " + e.getMessage());
         e.printStackTrace();
       }
-    }//for 
+    }//for
     try{
       EMLConvert.outputfileName = path;
       // when the package is on metacat, one wants to use a url pointing to the
@@ -1615,12 +1615,12 @@ public class DataPackage implements XMLFactoryInterface
       nf.delete();
     }
     savedirSub.delete();
-    
+
     JOptionPane.showMessageDialog(null,
                     "Conversion to EML2 Complete ! ");
-    
+
   }
-  
+
   /*
    * A method to trim the full path of data file name.(old version of morpho
    * will have full path in the name)
@@ -1661,9 +1661,9 @@ public class DataPackage implements XMLFactoryInterface
     FileWriter fileWriter = new FileWriter(outputFile);
     IOUtil.writeToWriter(buff, fileWriter, true);
   }
-  
+
   /**
-   * returns the id of a file based on the path.  this method assumes that 
+   * returns the id of a file based on the path.  this method assumes that
    * the file is being stored
    */
   private String getIdFromPath(String path)
@@ -1685,7 +1685,7 @@ public class DataPackage implements XMLFactoryInterface
     String scope = path.substring(secondToLastSep+1, lastSep);
     return scope + "." + num;
   }
-  
+
   /*
    * Method to get the map between data docid to data file name (oringinal)
    */
@@ -1695,16 +1695,16 @@ public class DataPackage implements XMLFactoryInterface
     Vector triplesV = triples.getCollection();
     int i = 1;
     String dataFileName = null;
-    for(int j=0; j<triplesV.size(); j++) 
+    for(int j=0; j<triplesV.size(); j++)
     {
       Triple triple = (Triple)triplesV.elementAt(j);
       String relationship = triple.getRelationship();
       String subject = triple.getSubject();
-      if(relationship.indexOf("isDataFileFor") != -1) 
+      if(relationship.indexOf("isDataFileFor") != -1)
       {
         //get the name of the data file.
         int lparenindex = relationship.indexOf("(");
-        dataFileName = relationship.substring(lparenindex + 1, 
+        dataFileName = relationship.substring(lparenindex + 1,
                                                      relationship.length() - 1);
         dataFileName = trimFullPathFromFileName(dataFileName);
         if (dataFileName != null)
@@ -1721,7 +1721,7 @@ public class DataPackage implements XMLFactoryInterface
     }//for
     return map;
   }
-  
+
   /*
    * A method to append file name a number, not in extension
    */
@@ -1738,7 +1738,7 @@ public class DataPackage implements XMLFactoryInterface
     }
     int size = fileName.length();
     index = fileName.lastIndexOf(dot);
-    
+
     if (index == -1)
     {
       // no extension
@@ -1752,9 +1752,9 @@ public class DataPackage implements XMLFactoryInterface
       fileName = prefix + number + dot + extension;
       return fileName;
     }
-    
+
   }
-  
+
   /*
    * A method to export a style sheet - export.css which will be used in html
    */
@@ -1777,17 +1777,17 @@ public class DataPackage implements XMLFactoryInterface
     {
       Log.debug(30, "Error in exportStyleSheet: "+e.getMessage());
     }
-    
+
   }
   /*
-   * returns string representation of full path to style directory in 
+   * returns string representation of full path to style directory in
    * Morpho-Config.jar.  All names are in config.xml file
    */
-  private String getStylePath() 
+  private String getStylePath()
   {
         StringBuffer pathBuff = new StringBuffer();
         pathBuff.append("/");
-        pathBuff.append(config.get(CONFIG_KEY_STYLESHEET_LOCATION, 0));
+        pathBuff.append(config.get(CONFIG_KEY_CSS_LOCATION, 0));
         pathBuff.append("/");
         pathBuff.append(EXPORTSYLE);
         pathBuff.append(EXPORTSYLEEXTENSION);
@@ -1795,28 +1795,28 @@ public class DataPackage implements XMLFactoryInterface
                                                           +pathBuff.toString());
         return pathBuff.toString();
    }
- /** 
+ /**
   * Checks a file to see if it is a text file by looking for bytes containing '0'
   */
-   private boolean isTextFile(File file) 
-   { 
-     boolean text = true; 
-     int res; 
+   private boolean isTextFile(File file)
+   {
+     boolean text = true;
+     int res;
      int cnt = 0;
      int maxcnt = 2000; // only check this many bytes to avoid performance problems
-     try 
-     { 
-       FileInputStream in = new FileInputStream(file); 
+     try
+     {
+       FileInputStream in = new FileInputStream(file);
        while (((res = in.read())>-1) &&(cnt<maxcnt))
-       { 
+       {
          cnt++;
-         if (res==0) text = false; 
-       } 
-     } 
-     catch (Exception e) {} 
-     return text; 
-   } 
-   
+         if (res==0) text = false;
+       }
+     }
+     catch (Exception e) {}
+     return text;
+   }
+
   /*
    * find out if the doc with the given id is a data doc
    * using the triple relationship
@@ -1838,7 +1838,7 @@ public class DataPackage implements XMLFactoryInterface
       }
       return res;
    }
-  
+
   /*
    * find out if there are datafiles associated with the given entity ID
    */
@@ -1857,14 +1857,14 @@ public class DataPackage implements XMLFactoryInterface
           for (int j=0; j<triplesV.size();j++) {
             Triple tripleA = (Triple)triplesV.elementAt(j);
             if ((tripleA.getSubject().equals(entityID))&&(tripleA.getObject().equals(dataFileID))) {
-              result = true;  
+              result = true;
             }
           }
         }
       }
     return result;
   }
- 
+
   public boolean isDataFileText(String entityID) {
     boolean result = false;
     File fl = getDataFile(entityID);
@@ -1874,18 +1874,18 @@ public class DataPackage implements XMLFactoryInterface
     else result = false;
     return result;
   }
-  
+
 
   /**
    *    returns the original text name of the datafile, which for EML beta6 is
    *    contained in the triples relationship string, inside parentheses)
    *
-   *    @param entityID the ID of the entity for which the datafile text name is 
+   *    @param entityID the ID of the entity for which the datafile text name is
    *                    sought
    *
    *    @return         the original text name of the datafile (as a String)
    */
-  
+
   public String getDataFileName(String entityID) {
     String dataFileName = null;
     boolean result = false;
@@ -1898,14 +1898,14 @@ public class DataPackage implements XMLFactoryInterface
         if(relationship.indexOf("isDataFileFor") != -1)
         {
           int lparenindex = relationship.indexOf("(");
-          dataFileName = relationship.substring(lparenindex + 1, 
+          dataFileName = relationship.substring(lparenindex + 1,
                                                 relationship.length() - 1);
           String dataFileID = triple.getSubject();
           // now see if entity file points to this data file
           for (int j=0; j<triplesV.size();j++) {
             Triple tripleA = (Triple)triplesV.elementAt(j);
             if ((tripleA.getSubject().equals(entityID))&&(tripleA.getObject().equals(dataFileID))) {
-              result = true; 
+              result = true;
               return dataFileName;
             }
           }
@@ -1915,7 +1915,7 @@ public class DataPackage implements XMLFactoryInterface
     if (result) resultString = dataFileName;
     return resultString;
   }
-  
+
   public File getPhysicalFile(String entityID) {
      if (entity2PhysicalFile.containsKey(entityID)) {
       return ((File)entity2PhysicalFile.get(entityID));
@@ -1952,7 +1952,7 @@ public class DataPackage implements XMLFactoryInterface
     }
     return physicalfile;
   }
-  
+
   public String getPhysicalFileId(String entityID) {
     File physicalfile = null;
     boolean localloc = false;
@@ -1978,12 +1978,12 @@ public class DataPackage implements XMLFactoryInterface
         String sub = triple.getSubject();
          physicalfile = getFileType(sub, "physical");
          if (physicalfile!=null) return sub;
-         
+
     }
     return null;
   }
 
-  
+
   public File getAttributeFile(String entityID) {
     if (entity2AttributeFile.containsKey(entityID)) {
       return ((File)entity2AttributeFile.get(entityID));
@@ -2022,7 +2022,7 @@ public class DataPackage implements XMLFactoryInterface
     return attributefile;
   }
 
-  
+
     public String getAttributeFileId(String entityID) {
     File attributefile = null;
     boolean localloc = false;
@@ -2050,7 +2050,7 @@ public class DataPackage implements XMLFactoryInterface
          if (attributefile!=null) return sub;
     }
 
-    
+
     return null;
   }
 
@@ -2083,12 +2083,12 @@ public class DataPackage implements XMLFactoryInterface
          accessfile = getFileType(sub, "access");
          if (accessfile!=null) return sub.trim();
     }
-    
+
     return "unknown";
   }
 
   public String getAccessFileIdForDataPackage() {
-    String temp = getAccessFileId(this.id); 
+    String temp = getAccessFileId(this.id);
     return temp;
   }
 
@@ -2161,7 +2161,7 @@ public class DataPackage implements XMLFactoryInterface
         }
       }
     return datafile;
-  } 
+  }
 
 
   /**
@@ -2196,20 +2196,20 @@ public class DataPackage implements XMLFactoryInterface
                   System.out.println("Error in DataPackage.getDataFile(): " + e.getMessage());
                   e.printStackTrace();
                 }
-              
-                            
+
+
             }
           }
         }
       }
     return dataFileID;
-  } 
+  }
 
   public File getFileFromId(String id) {
     File xmlFile = null;
     try
     {
-      if(location.equals(DataPackageInterface.LOCAL) || 
+      if(location.equals(DataPackageInterface.LOCAL) ||
          location.equals(DataPackageInterface.BOTH))
       {
         FileSystemDataStore fsds = new FileSystemDataStore(morpho);
@@ -2225,28 +2225,28 @@ public class DataPackage implements XMLFactoryInterface
     }
     catch(FileNotFoundException fnfe)
     {
-      Log.debug(0, "Error reading file : " + xmlFile + " " + 
+      Log.debug(0, "Error reading file : " + xmlFile + " " +
                          fnfe.getMessage() + "---File NOT found.");
     }
     catch(CacheAccessException cae)
     {
-      Log.debug(0, "Error reading file : " + xmlFile + " " + 
+      Log.debug(0, "Error reading file : " + xmlFile + " " +
                          cae.getMessage() + "---Cache could not be accessed");
     }
     return null;
   }
-  
+
   private File[] listFiles(File dir) {
     String[] fileStrings = dir.list();
     int len = fileStrings.length;
     File[] list = new File[len];
     for (int i=0; i<len; i++) {
-        list[i] = new File(dir, fileStrings[i]);    
+        list[i] = new File(dir, fileStrings[i]);
     }
     return list;
   }
 
-  
+
   private File getFileType(String id, String typeString) {
 //    ConfigXML config = morpho.getConfiguration();
 /*    if (getFileTypeHash.containsKey(id)) {
@@ -2259,7 +2259,7 @@ public class DataPackage implements XMLFactoryInterface
         return null;
       }
     }
-*/    
+*/
     String catalogPath = //config.getConfigDirectory() + File.separator +
                                      config.get("local_catalog_path", 0);
     File subfile;
@@ -2289,9 +2289,9 @@ public class DataPackage implements XMLFactoryInterface
           return null;
         }
       }
-      
+
       try
-      { 
+      {
         FileReader fr = new FileReader(subfile);
         String xmlString = "";
         for(int j=0; j<5; j++)
@@ -2308,7 +2308,7 @@ public class DataPackage implements XMLFactoryInterface
         else
         { //this is a data file not an xml file
           name = "Data File";
-        } 
+        }
       }
       catch (Exception ww) {}
  //     System.out.println("Name: "+name);
@@ -2326,10 +2326,10 @@ public class DataPackage implements XMLFactoryInterface
       else {
         getFileTypeHash.put(id, nullfile);
       }
-*/      
+*/
       return subfile;
   }
-  
+
   public void checkTriplesForAccess() {
     String accessId = null;
     try{
@@ -2353,7 +2353,7 @@ public class DataPackage implements XMLFactoryInterface
       Log.debug(11, "No access file in package!!!!");
     }
     if (missingIds.size()>0) {
-      int choice = JOptionPane.showConfirmDialog(null, 
+      int choice = JOptionPane.showConfirmDialog(null,
                    "This package is missing some access\n"+
                    "control information, possibly\n"+
                    "because it was created using an\n"+
@@ -2371,7 +2371,7 @@ public class DataPackage implements XMLFactoryInterface
       }
     }
   }
-  
+
   /* should return true if a triple exists with the indicated
    * subject and object
    */
@@ -2389,18 +2389,18 @@ public class DataPackage implements XMLFactoryInterface
     }
     return res;
   }
-  
+
   private void fixMissingAccess(String accessId, Vector missingIds) {
     String docString;
     TripleCollection newTriples = new TripleCollection();
     for (int i=0;i<missingIds.size();i++) {
-      Triple tr = new Triple(accessId, "provides access control rules for", 
+      Triple tr = new Triple(accessId, "provides access control rules for",
                                        (String)missingIds.elementAt(i));
-      newTriples.addTriple(tr);                                 
+      newTriples.addTriple(tr);
     }
     AccessionNumber a = new AccessionNumber(morpho);
     FileSystemDataStore fsds = new FileSystemDataStore(morpho);
-    docString = PackageUtil.addTriplesToTriplesFile(newTriples, this, 
+    docString = PackageUtil.addTriplesToTriplesFile(newTriples, this,
                                                       morpho);
     File newDPTempFile;
     //get a new id for the package file
@@ -2411,10 +2411,10 @@ public class DataPackage implements XMLFactoryInterface
       newDPTempFile = fsds.saveTempFile(dataPackageId,
                                     new StringReader(docString));
       //inc the revision of the new Package file in the triples
-      docString = a.incRevInTriples(newDPTempFile, this.getID(), 
+      docString = a.incRevInTriples(newDPTempFile, this.getID(),
                                     dataPackageId);
       //save new temp file that has the right id and the id inced in the triples
-      newDPTempFile = fsds.saveTempFile(dataPackageId, 
+      newDPTempFile = fsds.saveTempFile(dataPackageId,
                                     new StringReader(docString));
     }
     catch(Exception e)
@@ -2426,18 +2426,18 @@ public class DataPackage implements XMLFactoryInterface
     String location = this.getLocation();
     boolean locMetacat = false;
     boolean locLocal = false;
-    if(location.equals(DataPackageInterface.LOCAL) || 
+    if(location.equals(DataPackageInterface.LOCAL) ||
        location.equals(DataPackageInterface.BOTH))
     {
       locLocal = true;
     }
-    
-    if(location.equals(DataPackageInterface.METACAT) || 
+
+    if(location.equals(DataPackageInterface.METACAT) ||
        location.equals(DataPackageInterface.BOTH))
     {
       locMetacat = true;
     }
-    
+
     if(locLocal) {
       try
       { //save the new package file

@@ -5,9 +5,9 @@
 *    Authors: @authors@
 *    Release: @release@
 *
-*   '$Author: sambasiv $'
-*     '$Date: 2004-04-23 22:43:05 $'
-* '$Revision: 1.2 $'
+*   '$Author: sgarg $'
+*     '$Date: 2005-06-30 16:16:55 $'
+* '$Revision: 1.3 $'
 *
 * This program is free software; you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -60,27 +60,27 @@ import edu.ucsb.nceas.morpho.util.Command;
 public class ViewDocumentationCommand implements Command
 {
 	private ConfigXML config;
-	private final String CONFIG_KEY_STYLESHEET_LOCATION = "stylesheetLocation";
-  private final String CONFIG_KEY_MCONFJAR_LOC   = "morphoConfigJarLocation";
-	
-	public ViewDocumentationCommand() { 
-		
+        private final String CONFIG_KEY_CSS_LOCATION = "emlCSSLocation";
+        private final String CONFIG_KEY_MCONFJAR_LOC   = "morphoConfigJarLocation";
+
+	public ViewDocumentationCommand() {
+
 		config = Morpho.getConfiguration();
 	}
-	
-	
+
+
 	public void execute(ActionEvent ae) {
-		
+
 		AbstractDataPackage adp = UIController.getInstance().getCurrentAbstractDataPackage();
 		if(adp == null) {
 			Log.debug(16, " Abstract Data Package is null in View Documentation");
 			return;
 		}
-		
+
 		XMLTransformer transformer = XMLTransformer.getInstance();
-		transformer.addTransformerProperty(XMLTransformer.SELECTED_DISPLAY_XSLPROP, 	
+		transformer.addTransformerProperty(XMLTransformer.SELECTED_DISPLAY_XSLPROP,
 		XMLTransformer.XSLVALU_DISPLAY_PRNT);
-		transformer.addTransformerProperty( XMLTransformer.CSS_PATH_XSLPROP, 
+		transformer.addTransformerProperty( XMLTransformer.CSS_PATH_XSLPROP,
 		getFullStylePath());
 		Reader xmlReader = null, resultReader = null;
 		String htmlDoc = "<html><head><h2>Error displaying the requested Document</h2></head></html>";
@@ -110,9 +110,9 @@ public class ViewDocumentationCommand implements Command
 		JFrame parent = (JFrame)UIController.getInstance().getCurrentActiveWindow();
 		JFrame frame = new DisplayFrame(htmlDoc , "text/html", new Dimension(UISettings.POPUPDIALOG_WIDTH, UISettings.POPUPDIALOG_HEIGHT));
 		resetBounds(frame, parent);
-		
+
 	}
-	
+
 	private static String stripHTMLMetaTags(String html)
 	{
 		int META_END = 0;
@@ -131,28 +131,28 @@ public class ViewDocumentationCommand implements Command
 		}
 		return html;
 	}
-	
-	private static String stripComments(String html) 
+
+	private static String stripComments(String html)
 	{
 		int prev = 0;
-		String res = ""; 
+		String res = "";
 		int pos = html.indexOf("<!--");
 		if(pos < 0) return html;
-		
+
 		while(pos>=0) {
-			
+
 			res += html.substring(prev, pos);
 			html = html.substring(pos);
 			int next = html.indexOf("-->");
 			prev = 0;
 			html = html.substring(next+3);
 			pos = html.indexOf("<!--");
-			
+
 		}
 		res += html;
 		return res;
 	}
-	
+
 	private String addTitleTag(String html)
 	{
 		int pos;
@@ -172,17 +172,17 @@ public class ViewDocumentationCommand implements Command
 		}
 		return init;
 	}
-	
-	
+
+
 	private String processHTMLString(String displayString) {
 		displayString = stripHTMLMetaTags(displayString);
 		displayString = stripComments(displayString);
 		displayString = addTitleTag(displayString);
 		return displayString;
 	}
-		
+
 	private void resetBounds(JFrame frame, JFrame parent) {
-		
+
 		int xcoord, ycoord;
 		if(parent == null) {
 			xcoord = ycoord = 50;
@@ -190,12 +190,12 @@ public class ViewDocumentationCommand implements Command
 			xcoord = ( parent.getX() + parent.getWidth()/2 ) - frame.getWidth()/2;
 			ycoord = ( parent.getY() + parent.getHeight()/2 ) - frame.getHeight()/2;
 		}
-		
+
 		frame.setBounds(xcoord, ycoord,  frame.getWidth(), frame.getHeight());
-		
+
 	}
-	
-	private String getFullStylePath() 
+
+	private String getFullStylePath()
   {
 			StringBuffer pathBuff = new StringBuffer();
       pathBuff.append("jar:file:");
@@ -203,12 +203,12 @@ public class ViewDocumentationCommand implements Command
       pathBuff.append("/");
       pathBuff.append(config.get(CONFIG_KEY_MCONFJAR_LOC, 0));
       pathBuff.append("!/");
-      pathBuff.append(config.get(CONFIG_KEY_STYLESHEET_LOCATION, 0));
+      pathBuff.append(config.get(CONFIG_KEY_CSS_LOCATION, 0));
       Log.debug(50,"ViewDocumentationCommand.getFullStylePath() returning: "
                                                               +pathBuff.toString());
       return pathBuff.toString();
   }
-	
+
 }
 
 
@@ -216,14 +216,14 @@ class DisplayFrame extends JFrame implements HyperlinkListener
 {
 	JEditorPane editor;
 	JScrollPane scrollPane;
-	
+
 	DisplayFrame(String text, String contentType) {
-		
+
 		this(text, contentType, new Dimension(800, 600));
 	}
-	
+
 	DisplayFrame(String text, String contentType, Dimension dim) {
-		
+
 		super();
 		System.out.println("Type = " +contentType);
 		System.out.println("Text = " + text);
@@ -234,20 +234,20 @@ class DisplayFrame extends JFrame implements HyperlinkListener
 		editor.addHyperlinkListener(this);
 		editor.setCaretPosition(0);
 		scrollPane = new JScrollPane(editor, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-		
+
 		getContentPane().setLayout(new BorderLayout());
 		getContentPane().add(new JPanel(), BorderLayout.NORTH);
 		getContentPane().add(scrollPane, BorderLayout.CENTER);
-		
+
 		setSize((int)dim.getWidth(), (int)dim.getHeight());
 		setVisible(true);
 	}
-	
-	public void hyperlinkUpdate(HyperlinkEvent e) 
+
+	public void hyperlinkUpdate(HyperlinkEvent e)
 	{
 		Log.debug(50,"hyperlinkUpdate called in ViewDocumentation; eventType=" + e.getEventType());
 		Log.debug(50,"hyperlinks not supported in ViewDocumentation Window");
-		
+
 	}
-	
+
 } // end of DisplayFrame class
