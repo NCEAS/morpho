@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: sambasiv $'
- *     '$Date: 2004-04-05 22:00:30 $'
- * '$Revision: 1.1 $'
+ *   '$Author: sgarg $'
+ *     '$Date: 2005-06-30 16:19:58 $'
+ * '$Revision: 1.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -57,25 +57,25 @@ import edu.ucsb.nceas.morpho.util.Log;
 
 public class PreviewCommand implements Command
 {
-	
+
 	private Morpho instanceOfMorpho;
 	private PrinterPlugin printerPlugin;
 	private ConfigXML config;
-	private final String CONFIG_KEY_STYLESHEET_LOCATION = "stylesheetLocation";
-  private final String CONFIG_KEY_MCONFJAR_LOC   = "morphoConfigJarLocation";
-		
+        private final String CONFIG_KEY_CSS_LOCATION = "emlCSSLocation";
+        private final String CONFIG_KEY_MCONFJAR_LOC   = "morphoConfigJarLocation";
+
 	public void execute(ActionEvent ae) {
-		
+
 		AbstractDataPackage adp = UIController.getInstance().getCurrentAbstractDataPackage();
     if(adp == null) {
 			Log.debug(16, " Abstract Data Package is null in the Print Plugin");
 			return;
 		}
-																	
+
 		XMLTransformer transformer = XMLTransformer.getInstance();
-		transformer.addTransformerProperty(XMLTransformer.SELECTED_DISPLAY_XSLPROP, 	
+		transformer.addTransformerProperty(XMLTransformer.SELECTED_DISPLAY_XSLPROP,
 						XMLTransformer.XSLVALU_DISPLAY_PRNT);
-		transformer.addTransformerProperty( XMLTransformer.CSS_PATH_XSLPROP, 
+		transformer.addTransformerProperty( XMLTransformer.CSS_PATH_XSLPROP,
                                             getFullStylePath());
 		Reader xmlReader = null, resultReader = null;
 		String htmlDoc = "<html><head><h2>Error displaying the requested Document</h2></head></html>";
@@ -103,16 +103,16 @@ public class PreviewCommand implements Command
 		}
 		printerPlugin.display( htmlDoc , "text/html");
 	}
-	
-	
+
+
 	public PreviewCommand(Morpho morpho, PrinterPlugin prPlugin)
 	{
 		instanceOfMorpho = morpho;
 		printerPlugin = prPlugin;
 		config = Morpho.getConfiguration();
 	}
-	
-	private String getFullStylePath() 
+
+	private String getFullStylePath()
   {
 			StringBuffer pathBuff = new StringBuffer();
       pathBuff.append("jar:file:");
@@ -120,7 +120,7 @@ public class PreviewCommand implements Command
       pathBuff.append("/");
       pathBuff.append(config.get(CONFIG_KEY_MCONFJAR_LOC, 0));
       pathBuff.append("!/");
-      pathBuff.append(config.get(CONFIG_KEY_STYLESHEET_LOCATION, 0));
+      pathBuff.append(config.get(CONFIG_KEY_CSS_LOCATION, 0));
       Log.debug(50,"PrinterCommand.getFullStylePath() returning: "
                                                               +pathBuff.toString());
       return pathBuff.toString();
