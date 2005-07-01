@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: sambasiv $'
- *     '$Date: 2004-04-05 21:58:20 $'
- * '$Revision: 1.30 $'
+ *   '$Author: sgarg $'
+ *     '$Date: 2005-07-01 16:35:51 $'
+ * '$Revision: 1.31 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -221,8 +221,9 @@ public class XMLTransformer
 
     private final String CONFIG_KEY_LOCAL_CATALOG_PATH  = "local_catalog_path";
     private final String CONFIG_KEY_GENERIC_STYLESHEET  = "genericStylesheet";
-    private final String CONFIG_KEY_STYLESHEET_LOCATION = "stylesheetLocation";
+    private final String CONFIG_KEY_GENERIC_LOCATION    = "genericStylesheetLocation";
     private final String GENERIC_STYLESHEET;
+    private final String GENERIC_LOCATION;
 
     private final  ClassLoader      classLoader;
     private static XMLTransformer   instance;
@@ -236,6 +237,7 @@ public class XMLTransformer
     {
         this.config = Morpho.getConfiguration();
         GENERIC_STYLESHEET = config.get(CONFIG_KEY_GENERIC_STYLESHEET, 0);
+        GENERIC_LOCATION   = config.get(CONFIG_KEY_GENERIC_LOCATION, 0);
 
         Log.debug(30, "XMLTransformer: ClassLoader *would* have been: "
                             + this.getClass().getClassLoader().getClass().getName());
@@ -308,7 +310,7 @@ public class XMLTransformer
      *
      *  @throws IOException if there are problems reading either of the Readers
      */
-    public Reader transform(Reader xmlDocReader, Reader xslStyleSheet)
+    public Reader transform(Reader xmlDocReader, Reader xslStyleSheet, String xsltLocation)
                                                               throws IOException
     {
         Log.debug(50,"XMLTransformer.transform(Reader, Reader) called");
@@ -326,7 +328,7 @@ public class XMLTransformer
         } catch (ParserConfigurationException e) {
             throwIOException(e, "ParserConfigurationException");
         }
-        return transform(doc, xslStyleSheet);
+        return transform(doc, xslStyleSheet, xsltLocation);
     }
 
 
@@ -385,7 +387,7 @@ public class XMLTransformer
         }
 
 
-        return transform( domDoc, getStyleSheetReader(identifier));
+        return transform( domDoc, getStyleSheetReader(identifier), getStyleSheetLocation(identifier));
     }
 
 
@@ -405,19 +407,19 @@ public class XMLTransformer
      *
      *  @throws IOException if there are problems reading either of the Readers
      */
-    public Reader transform(Document domDoc, Reader xslStyleSheet)
+    public Reader transform(Document domDoc, Reader xslStyleSheet, String xsltLocation)
                                                               throws IOException
     {
         Log.debug(50,"XMLTransformer.transform(Document, Reader) called");
         validateInputParam(domDoc,        "XML DOM Document");
         validateInputParam(xslStyleSheet, "XSL stylesheet reader");
 
-        return doTransform( getAsDOMSource(domDoc), xslStyleSheet );
+        return doTransform( getAsDOMSource(domDoc), xslStyleSheet, xsltLocation);
     }
 
     //common method used to do transforms
     private synchronized Reader doTransform(Source source,
-                                        Reader xslStyleSheet) throws IOException
+                                        Reader xslStyleSheet, String xsltLocation) throws IOException
     {
         Log.debug(50,"--> XMLTransformer.doTransform(Source, Reader) called;"
                         +"\n    Source = "       +source
@@ -426,7 +428,7 @@ public class XMLTransformer
         CharArrayWriter outputWriter  = new CharArrayWriter();
 
         TransformerFactory tFactory = TransformerFactory.newInstance();
-        tFactory.setURIResolver(new CustomURIResolver());
+        tFactory.setURIResolver(new CustomURIResolver(xsltLocation));
 
         Transformer transformer = null;
         try {
@@ -669,6 +671,19 @@ public class XMLTransformer
         return xsltReader;
     }
 
+    //returns the location to access the stylesheet
+    private String getStyleSheetLocation(String identifier)
+    {
+      try {
+        getXSLTResolverService();
+      } catch(ServiceNotHandledException ee) {
+        Log.debug(0, "Error acquiring XSLT Resolver plugin: " + ee);
+        ee.printStackTrace();
+        return GENERIC_LOCATION;
+      }
+      return resolver.getXSLTStylesheetLocation(identifier);
+    }
+
     private XSLTResolverInterface getXSLTResolverService()
                                               throws ServiceNotHandledException
     {
@@ -762,7 +777,13 @@ public class XMLTransformer
 
         protected CustomURIResolver()
         {
-            STYLESHEET_LOCATION = config.get(CONFIG_KEY_STYLESHEET_LOCATION, 0);
+            STYLESHEET_LOCATION = config.get(CONFIG_KEY_GENERIC_LOCATION, 0);
+            resolution = new StringBuffer();
+        }
+
+        protected CustomURIResolver(String location)
+        {
+            STYLESHEET_LOCATION = location;
             resolution = new StringBuffer();
         }
 
