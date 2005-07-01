@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: sambasiv $'
- *     '$Date: 2004-04-05 21:58:20 $'
- * '$Revision: 1.10 $'
+ *   '$Author: sgarg $'
+ *     '$Date: 2005-07-01 16:40:59 $'
+ * '$Revision: 1.11 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -60,13 +60,13 @@ import edu.ucsb.nceas.morpho.exception.NullArgumentException;
 
 
 /**
- *  Plugin that builds a display panel to display metadata.  Given a String ID, 
- *  does a lookup using a factory that must also be provided (and which 
- *  implements the ContentFactoryInterface) to get the XML document to display.  
- *  Then styles this document accordingly using XSLT, before displaying it in an 
+ *  Plugin that builds a display panel to display metadata.  Given a String ID,
+ *  does a lookup using a factory that must also be provided (and which
+ *  implements the ContentFactoryInterface) to get the XML document to display.
+ *  Then styles this document accordingly using XSLT, before displaying it in an
  *  embedded HTML display.
  */
-public class MetaDisplayPlugin implements   PluginInterface, 
+public class MetaDisplayPlugin implements   PluginInterface,
                                             ServiceProvider,
                                             MetaDisplayFactoryInterface
 {
@@ -79,49 +79,49 @@ public class MetaDisplayPlugin implements   PluginInterface,
      */
     public void initialize(Morpho morpho)
     {
-        try 
+        try
         {
           ServiceController services = ServiceController.getInstance();
           services.addService(MetaDisplayFactoryInterface.class, this);
           Log.debug(20, "Service added: MetaDisplayFactoryInterface.");
-        } 
+        }
         catch (ServiceExistsException see)
         {
-          Log.debug(6, 
+          Log.debug(6,
                     "Service registration failed: MetaDisplayFactoryInterface");
           Log.debug(6, see.toString());
         }
         displayList = new ArrayList();
     }
-     
-    
+
+
     /**
      *  Required by MetaDisplayFactoryInterface:
-     *  Returns a new instance of an object that implements the 
+     *  Returns a new instance of an object that implements the
      *  <code>MetaDisplayInterface</code>
      *
-     *  @return     new instance of an object that implements the 
+     *  @return     new instance of an object that implements the
      *              <code>MetaDisplayInterface</code>
      */
-    public MetaDisplayInterface getInstance() 
+    public MetaDisplayInterface getInstance()
     {
         MetaDisplay display = new MetaDisplay();
         displayList.add(display);
         return display;
     }
-    
-    
+
+
     /**
      *  Required by MetaDisplayFactoryInterface:
-     *  Returns a reference to an existing object that implements the 
+     *  Returns a reference to an existing object that implements the
      *  <code>MetaDisplayInterface</code>. The object is identified by the int
      *  index assigned to it in the getInstance() method at the time of creation
      *
-     *  @param displayNum   int index assigned to the object in the 
+     *  @param displayNum   int index assigned to the object in the
      *                      getInstance() method at the time of creation
      *
-     *  @return             reference to an existing object that implements the 
-     *                      <code>MetaDisplayInterface</code> identified by 
+     *  @return             reference to an existing object that implements the
+     *                      <code>MetaDisplayInterface</code> identified by
      *                      displayNum.  Returns NULL if displayNum out of range
      */
     public MetaDisplayInterface getMetaDisplay(int displayNum)
@@ -129,32 +129,32 @@ public class MetaDisplayPlugin implements   PluginInterface,
         if (displayList.size() < displayNum+1) return null;
         return (MetaDisplayInterface)(displayList.get(displayNum));
     }
-    
-    
+
+
     /**
-     *  Main method can be used for testing this plugin. If you run it without 
-     *  any command-line arguments, you'll just get a default display with some 
-     *  test data in it.  If you want to actually style some XML, you must 
+     *  Main method can be used for testing this plugin. If you run it without
+     *  any command-line arguments, you'll just get a default display with some
+     *  test data in it.  If you want to actually style some XML, you must
      *  provide 2 or 3 command-line arguments:
-     *  
-     *  @param args <ul><li>id - the identifier string that tells the 
+     *
+     *  @param args <ul><li>id - the identifier string that tells the
      *                  MetaDisplay what XML document to display</li>
-     *                  <li>XMLFactoryInterface - the full string classname of 
+     *                  <li>XMLFactoryInterface - the full string classname of
      *                  an object that implements the XMLFactoryInterface. Given
-     *                  the id (see above), this factory then returns a Reader 
-     *                  which allows the MetaDisplay to actually get the 
+     *                  the id (see above), this factory then returns a Reader
+     *                  which allows the MetaDisplay to actually get the
      *                  Document identified by the id.</li>
      *                  <li>listener (optional) - the full string classname of
-     *                  an ActionListener that will receive callbacks each time 
-     *                  an event occurs within the metaDisplay. Useful for 
-     *                  responding to close actions, clicked links etc 
+     *                  an ActionListener that will receive callbacks each time
+     *                  an event occurs within the metaDisplay. Useful for
+     *                  responding to close actions, clicked links etc
      */
     public static void main(String[] args) {
       String id = "DEFAULT";
       Log.getLog().setDebugLevel(51);
-      XMLFactoryInterface xmlFactory  
+      XMLFactoryInterface xmlFactory
         = new XMLFactoryInterface() {
-            public Reader openAsReader(String id) 
+            public Reader openAsReader(String id)
                                               throws DocumentNotFoundException {
              Log.debug(50,"XMLFactoryInterface openAsReader got: "+id);
               Reader reader = null;
@@ -162,10 +162,10 @@ public class MetaDisplayPlugin implements   PluginInterface,
                reader = new StringReader(
                     "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
                     +"<eml:eml packageId=\"eml.1.1\" system=\"knb\" "
-//                    +"xmlns:ds=\"eml://ecoinformatics.org/dataset-2.0.0\" "
-                    +"xmlns:eml=\"eml://ecoinformatics.org/eml-2.0.0\" " 
+//                    +"xmlns:ds=\"eml://ecoinformatics.org/dataset-2.0.1\" "
+                    +"xmlns:eml=\"eml://ecoinformatics.org/eml-2.0.1\" "
                     +"xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" "
-                    +"xsi:schemaLocation=\"eml://ecoinformatics.org/eml-2.0.0 eml.xsd\"> "
+                    +"xsi:schemaLocation=\"eml://ecoinformatics.org/eml-2.0.1 eml.xsd\"> "
                     +"<dataset/> "
                   + "</eml:eml>");
               } else {
@@ -180,18 +180,18 @@ public class MetaDisplayPlugin implements   PluginInterface,
 						}};
 
       ActionListener listener = null;
-      
+
       for (int i=0; i<args.length; i++) {
-      
+
         switch (i) {
-        
+
           case 0:
             id = args[i];
             break;
-        
+
           case 1:
             try {
-              xmlFactory 
+              xmlFactory
                 = ((XMLFactoryInterface)(Class.forName(args[i]).newInstance()));
             }catch(ClassNotFoundException cnfe) {
               Log.debug(2,
@@ -210,10 +210,10 @@ public class MetaDisplayPlugin implements   PluginInterface,
               System.exit(1);
             }
             break;
-        
+
           case 2:
             try {
-              listener 
+              listener
                     = ((ActionListener)(Class.forName(args[i]).newInstance()));
             }catch(ClassNotFoundException cnfe) {
               Log.debug(2,
@@ -245,9 +245,9 @@ public class MetaDisplayPlugin implements   PluginInterface,
 
       MetaDisplayPlugin plugin = new MetaDisplayPlugin();
       plugin.initialize(null);
-      
+
       MetaDisplayInterface metaDisplay = plugin.getInstance();
-      
+
       Component comp = null;
       Log.debug(50,
          "Getting display component:\n id         = "+id
@@ -255,7 +255,7 @@ public class MetaDisplayPlugin implements   PluginInterface,
                                  +";\n listener   = "+listener);
       try {
         comp = metaDisplay.getDisplayComponent(id, xmlFactory, listener);
-        
+
       } catch (NullArgumentException nae) {
         Log.debug(50,"NullArgumentException getting metaDisplay! "+nae);
         nae.printStackTrace();
@@ -267,7 +267,7 @@ public class MetaDisplayPlugin implements   PluginInterface,
       JFrame frame = new JFrame();
       frame.setBounds(100,100,500,500);
       frame.addWindowListener(new WindowAdapter() {
-            public void windowClosing(WindowEvent event) { System.exit(0); 
+            public void windowClosing(WindowEvent event) { System.exit(0);
             }});
       frame.getContentPane().setLayout(new BorderLayout(5,5));
       frame.getContentPane().add(comp, BorderLayout.CENTER);
