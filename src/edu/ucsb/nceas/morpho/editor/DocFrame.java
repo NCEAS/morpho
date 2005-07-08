@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: sgarg $'
- *     '$Date: 2005-06-30 16:04:45 $'
- * '$Revision: 1.173 $'
+ *     '$Date: 2005-07-08 19:04:30 $'
+ * '$Revision: 1.174 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -129,6 +129,10 @@ import org.xml.sax.*;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.*;
 import org.w3c.dom.*;
+import edu.ucsb.nceas.morpho.plugins.ServiceProvider;
+import edu.ucsb.nceas.morpho.plugins.ServiceController;
+import edu.ucsb.nceas.morpho.plugins.ServiceNotHandledException;
+import edu.ucsb.nceas.morpho.plugins.XSLTResolverInterface;
 
 /**
  * DocFrame is a container for an XML editor which shows combined outline and
@@ -164,6 +168,21 @@ public class DocFrame extends javax.swing.JFrame
    *   used with cached template to see if new template tree is needed
    */
   static String templateRootName = "";
+
+  /**
+   *  used by the transform() method to get the schemaLocation (if one has
+   *  been defined) from the Document root node
+   */
+  public static final String NAMESPACE_FOR_SCHEMA_LOCATION
+                              = "http://www.w3.org/2001/XMLSchema-instance";
+
+  /**
+   *  used by the transform() method to get the schemaLocation (if one has
+   *  been defined) from the Document root node
+   */
+  public static final String ATTRIB_NAME_FOR_SCHEMA_LOCATION
+                              = "schemaLocation";
+
 
   /**
    *   the DOM node passed in which contains a parsed XML document
@@ -216,6 +235,11 @@ public class DocFrame extends javax.swing.JFrame
    * or the rootnode name
    */
   String doctype = null;
+
+  /*
+   * the schemaId is the idendifier for the schema of the document if one exsist
+   */
+  String schemaId = null;
 
   String rootnodeName = null;
   String publicIDString = null;
@@ -321,6 +345,8 @@ public class DocFrame extends javax.swing.JFrame
 
   /** A reference to the container framework */
   private Morpho morpho = null;
+
+  private static XSLTResolverInterface  resolver;
 
   /**
    *  flag to indicate whether 'references' should be shown
@@ -983,11 +1009,13 @@ public class DocFrame extends javax.swing.JFrame
    *  this class initializes the editor from a DOM representation
    *  of an XML document rather than a string.
    */
-  public void initDoc(Morpho morpho, Node docnode, String id, String loc)
+  public void initDoc(Morpho morpho, Node docnode, String id, String loc,
+      String schemaId)
   {
     this.id = id;
     this.location = loc;
     this.docnode = docnode;
+    this.schemaId = schemaId;
     setName("Morpho Editor");
     treeModel = putDOMintoTree(docnode);
     rootNode = (DefaultMutableTreeNode)treeModel.getRoot();
@@ -1032,7 +1060,15 @@ public class DocFrame extends javax.swing.JFrame
     // ".xml" as a file name; the formatting document is XML with the same
     // tree structure as the document being formatted; 'help' and 'editor' attributes
     // are used to set help and editor strings for nodes
-    rootname = rootname + ".xml";
+
+    String location = null;
+    if(schemaId != null)
+      location = getXMLLocation(schemaId);
+    if(location != null){
+      rootname = location;
+    } else {
+      rootname = rootname + ".xml";
+    }
     frootNode = new DefaultMutableTreeNode("froot");
     String fXMLString = "";
 
@@ -1104,8 +1140,31 @@ public class DocFrame extends javax.swing.JFrame
   public void initDoc(Morpho morpho, Document doc, String id, String loc,
                              String initNodeName, int initNodeNumber)
   {
-    Node docnode = doc.getDocumentElement() ;
-    initDoc(morpho, docnode, id, loc);
+    Element docnode = doc.getDocumentElement() ;
+    String identifier = null;
+    if (doc.getDoctype()!=null) {
+      identifier = doc.getDoctype().getPublicId();
+      Log.debug(50,"getPublicId() gives: "+identifier);
+    }
+    //if this is null, then try to get schemaLocation:
+    if (identifier==null || identifier.trim().equals("")) {
+      identifier = docnode.getAttributeNS(NAMESPACE_FOR_SCHEMA_LOCATION,
+          ATTRIB_NAME_FOR_SCHEMA_LOCATION);
+      // since schema location string may contain multiple substrings
+      // separated by spaces, we take only the first of these substrings:
+      if ((identifier!=null) && ( !identifier.trim().equals(""))) {
+        identifier = identifier.trim().substring(0, identifier.indexOf(" "));
+        Log.debug(50,"getAttributeNS schemaLocation is: "+identifier);
+      }
+    }
+
+    //if this is null, then try to get namespace of root node:
+    if (identifier==null || identifier.trim().equals("")) {
+      identifier = docnode.getNamespaceURI();
+      Log.debug(50,"rootNode.getNamespaceURI() gives: "+identifier);
+    }
+
+    initDoc(morpho, (Node)docnode, id, loc, identifier);
     findNode(rootNode, initNodeName, initNodeNumber);
   }
 
@@ -1350,7 +1409,7 @@ public class DocFrame extends javax.swing.JFrame
     }
     catch (Exception e) {Log.debug(4,"Problem in creating DOM!"+e);}
     // then display it
-    df.initDoc(null, domnode, null, null);
+    df.initDoc(null, domnode, null, null, null);
   }
 
 
@@ -4077,7 +4136,30 @@ public class DocFrame extends javax.swing.JFrame
     }
   }
 
+  //returns the location to access the stylesheet
+   private String getXMLLocation(String identifier)
+   {
+     try {
+       getXSLTResolverService();
+     } catch(ServiceNotHandledException ee) {
+       Log.debug(0, "Error acquiring XSLT Resolver plugin: " + ee);
+       ee.printStackTrace();
+       return null;
+     }
+     return resolver.getTreeEditorXMLLocation(identifier);
+   }
 
+   private XSLTResolverInterface getXSLTResolverService()
+                                             throws ServiceNotHandledException
+   {
+       if (resolver==null) {
+           ServiceController services = ServiceController.getInstance();
+           ServiceProvider provider =
+                     services.getServiceProvider(XSLTResolverInterface.class);
+           resolver = (XSLTResolverInterface)provider;
+       }
+       return resolver;
+    }
 }
 
 
