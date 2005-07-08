@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2004-04-23 22:39:37 $'
- * '$Revision: 1.41 $'
+ *   '$Author: sgarg $'
+ *     '$Date: 2005-07-08 19:00:56 $'
+ * '$Revision: 1.42 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -59,9 +59,9 @@ public class DataPackageFactory
    *  a uri in string form characterizing the docType of the current document
    */
   static private String docType = null;
-  
+
   static private Morpho morpho = null;
-  
+
   /**
    *  Create a new Datapackage given a Reader to a metadata stream
    *  location is given by 2 booleans
@@ -69,7 +69,7 @@ public class DataPackageFactory
   public static AbstractDataPackage getDataPackage(Reader in, boolean metacat, boolean local) {
     // read the stream. figure out the docType(i.e. emlbeta6, eml2, nbii, etc)
     // then create the appropriate subclass of AbstractDataPackage and return it.
-    
+
     // temporary stub!!!
     String location = null;
     if (metacat && !local) location = AbstractDataPackage.METACAT;
@@ -91,7 +91,7 @@ public class DataPackageFactory
     }
     return dp;
   }
-  
+
    /**
    *  Create a new Datapackage given a docid of a metadata stream
    *  location is given by 2 booleans
@@ -100,11 +100,11 @@ public class DataPackageFactory
     // first use datastore package to get a stream for the metadata
     // read the stream. figure out the docType(i.e. emlbeta6, eml2, nbii, etc)
     // then create the appropriate subclass of AbstractDataPackage and return it.
-    
-    morpho = Morpho.thisStaticInstance;  
+
+    morpho = Morpho.thisStaticInstance;
     if (morpho==null)  {
       Morpho.createMorphoInstance();
-      morpho = Morpho.thisStaticInstance;  
+      morpho = Morpho.thisStaticInstance;
     }
     String location = null;
     if (metacat && !local) location = AbstractDataPackage.METACAT;
@@ -113,8 +113,8 @@ public class DataPackageFactory
     Reader in = null;
     if ((location.equals(AbstractDataPackage.LOCAL))
                ||(location.equals(AbstractDataPackage.BOTH))) {
-      FileSystemDataStore fsds = new FileSystemDataStore(morpho); 
-     try {          
+      FileSystemDataStore fsds = new FileSystemDataStore(morpho);
+     try {
         File file = fsds.openFile(docid);
         in = new FileReader(file);
       }
@@ -160,8 +160,8 @@ public class DataPackageFactory
 
 
 //    dp.showPackageSummary();
-   
-    return dp;    
+
+    return dp;
   }
 
 
@@ -176,7 +176,7 @@ public class DataPackageFactory
     if(doctype.indexOf("eml-2.0")>-1) {
       // Note: assumed that this is ok for any 'eml-2.0.n' mod to eml2.0
       dp = new EML200DataPackage();
-    
+
       try{
         Node metadataPathNode = XMLUtilities.getXMLAsDOMTreeRootNode("/eml200KeymapConfig.xml");
         dp.setMetadataPath(metadataPathNode);
@@ -186,17 +186,17 @@ public class DataPackageFactory
         e2.printStackTrace();
       }
 
-    
+
       dp.grammar = "eml:eml";
       dp.metadataNode = node;
     }
-   // handlers for other types of documents hosuld be inserted here !!! 
+   // handlers for other types of documents hosuld be inserted here !!!
     if (dp==null) {
       Log.debug(1,"DOM document type is unknown! (DataPackaqeFactory.getDataPackage)");
     }
     return dp;
   }
-  
+
   /**
    *  reads the stream and tries to determine the docType. If there is a read docType,
    *  (i.e. a DocType element in the xml) then the publicID is stored, if available. If not
@@ -235,7 +235,7 @@ public class DataPackageFactory
       // assume that this is the root node and look for NS information
       StringTokenizer st = new StringTokenizer(temp," ");
       String temp1 = st.nextToken();
-      
+
       // if node name has a : then it has a namespace declaration
       int colon_pos = temp1.indexOf(":");
       if (colon_pos>-1) {
@@ -256,7 +256,7 @@ public class DataPackageFactory
     return docType;
   }
 
-  
+
   // 'borrowed' from MetaCatServlet class of metacat
   // this method should return everything inside the linenum set of angle brackets
     private static String getSchemaLine(Reader xml, int linenum)   {
@@ -271,13 +271,13 @@ public class DataPackageFactory
     char secondPreviousCharacter ='?';
     char previousCharacter = '?';
     char currentCharacter = '?';
-    
+
     try {
-    
+
       while ( (currentCharacter = (char) xml.read()) != -1)
       {
         //in a comment
-        if (currentCharacter =='-' && previousCharacter == '-'  && 
+        if (currentCharacter =='-' && previousCharacter == '-'  &&
           secondPreviousCharacter =='!' && thirdPreviousCharacter == '<')
         {
           count --;
@@ -285,12 +285,12 @@ public class DataPackageFactory
           comment = true;
         }
         //out of comment
-        if (comment && currentCharacter == '>' && previousCharacter == '-' && 
+        if (comment && currentCharacter == '>' && previousCharacter == '-' &&
           secondPreviousCharacter =='-')
         {
            comment = false;
         }
-      
+
         //this is not comment
         if (previousCharacter =='<'  && !comment)
         {
@@ -308,7 +308,7 @@ public class DataPackageFactory
         thirdPreviousCharacter = secondPreviousCharacter;
         secondPreviousCharacter = previousCharacter;
         previousCharacter = currentCharacter;
-      
+
       }
       secondLine = buffer.toString();
       Log.debug(25, "the second line string is: "+secondLine);
@@ -320,7 +320,7 @@ public class DataPackageFactory
     }
     return secondLine;
   }
-  
+
   /**
    *  This method is designed to try and determine the type of document
    *  the dom indicated by the rootNode 'rNode' represents
@@ -363,7 +363,7 @@ public class DataPackageFactory
     }
     return identifier;
   }
-  
+
   /**
    *  This is a static main method configured to test the class by
    *  creating a datapackage from a 'test' file with the id
@@ -380,15 +380,15 @@ public class DataPackageFactory
     try{
       Morpho.createMorphoInstance();
       adp = DataPackageFactory.getDataPackage("jscientist.7.1", false, true);
-      
+
       // create a simple subtree to use to test coverage insertion
       Document doc = adp.getMetadataNode().getOwnerDocument();
       Node elem = (Node)(doc.createElement("temporalCoverage"));
       Node txt = (Node)doc.createTextNode("when");
       elem.appendChild(txt);
-      
+
       adp.insertCoverage(elem);
-      
+
       adp.showPackageSummary();
 
       Node node = adp.getSubtree("intellectualRights",0);
@@ -399,12 +399,12 @@ public class DataPackageFactory
       Log.debug(1, "delNode: "+delNode);
       Node insNode = adp.insertSubtree("intellectualRights", node, 1);
       Log.debug(1,"insNode: "+insNode);
-/*      
+/*
       // now let us test the add attribute
       om.put("/attribute/"+"attributeName","TestAttributeName");
       om.put("/attribute/"+"attributeLabel","TestAttibuteLabel");
       om.put("/attribute/"+"attributeDefinition","Test Attribute Definition");
-      // set measurementScale 
+      // set measurementScale
       om.put("/attribute/"+"measurementScale/interval/"
               +"unit/standardUnit","meters");
       om.put("/attribute/"+"measurementScale/interval/numericDomain/"
@@ -417,25 +417,25 @@ public class DataPackageFactory
       //  create ordermap elements for a new entity
       om1.put("/dataTable/entityName", "TestEntityName");
       om1.put("/dataTable/attributeList/attribute/attributeName", "attributeOne");
-*/              
+*/
     } catch (Exception w) {Log.debug(5, "problem creating ordered map!");}
-    
-/*    try{        
- 
+
+/*    try{
+
       entityObject = new Entity("dataTable", om1);
       attributeObject = new Attribute(om);
 
       }
       catch (Exception e) {Log.debug(5, "problem creating DOM tree!"+ e);}
-      
+
       adp.insertEntity(entityObject, 3);
       adp.insertAttribute(0, attributeObject,1);
-			
+
 			Node[] ndarry = adp.getAttributeArray(0);
 			Node nd1 = ndarry[1];
       Node attrnode = adp.getReferencedNode(ndarry[1]);
 
-Log.debug(1, "referenced node: "+attrnode);			
+Log.debug(1, "referenced node: "+attrnode);
     Node attribute = attrnode;
     String temp = "";
     try {
@@ -451,12 +451,12 @@ Log.debug(1, "referenced node: "+attrnode);
     }
 Log.debug(1, "AttrName: "+temp);
 
-*/			
+*/
       Log.debug(1,"AbstractDataPackage complete - Will now show in an XML Editor..");
       Node domnode = adp.getMetadataNode();
       DocFrame df = new DocFrame();
       df.setVisible(true);
-      df.initDoc(null, domnode, null, null);
+      df.initDoc(null, domnode, null, null, null);
   }
 
 }

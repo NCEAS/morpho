@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: sgarg $'
- *     '$Date: 2005-06-30 16:27:20 $'
- * '$Revision: 1.41 $'
+ *     '$Date: 2005-07-08 19:00:13 $'
+ * '$Revision: 1.42 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -221,7 +221,8 @@ public class DataPackageWizardPlugin implements PluginInterface,
          Node domnode = dp.getMetadataNode();
           DocFrame df = new DocFrame();
           df.setVisible(true);
-          df.initDoc(null, domnode, null, null);
+          df.initDoc(null, domnode, null, null,
+              WizardSettings.EML201_SCHEMA_NAMESPACE);
 
           Log.debug(45, "\n\n********** Wizard finished: DOM:");
           Log.debug(45, XMLUtilities.getDOMTreeAsString(newDOM, false));

@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: sgarg $'
- *     '$Date: 2005-06-30 16:27:20 $'
- * '$Revision: 1.71 $'
+ *     '$Date: 2005-07-08 19:00:13 $'
+ * '$Revision: 1.72 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -248,6 +248,12 @@ public class WizardSettings {
   public static final int ACCESS_PAGE_USER          = 3;
 
   public static final int MAX_IMPORTED_ROWS_DISPLAYED_IN_CODE_IMPORT = 25;
+
+  protected static final String EML200_SCHEMA_NAMESPACE =
+      "eml://ecoinformatics.org/eml-2.0.0";
+
+  protected static final String EML201_SCHEMA_NAMESPACE =
+      "eml://ecoinformatics.org/eml-2.0.1";
 
   protected static final String NEW_EML200_DOCUMENT_TEXT =
   "<eml:eml "
