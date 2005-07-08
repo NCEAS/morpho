@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: sgarg $'
- *     '$Date: 2005-06-30 16:18:15 $'
- * '$Revision: 1.3 $'
+ *     '$Date: 2005-07-08 18:58:21 $'
+ * '$Revision: 1.4 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -75,5 +75,22 @@ public interface XSLTResolverInterface
      */
     public String getXSLTStylesheetLocation(String identifier);
 
+    /**
+    *  method to return a String, which will contain the name of the xml file
+    *  which conatins the structure of schema that can be displayed by the
+    *  tree editor. If a xml file corresponding to the DOCID cannot be found,
+    *  null is returned.
+    *
+    *  @param identifier - unique identifier used to determine the stylesheet
+    *                to return (e.g. DOCTYPE for DTD-defined XML, or
+    *                schemaLocation or rootnode namespace for XSD-defined XML)
+    *
+    *  @return       a String, which will contain the name of the xml file
+    *                which conatins the structure of schema that can be
+    *                displayed by the tree editor. If a xml file corresponding
+    *                to the DOCID cannot be found, null is returned.
+    *
+    */
+    public String getTreeEditorXMLLocation(String identifier);
 }
 

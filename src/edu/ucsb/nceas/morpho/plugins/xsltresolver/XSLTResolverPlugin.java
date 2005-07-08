@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: sgarg $'
- *     '$Date: 2005-06-30 16:22:43 $'
- * '$Revision: 1.12 $'
+ *     '$Date: 2005-07-08 18:58:21 $'
+ * '$Revision: 1.13 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -67,10 +67,14 @@ public class XSLTResolverPlugin implements  XSLTResolverInterface,
                                                     = "doctype_xslt_location_mappings";
     private final String CONFIG_KEY_LOCATIONS       = "location";
 
+    private final String CONFIG_KEY_TREE_EDITOR_XML = "tree_editor_xml_location_mappings";
+
     private final String    GENERIC_STYLESHEET;
     private final ConfigXML config;
+
     private       Hashtable xslt_mappings;
     private       Hashtable location_mappings;
+    private       Hashtable tree_editor_mappings;
 
     private final ClassLoader classLoader;
 
@@ -179,6 +183,33 @@ public class XSLTResolverPlugin implements  XSLTResolverInterface,
         return xslPathString;
     }
 
+
+    /**
+     *  Required by XSLTResolverInterface:
+     *  method to return a String, which will contain the name of the xml file
+     *  which conatins the structure of schema that can be displayed by the
+     *  tree editor. If a xml file corresponding to the DOCID cannot be found,
+     *  null is returned.
+     *
+     *  @param identifier - unique identifier used to determine the stylesheet
+     *                to return (e.g. DOCTYPE for DTD-defined XML, or
+     *                schemaLocation or rootnode namespace for XSD-defined XML)
+     *
+     *  @return       a String, which will contain the name of the xml file
+     *                which conatins the structure of schema that can be
+     *                displayed by the tree editor. If a xml file corresponding
+     *                to the DOCID cannot be found, null is returned.
+     *
+     */
+     public String getTreeEditorXMLLocation(String identifier)
+     {
+        Log.debug(50, "\ngetTreeEditorXMLLocation got: "+identifier);
+        String xmlPathString = getFromMappings(tree_editor_mappings, identifier);
+
+        Log.debug(50, "\ngetTreeEditorXMLLocation returning: "+xmlPathString);
+        return xmlPathString;
+    }
+
     // gets the doctype-to-xslt mappings from the config file and adds them to
     //the mappings hashtable
     private void initDoctypeToXSLTMappings()
@@ -188,6 +219,10 @@ public class XSLTResolverPlugin implements  XSLTResolverInterface,
                                         CONFIG_KEY_XSLT );
 
         location_mappings = config.getHashtable( CONFIG_KEY_DOCTYPE_TO_LOCATIONS,
+                                        CONFIG_KEY_DOCTYPE,
+                                        CONFIG_KEY_LOCATIONS );
+
+        tree_editor_mappings = config.getHashtable( CONFIG_KEY_TREE_EDITOR_XML,
                                         CONFIG_KEY_DOCTYPE,
                                         CONFIG_KEY_LOCATIONS );
 
