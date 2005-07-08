@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: sgarg $'
- *     '$Date: 2005-07-08 19:04:30 $'
- * '$Revision: 1.174 $'
+ *     '$Date: 2005-07-08 19:15:45 $'
+ * '$Revision: 1.175 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -924,6 +924,16 @@ public class DocFrame extends javax.swing.JFrame
     // ".xml" as a file name; the formatting document is XML with the same
     // tree structure as the document being formatted; 'help' and 'editor' attributes
     // are used to set help and editor strings for nodes
+
+    String location = null;
+      if(schemaId != null)
+        location = getXMLLocation(schemaId);
+      if(location != null){
+        rootname = location;
+      } else {
+        rootname = rootname + ".xml";
+    }
+
     rootname = rootname + ".xml";
     frootNode = new DefaultMutableTreeNode("froot");
     DefaultTreeModel ftreeModel = new DefaultTreeModel(frootNode);
