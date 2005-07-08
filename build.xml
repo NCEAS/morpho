@@ -6,7 +6,7 @@
   *    Copyright: 2000 Regents of the University of California and the
   *               National Center for Ecological Analysis and Synthesis
   *  For Details: http://www.nceas.ucsb.edu/
-  *    File Info: '$Id: build.xml,v 1.103 2005-05-09 23:03:28 sgarg Exp $'
+  *    File Info: '$Id: build.xml,v 1.104 2005-07-08 22:13:55 sgarg Exp $'
   *
   *  Build file for the Ant cross-platform build system for metacat
   *  See http://jakarta.apache.org for details on Ant
@@ -17,14 +17,14 @@
    <target name="init">
       <property name="name" value="morpho"/>
       <property name="Name" value="Morpho Data Management Client"/>
-      <property name="release" value="1.5.1"/>
+      <property name="release" value="1.6.0rc1"/>
       <property name="keystore" value="myKeystore"/>
       <property name="storepass" value="your-pw-goes-here"/>
       <property name="muser" value="uid=jones,o=NCEAS,dc=ecoinformatics,dc=org"/>
       <property name="mpass" value="your-pw-goes-here"/>
       <property name="eml-module" value="eml" />
-      <property name="eml-tag" value="RELEASE_EML_2_0_0" />
-      <property name="eml.doc.dir" value="docs/eml-2.0.0" />
+      <property name="eml-tag" value="RELEASE_EML_2_0_1" />
+      <property name="eml.doc.dir" value="docs/eml-2.0.1" />
       <property name="helpjar" value="morphohelp.jar" />
       <filter token="release" value="${release}"/>
       <filter token="muser" value="${muser}"/>
