@@ -1,5 +1,5 @@
  /*
-  *   '$RCSfile: entity.css,v $'
+  *   '$RCSfile: export.css,v $'
   *     Purpose: Default style sheet for KNB project web pages 
   *              Using this stylesheet rather than placing styles directly in 
   *              the KNB web documents allows us to globally change the 
@@ -8,8 +8,8 @@
   *               National Center for Ecological Analysis and Synthesis
   *     Authors: Matt Jones
   *
-  *    '$Author: brooke $'
-  *      '$Date: 2002-10-26 08:04:13 $'
+  *    '$Author: sgarg $'
+  *      '$Date: 2005-07-11 18:43:34 $'
   *  '$Revision: 1.1 $'
   *
   * This program is free software; you can redistribute it and/or modify
@@ -30,22 +30,27 @@
 body { 
       color: #000033;  
       background: #eeeeee;
-      font-size: 10px;  
+      font-size: 12px;  
 /*      font-family: Arial,Helvetica,sans-serif,Courier; */
 } 
  
 h1 { 
-      font-size: 12px;  
+      font-size: 14px;  
       font-weight: bold; 
 } 
 
 h3 { 
-      font-size: 11px;  
+      font-size: 13px;  
       font-weight: bold; 
 } 
 
 a {
     color: blue;
+    text-decoration: none; 
+}
+
+a:hover {
+    color: green;
     text-decoration: underline; 
 }
 
@@ -53,15 +58,15 @@ a {
     background: #eeeeee;
     color: black;
     width: 100%;
-    font-size: 10px; 
+    font-size: 12px; 
     left-padding: 5px;
     right-padding: 5px; 
 }
 
 .tablehead {
-    background: #9db3af;
+    background: #9aaabb;
     color: white;
-    font-size: 11px;
+    font-size: 13px;
 }
 
 .roweven {
@@ -73,6 +78,6 @@ a {
 }
 
 .highlight  {
-    background-color: #cae5e1;
-    font-size: 10px; 
+    background-color: #c9dcf0;
+    font-size: 12px; 
 }
