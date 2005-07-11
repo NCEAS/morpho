@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <config>
-  <version>1.6-RC1</version>
+  <version>1.6.0-RC1</version>
   <dataLocationInlineOnline>online</dataLocationInlineOnline>
   <plugin>edu.ucsb.nceas.morpho.query.QueryPlugin</plugin>
   <plugin>edu.ucsb.nceas.morpho.datapackage.DataPackagePlugin</plugin>
@@ -22,7 +22,7 @@
   <saxparser>org.apache.xerces.parsers.SAXParser</saxparser>
   <packageWizardConfig>frames/packagewizard.xml</packageWizardConfig>
   <tempDir>tmp</tempDir>
-  <morphoConfigJarLocation>lib/morpho-config.jar</morphoConfigJarLocation> 
+  <morphoConfigJarLocation>lib/morpho-config.jar</morphoConfigJarLocation>
   <northBCSearchPath>northBoundingCoordinate</northBCSearchPath>
   <westBCSearchPath>westBoundingCoordinate</westBCSearchPath>
   <southBCSearchPath>southBoundingCoordinate</southBCSearchPath>
@@ -34,11 +34,11 @@
   <returndoc>-//ecoinformatics.org//eml-dataset-2.0.0beta6//EN</returndoc>
   <returndoc>-//NCEAS//eml-dataset-2.0//EN</returndoc>
   <returndoc>-//NCEAS//resource//EN</returndoc>
-  <returndoc>eml://ecoinformatics.org/eml-2.0.0</returndoc> 
+  <returndoc>eml://ecoinformatics.org/eml-2.0.0</returndoc>
   <returndoc>eml://ecoinformatics.org/eml-2.0.1</returndoc>
   <returnfield>dataset/title</returnfield>
   <returnfield>individualName/surName</returnfield>
-  <returnfield>keyword</returnfield> 
+  <returnfield>keyword</returnfield>
   <returnfield>entityName</returnfield>
   <accessFileType>
     -//ecoinformatics.org//eml-access-2.0.0beta6//EN
