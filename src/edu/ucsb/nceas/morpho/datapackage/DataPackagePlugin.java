@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: sgarg $'
- *     '$Date: 2005-06-20 22:14:27 $'
- * '$Revision: 1.102 $'
+ *     '$Date: 2005-07-11 18:04:51 $'
+ * '$Revision: 1.103 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -144,7 +144,7 @@ public class DataPackagePlugin
     saveAction.setMenuItemPosition(4);
     saveAction.setToolTipText("Save...");
     saveAction.setMenu(FILE_MENU_LABEL, 0);
-    saveAction.setToolbarPosition(1);
+    saveAction.setToolbarPosition(2);
     saveAction.setEnabled(false);
     saveAction.setEnabledOnStateChange(
                       StateChangeEvent.CREATE_DATAPACKAGE_FRAME,
@@ -161,7 +161,7 @@ public class DataPackagePlugin
     saveCopyAction.setMenuItemPosition(5);
     saveCopyAction.setToolTipText("Duplicate this datapackage and save locally...");
     saveCopyAction.setMenu(FILE_MENU_LABEL, 0);
-    saveCopyAction.setToolbarPosition(2);
+    saveCopyAction.setToolbarPosition(3);
     saveCopyAction.setEnabled(false);
     saveCopyAction.setEnabledOnStateChange(
                       StateChangeEvent.CREATE_DATAPACKAGE_FRAME,

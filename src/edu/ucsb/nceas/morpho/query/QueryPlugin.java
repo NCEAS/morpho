@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: sgarg $'
- *     '$Date: 2005-06-13 18:25:24 $'
- * '$Revision: 1.112 $'
+ *     '$Date: 2005-07-11 18:04:26 $'
+ * '$Revision: 1.113 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -182,7 +182,7 @@ public class QueryPlugin implements PluginInterface, ConnectionListener,
     openDialogBoxAction.setMenuItemPosition(2);
     openDialogBoxAction.setToolTipText("Open...");
     openDialogBoxAction.setMenu("File", 0);
-    openDialogBoxAction.setToolbarPosition(3);
+    openDialogBoxAction.setToolbarPosition(1);
     controller.addGuiAction(openDialogBoxAction);
 
     // Open a data package action
