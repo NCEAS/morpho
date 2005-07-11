@@ -231,7 +231,7 @@
   <lookAndFeel></lookAndFeel>
   <genericStylesheet>style/generic.xsl</genericStylesheet>
   <genericStylesheetLocation>style/generic.xsl</genericStylesheetLocation>
-  <emlCSSLocation>style</emlCSSLocation>
+  <emlCSSLocation>style/CSS</emlCSSLocation>
   <doctype_xslt_location_mappings>
       <doctype>eml://ecoinformatics.org/eml-2.0.1</doctype>
       <location>style/eml201</location>
