@@ -240,9 +240,9 @@
   </doctype_xslt_location_mappings>
   <tree_editor_xml_location_mappings>
       <doctype>eml://ecoinformatics.org/eml-2.0.1</doctype>
-      <location>eml201.xml</location>
+      <location>eml-2.0.1.xml</location>
       <doctype>eml://ecoinformatics.org/eml-2.0.0</doctype>
-      <location>eml200.xml</location>
+      <location>eml-2.0.0.xml</location>
   </tree_editor_xml_location_mappings>
   <doctype_xslt_mappings>
       <doctype>eml://ecoinformatics.org/eml-2.0.1</doctype>
