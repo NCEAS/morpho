@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: sgarg $'
- *     '$Date: 2005-07-08 19:15:45 $'
- * '$Revision: 1.175 $'
+ *     '$Date: 2005-07-13 23:13:58 $'
+ * '$Revision: 1.176 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -934,7 +934,6 @@ public class DocFrame extends javax.swing.JFrame
         rootname = rootname + ".xml";
     }
 
-    rootname = rootname + ".xml";
     frootNode = new DefaultMutableTreeNode("froot");
     DefaultTreeModel ftreeModel = new DefaultTreeModel(frootNode);
     String fXMLString = "";
