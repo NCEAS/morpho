@@ -4367,7 +4367,7 @@
           <CHOICE2 minOccurs="1" maxOccurs="unbounded" help="">
             <enumeratedDomain enforced="yes" minOccurs="1" maxOccurs="1" help="The enumeratedDomain element describes any code that is used as a value of an attribute. These codes can be defined here in the metadata as a list with definitions (preferred), can be referenced by pointing to an external citation or URL where the codes are defined, or can be referenced by pointing at an entity that contains the code value and code definition as two attributes. For example, data might have a variable named 'site' with values 'A', 'B', and 'C', and the enumeratedDomain would explain how to interpret those codes.">
               <CHOICE3 minOccurs="1" maxOccurs="1" help="">
-                <codeDefinition minOccurs="1" maxOccurs="unbounded" help="This element gives the value of a particular code and its definition. It is repeatable to allow for a list of codes to be provided.">
+                <codeDefinition order="" minOccurs="1" maxOccurs="unbounded" help="This element gives the value of a particular code and its definition. It is repeatable to allow for a list of codes to be provided.">
                   <code minOccurs="1" maxOccurs="1" help="The code element specifies a code value that can be used in the domain">
                   </code>
                   <definition minOccurs="1" maxOccurs="1" help="The definition describes the code with which it is associated in enough  detail for scientists to interpret the meaning of the coded values.">
@@ -4392,6 +4392,8 @@
                   </valueAttributeReference>
                   <definitionAttributeReference minOccurs="1" maxOccurs="1" help="The definitionAttributeReference element is a reference to the id of the attribute that contains the definition of codes. This attribute must have been defined elsewhere in the metadata and have an id that matches the value of this element.">
                   </definitionAttributeReference>
+                  <orderAttributeReference minOccurs="0" maxOccurs="1" help="The orderAttributeReference element is a reference to the id of the attribute that contains the order of codes. The values in this attribute are integers indicating increasing values of the categories. This attribute must have been defined elsewhere in the metadata and have an id that matches the value of this element">
+                  </orderAttributeReference>
                 </entityCodeList>
               </CHOICE3>
             </enumeratedDomain>
@@ -4417,7 +4419,7 @@
           <CHOICE7 minOccurs="1" maxOccurs="unbounded" help="">
             <enumeratedDomain enforced="yes" minOccurs="1" maxOccurs="1" help="The enumeratedDomain element describes any code that is used as a value of an attribute. These codes can be defined here in the metadata as a list with definitions (preferred), can be referenced by pointing to an external citation or URL where the codes are defined, or can be referenced by pointing at an entity that contains the code value and code definition as two attributes. For example, data might have a variable named 'site' with values 'A', 'B', and 'C', and the enumeratedDomain would explain how to interpret those codes.">
               <CHOICE8 minOccurs="1" maxOccurs="1" help="">
-                <codeDefinition minOccurs="1" maxOccurs="unbounded" help="This element gives the value of a particular code and its definition. It is repeatable to allow for a list of codes to be provided.">
+                <codeDefinition order="" minOccurs="1" maxOccurs="unbounded" help="This element gives the value of a particular code and its definition. It is repeatable to allow for a list of codes to be provided.">
                   <code minOccurs="1" maxOccurs="1" help="The code element specifies a code value that can be used in the domain">
                   </code>
                   <definition minOccurs="1" maxOccurs="1" help="The definition describes the code with which it is associated in enough  detail for scientists to interpret the meaning of the coded values.">
@@ -4442,6 +4444,8 @@
                   </valueAttributeReference>
                   <definitionAttributeReference minOccurs="1" maxOccurs="1" help="The definitionAttributeReference element is a reference to the id of the attribute that contains the definition of codes. This attribute must have been defined elsewhere in the metadata and have an id that matches the value of this element.">
                   </definitionAttributeReference>
+		   <orderAttributeReference minOccurs="0" maxOccurs="1" help="The orderAttributeReference element is a reference to the id of the attribute that contains the order of codes. The values in this attribute are integers indicating increasing values of the categories. This attribute must have been defined elsewhere in the metadata and have an id that matches the value of this element">
+                  </orderAttributeReference>
                 </entityCodeList>
               </CHOICE8>
             </enumeratedDomain>
@@ -4470,7 +4474,7 @@
           </customUnit>
         </CHOICE11>
       </unit>
-      <precision minOccurs="1" maxOccurs="unbounded" help="The precision element represents the precision of the measurement, in the same unit as the measurement. For example, for an attribute with unit 'meter', a precision of '0.1' would be interpreted as precise to the nearest 1/10th of a meter, and a precision of '1' would be interpreted as precise to the nearest 1 meter.">
+      <precision minOccurs="0" maxOccurs="1" help="The precision element represents the precision of the measurement, in the same unit as the measurement. For example, for an attribute with unit 'meter', a precision of '0.1' would be interpreted as precise to the nearest 1/10th of a meter, and a precision of '1' would be interpreted as precise to the nearest 1 meter.">
       </precision>
       <numericDomain id="" minOccurs="1" maxOccurs="1" help="The numericDomain element specifies the minimum and maximum values of a numeric attribute. These are theoretical or permitted values (ie. prescriptive), and not necessarily the actual minimum and maximum observed in a given data set (descriptive). The information in numericDomain and in precision together constitute sufficient information to decide upon an appropriate system specific data type for representing a particular attribute. For example, an attribute with a numeric domain from 0-50,000 and a precision of 1 could be represented in the C language using a 'long' value, but if the precision is changed to '0.5' then a 'float' type would be needed.">
         <CHOICE12 minOccurs="1" maxOccurs="1" help="">
@@ -4500,7 +4504,7 @@
           </customUnit>
         </CHOICE15>
       </unit>
-      <precision minOccurs="1" maxOccurs="1" help="The precision element represents the precision of the measurement, in the same unit as the measurement. For example, for an attribute with unit 'meter', a precision of '0.1' would be interpreted as precise to the nearest 1/10th of a meter, and a precision of '1' would be interpreted as precise to the nearest 1 meter.">
+      <precision minOccurs="0" maxOccurs="1" help="The precision element represents the precision of the measurement, in the same unit as the measurement. For example, for an attribute with unit 'meter', a precision of '0.1' would be interpreted as precise to the nearest 1/10th of a meter, and a precision of '1' would be interpreted as precise to the nearest 1 meter.">
       </precision>
       <numericDomain id="" minOccurs="1" maxOccurs="1" help="The numericDomain element specifies the minimum and maximum values of a numeric attribute. These are theoretical or permitted values (ie. prescriptive), and not necessarily the actual minimum and maximum observed in a given data set (descriptive). The information in numericDomain and in precision together constitute sufficient information to decide upon an appropriate system specific data type for representing a particular attribute. For example, an attribute with a numeric domain from 0-50,000 and a precision of 1 could be represented in the C language using a 'long' value, but if the precision is changed to '0.5' then a 'float' type would be needed.">
         <CHOICE16 minOccurs="1" maxOccurs="1" help="">
@@ -4691,6 +4695,8 @@
               <simpleDelimited minOccurs="1" maxOccurs="1" help="A simple delimited format that uses one of a series of delimiters to indicate the ends of fields in the data stream. More complex formats such as fixed format or mixed delimited and fixed formats can be described using the 'complex' element.">
                 <fieldDelimiter minOccurs="1" maxOccurs="unbounded" help="This element specifies a character to be used in the object for indicating the ending column for an attribute. The delimiter character itself is not part of the attribute value, but rather is present in the column following the last character of the value. Typical delimiter characters include commas, tabs, spaces, and semicolons. The only time the fieldDelimiter character is not interpreted as a delimiter is if it is contained in a quoted string (see quoteCharacter) or is immediately preceded by a literalCharacter. Non-printable quote characters can be provided as their hex values, and for tab characters by its ASCII string '\t'. Processors should assume that the field starts in the column following the previous field if the previous field was fixed, or in the column following the delimiter from the previous field if the previous field was delimited.">
                 </fieldDelimiter>
+		<collapseDelimiters minOccurs="0" maxOccurs="1" help="The consecutiveDelimitersAreSingle element specifies whether sequential delimiters should be treated as a single delimiter or multiple delimiters.  An example is when a space delimiter is used; often there may be several repeated spaces that should be treated as a single delimiter, but not always. The valid values are yes or no. If it is set to yes, then consecutive delimiters will be seen as single. If set to no, then consecutive delimiters will be treated as seperate delimiters. Default behaviour is no; hence, consecutive delimiters will be treated as seperate delimiters, by default">
+                </collapseDelimiters>
                 <quoteCharacter minOccurs="0" maxOccurs="unbounded" help="This element specifies a character to be used in the object for quoting values so that field delimeters can be used within the value. This basically allows delimeter 'escaping'. The quoteChacter is typically a ' or '. When a processor encounters a quote character, it should not interpret any following characters as a delimiter until a matching quote character has been encountered (i.e., quotes come in pairs). It is an error to not provide a closing quote before the record ends. Non-printable quote characters can be provided as their hex values.">
                 </quoteCharacter>
                 <literalCharacter minOccurs="0" maxOccurs="unbounded" help="This element specifies a character to be used for escaping special character values so that they are treated as literal values. This allows 'escaping' for special characters like quotes, commas, and spaces when they are intended to be used in an attribute value rather than being intended as a delimiter. The literalCharacter is typically a \.">
@@ -4708,9 +4714,11 @@
                   </textFixed>
                   <textDelimited minOccurs="1" maxOccurs="1" help="Describes the physical format of data sequences that use delimiters in the stream to locate attribute values. This method is common in data exported from spreadsheets and database systems, To parse it, one must know the character that indicates the end of each attribute and the line to begin reading the value.">
                     <fieldDelimiter minOccurs="1" maxOccurs="1" help="This element specifies a character to be used in the object for indicating the ending column for an attribute. The delimiter character itself is not part of the attribute value, but rather is present in the column following the last character of the value. Typical delimiter characters include commas, tabs, spaces, and semicolons. The only time the fieldDelimiter character is not interpreted as a delimiter is if it is contained in a quoted string (see quoteCharacter) or is immediately preceded by a literalCharacter. Non-printable quote characters can be provided as their hex values, and for tab characters by its ASCII string '\t'. Processors should assume that the field starts in the column following the previous field if the previous field was fixed, or in the column following the delimiter from the previous field if the previous field was delimited.">
-                    </fieldDelimiter>
+		    </fieldDelimiter>
+		    <collapseDelimiters minOccurs="0" maxOccurs="1" help="The consecutiveDelimitersAreSingle element specifies whether sequential delimiters should be treated as a single delimiter or multiple delimiters.  An example is when a space delimiter is used; often there may be several repeated spaces that should be treated as a single delimiter, but not always. The valid values are yes or no. If it is set to yes, then consecutive delimiters will be seen as single. If set to no, then consecutive delimiters will be treated as seperate delimiters. Default behaviour is no; hence, consecutive delimiters will be treated as seperate delimiters, by default">
+		    </collapseDelimiters>
                     <lineNumber minOccurs="0" maxOccurs="1" help="A single logical data record may be written over several physical lines in a file, with no special marker to indicate the end of a record. In such cases, the relative location of a data field must be indicated by both relative row and column number. The lineNumber should never greater that the number of physical lines per record. When parsing the first field on a physical line as a delimited field, they should assume that the field data starts in the first column. Otherwise, follow the rules indicated under fieldDelimiter.">
-                    </lineNumber>
+		    </lineNumber>
                     <quoteCharacter minOccurs="0" maxOccurs="unbounded" help="This element specifies a character to be used in the object for quoting values so that field delimeters can be used within the value. This basically allows delimeter 'escaping'. The quoteChacter is typically a ' or '. When a processor encounters a quote character, it should not interpret any following characters as a delimiter until a matching quote character has been encountered (i.e., quotes come in pairs). It is an error to not provide a closing quote before the record ends. Non-printable quote characters can be provided as their hex values.">
                     </quoteCharacter>
                     <literalCharacter minOccurs="0" maxOccurs="unbounded" help="This element specifies a character to be used for escaping special character values so that they are treated as literal values. This allows 'escaping' for special characters like quotes, commas, and spaces when they are intended to be used in an attribute value rather than being intended as a delimiter. The literalCharacter is typically a \.">
@@ -5904,7 +5912,7 @@
           <CHOICE2E minOccurs="1" maxOccurs="unbounded" help="">
             <enumeratedDomain enforced="yes" minOccurs="1" maxOccurs="1" help="The enumeratedDomain element describes any code that is used as a value of an attribute. These codes can be defined here in the metadata as a list with definitions (preferred), can be referenced by pointing to an external citation or URL where the codes are defined, or can be referenced by pointing at an entity that contains the code value and code definition as two attributes. For example, data might have a variable named 'site' with values 'A', 'B', and 'C', and the enumeratedDomain would explain how to interpret those codes.">
               <CHOICE3E minOccurs="1" maxOccurs="1" help="">
-                <codeDefinition minOccurs="1" maxOccurs="unbounded" help="This element gives the value of a particular code and its definition. It is repeatable to allow for a list of codes to be provided.">
+                <codeDefinition order="" minOccurs="1" maxOccurs="unbounded" help="This element gives the value of a particular code and its definition. It is repeatable to allow for a list of codes to be provided.">
                   <code minOccurs="1" maxOccurs="1" help="The code element specifies a code value that can be used in the domain">
                   </code>
                   <definition minOccurs="1" maxOccurs="1" help="The definition describes the code with which it is associated in enough  detail for scientists to interpret the meaning of the coded values.">
@@ -5929,6 +5937,8 @@
                   </valueAttributeReference>
                   <definitionAttributeReference minOccurs="1" maxOccurs="1" help="The definitionAttributeReference element is a reference to the id of the attribute that contains the definition of codes. This attribute must have been defined elsewhere in the metadata and have an id that matches the value of this element.">
                   </definitionAttributeReference>
+		  <orderAttributeReference minOccurs="0" maxOccurs="1" help="The orderAttributeReference element is a reference to the id of the attribute that contains the order of codes. The values in this attribute are integers indicating increasing values of the categories. This attribute must have been defined elsewhere in the metadata and have an id that matches the value of this element">
+                  </orderAttributeReference>
                 </entityCodeList>
               </CHOICE3E>
             </enumeratedDomain>
@@ -5954,7 +5964,7 @@
           <CHOICE7E minOccurs="1" maxOccurs="unbounded" help="">
             <enumeratedDomain enforced="yes" minOccurs="1" maxOccurs="1" help="The enumeratedDomain element describes any code that is used as a value of an attribute. These codes can be defined here in the metadata as a list with definitions (preferred), can be referenced by pointing to an external citation or URL where the codes are defined, or can be referenced by pointing at an entity that contains the code value and code definition as two attributes. For example, data might have a variable named 'site' with values 'A', 'B', and 'C', and the enumeratedDomain would explain how to interpret those codes.">
               <CHOICE8E minOccurs="1" maxOccurs="1" help="">
-                <codeDefinition minOccurs="1" maxOccurs="unbounded" help="This element gives the value of a particular code and its definition. It is repeatable to allow for a list of codes to be provided.">
+                <codeDefinition order="" minOccurs="1" maxOccurs="unbounded" help="This element gives the value of a particular code and its definition. It is repeatable to allow for a list of codes to be provided.">
                   <code minOccurs="1" maxOccurs="1" help="The code element specifies a code value that can be used in the domain">
                   </code>
                   <definition minOccurs="1" maxOccurs="1" help="The definition describes the code with which it is associated in enough  detail for scientists to interpret the meaning of the coded values.">
@@ -5979,6 +5989,8 @@
                   </valueAttributeReference>
                   <definitionAttributeReference minOccurs="1" maxOccurs="1" help="The definitionAttributeReference element is a reference to the id of the attribute that contains the definition of codes. This attribute must have been defined elsewhere in the metadata and have an id that matches the value of this element.">
                   </definitionAttributeReference>
+		   <orderAttributeReference minOccurs="0" maxOccurs="1" help="The orderAttributeReference element is a reference to the id of the attribute that contains the order of codes. The values in this attribute are integers indicating increasing values of the categories. This attribute must have been defined elsewhere in the metadata and have an id that matches the value of this element">
+                  </orderAttributeReference>
                 </entityCodeList>
               </CHOICE8E>
             </enumeratedDomain>
@@ -6007,7 +6019,7 @@
           </customUnit>
         </CHOICE11E>
       </unit>
-      <precision minOccurs="1" maxOccurs="unbounded" help="The precision element represents the precision of the measurement, in the same unit as the measurement. For example, for an attribute with unit 'meter', a precision of '0.1' would be interpreted as precise to the nearest 1/10th of a meter, and a precision of '1' would be interpreted as precise to the nearest 1 meter.">
+      <precision minOccurs="0" maxOccurs="1" help="The precision element represents the precision of the measurement, in the same unit as the measurement. For example, for an attribute with unit 'meter', a precision of '0.1' would be interpreted as precise to the nearest 1/10th of a meter, and a precision of '1' would be interpreted as precise to the nearest 1 meter.">
       </precision>
       <numericDomain id="" minOccurs="1" maxOccurs="1" help="The numericDomain element specifies the minimum and maximum values of a numeric attribute. These are theoretical or permitted values (ie. prescriptive), and not necessarily the actual minimum and maximum observed in a given data set (descriptive). The information in numericDomain and in precision together constitute sufficient information to decide upon an appropriate system specific data type for representing a particular attribute. For example, an attribute with a numeric domain from 0-50,000 and a precision of 1 could be represented in the C language using a 'long' value, but if the precision is changed to '0.5' then a 'float' type would be needed.">
         <CHOICE12E minOccurs="1" maxOccurs="1" help="">
@@ -6037,7 +6049,7 @@
           </customUnit>
         </CHOICE15E>
       </unit>
-      <precision minOccurs="1" maxOccurs="1" help="The precision element represents the precision of the measurement, in the same unit as the measurement. For example, for an attribute with unit 'meter', a precision of '0.1' would be interpreted as precise to the nearest 1/10th of a meter, and a precision of '1' would be interpreted as precise to the nearest 1 meter.">
+      <precision minOccurs="0" maxOccurs="1" help="The precision element represents the precision of the measurement, in the same unit as the measurement. For example, for an attribute with unit 'meter', a precision of '0.1' would be interpreted as precise to the nearest 1/10th of a meter, and a precision of '1' would be interpreted as precise to the nearest 1 meter.">
       </precision>
       <numericDomain id="" minOccurs="1" maxOccurs="1" help="The numericDomain element specifies the minimum and maximum values of a numeric attribute. These are theoretical or permitted values (ie. prescriptive), and not necessarily the actual minimum and maximum observed in a given data set (descriptive). The information in numericDomain and in precision together constitute sufficient information to decide upon an appropriate system specific data type for representing a particular attribute. For example, an attribute with a numeric domain from 0-50,000 and a precision of 1 could be represented in the C language using a 'long' value, but if the precision is changed to '0.5' then a 'float' type would be needed.">
         <CHOICE16E minOccurs="1" maxOccurs="1" help="">
@@ -7483,7 +7495,7 @@
           <CHOICE2 minOccurs="1" maxOccurs="unbounded" help="">
             <enumeratedDomain enforced="yes" minOccurs="1" maxOccurs="1" help="The enumeratedDomain element describes any code that is used as a value of an attribute. These codes can be defined here in the metadata as a list with definitions (preferred), can be referenced by pointing to an external citation or URL where the codes are defined, or can be referenced by pointing at an entity that contains the code value and code definition as two attributes. For example, data might have a variable named 'site' with values 'A', 'B', and 'C', and the enumeratedDomain would explain how to interpret those codes.">
               <CHOICE3 minOccurs="1" maxOccurs="1" help="">
-                <codeDefinition minOccurs="1" maxOccurs="unbounded" help="This element gives the value of a particular code and its definition. It is repeatable to allow for a list of codes to be provided.">
+                <codeDefinition order="" minOccurs="1" maxOccurs="unbounded" help="This element gives the value of a particular code and its definition. It is repeatable to allow for a list of codes to be provided.">
                   <code minOccurs="1" maxOccurs="1" help="The code element specifies a code value that can be used in the domain">
                   </code>
                   <definition minOccurs="1" maxOccurs="1" help="The definition describes the code with which it is associated in enough  detail for scientists to interpret the meaning of the coded values.">
@@ -7508,6 +7520,8 @@
                   </valueAttributeReference>
                   <definitionAttributeReference minOccurs="1" maxOccurs="1" help="The definitionAttributeReference element is a reference to the id of the attribute that contains the definition of codes. This attribute must have been defined elsewhere in the metadata and have an id that matches the value of this element.">
                   </definitionAttributeReference>
+	   	  <orderAttributeReference minOccurs="0" maxOccurs="1" help="The orderAttributeReference element is a reference to the id of the attribute that contains the order of codes. The values in this attribute are integers indicating increasing values of the categories. This attribute must have been defined elsewhere in the metadata and have an id that matches the value of this element">
+                  </orderAttributeReference>
                 </entityCodeList>
               </CHOICE3>
             </enumeratedDomain>
@@ -7533,7 +7547,7 @@
           <CHOICE7 minOccurs="1" maxOccurs="unbounded" help="">
             <enumeratedDomain enforced="yes" minOccurs="1" maxOccurs="1" help="The enumeratedDomain element describes any code that is used as a value of an attribute. These codes can be defined here in the metadata as a list with definitions (preferred), can be referenced by pointing to an external citation or URL where the codes are defined, or can be referenced by pointing at an entity that contains the code value and code definition as two attributes. For example, data might have a variable named 'site' with values 'A', 'B', and 'C', and the enumeratedDomain would explain how to interpret those codes.">
               <CHOICE8 minOccurs="1" maxOccurs="1" help="">
-                <codeDefinition minOccurs="1" maxOccurs="unbounded" help="This element gives the value of a particular code and its definition. It is repeatable to allow for a list of codes to be provided.">
+                <codeDefinition order="" minOccurs="1" maxOccurs="unbounded" help="This element gives the value of a particular code and its definition. It is repeatable to allow for a list of codes to be provided.">
                   <code minOccurs="1" maxOccurs="1" help="The code element specifies a code value that can be used in the domain">
                   </code>
                   <definition minOccurs="1" maxOccurs="1" help="The definition describes the code with which it is associated in enough  detail for scientists to interpret the meaning of the coded values.">
@@ -7558,6 +7572,8 @@
                   </valueAttributeReference>
                   <definitionAttributeReference minOccurs="1" maxOccurs="1" help="The definitionAttributeReference element is a reference to the id of the attribute that contains the definition of codes. This attribute must have been defined elsewhere in the metadata and have an id that matches the value of this element.">
                   </definitionAttributeReference>
+      	          <orderAttributeReference minOccurs="0" maxOccurs="1" help="The orderAttributeReference element is a reference to the id of the attribute that contains the order of codes. The values in this attribute are integers indicating increasing values of the categories. This attribute must have been defined elsewhere in the metadata and have an id that matches the value of this element">
+                  </orderAttributeReference>
                 </entityCodeList>
               </CHOICE8>
             </enumeratedDomain>
@@ -7586,7 +7602,7 @@
           </customUnit>
         </CHOICE11>
       </unit>
-      <precision minOccurs="1" maxOccurs="unbounded" help="The precision element represents the precision of the measurement, in the same unit as the measurement. For example, for an attribute with unit 'meter', a precision of '0.1' would be interpreted as precise to the nearest 1/10th of a meter, and a precision of '1' would be interpreted as precise to the nearest 1 meter.">
+      <precision minOccurs="0"  maxOccurs="1" help="The precision element represents the precision of the measurement, in the same unit as the measurement. For example, for an attribute with unit 'meter', a precision of '0.1' would be interpreted as precise to the nearest 1/10th of a meter, and a precision of '1' would be interpreted as precise to the nearest 1 meter.">
       </precision>
       <numericDomain id="" minOccurs="1" maxOccurs="1" help="The numericDomain element specifies the minimum and maximum values of a numeric attribute. These are theoretical or permitted values (ie. prescriptive), and not necessarily the actual minimum and maximum observed in a given data set (descriptive). The information in numericDomain and in precision together constitute sufficient information to decide upon an appropriate system specific data type for representing a particular attribute. For example, an attribute with a numeric domain from 0-50,000 and a precision of 1 could be represented in the C language using a 'long' value, but if the precision is changed to '0.5' then a 'float' type would be needed.">
         <CHOICE12 minOccurs="1" maxOccurs="1" help="">
@@ -7616,7 +7632,7 @@
           </customUnit>
         </CHOICE15>
       </unit>
-      <precision minOccurs="1" maxOccurs="1" help="The precision element represents the precision of the measurement, in the same unit as the measurement. For example, for an attribute with unit 'meter', a precision of '0.1' would be interpreted as precise to the nearest 1/10th of a meter, and a precision of '1' would be interpreted as precise to the nearest 1 meter.">
+      <precision minOccurs="0" maxOccurs="1" help="The precision element represents the precision of the measurement, in the same unit as the measurement. For example, for an attribute with unit 'meter', a precision of '0.1' would be interpreted as precise to the nearest 1/10th of a meter, and a precision of '1' would be interpreted as precise to the nearest 1 meter.">
       </precision>
       <numericDomain id="" minOccurs="1" maxOccurs="1" help="The numericDomain element specifies the minimum and maximum values of a numeric attribute. These are theoretical or permitted values (ie. prescriptive), and not necessarily the actual minimum and maximum observed in a given data set (descriptive). The information in numericDomain and in precision together constitute sufficient information to decide upon an appropriate system specific data type for representing a particular attribute. For example, an attribute with a numeric domain from 0-50,000 and a precision of 1 could be represented in the C language using a 'long' value, but if the precision is changed to '0.5' then a 'float' type would be needed.">
         <CHOICE16 minOccurs="1" maxOccurs="1" help="">
@@ -8919,7 +8935,7 @@
           <CHOICE2 minOccurs="1" maxOccurs="unbounded" help="">
             <enumeratedDomain enforced="yes" minOccurs="1" maxOccurs="1" help="The enumeratedDomain element describes any code that is used as a value of an attribute. These codes can be defined here in the metadata as a list with definitions (preferred), can be referenced by pointing to an external citation or URL where the codes are defined, or can be referenced by pointing at an entity that contains the code value and code definition as two attributes. For example, data might have a variable named 'site' with values 'A', 'B', and 'C', and the enumeratedDomain would explain how to interpret those codes.">
               <CHOICE3 minOccurs="1" maxOccurs="1" help="">
-                <codeDefinition minOccurs="1" maxOccurs="unbounded" help="This element gives the value of a particular code and its definition. It is repeatable to allow for a list of codes to be provided.">
+                <codeDefinition order="" minOccurs="1" maxOccurs="unbounded" help="This element gives the value of a particular code and its definition. It is repeatable to allow for a list of codes to be provided.">
                   <code minOccurs="1" maxOccurs="1" help="The code element specifies a code value that can be used in the domain">
                   </code>
                   <definition minOccurs="1" maxOccurs="1" help="The definition describes the code with which it is associated in enough  detail for scientists to interpret the meaning of the coded values.">
@@ -8944,6 +8960,8 @@
                   </valueAttributeReference>
                   <definitionAttributeReference minOccurs="1" maxOccurs="1" help="The definitionAttributeReference element is a reference to the id of the attribute that contains the definition of codes. This attribute must have been defined elsewhere in the metadata and have an id that matches the value of this element.">
                   </definitionAttributeReference>
+		  <orderAttributeReference minOccurs="0" maxOccurs="1" help="The orderAttributeReference element is a reference to the id of the attribute that contains the order of codes. The values in this attribute are integers indicating increasing values of the categories. This attribute must have been defined elsewhere in the metadata and have an id that matches the value of this element">
+                  </orderAttributeReference>
                 </entityCodeList>
               </CHOICE3>
             </enumeratedDomain>
@@ -8969,7 +8987,7 @@
           <CHOICE7 minOccurs="1" maxOccurs="unbounded" help="">
             <enumeratedDomain enforced="yes" minOccurs="1" maxOccurs="1" help="The enumeratedDomain element describes any code that is used as a value of an attribute. These codes can be defined here in the metadata as a list with definitions (preferred), can be referenced by pointing to an external citation or URL where the codes are defined, or can be referenced by pointing at an entity that contains the code value and code definition as two attributes. For example, data might have a variable named 'site' with values 'A', 'B', and 'C', and the enumeratedDomain would explain how to interpret those codes.">
               <CHOICE8 minOccurs="1" maxOccurs="1" help="">
-                <codeDefinition minOccurs="1" maxOccurs="unbounded" help="This element gives the value of a particular code and its definition. It is repeatable to allow for a list of codes to be provided.">
+                <codeDefinition order="" minOccurs="1" maxOccurs="unbounded" help="This element gives the value of a particular code and its definition. It is repeatable to allow for a list of codes to be provided.">
                   <code minOccurs="1" maxOccurs="1" help="The code element specifies a code value that can be used in the domain">
                   </code>
                   <definition minOccurs="1" maxOccurs="1" help="The definition describes the code with which it is associated in enough  detail for scientists to interpret the meaning of the coded values.">
@@ -8994,6 +9012,8 @@
                   </valueAttributeReference>
                   <definitionAttributeReference minOccurs="1" maxOccurs="1" help="The definitionAttributeReference element is a reference to the id of the attribute that contains the definition of codes. This attribute must have been defined elsewhere in the metadata and have an id that matches the value of this element.">
                   </definitionAttributeReference>
+		  <orderAttributeReference minOccurs="0" maxOccurs="1" help="The orderAttributeReference element is a reference to the id of the attribute that contains the order of codes. The values in this attribute are integers indicating increasing values of the categories. This attribute must have been defined elsewhere in the metadata and have an id that matches the value of this element">
+                  </orderAttributeReference>
                 </entityCodeList>
               </CHOICE8>
             </enumeratedDomain>
@@ -9022,7 +9042,7 @@
           </customUnit>
         </CHOICE11>
       </unit>
-      <precision minOccurs="1" maxOccurs="unbounded" help="The precision element represents the precision of the measurement, in the same unit as the measurement. For example, for an attribute with unit 'meter', a precision of '0.1' would be interpreted as precise to the nearest 1/10th of a meter, and a precision of '1' would be interpreted as precise to the nearest 1 meter.">
+      <precision minOccurs="0" maxOccurs="1" help="The precision element represents the precision of the measurement, in the same unit as the measurement. For example, for an attribute with unit 'meter', a precision of '0.1' would be interpreted as precise to the nearest 1/10th of a meter, and a precision of '1' would be interpreted as precise to the nearest 1 meter.">
       </precision>
       <numericDomain id="" minOccurs="1" maxOccurs="1" help="The numericDomain element specifies the minimum and maximum values of a numeric attribute. These are theoretical or permitted values (ie. prescriptive), and not necessarily the actual minimum and maximum observed in a given data set (descriptive). The information in numericDomain and in precision together constitute sufficient information to decide upon an appropriate system specific data type for representing a particular attribute. For example, an attribute with a numeric domain from 0-50,000 and a precision of 1 could be represented in the C language using a 'long' value, but if the precision is changed to '0.5' then a 'float' type would be needed.">
         <CHOICE12 minOccurs="1" maxOccurs="1" help="">
@@ -9052,7 +9072,7 @@
           </customUnit>
         </CHOICE15>
       </unit>
-      <precision minOccurs="1" maxOccurs="1" help="The precision element represents the precision of the measurement, in the same unit as the measurement. For example, for an attribute with unit 'meter', a precision of '0.1' would be interpreted as precise to the nearest 1/10th of a meter, and a precision of '1' would be interpreted as precise to the nearest 1 meter.">
+      <precision minOccurs="0" maxOccurs="1" help="The precision element represents the precision of the measurement, in the same unit as the measurement. For example, for an attribute with unit 'meter', a precision of '0.1' would be interpreted as precise to the nearest 1/10th of a meter, and a precision of '1' would be interpreted as precise to the nearest 1 meter.">
       </precision>
       <numericDomain id="" minOccurs="1" maxOccurs="1" help="The numericDomain element specifies the minimum and maximum values of a numeric attribute. These are theoretical or permitted values (ie. prescriptive), and not necessarily the actual minimum and maximum observed in a given data set (descriptive). The information in numericDomain and in precision together constitute sufficient information to decide upon an appropriate system specific data type for representing a particular attribute. For example, an attribute with a numeric domain from 0-50,000 and a precision of 1 could be represented in the C language using a 'long' value, but if the precision is changed to '0.5' then a 'float' type would be needed.">
         <CHOICE16 minOccurs="1" maxOccurs="1" help="">
@@ -10321,7 +10341,7 @@
           <CHOICE2 minOccurs="1" maxOccurs="unbounded" help="">
             <enumeratedDomain enforced="yes" minOccurs="1" maxOccurs="1" help="The enumeratedDomain element describes any code that is used as a value of an attribute. These codes can be defined here in the metadata as a list with definitions (preferred), can be referenced by pointing to an external citation or URL where the codes are defined, or can be referenced by pointing at an entity that contains the code value and code definition as two attributes. For example, data might have a variable named 'site' with values 'A', 'B', and 'C', and the enumeratedDomain would explain how to interpret those codes.">
               <CHOICE3 minOccurs="1" maxOccurs="1" help="">
-                <codeDefinition minOccurs="1" maxOccurs="unbounded" help="This element gives the value of a particular code and its definition. It is repeatable to allow for a list of codes to be provided.">
+                <codeDefinition order="" minOccurs="1" maxOccurs="unbounded" help="This element gives the value of a particular code and its definition. It is repeatable to allow for a list of codes to be provided.">
                   <code minOccurs="1" maxOccurs="1" help="The code element specifies a code value that can be used in the domain">
                   </code>
                   <definition minOccurs="1" maxOccurs="1" help="The definition describes the code with which it is associated in enough  detail for scientists to interpret the meaning of the coded values.">
@@ -10346,6 +10366,8 @@
                   </valueAttributeReference>
                   <definitionAttributeReference minOccurs="1" maxOccurs="1" help="The definitionAttributeReference element is a reference to the id of the attribute that contains the definition of codes. This attribute must have been defined elsewhere in the metadata and have an id that matches the value of this element.">
                   </definitionAttributeReference>
+	   	  <orderAttributeReference minOccurs="0" maxOccurs="1" help="The orderAttributeReference element is a reference to the id of the attribute that contains the order of codes. The values in this attribute are integers indicating increasing values of the categories. This attribute must have been defined elsewhere in the metadata and have an id that matches the value of this element">
+                  </orderAttributeReference>
                 </entityCodeList>
               </CHOICE3>
             </enumeratedDomain>
@@ -10371,7 +10393,7 @@
           <CHOICE7 minOccurs="1" maxOccurs="unbounded" help="">
             <enumeratedDomain enforced="yes" minOccurs="1" maxOccurs="1" help="The enumeratedDomain element describes any code that is used as a value of an attribute. These codes can be defined here in the metadata as a list with definitions (preferred), can be referenced by pointing to an external citation or URL where the codes are defined, or can be referenced by pointing at an entity that contains the code value and code definition as two attributes. For example, data might have a variable named 'site' with values 'A', 'B', and 'C', and the enumeratedDomain would explain how to interpret those codes.">
               <CHOICE8 minOccurs="1" maxOccurs="1" help="">
-                <codeDefinition minOccurs="1" maxOccurs="unbounded" help="This element gives the value of a particular code and its definition. It is repeatable to allow for a list of codes to be provided.">
+                <codeDefinition order="" minOccurs="1" maxOccurs="unbounded" help="This element gives the value of a particular code and its definition. It is repeatable to allow for a list of codes to be provided.">
                   <code minOccurs="1" maxOccurs="1" help="The code element specifies a code value that can be used in the domain">
                   </code>
                   <definition minOccurs="1" maxOccurs="1" help="The definition describes the code with which it is associated in enough  detail for scientists to interpret the meaning of the coded values.">
@@ -10396,6 +10418,8 @@
                   </valueAttributeReference>
                   <definitionAttributeReference minOccurs="1" maxOccurs="1" help="The definitionAttributeReference element is a reference to the id of the attribute that contains the definition of codes. This attribute must have been defined elsewhere in the metadata and have an id that matches the value of this element.">
                   </definitionAttributeReference>
+ 	          <orderAttributeReference minOccurs="0" maxOccurs="1" help="The orderAttributeReference element is a reference to the id of the attribute that contains the order of codes. The values in this attribute are integers indicating increasing values of the categories. This attribute must have been defined elsewhere in the metadata and have an id that matches the value of this element">
+                  </orderAttributeReference>
                 </entityCodeList>
               </CHOICE8>
             </enumeratedDomain>
@@ -10424,7 +10448,7 @@
           </customUnit>
         </CHOICE11>
       </unit>
-      <precision minOccurs="1" maxOccurs="unbounded" help="The precision element represents the precision of the measurement, in the same unit as the measurement. For example, for an attribute with unit 'meter', a precision of '0.1' would be interpreted as precise to the nearest 1/10th of a meter, and a precision of '1' would be interpreted as precise to the nearest 1 meter.">
+      <precision minOccurs="0" maxOccurs="1" help="The precision element represents the precision of the measurement, in the same unit as the measurement. For example, for an attribute with unit 'meter', a precision of '0.1' would be interpreted as precise to the nearest 1/10th of a meter, and a precision of '1' would be interpreted as precise to the nearest 1 meter.">
       </precision>
       <numericDomain id="" minOccurs="1" maxOccurs="1" help="The numericDomain element specifies the minimum and maximum values of a numeric attribute. These are theoretical or permitted values (ie. prescriptive), and not necessarily the actual minimum and maximum observed in a given data set (descriptive). The information in numericDomain and in precision together constitute sufficient information to decide upon an appropriate system specific data type for representing a particular attribute. For example, an attribute with a numeric domain from 0-50,000 and a precision of 1 could be represented in the C language using a 'long' value, but if the precision is changed to '0.5' then a 'float' type would be needed.">
         <CHOICE12 minOccurs="1" maxOccurs="1" help="">
@@ -10454,7 +10478,7 @@
           </customUnit>
         </CHOICE15>
       </unit>
-      <precision minOccurs="1" maxOccurs="1" help="The precision element represents the precision of the measurement, in the same unit as the measurement. For example, for an attribute with unit 'meter', a precision of '0.1' would be interpreted as precise to the nearest 1/10th of a meter, and a precision of '1' would be interpreted as precise to the nearest 1 meter.">
+      <precision minOccurs="0" maxOccurs="1" help="The precision element represents the precision of the measurement, in the same unit as the measurement. For example, for an attribute with unit 'meter', a precision of '0.1' would be interpreted as precise to the nearest 1/10th of a meter, and a precision of '1' would be interpreted as precise to the nearest 1 meter.">
       </precision>
       <numericDomain id="" minOccurs="1" maxOccurs="1" help="The numericDomain element specifies the minimum and maximum values of a numeric attribute. These are theoretical or permitted values (ie. prescriptive), and not necessarily the actual minimum and maximum observed in a given data set (descriptive). The information in numericDomain and in precision together constitute sufficient information to decide upon an appropriate system specific data type for representing a particular attribute. For example, an attribute with a numeric domain from 0-50,000 and a precision of 1 could be represented in the C language using a 'long' value, but if the precision is changed to '0.5' then a 'float' type would be needed.">
         <CHOICE16 minOccurs="1" maxOccurs="1" help="">
@@ -11715,7 +11739,7 @@
           <CHOICE2 minOccurs="1" maxOccurs="unbounded" help="">
             <enumeratedDomain enforced="yes" minOccurs="1" maxOccurs="1" help="The enumeratedDomain element describes any code that is used as a value of an attribute. These codes can be defined here in the metadata as a list with definitions (preferred), can be referenced by pointing to an external citation or URL where the codes are defined, or can be referenced by pointing at an entity that contains the code value and code definition as two attributes. For example, data might have a variable named 'site' with values 'A', 'B', and 'C', and the enumeratedDomain would explain how to interpret those codes.">
               <CHOICE3 minOccurs="1" maxOccurs="1" help="">
-                <codeDefinition minOccurs="1" maxOccurs="unbounded" help="This element gives the value of a particular code and its definition. It is repeatable to allow for a list of codes to be provided.">
+                <codeDefinition order="" minOccurs="1" maxOccurs="unbounded" help="This element gives the value of a particular code and its definition. It is repeatable to allow for a list of codes to be provided.">
                   <code minOccurs="1" maxOccurs="1" help="The code element specifies a code value that can be used in the domain">
                   </code>
                   <definition minOccurs="1" maxOccurs="1" help="The definition describes the code with which it is associated in enough  detail for scientists to interpret the meaning of the coded values.">
@@ -11740,6 +11764,8 @@
                   </valueAttributeReference>
                   <definitionAttributeReference minOccurs="1" maxOccurs="1" help="The definitionAttributeReference element is a reference to the id of the attribute that contains the definition of codes. This attribute must have been defined elsewhere in the metadata and have an id that matches the value of this element.">
                   </definitionAttributeReference>
+ 	          <orderAttributeReference minOccurs="0" maxOccurs="1" help="The orderAttributeReference element is a reference to the id of the attribute that contains the order of codes. The values in this attribute are integers indicating increasing values of the categories. This attribute must have been defined elsewhere in the metadata and have an id that matches the value of this element">
+                  </orderAttributeReference>
                 </entityCodeList>
               </CHOICE3>
             </enumeratedDomain>
@@ -11765,7 +11791,7 @@
           <CHOICE7 minOccurs="1" maxOccurs="unbounded" help="">
             <enumeratedDomain enforced="yes" minOccurs="1" maxOccurs="1" help="The enumeratedDomain element describes any code that is used as a value of an attribute. These codes can be defined here in the metadata as a list with definitions (preferred), can be referenced by pointing to an external citation or URL where the codes are defined, or can be referenced by pointing at an entity that contains the code value and code definition as two attributes. For example, data might have a variable named 'site' with values 'A', 'B', and 'C', and the enumeratedDomain would explain how to interpret those codes.">
               <CHOICE8 minOccurs="1" maxOccurs="1" help="">
-                <codeDefinition minOccurs="1" maxOccurs="unbounded" help="This element gives the value of a particular code and its definition. It is repeatable to allow for a list of codes to be provided.">
+                <codeDefinition order="" minOccurs="1" maxOccurs="unbounded" help="This element gives the value of a particular code and its definition. It is repeatable to allow for a list of codes to be provided.">
                   <code minOccurs="1" maxOccurs="1" help="The code element specifies a code value that can be used in the domain">
                   </code>
                   <definition minOccurs="1" maxOccurs="1" help="The definition describes the code with which it is associated in enough  detail for scientists to interpret the meaning of the coded values.">
@@ -11790,6 +11816,8 @@
                   </valueAttributeReference>
                   <definitionAttributeReference minOccurs="1" maxOccurs="1" help="The definitionAttributeReference element is a reference to the id of the attribute that contains the definition of codes. This attribute must have been defined elsewhere in the metadata and have an id that matches the value of this element.">
                   </definitionAttributeReference>
+ 	          <orderAttributeReference minOccurs="0" maxOccurs="1" help="The orderAttributeReference element is a reference to the id of the attribute that contains the order of codes. The values in this attribute are integers indicating increasing values of the categories. This attribute must have been defined elsewhere in the metadata and have an id that matches the value of this element">
+                  </orderAttributeReference>
                 </entityCodeList>
               </CHOICE8>
             </enumeratedDomain>
@@ -11818,7 +11846,7 @@
           </customUnit>
         </CHOICE11>
       </unit>
-      <precision minOccurs="1" maxOccurs="unbounded" help="The precision element represents the precision of the measurement, in the same unit as the measurement. For example, for an attribute with unit 'meter', a precision of '0.1' would be interpreted as precise to the nearest 1/10th of a meter, and a precision of '1' would be interpreted as precise to the nearest 1 meter.">
+      <precision minOccurs="0" maxOccurs="1" help="The precision element represents the precision of the measurement, in the same unit as the measurement. For example, for an attribute with unit 'meter', a precision of '0.1' would be interpreted as precise to the nearest 1/10th of a meter, and a precision of '1' would be interpreted as precise to the nearest 1 meter.">
       </precision>
       <numericDomain id="" minOccurs="1" maxOccurs="1" help="The numericDomain element specifies the minimum and maximum values of a numeric attribute. These are theoretical or permitted values (ie. prescriptive), and not necessarily the actual minimum and maximum observed in a given data set (descriptive). The information in numericDomain and in precision together constitute sufficient information to decide upon an appropriate system specific data type for representing a particular attribute. For example, an attribute with a numeric domain from 0-50,000 and a precision of 1 could be represented in the C language using a 'long' value, but if the precision is changed to '0.5' then a 'float' type would be needed.">
         <CHOICE12 minOccurs="1" maxOccurs="1" help="">
@@ -11848,7 +11876,7 @@
           </customUnit>
         </CHOICE15>
       </unit>
-      <precision minOccurs="1" maxOccurs="1" help="The precision element represents the precision of the measurement, in the same unit as the measurement. For example, for an attribute with unit 'meter', a precision of '0.1' would be interpreted as precise to the nearest 1/10th of a meter, and a precision of '1' would be interpreted as precise to the nearest 1 meter.">
+      <precision minOccurs="0" maxOccurs="1" help="The precision element represents the precision of the measurement, in the same unit as the measurement. For example, for an attribute with unit 'meter', a precision of '0.1' would be interpreted as precise to the nearest 1/10th of a meter, and a precision of '1' would be interpreted as precise to the nearest 1 meter.">
       </precision>
       <numericDomain id="" minOccurs="1" maxOccurs="1" help="The numericDomain element specifies the minimum and maximum values of a numeric attribute. These are theoretical or permitted values (ie. prescriptive), and not necessarily the actual minimum and maximum observed in a given data set (descriptive). The information in numericDomain and in precision together constitute sufficient information to decide upon an appropriate system specific data type for representing a particular attribute. For example, an attribute with a numeric domain from 0-50,000 and a precision of 1 could be represented in the C language using a 'long' value, but if the precision is changed to '0.5' then a 'float' type would be needed.">
         <CHOICE16 minOccurs="1" maxOccurs="1" help="">
