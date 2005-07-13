@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: sgarg $'
- *     '$Date: 2005-05-27 16:47:29 $'
- * '$Revision: 1.107 $'
+ *     '$Date: 2005-07-13 23:12:18 $'
+ * '$Revision: 1.108 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -2892,7 +2892,7 @@ public abstract class AbstractDataPackage extends MetadataObject
     // for css
     try
     {
-      InputStream input = this.getClass().getResourceAsStream("/style/export.css");
+      InputStream input = this.getClass().getResourceAsStream("/style/CSS/export.css");
       InputStreamReader styleSheetReader = new InputStreamReader(input);
       //FileReader styleSheetReader = new FileReader(styleSheetSource);
       StringBuffer buffer = IOUtil.getAsStringBuffer(styleSheetReader, true);
@@ -3079,7 +3079,7 @@ public abstract class AbstractDataPackage extends MetadataObject
       try
       {
         String cssPath = packdir + "/export";
-        InputStream input = this.getClass().getResourceAsStream("/style/export.css");
+        InputStream input = this.getClass().getResourceAsStream("/style/CSS/export.css");
         InputStreamReader styleSheetReader = new InputStreamReader(input);
         //FileReader styleSheetReader = new FileReader(styleSheetSource);
         StringBuffer buffer = IOUtil.getAsStringBuffer(styleSheetReader, true);
