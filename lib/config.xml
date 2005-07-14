@@ -229,6 +229,9 @@
   <organization>UCNRS</organization>
   <organization>PISCO</organization>
   <organization>KU</organization>
+  <organization>SDSC</organization>
+  <organization>NAPIER</organization>
+  <organization>UVM</organization>
   <lookAndFeel></lookAndFeel>
   <genericStylesheet>style/generic.xsl</genericStylesheet>
   <genericStylesheetLocation>style/generic.xsl</genericStylesheetLocation>
