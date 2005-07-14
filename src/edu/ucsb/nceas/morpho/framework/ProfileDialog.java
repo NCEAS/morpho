@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: jones $'
- *     '$Date: 2004-04-12 20:09:41 $'
- * '$Revision: 1.24 $'
+ *   '$Author: sgarg $'
+ *     '$Date: 2005-07-14 01:56:35 $'
+ * '$Revision: 1.25 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -100,7 +100,7 @@ public class ProfileDialog extends JDialog
     helpPanel.setPreferredSize(new Dimension(150,400));
     helpPanel.setBorder(BorderFactory.createLoweredBevelBorder());
     helpPanel.add(Box.createRigidArea(new Dimension(8,8)));
-    ImageIcon logoIcon = 
+    ImageIcon logoIcon =
               new ImageIcon(getClass().getResource("logo-icon.gif"));
     JLabel imageLabel = new JLabel();
     imageLabel.setIcon(logoIcon);
@@ -182,7 +182,7 @@ public class ProfileDialog extends JDialog
     // Size and center the frame
     pack();
     profileNameField.requestFocus();
-        
+
     setResizable(false);
     Dimension screenDim = Toolkit.getDefaultToolkit().getScreenSize();
     Rectangle frameDim = getBounds();
@@ -195,12 +195,12 @@ public class ProfileDialog extends JDialog
     nextButton.addActionListener(myActionHandler);
     cancelButton.addActionListener(myActionHandler);
     //this.addKeyListener(keyPressListener);
-    
+
     config = framework.getConfiguration();
   }
 
   /**
-   * Listens for key events coming from the dialog.  responds to escape and 
+   * Listens for key events coming from the dialog.  responds to escape and
    * enter buttons.  escape toggles the cancel button and enter toggles the
    * next button
    */
@@ -217,35 +217,35 @@ public class ProfileDialog extends JDialog
         if (e.getSource() instanceof JButton){
           ((JButton)e.getSource()).doClick();
         } else {
-          java.awt.event.ActionEvent event = new 
+          java.awt.event.ActionEvent event = new
                          java.awt.event.ActionEvent(nextButton, 0, "Next");
           nextButtonHandler(event);
         }
       } else if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
         dispose();
-        java.awt.event.ActionEvent event = new 
+        java.awt.event.ActionEvent event = new
                        java.awt.event.ActionEvent(cancelButton, 0, "Cancel");
         cancelButtonHandler(event);
       }
     }
   }
 
-  
+
   /**
    * Adds listener to all components contained in passed array
    */
   private void addKeyListenerToComponents(Component[] components){
     if (components!=null){
-      for (int i=0;i<components.length;i++){    
+      for (int i=0;i<components.length;i++){
         addKeyListenerToComponent(components[i]);
       }
     } else {
-      Log.debug(10, 
+      Log.debug(10,
             "ProfileDialog.addKeyListenerToComponents() - received null array");
       return;
     }
   }
-  
+
    /**
    * Adds listener to passed Component object
    */
@@ -258,8 +258,8 @@ public class ProfileDialog extends JDialog
       return;
     }
   }
- 
-  
+
+
   /**
    * Listener used to detect button presses
    */
@@ -288,7 +288,7 @@ public class ProfileDialog extends JDialog
       layoutScreen();
     }
   }
-  
+
   /**
    * Perform actions associated with the Next button
    */
@@ -338,7 +338,7 @@ public class ProfileDialog extends JDialog
     }
   }
 
-  /** 
+  /**
    * Put the new components on the screen and redraw.
    */
   private void layoutScreen()
@@ -372,31 +372,31 @@ public class ProfileDialog extends JDialog
       profileNameLabel.setHorizontalAlignment(SwingConstants.RIGHT);
       firstNameLabel.setHorizontalAlignment(SwingConstants.RIGHT);
       lastNameLabel.setHorizontalAlignment(SwingConstants.RIGHT);
-  
+
       profileNameField.setColumns(15);
       firstNameField.setColumns(15);
       lastNameField.setColumns(15);
-  
+
       JLabel[] labels = {profileNameLabel, firstNameLabel, lastNameLabel};
       JTextField[] textFields = {profileNameField, firstNameField,
                         lastNameField};
       addLabelTextRows(labels, textFields, gridbag, screenPanel);
       addKeyListenerToComponents(textFields);
     } else if (1 == currentScreen) {
-      String helpText = "<html><p>Enter your Network account information. " +
-                        "This will allow you to log in to Network " +
-                        "and collaborate with other researchers " +
-                        "through the KNB.  To register for a new " + 
-                        "Network account, go to " +
-                        "\"http://knb.ecoinformatics.org\".</p></html>";
+      String helpText = "<html><p>Enter the information you submitted "
+          + "when you registered for the Knowledge Network for Biocomplexity "
+          + "(KNB). If you have not registered for the KNB yet, go to "
+          + "\"http://ldap.ecoinformatics.org/cgi-bin/ldapweb.cgi?cfg=knb\"."
+          + " This will allow you to login to the network and collaborate with"
+          + " other researchers through the KNB.</p></html>";
       helpLabel.setText(helpText);
       screenPanel.setBorder(BorderFactory.createTitledBorder(
                             BorderFactory.createEmptyBorder(8,8,8,8),
-                            "Metacat Account Information"));
+                            "Network Account Information"));
       JLabel usernameLabel = new JLabel();
       JLabel orgLabel = new JLabel();
       JLabel otherOrgLabel = new JLabel();
-      usernameLabel.setText("Network Username: ");
+      usernameLabel.setText("Username: ");
       orgLabel.setText("Organization: ");
       otherOrgLabel.setText("Other organization: ");
       usernameLabel.setForeground(Color.black);
@@ -461,7 +461,7 @@ public class ProfileDialog extends JDialog
       nextButton.setIcon(forwardIcon);
     }
     nextButton.isDefaultButton();
-    
+
     // Repaint the numScreens
     screenPanel.validate();
     screenPanel.paint(screenPanel.getGraphics());
@@ -476,7 +476,7 @@ public class ProfileDialog extends JDialog
   private boolean validateFieldContents()
   {
     boolean fieldsAreValid = true;
-    if (profileNameField.getText() == null || 
+    if (profileNameField.getText() == null ||
         profileNameField.getText().equals("")) {
       fieldsAreValid = false;
     }
@@ -509,7 +509,7 @@ public class ProfileDialog extends JDialog
   {
     if (validateFieldContents()) {
       // Create a profile directory
-      String profileDirName = config.getConfigDirectory() + File.separator + 
+      String profileDirName = config.getConfigDirectory() + File.separator +
                                             config.get("profile_directory", 0);
       File profileDirFile = new File(profileDirName);
       if (!profileDirFile.exists()) {
@@ -518,7 +518,7 @@ public class ProfileDialog extends JDialog
           currentScreen = 0;
           layoutScreen();
           String messageText = "Error creating the profiles directory.\n";
-          JOptionPane.showMessageDialog(this, messageText);      
+          JOptionPane.showMessageDialog(this, messageText);
         }
       }
       String profileName = profileNameField.getText();
@@ -529,7 +529,7 @@ public class ProfileDialog extends JDialog
       }
       String scope = scopeField.getText();
       String profilePath = profileDirName + File.separator + profileName;
-      String profileFileName = profilePath + File.separator + 
+      String profileFileName = profilePath + File.separator +
                         profileName + ".xml";
       File profileDir = new File(profilePath);
       if (!profileDir.mkdir()) {
@@ -539,15 +539,15 @@ public class ProfileDialog extends JDialog
         String messageText = "A profile named \"" + profileName +
                              "\" already exists.  Would you like to use it?" +
                              "\n\nUse existing profile?\n";
-        int result = JOptionPane.showConfirmDialog(this, messageText, 
-                                                   "Use existing profile?", 
+        int result = JOptionPane.showConfirmDialog(this, messageText,
+                                                   "Use existing profile?",
                                                    JOptionPane.YES_NO_OPTION);
         if (result == JOptionPane.YES_OPTION) {
           try {
             ConfigXML profile = new ConfigXML(profileFileName);
             // Log into metacat
             framework.setProfile(profile);
-  
+
             // Get rid of the dialog
             setVisible(false);
             dispose();
@@ -555,11 +555,11 @@ public class ProfileDialog extends JDialog
             messageText = "Sorry, I tried, but it looks like that profile\n" +
                           "is corrupted.  You'll have to choose another " +
                           "profile name.";
-            JOptionPane.showMessageDialog(this, messageText);      
+            JOptionPane.showMessageDialog(this, messageText);
           }
         } else {
           messageText = "OK, then please choose another profile name.\n";
-          JOptionPane.showMessageDialog(this, messageText);      
+          JOptionPane.showMessageDialog(this, messageText);
         }
       } else {
         try {
@@ -633,7 +633,7 @@ public class ProfileDialog extends JDialog
           String samplePath = config.get("samples_directory", 0);
           File sampleDir = new File(samplePath);
 //DFH          File[] samplesList = sampleDir.listFiles();
-           
+
           // MBJ commented out because samples are now in the -config.jar file
           // Need to reimplement from the jar file
           File[] samplesList = listFiles(sampleDir);
@@ -643,29 +643,29 @@ public class ProfileDialog extends JDialog
               String destDirName = dataPath + File.separator + "jscientist";
               File destDir = new File(destDirName);
               destDir.mkdirs();
-              String destName = destDirName + File.separator + 
+              String destName = destDirName + File.separator +
                                 srcFile.getName();
               Log.debug(20, destName);
               FileUtils.copy(srcFile.getAbsolutePath(), destName, tokens);
             }
           }
-          
-           
+
+
           // Create a metacat user
- 
+
           // Log into metacat
           framework.setProfile(profile);
 
           // Get rid of the dialog
           setVisible(false);
           dispose();
-   
+
         } catch (IOException ioe) {
           currentScreen = 0;
           layoutScreen();
-          String messageText = "Error creating profile named \"" + 
+          String messageText = "Error creating profile named \"" +
                                profileName + "\".  Please try again.\n";
-          JOptionPane.showMessageDialog(this, messageText);      
+          JOptionPane.showMessageDialog(this, messageText);
         }
       }
     } else {
@@ -675,20 +675,20 @@ public class ProfileDialog extends JDialog
                            "Please check that you have provided a\n" +
                            "profile name, a user name, an organization,\n" +
                            "and an identifer prefix.\n";
-      JOptionPane.showMessageDialog(this, messageText);      
+      JOptionPane.showMessageDialog(this, messageText);
     }
   }
-  
+
   private File[] listFiles(File dir) {
     String[] fileStrings = dir.list();
     int len = fileStrings.length;
     File[] list = new File[len];
     for (int i=0; i<len; i++) {
-        list[i] = new File(dir, fileStrings[i]);    
+        list[i] = new File(dir, fileStrings[i]);
     }
     return list;
   }
-  
-  
-  
+
+
+
 }

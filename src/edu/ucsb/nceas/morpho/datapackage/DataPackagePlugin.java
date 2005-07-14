@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: sgarg $'
- *     '$Date: 2005-07-11 18:04:51 $'
- * '$Revision: 1.103 $'
+ *     '$Date: 2005-07-14 01:56:35 $'
+ * '$Revision: 1.104 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -159,7 +159,7 @@ public class DataPackagePlugin
                                               UISettings.DUPLICATE_ICON,
                                               new SavePackageCopyCommand());
     saveCopyAction.setMenuItemPosition(5);
-    saveCopyAction.setToolTipText("Duplicate this datapackage and save locally...");
+    saveCopyAction.setToolTipText("Duplicate this data package and save locally...");
     saveCopyAction.setMenu(FILE_MENU_LABEL, 0);
     saveCopyAction.setToolbarPosition(3);
     saveCopyAction.setEnabled(false);
