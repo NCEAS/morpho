@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: sgarg $'
- *     '$Date: 2005-07-14 17:50:51 $'
- * '$Revision: 1.26 $'
+ *     '$Date: 2005-07-14 19:38:22 $'
+ * '$Revision: 1.27 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -60,7 +60,6 @@ public class ProfileDialog extends JDialog
   JTextField firstNameField = new JTextField();
   JTextField lastNameField = new JTextField();
   JTextField userIdField = new JTextField();
-  JTextField otherOrgField = new JTextField();
   JTextField scopeField = new JTextField();
   JList orgList = null;
 
@@ -395,19 +394,14 @@ public class ProfileDialog extends JDialog
                             "Network Account Information"));
       JLabel usernameLabel = new JLabel();
       JLabel orgLabel = new JLabel();
-      JLabel otherOrgLabel = new JLabel();
       usernameLabel.setText("Username: ");
       orgLabel.setText("Organization: ");
-      otherOrgLabel.setText("Other organization: ");
       usernameLabel.setForeground(Color.black);
       orgLabel.setForeground(Color.black);
-      otherOrgLabel.setForeground(Color.black);
       usernameLabel.setFont(new Font("Dialog", Font.PLAIN, 12));
       orgLabel.setFont(new Font("Dialog", Font.PLAIN, 12));
-      otherOrgLabel.setFont(new Font("Dialog", Font.PLAIN, 12));
       usernameLabel.setHorizontalAlignment(SwingConstants.RIGHT);
       orgLabel.setHorizontalAlignment(SwingConstants.RIGHT);
-      otherOrgLabel.setHorizontalAlignment(SwingConstants.RIGHT);
       userIdField.setColumns(15);
       Vector orgs = config.get("organization");
       String[] organizations = (String[])orgs.toArray(new String[0]);
@@ -416,10 +410,9 @@ public class ProfileDialog extends JDialog
       orgList.setVisibleRowCount(3);
       orgList.setSelectedIndex(0);
       JScrollPane orgScrollPane = new JScrollPane(orgList);
-      otherOrgField.setColumns(15);
-      JLabel[] labels = {usernameLabel, orgLabel, otherOrgLabel};
+      JLabel[] labels = {usernameLabel, orgLabel};
       JComponent[] components = {userIdField,
-                            orgScrollPane, otherOrgField};
+                            orgScrollPane};
       addLabelTextRows(labels, components, gridbag, screenPanel);
       addKeyListenerToComponents(components);
       userIdField.requestFocus();
@@ -489,12 +482,8 @@ public class ProfileDialog extends JDialog
     String org = (String)orgList.getSelectedValue();
     if (null == org) {
         Log.debug(20, "org was initially null");
-        org = otherOrgField.getText();
-        if ((null == org) || (org.equals(""))) {
-            Log.debug(20, "second org was null");
-            fieldsAreValid = false;
-        }
-    }
+        fieldsAreValid = false;
+      }
 
     if (scopeField.getText() == null || (scopeField.getText().equals(""))) {
       fieldsAreValid = false;
@@ -525,9 +514,6 @@ public class ProfileDialog extends JDialog
       String profileName = profileNameField.getText();
       String username = userIdField.getText();
       String org = (String)orgList.getSelectedValue();
-      if (null == org) {
-          org = otherOrgField.getText();
-      }
       String scope = scopeField.getText();
       String profilePath = profileDirName + File.separator + profileName;
       String profileFileName = profilePath + File.separator +
