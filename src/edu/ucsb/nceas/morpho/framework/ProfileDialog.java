@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: sgarg $'
- *     '$Date: 2005-07-14 01:56:35 $'
- * '$Revision: 1.25 $'
+ *     '$Date: 2005-07-14 17:50:51 $'
+ * '$Revision: 1.26 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -424,14 +424,15 @@ public class ProfileDialog extends JDialog
       addKeyListenerToComponents(components);
       userIdField.requestFocus();
     } else if (2 == currentScreen) {
-      String helpText = "<html><p>Enter miscellaneous profile options.  This " +
-                        "includes the prefix you wish to use to " +
-                        "construct data identifiers for your data." +
-                        "</p></html>";
+      String helpText = "<html><p>Enter a short identifier prefix for this "
+          + "profile. All data packages you create under this profile will "
+          + "bear this identifier prefix. For example, using the prefix "
+          + "\'jane_doe\', data packages will have names like jane_doe.1.1, "
+          + "jane_doe.2.1, etc.</p></html>";
       helpLabel.setText(helpText);
       screenPanel.setBorder(BorderFactory.createTitledBorder(
                             BorderFactory.createEmptyBorder(8,8,8,8),
-                            "Miscellaneous Information"));
+                            "Data Package Identification"));
       JLabel scopeLabel = new JLabel("Identifier prefix: ");
       scopeLabel.setForeground(Color.black);
       scopeLabel.setFont(new Font("Dialog", Font.PLAIN, 12));
