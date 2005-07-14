@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: sgarg $'
- *     '$Date: 2004-04-16 21:52:39 $'
- * '$Revision: 1.25 $'
+ *     '$Date: 2005-07-14 19:27:59 $'
+ * '$Revision: 1.26 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -113,6 +113,9 @@ public class AccessPage
   private String userOrg = null;
   private boolean alreadyGeneratedfromDocumentationMenu = false;
 
+  private ConfigXML config;
+  private Vector orgList;
+
   private final String[] accessTypeText = new String[] {
       "  Allow",
       "  Deny"
@@ -204,6 +207,9 @@ public class AccessPage
 
       displayTree(Access.accessTreeNode);
     }
+
+    config = Morpho.getConfiguration();
+    orgList = config.get("organization");
   }
 
   /**
@@ -775,6 +781,7 @@ public class AccessPage
     AccessTreeNodeObject nodeObject = null;
     DefaultMutableTreeNode tempTreeNode = null;
     ArrayList userList = new ArrayList();
+    String org = null;
 
     for (int count = 0; count < nl.getLength(); count++) {
       tempNode = nl.item(count);
@@ -787,8 +794,14 @@ public class AccessPage
               WizardSettings.ACCESS_PAGE_AUTHSYS);
 
           if (tempNode.getAttributes().getNamedItem("organization") != null) {
-            nodeObject.setOrganization(tempNode.getAttributes().getNamedItem(
-                "organization").getNodeValue());
+            org = tempNode.getAttributes().getNamedItem("organization").getNodeValue();
+            nodeObject.setOrganization(org);
+
+            // check if the organization name exsists in the list of orgs in
+            // the config.xml....
+            if(!orgList.contains(org)){
+              config.insert("organization",org);
+            }
           }
 
           tempTreeNode = new DefaultMutableTreeNode();
