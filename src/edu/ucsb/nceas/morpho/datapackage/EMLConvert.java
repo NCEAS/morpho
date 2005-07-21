@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2003-12-29 20:56:34 $'
- * '$Revision: 1.6 $'
+ *   '$Author: sgarg $'
+ *     '$Date: 2005-07-21 17:34:38 $'
+ * '$Revision: 1.7 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,16 +27,16 @@
 /**
  * The purpose of this class is to transform an emlbeta6 package to an eml2 document.
  * This process is done using two succesive xslt transformations.
- * 
- * The 'main' class runs the transformation from the command line. The path to the 
- * top level beta6 dataset module must be passed on the command line. All the associated 
+ *
+ * The 'main' class runs the transformation from the command line. The path to the
+ * top level beta6 dataset module must be passed on the command line. All the associated
  * modules in the package are assumed to be in the same directory and the file names are
  * the ids used in the beta6 triples (e.g. "higgins.232.3")
- */ 
+ */
 
 package edu.ucsb.nceas.morpho.datapackage;
 
- 
+
 import javax.xml.transform.*;
 import javax.xml.transform.sax.*;
 import javax.xml.transform.dom.*;
@@ -57,7 +57,7 @@ import java.io.FileWriter;
 
 import java.util.Properties;
 
-// Needed SAX classes  
+// Needed SAX classes
 import org.xml.sax.*;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -80,7 +80,7 @@ import edu.ucsb.nceas.morpho.util.Log;
 import javax.xml.parsers.*;
 
 public class EMLConvert
-{ 
+{
 
   public static String outputfileName = "eml2out.xml";
   static String path = "";
@@ -95,7 +95,7 @@ public class EMLConvert
   /**
    * Method main
    */
-  public static void main(String argv[]) 
+  public static void main(String argv[])
             throws TransformerException, TransformerConfigurationException, Exception {
     if (argv.length<1) {
       Log.debug(20, "Must have an argument with name/path of dataset module");
@@ -103,35 +103,37 @@ public class EMLConvert
     }
     doTransform(argv[0], "");
   }
-    
-  public static void doTransform(String datasetID, String metacatURL) 
-                 throws TransformerException, TransformerConfigurationException, Exception{  
+
+  public static void doTransform(String datasetID, String metacatURL)
+                 throws TransformerException, TransformerConfigurationException, Exception{
   // Instantiate  a TransformerFactory.
   	TransformerFactory tFactory = TransformerFactory.newInstance();
-    URIResolver res = new MyURIResolver();   
-   
-    
-    tFactory.setURIResolver(res);  
+    URIResolver res = new MyURIResolver();
 
 
-    // Determine whether the TransformerFactory supports The use uf SAXSource 
+    tFactory.setURIResolver(res);
+
+
+    // Determine whether the TransformerFactory supports The use uf SAXSource
     // and SAXResult
     if (tFactory.getFeature(SAXSource.FEATURE) && tFactory.getFeature(SAXResult.FEATURE))
-    { 
+    {
       // Cast the TransformerFactory to SAXTransformerFactory.
-      SAXTransformerFactory saxTFactory = ((SAXTransformerFactory) tFactory);	  
+      SAXTransformerFactory saxTFactory = ((SAXTransformerFactory) tFactory);
       // Create a TransformerHandler for each stylesheet.
-      
+
       // files created since using a string for the new StreamSourece objects
       // does not work correctly if there is a space in the path!
       File f1 = new File("./xsl/triple_info.xsl");
+      java.io.FileInputStream fis = new FileInputStream(f1);
+
       File f2 = new File("./xsl/emlb6toeml2.xsl");
       TransformerHandler tHandler1 = saxTFactory.newTransformerHandler(new StreamSource(f1));
-      TransformerHandler tHandler2 = saxTFactory.newTransformerHandler(new StreamSource(f2)); 
-      
-      Transformer tr = tHandler1.getTransformer(); 
+      TransformerHandler tHandler2 = saxTFactory.newTransformerHandler(new StreamSource(f2));
+
+      Transformer tr = tHandler1.getTransformer();
       Transformer tr1 = tHandler2.getTransformer();
-      
+
       getPathInfo(datasetID);
       if (path.length()>0) {
          if (!path.startsWith("file://")) {
@@ -139,13 +141,13 @@ public class EMLConvert
          }
          MyURIResolver.setDataDefault(path);
       }
-      tr.setParameter("packageName", fname); 
+      tr.setParameter("packageName", fname);
       tr1.setParameter("metacatURL", metacatURL);
-      
+
       Transformer lastTransformer = tHandler2.getTransformer();
       lastTransformer.setOutputProperty(OutputProperties.S_KEY_INDENT_AMOUNT, EMLConvert.indentAmount);
 
-    
+
       // Create an XMLReader.
 	    XMLReader reader = XMLReaderFactory.createXMLReader();
       reader.setContentHandler(tHandler1);
@@ -161,31 +163,31 @@ public class EMLConvert
       tHandler2.setResult(result);
 
 	    // Parse the XML input document. The input ContentHandler and output ContentHandler
-      // work in separate threads to optimize performance. 
+      // work in separate threads to optimize performance.
 
-      reader.parse("xsl/triple_info.xsl"); 
+      reader.parse(new InputSource(fis));
 //      String resultString = writer.toString();
 //      System.out.println(resultString);
-    }  
+    }
   }
 
   private static void getPathInfo1(String str) {
     int pos = -1;
-    if ((str.indexOf("/")>-1)||(str.indexOf("\\")>-1)) {  
+    if ((str.indexOf("/")>-1)||(str.indexOf("\\")>-1)) {
       int pos1 = str.lastIndexOf("/");
       int pos2 = str.lastIndexOf("\\");
       if (pos1>pos2) {
-        pos = pos1;  
+        pos = pos1;
       }
       else { pos = pos2; }
       path = str.substring(0,pos+1);
-      fname = str.substring(pos+1,str.length());  
+      fname = str.substring(pos+1,str.length());
     }
     else {
       fname = str;
     }
 //   System.out.println("path: "+path+"  --fname: "+fname);
-  } 
+  }
 
   private static void getPathInfo(String str) {
     File nf = new File(str);
