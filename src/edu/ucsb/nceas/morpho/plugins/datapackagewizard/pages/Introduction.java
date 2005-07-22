@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: sgarg $'
- *     '$Date: 2005-05-26 18:48:21 $'
- * '$Revision: 1.26 $'
+ *   '$Author: connolly $'
+ *     '$Date: 2005-07-22 16:33:36 $'
+ * '$Revision: 1.27 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -53,14 +53,19 @@ public class Introduction extends AbstractUIPage {
 
 //////////////////////////////////////////////////////////
   private JComponent metadataIntroLink;
-  public final String title      = "Welcome to the Data Package Wizard";
+  public final String title      = "Welcome to the New Data Package Wizard";
   public final String subtitle   = " ";
 
 
   public Introduction() {
 
     init();
-  }
+        try {
+            jbInit();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
 
   /**
    * initialize method does frame-specific design - i.e. adding the widgets that
@@ -73,18 +78,18 @@ public class Introduction extends AbstractUIPage {
     JLabel desc1 = WidgetFactory.makeHTMLLabel(
     "<p>This wizard creates a"
     +" <i>Data Package</i>, consisting of the structured documentation that "
-    +"describes your data, and the "
-    +"data itself. <br></br></p>"
+    +"describes your data (i.e., metadata), and the "
+    +"data themselves. <br></br></p>"
 
-    +"If you wish to improve your understanding of data documentation "
-    +"(metadata) and related concepts, you should start by reading the: ", 3);
+    +"If you wish to improve your understanding of metadata "
+    +"and related concepts, you should start by reading ", 3);
 
     JLabel desc2 = WidgetFactory.makeHTMLLabel(
-    "which provides background information and examples of data documentation. "
+    "which provides background information and examples of metadata. "
     +"The wizard uses a subset of EML to describe your data. If "
     +"additional documentation is needed to adequately document your data, use "
-    +"<i>Morpho's EML Editor</i> (after you finish this wizard, choose \"Add/"
-    +"Edit Documentation\" from the Documentation menu in the main Morpho screen).<br></br></p>"
+    +"<i>Morpho Editor</i> (after you finish this wizard, choose \"Add/"
+    +"Edit Documentation\" from the \"Documentation\" menu on the main Morpho screen).<br></br></p>"
 
     +"<p>Before beginning you should have your data "
     +"(electronic or hardcopy format) available. You can provide the following "
@@ -99,7 +104,7 @@ public class Introduction extends AbstractUIPage {
     +"<li><b>Methods and Sampling</b><br></br></li>"
     +"<li><b>Access Information</b></li></ul>"
     +"<p><b>Note:</b> Required information includes the title and personnel "
-    +"information for your dataset.  The rest of the information collected here "
+    +"information for your data set.  The rest of the information collected here "
     +"is optional, however it is highly recommended that you fill in as much as "
     +"possible.</p>", 19);
 
@@ -119,7 +124,7 @@ public class Introduction extends AbstractUIPage {
     if (metadataIntroLink==null) {
 
       GUIAction newDataTableAction
-        = new GUIAction("Introduction to Ecological Metadata ",
+        = new GUIAction("An Introduction to Ecological Metadata Language (EML) ",
                         null,
                         new Command() {
 
@@ -235,4 +240,7 @@ public class Introduction extends AbstractUIPage {
   public String getPageNumber() { return pageNumber; }
 
     public boolean setPageData(OrderedMap data, String xPathRoot) { return false; }
+
+    private void jbInit() throws Exception {
+    }
 }

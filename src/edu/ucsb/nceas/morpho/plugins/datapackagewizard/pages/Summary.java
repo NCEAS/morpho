@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: sgarg $'
- *     '$Date: 2005-05-18 22:32:46 $'
- * '$Revision: 1.24 $'
+ *   '$Author: connolly $'
+ *     '$Date: 2005-07-22 16:33:36 $'
+ * '$Revision: 1.25 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -56,8 +56,8 @@ public class Summary extends AbstractUIPage {
   public final String pageID     = DataPackageWizardInterface.SUMMARY;
   public final String nextPageID = null;
   public final String pageNumber = "15";
-  public final String PACKAGE_WIZ_SUMMARY_TITLE = "Data Package Wizard";
-  public final String ENTITY_WIZ_SUMMARY_TITLE  = "New DataTable Wizard";
+  public final String PACKAGE_WIZ_SUMMARY_TITLE = "New Data Package Wizard";
+  public final String ENTITY_WIZ_SUMMARY_TITLE  = "New Data Table Wizard";
   public final String SUBTITLE                  = "Summary";
 
   private JLabel desc1;
@@ -145,12 +145,12 @@ public class Summary extends AbstractUIPage {
         + WizardSettings.FINISH_BUTTON_TEXT + "\", you "
         +"will see your new package description information displayed in the "
         +"Morpho main screen.  If you want to add data tables to your package, "
-        +"select the \"Create New Datatable\" option in the \"Data\" menu</p>";
+        +"select the \"Create/Import New Data Table...\" option from the \"Data\" menu</p>";
 
     } else if (ID.equals(DataPackageWizardInterface.DATA_LOCATION)) {
 
       return "<p>If you want to add more data tables to your package, "
-        +"select the \"Create New Datatable\" option on the \"Data\" menu</p>";
+        +"select the \"Create/Import New Data Table...\" option from the \"Data\" menu</p>";
 
     }
     return "";
@@ -231,7 +231,7 @@ public class Summary extends AbstractUIPage {
 
             Log.debug(5, "Sorry - unable to start the table creator "
                       + "automatically - please select the "
-                      + "\"Create New Datatable\" option on the \"Data\" menu "
+                      + "\"Create/Import New Data Table...\" option from the \"Data\" menu "
                       + "by hand ");
             cnfe.printStackTrace();
           }

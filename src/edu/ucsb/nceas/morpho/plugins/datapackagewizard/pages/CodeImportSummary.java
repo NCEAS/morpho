@@ -6,9 +6,9 @@
  *             National Center for Ecological Analysis and Synthesis
  *    Release: @release@
  *
- *   '$Author: sambasiv $'
- *     '$Date: 2004-06-02 22:41:30 $'
- * '$Revision: 1.12 $'
+ *   '$Author: connolly $'
+ *     '$Date: 2005-07-22 16:33:36 $'
+ * '$Revision: 1.13 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -61,8 +61,8 @@ public class CodeImportSummary extends AbstractUIPage {
   public final String pageID     = DataPackageWizardInterface.CODE_IMPORT_SUMMARY;
   public String nextPageID 			 = DataPackageWizardInterface.CODE_IMPORT_PAGE;
   public final String pageNumber = "13";
-  public final String PACKAGE_WIZ_SUMMARY_TITLE = "Data Package Wizard";
-  public final String ENTITY_WIZ_SUMMARY_TITLE  = "New DataTable Wizard";
+  public final String PACKAGE_WIZ_SUMMARY_TITLE = "New Data Package Wizard";
+  public final String ENTITY_WIZ_SUMMARY_TITLE  = "New Data Table Wizard";
   public final String SUBTITLE                  = "Summary";
 
   private JLabel desc1;
@@ -142,14 +142,14 @@ public class CodeImportSummary extends AbstractUIPage {
    *  The action to be executed when the page is displayed. May be empty
    */
   public void onLoadAction() {
-		
+
 		adp = getADP();
 		if(adp == null) {
-			
+
 			Log.debug(10, "Error! Unable to obtain the ADP in CodeImportSummary page!");
 			return;
 		}
-		
+
     String firstPageID = mainWizFrame.getFirstPageID();
     String prevID = mainWizFrame.getPreviousPageID();
     String currentAttrName = "";
@@ -182,24 +182,24 @@ public class CodeImportSummary extends AbstractUIPage {
        +WizardSettings.HTML_TABLE_LABEL_CLOSING);
 
     } else if( prevID.equals(DataPackageWizardInterface.TEXT_IMPORT_WIZARD)) {
-			
+
 			desc1.setText(
       WizardSettings.HTML_TABLE_LABEL_OPENING
       +"<p>The new data table has been created successfully.</p>"
 			+ WizardSettings.HTML_TABLE_LABEL_CLOSING);
-			
+
 			edu.ucsb.nceas.morpho.datapackage.Entity[] arr = adp.getOriginalEntityArray();
 			if(arr == null) {
-				
+
 				arr = adp.getEntityArray();
 				if(arr == null) {
-				    arr = new edu.ucsb.nceas.morpho.datapackage.Entity[0];	
+				    arr = new edu.ucsb.nceas.morpho.datapackage.Entity[0];
 				}
 				adp.setOriginalEntityArray(arr);
 			}
 
-			
-			
+
+
       // this is a new data table creation. Need to store this DOM to return it.
 
       Node newDOM = mainWizFrame.collectDataFromPages();
@@ -239,7 +239,7 @@ public class CodeImportSummary extends AbstractUIPage {
       }
       adp.setAccessionNumber(newid);
       adp.setLocation("");  // we've changed it and not yet saved
-			
+
 
     }
 
@@ -258,7 +258,7 @@ public class CodeImportSummary extends AbstractUIPage {
   }
 
   private void updateAttributeInNewTable() {
-		
+
 		OrderedMap map = adp.getCurrentImportMap();
     adp = getADP();
     if(adp == null)
@@ -304,10 +304,10 @@ public class CodeImportSummary extends AbstractUIPage {
     }*/
 
     Attribute attr = new Attribute(map);
-		
+
 		adp.insertAttribute(entityIndex, attr, attrIndex);
     adp.deleteAttribute(entityIndex, attrIndex + 1);
-    
+
 
   }
 

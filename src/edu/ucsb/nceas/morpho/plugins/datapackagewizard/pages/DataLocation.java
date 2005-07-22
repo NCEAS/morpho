@@ -6,9 +6,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2004-04-13 05:14:19 $'
- * '$Revision: 1.38 $'
+ *   '$Author: connolly $'
+ *     '$Date: 2005-07-22 16:33:36 $'
+ * '$Revision: 1.39 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -72,7 +72,7 @@ public class DataLocation extends AbstractUIPage {
   private String nextPageID         = DataPackageWizardInterface.TEXT_IMPORT_WIZARD;
   private final String pageNumber   = "1";
 
-  private final String title      = "New DataTable Wizard";
+  private final String title      = "New Data Table Wizard";
   private final String subtitle   = "Data Location";
 
   // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -1133,7 +1133,7 @@ public class DataLocation extends AbstractUIPage {
     if (jrb.isSelected()) return true;
     return false;
   }
-  
+
   protected String getFileName() {
     String ret = "";
     File file = getDataFile();
