@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: connolly $'
- *     '$Date: 2005-07-22 16:33:36 $'
- * '$Revision: 1.27 $'
+ *     '$Date: 2005-07-22 17:39:25 $'
+ * '$Revision: 1.28 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -60,11 +60,7 @@ public class Introduction extends AbstractUIPage {
   public Introduction() {
 
     init();
-        try {
-            jbInit();
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
+
     }
 
   /**
@@ -241,6 +237,5 @@ public class Introduction extends AbstractUIPage {
 
     public boolean setPageData(OrderedMap data, String xPathRoot) { return false; }
 
-    private void jbInit() throws Exception {
-    }
+
 }
