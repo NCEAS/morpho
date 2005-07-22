@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: sgarg $'
- *     '$Date: 2005-07-14 01:56:35 $'
- * '$Revision: 1.104 $'
+ *   '$Author: connolly $'
+ *     '$Date: 2005-07-22 16:35:39 $'
+ * '$Revision: 1.105 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -500,7 +500,7 @@ public class DataPackagePlugin
     i = 0; // postition for menu item in data menu
 
 
-    GUIAction createNewDatatable = new GUIAction("Create/Import New Datatable...", null,
+    GUIAction createNewDatatable = new GUIAction("Create/Import New Data Table...", null,
                                                       new ImportDataCommand());
     createNewDatatable.setToolTipText("Add a new table");
     createNewDatatable.setMenuItemPosition(i);
@@ -515,7 +515,7 @@ public class DataPackagePlugin
 
 
     i = i+1;
-    GUIAction deleteDatatable = new GUIAction("Delete Current Datatable", null,
+    GUIAction deleteDatatable = new GUIAction("Delete Current Data Table", null,
                                                       new DeleteTableCommand());
     deleteDatatable.setToolTipText("Remove the currently displayed table");
     deleteDatatable.setMenuItemPosition(i);

@@ -4,9 +4,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2004-04-20 20:30:37 $'
- * '$Revision: 1.120 $'
+ *   '$Author: connolly $'
+ *     '$Date: 2005-07-22 16:35:39 $'
+ * '$Revision: 1.121 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -162,13 +162,13 @@ public class DataViewer extends javax.swing.JPanel
    */
    String format = "";
 
-   
+
   /**
    * ignoreConsecutiveDelimiter fleg
    */
    boolean ignoreConsecutiveDelimiters = false;
-   
-   
+
+
   /**
    *  field delimiter (hex string)
    */
@@ -255,7 +255,7 @@ public class DataViewer extends javax.swing.JPanel
   private Vector storedStateChangeEventlist = new Vector();
 
   boolean missing_metadata_flag = false;
-  
+
   private String currentURLInfo = null;
 
     // assorted gui components
@@ -328,7 +328,7 @@ public class DataViewer extends javax.swing.JPanel
 		ControlPanel.setLayout(new BorderLayout(0,0));
 		DataViewerPanel.add(BorderLayout.SOUTH, ControlPanel);
 		ButtonControlPanel.setLayout(new FlowLayout(FlowLayout.RIGHT,5,5));
-//  Update and Revert functionality moved to menus; controls thus removed by not displaying panel   
+//  Update and Revert functionality moved to menus; controls thus removed by not displaying panel
 //  ControlPanel.add(BorderLayout.CENTER, ButtonControlPanel);
 		DataIDLabel.setText("Data ID: ");
 		DataIDLabel.setNextFocusableComponent(CancelButton);
@@ -367,11 +367,11 @@ public class DataViewer extends javax.swing.JPanel
                                           new AddDocumentationCommand());
     addDocumentation = new JMenuItem(addDocumentationAction);
     popup.add(addDocumentation);
-    createNewDatatableAction = new GUIAction("Create/Import New Datatable...", null,
+    createNewDatatableAction = new GUIAction("Create/Import New Data Table...", null,
                                                 new ImportDataCommand());
     createNewDatatable = new JMenuItem(createNewDatatableAction);
     popup.add(createNewDatatable);
-    deleteDatatableAction = new GUIAction("Delete Current Datatable", null,
+    deleteDatatableAction = new GUIAction("Delete Current Data Table", null,
                                                 new DeleteTableCommand());
     deleteDatatable = new JMenuItem(deleteDatatableAction);
     popup.add(deleteDatatable);
@@ -477,7 +477,7 @@ public class DataViewer extends javax.swing.JPanel
     public void setCurrentURLInfo(String curURL) {
       this.currentURLInfo = curURL;
     }
-    
+
     public void setDataFile(File file) {
       this.dataFile = file;
     }
@@ -489,7 +489,7 @@ public class DataViewer extends javax.swing.JPanel
     public PersistentVector getPV() {
       return pv;
     }
-		
+
 		public void setPV(PersistentVector vector) {
 			pv = vector;
 			return;
@@ -696,7 +696,7 @@ public class DataViewer extends javax.swing.JPanel
           }
         }
 
-      
+
 
       // now examine format info and see if we want to simply display a text
       // file, create a table, or display an image
@@ -961,14 +961,14 @@ public class DataViewer extends javax.swing.JPanel
     {
       //select the clicked row first
 
-      
+
       table.clearSelection();
       int selrow = table.rowAtPoint(new Point(e.getX(), e.getY()));
       int selcol = table.columnAtPoint(new Point(e.getX(), e.getY()));
       table.setRowSelectionInterval(selrow, selrow);
       table.setEditingRow(selrow);
       table.setColumnSelectionInterval(selcol, selcol);
-      
+
       if (e.isPopupTrigger())
       {
         trigger = true;
@@ -1160,10 +1160,10 @@ public class DataViewer extends javax.swing.JPanel
     }
     ptm = new PersistentTableModel(pv, column_labels);
     ptm.setFieldDelimiter(field_delimiter);
-    
+
     UIManager.put("Table.focusCellBackground",new Color(0,0,150));
     UIManager.put("Table.focusCellForeground",Color.white);
-    
+
     table.setModel(ptm);
 
     table.setColumnSelectionAllowed(true);
@@ -1329,7 +1329,7 @@ public class DataViewer extends javax.swing.JPanel
       }//for
     }//if
   }
-	
+
 	/**
 	*
 	*	Method to save the current data table after a change has been made. This is
@@ -1338,7 +1338,7 @@ public class DataViewer extends javax.swing.JPanel
   *
   * changePackageId of 'true' means to increment the package id
 	*/
-	
+
 	public void saveCurrentTable(boolean changePackageId) {
 		if (adp!=null) {  // new eml2.0.0 handling
 			String id = "";
@@ -1351,17 +1351,17 @@ public class DataViewer extends javax.swing.JPanel
 			dataFileId = id;  // update to new value
 			String tempfilename = parseId(id);
 			ptm.getPersistentVector().writeObjects(tempdir + "/" + tempfilename);
-			
+
 			File newDataFile = new File(tempdir + "/" + tempfilename);
 			long newDataFileLength = newDataFile.length();
-			
+
 			int rowcnt = ptm.getRowCount();
 			String rowcntS = (new Integer(rowcnt)).toString();
 			adp.setEntityNumRecords(entityIndex, rowcntS);
-			
+
 			String sizeS = (new Long(newDataFileLength)).toString();
 			adp.setPhysicalSize(entityIndex, 0, sizeS);
-			
+
 			adp.setPhysicalFieldDelimiter(entityIndex, 0, field_delimiter);
 			adp.setDistributionUrl(entityIndex, 0, 0, "ecogrid://knb/"+dataFileId);
 			adp.setLocation("");
@@ -1375,20 +1375,20 @@ public class DataViewer extends javax.swing.JPanel
 				  newid = a.getNextId();
 			  }
 			  adp.setAccessionNumber(newid);
-      }  
+      }
 		}
-		
+
 	}
-	
+
 	void UpdateButton_actionPerformed(java.awt.event.ActionEvent event)
 	{
-    
+
 		MorphoFrame thisFrame = null;
 		saveCurrentTable(true);
 		// Log.debug(1,"Data File Number of Records: "+adp.getEntityNumRecords(entityIndex));
 		// Log.debug(1,"Physical Size: "+adp.getPhysicalSize(entityIndex,0));
 		// Log.debug(1,"Field Delimiter: "+adp.getPhysicalFieldDelimiter(entityIndex,0));
-		
+
 		if(adp != null) {
 			MorphoFrame morphoFrame = UIController.getInstance().getCurrentActiveWindow();
 			morphoFrame.setVisible(false);
@@ -1400,11 +1400,11 @@ public class DataViewer extends javax.swing.JPanel
 				dataPackageInt.openNewDataPackage(adp, null);
 				uicontroller.removeWindow(morphoFrame);
 				morphoFrame.dispose();
-				
+
 			} catch (Exception e) {
 				Log.debug(5, "Exception in converting edited XML to DOM!");
 			}
-			
+
 		}
 	}
 
