@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2004-04-15 18:18:00 $'
- * '$Revision: 1.3 $'
+ *   '$Author: connolly $'
+ *     '$Date: 2005-07-22 16:37:32 $'
+ * '$Revision: 1.4 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -44,7 +44,7 @@ public class HelpMetadataIntroCommand implements Command {
   public void execute(ActionEvent ae) {
 
     MorphoFrame frame
-        = UIController.getInstance().addWindow("Introduction to Metadata");
+        = UIController.getInstance().addWindow("Introduction to Ecological Metadata Language (EML)");
 
     HTMLBrowser viewer = new HTMLBrowser(frame, false);
 
