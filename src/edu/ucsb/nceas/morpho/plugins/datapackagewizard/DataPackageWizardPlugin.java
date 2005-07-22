@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: sgarg $'
- *     '$Date: 2005-07-08 19:00:13 $'
- * '$Revision: 1.42 $'
+ *   '$Author: connolly $'
+ *     '$Date: 2005-07-22 16:39:07 $'
+ * '$Revision: 1.43 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -148,7 +148,7 @@ public class DataPackageWizardPlugin implements PluginInterface,
   public void startEntityWizard(DataPackageWizardListener listener) {
 
     startWizardAtPage(WizardSettings.ENTITY_WIZ_FIRST_PAGE_ID, false, listener,
-                      "New Datatable Wizard");
+                      "New Data Table Wizard");
   }
 
 

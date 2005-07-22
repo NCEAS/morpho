@@ -4,9 +4,9 @@
  *              National Center for Ecological Analysis and Synthesis
  *    Release: @release@
  *
- *   '$Author: sambasiv $'
- *     '$Date: 2004-04-26 14:16:47 $'
- * '$Revision: 1.22 $'
+ *   '$Author: connolly $'
+ *     '$Date: 2005-07-22 16:39:07 $'
+ * '$Revision: 1.23 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -181,7 +181,7 @@ public class TextImportWizardEml2 extends JFrame {
    * vector containing AttributePage objects
    */
   private Vector columnAttributes;
-	
+
 	/**
    * vector containing Orderedmaps of the AttributePage objects
    */
@@ -267,7 +267,7 @@ public class TextImportWizardEml2 extends JFrame {
     lSymAction = new SymAction();
 
     //{{INIT_CONTROLS
-    setTitle("Text Import Wizard");
+    setTitle("New Data Table Wizard");
     setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
     getContentPane().setLayout(new BorderLayout(0, 0));
     setSize(695, 500);
@@ -295,7 +295,7 @@ public class TextImportWizardEml2 extends JFrame {
     ControlsPanel.add("card1", Step1FullControlsPanel);
 
 
-    JLabel Step1_titleLabel = new JLabel("New DataTable Wizard");
+    JLabel Step1_titleLabel = new JLabel("Text Import Wizard");
     Step1_titleLabel.setFont(WizardSettings.TITLE_FONT);
     Step1_titleLabel.setForeground(WizardSettings.TITLE_TEXT_COLOR);
     Step1_titleLabel.setBorder(new EmptyBorder(WizardSettings.PADDING,0,WizardSettings.PADDING,0));
@@ -1069,7 +1069,7 @@ public class TextImportWizardEml2 extends JFrame {
     String entityName = TableNameTextField.getText();
     List colNames = new ArrayList();
 		columnMaps = new Vector();
-		
+
 		String prefix = AttributeSettings.Attribute_xPath;
 		int attrsToBeImported = 0;
 		AbstractDataPackage adp = UIController.getInstance().getCurrentAbstractDataPackage();
@@ -1078,24 +1078,24 @@ public class TextImportWizardEml2 extends JFrame {
 		} else {
 			attrsToBeImported = adp.getAttributeImportCount();
 		}
-		
+
     while(it.hasNext()) {
       ad = (AttributePage) it.next();
       OrderedMap map1 = ad.getPageData(prefix + "[" + index + "]");
 			columnMaps.add(map1);
       String colName = getColumnName(map1, prefix + "[" + index + "]");
-			
+
 			if(adp != null && ad.isImportNeeded()) {
-				
+
         String mScale = getMeasurementScale(map1, prefix + "[" + index + "]");
         adp.addAttributeForImport(entityName, colName, mScale, map1, prefix + "[" + index + "]", true);
         importNeeded = true;
       }
 			index++;
       colNames.add(colName);
-      
+
     }
-		
+
 		if(adp != null) {
 			adp.setLastImportedEntity(entityName);
 			adp.setLastImportedAttributes(colNames);
@@ -1105,7 +1105,7 @@ public class TextImportWizardEml2 extends JFrame {
 					adp.setLastImportedDataSet(((UneditableTableModel)table.getModel()).getDataVector());
 				}
 		}
-		
+
     String prevPageID = mainWizFrame.getPreviousPageID();
 
     if(attrsToBeImported > 0) {
@@ -1152,7 +1152,7 @@ public class TextImportWizardEml2 extends JFrame {
     if(o1 != null) return "Interval";
 		o1 = map.get(xPath + "/measurementScale/interval/unit/customUnit");
     if(o1 != null) return "Interval";
-    
+
     o1 = map.get(xPath + "/measurementScale/ratio/unit/standardUnit");
     if(o1 != null) return "Ratio";
 		o1 = map.get(xPath + "/measurementScale/ratio/unit/customUnit");
@@ -1652,7 +1652,7 @@ public class TextImportWizardEml2 extends JFrame {
     int numrecs = nlines_actual - startingLine + 1 + temp;
     String numRecords = (new Integer(numrecs)).toString();
     om.put(header + "numberOfRecords", XMLUtil.normalize(numRecords));
-		
+
 		if(this.ignoreConsequtiveDelimiters) {
 			// if consecutive delimiters need to be ignored, we have to add this information in the
 			// additionalMetadata section.
@@ -1660,7 +1660,7 @@ public class TextImportWizardEml2 extends JFrame {
 			om.put(addtHeader + "/describes", physicalID);
 			om.put(addtHeader + "/consecutiveDelimiters", "true");
 		}
-		
+
     return om;
   }
 
