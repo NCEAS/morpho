@@ -60,7 +60,7 @@
     </tr>
     <tr>
       <td height="94" valign="top"><p class="helpsub"><font size="+1">Download Morpho<a name="downloadmorpho"></a></font></p>
-        <p><font size="+1">To download Morpho, </font><font size="+1">go to "http://knb.ecoinformatics.org/morphoportal.jsp" and
+        <p><font size="+1">To download Morpho, </font><font size="+1">go to "<a href="#">http://knb.ecoinformatics.org/morphoportal.jsp</a>" and
           choose the  link corresponding to your platform (Morpho can be used on Windows, Linux, and Mac). You will have the option of downloading
           Java along with Morpho if you do not already have it.</font></p>
       </td>
@@ -69,37 +69,41 @@
       <td height="752"><p class="helpsub"><font size="+1">Register for the 
             <span class="emphasis style1">Knowledge Network for Biocomplexity</span> (KNB)  <a name="register"></a></font></p>
         <p><font size="+1">Before you start using Morpho</font><font size="+1">,
-            register for the KNB. Go to "http://ldap.ecoinformatics.org/cgi-bin/ldapweb.cgi?cfg=knb" and
+            register for the KNB. Go to "<a href="http://ldap.ecoinformatics.org/cgi-bin/ldapweb.cgi?cfg=knb">http://ldap.ecoinformatics.org/cgi-bin/ldapweb.cgi?cfg=knb</a>" and
           fill out the form pictured below. Write down your username and password
           somewhere secure. Registering will provide you
           with access to some advanced metadata and data services from the KNB,
           and does not install any networked spyware on your system, nor does
-          it require that you be on a network in order to use Morpho.</font></p>
+          it require that you be on a network in order to use Morpho. If you do not have access to the Internet, or you do not want to register for
+          the KNB, Morpho will still work, but you will only be able to store your metadata
+          files locally, and will not be able to login to the KNB to take advantage
+          of the advanced storage, access, and querying capabilities provided
+          by the Metacat server.</font></p>
         <div align="center">
           <p><br>
-            <img height="620" width="510" src="images/knbregister.gif"></p>
+            <img height="569" width="773" src="images/knbregister.gif"></p>
           <p>&nbsp;</p>
         </div></td>
     </tr>
     <tr>
-      <td><p class="helpsub"><font size="+1">Open Morpho and Create a Morpho Profile<a name="openmorpho"></a></font></p>
+      <td><p class="helpsub"><font size="+1">Open Morpho and Create a  Profile<a name="openmorpho"></a></font></p>
         <p><font size="+1">Open Morpho by double-clicking on its icon or the
         file called "Morpho.bat". </font><font size="+1">The first time you execute Morpho, you will be asked
             to create a new profile. This profile allows you to use Morpho locally
             on your personal
           computer and, once registered for the KNB  (see preceding "<a href="#register">Register
-          for the KNB</a>" section), will allow you to create, access, edit and
-          search for data sets on the KNB.<br>
+          for the KNB</a>" section), will allow you to create, access, edit, and
+          search for metadata and data on the KNB. <br>
         </font></p>
         <p><font size="+1">If you are upgrading Morpho from a previous version,
             you will still be prompted to create a new profile. If you want to
             continue using
-          your old profile(s) (so that your locally-stored data continues to
+          your old profile(s) (so that your locally-stored data continue to
           be visible), simply enter a "new profile" with the same name as the
           old one, and you will be prompted if you would like to use the existing
           profile. For example, if your old profile is named "jdoe", then enter "jdoe" as
           the name of the new profile, and when you finish the profile wizard,
-          Morpho will ask if you want to keep your existing profile -- click "Yes".
+          Morpho will ask if you want to keep your existing profile (click "Yes").
           This will only work if you logged into your computer with the same
           account under which your old profile existed.<br>
         </font></p>
@@ -116,15 +120,10 @@
     <tr>
       <td><p><font size="+1">Click "Next" to move on to the "Network Account
             Information" screen,
-          pictured below. Here you should enter the username and the
-          organization name which you entered when you registered for the on the "http://knb.ecoinformatics.org/index.jsp" site.
-          If you are not on the Internet, or you do not want to register with
-          the KNB, you can enter any username here and Morpho will still work.
-          But if you do not reference a valid KNB account here, and associate
-          it with this profile, you will only be able to store your metadata
-          files locally, and will not be able to login to the KNB to take advantage
-          of the advanced storage, access, and querying capabilities provided
-          by Metacat.</font></p>
+          pictured below. Here you should enter the username and select the
+          organization which you entered when you <a href="#register">registered for the KNB</a>.
+          If you decided to not register for
+          the KNB, you can enter any username here, but you will not be able to login to the KNB using this profile.</font></p>
         <p>&nbsp; </p>
         <div align="center">
           <p><img height="434" width="568" src="images/newprofile2.gif"></p>
@@ -132,9 +131,9 @@
         </div></td>
     </tr>
     <tr>
-      <td><p><font size="+1">Click "Next" to move to the "Miscellaneous Information" screen,
+      <td><p><font size="+1">Click "Next" to move to the "Data Package Identification" screen,
           pictured below. The identifier prefix that you enter will become the
-          prefix of your stored metadata file names. For example, jdoe.xml.</font></p>
+          prefix of your stored metadata file names. For example, using the prefix &quot;jane_doe&quot;, your files will have names like jane_doe.1.1, jane_doe.2.1, etc.</font></p>
         <p>&nbsp;</p>
       <p align="center"><img height="434" width="568"
  src="images/newprofile3.gif"></p>
@@ -145,16 +144,15 @@
               Welcome Screen</a> of Morpho, described in the next section.</font></p>
         <p>&nbsp;</p>
       <div align="center">
-        <p><img src="images/mainscreen3.gif" width="576" height="408"></p>
+        <p><img src="images/mainscreen3.gif" width="713" height="515"></p>
         <p>&nbsp;</p>
       </div></td>
     </tr>
     <tr>
       <td><div class="helpsub"></div>
-      <p><font color="yellow"> <font size="+2" color="#ff0000"><b>!</b></font></font><font size="+1"> By
-          entering your password and clicking the "Login" button on the Main
-          Welcome Screen, you will be able to create, edit, search, access and
-          manage data that is
+      <p><font color="yellow"> <font size="+2" color="#ff0000"></font></font><font size="+1"><img src="images/exclaim_2.gif" width="37" height="31"> By
+          entering your password and clicking on "login"  in the &quot;Network Status&quot; box, you will be able to create, edit, search, access, and
+          manage data that are
           stored
 both locally (on your computer) and on the KNB network. If you choose not to
           login, you will be able to do all the previous operations locally,
