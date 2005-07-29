@@ -6,7 +6,7 @@
   *    Copyright: 2000 Regents of the University of California and the
   *               National Center for Ecological Analysis and Synthesis
   *  For Details: http://www.nceas.ucsb.edu/
-  *    File Info: '$Id: build.xml,v 1.105 2005-07-11 18:02:32 sgarg Exp $'
+  *    File Info: '$Id: build.xml,v 1.106 2005-07-29 15:18:10 bowdish Exp $'
   *
   *  Build file for the Ant cross-platform build system for metacat
   *  See http://jakarta.apache.org for details on Ant
@@ -205,7 +205,7 @@
    </target>
 
 
-   <target name="helpjar" depends="emldoc">
+   <target name="helpjar" depends="prepare">
       <mkdir dir="${java.help.doc.dir}" />
       <!-- copy morpho docs-->
       <copy todir="${java.help.doc.dir}" filtering="no">
@@ -229,7 +229,7 @@
           <include name="${help.index}"/>
         </fileset>
       </copy>
-      <!-- copy eml docs-->
+      <!-- copy eml docs
      <copy todir="${java.help.doc.dir}/eml" filtering="no">
         <fileset dir="${build.docs}/${eml-module}/${eml.doc.dir}">
           <include name="**/*.html" />
@@ -237,6 +237,7 @@
           <include name="**/*.css" />
         </fileset>
      </copy>
+		 -->
       <!-- Creating search database -->
       <!--<exec dir="${java.help.dir}" executable="${java.help.dir}/jhindexer" >
         <arg line="morphohelp" />
