@@ -2,6 +2,14 @@
 <head>
 <title>EML Metadata Guide</title>
 <link href="../../default.css" rel="stylesheet" type="text/css">
+<style type="text/css">
+<!--
+.style1 {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 1em;
+}
+-->
+</style>
 </head>
 <body>
 <table width="90%" border="0" cellspacing="0" cellpadding="5">
@@ -17,7 +25,7 @@
       <p>
         The long-term value of ecological data, and its utility for advancing ecological
         understanding and solving important environmental problems depend on the availability
-        of suitable and adequate metadata, or descriptive information describing data
+        of suitable and adequate metadata, or information describing data
         content, context, quality, structure and accessibility (Michener 2000). As
         a discipline, ecology is moving beyond its tradition of small-scale empirical
         observations and experiments conducted by one or a few investigators at relatively
@@ -41,7 +49,7 @@
         and motivated by the need to provide comprehensive access to biological population
         data, to facilitate discovery of general patterns and principles, to advance
         understanding of large-scale spatial and temporal patterns, and to enable
-        researchers to acquire large numbers of datasets, without having to undertake
+        researchers to acquire large numbers of data sets, without having to undertake
         repetitive, time-consuming and expensive searches, the Center for Population
         Biology at Imperial College, Silwood Park, the National Center for Ecological
         Analysis and Synthesis (NCEAS), and the University of Tennessee collaborated
@@ -68,7 +76,7 @@
         about what quantity and quality of metadata are sufficient to enable data
         that initially were collected for a single, relatively narrow purpose, to
         be understood and used appropriately for a variety of purposes. Unfortunately,
-        this often means that the value of ecological data diminish over time, because
+        this often means that the value of ecological data diminishes over time, because
         important details about the data may be forgotten or lost by the original
         investigator, because of career changes, or changes in data storage and management
         technology (Michener 2000).
@@ -86,7 +94,7 @@
     <h4>Metadata</h4>
       <p>
         Metadata is the information that describes &#8220;who, what where, when,
-        why and how&#8221; an ecological dataset was collected. Metadata literally
+        why, and how&#8221; an ecological data set was collected. Metadata literally
         means (meta ~ about) &#8220;about data&#8221;. Most of us have experienced
         the difficulty in using our own data after only a few months have passed since
         it was collected. Unless data are adequately documented, this difficulty only
@@ -98,17 +106,17 @@
         data were collected, the focal organism or system, or the identity and location
         of the data owner. Table 2 shows the same data table, with some additional
         metadata. In this example we can see that data were collected in May, 2002,
-        at a site, identified as VO. However, one can only guess at what VO might
+        at a site identified as VO. However, one can only guess at what VO might
         signify, or at the meaning of the columns with headers &#8220;S,&#8221; &#8220;R,&#8221;
         &#8220;Bm,&#8221; &#8220;P,&#8221; and &#8220;N.&#8221; signify. The lack
-        of adequate metadata makes this dataset useless to anyone other than the original
+        of adequate metadata makes this data set useless to anyone other than the original
         owner.
       </p>
       <p>
-        Table 3 illustrates a dataset with more comprehensive documentation. The
+        Table 3 illustrates a data set with more comprehensive documentation. The
         data owner is identified, column headers are defined, and some general information
         is provided regarding how and where the data were collected. Depending on
-        the intended use, access to this information may make this a useable dataset.
+        the intended use, access to this information may make this a useable data set.
         However, the original owner of this data probably has additional information
         that would facilitate a more comprehensive description of the data and potentially
         make it more suitable for a broader range of research activities in the future.
@@ -121,15 +129,15 @@
         This example illustrates another common feature of metadata; the information
         provided is what the data owner decided to document. Without standards or
         guidelines for metadata content, if the same individual were to document another
-        dataset, the same or different information might be included, and the format
+        data set, the same or different information might be included, and the format
         might or might not be the same. In this way, if analyses require multiple
-        datasets from different owners, locations or times, it is
-        unlikely that all relevant datasets would have metadata with equivalent levels
+        data sets from different owners, locations or times, it is
+        unlikely that all relevant data sets would have metadata with equivalent levels
         of detail, use consistent terminology, or use consistent formats for metadata.
         The potentially infinite formats and types of information in which to document
         data suggest the need for metadata to be standardized. Table 4 provides an
         example of a much more detailed metadata document that was made using EML,
-        in which each metadata concept (from dataset title to geographic description)
+        in which each metadata concept (from data set title to geographic description)
         has been formalized and standardized.
       </p>
       
@@ -138,7 +146,7 @@
     <h3>Creating Metadata with EML</h3>
       
       <p>
-        <i>NOTE: This for non-RDBMS datasets. Contact
+        <i>NOTE: This is for non-RDBMS data sets. Contact
         jones@ecoinformatics.ucsb.edu for more information.</i>
       </p>
       <p>
@@ -159,41 +167,38 @@
         information.   It describes a range of essential aspects of
         ecological data, such as data attribute (usually thought of as
         variables by ecologists) names and definitions; units of measurement;
-        date, time and location of data collection; who collected the data
+        date, time and location of data collection; who collected the data;
         sampling design; etc.  EML attempts to reduce ambiguity and
         uncertainty by formalizing these metadata concepts into a comprehensive
         yet standardized set of terms and definitions intended specifically for
-        ecological data.  The metadata in Table 4 provide an example of dataset
+        ecological data.  The metadata in Table 4 provide an example of data set
         that has been reasonably well-documented using EML.
       </p>
       
-    <p> The question of &quot;How much metadata is enough?&quot; does not have 
+      <p> The question of &quot;How much metadata is enough?&quot; does not have 
       a clear-cut answer. As a general guideline, an ecologist should be able 
-      to get a thorough understanding of a moderately complicated dataset after 
+      to get a thorough understanding of a moderately complicated data set after 
       reviewing the metadata for 20 minutes. If in doubt, assume that &quot;more 
       is better,&quot; because omitting detail from metadata at the outset may 
       lead to problems later on (e.g., hours of discussion or exploratory analyses), 
       and in the worst case may render the data unusable. In general the more 
-      metadata you create the longer the lifespan of your dataset. </p>
+      metadata you create the longer the lifespan of your data set. </p>
       <p>
         A walk through each of the formalized EML metadata concepts shown
         in Table 4 will clarify some of the more important metadata concepts
-        provided in EML.  The information in Table 4 is arranged in six broad
-        metadata categories, each of which contains more detailed metadata.
-        These categories are somewhat arbitrary, but are intended to categorize
-        EML metadata fields in a way that is intuitive to ecologists.  The
-        categories include the General Dataset, Geographic, Temporal, Taxonomic,
-        Methods and Data Table Metadata sections.
-      </p>
+      provided in EML. The information in Table 4 is arranged in six broad metadata categories: the
+General Data Set, Geographic, Temporal, Taxonomic, Methods, and Data Table
+metadata categories.  These categories are somewhat arbitrary, but are intended
+to categorize EML metadata fields in a way that is intuitive to ecologists.</p>
+      <p>&nbsp; </p>
       <p>
-        The General Dataset Metadata category contains EML metadata concepts
+        The General Data Set Metadata category contains EML metadata concepts
         that describe the purpose of the data collection and the questions
-        the data were originally intended to address being collected to
-        address.  Some types of metadata, such as the title and abstract
+        the data were originally intended to address.  Some types of metadata, such as the title and abstract
         are self-explanatory, but others may not be.  The usage rights
         field provides a place for information about who can use the
-        dataset, and what, if any, restrictions there are on usage.  Other
-        general dataset metadata information includes contact information for
+        data set, and what, if any, restrictions there are on usage.  Other
+        general data set metadata information includes contact information for
         people who had a significant role in collecting or managing the data.
         At least one primary contact is recommended.  This should be the person
         to whom further questions regarding the data and metadata should be
@@ -208,8 +213,7 @@
         software.
       </p>
       <p>
-        As the name suggests, the Geographic Metadata category is used for g
-        eographic and spatial metadata.   The geographic description field
+        As the name suggests, the Geographic Metadata category is used for geographic and spatial metadata.   The geographic description field
         contains information about where the research project took place,
         where samples were collected and any spatial or geographic references
         that may provide a context for the data.  Latitude and longitude may
@@ -222,10 +226,10 @@
         between June 2002 &amp; 2003) or specific time periods
         (e.g. May 2002 and June 2003).  In addition, information about
         potential gaps in data collection or in the collection of some
-        variables.
+        variables should be included.
       </p>
       <p>
-        If the dataset has species information there are Taxonomic Metadata
+        If the data set has species information there are Taxonomic Metadata
         fields that describe them.   Information such as the taxonomic
         authority (i.e. the book or system that is used to identify a species)
         and the taxonomic class (i.e. Family, Genus, Species) can be described
@@ -241,7 +245,7 @@
         sufficiently detailed to allow someone to recreate the research project.
       </p>
       
-    <p> The Data Table contains information regarding the data table itself. There 
+    <p> The Data Table section contains information regarding the data table itself. There 
       is physical data information such as the file name, whether or not the letters 
       in the data table are case sensitive, the number of records and the structure 
       of the data table (i.e., attribute names in columns or rows). This category 
@@ -263,12 +267,12 @@
       <p>
         The metadata contained in Table 4 represent a minimum level of detail
         that would be required by someone with little or no prior knowledge
-        about the dataset (or yourself after not working with the data for a
+        about the data set (or yourself after not working with the data for a
         few years) to determine whether or not the data are appropriate for
         some intended use.  Additionally, once someone has decided to use the
         data for a particular purpose, the metadata should be sufficient to
         enable the next research steps (e.g., contact the data owner for
-        the dataset, or if the data are public and accessible, begin
+        the data set, or if the data are public and accessible, begin
         preliminary analyses).
       </p>
      
@@ -279,7 +283,7 @@
       <p>
         At this point you have a basic understanding of the advantages of using
         EML, and you have seen an example of a reasonably well-documented
-        dataset.   Currently, there are two mechanisms for creating EML
+        data set.   Currently, there are two mechanisms for creating EML
         to document your data:  Morpho, and web registries.
       </p>
 
@@ -307,13 +311,12 @@
    
       <p>
         Another option is to document your data using a subset of EML through
-        a web registry at http://knb.ecoinformatics.org/index.jsp.  To use t
-        his tool you first must register (i.e., provide basic information
+        a web registry at http://knb.ecoinformatics.org/index.jsp.  To use this tool you first must register (i.e., provide basic information
         about yourself and how you may be contacted).  Then you can create
         EML compliant metadata without installing Morpho.  As when using
         Morpho, the user can create EML metadata and make it broadly available
         to the ecological community through the internet.  Making EML metadata
-        available facilitates the discovery of your dataset by ecologists
+        available facilitates the discovery of your data set by ecologists
         around the world.  Additionally, large organizations and large
         research projects may want to create customized EML web interfaces
         (contact jones@nceas.ucsb.edu for information about how to do this).
@@ -323,7 +326,7 @@
       </p>
    
         
-    <h3>&nbsp;</h3>
+      <h3>&nbsp;</h3>
     <h3>The Future</h3>
    
       <p>
@@ -338,7 +341,7 @@
         a growing standard for marking up documents on the Web.  This means
         that EML metadata eventually will enable the use of a wide range of
         software, from basic search and query tools that can be used remotely
-        through the web, to remote integration of heterogeneous datasets, to
+        through the web, to remote integration of heterogeneous data sets, to
         analysis and visualization.  For more information about EML and tools
         for creating metadata and sharing data, go to
         http://knb.ecoinformatics.org/index.jsp</p>.
@@ -2409,7 +2412,7 @@
                         <table cellpadding="0" cellspacing="0" width="100%"
                         class="tabledefault">
                           <tr>
-                            <td class="secondCol" width="100%">This dataset is
+                            <td class="secondCol" width="100%">This data set is
                             publicly available through the Knowledge Network
                             for Biocompletxity. www.knb.ecoinformatics.org
                             Please acknowledge the Knowledge Network for
