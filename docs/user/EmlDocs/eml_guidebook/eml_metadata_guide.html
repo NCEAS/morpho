@@ -2,20 +2,12 @@
 <head>
 <title>EML Metadata Guide</title>
 <link href="../../default.css" rel="stylesheet" type="text/css">
-<style type="text/css">
-<!--
-.style1 {
-	font-family: Arial, Helvetica, sans-serif;
-	font-size: 1em;
-}
--->
-</style>
 </head>
 <body>
 <table width="90%" border="0" cellspacing="0" cellpadding="5">
   <tr>
     <td>
-    <h2>An introduction to Ecological Metadata Language (EML)</h2>
+    <h2>An Introduction to Ecological Metadata Language (EML)</h2>
     </td>
   </tr>
   <tr>
@@ -26,7 +18,7 @@
         The long-term value of ecological data, and its utility for advancing ecological
         understanding and solving important environmental problems depend on the availability
         of suitable and adequate metadata, or information describing data
-        content, context, quality, structure and accessibility (Michener 2000). As
+        content, context, quality, structure, and accessibility (Michener 2000). As
         a discipline, ecology is moving beyond its tradition of small-scale empirical
         observations and experiments conducted by one or a few investigators at relatively
         small scales (Kareiva &amp; Anderson 1988; Brown &amp; Roughgarden 1990).
@@ -37,67 +29,67 @@
         the need for increased data sharing and long-term community access to data
         (e.g., Olson &amp; McCord 2000; Andelman et al. 2004) and presents new challenges
         for integration of heterogeneous ecological information across a range of
-        spatial, temporal and organizational scales.
+        spatial, temporal, and organizational scales.
       </p>
-      <p>
-        Historically, investigations of many ecological phenomena, and the development
+      <p>&nbsp;
+      </p>
+      <p>Historically, investigations of many ecological phenomena, and the development
         of theory to explain them, have been limited by the availability of suitable
         long-term data. For example, the fragmentary nature of population dynamics
         research activities, which often has focused on analysis of individual data
         sets, has made it difficult to formulate general theory and to investigate
         large-scale spatial and taxonomic patterns. In response to this limitation,
         and motivated by the need to provide comprehensive access to biological population
-        data, to facilitate discovery of general patterns and principles, to advance
+        data, to advance
         understanding of large-scale spatial and temporal patterns, and to enable
-        researchers to acquire large numbers of data sets, without having to undertake
-        repetitive, time-consuming and expensive searches, the Center for Population
+        researchers to acquire large numbers of data sets without having to undertake
+        repetitive, time-consuming, and expensive searches, the Center for Population
         Biology at Imperial College, Silwood Park, the National Center for Ecological
         Analysis and Synthesis (NCEAS), and the University of Tennessee collaborated
         to develop the Global Population Dynamics Database
         (GPDD; http://cpbnts1.bio.ic.ac.uk/gpdd/).
         The GPDD is now the largest collection of animal and plant population data
         in the world, and brings together nearly five thousand time series in one
-        database. It provides an important resource for ecologists, resource managers
+        database. It provides an important resource for ecologists, resource managers,
         and environmental scientists interested in the dynamics of natural populations
         or in asking comparative questions about the nature of population variability
-        (e.g., Kendall et al. 1998; Kendall et al. 2000; Fagan et al. 2001; Inchausti
-        &amp; Halley 2001; Inchausti &amp; Halley 2002; Inchausti &amp; Halley 2003).
+        (e.g., Kendall et al. 1998; Kendall et al. 2000; Fagan et al. 2001; Inchausti &amp; Halley 2001; Inchausti &amp; Halley 2002; Inchausti &amp; Halley 2003). </p>
+      <p>&nbsp;
       </p>
-      <p>
-        Synthetic efforts such as development of the GPDD are limited by the heterogeneity
+      <p>Synthetic efforts such as development of the GPDD are limited by the heterogeneity
         of ecological data and metadata. Ecological data exhibit a range of formats,
         reflecting different underlying motivations for data collection, different
-        suites of variables and different spatial and temporal sampling designs. In
+        suites of variables, and different spatial and temporal sampling designs. In
         addition, ecological metadata typically also are highly variable in extent,
-        depth, quality and associated types of uncertainty (Andelman et al. 2004;
+        depth, quality, and associated types of uncertainty (Andelman et al. 2004;
         Regan et al. 2002), and may consist of mental notes, hand-written notes in
-        a field notebook, a comments field in an Excel spreadsheet or other forms
+        a field notebook, a comments field in an Excel spreadsheet, or other forms
         of documentation. Currently, there is no single standard to guide the decision
         about what quantity and quality of metadata are sufficient to enable data
         that initially were collected for a single, relatively narrow purpose, to
         be understood and used appropriately for a variety of purposes. Unfortunately,
         this often means that the value of ecological data diminishes over time, because
         important details about the data may be forgotten or lost by the original
-        investigator, because of career changes, or changes in data storage and management
+        investigator, because of career changes or changes in data storage and management
         technology (Michener 2000).
       </p>
-      <p>
-        This paper describes Ecological Metadata Language
+      <p>&nbsp;
+      </p>
+      <p>This article describes Ecological Metadata Language
         (EML; http://knb.ecoinformatics.org/software/eml/),
         a method for formalizing and standardizing the set of concepts that are essential
         for describing ecological data, and explains why and how creating metadata
         with EML will extend the long-term utility of ecological data and facilitate
         the processes of data discovery and integration.
       </p>
-      
-    <h4>&nbsp;</h4>
+      <h4>&nbsp;</h4>
     <h4>Metadata</h4>
       <p>
-        Metadata is the information that describes &#8220;who, what where, when,
+        Metadata is the information that describes &quot;who, what, where, when,
         why, and how&#8221; an ecological data set was collected. Metadata literally
-        means (meta ~ about) &#8220;about data&#8221;. Most of us have experienced
+        means (meta ~ about) &quot;about data&#8221;. Most of us have experienced
         the difficulty in using our own data after only a few months have passed since
-        it was collected. Unless data are adequately documented, this difficulty only
+        they were collected. Unless data are adequately documented, this difficulty only
         increases over time. Even the simplest analysis requires some level of metadata.
         For example, consider a simple data table, with no column headers (Table 1).
         Without metadata, a data table such as this one is useless. Unless we know
@@ -105,18 +97,18 @@
         in this example, there is no metadata that would identify the location where
         data were collected, the focal organism or system, or the identity and location
         of the data owner. Table 2 shows the same data table, with some additional
-        metadata. In this example we can see that data were collected in May, 2002,
-        at a site identified as VO. However, one can only guess at what VO might
-        signify, or at the meaning of the columns with headers &#8220;S,&#8221; &#8220;R,&#8221;
-        &#8220;Bm,&#8221; &#8220;P,&#8221; and &#8220;N.&#8221; signify. The lack
+        metadata. In this example we can see that data were collected in May 2002,
+        at a site identified as &quot;VO&quot;. However, one can only guess at what &quot;VO&quot; might
+        signify, or at the meaning of the columns with headers &quot;S&quot;, &quot;R&#8221;, &quot;BM&#8221;, &quot;P&#8221;, and &quot;N&#8221;. signify. The lack
         of adequate metadata makes this data set useless to anyone other than the original
         owner.
       </p>
-      <p>
-        Table 3 illustrates a data set with more comprehensive documentation. The
+      <p>&nbsp;
+      </p>
+      <p>Table 3 illustrates a data set with more comprehensive documentation. The
         data owner is identified, column headers are defined, and some general information
         is provided regarding how and where the data were collected. Depending on
-        the intended use, access to this information may make this a useable data set.
+        the intended use, access to this information may make this a usable data set.
         However, the original owner of this data probably has additional information
         that would facilitate a more comprehensive description of the data and potentially
         make it more suitable for a broader range of research activities in the future.
@@ -125,13 +117,14 @@
         about codes or numbers used to indicate missing data would increase the potential
         utility of these data.
       </p>
-      <p>
-        This example illustrates another common feature of metadata; the information
+      <p>&nbsp;
+      </p>
+      <p>This example illustrates another common feature of metadata: the information
         provided is what the data owner decided to document. Without standards or
         guidelines for metadata content, if the same individual were to document another
         data set, the same or different information might be included, and the format
         might or might not be the same. In this way, if analyses require multiple
-        data sets from different owners, locations or times, it is
+        data sets from different owners, locations, or times, it is
         unlikely that all relevant data sets would have metadata with equivalent levels
         of detail, use consistent terminology, or use consistent formats for metadata.
         The potentially infinite formats and types of information in which to document
@@ -140,28 +133,26 @@
         in which each metadata concept (from data set title to geographic description)
         has been formalized and standardized.
       </p>
-      
-        
-    <h3>&nbsp;</h3>
+      <h3>&nbsp;</h3>
     <h3>Creating Metadata with EML</h3>
       
       <p>
         <i>NOTE: This is for non-RDBMS data sets. Contact
         jones@ecoinformatics.ucsb.edu for more information.</i>
       </p>
-      <p>
-        Ecological Metadata Language (EML) is a method for formalizing and
-        standardizing the set of concepts that are essential for describing
-        ecological data, as well as the format for recording this information.
-        EML evolved from an open source, community-based effort involving
-        ecological researchers, information managers, and software developers,
-        led by the National Center for Ecological Analysis and Synthesis
-        (NCEAS) and the Long Term Ecological Research Network (LTER).  The
-        need for EML or a similar method to promote preservation and long-term
-        utility of the growing archives of ecological data has been recognized
-        for some time (FLED Report 1995, Michener et al, 1997; Olson &amp;
-        McCord 2000).
+      <p>&nbsp;
       </p>
+      <p>Ecological Metadata Language (EML) is a method for formalizing and
+          standardizing the set of concepts that are essential for describing
+          ecological data, as well as the format for recording this information.
+          EML evolved from an open source, community-based effort involving
+          ecological researchers, information managers, and software developers,
+          led by the National Center for Ecological Analysis and Synthesis
+          (NCEAS) and the Long Term Ecological Research (LTER) Network .  The
+          need for EML or a similar method to promote preservation and long-term
+          utility of the growing archives of ecological data has been recognized
+          for some time (FLED Committee 1995, Michener et al, 1997; Olson &amp; McCord 2000).</p>
+      <p>&nbsp; </p>
       <p>
         EML is intended for use by any ecologist or manager of ecological
         information.   It describes a range of essential aspects of
@@ -175,7 +166,8 @@
         that has been reasonably well-documented using EML.
       </p>
       
-      <p> The question of &quot;How much metadata is enough?&quot; does not have 
+      <p>&nbsp; </p>
+      <p>The question of &quot;How much metadata is enough?&quot; does not have 
       a clear-cut answer. As a general guideline, an ecologist should be able 
       to get a thorough understanding of a moderately complicated data set after 
       reviewing the metadata for 20 minutes. If in doubt, assume that &quot;more 
@@ -192,7 +184,7 @@ metadata categories.  These categories are somewhat arbitrary, but are intended
 to categorize EML metadata fields in a way that is intuitive to ecologists.</p>
       <p>&nbsp; </p>
       <p>
-        The General Data Set Metadata category contains EML metadata concepts
+        The General Data Set metadata category contains EML concepts
         that describe the purpose of the data collection and the questions
         the data were originally intended to address.  Some types of metadata, such as the title and abstract
         are self-explanatory, but others may not be.  The usage rights
@@ -203,102 +195,98 @@ to categorize EML metadata fields in a way that is intuitive to ecologists.</p>
         At least one primary contact is recommended.  This should be the person
         to whom further questions regarding the data and metadata should be
         addressed.
-      </p>
-      <p>
-        Also, in this category, information about the data or data collection
+      Also, in this category, information about the data or data collection
         methods may be provided in published papers.  EML provides fields for
         entering bibliographic information such as citations to journal
         articles or books. EML supports a range of standard reference styles,
         and permits importation directly from EndNote and other bibliographic
         software.
       </p>
-      <p>
-        As the name suggests, the Geographic Metadata category is used for geographic and spatial metadata.   The geographic description field
+      <p>&nbsp;
+      </p>
+      <p>As the name suggests, the Geographic metadata category is used for geographic and spatial metadata.   The geographic description field
         contains information about where the research project took place,
-        where samples were collected and any spatial or geographic references
+        where samples were collected, and any spatial or geographic references
         that may provide a context for the data.  Latitude and longitude may
         also be entered here to increase geographic accuracy.
       </p>
-      <p>
-        The Temporal Metadata category contains information about when the
-        research project started and ended.   Information can be stored
-        either as a range of dates (e.g. data was collected every month
-        between June 2002 &amp; 2003) or specific time periods
-        (e.g. May 2002 and June 2003).  In addition, information about
-        potential gaps in data collection or in the collection of some
-        variables should be included.
+      <p>&nbsp;
       </p>
+      <p>The Temporal metadata category contains information about when the
+        research project started and ended.   Information can be stored
+        either as a range of dates (e.g., data were collected every month
+        between June 2002 and July 2003) or specific time periods
+        (e.g., May 2002 and June 2003).  In addition, information about
+        potential gaps in data collection or in the collection of some
+        variables should be included.</p>
+      <p>&nbsp;</p>
       <p>
-        If the data set has species information there are Taxonomic Metadata
-        fields that describe them.   Information such as the taxonomic
-        authority (i.e. the book or system that is used to identify a species)
-        and the taxonomic class (i.e. Family, Genus, Species) can be described
+        The Taxonomic metadata category contains information on  the organisms that were studied.   Information such as the taxonomic class (i.e., family, genus, species) and the taxonomic
+        authority (i.e., the book or system that was used to identify a species)
+        can be described
         here.  To facilitate entry of taxonomic information, tables or text
         files containing lists of species names can be uploaded as a single
         file.
       </p>
+      <p>&nbsp;</p>
       <p>
-        The Methods Metadata category contains information on the methods used
+        The Methods metadata category contains information on the methods used
         for data collection.   General methodological information such as the
-        experimental design and the machines or devices used to collect data
+        experimental design, and the machines or devices used to collect data
         can be described here.  The methods documentation should be
         sufficiently detailed to allow someone to recreate the research project.
       </p>
       
-    <p> The Data Table section contains information regarding the data table itself. There 
-      is physical data information such as the file name, whether or not the letters 
-      in the data table are case sensitive, the number of records and the structure 
+      <p>&nbsp; </p>
+      <p>The Data Table metadata category contains information regarding the data table itself. This includes physical data information such as the file name, whether or not the letters 
+      in the data table are case sensitive,  the number of records in the data table, and the structure 
       of the data table (i.e., attribute names in columns or rows). This category 
-      also contains metadata regarding the columns of data themselves. The label 
-      is a word or phrase that describes the column, because acronyms or ambiguous 
-      abbreviations often are used as column headers. The &quot;definition&quot; 
-      field contains more descriptive information, indicating what the numbers 
-      in individual columns or rows represent. The unit and type fields contain 
+      also contains metadata regarding the columns of data themselves. The &quot;label&quot; field contains a word or phrase that describes the column, because acronyms or ambiguous 
+      abbreviations often are used as column headers. The &quot;definition&quot; field contains more descriptive information, indicating what the numbers 
+      in individual columns or rows represent. The &quot;unit&quot; and &quot;type&quot; fields contain 
       the units and data type (e.g., integer, floating point, etc.) for each column. 
-      Missing represents a number or symbol used to indicate that no data was 
-      collected (e.g., 9999). Precision pertains to the accuracy of the measurement. 
+      The &quot;missing&quot; field represents a number or symbol used to indicate that no data were 
+      collected (e.g., 9999). The &quot;precision&quot; field pertains to the accuracy of the measurement. 
       For example, if the numbers in a column represent output from a machine, 
       there is often some level of precision or measurement error associated with 
       the data. Similarly, an investigator may have estimates of the precision 
-      associated with a particular data collection method. The attribute description 
-      column provides definitions of any codes used in that column (e.g. VO = 
-      Vally Oak) and the range of values in a column (e.g. biomass values range 
-      from 10.04g/ m2 to 88.82g/m2). </p>
-      <p>
-        The metadata contained in Table 4 represent a minimum level of detail
+      associated with a particular data collection method. The &quot;attribute description&quot; 
+      column provides definitions of any codes used in that column (e.g., VO = 
+      Vally Oak) and the range of values in a column (e.g., biomass values range 
+      from 10.04 g/m<sup>2</sup> to 88.82 g/m<sup>2</sup>). </p>
+      <p>&nbsp;
+      </p>
+      <p>The metadata contained in Table 4 represent a minimum level of detail
         that would be required by someone with little or no prior knowledge
-        about the data set (or yourself after not working with the data for a
+        about the data set (or by the owner after not working with the data for a
         few years) to determine whether or not the data are appropriate for
         some intended use.  Additionally, once someone has decided to use the
         data for a particular purpose, the metadata should be sufficient to
-        enable the next research steps (e.g., contact the data owner for
+        enable the next research steps (e.g., contact the data set owner to request 
         the data set, or if the data are public and accessible, begin
         preliminary analyses).
       </p>
-     
-         
-    <h3>&nbsp;</h3>
-    <h3>Documenting Data With Ecological Metadata Language (EML)</h3>
+      <h3>&nbsp;</h3>
+    <h3>Documenting Data with EML</h3>
      
       <p>
         At this point you have a basic understanding of the advantages of using
         EML, and you have seen an example of a reasonably well-documented
-        data set.   Currently, there are two mechanisms for creating EML
-        to document your data:  Morpho, and web registries.
+        data set.   Currently, there are two mechanisms for creating EML documents:  the software Morpho and a data registries available on the internet.
       </p>
 
         
-    <h4>&nbsp;</h4>
+      <h4>&nbsp;</h4>
     <h4>Morpho</h4>
  
       <p>
         Morpho is a cross-computer platform data and metadata management
-        software program.  It enables an ecologist to create, edit and manage
+        software program.  It enables an ecologist to create, edit, and manage
         metadata and data tables.  Morpho also provides capabilities to search
         and query ecological data, both locally and remotely, on publicly
-        accessible ecological data archives (i.e. ecological archives
+        accessible ecological data archives (i.e., ecological archives
         accessible via the internet).  Morpho includes wizards that facilitate
-        using a subset of EML (e.g. Table 4) to document the most common
+        using a subset of EML (e.g., Table 4) to document the most common
         attributes of your data.  In addition there are tools that provide
         access to the entire contents of EML, which currently include over
         2000 metadata concepts or terms for describing ecological data.  For
@@ -306,23 +294,22 @@ to categorize EML metadata fields in a way that is intuitive to ecologists.</p>
       </p>
   
         
-    <h4>&nbsp;</h4>
-    <h4>Web Registries</h4>
+      <h4>&nbsp;</h4>
+    <h4>Data Registries</h4>
    
       <p>
         Another option is to document your data using a subset of EML through
-        a web registry at http://knb.ecoinformatics.org/index.jsp.  To use this tool you first must register (i.e., provide basic information
+        a data registries available on the internet. The Knowledge Network for Biocomplexity Data Registry is one of them and is found at http://knb.ecoinformatics.org/index.jsp.  To use this tool you first must register (i.e., provide basic information
         about yourself and how you may be contacted).  Then you can create
         EML compliant metadata without installing Morpho.  As when using
         Morpho, the user can create EML metadata and make it broadly available
         to the ecological community through the internet.  Making EML metadata
-        available facilitates the discovery of your data set by ecologists
+        available facilitates the discovery of your data set(s) by ecologists
         around the world.  Additionally, large organizations and large
         research projects may want to create customized EML web interfaces
         (contact jones@nceas.ucsb.edu for information about how to do this).
-        Currently, the web registries provide a mechanism for creating and
-        querying metadata, however they do not provide direct access to the
-        data, which requires Morpho.
+        Currently, the data registries provide a mechanism for creating and
+        querying metadata, however they do not provide a way to include the data themselves into the registries, the latter requiring Morpho.
       </p>
    
         
@@ -335,8 +322,8 @@ to categorize EML metadata fields in a way that is intuitive to ecologists.</p>
         knowledge.  As ecological data and metadata archives grow,
         the value of these resources to the ecological community will increase.
         EML provides a common structure that ecologists can use to document,
-        share and interpret ecological data.  The formal structure of EML also
-        will facilitate the development of software applications that process
+        share, and interpret ecological data.  The formal structure of EML 
+        will also facilitate the development of software applications that process
         the metadata.  EML is implemented in XML (Extensible Markup Language),
         a growing standard for marking up documents on the Web.  This means
         that EML metadata eventually will enable the use of a wide range of
@@ -344,88 +331,80 @@ to categorize EML metadata fields in a way that is intuitive to ecologists.</p>
         through the web, to remote integration of heterogeneous data sets, to
         analysis and visualization.  For more information about EML and tools
         for creating metadata and sharing data, go to
-        http://knb.ecoinformatics.org/index.jsp</p>.
-      </p>
-   
+        http://knb.ecoinformatics.org/index.jsp.</p>
+      
+         
         <h3>&nbsp;</h3>
     <h3>Literature Cited</h3>
   
       <p>
-        Andelman, S. J., Bowles, C. M., Willig, M. R. &amp; Waide, R. B. (2004).
+        Andelman, S. J., C. M. Bowles, M. R. Willig, &amp; R. B. Waide.  2004.
         Understanding environmental complexity through a distributed
-        knowledge network. Bioscience 54, 240-246.
+        knowledge network. Bioscience 54: 240-246.
       </p>
       <p>
-        Brown JH, Roughgarden J. 1990. Ecology for a changing earth.
+        Brown J.H., &amp; J. Roughgarden.  1990. Ecology for a changing earth.
         Bulletin of the Ecological Society of America 71: 173-188.
       </p>
       <p>
-        Fagan, W. F., Meir, E., Prendergast, J., Folarin, A. &amp; Karieva, P.
-        (2001). Characterizing population vulnerability for 758 species.
-        Ecology Letters 4, 132-138.
+        Fagan, W. F., E. Meir, J. Prendergast, A. Folarin, &amp; P.
+        Karieva. 2001. Characterizing population vulnerability for 758 species.
+        Ecology Letters 4: 132-138.
       </p>
       <p>
-         Gross, K et al. Report of the Committee on the Future of Longterm
-         Ecological Data (FLED), Ecological Society of America.
-         Ecological Society of America, Washington, D.C., 1995.
-      </p>
+         Future of Long-term
+      Ecological Data (FLED) Committe. 1995. Final Report. Ecological Society of America, Washington, D.C.</p>
       <p>
-        Inchausti, P. &amp; Halley, J. (2001). Investigating long-term
+        Inchausti, P., &amp; J. Halley. 2001. Investigating long-term
         ecological variability using the global population dynamics database.
-        Science 293, 655-657.
+        Science 293: 655-657.
       </p>
       <p>
-        Inchausti, P. &amp; Halley, J. (2002). The long-term temporal variability
+        Inchausti, P., &amp; J. Halley. 2002. The long-term temporal variability
         and spectral colour of animal populations. Evolutionary Ecology
-        Research 4, 1033-1048.
+        Research 4: 1033-1048.
       </p>
       <p>
-        Inchausti, P. &amp; Halley, J. (2003). On the relation between temporal
+        Inchausti, P., &amp;,  J. Halley. 2003. On the relation between temporal
         variability and persistence time in animal populations. Journal of
-        Animal Ecology 72, 899-908.
+        Animal Ecology 72: 899-908.
       </p>
       <p>
-        Kareiva, P, Anderson, M. (1988) Spatial aspects of species interactions:
-        The wedding of models and experiments. In A Hastings (Ed.)
-        Community Ecology (pp. 35-50). New York: Springer-Verlag.
+        Kareiva, P, &amp; M. Anderson. 1988. Spatial aspects of species interactions:
+        The wedding of models and experiments. Pages 35-50 <em>in</em> A. Hastings, editor.
+        Community Ecology.  Springer-Verlag, New York.
       </p>
       <p>
-         Kendall, Bruce E.; Briggs, Cherie; Murdoch, William W.; Turchin,
-         Peter; Ellner, Stephen P.; McCauley, Edward; Nisbet, Roger M.;
-         Wood, Simon. 1998. Why do populations cycle?: A synthesis of
-         statistical and mechanistic modeling approaches. Ecology. Vol:
-         80. Pages 1789-1805.
-      </p>
+      Kendall, B. E., O. N. Bjornstad, J. Bascompte, T. H. Keitt, &amp; W. F. Fagan. 2000. Dispersal, environmental correlation, and spatial synchrony in population dynamics. American Naturalist 155: 628-636.</p>
+      <p>Kendall, B. E., C. Briggs, W. W. Murdoch, P. Turchin, S. P. Ellner, E. McCauley, R. M. Nisbet, &amp; 
+           S. Wood.  1998. Why do populations cycle?: A synthesis of
+           statistical and mechanistic modeling approaches. Ecology 80: 1789-1805. </p>
+      <p>Michener, W. K., &amp; J. W. Brunt, editors. 2000. Ecological Data - Design, 
+      Management and Processing. Blackwell Science, Malden, MA.</p>
+      
       <p>
-         Kendall, Bruce E.; Bjornstad, Ottar N.; Bascompte, Jordi; Keitt,
-         Timothy H.; Fagan, William F.. 2000. Dispersal, environmental
-         correlation, and spatial synchrony in population dynamics.
-         American Naturalist. Vol: 155. Pages 628-636.
+        Michener, W. K., J. W. Brunt, J. Helly, T. B. Kirchner,
+        &amp; S. G. Stafford.  1997.  Non-GeoSpatial  Metadata for the
+        Ecological Sciences. Ecological Applications 7: 330-342.
       </p>
       
-    <p> Michener, William and J. Brunt, eds. (2000) Ecological Data - Design, 
-      Management and Processing, Blackwell Science, Malden, MA: </p>
+      <p> Olson, R.J., &amp; R.A. McCord. 2000. Archiving Ecological Data and Information. 
+      Pages 117-141 <em>in</em>: W. Michener, &amp; J. Brunt, editors. Ecological Data - Design, Management 
+      and Processing. Blackwell Science, Malden, MA.</p>
       <p>
-        Michener, William K., James W. Brunt, John Helly, Thomas B. Kirchner,
-        and Susan G. Stafford.  1997.  Non-GeoSpatial  Metadata for the
-        Ecological Sciences. Ecological Applications.  7(1):330-342.
-      </p>
-      
-    <p> Olson, RJ &amp; McCord, RA. (2000) Archiving Ecological Data and Information. 
-      In: W. Michener &amp; J. Brunt (Eds.), Ecological Data - Design, Management 
-      and Processing (pp. 117-141). Malden, MA: Blackwell Science. </p>
-      <p>
-        Regan, H. M., Colyvan, M. &amp; Burgman, M. A. (2002). A taxonomy and
+        Regan, H. M., M. Colyvan, &amp; M. A. Burgman. 2002. A taxonomy and
         treatment of uncertainty for ecology and conservation biology.
-        Ecological Applications 12, 618-628.
+        Ecological Applications 12: 618-628.
       </p>
     </td>
   </tr>
+  
+  
   <tr>
     <td>
      
-        <h3>&nbsp;</h3>
-    <h3>Table 1. Ecological data with no metadata</h3>
+    <h3>&nbsp;</h3>
+    <h3>Table 1. Ecological Data with no Metadata.</h3>
      
       <table border="1" cellspacing="0" cellpadding="0" width="307">
         <tr>
@@ -516,33 +495,36 @@ to categorize EML metadata fields in a way that is intuitive to ecologists.</p>
           </td>
         </tr>
       </table>
-    
-        
-    <h3>&nbsp;</h3>
-    <h3>Table 2. Ecological data with a limited amount of metadata.</h3>
+	</td> 
+  </tr>
+  
+  <tr>      
+    <td>
+	<h3>&nbsp;</h3>
+    <h3>Table 2. Ecological Data with a Limited Amount of Metadata.</h3>
     
       <table border="1" cellspacing="0" cellpadding="0" width="399">
         <tr>
           <td width="40" nowrap="nowrap" valign="bottom">
-            <p class=""><b>Site</b></p>
+            <p class=""><b>SITE</b></p>
           </td>
           <td width="79" nowrap="nowrap" valign="bottom">
-            <p class=""><b>Date</b></p>
+            <p class=""><b>DATE</b></p>
           </td>
           <td width="42" nowrap="nowrap" valign="bottom">
-            <p class=""><b>Plot</b></p>
+            <p class=""><b>PLOT</b></p>
           </td>
           <td width="32" nowrap="nowrap" valign="bottom">
-            <p class=""><b>Sp</b></p>
+            <p class=""><b>SP</b></p>
           </td>
           <td width="32" nowrap="nowrap" valign="bottom">
-            <p class=""><b>Pa</b></p>
+            <p class=""><b>PA</b></p>
           </td>
           <td width="26" nowrap="nowrap" valign="bottom">
             <p class=""><b>R</b></p>
           </td>
           <td width="50" nowrap="nowrap" valign="bottom">
-            <p class=""><b>Bm</b></p>
+            <p class=""><b>BM</b></p>
           </td>
           <td width="50" nowrap="nowrap" valign="bottom">
             <p class=""><b>P</b></p>
@@ -812,1294 +794,58 @@ to categorize EML metadata fields in a way that is intuitive to ecologists.</p>
             <p class="">0</p>
           </td>
         </tr>
-        <!--<tr>
-          <td width="40" nowrap="nowrap" valign="bottom">
-            <p class="">VO</p>
-          </td>
-          <td width="79" nowrap="nowrap" valign="bottom">
-            <p class="">5/30/2002</p>
-          </td>
-          <td width="42" nowrap="nowrap" valign="bottom">
-            <p class="">2</p>
-          </td>
-          <td width="32" nowrap="nowrap" valign="bottom">
-            <p class="">S5</p>
-          </td>
-          <td width="32" nowrap="nowrap" valign="bottom">
-            <p class="">1</p>
-          </td>
-          <td width="26" nowrap="nowrap" valign="bottom">
-            <p class="">3</p>
-          </td>
-          <td width="50" nowrap="nowrap" valign="bottom">
-            <p class="">88.82</p>
-          </td>
-          <td width="50" nowrap="nowrap" valign="bottom">
-            <p class="">11.91</p>
-          </td>
-          <td width="46" nowrap="nowrap" valign="bottom">
-            <p class="">0</p>
-          </td>
-        </tr>
-        <tr>
-          <td width="40" nowrap="nowrap" valign="bottom">
-            <p class="">VO</p>
-          </td>
-          <td width="79" nowrap="nowrap" valign="bottom">
-            <p class="">5/30/2002</p>
-          </td>
-          <td width="42" nowrap="nowrap" valign="bottom">
-            <p class="">3</p>
-          </td>
-          <td width="32" nowrap="nowrap" valign="bottom">
-            <p class="">S1</p>
-          </td>
-          <td width="32" nowrap="nowrap" valign="bottom">
-            <p class="">1</p>
-          </td>
-          <td width="26" nowrap="nowrap" valign="bottom">
-            <p class="">4</p>
-          </td>
-          <td width="50" nowrap="nowrap" valign="bottom">
-            <p class="">22</p>
-          </td>
-          <td width="50" nowrap="nowrap" valign="bottom">
-            <p class="">9999</p>
-          </td>
-          <td width="46" nowrap="nowrap" valign="bottom">
-            <p class="">9999</p>
-          </td>
-        </tr>
-        <tr>
-          <td width="40" nowrap="nowrap" valign="bottom">
-            <p class="">VO</p>
-          </td>
-          <td width="79" nowrap="nowrap" valign="bottom">
-            <p class="">5/30/2002</p>
-          </td>
-          <td width="42" nowrap="nowrap" valign="bottom">
-            <p class="">3</p>
-          </td>
-          <td width="32" nowrap="nowrap" valign="bottom">
-            <p class="">S2</p>
-          </td>
-          <td width="32" nowrap="nowrap" valign="bottom">
-            <p class="">1</p>
-          </td>
-          <td width="26" nowrap="nowrap" valign="bottom">
-            <p class="">4</p>
-          </td>
-          <td width="50" nowrap="nowrap" valign="bottom">
-            <p class="">22</p>
-          </td>
-          <td width="50" nowrap="nowrap" valign="bottom">
-            <p class="">9999</p>
-          </td>
-          <td width="46" nowrap="nowrap" valign="bottom">
-            <p class="">9999</p>
-          </td>
-        </tr>
-        <tr>
-          <td width="40" nowrap="nowrap" valign="bottom">
-            <p class="">VO</p>
-          </td>
-          <td width="79" nowrap="nowrap" valign="bottom">
-            <p class="">5/30/2002</p>
-          </td>
-          <td width="42" nowrap="nowrap" valign="bottom">
-            <p class="">3</p>
-          </td>
-          <td width="32" nowrap="nowrap" valign="bottom">
-            <p class="">S3</p>
-          </td>
-          <td width="32" nowrap="nowrap" valign="bottom">
-            <p class="">1</p>
-          </td>
-          <td width="26" nowrap="nowrap" valign="bottom">
-            <p class="">4</p>
-          </td>
-          <td width="50" nowrap="nowrap" valign="bottom">
-            <p class="">22</p>
-          </td>
-          <td width="50" nowrap="nowrap" valign="bottom">
-            <p class="">9999</p>
-          </td>
-          <td width="46" nowrap="nowrap" valign="bottom">
-            <p class="">9999</p>
-          </td>
-        </tr>
-        <tr>
-          <td width="40" nowrap="nowrap" valign="bottom">
-            <p class="">VO</p>
-          </td>
-          <td width="79" nowrap="nowrap" valign="bottom">
-            <p class="">5/30/2002</p>
-          </td>
-          <td width="42" nowrap="nowrap" valign="bottom">
-            <p class="">3</p>
-          </td>
-          <td width="32" nowrap="nowrap" valign="bottom">
-            <p class="">S4</p>
-          </td>
-          <td width="32" nowrap="nowrap" valign="bottom">
-            <p class="">0</p>
-          </td>
-          <td width="26" nowrap="nowrap" valign="bottom">
-            <p class="">4</p>
-          </td>
-          <td width="50" nowrap="nowrap" valign="bottom">
-            <p class="">22</p>
-          </td>
-          <td width="50" nowrap="nowrap" valign="bottom">
-            <p class="">9999</p>
-          </td>
-          <td width="46" nowrap="nowrap" valign="bottom">
-            <p class="">9999</p>
-          </td>
-        </tr>
-        <tr>
-          <td width="40" nowrap="nowrap" valign="bottom">
-            <p class="">VO</p>
-          </td>
-          <td width="79" nowrap="nowrap" valign="bottom">
-            <p class="">5/30/2002</p>
-          </td>
-          <td width="42" nowrap="nowrap" valign="bottom">
-            <p class="">3</p>
-          </td>
-          <td width="32" nowrap="nowrap" valign="bottom">
-            <p class="">S5</p>
-          </td>
-          <td width="32" nowrap="nowrap" valign="bottom">
-            <p class="">1</p>
-          </td>
-          <td width="26" nowrap="nowrap" valign="bottom">
-            <p class="">4</p>
-          </td>
-          <td width="50" nowrap="nowrap" valign="bottom">
-            <p class="">22</p>
-          </td>
-          <td width="50" nowrap="nowrap" valign="bottom">
-            <p class="">9999</p>
-          </td>
-          <td width="46" nowrap="nowrap" valign="bottom">
-            <p class="">9999</p>
-          </td>
-        </tr>
-        <tr>
-          <td width="40" nowrap="nowrap" valign="bottom">
-            <p class="">VO</p>
-          </td>
-          <td width="79" nowrap="nowrap" valign="bottom">
-            <p class="">5/30/2002</p>
-          </td>
-          <td width="42" nowrap="nowrap" valign="bottom">
-            <p class="">4</p>
-          </td>
-          <td width="32" nowrap="nowrap" valign="bottom">
-            <p class="">S1</p>
-          </td>
-          <td width="32" nowrap="nowrap" valign="bottom">
-            <p class="">0</p>
-          </td>
-          <td width="26" nowrap="nowrap" valign="bottom">
-            <p class="">2</p>
-          </td>
-          <td width="50" nowrap="nowrap" valign="bottom">
-            <p class="">12.36</p>
-          </td>
-          <td width="50" nowrap="nowrap" valign="bottom">
-            <p class="">5.14</p>
-          </td>
-          <td width="46" nowrap="nowrap" valign="bottom">
-            <p class="">0.22</p>
-          </td>
-        </tr>
-        <tr>
-          <td width="40" nowrap="nowrap" valign="bottom">
-            <p class="">VO</p>
-          </td>
-          <td width="79" nowrap="nowrap" valign="bottom">
-            <p class="">5/30/2002</p>
-          </td>
-          <td width="42" nowrap="nowrap" valign="bottom">
-            <p class="">4</p>
-          </td>
-          <td width="32" nowrap="nowrap" valign="bottom">
-            <p class="">S2</p>
-          </td>
-          <td width="32" nowrap="nowrap" valign="bottom">
-            <p class="">1</p>
-          </td>
-          <td width="26" nowrap="nowrap" valign="bottom">
-            <p class="">2</p>
-          </td>
-          <td width="50" nowrap="nowrap" valign="bottom">
-            <p class="">12.36</p>
-          </td>
-          <td width="50" nowrap="nowrap" valign="bottom">
-            <p class="">5.14</p>
-          </td>
-          <td width="46" nowrap="nowrap" valign="bottom">
-            <p class="">0.22</p>
-          </td>
-        </tr>
-        <tr>
-          <td width="40" nowrap="nowrap" valign="bottom">
-            <p class="">VO</p>
-          </td>
-          <td width="79" nowrap="nowrap" valign="bottom">
-            <p class="">5/30/2002</p>
-          </td>
-          <td width="42" nowrap="nowrap" valign="bottom">
-            <p class="">4</p>
-          </td>
-          <td width="32" nowrap="nowrap" valign="bottom">
-            <p class="">S3</p>
-          </td>
-          <td width="32" nowrap="nowrap" valign="bottom">
-            <p class="">0</p>
-          </td>
-          <td width="26" nowrap="nowrap" valign="bottom">
-            <p class="">2</p>
-          </td>
-          <td width="50" nowrap="nowrap" valign="bottom">
-            <p class="">12.36</p>
-          </td>
-          <td width="50" nowrap="nowrap" valign="bottom">
-            <p class="">5.14</p>
-          </td>
-          <td width="46" nowrap="nowrap" valign="bottom">
-            <p class="">0.22</p>
-          </td>
-        </tr>
-        <tr>
-          <td width="40" nowrap="nowrap" valign="bottom">
-            <p class="">VO</p>
-          </td>
-          <td width="79" nowrap="nowrap" valign="bottom">
-            <p class="">5/30/2002</p>
-          </td>
-          <td width="42" nowrap="nowrap" valign="bottom">
-            <p class="">4</p>
-          </td>
-          <td width="32" nowrap="nowrap" valign="bottom">
-            <p class="">S4</p>
-          </td>
-          <td width="32" nowrap="nowrap" valign="bottom">
-            <p class="">0</p>
-          </td>
-          <td width="26" nowrap="nowrap" valign="bottom">
-            <p class="">2</p>
-          </td>
-          <td width="50" nowrap="nowrap" valign="bottom">
-            <p class="">12.36</p>
-          </td>
-          <td width="50" nowrap="nowrap" valign="bottom">
-            <p class="">5.14</p>
-          </td>
-          <td width="46" nowrap="nowrap" valign="bottom">
-            <p class="">0.22</p>
-          </td>
-        </tr>
-        <tr>
-          <td width="40" nowrap="nowrap" valign="bottom">
-            <p class="">VO</p>
-          </td>
-          <td width="79" nowrap="nowrap" valign="bottom">
-            <p class="">5/30/2002</p>
-          </td>
-          <td width="42" nowrap="nowrap" valign="bottom">
-            <p class="">4</p>
-          </td>
-          <td width="32" nowrap="nowrap" valign="bottom">
-            <p class="">S5</p>
-          </td>
-          <td width="32" nowrap="nowrap" valign="bottom">
-            <p class="">1</p>
-          </td>
-          <td width="26" nowrap="nowrap" valign="bottom">
-            <p class="">2</p>
-          </td>
-          <td width="50" nowrap="nowrap" valign="bottom">
-            <p class="">12.36</p>
-          </td>
-          <td width="50" nowrap="nowrap" valign="bottom">
-            <p class="">5.14</p>
-          </td>
-          <td width="46" nowrap="nowrap" valign="bottom">
-            <p class="">0.22</p>
-          </td>
-        </tr>
-        <tr>
-          <td width="40" nowrap="nowrap" valign="bottom">
-            <p class="">VO</p>
-          </td>
-          <td width="79" nowrap="nowrap" valign="bottom">
-            <p class="">5/30/2002</p>
-          </td>
-          <td width="42" nowrap="nowrap" valign="bottom">
-            <p class="">5</p>
-          </td>
-          <td width="32" nowrap="nowrap" valign="bottom">
-            <p class="">S1</p>
-          </td>
-          <td width="32" nowrap="nowrap" valign="bottom">
-            <p class="">0</p>
-          </td>
-          <td width="26" nowrap="nowrap" valign="bottom">
-            <p class="">3</p>
-          </td>
-          <td width="50" nowrap="nowrap" valign="bottom">
-            <p class="">22.18</p>
-          </td>
-          <td width="50" nowrap="nowrap" valign="bottom">
-            <p class="">7.15</p>
-          </td>
-          <td width="46" nowrap="nowrap" valign="bottom">
-            <p class="">0.35</p>
-          </td>
-        </tr>
-        <tr>
-          <td width="40" nowrap="nowrap" valign="bottom">
-            <p class="">VO</p>
-          </td>
-          <td width="79" nowrap="nowrap" valign="bottom">
-            <p class="">5/30/2002</p>
-          </td>
-          <td width="42" nowrap="nowrap" valign="bottom">
-            <p class="">5</p>
-          </td>
-          <td width="32" nowrap="nowrap" valign="bottom">
-            <p class="">S2</p>
-          </td>
-          <td width="32" nowrap="nowrap" valign="bottom">
-            <p class="">0</p>
-          </td>
-          <td width="26" nowrap="nowrap" valign="bottom">
-            <p class="">3</p>
-          </td>
-          <td width="50" nowrap="nowrap" valign="bottom">
-            <p class="">22.18</p>
-          </td>
-          <td width="50" nowrap="nowrap" valign="bottom">
-            <p class="">7.15</p>
-          </td>
-          <td width="46" nowrap="nowrap" valign="bottom">
-            <p class="">0.35</p>
-          </td>
-        </tr>
-        <tr>
-          <td width="40" nowrap="nowrap" valign="bottom">
-            <p class="">VO</p>
-          </td>
-          <td width="79" nowrap="nowrap" valign="bottom">
-            <p class="">5/30/2002</p>
-          </td>
-          <td width="42" nowrap="nowrap" valign="bottom">
-            <p class="">5</p>
-          </td>
-          <td width="32" nowrap="nowrap" valign="bottom">
-            <p class="">S3</p>
-          </td>
-          <td width="32" nowrap="nowrap" valign="bottom">
-            <p class="">1</p>
-          </td>
-          <td width="26" nowrap="nowrap" valign="bottom">
-            <p class="">3</p>
-          </td>
-          <td width="50" nowrap="nowrap" valign="bottom">
-            <p class="">22.18</p>
-          </td>
-          <td width="50" nowrap="nowrap" valign="bottom">
-            <p class="">7.15</p>
-          </td>
-          <td width="46" nowrap="nowrap" valign="bottom">
-            <p class="">0.35</p>
-          </td>
-        </tr>
-        <tr>
-          <td width="40" nowrap="nowrap" valign="bottom">
-            <p class="">VO</p>
-          </td>
-          <td width="79" nowrap="nowrap" valign="bottom">
-            <p class="">5/30/2002</p>
-          </td>
-          <td width="42" nowrap="nowrap" valign="bottom">
-            <p class="">5</p>
-          </td>
-          <td width="32" nowrap="nowrap" valign="bottom">
-            <p class="">S4</p>
-          </td>
-          <td width="32" nowrap="nowrap" valign="bottom">
-            <p class="">1</p>
-          </td>
-          <td width="26" nowrap="nowrap" valign="bottom">
-            <p class="">3</p>
-          </td>
-          <td width="50" nowrap="nowrap" valign="bottom">
-            <p class="">22.18</p>
-          </td>
-          <td width="50" nowrap="nowrap" valign="bottom">
-            <p class="">7.15</p>
-          </td>
-          <td width="46" nowrap="nowrap" valign="bottom">
-            <p class="">0.35</p>
-          </td>
-        </tr>
-        <tr>
-          <td width="40" nowrap="nowrap" valign="bottom">
-            <p class="">VO</p>
-          </td>
-          <td width="79" nowrap="nowrap" valign="bottom">
-            <p class="">5/30/2002</p>
-          </td>
-          <td width="42" nowrap="nowrap" valign="bottom">
-            <p class="">5</p>
-          </td>
-          <td width="32" nowrap="nowrap" valign="bottom">
-            <p class="">S5</p>
-          </td>
-          <td width="32" nowrap="nowrap" valign="bottom">
-            <p class="">1</p>
-          </td>
-          <td width="26" nowrap="nowrap" valign="bottom">
-            <p class="">3</p>
-          </td>
-          <td width="50" nowrap="nowrap" valign="bottom">
-            <p class="">22.18</p>
-          </td>
-          <td width="50" nowrap="nowrap" valign="bottom">
-            <p class="">7.15</p>
-          </td>
-          <td width="46" nowrap="nowrap" valign="bottom">
-            <p class="">0.35</p>
-          </td>
-        </tr>
-        <tr>
-          <td width="40" nowrap="nowrap" valign="bottom">
-            <p class="">VO</p>
-          </td>
-          <td width="79" nowrap="nowrap" valign="bottom">
-            <p class="">5/30/2002</p>
-          </td>
-          <td width="42" nowrap="nowrap" valign="bottom">
-            <p class="">6</p>
-          </td>
-          <td width="32" nowrap="nowrap" valign="bottom">
-            <p class="">S1</p>
-          </td>
-          <td width="32" nowrap="nowrap" valign="bottom">
-            <p class="">0</p>
-          </td>
-          <td width="26" nowrap="nowrap" valign="bottom">
-            <p class="">4</p>
-          </td>
-          <td width="50" nowrap="nowrap" valign="bottom">
-            <p class="">15.5</p>
-          </td>
-          <td width="50" nowrap="nowrap" valign="bottom">
-            <p class="">14.35</p>
-          </td>
-          <td width="46" nowrap="nowrap" valign="bottom">
-            <p class="">0.15</p>
-          </td>
-        </tr>
-        <tr>
-          <td width="40" nowrap="nowrap" valign="bottom">
-            <p class="">VO</p>
-          </td>
-          <td width="79" nowrap="nowrap" valign="bottom">
-            <p class="">5/30/2002</p>
-          </td>
-          <td width="42" nowrap="nowrap" valign="bottom">
-            <p class="">6</p>
-          </td>
-          <td width="32" nowrap="nowrap" valign="bottom">
-            <p class="">S2</p>
-          </td>
-          <td width="32" nowrap="nowrap" valign="bottom">
-            <p class="">1</p>
-          </td>
-          <td width="26" nowrap="nowrap" valign="bottom">
-            <p class="">4</p>
-          </td>
-          <td width="50" nowrap="nowrap" valign="bottom">
-            <p class="">15.5</p>
-          </td>
-          <td width="50" nowrap="nowrap" valign="bottom">
-            <p class="">14.35</p>
-          </td>
-          <td width="46" nowrap="nowrap" valign="bottom">
-            <p class="">0.15</p>
-          </td>
-        </tr>
-        <tr>
-          <td width="40" nowrap="nowrap" valign="bottom">
-            <p class="">VO</p>
-          </td>
-          <td width="79" nowrap="nowrap" valign="bottom">
-            <p class="">5/30/2002</p>
-          </td>
-          <td width="42" nowrap="nowrap" valign="bottom">
-            <p class="">6</p>
-          </td>
-          <td width="32" nowrap="nowrap" valign="bottom">
-            <p class="">S3</p>
-          </td>
-          <td width="32" nowrap="nowrap" valign="bottom">
-            <p class="">1</p>
-          </td>
-          <td width="26" nowrap="nowrap" valign="bottom">
-            <p class="">4</p>
-          </td>
-          <td width="50" nowrap="nowrap" valign="bottom">
-            <p class="">15.5</p>
-          </td>
-          <td width="50" nowrap="nowrap" valign="bottom">
-            <p class="">14.35</p>
-          </td>
-          <td width="46" nowrap="nowrap" valign="bottom">
-            <p class="">0.15</p>
-          </td>
-        </tr>
-        <tr>
-          <td width="40" nowrap="nowrap" valign="bottom">
-            <p class="">VO</p>
-          </td>
-          <td width="79" nowrap="nowrap" valign="bottom">
-            <p class="">5/30/2002</p>
-          </td>
-          <td width="42" nowrap="nowrap" valign="bottom">
-            <p class="">6</p>
-          </td>
-          <td width="32" nowrap="nowrap" valign="bottom">
-            <p class="">S4</p>
-          </td>
-          <td width="32" nowrap="nowrap" valign="bottom">
-            <p class="">1</p>
-          </td>
-          <td width="26" nowrap="nowrap" valign="bottom">
-            <p class="">4</p>
-          </td>
-          <td width="50" nowrap="nowrap" valign="bottom">
-            <p class="">15.5</p>
-          </td>
-          <td width="50" nowrap="nowrap" valign="bottom">
-            <p class="">14.35</p>
-          </td>
-          <td width="46" nowrap="nowrap" valign="bottom">
-            <p class="">0.15</p>
-          </td>
-        </tr>
-        <tr>
-          <td width="40" nowrap="nowrap" valign="bottom">
-            <p class="">VO</p>
-          </td>
-          <td width="79" nowrap="nowrap" valign="bottom">
-            <p class="">5/30/2002</p>
-          </td>
-          <td width="42" nowrap="nowrap" valign="bottom">
-            <p class="">6</p>
-          </td>
-          <td width="32" nowrap="nowrap" valign="bottom">
-            <p class="">S5</p>
-          </td>
-          <td width="32" nowrap="nowrap" valign="bottom">
-            <p class="">1</p>
-          </td>
-          <td width="26" nowrap="nowrap" valign="bottom">
-            <p class="">4</p>
-          </td>
-          <td width="50" nowrap="nowrap" valign="bottom">
-            <p class="">15.5</p>
-          </td>
-          <td width="50" nowrap="nowrap" valign="bottom">
-            <p class="">14.35</p>
-          </td>
-          <td width="46" nowrap="nowrap" valign="bottom">
-            <p class="">0.15</p>
-          </td>
-        </tr>
-        <tr>
-          <td width="40" nowrap="nowrap" valign="bottom">
-            <p class="">VO</p>
-          </td>
-          <td width="79" nowrap="nowrap" valign="bottom">
-            <p class="">5/30/2002</p>
-          </td>
-          <td width="42" nowrap="nowrap" valign="bottom">
-            <p class="">7</p>
-          </td>
-          <td width="32" nowrap="nowrap" valign="bottom">
-            <p class="">S1</p>
-          </td>
-          <td width="32" nowrap="nowrap" valign="bottom">
-            <p class="">1</p>
-          </td>
-          <td width="26" nowrap="nowrap" valign="bottom">
-            <p class="">4</p>
-          </td>
-          <td width="50" nowrap="nowrap" valign="bottom">
-            <p class="">61.49</p>
-          </td>
-          <td width="50" nowrap="nowrap" valign="bottom">
-            <p class="">12.65</p>
-          </td>
-          <td width="46" nowrap="nowrap" valign="bottom">
-            <p class="">0.45</p>
-          </td>
-        </tr>
-        <tr>
-          <td width="40" nowrap="nowrap" valign="bottom">
-            <p class="">VO</p>
-          </td>
-          <td width="79" nowrap="nowrap" valign="bottom">
-            <p class="">5/30/2002</p>
-          </td>
-          <td width="42" nowrap="nowrap" valign="bottom">
-            <p class="">7</p>
-          </td>
-          <td width="32" nowrap="nowrap" valign="bottom">
-            <p class="">S2</p>
-          </td>
-          <td width="32" nowrap="nowrap" valign="bottom">
-            <p class="">0</p>
-          </td>
-          <td width="26" nowrap="nowrap" valign="bottom">
-            <p class="">4</p>
-          </td>
-          <td width="50" nowrap="nowrap" valign="bottom">
-            <p class="">61.49</p>
-          </td>
-          <td width="50" nowrap="nowrap" valign="bottom">
-            <p class="">12.65</p>
-          </td>
-          <td width="46" nowrap="nowrap" valign="bottom">
-            <p class="">0.45</p>
-          </td>
-        </tr>
-        <tr>
-          <td width="40" nowrap="nowrap" valign="bottom">
-            <p class="">VO</p>
-          </td>
-          <td width="79" nowrap="nowrap" valign="bottom">
-            <p class="">5/30/2002</p>
-          </td>
-          <td width="42" nowrap="nowrap" valign="bottom">
-            <p class="">7</p>
-          </td>
-          <td width="32" nowrap="nowrap" valign="bottom">
-            <p class="">S3</p>
-          </td>
-          <td width="32" nowrap="nowrap" valign="bottom">
-            <p class="">1</p>
-          </td>
-          <td width="26" nowrap="nowrap" valign="bottom">
-            <p class="">4</p>
-          </td>
-          <td width="50" nowrap="nowrap" valign="bottom">
-            <p class="">61.49</p>
-          </td>
-          <td width="50" nowrap="nowrap" valign="bottom">
-            <p class="">12.65</p>
-          </td>
-          <td width="46" nowrap="nowrap" valign="bottom">
-            <p class="">0.45</p>
-          </td>
-        </tr>
-        <tr>
-          <td width="40" nowrap="nowrap" valign="bottom">
-            <p class="">VO</p>
-          </td>
-          <td width="79" nowrap="nowrap" valign="bottom">
-            <p class="">5/30/2002</p>
-          </td>
-          <td width="42" nowrap="nowrap" valign="bottom">
-            <p class="">7</p>
-          </td>
-          <td width="32" nowrap="nowrap" valign="bottom">
-            <p class="">S4</p>
-          </td>
-          <td width="32" nowrap="nowrap" valign="bottom">
-            <p class="">1</p>
-          </td>
-          <td width="26" nowrap="nowrap" valign="bottom">
-            <p class="">4</p>
-          </td>
-          <td width="50" nowrap="nowrap" valign="bottom">
-            <p class="">61.49</p>
-          </td>
-          <td width="50" nowrap="nowrap" valign="bottom">
-            <p class="">12.65</p>
-          </td>
-          <td width="46" nowrap="nowrap" valign="bottom">
-            <p class="">0.45</p>
-          </td>
-        </tr>
-        <tr>
-          <td width="40" nowrap="nowrap" valign="bottom">
-            <p class="">VO</p>
-          </td>
-          <td width="79" nowrap="nowrap" valign="bottom">
-            <p class="">5/30/2002</p>
-          </td>
-          <td width="42" nowrap="nowrap" valign="bottom">
-            <p class="">7</p>
-          </td>
-          <td width="32" nowrap="nowrap" valign="bottom">
-            <p class="">S5</p>
-          </td>
-          <td width="32" nowrap="nowrap" valign="bottom">
-            <p class="">1</p>
-          </td>
-          <td width="26" nowrap="nowrap" valign="bottom">
-            <p class="">4</p>
-          </td>
-          <td width="50" nowrap="nowrap" valign="bottom">
-            <p class="">61.49</p>
-          </td>
-          <td width="50" nowrap="nowrap" valign="bottom">
-            <p class="">12.65</p>
-          </td>
-          <td width="46" nowrap="nowrap" valign="bottom">
-            <p class="">0.45</p>
-          </td>
-        </tr>
-        <tr>
-          <td width="40" nowrap="nowrap" valign="bottom">
-            <p class="">VO</p>
-          </td>
-          <td width="79" nowrap="nowrap" valign="bottom">
-            <p class="">5/30/2002</p>
-          </td>
-          <td width="42" nowrap="nowrap" valign="bottom">
-            <p class="">8</p>
-          </td>
-          <td width="32" nowrap="nowrap" valign="bottom">
-            <p class="">S1</p>
-          </td>
-          <td width="32" nowrap="nowrap" valign="bottom">
-            <p class="">0</p>
-          </td>
-          <td width="26" nowrap="nowrap" valign="bottom">
-            <p class="">3</p>
-          </td>
-          <td width="50" nowrap="nowrap" valign="bottom">
-            <p class="">10.04</p>
-          </td>
-          <td width="50" nowrap="nowrap" valign="bottom">
-            <p class="">4.42</p>
-          </td>
-          <td width="46" nowrap="nowrap" valign="bottom">
-            <p class="">0.76</p>
-          </td>
-        </tr>
-        <tr>
-          <td width="40" nowrap="nowrap" valign="bottom">
-            <p class="">VO</p>
-          </td>
-          <td width="79" nowrap="nowrap" valign="bottom">
-            <p class="">5/30/2002</p>
-          </td>
-          <td width="42" nowrap="nowrap" valign="bottom">
-            <p class="">8</p>
-          </td>
-          <td width="32" nowrap="nowrap" valign="bottom">
-            <p class="">S2</p>
-          </td>
-          <td width="32" nowrap="nowrap" valign="bottom">
-            <p class="">1</p>
-          </td>
-          <td width="26" nowrap="nowrap" valign="bottom">
-            <p class="">3</p>
-          </td>
-          <td width="50" nowrap="nowrap" valign="bottom">
-            <p class="">10.04</p>
-          </td>
-          <td width="50" nowrap="nowrap" valign="bottom">
-            <p class="">4.42</p>
-          </td>
-          <td width="46" nowrap="nowrap" valign="bottom">
-            <p class="">0.76</p>
-          </td>
-        </tr>
-        <tr>
-          <td width="40" nowrap="nowrap" valign="bottom">
-            <p class="">VO</p>
-          </td>
-          <td width="79" nowrap="nowrap" valign="bottom">
-            <p class="">5/30/2002</p>
-          </td>
-          <td width="42" nowrap="nowrap" valign="bottom">
-            <p class="">8</p>
-          </td>
-          <td width="32" nowrap="nowrap" valign="bottom">
-            <p class="">S3</p>
-          </td>
-          <td width="32" nowrap="nowrap" valign="bottom">
-            <p class="">1</p>
-          </td>
-          <td width="26" nowrap="nowrap" valign="bottom">
-            <p class="">3</p>
-          </td>
-          <td width="50" nowrap="nowrap" valign="bottom">
-            <p class="">10.04</p>
-          </td>
-          <td width="50" nowrap="nowrap" valign="bottom">
-            <p class="">4.42</p>
-          </td>
-          <td width="46" nowrap="nowrap" valign="bottom">
-            <p class="">0.76</p>
-          </td>
-        </tr>
-        <tr>
-          <td width="40" nowrap="nowrap" valign="bottom">
-            <p class="">VO</p>
-          </td>
-          <td width="79" nowrap="nowrap" valign="bottom">
-            <p class="">5/30/2002</p>
-          </td>
-          <td width="42" nowrap="nowrap" valign="bottom">
-            <p class="">8</p>
-          </td>
-          <td width="32" nowrap="nowrap" valign="bottom">
-            <p class="">S4</p>
-          </td>
-          <td width="32" nowrap="nowrap" valign="bottom">
-            <p class="">0</p>
-          </td>
-          <td width="26" nowrap="nowrap" valign="bottom">
-            <p class="">3</p>
-          </td>
-          <td width="50" nowrap="nowrap" valign="bottom">
-            <p class="">10.04</p>
-          </td>
-          <td width="50" nowrap="nowrap" valign="bottom">
-            <p class="">4.42</p>
-          </td>
-          <td width="46" nowrap="nowrap" valign="bottom">
-            <p class="">0.76</p>
-          </td>
-        </tr>
-        <tr>
-          <td width="40" nowrap="nowrap" valign="bottom">
-            <p class="">VO</p>
-          </td>
-          <td width="79" nowrap="nowrap" valign="bottom">
-            <p class="">5/30/2002</p>
-          </td>
-          <td width="42" nowrap="nowrap" valign="bottom">
-            <p class="">8</p>
-          </td>
-          <td width="32" nowrap="nowrap" valign="bottom">
-            <p class="">S5</p>
-          </td>
-          <td width="32" nowrap="nowrap" valign="bottom">
-            <p class="">1</p>
-          </td>
-          <td width="26" nowrap="nowrap" valign="bottom">
-            <p class="">3</p>
-          </td>
-          <td width="50" nowrap="nowrap" valign="bottom">
-            <p class="">10.04</p>
-          </td>
-          <td width="50" nowrap="nowrap" valign="bottom">
-            <p class="">4.42</p>
-          </td>
-          <td width="46" nowrap="nowrap" valign="bottom">
-            <p class="">0.76</p>
-          </td>
-        </tr>
-        <tr>
-          <td width="40" nowrap="nowrap" valign="bottom">
-            <p class="">VO</p>
-          </td>
-          <td width="79" nowrap="nowrap" valign="bottom">
-            <p class="">5/30/2002</p>
-          </td>
-          <td width="42" nowrap="nowrap" valign="bottom">
-            <p class="">9</p>
-          </td>
-          <td width="32" nowrap="nowrap" valign="bottom">
-            <p class="">S1</p>
-          </td>
-          <td width="32" nowrap="nowrap" valign="bottom">
-            <p class="">1</p>
-          </td>
-          <td width="26" nowrap="nowrap" valign="bottom">
-            <p class="">5</p>
-          </td>
-          <td width="50" nowrap="nowrap" valign="bottom">
-            <p class="">75.58</p>
-          </td>
-          <td width="50" nowrap="nowrap" valign="bottom">
-            <p class="">3.55</p>
-          </td>
-          <td width="46" nowrap="nowrap" valign="bottom">
-            <p class="">0.76</p>
-          </td>
-        </tr>
-        <tr>
-          <td width="40" nowrap="nowrap" valign="bottom">
-            <p class="">VO</p>
-          </td>
-          <td width="79" nowrap="nowrap" valign="bottom">
-            <p class="">5/30/2002</p>
-          </td>
-          <td width="42" nowrap="nowrap" valign="bottom">
-            <p class="">9</p>
-          </td>
-          <td width="32" nowrap="nowrap" valign="bottom">
-            <p class="">S2</p>
-          </td>
-          <td width="32" nowrap="nowrap" valign="bottom">
-            <p class="">1</p>
-          </td>
-          <td width="26" nowrap="nowrap" valign="bottom">
-            <p class="">5</p>
-          </td>
-          <td width="50" nowrap="nowrap" valign="bottom">
-            <p class="">75.58</p>
-          </td>
-          <td width="50" nowrap="nowrap" valign="bottom">
-            <p class="">3.55</p>
-          </td>
-          <td width="46" nowrap="nowrap" valign="bottom">
-            <p class="">0.76</p>
-          </td>
-        </tr>
-        <tr>
-          <td width="40" nowrap="nowrap" valign="bottom">
-            <p class="">VO</p>
-          </td>
-          <td width="79" nowrap="nowrap" valign="bottom">
-            <p class="">5/30/2002</p>
-          </td>
-          <td width="42" nowrap="nowrap" valign="bottom">
-            <p class="">9</p>
-          </td>
-          <td width="32" nowrap="nowrap" valign="bottom">
-            <p class="">S3</p>
-          </td>
-          <td width="32" nowrap="nowrap" valign="bottom">
-            <p class="">1</p>
-          </td>
-          <td width="26" nowrap="nowrap" valign="bottom">
-            <p class="">5</p>
-          </td>
-          <td width="50" nowrap="nowrap" valign="bottom">
-            <p class="">75.58</p>
-          </td>
-          <td width="50" nowrap="nowrap" valign="bottom">
-            <p class="">3.55</p>
-          </td>
-          <td width="46" nowrap="nowrap" valign="bottom">
-            <p class="">0.76</p>
-          </td>
-        </tr>
-        <tr>
-          <td width="40" nowrap="nowrap" valign="bottom">
-            <p class="">VO</p>
-          </td>
-          <td width="79" nowrap="nowrap" valign="bottom">
-            <p class="">5/30/2002</p>
-          </td>
-          <td width="42" nowrap="nowrap" valign="bottom">
-            <p class="">9</p>
-          </td>
-          <td width="32" nowrap="nowrap" valign="bottom">
-            <p class="">S4</p>
-          </td>
-          <td width="32" nowrap="nowrap" valign="bottom">
-            <p class="">1</p>
-          </td>
-          <td width="26" nowrap="nowrap" valign="bottom">
-            <p class="">5</p>
-          </td>
-          <td width="50" nowrap="nowrap" valign="bottom">
-            <p class="">75.58</p>
-          </td>
-          <td width="50" nowrap="nowrap" valign="bottom">
-            <p class="">3.55</p>
-          </td>
-          <td width="46" nowrap="nowrap" valign="bottom">
-            <p class="">0.76</p>
-          </td>
-        </tr>
-        <tr>
-          <td width="40" nowrap="nowrap" valign="bottom">
-            <p class="">VO</p>
-          </td>
-          <td width="79" nowrap="nowrap" valign="bottom">
-            <p class="">5/30/2002</p>
-          </td>
-          <td width="42" nowrap="nowrap" valign="bottom">
-            <p class="">9</p>
-          </td>
-          <td width="32" nowrap="nowrap" valign="bottom">
-            <p class="">S5</p>
-          </td>
-          <td width="32" nowrap="nowrap" valign="bottom">
-            <p class="">1</p>
-          </td>
-          <td width="26" nowrap="nowrap" valign="bottom">
-            <p class="">5</p>
-          </td>
-          <td width="50" nowrap="nowrap" valign="bottom">
-            <p class="">75.58</p>
-          </td>
-          <td width="50" nowrap="nowrap" valign="bottom">
-            <p class="">3.55</p>
-          </td>
-          <td width="46" nowrap="nowrap" valign="bottom">
-            <p class="">0.76</p>
-          </td>
-        </tr>
-        <tr>
-          <td width="40" nowrap="nowrap" valign="bottom">
-            <p class="">VO</p>
-          </td>
-          <td width="79" nowrap="nowrap" valign="bottom">
-            <p class="">5/30/2002</p>
-          </td>
-          <td width="42" nowrap="nowrap" valign="bottom">
-            <p class="">10</p>
-          </td>
-          <td width="32" nowrap="nowrap" valign="bottom">
-            <p class="">S1</p>
-          </td>
-          <td width="32" nowrap="nowrap" valign="bottom">
-            <p class="">0</p>
-          </td>
-          <td width="26" nowrap="nowrap" valign="bottom">
-            <p class="">1</p>
-          </td>
-          <td width="50" nowrap="nowrap" valign="bottom">
-            <p class="">52.48</p>
-          </td>
-          <td width="50" nowrap="nowrap" valign="bottom">
-            <p class="">18.53</p>
-          </td>
-          <td width="46" nowrap="nowrap" valign="bottom">
-            <p class="">0.91</p>
-          </td>
-        </tr>
-        <tr>
-          <td width="40" nowrap="nowrap" valign="bottom">
-            <p class="">VO</p>
-          </td>
-          <td width="79" nowrap="nowrap" valign="bottom">
-            <p class="">5/30/2002</p>
-          </td>
-          <td width="42" nowrap="nowrap" valign="bottom">
-            <p class="">10</p>
-          </td>
-          <td width="32" nowrap="nowrap" valign="bottom">
-            <p class="">S2</p>
-          </td>
-          <td width="32" nowrap="nowrap" valign="bottom">
-            <p class="">1</p>
-          </td>
-          <td width="26" nowrap="nowrap" valign="bottom">
-            <p class="">1</p>
-          </td>
-          <td width="50" nowrap="nowrap" valign="bottom">
-            <p class="">52.48</p>
-          </td>
-          <td width="50" nowrap="nowrap" valign="bottom">
-            <p class="">18.53</p>
-          </td>
-          <td width="46" nowrap="nowrap" valign="bottom">
-            <p class="">0.91</p>
-          </td>
-        </tr>
-        <tr>
-          <td width="40" nowrap="nowrap" valign="bottom">
-            <p class="">VO</p>
-          </td>
-          <td width="79" nowrap="nowrap" valign="bottom">
-            <p class="">5/30/2002</p>
-          </td>
-          <td width="42" nowrap="nowrap" valign="bottom">
-            <p class="">10</p>
-          </td>
-          <td width="32" nowrap="nowrap" valign="bottom">
-            <p class="">S3</p>
-          </td>
-          <td width="32" nowrap="nowrap" valign="bottom">
-            <p class="">0</p>
-          </td>
-          <td width="26" nowrap="nowrap" valign="bottom">
-            <p class="">1</p>
-          </td>
-          <td width="50" nowrap="nowrap" valign="bottom">
-            <p class="">52.48</p>
-          </td>
-          <td width="50" nowrap="nowrap" valign="bottom">
-            <p class="">18.53</p>
-          </td>
-          <td width="46" nowrap="nowrap" valign="bottom">
-            <p class="">0.91</p>
-          </td>
-        </tr>
-        <tr>
-          <td width="40" nowrap="nowrap" valign="bottom">
-            <p class="">VO</p>
-          </td>
-          <td width="79" nowrap="nowrap" valign="bottom">
-            <p class="">5/30/2002</p>
-          </td>
-          <td width="42" nowrap="nowrap" valign="bottom">
-            <p class="">10</p>
-          </td>
-          <td width="32" nowrap="nowrap" valign="bottom">
-            <p class="">S4</p>
-          </td>
-          <td width="32" nowrap="nowrap" valign="bottom">
-            <p class="">0</p>
-          </td>
-          <td width="26" nowrap="nowrap" valign="bottom">
-            <p class="">1</p>
-          </td>
-          <td width="50" nowrap="nowrap" valign="bottom">
-            <p class="">52.48</p>
-          </td>
-          <td width="50" nowrap="nowrap" valign="bottom">
-            <p class="">18.53</p>
-          </td>
-          <td width="46" nowrap="nowrap" valign="bottom">
-            <p class="">0.91</p>
-          </td>
-        </tr>
-        <tr>
-          <td width="40" nowrap="nowrap" valign="bottom">
-            <p class="">VO</p>
-          </td>
-          <td width="79" nowrap="nowrap" valign="bottom">
-            <p class="">5/30/2002</p>
-          </td>
-          <td width="42" nowrap="nowrap" valign="bottom">
-            <p class="">10</p>
-          </td>
-          <td width="32" nowrap="nowrap" valign="bottom">
-            <p class="">S5</p>
-          </td>
-          <td width="32" nowrap="nowrap" valign="bottom">
-            <p class="">0</p>
-          </td>
-          <td width="26" nowrap="nowrap" valign="bottom">
-            <p class="">1</p>
-          </td>
-          <td width="50" nowrap="nowrap" valign="bottom">
-            <p class="">52.48</p>
-          </td>
-          <td width="50" nowrap="nowrap" valign="bottom">
-            <p class="">18.53</p>
-          </td>
-          <td width="46" nowrap="nowrap" valign="bottom">
-            <p class="">0.91</p>
-          </td>
-        </tr>-->
+        
       </table>
-    </td>
+    
+	</td>
   </tr>
+  
+  
   <tr>
     <td>
+     <h3>&nbsp;</h3>
+     <h3>Table 3. Relatively Comprehensive, but Unstructured Metadata.</h3>
     
-        <h3>&nbsp;</h3>
-    <h3>Table 3. Relatively Comprehensive, but Unstructured Metadata.</h3>
-     
-     
-        <h3>Written Metadata</h3>
-      
-      
-    <p> This experiment was designed to collect productivity, diversity and soil 
-      data for Northern California grasslands. The results were published in a 
-      paper titled &quot;Soil Nutrients and the Relationship between Diversity 
-      and Productivity&quot; (Doe and Smith 2003). Data were collected at two 
-      sites, the Coastal Hills Reserve and the Valley Oak Reserve, within the 
-      coastal mountains of Northern California. The area is primarily oak (Quercus 
-      spp.) savannah and grasslands on limestone soil. In spring of 2002, 10-1 
-      m2 plots were randomly distributed throughout a 100 km2 area of each location. 
-      All plots were placed on grasslands. In each plot, presence and absence 
-      of all plant species was recorded. All plants were then clipped at root 
-      level, dried and weighed to obtain above-ground peak standing biomass. As 
-      most of the production is from annual plants, peak standing biomass can 
-      be used as an approximate measure of annual productivity. Approximately 
-      0.5 g of soil was collected from the mid point of each plot. This soil was 
-      taken back to the laboratory and analyzed for total nitrogen and phosphorous 
-      content. </p>
-      <p>
-        Five species were observed in all plots. Nonnative plants observed
-        included: <i>Avena fatua</i> and <i>Bromus  hordeaceus</i>.
-        Native plants included <i>Eschscholziacalifornica</i>,
-        <i>Nassellapulchra</i> and <i>Calochortuslutens</i>.
-      </p>
-      <p>
-        Codes used in data tables are given below:
-        <u>Site</u>: Site at which data were collected. CH=Coastal Hills Reserve,
-        VO=Valley Oaks Reserve, <u>Date</u>: Date data were collected mm/dd/yy
-        format, <u>Plot</u>: Randomly assigned number of plot, <u>Sp1-Sp5</u>:
-        Presence absence of each of five species. For each species, a value of 1
-        indicates presence and a value of 0 indicates absence.
-      </p>
-      <p>&nbsp;</p><table border="1">
-        <tr>
-          <th>Species Name</th>
-          <th>Code</th>
-        </tr>
-        <tr>
-          <td><i>Avena fatua</i></td>
-          <td>S1</td>
-        </tr>
-        <tr>
-          <td><i>Bromus hordeaceus</i></td>
-          <td>S2</td>
-        </tr>
-        <tr>
-          <td><i>Calochortus lutens</i></td>
-          <td>S3</td>
-        </tr>
-        <tr>
-          <td><i>Eschscholzia californica</i></td>
-          <td>S4</td>
-        </tr>
-        <tr>
-          <td>Nassella pulchra</td>
-          <td>S5</td>
-        </tr>
-      </table>
-      <p>&nbsp;</p><p>
-        <u>R</u>: Species richness, <u>Bm</u>: Biomass, measured in grams,
-        <u>P</u>: Phosphorous in soil, recorded in ppm (parts per million),
-        <u>N</u>: Nitrogen in soil, recorded as a percentage
-      </p>
-      <p>
-        Data were collected by PI Jane Doe with assistance from graduate
-        student John Smith in conjunction with the staff of the
-        Coastal Hills Reserve and the Valley Oak Reserve. Collection of the
-        data was funded by NSF grant #12345. Data may be used freely.
-        Please acknowledge persons, grants and reserves in any resulting
-        publications.
-      </p>
-      
-    <p> Contact information:<br></br>
-      Jane Doe<br></br>
-      Department of Biology<br></br>
-      Northern California University<br></br>
-      University Town, CA 95666<br></br>
-      (321) 654-0987 doe@uncal.edu<br></br>
-      </p>
-    <p>&nbsp; </p>
-    
-        <h3>Table 4. Standardized and structured metadata created
-        with EML.</h3>
-     
-    </td>
-  </tr>
-  <tr>
+	     <table border="1" width="80%" >
+          <tr>
+            <td align="left" valign="top">
+              <p> This experiment was designed to collect productivity, diversity, and soil data for Northern California grasslands. The results were published in a paper entitled &quot;Soil Nutrients and the Relationship between Diversity and Productivity&quot; 
+			  (Doe and Smith 2003). Data were collected at two sites, the Coastal Hills Reserve and the Valley Oak Reserve, within the coastal mountains of Northern California. The area is primarily oak (Quercus spp.) savannah and grasslands on limestone soil. 
+			  In spring of 2002, 10 1-m<sup>2</sup> plots were randomly distributed throughout a 100 km<sup>2</sup> area of each location. All plots were placed on grasslands. In each plot, presence and absence of all plant species was recorded. All plants were 
+			  then clipped at root level, dried and weighed to obtain above-ground peak standing biomass. As most of the production is from annual plants, peak standing biomass can be used as an approximate measure of annual productivity. Approximately 0.5 g of 
+			  soil was collected from the mid point of each plot. This soil was taken back to the laboratory and analyzed for total nitrogen and phosphorous content. </p>
+              <p> Five species were observed in all plots. Nonnative plants observed included: <i>Avena fatua</i> and <i>Bromus hordeaceus</i>. Native plants included <i>Eschscholzia californica</i>, <i>Nassella pulchra</i> and <i>Calochortus luteus</i>. </p>
+              <p>&nbsp; </p>
+              <p>Codes used in data tables are given below: </p>
+              <p>SITE: Site at which data were collected; CH= Coastal Hills Reserve, VO= Valley Oaks Reserve. </p>
+              <p>DATE: Date when data were collected, mm/dd/yy format. </p>
+              <p>PLOT: Randomly assigned number of plot. </p>
+              <p>SP: Presence/absence of each of five species; S1= <i>Avena fatua</i>, S2= <i>Bromus hordeaceus</i>, S3= <i>Calochortus luteus</i>, S4<i>= Eschscholzia californica, </i>S5<i>= </i><em>Nassella pulchra</em>. For each species, a value of 1 indicates presence and a value of 0 indicates absence. </p>
+              <p>R: Species richness.</p>
+              <p>BM: Biomass, measured in grams.</p>
+              <p> P: Phosphorous in soil, recorded in ppm (parts per million)</p>
+              <p>N: Nitrogen in soil, recorded as a percentage. </p>
+              <p>&nbsp; </p>
+              <p>Data were collected by PI Jane Doe with assistance from graduate student John Smith in conjunction with the staff of the Coastal Hills Reserve and the </p>
+              <p>Valley Oak Reserve. Collection of the data was funded by NSF grant #12345. Data may be used freely. Please acknowledge persons, grants and reserves in any resulting publications. </p>
+              <p>&nbsp; </p>
+              <p>Contact information:<br>
+                  Jane Doe<br>
+                  Department of Biology<br>
+                  Northern California University<br>
+                  University Town, CA 95666<br>
+                 (321) 654-0987 doe@uncal.edu</p>
+				 </td>
+          </tr>
+        </table>
+     </td>
+</tr>
+<tr>
     <td>
+		<h3>&nbsp;</h3>
+        <h3>Table 4. Standardized and Structured Metadata Created
+        with Ecological Metadata Language (EML).</h3>
+   
 <!-------------------------------------------------------------------------->
       <!--begin EML table-->
       <table cellpadding="0" cellspacing="0" width="90%" class="tabledefault">
@@ -2120,58 +866,38 @@ to categorize EML metadata fields in a way that is intuitive to ecologists.</p>
 
           <td class="secondCol" width="85%">knb</td>
         </tr>
-</table>
-            <table cellpadding="0" cellspacing="0" width="100%" class="tabledefault">
-              <tr>
-                <td colspan="2">
-                  <table cellpadding="0" cellspacing="0" width="100%"
-                  class="tabledefault">
-                    <tr>
-                      <td class="highlight" width="15%">Title:</td>
+        
+		<tr>
+          <td class="highlight">Title:</td>
+          <td class="secondCol"><b>Diversity, Productivity and Soil Data for North American Grasslands</b></td>
+        </tr>
+   
+        <tr><td colspan="2" class="tablehead">Data Set Owner(s):</td>
+        </tr>
 
-                      <td class="secondCol" width="85%">
-                        <b>Diversity, Productivity and Soil Data for North
-                          American Grasslands</b>
-                      </td>
-                    </tr>
+        <tr>
+               <td class="highlight" width="15%">Individual:</td>
 
-                    <tr>
-                      <td colspan="2" class="tablehead">Data Set Owner(s):</td>
-                    </tr>
+               <td class="secondCol" width="85%"><b>Jane Doe</b></td>
+        </tr>
 
-                    <tr>
-                      <td colspan="2">
-                        <table cellpadding="0" cellspacing="0" width="100%"
-                        class="tabledefault">
+         <tr>
+                <td class="highlight" valign="top" width="15%">Address:</td>
+
+                 <td width="85%">
+                     <table cellpadding="0" cellspacing="0" width="100%" class="tableparty">
+                         <tr>
+                           <td class="secondCol">Department of Biology, Northern California  University</td>
+                         </tr>
+
                           <tr>
-                            <td class="highlight" width="15%">Individual:</td>
-
-                            <td class="secondCol" width="85%">
-                              <b>Jane Doe</b>
-                            </td>
+                            <td class="secondCol">University Town,  CA 95666  USA</td>
                           </tr>
+                      </table>
+                   </td>
+          </tr>
 
-                          <tr>
-                            <td class="highlight" valign="top" width="15%">
-                            Address:</td>
-
-                            <td width="85%">
-                              <table cellpadding="0" cellspacing="0" width="100%"
-                              class="tableparty">
-                                <tr>
-                                  <td class="secondCol">Department of Biology,
-                                    Northern California  University</td>
-                                </tr>
-
-                                <tr>
-                                  <td class="secondCol">University Town,  CA
-                                    95666  USA</td>
-                                </tr>
-                              </table>
-                            </td>
-                          </tr>
-
-                          <tr>
+          <tr>
                             <td class="highlight" width="15%">Phone:</td>
 
                             <td width="85%">
@@ -2183,9 +909,9 @@ to categorize EML metadata fields in a way that is intuitive to ecologists.</p>
                                 </tr>
                               </table>
                             </td>
-                          </tr>
+         </tr>
 
-                          <tr>
+          <tr>
                             <td class="highlight" width="15%">Email Address:</td>
 
                             <td width="85%">
@@ -2198,16 +924,9 @@ to categorize EML metadata fields in a way that is intuitive to ecologists.</p>
                                 </tr>
                               </table>
                             </td>
-                          </tr>
-                        </table>
-                      </td>
-                    </tr>
-
-                    <tr>
-                      <td colspan="2">
-                        <table cellpadding="0" cellspacing="0" width="100%"
-                        class="tabledefault">
-                          <tr>
+           </tr>
+                      
+           <tr>
                             <td class="highlight" width="15%">Individual:</td>
 
                             <td class="secondCol" width="85%">
@@ -2215,11 +934,10 @@ to categorize EML metadata fields in a way that is intuitive to ecologists.</p>
                             </td>
                           </tr>
 
-                          <tr>
-                            <td class="highlight" valign="top" width="15%">
-                            Address:</td>
+            <tr>
+                       <td class="highlight" valign="top" width="15%">Address:</td>
 
-                            <td width="85%">
+                       <td width="85%">
                               <table cellpadding="0" cellspacing="0" width="100%"
                               class="tableparty">
                                 <tr>
@@ -2232,13 +950,13 @@ to categorize EML metadata fields in a way that is intuitive to ecologists.</p>
                                     95666  USA</td>
                                 </tr>
                               </table>
-                            </td>
-                          </tr>
+                         </td>
+             </tr>
 
-                          <tr>
-                            <td class="highlight" width="15%">Phone:</td>
+              <tr>
+                          <td class="highlight" width="15%">Phone:</td>
 
-                            <td width="85%">
+                           <td width="85%">
                               <table cellpadding="0" cellspacing="0" width="100%"
                               class="tableparty">
                                 <tr>
@@ -2247,9 +965,9 @@ to categorize EML metadata fields in a way that is intuitive to ecologists.</p>
                                 </tr>
                               </table>
                             </td>
-                          </tr>
+               </tr>
 
-                          <tr>
+               <tr>
                             <td class="highlight" width="15%">Email Address:</td>
 
                             <td width="85%">
@@ -2262,10 +980,8 @@ to categorize EML metadata fields in a way that is intuitive to ecologists.</p>
                                 </tr>
                               </table>
                             </td>
-                          </tr>
-                        </table>
-                      </td>
-                    </tr>
+               </tr>
+                       
                     <!--end owners-->
                     <tr>
                       <td colspan="2" class="tablehead">Abstract:</td>
@@ -2280,19 +996,19 @@ to categorize EML metadata fields in a way that is intuitive to ecologists.</p>
                           <tr>
                             <td class="secondCol" width="100%">This research
                             program was designed to collect productivity,
-                            diversity and soil data in Northern California
+                            diversity, and soil data in Northern California
                             grasslands. Data collected include species
                             richness, presence absence of plant species,
-                            peak standing biomass and nitrogen and phosphorus
+                            peak standing biomass, and nitrogen and phosphorus
                             soil content. The relationship between diversity
                             and productivity can take many different shapes.
                             Soil nutrients can affect species composition,
-                            diversity and productivity. This research program
-                            will attempt to investigate soil nutrients to as
+                            diversity, and productivity. This research program
+                            will attempt to investigate soil nutrients as
                             a possible factor in determining the shape of the
                             diversity productivity curve. Funding was used to
-                            collect richness, plant presence / absence data,
-                            biomass and soil nutrient data.</td>
+                            collect richness, plant presence/absence data,
+                            biomass, and soil nutrient data.</td>
                           </tr>
                         </table>
                       </td>
@@ -2414,10 +1130,10 @@ to categorize EML metadata fields in a way that is intuitive to ecologists.</p>
                           <tr>
                             <td class="secondCol" width="100%">This data set is
                             publicly available through the Knowledge Network
-                            for Biocompletxity. www.knb.ecoinformatics.org
+                            for Biocompletxity (www.knb.ecoinformatics.org).
                             Please acknowledge the Knowledge Network for
                             Biocomplexity, NSF Grant 12345 and Dr. Jane
-                            Doe in any publications that use this data.</td>
+                            Doe in any publications that use these data.</td>
                           </tr>
                         </table>
                       </td>
@@ -2440,8 +1156,8 @@ to categorize EML metadata fields in a way that is intuitive to ecologists.</p>
                       in Sonoma County, approximately 150 km northeast of
                       San Francisco. The Valley Oak Reserve is located on
                       the east facing slope of the  California coastal
-                      mountains. The area is primarily oak (Quercus spp)
-                      savannah and grasslands. The reserve is 100 km&sup2;
+                      mountains. The area is primarily oak (Quercus spp.),
+                      savannah, and grasslands. The reserve is 100 km&sup2;
                       in area.</td>
                     </tr>
 
@@ -2489,18 +1205,17 @@ to categorize EML metadata fields in a way that is intuitive to ecologists.</p>
                     </tr>
 
                     <tr>
-                      <td class="highlight" width="15%">Temporal Description</td>
+                      <td class="highlight" width="15%">Temporal Description:</td>
 
                       <td width="85%">
                         <table cellpadding="0" cellspacing="0" width="100%"
                         class="tabledefault">
                           <tr>
                             <td class="secondCol" colspan="2">The
-                            observations in the data were made in the late
+                            observations in the data set were made in the late
                             spring, at approximately peak biomass. All
                             observations were made during daylight hours.
-                            Observations were made during the following
-                            range of dates.</td>
+                            Observations were made during the range of dates provided below.</td>
                           </tr>
                         </table>
                       </td>
@@ -2525,10 +1240,10 @@ to categorize EML metadata fields in a way that is intuitive to ecologists.</p>
                     </tr>
 
                     <tr>
-                      <td class="highlight">
-                        Taxonomic Authority Citation
-                      </td>
-                      <td class="highlight" width="15%">
+                      <td class="highlight" width="15%">Taxonomic Authority Citation:</td>
+                        
+                      
+                      <td width="85%">
                         <table cellpadding="0" cellspacing="0" width="100%"
                         class="tabledefault">
                           <tr>
@@ -2563,18 +1278,132 @@ to categorize EML metadata fields in a way that is intuitive to ecologists.</p>
                       </td>
                     </tr>
                     <tr>
-                      <td class="highlight">
-                        General Info:
-                      </td>
+                      <td class="highlight">General Info:</td>
+                      <td>All herbaceous plant species were recorded.</td>
+                    </tr>
+                    
+					<!--begin classifications-->
+                    <tr>
+                      <td class="highlight" width="15%">Classification:</td>
+                   
                       <td>
-                        All herbaceous plant species were recorded.
+                        <table cellpadding="0" cellspacing="0" width="100%"
+                        class="tabledefault">
+                          <tr>
+                            <td class="highlight" width="15%">Taxonomic Level:</td>
+                            <td>Family</td>
+                          </tr>
+                          
+						  <tr>
+                            <td class="highlight" width="15%">Taxonomic Name:</td>
+                            <td>Poaceae</td>
+                          </tr>
+                          
+						  <tr>
+                            <td class="highlight" width="15%">Taxonomic Level:</td>
+                            <td>Genus Species</td>
+                          </tr>
+                          
+						  <tr>
+                            <td class="highlight" width="15%">Taxonomic Name:</td>
+                            <td>Avena fatua</td>
+                          </tr>
+                        </table>
                       </td>
                     </tr>
-                    <!--begin classifications-->
-                    <tr>
-                      <td class="highlight" width="15%">
-                        Classification:
+                    
+					<tr>
+                      <td class="highlight" width="15%">Classification:</td>
+                      <td>
+                        <table cellpadding="0" cellspacing="0" width="100%"
+                        class="tabledefault">
+                          <tr>
+                            <td class="highlight" width="15%">Taxonomic Level:</td>
+                            <td>Family</td>
+                          </tr>
+                          
+						  <tr>
+                            <td class="highlight" width="15%">Taxonomic Name:</td>
+                            <td>Poaceae</td>
+                          </tr>
+                          
+						  <tr>
+                            <td class="highlight" width="15%">Taxonomic Level:</td>
+                            <td>Genus Species</td>
+                          </tr>   
+                         
+                          <tr>
+                            <td class="highlight" width="15%">Taxonomic Name:</td>
+                            <td>Bromus hordeaceus</td>
+                            
+                           </tr> 
+                        </table>
                       </td>
+                    </tr>
+
+                    <tr>
+                      <td class="highlight" width="15%">Classification:</td>
+                      <td> 
+                       <table cellpadding="0" cellspacing="0" width="100%"
+                        class="tabledefault">
+                          <tr>
+                            <td class="highlight" width="15%">Taxonomic Level:</td>
+                            <td>Family</td>
+                          </tr>    
+                       
+                          <tr>
+                            <td class="highlight" width="15%">Taxonomic Name:</td>
+                            <td>Liliaceae</td>
+                          </tr>
+                          
+						  <tr>
+                            <td class="highlight" width="15%">Taxonomic Level:</td>
+                            <td>Genus Species</td>
+                           </tr>
+                          
+						  <tr>
+                            <td class="highlight" width="15%">Taxonomic Name:</td>
+                            <td>Calochortus luteus</td>
+                          </tr>
+                        </table>
+                      </td>
+                    </tr>
+
+                    <tr>
+                      <td class="highlight" width="15%">Classification:</td>
+                      <td>
+                        <table cellpadding="0" cellspacing="0" width="100%"
+                        class="tabledefault">
+                          <tr>
+                            <td class="highlight" width="15%">Taxonomic Level:</td>
+                            <td>Family</td>
+                           </tr>
+                          
+						  <tr>
+                            <td class="highlight" width="15%">Taxonomic Name:</td>
+                           <td>Papaveraceae</td>
+                           </tr>
+                          
+						  <tr>
+                            <td class="highlight" width="15%">Taxonomic Level:</td>
+                            <td>Genus Species</td>
+                          </tr>
+                          
+						  <tr>
+                            <td class="highlight" width="15%">Taxonomic Name: </td>
+                            <td>Eschscholzia californica</td>
+                           </tr>
+                          
+						  <tr>
+                            <td class="highlight" width="15%">Common Name:</td>
+                            <td>California Poppy</td>
+                        </tr>
+                        </table>
+                      </td>
+                    </tr>
+                      
+					<tr>
+                      <td class="highlight" width="15%">Classification:</td>
                       <td>
                         <table cellpadding="0" cellspacing="0" width="100%"
                         class="tabledefault">
@@ -2607,236 +1436,49 @@ to categorize EML metadata fields in a way that is intuitive to ecologists.</p>
                               Taxonomic Name:
                             </td>
                             <td>
-                              Avena fatua
-                            </td>
-                          </tr>
-                        </table>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td class="highlight" width="15%">
-                        Classification:
-                      </td>
-                      <td>
-                        <table cellpadding="0" cellspacing="0" width="100%"
-                        class="tabledefault">
-                          <tr>
-                            <td class="highlight" width="15%">
-                              Taxonomic Level:
-                            </td>
-                            <td>
-                              Family
-                            </td>
-                          </tr>
-                          <tr>
-                            <td class="highlight" width="15%">
-                              Taxonomic Name:
-                            </td>
-                            <td>
-                              Poaceae
-                            </td>
-                          </tr>
-                          <tr>
-                            <td class="highlight" width="15%">
-                              Taxonomic Level:
-                            </td>
-                            <td>
-                              Genus Species
-                            </td>
-                          </tr>
-                          <tr>
-                            <td class="highlight" width="15%">
-                              Taxonomic Name:
-                            </td>
-                            <td>
-                              Bromus hordeaceus
-                            </td>
-                          </tr>
-                        </table>
-                      </td>
-                    </tr>
-
-                    <tr>
-                      <td class="highlight" width="15%">
-                        Classification:
-                      </td>
-                      <td>
-                        <table cellpadding="0" cellspacing="0" width="100%"
-                        class="tabledefault">
-                          <tr>
-                            <td class="highlight" width="15%">
-                              Taxonomic Level:
-                            </td>
-                            <td>
-                              Family
-                            </td>
-                          </tr>
-                          <tr>
-                            <td class="highlight" width="15%">
-                              Taxonomic Name:
-                            </td>
-                            <td>
-                              Liliaceae
-                            </td>
-                          </tr>
-                          <tr>
-                            <td class="highlight" width="15%">
-                              Taxonomic Level:
-                            </td>
-                            <td>
-                              Genus Species
-                            </td>
-                          </tr>
-                          <tr>
-                            <td class="highlight" width="15%">
-                              Taxonomic Name:
-                            </td>
-                            <td>
-                              Calochortus lutens
-                            </td>
-                          </tr>
-                        </table>
-                      </td>
-                    </tr>
-
-                    <tr>
-                      <td class="highlight" width="15%">
-                        Classification:
-                      </td>
-                      <td>
-                        <table cellpadding="0" cellspacing="0" width="100%"
-                        class="tabledefault">
-                          <tr>
-                            <td class="highlight" width="15%">
-                              Taxonomic Level:
-                            </td>
-                            <td>
-                              Family
-                            </td>
-                          </tr>
-                          <tr>
-                            <td class="highlight" width="15%">
-                              Taxonomic Name:
-                            </td>
-                            <td>
-                              Papaveraceae
-                            </td>
-                          </tr>
-                          <tr>
-                            <td class="highlight" width="15%">
-                              Taxonomic Level:
-                            </td>
-                            <td>
-                              Genus Species
-                            </td>
-                          </tr>
-                          <tr>
-                            <td class="highlight" width="15%">
-                              Taxonomic Name:
-                            </td>
-                            <td>
-                              Eschscholzia californica
-                            </td>
+                              Nassella pulchra</td>
                           </tr>
                           <tr>
                             <td class="highlight" width="15%">
                               Common Name:
                             </td>
-                            <td>
-                              California Poppy
-                            </td>
+                            <td>Barkworth</td>
                           </tr>
                         </table>
                       </td>
+                    </tr> 
+					
+					<!--methods-->
+                    <tr class="tablehead">
+                             <td colspan="2" class="tablehead">Methods Info:</td>
                     </tr>
-                      <tr>
-
-                      <td class="highlight" width="15%">
-                        Classification:
-                      </td>
-                      <td>
-                        <table cellpadding="0" cellspacing="0" width="100%"
-                        class="tabledefault">
-                          <tr>
-                            <td class="highlight" width="15%">
-                              Taxonomic Level:
-                            </td>
-                            <td>
-                              Family
-                            </td>
-                          </tr>
-                          <tr>
-                            <td class="highlight" width="15%">
-                              Taxonomic Name:
-                            </td>
-                            <td>
-                              Poaceae
-                            </td>
-                          </tr>
-                          <tr>
-                            <td class="highlight" width="15%">
-                              Taxonomic Level:
-                            </td>
-                            <td>
-                              Genus Species
-                            </td>
-                          </tr>
-                          <tr>
-                            <td class="highlight" width="15%">
-                              Taxonomic Name:
-                            </td>
-                            <td>
-                              Avena fatua
-                            </td>
-                          </tr>
-                          <tr>
-                            <td class="highlight" width="15%">
-                              Common Name:
-                            </td>
-                            <td>
-                              Bunchgrass
-                            </td>
-                          </tr>
-                        </table>
-                      </td>
+                    
+					<tr>
+					          <td class="highlight" width="15%"><b>General Sampling Design</b></td>
+                              <td class="secondCol" width="$"></td>
+                             
                     </tr>
-<tr>
-                    <!--methods-->
-                    <td colspan="2" class="tablehead">Methods Info:</td>
- </tr>
-                    <tr>
-                      <td colspan="2">
-                        <table cellpadding="0" cellspacing="0" width="100%" class="tabledefault">
-                            <tr>
-                              <td class="highlight" width="15%">
-                                <b>General Sampling Design</b>
-                              </td>
 
-                              <td class="secondCol" width="$">
-                              </td>
-                            </tr>
-
-                            <tr>
+                     <tr>
                               <td class="highlight" width="15%">Description:</td>
-
                               <td width="85%">
                                 <table cellpadding="0" cellspacing="0" width="100%"
                                 class="tabledefault">
 
                                     <tr>
                                       <td class="secondCol" width="100%">Twenty
-                                      five square1m&sup2; plots were randomly
+                                      five square1-m&sup2; plots were randomly
                                       placed throughout the Valley Oak Reserve.
                                       Due to destructive biomass harvest,
                                       plots are relocated each year.  Two
-                                      plastic sample bag (Ziplock) are labeled
+                                      plastic sample bag (Ziploc) were labeled
                                       with the randomly assigned plot number
                                       and contents (plant or soil). If more
-                                      than one bag is needed, all bags are
-                                      labeled with the contents, plot number
-                                      and bag number (i.e. the second of four
+                                      than one bag were needed, all bags were
+                                      labeled with the contents, plot number,
+                                      and bag number (i.e., the second of four
                                       bags of plant clippings from plot 6
-                                      will be labeled "Plant, Plot 6, Bag 2/4")
+                                      werelabeled "Plant, Plot 6, Bag 2/4")
                                       </td>
                                     </tr>
 
@@ -2863,9 +1505,9 @@ to categorize EML metadata fields in a way that is intuitive to ecologists.</p>
                                     <tr>
                                       <td class="secondCol" width="100%">At
                                       each plot, one person, starting at the
-                                      south-east corner of the plot, identifies
+                                      south-east corner of the plot, identified
                                       each plant according to the Jepson
-                                      manual. Species names are recorded in
+                                      manual. Species names were recorded in
                                       the field notebook.</td>
                                     </tr>
 
@@ -2891,7 +1533,7 @@ to categorize EML metadata fields in a way that is intuitive to ecologists.</p>
 
                                     <tr>
                                       <td class="secondCol" width="100%">
-                                      Species names are used to calculate
+                                      Species names were used to calculate
                                       species richness per plot.</td>
                                     </tr>
 
@@ -2917,15 +1559,15 @@ to categorize EML metadata fields in a way that is intuitive to ecologists.</p>
 
                                     <tr>
                                       <td class="secondCol" width="100%">All
-                                      plant material within each 1 m2 plot is
+                                      plant material within each 1-m<sup>2</sup> plot was
                                       clipped at soil level and placed in
                                       the sample bag.  Sample bags containing
-                                      plant matter are brought to the
-                                      laboratory. If wet, plant matter is
+                                      plant matter were brought to the
+                                      laboratory. If wet, plant matter was
                                       dried using paper towels.  Plant material
-                                      is dried in a drying oven at 80
+                                      was dried in a drying oven at 80
                                       degrees C for 24 (+/-2) hours.  Plant
-                                      matter is weighed within 2 hours of
+                                      matter was weighed within 2 hours of
                                       drying.</td>
                                     </tr>
 
@@ -2952,17 +1594,17 @@ to categorize EML metadata fields in a way that is intuitive to ecologists.</p>
                                     <tr>
                                       <td class="secondCol" width="100%">
                                       Approximately 0.5 g of soil, free from
-                                      plant debris, is collected from the
-                                      middle of the plot.  Soil is placed in
-                                      appropriate sample bag.  Soil samples are
+                                      plant debris, was collected from the
+                                      middle of the plot.  Soil was placed in
+                                      appropriate sample bag.  Soil samples were
                                       placed into aluminum sample trays and
                                       placed into a drying oven and dried at
                                       80 degrees C for 24 (+/- 2) hours.  Soil
-                                      is ground using a ball mill until
-                                      powedery and weighed.  Soil sample is
-                                      analyzed for Phosphorus and Nitrogen
+                                      was ground using a ball mill until
+                                      powdery and weighed.  Soil samples were
+                                      analyzed for phosphorus and nitrogen
                                       using a SoilPro v. 10 machine. All
-                                      procedures for this machine are followed.
+                                      procedures for this machine were followed.
                                       </td>
                                     </tr>
 
@@ -2988,9 +1630,7 @@ to categorize EML metadata fields in a way that is intuitive to ecologists.</p>
                               </td>
                             </tr>
 
-                        </table>
-                      </td>
-                    </tr> <!--end methods-->
+                        <!--end methods-->
 
                   <!--data table (entity)-->
                   <tr class="tablehead">
@@ -3001,23 +1641,15 @@ to categorize EML metadata fields in a way that is intuitive to ecologists.</p>
                     <td class="highlight" width="15%">Catalog System:</td>
 
                     <td class="secondCol" width="85%">knb</td>
-  </tr>
+                  </tr>
                     <tr>
-                      <td colspan="2">
-                        <table cellpadding="0" cellspacing="0" width="100%" class="tabledefault">
+					  <td class="highlight" width="15%">Name:</td>
+                      <td class="secondCol" width="85%"><b>EML_simpleEx_table.txt</b></td>
+                       </tr>
 
-                            <tr>
-                              <td class="highlight" width="15%">Name:</td>
-
-                              <td class="secondCol" width="85%">
-                                <b>EML_simpleEx_table.txt</b>
-                              </td>
-                            </tr>
-
-                            <tr>
-                              <td class="highlight" width="15%">Case Sensitive:</td>
-
-                              <td width="85%">
+                     <tr>
+                        <td class="highlight" width="15%">Case Sensitive:</td>
+                        <td width="85%">
                                 <table cellpadding="0" cellspacing="0" width="100%"
                                 class="tabledefault">
 
@@ -3059,23 +1691,20 @@ to categorize EML metadata fields in a way that is intuitive to ecologists.</p>
                               </td>
                             </tr>
 
-                        </table>
-                      </td>
-                    </tr>
- 
-
+                  
                   <!--attribute information-->
-                  <tr class="tablehead">
+                
+				  <tr class="tablehead">
                     <td colspan="2" class="tablehead">Table Attribute Information:</td>
                   </tr>
-<td colspan="2" class="tablehead"><table cellpadding="0" cellspacing="0" width="100%"
+                   <td colspan="2" class="tablehead"><table cellpadding="0" cellspacing="0" width="100%"
                                 class="tabledefault">
                   <tr>
-                    <td>
-                      <tr>
-                        <p>Attribute Name</p>
-
                         <td class="highlight">
+                            <p>Attribute Name</p>
+                        </td>
+                        
+						<td class="highlight">
                           <p>Label</p>
                         </td>
 
@@ -3101,13 +1730,13 @@ to categorize EML metadata fields in a way that is intuitive to ecologists.</p>
 
                         <td class="highlight">
                           <p>
-                          Att Description
+                          Attribute Description
                           </p>
                         </td>
-                      </tr>
+                     </tr>
                       <tr>
                         <td width="15%" valign="top" class="highlight">
-                          <p>Site</p>
+                          <p>SITE</p>
                         </td>
 
                         <td valign="top">
@@ -3115,7 +1744,7 @@ to categorize EML metadata fields in a way that is intuitive to ecologists.</p>
                         </td>
 
                         <td valign="top">
-                          <p>Site at which data were collected</p>
+                          <p>Site at which data were collected.</p>
                         </td>
 
                         <td valign="top">
@@ -3182,7 +1811,7 @@ to categorize EML metadata fields in a way that is intuitive to ecologists.</p>
 
                       <tr>
                         <td width="15%" valign="top" class="highlight">
-                          <p>Date</p>
+                          <p>DATE</p>
                         </td>
 
                         <td valign="top">
@@ -3190,12 +1819,11 @@ to categorize EML metadata fields in a way that is intuitive to ecologists.</p>
                         </td>
 
                         <td valign="top">
-                          <p>Date data were collected</p>
+                          <p>Date data were collected.</p>
                         </td>
 
                         <td valign="top">
-                          <p>mm/
-                          dd/yy
+                          <p>mm/dd/yy
                           </p>
                         </td>
 
@@ -3218,7 +1846,7 @@ to categorize EML metadata fields in a way that is intuitive to ecologists.</p>
 
                       <tr>
                         <td width="15%" valign="top" class="highlight">
-                          <p>Plot</p>
+                          <p>PLOT</p>
                         </td>
 
                         <td valign="top">
@@ -3226,7 +1854,7 @@ to categorize EML metadata fields in a way that is intuitive to ecologists.</p>
                         </td>
 
                         <td valign="top">
-                          <p>Randomly assigned 1m&sup2; plot numbers</p>
+                          <p>Randomly assigned 1-m&sup2; plot numbers.</p>
                         </td>
 
                         <td valign="top">&nbsp;
@@ -3280,7 +1908,7 @@ to categorize EML metadata fields in a way that is intuitive to ecologists.</p>
 
                       <tr>
                         <td width="15%" valign="top" class="highlight">
-                          <p>Sp</p>
+                          <p>SP</p>
                         </td>
 
                         <td valign="top">
@@ -3288,7 +1916,7 @@ to categorize EML metadata fields in a way that is intuitive to ecologists.</p>
                         </td>
 
                         <td valign="top">
-                          <p>Species codes</p>
+                          <p>Species codes.</p>
                         </td>
 
                         <td valign="top">&nbsp;
@@ -3339,11 +1967,11 @@ to categorize EML metadata fields in a way that is intuitive to ecologists.</p>
                                 </td>
 
                                 <td>
-                                  <p>
-                                    Avena
+                                  <p><em>
+                                  Avena
 
-                                    fatua
-                                  </p>
+                                  fatua
+                                </em></p>
                                 </td>
 
                                 <td>&nbsp;
@@ -3357,11 +1985,11 @@ to categorize EML metadata fields in a way that is intuitive to ecologists.</p>
                                 </td>
 
                                 <td>
-                                  <p>
-                                    Bromus
+                                  <p><em>
+                                  Bromus
 
-                                    Hordeasceus
-                                  </p>
+                                  Hordeasceus
+                                </em></p>
                                 </td>
 
                                 <td>&nbsp;
@@ -3389,11 +2017,11 @@ to categorize EML metadata fields in a way that is intuitive to ecologists.</p>
                                 </td>
 
                                 <td>
-                                  <p>
-                                    Calochortus
+                                  <p><em>
+                                  Calochortus
 
-                                    lutens
-                                  </p>
+                                  luteus
+                                </em></p>
                                 </td>
 
                                 <td>&nbsp;
@@ -3421,11 +2049,11 @@ to categorize EML metadata fields in a way that is intuitive to ecologists.</p>
                                 </td>
 
                                 <td>
-                                  <p>
-                                    Eschscholzia
+                                  <p><em>
+                                  Eschscholzia
 
-                                    californica
-                                  </p>
+                                  californica
+                                </em></p>
                                 </td>
 
                                 <td>&nbsp;
@@ -3453,11 +2081,11 @@ to categorize EML metadata fields in a way that is intuitive to ecologists.</p>
                                 </td>
 
                                 <td>
-                                  <p>
-                                    Nassella
+                                  <p><em>
+                                  Nassella
 
-                                    pulchra
-                                  </p>
+                                  pulchra
+                                </em></p>
                                 </td>
                                 <td>&nbsp;
                                   
@@ -3470,7 +2098,7 @@ to categorize EML metadata fields in a way that is intuitive to ecologists.</p>
 
                       <tr>
                         <td width="15%" valign="top" class="highlight">
-                          <p>Pa</p>
+                          <p>PA</p>
                         </td>
 
                         <td valign="top">
@@ -3478,7 +2106,7 @@ to categorize EML metadata fields in a way that is intuitive to ecologists.</p>
                         </td>
 
                         <td valign="top">
-                          <p>Presence/Absence of species in plot</p>
+                          <p>Presence/Absence of species in plot.</p>
                         </td>
 
                         <td valign="top">
@@ -3553,7 +2181,7 @@ to categorize EML metadata fields in a way that is intuitive to ecologists.</p>
                         </td>
 
                         <td valign="top">
-                          <p>Total number of species in plot</p>
+                          <p>Total number of species in plot.</p>
                         </td>
 
                         <td valign="top">
@@ -3608,8 +2236,7 @@ to categorize EML metadata fields in a way that is intuitive to ecologists.</p>
                       <tr>
                         <td width="15%" valign="top" class="highlight">
                           <p>
-                            Bm
-                          </p>
+                            BM</p>
                         </td>
 
                         <td valign="top">
@@ -3617,12 +2244,11 @@ to categorize EML metadata fields in a way that is intuitive to ecologists.</p>
                         </td>
 
                         <td valign="top">
-                          <p>Peak standing biomass in plot</p>
+                          <p>Peak standing biomass in plot.</p>
                         </td>
 
                         <td valign="top">
-                          <p>g/ m
-                          <sup>2</sup>
+                          <p>g/m<sup>2</sup>
                           </p>
                         </td>
 
@@ -3681,7 +2307,7 @@ to categorize EML metadata fields in a way that is intuitive to ecologists.</p>
                         </td>
 
                         <td valign="top">
-                          <p>Phosphorous in soil. Measured per plot</p>
+                          <p>Soil phosphorous  measured per plot.</p>
                         </td>
 
                         <td valign="top">
@@ -3744,7 +2370,7 @@ to categorize EML metadata fields in a way that is intuitive to ecologists.</p>
                         </td>
 
                         <td valign="top">
-                          <p>Nitrogen in soil. Measured per plot.</p>
+                          <p>Soil nitrogen measured per plot.</p>
                         </td>
 
                         <td valign="top">
@@ -3800,7 +2426,7 @@ to categorize EML metadata fields in a way that is intuitive to ecologists.</p>
                   </table>
 
       <!--end eml table-->
-
+</table>
                
 </body>
 </html>
