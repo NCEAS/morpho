@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: sgarg $'
- *     '$Date: 2005-07-13 23:12:18 $'
- * '$Revision: 1.108 $'
+ *   '$Author: higgins $'
+ *     '$Date: 2005-08-29 23:20:08 $'
+ * '$Revision: 1.109 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -215,6 +215,14 @@ public abstract class AbstractDataPackage extends MetadataObject
 
 	private static Map  customUnitDictionaryUnitsCacheMap = new HashMap();
 	private static String[] customUnitDictionaryUnitTypesArray = new String[0];
+  
+  // added by D Higgins on 29 Aug 2005
+  // these variables store the most recent AttributeArray so it does not
+  // need to be retreived again. This was added for use in tables with very
+  // large numbers of columns. It greatly speeds up retreiving colmn header names
+  // and other table header info. - Dan Higgins
+  private Node[] lastAttributeArray = null; //DFH
+  private int lastEntityIndex = -1;
 
 
   /*
@@ -1612,9 +1620,11 @@ public abstract class AbstractDataPackage extends MetadataObject
    *  the indexed entity in the entityNode array.
    *  Note that the attribute array is created as needed rather
    *  than stored as a class member.
+   *  Aug 2005 - class modified to save the last retreived array; this is used
+   *  to enhance performance in building table displays with large number of columns
    */
   public Node[] getAttributeArray(int entityIndex) {
-
+    if ((entityIndex==lastEntityIndex)&&(lastAttributeArray!=null)) return lastAttributeArray;
     if(entityIndex < 0)
         return null;
 
@@ -1636,6 +1646,8 @@ public abstract class AbstractDataPackage extends MetadataObject
       for (int i=0;i<attr.length;i++) {
         attr[i] = getReferencedNode(attr[i]);
       }
+      lastAttributeArray = attr;
+      lastEntityIndex = entityIndex;
       return attr;
     }
     catch (Exception w) {
