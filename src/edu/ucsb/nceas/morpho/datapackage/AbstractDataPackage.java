@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: higgins $'
- *     '$Date: 2005-08-30 23:50:27 $'
- * '$Revision: 1.110 $'
+ *     '$Date: 2005-08-31 21:05:58 $'
+ * '$Revision: 1.111 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1837,9 +1837,6 @@ public abstract class AbstractDataPackage extends MetadataObject
       if (attributeParent != null) {
         attributeParent.appendChild(newAttributeNode);
         //Note: attribute array is dynamically generated, so we don't need to update it here
-        // reset saved values
-        lastEntityIndex = -1;
-        lastAttributeArray = null;
 
       }
       else {
@@ -1868,6 +1865,9 @@ public abstract class AbstractDataPackage extends MetadataObject
       Node parent = currentAttr.getParentNode();
       parent.appendChild(newAttributeNode);
     }
+    // reset saved values
+    lastEntityIndex = -1;
+    lastAttributeArray = null;
 
   }
 
