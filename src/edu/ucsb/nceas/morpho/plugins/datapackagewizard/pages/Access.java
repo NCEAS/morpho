@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: sgarg $'
- *     '$Date: 2005-05-26 18:31:12 $'
- * '$Revision: 1.38 $'
+ *     '$Date: 2005-09-01 19:03:57 $'
+ * '$Revision: 1.39 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -337,6 +337,11 @@ public class Access
 
     if (rowLists != null && rowLists.isEmpty()) {
       return returnMap;
+    } else if(!publicReadAccess){
+      // need to add AUTHSYSTEM and ORDER as these were not added earlier not
+      // non publicly readable documents.
+      returnMap.put(rootXPath + AUTHSYSTEM_REL_XPATH, AUTHSYSTEM_VALUE);
+      returnMap.put(rootXPath + ORDER_REL_XPATH, ORDER_VALUE);
     }
 
     Vector pagesProcessed = new Vector();
