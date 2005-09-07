@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: sgarg $'
- *     '$Date: 2004-04-13 01:09:32 $'
- * '$Revision: 1.4 $'
+ *     '$Date: 2005-09-07 17:18:09 $'
+ * '$Revision: 1.5 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -117,12 +117,12 @@ class AccessTreeNodeObject
       value = DNinfo.substring(DNinfo.indexOf(key) + key.length());
       value = value.substring(0, value.indexOf(","));
     } else if (nodeType == WizardSettings.ACCESS_PAGE_USER) {
+      key = "uid=";
+      value = DNinfo.substring(DNinfo.indexOf(key) + key.length());
+      value = value.substring(0, value.indexOf(","));
+
       if (name != null && name.compareTo("") != 0) {
-        value = name;
-      } else {
-        key = "uid=";
-        value = DNinfo.substring(DNinfo.indexOf(key) + key.length());
-        value = value.substring(0, value.indexOf(","));
+        value = name + " (" + value + ")";
       }
     }
 
