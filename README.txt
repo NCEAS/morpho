@@ -22,6 +22,7 @@ Contributors:
     Andrea Chadden (chadden@nceas.ucsb.edu)
     Rick Reeves (reeves@nceas.ucsb.edu)
     Sandy Andelman (andelman@nceas.ucsb.edu)
+    P. Mark Anderson (anderson@nceas.ucsb.edu)
 
 This is Morpho, a data management application for managing ecological data.
 Morpho allows researchers to describe their data using a comprehensive and
