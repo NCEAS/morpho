@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: sgarg $'
- *     '$Date: 2005-07-13 23:13:58 $'
- * '$Revision: 1.176 $'
+ *     '$Date: 2005-09-21 22:24:51 $'
+ * '$Revision: 1.177 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -2611,10 +2611,10 @@ public class DocFrame extends javax.swing.JFrame
                  (DefaultMutableTreeNode)instChildren.elementAt(instChildrenIndex);
       if(!simpleCompareNodes(instChild, templChild)){
         if (instChildrenIndex<(instChildren.size()-1)) {
-          instance.insert(templChild, instance.getIndex(instChild));
+          instance.insert((DefaultMutableTreeNode)templChild.clone(), instance.getIndex(instChild));
         }
         else {
-          instance.add(templChild);
+          instance.add((DefaultMutableTreeNode)templChild.clone());
         }
       }
       else {
