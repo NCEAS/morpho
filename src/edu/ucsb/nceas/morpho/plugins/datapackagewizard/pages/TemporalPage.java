@@ -7,9 +7,9 @@
  *    Authors: Saurabh Garg
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2004-04-03 20:52:28 $'
- * '$Revision: 1.21 $'
+ *   '$Author: anderson $'
+ *     '$Date: 2005-10-05 00:13:04 $'
+ * '$Revision: 1.22 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -54,6 +54,7 @@ import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import javax.swing.JRadioButton;
 import javax.swing.border.EmptyBorder;
 
 import com.toedter.calendar.JCalendar;
@@ -70,12 +71,17 @@ public class TemporalPage extends AbstractUIPage {
   private final String title      = "Access Page";
   private final String subtitle   = "";
 
+  private int selDateTypeSingle = 1;
+  private int selDateTypeStart = 1;
+  private int selDateTypeEnd = 1;
+
   private JPanel topPanel;
   private JLabel descLabel;
 
   private JPanel currentPanel;
   private JPanel singlePointPanel;
   private JPanel rangeTimePanel;
+  private JPanel dateTypeRadioPanel;
 
   private JTextField singleTimeTF;
   private JTextField startTimeTF;
@@ -90,8 +96,8 @@ public class TemporalPage extends AbstractUIPage {
   };
 
   private final String[] timeText = new String[] {
-    "Enter Year 0nly",
-    "Enter Month and Year",
+    "Enter Year Only",
+    //"Enter Month and Year",
     "Enter Day, Month and Year"
   };
 
@@ -105,7 +111,7 @@ public class TemporalPage extends AbstractUIPage {
   private static final Dimension PANEL_DIMS = new Dimension(325,350);
   private static final int YYYYMMDD = 8;
   private static final int ALL = 4;
-  private static final int MONTH_YEAR = 2;
+  //private static final int MONTH_YEAR = 2;
   private static final int YEAR_ONLY = 1;
 
   public TemporalPage() {
@@ -133,31 +139,27 @@ public class TemporalPage extends AbstractUIPage {
         Log.debug(45, "got radiobutton command: "+e.getActionCommand());
         onLoadAction();
         if (e.getActionCommand().equals(timeTypeText[0])) {
-          instance.remove(currentPanel);
-          currentPanel = singlePointPanel;
-          instance.add(singlePointPanel);
+			enableSingleDatePanel();
         } else if (e.getActionCommand().equals(timeTypeText[1])) {
-          instance.remove(currentPanel);
-          currentPanel = rangeTimePanel;
-          instance.add(rangeTimePanel);
+			enableDateRangePanel();
         }
         instance.validate();
         instance.repaint();
       }
     };
 
-    JPanel typeRadioOuterPanel = WidgetFactory.makePanel(2);
-    JPanel typeRadioPanel = WidgetFactory.makeRadioPanel(timeTypeText, 0, accessTypeListener);
+    JPanel dateTypeRadioOuterPanel = WidgetFactory.makePanel(2);
+    dateTypeRadioPanel = WidgetFactory.makeRadioPanel(timeTypeText, 0, accessTypeListener);
 
-    typeRadioOuterPanel.add(WidgetFactory.makeLabel("", false));
-    typeRadioOuterPanel.add(typeRadioPanel);
+    dateTypeRadioOuterPanel.add(WidgetFactory.makeLabel("", false));
+    dateTypeRadioOuterPanel.add(dateTypeRadioPanel);
 
     topPanel.add(WidgetFactory.makeDefaultSpacer());
 
     descLabel = WidgetFactory.makeHTMLLabel(
         "<p><b>Choose date type:</b>", 1);
     topPanel.add(descLabel);
-    topPanel.add(typeRadioOuterPanel);
+    topPanel.add(dateTypeRadioOuterPanel);
 
     this.add(topPanel, BorderLayout.NORTH);
 
@@ -180,7 +182,6 @@ public class TemporalPage extends AbstractUIPage {
    *
    *  @return JPanel to select a single point of time.
    */
-
   public JPanel getSinglePointPanel() {
 
     JPanel panel = new JPanel();
@@ -189,13 +190,15 @@ public class TemporalPage extends AbstractUIPage {
     singleTimeTF = new JTextField();
     singleTimeTF.setEditable(false);
 
-    singleTimeCalendar = new JCalendar();
+	if (singleTimeCalendar == null) {
+		singleTimeCalendar = new JCalendar();
+	}
     singleTimeCalendar.setVisible(true);
     singleTimeCalendar.setFont(WizardSettings.WIZARD_CONTENT_FONT);
     singleTimeCalendar.getMonthChooser().setFont(WizardSettings.WIZARD_CONTENT_FONT);
 
-    JPanel singlePanel = getDateTimePanel("Enter date:",
-                                          singleTimeTF, singleTimeCalendar);
+    JPanel singlePanel = getDateTimePanel("Enter date:", singleTimeTF, 
+			singleTimeCalendar, selDateTypeSingle);
 
     panel.add(Box.createGlue());
 
@@ -222,12 +225,14 @@ public class TemporalPage extends AbstractUIPage {
     startTimeTF = new JTextField();
     startTimeTF.setEditable(false);
 
-    startTimeCalendar = new JCalendar();
+	if (startTimeCalendar == null) {
+    	startTimeCalendar = new JCalendar();
+	}
     startTimeCalendar.setVisible(true);
 
     JPanel startingPanel = getDateTimePanel("Enter starting date:",
                                             startTimeTF,
-                                            startTimeCalendar);
+                                            startTimeCalendar, selDateTypeStart);
     panel.add(Box.createGlue());
 
     panel.add(startingPanel);
@@ -235,11 +240,13 @@ public class TemporalPage extends AbstractUIPage {
     endTimeTF = new JTextField();
     endTimeTF.setEditable(false);
 
-    endTimeCalendar = new JCalendar();
+	if (endTimeCalendar == null) {
+    	endTimeCalendar = new JCalendar();
+	}
     endTimeCalendar.setVisible(true);
 
     JPanel endingPanel = getDateTimePanel("Enter ending date:",
-                                          endTimeTF, endTimeCalendar);
+                                          endTimeTF, endTimeCalendar, selDateTypeEnd);
     panel.add(endingPanel);
 
     panel.add(Box.createGlue());
@@ -257,8 +264,8 @@ public class TemporalPage extends AbstractUIPage {
    * @param timeTextField JTextField
    * @param timeCalendar JCalendar
    */
-  public JPanel getDateTimePanel(String panelHeading,
-                                 JTextField timeTextField, JCalendar timeCalendar) {
+  public JPanel getDateTimePanel(String panelHeading, JTextField timeTextField, 
+				JCalendar timeCalendar, int selDateType) {
 
     JPanel outerPanel = new JPanel();
     outerPanel.setLayout(new BoxLayout(outerPanel, BoxLayout.Y_AXIS));
@@ -275,14 +282,17 @@ public class TemporalPage extends AbstractUIPage {
     final JCalendar finalTimeCalendar = timeCalendar;
     final JTextField finalTimeTextField = timeTextField;
 
+	// sets the text field value based on date type radio
     PropertyChangeListener propertyListener = new PropertyChangeListener() {
       public void propertyChange(PropertyChangeEvent e) {
         Log.debug(45, "got radiobutton command: "+e.getPropertyName());
         if (e.getPropertyName().equals("calendar")) {
           if(finalTimeCalendar.getDayChooser().isEnabled()){
             finalTimeTextField.setText(calendarToString(finalTimeCalendar, ALL));
+			/*
           } else if(finalTimeCalendar.getMonthChooser().isEnabled()){
             finalTimeTextField.setText(calendarToString(finalTimeCalendar, MONTH_YEAR));
+		  */
           } else {
             finalTimeTextField.setText(calendarToString(finalTimeCalendar, YEAR_ONLY));
           }
@@ -291,40 +301,47 @@ public class TemporalPage extends AbstractUIPage {
     };
 
 
+	// handles change to date type radio
     ActionListener dayTypeListener = new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         Log.debug(45, "got radiobutton command: "+e.getActionCommand());
         onLoadAction();
         if (e.getActionCommand().equals(timeText[0])) {
-          finalTimeCalendar.getDayChooser().setEnabled(false);
-          finalTimeCalendar.getMonthChooser().setEnabled(false);
-          finalTimeCalendar.getYearChooser().setEnabled(true);
-          finalTimeTextField.setText(calendarToString(finalTimeCalendar, YEAR_ONLY));
+			enableYearOnlyFields(finalTimeCalendar, finalTimeTextField);
+			/*
         } else if (e.getActionCommand().equals(timeText[1])) {
-          finalTimeCalendar.getDayChooser().setEnabled(false);
-          finalTimeCalendar.getMonthChooser().setEnabled(true);
-          finalTimeCalendar.getYearChooser().setEnabled(true);
-          finalTimeTextField.setText(calendarToString(finalTimeCalendar, MONTH_YEAR));
-        } else if (e.getActionCommand().equals(timeText[2])) {
-          finalTimeCalendar.getDayChooser().setEnabled(true);
-          finalTimeCalendar.getMonthChooser().setEnabled(true);
-          finalTimeCalendar.getYearChooser().setEnabled(true);
-          finalTimeTextField.setText(calendarToString(finalTimeCalendar, ALL));
+			enableMonthYearFields(finalTimeCalendar, finalTimeTextField);
+		*/
+        } else if (e.getActionCommand().equals(timeText[1])) {
+			enableDayMonthYearFields(finalTimeCalendar, finalTimeTextField);
         }
       }
     };
 
-    JPanel typeRadioContainer = WidgetFactory.makeVerticalPanel(4);
+    JPanel typeRadioContainer = WidgetFactory.makeVerticalPanel(3);
 
-    JPanel typeRadioPanel
-        = WidgetFactory.makeRadioPanel(timeText, 2, dayTypeListener);
+    JPanel dateFieldsRadioPanel
+        = WidgetFactory.makeRadioPanel(timeText, selDateType, dayTypeListener);
 
-    typeRadioContainer.add(typeRadioPanel);
+	switch (selDateType) {
+	case 0:
+		enableYearOnlyFields(timeCalendar, timeTextField);
+		break;
+		/*
+	case 1:
+		enableMonthYearFields(timeCalendar, timeTextField);
+		break;
+		*/
+	default:
+		enableDayMonthYearFields(timeCalendar, timeTextField);
+		break;
+	}
+	//Log.debug(1, "set date text field: " + selDateType + ": " + timeTextField.getText());
+
+    typeRadioContainer.add(dateFieldsRadioPanel);
     typeRadioContainer.add(Box.createGlue());
 
     panel.add(typeRadioContainer, BorderLayout.NORTH);
-
-    timeTextField.setText(calendarToString(timeCalendar, ALL));
 
     JPanel calendarPanel = new JPanel();
     calendarPanel.setLayout(new BoxLayout(calendarPanel, BoxLayout.Y_AXIS));
@@ -369,10 +386,12 @@ public class TemporalPage extends AbstractUIPage {
     if(returnType == YEAR_ONLY){
       return calendar.get(Calendar.YEAR) + "";
     }
+	/*
     if(returnType == MONTH_YEAR){
       return Months[calendar.get(Calendar.MONTH)] + "," +
           calendar.get(Calendar.YEAR);
     }
+	*/
     if(returnType == YYYYMMDD){
       String dateString = calendar.get(Calendar.YEAR) + "-";
 
@@ -388,7 +407,7 @@ public class TemporalPage extends AbstractUIPage {
         }
       } else {
         dateString = dateString + "01" + "-";
-      }
+	  }
 
       if(!c.getDayChooser().isEnabled()){
         dateString = dateString + "01";
@@ -476,18 +495,49 @@ public class TemporalPage extends AbstractUIPage {
 
     returnMap.clear();
     if(currentPanel == singlePointPanel){
+		// single date
+		String singleDate;
+		if(singleTimeCalendar.getDayChooser().isEnabled()){
+			singleDate = calendarToString(singleTimeCalendar, YYYYMMDD);
+			/*
+		} else if(singleTimeCalendar.getMonthChooser().isEnabled()){
+			singleDate = calendarToString(singleTimeCalendar, MONTH_YEAR);
+			*/
+		} else {
+			singleDate = calendarToString(singleTimeCalendar, YEAR_ONLY);
+		}
 
-      returnMap.put(xPathRoot + "/singleDateTime/calendarDate",
-                    calendarToString(singleTimeCalendar, YYYYMMDD));
+		returnMap.put(xPathRoot + "/singleDateTime/calendarDate", singleDate);
 
     } else {
+		// date range
+		String startDate, endDate;
 
-      returnMap.put(xPathRoot + "/rangeOfDates/beginDate/calendarDate",
-                    calendarToString(startTimeCalendar, YYYYMMDD));
+		if(startTimeCalendar.getDayChooser().isEnabled()){
+			startDate = calendarToString(startTimeCalendar, YYYYMMDD);
+			/*
+		} else if(startTimeCalendar.getMonthChooser().isEnabled()){
+			startDate = calendarToString(startTimeCalendar, MONTH_YEAR);
+			*/
+		} else {
+			startDate = calendarToString(startTimeCalendar, YEAR_ONLY);
+		}
 
-      returnMap.put(xPathRoot + "/rangeOfDates/endDate/calendarDate",
-                    calendarToString(endTimeCalendar, YYYYMMDD));
+		if(endTimeCalendar.getDayChooser().isEnabled()){
+			endDate = calendarToString(endTimeCalendar, YYYYMMDD);
+			/*
+		} else if(endTimeCalendar.getMonthChooser().isEnabled()){
+			endDate = calendarToString(endTimeCalendar, MONTH_YEAR);
+			*/
+		} else {
+			endDate = calendarToString(endTimeCalendar, YEAR_ONLY);
+		}
+
+		returnMap.put(xPathRoot + "/rangeOfDates/beginDate/calendarDate", startDate);
+		returnMap.put(xPathRoot + "/rangeOfDates/endDate/calendarDate", endDate);
     }
+
+
     return returnMap;
   }
 
@@ -548,62 +598,173 @@ public class TemporalPage extends AbstractUIPage {
 
     if (_xPathRoot!=null && _xPathRoot.trim().length() > 0) this.xPathRoot = _xPathRoot;
 
-    String name = (String)map.get(xPathRoot + "/singleDateTime[1]/calendarDate[1]");
-    if (name!=null) {
-      map.remove(xPathRoot + "/singleDateTime[1]/calendarDate[1]");
-      // name is the calendar date in YYYY-MM-DD format
-      String yearS = name.substring(0,4);
-      String monthS = name.substring(5,7);
-      String dayS = name.substring(8,10);
-//      Log.debug(1,"year: "+yearS+"-----month: "+monthS+"-----day: "+dayS);
-      int year = (new Integer(yearS)).intValue();
-      int month = (new Integer(monthS)).intValue();
-      int day = (new Integer(dayS)).intValue();
-      Calendar singleCalendar = Calendar.getInstance();
-      singleCalendar.set(year, month-1, day);
-      singleTimeCalendar.setCalendar(singleCalendar);
-      this.remove(currentPanel);
-      currentPanel = singlePointPanel;
-      this.add(singlePointPanel, BorderLayout.CENTER);
+    String dateString = (String)map.get(xPathRoot + "/singleDateTime[1]/calendarDate[1]");
+    if (dateString!=null) {
+		// single date
+		map.remove(xPathRoot + "/singleDateTime[1]/calendarDate[1]");
+
+		Calendar singleCalendar = createCalendarFromDateString(dateString);
+		singleTimeCalendar.setCalendar(singleCalendar);
+
+		switch (dateString.length()) {
+			case 4: selDateTypeSingle = 0; break;
+			//case 7: selDateTypeSingle = 1; break;
+			default: selDateTypeSingle = 1;
+		}
+		//Log.debug(1, "Setting single date radio button values: " + selDateTypeSingle + ": " + dateString);
+
+		activateSingleDateMode();
+
     }
     else {
+			// date range
       String startString = (String)map.get(xPathRoot + "/rangeOfDates[1]/beginDate[1]/calendarDate[1]");
       String endString = (String)map.get(xPathRoot + "/rangeOfDates[1]/endDate[1]/calendarDate[1]");
+
       if ((startString!=null)&&(endString!=null)) {
         map.remove(xPathRoot + "/rangeOfDates[1]/beginDate[1]/calendarDate[1]");
         map.remove(xPathRoot + "/rangeOfDates[1]/endDate[1]/calendarDate[1]");
-        String syearS = startString.substring(0,4);
-        String smonthS = startString.substring(5,7);
-        String sdayS = startString.substring(8,10);
-        int syear = (new Integer(syearS)).intValue();
-        int smonth = (new Integer(smonthS)).intValue();
-        int sday = (new Integer(sdayS)).intValue();
-        Calendar startCalendar = Calendar.getInstance();
-        startCalendar.set(syear, smonth-1, sday);
+
+		Calendar startCalendar = createCalendarFromDateString(startString);
+		Calendar endCalendar = createCalendarFromDateString(endString);
+
         startTimeCalendar.setCalendar(startCalendar);
-        String eyearS = endString.substring(0,4);
-        String emonthS = endString.substring(5,7);
-        String edayS = endString.substring(8,10);
-        int eyear = (new Integer(eyearS)).intValue();
-        int emonth = (new Integer(emonthS)).intValue();
-        int eday = (new Integer(edayS)).intValue();
-        Calendar endCalendar = Calendar.getInstance();
-        endCalendar.set(eyear, emonth-1, eday);
-        this.remove(currentPanel);
         endTimeCalendar.setCalendar(endCalendar);
-        currentPanel = rangeTimePanel;
-        this.add(rangeTimePanel, BorderLayout.CENTER);
+
+		//Log.debug(45,"Setting date range radio button values.");
+		switch (startString.length()) {
+			case 4: selDateTypeStart = 0; break;
+			//case 7: selDateTypeStart = 1; break;
+			default: selDateTypeStart = 1;
+		}
+		switch (endString.length()) {
+			case 4: selDateTypeEnd = 0; break;
+			//case 7: selDateTypeEnd = 1; break;
+			default: selDateTypeEnd = 1;
+		}
+
+		activateDateRangeMode();
+	
+		// TODO: get the date range calendar panel and set the proper date field radios
+		// based on start/endString
+				
       }
+
     }
+
     //if anything left in map, then it included stuff we can't handle...
      boolean returnVal = map.isEmpty();
 
      if (!returnVal) {
 
-       Log.debug(20,
-                 "TemporalPage.setPageData returning FALSE! Map still contains:"
-                 + map);
+       Log.debug(20, "TemporalPage.setPageData returning FALSE! Map still contains:" + map);
      }
      return returnVal;
   }
+
+
+
+	/**
+	 * Given a date in YYYY-MM-DD format or YYYY,
+	 * returns a Calendar with those values set.
+	 */
+	private Calendar createCalendarFromDateString(String dateString) {
+		if (dateString == null || dateString.length() == 0) { return null; }
+		
+		Calendar cal = Calendar.getInstance();
+		try {
+			Log.debug(30, "creating cal: " + dateString);
+			String monthS, dayS, yearS;
+			int month, day, year;
+
+			yearS = dateString.substring(0,4);
+			year = (new Integer(yearS)).intValue();
+			cal.set(Calendar.YEAR, year);
+			cal.set(Calendar.MONTH, 0);
+			cal.set(Calendar.DATE, 1);
+
+			if (dateString.length() > 7) {
+				monthS = dateString.substring(5,7);
+				month = (new Integer(monthS)).intValue();
+				cal.set(Calendar.MONTH, month-1);
+
+				dayS = dateString.substring(8,10);
+				day = (new Integer(dayS)).intValue();
+				cal.set(Calendar.DATE, day);
+			}
+
+		} catch (Exception ex) {
+			cal = Calendar.getInstance();
+			Log.debug(1, "Problem creating calendar from: " + dateString);
+		}
+
+		return cal;
+	}
+
+
+	private void enableYearOnlyFields(JCalendar cal, JTextField f) {
+		cal.getDayChooser().setEnabled(false);
+		/*
+		cal.getMonthChooser().setEnabled(false);
+		*/
+		cal.getYearChooser().setEnabled(true);
+		f.setText(calendarToString(cal, YEAR_ONLY));
+	}
+
+		/*
+	private void enableMonthYearFields(JCalendar cal, JTextField f) {
+		cal.getDayChooser().setEnabled(false);
+		cal.getMonthChooser().setEnabled(true);
+		cal.getYearChooser().setEnabled(true);
+		f.setText(calendarToString(cal, MONTH_YEAR));
+	}
+		*/
+
+	private void enableDayMonthYearFields(JCalendar cal, JTextField f) {
+		cal.getDayChooser().setEnabled(true);
+		/*
+		cal.getMonthChooser().setEnabled(true);
+		*/
+		cal.getYearChooser().setEnabled(true);
+		f.setText(calendarToString(cal, ALL));
+	}
+
+	private void enableSingleDatePanel() {
+		this.remove(currentPanel);
+		// rebuild the panel
+		singlePointPanel = getSinglePointPanel();
+		currentPanel = singlePointPanel;
+		//this.add(singlePointPanel);
+		this.add(singlePointPanel, BorderLayout.CENTER);
+	}
+
+	private void enableDateRangePanel() {
+		this.remove(currentPanel);
+		// rebuild the panels
+		rangeTimePanel = getRangeTimePanel();
+		currentPanel = rangeTimePanel;
+		//this.add(rangeTimePanel);
+		this.add(rangeTimePanel, BorderLayout.CENTER);
+	}
+
+	/**
+	 * Sets the single date radio and enables calendar panel.
+	 */
+	private void activateSingleDateMode() {
+		JPanel radioPanel = (JPanel)dateTypeRadioPanel.getComponent(1);
+		// first radio button
+		((JRadioButton)radioPanel.getComponent(0)).setSelected(true);
+		enableSingleDatePanel();
+	}
+
+	/**
+	 * Sets the date range radio and enables calendar panels.
+	 */
+	private void activateDateRangeMode() {
+		JPanel radioPanel = (JPanel)dateTypeRadioPanel.getComponent(1);
+		// second radio button
+		((JRadioButton)radioPanel.getComponent(1)).setSelected(true);
+		enableDateRangePanel();
+	}
+
 }

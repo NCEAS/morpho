@@ -7,9 +7,9 @@
  *    Authors: Saurabh Garg
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2004-04-08 03:15:41 $'
- * '$Revision: 1.29 $'
+ *   '$Author: anderson $'
+ *     '$Date: 2005-10-05 00:13:04 $'
+ * '$Revision: 1.30 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -151,8 +151,7 @@ public class Temporal extends AbstractUIPage{
     ModalDialog wpd = new ModalDialog(temporalPage,
                                 WizardContainerFrame.getDialogParent(),
                                 UISettings.POPUPDIALOG_WIDTH,
-                                UISettings.POPUPDIALOG_HEIGHT
-, false);
+                                UISettings.POPUPDIALOG_HEIGHT, false);
     wpd.setVisible(true);
 
     if (wpd.USER_RESPONSE==ModalDialog.OK_OPTION) {
