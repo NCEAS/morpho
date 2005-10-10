@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: sgarg $'
- *     '$Date: 2005-01-26 23:25:58 $'
- * '$Revision: 1.1 $'
+ *     '$Date: 2005-10-10 20:12:41 $'
+ * '$Revision: 1.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -145,6 +145,7 @@ public class AddTitleAbstractCommand
     OrderedMap map = titleAbstractPage.getPageData("");
     OrderedMap titleMap = new OrderedMap();
     OrderedMap abstractMap = new OrderedMap();
+    boolean insertAbstract = false;
 
     Log.debug(45, "\n insertTitleAbstract() Got title & abstract details from "
          + "Title and Abstract page -\n" + map.toString());
@@ -157,6 +158,7 @@ public class AddTitleAbstractCommand
     map.remove("/title[1]");
     if(!map.isEmpty()){
       abstractMap.put("/abstract/para[1]", map.get("/abstract/para[1]"));
+      insertAbstract = true;
     }
 
     DOMImplementation impl = DOMImplementationImpl.getDOMImplementation();
@@ -187,34 +189,37 @@ public class AddTitleAbstractCommand
       Log.debug(5, "** ERROR: Unable to add new title details to package **");
     }
 
-    DOMImplementation abstractImpl =
-        DOMImplementationImpl.getDOMImplementation();
-    Document abstractDoc = abstractImpl.createDocument("", "abstract", null);
+    if(insertAbstract == true){
+      DOMImplementation abstractImpl =
+          DOMImplementationImpl.getDOMImplementation();
+      Document abstractDoc = abstractImpl.createDocument("", "abstract", null);
 
-    abstractRoot = abstractDoc.getDocumentElement();
+      abstractRoot = abstractDoc.getDocumentElement();
 
-    try {
-      XMLUtilities.getXPathMapAsDOMTree(abstractMap, abstractRoot);
-    }
-    catch (TransformerException w) {
-      Log.debug(5, "Unable to add abstract details to package!");
-      Log.debug(15, "TransformerException (" + w + ") calling "
-          + "XMLUtilities.getXPathMapAsDOMTree(abstractMap, abstractRoot) with \n"
-          + "map = " + abstractMap
-          + " and abstractRoot = " + abstractRoot);
-      return;
-    }
-    //delete old abstract from datapackage
-    adp.deleteSubtree(DATAPACKAGE_ABSTRACT_GENERIC_NAME, 0);
+      try {
+        XMLUtilities.getXPathMapAsDOMTree(abstractMap, abstractRoot);
+      }
+      catch (TransformerException w) {
+        Log.debug(5, "Unable to add abstract details to package!");
+        Log.debug(15, "TransformerException (" + w + ") calling "
+            +
+            "XMLUtilities.getXPathMapAsDOMTree(abstractMap, abstractRoot) with \n"
+            + "map = " + abstractMap
+            + " and abstractRoot = " + abstractRoot);
+        return;
+      }
+      //delete old abstract from datapackage
+      adp.deleteSubtree(DATAPACKAGE_ABSTRACT_GENERIC_NAME, 0);
 
-    // add to the datapackage
-    check = adp.insertSubtree(DATAPACKAGE_ABSTRACT_GENERIC_NAME, abstractRoot,
-        0);
+      // add to the datapackage
+      check = adp.insertSubtree(DATAPACKAGE_ABSTRACT_GENERIC_NAME, abstractRoot,
+          0);
 
-    if (check != null) {
-      Log.debug(45, "added new abstract details to package...");
-    }else {
-      Log.debug(5, "** ERROR: Unable to add new abstract details to package **");
+      if (check != null) {
+        Log.debug(45, "added new abstract details to package...");
+      } else {
+        Log.debug(5, "** ERROR: Unable to add new abstract details to package **");
+      }
     }
   }
 
