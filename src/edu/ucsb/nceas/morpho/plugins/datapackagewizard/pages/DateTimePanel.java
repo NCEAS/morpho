@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: sgarg $'
- *     '$Date: 2005-06-22 22:55:37 $'
- * '$Revision: 1.23 $'
+ *   '$Author: anderson $'
+ *     '$Date: 2005-10-14 02:02:19 $'
+ * '$Revision: 1.24 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -123,6 +123,8 @@ class DateTimePanel extends JPanel implements WizardPageSubPanelAPI {
 
     ////////////////////////
 
+    // TODO: determine if required by schema namespace
+    // not required for eml-2.0.1
     JPanel precisionPanel = WidgetFactory.makePanel();
     precisionLabel    = WidgetFactory.makeLabel("Precision:", true, WizardSettings.WIZARD_CONTENT_LABEL_DIMS);
     precisionPanel.add(precisionLabel);
@@ -296,6 +298,8 @@ class DateTimePanel extends JPanel implements WizardPageSubPanelAPI {
     WidgetFactory.unhiliteComponent(formatStringLabel);
 
     String precision = precisionField.getText().trim();
+    // TODO: determine if required by schema namespace
+    // not required for eml-2.0.1
     if (precision.equals(""))  {
 
       WidgetFactory.hiliteComponent(precisionLabel);
@@ -338,20 +342,28 @@ class DateTimePanel extends JPanel implements WizardPageSubPanelAPI {
     returnMap.put(  xPathRoot + "/formatString",
                     formatStringField.getText().trim());
 
-    returnMap.put(  xPathRoot + "/dateTimePrecision",
-                    precisionField.getText().trim());
-
-    returnMap.put(  xPathRoot + "/dateTimeDomain", "");
-
-    String id = dateTimeDomainID.trim();
-    if (id!=null && !id.equals("")) {
-      returnMap.put(xPathRoot + "/dateTimeDomain/@id", id);
+    // dateTimePrecision is not required, so don't add it if empty
+    if (!precisionField.getText().trim().equals("")) {
+        returnMap.put(xPathRoot + "/dateTimePrecision",
+                      precisionField.getText().trim());
     }
 
-    xPathRoot = xPathRoot + "/dateTimeDomain/bounds[";
 
     int index = 0;
     List rowLists = boundsList.getListOfRowLists();
+
+    if (rowLists.size() > 0) {
+        // only had the bounds if there are bounds to add.
+        returnMap.put(  xPathRoot + "/dateTimeDomain", "");
+
+        String id = dateTimeDomainID.trim();
+        if (id!=null && !id.equals("")) {
+          returnMap.put(xPathRoot + "/dateTimeDomain/@id", id);
+        }
+
+        xPathRoot += "/dateTimeDomain/bounds[";
+    }
+
     String nextMin = null;
     String nextMax = null;
     Object nextExcl = null;
