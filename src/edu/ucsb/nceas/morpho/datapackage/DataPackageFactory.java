@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: sgarg $'
- *     '$Date: 2005-07-08 19:00:56 $'
- * '$Revision: 1.42 $'
+ *   '$Author: anderson $'
+ *     '$Date: 2005-10-20 22:45:32 $'
+ * '$Revision: 1.43 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -81,9 +81,9 @@ public class DataPackageFactory
     Log.debug(1,"DocTypeInfo: " + type);
 //    if (type.equals("eml:eml")) {
     if (type.indexOf("eml://ecoinformatics.org/eml-2.0")>-1) {
-      Log.debug(1,"Creating new eml2.0.0 package");
+      Log.debug(1,"Creating new eml-2.0.x package from metadata stream");
       dp = new EML200DataPackage();
-      Log.debug(1,"loading new eml2.0.0 DOM");
+      Log.debug(1,"loading new eml-2.0.x DOM");
     }
     else if ((type.indexOf("eml-dataset-2.0.0beta6")>-1)||
               (type.indexOf("eml-dataset-2.0.0beta4")>-1)){
@@ -132,9 +132,9 @@ public class DataPackageFactory
     Log.debug(40,"DocTypeInfo: " + type);
 //    if (type.equals("eml:eml")) {
     if (type.indexOf("eml://ecoinformatics.org/eml-2.0")>-1) {
-      Log.debug(20,"Creating new eml2.0.0 package");
+      Log.debug(20,"Creating new eml-2.0.x package from docid");
       dp = new EML200DataPackage();
-      Log.debug(40,"loading new eml2.0.0 DOM");
+      Log.debug(40,"loading new eml-2.0.x DOM");
       dp.load(location,docid,morpho);
       dp.setInitialId(docid);
     }
