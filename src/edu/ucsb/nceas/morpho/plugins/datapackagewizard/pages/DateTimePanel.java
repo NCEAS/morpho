@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: anderson $'
- *     '$Date: 2005-10-14 02:02:19 $'
- * '$Revision: 1.24 $'
+ *     '$Date: 2005-10-20 22:41:30 $'
+ * '$Revision: 1.25 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,6 +33,11 @@ import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WidgetFactory;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardPageSubPanelAPI;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardSettings;
 import edu.ucsb.nceas.utilities.OrderedMap;
+import edu.ucsb.nceas.morpho.datapackage.AbstractDataPackage;
+import edu.ucsb.nceas.morpho.datapackage.EML200DataPackage;
+import edu.ucsb.nceas.morpho.framework.UIController;
+import edu.ucsb.nceas.morpho.util.Log;
+
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -75,6 +80,9 @@ class DateTimePanel extends JPanel implements WizardPageSubPanelAPI {
   private JButton addButton, delButton;
 
   private String dateTimeDomainID = "";
+  private String emlVersion = "";
+  private static final String EML_VER_200 = "eml-2.0.0";
+
   // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
 
@@ -100,6 +108,10 @@ class DateTimePanel extends JPanel implements WizardPageSubPanelAPI {
 
     this.setPreferredSize(dims);
 
+    emlVersion = ((EML200DataPackage)UIController.getInstance()
+                 .getCurrentAbstractDataPackage()).getEMLVersion();
+    Log.debug(30, "EML version: " + emlVersion);
+
     ////////////////////////
 
     JPanel formatStringPanel = WidgetFactory.makePanel();
@@ -121,12 +133,13 @@ class DateTimePanel extends JPanel implements WizardPageSubPanelAPI {
     this.add(formatStringGrid);
 
 
-    ////////////////////////
-
-    // TODO: determine if required by schema namespace
-    // not required for eml-2.0.1
+    boolean precisionRequired = false;
+    if (emlVersion.equals(EML_VER_200)) {
+        precisionRequired = true;
+    }
     JPanel precisionPanel = WidgetFactory.makePanel();
-    precisionLabel    = WidgetFactory.makeLabel("Precision:", true, WizardSettings.WIZARD_CONTENT_LABEL_DIMS);
+    precisionLabel = WidgetFactory.makeLabel("Precision:", precisionRequired,
+                                             WizardSettings.WIZARD_CONTENT_LABEL_DIMS);
     precisionPanel.add(precisionLabel);
     precisionField = WidgetFactory.makeOneLineTextField();
     precisionPanel.add(precisionField);
@@ -298,10 +311,7 @@ class DateTimePanel extends JPanel implements WizardPageSubPanelAPI {
     WidgetFactory.unhiliteComponent(formatStringLabel);
 
     String precision = precisionField.getText().trim();
-    // TODO: determine if required by schema namespace
-    // not required for eml-2.0.1
-    if (precision.equals(""))  {
-
+    if (emlVersion.equals(EML_VER_200) && precision.equals(""))  {
       WidgetFactory.hiliteComponent(precisionLabel);
       precisionField.requestFocus();
       return false;
