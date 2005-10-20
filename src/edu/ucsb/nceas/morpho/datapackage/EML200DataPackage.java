@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: sgarg $'
- *     '$Date: 2004-10-13 21:41:35 $'
- * '$Revision: 1.44 $'
+ *   '$Author: anderson $'
+ *     '$Date: 2005-10-20 22:43:37 $'
+ * '$Revision: 1.45 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -51,6 +51,7 @@ import org.w3c.dom.Attr;
 import org.w3c.dom.DOMImplementation;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
+import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.apache.xpath.XPathAPI;
@@ -246,6 +247,43 @@ public  class EML200DataPackage extends AbstractDataPackage
       temp = temp + salutation + " " + givenName + " " + surName;
     }
     return temp;
+  }
+
+
+  /**
+   * Get the xmlns:eml attribute of <eml:eml>.
+   * @return String
+   */
+  public String getXMLNamespace() {
+      String xmlns = "";
+      String emlXpath = "/eml:eml";
+      NodeList nodes = null;
+      try {
+          nodes = XMLUtilities.getNodeListWithXPath(metadataNode, emlXpath);
+      } catch (Exception w) {
+          Log.debug(4, "Problem with getting NodeList for " + emlXpath);
+      }
+
+      if (nodes == null) return "";  // no eml:eml
+      if (nodes.getLength() > 0) {
+          NamedNodeMap atts = nodes.item(0).getAttributes();
+          Node xmlnsNode = atts.getNamedItem("xmlns:eml");
+          xmlns = xmlnsNode.getNodeValue();
+      }
+      return xmlns;
+  }
+
+  /**
+   * Returns everything after the last / in the xmlns:eml.
+   * @return String
+   */
+  public String getEMLVersion() {
+      String xmlns = getXMLNamespace();
+      int pos = xmlns.lastIndexOf('/');
+      if (pos != -1) {
+          return xmlns.substring(pos+1);
+      }
+      return "";
   }
 
   public AbstractDataPackage upload(String id, boolean updatePackageId)
