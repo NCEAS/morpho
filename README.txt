@@ -23,6 +23,9 @@ Contributors:
     Rick Reeves (reeves@nceas.ucsb.edu)
     Sandy Andelman (andelman@nceas.ucsb.edu)
     P. Mark Anderson (anderson@nceas.ucsb.edu)
+    Callie Bowdish (bowdish@nceas.ucsb.edu)
+    Veronique Connolly (connolly@nceas.ucsb.edu)
+    Will Tyburczy (tyburczy@nceas.ucsb.edu)
 
 This is Morpho, a data management application for managing ecological data.
 Morpho allows researchers to describe their data using a comprehensive and
@@ -44,7 +47,7 @@ Morpho's main features include:
 ATTENTION ! --  ATTENTION !  -- ATTENTION !  (April 15, 2004)
 
 
-Many sections of Morpho Version 1.5 has been completely rewritten to work with
+Many sections of Morpho Version 1.5 (and subsequent versions) have been completely rewritten to work with
 EML 2.0.0 (and newer versions of EML). EML 2.0.0 is a considerable change from
 the so-called "Beta6" version used in previous versions of Morpho. Previously, eml
 modules were separate documents linked by references to IDs in a set of "triples".
@@ -81,7 +84,7 @@ Once Morpho has been installed, it can be launched using a shortcut, as follows:
 
     Macintosh: Double click on the morpho icon.
 
-    Linux: Run the "morpho" shell script from the instalation directory
+    Linux: Run the "morpho" shell script from the installation directory
 
 If this is the first time you have launched Morpho, you will see a "New Profile" dialog box.  Profiles are Morpho's way of keeping your data separate from other people's data on your computer in case more than one person uses Morpho on your computer.  Simply fill in the forms and the profile will be created for you.
 
@@ -104,7 +107,7 @@ See http://bugzilla.ecoinformatics.org where we maintain a comprehensive list of
 Version History
 -------------------------------
 ***
-Version 1.6.0 is a major update to 1.5.1 with bug fixes and new features. One of the major features is that Morpho now supports EML 2.0.1. All the Data Package Wizard screens are now accessible from the Documentation Menu. This release also includes bug fixes in the tree editor and the text import wizard.
+Version 1.6.0 is a major update to 1.5.1 with bug fixes and new features. One of the major features is that Morpho now supports EML 2.0.1. All the Data Package Wizard screens are now accessible from the Documentation Menu. This release also includes bug fixes in the tree editor, the text import wizard, and the new data package wizard, as well as improved performance times for loading large data tables.
 
 ***
 Version 1.5.1 is a minor update to 1.5.0 with bug fixes only. One major bug fixed was the inability of version 1.5.0 to locally save data files from a server originally submitted as part of a previously created "beta6" eml package.
