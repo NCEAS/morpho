@@ -5,9 +5,9 @@
  *    Authors: @higgins@
  *    Release: @release@
  *
- *   '$Author: sgarg $'
- *     '$Date: 2005-09-21 22:24:51 $'
- * '$Revision: 1.177 $'
+ *   '$Author: anderson $'
+ *     '$Date: 2005-10-21 19:45:25 $'
+ * '$Revision: 1.178 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -133,6 +133,7 @@ import edu.ucsb.nceas.morpho.plugins.ServiceProvider;
 import edu.ucsb.nceas.morpho.plugins.ServiceController;
 import edu.ucsb.nceas.morpho.plugins.ServiceNotHandledException;
 import edu.ucsb.nceas.morpho.plugins.XSLTResolverInterface;
+import edu.ucsb.nceas.morpho.datapackage.EML200DataPackage;
 
 /**
  * DocFrame is a container for an XML editor which shows combined outline and
@@ -4046,17 +4047,26 @@ public class DocFrame extends javax.swing.JFrame
     StringReader sr = new StringReader(xml);
     try {
       SAXValidate validator = new SAXValidate(true);
-      File fff = new File("./xsd/eml.xsd");
+      String emlVersion = ((EML200DataPackage)UIController.getInstance()
+                   .getCurrentAbstractDataPackage()).getEMLVersion();
+      String xsdPath = "xsd/" + emlVersion + "/eml.xsd";
+      Log.debug(30, "Loading schema: " + xsdPath);
+      File fff = new File(xsdPath);
+      Log.debug(30, "Real schema path: " + fff.getAbsolutePath());
       String emlpath = "";
+
       if (fff.exists()) {
         emlpath = fff.getAbsolutePath();
-        emlpath = emlpath.trim();
-        while (emlpath.indexOf(" ")>-1) {
+        emlpath = emlpath.trim().replaceAll("\\s", "%20").replace('\\', '/');
+ /*
+       while (emlpath.indexOf(" ")>-1) {
           int pos = emlpath.indexOf(" ");
           emlpath = emlpath.substring(0,pos)+"%20"+emlpath.substring(pos+1,emlpath.length());
         }
+*/
       }
-      validator.runTest(sr, "DEFAULT", "eml://ecoinformatics.org/eml-2.0.0 "+"file:///"+emlpath);
+      validator.runTest(sr, "DEFAULT", "eml://ecoinformatics.org/" + emlVersion +
+                        " file:///" + emlpath);
      return "<valid />";
     }
     catch(IOException ioe)
@@ -4071,6 +4081,8 @@ public class DocFrame extends javax.swing.JFrame
     }
     catch(Exception w)
     {
+        Log.debug(30, "Validation problem: " + w.toString());
+       // w.printStackTrace();
       return ("Exception:" + w.getMessage());
 //      html.append("<p>").append(cnfe.getMessage()).append("</p>");
     }
