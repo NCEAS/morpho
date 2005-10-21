@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: anderson $'
- *     '$Date: 2005-10-20 22:41:30 $'
- * '$Revision: 1.25 $'
+ *     '$Date: 2005-10-21 19:46:46 $'
+ * '$Revision: 1.26 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -81,6 +81,7 @@ class DateTimePanel extends JPanel implements WizardPageSubPanelAPI {
 
   private String dateTimeDomainID = "";
   private String emlVersion = "";
+  private boolean precisionRequired = false;
   private static final String EML_VER_200 = "eml-2.0.0";
 
   // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -133,7 +134,6 @@ class DateTimePanel extends JPanel implements WizardPageSubPanelAPI {
     this.add(formatStringGrid);
 
 
-    boolean precisionRequired = false;
     if (emlVersion.equals(EML_VER_200)) {
         precisionRequired = true;
     }
@@ -280,7 +280,9 @@ class DateTimePanel extends JPanel implements WizardPageSubPanelAPI {
   public void onLoadAction() {
 
     WidgetFactory.unhiliteComponent(formatStringLabel);
-    WidgetFactory.unhiliteComponent(precisionLabel);
+    if (precisionRequired) {
+        WidgetFactory.unhiliteComponent(precisionLabel);
+    }
     formatStringField.requestFocus();
   }
 
@@ -311,12 +313,15 @@ class DateTimePanel extends JPanel implements WizardPageSubPanelAPI {
     WidgetFactory.unhiliteComponent(formatStringLabel);
 
     String precision = precisionField.getText().trim();
-    if (emlVersion.equals(EML_VER_200) && precision.equals(""))  {
+    if (precisionRequired && precision.equals(""))  {
       WidgetFactory.hiliteComponent(precisionLabel);
       precisionField.requestFocus();
       return false;
     }
-    WidgetFactory.unhiliteComponent(precisionLabel);
+
+    // I believe this is unnecessary
+    // and we don't want that label to be red
+    //WidgetFactory.unhiliteComponent(precisionLabel);
 
     return true;
   }
