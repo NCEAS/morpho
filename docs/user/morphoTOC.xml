@@ -15,8 +15,7 @@
     <tocitem text="Editing a Data Package" target="Editing_a_data_package" />
     <tocitem text="Uploading and Downloading Data Packages" target="saving_to_network" />
     <tocitem text="Frequently Asked Questions" target="faq" />
-    <tocitem text="Ecological Metadata Language" target="eml_index"/>
   </tocitem>
+    <tocitem text="Introduction to Metadata" target="metadata"/>
+    <tocitem text="Ecological Metadata Language" target="eml_index"/>
 </toc>
-
-
