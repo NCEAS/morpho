@@ -6,7 +6,7 @@
   *    Copyright: 2000 Regents of the University of California and the
   *               National Center for Ecological Analysis and Synthesis
   *  For Details: http://www.nceas.ucsb.edu/
-  *    File Info: '$Id: build.xml,v 1.106 2005-07-29 15:18:10 bowdish Exp $'
+  *    File Info: '$Id: build.xml,v 1.107 2005-10-24 17:06:39 sgarg Exp $'
   *
   *  Build file for the Ant cross-platform build system for metacat
   *  See http://jakarta.apache.org for details on Ant
@@ -219,6 +219,9 @@
           <exclude name="advanced/**" />
           <exclude name="EmlDocs/**" />
         </fileset>
+      </copy>
+      <!-- copy metadata guide docs-->
+      <copy todir="${java.help.doc.dir}/EmlDocs/eml_guidebook" filtering="no" file="${docuserdir}/EmlDocs/eml_guidebook/eml_metadata_guide.html" >
       </copy>
       <!-- copy help systm files -->
       <copy todir="." filtering="no">
