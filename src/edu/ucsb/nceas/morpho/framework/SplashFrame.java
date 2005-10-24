@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: jones $'
- *     '$Date: 2004-04-14 15:56:30 $'
- * '$Revision: 1.25 $'
+ *   '$Author: anderson $'
+ *     '$Date: 2005-10-24 22:44:38 $'
+ * '$Revision: 1.26 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -59,14 +59,18 @@ public class SplashFrame extends javax.swing.JFrame
                                      "Andrea Chadden",
                                      "Rick Reeves",
                                      "Sandy Andelman",
+                                     "P. Mark Anderson",
+                                     "Callie Bowdish",
+                                     "Veronique Connolly",
+                                     "Will Tyburczy",
                                     };
-  private static String[] orgs = { 
+  private static String[] orgs = {
                  "National Center for Ecological Analysis and Synthesis",
                  "Long Term Ecological Research Network Office",
                  "San Diego Supercomputer Center",
                  "Texas Tech University" };
 
-  private static String credit = 
+  private static String credit =
                   "This material is based upon work supported\n" +
                   "by the National Science Foundation under Grant\n" +
                   "No. DEB99-80154, DBI99-04777, and DBI01-31178. Also\n" +
@@ -97,7 +101,7 @@ public class SplashFrame extends javax.swing.JFrame
   //}}
 
   /**
-   * Construct a frame and optionally display a note that the application 
+   * Construct a frame and optionally display a note that the application
    * is loading.  This is used during application startup only.
    *
    * @param sTitle the title for the frame
@@ -323,7 +327,7 @@ public class SplashFrame extends javax.swing.JFrame
     int menuBarHeight = 0;
     if (menuBar != null)
       menuBarHeight = menuBar.getPreferredSize().height;
-    
+
     setSize(insets.left + insets.right + size.width,
               insets.top + insets.bottom + size.height + menuBarHeight);
   }
