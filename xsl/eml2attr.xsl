@@ -333,7 +333,12 @@
         <xsl:element name="standardUnit">
           <xsl:value-of select="$unitDict/stmml:unitList/stmml:unit[./@abbreviation=normalize-space($string)]/@id"/>
         </xsl:element>
-          </xsl:when>
+      </xsl:when>
+      <xsl:when test="''=normalize-space($string)">
+        <xsl:element name="standardUnit">
+           dimensionless 
+        </xsl:element>
+      </xsl:when>
       <!-- Otherwise, use the trimmed value in a customUnit definition-->
       <xsl:otherwise>
         <xsl:element name="customUnit">
