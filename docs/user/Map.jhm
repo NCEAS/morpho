@@ -13,7 +13,7 @@
 <mapID target="saving_to_network" url="morphohelp/saving_to_network_synchronizing.htm" />
 <mapID target="faq" url="morphohelp/Morpho_FAQ.html" />
 
-<mapID target="metadata" url="morphohelp/eml_metadata_guide.html"/>
+<mapID target="metadata" url="morphohelp/EmlDocs/eml_guidebook/eml_metadata_guide.html"/>
 <mapID target="eml_index" url="morphohelp/eml/index.html"/>
 <mapID target="abstract_eml-project" url="morphohelp/eml/eml-project.html#abstract"/>
 <mapID target="abstract_eml-resource" url="morphohelp/eml/eml-resource.html#abstract"/>
