@@ -6,9 +6,9 @@
  *    Authors: @higgins@
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2004-04-13 21:23:16 $'
- * '$Revision: 1.22 $'
+ *   '$Author: anderson $'
+ *     '$Date: 2005-11-10 21:30:09 $'
+ * '$Revision: 1.23 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -82,6 +82,7 @@ public class SaveDialog extends JDialog
   /** Radio button */
   private JCheckBox localLoc = new JCheckBox("Save Locally");
   private JCheckBox networkLoc = new JCheckBox("Save to Network.");
+  //private JCheckBox upgradeEml = new JCheckBox("Upgrade to latest EML (v2.0.1)");
   
   private static final int PADDINGWIDTH = 8;
   private static String WARNING =
@@ -183,6 +184,7 @@ public class SaveDialog extends JDialog
     Box radioBox = Box.createVerticalBox();
     radioBox.add(localLoc);
     radioBox.add(networkLoc);
+    //radioBox.add(upgradeEml);
     
     // create another center box which will put radion box in the center
     // and it will be add into center of mainPanel
@@ -248,6 +250,14 @@ public class SaveDialog extends JDialog
       localLoc.setSelected(false);
       networkLoc.setSelected(false);
     }
+
+    try {
+        String emlVersion = ((EML200DataPackage)adp).getEMLVersion();
+        Log.debug(10, "\n\n**********Got the EML version: " + emlVersion);
+    } catch (ClassCastException cce) {
+        Log.debug(30, "Couldn't cast ADP to EML200DataPackage");
+    }
+
     setVisible(true);
    
   }
