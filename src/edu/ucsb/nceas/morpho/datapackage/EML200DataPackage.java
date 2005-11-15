@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: anderson $'
- *     '$Date: 2005-10-20 22:43:37 $'
- * '$Revision: 1.45 $'
+ *     '$Date: 2005-11-15 01:14:31 $'
+ * '$Revision: 1.46 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -63,6 +63,7 @@ import org.apache.xpath.XPathAPI;
 public  class EML200DataPackage extends AbstractDataPackage
 {
 
+  public static final String LATEST_EML_VER = "eml-2.0.1";
 
   // serialize to the indicated location
   public void serialize(String location)
@@ -251,27 +252,36 @@ public  class EML200DataPackage extends AbstractDataPackage
 
 
   /**
+    * Get the xmlns node.
+    * @return Node
+    */
+   private Node getXMLNamespaceNode() {
+       String emlXpath = "/eml:eml";
+       NodeList nodes = null;
+       try {
+           nodes = XMLUtilities.getNodeListWithXPath(metadataNode, emlXpath);
+       } catch (Exception w) {
+           Log.debug(4, "Problem with getting NodeList for " + emlXpath);
+       }
+
+       if (nodes == null) return null;  // no eml:eml
+       if (nodes.getLength() > 0) {
+           NamedNodeMap atts = nodes.item(0).getAttributes();
+           return atts.getNamedItem("xmlns:eml");
+       }
+       return null;
+   }
+
+  /**
    * Get the xmlns:eml attribute of <eml:eml>.
    * @return String
    */
   public String getXMLNamespace() {
-      String xmlns = "";
-      String emlXpath = "/eml:eml";
-      NodeList nodes = null;
-      try {
-          nodes = XMLUtilities.getNodeListWithXPath(metadataNode, emlXpath);
-      } catch (Exception w) {
-          Log.debug(4, "Problem with getting NodeList for " + emlXpath);
-      }
-
-      if (nodes == null) return "";  // no eml:eml
-      if (nodes.getLength() > 0) {
-          NamedNodeMap atts = nodes.item(0).getAttributes();
-          Node xmlnsNode = atts.getNamedItem("xmlns:eml");
-          xmlns = xmlnsNode.getNodeValue();
-      }
-      return xmlns;
+      Node xmlnsNode = getXMLNamespaceNode();
+      if (xmlnsNode == null) return "";  // no eml:eml
+      return xmlnsNode.getNodeValue();
   }
+
 
   /**
    * Returns everything after the last / in the xmlns:eml.
@@ -284,6 +294,28 @@ public  class EML200DataPackage extends AbstractDataPackage
           return xmlns.substring(pos+1);
       }
       return "";
+  }
+
+  /**
+   * Sets the EML version by changing everything after
+   * the / in the xmlns:eml.
+   */
+  public void setEMLVersion(String newVersion) {
+      String xmlns = getXMLNamespace();
+      int pos = xmlns.lastIndexOf('/');
+      if (pos != -1) {
+          xmlns = xmlns.substring(pos+1);
+          if (!xmlns.equals(newVersion)) {
+              // different versions
+              xmlns = xmlns.substring(0, pos) + newVersion;
+              Log.debug(30, "new xmlns: " + xmlns);
+
+              Node xmlnsNode = getXMLNamespaceNode();
+              xmlnsNode.setNodeValue(xmlns);
+          }
+      } else {
+          Log.debug(15, "invalid xmlns while setting EML version: " + xmlns);
+      }
   }
 
   public AbstractDataPackage upload(String id, boolean updatePackageId)

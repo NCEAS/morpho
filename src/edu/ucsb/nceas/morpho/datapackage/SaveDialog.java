@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: anderson $'
- *     '$Date: 2005-11-10 21:30:09 $'
- * '$Revision: 1.23 $'
+ *     '$Date: 2005-11-15 01:14:31 $'
+ * '$Revision: 1.24 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -71,44 +71,45 @@ import javax.swing.SwingConstants;
  */
 public class SaveDialog extends JDialog
 {
- 
-  /** Control button */ 
+
+  /** Control button */
   private JButton executeButton = null;
   private JButton cancelButton = null;
-  
+
   private boolean showPackageFlag = true;
-  
-  
+
+
   /** Radio button */
   private JCheckBox localLoc = new JCheckBox("Save Locally");
   private JCheckBox networkLoc = new JCheckBox("Save to Network.");
-  //private JCheckBox upgradeEml = new JCheckBox("Upgrade to latest EML (v2.0.1)");
-  
+  private JCheckBox upgradeEml = new JCheckBox("Upgrade to latest EML (" +
+                                       EML200DataPackage.LATEST_EML_VER + ")");
+
   private static final int PADDINGWIDTH = 8;
   private static String WARNING =
       "Please choose where you would like to save the data package.";
 
   /** A reference to morpho frame */
   MorphoFrame morphoFrame = null;
-  
+
   /** A string indicating the morpho frame's type*/
   String morphoFrameType = null;
-  
-  
+
+
   /** selected docid  */
   String selectDocId = null;
-    
+
   /** flag to indicate selected data package has local copy */
   private boolean inLocal = false;
-  
+
   /** flag to indicate selected data package has local copy */
   private boolean inNetwork = false;
 
-  
+
   /** the AbstractDataPackage object to be saved  */
   AbstractDataPackage adp = null;
-  
-  
+
+
   /**
    * Construct a new instance of the dialog where parent is morphoframe
    *
@@ -119,15 +120,15 @@ public class SaveDialog extends JDialog
     this.adp = adp;
     morphoFrame = UIController.getInstance().getCurrentActiveWindow();
     initialize(morphoFrame);
- 
+
   }
-  
+
   public SaveDialog(AbstractDataPackage adp, boolean showPackageFlag)
   {
     this(adp);
     this.showPackageFlag = showPackageFlag;
   }
-  
+
   /** Method to initialize save dialog */
   private void initialize(Window parent)
   {
@@ -138,7 +139,7 @@ public class SaveDialog extends JDialog
     int dialogHeight = 270;
     setSize(dialogWidth, dialogHeight);
     setResizable(false);
-    
+
     // Set location of dialog, it shared same center of parent
     double parentX = parent.getLocation().getX();
     double parentY = parent.getLocation().getY();
@@ -147,25 +148,25 @@ public class SaveDialog extends JDialog
     int dialogX = (new Double(centerX - 0.5 * dialogWidth)).intValue();
     int dialogY = (new Double(centerY - 0.5 * dialogHeight)).intValue();
     setLocation(dialogX, dialogY);
-    
+
     setTitle("Save Current DataPackage");
     // Set the default close operation is dispose
     setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-    
+
     // Set the border layout as layout
     getContentPane().setLayout(new BorderLayout(0, 0));
      // Add padding for left and right
-    getContentPane().add(BorderLayout.EAST, 
+    getContentPane().add(BorderLayout.EAST,
                                       Box.createHorizontalStrut(PADDINGWIDTH));
-    getContentPane().add(BorderLayout.WEST, 
+    getContentPane().add(BorderLayout.WEST,
                                       Box.createHorizontalStrut(PADDINGWIDTH));
-  
-   
-    
+
+
+
     // Create JPanel and set it border layout
     JPanel mainPanel = new JPanel();
     mainPanel.setLayout(new BorderLayout(0, 0));
-    
+
     // Create note box and add it to the north of mainPanel
     Box noteBox = Box.createVerticalBox();
     noteBox.add(Box.createVerticalStrut(PADDINGWIDTH));
@@ -175,17 +176,17 @@ public class SaveDialog extends JDialog
     note.setLineWrap(true);
     note.setWrapStyleWord(true);
     note.setOpaque(false);
-*/    
+*/
     noteBox.add(note);
     noteBox.add(Box.createVerticalStrut(PADDINGWIDTH));
     mainPanel.add(BorderLayout.NORTH, noteBox);
-    
-    // Create a radio box 
+
+    // Create a radio box
     Box radioBox = Box.createVerticalBox();
     radioBox.add(localLoc);
     radioBox.add(networkLoc);
-    //radioBox.add(upgradeEml);
-    
+    radioBox.add(upgradeEml);
+
     // create another center box which will put radion box in the center
     // and it will be add into center of mainPanel
     Box centerBox = Box.createHorizontalBox();
@@ -193,10 +194,10 @@ public class SaveDialog extends JDialog
     centerBox.add(radioBox);
     centerBox.add(Box.createHorizontalGlue());
     mainPanel.add(BorderLayout.CENTER, centerBox);
-   
-    // Finish mainPanel and add it the certer of contentpanel    
+
+    // Finish mainPanel and add it the certer of contentpanel
     getContentPane().add(BorderLayout.CENTER, mainPanel);
-    
+
     // Create bottom box
     Box bottomBox = Box.createVerticalBox();
     getContentPane().add(BorderLayout.SOUTH, bottomBox);
@@ -205,26 +206,26 @@ public class SaveDialog extends JDialog
     // Create a controlbuttionBox
     Box controlButtonsBox = Box.createHorizontalBox();
     controlButtonsBox.add(Box.createHorizontalGlue());
-    
+
     // Save button
-    executeButton = new JButton("Save");   
+    executeButton = new JButton("Save");
     controlButtonsBox.add(executeButton);
     controlButtonsBox.add(Box.createHorizontalStrut(PADDINGWIDTH));
-    
+
     //Cancel button
     cancelButton = new JButton("Cancel");
     controlButtonsBox.add(cancelButton);
     controlButtonsBox.add(Box.createHorizontalStrut(PADDINGWIDTH));
-    
+
     // Add controlButtonsBox to bottomBox
     bottomBox.add(controlButtonsBox);
     // Add the margin between controlButtonPanel to the bottom line
     bottomBox.add(Box.createVerticalStrut(10));
-    
+
 		SymAction lSymAction = new SymAction();
 		executeButton.addActionListener(lSymAction);
 		cancelButton.addActionListener(lSymAction);
-    
+
     String location = adp.getLocation();
     if (location.equals("")) {  // never been saved
       localLoc.setEnabled(true);
@@ -250,23 +251,29 @@ public class SaveDialog extends JDialog
       localLoc.setSelected(false);
       networkLoc.setSelected(false);
     }
-
+/*
     try {
         String emlVersion = ((EML200DataPackage)adp).getEMLVersion();
         Log.debug(10, "\n\n**********Got the EML version: " + emlVersion);
-    } catch (ClassCastException cce) {
-        Log.debug(30, "Couldn't cast ADP to EML200DataPackage");
-    }
+        boolean askUpgrade = (emlVersion.toLowerCase()
+                             .indexOf(EML200DataPackage.LATEST_EML_VER) == -1);
+        // show and check the checkbox for upgrading EML if not latest version
+        upgradeEml.setSelected(askUpgrade);
+        upgradeEml.setVisible(askUpgrade);
 
+    } catch (Exception e) {
+        Log.debug(30, "Couldn't get EML version: " + e.getMessage());
+    }
+*/
     setVisible(true);
-   
+
   }
-  
+
     /** Method to enable executeButton and assign command */
    private void enableExecuteButton(Object object, JDialog dialog)
    {
    }//enableExecuteButton
- 
+
 
 	class SymAction implements java.awt.event.ActionListener
 	{
@@ -281,7 +288,7 @@ public class SaveDialog extends JDialog
       }
 		}
 	}
-  
+
   void cancelButton_actionPerformed(java.awt.event.ActionEvent event)
 	{
 		this.setVisible(false);
@@ -317,7 +324,11 @@ public class SaveDialog extends JDialog
         adp.setAccessionNumber(nextid);
       }
     }
-    
+
+    if (upgradeEml.isSelected()) {
+        ((EML200DataPackage)adp).setEMLVersion(EML200DataPackage.LATEST_EML_VER);
+    }
+
 		try{
       if ((localLoc.isSelected())&&(localLoc.isEnabled())
           &&(networkLoc.isSelected())&&(networkLoc.isEnabled())) {
@@ -334,7 +345,7 @@ public class SaveDialog extends JDialog
         adp.serialize(AbstractDataPackage.METACAT);
         adp.setLocation(AbstractDataPackage.METACAT);
         adp.serializeData();
-      }  
+      }
       else {
         Log.debug(1, "No location for saving is selected!");
 		  }
@@ -356,14 +367,14 @@ public class SaveDialog extends JDialog
           // validation error
 			  Log.debug(5, "Problem Saving Data due to invalid content");
         }
-					
+
 			  Log.debug(20, "Problem Saving\n"+mue.getMessage());
 				problem = true;
 		}
-		
+
 	  this.setVisible(false);
 	  this.dispose();
-     
+
     if (!problem) {
       if (showPackageFlag) {
         UIController.showNewPackageNoLocChange(adp);
@@ -379,5 +390,5 @@ public class SaveDialog extends JDialog
 
 	}
 
- 
+
 }//ExportDialog
