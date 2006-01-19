@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: sgarg $'
- *     '$Date: 2005-01-26 23:33:21 $'
- * '$Revision: 1.19 $'
+ *   '$Author: anderson $'
+ *     '$Date: 2006-01-19 22:19:17 $'
+ * '$Revision: 1.20 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -190,11 +190,11 @@ public class General extends AbstractUIPage{
 
     returnMap.put("/eml:eml/dataset/title[1]", titleField.getText().trim());
 
-    if ( !(absField.getText().trim().equals("")) ) {
+//    if ( !(absField.getText().trim().equals("")) ) {
 
-      returnMap.put("/eml:eml/dataset/abstract/para[1]",
-                    absField.getText().trim());
-    }
+        returnMap.put("/eml:eml/dataset/abstract/para[1]",
+                      absField.getText().trim());
+//    }
     return returnMap;
   }
 
@@ -215,11 +215,12 @@ public class General extends AbstractUIPage{
 
     returnMap.put(rootXPath + "/title[1]", titleField.getText().trim());
 
-    if ( !(absField.getText().trim().equals("")) ) {
+    // Removing this logic fixes bug 2223
+//    if ( !(absField.getText().trim().equals("")) ) {
 
       returnMap.put(rootXPath + "/abstract/para[1]",
           absField.getText().trim());
-    }
+//    }
     return returnMap;
 
   }
