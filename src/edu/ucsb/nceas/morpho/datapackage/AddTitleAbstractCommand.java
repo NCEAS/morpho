@@ -5,9 +5,9 @@
  *    Authors: Saurabh Garg
  *    Release: @release@
  *
- *   '$Author: sgarg $'
- *     '$Date: 2005-10-10 20:12:41 $'
- * '$Revision: 1.2 $'
+ *   '$Author: anderson $'
+ *     '$Date: 2006-01-20 23:49:10 $'
+ * '$Revision: 1.3 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -156,9 +156,19 @@ public class AddTitleAbstractCommand
     }
     titleMap.put("/title[1]", map.get("/title[1]"));
     map.remove("/title[1]");
-    if(!map.isEmpty()){
-      abstractMap.put("/abstract/para[1]", map.get("/abstract/para[1]"));
-      insertAbstract = true;
+    if(!map.isEmpty()) {
+       String abstractKey = "/abstract/para[1]";
+       String abstractValue = (String) map.get(abstractKey);
+
+       if (abstractValue == null || abstractValue.equals("")){
+           // make sure the abstract is not present in the map
+           abstractMap.remove(abstractKey);
+           adp.deleteSubtree(DATAPACKAGE_ABSTRACT_GENERIC_NAME, 0);
+
+       } else {
+           abstractMap.put(abstractKey, map.get(abstractKey));
+           insertAbstract = true;
+       }
     }
 
     DOMImplementation impl = DOMImplementationImpl.getDOMImplementation();
