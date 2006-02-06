@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2005-08-31 21:05:58 $'
- * '$Revision: 1.111 $'
+ *   '$Author: anderson $'
+ *     '$Date: 2006-02-06 18:44:45 $'
+ * '$Revision: 1.112 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -68,6 +68,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Date;
@@ -76,6 +77,8 @@ import java.util.Vector;
 import java.util.Iterator;
 import java.util.HashMap;
 import java.util.Map;
+import javax.xml.transform.*;
+
 
 
 /**
@@ -215,7 +218,7 @@ public abstract class AbstractDataPackage extends MetadataObject
 
 	private static Map  customUnitDictionaryUnitsCacheMap = new HashMap();
 	private static String[] customUnitDictionaryUnitTypesArray = new String[0];
-  
+
   // added by D Higgins on 29 Aug 2005
   // these variables store the most recent AttributeArray so it does not
   // need to be retreived again. This was added for use in tables with very
@@ -263,6 +266,16 @@ public abstract class AbstractDataPackage extends MetadataObject
    * @param morpho Morpho
    */
   abstract public void load(String location, String identifier, Morpho morpho);
+
+  /**
+    * This abstract method loads a datapackage from an XML character stream.
+    * Basic action is to create a DOM and assign
+    * it to the underlying MetadataObject. Actual implementation is done in
+    * classes specific to grammar
+    *
+    * @param in InputSource
+    */
+   abstract public void load(InputSource in);
 
 
   /**
@@ -430,13 +443,14 @@ public abstract class AbstractDataPackage extends MetadataObject
   public String getAccessionNumber() {
     String initId = getInitialId();
     String temp = getGenericValue(
-          "/xpathKeyMap/contextNode[@name='package']/accessionNumber");
-    if (initId!=null) {
+        "/xpathKeyMap/contextNode[@name='package']/accessionNumber");
+    if (initId != null) {
       if (!initId.equals(temp)) {
         Log.debug(10,"Internal Id DOES NOT match Storage Id!!!");
       }
       temp = initId;
     }
+
     return temp;
   }
 
@@ -453,6 +467,30 @@ public abstract class AbstractDataPackage extends MetadataObject
     return temp;
   }
 
+
+  /**
+   *
+   */
+  public String getPackageIdFromDOM() {
+      String emlXpath = "/eml:eml/";
+      NodeList nodes = null;
+      try {
+          nodes = XMLUtilities.getNodeListWithXPath(getMetadataNode(), emlXpath);
+      } catch (Exception w) {
+        //  Log.debug(30, "Problem with getting NodeList for " + emlXpath);
+      }
+
+      if (nodes == null) {
+          return null; // no eml:eml
+      }
+
+      if (nodes.getLength() > 0) {
+          NamedNodeMap atts = nodes.item(0).getAttributes();
+          String packageId = atts.getNamedItem("packageId").getNodeValue();
+          return packageId;
+      }
+      return "";
+  }
 
   /**
    * convenience method to set accession number from DOM
