@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2004-03-09 22:22:02 $'
- * '$Revision: 1.11 $'
+ *   '$Author: anderson $'
+ *     '$Date: 2006-02-06 19:52:24 $'
+ * '$Revision: 1.12 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -66,14 +66,14 @@ public class MetadataObject
    * root node of the in-memory DOM structure
    */
   static protected Node root;
-  
+
   /**
    *   A DOM Node is the basic datastructure. This may be the root of a DOM or it
    *   may be the top level node of a subtree. Working with the Node allows several
    *   Metadata objects to share a DOM and avoids the need to move Nodes between DOMs
    */
   protected Node metadataNode = null;
-  
+
   /**
    *   paths is designed to provide a 'map' between generic paths and specific locations
    *   in a tree (Node) structure. This allows one to get items like 'name' from paths that
@@ -83,14 +83,14 @@ public class MetadataObject
    *   use (see XMLUtilites)
    */
   protected Node metadataPathNode = null;
-  
+
   /**
    *   specifies the general type of the grammar used to specify the schema;
    *   currently, the allowed types are "publicID", "systemID", "namespace",
    *   "rootname", and "unknown"
    */
   protected String grammarType = "unknown";
-  
+
   /**
    *  the specific grammar value; i.e. publicID, namespace value, etc
    */
@@ -126,19 +126,19 @@ public class MetadataObject
   public void setMetadataNode(Node nd) {
     metadataNode = nd;
   }
-  
+
   public Node getMetadataNode() {
-    return metadataNode; 
+    return metadataNode;
   }
-  
+
   public Node getMetadataPath() {
-    return metadataPathNode; 
+    return metadataPathNode;
   }
-  
+
   public void setMetadataPath(Node nd) {
     metadataPathNode = nd;
   }
-  
+
   public String getGenericValue(String genericName) {
     Node value = null;
     try{
@@ -157,8 +157,17 @@ public class MetadataObject
         Log.debug(30,"path: "+path);
         try{
           // metadataNode is the context node
+          try {
+              Log.debug(30, " Document root node has " +
+                        metadataNode.getAttributes().getLength() +
+                        " attributes");
+          } catch (Exception ex) {}
+
           NodeList nl = XPathAPI.selectNodeList(metadataNode, path);
-          if (nl.getLength() == 0) return ret;
+          if (nl.getLength() == 0) {
+              Log.debug(30, "no nodes for " + path + " in " + metadataNode.toString());
+              return ret;
+          }
           // for now, just get first node value
           Node n = nl.item(0);
           Node child = n.getFirstChild();
@@ -179,11 +188,11 @@ public class MetadataObject
     else { return ret;}
     return ret;
   }
-  
+
   public String getXPathValue(String path) {
     String ret = "";
       if ((path!=null)&&(path.length()>1)) {
-        Log.debug(30,"path: "+path);
+        //Log.debug(30,"path: "+path);
         try{
           // metadataNode is the context node
           NodeList nl = XPathAPI.selectNodeList(metadataNode, path);
@@ -203,9 +212,9 @@ public class MetadataObject
           Log.debug(5, "error in XPath node selection in MetadataObject (getXPathValue)");
         }
       }
-    return ret;  
+    return ret;
   }
-  
+
   public void setGenericValue(String genericName, String genericValue) {
     Object value = null;
     try{
@@ -214,21 +223,32 @@ public class MetadataObject
     catch (Exception e) {
       Log.debug(10, "Error in getGenericValue: "+e.toString());
     }
+
+    Log.debug(30, genericName + " maps to " + value);
     if (value!=null) {
       // value is an XPath
       String path = (String)((Node)value).getNodeValue();
       if ((path!=null)||(path.length()<1)) {
         try{
+          Log.debug(30, "node path is " + path);
           // metadataNode is the context node
           NodeList nl = XPathAPI.selectNodeList(metadataNode, path);
           // for now, just set first node value
           Node n = nl.item(0);
+
+          if (n == null) {
+              // this is bad
+              Log.debug(5, "Unable to get node at " + path);
+          }
+
           Node child = n.getFirstChild();
           if (child != null) {
+            Log.debug(30, "setting value to " + genericValue);
             child.setNodeValue(genericValue);
           }
         } catch (Exception e) {
-          Log.debug(5, "error in setting XPath node in MetadataObject");
+          Log.debug(30, "error in setting XPath node in MetadataObject: " + e.toString());
+          e.printStackTrace();
         }
       }
     }
@@ -245,7 +265,7 @@ public class MetadataObject
       XObject xobj = XPathAPI.eval(root, args[0]);
       Log.debug(1,"XObject evaluated: Type ="+xobj.getType());
       if (xobj.getType()==XObject.CLASS_BOOLEAN) {
-          Log.debug(1,"XPath evaluation results in a BOOLEAN!"+"     val: "+xobj.bool());        
+          Log.debug(1,"XPath evaluation results in a BOOLEAN!"+"     val: "+xobj.bool());
       }
       if (xobj.getType()==XObject.CLASS_NODESET) {
         NodeList nl = XPathAPI.selectNodeList(root, args[0]);
@@ -266,10 +286,10 @@ public class MetadataObject
           Log.debug(5, "error in XPath node selection in MetadataObject"+e.toString());
       }
   }
-  
+
   public String toString() {
-  
+
     return XMLUtilities.getDOMTreeAsString(metadataNode);
   }
-  
+
 }
