@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2004-04-27 19:00:45 $'
- * '$Revision: 1.6 $'
+ *   '$Author: anderson $'
+ *     '$Date: 2006-02-06 19:43:41 $'
+ * '$Revision: 1.7 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -37,7 +37,7 @@ import org.xml.sax.SAXException;
 import org.xml.sax.InputSource;
 import java.io.*;
 
-public class XMLUtil                                         
+public class XMLUtil
 {
     /** Normalizes the given string. */
     public static String normalize(Object ss) {
@@ -83,7 +83,7 @@ public class XMLUtil
 */                 default: {
                     if ((ch<128)&&(ch>31)) {
                       str.append(ch);
-                    } 
+                    }
                     else if (ch<32) {
                       if (ch== 10) {
                         str.append(ch);
@@ -93,7 +93,7 @@ public class XMLUtil
                       }
                       if (ch==9) {
                         str.append(ch);
-                      }  
+                      }
                       // otherwise skip
                     }
                     else {
@@ -110,7 +110,7 @@ public class XMLUtil
         return temp;
 
     } // normalize(String):String
-    
+
 
 
     public static String getDOMTreeAsString(Node node) {
@@ -135,7 +135,7 @@ public class XMLUtil
       return baos.toString();
   }
 
-    
+
   /**
    * This method can 'print' any DOM subtree. Specifically it is
    * set (by means of 'out') to write the in-memory DOM to the
@@ -284,5 +284,23 @@ public class XMLUtil
     return (array);
 
   } // sortAttributes(NamedNodeMap):Attr[]
-    
+
+
+  /**
+   * Returns attribute value given a node's attributes and attribute name.
+   * Returns null if attribute is not found.
+   * @param attributes NamedNodeMap
+   * @param attributeName String
+   * @return String
+   */
+  public static String getAttributeValue(NamedNodeMap attributes,
+                                         String attributeName) {
+      if (attributes == null)  return null;
+      Node n = attributes.getNamedItem(attributeName);
+      if (n == null)  return null;
+      return n.getNodeValue();
+  } // getAttributeValue(NamedNodeMap,String):String
+
+
+
 }
