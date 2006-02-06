@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: anderson $'
- *     '$Date: 2005-11-15 01:14:31 $'
- * '$Revision: 1.24 $'
+ *     '$Date: 2006-02-06 19:42:37 $'
+ * '$Revision: 1.25 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -65,6 +65,7 @@ import javax.swing.JTextField;
 import javax.swing.JTextArea;
 import javax.swing.WindowConstants;
 import javax.swing.SwingConstants;
+import edu.ucsb.nceas.morpho.util.XMLUtil;
 
 /**
  * A dialog box for user choice of export options
@@ -251,7 +252,7 @@ public class SaveDialog extends JDialog
       localLoc.setSelected(false);
       networkLoc.setSelected(false);
     }
-/*
+
     try {
         String emlVersion = ((EML200DataPackage)adp).getEMLVersion();
         Log.debug(10, "\n\n**********Got the EML version: " + emlVersion);
@@ -264,7 +265,7 @@ public class SaveDialog extends JDialog
     } catch (Exception e) {
         Log.debug(30, "Couldn't get EML version: " + e.getMessage());
     }
-*/
+
     setVisible(true);
 
   }
@@ -301,10 +302,35 @@ public class SaveDialog extends JDialog
     if (comp instanceof DataViewContainerPanel) {
       ((DataViewContainerPanel)comp).saveDataChanges();
     }
-		boolean problem = false;
+
+    boolean problem = false;
     Morpho morpho = Morpho.thisStaticInstance;
     String location = adp.getLocation();
     if (location.equals("")) { // only update version if new
+      try {
+          if (upgradeEml.isSelected()) {
+              // change the XML
+              ((EML200DataPackage)adp).setEMLVersion(EML200DataPackage.LATEST_EML_VER);
+
+              /*
+              Log.debug(15, "Reloading ADP with its own XML:\n" +
+                        XMLUtil.getDOMTreeAsString(
+                                adp.getMetadataNode().getOwnerDocument())
+                                .substring(0, 512) + ".............");
+              */
+
+              // create a new data package instance with the altered XML
+              adp = (EML200DataPackage)DataPackageFactory.getDataPackage(
+                      new java.io.StringReader(
+                              XMLUtil.getDOMTreeAsString(
+                                  adp.getMetadataNode().cloneNode(true).getOwnerDocument())),
+                      false, true);
+
+          }
+      } catch (Exception ex) {
+          Log.debug(30, "Problem setting new EML version: " + ex.toString());
+      }
+
       try{
         String id = adp.getAccessionNumber();
         if (id.indexOf("temporary")>-1) {
@@ -325,11 +351,7 @@ public class SaveDialog extends JDialog
       }
     }
 
-    if (upgradeEml.isSelected()) {
-        ((EML200DataPackage)adp).setEMLVersion(EML200DataPackage.LATEST_EML_VER);
-    }
-
-		try{
+    try{
       if ((localLoc.isSelected())&&(localLoc.isEnabled())
           &&(networkLoc.isSelected())&&(networkLoc.isEnabled())) {
         adp.serialize(AbstractDataPackage.BOTH);
