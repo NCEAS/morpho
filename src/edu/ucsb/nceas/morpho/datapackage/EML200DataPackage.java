@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: anderson $'
- *     '$Date: 2005-11-15 01:14:31 $'
- * '$Revision: 1.46 $'
+ *     '$Date: 2006-02-06 19:30:22 $'
+ * '$Revision: 1.47 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,6 +33,7 @@ import edu.ucsb.nceas.morpho.datastore.MetacatUploadException;
 import edu.ucsb.nceas.morpho.util.Log;
 import edu.ucsb.nceas.utilities.XMLUtilities;
 import edu.ucsb.nceas.morpho.util.XMLUtil;
+import edu.ucsb.nceas.morpho.util.XMLErrorHandler;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -72,11 +73,15 @@ public  class EML200DataPackage extends AbstractDataPackage
     Morpho morpho = Morpho.thisStaticInstance;
 //    String temp = XMLUtilities.getDOMTreeAsString(getMetadataNode(), false);
     String temp = XMLUtil.getDOMTreeAsString(getMetadataNode().getOwnerDocument());
+
     StringReader sr = new StringReader(temp);
+//    Log.debug(30, temp);
     StringReader sr1 = new StringReader(temp);
       if((location.equals(AbstractDataPackage.LOCAL))||
                  (location.equals(AbstractDataPackage.BOTH))) {
         FileSystemDataStore fsds = new FileSystemDataStore(morpho);
+//        Log.debug(10, "XXXXXXXXX: serializing to hardcoded /tmp/emldoc.xml");
+//       fsds.saveFile("100.0",sr);
         fsds.saveFile(getAccessionNumber(),sr);
       }
       if((location.equals(AbstractDataPackage.METACAT))||
@@ -190,30 +195,56 @@ public  class EML200DataPackage extends AbstractDataPackage
     InputSource in;
     FileInputStream fs;
     Document doc = null;
-    try
-    {
-    if (packagefile==null) Log.debug(1, "packagefile is NULL!");
-      fs = new FileInputStream(packagefile);
-      in = new InputSource(fs);
 
-      doc = parser.parse(in);
-      fs.close();
-   } catch(Exception e1) {
-      Log.debug(4, "Parsing threw: " + e1.toString());
-      e1.printStackTrace();
-    }
-    if (doc==null) Log.debug(1, "doc is NULL!");
-    metadataNode = doc.getDocumentElement();  // the root Node
-    this.doc = doc;  // set the MetadataObject doc
-    try{
-      metadataPathNode = XMLUtilities.getXMLAsDOMTreeRootNode("/eml200KeymapConfig.xml");
-    }
-    catch (Exception e2) {
-      Log.debug(4, "getting DOM for Paths threw error: " + e2.toString());
-      e2.printStackTrace();
+    if (packagefile==null){ Log.debug(1, "packagefile is NULL!"); }
+    try {
+        fs = new FileInputStream(packagefile);
+        load(new InputSource(fs));
+        fs.close();
+    } catch (java.io.IOException ioe) {
+        Log.debug(15, "IOException: " + ioe.getMessage());
     }
   }
 
+  public void load(InputSource in) {
+      DocumentBuilder parser = Morpho.createDomParser();
+      Document doc = null;
+      /*
+      Log.debug(15, "Testing input source");
+      try {
+          java.io.BufferedReader r = new java.io.BufferedReader(in.getCharacterStream());
+          String line;
+          while ((line=r.readLine()) != null) {
+              Log.debug(15, line);
+          }
+      } catch (Exception ex) {
+          Log.debug(1, "Problem with XML input source: " + ex.toString());
+      }
+*/
+
+      try
+      {
+        parser.setErrorHandler(new XMLErrorHandler());
+        doc = parser.parse(in);
+      } catch(Exception e1) {
+        Log.debug(4, "Parsing threw: " + e1.toString());
+        e1.printStackTrace();
+      }
+      if (doc==null) { Log.debug(1, "doc is NULL!");}
+      setDocument(doc);
+      try{
+        metadataPathNode = XMLUtilities.getXMLAsDOMTreeRootNode("/eml200KeymapConfig.xml");
+      }
+      catch (Exception e2) {
+        Log.debug(4, "getting DOM for Paths threw error: " + e2.toString());
+        e2.printStackTrace();
+      }
+  }
+
+  private void setDocument(Document doc) {
+      setMetadataNode(doc.getDocumentElement());
+      this.doc = doc;  // set the MetadataObject doc
+  }
 
   /**
    * override method in AbstractDataPackage to get all authors and combine name
@@ -250,36 +281,48 @@ public  class EML200DataPackage extends AbstractDataPackage
     return temp;
   }
 
-
-  /**
-    * Get the xmlns node.
+   /**
+    * Gets the /eml:eml node.
     * @return Node
     */
-   private Node getXMLNamespaceNode() {
+   private Node getRootNode() {
        String emlXpath = "/eml:eml";
        NodeList nodes = null;
        try {
            nodes = XMLUtilities.getNodeListWithXPath(metadataNode, emlXpath);
        } catch (Exception w) {
-           Log.debug(4, "Problem with getting NodeList for " + emlXpath);
+           Log.debug(30, "Problem with getting root node with path " +
+                     emlXpath + " -- " + w.toString());
        }
 
        if (nodes == null) return null;  // no eml:eml
        if (nodes.getLength() > 0) {
-           NamedNodeMap atts = nodes.item(0).getAttributes();
-           return atts.getNamedItem("xmlns:eml");
+           return nodes.item(0);
        }
        return null;
    }
+
+
+   /**
+     * Get the root node's attributes.
+     * @return NamedNodeMap
+     */
+    private NamedNodeMap getRootNodeAttributes() {
+        Node n = getRootNode();
+        if (n == null)  return null;
+        return n.getAttributes();
+    }
+
 
   /**
    * Get the xmlns:eml attribute of <eml:eml>.
    * @return String
    */
   public String getXMLNamespace() {
-      Node xmlnsNode = getXMLNamespaceNode();
-      if (xmlnsNode == null) return "";  // no eml:eml
-      return xmlnsNode.getNodeValue();
+      return XMLUtil.getAttributeValue(getRootNodeAttributes(), "xmlns:eml");
+
+//   return getGenericValue("/xpathKeyMap/contextNode[@name='package']/emlVersion");
+//   return getXPathValue("/eml:eml/@xmlns:eml");
   }
 
 
@@ -293,28 +336,75 @@ public  class EML200DataPackage extends AbstractDataPackage
       if (pos != -1) {
           return xmlns.substring(pos+1);
       }
+
       return "";
   }
 
+
   /**
-   * Sets the EML version by changing everything after
-   * the / in the xmlns:eml.
+   * Sets the EML version xmlns:eml and xsi:schemaLocation.
+   *
+   * xmlns:eml="eml://ecoinformatics.org/eml-2.0.1"
+   * xsi:schemaLocation="eml://ecoinformatics.org/eml-2.0.1 eml.xsd"
    */
   public void setEMLVersion(String newVersion) {
-      String xmlns = getXMLNamespace();
-      int pos = xmlns.lastIndexOf('/');
-      if (pos != -1) {
-          xmlns = xmlns.substring(pos+1);
-          if (!xmlns.equals(newVersion)) {
-              // different versions
-              xmlns = xmlns.substring(0, pos) + newVersion;
-              Log.debug(30, "new xmlns: " + xmlns);
 
-              Node xmlnsNode = getXMLNamespaceNode();
-              xmlnsNode.setNodeValue(xmlns);
+      NamedNodeMap rootNodeAtts = getRootNodeAttributes();
+      String oldXmlns = XMLUtil.getAttributeValue(rootNodeAtts, "xmlns:eml");
+
+      // check if current version differs from given version
+      int pos = oldXmlns.lastIndexOf('/');
+      if (pos != -1) {
+          String oldVersion = oldXmlns.substring(pos+1);
+          if (!oldVersion.equals(newVersion)) {
+              // different versions
+              String newXmlns = oldXmlns.substring(0, pos+1) + newVersion;
+              Log.debug(30, "XXXXX setting new xmlns: " + newXmlns);
+
+              Node xmlnsNode = rootNodeAtts.getNamedItem("xmlns:eml");
+              xmlnsNode.setNodeValue(newXmlns);
+
+              // todo: str_replace old version with eml-2.0.1
+              // todo: go back to SaveDialog line 315 and make a new DP
+              String oldSchemaLocation = XMLUtil.getAttributeValue(rootNodeAtts,
+                      "xsi:schemaLocation");
+              int spacePos = oldSchemaLocation.indexOf(' ');
+              String oldSchemaHome = oldSchemaLocation.substring(
+                      oldSchemaLocation.lastIndexOf('/', spacePos)+1, spacePos);
+
+              String newSchemaLocation = oldSchemaLocation.replaceAll(oldSchemaHome, newVersion);
+
+              //Log.debug(10, "newSchemaLocation = " + newSchemaLocation);
+              Node schemaLocationNode = rootNodeAtts.getNamedItem("xsi:schemaLocation");
+              schemaLocationNode.setNodeValue(newSchemaLocation);
+
+              /*
+              // reload the DOM with the new namespace
+              Node origMetadataNode = getMetadataNode();
+              org.w3c.dom.Document oldDoc = origMetadataNode.getOwnerDocument();
+              DOMImplementation impl = DOMImplementationImpl.getDOMImplementation();
+              org.w3c.dom.Document newDoc = impl.createDocument(
+                      origMetadataNode.getNamespaceURI(),
+                      origMetadataNode.getNodeName(),
+                      oldDoc.getDoctype());
+
+              // swap out the old doc's root node
+              Node importedNode = newDoc.importNode(origMetadataNode, true);
+              Node tempRoot = newDoc.getDocumentElement();
+              newDoc.replaceChild(importedNode, tempRoot);
+
+              // now reset the metadataNode
+              setDocument(newDoc);
+              */
+
+              // TODO: somehow confirm that the new doc is set right
+              //Log.debug(30, XMLUtil.getDOMTreeAsString(metadataNode));
+              //Log.debug(30, "new namespace: " + getEMLVersion());
+
+              Log.debug(30, "----DONE setting new EML version");
           }
       } else {
-          Log.debug(15, "invalid xmlns while setting EML version: " + xmlns);
+          Log.debug(15, "invalid xmlns while setting EML version: " + oldXmlns);
       }
   }
 
