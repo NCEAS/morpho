@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2004-04-30 00:02:01 $'
- * '$Revision: 1.19 $'
+ *   '$Author: anderson $'
+ *     '$Date: 2006-02-06 19:37:13 $'
+ * '$Revision: 1.20 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -119,6 +119,12 @@ public class EML2Beta6DataPackage extends AbstractDataPackage
       Log.debug(4, "getting DOM for Paths threw error: " + e2.toString());
       e2.printStackTrace();
     }
+  }
+
+  public void load(org.xml.sax.InputSource in) {
+      // TODO: maybe want to implement (not sarcasm)
+      Log.debug(15, "Loading from XML is not supported by EML2Beta6DataPackage");
+
   }
 
     public AbstractDataPackage upload(String id, boolean updatePackageIds) throws MetacatUploadException {

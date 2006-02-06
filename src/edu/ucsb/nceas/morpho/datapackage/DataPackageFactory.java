@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: anderson $'
- *     '$Date: 2005-10-20 22:45:32 $'
- * '$Revision: 1.43 $'
+ *     '$Date: 2006-02-06 19:37:13 $'
+ * '$Revision: 1.44 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -78,12 +78,19 @@ public class DataPackageFactory
 
     AbstractDataPackage dp = null;
     String type = getDocTypeInfo(in);
-    Log.debug(1,"DocTypeInfo: " + type);
+    //Log.debug(15,"DocTypeInfo: " + type);
 //    if (type.equals("eml:eml")) {
     if (type.indexOf("eml://ecoinformatics.org/eml-2.0")>-1) {
-      Log.debug(1,"Creating new eml-2.0.x package from metadata stream");
+      //Log.debug(15,"Creating new eml-2.0.x package from metadata stream");
       dp = new EML200DataPackage();
-      Log.debug(1,"loading new eml-2.0.x DOM");
+      //Log.debug(15,"loading new eml-2.0.x DOM");
+      try {
+          in.reset();
+      } catch (IOException ioe) {
+          Log.debug(15, "!!ERROR!! Unable reset XML input stream");
+      }
+      dp.load(new InputSource(in));
+
     }
     else if ((type.indexOf("eml-dataset-2.0.0beta6")>-1)||
               (type.indexOf("eml-dataset-2.0.0beta4")>-1)){
@@ -132,16 +139,16 @@ public class DataPackageFactory
     Log.debug(40,"DocTypeInfo: " + type);
 //    if (type.equals("eml:eml")) {
     if (type.indexOf("eml://ecoinformatics.org/eml-2.0")>-1) {
-      Log.debug(20,"Creating new eml-2.0.x package from docid");
+      //Log.debug(20,"Creating new eml-2.0.x package from docid");
       dp = new EML200DataPackage();
-      Log.debug(40,"loading new eml-2.0.x DOM");
+      //Log.debug(40,"loading new eml-2.0.x DOM");
       dp.load(location,docid,morpho);
       dp.setInitialId(docid);
     }
 
     else if ((type.indexOf("eml-dataset-2.0.0beta6")>-1)||
               (type.indexOf("eml-dataset-2.0.0beta4")>-1)){
-      Log.debug(20,"Creating new eml2Beta6 package");
+      //Log.debug(20,"Creating new eml2Beta6 package");
       AbstractDataPackage adptemp = new EML2Beta6DataPackage();
       adptemp.setInitialId(docid);
       adptemp.load(location,docid,morpho);
@@ -154,7 +161,7 @@ public class DataPackageFactory
       dp = getDataPackage(adptemp.metadataNode);
       dp.setInitialId(docid);
 //      dp.location = "";  // has NOT been saved
-      Log.debug(40,"loading new eml2Beta6 doc that has been transformed to eml200");
+      //Log.debug(40,"loading new eml2Beta6 doc that has been transformed to eml200");
     }
 
 
@@ -172,7 +179,7 @@ public class DataPackageFactory
   public static AbstractDataPackage getDataPackage(Node node) {
     AbstractDataPackage dp = null;
     String doctype = getDocType(node);
-    Log.debug(50, "doctype: "+doctype);
+    //Log.debug(50, "doctype: "+doctype);
     if(doctype.indexOf("eml-2.0")>-1) {
       // Note: assumed that this is ok for any 'eml-2.0.n' mod to eml2.0
       dp = new EML200DataPackage();
@@ -208,7 +215,7 @@ public class DataPackageFactory
    */
   private static String getDocTypeInfo(Reader in) {
     String temp = getSchemaLine(in,2);
-//    Log.debug(1,"line is:"+temp);
+    //Log.debug(1,"line is:"+temp);
     // this should return a line of text which is either the DOCTYPE declaraton or the root node
     if (temp.indexOf("DOCTYPE")>-1) {
       // get PUBLIC and/or SYSRWM values
@@ -233,6 +240,7 @@ public class DataPackageFactory
     }
     else {
       // assume that this is the root node and look for NS information
+      //Log.debug(1,"first line is root node");
       StringTokenizer st = new StringTokenizer(temp," ");
       String temp1 = st.nextToken();
 
@@ -313,7 +321,7 @@ public class DataPackageFactory
       secondLine = buffer.toString();
       Log.debug(25, "the second line string is: "+secondLine);
 //      xml.reset();
-      xml.close();
+    //  xml.close();
     } catch (Exception e) {
     Log.debug(6, "Sorry - Unable to Open the Requested Data Package!");
     Log.debug(20, "Error in getSchemaLine!");
@@ -325,7 +333,7 @@ public class DataPackageFactory
    *  This method is designed to try and determine the type of document
    *  the dom indicated by the rootNode 'rNode' represents
    */
-  private static String getDocType(Node rNode) {
+  public static String getDocType(Node rNode) {
     Element rootNode = (Element)rNode;
     Document domDoc = rootNode.getOwnerDocument();
     Log.debug(50,"domDoc is: "+XMLUtilities.getDOMTreeAsString(rootNode));
