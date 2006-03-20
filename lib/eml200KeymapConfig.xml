@@ -14,6 +14,7 @@
     <abstract>/eml:eml/dataset/abstract</abstract>
     <author>/eml:eml/dataset/creator/individualName/surName</author>
     <accessionNumber>/eml:eml/@packageId</accessionNumber>
+    <emlVersion>/eml:eml/@xmlns:eml</emlVersion>
     <keywordSet>/eml:eml/dataset/keywordSet</keywordSet>
     <keywords>/eml:eml/dataset/keywordSet/keyword</keywords>
     <coverage>/eml:eml/dataset/coverage</coverage>
