@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2006-06-06 22:50:15 $'
- * '$Revision: 1.180 $'
+ *     '$Date: 2006-06-06 23:26:56 $'
+ * '$Revision: 1.181 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -362,7 +362,9 @@ public class DocFrame extends javax.swing.JFrame
   
   private Hashtable duplicatePathHash = new Hashtable();
   
-  private static final int BUTTONSIZE = 27;
+  private static final int BUTTONSIZE   = 26;
+  
+  private static final int BUTTONLENGTH = 71;
 
   /** This constructor builds the contents of the DocFrame Display  */
 
@@ -417,10 +419,12 @@ public class DocFrame extends javax.swing.JFrame
     OutputScrollPanelContainer.add(BorderLayout.NORTH, ControlsPanel);
     OutputScrollPanelContainer.add(BorderLayout.CENTER, OutputScrollPanel);
     TrimTreeButton.setText("Trim");
+    TrimTreeButton.setPreferredSize(new Dimension(BUTTONLENGTH, BUTTONSIZE));
     TrimTreeButton.setActionCommand("Trim");
     TrimTreeButton.setToolTipText("Remove all optional nodes that contain no text.");
     TrimTreeButton.setEnabled(false);
     UntrimTreeButton.setText("Show All");
+    UntrimTreeButton.setPreferredSize(new Dimension(BUTTONLENGTH, BUTTONSIZE));
     UntrimTreeButton.setActionCommand("Show All");
     UntrimTreeButton.setToolTipText("Show all possible elements.");
     UntrimTreeButton.setEnabled(true);
