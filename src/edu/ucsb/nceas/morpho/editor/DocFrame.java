@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2006-06-06 18:26:21 $'
- * '$Revision: 1.179 $'
+ *     '$Date: 2006-06-06 22:50:15 $'
+ * '$Revision: 1.180 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -361,6 +361,8 @@ public class DocFrame extends javax.swing.JFrame
   private String lastFoundString = "";
   
   private Hashtable duplicatePathHash = new Hashtable();
+  
+  private static final int BUTTONSIZE = 27;
 
   /** This constructor builds the contents of the DocFrame Display  */
 
@@ -425,10 +427,12 @@ public class DocFrame extends javax.swing.JFrame
     TreeControlPanel.add(UntrimTreeButton);
     TreeControlPanel.add(TrimTreeButton);
     ExpandTreeButton.setText("+");
+    ExpandTreeButton.setPreferredSize(new Dimension(BUTTONSIZE, BUTTONSIZE));
     ExpandTreeButton.setActionCommand("+");
     ExpandTreeButton.setToolTipText("Expand Tree levels displayed");
     TreeControlPanel.add(ExpandTreeButton);
     ContractTreeButton.setText("-");
+    ContractTreeButton.setPreferredSize(new Dimension(BUTTONSIZE, BUTTONSIZE));
     ContractTreeButton.setActionCommand("-");
     ContractTreeButton.setToolTipText("Contract Tree levels displayed");
     TreeControlPanel.add(ContractTreeButton);
