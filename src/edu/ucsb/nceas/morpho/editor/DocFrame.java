@@ -5,9 +5,9 @@
  *    Authors: @higgins@
  *    Release: @release@
  *
- *   '$Author: anderson $'
- *     '$Date: 2005-10-21 19:45:25 $'
- * '$Revision: 1.178 $'
+ *   '$Author: tao $'
+ *     '$Date: 2006-06-06 18:26:21 $'
+ * '$Revision: 1.179 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -359,6 +359,8 @@ public class DocFrame extends javax.swing.JFrame
   // the index of the node found in findNode
   private int findNodeCount = 0;
   private String lastFoundString = "";
+  
+  private Hashtable duplicatePathHash = new Hashtable();
 
   /** This constructor builds the contents of the DocFrame Display  */
 
@@ -2591,8 +2593,21 @@ public class DocFrame extends javax.swing.JFrame
   void mergeMissingChildren(DefaultMutableTreeNode instance, DefaultMutableTreeNode template) {
     Enumeration enumeration = instance.children();
     Vector instChildren = new Vector();
+    Hashtable pathHash = new Hashtable();
     while (enumeration.hasMoreElements()) {
-      instChildren.addElement(enumeration.nextElement());
+      DefaultMutableTreeNode instanceNode = (DefaultMutableTreeNode)enumeration.nextElement();
+      instChildren.addElement(instanceNode);
+      String childPath =  fullpathToString(instanceNode);
+      //System.out.println("the child path is "+childPath);
+      String storedPath = (String)pathHash.get(childPath);
+      //System.out.println("the stored path is "+storedPath);
+      if (storedPath != null && storedPath.equals(childPath))
+      {
+    	  //System.out.println("put "+childPath+" into duplicate hashtable");
+    	  duplicatePathHash.put(childPath, childPath);
+      }
+      pathHash.put(childPath, childPath);
+    
     }
     instChildren.addElement(newNode("end")); // end of set marker
     int instChildrenIndex = 0;
@@ -2611,11 +2626,36 @@ public class DocFrame extends javax.swing.JFrame
         DefaultMutableTreeNode instChild =
                  (DefaultMutableTreeNode)instChildren.elementAt(instChildrenIndex);
       if(!simpleCompareNodes(instChild, templChild)){
+    	  String instanceChildPath = fullpathToString(instChild);
+    	  //System.out.println("full path of instchild "+instanceChildPath);
+    	  String tempPath = fullpathToString(templChild);
+          //System.out.println("=============the template path "+tempPath+" before comparing duplicate hash");
+          Enumeration en = duplicatePathHash.keys();
+          boolean copy = false;
+          while (en.hasMoreElements())
+          {
+        	  String path = (String)en.nextElement();
+        	  System.out.println("the stored duplicate path "+path);
+        	  if (tempPath != null  && tempPath.startsWith(path))
+        	  {
+        		  copy = true;
+        		  break;
+        	  }
+          }
+          DefaultMutableTreeNode newNode = null;
+          if (copy)
+          {
+        	  newNode = deepNodeCopy(templChild);
+          }
+          else
+          {
+        	  newNode = templChild;
+          }
         if (instChildrenIndex<(instChildren.size()-1)) {
-          instance.insert((DefaultMutableTreeNode)templChild.clone(), instance.getIndex(instChild));
+          instance.insert(newNode, instance.getIndex(instChild));
         }
         else {
-          instance.add((DefaultMutableTreeNode)templChild.clone());
+          instance.add(newNode);
         }
       }
       else {
@@ -2853,6 +2893,23 @@ public class DocFrame extends javax.swing.JFrame
       sb.append(temp + "/");
      }
   return sb.toString();
+  }
+  
+  /*
+   * Method to get a full path string of a given node
+   */
+  String fullpathToString(DefaultMutableTreeNode node)
+  {
+    int start = 0;
+    StringBuffer sb = new StringBuffer();
+    TreeNode[] tset = node.getPath();
+    int numiterations = tset.length;
+    for (int i = start; i < numiterations; i++) {
+      String temp = ((NodeInfo)((DefaultMutableTreeNode)tset[i]).
+       getUserObject()).getName();
+      sb.append(temp + "/");
+     }
+     return sb.toString();
   }
 
   /**
