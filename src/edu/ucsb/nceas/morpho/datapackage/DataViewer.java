@@ -4,9 +4,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: connolly $'
- *     '$Date: 2005-07-22 16:35:39 $'
- * '$Revision: 1.121 $'
+ *   '$Author: tao $'
+ *     '$Date: 2006-06-10 00:10:00 $'
+ * '$Revision: 1.122 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1343,12 +1343,32 @@ public class DataViewer extends javax.swing.JPanel
 		if (adp!=null) {  // new eml2.0.0 handling
 			String id = "";
 			AccessionNumber an = new AccessionNumber(Morpho.thisStaticInstance);
+			//System.out.println("the file id is "+dataFileId);
 			if (dataFileId==null) {
-				id = an.getNextId();
+				if (dataFile != null)
+				{
+				   String fileName = dataFile.getName();
+				   String oldId = an.getDocIdFromInternalFileName(fileName);
+				   if (oldId != null)
+				   {
+				      id = an.incRev(oldId);
+				   }
+				   else
+				   {
+					   id = an.getNextId();
+				   }
+				}
+				else
+				{
+				   id = an.getNextId();
+				}
+				
 			} else {
+				
 				id = an.incRev(dataFileId);
 			}
 			dataFileId = id;  // update to new value
+			//System.out.println("reset the dataFileId "+dataFileId);
 			String tempfilename = parseId(id);
 			ptm.getPersistentVector().writeObjects(tempdir + "/" + tempfilename);
 
