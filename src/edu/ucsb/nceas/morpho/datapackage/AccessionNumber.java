@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2003-12-15 20:28:31 $'
- * '$Revision: 1.14 $'
+ *   '$Author: tao $'
+ *     '$Date: 2006-06-10 00:09:16 $'
+ * '$Revision: 1.15 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -258,5 +258,23 @@ public class AccessionNumber
     v.addElement(rev);
     v.addElement(separator);
     return v;
+  }
+  
+  /**
+   * In morpho, the internal file name will look like 300.1 or 300.2. This
+   * method will add scope to it. If intralFileName is null, null will be
+   * returned
+   * @param dataFileName
+   * @return
+   */
+  public String getDocIdFromInternalFileName(String internalFileName)
+  {
+	  String id = null;
+	  if (internalFileName != null)
+	  {
+		  id = profile.get("scope", 0) + profile.get("separator", 0) +internalFileName;
+		  //System.out.println("===============the id is "+id);
+	  }
+	  return id;
   }
 }
