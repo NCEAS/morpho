@@ -6,9 +6,9 @@
  *    Authors: Dan Higgins
  *    Release: @release@
  *
- *   '$Author: sgarg $'
- *     '$Date: 2005-06-28 19:13:35 $'
- * '$Revision: 1.44 $'
+ *   '$Author: tao $'
+ *     '$Date: 2006-06-13 21:58:55 $'
+ * '$Revision: 1.45 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -386,7 +386,8 @@ class dfhAction implements java.awt.event.ActionListener
             parentNode = (DefaultMutableTreeNode) parentNode.getParent();
           }
           if(container != null){
-            container.setSelectedNodes( (DefaultMutableTreeNode) nd.getRoot());
+        	 // fixed bug 2200
+            //container.setSelectedNodes( (DefaultMutableTreeNode) nd.getRoot());
           }
           if(tree != null){
             tree.repaint();
