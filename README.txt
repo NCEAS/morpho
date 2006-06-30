@@ -1,7 +1,7 @@
 Morpho: XML Metadata Client  
 ---------------------------
 
-Version: 1.6.0
+Version: 1.6.1
 
 Feedback and bugs to: morpho-dev@ecoinformatics.org
                       http://bugzilla.ecoinformatics.org
@@ -106,6 +106,9 @@ See http://bugzilla.ecoinformatics.org where we maintain a comprehensive list of
 
 Version History
 -------------------------------
+***
+Version 1.6.1 is a minor update to 1.6.0 with bug fixed only. One major bug fixed was the prompt user to convert eml 2.0.0 packages to eml 2.0.1. The other bugs fixes includes tree editor, changing morpho example package to eml 2.0.1 and data file couldn't update revision number et al.
+
 ***
 Version 1.6.0 is a major update to 1.5.1 with bug fixes and new features. One of the major features is that Morpho now supports EML 2.0.1. All the Data Package Wizard screens are now accessible from the Documentation Menu. This release also includes bug fixes in the tree editor, the text import wizard, and the new data package wizard, as well as improved performance times for loading large data tables.
 
