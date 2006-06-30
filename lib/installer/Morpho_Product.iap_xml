@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- This script was automatically generated using Zero G's InstallAnywhere 6.1 Enterprise, Build 2325
      STATUS: Fully Functional LICENSED Edition
-     DATE:   Wed Jun 28 13:53:12 PDT 2006 -->
-<InstallAnywhere_Deployment_Project increments="2454">
+     DATE:   Fri Jun 30 15:08:09 PDT 2006 -->
+<InstallAnywhere_Deployment_Project increments="2466">
 	<!-- ** DO NOT EDIT ** Essential authorization and configuration data ** DO NOT EDIT ** -->
 	<essentialScriptInfo>
 		<versionID major="6" minor="1" revision="-1"/>
@@ -10,9 +10,9 @@
 		<scriptID>12,42,11,90,81,49,52,54,54,71,56,76,69,80,87,86</scriptID>
 		<buildID>3,13,71,87,105,110,100,111,119,115,32,88,80,44,32,53,46,49,44,32,120,56,54,59,32,74,97,118,97,32,49,46,51,46,49,95,48,56,44,32,83,117,110,32,77,105,99,114,111,115,121,115,116,101,109,115,32,73,110,99,46,44,32,104,116,116,112,58,47,47,106,97,118,97,46,115,117,110,46,99,111,109,47,59,32,101,110,44,32,85,83,59,32,67,112,49,50,53,50</buildID>
 		<!-- The authorizationID may change between project saves and builds.  This does not effect the integrity of the project, nor do changes in this value represent changes in the actual InstallAnywhere project. -->
-		<authorizationID>1,0,0,0,19,108,-76,16,80,112,116,103,88,98,113,97,113,65,65,88,74,65,72,71,70,69,64,69,66,69,48,79,87,5,2,0,12,90,108,12,1,0,0</authorizationID>
+		<authorizationID>1,0,0,0,35,-4,20,-48,80,112,116,103,88,98,113,97,113,65,65,88,74,65,72,71,70,69,64,69,66,69,48,79,87,5,2,4,4,92,102,12,1,0,0</authorizationID>
 	</essentialScriptInfo>
-	<installationObjects uniqueObjects="116">
+	<installationObjects uniqueObjects="117">
 		<object class="com.zerog.ia.installer.Installer" objectID="2a90a051bff1">
 			<property name="wizardME">
 				<object class="com.zerog.ia.installer.actions.MakeExecutable" objectID="2a90a459801f">
@@ -138,6 +138,16 @@ Can be separated by colons (Mac OS/Unix) or semicolons (Windows)]]></string>
 								</object>
 							</method>
 							<method name="addElement">
+								<object class="com.zerog.ia.installer.util.LAXPropertyData" objectID="3a771c08bfae">
+									<property name="propertyValue">
+										<string><![CDATA[536870912]]></string>
+									</property>
+									<property name="propertyName">
+										<string><![CDATA[lax.nl.java.option.java.heap.size.max]]></string>
+									</property>
+								</object>
+							</method>
+							<method name="addElement">
 								<object class="com.zerog.ia.installer.util.LAXPropertyData" objectID="2a90a45a8023">
 									<property name="propertyValue">
 										<string><![CDATA[J2 J1 MSJ]]></string>
@@ -166,7 +176,7 @@ it will search for ones in this list]]></string>
 								</object>
 							</method>
 							<method name="addElement">
-								<object class="com.zerog.ia.installer.util.LAXPropertyData" objectID="2feb35e3bfd3">
+								<object class="com.zerog.ia.installer.util.LAXPropertyData" objectID="3a76a15abd56">
 									<property name="propertyValue">
 										<string><![CDATA[edu.ucsb.nceas.morpho.Morpho]]></string>
 									</property>
@@ -1224,83 +1234,7 @@ Press "Done" to quit the installer.]]></string>
 			<property name="buildSettings">
 				<object class="java.util.Properties">
 					<method name="put">
-						<string><![CDATA[com.zerog.ia.project.save.last.date]]></string>
-						<string><![CDATA[June 28, 2006 1:53:12 PM PDT]]></string>
-					</method>
-					<method name="put">
-						<string><![CDATA[com.zerog.ia.build.options.optimization.platform.merge]]></string>
-						<string><![CDATA[false]]></string>
-					</method>
-					<method name="put">
-						<string><![CDATA[com.zerog.ia.installer.options.heap.size.max]]></string>
-						<string><![CDATA[50331648]]></string>
-					</method>
-					<method name="put">
-						<string><![CDATA[com.zerog.ia.build.platform.linux.vm]]></string>
-						<string><![CDATA[false]]></string>
-					</method>
-					<method name="put">
-						<string><![CDATA[com.zerog.ia.build.platform.solaris.vm]]></string>
-						<string><![CDATA[false]]></string>
-					</method>
-					<method name="put">
-						<string><![CDATA[com.zerog.ia.build.platform.named_unix.vm]]></string>
-						<string><![CDATA[false]]></string>
-					</method>
-					<method name="put">
-						<string><![CDATA[com.zerog.ia.build.platform.hpux.vm]]></string>
-						<string><![CDATA[false]]></string>
-					</method>
-					<method name="put">
-						<string><![CDATA[com.zerog.ia.build.platform.unix.novm]]></string>
-						<string><![CDATA[false]]></string>
-					</method>
-					<method name="put">
-						<string><![CDATA[com.zerog.ia.build.options.output.merge.read.only]]></string>
-						<string><![CDATA[true]]></string>
-					</method>
-					<method name="put">
-						<string><![CDATA[com.zerog.ia.build.options.optimization.platform.cdrom]]></string>
-						<string><![CDATA[false]]></string>
-					</method>
-					<method name="put">
-						<string><![CDATA[com.zerog.ia.installer.options.platform.macosx.vm.version]]></string>
-						<string><![CDATA[1.4+]]></string>
-					</method>
-					<method name="put">
-						<string><![CDATA[com.zerog.ia.build.options.auto-populate.labels]]></string>
-						<string><![CDATA[true]]></string>
-					</method>
-					<method name="put">
-						<string><![CDATA[com.zerog.ia.build.options.webpage.language]]></string>
-						<string><![CDATA[en]]></string>
-					</method>
-					<method name="put">
-						<string><![CDATA[com.zerog.ia.build.platform.named_unix.novm]]></string>
-						<string><![CDATA[false]]></string>
-					</method>
-					<method name="put">
-						<string><![CDATA[com.zerog.ia.build.platform.aix.vm]]></string>
-						<string><![CDATA[false]]></string>
-					</method>
-					<method name="put">
-						<string><![CDATA[com.zerog.ia.project.build.last.date]]></string>
-						<string><![CDATA[June 28, 2006 1:53:12 PM PDT]]></string>
-					</method>
-					<method name="put">
-						<string><![CDATA[com.zerog.ia.installer.options.heap.size.initial]]></string>
-						<string><![CDATA[16777216]]></string>
-					</method>
-					<method name="put">
-						<string><![CDATA[com.zerog.ia.installer.options.platform.macosx.authentication]]></string>
-						<string><![CDATA[false]]></string>
-					</method>
-					<method name="put">
-						<string><![CDATA[com.zerog.ia.build.platform.aix.novm]]></string>
-						<string><![CDATA[false]]></string>
-					</method>
-					<method name="put">
-						<string><![CDATA[com.zerog.ia.build.options.output.merge]]></string>
+						<string><![CDATA[com.zerog.ia.build.platform.hpux.novm]]></string>
 						<string><![CDATA[false]]></string>
 					</method>
 					<method name="put">
@@ -1308,27 +1242,35 @@ Press "Done" to quit the installer.]]></string>
 						<string><![CDATA[true]]></string>
 					</method>
 					<method name="put">
-						<string><![CDATA[com.zerog.ia.installer.options.platform.unix.ui.default]]></string>
-						<string><![CDATA[GUI]]></string>
-					</method>
-					<method name="put">
-						<string><![CDATA[com.zerog.ia.build.platform.java.novm]]></string>
+						<string><![CDATA[com.zerog.ia.build.platform.linux.vm]]></string>
 						<string><![CDATA[false]]></string>
 					</method>
 					<method name="put">
-						<string><![CDATA[com.zerog.ia.build.platform.hpux.novm]]></string>
+						<string><![CDATA[com.zerog.ia.build.options.optimization.platform.merge]]></string>
 						<string><![CDATA[false]]></string>
 					</method>
 					<method name="put">
-						<string><![CDATA[com.zerog.ia.installer.options.platform.macosx.authentication.gui]]></string>
+						<string><![CDATA[com.zerog.ia.installer.options.platform.macosx.authentication]]></string>
+						<string><![CDATA[false]]></string>
+					</method>
+					<method name="put">
+						<string><![CDATA[com.zerog.ia.build.platform.macosx.novm]]></string>
 						<string><![CDATA[true]]></string>
 					</method>
 					<method name="put">
-						<string><![CDATA[com.zerog.ia.build.platform.windows.novm]]></string>
+						<string><![CDATA[com.zerog.ia.build.platform.aix.novm]]></string>
+						<string><![CDATA[false]]></string>
+					</method>
+					<method name="put">
+						<string><![CDATA[com.zerog.ia.installer.options.heap.size.max]]></string>
+						<string><![CDATA[50331648]]></string>
+					</method>
+					<method name="put">
+						<string><![CDATA[com.zerog.ia.build.options.auto-populate.labels]]></string>
 						<string><![CDATA[true]]></string>
 					</method>
 					<method name="put">
-						<string><![CDATA[com.zerog.ia.build.platform.solaris.novm]]></string>
+						<string><![CDATA[com.zerog.ia.build.platform.solaris.vm]]></string>
 						<string><![CDATA[false]]></string>
 					</method>
 					<method name="put">
@@ -1340,24 +1282,100 @@ Press "Done" to quit the installer.]]></string>
 						<string><![CDATA[J2 J1 MSJ]]></string>
 					</method>
 					<method name="put">
+						<string><![CDATA[com.zerog.ia.project.build.last.date]]></string>
+						<string><![CDATA[June 30, 2006 11:48:55 AM PDT]]></string>
+					</method>
+					<method name="put">
+						<string><![CDATA[com.zerog.ia.build.platform.windows.vm]]></string>
+						<string><![CDATA[true]]></string>
+					</method>
+					<method name="put">
 						<string><![CDATA[com.zerog.ia.build.options.output.web]]></string>
 						<string><![CDATA[true]]></string>
-					</method>
-					<method name="put">
-						<string><![CDATA[com.zerog.ia.build.platform.macosx.novm]]></string>
-						<string><![CDATA[true]]></string>
-					</method>
-					<method name="put">
-						<string><![CDATA[com.zerog.ia.build.options.output.cdrom]]></string>
-						<string><![CDATA[false]]></string>
 					</method>
 					<method name="put">
 						<string><![CDATA[com.zerog.ia.build.options.optimization.platform.web]]></string>
 						<string><![CDATA[false]]></string>
 					</method>
 					<method name="put">
-						<string><![CDATA[com.zerog.ia.build.platform.windows.vm]]></string>
+						<string><![CDATA[com.zerog.ia.build.vmpack.linux.path]]></string>
+						<string><![CDATA[SunJRE142_09LinuxINTEL.vm]]></string>
+					</method>
+					<method name="put">
+						<string><![CDATA[com.zerog.ia.build.platform.named_unix.vm]]></string>
+						<string><![CDATA[false]]></string>
+					</method>
+					<method name="put">
+						<string><![CDATA[com.zerog.ia.build.platform.unix.novm]]></string>
+						<string><![CDATA[false]]></string>
+					</method>
+					<method name="put">
+						<string><![CDATA[com.zerog.ia.build.options.output.cdrom]]></string>
+						<string><![CDATA[false]]></string>
+					</method>
+					<method name="put">
+						<string><![CDATA[com.zerog.ia.build.platform.hpux.vm]]></string>
+						<string><![CDATA[false]]></string>
+					</method>
+					<method name="put">
+						<string><![CDATA[com.zerog.ia.build.vmpack.unix.path]]></string>
+						<string><![CDATA[SunJRE142_09LinuxINTEL.vm]]></string>
+					</method>
+					<method name="put">
+						<string><![CDATA[com.zerog.ia.build.platform.named_unix.novm]]></string>
+						<string><![CDATA[false]]></string>
+					</method>
+					<method name="put">
+						<string><![CDATA[com.zerog.ia.build.options.output.merge.read.only]]></string>
 						<string><![CDATA[true]]></string>
+					</method>
+					<method name="put">
+						<string><![CDATA[com.zerog.ia.build.platform.solaris.novm]]></string>
+						<string><![CDATA[false]]></string>
+					</method>
+					<method name="put">
+						<string><![CDATA[com.zerog.ia.build.platform.windows.novm]]></string>
+						<string><![CDATA[true]]></string>
+					</method>
+					<method name="put">
+						<string><![CDATA[com.zerog.ia.build.platform.aix.vm]]></string>
+						<string><![CDATA[false]]></string>
+					</method>
+					<method name="put">
+						<string><![CDATA[com.zerog.ia.project.save.last.date]]></string>
+						<string><![CDATA[June 30, 2006 3:08:09 PM PDT]]></string>
+					</method>
+					<method name="put">
+						<string><![CDATA[com.zerog.ia.build.options.optimization.platform.cdrom]]></string>
+						<string><![CDATA[false]]></string>
+					</method>
+					<method name="put">
+						<string><![CDATA[com.zerog.ia.installer.options.platform.unix.ui.default]]></string>
+						<string><![CDATA[GUI]]></string>
+					</method>
+					<method name="put">
+						<string><![CDATA[com.zerog.ia.installer.options.heap.size.initial]]></string>
+						<string><![CDATA[16777216]]></string>
+					</method>
+					<method name="put">
+						<string><![CDATA[com.zerog.ia.build.options.output.merge]]></string>
+						<string><![CDATA[false]]></string>
+					</method>
+					<method name="put">
+						<string><![CDATA[com.zerog.ia.installer.options.platform.macosx.authentication.gui]]></string>
+						<string><![CDATA[true]]></string>
+					</method>
+					<method name="put">
+						<string><![CDATA[com.zerog.ia.installer.options.platform.macosx.vm.version]]></string>
+						<string><![CDATA[1.4+]]></string>
+					</method>
+					<method name="put">
+						<string><![CDATA[com.zerog.ia.build.options.webpage.language]]></string>
+						<string><![CDATA[en]]></string>
+					</method>
+					<method name="put">
+						<string><![CDATA[com.zerog.ia.build.platform.java.novm]]></string>
+						<string><![CDATA[false]]></string>
 					</method>
 				</object>
 			</property>
@@ -2411,7 +2429,7 @@ and any path to a file to read from that file]]></string>
 												<string><![CDATA[morpho.bat]]></string>
 											</property>
 											<property name="fileSize">
-												<long>994</long>
+												<long>1031</long>
 											</property>
 											<property name="macBinary">
 												<boolean>false</boolean>
@@ -2501,7 +2519,7 @@ and any path to a file to read from that file]]></string>
 												<boolean>false</boolean>
 											</property>
 											<property name="totalSize">
-												<long>40286568</long>
+												<long>1</long>
 											</property>
 											<property name="macBinary">
 												<boolean>false</boolean>
@@ -2530,7 +2548,7 @@ and any path to a file to read from that file]]></string>
 												<boolean>false</boolean>
 											</property>
 											<property name="totalSize">
-												<long>87797</long>
+												<long>1</long>
 											</property>
 											<property name="macBinary">
 												<boolean>false</boolean>
@@ -2559,7 +2577,7 @@ and any path to a file to read from that file]]></string>
 												<boolean>false</boolean>
 											</property>
 											<property name="totalSize">
-												<long>16369</long>
+												<long>1</long>
 											</property>
 											<property name="macBinary">
 												<boolean>false</boolean>
@@ -2588,7 +2606,7 @@ and any path to a file to read from that file]]></string>
 												<boolean>false</boolean>
 											</property>
 											<property name="totalSize">
-												<long>2654550</long>
+												<long>1</long>
 											</property>
 											<property name="macBinary">
 												<boolean>false</boolean>
@@ -2617,7 +2635,7 @@ and any path to a file to read from that file]]></string>
 												<boolean>false</boolean>
 											</property>
 											<property name="totalSize">
-												<long>358946</long>
+												<long>1</long>
 											</property>
 											<property name="macBinary">
 												<boolean>false</boolean>
@@ -2646,7 +2664,7 @@ and any path to a file to read from that file]]></string>
 												<boolean>false</boolean>
 											</property>
 											<property name="totalSize">
-												<long>13381</long>
+												<long>1</long>
 											</property>
 											<property name="macBinary">
 												<boolean>false</boolean>
@@ -2675,7 +2693,7 @@ and any path to a file to read from that file]]></string>
 												<boolean>false</boolean>
 											</property>
 											<property name="totalSize">
-												<long>10359</long>
+												<long>1</long>
 											</property>
 											<property name="macBinary">
 												<boolean>false</boolean>
@@ -2704,7 +2722,7 @@ and any path to a file to read from that file]]></string>
 												<boolean>false</boolean>
 											</property>
 											<property name="totalSize">
-												<long>2061092</long>
+												<long>1</long>
 											</property>
 											<property name="macBinary">
 												<boolean>false</boolean>
@@ -2733,7 +2751,7 @@ and any path to a file to read from that file]]></string>
 												<boolean>false</boolean>
 											</property>
 											<property name="totalSize">
-												<long>1103950</long>
+												<long>1</long>
 											</property>
 											<property name="macBinary">
 												<boolean>false</boolean>
@@ -2828,7 +2846,7 @@ and any path to a file to read from that file]]></string>
 												<boolean>false</boolean>
 											</property>
 											<property name="totalSize">
-												<long>1941554</long>
+												<long>1</long>
 											</property>
 											<property name="macBinary">
 												<boolean>false</boolean>
@@ -2857,7 +2875,7 @@ and any path to a file to read from that file]]></string>
 												<boolean>false</boolean>
 											</property>
 											<property name="totalSize">
-												<long>188049</long>
+												<long>1</long>
 											</property>
 											<property name="macBinary">
 												<boolean>false</boolean>
