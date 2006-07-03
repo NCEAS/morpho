@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- This script was automatically generated using Zero G's InstallAnywhere 6.1 Enterprise, Build 2325
      STATUS: Fully Functional LICENSED Edition
-     DATE:   Fri Jun 30 15:08:09 PDT 2006 -->
-<InstallAnywhere_Deployment_Project increments="2466">
+     DATE:   Mon Jul 03 13:33:04 PDT 2006 -->
+<InstallAnywhere_Deployment_Project increments="2517">
 	<!-- ** DO NOT EDIT ** Essential authorization and configuration data ** DO NOT EDIT ** -->
 	<essentialScriptInfo>
 		<versionID major="6" minor="1" revision="-1"/>
 		<editionID>54,46,49,32,69,110,116,101,114,112,114,105,115,101,32,66,117,105,108,100,32,50,51,50,53</editionID>
-		<scriptID>12,42,11,90,81,49,52,54,54,71,56,76,69,80,87,86</scriptID>
+		<scriptID>12,42,11,90,81,49,48,55,54,71,56,76,69,80,87,86</scriptID>
 		<buildID>3,13,71,87,105,110,100,111,119,115,32,88,80,44,32,53,46,49,44,32,120,56,54,59,32,74,97,118,97,32,49,46,51,46,49,95,48,56,44,32,83,117,110,32,77,105,99,114,111,115,121,115,116,101,109,115,32,73,110,99,46,44,32,104,116,116,112,58,47,47,106,97,118,97,46,115,117,110,46,99,111,109,47,59,32,101,110,44,32,85,83,59,32,67,112,49,50,53,50</buildID>
 		<!-- The authorizationID may change between project saves and builds.  This does not effect the integrity of the project, nor do changes in this value represent changes in the actual InstallAnywhere project. -->
-		<authorizationID>1,0,0,0,35,-4,20,-48,80,112,116,103,88,98,113,97,113,65,65,88,74,65,72,71,70,69,64,69,66,69,48,79,87,5,2,4,4,92,102,12,1,0,0</authorizationID>
+		<authorizationID>1,0,0,0,51,16,19,80,80,112,116,103,88,98,113,97,113,65,65,88,74,65,72,71,70,69,64,69,66,69,48,79,87,5,2,7,9,-104,102,12,1,0,0</authorizationID>
 	</essentialScriptInfo>
-	<installationObjects uniqueObjects="117">
+	<installationObjects uniqueObjects="119">
 		<object class="com.zerog.ia.installer.Installer" objectID="2a90a051bff1">
 			<property name="wizardME">
 				<object class="com.zerog.ia.installer.actions.MakeExecutable" objectID="2a90a459801f">
@@ -176,7 +176,7 @@ it will search for ones in this list]]></string>
 								</object>
 							</method>
 							<method name="addElement">
-								<object class="com.zerog.ia.installer.util.LAXPropertyData" objectID="3a76a15abd56">
+								<object class="com.zerog.ia.installer.util.LAXPropertyData" objectID="499788319b98">
 									<property name="propertyValue">
 										<string><![CDATA[edu.ucsb.nceas.morpho.Morpho]]></string>
 									</property>
@@ -229,7 +229,7 @@ and any path to a file to read from that file]]></string>
 								<boolean>false</boolean>
 							</property>
 							<property name="sourcePath">
-								<string><![CDATA[D:\project\morpho\lib\]]></string>
+								<string><![CDATA[G:\product\morpho_release_1.6.1_rc\morpho\lib\]]></string>
 							</property>
 							<property name="shouldUninstall">
 								<boolean>true</boolean>
@@ -260,7 +260,7 @@ and any path to a file to read from that file]]></string>
 								<boolean>false</boolean>
 							</property>
 							<property name="sourcePath">
-								<string><![CDATA[D:\project\morpho\lib\]]></string>
+								<string><![CDATA[G:\product\morpho_release_1.6.1_rc\morpho\lib\]]></string>
 							</property>
 							<property name="shouldUninstall">
 								<boolean>true</boolean>
@@ -291,7 +291,7 @@ and any path to a file to read from that file]]></string>
 								<boolean>false</boolean>
 							</property>
 							<property name="sourcePath">
-								<string><![CDATA[D:\project\morpho\lib\]]></string>
+								<string><![CDATA[G:\product\morpho_release_1.6.1_rc\morpho\lib\]]></string>
 							</property>
 							<property name="shouldUninstall">
 								<boolean>true</boolean>
@@ -322,7 +322,7 @@ and any path to a file to read from that file]]></string>
 								<boolean>false</boolean>
 							</property>
 							<property name="sourcePath">
-								<string><![CDATA[D:\project\morpho\lib\]]></string>
+								<string><![CDATA[G:\product\morpho_release_1.6.1_rc\morpho\lib\]]></string>
 							</property>
 							<property name="shouldUninstall">
 								<boolean>true</boolean>
@@ -353,7 +353,7 @@ and any path to a file to read from that file]]></string>
 								<boolean>false</boolean>
 							</property>
 							<property name="sourcePath">
-								<string><![CDATA[D:\project\morpho\lib\]]></string>
+								<string><![CDATA[G:\product\morpho_release_1.6.1_rc\morpho\lib\]]></string>
 							</property>
 							<property name="shouldUninstall">
 								<boolean>true</boolean>
@@ -384,7 +384,7 @@ and any path to a file to read from that file]]></string>
 								<boolean>false</boolean>
 							</property>
 							<property name="sourcePath">
-								<string><![CDATA[D:\project\morpho\lib\]]></string>
+								<string><![CDATA[G:\product\morpho_release_1.6.1_rc\morpho\lib\]]></string>
 							</property>
 							<property name="shouldUninstall">
 								<boolean>true</boolean>
@@ -415,7 +415,7 @@ and any path to a file to read from that file]]></string>
 								<boolean>false</boolean>
 							</property>
 							<property name="sourcePath">
-								<string><![CDATA[D:\project\morpho\lib\]]></string>
+								<string><![CDATA[G:\product\morpho_release_1.6.1_rc\morpho\lib\]]></string>
 							</property>
 							<property name="shouldUninstall">
 								<boolean>true</boolean>
@@ -446,7 +446,7 @@ and any path to a file to read from that file]]></string>
 								<boolean>false</boolean>
 							</property>
 							<property name="sourcePath">
-								<string><![CDATA[D:\project\morpho\lib\]]></string>
+								<string><![CDATA[G:\product\morpho_release_1.6.1_rc\morpho\lib\]]></string>
 							</property>
 							<property name="shouldUninstall">
 								<boolean>true</boolean>
@@ -477,7 +477,7 @@ and any path to a file to read from that file]]></string>
 								<boolean>false</boolean>
 							</property>
 							<property name="sourcePath">
-								<string><![CDATA[D:\project\morpho\lib\]]></string>
+								<string><![CDATA[G:\product\morpho_release_1.6.1_rc\morpho\lib\]]></string>
 							</property>
 							<property name="shouldUninstall">
 								<boolean>true</boolean>
@@ -508,7 +508,7 @@ and any path to a file to read from that file]]></string>
 								<boolean>false</boolean>
 							</property>
 							<property name="sourcePath">
-								<string><![CDATA[D:\project\morpho\lib\]]></string>
+								<string><![CDATA[G:\product\morpho_release_1.6.1_rc\morpho\lib\]]></string>
 							</property>
 							<property name="shouldUninstall">
 								<boolean>true</boolean>
@@ -539,7 +539,7 @@ and any path to a file to read from that file]]></string>
 								<boolean>false</boolean>
 							</property>
 							<property name="sourcePath">
-								<string><![CDATA[D:\project\morpho\lib\]]></string>
+								<string><![CDATA[G:\product\morpho_release_1.6.1_rc\morpho\lib\]]></string>
 							</property>
 							<property name="shouldUninstall">
 								<boolean>true</boolean>
@@ -570,7 +570,7 @@ and any path to a file to read from that file]]></string>
 								<boolean>false</boolean>
 							</property>
 							<property name="sourcePath">
-								<string><![CDATA[D:\project\morpho\lib\]]></string>
+								<string><![CDATA[G:\product\morpho_release_1.6.1_rc\morpho\lib\]]></string>
 							</property>
 							<property name="shouldUninstall">
 								<boolean>true</boolean>
@@ -579,7 +579,7 @@ and any path to a file to read from that file]]></string>
 								<string><![CDATA[morpho-config.jar]]></string>
 							</property>
 							<property name="fileSize">
-								<long>747173</long>
+								<long>757923</long>
 							</property>
 							<property name="macBinary">
 								<boolean>false</boolean>
@@ -601,7 +601,7 @@ and any path to a file to read from that file]]></string>
 								<boolean>false</boolean>
 							</property>
 							<property name="sourcePath">
-								<string><![CDATA[D:\project\morpho\lib\]]></string>
+								<string><![CDATA[G:\product\morpho_release_1.6.1_rc\morpho\lib\]]></string>
 							</property>
 							<property name="shouldUninstall">
 								<boolean>true</boolean>
@@ -610,7 +610,7 @@ and any path to a file to read from that file]]></string>
 								<string><![CDATA[morpho.jar]]></string>
 							</property>
 							<property name="fileSize">
-								<long>1874576</long>
+								<long>1874609</long>
 							</property>
 							<property name="macBinary">
 								<boolean>false</boolean>
@@ -632,7 +632,7 @@ and any path to a file to read from that file]]></string>
 								<boolean>false</boolean>
 							</property>
 							<property name="sourcePath">
-								<string><![CDATA[D:\project\morpho\lib\]]></string>
+								<string><![CDATA[G:\product\morpho_release_1.6.1_rc\morpho\lib\]]></string>
 							</property>
 							<property name="shouldUninstall">
 								<boolean>true</boolean>
@@ -663,7 +663,7 @@ and any path to a file to read from that file]]></string>
 								<boolean>false</boolean>
 							</property>
 							<property name="sourcePath">
-								<string><![CDATA[D:\project\morpho\lib\]]></string>
+								<string><![CDATA[G:\product\morpho_release_1.6.1_rc\morpho\lib\]]></string>
 							</property>
 							<property name="shouldUninstall">
 								<boolean>true</boolean>
@@ -694,7 +694,7 @@ and any path to a file to read from that file]]></string>
 								<boolean>false</boolean>
 							</property>
 							<property name="sourcePath">
-								<string><![CDATA[D:\project\morpho\lib\]]></string>
+								<string><![CDATA[G:\product\morpho_release_1.6.1_rc\morpho\lib\]]></string>
 							</property>
 							<property name="shouldUninstall">
 								<boolean>true</boolean>
@@ -725,7 +725,7 @@ and any path to a file to read from that file]]></string>
 								<boolean>false</boolean>
 							</property>
 							<property name="sourcePath">
-								<string><![CDATA[D:\project\morpho\lib\]]></string>
+								<string><![CDATA[G:\product\morpho_release_1.6.1_rc\morpho\lib\]]></string>
 							</property>
 							<property name="shouldUninstall">
 								<boolean>true</boolean>
@@ -756,7 +756,7 @@ and any path to a file to read from that file]]></string>
 								<boolean>false</boolean>
 							</property>
 							<property name="sourcePath">
-								<string><![CDATA[D:\project\morpho\lib\]]></string>
+								<string><![CDATA[G:\product\morpho_release_1.6.1_rc\morpho\lib\]]></string>
 							</property>
 							<property name="shouldUninstall">
 								<boolean>true</boolean>
@@ -787,7 +787,7 @@ and any path to a file to read from that file]]></string>
 								<boolean>false</boolean>
 							</property>
 							<property name="sourcePath">
-								<string><![CDATA[D:\project\morpho\lib\]]></string>
+								<string><![CDATA[G:\product\morpho_release_1.6.1_rc\morpho\lib\]]></string>
 							</property>
 							<property name="shouldUninstall">
 								<boolean>true</boolean>
@@ -830,6 +830,9 @@ and any path to a file to read from that file]]></string>
 						<string><![CDATA[Introduction]]></string>
 					</method>
 					<method name="addElement">
+						<string><![CDATA[Important Information]]></string>
+					</method>
+					<method name="addElement">
 						<string><![CDATA[Choose Install Folder]]></string>
 					</method>
 					<method name="addElement">
@@ -847,7 +850,7 @@ and any path to a file to read from that file]]></string>
 				</object>
 			</property>
 			<property name="installProgressLabelIndex">
-				<int>4</int>
+				<int>5</int>
 			</property>
 			<property name="installProgressLabelOption">
 				<int>2</int>
@@ -947,6 +950,50 @@ You may cancel this installation at any time by clicking the 'Cancel' button.]]>
 						</object>
 					</method>
 					<method name="addElement">
+						<object class="com.zerog.ia.installer.actions.ImportantNoteAction" objectID="4998b74b9d6e">
+							<property name="imageOption">
+								<int>1</int>
+							</property>
+							<property name="labelOption">
+								<int>2</int>
+							</property>
+							<property name="labelIndex">
+								<int>1</int>
+							</property>
+							<property name="title">
+								<string><![CDATA[Important Information]]></string>
+							</property>
+							<property name="stepPrompt">
+								<string><![CDATA[Please Read Before Continuing:]]></string>
+							</property>
+							<property name="resourcePath">
+								<string><![CDATA[G:\product\morpho_release_1.6.1_rc\morpho\]]></string>
+							</property>
+							<property name="resourceName">
+								<string><![CDATA[README.txt]]></string>
+							</property>
+							<property name="sourceFileType">
+								<int>0</int>
+							</property>
+							<property name="requiresUserChoice">
+								<boolean>false</boolean>
+							</property>
+							<property name="agreeWithLicenseByDefault">
+								<boolean>false</boolean>
+							</property>
+							<property name="openExternalLinks">
+								<boolean>true</boolean>
+							</property>
+							<property name="help">
+								<object class="com.zerog.ia.installer.util.Help" objectID="4998b74c9d6e">
+									<property name="showHelp">
+										<boolean>false</boolean>
+									</property>
+								</object>
+							</property>
+						</object>
+					</method>
+					<method name="addElement">
 						<object class="com.zerog.ia.installer.actions.InstallDirAction" objectID="2a90a0de8012">
 							<property name="imageOption">
 								<int>1</int>
@@ -970,7 +1017,7 @@ You may cancel this installation at any time by clicking the 'Cancel' button.]]>
 								<int>2</int>
 							</property>
 							<property name="labelIndex">
-								<int>1</int>
+								<int>2</int>
 							</property>
 							<property name="help">
 								<object class="com.zerog.ia.installer.util.Help" objectID="2a90a0df8012">
@@ -1008,7 +1055,7 @@ You may cancel this installation at any time by clicking the 'Cancel' button.]]>
 								<int>2</int>
 							</property>
 							<property name="labelIndex">
-								<int>2</int>
+								<int>3</int>
 							</property>
 							<property name="help">
 								<object class="com.zerog.ia.installer.util.Help" objectID="2a90a0df8013">
@@ -1058,7 +1105,7 @@ You may cancel this installation at any time by clicking the 'Cancel' button.]]>
 								<int>2</int>
 							</property>
 							<property name="labelIndex">
-								<int>3</int>
+								<int>4</int>
 							</property>
 							<property name="fieldList">
 								<object class="java.util.Vector"/>
@@ -1085,7 +1132,7 @@ You may cancel this installation at any time by clicking the 'Cancel' button.]]>
 								<int>2</int>
 							</property>
 							<property name="labelIndex">
-								<int>5</int>
+								<int>6</int>
 							</property>
 							<property name="help">
 								<object class="com.zerog.ia.installer.util.Help" objectID="2a90a0df8015">
@@ -1283,7 +1330,7 @@ Press "Done" to quit the installer.]]></string>
 					</method>
 					<method name="put">
 						<string><![CDATA[com.zerog.ia.project.build.last.date]]></string>
-						<string><![CDATA[June 30, 2006 11:48:55 AM PDT]]></string>
+						<string><![CDATA[July 3, 2006 1:33:04 PM PDT]]></string>
 					</method>
 					<method name="put">
 						<string><![CDATA[com.zerog.ia.build.platform.windows.vm]]></string>
@@ -1343,7 +1390,7 @@ Press "Done" to quit the installer.]]></string>
 					</method>
 					<method name="put">
 						<string><![CDATA[com.zerog.ia.project.save.last.date]]></string>
-						<string><![CDATA[June 30, 2006 3:08:09 PM PDT]]></string>
+						<string><![CDATA[July 3, 2006 1:33:04 PM PDT]]></string>
 					</method>
 					<method name="put">
 						<string><![CDATA[com.zerog.ia.build.options.optimization.platform.cdrom]]></string>
@@ -2082,7 +2129,7 @@ and any path to a file to read from that file]]></string>
 												<boolean>false</boolean>
 											</property>
 											<property name="sourcePath">
-												<string><![CDATA[D:\project\morpho\lib\]]></string>
+												<string><![CDATA[G:\product\morpho_release_1.6.1_rc\morpho\lib\]]></string>
 											</property>
 											<property name="shouldUninstall">
 												<boolean>true</boolean>
@@ -2111,7 +2158,7 @@ and any path to a file to read from that file]]></string>
 												<boolean>false</boolean>
 											</property>
 											<property name="sourcePath">
-												<string><![CDATA[D:\project\morpho\lib\]]></string>
+												<string><![CDATA[G:\product\morpho_release_1.6.1_rc\morpho\lib\]]></string>
 											</property>
 											<property name="shouldUninstall">
 												<boolean>true</boolean>
@@ -2140,7 +2187,7 @@ and any path to a file to read from that file]]></string>
 												<boolean>false</boolean>
 											</property>
 											<property name="sourcePath">
-												<string><![CDATA[D:\project\morpho\lib\]]></string>
+												<string><![CDATA[G:\product\morpho_release_1.6.1_rc\morpho\lib\]]></string>
 											</property>
 											<property name="shouldUninstall">
 												<boolean>true</boolean>
@@ -2169,7 +2216,7 @@ and any path to a file to read from that file]]></string>
 												<boolean>false</boolean>
 											</property>
 											<property name="sourcePath">
-												<string><![CDATA[D:\project\morpho\lib\]]></string>
+												<string><![CDATA[G:\product\morpho_release_1.6.1_rc\morpho\lib\]]></string>
 											</property>
 											<property name="shouldUninstall">
 												<boolean>true</boolean>
@@ -2199,7 +2246,7 @@ and any path to a file to read from that file]]></string>
 												<boolean>false</boolean>
 											</property>
 											<property name="sourcePath">
-												<string><![CDATA[D:\project\morpho\lib\]]></string>
+												<string><![CDATA[G:\product\morpho_release_1.6.1_rc\morpho\lib\]]></string>
 											</property>
 											<property name="shouldUninstall">
 												<boolean>true</boolean>
@@ -2228,7 +2275,7 @@ and any path to a file to read from that file]]></string>
 												<boolean>false</boolean>
 											</property>
 											<property name="sourcePath">
-												<string><![CDATA[D:\project\morpho\lib\]]></string>
+												<string><![CDATA[G:\product\morpho_release_1.6.1_rc\morpho\lib\]]></string>
 											</property>
 											<property name="shouldUninstall">
 												<boolean>true</boolean>
@@ -2257,7 +2304,7 @@ and any path to a file to read from that file]]></string>
 												<boolean>false</boolean>
 											</property>
 											<property name="sourcePath">
-												<string><![CDATA[D:\project\morpho\lib\]]></string>
+												<string><![CDATA[G:\product\morpho_release_1.6.1_rc\morpho\lib\]]></string>
 											</property>
 											<property name="shouldUninstall">
 												<boolean>true</boolean>
@@ -2296,7 +2343,7 @@ and any path to a file to read from that file]]></string>
 												<boolean>false</boolean>
 											</property>
 											<property name="sourcePath">
-												<string><![CDATA[D:\project\morpho\lib\]]></string>
+												<string><![CDATA[G:\product\morpho_release_1.6.1_rc\morpho\lib\]]></string>
 											</property>
 											<property name="shouldUninstall">
 												<boolean>true</boolean>
@@ -2333,7 +2380,7 @@ and any path to a file to read from that file]]></string>
 												<boolean>false</boolean>
 											</property>
 											<property name="sourcePath">
-												<string><![CDATA[D:\project\morpho\]]></string>
+												<string><![CDATA[G:\product\morpho_release_1.6.1_rc\morpho\]]></string>
 											</property>
 											<property name="shouldUninstall">
 												<boolean>true</boolean>
@@ -2342,7 +2389,7 @@ and any path to a file to read from that file]]></string>
 												<string><![CDATA[build.xml]]></string>
 											</property>
 											<property name="fileSize">
-												<long>22419</long>
+												<long>22414</long>
 											</property>
 											<property name="macBinary">
 												<boolean>false</boolean>
@@ -2362,7 +2409,7 @@ and any path to a file to read from that file]]></string>
 												<boolean>false</boolean>
 											</property>
 											<property name="sourcePath">
-												<string><![CDATA[D:\project\morpho\]]></string>
+												<string><![CDATA[G:\product\morpho_release_1.6.1_rc\morpho\]]></string>
 											</property>
 											<property name="shouldUninstall">
 												<boolean>true</boolean>
@@ -2391,7 +2438,7 @@ and any path to a file to read from that file]]></string>
 												<boolean>false</boolean>
 											</property>
 											<property name="sourcePath">
-												<string><![CDATA[D:\project\morpho\]]></string>
+												<string><![CDATA[G:\product\morpho_release_1.6.1_rc\morpho\]]></string>
 											</property>
 											<property name="shouldUninstall">
 												<boolean>true</boolean>
@@ -2420,7 +2467,7 @@ and any path to a file to read from that file]]></string>
 												<boolean>false</boolean>
 											</property>
 											<property name="sourcePath">
-												<string><![CDATA[D:\project\morpho\]]></string>
+												<string><![CDATA[G:\product\morpho_release_1.6.1_rc\morpho\]]></string>
 											</property>
 											<property name="shouldUninstall">
 												<boolean>true</boolean>
@@ -2429,7 +2476,7 @@ and any path to a file to read from that file]]></string>
 												<string><![CDATA[morpho.bat]]></string>
 											</property>
 											<property name="fileSize">
-												<long>1031</long>
+												<long>994</long>
 											</property>
 											<property name="macBinary">
 												<boolean>false</boolean>
@@ -2449,7 +2496,7 @@ and any path to a file to read from that file]]></string>
 												<boolean>false</boolean>
 											</property>
 											<property name="sourcePath">
-												<string><![CDATA[D:\project\morpho\]]></string>
+												<string><![CDATA[G:\product\morpho_release_1.6.1_rc\morpho\]]></string>
 											</property>
 											<property name="shouldUninstall">
 												<boolean>true</boolean>
@@ -2478,7 +2525,7 @@ and any path to a file to read from that file]]></string>
 												<boolean>false</boolean>
 											</property>
 											<property name="sourcePath">
-												<string><![CDATA[D:\project\morpho\]]></string>
+												<string><![CDATA[G:\product\morpho_release_1.6.1_rc\morpho\]]></string>
 											</property>
 											<property name="shouldUninstall">
 												<boolean>true</boolean>
@@ -2487,7 +2534,7 @@ and any path to a file to read from that file]]></string>
 												<string><![CDATA[README.txt]]></string>
 											</property>
 											<property name="fileSize">
-												<long>17431</long>
+												<long>17726</long>
 											</property>
 											<property name="macBinary">
 												<boolean>false</boolean>
@@ -2496,7 +2543,7 @@ and any path to a file to read from that file]]></string>
 												<int>0</int>
 											</property>
 										</object>
-										<object class="com.zerog.ia.installer.actions.InstallDirectory" objectID="2a912ee58026">
+										<object class="com.zerog.ia.installer.actions.InstallDirectory" objectID="2a91303d81de">
 											<property name="unixPermissions">
 												<string><![CDATA[775]]></string>
 											</property>
@@ -2507,25 +2554,25 @@ and any path to a file to read from that file]]></string>
 												<boolean>false</boolean>
 											</property>
 											<property name="sourcePath">
-												<string><![CDATA[D:\project\morpho\docs]]></string>
+												<string><![CDATA[G:\product\morpho_release_1.6.1_rc\morpho\xsl]]></string>
 											</property>
 											<property name="shouldUninstall">
 												<boolean>true</boolean>
 											</property>
 											<property name="destinationName">
-												<string><![CDATA[docs]]></string>
+												<string><![CDATA[xsl]]></string>
 											</property>
 											<property name="removeRecursively">
 												<boolean>false</boolean>
 											</property>
 											<property name="totalSize">
-												<long>1</long>
+												<long>187495</long>
 											</property>
 											<property name="macBinary">
 												<boolean>false</boolean>
 											</property>
 										</object>
-										<object class="com.zerog.ia.installer.actions.InstallDirectory" objectID="2a912f7280d4">
+										<object class="com.zerog.ia.installer.actions.InstallDirectory" objectID="2a91303d81d1">
 											<property name="unixPermissions">
 												<string><![CDATA[775]]></string>
 											</property>
@@ -2536,193 +2583,19 @@ and any path to a file to read from that file]]></string>
 												<boolean>false</boolean>
 											</property>
 											<property name="sourcePath">
-												<string><![CDATA[D:\project\morpho\lib\catalog]]></string>
+												<string><![CDATA[G:\product\morpho_release_1.6.1_rc\morpho\xsd]]></string>
 											</property>
 											<property name="shouldUninstall">
 												<boolean>true</boolean>
 											</property>
 											<property name="destinationName">
-												<string><![CDATA[catalog]]></string>
+												<string><![CDATA[xsd]]></string>
 											</property>
 											<property name="removeRecursively">
 												<boolean>false</boolean>
 											</property>
 											<property name="totalSize">
-												<long>1</long>
-											</property>
-											<property name="macBinary">
-												<boolean>false</boolean>
-											</property>
-										</object>
-										<object class="com.zerog.ia.installer.actions.InstallDirectory" objectID="2a912f8380e4">
-											<property name="unixPermissions">
-												<string><![CDATA[775]]></string>
-											</property>
-											<property name="sourceName">
-												<string><![CDATA[]]></string>
-											</property>
-											<property name="overrideUnixPermissions">
-												<boolean>false</boolean>
-											</property>
-											<property name="sourcePath">
-												<string><![CDATA[D:\project\morpho\lib\frames]]></string>
-											</property>
-											<property name="shouldUninstall">
-												<boolean>true</boolean>
-											</property>
-											<property name="destinationName">
-												<string><![CDATA[frames]]></string>
-											</property>
-											<property name="removeRecursively">
-												<boolean>false</boolean>
-											</property>
-											<property name="totalSize">
-												<long>1</long>
-											</property>
-											<property name="macBinary">
-												<boolean>false</boolean>
-											</property>
-										</object>
-										<object class="com.zerog.ia.installer.actions.InstallDirectory" objectID="2a912f8280e9">
-											<property name="unixPermissions">
-												<string><![CDATA[775]]></string>
-											</property>
-											<property name="sourceName">
-												<string><![CDATA[]]></string>
-											</property>
-											<property name="overrideUnixPermissions">
-												<boolean>false</boolean>
-											</property>
-											<property name="sourcePath">
-												<string><![CDATA[D:\project\morpho\lib\HTTPClient]]></string>
-											</property>
-											<property name="shouldUninstall">
-												<boolean>true</boolean>
-											</property>
-											<property name="destinationName">
-												<string><![CDATA[HTTPClient]]></string>
-											</property>
-											<property name="removeRecursively">
-												<boolean>false</boolean>
-											</property>
-											<property name="totalSize">
-												<long>1</long>
-											</property>
-											<property name="macBinary">
-												<boolean>false</boolean>
-											</property>
-										</object>
-										<object class="com.zerog.ia.installer.actions.InstallDirectory" objectID="2a912fef8174">
-											<property name="unixPermissions">
-												<string><![CDATA[775]]></string>
-											</property>
-											<property name="sourceName">
-												<string><![CDATA[]]></string>
-											</property>
-											<property name="overrideUnixPermissions">
-												<boolean>false</boolean>
-											</property>
-											<property name="sourcePath">
-												<string><![CDATA[D:\project\morpho\lib\LiveMap]]></string>
-											</property>
-											<property name="shouldUninstall">
-												<boolean>true</boolean>
-											</property>
-											<property name="destinationName">
-												<string><![CDATA[LiveMap]]></string>
-											</property>
-											<property name="removeRecursively">
-												<boolean>false</boolean>
-											</property>
-											<property name="totalSize">
-												<long>1</long>
-											</property>
-											<property name="macBinary">
-												<boolean>false</boolean>
-											</property>
-										</object>
-										<object class="com.zerog.ia.installer.actions.InstallDirectory" objectID="2a9130008188">
-											<property name="unixPermissions">
-												<string><![CDATA[775]]></string>
-											</property>
-											<property name="sourceName">
-												<string><![CDATA[]]></string>
-											</property>
-											<property name="overrideUnixPermissions">
-												<boolean>false</boolean>
-											</property>
-											<property name="sourcePath">
-												<string><![CDATA[D:\project\morpho\lib\MemoryMonitor]]></string>
-											</property>
-											<property name="shouldUninstall">
-												<boolean>true</boolean>
-											</property>
-											<property name="destinationName">
-												<string><![CDATA[MemoryMonitor]]></string>
-											</property>
-											<property name="removeRecursively">
-												<boolean>false</boolean>
-											</property>
-											<property name="totalSize">
-												<long>1</long>
-											</property>
-											<property name="macBinary">
-												<boolean>false</boolean>
-											</property>
-										</object>
-										<object class="com.zerog.ia.installer.actions.InstallDirectory" objectID="2a913000818d">
-											<property name="unixPermissions">
-												<string><![CDATA[775]]></string>
-											</property>
-											<property name="sourceName">
-												<string><![CDATA[]]></string>
-											</property>
-											<property name="overrideUnixPermissions">
-												<boolean>false</boolean>
-											</property>
-											<property name="sourcePath">
-												<string><![CDATA[D:\project\morpho\lib\sampledata]]></string>
-											</property>
-											<property name="shouldUninstall">
-												<boolean>true</boolean>
-											</property>
-											<property name="destinationName">
-												<string><![CDATA[sampledata]]></string>
-											</property>
-											<property name="removeRecursively">
-												<boolean>false</boolean>
-											</property>
-											<property name="totalSize">
-												<long>1</long>
-											</property>
-											<property name="macBinary">
-												<boolean>false</boolean>
-											</property>
-										</object>
-										<object class="com.zerog.ia.installer.actions.InstallDirectory" objectID="2a912fff8192">
-											<property name="unixPermissions">
-												<string><![CDATA[775]]></string>
-											</property>
-											<property name="sourceName">
-												<string><![CDATA[]]></string>
-											</property>
-											<property name="overrideUnixPermissions">
-												<boolean>false</boolean>
-											</property>
-											<property name="sourcePath">
-												<string><![CDATA[D:\project\morpho\lib\SchemaParser]]></string>
-											</property>
-											<property name="shouldUninstall">
-												<boolean>true</boolean>
-											</property>
-											<property name="destinationName">
-												<string><![CDATA[SchemaParser]]></string>
-											</property>
-											<property name="removeRecursively">
-												<boolean>false</boolean>
-											</property>
-											<property name="totalSize">
-												<long>1</long>
+												<long>1938937</long>
 											</property>
 											<property name="macBinary">
 												<boolean>false</boolean>
@@ -2739,7 +2612,7 @@ and any path to a file to read from that file]]></string>
 												<boolean>false</boolean>
 											</property>
 											<property name="sourcePath">
-												<string><![CDATA[D:\project\morpho\lib\style]]></string>
+												<string><![CDATA[G:\product\morpho_release_1.6.1_rc\morpho\lib\style]]></string>
 											</property>
 											<property name="shouldUninstall">
 												<boolean>true</boolean>
@@ -2751,7 +2624,210 @@ and any path to a file to read from that file]]></string>
 												<boolean>false</boolean>
 											</property>
 											<property name="totalSize">
-												<long>1</long>
+												<long>1099063</long>
+											</property>
+											<property name="macBinary">
+												<boolean>false</boolean>
+											</property>
+										</object>
+										<object class="com.zerog.ia.installer.actions.InstallDirectory" objectID="2a912fff8192">
+											<property name="unixPermissions">
+												<string><![CDATA[775]]></string>
+											</property>
+											<property name="sourceName">
+												<string><![CDATA[]]></string>
+											</property>
+											<property name="overrideUnixPermissions">
+												<boolean>false</boolean>
+											</property>
+											<property name="sourcePath">
+												<string><![CDATA[G:\product\morpho_release_1.6.1_rc\morpho\lib\SchemaParser]]></string>
+											</property>
+											<property name="shouldUninstall">
+												<boolean>true</boolean>
+											</property>
+											<property name="destinationName">
+												<string><![CDATA[SchemaParser]]></string>
+											</property>
+											<property name="removeRecursively">
+												<boolean>false</boolean>
+											</property>
+											<property name="totalSize">
+												<long>2059369</long>
+											</property>
+											<property name="macBinary">
+												<boolean>false</boolean>
+											</property>
+										</object>
+										<object class="com.zerog.ia.installer.actions.InstallDirectory" objectID="2a913000818d">
+											<property name="unixPermissions">
+												<string><![CDATA[775]]></string>
+											</property>
+											<property name="sourceName">
+												<string><![CDATA[]]></string>
+											</property>
+											<property name="overrideUnixPermissions">
+												<boolean>false</boolean>
+											</property>
+											<property name="sourcePath">
+												<string><![CDATA[G:\product\morpho_release_1.6.1_rc\morpho\lib\sampledata]]></string>
+											</property>
+											<property name="shouldUninstall">
+												<boolean>true</boolean>
+											</property>
+											<property name="destinationName">
+												<string><![CDATA[sampledata]]></string>
+											</property>
+											<property name="removeRecursively">
+												<boolean>false</boolean>
+											</property>
+											<property name="totalSize">
+												<long>10221</long>
+											</property>
+											<property name="macBinary">
+												<boolean>false</boolean>
+											</property>
+										</object>
+										<object class="com.zerog.ia.installer.actions.InstallDirectory" objectID="2a9130008188">
+											<property name="unixPermissions">
+												<string><![CDATA[775]]></string>
+											</property>
+											<property name="sourceName">
+												<string><![CDATA[]]></string>
+											</property>
+											<property name="overrideUnixPermissions">
+												<boolean>false</boolean>
+											</property>
+											<property name="sourcePath">
+												<string><![CDATA[G:\product\morpho_release_1.6.1_rc\morpho\lib\MemoryMonitor]]></string>
+											</property>
+											<property name="shouldUninstall">
+												<boolean>true</boolean>
+											</property>
+											<property name="destinationName">
+												<string><![CDATA[MemoryMonitor]]></string>
+											</property>
+											<property name="removeRecursively">
+												<boolean>false</boolean>
+											</property>
+											<property name="totalSize">
+												<long>13054</long>
+											</property>
+											<property name="macBinary">
+												<boolean>false</boolean>
+											</property>
+										</object>
+										<object class="com.zerog.ia.installer.actions.InstallDirectory" objectID="2a912fef8174">
+											<property name="unixPermissions">
+												<string><![CDATA[775]]></string>
+											</property>
+											<property name="sourceName">
+												<string><![CDATA[]]></string>
+											</property>
+											<property name="overrideUnixPermissions">
+												<boolean>false</boolean>
+											</property>
+											<property name="sourcePath">
+												<string><![CDATA[G:\product\morpho_release_1.6.1_rc\morpho\lib\LiveMap]]></string>
+											</property>
+											<property name="shouldUninstall">
+												<boolean>true</boolean>
+											</property>
+											<property name="destinationName">
+												<string><![CDATA[LiveMap]]></string>
+											</property>
+											<property name="removeRecursively">
+												<boolean>false</boolean>
+											</property>
+											<property name="totalSize">
+												<long>357299</long>
+											</property>
+											<property name="macBinary">
+												<boolean>false</boolean>
+											</property>
+										</object>
+										<object class="com.zerog.ia.installer.actions.InstallDirectory" objectID="2a912f8280e9">
+											<property name="unixPermissions">
+												<string><![CDATA[775]]></string>
+											</property>
+											<property name="sourceName">
+												<string><![CDATA[]]></string>
+											</property>
+											<property name="overrideUnixPermissions">
+												<boolean>false</boolean>
+											</property>
+											<property name="sourcePath">
+												<string><![CDATA[G:\product\morpho_release_1.6.1_rc\morpho\lib\HTTPClient]]></string>
+											</property>
+											<property name="shouldUninstall">
+												<boolean>true</boolean>
+											</property>
+											<property name="destinationName">
+												<string><![CDATA[HTTPClient]]></string>
+											</property>
+											<property name="removeRecursively">
+												<boolean>false</boolean>
+											</property>
+											<property name="totalSize">
+												<long>2639824</long>
+											</property>
+											<property name="macBinary">
+												<boolean>false</boolean>
+											</property>
+										</object>
+										<object class="com.zerog.ia.installer.actions.InstallDirectory" objectID="2a912f8380e4">
+											<property name="unixPermissions">
+												<string><![CDATA[775]]></string>
+											</property>
+											<property name="sourceName">
+												<string><![CDATA[]]></string>
+											</property>
+											<property name="overrideUnixPermissions">
+												<boolean>false</boolean>
+											</property>
+											<property name="sourcePath">
+												<string><![CDATA[G:\product\morpho_release_1.6.1_rc\morpho\lib\frames]]></string>
+											</property>
+											<property name="shouldUninstall">
+												<boolean>true</boolean>
+											</property>
+											<property name="destinationName">
+												<string><![CDATA[frames]]></string>
+											</property>
+											<property name="removeRecursively">
+												<boolean>false</boolean>
+											</property>
+											<property name="totalSize">
+												<long>15984</long>
+											</property>
+											<property name="macBinary">
+												<boolean>false</boolean>
+											</property>
+										</object>
+										<object class="com.zerog.ia.installer.actions.InstallDirectory" objectID="2a912f7280d4">
+											<property name="unixPermissions">
+												<string><![CDATA[775]]></string>
+											</property>
+											<property name="sourceName">
+												<string><![CDATA[]]></string>
+											</property>
+											<property name="overrideUnixPermissions">
+												<boolean>false</boolean>
+											</property>
+											<property name="sourcePath">
+												<string><![CDATA[G:\product\morpho_release_1.6.1_rc\morpho\lib\catalog]]></string>
+											</property>
+											<property name="shouldUninstall">
+												<boolean>true</boolean>
+											</property>
+											<property name="destinationName">
+												<string><![CDATA[catalog]]></string>
+											</property>
+											<property name="removeRecursively">
+												<boolean>false</boolean>
+											</property>
+											<property name="totalSize">
+												<long>86112</long>
 											</property>
 											<property name="macBinary">
 												<boolean>false</boolean>
@@ -2768,7 +2844,7 @@ and any path to a file to read from that file]]></string>
 												<boolean>false</boolean>
 											</property>
 											<property name="sourcePath">
-												<string><![CDATA[D:\project\morpho\lib]]></string>
+												<string><![CDATA[G:\product\morpho_release_1.6.1_rc\morpho\lib]]></string>
 											</property>
 											<property name="shouldUninstall">
 												<boolean>true</boolean>
@@ -2823,7 +2899,7 @@ and any path to a file to read from that file]]></string>
 												<object refID="2a91303e81d0"/>
 											</visualChildren>
 										</object>
-										<object class="com.zerog.ia.installer.actions.InstallDirectory" objectID="2a91303d81d1">
+										<object class="com.zerog.ia.installer.actions.InstallDirectory" objectID="2a912ee58026">
 											<property name="unixPermissions">
 												<string><![CDATA[775]]></string>
 											</property>
@@ -2834,48 +2910,19 @@ and any path to a file to read from that file]]></string>
 												<boolean>false</boolean>
 											</property>
 											<property name="sourcePath">
-												<string><![CDATA[D:\project\morpho\xsd]]></string>
+												<string><![CDATA[G:\product\morpho_release_1.6.1_rc\morpho\docs]]></string>
 											</property>
 											<property name="shouldUninstall">
 												<boolean>true</boolean>
 											</property>
 											<property name="destinationName">
-												<string><![CDATA[xsd]]></string>
+												<string><![CDATA[docs]]></string>
 											</property>
 											<property name="removeRecursively">
 												<boolean>false</boolean>
 											</property>
 											<property name="totalSize">
-												<long>1</long>
-											</property>
-											<property name="macBinary">
-												<boolean>false</boolean>
-											</property>
-										</object>
-										<object class="com.zerog.ia.installer.actions.InstallDirectory" objectID="2a91303d81de">
-											<property name="unixPermissions">
-												<string><![CDATA[775]]></string>
-											</property>
-											<property name="sourceName">
-												<string><![CDATA[]]></string>
-											</property>
-											<property name="overrideUnixPermissions">
-												<boolean>false</boolean>
-											</property>
-											<property name="sourcePath">
-												<string><![CDATA[D:\project\morpho\xsl]]></string>
-											</property>
-											<property name="shouldUninstall">
-												<boolean>true</boolean>
-											</property>
-											<property name="destinationName">
-												<string><![CDATA[xsl]]></string>
-											</property>
-											<property name="removeRecursively">
-												<boolean>false</boolean>
-											</property>
-											<property name="totalSize">
-												<long>1</long>
+												<long>40272626</long>
 											</property>
 											<property name="macBinary">
 												<boolean>false</boolean>
@@ -3018,16 +3065,16 @@ and any path to a file to read from that file]]></string>
 		</object>
 	</installationObjects>
 	<restorationObjects count="11">
-		<object refID="2a912ee58026"/>
-		<object refID="2a912f7280d4"/>
-		<object refID="2a912f8380e4"/>
-		<object refID="2a912f8280e9"/>
-		<object refID="2a912fef8174"/>
-		<object refID="2a9130008188"/>
-		<object refID="2a913000818d"/>
-		<object refID="2a912fff8192"/>
-		<object refID="2a91300f81a3"/>
-		<object refID="2a91303d81d1"/>
 		<object refID="2a91303d81de"/>
+		<object refID="2a91303d81d1"/>
+		<object refID="2a91300f81a3"/>
+		<object refID="2a912fff8192"/>
+		<object refID="2a913000818d"/>
+		<object refID="2a9130008188"/>
+		<object refID="2a912fef8174"/>
+		<object refID="2a912f8280e9"/>
+		<object refID="2a912f8380e4"/>
+		<object refID="2a912f7280d4"/>
+		<object refID="2a912ee58026"/>
 	</restorationObjects>
 </InstallAnywhere_Deployment_Project>
