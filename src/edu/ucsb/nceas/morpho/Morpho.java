@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: anderson $'
- *     '$Date: 2005-10-24 22:07:42 $'
- * '$Revision: 1.81 $'
+ *   '$Author: tao $'
+ *     '$Date: 2006-07-05 22:59:52 $'
+ * '$Revision: 1.82 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -107,7 +107,7 @@ import org.xml.sax.XMLReader;
 public class Morpho
 {
     /** The version of this release of Morpho */
-    public static String VERSION = "1.6.0";
+    public static String VERSION = "1.6.1";
 
     /** Constant to indicate a separator should precede an action */
     public static String SEPARATOR_PRECEDING = "separator_preceding";
