@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- This script was automatically generated using Zero G's InstallAnywhere 6.1 Enterprise, Build 2325
      STATUS: Fully Functional LICENSED Edition
-     DATE:   Mon Jul 03 15:29:25 PDT 2006 -->
-<InstallAnywhere_Deployment_Project increments="2547">
+     DATE:   Wed Jul 05 17:21:50 PDT 2006 -->
+<InstallAnywhere_Deployment_Project increments="2551">
 	<!-- ** DO NOT EDIT ** Essential authorization and configuration data ** DO NOT EDIT ** -->
 	<essentialScriptInfo>
 		<versionID major="6" minor="1" revision="-1"/>
@@ -10,7 +10,7 @@
 		<scriptID>12,42,11,90,81,49,48,55,54,71,56,76,69,80,87,86</scriptID>
 		<buildID>3,13,71,87,105,110,100,111,119,115,32,88,80,44,32,53,46,49,44,32,120,56,54,59,32,74,97,118,97,32,49,46,51,46,49,95,48,56,44,32,83,117,110,32,77,105,99,114,111,115,121,115,116,101,109,115,32,73,110,99,46,44,32,104,116,116,112,58,47,47,106,97,118,97,46,115,117,110,46,99,111,109,47,59,32,101,110,44,32,85,83,59,32,67,112,49,50,53,50</buildID>
 		<!-- The authorizationID may change between project saves and builds.  This does not effect the integrity of the project, nor do changes in this value represent changes in the actual InstallAnywhere project. -->
-		<authorizationID>1,0,0,0,51,-123,-108,-128,80,112,116,103,88,98,113,97,113,65,65,88,74,65,72,71,70,69,64,69,66,69,48,79,87,5,2,2,14,-14,102,12,1,0,0</authorizationID>
+		<authorizationID>1,0,0,0,67,48,67,96,80,112,116,103,88,98,113,97,113,65,65,88,74,65,72,71,70,69,64,69,66,69,48,79,87,5,2,8,2,-106,97,12,1,0,0</authorizationID>
 	</essentialScriptInfo>
 	<installationObjects uniqueObjects="122">
 		<object class="com.zerog.ia.installer.Installer" objectID="2a90a051bff1">
@@ -176,7 +176,7 @@ it will search for ones in this list]]></string>
 								</object>
 							</method>
 							<method name="addElement">
-								<object class="com.zerog.ia.installer.util.LAXPropertyData" objectID="4a02f6459b96">
+								<object class="com.zerog.ia.installer.util.LAXPropertyData" objectID="54b702aa9b97">
 									<property name="propertyValue">
 										<string><![CDATA[edu.ucsb.nceas.morpho.Morpho]]></string>
 									</property>
@@ -208,7 +208,7 @@ and any path to a file to read from that file]]></string>
 						<boolean>true</boolean>
 					</property>
 					<property name="destinationName">
-						<string><![CDATA[Morpho-1.6.0RC1]]></string>
+						<string><![CDATA[Morpho-1.6.1RC2]]></string>
 					</property>
 					<property name="executableIcon">
 						<object class="com.zerog.ia.installer.util.BindingWin32" objectID="49e680af9e72">
@@ -223,6 +223,12 @@ and any path to a file to read from that file]]></string>
 							</property>
 							<property name="largeIconPath">
 								<string><![CDATA[G:\product\morpho_release_1.6.1_rc\morpho\lib\]]></string>
+							</property>
+							<property name="macOSXIconPath">
+								<string><![CDATA[G:\product\morpho_release_1.6.1_rc\morpho\lib\]]></string>
+							</property>
+							<property name="macOSXIconName">
+								<string><![CDATA[MacDesktopIcon32x32.icns]]></string>
 							</property>
 						</object>
 					</property>
@@ -595,7 +601,7 @@ and any path to a file to read from that file]]></string>
 								<string><![CDATA[morpho-config.jar]]></string>
 							</property>
 							<property name="fileSize">
-								<long>758122</long>
+								<long>760745</long>
 							</property>
 							<property name="macBinary">
 								<boolean>false</boolean>
@@ -1346,7 +1352,7 @@ Press "Done" to quit the installer.]]></string>
 					</method>
 					<method name="put">
 						<string><![CDATA[com.zerog.ia.project.build.last.date]]></string>
-						<string><![CDATA[July 3, 2006 3:29:24 PM PDT]]></string>
+						<string><![CDATA[July 5, 2006 4:50:56 PM PDT]]></string>
 					</method>
 					<method name="put">
 						<string><![CDATA[com.zerog.ia.build.platform.windows.vm]]></string>
@@ -1406,7 +1412,7 @@ Press "Done" to quit the installer.]]></string>
 					</method>
 					<method name="put">
 						<string><![CDATA[com.zerog.ia.project.save.last.date]]></string>
-						<string><![CDATA[July 3, 2006 3:29:24 PM PDT]]></string>
+						<string><![CDATA[July 5, 2006 5:21:50 PM PDT]]></string>
 					</method>
 					<method name="put">
 						<string><![CDATA[com.zerog.ia.build.options.optimization.platform.cdrom]]></string>
@@ -1560,13 +1566,13 @@ Press "Done" to quit the installer.]]></string>
 			<property name="installerInfoData">
 				<object class="com.zerog.ia.installer.util.InstallerInfoData" objectID="2a90a061bff3">
 					<property name="installerTitle">
-						<string><![CDATA[Morpho-1.6.1RC1]]></string>
+						<string><![CDATA[Morpho-1.6.1RC2]]></string>
 					</property>
 					<property name="installerName">
-						<string><![CDATA[install]]></string>
+						<string><![CDATA[Morpho-1.6.1-RC2-Installer]]></string>
 					</property>
 					<property name="productName">
-						<string><![CDATA[Morpho-1.6.1RC1]]></string>
+						<string><![CDATA[Morpho-1.6.1RC2]]></string>
 					</property>
 					<property name="productID">
 						<object class="com.zerog.registry.UUID">
@@ -2614,7 +2620,7 @@ and any path to a file to read from that file]]></string>
 												<boolean>false</boolean>
 											</property>
 											<property name="totalSize">
-												<long>40308996</long>
+												<long>1</long>
 											</property>
 											<property name="macBinary">
 												<boolean>false</boolean>
@@ -2643,7 +2649,7 @@ and any path to a file to read from that file]]></string>
 												<boolean>false</boolean>
 											</property>
 											<property name="totalSize">
-												<long>88822</long>
+												<long>1</long>
 											</property>
 											<property name="macBinary">
 												<boolean>false</boolean>
@@ -2672,7 +2678,7 @@ and any path to a file to read from that file]]></string>
 												<boolean>false</boolean>
 											</property>
 											<property name="totalSize">
-												<long>16530</long>
+												<long>1</long>
 											</property>
 											<property name="macBinary">
 												<boolean>false</boolean>
@@ -2701,7 +2707,7 @@ and any path to a file to read from that file]]></string>
 												<boolean>false</boolean>
 											</property>
 											<property name="totalSize">
-												<long>2680051</long>
+												<long>1</long>
 											</property>
 											<property name="macBinary">
 												<boolean>false</boolean>
@@ -2730,7 +2736,7 @@ and any path to a file to read from that file]]></string>
 												<boolean>false</boolean>
 											</property>
 											<property name="totalSize">
-												<long>360616</long>
+												<long>1</long>
 											</property>
 											<property name="macBinary">
 												<boolean>false</boolean>
@@ -2759,7 +2765,7 @@ and any path to a file to read from that file]]></string>
 												<boolean>false</boolean>
 											</property>
 											<property name="totalSize">
-												<long>13520</long>
+												<long>1</long>
 											</property>
 											<property name="macBinary">
 												<boolean>false</boolean>
@@ -2788,7 +2794,7 @@ and any path to a file to read from that file]]></string>
 												<boolean>false</boolean>
 											</property>
 											<property name="totalSize">
-												<long>10387</long>
+												<long>1</long>
 											</property>
 											<property name="macBinary">
 												<boolean>false</boolean>
@@ -2817,7 +2823,7 @@ and any path to a file to read from that file]]></string>
 												<boolean>false</boolean>
 											</property>
 											<property name="totalSize">
-												<long>2061979</long>
+												<long>1</long>
 											</property>
 											<property name="macBinary">
 												<boolean>false</boolean>
@@ -2846,7 +2852,7 @@ and any path to a file to read from that file]]></string>
 												<boolean>false</boolean>
 											</property>
 											<property name="totalSize">
-												<long>1113343</long>
+												<long>1</long>
 											</property>
 											<property name="macBinary">
 												<boolean>false</boolean>
@@ -2941,7 +2947,7 @@ and any path to a file to read from that file]]></string>
 												<boolean>false</boolean>
 											</property>
 											<property name="totalSize">
-												<long>1942894</long>
+												<long>1</long>
 											</property>
 											<property name="macBinary">
 												<boolean>false</boolean>
@@ -2970,7 +2976,7 @@ and any path to a file to read from that file]]></string>
 												<boolean>false</boolean>
 											</property>
 											<property name="totalSize">
-												<long>188320</long>
+												<long>1</long>
 											</property>
 											<property name="macBinary">
 												<boolean>false</boolean>
