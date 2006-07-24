@@ -1,0 +1,9 @@
+User Cases:
+1. User can save partial eml document in new package wizard and import data table wizard. In the saving process,
+   user can specify the file name which he want (user can't specify the file location). If file already existed, an 
+   eorror message will be shown. 
+2. User can open the save partial eml document and get the exact same satuation in new package wizard (or import data table wizard)
+    when he saved it. 
+3. If Morpho cashes during new package wizard (or import data table wizard) processing, user can restart Morpho and find the most
+   recently crashed file (we only stored one crached file, the most recently one will overwrite the older one).
+
