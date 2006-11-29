@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2006-11-29 01:49:33 $'
- * '$Revision: 1.7 $'
+ *     '$Date: 2006-11-29 21:51:50 $'
+ * '$Revision: 1.8 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -193,17 +193,17 @@ public class FileSystemDataStore extends DataStore
    public boolean deleteFile(String name)
    {
      String path = parseId(name);
-     String filePath = datadir + "/" + path;
+     String filePath = datadir + "/" +path;
      //System.out.println("the deleted file path will be !"+filePath+"!");
      File delfile = new File(filePath); //the path to the file
      System.out.println("the file exists "+delfile.exists());
-     SecurityManager manager = new SecurityManager();
+     //SecurityManager manager = new SecurityManager();
      boolean success = false;
      try
      {
-    	 manager.checkRead(filePath);
-    	 manager.checkWrite(filePath);
-    	 manager.checkDelete(filePath);
+    	 //manager.checkRead(filePath);
+    	 //manager.checkWrite(filePath);
+    	 //manager.checkDelete(filePath);
     	 success = delfile.delete();
     	 
      }
@@ -212,7 +212,7 @@ public class FileSystemDataStore extends DataStore
     	 //System.out.println("got an exception in deleting the local file");
     	 e.printStackTrace();
      }
-     //System.out.println("the success value is "+success);
+     System.out.println("the success value is "+success);
      return success;
    }
   
