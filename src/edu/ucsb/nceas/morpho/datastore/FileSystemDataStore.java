@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2006-11-29 21:51:50 $'
- * '$Revision: 1.8 $'
+ *     '$Date: 2006-12-01 01:21:44 $'
+ * '$Revision: 1.9 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -132,6 +132,8 @@ public class FileSystemDataStore extends DataStore
    */
   public File saveFile(String name, Reader file, String rootDir)
   {
+	BufferedWriter bwriter = null; 
+	BufferedReader bsr = null;
     try
     {
       String path = parseId(name);
@@ -149,20 +151,33 @@ public class FileSystemDataStore extends DataStore
           ee.printStackTrace();
         }
       }
-      BufferedReader bsr = new BufferedReader(file);
-      BufferedWriter bwriter = new BufferedWriter(new FileWriter(savefile));
+      bsr = new BufferedReader(file);
+      bwriter = new BufferedWriter(new FileWriter(savefile));
       int d = bsr.read();
       while(d != -1)
       {
         bwriter.write(d); //write out everything in the reader
         d = bsr.read();
       }
+      bsr.close();
       bwriter.flush();
       bwriter.close();
       return savefile;
     }
     catch(Exception e)
     {
+      if (bwriter != null)
+      {
+    	  try
+    	  {
+    		if (bsr != null) bsr.close();
+    	    if (bwriter != null) bwriter.close();
+    	  }
+    	  catch(Exception ie)
+    	  {
+    		  ie.printStackTrace();
+    	  }
+      }
       e.printStackTrace();
       return null;
     }
@@ -196,14 +211,24 @@ public class FileSystemDataStore extends DataStore
      String filePath = datadir + "/" +path;
      //System.out.println("the deleted file path will be !"+filePath+"!");
      File delfile = new File(filePath); //the path to the file
-     System.out.println("the file exists "+delfile.exists());
+     //System.out.println("the file exists "+delfile.exists());
+     //System.out.println("the applicate read file "+delfile.canRead());
+     //System.out.println("the application write file "+delfile.canWrite());
+     
      //SecurityManager manager = new SecurityManager();
      boolean success = false;
+     
      try
      {
     	 //manager.checkRead(filePath);
     	 //manager.checkWrite(filePath);
     	 //manager.checkDelete(filePath);
+    	 //Thread.sleep(5000);
+    	 //System.out.println("the canonical path is "+delfile.getCanonicalPath());
+    	 //delfile.close();
+    	 //this is not a good way to call system.gc there. but it works. otherwise
+    	 // delete() wouldn't work on windows xp
+    	 System.gc();
     	 success = delfile.delete();
     	 
      }
