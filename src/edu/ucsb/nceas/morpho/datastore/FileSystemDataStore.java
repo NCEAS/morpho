@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2006-12-01 01:21:44 $'
- * '$Revision: 1.9 $'
+ *     '$Date: 2006-12-02 00:59:54 $'
+ * '$Revision: 1.10 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -228,7 +228,7 @@ public class FileSystemDataStore extends DataStore
     	 //delfile.close();
     	 //this is not a good way to call system.gc there. but it works. otherwise
     	 // delete() wouldn't work on windows xp
-    	 System.gc();
+    	 //System.gc();
     	 success = delfile.delete();
     	 
      }
