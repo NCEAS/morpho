@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: anderson $'
- *     '$Date: 2006-02-06 19:37:13 $'
- * '$Revision: 1.44 $'
+ *   '$Author: tao $'
+ *     '$Date: 2006-12-02 01:01:03 $'
+ * '$Revision: 1.45 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -137,6 +137,14 @@ public class DataPackageFactory
     AbstractDataPackage dp = null;
     String type = getDocTypeInfo(in);
     Log.debug(40,"DocTypeInfo: " + type);
+    try
+	{
+		if(in != null)in.close();
+	}
+	catch(IOException ie)
+	{
+		Log.debug(40, "Sorry - Couldn't close the package");
+	}
 //    if (type.equals("eml:eml")) {
     if (type.indexOf("eml://ecoinformatics.org/eml-2.0")>-1) {
       //Log.debug(20,"Creating new eml-2.0.x package from docid");
@@ -321,11 +329,12 @@ public class DataPackageFactory
       secondLine = buffer.toString();
       Log.debug(25, "the second line string is: "+secondLine);
 //      xml.reset();
-    //  xml.close();
+     //xml.close();
     } catch (Exception e) {
     Log.debug(6, "Sorry - Unable to Open the Requested Data Package!");
     Log.debug(20, "Error in getSchemaLine!");
     }
+    
     return secondLine;
   }
 
