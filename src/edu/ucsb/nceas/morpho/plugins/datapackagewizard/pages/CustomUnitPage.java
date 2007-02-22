@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2004-04-19 21:43:54 $'
- * '$Revision: 1.3 $'
+ *   '$Author: tao $'
+ *     '$Date: 2007-02-22 18:52:12 $'
+ * '$Revision: 1.4 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -761,7 +761,7 @@ public class CustomUnitPage extends AbstractUIPage {
 						
 			map.put(xPathRoot + "/unit[1]/@unitType", type);
 			map.put(xPathRoot + "/unit[1]/@parentSI", SIUnit);
-			map.put(xPathRoot + "/unit[1]/@multiplerToSI", multiplier);
+			map.put(xPathRoot + "/unit[1]/@multiplierToSI", multiplier);
 			
 		} else { //new type
 			
@@ -792,7 +792,7 @@ public class CustomUnitPage extends AbstractUIPage {
 			
 			map.put(xPathRoot + "/unit[1]/@unitType", type);
 			map.put(xPathRoot + "/unit[1]/@parentSI", SIUnit);
-			map.put(xPathRoot + "/unit[1]/@multiplerToSI", multiplier);
+			map.put(xPathRoot + "/unit[1]/@multiplierToSI", multiplier);
 			
 		}
 		
