@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2002-12-16 22:43:27 $'
- * '$Revision: 1.8 $'
+ *   '$Author: leinfelder $'
+ *     '$Date: 2007-12-19 15:54:55 $'
+ * '$Revision: 1.9 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -400,6 +400,9 @@ public class InitialScreen extends JPanel
         loginButton.setRolloverEnabled(true);
         loginButton.setHorizontalAlignment(SwingConstants.CENTER);
         loginButton.setMargin(new Insets(0,0,0,0));
+        
+        //set the size of the button, see bug #3031
+        setSizes(loginButton, UISettings.INIT_SCR_LOGIN_BUTTON_DIMS);
         //////////////
 
         //ADD CONNECTIONLISTENER SO WE CAN RESPOND TO CHANGES:

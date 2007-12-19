@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: sgarg $'
- *     '$Date: 2005-06-20 22:13:32 $'
- * '$Revision: 1.23 $'
+ *   '$Author: leinfelder $'
+ *     '$Date: 2007-12-19 15:54:54 $'
+ * '$Revision: 1.24 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -163,7 +163,7 @@ public class UISettings
      *  the left side of the initial screen
      */
     public static final Dimension INIT_SCRN_LEFT_PANELS_PICKLISTDIMS
-                                                    = new Dimension(130, 20);
+                                                    = new Dimension(130, 22);
 
 
     /**
@@ -172,6 +172,11 @@ public class UISettings
     public static final Dimension INIT_SCR_LINKBUTTON_DIMS
                                                     = new Dimension(280, 20);
 
+    /**
+     * size of the login button for init screen
+     */
+    public static final Dimension INIT_SCR_LOGIN_BUTTON_DIMS
+													= new Dimension(50, 25);
 
 
 
