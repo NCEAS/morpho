@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: sgarg $'
- *     '$Date: 2005-07-14 19:38:22 $'
- * '$Revision: 1.27 $'
+ *   '$Author: leinfelder $'
+ *     '$Date: 2008-02-04 18:36:53 $'
+ * '$Revision: 1.28 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -95,8 +95,9 @@ public class ProfileDialog extends JDialog
     JPanel helpPanel = new JPanel();
     helpPanel.setLayout(new BoxLayout(helpPanel, BoxLayout.Y_AXIS));
     helpPanel.setBackground(Color.white);
-    helpPanel.setMaximumSize(new Dimension(150,400));
-    helpPanel.setPreferredSize(new Dimension(150,400));
+    Dimension helpDim = new Dimension(250, 400);
+    helpPanel.setMaximumSize(helpDim);
+    helpPanel.setPreferredSize(helpDim);
     helpPanel.setBorder(BorderFactory.createLoweredBevelBorder());
     helpPanel.add(Box.createRigidArea(new Dimension(8,8)));
     ImageIcon logoIcon =
@@ -384,8 +385,9 @@ public class ProfileDialog extends JDialog
     } else if (1 == currentScreen) {
       String helpText = "<html><p>Enter the information you submitted "
           + "when you registered for the Knowledge Network for Biocomplexity "
-          + "(KNB). If you have not registered for the KNB yet, go to "
-          + "\"http://ldap.ecoinformatics.org/cgi-bin/ldapweb.cgi?cfg=knb\"."
+          + "(KNB). "
+          + "<br>If you have not registered for the KNB yet, go to: "
+          + "<i>http://knb.ecoinformatics.org/</i>."
           + " This will allow you to login to the network and collaborate with"
           + " other researchers through the KNB.</p></html>";
       helpLabel.setText(helpText);
