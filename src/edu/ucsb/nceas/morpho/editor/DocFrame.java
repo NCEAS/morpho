@@ -5,9 +5,9 @@
  *    Authors: @higgins@
  *    Release: @release@
  *
- *   '$Author: tao $'
- *     '$Date: 2006-06-06 23:26:56 $'
- * '$Revision: 1.181 $'
+ *   '$Author: leinfelder $'
+ *     '$Date: 2008-03-11 21:41:50 $'
+ * '$Revision: 1.182 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -119,14 +119,11 @@ import java.awt.event.*;
 import java.io.*;
 import java.net.URL;
 import java.util.*;
-import java.util.Hashtable;
-import java.util.PropertyResourceBundle;
 import javax.swing.*;
 import javax.swing.*;
 import javax.swing.event.*;
 import javax.swing.tree.*;
 import org.xml.sax.*;
-import org.xml.sax.SAXException;
 import org.xml.sax.helpers.*;
 import org.w3c.dom.*;
 import edu.ucsb.nceas.morpho.plugins.ServiceProvider;
@@ -407,6 +404,11 @@ public class DocFrame extends javax.swing.JFrame
             "dataTable", "attributeList", "abstract", "geographicCoverage",
             "temporalCoverage", "taxonomicCoverage", "methods", "project",
             "entityName", "physical", "spatialRaster", "spatialVector"};
+    //look up the configured choices rather than hardcoding them
+    Vector configuredChoices = Morpho.getConfiguration().get("editorChoice");
+    if (configuredChoices != null && configuredChoices.size() > 0) {
+    	choices = (String[]) configuredChoices.toArray(new String[0]);
+    }
     choiceCombo = new JComboBox(choices);
     choiceCombo.setVisible(false);
     choiceCombo.setEditable(true);
@@ -2016,11 +2018,12 @@ public class DocFrame extends javax.swing.JFrame
         ) {
         // ignore (CHOICE) nodes but process their children
 
-        // modify if the node has name 'eml' to add namespace info
-        // needed for eml2 docs
-        if (name.equals("eml")) {
-          start1.append("\n" + indentString + "<" + "eml:eml ");;
-        } else {
+        // modify if the node has name is document to add namespace info
+        // (needed for eml2 docs and others)
+        if (name.equals(docnode.getLocalName())) {
+            start1.append("\n" + indentString + "<" + docnode.getNodeName());;
+          }
+        else {
           start1.append("\n" + indentString + "<" + name);
         }
 
@@ -2049,9 +2052,11 @@ public class DocFrame extends javax.swing.JFrame
           start1.append(" help=\""+ni.getHelp()+"\"");
         }
         start1.append(">");
-        if (name.equals("eml")) {
-          end = "</eml:eml>";
-        } else {
+        //close with the full node name if this is the docnode
+        if (name.equals(docnode.getLocalName())) {
+        	end = "</" + docnode.getNodeName() + ">";
+        }
+        else {
           end = "</" + name + ">";
         }
         tempStack.push(end);
