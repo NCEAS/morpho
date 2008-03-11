@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: anderson $'
- *     '$Date: 2006-02-06 18:44:45 $'
- * '$Revision: 1.112 $'
+ *   '$Author: leinfelder $'
+ *     '$Date: 2008-03-11 21:55:20 $'
+ * '$Revision: 1.113 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -306,7 +306,7 @@ public abstract class AbstractDataPackage extends MetadataObject
    *  This is really specific to eml2; thus just declared as abstract here
    *  and implemented in the EML200DataPackage class.
    */
-  abstract Node getReferencedNode(Node node);
+  public abstract Node getReferencedNode(Node node);
 
   /**
    * used to signify that this package is located on a metacat server
