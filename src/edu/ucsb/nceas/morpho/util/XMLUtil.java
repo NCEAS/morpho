@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: anderson $'
- *     '$Date: 2006-02-06 19:43:41 $'
- * '$Revision: 1.7 $'
+ *   '$Author: tao $'
+ *     '$Date: 2008-03-12 00:45:42 $'
+ * '$Revision: 1.8 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -58,48 +58,102 @@ public class XMLUtil
                     break;
                 }
                 case '&': {
-                    str.append("&amp;");
-                    break;
-                }
-                case '"': {
-                    str.append("&quot;");
-                    break;
-                }
-/*  handled in default
-                case '\r':
-		            case '\t':
-                case '\n': {
-                    if (true) {
+                    /*
+                     * patch provided by Johnoel Ancheta from U of Hawaii
+                     */
+                    // check if & is for a character reference &#xnnnn;
+                    if (i + 1 < len - 1 && s.charAt(i + 1) == '#') {
                         str.append("&#");
-                        str.append(Integer.toString(ch));
+                        i += 2;
+
+                        ch = s.charAt(i);
+                        while (i < len && ch != ';') {
+                            str.append(ch);
+                            i++;
+                            ch = s.charAt(i);
+                        }
                         str.append(';');
-                        break;
-                    } else {
-                    // else, default append char
-                    str.append(" ");
-			              break;
+                    } else 
+                    // check if & is in front of amp; 
+                    // (we dont yet check for other HTML 4.0 Character entities) 
+                    if (i + 4 < len  && s.charAt(i + 1) == 'a' 
+                   	 && s.charAt(i + 2) == 'm' 
+                   		 && s.charAt(i + 3) == 'p' 
+                   			 && s.charAt(i + 4) == ';'){
+                        str.append("&amp;");
+                        i += 4;                        	 
                     }
-               }
-*/                 default: {
-                    if ((ch<128)&&(ch>31)) {
-                      str.append(ch);
+                    else  if (i + 3 < len && s.charAt(i + 1) == 'l' 
+                   	 && s.charAt(i + 2) == 't' 
+                   		 && s.charAt(i + 3) == ';' ){
+               	  // check if & is in front of it; 
+                        str.append("&lt;");
+                        i += 3;                        	 
+                    } 
+                    else  if (i + 3 < len && s.charAt(i + 1) == 'g' 
+                   	 && s.charAt(i + 2) == 't' 
+                   		 && s.charAt(i + 3) == ';' ){
+               	  // check if & is in front of gt; 
+                      // (we dont yet check for other HTML 4.0 Character entities) 
+                        str.append("&gt;");
+                        i += 3;                        	 
+                    } 
+                    else  if (i + 5 < len && s.charAt(i + 1) == 'q' 
+                   	 && s.charAt(i + 2) == 'u' 
+                   		 && s.charAt(i + 3) == 'o' 
+                   	 && s.charAt(i + 4) == 't'
+                   	 && s.charAt(i + 5) == ';')
+                        {
+               	   // check if & is in front of quot; 
+                      // (we dont yet check for other HTML 4.0 Character entities) 
+                        str.append("&quot;");
+                        i += 5;                        	 
+                    } 
+                    else  if (i + 5 < len && s.charAt(i + 1) == 'a' 
+                   	 && s.charAt(i + 2) == 'p' 
+                   		 && s.charAt(i + 3) == 'o' 
+                   	 && s.charAt(i + 4) == 's'
+                   	 && s.charAt(i + 5) == ';')
+                        {
+               	   // check if & is in front of apostrophe; 
+                      // (we dont yet check for other HTML 4.0 Character entities) 
+                        str.append("&apos;");
+                        i += 5;                        	 
+                    } 
+                    else{
+                        str.append("&amp;");
+                    }
+                    /////////
+                    break;
+                }
+                case '"':
+               	 str.append("&quot;");
+                    break;
+                case '\'':
+               	 str.append("&apos;");
+                    break;
+               default: {
+                    if ( (ch<128) && (ch>31) ) {
+                        str.append(ch);
                     }
                     else if (ch<32) {
-                      if (ch== 10) {
-                        str.append(ch);
-                      }
-                      if (ch==13) {
-                        str.append(ch);
-                      }
-                      if (ch==9) {
-                        str.append(ch);
-                      }
-                      // otherwise skip
+                        if (ch == 10) { // new line
+                            str.append(ch);
+                        }
+                        if (ch == 13) { // carriage return
+                            str.append(ch);
+                        }
+                        if (ch == 9) {  // tab
+                            str.append(ch);
+                        }
+                        // otherwise skip
                     }
                     else {
-                        str.append("&#");
+                   	 //Don't transfer special character to numeric entity
+                        /*str.append("&#");
                         str.append(Integer.toString(ch));
-                        str.append(';');
+                        str.append(';');*/
+                        str.append(ch);
                     }
                 }
             }
