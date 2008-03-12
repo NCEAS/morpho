@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2008-03-12 00:45:42 $'
- * '$Revision: 1.8 $'
+ *     '$Date: 2008-03-12 22:11:34 $'
+ * '$Revision: 1.9 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -150,10 +150,10 @@ public class XMLUtil
                     }
                     else {
                    	 //Don't transfer special character to numeric entity
-                        /*str.append("&#");
+                        str.append("&#");
                         str.append(Integer.toString(ch));
-                        str.append(';');*/
-                        str.append(ch);
+                        str.append(';');
+                        //str.append(ch);
                     }
                 }
             }
