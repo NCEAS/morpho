@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: anderson $'
- *     '$Date: 2006-02-06 19:52:24 $'
- * '$Revision: 1.12 $'
+ *   '$Author: leinfelder $'
+ *     '$Date: 2008-04-11 18:54:01 $'
+ * '$Revision: 1.13 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -135,6 +135,14 @@ public class MetadataObject
     return metadataPathNode;
   }
 
+  public String getGrammar() {
+	  return grammar;
+  }
+	
+  public void setGrammar(String grammar) {
+	  this.grammar = grammar;
+  }
+	
   public void setMetadataPath(Node nd) {
     metadataPathNode = nd;
   }

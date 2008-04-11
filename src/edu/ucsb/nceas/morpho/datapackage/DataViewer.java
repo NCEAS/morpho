@@ -4,9 +4,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: tao $'
- *     '$Date: 2006-06-10 00:10:00 $'
- * '$Revision: 1.122 $'
+ *   '$Author: leinfelder $'
+ *     '$Date: 2008-04-11 18:54:01 $'
+ * '$Revision: 1.123 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -550,7 +550,11 @@ public class DataViewer extends javax.swing.JPanel
       return TablePanel;
     }
 
-    /**
+    public JPanel getDataViewerPanel() {
+		return DataViewerPanel;
+	}
+
+	/**
      * Method to get persistent talbe model
      */
     public PersistentTableModel getPersistentTableModel()

@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: tao $'
- *     '$Date: 2006-12-02 01:01:03 $'
- * '$Revision: 1.45 $'
+ *   '$Author: leinfelder $'
+ *     '$Date: 2008-04-11 18:54:01 $'
+ * '$Revision: 1.46 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -58,9 +58,9 @@ public class DataPackageFactory
   /**
    *  a uri in string form characterizing the docType of the current document
    */
-  static private String docType = null;
+  protected static String docType = null;
 
-  static private Morpho morpho = null;
+  protected static Morpho morpho = null;
 
   /**
    *  Create a new Datapackage given a Reader to a metadata stream
@@ -221,7 +221,7 @@ public class DataPackageFactory
    *  This method avoids creating a DOM in case the XML doc is very large (i.e. contains inline
    *  data)
    */
-  private static String getDocTypeInfo(Reader in) {
+  protected static String getDocTypeInfo(Reader in) {
     String temp = getSchemaLine(in,2);
     //Log.debug(1,"line is:"+temp);
     // this should return a line of text which is either the DOCTYPE declaraton or the root node
@@ -275,7 +275,7 @@ public class DataPackageFactory
 
   // 'borrowed' from MetaCatServlet class of metacat
   // this method should return everything inside the linenum set of angle brackets
-    private static String getSchemaLine(Reader xml, int linenum)   {
+    protected static String getSchemaLine(Reader xml, int linenum)   {
     // find the line
     String secondLine = null;
     int count =0;
