@@ -7,9 +7,9 @@
  *    Authors: Matthew Brooke
  *    Release: @release@
  *
- *   '$Author: sgarg $'
- *     '$Date: 2005-06-30 16:27:20 $'
- * '$Revision: 1.67 $'
+ *   '$Author: leinfelder $'
+ *     '$Date: 2008-04-11 18:55:15 $'
+ * '$Revision: 1.68 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -418,7 +418,7 @@ public class WizardContainerFrame
    *
    * @param show boolean
    */
-  protected void setShowPageCountdown(boolean show) {
+  public void setShowPageCountdown(boolean show) {
     showPageCount = show;
     setPageCount();
   }

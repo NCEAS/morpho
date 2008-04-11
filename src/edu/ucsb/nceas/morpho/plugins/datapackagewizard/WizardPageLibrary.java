@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: sambasiv $'
- *     '$Date: 2004-04-14 21:20:53 $'
- * '$Revision: 1.30 $'
+ *   '$Author: leinfelder $'
+ *     '$Date: 2008-04-11 18:55:15 $'
+ * '$Revision: 1.31 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -45,7 +45,7 @@ import edu.ucsb.nceas.morpho.framework.AbstractUIPage;
  */
 public class WizardPageLibrary {
 
-  private static WizardContainerFrame container;
+  protected static WizardContainerFrame container;
 
 
   public WizardPageLibrary(WizardContainerFrame container) {

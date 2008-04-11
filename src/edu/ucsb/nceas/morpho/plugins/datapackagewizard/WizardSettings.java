@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: sgarg $'
- *     '$Date: 2005-07-08 19:00:13 $'
- * '$Revision: 1.72 $'
+ *   '$Author: leinfelder $'
+ *     '$Date: 2008-04-11 18:55:15 $'
+ * '$Revision: 1.73 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -113,13 +113,13 @@ public class WizardSettings {
   private static final String EML_UNIT_DICTIONARY_PATH
   = "/xsl/eml-unitDictionary.xml";
 
-  protected static final int WIZARD_X_COORD = UISettings.WIZARD_X_COORD;
+  public static final int WIZARD_X_COORD = UISettings.WIZARD_X_COORD;
 
-  protected static final int WIZARD_Y_COORD = UISettings.WIZARD_Y_COORD;
+  public static final int WIZARD_Y_COORD = UISettings.WIZARD_Y_COORD;
 
-  protected static final int WIZARD_WIDTH   = UISettings.WIZARD_WIDTH;
+  public static final int WIZARD_WIDTH   = UISettings.WIZARD_WIDTH;
 
-  protected static final int WIZARD_HEIGHT  = UISettings.WIZARD_HEIGHT;
+  public static final int WIZARD_HEIGHT  = UISettings.WIZARD_HEIGHT;
 
 
   public static final int DIALOG_WIDTH = UISettings.POPUPDIALOG_WIDTH;
@@ -128,9 +128,9 @@ public class WizardSettings {
 
   public static final int ATTR_DIALOG_HEIGHT = UISettings.POPUPDIALOG_FOR_ATTR_HEIGHT;
 
-  protected static final String PACKAGE_WIZ_FIRST_PAGE_ID = DataPackageWizardInterface.INTRODUCTION;
+  public static final String PACKAGE_WIZ_FIRST_PAGE_ID = DataPackageWizardInterface.INTRODUCTION;
 
-  protected static final String ENTITY_WIZ_FIRST_PAGE_ID = DataPackageWizardInterface.DATA_LOCATION;
+  public static final String ENTITY_WIZ_FIRST_PAGE_ID = DataPackageWizardInterface.DATA_LOCATION;
 
   public static final Color TOP_PANEL_BG_COLOR = new Color(11,85,112);
 
@@ -252,7 +252,7 @@ public class WizardSettings {
   protected static final String EML200_SCHEMA_NAMESPACE =
       "eml://ecoinformatics.org/eml-2.0.0";
 
-  protected static final String EML201_SCHEMA_NAMESPACE =
+  public static final String EML201_SCHEMA_NAMESPACE =
       "eml://ecoinformatics.org/eml-2.0.1";
 
   protected static final String NEW_EML200_DOCUMENT_TEXT =
@@ -298,7 +298,7 @@ public class WizardSettings {
   +"   </dataset> "
   +"</eml:eml>";
 
-  protected static final String TEMP_REFS_EML201_DOCUMENT_TEXT =
+  public static final String TEMP_REFS_EML201_DOCUMENT_TEXT =
   "<eml:eml "
   +"   packageId=\"\" system=\"knb\" "
   +"   xmlns:eml=\"eml://ecoinformatics.org/eml-2.0.1\" "
