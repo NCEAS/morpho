@@ -31,10 +31,12 @@ import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
 
 
@@ -532,6 +534,14 @@ public class WidgetFactory {
 
     c.add(centerPanel, BorderLayout.CENTER);
     return dialog;
+  }
+  
+  public static JList makeSimpleList(String[] data) {
+	  JList list = new JList(data); //data has type Object[]
+	  list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+	  list.setLayoutOrientation(JList.VERTICAL);
+	  list.setVisibleRowCount(-1);
+	  return list;
   }
 
 
