@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2004-02-20 22:53:36 $'
- * '$Revision: 1.29 $'
+ *   '$Author: leinfelder $'
+ *     '$Date: 2008-05-16 18:08:01 $'
+ * '$Revision: 1.30 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -53,35 +53,35 @@ import org.w3c.dom.Document;
 public class EditorPlugin implements PluginInterface, ServiceProvider, EditorInterface {
 
   /** A reference to the container framework */
-  private Morpho morpho = null;
+  protected Morpho morpho = null;
 
   /** The configuration options object reference from the framework */
-  private ConfigXML config = null;
+  protected ConfigXML config = null;
 
-  private Vector editingCompleteRegistry = null;
+  protected Vector editingCompleteRegistry = null;
   
   /** list of DocFrame object that have been openeds (key)
    *  with associated EditingCompleteListeners 
    */
-  private Hashtable docframes = null;
+  protected Hashtable docframes = null;
   
   /**
    *  the id of a document being edited
    */
-  private String id = null;
+  protected String id = null;
   
   /**
    *  the location (local,metacat) of a document being edited
    */
   
-  private String location = null;
+  protected String location = null;
   
   /** 
    *  clipboardObject is a DefaultMutableTreeNode used to
    *  pass nodes between different editors; i.e. for
    *  copy and paste between editor windows
    */
-   private Object clipboardObject = null;
+  protected Object clipboardObject = null;
   
   
   /**
