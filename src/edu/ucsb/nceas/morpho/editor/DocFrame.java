@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: leinfelder $'
- *     '$Date: 2008-03-11 21:41:50 $'
- * '$Revision: 1.182 $'
+ *     '$Date: 2008-05-16 18:08:57 $'
+ * '$Revision: 1.183 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -3073,7 +3073,7 @@ public class DocFrame extends javax.swing.JFrame
     }
     else {
       Log.debug(20,"Validation problem: "+valresult);
-      String msg = "The saved document is not valid EML2 for some reason.\n"+
+      String msg = "The saved document is not valid for some reason.\n"+
                    "You can save it locally and fix the problem later,\n"+
                    "but you will be unable to submit it to the network storage system.\n"+
                    "\nDo you want to Continue Exiting the Editor?";
