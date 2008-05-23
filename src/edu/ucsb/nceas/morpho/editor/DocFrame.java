@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: leinfelder $'
- *     '$Date: 2008-05-16 18:08:57 $'
- * '$Revision: 1.183 $'
+ *     '$Date: 2008-05-23 01:02:24 $'
+ * '$Revision: 1.184 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1249,7 +1249,7 @@ public class DocFrame extends javax.swing.JFrame
    *  starting at 'treeNode'
    *  Then selects the node found
    */
-   private void findNode(DefaultMutableTreeNode treeNode, String name, int n) {
+   protected void findNode(DefaultMutableTreeNode treeNode, String name, int n) {
      if (name==null) name = "dataset";
      DefaultMutableTreeNode startNode = treeNode;
      String newName = name;
