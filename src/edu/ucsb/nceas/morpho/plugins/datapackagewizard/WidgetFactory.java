@@ -39,6 +39,9 @@ import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
 
+import com.toedter.calendar.JDateChooser;
+import com.toedter.calendar.JYearChooser;
+
 
 public class WidgetFactory {
 
@@ -141,6 +144,26 @@ public class WidgetFactory {
     JTextField field = new JTextField();
     setPrefMaxSizes(field, WizardSettings.WIZARD_CONTENT_SINGLE_LINE_DIMS);
     field.setText(initialValue);
+    field.setFont(WizardSettings.WIZARD_CONTENT_FONT);
+    field.setForeground(WizardSettings.WIZARD_CONTENT_TEXT_COLOR);
+    return field;
+  }
+  
+  public static JDateChooser makeDateChooser(String dateFormat) {
+
+    JDateChooser field = new JDateChooser();
+    setPrefMaxSizes(field, WizardSettings.WIZARD_CONTENT_SINGLE_LINE_DIMS);
+    field.setFont(WizardSettings.WIZARD_CONTENT_FONT);
+    field.setForeground(WizardSettings.WIZARD_CONTENT_TEXT_COLOR);
+    if (dateFormat != null) {
+    	field.setDateFormatString(dateFormat);
+    }
+    return field;
+  }
+  
+  public static JYearChooser makeYearChooser() {
+	JYearChooser field = new JYearChooser();
+    setPrefMaxSizes(field, WizardSettings.WIZARD_CONTENT_SINGLE_LINE_DIMS);
     field.setFont(WizardSettings.WIZARD_CONTENT_FONT);
     field.setForeground(WizardSettings.WIZARD_CONTENT_TEXT_COLOR);
     return field;
