@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: tao $'
- *     '$Date: 2006-07-05 22:59:52 $'
- * '$Revision: 1.82 $'
+ *   '$Author: leinfelder $'
+ *     '$Date: 2008-06-17 16:19:26 $'
+ * '$Revision: 1.83 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -930,8 +930,12 @@ public class Morpho
             java.security.Security.addProvider(
                 new com.sun.net.ssl.internal.ssl.Provider());
 
-
-
+            //check for override config dir
+            if (args.length > 0) {
+            	String dir = args[0];
+            	ConfigXML.setConfigDirectory(dir);
+            }
+            
             //initialize the config
             initializeConfiguration();
 

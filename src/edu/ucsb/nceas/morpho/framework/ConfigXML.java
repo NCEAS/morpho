@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: berkley $'
- *     '$Date: 2004-04-14 18:03:43 $'
- * '$Revision: 1.18 $'
+ *   '$Author: leinfelder $'
+ *     '$Date: 2008-06-17 16:19:26 $'
+ * '$Revision: 1.19 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -94,7 +94,7 @@ public class ConfigXML
    */
   private PrintWriter out;
 
-  private static final String configDirectory = ".morpho";
+  private static String configDirectory = ".morpho";
 
   /**
    * String passed to the creator is the XML config file name
@@ -690,6 +690,10 @@ public class ConfigXML
    */
   public static String getConfigDirectory() {
     return System.getProperty("user.home") + File.separator + configDirectory;
+  }
+  
+  public static void setConfigDirectory(String dir) {
+	  configDirectory = dir;
   }
 
   /**
