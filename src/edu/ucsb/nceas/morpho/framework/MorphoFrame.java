@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2004-04-14 22:58:13 $'
- * '$Revision: 1.26 $'
+ *   '$Author: leinfelder $'
+ *     '$Date: 2008-06-20 23:44:14 $'
+ * '$Revision: 1.27 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,6 +28,7 @@ package edu.ucsb.nceas.morpho.framework;
 
 import edu.ucsb.nceas.morpho.datapackage.DataViewContainerPanel;
 import edu.ucsb.nceas.morpho.datapackage.SavePackageCommand;
+import edu.ucsb.nceas.morpho.util.Command;
 import edu.ucsb.nceas.morpho.util.GUIAction;
 import edu.ucsb.nceas.morpho.util.Log;
 import edu.ucsb.nceas.morpho.util.UISettings;
@@ -435,6 +436,40 @@ public class MorphoFrame extends JFrame
             }
         }
     }
+    
+    public GUIAction lookupGuiActionByCommand(Class commandClass)
+    {
+        // lookup the action from the menus
+        Iterator menus = menuList.values().iterator();
+        while (menus.hasNext()) {
+            JMenu currentMenu = (JMenu)menus.next();
+            String currentMenuName = currentMenu.getText();
+            TreeMap actionList = (TreeMap)menuActions.get(currentMenuName);
+            Iterator actionListVectors = actionList.values().iterator();
+            while (actionListVectors.hasNext()) {
+                Vector actionVector = (Vector)actionListVectors.next();
+                for (int i= 0; i < actionVector.size(); i++) {
+                	GUIAction action = (GUIAction) actionVector.get(i);
+                	if (commandClass.isInstance(action.getCommand())) {
+                		return action;
+					}
+                }
+            }
+        }
+
+        // lookup the action from the toolbar if present
+        Iterator toolbarVectors = toolbarActions.values().iterator();
+        while (toolbarVectors.hasNext()) {
+            Vector actionVector = (Vector)toolbarVectors.next();
+            for (int i= 0; i < actionVector.size(); i++) {
+            	GUIAction action = (GUIAction) actionVector.get(i);
+            	if (commandClass.isInstance(action.getCommand())) {
+            		return action;
+				}
+            }
+        }
+        return null;
+    }
 
     /**
      * Set the ProgressIndicator to either the busy or notBusy state.
@@ -585,8 +620,15 @@ public class MorphoFrame extends JFrame
                  "Would you like to save the current package?",
                  "Save ?", JOptionPane.YES_NO_OPTION);
            if (res==JOptionPane.YES_OPTION) {
-             //save here
-             SavePackageCommand spc = new SavePackageCommand(dvcp.getAbstractDataPackage(), false);
+             //save here using the save command implementation used by the frame
+        	 GUIAction saveAction = this.lookupGuiActionByCommand(SaveCommandInterface.class);
+        	 Command spc = null;
+        	 if (saveAction != null) {
+        		 spc = saveAction.getCommand();
+        	 }
+        	 else {
+        		 spc = new SavePackageCommand(dvcp.getAbstractDataPackage(), false);
+        	 }
              spc.execute(null);
              return;
 //             Log.debug(1, "Save here!");

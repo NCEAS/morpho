@@ -5,9 +5,9 @@
  *    Authors: @higgins@
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2004-04-12 20:19:09 $'
- * '$Revision: 1.6 $'
+ *   '$Author: leinfelder $'
+ *     '$Date: 2008-06-20 23:44:14 $'
+ * '$Revision: 1.7 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,6 +28,7 @@ package edu.ucsb.nceas.morpho.datapackage;
 import edu.ucsb.nceas.morpho.datapackage.AbstractDataPackage;
 import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
 import edu.ucsb.nceas.morpho.framework.MorphoFrame;
+import edu.ucsb.nceas.morpho.framework.SaveCommandInterface;
 import edu.ucsb.nceas.morpho.framework.UIController;
 import edu.ucsb.nceas.morpho.plugins.ServiceController;
 import edu.ucsb.nceas.morpho.plugins.ServiceNotHandledException;
@@ -43,7 +44,7 @@ import javax.swing.JDialog;
  * Class to Save an AbstractDataPackage to Metacat and/or Local
  * File system
  */
-public class SavePackageCommand implements Command
+public class SavePackageCommand implements Command, SaveCommandInterface
 {
   /* Referrence to  morphoframe */
   private MorphoFrame morphoFrame = null;
