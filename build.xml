@@ -6,7 +6,7 @@
   *    Copyright: 2000 Regents of the University of California and the
   *               National Center for Ecological Analysis and Synthesis
   *  For Details: http://www.nceas.ucsb.edu/
-  *    File Info: '$Id: build.xml,v 1.112 2008-06-24 23:00:28 tao Exp $'
+  *    File Info: '$Id: build.xml,v 1.113 2008-06-24 23:42:28 leinfelder Exp $'
   *
   *  Build file for the Ant cross-platform build system for metacat
   *  See http://jakarta.apache.org for details on Ant
@@ -473,9 +473,9 @@
      <java classname="edu.ucsb.nceas.morpho.Morpho"
            classpath="${cpath}:${morpho}:${help}"
            fork="yes" >
-       <arg value="-Xmx512m"/>
-       <arg value="-Xss1m"/>
-       <jvmarg line="-Djava.protocol.handler.pkgs=HTTPClient"/>
+       <jvmarg value="-Xmx512m"/>
+       <jvmarg value="-Xss1m"/>
+       <jvmarg value="-Djava.protocol.handler.pkgs=HTTPClient"/>
      </java>
    </target>
 
