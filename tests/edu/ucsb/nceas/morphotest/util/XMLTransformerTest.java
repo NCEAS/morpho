@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2002-09-12 02:49:44 $'
- * '$Revision: 1.8 $'
+ *   '$Author: tao $'
+ *     '$Date: 2008-06-24 22:14:16 $'
+ * '$Revision: 1.9 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -145,7 +145,7 @@ public class XMLTransformerTest extends TestCase
         
         System.out.println("testing with null XML reader..."); 
         try {
-            result = transformer.transform((Reader)null, getXSL_testDoc());
+            result = transformer.transform(getXSL_testDoc());
         } catch (IOException e) {
             System.out.println("OK: testTransform() IOException: " 
                                                             + e.getMessage());
@@ -159,7 +159,7 @@ public class XMLTransformerTest extends TestCase
 
         System.out.println("testing with null XSL reader..."); 
         try {
-            result = transformer.transform(getXML_testDoc(), null);
+            result = transformer.transform(getXML_testDoc());
         } catch (IOException e) {
             System.out.println("OK: testTransform() IOException: " 
                                                             + e.getMessage());
@@ -174,7 +174,7 @@ public class XMLTransformerTest extends TestCase
         
         System.out.println("testing with null XML DOM Document..."); 
         try {
-            result = transformer.transform((Document)null, getXSL_testDoc());
+            result = transformer.transform( getXSL_testDoc());
         } catch (IOException e) {
             System.out.println("OK: testTransform() IOException: " 
                                                             + e.getMessage());
@@ -208,7 +208,7 @@ public class XMLTransformerTest extends TestCase
 
         System.out.println("testing with XML Reader and XSL Reader..."); 
         try {
-            result = transformer.transform(getXML_testDoc(), getXSL_testDoc());
+            result = transformer.transform(getXML_testDoc(), getXSL_testDoc(), null);
         } catch (IOException e) {
             e.printStackTrace();
             fail("Unexpected testTransform() IOException: " + e.getMessage());
@@ -246,7 +246,7 @@ public class XMLTransformerTest extends TestCase
       
       System.out.println("testing with XML DOM Document and XSL Reader..."); 
       try {
-          result = transformer.transform(getAsDOMDocument(getXML_testDoc()), getXSL_testDoc());
+          result = transformer.transform(getAsDOMDocument(getXML_testDoc()), getXSL_testDoc(), null);
       } catch (IOException e) {
           e.printStackTrace();
           fail("Unexpected testTransform() IOException: " + e.getMessage());
