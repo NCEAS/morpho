@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2003-08-21 19:25:47 $'
- * '$Revision: 1.1 $'
+ *   '$Author: tao $'
+ *     '$Date: 2008-06-24 22:13:16 $'
+ * '$Revision: 1.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -102,9 +102,9 @@ public class ObjectCacheTest extends TestCase
       oc.putObject("CC"+i, new Storage("CC"+i));
     }
     Log.debug(1, "oc size is: "+oc.getSize());    
-    Enumeration enum = oc.getKeys();
-    while (enum.hasMoreElements()) {
-      System.out.println("keys: "+ enum.nextElement());
+    Enumeration enumration = oc.getKeys();
+    while (enumration.hasMoreElements()) {
+      System.out.println("keys: "+ enumration.nextElement());
     }
     assertTrue(oc.getSize()>2);
     assertTrue(((Storage)oc.getObject("AAA")).getName().equals("AAA"));  
