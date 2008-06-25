@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2008-06-24 00:23:47 $'
- * '$Revision: 1.1 $'
+ *     '$Date: 2008-06-25 23:38:10 $'
+ * '$Revision: 1.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,9 +30,12 @@ import java.util.List;
 import edu.ucsb.nceas.morpho.datapackage.AbstractDataPackage;
 import edu.ucsb.nceas.morpho.datapackage.DataPackageFactory;
 import edu.ucsb.nceas.morpho.datapackage.EML200DataPackage;
+import edu.ucsb.nceas.utilities.XMLUtilities;
 
+import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 /**
  * Before Metacat 1.8.1 release, Metacat uses the eml201 schema with the tag
  * RELEASE_EML_2_0_1_UPDATE_5. Unfortunately, this tag points at wrong version
@@ -53,7 +56,7 @@ public class EML201DocumentCorrector {
 	
 	private String docid;
 	private static final String EML201NAMESPACE = "eml://ecoinformatics.org/eml-2.0.1";
-	private static final String REFERENCEPATH = "references";
+	private static final String REFERENCEPATH = "//*/references";
 	private static final String SYSTEM = "system";
 	
 	/**
@@ -83,7 +86,9 @@ public class EML201DocumentCorrector {
     			  // remove the extral attribute
     			  removeExtralAttributes(eml2Package);
     			  // save the new  package to old id.
+    			  //System.out.println("after calling removing");
     			  eml2Package.serialize(AbstractDataPackage.LOCAL);
+    			  //System.out.println("saving package");
     		  }
     			  
     	 }
@@ -104,35 +109,51 @@ public class EML201DocumentCorrector {
      /*
       * Remove the extral attributes from reference element
       */
-     private void removeExtralAttributes(AbstractDataPackage dataPackage)
+     private void removeExtralAttributes(AbstractDataPackage dataPackage) throws Exception
      {
     	  if (dataPackage != null)
     	  {
-    		  List list = dataPackage.getSubtrees(REFERENCEPATH);
-    		  if (list != null)
+    		  Node metadataNode = dataPackage.getMetadataNode();
+    		  if (metadataNode != null)
     		  {
-    			  // Go through every reference element
-    			  for (int i=0;i<list.size();i++)
-    			  {
-    				  Node node = (Node)list.get(i);
-    				  if (node != null )
-    				  {
-    					   NamedNodeMap attributeList= node.getAttributes();
-    					   if (attributeList != null)
-    					   {
-    						   for (int j=0; j<attributeList.getLength(); j++)
-    						   {
-    							     Node attribute = attributeList.item(j);
-    							     // find the attribute and remove it
-    							     if (attribute != null && attribute.getNodeName().equals(SYSTEM))
-    							     {
-    							    	 node.removeChild(attribute);
-    							     }
-    						   }
-    					   }
-    				  }
-    			  }
+	    		  NodeList list = XMLUtilities.getNodeListWithXPath(metadataNode, REFERENCEPATH );
+	    		 
+	    		  if (list != null)
+	    		  {
+	    			  //System.out.println("after get list "+list.getLength());
+	    			  // Go through every reference element
+	    			  for (int i=0;i<list.getLength();i++)
+	    			  {
+	    				  //System.out.println("in list loop");
+	    				  Node node = list.item(i);
+	    				  if (node != null )
+	    				  {
+	    					  //System.out.println("get reference node");
+	    					   NamedNodeMap attributeList = node.getAttributes();
+	    					   if (attributeList != null)
+	    					   {
+	    						   //System.out.println("get attributes of reference element");
+	    						   for (int j=0; j<attributeList.getLength(); j++)
+	    						   {
+	    							    //System.out.println("go through attribute");
+	    							     Node attribute = attributeList.item(j);
+	    							     //System.out.println("the attribute name is "+attribute.getNodeName());
+	    							     //System.out.println("the attribute type is "+attribute.getNodeType());
+	    							     // find the attribute and remove it
+	    							     if (attribute != null && attribute.getNodeName().equals(SYSTEM))
+	    							     {
+	    							    	 Element elementNode = (Element)node;
+	    							    	 //System.out.println("remove node"+node.getNodeName());
+	    							    	 elementNode.removeAttribute(attribute.getNodeName());
+	    							    	 //System.out.println("after removing node");
+	    							     }
+	    						   }
+	    					   }
+	    				  }
+	    			  }
+	    		  }
     		  }
+    		 
     	  }
      }
 	
