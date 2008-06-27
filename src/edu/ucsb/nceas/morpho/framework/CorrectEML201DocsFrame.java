@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2008-06-27 22:47:52 $'
- * '$Revision: 1.3 $'
+ *     '$Date: 2008-06-27 23:47:26 $'
+ * '$Revision: 1.4 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -64,7 +64,6 @@ public class CorrectEML201DocsFrame extends JFrame
 	private static final String TITLE = "Correcting InValid EML 2.0.1 Document";
 	private boolean hasCorrectionPath = false;
 	
-	public static final String CORRECTIONEMLPROFILEPATH = "eml201corrected";
 	
 	
 	/**
@@ -113,10 +112,10 @@ public class CorrectEML201DocsFrame extends JFrame
 	 */
 	private boolean getCorrectionFlag(ConfigXML profile)
 	{
-		boolean flag = false;
+		boolean flag = true;
 		if(profile != null)
 		{
-			String wasCorrected = profile.get(CORRECTIONEMLPROFILEPATH, 0);
+			String wasCorrected = profile.get(ProfileDialog.CORRECTIONEMLPROFILEPATH, 0);
 			if (wasCorrected != null)
 			{
 				  hasCorrectionPath = true;
@@ -142,11 +141,11 @@ public class CorrectEML201DocsFrame extends JFrame
 			if (hasCorrectionPath)
 			{
 				//need to remove the file
-	            profile.removeNode(CORRECTIONEMLPROFILEPATH, 0);
+	            profile.removeNode(ProfileDialog.CORRECTIONEMLPROFILEPATH, 0);
 	            
 			}
 	         //append the correction path and value to the end.
-			profile.insert(CORRECTIONEMLPROFILEPATH, "true");
+			profile.insert(ProfileDialog.CORRECTIONEMLPROFILEPATH, "true");
 			profile.save();
 		}
 	}
@@ -260,29 +259,32 @@ public class CorrectEML201DocsFrame extends JFrame
 	 */
 	private void doCorrectionInOneProfile(ConfigXML profile)
 	{   
-	        Vector docList = getOneProfileDocList(profile);
-	        //System.out.println("the size of doclist is "+docList.size());
-			if (docList != null && !docList.isEmpty() )
-			{
-				for (int i=0; i<docList.size(); i++)
+		   if (profile != null)
+		   {
+		        Vector docList = getOneProfileDocList(profile);
+		        //System.out.println("the size of doclist is "+docList.size());
+				if (docList != null && !docList.isEmpty() )
 				{
-					String docid = null;
-					try
+					for (int i=0; i<docList.size(); i++)
 					{
-				        docid = (String)docList.elementAt(i);
-				        //System.out.println("before correction docid "+docid);
-				        EML201DocumentCorrector corrector = new EML201DocumentCorrector(docid);
-				        corrector.correctDocument();
-				        Log.debug(30, "finish correcting docid(maybe skip) "+docid);
+						String docid = null;
+						try
+						{
+					        docid = (String)docList.elementAt(i);
+					        //System.out.println("before correction docid "+docid);
+					        EML201DocumentCorrector corrector = new EML201DocumentCorrector(docid);
+					        corrector.correctDocument();
+					        Log.debug(30, "finish correcting docid(maybe skip) "+docid);
+						}
+						catch(Exception e)
+						{
+							Log.debug(30, "Couldn't correct docid "+ docid+ " since "+e.getMessage());
+						}
 					}
-					catch(Exception e)
-					{
-						Log.debug(30, "Couldn't correct docid "+ docid+ " since "+e.getMessage());
-					}
+	     			 // Set the "correctionWasDone" flag to true
+		     		 setCorrectionFlagTrue(profile);
 				}
-     			 // Set the "correctionWasDone" flag to true
-	     		 setCorrectionFlagTrue(profile);
-			}		
+		   }
 	}
 
 
