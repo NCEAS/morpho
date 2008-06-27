@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: leinfelder $'
- *     '$Date: 2008-02-04 18:36:53 $'
- * '$Revision: 1.28 $'
+ *   '$Author: tao $'
+ *     '$Date: 2008-06-27 23:45:15 $'
+ * '$Revision: 1.29 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -62,6 +62,7 @@ public class ProfileDialog extends JDialog
   JTextField userIdField = new JTextField();
   JTextField scopeField = new JTextField();
   JList orgList = null;
+  public static final String CORRECTIONEMLPROFILEPATH = "eml201corrected";
 
   KeyPressActionListener keyPressListener = new KeyPressActionListener();
 
@@ -598,6 +599,9 @@ public class ProfileDialog extends JDialog
           if (! profile.set("dn", 0, dn.toString())) {
             success = profile.insert("dn", dn.toString());
           }
+          if (! profile.set(CORRECTIONEMLPROFILEPATH, 0, "true")) {
+              success = profile.insert(CORRECTIONEMLPROFILEPATH, "true");
+            }
           profile.save();
 
           // Create our directories for user data
