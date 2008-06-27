@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2008-06-27 00:03:03 $'
- * '$Revision: 1.1 $'
+ *     '$Date: 2008-06-27 17:33:56 $'
+ * '$Revision: 1.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -38,6 +38,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JProgressBar;
 
+import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.util.Log;
 
 /**
@@ -49,16 +50,22 @@ import edu.ucsb.nceas.morpho.util.Log;
  */
 public class CorrectEML201DocsFrame extends JFrame 
 {
-	private static boolean correctionWasDone = false;
+	private Morpho morpho = null;
+	private boolean correctionWasDone = false;
 	private String[] docList = null;
 	private static final String TITLE = "Correcting InValid EML 2.0.1 Document";
+	private boolean hasCorrectionPath = false;
+	
+	public static final String CORRECTIONEMLPROFILEPATH = "eml201corrected";
+	
 	
 	/**
 	 * Default Constructor
 	 *
 	 */
-	public CorrectEML201DocsFrame()
+	public CorrectEML201DocsFrame(Morpho morpho)
 	{
+		this.morpho = morpho;
 	    this.correctionWasDone = getCorrectionFlag();	
 	    if (!correctionWasDone)
 	    {
@@ -67,7 +74,7 @@ public class CorrectEML201DocsFrame extends JFrame
 	}
 	
 	/*
-	 * Load GUI of this frame. The GUI is very simple: A label and a porgress bar.
+	 * Load GUI of this frame. The GUI is very simple: a label and a porgress bar.
 	 */
 	private void loadGUI()
 	{
@@ -103,6 +110,19 @@ public class CorrectEML201DocsFrame extends JFrame
 	private boolean getCorrectionFlag()
 	{
 		boolean flag = false;
+		ConfigXML profile = morpho.getProfile();
+		String wasCorrected = profile.get(CORRECTIONEMLPROFILEPATH, 0);
+		if (wasCorrected != null)
+		{
+			  hasCorrectionPath = true;
+		      flag = (new Boolean(wasCorrected)).booleanValue();
+		}
+		else
+		{
+			// There is no correction path in the profile.
+			hasCorrectionPath = false;
+			flag = false;
+		}
 		return flag;
 	}
 	
@@ -111,7 +131,16 @@ public class CorrectEML201DocsFrame extends JFrame
 	 */
 	private void setCorrectionFlagTrue()
 	{
-		
+		ConfigXML profile = morpho.getProfile();		
+		if (hasCorrectionPath)
+		{
+			//need to remove the file
+            profile.removeNode(CORRECTIONEMLPROFILEPATH, 0);
+            
+		}
+         //append the correction path and value to the end.
+		profile.insert(CORRECTIONEMLPROFILEPATH, "true");
+		profile.save();
 	}
 	
 	/*
