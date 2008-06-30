@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: leinfelder $'
- *     '$Date: 2008-06-17 16:19:26 $'
- * '$Revision: 1.83 $'
+ *   '$Author: tao $'
+ *     '$Date: 2008-06-30 19:09:16 $'
+ * '$Revision: 1.84 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,6 +32,7 @@ import edu.ucsb.nceas.itis.Taxon;
 import edu.ucsb.nceas.morpho.framework.ConfigXML;
 import edu.ucsb.nceas.morpho.framework.ConnectionFrame;
 import edu.ucsb.nceas.morpho.framework.ConnectionListener;
+import edu.ucsb.nceas.morpho.framework.CorrectEML201DocsFrame;
 import edu.ucsb.nceas.morpho.framework.HelpCommand;
 import edu.ucsb.nceas.morpho.framework.HelpMetadataIntroCommand;
 import edu.ucsb.nceas.morpho.framework.HttpMessage;
@@ -956,7 +957,11 @@ public class Morpho
 
             // Load the current profile and log in
             morpho.loadProfile(morpho);
-
+            
+            // Correct the invalid eml 201 documents
+            CorrectEML201DocsFrame correctFrame = new CorrectEML201DocsFrame(morpho);
+            correctFrame.doCorrection();
+            
             // Set up the Service Controller
             ServiceController services = ServiceController.getInstance();
 
