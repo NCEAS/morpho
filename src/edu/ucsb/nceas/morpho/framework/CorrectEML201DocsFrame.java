@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2008-06-28 01:40:06 $'
- * '$Revision: 1.5 $'
+ *     '$Date: 2008-06-30 20:26:52 $'
+ * '$Revision: 1.6 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -97,8 +97,6 @@ public class CorrectEML201DocsFrame extends JFrame
 			if (correctionNeeded)
 			{
 				  loadGUI();
-			      //clean the Cache
-			      morpho.cleanCache();
 			      for (int i=0; i<profilesStatusVector.size(); i++)
 			      {
 			    	   ProfileCorrectionStatus correctionStatus = (ProfileCorrectionStatus)profilesStatusVector.elementAt(i);
@@ -124,6 +122,8 @@ public class CorrectEML201DocsFrame extends JFrame
 		   {
 			   //Set morpho to a new profile
 			    morpho.setProfileDontLogin(correctionStatus.getProfile());
+			    //clean the Cache
+			    morpho.cleanCache();
 		        Vector docList = getOneProfileDocList(correctionStatus.getProfile());
 		        //System.out.println("the size of doclist is "+docList.size());
 				if (docList != null && !docList.isEmpty() )
@@ -233,10 +233,10 @@ public class CorrectEML201DocsFrame extends JFrame
 				//So the eml documents haven't been corrected.
 				flag = false;
 			}
-			String name = profile.get(PROFILENAME, 0);
-			System.out.println("The profile name is "+ name);
-			System.out.println("Is eml corrected "+ flag);
-			System.out.println("Does the profile has the eml201corrected path "+hasCorrectionPath);
+			//String name = profile.get(PROFILENAME, 0);
+			//System.out.println("The profile name is "+ name);
+			//System.out.println("Is eml corrected "+ flag);
+			//System.out.println("Does the profile has the eml201corrected path "+hasCorrectionPath);
 			profileCorrectionStatus = new ProfileCorrectionStatus(profile, flag, hasCorrectionPath);
 		}
 		return profileCorrectionStatus;
