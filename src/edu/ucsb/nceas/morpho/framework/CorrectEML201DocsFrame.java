@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2008-06-30 20:26:52 $'
- * '$Revision: 1.6 $'
+ *     '$Date: 2008-06-30 21:08:29 $'
+ * '$Revision: 1.7 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -164,8 +164,8 @@ public class CorrectEML201DocsFrame extends JFrame
 		   getContentPane().add(Box.createVerticalStrut(8));
 		   javax.swing.JLabel loadingLabel = new javax.swing.JLabel();
 		   loadingLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-		   loadingLabel.setText("Morpho is correcting invalid EML 2.0.1 documents...");
-		   loadingLabel.setForeground(java.awt.Color.red);
+		   loadingLabel.setText("Verifying EML 2.0.1 documents. It may take a while...");
+		   //loadingLabel.setForeground(java.awt.Color.red);
 		   loadingLabel.setFont(new Font("Dialog", Font.BOLD, 14));
 		   getContentPane().add(loadingLabel);
 		   getContentPane().add(Box.createVerticalStrut(8));
