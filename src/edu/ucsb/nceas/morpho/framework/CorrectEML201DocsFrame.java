@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2008-06-30 21:08:29 $'
- * '$Revision: 1.7 $'
+ *     '$Date: 2008-07-01 02:07:13 $'
+ * '$Revision: 1.8 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -92,24 +92,34 @@ public class CorrectEML201DocsFrame extends JFrame
 	{
 		if (morpho != null)
 		{
-			ConfigXML profile =morpho.getProfile();
-			boolean correctionNeeded = getCorrectionNeededStatusForMorpho();
-			if (correctionNeeded)
+			try
 			{
-				  loadGUI();
-			      for (int i=0; i<profilesStatusVector.size(); i++)
-			      {
-			    	   ProfileCorrectionStatus correctionStatus = (ProfileCorrectionStatus)profilesStatusVector.elementAt(i);
-				       doCorrectionInOneProfile(correctionStatus);
-		               //Dipose the frame
-						if (this != null)
-						{
+				boolean correctionNeeded = getCorrectionNeededStatusForMorpho();
+				if (correctionNeeded)
+				{
+					  loadGUI();
+				      for (int i=0; i<profilesStatusVector.size(); i++)
+				      {
+				    	   ProfileCorrectionStatus correctionStatus = (ProfileCorrectionStatus)profilesStatusVector.elementAt(i);
+					       doCorrectionInOneProfile(correctionStatus);
+			              
+				      }
+				      //Dipose the frame
+					 if (this != null)
+					{
 							this.dispose();
-						}
-			      }
+					 }
+				}
 			}
-			//set back to orginal profile.
-			morpho.setProfileDontLogin(orginalProfile);
+			catch(Exception e)
+			{
+			   // Log.debug(30, "Failed to correct eml20l document");
+			}
+			finally
+			{
+				 //set back to orginal profile.
+			    morpho.setProfileDontLogin(orginalProfile);
+			}
 		}
 	}
     
@@ -121,7 +131,16 @@ public class CorrectEML201DocsFrame extends JFrame
 		   if (correctionStatus != null && !correctionStatus.isEmlCorrected())
 		   {
 			   //Set morpho to a new profile
-			    morpho.setProfileDontLogin(correctionStatus.getProfile());
+			   try
+			   {
+				   morpho.setProfileDontLogin(correctionStatus.getProfile());
+			   }
+			   catch(Exception e)
+			   {
+				    Log.debug(20, "Profile was corrupted: "+e.getMessage());
+				    return;
+			   }
+			    
 			    //clean the Cache
 			    morpho.cleanCache();
 		        Vector docList = getOneProfileDocList(correctionStatus.getProfile());
@@ -196,17 +215,45 @@ public class CorrectEML201DocsFrame extends JFrame
 				for (int i=0; i<profileList.length; i++)
 				{
 					String profileName = profileList[i];
-					morpho.setProfileDontLogin(profileName);
-					ProfileCorrectionStatus status = getCorrectionStatusForProfile(morpho.getProfile());
-					profilesStatusVector.add(status);
-					if (status.emlCorrected == false)
+					//morpho.setProfileDontLogin(profileName, 30);
+					ConfigXML profile = getProfile(profileName);
+					if (profile != null)
 					{
-						correctionNeeded = true;
+						ProfileCorrectionStatus status = getCorrectionStatusForProfile(profile);
+						profilesStatusVector.add(status);
+						if (status.emlCorrected == false)
+						{
+							correctionNeeded = true;
+						}
 					}
 				}
 			}
 		}
 		return correctionNeeded;
+	}
+	
+	/*
+	 * Get a profile for given profile name. If couldn't find this file, null will be returned.
+	 */
+	private ConfigXML getProfile(String profileName)
+	{
+		ConfigXML profile = null;
+	    try 
+	    {
+	    	String profileDir = morpho.getConfiguration().getConfigDirectory() + File.separator +
+                                           morpho.getConfiguration().get("profile_directory", 0);
+            String newProfilePath = profileDir + File.separator +
+                      profileName + File.separator + profileName + ".xml";
+	        profile = new ConfigXML(newProfilePath);
+	      
+	    }
+	    catch (Exception fnf)
+        {
+	    	
+	    	  Log.debug(30, "Profile not found! " +fnf.getMessage());
+	    
+	    }
+	    return profile;
 	}
 	
 	/*
