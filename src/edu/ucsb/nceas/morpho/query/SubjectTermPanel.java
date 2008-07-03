@@ -6,9 +6,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2004-04-04 05:27:52 $'
- * '$Revision: 1.8 $'
+ *   '$Author: tao $'
+ *     '$Date: 2008-07-03 22:29:58 $'
+ * '$Revision: 1.9 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -90,7 +90,7 @@ public class SubjectTermPanel extends JComponent
     Box checkBoxHorizontal = Box.createHorizontalBox();
     allCheckBox.setText("All");
     allCheckBox.setActionCommand("All");
-    allCheckBox.setSelected(true);
+    //allCheckBox.setSelected(true);
     allCheckBox.setAlignmentX(Component.LEFT_ALIGNMENT);
     checkBoxHorizontal.add(allCheckBox);
 
