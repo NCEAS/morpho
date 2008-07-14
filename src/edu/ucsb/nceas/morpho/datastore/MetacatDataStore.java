@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2004-04-30 16:54:27 $'
- * '$Revision: 1.14 $'
+ *   '$Author: tao $'
+ *     '$Date: 2008-07-14 23:27:31 $'
+ * '$Revision: 1.15 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -757,7 +757,7 @@ public class MetacatDataStore extends DataStore implements DataStoreInterface
    * 
    */
   
-   public String saveFilesTransaction(Vector namesVec, Vector readersVec) {
+   /*public String saveFilesTransaction(Vector namesVec, Vector readersVec) {
         String temp = "";
         String response = "OK";
         for (int i=0;i<namesVec.size();i++) {
@@ -781,5 +781,5 @@ public class MetacatDataStore extends DataStore implements DataStoreInterface
         }
         if (temp.length()>0) response = temp;
         return response;
-   }
+   }*/
 }
