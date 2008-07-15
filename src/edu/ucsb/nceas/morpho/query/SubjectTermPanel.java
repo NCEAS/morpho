@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2008-07-03 22:29:58 $'
- * '$Revision: 1.9 $'
+ *     '$Date: 2008-07-15 21:01:42 $'
+ * '$Revision: 1.10 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -101,17 +101,17 @@ public class SubjectTermPanel extends JComponent
     titleCheckBox.setText("Title");
     titleCheckBox.setActionCommand("Title");
     titleCheckBox.setSelected(true);
-    titleCheckBox.setEnabled(false);
+    //titleCheckBox.setEnabled(false);
     checkBoxVertical.add(titleCheckBox);
     abstractCheckBox.setText("Abstract");
     abstractCheckBox.setActionCommand("Abstract");
     abstractCheckBox.setSelected(true);
-    abstractCheckBox.setEnabled(false);
+    //abstractCheckBox.setEnabled(false);
     checkBoxVertical.add(abstractCheckBox);
     keywordsCheckBox.setText("Keywords");
     keywordsCheckBox.setActionCommand("Keywords");
     keywordsCheckBox.setSelected(true);
-    keywordsCheckBox.setEnabled(false);
+    //keywordsCheckBox.setEnabled(false);
     checkBoxVertical.add(keywordsCheckBox);
     checkBoxHorizontal.add(checkBoxVertical);
     queryTermPanel.add(checkBoxHorizontal);
