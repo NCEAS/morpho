@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2008-07-17 22:17:37 $'
- * '$Revision: 1.85 $'
+ *     '$Date: 2008-07-17 23:18:27 $'
+ * '$Revision: 1.86 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1478,6 +1478,10 @@ public class Morpho
       MorphoPrefsDialog MorphoPrefsDialog1 = new MorphoPrefsDialog(mf, this);
       MorphoPrefsDialog1.setModal(true);
       MorphoPrefsDialog1.setVisible(true);
+      // when preference change, the lastID should be change too.
+      // since the remote server may have different max docid
+      String scope = profile.get("scope", 0);
+      setLastID(scope);
 
     }
 
