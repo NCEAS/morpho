@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2008-06-30 19:09:16 $'
- * '$Revision: 1.84 $'
+ *     '$Date: 2008-07-17 22:17:37 $'
+ * '$Revision: 1.85 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1113,7 +1113,8 @@ public class Morpho
     }
 
     /**
-     * Gets the LastID attribute of the Morpho object
+     * Gets the LastID attribute of the Morpho object. It will go through both local and
+     * metacat system
      *
      * @param scope  Description of Parameter
      * @return       The LastID value
@@ -1125,6 +1126,9 @@ public class Morpho
         lastIDProp.put("action", "getlastdocid");
         lastIDProp.put("scope", scope);
         String temp = getMetacatString(lastIDProp);
+        System.out.println("the last id from metacat ===== "+temp);
+        //localMaxDocid will be 54 if the biggest file name is 54.2
+        int localMaxDocid = getMaxLocalId(scope);
         /*
             if successful temp should be of the form
             <?xml version="1.0"?>
@@ -1143,12 +1147,104 @@ public class Morpho
                     result = result.substring(0, result.lastIndexOf("."));
                     result = result.substring(result.indexOf(".") + 1,
                         result.length());
-                } else {
-                    result = null;
+                    int metacatId = 0;
+                    try 
+            		{
+            			metacatId = (new Integer(result).intValue());
+            		} 
+            		catch (NumberFormatException nfe) 
+            		{
+	                    Log.debug(30, "Last id from metacat is not integer.");
+	                }
+            		//choose the bigger one between local and metacat
+                    if (metacatId < localMaxDocid )
+                    {
+                        result = ""+localMaxDocid;
+                    }
+                } 
+                else 
+                {
+                	// no metacat lastid branch
+                	if (localMaxDocid > 0)
+                	{
+                		//we have the maxid in local file, so use it.
+                		result = ""+localMaxDocid;
+                	}
+                	else
+                	{
+                         result = null;
+                	}
                 }
             }
         }
+        // add a code to handle somehow we can't get result from metacat
+       if (result == null)
+        {
+        	// no metacat lastid branch
+        	if (localMaxDocid > 0)
+        	{
+        		//we have the maxid in local file, so use it.
+        		result = ""+localMaxDocid;
+        	}
+        	else
+        	{
+                 result = null;
+        	}
+        }
+        Log.debug(30, "Final Last id is "+result);
         return result;
+    }
+    
+    /*
+     * Gets the max local id for given scope in current the profile.  The local file's names look like 100.1, 102.1... under scope dir.
+     * In this case, 102 will be returned.
+     */
+    private int getMaxLocalId(String scope)
+    {
+    	    int docid =0;
+    	    int maxDocid =0;
+    	    String currentProfile = profile.get("profilename", 0);
+  		    String separator = profile.get("separator", 0);
+  		    ConfigXML config = getConfiguration();
+  		    String profileDir = config.getConfigDirectory() + File.separator +
+  		                       config.get("profile_directory", 0) + File.separator +
+  		                       currentProfile;
+  		    String datadir = profileDir + File.separator + profile.get("datadir", 0)+File.separator+scope;
+  		    datadir = datadir.trim();
+  		    Log.debug(30, "the data dir is ===== "+datadir);
+  		    File directoryFile = new File(datadir);
+    	    File[] files = directoryFile.listFiles();
+    	    if (files != null)
+    	    {
+    	      for (int i=0;i<files.length;i++)
+    	        {
+    	            File currentfile = files[i];   	            
+    	            if (currentfile != null && currentfile.isFile()) {  	                
+    	                	String fileName = currentfile.getName();
+    	                	Log.debug(50, "the file name in dir is "+fileName);
+    	                	if (fileName != null)
+    	                	{
+    	                		fileName = fileName.substring(0, fileName.indexOf("."));
+    	                		Log.debug(50, "the file name after removing revision in dir is "+fileName);
+    	                		try 
+    	                		{
+    	                			docid = (new Integer(fileName).intValue());
+    	                			if (docid > maxDocid)
+    	                			{
+    	                				maxDocid = docid;
+    	                			}
+    	                		} 
+    	                		catch (NumberFormatException nfe) 
+    	                		{
+    	    	                    Log.debug(30, "Not loading file with invalid name");
+    	    	                }
+    	                	
+    	                	}
+    	            }
+    	        }
+    	    }
+    	Log.debug(30, "The max docid in local file system for scope "+scope+" is "+maxDocid);      
+    	return maxDocid;
     }
 
     /**
