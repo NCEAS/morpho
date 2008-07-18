@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: leinfelder $'
- *     '$Date: 2008-03-11 21:55:20 $'
- * '$Revision: 1.113 $'
+ *   '$Author: tao $'
+ *     '$Date: 2008-07-18 23:33:35 $'
+ * '$Revision: 1.114 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -380,6 +380,39 @@ public abstract class AbstractDataPackage extends MetadataObject
   public void setInitialId(String initId) {
     this.initialId = initId;
   }
+  
+  /**
+   *  Gets the scope of id. For example, it will return jones if the docid is jones.1.1.
+   *  It will return the substring from 0 to the second last .
+   *  null will be returned if no scope found.
+   * @return the scope of this id
+   */
+  public String getIdScope()
+  {
+	  String scope = null;
+	  if (initialId != null)
+	  {
+		  int index =initialId.lastIndexOf(".");
+		  if (index != -1)
+		  {
+		      scope = initialId.substring(0, index);
+		      if (scope != null)
+		      {
+		    	  index = scope.lastIndexOf(".");
+		    	  if (index != -1)
+		    	  {
+		    		  scope = scope.substring(0,index);
+		    	  }
+		    	  else
+		    	  {
+		    		  scope = null;
+		    	  }
+		      }
+		  }
+	  }
+	  return scope;
+  }
+  
 
   /**
    *  gets the initialId variable
@@ -2691,6 +2724,7 @@ public abstract class AbstractDataPackage extends MetadataObject
    * place where the data is to be saved.
    */
   public void serializeData() throws MetacatUploadException {
+	  //System.out.println("serilaize data =====================");
     File dataFile = null;
     Morpho morpho = Morpho.thisStaticInstance;
     FileSystemDataStore fds = new FileSystemDataStore(morpho);
