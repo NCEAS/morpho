@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2008-07-17 23:18:27 $'
- * '$Revision: 1.86 $'
+ *     '$Date: 2008-07-18 18:41:52 $'
+ * '$Revision: 1.87 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1783,6 +1783,14 @@ public class Morpho
                         Log.debug(6, snhe.getMessage());
                         }
                       */
+                	//When got the network connection, we should reset last docid, since
+                	//remote metacat may have bigger docid number
+                	if (profile != null)
+                	{
+                		Log.debug(55, "reset lastid when network is avaliable");
+                	    String scope = profile.get("scope", 0);
+                        setLastID(scope);
+                	}
                 }
                 //update status bar
             }
