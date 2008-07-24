@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2008-07-18 23:33:35 $'
- * '$Revision: 1.114 $'
+ *     '$Date: 2008-07-24 22:07:32 $'
+ * '$Revision: 1.115 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -73,6 +73,7 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Arrays;
+import java.util.Properties;
 import java.util.Vector;
 import java.util.Iterator;
 import java.util.HashMap;
@@ -242,6 +243,7 @@ public abstract class AbstractDataPackage extends MetadataObject
   private final String HTMLEXTENSION = ".html";
   private final String METADATAHTML = "metadata";
   private final String EXPORTSYLE = "export";
+  private final int ORIGINAL_REVISION = 1;
 
   /**
    * This abstract method turns the datapackage into a form (e.g. string) that
@@ -389,13 +391,24 @@ public abstract class AbstractDataPackage extends MetadataObject
    */
   public String getIdScope()
   {
+	  return getIdScope(initialId);
+  }
+  
+  /*
+   *  Gets the scope of given id. For example, it will return jones if the docid is jones.1.1.
+   *  It will return the substring from 0 to the second last .
+   *  null will be returned if no scope found.
+   * @return the scope of this id
+   */
+  private String getIdScope(String id)
+  {
 	  String scope = null;
-	  if (initialId != null)
+	  if (id != null)
 	  {
-		  int index =initialId.lastIndexOf(".");
+		  int index =id.lastIndexOf(".");
 		  if (index != -1)
 		  {
-		      scope = initialId.substring(0, index);
+		      scope = id.substring(0, index);
 		      if (scope != null)
 		      {
 		    	  index = scope.lastIndexOf(".");
@@ -3615,6 +3628,210 @@ public abstract class AbstractDataPackage extends MetadataObject
 		lastImportedEntityName = null;
 		lastImportedDataSet = null;
 
+	}
+	
+	/**
+	 * Gets next revision for this doc. It will check revisions in both metacat and local file system.
+	 * 1 will be return if no pre-revision exists.
+	 * @return  the next revision number
+	 */
+	public int getNextRevisionNumber()
+	{
+		int version = ORIGINAL_REVISION;
+		int localNextRevision = getNextRevisionNumberFromLocal();
+		int metacatNextRevision = getNextRevisionNumberFromMetacat();
+		//choose the bigger one as the next revision
+		if (localNextRevision > metacatNextRevision)
+		{
+			version = localNextRevision;
+		}
+		else
+		{
+			version = metacatNextRevision;
+		}
+		Log.debug(30, "The final next revision is "+version);
+		return version;
+	}
+	
+	/*
+	 * Gets next revisons from metacat. This method will look at the profile/scope dir and figure
+	 * it out the maximum revision. This number will be  increase 1 to get the next revision number.
+	 * If local file system doesn't have this docid, 1 will be returned
+	 */
+	private int getNextRevisionNumberFromLocal()
+	{
+		int version = ORIGINAL_REVISION;
+		String dataDir = null;
+		//Get Data dir
+		if (this.fileSysDataStore != null)
+		{
+			dataDir = fileSysDataStore.getDataDir();
+		}
+		else if (this.metacatDataStore != null)
+		{
+			dataDir = metacatDataStore.getDataDir();
+		}
+		String targetDocid = getDocIdPart();
+		System.out.println("the data dir is "+dataDir);
+		if (dataDir != null && targetDocid != null)
+		{
+			//Gets scope name
+			String scope = null;
+			if (initialId != null)
+			{
+				scope = getIdScope(initialId);
+			}
+			else
+			{
+				scope = getIdScope(getPackageId());
+			}
+			Log.debug(30, "the scope from id is "+scope);
+			File scopeFiles = new File(dataDir+File.separator+scope);
+			if (scopeFiles.isDirectory())
+			{
+				File[] list = scopeFiles.listFiles();
+				//Finds docid and revision part. The file name in above list will look 
+				//like 56.1. We will go through all files and find the maximum revision of
+				//same docid
+				if (list != null)
+				{
+					for (int i=0; i<list.length; i++)
+					{
+						File file = list[i];
+						if (file != null)
+						{
+							String name = file.getName();
+							if (name != null)
+							{
+								int index = name.lastIndexOf(".");
+								if (index != -1)
+								{
+								   String docid = name.substring(0,index);
+								   if (docid != null && docid.equals(targetDocid))
+								   {
+									   String versionStr = name.substring(index+1);
+									   if (versionStr != null)
+									   {
+										   try
+										   {
+											   int newVersion = (new Integer(versionStr)).intValue();
+											   if (newVersion > version)
+											   {
+												   version = newVersion;
+											   }
+										   }
+										   catch(Exception e)
+										   {
+											   Log.debug(30, "couldn't find the version part in file name "+name);
+										   }
+									   }
+								   }
+								}
+							}
+							
+						}
+					}
+				}
+				
+			}
+		}
+		//if we found a maximum revsion, we should increase 1 to get the next revsion
+		if (version != ORIGINAL_REVISION)
+		{
+			version++;
+		}
+		Log.debug(30, "The next version for docid "+getPackageId()+ " in local file system is "+version);
+		return version;
+	}
+	
+	/*
+	 * Get docid part of an identifier. For example, it will return 30 if package id is jones.30.1
+	 * It will return the substring from the second last dot to the last dot.
+	 * null will return if no docid part found
+	 */
+	private String getDocIdPart()
+	{
+	  String docid = null;
+	  String identifier = null;
+	  if (initialId != null)
+	  {
+	      identifier = initialId;
+		  
+	  }
+	  else
+	  {
+		  identifier = getPackageId();
+	  }
+	  Log.debug(30, "This package's identifier is "+identifier);
+	  if (identifier != null)
+	  {
+		  int index =identifier.lastIndexOf(".");
+		  if (index != -1)
+		  {
+		      docid = identifier.substring(0, index);
+		      if (docid != null)
+		      {
+		    	  index = docid.lastIndexOf(".");
+		    	  if (index != -1 )
+		    	  {
+		    		  docid = docid.substring(index+1);
+		    		  
+		    	  }
+		    	  else
+		    	  {
+		    		  docid = null;
+		    	  }
+		      }
+		  }
+	  }
+	  Log.debug(30, "the docid part is "+docid);
+	  return docid;
+	}
+	
+	/*
+	 * Gets next version from metacat. "getrevisionanddoctype" method of Metacat API will
+	 * return the max version of metacat. So we should increase 1 to get next version number.
+	 * If couldn't connect metacat or metacat doesn't have this docid, 1 will be returned.
+	 */
+	private int getNextRevisionNumberFromMetacat()
+	{
+		int version = ORIGINAL_REVISION;
+		String semiColon = ";";
+		String docid = null;
+		//Gets metacat url from configuration
+		if (Morpho.thisStaticInstance != null && Morpho.thisStaticInstance.getNetworkStatus())
+		{
+			String metacatURL = Morpho.thisStaticInstance.getMetacatURLString();
+			String result = null;
+		    Properties lastVersionProp = new Properties();
+		    lastVersionProp.put("action", "getrevisionanddoctype");
+		    docid = getPackageId();
+		    lastVersionProp.put("docid", docid);
+		    result = Morpho.thisStaticInstance.getMetacatString(lastVersionProp);
+		    Log.debug(30, "the result is ============= "+result);
+		    // Get version
+		    if (result != null)
+		    {
+		    	int index = result.indexOf(semiColon);
+		    	if (index != -1)
+		    	{
+		    		String versionStr = result.substring(0, index);
+		    		try
+		    		{
+		    			version = (new Integer(versionStr).intValue());
+		    			//increase 1 to get next version
+		    			version = version +1;
+		    		}
+		    		catch(Exception e)
+		    		{
+		    			Log.debug(20, "Couldn't transfer version string "+versionStr +" into integer");
+		    		}
+		    	}
+		    }
+		    
+		}
+		Log.debug(30, "Next version for doicd " +docid+" in metacat is "+version);
+		return version;
 	}
 }
 
