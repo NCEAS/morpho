@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2004-01-27 21:31:32 $'
- * '$Revision: 1.7 $'
+ *   '$Author: tao $'
+ *     '$Date: 2008-07-24 22:05:25 $'
+ * '$Revision: 1.8 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -77,6 +77,15 @@ public abstract class DataStore implements DataStoreInterface
     cachedir = profileDirName + File.separator + profile.get("cachedir", 0);
     separator = profile.get("separator", 0);
     separator = separator.trim();
+  }
+  
+  /**
+   * Gets the data dir directory
+   * @return
+   */
+  public String getDataDir()
+  {
+	  return datadir;
   }
   
   public void debug(int code, String message)
