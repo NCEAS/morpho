@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2008-07-24 22:07:32 $'
- * '$Revision: 1.115 $'
+ *     '$Date: 2008-07-31 00:55:43 $'
+ * '$Revision: 1.116 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -2736,8 +2736,8 @@ public abstract class AbstractDataPackage extends MetadataObject
    * It has been assumed that the 'location' has been set to point to the
    * place where the data is to be saved.
    */
-  public void serializeData() throws MetacatUploadException {
-	  //System.out.println("serilaize data =====================");
+  public void serializeData(String dataLocation) throws MetacatUploadException {
+	//System.out.println("serilaize data =====================");
     File dataFile = null;
     Morpho morpho = Morpho.thisStaticInstance;
     FileSystemDataStore fds = new FileSystemDataStore(morpho);
@@ -2753,13 +2753,13 @@ public abstract class AbstractDataPackage extends MetadataObject
       if(protocol.equals("ecogrid:")) {
         String urlinfo = getUrlInfo(i);
         // urlinfo should be the id in a string
-        if (location.equals(LOCAL))  {
+        if (dataLocation.equals(LOCAL))  {
           handleLocal(urlinfo);
         }
-        else if (location.equals(METACAT)) {
+        else if (dataLocation.equals(METACAT)) {
           handleMetacat(urlinfo, i);
         }
-        else if (location.equals(BOTH)) {
+        else if (dataLocation.equals(BOTH)) {
           handleBoth(urlinfo, i);
         }
       }

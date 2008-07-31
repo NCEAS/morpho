@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: anderson $'
- *     '$Date: 2006-02-06 19:30:22 $'
- * '$Revision: 1.47 $'
+ *   '$Author: tao $'
+ *     '$Date: 2008-07-31 00:55:43 $'
+ * '$Revision: 1.48 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -70,6 +70,7 @@ public  class EML200DataPackage extends AbstractDataPackage
   public void serialize(String location)
         throws MetacatUploadException
   {
+	 //System.out.println("serialize metadata ===============");
     Morpho morpho = Morpho.thisStaticInstance;
 //    String temp = XMLUtilities.getDOMTreeAsString(getMetadataNode(), false);
     String temp = XMLUtil.getDOMTreeAsString(getMetadataNode().getOwnerDocument());
@@ -97,6 +98,7 @@ public  class EML200DataPackage extends AbstractDataPackage
         }
         boolean existsFlag = mds.exists(temp2+".1");
         boolean updateFlag = !(temp1.equals("1"));
+    
 //Log.debug(1, "exists: "+existsFlag);
         try{
           if ((this.getLocation().equals(AbstractDataPackage.METACAT))||
@@ -104,11 +106,13 @@ public  class EML200DataPackage extends AbstractDataPackage
               (existsFlag && updateFlag)
               )
           {
+        	 //System.out.println("save ================");
             mds.saveFile(getAccessionNumber(),sr1);
           } // exists on metacat; thus update
           else
           {
             if (!existsFlag) {
+            	//System.out.println("new ================");
               // .1 version does not currently exist on metacat; try to create it
               String temp_an = getAccessionNumber();
               setAccessionNumber(temp2+".1");
@@ -424,7 +428,7 @@ public  class EML200DataPackage extends AbstractDataPackage
     try {
       serialize(AbstractDataPackage.METACAT);
       this.setLocation(AbstractDataPackage.METACAT);
-      serializeData();
+      serializeData(AbstractDataPackage.METACAT);
     }
     catch (MetacatUploadException mcue) {
       throw mcue;

@@ -6,9 +6,9 @@
  *    Authors: @higgins@
  *    Release: @release@
  *
- *   '$Author: anderson $'
- *     '$Date: 2006-02-06 19:42:37 $'
- * '$Revision: 1.25 $'
+ *   '$Author: tao $'
+ *     '$Date: 2008-07-31 00:55:43 $'
+ * '$Revision: 1.26 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -354,19 +354,21 @@ public class SaveDialog extends JDialog
     try{
       if ((localLoc.isSelected())&&(localLoc.isEnabled())
           &&(networkLoc.isSelected())&&(networkLoc.isEnabled())) {
+    	adp.serializeData(AbstractDataPackage.BOTH);
         adp.serialize(AbstractDataPackage.BOTH);
         adp.setLocation(AbstractDataPackage.BOTH);
-        adp.serializeData();
+        
       }
       else if ((localLoc.isSelected())&&(localLoc.isEnabled())) {
+    	adp.serializeData(AbstractDataPackage.LOCAL);
         adp.serialize(AbstractDataPackage.LOCAL);
         adp.setLocation(AbstractDataPackage.LOCAL);
-        adp.serializeData();
+        
       }
       else if ((networkLoc.isSelected())&&(networkLoc.isEnabled())) {
+        adp.serializeData(AbstractDataPackage.METACAT);        
         adp.serialize(AbstractDataPackage.METACAT);
         adp.setLocation(AbstractDataPackage.METACAT);
-        adp.serializeData();
       }
       else {
         Log.debug(1, "No location for saving is selected!");

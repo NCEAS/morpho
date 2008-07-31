@@ -5,9 +5,9 @@
  *    Authors: @higgins@
  *    Release: @release@
  *
- *   '$Author: sgarg $'
- *     '$Date: 2005-06-13 18:27:48 $'
- * '$Revision: 1.1 $'
+ *   '$Author: tao $'
+ *     '$Date: 2008-07-31 00:55:43 $'
+ * '$Revision: 1.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -109,7 +109,7 @@ public class SavePackageCopyCommand implements Command
     try{
       adp.serialize(AbstractDataPackage.LOCAL);
       adp.setLocation(AbstractDataPackage.LOCAL);
-      adp.serializeData();
+      adp.serializeData(AbstractDataPackage.LOCAL);
     } catch (MetacatUploadException e){
       Log.debug(5, "Problem Saving Datapackage Locally");
     }
