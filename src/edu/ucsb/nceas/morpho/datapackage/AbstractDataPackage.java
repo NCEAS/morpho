@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2008-07-31 00:55:43 $'
- * '$Revision: 1.116 $'
+ *     '$Date: 2008-07-31 21:06:51 $'
+ * '$Revision: 1.117 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -2911,8 +2911,8 @@ public abstract class AbstractDataPackage extends MetadataObject
     Morpho morpho = Morpho.thisStaticInstance;
     FileSystemDataStore fds = new FileSystemDataStore(morpho);
     MetacatDataStore mds = new MetacatDataStore(morpho);
-    handleLocal(urlinfo);
     handleMetacat(urlinfo, entityIndex);
+    handleLocal(urlinfo);
   }
 
   private String getUrlInfo(int entityIndex) {
