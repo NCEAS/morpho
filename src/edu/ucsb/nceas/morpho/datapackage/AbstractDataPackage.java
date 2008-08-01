@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2008-07-31 21:06:51 $'
- * '$Revision: 1.117 $'
+ *     '$Date: 2008-08-01 01:36:33 $'
+ * '$Revision: 1.118 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -2815,10 +2815,10 @@ public abstract class AbstractDataPackage extends MetadataObject
     Morpho morpho = Morpho.thisStaticInstance;
     FileSystemDataStore fds = new FileSystemDataStore(morpho);
     MetacatDataStore mds = new MetacatDataStore(morpho);
-    try {
-      dataFile = mds.openDataFile(urlinfo);
-    }
-    catch (Exception fnf) {
+    //try {
+      //dataFile = mds.openDataFile(urlinfo);
+    //}
+    //catch (Exception fnf) {
       // if the datfile has NOT been located, an Exception will be thrown.
       // this indicates that the datafile with the url has NOT been saved
       // the datafile should be stored in the profile temp dir
@@ -2840,26 +2840,7 @@ public abstract class AbstractDataPackage extends MetadataObject
           // if we reach here, most likely there has been a problem saving the datafile
           // on metacat because the id is already in use
           // so, get a new id
-          AccessionNumber an = new AccessionNumber(morpho);
-          String newid = an.getNextId();
-          // now try saving with the new id
-          try{
-            mds.newDataFile(newid, dataFile);
-            dataFile.delete();
-            // newDataFile must have worked; thus update the package
-            setDistributionUrl(entityIndex, 0, 0, newid);
-            String newPackageId = an.getNextId();
-            setAccessionNumber(newPackageId);
-            serialize(AbstractDataPackage.METACAT);
-            if(location.equals(BOTH)) {  // save new package locally
-              serialize(AbstractDataPackage.LOCAL);
-            }
-          } catch (MetacatUploadException mue1) {
-            Log.debug(5, "Problem saving data to metacat\n"+
-                           mue1.getMessage());
-            throw new MetacatUploadException("ERROR SAVING DATA TO METACAT! "
-                          +mue1.getMessage());
-          }
+        	handleDataIdConfictionSliently(morpho,  mds, dataFile, entityIndex);
         }
       }
       catch (Exception qq) {
@@ -2874,26 +2855,7 @@ public abstract class AbstractDataPackage extends MetadataObject
             // if we reach here, most likely there has been a problem saving the datafile
             // on metacat because the id is already in use
             // so, get a new id
-            AccessionNumber an = new AccessionNumber(morpho);
-            String newid = an.getNextId();
-            // now try saving with the new id
-            try{
-              mds.newDataFile(newid, dataFile);
-              dataFile.delete();
-              // newDataFile must have worked; thus update the package
-              setDistributionUrl(entityIndex, 0, 0, newid);
-              String newPackageId = an.getNextId();
-              setAccessionNumber(newPackageId);
-              serialize(AbstractDataPackage.METACAT);
-              if(location.equals(BOTH)) {  // save new package locally
-                serialize(AbstractDataPackage.LOCAL);
-              }
-            } catch (MetacatUploadException mue1) {
-              Log.debug(5, "Problem saving data to metacat\n"+
-                           mue1.getMessage());
-              throw new MetacatUploadException("ERROR SAVING DATA TO METACAT! "
-                          +mue1.getMessage());
-            }
+        	  handleDataIdConfictionSliently(morpho,  mds, dataFile, entityIndex);
           }
         }
         catch (Exception qqq) {
@@ -2902,7 +2864,39 @@ public abstract class AbstractDataPackage extends MetadataObject
           qq.printStackTrace();
         }
       }
-    }
+    //}
+  }
+  
+  /*
+   * Automatically increase data file identifier number without notifying user
+   */
+  private void handleDataIdConfictionSliently(Morpho morpho,  MetacatDataStore mds, 
+		                                   File dataFile, int entityIndex) throws MetacatUploadException 
+  {
+	  AccessionNumber an = new AccessionNumber(morpho);
+      String newid = an.getNextId();
+      if (newid == null)
+      {
+    	   throw new MetacatUploadException("Couldn't get new docid");
+      }
+      // now try saving with the new id
+      try{
+        mds.newDataFile(newid, dataFile);
+        dataFile.delete();
+        // newDataFile must have worked; thus update the package
+        setDistributionUrl(entityIndex, 0, 0, newid);
+        //String newPackageId = an.getNextId();
+        //setAccessionNumber(newPackageId);
+        /*serialize(AbstractDataPackage.METACAT);
+        if(location.equals(BOTH)) {  // save new package locally
+          serialize(AbstractDataPackage.LOCAL);
+        }*/
+      } catch (MetacatUploadException mue1) {
+        Log.debug(5, "Problem saving data to metacat\n"+
+                       mue1.getMessage());
+        throw new MetacatUploadException("ERROR SAVING DATA TO METACAT! "
+                      +mue1.getMessage());
+      }
   }
 
 
