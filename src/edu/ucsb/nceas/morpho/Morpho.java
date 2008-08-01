@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2008-07-18 18:41:52 $'
- * '$Revision: 1.87 $'
+ *     '$Date: 2008-08-01 01:17:39 $'
+ * '$Revision: 1.88 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1101,7 +1101,7 @@ public class Morpho
                 int num = (new Integer(id)).intValue();
                 String curval = profile.get("lastId", 0);
                 int curnum = (new Integer(curval)).intValue();
-                if (curnum < num) {
+                if (curnum <= num) {
                     num = num + 1;
                     // required because Metacat does not return the latest id
                     id = (new Integer(num)).toString();
@@ -1119,14 +1119,14 @@ public class Morpho
      * @param scope  Description of Parameter
      * @return       The LastID value
      */
-    private String getLastID(String scope)
+    public String getLastID(String scope)
     {
         String result = null;
         Properties lastIDProp = new Properties();
         lastIDProp.put("action", "getlastdocid");
         lastIDProp.put("scope", scope);
         String temp = getMetacatString(lastIDProp);
-        System.out.println("the last id from metacat ===== "+temp);
+        Log.debug(30, "the last id from metacat ===== "+temp);
         //localMaxDocid will be 54 if the biggest file name is 54.2
         int localMaxDocid = getMaxLocalId(scope);
         /*
