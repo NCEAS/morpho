@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2006-12-02 00:59:54 $'
- * '$Revision: 1.10 $'
+ *     '$Date: 2008-08-01 23:32:44 $'
+ * '$Revision: 1.11 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -115,6 +115,25 @@ public class FileSystemDataStore extends DataStore
   public File saveTempDataFile(String name, InputStream file)
   {
     return saveDataFile(name, file, tempdir);
+  }
+  
+  /**
+   * Check if the given docid exists in local file system.
+   * @param docid 
+   * @return exists or not
+   */
+  public boolean exists(String docid)
+  {
+	  boolean existence = false;
+	  String path = parseId(docid);
+      String dirs = path.substring(0, path.lastIndexOf("/"));
+      File savefile = new File(datadir + "/" + path); //the path to the file
+      if(savefile.exists())
+      {
+        existence = true;
+      }
+      Log.debug(30, "The docid "+docid +" existing is "+existence);
+	  return existence;
   }
   
   /**
