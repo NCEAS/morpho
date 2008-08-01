@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2008-07-14 23:27:31 $'
- * '$Revision: 1.15 $'
+ *     '$Date: 2008-08-01 23:35:46 $'
+ * '$Revision: 1.16 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -339,101 +339,86 @@ public class MetacatDataStore extends DataStore implements DataStoreInterface
    */
   public boolean exists(String name)
   {
+	boolean existence = true;
     String path = parseId(name);
-    String dirs = path.substring(0, path.lastIndexOf("/"));
-    StringBuffer response = new StringBuffer();
-    FileOutputStream fos;
-    FileWriter writer;
-    FileReader reader;
-    
+    String dirs = path.substring(0, path.lastIndexOf("/")); 
     File localfile = new File(cachedir + "/" + path); //the path to the file
     File localdir = new File(cachedir + "/" + dirs); //the dir part of the path
     
     if((localfile.exists())&&(localfile.length()>0))
     { //if the file is cached locally, read it from the hard drive
-      Log.debug(11, "MetacatDataStore: cached file exists ");
-      return true;
+      Log.debug(30, "MetacatDataStore: cached file exists and docid is used "+name);
+      return existence;
     }
     else
-    { // if the filelength is zero, delete it
-      if (localfile.length()==0) {
-        localfile.delete();
-      }
-      
-      //if the file is not cached, check metacat.
-      
-      Log.debug(11,"MetacatDataStore: getting file from Metacat");
-      Properties props = new Properties();
-      props.put("action", "read");
-      props.put("docid", name);
-      props.put("qformat", "xml");
-      
-      try
-      {
-        fos = new FileOutputStream(localfile);
-        BufferedOutputStream bfos = new BufferedOutputStream(fos);
-        InputStream metacatInput = morpho.getMetacatInputStream(props);
-        // set here because previous line call to getMetacatInputStream will set
-        // to false
-        Morpho.connectionBusy = true;
-
-        BufferedInputStream bmetacatInputStream = new BufferedInputStream(metacatInput);
-        int x = 1;
-        int c = bmetacatInputStream.read();
-        while(c != -1)
-        {
-          bfos.write(c);
-          c = bmetacatInputStream.read();
-        }
-        bfos.flush();
-        bfos.close();
-        
-        // just look for error in first 1000 bytes - DFH
-        int cnt = 0;
-        reader = new FileReader(localfile);
-        BufferedReader breader = new BufferedReader(reader);
-        c = breader.read();
-        while((c != -1)&&(cnt<1000))
-        {
-          cnt++;  
-          response.append((char)c);
-          c = breader.read();
-        }
-        String responseStr = response.toString();
-        if(responseStr.indexOf("<error>") != -1)
-        {//metacat reported some error
-          bfos.close();
-          breader.close();
-          bmetacatInputStream.close();
-          metacatInput.close();
-          if(!localfile.delete())
-          {
-            throw new CacheAccessException("A cached file could not be " + 
-                                  "deleted.  Please check your access " +
-                                  "permissions on the cache directory." +
-                                  "Failing to delete cached files can " +
-                                  "result in erroneous operation of morpho." +
-                                  "You may want to manually clear your cache " +
-                                  "now.");
-          }
-          return false;
-        }
-        
-        bfos.close();
-        breader.close();
-        bmetacatInputStream.close();
-        metacatInput.close();
-        Morpho.connectionBusy = false;
-        return true;
-      }
-      catch(Exception e)
-      {
-//        e.printStackTrace();
-       Morpho.connectionBusy = false;
-       return false;
-      }
+    {    
+    	 // if the filelength is zero, delete it
+	      if (localfile.length()==0) 
+	      {
+	        localfile.delete();
+	      }
+         //    Gets metacat url from configuration
+		if (Morpho.thisStaticInstance != null && Morpho.thisStaticInstance.getNetworkStatus())
+		{
+			String metacatURL = Morpho.thisStaticInstance.getMetacatURLString();
+			String result = null;
+		    Properties lastVersionProp = new Properties();
+		    lastVersionProp.put("action", "getrevisionanddoctype");
+		   
+		    lastVersionProp.put("docid", name);
+		    Morpho.connectionBusy = true;
+		    try
+		    {
+			    result = Morpho.thisStaticInstance.getMetacatString(lastVersionProp);
+			    Morpho.connectionBusy = false;
+			    Log.debug(30, "the result is ============= "+result);
+			    // Get version
+			    if (result != null)
+			    {
+			    	int index = result.indexOf("<error>");
+			    	if (index == -1)
+			    	{
+			    		// if have this id, but metacat version is less than the version in name,
+			    		// we consider this id doesn't exist
+			    		int index1 = result.indexOf(";");
+			    		String versionStr = result.substring(0, index1);
+			    		index1 = name.lastIndexOf(".");
+			    		String versionStrFromName = name.substring(index1+1);
+			    		Log.debug(30, "version from name is "+versionStrFromName +
+		    					 " and version from metacat is "+versionStr);
+			    		try
+			    		{
+			    			int  versionFromMetacat = (new Integer(versionStr)).intValue();
+			    			int versionFromName = (new Integer(versionStrFromName)).intValue();
+			    			Log.debug(30, "version from name is "+versionFromName +
+			    					 " and version from metacat is "+versionFromMetacat);
+			    			if (versionFromName > versionFromMetacat)
+			    			{
+			    				existence = false;
+			    			}
+			    		}
+			    		catch(Exception e)
+			    		{
+			    			Log.debug(20, "Couldn't transfer version string "+versionStr +" into integer");
+			    		}
+			    		
+			    	}
+			    	else
+			    	{
+			    		// if have error tag, this means docid doesn't exist
+			    		existence = false;
+			    	}
+			    }
+		    }
+		    catch(Exception e)
+		    {
+		    	Morpho.connectionBusy = false;	    
+		   }
+		}
     }
-  }
+    Log.debug(30, "The docid "+name + " existing in metacat is "+existence);
+	return existence;
+}
 
   
   /**
