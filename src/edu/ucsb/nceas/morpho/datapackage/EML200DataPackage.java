@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2008-08-01 01:23:10 $'
- * '$Revision: 1.49 $'
+ *     '$Date: 2008-08-01 02:49:56 $'
+ * '$Revision: 1.50 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -120,15 +120,15 @@ public  class EML200DataPackage extends AbstractDataPackage
         	StringReader sr2 = null;
         	try
         	{
-	        	String temp_an = getAccessionNumber();
-	        	Log.debug(1, "temp_an is "+ temp_an);
-	        	Log.debug(1, "temp2 is "+ temp2);
+	        	//String temp_an = getAccessionNumber();
+	        	//Log.debug(1, "temp_an is "+ temp_an);
+	        	//Log.debug(1, "temp2 is "+ temp2);
 	            setAccessionNumber(temp2+".1");
 	            // String tempout = XMLUtilities.getDOMTreeAsString(getMetadataNode(), false);
 	            String tempout = XMLUtil.getDOMTreeAsString(getMetadataNode().getOwnerDocument());
 	            sr2 = new StringReader(tempout);
 	            mds.newFile(temp2+".1",sr2);
-	            setAccessionNumber(temp_an);
+	            //setAccessionNumber(temp_an);
         	}
         	 catch (MetacatUploadException mue) 
              {
