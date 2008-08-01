@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: leinfelder $'
- *     '$Date: 2008-06-26 21:37:31 $'
- * '$Revision: 1.16 $'
+ *   '$Author: tao $'
+ *     '$Date: 2008-08-01 01:20:56 $'
+ * '$Revision: 1.17 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -66,9 +66,38 @@ public class AccessionNumber
    */
   public synchronized String getNextId()
   {
+	 int idFromMetacatAndlLocalSystem = -1;
+	 int lastid = -1;
     String scope = profile.get("scope", 0);
+    //Get last id from metacat and local system
+    String IDFromMetacatAndLocal = morpho.getLastID(scope);
+    if (IDFromMetacatAndLocal != null)
+    {
+    	idFromMetacatAndlLocalSystem = (new Integer(IDFromMetacatAndLocal).intValue());
+    }
+    //Gets last id from profile
     String lastidS = profile.get("lastId", 0);
-    int lastid = (new Integer(lastidS)).intValue();
+    try
+    {
+        lastid = (new Integer(lastidS)).intValue();
+    }
+    catch(Exception e)
+    {
+    	Log.debug(30, "couldn't get lastid from profile");
+    }
+    Log.debug(30, "the last id from profile "+lastid);
+    Log.debug(30, "the last id from Metacat and local file system "+idFromMetacatAndlLocalSystem);
+    //Chooses the bigger one between profile and metacat(local).
+    if (lastid < idFromMetacatAndlLocalSystem )
+    {
+    	lastid =  idFromMetacatAndlLocalSystem;
+    }
+    
+    if (lastid == -1)
+    {
+    	Log.debug(1, "Error incrementing the accession number id");
+        return null;
+    }
     String separator = profile.get("separator", 0);
     
     if(scope.trim().equals("USERNAME"))
@@ -88,6 +117,7 @@ public class AccessionNumber
     else
     {
       profile.save();
+      Log.debug(30, "the next id is "+identifier+".1");
       return identifier + ".1"; 
     }
   }
