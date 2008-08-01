@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2008-08-01 17:53:08 $'
- * '$Revision: 1.51 $'
+ *     '$Date: 2008-08-01 23:37:52 $'
+ * '$Revision: 1.52 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,6 +28,7 @@ package edu.ucsb.nceas.morpho.datapackage;
 
 import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.datastore.FileSystemDataStore;
+import edu.ucsb.nceas.morpho.datastore.LocalFileExistingException;
 import edu.ucsb.nceas.morpho.datastore.MetacatDataStore;
 import edu.ucsb.nceas.morpho.datastore.MetacatUploadException;
 import edu.ucsb.nceas.morpho.util.Log;
@@ -72,36 +73,79 @@ public  class EML200DataPackage extends AbstractDataPackage
   {
 	 //System.out.println("serialize metadata ===============");
     Morpho morpho = Morpho.thisStaticInstance;
-//    String temp = XMLUtilities.getDOMTreeAsString(getMetadataNode(), false);
+    MetacatDataStore mds  = null;
+    FileSystemDataStore fsds = null;
+    boolean existInMetacat = true;
+    boolean existInLocal  = true;
+    boolean existFlag = true;
+    //String temp = XMLUtilities.getDOMTreeAsString(getMetadataNode(), false);
     String temp = XMLUtil.getDOMTreeAsString(getMetadataNode().getOwnerDocument());
+    // To check if this update or insert action
+    String identifier = getAccessionNumber();
+    String temp2 = identifier;
+    String version = null;
+    int lastperiod = identifier.lastIndexOf(".");
+    if (lastperiod>-1) {
+      version = identifier.substring(lastperiod+1, identifier.length());
+      temp2 = temp2.substring(0, lastperiod);
+      //Log.debug(1, "temp1: "+temp1+"---temp2: "+temp2);
+    }
+    //boolean existsFlag = mds.exists(temp2+".1");
+    boolean updateFlag = !(version.equals("1"));
+    //Check to see if id confilct or not
+    if((location.equals(AbstractDataPackage.METACAT))) 
+    {
+	    mds = new MetacatDataStore(morpho);
+	    existInMetacat = mds.exists(getAccessionNumber());
+	    existFlag = existInMetacat;
+    }
+    else if((location.equals(AbstractDataPackage.LOCAL))) 
+    {
+    	fsds = new FileSystemDataStore(morpho);
+    	existInLocal = fsds.exists(getAccessionNumber());
+    	existFlag = existInLocal;
+    }
+    else if (location.equals(AbstractDataPackage.BOTH))
+    {
+    	mds = new MetacatDataStore(morpho);
+	    existInMetacat = mds.exists(getAccessionNumber());
+	    fsds = new FileSystemDataStore(morpho);
+    	existInLocal = fsds.exists(getAccessionNumber());
+    	existFlag = existInMetacat || existInLocal;
+    }
+    
+    //We need to change id to resolve id confilcition
+    if (existFlag && updateFlag)
+    {
+    	Log.debug(30, "=============In existFlag and updateFlag branch");
+    	// ToDo - add a frame to give user option to increase docid or revision
+    	 AccessionNumber an = new AccessionNumber(morpho);
+         identifier = an.getNextId();
+         setAccessionNumber(identifier);
+         temp = XMLUtil.getDOMTreeAsString(getMetadataNode().getOwnerDocument());
+         updateFlag =false;
+    }
+    else if (existFlag)
+    {
+    	Log.debug(30, "==============In existFlag and NOT updateFlag branch");
+    	//since it is saving a new package, increase docid silently
+    	 AccessionNumber an = new AccessionNumber(morpho);
+    	 identifier = an.getNextId();
+    	 setAccessionNumber(identifier);
+    	 temp = XMLUtil.getDOMTreeAsString(getMetadataNode().getOwnerDocument());
+    }
+     // Log.debug(30, temp);
 
-    //    Log.debug(30, temp);
-    StringReader sr1 = new StringReader(temp);
       // save doc to metacat
-      if((location.equals(AbstractDataPackage.METACAT))||
-                 (location.equals(AbstractDataPackage.BOTH))) {
-        MetacatDataStore mds = new MetacatDataStore(morpho);
-        String temp1 = getAccessionNumber();
-        String temp2 = temp1;
-        int lastperiod = temp1.lastIndexOf(".");
-        if (lastperiod>-1) {
-          temp1 = temp1.substring(lastperiod+1, temp1.length());
-          temp2 = temp2.substring(0, lastperiod);
-          //Log.debug(1, "temp1: "+temp1+"---temp2: "+temp2);
-        }
-        //boolean existsFlag = mds.exists(temp2+".1");
-        boolean updateFlag = !(temp1.equals("1"));
+      StringReader sr1 = new StringReader(temp);
+      if((location.equals(AbstractDataPackage.METACAT))|| (location.equals(AbstractDataPackage.BOTH))) 
+      {
         if (updateFlag)
         {
         	try
         	{
         	    mds.saveFile(getAccessionNumber(),sr1);
         	}
-            catch (MetacatUploadException mue) 
-            {
-               //System.out.println(" in MetacatUploadException ============ "+mue.getMessage());
-        	   handleMetadataIdConfictionSliently(morpho, mds);
-            }
             catch(Exception e) 
             {
             	//System.out.println(" in other exception Exception==========  "+e.getMessage());
@@ -110,38 +154,26 @@ public  class EML200DataPackage extends AbstractDataPackage
         }
         else
         {
-        	StringReader sr2 = null;
         	try
         	{
-	        	//String temp_an = getAccessionNumber();
-	        	//Log.debug(1, "temp_an is "+ temp_an);
-	        	//Log.debug(1, "temp2 is "+ temp2);
-	            setAccessionNumber(temp2+".1");
-	            // String tempout = XMLUtilities.getDOMTreeAsString(getMetadataNode(), false);
-	            String tempout = XMLUtil.getDOMTreeAsString(getMetadataNode().getOwnerDocument());
-	            sr2 = new StringReader(tempout);
-	            mds.newFile(temp2+".1",sr2);
+	            mds.newFile(getAccessionNumber(),sr1);
 	            //setAccessionNumber(temp_an);
         	}
-        	 catch (MetacatUploadException mue) 
-             {
-         	     handleMetadataIdConfictionSliently(morpho, mds);
-             }
              catch(Exception e) 
              {
                  Log.debug(5,"Problem with saving to metacat in EML200DataPackage!");
              }
         }
       }
+      
       // save doc to local file system
       StringReader sr = new StringReader(temp);
-      if((location.equals(AbstractDataPackage.LOCAL))||
-              (location.equals(AbstractDataPackage.BOTH))) {
-     FileSystemDataStore fsds = new FileSystemDataStore(morpho);
-     //     Log.debug(10, "XXXXXXXXX: serializing to hardcoded /tmp/emldoc.xml");
-     //    fsds.saveFile("100.0",sr);
-       fsds.saveFile(getAccessionNumber(),sr);
-     }
+      if((location.equals(AbstractDataPackage.LOCAL)) || (location.equals(AbstractDataPackage.BOTH))) 
+      {
+         //Log.debug(10, "XXXXXXXXX: serializing to hardcoded /tmp/emldoc.xml");
+         //fsds.saveFile("100.0",sr);
+          fsds.saveFile(getAccessionNumber(),sr);
+       }
   }
   
   /*
