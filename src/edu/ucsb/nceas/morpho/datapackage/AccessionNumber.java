@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2008-08-01 01:20:56 $'
- * '$Revision: 1.17 $'
+ *     '$Date: 2008-08-01 02:48:55 $'
+ * '$Revision: 1.18 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -66,14 +66,16 @@ public class AccessionNumber
    */
   public synchronized String getNextId()
   {
-	 int idFromMetacatAndlLocalSystem = -1;
+	 int idFromMetacatAndLocalSystem = -1;
 	 int lastid = -1;
     String scope = profile.get("scope", 0);
     //Get last id from metacat and local system
     String IDFromMetacatAndLocal = morpho.getLastID(scope);
     if (IDFromMetacatAndLocal != null)
     {
-    	idFromMetacatAndlLocalSystem = (new Integer(IDFromMetacatAndLocal).intValue());
+    	idFromMetacatAndLocalSystem = (new Integer(IDFromMetacatAndLocal).intValue());
+    	//in order to get next id, this number should be increase 1
+    	idFromMetacatAndLocalSystem++;
     }
     //Gets last id from profile
     String lastidS = profile.get("lastId", 0);
@@ -86,11 +88,11 @@ public class AccessionNumber
     	Log.debug(30, "couldn't get lastid from profile");
     }
     Log.debug(30, "the last id from profile "+lastid);
-    Log.debug(30, "the last id from Metacat and local file system "+idFromMetacatAndlLocalSystem);
+    Log.debug(30, "the last id from Metacat and local file system "+idFromMetacatAndLocalSystem);
     //Chooses the bigger one between profile and metacat(local).
-    if (lastid < idFromMetacatAndlLocalSystem )
+    if (lastid < idFromMetacatAndLocalSystem )
     {
-    	lastid =  idFromMetacatAndlLocalSystem;
+    	lastid =  idFromMetacatAndLocalSystem;
     }
     
     if (lastid == -1)
