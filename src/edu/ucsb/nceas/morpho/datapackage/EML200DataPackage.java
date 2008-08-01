@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2008-08-01 02:49:56 $'
- * '$Revision: 1.50 $'
+ *     '$Date: 2008-08-01 17:53:08 $'
+ * '$Revision: 1.51 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -75,16 +75,9 @@ public  class EML200DataPackage extends AbstractDataPackage
 //    String temp = XMLUtilities.getDOMTreeAsString(getMetadataNode(), false);
     String temp = XMLUtil.getDOMTreeAsString(getMetadataNode().getOwnerDocument());
 
-    StringReader sr = new StringReader(temp);
-//    Log.debug(30, temp);
+    //    Log.debug(30, temp);
     StringReader sr1 = new StringReader(temp);
-      if((location.equals(AbstractDataPackage.LOCAL))||
-                 (location.equals(AbstractDataPackage.BOTH))) {
-        FileSystemDataStore fsds = new FileSystemDataStore(morpho);
-//        Log.debug(10, "XXXXXXXXX: serializing to hardcoded /tmp/emldoc.xml");
-//       fsds.saveFile("100.0",sr);
-        fsds.saveFile(getAccessionNumber(),sr);
-      }
+      // save doc to metacat
       if((location.equals(AbstractDataPackage.METACAT))||
                  (location.equals(AbstractDataPackage.BOTH))) {
         MetacatDataStore mds = new MetacatDataStore(morpho);
@@ -139,42 +132,16 @@ public  class EML200DataPackage extends AbstractDataPackage
                  Log.debug(5,"Problem with saving to metacat in EML200DataPackage!");
              }
         }
-    
-       //Log.debug(1, "exists: "+existsFlag);
-       //Log.debug(1, "update: "+updateFlag);
-        /*try{
-          if ((this.getLocation().equals(AbstractDataPackage.METACAT))||
-              (this.getLocation().equals(AbstractDataPackage.BOTH)) ||
-              (existsFlag && updateFlag)
-              )
-          {
-        	 //System.out.println("save ================");
-            mds.saveFile(getAccessionNumber(),sr1);
-          } // exists on metacat; thus update
-          else
-          {
-            if (!existsFlag) {
-            	//System.out.println("new ================");
-              // .1 version does not currently exist on metacat; try to create it
-              String temp_an = getAccessionNumber();
-              setAccessionNumber(temp2+".1");
-//              String tempout = XMLUtilities.getDOMTreeAsString(getMetadataNode(), false);
-              String tempout = XMLUtil.getDOMTreeAsString(getMetadataNode().getOwnerDocument());
-              StringReader sr2 = new StringReader(tempout);
-              mds.newFile(temp2+".1",sr2);
-              setAccessionNumber(temp_an);
-            }
-            // the basic package now exists,
-            if (updateFlag) {
-              mds.saveFile(getAccessionNumber(),sr1);
-            }
-          }// not currently on metacat
-        } catch (MetacatUploadException mue) {
-        	handleMetadataIdConfictionSliently(morpho, mds, sr1);
-        } catch(Exception e) {
-          Log.debug(5,"Problem with saving to metacat in EML200DataPackage!");
-        }*/
       }
+      // save doc to local file system
+      StringReader sr = new StringReader(temp);
+      if((location.equals(AbstractDataPackage.LOCAL))||
+              (location.equals(AbstractDataPackage.BOTH))) {
+     FileSystemDataStore fsds = new FileSystemDataStore(morpho);
+     //     Log.debug(10, "XXXXXXXXX: serializing to hardcoded /tmp/emldoc.xml");
+     //    fsds.saveFile("100.0",sr);
+       fsds.saveFile(getAccessionNumber(),sr);
+     }
   }
   
   /*
