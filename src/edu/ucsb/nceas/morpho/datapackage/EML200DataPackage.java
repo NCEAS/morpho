@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2008-07-31 00:55:43 $'
- * '$Revision: 1.48 $'
+ *     '$Date: 2008-08-01 01:23:10 $'
+ * '$Revision: 1.49 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -94,13 +94,55 @@ public  class EML200DataPackage extends AbstractDataPackage
         if (lastperiod>-1) {
           temp1 = temp1.substring(lastperiod+1, temp1.length());
           temp2 = temp2.substring(0, lastperiod);
-//Log.debug(1, "temp1: "+temp1+"---temp2: "+temp2);
+          //Log.debug(1, "temp1: "+temp1+"---temp2: "+temp2);
         }
-        boolean existsFlag = mds.exists(temp2+".1");
+        //boolean existsFlag = mds.exists(temp2+".1");
         boolean updateFlag = !(temp1.equals("1"));
+        if (updateFlag)
+        {
+        	try
+        	{
+        	    mds.saveFile(getAccessionNumber(),sr1);
+        	}
+            catch (MetacatUploadException mue) 
+            {
+               //System.out.println(" in MetacatUploadException ============ "+mue.getMessage());
+        	   handleMetadataIdConfictionSliently(morpho, mds);
+            }
+            catch(Exception e) 
+            {
+            	//System.out.println(" in other exception Exception==========  "+e.getMessage());
+                Log.debug(5,"Problem with saving to metacat in EML200DataPackage!");
+            }
+        }
+        else
+        {
+        	StringReader sr2 = null;
+        	try
+        	{
+	        	String temp_an = getAccessionNumber();
+	        	Log.debug(1, "temp_an is "+ temp_an);
+	        	Log.debug(1, "temp2 is "+ temp2);
+	            setAccessionNumber(temp2+".1");
+	            // String tempout = XMLUtilities.getDOMTreeAsString(getMetadataNode(), false);
+	            String tempout = XMLUtil.getDOMTreeAsString(getMetadataNode().getOwnerDocument());
+	            sr2 = new StringReader(tempout);
+	            mds.newFile(temp2+".1",sr2);
+	            setAccessionNumber(temp_an);
+        	}
+        	 catch (MetacatUploadException mue) 
+             {
+         	     handleMetadataIdConfictionSliently(morpho, mds);
+             }
+             catch(Exception e) 
+             {
+                 Log.debug(5,"Problem with saving to metacat in EML200DataPackage!");
+             }
+        }
     
-//Log.debug(1, "exists: "+existsFlag);
-        try{
+       //Log.debug(1, "exists: "+existsFlag);
+       //Log.debug(1, "update: "+updateFlag);
+        /*try{
           if ((this.getLocation().equals(AbstractDataPackage.METACAT))||
               (this.getLocation().equals(AbstractDataPackage.BOTH)) ||
               (existsFlag && updateFlag)
@@ -128,14 +170,40 @@ public  class EML200DataPackage extends AbstractDataPackage
             }
           }// not currently on metacat
         } catch (MetacatUploadException mue) {
-            Log.debug(20,"MetacatUpload Exception in EML200DataPackage!\n"
-                       +mue.getMessage());
-            throw mue;
+        	handleMetadataIdConfictionSliently(morpho, mds, sr1);
         } catch(Exception e) {
           Log.debug(5,"Problem with saving to metacat in EML200DataPackage!");
-        }
+        }*/
       }
   }
+  
+  /*
+   * Automatically increase eml identifier number without notifying user
+   */
+  private void handleMetadataIdConfictionSliently(Morpho morpho,  MetacatDataStore mds) throws MetacatUploadException 
+  {
+	  AccessionNumber an = new AccessionNumber(morpho);
+      String newid = an.getNextId();
+      if (newid == null)
+      {
+    	   throw new MetacatUploadException("Couldn't get new docid");
+      }
+      Log.debug(30, "Resend the data and the new id "+newid);
+      // now try saving with the new id
+      try{
+    	  setAccessionNumber(newid);
+    	  String tempout = XMLUtil.getDOMTreeAsString(getMetadataNode().getOwnerDocument());
+          //System.out.println("the xml is "+tempout);
+    	  StringReader content = new StringReader(tempout);
+    	  mds.newFile(newid, content);
+      } catch (MetacatUploadException mue) {
+    	  Log.debug(20,"MetacatUpload Exception in EML200DataPackage!\n"
+                  +mue.getMessage());
+          throw mue;
+        
+      }
+  }
+
 
   /*
    *  This method loops over the entities associated witht the package and
