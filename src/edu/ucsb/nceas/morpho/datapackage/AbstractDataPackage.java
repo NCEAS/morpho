@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2008-08-01 01:36:33 $'
- * '$Revision: 1.118 $'
+ *     '$Date: 2008-08-04 23:59:04 $'
+ * '$Revision: 1.119 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -2737,7 +2737,7 @@ public abstract class AbstractDataPackage extends MetadataObject
    * place where the data is to be saved.
    */
   public void serializeData(String dataLocation) throws MetacatUploadException {
-	//System.out.println("serilaize data =====================");
+	Log.debug(30, "serilaize data =====================");
     File dataFile = null;
     Morpho morpho = Morpho.thisStaticInstance;
     FileSystemDataStore fds = new FileSystemDataStore(morpho);
@@ -2768,11 +2768,13 @@ public abstract class AbstractDataPackage extends MetadataObject
 
 
   private void handleLocal(String urlinfo) {
+	Log.debug(30, "~~~~~~~~~~~~~~~~~~~~~~handle local "+urlinfo);
     File dataFile = null;
     Morpho morpho = Morpho.thisStaticInstance;
     FileSystemDataStore fds = new FileSystemDataStore(morpho);
     try {
       dataFile = fds.openFile(urlinfo);
+      //Log.debug(1, ""+urlinfo+" already exists in "+location);
     } catch (FileNotFoundException fnf) {
       // if the datfile has NOT been located, a FileNotFoundException will be thrown.
       // this indicates that the datafile with the url has NOT been saved
@@ -2811,14 +2813,15 @@ public abstract class AbstractDataPackage extends MetadataObject
   }
 
   private void handleMetacat(String urlinfo, int entityIndex) {
+	Log.debug(30, "----------------------------------------handle metacat "+urlinfo);
     File dataFile = null;
     Morpho morpho = Morpho.thisStaticInstance;
     FileSystemDataStore fds = new FileSystemDataStore(morpho);
     MetacatDataStore mds = new MetacatDataStore(morpho);
-    //try {
-      //dataFile = mds.openDataFile(urlinfo);
-    //}
-    //catch (Exception fnf) {
+    try {
+      dataFile = mds.openDataFile(urlinfo);
+    }
+    catch (Exception fnf) {
       // if the datfile has NOT been located, an Exception will be thrown.
       // this indicates that the datafile with the url has NOT been saved
       // the datafile should be stored in the profile temp dir
@@ -2855,7 +2858,8 @@ public abstract class AbstractDataPackage extends MetadataObject
             // if we reach here, most likely there has been a problem saving the datafile
             // on metacat because the id is already in use
             // so, get a new id
-        	  handleDataIdConfictionSliently(morpho,  mds, dataFile, entityIndex);
+        	  Log.debug(20, "Some problem with saving data files has occurred!"+mue.getMessage());
+        	  //handleDataIdConfictionSliently(morpho,  mds, dataFile, entityIndex);
           }
         }
         catch (Exception qqq) {
@@ -2864,7 +2868,7 @@ public abstract class AbstractDataPackage extends MetadataObject
           qq.printStackTrace();
         }
       }
-    //}
+    }
   }
   
   /*
@@ -3666,7 +3670,7 @@ public abstract class AbstractDataPackage extends MetadataObject
 			dataDir = metacatDataStore.getDataDir();
 		}
 		String targetDocid = getDocIdPart();
-		System.out.println("the data dir is "+dataDir);
+		Log.debug(30, "the data dir is "+dataDir);
 		if (dataDir != null && targetDocid != null)
 		{
 			//Gets scope name
