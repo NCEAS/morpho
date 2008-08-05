@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2008-08-01 23:37:52 $'
- * '$Revision: 1.52 $'
+ *     '$Date: 2008-08-05 22:11:51 $'
+ * '$Revision: 1.53 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,6 +31,7 @@ import edu.ucsb.nceas.morpho.datastore.FileSystemDataStore;
 import edu.ucsb.nceas.morpho.datastore.LocalFileExistingException;
 import edu.ucsb.nceas.morpho.datastore.MetacatDataStore;
 import edu.ucsb.nceas.morpho.datastore.MetacatUploadException;
+import edu.ucsb.nceas.morpho.framework.DocidIncreaseDialog;
 import edu.ucsb.nceas.morpho.util.Log;
 import edu.ucsb.nceas.utilities.XMLUtilities;
 import edu.ucsb.nceas.morpho.util.XMLUtil;
@@ -78,6 +79,7 @@ public  class EML200DataPackage extends AbstractDataPackage
     boolean existInMetacat = true;
     boolean existInLocal  = true;
     boolean existFlag = true;
+    String conflictLocation = null;
     //String temp = XMLUtilities.getDOMTreeAsString(getMetadataNode(), false);
     String temp = XMLUtil.getDOMTreeAsString(getMetadataNode().getOwnerDocument());
     // To check if this update or insert action
@@ -98,12 +100,20 @@ public  class EML200DataPackage extends AbstractDataPackage
 	    mds = new MetacatDataStore(morpho);
 	    existInMetacat = mds.exists(getAccessionNumber());
 	    existFlag = existInMetacat;
+	    if (existFlag)
+	    {
+	    	conflictLocation = DocidIncreaseDialog.METACAT;
+	    }
     }
     else if((location.equals(AbstractDataPackage.LOCAL))) 
     {
     	fsds = new FileSystemDataStore(morpho);
     	existInLocal = fsds.exists(getAccessionNumber());
     	existFlag = existInLocal;
+    	if (existFlag)
+	    {
+	    	conflictLocation = DocidIncreaseDialog.LOCAL;
+	    }
     }
     else if (location.equals(AbstractDataPackage.BOTH))
     {
@@ -112,6 +122,21 @@ public  class EML200DataPackage extends AbstractDataPackage
 	    fsds = new FileSystemDataStore(morpho);
     	existInLocal = fsds.exists(getAccessionNumber());
     	existFlag = existInMetacat || existInLocal;
+    	if (existFlag)
+    	{
+    		if (existInMetacat && existInLocal)
+    		{
+    			conflictLocation =  DocidIncreaseDialog.LOCAL + " and "+ DocidIncreaseDialog.METACAT;
+    		}
+    		else if (existInMetacat)
+    		{
+    			conflictLocation =  DocidIncreaseDialog.METACAT;
+    		}
+    		else if (existInLocal)
+    		{
+    			conflictLocation =  DocidIncreaseDialog.LOCAL;
+    		}
+    	}
     }
     
     //We need to change id to resolve id confilcition
@@ -119,11 +144,26 @@ public  class EML200DataPackage extends AbstractDataPackage
     {
     	Log.debug(30, "=============In existFlag and updateFlag branch");
     	// ToDo - add a frame to give user option to increase docid or revision
-    	 AccessionNumber an = new AccessionNumber(morpho);
-         identifier = an.getNextId();
-         setAccessionNumber(identifier);
-         temp = XMLUtil.getDOMTreeAsString(getMetadataNode().getOwnerDocument());
-         updateFlag =false;
+    	 DocidIncreaseDialog docidIncreaseDialog = new DocidIncreaseDialog(identifier, conflictLocation);
+    	 String choice = docidIncreaseDialog.getUserChoice();
+    	 if (choice != null && choice.equals(DocidIncreaseDialog.INCEASEID))
+    	 {
+    		 // increase to a new id
+    	    AccessionNumber an = new AccessionNumber(morpho);
+            identifier = an.getNextId();
+            setAccessionNumber(identifier);
+            temp = XMLUtil.getDOMTreeAsString(getMetadataNode().getOwnerDocument());
+            updateFlag =false;
+    	 }
+    	 else
+    	 {
+    		 // increase revision number
+    		 int newRevision = this.getNextRevisionNumber();
+    		 identifier = temp2+"."+newRevision;
+    		 setAccessionNumber(identifier);
+             temp = XMLUtil.getDOMTreeAsString(getMetadataNode().getOwnerDocument());
+    		 Log.debug(30, "The new id (after increase revision number) is "+identifier);
+    	 }
     }
     else if (existFlag)
     {
