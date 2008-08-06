@@ -24,8 +24,8 @@ public class DocidIncreaseDialog extends JDialog implements ActionListener
        private String docid = null;
        private String location = null;
        private String userChoice = null;
-       private static final String LABELINCEASEDOCID = "Increase doc idenfier";
-       private static final String LABELINCREASEREVISION = "Increase revsion number";
+       private static final String LABELINCEASEDOCID = "Generate new document id";
+       private static final String LABELINCREASEREVISION = "Increment revsion number";
        private static final String TITLE = "Resolving Identifier Conflict";
        private String message = null;
        
@@ -38,8 +38,9 @@ public class DocidIncreaseDialog extends JDialog implements ActionListener
     	    this.docid = docid;
     	    this.location = location;
     	    this.userChoice = INCRASEREVISION;
-    	    message =  "Docid "+docid +" already exists in "+location+
-            ". You need to either increase identifer or just increase revison. Then close this window.";
+    	    message =  "Document id "+docid +" already exists in "+location+
+            ".  \nIf the saving document is an updated version of the document, increment the revision number. "+ 
+            "\n Otherwise, generate a new document id. Then close this window.";
     	    intialGUI();
        }
        
