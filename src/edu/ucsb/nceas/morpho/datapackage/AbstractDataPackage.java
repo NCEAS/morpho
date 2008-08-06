@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2008-08-04 23:59:04 $'
- * '$Revision: 1.119 $'
+ *     '$Date: 2008-08-06 03:47:27 $'
+ * '$Revision: 1.120 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,12 +33,14 @@ import edu.ucsb.nceas.morpho.datastore.FileSystemDataStore;
 import edu.ucsb.nceas.morpho.datastore.MetacatDataStore;
 import edu.ucsb.nceas.morpho.datastore.MetacatUploadException;
 import edu.ucsb.nceas.morpho.framework.ConfigXML;
+import edu.ucsb.nceas.morpho.framework.DocidIncreaseDialog;
 import edu.ucsb.nceas.morpho.util.DocumentNotFoundException;
 import edu.ucsb.nceas.morpho.plugins.XMLFactoryInterface;
 import edu.ucsb.nceas.morpho.query.LocalQuery;
 import edu.ucsb.nceas.morpho.util.IOUtil;
 import edu.ucsb.nceas.morpho.util.Log;
 import edu.ucsb.nceas.morpho.util.XMLTransformer;
+import edu.ucsb.nceas.morpho.util.XMLUtil;
 import edu.ucsb.nceas.utilities.XMLUtilities;
 import edu.ucsb.nceas.utilities.OrderedMap;
 
@@ -54,6 +56,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.util.zip.Adler32;
+import java.util.zip.CheckedInputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -2736,7 +2740,7 @@ public abstract class AbstractDataPackage extends MetadataObject
    * It has been assumed that the 'location' has been set to point to the
    * place where the data is to be saved.
    */
-  public void serializeData(String dataLocation) throws MetacatUploadException {
+  public void serializeData(String dataDestination) throws MetacatUploadException {
 	Log.debug(30, "serilaize data =====================");
     File dataFile = null;
     Morpho morpho = Morpho.thisStaticInstance;
@@ -2753,13 +2757,13 @@ public abstract class AbstractDataPackage extends MetadataObject
       if(protocol.equals("ecogrid:")) {
         String urlinfo = getUrlInfo(i);
         // urlinfo should be the id in a string
-        if (dataLocation.equals(LOCAL))  {
+        if (dataDestination.equals(LOCAL))  {
           handleLocal(urlinfo);
         }
-        else if (dataLocation.equals(METACAT)) {
+        else if (dataDestination.equals(METACAT)) {
           handleMetacat(urlinfo, i);
         }
-        else if (dataLocation.equals(BOTH)) {
+        else if (dataDestination.equals(BOTH)) {
           handleBoth(urlinfo, i);
         }
       }
@@ -2815,92 +2819,207 @@ public abstract class AbstractDataPackage extends MetadataObject
   private void handleMetacat(String urlinfo, int entityIndex) {
 	Log.debug(30, "----------------------------------------handle metacat "+urlinfo);
     File dataFile = null;
+    File metacatDataFile = null;
+    boolean sourceFromTemp = true;
     Morpho morpho = Morpho.thisStaticInstance;
-    FileSystemDataStore fds = new FileSystemDataStore(morpho);
-    MetacatDataStore mds = new MetacatDataStore(morpho);
-    try {
-      dataFile = mds.openDataFile(urlinfo);
+	 FileSystemDataStore fds = new FileSystemDataStore(morpho);
+	 MetacatDataStore mds = new MetacatDataStore(morpho);
+    ConfigXML profile = morpho.getProfile();
+    String separator = profile.get("separator", 0);
+    separator = separator.trim();
+    String temp = new String();
+    temp = urlinfo.substring(0, urlinfo.indexOf(separator));
+    temp = temp + "/" +
+        urlinfo.substring(urlinfo.indexOf(separator) + 1, urlinfo.length());
+    // Check where is the source data file (from temp or from data file)
+    try
+    {
+    	dataFile = fds.openTempFile(temp);
     }
-    catch (Exception fnf) {
-      // if the datfile has NOT been located, an Exception will be thrown.
-      // this indicates that the datafile with the url has NOT been saved
-      // the datafile should be stored in the profile temp dir
-      ConfigXML profile = morpho.getProfile();
-      String separator = profile.get("separator", 0);
-      separator = separator.trim();
-      String temp = new String();
-      temp = urlinfo.substring(0, urlinfo.indexOf(separator));
-      temp = temp + "/" +
-          urlinfo.substring(urlinfo.indexOf(separator) + 1, urlinfo.length());
-      try {
-        dataFile = fds.openTempFile(temp);
-        InputStream dfis = new FileInputStream(dataFile);
-        try{
-          mds.newDataFile(urlinfo, dataFile);
-            // the temp file has been saved; thus delete
-          dataFile.delete();
-        } catch (MetacatUploadException mue) {
-          // if we reach here, most likely there has been a problem saving the datafile
-          // on metacat because the id is already in use
-          // so, get a new id
-        	handleDataIdConfictionSliently(morpho,  mds, dataFile, entityIndex);
-        }
+    catch(FileNotFoundException e)
+    {
+    	try
+    	{
+    	    dataFile =  fds.openFile(urlinfo);
+    	    sourceFromTemp = false;
+    	}
+    	catch(Exception ee)
+    	{
+    		Log.debug(5, "Couldn't find "+urlinfo+" in local system, so morpho couldn't upload it to metacat");
+    	    return;
+    	}   	
+    }
+    // to see if metacat already has this file
+    try 
+    {
+      metacatDataFile = mds.openDataFile(urlinfo);
+      long metacatCheckSum = getFileCheckSum(metacatDataFile);
+      long localCheckSum = getFileCheckSum(dataFile);
+      Log.debug(30, "The existen metacat data file "+urlinfo+" has the checksum "+metacatCheckSum+
+    		                 "\n The data file in local system has the checksum "+localCheckSum);
+      // "localCheckSum not equals 0" means local file is in good shape
+      // "metacatCheckSum != localCheckSum" means even both local and metacat file have
+      // same id, but they are really different data file. We need ask user if he want to change id
+      // (or increase revision to upload the file to metacat
+      if (metacatCheckSum != localCheckSum && localCheckSum != 0)
+      {
+    	  handleDataIdConfiction(urlinfo, mds, dataFile, entityIndex);
       }
-      catch (Exception qq) {
-        // data file might already be in the local file store, but not the temp dir
-        try{
-          dataFile = fds.openFile(urlinfo);
-          InputStream dfis = new FileInputStream(dataFile);
-          try{
-            mds.newDataFile(urlinfo, dataFile);
-          }
-          catch (MetacatUploadException mue) {
-            // if we reach here, most likely there has been a problem saving the datafile
-            // on metacat because the id is already in use
-            // so, get a new id
-        	  Log.debug(20, "Some problem with saving data files has occurred!"+mue.getMessage());
-        	  //handleDataIdConfictionSliently(morpho,  mds, dataFile, entityIndex);
-          }
-        }
-        catch (Exception qqq) {
-          // some other problem has occured
-          Log.debug(5, "Some problem with saving data files has occurred!");
-          qq.printStackTrace();
-        }
-      }
+      // Metacat already has this file
+    }
+    catch (Exception fnf) 
+    {
+    	//Metacat doesn't has this file
+    	uploadDataFileToMetacat(urlinfo, dataFile, sourceFromTemp, entityIndex, fds, mds);
     }
   }
   
   /*
-   * Automatically increase data file identifier number without notifying user
+   * Loads the data file to metacat
    */
-  private void handleDataIdConfictionSliently(Morpho morpho,  MetacatDataStore mds, 
-		                                   File dataFile, int entityIndex) throws MetacatUploadException 
+  private void uploadDataFileToMetacat(String identifier, File dataFile, boolean fromTemp, 
+                                                                   int entityIndex,  FileSystemDataStore fds, MetacatDataStore mds)
   {
-	  AccessionNumber an = new AccessionNumber(morpho);
-      String newid = an.getNextId();
-      if (newid == null)
-      {
-    	   throw new MetacatUploadException("Couldn't get new docid");
-      }
-      // now try saving with the new id
-      try{
-        mds.newDataFile(newid, dataFile);
-        dataFile.delete();
-        // newDataFile must have worked; thus update the package
-        setDistributionUrl(entityIndex, 0, 0, newid);
-        //String newPackageId = an.getNextId();
-        //setAccessionNumber(newPackageId);
-        /*serialize(AbstractDataPackage.METACAT);
-        if(location.equals(BOTH)) {  // save new package locally
-          serialize(AbstractDataPackage.LOCAL);
-        }*/
-      } catch (MetacatUploadException mue1) {
-        Log.debug(5, "Problem saving data to metacat\n"+
-                       mue1.getMessage());
-        throw new MetacatUploadException("ERROR SAVING DATA TO METACAT! "
-                      +mue1.getMessage());
-      }
+	        try
+	          {
+		          InputStream dfis = new FileInputStream(dataFile);
+		          try
+		          {
+	                 mds.newDataFile(identifier, dataFile);
+		          }
+		          catch (MetacatUploadException mue) 
+		          {
+		            // if we reach here, most likely there has been a problem saving the datafile
+		            // on metacat because the id is already in use
+		            // so, get a new id
+		        	  Log.debug(5, "Some problem with saving data files has occurred! "+mue.getMessage());
+		          	 handleDataIdConfiction(identifier, mds, dataFile, entityIndex);
+		          }
+	              // the temp file has been saved; thus delete
+		          if (fromTemp)
+		          {
+	                  dataFile.delete();
+		          }
+	          } 
+              catch (Exception qqq) 
+              {
+                 // some other problem has occured
+                 Log.debug(5, "Some problem with saving data files has occurred! "+qqq.getMessage());
+                 qqq.printStackTrace();
+              }
+      
+      
+  }
+  
+  /*
+   * If the docid is revision 1, automatically increase data file identifier number without notifying user.
+   * If the docid is bigger than revision 1, user will be asked to make a chioce: increasing docid or increasing revision.
+   */
+  private void handleDataIdConfiction(String identifier, MetacatDataStore mds, 
+		                                   File dataFile, int entityIndex) 
+  {
+	   Morpho morpho = Morpho.thisStaticInstance;
+	    String version = null;
+	    int revision = -1;
+	    String scope = null;
+	    boolean update = true;
+	    if (identifier != null)
+	    {
+	    	// get revision number
+		    int lastperiod = identifier.lastIndexOf(".");
+		    if (lastperiod>-1) {
+		      version = identifier.substring(lastperiod+1, identifier.length());
+		      scope = identifier.substring(0, lastperiod);
+		      Log.debug(1, "scope: "+scope+"---version: "+version);
+		    }
+		  try
+		  {
+			  revision = (new Integer(version).intValue());
+			  if (revision == 1)
+			  {
+				  update = false;
+			  }
+		  }
+		  catch(Exception e)
+		  {
+			  Log.debug(5, "Couldn't find the revison in docid "+identifier +" since "+e.getMessage());
+		  }
+		  
+		  //if it is update, we need give user options to choose: increase docid or revision number
+		  if (update)
+		  {
+			  DocidIncreaseDialog docidIncreaseDialog = new DocidIncreaseDialog(identifier, DocidIncreaseDialog.METACAT);
+		      String choice = docidIncreaseDialog.getUserChoice();
+		      if (choice != null && choice.equals(DocidIncreaseDialog.INCEASEID))
+		      {
+		            update =false;
+		      }
+		      else
+		      {
+		    	  update = true;
+		      }
+		  }
+		  
+		  // decides docid base on user choice
+		  if (!update)
+		  {
+		     AccessionNumber an = new AccessionNumber(morpho);
+	         identifier = an.getNextId();
+		  }
+		  else
+		  {
+			  int newRevision = this.getNextRevisionNumber();
+	    	   identifier = scope+"."+newRevision;
+		  }
+	      if (identifier == null)
+	      {
+	    	   Log.debug(30, "Couldn't get new docid");
+	    	   return;
+	      }
+	      Log.debug(30, "======================new identifier is "+identifier);
+	      // now try saving with the new id
+	      try{
+	        mds.newDataFile(identifier, dataFile);
+	        //dataFile.delete();
+	        // newDataFile must have worked; thus update the package
+	        setDistributionUrl(entityIndex, 0, 0, "ecogrid://knb/"+identifier);
+	        //String newPackageId = an.getNextId();
+	        //setAccessionNumber(newPackageId);
+	        /*serialize(AbstractDataPackage.METACAT);
+	        if(location.equals(BOTH)) {  // save new package locally
+	          serialize(AbstractDataPackage.LOCAL);
+	        }*/
+	      } catch (MetacatUploadException mue1) {
+	        Log.debug(5, "Problem saving data to metacat\n"+
+	                       mue1.getMessage());
+	  
+	      }
+	  }
+  }
+  
+  /*
+   * Returns a checksum of the given file. 0 will be return if some bad thing happens
+   */
+  private long getFileCheckSum(File file)
+  {
+	  long checksum = 0;
+	  try {
+	        // Compute Adler-32 checksum
+	        CheckedInputStream cis = new CheckedInputStream(
+	            new FileInputStream(file), new Adler32());
+	        byte[] tempBuf = new byte[128];
+	        while (cis.read(tempBuf) >= 0) 
+	        {
+	        	
+	        }
+	        checksum = cis.getChecksum().getValue();
+	    } 
+	    catch (IOException e) 
+	    {
+	        Log.debug(30, "Couldn't get the checksum value of the file" +file.getName());
+	    }
+	    Log.debug(30, "The checksum of " +file.getName()+" is "+checksum);
+	    return checksum;
   }
 
 
