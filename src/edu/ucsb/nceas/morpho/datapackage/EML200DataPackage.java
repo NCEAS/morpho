@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2008-08-05 22:11:51 $'
- * '$Revision: 1.53 $'
+ *     '$Date: 2008-08-06 03:45:02 $'
+ * '$Revision: 1.54 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -216,33 +216,7 @@ public  class EML200DataPackage extends AbstractDataPackage
        }
   }
   
-  /*
-   * Automatically increase eml identifier number without notifying user
-   */
-  private void handleMetadataIdConfictionSliently(Morpho morpho,  MetacatDataStore mds) throws MetacatUploadException 
-  {
-	  AccessionNumber an = new AccessionNumber(morpho);
-      String newid = an.getNextId();
-      if (newid == null)
-      {
-    	   throw new MetacatUploadException("Couldn't get new docid");
-      }
-      Log.debug(30, "Resend the data and the new id "+newid);
-      // now try saving with the new id
-      try{
-    	  setAccessionNumber(newid);
-    	  String tempout = XMLUtil.getDOMTreeAsString(getMetadataNode().getOwnerDocument());
-          //System.out.println("the xml is "+tempout);
-    	  StringReader content = new StringReader(tempout);
-    	  mds.newFile(newid, content);
-      } catch (MetacatUploadException mue) {
-    	  Log.debug(20,"MetacatUpload Exception in EML200DataPackage!\n"
-                  +mue.getMessage());
-          throw mue;
-        
-      }
-  }
-
+ 
 
   /*
    *  This method loops over the entities associated witht the package and
