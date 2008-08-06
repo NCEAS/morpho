@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2008-08-01 01:17:39 $'
- * '$Revision: 1.88 $'
+ *     '$Date: 2008-08-06 03:46:17 $'
+ * '$Revision: 1.89 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1095,7 +1095,7 @@ public class Morpho
         //MB 05-21-02: if (connected && networkStatus) {
         // only execute if connected to avoid hanging when there is
         // no network connection
-        if (networkStatus) {
+        //if (networkStatus) {
             String id = getLastID(scope);
             if (id != null) {
                 int num = (new Integer(id)).intValue();
@@ -1109,7 +1109,7 @@ public class Morpho
                     profile.save();
                 }
             }
-        }
+       //}
     }
 
     /**
@@ -1121,11 +1121,16 @@ public class Morpho
      */
     public String getLastID(String scope)
     {
+    	
         String result = null;
+        String temp  =  null;
         Properties lastIDProp = new Properties();
         lastIDProp.put("action", "getlastdocid");
         lastIDProp.put("scope", scope);
-        String temp = getMetacatString(lastIDProp);
+         if (networkStatus)
+         {
+             temp= getMetacatString(lastIDProp);
+         }
         Log.debug(30, "the last id from metacat ===== "+temp);
         //localMaxDocid will be 54 if the biggest file name is 54.2
         int localMaxDocid = getMaxLocalId(scope);
