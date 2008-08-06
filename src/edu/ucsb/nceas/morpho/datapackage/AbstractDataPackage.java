@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2008-08-06 03:47:27 $'
- * '$Revision: 1.120 $'
+ *     '$Date: 2008-08-06 23:53:16 $'
+ * '$Revision: 1.121 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -73,6 +73,8 @@ import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
+
+import java.util.Hashtable;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Date;
@@ -231,6 +233,8 @@ public abstract class AbstractDataPackage extends MetadataObject
   // and other table header info. - Dan Higgins
   private Node[] lastAttributeArray = null; //DFH
   private int lastEntityIndex = -1;
+  boolean serializeDataAtBothLocation = false;
+  private Hashtable original_new_id_map = new Hashtable(); // store the map between new data id and old data id
 
 
   /*
@@ -2764,10 +2768,14 @@ public abstract class AbstractDataPackage extends MetadataObject
           handleMetacat(urlinfo, i);
         }
         else if (dataDestination.equals(BOTH)) {
+        	//Log.debug(1, "~~~~~~~~~~~~~~~~~~~~~~set bothLoation true ");
+          serializeDataAtBothLocation =true;
           handleBoth(urlinfo, i);
         }
       }
     }
+    //Log.debug(1, "~~~~~~~~~~~~~~~~~~~~~~set bothLoation false ");
+    serializeDataAtBothLocation =false;
   }
 
 
@@ -2776,6 +2784,22 @@ public abstract class AbstractDataPackage extends MetadataObject
     File dataFile = null;
     Morpho morpho = Morpho.thisStaticInstance;
     FileSystemDataStore fds = new FileSystemDataStore(morpho);
+    // if morpho serilaize data into both local and metacat, and docid was changed
+    // during saving data in metacat, we need to get the new id and store it into local
+    if (serializeDataAtBothLocation && !original_new_id_map.isEmpty())
+    {
+    	//System.out.println("the key is "+urlinfo);
+    	//System.out.println("the hashtable is "+original_new_id_map);
+    	//Log.debug(1, "~~~~~~~~~~~~~~~~~~~~~~change id in local serialization ");
+    	String newURLInfo = (String)original_new_id_map.get(urlinfo);
+    	//Log.debug(1, "~~~~~~~~~~~~~~~~~~~~~~the id from map is " +newURLInfo);
+    	if (newURLInfo != null && !newURLInfo.equals(""))
+    	{
+    		urlinfo = newURLInfo;
+    		Log.debug(30, "~~~~~~~~~~~~~~~~~~~~~~new id for local system "+urlinfo);
+    	}
+    	original_new_id_map = new Hashtable();
+    }
     try {
       dataFile = fds.openFile(urlinfo);
       //Log.debug(1, ""+urlinfo+" already exists in "+location);
@@ -2863,7 +2887,7 @@ public abstract class AbstractDataPackage extends MetadataObject
       // (or increase revision to upload the file to metacat
       if (metacatCheckSum != localCheckSum && localCheckSum != 0)
       {
-    	  handleDataIdConfiction(urlinfo, mds, dataFile, entityIndex);
+    	  handleDataIdConfiction(urlinfo, fds, mds, dataFile, entityIndex);
       }
       // Metacat already has this file
     }
@@ -2893,7 +2917,7 @@ public abstract class AbstractDataPackage extends MetadataObject
 		            // on metacat because the id is already in use
 		            // so, get a new id
 		        	  Log.debug(5, "Some problem with saving data files has occurred! "+mue.getMessage());
-		          	 handleDataIdConfiction(identifier, mds, dataFile, entityIndex);
+		          	 handleDataIdConfiction(identifier, fds, mds, dataFile, entityIndex);
 		          }
 	              // the temp file has been saved; thus delete
 		          if (fromTemp)
@@ -2915,7 +2939,7 @@ public abstract class AbstractDataPackage extends MetadataObject
    * If the docid is revision 1, automatically increase data file identifier number without notifying user.
    * If the docid is bigger than revision 1, user will be asked to make a chioce: increasing docid or increasing revision.
    */
-  private void handleDataIdConfiction(String identifier, MetacatDataStore mds, 
+  private void handleDataIdConfiction(String identifier, FileSystemDataStore fds, MetacatDataStore mds, 
 		                                   File dataFile, int entityIndex) 
   {
 	   Morpho morpho = Morpho.thisStaticInstance;
@@ -2923,14 +2947,16 @@ public abstract class AbstractDataPackage extends MetadataObject
 	    int revision = -1;
 	    String scope = null;
 	    boolean update = true;
+	    String originalIdentifier = null;
 	    if (identifier != null)
 	    {
+	    	originalIdentifier = identifier;
 	    	// get revision number
 		    int lastperiod = identifier.lastIndexOf(".");
 		    if (lastperiod>-1) {
 		      version = identifier.substring(lastperiod+1, identifier.length());
 		      scope = identifier.substring(0, lastperiod);
-		      Log.debug(1, "scope: "+scope+"---version: "+version);
+		      Log.debug(55, "scope: "+scope+"---version: "+version);
 		    }
 		  try
 		  {
@@ -2983,6 +3009,24 @@ public abstract class AbstractDataPackage extends MetadataObject
 	        //dataFile.delete();
 	        // newDataFile must have worked; thus update the package
 	        setDistributionUrl(entityIndex, 0, 0, "ecogrid://knb/"+identifier);
+	        if (serializeDataAtBothLocation)
+	        {
+	        	Log.debug(30, "save original url info  "+originalIdentifier+ "and  new url "+identifier+ " into the ma");
+	        	// store the new id and original id into a map. So when morpho know the new id when it serialize
+	            original_new_id_map.put(originalIdentifier, identifier);
+	            // save the data file into temp with the new id.
+	            try
+	            {
+	            	FileInputStream input = new FileInputStream(dataFile);
+	            	fds.saveTempDataFile(identifier, input);
+	            	input.close();
+	            }
+	            catch(Exception e)
+	            {
+	            	
+	            }
+	           
+	        }
 	        //String newPackageId = an.getNextId();
 	        //setAccessionNumber(newPackageId);
 	        /*serialize(AbstractDataPackage.METACAT);
