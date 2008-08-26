@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: sgarg $'
- *     '$Date: 2005-06-22 22:55:37 $'
- * '$Revision: 1.41 $'
+ *   '$Author: tao $'
+ *     '$Date: 2008-08-26 22:31:48 $'
+ * '$Revision: 1.42 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -646,7 +646,8 @@ public class IntervalRatioPanel extends JPanel implements WizardPageSubPanelAPI 
 
     String type = (String)map.get(xPathRoot + "/numericDomain/numberType");
     if (type != null) {
-      numberTypePickList.setSelectedItem(type);
+      int index = getNumberTypeIndexOfComboBox(type);
+      numberTypePickList.setSelectedIndex(index);
       map.remove(xPathRoot + "/numericDomain/numberType");
     }
 
@@ -729,8 +730,31 @@ public class IntervalRatioPanel extends JPanel implements WizardPageSubPanelAPI 
      // if not, a linear search needs to be done instead of the binary search
      return Arrays.binarySearch(unitsOfThisType, unitType);
    }
-
-
+   
+   /*
+    * Get the index of type in numberEMLVals arry
+    */
+   private int getNumberTypeIndexOfComboBox(String type)
+   {
+	   int index = 0;
+	   if (type != null)
+	   {
+		   if(numberEMLVals != null)
+		   {
+			   int length = numberEMLVals.length;
+			   for (int i=0; i<length;i++)
+			   {
+				   String dataType = numberEMLVals[i];
+				   if(dataType != null && dataType.equals(type))
+				   {
+					   index = i;
+				   }
+			   }
+		   }
+	   }
+	   Log.debug(30, " ========== the index is of type "+ type +" is "+index);
+	   return index;
+   }
 
 
 
