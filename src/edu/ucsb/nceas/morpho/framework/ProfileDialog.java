@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2008-06-27 23:45:15 $'
- * '$Revision: 1.29 $'
+ *     '$Date: 2008-08-26 03:58:27 $'
+ * '$Revision: 1.30 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -488,7 +488,10 @@ public class ProfileDialog extends JDialog
         fieldsAreValid = false;
       }
 
-    if (scopeField.getText() == null || (scopeField.getText().equals(""))) {
+    if (scopeField.getText() == null || (scopeField.getText().equals(""))|| scopeField.getText().contains(" ")
+    	||scopeField.getText().contains("&")||scopeField.getText().contains("#")||scopeField.getText().contains(",")
+    	||scopeField.getText().contains("+")||scopeField.getText().contains("-")||scopeField.getText().contains("(")) 
+    {
       fieldsAreValid = false;
     }
 
@@ -667,7 +670,7 @@ public class ProfileDialog extends JDialog
       String messageText = "Some required information was invalid.\n\n" +
                            "Please check that you have provided a\n" +
                            "profile name, a user name, an organization,\n" +
-                           "and an identifer prefix.\n";
+                           "and an identifer prefix (It couldn't have space, &, comma, -, (, # and +) .\n";
       JOptionPane.showMessageDialog(this, messageText);
     }
   }
