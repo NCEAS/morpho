@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2008-08-06 23:53:16 $'
- * '$Revision: 1.121 $'
+ *     '$Date: 2008-08-27 18:41:05 $'
+ * '$Revision: 1.122 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -252,6 +252,8 @@ public abstract class AbstractDataPackage extends MetadataObject
   private final String METADATAHTML = "metadata";
   private final String EXPORTSYLE = "export";
   private final int ORIGINAL_REVISION = 1;
+  private boolean serializeLocalSuccess = false;
+  private boolean serializeMetacatSuccess = false;
 
   /**
    * This abstract method turns the datapackage into a form (e.g. string) that
@@ -3994,5 +3996,40 @@ public abstract class AbstractDataPackage extends MetadataObject
 		Log.debug(30, "Next version for doicd " +docid+" in metacat is "+version);
 		return version;
 	}
+	 /**
+	   * Gets the status of serializing metadata to local
+	   * @return
+	   */
+	  public boolean getSerializeLocalSuccess()
+	  {
+		  return serializeLocalSuccess;
+	  }
+	  
+	  /**
+	   * Sets the status of serializing metdata to local
+	   * @param success
+	   */
+	  public void setSerializeLocalSuccess(boolean success)
+	  {
+		  this.serializeLocalSuccess = success;
+	  }
+	  
+	  /**
+	   * Gets the status of serializing metadata to metacat
+	   * @return
+	   */
+	  public boolean getSerializeMetacatSuccess()
+	  {
+		  return this.serializeMetacatSuccess;
+	  }
+	  
+	  /**
+	   * Sets the status of serializing metdata to metacat
+	   * @param success
+	   */
+	  public void setSerializeMetacatSuccess(boolean success)
+	  {
+		  this.serializeMetacatSuccess = success;
+	  }
 }
 
