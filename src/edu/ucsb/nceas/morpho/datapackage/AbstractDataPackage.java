@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2008-08-27 18:41:05 $'
- * '$Revision: 1.122 $'
+ *     '$Date: 2008-08-27 22:40:41 $'
+ * '$Revision: 1.123 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -254,6 +254,8 @@ public abstract class AbstractDataPackage extends MetadataObject
   private final int ORIGINAL_REVISION = 1;
   private boolean serializeLocalSuccess = false;
   private boolean serializeMetacatSuccess = false;
+  private boolean identifierChangedInMetacatSerialization = false;
+  private boolean identifierChangedInLocalSerialization = false;
 
   /**
    * This abstract method turns the datapackage into a form (e.g. string) that
@@ -4030,6 +4032,44 @@ public abstract class AbstractDataPackage extends MetadataObject
 	  public void setSerializeMetacatSuccess(boolean success)
 	  {
 		  this.serializeMetacatSuccess = success;
+	  }
+	  
+	  /**
+	   * Sets the variable of identifierChangedInMetacatSerialization
+	   * @param change
+	   */
+	  public void setIdentifierChangedInMetacatSerialization(boolean change)
+	  {
+		  identifierChangedInMetacatSerialization = change;
+	  }
+	  
+	  
+      /**
+       * Gets the value of identifierChangedInMetacatSerialization
+       * @return
+       */
+	  public boolean getIndentifierChangedInMetacatSeriaalization()
+	  {
+		  return identifierChangedInMetacatSerialization;
+	  }
+	  
+	  /**
+	   * Sets the variable of identifierChangedInLocalSerialization
+	   * @param change
+	   */
+	  public void setIdentifierChangedInLocalSerialization(boolean change)
+	  {
+		  identifierChangedInLocalSerialization = change;
+	  }
+	  
+	  
+      /**
+       * Gets the value of identifierChangedInLocalSerialization
+       * @return
+       */
+	  public boolean getIndentifierChangedInLocalSeriaalization()
+	  {
+		  return identifierChangedInLocalSerialization;
 	  }
 }
 
