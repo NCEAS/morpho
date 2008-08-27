@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2008-08-06 03:45:02 $'
- * '$Revision: 1.54 $'
+ *     '$Date: 2008-08-27 22:41:31 $'
+ * '$Revision: 1.55 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -67,11 +67,15 @@ public  class EML200DataPackage extends AbstractDataPackage
 {
 
   public static final String LATEST_EML_VER = "eml-2.0.1";
+ 
 
   // serialize to the indicated location
   public void serialize(String location)
-        throws MetacatUploadException
   {
+	 this.setSerializeLocalSuccess(false);
+	 this.setSerializeMetacatSuccess(false);
+	 this.setIdentifierChangedInLocalSerialization(false);
+	 this.setIdentifierChangedInMetacatSerialization(false);
 	 //System.out.println("serialize metadata ===============");
     Morpho morpho = Morpho.thisStaticInstance;
     MetacatDataStore mds  = null;
@@ -127,14 +131,18 @@ public  class EML200DataPackage extends AbstractDataPackage
     		if (existInMetacat && existInLocal)
     		{
     			conflictLocation =  DocidIncreaseDialog.LOCAL + " and "+ DocidIncreaseDialog.METACAT;
+    		    this.setIdentifierChangedInLocalSerialization(true);
+    		    this.setIdentifierChangedInMetacatSerialization(true);
     		}
     		else if (existInMetacat)
     		{
     			conflictLocation =  DocidIncreaseDialog.METACAT;
+    			this.setIdentifierChangedInMetacatSerialization(true);
     		}
     		else if (existInLocal)
     		{
     			conflictLocation =  DocidIncreaseDialog.LOCAL;
+    			this.setIdentifierChangedInLocalSerialization(true);
     		}
     	}
     }
@@ -185,11 +193,14 @@ public  class EML200DataPackage extends AbstractDataPackage
         	try
         	{
         	    mds.saveFile(getAccessionNumber(),sr1);
+        	    this.setSerializeMetacatSuccess(true);
         	}
             catch(Exception e) 
             {
+            	this.setSerializeMetacatSuccess(false);
+            	this.setIdentifierChangedInMetacatSerialization(false);
             	//System.out.println(" in other exception Exception==========  "+e.getMessage());
-                Log.debug(5,"Problem with saving to metacat in EML200DataPackage!");
+                Log.debug(5,"Problem with saving to metacat in EML200DataPackage!");              
             }
         }
         else
@@ -197,10 +208,13 @@ public  class EML200DataPackage extends AbstractDataPackage
         	try
         	{
 	            mds.newFile(getAccessionNumber(),sr1);
+	            this.setSerializeMetacatSuccess(true);
 	            //setAccessionNumber(temp_an);
         	}
              catch(Exception e) 
              {
+            	 this.setSerializeMetacatSuccess(false);
+            	 this.setIdentifierChangedInMetacatSerialization(false);
                  Log.debug(5,"Problem with saving to metacat in EML200DataPackage!");
              }
         }
@@ -212,7 +226,16 @@ public  class EML200DataPackage extends AbstractDataPackage
       {
          //Log.debug(10, "XXXXXXXXX: serializing to hardcoded /tmp/emldoc.xml");
          //fsds.saveFile("100.0",sr);
-          fsds.saveFile(getAccessionNumber(),sr);
+          File newFile = fsds.saveFile(getAccessionNumber(),sr);
+          if (newFile != null)
+          {
+             this.setSerializeLocalSuccess(true);
+          }
+          else
+          {
+        	  this.setSerializeLocalSuccess(false);
+        	  this.setIdentifierChangedInLocalSerialization(false);
+          }
        }
   }
   
@@ -773,6 +796,6 @@ public  class EML200DataPackage extends AbstractDataPackage
     }
     return ret;
   }
-
+   
 }
 
