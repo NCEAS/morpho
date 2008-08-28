@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <config>
-  <version>1.6.1</version>
+  <version>1.6.2</version>
   <dataLocationInlineOnline>online</dataLocationInlineOnline>
   <plugin>edu.ucsb.nceas.morpho.query.QueryPlugin</plugin>
   <plugin>edu.ucsb.nceas.morpho.datapackage.DataPackagePlugin</plugin>
@@ -36,6 +36,7 @@
   <returndoc>-//NCEAS//resource//EN</returndoc>
   <returndoc>eml://ecoinformatics.org/eml-2.0.0</returndoc>
   <returndoc>eml://ecoinformatics.org/eml-2.0.1</returndoc>
+  <returndoc>eml://ecoinformatics.org/eml-2.1.0</returndoc>
   <returnfield>dataset/title</returnfield>
   <returnfield>individualName/surName</returnfield>
   <returnfield>keyword</returnfield>
@@ -240,18 +241,24 @@
   <genericStylesheetLocation>style/generic.xsl</genericStylesheetLocation>
   <emlCSSLocation>style/CSS</emlCSSLocation>
   <doctype_xslt_location_mappings>
+      <doctype>eml://ecoinformatics.org/eml-2.1.0</doctype>
+      <location>style/eml210</location>
       <doctype>eml://ecoinformatics.org/eml-2.0.1</doctype>
       <location>style/eml201</location>
       <doctype>eml://ecoinformatics.org/eml-2.0.0</doctype>
       <location>style/eml200</location>
   </doctype_xslt_location_mappings>
   <tree_editor_xml_location_mappings>
+      <doctype>eml://ecoinformatics.org/eml-2.1.0</doctype>
+      <location>eml-2.1.0.xml</location>
       <doctype>eml://ecoinformatics.org/eml-2.0.1</doctype>
       <location>eml-2.0.1.xml</location>
       <doctype>eml://ecoinformatics.org/eml-2.0.0</doctype>
       <location>eml-2.0.0.xml</location>
   </tree_editor_xml_location_mappings>
   <doctype_xslt_mappings>
+      <doctype>eml://ecoinformatics.org/eml-2.1.0</doctype>
+      <xslt>style/eml210/eml-2.1.0.xsl</xslt>
       <doctype>eml://ecoinformatics.org/eml-2.0.1</doctype>
       <xslt>style/eml201/eml-2.0.1.xsl</xslt>
       <doctype>eml://ecoinformatics.org/eml-2.0.0</doctype>
