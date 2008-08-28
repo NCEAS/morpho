@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2008-08-27 22:41:31 $'
- * '$Revision: 1.55 $'
+ *     '$Date: 2008-08-28 23:30:59 $'
+ * '$Revision: 1.56 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -66,7 +66,7 @@ import org.apache.xpath.XPathAPI;
 public  class EML200DataPackage extends AbstractDataPackage
 {
 
-  public static final String LATEST_EML_VER = "eml-2.0.1";
+  public static final String LATEST_EML_VER = "eml-2.1.0";
  
 
   // serialize to the indicated location
