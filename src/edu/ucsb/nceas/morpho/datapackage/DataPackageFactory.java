@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: leinfelder $'
- *     '$Date: 2008-04-11 18:54:01 $'
- * '$Revision: 1.46 $'
+ *   '$Author: tao $'
+ *     '$Date: 2008-08-28 23:22:04 $'
+ * '$Revision: 1.47 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -80,7 +80,7 @@ public class DataPackageFactory
     String type = getDocTypeInfo(in);
     //Log.debug(15,"DocTypeInfo: " + type);
 //    if (type.equals("eml:eml")) {
-    if (type.indexOf("eml://ecoinformatics.org/eml-2.0")>-1) {
+    if (type.indexOf("eml://ecoinformatics.org/eml-2.0")>-1 || type.indexOf("eml://ecoinformatics.org/eml-2.1") > -1) {
       //Log.debug(15,"Creating new eml-2.0.x package from metadata stream");
       dp = new EML200DataPackage();
       //Log.debug(15,"loading new eml-2.0.x DOM");
@@ -146,7 +146,7 @@ public class DataPackageFactory
 		Log.debug(40, "Sorry - Couldn't close the package");
 	}
 //    if (type.equals("eml:eml")) {
-    if (type.indexOf("eml://ecoinformatics.org/eml-2.0")>-1) {
+    if (type.indexOf("eml://ecoinformatics.org/eml-2.0")>-1 ||type.indexOf("eml://ecoinformatics.org/eml-2.1")>-1 ) {
       //Log.debug(20,"Creating new eml-2.0.x package from docid");
       dp = new EML200DataPackage();
       //Log.debug(40,"loading new eml-2.0.x DOM");
@@ -188,7 +188,7 @@ public class DataPackageFactory
     AbstractDataPackage dp = null;
     String doctype = getDocType(node);
     //Log.debug(50, "doctype: "+doctype);
-    if(doctype.indexOf("eml-2.0")>-1) {
+    if(doctype.indexOf("eml-2.0")>-1|| doctype.indexOf("eml-2.1")>-1) {
       // Note: assumed that this is ok for any 'eml-2.0.n' mod to eml2.0
       dp = new EML200DataPackage();
 
