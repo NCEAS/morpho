@@ -7,8 +7,8 @@
   *  For Details: http://www.nceas.ucsb.edu/
   *
   *   '$Author: tao $'
-  *     '$Date: 2008-08-28 23:00:02 $'
-  * '$Revision: 1.1 $'
+  *     '$Date: 2008-08-28 23:10:24 $'
+  * '$Revision: 1.2 $'
   *
   * This program is free software; you can redistribute it and/or modify
   * it under the terms of the GNU General Public License as published by
@@ -29,7 +29,7 @@
   * module of the Ecological Metadata Language (EML) into an HTML format
   * suitable for rendering with modern web browsers.
 -->
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:fn="http://www.w3.org/2005/02/xpath-function" xmlns:eml="eml://ecoinformatics.org/eml-2.0.1" version="1.0">
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:fn="http://www.w3.org/2005/02/xpath-function" xmlns:eml="eml://ecoinformatics.org/eml-2.1.0" version="1.0">
   <xsl:import href="emlroot-2.1.0.xsl"/>
 
   <xsl:output method="html" encoding="iso-8859-1"
