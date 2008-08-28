@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: leinfelder $'
- *     '$Date: 2008-04-11 18:55:15 $'
- * '$Revision: 1.73 $'
+ *   '$Author: tao $'
+ *     '$Date: 2008-08-28 23:33:33 $'
+ * '$Revision: 1.74 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -252,8 +252,11 @@ public class WizardSettings {
   protected static final String EML200_SCHEMA_NAMESPACE =
       "eml://ecoinformatics.org/eml-2.0.0";
 
-  public static final String EML201_SCHEMA_NAMESPACE =
-      "eml://ecoinformatics.org/eml-2.0.1";
+  /*public static final String EML201_SCHEMA_NAMESPACE =
+      "eml://ecoinformatics.org/eml-2.0.1";*/
+  
+  public static final String EML210_SCHEMA_NAMESPACE =
+      "eml://ecoinformatics.org/eml-2.1.0";
 
   protected static final String NEW_EML200_DOCUMENT_TEXT =
   "<eml:eml "
@@ -285,7 +288,7 @@ public class WizardSettings {
   +"   </dataset> "
   +"</eml:eml>";
 
-  protected static final String NEW_EML201_DOCUMENT_TEXT =
+  /*protected static final String NEW_EML201_DOCUMENT_TEXT =
   "<eml:eml "
   +"   packageId=\"\" system=\"knb\" "
   +"   xmlns:eml=\"eml://ecoinformatics.org/eml-2.0.1\" "
@@ -313,7 +316,37 @@ public class WizardSettings {
   +"            </taxonomicSystem> </taxonomicCoverage></coverage>"
   +"   <project><title> </title></project>"
   +"   </dataset> "
-  +"</eml:eml>";
+  +"</eml:eml>";*/
+  
+  protected static final String NEW_EML210_DOCUMENT_TEXT =
+	  "<eml:eml "
+	  +"   packageId=\"\" system=\"knb\" "
+	  +"   xmlns:eml=\"eml://ecoinformatics.org/eml-2.1.0\" "
+	  +"   xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" "
+//	  +"   xmlns:ds=\"eml://ecoinformatics.org/dataset-2.0.1\" "
+	  +"   xsi:schemaLocation=\"eml://ecoinformatics.org/eml-2.1.0 eml.xsd\"> "
+	  +"   <dataset> "
+	  +"   <title> </title> "
+	  +"   <creator> </creator>"
+	  +"   </dataset> "
+	  +"</eml:eml>";
+
+	  public static final String TEMP_REFS_EML210_DOCUMENT_TEXT =
+	  "<eml:eml "
+	  +"   packageId=\"\" system=\"knb\" "
+	  +"   xmlns:eml=\"eml://ecoinformatics.org/eml-2.1.0\" "
+	  +"   xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" "
+	  +"   xsi:schemaLocation=\"eml://ecoinformatics.org/eml-2.1.0 eml.xsd\"> "
+	  +"   <dataset> "
+	  +"   <title> </title> "
+	  +"   <creator> </creator>"
+	  +"   <coverage><taxonomicCoverage><taxonomicSystem><classificationSystem>"
+	  +"                             <classificationSystemCitation><title> </title>"
+	  +"            </classificationSystemCitation> </classificationSystem>"
+	  +"            </taxonomicSystem> </taxonomicCoverage></coverage>"
+	  +"   <project><title> </title></project>"
+	  +"   </dataset> "
+	  +"</eml:eml>";
 
 //  /////
 
