@@ -7,8 +7,8 @@
   *  For Details: http://www.nceas.ucsb.edu/
   *
   *   '$Author: tao $'
-  *     '$Date: 2008-08-28 23:00:02 $'
-  * '$Revision: 1.1 $'
+  *     '$Date: 2008-08-29 00:13:19 $'
+  * '$Revision: 1.2 $'
   *
   * This program is free software; you can redistribute it and/or modify
   * it under the terms of the GNU General Public License as published by
@@ -30,7 +30,7 @@
   * suitable for rendering with modern web browsers.
 -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0">
-  <xsl:import href="eml-text.xsl" />
+  <xsl:import href="eml-text-2.1.0.xsl" />
   <xsl:output method="html" encoding="iso-8859-1"
               doctype-public="-//W3C//DTD HTML 4.01 Transitional//EN"
               doctype-system="http://www.w3.org/TR/html4/loose.dtd"
