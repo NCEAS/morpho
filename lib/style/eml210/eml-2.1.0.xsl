@@ -7,8 +7,8 @@
   *  For Details: http://www.nceas.ucsb.edu/
   *
   *   '$Author: tao $'
-  *     '$Date: 2008-08-28 23:10:24 $'
-  * '$Revision: 1.2 $'
+  *     '$Date: 2008-08-29 18:41:18 $'
+  * '$Revision: 1.3 $'
   *
   * This program is free software; you can redistribute it and/or modify
   * it under the terms of the GNU General Public License as published by
@@ -42,9 +42,9 @@
       <head>
         <title><xsl:value-of select="./eml:eml/dataset/title"/></title>
         <link rel="stylesheet" type="text/css"
-              href="{$contextURL}/style/skins/{$qformat}/{$qformat}.css"></link>
+              href="{$stylePath}/{$qformat}/{$qformat}.css"></link>
         <script language="Javascript" type="text/JavaScript"
-                src="{$contextURL}/style/skins/{$qformat}/{$qformat}.js"></script>
+                src="{$stylePath}/{$qformat}/{$qformat}.js"></script>
         <script language="Javascript"
                 type="text/JavaScript"
                 src="{$contextURL}/style/common/branding.js"></script>
