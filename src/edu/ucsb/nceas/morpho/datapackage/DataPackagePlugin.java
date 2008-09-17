@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: connolly $'
- *     '$Date: 2005-07-22 16:35:39 $'
- * '$Revision: 1.105 $'
+ *   '$Author: tao $'
+ *     '$Date: 2008-09-17 17:41:12 $'
+ * '$Revision: 1.106 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1071,7 +1071,15 @@ public class DataPackagePlugin
     AbstractDataPackage adp = DataPackageFactory.getDataPackage(docid, false, true);
                       // metacat flag is false; local is true
     AbstractDataPackage newadp = adp.upload(docid, updateIds);
-    return newadp.getPackageId();
+    if (newadp != null)
+    {
+         return newadp.getPackageId();
+    }
+    else
+    {
+    	return null;
+    }
+    
   }
 
   /**
@@ -1079,13 +1087,21 @@ public class DataPackagePlugin
    * DataPackageInterface.METACAT
    * @param docid the id of the package to download
    */
-  public void download(String docid)
+  public String download(String docid)
   {
 //    DataPackage dp = new DataPackage(DataPackageInterface.METACAT, docid, null, morpho, true);
 //    dp.download();
     AbstractDataPackage adp = DataPackageFactory.getDataPackage(docid, true, false);
                       // metacat flag is true; local is false
     AbstractDataPackage newadp = adp.download(docid);
+    if (newadp != null)
+    {
+         return newadp.getPackageId();
+    }
+    else
+    {
+    	return null;
+    }
   }
 
 
