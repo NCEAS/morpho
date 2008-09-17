@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2004-03-27 21:42:06 $'
- * '$Revision: 1.22 $'
+ *   '$Author: tao $'
+ *     '$Date: 2008-09-17 17:39:43 $'
+ * '$Revision: 1.23 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -112,8 +112,9 @@ public interface DataPackageInterface
    * This method is called to download a datapackage from metacat to the local
    * disk.
    * @param docid the docid of the package to download
+   * @return the new docid (if the docid conflict happens, the new docid may different to the old one)
    */
-  public void download(String docid);
+  public String download(String docid);
 
   /**
    * This method is called to delete a datapackage from metacat or the local
