@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2008-08-27 22:40:41 $'
- * '$Revision: 1.123 $'
+ *     '$Date: 2008-09-17 01:29:54 $'
+ * '$Revision: 1.124 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -256,6 +256,8 @@ public abstract class AbstractDataPackage extends MetadataObject
   private boolean serializeMetacatSuccess = false;
   private boolean identifierChangedInMetacatSerialization = false;
   private boolean identifierChangedInLocalSerialization = false;
+  private boolean dataIDChanged = false;
+  private boolean packageIDChanged = false;
 
   /**
    * This abstract method turns the datapackage into a form (e.g. string) that
@@ -4070,6 +4072,42 @@ public abstract class AbstractDataPackage extends MetadataObject
 	  public boolean getIndentifierChangedInLocalSeriaalization()
 	  {
 		  return identifierChangedInLocalSerialization;
+	  }
+	  
+	  /**
+	   * Gets the value of dataIDChanged
+	   * @return
+	   */
+	  public boolean getDataIDChanged()
+	  {
+		  return this.dataIDChanged;
+	  }
+	  
+	  /**
+	   * Sets the value of dataIDChanged
+	   * @param changed
+	   */
+	  public void setDataIDChanged(boolean changed)
+	  {
+		  this.dataIDChanged = changed;
+	  }
+	  
+	  /**
+	   * Gets the value of packageIDChanged
+	   * @return
+	   */
+	  public boolean getPackageIDChanged()
+	  {
+		  return this.packageIDChanged;
+	  }
+	  
+	  /**
+	   * Sets the value of package id changed.
+	   * @param changed
+	   */
+	  public void setPackageIDChanged(boolean changed)
+	  {
+		  this.packageIDChanged = changed;
 	  }
 }
 
