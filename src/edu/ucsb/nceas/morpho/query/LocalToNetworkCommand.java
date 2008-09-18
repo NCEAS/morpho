@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2008-09-18 01:17:41 $'
- * '$Revision: 1.12 $'
+ *     '$Date: 2008-09-18 18:24:33 $'
+ * '$Revision: 1.13 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -173,7 +173,7 @@ public class LocalToNetworkCommand implements Command
               {
             	  // create a local copy for the new document.
             	  //dataPackage.download(metacatDocid);
-            	  JOptionPane.showMessageDialog(null, ""+selectDocId+ " exists in local system and morpho assigns new docid "+
+            	  JOptionPane.showMessageDialog(null, ""+selectDocId+ " exists in metacat and morpho assigns new docid "+
             			  metacatDocid+ " for it.", "Information",
                           JOptionPane.INFORMATION_MESSAGE);
               }
@@ -283,7 +283,7 @@ public class LocalToNetworkCommand implements Command
           String location = DataPackageInterface.BOTH;
           if (docid != null && !docid.equals(selectDocId))
           {
-          	location = DataPackageInterface.LOCAL;
+          	location = DataPackageInterface.METACAT;
           }
           dataPackage.openDataPackage(location, docid, null, null, null);
           
