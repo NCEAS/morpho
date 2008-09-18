@@ -5,9 +5,9 @@
  *    Authors: @tao@
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2004-04-13 21:10:44 $'
- * '$Revision: 1.11 $'
+ *   '$Author: tao $'
+ *     '$Date: 2008-09-18 01:17:41 $'
+ * '$Revision: 1.12 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -168,7 +168,15 @@ public class LocalToNetworkCommand implements Command
             Log.debug(20, "Uploading package.");
             try
             {
-              dataPackage.upload(selectDocId, false);
+              String metacatDocid = dataPackage.upload(selectDocId, false);
+              if (metacatDocid != null && !metacatDocid.equals(selectDocId))
+              {
+            	  // create a local copy for the new document.
+            	  //dataPackage.download(metacatDocid);
+            	  JOptionPane.showMessageDialog(null, ""+selectDocId+ " exists in local system and morpho assigns new docid "+
+            			  metacatDocid+ " for it.", "Information",
+                          JOptionPane.INFORMATION_MESSAGE);
+              }
               refreshFlag = true;
               
               if ( comeFromOpenDialog || (morphoFrameType != null &&
@@ -181,7 +189,7 @@ public class LocalToNetworkCommand implements Command
                      morphoFrameType.equals(morphoFrame.DATAPACKAGEFRAME))
               {
                 // for data package frame
-                refreshDataPackageFrame();
+                refreshDataPackageFrame(metacatDocid);
               }
             }
             catch(MetacatUploadException mue)
@@ -223,8 +231,16 @@ public class LocalToNetworkCommand implements Command
                 {
                   // a new id or orignal id will be returned.
                   Log.debug(30, "the docid before upload: "+selectDocId);
-                  selectDocId = dataPackage.upload(selectDocId, true);
-                  Log.debug(30, "docid after upload: "+selectDocId);
+                  String docid = dataPackage.upload(selectDocId, true);
+                  Log.debug(30, "docid after upload: "+docid);
+                  if (docid != null && !docid.equals(selectDocId))
+                 {
+                	  // create a local copy for the new document.
+                	  //dataPackage.download(metacatDocid);
+            	      JOptionPane.showMessageDialog(null, ""+selectDocId+ " exists in local system and morpho assigns new docid "+
+            			  docid+ " for it.", "Information",
+                          JOptionPane.INFORMATION_MESSAGE);
+                  };
                   refreshFlag = true;
                   // for search result 
                   if ( comeFromOpenDialog || (morphoFrameType != null &&
@@ -237,7 +253,7 @@ public class LocalToNetworkCommand implements Command
                   {
                    
                     // for data package frame
-                    refreshDataPackageFrame();
+                    refreshDataPackageFrame(docid);
                   }
                 }
                 catch(MetacatUploadException mue2)
@@ -261,11 +277,15 @@ public class LocalToNetworkCommand implements Command
         /*
          * Method to refresh a open datackage 
          */
-        private void refreshDataPackageFrame()
+        private void refreshDataPackageFrame(String docid)
         {
           // the location of data package after synchronize
           String location = DataPackageInterface.BOTH;
-          dataPackage.openDataPackage(location, selectDocId, null, null, null);
+          if (docid != null && !docid.equals(selectDocId))
+          {
+          	location = DataPackageInterface.LOCAL;
+          }
+          dataPackage.openDataPackage(location, docid, null, null, null);
           
           // Distroy old frame
           UIController.getInstance().removeWindow(frame);
