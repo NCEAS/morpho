@@ -5,9 +5,9 @@
  *    Authors: @tao@
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2003-12-11 21:23:41 $'
- * '$Revision: 1.10 $'
+ *   '$Author: tao $'
+ *     '$Date: 2008-09-18 00:28:06 $'
+ * '$Revision: 1.11 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -161,7 +161,14 @@ public class NetworkToLocalCommand implements Command
           
           //download the current selection to the local disk
           Log.debug(30, "Downloading package. (id: "+docid);
-          dataPackage.download(docid);
+          // since docid may confict, the local docid may be different to the docid in metacat.
+          String localDocid = dataPackage.download(docid);
+          if (localDocid != null && !localDocid.equals(selectDocId))
+          {
+        	  JOptionPane.showMessageDialog(null, ""+selectDocId+ " exists in local system and morpho assigns new docid "+
+        			  localDocid+ " for it.", "Information",
+                      JOptionPane.INFORMATION_MESSAGE);
+          }
           refreshFlag = true;
           //refresh.execute(null);
           if ( comeFromOpenDialog || (morphoFrameType != null &&
@@ -173,7 +180,7 @@ public class NetworkToLocalCommand implements Command
                      morphoFrameType.equals(morphoFrame.DATAPACKAGEFRAME))
          {
            // for data package frame
-           refreshDataPackageFrame();
+           refreshDataPackageFrame(localDocid);
          }
           
           return null;  
@@ -183,15 +190,21 @@ public class NetworkToLocalCommand implements Command
         /*
          * Method to refresh a open datackage 
          */
-        private void refreshDataPackageFrame()
+        private void refreshDataPackageFrame(String docid)
         {
           
           // the location of data package after synchronize
-          String location = DataPackageInterface.BOTH;
-          dataPackage.openDataPackage(location, selectDocId, null, null, null);
-          // Distroy old frame
-          UIController.getInstance().removeWindow(frame);
-          frame.dispose();
+        	String location = DataPackageInterface.BOTH;
+            if (docid != null && !docid.equals(selectDocId))
+            {
+            	location = DataPackageInterface.LOCAL;
+            }
+            dataPackage.openDataPackage(location, docid, null, null, null);
+            // Distroy old frame
+            UIController.getInstance().removeWindow(frame);
+            frame.dispose();
+            
+         
         }
 
         //Runs on the event-dispatching thread.
