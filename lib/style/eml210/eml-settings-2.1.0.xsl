@@ -7,8 +7,8 @@
   *  For Details: http://www.nceas.ucsb.edu/
   *
   *   '$Author: tao $'
-  *     '$Date: 2008-08-28 23:00:02 $'
-  * '$Revision: 1.1 $'
+  *     '$Date: 2008-09-19 00:33:06 $'
+  * '$Revision: 1.2 $'
   *
   * This program is free software; you can redistribute it and/or modify
   * it under the terms of the GNU General Public License as published by
@@ -69,7 +69,7 @@
     *   To show the links for the Entities in the dataset display module.
     */
 -->
-  <xsl:param name="withEntityLinks">1</xsl:param>
+  <xsl:param name="withEntityLinks">0</xsl:param>
 
 
 <!--
@@ -77,7 +77,7 @@
     *   To show the link for Additional Metadata in the dataset display module.
     */
 -->
-  <xsl:param name="withAdditionalMetadataLink">1</xsl:param>
+  <xsl:param name="withAdditionalMetadataLink">0</xsl:param>
 
 
 <!--
@@ -85,7 +85,7 @@
     *   To show the link for the Original XML in the dataset display module.
     */
 -->
-  <xsl:param name="withOriginalXMLLink">1</xsl:param>
+  <xsl:param name="withOriginalXMLLink">0</xsl:param>
 
 
 <!--
@@ -93,21 +93,21 @@
     *   To show any html links (emails and webpage).
     */
 -->
-  <xsl:param name="withHTMLLinks">1</xsl:param>
+  <xsl:param name="withHTMLLinks">0</xsl:param>
 
 <!--
     /**
     *   To show the Attributes table in the entity display.
     */
 -->
-  <xsl:param name="withAttributes">1</xsl:param>
+  <xsl:param name="withAttributes">0</xsl:param>
 
 <!--
     /**
     *   To insert templates where header and footer are defined.
     */
 -->
-  <xsl:param name="insertTemplate">1</xsl:param>
+  <xsl:param name="insertTemplate">0</xsl:param>
 
 
 <!--
