@@ -7,8 +7,8 @@
   *  For Details: http://www.nceas.ucsb.edu/
   *
   *   '$Author: tao $'
-  *     '$Date: 2008-08-28 23:00:02 $'
-  * '$Revision: 1.1 $'
+  *     '$Date: 2008-09-19 23:00:26 $'
+  * '$Revision: 1.2 $'
   *
   * This program is free software; you can redistribute it and/or modify
   * it under the terms of the GNU General Public License as published by
@@ -43,7 +43,7 @@
       <xsl:param name="datatablesubHeaderStyle"/>
       <xsl:param name="docid"/>
       <xsl:param name="entityindex"/>
-      <table xsl:use-attribute-sets="cellspacing" class="{$tabledefaultStyle}" width="850px">
+      <table xsl:use-attribute-sets="cellspacing" class="{$tabledefaultStyle}" width="100%">
         <xsl:choose>
          <xsl:when test="references!=''">
           <xsl:variable name="ref_id" select="references"/>
@@ -233,7 +233,7 @@
         <xsl:text>Attribute(s) Info:</xsl:text>
     </td></tr>
     <tr><td colspan="2"> 
-		    <div style="overflow:auto; height:100%; width:850px;">
+		    <div style="overflow:auto; height:100%; width:100%;">
          <xsl:call-template name="attributelist">
            <xsl:with-param name="docid" select="$docid"/>
            <xsl:with-param name="entitytype" select="$entitytype"/>
