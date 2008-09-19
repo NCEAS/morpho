@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2008-09-17 17:41:12 $'
- * '$Revision: 1.106 $'
+ *     '$Date: 2008-09-19 00:32:29 $'
+ * '$Revision: 1.107 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1015,7 +1015,15 @@ public class DataPackagePlugin
 
     dvcp.setSize(packageWindow.getDefaultContentAreaSize());
     dvcp.setPreferredSize(packageWindow.getDefaultContentAreaSize());
-//    dvcp.setVisible(true);
+    dvcp.setVisible(true);
+    try
+    {
+        Thread.sleep(1000);
+    }
+    catch(Exception e)
+    {
+    	Log.debug(30,"Couldn't sleep the thread");
+    }
     packageWindow.setMainContentPane(dvcp);
 
     // Broadcast stored event int dvcp
