@@ -7,8 +7,8 @@
   *  For Details: http://www.nceas.ucsb.edu/
   *
   *   '$Author: tao $'
-  *     '$Date: 2008-08-28 23:00:02 $'
-  * '$Revision: 1.1 $'
+  *     '$Date: 2008-09-19 00:33:43 $'
+  * '$Revision: 1.2 $'
   *
   * This program is free software; you can redistribute it and/or modify
   * it under the terms of the GNU General Public License as published by
@@ -72,14 +72,14 @@
 				    </xsl:choose>
                 </span>
 				
-	        	<xsl:choose>
+<!--	        	<xsl:choose>
 	        		<xsl:when test="boolean($registryurl)">
 	        			(<a> <xsl:attribute name="href"><xsl:value-of select="$tripleURI"/><xsl:value-of select="$docid"/></xsl:attribute> <xsl:value-of select="$registryurl"/>/metacat/<xsl:value-of select="../@packageId"/>/<xsl:value-of select="$qformat"/></a>).
 	        		</xsl:when>
 	        		<xsl:otherwise>
 	        			(<a> <xsl:attribute name="href"><xsl:value-of select="$tripleURI"/><xsl:value-of select="$docid"/></xsl:attribute> <xsl:value-of select="$contextURL"/>/metacat/<xsl:value-of select="../@packageId"/>/<xsl:value-of select="$qformat"/></a>).				
 	        		</xsl:otherwise>
-	        	</xsl:choose>
+	        	</xsl:choose> -->
 				<br />
         </td></tr>
    </xsl:template>
