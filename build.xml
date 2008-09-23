@@ -6,7 +6,7 @@
   *    Copyright: 2000 Regents of the University of California and the
   *               National Center for Ecological Analysis and Synthesis
   *  For Details: http://www.nceas.ucsb.edu/
-  *    File Info: '$Id: build.xml,v 1.113 2008-06-24 23:42:28 leinfelder Exp $'
+  *    File Info: '$Id: build.xml,v 1.114 2008-09-23 01:38:53 tao Exp $'
   *
   *  Build file for the Ant cross-platform build system for metacat
   *  See http://jakarta.apache.org for details on Ant
@@ -180,6 +180,9 @@
 
    </target>
    <target name="transform" depends="prepare">
+      <property name="input" value="tests/testfiles/eml201withadditionalMetacat.xml" />
+     <property name="output" value="eml210" />
+     <property name="stylesheetname" value="eml201to210.xsl" />
       <xslt in="${input}" out="${output}" style="${xsldir}/${stylesheetname}">
       <param name="filename" expression="${input}"/>
        <outputproperty name="method" value="xml"/>
