@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2008-07-31 00:55:43 $'
- * '$Revision: 1.26 $'
+ *     '$Date: 2008-09-23 23:38:47 $'
+ * '$Revision: 1.27 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -49,6 +49,10 @@ import java.awt.FlowLayout;
 import java.awt.Frame;
 import java.awt.Insets;
 import java.awt.Window;
+import java.io.CharArrayWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.StringReader;
 import java.util.Vector;
 
 
@@ -59,12 +63,32 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JCheckBox;
 import javax.swing.JTextField;
 import javax.swing.JTextArea;
 import javax.swing.WindowConstants;
 import javax.swing.SwingConstants;
+import javax.xml.transform.Result;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMResult;
+import javax.xml.transform.sax.SAXResult;
+import javax.xml.transform.sax.SAXSource;
+import javax.xml.transform.sax.SAXTransformerFactory;
+import javax.xml.transform.sax.TransformerHandler;
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.stream.StreamSource;
+
+import org.apache.xalan.templates.OutputProperties;
+import org.w3c.dom.Node;
+import org.xml.sax.InputSource;
+import org.xml.sax.XMLReader;
+import org.xml.sax.helpers.XMLReaderFactory;
+
 import edu.ucsb.nceas.morpho.util.XMLUtil;
 
 /**
@@ -310,24 +334,30 @@ public class SaveDialog extends JDialog
       try {
           if (upgradeEml.isSelected()) {
               // change the XML
-              ((EML200DataPackage)adp).setEMLVersion(EML200DataPackage.LATEST_EML_VER);
-
-              /*
-              Log.debug(15, "Reloading ADP with its own XML:\n" +
-                        XMLUtil.getDOMTreeAsString(
-                                adp.getMetadataNode().getOwnerDocument())
-                                .substring(0, 512) + ".............");
-              */
-
-              // create a new data package instance with the altered XML
-              adp = (EML200DataPackage)DataPackageFactory.getDataPackage(
-                      new java.io.StringReader(
-                              XMLUtil.getDOMTreeAsString(
-                                  adp.getMetadataNode().cloneNode(true).getOwnerDocument())),
-                      false, true);
+             //((EML200DataPackage)adp).setEMLVersion(EML200DataPackage.LATEST_EML_VER);
+        	  String newString = doTransform("./xsl/eml201to210.xsl", XMLUtil.getDOMTreeAsString(
+                      adp.getMetadataNode().getOwnerDocument())) ;
+              if (newString != null)
+              {
+	              /*Log.debug(15, "Reloading ADP with its own XML:\n" +
+	                        XMLUtil.getDOMTreeAsString(
+	                                newNode.getOwnerDocument())
+	                                .substring(0, 512) + ".............");*/
+	              
+	
+	              // create a new data package instance with the altered XML
+	              adp = (EML200DataPackage)DataPackageFactory.getDataPackage(
+	                      new java.io.StringReader(newString), false, true);
+              }
+              else
+              {
+            	  JOptionPane.showMessageDialog(null, "Morpho couldn't transform it to the newest version of EML.", "Information",
+                          JOptionPane.INFORMATION_MESSAGE);
+              }
 
           }
       } catch (Exception ex) {
+    	  ex.printStackTrace();
           Log.debug(30, "Problem setting new EML version: " + ex.toString());
       }
 
@@ -413,6 +443,60 @@ public class SaveDialog extends JDialog
 	  }
 
 	}
+  
+  /*
+   * Transform old version eml2 document to the newest version of eml2.
+   * The output will be node which contains the new DOMtree. If  something happened,
+   * null will be returned.
+   */
+  private String doTransform(String styleSheetPath, String XMLinput)
+  throws TransformerException, TransformerConfigurationException, Exception{
+	 String output = null;
+	// Instantiate  a TransformerFactory.
+	TransformerFactory tFactory = TransformerFactory.newInstance();
+	//MyURIResolver res = new MyURIResolver();		
+	//tFactory.setURIResolver(res);
+	
+	//System.out.println("==================1 "+XMLinput);
+	// Determine whether the TransformerFactory supports The use uf SAXSource
+	// and SAXResult
+	if (tFactory.getFeature(SAXSource.FEATURE) &&  tFactory.getFeature(DOMResult.FEATURE))
+	{
+		// Cast the TransformerFactory to SAXTransformerFactory.
+		SAXTransformerFactory saxTFactory = ((SAXTransformerFactory) tFactory);
+		// Create a TransformerHandler for  stylesheet.
+	    File f2 = new File(styleSheetPath);
+		TransformerHandler tHandler2 = saxTFactory.newTransformerHandler(new StreamSource(f2));
+		Transformer lastTransformer = tHandler2.getTransformer();
+		lastTransformer.setOutputProperty(OutputProperties.S_KEY_INDENT_AMOUNT, EMLConvert.indentAmount);
+		
+		// Create an XMLReader.
+		XMLReader reader = XMLReaderFactory.createXMLReader();
+	   	reader.setContentHandler(tHandler2);
+		reader.setProperty("http://xml.org/sax/properties/lexical-handler", tHandler2);
+		/*File outfile = new File("example");
+		FileWriter writer = new FileWriter(outfile);
+		Result result = new StreamResult(writer);*/
+		CharArrayWriter outputWriter  = new CharArrayWriter();
+		Result result = new StreamResult(outputWriter);
+		//DOMResult result = new DOMResult();
+		tHandler2.setResult(result);
+		// Parse the XML input document. The input ContentHandler and output ContentHandler
+		// work in separate threads to optimize performance.	
+		reader.parse(new InputSource(new StringReader(XMLinput)));
+		//outputNode = result.getNode();
+		output = outputWriter.toString();
+		//System.out.println("==================6 "+output);
+	
+	}
+	else
+	{
+		 JOptionPane.showMessageDialog(null, "The parser doesn't support SAXsource or SAXresult or DOMresult featurs. \n"+
+				 "It couldn't be save to newest EML document ", "Information",
+                 JOptionPane.INFORMATION_MESSAGE);
+	}
+	return output;
+  }
 
 
 }//ExportDialog
