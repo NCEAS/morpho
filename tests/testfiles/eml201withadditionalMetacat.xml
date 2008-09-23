@@ -21,4 +21,10 @@
     <describes>1219880396347</describes>
     <text><b>text</b><a>a</a></text>
  </additionalMetadata>
+ <additionalMetadata>
+    <text><b>text</b><a>a</a></text>
+ </additionalMetadata>
+  <additionalMetadata>
+    <text><additionalMetadata><c>hello</c></additionalMetadata></text>
+ </additionalMetadata>
  </eml:eml>
