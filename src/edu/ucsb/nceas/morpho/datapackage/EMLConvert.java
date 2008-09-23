@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: sgarg $'
- *     '$Date: 2005-07-21 17:34:38 $'
- * '$Revision: 1.7 $'
+ *   '$Author: tao $'
+ *     '$Date: 2008-09-23 23:28:37 $'
+ * '$Revision: 1.8 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -86,7 +86,7 @@ public class EMLConvert
   static String path = "";
   static String fname = "";
 
-  private static String indentAmount = "2";
+  public static String indentAmount = "2";
 
   public static void setIndentAmount(String indentAmount) {
     EMLConvert.indentAmount = indentAmount;
