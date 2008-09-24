@@ -20,7 +20,7 @@
     	         <xsl:apply-templates mode="copy-no-ns" select="."/>
     	     </xsl:when>
     	     <xsl:when test="name()='additionalMetadata'">
-    	       <addtionalMetadata>
+    	       <additionalMetadata>
     	             <xsl:for-each select="*">
     	           	           <xsl:choose>
     	           	               <xsl:when test="name()='describes'">
@@ -33,7 +33,7 @@
     	           	                </xsl:otherwise>
     	           	           </xsl:choose>
     	           	  </xsl:for-each>
-    	        </addtionalMetadata>
+    	        </additionalMetadata>
     	     </xsl:when>
     	   </xsl:choose>
     	 </xsl:for-each>
