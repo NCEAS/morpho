@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2008-09-17 01:29:54 $'
- * '$Revision: 1.124 $'
+ *     '$Date: 2008-09-25 01:08:48 $'
+ * '$Revision: 1.125 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -223,7 +223,7 @@ public abstract class AbstractDataPackage extends MetadataObject
   protected FileSystemDataStore fileSysDataStore;
   protected MetacatDataStore metacatDataStore;
 
-	private static Map  customUnitDictionaryUnitsCacheMap = new HashMap();
+	protected static Map  customUnitDictionaryUnitsCacheMap = new HashMap();
 	private static String[] customUnitDictionaryUnitTypesArray = new String[0];
 
   // added by D Higgins on 29 Aug 2005
@@ -1817,7 +1817,7 @@ public abstract class AbstractDataPackage extends MetadataObject
 	}
 
 
-	private void extractUnits(OrderedMap map, String xPath) {
+	protected void extractUnits(OrderedMap map, String xPath) {
 
 		xPath += "/unitList[1]";
 		int cnt = 1;
