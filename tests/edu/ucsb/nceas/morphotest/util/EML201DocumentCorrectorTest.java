@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2008-09-25 19:16:21 $'
- * '$Revision: 1.2 $'
+ *     '$Date: 2008-09-25 22:56:13 $'
+ * '$Revision: 1.3 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -44,20 +44,27 @@ public class EML201DocumentCorrectorTest extends TestCase
 	private static Morpho morpho;
 	private static ConfigXML config = null;
 	private static String docid="tao.12104.1";
-	private static String id ="945690312.1";
-	private static String scope = "tao";
-	private static String profile_name = "tao";
 	static {
         try {
             File configDir = new File(ConfigXML.getConfigDirectory());
             File configFile = new File(configDir, "config.xml");
             config = new ConfigXML(configFile.getAbsolutePath());
-            morpho = new Morpho(config);
-            String profileDirName = config.getConfigDirectory() + File.separator +
-               config.get("profile_directory", 0) + File.separator + profile_name+"/data";
-            String datadir = profileDirName + File.separator +scope;
-            copyFileToDataDir(datadir+"/"+id);
-            docid = scope+"."+id;
+            File currentProfileLocation = new File(configDir, "currentprofile.xml");
+            ConfigXML currentProfileConfig = new ConfigXML(currentProfileLocation.getAbsolutePath());
+            String currentProfileName = currentProfileConfig.get("current_profile", 0);
+            String profileDirName = config.getConfigDirectory()+
+    		File.separator+config.get("profile_directory", 0)+
+    		File.separator+currentProfileName;
+            //System.out.println("the profile dir is "+profileDirName);
+            File profileLocation = new File(profileDirName, currentProfileName+".xml");
+            ConfigXML profile = new ConfigXML(profileLocation.getAbsolutePath());
+            String lastId = profile.get("lastId", 0);
+            String scope = profile.get("scope", 0);
+            String datadirName = profile.get("datadir", 0);
+            String datadir = profileDirName+File.separator+datadirName+File.separator+scope;
+            //System.out.println("the data dir is ======== "+datadir);
+            copyFileToDataDir(datadir+File.separator+lastId+".1");
+            docid = scope+"."+lastId+".1";
         } catch (IOException ioe) {
           fail("Test failed, couldn't create config."+ioe.getMessage());
         }
