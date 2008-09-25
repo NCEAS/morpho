@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2002-09-28 00:26:50 $'
- * '$Revision: 1.2 $'
+ *   '$Author: tao $'
+ *     '$Date: 2008-09-25 18:11:26 $'
+ * '$Revision: 1.3 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,7 +29,7 @@ package edu.ucsb.nceas.morphotest.util;
 import edu.ucsb.nceas.morpho.util.StateChangeEvent;
 import edu.ucsb.nceas.morpho.util.StateChangeListener;
 import edu.ucsb.nceas.morpho.util.StateChangeMonitor;
-
+import java.awt.Label;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestResult;
@@ -93,7 +93,8 @@ public class StateChangeMonitorTest extends TestCase
    */
   public void testListener()
   {
-        StateChangeEvent event = new StateChangeEvent(null, state); 
+	    Label label = new Label("test");
+        StateChangeEvent event = new StateChangeEvent(label, state); 
         assertTrue(event != null);
 
         ListenerAdapter listener = new ListenerAdapter();
@@ -107,10 +108,10 @@ public class StateChangeMonitorTest extends TestCase
         monitor.notifyStateChange(event);
 
         assertTrue(listener.lastState.equals(state));
-        assertTrue(listener.lastSource == this);
+        assertTrue(listener.lastSource == event.getSource());
 
         // Post an event for which we are not listening
-        StateChangeEvent event2 = new StateChangeEvent(null, state2); 
+        StateChangeEvent event2 = new StateChangeEvent(label, state2); 
         assertTrue(event2 != null);
 
         monitor.notifyStateChange(event2);
@@ -121,14 +122,14 @@ public class StateChangeMonitorTest extends TestCase
         monitor.notifyStateChange(event2);
           
         assertTrue(listener.lastState.equals(state2));
-        assertTrue(listener.lastSource == this);
+        assertTrue(listener.lastSource == event2.getSource());
 
         // Now remove the state listener and post it, we shouldn't be notified
         monitor.removeStateChangeListener(state, (StateChangeListener)listener);
         monitor.notifyStateChange(event);
 
         assertTrue(listener.lastState.equals(state2));
-        assertTrue(listener.lastSource == this);
+        assertTrue(listener.lastSource == event.getSource());
   }
 
   /**
