@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2008-06-25 23:38:10 $'
- * '$Revision: 1.2 $'
+ *     '$Date: 2008-09-25 21:30:14 $'
+ * '$Revision: 1.3 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -87,7 +87,7 @@ public class EML201DocumentCorrector {
     			  removeExtralAttributes(eml2Package);
     			  // save the new  package to old id.
     			  //System.out.println("after calling removing");
-    			  eml2Package.serialize(AbstractDataPackage.LOCAL);
+    			  eml2Package.serializeToLocalWithOverwrite();
     			  //System.out.println("saving package");
     		  }
     			  
