@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2008-08-26 22:31:48 $'
- * '$Revision: 1.42 $'
+ *     '$Date: 2008-09-25 01:05:29 $'
+ * '$Revision: 1.43 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -904,7 +904,7 @@ class UnitsPickList extends JPanel {
       return;
 		customUnitDialog.setVisible(false);
 		customPages.add(customPage);
-		String xPath = "/additionalMetadata";
+		String xPath = "/additionalMetadata/metadata";
     OrderedMap map = customPage.getPageData(xPath);
 
     String type = getUnitTypeOfNewUnit(map, xPath);
@@ -966,9 +966,9 @@ class UnitsPickList extends JPanel {
 		}
 		Node check1 = adp.appendAdditionalMetadata(metadataRoot);
 		if (check1 != null) {
-			Log.debug(45, "added new addt metadata details to package...");
+			Log.debug(30, "====================added new addt metadata details to package...");
 		} else {
-			Log.debug(45, "cldnt added new metadata details to package...");
+			Log.debug(30, "cldnt added new metadata details to package...");
 		}
 
 	}
