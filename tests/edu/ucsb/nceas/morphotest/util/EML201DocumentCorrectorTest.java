@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2008-06-25 23:39:01 $'
- * '$Revision: 1.1 $'
+ *     '$Date: 2008-09-25 19:16:21 $'
+ * '$Revision: 1.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,6 +26,8 @@
 package edu.ucsb.nceas.morphotest.util;
 
 import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 
 import edu.ucsb.nceas.morpho.Morpho;
@@ -41,15 +43,23 @@ public class EML201DocumentCorrectorTest extends TestCase
 	
 	private static Morpho morpho;
 	private static ConfigXML config = null;
-	private String docid="tao.12104.1";
+	private static String docid="tao.12104.1";
+	private static String id ="945690312.1";
+	private static String scope = "tao";
+	private static String profile_name = "tao";
 	static {
         try {
             File configDir = new File(ConfigXML.getConfigDirectory());
             File configFile = new File(configDir, "config.xml");
             config = new ConfigXML(configFile.getAbsolutePath());
             morpho = new Morpho(config);
+            String profileDirName = config.getConfigDirectory() + File.separator +
+               config.get("profile_directory", 0) + File.separator + profile_name+"/data";
+            String datadir = profileDirName + File.separator +scope;
+            copyFileToDataDir(datadir+"/"+id);
+            docid = scope+"."+id;
         } catch (IOException ioe) {
-          fail("Test failed, couldn't create config.");
+          fail("Test failed, couldn't create config."+ioe.getMessage());
         }
 	}
 
@@ -95,6 +105,30 @@ public class EML201DocumentCorrectorTest extends TestCase
         	{
         		fail("Failed to correct the document because of the exception: " + e.getMessage());
         	}
+        }
+        
+        /*
+         * Copy the incorrect eml201 file from test file to data file dir
+         */
+        static private void copyFileToDataDir(String destinationFile) throws IOException
+        {
+        	 File source = new File("./tests/testfiles/eml201-reference-system.xml");
+        	 FileReader reader = new FileReader(source);
+        	 File destination = new File(destinationFile);
+        	 if (destination.exists())
+        	 {
+        		 destination.delete();
+        	 }
+        	 FileWriter writer = new FileWriter(destination);
+        	 char[] cbuf = new char[1024];
+        	  int size = reader.read(cbuf);
+        	 while (size != -1)
+        	 {
+        		 writer.write(cbuf, 0, size);
+        		 size = reader.read(cbuf);
+        	 }
+        	 writer.close();
+        	 reader.close();
         }
 
 }
