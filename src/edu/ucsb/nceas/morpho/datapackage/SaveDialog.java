@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2008-09-23 23:38:47 $'
- * '$Revision: 1.27 $'
+ *     '$Date: 2008-09-25 01:13:43 $'
+ * '$Revision: 1.28 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -348,6 +348,7 @@ public class SaveDialog extends JDialog
 	              // create a new data package instance with the altered XML
 	              adp = (EML200DataPackage)DataPackageFactory.getDataPackage(
 	                      new java.io.StringReader(newString), false, true);
+                  ((EML200DataPackage)adp).setEMLVersion(EML200DataPackage.LATEST_EML_VER);
               }
               else
               {
@@ -446,7 +447,7 @@ public class SaveDialog extends JDialog
   
   /*
    * Transform old version eml2 document to the newest version of eml2.
-   * The output will be node which contains the new DOMtree. If  something happened,
+   * The output will be string of the new doc. If  something happened,
    * null will be returned.
    */
   private String doTransform(String styleSheetPath, String XMLinput)
@@ -460,7 +461,7 @@ public class SaveDialog extends JDialog
 	//System.out.println("==================1 "+XMLinput);
 	// Determine whether the TransformerFactory supports The use uf SAXSource
 	// and SAXResult
-	if (tFactory.getFeature(SAXSource.FEATURE) &&  tFactory.getFeature(DOMResult.FEATURE))
+	if (tFactory.getFeature(SAXSource.FEATURE) &&  tFactory.getFeature(StreamResult.FEATURE))
 	{
 		// Cast the TransformerFactory to SAXTransformerFactory.
 		SAXTransformerFactory saxTFactory = ((SAXTransformerFactory) tFactory);
