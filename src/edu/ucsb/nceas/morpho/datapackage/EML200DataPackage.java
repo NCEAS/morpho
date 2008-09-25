@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2008-08-28 23:30:59 $'
- * '$Revision: 1.56 $'
+ *     '$Date: 2008-09-25 01:11:52 $'
+ * '$Revision: 1.57 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,6 +33,7 @@ import edu.ucsb.nceas.morpho.datastore.MetacatDataStore;
 import edu.ucsb.nceas.morpho.datastore.MetacatUploadException;
 import edu.ucsb.nceas.morpho.framework.DocidIncreaseDialog;
 import edu.ucsb.nceas.morpho.util.Log;
+import edu.ucsb.nceas.utilities.OrderedMap;
 import edu.ucsb.nceas.utilities.XMLUtilities;
 import edu.ucsb.nceas.morpho.util.XMLUtil;
 import edu.ucsb.nceas.morpho.util.XMLErrorHandler;
@@ -42,6 +43,7 @@ import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.StringReader;
 import java.util.Enumeration;
+import java.util.Iterator;
 import java.util.Vector;
 import java.util.List;
 import java.util.ArrayList;
@@ -67,6 +69,8 @@ public  class EML200DataPackage extends AbstractDataPackage
 {
 
   public static final String LATEST_EML_VER = "eml-2.1.0";
+  public static final String EML200NAMESPACE = "eml://ecoinformatics.org/eml-2.0.0";
+  public static final String EML201NAMESPACE =  "eml://ecoinformatics.org/eml-2.0.1";
  
 
   // serialize to the indicated location
@@ -432,6 +436,45 @@ public  class EML200DataPackage extends AbstractDataPackage
 //   return getGenericValue("/xpathKeyMap/contextNode[@name='package']/emlVersion");
 //   return getXPathValue("/eml:eml/@xmlns:eml");
   }
+
+//method to load custom units that the user had defined and are stored in the
+	// 'additionalMetadata' subtree
+	public void loadCustomUnits() {
+
+		Document thisDom = getMetadataNode().getOwnerDocument();
+		Node rootNode = thisDom.getDocumentElement();
+		NodeList nodeList = rootNode.getChildNodes();
+		Log.debug(40, "in loadCustom data, initial size = " + this.customUnitDictionaryUnitsCacheMap.keySet().size());
+		for(int i = 0; i < nodeList.getLength(); i++) {
+
+			Node child = nodeList.item(i);
+			if(child.getNodeName().equals("additionalMetadata")) {
+				OrderedMap map = XMLUtilities.getDOMTreeAsXPathMap(child);
+				Log.debug(40, "got Map as - " + map.toString());
+				if (getXMLNamespace() != null && (getXMLNamespace().equals("EML200NAMESPACE") ||
+						getXMLNamespace().equals("EML201NAMESPACE")))
+				{
+					Log.debug(30,"in eml 201 ..... addtionalMetacat unit");
+				    extractUnits(map, "/additionalMetadata");
+				}
+				else
+				{
+					Log.debug(30, "in eml 210 and higher version ..... addtionalMetacat unit");
+					extractUnits(map, "/additionalMetadata/metadata");
+				}
+			}
+		}
+		Log.debug(40, "Extracted units -- \n");
+		Iterator it = customUnitDictionaryUnitsCacheMap.keySet().iterator();
+		while(it.hasNext()) {
+			String key = (String) it.next();
+			String[] arr = (String[])customUnitDictionaryUnitsCacheMap.get(key);
+			Log.debug(40, key);
+			for(int j = 0; j < arr.length; j++)
+				Log.debug(40, "\t" + arr[j]);
+		}
+		Log.debug(40, "End of Extracted units -- \n");
+	}
 
 
   /**
