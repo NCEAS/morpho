@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2008-09-23 23:42:34 $'
- * '$Revision: 1.90 $'
+ *     '$Date: 2008-09-25 23:36:09 $'
+ * '$Revision: 1.91 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1570,7 +1570,10 @@ public class Morpho
     {
         HttpMessage.setCookie(null);
         connected = false;
-        UIController.getInstance().updateAllStatusBars();
+        if (UIController.getInstance()!= null)
+        {
+           UIController.getInstance().updateAllStatusBars();
+        }
         fireConnectionChangedEvent();
     }
 
