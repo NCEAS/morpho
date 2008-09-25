@@ -6,9 +6,9 @@
 *             National Center for Ecological Analysis and Synthesis
 *    Release: @release@
 *
-*   '$Author: sgarg $'
-*     '$Date: 2005-06-30 16:28:16 $'
-* '$Revision: 1.34 $'
+*   '$Author: tao $'
+*     '$Date: 2008-09-25 01:06:47 $'
+* '$Revision: 1.35 $'
 *
 * This program is free software; you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -891,27 +891,7 @@ public class AttributePage extends AbstractUIPage {
 
   }*/
 
-  private OrderedMap extractKeysContaining(OrderedMap map, String xPath) {
-
-    OrderedMap resultMap = new OrderedMap();
-    Iterator it = map.keySet().iterator();
-    while(it.hasNext()) {
-
-      String key = (String) it.next();
-      int idx = key.indexOf(xPath);
-      if(idx >= 0) {
-        String substring = key.substring(idx);
-        // key now starts with "/additionalMetadata"
-        // now, have to remove the subscript of additionalMetadata
-        int idx2 = substring.substring(1).indexOf("/"); // indx of "/" after the predicate
-        String correctKey = "/additionalMetadata" + substring.substring(idx2 + 1);
-        resultMap.put(correctKey, map.get(key));
-        it.remove();
-      }
-    }
-
-    return resultMap;
-  }
+  
 
   private String findMeasurementScale(OrderedMap map) {
 
