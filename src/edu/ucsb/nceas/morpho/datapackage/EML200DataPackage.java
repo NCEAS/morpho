@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2008-09-25 01:11:52 $'
- * '$Revision: 1.57 $'
+ *     '$Date: 2008-09-25 21:21:24 $'
+ * '$Revision: 1.58 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -72,9 +72,28 @@ public  class EML200DataPackage extends AbstractDataPackage
   public static final String EML200NAMESPACE = "eml://ecoinformatics.org/eml-2.0.0";
   public static final String EML201NAMESPACE =  "eml://ecoinformatics.org/eml-2.0.1";
  
-
+  /**
+   * Serialize the DOM tree to file system. This method would not overwrite
+   * document if docids confict.
+   */
+   public void serialize(String location)
+   {
+	   boolean overwrite = false;
+	   serialize(location, overwrite);
+   }
+   
+   /**
+    * Serialize to local withoverwrite
+    *
+    */
+   public void serializeToLocalWithOverwrite()
+   {
+	   boolean overwrite = true;
+	   serialize(AbstractDataPackage.LOCAL, overwrite);
+   }
+   
   // serialize to the indicated location
-  public void serialize(String location)
+  private void serialize(String location, boolean overWrite)
   {
 	 this.setSerializeLocalSuccess(false);
 	 this.setSerializeMetacatSuccess(false);
@@ -150,7 +169,11 @@ public  class EML200DataPackage extends AbstractDataPackage
     		}
     	}
     }
-    
+    // if we allow oeve write, we reset existFlag
+    if (overWrite)
+    {
+    	existFlag = false;
+    }
     //We need to change id to resolve id confilcition
     if (existFlag && updateFlag)
     {
