@@ -4,9 +4,9 @@
  *              National Center for Ecological Analysis and Synthesis
  *    Release: @release@
  *
- *   '$Author: connolly $'
- *     '$Date: 2005-07-22 16:39:07 $'
- * '$Revision: 1.23 $'
+ *   '$Author: tao $'
+ *     '$Date: 2008-09-25 01:07:46 $'
+ * '$Revision: 1.24 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1658,7 +1658,7 @@ public class TextImportWizardEml2 extends JFrame {
 			// additionalMetadata section.
 			String addtHeader = "/eml:eml/additionalMetadata";
 			om.put(addtHeader + "/describes", physicalID);
-			om.put(addtHeader + "/consecutiveDelimiters", "true");
+			om.put(addtHeader + "/metadata/consecutiveDelimiters", "true");
 		}
 
     return om;
