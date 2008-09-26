@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2008-09-26 00:56:50 $'
- * '$Revision: 1.126 $'
+ *     '$Date: 2008-09-26 17:02:00 $'
+ * '$Revision: 1.127 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -3830,15 +3830,21 @@ public abstract class AbstractDataPackage extends MetadataObject
 		int version = ORIGINAL_REVISION;
 		String dataDir = null;
 		//Get Data dir
+		// intialize filesystem datastore if it is null
 		if (this.fileSysDataStore == null)
 		{
-			fileSysDataStore = new FileSystemDataStore(Morpho.thisStaticInstance);
+			this.fileSysDataStore = new FileSystemDataStore(Morpho.thisStaticInstance);
 		}
 		
-		if (fileSysDataStore != null)
+		if (this.fileSysDataStore != null)
 		{
-		     dataDir = fileSysDataStore.getDataDir();
+		     dataDir = this.fileSysDataStore.getDataDir();
 		}
+		else if (this.metacatDataStore != null)
+		{
+			dataDir = this.metacatDataStore.getDataDir();
+		}
+		
 		String targetDocid = getDocIdPart();
 		Log.debug(30, "the data dir is "+dataDir);
 		if (dataDir != null && targetDocid != null)
