@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: sgarg $'
- *     '$Date: 2005-05-27 19:58:41 $'
- * '$Revision: 1.106 $'
+ *   '$Author: tao $'
+ *     '$Date: 2008-10-02 00:46:40 $'
+ * '$Revision: 1.107 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -702,12 +702,18 @@ public class DataViewContainerPanel extends javax.swing.JPanel
           if (changeFlag) {
             dvArray[i].saveCurrentTable(false);
             adp.setLocation("");
+            int entityIndex = dvArray[i].getEntityIndex();
+            adp.setDirtyEntityIndex(entityIndex);
+            Log.debug(30, "The index of dirty entity is "+entityIndex+
+           		 " and the file id is "+dvArray[i].getEntityFileId());
           }
           dvArray[i].setDataChangedFlag(false);
         }
       }  // end of loop over all dvs
     }
   }
+  
+
 
   /**
    *  checks the dvArray for dataViewer and reload unsaved information
