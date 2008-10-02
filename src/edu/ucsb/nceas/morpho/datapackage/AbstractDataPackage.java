@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: leinfelder $'
- *     '$Date: 2008-10-02 00:16:04 $'
- * '$Revision: 1.128 $'
+ *   '$Author: tao $'
+ *     '$Date: 2008-10-02 00:45:49 $'
+ * '$Revision: 1.129 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -235,7 +235,7 @@ public abstract class AbstractDataPackage extends MetadataObject
   private int lastEntityIndex = -1;
   boolean serializeDataAtBothLocation = false;
   private Hashtable original_new_id_map = new Hashtable(); // store the map between new data id and old data id
-
+  private Vector dirtEntityIndexList = new Vector(); // store the index of entity which data file was changed
 
   /*
    *  If the AbstractDataPackage is created by opening an existing document,
@@ -2860,8 +2860,14 @@ public abstract class AbstractDataPackage extends MetadataObject
       Log.debug(30, "Entity array is null!");
       return; // there is no data!
     }
+   
     for (int i = 0; i < entityArray.length; i++) {
       String protocol = getUrlProtocol(i);
+      if (this.dirtEntityIndexList.contains(new Integer(i)));
+      {
+    	  Log.debug(30, "Index "+i+ " is in dirty entity index list and url is "+getUrlInfo(i));
+    	  dirtEntityIndexList.remove(new Integer(i));
+      }
       if(protocol.equals("ecogrid:")) {
         String urlinfo = getUrlInfo(i);
         // urlinfo should be the id in a string
@@ -2878,6 +2884,8 @@ public abstract class AbstractDataPackage extends MetadataObject
         }
       }
     }
+   
+    
     //Log.debug(1, "~~~~~~~~~~~~~~~~~~~~~~set bothLoation false ");
     serializeDataAtBothLocation =false;
   }
@@ -4213,6 +4221,15 @@ public abstract class AbstractDataPackage extends MetadataObject
 	  public void setPackageIDChanged(boolean changed)
 	  {
 		  this.packageIDChanged = changed;
+	  }
+	  
+	  /**
+	   * Sets the index of dirty entity into the package
+	   * @param index
+	   */
+	  public void setDirtyEntityIndex(int index)
+	  {
+		  this.dirtEntityIndexList.add(new Integer(index));
 	  }
 }
 
