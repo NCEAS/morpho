@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: tao $'
- *     '$Date: 2008-09-26 17:02:00 $'
- * '$Revision: 1.127 $'
+ *   '$Author: leinfelder $'
+ *     '$Date: 2008-10-02 00:16:04 $'
+ * '$Revision: 1.128 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -2736,6 +2736,104 @@ public abstract class AbstractDataPackage extends MetadataObject
     }
     catch (Exception w) {
       Log.debug(50, "exception in setting distribution url: " + w.toString());
+    }
+  }
+  
+  /**
+   *  This method returns the access for data for the indexed entity,
+   *  physical object, and distribution object. 
+   */
+  public Node getEntityAccess(int entityIndex, int physicalIndex,
+                                   int distIndex) {
+    Node temp = null;
+    Node[] distNodes = getDistributionArray(entityIndex, physicalIndex);
+    if (distNodes == null) {
+      return temp;
+    }
+    if (distIndex > distNodes.length - 1) {
+      return temp;
+    }
+    Node distNode = distNodes[distIndex];
+    String distXpath = "";
+    try {
+      distXpath = (XMLUtilities.getTextNodeWithXPath(getMetadataPath(),
+          "/xpathKeyMap/contextNode[@name='distribution']/access")).getNodeValue();
+      NodeList aNodes = XPathAPI.selectNodeList(distNode, distXpath);
+      if (aNodes == null) {
+        return temp;
+      }
+      temp = aNodes.item(0);
+    }
+    catch (Exception w) {
+      Log.debug(50, "exception in getting entity access: " + w.toString());
+    }
+    return temp;
+  }
+  
+  /**
+   *  This method sets the access for data for the indexed entity,
+   *  physical object, and distribution object.    */
+  public void setEntityAccess(int entityIndex, int physicalIndex,
+                                 int distIndex, Node accessNode) {
+
+	  Document thisDom = getMetadataNode().getOwnerDocument();
+	  Node newAccessSubtree = thisDom.importNode(accessNode, true); // 'true' imports children
+	    
+	Node[] distNodes = getDistributionArray(entityIndex, physicalIndex);
+    if (distNodes == null) {
+      // this is the case where no distribution info exists; must create the subtree
+      try {
+        String entityPar = (XMLUtilities.getTextNodeWithXPath(getMetadataPath(),
+            "/xpathKeyMap/contextNode[@name='package']/entityParent")).
+            getNodeValue();
+        String physicalXpath = (XMLUtilities.getTextNodeWithXPath(
+            getMetadataPath(),
+            "/xpathKeyMap/contextNode[@name='entity']/physical")).getNodeValue();
+        String distributionXpath = (XMLUtilities.getTextNodeWithXPath(
+            getMetadataPath(),
+            "/xpathKeyMap/contextNode[@name='physical']/distribution")).
+            getNodeValue();
+        String accessxpath = (XMLUtilities.getTextNodeWithXPath(getMetadataPath(),
+            "/xpathKeyMap/contextNode[@name='distribution']/access")).getNodeValue();
+        Node entnode = entityArray[entityIndex].getNode();
+        String distxpath = entityPar + "/" + entnode.getNodeName() + "[" +
+            (entityIndex + 1) + "]/"
+            + physicalXpath + "/" + distributionXpath + "/" + accessxpath;
+        //Log.debug(1,"Distribution path: "+accessxpath);
+        // there is a problem in the above logic for creating a path if all the
+        // entity nodes are not to the same type (e.g. not all are 'dataTable')
+        // the index is incorrect in that case - DFH
+        XMLUtilities.addNodeToDOMTree(getMetadataNode(), distxpath, newAccessSubtree);
+      }
+      catch (Exception w) {
+        Log.debug(6,
+                  "error inside set entity access method in adp" + w.toString());
+      }
+      return;
+    }
+    if (distIndex > distNodes.length - 1) {
+      return;
+    }
+    Node distNode = distNodes[distIndex];
+    String distXpath = "";
+    try {
+      distXpath = (XMLUtilities.getTextNodeWithXPath(getMetadataPath(),
+          "/xpathKeyMap/contextNode[@name='distribution']/access")).getNodeValue();
+      NodeList aNodes = XPathAPI.selectNodeList(distNode, distXpath);
+      if (aNodes == null) {
+        Log.debug(10, "aNodes is null !");
+        return;
+      }
+      if (aNodes.getLength() > 0) {
+	      Node child = aNodes.item(0); // get first ?; (only 1?)
+	      child.getParentNode().replaceChild(newAccessSubtree, child);
+      }
+      else {
+    	  distNode.appendChild(newAccessSubtree);
+      }
+    }
+    catch (Exception w) {
+      Log.debug(5, "exception in setting entity access: " + w.toString());
     }
   }
 

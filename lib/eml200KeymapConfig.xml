@@ -59,6 +59,7 @@
     <url>online/url</url>
     <isInline>count(inline)!=0</isInline>
     <inline>inline</inline>
+    <access>access</access>    
   </contextNode>
   <insertionList name="coverage">
     <!-- coverage node should follow these nodes. A node list is needed because a number of nodes

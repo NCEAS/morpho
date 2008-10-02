@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: tao $'
- *     '$Date: 2008-09-19 00:32:29 $'
- * '$Revision: 1.107 $'
+ *   '$Author: leinfelder $'
+ *     '$Date: 2008-10-02 00:16:04 $'
+ * '$Revision: 1.108 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -520,7 +520,7 @@ public class DataPackagePlugin
     deleteDatatable.setToolTipText("Remove the currently displayed table");
     deleteDatatable.setMenuItemPosition(i);
     deleteDatatable.setMenu(DATA_MENU_LABEL, DATAMENUPOSITION);
-    deleteDatatable.setSeparatorPosition(Morpho.SEPARATOR_FOLLOWING);
+    //deleteDatatable.setSeparatorPosition(Morpho.SEPARATOR_FOLLOWING);
     deleteDatatable.setEnabledOnStateChange(
                       StateChangeEvent.CREATE_EDITABLE_ENTITY_DATAPACKAGE_FRAME,
                       true, GUIAction.EVENT_LOCAL);
@@ -534,6 +534,27 @@ public class DataPackagePlugin
                    StateChangeEvent.CREATE_NONEDITABLE_ENTITY_DATAPACKAGE_FRAME,
                    false, GUIAction.EVENT_LOCAL);
     controller.addGuiAction(deleteDatatable);
+    
+    i = i+1;
+    GUIAction editDatatableAccess = new GUIAction("Edit Data Table Access", null,
+                                                      new AddEntityAccessCommand());
+    editDatatableAccess.setToolTipText("Edit Access rights for currently displayed table");
+    editDatatableAccess.setMenuItemPosition(i);
+    editDatatableAccess.setMenu(DATA_MENU_LABEL, DATAMENUPOSITION);
+    editDatatableAccess.setSeparatorPosition(Morpho.SEPARATOR_FOLLOWING);
+    editDatatableAccess.setEnabledOnStateChange(
+                      StateChangeEvent.CREATE_EDITABLE_ENTITY_DATAPACKAGE_FRAME,
+                      true, GUIAction.EVENT_LOCAL);
+    editDatatableAccess.setEnabledOnStateChange(
+                            StateChangeEvent.CREATE_SEARCH_RESULT_FRAME,
+                            false, GUIAction.EVENT_LOCAL);
+    editDatatableAccess.setEnabledOnStateChange(
+                            StateChangeEvent.CREATE_NOENTITY_DATAPACKAGE_FRAME,
+                            false, GUIAction.EVENT_LOCAL);
+    editDatatableAccess.setEnabledOnStateChange(
+                   StateChangeEvent.CREATE_NONEDITABLE_ENTITY_DATAPACKAGE_FRAME,
+                   false, GUIAction.EVENT_LOCAL);
+    controller.addGuiAction(editDatatableAccess);
 
 
     i= i+2; // separator will take a position so add 2
@@ -703,6 +724,7 @@ public class DataPackagePlugin
 		viewDocumentation.setEnabled(false);
     createNewDatatable.setEnabled(false);
     deleteDatatable.setEnabled(false);
+    editDatatableAccess.setEnabled(false);
     addTitleAbstractAction.setEnabled(false);
     addKeywordAction.setEnabled(false);
     addCreatorAction.setEnabled(false);
