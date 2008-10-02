@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2008-10-02 00:46:40 $'
- * '$Revision: 1.107 $'
+ *     '$Date: 2008-10-02 02:28:57 $'
+ * '$Revision: 1.108 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -703,7 +703,7 @@ public class DataViewContainerPanel extends javax.swing.JPanel
             dvArray[i].saveCurrentTable(false);
             adp.setLocation("");
             int entityIndex = dvArray[i].getEntityIndex();
-            adp.setDirtyEntityIndex(entityIndex);
+            adp.addDirtyEntityIndex(entityIndex);
             Log.debug(30, "The index of dirty entity is "+entityIndex+
            		 " and the file id is "+dvArray[i].getEntityFileId());
           }
