@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2008-10-03 01:35:03 $'
- * '$Revision: 1.131 $'
+ *     '$Date: 2008-10-03 18:46:26 $'
+ * '$Revision: 1.132 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -2853,7 +2853,7 @@ public abstract class AbstractDataPackage extends MetadataObject
    * It has been assumed that the 'location' has been set to point to the
    * place where the data is to be saved.
    */
-  public void serializeData(String dataDestination) throws MetacatUploadException {
+  public void serializeData(String dataDestination)  {
 	Log.debug(30, "serilaize data =====================");
     File dataFile = null;
     Morpho morpho = Morpho.thisStaticInstance;
@@ -2975,6 +2975,8 @@ public abstract class AbstractDataPackage extends MetadataObject
 	          //serializeDataAtBothLocation =true;
 	          handleBoth(docid);
 	        }
+	        // reset the map after finishing save. There is no need for this pair after saving
+	        original_new_id_map = new Hashtable();
 	        
 	        // newDataFile must have worked; thus update the package
 	        String urlinfo = "ecogrid://knb/"+docid;
@@ -3021,42 +3023,38 @@ public abstract class AbstractDataPackage extends MetadataObject
   private void handleLocal(String docid) {
 	Log.debug(30, "~~~~~~~~~~~~~~~~~~~~~~handle local "+docid);
     File dataFile = null;
+    String oldDocid = null;
     Morpho morpho = Morpho.thisStaticInstance;
     FileSystemDataStore fds = new FileSystemDataStore(morpho);
-    // if morpho serilaize data into both local and metacat, and docid was changed
-    // during saving data in metacat, we need to get the new id and store it into local
-    /*if (serializeDataAtBothLocation && !original_new_id_map.isEmpty())
+    // if morpho serilaize data into local or metacat, and docid was changed, 
+    // we need to get the old docid and find the it in temp dir
+    if (!original_new_id_map.isEmpty())
     {
     	//System.out.println("the key is "+urlinfo);
     	//System.out.println("the hashtable is "+original_new_id_map);
     	//Log.debug(1, "~~~~~~~~~~~~~~~~~~~~~~change id in local serialization ");
-    	String newURLInfo = (String)original_new_id_map.get(urlinfo);
-    	//Log.debug(1, "~~~~~~~~~~~~~~~~~~~~~~the id from map is " +newURLInfo);
-    	if (newURLInfo != null && !newURLInfo.equals(""))
-    	{
-    		urlinfo = newURLInfo;
-    		Log.debug(30, "~~~~~~~~~~~~~~~~~~~~~~new id for local system "+urlinfo);
-    	}
-    	original_new_id_map = new Hashtable();
-    }*/
-    /*try {
-      dataFile = fds.openFile(urlinfo);
-      //Log.debug(1, ""+urlinfo+" already exists in "+location);
-    } catch (FileNotFoundException fnf) {*/
-      // if the datfile has NOT been located, a FileNotFoundException will be thrown.
-      // this indicates that the datafile with the url has NOT been saved
-      // the datafile should be stored in the profile temp dir
-      //Log.debug(1, "FileNotFoundException");
+    	oldDocid = (String)original_new_id_map.get(docid);
+    	Log.debug(30, "~~~~~~~~~~~~~~~~~~~~~~the id from map is " +oldDocid);  	
+    	
+      }
+      // if oldDocid is null, that means docid change. So we set old docid to be the current id
+      if (oldDocid == null)
+      {
+    	  oldDocid = docid;
+      }
+      Log.debug(30, "~~~~~~~~~~~~~~~~~~~~~~eventually old id is  " +oldDocid); 
       ConfigXML profile = morpho.getProfile();
       String separator = profile.get("separator", 0);
       separator = separator.trim();
       String temp = new String();
-      temp = docid.substring(0, docid.indexOf(separator));
+      temp = oldDocid.substring(0, oldDocid.indexOf(separator));
       temp += "/" +
-            docid.substring(docid.indexOf(separator) + 1, docid.length());
+            oldDocid.substring(oldDocid.indexOf(separator) + 1, oldDocid.length());
+      Log.debug(30, "The temp file path is "+temp);
       try {
-        dataFile = fds.openTempFile(temp);
-        InputStream dfis = new FileInputStream(dataFile);
+           dataFile = fds.openTempFile(temp);
+          //open old file name (if no file change, the old file name will be as same as docid).
+           InputStream dfis = new FileInputStream(dataFile);
           //Log.debug(1, "ready to save: urlinfo: "+urlinfo);
           fds.saveDataFile(docid, dfis);
           // the temp file has been saved; thus delete
@@ -3066,7 +3064,8 @@ public abstract class AbstractDataPackage extends MetadataObject
         // if a datafile is on metacat and one wants to save locally
         try{
           MetacatDataStore mds = new MetacatDataStore(morpho);
-          dataFile = mds.openDataFile(docid);
+          //open old file name (if no file change, the old file name will be as same as docid).
+          dataFile = mds.openDataFile(oldDocid);
           InputStream dfis = new FileInputStream(dataFile);
           fds.saveDataFile(docid, dfis);
           dfis.close();
@@ -3076,7 +3075,7 @@ public abstract class AbstractDataPackage extends MetadataObject
           qq.printStackTrace();
         }//end catch
       }
-    //}
+    
   }
   
   
@@ -3088,6 +3087,7 @@ public abstract class AbstractDataPackage extends MetadataObject
 		Log.debug(30, "----------------------------------------handle metacat "+docid);
 	    File dataFile = null;
 	    File metacatDataFile = null;
+	    String oldDocid = null;
 	    boolean sourceFromTemp = true;
 	    Morpho morpho = Morpho.thisStaticInstance;
 		 FileSystemDataStore fds = new FileSystemDataStore(morpho);
@@ -3096,9 +3096,23 @@ public abstract class AbstractDataPackage extends MetadataObject
 	    String separator = profile.get("separator", 0);
 	    separator = separator.trim();
 	    String temp = new String();
-	    temp = docid.substring(0, docid.indexOf(separator));
+	    if (!original_new_id_map.isEmpty())
+	    {
+	    	//System.out.println("the key is "+urlinfo);
+	    	//System.out.println("the hashtable is "+original_new_id_map);
+	    	//Log.debug(1, "~~~~~~~~~~~~~~~~~~~~~~change id in local serialization ");
+	    	oldDocid = (String)original_new_id_map.get(docid);
+	    	Log.debug(30, "~~~~~~~~~~~~~~~~~~~~~~the id from map is " +oldDocid);  	
+	    	
+	      }
+	      // if oldDocid is null, that means docid change. So we set old docid to be the current id
+	      if (oldDocid == null)
+	      {
+	    	  oldDocid = docid;
+	      }
+	    temp = oldDocid.substring(0, oldDocid.indexOf(separator));
 	    temp = temp + "/" +
-	        docid.substring(docid.indexOf(separator) + 1, docid.length());
+	        oldDocid.substring(oldDocid.indexOf(separator) + 1, oldDocid.length());
 	    // Check where is the source data file (from temp or from data file)
 	    try
 	    {
@@ -3108,12 +3122,12 @@ public abstract class AbstractDataPackage extends MetadataObject
 	    {
 	    	try
 	    	{
-	    	    dataFile =  fds.openFile(docid);
+	    	    dataFile =  fds.openFile(oldDocid);
 	    	    sourceFromTemp = false;
 	    	}
 	    	catch(Exception ee)
 	    	{
-	    		Log.debug(5, "Couldn't find "+docid+" in local system, so morpho couldn't upload it to metacat");
+	    		Log.debug(5, "Couldn't find "+oldDocid+" in local system, so morpho couldn't upload it to metacat");
 	    	    return;
 	    	}   	
 	    }
@@ -3219,43 +3233,10 @@ public abstract class AbstractDataPackage extends MetadataObject
 			  int newRevision = this.getNextRevisionNumber();
 	    	   identifier = scope+"."+newRevision;
 		  }
-	      /*if (identifier == null)
-	      {
-	    	   Log.debug(30, "Couldn't get new docid");
-	    	   return;
-	      }*/
-		  
-	      
-	      // now try saving with the new id
-	      /*try{
-	        mds.newDataFile(identifier, dataFile);
-	        //dataFile.delete();
-	        // newDataFile must have worked; thus update the package
-	        setDistributionUrl(entityIndex, 0, 0, "ecogrid://knb/"+identifier);
-	        if (serializeDataAtBothLocation)
-	        {
-	        	Log.debug(30, "save original url info  "+originalIdentifier+ "and  new url "+identifier+ " into the ma");
-	        	// store the new id and original id into a map. So when morpho know the new id when it serialize
-	            original_new_id_map.put(originalIdentifier, identifier);
-	            // save the data file into temp with the new id.
-	            try
-	            {
-	            	FileInputStream input = new FileInputStream(dataFile);
-	            	fds.saveTempDataFile(identifier, input);
-	            	input.close();
-	            }
-	            catch(Exception e)
-	            {
-	            	
-	            }
-	           
-	        }
-	      
-	      } catch (MetacatUploadException mue1) {
-	        Log.debug(5, "Problem saving data to metacat\n"+
-	                       mue1.getMessage());
+		  // store the new id and original id into a map. 
+		  // So when morpho know the new id when it serialize
+          original_new_id_map.put(identifier,originalIdentifier);
 	  
-	      }*/
 	  }
 	   Log.debug(30, "======================new identifier is "+identifier);
 	   return identifier;
