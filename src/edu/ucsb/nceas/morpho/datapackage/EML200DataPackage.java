@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2008-09-25 21:21:24 $'
- * '$Revision: 1.58 $'
+ *     '$Date: 2008-10-03 18:48:51 $'
+ * '$Revision: 1.59 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -600,11 +600,8 @@ public  class EML200DataPackage extends AbstractDataPackage
       this.setLocation(AbstractDataPackage.METACAT);
       serializeData(AbstractDataPackage.METACAT);
     }
-    catch (MetacatUploadException mcue) {
-      throw mcue;
-    }
     catch (Exception w) {
-      Log.debug(5, "error in uploading!");
+      Log.debug(5, "error in uploading! "+w.getMessage());
     }
     return this;
   }
