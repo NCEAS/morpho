@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2008-10-03 18:46:26 $'
- * '$Revision: 1.132 $'
+ *     '$Date: 2008-10-03 22:08:07 $'
+ * '$Revision: 1.133 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -3230,7 +3230,7 @@ public abstract class AbstractDataPackage extends MetadataObject
 		  }
 		  else
 		  {
-			  int newRevision = this.getNextRevisionNumber();
+			  int newRevision = this.getNextRevisionNumber(identifier);
 	    	   identifier = scope+"."+newRevision;
 		  }
 		  // store the new id and original id into a map. 
@@ -3994,11 +3994,11 @@ public abstract class AbstractDataPackage extends MetadataObject
 	 * 1 will be return if no pre-revision exists.
 	 * @return  the next revision number
 	 */
-	public int getNextRevisionNumber()
+	public int getNextRevisionNumber(String docid)
 	{
 		int version = ORIGINAL_REVISION;
-		int localNextRevision = getNextRevisionNumberFromLocal();
-		int metacatNextRevision = getNextRevisionNumberFromMetacat();
+		int localNextRevision = getNextRevisionNumberFromLocal(docid);
+		int metacatNextRevision = getNextRevisionNumberFromMetacat(docid);
 		//choose the bigger one as the next revision
 		if (localNextRevision > metacatNextRevision)
 		{
@@ -4017,10 +4017,14 @@ public abstract class AbstractDataPackage extends MetadataObject
 	 * it out the maximum revision. This number will be  increase 1 to get the next revision number.
 	 * If local file system doesn't have this docid, 1 will be returned
 	 */
-	private int getNextRevisionNumberFromLocal()
+	private int getNextRevisionNumberFromLocal(String identifier)
 	{
 		int version = ORIGINAL_REVISION;
 		String dataDir = null;
+		if (identifier == null)
+		{
+			return version;
+		}
 		//Get Data dir
 		// intialize filesystem datastore if it is null
 		if (this.fileSysDataStore == null)
@@ -4037,20 +4041,13 @@ public abstract class AbstractDataPackage extends MetadataObject
 			dataDir = this.metacatDataStore.getDataDir();
 		}
 		
-		String targetDocid = getDocIdPart();
+		String targetDocid = getDocIdPart(identifier);
 		Log.debug(30, "the data dir is "+dataDir);
 		if (dataDir != null && targetDocid != null)
 		{
 			//Gets scope name
 			String scope = null;
-			if (initialId != null)
-			{
-				scope = getIdScope(initialId);
-			}
-			else
-			{
-				scope = getIdScope(getPackageId());
-			}
+			scope = getIdScope(identifier);
 			Log.debug(30, "the scope from id is "+scope);
 			File scopeFiles = new File(dataDir+File.separator+scope);
 			if (scopeFiles.isDirectory())
@@ -4115,11 +4112,11 @@ public abstract class AbstractDataPackage extends MetadataObject
 	 * It will return the substring from the second last dot to the last dot.
 	 * null will return if no docid part found
 	 */
-	private String getDocIdPart()
+	private String getDocIdPart(String identifier)
 	{
 	  String docid = null;
-	  String identifier = null;
-	  if (initialId != null)
+	  //String identifier = null;
+	  /*if (initialId != null)
 	  {
 	      identifier = initialId;
 		  
@@ -4127,8 +4124,8 @@ public abstract class AbstractDataPackage extends MetadataObject
 	  else
 	  {
 		  identifier = getPackageId();
-	  }
-	  Log.debug(30, "This package's identifier is "+identifier);
+	  }*/
+	  Log.debug(30, "The identifier which need be got docid part is "+identifier);
 	  if (identifier != null)
 	  {
 		  int index =identifier.lastIndexOf(".");
@@ -4159,20 +4156,20 @@ public abstract class AbstractDataPackage extends MetadataObject
 	 * return the max version of metacat. So we should increase 1 to get next version number.
 	 * If couldn't connect metacat or metacat doesn't have this docid, 1 will be returned.
 	 */
-	private int getNextRevisionNumberFromMetacat()
+	private int getNextRevisionNumberFromMetacat(String identifier)
 	{
 		int version = ORIGINAL_REVISION;
 		String semiColon = ";";
-		String docid = null;
+		//String docid = null;
 		//Gets metacat url from configuration
-		if (Morpho.thisStaticInstance != null && Morpho.thisStaticInstance.getNetworkStatus())
+		if (Morpho.thisStaticInstance != null && Morpho.thisStaticInstance.getNetworkStatus() && identifier != null)
 		{
 			String metacatURL = Morpho.thisStaticInstance.getMetacatURLString();
 			String result = null;
 		    Properties lastVersionProp = new Properties();
 		    lastVersionProp.put("action", "getrevisionanddoctype");
-		    docid = getPackageId();
-		    lastVersionProp.put("docid", docid);
+		    //docid = getPackageId();
+		    lastVersionProp.put("docid", identifier);
 		    result = Morpho.thisStaticInstance.getMetacatString(lastVersionProp);
 		    Log.debug(30, "the result is ============= "+result);
 		    // Get version
@@ -4196,7 +4193,7 @@ public abstract class AbstractDataPackage extends MetadataObject
 		    }
 		    
 		}
-		Log.debug(30, "Next version for doicd " +docid+" in metacat is "+version);
+		Log.debug(30, "Next version for doicd " +identifier+" in metacat is "+version);
 		return version;
 	}
 	 /**
