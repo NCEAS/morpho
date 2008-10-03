@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2008-10-03 18:48:51 $'
- * '$Revision: 1.59 $'
+ *     '$Date: 2008-10-03 22:09:20 $'
+ * '$Revision: 1.60 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -193,7 +193,7 @@ public  class EML200DataPackage extends AbstractDataPackage
     	 else
     	 {
     		 // increase revision number
-    		 int newRevision = this.getNextRevisionNumber();
+    		 int newRevision = this.getNextRevisionNumber(getAccessionNumber());
     		 identifier = temp2+"."+newRevision;
     		 setAccessionNumber(identifier);
              temp = XMLUtil.getDOMTreeAsString(getMetadataNode().getOwnerDocument());
