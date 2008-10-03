@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2008-10-02 02:24:49 $'
- * '$Revision: 1.130 $'
+ *     '$Date: 2008-10-03 01:35:03 $'
+ * '$Revision: 1.131 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -233,7 +233,7 @@ public abstract class AbstractDataPackage extends MetadataObject
   // and other table header info. - Dan Higgins
   private Node[] lastAttributeArray = null; //DFH
   private int lastEntityIndex = -1;
-  boolean serializeDataAtBothLocation = false;
+  //boolean serializeDataAtBothLocation = false;
   private Hashtable original_new_id_map = new Hashtable(); // store the map between new data id and old data id
   //store the index of entity which data file has unsaved change (dirty)
   private Vector dirtyEntityIndexList = new Vector(); 
@@ -1643,9 +1643,13 @@ public abstract class AbstractDataPackage extends MetadataObject
   public void addEntity(Entity entity) {
     if (entityArray == null) {
       insertEntity(entity, 0);
+      // since it is the new entity, so it has unsaved  data
+      addDirtyEntityIndex(0);
     }
     else {
       insertEntity(entity, entityArray.length);
+      // since it is the new entity, so it has unsaved  data
+      addDirtyEntityIndex(entityArray.length-1);
     }
   }
 
@@ -2853,53 +2857,175 @@ public abstract class AbstractDataPackage extends MetadataObject
 	Log.debug(30, "serilaize data =====================");
     File dataFile = null;
     Morpho morpho = Morpho.thisStaticInstance;
-    FileSystemDataStore fds = new FileSystemDataStore(morpho);
+    FileSystemDataStore fsds = new FileSystemDataStore(morpho);
     MetacatDataStore mds = new MetacatDataStore(morpho);
     getEntityArray();
     //Log.debug(1, "About to check entityArray!");
     if (entityArray == null) {
-      Log.debug(30, "Entity array is null!");
+      Log.debug(30, "Entity array is null, no need to serialize data");
       return; // there is no data!
     }
+    if (dataDestination == null)
+    {
+    	Log.debug(30, "User didn't specify the data destination");
+    	return;
+    }
+    
    
     for (int i = 0; i < entityArray.length; i++) {
       String protocol = getUrlProtocol(i);
-      if (this.dirtyEntityIndexList.contains(new Integer(i)));
-      {
-    	  Log.debug(30, "Index "+i+ " is in dirty entity index list and url is "+getUrlInfo(i));
-    	  dirtyEntityIndexList.remove(new Integer(i));
-      }
-      if(protocol.equals("ecogrid:")) {
-        String urlinfo = getUrlInfo(i);
-        // urlinfo should be the id in a string
-        if (dataDestination.equals(LOCAL))  {
-          handleLocal(urlinfo);
-        }
-        else if (dataDestination.equals(METACAT)) {
-          handleMetacat(urlinfo, i);
-        }
-        else if (dataDestination.equals(BOTH)) {
-        	//Log.debug(1, "~~~~~~~~~~~~~~~~~~~~~~set bothLoation true ");
-          serializeDataAtBothLocation =true;
-          handleBoth(urlinfo, i);
-        }
+ 
+      if(protocol != null && protocol.equals("ecogrid:") ) {
+    	  
+        String docid = getUrlInfo(i);
+        Log.debug(30, "handle data file  with index "+i+ ""+docid);
+        //if (urlinfo != null)
+        //{
+        	//String docid = getDocidFromEcoGridURL(urlinfo);
+    	if (docid != null)
+    	{
+    		boolean isDirty = containsDirtyEntityIndex(i);
+    		Log.debug(30, "url "+docid+" with index "+i+" is dirty "+isDirty);
+    		// Detects if docid conflict occurs
+	        //boolean updateFlag = !(version.equals("1"));
+	        boolean existFlag = false;
+	        boolean existInMetacat = false;
+	        boolean existInLocal = false;
+	        String conflictLocation = null;
+	        //Check to see if id confilct or not
+	        if((dataDestination.equals(AbstractDataPackage.METACAT))) 
+	        {
+	    	    mds = new MetacatDataStore(morpho);
+	    	    existInMetacat = mds.exists(docid);
+	    	    existFlag = existInMetacat;
+	    	    Log.debug(30, "docid "+docid+ " exsits in metacat is "+existFlag);
+	    	    if (existFlag)
+	    	    {
+	    	    	conflictLocation = DocidIncreaseDialog.METACAT;
+	    	    }
+	        }
+	        else if((dataDestination.equals(AbstractDataPackage.LOCAL))) 
+	        {
+	        	fsds = new FileSystemDataStore(morpho);
+	        	existInLocal = fsds.exists(docid);
+	        	existFlag = existInLocal;
+	        	Log.debug(30, "docid "+docid+ " exsits in local is "+existFlag);
+	        	if (existFlag)
+	    	    {
+	    	    	conflictLocation = DocidIncreaseDialog.LOCAL;
+	    	    }
+	        }
+	        else if (dataDestination.equals(AbstractDataPackage.BOTH))
+	        {
+	        	mds = new MetacatDataStore(morpho);
+	    	    existInMetacat = mds.exists(docid);
+	    	    fsds = new FileSystemDataStore(morpho);
+	        	existInLocal = fsds.exists(docid);
+	        	existFlag = existInMetacat || existInLocal;
+	        	Log.debug(30, "docid "+docid+ " exsits in local or metacat is "+existFlag);
+	        	if (existFlag)
+	        	{
+	        		if (existInMetacat && existInLocal)
+	        		{
+	        			conflictLocation =  DocidIncreaseDialog.LOCAL + " and "+ DocidIncreaseDialog.METACAT;
+	        		    //this.setIdentifierChangedInLocalSerialization(true);
+	        		    //this.setIdentifierChangedInMetacatSerialization(true);
+	        		}
+	        		else if (existInMetacat)
+	        		{
+	        			conflictLocation =  DocidIncreaseDialog.METACAT;
+	        			//this.setIdentifierChangedInMetacatSerialization(true);
+	        		}
+	        		else if (existInLocal)
+	        		{
+	        			conflictLocation =  DocidIncreaseDialog.LOCAL;
+	        			//this.setIdentifierChangedInLocalSerialization(true);
+	        		}
+	        	}
+	        }
+	        
+	       
+	        if (existFlag && isDirty)
+	        {
+	        	 // If docid conflict and the entity is dirty, we need to
+		        // pop-out an window to change the docid
+	        	Log.debug(30, "The docid "+docid+" exists and has unsaved data. So increase docid for it");
+	        	docid = handleDataIdConfiction(docid, conflictLocation);
+	        	
+	        	
+	        }
+	        else if(existFlag)
+	        {
+	        	// if docid conflict, but entity wasn't changed, do nothing (skip the saving steps)
+	        	Log.debug(30, "The docid "+docid+" exists and but was NOT changed. So skip serializedata");
+	        	continue;
+	        }
+	        
+	        // reset urlinfo with new docid (if docid was not changed, the url will still be same).
+	        
+	        // urlinfo should be the id in a string
+	        if (dataDestination.equals(LOCAL))  {
+	          handleLocal(docid);
+	        }
+	        else if (dataDestination.equals(METACAT)) {
+	          handleMetacat(docid);
+	        }
+	        else if (dataDestination.equals(BOTH)) {
+	        	//Log.debug(1, "~~~~~~~~~~~~~~~~~~~~~~set bothLoation true ");
+	          //serializeDataAtBothLocation =true;
+	          handleBoth(docid);
+	        }
+	        
+	        // newDataFile must have worked; thus update the package
+	        String urlinfo = "ecogrid://knb/"+docid;
+	        setDistributionUrl(i, 0, 0, urlinfo);
+	        //File was saved successfully, we need to remove the index from the vector.
+	        if (isDirty)
+    		{
+    		    removeDirtyEntityIndex(i);
+    		}
+    	}
+        //}
       }
     }
    
     
     //Log.debug(1, "~~~~~~~~~~~~~~~~~~~~~~set bothLoation false ");
-    serializeDataAtBothLocation =false;
+    //serializeDataAtBothLocation =false;
   }
+   
+  /*
+   * Strips docid (e.g tao.1.1) out from ecogrid url (e.g. ecogrid://knb/tao.1.1).
+   * Null will be returned if docid couldn't be found.
+   */
+   private String getDocidFromEcoGridURL(String ecogridURL)
+   {
+	   String docid = null;
+	   Log.debug(30, "the ecogridURL is "+ecogridURL);
+	   if (ecogridURL != null)
+	   {
+		   int index = ecogridURL.lastIndexOf("/");
+		   index ++;
+		   if (index < ecogridURL.length())
+		   {
+		      docid = ecogridURL.substring(index);
+		   }
+	   }
+	   Log.debug(30, "the docid stripped from ecogridURL is "+docid);
+	   return docid;
+   }
 
-
-  private void handleLocal(String urlinfo) {
-	Log.debug(30, "~~~~~~~~~~~~~~~~~~~~~~handle local "+urlinfo);
+  /*
+   * Saves the entity into local system
+   */
+  private void handleLocal(String docid) {
+	Log.debug(30, "~~~~~~~~~~~~~~~~~~~~~~handle local "+docid);
     File dataFile = null;
     Morpho morpho = Morpho.thisStaticInstance;
     FileSystemDataStore fds = new FileSystemDataStore(morpho);
     // if morpho serilaize data into both local and metacat, and docid was changed
     // during saving data in metacat, we need to get the new id and store it into local
-    if (serializeDataAtBothLocation && !original_new_id_map.isEmpty())
+    /*if (serializeDataAtBothLocation && !original_new_id_map.isEmpty())
     {
     	//System.out.println("the key is "+urlinfo);
     	//System.out.println("the hashtable is "+original_new_id_map);
@@ -2912,11 +3038,11 @@ public abstract class AbstractDataPackage extends MetadataObject
     		Log.debug(30, "~~~~~~~~~~~~~~~~~~~~~~new id for local system "+urlinfo);
     	}
     	original_new_id_map = new Hashtable();
-    }
-    try {
+    }*/
+    /*try {
       dataFile = fds.openFile(urlinfo);
       //Log.debug(1, ""+urlinfo+" already exists in "+location);
-    } catch (FileNotFoundException fnf) {
+    } catch (FileNotFoundException fnf) {*/
       // if the datfile has NOT been located, a FileNotFoundException will be thrown.
       // this indicates that the datafile with the url has NOT been saved
       // the datafile should be stored in the profile temp dir
@@ -2925,14 +3051,14 @@ public abstract class AbstractDataPackage extends MetadataObject
       String separator = profile.get("separator", 0);
       separator = separator.trim();
       String temp = new String();
-      temp = urlinfo.substring(0, urlinfo.indexOf(separator));
+      temp = docid.substring(0, docid.indexOf(separator));
       temp += "/" +
-            urlinfo.substring(urlinfo.indexOf(separator) + 1, urlinfo.length());
+            docid.substring(docid.indexOf(separator) + 1, docid.length());
       try {
         dataFile = fds.openTempFile(temp);
         InputStream dfis = new FileInputStream(dataFile);
           //Log.debug(1, "ready to save: urlinfo: "+urlinfo);
-          fds.saveDataFile(urlinfo, dfis);
+          fds.saveDataFile(docid, dfis);
           // the temp file has been saved; thus delete
           dfis.close();
 //          dataFile.delete();
@@ -2940,82 +3066,69 @@ public abstract class AbstractDataPackage extends MetadataObject
         // if a datafile is on metacat and one wants to save locally
         try{
           MetacatDataStore mds = new MetacatDataStore(morpho);
-          dataFile = mds.openDataFile(urlinfo);
+          dataFile = mds.openDataFile(docid);
           InputStream dfis = new FileInputStream(dataFile);
-          fds.saveDataFile(urlinfo, dfis);
+          fds.saveDataFile(docid, dfis);
           dfis.close();
         }catch (Exception qqq) {
           // some other problem has occured
-          Log.debug(5, "Some problem with saving local data files has occurred!");
+          Log.debug(5, "Some problem with saving local data files has occurred! "+qqq.getMessage());
           qq.printStackTrace();
         }//end catch
       }
-    }
+    //}
   }
+  
+  
+  
+  /*
+   * Saves data files to Metacat
+   */
+  private void handleMetacat(String docid) {
+		Log.debug(30, "----------------------------------------handle metacat "+docid);
+	    File dataFile = null;
+	    File metacatDataFile = null;
+	    boolean sourceFromTemp = true;
+	    Morpho morpho = Morpho.thisStaticInstance;
+		 FileSystemDataStore fds = new FileSystemDataStore(morpho);
+		 MetacatDataStore mds = new MetacatDataStore(morpho);
+	    ConfigXML profile = morpho.getProfile();
+	    String separator = profile.get("separator", 0);
+	    separator = separator.trim();
+	    String temp = new String();
+	    temp = docid.substring(0, docid.indexOf(separator));
+	    temp = temp + "/" +
+	        docid.substring(docid.indexOf(separator) + 1, docid.length());
+	    // Check where is the source data file (from temp or from data file)
+	    try
+	    {
+	    	dataFile = fds.openTempFile(temp);
+	    }
+	    catch(FileNotFoundException e)
+	    {
+	    	try
+	    	{
+	    	    dataFile =  fds.openFile(docid);
+	    	    sourceFromTemp = false;
+	    	}
+	    	catch(Exception ee)
+	    	{
+	    		Log.debug(5, "Couldn't find "+docid+" in local system, so morpho couldn't upload it to metacat");
+	    	    return;
+	    	}   	
+	    }
+	  
+	    uploadDataFileToMetacat(docid, dataFile, sourceFromTemp, mds);
+	
+	  }
 
-  private void handleMetacat(String urlinfo, int entityIndex) {
-	Log.debug(30, "----------------------------------------handle metacat "+urlinfo);
-    File dataFile = null;
-    File metacatDataFile = null;
-    boolean sourceFromTemp = true;
-    Morpho morpho = Morpho.thisStaticInstance;
-	 FileSystemDataStore fds = new FileSystemDataStore(morpho);
-	 MetacatDataStore mds = new MetacatDataStore(morpho);
-    ConfigXML profile = morpho.getProfile();
-    String separator = profile.get("separator", 0);
-    separator = separator.trim();
-    String temp = new String();
-    temp = urlinfo.substring(0, urlinfo.indexOf(separator));
-    temp = temp + "/" +
-        urlinfo.substring(urlinfo.indexOf(separator) + 1, urlinfo.length());
-    // Check where is the source data file (from temp or from data file)
-    try
-    {
-    	dataFile = fds.openTempFile(temp);
-    }
-    catch(FileNotFoundException e)
-    {
-    	try
-    	{
-    	    dataFile =  fds.openFile(urlinfo);
-    	    sourceFromTemp = false;
-    	}
-    	catch(Exception ee)
-    	{
-    		Log.debug(5, "Couldn't find "+urlinfo+" in local system, so morpho couldn't upload it to metacat");
-    	    return;
-    	}   	
-    }
-    // to see if metacat already has this file
-    try 
-    {
-      metacatDataFile = mds.openDataFile(urlinfo);
-      long metacatCheckSum = getFileCheckSum(metacatDataFile);
-      long localCheckSum = getFileCheckSum(dataFile);
-      Log.debug(30, "The existen metacat data file "+urlinfo+" has the checksum "+metacatCheckSum+
-    		                 "\n The data file in local system has the checksum "+localCheckSum);
-      // "localCheckSum not equals 0" means local file is in good shape
-      // "metacatCheckSum != localCheckSum" means even both local and metacat file have
-      // same id, but they are really different data file. We need ask user if he want to change id
-      // (or increase revision to upload the file to metacat
-      if (metacatCheckSum != localCheckSum && localCheckSum != 0)
-      {
-    	  handleDataIdConfiction(urlinfo, fds, mds, dataFile, entityIndex);
-      }
-      // Metacat already has this file
-    }
-    catch (Exception fnf) 
-    {
-    	//Metacat doesn't has this file
-    	uploadDataFileToMetacat(urlinfo, dataFile, sourceFromTemp, entityIndex, fds, mds);
-    }
-  }
+  
   
   /*
    * Loads the data file to metacat
    */
   private void uploadDataFileToMetacat(String identifier, File dataFile, boolean fromTemp, 
-                                                                   int entityIndex,  FileSystemDataStore fds, MetacatDataStore mds)
+                                                         MetacatDataStore mds)
   {
 	        try
 	          {
@@ -3026,11 +3139,9 @@ public abstract class AbstractDataPackage extends MetadataObject
 		          }
 		          catch (MetacatUploadException mue) 
 		          {
-		            // if we reach here, most likely there has been a problem saving the datafile
-		            // on metacat because the id is already in use
-		            // so, get a new id
+		            //Gets some error from metacat
 		        	  Log.debug(5, "Some problem with saving data files has occurred! "+mue.getMessage());
-		          	 handleDataIdConfiction(identifier, fds, mds, dataFile, entityIndex);
+		          	 
 		          }
 	              // the temp file has been saved; thus delete
 		          if (fromTemp)
@@ -3043,8 +3154,7 @@ public abstract class AbstractDataPackage extends MetadataObject
                  // some other problem has occured
                  Log.debug(5, "Some problem with saving data files has occurred! "+qqq.getMessage());
                  qqq.printStackTrace();
-              }
-      
+              }   
       
   }
   
@@ -3052,8 +3162,7 @@ public abstract class AbstractDataPackage extends MetadataObject
    * If the docid is revision 1, automatically increase data file identifier number without notifying user.
    * If the docid is bigger than revision 1, user will be asked to make a chioce: increasing docid or increasing revision.
    */
-  private void handleDataIdConfiction(String identifier, FileSystemDataStore fds, MetacatDataStore mds, 
-		                                   File dataFile, int entityIndex) 
+  private String handleDataIdConfiction(String identifier, String conflictLocation) 
   {
 	   Morpho morpho = Morpho.thisStaticInstance;
 	    String version = null;
@@ -3087,7 +3196,7 @@ public abstract class AbstractDataPackage extends MetadataObject
 		  //if it is update, we need give user options to choose: increase docid or revision number
 		  if (update)
 		  {
-			  DocidIncreaseDialog docidIncreaseDialog = new DocidIncreaseDialog(identifier, DocidIncreaseDialog.METACAT);
+			  DocidIncreaseDialog docidIncreaseDialog = new DocidIncreaseDialog(identifier, conflictLocation);
 		      String choice = docidIncreaseDialog.getUserChoice();
 		      if (choice != null && choice.equals(DocidIncreaseDialog.INCEASEID))
 		      {
@@ -3110,14 +3219,15 @@ public abstract class AbstractDataPackage extends MetadataObject
 			  int newRevision = this.getNextRevisionNumber();
 	    	   identifier = scope+"."+newRevision;
 		  }
-	      if (identifier == null)
+	      /*if (identifier == null)
 	      {
 	    	   Log.debug(30, "Couldn't get new docid");
 	    	   return;
-	      }
-	      Log.debug(30, "======================new identifier is "+identifier);
+	      }*/
+		  
+	      
 	      // now try saving with the new id
-	      try{
+	      /*try{
 	        mds.newDataFile(identifier, dataFile);
 	        //dataFile.delete();
 	        // newDataFile must have worked; thus update the package
@@ -3140,18 +3250,15 @@ public abstract class AbstractDataPackage extends MetadataObject
 	            }
 	           
 	        }
-	        //String newPackageId = an.getNextId();
-	        //setAccessionNumber(newPackageId);
-	        /*serialize(AbstractDataPackage.METACAT);
-	        if(location.equals(BOTH)) {  // save new package locally
-	          serialize(AbstractDataPackage.LOCAL);
-	        }*/
+	      
 	      } catch (MetacatUploadException mue1) {
 	        Log.debug(5, "Problem saving data to metacat\n"+
 	                       mue1.getMessage());
 	  
-	      }
+	      }*/
 	  }
+	   Log.debug(30, "======================new identifier is "+identifier);
+	   return identifier;
   }
   
   /*
@@ -3180,13 +3287,10 @@ public abstract class AbstractDataPackage extends MetadataObject
   }
 
 
-  private void handleBoth(String urlinfo, int entityIndex) {
-    File dataFile = null;
-    Morpho morpho = Morpho.thisStaticInstance;
-    FileSystemDataStore fds = new FileSystemDataStore(morpho);
-    MetacatDataStore mds = new MetacatDataStore(morpho);
-    handleMetacat(urlinfo, entityIndex);
-    handleLocal(urlinfo);
+  private void handleBoth(String docid) 
+  {
+    handleLocal(docid);
+    handleMetacat(docid);   
   }
 
   private String getUrlInfo(int entityIndex) {
@@ -4230,7 +4334,26 @@ public abstract class AbstractDataPackage extends MetadataObject
 	   */
 	  public void addDirtyEntityIndex(int index)
 	  {
-		  this.dirtyEntityIndexList.add(new Integer(index));
+		  if (!this.dirtyEntityIndexList.contains(index))
+		  {
+		    this.dirtyEntityIndexList.add(index);
+		  }
+	  }
+	  
+	  /*
+	   * Tests if the specified index is a component in this dirtyEntityIndexList vector
+	   */
+	  private boolean containsDirtyEntityIndex(int index)
+	  {
+		  return this.dirtyEntityIndexList.contains(index);
+	  }
+	  
+	  /*
+	   * Removes the sepcified index from this dirtyEntityIndexList vector
+	   */
+	  private void removeDirtyEntityIndex(int index)
+	  {
+		  this.dirtyEntityIndexList.removeElement(index);
 	  }
 }
 
