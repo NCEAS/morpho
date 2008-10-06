@@ -5,20 +5,41 @@
 <xsl:variable name="packageId" select="/*/@packageId"/>
 <xsl:template match="/ ">
  <eml:eml xmlns:eml="eml://ecoinformatics.org/eml-2.1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" packageId="{$packageId}" system="knb" xsi:schemaLocation="eml://ecoinformatics.org/eml-2.1.0 eml.xsd">       
-    	<xsl:for-each select="/*/*">
+     <xsl:apply-templates mode="copy-top-access-tree" select="/*/dataset/access"/>
+     <xsl:apply-templates mode="copy-top-access-tree" select="/*/citation/access"/>
+     <xsl:apply-templates mode="copy-top-access-tree" select="/*/software/access"/>
+     <xsl:apply-templates mode="copy-top-access-tree" select="/*/protocol/access"/>	
+     
+      <xsl:for-each select="/*/*">
     	  <xsl:choose>
     	     <xsl:when test="name()='dataset'">
-    	         <xsl:apply-templates mode="copy-no-ns" select="."/>
-    	     </xsl:when>
+                  <xsl:element name="{name(.)}" namespace="{namespace-uri(.)}">  
+           			    <xsl:copy-of select="@*"/> 
+                    	<xsl:apply-templates mode="handle-elements-under-main-module" select="."/>
+    	           </xsl:element>
+			 </xsl:when>
+
     	     <xsl:when test="name()='citation'">
-    	         <xsl:apply-templates mode="copy-no-ns" select="."/>
+    	         <xsl:element name="{name(.)}" namespace="{namespace-uri(.)}">  
+           			    <xsl:copy-of select="@*"/> 
+                    	<xsl:apply-templates mode="handle-elements-under-main-module" select="."/>
+    	           </xsl:element>
     	     </xsl:when>
+
     	     <xsl:when test="name()='software'">
-    	         <xsl:apply-templates mode="copy-no-ns" select="."/>
+    	         <xsl:element name="{name(.)}" namespace="{namespace-uri(.)}">  
+           			    <xsl:copy-of select="@*"/> 
+                    	<xsl:apply-templates mode="handle-elements-under-main-module" select="."/>
+    	           </xsl:element>
     	     </xsl:when>
+
     	     <xsl:when test="name()='protocol'">
-    	         <xsl:apply-templates mode="copy-no-ns" select="."/>
+    	         <xsl:element name="{name(.)}" namespace="{namespace-uri(.)}">  
+           			    <xsl:copy-of select="@*"/> 
+                    	<xsl:apply-templates mode="handle-elements-under-main-module" select="."/>
+    	           </xsl:element>
     	     </xsl:when>
+
     	     <xsl:when test="name()='additionalMetadata'">
     	       <additionalMetadata>
     	             <xsl:for-each select="*">
@@ -39,11 +60,38 @@
     	 </xsl:for-each>
   </eml:eml>
   </xsl:template>
-  <!-- copy node and children without namespace -->
-   <xsl:template mode="copy-no-ns" match="*">  
+
+	<!-- handle make changes under main module (dataset, citation, protocol and software) -->
+	<xsl:template mode="handle-elements-under-main-module" match="*">
+   		<xsl:for-each select="./*">
+                  	<xsl:choose>
+    	            	<xsl:when test="name()='access'">
+    	               		<xsl:apply-templates mode="do-nothing" select="."/>
+    	            	</xsl:when>
+                     	<xsl:otherwise>
+    	                	<xsl:apply-templates mode="copy-no-ns" select="."/>
+                     	 </xsl:otherwise>
+                  	</xsl:choose>
+   		</xsl:for-each>
+	</xsl:template>
+
+	<!-- copy node and children without namespace -->
+	<xsl:template mode="copy-no-ns" match="*">  
         <xsl:element name="{name(.)}" namespace="{namespace-uri(.)}">  
            <xsl:copy-of select="@*"/> 
            <xsl:apply-templates mode="copy-no-ns"/>  
         </xsl:element> 
-   </xsl:template>
+	</xsl:template>
+
+
+	<!-- copy access tree under dataset(or protocol, software and citation) to the top level -->
+	<xsl:template mode="copy-top-access-tree" match="*">
+         <xsl:apply-templates mode="copy-no-ns" select="."/>
+ 	</xsl:template>
+
+	<!-- do nothing for this element (removing it)-->
+ 	<xsl:template mode="do-nothing" match="*">  
+ 	</xsl:template>
+
+  
 </xsl:stylesheet>
