@@ -1,10 +1,15 @@
 <?xml version="1.0"?>
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"  version="1.0" >
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"  version="1.0" xmlns:eml="eml://ecoinformatics.org/eml-2.1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" >
 <xsl:output method="xml" indent="yes"/>
 <xsl:strip-space elements="*"/>
-<xsl:variable name="packageId" select="/*/@packageId"/>
-<xsl:template match="/ ">
- <eml:eml xmlns:eml="eml://ecoinformatics.org/eml-2.1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" packageId="{$packageId}" system="knb" xsi:schemaLocation="eml://ecoinformatics.org/eml-2.1.0 eml.xsd">       
+
+<xsl:template match="/* ">
+    <!--handle top level element-->
+   <xsl:element name="eml:eml"> 
+      <xsl:copy-of select="@*"/> 
+      <xsl:attribute name="xsi:schemaLocation">eml://ecoinformatics.org/eml-2.1.0 eml.xsd</xsl:attribute>
+
+     <!-- move the access sub tree to top level-->
      <xsl:apply-templates mode="copy-top-access-tree" select="/*/dataset/access"/>
      <xsl:apply-templates mode="copy-top-access-tree" select="/*/citation/access"/>
      <xsl:apply-templates mode="copy-top-access-tree" select="/*/software/access"/>
@@ -58,7 +63,7 @@
     	     </xsl:when>
     	   </xsl:choose>
     	 </xsl:for-each>
-  </eml:eml>
+  </xsl:element>
   </xsl:template>
 
 	<!-- handle make changes under main module (dataset, citation, protocol and software) -->
@@ -83,14 +88,15 @@
         </xsl:element>
 	</xsl:template>
 
-	<!-- fixing dataset/dataTable/attributeList/attribute/measurementScale/datetime -> .../dateTime -->
-	<xsl:template match="dataTable/attributeList/attribute/measurementScale/datetime">  
+	<!-- fixing attributeList/attribute/measurementScale/datetime -> .../dateTime -->
+	<xsl:template match="attributeList/attribute/measurementScale/datetime">  
         <xsl:element name="dateTime" namespace="{namespace-uri(.)}">  
            			    <xsl:copy-of select="@*"/> 
                     	<xsl:apply-templates mode="copy-no-ns" select="./*"/>
     	 </xsl:element>
 	</xsl:template>
 	
+    <!-- change the name of element form method to methods -->
 	<xsl:template match="dataTable/method">  
         <xsl:element name="methods" namespace="{namespace-uri(.)}">  
            			    <xsl:copy-of select="@*"/> 
@@ -98,6 +104,7 @@
     	 </xsl:element>
 	</xsl:template>
 
+	<!-- change the name of element form method to methods -->
     <xsl:template match="spatialRaster/method">  
         <xsl:element name="methods" namespace="{namespace-uri(.)}">  
            			    <xsl:copy-of select="@*"/> 
@@ -105,6 +112,7 @@
     	 </xsl:element>
 	</xsl:template>
 
+	<!-- change the name of element form method to methods -->
 	<xsl:template match="spatialVector/method">  
         <xsl:element name="methods" namespace="{namespace-uri(.)}">  
            			    <xsl:copy-of select="@*"/> 
@@ -112,6 +120,7 @@
     	 </xsl:element>
 	</xsl:template>
 
+	<!-- change the name of element form method to methods -->
 	<xsl:template match="view/method">  
         <xsl:element name="methods" namespace="{namespace-uri(.)}">  
            			    <xsl:copy-of select="@*"/> 
@@ -119,6 +128,7 @@
     	 </xsl:element>
 	</xsl:template>
 
+	<!-- change the name of element form method to methods -->
 	<xsl:template match="storedProcedure/method">  
         <xsl:element name="methods" namespace="{namespace-uri(.)}">  
            			    <xsl:copy-of select="@*"/> 
