@@ -22,7 +22,7 @@
 </simpleDelimited>
 </textFormat>
 </dataFormat>
-<distribution><online><url>ecogrid://knb/tao.12433.1</url>
+<distribution id="100"><online><url>ecogrid://knb/tao.12433.1</url>
 </online>
 </distribution>
 </physical>
@@ -40,9 +40,17 @@
 </attribute>
 </attributeList>
 <numberOfRecords>2</numberOfRecords>
+<method><methodStep>step</methodStep></method>
 </dataTable>
 
 </dataset>
+<software>
+  <implementation>
+      <distribution id="200"><online><url>ecogrid://knb/tao.12433.2</url>
+</online>
+</distribution>
+  </implementation>
+</software>
  <additionalMetadata>
     <describes>1219880396347</describes>
     <hello>hello</hello>
@@ -57,5 +65,14 @@
  </additionalMetadata>
   <additionalMetadata>
     <text><additionalMetadata><c>hello</c></additionalMetadata></text>
+ </additionalMetadata>
+ <additionalMetadata>
+  <describes>100</describes>
+  <describes>200</describes>
+  <access authSystem="knb" order="allowFirst"><allow><principal>knb</principal>
+<permission>write</permission>
+</allow>
+</access>
+
  </additionalMetadata>
  </eml:eml>
