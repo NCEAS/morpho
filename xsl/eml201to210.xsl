@@ -136,6 +136,43 @@
     	 </xsl:element>
 	</xsl:template>
 
+
+     <!-- Move the access tree of data file level from additionalMetadata part to physical/distribution part.
+           If we find the id of physical/distribution is in aditionalMetadata/describe and it 
+             has sibling of access subtree, copy the subtree to physical/distribution -->
+     <xsl:template match="physical/distribution">
+        <xsl:element name="distribution" namespace="{namespace-uri(.)}">
+          <xsl:copy-of select="@*"/> 
+          <xsl:apply-templates mode="copy-no-ns" select="./*"/>
+ 		  <!--find the id in addtionalMetacat/describes-->
+          <xsl:variable name="id" select="@id"/>
+          <xsl:for-each select="/*/additionalMetadata/describes">
+                <xsl:variable name="describesId" select="."/>
+                <xsl:if test="$id=$describesId">				
+                     	 <xsl:apply-templates mode="copy-no-ns" select="../access"/>
+                </xsl:if>
+          </xsl:for-each>
+		</xsl:element>
+     </xsl:template>
+
+      <!-- Move the access tree of data file level from additionalMetadata part to software/implementation/distribution part.
+           If we find the id of physical/distribution is in aditionalMetadata/describe and it 
+             has sibling of access subtree, copy the subtree to software/implementation/distribution -->
+     <xsl:template match="software/implementation/distribution">
+        <xsl:element name="distribution" namespace="{namespace-uri(.)}">
+          <xsl:copy-of select="@*"/> 
+          <xsl:apply-templates mode="copy-no-ns" select="./*"/>
+ 		  <!--find the id in addtionalMetacat/describes-->
+          <xsl:variable name="id" select="@id"/>
+          <xsl:for-each select="/*/additionalMetadata/describes">
+                <xsl:variable name="describesId" select="."/>
+                <xsl:if test="$id=$describesId">				
+                     	 <xsl:apply-templates mode="copy-no-ns" select="../access"/>
+                </xsl:if>
+          </xsl:for-each>
+		</xsl:element>
+     </xsl:template>
+
 	<!-- copy access tree under dataset(or protocol, software and citation) to the top level -->
 	<xsl:template mode="copy-top-access-tree" match="*">
          <xsl:apply-templates mode="copy-no-ns" select="."/>
