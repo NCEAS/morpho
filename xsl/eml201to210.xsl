@@ -143,15 +143,61 @@
      <xsl:template match="physical/distribution">
         <xsl:element name="distribution" namespace="{namespace-uri(.)}">
           <xsl:copy-of select="@*"/> 
-          <xsl:apply-templates mode="copy-no-ns" select="./*"/>
- 		  <!--find the id in addtionalMetacat/describes-->
-          <xsl:variable name="id" select="@id"/>
-          <xsl:for-each select="/*/additionalMetadata/describes">
-                <xsl:variable name="describesId" select="."/>
-                <xsl:if test="$id=$describesId">				
+          <xsl:apply-templates mode="copy-no-access" select="./*"/>
+          <!--Check if access arleady exist-->
+		  <xsl:choose> 
+			<xsl:when test="access/*">
+				<!--distribution does have any access node. This can happen that we already moved an access tree 
+                      from additionalMetadata to this part. This means document have two or more addtionalMetadata
+					   with access tree describing same distribution.
+                       <additionalMetadata>
+                          <describes>100</describe>
+                          <access>...</access>
+                        </additionalMetadata>
+						 <additionalMetadata>
+                          <describes>100</describe>
+                          <access>...</access>
+                        </additionalMetadata>
+                  -->
+				<xsl:variable name="id" select="@id"/>
+				<xsl:for-each select="access">
+				<xsl:param name="accessOrder">
+					<xsl:value-of select="@order"/>
+                 </xsl:param>	
+          		<xsl:for-each select="/*/additionalMetadata/describes">
+                	<xsl:variable name="describesId" select="."/>
+                	<xsl:if test="$id=$describesId">				
+                     	 <xsl:variable name="secondOrder" select="../access/@order"/>
+						 	<xsl:choose>
+										<!-- two access trees have same order (denyFirst or allowFirst), merge it-->
+										<xsl:when test="$accessOrder=$secondOrder">	
+												<xsl:element name="access" namespace="{namespace-uri(.)}">
+          											<xsl:copy-of select="./access/@*"/> 								
+											    	<xsl:apply-templates mode="copy-no-ns" select="../access/*"/>
+												</xsl:element>											
+										</xsl:when>
+										<xsl:otherwise>
+											<xsl:message terminate="no">EML 2.0.1 document has more than one access subtree in addtionalMetadata block describing same entity.
+                                                                                         However, the access subtree has different order. It is illegitimate. Please fix the EML 2.0.1 document first.
+                                             </xsl:message>
+										</xsl:otherwise>
+									</xsl:choose>
+                	</xsl:if>
+          		</xsl:for-each>
+				</xsl:for-each>	
+            </xsl:when>
+			<xsl:otherwise>
+				<!--distribution doesn't have any access node yet. Move the subtree from addtionalMetadata to distribution-->
+				<!--find the id in addtionalMetacat/describes-->
+          		<xsl:variable name="id" select="@id"/>
+          		<xsl:for-each select="/*/additionalMetadata/describes">
+                	<xsl:variable name="describesId" select="."/>
+                	<xsl:if test="$id=$describesId">				
                      	 <xsl:apply-templates mode="copy-no-ns" select="../access"/>
-                </xsl:if>
-          </xsl:for-each>
+                	</xsl:if>
+          		</xsl:for-each>			
+			</xsl:otherwise>         
+		  </xsl:choose>		  
 		</xsl:element>
      </xsl:template>
 
@@ -188,6 +234,16 @@
            <xsl:copy-of select="@*"/> 
            <xsl:apply-templates mode="copy-no-ns"/>  
         </xsl:element> 
+	</xsl:template>
+
+ 	<!-- copy node and children without namespace and without access tree -->
+	<xsl:template mode="copy-no-access" match="*">
+       <xsl:if test="name()!='access'">  
+        <xsl:element name="{name(.)}" namespace="{namespace-uri(.)}">  
+           <xsl:copy-of select="@*"/> 
+           <xsl:apply-templates mode="copy-no-ns"/>  
+        </xsl:element>
+       </xsl:if> 
 	</xsl:template>
 
   
