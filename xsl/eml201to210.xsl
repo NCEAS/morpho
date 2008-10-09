@@ -46,21 +46,9 @@
     	     </xsl:when>
 
     	     <xsl:when test="name()='additionalMetadata'">
-    	       <additionalMetadata>
-    	             <xsl:for-each select="*">
-    	           	           <xsl:choose>
-    	           	               <xsl:when test="name()='describes'">
-    	           	                    <xsl:apply-templates mode="copy-no-ns" select="."/>
-    	           	               </xsl:when>
-    	           	               <xsl:otherwise>
-    	           	                   <metadata>
-    	           	                      <xsl:apply-templates mode="copy-no-ns" select="."/>
-    	           	                    </metadata>
-    	           	                </xsl:otherwise>
-    	           	           </xsl:choose>
-    	           	  </xsl:for-each>
-    	        </additionalMetadata>
+				<xsl:apply-templates mode="handle-additionalMetadata" select="."/>
     	     </xsl:when>
+
     	   </xsl:choose>
     	 </xsl:for-each>
   </xsl:element>
@@ -208,6 +196,93 @@
         </xsl:element> 
 	</xsl:template>
 
-
-  
+	<!--Handle additionMetadata part. Here are 4 scenarios:
+         1. <additionalMetadata>
+					<describes>100</describes>
+                     <foo>.....</foo>
+             </additionalMetacata>
+             The result will be (foo deosn't euqal access):
+             <additionalMetadata>
+					<describes>100</describes>
+                     <metadata><foo>.....</foo></metadata>
+             </additionalMetacata>
+         2. <additionalMetadata>
+					<describes>100</describes>
+					<describes>200</describes>
+                     <access>.....</access>
+             </additionalMetacata>
+            Both 100 and 200 are referenced ids of pysical/distribtuion or software/implementation/distribution.
+            Since we moved the access part to distribution element, we don't need to keep the info. 
+           So the output is blank - remvoing the additionalMetadata tree.
+         3. <additionalMetadata>
+					<describes>300</describes>
+					<describes>400</describes>
+                     <access>.....</access>
+             </additionalMetacata>
+            300 is the referenced ids of pysical/distribtuion or software/implementation/distribution. 
+            But 400 is not. So output will be:
+            <additionalMetadata>
+					<describes>400</describes>
+                     <metadata><access>.....</access></metadata>
+             </additionalMetacata>
+            And we will give an warning message: 400 is a not distribution id and the eml201 document does not follow EML pratice.
+		4. <additionalMetadata>
+                     <access>.....</access>
+             </additionalMetacata>
+            Since no describes, no access tree will move. So output will be:
+            <additionalMetadata>
+                     <metadata><access>.....</access></metadata>
+             </additionalMetacata>
+            And we will give an warning message:No distribution id in addtionalMetadata/describes and the eml201 document does not follow EML pratice.
+	-->
+	<xsl:template mode="handle-additionalMetadata" match="*">
+			<!-- test if this additionalMetadata part has "access" element-->
+			<xsl:variable name="accessCount" select="count(access)" />
+			<xsl:choose>
+				<xsl:when test="$accessCount &lt; 1">
+					<!-- no access tree here. Scenario 1 -->
+					<additionalMetadata>
+    	             	<xsl:for-each select="./*">
+    	           	           <xsl:choose>
+    	           	               <xsl:when test="name()='describes'">
+    	           	                    <xsl:apply-templates mode="copy-no-ns" select="."/>
+    	           	               </xsl:when>
+    	           	               <xsl:otherwise>
+    	           	                   <metadata>
+    	           	                      <xsl:apply-templates mode="copy-no-ns" select="."/>
+    	           	                    </metadata>
+    	           	                </xsl:otherwise>
+    	           	           </xsl:choose>
+    	           	  </xsl:for-each>
+    	        	</additionalMetadata>
+ 				</xsl:when>
+				<xsl:otherwise>
+					<!--additionalMetadata has access child-->
+					<xsl:variable name="describesCount" select="count(access)" />
+					<xsl:choose>
+						<xsl:when test="$describesCount=0">
+							<!-- scenario 4 -->
+							 <additionalMetadata>
+ 	  	           	                <metadata>
+    	           	                      <xsl:apply-templates mode="copy-no-ns" select="./*"/>
+    	           	                 </metadata>
+    	        			</additionalMetadata>
+							<xsl:message terminate="no">additonalMetadata has access element, but doesn't have any describes element which references id of physical/distribution 
+																		or software/implementation/distribution elements. This document doesn't follow the EML practice.
+                            </xsl:message>
+						</xsl:when>
+						<xsl:otherwise>
+							<xsl:for-each select="./describes">
+								 <xsl:variable name="describesID" select="."/>
+								 <xsl:variable name="distribution" select="count(//physical/distribution[@id=$describesID] | //software/implementation/distribution[@id=$describesID] )"/>
+									<xsl:if test="$distribution=0">
+								 		<xsl:message terminate="no">We removed the access tree from additionalMetadata. However, described ID doesn't reference any distribution id</xsl:message>
+									</xsl:if>
+							</xsl:for-each>
+						</xsl:otherwise>
+					</xsl:choose>
+				</xsl:otherwise>
+			</xsl:choose>
+	</xsl:template>
+              
 </xsl:stylesheet>
