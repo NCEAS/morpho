@@ -16,11 +16,15 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
+import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.datapackage.AbstractDataPackage;
+import edu.ucsb.nceas.morpho.datapackage.AccessionNumber;
+import edu.ucsb.nceas.morpho.datapackage.DataPackageFactory;
 import edu.ucsb.nceas.morpho.datapackage.DataViewContainerPanel;
 import edu.ucsb.nceas.morpho.datapackage.EML200DataPackage;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WidgetFactory;
 import edu.ucsb.nceas.morpho.util.Log;
+
 
 /**
  * This class represents a dialog which will ask if user want to upgrade the EML datapckage
@@ -46,8 +50,11 @@ public class EMLTransformToNewestVersionDialog
 	  private JButton executeButton = null;
 	  private JButton cancelButton = null;
 	  
-	/* the user's choice of */
-	  private int userChoice = -1;
+	  /* the user's choice of */
+	  private int userChoice = -2;
+	  
+	  /* the eml2 package embedded in the morpho frame*/
+	  private EML200DataPackage eml200Package = null;
 	
 	/**
 	 * Constructor of this dialog
@@ -56,9 +63,18 @@ public class EMLTransformToNewestVersionDialog
 	public EMLTransformToNewestVersionDialog(MorphoFrame frame)
 	{
 		morphoFrame = frame;
-		initializeUI(frame);
-		//Only when user choose "Yes", the document will be transformed
-		transfromEMLToNewestVersion();
+		AbstractDataPackage dataPackage = morphoFrame.getAbstractDataPackage();
+		if (dataPackage != null && dataPackage instanceof EML200DataPackage)
+		{
+			eml200Package = (EML200DataPackage)dataPackage;
+			if(eml200Package != null && !eml200Package.isLatestEMLVersion())
+			{
+				initializeUI(frame);
+				//Only when user choose "Yes", the document will be transformed
+				transfromEMLToNewestVersion();
+			}
+			
+		}
 	}
 	
 	/*
@@ -90,12 +106,31 @@ public class EMLTransformToNewestVersionDialog
 		if (userChoice == JOptionPane.YES_OPTION && morphoFrame != null)
 		{
 			AbstractDataPackage dataPackage = morphoFrame.getAbstractDataPackage();
-			if (dataPackage != null)
+			if (eml200Package != null)
 			{
 				//TODO transform the datapakcage to the newest version
+				String id = eml200Package.getAccessionNumber();
+				String newString = eml200Package.transformToLastestEML();
+				if (newString != null)
+				{
+					eml200Package= (EML200DataPackage)DataPackageFactory.getDataPackage(
+		                      new java.io.StringReader(newString), false, true);
+	                eml200Package.setEMLVersion(EML200DataPackage.LATEST_EML_VER);
+	                Morpho morpho = Morpho.thisStaticInstance;
+	                //AccessionNumber an = new AccessionNumber(morpho);
+	                //String newid = an.incRev(id);
+	                //eml200Package.setAccessionNumber(newid);
+	                eml200Package.setLocation("");//not save it yet
+	                UIController.showNewPackage(eml200Package);
+				}
+				else
+				{
+					Log.debug(20, "Couldn't tranform the eml document to the newest version");
+				}
 			}
 		}
 	}
+	
 	
 	
 	/**
