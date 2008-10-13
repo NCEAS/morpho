@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2008-10-03 22:09:20 $'
- * '$Revision: 1.60 $'
+ *     '$Date: 2008-10-13 23:45:35 $'
+ * '$Revision: 1.61 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -38,6 +38,7 @@ import edu.ucsb.nceas.utilities.XMLUtilities;
 import edu.ucsb.nceas.morpho.util.XMLUtil;
 import edu.ucsb.nceas.morpho.util.XMLErrorHandler;
 
+import java.io.CharArrayWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileReader;
@@ -48,8 +49,20 @@ import java.util.Vector;
 import java.util.List;
 import java.util.ArrayList;
 
+
 import javax.xml.parsers.DocumentBuilder;
+import javax.xml.transform.Result;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMResult;
+import javax.xml.transform.sax.SAXResult;
+import javax.xml.transform.sax.SAXSource;
+import javax.xml.transform.sax.SAXTransformerFactory;
+import javax.xml.transform.sax.TransformerHandler;
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.stream.StreamSource;
 
 import org.apache.xerces.dom.DOMImplementationImpl;
 import org.w3c.dom.Attr;
@@ -60,6 +73,9 @@ import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.apache.xpath.XPathAPI;
+import org.apache.xalan.templates.OutputProperties;
+import org.xml.sax.XMLReader;
+import org.xml.sax.helpers.XMLReaderFactory;
 
 /**
  * class that represents a data package. This class is abstract. Specific datapackages
@@ -859,6 +875,101 @@ public  class EML200DataPackage extends AbstractDataPackage
     }
     return ret;
   }
+  
+  /**
+   * Determines if the package is the latest eml version
+   * @return
+   */
+  public boolean isLatestEMLVersion()
+  {
+	  String emlVersion = getEMLVersion();
+      Log.debug(10, "\n\n**********Got the EML version: " + emlVersion);
+      boolean isLatestEMLVersion = (emlVersion.toLowerCase()
+                           .indexOf(EML200DataPackage.LATEST_EML_VER) != -1);
+      return isLatestEMLVersion;
+  }
    
+  /**
+   * Transform to the latest eml version. Null will be return if it couldn't be transformed.
+   * This is a utility method
+   * @return the eml document in string format
+   */
+  public String transformToLastestEML()
+  {
+	  String result = transformToEML210();
+	  return result;
+  }
+  
+  /*
+   * Transform to eml 210 version. Null will be return if it couldn't be transformed.
+   */
+  private String transformToEML210()
+  {
+	  String result = null;
+	  try
+	  {
+		  result= doTransform("./xsl/eml201to210.xsl", XMLUtil.getDOMTreeAsString(
+                            getMetadataNode().getOwnerDocument())) ;
+	  }
+	  catch(Exception e)
+	  {
+		  Log.debug(20, "Couldn't transform the eml document to the latest version "+e.getMessage());
+	  }
+	  return result;
+  }
+  
+  /*
+   * Transform an eml document to another version of eml2 document by specifying the
+   * style sheet. The output will be string of the new doc. If  transform couldn't happen,
+   * null will be returned.
+   */
+  private String doTransform(String styleSheetPath, String XMLinput)
+  throws TransformerException, TransformerConfigurationException, Exception{
+	 String output = null;
+	// Instantiate  a TransformerFactory.
+	TransformerFactory tFactory = TransformerFactory.newInstance();
+	//MyURIResolver res = new MyURIResolver();		
+	//tFactory.setURIResolver(res);
+	
+	//System.out.println("==================1 "+XMLinput);
+	// Determine whether the TransformerFactory supports The use uf SAXSource
+	// and SAXResult
+	if (tFactory.getFeature(SAXSource.FEATURE) &&  tFactory.getFeature(StreamResult.FEATURE))
+	{
+		// Cast the TransformerFactory to SAXTransformerFactory.
+		SAXTransformerFactory saxTFactory = ((SAXTransformerFactory) tFactory);
+		// Create a TransformerHandler for  stylesheet.
+	    File f2 = new File(styleSheetPath);
+		TransformerHandler tHandler2 = saxTFactory.newTransformerHandler(new StreamSource(f2));
+		Transformer lastTransformer = tHandler2.getTransformer();
+		lastTransformer.setOutputProperty(OutputProperties.S_KEY_INDENT_AMOUNT, EMLConvert.indentAmount);
+		
+		// Create an XMLReader.
+		XMLReader reader = XMLReaderFactory.createXMLReader();
+	   	reader.setContentHandler(tHandler2);
+		reader.setProperty("http://xml.org/sax/properties/lexical-handler", tHandler2);
+		/*File outfile = new File("example");
+		FileWriter writer = new FileWriter(outfile);
+		Result result = new StreamResult(writer);*/
+		CharArrayWriter outputWriter  = new CharArrayWriter();
+		Result result = new StreamResult(outputWriter);
+		//DOMResult result = new DOMResult();
+		tHandler2.setResult(result);
+		// Parse the XML input document. The input ContentHandler and output ContentHandler
+		// work in separate threads to optimize performance.	
+		reader.parse(new InputSource(new StringReader(XMLinput)));
+		//outputNode = result.getNode();
+		output = outputWriter.toString();
+		//System.out.println("==================6 "+output);
+	
+	}
+	else
+	{
+		Log.debug(3, "The parser doesn't support SAXsource or SAXresult or DOMresult featurs. \n"+
+				 "It couldn't be save to newest EML document ");
+	}
+	return output;
+  }
+
 }
 
