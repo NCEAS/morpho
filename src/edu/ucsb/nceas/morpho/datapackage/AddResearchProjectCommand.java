@@ -5,9 +5,9 @@
  *    Authors: Saurabh Garg
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2004-04-05 20:28:01 $'
- * '$Revision: 1.15 $'
+ *   '$Author: tao $'
+ *     '$Date: 2008-10-14 01:00:44 $'
+ * '$Revision: 1.16 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,6 +26,8 @@
 
 package edu.ucsb.nceas.morpho.datapackage;
 
+import edu.ucsb.nceas.morpho.framework.EMLTransformToNewestVersionDialog;
+import edu.ucsb.nceas.morpho.framework.MorphoFrame;
 import edu.ucsb.nceas.morpho.framework.AbstractUIPage;
 import edu.ucsb.nceas.morpho.framework.ModalDialog;
 import edu.ucsb.nceas.morpho.framework.MorphoFrame;
@@ -49,7 +51,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import java.util.List;
 import java.util.ArrayList;
-
+import javax.swing.JOptionPane;
 /**
  * Class to handle add project command
  */
@@ -88,6 +90,15 @@ public class AddResearchProjectCommand implements Command {
 
     projectPage = dpwPlugin.getPage(DataPackageWizardInterface.PROJECT);
 
+    //Check if the eml document is the current version before editing it.
+	  MorphoFrame morphoFrame = UIController.getInstance().getCurrentActiveWindow();
+	  EMLTransformToNewestVersionDialog dialog = new EMLTransformToNewestVersionDialog(morphoFrame);
+	  if (dialog.getUserChoice() == JOptionPane.NO_OPTION)
+	 {
+		   // if user choose not transform it, stop the action.
+			Log.debug(2,"The current EML document is not the latest version. You should transform it first!");
+			return;
+	 }
     adp = UIController.getInstance().getCurrentAbstractDataPackage();
 
     if (backupSubtreeAndShowProjectDialog()) {

@@ -5,9 +5,9 @@
  *    Authors: Saurabh Garg
  *    Release: @release@
  *
- *   '$Author: anderson $'
- *     '$Date: 2006-01-20 23:49:10 $'
- * '$Revision: 1.3 $'
+ *   '$Author: tao $'
+ *     '$Date: 2008-10-14 01:00:44 $'
+ * '$Revision: 1.4 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,6 +26,7 @@
 
 package edu.ucsb.nceas.morpho.datapackage;
 
+import javax.swing.JOptionPane;
 import javax.xml.transform.TransformerException;
 
 import java.awt.event.ActionEvent;
@@ -34,6 +35,8 @@ import org.apache.xerces.dom.DOMImplementationImpl;
 import org.w3c.dom.DOMImplementation;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
+import edu.ucsb.nceas.morpho.framework.EMLTransformToNewestVersionDialog;
+import edu.ucsb.nceas.morpho.framework.MorphoFrame;
 import edu.ucsb.nceas.morpho.framework.AbstractUIPage;
 import edu.ucsb.nceas.morpho.framework.ModalDialog;
 import edu.ucsb.nceas.morpho.framework.UIController;
@@ -65,6 +68,15 @@ public class AddTitleAbstractCommand
    */
   public void execute(ActionEvent event) {
 
+	  //Check if the eml document is the current version before editing it.
+	  MorphoFrame frame = UIController.getInstance().getCurrentActiveWindow();
+	  EMLTransformToNewestVersionDialog dialog = new EMLTransformToNewestVersionDialog(frame);
+	  if (dialog.getUserChoice() == JOptionPane.NO_OPTION)
+	 {
+		   // if user choose not transform it, stop the action.
+			Log.debug(2,"The current EML document is not the latest version. You should transform it first!");
+			return;
+	 }
     adp = UIController.getInstance().getCurrentAbstractDataPackage();
 
     if (showTitleAbstractDialog()) {

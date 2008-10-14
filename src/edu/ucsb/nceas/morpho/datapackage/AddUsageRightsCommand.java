@@ -5,9 +5,9 @@
  *    Authors: Saurabh Garg
  *    Release: @release@
  *
- *   '$Author: sambasiv $'
- *     '$Date: 2004-04-29 00:08:40 $'
- * '$Revision: 1.6 $'
+ *   '$Author: tao $'
+ *     '$Date: 2008-10-14 01:00:44 $'
+ * '$Revision: 1.7 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -38,7 +38,7 @@ import edu.ucsb.nceas.morpho.util.Log;
 import edu.ucsb.nceas.morpho.util.UISettings;
 import edu.ucsb.nceas.utilities.OrderedMap;
 import edu.ucsb.nceas.utilities.XMLUtilities;
-
+import javax.swing.JOptionPane;
 import javax.xml.transform.TransformerException;
 
 import java.awt.event.ActionEvent;
@@ -47,6 +47,8 @@ import org.apache.xerces.dom.DOMImplementationImpl;
 import org.w3c.dom.DOMImplementation;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
+import edu.ucsb.nceas.morpho.framework.EMLTransformToNewestVersionDialog;
+import edu.ucsb.nceas.morpho.framework.MorphoFrame;
 import edu.ucsb.nceas.morpho.framework.EditorInterface;
 import edu.ucsb.nceas.morpho.plugins.ServiceProvider;
 import edu.ucsb.nceas.morpho.framework.EditingCompleteListener;
@@ -72,6 +74,15 @@ public class AddUsageRightsCommand implements Command {
    */
   public void execute(ActionEvent event) {
 
+	  //Check if the eml document is the current version before editing it.
+	  MorphoFrame frame = UIController.getInstance().getCurrentActiveWindow();
+	  EMLTransformToNewestVersionDialog dialog = new EMLTransformToNewestVersionDialog(frame);
+	  if (dialog.getUserChoice() == JOptionPane.NO_OPTION)
+	 {
+		   // if user choose not transform it, stop the action.
+			Log.debug(2,"The current EML document is not the latest version. You should transform it first!");
+			return;
+	 }
     adp = UIController.getInstance().getCurrentAbstractDataPackage();
 
     if (showUsageDialog()) {

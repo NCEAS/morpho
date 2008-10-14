@@ -5,9 +5,9 @@
  *    Authors: Saurabh Garg
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2004-04-07 20:33:54 $'
- * '$Revision: 1.15 $'
+ *   '$Author: tao $'
+ *     '$Date: 2008-10-14 01:00:44 $'
+ * '$Revision: 1.16 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,6 +26,8 @@
 
 package edu.ucsb.nceas.morpho.datapackage;
 
+import edu.ucsb.nceas.morpho.framework.EMLTransformToNewestVersionDialog;
+import edu.ucsb.nceas.morpho.framework.MorphoFrame;
 import edu.ucsb.nceas.morpho.framework.AbstractUIPage;
 import edu.ucsb.nceas.morpho.framework.ModalDialog;
 import edu.ucsb.nceas.morpho.framework.MorphoFrame;
@@ -43,6 +45,7 @@ import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
 
 import java.util.Iterator;
 import java.util.Set;
+import javax.swing.JOptionPane;
 
 import java.awt.event.ActionEvent;
 
@@ -79,6 +82,15 @@ public class AddTemporalCovCommand implements Command {
    */
   public void execute(ActionEvent event) {
 
+	  //Check if the eml document is the current version before editing it.
+	  MorphoFrame frame = UIController.getInstance().getCurrentActiveWindow();
+	  EMLTransformToNewestVersionDialog dialog = new EMLTransformToNewestVersionDialog(frame);
+	  if (dialog.getUserChoice() == JOptionPane.NO_OPTION)
+	 {
+		   // if user choose not transform it, stop the action.
+			Log.debug(2,"The current EML document is not the latest version. You should transform it first!");
+			return;
+	 }
     adp = UIController.getInstance().getCurrentAbstractDataPackage();
 
     resultPane = null;
