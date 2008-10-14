@@ -7,9 +7,9 @@
  *    Authors: Saurabh Garg
  *    Release: @release@
  *
- *   '$Author: sgarg $'
- *     '$Date: 2005-09-01 19:03:57 $'
- * '$Revision: 1.39 $'
+ *   '$Author: tao $'
+ *     '$Date: 2008-10-14 23:09:28 $'
+ * '$Revision: 1.40 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -69,7 +69,7 @@ public class Access
   public final String subtitle = " ";
 
   private JPanel radioPanel;
-  private String xPathRoot = "/eml:eml/dataset/access/";
+  private String xPathRoot = "/eml:eml/access/";
 
   private boolean publicReadAccess = true;
   private final String[] buttonsText = new String[] {
