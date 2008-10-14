@@ -5,9 +5,9 @@
  *    Authors: @tao@
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2004-04-16 19:36:18 $'
- * '$Revision: 1.17 $'
+ *   '$Author: tao $'
+ *     '$Date: 2008-10-14 03:44:35 $'
+ * '$Revision: 1.18 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,6 +28,7 @@ package edu.ucsb.nceas.morpho.datapackage;
 
 import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
+import edu.ucsb.nceas.morpho.framework.EMLTransformToNewestVersionDialog;
 import edu.ucsb.nceas.morpho.framework.MorphoFrame;
 import edu.ucsb.nceas.morpho.framework.UIController;
 import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
@@ -40,6 +41,8 @@ import edu.ucsb.nceas.morpho.util.Log;
 import edu.ucsb.nceas.utilities.XMLUtilities;
 
 import java.awt.event.ActionEvent;
+
+import javax.swing.JOptionPane;
 
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -70,6 +73,15 @@ public class ImportDataCommand implements Command
   {
     DataViewContainerPanel resultPane = null;
     morphoFrame = UIController.getInstance().getCurrentActiveWindow();
+
+    //Check if the eml document is the current version before editing it.
+	  EMLTransformToNewestVersionDialog dialog = new EMLTransformToNewestVersionDialog(morphoFrame);
+	  if (dialog.getUserChoice() == JOptionPane.NO_OPTION)
+	 {
+		   // if user choose not transform it, stop the action.
+			Log.debug(2,"The current EML document is not the latest version. You should transform it first!");
+			return;
+	 }
     if (morphoFrame != null) {
 
        resultPane = morphoFrame.getDataViewContainerPanel();
