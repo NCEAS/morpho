@@ -5,9 +5,9 @@
 *    Authors: @tao@
 *    Release: @release@
 *
-*   '$Author: sambasiv $'
-*     '$Date: 2004-04-29 00:55:16 $'
-* '$Revision: 1.21 $'
+*   '$Author: tao $'
+*     '$Date: 2008-10-14 17:25:51 $'
+* '$Revision: 1.22 $'
 *
 * This program is free software; you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -28,6 +28,7 @@ package edu.ucsb.nceas.morpho.datapackage;
 
 import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
+import edu.ucsb.nceas.morpho.framework.EMLTransformToNewestVersionDialog;
 import edu.ucsb.nceas.morpho.framework.ModalDialog;
 import edu.ucsb.nceas.morpho.framework.MorphoFrame;
 import edu.ucsb.nceas.morpho.framework.UIController;
@@ -49,6 +50,7 @@ import java.awt.event.ActionEvent;
 import javax.swing.DefaultCellEditor;
 import javax.swing.JButton;
 import javax.swing.JDialog;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTable;
 import javax.swing.table.TableColumnModel;
@@ -133,22 +135,47 @@ public class InsertColumnCommand implements Command
     // make sure resulPanel is not null
     if (resultPane != null)
     {
+
+       
       dataView = resultPane.getCurrentDataViewer();
       if (dataView != null)
       {
-        // Get parameters and run it
-        table=dataView.getDataTable();
-        ptm = (PersistentTableModel)table.getModel();
-        pv = dataView.getPV();
-        Morpho morph=dataView.getMorpho();
-        attributeDoc = dataView.getAttributeDoc();
-        columnLabels=dataView.getColumnLabels();
-        //         String fieldDelimiter=dataView.getFieldDelimiter();
-        fieldDelimiter= pv.getFieldDelimiter();
-        tablePanel=dataView.getTablePanel();
-        selectedCol = table.getSelectedColumn();
-        if (selectedCol > -1) {
-          showAttributeDialog();
+    	  tablePanel=dataView.getTablePanel();
+    	  table=dataView.getDataTable();
+          selectedCol = table.getSelectedColumn();       
+          if (selectedCol > -1) 
+          {
+        	  //Check if the eml document is the current version before editing it.
+           	 EMLTransformToNewestVersionDialog dialog = new EMLTransformToNewestVersionDialog(morphoFrame);
+           	 if (dialog.getUserChoice() == JOptionPane.NO_OPTION)
+           	 {
+           		   // if user choose not transform it, stop the action.
+           			Log.debug(2,"The current EML document is not the latest version. You should transform it first!");
+           			return;
+               }
+           	 // since morphoFrame object maybe updated, we need to get it again.
+           	 morphoFrame = UIController.getInstance().getCurrentActiveWindow();
+           	 if (morphoFrame != null)
+             {
+               resultPane = morphoFrame.getDataViewContainerPanel();
+             }//if
+           	 if (resultPane != null)
+           	 {
+           		dataView = resultPane.getCurrentDataViewer();
+                if (dataView != null)
+                {
+			        // Get parameters and run it
+			        table=dataView.getDataTable();
+			        ptm = (PersistentTableModel)table.getModel();
+			        pv = dataView.getPV();
+			        Morpho morph=dataView.getMorpho();
+			        attributeDoc = dataView.getAttributeDoc();
+			        columnLabels=dataView.getColumnLabels();
+			        //         String fieldDelimiter=dataView.getFieldDelimiter();
+			        fieldDelimiter= pv.getFieldDelimiter();
+			        showAttributeDialog();
+                }
+           	 }
         }
       }
 
