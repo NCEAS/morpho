@@ -7,9 +7,9 @@
  *    Authors: Saurabh Garg
  *    Release: @release@
  *
- *   '$Author: sgarg $'
- *     '$Date: 2005-07-14 19:27:59 $'
- * '$Revision: 1.26 $'
+ *   '$Author: tao $'
+ *     '$Date: 2008-10-14 23:08:16 $'
+ * '$Revision: 1.27 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -129,7 +129,7 @@ public class AccessPage
   };
 
   public boolean accessIsAllow = true;
-  private String xPathRoot = "/eml:eml/dataset/access";
+  private String xPathRoot = "/eml:eml/access";
 
   public void setQueryMetacatCancelled(boolean queryMetacatCancelled) {
     this.queryMetacatCancelled = queryMetacatCancelled;
