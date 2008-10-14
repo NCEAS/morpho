@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2008-08-28 23:33:33 $'
- * '$Revision: 1.74 $'
+ *     '$Date: 2008-10-14 23:11:10 $'
+ * '$Revision: 1.75 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -323,8 +323,9 @@ public class WizardSettings {
 	  +"   packageId=\"\" system=\"knb\" "
 	  +"   xmlns:eml=\"eml://ecoinformatics.org/eml-2.1.0\" "
 	  +"   xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" "
-//	  +"   xmlns:ds=\"eml://ecoinformatics.org/dataset-2.0.1\" "
 	  +"   xsi:schemaLocation=\"eml://ecoinformatics.org/eml-2.1.0 eml.xsd\"> "
+	  +"   <access> "
+  	  +"   </access>"
 	  +"   <dataset> "
 	  +"   <title> </title> "
 	  +"   <creator> </creator>"
@@ -337,6 +338,8 @@ public class WizardSettings {
 	  +"   xmlns:eml=\"eml://ecoinformatics.org/eml-2.1.0\" "
 	  +"   xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" "
 	  +"   xsi:schemaLocation=\"eml://ecoinformatics.org/eml-2.1.0 eml.xsd\"> "
+	  +"   <access> "
+  	  +"   </access>"
 	  +"   <dataset> "
 	  +"   <title> </title> "
 	  +"   <creator> </creator>"
