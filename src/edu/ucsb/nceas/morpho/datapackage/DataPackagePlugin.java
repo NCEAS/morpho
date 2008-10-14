@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: leinfelder $'
- *     '$Date: 2008-10-02 00:16:04 $'
- * '$Revision: 1.108 $'
+ *   '$Author: tao $'
+ *     '$Date: 2008-10-14 17:51:38 $'
+ * '$Revision: 1.109 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,6 +30,7 @@ import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.datastore.MetacatUploadException;
 import edu.ucsb.nceas.morpho.framework.ButterflyFlapCoordinator;
 import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
+import edu.ucsb.nceas.morpho.framework.EMLTransformToNewestVersionDialog;
 import edu.ucsb.nceas.morpho.framework.MorphoFrame;
 import edu.ucsb.nceas.morpho.framework.UIController;
 import edu.ucsb.nceas.morpho.plugins.PluginInterface;
@@ -881,7 +882,10 @@ public class DataPackagePlugin
                  dvcp,
                  StateChangeEvent.CREATE_DATAPACKAGE_FRAME));
     adp.loadCustomUnits();
-		packageWindow.setBusy(false);
+	packageWindow.setBusy(false);
+	//check if we should upgrade eml to the newest version
+    EMLTransformToNewestVersionDialog dialog = new EMLTransformToNewestVersionDialog(packageWindow);
+		
   }
 
 
