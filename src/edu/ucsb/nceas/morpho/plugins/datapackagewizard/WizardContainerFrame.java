@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2008-08-28 23:32:38 $'
- * '$Revision: 1.69 $'
+ *     '$Date: 2008-10-14 23:12:32 $'
+ * '$Revision: 1.70 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -587,6 +587,12 @@ public class WizardContainerFrame
 
     //TITLE:
     OrderedMap generalMap = null;
+    
+    //ACCESS:
+    if (ACCESS != null) {
+      addPageDataToResultsMap( ACCESS, wizData);
+    }
+    
     if (GENERAL != null) {
 
       generalMap = GENERAL.getPageData();
@@ -659,10 +665,7 @@ public class WizardContainerFrame
       addPageDataToResultsMap( PROJECT, wizData);
     }
 
-    //ACCESS:
-    if (ACCESS != null) {
-      addPageDataToResultsMap( ACCESS, wizData);
-    }
+   
 
     if (TEXT_IMPORT_WIZARD != null) {
       addPageDataToResultsMap( TEXT_IMPORT_WIZARD, wizData);
