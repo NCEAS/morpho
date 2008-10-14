@@ -5,9 +5,9 @@
  *    Authors: @tao@
  *    Release: @release@
  *
- *   '$Author: sambasiv $'
- *     '$Date: 2004-04-29 00:55:16 $'
- * '$Revision: 1.18 $'
+ *   '$Author: tao $'
+ *     '$Date: 2008-10-14 17:24:40 $'
+ * '$Revision: 1.19 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,6 +27,7 @@
 package edu.ucsb.nceas.morpho.datapackage;
 
 import edu.ucsb.nceas.morpho.framework.AbstractUIPage;
+import edu.ucsb.nceas.morpho.framework.EMLTransformToNewestVersionDialog;
 import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
 import edu.ucsb.nceas.morpho.framework.ModalDialog;
 import edu.ucsb.nceas.morpho.framework.MorphoFrame;
@@ -49,6 +50,7 @@ import java.util.Vector;
 import java.awt.event.ActionEvent;
 
 import javax.swing.JTable;
+import javax.swing.JOptionPane;
 
 import org.w3c.dom.Node;
 
@@ -65,6 +67,7 @@ public class EditColumnMetaDataCommand implements Command
   private int attrIndex = -1;
   private int entityIndex = -1;
   private JTable table = null;
+  private DataViewContainerPanel resultPane = null;
   private OrderedMap map = null;
   private String columnName;
   private String mScale;
@@ -87,11 +90,12 @@ public class EditColumnMetaDataCommand implements Command
    */
   public void execute(ActionEvent event)
   {
-    DataViewContainerPanel resultPane = null;
+    
 
     Node[] attributes = null;
 
     morphoFrame = UIController.getInstance().getCurrentActiveWindow();
+    
     if (morphoFrame != null)
     {
        resultPane = morphoFrame.getDataViewContainerPanel();
@@ -120,11 +124,40 @@ public class EditColumnMetaDataCommand implements Command
           table = dataView.getDataTable();
           attrIndex = table.getSelectedColumn();
           entityIndex = dataView.getEntityIndex();
-          attributes = adp.getAttributeArray(entityIndex);
+          //attributes = adp.getAttributeArray(entityIndex);
        }
 
 
     }//if
+    
+    //check if we should upgrade eml to the newest version
+    EMLTransformToNewestVersionDialog dialog = new EMLTransformToNewestVersionDialog(morphoFrame);
+	 if (dialog.getUserChoice() == JOptionPane.NO_OPTION)
+	 {
+		   // if user choose not transform it, stop the action.
+			Log.debug(2,"The current EML document is not the latest version. You should transform it first!");
+			return;
+	 }
+	// since the morphoFrame may be updated to eml210 document, we need to get the adp again.
+	morphoFrame = UIController.getInstance().getCurrentActiveWindow();
+	if (morphoFrame != null)
+	{
+	       resultPane = morphoFrame.getDataViewContainerPanel();
+	 }//if
+
+	  if ( resultPane != null)
+	  {
+	       adp = resultPane.getAbstractDataPackage();
+	       dataView = resultPane.getCurrentDataViewer();
+	       table = dataView.getDataTable();
+	  }
+
+	  if(adp == null) {
+	      Log.debug(16, " Abstract Data Package is null in the EditColumnMetaDataCommand");
+	      return;
+	  }
+	  
+	  attributes = adp.getAttributeArray(entityIndex);
 
     if(attributes == null || attrIndex == -1) {
 
