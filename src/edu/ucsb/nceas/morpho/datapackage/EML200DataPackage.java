@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2008-10-13 23:45:35 $'
- * '$Revision: 1.61 $'
+ *     '$Date: 2008-10-15 02:25:28 $'
+ * '$Revision: 1.62 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -384,7 +384,19 @@ public  class EML200DataPackage extends AbstractDataPackage
       if (doc==null) { Log.debug(1, "doc is NULL!");}
       setDocument(doc);
       try{
-        metadataPathNode = XMLUtilities.getXMLAsDOMTreeRootNode("/eml200KeymapConfig.xml");
+    	String emlVersion = getEMLVersion();
+    	Log.debug(30, "eml version===== is "+emlVersion);
+    	 if (emlVersion.indexOf("eml-2.0")>-1)
+   	  	{
+   		  	//System.out.println("the eml 200 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+   		  	metadataPathNode = XMLUtilities.getXMLAsDOMTreeRootNode("/eml200KeymapConfig.xml");
+   	  	}
+   	  	else
+   	  	{
+   	  		//System.out.println("the eml 210 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+   	  		metadataPathNode = XMLUtilities.getXMLAsDOMTreeRootNode("/eml210KeymapConfig.xml");
+   	  	}
+         //metadataPathNode = XMLUtilities.getXMLAsDOMTreeRootNode("/eml200KeymapConfig.xml");
       }
       catch (Exception e2) {
         Log.debug(4, "getting DOM for Paths threw error: " + e2.toString());
