@@ -5,9 +5,9 @@
  *    Authors: Saurabh Garg
  *    Release: @release@
  *
- *   '$Author: tao $'
- *     '$Date: 2008-10-14 01:00:44 $'
- * '$Revision: 1.2 $'
+ *   '$Author: leinfelder $'
+ *     '$Date: 2008-10-15 22:47:34 $'
+ * '$Revision: 1.3 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -126,7 +126,7 @@ public class AddEntityAccessCommand implements Command {
 			return false;
 		}
 
-		accessPage = dpwPlugin.getPage(DataPackageWizardInterface.ACCESS);
+		accessPage = dpwPlugin.getPage(DataPackageWizardInterface.ENTITY_ACCESS);
 
 		OrderedMap existingValuesMap = null;
 		try {

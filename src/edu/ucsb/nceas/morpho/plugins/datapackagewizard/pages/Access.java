@@ -7,9 +7,9 @@
  *    Authors: Saurabh Garg
  *    Release: @release@
  *
- *   '$Author: tao $'
- *     '$Date: 2008-10-14 23:09:28 $'
- * '$Revision: 1.40 $'
+ *   '$Author: leinfelder $'
+ *     '$Date: 2008-10-15 22:47:35 $'
+ * '$Revision: 1.41 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -70,6 +70,8 @@ public class Access
 
   private JPanel radioPanel;
   private String xPathRoot = "/eml:eml/access/";
+  
+  protected boolean isEntity = false;
 
   private boolean publicReadAccess = true;
   private final String[] buttonsText = new String[] {
@@ -101,7 +103,7 @@ public class Access
    * initialize access does frame-specific design - i.e. adding the widgets that
    are displayed only in this frame (doesn't include prev/next buttons etc)
    */
-  private void init() {
+  protected void init() {
 
     this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
@@ -321,14 +323,14 @@ public class Access
           "public");
       returnMap.put(rootXPath + "allow[" + (allowIndex++) + "]/permission",
           "read");
-   // } else {
-      // REMOVE THIS ///////////////////////
-   //   returnMap.put(rootXPath + AUTHSYSTEM_REL_XPATH, AUTHSYSTEM_VALUE);
-   //   returnMap.put(rootXPath + ORDER_REL_XPATH, ORDER_VALUE);
-   //   returnMap.put(rootXPath + "deny[" + (denyIndex) + "]/principal",
-   //       "public");
-   //   returnMap.put(rootXPath + "deny[" + (denyIndex++) + "]/permission",
-   //       "read");
+    } 
+    else if (isEntity) {
+      returnMap.put(rootXPath + AUTHSYSTEM_REL_XPATH, AUTHSYSTEM_VALUE);
+      returnMap.put(rootXPath + ORDER_REL_XPATH, ORDER_VALUE);
+      returnMap.put(rootXPath + "deny[" + (denyIndex) + "]/principal",
+          "public");
+      returnMap.put(rootXPath + "deny[" + (denyIndex++) + "]/permission",
+          "read");
 
       ///////////////////////////////
     }
