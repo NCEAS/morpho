@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2008-10-03 22:08:07 $'
- * '$Revision: 1.133 $'
+ *     '$Date: 2008-10-15 02:22:16 $'
+ * '$Revision: 1.134 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -628,6 +628,7 @@ public abstract class AbstractDataPackage extends MetadataObject
     try{
       genericNamePath = (XMLUtilities.getTextNodeWithXPath(getMetadataPath(),
           "/xpathKeyMap/contextNode[@name='package']/"+ genericName)).getNodeValue();
+      Log.debug(40, "=================the genericNamePath in getSubtree() is "+genericNamePath);
       nodelist = XMLUtilities.getNodeListWithXPath(metadataNode,
           genericNamePath);
 
@@ -656,7 +657,7 @@ public abstract class AbstractDataPackage extends MetadataObject
         }
       }
     } catch (Exception e) {
-      Log.debug(50, "Exception in getSubtree!");
+      Log.debug(30, "Exception in getSubtree!"+e.getMessage());
     }
     return null;
   }
@@ -934,7 +935,7 @@ public abstract class AbstractDataPackage extends MetadataObject
         NodeList insertionList = XMLUtilities.getNodeListWithXPath(getMetadataPath(),
             "/xpathKeyMap/insertionList[@name='"+genericName+"']/prevNode");
         if (insertionList==null) {
-          // check if there is a node next to teh generic node
+          // check if there is a node next to the generic node
           insertionList = XMLUtilities.getNodeListWithXPath(getMetadataPath(),
             "/xpathKeyMap/insertionList[@name='"+genericName+"']/nextNode");
           if (insertionList==null) {
@@ -1031,6 +1032,7 @@ public abstract class AbstractDataPackage extends MetadataObject
     try{
       genericNamePath = (XMLUtilities.getTextNodeWithXPath(getMetadataPath(),
           "/xpathKeyMap/contextNode[@name='package']/"+ genericName)).getNodeValue();
+      Log.debug(40, "=================the genericNamePath in deleteSubtree() is "+genericNamePath);
       nodelist = XMLUtilities.getNodeListWithXPath(metadataNode,
           genericNamePath);
       if ((nodelist == null)||(nodelist.getLength()==0)) {
