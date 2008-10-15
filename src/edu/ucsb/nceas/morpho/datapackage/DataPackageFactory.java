@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2008-08-28 23:22:04 $'
- * '$Revision: 1.47 $'
+ *     '$Date: 2008-10-15 02:23:40 $'
+ * '$Revision: 1.48 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -193,8 +193,18 @@ public class DataPackageFactory
       dp = new EML200DataPackage();
 
       try{
-        Node metadataPathNode = XMLUtilities.getXMLAsDOMTreeRootNode("/eml200KeymapConfig.xml");
-        dp.setMetadataPath(metadataPathNode);
+    	  Node metadataPathNode = null;
+    	  if (doctype.indexOf("eml-2.0")>-1)
+    	  {
+    		  //System.out.println("the eml 200 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+    		  metadataPathNode = XMLUtilities.getXMLAsDOMTreeRootNode("/eml200KeymapConfig.xml");
+    	  }
+    	  else
+    	  {
+    		  //System.out.println("the eml 210 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+    		  metadataPathNode = XMLUtilities.getXMLAsDOMTreeRootNode("/eml210KeymapConfig.xml");
+    	  }
+    	  dp.setMetadataPath(metadataPathNode);
       }
       catch (Exception e2) {
         Log.debug(20, "getting DOM for Paths threw error: " + e2.toString());
