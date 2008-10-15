@@ -7,8 +7,8 @@
 *    Release: @release@
 *
 *   '$Author: tao $'
-*     '$Date: 2008-09-25 01:06:47 $'
-* '$Revision: 1.35 $'
+*     '$Date: 2008-10-15 02:52:57 $'
+* '$Revision: 1.36 $'
 *
 * This program is free software; you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -244,7 +244,7 @@ public class AttributePage extends AbstractUIPage {
     measScaleElemNames[MEASUREMENTSCALE_ORDINAL]  = "ordinal";
     measScaleElemNames[MEASUREMENTSCALE_INTERVAL] = "interval";
     measScaleElemNames[MEASUREMENTSCALE_RATIO]    = "ratio";
-    measScaleElemNames[MEASUREMENTSCALE_DATETIME] = "datetime";
+    measScaleElemNames[MEASUREMENTSCALE_DATETIME] = "dateTime";
 
     measScaleDisplayNames[MEASUREMENTSCALE_NOMINAL]  = "Unordered";
     measScaleDisplayNames[MEASUREMENTSCALE_ORDINAL]  = "Ordered";
@@ -1064,12 +1064,12 @@ public class AttributePage extends AbstractUIPage {
       ((IntervalRatioPanel)ratioPanel).setPanelData(
       xPathRoot + "/measurementScale/ratio", map);
     }
-    if(measurementScale.equalsIgnoreCase("datetime")) {
+    if(measurementScale.equalsIgnoreCase("dateTime")) {
       setMeasurementScaleUI(dateTimePanel);
       setMeasurementScale(measScaleElemNames[4]);
       componentNum = 4;;
       ((DateTimePanel)dateTimePanel).setPanelData(
-      xPathRoot + "/measurementScale/datetime", map);
+      xPathRoot + "/measurementScale/dateTime", map);
     }
 
     //selects the appropriate radio button

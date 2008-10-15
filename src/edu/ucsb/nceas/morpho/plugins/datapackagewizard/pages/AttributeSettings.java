@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2004-02-14 00:02:28 $'
- * '$Revision: 1.3 $'
+ *   '$Author: tao $'
+ *     '$Date: 2008-10-15 02:52:57 $'
+ * '$Revision: 1.4 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -56,8 +56,8 @@ public class AttributeSettings
 	public static final String Interval_xPath_rel = "/measurementScale/interval";
 	public static final String Ratio_xPath = "/eml:eml/dataset/dataTable/attributeList/attribute/measurementScale/ratio";
 	public static final String Ratio_xPath_rel = "/measurementScale/ratio";
-	public static final String DateTime_xPath = "/eml:eml/dataset/dataTable/attributeList/attribute/measurementScale/datetime";
-	public static final String DateTime_xPath_rel = "/measurementScale/datetime";
+	public static final String DateTime_xPath = "/eml:eml/dataset/dataTable/attributeList/attribute/measurementScale/dateTime";
+	public static final String DateTime_xPath_rel = "/measurementScale/dateTime";
 
 
 }
