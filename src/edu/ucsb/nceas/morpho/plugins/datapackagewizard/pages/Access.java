@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: leinfelder $'
- *     '$Date: 2008-10-15 22:47:35 $'
- * '$Revision: 1.41 $'
+ *     '$Date: 2008-10-16 00:44:09 $'
+ * '$Revision: 1.42 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -95,7 +95,8 @@ public class Access
   public static DefaultMutableTreeNode accessTreeNode = null;
   public static String accessTreeMetacatServerName = null;
 
-  public Access() {
+  public Access(boolean isEntity) {
+	this.isEntity = isEntity;
     init();
   }
 
@@ -110,10 +111,19 @@ public class Access
     Box vBox = Box.createVerticalBox();
     vBox.add(WidgetFactory.makeDefaultSpacer());
 
-    JLabel desc = WidgetFactory.makeHTMLLabel(
-        "<p><b>Would you like the allow the public to read your data package?"
-        + "</b></p>", 3);
-
+    JLabel desc = null; 
+    if (isEntity) {	
+    	desc =
+    		WidgetFactory.makeHTMLLabel(
+	        "<p><b>Would you like the allow the public to read your data entity?"
+	        + "</b></p>", 3);
+    }
+    else {
+    	desc =
+    		WidgetFactory.makeHTMLLabel(
+	        "<p><b>Would you like the allow the public to read your data package?"
+	        + "</b></p>", 3);
+    }
     vBox.add(desc);
 
     ActionListener listener = new ActionListener() {
@@ -136,12 +146,23 @@ public class Access
     vBox.add(radioPanel);
     vBox.add(WidgetFactory.makeDefaultSpacer());
 
-    JLabel desc1 = WidgetFactory.makeHTMLLabel(
-        "<p><b>Would you like to give special access rights to other people?"
-        + "</b> You can specify access for other members of your team or any "
-        + "other person. "
-        + "Use the table below to add, edit and "
-        + "delete access rights to your data package.</p>", 3);
+    JLabel desc1 = null;
+	if (isEntity) {	
+	    desc1 = WidgetFactory.makeHTMLLabel(
+		        "<p><b>Would you like to give special access rights to other people?"
+		        + "</b> You can specify access for other members of your team or any "
+		        + "other person. "
+		        + "Use the table below to add, edit and "
+		        + "delete access rights to your data entity.</p>", 3);
+	}
+	else {
+		desc1 = WidgetFactory.makeHTMLLabel(
+		        "<p><b>Would you like to give special access rights to other people?"
+		        + "</b> You can specify access for other members of your team or any "
+		        + "other person. "
+		        + "Use the table below to add, edit and "
+		        + "delete access rights to your data package.</p>", 3);
+	}
     vBox.add(desc1);
 
     accessList = WidgetFactory.makeList(colNames, editors, 4,
@@ -324,7 +345,7 @@ public class Access
       returnMap.put(rootXPath + "allow[" + (allowIndex++) + "]/permission",
           "read");
     } 
-    else if (isEntity) {
+    else { //if (isEntity) {
       returnMap.put(rootXPath + AUTHSYSTEM_REL_XPATH, AUTHSYSTEM_VALUE);
       returnMap.put(rootXPath + ORDER_REL_XPATH, ORDER_VALUE);
       returnMap.put(rootXPath + "deny[" + (denyIndex) + "]/principal",
@@ -642,9 +663,11 @@ public class Access
           if (nextXPath.indexOf("allow") > -1) {
             allowReadAccess.setSelected(true);
             denyReadAccess.setSelected(false);
+            publicReadAccess = true;
           } else {
             allowReadAccess.setSelected(false);
             denyReadAccess.setSelected(true);
+            publicReadAccess = false;
           }
 
         } else if (nextVal.compareTo("public") == 0) {

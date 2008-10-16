@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: leinfelder $'
- *     '$Date: 2008-10-15 22:47:35 $'
- * '$Revision: 1.32 $'
+ *     '$Date: 2008-10-16 00:44:09 $'
+ * '$Revision: 1.33 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -123,9 +123,9 @@ public class WizardPageLibrary {
     if(pageID.equals(DataPackageWizardInterface.METHODS_PAGE))
       return new MethodsPage();
     if(pageID.equals(DataPackageWizardInterface.ACCESS))
-      return new Access();
+      return new Access(false);
     if(pageID.equals(DataPackageWizardInterface.ENTITY_ACCESS))
-        return new EntityAccess();
+        return new Access(true);
     if(pageID.equals(DataPackageWizardInterface.ACCESS_PAGE))
       return new AccessPage();
     if(pageID.equals(DataPackageWizardInterface.SUMMARY))
