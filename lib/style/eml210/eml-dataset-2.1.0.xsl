@@ -7,8 +7,8 @@
   *  For Details: http://www.nceas.ucsb.edu/
   *
   *   '$Author: tao $'
-  *     '$Date: 2008-08-28 23:00:02 $'
-  * '$Revision: 1.1 $'
+  *     '$Date: 2008-10-17 00:17:23 $'
+  * '$Revision: 1.2 $'
   *
   * This program is free software; you can redistribute it and/or modify
   * it under the terms of the GNU General Public License as published by
@@ -49,7 +49,7 @@
        <xsl:call-template name="datasetentity"/>
      </xsl:if>
      <xsl:call-template name="datasetresource"/>
-     <xsl:call-template name="datasetaccess"/>
+    <!-- <xsl:call-template name="datasetaccess"/>-->
      <xsl:call-template name="datasetpurpose"/>
      <xsl:call-template name="datasetmaintenance"/>
      <xsl:call-template name="datasetcontact"/>
@@ -65,7 +65,7 @@
        <xsl:call-template name="datasetentity"/>
      </xsl:if>
      <xsl:call-template name="datasetresource"/>
-     <xsl:call-template name="datasetaccess"/>
+     <!--<xsl:call-template name="datasetaccess"/>-->
      <xsl:call-template name="datasetpurpose"/>
      <xsl:call-template name="datasetmaintenance"/>
      <xsl:call-template name="datasetcontact"/>
@@ -252,7 +252,7 @@
 </xsl:for-each>
 </xsl:template>
 
-<xsl:template name="datasetaccess">
+<!-- <xsl:template name="datasetaccess">
 <xsl:for-each select="access">
 <tr>
 <td colspan="2">
@@ -263,7 +263,7 @@
 </td>
 </tr>
 </xsl:for-each>
-</xsl:template>
+</xsl:template>-->
 
 
 

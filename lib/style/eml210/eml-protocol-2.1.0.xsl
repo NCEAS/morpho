@@ -7,8 +7,8 @@
   *  For Details: http://www.nceas.ucsb.edu/
   *
   *   '$Author: tao $'
-  *     '$Date: 2008-08-28 23:00:02 $'
-  * '$Revision: 1.1 $'
+  *     '$Date: 2008-10-17 00:17:23 $'
+  * '$Revision: 1.2 $'
   *
   * This program is free software; you can redistribute it and/or modify
   * it under the terms of the GNU General Public License as published by
@@ -81,10 +81,10 @@
               <xsl:with-param name="protocolsubHeaderStyle" select="$protocolsubHeaderStyle"/>
           </xsl:call-template>
         </xsl:for-each>
-        <xsl:call-template name="protocolAccess">
+        <!--<xsl:call-template name="protocolAccess">
               <xsl:with-param name="protocolfirstColStyle" select="$protocolfirstColStyle"/>
               <xsl:with-param name="protocolsubHeaderStyle" select="$protocolsubHeaderStyle"/>
-        </xsl:call-template>
+        </xsl:call-template>-->
   </xsl:template>
 
   <xsl:template name="step">
@@ -166,7 +166,7 @@
     </xsl:for-each>
   </xsl:template>
 
-  <xsl:template name="protocolAccess">
+  <!--<xsl:template name="protocolAccess">
     <xsl:param name="protocolfirstColStyle"/>
     <xsl:param name="protocolsubHeaderStyle"/>
     <xsl:for-each select="access">
@@ -178,5 +178,5 @@
          </td>
        </tr>
     </xsl:for-each>
-  </xsl:template>
+  </xsl:template>-->
 </xsl:stylesheet>

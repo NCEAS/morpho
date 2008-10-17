@@ -7,8 +7,8 @@
   *  For Details: http://www.nceas.ucsb.edu/
   *
   *   '$Author: tao $'
-  *     '$Date: 2008-09-19 00:33:43 $'
-  * '$Revision: 1.2 $'
+  *     '$Date: 2008-10-17 00:17:23 $'
+  * '$Revision: 1.3 $'
   *
   * This program is free software; you can redistribute it and/or modify
   * it under the terms of the GNU General Public License as published by
@@ -38,6 +38,7 @@
 	
 	<!--*************** displays dataset citation********-->
    <xsl:template name="identifier">
+	   <xsl:if test="$displaymodule='dataset' or $displaymodule='printall'">
         <tr><td colspan="2" class="tablehead">Data Set Citation</td></tr>
         <tr><td colspan="2" class="citation">
 	        	<xsl:for-each select="creator">
@@ -82,6 +83,7 @@
 	        	</xsl:choose> -->
 				<br />
         </td></tr>
+	  </xsl:if>
    </xsl:template>
    
    <!--************** creates lsid dataset id **************-->
