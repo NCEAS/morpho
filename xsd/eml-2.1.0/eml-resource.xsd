@@ -21,8 +21,8 @@
      For Details: http://knb.ecoinformatics.org/
 
         '$Author: tao $'
-          '$Date: 2008-08-28 23:29:30 $'
-      '$Revision: 1.1 $'
+          '$Date: 2008-10-17 00:16:22 $'
+      '$Revision: 1.2 $'
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -721,7 +721,7 @@
           </xs:annotation>
           <xs:complexType>
             <xs:sequence>
-              <xs:element name="mediumName" type="xs:string" minOccurs="0">
+              <xs:element name="mediumName" type="xs:string">
                 <xs:annotation>
                   <xs:appinfo>
                     <doc:tooltip>Medium name</doc:tooltip>

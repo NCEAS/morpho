@@ -38,8 +38,8 @@
      For Details: http://knb.ecoinformatics.org/
 
         '$Author: tao $'
-          '$Date: 2008-08-28 23:29:30 $'
-      '$Revision: 1.1 $'
+          '$Date: 2008-10-17 00:16:21 $'
+      '$Revision: 1.2 $'
     </xs:documentation>
     <xs:appinfo>
       <doc:moduleDocs>

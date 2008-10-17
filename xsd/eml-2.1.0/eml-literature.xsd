@@ -1,26 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xs:schema 
-    xmlns:xs="http://www.w3.org/2001/XMLSchema" 
-    xmlns:doc="eml://ecoinformatics.org/documentation-2.1.0" 
-    xmlns:rp="eml://ecoinformatics.org/party-2.1.0" 
-    xmlns:cov="eml://ecoinformatics.org/coverage-2.1.0" 
-    xmlns:res="eml://ecoinformatics.org/resource-2.1.0" 
-    xmlns:acc="eml://ecoinformatics.org/access-2.1.0" 
-    xmlns:proj="eml://ecoinformatics.org/project-2.1.0" 
-    xmlns="eml://ecoinformatics.org/literature-2.1.0" 
-    targetNamespace="eml://ecoinformatics.org/literature-2.1.0">
-  <xs:import namespace="eml://ecoinformatics.org/documentation-2.1.0" 
-  schemaLocation="eml-documentation.xsd"/>
-  <xs:import namespace="eml://ecoinformatics.org/resource-2.1.0" 
-  schemaLocation="eml-resource.xsd"/>
-  <xs:import namespace="eml://ecoinformatics.org/coverage-2.1.0" 
-  schemaLocation="eml-coverage.xsd"/>
-  <xs:import namespace="eml://ecoinformatics.org/party-2.1.0" 
-  schemaLocation="eml-party.xsd"/>
-  <xs:import namespace="eml://ecoinformatics.org/access-2.1.0" 
-  schemaLocation="eml-access.xsd"/>
-  <xs:import namespace="eml://ecoinformatics.org/project-2.1.0" 
-  schemaLocation="eml-project.xsd"/>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:doc="eml://ecoinformatics.org/documentation-2.1.0" xmlns:rp="eml://ecoinformatics.org/party-2.1.0" xmlns:cov="eml://ecoinformatics.org/coverage-2.1.0" xmlns:res="eml://ecoinformatics.org/resource-2.1.0" xmlns:acc="eml://ecoinformatics.org/access-2.1.0" xmlns:proj="eml://ecoinformatics.org/project-2.1.0" xmlns="eml://ecoinformatics.org/literature-2.1.0" targetNamespace="eml://ecoinformatics.org/literature-2.1.0">
+  <xs:import namespace="eml://ecoinformatics.org/documentation-2.1.0" schemaLocation="eml-documentation.xsd"/>
+  <xs:import namespace="eml://ecoinformatics.org/resource-2.1.0" schemaLocation="eml-resource.xsd"/>
+  <xs:import namespace="eml://ecoinformatics.org/coverage-2.1.0" schemaLocation="eml-coverage.xsd"/>
+  <xs:import namespace="eml://ecoinformatics.org/party-2.1.0" schemaLocation="eml-party.xsd"/>
+  <xs:import namespace="eml://ecoinformatics.org/access-2.1.0" schemaLocation="eml-access.xsd"/>
+  <xs:import namespace="eml://ecoinformatics.org/project-2.1.0" schemaLocation="eml-project.xsd"/>
   <xs:annotation>
     <xs:documentation>
       '$RCSfile: eml-literature.xsd,v $'
@@ -38,8 +23,8 @@
      For Details: http://knb.ecoinformatics.org/
 
         '$Author: tao $'
-          '$Date: 2008-08-28 23:29:30 $'
-      '$Revision: 1.1 $'
+          '$Date: 2008-10-17 00:16:21 $'
+      '$Revision: 1.2 $'
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -106,7 +91,6 @@
         resource such as a book, a journal article, a thesis, etc. It extends
         the generic resource elements with literature specific
         fields.</doc:description>
-        
       </xs:appinfo>
     </xs:annotation>
   </xs:element>
@@ -114,6 +98,16 @@
     <xs:choice>
       <xs:sequence>
         <xs:group ref="res:ResourceGroup"/>
+        <xs:element name="contact" type="rp:ResponsibleParty" minOccurs="0" maxOccurs="unbounded">
+          <xs:annotation>
+            <xs:appinfo>
+              <doc:tooltip>Contact</doc:tooltip>
+              <doc:summary>An optional contact individual for this citation</doc:summary>
+              <doc:description>The contact field contains information about an alternate person to be contacted 
+              about this citation. Ususally, the first author serves as the contact for a citation resource, e.g., a reprint request. In some cases, an altnernate individual(s) may serve that function, and can be indicated here. Since contact is of the type rp:ResponsibleParty, a reference may be used.</doc:description>
+            </xs:appinfo>
+          </xs:annotation>
+        </xs:element>
         <xs:choice>
           <xs:element name="article" type="Article">
             <xs:annotation>
@@ -124,7 +118,6 @@
                 <doc:description>The article field provides sub-fields for a
                 full citation of an article in a journal or other
                 periodical.</doc:description>
-                
               </xs:appinfo>
             </xs:annotation>
           </xs:element>
@@ -136,7 +129,6 @@
                 book</doc:summary>
                 <doc:description>The book field provides sub-fields for a full
                 citation of a book.</doc:description>
-                
               </xs:appinfo>
             </xs:annotation>
           </xs:element>
@@ -151,7 +143,6 @@
                 are the chapter's authors, while the "editor" is the book
                 editors. Likewise, "title" is the chapter title, while
                 "bookTitle" is the title of the whole book.</doc:description>
-                
               </xs:appinfo>
             </xs:annotation>
           </xs:element>
@@ -165,7 +156,6 @@
                 edited by one or more editors, but whose chapters were possibly
                 authored by others. The editors of an edited book should be
                 listed in the "creator" field.</doc:description>
-                
               </xs:appinfo>
             </xs:annotation>
           </xs:element>
@@ -177,7 +167,6 @@
                 manuscript</doc:summary>
                 <doc:description>The manuscript field provides sub-fields for a
                 full citation of an unpublished manuscript.</doc:description>
-                
               </xs:appinfo>
             </xs:annotation>
           </xs:element>
@@ -191,7 +180,6 @@
                 institution or through a publisher. They usually are available
                 by request to the institution or can be purchased from the
                 publisher.</doc:description>
-                
               </xs:appinfo>
             </xs:annotation>
           </xs:element>
@@ -206,7 +194,6 @@
                 written as part of a degree requirement and is frequently
                 published in small numbers by the degree awarding
                 institution.</doc:description>
-                
               </xs:appinfo>
             </xs:annotation>
           </xs:element>
@@ -218,7 +205,6 @@
                 of a conference.</doc:summary>
                 <doc:description>The published notes, papers, presentations,
                 etc..., of a conference.</doc:description>
-                
               </xs:appinfo>
             </xs:annotation>
           </xs:element>
@@ -231,7 +217,6 @@
                 <doc:description>This could be a widely distributed memo, an
                 e-mail, a transcript from a conversation or interview,
                 etc...</doc:description>
-                
               </xs:appinfo>
             </xs:annotation>
           </xs:element>
@@ -244,7 +229,6 @@
                 <doc:description>This element desribes the map that is being
                 cited or cataloged, including its geographic coverage and
                 scale.</doc:description>
-                
               </xs:appinfo>
             </xs:annotation>
           </xs:element>
@@ -258,7 +242,6 @@
                 <doc:description>This reference type was created for references
                 that do not fit in to the other existing reference
                 types.</doc:description>
-                
               </xs:appinfo>
             </xs:annotation>
           </xs:element>
@@ -271,7 +254,6 @@
                 <doc:description>This reference type is meant to cover all
                 forms of audio and visual media, including film, video,
                 broadcast, other electronic media.</doc:description>
-                
               </xs:appinfo>
             </xs:annotation>
           </xs:element>
@@ -286,24 +268,10 @@
                 request in either in paper and/or electronic form. If the
                 presentation was actually published in a proceedings, use the
                 conferenceProceedings type instead.</doc:description>
-                
               </xs:appinfo>
             </xs:annotation>
           </xs:element>
         </xs:choice>
-        <xs:element name="access" type="acc:AccessType" minOccurs="0">
-          <xs:annotation>
-            <xs:appinfo>
-              <doc:tooltip>access control rules</doc:tooltip>
-              <doc:summary>The access element describes the access control
-              rules for this literature resource.</doc:summary>
-              <doc:description>The access element describes the access control
-              rules for this literature resource. This is a general purpose
-              description which will be used by any EML compliant
-              repository.</doc:description>
-            </xs:appinfo>
-          </xs:annotation>
-        </xs:element>
       </xs:sequence>
       <xs:group ref="res:ReferencesGroup"/>
     </xs:choice>
@@ -320,7 +288,6 @@
         <doc:description>The article field provides sub-fields for a full
         citation of an article in a journal or other
         periodical.</doc:description>
-        
       </xs:appinfo>
     </xs:annotation>
     <xs:sequence>
@@ -335,7 +302,6 @@
             <doc:example>"Ecology"</doc:example>
             <doc:example>"New York Times"</doc:example>
             <doc:example>"Harper's"</doc:example>
-            
           </xs:appinfo>
         </xs:annotation>
       </xs:element>
@@ -348,7 +314,6 @@
             <doc:description>The volume field is used to describe the volume of
             the journal in which the article appears.</doc:description>
             <doc:example>"Volume I"</doc:example>
-            
           </xs:appinfo>
         </xs:annotation>
       </xs:element>
@@ -361,7 +326,6 @@
             <doc:description>The issue field is used to describe the issue of
             the journal in which the article appears.</doc:description>
             <doc:example>November 2001</doc:example>
-            
           </xs:appinfo>
         </xs:annotation>
       </xs:element>
@@ -375,7 +339,6 @@
             ending pages of the journal article that is being
             documented.</doc:description>
             <doc:example>115-122</doc:example>
-            
           </xs:appinfo>
         </xs:annotation>
       </xs:element>
@@ -389,7 +352,6 @@
             article and publishes it.</doc:description>
             <doc:example>Harper Collins</doc:example>
             <doc:example>University Of California Press</doc:example>
-            
           </xs:appinfo>
         </xs:annotation>
       </xs:element>
@@ -404,7 +366,6 @@
             produced the work.</doc:description>
             <doc:example>New York</doc:example>
             <doc:example>London</doc:example>
-            
           </xs:appinfo>
         </xs:annotation>
       </xs:element>
@@ -418,7 +379,6 @@
             that has been assigned to this literature
             resource.</doc:description>
             <doc:example>ISSN 1234-5679</doc:example>
-            
           </xs:appinfo>
         </xs:annotation>
       </xs:element>
@@ -431,7 +391,6 @@
         <doc:summary>Information for full citation of a book</doc:summary>
         <doc:description>The book field provides sub-fields for a full citation
         of a book.</doc:description>
-        
       </xs:appinfo>
     </xs:annotation>
     <xs:sequence>
@@ -445,7 +404,6 @@
             book and publishes it.</doc:description>
             <doc:example>Harper Collins</doc:example>
             <doc:example>University Of California Press</doc:example>
-            
           </xs:appinfo>
         </xs:annotation>
       </xs:element>
@@ -460,7 +418,6 @@
             produced the work.</doc:description>
             <doc:example>New York</doc:example>
             <doc:example>London</doc:example>
-            
           </xs:appinfo>
         </xs:annotation>
       </xs:element>
@@ -472,7 +429,6 @@
             <doc:description>The edition field is to document the edition of
             the book that is being described.</doc:description>
             <doc:example>Second Edition</doc:example>
-            
           </xs:appinfo>
         </xs:annotation>
       </xs:element>
@@ -486,7 +442,6 @@
             number of a book that is part of a multi-volume series of
             books.</doc:description>
             <doc:example>Volume 2</doc:example>
-            
           </xs:appinfo>
         </xs:annotation>
       </xs:element>
@@ -498,7 +453,6 @@
             <doc:description>Number of volumes in a
             collection</doc:description>
             <doc:example>12</doc:example>
-            
           </xs:appinfo>
         </xs:annotation>
       </xs:element>
@@ -511,7 +465,6 @@
             total number of pages in the book that is being
             described.</doc:description>
             <doc:example>628</doc:example>
-            
           </xs:appinfo>
         </xs:annotation>
       </xs:element>
@@ -524,7 +477,6 @@
             total number of figures, diagrams, and plates in the book that is
             being documented.</doc:description>
             <doc:example>45</doc:example>
-            
           </xs:appinfo>
         </xs:annotation>
       </xs:element>
@@ -537,7 +489,6 @@
             total number of tables that are present in the book that is being
             documented.</doc:description>
             <doc:example>10</doc:example>
-            
           </xs:appinfo>
         </xs:annotation>
       </xs:element>
@@ -551,7 +502,6 @@
             that has been assigned to this literature
             resource.</doc:description>
             <doc:example>ISBN 1-861003-11-0</doc:example>
-            
           </xs:appinfo>
         </xs:annotation>
       </xs:element>
@@ -568,7 +518,6 @@
         chapter's authors, while the "editor" is the book editors. Likewise,
         "title" is the chapter title, while "bookTitle" is the title of the
         whole book.</doc:description>
-        
       </xs:appinfo>
     </xs:annotation>
     <xs:complexContent>
@@ -583,7 +532,6 @@
                 <doc:description>The chapter number of the chapter of a book
                 that is being described.</doc:description>
                 <doc:example>7</doc:example>
-                
               </xs:appinfo>
             </xs:annotation>
           </xs:element>
@@ -599,7 +547,6 @@
                 <doc:example>Tom Christiansen</doc:example>
                 <doc:example>Institute of Marine Science</doc:example>
                 <doc:example>Publication Manager</doc:example>
-                
               </xs:appinfo>
             </xs:annotation>
           </xs:element>
@@ -611,7 +558,6 @@
                 <doc:description>The book title field is used to document the
                 title of the book that is being described.</doc:description>
                 <doc:example>War and Peace</doc:example>
-                
               </xs:appinfo>
             </xs:annotation>
           </xs:element>
@@ -625,7 +571,6 @@
                 beginning and ending pages of a chapter in a
                 book.</doc:description>
                 <doc:example>25-122</doc:example>
-                
               </xs:appinfo>
             </xs:annotation>
           </xs:element>
@@ -641,7 +586,6 @@
         conference.</doc:summary>
         <doc:description>The published notes, papers, presentations, etc..., of
         a conference.</doc:description>
-        
       </xs:appinfo>
     </xs:annotation>
     <xs:complexContent>
@@ -656,7 +600,6 @@
                 <doc:description>The name of the conference whose proceedings
                 have been published.</doc:description>
                 <doc:example>North American Science Symposium</doc:example>
-                
               </xs:appinfo>
             </xs:annotation>
           </xs:element>
@@ -668,7 +611,6 @@
                 <doc:description>The date the conference was
                 held.</doc:description>
                 <doc:example>November 1-6, 1998</doc:example>
-                
               </xs:appinfo>
             </xs:annotation>
           </xs:element>
@@ -680,7 +622,6 @@
                 held.</doc:summary>
                 <doc:description>The location where the conference was
                 held.</doc:description>
-                
               </xs:appinfo>
             </xs:annotation>
           </xs:element>
@@ -695,7 +636,6 @@
         <doc:summary>Information about an unpublished manuscript</doc:summary>
         <doc:description>The manuscript field provides sub-fields for a full
         citation of an unpublished manuscript.</doc:description>
-        
       </xs:appinfo>
     </xs:annotation>
     <xs:sequence>
@@ -710,7 +650,6 @@
             request an unpublished manuscript</doc:description>
             <doc:example>Please see the individual sub-fields for specific
             examples.</doc:example>
-            
           </xs:appinfo>
         </xs:annotation>
       </xs:element>
@@ -724,7 +663,6 @@
             total number of pages in the manuscript that is being
             described.</doc:description>
             <doc:example>628</doc:example>
-            
           </xs:appinfo>
         </xs:annotation>
       </xs:element>
@@ -739,7 +677,6 @@
         <doc:description>The report may be self published by the institution or
         through a publisher. They usually are available by request to the
         institution or can be purchased from the publisher.</doc:description>
-        
       </xs:appinfo>
     </xs:annotation>
     <xs:sequence>
@@ -753,7 +690,6 @@
             unique identification number that has been issued by the report
             institution for the report being described.</doc:description>
             <doc:example>22</doc:example>
-            
           </xs:appinfo>
         </xs:annotation>
       </xs:element>
@@ -767,7 +703,6 @@
             report and publishes it.</doc:description>
             <doc:example>Harper Collins</doc:example>
             <doc:example>University Of California Press</doc:example>
-            
           </xs:appinfo>
         </xs:annotation>
       </xs:element>
@@ -782,7 +717,6 @@
             produced the work.</doc:description>
             <doc:example>New York</doc:example>
             <doc:example>London</doc:example>
-            
           </xs:appinfo>
         </xs:annotation>
       </xs:element>
@@ -795,7 +729,6 @@
             total number of pages in the report that is being
             described.</doc:description>
             <doc:example>628</doc:example>
-            
           </xs:appinfo>
         </xs:annotation>
       </xs:element>
@@ -809,7 +742,6 @@
         hard-copy.</doc:summary>
         <doc:description>This could be a widely distributed memo, an e-mail, a
         transcript from a conversation or interview, etc...</doc:description>
-        
       </xs:appinfo>
     </xs:annotation>
     <xs:sequence>
@@ -823,7 +755,6 @@
             communication and publishes it.</doc:description>
             <doc:example>Harper Collins</doc:example>
             <doc:example>University Of California Press</doc:example>
-            
           </xs:appinfo>
         </xs:annotation>
       </xs:element>
@@ -838,7 +769,6 @@
             produced the work.</doc:description>
             <doc:example>New York</doc:example>
             <doc:example>London</doc:example>
-            
           </xs:appinfo>
         </xs:annotation>
       </xs:element>
@@ -853,7 +783,6 @@
             <doc:example>memo</doc:example>
             <doc:example>letter</doc:example>
             <doc:example>email</doc:example>
-            
           </xs:appinfo>
         </xs:annotation>
       </xs:element>
@@ -866,7 +795,6 @@
             communication was sent to.</doc:description>
             <doc:example>Schmedley, Joe</doc:example>
             <doc:example>jschmedley@lternet.edu</doc:example>
-            
           </xs:appinfo>
         </xs:annotation>
       </xs:element>
@@ -881,7 +809,6 @@
         <doc:description>This element desribes the map that is being cited or
         cataloged, including its geographic coverage and
         scale.</doc:description>
-        
       </xs:appinfo>
     </xs:annotation>
     <xs:sequence>
@@ -894,7 +821,6 @@
             <doc:description>The organization that physically puts together the
             map and publishes it.</doc:description>
             <doc:example>Harper Collins</doc:example>
-            
           </xs:appinfo>
         </xs:annotation>
       </xs:element>
@@ -906,7 +832,6 @@
             <doc:description>The edition field is to document the edition of
             the mapthat is being described.</doc:description>
             <doc:example>Second Edition</doc:example>
-            
           </xs:appinfo>
         </xs:annotation>
       </xs:element>
@@ -919,7 +844,6 @@
             <doc:description>This element describes the geographic area which
             the map covers. Could be descriptive text or Cartesian coordinates
             of the area.</doc:description>
-            
           </xs:appinfo>
         </xs:annotation>
       </xs:element>
@@ -930,7 +854,6 @@
             <doc:summary>The Map's scale</doc:summary>
             <doc:description>The Map's scale</doc:description>
             <doc:example>1:25,000</doc:example>
-            
           </xs:appinfo>
         </xs:annotation>
       </xs:element>
@@ -945,7 +868,6 @@
         <doc:description>This reference type is meant to cover all forms of
         audio and visual media, including film, video, broadcast, other
         electronic media.</doc:description>
-        
       </xs:appinfo>
     </xs:annotation>
     <xs:sequence>
@@ -960,7 +882,6 @@
             <doc:example>LTER Network Office</doc:example>
             <doc:example>Public Broadcasting</doc:example>
             <doc:example>Pacifica Radio</doc:example>
-            
           </xs:appinfo>
         </xs:annotation>
       </xs:element>
@@ -975,7 +896,6 @@
             produced the work.</doc:description>
             <doc:example>New York</doc:example>
             <doc:example>London</doc:example>
-            
           </xs:appinfo>
         </xs:annotation>
       </xs:element>
@@ -989,7 +909,6 @@
             shown in the audio visual production.</doc:description>
             <doc:example>Jim Nabors</doc:example>
             <doc:example>Sir Lawrence Olivier</doc:example>
-            
           </xs:appinfo>
         </xs:annotation>
       </xs:element>
@@ -1003,7 +922,6 @@
             that has been assigned to this literature
             resource.</doc:description>
             <doc:example>ISBN 1-861003-11-0</doc:example>
-            
           </xs:appinfo>
         </xs:annotation>
       </xs:element>
@@ -1021,7 +939,6 @@
             the reference and publishes it.</doc:description>
             <doc:example>Harper Collins</doc:example>
             <doc:example>University Of California Press</doc:example>
-            
           </xs:appinfo>
         </xs:annotation>
       </xs:element>
@@ -1036,7 +953,6 @@
             produced the work.</doc:description>
             <doc:example>New York</doc:example>
             <doc:example>London</doc:example>
-            
           </xs:appinfo>
         </xs:annotation>
       </xs:element>
@@ -1050,7 +966,6 @@
             <doc:example>zine</doc:example>
             <doc:example>film</doc:example>
             <doc:example>radio program</doc:example>
-            
           </xs:appinfo>
         </xs:annotation>
       </xs:element>
@@ -1064,7 +979,6 @@
             number of a reference that is part of a multi-volume series of
             references.</doc:description>
             <doc:example>Volume 2</doc:example>
-            
           </xs:appinfo>
         </xs:annotation>
       </xs:element>
@@ -1076,7 +990,6 @@
             <doc:description>Number of volumes in a
             collection</doc:description>
             <doc:example>"12"</doc:example>
-            
           </xs:appinfo>
         </xs:annotation>
       </xs:element>
@@ -1090,7 +1003,6 @@
             total number of pages in the references that is being
             described.</doc:description>
             <doc:example>628</doc:example>
-            
           </xs:appinfo>
         </xs:annotation>
       </xs:element>
@@ -1104,7 +1016,6 @@
             total number of figures, diagrams, and plates in the reference that
             is being documented.</doc:description>
             <doc:example>45</doc:example>
-            
           </xs:appinfo>
         </xs:annotation>
       </xs:element>
@@ -1118,7 +1029,6 @@
             total number of tables that are present in the reference that is
             being documented.</doc:description>
             <doc:example>10</doc:example>
-            
           </xs:appinfo>
         </xs:annotation>
       </xs:element>
@@ -1132,7 +1042,6 @@
             the generic reference type that is being
             described.</doc:description>
             <doc:example>Second Edition</doc:example>
-            
           </xs:appinfo>
         </xs:annotation>
       </xs:element>
@@ -1146,7 +1055,6 @@
             publication of the current reference.</doc:description>
             <doc:example>Date</doc:example>
             <doc:example>Publisher</doc:example>
-            
           </xs:appinfo>
         </xs:annotation>
       </xs:element>
@@ -1160,7 +1068,6 @@
             published under a different title.</doc:description>
             <doc:example>Stream Research in the LTER Network,
             1993</doc:example>
-            
           </xs:appinfo>
         </xs:annotation>
       </xs:element>
@@ -1176,7 +1083,6 @@
             <doc:example>Structure and Function of an Alpine Ecosystem Niwot
             Ridge, Colorado Edited by WILLIAM D. BOWMAN and TIMOTHY R.
             SEASTEDT, University of Colorado, Boulder</doc:example>
-            
           </xs:appinfo>
         </xs:annotation>
       </xs:element>
@@ -1191,7 +1097,6 @@
               that has been assigned to this literature
               resource.</doc:description>
               <doc:example>ISBN 1-861003-11-0</doc:example>
-              
             </xs:appinfo>
           </xs:annotation>
         </xs:element>
@@ -1205,7 +1110,6 @@
               Number that has been assigned to this literature
               resource.</doc:description>
               <doc:example>ISSN 1234-5679</doc:example>
-              
             </xs:appinfo>
           </xs:annotation>
         </xs:element>
@@ -1222,7 +1126,6 @@
         <doc:description>Information about a thesis that has been written as
         part of a degree requirement and is frequently published in small
         numbers by the degree awarding institution.</doc:description>
-        
       </xs:appinfo>
     </xs:annotation>
     <xs:sequence>
@@ -1237,7 +1140,6 @@
             <doc:example>Ph.D.</doc:example>
             <doc:example>M.S.</doc:example>
             <doc:example>Master of Science</doc:example>
-            
           </xs:appinfo>
         </xs:annotation>
       </xs:element>
@@ -1251,7 +1153,6 @@
             institution from which the degree was awarded for the thesis being
             described.</doc:description>
             <doc:example>Western Washington University</doc:example>
-            
           </xs:appinfo>
         </xs:annotation>
       </xs:element>
@@ -1264,7 +1165,6 @@
             number of pages that are present in the thesis that is being
             described.</doc:description>
             <doc:example>356</doc:example>
-            
           </xs:appinfo>
         </xs:annotation>
       </xs:element>
@@ -1281,7 +1181,6 @@
         in either in paper and/or electronic form by contacting the authors. If
         the presentation was actually published in a proceedings, use the
         conferenceProceedings type instead.</doc:description>
-        
       </xs:appinfo>
     </xs:annotation>
     <xs:sequence>
@@ -1294,7 +1193,6 @@
             <doc:description>The name of the conference at which this
             presentation was given.</doc:description>
             <doc:example>North American Science Symposium</doc:example>
-            
           </xs:appinfo>
         </xs:annotation>
       </xs:element>
@@ -1306,7 +1204,6 @@
             <doc:description>The date the conference was
             held.</doc:description>
             <doc:example>November 1-6, 1998</doc:example>
-            
           </xs:appinfo>
         </xs:annotation>
       </xs:element>
@@ -1318,7 +1215,6 @@
             held.</doc:summary>
             <doc:description>The location where the conference was
             held.</doc:description>
-            
           </xs:appinfo>
         </xs:annotation>
       </xs:element>
