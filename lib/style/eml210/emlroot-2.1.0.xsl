@@ -7,8 +7,8 @@
   *  For Details: http://www.nceas.ucsb.edu/
   *
   *   '$Author: tao $'
-  *     '$Date: 2008-10-17 00:17:23 $'
-  * '$Revision: 1.2 $'
+  *     '$Date: 2008-10-17 01:09:15 $'
+  * '$Revision: 1.3 $'
   *
   * This program is free software; you can redistribute it and/or modify
   * it under the terms of the GNU General Public License as published by
@@ -821,7 +821,7 @@
               </xsl:for-each>
            </xsl:if>
            <xsl:if test="$displaymodule='attributemethod'">
-              <xsl:for-each select="method">
+              <xsl:for-each select="methods">
                 <xsl:call-template name="method">
                     <xsl:with-param name="methodfirstColStyle" select="$firstColStyle"/>
                     <xsl:with-param name="methodsubHeaderStyle" select="$firstColStyle"/>
