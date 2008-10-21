@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2008-10-13 23:47:37 $'
- * '$Revision: 1.29 $'
+ *     '$Date: 2008-10-21 19:29:00 $'
+ * '$Revision: 1.30 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -393,19 +393,48 @@ public class SaveDialog extends JDialog
           &&(networkLoc.isSelected())&&(networkLoc.isEnabled())) {
     	adp.serializeData(AbstractDataPackage.BOTH);
         adp.serialize(AbstractDataPackage.BOTH);
-        adp.setLocation(AbstractDataPackage.BOTH);
+        if (adp.getSerializeLocalSuccess() && adp.getSerializeMetacatSuccess())
+        {
+        	adp.setLocation(AbstractDataPackage.BOTH);
+        }
+        else if(adp.getSerializeLocalSuccess())
+        {
+        	adp.setLocation(AbstractDataPackage.LOCAL);
+        }
+        else if(adp.getSerializeMetacatSuccess())
+        {
+        	adp.setLocation(AbstractDataPackage.METACAT);
+        }
+        else
+        {
+        	adp.setLocation("");
+        }
         
       }
       else if ((localLoc.isSelected())&&(localLoc.isEnabled())) {
     	adp.serializeData(AbstractDataPackage.LOCAL);
         adp.serialize(AbstractDataPackage.LOCAL);
-        adp.setLocation(AbstractDataPackage.LOCAL);
+        if (adp.getSerializeLocalSuccess())
+        {
+        	adp.setLocation(AbstractDataPackage.LOCAL);
+        }
+        else
+        {
+        	adp.setLocation("");
+        }
         
       }
       else if ((networkLoc.isSelected())&&(networkLoc.isEnabled())) {
         adp.serializeData(AbstractDataPackage.METACAT);        
         adp.serialize(AbstractDataPackage.METACAT);
-        adp.setLocation(AbstractDataPackage.METACAT);
+        if(adp.getSerializeMetacatSuccess())
+        {
+        	adp.setLocation(AbstractDataPackage.METACAT);
+        }
+        else
+        {
+        	adp.setLocation("");
+        }
       }
       else {
         Log.debug(1, "No location for saving is selected!");
