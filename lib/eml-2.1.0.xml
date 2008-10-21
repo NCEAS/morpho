@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 
 <eml scope="system" system="" packageId="" minOccurs="" maxOccurs="" help="">
-  <SEQUENCE0 minOccurs="1" maxOccurs="1" help="">
+  <SEQUENCE0 minOccurs="0" maxOccurs="1" help="">
     <access authSystem="" order="allowFirst" scope="document" system="" id="" minOccurs="0" maxOccurs="1" help="The access element contains a list of rules that define the level of access for a given data package, including both metadata and data. The access element must contain the elements defined in the AccessType type.">
       <CHOICE1 minOccurs="1" maxOccurs="1" help="">
         <CHOICE2 minOccurs="1" maxOccurs="unbounded" help="">
@@ -62,7 +62,7 @@
               </CHOICE5>
               <address scope="document" system="" id="" minOccurs="0" maxOccurs="unbounded" help="The address field is provides detailed information for communicating with a party contact via electronic mail or postal mail, including the physical delivery location.">
                 <CHOICE7 minOccurs="1" maxOccurs="1" help="">
-                  <SEQUENCE8 minOccurs="1" maxOccurs="1" help="">
+                  <SEQUENCE8 minOccurs="0" maxOccurs="1" help="">
                     <deliveryPoint minOccurs="0" maxOccurs="unbounded" help="The delivery point field is used for the physical address for postal communication. This field is used to accomodate the many different international conventions that are the equivalent to a U.S. 'street address'.">
                     </deliveryPoint>
                     <city minOccurs="0" maxOccurs="1" help="The city field is used for the city name of the contact associated with a particular resource.">
@@ -116,7 +116,7 @@
               </CHOICE13>
               <address scope="document" system="" id="" minOccurs="0" maxOccurs="unbounded" help="The address field is provides detailed information for communicating with a party contact via electronic mail or postal mail, including the physical delivery location.">
                 <CHOICE15 minOccurs="1" maxOccurs="1" help="">
-                  <SEQUENCE16 minOccurs="1" maxOccurs="1" help="">
+                  <SEQUENCE16 minOccurs="0" maxOccurs="1" help="">
                     <deliveryPoint minOccurs="0" maxOccurs="unbounded" help="The delivery point field is used for the physical address for postal communication. This field is used to accomodate the many different international conventions that are the equivalent to a U.S. 'street address'.">
                     </deliveryPoint>
                     <city minOccurs="0" maxOccurs="1" help="The city field is used for the city name of the contact associated with a particular resource.">
@@ -171,7 +171,7 @@
                 </CHOICE22>
                 <address scope="document" system="" id="" minOccurs="0" maxOccurs="unbounded" help="The address field is provides detailed information for communicating with a party contact via electronic mail or postal mail, including the physical delivery location.">
                   <CHOICE24 minOccurs="1" maxOccurs="1" help="">
-                    <SEQUENCE25 minOccurs="1" maxOccurs="1" help="">
+                    <SEQUENCE25 minOccurs="0" maxOccurs="1" help="">
                       <deliveryPoint minOccurs="0" maxOccurs="unbounded" help="The delivery point field is used for the physical address for postal communication. This field is used to accomodate the many different international conventions that are the equivalent to a U.S. 'street address'.">
                       </deliveryPoint>
                       <city minOccurs="0" maxOccurs="1" help="The city field is used for the city name of the contact associated with a particular resource.">
@@ -299,7 +299,7 @@
                       <ulink url="" minOccurs="0" maxOccurs="1" help="this element and its children allow paragraphs to contain urls and titles for anchor tags. This markup is a subset of DocBook.">
                         <SEQUENCE43 minOccurs="0" maxOccurs="unbounded" help="">
                           <citetitle minOccurs="1" maxOccurs="1" help="the citetitle element contains a text title for the url. It can be displated in an achor tag. This markup is a subset of DocBook.">
-                            <SEQUENCE44 minOccurs="1" maxOccurs="1" help="">
+                            <SEQUENCE44 minOccurs="0" maxOccurs="1" help="">
                               <ANY minOccurs="0" maxOccurs="unbounded" help="">
                               </ANY>
                             </SEQUENCE44>
@@ -522,7 +522,7 @@
                 <ulink url="" minOccurs="0" maxOccurs="1" help="this element and its children allow paragraphs to contain urls and titles for anchor tags. This markup is a subset of DocBook.">
                   <SEQUENCE75 minOccurs="0" maxOccurs="unbounded" help="">
                     <citetitle minOccurs="1" maxOccurs="1" help="the citetitle element contains a text title for the url. It can be displated in an achor tag. This markup is a subset of DocBook.">
-                      <SEQUENCE76 minOccurs="1" maxOccurs="1" help="">
+                      <SEQUENCE76 minOccurs="0" maxOccurs="1" help="">
                         <ANY minOccurs="0" maxOccurs="unbounded" help="">
                         </ANY>
                       </SEQUENCE76>
@@ -625,7 +625,7 @@
                       <ulink url="" minOccurs="0" maxOccurs="1" help="this element and its children allow paragraphs to contain urls and titles for anchor tags. This markup is a subset of DocBook.">
                         <SEQUENCE92 minOccurs="0" maxOccurs="unbounded" help="">
                           <citetitle minOccurs="1" maxOccurs="1" help="the citetitle element contains a text title for the url. It can be displated in an achor tag. This markup is a subset of DocBook.">
-                            <SEQUENCE93 minOccurs="1" maxOccurs="1" help="">
+                            <SEQUENCE93 minOccurs="0" maxOccurs="1" help="">
                               <ANY minOccurs="0" maxOccurs="unbounded" help="">
                               </ANY>
                             </SEQUENCE93>
@@ -848,7 +848,7 @@
                 <ulink url="" minOccurs="0" maxOccurs="1" help="this element and its children allow paragraphs to contain urls and titles for anchor tags. This markup is a subset of DocBook.">
                   <SEQUENCE124 minOccurs="0" maxOccurs="unbounded" help="">
                     <citetitle minOccurs="1" maxOccurs="1" help="the citetitle element contains a text title for the url. It can be displated in an achor tag. This markup is a subset of DocBook.">
-                      <SEQUENCE125 minOccurs="1" maxOccurs="1" help="">
+                      <SEQUENCE125 minOccurs="0" maxOccurs="1" help="">
                         <ANY minOccurs="0" maxOccurs="unbounded" help="">
                         </ANY>
                       </SEQUENCE125>
@@ -943,7 +943,7 @@
                       <ulink url="" minOccurs="0" maxOccurs="1" help="this element and its children allow paragraphs to contain urls and titles for anchor tags. This markup is a subset of DocBook.">
                         <SEQUENCE140 minOccurs="0" maxOccurs="unbounded" help="">
                           <citetitle minOccurs="1" maxOccurs="1" help="the citetitle element contains a text title for the url. It can be displated in an achor tag. This markup is a subset of DocBook.">
-                            <SEQUENCE141 minOccurs="1" maxOccurs="1" help="">
+                            <SEQUENCE141 minOccurs="0" maxOccurs="1" help="">
                               <ANY minOccurs="0" maxOccurs="unbounded" help="">
                               </ANY>
                             </SEQUENCE141>
@@ -1166,7 +1166,7 @@
                 <ulink url="" minOccurs="0" maxOccurs="1" help="this element and its children allow paragraphs to contain urls and titles for anchor tags. This markup is a subset of DocBook.">
                   <SEQUENCE172 minOccurs="0" maxOccurs="unbounded" help="">
                     <citetitle minOccurs="1" maxOccurs="1" help="the citetitle element contains a text title for the url. It can be displated in an achor tag. This markup is a subset of DocBook.">
-                      <SEQUENCE173 minOccurs="1" maxOccurs="1" help="">
+                      <SEQUENCE173 minOccurs="0" maxOccurs="1" help="">
                         <ANY minOccurs="0" maxOccurs="unbounded" help="">
                         </ANY>
                       </SEQUENCE173>
@@ -1267,7 +1267,7 @@
                 </SEQUENCE189>
               </offline>
               <inline minOccurs="1" maxOccurs="1" help="Object data distributed inline in the metadata. Users have the option of including the data right inline in the metadata by providing it inside of the 'inline' element. For many text formats, the data can be simply included directly in the element. However, certain character sequences are invalid in an XML document (e.g., &lt;), so care will need to be taken to  either 1) wrap the data in a CDATA section if needed, or  2) encode the data using a text encoding algorithm such as base64, and then include that in a CDATA section. The latter will be necessary for binary formats.">
-                <SEQUENCE190 minOccurs="1" maxOccurs="1" help="">
+                <SEQUENCE190 minOccurs="0" maxOccurs="1" help="">
                   <ANY minOccurs="0" maxOccurs="unbounded" help="">
                   </ANY>
                 </SEQUENCE190>
@@ -1554,7 +1554,7 @@
                     <generalTaxonomicCoverage minOccurs="0" maxOccurs="1" help="A description of the range of taxa addressed in the data set or collection.">
                     </generalTaxonomicCoverage>
                     <taxonomicClassification minOccurs="1" maxOccurs="unbounded" help="Information about the range of taxa addressed in the data set or collection. It is recommended that one provide information starting from the taxonomic rank of kingdom, to a level which reflects the data set or collection being documented. The levels of Kingdom, Division/Phylum, Class, Order, Family, Genus, and Species should be included as ranks as appropriate. Because the taxonomic ranks are hierarchical, the Taxonomic Classification field is self-referencing to allow for an arbitrary depth of rank, down to species.">
-                      <SEQUENCE228 minOccurs="1" maxOccurs="1" help="">
+                      <SEQUENCE228 minOccurs="0" maxOccurs="1" help="">
                         <taxonRankName minOccurs="0" maxOccurs="1" help="The name of the taxonomic rank for which the Taxon rank value is provided. This field allows for the name one of the accepted levels of Taxa.">
                         </taxonRankName>
                         <taxonRankValue minOccurs="0" maxOccurs="1" help="The name representing the taxonomic rank of the taxon being described. The values included may be referenced from an authoritative source such as the Integrated Taxonomic Information Sytem (ITIS)in the U.S. (http://www/itis.usda.gov) and in Canada (http://sis.agr.gc.ca/pls/itisca/taxaget). Also, Species2000 is another source of taxonomic information, found at (http://www.sp2000.org)">
@@ -1562,7 +1562,7 @@
                         <commonName minOccurs="0" maxOccurs="unbounded" help="Specification of applicable common names. These common names may be general descriptions of a group of organisms if appropriate.">
                         </commonName>
                         <taxonomicClassification minOccurs="0" maxOccurs="unbounded" help="Information about the range of taxa addressed in the data set or collection. It is recommended that one provide information starting from the taxonomic rank of kingdom, to a level which reflects the data set or collection being documented. The levels of Kingdom, Division/Phylum, Class, Order, Family, Genus, and Species should be included as ranks as appropriate. Because the taxonomic ranks are hierarchical, the Taxonomic Classification field is self-referencing to allow for an arbitrary depth of rank, down to species.">
-                          <SEQUENCE229 minOccurs="1" maxOccurs="1" help="">
+                          <SEQUENCE229 minOccurs="0" maxOccurs="1" help="">
                             <taxonRankName minOccurs="0" maxOccurs="1" help="The name of the taxonomic rank for which the Taxon rank value is provided. This field allows for the name one of the accepted levels of Taxa.">
                             </taxonRankName>
                             <taxonRankValue minOccurs="0" maxOccurs="1" help="The name representing the taxonomic rank of the taxon being described. The values included may be referenced from an authoritative source such as the Integrated Taxonomic Information Sytem (ITIS)in the U.S. (http://www/itis.usda.gov) and in Canada (http://sis.agr.gc.ca/pls/itisca/taxaget). Also, Species2000 is another source of taxonomic information, found at (http://www.sp2000.org)">
@@ -1674,7 +1674,7 @@
                     <ulink url="" minOccurs="0" maxOccurs="1" help="this element and its children allow paragraphs to contain urls and titles for anchor tags. This markup is a subset of DocBook.">
                       <SEQUENCE246 minOccurs="0" maxOccurs="unbounded" help="">
                         <citetitle minOccurs="1" maxOccurs="1" help="the citetitle element contains a text title for the url. It can be displated in an achor tag. This markup is a subset of DocBook.">
-                          <SEQUENCE247 minOccurs="1" maxOccurs="1" help="">
+                          <SEQUENCE247 minOccurs="0" maxOccurs="1" help="">
                             <ANY minOccurs="0" maxOccurs="unbounded" help="">
                             </ANY>
                           </SEQUENCE247>
@@ -2097,7 +2097,7 @@
               <ulink url="" minOccurs="0" maxOccurs="1" help="this element and its children allow paragraphs to contain urls and titles for anchor tags. This markup is a subset of DocBook.">
                 <SEQUENCE313 minOccurs="0" maxOccurs="unbounded" help="">
                   <citetitle minOccurs="1" maxOccurs="1" help="the citetitle element contains a text title for the url. It can be displated in an achor tag. This markup is a subset of DocBook.">
-                    <SEQUENCE314 minOccurs="1" maxOccurs="1" help="">
+                    <SEQUENCE314 minOccurs="0" maxOccurs="1" help="">
                       <ANY minOccurs="0" maxOccurs="unbounded" help="">
                       </ANY>
                     </SEQUENCE314>
@@ -2373,7 +2373,7 @@
                   <ulink url="" minOccurs="0" maxOccurs="1" help="this element and its children allow paragraphs to contain urls and titles for anchor tags. This markup is a subset of DocBook.">
                     <SEQUENCE355 minOccurs="0" maxOccurs="unbounded" help="">
                       <citetitle minOccurs="1" maxOccurs="1" help="the citetitle element contains a text title for the url. It can be displated in an achor tag. This markup is a subset of DocBook.">
-                        <SEQUENCE356 minOccurs="1" maxOccurs="1" help="">
+                        <SEQUENCE356 minOccurs="0" maxOccurs="1" help="">
                           <ANY minOccurs="0" maxOccurs="unbounded" help="">
                           </ANY>
                         </SEQUENCE356>
@@ -2421,7 +2421,7 @@
             </CHOICE360>
             <address scope="document" system="" id="" minOccurs="0" maxOccurs="unbounded" help="The address field is provides detailed information for communicating with a party contact via electronic mail or postal mail, including the physical delivery location.">
               <CHOICE362 minOccurs="1" maxOccurs="1" help="">
-                <SEQUENCE363 minOccurs="1" maxOccurs="1" help="">
+                <SEQUENCE363 minOccurs="0" maxOccurs="1" help="">
                   <deliveryPoint minOccurs="0" maxOccurs="unbounded" help="The delivery point field is used for the physical address for postal communication. This field is used to accomodate the many different international conventions that are the equivalent to a U.S. 'street address'.">
                   </deliveryPoint>
                   <city minOccurs="0" maxOccurs="1" help="The city field is used for the city name of the contact associated with a particular resource.">
@@ -2475,7 +2475,7 @@
             </CHOICE368>
             <address scope="document" system="" id="" minOccurs="0" maxOccurs="unbounded" help="The address field is provides detailed information for communicating with a party contact via electronic mail or postal mail, including the physical delivery location.">
               <CHOICE370 minOccurs="1" maxOccurs="1" help="">
-                <SEQUENCE371 minOccurs="1" maxOccurs="1" help="">
+                <SEQUENCE371 minOccurs="0" maxOccurs="1" help="">
                   <deliveryPoint minOccurs="0" maxOccurs="unbounded" help="The delivery point field is used for the physical address for postal communication. This field is used to accomodate the many different international conventions that are the equivalent to a U.S. 'street address'.">
                   </deliveryPoint>
                   <city minOccurs="0" maxOccurs="1" help="The city field is used for the city name of the contact associated with a particular resource.">
@@ -2928,7 +2928,7 @@
                                   </references>
                                 </SEQUENCE435>
                               </CHOICE433>
-                              <SEQUENCE436 minOccurs="1" maxOccurs="1" help="">
+                              <SEQUENCE436 minOccurs="0" maxOccurs="1" help="">
                                 <access minOccurs="0" maxOccurs="1" help="">
                                 </access>
                               </SEQUENCE436>
@@ -3436,7 +3436,7 @@
                   </SEQUENCE450>
                 </subStep>
               </SEQUENCE376>
-              <SEQUENCE488 minOccurs="1" maxOccurs="1" help="">
+              <SEQUENCE488 minOccurs="0" maxOccurs="1" help="">
                 <dataSource scope="document" system="" id="" minOccurs="0" maxOccurs="unbounded" help="DatasetType is the base type for the dataset element. The dataset field encompasses all information about a single dataset. A dataset is defined as all of the information describing a data collection event. This event may take place over some period of time and include many actual collections (a time series or remote sensing application) or it could be just one actual collection (a day in the field).">
                   <CHOICE489 minOccurs="1" maxOccurs="1" help="">
                     <SEQUENCE490 minOccurs="1" maxOccurs="1" help="">
@@ -3748,7 +3748,7 @@
                                 <subStep minOccurs="0" maxOccurs="unbounded" help="This fields allows the nesting of additional method steps within this step. This is useful for heirarchical method descriptions.">
                                 </subStep>
                               </SEQUENCE533>
-                              <SEQUENCE536 minOccurs="1" maxOccurs="1" help="">
+                              <SEQUENCE536 minOccurs="0" maxOccurs="1" help="">
                                 <dataSource minOccurs="0" maxOccurs="unbounded" help="A source of data used by this methodStep.">
                                 </dataSource>
                               </SEQUENCE536>
@@ -4339,7 +4339,7 @@
 							<generalTaxonomicCoverage minOccurs="0" maxOccurs="1" help="A description of the range of taxa addressed in the data set or collection.">
 							</generalTaxonomicCoverage>
 							<taxonomicClassification minOccurs="1" maxOccurs="unbounded" help="Information about the range of taxa addressed in the data set or collection. It is recommended that one provide information starting from the taxonomic rank of kingdom, to a level which reflects the data set or collection being documented. The levels of Kingdom, Division/Phylum, Class, Order, Family, Genus, and Species should be included as ranks as appropriate. Because the taxonomic ranks are hierarchical, the Taxonomic Classification field is self-referencing to allow for an arbitrary depth of rank, down to species.">
-							  <SEQUENCE228 minOccurs="1" maxOccurs="1" help="">
+							  <SEQUENCE228 minOccurs="0" maxOccurs="1" help="">
 								<taxonRankName minOccurs="0" maxOccurs="1" help="The name of the taxonomic rank for which the Taxon rank value is provided. This field allows for the name one of the accepted levels of Taxa.">
 								</taxonRankName>
 								<taxonRankValue minOccurs="0" maxOccurs="1" help="The name representing the taxonomic rank of the taxon being described. The values included may be referenced from an authoritative source such as the Integrated Taxonomic Information Sytem (ITIS)in the U.S. (http://www/itis.usda.gov) and in Canada (http://sis.agr.gc.ca/pls/itisca/taxaget). Also, Species2000 is another source of taxonomic information, found at (http://www.sp2000.org)">
@@ -4347,7 +4347,7 @@
 								<commonName minOccurs="0" maxOccurs="unbounded" help="Specification of applicable common names. These common names may be general descriptions of a group of organisms if appropriate.">
 								</commonName>
 								<taxonomicClassification minOccurs="0" maxOccurs="unbounded" help="Information about the range of taxa addressed in the data set or collection. It is recommended that one provide information starting from the taxonomic rank of kingdom, to a level which reflects the data set or collection being documented. The levels of Kingdom, Division/Phylum, Class, Order, Family, Genus, and Species should be included as ranks as appropriate. Because the taxonomic ranks are hierarchical, the Taxonomic Classification field is self-referencing to allow for an arbitrary depth of rank, down to species.">
-								  <SEQUENCE229 minOccurs="1" maxOccurs="1" help="">
+								  <SEQUENCE229 minOccurs="0" maxOccurs="1" help="">
 									<taxonRankName minOccurs="0" maxOccurs="1" help="The name of the taxonomic rank for which the Taxon rank value is provided. This field allows for the name one of the accepted levels of Taxa.">
 									</taxonRankName>
 									<taxonRankValue minOccurs="0" maxOccurs="1" help="The name representing the taxonomic rank of the taxon being described. The values included may be referenced from an authoritative source such as the Integrated Taxonomic Information Sytem (ITIS)in the U.S. (http://www/itis.usda.gov) and in Canada (http://sis.agr.gc.ca/pls/itisca/taxaget). Also, Species2000 is another source of taxonomic information, found at (http://www.sp2000.org)">
@@ -4551,7 +4551,7 @@
                       <ulink url="" minOccurs="0" maxOccurs="1" help="this element and its children allow paragraphs to contain urls and titles for anchor tags. This markup is a subset of DocBook.">
                         <SEQUENCE611 minOccurs="0" maxOccurs="unbounded" help="">
                           <citetitle minOccurs="1" maxOccurs="1" help="the citetitle element contains a text title for the url. It can be displated in an achor tag. This markup is a subset of DocBook.">
-                            <SEQUENCE612 minOccurs="1" maxOccurs="1" help="">
+                            <SEQUENCE612 minOccurs="0" maxOccurs="1" help="">
                               <ANY minOccurs="0" maxOccurs="unbounded" help="">
                               </ANY>
                             </SEQUENCE612>
@@ -4565,7 +4565,7 @@
               <spatialSamplingUnits minOccurs="0" maxOccurs="1" help="A spatial sampling unit describes the specific geographic areas sampled. In the case of a study in which the measurements from several disbursed point collection devices are aggregated, then the sampling unit would be the area of that aggregation. Spatial sampling units can either be described by filling out the structured coverage element or by reference to the values in a data table (usually a GIS layer)">
                 <CHOICE613 minOccurs="1" maxOccurs="unbounded" help="">
                   <referencedEntityId minOccurs="1" maxOccurs="1" help="A value of a referencedEntityId element is a reference to the identifier of the entity module that provides the metadata for a data table (RDBMS, GIS or ascii text) that has the actual spatial sampling unit values. The referencedEntityId field is an indirect pointer to the actual values. The referencedEntityId can be thought of as a foreign key in a relational database.">
-                    <SEQUENCE614 minOccurs="1" maxOccurs="1" help="">
+                    <SEQUENCE614 minOccurs="0" maxOccurs="1" help="">
                       <ANY minOccurs="0" maxOccurs="unbounded" help="">
                       </ANY>
                     </SEQUENCE614>
@@ -4868,7 +4868,7 @@
                           </CHOICE658>
                           <address scope="document" system="" id="" minOccurs="0" maxOccurs="unbounded" help="The address field is provides detailed information for communicating with a party contact via electronic mail or postal mail, including the physical delivery location.">
                             <CHOICE659 minOccurs="1" maxOccurs="1" help="">
-                              <SEQUENCE660 minOccurs="1" maxOccurs="1" help="">
+                              <SEQUENCE660 minOccurs="0" maxOccurs="1" help="">
                                 <deliveryPoint minOccurs="0" maxOccurs="unbounded" help="The delivery point field is used for the physical address for postal communication. This field is used to accomodate the many different international conventions that are the equivalent to a U.S. 'street address'.">
                                 </deliveryPoint>
                                 <city minOccurs="0" maxOccurs="1" help="The city field is used for the city name of the contact associated with a particular resource.">
@@ -5111,7 +5111,7 @@
                         </SEQUENCE682>
                       </manuscript>
                       <report minOccurs="1" maxOccurs="1" help="The report may be self published by the institution or through a publisher. They usually are available by request to the institution or can be purchased from the publisher.">
-                        <SEQUENCE687 minOccurs="1" maxOccurs="1" help="">
+                        <SEQUENCE687 minOccurs="0" maxOccurs="1" help="">
                           <reportNumber minOccurs="0" maxOccurs="1" help="The report number field is used to describe the unique identification number that has been issued by the report institution for the report being described.">
                           </reportNumber>
                           <publisher scope="document" system="" id="" minOccurs="0" maxOccurs="1" help="The responsible party field contains multiple subfields that are used to describe the person, organization, or position within an organization that is associated in some way with a resource. It is intended to be used to fully document contact information for many types of associations, such as owner, manager, steward, curator, etc.">
@@ -5218,7 +5218,7 @@
                               </pageRange>
                             </SEQUENCE700>
                           </SEQUENCE698>
-                          <SEQUENCE701 minOccurs="1" maxOccurs="1" help="">
+                          <SEQUENCE701 minOccurs="0" maxOccurs="1" help="">
                             <conferenceName minOccurs="0" maxOccurs="1" help="The name of the conference whose proceedings have been published.">
                             </conferenceName>
                             <conferenceDate minOccurs="0" maxOccurs="1" help="The date the conference was held.">
@@ -5229,7 +5229,7 @@
                         </SEQUENCE697>
                       </conferenceProceedings>
                       <personalCommunication minOccurs="1" maxOccurs="1" help="This could be a widely distributed memo, an e-mail, a transcript from a conversation or interview, etc...">
-                        <SEQUENCE702 minOccurs="1" maxOccurs="1" help="">
+                        <SEQUENCE702 minOccurs="0" maxOccurs="1" help="">
                           <publisher scope="document" system="" id="" minOccurs="0" maxOccurs="1" help="The responsible party field contains multiple subfields that are used to describe the person, organization, or position within an organization that is associated in some way with a resource. It is intended to be used to fully document contact information for many types of associations, such as owner, manager, steward, curator, etc.">
                             <CHOICE703 minOccurs="1" maxOccurs="1" help="">
                               <SEQUENCE704 minOccurs="1" maxOccurs="1" help="">
@@ -5293,7 +5293,7 @@
                         </SEQUENCE702>
                       </personalCommunication>
                       <map minOccurs="1" maxOccurs="1" help="This element desribes the map that is being cited or cataloged, including its geographic coverage and scale.">
-                        <SEQUENCE711 minOccurs="1" maxOccurs="1" help="">
+                        <SEQUENCE711 minOccurs="0" maxOccurs="1" help="">
                           <publisher scope="document" system="" id="" minOccurs="0" maxOccurs="1" help="The responsible party field contains multiple subfields that are used to describe the person, organization, or position within an organization that is associated in some way with a resource. It is intended to be used to fully document contact information for many types of associations, such as owner, manager, steward, curator, etc.">
                             <CHOICE712 minOccurs="1" maxOccurs="1" help="">
                               <SEQUENCE713 minOccurs="1" maxOccurs="1" help="">
@@ -5377,7 +5377,7 @@
                           <publicationPlace minOccurs="0" maxOccurs="1" help="The location at which the work was published. This is usually the name of the city in which the publishing house produced the work.">
                           </publicationPlace>
                           <referenceType minOccurs="0" maxOccurs="1" help="The reference type describes the type of reference this generic type is being used to represent.">
-                            <SEQUENCE724 minOccurs="1" maxOccurs="1" help="">
+                            <SEQUENCE724 minOccurs="0" maxOccurs="1" help="">
                               <ANY minOccurs="0" maxOccurs="unbounded" help="">
                               </ANY>
                             </SEQUENCE724>
@@ -5473,14 +5473,14 @@
                         </SEQUENCE726>
                       </audioVisual>
                       <presentation minOccurs="1" maxOccurs="1" help="An unpublished presentation from a conference, workshop, workgroup, symposium, etc. It will be provided upon request in either in paper and/or electronic form by contacting the authors. If the presentation was actually published in a proceedings, use the conferenceProceedings type instead.">
-                        <SEQUENCE735 minOccurs="1" maxOccurs="1" help="">
+                        <SEQUENCE735 minOccurs="0" maxOccurs="1" help="">
                           <conferenceName minOccurs="0" maxOccurs="1" help="The name of the conference at which this presentation was given.">
                           </conferenceName>
                           <conferenceDate minOccurs="0" maxOccurs="1" help="The date the conference was held.">
                           </conferenceDate>
                           <conferenceLocation scope="document" system="" id="" minOccurs="0" maxOccurs="1" help="The address field is provides detailed information for communicating with a party contact via electronic mail or postal mail, including the physical delivery location.">
                             <CHOICE736 minOccurs="1" maxOccurs="1" help="">
-                              <SEQUENCE737 minOccurs="1" maxOccurs="1" help="">
+                              <SEQUENCE737 minOccurs="0" maxOccurs="1" help="">
                                 <deliveryPoint minOccurs="0" maxOccurs="unbounded" help="The delivery point field is used for the physical address for postal communication. This field is used to accomodate the many different international conventions that are the equivalent to a U.S. 'street address'.">
                                 </deliveryPoint>
                                 <city minOccurs="0" maxOccurs="1" help="The city field is used for the city name of the contact associated with a particular resource.">
@@ -5903,7 +5903,7 @@
                             </SEQUENCE793>
                           </manuscript>
                           <report minOccurs="1" maxOccurs="1" help="The report may be self published by the institution or through a publisher. They usually are available by request to the institution or can be purchased from the publisher.">
-                            <SEQUENCE794 minOccurs="1" maxOccurs="1" help="">
+                            <SEQUENCE794 minOccurs="0" maxOccurs="1" help="">
                               <reportNumber minOccurs="0" maxOccurs="1" help="The report number field is used to describe the unique identification number that has been issued by the report institution for the report being described.">
                               </reportNumber>
                               <publisher minOccurs="0" maxOccurs="1" help="The organization that physically put together the report and publishes it.">
@@ -5958,7 +5958,7 @@
                                   </pageRange>
                                 </SEQUENCE799>
                               </SEQUENCE797>
-                              <SEQUENCE800 minOccurs="1" maxOccurs="1" help="">
+                              <SEQUENCE800 minOccurs="0" maxOccurs="1" help="">
                                 <conferenceName minOccurs="0" maxOccurs="1" help="The name of the conference whose proceedings have been published.">
                                 </conferenceName>
                                 <conferenceDate minOccurs="0" maxOccurs="1" help="The date the conference was held.">
@@ -5969,7 +5969,7 @@
                             </SEQUENCE796>
                           </conferenceProceedings>
                           <personalCommunication minOccurs="1" maxOccurs="1" help="This could be a widely distributed memo, an e-mail, a transcript from a conversation or interview, etc...">
-                            <SEQUENCE801 minOccurs="1" maxOccurs="1" help="">
+                            <SEQUENCE801 minOccurs="0" maxOccurs="1" help="">
                               <publisher minOccurs="0" maxOccurs="1" help="The organization that physically puts together the communication and publishes it.">
                               </publisher>
                               <publicationPlace minOccurs="0" maxOccurs="1" help="The location at which the work was published. This is usually the name of the city in which the publishing house produced the work.">
@@ -5981,7 +5981,7 @@
                             </SEQUENCE801>
                           </personalCommunication>
                           <map minOccurs="1" maxOccurs="1" help="This element desribes the map that is being cited or cataloged, including its geographic coverage and scale.">
-                            <SEQUENCE802 minOccurs="1" maxOccurs="1" help="">
+                            <SEQUENCE802 minOccurs="0" maxOccurs="1" help="">
                               <publisher minOccurs="0" maxOccurs="1" help="The organization that physically puts together the map and publishes it.">
                               </publisher>
                               <edition minOccurs="0" maxOccurs="1" help="The edition field is to document the edition of the mapthat is being described.">
@@ -6039,7 +6039,7 @@
                             </SEQUENCE805>
                           </audioVisual>
                           <presentation minOccurs="1" maxOccurs="1" help="An unpublished presentation from a conference, workshop, workgroup, symposium, etc. It will be provided upon request in either in paper and/or electronic form by contacting the authors. If the presentation was actually published in a proceedings, use the conferenceProceedings type instead.">
-                            <SEQUENCE806 minOccurs="1" maxOccurs="1" help="">
+                            <SEQUENCE806 minOccurs="0" maxOccurs="1" help="">
                               <conferenceName minOccurs="0" maxOccurs="1" help="The name of the conference at which this presentation was given.">
                               </conferenceName>
                               <conferenceDate minOccurs="0" maxOccurs="1" help="The date the conference was held.">
@@ -6525,7 +6525,7 @@
                                 </references>
                               </SEQUENCE879>
                             </CHOICE877>
-                            <SEQUENCE880 minOccurs="1" maxOccurs="1" help="">
+                            <SEQUENCE880 minOccurs="0" maxOccurs="1" help="">
                               <access minOccurs="0" maxOccurs="1" help="">
                               </access>
                             </SEQUENCE880>
@@ -7463,7 +7463,7 @@
                     </CHOICE991>
                     <address scope="document" system="" id="" minOccurs="0" maxOccurs="unbounded" help="The address field is provides detailed information for communicating with a party contact via electronic mail or postal mail, including the physical delivery location.">
                       <CHOICE993 minOccurs="1" maxOccurs="1" help="">
-                        <SEQUENCE994 minOccurs="1" maxOccurs="1" help="">
+                        <SEQUENCE994 minOccurs="0" maxOccurs="1" help="">
                           <deliveryPoint minOccurs="0" maxOccurs="unbounded" help="The delivery point field is used for the physical address for postal communication. This field is used to accomodate the many different international conventions that are the equivalent to a U.S. 'street address'.">
                           </deliveryPoint>
                           <city minOccurs="0" maxOccurs="1" help="The city field is used for the city name of the contact associated with a particular resource.">
@@ -7642,7 +7642,7 @@
                     <ulink url="" minOccurs="0" maxOccurs="1" help="this element and its children allow paragraphs to contain urls and titles for anchor tags. This markup is a subset of DocBook.">
                       <SEQUENCE1020 minOccurs="0" maxOccurs="unbounded" help="">
                         <citetitle minOccurs="1" maxOccurs="1" help="the citetitle element contains a text title for the url. It can be displated in an achor tag. This markup is a subset of DocBook.">
-                          <SEQUENCE1021 minOccurs="1" maxOccurs="1" help="">
+                          <SEQUENCE1021 minOccurs="0" maxOccurs="1" help="">
                             <ANY minOccurs="0" maxOccurs="unbounded" help="">
                             </ANY>
                           </SEQUENCE1021>
@@ -7794,7 +7794,7 @@
                     <ulink url="" minOccurs="0" maxOccurs="1" help="this element and its children allow paragraphs to contain urls and titles for anchor tags. This markup is a subset of DocBook.">
                       <SEQUENCE1044 minOccurs="0" maxOccurs="unbounded" help="">
                         <citetitle minOccurs="1" maxOccurs="1" help="the citetitle element contains a text title for the url. It can be displated in an achor tag. This markup is a subset of DocBook.">
-                          <SEQUENCE1045 minOccurs="1" maxOccurs="1" help="">
+                          <SEQUENCE1045 minOccurs="0" maxOccurs="1" help="">
                             <ANY minOccurs="0" maxOccurs="unbounded" help="">
                             </ANY>
                           </SEQUENCE1045>
@@ -8216,7 +8216,7 @@
                           </SEQUENCE1095>
                         </manuscript>
                         <report minOccurs="1" maxOccurs="1" help="The report may be self published by the institution or through a publisher. They usually are available by request to the institution or can be purchased from the publisher.">
-                          <SEQUENCE1096 minOccurs="1" maxOccurs="1" help="">
+                          <SEQUENCE1096 minOccurs="0" maxOccurs="1" help="">
                             <reportNumber minOccurs="0" maxOccurs="1" help="The report number field is used to describe the unique identification number that has been issued by the report institution for the report being described.">
                             </reportNumber>
                             <publisher minOccurs="0" maxOccurs="1" help="The organization that physically put together the report and publishes it.">
@@ -8271,7 +8271,7 @@
                                 </pageRange>
                               </SEQUENCE1101>
                             </SEQUENCE1099>
-                            <SEQUENCE1102 minOccurs="1" maxOccurs="1" help="">
+                            <SEQUENCE1102 minOccurs="0" maxOccurs="1" help="">
                               <conferenceName minOccurs="0" maxOccurs="1" help="The name of the conference whose proceedings have been published.">
                               </conferenceName>
                               <conferenceDate minOccurs="0" maxOccurs="1" help="The date the conference was held.">
@@ -8282,7 +8282,7 @@
                           </SEQUENCE1098>
                         </conferenceProceedings>
                         <personalCommunication minOccurs="1" maxOccurs="1" help="This could be a widely distributed memo, an e-mail, a transcript from a conversation or interview, etc...">
-                          <SEQUENCE1103 minOccurs="1" maxOccurs="1" help="">
+                          <SEQUENCE1103 minOccurs="0" maxOccurs="1" help="">
                             <publisher minOccurs="0" maxOccurs="1" help="The organization that physically puts together the communication and publishes it.">
                             </publisher>
                             <publicationPlace minOccurs="0" maxOccurs="1" help="The location at which the work was published. This is usually the name of the city in which the publishing house produced the work.">
@@ -8294,7 +8294,7 @@
                           </SEQUENCE1103>
                         </personalCommunication>
                         <map minOccurs="1" maxOccurs="1" help="This element desribes the map that is being cited or cataloged, including its geographic coverage and scale.">
-                          <SEQUENCE1104 minOccurs="1" maxOccurs="1" help="">
+                          <SEQUENCE1104 minOccurs="0" maxOccurs="1" help="">
                             <publisher minOccurs="0" maxOccurs="1" help="The organization that physically puts together the map and publishes it.">
                             </publisher>
                             <edition minOccurs="0" maxOccurs="1" help="The edition field is to document the edition of the mapthat is being described.">
@@ -8352,7 +8352,7 @@
                           </SEQUENCE1107>
                         </audioVisual>
                         <presentation minOccurs="1" maxOccurs="1" help="An unpublished presentation from a conference, workshop, workgroup, symposium, etc. It will be provided upon request in either in paper and/or electronic form by contacting the authors. If the presentation was actually published in a proceedings, use the conferenceProceedings type instead.">
-                          <SEQUENCE1108 minOccurs="1" maxOccurs="1" help="">
+                          <SEQUENCE1108 minOccurs="0" maxOccurs="1" help="">
                             <conferenceName minOccurs="0" maxOccurs="1" help="The name of the conference at which this presentation was given.">
                             </conferenceName>
                             <conferenceDate minOccurs="0" maxOccurs="1" help="The date the conference was held.">
@@ -8818,7 +8818,7 @@
                           </SEQUENCE1173>
                         </manuscript>
                         <report minOccurs="1" maxOccurs="1" help="The report may be self published by the institution or through a publisher. They usually are available by request to the institution or can be purchased from the publisher.">
-                          <SEQUENCE1174 minOccurs="1" maxOccurs="1" help="">
+                          <SEQUENCE1174 minOccurs="0" maxOccurs="1" help="">
                             <reportNumber minOccurs="0" maxOccurs="1" help="The report number field is used to describe the unique identification number that has been issued by the report institution for the report being described.">
                             </reportNumber>
                             <publisher minOccurs="0" maxOccurs="1" help="The organization that physically put together the report and publishes it.">
@@ -8873,7 +8873,7 @@
                                 </pageRange>
                               </SEQUENCE1179>
                             </SEQUENCE1177>
-                            <SEQUENCE1180 minOccurs="1" maxOccurs="1" help="">
+                            <SEQUENCE1180 minOccurs="0" maxOccurs="1" help="">
                               <conferenceName minOccurs="0" maxOccurs="1" help="The name of the conference whose proceedings have been published.">
                               </conferenceName>
                               <conferenceDate minOccurs="0" maxOccurs="1" help="The date the conference was held.">
@@ -8884,7 +8884,7 @@
                           </SEQUENCE1176>
                         </conferenceProceedings>
                         <personalCommunication minOccurs="1" maxOccurs="1" help="This could be a widely distributed memo, an e-mail, a transcript from a conversation or interview, etc...">
-                          <SEQUENCE1181 minOccurs="1" maxOccurs="1" help="">
+                          <SEQUENCE1181 minOccurs="0" maxOccurs="1" help="">
                             <publisher minOccurs="0" maxOccurs="1" help="The organization that physically puts together the communication and publishes it.">
                             </publisher>
                             <publicationPlace minOccurs="0" maxOccurs="1" help="The location at which the work was published. This is usually the name of the city in which the publishing house produced the work.">
@@ -8896,7 +8896,7 @@
                           </SEQUENCE1181>
                         </personalCommunication>
                         <map minOccurs="1" maxOccurs="1" help="This element desribes the map that is being cited or cataloged, including its geographic coverage and scale.">
-                          <SEQUENCE1182 minOccurs="1" maxOccurs="1" help="">
+                          <SEQUENCE1182 minOccurs="0" maxOccurs="1" help="">
                             <publisher minOccurs="0" maxOccurs="1" help="The organization that physically puts together the map and publishes it.">
                             </publisher>
                             <edition minOccurs="0" maxOccurs="1" help="The edition field is to document the edition of the mapthat is being described.">
@@ -8954,7 +8954,7 @@
                           </SEQUENCE1185>
                         </audioVisual>
                         <presentation minOccurs="1" maxOccurs="1" help="An unpublished presentation from a conference, workshop, workgroup, symposium, etc. It will be provided upon request in either in paper and/or electronic form by contacting the authors. If the presentation was actually published in a proceedings, use the conferenceProceedings type instead.">
-                          <SEQUENCE1186 minOccurs="1" maxOccurs="1" help="">
+                          <SEQUENCE1186 minOccurs="0" maxOccurs="1" help="">
                             <conferenceName minOccurs="0" maxOccurs="1" help="The name of the conference at which this presentation was given.">
                             </conferenceName>
                             <conferenceDate minOccurs="0" maxOccurs="1" help="The date the conference was held.">
@@ -8992,7 +8992,7 @@
                           </CHOICE1193>
                           <address scope="document" system="" id="" minOccurs="0" maxOccurs="unbounded" help="The address field is provides detailed information for communicating with a party contact via electronic mail or postal mail, including the physical delivery location.">
                             <CHOICE1194 minOccurs="1" maxOccurs="1" help="">
-                              <SEQUENCE1195 minOccurs="1" maxOccurs="1" help="">
+                              <SEQUENCE1195 minOccurs="0" maxOccurs="1" help="">
                                 <deliveryPoint minOccurs="0" maxOccurs="unbounded" help="The delivery point field is used for the physical address for postal communication. This field is used to accomodate the many different international conventions that are the equivalent to a U.S. 'street address'.">
                                 </deliveryPoint>
                                 <city minOccurs="0" maxOccurs="1" help="The city field is used for the city name of the contact associated with a particular resource.">
@@ -9585,7 +9585,7 @@
 							  <recordDelimiter minOccurs="0" maxOccurs="unbounded" help="This element specifies the record delimiter character when the format is text. The record delimiter is usually a linefeed (\n) on UNIX, a carriage return (\r) on MacOS, or both (\r\n) on Windows/DOS. Multiline records are usually delimited with two line ending characters, for example on UNIX it would be two linefeed characters (\n\n). As record delimeters are often non-printing characters, one can use either the special value '\n' to represent a linefeed (ASCII 0x0a) and '\r' to represent a carriage return (ASCII 0x0d). Alternatively, one can use the hex value to represent character values (e.g., 0x0a).">
 							  </recordDelimiter>
 							  <physicalLineDelimiter minOccurs="0" maxOccurs="unbounded" help="This element specifies the physical line delimiter character when the format is text. The line delimiter is usually a linefeed (\n) on UNIX, a carriage return (\r) on MacOS, or both (\r\n) on Windows/DOS. Multiline records are usually delimited with two line ending characters, for example on UNIX it would be two linefeed characters (\n\n). As line delimeters are often non-printing characters, one can use either the special value '\n' to represent a linefeed (ASCII 0x0a) and '\r' to represent a carriage return (ASCII 0x0d). Alternatively, one can use the hex value to represent character values (e.g., 0x0a). If this value is not provided, prcessors should assume that the physical line delimiter is the same as the record delimiter.">
-								<SEQUENCE5 minOccurs="1" maxOccurs="1" help="">
+								<SEQUENCE5 minOccurs="0" maxOccurs="1" help="">
 								  <ANY minOccurs="0" maxOccurs="unbounded" help="">
 								  </ANY>
 								</SEQUENCE5>
@@ -9908,7 +9908,7 @@
 										  </CHOICE50>
 										  <address scope="document" system="" id="" minOccurs="0" maxOccurs="unbounded" help="The address field is provides detailed information for communicating with a party contact via electronic mail or postal mail, including the physical delivery location.">
 											<CHOICE51 minOccurs="1" maxOccurs="1" help="">
-											  <SEQUENCE52 minOccurs="1" maxOccurs="1" help="">
+											  <SEQUENCE52 minOccurs="0" maxOccurs="1" help="">
 												<deliveryPoint minOccurs="0" maxOccurs="unbounded" help="The delivery point field is used for the physical address for postal communication. This field is used to accomodate the many different international conventions that are the equivalent to a U.S. 'street address'.">
 												</deliveryPoint>
 												<city minOccurs="0" maxOccurs="1" help="The city field is used for the city name of the contact associated with a particular resource.">
@@ -10151,7 +10151,7 @@
 										</SEQUENCE74>
 									  </manuscript>
 									  <report minOccurs="1" maxOccurs="1" help="The report may be self published by the institution or through a publisher. They usually are available by request to the institution or can be purchased from the publisher.">
-										<SEQUENCE79 minOccurs="1" maxOccurs="1" help="">
+										<SEQUENCE79 minOccurs="0" maxOccurs="1" help="">
 										  <reportNumber minOccurs="0" maxOccurs="1" help="The report number field is used to describe the unique identification number that has been issued by the report institution for the report being described.">
 										  </reportNumber>
 										  <publisher scope="document" system="" id="" minOccurs="0" maxOccurs="1" help="The responsible party field contains multiple subfields that are used to describe the person, organization, or position within an organization that is associated in some way with a resource. It is intended to be used to fully document contact information for many types of associations, such as owner, manager, steward, curator, etc.">
@@ -10258,7 +10258,7 @@
 											  </pageRange>
 											</SEQUENCE92>
 										  </SEQUENCE90>
-										  <SEQUENCE93 minOccurs="1" maxOccurs="1" help="">
+										  <SEQUENCE93 minOccurs="0" maxOccurs="1" help="">
 											<conferenceName minOccurs="0" maxOccurs="1" help="The name of the conference whose proceedings have been published.">
 											</conferenceName>
 											<conferenceDate minOccurs="0" maxOccurs="1" help="The date the conference was held.">
@@ -10269,7 +10269,7 @@
 										</SEQUENCE89>
 									  </conferenceProceedings>
 									  <personalCommunication minOccurs="1" maxOccurs="1" help="This could be a widely distributed memo, an e-mail, a transcript from a conversation or interview, etc...">
-										<SEQUENCE94 minOccurs="1" maxOccurs="1" help="">
+										<SEQUENCE94 minOccurs="0" maxOccurs="1" help="">
 										  <publisher scope="document" system="" id="" minOccurs="0" maxOccurs="1" help="The responsible party field contains multiple subfields that are used to describe the person, organization, or position within an organization that is associated in some way with a resource. It is intended to be used to fully document contact information for many types of associations, such as owner, manager, steward, curator, etc.">
 											<CHOICE95 minOccurs="1" maxOccurs="1" help="">
 											  <SEQUENCE96 minOccurs="1" maxOccurs="1" help="">
@@ -10333,7 +10333,7 @@
 										</SEQUENCE94>
 									  </personalCommunication>
 									  <map minOccurs="1" maxOccurs="1" help="This element desribes the map that is being cited or cataloged, including its geographic coverage and scale.">
-										<SEQUENCE103 minOccurs="1" maxOccurs="1" help="">
+										<SEQUENCE103 minOccurs="0" maxOccurs="1" help="">
 										  <publisher scope="document" system="" id="" minOccurs="0" maxOccurs="1" help="The responsible party field contains multiple subfields that are used to describe the person, organization, or position within an organization that is associated in some way with a resource. It is intended to be used to fully document contact information for many types of associations, such as owner, manager, steward, curator, etc.">
 											<CHOICE104 minOccurs="1" maxOccurs="1" help="">
 											  <SEQUENCE105 minOccurs="1" maxOccurs="1" help="">
@@ -10417,7 +10417,7 @@
 										  <publicationPlace minOccurs="0" maxOccurs="1" help="The location at which the work was published. This is usually the name of the city in which the publishing house produced the work.">
 										  </publicationPlace>
 										  <referenceType minOccurs="0" maxOccurs="1" help="The reference type describes the type of reference this generic type is being used to represent.">
-											<SEQUENCE116 minOccurs="1" maxOccurs="1" help="">
+											<SEQUENCE116 minOccurs="0" maxOccurs="1" help="">
 											  <ANY minOccurs="0" maxOccurs="unbounded" help="">
 											  </ANY>
 											</SEQUENCE116>
@@ -10513,14 +10513,14 @@
 										</SEQUENCE118>
 									  </audioVisual>
 									  <presentation minOccurs="1" maxOccurs="1" help="An unpublished presentation from a conference, workshop, workgroup, symposium, etc. It will be provided upon request in either in paper and/or electronic form by contacting the authors. If the presentation was actually published in a proceedings, use the conferenceProceedings type instead.">
-										<SEQUENCE127 minOccurs="1" maxOccurs="1" help="">
+										<SEQUENCE127 minOccurs="0" maxOccurs="1" help="">
 										  <conferenceName minOccurs="0" maxOccurs="1" help="The name of the conference at which this presentation was given.">
 										  </conferenceName>
 										  <conferenceDate minOccurs="0" maxOccurs="1" help="The date the conference was held.">
 										  </conferenceDate>
 										  <conferenceLocation scope="document" system="" id="" minOccurs="0" maxOccurs="1" help="The address field is provides detailed information for communicating with a party contact via electronic mail or postal mail, including the physical delivery location.">
 											<CHOICE128 minOccurs="1" maxOccurs="1" help="">
-											  <SEQUENCE129 minOccurs="1" maxOccurs="1" help="">
+											  <SEQUENCE129 minOccurs="0" maxOccurs="1" help="">
 												<deliveryPoint minOccurs="0" maxOccurs="unbounded" help="The delivery point field is used for the physical address for postal communication. This field is used to accomodate the many different international conventions that are the equivalent to a U.S. 'street address'.">
 												</deliveryPoint>
 												<city minOccurs="0" maxOccurs="1" help="The city field is used for the city name of the contact associated with a particular resource.">
@@ -10669,7 +10669,7 @@
 								</SEQUENCE150>
 							  </offline>
 							  <inline minOccurs="1" maxOccurs="1" help="Object data distributed inline in the metadata. Users have the option of including the data right inline in the metadata by providing it inside of the 'inline' element. For many text formats, the data can be simply included directly in the element. However, certain character sequences are invalid in an XML document (e.g., &lt;), so care will need to be taken to  either 1) wrap the data in a CDATA section if needed, or  2) encode the data using a text encoding algorithm such as base64, and then include that in a CDATA section. The latter will be necessary for binary formats.">
-								<SEQUENCE151 minOccurs="1" maxOccurs="1" help="">
+								<SEQUENCE151 minOccurs="0" maxOccurs="1" help="">
 								  <ANY minOccurs="0" maxOccurs="unbounded" help="">
 								  </ANY>
 								</SEQUENCE151>
@@ -10680,7 +10680,7 @@
 							  </references>
 							</SEQUENCE152>
 						  </CHOICE135>
-						  <SEQUENCE153 minOccurs="1" maxOccurs="1" help="">
+						  <SEQUENCE153 minOccurs="0" maxOccurs="1" help="">
 							<access authSystem="" order="allowFirst" scope="document" system="" id="" minOccurs="0" maxOccurs="1" help="The access element contains a list of rules that define the level of access for a given data package, including both metadata and data. The access element must contain the elements defined in the AccessType type.">
 							  <CHOICE154 minOccurs="1" maxOccurs="1" help="">
 								<CHOICE155 minOccurs="1" maxOccurs="unbounded" help="">
@@ -10992,7 +10992,7 @@
 							<generalTaxonomicCoverage minOccurs="0" maxOccurs="1" help="A description of the range of taxa addressed in the data set or collection.">
 							</generalTaxonomicCoverage>
 							<taxonomicClassification minOccurs="1" maxOccurs="unbounded" help="Information about the range of taxa addressed in the data set or collection. It is recommended that one provide information starting from the taxonomic rank of kingdom, to a level which reflects the data set or collection being documented. The levels of Kingdom, Division/Phylum, Class, Order, Family, Genus, and Species should be included as ranks as appropriate. Because the taxonomic ranks are hierarchical, the Taxonomic Classification field is self-referencing to allow for an arbitrary depth of rank, down to species.">
-							  <SEQUENCE76 minOccurs="1" maxOccurs="1" help="">
+							  <SEQUENCE76 minOccurs="0" maxOccurs="1" help="">
 								<taxonRankName minOccurs="0" maxOccurs="1" help="The name of the taxonomic rank for which the Taxon rank value is provided. This field allows for the name one of the accepted levels of Taxa.">
 								</taxonRankName>
 								<taxonRankValue minOccurs="0" maxOccurs="1" help="The name representing the taxonomic rank of the taxon being described. The values included may be referenced from an authoritative source such as the Integrated Taxonomic Information Sytem (ITIS)in the U.S. (http://www/itis.usda.gov) and in Canada (http://sis.agr.gc.ca/pls/itisca/taxaget). Also, Species2000 is another source of taxonomic information, found at (http://www.sp2000.org)">
@@ -11000,7 +11000,7 @@
 								<commonName minOccurs="0" maxOccurs="unbounded" help="Specification of applicable common names. These common names may be general descriptions of a group of organisms if appropriate.">
 								</commonName>
 								<taxonomicClassification minOccurs="0" maxOccurs="unbounded" help="Information about the range of taxa addressed in the data set or collection. It is recommended that one provide information starting from the taxonomic rank of kingdom, to a level which reflects the data set or collection being documented. The levels of Kingdom, Division/Phylum, Class, Order, Family, Genus, and Species should be included as ranks as appropriate. Because the taxonomic ranks are hierarchical, the Taxonomic Classification field is self-referencing to allow for an arbitrary depth of rank, down to species.">
-								  <SEQUENCE77 minOccurs="1" maxOccurs="1" help="">
+								  <SEQUENCE77 minOccurs="0" maxOccurs="1" help="">
 									<taxonRankName minOccurs="0" maxOccurs="1" help="The name of the taxonomic rank for which the Taxon rank value is provided. This field allows for the name one of the accepted levels of Taxa.">
 									</taxonRankName>
 									<taxonRankValue minOccurs="0" maxOccurs="1" help="The name representing the taxonomic rank of the taxon being described. The values included may be referenced from an authoritative source such as the Integrated Taxonomic Information Sytem (ITIS)in the U.S. (http://www/itis.usda.gov) and in Canada (http://sis.agr.gc.ca/pls/itisca/taxaget). Also, Species2000 is another source of taxonomic information, found at (http://www.sp2000.org)">
@@ -11715,7 +11715,7 @@
 							</SEQUENCE132>
 						  </subStep>
 						</SEQUENCE82>
-						<SEQUENCE161 minOccurs="1" maxOccurs="1" help="">
+						<SEQUENCE161 minOccurs="0" maxOccurs="1" help="">
 						  <dataSource scope="document" system="" id="" minOccurs="0" maxOccurs="unbounded" help="DatasetType is the base type for the dataset element. The dataset field encompasses all information about a single dataset. A dataset is defined as all of the information describing a data collection event. This event may take place over some period of time and include many actual collections (a time series or remote sensing application) or it could be just one actual collection (a day in the field).">
 							<CHOICE162 minOccurs="1" maxOccurs="1" help="">
 							  <SEQUENCE163 minOccurs="1" maxOccurs="1" help="">
@@ -12428,7 +12428,7 @@
 						<spatialSamplingUnits minOccurs="0" maxOccurs="1" help="A spatial sampling unit describes the specific geographic areas sampled. In the case of a study in which the measurements from several disbursed point collection devices are aggregated, then the sampling unit would be the area of that aggregation. Spatial sampling units can either be described by filling out the structured coverage element or by reference to the values in a data table (usually a GIS layer)">
 						  <CHOICE260 minOccurs="1" maxOccurs="unbounded" help="">
 							<referencedEntityId minOccurs="1" maxOccurs="1" help="A value of a referencedEntityId element is a reference to the identifier of the entity module that provides the metadata for a data table (RDBMS, GIS or ascii text) that has the actual spatial sampling unit values. The referencedEntityId field is an indirect pointer to the actual values. The referencedEntityId can be thought of as a foreign key in a relational database.">
-							  <SEQUENCE261 minOccurs="1" maxOccurs="1" help="">
+							  <SEQUENCE261 minOccurs="0" maxOccurs="1" help="">
 								<ANY minOccurs="0" maxOccurs="unbounded" help="">
 								</ANY>
 							  </SEQUENCE261>
@@ -12774,7 +12774,7 @@
 								  </SEQUENCE305>
 								</manuscript>
 								<report minOccurs="1" maxOccurs="1" help="The report may be self published by the institution or through a publisher. They usually are available by request to the institution or can be purchased from the publisher.">
-								  <SEQUENCE306 minOccurs="1" maxOccurs="1" help="">
+								  <SEQUENCE306 minOccurs="0" maxOccurs="1" help="">
 									<reportNumber minOccurs="0" maxOccurs="1" help="The report number field is used to describe the unique identification number that has been issued by the report institution for the report being described.">
 									</reportNumber>
 									<publisher minOccurs="0" maxOccurs="1" help="The organization that physically put together the report and publishes it.">
@@ -12829,7 +12829,7 @@
 										</pageRange>
 									  </SEQUENCE311>
 									</SEQUENCE309>
-									<SEQUENCE312 minOccurs="1" maxOccurs="1" help="">
+									<SEQUENCE312 minOccurs="0" maxOccurs="1" help="">
 									  <conferenceName minOccurs="0" maxOccurs="1" help="The name of the conference whose proceedings have been published.">
 									  </conferenceName>
 									  <conferenceDate minOccurs="0" maxOccurs="1" help="The date the conference was held.">
@@ -12840,7 +12840,7 @@
 								  </SEQUENCE308>
 								</conferenceProceedings>
 								<personalCommunication minOccurs="1" maxOccurs="1" help="This could be a widely distributed memo, an e-mail, a transcript from a conversation or interview, etc...">
-								  <SEQUENCE313 minOccurs="1" maxOccurs="1" help="">
+								  <SEQUENCE313 minOccurs="0" maxOccurs="1" help="">
 									<publisher minOccurs="0" maxOccurs="1" help="The organization that physically puts together the communication and publishes it.">
 									</publisher>
 									<publicationPlace minOccurs="0" maxOccurs="1" help="The location at which the work was published. This is usually the name of the city in which the publishing house produced the work.">
@@ -12852,7 +12852,7 @@
 								  </SEQUENCE313>
 								</personalCommunication>
 								<map minOccurs="1" maxOccurs="1" help="This element desribes the map that is being cited or cataloged, including its geographic coverage and scale.">
-								  <SEQUENCE314 minOccurs="1" maxOccurs="1" help="">
+								  <SEQUENCE314 minOccurs="0" maxOccurs="1" help="">
 									<publisher minOccurs="0" maxOccurs="1" help="The organization that physically puts together the map and publishes it.">
 									</publisher>
 									<edition minOccurs="0" maxOccurs="1" help="The edition field is to document the edition of the mapthat is being described.">
@@ -12910,7 +12910,7 @@
 								  </SEQUENCE317>
 								</audioVisual>
 								<presentation minOccurs="1" maxOccurs="1" help="An unpublished presentation from a conference, workshop, workgroup, symposium, etc. It will be provided upon request in either in paper and/or electronic form by contacting the authors. If the presentation was actually published in a proceedings, use the conferenceProceedings type instead.">
-								  <SEQUENCE318 minOccurs="1" maxOccurs="1" help="">
+								  <SEQUENCE318 minOccurs="0" maxOccurs="1" help="">
 									<conferenceName minOccurs="0" maxOccurs="1" help="The name of the conference at which this presentation was given.">
 									</conferenceName>
 									<conferenceDate minOccurs="0" maxOccurs="1" help="The date the conference was held.">
@@ -13344,7 +13344,7 @@
 										  </references>
 										</SEQUENCE379>
 									  </CHOICE377>
-									  <SEQUENCE380 minOccurs="1" maxOccurs="1" help="">
+									  <SEQUENCE380 minOccurs="0" maxOccurs="1" help="">
 										<access minOccurs="0" maxOccurs="1" help="">
 										</access>
 									  </SEQUENCE380>
@@ -13939,7 +13939,7 @@
 							  <ulink url="" minOccurs="0" maxOccurs="1" help="this element and its children allow paragraphs to contain urls and titles for anchor tags. This markup is a subset of DocBook.">
 								<SEQUENCE446 minOccurs="0" maxOccurs="unbounded" help="">
 								  <citetitle minOccurs="1" maxOccurs="1" help="the citetitle element contains a text title for the url. It can be displated in an achor tag. This markup is a subset of DocBook.">
-									<SEQUENCE447 minOccurs="1" maxOccurs="1" help="">
+									<SEQUENCE447 minOccurs="0" maxOccurs="1" help="">
 									  <ANY minOccurs="0" maxOccurs="unbounded" help="">
 									  </ANY>
 									</SEQUENCE447>
@@ -14162,7 +14162,7 @@
 						<ulink url="" minOccurs="0" maxOccurs="1" help="this element and its children allow paragraphs to contain urls and titles for anchor tags. This markup is a subset of DocBook.">
 						  <SEQUENCE478 minOccurs="0" maxOccurs="unbounded" help="">
 							<citetitle minOccurs="1" maxOccurs="1" help="the citetitle element contains a text title for the url. It can be displated in an achor tag. This markup is a subset of DocBook.">
-							  <SEQUENCE479 minOccurs="1" maxOccurs="1" help="">
+							  <SEQUENCE479 minOccurs="0" maxOccurs="1" help="">
 								<ANY minOccurs="0" maxOccurs="unbounded" help="">
 								</ANY>
 							  </SEQUENCE479>
@@ -14330,9 +14330,9 @@
 									  <SEQUENCE26 minOccurs="1" maxOccurs="1" help="">
 										<numberType minOccurs="1" maxOccurs="1" help="">
 										</numberType>
-										<SEQUENCE27 minOccurs="1" maxOccurs="1" help="">
+										<SEQUENCE27 minOccurs="0" maxOccurs="1" help="">
 										  <bounds minOccurs="0" maxOccurs="unbounded" help="">
-											<SEQUENCE28 minOccurs="1" maxOccurs="1" help="">
+											<SEQUENCE28 minOccurs="0" maxOccurs="1" help="">
 											  <minimum exclusive="" minOccurs="0" maxOccurs="1" help="The minimum element specifies the minimum permitted value of a numeric attribute.">
 											  </minimum>
 											  <maximum exclusive="" minOccurs="0" maxOccurs="1" help="The maximum element specifies the maximum permitted value of a numeric attribute.">
@@ -14366,9 +14366,9 @@
 									  <SEQUENCE33 minOccurs="1" maxOccurs="1" help="">
 										<numberType minOccurs="1" maxOccurs="1" help="">
 										</numberType>
-										<SEQUENCE34 minOccurs="1" maxOccurs="1" help="">
+										<SEQUENCE34 minOccurs="0" maxOccurs="1" help="">
 										  <bounds minOccurs="0" maxOccurs="unbounded" help="">
-											<SEQUENCE35 minOccurs="1" maxOccurs="1" help="">
+											<SEQUENCE35 minOccurs="0" maxOccurs="1" help="">
 											  <minimum exclusive="" minOccurs="0" maxOccurs="1" help="The minimum element specifies the minimum permitted value of a numeric attribute.">
 											  </minimum>
 											  <maximum exclusive="" minOccurs="0" maxOccurs="1" help="The maximum element specifies the maximum permitted value of a numeric attribute.">
@@ -14393,10 +14393,10 @@
 								  </dateTimePrecision>
 								  <dateTimeDomain id="" minOccurs="0" maxOccurs="1" help="The DateTimeDomain specifies the minimum and maximum values of a dateTime attribute. These are theoretical or permitted values (ie. prescriptive), and not necessarily the actual minimum and maximum observed in a given data set (descriptive). The domain expressions should be in the same dateTime format as is used in the 'formatString' description for the attribute. For example, if the format string is 'YYYY-MM-DD', then a valid minimum in the domain would be '2001-05-29'. The 'bounds' element is optional, and if it is missing then any legitimate value from the Gregorian  calendar system is allowed in the attribute as long as its representation matches its corresponding formatString.">
 									<CHOICE38 minOccurs="1" maxOccurs="1" help="">
-									  <SEQUENCE39 minOccurs="1" maxOccurs="1" help="">
-										<SEQUENCE40 minOccurs="1" maxOccurs="1" help="">
+									  <SEQUENCE39 minOccurs="0" maxOccurs="1" help="">
+										<SEQUENCE40 minOccurs="0" maxOccurs="1" help="">
 										  <bounds minOccurs="0" maxOccurs="unbounded" help="">
-											<SEQUENCE41 minOccurs="1" maxOccurs="1" help="">
+											<SEQUENCE41 minOccurs="0" maxOccurs="1" help="">
 											  <minimum exclusive="" minOccurs="0" maxOccurs="1" help="The minimum element specifies the minimum permitted value of a date attribute.">
 											  </minimum>
 											  <maximum exclusive="" minOccurs="0" maxOccurs="1" help="The maximum element specifies the maximum permitted value of a date attribute.">
@@ -14587,7 +14587,7 @@
 									</SEQUENCE534>
 								  </subStep>
 								</SEQUENCE526>
-								<SEQUENCE537 minOccurs="1" maxOccurs="1" help="">
+								<SEQUENCE537 minOccurs="0" maxOccurs="1" help="">
 								  <dataSource scope="document" system="" id="" minOccurs="0" maxOccurs="unbounded" help="DatasetType is the base type for the dataset element. The dataset field encompasses all information about a single dataset. A dataset is defined as all of the information describing a data collection event. This event may take place over some period of time and include many actual collections (a time series or remote sensing application) or it could be just one actual collection (a day in the field).">
 									<CHOICE538 minOccurs="1" maxOccurs="1" help="">
 									  <SEQUENCE539 minOccurs="1" maxOccurs="1" help="">
@@ -14882,7 +14882,7 @@
 						<constraintName minOccurs="1" maxOccurs="1" help="The constraintName element is a name which represents a human readible and meaningful name for the constraint.">
 						</constraintName>
 						<constraintDescription minOccurs="0" maxOccurs="1" help="The constraintDescription element describes the nature of the constraint. It might be a description of a check condition, or a statement about the composition of a primary key or the nature of the relationship between two database tables or two ascii files.">
-						  <SEQUENCE569 minOccurs="1" maxOccurs="1" help="">
+						  <SEQUENCE569 minOccurs="0" maxOccurs="1" help="">
 							<ANY minOccurs="0" maxOccurs="unbounded" help="">
 							</ANY>
 						  </SEQUENCE569>
@@ -14902,7 +14902,7 @@
 						<constraintName minOccurs="1" maxOccurs="1" help="The constraintName element is a name which represents a human readible and meaningful name for the constraint.">
 						</constraintName>
 						<constraintDescription minOccurs="0" maxOccurs="1" help="The constraintDescription element describes the nature of the constraint. It might be a description of a check condition, or a statement about the composition of a primary key or the nature of the relationship between two database tables or two ascii files.">
-						  <SEQUENCE573 minOccurs="1" maxOccurs="1" help="">
+						  <SEQUENCE573 minOccurs="0" maxOccurs="1" help="">
 							<ANY minOccurs="0" maxOccurs="unbounded" help="">
 							</ANY>
 						  </SEQUENCE573>
@@ -14922,7 +14922,7 @@
 						<constraintName minOccurs="1" maxOccurs="1" help="The constraintName element is a name which represents a human readible and meaningful name for the constraint.">
 						</constraintName>
 						<constraintDescription minOccurs="0" maxOccurs="1" help="The constraintDescription element describes the nature of the constraint. It might be a description of a check condition, or a statement about the composition of a primary key or the nature of the relationship between two database tables or two ascii files.">
-						  <SEQUENCE577 minOccurs="1" maxOccurs="1" help="">
+						  <SEQUENCE577 minOccurs="0" maxOccurs="1" help="">
 							<ANY minOccurs="0" maxOccurs="unbounded" help="">
 							</ANY>
 						  </SEQUENCE577>
@@ -14938,7 +14938,7 @@
 						<constraintName minOccurs="1" maxOccurs="1" help="The constraintName element is a name which represents a human readible and meaningful name for the constraint.">
 						</constraintName>
 						<constraintDescription minOccurs="0" maxOccurs="1" help="The constraintDescription element describes the nature of the constraint. It might be a description of a check condition, or a statement about the composition of a primary key or the nature of the relationship between two database tables or two ascii files.">
-						  <SEQUENCE580 minOccurs="1" maxOccurs="1" help="">
+						  <SEQUENCE580 minOccurs="0" maxOccurs="1" help="">
 							<ANY minOccurs="0" maxOccurs="unbounded" help="">
 							</ANY>
 						  </SEQUENCE580>
@@ -14971,7 +14971,7 @@
 						  <constraintName minOccurs="1" maxOccurs="1" help="The constraintName element is a name which represents a human readible and meaningful name for the constraint.">
 						  </constraintName>
 						  <constraintDescription minOccurs="0" maxOccurs="1" help="The constraintDescription element describes the nature of the constraint. It might be a description of a check condition, or a statement about the composition of a primary key or the nature of the relationship between two database tables or two ascii files.">
-							<SEQUENCE586 minOccurs="1" maxOccurs="1" help="">
+							<SEQUENCE586 minOccurs="0" maxOccurs="1" help="">
 							  <ANY minOccurs="0" maxOccurs="unbounded" help="">
 							  </ANY>
 							</SEQUENCE586>
@@ -15010,7 +15010,7 @@
 						<constraintName minOccurs="1" maxOccurs="1" help="The constraintName element is a name which represents a human readible and meaningful name for the constraint.">
 						</constraintName>
 						<constraintDescription minOccurs="0" maxOccurs="1" help="The constraintDescription element describes the nature of the constraint. It might be a description of a check condition, or a statement about the composition of a primary key or the nature of the relationship between two database tables or two ascii files.">
-						  <SEQUENCE592 minOccurs="1" maxOccurs="1" help="">
+						  <SEQUENCE592 minOccurs="0" maxOccurs="1" help="">
 							<ANY minOccurs="0" maxOccurs="unbounded" help="">
 							</ANY>
 						  </SEQUENCE592>
@@ -15075,7 +15075,7 @@
 							  <recordDelimiter minOccurs="0" maxOccurs="unbounded" help="This element specifies the record delimiter character when the format is text. The record delimiter is usually a linefeed (\n) on UNIX, a carriage return (\r) on MacOS, or both (\r\n) on Windows/DOS. Multiline records are usually delimited with two line ending characters, for example on UNIX it would be two linefeed characters (\n\n). As record delimeters are often non-printing characters, one can use either the special value '\n' to represent a linefeed (ASCII 0x0a) and '\r' to represent a carriage return (ASCII 0x0d). Alternatively, one can use the hex value to represent character values (e.g., 0x0a).">
 							  </recordDelimiter>
 							  <physicalLineDelimiter minOccurs="0" maxOccurs="unbounded" help="This element specifies the physical line delimiter character when the format is text. The line delimiter is usually a linefeed (\n) on UNIX, a carriage return (\r) on MacOS, or both (\r\n) on Windows/DOS. Multiline records are usually delimited with two line ending characters, for example on UNIX it would be two linefeed characters (\n\n). As line delimeters are often non-printing characters, one can use either the special value '\n' to represent a linefeed (ASCII 0x0a) and '\r' to represent a carriage return (ASCII 0x0d). Alternatively, one can use the hex value to represent character values (e.g., 0x0a). If this value is not provided, prcessors should assume that the physical line delimiter is the same as the record delimiter.">
-								<SEQUENCE5 minOccurs="1" maxOccurs="1" help="">
+								<SEQUENCE5 minOccurs="0" maxOccurs="1" help="">
 								  <ANY minOccurs="0" maxOccurs="unbounded" help="">
 								  </ANY>
 								</SEQUENCE5>
@@ -15398,7 +15398,7 @@
 										  </CHOICE50>
 										  <address scope="document" system="" id="" minOccurs="0" maxOccurs="unbounded" help="The address field is provides detailed information for communicating with a party contact via electronic mail or postal mail, including the physical delivery location.">
 											<CHOICE51 minOccurs="1" maxOccurs="1" help="">
-											  <SEQUENCE52 minOccurs="1" maxOccurs="1" help="">
+											  <SEQUENCE52 minOccurs="0" maxOccurs="1" help="">
 												<deliveryPoint minOccurs="0" maxOccurs="unbounded" help="The delivery point field is used for the physical address for postal communication. This field is used to accomodate the many different international conventions that are the equivalent to a U.S. 'street address'.">
 												</deliveryPoint>
 												<city minOccurs="0" maxOccurs="1" help="The city field is used for the city name of the contact associated with a particular resource.">
@@ -15641,7 +15641,7 @@
 										</SEQUENCE74>
 									  </manuscript>
 									  <report minOccurs="1" maxOccurs="1" help="The report may be self published by the institution or through a publisher. They usually are available by request to the institution or can be purchased from the publisher.">
-										<SEQUENCE79 minOccurs="1" maxOccurs="1" help="">
+										<SEQUENCE79 minOccurs="0" maxOccurs="1" help="">
 										  <reportNumber minOccurs="0" maxOccurs="1" help="The report number field is used to describe the unique identification number that has been issued by the report institution for the report being described.">
 										  </reportNumber>
 										  <publisher scope="document" system="" id="" minOccurs="0" maxOccurs="1" help="The responsible party field contains multiple subfields that are used to describe the person, organization, or position within an organization that is associated in some way with a resource. It is intended to be used to fully document contact information for many types of associations, such as owner, manager, steward, curator, etc.">
@@ -15748,7 +15748,7 @@
 											  </pageRange>
 											</SEQUENCE92>
 										  </SEQUENCE90>
-										  <SEQUENCE93 minOccurs="1" maxOccurs="1" help="">
+										  <SEQUENCE93 minOccurs="0" maxOccurs="1" help="">
 											<conferenceName minOccurs="0" maxOccurs="1" help="The name of the conference whose proceedings have been published.">
 											</conferenceName>
 											<conferenceDate minOccurs="0" maxOccurs="1" help="The date the conference was held.">
@@ -15759,7 +15759,7 @@
 										</SEQUENCE89>
 									  </conferenceProceedings>
 									  <personalCommunication minOccurs="1" maxOccurs="1" help="This could be a widely distributed memo, an e-mail, a transcript from a conversation or interview, etc...">
-										<SEQUENCE94 minOccurs="1" maxOccurs="1" help="">
+										<SEQUENCE94 minOccurs="0" maxOccurs="1" help="">
 										  <publisher scope="document" system="" id="" minOccurs="0" maxOccurs="1" help="The responsible party field contains multiple subfields that are used to describe the person, organization, or position within an organization that is associated in some way with a resource. It is intended to be used to fully document contact information for many types of associations, such as owner, manager, steward, curator, etc.">
 											<CHOICE95 minOccurs="1" maxOccurs="1" help="">
 											  <SEQUENCE96 minOccurs="1" maxOccurs="1" help="">
@@ -15823,7 +15823,7 @@
 										</SEQUENCE94>
 									  </personalCommunication>
 									  <map minOccurs="1" maxOccurs="1" help="This element desribes the map that is being cited or cataloged, including its geographic coverage and scale.">
-										<SEQUENCE103 minOccurs="1" maxOccurs="1" help="">
+										<SEQUENCE103 minOccurs="0" maxOccurs="1" help="">
 										  <publisher scope="document" system="" id="" minOccurs="0" maxOccurs="1" help="The responsible party field contains multiple subfields that are used to describe the person, organization, or position within an organization that is associated in some way with a resource. It is intended to be used to fully document contact information for many types of associations, such as owner, manager, steward, curator, etc.">
 											<CHOICE104 minOccurs="1" maxOccurs="1" help="">
 											  <SEQUENCE105 minOccurs="1" maxOccurs="1" help="">
@@ -15907,7 +15907,7 @@
 										  <publicationPlace minOccurs="0" maxOccurs="1" help="The location at which the work was published. This is usually the name of the city in which the publishing house produced the work.">
 										  </publicationPlace>
 										  <referenceType minOccurs="0" maxOccurs="1" help="The reference type describes the type of reference this generic type is being used to represent.">
-											<SEQUENCE116 minOccurs="1" maxOccurs="1" help="">
+											<SEQUENCE116 minOccurs="0" maxOccurs="1" help="">
 											  <ANY minOccurs="0" maxOccurs="unbounded" help="">
 											  </ANY>
 											</SEQUENCE116>
@@ -16003,14 +16003,14 @@
 										</SEQUENCE118>
 									  </audioVisual>
 									  <presentation minOccurs="1" maxOccurs="1" help="An unpublished presentation from a conference, workshop, workgroup, symposium, etc. It will be provided upon request in either in paper and/or electronic form by contacting the authors. If the presentation was actually published in a proceedings, use the conferenceProceedings type instead.">
-										<SEQUENCE127 minOccurs="1" maxOccurs="1" help="">
+										<SEQUENCE127 minOccurs="0" maxOccurs="1" help="">
 										  <conferenceName minOccurs="0" maxOccurs="1" help="The name of the conference at which this presentation was given.">
 										  </conferenceName>
 										  <conferenceDate minOccurs="0" maxOccurs="1" help="The date the conference was held.">
 										  </conferenceDate>
 										  <conferenceLocation scope="document" system="" id="" minOccurs="0" maxOccurs="1" help="The address field is provides detailed information for communicating with a party contact via electronic mail or postal mail, including the physical delivery location.">
 											<CHOICE128 minOccurs="1" maxOccurs="1" help="">
-											  <SEQUENCE129 minOccurs="1" maxOccurs="1" help="">
+											  <SEQUENCE129 minOccurs="0" maxOccurs="1" help="">
 												<deliveryPoint minOccurs="0" maxOccurs="unbounded" help="The delivery point field is used for the physical address for postal communication. This field is used to accomodate the many different international conventions that are the equivalent to a U.S. 'street address'.">
 												</deliveryPoint>
 												<city minOccurs="0" maxOccurs="1" help="The city field is used for the city name of the contact associated with a particular resource.">
@@ -16159,7 +16159,7 @@
 								</SEQUENCE150>
 							  </offline>
 							  <inline minOccurs="1" maxOccurs="1" help="Object data distributed inline in the metadata. Users have the option of including the data right inline in the metadata by providing it inside of the 'inline' element. For many text formats, the data can be simply included directly in the element. However, certain character sequences are invalid in an XML document (e.g., &lt;), so care will need to be taken to  either 1) wrap the data in a CDATA section if needed, or  2) encode the data using a text encoding algorithm such as base64, and then include that in a CDATA section. The latter will be necessary for binary formats.">
-								<SEQUENCE151 minOccurs="1" maxOccurs="1" help="">
+								<SEQUENCE151 minOccurs="0" maxOccurs="1" help="">
 								  <ANY minOccurs="0" maxOccurs="unbounded" help="">
 								  </ANY>
 								</SEQUENCE151>
@@ -16170,7 +16170,7 @@
 							  </references>
 							</SEQUENCE152>
 						  </CHOICE135>
-						  <SEQUENCE153 minOccurs="1" maxOccurs="1" help="">
+						  <SEQUENCE153 minOccurs="0" maxOccurs="1" help="">
 							<access authSystem="" order="allowFirst" scope="document" system="" id="" minOccurs="0" maxOccurs="1" help="The access element contains a list of rules that define the level of access for a given data package, including both metadata and data. The access element must contain the elements defined in the AccessType type.">
 							  <CHOICE154 minOccurs="1" maxOccurs="1" help="">
 								<CHOICE155 minOccurs="1" maxOccurs="unbounded" help="">
@@ -16482,7 +16482,7 @@
 							<generalTaxonomicCoverage minOccurs="0" maxOccurs="1" help="A description of the range of taxa addressed in the data set or collection.">
 							</generalTaxonomicCoverage>
 							<taxonomicClassification minOccurs="1" maxOccurs="unbounded" help="Information about the range of taxa addressed in the data set or collection. It is recommended that one provide information starting from the taxonomic rank of kingdom, to a level which reflects the data set or collection being documented. The levels of Kingdom, Division/Phylum, Class, Order, Family, Genus, and Species should be included as ranks as appropriate. Because the taxonomic ranks are hierarchical, the Taxonomic Classification field is self-referencing to allow for an arbitrary depth of rank, down to species.">
-							  <SEQUENCE76 minOccurs="1" maxOccurs="1" help="">
+							  <SEQUENCE76 minOccurs="0" maxOccurs="1" help="">
 								<taxonRankName minOccurs="0" maxOccurs="1" help="The name of the taxonomic rank for which the Taxon rank value is provided. This field allows for the name one of the accepted levels of Taxa.">
 								</taxonRankName>
 								<taxonRankValue minOccurs="0" maxOccurs="1" help="The name representing the taxonomic rank of the taxon being described. The values included may be referenced from an authoritative source such as the Integrated Taxonomic Information Sytem (ITIS)in the U.S. (http://www/itis.usda.gov) and in Canada (http://sis.agr.gc.ca/pls/itisca/taxaget). Also, Species2000 is another source of taxonomic information, found at (http://www.sp2000.org)">
@@ -16490,7 +16490,7 @@
 								<commonName minOccurs="0" maxOccurs="unbounded" help="Specification of applicable common names. These common names may be general descriptions of a group of organisms if appropriate.">
 								</commonName>
 								<taxonomicClassification minOccurs="0" maxOccurs="unbounded" help="Information about the range of taxa addressed in the data set or collection. It is recommended that one provide information starting from the taxonomic rank of kingdom, to a level which reflects the data set or collection being documented. The levels of Kingdom, Division/Phylum, Class, Order, Family, Genus, and Species should be included as ranks as appropriate. Because the taxonomic ranks are hierarchical, the Taxonomic Classification field is self-referencing to allow for an arbitrary depth of rank, down to species.">
-								  <SEQUENCE77 minOccurs="1" maxOccurs="1" help="">
+								  <SEQUENCE77 minOccurs="0" maxOccurs="1" help="">
 									<taxonRankName minOccurs="0" maxOccurs="1" help="The name of the taxonomic rank for which the Taxon rank value is provided. This field allows for the name one of the accepted levels of Taxa.">
 									</taxonRankName>
 									<taxonRankValue minOccurs="0" maxOccurs="1" help="The name representing the taxonomic rank of the taxon being described. The values included may be referenced from an authoritative source such as the Integrated Taxonomic Information Sytem (ITIS)in the U.S. (http://www/itis.usda.gov) and in Canada (http://sis.agr.gc.ca/pls/itisca/taxaget). Also, Species2000 is another source of taxonomic information, found at (http://www.sp2000.org)">
@@ -16611,7 +16611,7 @@
                             </SEQUENCE1422>
                           </subStep>
                         </SEQUENCE1414>
-                        <SEQUENCE1425 minOccurs="1" maxOccurs="1" help="">
+                        <SEQUENCE1425 minOccurs="0" maxOccurs="1" help="">
                           <dataSource scope="document" system="" id="" minOccurs="0" maxOccurs="unbounded" help="DatasetType is the base type for the dataset element. The dataset field encompasses all information about a single dataset. A dataset is defined as all of the information describing a data collection event. This event may take place over some period of time and include many actual collections (a time series or remote sensing application) or it could be just one actual collection (a day in the field).">
                             <CHOICE1426 minOccurs="1" maxOccurs="1" help="">
                               <SEQUENCE1427 minOccurs="1" maxOccurs="1" help="">
@@ -17126,9 +17126,9 @@
 									  <SEQUENCE26 minOccurs="1" maxOccurs="1" help="">
 										<numberType minOccurs="1" maxOccurs="1" help="">
 										</numberType>
-										<SEQUENCE27 minOccurs="1" maxOccurs="1" help="">
+										<SEQUENCE27 minOccurs="0" maxOccurs="1" help="">
 										  <bounds minOccurs="0" maxOccurs="unbounded" help="">
-											<SEQUENCE28 minOccurs="1" maxOccurs="1" help="">
+											<SEQUENCE28 minOccurs="0" maxOccurs="1" help="">
 											  <minimum exclusive="" minOccurs="0" maxOccurs="1" help="The minimum element specifies the minimum permitted value of a numeric attribute.">
 											  </minimum>
 											  <maximum exclusive="" minOccurs="0" maxOccurs="1" help="The maximum element specifies the maximum permitted value of a numeric attribute.">
@@ -17162,9 +17162,9 @@
 									  <SEQUENCE33 minOccurs="1" maxOccurs="1" help="">
 										<numberType minOccurs="1" maxOccurs="1" help="">
 										</numberType>
-										<SEQUENCE34 minOccurs="1" maxOccurs="1" help="">
+										<SEQUENCE34 minOccurs="0" maxOccurs="1" help="">
 										  <bounds minOccurs="0" maxOccurs="unbounded" help="">
-											<SEQUENCE35 minOccurs="1" maxOccurs="1" help="">
+											<SEQUENCE35 minOccurs="0" maxOccurs="1" help="">
 											  <minimum exclusive="" minOccurs="0" maxOccurs="1" help="The minimum element specifies the minimum permitted value of a numeric attribute.">
 											  </minimum>
 											  <maximum exclusive="" minOccurs="0" maxOccurs="1" help="The maximum element specifies the maximum permitted value of a numeric attribute.">
@@ -17189,10 +17189,10 @@
 								  </dateTimePrecision>
 								  <dateTimeDomain id="" minOccurs="0" maxOccurs="1" help="The DateTimeDomain specifies the minimum and maximum values of a dateTime attribute. These are theoretical or permitted values (ie. prescriptive), and not necessarily the actual minimum and maximum observed in a given data set (descriptive). The domain expressions should be in the same dateTime format as is used in the 'formatString' description for the attribute. For example, if the format string is 'YYYY-MM-DD', then a valid minimum in the domain would be '2001-05-29'. The 'bounds' element is optional, and if it is missing then any legitimate value from the Gregorian  calendar system is allowed in the attribute as long as its representation matches its corresponding formatString.">
 									<CHOICE38 minOccurs="1" maxOccurs="1" help="">
-									  <SEQUENCE39 minOccurs="1" maxOccurs="1" help="">
-										<SEQUENCE40 minOccurs="1" maxOccurs="1" help="">
+									  <SEQUENCE39 minOccurs="0" maxOccurs="1" help="">
+										<SEQUENCE40 minOccurs="0" maxOccurs="1" help="">
 										  <bounds minOccurs="0" maxOccurs="unbounded" help="">
-											<SEQUENCE41 minOccurs="1" maxOccurs="1" help="">
+											<SEQUENCE41 minOccurs="0" maxOccurs="1" help="">
 											  <minimum exclusive="" minOccurs="0" maxOccurs="1" help="The minimum element specifies the minimum permitted value of a date attribute.">
 											  </minimum>
 											  <maximum exclusive="" minOccurs="0" maxOccurs="1" help="The maximum element specifies the maximum permitted value of a date attribute.">
@@ -17274,7 +17274,7 @@
                         <constraintName minOccurs="1" maxOccurs="1" help="The constraintName element is a name which represents a human readible and meaningful name for the constraint.">
                         </constraintName>
                         <constraintDescription minOccurs="0" maxOccurs="1" help="The constraintDescription element describes the nature of the constraint. It might be a description of a check condition, or a statement about the composition of a primary key or the nature of the relationship between two database tables or two ascii files.">
-                          <SEQUENCE1479 minOccurs="1" maxOccurs="1" help="">
+                          <SEQUENCE1479 minOccurs="0" maxOccurs="1" help="">
                             <ANY minOccurs="0" maxOccurs="unbounded" help="">
                             </ANY>
                           </SEQUENCE1479>
@@ -17294,7 +17294,7 @@
                         <constraintName minOccurs="1" maxOccurs="1" help="The constraintName element is a name which represents a human readible and meaningful name for the constraint.">
                         </constraintName>
                         <constraintDescription minOccurs="0" maxOccurs="1" help="The constraintDescription element describes the nature of the constraint. It might be a description of a check condition, or a statement about the composition of a primary key or the nature of the relationship between two database tables or two ascii files.">
-                          <SEQUENCE1483 minOccurs="1" maxOccurs="1" help="">
+                          <SEQUENCE1483 minOccurs="0" maxOccurs="1" help="">
                             <ANY minOccurs="0" maxOccurs="unbounded" help="">
                             </ANY>
                           </SEQUENCE1483>
@@ -17314,7 +17314,7 @@
                         <constraintName minOccurs="1" maxOccurs="1" help="The constraintName element is a name which represents a human readible and meaningful name for the constraint.">
                         </constraintName>
                         <constraintDescription minOccurs="0" maxOccurs="1" help="The constraintDescription element describes the nature of the constraint. It might be a description of a check condition, or a statement about the composition of a primary key or the nature of the relationship between two database tables or two ascii files.">
-                          <SEQUENCE1487 minOccurs="1" maxOccurs="1" help="">
+                          <SEQUENCE1487 minOccurs="0" maxOccurs="1" help="">
                             <ANY minOccurs="0" maxOccurs="unbounded" help="">
                             </ANY>
                           </SEQUENCE1487>
@@ -17330,7 +17330,7 @@
                         <constraintName minOccurs="1" maxOccurs="1" help="The constraintName element is a name which represents a human readible and meaningful name for the constraint.">
                         </constraintName>
                         <constraintDescription minOccurs="0" maxOccurs="1" help="The constraintDescription element describes the nature of the constraint. It might be a description of a check condition, or a statement about the composition of a primary key or the nature of the relationship between two database tables or two ascii files.">
-                          <SEQUENCE1490 minOccurs="1" maxOccurs="1" help="">
+                          <SEQUENCE1490 minOccurs="0" maxOccurs="1" help="">
                             <ANY minOccurs="0" maxOccurs="unbounded" help="">
                             </ANY>
                           </SEQUENCE1490>
@@ -17363,7 +17363,7 @@
                           <constraintName minOccurs="1" maxOccurs="1" help="The constraintName element is a name which represents a human readible and meaningful name for the constraint.">
                           </constraintName>
                           <constraintDescription minOccurs="0" maxOccurs="1" help="The constraintDescription element describes the nature of the constraint. It might be a description of a check condition, or a statement about the composition of a primary key or the nature of the relationship between two database tables or two ascii files.">
-                            <SEQUENCE1496 minOccurs="1" maxOccurs="1" help="">
+                            <SEQUENCE1496 minOccurs="0" maxOccurs="1" help="">
                               <ANY minOccurs="0" maxOccurs="unbounded" help="">
                               </ANY>
                             </SEQUENCE1496>
@@ -17402,7 +17402,7 @@
                         <constraintName minOccurs="1" maxOccurs="1" help="The constraintName element is a name which represents a human readible and meaningful name for the constraint.">
                         </constraintName>
                         <constraintDescription minOccurs="0" maxOccurs="1" help="The constraintDescription element describes the nature of the constraint. It might be a description of a check condition, or a statement about the composition of a primary key or the nature of the relationship between two database tables or two ascii files.">
-                          <SEQUENCE1502 minOccurs="1" maxOccurs="1" help="">
+                          <SEQUENCE1502 minOccurs="0" maxOccurs="1" help="">
                             <ANY minOccurs="0" maxOccurs="unbounded" help="">
                             </ANY>
                           </SEQUENCE1502>
@@ -17466,7 +17466,7 @@
 					  </horizCoordSysDef>
 					</CHOICE596>
 					<vertCoordSys minOccurs="0" maxOccurs="1" help="">
-					  <SEQUENCE602 minOccurs="1" maxOccurs="1" help="">
+					  <SEQUENCE602 minOccurs="0" maxOccurs="1" help="">
 						<altitudeSysDef minOccurs="0" maxOccurs="1" help="The term 'altitude'' is used instead of the common term 'elevation' to conform to the terminology in Federal Information Processing Standards 70-1 and 173.">
 						  <SEQUENCE603 minOccurs="1" maxOccurs="1" help="">
 							<altitudeDatumName minOccurs="1" maxOccurs="1" help="">
@@ -17571,19 +17571,19 @@
                 </SEQUENCE1520>
               </verticalAccuracy>
               <cellSizeXDirection minOccurs="1" maxOccurs="1" help="Cell sizes should be expressed in the units declared in the spatialReference module.">
-                <SEQUENCE1522 minOccurs="1" maxOccurs="1" help="">
+                <SEQUENCE1522 minOccurs="0" maxOccurs="1" help="">
                   <ANY minOccurs="0" maxOccurs="unbounded" help="">
                   </ANY>
                 </SEQUENCE1522>
               </cellSizeXDirection>
               <cellSizeYDirection minOccurs="1" maxOccurs="1" help="Cell sizes should be expressed in the units declared in the spatialReference module.">
-                <SEQUENCE1523 minOccurs="1" maxOccurs="1" help="">
+                <SEQUENCE1523 minOccurs="0" maxOccurs="1" help="">
                   <ANY minOccurs="0" maxOccurs="unbounded" help="">
                   </ANY>
                 </SEQUENCE1523>
               </cellSizeYDirection>
               <numberOfBands minOccurs="1" maxOccurs="1" help="Image data may have more than one sensor band represented for each pixel.">
-                <SEQUENCE1524 minOccurs="1" maxOccurs="1" help="">
+                <SEQUENCE1524 minOccurs="0" maxOccurs="1" help="">
                   <ANY minOccurs="0" maxOccurs="unbounded" help="">
                   </ANY>
                 </SEQUENCE1524>
@@ -17595,7 +17595,7 @@
               <columns minOccurs="1" maxOccurs="1" help="Maximum number of raster objects along the abscissa (x) axis">
               </columns>
               <verticals minOccurs="1" maxOccurs="1" help="Maximum number of raster objects along the vertical (z) axis.">
-                <SEQUENCE1525 minOccurs="1" maxOccurs="1" help="">
+                <SEQUENCE1525 minOccurs="0" maxOccurs="1" help="">
                   <ANY minOccurs="0" maxOccurs="unbounded" help="">
                   </ANY>
                 </SEQUENCE1525>
@@ -17609,7 +17609,7 @@
               <offset minOccurs="0" maxOccurs="1" help="The offset is used for raster-rescaling operations, where the following operation is applied to each pixel in the data in the source: rescaled=(source*scaleFactor)+offset.">
               </offset>
               <imageDescription minOccurs="0" maxOccurs="1" help="Provides information about the image's suitability for use, sensor properties, and individual band descriptions.">
-                <SEQUENCE1526 minOccurs="1" maxOccurs="1" help="">
+                <SEQUENCE1526 minOccurs="0" maxOccurs="1" help="">
                   <illuminationElevationAngle minOccurs="0" maxOccurs="1" help="Illumination elevation measured in degrees clockwise from the target plane at intersection of the optical line of sight with the earth's surface.">
                   </illuminationElevationAngle>
                   <illuminationAzimuthAngle minOccurs="0" maxOccurs="1" help="Illumitation azimuth measured in degrees clockwise from true north at the time the image is taken.">
@@ -17637,7 +17637,7 @@
                   <lensDistortionInformationAvailability minOccurs="0" maxOccurs="1" help="Code which indicates whether or not lens aberration correction information is available">
                   </lensDistortionInformationAvailability>
                   <bandDescription minOccurs="0" maxOccurs="unbounded" help="">
-                    <SEQUENCE1527 minOccurs="1" maxOccurs="1" help="">
+                    <SEQUENCE1527 minOccurs="0" maxOccurs="1" help="">
                       <sequenceIdentifier minOccurs="0" maxOccurs="1" help="Number that uniquely identifies instances of bands of wavelengths on which a sensor operates.">
                       </sequenceIdentifier>
                       <highWavelength minOccurs="0" maxOccurs="1" help="Highest wavelength that the sensor is capable of collecting within a designated band.">
@@ -17647,7 +17647,7 @@
                       <waveLengthUnits minOccurs="0" maxOccurs="1" help="Units of measure for the wavelength at which the sensor collected the data.">
                       </waveLengthUnits>
                       <peakResponse minOccurs="0" maxOccurs="1" help="">
-                        <SEQUENCE1528 minOccurs="1" maxOccurs="1" help="">
+                        <SEQUENCE1528 minOccurs="0" maxOccurs="1" help="">
                           <ANY minOccurs="0" maxOccurs="unbounded" help="">
                           </ANY>
                         </SEQUENCE1528>
@@ -17701,7 +17701,7 @@
 							  <recordDelimiter minOccurs="0" maxOccurs="unbounded" help="This element specifies the record delimiter character when the format is text. The record delimiter is usually a linefeed (\n) on UNIX, a carriage return (\r) on MacOS, or both (\r\n) on Windows/DOS. Multiline records are usually delimited with two line ending characters, for example on UNIX it would be two linefeed characters (\n\n). As record delimeters are often non-printing characters, one can use either the special value '\n' to represent a linefeed (ASCII 0x0a) and '\r' to represent a carriage return (ASCII 0x0d). Alternatively, one can use the hex value to represent character values (e.g., 0x0a).">
 							  </recordDelimiter>
 							  <physicalLineDelimiter minOccurs="0" maxOccurs="unbounded" help="This element specifies the physical line delimiter character when the format is text. The line delimiter is usually a linefeed (\n) on UNIX, a carriage return (\r) on MacOS, or both (\r\n) on Windows/DOS. Multiline records are usually delimited with two line ending characters, for example on UNIX it would be two linefeed characters (\n\n). As line delimeters are often non-printing characters, one can use either the special value '\n' to represent a linefeed (ASCII 0x0a) and '\r' to represent a carriage return (ASCII 0x0d). Alternatively, one can use the hex value to represent character values (e.g., 0x0a). If this value is not provided, prcessors should assume that the physical line delimiter is the same as the record delimiter.">
-								<SEQUENCE5 minOccurs="1" maxOccurs="1" help="">
+								<SEQUENCE5 minOccurs="0" maxOccurs="1" help="">
 								  <ANY minOccurs="0" maxOccurs="unbounded" help="">
 								  </ANY>
 								</SEQUENCE5>
@@ -18024,7 +18024,7 @@
 										  </CHOICE50>
 										  <address scope="document" system="" id="" minOccurs="0" maxOccurs="unbounded" help="The address field is provides detailed information for communicating with a party contact via electronic mail or postal mail, including the physical delivery location.">
 											<CHOICE51 minOccurs="1" maxOccurs="1" help="">
-											  <SEQUENCE52 minOccurs="1" maxOccurs="1" help="">
+											  <SEQUENCE52 minOccurs="0" maxOccurs="1" help="">
 												<deliveryPoint minOccurs="0" maxOccurs="unbounded" help="The delivery point field is used for the physical address for postal communication. This field is used to accomodate the many different international conventions that are the equivalent to a U.S. 'street address'.">
 												</deliveryPoint>
 												<city minOccurs="0" maxOccurs="1" help="The city field is used for the city name of the contact associated with a particular resource.">
@@ -18267,7 +18267,7 @@
 										</SEQUENCE74>
 									  </manuscript>
 									  <report minOccurs="1" maxOccurs="1" help="The report may be self published by the institution or through a publisher. They usually are available by request to the institution or can be purchased from the publisher.">
-										<SEQUENCE79 minOccurs="1" maxOccurs="1" help="">
+										<SEQUENCE79 minOccurs="0" maxOccurs="1" help="">
 										  <reportNumber minOccurs="0" maxOccurs="1" help="The report number field is used to describe the unique identification number that has been issued by the report institution for the report being described.">
 										  </reportNumber>
 										  <publisher scope="document" system="" id="" minOccurs="0" maxOccurs="1" help="The responsible party field contains multiple subfields that are used to describe the person, organization, or position within an organization that is associated in some way with a resource. It is intended to be used to fully document contact information for many types of associations, such as owner, manager, steward, curator, etc.">
@@ -18374,7 +18374,7 @@
 											  </pageRange>
 											</SEQUENCE92>
 										  </SEQUENCE90>
-										  <SEQUENCE93 minOccurs="1" maxOccurs="1" help="">
+										  <SEQUENCE93 minOccurs="0" maxOccurs="1" help="">
 											<conferenceName minOccurs="0" maxOccurs="1" help="The name of the conference whose proceedings have been published.">
 											</conferenceName>
 											<conferenceDate minOccurs="0" maxOccurs="1" help="The date the conference was held.">
@@ -18385,7 +18385,7 @@
 										</SEQUENCE89>
 									  </conferenceProceedings>
 									  <personalCommunication minOccurs="1" maxOccurs="1" help="This could be a widely distributed memo, an e-mail, a transcript from a conversation or interview, etc...">
-										<SEQUENCE94 minOccurs="1" maxOccurs="1" help="">
+										<SEQUENCE94 minOccurs="0" maxOccurs="1" help="">
 										  <publisher scope="document" system="" id="" minOccurs="0" maxOccurs="1" help="The responsible party field contains multiple subfields that are used to describe the person, organization, or position within an organization that is associated in some way with a resource. It is intended to be used to fully document contact information for many types of associations, such as owner, manager, steward, curator, etc.">
 											<CHOICE95 minOccurs="1" maxOccurs="1" help="">
 											  <SEQUENCE96 minOccurs="1" maxOccurs="1" help="">
@@ -18449,7 +18449,7 @@
 										</SEQUENCE94>
 									  </personalCommunication>
 									  <map minOccurs="1" maxOccurs="1" help="This element desribes the map that is being cited or cataloged, including its geographic coverage and scale.">
-										<SEQUENCE103 minOccurs="1" maxOccurs="1" help="">
+										<SEQUENCE103 minOccurs="0" maxOccurs="1" help="">
 										  <publisher scope="document" system="" id="" minOccurs="0" maxOccurs="1" help="The responsible party field contains multiple subfields that are used to describe the person, organization, or position within an organization that is associated in some way with a resource. It is intended to be used to fully document contact information for many types of associations, such as owner, manager, steward, curator, etc.">
 											<CHOICE104 minOccurs="1" maxOccurs="1" help="">
 											  <SEQUENCE105 minOccurs="1" maxOccurs="1" help="">
@@ -18533,7 +18533,7 @@
 										  <publicationPlace minOccurs="0" maxOccurs="1" help="The location at which the work was published. This is usually the name of the city in which the publishing house produced the work.">
 										  </publicationPlace>
 										  <referenceType minOccurs="0" maxOccurs="1" help="The reference type describes the type of reference this generic type is being used to represent.">
-											<SEQUENCE116 minOccurs="1" maxOccurs="1" help="">
+											<SEQUENCE116 minOccurs="0" maxOccurs="1" help="">
 											  <ANY minOccurs="0" maxOccurs="unbounded" help="">
 											  </ANY>
 											</SEQUENCE116>
@@ -18629,14 +18629,14 @@
 										</SEQUENCE118>
 									  </audioVisual>
 									  <presentation minOccurs="1" maxOccurs="1" help="An unpublished presentation from a conference, workshop, workgroup, symposium, etc. It will be provided upon request in either in paper and/or electronic form by contacting the authors. If the presentation was actually published in a proceedings, use the conferenceProceedings type instead.">
-										<SEQUENCE127 minOccurs="1" maxOccurs="1" help="">
+										<SEQUENCE127 minOccurs="0" maxOccurs="1" help="">
 										  <conferenceName minOccurs="0" maxOccurs="1" help="The name of the conference at which this presentation was given.">
 										  </conferenceName>
 										  <conferenceDate minOccurs="0" maxOccurs="1" help="The date the conference was held.">
 										  </conferenceDate>
 										  <conferenceLocation scope="document" system="" id="" minOccurs="0" maxOccurs="1" help="The address field is provides detailed information for communicating with a party contact via electronic mail or postal mail, including the physical delivery location.">
 											<CHOICE128 minOccurs="1" maxOccurs="1" help="">
-											  <SEQUENCE129 minOccurs="1" maxOccurs="1" help="">
+											  <SEQUENCE129 minOccurs="0" maxOccurs="1" help="">
 												<deliveryPoint minOccurs="0" maxOccurs="unbounded" help="The delivery point field is used for the physical address for postal communication. This field is used to accomodate the many different international conventions that are the equivalent to a U.S. 'street address'.">
 												</deliveryPoint>
 												<city minOccurs="0" maxOccurs="1" help="The city field is used for the city name of the contact associated with a particular resource.">
@@ -18785,7 +18785,7 @@
 								</SEQUENCE150>
 							  </offline>
 							  <inline minOccurs="1" maxOccurs="1" help="Object data distributed inline in the metadata. Users have the option of including the data right inline in the metadata by providing it inside of the 'inline' element. For many text formats, the data can be simply included directly in the element. However, certain character sequences are invalid in an XML document (e.g., &lt;), so care will need to be taken to  either 1) wrap the data in a CDATA section if needed, or  2) encode the data using a text encoding algorithm such as base64, and then include that in a CDATA section. The latter will be necessary for binary formats.">
-								<SEQUENCE151 minOccurs="1" maxOccurs="1" help="">
+								<SEQUENCE151 minOccurs="0" maxOccurs="1" help="">
 								  <ANY minOccurs="0" maxOccurs="unbounded" help="">
 								  </ANY>
 								</SEQUENCE151>
@@ -18796,7 +18796,7 @@
 							  </references>
 							</SEQUENCE152>
 						  </CHOICE135>
-						  <SEQUENCE153 minOccurs="1" maxOccurs="1" help="">
+						  <SEQUENCE153 minOccurs="0" maxOccurs="1" help="">
 							<access authSystem="" order="allowFirst" scope="document" system="" id="" minOccurs="0" maxOccurs="1" help="The access element contains a list of rules that define the level of access for a given data package, including both metadata and data. The access element must contain the elements defined in the AccessType type.">
 							  <CHOICE154 minOccurs="1" maxOccurs="1" help="">
 								<CHOICE155 minOccurs="1" maxOccurs="unbounded" help="">
@@ -18983,7 +18983,7 @@
                             </SEQUENCE1569>
                           </subStep>
                         </SEQUENCE1561>
-                        <SEQUENCE1572 minOccurs="1" maxOccurs="1" help="">
+                        <SEQUENCE1572 minOccurs="0" maxOccurs="1" help="">
                           <dataSource scope="document" system="" id="" minOccurs="0" maxOccurs="unbounded" help="DatasetType is the base type for the dataset element. The dataset field encompasses all information about a single dataset. A dataset is defined as all of the information describing a data collection event. This event may take place over some period of time and include many actual collections (a time series or remote sensing application) or it could be just one actual collection (a day in the field).">
                             <CHOICE1573 minOccurs="1" maxOccurs="1" help="">
                               <SEQUENCE1574 minOccurs="1" maxOccurs="1" help="">
@@ -19498,9 +19498,9 @@
 									  <SEQUENCE26 minOccurs="1" maxOccurs="1" help="">
 										<numberType minOccurs="1" maxOccurs="1" help="">
 										</numberType>
-										<SEQUENCE27 minOccurs="1" maxOccurs="1" help="">
+										<SEQUENCE27 minOccurs="0" maxOccurs="1" help="">
 										  <bounds minOccurs="0" maxOccurs="unbounded" help="">
-											<SEQUENCE28 minOccurs="1" maxOccurs="1" help="">
+											<SEQUENCE28 minOccurs="0" maxOccurs="1" help="">
 											  <minimum exclusive="" minOccurs="0" maxOccurs="1" help="The minimum element specifies the minimum permitted value of a numeric attribute.">
 											  </minimum>
 											  <maximum exclusive="" minOccurs="0" maxOccurs="1" help="The maximum element specifies the maximum permitted value of a numeric attribute.">
@@ -19534,9 +19534,9 @@
 									  <SEQUENCE33 minOccurs="1" maxOccurs="1" help="">
 										<numberType minOccurs="1" maxOccurs="1" help="">
 										</numberType>
-										<SEQUENCE34 minOccurs="1" maxOccurs="1" help="">
+										<SEQUENCE34 minOccurs="0" maxOccurs="1" help="">
 										  <bounds minOccurs="0" maxOccurs="unbounded" help="">
-											<SEQUENCE35 minOccurs="1" maxOccurs="1" help="">
+											<SEQUENCE35 minOccurs="0" maxOccurs="1" help="">
 											  <minimum exclusive="" minOccurs="0" maxOccurs="1" help="The minimum element specifies the minimum permitted value of a numeric attribute.">
 											  </minimum>
 											  <maximum exclusive="" minOccurs="0" maxOccurs="1" help="The maximum element specifies the maximum permitted value of a numeric attribute.">
@@ -19561,10 +19561,10 @@
 								  </dateTimePrecision>
 								  <dateTimeDomain id="" minOccurs="0" maxOccurs="1" help="The DateTimeDomain specifies the minimum and maximum values of a dateTime attribute. These are theoretical or permitted values (ie. prescriptive), and not necessarily the actual minimum and maximum observed in a given data set (descriptive). The domain expressions should be in the same dateTime format as is used in the 'formatString' description for the attribute. For example, if the format string is 'YYYY-MM-DD', then a valid minimum in the domain would be '2001-05-29'. The 'bounds' element is optional, and if it is missing then any legitimate value from the Gregorian  calendar system is allowed in the attribute as long as its representation matches its corresponding formatString.">
 									<CHOICE38 minOccurs="1" maxOccurs="1" help="">
-									  <SEQUENCE39 minOccurs="1" maxOccurs="1" help="">
-										<SEQUENCE40 minOccurs="1" maxOccurs="1" help="">
+									  <SEQUENCE39 minOccurs="0" maxOccurs="1" help="">
+										<SEQUENCE40 minOccurs="0" maxOccurs="1" help="">
 										  <bounds minOccurs="0" maxOccurs="unbounded" help="">
-											<SEQUENCE41 minOccurs="1" maxOccurs="1" help="">
+											<SEQUENCE41 minOccurs="0" maxOccurs="1" help="">
 											  <minimum exclusive="" minOccurs="0" maxOccurs="1" help="The minimum element specifies the minimum permitted value of a date attribute.">
 											  </minimum>
 											  <maximum exclusive="" minOccurs="0" maxOccurs="1" help="The maximum element specifies the maximum permitted value of a date attribute.">
@@ -19646,7 +19646,7 @@
                         <constraintName minOccurs="1" maxOccurs="1" help="The constraintName element is a name which represents a human readible and meaningful name for the constraint.">
                         </constraintName>
                         <constraintDescription minOccurs="0" maxOccurs="1" help="The constraintDescription element describes the nature of the constraint. It might be a description of a check condition, or a statement about the composition of a primary key or the nature of the relationship between two database tables or two ascii files.">
-                          <SEQUENCE1626 minOccurs="1" maxOccurs="1" help="">
+                          <SEQUENCE1626 minOccurs="0" maxOccurs="1" help="">
                             <ANY minOccurs="0" maxOccurs="unbounded" help="">
                             </ANY>
                           </SEQUENCE1626>
@@ -19666,7 +19666,7 @@
                         <constraintName minOccurs="1" maxOccurs="1" help="The constraintName element is a name which represents a human readible and meaningful name for the constraint.">
                         </constraintName>
                         <constraintDescription minOccurs="0" maxOccurs="1" help="The constraintDescription element describes the nature of the constraint. It might be a description of a check condition, or a statement about the composition of a primary key or the nature of the relationship between two database tables or two ascii files.">
-                          <SEQUENCE1630 minOccurs="1" maxOccurs="1" help="">
+                          <SEQUENCE1630 minOccurs="0" maxOccurs="1" help="">
                             <ANY minOccurs="0" maxOccurs="unbounded" help="">
                             </ANY>
                           </SEQUENCE1630>
@@ -19686,7 +19686,7 @@
                         <constraintName minOccurs="1" maxOccurs="1" help="The constraintName element is a name which represents a human readible and meaningful name for the constraint.">
                         </constraintName>
                         <constraintDescription minOccurs="0" maxOccurs="1" help="The constraintDescription element describes the nature of the constraint. It might be a description of a check condition, or a statement about the composition of a primary key or the nature of the relationship between two database tables or two ascii files.">
-                          <SEQUENCE1634 minOccurs="1" maxOccurs="1" help="">
+                          <SEQUENCE1634 minOccurs="0" maxOccurs="1" help="">
                             <ANY minOccurs="0" maxOccurs="unbounded" help="">
                             </ANY>
                           </SEQUENCE1634>
@@ -19702,7 +19702,7 @@
                         <constraintName minOccurs="1" maxOccurs="1" help="The constraintName element is a name which represents a human readible and meaningful name for the constraint.">
                         </constraintName>
                         <constraintDescription minOccurs="0" maxOccurs="1" help="The constraintDescription element describes the nature of the constraint. It might be a description of a check condition, or a statement about the composition of a primary key or the nature of the relationship between two database tables or two ascii files.">
-                          <SEQUENCE1637 minOccurs="1" maxOccurs="1" help="">
+                          <SEQUENCE1637 minOccurs="0" maxOccurs="1" help="">
                             <ANY minOccurs="0" maxOccurs="unbounded" help="">
                             </ANY>
                           </SEQUENCE1637>
@@ -19735,7 +19735,7 @@
                           <constraintName minOccurs="1" maxOccurs="1" help="The constraintName element is a name which represents a human readible and meaningful name for the constraint.">
                           </constraintName>
                           <constraintDescription minOccurs="0" maxOccurs="1" help="The constraintDescription element describes the nature of the constraint. It might be a description of a check condition, or a statement about the composition of a primary key or the nature of the relationship between two database tables or two ascii files.">
-                            <SEQUENCE1643 minOccurs="1" maxOccurs="1" help="">
+                            <SEQUENCE1643 minOccurs="0" maxOccurs="1" help="">
                               <ANY minOccurs="0" maxOccurs="unbounded" help="">
                               </ANY>
                             </SEQUENCE1643>
@@ -19774,7 +19774,7 @@
                         <constraintName minOccurs="1" maxOccurs="1" help="The constraintName element is a name which represents a human readible and meaningful name for the constraint.">
                         </constraintName>
                         <constraintDescription minOccurs="0" maxOccurs="1" help="The constraintDescription element describes the nature of the constraint. It might be a description of a check condition, or a statement about the composition of a primary key or the nature of the relationship between two database tables or two ascii files.">
-                          <SEQUENCE1649 minOccurs="1" maxOccurs="1" help="">
+                          <SEQUENCE1649 minOccurs="0" maxOccurs="1" help="">
                             <ANY minOccurs="0" maxOccurs="unbounded" help="">
                             </ANY>
                           </SEQUENCE1649>
@@ -19828,7 +19828,7 @@
                       </horizCoordSysDef>
                     </CHOICE1653>
                     <vertCoordSys minOccurs="0" maxOccurs="1" help="">
-                      <SEQUENCE1657 minOccurs="1" maxOccurs="1" help="">
+                      <SEQUENCE1657 minOccurs="0" maxOccurs="1" help="">
                         <altitudeSysDef minOccurs="0" maxOccurs="1" help="The term 'altitude'' is used instead of the common term 'elevation' to conform to the terminology in Federal Information Processing Standards 70-1 and 173.">
                           <SEQUENCE1658 minOccurs="1" maxOccurs="1" help="">
                             <altitudeDatumName minOccurs="1" maxOccurs="1" help="">
@@ -19935,7 +19935,7 @@
 							  <recordDelimiter minOccurs="0" maxOccurs="unbounded" help="This element specifies the record delimiter character when the format is text. The record delimiter is usually a linefeed (\n) on UNIX, a carriage return (\r) on MacOS, or both (\r\n) on Windows/DOS. Multiline records are usually delimited with two line ending characters, for example on UNIX it would be two linefeed characters (\n\n). As record delimeters are often non-printing characters, one can use either the special value '\n' to represent a linefeed (ASCII 0x0a) and '\r' to represent a carriage return (ASCII 0x0d). Alternatively, one can use the hex value to represent character values (e.g., 0x0a).">
 							  </recordDelimiter>
 							  <physicalLineDelimiter minOccurs="0" maxOccurs="unbounded" help="This element specifies the physical line delimiter character when the format is text. The line delimiter is usually a linefeed (\n) on UNIX, a carriage return (\r) on MacOS, or both (\r\n) on Windows/DOS. Multiline records are usually delimited with two line ending characters, for example on UNIX it would be two linefeed characters (\n\n). As line delimeters are often non-printing characters, one can use either the special value '\n' to represent a linefeed (ASCII 0x0a) and '\r' to represent a carriage return (ASCII 0x0d). Alternatively, one can use the hex value to represent character values (e.g., 0x0a). If this value is not provided, prcessors should assume that the physical line delimiter is the same as the record delimiter.">
-								<SEQUENCE5 minOccurs="1" maxOccurs="1" help="">
+								<SEQUENCE5 minOccurs="0" maxOccurs="1" help="">
 								  <ANY minOccurs="0" maxOccurs="unbounded" help="">
 								  </ANY>
 								</SEQUENCE5>
@@ -20258,7 +20258,7 @@
 										  </CHOICE50>
 										  <address scope="document" system="" id="" minOccurs="0" maxOccurs="unbounded" help="The address field is provides detailed information for communicating with a party contact via electronic mail or postal mail, including the physical delivery location.">
 											<CHOICE51 minOccurs="1" maxOccurs="1" help="">
-											  <SEQUENCE52 minOccurs="1" maxOccurs="1" help="">
+											  <SEQUENCE52 minOccurs="0" maxOccurs="1" help="">
 												<deliveryPoint minOccurs="0" maxOccurs="unbounded" help="The delivery point field is used for the physical address for postal communication. This field is used to accomodate the many different international conventions that are the equivalent to a U.S. 'street address'.">
 												</deliveryPoint>
 												<city minOccurs="0" maxOccurs="1" help="The city field is used for the city name of the contact associated with a particular resource.">
@@ -20501,7 +20501,7 @@
 										</SEQUENCE74>
 									  </manuscript>
 									  <report minOccurs="1" maxOccurs="1" help="The report may be self published by the institution or through a publisher. They usually are available by request to the institution or can be purchased from the publisher.">
-										<SEQUENCE79 minOccurs="1" maxOccurs="1" help="">
+										<SEQUENCE79 minOccurs="0" maxOccurs="1" help="">
 										  <reportNumber minOccurs="0" maxOccurs="1" help="The report number field is used to describe the unique identification number that has been issued by the report institution for the report being described.">
 										  </reportNumber>
 										  <publisher scope="document" system="" id="" minOccurs="0" maxOccurs="1" help="The responsible party field contains multiple subfields that are used to describe the person, organization, or position within an organization that is associated in some way with a resource. It is intended to be used to fully document contact information for many types of associations, such as owner, manager, steward, curator, etc.">
@@ -20608,7 +20608,7 @@
 											  </pageRange>
 											</SEQUENCE92>
 										  </SEQUENCE90>
-										  <SEQUENCE93 minOccurs="1" maxOccurs="1" help="">
+										  <SEQUENCE93 minOccurs="0" maxOccurs="1" help="">
 											<conferenceName minOccurs="0" maxOccurs="1" help="The name of the conference whose proceedings have been published.">
 											</conferenceName>
 											<conferenceDate minOccurs="0" maxOccurs="1" help="The date the conference was held.">
@@ -20619,7 +20619,7 @@
 										</SEQUENCE89>
 									  </conferenceProceedings>
 									  <personalCommunication minOccurs="1" maxOccurs="1" help="This could be a widely distributed memo, an e-mail, a transcript from a conversation or interview, etc...">
-										<SEQUENCE94 minOccurs="1" maxOccurs="1" help="">
+										<SEQUENCE94 minOccurs="0" maxOccurs="1" help="">
 										  <publisher scope="document" system="" id="" minOccurs="0" maxOccurs="1" help="The responsible party field contains multiple subfields that are used to describe the person, organization, or position within an organization that is associated in some way with a resource. It is intended to be used to fully document contact information for many types of associations, such as owner, manager, steward, curator, etc.">
 											<CHOICE95 minOccurs="1" maxOccurs="1" help="">
 											  <SEQUENCE96 minOccurs="1" maxOccurs="1" help="">
@@ -20683,7 +20683,7 @@
 										</SEQUENCE94>
 									  </personalCommunication>
 									  <map minOccurs="1" maxOccurs="1" help="This element desribes the map that is being cited or cataloged, including its geographic coverage and scale.">
-										<SEQUENCE103 minOccurs="1" maxOccurs="1" help="">
+										<SEQUENCE103 minOccurs="0" maxOccurs="1" help="">
 										  <publisher scope="document" system="" id="" minOccurs="0" maxOccurs="1" help="The responsible party field contains multiple subfields that are used to describe the person, organization, or position within an organization that is associated in some way with a resource. It is intended to be used to fully document contact information for many types of associations, such as owner, manager, steward, curator, etc.">
 											<CHOICE104 minOccurs="1" maxOccurs="1" help="">
 											  <SEQUENCE105 minOccurs="1" maxOccurs="1" help="">
@@ -20767,7 +20767,7 @@
 										  <publicationPlace minOccurs="0" maxOccurs="1" help="The location at which the work was published. This is usually the name of the city in which the publishing house produced the work.">
 										  </publicationPlace>
 										  <referenceType minOccurs="0" maxOccurs="1" help="The reference type describes the type of reference this generic type is being used to represent.">
-											<SEQUENCE116 minOccurs="1" maxOccurs="1" help="">
+											<SEQUENCE116 minOccurs="0" maxOccurs="1" help="">
 											  <ANY minOccurs="0" maxOccurs="unbounded" help="">
 											  </ANY>
 											</SEQUENCE116>
@@ -20863,14 +20863,14 @@
 										</SEQUENCE118>
 									  </audioVisual>
 									  <presentation minOccurs="1" maxOccurs="1" help="An unpublished presentation from a conference, workshop, workgroup, symposium, etc. It will be provided upon request in either in paper and/or electronic form by contacting the authors. If the presentation was actually published in a proceedings, use the conferenceProceedings type instead.">
-										<SEQUENCE127 minOccurs="1" maxOccurs="1" help="">
+										<SEQUENCE127 minOccurs="0" maxOccurs="1" help="">
 										  <conferenceName minOccurs="0" maxOccurs="1" help="The name of the conference at which this presentation was given.">
 										  </conferenceName>
 										  <conferenceDate minOccurs="0" maxOccurs="1" help="The date the conference was held.">
 										  </conferenceDate>
 										  <conferenceLocation scope="document" system="" id="" minOccurs="0" maxOccurs="1" help="The address field is provides detailed information for communicating with a party contact via electronic mail or postal mail, including the physical delivery location.">
 											<CHOICE128 minOccurs="1" maxOccurs="1" help="">
-											  <SEQUENCE129 minOccurs="1" maxOccurs="1" help="">
+											  <SEQUENCE129 minOccurs="0" maxOccurs="1" help="">
 												<deliveryPoint minOccurs="0" maxOccurs="unbounded" help="The delivery point field is used for the physical address for postal communication. This field is used to accomodate the many different international conventions that are the equivalent to a U.S. 'street address'.">
 												</deliveryPoint>
 												<city minOccurs="0" maxOccurs="1" help="The city field is used for the city name of the contact associated with a particular resource.">
@@ -21019,7 +21019,7 @@
 								</SEQUENCE150>
 							  </offline>
 							  <inline minOccurs="1" maxOccurs="1" help="Object data distributed inline in the metadata. Users have the option of including the data right inline in the metadata by providing it inside of the 'inline' element. For many text formats, the data can be simply included directly in the element. However, certain character sequences are invalid in an XML document (e.g., &lt;), so care will need to be taken to  either 1) wrap the data in a CDATA section if needed, or  2) encode the data using a text encoding algorithm such as base64, and then include that in a CDATA section. The latter will be necessary for binary formats.">
-								<SEQUENCE151 minOccurs="1" maxOccurs="1" help="">
+								<SEQUENCE151 minOccurs="0" maxOccurs="1" help="">
 								  <ANY minOccurs="0" maxOccurs="unbounded" help="">
 								  </ANY>
 								</SEQUENCE151>
@@ -21030,7 +21030,7 @@
 							  </references>
 							</SEQUENCE152>
 						  </CHOICE135>
-						  <SEQUENCE153 minOccurs="1" maxOccurs="1" help="">
+						  <SEQUENCE153 minOccurs="0" maxOccurs="1" help="">
 							<access authSystem="" order="allowFirst" scope="document" system="" id="" minOccurs="0" maxOccurs="1" help="The access element contains a list of rules that define the level of access for a given data package, including both metadata and data. The access element must contain the elements defined in the AccessType type.">
 							  <CHOICE154 minOccurs="1" maxOccurs="1" help="">
 								<CHOICE155 minOccurs="1" maxOccurs="unbounded" help="">
@@ -21217,7 +21217,7 @@
                             </SEQUENCE1705>
                           </subStep>
                         </SEQUENCE1697>
-                        <SEQUENCE1708 minOccurs="1" maxOccurs="1" help="">
+                        <SEQUENCE1708 minOccurs="0" maxOccurs="1" help="">
                           <dataSource scope="document" system="" id="" minOccurs="0" maxOccurs="unbounded" help="DatasetType is the base type for the dataset element. The dataset field encompasses all information about a single dataset. A dataset is defined as all of the information describing a data collection event. This event may take place over some period of time and include many actual collections (a time series or remote sensing application) or it could be just one actual collection (a day in the field).">
                             <CHOICE1709 minOccurs="1" maxOccurs="1" help="">
                               <SEQUENCE1710 minOccurs="1" maxOccurs="1" help="">
@@ -21732,9 +21732,9 @@
 									  <SEQUENCE26 minOccurs="1" maxOccurs="1" help="">
 										<numberType minOccurs="1" maxOccurs="1" help="">
 										</numberType>
-										<SEQUENCE27 minOccurs="1" maxOccurs="1" help="">
+										<SEQUENCE27 minOccurs="0" maxOccurs="1" help="">
 										  <bounds minOccurs="0" maxOccurs="unbounded" help="">
-											<SEQUENCE28 minOccurs="1" maxOccurs="1" help="">
+											<SEQUENCE28 minOccurs="0" maxOccurs="1" help="">
 											  <minimum exclusive="" minOccurs="0" maxOccurs="1" help="The minimum element specifies the minimum permitted value of a numeric attribute.">
 											  </minimum>
 											  <maximum exclusive="" minOccurs="0" maxOccurs="1" help="The maximum element specifies the maximum permitted value of a numeric attribute.">
@@ -21768,9 +21768,9 @@
 									  <SEQUENCE33 minOccurs="1" maxOccurs="1" help="">
 										<numberType minOccurs="1" maxOccurs="1" help="">
 										</numberType>
-										<SEQUENCE34 minOccurs="1" maxOccurs="1" help="">
+										<SEQUENCE34 minOccurs="0" maxOccurs="1" help="">
 										  <bounds minOccurs="0" maxOccurs="unbounded" help="">
-											<SEQUENCE35 minOccurs="1" maxOccurs="1" help="">
+											<SEQUENCE35 minOccurs="0" maxOccurs="1" help="">
 											  <minimum exclusive="" minOccurs="0" maxOccurs="1" help="The minimum element specifies the minimum permitted value of a numeric attribute.">
 											  </minimum>
 											  <maximum exclusive="" minOccurs="0" maxOccurs="1" help="The maximum element specifies the maximum permitted value of a numeric attribute.">
@@ -21795,10 +21795,10 @@
 								  </dateTimePrecision>
 								  <dateTimeDomain id="" minOccurs="0" maxOccurs="1" help="The DateTimeDomain specifies the minimum and maximum values of a dateTime attribute. These are theoretical or permitted values (ie. prescriptive), and not necessarily the actual minimum and maximum observed in a given data set (descriptive). The domain expressions should be in the same dateTime format as is used in the 'formatString' description for the attribute. For example, if the format string is 'YYYY-MM-DD', then a valid minimum in the domain would be '2001-05-29'. The 'bounds' element is optional, and if it is missing then any legitimate value from the Gregorian  calendar system is allowed in the attribute as long as its representation matches its corresponding formatString.">
 									<CHOICE38 minOccurs="1" maxOccurs="1" help="">
-									  <SEQUENCE39 minOccurs="1" maxOccurs="1" help="">
-										<SEQUENCE40 minOccurs="1" maxOccurs="1" help="">
+									  <SEQUENCE39 minOccurs="0" maxOccurs="1" help="">
+										<SEQUENCE40 minOccurs="0" maxOccurs="1" help="">
 										  <bounds minOccurs="0" maxOccurs="unbounded" help="">
-											<SEQUENCE41 minOccurs="1" maxOccurs="1" help="">
+											<SEQUENCE41 minOccurs="0" maxOccurs="1" help="">
 											  <minimum exclusive="" minOccurs="0" maxOccurs="1" help="The minimum element specifies the minimum permitted value of a date attribute.">
 											  </minimum>
 											  <maximum exclusive="" minOccurs="0" maxOccurs="1" help="The maximum element specifies the maximum permitted value of a date attribute.">
@@ -21880,7 +21880,7 @@
                         <constraintName minOccurs="1" maxOccurs="1" help="The constraintName element is a name which represents a human readible and meaningful name for the constraint.">
                         </constraintName>
                         <constraintDescription minOccurs="0" maxOccurs="1" help="The constraintDescription element describes the nature of the constraint. It might be a description of a check condition, or a statement about the composition of a primary key or the nature of the relationship between two database tables or two ascii files.">
-                          <SEQUENCE1762 minOccurs="1" maxOccurs="1" help="">
+                          <SEQUENCE1762 minOccurs="0" maxOccurs="1" help="">
                             <ANY minOccurs="0" maxOccurs="unbounded" help="">
                             </ANY>
                           </SEQUENCE1762>
@@ -21900,7 +21900,7 @@
                         <constraintName minOccurs="1" maxOccurs="1" help="The constraintName element is a name which represents a human readible and meaningful name for the constraint.">
                         </constraintName>
                         <constraintDescription minOccurs="0" maxOccurs="1" help="The constraintDescription element describes the nature of the constraint. It might be a description of a check condition, or a statement about the composition of a primary key or the nature of the relationship between two database tables or two ascii files.">
-                          <SEQUENCE1766 minOccurs="1" maxOccurs="1" help="">
+                          <SEQUENCE1766 minOccurs="0" maxOccurs="1" help="">
                             <ANY minOccurs="0" maxOccurs="unbounded" help="">
                             </ANY>
                           </SEQUENCE1766>
@@ -21920,7 +21920,7 @@
                         <constraintName minOccurs="1" maxOccurs="1" help="The constraintName element is a name which represents a human readible and meaningful name for the constraint.">
                         </constraintName>
                         <constraintDescription minOccurs="0" maxOccurs="1" help="The constraintDescription element describes the nature of the constraint. It might be a description of a check condition, or a statement about the composition of a primary key or the nature of the relationship between two database tables or two ascii files.">
-                          <SEQUENCE1770 minOccurs="1" maxOccurs="1" help="">
+                          <SEQUENCE1770 minOccurs="0" maxOccurs="1" help="">
                             <ANY minOccurs="0" maxOccurs="unbounded" help="">
                             </ANY>
                           </SEQUENCE1770>
@@ -21936,7 +21936,7 @@
                         <constraintName minOccurs="1" maxOccurs="1" help="The constraintName element is a name which represents a human readible and meaningful name for the constraint.">
                         </constraintName>
                         <constraintDescription minOccurs="0" maxOccurs="1" help="The constraintDescription element describes the nature of the constraint. It might be a description of a check condition, or a statement about the composition of a primary key or the nature of the relationship between two database tables or two ascii files.">
-                          <SEQUENCE1773 minOccurs="1" maxOccurs="1" help="">
+                          <SEQUENCE1773 minOccurs="0" maxOccurs="1" help="">
                             <ANY minOccurs="0" maxOccurs="unbounded" help="">
                             </ANY>
                           </SEQUENCE1773>
@@ -21969,7 +21969,7 @@
                           <constraintName minOccurs="1" maxOccurs="1" help="The constraintName element is a name which represents a human readible and meaningful name for the constraint.">
                           </constraintName>
                           <constraintDescription minOccurs="0" maxOccurs="1" help="The constraintDescription element describes the nature of the constraint. It might be a description of a check condition, or a statement about the composition of a primary key or the nature of the relationship between two database tables or two ascii files.">
-                            <SEQUENCE1779 minOccurs="1" maxOccurs="1" help="">
+                            <SEQUENCE1779 minOccurs="0" maxOccurs="1" help="">
                               <ANY minOccurs="0" maxOccurs="unbounded" help="">
                               </ANY>
                             </SEQUENCE1779>
@@ -22008,7 +22008,7 @@
                         <constraintName minOccurs="1" maxOccurs="1" help="The constraintName element is a name which represents a human readible and meaningful name for the constraint.">
                         </constraintName>
                         <constraintDescription minOccurs="0" maxOccurs="1" help="The constraintDescription element describes the nature of the constraint. It might be a description of a check condition, or a statement about the composition of a primary key or the nature of the relationship between two database tables or two ascii files.">
-                          <SEQUENCE1785 minOccurs="1" maxOccurs="1" help="">
+                          <SEQUENCE1785 minOccurs="0" maxOccurs="1" help="">
                             <ANY minOccurs="0" maxOccurs="unbounded" help="">
                             </ANY>
                           </SEQUENCE1785>
@@ -22081,7 +22081,7 @@
 							  <recordDelimiter minOccurs="0" maxOccurs="unbounded" help="This element specifies the record delimiter character when the format is text. The record delimiter is usually a linefeed (\n) on UNIX, a carriage return (\r) on MacOS, or both (\r\n) on Windows/DOS. Multiline records are usually delimited with two line ending characters, for example on UNIX it would be two linefeed characters (\n\n). As record delimeters are often non-printing characters, one can use either the special value '\n' to represent a linefeed (ASCII 0x0a) and '\r' to represent a carriage return (ASCII 0x0d). Alternatively, one can use the hex value to represent character values (e.g., 0x0a).">
 							  </recordDelimiter>
 							  <physicalLineDelimiter minOccurs="0" maxOccurs="unbounded" help="This element specifies the physical line delimiter character when the format is text. The line delimiter is usually a linefeed (\n) on UNIX, a carriage return (\r) on MacOS, or both (\r\n) on Windows/DOS. Multiline records are usually delimited with two line ending characters, for example on UNIX it would be two linefeed characters (\n\n). As line delimeters are often non-printing characters, one can use either the special value '\n' to represent a linefeed (ASCII 0x0a) and '\r' to represent a carriage return (ASCII 0x0d). Alternatively, one can use the hex value to represent character values (e.g., 0x0a). If this value is not provided, prcessors should assume that the physical line delimiter is the same as the record delimiter.">
-								<SEQUENCE5 minOccurs="1" maxOccurs="1" help="">
+								<SEQUENCE5 minOccurs="0" maxOccurs="1" help="">
 								  <ANY minOccurs="0" maxOccurs="unbounded" help="">
 								  </ANY>
 								</SEQUENCE5>
@@ -22404,7 +22404,7 @@
 										  </CHOICE50>
 										  <address scope="document" system="" id="" minOccurs="0" maxOccurs="unbounded" help="The address field is provides detailed information for communicating with a party contact via electronic mail or postal mail, including the physical delivery location.">
 											<CHOICE51 minOccurs="1" maxOccurs="1" help="">
-											  <SEQUENCE52 minOccurs="1" maxOccurs="1" help="">
+											  <SEQUENCE52 minOccurs="0" maxOccurs="1" help="">
 												<deliveryPoint minOccurs="0" maxOccurs="unbounded" help="The delivery point field is used for the physical address for postal communication. This field is used to accomodate the many different international conventions that are the equivalent to a U.S. 'street address'.">
 												</deliveryPoint>
 												<city minOccurs="0" maxOccurs="1" help="The city field is used for the city name of the contact associated with a particular resource.">
@@ -22647,7 +22647,7 @@
 										</SEQUENCE74>
 									  </manuscript>
 									  <report minOccurs="1" maxOccurs="1" help="The report may be self published by the institution or through a publisher. They usually are available by request to the institution or can be purchased from the publisher.">
-										<SEQUENCE79 minOccurs="1" maxOccurs="1" help="">
+										<SEQUENCE79 minOccurs="0" maxOccurs="1" help="">
 										  <reportNumber minOccurs="0" maxOccurs="1" help="The report number field is used to describe the unique identification number that has been issued by the report institution for the report being described.">
 										  </reportNumber>
 										  <publisher scope="document" system="" id="" minOccurs="0" maxOccurs="1" help="The responsible party field contains multiple subfields that are used to describe the person, organization, or position within an organization that is associated in some way with a resource. It is intended to be used to fully document contact information for many types of associations, such as owner, manager, steward, curator, etc.">
@@ -22754,7 +22754,7 @@
 											  </pageRange>
 											</SEQUENCE92>
 										  </SEQUENCE90>
-										  <SEQUENCE93 minOccurs="1" maxOccurs="1" help="">
+										  <SEQUENCE93 minOccurs="0" maxOccurs="1" help="">
 											<conferenceName minOccurs="0" maxOccurs="1" help="The name of the conference whose proceedings have been published.">
 											</conferenceName>
 											<conferenceDate minOccurs="0" maxOccurs="1" help="The date the conference was held.">
@@ -22765,7 +22765,7 @@
 										</SEQUENCE89>
 									  </conferenceProceedings>
 									  <personalCommunication minOccurs="1" maxOccurs="1" help="This could be a widely distributed memo, an e-mail, a transcript from a conversation or interview, etc...">
-										<SEQUENCE94 minOccurs="1" maxOccurs="1" help="">
+										<SEQUENCE94 minOccurs="0" maxOccurs="1" help="">
 										  <publisher scope="document" system="" id="" minOccurs="0" maxOccurs="1" help="The responsible party field contains multiple subfields that are used to describe the person, organization, or position within an organization that is associated in some way with a resource. It is intended to be used to fully document contact information for many types of associations, such as owner, manager, steward, curator, etc.">
 											<CHOICE95 minOccurs="1" maxOccurs="1" help="">
 											  <SEQUENCE96 minOccurs="1" maxOccurs="1" help="">
@@ -22829,7 +22829,7 @@
 										</SEQUENCE94>
 									  </personalCommunication>
 									  <map minOccurs="1" maxOccurs="1" help="This element desribes the map that is being cited or cataloged, including its geographic coverage and scale.">
-										<SEQUENCE103 minOccurs="1" maxOccurs="1" help="">
+										<SEQUENCE103 minOccurs="0" maxOccurs="1" help="">
 										  <publisher scope="document" system="" id="" minOccurs="0" maxOccurs="1" help="The responsible party field contains multiple subfields that are used to describe the person, organization, or position within an organization that is associated in some way with a resource. It is intended to be used to fully document contact information for many types of associations, such as owner, manager, steward, curator, etc.">
 											<CHOICE104 minOccurs="1" maxOccurs="1" help="">
 											  <SEQUENCE105 minOccurs="1" maxOccurs="1" help="">
@@ -22913,7 +22913,7 @@
 										  <publicationPlace minOccurs="0" maxOccurs="1" help="The location at which the work was published. This is usually the name of the city in which the publishing house produced the work.">
 										  </publicationPlace>
 										  <referenceType minOccurs="0" maxOccurs="1" help="The reference type describes the type of reference this generic type is being used to represent.">
-											<SEQUENCE116 minOccurs="1" maxOccurs="1" help="">
+											<SEQUENCE116 minOccurs="0" maxOccurs="1" help="">
 											  <ANY minOccurs="0" maxOccurs="unbounded" help="">
 											  </ANY>
 											</SEQUENCE116>
@@ -23009,14 +23009,14 @@
 										</SEQUENCE118>
 									  </audioVisual>
 									  <presentation minOccurs="1" maxOccurs="1" help="An unpublished presentation from a conference, workshop, workgroup, symposium, etc. It will be provided upon request in either in paper and/or electronic form by contacting the authors. If the presentation was actually published in a proceedings, use the conferenceProceedings type instead.">
-										<SEQUENCE127 minOccurs="1" maxOccurs="1" help="">
+										<SEQUENCE127 minOccurs="0" maxOccurs="1" help="">
 										  <conferenceName minOccurs="0" maxOccurs="1" help="The name of the conference at which this presentation was given.">
 										  </conferenceName>
 										  <conferenceDate minOccurs="0" maxOccurs="1" help="The date the conference was held.">
 										  </conferenceDate>
 										  <conferenceLocation scope="document" system="" id="" minOccurs="0" maxOccurs="1" help="The address field is provides detailed information for communicating with a party contact via electronic mail or postal mail, including the physical delivery location.">
 											<CHOICE128 minOccurs="1" maxOccurs="1" help="">
-											  <SEQUENCE129 minOccurs="1" maxOccurs="1" help="">
+											  <SEQUENCE129 minOccurs="0" maxOccurs="1" help="">
 												<deliveryPoint minOccurs="0" maxOccurs="unbounded" help="The delivery point field is used for the physical address for postal communication. This field is used to accomodate the many different international conventions that are the equivalent to a U.S. 'street address'.">
 												</deliveryPoint>
 												<city minOccurs="0" maxOccurs="1" help="The city field is used for the city name of the contact associated with a particular resource.">
@@ -23165,7 +23165,7 @@
 								</SEQUENCE150>
 							  </offline>
 							  <inline minOccurs="1" maxOccurs="1" help="Object data distributed inline in the metadata. Users have the option of including the data right inline in the metadata by providing it inside of the 'inline' element. For many text formats, the data can be simply included directly in the element. However, certain character sequences are invalid in an XML document (e.g., &lt;), so care will need to be taken to  either 1) wrap the data in a CDATA section if needed, or  2) encode the data using a text encoding algorithm such as base64, and then include that in a CDATA section. The latter will be necessary for binary formats.">
-								<SEQUENCE151 minOccurs="1" maxOccurs="1" help="">
+								<SEQUENCE151 minOccurs="0" maxOccurs="1" help="">
 								  <ANY minOccurs="0" maxOccurs="unbounded" help="">
 								  </ANY>
 								</SEQUENCE151>
@@ -23176,7 +23176,7 @@
 							  </references>
 							</SEQUENCE152>
 						  </CHOICE135>
-						  <SEQUENCE153 minOccurs="1" maxOccurs="1" help="">
+						  <SEQUENCE153 minOccurs="0" maxOccurs="1" help="">
 							<access authSystem="" order="allowFirst" scope="document" system="" id="" minOccurs="0" maxOccurs="1" help="The access element contains a list of rules that define the level of access for a given data package, including both metadata and data. The access element must contain the elements defined in the AccessType type.">
 							  <CHOICE154 minOccurs="1" maxOccurs="1" help="">
 								<CHOICE155 minOccurs="1" maxOccurs="unbounded" help="">
@@ -23363,7 +23363,7 @@
                             </SEQUENCE1828>
                           </subStep>
                         </SEQUENCE1820>
-                        <SEQUENCE1831 minOccurs="1" maxOccurs="1" help="">
+                        <SEQUENCE1831 minOccurs="0" maxOccurs="1" help="">
                           <dataSource scope="document" system="" id="" minOccurs="0" maxOccurs="unbounded" help="DatasetType is the base type for the dataset element. The dataset field encompasses all information about a single dataset. A dataset is defined as all of the information describing a data collection event. This event may take place over some period of time and include many actual collections (a time series or remote sensing application) or it could be just one actual collection (a day in the field).">
                             <CHOICE1832 minOccurs="1" maxOccurs="1" help="">
                               <SEQUENCE1833 minOccurs="1" maxOccurs="1" help="">
@@ -23878,9 +23878,9 @@
 									  <SEQUENCE26 minOccurs="1" maxOccurs="1" help="">
 										<numberType minOccurs="1" maxOccurs="1" help="">
 										</numberType>
-										<SEQUENCE27 minOccurs="1" maxOccurs="1" help="">
+										<SEQUENCE27 minOccurs="0" maxOccurs="1" help="">
 										  <bounds minOccurs="0" maxOccurs="unbounded" help="">
-											<SEQUENCE28 minOccurs="1" maxOccurs="1" help="">
+											<SEQUENCE28 minOccurs="0" maxOccurs="1" help="">
 											  <minimum exclusive="" minOccurs="0" maxOccurs="1" help="The minimum element specifies the minimum permitted value of a numeric attribute.">
 											  </minimum>
 											  <maximum exclusive="" minOccurs="0" maxOccurs="1" help="The maximum element specifies the maximum permitted value of a numeric attribute.">
@@ -23914,9 +23914,9 @@
 									  <SEQUENCE33 minOccurs="1" maxOccurs="1" help="">
 										<numberType minOccurs="1" maxOccurs="1" help="">
 										</numberType>
-										<SEQUENCE34 minOccurs="1" maxOccurs="1" help="">
+										<SEQUENCE34 minOccurs="0" maxOccurs="1" help="">
 										  <bounds minOccurs="0" maxOccurs="unbounded" help="">
-											<SEQUENCE35 minOccurs="1" maxOccurs="1" help="">
+											<SEQUENCE35 minOccurs="0" maxOccurs="1" help="">
 											  <minimum exclusive="" minOccurs="0" maxOccurs="1" help="The minimum element specifies the minimum permitted value of a numeric attribute.">
 											  </minimum>
 											  <maximum exclusive="" minOccurs="0" maxOccurs="1" help="The maximum element specifies the maximum permitted value of a numeric attribute.">
@@ -23941,10 +23941,10 @@
 								  </dateTimePrecision>
 								  <dateTimeDomain id="" minOccurs="0" maxOccurs="1" help="The DateTimeDomain specifies the minimum and maximum values of a dateTime attribute. These are theoretical or permitted values (ie. prescriptive), and not necessarily the actual minimum and maximum observed in a given data set (descriptive). The domain expressions should be in the same dateTime format as is used in the 'formatString' description for the attribute. For example, if the format string is 'YYYY-MM-DD', then a valid minimum in the domain would be '2001-05-29'. The 'bounds' element is optional, and if it is missing then any legitimate value from the Gregorian  calendar system is allowed in the attribute as long as its representation matches its corresponding formatString.">
 									<CHOICE38 minOccurs="1" maxOccurs="1" help="">
-									  <SEQUENCE39 minOccurs="1" maxOccurs="1" help="">
-										<SEQUENCE40 minOccurs="1" maxOccurs="1" help="">
+									  <SEQUENCE39 minOccurs="0" maxOccurs="1" help="">
+										<SEQUENCE40 minOccurs="0" maxOccurs="1" help="">
 										  <bounds minOccurs="0" maxOccurs="unbounded" help="">
-											<SEQUENCE41 minOccurs="1" maxOccurs="1" help="">
+											<SEQUENCE41 minOccurs="0" maxOccurs="1" help="">
 											  <minimum exclusive="" minOccurs="0" maxOccurs="1" help="The minimum element specifies the minimum permitted value of a date attribute.">
 											  </minimum>
 											  <maximum exclusive="" minOccurs="0" maxOccurs="1" help="The maximum element specifies the maximum permitted value of a date attribute.">
@@ -24026,7 +24026,7 @@
                         <constraintName minOccurs="1" maxOccurs="1" help="The constraintName element is a name which represents a human readible and meaningful name for the constraint.">
                         </constraintName>
                         <constraintDescription minOccurs="0" maxOccurs="1" help="The constraintDescription element describes the nature of the constraint. It might be a description of a check condition, or a statement about the composition of a primary key or the nature of the relationship between two database tables or two ascii files.">
-                          <SEQUENCE1885 minOccurs="1" maxOccurs="1" help="">
+                          <SEQUENCE1885 minOccurs="0" maxOccurs="1" help="">
                             <ANY minOccurs="0" maxOccurs="unbounded" help="">
                             </ANY>
                           </SEQUENCE1885>
@@ -24046,7 +24046,7 @@
                         <constraintName minOccurs="1" maxOccurs="1" help="The constraintName element is a name which represents a human readible and meaningful name for the constraint.">
                         </constraintName>
                         <constraintDescription minOccurs="0" maxOccurs="1" help="The constraintDescription element describes the nature of the constraint. It might be a description of a check condition, or a statement about the composition of a primary key or the nature of the relationship between two database tables or two ascii files.">
-                          <SEQUENCE1889 minOccurs="1" maxOccurs="1" help="">
+                          <SEQUENCE1889 minOccurs="0" maxOccurs="1" help="">
                             <ANY minOccurs="0" maxOccurs="unbounded" help="">
                             </ANY>
                           </SEQUENCE1889>
@@ -24066,7 +24066,7 @@
                         <constraintName minOccurs="1" maxOccurs="1" help="The constraintName element is a name which represents a human readible and meaningful name for the constraint.">
                         </constraintName>
                         <constraintDescription minOccurs="0" maxOccurs="1" help="The constraintDescription element describes the nature of the constraint. It might be a description of a check condition, or a statement about the composition of a primary key or the nature of the relationship between two database tables or two ascii files.">
-                          <SEQUENCE1893 minOccurs="1" maxOccurs="1" help="">
+                          <SEQUENCE1893 minOccurs="0" maxOccurs="1" help="">
                             <ANY minOccurs="0" maxOccurs="unbounded" help="">
                             </ANY>
                           </SEQUENCE1893>
@@ -24082,7 +24082,7 @@
                         <constraintName minOccurs="1" maxOccurs="1" help="The constraintName element is a name which represents a human readible and meaningful name for the constraint.">
                         </constraintName>
                         <constraintDescription minOccurs="0" maxOccurs="1" help="The constraintDescription element describes the nature of the constraint. It might be a description of a check condition, or a statement about the composition of a primary key or the nature of the relationship between two database tables or two ascii files.">
-                          <SEQUENCE1896 minOccurs="1" maxOccurs="1" help="">
+                          <SEQUENCE1896 minOccurs="0" maxOccurs="1" help="">
                             <ANY minOccurs="0" maxOccurs="unbounded" help="">
                             </ANY>
                           </SEQUENCE1896>
@@ -24115,7 +24115,7 @@
                           <constraintName minOccurs="1" maxOccurs="1" help="The constraintName element is a name which represents a human readible and meaningful name for the constraint.">
                           </constraintName>
                           <constraintDescription minOccurs="0" maxOccurs="1" help="The constraintDescription element describes the nature of the constraint. It might be a description of a check condition, or a statement about the composition of a primary key or the nature of the relationship between two database tables or two ascii files.">
-                            <SEQUENCE1902 minOccurs="1" maxOccurs="1" help="">
+                            <SEQUENCE1902 minOccurs="0" maxOccurs="1" help="">
                               <ANY minOccurs="0" maxOccurs="unbounded" help="">
                               </ANY>
                             </SEQUENCE1902>
@@ -24154,7 +24154,7 @@
                         <constraintName minOccurs="1" maxOccurs="1" help="The constraintName element is a name which represents a human readible and meaningful name for the constraint.">
                         </constraintName>
                         <constraintDescription minOccurs="0" maxOccurs="1" help="The constraintDescription element describes the nature of the constraint. It might be a description of a check condition, or a statement about the composition of a primary key or the nature of the relationship between two database tables or two ascii files.">
-                          <SEQUENCE1908 minOccurs="1" maxOccurs="1" help="">
+                          <SEQUENCE1908 minOccurs="0" maxOccurs="1" help="">
                             <ANY minOccurs="0" maxOccurs="unbounded" help="">
                             </ANY>
                           </SEQUENCE1908>
@@ -24217,7 +24217,7 @@
 							  <recordDelimiter minOccurs="0" maxOccurs="unbounded" help="This element specifies the record delimiter character when the format is text. The record delimiter is usually a linefeed (\n) on UNIX, a carriage return (\r) on MacOS, or both (\r\n) on Windows/DOS. Multiline records are usually delimited with two line ending characters, for example on UNIX it would be two linefeed characters (\n\n). As record delimeters are often non-printing characters, one can use either the special value '\n' to represent a linefeed (ASCII 0x0a) and '\r' to represent a carriage return (ASCII 0x0d). Alternatively, one can use the hex value to represent character values (e.g., 0x0a).">
 							  </recordDelimiter>
 							  <physicalLineDelimiter minOccurs="0" maxOccurs="unbounded" help="This element specifies the physical line delimiter character when the format is text. The line delimiter is usually a linefeed (\n) on UNIX, a carriage return (\r) on MacOS, or both (\r\n) on Windows/DOS. Multiline records are usually delimited with two line ending characters, for example on UNIX it would be two linefeed characters (\n\n). As line delimeters are often non-printing characters, one can use either the special value '\n' to represent a linefeed (ASCII 0x0a) and '\r' to represent a carriage return (ASCII 0x0d). Alternatively, one can use the hex value to represent character values (e.g., 0x0a). If this value is not provided, prcessors should assume that the physical line delimiter is the same as the record delimiter.">
-								<SEQUENCE5 minOccurs="1" maxOccurs="1" help="">
+								<SEQUENCE5 minOccurs="0" maxOccurs="1" help="">
 								  <ANY minOccurs="0" maxOccurs="unbounded" help="">
 								  </ANY>
 								</SEQUENCE5>
@@ -24540,7 +24540,7 @@
 										  </CHOICE50>
 										  <address scope="document" system="" id="" minOccurs="0" maxOccurs="unbounded" help="The address field is provides detailed information for communicating with a party contact via electronic mail or postal mail, including the physical delivery location.">
 											<CHOICE51 minOccurs="1" maxOccurs="1" help="">
-											  <SEQUENCE52 minOccurs="1" maxOccurs="1" help="">
+											  <SEQUENCE52 minOccurs="0" maxOccurs="1" help="">
 												<deliveryPoint minOccurs="0" maxOccurs="unbounded" help="The delivery point field is used for the physical address for postal communication. This field is used to accomodate the many different international conventions that are the equivalent to a U.S. 'street address'.">
 												</deliveryPoint>
 												<city minOccurs="0" maxOccurs="1" help="The city field is used for the city name of the contact associated with a particular resource.">
@@ -24783,7 +24783,7 @@
 										</SEQUENCE74>
 									  </manuscript>
 									  <report minOccurs="1" maxOccurs="1" help="The report may be self published by the institution or through a publisher. They usually are available by request to the institution or can be purchased from the publisher.">
-										<SEQUENCE79 minOccurs="1" maxOccurs="1" help="">
+										<SEQUENCE79 minOccurs="0" maxOccurs="1" help="">
 										  <reportNumber minOccurs="0" maxOccurs="1" help="The report number field is used to describe the unique identification number that has been issued by the report institution for the report being described.">
 										  </reportNumber>
 										  <publisher scope="document" system="" id="" minOccurs="0" maxOccurs="1" help="The responsible party field contains multiple subfields that are used to describe the person, organization, or position within an organization that is associated in some way with a resource. It is intended to be used to fully document contact information for many types of associations, such as owner, manager, steward, curator, etc.">
@@ -24890,7 +24890,7 @@
 											  </pageRange>
 											</SEQUENCE92>
 										  </SEQUENCE90>
-										  <SEQUENCE93 minOccurs="1" maxOccurs="1" help="">
+										  <SEQUENCE93 minOccurs="0" maxOccurs="1" help="">
 											<conferenceName minOccurs="0" maxOccurs="1" help="The name of the conference whose proceedings have been published.">
 											</conferenceName>
 											<conferenceDate minOccurs="0" maxOccurs="1" help="The date the conference was held.">
@@ -24901,7 +24901,7 @@
 										</SEQUENCE89>
 									  </conferenceProceedings>
 									  <personalCommunication minOccurs="1" maxOccurs="1" help="This could be a widely distributed memo, an e-mail, a transcript from a conversation or interview, etc...">
-										<SEQUENCE94 minOccurs="1" maxOccurs="1" help="">
+										<SEQUENCE94 minOccurs="0" maxOccurs="1" help="">
 										  <publisher scope="document" system="" id="" minOccurs="0" maxOccurs="1" help="The responsible party field contains multiple subfields that are used to describe the person, organization, or position within an organization that is associated in some way with a resource. It is intended to be used to fully document contact information for many types of associations, such as owner, manager, steward, curator, etc.">
 											<CHOICE95 minOccurs="1" maxOccurs="1" help="">
 											  <SEQUENCE96 minOccurs="1" maxOccurs="1" help="">
@@ -24965,7 +24965,7 @@
 										</SEQUENCE94>
 									  </personalCommunication>
 									  <map minOccurs="1" maxOccurs="1" help="This element desribes the map that is being cited or cataloged, including its geographic coverage and scale.">
-										<SEQUENCE103 minOccurs="1" maxOccurs="1" help="">
+										<SEQUENCE103 minOccurs="0" maxOccurs="1" help="">
 										  <publisher scope="document" system="" id="" minOccurs="0" maxOccurs="1" help="The responsible party field contains multiple subfields that are used to describe the person, organization, or position within an organization that is associated in some way with a resource. It is intended to be used to fully document contact information for many types of associations, such as owner, manager, steward, curator, etc.">
 											<CHOICE104 minOccurs="1" maxOccurs="1" help="">
 											  <SEQUENCE105 minOccurs="1" maxOccurs="1" help="">
@@ -25049,7 +25049,7 @@
 										  <publicationPlace minOccurs="0" maxOccurs="1" help="The location at which the work was published. This is usually the name of the city in which the publishing house produced the work.">
 										  </publicationPlace>
 										  <referenceType minOccurs="0" maxOccurs="1" help="The reference type describes the type of reference this generic type is being used to represent.">
-											<SEQUENCE116 minOccurs="1" maxOccurs="1" help="">
+											<SEQUENCE116 minOccurs="0" maxOccurs="1" help="">
 											  <ANY minOccurs="0" maxOccurs="unbounded" help="">
 											  </ANY>
 											</SEQUENCE116>
@@ -25145,14 +25145,14 @@
 										</SEQUENCE118>
 									  </audioVisual>
 									  <presentation minOccurs="1" maxOccurs="1" help="An unpublished presentation from a conference, workshop, workgroup, symposium, etc. It will be provided upon request in either in paper and/or electronic form by contacting the authors. If the presentation was actually published in a proceedings, use the conferenceProceedings type instead.">
-										<SEQUENCE127 minOccurs="1" maxOccurs="1" help="">
+										<SEQUENCE127 minOccurs="0" maxOccurs="1" help="">
 										  <conferenceName minOccurs="0" maxOccurs="1" help="The name of the conference at which this presentation was given.">
 										  </conferenceName>
 										  <conferenceDate minOccurs="0" maxOccurs="1" help="The date the conference was held.">
 										  </conferenceDate>
 										  <conferenceLocation scope="document" system="" id="" minOccurs="0" maxOccurs="1" help="The address field is provides detailed information for communicating with a party contact via electronic mail or postal mail, including the physical delivery location.">
 											<CHOICE128 minOccurs="1" maxOccurs="1" help="">
-											  <SEQUENCE129 minOccurs="1" maxOccurs="1" help="">
+											  <SEQUENCE129 minOccurs="0" maxOccurs="1" help="">
 												<deliveryPoint minOccurs="0" maxOccurs="unbounded" help="The delivery point field is used for the physical address for postal communication. This field is used to accomodate the many different international conventions that are the equivalent to a U.S. 'street address'.">
 												</deliveryPoint>
 												<city minOccurs="0" maxOccurs="1" help="The city field is used for the city name of the contact associated with a particular resource.">
@@ -25301,7 +25301,7 @@
 								</SEQUENCE150>
 							  </offline>
 							  <inline minOccurs="1" maxOccurs="1" help="Object data distributed inline in the metadata. Users have the option of including the data right inline in the metadata by providing it inside of the 'inline' element. For many text formats, the data can be simply included directly in the element. However, certain character sequences are invalid in an XML document (e.g., &lt;), so care will need to be taken to  either 1) wrap the data in a CDATA section if needed, or  2) encode the data using a text encoding algorithm such as base64, and then include that in a CDATA section. The latter will be necessary for binary formats.">
-								<SEQUENCE151 minOccurs="1" maxOccurs="1" help="">
+								<SEQUENCE151 minOccurs="0" maxOccurs="1" help="">
 								  <ANY minOccurs="0" maxOccurs="unbounded" help="">
 								  </ANY>
 								</SEQUENCE151>
@@ -25312,7 +25312,7 @@
 							  </references>
 							</SEQUENCE152>
 						  </CHOICE135>
-						  <SEQUENCE153 minOccurs="1" maxOccurs="1" help="">
+						  <SEQUENCE153 minOccurs="0" maxOccurs="1" help="">
 							<access authSystem="" order="allowFirst" scope="document" system="" id="" minOccurs="0" maxOccurs="1" help="The access element contains a list of rules that define the level of access for a given data package, including both metadata and data. The access element must contain the elements defined in the AccessType type.">
 							  <CHOICE154 minOccurs="1" maxOccurs="1" help="">
 								<CHOICE155 minOccurs="1" maxOccurs="unbounded" help="">
@@ -25499,7 +25499,7 @@
                             </SEQUENCE1950>
                           </subStep>
                         </SEQUENCE1942>
-                        <SEQUENCE1953 minOccurs="1" maxOccurs="1" help="">
+                        <SEQUENCE1953 minOccurs="0" maxOccurs="1" help="">
                           <dataSource scope="document" system="" id="" minOccurs="0" maxOccurs="unbounded" help="DatasetType is the base type for the dataset element. The dataset field encompasses all information about a single dataset. A dataset is defined as all of the information describing a data collection event. This event may take place over some period of time and include many actual collections (a time series or remote sensing application) or it could be just one actual collection (a day in the field).">
                             <CHOICE1954 minOccurs="1" maxOccurs="1" help="">
                               <SEQUENCE1955 minOccurs="1" maxOccurs="1" help="">
@@ -26015,9 +26015,9 @@
 									  <SEQUENCE26 minOccurs="1" maxOccurs="1" help="">
 										<numberType minOccurs="1" maxOccurs="1" help="">
 										</numberType>
-										<SEQUENCE27 minOccurs="1" maxOccurs="1" help="">
+										<SEQUENCE27 minOccurs="0" maxOccurs="1" help="">
 										  <bounds minOccurs="0" maxOccurs="unbounded" help="">
-											<SEQUENCE28 minOccurs="1" maxOccurs="1" help="">
+											<SEQUENCE28 minOccurs="0" maxOccurs="1" help="">
 											  <minimum exclusive="" minOccurs="0" maxOccurs="1" help="The minimum element specifies the minimum permitted value of a numeric attribute.">
 											  </minimum>
 											  <maximum exclusive="" minOccurs="0" maxOccurs="1" help="The maximum element specifies the maximum permitted value of a numeric attribute.">
@@ -26051,9 +26051,9 @@
 									  <SEQUENCE33 minOccurs="1" maxOccurs="1" help="">
 										<numberType minOccurs="1" maxOccurs="1" help="">
 										</numberType>
-										<SEQUENCE34 minOccurs="1" maxOccurs="1" help="">
+										<SEQUENCE34 minOccurs="0" maxOccurs="1" help="">
 										  <bounds minOccurs="0" maxOccurs="unbounded" help="">
-											<SEQUENCE35 minOccurs="1" maxOccurs="1" help="">
+											<SEQUENCE35 minOccurs="0" maxOccurs="1" help="">
 											  <minimum exclusive="" minOccurs="0" maxOccurs="1" help="The minimum element specifies the minimum permitted value of a numeric attribute.">
 											  </minimum>
 											  <maximum exclusive="" minOccurs="0" maxOccurs="1" help="The maximum element specifies the maximum permitted value of a numeric attribute.">
@@ -26078,10 +26078,10 @@
 								  </dateTimePrecision>
 								  <dateTimeDomain id="" minOccurs="0" maxOccurs="1" help="The DateTimeDomain specifies the minimum and maximum values of a dateTime attribute. These are theoretical or permitted values (ie. prescriptive), and not necessarily the actual minimum and maximum observed in a given data set (descriptive). The domain expressions should be in the same dateTime format as is used in the 'formatString' description for the attribute. For example, if the format string is 'YYYY-MM-DD', then a valid minimum in the domain would be '2001-05-29'. The 'bounds' element is optional, and if it is missing then any legitimate value from the Gregorian  calendar system is allowed in the attribute as long as its representation matches its corresponding formatString.">
 									<CHOICE38 minOccurs="1" maxOccurs="1" help="">
-									  <SEQUENCE39 minOccurs="1" maxOccurs="1" help="">
-										<SEQUENCE40 minOccurs="1" maxOccurs="1" help="">
+									  <SEQUENCE39 minOccurs="0" maxOccurs="1" help="">
+										<SEQUENCE40 minOccurs="0" maxOccurs="1" help="">
 										  <bounds minOccurs="0" maxOccurs="unbounded" help="">
-											<SEQUENCE41 minOccurs="1" maxOccurs="1" help="">
+											<SEQUENCE41 minOccurs="0" maxOccurs="1" help="">
 											  <minimum exclusive="" minOccurs="0" maxOccurs="1" help="The minimum element specifies the minimum permitted value of a date attribute.">
 											  </minimum>
 											  <maximum exclusive="" minOccurs="0" maxOccurs="1" help="The maximum element specifies the maximum permitted value of a date attribute.">
@@ -26163,7 +26163,7 @@
                           <constraintName minOccurs="1" maxOccurs="1" help="The constraintName element is a name which represents a human readible and meaningful name for the constraint.">
                           </constraintName>
                           <constraintDescription minOccurs="0" maxOccurs="1" help="The constraintDescription element describes the nature of the constraint. It might be a description of a check condition, or a statement about the composition of a primary key or the nature of the relationship between two database tables or two ascii files.">
-                            <SEQUENCE2008 minOccurs="1" maxOccurs="1" help="">
+                            <SEQUENCE2008 minOccurs="0" maxOccurs="1" help="">
                               <ANY minOccurs="0" maxOccurs="unbounded" help="">
                               </ANY>
                             </SEQUENCE2008>
@@ -26183,7 +26183,7 @@
                           <constraintName minOccurs="1" maxOccurs="1" help="The constraintName element is a name which represents a human readible and meaningful name for the constraint.">
                           </constraintName>
                           <constraintDescription minOccurs="0" maxOccurs="1" help="The constraintDescription element describes the nature of the constraint. It might be a description of a check condition, or a statement about the composition of a primary key or the nature of the relationship between two database tables or two ascii files.">
-                            <SEQUENCE2012 minOccurs="1" maxOccurs="1" help="">
+                            <SEQUENCE2012 minOccurs="0" maxOccurs="1" help="">
                               <ANY minOccurs="0" maxOccurs="unbounded" help="">
                               </ANY>
                             </SEQUENCE2012>
@@ -26203,7 +26203,7 @@
                           <constraintName minOccurs="1" maxOccurs="1" help="The constraintName element is a name which represents a human readible and meaningful name for the constraint.">
                           </constraintName>
                           <constraintDescription minOccurs="0" maxOccurs="1" help="The constraintDescription element describes the nature of the constraint. It might be a description of a check condition, or a statement about the composition of a primary key or the nature of the relationship between two database tables or two ascii files.">
-                            <SEQUENCE2016 minOccurs="1" maxOccurs="1" help="">
+                            <SEQUENCE2016 minOccurs="0" maxOccurs="1" help="">
                               <ANY minOccurs="0" maxOccurs="unbounded" help="">
                               </ANY>
                             </SEQUENCE2016>
@@ -26219,7 +26219,7 @@
                           <constraintName minOccurs="1" maxOccurs="1" help="The constraintName element is a name which represents a human readible and meaningful name for the constraint.">
                           </constraintName>
                           <constraintDescription minOccurs="0" maxOccurs="1" help="The constraintDescription element describes the nature of the constraint. It might be a description of a check condition, or a statement about the composition of a primary key or the nature of the relationship between two database tables or two ascii files.">
-                            <SEQUENCE2019 minOccurs="1" maxOccurs="1" help="">
+                            <SEQUENCE2019 minOccurs="0" maxOccurs="1" help="">
                               <ANY minOccurs="0" maxOccurs="unbounded" help="">
                               </ANY>
                             </SEQUENCE2019>
@@ -26287,7 +26287,7 @@
                           <constraintName minOccurs="1" maxOccurs="1" help="The constraintName element is a name which represents a human readible and meaningful name for the constraint.">
                           </constraintName>
                           <constraintDescription minOccurs="0" maxOccurs="1" help="The constraintDescription element describes the nature of the constraint. It might be a description of a check condition, or a statement about the composition of a primary key or the nature of the relationship between two database tables or two ascii files.">
-                            <SEQUENCE2030 minOccurs="1" maxOccurs="1" help="">
+                            <SEQUENCE2030 minOccurs="0" maxOccurs="1" help="">
                               <ANY minOccurs="0" maxOccurs="unbounded" help="">
                               </ANY>
                             </SEQUENCE2030>
