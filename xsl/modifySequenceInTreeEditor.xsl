@@ -6,9 +6,10 @@ This stylesheet tries to print out those sequences, then we will manully change 
   <xsl:output method="xml" indent="yes"/>
   <xsl:strip-space elements="*"/>
   <xsl:template match="*">
-    <xsl:if test="contains(name(), 'SEQUENCE')">
+    <xsl:if test="contains(name(), 'SEQUENCE') and @minOccurs != '0'">
       <xsl:variable name="countRequiredChildren" select="count(./*[@minOccurs='1'])"/>
-        <xsl:if test="$countRequiredChildren=0">
+      <xsl:variable name="countRequiredChildren2" select="count(./*[@minOccurs='3'])"/>
+        <xsl:if test="$countRequiredChildren=0 and $countRequiredChildren2=0 ">
                   <xsl:element name="{name(.)}" namespace="{namespace-uri(.)}">
                                     <xsl:copy-of select="@*"/>
                    </xsl:element>
