@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2008-10-15 02:25:28 $'
- * '$Revision: 1.62 $'
+ *     '$Date: 2008-10-24 00:17:38 $'
+ * '$Revision: 1.63 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -625,11 +625,23 @@ public  class EML200DataPackage extends AbstractDataPackage
 
     try {
       serialize(AbstractDataPackage.METACAT);
-      this.setLocation(AbstractDataPackage.METACAT);
-      serializeData(AbstractDataPackage.METACAT);
+      // if serialize data successfully, we will serialize data. 
+      if(getSerializeMetacatSuccess() == true)
+      {
+    	  //System.out.println("=================== serialzie metacat is true");
+    	  this.setLocation(AbstractDataPackage.METACAT);
+    	  serializeData(AbstractDataPackage.METACAT);
+      }
+      else
+      {
+    	  //System.out.println("=================== serialzie metacat is false");
+    	  this.setLocation(AbstractDataPackage.LOCAL);
+    	  throw new MetacatUploadException("Couldn't upload the package to metacat");
+      }
     }
     catch (Exception w) {
       Log.debug(5, "error in uploading! "+w.getMessage());
+      throw new MetacatUploadException(w.getMessage());
     }
     return this;
   }

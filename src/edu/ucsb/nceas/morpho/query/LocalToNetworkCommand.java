@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2008-09-18 18:24:33 $'
- * '$Revision: 1.13 $'
+ *     '$Date: 2008-10-24 00:17:38 $'
+ * '$Revision: 1.14 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -195,11 +195,11 @@ public class LocalToNetworkCommand implements Command
             catch(MetacatUploadException mue)
             {
               String errorMsg = mue.getMessage();
-              if (errorMsg.indexOf("Invalid content")>-1) { // validation problem
-                Log.debug(1,"Synchonization failed due to validation problem!");
+              //if (errorMsg.indexOf("Invalid content")>-1) { // validation problem
+                Log.debug(1,"Synchonization failed!");
                 Log.debug(20, "MetacatUploadException: "+errorMsg);
                 return null;
-              } else {
+              /*} else {
               //ask the user if he is sure he wants to overwrite the package
               //if he is do it, otherwise return
               String message="A conflict has been found in one or more of the "+ 
@@ -267,7 +267,7 @@ public class LocalToNetworkCommand implements Command
                 
                 return null;
               }
-            }
+            }*/
             }
           
           
