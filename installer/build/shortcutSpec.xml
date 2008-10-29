@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+
+<shortcuts>
+
+  <skipIfNotSupported />
+
+  <programGroup defaultName="Morpho" location="applications"/>
+
+  <shortcut
+     name="Morpho 1.6.2"
+     programGroup="yes"
+     desktop="yes"
+     applications="no"
+     startMenu="yes"
+     startup="no"
+     target="$INSTALL_PATH\morpho.exe"
+     commandLine=""
+     description="Morpho 1.6.2 - Scientific Data Management Tool"
+     iconFile="$INSTALL_PATH\lib\DesktopIcon32x32.gif">
+   
+     
+   </shortcut>
+
+   <shortcut
+     name="Morpho Uninstaller"
+     programGroup="yes"
+     desktop="no"
+     applications="no"
+     startMenu="yes"
+     startup="no"
+     target="$INSTALL_PATH\Uninstaller\uninstaller.jar"     
+     commandLine=""
+	 iconFile="%SystemRoot%\system32\SHELL32.dll"
+     iconIndex="31" 
+     description="This uninstalls Morpho">
+     
+   </shortcut>
+   
+</shortcuts>

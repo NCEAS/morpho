@@ -89,9 +89,6 @@
     <pack name="Base" required="yes">
       <description>The base files</description>		
       			
-			<executable targetfile="$INSTALL_PATH/lib/morpho.jar" type="jar" class="Morpho" stage="postinstall" keep="true" failure="warn">
-				<os family="unix"/>
-		  </executable>
 	
 			<fileset dir="" targetdir="$INSTALL_PATH/">
 				<os family="unix"/>
@@ -117,13 +114,15 @@
 			<executable targetfile="$INSTALL_PATH/Kepler.app/Kepler/cplibs.sh" stage="postinstall" keep="true" failure="warn">
         <os family="mac"/>
       </executable> -->
-	  <executable targetfile="$INSTALL_PATH/Kepler.app/Kepler/lib/morpho.jar" type="jar" class="Morpho" stage="postinstall" keep="true" failure="warn">
-        <os family="mac"/>
-      </executable>
-	
-		<file src="morpho.app" targetdir="$INSTALL_PATH">
+		<file targetdir="$INSTALL_PATH/Morpho.app/morpho/" src="morpho">
+			<os family="mac"/>
+        </file>
+		<executable targetfile="$INSTALL_PATH/morpho.app/morpho/morpho" stage="postinstall" keep="true" failure="warn">
+			<os family="mac"/>
+        </executable> 
+		<!--<file src="morpho.app" targetdir="$INSTALL_PATH">
            <os family="mac"/>
-       </file>
+       </file>-->
 			<fileset dir="" targetdir="$INSTALL_PATH/morpho.app/morpho/">
                 <os family="mac"/>
 				<exclude name="stderr.log"/>
@@ -152,10 +151,13 @@
 			<executable targetfile="$INSTALL_PATH/cplibs.bat" stage="postinstall" keep="true" failure="warn">
         <os family="windows"/>
       </executable> -->
-	  <executable targetfile="$INSTALL_PATH/lib/morpho.jar" type="jar" class="Morpho" stage="postinstall" keep="true" failure="warn">
-        <os family="windows"/>
-      </executable>
 	
+		   <file targetdir="$INSTALL_PATH/" src="morpho.bat">
+				<os family="windows"/>
+		  </file>
+		   <executable targetfile="$INSTALL_PATH/morpho.app/morpho/morpho.bat" stage="postinstall" keep="true" failure="warn">
+				<os family="windows"/>
+            </executable> -->
 			<fileset dir="" targetdir="$INSTALL_PATH/">
 				<os family="windows"/>
 				<exclude name="stderr.log"/>
