@@ -19,7 +19,7 @@
 		<appname>Morpho</appname>
 		<appversion>1.6.2</appversion>
 		<url>http://knb.ecoinformatics.org</url>
-    <appsubpath>Mopho-1.6.2</appsubpath>
+    <appsubpath>morpho-1.6.2</appsubpath>
 	</info> 
   	
 	<!-- 
@@ -89,49 +89,26 @@
     <pack name="Base" required="yes">
       <description>The base files</description>		
       			
-      
-			<executable targetfile="$INSTALL_PATH/lib/RemoveDotKepler.jar" type="jar" class="RemoveDotKepler" stage="postinstall" keep="true" failure="warn">
-        <os family="unix"/>
-      </executable>
+			<executable targetfile="$INSTALL_PATH/lib/morpho.jar" type="jar" class="Morpho" stage="postinstall" keep="true" failure="warn">
+				<os family="unix"/>
+		  </executable>
 	
 			<fileset dir="" targetdir="$INSTALL_PATH/">
-        <os family="unix"/>
-				<exclude name="install.jar"/>
+				<os family="unix"/>
+				<exclude name="stderr.log"/>
 				<exclude name="src/"/>
-				<exclude name="build-nmi/"/>
-				<exclude name="build/classes/"/>
-				<exclude name="build/configs/"/>
-				<exclude name="build/icons/"/>
-				<exclude name="build/src/"/>
-				<exclude name="build/tmp/"/>
-				<exclude name="build/kepler-configs.jar/"/>
-				<exclude name="cog/"/>
+				<exclude name="build/"/>
 				<exclude name="tests/"/>
-				<exclude name="website/"/>
-				<exclude name="webservice"/>
-				<exclude name="lib/nddp/"/> 
-				<exclude name="lib/installer"/>
-				<exclude name="lib/nightlybuild/"/>
-				<exclude name="website/"/>
-				<exclude name="configs/nddp/"/>
-				<exclude name="configs/spa/"/>
-				<exclude name="lib/cplibs.bat"/>
-				<exclude name="lib/setclasspath.bat"/>
-				<exclude name="lib/cplibs.sh"/>
-				<exclude name="demos/ENM/GARP_MultipleSpecies-V-dist2.xml"/>
-				<exclude name="demos/ENM/GARP_MultipleSpecies-V-distributed.xml"/>
-				<exclude name="Kepler.app/"/>
-        <exclude name="R-2.6.2-osx.dmg"/>
-        <exclude name="R-2.6.2-win.zip"/>
+				<exclude name="eclipse/"/>
 			</fileset>
       
-      <executable type="bin" stage="never" targetfile="$INSTALL_PATH/kepler.sh" >
+      <executable type="bin" stage="never" targetfile="$INSTALL_PATH/morpho" >
         <os family="unix"/>
       </executable>
       
 
       
-      <file targetdir="$INSTALL_PATH/Kepler.app/Kepler/" src="lib/cplibs.sh">
+      <!--<file targetdir="$INSTALL_PATH/Morpho.app/morpho/" src="lib/cplibs.sh">
         <os family="mac"/>
       </file>
 			<parsable targetfile="$INSTALL_PATH/Kepler.app/Kepler/cplibs.sh">
@@ -139,51 +116,27 @@
       </parsable>
 			<executable targetfile="$INSTALL_PATH/Kepler.app/Kepler/cplibs.sh" stage="postinstall" keep="true" failure="warn">
         <os family="mac"/>
-      </executable>
-			<executable targetfile="$INSTALL_PATH/Kepler.app/Kepler/lib/RemoveDotKepler.jar" type="jar" class="RemoveDotKepler" stage="postinstall" keep="true" failure="warn">
+      </executable> -->
+	  <executable targetfile="$INSTALL_PATH/Kepler.app/Kepler/lib/morpho.jar" type="jar" class="Morpho" stage="postinstall" keep="true" failure="warn">
         <os family="mac"/>
       </executable>
 	
-			<file src="Kepler.app" targetdir="$INSTALL_PATH">
-        <os family="mac"/>
-      </file>
-			<fileset dir="" targetdir="$INSTALL_PATH/Kepler.app/Kepler/">
-        <os family="mac"/>
-				<exclude name="install.jar"/>
+		<file src="morpho.app" targetdir="$INSTALL_PATH">
+           <os family="mac"/>
+       </file>
+			<fileset dir="" targetdir="$INSTALL_PATH/morpho.app/morpho/">
+                <os family="mac"/>
+				<exclude name="stderr.log"/>
 				<exclude name="src/"/>
-				<exclude name="build-nmi/"/>
-				<exclude name="build/classes/"/>
-				<exclude name="build/configs/"/>
-				<exclude name="build/icons/"/>
-				<exclude name="build/src/"/>
-				<exclude name="build/tmp/"/>
-				<exclude name="build/kepler-configs.jar/"/>
-				<exclude name="cog/"/>
+				<exclude name="build/"/>
 				<exclude name="tests/"/>
-				<exclude name="website/"/>
-				<exclude name="webservice"/>
-				<exclude name="lib/nddp/"/> 
+				<exclude name="eclipse/"/>
 				<exclude name="lib/installer"/>
-				<exclude name="lib/nightlybuild/"/>
-				<exclude name="website/"/>
-				<exclude name="configs/nddp/"/>
-				<exclude name="configs/spa/"/>
-				<exclude name="lib/cplibs.bat"/>
-				<exclude name="lib/setclasspath.bat"/>
-				<exclude name="lib/cplibs.sh"/>
-        <exclude name="lib/installer"/>
-				<exclude name="demos/"/>
-				<exclude name="Kepler.app"/>
 			</fileset>
-			<fileset dir="demos/" targetdir="$INSTALL_PATH/demos">
-        <os family="mac"/>
-				<exclude name="ENM/GARP_MultipleSpecies-V-dist2.xml"/>
-				<exclude name="ENM/GARP_MultipleSpecies-V-distributed.xml"/>
-			</fileset>
-      
+
 
       
-      <file targetdir="$INSTALL_PATH/" src="lib/cplibs.bat">
+ <!--     <file targetdir="$INSTALL_PATH/" src="lib/cplibs.bat">
         <os family="windows"/>
       </file>
       
@@ -198,199 +151,29 @@
       </parsable>
 			<executable targetfile="$INSTALL_PATH/cplibs.bat" stage="postinstall" keep="true" failure="warn">
         <os family="windows"/>
-      </executable>
-			<executable targetfile="$INSTALL_PATH/lib/RemoveDotKepler.jar" type="jar" class="RemoveDotKepler" stage="postinstall" keep="true" failure="warn">
+      </executable> -->
+	  <executable targetfile="$INSTALL_PATH/lib/morpho.jar" type="jar" class="Morpho" stage="postinstall" keep="true" failure="warn">
         <os family="windows"/>
       </executable>
 	
 			<fileset dir="" targetdir="$INSTALL_PATH/">
-        <os family="windows"/>
-				<exclude name="install.jar"/>
+				<os family="windows"/>
+				<exclude name="stderr.log"/>
 				<exclude name="src/"/>
-				<exclude name="build-nmi/"/>
-				<exclude name="build/classes/"/>
-				<exclude name="build/configs/"/>
-				<exclude name="build/icons/"/>
-				<exclude name="build/src/"/>
-				<exclude name="build/tmp/"/>
-				<exclude name="build/kepler-configs.jar/"/>
-				<exclude name="cog/"/>
+				<exclude name="build/"/>
 				<exclude name="tests/"/>
-				<exclude name="website/"/>
-				<exclude name="webservice"/>
-				<exclude name="lib/nddp/"/> 
+				<exclude name="eclipse/"/>
 				<exclude name="lib/installer"/>
-				<exclude name="lib/nightlybuild/"/>
-				<exclude name="website/"/>
-				<exclude name="configs/nddp/"/>
-				<exclude name="configs/spa/"/>
-				<exclude name="lib/cplibs.bat"/>
-				<exclude name="lib/setclasspath.bat"/>
-				<exclude name="lib/cplibs.sh"/>
-				<exclude name="demos/ENM/GARP_MultipleSpecies-V-dist2.xml"/>
-				<exclude name="demos/ENM/GARP_MultipleSpecies-V-distributed.xml"/>
-				<exclude name="Kepler.app"/>
+				<exclude name="morpho.app"/>
 			</fileset>
       
     </pack>
-    <!--
-    <pack name="Linux Base" required="yes" os="linux">
-      <description>Linux base files.</description>
-      <executable targetfile="$INSTALL_PATH/lib/RemoveDotKepler.jar" type="jar" 
-                  class="RemoveDotKepler" stage="postinstall" keep="true" failure="warn"/>
-	
-			<fileset dir="" targetdir="$INSTALL_PATH/">
-				<exclude name="install.jar"/>
-        <exclude name="lib/jar/standalone-compiler.jar"/>
-				<exclude name="src/"/>
-				<exclude name="build-nmi/"/>
-				<exclude name="build/classes/"/>
-				<exclude name="build/configs/"/>
-				<exclude name="build/icons/"/>
-				<exclude name="build/src/"/>
-				<exclude name="build/tmp/"/>
-				<exclude name="build/kepler-configs.jar/"/>
-				<exclude name="cog/"/>
-				<exclude name="tests/"/>
-				<exclude name="website/"/>
-				<exclude name="webservice"/>
-				<exclude name="lib/nddp/"/> 
-				<exclude name="lib/installer"/>
-				<exclude name="lib/nightlybuild/"/>
-				<exclude name="website/"/>
-				<exclude name="configs/nddp/"/>
-				<exclude name="configs/spa/"/>
-				<exclude name="lib/cplibs.bat"/>
-				<exclude name="lib/setclasspath.bat"/>
-				<exclude name="lib/cplibs.sh"/>
-				<exclude name="demos/ENM/GARP_MultipleSpecies-V-dist2.xml"/>
-				<exclude name="demos/ENM/GARP_MultipleSpecies-V-distributed.xml"/>
-				<exclude name="Kepler.app/"/>
-        <exclude name="R-2.6.2-osx.dmg"/>
-        <exclude name="R-2.6.2-win.zip"/>
-        <exclude name="build.xml"/>
-        <exclude name="build-doc.xml"/>
-        <exclude name="build-ptolemy.xml"/>
-        <exclude name="build.properties"/>
-        <exclude name="loaddmg.sh"/>
-        <exclude name="createDemosLink.sh"/>
-			</fileset>
-      
-      <executable type="bin" stage="never" targetfile="$INSTALL_PATH/kepler.sh" />
-    </pack>-->
     
-    <!--<pack name="Mac Base" required="yes" os="Mac">
-      <description>Base files for the Mac</description>
-      <file targetdir="$INSTALL_PATH/Kepler.app/Kepler/" src="lib/cplibs.sh"/>
-			<parsable targetfile="$INSTALL_PATH/Kepler.app/Kepler/cplibs.sh"/>
-			<executable targetfile="$INSTALL_PATH/Kepler.app/Kepler/cplibs.sh" 
-                  stage="postinstall" keep="true" failure="warn"/>
-			<executable targetfile="$INSTALL_PATH/Kepler.app/Kepler/lib/RemoveDotKepler.jar" 
-                  type="jar" class="RemoveDotKepler" stage="postinstall" keep="true" 
-                  failure="warn"/>
-	
-			<file src="Kepler.app" targetdir="$INSTALL_PATH"/>
-			<fileset dir="" targetdir="$INSTALL_PATH/Kepler.app/Kepler/">
-				<exclude name="install.jar"/>
-				<exclude name="src/"/>
-				<exclude name="build-nmi/"/>
-        <exclude name="lib/jar/standalone-compiler.jar"/>
-				<exclude name="build/classes/"/>
-				<exclude name="build/configs/"/>
-				<exclude name="build/icons/"/>
-				<exclude name="build/src/"/>
-				<exclude name="build/tmp/"/>
-				<exclude name="build/kepler-configs.jar/"/>
-				<exclude name="cog/"/>
-				<exclude name="tests/"/>
-				<exclude name="website/"/>
-				<exclude name="webservice"/>
-				<exclude name="lib/nddp/"/> 
-				<exclude name="lib/installer"/>
-				<exclude name="lib/nightlybuild/"/>
-				<exclude name="website/"/>
-				<exclude name="configs/nddp/"/>
-				<exclude name="configs/spa/"/>
-				<exclude name="lib/cplibs.bat"/>
-				<exclude name="lib/setclasspath.bat"/>
-				<exclude name="lib/cplibs.sh"/>
-        <exclude name="lib/installer"/>
-				<exclude name="demos/"/>
-				<exclude name="Kepler.app"/>
-        <exclude name="build.xml"/>
-        <exclude name="build-doc.xml"/>
-        <exclude name="build-ptolemy.xml"/>
-        <exclude name="build.properties"/>
-			</fileset>
-			<fileset dir="demos/" targetdir="$INSTALL_PATH/demos" />
-      <parsable targetfile="$INSTALL_PATH/Kepler.app/Kepler/createDemosLink.sh"/>
-      <executable type="bin" stage="never" targetfile="$INSTALL_PATH/Kepler.app/Kepler/createDemosLink.sh" os="mac" />
-      <executable type="bin" stage="postinstall" targetfile="$INSTALL_PATH/Kepler.app/Kepler/createDemosLink.sh" os="mac" failure="ask"/>
-    </pack>
-        
-    <pack name="R (2.6.2) OSX" required="no" os="mac" id="r-2.6.2-mac">
-			<description>R (2.6.2) for Mac OSX - If you choose to install this option, the R installer will be launched at the completion of the Kepler installation.</description>
-			<parsable targetfile="$INSTALL_PATH/Kepler.app/Kepler/loaddmg.sh"/>
-			<file targetdir="$INSTALL_PATH/Kepler.app/Kepler/" src="R-2.6.2-osx.dmg" os="mac" unpack="false"/>
-			<executable type="bin" stage="never" targetfile="$INSTALL_PATH/Kepler.app/Kepler/loaddmg.sh" os="mac" />
-			<executable type="bin" stage="postinstall" targetfile="$INSTALL_PATH/Kepler.app/Kepler/loaddmg.sh" os="mac" failure="ask"/>
-		</pack>-->
-    
-		
-	<!--<pack name="Windows Base" required="yes" os="Windows">
-			<description>The Windows base files</description>			
-			
-			<file targetdir="$INSTALL_PATH/" src="lib/cplibs.bat"/>
-			<file targetdir="$INSTALL_PATH/" src="lib/setclasspath.bat"/>
-			<parsable targetfile="$INSTALL_PATH/cplibs.bat"/>
-			<parsable targetfile="$INSTALL_PATH/setclasspath.bat"/>
-			<executable targetfile="$INSTALL_PATH/cplibs.bat" stage="postinstall" keep="true" failure="warn"/>
-			<executable targetfile="$INSTALL_PATH/lib/RemoveDotKepler.jar" type="jar" class="RemoveDotKepler" stage="postinstall" keep="true" failure="warn"/> 
-	
-			<fileset dir="" targetdir="$INSTALL_PATH/">
-				<exclude name="install.jar"/>
-				<exclude name="src/"/>
-				<exclude name="build-nmi/"/>
-        <exclude name="lib/jar/standalone-compiler.jar"/>
-				<exclude name="build/classes/"/>
-				<exclude name="build/configs/"/>
-				<exclude name="build/icons/"/>
-				<exclude name="build/src/"/>
-				<exclude name="build/tmp/"/>
-				<exclude name="build/kepler-configs.jar/"/>
-				<exclude name="cog/"/>
-				<exclude name="tests/"/>
-				<exclude name="website/"/>
-				<exclude name="webservice"/>
-				<exclude name="lib/nddp/"/> 
-				<exclude name="lib/installer"/>
-				<exclude name="lib/nightlybuild/"/>
-				<exclude name="website/"/>
-				<exclude name="configs/nddp/"/>
-				<exclude name="configs/spa/"/>
-				<exclude name="lib/cplibs.bat"/>
-				<exclude name="lib/setclasspath.bat"/>
-				<exclude name="lib/cplibs.sh"/>
-				<exclude name="Kepler.app"/>
-        <exclude name="build.xml"/>
-        <exclude name="build-doc.xml"/>
-        <exclude name="build-ptolemy.xml"/>
-        <exclude name="build.properties"/>
-        <exclude name="loaddmg.sh"/>
-        <exclude name="createDemosLink.sh"/>
-			</fileset>
-		</pack>
-
-		<pack name="R (2.6.2) Windows" required="no" os="windows">
-			<description>R (2.6.2) for Windows</description>
-			<file targetdir="$INSTALL_PATH/" src="R-2.6.2-win.zip" os="windows" unpack="true"/>
-		</pack>-->
     
 		<pack name="Sources" required="no">
-			<description>Kepler Source Files</description>
+			<description>Morphor Source Files</description>
 			<fileset dir="src" targetdir="$INSTALL_PATH/src">
-				<exclude name="org/nddp/"/>
-				<exclude name="org/monash/"/>
+
 			</fileset>
 		</pack>	 
 	</packs>
