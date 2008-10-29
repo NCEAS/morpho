@@ -6,7 +6,7 @@
   *    Copyright: 2000 Regents of the University of California and the
   *               National Center for Ecological Analysis and Synthesis
   *  For Details: http://www.nceas.ucsb.edu/
-  *    File Info: '$Id: build.xml,v 1.116 2008-09-23 23:41:02 tao Exp $'
+  *    File Info: '$Id: build.xml,v 1.117 2008-10-29 00:42:48 tao Exp $'
   *
   *  Build file for the Ant cross-platform build system for metacat
   *  See http://jakarta.apache.org for details on Ant
@@ -29,7 +29,7 @@
       <filter token="release" value="${release}"/>
       <filter token="muser" value="${muser}"/>
       <filter token="mpass" value="${mpass}"/>
-
+       
       <filter token="server" value="http://knb.ecoinformatics.org"/>
       <filter token="docrooturl" value="/"/>
 
@@ -79,6 +79,8 @@
       <property name="morpho.docs.licenses" value="${morpho.docs}/licenses"/>
       <property name="morpho.docs.dev.api" value="${morpho.docs.dev}/api"/>
    	
+	   <property name="izpackjar" 
+		            value="/usr/local/devtools/IzPack/lib/standalone-compiler.jar"/>
    		<property name="jcal"
    	                value="${libdir}/jcalendar-1.3.2.jar" />
       <property name="xml4j"
@@ -478,6 +480,39 @@
        <jvmarg value="-Xss1m"/>
        <jvmarg value="-Djava.protocol.handler.pkgs=HTTPClient"/>
      </java>
+   </target>
+	
+	
+	<!-- The target "makeinstaller" uses the IzPack installer system (see http://izpack.org/)
+     to create an installer jar file. This is based on the script $KEPLER/installer/build/install.xml.
+     A jar file called 'IzPack-install.jar' is created in $KEPLER dir. This jar can be executed by
+     double clicking on Windows and on Mac OS X.
+     Dan Higgins - Nov 2007
+-->
+  <target name="makeinstaller" depends="install,installercleanup">
+      <delete file="morpho-${release}.jar"/>
+      <delete file="morpho-${release}.exe"/>
+      <mkdir dir="morpho.app/morpho"/>
+      
+      
+      <taskdef name="izpack" classpath="${izpackjar}"
+         classname="com.izforge.izpack.ant.IzPackTask"
+         onerror="ignore"/>
+
+  <!-- We call IzPack -->
+    <echo message="Makes the installer using IzPack"/>
+    <izpack input="./installer/build/install.xml"
+        output="morpho-${release}.jar"
+        installerType="standard"
+        basedir="./" />
+   </target>
+	
+	<!-- the following 3 targets clean up the build for system specific installers -->
+	<target name="installercleanup">
+     <delete verbose="true" includeemptydirs="true">
+      <fileset dir="tests/testfiles" includes="**/*" excludes="garp/**, eml/**"/>
+     </delete>
+     <delete file="INSTALL.txt"/>
    </target>
 
    <!-- use the ant "junit" task to run JUnit tests. -->
