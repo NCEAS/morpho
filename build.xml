@@ -6,7 +6,7 @@
   *    Copyright: 2000 Regents of the University of California and the
   *               National Center for Ecological Analysis and Synthesis
   *  For Details: http://www.nceas.ucsb.edu/
-  *    File Info: '$Id: build.xml,v 1.117 2008-10-29 00:42:48 tao Exp $'
+  *    File Info: '$Id: build.xml,v 1.118 2008-10-30 21:54:35 tao Exp $'
   *
   *  Build file for the Ant cross-platform build system for metacat
   *  See http://jakarta.apache.org for details on Ant
@@ -79,6 +79,9 @@
       <property name="morpho.docs.licenses" value="${morpho.docs}/licenses"/>
       <property name="morpho.docs.dev.api" value="${morpho.docs.dev}/api"/>
    	
+	   <!-- NOTE: location is machine specific - insert 'Launch4J' location on your machine! This
+		   property will be used in buildwininstaller target. -->
+      <property name="launch4j.dir" location="/usr/local/devtools/launch4j" />
 	   <property name="izpackjar" 
 		            value="/usr/local/devtools/IzPack/lib/standalone-compiler.jar"/>
    		<property name="jcal"
@@ -482,6 +485,81 @@
      </java>
    </target>
 	
+	<!--
+   This target uses Launch$J (see http://launch4j.sourceforge.net/)
+   It will create a file ("Kepler-launch.exe" that will launch Kepler on a Windows box
+   Dan Higgins - Nov 2007
+--> 
+  <target name="buildwinexe" depends="init"> 
+       <!-- NOTE: location is machine specific - insert 'Launch4J' location on your machine!  -->
+      <taskdef name="launch4j"
+               classname="net.sf.launch4j.ant.Launch4jTask"
+               classpath="${launch4j.dir}/launch4j.jar:${launch4j.dir}/lib/xstream.jar" 
+      onerror="ignore"/>
+      <launch4j configFile="./installer/build/launch-morpho.xml"/>
+  </target> 
+	
+	<!-- The target 'macjarbundler' builds a Mac OS X application bundle.
+     This provides a double-clickable icon that will launch a java
+     application on the Mac without the need to open the terminal and
+     type a long command string. It it thus similar to creating an 
+     .exe file from launching Kepler on Windows.
+
+     The target uses an ant taskdef called 'jarbundler' 
+     (see http://informagen.com/JarBundler/). For the target to work a
+     'jarbundler-n.n.jar' must be added to the ant /lib directory. This
+     task is supposed to be cross-platform (as long as a file called
+     'JavaApplicationStub' is available. However, I encountered a
+     problem with building the application bundle on a Windows machine
+     and moving the result to a Mac due to differences between '\' and
+     '/' in the classpath. It is thus suggested that this be run on a
+     Mac. (Dan Higgins 11/2007)
+-->          
+  <target name="macjarbundler">
+      <taskdef name="jarbundler" 
+         classpath="lib/jarbundler-1.9.jar"
+         classname="net.sourceforge.jarbundler.JarBundler" 
+         onerror="ignore" />
+      <jarbundler dir="./"
+            name="Morpho"
+		    stubfile="./installer/build/mac/JavaApplicationStub"
+            mainclass="edu.ucsb.nceas.morpho.Morpho"
+            jvmversion="1.5"
+            jar="lib/morpho.jar"
+            icon="lib/MacDesktopIcon32x32.icns" 
+            vmoptions="-Xmx512m -Xss5m" >
+        </jarbundler>
+  </target>
+
+	
+	<!--
+   This target uses Launch4J (see http://launch4j.sourceforge.net/)
+   It will create a file ("morpho-installer.exe" that will install morpho on a Windows box
+   Dan Higgins - Jan 2008
+	--> 
+  <target name="buildwininstaller" depends="buildwinexe, makeinstaller"> 
+      <taskdef name="launch4j"
+               classname="net.sf.launch4j.ant.Launch4jTask"
+               classpath="${launch4j.dir}/launch4j.jar:${launch4j.dir}/xstream.jar" 
+      onerror="ignore"/>
+      <launch4j configFile="./installer/build/launch-installer.xml"
+                outfile="morpho-${release}.exe" jar="morpho-${release}.jar"/>
+  </target>
+	
+  
+  <!--Builds jar file for mac  -->
+  <target name="buildmacinstaller" depends="macjarbundler, makeinstaller"> 
+     
+  </target>
+	
+	<!--Builds jar installer file for linux.   -->
+  <target name="buildlinuxinstaller" depends="makeinstaller"> 
+     
+  </target>
+
+
+
+	
 	
 	<!-- The target "makeinstaller" uses the IzPack installer system (see http://izpack.org/)
      to create an installer jar file. This is based on the script $KEPLER/installer/build/install.xml.
@@ -492,8 +570,6 @@
   <target name="makeinstaller" depends="install,installercleanup">
       <delete file="morpho-${release}.jar"/>
       <delete file="morpho-${release}.exe"/>
-      <mkdir dir="morpho.app/morpho"/>
-      
       
       <taskdef name="izpack" classpath="${izpackjar}"
          classname="com.izforge.izpack.ant.IzPackTask"
