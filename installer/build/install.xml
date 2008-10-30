@@ -97,6 +97,10 @@
 				<exclude name="build/"/>
 				<exclude name="tests/"/>
 				<exclude name="eclipse/"/>
+				<exclude name="Morpho.app"/>
+				<exclude name="lib/installer"/>
+				<exclude name="installer"/>
+				<exclude name="lib/SchemaParser"/>
 			</fileset>
       
       <executable type="bin" stage="never" targetfile="$INSTALL_PATH/morpho" >
@@ -131,6 +135,8 @@
 				<exclude name="tests/"/>
 				<exclude name="eclipse/"/>
 				<exclude name="lib/installer"/>
+				<exclude name="installer"/>
+				<exclude name="lib/SchemaParser"/>
 			</fileset>
 
 
@@ -166,7 +172,9 @@
 				<exclude name="tests/"/>
 				<exclude name="eclipse/"/>
 				<exclude name="lib/installer"/>
-				<exclude name="morpho.app"/>
+				<exclude name="Morpho.app"/>
+				<exclude name="installer"/>
+				<exclude name="lib/SchemaParser"/>
 			</fileset>
       
     </pack>
