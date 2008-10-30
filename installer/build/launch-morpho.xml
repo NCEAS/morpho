@@ -1,0 +1,26 @@
+<launch4jConfig>
+  <dontWrapJar>true</dontWrapJar>
+  <headerType>gui</headerType>
+  <jar>lib\morpho.jar</jar>
+  <outfile>../../morpho.exe</outfile>
+  <errTitle>Morpho</errTitle>
+  <cmdLine></cmdLine>
+  <chdir>.</chdir>
+  <priority>normal</priority>
+  <downloadUrl>http://java.com/download</downloadUrl>
+  <supportUrl></supportUrl>
+  <customProcName>false</customProcName>
+  <stayAlive>false</stayAlive>
+  <manifest></manifest>
+  <icon>../../lib/DesktopIcon16x16.gif</icon>
+  <jre>
+    <path></path>
+    <minVersion>1.5.0</minVersion>
+    <maxVersion></maxVersion>
+    <jdkPreference>preferJre</jdkPreference>
+    <opt>-Xmx512m</opt>
+    <opt>-Xss5m</opt>
+    <opt>-Djava.endorsed.dirs=&quot;%EXEDIR%/lib/jar/apache&quot;</opt>
+    <opt>-Djava.library.path=&quot;%EXEDIR%/lib&quot;</opt>
+  </jre>
+</launch4jConfig>
