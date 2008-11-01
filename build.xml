@@ -6,7 +6,7 @@
   *    Copyright: 2000 Regents of the University of California and the
   *               National Center for Ecological Analysis and Synthesis
   *  For Details: http://www.nceas.ucsb.edu/
-  *    File Info: '$Id: build.xml,v 1.119 2008-10-31 01:48:22 tao Exp $'
+  *    File Info: '$Id: build.xml,v 1.120 2008-11-01 00:57:56 tao Exp $'
   *
   *  Build file for the Ant cross-platform build system for metacat
   *  See http://jakarta.apache.org for details on Ant
@@ -548,30 +548,37 @@
         </jarbundler>
   </target>
 
-	
+
+  <target name="setwindowsos">
+  	<property name="os-name" value="windows"/>
+  </target>
 	<!--
    This target uses Launch4J (see http://launch4j.sourceforge.net/)
    It will create a file ("morpho-installer.exe" that will install morpho on a Windows box
    Dan Higgins - Jan 2008
 	--> 
-  <target name="buildwininstaller" depends="buildwinexe, makeinstaller"> 
+  <target name="buildwininstaller" depends="setwindowsos,installercleanup,buildwinexe, makeinstaller"> 
       <taskdef name="launch4j"
                classname="net.sf.launch4j.ant.Launch4jTask"
                classpath="${launch4j.dir}/launch4j.jar:${launch4j.dir}/xstream.jar" 
       onerror="ignore"/>
       <launch4j configFile="./installer/build/launch-installer.xml"
-                outfile="morpho-${release}.exe" jar="morpho-${release}.jar"/>
+                outfile="morpho-${release}.exe" jar="morpho-${release}-${os-name}.jar"/>
   </target>
 	
   
+  <target name="setmacos">
+  	<property name="os-name" value="mac"/>
+  </target>
   <!--Builds jar file for mac  -->
-  <target name="buildmacinstaller" depends="macjarbundler, makeinstaller"> 
-     
+  <target name="buildmacinstaller" depends="setmacos,installercleanup, macjarbundler,makeinstaller"> 	
   </target>
 	
-	<!--Builds jar installer file for linux.   -->
-  <target name="buildlinuxinstaller" depends="install,makeinstaller"> 
-     
+  <target name="setlinuxos">
+	 <property name="os-name" value="linux"/>
+   </target>
+  <!--Builds jar installer file for linux.   -->
+  <target name="buildlinuxinstaller" depends="setlinuxos,installercleanup,install,makeinstaller"> 
   </target>
 
 
@@ -584,9 +591,7 @@
      double clicking on Windows and on Mac OS X.
      Dan Higgins - Nov 2007
 -->
-  <target name="makeinstaller" depends="installercleanup">
-      <delete file="morpho-${release}.jar"/>
-      <delete file="morpho-${release}.exe"/>
+  <target name="makeinstaller">
       
       <taskdef name="izpack" classpath="${izpackjar}"
          classname="com.izforge.izpack.ant.IzPackTask"
@@ -595,17 +600,19 @@
   <!-- We call IzPack -->
     <echo message="Makes the installer using IzPack"/>
     <izpack input="./installer/build/install.xml"
-        output="morpho-${release}.jar"
+        output="morpho-${release}-${os-name}.jar"
         installerType="standard"
-        basedir="./" />
+        basedir="./" 
+    	inheritAll="true"/>
    </target>
 	
 	<!-- the following 3 targets clean up the build for system specific installers -->
 	<target name="installercleanup">
-     <delete verbose="true" includeemptydirs="true">
-      <fileset dir="tests/testfiles" includes="**/*" excludes="garp/**, eml/**"/>
-     </delete>
-     <delete file="INSTALL.txt"/>
+		 <delete file="morpho-${release}-linux.jar"/>
+		 <delete file="morpho-${release}-mac.jar"/>
+		 <delete file="morpho-${release}-windows.jar"/>
+		 <delete file="morpho-${release}.exe"/>
+		 <delete dir="morpho.app"/>
    </target>
 
    <!-- use the ant "junit" task to run JUnit tests. -->
