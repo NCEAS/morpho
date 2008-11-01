@@ -35,6 +35,25 @@
 	<variables>
 		<variable name="DesktopShortcutCheckboxEnabled" value="true"/>
 	</variables>
+	
+	<variables>
+		<variable name="osName" value="@{os-name}"/>
+	</variables>
+	
+	<condition type="variable" id="isWindows">
+		<name>osName</name>
+		<value>windows</value>
+	</condition>
+	
+	<condition type="variable" id="isMac">
+		<name>osName</name>
+		<value>mac</value>
+	</condition>
+	
+	<condition type="variable" id="isLinux">
+		<name>osName</name>
+		<value>linux</value>
+	</condition>
 
 	<!-- 
 		The resources section.
@@ -88,102 +107,79 @@
   
     <pack name="Base" required="yes">
       <description>The base files</description>		
-      			
-	
-			<fileset dir="" targetdir="$INSTALL_PATH/">
-				<os family="unix"/>
+      		<!-- windwos file set-->	
+			<fileset dir="" targetdir="$INSTALL_PATH/" condition="isWindows">				
 				<exclude name="stderr.log"/>
 				<exclude name="src/"/>
+				<exclude name="bin/"/>
 				<exclude name="build/"/>
 				<exclude name="tests/"/>
 				<exclude name="eclipse/"/>
-				<exclude name="Morpho.app"/>
-				<exclude name="lib/installer"/>
-				<exclude name="installer"/>
-				<exclude name="lib/SchemaParser"/>
+				<exclude name="installer/"/>
+				<exclude name="morpho.app/"/>
+				<exclude name="morpho"/>
+				<exclude name="docs/dev/"/>
+				<exclude name="lib/MemoryMonitor/"/>
+				<exclude name="lib/installer/"/>
+				<exclude name="lib/LiveMap/"/>
+				<exclude name="lib/HTTPClient/"/>
+				<exclude name="lib/SchemaParser/"/>
 			</fileset>
-      
-      <executable type="bin" stage="never" targetfile="$INSTALL_PATH/morpho" >
-        <os family="unix"/>
-      </executable>
-      
-
-      
-      <!--<file targetdir="$INSTALL_PATH/Morpho.app/morpho/" src="lib/cplibs.sh">
-        <os family="mac"/>
-      </file>
-			<parsable targetfile="$INSTALL_PATH/Kepler.app/Kepler/cplibs.sh">
-        <os family="mac"/>
-      </parsable>
-			<executable targetfile="$INSTALL_PATH/Kepler.app/Kepler/cplibs.sh" stage="postinstall" keep="true" failure="warn">
-        <os family="mac"/>
-      </executable> -->
-		<file targetdir="$INSTALL_PATH/Morpho.app/morpho/" src="morpho">
-			<os family="mac"/>
-        </file>
-		<executable targetfile="$INSTALL_PATH/morpho.app/morpho/morpho" stage="postinstall" keep="true" failure="warn">
-			<os family="mac"/>
-        </executable> 
-		<!--<file src="morpho.app" targetdir="$INSTALL_PATH">
-           <os family="mac"/>
-       </file>-->
+      		<executable type="bin" stage="postinstall" keep="true" failure="warn" targetfile="$INSTALL_PATH/morpho.bat" condition="isWindows"/>
+			
+			<!--mac file set-->
 			<fileset dir="" targetdir="$INSTALL_PATH/morpho.app/morpho/">
-                <os family="mac"/>
-				<exclude name="stderr.log"/>
+                <exclude name="stderr.log"/>
 				<exclude name="src/"/>
+				<exclude name="bin/"/>
 				<exclude name="build/"/>
 				<exclude name="tests/"/>
 				<exclude name="eclipse/"/>
-				<exclude name="lib/installer"/>
-				<exclude name="installer"/>
-				<exclude name="lib/SchemaParser"/>
+				<exclude name="installer/"/>
+				<exclude name="morpho.app/Contents/"/>
+				<exclude name="docs/"/>
+				<exclude name="lib/MemoryMonitor/"/>
+				<exclude name="lib/installer/"/>
+				<exclude name="lib/LiveMap/"/>
+				<exclude name="lib/HTTPClient/"/>
+				<exclude name="lib/SchemaParser/"/>
 			</fileset>
-
-
-      
- <!--     <file targetdir="$INSTALL_PATH/" src="lib/cplibs.bat">
-        <os family="windows"/>
-      </file>
-      
-			<file targetdir="$INSTALL_PATH/" src="lib/setclasspath.bat">
-        <os family="windows"/>
-      </file>
-			<parsable targetfile="$INSTALL_PATH/cplibs.bat">
-        <os family="windows"/>
-      </parsable>
-			<parsable targetfile="$INSTALL_PATH/setclasspath.bat">
-        <os family="windows"/>
-      </parsable>
-			<executable targetfile="$INSTALL_PATH/cplibs.bat" stage="postinstall" keep="true" failure="warn">
-        <os family="windows"/>
-      </executable> -->
-	
-		   <file targetdir="$INSTALL_PATH/" src="morpho.bat">
-				<os family="windows"/>
-		  </file>
-		   <executable targetfile="$INSTALL_PATH/morpho.app/morpho/morpho.bat" stage="postinstall" keep="true" failure="warn">
-				<os family="windows"/>
-            </executable> -->
-			<fileset dir="" targetdir="$INSTALL_PATH/">
-				<os family="windows"/>
+			<fileset dir="" targetdir="$INSTALL_PATH/morpho.app/Contents/">
+               <include name="morpho.app/Contents/"/>
+			</fileset>
+			<fileset dir="." targetdir="$INSTALL_PATH/">
+			  <include name="docs/user/"/>
+			  <include name="docs/licenses/"/>
+			  <include name="docs/README.txt"/>
+			</fileset>
+			<executable type="bin" stage="postinstall" keep="true" failure="warn" targetfile="$INSTALL_PATH/morpho.app/Contents/MacOS/JavaApplicationStub"/>
+        
+		
+			<!--linux file set-->
+			<fileset dir="" targetdir="$INSTALL_PATH/" condition="isLinux">				
 				<exclude name="stderr.log"/>
 				<exclude name="src/"/>
+				<exclude name="bin/"/>
 				<exclude name="build/"/>
 				<exclude name="tests/"/>
 				<exclude name="eclipse/"/>
-				<exclude name="lib/installer"/>
-				<exclude name="Morpho.app"/>
-				<exclude name="installer"/>
-				<exclude name="lib/SchemaParser"/>
+				<exclude name="installer/"/>
+				<exclude name="morpho.app/"/>
+				<exclude name="morpho"/>
+				<exclude name="docs/dev/"/>
+				<exclude name="lib/MemoryMonitor/"/>
+				<exclude name="lib/installer/"/>
+				<exclude name="lib/LiveMap/"/>
+				<exclude name="lib/HTTPClient/"/>
+				<exclude name="lib/SchemaParser/"/>
 			</fileset>
-      
-    </pack>
+      		<executable type="bin" stage="postinstall" keep="true" failure="warn" targetfile="$INSTALL_PATH/morpho" condition="isLinux"/>		   
+    	</pack>
     
     
 		<pack name="Sources" required="no">
 			<description>Morphor Source Files</description>
 			<fileset dir="src" targetdir="$INSTALL_PATH/src">
-
 			</fileset>
 		</pack>	 
 	</packs>
