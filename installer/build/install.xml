@@ -39,7 +39,7 @@
 	<variables>
 		<variable name="osName" value="@{os-name}"/>
 	</variables>
-	
+	<conditions>
 	<condition type="variable" id="isWindows">
 		<name>osName</name>
 		<value>windows</value>
@@ -54,6 +54,7 @@
 		<name>osName</name>
 		<value>linux</value>
 	</condition>
+	</conditions>
 
 	<!-- 
 		The resources section.
@@ -108,7 +109,7 @@
     <pack name="Base" required="yes">
       <description>The base files</description>		
       		<!-- windwos file set-->	
-			<fileset dir="" targetdir="$INSTALL_PATH/" condition="isWindows">				
+			<!--<fileset dir="" targetdir="$INSTALL_PATH/" condition="isWindows">				
 				<exclude name="stderr.log"/>
 				<exclude name="src/"/>
 				<exclude name="bin/"/>
@@ -125,10 +126,12 @@
 				<exclude name="lib/HTTPClient/"/>
 				<exclude name="lib/SchemaParser/"/>
 			</fileset>
-      		<executable type="bin" stage="postinstall" keep="true" failure="warn" targetfile="$INSTALL_PATH/morpho.bat" condition="isWindows"/>
+      		<executable type="bin" stage="never" keep="true" failure="warn" targetfile="$INSTALL_PATH/morpho.bat" condition="isWindows"/> -->
 			
 			<!--mac file set-->
-			<fileset dir="" targetdir="$INSTALL_PATH/morpho.app/morpho/">
+			<file src="morpho.app" targetdir="$INSTALL_PATH"/>
+			<!--<fileset dir="" targetdir="$INSTALL_PATH/morpho.app/morpho/">-->
+			<fileset dir="" targetdir="$INSTALL_PATH/">
                 <exclude name="stderr.log"/>
 				<exclude name="src/"/>
 				<exclude name="bin/"/>
@@ -143,20 +146,23 @@
 				<exclude name="lib/LiveMap/"/>
 				<exclude name="lib/HTTPClient/"/>
 				<exclude name="lib/SchemaParser/"/>
+				<exclude name="build.xml"/>
+				<exclude name="morpho"/>
+				<exclude name="morpho.bat"/>
+				<exclude name="morpho.jnlp"/>
 			</fileset>
-			<fileset dir="" targetdir="$INSTALL_PATH/morpho.app/Contents/">
-               <include name="morpho.app/Contents/"/>
-			</fileset>
+			
+			
 			<fileset dir="." targetdir="$INSTALL_PATH/">
 			  <include name="docs/user/"/>
 			  <include name="docs/licenses/"/>
 			  <include name="docs/README.txt"/>
 			</fileset>
-			<executable type="bin" stage="postinstall" keep="true" failure="warn" targetfile="$INSTALL_PATH/morpho.app/Contents/MacOS/JavaApplicationStub"/>
-        
+			<executable type="bin" stage="never" keep="true" failure="warn" targetfile="$INSTALL_PATH/morpho.app/Contents/MacOS/JavaApplicationStub"/>
+        		
 		
 			<!--linux file set-->
-			<fileset dir="" targetdir="$INSTALL_PATH/" condition="isLinux">				
+			<!--<fileset dir="" targetdir="$INSTALL_PATH/" condition="isLinux">				
 				<exclude name="stderr.log"/>
 				<exclude name="src/"/>
 				<exclude name="bin/"/>
@@ -173,7 +179,7 @@
 				<exclude name="lib/HTTPClient/"/>
 				<exclude name="lib/SchemaParser/"/>
 			</fileset>
-      		<executable type="bin" stage="postinstall" keep="true" failure="warn" targetfile="$INSTALL_PATH/morpho" condition="isLinux"/>		   
+      		<executable type="bin" stage="postinstall" keep="true" failure="warn" targetfile="$INSTALL_PATH/morpho" condition="isLinux"/>-->		   
     	</pack>
     
     
