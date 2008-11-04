@@ -6,7 +6,7 @@
   *    Copyright: 2000 Regents of the University of California and the
   *               National Center for Ecological Analysis and Synthesis
   *  For Details: http://www.nceas.ucsb.edu/
-  *    File Info: '$Id: build.xml,v 1.121 2008-11-04 00:46:31 tao Exp $'
+  *    File Info: '$Id: build.xml,v 1.122 2008-11-04 02:57:22 tao Exp $'
   *
   *  Build file for the Ant cross-platform build system for metacat
   *  See http://jakarta.apache.org for details on Ant
@@ -498,6 +498,7 @@
 --> 
   <target name="buildwinexe" depends="install"> 
        <!-- NOTE: location is machine specific - insert 'Launch4J' location on your machine!  -->
+      <delete file="morpho.exe"/>
       <taskdef name="launch4j"
                classname="net.sf.launch4j.ant.Launch4jTask"
                classpath="${launch4j.dir}/launch4j.jar:${launch4j.dir}/lib/xstream.jar" 
