@@ -1,7 +1,12 @@
 <launch4jConfig>
   <dontWrapJar>true</dontWrapJar>
   <headerType>gui</headerType>
-  <jar>lib\morpho.jar</jar>
+  <!--<jar>.\lib\morpho.jar</jar>-->
+  <classPath>
+    <mainClass>edu.ucsb.nceas.morpho.Morpho</mainClass>
+    <cp>lib\morpho.jar;lib\xercesImpl.jar;lib\xml-apis.jar;lib\xalan.jar;lib\morpho-config.jar;lib\jhall.jar;lib\shippedIcons.jar</cp>
+    <cp>lib\morphohelp.jar;lib\httpclient.jar;lib\itislib.jar;lib\jsse.jar;lib\jcert.jar;lib\jnet.jar;lib\kunststoff.jar;lib\liveMap.jar;lib\utilities.jar;lib\dom4j.jar;lib\jcalendar-1.3.2.jar</cp>
+  </classPath>
   <outfile>../../morpho.exe</outfile>
   <errTitle>Morpho</errTitle>
   <cmdLine></cmdLine>
