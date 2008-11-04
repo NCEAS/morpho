@@ -6,7 +6,7 @@
   *    Copyright: 2000 Regents of the University of California and the
   *               National Center for Ecological Analysis and Synthesis
   *  For Details: http://www.nceas.ucsb.edu/
-  *    File Info: '$Id: build.xml,v 1.120 2008-11-01 00:57:56 tao Exp $'
+  *    File Info: '$Id: build.xml,v 1.121 2008-11-04 00:46:31 tao Exp $'
   *
   *  Build file for the Ant cross-platform build system for metacat
   *  See http://jakarta.apache.org for details on Ant
@@ -321,7 +321,13 @@
       </copy>
       -->
       <jar jarfile="${build.dir}/${name}.jar" basedir="${build.dest}"
-	      includes="${package.home}/${name}/** com/** edu/tesc/**" />
+	      includes="${package.home}/${name}/** com/** edu/tesc/**" >
+		  <manifest>
+           <attribute name="Built-By" value="${user.name}"/>
+           <attribute name="Main-Class" value="edu.ucsb.nceas.morpho.Morpho"/>  
+			<attribute name="Class-Path" value="../ ../lib/"/>       
+        </manifest>
+	  </jar>
       <jar jarfile="${build.dir}/${name}-config.jar" basedir="${libdir}"
            excludes="*.jar,HTTPClient/**,SchemaParser/**,LiveMap/**,*.zip,*.gz"/>
    </target>
@@ -557,7 +563,8 @@
    It will create a file ("morpho-installer.exe" that will install morpho on a Windows box
    Dan Higgins - Jan 2008
 	--> 
-  <target name="buildwininstaller" depends="setwindowsos,installercleanup,buildwinexe, makeinstaller"> 
+  <target name="buildwininstaller" depends="setwindowsos,installercleanup,buildwinexe, makeinstaller">
+	   <echo>Please edit installer/build/install.xml file before running it</echo> 
       <taskdef name="launch4j"
                classname="net.sf.launch4j.ant.Launch4jTask"
                classpath="${launch4j.dir}/launch4j.jar:${launch4j.dir}/xstream.jar" 
@@ -570,8 +577,9 @@
   <target name="setmacos">
   	<property name="os-name" value="mac"/>
   </target>
-  <!--Builds jar file for mac  -->
-  <target name="buildmacinstaller" depends="setmacos,installercleanup, macjarbundler,makeinstaller"> 	
+  <!--Builds jar file for mac. Before run it, please edit installer/build/install.xml file  -->
+  <target name="buildmacinstaller" depends="setmacos,installercleanup, macjarbundler,makeinstaller">
+	  <echo>Please edit installer/build/install.xml file before running it</echo>
   </target>
 	
   <target name="setlinuxos">
@@ -579,6 +587,7 @@
    </target>
   <!--Builds jar installer file for linux.   -->
   <target name="buildlinuxinstaller" depends="setlinuxos,installercleanup,install,makeinstaller"> 
+	   <echo>Please edit installer/build/install.xml file before running it</echo>
   </target>
 
 
