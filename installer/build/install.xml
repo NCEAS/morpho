@@ -102,7 +102,7 @@
     <pack name="Base" required="yes">
       <description>The base files</description>		
       		<!-- windwos file set-->	
-			<fileset dir="" targetdir="$INSTALL_PATH/">				
+			<!--<fileset dir="" targetdir="$INSTALL_PATH/">				
 				<exclude name="stderr.log"/>
 				<exclude name="src/"/>
 				<exclude name="bin/"/>
@@ -112,6 +112,7 @@
 				<exclude name="installer/"/>
 				<exclude name="morpho.app/"/>
 				<exclude name="morpho"/>
+				<exclude name="morpho.jnlp"/>
 				<exclude name="docs/dev/"/>
 				<exclude name="lib/MemoryMonitor/"/>
 				<exclude name="lib/installer/"/>
@@ -119,7 +120,7 @@
 				<exclude name="lib/HTTPClient/"/>
 				<exclude name="lib/SchemaParser/"/>
 			</fileset>
-      		<executable type="bin" stage="never" keep="true" failure="warn" targetfile="$INSTALL_PATH/morpho.bat"/> 
+      		<executable type="bin" stage="never" keep="true" failure="warn" targetfile="$INSTALL_PATH/morpho.bat"/> -->
 			
 			<!--mac file set-->
 			<!--<file src="morpho.app" targetdir="$INSTALL_PATH"/>
@@ -139,9 +140,9 @@
 				<exclude name="lib/HTTPClient/"/>
 				<exclude name="lib/SchemaParser/"/>
 				<exclude name="build.xml"/>
-				<exclude name="morpho"/>
 				<exclude name="morpho.bat"/>
 				<exclude name="morpho.jnlp"/>
+				<exclude name="morpho.exe"/>
 			</fileset>			
 			<fileset dir="." targetdir="$INSTALL_PATH/">
 			  <include name="docs/user/"/>
@@ -152,7 +153,7 @@
         		
 		
 			<!--linux file set-->
-			<!--<fileset dir="" targetdir="$INSTALL_PATH/">				
+			<fileset dir="" targetdir="$INSTALL_PATH/">				
 				<exclude name="stderr.log"/>
 				<exclude name="src/"/>
 				<exclude name="bin/"/>
@@ -161,7 +162,9 @@
 				<exclude name="eclipse/"/>
 				<exclude name="installer/"/>
 				<exclude name="morpho.app/"/>
-				<exclude name="morpho"/>
+				<exclude name="morpho.bat"/>
+				<exclude name="morpho.exe"/>
+				<exclude name="morpho.jnlp"/>
 				<exclude name="docs/dev/"/>
 				<exclude name="lib/MemoryMonitor/"/>
 				<exclude name="lib/installer/"/>
@@ -169,7 +172,7 @@
 				<exclude name="lib/HTTPClient/"/>
 				<exclude name="lib/SchemaParser/"/>
 			</fileset>
-      		<executable type="bin" stage="never" keep="true" failure="warn" targetfile="$INSTALL_PATH/morpho"/>-->		   
+      		<executable type="bin" stage="never" keep="true" failure="warn" targetfile="$INSTALL_PATH/morpho"/>
     	</pack>
     
     
