@@ -12,7 +12,7 @@
   <customProcName>false</customProcName>
   <stayAlive>false</stayAlive>
   <manifest></manifest>
-  <icon>../../lib/DesktopIcon16x16.gif</icon>
+  <icon>../../lib/DesktopIcon16x16.ico</icon>
   <jre>
     <path></path>
     <minVersion>1.5.0</minVersion>

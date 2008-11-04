@@ -16,7 +16,7 @@
      target="$INSTALL_PATH\morpho.exe"
      commandLine=""
      description="Morpho 1.6.2 - Scientific Data Management Tool"
-     iconFile="$INSTALL_PATH\lib\DesktopIcon32x32.gif">
+     iconFile="$INSTALL_PATH\lib\DesktopIcon32x32.ico">
    
      
    </shortcut>
