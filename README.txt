@@ -26,7 +26,10 @@ Contributors:
     Callie Bowdish (bowdish@nceas.ucsb.edu)
     Veronique Connolly (connolly@nceas.ucsb.edu)
     Will Tyburczy (tyburczy@nceas.ucsb.edu)
-
+    Jim Regetz(regetz@nceas.ucsb.edu)
+    Judith Kruger(JudithW@sanparks.org)
+    Margaret O'Brien(mob@icess.ucsb.edu)
+    
 This is Morpho, a data management application for managing ecological data.
 Morpho allows researchers to describe their data using a comprehensive and
 flexible metadata specification, and to share their data publicly or to
