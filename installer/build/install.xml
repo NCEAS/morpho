@@ -94,22 +94,15 @@
 		READ THIS NOTE!!
     The pack name="Base" will build an installer that will work on the mac, linux
     and windows.  However, due to bugs in IzPack, it is also very slow and
-    very large.  This pack is here for the nightly build only.  The packs
-    labeled "linux base", "windows base" and "mac base" should be used for
-    building the individual installers for the release.  The packs for R
-    can be commented or uncommented depending on whether you want to include
-    R with the mac or windows.
-    
-    The CVS copy of this file should ALWAYS have the "xxx base" packs commented
-    out and the "Base" pack uncommented.  The R packs should also be uncommented
-    in the CVS copy.
+    very large. When you run "ant clean buildwininstaller", you should comment out
+    mac and linux file set, only keep windows file set. Same thing for mac and linux.
     -->
 	<packs>
   
     <pack name="Base" required="yes">
       <description>The base files</description>		
       		<!-- windwos file set-->	
-			<!--<fileset dir="" targetdir="$INSTALL_PATH/" condition="isWindows">				
+			<fileset dir="" targetdir="$INSTALL_PATH/">				
 				<exclude name="stderr.log"/>
 				<exclude name="src/"/>
 				<exclude name="bin/"/>
@@ -126,11 +119,10 @@
 				<exclude name="lib/HTTPClient/"/>
 				<exclude name="lib/SchemaParser/"/>
 			</fileset>
-      		<executable type="bin" stage="never" keep="true" failure="warn" targetfile="$INSTALL_PATH/morpho.bat" condition="isWindows"/> -->
+      		<executable type="bin" stage="never" keep="true" failure="warn" targetfile="$INSTALL_PATH/morpho.bat"/> 
 			
 			<!--mac file set-->
-			<file src="morpho.app" targetdir="$INSTALL_PATH"/>
-			<!--<fileset dir="" targetdir="$INSTALL_PATH/morpho.app/morpho/">-->
+			<!--<file src="morpho.app" targetdir="$INSTALL_PATH"/>
 			<fileset dir="" targetdir="$INSTALL_PATH/">
                 <exclude name="stderr.log"/>
 				<exclude name="src/"/>
@@ -150,19 +142,17 @@
 				<exclude name="morpho"/>
 				<exclude name="morpho.bat"/>
 				<exclude name="morpho.jnlp"/>
-			</fileset>
-			
-			
+			</fileset>			
 			<fileset dir="." targetdir="$INSTALL_PATH/">
 			  <include name="docs/user/"/>
 			  <include name="docs/licenses/"/>
 			  <include name="docs/README.txt"/>
 			</fileset>
-			<executable type="bin" stage="never" keep="true" failure="warn" targetfile="$INSTALL_PATH/morpho.app/Contents/MacOS/JavaApplicationStub"/>
+			<executable type="bin" stage="never" keep="true" failure="warn" targetfile="$INSTALL_PATH/morpho.app/Contents/MacOS/JavaApplicationStub"/>-->
         		
 		
 			<!--linux file set-->
-			<!--<fileset dir="" targetdir="$INSTALL_PATH/" condition="isLinux">				
+			<!--<fileset dir="" targetdir="$INSTALL_PATH/">				
 				<exclude name="stderr.log"/>
 				<exclude name="src/"/>
 				<exclude name="bin/"/>
@@ -179,7 +169,7 @@
 				<exclude name="lib/HTTPClient/"/>
 				<exclude name="lib/SchemaParser/"/>
 			</fileset>
-      		<executable type="bin" stage="postinstall" keep="true" failure="warn" targetfile="$INSTALL_PATH/morpho" condition="isLinux"/>-->		   
+      		<executable type="bin" stage="never" keep="true" failure="warn" targetfile="$INSTALL_PATH/morpho"/>-->		   
     	</pack>
     
     
