@@ -6,7 +6,7 @@
   *    Copyright: 2000 Regents of the University of California and the
   *               National Center for Ecological Analysis and Synthesis
   *  For Details: http://www.nceas.ucsb.edu/
-  *    File Info: '$Id: build.xml,v 1.122 2008-11-04 02:57:22 tao Exp $'
+  *    File Info: '$Id: build.xml,v 1.123 2008-11-05 19:37:32 tao Exp $'
   *
   *  Build file for the Ant cross-platform build system for metacat
   *  See http://jakarta.apache.org for details on Ant
@@ -555,7 +555,7 @@
         </jarbundler>
   </target>
 
-
+	
   <target name="setwindowsos">
   	<property name="os-name" value="windows"/>
   </target>
@@ -565,7 +565,6 @@
    Dan Higgins - Jan 2008
 	--> 
   <target name="buildwininstaller" depends="setwindowsos,installercleanup,buildwinexe, makeinstaller">
-	   <echo>Please edit installer/build/install.xml file before running it</echo> 
       <taskdef name="launch4j"
                classname="net.sf.launch4j.ant.Launch4jTask"
                classpath="${launch4j.dir}/launch4j.jar:${launch4j.dir}/xstream.jar" 
@@ -580,7 +579,6 @@
   </target>
   <!--Builds jar file for mac. Before run it, please edit installer/build/install.xml file  -->
   <target name="buildmacinstaller" depends="setmacos,installercleanup, macjarbundler,makeinstaller">
-	  <echo>Please edit installer/build/install.xml file before running it</echo>
   </target>
 	
   <target name="setlinuxos">
@@ -588,7 +586,6 @@
    </target>
   <!--Builds jar installer file for linux.   -->
   <target name="buildlinuxinstaller" depends="setlinuxos,installercleanup,install,makeinstaller"> 
-	   <echo>Please edit installer/build/install.xml file before running it</echo>
   </target>
 
 
@@ -609,7 +606,7 @@
 
   <!-- We call IzPack -->
     <echo message="Makes the installer using IzPack"/>
-    <izpack input="./installer/build/install.xml"
+    <izpack input="./installer/build/install-${os-name}.xml"
         output="morpho-${release}-${os-name}.jar"
         installerType="standard"
         basedir="./" 
