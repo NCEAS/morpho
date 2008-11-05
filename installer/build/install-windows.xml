@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="iso-8859-1" standalone="yes" ?>
+
+<!-- 
+	A sample installation file.
+	Use it as a base for your own installers :-)
+	
+	To compile it :
+	- go in the bin directory where you installed IzPack
+	- call "compile ../sample/install.xml -b ../sample"
+-->
+
+<installation version="1.0">
+
+	<!-- 
+		The info section.
+		The meaning of the tags should be natural ...
+	-->
+	<info>
+		<appname>Morpho</appname>
+		<appversion>1.6.2</appversion>
+		<url>http://knb.ecoinformatics.org</url>
+    <appsubpath>morpho-1.6.2</appsubpath>
+	</info> 
+  	
+	<!-- 
+		The gui preferences indication.
+		Sets the installer window to 800x600. It will not be able to change the size.
+	-->
+	<guiprefs width="800" height="600" resizable="no"/>
+	
+	<locale>
+		<langpack iso3="eng"/>
+	</locale>
+	
+	<variables>
+		<variable name="DesktopShortcutCheckboxEnabled" value="true"/>
+	</variables>
+	
+	<variables>
+		<variable name="osName" value="@{os-name}"/>
+	</variables>
+	<conditions>
+	<condition type="variable" id="isWindows">
+		<name>osName</name>
+		<value>windows</value>
+	</condition>
+	
+	<condition type="variable" id="isMac">
+		<name>osName</name>
+		<value>mac</value>
+	</condition>
+	
+	<condition type="variable" id="isLinux">
+		<name>osName</name>
+		<value>linux</value>
+	</condition>
+	</conditions>
+
+	<!-- 
+		The resources section.
+		The ids must be these ones if you want to use the LicencePanel and/or the InfoPanel.
+	-->
+	<resources>
+		<res id="InfoPanel.info" src="README.txt"/>
+		<res src="installer/build/border1.png" id="Installer.image.0"/>
+		<res src="installer/build/border2.png" id="Installer.image.1"/>
+		<res src="installer/build/border3.png" id="Installer.image.2"/>
+		<res src="installer/build/border4.png" id="Installer.image.3"/>
+		<res src="installer/build/border5.png" id="Installer.image.4"/>
+		<res src="installer/build/border5.png" id="Installer.image.5"/>
+		<res src="installer/build/border6.png" id="Installer.image.6"/>
+		<res src="installer/build/border7.png" id="Installer.image.7"/>
+		<res src="installer/build/border8.png" id="Installer.image.8"/>
+		<res src="installer/build/shortcutSpec.xml" id="shortcutSpec.xml"/>
+	</resources>
+	
+	<native type="izpack" name="ShellLink.dll"/>
+
+	<!-- 
+		The panels section.
+		We indicate here which panels we want to use. The order will be respected.
+	-->
+	<panels>
+		<panel classname="HelloPanel"/>
+		<panel classname="InfoPanel"/>
+		<panel classname="TargetPanel"/> 
+		<panel classname="PacksPanel"/>
+		<panel classname="InstallPanel"/>
+		<panel classname="ShortcutPanel" os="windows"/>
+		<panel classname="SimpleFinishPanel"/>
+	</panels>
+	
+	<!-- 
+		READ THIS NOTE!!
+    The pack name="Base" will build an installer that will work on the mac, linux
+    and windows.  However, due to bugs in IzPack, it is also very slow and
+    very large. When you run "ant clean buildwininstaller", you should comment out
+    mac and linux file set, only keep windows file set. Same thing for mac and linux.
+    -->
+	<packs>
+  
+    <pack name="Base" required="yes">
+      <description>The base files</description>		
+      		<!-- windwos file set-->	
+			<fileset dir="" targetdir="$INSTALL_PATH/">				
+				<exclude name="stderr.log"/>
+				<exclude name="src/"/>
+				<exclude name="bin/"/>
+				<exclude name="build/"/>
+				<exclude name="tests/"/>
+				<exclude name="eclipse/"/>
+				<exclude name="installer/"/>
+				<exclude name="morpho.app/"/>
+				<exclude name="morpho"/>
+				<exclude name="morpho.jnlp"/>
+				<exclude name="docs/dev/"/>
+				<exclude name="lib/MemoryMonitor/"/>
+				<exclude name="lib/installer/"/>
+				<exclude name="lib/LiveMap/"/>
+				<exclude name="lib/HTTPClient/"/>
+				<exclude name="lib/SchemaParser/"/>
+			</fileset>
+      		<executable type="bin" stage="never" keep="true" failure="warn" targetfile="$INSTALL_PATH/morpho.bat"/> 
+    	</pack>
+    
+    
+		<pack name="Sources" required="no">
+			<description>Morphor Source Files</description>
+			<fileset dir="src" targetdir="$INSTALL_PATH/src">
+			</fileset>
+		</pack>	 
+	</packs>
+
+</installation>
