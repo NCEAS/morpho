@@ -17,7 +17,7 @@
   <customProcName>false</customProcName>
   <stayAlive>false</stayAlive>
   <manifest></manifest>
-  <icon>../../lib/DesktopIcon16x16.ico</icon>
+  <icon>../../lib/DesktopIcon32x32.ico</icon>
   <jre>
     <path></path>
     <minVersion>1.5.0</minVersion>
