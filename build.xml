@@ -6,7 +6,7 @@
   *    Copyright: 2000 Regents of the University of California and the
   *               National Center for Ecological Analysis and Synthesis
   *  For Details: http://www.nceas.ucsb.edu/
-  *    File Info: '$Id: build.xml,v 1.123 2008-11-05 19:37:32 tao Exp $'
+  *    File Info: '$Id: build.xml,v 1.124 2008-11-06 01:27:12 tao Exp $'
   *
   *  Build file for the Ant cross-platform build system for metacat
   *  See http://jakarta.apache.org for details on Ant
@@ -533,7 +533,7 @@
             mainclass="edu.ucsb.nceas.morpho.Morpho"
             jvmversion="1.5"
             jar="lib/morpho.jar"
-            icon="lib/MacDesktopIcon32x32.icns" 
+            icon="lib/DesktopIcon32x32.icns" 
       	    extraclasspath="./lib/xercesImpl.jar ./lib/xercesImpl.jar
       			./lib/xml-apis.jar
       			./lib/xalan.jar
