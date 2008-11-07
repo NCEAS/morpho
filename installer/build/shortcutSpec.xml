@@ -4,10 +4,10 @@
 
   <skipIfNotSupported />
 
-  <programGroup defaultName="Morpho" location="applications"/>
+  <programGroup defaultName="Morpho.1.6.2" location="applications"/>
 
   <shortcut
-     name="Morpho 1.6.2"
+     name="Morpho"
      programGroup="yes"
      desktop="yes"
      applications="no"
@@ -15,7 +15,7 @@
      startup="no"
      target="$INSTALL_PATH\morpho.exe"
      commandLine=""
-     description="Morpho 1.6.2 - Scientific Data Management Tool"
+     description="Morpho - Scientific Data Management Tool"
      iconFile="$INSTALL_PATH\lib\DesktopIcon32x32.ico">
    
      
