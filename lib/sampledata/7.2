@@ -1,233 +1,230 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<eml:eml packageId="jscientist.7.2" system="knb"
-  xmlns:eml="eml://ecoinformatics.org/eml-2.0.1"
-  xmlns:stmml="http://www.xml-cml.org/schema/stmml"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="eml://ecoinformatics.org/eml-2.0.1 eml.xsd">
-  <dataset>
-    <title>Population sampling data for zooplankton in the Great Lakes,
+<eml:eml xmlns:eml="eml://ecoinformatics.org/eml-2.1.0" packageId="jscientist.7.2" system="knb" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="eml://ecoinformatics.org/eml-2.1.0 eml.xsd">
+<access authSystem="knb" order="allowFirst">
+<allow>
+<principal>uid=jscientist,o=NCEAS,dc=ecoinformatics,dc=org</principal>
+<permission>all</permission>
+</allow>
+</access>
+<dataset>
+<title>Population sampling data for zooplankton in the Great Lakes,
       2000 (fictitious sample data :)</title>
-    <creator>
-      <individualName>
-        <givenName>Joe</givenName>
-        <surName>Scientist</surName>
-      </individualName>
-      <address>
-        <deliveryPoint>Marine Science Institute</deliveryPoint>
-        <city>Santa Barbara</city>
-        <administrativeArea>CA</administrativeArea>
-        <postalCode>90024</postalCode>
-        <country>USA</country>
-      </address>
-      <phone>(310) 206-1984</phone>
-      <electronicMailAddress>jsci@msi.ucsb.edu</electronicMailAddress>
-    </creator>
-    <associatedParty>
-      <individualName>
-        <givenName>Joe</givenName>
-        <surName>Scientist</surName>
-      </individualName>
-      <address>
-        <deliveryPoint>Marine Science Institute</deliveryPoint>
-        <city>Santa Barbara</city>
-        <administrativeArea>CA</administrativeArea>
-        <postalCode>90024</postalCode>
-        <country>USA</country>
-      </address>
-      <phone>(310) 206-1984</phone>
-      <electronicMailAddress>jsci@msi.ucsb.edu</electronicMailAddress>
-      <role>owner</role>
-    </associatedParty>
-    <abstract>
-      <para>Population sampling data for various zooplankton species in the Great Lakes, 2000. Sampling used Van Dorn samples at 1 m and 5 m depths on a randomly placed sampling grid.  Species names according to the ITIS taxonomic database (http://www.itis.usda.gov/ ). This is fictitious sample data and should in no way be construed as meaningful information!</para>
-    </abstract>
-    <keywordSet>
-      <keyword keywordType="theme">zooplankton</keyword>
-      <keyword keywordType="theme">Van Dorn sampling</keyword>
-      <keyword keywordType="theme">population survey</keyword>
-      <keyword keywordType="theme">fictitious sample data</keyword>
-      <keyword keywordType="place">Great Lakes</keyword>
-    </keywordSet>
-    <contact>
-      <individualName>
-        <givenName>Joe</givenName>
-        <surName>Scientist</surName>
-      </individualName>
-      <address>
-        <deliveryPoint>Marine Science Institute</deliveryPoint>
-        <city>Santa Barbara</city>
-        <administrativeArea>CA</administrativeArea>
-        <postalCode>90024</postalCode>
-        <country>USA</country>
-      </address>
-      <phone>(310) 206-1984</phone>
-      <electronicMailAddress>jsci@msi.ucsb.edu</electronicMailAddress>
-    </contact>
-    <access authSystem="knb" order="allowFirst">
-      <allow>
-        <principal>uid=jscientist,o=NCEAS,dc=ecoinformatics,dc=org</principal>
-        <permission>all</permission>
-      </allow>
-    </access>
-    <dataTable>
-      <entityName> ExampleData.txt</entityName>
-      <physical>
-        <objectName>jscientist.6.1</objectName>
-        <size unit="bytes">1152</size>
-        <dataFormat>
-          <textFormat>
-            <numHeaderLines>1</numHeaderLines>
-            <recordDelimiter>#x0A</recordDelimiter>
-            <attributeOrientation>column</attributeOrientation>
-            <simpleDelimited>
-              <fieldDelimiter>,</fieldDelimiter>
-            </simpleDelimited>
-          </textFormat>
-        </dataFormat>
-        <distribution>
-          <online>
-            <url>ecogrid://knb/jscientist.3.1</url>
-          </online>
-        </distribution>
-      </physical>
-      <attributeList>
-        <attribute id="123456">
-          <attributeName>lake</attributeName>
-          <attributeLabel>lake</attributeLabel>
-          <attributeDefinition>The name of the lake (but you could guess that couldn't you:)</attributeDefinition>
-          <storageType>Text</storageType>
-          <measurementScale>
-            <nominal>
-              <nonNumericDomain>
-                <textDomain>
-                  <definition>*</definition>
-                </textDomain>
-              </nonNumericDomain>
-            </nominal>
-          </measurementScale>
-        </attribute>
-        <attribute>
-          <attributeName>site</attributeName>
-          <attributeLabel>site</attributeLabel>
-          <attributeDefinition>Code indication specific site</attributeDefinition>
-          <storageType> Text</storageType>
-          <measurementScale>
-            <nominal>
-              <nonNumericDomain>
-                <enumeratedDomain>
-                  <codeDefinition>
-                    <code>N1</code>
-                    <definition>N1</definition>
-                  </codeDefinition>
-                  <codeDefinition>
-                    <code>N2</code>
-                    <definition>N2</definition>
-                  </codeDefinition>
-                  <codeDefinition>
-                    <code>N3</code>
-                    <definition>N3</definition>
-                  </codeDefinition>
-                </enumeratedDomain>
-              </nonNumericDomain>
-            </nominal>
-          </measurementScale>
-        </attribute>
-        <attribute>
-          <attributeName> sampdate</attributeName>
-          <attributeLabel> sampdate</attributeLabel>
-          <attributeDefinition>the date of collectoin in DDMMYYYY format</attributeDefinition>
-          <storageType> Text</storageType>
-          <measurementScale>
-            <nominal>
-              <nonNumericDomain>
-                <textDomain>
-                  <definition>*</definition>
-                </textDomain>
-              </nonNumericDomain>
-            </nominal>
-          </measurementScale>
-        </attribute>
-        <attribute>
-          <attributeName> depth</attributeName>
-          <attributeLabel> depth</attributeLabel>
-          <attributeDefinition>depth where sample was collected</attributeDefinition>
-          <storageType> Integers</storageType>
-          <measurementScale>
-            <ratio>
-              <unit>
-                <standardUnit>meter</standardUnit>
-              </unit>
-              <precision>0.0</precision>
-              <numericDomain>
-                <numberType>real</numberType>
-                <bounds>
-                  <minimum exclusive="false">1.0</minimum>
-                  <maximum exclusive="false">5.0</maximum>
-                </bounds>
-              </numericDomain>
-            </ratio>
-          </measurementScale>
-        </attribute>
-        <attribute>
-          <attributeName> sampvol</attributeName>
-          <attributeLabel> sampvol</attributeLabel>
-          <attributeDefinition>sample volume</attributeDefinition>
-          <storageType> Floating Point</storageType>
-          <measurementScale>
-            <ratio>
-              <unit>
-                <standardUnit>cubicMeter</standardUnit>
-              </unit>
-              <precision>0.0</precision>
-              <numericDomain>
-                <numberType>real</numberType>
-                <bounds>
-                  <minimum exclusive="false">10.0</minimum>
-                  <maximum exclusive="false">10.0</maximum>
-                </bounds>
-              </numericDomain>
-            </ratio>
-          </measurementScale>
-        </attribute>
-        <attribute>
-          <attributeName> species</attributeName>
-          <attributeLabel> species</attributeLabel>
-          <attributeDefinition>Species Name</attributeDefinition>
-          <storageType> Text</storageType>
-          <measurementScale>
-            <nominal>
-              <nonNumericDomain>
-                <textDomain>
-                  <definition>*</definition>
-                </textDomain>
-              </nonNumericDomain>
-            </nominal>
-          </measurementScale>
-        </attribute>
-        <attribute>
-          <attributeName> count</attributeName>
-          <attributeLabel> count</attributeLabel>
-          <attributeDefinition>numer of the indicated species founf in
+<creator>
+<individualName>
+<givenName>Joe</givenName>
+<surName>Scientist</surName>
+</individualName>
+<address>
+<deliveryPoint>Marine Science Institute</deliveryPoint>
+<city>Santa Barbara</city>
+<administrativeArea>CA</administrativeArea>
+<postalCode>90024</postalCode>
+<country>USA</country>
+</address>
+<phone>(310) 206-1984</phone>
+<electronicMailAddress>jsci@msi.ucsb.edu</electronicMailAddress>
+</creator>
+<associatedParty>
+<individualName>
+<givenName>Joe</givenName>
+<surName>Scientist</surName>
+</individualName>
+<address>
+<deliveryPoint>Marine Science Institute</deliveryPoint>
+<city>Santa Barbara</city>
+<administrativeArea>CA</administrativeArea>
+<postalCode>90024</postalCode>
+<country>USA</country>
+</address>
+<phone>(310) 206-1984</phone>
+<electronicMailAddress>jsci@msi.ucsb.edu</electronicMailAddress>
+<role>owner</role>
+</associatedParty>
+<abstract>
+<para>Population sampling data for various zooplankton species in the Great Lakes, 2000. Sampling used Van Dorn samples at 1 m and 5 m depths on a randomly placed sampling grid.  Species names according to the ITIS taxonomic database (http://www.itis.usda.gov/ ). This is fictitious sample data and should in no way be construed as meaningful information!</para>
+</abstract>
+<keywordSet>
+<keyword keywordType="theme">zooplankton</keyword>
+<keyword keywordType="theme">Van Dorn sampling</keyword>
+<keyword keywordType="theme">population survey</keyword>
+<keyword keywordType="theme">fictitious sample data</keyword>
+<keyword keywordType="place">Great Lakes</keyword>
+</keywordSet>
+<contact>
+<individualName>
+<givenName>Joe</givenName>
+<surName>Scientist</surName>
+</individualName>
+<address>
+<deliveryPoint>Marine Science Institute</deliveryPoint>
+<city>Santa Barbara</city>
+<administrativeArea>CA</administrativeArea>
+<postalCode>90024</postalCode>
+<country>USA</country>
+</address>
+<phone>(310) 206-1984</phone>
+<electronicMailAddress>jsci@msi.ucsb.edu</electronicMailAddress>
+</contact>
+<dataTable>
+<entityName> ExampleData.txt</entityName>
+<physical>
+<objectName>jscientist.6.1</objectName>
+<size unit="bytes">1152</size>
+<dataFormat>
+<textFormat>
+<numHeaderLines>1</numHeaderLines>
+<recordDelimiter>#x0A</recordDelimiter>
+<attributeOrientation>column</attributeOrientation>
+<simpleDelimited>
+<fieldDelimiter>,</fieldDelimiter>
+</simpleDelimited>
+</textFormat>
+</dataFormat>
+<distribution>
+<online>
+<url>ecogrid://knb/jscientist.3.1</url>
+</online>
+</distribution>
+</physical>
+<attributeList>
+<attribute id="123456">
+<attributeName>lake</attributeName>
+<attributeLabel>lake</attributeLabel>
+<attributeDefinition>The name of the lake (but you could guess that couldn't you:)</attributeDefinition>
+<storageType>Text</storageType>
+<measurementScale>
+<nominal>
+<nonNumericDomain>
+<textDomain>
+<definition>*</definition>
+</textDomain>
+</nonNumericDomain>
+</nominal>
+</measurementScale>
+</attribute>
+<attribute>
+<attributeName>site</attributeName>
+<attributeLabel>site</attributeLabel>
+<attributeDefinition>Code indication specific site</attributeDefinition>
+<storageType> Text</storageType>
+<measurementScale>
+<nominal>
+<nonNumericDomain>
+<enumeratedDomain>
+<codeDefinition>
+<code>N1</code>
+<definition>N1</definition>
+</codeDefinition>
+<codeDefinition>
+<code>N2</code>
+<definition>N2</definition>
+</codeDefinition>
+<codeDefinition>
+<code>N3</code>
+<definition>N3</definition>
+</codeDefinition>
+</enumeratedDomain>
+</nonNumericDomain>
+</nominal>
+</measurementScale>
+</attribute>
+<attribute>
+<attributeName> sampdate</attributeName>
+<attributeLabel> sampdate</attributeLabel>
+<attributeDefinition>the date of collectoin in DDMMYYYY format</attributeDefinition>
+<storageType> Text</storageType>
+<measurementScale>
+<nominal>
+<nonNumericDomain>
+<textDomain>
+<definition>*</definition>
+</textDomain>
+</nonNumericDomain>
+</nominal>
+</measurementScale>
+</attribute>
+<attribute>
+<attributeName> depth</attributeName>
+<attributeLabel> depth</attributeLabel>
+<attributeDefinition>depth where sample was collected</attributeDefinition>
+<storageType> Integers</storageType>
+<measurementScale>
+<ratio>
+<unit>
+<standardUnit>meter</standardUnit>
+</unit>
+<precision>0.0</precision>
+<numericDomain>
+<numberType>real</numberType>
+<bounds>
+<minimum exclusive="false">1.0</minimum>
+<maximum exclusive="false">5.0</maximum>
+</bounds>
+</numericDomain>
+</ratio>
+</measurementScale>
+</attribute>
+<attribute>
+<attributeName> sampvol</attributeName>
+<attributeLabel> sampvol</attributeLabel>
+<attributeDefinition>sample volume</attributeDefinition>
+<storageType> Floating Point</storageType>
+<measurementScale>
+<ratio>
+<unit>
+<standardUnit>cubicMeter</standardUnit>
+</unit>
+<precision>0.0</precision>
+<numericDomain>
+<numberType>real</numberType>
+<bounds>
+<minimum exclusive="false">10.0</minimum>
+<maximum exclusive="false">10.0</maximum>
+</bounds>
+</numericDomain>
+</ratio>
+</measurementScale>
+</attribute>
+<attribute>
+<attributeName> species</attributeName>
+<attributeLabel> species</attributeLabel>
+<attributeDefinition>Species Name</attributeDefinition>
+<storageType> Text</storageType>
+<measurementScale>
+<nominal>
+<nonNumericDomain>
+<textDomain>
+<definition>*</definition>
+</textDomain>
+</nonNumericDomain>
+</nominal>
+</measurementScale>
+</attribute>
+<attribute>
+<attributeName> count</attributeName>
+<attributeLabel> count</attributeLabel>
+<attributeDefinition>numer of the indicated species founf in
             the sample</attributeDefinition>
-          <storageType> Integers</storageType>
-          <measurementScale>
-            <ratio>
-              <unit>
-                <standardUnit>dimensionless</standardUnit>
-              </unit>
-              <precision>0.0</precision>
-              <numericDomain>
-                <numberType>real</numberType>
-                <bounds>
-                  <minimum exclusive="false">70.0</minimum>
-                  <maximum exclusive="false">99.0</maximum>
-                </bounds>
-              </numericDomain>
-            </ratio>
-          </measurementScale>
-        </attribute>
-      </attributeList>
-      <caseSensitive>no</caseSensitive>
-      <numberOfRecords> 24</numberOfRecords>
-    </dataTable>
-  </dataset>
+<storageType> Integers</storageType>
+<measurementScale>
+<ratio>
+<unit>
+<standardUnit>dimensionless</standardUnit>
+</unit>
+<precision>0.0</precision>
+<numericDomain>
+<numberType>real</numberType>
+<bounds>
+<minimum exclusive="false">70.0</minimum>
+<maximum exclusive="false">99.0</maximum>
+</bounds>
+</numericDomain>
+</ratio>
+</measurementScale>
+</attribute>
+</attributeList>
+<caseSensitive>no</caseSensitive>
+<numberOfRecords> 24</numberOfRecords>
+</dataTable>
+</dataset>
 </eml:eml>
