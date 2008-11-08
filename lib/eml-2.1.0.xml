@@ -10620,36 +10620,7 @@
 									  </SEQUENCE144>
 									</CHOICE138>
 								  </connection>
-								  <connectionDefinition scope="document" system="" id="" minOccurs="1" maxOccurs="1" help="The definition of a type of connection that will be used in another location in the EML document. This only provides the definition of the protocol and its parameters, but not the actual values to be used to make the connection (instead, see the connection element). The same connection definition may be used by multiple connections (e.g., to download different files from the same database), but each connection must provide or reference a valid connection definition.">
-									<CHOICE145 minOccurs="1" maxOccurs="1" help="">
-									  <SEQUENCE146 minOccurs="1" maxOccurs="1" help="">
-										<schemeName system="" minOccurs="1" maxOccurs="1" help="The name of the scheme used to identify this connection. The scheme name is qualified by its system attribute. The scheme name implies a particular protocol for accessing information from the connection. Applications must have a knowledge of the scheme or be able to deduce the protocol from the scheme description in order to effectively access data over the connection. Many schemes will be unknown to client applications. At some later point in time a registry for connection schemes may be established in order to promote application interoperability, and we may expand this portion of EML to adopt a more comprehensive standard such as WSDL, but for now this simpler description is provided.">
-										</schemeName>
-										<description minOccurs="1" maxOccurs="1" help="The 'text' element allows for both formatted and unformatted text blocks to be included in EML. It can contain a number of relevant subsections that allow the use of titles, sections, and paragraphs in the text block. This markup is a subset of DocBook.">
-										  <CHOICE147 minOccurs="1" maxOccurs="unbounded" help="">
-											<section minOccurs="0" maxOccurs="unbounded" help="The 'section' element allows for grouping related paragraphs of text together, with an optional title. This markup is a subset of DocBook.">
-											</section>
-											<para minOccurs="0" maxOccurs="unbounded" help="The 'paragraph' element allows for both formatted and unformatted text blocks to be included in EML. It can be plain text or text with a limited set of markup tags, inlcuding emphasis, subscript, superscript, and lists. This markup is a subset of DocBook.">
-											</para>
-										  </CHOICE147>
-										</description>
-										<parameterDefinition minOccurs="1" maxOccurs="unbounded" help="The definition of a parameter that is needed to properly use this connection scheme. Each parameter has a name and a definition that are used by applications to assess the type of information needed for the request. Parameters may also set default values that are used if a connection does not provide a value for a parameter.">
-										  <SEQUENCE148 minOccurs="1" maxOccurs="1" help="">
-											<name minOccurs="1" maxOccurs="1" help="The name of a parameter that is needed to properly use this connection scheme.">
-											</name>
-											<definition minOccurs="1" maxOccurs="1" help="The definition of a parameter that is needed to properly use this connection scheme. The definition is used by applications to assess the type of information needed for the request.">
-											</definition>
-											<defaultValue minOccurs="0" maxOccurs="1" help="The default value for a parameter that is needed to properly use this connection scheme. If a default value is set, then it should be used for connections that do not override the default with a connection-specific value. This allows a definition to be established that declares common information that might be shared by several connections as default values. Parameter values provided in the connection always override any default values provided in the conneciton definition.">
-											</defaultValue>
-										  </SEQUENCE148>
-										</parameterDefinition>
-									  </SEQUENCE146>
-									  <SEQUENCE149 minOccurs="1" maxOccurs="1" help="">
-										<references minOccurs="1" maxOccurs="1" help="The id of another element in this EML document to be used to here in this context. This is used instead of duplicating information when an identical piece of information needs to be used multiple times in an EML document. For example, if the same person is the creator, metadataProvider, and contact for a dataset, their name and address can be provided once as part of the 'creator' element, and then their 'id' can be used in the 'references' element of  metadataProvider and contact. This reduces the likelihood of error by reducing redundancy, and allows one to specify that two pieces of information are identical. To be a vaild EML document, the content of every 'references' element MUST be defined in the document as the value of an 'id' attribute on some element within the document. Other critical rules about the use of IDs and references in EML are provided in the text of the EML specification.">
-										</references>
-									  </SEQUENCE149>
-									</CHOICE145>
-								  </connectionDefinition>
+								  
 								</CHOICE137>
 							  </online>
 							  <offline minOccurs="1" maxOccurs="1" help="the medium on which this resource is distributed digitally, such as 3.5' floppy disk, or various tape media types, or 'hardcopy'">
@@ -16110,36 +16081,7 @@
 									  </SEQUENCE144>
 									</CHOICE138>
 								  </connection>
-								  <connectionDefinition scope="document" system="" id="" minOccurs="1" maxOccurs="1" help="The definition of a type of connection that will be used in another location in the EML document. This only provides the definition of the protocol and its parameters, but not the actual values to be used to make the connection (instead, see the connection element). The same connection definition may be used by multiple connections (e.g., to download different files from the same database), but each connection must provide or reference a valid connection definition.">
-									<CHOICE145 minOccurs="1" maxOccurs="1" help="">
-									  <SEQUENCE146 minOccurs="1" maxOccurs="1" help="">
-										<schemeName system="" minOccurs="1" maxOccurs="1" help="The name of the scheme used to identify this connection. The scheme name is qualified by its system attribute. The scheme name implies a particular protocol for accessing information from the connection. Applications must have a knowledge of the scheme or be able to deduce the protocol from the scheme description in order to effectively access data over the connection. Many schemes will be unknown to client applications. At some later point in time a registry for connection schemes may be established in order to promote application interoperability, and we may expand this portion of EML to adopt a more comprehensive standard such as WSDL, but for now this simpler description is provided.">
-										</schemeName>
-										<description minOccurs="1" maxOccurs="1" help="The 'text' element allows for both formatted and unformatted text blocks to be included in EML. It can contain a number of relevant subsections that allow the use of titles, sections, and paragraphs in the text block. This markup is a subset of DocBook.">
-										  <CHOICE147 minOccurs="1" maxOccurs="unbounded" help="">
-											<section minOccurs="0" maxOccurs="unbounded" help="The 'section' element allows for grouping related paragraphs of text together, with an optional title. This markup is a subset of DocBook.">
-											</section>
-											<para minOccurs="0" maxOccurs="unbounded" help="The 'paragraph' element allows for both formatted and unformatted text blocks to be included in EML. It can be plain text or text with a limited set of markup tags, inlcuding emphasis, subscript, superscript, and lists. This markup is a subset of DocBook.">
-											</para>
-										  </CHOICE147>
-										</description>
-										<parameterDefinition minOccurs="1" maxOccurs="unbounded" help="The definition of a parameter that is needed to properly use this connection scheme. Each parameter has a name and a definition that are used by applications to assess the type of information needed for the request. Parameters may also set default values that are used if a connection does not provide a value for a parameter.">
-										  <SEQUENCE148 minOccurs="1" maxOccurs="1" help="">
-											<name minOccurs="1" maxOccurs="1" help="The name of a parameter that is needed to properly use this connection scheme.">
-											</name>
-											<definition minOccurs="1" maxOccurs="1" help="The definition of a parameter that is needed to properly use this connection scheme. The definition is used by applications to assess the type of information needed for the request.">
-											</definition>
-											<defaultValue minOccurs="0" maxOccurs="1" help="The default value for a parameter that is needed to properly use this connection scheme. If a default value is set, then it should be used for connections that do not override the default with a connection-specific value. This allows a definition to be established that declares common information that might be shared by several connections as default values. Parameter values provided in the connection always override any default values provided in the conneciton definition.">
-											</defaultValue>
-										  </SEQUENCE148>
-										</parameterDefinition>
-									  </SEQUENCE146>
-									  <SEQUENCE149 minOccurs="1" maxOccurs="1" help="">
-										<references minOccurs="1" maxOccurs="1" help="The id of another element in this EML document to be used to here in this context. This is used instead of duplicating information when an identical piece of information needs to be used multiple times in an EML document. For example, if the same person is the creator, metadataProvider, and contact for a dataset, their name and address can be provided once as part of the 'creator' element, and then their 'id' can be used in the 'references' element of  metadataProvider and contact. This reduces the likelihood of error by reducing redundancy, and allows one to specify that two pieces of information are identical. To be a vaild EML document, the content of every 'references' element MUST be defined in the document as the value of an 'id' attribute on some element within the document. Other critical rules about the use of IDs and references in EML are provided in the text of the EML specification.">
-										</references>
-									  </SEQUENCE149>
-									</CHOICE145>
-								  </connectionDefinition>
+								  
 								</CHOICE137>
 							  </online>
 							  <offline minOccurs="1" maxOccurs="1" help="the medium on which this resource is distributed digitally, such as 3.5' floppy disk, or various tape media types, or 'hardcopy'">
@@ -18736,36 +18678,7 @@
 									  </SEQUENCE144>
 									</CHOICE138>
 								  </connection>
-								  <connectionDefinition scope="document" system="" id="" minOccurs="1" maxOccurs="1" help="The definition of a type of connection that will be used in another location in the EML document. This only provides the definition of the protocol and its parameters, but not the actual values to be used to make the connection (instead, see the connection element). The same connection definition may be used by multiple connections (e.g., to download different files from the same database), but each connection must provide or reference a valid connection definition.">
-									<CHOICE145 minOccurs="1" maxOccurs="1" help="">
-									  <SEQUENCE146 minOccurs="1" maxOccurs="1" help="">
-										<schemeName system="" minOccurs="1" maxOccurs="1" help="The name of the scheme used to identify this connection. The scheme name is qualified by its system attribute. The scheme name implies a particular protocol for accessing information from the connection. Applications must have a knowledge of the scheme or be able to deduce the protocol from the scheme description in order to effectively access data over the connection. Many schemes will be unknown to client applications. At some later point in time a registry for connection schemes may be established in order to promote application interoperability, and we may expand this portion of EML to adopt a more comprehensive standard such as WSDL, but for now this simpler description is provided.">
-										</schemeName>
-										<description minOccurs="1" maxOccurs="1" help="The 'text' element allows for both formatted and unformatted text blocks to be included in EML. It can contain a number of relevant subsections that allow the use of titles, sections, and paragraphs in the text block. This markup is a subset of DocBook.">
-										  <CHOICE147 minOccurs="1" maxOccurs="unbounded" help="">
-											<section minOccurs="0" maxOccurs="unbounded" help="The 'section' element allows for grouping related paragraphs of text together, with an optional title. This markup is a subset of DocBook.">
-											</section>
-											<para minOccurs="0" maxOccurs="unbounded" help="The 'paragraph' element allows for both formatted and unformatted text blocks to be included in EML. It can be plain text or text with a limited set of markup tags, inlcuding emphasis, subscript, superscript, and lists. This markup is a subset of DocBook.">
-											</para>
-										  </CHOICE147>
-										</description>
-										<parameterDefinition minOccurs="1" maxOccurs="unbounded" help="The definition of a parameter that is needed to properly use this connection scheme. Each parameter has a name and a definition that are used by applications to assess the type of information needed for the request. Parameters may also set default values that are used if a connection does not provide a value for a parameter.">
-										  <SEQUENCE148 minOccurs="1" maxOccurs="1" help="">
-											<name minOccurs="1" maxOccurs="1" help="The name of a parameter that is needed to properly use this connection scheme.">
-											</name>
-											<definition minOccurs="1" maxOccurs="1" help="The definition of a parameter that is needed to properly use this connection scheme. The definition is used by applications to assess the type of information needed for the request.">
-											</definition>
-											<defaultValue minOccurs="0" maxOccurs="1" help="The default value for a parameter that is needed to properly use this connection scheme. If a default value is set, then it should be used for connections that do not override the default with a connection-specific value. This allows a definition to be established that declares common information that might be shared by several connections as default values. Parameter values provided in the connection always override any default values provided in the conneciton definition.">
-											</defaultValue>
-										  </SEQUENCE148>
-										</parameterDefinition>
-									  </SEQUENCE146>
-									  <SEQUENCE149 minOccurs="1" maxOccurs="1" help="">
-										<references minOccurs="1" maxOccurs="1" help="The id of another element in this EML document to be used to here in this context. This is used instead of duplicating information when an identical piece of information needs to be used multiple times in an EML document. For example, if the same person is the creator, metadataProvider, and contact for a dataset, their name and address can be provided once as part of the 'creator' element, and then their 'id' can be used in the 'references' element of  metadataProvider and contact. This reduces the likelihood of error by reducing redundancy, and allows one to specify that two pieces of information are identical. To be a vaild EML document, the content of every 'references' element MUST be defined in the document as the value of an 'id' attribute on some element within the document. Other critical rules about the use of IDs and references in EML are provided in the text of the EML specification.">
-										</references>
-									  </SEQUENCE149>
-									</CHOICE145>
-								  </connectionDefinition>
+								  
 								</CHOICE137>
 							  </online>
 							  <offline minOccurs="1" maxOccurs="1" help="the medium on which this resource is distributed digitally, such as 3.5' floppy disk, or various tape media types, or 'hardcopy'">
@@ -20970,36 +20883,7 @@
 									  </SEQUENCE144>
 									</CHOICE138>
 								  </connection>
-								  <connectionDefinition scope="document" system="" id="" minOccurs="1" maxOccurs="1" help="The definition of a type of connection that will be used in another location in the EML document. This only provides the definition of the protocol and its parameters, but not the actual values to be used to make the connection (instead, see the connection element). The same connection definition may be used by multiple connections (e.g., to download different files from the same database), but each connection must provide or reference a valid connection definition.">
-									<CHOICE145 minOccurs="1" maxOccurs="1" help="">
-									  <SEQUENCE146 minOccurs="1" maxOccurs="1" help="">
-										<schemeName system="" minOccurs="1" maxOccurs="1" help="The name of the scheme used to identify this connection. The scheme name is qualified by its system attribute. The scheme name implies a particular protocol for accessing information from the connection. Applications must have a knowledge of the scheme or be able to deduce the protocol from the scheme description in order to effectively access data over the connection. Many schemes will be unknown to client applications. At some later point in time a registry for connection schemes may be established in order to promote application interoperability, and we may expand this portion of EML to adopt a more comprehensive standard such as WSDL, but for now this simpler description is provided.">
-										</schemeName>
-										<description minOccurs="1" maxOccurs="1" help="The 'text' element allows for both formatted and unformatted text blocks to be included in EML. It can contain a number of relevant subsections that allow the use of titles, sections, and paragraphs in the text block. This markup is a subset of DocBook.">
-										  <CHOICE147 minOccurs="1" maxOccurs="unbounded" help="">
-											<section minOccurs="0" maxOccurs="unbounded" help="The 'section' element allows for grouping related paragraphs of text together, with an optional title. This markup is a subset of DocBook.">
-											</section>
-											<para minOccurs="0" maxOccurs="unbounded" help="The 'paragraph' element allows for both formatted and unformatted text blocks to be included in EML. It can be plain text or text with a limited set of markup tags, inlcuding emphasis, subscript, superscript, and lists. This markup is a subset of DocBook.">
-											</para>
-										  </CHOICE147>
-										</description>
-										<parameterDefinition minOccurs="1" maxOccurs="unbounded" help="The definition of a parameter that is needed to properly use this connection scheme. Each parameter has a name and a definition that are used by applications to assess the type of information needed for the request. Parameters may also set default values that are used if a connection does not provide a value for a parameter.">
-										  <SEQUENCE148 minOccurs="1" maxOccurs="1" help="">
-											<name minOccurs="1" maxOccurs="1" help="The name of a parameter that is needed to properly use this connection scheme.">
-											</name>
-											<definition minOccurs="1" maxOccurs="1" help="The definition of a parameter that is needed to properly use this connection scheme. The definition is used by applications to assess the type of information needed for the request.">
-											</definition>
-											<defaultValue minOccurs="0" maxOccurs="1" help="The default value for a parameter that is needed to properly use this connection scheme. If a default value is set, then it should be used for connections that do not override the default with a connection-specific value. This allows a definition to be established that declares common information that might be shared by several connections as default values. Parameter values provided in the connection always override any default values provided in the conneciton definition.">
-											</defaultValue>
-										  </SEQUENCE148>
-										</parameterDefinition>
-									  </SEQUENCE146>
-									  <SEQUENCE149 minOccurs="1" maxOccurs="1" help="">
-										<references minOccurs="1" maxOccurs="1" help="The id of another element in this EML document to be used to here in this context. This is used instead of duplicating information when an identical piece of information needs to be used multiple times in an EML document. For example, if the same person is the creator, metadataProvider, and contact for a dataset, their name and address can be provided once as part of the 'creator' element, and then their 'id' can be used in the 'references' element of  metadataProvider and contact. This reduces the likelihood of error by reducing redundancy, and allows one to specify that two pieces of information are identical. To be a vaild EML document, the content of every 'references' element MUST be defined in the document as the value of an 'id' attribute on some element within the document. Other critical rules about the use of IDs and references in EML are provided in the text of the EML specification.">
-										</references>
-									  </SEQUENCE149>
-									</CHOICE145>
-								  </connectionDefinition>
+								 
 								</CHOICE137>
 							  </online>
 							  <offline minOccurs="1" maxOccurs="1" help="the medium on which this resource is distributed digitally, such as 3.5' floppy disk, or various tape media types, or 'hardcopy'">
@@ -23116,36 +23000,7 @@
 									  </SEQUENCE144>
 									</CHOICE138>
 								  </connection>
-								  <connectionDefinition scope="document" system="" id="" minOccurs="1" maxOccurs="1" help="The definition of a type of connection that will be used in another location in the EML document. This only provides the definition of the protocol and its parameters, but not the actual values to be used to make the connection (instead, see the connection element). The same connection definition may be used by multiple connections (e.g., to download different files from the same database), but each connection must provide or reference a valid connection definition.">
-									<CHOICE145 minOccurs="1" maxOccurs="1" help="">
-									  <SEQUENCE146 minOccurs="1" maxOccurs="1" help="">
-										<schemeName system="" minOccurs="1" maxOccurs="1" help="The name of the scheme used to identify this connection. The scheme name is qualified by its system attribute. The scheme name implies a particular protocol for accessing information from the connection. Applications must have a knowledge of the scheme or be able to deduce the protocol from the scheme description in order to effectively access data over the connection. Many schemes will be unknown to client applications. At some later point in time a registry for connection schemes may be established in order to promote application interoperability, and we may expand this portion of EML to adopt a more comprehensive standard such as WSDL, but for now this simpler description is provided.">
-										</schemeName>
-										<description minOccurs="1" maxOccurs="1" help="The 'text' element allows for both formatted and unformatted text blocks to be included in EML. It can contain a number of relevant subsections that allow the use of titles, sections, and paragraphs in the text block. This markup is a subset of DocBook.">
-										  <CHOICE147 minOccurs="1" maxOccurs="unbounded" help="">
-											<section minOccurs="0" maxOccurs="unbounded" help="The 'section' element allows for grouping related paragraphs of text together, with an optional title. This markup is a subset of DocBook.">
-											</section>
-											<para minOccurs="0" maxOccurs="unbounded" help="The 'paragraph' element allows for both formatted and unformatted text blocks to be included in EML. It can be plain text or text with a limited set of markup tags, inlcuding emphasis, subscript, superscript, and lists. This markup is a subset of DocBook.">
-											</para>
-										  </CHOICE147>
-										</description>
-										<parameterDefinition minOccurs="1" maxOccurs="unbounded" help="The definition of a parameter that is needed to properly use this connection scheme. Each parameter has a name and a definition that are used by applications to assess the type of information needed for the request. Parameters may also set default values that are used if a connection does not provide a value for a parameter.">
-										  <SEQUENCE148 minOccurs="1" maxOccurs="1" help="">
-											<name minOccurs="1" maxOccurs="1" help="The name of a parameter that is needed to properly use this connection scheme.">
-											</name>
-											<definition minOccurs="1" maxOccurs="1" help="The definition of a parameter that is needed to properly use this connection scheme. The definition is used by applications to assess the type of information needed for the request.">
-											</definition>
-											<defaultValue minOccurs="0" maxOccurs="1" help="The default value for a parameter that is needed to properly use this connection scheme. If a default value is set, then it should be used for connections that do not override the default with a connection-specific value. This allows a definition to be established that declares common information that might be shared by several connections as default values. Parameter values provided in the connection always override any default values provided in the conneciton definition.">
-											</defaultValue>
-										  </SEQUENCE148>
-										</parameterDefinition>
-									  </SEQUENCE146>
-									  <SEQUENCE149 minOccurs="1" maxOccurs="1" help="">
-										<references minOccurs="1" maxOccurs="1" help="The id of another element in this EML document to be used to here in this context. This is used instead of duplicating information when an identical piece of information needs to be used multiple times in an EML document. For example, if the same person is the creator, metadataProvider, and contact for a dataset, their name and address can be provided once as part of the 'creator' element, and then their 'id' can be used in the 'references' element of  metadataProvider and contact. This reduces the likelihood of error by reducing redundancy, and allows one to specify that two pieces of information are identical. To be a vaild EML document, the content of every 'references' element MUST be defined in the document as the value of an 'id' attribute on some element within the document. Other critical rules about the use of IDs and references in EML are provided in the text of the EML specification.">
-										</references>
-									  </SEQUENCE149>
-									</CHOICE145>
-								  </connectionDefinition>
+								  
 								</CHOICE137>
 							  </online>
 							  <offline minOccurs="1" maxOccurs="1" help="the medium on which this resource is distributed digitally, such as 3.5' floppy disk, or various tape media types, or 'hardcopy'">
@@ -25252,36 +25107,7 @@
 									  </SEQUENCE144>
 									</CHOICE138>
 								  </connection>
-								  <connectionDefinition scope="document" system="" id="" minOccurs="1" maxOccurs="1" help="The definition of a type of connection that will be used in another location in the EML document. This only provides the definition of the protocol and its parameters, but not the actual values to be used to make the connection (instead, see the connection element). The same connection definition may be used by multiple connections (e.g., to download different files from the same database), but each connection must provide or reference a valid connection definition.">
-									<CHOICE145 minOccurs="1" maxOccurs="1" help="">
-									  <SEQUENCE146 minOccurs="1" maxOccurs="1" help="">
-										<schemeName system="" minOccurs="1" maxOccurs="1" help="The name of the scheme used to identify this connection. The scheme name is qualified by its system attribute. The scheme name implies a particular protocol for accessing information from the connection. Applications must have a knowledge of the scheme or be able to deduce the protocol from the scheme description in order to effectively access data over the connection. Many schemes will be unknown to client applications. At some later point in time a registry for connection schemes may be established in order to promote application interoperability, and we may expand this portion of EML to adopt a more comprehensive standard such as WSDL, but for now this simpler description is provided.">
-										</schemeName>
-										<description minOccurs="1" maxOccurs="1" help="The 'text' element allows for both formatted and unformatted text blocks to be included in EML. It can contain a number of relevant subsections that allow the use of titles, sections, and paragraphs in the text block. This markup is a subset of DocBook.">
-										  <CHOICE147 minOccurs="1" maxOccurs="unbounded" help="">
-											<section minOccurs="0" maxOccurs="unbounded" help="The 'section' element allows for grouping related paragraphs of text together, with an optional title. This markup is a subset of DocBook.">
-											</section>
-											<para minOccurs="0" maxOccurs="unbounded" help="The 'paragraph' element allows for both formatted and unformatted text blocks to be included in EML. It can be plain text or text with a limited set of markup tags, inlcuding emphasis, subscript, superscript, and lists. This markup is a subset of DocBook.">
-											</para>
-										  </CHOICE147>
-										</description>
-										<parameterDefinition minOccurs="1" maxOccurs="unbounded" help="The definition of a parameter that is needed to properly use this connection scheme. Each parameter has a name and a definition that are used by applications to assess the type of information needed for the request. Parameters may also set default values that are used if a connection does not provide a value for a parameter.">
-										  <SEQUENCE148 minOccurs="1" maxOccurs="1" help="">
-											<name minOccurs="1" maxOccurs="1" help="The name of a parameter that is needed to properly use this connection scheme.">
-											</name>
-											<definition minOccurs="1" maxOccurs="1" help="The definition of a parameter that is needed to properly use this connection scheme. The definition is used by applications to assess the type of information needed for the request.">
-											</definition>
-											<defaultValue minOccurs="0" maxOccurs="1" help="The default value for a parameter that is needed to properly use this connection scheme. If a default value is set, then it should be used for connections that do not override the default with a connection-specific value. This allows a definition to be established that declares common information that might be shared by several connections as default values. Parameter values provided in the connection always override any default values provided in the conneciton definition.">
-											</defaultValue>
-										  </SEQUENCE148>
-										</parameterDefinition>
-									  </SEQUENCE146>
-									  <SEQUENCE149 minOccurs="1" maxOccurs="1" help="">
-										<references minOccurs="1" maxOccurs="1" help="The id of another element in this EML document to be used to here in this context. This is used instead of duplicating information when an identical piece of information needs to be used multiple times in an EML document. For example, if the same person is the creator, metadataProvider, and contact for a dataset, their name and address can be provided once as part of the 'creator' element, and then their 'id' can be used in the 'references' element of  metadataProvider and contact. This reduces the likelihood of error by reducing redundancy, and allows one to specify that two pieces of information are identical. To be a vaild EML document, the content of every 'references' element MUST be defined in the document as the value of an 'id' attribute on some element within the document. Other critical rules about the use of IDs and references in EML are provided in the text of the EML specification.">
-										</references>
-									  </SEQUENCE149>
-									</CHOICE145>
-								  </connectionDefinition>
+								  
 								</CHOICE137>
 							  </online>
 							  <offline minOccurs="1" maxOccurs="1" help="the medium on which this resource is distributed digitally, such as 3.5' floppy disk, or various tape media types, or 'hardcopy'">
