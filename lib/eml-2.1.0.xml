@@ -1181,7 +1181,10 @@
           <CHOICE174 minOccurs="1" maxOccurs="1" help="">
             <CHOICE175 minOccurs="1" maxOccurs="1" help="">
               <online minOccurs="1" maxOccurs="1" help="Distribution information for accessing the resource online, represented either as a URL or as a series of named parameters that are needed in order to connect. The URL field is provided for the simple cases where a file is available for download directly from a web server or other similar server and a complex connection protocol is not needed. The connection field provides an alternative where a complex protocol needs to be named and described, along with the necessary parameters needed for the connection.">
-                <CHOICE176 minOccurs="1" maxOccurs="1" help="">
+                <SEQUENCE176 minOccurs="1" maxOccurs="1" help="">
+				  <description minOccurs="0" maxOccurs="1" help="This element can hold a brief description of the content  of the online element's online|offline|inline child. This description element could  supply content for an html anchor tag.">
+                  </description>
+				  <CHOICE176 minOccurs="1" maxOccurs="1" help="">
                   <url function="download" minOccurs="1" maxOccurs="1" help="A URL (Uniform Resource Locator) from which this resource can be downloaded or additional information can be obtained. If accessing the URL would directly return the data stream, then the 'function' attribute should be set to 'download'. If the URL provides further information about downloading the object but does not directly return the data stream, then the 'function' attribute should be set to 'information'. If the 'function' attribute is omitted, then 'download' is implied for the URL function. In more complex cases where a non-standard connection must be established that complies with application specific procedures beyond what can be described in the simple URL, then the 'connection' element should be used instead of the URL element.">
                   </url>
                   <connection scope="document" system="" id="" minOccurs="1" maxOccurs="1" help="A description of the information needed to make an application connection to a data service. The connection starts with a connectionDefinition which lists all of the parameters needed for the connection and possible default values for each. It then includes a list of parameter values, one for each parameter, that override the defaults for this particular connection. One parameter element should exist for every parameterDefinition that is present in the connectionDefinition, except that parameters that were defined with a defaultValue in their parameterDefinition can be ommitted from the connection and the default will be used. All information about how to use the parameters to establish a session and extract data is present in the connectionDefinition, possibly implicitly by naming a connection schemeName that is well-known.">
@@ -1249,6 +1252,7 @@
                     </CHOICE184>
                   </connectionDefinition>
                 </CHOICE176>
+			   </SEQUENCE176>
               </online>
               <offline minOccurs="1" maxOccurs="1" help="the medium on which this resource is distributed digitally, such as 3.5' floppy disk, or various tape media types, or 'hardcopy'">
                 <SEQUENCE189 minOccurs="1" maxOccurs="1" help="">
@@ -10583,7 +10587,9 @@
 						  <CHOICE135 minOccurs="1" maxOccurs="1" help="">
 							<CHOICE136 minOccurs="1" maxOccurs="1" help="">
 							  <online minOccurs="1" maxOccurs="1" help="Distribution information for accessing the resource online, represented either as a URL or as a series of named parameters that are needed in order to connect. The URL field is provided for the simple cases where a file is available for download directly from a web server or other similar server and a complex connection protocol is not needed. The connection field provides an alternative where a complex protocol needs to be named and described, along with the necessary parameters needed for the connection.">
-								<CHOICE137 minOccurs="1" maxOccurs="1" help="">
+								<SEQUENCE137 minOccurs="1" maxOccurs="1" help="">
+									<onlineDescription minOccurs="0" maxOccurs="1" help=""> </onlineDescription>
+								  <CHOICE137 minOccurs="1" maxOccurs="1" help="">
 								  <url function="download" minOccurs="1" maxOccurs="1" help="A URL (Uniform Resource Locator) from which this resource can be downloaded or additional information can be obtained. If accessing the URL would directly return the data stream, then the 'function' attribute should be set to 'download'. If the URL provides further information about downloading the object but does not directly return the data stream, then the 'function' attribute should be set to 'information'. If the 'function' attribute is omitted, then 'download' is implied for the URL function. In more complex cases where a non-standard connection must be established that complies with application specific procedures beyond what can be described in the simple URL, then the 'connection' element should be used instead of the URL element.">
 								  </url>
 								  <connection scope="document" system="" id="" minOccurs="1" maxOccurs="1" help="A description of the information needed to make an application connection to a data service. The connection starts with a connectionDefinition which lists all of the parameters needed for the connection and possible default values for each. It then includes a list of parameter values, one for each parameter, that override the defaults for this particular connection. One parameter element should exist for every parameterDefinition that is present in the connectionDefinition, except that parameters that were defined with a defaultValue in their parameterDefinition can be ommitted from the connection and the default will be used. All information about how to use the parameters to establish a session and extract data is present in the connectionDefinition, possibly implicitly by naming a connection schemeName that is well-known.">
@@ -10622,6 +10628,7 @@
 								  </connection>
 								  
 								</CHOICE137>
+							   </SEQUENCE137>
 							  </online>
 							  <offline minOccurs="1" maxOccurs="1" help="the medium on which this resource is distributed digitally, such as 3.5' floppy disk, or various tape media types, or 'hardcopy'">
 								<SEQUENCE150 minOccurs="1" maxOccurs="1" help="">
@@ -16044,7 +16051,9 @@
 						  <CHOICE135 minOccurs="1" maxOccurs="1" help="">
 							<CHOICE136 minOccurs="1" maxOccurs="1" help="">
 							  <online minOccurs="1" maxOccurs="1" help="Distribution information for accessing the resource online, represented either as a URL or as a series of named parameters that are needed in order to connect. The URL field is provided for the simple cases where a file is available for download directly from a web server or other similar server and a complex connection protocol is not needed. The connection field provides an alternative where a complex protocol needs to be named and described, along with the necessary parameters needed for the connection.">
-								<CHOICE137 minOccurs="1" maxOccurs="1" help="">
+								<SEQUENCE137 minOccurs="1" maxOccurs="1" help="">
+								  <onlineDescription minOccurs="0" maxOccurs="1" help=""> </onlineDescription>
+								  <CHOICE137 minOccurs="1" maxOccurs="1" help="">
 								  <url function="download" minOccurs="1" maxOccurs="1" help="A URL (Uniform Resource Locator) from which this resource can be downloaded or additional information can be obtained. If accessing the URL would directly return the data stream, then the 'function' attribute should be set to 'download'. If the URL provides further information about downloading the object but does not directly return the data stream, then the 'function' attribute should be set to 'information'. If the 'function' attribute is omitted, then 'download' is implied for the URL function. In more complex cases where a non-standard connection must be established that complies with application specific procedures beyond what can be described in the simple URL, then the 'connection' element should be used instead of the URL element.">
 								  </url>
 								  <connection scope="document" system="" id="" minOccurs="1" maxOccurs="1" help="A description of the information needed to make an application connection to a data service. The connection starts with a connectionDefinition which lists all of the parameters needed for the connection and possible default values for each. It then includes a list of parameter values, one for each parameter, that override the defaults for this particular connection. One parameter element should exist for every parameterDefinition that is present in the connectionDefinition, except that parameters that were defined with a defaultValue in their parameterDefinition can be ommitted from the connection and the default will be used. All information about how to use the parameters to establish a session and extract data is present in the connectionDefinition, possibly implicitly by naming a connection schemeName that is well-known.">
@@ -16083,6 +16092,7 @@
 								  </connection>
 								  
 								</CHOICE137>
+							   </SEQUENCE137>
 							  </online>
 							  <offline minOccurs="1" maxOccurs="1" help="the medium on which this resource is distributed digitally, such as 3.5' floppy disk, or various tape media types, or 'hardcopy'">
 								<SEQUENCE150 minOccurs="1" maxOccurs="1" help="">
@@ -18641,7 +18651,9 @@
 						  <CHOICE135 minOccurs="1" maxOccurs="1" help="">
 							<CHOICE136 minOccurs="1" maxOccurs="1" help="">
 							  <online minOccurs="1" maxOccurs="1" help="Distribution information for accessing the resource online, represented either as a URL or as a series of named parameters that are needed in order to connect. The URL field is provided for the simple cases where a file is available for download directly from a web server or other similar server and a complex connection protocol is not needed. The connection field provides an alternative where a complex protocol needs to be named and described, along with the necessary parameters needed for the connection.">
-								<CHOICE137 minOccurs="1" maxOccurs="1" help="">
+								<SEQUENCE137 minOccurs="1" maxOccurs="1" help="">
+								  <onlineDescription minOccurs="0" maxOccurs="1" help=""> </onlineDescription>
+								  <CHOICE137 minOccurs="1" maxOccurs="1" help="">
 								  <url function="download" minOccurs="1" maxOccurs="1" help="A URL (Uniform Resource Locator) from which this resource can be downloaded or additional information can be obtained. If accessing the URL would directly return the data stream, then the 'function' attribute should be set to 'download'. If the URL provides further information about downloading the object but does not directly return the data stream, then the 'function' attribute should be set to 'information'. If the 'function' attribute is omitted, then 'download' is implied for the URL function. In more complex cases where a non-standard connection must be established that complies with application specific procedures beyond what can be described in the simple URL, then the 'connection' element should be used instead of the URL element.">
 								  </url>
 								  <connection scope="document" system="" id="" minOccurs="1" maxOccurs="1" help="A description of the information needed to make an application connection to a data service. The connection starts with a connectionDefinition which lists all of the parameters needed for the connection and possible default values for each. It then includes a list of parameter values, one for each parameter, that override the defaults for this particular connection. One parameter element should exist for every parameterDefinition that is present in the connectionDefinition, except that parameters that were defined with a defaultValue in their parameterDefinition can be ommitted from the connection and the default will be used. All information about how to use the parameters to establish a session and extract data is present in the connectionDefinition, possibly implicitly by naming a connection schemeName that is well-known.">
@@ -18680,6 +18692,7 @@
 								  </connection>
 								  
 								</CHOICE137>
+							   </SEQUENCE137>
 							  </online>
 							  <offline minOccurs="1" maxOccurs="1" help="the medium on which this resource is distributed digitally, such as 3.5' floppy disk, or various tape media types, or 'hardcopy'">
 								<SEQUENCE150 minOccurs="1" maxOccurs="1" help="">
@@ -20846,7 +20859,9 @@
 						  <CHOICE135 minOccurs="1" maxOccurs="1" help="">
 							<CHOICE136 minOccurs="1" maxOccurs="1" help="">
 							  <online minOccurs="1" maxOccurs="1" help="Distribution information for accessing the resource online, represented either as a URL or as a series of named parameters that are needed in order to connect. The URL field is provided for the simple cases where a file is available for download directly from a web server or other similar server and a complex connection protocol is not needed. The connection field provides an alternative where a complex protocol needs to be named and described, along with the necessary parameters needed for the connection.">
-								<CHOICE137 minOccurs="1" maxOccurs="1" help="">
+								<SEQUENCE137 minOccurs="1" maxOccurs="1" help="">
+								  <onlineDescription minOccurs="0" maxOccurs="1" help=""> </onlineDescription>
+								  <CHOICE137 minOccurs="1" maxOccurs="1" help="">
 								  <url function="download" minOccurs="1" maxOccurs="1" help="A URL (Uniform Resource Locator) from which this resource can be downloaded or additional information can be obtained. If accessing the URL would directly return the data stream, then the 'function' attribute should be set to 'download'. If the URL provides further information about downloading the object but does not directly return the data stream, then the 'function' attribute should be set to 'information'. If the 'function' attribute is omitted, then 'download' is implied for the URL function. In more complex cases where a non-standard connection must be established that complies with application specific procedures beyond what can be described in the simple URL, then the 'connection' element should be used instead of the URL element.">
 								  </url>
 								  <connection scope="document" system="" id="" minOccurs="1" maxOccurs="1" help="A description of the information needed to make an application connection to a data service. The connection starts with a connectionDefinition which lists all of the parameters needed for the connection and possible default values for each. It then includes a list of parameter values, one for each parameter, that override the defaults for this particular connection. One parameter element should exist for every parameterDefinition that is present in the connectionDefinition, except that parameters that were defined with a defaultValue in their parameterDefinition can be ommitted from the connection and the default will be used. All information about how to use the parameters to establish a session and extract data is present in the connectionDefinition, possibly implicitly by naming a connection schemeName that is well-known.">
@@ -20885,6 +20900,7 @@
 								  </connection>
 								 
 								</CHOICE137>
+							   </SEQUENCE137>
 							  </online>
 							  <offline minOccurs="1" maxOccurs="1" help="the medium on which this resource is distributed digitally, such as 3.5' floppy disk, or various tape media types, or 'hardcopy'">
 								<SEQUENCE150 minOccurs="1" maxOccurs="1" help="">
@@ -22963,7 +22979,9 @@
 						  <CHOICE135 minOccurs="1" maxOccurs="1" help="">
 							<CHOICE136 minOccurs="1" maxOccurs="1" help="">
 							  <online minOccurs="1" maxOccurs="1" help="Distribution information for accessing the resource online, represented either as a URL or as a series of named parameters that are needed in order to connect. The URL field is provided for the simple cases where a file is available for download directly from a web server or other similar server and a complex connection protocol is not needed. The connection field provides an alternative where a complex protocol needs to be named and described, along with the necessary parameters needed for the connection.">
-								<CHOICE137 minOccurs="1" maxOccurs="1" help="">
+								 <SEQUENCE137 minOccurs="1" maxOccurs="1" help="">
+								  <onlineDescription minOccurs="0" maxOccurs="1" help=""> </onlineDescription>
+								  <CHOICE137 minOccurs="1" maxOccurs="1" help="">
 								  <url function="download" minOccurs="1" maxOccurs="1" help="A URL (Uniform Resource Locator) from which this resource can be downloaded or additional information can be obtained. If accessing the URL would directly return the data stream, then the 'function' attribute should be set to 'download'. If the URL provides further information about downloading the object but does not directly return the data stream, then the 'function' attribute should be set to 'information'. If the 'function' attribute is omitted, then 'download' is implied for the URL function. In more complex cases where a non-standard connection must be established that complies with application specific procedures beyond what can be described in the simple URL, then the 'connection' element should be used instead of the URL element.">
 								  </url>
 								  <connection scope="document" system="" id="" minOccurs="1" maxOccurs="1" help="A description of the information needed to make an application connection to a data service. The connection starts with a connectionDefinition which lists all of the parameters needed for the connection and possible default values for each. It then includes a list of parameter values, one for each parameter, that override the defaults for this particular connection. One parameter element should exist for every parameterDefinition that is present in the connectionDefinition, except that parameters that were defined with a defaultValue in their parameterDefinition can be ommitted from the connection and the default will be used. All information about how to use the parameters to establish a session and extract data is present in the connectionDefinition, possibly implicitly by naming a connection schemeName that is well-known.">
@@ -23002,6 +23020,7 @@
 								  </connection>
 								  
 								</CHOICE137>
+							   </SEQUENCE137>
 							  </online>
 							  <offline minOccurs="1" maxOccurs="1" help="the medium on which this resource is distributed digitally, such as 3.5' floppy disk, or various tape media types, or 'hardcopy'">
 								<SEQUENCE150 minOccurs="1" maxOccurs="1" help="">
@@ -25070,7 +25089,9 @@
 						  <CHOICE135 minOccurs="1" maxOccurs="1" help="">
 							<CHOICE136 minOccurs="1" maxOccurs="1" help="">
 							  <online minOccurs="1" maxOccurs="1" help="Distribution information for accessing the resource online, represented either as a URL or as a series of named parameters that are needed in order to connect. The URL field is provided for the simple cases where a file is available for download directly from a web server or other similar server and a complex connection protocol is not needed. The connection field provides an alternative where a complex protocol needs to be named and described, along with the necessary parameters needed for the connection.">
-								<CHOICE137 minOccurs="1" maxOccurs="1" help="">
+								<SEQUENCE137 minOccurs="1" maxOccurs="1" help="">
+								  <onlineDescription minOccurs="0" maxOccurs="1" help=""> </onlineDescription>
+								  <CHOICE137 minOccurs="1" maxOccurs="1" help="">
 								  <url function="download" minOccurs="1" maxOccurs="1" help="A URL (Uniform Resource Locator) from which this resource can be downloaded or additional information can be obtained. If accessing the URL would directly return the data stream, then the 'function' attribute should be set to 'download'. If the URL provides further information about downloading the object but does not directly return the data stream, then the 'function' attribute should be set to 'information'. If the 'function' attribute is omitted, then 'download' is implied for the URL function. In more complex cases where a non-standard connection must be established that complies with application specific procedures beyond what can be described in the simple URL, then the 'connection' element should be used instead of the URL element.">
 								  </url>
 								  <connection scope="document" system="" id="" minOccurs="1" maxOccurs="1" help="A description of the information needed to make an application connection to a data service. The connection starts with a connectionDefinition which lists all of the parameters needed for the connection and possible default values for each. It then includes a list of parameter values, one for each parameter, that override the defaults for this particular connection. One parameter element should exist for every parameterDefinition that is present in the connectionDefinition, except that parameters that were defined with a defaultValue in their parameterDefinition can be ommitted from the connection and the default will be used. All information about how to use the parameters to establish a session and extract data is present in the connectionDefinition, possibly implicitly by naming a connection schemeName that is well-known.">
@@ -25109,6 +25130,7 @@
 								  </connection>
 								  
 								</CHOICE137>
+							   </SEQUENCE137>
 							  </online>
 							  <offline minOccurs="1" maxOccurs="1" help="the medium on which this resource is distributed digitally, such as 3.5' floppy disk, or various tape media types, or 'hardcopy'">
 								<SEQUENCE150 minOccurs="1" maxOccurs="1" help="">
