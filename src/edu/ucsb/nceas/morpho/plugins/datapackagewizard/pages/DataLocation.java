@@ -6,9 +6,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: connolly $'
- *     '$Date: 2005-07-22 16:33:36 $'
- * '$Revision: 1.39 $'
+ *   '$Author: tao $'
+ *     '$Date: 2008-11-11 23:51:55 $'
+ * '$Revision: 1.40 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -37,6 +37,7 @@ import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardContainerFrame;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardSettings;
 import edu.ucsb.nceas.morpho.util.Base64;
 import edu.ucsb.nceas.morpho.util.Log;
+import edu.ucsb.nceas.morpho.util.Util;
 import edu.ucsb.nceas.utilities.OrderedMap;
 
 import java.io.ByteArrayOutputStream;
@@ -705,7 +706,8 @@ public class DataLocation extends AbstractUIPage {
 
       case DESCRIBE_MAN_OFFLINE:
 
-        if (medNameField.getText().trim().equals(EMPTY_STRING)) {
+        //if (medNameField.getText().trim().equals(EMPTY_STRING)) {
+    	if(Util.isBlank(medNameField.getText())){
           WidgetFactory.hiliteComponent(medNameLabel);
           return false;
         }
