@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2008-11-11 19:28:10 $'
- * '$Revision: 1.1 $'
+ *     '$Date: 2008-11-11 23:51:05 $'
+ * '$Revision: 1.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -37,12 +37,12 @@ public class Util
 		 * @param input the specified string
 		 * @return true or false if the the string is blank.
 		 */
-		public boolean isBlank(String input)
+		public static  boolean isBlank(String input)
 		{
 			boolean isBlank = true;
 			if (input != null)
 			{
-				if (input.trim() != "")
+				if (!input.trim().equals(""))
 				{
 					isBlank = false;
 				}
@@ -55,7 +55,7 @@ public class Util
 		 * @param input the specified string
 		 * @return true if it is number. otherwise false.
 		 */
-		public boolean isNumber (String input)
+		public static boolean isNumber (String input)
 		{
 			boolean isNumber = true;
 			if (input != null)
