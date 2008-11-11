@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: anderson $'
- *     '$Date: 2006-01-19 22:19:17 $'
- * '$Revision: 1.20 $'
+ *   '$Author: tao $'
+ *     '$Date: 2008-11-11 23:52:42 $'
+ * '$Revision: 1.21 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -42,6 +42,7 @@ import javax.swing.JScrollPane;
 import edu.ucsb.nceas.morpho.framework.AbstractUIPage;
 import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardSettings;
+import edu.ucsb.nceas.morpho.util.Util;
 import edu.ucsb.nceas.utilities.Log;
 import java.util.List;
 import java.util.Iterator;
@@ -165,7 +166,8 @@ public class General extends AbstractUIPage{
    */
   public boolean onAdvanceAction() {
 
-    if (titleField.getText().trim().equals("")) {
+    //if (titleField.getText().trim().equals("")) {
+	if (Util.isBlank(titleField.getText())) {
 
       WidgetFactory.hiliteComponent(titleLabel);
       titleField.requestFocus();
