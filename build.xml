@@ -6,7 +6,7 @@
   *    Copyright: 2000 Regents of the University of California and the
   *               National Center for Ecological Analysis and Synthesis
   *  For Details: http://www.nceas.ucsb.edu/
-  *    File Info: '$Id: build.xml,v 1.124 2008-11-06 01:27:12 tao Exp $'
+  *    File Info: '$Id: build.xml,v 1.125 2008-11-12 18:41:12 tao Exp $'
   *
   *  Build file for the Ant cross-platform build system for metacat
   *  See http://jakarta.apache.org for details on Ant
@@ -23,8 +23,8 @@
       <property name="muser" value="uid=jones,o=NCEAS,dc=ecoinformatics,dc=org"/>
       <property name="mpass" value="your-pw-goes-here"/>
       <property name="eml-module" value="eml" />
-      <property name="eml-tag" value="RELEASE_EML_2_0_1" />
-      <property name="eml.doc.dir" value="docs/eml-2.0.1" />
+      <property name="eml-tag" value="RELEASE_EML_2_1_0" />
+      <property name="eml.doc.dir" value="docs/eml-2.1.0" />
       <property name="helpjar" value="morphohelp.jar" />
       <filter token="release" value="${release}"/>
       <filter token="muser" value="${muser}"/>
@@ -217,7 +217,7 @@
    </target>
 
 
-   <target name="helpjar" depends="prepare">
+   <target name="helpjar" depends="prepare, emldoc">
       <mkdir dir="${java.help.doc.dir}" />
       <!-- copy morpho docs-->
       <copy todir="${java.help.doc.dir}" filtering="no">
