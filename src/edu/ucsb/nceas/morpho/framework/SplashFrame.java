@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: anderson $'
- *     '$Date: 2005-10-24 22:44:38 $'
- * '$Revision: 1.26 $'
+ *   '$Author: tao $'
+ *     '$Date: 2008-11-12 01:17:50 $'
+ * '$Revision: 1.27 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -62,7 +62,9 @@ public class SplashFrame extends javax.swing.JFrame
                                      "P. Mark Anderson",
                                      "Callie Bowdish",
                                      "Veronique Connolly",
-                                     "Will Tyburczy",
+                                     "Will Tyburczy",  
+                                     "Judith Kruger",
+                                     "Margaret O'Brien"
                                     };
   private static String[] orgs = {
                  "National Center for Ecological Analysis and Synthesis",
