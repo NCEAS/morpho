@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2008-10-15 02:22:16 $'
- * '$Revision: 1.134 $'
+ *     '$Date: 2008-11-13 00:22:36 $'
+ * '$Revision: 1.135 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -2873,7 +2873,7 @@ public abstract class AbstractDataPackage extends MetadataObject
     	return;
     }
     
-   
+    setDataIDChanged(false);
     for (int i = 0; i < entityArray.length; i++) {
       String protocol = getUrlProtocol(i);
  
@@ -3238,6 +3238,7 @@ public abstract class AbstractDataPackage extends MetadataObject
 		  // store the new id and original id into a map. 
 		  // So when morpho know the new id when it serialize
           original_new_id_map.put(identifier,originalIdentifier);
+          setDataIDChanged(true);
 	  
 	  }
 	   Log.debug(30, "======================new identifier is "+identifier);
