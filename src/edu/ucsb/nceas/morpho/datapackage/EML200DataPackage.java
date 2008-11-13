@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2008-10-24 22:22:00 $'
- * '$Revision: 1.64 $'
+ *     '$Date: 2008-11-13 00:24:12 $'
+ * '$Revision: 1.65 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -115,6 +115,7 @@ public  class EML200DataPackage extends AbstractDataPackage
 	 this.setSerializeMetacatSuccess(false);
 	 this.setIdentifierChangedInLocalSerialization(false);
 	 this.setIdentifierChangedInMetacatSerialization(false);
+	 this.setPackageIDChanged(false);
 	 //System.out.println("serialize metadata ===============");
     Morpho morpho = Morpho.thisStaticInstance;
     MetacatDataStore mds  = null;
@@ -203,6 +204,7 @@ public  class EML200DataPackage extends AbstractDataPackage
     	    AccessionNumber an = new AccessionNumber(morpho);
             identifier = an.getNextId();
             setAccessionNumber(identifier);
+            setPackageIDChanged(true);
             temp = XMLUtil.getDOMTreeAsString(getMetadataNode().getOwnerDocument());
             updateFlag =false;
     	 }
@@ -212,6 +214,7 @@ public  class EML200DataPackage extends AbstractDataPackage
     		 int newRevision = this.getNextRevisionNumber(getAccessionNumber());
     		 identifier = temp2+"."+newRevision;
     		 setAccessionNumber(identifier);
+    		 setPackageIDChanged(true);
              temp = XMLUtil.getDOMTreeAsString(getMetadataNode().getOwnerDocument());
     		 Log.debug(30, "The new id (after increase revision number) is "+identifier);
     	 }
@@ -223,6 +226,7 @@ public  class EML200DataPackage extends AbstractDataPackage
     	 AccessionNumber an = new AccessionNumber(morpho);
     	 identifier = an.getNextId();
     	 setAccessionNumber(identifier);
+    	 setPackageIDChanged(true);
     	 temp = XMLUtil.getDOMTreeAsString(getMetadataNode().getOwnerDocument());
     }
      // Log.debug(30, temp);
