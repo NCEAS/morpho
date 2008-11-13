@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2008-10-21 19:29:00 $'
- * '$Revision: 1.30 $'
+ *     '$Date: 2008-11-13 00:26:50 $'
+ * '$Revision: 1.31 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -261,14 +261,14 @@ public class SaveDialog extends JDialog
     else if (location.equals(AbstractDataPackage.LOCAL)) {
       localLoc.setEnabled(false);
       networkLoc.setEnabled(true);
-      localLoc.setSelected(true);
+      localLoc.setSelected(false);
       networkLoc.setSelected(true);
     }
     else if (location.equals(AbstractDataPackage.METACAT)) {
       localLoc.setEnabled(true);
       networkLoc.setEnabled(false);
       localLoc.setSelected(true);
-      networkLoc.setSelected(true);
+      networkLoc.setSelected(false);
     }
     else if (location.equals(AbstractDataPackage.BOTH)) {
       localLoc.setEnabled(false);
@@ -430,6 +430,11 @@ public class SaveDialog extends JDialog
         if(adp.getSerializeMetacatSuccess())
         {
         	adp.setLocation(AbstractDataPackage.METACAT);
+        }
+        else if(adp.getLocation() != null && adp.getLocation().equals(AbstractDataPackage.LOCAL)
+        		&& !adp.getPackageIDChanged() && !adp.getDataIDChanged())
+        {
+        	adp.setLocation(AbstractDataPackage.LOCAL);
         }
         else
         {
