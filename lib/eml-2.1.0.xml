@@ -16045,12 +16045,12 @@
 						</CHOICE3>
 					  </dataFormat>
 					  <distribution scope="document" system="" id="" minOccurs="0" maxOccurs="unbounded" help="This element provides information on how the resource is distributed online and offline. Connections to online systems can be described as URLs and as a list of relevant connection parameters.">
-						<SEQUENCE134 minOccurs="1" maxOccurs="1" help="">
-						  <CHOICE135 minOccurs="1" maxOccurs="1" help="">
+						<CHOICE134 minOccurs="1" maxOccurs="1" help="">
+						  <SEQUENCE135 minOccurs="1" maxOccurs="1" help="">
 							<CHOICE136 minOccurs="1" maxOccurs="1" help="">
 							  <online minOccurs="1" maxOccurs="1" help="Distribution information for accessing the resource online, represented either as a URL or as a series of named parameters that are needed in order to connect. The URL field is provided for the simple cases where a file is available for download directly from a web server or other similar server and a complex connection protocol is not needed. The connection field provides an alternative where a complex protocol needs to be named and described, along with the necessary parameters needed for the connection.">
 								<SEQUENCE137 minOccurs="1" maxOccurs="1" help="">
-								  <onlineDescription minOccurs="0" maxOccurs="1" help=""> </onlineDescription>
+									<onlineDescription minOccurs="0" maxOccurs="1" help=""> </onlineDescription>
 								  <CHOICE137 minOccurs="1" maxOccurs="1" help="">
 								  <url function="download" minOccurs="1" maxOccurs="1" help="A URL (Uniform Resource Locator) from which this resource can be downloaded or additional information can be obtained. If accessing the URL would directly return the data stream, then the 'function' attribute should be set to 'download'. If the URL provides further information about downloading the object but does not directly return the data stream, then the 'function' attribute should be set to 'information'. If the 'function' attribute is omitted, then 'download' is implied for the URL function. In more complex cases where a non-standard connection must be established that complies with application specific procedures beyond what can be described in the simple URL, then the 'connection' element should be used instead of the URL element.">
 								  </url>
@@ -16115,12 +16115,6 @@
 								</SEQUENCE151>
 							  </inline>
 							</CHOICE136>
-							<SEQUENCE152 minOccurs="1" maxOccurs="1" help="">
-							  <references minOccurs="1" maxOccurs="1" help="The id of another element in this EML document to be used to here in this context. This is used instead of duplicating information when an identical piece of information needs to be used multiple times in an EML document. For example, if the same person is the creator, metadataProvider, and contact for a dataset, their name and address can be provided once as part of the 'creator' element, and then their 'id' can be used in the 'references' element of  metadataProvider and contact. This reduces the likelihood of error by reducing redundancy, and allows one to specify that two pieces of information are identical. To be a vaild EML document, the content of every 'references' element MUST be defined in the document as the value of an 'id' attribute on some element within the document. Other critical rules about the use of IDs and references in EML are provided in the text of the EML specification.">
-							  </references>
-							</SEQUENCE152>
-						  </CHOICE135>
-						  <SEQUENCE153 minOccurs="0" maxOccurs="1" help="">
 							<access authSystem="" order="allowFirst" scope="document" system="" id="" minOccurs="0" maxOccurs="1" help="The access element contains a list of rules that define the level of access for a given data package, including both metadata and data. The access element must contain the elements defined in the AccessType type.">
 							  <CHOICE154 minOccurs="1" maxOccurs="1" help="">
 								<CHOICE155 minOccurs="1" maxOccurs="unbounded" help="">
@@ -16147,8 +16141,12 @@
 								</SEQUENCE158>
 							  </CHOICE154>
 							</access>
+						  </SEQUENCE135>
+						  <SEQUENCE153 minOccurs="1" maxOccurs="1" help="">
+							 <references minOccurs="1" maxOccurs="1" help="The id of another element in this EML document to be used to here in this context. This is used instead of duplicating information when an identical piece of information needs to be used multiple times in an EML document. For example, if the same person is the creator, metadataProvider, and contact for a dataset, their name and address can be provided once as part of the 'creator' element, and then their 'id' can be used in the 'references' element of  metadataProvider and contact. This reduces the likelihood of error by reducing redundancy, and allows one to specify that two pieces of information are identical. To be a vaild EML document, the content of every 'references' element MUST be defined in the document as the value of an 'id' attribute on some element within the document. Other critical rules about the use of IDs and references in EML are provided in the text of the EML specification.">
+							  </references>
 						  </SEQUENCE153>
-						</SEQUENCE134>
+						</CHOICE134>
 					  </distribution>
                     </SEQUENCE1387>
                     <SEQUENCE1399 minOccurs="1" maxOccurs="1" help="">
@@ -18645,12 +18643,12 @@
 						</CHOICE3>
 					  </dataFormat>
 					  <distribution scope="document" system="" id="" minOccurs="0" maxOccurs="unbounded" help="This element provides information on how the resource is distributed online and offline. Connections to online systems can be described as URLs and as a list of relevant connection parameters.">
-						<SEQUENCE134 minOccurs="1" maxOccurs="1" help="">
-						  <CHOICE135 minOccurs="1" maxOccurs="1" help="">
+						<CHOICE134 minOccurs="1" maxOccurs="1" help="">
+						  <SEQUENCE135 minOccurs="1" maxOccurs="1" help="">
 							<CHOICE136 minOccurs="1" maxOccurs="1" help="">
 							  <online minOccurs="1" maxOccurs="1" help="Distribution information for accessing the resource online, represented either as a URL or as a series of named parameters that are needed in order to connect. The URL field is provided for the simple cases where a file is available for download directly from a web server or other similar server and a complex connection protocol is not needed. The connection field provides an alternative where a complex protocol needs to be named and described, along with the necessary parameters needed for the connection.">
 								<SEQUENCE137 minOccurs="1" maxOccurs="1" help="">
-								  <onlineDescription minOccurs="0" maxOccurs="1" help=""> </onlineDescription>
+									<onlineDescription minOccurs="0" maxOccurs="1" help=""> </onlineDescription>
 								  <CHOICE137 minOccurs="1" maxOccurs="1" help="">
 								  <url function="download" minOccurs="1" maxOccurs="1" help="A URL (Uniform Resource Locator) from which this resource can be downloaded or additional information can be obtained. If accessing the URL would directly return the data stream, then the 'function' attribute should be set to 'download'. If the URL provides further information about downloading the object but does not directly return the data stream, then the 'function' attribute should be set to 'information'. If the 'function' attribute is omitted, then 'download' is implied for the URL function. In more complex cases where a non-standard connection must be established that complies with application specific procedures beyond what can be described in the simple URL, then the 'connection' element should be used instead of the URL element.">
 								  </url>
@@ -18715,12 +18713,6 @@
 								</SEQUENCE151>
 							  </inline>
 							</CHOICE136>
-							<SEQUENCE152 minOccurs="1" maxOccurs="1" help="">
-							  <references minOccurs="1" maxOccurs="1" help="The id of another element in this EML document to be used to here in this context. This is used instead of duplicating information when an identical piece of information needs to be used multiple times in an EML document. For example, if the same person is the creator, metadataProvider, and contact for a dataset, their name and address can be provided once as part of the 'creator' element, and then their 'id' can be used in the 'references' element of  metadataProvider and contact. This reduces the likelihood of error by reducing redundancy, and allows one to specify that two pieces of information are identical. To be a vaild EML document, the content of every 'references' element MUST be defined in the document as the value of an 'id' attribute on some element within the document. Other critical rules about the use of IDs and references in EML are provided in the text of the EML specification.">
-							  </references>
-							</SEQUENCE152>
-						  </CHOICE135>
-						  <SEQUENCE153 minOccurs="0" maxOccurs="1" help="">
 							<access authSystem="" order="allowFirst" scope="document" system="" id="" minOccurs="0" maxOccurs="1" help="The access element contains a list of rules that define the level of access for a given data package, including both metadata and data. The access element must contain the elements defined in the AccessType type.">
 							  <CHOICE154 minOccurs="1" maxOccurs="1" help="">
 								<CHOICE155 minOccurs="1" maxOccurs="unbounded" help="">
@@ -18747,8 +18739,12 @@
 								</SEQUENCE158>
 							  </CHOICE154>
 							</access>
+						  </SEQUENCE135>
+						  <SEQUENCE153 minOccurs="1" maxOccurs="1" help="">
+							 <references minOccurs="1" maxOccurs="1" help="The id of another element in this EML document to be used to here in this context. This is used instead of duplicating information when an identical piece of information needs to be used multiple times in an EML document. For example, if the same person is the creator, metadataProvider, and contact for a dataset, their name and address can be provided once as part of the 'creator' element, and then their 'id' can be used in the 'references' element of  metadataProvider and contact. This reduces the likelihood of error by reducing redundancy, and allows one to specify that two pieces of information are identical. To be a vaild EML document, the content of every 'references' element MUST be defined in the document as the value of an 'id' attribute on some element within the document. Other critical rules about the use of IDs and references in EML are provided in the text of the EML specification.">
+							  </references>
 						  </SEQUENCE153>
-						</SEQUENCE134>
+						</CHOICE134>
 					  </distribution>
                     </SEQUENCE1534>
                     <SEQUENCE1546 minOccurs="1" maxOccurs="1" help="">
@@ -20853,12 +20849,12 @@
 						</CHOICE3>
 					  </dataFormat>
 					  <distribution scope="document" system="" id="" minOccurs="0" maxOccurs="unbounded" help="This element provides information on how the resource is distributed online and offline. Connections to online systems can be described as URLs and as a list of relevant connection parameters.">
-						<SEQUENCE134 minOccurs="1" maxOccurs="1" help="">
-						  <CHOICE135 minOccurs="1" maxOccurs="1" help="">
+						<CHOICE134 minOccurs="1" maxOccurs="1" help="">
+						  <SEQUENCE135 minOccurs="1" maxOccurs="1" help="">
 							<CHOICE136 minOccurs="1" maxOccurs="1" help="">
 							  <online minOccurs="1" maxOccurs="1" help="Distribution information for accessing the resource online, represented either as a URL or as a series of named parameters that are needed in order to connect. The URL field is provided for the simple cases where a file is available for download directly from a web server or other similar server and a complex connection protocol is not needed. The connection field provides an alternative where a complex protocol needs to be named and described, along with the necessary parameters needed for the connection.">
 								<SEQUENCE137 minOccurs="1" maxOccurs="1" help="">
-								  <onlineDescription minOccurs="0" maxOccurs="1" help=""> </onlineDescription>
+									<onlineDescription minOccurs="0" maxOccurs="1" help=""> </onlineDescription>
 								  <CHOICE137 minOccurs="1" maxOccurs="1" help="">
 								  <url function="download" minOccurs="1" maxOccurs="1" help="A URL (Uniform Resource Locator) from which this resource can be downloaded or additional information can be obtained. If accessing the URL would directly return the data stream, then the 'function' attribute should be set to 'download'. If the URL provides further information about downloading the object but does not directly return the data stream, then the 'function' attribute should be set to 'information'. If the 'function' attribute is omitted, then 'download' is implied for the URL function. In more complex cases where a non-standard connection must be established that complies with application specific procedures beyond what can be described in the simple URL, then the 'connection' element should be used instead of the URL element.">
 								  </url>
@@ -20896,7 +20892,7 @@
 									  </SEQUENCE144>
 									</CHOICE138>
 								  </connection>
-								 
+								  
 								</CHOICE137>
 							   </SEQUENCE137>
 							  </online>
@@ -20923,12 +20919,6 @@
 								</SEQUENCE151>
 							  </inline>
 							</CHOICE136>
-							<SEQUENCE152 minOccurs="1" maxOccurs="1" help="">
-							  <references minOccurs="1" maxOccurs="1" help="The id of another element in this EML document to be used to here in this context. This is used instead of duplicating information when an identical piece of information needs to be used multiple times in an EML document. For example, if the same person is the creator, metadataProvider, and contact for a dataset, their name and address can be provided once as part of the 'creator' element, and then their 'id' can be used in the 'references' element of  metadataProvider and contact. This reduces the likelihood of error by reducing redundancy, and allows one to specify that two pieces of information are identical. To be a vaild EML document, the content of every 'references' element MUST be defined in the document as the value of an 'id' attribute on some element within the document. Other critical rules about the use of IDs and references in EML are provided in the text of the EML specification.">
-							  </references>
-							</SEQUENCE152>
-						  </CHOICE135>
-						  <SEQUENCE153 minOccurs="0" maxOccurs="1" help="">
 							<access authSystem="" order="allowFirst" scope="document" system="" id="" minOccurs="0" maxOccurs="1" help="The access element contains a list of rules that define the level of access for a given data package, including both metadata and data. The access element must contain the elements defined in the AccessType type.">
 							  <CHOICE154 minOccurs="1" maxOccurs="1" help="">
 								<CHOICE155 minOccurs="1" maxOccurs="unbounded" help="">
@@ -20955,8 +20945,12 @@
 								</SEQUENCE158>
 							  </CHOICE154>
 							</access>
+						  </SEQUENCE135>
+						  <SEQUENCE153 minOccurs="1" maxOccurs="1" help="">
+							 <references minOccurs="1" maxOccurs="1" help="The id of another element in this EML document to be used to here in this context. This is used instead of duplicating information when an identical piece of information needs to be used multiple times in an EML document. For example, if the same person is the creator, metadataProvider, and contact for a dataset, their name and address can be provided once as part of the 'creator' element, and then their 'id' can be used in the 'references' element of  metadataProvider and contact. This reduces the likelihood of error by reducing redundancy, and allows one to specify that two pieces of information are identical. To be a vaild EML document, the content of every 'references' element MUST be defined in the document as the value of an 'id' attribute on some element within the document. Other critical rules about the use of IDs and references in EML are provided in the text of the EML specification.">
+							  </references>
 						  </SEQUENCE153>
-						</SEQUENCE134>
+						</CHOICE134>
 					  </distribution>
                     </SEQUENCE1670>
                     <SEQUENCE1682 minOccurs="1" maxOccurs="1" help="">
@@ -22973,12 +22967,12 @@
 						</CHOICE3>
 					  </dataFormat>
 					  <distribution scope="document" system="" id="" minOccurs="0" maxOccurs="unbounded" help="This element provides information on how the resource is distributed online and offline. Connections to online systems can be described as URLs and as a list of relevant connection parameters.">
-						<SEQUENCE134 minOccurs="1" maxOccurs="1" help="">
-						  <CHOICE135 minOccurs="1" maxOccurs="1" help="">
+						<CHOICE134 minOccurs="1" maxOccurs="1" help="">
+						  <SEQUENCE135 minOccurs="1" maxOccurs="1" help="">
 							<CHOICE136 minOccurs="1" maxOccurs="1" help="">
 							  <online minOccurs="1" maxOccurs="1" help="Distribution information for accessing the resource online, represented either as a URL or as a series of named parameters that are needed in order to connect. The URL field is provided for the simple cases where a file is available for download directly from a web server or other similar server and a complex connection protocol is not needed. The connection field provides an alternative where a complex protocol needs to be named and described, along with the necessary parameters needed for the connection.">
-								 <SEQUENCE137 minOccurs="1" maxOccurs="1" help="">
-								  <onlineDescription minOccurs="0" maxOccurs="1" help=""> </onlineDescription>
+								<SEQUENCE137 minOccurs="1" maxOccurs="1" help="">
+									<onlineDescription minOccurs="0" maxOccurs="1" help=""> </onlineDescription>
 								  <CHOICE137 minOccurs="1" maxOccurs="1" help="">
 								  <url function="download" minOccurs="1" maxOccurs="1" help="A URL (Uniform Resource Locator) from which this resource can be downloaded or additional information can be obtained. If accessing the URL would directly return the data stream, then the 'function' attribute should be set to 'download'. If the URL provides further information about downloading the object but does not directly return the data stream, then the 'function' attribute should be set to 'information'. If the 'function' attribute is omitted, then 'download' is implied for the URL function. In more complex cases where a non-standard connection must be established that complies with application specific procedures beyond what can be described in the simple URL, then the 'connection' element should be used instead of the URL element.">
 								  </url>
@@ -23043,12 +23037,6 @@
 								</SEQUENCE151>
 							  </inline>
 							</CHOICE136>
-							<SEQUENCE152 minOccurs="1" maxOccurs="1" help="">
-							  <references minOccurs="1" maxOccurs="1" help="The id of another element in this EML document to be used to here in this context. This is used instead of duplicating information when an identical piece of information needs to be used multiple times in an EML document. For example, if the same person is the creator, metadataProvider, and contact for a dataset, their name and address can be provided once as part of the 'creator' element, and then their 'id' can be used in the 'references' element of  metadataProvider and contact. This reduces the likelihood of error by reducing redundancy, and allows one to specify that two pieces of information are identical. To be a vaild EML document, the content of every 'references' element MUST be defined in the document as the value of an 'id' attribute on some element within the document. Other critical rules about the use of IDs and references in EML are provided in the text of the EML specification.">
-							  </references>
-							</SEQUENCE152>
-						  </CHOICE135>
-						  <SEQUENCE153 minOccurs="0" maxOccurs="1" help="">
 							<access authSystem="" order="allowFirst" scope="document" system="" id="" minOccurs="0" maxOccurs="1" help="The access element contains a list of rules that define the level of access for a given data package, including both metadata and data. The access element must contain the elements defined in the AccessType type.">
 							  <CHOICE154 minOccurs="1" maxOccurs="1" help="">
 								<CHOICE155 minOccurs="1" maxOccurs="unbounded" help="">
@@ -23075,8 +23063,12 @@
 								</SEQUENCE158>
 							  </CHOICE154>
 							</access>
+						  </SEQUENCE135>
+						  <SEQUENCE153 minOccurs="1" maxOccurs="1" help="">
+							 <references minOccurs="1" maxOccurs="1" help="The id of another element in this EML document to be used to here in this context. This is used instead of duplicating information when an identical piece of information needs to be used multiple times in an EML document. For example, if the same person is the creator, metadataProvider, and contact for a dataset, their name and address can be provided once as part of the 'creator' element, and then their 'id' can be used in the 'references' element of  metadataProvider and contact. This reduces the likelihood of error by reducing redundancy, and allows one to specify that two pieces of information are identical. To be a vaild EML document, the content of every 'references' element MUST be defined in the document as the value of an 'id' attribute on some element within the document. Other critical rules about the use of IDs and references in EML are provided in the text of the EML specification.">
+							  </references>
 						  </SEQUENCE153>
-						</SEQUENCE134>
+						</CHOICE134>
 					  </distribution>
                     </SEQUENCE1793>
                     <SEQUENCE1805 minOccurs="1" maxOccurs="1" help="">
@@ -25083,12 +25075,12 @@
 						</CHOICE3>
 					  </dataFormat>
 					  <distribution scope="document" system="" id="" minOccurs="0" maxOccurs="unbounded" help="This element provides information on how the resource is distributed online and offline. Connections to online systems can be described as URLs and as a list of relevant connection parameters.">
-						<SEQUENCE134 minOccurs="1" maxOccurs="1" help="">
-						  <CHOICE135 minOccurs="1" maxOccurs="1" help="">
+						<CHOICE134 minOccurs="1" maxOccurs="1" help="">
+						  <SEQUENCE135 minOccurs="1" maxOccurs="1" help="">
 							<CHOICE136 minOccurs="1" maxOccurs="1" help="">
 							  <online minOccurs="1" maxOccurs="1" help="Distribution information for accessing the resource online, represented either as a URL or as a series of named parameters that are needed in order to connect. The URL field is provided for the simple cases where a file is available for download directly from a web server or other similar server and a complex connection protocol is not needed. The connection field provides an alternative where a complex protocol needs to be named and described, along with the necessary parameters needed for the connection.">
 								<SEQUENCE137 minOccurs="1" maxOccurs="1" help="">
-								  <onlineDescription minOccurs="0" maxOccurs="1" help=""> </onlineDescription>
+									<onlineDescription minOccurs="0" maxOccurs="1" help=""> </onlineDescription>
 								  <CHOICE137 minOccurs="1" maxOccurs="1" help="">
 								  <url function="download" minOccurs="1" maxOccurs="1" help="A URL (Uniform Resource Locator) from which this resource can be downloaded or additional information can be obtained. If accessing the URL would directly return the data stream, then the 'function' attribute should be set to 'download'. If the URL provides further information about downloading the object but does not directly return the data stream, then the 'function' attribute should be set to 'information'. If the 'function' attribute is omitted, then 'download' is implied for the URL function. In more complex cases where a non-standard connection must be established that complies with application specific procedures beyond what can be described in the simple URL, then the 'connection' element should be used instead of the URL element.">
 								  </url>
@@ -25153,12 +25145,6 @@
 								</SEQUENCE151>
 							  </inline>
 							</CHOICE136>
-							<SEQUENCE152 minOccurs="1" maxOccurs="1" help="">
-							  <references minOccurs="1" maxOccurs="1" help="The id of another element in this EML document to be used to here in this context. This is used instead of duplicating information when an identical piece of information needs to be used multiple times in an EML document. For example, if the same person is the creator, metadataProvider, and contact for a dataset, their name and address can be provided once as part of the 'creator' element, and then their 'id' can be used in the 'references' element of  metadataProvider and contact. This reduces the likelihood of error by reducing redundancy, and allows one to specify that two pieces of information are identical. To be a vaild EML document, the content of every 'references' element MUST be defined in the document as the value of an 'id' attribute on some element within the document. Other critical rules about the use of IDs and references in EML are provided in the text of the EML specification.">
-							  </references>
-							</SEQUENCE152>
-						  </CHOICE135>
-						  <SEQUENCE153 minOccurs="0" maxOccurs="1" help="">
 							<access authSystem="" order="allowFirst" scope="document" system="" id="" minOccurs="0" maxOccurs="1" help="The access element contains a list of rules that define the level of access for a given data package, including both metadata and data. The access element must contain the elements defined in the AccessType type.">
 							  <CHOICE154 minOccurs="1" maxOccurs="1" help="">
 								<CHOICE155 minOccurs="1" maxOccurs="unbounded" help="">
@@ -25185,8 +25171,12 @@
 								</SEQUENCE158>
 							  </CHOICE154>
 							</access>
+						  </SEQUENCE135>
+						  <SEQUENCE153 minOccurs="1" maxOccurs="1" help="">
+							 <references minOccurs="1" maxOccurs="1" help="The id of another element in this EML document to be used to here in this context. This is used instead of duplicating information when an identical piece of information needs to be used multiple times in an EML document. For example, if the same person is the creator, metadataProvider, and contact for a dataset, their name and address can be provided once as part of the 'creator' element, and then their 'id' can be used in the 'references' element of  metadataProvider and contact. This reduces the likelihood of error by reducing redundancy, and allows one to specify that two pieces of information are identical. To be a vaild EML document, the content of every 'references' element MUST be defined in the document as the value of an 'id' attribute on some element within the document. Other critical rules about the use of IDs and references in EML are provided in the text of the EML specification.">
+							  </references>
 						  </SEQUENCE153>
-						</SEQUENCE134>
+						</CHOICE134>
 					  </distribution>
                     </SEQUENCE1915>
                     <SEQUENCE1927 minOccurs="1" maxOccurs="1" help="">
