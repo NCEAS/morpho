@@ -74,10 +74,11 @@ INSTALLATION
 1. Uninstall old versions of Morpho.
 Windows may get confused when there are multiple versions of Morpho installed, so we recommend that you uninstall previous version using the Windows control panel "Add/Remove Programs" before proceeding with the installation. Note, however, that previously created data packages will NOT be deleted because they are stored in a separate directory. Older packages will contnue to be available when new versions of Morpho are installed.
 
-2. Download the new version, along with Java. Morpho is a Java application. One thus needs to have a Java Virtual  Machine (JVM) installed on the machine running Morpho, preferably  version 1.3 or later.  Morpho can be downloaded with Java for your convenience, or it can be obtained from Sun (http://java.sun.com). With Java the Morpho distribution is a much larger download, so if you already have Java 1.3 or later installed, its better to download the Morpho-only distribution. [Note: Java 1.4 is currently the preferred version of Java for use with Morpho.]
+2. Download a JVM if necessary. 
+Morpho and the installers are Java applications. One thus needs to have a Java Virtual  Machine (JVM) installed on the machine that will install and run Morpho, preferably  version 1.5 or later.  If you don't have JVM on the machine, the installers will help you to get one from the Internet.
 
-3. Run the installer application.
-Download the installation executable and run it on your desired platform. For windows this requires simply double-clicking on the executable file that you downloaded, but may vary depending on your operating system.
+3. Run the installer.
+Download and run the installation executable. This process will be different depending on your operating system. For windows and mac, simply double-click on the executable file that you downloaded. For Linux, run the following command from a terminal window: java -jar morpho-1.6.2-linux.jar
 
 STARTING MORPHO
 ---------------
