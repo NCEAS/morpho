@@ -7,8 +7,8 @@
 *    Release: @release@
 *
 *   '$Author: tao $'
-*     '$Date: 2008-10-15 02:52:57 $'
-* '$Revision: 1.36 $'
+*     '$Date: 2008-11-17 23:39:00 $'
+* '$Revision: 1.37 $'
 *
 * This program is free software; you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -37,6 +37,7 @@ import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WidgetFactory;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardPageSubPanelAPI;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardSettings;
 import edu.ucsb.nceas.morpho.util.Log;
+import edu.ucsb.nceas.morpho.util.Util;
 import edu.ucsb.nceas.utilities.OrderedMap;
 import edu.ucsb.nceas.utilities.XMLUtilities;
 
@@ -681,7 +682,8 @@ public class AttributePage extends AbstractUIPage {
   */
   public boolean onAdvanceAction() {
 
-    if (attribNameField.getText().trim().equals("")) {
+    //if (attribNameField.getText().trim().equals("")) {
+    if (Util.isBlank(attribNameField.getText())) {
 
       WidgetFactory.hiliteComponent(attribNameLabel);
       attribNameField.requestFocus();
@@ -689,7 +691,8 @@ public class AttributePage extends AbstractUIPage {
     }
     WidgetFactory.unhiliteComponent(attribNameLabel);
 
-    if (attribDefinitionField.getText().trim().equals("")) {
+    //if (attribDefinitionField.getText().trim().equals("")) {
+    if (Util.isBlank(attribDefinitionField.getText())) {
 
       WidgetFactory.hiliteComponent(attribDefinitionLabel);
       attribDefinitionField.requestFocus();
@@ -847,12 +850,12 @@ public class AttributePage extends AbstractUIPage {
     }*/
 
     String missingValueCode = missingValueCodeField.getText().trim();
-    if(missingValueCode !=null && !missingValueCode.equals("")) {
+    if(Util.isBlank(missingValueCode)) {
       returnMap.put(xPath + "/missingValueCode/code", missingValueCode);
     }
 
     String missingValueExpln = missingValueExplnField.getText().trim();
-    if(missingValueExpln !=null && !missingValueExpln.equals("")) {
+    if(Util.isBlank(missingValueExpln)) {
       returnMap.put(xPath + "/missingValueCode/codeExplanation",
       missingValueExpln);
     }

@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: anderson $'
- *     '$Date: 2005-10-21 19:46:46 $'
- * '$Revision: 1.26 $'
+ *   '$Author: tao $'
+ *     '$Date: 2008-11-17 23:39:00 $'
+ * '$Revision: 1.27 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -37,6 +37,7 @@ import edu.ucsb.nceas.morpho.datapackage.AbstractDataPackage;
 import edu.ucsb.nceas.morpho.datapackage.EML200DataPackage;
 import edu.ucsb.nceas.morpho.framework.UIController;
 import edu.ucsb.nceas.morpho.util.Log;
+import edu.ucsb.nceas.morpho.util.Util;
 
 
 import java.util.ArrayList;
@@ -304,7 +305,8 @@ class DateTimePanel extends JPanel implements WizardPageSubPanelAPI {
                                               CustomList.IGNORE,
                                               CustomList.EMPTY_STRING_TRIM } );
 
-    if (formatStringField.getText().trim().equals("")) {
+    //if (formatStringField.getText().trim().equals("")) {
+    if (Util.isBlank(formatStringField.getText())) {
 
       WidgetFactory.hiliteComponent(formatStringLabel);
       formatStringField.requestFocus();

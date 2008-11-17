@@ -6,9 +6,9 @@
 *    Authors: Chad Berkley
 *    Release: @release@
 *
-*   '$Author: sgarg $'
-*     '$Date: 2005-06-22 22:55:38 $'
-* '$Revision: 1.34 $'
+*   '$Author: tao $'
+*     '$Date: 2008-11-17 23:39:00 $'
+* '$Revision: 1.35 $'
 *
 * This program is free software; you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -38,6 +38,7 @@ import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WidgetFactory;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardPageSubPanelAPI;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardSettings;
 import edu.ucsb.nceas.morpho.util.Log;
+import edu.ucsb.nceas.morpho.util.Util;
 import edu.ucsb.nceas.utilities.OrderedMap;
 
 import java.util.ArrayList;
@@ -580,7 +581,7 @@ class NominalOrdinalPanel extends JPanel implements WizardPageSubPanelAPI {
     } else {    ////////////////////////////TEXT
 
       WidgetFactory.unhiliteComponent(textDefinitionLabel);
-      if (textDefinitionField.getText().trim().equals(EMPTY_STRING)) {
+      if (Util.isBlank(textDefinitionField.getText())) {
 
   WidgetFactory.hiliteComponent(textDefinitionLabel);
   textDefinitionField.requestFocus();
