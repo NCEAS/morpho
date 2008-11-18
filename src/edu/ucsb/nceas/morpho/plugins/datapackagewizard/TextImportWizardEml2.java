@@ -5,8 +5,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2008-11-18 03:13:46 $'
- * '$Revision: 1.26 $'
+ *     '$Date: 2008-11-18 22:15:06 $'
+ * '$Revision: 1.27 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -427,6 +427,7 @@ public class TextImportWizardEml2 extends JFrame {
     Step2_DelimiterChoicePanel.add(OtherCheckBox);
     OtherCheckBox.setFont(new Font("Dialog", Font.PLAIN, 12));
     OtherTextField.setColumns(2);
+    OtherTextField.setEnabled(false);
     Step2_DelimiterChoicePanel.add(OtherTextField);
     JPanel10.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
     //Step2ControlsPanel.add(JPanel10);
@@ -1634,6 +1635,8 @@ public class TextImportWizardEml2 extends JFrame {
     }
     int stateChange = event.getStateChange();
     delim_other = (stateChange==ItemEvent.SELECTED);
+    OtherTextField.setEnabled(stateChange==ItemEvent.SELECTED);
+    
   }
 
   void ConsecutiveCheckBox_itemStateChanged(java.awt.event.ItemEvent event) {
