@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2004-04-13 04:51:21 $'
- * '$Revision: 1.34 $'
+ *   '$Author: tao $'
+ *     '$Date: 2008-11-18 01:42:20 $'
+ * '$Revision: 1.35 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,6 +34,7 @@ import edu.ucsb.nceas.morpho.plugins.datapackagewizard.CustomList;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WidgetFactory;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardSettings;
 import edu.ucsb.nceas.morpho.util.Log;
+import edu.ucsb.nceas.morpho.util.Util;
 import edu.ucsb.nceas.utilities.OrderedMap;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardContainerFrame;
 
@@ -562,7 +563,8 @@ public class DataFormat extends AbstractUIPage{
       if (delim_other==true) {
 
         String otherTxt = otherDelimTextFieldSimple.getText();
-        if (otherTxt==null || otherTxt.equals(EMPTY_STRING)) {
+        //if (otherTxt==null || otherTxt.equals(EMPTY_STRING)) {
+        if (Util.isBlank(otherTxt)) {
 
           WidgetFactory.hiliteComponent(otherDelimTextFieldSimple);
           otherDelimTextFieldSimple.requestFocus();
@@ -597,7 +599,8 @@ public class DataFormat extends AbstractUIPage{
           proprietaryText = otherProprietaryTextField.getText().trim();
 
           //if actual values is still empty string, user hasn't entered anything
-          if (proprietaryText.equals(EMPTY_STRING)) {
+          //if (proprietaryText.equals(EMPTY_STRING)) {
+          if (Util.isBlank(proprietaryText)) {
 
             WidgetFactory.hiliteComponent(otherProprietaryTextField);
             return false;

@@ -7,9 +7,9 @@
  *    Authors: Saurabh Garg
  *    Release: @release@
  *
- *   '$Author: sgarg $'
- *     '$Date: 2005-06-17 22:57:03 $'
- * '$Revision: 1.18 $'
+ *   '$Author: tao $'
+ *     '$Date: 2008-11-18 01:42:20 $'
+ * '$Revision: 1.19 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -35,6 +35,7 @@ import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WidgetFactory;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardSettings;
 import edu.ucsb.nceas.morpho.query.LiveMapPanel;
 import edu.ucsb.nceas.morpho.util.Log;
+import edu.ucsb.nceas.morpho.util.Util;
 import edu.ucsb.nceas.utilities.OrderedMap;
 
 import java.util.ArrayList;
@@ -595,7 +596,8 @@ public class GeographicPage extends AbstractUIPage {
     west  = lmp.getWest();
     east  = lmp.getEast();
     south = lmp.getSouth();
-    if (covDescField.getText().trim().equals("")) {
+    //if (covDescField.getText().trim().equals("")) {
+    if (Util.isBlank(covDescField.getText())) {
       WidgetFactory.hiliteComponent(covDescLabel);
       covDescField.requestFocus();
       return false;

@@ -5,9 +5,9 @@
  *             National Center for Ecological Analysis and Synthesis
  *    Release: @release@
  *
- *   '$Author: sgarg $'
- *     '$Date: 2005-05-09 22:08:40 $'
- * '$Revision: 1.23 $'
+ *   '$Author: tao $'
+ *     '$Date: 2008-11-18 01:42:20 $'
+ * '$Revision: 1.24 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -61,6 +61,7 @@ import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardPageSubPanelAPI;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardSettings;
 import edu.ucsb.nceas.morpho.util.Log;
 import edu.ucsb.nceas.morpho.util.UISettings;
+import edu.ucsb.nceas.morpho.util.Util;
 import edu.ucsb.nceas.utilities.OrderedMap;
 import edu.ucsb.nceas.utilities.XMLUtilities;
 
@@ -1217,7 +1218,8 @@ class ArticlePanel extends JPanel  implements WizardPageSubPanelAPI{
 
   public boolean validateUserInput() {
 
-    if (journalField.getText().trim().equals("")) {
+    //if (journalField.getText().trim().equals("")) {
+    if (Util.isBlank(journalField.getText())) {
 
       WidgetFactory.hiliteComponent(journalLabel);
       journalField.requestFocus();

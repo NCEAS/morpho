@@ -6,9 +6,9 @@
  *    Authors: Saurabh Garg
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2004-04-26 17:21:29 $'
- * '$Revision: 1.44 $'
+ *   '$Author: tao $'
+ *     '$Date: 2008-11-18 01:42:21 $'
+ * '$Revision: 1.45 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -42,6 +42,7 @@ import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardPageLibrary;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardSettings;
 import edu.ucsb.nceas.morpho.util.Log;
 import edu.ucsb.nceas.morpho.util.UISettings;
+import edu.ucsb.nceas.morpho.util.Util;
 import edu.ucsb.nceas.utilities.OrderedMap;
 import edu.ucsb.nceas.utilities.XMLUtilities;
 
@@ -484,7 +485,8 @@ public class Project extends AbstractUIPage {
 
     if (currentPanel == dataPanel) {
 
-      if (titleField.getText().trim().equals("")) {
+      //if (titleField.getText().trim().equals("")) {
+      if (Util.isBlank(titleField.getText())) {
         WidgetFactory.hiliteComponent(titleLabel);
         titleField.requestFocus();
         return false;

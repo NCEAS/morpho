@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: sambasiv $'
- *     '$Date: 2004-06-02 22:41:30 $'
- * '$Revision: 1.27 $'
+ *   '$Author: tao $'
+ *     '$Date: 2008-11-18 01:42:20 $'
+ * '$Revision: 1.28 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -38,6 +38,7 @@ import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardContainerFrame;
 import edu.ucsb.nceas.morpho.framework.ModalDialog;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardSettings;
 import edu.ucsb.nceas.morpho.util.Log;
+import edu.ucsb.nceas.morpho.util.Util;
 import edu.ucsb.nceas.utilities.OrderedMap;
 
 import java.util.Iterator;
@@ -278,7 +279,8 @@ public class Entity extends AbstractUIPage{
    */
   public boolean onAdvanceAction() {
 
-    if (entityNameField.getText().trim().equals("")) {
+    //if (entityNameField.getText().trim().equals("")) {
+    if (Util.isBlank(entityNameField.getText())) {
 
       WidgetFactory.hiliteComponent(entityNameLabel);
       entityNameField.requestFocus();

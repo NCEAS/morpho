@@ -6,9 +6,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: sambasiv $'
- *     '$Date: 2004-04-26 23:34:38 $'
- * '$Revision: 1.48 $'
+ *   '$Author: tao $'
+ *     '$Date: 2008-11-18 01:42:20 $'
+ * '$Revision: 1.49 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -37,6 +37,7 @@ import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WidgetFactory;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardSettings;
 import edu.ucsb.nceas.morpho.util.Log;
+import edu.ucsb.nceas.morpho.util.Util;
 import edu.ucsb.nceas.utilities.OrderedMap;
 import edu.ucsb.nceas.utilities.XMLUtilities;
 
@@ -1119,7 +1120,8 @@ public class PartyPage extends AbstractUIPage {
   // NOTE - assumes string has already been trimmed
   // of leading & trailing whitespace
   private boolean notNullAndNotEmpty(String arg) {
-    return (arg != null && !(arg.equals(EMPTY_STRING)));
+    //return (arg != null && !(arg.equals(EMPTY_STRING)));
+	  return (!Util.isBlank(arg));
   }
 
 
