@@ -5,8 +5,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2008-10-15 02:52:56 $'
- * '$Revision: 1.25 $'
+ *     '$Date: 2008-11-18 03:13:46 $'
+ * '$Revision: 1.26 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,6 +34,7 @@ import edu.ucsb.nceas.morpho.plugins.TextImportListener;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.AttributePage;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.AttributeSettings;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.ImportWizard;
+import edu.ucsb.nceas.morpho.util.Util;
 import edu.ucsb.nceas.morpho.util.XMLUtil;
 import edu.ucsb.nceas.morpho.util.Log;
 
@@ -63,6 +64,7 @@ import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.FocusAdapter;
+import java.awt.event.ItemEvent;
 import java.awt.event.WindowAdapter;
 
 import javax.swing.BorderFactory;
@@ -210,6 +212,7 @@ public class TextImportWizardEml2 extends JFrame {
   private short distribution = WizardSettings.ONLINE;
 
   private WizardContainerFrame mainWizFrame;
+  private boolean delim_other = false;
 
   /**
    * constructor
@@ -322,13 +325,15 @@ public class TextImportWizardEml2 extends JFrame {
                                                  BoxLayout.X_AXIS));
     Step1ControlsPanel.add(Step1_TableNamePanel);
     Step1ControlsPanel.add(Box.createGlue());
-    Step1_NameLabel.setText(" Table Name: ");
+    /*Step1_NameLabel.setText(" Table Name: ");
     Step1_NameLabel.setPreferredSize(WizardSettings.WIZARD_CONTENT_LABEL_DIMS);
     Step1_NameLabel.setMinimumSize(WizardSettings.WIZARD_CONTENT_LABEL_DIMS);
     Step1_NameLabel.setMaximumSize(WizardSettings.WIZARD_CONTENT_LABEL_DIMS);
     Step1_TableNamePanel.add(Step1_NameLabel);
     Step1_NameLabel.setForeground(java.awt.Color.black);
-    Step1_NameLabel.setFont(new Font("Dialog", Font.PLAIN, 12));
+    Step1_NameLabel.setFont(new Font("Dialog", Font.PLAIN, 12));*/
+    Step1_NameLabel = WidgetFactory.makeLabel(" Title:", true);
+    Step1_TableNamePanel.add(Step1_NameLabel);
     Step1_TableDescriptionLabel.setMaximumSize(WizardSettings.WIZARD_CONTENT_LABEL_DIMS);
     Step1_TableDescriptionLabel.setMinimumSize(WizardSettings.WIZARD_CONTENT_LABEL_DIMS);
     Step1_TableDescriptionLabel.setPreferredSize(WizardSettings.
@@ -837,6 +842,36 @@ public class TextImportWizardEml2 extends JFrame {
 
 
   void NextButton_actionPerformed(java.awt.event.ActionEvent event) {
+	 // check if table name field is empty. If it is next button couldn't  go throgh.
+	if(Util.isBlank(TableNameTextField.getText()))
+	{
+		WidgetFactory.hiliteComponent(Step1_NameLabel);
+		TableNameTextField.requestFocus();
+		return;
+	}
+	
+	// check if delimiter is checked.
+	 if (stepNumber >= 2) {
+		 
+		 if (TabCheckBox==null && CommaCheckBox==null && SpaceCheckBox==null
+                 && SemicolonCheckBox==null && delim_other==false) {
+
+			 	WidgetFactory.hiliteComponent(Step2_DelimterChoiceLabel);
+			 	return;
+		 }
+		 if (delim_other==true) {
+
+			 String otherTxt = OtherTextField.getText();
+			 if (Util.isBlank(otherTxt)) {
+
+				 WidgetFactory.hiliteComponent(OtherTextField);
+				 OtherTextField.requestFocus();
+				 return;
+			 }
+		}
+	     
+	 }
+	 
     if (stepNumber >= 3) {
       AttributePage attrd = (AttributePage)columnAttributes.elementAt(
           stepNumber - 3);
@@ -1597,6 +1632,8 @@ public class TextImportWizardEml2 extends JFrame {
     if (parseOn) {
       parseDelimited();
     }
+    int stateChange = event.getStateChange();
+    delim_other = (stateChange==ItemEvent.SELECTED);
   }
 
   void ConsecutiveCheckBox_itemStateChanged(java.awt.event.ItemEvent event) {
