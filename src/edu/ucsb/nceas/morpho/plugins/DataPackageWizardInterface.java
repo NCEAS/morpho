@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: leinfelder $'
- *     '$Date: 2008-10-15 23:15:41 $'
- * '$Revision: 1.22 $'
+ *     '$Date: 2008-11-19 01:48:52 $'
+ * '$Revision: 1.23 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -89,6 +89,8 @@ public interface DataPackageWizardInterface {
   public static final String CODE_DEFINITION   	= "CODE_DEFINITION";
   public static final String CITATION_PAGE	   	= "CITATION";
 	public static final String CUSTOM_UNIT_PAGE	  = "CUSTOM_UNIT_PAGE";
+  public static final String GENERIC_VOCABULARY	  = "GENERIC_VOCABULARY";
+
 
 
   /**

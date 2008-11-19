@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: leinfelder $'
- *     '$Date: 2008-10-16 00:44:09 $'
- * '$Revision: 1.33 $'
+ *     '$Date: 2008-11-19 01:48:52 $'
+ * '$Revision: 1.34 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -136,8 +136,10 @@ public class WizardPageLibrary {
       return new CodeDefinition(container);
     if(pageID.equals(DataPackageWizardInterface.CITATION_PAGE))
       return new CitationPage();
-		if(pageID.equals(DataPackageWizardInterface.CUSTOM_UNIT_PAGE))
+    if(pageID.equals(DataPackageWizardInterface.CUSTOM_UNIT_PAGE))
       return new CustomUnitPage();
+	if(pageID.equals(DataPackageWizardInterface.GENERIC_VOCABULARY))
+	  return new GenericVocabularyPage();	
 
     throw new IllegalArgumentException(
       "WizardPageLibrary - no page registered with identifier: "+pageID);
