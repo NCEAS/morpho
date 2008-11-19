@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: leinfelder $'
- *     '$Date: 2008-11-19 01:48:52 $'
- * '$Revision: 1.1 $'
+ *     '$Date: 2008-11-19 23:48:40 $'
+ * '$Revision: 1.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,11 +32,13 @@ import java.awt.BorderLayout;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.Vector;
 
 import javax.swing.BoxLayout;
 import javax.swing.DefaultListModel;
@@ -49,10 +51,14 @@ import javax.swing.event.ListSelectionListener;
 
 import edu.ucsb.nceas.morpho.first.plugins.wizard.EdMLWizardSettings;
 import edu.ucsb.nceas.morpho.framework.AbstractUIPage;
+import edu.ucsb.nceas.morpho.framework.ConfigXML;
 import edu.ucsb.nceas.morpho.framework.ModalDialog;
 import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WidgetFactory;
+import edu.ucsb.nceas.morpho.util.Log;
 import edu.ucsb.nceas.utilities.OrderedMap;
+import edu.ucsb.nceas.utilities.PropertyNotFoundException;
+import edu.ucsb.nceas.utilities.SortedProperties;
 
 public class GenericVocabularyPage extends AbstractUIPage {
 
@@ -82,13 +88,19 @@ public class GenericVocabularyPage extends AbstractUIPage {
 	}
 
 	private void initVocab(String vocab) {
+		
 		vocabulary = new OrderedMap();
-		ResourceBundle props = ResourceBundle.getBundle(vocab);
-		Enumeration entries = props.getKeys();
-		while (entries.hasMoreElements()) {
-			String key = (String) entries.nextElement();
-			String value = props.getString(key);
-			vocabulary.put(key, value);
+		try {
+			String vocabFilePath = 
+				File.separator + vocab + ".xml";
+			ConfigXML vocabConfig = new ConfigXML(this.getClass().getResourceAsStream(vocabFilePath));
+			Vector terms = vocabConfig.get("termIdentifier");
+			for (Object term : terms) {
+				vocabulary.put(term, term);
+			}
+		} catch (Exception e) {
+			Log.debug(5, "Could not load selected vocabulary!");
+			e.printStackTrace();
 		}
 		
 	}
