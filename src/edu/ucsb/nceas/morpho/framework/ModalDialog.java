@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: tao $'
- *     '$Date: 2004-04-19 19:22:10 $'
- * '$Revision: 1.4 $'
+ *   '$Author: leinfelder $'
+ *     '$Date: 2008-11-19 01:38:39 $'
+ * '$Revision: 1.5 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -69,6 +69,7 @@ public class ModalDialog extends JDialog {
     super(parent, true);
     this.parent = parent;
     this.wizardPage = page;
+    this.wizardPage.setModalDialog(this);
     this.dialogWidth = width;
     this.dialogHeight = height;
     init();
@@ -201,7 +202,7 @@ public class ModalDialog extends JDialog {
   }
 
 
-  private void okAction() {
+  public void okAction() {
 
     if (onAdvanceAction()) this.setVisible(false);
     if (this.parent != null)

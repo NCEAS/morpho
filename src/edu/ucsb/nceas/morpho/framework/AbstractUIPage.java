@@ -4,9 +4,9 @@
  *             National Center for Ecological Analysis and Synthesis
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2004-03-24 02:14:18 $'
- * '$Revision: 1.4 $'
+ *   '$Author: leinfelder $'
+ *     '$Date: 2008-11-19 01:38:39 $'
+ * '$Revision: 1.5 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -139,5 +139,21 @@ public abstract class AbstractUIPage extends JPanel {
    * returning false</em>
    */
   public abstract boolean setPageData(OrderedMap data, String rootXPath);
+  
+  /**
+   * The default implementation returns null so that subclasses are 
+   * not required to provide their own implementation.
+   * @return the ModalDialog that contains this page
+   */
+  public ModalDialog getModalDialog() {
+	  return null;
+  }
+  
+  /**
+   * Can be used to allow the page to control the dialog
+   * Default implementation does nothing
+   * @param md the ModalDialog (if any) that contains this page
+   */
+  public void setModalDialog(ModalDialog md) {}
 
 }
