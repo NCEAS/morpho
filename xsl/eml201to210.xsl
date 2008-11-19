@@ -269,7 +269,7 @@
 					<xsl:variable name="describesCount" select="count(access)" />
 					<xsl:choose>
 						<xsl:when test="$describesCount=0">
-							<!-- scenario 4 -->
+							<!-- scenario 4 - only has access but no describes-->
 							 <additionalMetadata>
  	  	           	                <metadata>
     	           	                      <xsl:apply-templates mode="copy-no-ns" select="./*"/>
@@ -280,17 +280,31 @@
                             </xsl:message>
 						</xsl:when>
 						<xsl:otherwise>
+							<!-- Scenario 2 and 3 -->
 							<xsl:for-each select="./describes">
 								 <xsl:variable name="describesID" select="."/>
 								 <xsl:variable name="distribution" select="count(//physical/distribution[@id=$describesID] | //software/implementation/distribution[@id=$describesID] )"/>
 									<xsl:if test="$distribution=0">
-								 		<xsl:message terminate="no">We removed the access tree from additionalMetadata. However, described ID doesn't reference any distribution id</xsl:message>
+								 		<xsl:call-template name="keep-describe-access-in-additional-metadata">
+											 <xsl:with-param name="describesValue" select="$describesID"/>
+										</xsl:call-template>
 									</xsl:if>
 							</xsl:for-each>
+							
 						</xsl:otherwise>
 					</xsl:choose>
 				</xsl:otherwise>
 			</xsl:choose>
 	</xsl:template>
-              
+	
+	<!--This template will keep the describe element which doesn't reference a phyical/distribution or software/implementation/distribution and access element-->
+	<xsl:template name="keep-describe-access-in-additional-metadata">
+		<xsl:param name="describesValue"/>
+		<additionalMetadata>
+		  <describes><xsl:value-of select="$describesValue"/></describes>
+			<metadata>
+    	         <xsl:apply-templates mode="copy-no-ns" select="../access"/>
+    	    </metadata>
+		</additionalMetadata>		  
+	</xsl:template>
 </xsl:stylesheet>
