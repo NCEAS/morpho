@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: tao $'
- *     '$Date: 2008-08-01 23:35:46 $'
- * '$Revision: 1.16 $'
+ *   '$Author: leinfelder $'
+ *     '$Date: 2008-11-19 01:50:20 $'
+ * '$Revision: 1.17 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -648,6 +648,85 @@ public class MetacatDataStore extends DataStore implements DataStoreInterface
     catch(IOException ioe)
     {
       Log.debug(0, "Error deleting file from metacat: " + 
+                            ioe.getMessage());
+      Morpho.connectionBusy = false;
+      return false;
+    }
+    
+    String message = messageBuf.toString();
+    Log.debug(11, "message from server: " + message);
+    
+    if(message.indexOf("<error>") != -1)
+    { //there was an error
+      try
+      {
+        bmetacatInputReader.close();
+        metacatInput.close();
+      }
+      catch(Exception e)
+      {}
+      Morpho.connectionBusy = false;
+      return false;
+    }
+    else if(message.indexOf("<success>") != -1)
+    { //the operation worked
+      try
+      {
+        bmetacatInputReader.close();
+        metacatInput.close();
+      }
+      catch(Exception e)
+      {}
+      Morpho.connectionBusy = false;
+      return true;
+    }
+    else
+    {//something weird happened.
+      Morpho.connectionBusy = false;
+      return false;
+    } 
+  }
+
+
+  /**
+   * sets access to a document in metacat. 
+   * @param docid id to set permission for
+   * @param principal user for permission
+   * @param permission the permission being set (read/write)
+   * @param permType allow/deny
+   * @param permOrder denyFirst/allowFirst
+   * @return true if successful
+   */
+  public boolean setAccess(String docid, String principal, String permission, String permType, String permOrder)
+  {
+    StringBuffer messageBuf = new StringBuffer();
+    Properties prop = new Properties();
+    prop.put("action", "setaccess");
+    prop.put("docid", docid);
+    prop.put("principal", principal);
+    prop.put("permission", permission);
+    prop.put("permType", permType);
+    prop.put("permOrder", permOrder);
+
+    Log.debug(11, "setting access for docid: " + docid + " on metacat");
+    
+    InputStream metacatInput = null;
+    metacatInput = morpho.getMetacatInputStream(prop, true);
+    Morpho.connectionBusy = true;
+    InputStreamReader metacatInputReader = new InputStreamReader(metacatInput);
+    BufferedReader bmetacatInputReader = new BufferedReader(metacatInputReader);
+    try
+    {
+      int d = bmetacatInputReader.read();
+      while(d != -1)
+      {
+        messageBuf.append((char)d);
+        d = bmetacatInputReader.read();
+      }
+    }
+    catch(IOException ioe)
+    {
+      Log.debug(0, "Error setting access in metacat: " + 
                             ioe.getMessage());
       Morpho.connectionBusy = false;
       return false;
