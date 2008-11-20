@@ -281,30 +281,56 @@
 						</xsl:when>
 						<xsl:otherwise>
 							<!-- Scenario 2 and 3 -->
-							<xsl:for-each select="./describes">
-								 <xsl:variable name="describesID" select="."/>
-								 <xsl:variable name="distribution" select="count(//physical/distribution[@id=$describesID] | //software/implementation/distribution[@id=$describesID] )"/>
-									<xsl:if test="$distribution=0">
-								 		<xsl:call-template name="keep-describe-access-in-additional-metadata">
-											 <xsl:with-param name="describesValue" select="$describesID"/>
-										</xsl:call-template>
-									</xsl:if>
-							</xsl:for-each>
-							
+							<xsl:call-template name="handle-describe-access-in-additional-metadata">
+								<!--select node-set of describe which doesn't refer physical/distribtuion or software/implmentation/distribution -->
+								 <xsl:with-param name="describes-list" select="./describes[//physical/distribution/@id !=. and //software/implementation/distribution/@id != .] "/>							 
+							 </xsl:call-template>					
 						</xsl:otherwise>
 					</xsl:choose>
 				</xsl:otherwise>
 			</xsl:choose>
 	</xsl:template>
 	
-	<!--This template will keep the describe element which doesn't reference a phyical/distribution or software/implementation/distribution and access element-->
-	<xsl:template name="keep-describe-access-in-additional-metadata">
-		<xsl:param name="describesValue"/>
-		<additionalMetadata>
-		  <describes><xsl:value-of select="$describesValue"/></describes>
-			<metadata>
-    	         <xsl:apply-templates mode="copy-no-ns" select="../access"/>
-    	    </metadata>
-		</additionalMetadata>		  
+	<!-- parameter desribes will have the node-set of "describe" which doesn't reference any physical/distribtuion or
+		software/implmentation/distribution. If size of node-set is zero, the template will do nothing, in other it will
+		remove the additionalMetadata. If the size is not zero, we will keep the desribes and access--> 
+	<xsl:template name="handle-describe-access-in-additional-metadata">
+		<xsl:param name="describes-list"/>
+		<xsl:choose>
+			<xsl:when test="count($describes-list)=0">
+				<!--Scenario 2: do nothing since all desribes are reference to physical/distribtuion or software/implmentation/distribution-->
+			</xsl:when>
+			<xsl:otherwise>
+				<!--Scenario 3: some desribes doesn't refer to physical/distribtuion or software/implmentation/distribution. We need to keep them-->
+				<additionalMetadata>			 
+					 <xsl:call-template name="recursive-describes">
+						<xsl:with-param name="describes" select="$describes-list"/>
+					 </xsl:call-template>
+					 <metadata>
+						 <xsl:apply-templates mode="copy-no-ns" select="./access"/>
+					 </metadata>
+				</additionalMetadata>
+			</xsl:otherwise>
+		</xsl:choose>
 	</xsl:template>
+	
+	<!-- Use a recursive way to print out describes which doesn't refer physical/distribtuion or software/implmentation/distribution -->
+	<xsl:template name="recursive-describes">
+		<xsl:param name="describes"/>
+		 <xsl:param name="index" select="1"/>
+		 <xsl:choose>
+			  <!--finish-->
+			 <xsl:when test="$index > count($describes)">
+				 <!-- do nothing-->
+			 </xsl:when>
+			 <xsl:otherwise>
+				 <describes><xsl:value-of select="$describes[$index]"/></describes>
+				 <xsl:call-template name="recursive-describes">
+							<xsl:with-param name="describes" select="$describes"/>
+					         <xsl:with-param name="index" select="$index + 1"/>
+			 </xsl:call-template>
+			 </xsl:otherwise>
+		 </xsl:choose>
+	</xsl:template>	
+	
 </xsl:stylesheet>
