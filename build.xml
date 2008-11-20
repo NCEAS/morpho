@@ -6,7 +6,7 @@
   *    Copyright: 2000 Regents of the University of California and the
   *               National Center for Ecological Analysis and Synthesis
   *  For Details: http://www.nceas.ucsb.edu/
-  *    File Info: '$Id: build.xml,v 1.125 2008-11-12 18:41:12 tao Exp $'
+  *    File Info: '$Id: build.xml,v 1.126 2008-11-20 22:38:09 tao Exp $'
   *
   *  Build file for the Ant cross-platform build system for metacat
   *  See http://jakarta.apache.org for details on Ant
@@ -131,6 +131,12 @@
       <property name="cpath"
 	      value="lib/jsse.jar:lib/jcert.jar:lib/jnet.jar:${jcal}:${xerces}:${apis}:${kunststoff}:${xalan}:${xml4j}:${build.dest}:${sym}:${dtd}:${dom}:${jlf}:${itisjar}:${httpclient}:${lmap}:${morpho-config}:${jhelp}:${utilities}:${builddir.first}"/>
       <property name="package.home" value="edu/ucsb/nceas" />
+	   
+	   <condition property="utilities.required">
+        <or>
+          <not><available file="${utilities}" type="file"/></not>
+        </or>
+      </condition>
 
    </target>
 
@@ -196,9 +202,9 @@
    </target>
 
 
-   <target name="utils_update" depends="cvsrootfromenv, cvsrootfrominput">
+   <target name="utilities" depends="cvsrootfromenv, cvsrootfrominput" if="utilities.required">
      <!-- checkout utilities moduel -->
-     <echo>Enter CVS password: </echo>
+     <echo>Enter CVS password for utilities module: </echo>
      <cvs cvsRoot="${cvsroot}"
           package="utilities"
           dest="${build.dir}" />
@@ -276,7 +282,7 @@
    <!--
    <target name="compile" depends="clean,itis,prepare">
    -->
-   <target name="compile" depends="prepare">
+   <target name="compile" depends="prepare, utilities">
 
       <jar jarfile="lib/httpclient.jar">
         <fileset dir="lib" includes="HTTPClient/**/*.class"/>
