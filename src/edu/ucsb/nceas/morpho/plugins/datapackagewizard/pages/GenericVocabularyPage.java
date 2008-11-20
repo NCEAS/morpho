@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: leinfelder $'
- *     '$Date: 2008-11-19 23:48:40 $'
- * '$Revision: 1.2 $'
+ *     '$Date: 2008-11-20 21:24:26 $'
+ * '$Revision: 1.3 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,10 +34,8 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
-import java.util.ResourceBundle;
 import java.util.Vector;
 
 import javax.swing.BoxLayout;
@@ -49,18 +47,16 @@ import javax.swing.JScrollPane;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
-import edu.ucsb.nceas.morpho.first.plugins.wizard.EdMLWizardSettings;
-import edu.ucsb.nceas.morpho.framework.AbstractUIPage;
 import edu.ucsb.nceas.morpho.framework.ConfigXML;
 import edu.ucsb.nceas.morpho.framework.ModalDialog;
 import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WidgetFactory;
+import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardSettings;
+import edu.ucsb.nceas.morpho.plugins.vocabulary.AbstractUIVocabularyPage;
 import edu.ucsb.nceas.morpho.util.Log;
 import edu.ucsb.nceas.utilities.OrderedMap;
-import edu.ucsb.nceas.utilities.PropertyNotFoundException;
-import edu.ucsb.nceas.utilities.SortedProperties;
 
-public class GenericVocabularyPage extends AbstractUIPage {
+public class GenericVocabularyPage extends AbstractUIVocabularyPage {
 
 	private final String pageID = DataPackageWizardInterface.GENERIC_VOCABULARY;
 	private final String nextPageID = "";
@@ -163,8 +159,8 @@ public class GenericVocabularyPage extends AbstractUIPage {
 		middlePanel.add(selectedPanel);
 
 		middlePanel.setBorder(new javax.swing.border.EmptyBorder(0,
-				4 * EdMLWizardSettings.PADDING, 7 * EdMLWizardSettings.PADDING,
-				8 * EdMLWizardSettings.PADDING));
+				4 * WizardSettings.PADDING, 7 * WizardSettings.PADDING,
+				8 * WizardSettings.PADDING));
 
 		this.add(middlePanel, BorderLayout.CENTER);
 	}
