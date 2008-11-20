@@ -1,6 +1,7 @@
 package edu.ucsb.nceas.morpho.plugins.vocabulary;
 
 import java.util.Map;
+import java.util.Vector;
 
 import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.plugins.PluginInterface;
@@ -29,6 +30,12 @@ public class VocabularyPlugin implements PluginInterface, ServiceProvider {
 	
 	public static VocabularyPlugin getInstance() {
 		return instance;
+	}
+	
+	public Vector getAvailableVocabularies() {
+		Vector v = new Vector();
+		v.addAll(vocabularies.keySet());
+		return v;
 	}
 	
 	public AbstractUIVocabularyPage getVocabularyPage(String vocab) {
