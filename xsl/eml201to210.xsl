@@ -144,11 +144,11 @@
 				<!--find the id in addtionalMetacat/describes-->
           		<xsl:variable name="id" select="@id"/>
 				<!-- count how many additionalMetadata/access describing same distribution is -->
-				<xsl:variable name="countAccessTree" select="count(/*/additionalMetadata[describes=$id]/access)"/>
+				<xsl:variable name="countAccessTree" select="count(/*/additionalMetadata[describes=$id]/access | /*/additionalMetadata[describes=$id]/metadata/access)"/>
 				<xsl:choose>
 					<xsl:when test="$countAccessTree=1">
           				<!-- only has one access tree, we need copy it to distribution-->
-                     	 <xsl:apply-templates mode="copy-no-ns" select="/*/additionalMetadata[describes=$id]/access"/>
+                     	 <xsl:apply-templates mode="copy-no-ns" select="/*/additionalMetadata[describes=$id]/access | /*/additionalMetadata[describes=$id]/metadata/access"/>
                 	</xsl:when>
 					<xsl:when test="$countAccessTree &gt; 1">
           				 <!-- has more than one access tree, we need merge them-->
@@ -162,15 +162,15 @@
                           		<describes>100</describe>
                           		<access>...</access>
                         	</additionalMetadata>-->
-                         	<xsl:variable name="totalOrderNumber" select="count(/*/additionalMetadata[describes=$id]/access)"/>
-						 	<xsl:variable name="totalAllowFirstNumber" select="count(/*/additionalMetadata[describes=$id]/access[@order='allowFirst'])"/>						  
-						    <xsl:variable name="totalDenyFirstNumber" select="count(/*/additionalMetadata[describes=$id]/access[@order='denyFirst'])"/>
+                         	<xsl:variable name="totalOrderNumber" select="count(/*/additionalMetadata[describes=$id]/access | /*/additionalMetadata[describes=$id]/metadata/access)"/>
+						 	<xsl:variable name="totalAllowFirstNumber" select="count(/*/additionalMetadata[describes=$id]/access[@order='allowFirst'] | /*/additionalMetadata[describes=$id]/metadata/access[@order='allowFirst'])"/>						  
+						    <xsl:variable name="totalDenyFirstNumber" select="count(/*/additionalMetadata[describes=$id]/access[@order='denyFirst'] | /*/additionalMetadata[describes=$id]/metadata/access[@order='denyFirst'])"/>
 							<xsl:choose>
 								<xsl:when test="$totalOrderNumber=$totalAllowFirstNumber or $totalOrderNumber=$totalDenyFirstNumber">	
 								<!-- all access subtrees have same order, just merge it-->			                      	 
 							  		<xsl:element name="access">
-										<xsl:copy-of select="/*/additionalMetadata[describes=$id]/access/@*"/> 
-										<xsl:for-each select="/*/additionalMetadata[describes=$id]/access">
+										<xsl:copy-of select="/*/additionalMetadata[describes=$id]/access/@* | /*/additionalMetadata[describes=$id]/metadata/access/@*"/> 
+										<xsl:for-each select="/*/additionalMetadata[describes=$id]/access | /*/additionalMetadata[describes=$id]/metadata/access">
 											<xsl:apply-templates mode="copy-no-ns" select="./*"/>
 										</xsl:for-each>
 							 		</xsl:element>
@@ -245,7 +245,7 @@
 	-->
 	<xsl:template mode="handle-additionalMetadata" match="*">
 			<!-- test if this additionalMetadata part has "access" element-->
-			<xsl:variable name="accessCount" select="count(access)" />
+			<xsl:variable name="accessCount" select="count(access | metadata/access)" />
 			<xsl:choose>
 				<xsl:when test="$accessCount &lt; 1">
 					<!-- no access tree here. Scenario 1 -->
@@ -253,6 +253,10 @@
     	             	<xsl:for-each select="./*">
     	           	           <xsl:choose>
     	           	               <xsl:when test="name()='describes'">
+    	           	                    <xsl:apply-templates mode="copy-no-ns" select="."/>
+    	           	               </xsl:when>
+									<!--if it already has metadata tag under additionalMetadata, just copy it-->
+									<xsl:when test="name()='metadata'">
     	           	                    <xsl:apply-templates mode="copy-no-ns" select="."/>
     	           	               </xsl:when>
     	           	               <xsl:otherwise>
@@ -265,19 +269,28 @@
     	        	</additionalMetadata>
  				</xsl:when>
 				<xsl:otherwise>
-					<!--additionalMetadata has access child-->
-					<xsl:variable name="describesCount" select="count(access)" />
+					<!--additionalMetadata has EML access child-->
+					<xsl:variable name="describesCount" select="count(describes)" />
 					<xsl:choose>
 						<xsl:when test="$describesCount=0">
 							<!-- scenario 4 - only has access but no describes-->
 							 <additionalMetadata>
- 	  	           	                <metadata>
-    	           	                      <xsl:apply-templates mode="copy-no-ns" select="./*"/>
-    	           	                 </metadata>
-    	        			</additionalMetadata>
-							<xsl:message terminate="no">additonalMetadata has access element, but doesn't have any describes element which references id of physical/distribution 
+								 <xsl:for-each select="./*">
+								   <xsl:choose>
+									 <xsl:when test="name()='metadata'">
+    	           	                    <xsl:apply-templates mode="copy-no-ns" select="."/>
+									 </xsl:when>
+									 <xsl:otherwise>
+    	           	                   <metadata>
+    	           	                      <xsl:apply-templates mode="copy-no-ns" select="."/>
+    	           	                    </metadata>
+    	           	                 </xsl:otherwise>
+								  </xsl:choose>	        			
+							    </xsl:for-each>								 
+								<xsl:message terminate="no">additonalMetadata has access element, but doesn't have any describes element which references id of physical/distribution 
 																		or software/implementation/distribution elements. This document doesn't follow the EML practice.
-                            </xsl:message>
+                                </xsl:message>
+							</additionalMetadata>
 						</xsl:when>
 						<xsl:otherwise>
 							<!-- Scenario 2 and 3 -->
@@ -307,7 +320,7 @@
 						<xsl:with-param name="describes" select="$describes-list"/>
 					 </xsl:call-template>
 					 <metadata>
-						 <xsl:apply-templates mode="copy-no-ns" select="./access"/>
+						 <xsl:apply-templates mode="copy-no-ns" select="./access | ./metadata/access"/>
 					 </metadata>
 				</additionalMetadata>
 			</xsl:otherwise>
