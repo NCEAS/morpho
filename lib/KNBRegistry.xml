@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="vdex.xsl"?>
+
+<vdex
+	language="EN" 
+	orderSignificant="false"
+	profileType="hierarchicalTokenTerms"
+	xmlns:vdex="http://www.imsglobal.org/xsd/imsvdex_v1p0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.imsglobal.org/xsd/imsvdex_v1p0 imsvdex_v1p0.xsd ">
+		
+	<vocabName>
+		<langstring language="EN">KNBRegistryList</langstring>
+	</vocabName>
+	<vocabIdentifier isRegistered="false">http://knb.ecoinformatics.org/KNBRegistryList</vocabIdentifier>
+	
+	<!-- NCEAS -->
+	<term orderSignificant="false" validIndex="true">
+		<termIdentifier>National Center for Ecological Analysis and Synthesis</termIdentifier>
+	</term>
+		
+	<!-- SANParks top level -->
+	<term orderSignificant="false" validIndex="true">
+		<termIdentifier>SANParks, South Africa</termIdentifier>
+		<caption>
+			<langstring language="EN">SANParks</langstring>
+		</caption>
+		<description>
+			<langstring language="EN">Encompasses all SANParks</langstring>
+		</description>
+		<metadata />
+
+		<!-- parks under SANParks container -->
+		<term><termIdentifier>Addo Elephant National Park, South Africa</termIdentifier></term>
+		<term><termIdentifier>Agulhas National Park, South Africa</termIdentifier></term>
+		<term><termIdentifier>Augrabies Falls National Park, South Africa</termIdentifier></term>
+		<term><termIdentifier>Bontebok National Park, South Africa</termIdentifier></term>
+		<term><termIdentifier>Camdeboo National Park, South Africa</termIdentifier></term>
+		<term><termIdentifier>Golden Gate Highlands National Park, South Africa</termIdentifier></term>
+		<term><termIdentifier>Karoo National Park, South Africa</termIdentifier></term>
+		<term><termIdentifier>Kgalagadi Transfrontier Park, South Africa</termIdentifier></term>
+		<term><termIdentifier>Knysna National Lake Area, South Africa</termIdentifier></term>
+		<term><termIdentifier>Kruger National Park, South Africa</termIdentifier></term>
+		<term><termIdentifier>Mapungubwe National Park, South Africa</termIdentifier></term>
+		<term><termIdentifier>Marakele National Park, South Africa</termIdentifier></term>
+		<term><termIdentifier>Mokala National Park, South Africa</termIdentifier></term>
+		<term><termIdentifier>Mountain Zebra National Park, South Africa</termIdentifier></term>
+		<term><termIdentifier>Namaqua National Park, South Africa</termIdentifier></term>
+		<term><termIdentifier>Table Mountain National Park, South Africa</termIdentifier></term>
+		<term><termIdentifier>Tankwa Karoo National Park, South Africa</termIdentifier></term>
+		<term><termIdentifier>Tsitsikamma National Park, South Africa</termIdentifier></term>
+		<term><termIdentifier>West Coast National Park, South Africa</termIdentifier></term>
+		<term><termIdentifier>Wilderness National Park, South Africa</termIdentifier></term>
+		<term><termIdentifier>Ai-|Ais/Richtersveld Transfrontier National Park, South Africa</termIdentifier></term>
+		
+	</term>
+
+	<!-- SAEON container -->
+	<term orderSignificant="false" validIndex="true">
+		<termIdentifier>SAEON, South Africa</termIdentifier>
+		<caption>
+			<langstring language="EN">SAEON</langstring>
+		</caption>
+		<description>
+			<langstring language="EN">SAEON, South Africa</langstring>
+		</description>
+		<metadata />
+		<term><termIdentifier>Elwandle SAEON Node, South Africa</termIdentifier></term>
+		<term><termIdentifier>Ndlovu SAEON Node, South Africa</termIdentifier></term>
+	</term>
+	
+</vdex>

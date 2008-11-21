@@ -10,6 +10,7 @@
   <plugin>edu.ucsb.nceas.morpho.plugins.datapackagewizard.DataPackageWizardPlugin</plugin>
   <plugin>edu.ucsb.nceas.morpho.plugins.printer.PrinterPlugin</plugin>
   <plugin>edu.tesc.scidb.morpho.plugins.ImportMSAccessPlugin</plugin>
+  <plugin>edu.ucsb.nceas.morpho.plugins.vocabulary.VocabularyPlugin</plugin>
   <metacat_url>http://knb.ecoinformatics.org/knb/metacat</metacat_url>
   <profile_directory>profiles</profile_directory>
   <samples_directory>./lib/sampledata</samples_directory>
@@ -29,6 +30,10 @@
   <eastBCSearchPath>eastBoundingCoordinate</eastBCSearchPath>
   <taxonRankSearchPath>taxonomicClassification/taxonRankName</taxonRankSearchPath>
   <taxonValueSearchPath>taxonomicClassification/taxonRankValue</taxonValueSearchPath>
+  <vocabularies>
+  	<vocabulary>KNBRegistry</vocabulary>
+  	<className>edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.GenericVocabularyPage</className>
+  </vocabularies>
   <doctype>any</doctype>
   <returndoc>-//ecoinformatics.org//eml-dataset-2.0.0beta4//EN</returndoc>
   <returndoc>-//ecoinformatics.org//eml-dataset-2.0.0beta6//EN</returndoc>

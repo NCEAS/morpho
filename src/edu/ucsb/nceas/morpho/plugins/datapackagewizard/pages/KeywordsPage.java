@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: sgarg $'
- *     '$Date: 2005-01-26 23:33:21 $'
- * '$Revision: 1.12 $'
+ *   '$Author: leinfelder $'
+ *     '$Date: 2008-11-21 01:31:30 $'
+ * '$Revision: 1.13 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,26 +31,35 @@ package edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages;
 
 import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
 import edu.ucsb.nceas.morpho.framework.AbstractUIPage;
+import edu.ucsb.nceas.morpho.framework.ModalDialog;
+import edu.ucsb.nceas.morpho.framework.UIController;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.CustomList;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WidgetFactory;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardSettings;
 import edu.ucsb.nceas.morpho.util.Log;
+import edu.ucsb.nceas.morpho.util.UISettings;
 import edu.ucsb.nceas.utilities.OrderedMap;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Vector;
 
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import javax.swing.AbstractAction;
+import javax.swing.Action;
 import javax.swing.BoxLayout;
+import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardPageLibrary;
+import edu.ucsb.nceas.morpho.plugins.vocabulary.AbstractUIVocabularyPage;
+import edu.ucsb.nceas.morpho.plugins.vocabulary.VocabularyPlugin;
 
 public class KeywordsPage extends AbstractUIPage {
 
@@ -61,15 +70,17 @@ public class KeywordsPage extends AbstractUIPage {
   private final String subtitle   = "";
 
   private final String EMPTY_STRING = "";
-  private JTextField thesaurusField;
+  private JComboBox thesaurusField;
   private JLabel thesaurusLabel;
   private JLabel kwLabel;
   private CustomList kwList;
   private JPanel middlePanel;
   private JPanel radioPanel;
+  
+  private String[] thesaurii = new String[] {EMPTY_STRING};
 
   private final String[] buttonsText = new String[] {
-    "These keywords are not chosen from a predefined list:",
+    "These keywords are not chosen from a predefined list",
     "These keywords are chosen from a predefined list:"
   };
 
@@ -88,7 +99,7 @@ public class KeywordsPage extends AbstractUIPage {
       if (e.getActionCommand().equals(buttonsText[0])) {
         thesaurusField.setVisible(false);
         thesaurusLabel.setVisible(false);
-        thesaurusField.setText("");
+        thesaurusField.setSelectedItem(EMPTY_STRING);
       } else if (e.getActionCommand().equals(buttonsText[1])) {
         thesaurusField.setVisible(true);
         thesaurusLabel.setVisible(true);
@@ -97,7 +108,20 @@ public class KeywordsPage extends AbstractUIPage {
   };
 
   public KeywordsPage() {
+	initThesaurii();
     init();
+  }
+  
+  private void initThesaurii() {
+	  try {
+		Vector vocab = VocabularyPlugin.getInstance().getAvailableVocabularies();
+		vocab.add(0, EMPTY_STRING);
+		thesaurii = (String[]) vocab.toArray(new String[0]);
+	  }
+	  catch (Exception e) {
+		// ignore this error, likely we have no vocabularies yet
+		Log.debug(10, "Could not initialize the available vocabularies");  
+	}
   }
 
   /**
@@ -116,7 +140,23 @@ public class KeywordsPage extends AbstractUIPage {
                       "<font size=\"4\"><b>Define Keyword Set:</b></font>", 1);
     middlePanel.add(desc);
 
+    ////
+    radioPanel = WidgetFactory.makeRadioPanel(buttonsText, 0, listener);
     middlePanel.add(WidgetFactory.makeDefaultSpacer());
+    middlePanel.add(radioPanel);
+
+    JPanel thesaurusPanel = WidgetFactory.makePanel(1);
+    thesaurusLabel = WidgetFactory.makeLabel("Thesaurus name:", false);
+    thesaurusPanel.add(thesaurusLabel);
+    thesaurusLabel.setVisible(false);
+    thesaurusField = WidgetFactory.makePickList(thesaurii, true, 0, null);
+    thesaurusField.setVisible(false);
+    thesaurusPanel.add(thesaurusField);
+    thesaurusPanel.setBorder(new javax.swing.border.EmptyBorder(0,0,0,
+        WizardSettings.PADDING));
+    middlePanel.add(WidgetFactory.makeHalfSpacer());
+    middlePanel.add(thesaurusPanel);
+    
     middlePanel.add(WidgetFactory.makeDefaultSpacer());
 
     ////
@@ -127,25 +167,47 @@ public class KeywordsPage extends AbstractUIPage {
     kwList = WidgetFactory.makeList(new String[]{ "Keyword" },
                                     new Object[]{ new JTextField()},
                                     8, true, false, false, true, true, true );
+    
+    Action thesaurusAction = 
+    	new AbstractAction() {
+	      public void actionPerformed(ActionEvent e) {
+	        Log.debug(45, "\nKeywords: CustomEditAction called");
+	        // show lookup for known thesaurii
+	        if (
+	        		((String) thesaurusField.getSelectedItem()).equals(EMPTY_STRING)
+	        		||
+	        		!VocabularyPlugin.getInstance().getAvailableVocabularies().contains(thesaurusField.getSelectedItem())
+	        ) {	
+	        	List row = new ArrayList();
+	        	row.add("");
+	        	kwList.addRow(row);
+	        	kwList.setEditable(true);
+	        	return;
+	        }
+	        // configured vocabularies as given in the Configuration
+	        else {	
+	        	showLookupDialog((String) thesaurusField.getSelectedItem());
+	        	kwList.setEditable(false);
+	        }
+	        //lock the selection box
+	        thesaurusField.setEnabled(false);
+	      }
+	};
+	Action thesaurusDeleteAction = 
+    	new AbstractAction() {
+	      public void actionPerformed(ActionEvent e) {
+	    	  int row = kwList.getSelectedRowIndex();
+	    	  kwList.removeRow(row);
+	    	  if (kwList.getRowCount() == 0) {
+	  	        thesaurusField.setEnabled(true);
+	    	  }
+	      }
+		
+	};
+	kwList.setCustomAddAction(thesaurusAction);
+    kwList.setCustomDeleteAction(thesaurusDeleteAction);
     kwPanel.add(kwList);
     middlePanel.add(kwPanel);
-
-    ////
-    radioPanel = WidgetFactory.makeRadioPanel(buttonsText, 0, listener);
-    middlePanel.add(WidgetFactory.makeDefaultSpacer());
-    middlePanel.add(radioPanel);
-
-    JPanel thesaurusPanel = WidgetFactory.makePanel(1);
-    thesaurusLabel = WidgetFactory.makeLabel("Thesaurus name:", false);
-    thesaurusPanel.add(thesaurusLabel);
-    thesaurusLabel.setVisible(false);
-    thesaurusField = WidgetFactory.makeOneLineTextField();
-    thesaurusField.setVisible(false);
-    thesaurusPanel.add(thesaurusField);
-    thesaurusPanel.setBorder(new javax.swing.border.EmptyBorder(0,0,0,
-        WizardSettings.PADDING));
-    middlePanel.add(WidgetFactory.makeHalfSpacer());
-    middlePanel.add(thesaurusPanel);
 
     middlePanel.setBorder(new javax.swing.border.EmptyBorder(0,4*WizardSettings.PADDING,
         7*WizardSettings.PADDING,8*WizardSettings.PADDING));
@@ -153,6 +215,28 @@ public class KeywordsPage extends AbstractUIPage {
     this.add(middlePanel, BorderLayout.CENTER);
   }
 
+  private void showLookupDialog(String vocab) {
+
+	    AbstractUIVocabularyPage page = 
+	    	VocabularyPlugin.getInstance().getVocabularyPage(vocab);
+	    
+	    ModalDialog wpd = new ModalDialog(
+	    		page,
+	    		UIController.getInstance().getCurrentActiveWindow(),
+	    		UISettings.POPUPDIALOG_WIDTH,
+	    		UISettings.POPUPDIALOG_HEIGHT, true);
+
+	    if (wpd.USER_RESPONSE == ModalDialog.OK_OPTION) {
+
+			List terms = page.getSelectedTerms();
+	    	for (int i=0; i<terms.size(); i++) {
+				List newRow = new ArrayList();
+	    		String term = (String) terms.get(i);
+	    		newRow.add(term);
+	    		kwList.addRow(newRow);
+	    	}
+	    }
+  }
 
   /**
    *  The action to be executed when the "OK" button is pressed. If no onAdvance
@@ -216,7 +300,7 @@ public class KeywordsPage extends AbstractUIPage {
 
 
     //keywords (second column) surrogate:
-    String thesaurus   = thesaurusField.getText().trim();
+    String thesaurus   = ((String) thesaurusField.getSelectedItem()).trim();
     if (thesaurus==null) thesaurus = EMPTY_STRING;
     surrogate.add(thesaurus);
 
@@ -249,7 +333,7 @@ public class KeywordsPage extends AbstractUIPage {
 
     returnMap.putAll(getKWListAsNVP(xPathRoot));
 
-    String thesaurus = thesaurusField.getText().trim();
+    String thesaurus = ((String) thesaurusField.getSelectedItem()).trim();
     if (thesaurus!=null && !thesaurus.equals(EMPTY_STRING)) {
       returnMap.put(xPathRoot + "/keywordThesaurus", thesaurus);
     }
@@ -366,7 +450,7 @@ public class KeywordsPage extends AbstractUIPage {
   private void resetBlankData() {
     radioPanel.removeAll();
     radioPanel.add((JPanel)WidgetFactory.makeRadioPanel(buttonsText, 0, listener));
-    thesaurusField.setText("");
+    thesaurusField.setSelectedItem(EMPTY_STRING);
     kwList.removeAllRows();
 
   }
@@ -421,7 +505,12 @@ public class KeywordsPage extends AbstractUIPage {
             listener));
         thesaurusField.setVisible(true);
         thesaurusField.setEnabled(true);
-        thesaurusField.setText(nextVal);
+        if (kwList.getRowCount() != 0) {
+        	//don't allow changes if there are terms already
+        	thesaurusField.setEnabled(false);
+        	kwList.setEditable(false);
+        }
+        thesaurusField.setSelectedItem(nextVal);
         toDeleteList.add(nextXPathObj);
       }
 
