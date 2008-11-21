@@ -7,8 +7,8 @@
 *    Release: @release@
 *
 *   '$Author: tao $'
-*     '$Date: 2008-11-17 23:39:00 $'
-* '$Revision: 1.37 $'
+*     '$Date: 2008-11-21 18:35:20 $'
+* '$Revision: 1.38 $'
 *
 * This program is free software; you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -850,12 +850,12 @@ public class AttributePage extends AbstractUIPage {
     }*/
 
     String missingValueCode = missingValueCodeField.getText().trim();
-    if(Util.isBlank(missingValueCode)) {
+    if(!Util.isBlank(missingValueCode)) {
       returnMap.put(xPath + "/missingValueCode/code", missingValueCode);
     }
 
     String missingValueExpln = missingValueExplnField.getText().trim();
-    if(Util.isBlank(missingValueExpln)) {
+    if(!Util.isBlank(missingValueExpln)) {
       returnMap.put(xPath + "/missingValueCode/codeExplanation",
       missingValueExpln);
     }
