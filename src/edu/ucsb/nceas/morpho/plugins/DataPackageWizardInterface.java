@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: leinfelder $'
- *     '$Date: 2008-11-19 01:48:52 $'
- * '$Revision: 1.23 $'
+ *     '$Date: 2008-11-22 01:28:10 $'
+ * '$Revision: 1.24 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -90,6 +90,8 @@ public interface DataPackageWizardInterface {
   public static final String CITATION_PAGE	   	= "CITATION";
 	public static final String CUSTOM_UNIT_PAGE	  = "CUSTOM_UNIT_PAGE";
   public static final String GENERIC_VOCABULARY	  = "GENERIC_VOCABULARY";
+  public static final String NBII_THESAURUS_LOOKUP	  = "NBII_THESAURUS_LOOKUP";
+  
 
 
 

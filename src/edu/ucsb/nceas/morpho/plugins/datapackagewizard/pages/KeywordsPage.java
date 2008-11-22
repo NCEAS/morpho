@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: leinfelder $'
- *     '$Date: 2008-11-21 01:31:30 $'
- * '$Revision: 1.13 $'
+ *     '$Date: 2008-11-22 01:28:10 $'
+ * '$Revision: 1.14 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -224,7 +224,12 @@ public class KeywordsPage extends AbstractUIPage {
 	    		page,
 	    		UIController.getInstance().getCurrentActiveWindow(),
 	    		UISettings.POPUPDIALOG_WIDTH,
-	    		UISettings.POPUPDIALOG_HEIGHT, true);
+	    		UISettings.POPUPDIALOG_HEIGHT, false);
+	    
+	    //deactivate the default "ok" action
+	    wpd.getRootPane().setDefaultButton(null);
+	    wpd.resetBounds();
+	    wpd.setVisible(true);
 
 	    if (wpd.USER_RESPONSE == ModalDialog.OK_OPTION) {
 

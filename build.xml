@@ -6,7 +6,7 @@
   *    Copyright: 2000 Regents of the University of California and the
   *               National Center for Ecological Analysis and Synthesis
   *  For Details: http://www.nceas.ucsb.edu/
-  *    File Info: '$Id: build.xml,v 1.127 2008-11-21 18:54:16 tao Exp $'
+  *    File Info: '$Id: build.xml,v 1.128 2008-11-22 01:28:10 leinfelder Exp $'
   *
   *  Build file for the Ant cross-platform build system for metacat
   *  See http://jakarta.apache.org for details on Ant
@@ -36,9 +36,6 @@
 
       <property name="itisdir" value="../itislib" />
       <property name="srcdir" value="./src" />
-
-   	<property name="builddir.first" value="../first/development/shared/build/classes" />
-   	<property name="srcdir.first.wizard" value="../first/development/AssessmentImport/src" />
 
       <property name="libdir" value="./lib" />
       <property name="xsldir" value="./xsl" />
@@ -129,8 +126,10 @@
                 value="${libdir}/utilities.jar" />
       <property name="index"
                 value="${libdir}/jhindexer.jar"/>
+   	  <property name="axis"
+   	                value="${libdir}/axis/axis.jar"/>
       <property name="cpath"
-	      value="lib/jsse.jar:lib/jcert.jar:lib/jnet.jar:${jcal}:${xerces}:${apis}:${kunststoff}:${xalan}:${xml4j}:${build.dest}:${sym}:${dtd}:${dom}:${jlf}:${itisjar}:${httpclient}:${lmap}:${morpho-config}:${jhelp}:${utilities}:${builddir.first}"/>
+	      value="lib/jsse.jar:lib/jcert.jar:lib/jnet.jar:${jcal}:${xerces}:${apis}:${kunststoff}:${xalan}:${xml4j}:${build.dest}:${sym}:${dtd}:${dom}:${jlf}:${itisjar}:${httpclient}:${lmap}:${morpho-config}:${jhelp}:${utilities}:${axis}"/>
       <property name="package.home" value="edu/ucsb/nceas" />
 	   
 	   <condition property="utilities.required">
@@ -138,9 +137,45 @@
           <not><available file="${utilities}" type="file"/></not>
         </or>
       </condition>
+   	
+		<property name="nbii.jarname" value="nbii.jar" />
 
+   		<property name="wsdl.url.nbii" value="http://nbii-thesaurus.ornl.gov/ws/services/SKOSThesaurusService?wsdl" />
+
+   		<!-- for easier classpath management (so many axis jars!)-->
+   		<path id="classpath">
+   			<fileset dir="${libdir}">
+   				<include name="*.jar" />
+   			</fileset>
+   			<fileset dir="${libdir}/axis">
+   				<include name="*.jar" />
+   			</fileset>
+   		</path>
+
+   		<taskdef resource="axis-tasks.properties" classpathref="classpath"/>
    </target>
+	
 
+	<target name="generateNBIIStubs" depends="prepare">
+		<echo message=" Generating stubs for NBII from ${wsdl.url.nbii}" />
+		<axis-wsdl2java verbose="true" output="${build.src}" 
+			url="${wsdl.url.nbii}" />
+	</target>
+	
+	<target name="compileNBII" depends="generateNBIIStubs">
+		<javac destdir="${build.dir}" debug="on" classpathref="classpath" >
+			<src path="${build.src}" />
+			
+		</javac>
+	</target>
+	
+	<target name="jarNBII" depends="compileNBII">
+		<jar jarfile="${build.dir}/${nbii.jarname}" basedir="${build.dir}" >
+			<include name="org/w3/www/**/*.*"/>
+		</jar>
+		<copy file="${build.dir}/${nbii.jarname}" todir="${libdir}" overwrite="true" />
+	</target>
+	
    <target name="prepare" depends="init">
       <mkdir dir="${build.dir}"/>
       <mkdir dir="${build.src}"/>
@@ -156,6 +191,8 @@
       </copy>
        -->
    </target>
+	
+	
 
    <target name="cvsprepare" depends="prepare">
       <property environment="env"/>
@@ -205,7 +242,7 @@
 
    <target name="utilities" depends="cvsrootfromenv, cvsrootfrominput" if="utilities.required">
      <!-- checkout utilities moduel -->
-     <echo>Enter CVS password for utilities module: </echo>
+     <echo>Enter CVS password for utilities module (${cvsroot}) : </echo>
      <cvs cvsRoot="${cvsroot}"
           package="utilities"
 		  tag="${utilities-tag}"
@@ -285,7 +322,7 @@
       <javac srcdir="${srcdir}"
              destdir="${build.dest}"
              debug="on"
-             classpath="${cpath}" />
+             classpathref="classpath" />
    </target>
 
    <target name="jar" depends="compile">
@@ -385,6 +422,17 @@
       <copy todir="${morpho.docs.dev.api}">
         <fileset dir="${build.docs}/api"/>
       </copy>
+   	
+    <copy todir="${morpho.lib}">
+        <fileset dir="${libdir}" >
+        	<include name="*.jar"/>
+        </fileset>
+    	<fileset dir="${libdir}/axis" >
+        	<include name="*.jar"/>
+        </fileset>
+   	</copy>
+   	
+<!--   	
       <copy file="./lib/itislib.jar" todir="${morpho.lib}"/>
       <copy file="./lib/shippedIcons.jar" todir="${morpho.lib}"/>
       <copy file="./lib/morpho.jar" todir="${morpho.lib}"/>
@@ -400,7 +448,7 @@
       <copy file="./lib/liveMap.jar" todir="${morpho.lib}"/>
       <copy file="./lib/jhall.jar" todir="${morpho.lib}"/>
       <copy file="./lib/morphohelp.jar" todir="${morpho.lib}"/>
-
+-->
 
       <delete file="./lib/morpho-${release}.zip"/>
       <zip zipfile="./lib/morpho-${release}.zip" basedir="${dist.dir}"/>
@@ -483,8 +531,10 @@
 
    <target name="morpho" depends="install">
      <java classname="edu.ucsb.nceas.morpho.Morpho"
-           classpath="${cpath}:${morpho}:${help}"
            fork="yes" >
+     	<classpath refid="classpath">
+     		<pathelement path="${morpho}:${help}"/>
+     	</classpath>
        <jvmarg value="-Xmx512m"/>
        <jvmarg value="-Xss1m"/>
        <jvmarg value="-Djava.protocol.handler.pkgs=HTTPClient"/>
@@ -634,7 +684,7 @@
       </copy>
       <javac srcdir="${build.tests}"
              destdir="${build.dest}"
-             classpath="${cpath}"
+      		 classpathref="classpath"
              debug="on"/>
 
       <jar jarfile="${build.dir}/${name}-test.jar" basedir="${build.dest}"
@@ -643,8 +693,8 @@
       <!-- use the ant "junit" task to run JUnit tests. -->
       <junit printsummary="yes" haltonfailure="no" fork="no"
              haltonerror="no">
-        <classpath>
-          <pathelement path="${cpath}:${build.dir}/${name}-test.jar" />
+        <classpath refid="classpath">
+          <pathelement path="${build.dir}/${name}-test.jar" />
         </classpath>
 
         <formatter type="plain" />
@@ -670,7 +720,7 @@
       </copy>
       <javac srcdir="${build.tests}"
              destdir="${build.dest}"
-             classpath="${cpath}"
+             classpathref="classpath"
              debug="on"/>
 
       <jar jarfile="${build.dir}/${name}-test.jar" basedir="${build.dest}"
@@ -679,8 +729,8 @@
       <!-- use the ant "junit" task to run JUnit one test. -->
       <junit printsummary="yes" haltonfailure="no" fork="yes"
              haltonerror="no" showoutput="yes">
-        <classpath>
-          <pathelement path="${cpath}:${build.dir}/${name}-test.jar" />
+        <classpath refid="classpath">
+          <pathelement path="${build.dir}/${name}-test.jar" />
         </classpath>
 
         <formatter type="plain" />

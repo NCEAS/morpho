@@ -4,8 +4,8 @@
 #
 # '$RCSfile: morpho,v $'
 # '$Author: leinfelder $'
-# '$Date: 2008-06-11 23:23:26 $'
-# '$Revision: 1.29 $'
+# '$Date: 2008-11-22 01:28:10 $'
+# '$Revision: 1.30 $'
 
 if ! ls $JAVA_HOME/bin/ | grep -q java; then
  echo ----------------------------------------------------------------------
@@ -21,30 +21,14 @@ if ! ls $JAVA_HOME/bin/ | grep -q java; then
 fi
 
 
-
-XMLP=./lib/xercesImpl.jar
-API=./lib/xml-apis.jar
-XALAN=./lib/xalan.jar
-DMC=./lib/morpho.jar
-#DMC=./build/morpho.jar
-CFG=./lib/morpho-config.jar
-#CFG=./build/morpho-config.jar
-JHELP=./lib/jhall.jar
-JLF=./lib/shippedIcons.jar
-HELP=./lib/morphohelp.jar
-HTP=./lib/httpclient.jar
-ITS=./lib/itislib.jar
-JSE=./lib/jsse.jar
-JCE=./lib/jcert.jar
-JNE=./lib/jnet.jar  
-LAF=./lib/kunststoff.jar 
-LMP=./lib/liveMap.jar 
-UTL=./lib/utilities.jar
-DOM=./lib/dom4j.jar
-JCAL=./lib/jcalendar-1.3.2.jar
+CPATH=.:$JAVA_HOME/jre/lib/rt.jar
+for i in $( ls ./lib/*.jar ); do
+	#echo "jar file: $i"
+	CPATH="$CPATH:$i"
+done
+echo "Using dynamic classpath: $CPATH"
 
 
-CPATH=.:$JAVA_HOME/jre/lib/rt.jar:$LMP:$XMLP:$API:$XALAN:$DMC:$CFG:$JLF:$HTP:$ITS:$JSE:$JCE:$JNE:$LAF:$UTL:$DOM:$JCAL:$JHELP:$HELP
 echo "----------------------------------"
 
 $JAVA_HOME/bin/java -version

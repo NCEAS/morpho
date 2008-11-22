@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: leinfelder $'
- *     '$Date: 2008-11-19 01:48:52 $'
- * '$Revision: 1.34 $'
+ *     '$Date: 2008-11-22 01:28:10 $'
+ * '$Revision: 1.35 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,6 +32,7 @@ import java.util.Map;
 import java.util.HashMap;
 
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.*;
+import edu.ucsb.nceas.morpho.plugins.vocabulary.ThesaurusLookupPage;
 import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
 
 import edu.ucsb.nceas.morpho.framework.AbstractUIPage;
@@ -140,6 +141,8 @@ public class WizardPageLibrary {
       return new CustomUnitPage();
 	if(pageID.equals(DataPackageWizardInterface.GENERIC_VOCABULARY))
 	  return new GenericVocabularyPage();	
+	if(pageID.equals(DataPackageWizardInterface.NBII_THESAURUS_LOOKUP))
+		  return new ThesaurusLookupPage();
 
     throw new IllegalArgumentException(
       "WizardPageLibrary - no page registered with identifier: "+pageID);
