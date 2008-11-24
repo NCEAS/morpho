@@ -32,7 +32,7 @@
   <taxonValueSearchPath>taxonomicClassification/taxonRankValue</taxonValueSearchPath>
   <vocabularies>
   	<vocabulary>KNBRegistry</vocabulary>
-  	<className>edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.GenericVocabularyPage</className>
+  	<className>edu.ucsb.nceas.morpho.plugins.vocabulary.GenericTreeVocabularyPage</className>
   	<vocabulary>nbii</vocabulary>
   	<className>edu.ucsb.nceas.morpho.plugins.vocabulary.ThesaurusLookupPage</className>
   </vocabularies>

@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: leinfelder $'
- *     '$Date: 2008-11-20 21:24:26 $'
- * '$Revision: 1.3 $'
+ *     '$Date: 2008-11-24 02:10:54 $'
+ * '$Revision: 1.1 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,7 +26,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages;
+package edu.ucsb.nceas.morpho.plugins.vocabulary;
 
 import java.awt.BorderLayout;
 import java.awt.event.MouseAdapter;
@@ -52,7 +52,6 @@ import edu.ucsb.nceas.morpho.framework.ModalDialog;
 import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WidgetFactory;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardSettings;
-import edu.ucsb.nceas.morpho.plugins.vocabulary.AbstractUIVocabularyPage;
 import edu.ucsb.nceas.morpho.util.Log;
 import edu.ucsb.nceas.utilities.OrderedMap;
 

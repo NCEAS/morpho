@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: leinfelder $'
- *     '$Date: 2008-11-22 01:28:10 $'
- * '$Revision: 1.35 $'
+ *     '$Date: 2008-11-24 02:10:54 $'
+ * '$Revision: 1.36 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,6 +32,7 @@ import java.util.Map;
 import java.util.HashMap;
 
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.*;
+import edu.ucsb.nceas.morpho.plugins.vocabulary.GenericVocabularyPage;
 import edu.ucsb.nceas.morpho.plugins.vocabulary.ThesaurusLookupPage;
 import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
 
