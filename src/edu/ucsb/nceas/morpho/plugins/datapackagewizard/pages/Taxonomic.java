@@ -7,9 +7,9 @@
 *    Authors: Saurabh Garg
 *    Release: @release@
 *
-*   '$Author: sgarg $'
-*     '$Date: 2005-06-21 17:42:18 $'
-* '$Revision: 1.33 $'
+*   '$Author: tao $'
+*     '$Date: 2008-11-25 22:58:36 $'
+* '$Revision: 1.34 $'
 *
 * This program is free software; you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -42,6 +42,7 @@ import edu.ucsb.nceas.morpho.util.GUIAction;
 import edu.ucsb.nceas.morpho.util.HyperlinkButton;
 import edu.ucsb.nceas.morpho.util.Log;
 import edu.ucsb.nceas.morpho.util.UISettings;
+import edu.ucsb.nceas.morpho.util.Util;
 import edu.ucsb.nceas.utilities.OrderedMap;
 import edu.ucsb.nceas.utilities.XMLUtilities;
 
@@ -858,12 +859,14 @@ public class Taxonomic extends AbstractUIPage {
         TaxonLevel level = (TaxonLevel)taxonLevels.get(i);
         String tRank = level.getRank();
         String tName = level.getName();
-        if(tRank.trim().equals("") || tName.trim().equals("")) continue;
+        //if(tRank.trim().equals("") || tName.trim().equals("")) continue;
+        if(Util.isBlank(tRank)|| Util.isBlank(tName)) continue;
 
         result.put(prefix + "/taxonRankName",  tRank);
         result.put(prefix + "/taxonRankValue",  tName);
         String[] cn = level.getCommonNames();
         for(int j = 0; cn != null && j < cn.length; j++) {
+          if(Util.isBlank(cn[j])) continue;
           result.put(prefix + "/commonName[" + (j + 1) +"]", cn[j]);
         }
         lastAddedPrefix = prefix;
@@ -923,12 +926,14 @@ public class Taxonomic extends AbstractUIPage {
             TaxonLevel level = (TaxonLevel)newTaxonLevels.get(k);
             String tRank = level.getRank();
             String tName = level.getName();
-            if(tRank.trim().equals("") || tName.trim().equals("")) continue;
-
+            //if(tRank.trim().equals("") || tName.trim().equals("")) continue;
+            if(Util.isBlank(tRank)|| Util.isBlank(tName)) continue;
+            
             result.put(currPrefix + "/taxonRankName",  tRank);
             result.put(currPrefix + "/taxonRankValue",  tName);
             String[] cn = level.getCommonNames();
             for(int j = 0; cn != null && j < cn.length; j++) {
+              if(Util.isBlank(cn[j])) continue;
               result.put(currPrefix + "/commonName[" + (j + 1) +"]", cn[j]);
             }
             lastAddedPrefix = currPrefix;
