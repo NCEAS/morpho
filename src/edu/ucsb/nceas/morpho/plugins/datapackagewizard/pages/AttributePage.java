@@ -7,8 +7,8 @@
 *    Release: @release@
 *
 *   '$Author: tao $'
-*     '$Date: 2008-11-21 18:35:20 $'
-* '$Revision: 1.38 $'
+*     '$Date: 2008-11-25 20:27:48 $'
+* '$Revision: 1.39 $'
 *
 * This program is free software; you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -807,7 +807,8 @@ public class AttributePage extends AbstractUIPage {
     }
 
     String attribLabel = attribLabelField.getText().trim();
-    if(attribLabel != null && !attribLabel.equals("")) {
+    //if(attribLabel != null && !attribLabel.equals("")) {
+    if(!Util.isBlank(attribLabel)) {
       returnMap.put(xPath + "/attributeLabel", attribLabel);
     }
 

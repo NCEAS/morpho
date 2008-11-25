@@ -7,8 +7,8 @@
 *    Release: @release@
 *
 *   '$Author: tao $'
-*     '$Date: 2008-11-17 23:39:00 $'
-* '$Revision: 1.35 $'
+*     '$Date: 2008-11-25 20:27:48 $'
+* '$Revision: 1.36 $'
 *
 * This program is free software; you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -692,7 +692,8 @@ class NominalOrdinalPanel extends JPanel implements WizardPageSubPanelAPI {
       }
 
       String source = textSourceField.getText().trim();
-      if (!source.equals(EMPTY_STRING)) {
+      //if (!source.equals(EMPTY_STRING)) {
+      if (!Util.isBlank(source)) {
         returnMap.put(  xPathRoot + "textDomain[1]/source", source);
       }
     }

@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2008-11-17 23:39:00 $'
- * '$Revision: 1.27 $'
+ *     '$Date: 2008-11-25 20:27:48 $'
+ * '$Revision: 1.28 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -360,7 +360,8 @@ class DateTimePanel extends JPanel implements WizardPageSubPanelAPI {
                     formatStringField.getText().trim());
 
     // dateTimePrecision is not required, so don't add it if empty
-    if (!precisionField.getText().trim().equals("")) {
+    //if (!precisionField.getText().trim().equals("")) {
+      if (!Util.isBlank(precisionField.getText())) {
         returnMap.put(xPathRoot + "/dateTimePrecision",
                       precisionField.getText().trim());
     }
