@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2008-11-18 01:42:20 $'
- * '$Revision: 1.28 $'
+ *     '$Date: 2008-11-25 22:30:32 $'
+ * '$Revision: 1.29 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -373,7 +373,8 @@ public class Entity extends AbstractUIPage{
                   entityNameField.getText().trim());
 
     String entityDesc = entityDescField.getText().trim();
-    if (!entityDesc.equals("")) {
+    //if (!entityDesc.equals("")) {
+    if (!Util.isBlank(entityDesc)) {
       returnMap.put(xPathRoot + "/entityDescription", entityDesc);
     }
 
