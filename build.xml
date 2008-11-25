@@ -6,7 +6,7 @@
   *    Copyright: 2000 Regents of the University of California and the
   *               National Center for Ecological Analysis and Synthesis
   *  For Details: http://www.nceas.ucsb.edu/
-  *    File Info: '$Id: build.xml,v 1.128 2008-11-22 01:28:10 leinfelder Exp $'
+  *    File Info: '$Id: build.xml,v 1.129 2008-11-25 19:24:14 leinfelder Exp $'
   *
   *  Build file for the Ant cross-platform build system for metacat
   *  See http://jakarta.apache.org for details on Ant
@@ -532,7 +532,8 @@
    <target name="morpho" depends="install">
      <java classname="edu.ucsb.nceas.morpho.Morpho"
            fork="yes" >
-     	<classpath refid="classpath">
+     	<classpath>
+     		<path refid="classpath" />
      		<pathelement path="${morpho}:${help}"/>
      	</classpath>
        <jvmarg value="-Xmx512m"/>
@@ -693,7 +694,8 @@
       <!-- use the ant "junit" task to run JUnit tests. -->
       <junit printsummary="yes" haltonfailure="no" fork="no"
              haltonerror="no">
-        <classpath refid="classpath">
+        <classpath>
+        	<path refid="classpath" />
           <pathelement path="${build.dir}/${name}-test.jar" />
         </classpath>
 
@@ -729,7 +731,8 @@
       <!-- use the ant "junit" task to run JUnit one test. -->
       <junit printsummary="yes" haltonfailure="no" fork="yes"
              haltonerror="no" showoutput="yes">
-        <classpath refid="classpath">
+        <classpath>
+        	<path refid="classpath" />
           <pathelement path="${build.dir}/${name}-test.jar" />
         </classpath>
 
