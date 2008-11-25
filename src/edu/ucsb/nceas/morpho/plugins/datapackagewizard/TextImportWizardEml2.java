@@ -5,8 +5,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2008-11-18 22:15:06 $'
- * '$Revision: 1.27 $'
+ *     '$Date: 2008-11-25 22:29:39 $'
+ * '$Revision: 1.28 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1658,8 +1658,11 @@ public class TextImportWizardEml2 extends JFrame {
     String header = "/eml:eml/dataset/dataTable/";
     OrderedMap om = new OrderedMap();
     om.put(header + "entityName", XMLUtil.normalize(TableNameTextField.getText()));
-    om.put(header + "entityDescription",
+    if(!Util.isBlank(TableDescriptionTextField.getText()))
+    {
+    	om.put(header + "entityDescription",
            XMLUtil.normalize(TableDescriptionTextField.getText()));
+    }
     // physical NV pairs are inserted here
 		String physicalID = WizardSettings.getUniqueID();
 		om.put(header + "physical/@id", physicalID);
@@ -1691,7 +1694,10 @@ public class TextImportWizardEml2 extends JFrame {
     if (labelsInStartingLine)temp = 1;
     int numrecs = nlines_actual - startingLine + 1 + temp;
     String numRecords = (new Integer(numrecs)).toString();
-    om.put(header + "numberOfRecords", XMLUtil.normalize(numRecords));
+    if(!Util.isBlank(numRecords))
+    {
+    	om.put(header + "numberOfRecords", XMLUtil.normalize(numRecords));
+    }
 
 		if(this.ignoreConsequtiveDelimiters) {
 			// if consecutive delimiters need to be ignored, we have to add this information in the
