@@ -6,7 +6,7 @@
   *    Copyright: 2000 Regents of the University of California and the
   *               National Center for Ecological Analysis and Synthesis
   *  For Details: http://www.nceas.ucsb.edu/
-  *    File Info: '$Id: build.xml,v 1.129 2008-11-25 19:24:14 leinfelder Exp $'
+  *    File Info: '$Id: build.xml,v 1.130 2008-11-26 20:44:54 tao Exp $'
   *
   *  Build file for the Ant cross-platform build system for metacat
   *  See http://jakarta.apache.org for details on Ant
@@ -24,8 +24,13 @@
       <property name="mpass" value="your-pw-goes-here"/>
 	   <property name="utilities-tag" value="UTILITIES_1_0_0" />
       <property name="eml-module" value="eml" />
+	   <!-- the following two properties will be used to get newest eml doc-->
       <property name="eml-tag" value="RELEASE_EML_2_1_0" />
       <property name="eml.doc.dir" value="docs/eml-2.1.0" />
+	   <!-- the following property will be used to get eml210 schemas -->
+	  <property name="eml-210-schema-tag" value="RELEASE_EML_2_1_0" />
+	   <!-- eml-210-style-tag only be used to get eml201to210.xsl file -->
+	  <property name="eml-210-style-tag" value="RELEASE_EML_2_1_0" />
       <property name="helpjar" value="morphohelp.jar" />
       <filter token="release" value="${release}"/>
       <filter token="muser" value="${muser}"/>
@@ -39,6 +44,7 @@
 
       <property name="libdir" value="./lib" />
       <property name="xsldir" value="./xsl" />
+	   <property name="schemadir" value="./xsd"/>
       <property name="docuserdir" value="./docs/user" />
       <property name="jwsdir"
                 value="/var/www/org.ecoinformatics.knb/software/dist/morpho" />
@@ -53,6 +59,7 @@
       <property name="build.data" value="${build.dir}/data"/>
       <property name="build.javadocs" value="${build.dir}/docs/api"/>
       <property name="build.xsl" value="${build.dir}/xsl"/>
+	   <property name="build.schema" value="${build.dir}/schema"/>
       <!-- don't modify this value-->
       <property name="java.help.doc.dir" value="./morphohelp" />
       <property name="searchDB" value="./JavaHelpSearch"/>
@@ -135,6 +142,18 @@
 	   <condition property="utilities.required">
         <or>
           <not><available file="${utilities}" type="file"/></not>
+        </or>
+      </condition>
+	   
+	  <condition property="eml210schema.needed">
+        <or>
+          <not><available file="${schemadir}/eml-2.1.0/eml.xsd" type="file"/></not>
+        </or>
+      </condition>
+	   
+	   <condition property="eml201-210stylesheet.needed">
+        <or>
+          <not><available file="${xsldir}/eml201to210.xsl" type="file"/></not>
         </or>
       </condition>
    	
@@ -238,6 +257,32 @@
       <outputproperty name="indent" value="yes"/>
     </xslt>
    </target>
+	
+	<target name="geteml201to210stylesheet" depends="cvsrootfromenv, cvsrootfrominput" if="eml201-210stylesheet.needed">
+     <!-- checkout eml/eml201to210.xsl file -->
+     <echo>Enter CVS password: </echo>
+     <cvs cvsRoot="${cvsroot}"
+          package="${eml-module}/eml201to210.xsl"
+          tag="${eml-210-style-tag}"
+          dest="${build.xsl}/eml_${eml-210-style-tag}" />
+	<copy file="${build.xsl}/eml_${eml-210-style-tag}/${eml-module}/eml201to210.xsl" todir="${xsldir}" />
+   </target>
+
+	
+	<target name="geteml210" depends="geteml201to210stylesheet" if="eml210schema.needed">
+     <!-- checkout eml moduel -->
+     <echo>Enter CVS password: </echo>
+     <cvs cvsRoot="${cvsroot}"
+          package="${eml-module}"
+          tag="${eml-210-schema-tag}"
+          dest="${build.schema}/eml_${eml-210-schema-tag}" />
+     <mkdir dir="${schemadir}/eml-2.1.0" />
+     <copy todir="${schemadir}/eml-2.1.0" filtering="yes">
+       <fileset dir="${build.schema}/eml_${eml-210-schema-tag}/${eml-module}">
+         <include name="*.xsd"/>
+       </fileset>
+     </copy> 
+   </target>
 
 
    <target name="utilities" depends="cvsrootfromenv, cvsrootfrominput" if="utilities.required">
@@ -313,7 +358,7 @@
    <!--
    <target name="compile" depends="clean,itis,prepare">
    -->
-   <target name="compile" depends="prepare, utilities">
+   <target name="compile" depends="prepare, utilities, geteml210">
 
       <jar jarfile="lib/httpclient.jar">
         <fileset dir="lib" includes="HTTPClient/**/*.class"/>
@@ -484,6 +529,14 @@
        <delete file="${libdir}/${name}.jar" />
        <delete file="${libdir}/${name}-config.jar" />
        <delete dir="${dist.dir}"/>
+   </target>
+	
+	<!--Except clean, it also delete utilies.jar, eml-210 schema and eml201to210.xsl file.
+		Those files are checked out from another cvs.-->
+	<target name="fullclean" depends="clean">
+       <delete dir="${schemadir}/eml-2.1.0" />
+       <delete file="${libdir}/utilities.jar" />
+		<delete file="${xsldir}/eml201to210.xsl" />
    </target>
 
    <target name="docs" depends="init">
