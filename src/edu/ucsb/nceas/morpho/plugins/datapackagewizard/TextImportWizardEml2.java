@@ -5,8 +5,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2008-11-25 22:29:39 $'
- * '$Revision: 1.28 $'
+ *     '$Date: 2008-11-26 01:45:32 $'
+ * '$Revision: 1.29 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1703,7 +1703,10 @@ public class TextImportWizardEml2 extends JFrame {
 			// if consecutive delimiters need to be ignored, we have to add this information in the
 			// additionalMetadata section.
 			String addtHeader = "/eml:eml/additionalMetadata";
-			om.put(addtHeader + "/describes", physicalID);
+			if(!Util.isBlank(physicalID))
+			{
+				om.put(addtHeader + "/describes", physicalID);
+			}
 			om.put(addtHeader + "/metadata/consecutiveDelimiters", "true");
 		}
 
