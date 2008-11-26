@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2008-11-18 01:42:20 $'
- * '$Revision: 1.24 $'
+ *     '$Date: 2008-11-26 00:49:49 $'
+ * '$Revision: 1.25 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1064,13 +1064,13 @@ class BookPanel extends JPanel implements WizardPageSubPanelAPI{
     map.put(xPathRoot + "/publisher[1]/organizationName[1]", publisher);
 
     String en = this.editionField.getText();
-    if(!en.trim().equals("")) map.put(xPathRoot + "/edition[1]", en);
+    if(!Util.isBlank(en)) map.put(xPathRoot + "/edition[1]", en);
 
     String vn = this.volumeField.getText();
-    if(!vn.trim().equals("")) map.put(xPathRoot + "/volume[1]", vn);
+    if(!Util.isBlank(vn)) map.put(xPathRoot + "/volume[1]", vn);
 
     String isbn = this.isbnField.getText();
-    if(!isbn.trim().equals("")) map.put(xPathRoot + "/ISBN[1]", isbn);
+    if(!Util.isBlank(isbn)) map.put(xPathRoot + "/ISBN[1]", isbn);
 
     return map;
   }
@@ -1227,8 +1227,8 @@ class ArticlePanel extends JPanel  implements WizardPageSubPanelAPI{
     }
     WidgetFactory.unhiliteComponent(journalLabel);
 
-    if (volumeField.getText().trim().equals("")) {
-
+    //if (volumeField.getText().trim().equals("")) {
+    if (Util.isBlank(volumeField.getText())) {
       WidgetFactory.hiliteComponent(volumeLabel);
       volumeField.requestFocus();
       return false;
@@ -1270,11 +1270,11 @@ class ArticlePanel extends JPanel  implements WizardPageSubPanelAPI{
 
     OrderedMap map = new OrderedMap();
     map.put(xPathRoot + "/journal[1]", journalField.getText());
-    map.put(xPathRoot + "/volume[1]", volumeField.getText());
+    if(!Util.isBlank(volumeField.getText())) map.put(xPathRoot + "/volume[1]", volumeField.getText());
     String issue = (String) this.issueField.getText();
-    if(!issue.trim().equals("")) map.put(xPathRoot + "/issue[1]", issue);
+    if(!Util.isBlank(issue)) map.put(xPathRoot + "/issue[1]", issue);
 
-    map.put(xPathRoot + "/pageRange[1]", this.rangeField.getText());
+    if(!Util.isBlank(this.rangeField.getText())) map.put(xPathRoot + "/pageRange[1]", this.rangeField.getText());
     String pub = (String)this.publisherField.getText();
     if(!pub.trim().equals("")) map.put(xPathRoot + "/publisher[1]/organizationName[1]", pub);
 
@@ -1435,13 +1435,13 @@ class ReportPanel extends JPanel  implements WizardPageSubPanelAPI{
     OrderedMap map = new OrderedMap();
 
     String rn = this.numberField.getText().trim();
-    if(!rn.equals("")) map.put(xPathRoot + "/reportNumber[1]", rn);
+    if(!Util.isBlank(rn)) map.put(xPathRoot + "/reportNumber[1]", rn);
 
     String pub = this.publisherField.getText().trim();
     if(!pub.equals("")) map.put(xPathRoot + "/publisher[1]/organizationName[1]", pub);
 
     String pn = this.pagesField.getText();
-    if(!pn.trim().equals("")) map.put(xPathRoot + "/totalPages[1]", pn);
+    if(!Util.isBlank(pn)) map.put(xPathRoot + "/totalPages[1]", pn);
 
     return map;
   }
