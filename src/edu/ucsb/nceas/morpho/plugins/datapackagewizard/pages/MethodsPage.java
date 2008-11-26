@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: sgarg $'
- *     '$Date: 2004-03-30 21:35:46 $'
- * '$Revision: 1.8 $'
+ *   '$Author: tao $'
+ *     '$Date: 2008-11-26 00:58:47 $'
+ * '$Revision: 1.9 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,6 +33,7 @@ import edu.ucsb.nceas.morpho.framework.AbstractUIPage;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WidgetFactory;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardSettings;
 import edu.ucsb.nceas.morpho.util.Log;
+import edu.ucsb.nceas.morpho.util.Util;
 import edu.ucsb.nceas.utilities.OrderedMap;
 
 import java.util.ArrayList;
@@ -249,7 +250,8 @@ public class MethodsPage
     }
 
     String inst = instField.getText().trim();
-    if (inst != null && !inst.equals(EMPTY_STRING)) {
+    //if (inst != null && !inst.equals(EMPTY_STRING)) {
+    if (!Util.isBlank(inst)) {
 
       StringTokenizer st = new StringTokenizer(inst, "\n");
       int count = 0;
