@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: leinfelder $'
- *     '$Date: 2008-11-22 01:28:10 $'
- * '$Revision: 1.14 $'
+ *   '$Author: tao $'
+ *     '$Date: 2008-11-26 04:31:56 $'
+ * '$Revision: 1.15 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -38,6 +38,7 @@ import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WidgetFactory;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardSettings;
 import edu.ucsb.nceas.morpho.util.Log;
 import edu.ucsb.nceas.morpho.util.UISettings;
+import edu.ucsb.nceas.morpho.util.Util;
 import edu.ucsb.nceas.utilities.OrderedMap;
 
 import java.util.ArrayList;
@@ -339,7 +340,8 @@ public class KeywordsPage extends AbstractUIPage {
     returnMap.putAll(getKWListAsNVP(xPathRoot));
 
     String thesaurus = ((String) thesaurusField.getSelectedItem()).trim();
-    if (thesaurus!=null && !thesaurus.equals(EMPTY_STRING)) {
+    //if (thesaurus!=null && !thesaurus.equals(EMPTY_STRING)) {
+    if (!Util.isBlank(thesaurus)) {
       returnMap.put(xPathRoot + "/keywordThesaurus", thesaurus);
     }
 
