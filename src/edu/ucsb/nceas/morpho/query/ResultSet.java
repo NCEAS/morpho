@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: tao $'
- *     '$Date: 2004-04-19 20:44:50 $'
- * '$Revision: 1.49 $'
+ *   '$Author: leinfelder $'
+ *     '$Date: 2008-11-27 00:47:17 $'
+ * '$Revision: 1.50 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -136,40 +136,40 @@ public class ResultSet extends AbstractTableModel implements ColumnSortableTable
   //private ImageIcon bothDataIcon = null;
 
   /** Store the index of package icon in resultsVector */
-  protected static final int PACKAGEICONINDEX = 0;
+  public static final int PACKAGEICONINDEX = 0;
 
   /** Store the index of titl in resultsVector */
-  protected static final int TITLEINDEX = 1;
+  public static final int TITLEINDEX = 1;
 
   /** Store the index of surname in resultsVector */
-  protected static final int SURNAMEINDEX = 2;
+  public static final int SURNAMEINDEX = 2;
 
   /** Store the index of keywords in resultsVector */
-  protected static final int KEYWORDSINDEX = 3;
+  public static final int KEYWORDSINDEX = 3;
 
   /** Store the index of createdate in resultsVector */
-  protected static final int CREATEDATEINDEX = 4;
+  public static final int CREATEDATEINDEX = 4;
 
   /** Store the index of update in resultsVector */
-  protected static final int UPDATEDATEINDEX = 5;
+  public static final int UPDATEDATEINDEX = 5;
 
   /** Store the index of docid in resultsVector */
-  protected static final int DOCIDINDEX = 6;
+  public static final int DOCIDINDEX = 6;
 
   /** Store the index of doc name in resultsVector */
-  protected static final int DOCNAMEINDEX = 7;
+  public static final int DOCNAMEINDEX = 7;
 
   /** Store the index of doc type in resultsVector */
-  protected static final int DOCTYPEINDEX = 8;
+  public static final int DOCTYPEINDEX = 8;
 
   /** Store the index of islocal in resultsVector */
-  protected static final int ISLOCALINDEX = 9;
+  public static final int ISLOCALINDEX = 9;
 
   /** Store the index of ismetacat in resultsVector */
-  protected static final int ISMETACATINDEX = 10;
+  public static final int ISMETACATINDEX = 10;
 
   /** Store the index of triple in resultsVector*/
-  protected static final int TRIPLEINDEX =11;
+  public static final int TRIPLEINDEX =11;
 
   /** Store the height fact for table row height */
   private static final int HEIGHTFACTOR = 2;
