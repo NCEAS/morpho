@@ -296,7 +296,7 @@
 							<!-- Scenario 2 and 3 -->
 							<xsl:call-template name="handle-describe-access-in-additional-metadata">
 								<!--select node-set of describe which doesn't refer physical/distribtuion or software/implmentation/distribution -->
-								 <xsl:with-param name="describes-list" select="./describes[//physical/distribution/@id !=. and //software/implementation/distribution/@id != .] "/>							 
+								 <xsl:with-param name="describes-list" select="./describes[not(//physical/distribution/@id =.) and not(//software/implementation/distribution/@id = .)] "/>							 
 							 </xsl:call-template>					
 						</xsl:otherwise>
 					</xsl:choose>
