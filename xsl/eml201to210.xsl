@@ -131,6 +131,14 @@
                     	<xsl:apply-templates mode="copy-no-ns" select="./*"/>
     	 </xsl:element>
 	</xsl:template>
+	
+	<!-- change the name of element form method to methods -->
+	<xsl:template match="attribute/method">  
+        <xsl:element name="methods" namespace="{namespace-uri(.)}">  
+           			    <xsl:copy-of select="@*"/> 
+                    	<xsl:apply-templates mode="copy-no-ns" select="./*"/>
+    	 </xsl:element>
+	</xsl:template>
 
 
      <!-- Move the access tree of data file level from additionalMetadata part to physical/distribution or software/implementation/distribution part.
