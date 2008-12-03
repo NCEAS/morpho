@@ -6,7 +6,7 @@
   *    Copyright: 2000 Regents of the University of California and the
   *               National Center for Ecological Analysis and Synthesis
   *  For Details: http://www.nceas.ucsb.edu/
-  *    File Info: '$Id: build.xml,v 1.130 2008-11-26 20:44:54 tao Exp $'
+  *    File Info: '$Id: build.xml,v 1.131 2008-12-03 19:15:59 tao Exp $'
   *
   *  Build file for the Ant cross-platform build system for metacat
   *  See http://jakarta.apache.org for details on Ant
@@ -262,10 +262,10 @@
      <!-- checkout eml/eml201to210.xsl file -->
      <echo>Enter CVS password: </echo>
      <cvs cvsRoot="${cvsroot}"
-          package="${eml-module}/eml201to210.xsl"
+          package="${eml-module}/style/eml201to210.xsl"
           tag="${eml-210-style-tag}"
           dest="${build.xsl}/eml_${eml-210-style-tag}" />
-	<copy file="${build.xsl}/eml_${eml-210-style-tag}/${eml-module}/eml201to210.xsl" todir="${xsldir}" />
+	<copy file="${build.xsl}/eml_${eml-210-style-tag}/${eml-module}/style/eml201to210.xsl" todir="${xsldir}" />
    </target>
 
 	
