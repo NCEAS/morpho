@@ -1,14 +1,32 @@
 <?xml version="1.0"?>
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"  version="1.0" xmlns:eml="eml://ecoinformatics.org/eml-2.1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" >
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"  xmlns:eml="eml://ecoinformatics.org/eml-2.1.0"  version="1.0">
 <xsl:output method="xml" indent="yes"/>
 <xsl:strip-space elements="*"/>
 
 <xsl:template match="/* ">
     <!--handle top level element-->
    <xsl:element name="eml:eml"> 
-      <xsl:copy-of select="@*"/> 
-      <xsl:attribute name="xsi:schemaLocation">eml://ecoinformatics.org/eml-2.1.0 eml.xsd</xsl:attribute>
-
+      <xsl:copy-of select="@*"/>
+      <!--<xsl:attribute name="xsi:schemaLocation">eml://ecoinformatics.org/eml-2.1.0 eml.xsd</xsl:attribute>-->
+	   <xsl:for-each select="@*">
+		    <xsl:attribute name="{name()}">	
+			  <xsl:variable name="value" select="."/>
+			 <xsl:choose>
+				  <xsl:when test='contains(., "eml://ecoinformatics.org/eml-2.0.0")'>
+				   <xsl:value-of select='translate(., "eml://ecoinformatics.org/eml-2.0.0", "eml://ecoinformatics.org/eml-2.1.0")'/>
+			     </xsl:when>			
+				 <xsl:when test='contains(., "eml://ecoinformatics.org/eml-2.0.1")'>
+				   <xsl:value-of select='translate(., "eml://ecoinformatics.org/eml-2.0.1", "eml://ecoinformatics.org/eml-2.1.0")'/>
+			     </xsl:when>		   
+			   <xsl:otherwise>
+			        <xsl:value-of select="."/>
+			   </xsl:otherwise>
+			  </xsl:choose>
+			</xsl:attribute>
+	   </xsl:for-each>
+       <!--<xsl:attribute name="xsi:schemaLocation">
+		  <xsl:value-of select='translate(@xsi:schemaLocation, "eml-2.0.1", "eml-2.1.0")'/>
+	  </xsl:attribute>-->
      <!-- move the access sub tree to top level-->
      <xsl:apply-templates mode="copy-top-access-tree" select="/*/dataset/access"/>
      <xsl:apply-templates mode="copy-top-access-tree" select="/*/citation/access"/>
