@@ -12,11 +12,21 @@
 		    <xsl:attribute name="{name()}">	
 			  <xsl:variable name="value" select="."/>
 			 <xsl:choose>
-				  <xsl:when test='contains(., "eml://ecoinformatics.org/eml-2.0.0")'>
-				   <xsl:value-of select='translate(., "eml://ecoinformatics.org/eml-2.0.0", "eml://ecoinformatics.org/eml-2.1.0")'/>
-			     </xsl:when>			
-				 <xsl:when test='contains(., "eml://ecoinformatics.org/eml-2.0.1")'>
-				   <xsl:value-of select='translate(., "eml://ecoinformatics.org/eml-2.0.1", "eml://ecoinformatics.org/eml-2.1.0")'/>
+				  <!--change eml201 to eml210 in attribute-->
+				  <xsl:when test='contains($value, "eml://ecoinformatics.org/eml-2.0.0")'>
+					   <xsl:call-template name="replace-string">
+						  <xsl:with-param name="text" select="$value"/>
+						  <xsl:with-param name="replace" select="'eml://ecoinformatics.org/eml-2.0.0'"/>
+						  <xsl:with-param name="with" select="'eml://ecoinformatics.org/eml-2.1.0'"/>
+					  </xsl:call-template>
+			     </xsl:when>	
+				 <!--change eml200 to eml210 in attribute-->		
+				 <xsl:when test='contains($value, "eml://ecoinformatics.org/eml-2.0.1")'>
+				   <xsl:call-template name="replace-string">
+						  <xsl:with-param name="text" select="$value"/>
+						  <xsl:with-param name="replace" select="'eml://ecoinformatics.org/eml-2.0.1'"/>
+						  <xsl:with-param name="with" select="'eml://ecoinformatics.org/eml-2.1.0'"/>
+					  </xsl:call-template>
 			     </xsl:when>		   
 			   <xsl:otherwise>
 			        <xsl:value-of select="."/>
@@ -370,6 +380,28 @@
 			 </xsl:call-template>
 			 </xsl:otherwise>
 		 </xsl:choose>
-	</xsl:template>	
+	</xsl:template>
+	
+	<!--Template to replace string "replace" by string "with" in given string "text"-->
+   <xsl:template name="replace-string">
+    <xsl:param name="text"/>
+    <xsl:param name="replace"/>
+    <xsl:param name="with"/>
+    <xsl:choose>
+      <xsl:when test="contains($text,$replace)">
+        <xsl:value-of select="substring-before($text,$replace)"/>
+        <xsl:value-of select="$with"/>
+        <xsl:call-template name="replace-string">
+          <xsl:with-param name="text" select="substring-after($text,$replace)"/>
+          <xsl:with-param name="replace" select="$replace"/>
+          <xsl:with-param name="with" select="$with"/>
+        </xsl:call-template>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:value-of select="$text"/>
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:template>
+	
 	
 </xsl:stylesheet>
