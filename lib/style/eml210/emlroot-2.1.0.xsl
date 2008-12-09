@@ -7,8 +7,8 @@
   *  For Details: http://www.nceas.ucsb.edu/
   *
   *   '$Author: tao $'
-  *     '$Date: 2008-10-17 01:09:15 $'
-  * '$Revision: 1.3 $'
+  *     '$Date: 2008-12-09 00:17:19 $'
+  * '$Revision: 1.4 $'
   *
   * This program is free software; you can redistribute it and/or modify
   * it under the terms of the GNU General Public License as published by
@@ -61,9 +61,6 @@
  <xsl:variable name="ids" select="//*[@id!='']"/>
   
  <xsl:template match="*[local-name()='eml']">
-	  <xsl:for-each select="access">
-		   <xsl:call-template name="topaccess"/>
-	  </xsl:for-each>
      <tr><td>
        <xsl:for-each select="dataset">
          <xsl:call-template name="emldataset"/>
@@ -110,6 +107,9 @@
          <xsl:call-template name="emlprotocol"/>
        </xsl:for-each>
       </td></tr>
+	 <xsl:for-each select="access">
+		   <xsl:call-template name="topaccess"/>
+	  </xsl:for-each>
 
      <!-- xml format
      <xsl:if test="$displaymodule='dataset'">
