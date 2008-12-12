@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2008-11-18 01:42:20 $'
- * '$Revision: 1.35 $'
+ *     '$Date: 2008-12-12 20:32:31 $'
+ * '$Revision: 1.36 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -729,7 +729,15 @@ public class DataFormat extends AbstractUIPage{
       return returnMap;
 
     } else if (formatXPath==SIMPLE_TEXT_XPATH)  {
-      returnMap.put(PHYSICAL_XPATH+"objectName",fileName);
+      //returnMap.put(PHYSICAL_XPATH+"objectName",fileName);
+      if(!Util.isBlank(fileName))
+      {
+           returnMap.put(PHYSICAL_XPATH+"objectName",fileName);
+      }
+      else
+      {
+       	 returnMap.put(PHYSICAL_XPATH+"objectName",WizardSettings.UNAVAILABLE);
+      }
       returnMap.put(TEXT_BASE_XPATH+"attributeOrientation", orientationSimple);
 
       int index=1;
@@ -788,13 +796,28 @@ public class DataFormat extends AbstractUIPage{
 
 
     } else if (formatXPath==COMPLEX_TEXT_XPATH)  {
-      returnMap.put(PHYSICAL_XPATH+"objectName",fileName);
+      if(!Util.isBlank(fileName))
+      {
+        returnMap.put(PHYSICAL_XPATH+"objectName",fileName);
+      }
+      else
+      {
+    	 returnMap.put(PHYSICAL_XPATH+"objectName",WizardSettings.UNAVAILABLE);
+      }
       returnMap.put(TEXT_BASE_XPATH+"attributeOrientation", orientationComplex);
 
       returnMap.putAll(getCmplxDelimListAsNVP());
 
     } else if (formatXPath==PROPRIETARY_XPATH)  {
-      returnMap.put(PHYSICAL_XPATH+"objectName",fileName);
+      //returnMap.put(PHYSICAL_XPATH+"objectName",fileName);
+      if(!Util.isBlank(fileName))
+      {
+           returnMap.put(PHYSICAL_XPATH+"objectName",fileName);
+      }
+      else
+      {
+       	 returnMap.put(PHYSICAL_XPATH+"objectName",WizardSettings.UNAVAILABLE);
+      }
       returnMap.put(PROPRIETARY_XPATH, proprietaryText);
 
 //    } else if (formatXPath==RASTER_XPATH) {

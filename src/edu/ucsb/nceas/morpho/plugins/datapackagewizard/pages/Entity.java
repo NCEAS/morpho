@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2008-11-25 22:30:32 $'
- * '$Revision: 1.29 $'
+ *     '$Date: 2008-12-12 20:32:31 $'
+ * '$Revision: 1.30 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -378,7 +378,7 @@ public class Entity extends AbstractUIPage{
       returnMap.put(xPathRoot + "/entityDescription", entityDesc);
     }
 
-    returnMap.put(xPathRoot + "/physical/objectName", "");
+    returnMap.put(xPathRoot + "/physical/objectName", WizardSettings.UNAVAILABLE);
     returnMap.put(xPathRoot + "/physical/dataFormat", "");
 
     int index = 1;

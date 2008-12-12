@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2008-10-14 23:11:10 $'
- * '$Revision: 1.75 $'
+ *     '$Date: 2008-12-12 20:32:31 $'
+ * '$Revision: 1.76 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -133,6 +133,8 @@ public class WizardSettings {
   public static final String ENTITY_WIZ_FIRST_PAGE_ID = DataPackageWizardInterface.DATA_LOCATION;
 
   public static final Color TOP_PANEL_BG_COLOR = new Color(11,85,112);
+  
+  public static final String UNAVAILABLE = "Unavailable";
 
   // x-dimension is ignored:
   protected static final Dimension TOP_PANEL_DIMS = new Dimension(100,60);

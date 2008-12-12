@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2008-11-11 23:51:55 $'
- * '$Revision: 1.40 $'
+ *     '$Date: 2008-12-12 20:32:31 $'
+ * '$Revision: 1.41 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -857,7 +857,14 @@ public class DataLocation extends AbstractUIPage {
           returnMap.put(ONLINE_URL_XPATH, URN_ROOT + dataFileID);
         } else {
           // if no datafile, it's an online URL
-          returnMap.put(OBJECTNAME_XPATH, fileNameFieldOnline.getText().trim());
+          if (!Util.isBlank(fileNameFieldOnline.getText().trim()))
+          {
+             returnMap.put(OBJECTNAME_XPATH, fileNameFieldOnline.getText().trim());
+          }
+          else
+          {
+        	  returnMap.put(OBJECTNAME_XPATH, WizardSettings.UNAVAILABLE);
+          }
           returnMap.put(ONLINE_URL_XPATH, urlFieldOnline.getText().trim());
         }
         break;
@@ -870,8 +877,23 @@ public class DataLocation extends AbstractUIPage {
         //////
 
       case WizardSettings.OFFLINE:
-        returnMap.put(OBJECTNAME_XPATH, objNameField.getText().trim());
-        returnMap.put(MEDIUMNAME_XPATH, medNameField.getText().trim());
+    	if(!Util.isBlank(objNameField.getText().trim()))
+    	{
+            returnMap.put(OBJECTNAME_XPATH, objNameField.getText().trim());
+    	}
+    	else
+    	{
+    		returnMap.put(OBJECTNAME_XPATH, WizardSettings.UNAVAILABLE);
+    	}
+    	
+    	if(!Util.isBlank(medNameField.getText().trim()))
+    	{
+            returnMap.put(MEDIUMNAME_XPATH, medNameField.getText().trim());
+    	}
+    	else
+    	{
+    		returnMap.put(MEDIUMNAME_XPATH, WizardSettings.UNAVAILABLE);
+    	}
         break;
         //////
 

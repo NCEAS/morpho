@@ -5,8 +5,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2008-11-26 01:45:32 $'
- * '$Revision: 1.29 $'
+ *     '$Date: 2008-12-12 20:32:31 $'
+ * '$Revision: 1.30 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1666,7 +1666,14 @@ public class TextImportWizardEml2 extends JFrame {
     // physical NV pairs are inserted here
 		String physicalID = WizardSettings.getUniqueID();
 		om.put(header + "physical/@id", physicalID);
-    om.put(header + "physical/objectName", shortFilename);
+	if(!Util.isBlank(shortFilename))
+	{
+        om.put(header + "physical/objectName", shortFilename);
+	}
+	else
+	{
+		om.put(header + "physical/objectName", WizardSettings.UNAVAILABLE);
+	}
     long filesize = dataFile.length();
     String filesizeString = (new Long(filesize)).toString();
     om.put(header + "physical/size", filesizeString);
