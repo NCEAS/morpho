@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2008-12-12 20:32:31 $'
- * '$Revision: 1.41 $'
+ *     '$Date: 2008-12-15 23:57:23 $'
+ * '$Revision: 1.42 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -75,6 +75,7 @@ public class DataLocation extends AbstractUIPage {
 
   private final String title      = "New Data Table Wizard";
   private final String subtitle   = "Data Location";
+  private final String HARDDRIVE = "hard drive";
 
   // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
@@ -877,23 +878,39 @@ public class DataLocation extends AbstractUIPage {
         //////
 
       case WizardSettings.OFFLINE:
-    	if(!Util.isBlank(objNameField.getText().trim()))
+    	if(getLastEvent() == DESCRIBE_AUTO)
     	{
-            returnMap.put(OBJECTNAME_XPATH, objNameField.getText().trim());
+    		if(getDataFile() != null)
+        	{
+                returnMap.put(OBJECTNAME_XPATH, getDataFile().getName());
+        	}
+        	else
+        	{
+        		returnMap.put(OBJECTNAME_XPATH, WizardSettings.UNAVAILABLE);
+        	}
+        	returnMap.put(MEDIUMNAME_XPATH, HARDDRIVE);
+        
     	}
     	else
     	{
-    		returnMap.put(OBJECTNAME_XPATH, WizardSettings.UNAVAILABLE);
-    	}
-    	
-    	if(!Util.isBlank(medNameField.getText().trim()))
-    	{
-            returnMap.put(MEDIUMNAME_XPATH, medNameField.getText().trim());
-    	}
-    	else
-    	{
-    		returnMap.put(MEDIUMNAME_XPATH, WizardSettings.UNAVAILABLE);
-    	}
+    		if(!Util.isBlank(objNameField.getText().trim()))
+        	{
+                returnMap.put(OBJECTNAME_XPATH, objNameField.getText().trim());
+        	}
+        	else
+        	{
+        		returnMap.put(OBJECTNAME_XPATH, WizardSettings.UNAVAILABLE);
+        	}
+        	
+        	if(!Util.isBlank(medNameField.getText().trim()))
+        	{
+                returnMap.put(MEDIUMNAME_XPATH, medNameField.getText().trim());
+        	}
+        	else
+        	{
+        		returnMap.put(MEDIUMNAME_XPATH, WizardSettings.UNAVAILABLE);
+        	}
+    	}    	
         break;
         //////
 
