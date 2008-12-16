@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2008-12-15 23:57:23 $'
- * '$Revision: 1.42 $'
+ *     '$Date: 2008-12-16 01:26:38 $'
+ * '$Revision: 1.43 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -339,17 +339,17 @@ public class DataLocation extends AbstractUIPage {
 
     topBox.add(secondChoiceContainer);
 
-    this.add(topBox, BorderLayout.NORTH);
-
-    q3Widget = new ThirdChoiceWidget();
-
-    this.add(thirdChoiceContainer, BorderLayout.CENTER);
+    this.add(topBox, BorderLayout.NORTH);    
 
     filechooserPanel  = getFilechooserPanel();
     onlinePanel  = getOnlinePanel();
     offlinePanel = getOfflinePanel();
+    nodataPanel = getNoDataPanel();
     blankPanel  = WidgetFactory.makeVerticalPanel(7);
-
+    
+    q3Widget = new ThirdChoiceWidget();
+    this.add(thirdChoiceContainer, BorderLayout.CENTER);
+    
     currentSecondChoicePanel = blankPanel;
     currentThirdChoicePanel  = blankPanel;
   }
@@ -370,6 +370,43 @@ public class DataLocation extends AbstractUIPage {
                                               INIT_FILE_LOCATOR_TEXT);
 
     panel.add(fileChooserWidget, BorderLayout.NORTH);
+
+    return panel;
+  }
+  
+  // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+
+  private JLabel      fileNameLabelNoData;
+  private JTextField  fileNameFieldNoData;
+
+  private JPanel getNoDataPanel() {
+
+    JPanel panel = WidgetFactory.makeVerticalPanel(7);
+
+    WidgetFactory.addTitledBorder(panel, Q3_LABELS[0]);
+
+    panel.add(WidgetFactory.makeDefaultSpacer());
+    panel.add(WidgetFactory.makeDefaultSpacer());
+
+    ////
+    JPanel fileNamePanel = WidgetFactory.makePanel(1);
+
+    fileNameLabelNoData = WidgetFactory.makeLabel("File Name:", true);
+
+    fileNamePanel.add(fileNameLabelNoData);
+
+    fileNameFieldNoData = WidgetFactory.makeOneLineTextField();
+    fileNamePanel.add(fileNameFieldNoData);
+
+    panel.add(fileNamePanel);
+
+   
+    
+    panel.add(WidgetFactory.makeDefaultSpacer());
+
+    panel.add(WidgetFactory.makeDefaultSpacer());
+
+    panel.add(Box.createGlue());
 
     return panel;
   }
@@ -676,6 +713,11 @@ public class DataLocation extends AbstractUIPage {
       case DESCRIBE_MAN_NODATA:
         // go directly to last page
 //        WizardSettings.setSummaryText(WizardSettings.?????????);
+    	  if (fileNameFieldNoData.getText().trim().equals("")) {
+              WidgetFactory.hiliteComponent(fileNameLabelNoData);
+              fileNameFieldNoData.requestFocus();
+              return false;
+            }
         distribution = WizardSettings.NODATA;
         setDataFile(null);
         setNextPageID(DataPackageWizardInterface.DATA_FORMAT);
@@ -915,7 +957,19 @@ public class DataLocation extends AbstractUIPage {
         //////
 
       case WizardSettings.NODATA:
-        //if no data, then miss out the distribution elements altogether
+    	  //if no data, then miss out the distribution elements altogether. But we need
+    	  // object name  	  
+    	  if (!Util.isBlank( fileNameFieldNoData.getText().trim()))
+          {
+             returnMap.put(OBJECTNAME_XPATH,  fileNameFieldNoData.getText().trim());
+          }
+          else
+          {
+        	  returnMap.put(OBJECTNAME_XPATH, WizardSettings.UNAVAILABLE);
+          }
+    	
+    	 
+      
     }
     return returnMap;
   }
@@ -1046,6 +1100,7 @@ public class DataLocation extends AbstractUIPage {
   private JPanel filechooserPanel;
   private JPanel onlinePanel;
   private JPanel offlinePanel;
+  private JPanel nodataPanel;
   private JPanel blankPanel;
   private JPanel secondChoiceContainer;
   private JPanel currentSecondChoicePanel;
@@ -1083,7 +1138,7 @@ public class DataLocation extends AbstractUIPage {
   class ThirdChoiceWidget extends JPanel {
 
     private JPanel q3RadioPanel;
-    private JPanel blankChoicePanel;
+    //private JPanel blankChoicePanel;
     private JPanel currentChoicePanel;
 
 //    public ThirdChoiceWidget(String Q3_TITLE, String[] Q3_LABELS, short[] Q3_EVENTS) {
@@ -1096,7 +1151,7 @@ public class DataLocation extends AbstractUIPage {
 
       this.setLayout(new BorderLayout());
 
-      blankChoicePanel = WidgetFactory.makePanel(5);
+      //blankChoicePanel = WidgetFactory.makePanel(5);
 
       final JPanel instance = this;
 
@@ -1115,7 +1170,8 @@ public class DataLocation extends AbstractUIPage {
 
             // NOT AVAILABLE
             Log.debug(45, "NOT AVAILABLE");
-            setChoicePanel(blankChoicePanel);
+            setChoicePanel(nodataPanel);
+            fileNameFieldNoData.requestFocus();
             setLastEvent(DESCRIBE_MAN_NODATA);
 
           } else if (e.getActionCommand().equals(Q3_LABELS[1])) {
@@ -1150,7 +1206,7 @@ public class DataLocation extends AbstractUIPage {
       q3RadioPanel.add(WidgetFactory.makeRadioPanel(Q3_LABELS, 0, q3Listener));
       q3RadioPanel.add(Box.createGlue());
 
-      currentChoicePanel = blankChoicePanel;
+      currentChoicePanel = nodataPanel;
 
       this.add(q3RadioPanel, BorderLayout.WEST);
       this.add(currentChoicePanel, BorderLayout.CENTER);
