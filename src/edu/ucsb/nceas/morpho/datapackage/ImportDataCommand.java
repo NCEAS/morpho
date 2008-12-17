@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2008-10-14 03:44:35 $'
- * '$Revision: 1.18 $'
+ *     '$Date: 2008-12-17 20:05:58 $'
+ * '$Revision: 1.19 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -82,6 +82,8 @@ public class ImportDataCommand implements Command
 			Log.debug(2,"The current EML document is not the latest version. You should transform it first!");
 			return;
 	 }
+	//Get the frame again since EMLTransformer may generate a new one
+	morphoFrame = UIController.getInstance().getCurrentActiveWindow();
     if (morphoFrame != null) {
 
        resultPane = morphoFrame.getDataViewContainerPanel();

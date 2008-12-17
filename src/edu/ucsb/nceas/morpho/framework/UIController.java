@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2004-04-13 22:43:36 $'
- * '$Revision: 1.37 $'
+ *     '$Date: 2008-12-17 20:05:58 $'
+ * '$Revision: 1.38 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -462,13 +462,16 @@ public class UIController
      */
     public void removeGuiAction(GUIAction action)
     {
-        Vector cloneList = (Vector)guiActionClones.get(action);
-        guiActionClones.remove(action);
-        for (int i=0; i< cloneList.size(); i++) {
-            GUIAction clone = (GUIAction)cloneList.elementAt(i);
-            MorphoFrame window = getMorphoFrameContainingGUIAction(clone);
-            window.removeGuiAction(clone);
-        }
+    	if (guiActionClones != null && action != null)
+    	{
+            Vector cloneList = (Vector)guiActionClones.get(action);
+            guiActionClones.remove(action);
+            for (int i=0; i< cloneList.size(); i++) {
+               GUIAction clone = (GUIAction)cloneList.elementAt(i);
+               MorphoFrame window = getMorphoFrameContainingGUIAction(clone);
+               window.removeGuiAction(clone);
+            }
+    	}
     }
 
     /**

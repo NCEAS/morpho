@@ -22,6 +22,9 @@ import edu.ucsb.nceas.morpho.datapackage.AccessionNumber;
 import edu.ucsb.nceas.morpho.datapackage.DataPackageFactory;
 import edu.ucsb.nceas.morpho.datapackage.DataViewContainerPanel;
 import edu.ucsb.nceas.morpho.datapackage.EML200DataPackage;
+import edu.ucsb.nceas.morpho.plugins.ServiceController;
+import edu.ucsb.nceas.morpho.plugins.ServiceNotHandledException;
+import edu.ucsb.nceas.morpho.plugins.ServiceProvider;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WidgetFactory;
 import edu.ucsb.nceas.morpho.util.Log;
 
@@ -121,7 +124,23 @@ public class EMLTransformToNewestVersionDialog
 	                //String newid = an.incRev(id);
 	                //eml200Package.setAccessionNumber(newid);
 	                eml200Package.setLocation("");//not save it yet
-	                UIController.showNewPackage(eml200Package);
+	                try
+	                {
+	                  ServiceController services = ServiceController.getInstance();
+	                  ServiceProvider provider =
+	                  services.getServiceProvider(DataPackageInterface.class);
+	                  DataPackageInterface dataPackageInt = (DataPackageInterface)provider;
+	                  dataPackageInt.openNewDataPackage(eml200Package, null);
+	                }
+	                catch (ServiceNotHandledException snhe)
+	                {
+	                  Log.debug(6, snhe.getMessage());
+	                }
+	                morphoFrame.setVisible(false);                
+	                UIController controller = UIController.getInstance();
+	                controller.removeWindow(morphoFrame);
+	                morphoFrame.dispose();
+	                
 				}
 				else
 				{
