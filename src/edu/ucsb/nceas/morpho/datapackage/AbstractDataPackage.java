@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2008-11-13 00:22:36 $'
- * '$Revision: 1.135 $'
+ *     '$Date: 2008-12-17 01:46:38 $'
+ * '$Revision: 1.136 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -2876,7 +2876,8 @@ public abstract class AbstractDataPackage extends MetadataObject
     setDataIDChanged(false);
     for (int i = 0; i < entityArray.length; i++) {
       String protocol = getUrlProtocol(i);
- 
+      String objectName = getPhysicalName(i, 0);
+      Log.debug(25, "object name is ===================== "+ objectName);
       if(protocol != null && protocol.equals("ecogrid:") ) {
     	  
         String docid = getUrlInfo(i);
@@ -2970,12 +2971,12 @@ public abstract class AbstractDataPackage extends MetadataObject
 	          handleLocal(docid);
 	        }
 	        else if (dataDestination.equals(METACAT)) {
-	          handleMetacat(docid);
+	          handleMetacat(docid, objectName);
 	        }
 	        else if (dataDestination.equals(BOTH)) {
 	        	//Log.debug(1, "~~~~~~~~~~~~~~~~~~~~~~set bothLoation true ");
 	          //serializeDataAtBothLocation =true;
-	          handleBoth(docid);
+	          handleBoth(docid, objectName);
 	        }
 	        // reset the map after finishing save. There is no need for this pair after saving
 	        original_new_id_map = new Hashtable();
@@ -3085,7 +3086,7 @@ public abstract class AbstractDataPackage extends MetadataObject
   /*
    * Saves data files to Metacat
    */
-  private void handleMetacat(String docid) {
+  private void handleMetacat(String docid, String objectName) {
 		Log.debug(30, "----------------------------------------handle metacat "+docid);
 	    File dataFile = null;
 	    File metacatDataFile = null;
@@ -3134,7 +3135,7 @@ public abstract class AbstractDataPackage extends MetadataObject
 	    	}   	
 	    }
 	  
-	    uploadDataFileToMetacat(docid, dataFile, sourceFromTemp, mds);
+	    uploadDataFileToMetacat(docid, dataFile, objectName, sourceFromTemp, mds);
 	
 	  }
 
@@ -3143,7 +3144,7 @@ public abstract class AbstractDataPackage extends MetadataObject
   /*
    * Loads the data file to metacat
    */
-  private void uploadDataFileToMetacat(String identifier, File dataFile, boolean fromTemp, 
+  private void uploadDataFileToMetacat(String identifier, File dataFile, String objectName, boolean fromTemp, 
                                                          MetacatDataStore mds)
   {
 	        try
@@ -3151,7 +3152,7 @@ public abstract class AbstractDataPackage extends MetadataObject
 		          InputStream dfis = new FileInputStream(dataFile);
 		          try
 		          {
-	                 mds.newDataFile(identifier, dataFile);
+	                 mds.newDataFile(identifier, dataFile, objectName);
 		          }
 		          catch (MetacatUploadException mue) 
 		          {
@@ -3271,10 +3272,10 @@ public abstract class AbstractDataPackage extends MetadataObject
   }
 
 
-  private void handleBoth(String docid) 
+  private void handleBoth(String docid, String objectName) 
   {
     handleLocal(docid);
-    handleMetacat(docid);   
+    handleMetacat(docid, objectName);   
   }
 
   private String getUrlInfo(int entityIndex) {

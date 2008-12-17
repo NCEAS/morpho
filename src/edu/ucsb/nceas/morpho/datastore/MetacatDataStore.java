@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: leinfelder $'
- *     '$Date: 2008-11-19 01:50:20 $'
- * '$Revision: 1.17 $'
+ *   '$Author: tao $'
+ *     '$Date: 2008-12-17 01:46:38 $'
+ * '$Revision: 1.18 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -585,14 +585,15 @@ public class MetacatDataStore extends DataStore implements DataStoreInterface
    * @param id the identifier to use for this file (e.g., knb.1.1).  It should be
    *           revision '1' because data files cannot be updated on metacat
    * @param file the file to upload to metacat
+   * @param objectName the object name associated with the file
    */
-  public void newDataFile(String id, File file) throws MetacatUploadException
+  public void newDataFile(String id, File file, String objectName) throws MetacatUploadException
   {
     try {
       if (file.length()>0) {
         System.out.println("id:"+id+"  filelength:"+file.length());
         InputStream metacatInput = null;;
-        metacatInput = morpho.sendDataFile(id, file);
+        metacatInput = morpho.sendDataFile(id, file, objectName);
 
         InputStreamReader returnStream = 
                new InputStreamReader(metacatInput);
@@ -800,7 +801,7 @@ public class MetacatDataStore extends DataStore implements DataStoreInterface
       Log.debug(20, "Testing data upload...");
       id = args[4];
       f = new File(args[5]);
-      mds.newDataFile(id, f);
+      mds.newDataFile(id, f, null);
       Log.debug(20, "Data file uploaded!");
     }
     catch(Exception e)

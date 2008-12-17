@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2008-07-24 22:05:25 $'
- * '$Revision: 1.8 $'
+ *     '$Date: 2008-12-17 01:46:38 $'
+ * '$Revision: 1.9 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -77,6 +77,15 @@ public abstract class DataStore implements DataStoreInterface
     cachedir = profileDirName + File.separator + profile.get("cachedir", 0);
     separator = profile.get("separator", 0);
     separator = separator.trim();
+  }
+  
+  /**
+   * Gets the temp directory
+   * @return
+   */
+  public String getTempDir()
+  {
+	  return tempdir;
   }
   
   /**

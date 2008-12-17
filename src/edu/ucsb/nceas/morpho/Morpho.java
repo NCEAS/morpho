@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2008-09-25 23:36:09 $'
- * '$Revision: 1.91 $'
+ *     '$Date: 2008-12-17 01:46:38 $'
+ * '$Revision: 1.92 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,6 +29,8 @@ package edu.ucsb.nceas.morpho;
 import edu.ucsb.nceas.itis.Itis;
 import edu.ucsb.nceas.itis.ItisException;
 import edu.ucsb.nceas.itis.Taxon;
+import edu.ucsb.nceas.morpho.datastore.DataStore;
+import edu.ucsb.nceas.morpho.datastore.FileSystemDataStore;
 import edu.ucsb.nceas.morpho.framework.ConfigXML;
 import edu.ucsb.nceas.morpho.framework.ConnectionFrame;
 import edu.ucsb.nceas.morpho.framework.ConnectionListener;
@@ -50,8 +52,10 @@ import edu.ucsb.nceas.morpho.util.Command;
 import edu.ucsb.nceas.morpho.util.GUIAction;
 import edu.ucsb.nceas.morpho.util.Log;
 import edu.ucsb.nceas.morpho.util.UISettings;
+import edu.ucsb.nceas.morpho.util.Util;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
@@ -695,12 +699,15 @@ public class Morpho
      *
      * @param id    the id to assign to the file on metacat (e.g., knb.1.1)
      * @param file  the file to send
+     * @param objectName  the object name associate with the file
      * @return      the response stream from metacat
      */
-    public InputStream sendDataFile(String id, File file)
+    public InputStream sendDataFile(String id, File file, String objectName)
     {
         String retmsg = "";
+        String filename = null;
         InputStream returnStream = null;
+        File newFile = null;
 
         if (!connected) {
             // Ask the user to connect
@@ -719,7 +726,29 @@ public class Morpho
             args.put("docid", id);
 
             Properties dataStreams = new Properties();
-            String filename = file.getAbsolutePath();
+            // use object name to replace the meaningless name such as 12.2
+            if (objectName != null && !Util.isBlank(objectName))
+            {
+            	FileSystemDataStore store = new FileSystemDataStore(thisStaticInstance);
+            	String tmpDir = store.getTempDir();
+            	newFile = new File(tmpDir, objectName);
+            	FileInputStream input = new FileInputStream(file);
+            	FileOutputStream out = new FileOutputStream(newFile);
+            	byte[] c = new byte[3*1024];
+            	int read = input.read(c);
+            	while (read !=-1)
+            	{
+            		out.write(c, 0, read);
+            		read = input.read(c);
+            	}
+            	input.close();
+            	out.close();
+            	filename = newFile.getAbsolutePath();
+            }
+            else
+            {
+                filename = file.getAbsolutePath();
+            }
             Log.debug(20, "Sending data file: " + filename);
             dataStreams.put("datafile", filename);
 
@@ -749,6 +778,22 @@ public class Morpho
             Log.debug(1, "Fatal error sending binary data to Metacat: " +
                     e.getMessage());
             e.printStackTrace(System.err);
+        }
+        finally
+        {
+        	try
+        	{
+        		
+        		if(newFile != null)
+        		{
+        			Log.debug(40, "delete file===============");
+        			newFile.delete();
+        		}
+        	}
+        	catch(Exception e)
+        	{
+        		 Log.debug(20, "============couldn't delete the new file ");
+        	}
         }
         return returnStream;
     }
