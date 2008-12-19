@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2008-12-17 01:46:38 $'
- * '$Revision: 1.136 $'
+ *     '$Date: 2008-12-19 23:58:56 $'
+ * '$Revision: 1.137 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,6 +29,7 @@ package edu.ucsb.nceas.morpho.datapackage;
 
 import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.datastore.CacheAccessException;
+import edu.ucsb.nceas.morpho.datastore.DataStoreInterface;
 import edu.ucsb.nceas.morpho.datastore.FileSystemDataStore;
 import edu.ucsb.nceas.morpho.datastore.MetacatDataStore;
 import edu.ucsb.nceas.morpho.datastore.MetacatUploadException;
@@ -255,10 +256,13 @@ public abstract class AbstractDataPackage extends MetadataObject
   private final int ORIGINAL_REVISION = 1;
   private boolean serializeLocalSuccess = false;
   private boolean serializeMetacatSuccess = false;
-  private boolean identifierChangedInMetacatSerialization = false;
-  private boolean identifierChangedInLocalSerialization = false;
+  //private boolean identifierChangedInMetacatSerialization = false;
+  //private boolean identifierChangedInLocalSerialization = false;
   private boolean dataIDChanged = false;
   private boolean packageIDChanged = false;
+  protected static final String INSERTMETACAT = "insert";
+  protected static final String UPDATEMETACAT = "update";
+  protected static final String DONOTHMETACAT = "donothing";
 
   /**
    * This abstract method turns the datapackage into a form (e.g. string) that
@@ -2892,62 +2896,58 @@ public abstract class AbstractDataPackage extends MetadataObject
     		// Detects if docid conflict occurs
 	        //boolean updateFlag = !(version.equals("1"));
 	        boolean existFlag = false;
-	        boolean existInMetacat = false;
-	        boolean existInLocal = false;
+	        String statusInMetacat = null;
+	        String statusInLocal = null;
 	        String conflictLocation = null;
 	        //Check to see if id confilct or not
 	        if((dataDestination.equals(AbstractDataPackage.METACAT))) 
 	        {
-	    	    mds = new MetacatDataStore(morpho);
-	    	    existInMetacat = mds.exists(docid);
-	    	    existFlag = existInMetacat;
-	    	    Log.debug(30, "docid "+docid+ " exsits in metacat is "+existFlag);
-	    	    if (existFlag)
+	    	    statusInMetacat = mds.status(docid);
+	    	    Log.debug(30, "docid "+docid+ " status in metacat is "+statusInMetacat);
+	    	    if (statusInMetacat != null && statusInMetacat.equals(DataStoreInterface.CONFLICT))
 	    	    {
 	    	    	conflictLocation = DocidIncreaseDialog.METACAT;
+	    	    	existFlag = true;
 	    	    }
 	        }
 	        else if((dataDestination.equals(AbstractDataPackage.LOCAL))) 
 	        {
-	        	fsds = new FileSystemDataStore(morpho);
-	        	existInLocal = fsds.exists(docid);
-	        	existFlag = existInLocal;
-	        	Log.debug(30, "docid "+docid+ " exsits in local is "+existFlag);
-	        	if (existFlag)
+	        	statusInLocal = fsds.status(docid);
+	        	Log.debug(30, "docid "+docid+ " status in local is "+statusInLocal);
+	        	if (statusInLocal != null && statusInLocal.equals(DataStoreInterface.CONFLICT))
 	    	    {
 	    	    	conflictLocation = DocidIncreaseDialog.LOCAL;
+	    	    	existFlag = true;
 	    	    }
 	        }
 	        else if (dataDestination.equals(AbstractDataPackage.BOTH))
 	        {
-	        	mds = new MetacatDataStore(morpho);
-	    	    existInMetacat = mds.exists(docid);
-	    	    fsds = new FileSystemDataStore(morpho);
-	        	existInLocal = fsds.exists(docid);
-	        	existFlag = existInMetacat || existInLocal;
-	        	Log.debug(30, "docid "+docid+ " exsits in local or metacat is "+existFlag);
-	        	if (existFlag)
+	    	    statusInMetacat = mds.status(docid);
+	        	statusInLocal = fsds.status(docid);
+	        	Log.debug(30, "docid "+docid+ " status in local is "+statusInLocal +" and status in metacat is"+statusInMetacat);
+        		if (statusInMetacat != null && statusInLocal != null && 
+        				statusInLocal.equals(DataStoreInterface.CONFLICT) && statusInMetacat.equals(DataStoreInterface.CONFLICT))
 	        	{
-	        		if (existInMetacat && existInLocal)
-	        		{
 	        			conflictLocation =  DocidIncreaseDialog.LOCAL + " and "+ DocidIncreaseDialog.METACAT;
+	        			existFlag = true;
 	        		    //this.setIdentifierChangedInLocalSerialization(true);
 	        		    //this.setIdentifierChangedInMetacatSerialization(true);
-	        		}
-	        		else if (existInMetacat)
-	        		{
-	        			conflictLocation =  DocidIncreaseDialog.METACAT;
-	        			//this.setIdentifierChangedInMetacatSerialization(true);
-	        		}
-	        		else if (existInLocal)
-	        		{
-	        			conflictLocation =  DocidIncreaseDialog.LOCAL;
-	        			//this.setIdentifierChangedInLocalSerialization(true);
-	        		}
 	        	}
+	        	else if (statusInMetacat != null  && statusInMetacat.equals(DataStoreInterface.CONFLICT))
+	        	{
+	        			conflictLocation =  DocidIncreaseDialog.METACAT;
+	        			existFlag = true;
+	        			//this.setIdentifierChangedInMetacatSerialization(true);
+	        	}
+	        	else if (statusInLocal != null && statusInLocal.equals(DataStoreInterface.CONFLICT))
+	        	{
+	        			conflictLocation =  DocidIncreaseDialog.LOCAL;
+	        			existFlag = true;
+	        			//this.setIdentifierChangedInLocalSerialization(true);
+	        	}
+	        	
 	        }
-	        
-	       
+	      
 	        if (existFlag && isDirty)
 	        {
 	        	 // If docid conflict and the entity is dirty, we need to
@@ -4236,43 +4236,8 @@ public abstract class AbstractDataPackage extends MetadataObject
 		  this.serializeMetacatSuccess = success;
 	  }
 	  
-	  /**
-	   * Sets the variable of identifierChangedInMetacatSerialization
-	   * @param change
-	   */
-	  public void setIdentifierChangedInMetacatSerialization(boolean change)
-	  {
-		  identifierChangedInMetacatSerialization = change;
-	  }
-	  
-	  
-      /**
-       * Gets the value of identifierChangedInMetacatSerialization
-       * @return
-       */
-	  public boolean getIndentifierChangedInMetacatSeriaalization()
-	  {
-		  return identifierChangedInMetacatSerialization;
-	  }
-	  
-	  /**
-	   * Sets the variable of identifierChangedInLocalSerialization
-	   * @param change
-	   */
-	  public void setIdentifierChangedInLocalSerialization(boolean change)
-	  {
-		  identifierChangedInLocalSerialization = change;
-	  }
-	  
-	  
-      /**
-       * Gets the value of identifierChangedInLocalSerialization
-       * @return
-       */
-	  public boolean getIndentifierChangedInLocalSeriaalization()
-	  {
-		  return identifierChangedInLocalSerialization;
-	  }
+	
+	
 	  
 	  /**
 	   * Gets the value of dataIDChanged

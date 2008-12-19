@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2008-11-13 00:24:12 $'
- * '$Revision: 1.65 $'
+ *     '$Date: 2008-12-19 23:58:56 $'
+ * '$Revision: 1.66 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,6 +27,7 @@
 package edu.ucsb.nceas.morpho.datapackage;
 
 import edu.ucsb.nceas.morpho.Morpho;
+import edu.ucsb.nceas.morpho.datastore.DataStoreInterface;
 import edu.ucsb.nceas.morpho.datastore.FileSystemDataStore;
 import edu.ucsb.nceas.morpho.datastore.LocalFileExistingException;
 import edu.ucsb.nceas.morpho.datastore.MetacatDataStore;
@@ -113,16 +114,16 @@ public  class EML200DataPackage extends AbstractDataPackage
   {
 	 this.setSerializeLocalSuccess(false);
 	 this.setSerializeMetacatSuccess(false);
-	 this.setIdentifierChangedInLocalSerialization(false);
-	 this.setIdentifierChangedInMetacatSerialization(false);
+	 //this.setIdentifierChangedInLocalSerialization(false);
+	 //this.setIdentifierChangedInMetacatSerialization(false);
 	 this.setPackageIDChanged(false);
 	 //System.out.println("serialize metadata ===============");
     Morpho morpho = Morpho.thisStaticInstance;
-    MetacatDataStore mds  = null;
-    FileSystemDataStore fsds = null;
-    boolean existInMetacat = true;
-    boolean existInLocal  = true;
-    boolean existFlag = true;
+    MetacatDataStore mds  = new MetacatDataStore(morpho);
+    FileSystemDataStore fsds = new FileSystemDataStore(morpho);;
+    String statusInMetacat = null;
+    String  statusInLocal  = null;
+    //boolean existFlag = true;
     String conflictLocation = null;
     //String temp = XMLUtilities.getDOMTreeAsString(getMetadataNode(), false);
     String temp = XMLUtil.getDOMTreeAsString(getMetadataNode().getOwnerDocument());
@@ -137,64 +138,74 @@ public  class EML200DataPackage extends AbstractDataPackage
       //Log.debug(1, "temp1: "+temp1+"---temp2: "+temp2);
     }
     //boolean existsFlag = mds.exists(temp2+".1");
-    boolean updateFlag = !(version.equals("1"));
+    
+    boolean isRevisionOne = false;
+    if (version != null)
+    {
+    	isRevisionOne = version.equals("1");
+    }
+    else
+    {
+    	Log.debug(5,"No revision number assigned to docid. Couldn't save it");
+    	return;
+    }
     //Check to see if id confilct or not
     if((location.equals(AbstractDataPackage.METACAT))) 
     {
-	    mds = new MetacatDataStore(morpho);
-	    existInMetacat = mds.exists(getAccessionNumber());
-	    existFlag = existInMetacat;
-	    if (existFlag)
+	    statusInMetacat = mds.status(getAccessionNumber());
+	    if (statusInMetacat != null && statusInMetacat.equals(DataStoreInterface.CONFLICT))
 	    {
 	    	conflictLocation = DocidIncreaseDialog.METACAT;
+	    	//this.setIdentifierChangedInMetacatSerialization(true);
 	    }
     }
     else if((location.equals(AbstractDataPackage.LOCAL))) 
     {
-    	fsds = new FileSystemDataStore(morpho);
-    	existInLocal = fsds.exists(getAccessionNumber());
-    	existFlag = existInLocal;
-    	if (existFlag)
+    	statusInLocal = fsds.status(getAccessionNumber());
+    	//existFlag = existInLocal;
+    	if (statusInLocal != null && statusInLocal.equals(DataStoreInterface.CONFLICT))
 	    {
 	    	conflictLocation = DocidIncreaseDialog.LOCAL;
+	    	//this.setIdentifierChangedInLocalSerialization(true);
 	    }
     }
     else if (location.equals(AbstractDataPackage.BOTH))
     {
-    	mds = new MetacatDataStore(morpho);
-	    existInMetacat = mds.exists(getAccessionNumber());
-	    fsds = new FileSystemDataStore(morpho);
-    	existInLocal = fsds.exists(getAccessionNumber());
-    	existFlag = existInMetacat || existInLocal;
-    	if (existFlag)
-    	{
-    		if (existInMetacat && existInLocal)
+	    statusInMetacat = mds.status(getAccessionNumber());
+    	statusInLocal = fsds.status(getAccessionNumber());
+    	//if (existFlag)
+    	//{
+    		if (statusInMetacat != null && statusInLocal != null && 
+    				statusInLocal.equals(DataStoreInterface.CONFLICT) && statusInMetacat.equals(DataStoreInterface.CONFLICT) )
     		{
     			conflictLocation =  DocidIncreaseDialog.LOCAL + " and "+ DocidIncreaseDialog.METACAT;
-    		    this.setIdentifierChangedInLocalSerialization(true);
-    		    this.setIdentifierChangedInMetacatSerialization(true);
+    		    //this.setIdentifierChangedInLocalSerialization(true);
+    		    //this.setIdentifierChangedInMetacatSerialization(true);
     		}
-    		else if (existInMetacat)
+    		else if (statusInMetacat != null && statusInMetacat.equals(DataStoreInterface.CONFLICT))
     		{
     			conflictLocation =  DocidIncreaseDialog.METACAT;
-    			this.setIdentifierChangedInMetacatSerialization(true);
+    			//this.setIdentifierChangedInMetacatSerialization(true);
     		}
-    		else if (existInLocal)
+    		else if (statusInLocal != null && statusInLocal.equals(DataStoreInterface.CONFLICT))
     		{
     			conflictLocation =  DocidIncreaseDialog.LOCAL;
-    			this.setIdentifierChangedInLocalSerialization(true);
+    			//this.setIdentifierChangedInLocalSerialization(true);
     		}
-    	}
+    	//}
     }
-    // if we allow oeve write, we reset existFlag
+    // if we allow local overwrite, we reset confilcLocation. It will skip 
+    // the code to handle conflict
     if (overWrite)
     {
-    	existFlag = false;
+    	conflictLocation = null;
+
     }
+    
     //We need to change id to resolve id confilcition
-    if (existFlag && updateFlag)
+    if (conflictLocation != null && !isRevisionOne)
     {
-    	Log.debug(30, "=============In existFlag and updateFlag branch");
+    	Log.debug(30, "=============In existFlag and update branch");
     	// ToDo - add a frame to give user option to increase docid or revision
     	 DocidIncreaseDialog docidIncreaseDialog = new DocidIncreaseDialog(identifier, conflictLocation);
     	 String choice = docidIncreaseDialog.getUserChoice();
@@ -206,7 +217,9 @@ public  class EML200DataPackage extends AbstractDataPackage
             setAccessionNumber(identifier);
             setPackageIDChanged(true);
             temp = XMLUtil.getDOMTreeAsString(getMetadataNode().getOwnerDocument());
-            updateFlag =false;
+            //since we changed the revision number, the status of docid will be changed
+            statusInMetacat = DataStoreInterface.NONEXIST;
+            statusInLocal = DataStoreInterface.NONEXIST;
     	 }
     	 else
     	 {
@@ -217,17 +230,21 @@ public  class EML200DataPackage extends AbstractDataPackage
     		 setPackageIDChanged(true);
              temp = XMLUtil.getDOMTreeAsString(getMetadataNode().getOwnerDocument());
     		 Log.debug(30, "The new id (after increase revision number) is "+identifier);
+    		 statusInMetacat = DataStoreInterface.UPDATE;
+             statusInLocal = DataStoreInterface.UPDATE;
     	 }
     }
-    else if (existFlag)
+    else if (conflictLocation != null)
     {
-    	Log.debug(30, "==============In existFlag and NOT updateFlag branch");
+    	Log.debug(30, "==============In existFlag and insert revision 1 branch");
     	//since it is saving a new package, increase docid silently
     	 AccessionNumber an = new AccessionNumber(morpho);
     	 identifier = an.getNextId();
     	 setAccessionNumber(identifier);
     	 setPackageIDChanged(true);
     	 temp = XMLUtil.getDOMTreeAsString(getMetadataNode().getOwnerDocument());
+    	 statusInMetacat = DataStoreInterface.NONEXIST;
+         statusInLocal = DataStoreInterface.NONEXIST;
     }
      // Log.debug(30, temp);
 
@@ -235,7 +252,7 @@ public  class EML200DataPackage extends AbstractDataPackage
       StringReader sr1 = new StringReader(temp);
       if((location.equals(AbstractDataPackage.METACAT))|| (location.equals(AbstractDataPackage.BOTH))) 
       {
-        if (updateFlag)
+        if (statusInMetacat != null && statusInMetacat.equals(DataStoreInterface.UPDATE))
         {
         	try
         	{
@@ -245,12 +262,12 @@ public  class EML200DataPackage extends AbstractDataPackage
             catch(Exception e) 
             {
             	this.setSerializeMetacatSuccess(false);
-            	this.setIdentifierChangedInMetacatSerialization(false);
+            	//this.setIdentifierChangedInMetacatSerialization(false);
             	//System.out.println(" in other exception Exception==========  "+e.getMessage());
                 Log.debug(5,"Problem with saving to metacat in EML200DataPackage!");              
             }
         }
-        else
+        else if (statusInMetacat != null && statusInMetacat.equals(DataStoreInterface.NONEXIST))
         {
         	try
         	{
@@ -261,9 +278,15 @@ public  class EML200DataPackage extends AbstractDataPackage
              catch(Exception e) 
              {
             	 this.setSerializeMetacatSuccess(false);
-            	 this.setIdentifierChangedInMetacatSerialization(false);
+            	 //this.setIdentifierChangedInMetacatSerialization(false);
                  Log.debug(5,"Problem with saving to metacat in EML200DataPackage!");
              }
+        }
+        else
+        {
+        	this.setSerializeMetacatSuccess(false);
+       	    //this.setIdentifierChangedInMetacatSerialization(false);
+            Log.debug(5,"Problem with saving to metacat in EML200DataPackage since couldn't get the docid status in Metacat");
         }
       }
       
@@ -281,7 +304,7 @@ public  class EML200DataPackage extends AbstractDataPackage
           else
           {
         	  this.setSerializeLocalSuccess(false);
-        	  this.setIdentifierChangedInLocalSerialization(false);
+        	  //this.setIdentifierChangedInLocalSerialization(false);
           }
        }
   }

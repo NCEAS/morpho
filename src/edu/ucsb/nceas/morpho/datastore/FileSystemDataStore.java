@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2008-08-01 23:32:44 $'
- * '$Revision: 1.11 $'
+ *     '$Date: 2008-12-19 23:58:56 $'
+ * '$Revision: 1.12 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -122,18 +122,18 @@ public class FileSystemDataStore extends DataStore
    * @param docid 
    * @return exists or not
    */
-  public boolean exists(String docid)
+  public String status(String docid)
   {
-	  boolean existence = false;
+	  String status = DataStoreInterface.NONEXIST;
 	  String path = parseId(docid);
       String dirs = path.substring(0, path.lastIndexOf("/"));
       File savefile = new File(datadir + "/" + path); //the path to the file
       if(savefile.exists())
       {
-        existence = true;
+        status = DataStoreInterface.CONFLICT;
       }
-      Log.debug(30, "The docid "+docid +" existing is "+existence);
-	  return existence;
+      Log.debug(30, "The docid "+docid +" local status is "+status);
+	  return status;
   }
   
   /**

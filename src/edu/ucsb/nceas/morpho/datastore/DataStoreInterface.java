@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2004-01-27 21:31:32 $'
- * '$Revision: 1.4 $'
+ *   '$Author: tao $'
+ *     '$Date: 2008-12-19 23:58:56 $'
+ * '$Revision: 1.5 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -35,6 +35,12 @@ import java.util.*;
  */
 public interface DataStoreInterface
 {
+	
+   // status of given id in metacat:
+   static final String CONFLICT    = "conflict"; //docid exist, but revision is less than the one in metacat
+   static final String UPDATE       = "update";//docid exist, but revision is greater than the on in metacat
+   static final String NONEXIST    =  "nonexist";//docid not exist all no all.
+   
   /**
    * open a file from a datastore with the id of name and return a File
    * object that represents it.  Throws FileNotFoundException if a file

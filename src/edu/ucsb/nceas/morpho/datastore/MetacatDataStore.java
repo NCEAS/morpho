@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2008-12-17 01:46:38 $'
- * '$Revision: 1.18 $'
+ *     '$Date: 2008-12-19 23:58:56 $'
+ * '$Revision: 1.19 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -332,14 +332,17 @@ public class MetacatDataStore extends DataStore implements DataStoreInterface
   
   
   /**
-   * Checks to see if a document with the id exists on Metacat
+   * Gets the id(with revision) status on Metacat: 
+   * CONFLICT: docid exist, but revision is less than the one in metacat
+   * UPDATE: docid exist, but revision is greater than the on in metacat
+   * NONEXIST: docid not exist all no all.
    *
    * @param name: the docid of the metacat file in &lt;scope&gt;.&lt;number&gt;
    * or &lt;scope&gt;.&lt;number&gt;.&lt;revision&gt; form.
    */
-  public boolean exists(String name)
+  public String status(String name)
   {
-	boolean existence = true;
+	String status  = DataStoreInterface.NONEXIST;
     String path = parseId(name);
     String dirs = path.substring(0, path.lastIndexOf("/")); 
     File localfile = new File(cachedir + "/" + path); //the path to the file
@@ -348,7 +351,7 @@ public class MetacatDataStore extends DataStore implements DataStoreInterface
     if((localfile.exists())&&(localfile.length()>0))
     { //if the file is cached locally, read it from the hard drive
       Log.debug(30, "MetacatDataStore: cached file exists and docid is used "+name);
-      return existence;
+      return DataStoreInterface.CONFLICT;
     }
     else
     {    
@@ -394,7 +397,11 @@ public class MetacatDataStore extends DataStore implements DataStoreInterface
 			    					 " and version from metacat is "+versionFromMetacat);
 			    			if (versionFromName > versionFromMetacat)
 			    			{
-			    				existence = false;
+			    				status = DataStoreInterface.UPDATE;
+			    			}
+			    			else
+			    			{
+			    				status = DataStoreInterface.CONFLICT;
 			    			}
 			    		}
 			    		catch(Exception e)
@@ -406,7 +413,7 @@ public class MetacatDataStore extends DataStore implements DataStoreInterface
 			    	else
 			    	{
 			    		// if have error tag, this means docid doesn't exist
-			    		existence = false;
+			    		status = DataStoreInterface.NONEXIST;
 			    	}
 			    }
 		    }
@@ -416,8 +423,8 @@ public class MetacatDataStore extends DataStore implements DataStoreInterface
 		   }
 		}
     }
-    Log.debug(30, "The docid "+name + " existing in metacat is "+existence);
-	return existence;
+    Log.debug(30, "The docid "+name + " status in metacat is "+status);
+	return status;
 }
 
   
