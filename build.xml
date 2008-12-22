@@ -6,7 +6,7 @@
   *    Copyright: 2000 Regents of the University of California and the
   *               National Center for Ecological Analysis and Synthesis
   *  For Details: http://www.nceas.ucsb.edu/
-  *    File Info: '$Id: build.xml,v 1.132 2008-12-03 23:56:28 tao Exp $'
+  *    File Info: '$Id: build.xml,v 1.133 2008-12-22 23:08:39 tao Exp $'
   *
   *  Build file for the Ant cross-platform build system for metacat
   *  See http://jakarta.apache.org for details on Ant
@@ -28,9 +28,9 @@
       <property name="eml-tag" value="RELEASE_EML_2_1_0" />
       <property name="eml.doc.dir" value="docs/eml-2.1.0" />
       <!-- the following property will be used to get eml210 schemas -->
-      <property name="eml-210-schema-tag" value="RELEASE_EML_2_1_0" />
+      <property name="eml-210-schema-tag" value="RELEASE_EML_2_1_0_RC_4" />
       <!-- eml-210-style-tag only be used to get eml201to210.xsl file -->
-      <property name="eml-210-style-tag" value="RELEASE_EML_2_1_0" />
+      <property name="eml-210-style-tag" value="RELEASE_EML_2_1_0_RC_4" />
       <property name="helpjar" value="morphohelp.jar" />
       <filter token="release" value="${release}"/>
       <filter token="muser" value="${muser}"/>
