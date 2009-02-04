@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2008-12-19 23:58:56 $'
- * '$Revision: 1.66 $'
+ *     '$Date: 2009-02-04 00:38:33 $'
+ * '$Revision: 1.67 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -965,7 +965,7 @@ public  class EML200DataPackage extends AbstractDataPackage
 	  }
 	  catch(Exception e)
 	  {
-		  Log.debug(20, "Couldn't transform the eml document to the latest version "+e.getMessage());
+		  Log.debug(5, "Couldn't transform the eml document to the latest version "+e.getMessage());
 	  }
 	  return result;
   }

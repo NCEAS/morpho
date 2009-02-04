@@ -5,9 +5,9 @@
  *    Authors: Saurabh Garg
  *    Release: @release@
  *
- *   '$Author: leinfelder $'
- *     '$Date: 2008-10-15 22:47:34 $'
- * '$Revision: 1.3 $'
+ *   '$Author: tao $'
+ *     '$Date: 2009-02-04 00:38:33 $'
+ * '$Revision: 1.4 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -72,7 +72,15 @@ public class AddEntityAccessCommand implements Command {
 	public void execute(ActionEvent event) {
 		 //Check if the eml document is the current version before editing it.
 		  MorphoFrame frame = UIController.getInstance().getCurrentActiveWindow();
-		  EMLTransformToNewestVersionDialog dialog = new EMLTransformToNewestVersionDialog(frame);
+		  EMLTransformToNewestVersionDialog dialog = null;
+		  try
+		  {
+			  dialog = new EMLTransformToNewestVersionDialog(frame);
+		  }
+		  catch(Exception e)
+		  {
+			  return;
+		  }
 		  if (dialog.getUserChoice() == JOptionPane.NO_OPTION)
 		 {
 			   // if user choose not transform it, stop the action.

@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2008-10-14 01:00:44 $'
- * '$Revision: 1.16 $'
+ *     '$Date: 2009-02-04 00:38:33 $'
+ * '$Revision: 1.17 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -84,7 +84,15 @@ public class AddTemporalCovCommand implements Command {
 
 	  //Check if the eml document is the current version before editing it.
 	  MorphoFrame frame = UIController.getInstance().getCurrentActiveWindow();
-	  EMLTransformToNewestVersionDialog dialog = new EMLTransformToNewestVersionDialog(frame);
+	  EMLTransformToNewestVersionDialog dialog = null;
+	  try
+	  {
+		  dialog = new EMLTransformToNewestVersionDialog(frame);
+	  }
+	  catch(Exception e)
+	  {
+		  return;
+	  }
 	  if (dialog.getUserChoice() == JOptionPane.NO_OPTION)
 	 {
 		   // if user choose not transform it, stop the action.

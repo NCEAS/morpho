@@ -6,8 +6,8 @@
 *    Release: @release@
 *
 *   '$Author: tao $'
-*     '$Date: 2008-10-15 02:52:56 $'
-* '$Revision: 1.23 $'
+*     '$Date: 2009-02-04 00:38:33 $'
+* '$Revision: 1.24 $'
 *
 * This program is free software; you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -146,7 +146,15 @@ public class InsertColumnCommand implements Command
           if (selectedCol > -1) 
           {
         	  //Check if the eml document is the current version before editing it.
-           	 EMLTransformToNewestVersionDialog dialog = new EMLTransformToNewestVersionDialog(morphoFrame);
+        	  EMLTransformToNewestVersionDialog dialog = null;
+        	  try
+        	  {
+        		  dialog = new EMLTransformToNewestVersionDialog(morphoFrame);
+        	  }
+        	  catch(Exception e)
+        	  {
+        		  return;
+        	  }
            	 if (dialog.getUserChoice() == JOptionPane.NO_OPTION)
            	 {
            		   // if user choose not transform it, stop the action.

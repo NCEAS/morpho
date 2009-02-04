@@ -63,7 +63,7 @@ public class EMLTransformToNewestVersionDialog
 	 * Constructor of this dialog
 	 * @param frame  parent of this dialog
 	 */
-	public EMLTransformToNewestVersionDialog(MorphoFrame frame)
+	public EMLTransformToNewestVersionDialog(MorphoFrame frame) throws Exception
 	{
 		morphoFrame = frame;
 		AbstractDataPackage dataPackage = morphoFrame.getAbstractDataPackage();
@@ -104,7 +104,7 @@ public class EMLTransformToNewestVersionDialog
 	/*
 	 * transform the data package from old version to the newest version
 	 */
-	private void transfromEMLToNewestVersion()
+	private void transfromEMLToNewestVersion() throws Exception
 	{
 		if (userChoice == JOptionPane.YES_OPTION && morphoFrame != null)
 		{
@@ -145,6 +145,7 @@ public class EMLTransformToNewestVersionDialog
 				else
 				{
 					Log.debug(20, "Couldn't tranform the eml document to the newest version");
+				    throw new Exception("Couldn't tranform the eml document to the newest version");
 				}
 			}
 		}

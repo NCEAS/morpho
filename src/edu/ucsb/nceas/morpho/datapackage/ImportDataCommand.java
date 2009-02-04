@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2008-12-17 20:05:58 $'
- * '$Revision: 1.19 $'
+ *     '$Date: 2009-02-04 00:38:33 $'
+ * '$Revision: 1.20 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -75,7 +75,15 @@ public class ImportDataCommand implements Command
     morphoFrame = UIController.getInstance().getCurrentActiveWindow();
 
     //Check if the eml document is the current version before editing it.
-	  EMLTransformToNewestVersionDialog dialog = new EMLTransformToNewestVersionDialog(morphoFrame);
+    EMLTransformToNewestVersionDialog dialog = null;
+	  try
+	  {
+		  dialog = new EMLTransformToNewestVersionDialog(morphoFrame);
+	  }
+	  catch(Exception e)
+	  {
+		  return;
+	  }
 	  if (dialog.getUserChoice() == JOptionPane.NO_OPTION)
 	 {
 		   // if user choose not transform it, stop the action.
