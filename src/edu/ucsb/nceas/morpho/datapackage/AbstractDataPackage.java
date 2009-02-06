@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2008-12-19 23:58:56 $'
- * '$Revision: 1.137 $'
+ *     '$Date: 2009-02-06 19:53:05 $'
+ * '$Revision: 1.138 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -3530,15 +3530,41 @@ public abstract class AbstractDataPackage extends MetadataObject
           String entry = tempDatapackdir + "/" + dataFileList[i];
           ZipEntry ze = new ZipEntry(dataPackdir + "/" + dataFileList[i]);
           File entryFile = new File(entry);
-          ze.setSize(entryFile.length());
-          zos.putNextEntry(ze);
-          FileInputStream fis = new FileInputStream(entryFile);
-          int c = fis.read();
-          while (c != -1) {
-            zos.write(c);
-            c = fis.read();
+          if (!entryFile.isDirectory())
+          {
+	          ze.setSize(entryFile.length());
+	          zos.putNextEntry(ze);
+	          FileInputStream fis = new FileInputStream(entryFile);
+	          int c = fis.read();
+	          while (c != -1) {
+	            zos.write(c);
+	            c = fis.read();
+	          }
+	          zos.closeEntry();
           }
-          zos.closeEntry();
+          else
+          {
+        	  String[] secondaryDataFileList = entryFile.list();
+        	  if (secondaryDataFileList != null)
+        	  {
+        		  for (int j=0; j<secondaryDataFileList.length; j++)
+        		  {
+        			  String secondaryEntry = entry+"/"+secondaryDataFileList[j];
+        			  ZipEntry secondaryZE = new ZipEntry(dataPackdir + "/" + dataFileList[i]+"/"+secondaryDataFileList[j]);
+        			  File secondaryEntryFile = new File (secondaryEntry);
+        			  secondaryZE.setSize(secondaryEntryFile.length());
+        			  zos.putNextEntry(secondaryZE);
+        			  FileInputStream fis = new FileInputStream(secondaryEntryFile);
+        			  int c = fis.read();
+        			  while (c != -1)
+        			  {
+        				  zos.write(c);
+        				  c = fis.read();
+        			  }
+        			  zos.closeEntry();
+        		  }
+        	  }
+          }
         }
       }
 
@@ -3590,7 +3616,7 @@ public abstract class AbstractDataPackage extends MetadataObject
       zos.close();
     }
     catch (Exception e) {
-      Log.debug(5, "Exception in exporting to zip file (AbstractDataPackage)");
+      Log.debug(5, "Exception in exporting to zip file (AbstractDataPackage)" +e.getMessage());
     }
   }
 
