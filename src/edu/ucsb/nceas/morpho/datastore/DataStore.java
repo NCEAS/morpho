@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: tao $'
- *     '$Date: 2008-12-17 01:46:38 $'
- * '$Revision: 1.9 $'
+ *   '$Author: leinfelder $'
+ *     '$Date: 2009-02-06 21:26:34 $'
+ * '$Revision: 1.10 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -59,6 +59,7 @@ public abstract class DataStore implements DataStoreInterface
   protected String separator;
   protected String cachedir;
   protected String tempdir;
+  protected String charset;
   
   /**
    * create a new FileSystemDataStore for a Morpho
@@ -77,6 +78,7 @@ public abstract class DataStore implements DataStoreInterface
     cachedir = profileDirName + File.separator + profile.get("cachedir", 0);
     separator = profile.get("separator", 0);
     separator = separator.trim();
+    charset = config.get("charset", 0);
   }
   
   /**

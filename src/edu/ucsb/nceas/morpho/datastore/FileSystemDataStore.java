@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: tao $'
- *     '$Date: 2008-12-19 23:58:56 $'
- * '$Revision: 1.12 $'
+ *   '$Author: leinfelder $'
+ *     '$Date: 2009-02-06 21:26:34 $'
+ * '$Revision: 1.13 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -171,7 +171,12 @@ public class FileSystemDataStore extends DataStore
         }
       }
       bsr = new BufferedReader(file);
-      bwriter = new BufferedWriter(new FileWriter(savefile));
+      if (charset != null) {
+    	  bwriter = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(savefile), charset));
+      }
+      else {
+    	  bwriter = new BufferedWriter(new FileWriter(savefile));
+      }
       int d = bsr.read();
       while(d != -1)
       {
