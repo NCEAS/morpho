@@ -4,7 +4,7 @@
 
   <skipIfNotSupported />
 
-  <programGroup defaultName="Morpho.1.6.2" location="applications"/>
+  <programGroup defaultName="Morpho.1.7" location="applications"/>
 
   <shortcut
      name="Morpho"

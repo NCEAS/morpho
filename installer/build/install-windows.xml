@@ -17,9 +17,9 @@
 	-->
 	<info>
 		<appname>Morpho</appname>
-		<appversion>1.6.2</appversion>
+		<appversion>1.7</appversion>
 		<url>http://knb.ecoinformatics.org</url>
-    <appsubpath>morpho-1.6.2</appsubpath>
+    <appsubpath>morpho-1.7</appsubpath>
 	</info> 
   	
 	<!-- 
