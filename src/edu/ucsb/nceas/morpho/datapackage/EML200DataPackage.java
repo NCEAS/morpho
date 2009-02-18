@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2009-02-04 00:38:33 $'
- * '$Revision: 1.67 $'
+ *     '$Date: 2009-02-18 19:55:14 $'
+ * '$Revision: 1.68 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -52,9 +52,11 @@ import java.util.ArrayList;
 
 
 import javax.xml.parsers.DocumentBuilder;
+import javax.xml.transform.ErrorListener;
 import javax.xml.transform.Result;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMResult;
@@ -996,6 +998,10 @@ public  class EML200DataPackage extends AbstractDataPackage
 		Transformer lastTransformer = tHandler2.getTransformer();
 		lastTransformer.setOutputProperty(OutputProperties.S_KEY_INDENT_AMOUNT, EMLConvert.indentAmount);
 		
+		//add code to handle the error message from xslt style sheet
+		XSLTErrorListener xslErrorListener = new XSLTErrorListener();
+		lastTransformer.setErrorListener(xslErrorListener);
+		
 		// Create an XMLReader.
 		XMLReader reader = XMLReaderFactory.createXMLReader();
 	   	reader.setContentHandler(tHandler2);
@@ -1021,6 +1027,41 @@ public  class EML200DataPackage extends AbstractDataPackage
 				 "It couldn't be save to newest EML document ");
 	}
 	return output;
+  }
+  
+  /*
+   * A class to catch the error from xslt style sheet
+   */
+    private class XSLTErrorListener implements ErrorListener{
+    	
+      private String warningMessage = null;
+	  
+	  public void error(TransformerException e) throws TransformerException
+	  {
+		  Log.debug(30, "error method "+e.getMessage());
+		  throw e;
+	  }
+	  
+	  public void fatalError(TransformerException e) throws TransformerException
+	  {
+		  Log.debug(30, "fatal error method "+e.getMessage());
+		  // Gets the warning message from xslt
+		  if (warningMessage != null)
+		  {
+			  throw(new TransformerException(warningMessage));
+		  }
+		  else
+		  {
+		      throw e;
+		  }
+	  }
+	  
+	  public void warning(TransformerException e)
+	  {
+		  Log.debug(30, "warning method "+e.getMessage());
+		  warningMessage = e.getMessage();
+	  }
+	  
   }
 
 }
