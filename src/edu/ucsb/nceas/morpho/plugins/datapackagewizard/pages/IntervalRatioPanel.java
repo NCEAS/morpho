@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2008-09-25 01:05:29 $'
- * '$Revision: 1.43 $'
+ *     '$Date: 2009-02-18 00:04:13 $'
+ * '$Revision: 1.44 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -350,10 +350,11 @@ public class IntervalRatioPanel extends JPanel implements WizardPageSubPanelAPI 
   public void onLoadAction() {
 
     WidgetFactory.unhiliteComponent(unitsPickListLabel);
-    WidgetFactory.unhiliteComponent(precisionLabel);
+    //WidgetFactory.unhiliteComponent(precisionLabel);
+    unhilitePrecisionLabel();
     WidgetFactory.unhiliteComponent(numberTypeLabel);
     unhiliteBoundsLabel();
-    precisionField.requestFocus();
+    //precisionField.requestFocus();
   }
 
 
@@ -383,14 +384,15 @@ public class IntervalRatioPanel extends JPanel implements WizardPageSubPanelAPI 
     WidgetFactory.unhiliteComponent(unitsPickListLabel);
 
     String precision = precisionField.getText().trim();
-    if (precision.equals("") || !(WizardSettings.isFloat(precision))) {
+    if (!precision.equals("") && !(WizardSettings.isFloat(precision))) {
 
       WidgetFactory.hiliteComponent(precisionLabel);
       precisionField.requestFocus();
 
       return false;
     }
-    WidgetFactory.unhiliteComponent(precisionLabel);
+    //WidgetFactory.unhiliteComponent(precisionLabel);
+    unhilitePrecisionLabel();
 
     if (numberTypePickList.getSelectedItem().toString().trim().equals("")) {
 
@@ -417,6 +419,13 @@ public class IntervalRatioPanel extends JPanel implements WizardPageSubPanelAPI 
 
     WidgetFactory.unhiliteComponent(boundsLabel);
     boundsLabel.setForeground(WizardSettings.WIZARD_CONTENT_TEXT_COLOR);
+  }
+  
+//need to set foreground, because unhilite reverts back to red foreground
+  private void unhilitePrecisionLabel() {
+
+    WidgetFactory.unhiliteComponent(precisionLabel);
+    precisionLabel.setForeground(WizardSettings.WIZARD_CONTENT_TEXT_COLOR);
   }
 
   //
@@ -508,10 +517,12 @@ public class IntervalRatioPanel extends JPanel implements WizardPageSubPanelAPI 
 		} else {
 			returnMap.put(  xPathRoot + "/unit/standardUnit", unit);
 		}
-
-    returnMap.put(  xPathRoot + "/precision",
-        precisionField.getText().trim());
-
+    
+	String precision = precisionField.getText().trim();
+	if(!precision.equals("") && (WizardSettings.isFloat(precision)))
+   {
+      returnMap.put(  xPathRoot + "/precision", precision);
+   }
 
     String id = numericDomainID.trim();
     if (id!=null && !id.equals("")) {
