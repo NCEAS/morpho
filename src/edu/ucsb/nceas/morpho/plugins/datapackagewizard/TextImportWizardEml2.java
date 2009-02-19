@@ -5,8 +5,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2008-12-12 20:32:31 $'
- * '$Revision: 1.30 $'
+ *     '$Date: 2009-02-19 23:55:41 $'
+ * '$Revision: 1.31 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1724,12 +1724,15 @@ public class TextImportWizardEml2 extends JFrame {
 
 
   void CancelButton_actionPerformed(java.awt.event.ActionEvent event) {
-
+	// move if statement block in front of "this.setVisble(false);". 
+	// this movement will dispose mainframe first, then this frame. It will fix the bug that
+	//  cancel button couldn't kill mainframe.
+	if (listener != null) {
+	    listener.importCanceled();
+	}
     this.setVisible(false);
     this.dispose();
-    if (listener != null) {
-      listener.importCanceled();
-    }
+   
   }
 
 
