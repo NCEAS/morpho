@@ -5,8 +5,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2009-02-19 23:55:41 $'
- * '$Revision: 1.31 $'
+ *     '$Date: 2009-02-21 00:18:37 $'
+ * '$Revision: 1.32 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1727,11 +1727,15 @@ public class TextImportWizardEml2 extends JFrame {
 	// move if statement block in front of "this.setVisble(false);". 
 	// this movement will dispose mainframe first, then this frame. It will fix the bug that
 	//  cancel button couldn't kill mainframe.
-	if (listener != null) {
+	/*if (listener != null) {
 	    listener.importCanceled();
+	}*/
+
+	if (this != null)
+	{
+        this.setVisible(false);
+        this.dispose();
 	}
-    this.setVisible(false);
-    this.dispose();
    
   }
 
