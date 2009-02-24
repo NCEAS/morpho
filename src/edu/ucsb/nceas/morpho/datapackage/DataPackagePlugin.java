@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: tao $'
- *     '$Date: 2009-02-04 00:38:33 $'
- * '$Revision: 1.110 $'
+ *   '$Author: leinfelder $'
+ *     '$Date: 2009-02-24 17:51:08 $'
+ * '$Revision: 1.111 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -553,8 +553,8 @@ public class DataPackagePlugin
                             StateChangeEvent.CREATE_NOENTITY_DATAPACKAGE_FRAME,
                             false, GUIAction.EVENT_LOCAL);
     editDatatableAccess.setEnabledOnStateChange(
-                   StateChangeEvent.CREATE_NONEDITABLE_ENTITY_DATAPACKAGE_FRAME,
-                   false, GUIAction.EVENT_LOCAL);
+                   StateChangeEvent.CREATE_ENTITY_DATAPACKAGE_FRAME,
+                   true, GUIAction.EVENT_LOCAL);
     controller.addGuiAction(editDatatableAccess);
 
 
