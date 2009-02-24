@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: tao $'
- *     '$Date: 2009-02-06 19:53:05 $'
- * '$Revision: 1.138 $'
+ *   '$Author: leinfelder $'
+ *     '$Date: 2009-02-24 19:34:07 $'
+ * '$Revision: 1.139 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -2788,7 +2788,10 @@ public abstract class AbstractDataPackage extends MetadataObject
                                  int distIndex, Node accessNode) {
 
 	  Document thisDom = getMetadataNode().getOwnerDocument();
-	  Node newAccessSubtree = thisDom.importNode(accessNode, true); // 'true' imports children
+	  Node newAccessSubtree = null;
+	  if (accessNode != null) {
+		  newAccessSubtree = thisDom.importNode(accessNode, true); // 'true' imports children
+	  }
 	    
 	Node[] distNodes = getDistributionArray(entityIndex, physicalIndex);
     if (distNodes == null) {
@@ -2835,12 +2838,21 @@ public abstract class AbstractDataPackage extends MetadataObject
         Log.debug(10, "aNodes is null !");
         return;
       }
-      if (aNodes.getLength() > 0) {
-	      Node child = aNodes.item(0); // get first ?; (only 1?)
-	      child.getParentNode().replaceChild(newAccessSubtree, child);
+      if (newAccessSubtree != null) {
+	      if (aNodes.getLength() > 0) {
+		      Node child = aNodes.item(0); // get first ?; (only 1?)
+		      child.getParentNode().replaceChild(newAccessSubtree, child);
+	      }
+	      else {
+	    	  distNode.appendChild(newAccessSubtree);
+	      }
       }
       else {
-    	  distNode.appendChild(newAccessSubtree);
+    	  //delete it
+    	  if (aNodes.getLength() > 0) {
+		      Node child = aNodes.item(0); // get first ?; (only 1?)
+		      child.getParentNode().removeChild(child);
+	      }
       }
     }
     catch (Exception w) {
