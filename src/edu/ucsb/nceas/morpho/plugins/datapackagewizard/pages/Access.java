@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: leinfelder $'
- *     '$Date: 2008-10-16 00:44:09 $'
- * '$Revision: 1.42 $'
+ *     '$Date: 2009-02-24 19:35:02 $'
+ * '$Revision: 1.43 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -74,7 +74,8 @@ public class Access
   protected boolean isEntity = false;
 
   private boolean publicReadAccess = true;
-  private final String[] buttonsText = new String[] {
+  private boolean inherit = false;
+  private String[] buttonsText = new String[] {
       "Yes, give read-only access to public.",
       "No."
   };
@@ -113,6 +114,12 @@ public class Access
 
     JLabel desc = null; 
     if (isEntity) {	
+    	buttonsText = 
+    		new String[] {
+    		      "Yes, give read-only access to public.",
+    		      "No.",
+    		      "Same as Metadata."
+    		  };
     	desc =
     		WidgetFactory.makeHTMLLabel(
 	        "<p><b>Would you like the allow the public to read your data entity?"
@@ -132,9 +139,16 @@ public class Access
         Log.debug(45, "got radiobutton command: " + e.getActionCommand());
         if (e.getActionCommand().equals(buttonsText[0])) {
           publicReadAccess = true;
+          inherit = false;
         }
         if (e.getActionCommand().equals(buttonsText[1])) {
           publicReadAccess = false;
+          inherit = false;
+        }
+        if (isEntity) {
+	        if (e.getActionCommand().equals(buttonsText[2])) {
+	            inherit = true;
+            }
         }
       }
     };
@@ -337,6 +351,10 @@ public class Access
     OrderedMap nextNVPMap = null;
     AccessPage nextAccessPage = null;
 
+    if (isEntity && inherit) {
+    	//we are removing everything
+    	return null;
+    }
     if (publicReadAccess) {
       returnMap.put(rootXPath + AUTHSYSTEM_REL_XPATH, AUTHSYSTEM_VALUE);
       returnMap.put(rootXPath + ORDER_REL_XPATH, ORDER_VALUE);
@@ -451,6 +469,27 @@ public class Access
 
   // resets all fields to blank
   private void resetBlankData() {
+	  JPanel innerPanel = ( (JPanel) (radioPanel.getComponent(1)));
+	  JRadioButton allowReadAccess = 
+		  ( (JRadioButton) (innerPanel.getComponent(0)));
+	  JRadioButton denyReadAccess = 
+		  ( (JRadioButton) (innerPanel.getComponent(1)));
+	  
+	  if (isEntity) {  
+		  JRadioButton inheritAccess = 
+			  ( (JRadioButton) (innerPanel.getComponent(2)));
+		  allowReadAccess.setSelected(false);
+		  denyReadAccess.setSelected(false);
+		  inheritAccess.setSelected(true);
+		  publicReadAccess = false;
+		  inherit = true;
+	  }
+	  else {
+		  allowReadAccess.setSelected(false);
+		  denyReadAccess.setSelected(true);
+		  publicReadAccess = false;
+		  inherit = false;
+	  }
     accessList.removeAllRows();
   }
 
@@ -466,16 +505,6 @@ public class Access
 
       // remove all access rules
       this.resetBlankData();
-
-      // set public read access to no
-      JPanel innerPanel = ( (JPanel) (radioPanel.getComponent(1)));
-      JRadioButton allowReadAccess = ( (JRadioButton)
-          (innerPanel.getComponent(0)));
-      JRadioButton denyReadAccess = ( (JRadioButton)
-          (innerPanel.getComponent(1)));
-      allowReadAccess.setSelected(false);
-      denyReadAccess.setSelected(true);
-      publicReadAccess = false;
 
       return true;
     }

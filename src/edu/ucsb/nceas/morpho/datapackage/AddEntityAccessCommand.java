@@ -5,9 +5,9 @@
  *    Authors: Saurabh Garg
  *    Release: @release@
  *
- *   '$Author: tao $'
- *     '$Date: 2009-02-04 00:38:33 $'
- * '$Revision: 1.4 $'
+ *   '$Author: leinfelder $'
+ *     '$Date: 2009-02-24 19:35:02 $'
+ * '$Revision: 1.5 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -178,11 +178,11 @@ public class AddEntityAccessCommand implements Command {
 		OrderedMap map = accessPage.getPageData(ACCESS_SUBTREE_NODENAME);
 
 		Log.debug(45,
-				"\n insertAccess() Got access details from Access page -\n"
-						+ map.toString());
+				"\n insertAccess() Got access details from Access page");
 
 		if (map == null || map.isEmpty()) {
-			Log.debug(5, "Unable to get access details from input!");
+			Log.debug(30, "removing access rules from data entity!");
+			adp.setEntityAccess(entityIndex, 0, 0, null);
 			return;
 		}
 
