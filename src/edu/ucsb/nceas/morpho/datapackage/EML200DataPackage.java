@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2009-02-18 19:55:14 $'
- * '$Revision: 1.68 $'
+ *     '$Date: 2009-02-27 00:55:59 $'
+ * '$Revision: 1.69 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1019,6 +1019,11 @@ public  class EML200DataPackage extends AbstractDataPackage
 		//outputNode = result.getNode();
 		output = outputWriter.toString();
 		//System.out.println("==================6 "+output);
+		if (xslErrorListener.getWarningMessage() != null)
+		{
+		   Log.debug(5, "Transforming the eml document to the latest version was done, however it got those warning(s) "+
+				   xslErrorListener.getWarningMessage());
+		}
 	
 	}
 	else
@@ -1056,10 +1061,27 @@ public  class EML200DataPackage extends AbstractDataPackage
 		  }
 	  }
 	  
-	  public void warning(TransformerException e)
+	  public void warning(TransformerException e) throws TransformerException
 	  {
 		  Log.debug(30, "warning method "+e.getMessage());
-		  warningMessage = e.getMessage();
+		  if (warningMessage == null)
+		  {
+		     warningMessage = e.getMessage();
+		  }
+		  else
+		  {
+			  warningMessage = warningMessage+"\n"+e.getMessage();
+		  }
+		  //throw(new TransformerException(warningMessage));
+	  }
+	  
+	  /**
+	   * Get the warning message from transformation style sheet
+	   * @return
+	   */
+	  public String getWarningMessage()
+	  {
+		  return warningMessage;
 	  }
 	  
   }
