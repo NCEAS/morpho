@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<eml:eml packageId="tao.12737.1" scope="system" system="knb" xmlns:eml="eml://ecoinformatics.org/eml-2.1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="eml://ecoinformatics.org/eml-2.1.0 eml.xsd"> <access authSystem="knb" order="denyFirst" scope="document"> <allow> <principal> </principal>
+ <permission>read</permission>
+ </allow>
+ </access>
+ <dataset scope="document"><title>  </title>
+ <creator id="1236039194635" scope="document"> <individualName> <surName>test</surName>
+ </individualName>
+ </creator>
+ <contact id="1236039198897" scope="document"> <individualName> <surName>test</surName>
+ </individualName>
+ </contact>
+ </dataset>
+ </eml:eml>
