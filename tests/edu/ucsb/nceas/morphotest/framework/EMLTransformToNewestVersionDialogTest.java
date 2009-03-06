@@ -90,7 +90,7 @@ public class EMLTransformToNewestVersionDialogTest extends TestCase
 	  /**
 	   * Check the if the action buttons works.
 	   */
-	  public void testActions() throws IOException
+	  public void testActions() throws IOException, Exception
 	  {
 		  
 		    //create data package
