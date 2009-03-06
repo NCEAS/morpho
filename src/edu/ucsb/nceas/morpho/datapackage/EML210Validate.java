@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2009-03-06 02:47:24 $'
- * '$Revision: 1.1 $'
+ *     '$Date: 2009-03-06 21:36:24 $'
+ * '$Revision: 1.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -63,11 +63,18 @@ public class EML210Validate extends DefaultHandler implements ErrorHandler
 {
 	 private final static String DEFAULT_PARSER = "org.apache.xerces.parsers.SAXParser";
 	 private final static String SLASH ="/";
+	 private final static String RECORDDELIMITER = "recordDelimiter";
+	 private final static String PHYSICALLINEDELIMITER = "physicalLineDelimiter";
+	 private final static String FIELDDELIMITER = "fieldDelimiter";
+	 
 	// SAX parser
 	XMLReader parser = null;
-	private String schemaLocation = "xsd/eml-2.1.0";
+	private String schemaLocation = "eml://ecoinformatics.org/eml-2.1.0 ./xsd/eml-2.1.0/eml.xsd";
 	private Stack path = new Stack();
 	private Vector invalidPathList = new Vector();
+	private StringBuffer textBuffer = new StringBuffer();// a buffer to contain text value
+	private boolean startElement = false; // indicator of parser hit a start element node
+	private boolean endElement   = false;// indicator of parser hit a start element node
 
 	/**
 	 * Class constructor.
@@ -130,7 +137,13 @@ public class EML210Validate extends DefaultHandler implements ErrorHandler
         Log.debug(30, "Start ELEMENT(qName) " + qName);
         Log.debug(30, "Start ELEMENT(localName) " + localName);
         Log.debug(30, "Start ELEMENT(uri) " + uri);
-        path.add(qName);
+        path.push(qName);// put qName into stack
+        startElement = true;
+        endElement = false;
+        // reset textbuffer
+        textBuffer = null;
+        textBuffer = new StringBuffer();      
+      
     }
     
     /** SAX Handler that is called at the end of each XML element */
@@ -138,12 +151,43 @@ public class EML210Validate extends DefaultHandler implements ErrorHandler
             throws SAXException
     {
         Log.debug(30, "End ELEMENT " + qName);
+        endElement = true;
+        // This will only get the text value of element which only has text node as child.
+        //Here is the example:
+        // <a> v1
+        //     <b>v2
+        //        <c>v3</c>v4
+        //      </b>v5
+        //  </a>
+        // Only v3 is between startelement c and endllement c.
+        // v1 is between startelement a and startment b and v4 is between endelement c and endelement b.
+        if(startElement == true && endElement == true)
+        {
+	        String text = textBuffer.toString();
+	        // find a white space in the value, get the path from stack and put the path into the 
+	        // invlaidPathList vector.
+	        if ((text == null || text.trim().equals("")) && !RECORDDELIMITER.equals(qName) &&
+	        		!PHYSICALLINEDELIMITER.equals(qName) && !FIELDDELIMITER.equals(qName))
+	        {
+	        	String errorPath = transformPathFromStackToString(path);
+	        	Log.debug(30, "ERROR full path "+errorPath);
+	        	invalidPathList.add(errorPath);
+	        }
+        }
+        // pop out element from stack
+        path.pop();        
+        startElement = false;
+        // reset textbuff
+        textBuffer = null;
+        textBuffer = new StringBuffer();
+
     }
     
     /** SAX Handler that is called for each XML text node */
     public void characters(char[] cbuf, int start, int len) throws SAXException
     {
         Log.debug(30, "CHARACTERS");
+        textBuffer.append(new String(cbuf, start, len));
     }
     
     
@@ -197,5 +241,23 @@ public class EML210Validate extends DefaultHandler implements ErrorHandler
     {
       //throw new SAXException("WARNING: " + exception.getMessage());
     	Log.debug(30, "Warning: " +exception.getMessage());
+    }
+    
+    /*
+     * Transform the contents in the stack to a string.
+     */
+    private String transformPathFromStackToString(Stack stack)
+    {
+    	String fullPath = "";
+    	if (stack != null)
+    	{
+    		int length = stack.size();
+    		for (int i= 0; i<length; i++)
+    		{
+    			String value =(String)stack.elementAt(i);
+    			fullPath=fullPath+SLASH+value;
+    		}
+    	}
+    	return fullPath;
     }
 }
