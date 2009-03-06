@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2009-03-06 02:49:25 $'
- * '$Revision: 1.1 $'
+ *     '$Date: 2009-03-06 21:37:37 $'
+ * '$Revision: 1.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,6 +30,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Reader;
+import java.util.Vector;
 
 import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.datapackage.EML210Validate;
@@ -47,7 +48,7 @@ public class EML210ValidateTest extends TestCase
 	
 	private static Morpho morpho;
 	private static ConfigXML config = null;
-	private static final String EMLFILE = "tests/testfiles/eml210-whitespace.xml";
+	private static final String EMLFILEWITHSPACE = "tests/testfiles/eml210-whitespace.xml";
 	
 	static {
         try {
@@ -96,7 +97,7 @@ public class EML210ValidateTest extends TestCase
         {
             TestSuite suite = new TestSuite();
             suite.addTest(new EML210ValidateTest("initialize"));
-            suite.addTest(new EML210ValidateTest("testParse"));
+            suite.addTest(new EML210ValidateTest("testParseWithspace"));
             return suite;
         }
         
@@ -109,18 +110,39 @@ public class EML210ValidateTest extends TestCase
             assertTrue(true);
         }
         
-        public void testParse()
+        public void testParseWithspace()
         {
         	try
         	{
-        	  Reader xml = new FileReader(new File(EMLFILE));
+        	  Reader xml = new FileReader(new File(EMLFILEWITHSPACE));
         	   EML210Validate validate = new EML210Validate();
         	   validate.parse(xml);
+        	   assertFalse("Failed to determine the invalid path is not empty", validate.invalidPathIsEmpty());
+        	   Vector errorPath = validate.getInvalidPathList();
+        	   
+        	   int size = errorPath.size();
+        	   for (int i=0; i<size; i++)
+        	   {
+        		   String path = (String)errorPath.elementAt(i);
+        		   if (i==0)
+        		   {
+        			   assertTrue("Couldn't find white space path /eml:eml/access/allow/principal", path.equals("/eml:eml/access/allow/principal"));
+        		   }
+        		   else if (i==1)
+        		   {
+        			   assertTrue("Could find whitespace path /eml:eml/dataset/title", path.equals("/eml:eml/dataset/title"));
+        		   }
+        		   else
+        		   {
+        			   fail("find more whitespace path than expect: " + path);
+        		   }
+        		
+        	   }
         	   xml.close();
         	}
         	catch(Exception e)
         	{
-        		fail("Failed to correct the document because of the exception: " + e.getMessage());
+        		fail("Failed to get valide element path: " + e.getMessage());
         	}
         }
         
