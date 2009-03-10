@@ -1,0 +1,14 @@
+<mappingList>
+  <mapping>
+    <root>/eml:eml/dataset/</root>
+    <xpath>title</xpath>
+    <wizardPageClass>General</wizardPageClass>
+  </mapping>
+  <mapping>
+    <root>/eml:eml/dataset/</root>
+    <xpath>abstract/para</xpath>
+    <wizardPageClass>General</wizardPageClass>
+  </mapping>
+</mappingList>
+
+
