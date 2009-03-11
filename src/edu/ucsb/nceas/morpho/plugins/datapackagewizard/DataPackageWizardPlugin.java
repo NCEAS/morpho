@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2008-08-28 23:31:49 $'
- * '$Revision: 1.44 $'
+ *     '$Date: 2009-03-11 03:22:16 $'
+ * '$Revision: 1.45 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -173,7 +173,7 @@ public class DataPackageWizardPlugin implements PluginInterface,
    * @param listener String
    * @param frameTitle String
    */
-  private void startWizardAtPage(String pageID, boolean showPageCount,
+  protected void startWizardAtPage(String pageID, boolean showPageCount,
                         DataPackageWizardListener listener, String frameTitle) {
 
     WizardContainerFrame dpWiz = new WizardContainerFrame();
