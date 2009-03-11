@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2009-03-10 01:40:45 $'
- * '$Revision: 1.1 $'
+ *     '$Date: 2009-03-11 03:23:09 $'
+ * '$Revision: 1.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,8 +32,13 @@ package edu.ucsb.nceas.morpho.plugins.datapackagewizard;
 
 import edu.ucsb.nceas.morpho.framework.AbstractUIPage;
 import edu.ucsb.nceas.morpho.framework.ConfigXML;
+import edu.ucsb.nceas.morpho.plugins.DataPackageWizardListener;
 import edu.ucsb.nceas.morpho.util.Log;
+import edu.ucsb.nceas.utilities.OrderedMap;
+import edu.ucsb.nceas.utilities.XMLUtilities;
 
+import java.util.Hashtable;
+import java.util.Map;
 import java.util.Vector;
 
 import org.w3c.dom.Document;
@@ -55,6 +60,14 @@ public class CorrectionWizardController
 	private Vector pageList = new Vector();
 	// The hasttable containing the mapping which be read from mapping property file
 	private MappingUnit[] mappingList = null;
+	// full path mapping hash table - key is full path, value is class name
+	private Hashtable fullPathMapping = new Hashtable();
+	// short path mapping hash table - key is path (without root and value is class name
+	private Hashtable shortPathMapping = new Hashtable();
+	// metadata in DOM tree format
+	private Document metadataDoc = null;
+	private DataPackageWizardListener listener = null;
+	private DataPackageWizardPlugin plugin = new DataPackageWizardPlugin();
 	// the file path of mapping properties file (xml format)
 	private static final String MAPPINGFILEPATH = "lib/xpath-wizard-map.xml";
 	// element name used in mapping properties file (xml format)
@@ -68,10 +81,46 @@ public class CorrectionWizardController
 	 * Constructor
 	 * @param errorPathList the list of paths which contain invalid value
 	 */
-	public CorrectionWizardController(Vector errorPathList)
+	public CorrectionWizardController(Vector errorPathList, Document metadataDoc)
 	{
-	    this.errorPathList = errorPathList;
-	    this.mappingList  = getXPATHMappingUIPage();
+	    this.errorPathList  = errorPathList;
+	    this.metadataDoc  = metadataDoc;
+	    this.mappingList   = getXPATHMappingUIPage();
+	    getUIPageList();
+	}
+	
+	/**
+	 * Start to run the wizard
+	 */
+	public void startWizard()
+	{
+		if (errorPathList != null)
+		{
+			for (int i=0; i<errorPathList.size(); i++)
+			{
+				String path = (String)errorPathList.elementAt(i);
+				Object page = pageList.elementAt(i);
+				OrderedMap xpathMap = null;
+				try
+				{
+					NodeList nodeList = XMLUtilities.getNodeListWithXPath(metadataDoc, path);	
+					// we need some mechanism to find out the index. now i just use 0
+					Node node = nodeList.item(0);
+					XMLUtilities.getXPathMapAsDOMTree(xpathMap, node);
+					if (page instanceof AbstractUIPage )
+					{
+						AbstractUIPage wizardPage = (AbstractUIPage)page;
+						wizardPage.setPageData(xpathMap, null);
+						plugin.startWizardAtPage(wizardPage.getPageID(), false, listener, wizardPage.getTitle());
+					}
+				}
+				catch(Exception e)
+				{
+					Log.debug(30, "couldn't find the subtree for given error xpath "+e.getMessage());
+					continue;
+				}
+			}
+		}
 	}
 	
 	/*
@@ -89,6 +138,7 @@ public class CorrectionWizardController
 				AbstractUIPage page = getUIPage((String)errorPathList.elementAt(i));
 				if (page != null)
 				{
+					Log.debug(48, "page object is "+page.toString());
 					// find a wizard page and add it to the list
 					pageList.add(page);
 				}
@@ -109,11 +159,39 @@ public class CorrectionWizardController
 	{
 		//Todo
 		AbstractUIPage page = null;
+		String className = null;
 		if (mappingList != null)
 		{
-			
+			className = getWizardPageClassName(path);
+			if(className != null)
+			{
+				page = (AbstractUIPage)createObject(className);
+			}
 		}
 		return page;
+	}
+	
+	
+	/*
+	 * Find out the wizard page class name
+	 */
+	private String getWizardPageClassName(String path)
+	{
+		String className = null;
+		// first to check full path mapping
+		Log.debug(48, "the given error path is"+path);
+		if (fullPathMapping != null)
+		{
+			className = (String)fullPathMapping.get(path);
+			Log.debug(48, "find the class name in full path mapping "+className);
+		}
+		// second to check short mapping if no class name was found in full path mapping
+		if (className == null)
+		{
+			className = (String)shortPathMapping.get(path);
+			Log.debug(48, "find the class name in short path mapping "+className);
+		}
+		return className;
 	}
 	
 	/*
@@ -143,6 +221,9 @@ public class CorrectionWizardController
 		      {
 			      NodeList children = nl.item(i).getChildNodes();
 			      MappingUnit unit = new MappingUnit();
+			      String root = null;
+		          String xpath = null;
+		          String className = null;
 			      if (children.getLength() > 0)
 			      {
 			        for (int j = 0; j < children.getLength(); j++)
@@ -155,7 +236,8 @@ public class CorrectionWizardController
 			            Node ccn = cn.getFirstChild();        // assumed to be a text node
 			            if ((ccn != null) && (ccn.getNodeType() == Node.TEXT_NODE))
 			            {
-			              unit.setRoot(ccn.getNodeValue());
+			              root = ccn.getNodeValue();
+			              unit.setRoot(root);
 			            }
 			          }
 			          else if ((cn.getNodeType() == Node.ELEMENT_NODE)
@@ -164,7 +246,8 @@ public class CorrectionWizardController
 			            Node ccn = cn.getFirstChild();        // assumed to be a text node
 			            if ((ccn != null) && (ccn.getNodeType() == Node.TEXT_NODE))
 			            {
-			               unit.setXpath( ccn.getNodeValue());
+			               xpath = ccn.getNodeValue();
+			               unit.setXpath(xpath);
 			            }
 			          }
 			          else if ((cn.getNodeType() == Node.ELEMENT_NODE)
@@ -173,11 +256,16 @@ public class CorrectionWizardController
 				            Node ccn = cn.getFirstChild();        // assumed to be a text node
 				            if ((ccn != null) && (ccn.getNodeType() == Node.TEXT_NODE))
 				            {
-				               unit.setWizardPageClassName(( ccn.getNodeValue()));
+				               className = ccn.getNodeValue();
+				               unit.setWizardPageClassName(className);
 				            }
 				        }
+			            
 			        }
 			      }
+			      String fullPath = root+xpath;
+		          fullPathMapping.put(fullPath, className);
+		          shortPathMapping.put(xpath, className);
 			      mappingList[i] = unit;
 		      }
 		    }
@@ -193,12 +281,33 @@ public class CorrectionWizardController
 				   }
 			   }
 		   }
+		   Log.debug(48, "full path mapping is "+fullPathMapping);
+		   Log.debug(48, "short path mapping is "+shortPathMapping);
 		}
 		catch (Exception e)
 		{
 			Log.debug(30, "Couldn't get the mapping property from the file "+e.getMessage());
 		}
 		return mappingList;		
+	}
+	
+	/*
+	 * Create an object for given class name
+	 */
+	private static Object createObject(String className)  {
+
+		Object object = null;
+		try {
+			Class classDefinition = Class.forName(className);
+			object = classDefinition.newInstance();
+		} catch (InstantiationException e) {
+			Log.debug(30, e.getMessage());
+		} catch (IllegalAccessException e) {
+			Log.debug(30, e.getMessage());
+		} catch (ClassNotFoundException e) {
+			Log.debug(30, e.getMessage());
+		}
+		return object;
 	}
 	
 	/*
