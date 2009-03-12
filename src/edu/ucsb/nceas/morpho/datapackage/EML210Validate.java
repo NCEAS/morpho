@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2009-03-06 21:36:24 $'
- * '$Revision: 1.2 $'
+ *     '$Date: 2009-03-12 00:20:35 $'
+ * '$Revision: 1.3 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -134,9 +134,9 @@ public class EML210Validate extends DefaultHandler implements ErrorHandler
         // for element <eml:eml...> qname is "eml:eml", local name is "eml"
         // for element <acl....> both qname and local name is "eml"
         // uri is namespace
-        Log.debug(30, "Start ELEMENT(qName) " + qName);
-        Log.debug(30, "Start ELEMENT(localName) " + localName);
-        Log.debug(30, "Start ELEMENT(uri) " + uri);
+        Log.debug(48, "Start ELEMENT(qName) " + qName);
+        Log.debug(48, "Start ELEMENT(localName) " + localName);
+        Log.debug(48, "Start ELEMENT(uri) " + uri);
         path.push(qName);// put qName into stack
         startElement = true;
         endElement = false;
@@ -150,7 +150,7 @@ public class EML210Validate extends DefaultHandler implements ErrorHandler
     public void endElement(String uri, String localName, String qName)
             throws SAXException
     {
-        Log.debug(30, "End ELEMENT " + qName);
+        Log.debug(48, "End ELEMENT " + qName);
         endElement = true;
         // This will only get the text value of element which only has text node as child.
         //Here is the example:
@@ -186,7 +186,7 @@ public class EML210Validate extends DefaultHandler implements ErrorHandler
     /** SAX Handler that is called for each XML text node */
     public void characters(char[] cbuf, int start, int len) throws SAXException
     {
-        Log.debug(30, "CHARACTERS");
+        Log.debug(48, "CHARACTERS");
         textBuffer.append(new String(cbuf, start, len));
     }
     
@@ -201,7 +201,7 @@ public class EML210Validate extends DefaultHandler implements ErrorHandler
         // When validation is turned "on", white spaces are reported here
         // When validation is turned "off" white spaces are not reported here,
         // but through characters() callback
-        Log.debug(30, "IGNORABLEWHITESPACE");
+        Log.debug(48, "IGNORABLEWHITESPACE");
 
     }
 
@@ -215,7 +215,7 @@ public class EML210Validate extends DefaultHandler implements ErrorHandler
     public void error(SAXParseException exception) throws SAXException
     {
       //throw exception;
-    	Log.debug(30, "Error: " +exception.getMessage());
+    	Log.debug(48, "Error: " +exception.getMessage());
     }
     
     /**
@@ -227,7 +227,7 @@ public class EML210Validate extends DefaultHandler implements ErrorHandler
     public void fatalError(SAXParseException exception) throws SAXException
     {
       //throw exception;
-    	Log.debug(30, "Fatal Error: " +exception.getMessage());
+    	Log.debug(48, "Fatal Error: " +exception.getMessage());
     }
 
     /**
@@ -240,7 +240,7 @@ public class EML210Validate extends DefaultHandler implements ErrorHandler
       throws SAXException
     {
       //throw new SAXException("WARNING: " + exception.getMessage());
-    	Log.debug(30, "Warning: " +exception.getMessage());
+    	Log.debug(48, "Warning: " +exception.getMessage());
     }
     
     /*
