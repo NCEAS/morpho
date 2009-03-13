@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2008-12-12 20:32:31 $'
- * '$Revision: 1.30 $'
+ *     '$Date: 2009-03-13 03:57:28 $'
+ * '$Revision: 1.31 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -63,7 +63,6 @@ public class Entity extends AbstractUIPage{
   // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
   private final String pageID     = DataPackageWizardInterface.ENTITY;
-  private String nextPageID = DataPackageWizardInterface.SUMMARY;
   private final String pageNumber = "";
   private final String title      = "Data Information:";
   private final String subtitle   = "Table (Entity)";
@@ -85,7 +84,7 @@ public class Entity extends AbstractUIPage{
   // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
   public Entity(WizardContainerFrame frame) {
-
+	nextPageID = DataPackageWizardInterface.SUMMARY;
     this.mainWizFrame = frame;
     init();
   }

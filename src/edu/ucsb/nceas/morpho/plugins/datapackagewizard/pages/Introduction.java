@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: connolly $'
- *     '$Date: 2005-07-22 17:39:25 $'
- * '$Revision: 1.28 $'
+ *   '$Author: tao $'
+ *     '$Date: 2009-03-13 03:57:28 $'
+ * '$Revision: 1.29 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -48,7 +48,6 @@ import javax.swing.JLabel;
 public class Introduction extends AbstractUIPage {
 
   public final String pageID     = DataPackageWizardInterface.INTRODUCTION;
-  public final String nextPageID = DataPackageWizardInterface.GENERAL;
   public final String pageNumber = "1";
 
 //////////////////////////////////////////////////////////
@@ -58,7 +57,7 @@ public class Introduction extends AbstractUIPage {
 
 
   public Introduction() {
-
+	nextPageID = DataPackageWizardInterface.GENERAL;
     init();
 
     }

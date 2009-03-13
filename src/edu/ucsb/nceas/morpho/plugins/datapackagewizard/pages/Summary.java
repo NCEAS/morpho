@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: connolly $'
- *     '$Date: 2005-07-22 16:33:36 $'
- * '$Revision: 1.25 $'
+ *   '$Author: tao $'
+ *     '$Date: 2009-03-13 03:57:28 $'
+ * '$Revision: 1.26 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -54,7 +54,6 @@ import javax.swing.JLabel;
 public class Summary extends AbstractUIPage {
 
   public final String pageID     = DataPackageWizardInterface.SUMMARY;
-  public final String nextPageID = null;
   public final String pageNumber = "15";
   public final String PACKAGE_WIZ_SUMMARY_TITLE = "New Data Package Wizard";
   public final String ENTITY_WIZ_SUMMARY_TITLE  = "New Data Table Wizard";
@@ -67,7 +66,7 @@ public class Summary extends AbstractUIPage {
   private JComponent showMeButton;
 
   public Summary(WizardContainerFrame mainWizFrame) {
-
+	 nextPageID = null;
     this.mainWizFrame = mainWizFrame;
     init();
   }

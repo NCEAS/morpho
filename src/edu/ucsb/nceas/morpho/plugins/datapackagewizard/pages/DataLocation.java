@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2008-12-16 01:26:38 $'
- * '$Revision: 1.43 $'
+ *     '$Date: 2009-03-13 03:57:28 $'
+ * '$Revision: 1.44 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -70,7 +70,6 @@ import javax.swing.JTextField;
 public class DataLocation extends AbstractUIPage {
 
   private final String pageID       = DataPackageWizardInterface.DATA_LOCATION;
-  private String nextPageID         = DataPackageWizardInterface.TEXT_IMPORT_WIZARD;
   private final String pageNumber   = "1";
 
   private final String title      = "New Data Table Wizard";
@@ -156,6 +155,7 @@ public class DataLocation extends AbstractUIPage {
 
   public DataLocation(WizardContainerFrame mainWizFrame) {
 
+	nextPageID         = DataPackageWizardInterface.TEXT_IMPORT_WIZARD;
     this.mainWizFrame = mainWizFrame;
 
     INLINE_OR_ONLINE = WizardSettings.ONLINE;
@@ -1041,7 +1041,7 @@ public class DataLocation extends AbstractUIPage {
 
 
 
-  private void setNextPageID(String id)  { nextPageID = id; }
+  //private void setNextPageID(String id)  { nextPageID = id; }
 
 
   /**

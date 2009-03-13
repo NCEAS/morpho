@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2008-11-26 04:31:56 $'
- * '$Revision: 1.15 $'
+ *     '$Date: 2009-03-13 03:57:28 $'
+ * '$Revision: 1.16 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -65,7 +65,6 @@ import edu.ucsb.nceas.morpho.plugins.vocabulary.VocabularyPlugin;
 public class KeywordsPage extends AbstractUIPage {
 
   private final String pageID     = DataPackageWizardInterface.KEYWORDS_PAGE;
-  private final String nextPageID = "";
   private final String pageNumber = "";
   private final String title      = "Keywords Page";
   private final String subtitle   = "";
@@ -109,6 +108,7 @@ public class KeywordsPage extends AbstractUIPage {
   };
 
   public KeywordsPage() {
+	nextPageID = "";
 	initThesaurii();
     init();
   }

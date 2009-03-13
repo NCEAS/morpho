@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2007-02-22 18:52:12 $'
- * '$Revision: 1.4 $'
+ *     '$Date: 2009-03-13 03:57:28 $'
+ * '$Revision: 1.5 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -89,7 +89,6 @@ import javax.swing.AbstractAction;
 public class CustomUnitPage extends AbstractUIPage { 
 	
 	private final String pageID     = DataPackageWizardInterface.CUSTOM_UNIT_PAGE;
-  private final String nextPageID = "";
   private final String pageNumber = "";
   private final String title      = "Custom Unit Definition";
   private final String subtitle   = "";
@@ -164,7 +163,7 @@ public class CustomUnitPage extends AbstractUIPage {
 	private JPanel middleExistingTypePanel;
 	
 	public CustomUnitPage() {
-		
+		nextPageID = "";
 		init();
 	}
 	

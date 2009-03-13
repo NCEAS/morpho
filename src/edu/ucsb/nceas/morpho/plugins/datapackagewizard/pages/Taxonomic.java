@@ -8,8 +8,8 @@
 *    Release: @release@
 *
 *   '$Author: tao $'
-*     '$Date: 2008-11-25 22:58:36 $'
-* '$Revision: 1.34 $'
+*     '$Date: 2009-03-13 03:57:28 $'
+* '$Revision: 1.35 $'
 *
 * This program is free software; you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -87,7 +87,6 @@ import org.w3c.dom.NodeList;
 public class Taxonomic extends AbstractUIPage {
 
   public final String pageID     = DataPackageWizardInterface.TAXONOMIC;
-  private final String nextPageID = DataPackageWizardInterface.METHODS;
   public final String pageNumber = "12";
 
   //////////////////////////////////////////////////////////
@@ -143,7 +142,7 @@ public class Taxonomic extends AbstractUIPage {
 
   private JTextField colObjects[];
   public Taxonomic() {
-
+	nextPageID = DataPackageWizardInterface.METHODS;
     init();
   }
 

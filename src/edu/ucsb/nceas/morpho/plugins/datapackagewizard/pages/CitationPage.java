@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2008-11-26 00:49:49 $'
- * '$Revision: 1.25 $'
+ *     '$Date: 2009-03-13 03:57:28 $'
+ * '$Revision: 1.26 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -68,7 +68,6 @@ import edu.ucsb.nceas.utilities.XMLUtilities;
 public class CitationPage extends AbstractUIPage {
 
   private final String pageID     = DataPackageWizardInterface.CITATION_PAGE;
-  private final String nextPageID = "";
   private final String pageNumber = "";
   private final String title      = "Citation Page";
   private final String subtitle   = "";
@@ -119,7 +118,7 @@ public class CitationPage extends AbstractUIPage {
   private final int PADDING = WizardSettings.PADDING;
 
   public CitationPage() {
-
+	nextPageID = "";
     initNames();
     init();
   }

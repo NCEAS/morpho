@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: berkley $'
- *     '$Date: 2004-04-07 23:29:24 $'
- * '$Revision: 1.15 $'
+ *   '$Author: tao $'
+ *     '$Date: 2009-03-13 03:57:28 $'
+ * '$Revision: 1.16 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -62,7 +62,6 @@ public class Methods
   // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
   private final String pageID = DataPackageWizardInterface.METHODS;
-  private final String nextPageID = DataPackageWizardInterface.ACCESS;
   private final String title = "Methods and Sampling";
   private final String subtitle = "";
   private final String pageNumber = "13";
@@ -97,6 +96,7 @@ public class Methods
   // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
   public Methods() {
+	nextPageID = DataPackageWizardInterface.ACCESS;
     init();
   }
 

@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2008-11-18 01:42:20 $'
- * '$Revision: 1.49 $'
+ *     '$Date: 2009-03-13 03:57:28 $'
+ * '$Revision: 1.50 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -73,8 +73,6 @@ public class PartyPage extends AbstractUIPage {
   private final String EMPTY_STRING = "";
 
   private String pageID = DataPackageWizardInterface.PARTY_CREATOR;
-
-  private final String nextPageID = EMPTY_STRING;
 
   private final String title = "Party Page";
 
@@ -200,7 +198,7 @@ public class PartyPage extends AbstractUIPage {
    * @param role short - CREATOR, CONTACT, ASSOCIATED, PERSONNEL, CITATION_AUTHOR or UNDEFINED
    */
   public PartyPage(String role) {
-
+	nextPageID = EMPTY_STRING;
     pageID = role;
     referencesHandler = new ReferencesHandler(PARTY_GENERIC_NAME,
                                               REFSHANDLER_SURROGATE_STRING);

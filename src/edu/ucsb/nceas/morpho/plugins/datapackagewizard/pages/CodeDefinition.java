@@ -61,7 +61,7 @@ import org.w3c.dom.NodeList;
 public class CodeDefinition extends AbstractUIPage {
 
   public final String pageID = DataPackageWizardInterface.CODE_DEFINITION;
-  public String nextPageID = DataPackageWizardInterface.CODE_IMPORT_SUMMARY;
+  
   public final String pageNumber = "";
   
   public final String title      = "Code Defintions Import Page";
@@ -81,7 +81,7 @@ public class CodeDefinition extends AbstractUIPage {
   public CodeDefinition(WizardContainerFrame mainWizFrame) {
 
     this.mainWizFrame = mainWizFrame;
-
+    nextPageID = DataPackageWizardInterface.CODE_IMPORT_SUMMARY;
     init();
   }
 

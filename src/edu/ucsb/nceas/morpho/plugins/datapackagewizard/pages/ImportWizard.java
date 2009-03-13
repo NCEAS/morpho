@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: brooke $'
- *     '$Date: 2004-04-02 18:47:42 $'
- * '$Revision: 1.25 $'
+ *   '$Author: tao $'
+ *     '$Date: 2009-03-13 03:57:28 $'
+ * '$Revision: 1.26 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -46,7 +46,6 @@ public class ImportWizard extends     AbstractUIPage
                           implements  TextImportListener {
 
   public final String pageID     = DataPackageWizardInterface.TEXT_IMPORT_WIZARD;
-  public String nextPageID = DataPackageWizardInterface.SUMMARY;
   public final String pageNumber = "";
 
   public final String title      = "Data Package Wizard";
@@ -60,7 +59,7 @@ public class ImportWizard extends     AbstractUIPage
   private TextImportWizardEml2 importWizFrame;
 
   public ImportWizard(WizardContainerFrame mainWizFrame) {
-
+	nextPageID = DataPackageWizardInterface.SUMMARY;
     this.mainWizFrame = mainWizFrame;
     init();
   }

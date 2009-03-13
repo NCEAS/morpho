@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2008-11-18 01:42:20 $'
- * '$Revision: 1.19 $'
+ *     '$Date: 2009-03-13 03:57:28 $'
+ * '$Revision: 1.20 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -78,7 +78,6 @@ import org.w3c.dom.Node;
 public class GeographicPage extends AbstractUIPage {
 
   public final String pageID     = DataPackageWizardInterface.GEOGRAPHIC;
-  public final String nextPageID = DataPackageWizardInterface.TEMPORAL;
   public final String pageNumber = "1";
 //////////////////////////////////////////////////////////
 
@@ -107,7 +106,7 @@ public class GeographicPage extends AbstractUIPage {
   // user to indicate the event from sort command
   private boolean eventFromSortCommand = false;
   public GeographicPage() {
-
+	nextPageID = DataPackageWizardInterface.TEMPORAL;
     init();
   }
 

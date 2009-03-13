@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2008-11-11 23:52:42 $'
- * '$Revision: 1.21 $'
+ *     '$Date: 2009-03-13 03:57:28 $'
+ * '$Revision: 1.22 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -54,7 +54,6 @@ public class General extends AbstractUIPage{
   // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
   private final String pageID     = DataPackageWizardInterface.GENERAL;
-  private final String nextPageID = DataPackageWizardInterface.KEYWORDS;
   private final String title      = "Title and Abstract";
   private final String subtitle   = "";
   public  final String pageNumber = "2";
@@ -71,7 +70,11 @@ public class General extends AbstractUIPage{
 
   // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
-  public General() { init(); }
+  public General() 
+  {
+	  nextPageID = DataPackageWizardInterface.KEYWORDS;
+	  init(); 
+  }
 
   /**
    * initialize method does frame-specific design - i.e. adding the widgets that

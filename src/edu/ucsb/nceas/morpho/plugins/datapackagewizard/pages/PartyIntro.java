@@ -6,9 +6,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: berkley $'
- *     '$Date: 2004-04-05 23:48:41 $'
- * '$Revision: 1.16 $'
+ *   '$Author: tao $'
+ *     '$Date: 2009-03-13 03:57:28 $'
+ * '$Revision: 1.17 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -39,12 +39,12 @@ import javax.swing.JLabel;
 public class PartyIntro extends AbstractUIPage{
 
   public final String pageID = DataPackageWizardInterface.PARTY_INTRO;
-  public final String nextPageID = DataPackageWizardInterface.PARTY_CREATOR_PAGE;
   public final String title = "People and Organizations";
   public final String subtitle = "";
   public final String pageNumber = "4";
 
   public PartyIntro() {
+	nextPageID = DataPackageWizardInterface.PARTY_CREATOR_PAGE;
     init();
   }
 

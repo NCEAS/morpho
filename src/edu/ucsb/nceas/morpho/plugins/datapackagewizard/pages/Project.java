@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2008-11-18 01:42:21 $'
- * '$Revision: 1.45 $'
+ *     '$Date: 2009-03-13 03:57:28 $'
+ * '$Revision: 1.46 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -68,7 +68,6 @@ import org.w3c.dom.Node;
 public class Project extends AbstractUIPage {
 
   public final String pageID     = DataPackageWizardInterface.PROJECT;
-  public final String nextPageID = DataPackageWizardInterface.USAGE_RIGHTS;
 
   public final String title      = "Research Project Information";
   public final String subtitle   = " ";
@@ -105,6 +104,7 @@ public class Project extends AbstractUIPage {
 
 
   public Project() {
+	nextPageID = DataPackageWizardInterface.USAGE_RIGHTS;
     init();
   }
 

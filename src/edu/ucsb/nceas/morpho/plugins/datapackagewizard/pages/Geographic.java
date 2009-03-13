@@ -7,9 +7,9 @@
  *    Authors: Dan Higgins
  *    Release: @release@
  *
- *   '$Author: berkley $'
- *     '$Date: 2004-04-07 23:29:24 $'
- * '$Revision: 1.26 $'
+ *   '$Author: tao $'
+ *     '$Date: 2009-03-13 03:57:28 $'
+ * '$Revision: 1.27 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -58,7 +58,6 @@ public class Geographic extends AbstractUIPage{
   // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
   private final String pageID     = DataPackageWizardInterface.GEOGRAPHIC;
-  private final String nextPageID = DataPackageWizardInterface.TEMPORAL;
   private final String title      = "Geographic Coverage";
   private final String subtitle   = "";
   private final String xPathRoot  = "/eml:eml/dataset/coverage/geographicCoverage[";
@@ -71,7 +70,11 @@ public class Geographic extends AbstractUIPage{
 
   // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
-  public Geographic() { init(); }
+  public Geographic() 
+  {
+	  nextPageID = DataPackageWizardInterface.TEMPORAL;
+	  init(); 
+   }
 
 
   /**

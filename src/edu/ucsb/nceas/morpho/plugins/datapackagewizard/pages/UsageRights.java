@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: berkley $'
- *     '$Date: 2004-04-07 00:41:35 $'
- * '$Revision: 1.17 $'
+ *   '$Author: tao $'
+ *     '$Date: 2009-03-13 03:57:28 $'
+ * '$Revision: 1.18 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -50,7 +50,6 @@ public class UsageRights extends AbstractUIPage{
   // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
   private final String pageID     = DataPackageWizardInterface.USAGE_RIGHTS;
-  private final String nextPageID = DataPackageWizardInterface.GEOGRAPHIC;
   private final String pageNumber = "9";
   private final String title      = "Usage Rights";
   private final String subtitle   = "";
@@ -65,7 +64,11 @@ public class UsageRights extends AbstractUIPage{
 
   // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
-  public UsageRights() { init(); }
+  public UsageRights() 
+  {
+	  nextPageID = DataPackageWizardInterface.GEOGRAPHIC;
+	  init(); 
+  }
 
   /**
    * initialize method does frame-specific design - i.e. adding the widgets that

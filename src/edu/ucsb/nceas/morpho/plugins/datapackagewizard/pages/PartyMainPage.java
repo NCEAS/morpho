@@ -6,9 +6,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: sgarg $'
- *     '$Date: 2005-01-27 16:25:55 $'
- * '$Revision: 1.44 $'
+ *   '$Author: tao $'
+ *     '$Date: 2009-03-13 03:57:28 $'
+ * '$Revision: 1.45 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -62,7 +62,7 @@ public class PartyMainPage
     extends AbstractUIPage {
 
   private String pageID;
-  private String nextPageID;
+  //private String nextPageID;
   private String pageNumber;
   private String subtitle;
   private String description;

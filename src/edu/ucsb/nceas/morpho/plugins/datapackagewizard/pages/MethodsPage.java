@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2008-11-26 00:58:47 $'
- * '$Revision: 1.9 $'
+ *     '$Date: 2009-03-13 03:57:28 $'
+ * '$Revision: 1.10 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -54,7 +54,6 @@ public class MethodsPage
     extends AbstractUIPage {
 
   private final String pageID = DataPackageWizardInterface.METHODS_PAGE;
-  private final String nextPageID = "";
   private final String pageNumber = "";
   private final String title = "Methods Page";
   private final String subtitle = "";
@@ -71,6 +70,7 @@ public class MethodsPage
       "/eml:eml/dataset/methods/methodStep/description/section";
 
   public MethodsPage() {
+	nextPageID = "";
     init();
   }
 

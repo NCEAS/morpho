@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2008-10-14 23:08:16 $'
- * '$Revision: 1.27 $'
+ *     '$Date: 2009-03-13 03:57:28 $'
+ * '$Revision: 1.28 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -82,7 +82,6 @@ public class AccessPage
     extends AbstractUIPage {
 
   private final String pageID = DataPackageWizardInterface.ACCESS_PAGE;
-  private final String nextPageID = "";
   private final String pageNumber = "";
   private final String title = "Access Page";
   private final String subtitle = "";
@@ -136,6 +135,7 @@ public class AccessPage
   }
 
   public AccessPage() {
+	nextPageID = "";
     init();
   }
 

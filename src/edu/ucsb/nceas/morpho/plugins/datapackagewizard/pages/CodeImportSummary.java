@@ -6,9 +6,9 @@
  *             National Center for Ecological Analysis and Synthesis
  *    Release: @release@
  *
- *   '$Author: connolly $'
- *     '$Date: 2005-07-22 16:33:36 $'
- * '$Revision: 1.13 $'
+ *   '$Author: tao $'
+ *     '$Date: 2009-03-13 03:57:28 $'
+ * '$Revision: 1.14 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -59,7 +59,7 @@ import org.w3c.dom.NodeList;
 public class CodeImportSummary extends AbstractUIPage {
 
   public final String pageID     = DataPackageWizardInterface.CODE_IMPORT_SUMMARY;
-  public String nextPageID 			 = DataPackageWizardInterface.CODE_IMPORT_PAGE;
+  
   public final String pageNumber = "13";
   public final String PACKAGE_WIZ_SUMMARY_TITLE = "New Data Package Wizard";
   public final String ENTITY_WIZ_SUMMARY_TITLE  = "New Data Table Wizard";
@@ -72,7 +72,7 @@ public class CodeImportSummary extends AbstractUIPage {
   private AbstractDataPackage adp = null;
 
   public CodeImportSummary(WizardContainerFrame mainWizFrame) {
-
+	 nextPageID 		   = DataPackageWizardInterface.CODE_IMPORT_PAGE;
     this.mainWizFrame = mainWizFrame;
     init();
   }

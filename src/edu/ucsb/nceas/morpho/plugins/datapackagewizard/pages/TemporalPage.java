@@ -7,9 +7,9 @@
  *    Authors: Saurabh Garg
  *    Release: @release@
  *
- *   '$Author: anderson $'
- *     '$Date: 2005-10-05 00:13:04 $'
- * '$Revision: 1.22 $'
+ *   '$Author: tao $'
+ *     '$Date: 2009-03-13 03:57:28 $'
+ * '$Revision: 1.23 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -66,7 +66,6 @@ import com.toedter.calendar.JCalendar;
 public class TemporalPage extends AbstractUIPage {
 
   private final String pageID     = DataPackageWizardInterface.TEMPORAL_PAGE;
-  private final String nextPageID = "";
   private final String pageNumber = "";
   private final String title      = "Access Page";
   private final String subtitle   = "";
@@ -115,6 +114,7 @@ public class TemporalPage extends AbstractUIPage {
   private static final int YEAR_ONLY = 1;
 
   public TemporalPage() {
+	      nextPageID = "";
           init();
   }
 

@@ -7,9 +7,9 @@
  *    Authors: Saurabh Garg
  *    Release: @release@
  *
- *   '$Author: leinfelder $'
- *     '$Date: 2009-02-24 19:35:02 $'
- * '$Revision: 1.43 $'
+ *   '$Author: tao $'
+ *     '$Date: 2009-03-13 03:57:28 $'
+ * '$Revision: 1.44 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -60,7 +60,6 @@ public class Access
     extends AbstractUIPage {
 
   public final String pageID = DataPackageWizardInterface.ACCESS;
-  public final String nextPageID = DataPackageWizardInterface.SUMMARY;
   public final String pageNumber = "14";
 
   /////////////////////////////////////////////////////////
@@ -98,6 +97,7 @@ public class Access
 
   public Access(boolean isEntity) {
 	this.isEntity = isEntity;
+	nextPageID = DataPackageWizardInterface.SUMMARY;
     init();
   }
 

@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: sgarg $'
- *     '$Date: 2005-01-27 20:17:26 $'
- * '$Revision: 1.34 $'
+ *   '$Author: tao $'
+ *     '$Date: 2009-03-13 03:57:28 $'
+ * '$Revision: 1.35 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -59,7 +59,6 @@ public class Keywords
   // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
   private final String pageID = DataPackageWizardInterface.KEYWORDS;
-  private final String nextPageID = DataPackageWizardInterface.PARTY_INTRO;
   private final String title = "Keywords";
   private final String subtitle = "";
   private final String KEYWORDSET_REL_XPATH = "/keywordSet[";
@@ -75,6 +74,7 @@ public class Keywords
   // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
   public Keywords() {
+	nextPageID = DataPackageWizardInterface.PARTY_INTRO;
     init();
   }
 

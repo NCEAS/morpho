@@ -7,8 +7,8 @@
 *    Release: @release@
 *
 *   '$Author: tao $'
-*     '$Date: 2008-11-25 20:27:48 $'
-* '$Revision: 1.39 $'
+*     '$Date: 2009-03-13 03:57:28 $'
+* '$Revision: 1.40 $'
 *
 * This program is free software; you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -84,7 +84,6 @@ import javax.swing.border.EmptyBorder;
 public class AttributePage extends AbstractUIPage {
 
   private final String pageID     = DataPackageWizardInterface.ATTRIBUTE_PAGE;
-  private final String nextPageID = "";
   private final String pageNumber = "";
   private final String title      = "Attribute Page";
   private final String subtitle   = "";
@@ -234,7 +233,7 @@ public class AttributePage extends AbstractUIPage {
 
 
   public AttributePage() {
-
+	nextPageID = "";
     initNames();
     init();
   }
