@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: leinfelder $'
- *     '$Date: 2008-11-22 01:28:10 $'
- * '$Revision: 1.24 $'
+ *   '$Author: tao $'
+ *     '$Date: 2009-03-13 03:38:10 $'
+ * '$Revision: 1.25 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -85,6 +85,7 @@ public interface DataPackageWizardInterface {
   public static final String ENTITY_ACCESS      = "ENTITY_ACCESS";
   public static final String ACCESS_PAGE        = "ACCESS_PAGE";
   public static final String SUMMARY            = "SUMMARY";
+  public static final String CORRECTION_SUMMARY    ="CORRECTION_SUMMARY";
   public static final String CODE_IMPORT_SUMMARY= "CODE_IMPORT_SUMMARY";
   public static final String CODE_DEFINITION   	= "CODE_DEFINITION";
   public static final String CITATION_PAGE	   	= "CITATION";
