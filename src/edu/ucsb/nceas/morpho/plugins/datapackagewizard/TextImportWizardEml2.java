@@ -5,8 +5,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2009-02-21 00:18:37 $'
- * '$Revision: 1.32 $'
+ *     '$Date: 2009-03-13 03:39:22 $'
+ * '$Revision: 1.33 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1146,13 +1146,13 @@ public class TextImportWizardEml2 extends JFrame {
 
     if(attrsToBeImported > 0) {
       if(listener != null)
-        ((ImportWizard)listener).nextPageID = DataPackageWizardInterface.CODE_DEFINITION;
+        ((ImportWizard)listener).setNextPageID(DataPackageWizardInterface.CODE_DEFINITION);
     } else if(importNeeded) {
       if(listener != null)
-      ((ImportWizard)listener).nextPageID=DataPackageWizardInterface.CODE_IMPORT_SUMMARY;
+      ((ImportWizard)listener).setNextPageID(DataPackageWizardInterface.CODE_IMPORT_SUMMARY);
     } else {
       if(listener != null)
-        ((ImportWizard)listener).nextPageID = DataPackageWizardInterface.SUMMARY;
+        ((ImportWizard)listener).setNextPageID(DataPackageWizardInterface.SUMMARY);
     }
 
 
