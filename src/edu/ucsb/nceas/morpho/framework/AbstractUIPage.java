@@ -4,9 +4,9 @@
  *             National Center for Ecological Analysis and Synthesis
  *    Release: @release@
  *
- *   '$Author: leinfelder $'
- *     '$Date: 2008-11-19 01:38:39 $'
- * '$Revision: 1.5 $'
+ *   '$Author: tao $'
+ *     '$Date: 2009-03-13 03:37:11 $'
+ * '$Revision: 1.6 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -35,6 +35,8 @@ import javax.swing.JPanel;
  *
  */
 public abstract class AbstractUIPage extends JPanel {
+	
+	protected String nextPageID = null;
 
   /**
    *  gets the unique ID for this UI page
@@ -155,5 +157,16 @@ public abstract class AbstractUIPage extends JPanel {
    * @param md the ModalDialog (if any) that contains this page
    */
   public void setModalDialog(ModalDialog md) {}
+  
+  /**
+   *  Set the ID of the page that the user will see next, after the "Next"
+   *  button is pressed. It can overwrite the default one
+   *
+   *  @para nexPageID the String ID of the page that the user will see next
+   */
+  public void setNextPageID(String nextPageID)
+  {
+	  this.nextPageID = nextPageID;
+  }
 
 }
