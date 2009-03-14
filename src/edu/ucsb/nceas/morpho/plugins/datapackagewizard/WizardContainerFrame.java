@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2008-10-14 23:12:32 $'
- * '$Revision: 1.70 $'
+ *     '$Date: 2009-03-14 01:45:01 $'
+ * '$Revision: 1.71 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -138,7 +138,7 @@ public class WizardContainerFrame
       return;
     }
 
-    AbstractUIPage pageForID = WizardPageLibrary.getPage(pageID);
+    AbstractUIPage pageForID = pageLib.getUIPage(pageID);
 
     if (pageForID == null) {
       Log.debug(15,
@@ -495,7 +495,7 @@ public class WizardContainerFrame
 
     AbstractUIPage nextPage = (AbstractUIPage)pageCache.get(nextPgID);
 
-    if (nextPage==null) nextPage = pageLib.getPage(nextPgID);
+    if (nextPage==null) nextPage = pageLib.getUIPage(nextPgID);
 
     setCurrentPage(nextPage);
   }
