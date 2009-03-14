@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2009-03-11 03:23:09 $'
- * '$Revision: 1.2 $'
+ *     '$Date: 2009-03-14 01:46:47 $'
+ * '$Revision: 1.3 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -58,6 +58,11 @@ public class CorrectionWizardController
 {
 	private Vector errorPathList = null;
 	private Vector pageList = new Vector();
+	// page library to store wizard page
+	private CustomizedWizardPageLibrary wizardPageLibrary = new CustomizedWizardPageLibrary();
+	//vector to store the path which should be openned by tree editor
+	private Vector pathListForTreeEditor = new Vector();
+	
 	// The hasttable containing the mapping which be read from mapping property file
 	private MappingUnit[] mappingList = null;
 	// full path mapping hash table - key is full path, value is class name
@@ -133,20 +138,48 @@ public class CorrectionWizardController
 	{
 		if (errorPathList != null)
 		{
+			int pageID = 0;
+			AbstractUIPage previousPage = null;
 			for (int i=0; i<errorPathList.size(); i++)
 			{
-				AbstractUIPage page = getUIPage((String)errorPathList.elementAt(i));
+				String path =(String)errorPathList.elementAt(i);
+				AbstractUIPage page = null;
+				try
+				{
+				   page = getUIPage(path);
+				}
+				catch(Exception e)
+				{
+					Log.debug(30, "couldn't find the ui page "+e.getMessage());
+					continue;
+				}
+				
 				if (page != null)
 				{
 					Log.debug(48, "page object is "+page.toString());
+					String pageIDstr = (new Integer(pageID)).toString();
+					// set up next id for previous page
+					if (previousPage != null)
+					{
+						previousPage.setNextPageID(pageIDstr);
+					}
+					previousPage = page;
 					// find a wizard page and add it to the list
-					pageList.add(page);
+					wizardPageLibrary.addPage(pageIDstr, page);
 				}
 				else
 				{
 					//no wizard page found and add a tree editor to the list
 					//Todo
+					pathListForTreeEditor.add(path);
 				}
+				pageID ++;
+			}
+			
+			// set up correction summary page as the last one page
+			if (!wizardPageLibrary.isEmpty())
+			{
+				//todo
 			}
 		}
 	}
@@ -155,7 +188,7 @@ public class CorrectionWizardController
 	/*
 	 * Returns a UI page for given xml path. If no page can be found, null will be returned.
 	 */
-	private AbstractUIPage getUIPage(String path) 
+	private AbstractUIPage getUIPage(String path) throws Exception
 	{
 		//Todo
 		AbstractUIPage page = null;
@@ -165,7 +198,14 @@ public class CorrectionWizardController
 			className = getWizardPageClassName(path);
 			if(className != null)
 			{
+				OrderedMap xpathMap = null;
 				page = (AbstractUIPage)createObject(className);
+				NodeList nodeList = XMLUtilities.getNodeListWithXPath(metadataDoc, path);	
+				// we need some mechanism to find out the index. now i just use 0
+				Node node = nodeList.item(0);
+				xpathMap = XMLUtilities.getDOMTreeAsXPathMap(node);
+				page.setPageData(xpathMap, null);
+		
 			}
 		}
 		return page;
