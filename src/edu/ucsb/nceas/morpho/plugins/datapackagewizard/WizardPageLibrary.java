@@ -7,9 +7,9 @@
  *    Authors: Chad Berkley
  *    Release: @release@
  *
- *   '$Author: leinfelder $'
- *     '$Date: 2008-11-24 02:10:54 $'
- * '$Revision: 1.36 $'
+ *   '$Author: tao $'
+ *     '$Date: 2009-03-14 01:46:00 $'
+ * '$Revision: 1.37 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -45,7 +45,7 @@ import edu.ucsb.nceas.morpho.framework.AbstractUIPage;
  *  - a container for all the wizard pages, that can be retrieved by ID using
  *  the getPage() method
  */
-public class WizardPageLibrary {
+public class WizardPageLibrary implements WizardPageLibraryInterface{
 
   protected static WizardContainerFrame container;
 
@@ -148,4 +148,11 @@ public class WizardPageLibrary {
     throw new IllegalArgumentException(
       "WizardPageLibrary - no page registered with identifier: "+pageID);
   }
+  
+  
+  public AbstractUIPage getUIPage(String pageID)
+  {
+	  return getPage(pageID);
+  }
+  
 }
