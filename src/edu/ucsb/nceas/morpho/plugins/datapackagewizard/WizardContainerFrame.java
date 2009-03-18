@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2009-03-14 01:45:01 $'
- * '$Revision: 1.71 $'
+ *     '$Date: 2009-03-18 18:28:20 $'
+ * '$Revision: 1.72 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -183,6 +183,15 @@ public class WizardContainerFrame
     // the setButtonsStatus()
     getCurrentPage().onLoadAction();
 
+  }
+  
+  /**
+   * Sets the WizardPageLibrary to this frame.
+   * @param pageLib the specified WizardPageLibrary will be set. 
+   */
+  public void setWizardPageLibrary(WizardPageLibrary pageLib)
+  {
+	  this.pageLib = pageLib;
   }
 
   /**
@@ -1062,7 +1071,7 @@ public class WizardContainerFrame
   private JButton finishButton;
   private AbstractUIPage currentPage;
   private Stack pageStack;
-  private WizardPageLibrary pageLib;
+  private WizardPageLibraryInterface pageLib;
   private boolean showPageCount;
   private Map pageCache;
 
