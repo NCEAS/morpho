@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2009-03-14 01:46:47 $'
- * '$Revision: 1.3 $'
+ *     '$Date: 2009-03-19 01:07:55 $'
+ * '$Revision: 1.4 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,11 +32,13 @@ package edu.ucsb.nceas.morpho.plugins.datapackagewizard;
 
 import edu.ucsb.nceas.morpho.framework.AbstractUIPage;
 import edu.ucsb.nceas.morpho.framework.ConfigXML;
+import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
 import edu.ucsb.nceas.morpho.plugins.DataPackageWizardListener;
 import edu.ucsb.nceas.morpho.util.Log;
 import edu.ucsb.nceas.utilities.OrderedMap;
 import edu.ucsb.nceas.utilities.XMLUtilities;
 
+import java.lang.reflect.Constructor;
 import java.util.Hashtable;
 import java.util.Map;
 import java.util.Vector;
@@ -57,7 +59,6 @@ import org.w3c.dom.NodeList;
 public class CorrectionWizardController 
 {
 	private Vector errorPathList = null;
-	private Vector pageList = new Vector();
 	// page library to store wizard page
 	private CustomizedWizardPageLibrary wizardPageLibrary = new CustomizedWizardPageLibrary();
 	//vector to store the path which should be openned by tree editor
@@ -73,6 +74,7 @@ public class CorrectionWizardController
 	private Document metadataDoc = null;
 	private DataPackageWizardListener listener = null;
 	private DataPackageWizardPlugin plugin = new DataPackageWizardPlugin();
+	private WizardContainerFrame dpWiz = null;
 	// the file path of mapping properties file (xml format)
 	private static final String MAPPINGFILEPATH = "lib/xpath-wizard-map.xml";
 	// element name used in mapping properties file (xml format)
@@ -80,7 +82,8 @@ public class CorrectionWizardController
 	private static final String XPATH = "xpath";
 	private static final String WIZARDAGECLASS = "wizardPageClass";
 	private static final String ROOT = "root";
-	
+	private static final String WIZARDCONTAINERFRAME = "edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardContainerFrame";
+	private static final String CORRECTIONSUMMARY = "edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.CorrectionSummary";
 	
 	/**
 	 * Constructor
@@ -90,8 +93,10 @@ public class CorrectionWizardController
 	{
 	    this.errorPathList  = errorPathList;
 	    this.metadataDoc  = metadataDoc;
+	    dpWiz = new WizardContainerFrame();
 	    this.mappingList   = getXPATHMappingUIPage();
-	    getUIPageList();
+	    getCorrectionPageList();
+
 	}
 	
 	/**
@@ -99,32 +104,24 @@ public class CorrectionWizardController
 	 */
 	public void startWizard()
 	{
-		if (errorPathList != null)
+		// first to run wizard page to fix the issue
+		if(!wizardPageLibrary.isEmpty())
 		{
-			for (int i=0; i<errorPathList.size(); i++)
-			{
-				String path = (String)errorPathList.elementAt(i);
-				Object page = pageList.elementAt(i);
-				OrderedMap xpathMap = null;
-				try
-				{
-					NodeList nodeList = XMLUtilities.getNodeListWithXPath(metadataDoc, path);	
-					// we need some mechanism to find out the index. now i just use 0
-					Node node = nodeList.item(0);
-					XMLUtilities.getXPathMapAsDOMTree(xpathMap, node);
-					if (page instanceof AbstractUIPage )
-					{
-						AbstractUIPage wizardPage = (AbstractUIPage)page;
-						wizardPage.setPageData(xpathMap, null);
-						plugin.startWizardAtPage(wizardPage.getPageID(), false, listener, wizardPage.getTitle());
-					}
-				}
-				catch(Exception e)
-				{
-					Log.debug(30, "couldn't find the subtree for given error xpath "+e.getMessage());
-					continue;
-				}
-			}
+		    	
+			dpWiz.setWizardPageLibrary(wizardPageLibrary);
+		    dpWiz.setDataPackageWizardListener(listener);
+		    dpWiz.setBounds(
+		                  WizardSettings.WIZARD_X_COORD, WizardSettings.WIZARD_Y_COORD,
+		                  WizardSettings.WIZARD_WIDTH,   WizardSettings.WIZARD_HEIGHT );
+		    //dpWiz.setCurrentPage(pageID);
+		    dpWiz.setShowPageCountdown(false);
+		    dpWiz.setTitle("correction");
+		    dpWiz.setVisible(true);
+		}
+		//then run tree editor to fix the issue
+		if(!pathListForTreeEditor.isEmpty())
+		{
+			
 		}
 	}
 	
@@ -134,15 +131,19 @@ public class CorrectionWizardController
 	 * the wizard page will bet put into list. If we couldn't find one, tree editor
 	 * for this xpath will be put into list.
 	 */
-	private void getUIPageList()
+	private void getCorrectionPageList()
 	{
+		int pageID = 0;
+		String pageIDstr = null;
+		AbstractUIPage previousPage = null;		
 		if (errorPathList != null)
 		{
-			int pageID = 0;
-			AbstractUIPage previousPage = null;
+			
+			
 			for (int i=0; i<errorPathList.size(); i++)
 			{
 				String path =(String)errorPathList.elementAt(i);
+				pageIDstr = (new Integer(pageID)).toString();
 				AbstractUIPage page = null;
 				try
 				{
@@ -151,13 +152,11 @@ public class CorrectionWizardController
 				catch(Exception e)
 				{
 					Log.debug(30, "couldn't find the ui page "+e.getMessage());
-					continue;
 				}
 				
 				if (page != null)
 				{
-					Log.debug(48, "page object is "+page.toString());
-					String pageIDstr = (new Integer(pageID)).toString();
+					Log.debug(45, "page object is "+page.toString());
 					// set up next id for previous page
 					if (previousPage != null)
 					{
@@ -166,20 +165,25 @@ public class CorrectionWizardController
 					previousPage = page;
 					// find a wizard page and add it to the list
 					wizardPageLibrary.addPage(pageIDstr, page);
+					pageID ++;
 				}
 				else
 				{
 					//no wizard page found and add a tree editor to the list
-					//Todo
 					pathListForTreeEditor.add(path);
 				}
-				pageID ++;
 			}
 			
-			// set up correction summary page as the last one page
+			// set up correction summary page as the last one page if there is at least one found wizard page 
 			if (!wizardPageLibrary.isEmpty())
 			{
-				//todo
+				if (previousPage != null)
+				{
+					previousPage.setNextPageID(pageIDstr);
+				}
+				//AbstractUIPage summaryPage = WizardPageLibrary.getPage(DataPackageWizardInterface.CORRECTION_SUMMARY);
+				AbstractUIPage summaryPage = createAbstractUIpageObject(CORRECTIONSUMMARY,dpWiz);
+				wizardPageLibrary.addPage(pageIDstr, summaryPage);
 			}
 		}
 	}
@@ -199,7 +203,7 @@ public class CorrectionWizardController
 			if(className != null)
 			{
 				OrderedMap xpathMap = null;
-				page = (AbstractUIPage)createObject(className);
+				page = createAbstractUIpageObject(className, dpWiz);
 				NodeList nodeList = XMLUtilities.getNodeListWithXPath(metadataDoc, path);	
 				// we need some mechanism to find out the index. now i just use 0
 				Node node = nodeList.item(0);
@@ -332,22 +336,39 @@ public class CorrectionWizardController
 	}
 	
 	/*
-	 * Create an object for given class name
+	 * Create an object for given class name. This is only for AbractUIPage object
 	 */
-	private static Object createObject(String className)  {
+	private static AbstractUIPage createAbstractUIpageObject(String className, WizardContainerFrame frame)  {
 
 		Object object = null;
+		Class classDefinition = null;
 		try {
-			Class classDefinition = Class.forName(className);
+			classDefinition = Class.forName(className);
 			object = classDefinition.newInstance();
 		} catch (InstantiationException e) {
-			Log.debug(30, e.getMessage());
+			Log.debug(30, "InstantiationException "+e.getMessage());
+			// couldn't get default constructor. The contructor has a parameter WizardContainerFrame
+			try
+			{
+				if (classDefinition != null)
+				{
+					Class parameter= Class.forName(WIZARDCONTAINERFRAME);
+					Class[] parameterList = new Class[1];
+					parameterList[0] = parameter;
+					Constructor constructor = classDefinition.getDeclaredConstructor(parameterList);
+					object = constructor.newInstance(frame);
+				}
+			}
+			catch(Exception ee)
+			{
+				Log.debug(30, "Exception "+e.getMessage());
+			}
 		} catch (IllegalAccessException e) {
-			Log.debug(30, e.getMessage());
+			Log.debug(30, "IllegalAccessException "+e.getMessage());
 		} catch (ClassNotFoundException e) {
-			Log.debug(30, e.getMessage());
-		}
-		return object;
+			Log.debug(30, "ClassNotFoundException "+e.getMessage());
+		} 
+		return (AbstractUIPage)object;
 	}
 	
 	/*
