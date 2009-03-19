@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2009-03-18 18:28:20 $'
- * '$Revision: 1.72 $'
+ *     '$Date: 2009-03-19 01:06:52 $'
+ * '$Revision: 1.73 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -189,7 +189,7 @@ public class WizardContainerFrame
    * Sets the WizardPageLibrary to this frame.
    * @param pageLib the specified WizardPageLibrary will be set. 
    */
-  public void setWizardPageLibrary(WizardPageLibrary pageLib)
+  public void setWizardPageLibrary(WizardPageLibraryInterface pageLib)
   {
 	  this.pageLib = pageLib;
   }
