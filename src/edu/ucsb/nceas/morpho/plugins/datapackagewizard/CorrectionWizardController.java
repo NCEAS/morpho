@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2009-03-19 01:07:55 $'
- * '$Revision: 1.4 $'
+ *     '$Date: 2009-03-20 01:19:32 $'
+ * '$Revision: 1.5 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -84,6 +84,8 @@ public class CorrectionWizardController
 	private static final String ROOT = "root";
 	private static final String WIZARDCONTAINERFRAME = "edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardContainerFrame";
 	private static final String CORRECTIONSUMMARY = "edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.CorrectionSummary";
+	private static final String TITLE = "Correction Wizard";
+	private static final String STARTPAGEID = "0";
 	
 	/**
 	 * Constructor
@@ -113,9 +115,9 @@ public class CorrectionWizardController
 		    dpWiz.setBounds(
 		                  WizardSettings.WIZARD_X_COORD, WizardSettings.WIZARD_Y_COORD,
 		                  WizardSettings.WIZARD_WIDTH,   WizardSettings.WIZARD_HEIGHT );
-		    //dpWiz.setCurrentPage(pageID);
+		    dpWiz.setCurrentPage(STARTPAGEID);
 		    dpWiz.setShowPageCountdown(false);
-		    dpWiz.setTitle("correction");
+		    dpWiz.setTitle(TITLE);
 		    dpWiz.setVisible(true);
 		}
 		//then run tree editor to fix the issue
@@ -138,8 +140,7 @@ public class CorrectionWizardController
 		AbstractUIPage previousPage = null;		
 		if (errorPathList != null)
 		{
-			
-			
+				
 			for (int i=0; i<errorPathList.size(); i++)
 			{
 				String path =(String)errorPathList.elementAt(i);
@@ -154,6 +155,7 @@ public class CorrectionWizardController
 					Log.debug(30, "couldn't find the ui page "+e.getMessage());
 				}
 				
+				// found a wizard page for this path
 				if (page != null)
 				{
 					Log.debug(45, "page object is "+page.toString());
@@ -177,6 +179,7 @@ public class CorrectionWizardController
 			// set up correction summary page as the last one page if there is at least one found wizard page 
 			if (!wizardPageLibrary.isEmpty())
 			{
+				pageIDstr = (new Integer(pageID)).toString();
 				if (previousPage != null)
 				{
 					previousPage.setNextPageID(pageIDstr);

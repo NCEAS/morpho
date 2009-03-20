@@ -13,6 +13,7 @@ import edu.ucsb.nceas.morpho.framework.AbstractUIPage;
 
 import edu.ucsb.nceas.morpho.framework.AbstractUIPage;
 
+import edu.ucsb.nceas.morpho.util.Log;
 /**
  * This class represents a customized wizard page library. User can add any 
  * AbractUIPage into the library with unique id. Comparing to WizardPageLibaray
@@ -51,6 +52,7 @@ public class CustomizedWizardPageLibrary implements WizardPageLibraryInterface {
    */
   public void addPage(String pageID, AbstractUIPage page)
   {
+	  Log.debug(30, "add "+ pageID+"into CustomizedWizardPageLibrary");
 	  pageList.put(pageID, page);
   }
   
