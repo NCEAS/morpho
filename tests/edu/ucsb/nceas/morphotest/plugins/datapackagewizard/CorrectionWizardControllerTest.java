@@ -11,8 +11,12 @@ import org.w3c.dom.Document;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
+import edu.ucsb.nceas.morpho.Morpho;
+import edu.ucsb.nceas.morpho.datapackage.DataPackagePlugin;
 import edu.ucsb.nceas.morpho.datapackage.EML210Validate;
 import edu.ucsb.nceas.morpho.framework.ConfigXML;
+import edu.ucsb.nceas.morpho.framework.UIController;
+import edu.ucsb.nceas.morpho.plugins.ServiceController;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.CorrectionWizardController;
 import edu.ucsb.nceas.morpho.util.Log;
 import edu.ucsb.nceas.morphotest.datapackage.EML210ValidateTest;
@@ -21,10 +25,37 @@ import edu.ucsb.nceas.utilities.XMLUtilities;
 public class CorrectionWizardControllerTest extends TestCase
 {
 	private static final String EMLFILEWITHSPACE = "tests/testfiles/eml210-whitespace.xml";
-	static
-	{
-         Log.setDebugLevel(48);
+	
+	private static Morpho morpho;
+	private static ConfigXML config = null;
+	private static String docid="tao.12104.1";
+	static {
+        try {
+        	Log.setDebugLevel(47);
+            File configDir = new File(ConfigXML.getConfigDirectory());
+            File configFile = new File(configDir, "config.xml");
+            config = new ConfigXML(configFile.getAbsolutePath());
+            File currentProfileLocation = new File(configDir, "currentprofile.xml");
+            ConfigXML currentProfileConfig = new ConfigXML(currentProfileLocation.getAbsolutePath());
+            String currentProfileName = currentProfileConfig.get("current_profile", 0);
+            String profileDirName = config.getConfigDirectory()+
+    		File.separator+config.get("profile_directory", 0)+
+    		File.separator+currentProfileName;
+            //System.out.println("the profile dir is "+profileDirName);
+            File profileLocation = new File(profileDirName, currentProfileName+".xml");
+            ConfigXML profile = new ConfigXML(profileLocation.getAbsolutePath());
+            ServiceController services = ServiceController.getInstance();
+            morpho = new Morpho(config);
+            UIController controller = UIController.initialize(morpho);
+            DataPackagePlugin plug = new DataPackagePlugin(morpho);
+            plug.initialize(morpho);
+        } catch (IOException ioe) {
+          fail("Test failed, couldn't create config."+ioe.getMessage());
+        }
 	}
+
+        
+	
 	
     /**
      * Constructor to build the test
@@ -69,6 +100,7 @@ public class CorrectionWizardControllerTest extends TestCase
 	    	 Vector errorList = validate.getInvalidPathList();   	
 	    	 CorrectionWizardController controller = new CorrectionWizardController(errorList, metadata);  
 	    	 controller.startWizard();
+	    	 Thread.sleep(15000);
     	}
     	catch (Exception e)
     	{
