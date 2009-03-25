@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2009-03-20 01:19:32 $'
- * '$Revision: 1.5 $'
+ *     '$Date: 2009-03-25 01:33:44 $'
+ * '$Revision: 1.6 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -65,16 +65,17 @@ public class CorrectionWizardController
 	private Vector pathListForTreeEditor = new Vector();
 	
 	// The hasttable containing the mapping which be read from mapping property file
-	private MappingUnit[] mappingList = null;
-	// full path mapping hash table - key is full path, value is class name
+	private XPathUIPageMapping[] mappingList = null;
+	// full path mapping hash table - key is full path, value is XPathUIPageMapping
 	private Hashtable fullPathMapping = new Hashtable();
-	// short path mapping hash table - key is path (without root and value is class name
+	// short path mapping hash table - key is path (without root and value is XPathUIPageMapping)
+	// now we only consider fullPathMapping
 	private Hashtable shortPathMapping = new Hashtable();
 	// metadata in DOM tree format
 	private Document metadataDoc = null;
 	private DataPackageWizardListener listener = null;
 	private DataPackageWizardPlugin plugin = new DataPackageWizardPlugin();
-	private WizardContainerFrame dpWiz = null;
+	private CorrectionWizardContainerFrame dpWiz = null;
 	// the file path of mapping properties file (xml format)
 	private static final String MAPPINGFILEPATH = "lib/xpath-wizard-map.xml";
 	// element name used in mapping properties file (xml format)
@@ -82,10 +83,13 @@ public class CorrectionWizardController
 	private static final String XPATH = "xpath";
 	private static final String WIZARDAGECLASS = "wizardPageClass";
 	private static final String ROOT = "root";
+	private static final String LOADDATAFROMROOTPATH = "loadDataFromRootPath";
 	private static final String WIZARDCONTAINERFRAME = "edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardContainerFrame";
 	private static final String CORRECTIONSUMMARY = "edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.CorrectionSummary";
 	private static final String TITLE = "Correction Wizard";
 	private static final String STARTPAGEID = "0";
+	private static final String PARA = "para";
+	private static final String SLASH = "/";
 	
 	/**
 	 * Constructor
@@ -95,7 +99,7 @@ public class CorrectionWizardController
 	{
 	    this.errorPathList  = errorPathList;
 	    this.metadataDoc  = metadataDoc;
-	    dpWiz = new WizardContainerFrame();
+	    dpWiz = new CorrectionWizardContainerFrame();
 	    this.mappingList   = getXPATHMappingUIPage();
 	    getCorrectionPageList();
 
@@ -202,16 +206,54 @@ public class CorrectionWizardController
 		String className = null;
 		if (mappingList != null)
 		{
-			className = getWizardPageClassName(path);
-			if(className != null)
+			XPathUIPageMapping mapping = getXPathUIPageMapping(path);
+			if(mapping != null)
 			{
-				OrderedMap xpathMap = null;
-				page = createAbstractUIpageObject(className, dpWiz);
-				NodeList nodeList = XMLUtilities.getNodeListWithXPath(metadataDoc, path);	
-				// we need some mechanism to find out the index. now i just use 0
-				Node node = nodeList.item(0);
-				xpathMap = XMLUtilities.getDOMTreeAsXPathMap(node);
-				page.setPageData(xpathMap, null);
+				className = mapping.getWizardPageClassName();
+				if(className != null)
+				{
+					OrderedMap xpathMap = null;
+					page = createAbstractUIpageObject(className, dpWiz);
+					//load data into the page
+					//first we need to check if we should load data from root path.
+					boolean loadDataFromRoot = mapping.isLoadDataFromRootPath();
+					NodeList nodeList = null;
+					if (loadDataFromRoot)
+					{
+						//load data from root
+						nodeList = XMLUtilities.getNodeListWithXPath(metadataDoc, mapping.getRoot());	
+						// we need some mechanism to find out the index. now i just use 0
+						Node node = nodeList.item(0);
+						xpathMap = XMLUtilities.getDOMTreeAsXPathMap(node);
+					}
+					else
+					{
+						//load data from every root+xpath(like General page)
+						String xPath = null;
+						Vector list = mapping.getXpath();
+						boolean firstTime = true;
+						for (int i=0; i<list.size(); i++)
+						{
+							xPath = (String)list.elementAt(i);
+							//System.out.println("==========the xpath is "+xPath);
+							xPath = removeParaFromXPath(xPath);
+							nodeList = XMLUtilities.getNodeListWithXPath(metadataDoc, mapping.getRoot()+xPath);
+							Node node = nodeList.item(0);
+							if(firstTime)
+							{
+							  xpathMap = XMLUtilities.getDOMTreeAsXPathMap(node);
+							  firstTime = false;
+							}
+							else
+							{
+								xpathMap.putAll(XMLUtilities.getDOMTreeAsXPathMap(node));
+							}
+						}
+						
+					}	
+					System.out.println("the xmpath map is "+xpathMap.toString());
+					page.setPageData(xpathMap, null);
+				}
 		
 			}
 		}
@@ -220,42 +262,42 @@ public class CorrectionWizardController
 	
 	
 	/*
-	 * Find out the wizard page class name
+	 * Find out the mapping before xpath and UIPage
 	 */
-	private String getWizardPageClassName(String path)
+	private XPathUIPageMapping getXPathUIPageMapping(String path)
 	{
-		String className = null;
+		XPathUIPageMapping mapping = null;
 		// first to check full path mapping
 		Log.debug(48, "the given error path is"+path);
 		if (fullPathMapping != null)
 		{
-			className = (String)fullPathMapping.get(path);
-			Log.debug(48, "find the class name in full path mapping "+className);
+			mapping = (XPathUIPageMapping)fullPathMapping.get(path);
+			Log.debug(48, "find the xpath and uipage mapping in full path mapping "+mapping.getClass());
 		}
 		// second to check short mapping if no class name was found in full path mapping
-		if (className == null)
+		/*if (mapping == null)
 		{
-			className = (String)shortPathMapping.get(path);
-			Log.debug(48, "find the class name in short path mapping "+className);
-		}
-		return className;
+			mapping = (XPathUIPageMapping)shortPathMapping.get(path);
+			Log.debug(48, "find the class name in short path mapping "+mapping.getWizardPageClassName());
+		}*/
+		return mapping;
 	}
 	
 	/*
 	 * Gets the mapping between xpath and UIPage. 
 	 * A hash table will be returned. The key is xpath and value is UIPage
 	 */
-	private MappingUnit[] getXPATHMappingUIPage() 
+	private XPathUIPageMapping[] getXPATHMappingUIPage() 
 	{
-	    return readFromFile(MAPPINGFILEPATH);
+	    return readMappingFromFile(MAPPINGFILEPATH);
 	}
 	
 	/*
 	 * Reads the mapping properties file
 	 */
-	private MappingUnit[] readFromFile(String fileName) 
+	private XPathUIPageMapping[] readMappingFromFile(String fileName) 
 	{
-		MappingUnit[] mappingList = null;
+		XPathUIPageMapping[] mappingList = null;
 		try
 		{
 		   ConfigXML mappingProperties = new ConfigXML(fileName);
@@ -263,14 +305,17 @@ public class CorrectionWizardController
 		   NodeList nl = doc.getElementsByTagName(MAPPING);
 		    if (nl.getLength() > 0)
 		    {
-		      mappingList = new MappingUnit[nl.getLength()];
+		      mappingList = new XPathUIPageMapping[nl.getLength()];
 		      for(int i = 0; i<nl.getLength(); i++)
 		      {
+		    	try
+		    	{
 			      NodeList children = nl.item(i).getChildNodes();
-			      MappingUnit unit = new MappingUnit();
+			      XPathUIPageMapping unit = new XPathUIPageMapping();
 			      String root = null;
 		          String xpath = null;
 		          String className = null;
+		          String loadDataFromRoot = null;
 			      if (children.getLength() > 0)
 			      {
 			        for (int j = 0; j < children.getLength(); j++)
@@ -294,7 +339,7 @@ public class CorrectionWizardController
 			            if ((ccn != null) && (ccn.getNodeType() == Node.TEXT_NODE))
 			            {
 			               xpath = ccn.getNodeValue();
-			               unit.setXpath(xpath);
+			               unit.addXpath(xpath);
 			            }
 			          }
 			          else if ((cn.getNodeType() == Node.ELEMENT_NODE)
@@ -307,29 +352,56 @@ public class CorrectionWizardController
 				               unit.setWizardPageClassName(className);
 				            }
 				        }
+			          else if ((cn.getNodeType() == Node.ELEMENT_NODE)
+				              && (cn.getNodeName().equalsIgnoreCase(LOADDATAFROMROOTPATH)))
+				       {
+				            Node ccn = cn.getFirstChild();        // assumed to be a text node
+				            if ((ccn != null) && (ccn.getNodeType() == Node.TEXT_NODE))
+				            {
+				               loadDataFromRoot = ccn.getNodeValue();
+				               boolean loadData = true;
+				               loadData = (new Boolean(loadDataFromRoot)).booleanValue();
+				               unit.setLoadDataFromRootPath(loadData);
+				            }
+				        }
 			            
-			        }
-			      }
-			      String fullPath = root+xpath;
-		          fullPathMapping.put(fullPath, className);
-		          shortPathMapping.put(xpath, className);
-			      mappingList[i] = unit;
+			         }			        
+			          mappingList[i] = unit;
+				      Vector list = unit.getXpath();
+				      if (list != null)
+				      {
+				    	  for(int j=0; j<list.size(); j++)
+				    	  {
+				    		  String shortPath = (String)list.elementAt(j);
+				    		  String fullPath = root+shortPath;
+				    		  Log.debug(48, "put "+fullPath+" into full path mapping");
+				    		  Log.debug(48, "put short path "+ shortPath +" into short path mapping");
+				    		  fullPathMapping.put(fullPath, unit);
+						      shortPathMapping.put(xpath, unit);
+				    	  }
+				      }
+			      }		      
 		      }
-		    }
-		   if (mappingList != null)
+		       catch(Exception e)
+		       {
+		        	continue;
+		       }
+		    }//for
+		   /*if (mappingList != null)
 		   {
 			   for (int i=0; i<mappingList.length; i++)
 			   {
-				   MappingUnit unit = mappingList[i];
+				   XPathUIPageMapping unit = mappingList[i];
 				   if (unit != null)
 				   {
 				     Log.debug(48, "mapping is "+ unit.getRoot() + " "+unit.getXpath() + " "+
 				    		        unit.getWizardPageClassName());
 				   }
 			   }
-		   }
+		   }*/
 		   Log.debug(48, "full path mapping is "+fullPathMapping);
 		   Log.debug(48, "short path mapping is "+shortPathMapping);
+		  }
 		}
 		catch (Exception e)
 		{
@@ -375,48 +447,36 @@ public class CorrectionWizardController
 	}
 	
 	/*
-	 * This class represents a unit in mapping property file:
-	 * 
-	 * <mapping>
-     *   <root>/eml:eml/dataset/</root>
-     *    <xpath>title</xpath>
-     *    <wizardPageClass>General</wizardPageClass>
-     *  </mapping>
+	 * If the last element of xmpath contains "para", it will be special, we should remove it.
+	 * If no para, original path will be returned.
 	 */
-	private class MappingUnit
+	private String removeParaFromXPath(String xpath)
 	{
-		private String root = null;
-		private String xpath = null;
-		private String wizardPageClassName = null;
-		
-		public MappingUnit()
+		String newPath = xpath;
+		if (xpath != null)
 		{
-			
+			//find the last slash
+			int index = xpath.lastIndexOf(SLASH);
+			if (index < (xpath.length() -1))
+			{
+			    String lastElement = xpath.substring(index+1);
+			    if (lastElement != null && (lastElement.equals(PARA) || lastElement.startsWith(PARA)))
+			    {
+			    	newPath = xpath.substring(0, index);
+			    }
+			}
+			else
+			{
+				//slash is the last character in the given string
+				newPath = xpath;
+			}
+			if(newPath.equals(SLASH) || newPath.trim().equals(""))
+			{
+				newPath = xpath;
+			}
 		}
-		public String getRoot() 
-		{
-			return root;
-		}
-		public void setRoot(String root) 
-		{
-			this.root = root;
-		}
-		public String getXpath() 
-		{
-			return xpath;
-		}
-		public void setXpath(String xpath) 
-		{
-			this.xpath = xpath;
-		}
-		public String getWizardPageClassName() 
-		{
-			return wizardPageClassName;
-		}
-		public void setWizardPageClassName(String wizardPageClassName) 
-		{
-			this.wizardPageClassName = wizardPageClassName;
-		}
-		
+		Log.debug(40, "After removing para, the new xpath is "+newPath);
+		return newPath;
 	}
+
 }

@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2009-03-19 01:06:52 $'
- * '$Revision: 1.73 $'
+ *     '$Date: 2009-03-25 01:33:44 $'
+ * '$Revision: 1.74 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -742,7 +742,7 @@ public class WizardContainerFrame
 
 
   //create a new empty DOM document to be populated by the wizard values:
-  private Node getNewEmptyDataPackageDOM(String DocText) {
+  protected Node getNewEmptyDataPackageDOM(String DocText) {
 
     Node rootNode = null;
 
@@ -773,7 +773,7 @@ public class WizardContainerFrame
    * @param elementsNeedingIDsArray String[]
    * @param resultsMap OrderedMap
    */
-  private void addIDs(String[] elementsNeedingIDsArray, OrderedMap resultsMap) {
+  protected void addIDs(String[] elementsNeedingIDsArray, OrderedMap resultsMap) {
 
     idMap.clear();
     Set keyset = resultsMap.keySet();
@@ -870,7 +870,7 @@ public class WizardContainerFrame
    * @param nextPage WizardPage
    * @param resultsMap OrderedMap
    */
-  private void addPageDataToResultsMap(AbstractUIPage nextPage,
+  protected void addPageDataToResultsMap(AbstractUIPage nextPage,
                                        OrderedMap resultsMap) {
 
     String nextKey = null;
@@ -1070,7 +1070,7 @@ public class WizardContainerFrame
   private JButton prevButton;
   private JButton finishButton;
   private AbstractUIPage currentPage;
-  private Stack pageStack;
+  protected Stack pageStack;
   private WizardPageLibraryInterface pageLib;
   private boolean showPageCount;
   private Map pageCache;
