@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2009-03-25 01:33:44 $'
- * '$Revision: 1.6 $'
+ *     '$Date: 2009-03-26 00:55:58 $'
+ * '$Revision: 1.7 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,10 +30,16 @@ package edu.ucsb.nceas.morpho.plugins.datapackagewizard;
 
 
 
+import edu.ucsb.nceas.morpho.datapackage.AbstractDataPackage;
+import edu.ucsb.nceas.morpho.datapackage.DataPackageFactory;
 import edu.ucsb.nceas.morpho.framework.AbstractUIPage;
 import edu.ucsb.nceas.morpho.framework.ConfigXML;
+import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
 import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
 import edu.ucsb.nceas.morpho.plugins.DataPackageWizardListener;
+import edu.ucsb.nceas.morpho.plugins.ServiceController;
+import edu.ucsb.nceas.morpho.plugins.ServiceNotHandledException;
+import edu.ucsb.nceas.morpho.plugins.ServiceProvider;
 import edu.ucsb.nceas.morpho.util.Log;
 import edu.ucsb.nceas.utilities.OrderedMap;
 import edu.ucsb.nceas.utilities.XMLUtilities;
@@ -73,7 +79,7 @@ public class CorrectionWizardController
 	private Hashtable shortPathMapping = new Hashtable();
 	// metadata in DOM tree format
 	private Document metadataDoc = null;
-	private DataPackageWizardListener listener = null;
+	private DataPackageWizardListener listener = new CorrectionDataPackageWizardListener();
 	private DataPackageWizardPlugin plugin = new DataPackageWizardPlugin();
 	private CorrectionWizardContainerFrame dpWiz = null;
 	// the file path of mapping properties file (xml format)
@@ -97,9 +103,11 @@ public class CorrectionWizardController
 	 */
 	public CorrectionWizardController(Vector errorPathList, Document metadataDoc)
 	{
+		Log.debug(45, "\n\n********** In the begining of controller");
+	    Log.debug(45, XMLUtilities.getDOMTreeAsString(metadataDoc));
 	    this.errorPathList  = errorPathList;
 	    this.metadataDoc  = metadataDoc;
-	    dpWiz = new CorrectionWizardContainerFrame();
+	    dpWiz = new CorrectionWizardContainerFrame(metadataDoc);
 	    this.mappingList   = getXPATHMappingUIPage();
 	    getCorrectionPageList();
 
@@ -225,6 +233,7 @@ public class CorrectionWizardController
 						// we need some mechanism to find out the index. now i just use 0
 						Node node = nodeList.item(0);
 						xpathMap = XMLUtilities.getDOMTreeAsXPathMap(node);
+						page.setXPathRoot(node);
 					}
 					else
 					{
@@ -243,6 +252,8 @@ public class CorrectionWizardController
 							{
 							  xpathMap = XMLUtilities.getDOMTreeAsXPathMap(node);
 							  firstTime = false;
+							  //we set first child as the root node for not loading data from root path directly
+							  page.setXPathRoot(node);
 							}
 							else
 							{
@@ -251,7 +262,7 @@ public class CorrectionWizardController
 						}
 						
 					}	
-					System.out.println("the xmpath map is "+xpathMap.toString());
+					Log.debug(48, "the xmpath map is "+xpathMap.toString());
 					page.setPageData(xpathMap, null);
 				}
 		
@@ -477,6 +488,40 @@ public class CorrectionWizardController
 		}
 		Log.debug(40, "After removing para, the new xpath is "+newPath);
 		return newPath;
+	}
+	
+	private class CorrectionDataPackageWizardListener implements DataPackageWizardListener
+	{
+
+		public void wizardComplete(Node newDOM) {
+
+	          Log.debug(30,
+	              "Correction Wizard complete - Will now create an AbstractDataPackage..");
+
+	          AbstractDataPackage adp = DataPackageFactory.getDataPackage(newDOM);
+	          Log.debug(30, "AbstractDataPackage complete");
+	          adp.setAccessionNumber("temporary.1.1");
+
+	          try {
+	            ServiceController services = ServiceController.getInstance();
+	            ServiceProvider provider =
+	                services.getServiceProvider(DataPackageInterface.class);
+	            DataPackageInterface dataPackage = (DataPackageInterface)provider;
+	            dataPackage.openNewDataPackage(adp, null);
+
+	          } catch (ServiceNotHandledException snhe) {
+
+	            Log.debug(6, snhe.getMessage());
+	          }
+	          Log.debug(45, "\n\n********** Correction Wizard finished: DOM:");
+	          Log.debug(45, XMLUtilities.getDOMTreeAsString(newDOM, false));
+	        }
+
+
+	        public void wizardCanceled() {
+
+	          Log.debug(45, "\n\n********** Correction Wizard canceled!");
+	        }
 	}
 
 }
