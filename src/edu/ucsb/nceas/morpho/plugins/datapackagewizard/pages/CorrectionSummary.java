@@ -306,8 +306,7 @@ public class CorrectionSummary extends AbstractUIPage {
 	   */
 	  public OrderedMap getPageData(String rootXPath) {
 
-	    throw new UnsupportedOperationException(
-	      "getPageData(String rootXPath) Method Not Implemented");
+	    return null;
 	  }
 
 

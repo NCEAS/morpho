@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2009-03-26 00:55:58 $'
- * '$Revision: 1.7 $'
+ *     '$Date: 2009-03-27 01:08:57 $'
+ * '$Revision: 1.8 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -77,8 +77,9 @@ public class CorrectionWizardController
 	// short path mapping hash table - key is path (without root and value is XPathUIPageMapping)
 	// now we only consider fullPathMapping
 	private Hashtable shortPathMapping = new Hashtable();
-	// metadata in DOM tree format
-	private Document metadataDoc = null;
+	// metadata in AbrstractDataPackage format
+	AbstractDataPackage dataPackage = null;
+	//private Document metadataDoc = null;
 	private DataPackageWizardListener listener = new CorrectionDataPackageWizardListener();
 	private DataPackageWizardPlugin plugin = new DataPackageWizardPlugin();
 	private CorrectionWizardContainerFrame dpWiz = null;
@@ -101,13 +102,11 @@ public class CorrectionWizardController
 	 * Constructor
 	 * @param errorPathList the list of paths which contain invalid value
 	 */
-	public CorrectionWizardController(Vector errorPathList, Document metadataDoc)
+	public CorrectionWizardController(Vector errorPathList, AbstractDataPackage dataPackage)
 	{
-		Log.debug(45, "\n\n********** In the begining of controller");
-	    Log.debug(45, XMLUtilities.getDOMTreeAsString(metadataDoc));
 	    this.errorPathList  = errorPathList;
-	    this.metadataDoc  = metadataDoc;
-	    dpWiz = new CorrectionWizardContainerFrame(metadataDoc);
+	    this.dataPackage  = dataPackage;
+	    dpWiz = new CorrectionWizardContainerFrame(dataPackage);
 	    this.mappingList   = getXPATHMappingUIPage();
 	    getCorrectionPageList();
 
@@ -229,7 +228,7 @@ public class CorrectionWizardController
 					if (loadDataFromRoot)
 					{
 						//load data from root
-						nodeList = XMLUtilities.getNodeListWithXPath(metadataDoc, mapping.getRoot());	
+						nodeList = XMLUtilities.getNodeListWithXPath(dataPackage.getMetadataNode(), mapping.getRoot());	
 						// we need some mechanism to find out the index. now i just use 0
 						Node node = nodeList.item(0);
 						xpathMap = XMLUtilities.getDOMTreeAsXPathMap(node);
@@ -246,7 +245,7 @@ public class CorrectionWizardController
 							xPath = (String)list.elementAt(i);
 							//System.out.println("==========the xpath is "+xPath);
 							xPath = removeParaFromXPath(xPath);
-							nodeList = XMLUtilities.getNodeListWithXPath(metadataDoc, mapping.getRoot()+xPath);
+							nodeList = XMLUtilities.getNodeListWithXPath(dataPackage.getMetadataNode(), mapping.getRoot()+xPath);
 							Node node = nodeList.item(0);
 							if(firstTime)
 							{

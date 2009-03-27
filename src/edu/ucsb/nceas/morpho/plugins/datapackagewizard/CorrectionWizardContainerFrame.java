@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2009-03-26 00:55:58 $'
- * '$Revision: 1.3 $'
+ *     '$Date: 2009-03-27 01:08:57 $'
+ * '$Revision: 1.4 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -41,6 +41,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import edu.ucsb.nceas.morpho.datapackage.AbstractDataPackage;
 import edu.ucsb.nceas.morpho.framework.AbstractUIPage;
 import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.General;
@@ -57,20 +58,16 @@ import edu.ucsb.nceas.utilities.XMLUtilities;
  */
 public class CorrectionWizardContainerFrame extends WizardContainerFrame 
 {
-	private Document metadataDoc = null;
+	private AbstractDataPackage dataPackage = null;
 	private Node rootNode = null;
 	
 	/**
 	 * Constructor
 	 * @param docRootNode
 	 */
-	public CorrectionWizardContainerFrame(Document metadataDoc)
+	public CorrectionWizardContainerFrame(AbstractDataPackage dataPackage)
 	{
-		this.metadataDoc = metadataDoc;
-		if (metadataDoc != null)
-		{
-			rootNode = (Node)metadataDoc.getDocumentElement();
-		}
+		this.dataPackage = dataPackage;
 	}
 	
 	/**
@@ -79,96 +76,70 @@ public class CorrectionWizardContainerFrame extends WizardContainerFrame
 	public Node collectDataFromPages() 
 	{
 		//Node rootNode = getNewEmptyDataPackageDOM(WizardSettings.NEW_EML210_DOCUMENT_TEXT);
-		if (rootNode != null)
+		if (dataPackage != null)
 		{
 	
 		    while (!pageStack.isEmpty()) 
 		    {
-		       System.out.println("pageStack is not empty");
+		       //System.out.println("pageStack is not empty");
 		       OrderedMap wizData = new OrderedMap();
 		       AbstractUIPage page = (AbstractUIPage)pageStack.pop();
-		       Node oldSubTree = page.getXPathRoot();
-		       Node parentNode = null;
 		       Node newSubTree = null;
-		       wizData = page.getPageData();
-		       if(page instanceof General)
+		       if(page != null)
 		       {
-		    	   System.out.println("in general page");
-		    	   if(oldSubTree != null)
-		    	   {
-		    		   parentNode = oldSubTree.getParentNode();
-		    		   System.out.println("parent node name "+parentNode.getLocalName());
-		    		   int index =1;
-		    		   if (parentNode != null)
-		    		   {
-			    		   Set set = wizData.keySet();
-			    		   Iterator iterator = set.iterator();
-			    		   while(iterator.hasNext())
-			    		   {
-			    			   String key = (String)iterator.next();
-			    			   System.out.println("key "+key);
-			    			   String value = (String)wizData.get(key);
-			    			   System.out.println("value "+value);
-			    			   OrderedMap data = new OrderedMap();
-			    			   data.put(key, value);
-			    			   
-			    			   try
-			    			   {
-			    			     
-			    			      if(index == 1)
-			    			     {
-			    			    	  DOMImplementation impl = DOMImplementationImpl.getDOMImplementation();
-					    			  Document doc = impl.createDocument("", "title", null);
-                                      newSubTree = doc.getDocumentElement();
-                                      XMLUtilities.getXPathMapAsDOMTree(data, newSubTree);
-			    			    	  System.out.println("repalce old subTree"+XMLUtilities.getDOMTreeAsString(oldSubTree)+ " by "+XMLUtilities.getDOMTreeAsString(newSubTree));
-			    				      parentNode.replaceChild(newSubTree, oldSubTree);
-			    			     }
-			    			     else
-			    			     {
-			    			    	 XMLUtilities.getXPathMapAsDOMTree(data, newSubTree);
-			    			    	 NodeList nodeList = XMLUtilities.getNodeListWithXPath(rootNode,key);
-			    			    	 oldSubTree = nodeList.item(0);
-			    			    	 System.out.println("repalce old subTree"+XMLUtilities.getDOMTreeAsString(oldSubTree)+ " by "+XMLUtilities.getDOMTreeAsString(newSubTree));
-			    			    	 parentNode.replaceChild(newSubTree, oldSubTree);
-			    			     }
-			    			   }
-			    			   catch(Exception e)
-			    			   {
-			    				   continue;
-			    			   }
-			    			   finally
-			    			   {
-			    				   index++;
-			    				   oldSubTree = null;
-			    				   newSubTree = null;
-			    			   }
-			    		   }    		   
-		    		   } 
-		    	   }
-		       }
-		       else
-		       {
+			       wizData = page.getPageData("");
+			       String[] listOfGenericPathName = page.getGenericPathName();
+			       if (listOfGenericPathName != null)
+			       {
 		    	   
-		    	   try
-		    	   {
-		    	     XMLUtilities.getXPathMapAsDOMTree(wizData, newSubTree);
-		    	     if(oldSubTree != null)
-		    	     {
-		    	    	 parentNode = oldSubTree.getParentNode();
-		    	    	 if(parentNode != null)
-		    	    	 {
-		    	    		 System.out.println("repalce old subTree in non-general page"+XMLUtilities.getDOMTreeAsString(oldSubTree)+ " by "+XMLUtilities.getDOMTreeAsString(newSubTree));
-		    	    		 parentNode.replaceChild(newSubTree, oldSubTree);
-		    	    	 }
-		    	     }
-		    	   }
-		    	   catch(Exception e)
-		    	   {
-		    		   Log.debug(30, "Couldn't get metadata as subtree from UIPage "+e.getMessage());
-		    		   continue;
-		    	   }
+			    	   if(listOfGenericPathName.length>1)
+			    	   {
+			    		   //This UI page will generate more than one sub trees.
+			    		   //The order of the list of generic path name should be as same as the order of sub trees
+			    	      for(int i=0; i<listOfGenericPathName.length; i++)
+			    	      {
+			    	    	  String genericName = listOfGenericPathName[i];
+			    	    	  //System.out.println("generic name");
+			                   //Go through the every subtree
+				    		   Set set = wizData.keySet();
+				    		   Iterator iterator = set.iterator();
+				    		   while(iterator.hasNext())
+				    		   {
+				    			   String key = (String)iterator.next();
+				    			   //System.out.println("key "+key);
+				    			   String value = (String)wizData.get(key);
+				    			   //System.out.println("value "+value);
+				    			   OrderedMap data = new OrderedMap();
+				    			   data.put(key, value);		    			   
+				    			   try
+				    			   {			    			      
+				    			    
+				    			      modifyDataPackage(data, genericName, 0);
+				    			   }
+				    			   catch(Exception e)
+				    			   {
+				    				   Log.debug(30, "Failed to replace old subtree "+e.getMessage());
+				    				   continue;
+				    			   }			    			 
+				    		   }
+			    	         }
+			    	      }
+			    	      else if(listOfGenericPathName.length==1)
+			    	      {
+			    	    	  String genericName = listOfGenericPathName[0];
+			    	    	  try
+			    	    	  {
+			    	    	     modifyDataPackage(wizData, genericName, 0);
+			    	    	  }
+			    	    	   catch(Exception e)
+			    			   {
+			    				   Log.debug(30, "Failed to replace old subtree "+e.getMessage());
+			    			   }			    
+			    	      }
+		            }
+		    			    	   
 		       }
+		  
 		       
 		    }
 	
@@ -348,10 +319,36 @@ public class CorrectionWizardContainerFrame extends WizardContainerFrame
 		}
 		
 	    Log.debug(45, "\n\n********** Correction Wizard finished: DOM:");
-	    Log.debug(45, XMLUtilities.getDOMTreeAsString(rootNode));
-	    return rootNode;
+	    Log.debug(45, XMLUtilities.getDOMTreeAsString(dataPackage.getMetadataNode()));
+	    return dataPackage.getMetadataNode();
 	  }
-
+	
+	  
+	/*
+	 *Repalce a subtree of the dataPakcage by a new subtree with given data and position
+	 */
+	  private void modifyDataPackage(OrderedMap data, String genericName, int position) throws Exception
+	  {
+		  if(dataPackage != null)
+		  {
+			  DOMImplementation impl = DOMImplementationImpl.getDOMImplementation();
+	    	  Document doc = impl.createDocument("", genericName, null);
+	          Node newSubTree = doc.getDocumentElement();
+	          XMLUtilities.getXPathMapAsDOMTree(data, newSubTree);
+	          dataPackage.deleteSubtree(genericName, position);
+	          // add to the datapackage
+	          Node check = dataPackage.insertSubtree(genericName, newSubTree, position);
+	
+	          if (check != null) 
+	          {
+	            Log.debug(45, "added new abstract details to package...");
+	          } 
+	          else 
+	          {
+	            Log.debug(5, "** ERROR: Unable to add new abstract details to package **");
+	          }
+	      }
+	  }
 
 	 
 }

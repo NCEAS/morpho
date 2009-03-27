@@ -5,8 +5,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2009-03-24 01:21:01 $'
- * '$Revision: 1.7 $'
+ *     '$Date: 2009-03-27 01:08:57 $'
+ * '$Revision: 1.8 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -190,6 +190,15 @@ public abstract class AbstractUIPage extends JPanel {
   public Node getXPathRoot()
   {
 	   return this.rootNode;  
+  }
+  
+  /**
+   * Gets a list of generic name of path of this page
+   * The order of the list should be as same as the order of subtrees in the page
+   */
+  public String[] getGenericPathName()
+  {
+	  return null;
   }
 
 }

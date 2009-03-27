@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2009-03-13 03:57:28 $'
- * '$Revision: 1.22 $'
+ *     '$Date: 2009-03-27 01:08:57 $'
+ * '$Revision: 1.23 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -61,6 +61,7 @@ public class General extends AbstractUIPage{
   private       String xPathRoot  = "/eml:eml/dataset/";
   private final String TITLE_REL_XPATH = "/title";
   private final String ABSTRACT_REL_XPATH = "/abstract/para[1]";
+  private final String[] genericPathNameList = {"title", "abstract"};
 
   // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
@@ -267,6 +268,15 @@ public class General extends AbstractUIPage{
     *  @return the serial number of the page
     */
   public String getPageNumber() { return pageNumber; }
+  
+  /**
+   * Gets a list of generic name of path of this page
+   * The order of the list should be as same as the order of subtrees in the page
+   */
+  public String[] getGenericPathName()
+  {
+	  return genericPathNameList;
+  }
 
   /**
     *  Resets all fields to blank
