@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2009-03-06 21:37:37 $'
- * '$Revision: 1.2 $'
+ *     '$Date: 2009-03-27 23:24:41 $'
+ * '$Revision: 1.3 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -131,6 +131,26 @@ public class EML210ValidateTest extends TestCase
         		   else if (i==1)
         		   {
         			   assertTrue("Could find whitespace path /eml:eml/dataset/title", path.equals("/eml:eml/dataset/title"));
+        		   }
+        		   else if (i==2)
+        		   {
+        			   assertTrue("Could find whitespace path /eml:eml/dataset/dataTable[0]/physical/objectName", path.equals("/eml:eml/dataset/dataTable[0]/physical/objectName"));
+        		   }
+        		   else if (i==3)
+        		   {
+        			   assertTrue("Could find whitespace /eml:eml/dataset/dataTable[0]/attributeList/attribute[0]/attributeName", path.equals("/eml:eml/dataset/dataTable[0]/attributeList/attribute[0]/attributeName"));
+        		   }
+        		   else if (i==4)
+        		   {
+        			   assertTrue("Could find whitespace /eml:eml/dataset/dataTable[0]/attributeList/attribute[2]/attributeDefinition", path.equals("/eml:eml/dataset/dataTable[0]/attributeList/attribute[2]/attributeDefinition"));
+        		   }
+        		   else if (i==5)
+        		   {
+        			   assertTrue("Could find whitespace /eml:eml/dataset/dataTable[1]/physical/size", path.equals("/eml:eml/dataset/dataTable[1]/physical/size"));
+        		   }
+        		   else if (i==6)
+        		   {
+        			   assertTrue("Could find whitespace /eml:eml/dataset/dataTable[1]/attributeList/attribute[0]/attributeDefinition", path.equals("/eml:eml/dataset/dataTable[1]/attributeList/attribute[0]/attributeDefinition"));
         		   }
         		   else
         		   {

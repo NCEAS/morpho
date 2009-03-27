@@ -7,12 +7,15 @@ import java.io.Reader;
 import java.util.Vector;
 
 import org.w3c.dom.Document;
+import org.w3c.dom.Node;
 
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 import edu.ucsb.nceas.morpho.Morpho;
+import edu.ucsb.nceas.morpho.datapackage.DataPackageFactory;
 import edu.ucsb.nceas.morpho.datapackage.DataPackagePlugin;
+import edu.ucsb.nceas.morpho.datapackage.EML200DataPackage;
 import edu.ucsb.nceas.morpho.datapackage.EML210Validate;
 import edu.ucsb.nceas.morpho.framework.ConfigXML;
 import edu.ucsb.nceas.morpho.framework.UIController;
@@ -25,6 +28,7 @@ import edu.ucsb.nceas.utilities.XMLUtilities;
 public class CorrectionWizardControllerTest extends TestCase
 {
 	private static final String EMLFILEWITHSPACE = "tests/testfiles/eml210-whitespace.xml";
+	private static final String EMLPATHFILE = "lib/eml210KeymapConfig.xml";
 	
 	private static Morpho morpho;
 	private static ConfigXML config = null;
@@ -91,14 +95,15 @@ public class CorrectionWizardControllerTest extends TestCase
     	try
     	{
 	    	 Reader xml = new FileReader(new File(EMLFILEWITHSPACE));
-	    	 Document metadata = XMLUtilities.getXMLReaderAsDOMDocument(xml);
-	    	 xml.close();
+	    	 Node metadata = XMLUtilities.getXMLReaderAsDOMTreeRootNode(xml);
+	    	
+	    	 EML200DataPackage dataPackage = (EML200DataPackage)DataPackageFactory.getDataPackage(metadata);	    	 xml.close();
 	    	 xml = new FileReader(new File(EMLFILEWITHSPACE));
 	  	     EML210Validate validate = new EML210Validate();
 	  	     validate.parse(xml);
 	  	     xml.close();
 	    	 Vector errorList = validate.getInvalidPathList();   	
-	    	 CorrectionWizardController controller = new CorrectionWizardController(errorList, metadata);  
+	    	 CorrectionWizardController controller = new CorrectionWizardController(errorList, dataPackage);  
 	    	 controller.startWizard();
 	    	 Thread.sleep(15000);
     	}

@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<eml:eml packageId="tao.12718.1" system="knb" xmlns:eml="eml://ecoinformatics.org/eml-2.1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="eml://ecoinformatics.org/eml-2.1.0 eml.xsd"> <access authSystem="knb" order="denyFirst"> <allow><principal></principal>
+<eml:eml packageId="tao.12718.1" system="knb" xmlns:eml="eml://ecoinformatics.org/eml-2.1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="eml://ecoinformatics.org/eml-2.1.0 eml.xsd"> <access authSystem="knb" order="denyFirst"> <allow><principal> </principal>
 <permission>read</permission>
 </allow>
 </access>
@@ -13,7 +13,7 @@
 </individualName>
 </contact>
 <dataTable id="1234908894655"><entityName>test</entityName>
-<physical id="1234908891889"><objectName>test</objectName>
+<physical id="1234908891889"><objectName> </objectName>
 <size unit="byte">12</size>
 <dataFormat><textFormat><numHeaderLines>0</numHeaderLines>
 <recordDelimiter> </recordDelimiter>
@@ -27,7 +27,7 @@
 </online>
 </distribution>
 </physical>
-<attributeList><attribute id="1234908894656"><attributeName>Column 1</attributeName>
+<attributeList><attribute id="1234908894656"><attributeName> </attributeName>
 <attributeDefinition>1</attributeDefinition>
 <measurementScale><ratio><unit><standardUnit>metersPerSecondSquared</standardUnit>
 </unit>
@@ -48,7 +48,7 @@
 </measurementScale>
 </attribute>
 <attribute id="1234908894658"><attributeName>Column 3</attributeName>
-<attributeDefinition>ad</attributeDefinition>
+<attributeDefinition> </attributeDefinition>
 <measurementScale><interval><unit><standardUnit>metersPerSecondSquared</standardUnit>
 </unit>
 <precision>12</precision>
@@ -59,6 +59,33 @@
 </attribute>
 </attributeList>
 <numberOfRecords>2</numberOfRecords>
+</dataTable>
+<dataTable id="1237581136214"><entityName>test-2</entityName>
+<physical id="1237581135132"><objectName>test-2</objectName>
+<size unit="byte"> </size>
+<dataFormat><textFormat><numHeaderLines>0</numHeaderLines>
+<recordDelimiter>#x0A</recordDelimiter>
+<attributeOrientation>column</attributeOrientation>
+<simpleDelimited><fieldDelimiter>#x20</fieldDelimiter>
+</simpleDelimited>
+</textFormat>
+</dataFormat>
+<distribution><online><url>ecogrid://knb/tao.12755.1</url>
+</online>
+<access authSystem="knb" order="denyFirst"><deny><principal>public</principal>
+<permission>read</permission>
+</deny>
+</access>
+</distribution>
+</physical>
+<attributeList><attribute id="1237581136215"><attributeName>Column 1</attributeName>
+<attributeDefinition> </attributeDefinition>
+<measurementScale><dateTime><formatString>ssss</formatString>
+</dateTime>
+</measurementScale>
+</attribute>
+</attributeList>
+<numberOfRecords>3</numberOfRecords>
 </dataTable>
 </dataset>
  </eml:eml>
