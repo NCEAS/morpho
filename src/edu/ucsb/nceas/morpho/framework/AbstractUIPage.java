@@ -5,8 +5,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2009-03-27 01:08:57 $'
- * '$Revision: 1.8 $'
+ *     '$Date: 2009-03-27 23:23:31 $'
+ * '$Revision: 1.9 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -40,7 +40,7 @@ public abstract class AbstractUIPage extends JPanel {
 	
 	protected String nextPageID = null;
 	
-	protected Node rootNode = null;
+	protected int rootNodeIndex = 0;
 
   /**
    *  gets the unique ID for this UI page
@@ -174,22 +174,22 @@ public abstract class AbstractUIPage extends JPanel {
   }
   
   /**
-   * Set the root node for a UIpage
+   * Set the root node index in metadata tree for the UIpage
    * @param xPathRoot
    */
-  public void setXPathRoot(Node rootNode)
+  public void setRootNodeIndex(int rootNodeIndex)
   {
-	  this.rootNode = rootNode;
+	  this.rootNodeIndex = rootNodeIndex;
   }
   
   /**
-   * Get the root node for a UIPage
+   * Get the root node index in the metadata tree for the UIPage
    * @return
    */
   
-  public Node getXPathRoot()
+  public int getRootNodeIndex()
   {
-	   return this.rootNode;  
+	   return this.rootNodeIndex;  
   }
   
   /**

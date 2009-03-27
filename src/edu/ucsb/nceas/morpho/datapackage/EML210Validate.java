@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2009-03-12 00:20:35 $'
- * '$Revision: 1.3 $'
+ *     '$Date: 2009-03-27 23:23:31 $'
+ * '$Revision: 1.4 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -66,6 +66,10 @@ public class EML210Validate extends DefaultHandler implements ErrorHandler
 	 private final static String RECORDDELIMITER = "recordDelimiter";
 	 private final static String PHYSICALLINEDELIMITER = "physicalLineDelimiter";
 	 private final static String FIELDDELIMITER = "fieldDelimiter";
+	 private final static String DATATABLE = "dataTable";
+	 private final static String ATTRIBUTE = "attribute";
+	 private final static String RIGHTBRACKET = "[";
+	 private final static String LEFTBRACKET = "]";
 	 
 	// SAX parser
 	XMLReader parser = null;
@@ -75,7 +79,9 @@ public class EML210Validate extends DefaultHandler implements ErrorHandler
 	private StringBuffer textBuffer = new StringBuffer();// a buffer to contain text value
 	private boolean startElement = false; // indicator of parser hit a start element node
 	private boolean endElement   = false;// indicator of parser hit a start element node
-
+	private int dataTableIndex = 0;
+	private int attributeIndex = 0; //attribute index is the index of attribute under same entity, it is not DOM tree index.
+    private boolean hitDataTable = false;
 	/**
 	 * Class constructor.
 	 * It will initialize a sax parser.
@@ -137,6 +143,10 @@ public class EML210Validate extends DefaultHandler implements ErrorHandler
         Log.debug(48, "Start ELEMENT(qName) " + qName);
         Log.debug(48, "Start ELEMENT(localName) " + localName);
         Log.debug(48, "Start ELEMENT(uri) " + uri);
+        if(localName.equals(DATATABLE))
+        {
+        	hitDataTable = true;
+        }
         path.push(qName);// put qName into stack
         startElement = true;
         endElement = false;
@@ -180,6 +190,20 @@ public class EML210Validate extends DefaultHandler implements ErrorHandler
         // reset textbuff
         textBuffer = null;
         textBuffer = new StringBuffer();
+        //when close an attribute, the attribute index should increase one.(only work with dataTable)
+        if(hitDataTable && localName.equals(ATTRIBUTE))
+        {
+        	attributeIndex++;
+        }
+        
+        //when close an entity, the entity index should be increase one and attribute index should be set to 0
+        if(localName.equals(DATATABLE))
+        {
+        	dataTableIndex++;
+        	attributeIndex = 0;
+        	hitDataTable = false;
+        }
+  
 
     }
     
@@ -244,7 +268,8 @@ public class EML210Validate extends DefaultHandler implements ErrorHandler
     }
     
     /*
-     * Transform the contents in the stack to a string.
+     * Transform the contents in the stack to a string. for datatable and attribute (under datatable 
+     * element, we would like to add [index].
      */
     private String transformPathFromStackToString(Stack stack)
     {
@@ -255,7 +280,18 @@ public class EML210Validate extends DefaultHandler implements ErrorHandler
     		for (int i= 0; i<length; i++)
     		{
     			String value =(String)stack.elementAt(i);
-    			fullPath=fullPath+SLASH+value;
+    			if(value != null && value.equals(DATATABLE))
+    			{
+    				fullPath=fullPath+SLASH+value+RIGHTBRACKET+dataTableIndex+LEFTBRACKET;
+    			}
+    			else if(value != null && hitDataTable && value.equals(ATTRIBUTE))
+    			{
+    				fullPath=fullPath+SLASH+value+RIGHTBRACKET+attributeIndex+LEFTBRACKET;
+    			}
+    			else
+    			{
+    				fullPath=fullPath+SLASH+value;
+    			}
     		}
     	}
     	return fullPath;

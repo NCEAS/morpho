@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2009-03-27 01:08:57 $'
- * '$Revision: 1.8 $'
+ *     '$Date: 2009-03-27 23:23:31 $'
+ * '$Revision: 1.9 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -232,7 +232,7 @@ public class CorrectionWizardController
 						// we need some mechanism to find out the index. now i just use 0
 						Node node = nodeList.item(0);
 						xpathMap = XMLUtilities.getDOMTreeAsXPathMap(node);
-						page.setXPathRoot(node);
+						//page.setXPathRoot(node);
 					}
 					else
 					{
@@ -252,7 +252,7 @@ public class CorrectionWizardController
 							  xpathMap = XMLUtilities.getDOMTreeAsXPathMap(node);
 							  firstTime = false;
 							  //we set first child as the root node for not loading data from root path directly
-							  page.setXPathRoot(node);
+							  //page.setXPathRoot(node);
 							}
 							else
 							{
