@@ -7,8 +7,8 @@
 *    Release: @release@
 *
 *   '$Author: tao $'
-*     '$Date: 2009-03-13 03:57:28 $'
-* '$Revision: 1.40 $'
+*     '$Date: 2009-03-31 01:32:23 $'
+* '$Revision: 1.41 $'
 *
 * This program is free software; you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -134,6 +134,8 @@ public class AttributePage extends AbstractUIPage {
   private JTextField missingValueExplnField;
 
   private String xPathRoot = AttributeSettings.Attribute_xPath;
+  
+  private int attributeIndex = 0;
 
 
   final String ATTRIB_NAME_HELP
@@ -672,6 +674,23 @@ public class AttributePage extends AbstractUIPage {
   */
   public String getPageNumber() { return pageNumber; }
 
+  /**
+   * Get the index of this attribute
+   * @return
+   */
+  public int getAttributeIndex()
+  {
+	  return attributeIndex;
+  }
+  
+  /**
+   * Set the index (under the same entity) to this attribute
+   * @param attributeIndex
+   */
+  public void setAttributeIndex(int attributeIndex)
+  {
+	  this.attributeIndex = attributeIndex;
+  }
   /**
   *  The action to be executed when the "OK" button is pressed. If no onAdvance
   *  processing is required, implementation must return boolean true.

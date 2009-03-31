@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2009-03-27 23:23:31 $'
- * '$Revision: 1.9 $'
+ *     '$Date: 2009-03-31 01:32:23 $'
+ * '$Revision: 1.10 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -35,11 +35,14 @@ import edu.ucsb.nceas.morpho.datapackage.DataPackageFactory;
 import edu.ucsb.nceas.morpho.framework.AbstractUIPage;
 import edu.ucsb.nceas.morpho.framework.ConfigXML;
 import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
+import edu.ucsb.nceas.morpho.framework.UIController;
 import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
 import edu.ucsb.nceas.morpho.plugins.DataPackageWizardListener;
 import edu.ucsb.nceas.morpho.plugins.ServiceController;
 import edu.ucsb.nceas.morpho.plugins.ServiceNotHandledException;
 import edu.ucsb.nceas.morpho.plugins.ServiceProvider;
+import edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.AttributePage;
+import edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.Entity;
 import edu.ucsb.nceas.morpho.util.Log;
 import edu.ucsb.nceas.utilities.OrderedMap;
 import edu.ucsb.nceas.utilities.XMLUtilities;
@@ -97,6 +100,12 @@ public class CorrectionWizardController
 	private static final String STARTPAGEID = "0";
 	private static final String PARA = "para";
 	private static final String SLASH = "/";
+	private final static String DATATABLE = "dataTable";
+	private final static String ATTRIBUTE = "attribute";
+	private final static String RIGHTBRACKET = "]";
+	private final static String LEFTBRACKET = "[";
+	private final static char RIGHTBRACKETCHAR = ']';
+	private final static char LEFTBRACKETCHAR = '[';
 	
 	/**
 	 * Constructor
@@ -134,7 +143,11 @@ public class CorrectionWizardController
 		//then run tree editor to fix the issue
 		if(!pathListForTreeEditor.isEmpty())
 		{
-			
+			for(int i=0; i<pathListForTreeEditor.size(); i++)
+			{
+			  String path = (String)pathListForTreeEditor.elementAt(i);
+			  UIController.getInstance().launchEditorAtSubtreeForCurrentFrame(path, 0);
+			}
 		}
 	}
 	
@@ -233,6 +246,24 @@ public class CorrectionWizardController
 						Node node = nodeList.item(0);
 						xpathMap = XMLUtilities.getDOMTreeAsXPathMap(node);
 						//page.setXPathRoot(node);
+						if (page instanceof AttributePage)
+						{
+							int entityIndex = getDataTableIndex(path);
+							int attributeIndex = getAttributeIndex(path);
+							page.setRootNodeIndex(entityIndex);
+							AttributePage aPage =(AttributePage)page;
+							aPage.setAttributeIndex(attributeIndex);
+							page = aPage;
+						} 
+						else if(page instanceof Entity)
+						{
+							int entityIndex = getDataTableIndex(path);
+							page.setRootNodeIndex(entityIndex);
+						}
+						else
+						{
+							page.setRootNodeIndex(0);
+						}
 					}
 					else
 					{
@@ -258,6 +289,7 @@ public class CorrectionWizardController
 							{
 								xpathMap.putAll(XMLUtilities.getDOMTreeAsXPathMap(node));
 							}
+							page.setRootNodeIndex(0);
 						}
 						
 					}	
@@ -277,19 +309,24 @@ public class CorrectionWizardController
 	private XPathUIPageMapping getXPathUIPageMapping(String path)
 	{
 		XPathUIPageMapping mapping = null;
-		// first to check full path mapping
-		Log.debug(48, "the given error path is"+path);
-		if (fullPathMapping != null)
+		if(path != null)
 		{
-			mapping = (XPathUIPageMapping)fullPathMapping.get(path);
-			Log.debug(48, "find the xpath and uipage mapping in full path mapping "+mapping.getClass());
+			//first we need to remove all predicates
+			path =XMLUtilities.removeAllPredicates(path);
+			// first to check full path mapping
+			Log.debug(48, "the given error path without all predicates is"+path);
+			if (fullPathMapping != null)
+			{
+				mapping = (XPathUIPageMapping)fullPathMapping.get(path);
+				Log.debug(48, "find the xpath and uipage mapping in full path mapping "+mapping.getClass());
+			}
+			// second to check short mapping if no class name was found in full path mapping
+			/*if (mapping == null)
+			{
+				mapping = (XPathUIPageMapping)shortPathMapping.get(path);
+				Log.debug(48, "find the class name in short path mapping "+mapping.getWizardPageClassName());
+			}*/
 		}
-		// second to check short mapping if no class name was found in full path mapping
-		/*if (mapping == null)
-		{
-			mapping = (XPathUIPageMapping)shortPathMapping.get(path);
-			Log.debug(48, "find the class name in short path mapping "+mapping.getWizardPageClassName());
-		}*/
 		return mapping;
 	}
 	
@@ -488,7 +525,83 @@ public class CorrectionWizardController
 		Log.debug(40, "After removing para, the new xpath is "+newPath);
 		return newPath;
 	}
+	/*
+	 * Get the datatable index for a given xpath.
+	 * If the path is "eml/dataset/datatable[2], 2 will be returned.
+	 * if no index found, -1 will be returned
+	 */
+	private int getDataTableIndex(String path)
+	{
+		int index = getGivenStringIndexAtXPath(DATATABLE, path);
+		return index;
+	}
 	
+	/*
+	 * Get the attribute index for a given xpath.
+	 * If the path is "eml/dataset/datatable[2]/attributeList/attribute[1], 1 will be returned.
+	 * if no index found, -1 will be returned
+	 */
+	private int getAttributeIndex(String path)
+	{
+		int index = getGivenStringIndexAtXPath(ATTRIBUTE, path);
+		return index;
+	}
+	
+	/*
+	 * Get the given string index for a given xpath.
+	 * If the path is "eml/dataset/datatable[2] and given string is datatable, 2 will be returned.
+	 * if no index found, -1 will be returned
+	 */
+	private int getGivenStringIndexAtXPath(String givenString, String path)
+	{
+		int index = -1;
+		if(path != null)
+		{
+			int position = path.lastIndexOf(givenString+LEFTBRACKET);
+			int length = path.length();
+			if (position != -1)
+			{
+				// "dataTable[" exists
+				try
+				{
+				   char singleChar = path.charAt(position);
+				   StringBuffer buffer = new StringBuffer();
+				   boolean startBuffer = false;
+				   while (singleChar != RIGHTBRACKETCHAR && position < length)
+				   {
+					   // start to buffer
+					   if(startBuffer)
+					   {
+						   buffer.append(singleChar);
+					   }
+					   //when we see [, set the flag to bute
+					   if (singleChar == LEFTBRACKETCHAR)
+					   {
+						   startBuffer = true;
+					   }
+					   //increase position number
+					   position++;
+					   singleChar = path.charAt(position);
+				   }
+				   if (buffer.length() != 0)
+				   {
+					   String indexStr = buffer.toString();
+					   index = (new Integer(indexStr)).intValue();
+				   }
+				}
+				catch(Exception e)
+				{
+					Log.debug(30,"Couldn't " +givenString+" index for path "+path+ " "+e.getMessage());
+				}
+				
+			}
+		}
+		return index;
+	}
+	
+
+	
+	 
 	private class CorrectionDataPackageWizardListener implements DataPackageWizardListener
 	{
 

@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2009-03-27 23:23:31 $'
- * '$Revision: 1.4 $'
+ *     '$Date: 2009-03-31 01:32:23 $'
+ * '$Revision: 1.5 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -68,8 +68,8 @@ public class EML210Validate extends DefaultHandler implements ErrorHandler
 	 private final static String FIELDDELIMITER = "fieldDelimiter";
 	 private final static String DATATABLE = "dataTable";
 	 private final static String ATTRIBUTE = "attribute";
-	 private final static String RIGHTBRACKET = "[";
-	 private final static String LEFTBRACKET = "]";
+	 private final static String RIGHTBRACKET = "]";
+	 private final static String LEFTBRACKET = "[";
 	 
 	// SAX parser
 	XMLReader parser = null;
@@ -282,11 +282,11 @@ public class EML210Validate extends DefaultHandler implements ErrorHandler
     			String value =(String)stack.elementAt(i);
     			if(value != null && value.equals(DATATABLE))
     			{
-    				fullPath=fullPath+SLASH+value+RIGHTBRACKET+dataTableIndex+LEFTBRACKET;
+    				fullPath=fullPath+SLASH+value+LEFTBRACKET+dataTableIndex+RIGHTBRACKET;
     			}
     			else if(value != null && hitDataTable && value.equals(ATTRIBUTE))
     			{
-    				fullPath=fullPath+SLASH+value+RIGHTBRACKET+attributeIndex+LEFTBRACKET;
+    				fullPath=fullPath+SLASH+value+LEFTBRACKET+attributeIndex+RIGHTBRACKET;
     			}
     			else
     			{

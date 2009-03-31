@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2009-03-27 01:08:57 $'
- * '$Revision: 1.4 $'
+ *     '$Date: 2009-03-31 01:32:23 $'
+ * '$Revision: 1.5 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -42,10 +42,13 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import edu.ucsb.nceas.morpho.datapackage.AbstractDataPackage;
+import edu.ucsb.nceas.morpho.datapackage.Attribute;
 import edu.ucsb.nceas.morpho.framework.AbstractUIPage;
 import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
+import edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.AttributePage;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.General;
 import edu.ucsb.nceas.morpho.util.Log;
+import edu.ucsb.nceas.morpho.util.UISettings;
 import edu.ucsb.nceas.utilities.OrderedMap;
 import edu.ucsb.nceas.utilities.XMLUtilities;
 
@@ -114,7 +117,7 @@ public class CorrectionWizardContainerFrame extends WizardContainerFrame
 				    			   try
 				    			   {			    			      
 				    			    
-				    			      modifyDataPackage(data, genericName, 0);
+				    			      modifyDataPackage(data, genericName, page);
 				    			   }
 				    			   catch(Exception e)
 				    			   {
@@ -129,7 +132,7 @@ public class CorrectionWizardContainerFrame extends WizardContainerFrame
 			    	    	  String genericName = listOfGenericPathName[0];
 			    	    	  try
 			    	    	  {
-			    	    	     modifyDataPackage(wizData, genericName, 0);
+			    	    	     modifyDataPackage(wizData, genericName, page);
 			    	    	  }
 			    	    	   catch(Exception e)
 			    			   {
@@ -327,26 +330,42 @@ public class CorrectionWizardContainerFrame extends WizardContainerFrame
 	/*
 	 *Repalce a subtree of the dataPakcage by a new subtree with given data and position
 	 */
-	  private void modifyDataPackage(OrderedMap data, String genericName, int position) throws Exception
+	  private void modifyDataPackage(OrderedMap data, String genericName, AbstractUIPage page) throws Exception
 	  {
-		  if(dataPackage != null)
+		  if(dataPackage != null && page != null)
 		  {
 			  DOMImplementation impl = DOMImplementationImpl.getDOMImplementation();
 	    	  Document doc = impl.createDocument("", genericName, null);
 	          Node newSubTree = doc.getDocumentElement();
 	          XMLUtilities.getXPathMapAsDOMTree(data, newSubTree);
-	          dataPackage.deleteSubtree(genericName, position);
-	          // add to the datapackage
-	          Node check = dataPackage.insertSubtree(genericName, newSubTree, position);
-	
-	          if (check != null) 
-	          {
-	            Log.debug(45, "added new abstract details to package...");
-	          } 
-	          else 
-	          {
-	            Log.debug(5, "** ERROR: Unable to add new abstract details to package **");
+	          if (page instanceof AttributePage)
+	          {	        	    
+	        	    AttributePage aPage = (AttributePage)page;
+	        	    int entityIndex = aPage.getRootNodeIndex();
+	        	    int attrIndex = aPage.getAttributeIndex();
+	        	    String oldID = dataPackage.getAttributeID(entityIndex, attrIndex);
+	        		if(oldID == null || oldID.trim().equals("")) oldID = UISettings.getUniqueID();
+	                 data.put("/attribute/@id", oldID);
+	                Attribute attr = new Attribute(data);
+	                dataPackage.insertAttribute(entityIndex, attr, attrIndex);
+	        		dataPackage.deleteAttribute(entityIndex, attrIndex + 1);
 	          }
+	          else
+	          {
+	            dataPackage.deleteSubtree(genericName, page.getRootNodeIndex());
+	            // add to the datapackage
+	            Node check = dataPackage.insertSubtree(genericName, newSubTree, page.getRootNodeIndex());
+	             if (check != null) 
+		         {
+		            Log.debug(45, "added new abstract details to package...");
+		          } 
+		          else 
+		          {
+		            Log.debug(5, "** ERROR: Unable to add new abstract details to package **");
+		          }
+	          }
+	
+	          
 	      }
 	  }
 
