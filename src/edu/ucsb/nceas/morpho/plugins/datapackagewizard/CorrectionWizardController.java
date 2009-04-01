@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2009-04-01 01:12:14 $'
- * '$Revision: 1.11 $'
+ *     '$Date: 2009-04-01 18:32:12 $'
+ * '$Revision: 1.12 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -138,10 +138,6 @@ public class CorrectionWizardController
 		    dpWiz.setCurrentPage(STARTPAGEID);
 		    dpWiz.setShowPageCountdown(false);
 		    dpWiz.setTitle(TITLE);
-		    if(pathListForTreeEditor != null && !pathListForTreeEditor.isEmpty())
-		    {
-		    	dpWiz.setPathListForTreeEditor(pathListForTreeEditor);
-		    }
 		    dpWiz.setVisible(true);
 		}
 		else if( pathListForTreeEditor != null && !pathListForTreeEditor.isEmpty())
@@ -616,26 +612,42 @@ public class CorrectionWizardController
 		public void wizardComplete(Node newDOM) {
 
 	          Log.debug(30,
-	              "Correction Wizard complete - Will now create an AbstractDataPackage..");
-
+	              "Correction Wizard UI Page complete ");
 	          AbstractDataPackage adp = DataPackageFactory.getDataPackage(newDOM);
 	          Log.debug(30, "AbstractDataPackage complete");
 	          adp.setAccessionNumber("temporary.1.1");
-
-	          try {
-	            ServiceController services = ServiceController.getInstance();
-	            ServiceProvider provider =
-	                services.getServiceProvider(DataPackageInterface.class);
-	            DataPackageInterface dataPackage = (DataPackageInterface)provider;
-	            dataPackage.openNewDataPackage(adp, null);
-
-	          } catch (ServiceNotHandledException snhe) {
-
-	            Log.debug(6, snhe.getMessage());
-	          }
-	          Log.debug(45, "\n\n********** Correction Wizard finished: DOM:");
-	          Log.debug(45, XMLUtilities.getDOMTreeAsString(newDOM, false));
-	        }
+	          //second, to correct data by tree editor
+			    if(pathListForTreeEditor != null)
+			    {
+			    	//there is no UIPage returned, we only run tree editor to fix the issue
+					try
+					{
+						TreeEditorCorrectionController treeEditorController = new TreeEditorCorrectionController(adp, pathListForTreeEditor);
+						treeEditorController.startCorrection();
+					}
+					catch(Exception e)
+					{
+						Log.debug(5, "Couldn't run tree editor to correct the eml210 document "+e.getMessage());
+					}
+			    }
+			    else
+			    {        
+                      //no tree editor is needed, so we can display the data now
+			          try {
+			            ServiceController services = ServiceController.getInstance();
+			            ServiceProvider provider =
+			                services.getServiceProvider(DataPackageInterface.class);
+			            DataPackageInterface dataPackage = (DataPackageInterface)provider;
+			            dataPackage.openNewDataPackage(adp, null);
+		
+			          } catch (ServiceNotHandledException snhe) {
+		
+			            Log.debug(6, snhe.getMessage());
+			          }
+			           Log.debug(45, "\n\n********** Correction Wizard finished: DOM:");
+			           Log.debug(45, XMLUtilities.getDOMTreeAsString(adp.getMetadataNode(), false));
+			        }
+		     }
 
 
 	        public void wizardCanceled() {

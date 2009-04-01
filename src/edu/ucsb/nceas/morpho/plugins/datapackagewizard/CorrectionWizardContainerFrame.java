@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2009-04-01 01:12:14 $'
- * '$Revision: 1.6 $'
+ *     '$Date: 2009-04-01 18:32:12 $'
+ * '$Revision: 1.7 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -65,7 +65,7 @@ public class CorrectionWizardContainerFrame extends WizardContainerFrame
 {
 	private AbstractDataPackage dataPackage = null;
 	private Node rootNode = null;
-	private Vector pathListForTreeEditor = new Vector();
+	//private Vector pathListForTreeEditor = new Vector();
 	
 	/**
 	 * Constructor
@@ -149,21 +149,6 @@ public class CorrectionWizardContainerFrame extends WizardContainerFrame
 		       
 		    }
 		    
-		    //second, to correct data by tree editor
-		    if(pathListForTreeEditor != null)
-		    {
-		    	//there is no UIPage returned, we only run tree editor to fix the issue
-				try
-				{
-					TreeEditorCorrectionController treeEditorController = new TreeEditorCorrectionController(dataPackage, pathListForTreeEditor);
-					treeEditorController.startCorrection();
-				}
-				catch(Exception e)
-				{
-					Log.debug(5, "Couldn't run tree editor to correct the eml210 document "+e.getMessage());
-				}
-		    }
-	
 		    /*AbstractUIPage GENERAL
 		        = (AbstractUIPage)pageMap.get(DataPackageWizardInterface.GENERAL);
 		    AbstractUIPage KEYWORDS
@@ -353,14 +338,6 @@ public class CorrectionWizardContainerFrame extends WizardContainerFrame
 	      }
 	  }
 	  
-	  /**
-	   * Set the list of path which should be handled by tree editor
-	   * @param pathListForTreeEditor
-	   */
-	  public void setPathListForTreeEditor(Vector pathListForTreeEditor )
-	  {
-		  this.pathListForTreeEditor = pathListForTreeEditor;
-	  }
 
 	 
 }

@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2009-04-01 01:10:21 $'
- * '$Revision: 1.1 $'
+ *     '$Date: 2009-04-01 18:32:12 $'
+ * '$Revision: 1.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -37,10 +37,12 @@ import org.w3c.dom.Node;
 
 import edu.ucsb.nceas.morpho.datapackage.AbstractDataPackage;
 import edu.ucsb.nceas.morpho.datapackage.DataPackageFactory;
+import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
 import edu.ucsb.nceas.morpho.framework.EditingCompleteListener;
 import edu.ucsb.nceas.morpho.framework.EditorInterface;
 import edu.ucsb.nceas.morpho.plugins.MetaDisplayInterface;
 import edu.ucsb.nceas.morpho.plugins.ServiceController;
+import edu.ucsb.nceas.morpho.plugins.ServiceNotHandledException;
 import edu.ucsb.nceas.morpho.plugins.ServiceProvider;
 import edu.ucsb.nceas.morpho.util.Log;
 import edu.ucsb.nceas.utilities.XMLUtilities;
@@ -193,6 +195,20 @@ public class TreeEditorCorrectionController
 		  // when the index hit the end of pathList vector. The editing is really done
 		  if(index == (xPathList.size() -1))
 		  {
+			  //no tree editor is needed, so we can display the data now
+	          try {
+	            ServiceController services = ServiceController.getInstance();
+	            ServiceProvider provider =
+	                services.getServiceProvider(DataPackageInterface.class);
+	            DataPackageInterface dataPackageInterface = (DataPackageInterface)provider;
+	            dataPackageInterface.openNewDataPackage(dataPackage, null);
+
+	          } catch (ServiceNotHandledException snhe) {
+
+	            Log.debug(6, snhe.getMessage());
+	          }
+	           Log.debug(45, "\n\n********** Correction Wizard finished: DOM:");
+	           Log.debug(45, XMLUtilities.getDOMTreeAsString(dataPackage.getMetadataNode(), false));
 			  return;
 		  }
 		  // then open the editor
