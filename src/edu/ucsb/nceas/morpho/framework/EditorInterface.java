@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: higgins $'
- *     '$Date: 2004-02-20 21:31:10 $'
- * '$Revision: 1.9 $'
+ *   '$Author: tao $'
+ *     '$Date: 2009-04-01 23:18:33 $'
+ * '$Revision: 1.10 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -85,6 +85,15 @@ public interface EditorInterface
  public void openEditor(Document doc, String id, String location,
                         EditingCompleteListener listener,
                         String nodeName, int nodeNumber);
+ 
+ /**
+  * This method is called to open a XML editor with the indicated
+  * xml structure in a DOM and an editingCompletedListener to be notified when
+  * the editing is completed
+  */
+ public void openEditor(Document doc, String id, String location,
+         EditingCompleteListener listener,
+         String nodeName, int nodeNumber, boolean returnErrorMessage);
    
    
 }

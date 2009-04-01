@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: leinfelder $'
- *     '$Date: 2008-05-16 18:08:01 $'
- * '$Revision: 1.30 $'
+ *   '$Author: tao $'
+ *     '$Date: 2009-04-01 23:18:33 $'
+ * '$Revision: 1.31 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -206,17 +206,26 @@ public class EditorPlugin implements PluginInterface, ServiceProvider, EditorInt
   public void openEditor(Document doc, String id, String location, 
                          EditingCompleteListener listener,
                          String nodeName, int cnt) {
-    DocFrame editorframe = new DocFrame();
-    editorframe.setController(this);
-    editorframe.setVisible(true);
-    editorframe.initDoc(morpho, doc, id, location, nodeName, cnt);      
-    this.id = id;
-    this.location = location;
-    //MBJ if (framework!=null) {
-      //MBJ framework.addWindow(editorframe);
-    //MBJ }
-    docframes.put(editorframe, listener);
+	  openEditor(doc, id, location, 
+	          listener, nodeName, cnt, true);
+    
   }
+  
+  public void openEditor(Document doc, String id, String location, 
+          EditingCompleteListener listener,
+          String nodeName, int cnt, boolean returnErrorMessage) {
+		DocFrame editorframe = new DocFrame();
+		editorframe.setController(this);
+		editorframe.setReturnErrorMessageInExistEditing(returnErrorMessage);
+		editorframe.setVisible(true);
+		editorframe.initDoc(morpho, doc, id, location, nodeName, cnt);      
+		this.id = id;
+		this.location = location;
+		//MBJ if (framework!=null) {
+		//MBJ framework.addWindow(editorframe);
+		//MBJ }
+		docframes.put(editorframe, listener);
+	}
 
   public void openEditor(String xmlText, String id, String location, 
                          EditingCompleteListener listener, boolean template) {

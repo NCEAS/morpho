@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2009-04-01 18:32:12 $'
- * '$Revision: 1.2 $'
+ *     '$Date: 2009-04-01 23:18:33 $'
+ * '$Revision: 1.3 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -119,7 +119,7 @@ public class TreeEditorCorrectionController
 			if(nodeName != null)
 			{
 			  editor.openEditor(dataPackage.getMetadataNode().getOwnerDocument(), dataPackage.getPackageId(), 
-					  dataPackage.getLocation(), listener, nodeName, subTreeIndex);
+					  dataPackage.getLocation(), listener, nodeName, subTreeIndex, false);
 			}
 			else
 			{

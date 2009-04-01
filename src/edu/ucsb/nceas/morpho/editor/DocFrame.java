@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2009-04-01 18:30:02 $'
- * '$Revision: 1.185 $'
+ *     '$Date: 2009-04-01 23:18:33 $'
+ * '$Revision: 1.186 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -295,6 +295,11 @@ public class DocFrame extends javax.swing.JFrame
    * in a meaningful manner.
    */
   boolean treeSelChangedFlag = false;
+  
+  /*
+   * Indicate if the doc frame will return error message when it exists.
+   */
+  boolean returnErrorMessageInExistEditing = true;
 
 
   /**
@@ -844,6 +849,15 @@ public class DocFrame extends javax.swing.JFrame
   public String getLocationString()
   {
     return location;
+  }
+  
+  /**
+   * Sets the flag if the frame will return error message when it exists.
+   * @param returnErrorMessageInExistEditing
+   */
+  public void setReturnErrorMessageInExistEditing(boolean returnErrorMessageInExistEditing)
+  {
+	  this.returnErrorMessageInExistEditing = returnErrorMessageInExistEditing;
   }
 
   /**
@@ -3011,11 +3025,11 @@ public class DocFrame extends javax.swing.JFrame
    * @param event  event created when 'Save Changes' button is
    * clicked.
    */
-  void EditingExit_actionPerformed(java.awt.event.ActionEvent event)
+  void EditingExit_actionPerformed(java.awt.event.ActionEvent event, boolean returnErrorMessage)
   {
     treeModel = (DefaultTreeModel)tree.getModel();
     rootNode = (DefaultMutableTreeNode)treeModel.getRoot();
-    String xmlout = writeXMLString(rootNode, true);
+    String xmlout = writeXMLString(rootNode, returnErrorMessage);
     if(xmlout.indexOf("<?xml version=\"1.0\"?>")<0){
       Log.debug(5, "Unable to trim following nodes: " + xmlout +
           "\n\nPlease check if all the required values are entered "
@@ -3605,7 +3619,7 @@ public class DocFrame extends javax.swing.JFrame
       } else if (object == AddtextItem) {
         Addtext_actionPerformed(event);
       } else if (object == EditingExit) {
-        EditingExit_actionPerformed(event);
+        EditingExit_actionPerformed(event, returnErrorMessageInExistEditing);
       } else if (object == CancelButton) {
         CancelButton_actionPerformed(event);
       } else if (object == OpenButton) {
