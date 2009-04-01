@@ -5,9 +5,9 @@
  *    Authors: @higgins@
  *    Release: @release@
  *
- *   '$Author: leinfelder $'
- *     '$Date: 2008-05-23 01:02:24 $'
- * '$Revision: 1.184 $'
+ *   '$Author: tao $'
+ *     '$Date: 2009-04-01 18:30:02 $'
+ * '$Revision: 1.185 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -3056,16 +3056,16 @@ public class DocFrame extends javax.swing.JFrame
     String valresult = xmlvalidate(xmlout);
     if (valresult.indexOf("<valid />")>-1) {
       if (controller!=null) {
-        controller.fireEditingCompleteEvent(this, xmlout);
-      // hide the Frame
-      this.setVisible(false);
-      // free the system resources
-      this.dispose();
-      tree = null;
-      treeModel = null;
-      OutputScrollPanelContainer = null;
-      NestedPanelScrollPanel = null;
-      System.gc();
+    	// hide the Frame
+        this.setVisible(false);
+        // free the system resources
+        this.dispose();
+        tree = null;
+        treeModel = null;
+        OutputScrollPanelContainer = null;
+        NestedPanelScrollPanel = null;
+        System.gc();
+        controller.fireEditingCompleteEvent(this, xmlout);  
       }
       else {
         writeOutputFile(xmlout);
@@ -3083,12 +3083,13 @@ public class DocFrame extends javax.swing.JFrame
          JOptionPane.YES_NO_OPTION);
       if (opt1== JOptionPane.YES_OPTION) {
         if (controller!=null) {
-          controller.fireEditingCompleteEvent(this, xmlout);
-          // hide the Frame
+           // hide the Frame
           this.setVisible(false);
           // free the system resources
           this.dispose();
           System.gc();
+          controller.fireEditingCompleteEvent(this, xmlout);
+         
         }
         else {
           writeOutputFile(xmlout);
