@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2009-03-31 01:32:23 $'
- * '$Revision: 1.10 $'
+ *     '$Date: 2009-04-01 01:12:14 $'
+ * '$Revision: 1.11 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -138,15 +138,23 @@ public class CorrectionWizardController
 		    dpWiz.setCurrentPage(STARTPAGEID);
 		    dpWiz.setShowPageCountdown(false);
 		    dpWiz.setTitle(TITLE);
+		    if(pathListForTreeEditor != null && !pathListForTreeEditor.isEmpty())
+		    {
+		    	dpWiz.setPathListForTreeEditor(pathListForTreeEditor);
+		    }
 		    dpWiz.setVisible(true);
 		}
-		//then run tree editor to fix the issue
-		if(!pathListForTreeEditor.isEmpty())
+		else if( pathListForTreeEditor != null && !pathListForTreeEditor.isEmpty())
 		{
-			for(int i=0; i<pathListForTreeEditor.size(); i++)
+			//there is no UIPage returned, we only run tree editor to fix the issue
+			try
 			{
-			  String path = (String)pathListForTreeEditor.elementAt(i);
-			  UIController.getInstance().launchEditorAtSubtreeForCurrentFrame(path, 0);
+				TreeEditorCorrectionController treeEditorController = new TreeEditorCorrectionController(dataPackage, pathListForTreeEditor);
+				treeEditorController.startCorrection();
+			}
+			catch(Exception e)
+			{
+				Log.debug(5, "Couldn't run tree editor to correct the eml210 document "+e.getMessage());
 			}
 		}
 	}

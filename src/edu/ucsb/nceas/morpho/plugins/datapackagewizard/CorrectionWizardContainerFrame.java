@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2009-03-31 01:32:23 $'
- * '$Revision: 1.5 $'
+ *     '$Date: 2009-04-01 01:12:14 $'
+ * '$Revision: 1.6 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,6 +34,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
+import java.util.Vector;
 
 import org.apache.xerces.dom.DOMImplementationImpl;
 import org.w3c.dom.DOMImplementation;
@@ -44,6 +45,7 @@ import org.w3c.dom.NodeList;
 import edu.ucsb.nceas.morpho.datapackage.AbstractDataPackage;
 import edu.ucsb.nceas.morpho.datapackage.Attribute;
 import edu.ucsb.nceas.morpho.framework.AbstractUIPage;
+import edu.ucsb.nceas.morpho.framework.UIController;
 import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.AttributePage;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.General;
@@ -63,6 +65,7 @@ public class CorrectionWizardContainerFrame extends WizardContainerFrame
 {
 	private AbstractDataPackage dataPackage = null;
 	private Node rootNode = null;
+	private Vector pathListForTreeEditor = new Vector();
 	
 	/**
 	 * Constructor
@@ -81,7 +84,7 @@ public class CorrectionWizardContainerFrame extends WizardContainerFrame
 		//Node rootNode = getNewEmptyDataPackageDOM(WizardSettings.NEW_EML210_DOCUMENT_TEXT);
 		if (dataPackage != null)
 		{
-	
+	       //first, to correct data by UIPage
 		    while (!pageStack.isEmpty()) 
 		    {
 		       //System.out.println("pageStack is not empty");
@@ -144,6 +147,21 @@ public class CorrectionWizardContainerFrame extends WizardContainerFrame
 		       }
 		  
 		       
+		    }
+		    
+		    //second, to correct data by tree editor
+		    if(pathListForTreeEditor != null)
+		    {
+		    	//there is no UIPage returned, we only run tree editor to fix the issue
+				try
+				{
+					TreeEditorCorrectionController treeEditorController = new TreeEditorCorrectionController(dataPackage, pathListForTreeEditor);
+					treeEditorController.startCorrection();
+				}
+				catch(Exception e)
+				{
+					Log.debug(5, "Couldn't run tree editor to correct the eml210 document "+e.getMessage());
+				}
 		    }
 	
 		    /*AbstractUIPage GENERAL
@@ -284,41 +302,7 @@ public class CorrectionWizardContainerFrame extends WizardContainerFrame
 		    }
 		        , wizData);*/
 	
-		    //Log.debug(45, "\n\n********** Wizard finished: NVPs:");
-		    //Log.debug(45, wizData.toString());
-	
-		    ////////////////////////////////////////////////////////////////////////////
-		    // this is the end of the page processing - wizData OrderedMap should now
-		    // contain all values in correct order
-		    ////////////////////////////////////////////////////////////////////////////
-	
-		    ////////////////////////////////////////////////////////////////////////////
-		    ////////////////////////////////////////////////////////////////////////////
-		    ////////////////////////////////////////////////////////////////////////////
-	
-	
-		    ////////////////////////////////////////////////////////////////////////////
-		    // next, create a DOM from the OrderedMap...
-		    ////////////////////////////////////////////////////////////////////////////
-	
-		    //create a new empty DOM document to be populated by the wizard values:
-		    
-	
-		    //now populate it...
-		    /*try {
-	
-		      XMLUtilities.getXPathMapAsDOMTree(wizData, rootNode);
-	
-		    }
-		    catch (Exception e) {
-	
-		      e.printStackTrace();
-		      Log.debug(5, "unexpected error trying to create new XML document "
-		                + "after wizard finished\n");
-		      cancelAction();
-	
-		      return null;
-		    }*/
+		  
 		}
 		
 	    Log.debug(45, "\n\n********** Correction Wizard finished: DOM:");
@@ -367,6 +351,15 @@ public class CorrectionWizardContainerFrame extends WizardContainerFrame
 	
 	          
 	      }
+	  }
+	  
+	  /**
+	   * Set the list of path which should be handled by tree editor
+	   * @param pathListForTreeEditor
+	   */
+	  public void setPathListForTreeEditor(Vector pathListForTreeEditor )
+	  {
+		  this.pathListForTreeEditor = pathListForTreeEditor;
 	  }
 
 	 
