@@ -17,10 +17,12 @@ import edu.ucsb.nceas.morpho.datapackage.DataPackageFactory;
 import edu.ucsb.nceas.morpho.datapackage.DataPackagePlugin;
 import edu.ucsb.nceas.morpho.datapackage.EML200DataPackage;
 import edu.ucsb.nceas.morpho.datapackage.EML210Validate;
+import edu.ucsb.nceas.morpho.editor.EditorPlugin;
 import edu.ucsb.nceas.morpho.framework.ConfigXML;
 import edu.ucsb.nceas.morpho.framework.UIController;
 import edu.ucsb.nceas.morpho.plugins.ServiceController;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.CorrectionWizardController;
+import edu.ucsb.nceas.morpho.plugins.xsltresolver.XSLTResolverPlugin;
 import edu.ucsb.nceas.morpho.util.Log;
 import edu.ucsb.nceas.morphotest.datapackage.EML210ValidateTest;
 import edu.ucsb.nceas.utilities.XMLUtilities;
@@ -51,8 +53,13 @@ public class CorrectionWizardControllerTest extends TestCase
             ServiceController services = ServiceController.getInstance();
             morpho = new Morpho(config);
             UIController controller = UIController.initialize(morpho);
+            //register plugins
             DataPackagePlugin plug = new DataPackagePlugin(morpho);
             plug.initialize(morpho);
+            EditorPlugin editor = new EditorPlugin();
+            editor.initialize(morpho);
+            XSLTResolverPlugin xsltResolver = new XSLTResolverPlugin();
+            xsltResolver.initialize(morpho);
         } catch (IOException ioe) {
           fail("Test failed, couldn't create config."+ioe.getMessage());
         }
