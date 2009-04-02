@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2009-04-01 23:18:33 $'
- * '$Revision: 1.186 $'
+ *     '$Date: 2009-04-02 17:07:31 $'
+ * '$Revision: 1.187 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -2034,7 +2034,7 @@ public class DocFrame extends javax.swing.JFrame
 
         // modify if the node has name is document to add namespace info
         // (needed for eml2 docs and others)
-        if (name.equals(docnode.getLocalName())) {
+        if (docnode != null && name.equals(docnode.getLocalName())) {
             start1.append("\n" + indentString + "<" + docnode.getNodeName());;
           }
         else {
@@ -2067,7 +2067,7 @@ public class DocFrame extends javax.swing.JFrame
         }
         start1.append(">");
         //close with the full node name if this is the docnode
-        if (name.equals(docnode.getLocalName())) {
+        if (docnode != null && name.equals(docnode.getLocalName())) {
         	end = "</" + docnode.getNodeName() + ">";
         }
         else {
