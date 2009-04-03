@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2009-04-01 18:32:12 $'
- * '$Revision: 1.12 $'
+ *     '$Date: 2009-04-03 01:00:04 $'
+ * '$Revision: 1.13 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -200,6 +200,7 @@ public class CorrectionWizardController
 				else
 				{
 					//no wizard page found and add a tree editor to the list
+					path = XMLUtilities.removeAllPredicates(path);
 					pathListForTreeEditor.add(path);
 				}
 			}

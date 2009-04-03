@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2009-04-02 17:07:31 $'
- * '$Revision: 1.187 $'
+ *     '$Date: 2009-04-03 01:00:04 $'
+ * '$Revision: 1.188 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -3036,7 +3036,7 @@ public class DocFrame extends javax.swing.JFrame
          + "and that there are no empty fields");
       return;
     }
-      Log.debug(20, xmlout);
+      Log.debug(50, xmlout);
   /*
   // the following code for checking for empty leaf nodes is
   // commented out because of problems with eml-attribute documents
@@ -3086,28 +3086,46 @@ public class DocFrame extends javax.swing.JFrame
       }
     }
     else {
-      Log.debug(20,"Validation problem: "+valresult);
-      String msg = "The saved document is not valid for some reason.\n"+
-                   "You can save it locally and fix the problem later,\n"+
-                   "but you will be unable to submit it to the network storage system.\n"+
-                   "\nDo you want to Continue Exiting the Editor?";
-      int opt1 = JOptionPane.showConfirmDialog(null,
-         msg,
-         "Validation Problem!",
-         JOptionPane.YES_NO_OPTION);
-      if (opt1== JOptionPane.YES_OPTION) {
-        if (controller!=null) {
-           // hide the Frame
-          this.setVisible(false);
-          // free the system resources
-          this.dispose();
-          System.gc();
-          controller.fireEditingCompleteEvent(this, xmlout);
-         
-        }
-        else {
-          writeOutputFile(xmlout);
-        }
+       if(returnErrorMessage)
+       {
+	      Log.debug(20,"Validation problem: "+valresult);
+	      String msg = "The saved document is not valid for some reason.\n"+
+	                   "You can save it locally and fix the problem later,\n"+
+	                   "but you will be unable to submit it to the network storage system.\n"+
+	                   "\nDo you want to Continue Exiting the Editor?";
+	      int opt1 = JOptionPane.showConfirmDialog(null,
+	         msg,
+	         "Validation Problem!",
+	         JOptionPane.YES_NO_OPTION);
+	      if (opt1== JOptionPane.YES_OPTION) {
+	        if (controller!=null) {
+	           // hide the Frame
+	          this.setVisible(false);
+	          // free the system resources
+	          this.dispose();
+	          System.gc();
+	          controller.fireEditingCompleteEvent(this, xmlout);
+	         
+	        }
+	        else {
+	          writeOutputFile(xmlout);
+	        }
+         }
+      }
+      else
+      {
+    	  if (controller!=null) {
+	           // hide the Frame
+	          this.setVisible(false);
+	          // free the system resources
+	          this.dispose();
+	          System.gc();
+	          controller.fireEditingCompleteEvent(this, xmlout);
+	         
+	        }
+	        else {
+	          writeOutputFile(xmlout);
+	        }
       }
     }
   }
