@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2009-04-03 01:00:04 $'
- * '$Revision: 1.13 $'
+ *     '$Date: 2009-04-04 00:29:09 $'
+ * '$Revision: 1.14 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -60,8 +60,9 @@ import org.w3c.dom.NodeList;
  * This class represents a controller which will start a process to 
  * correct valid values in eml 210 documents. This class will be passed a list
  * of xml paths which contain invalid value, e.g. white spaces. First, the class
- * will figure out which wizard pages should be used upon the xml paths. Then, 
- * it will introduce wizard page to user, which can help to correct error.
+ * will figure out which wizard pages should be used upon the xml paths base on
+ * a mappting file. If no UIPage was found, the path will be assigned to a tree editor.
+ *  Then, it will introduce wizard page and/or tree editor to user, which can help to correct error.
  * @author tao
  *
  */
@@ -116,8 +117,9 @@ public class CorrectionWizardController
 	    this.errorPathList  = errorPathList;
 	    this.dataPackage  = dataPackage;
 	    dpWiz = new CorrectionWizardContainerFrame(dataPackage);
+	    // find the mapping between xpath and page class name in a file
 	    this.mappingList   = getXPATHMappingUIPage();
-	    getCorrectionPageList();
+	    assignErrorPath();// assign the error path to UI page list or tree editor path list
 
 	}
 	
@@ -129,7 +131,8 @@ public class CorrectionWizardController
 		// first to run wizard page to fix the issue
 		if(!wizardPageLibrary.isEmpty())
 		{
-		    	
+		    //this part will open a tree editor too if pathListForTreeEditor is not empty
+			//the DataPackageWizardListener will trigger to open tree editor
 			dpWiz.setWizardPageLibrary(wizardPageLibrary);
 		    dpWiz.setDataPackageWizardListener(listener);
 		    dpWiz.setBounds(
@@ -161,14 +164,13 @@ public class CorrectionWizardController
 	 * the wizard page will bet put into list. If we couldn't find one, tree editor
 	 * for this xpath will be put into list.
 	 */
-	private void getCorrectionPageList()
+	private void assignErrorPath()
 	{
 		int pageID = 0;
 		String pageIDstr = null;
 		AbstractUIPage previousPage = null;		
 		if (errorPathList != null)
-		{
-				
+		{				
 			for (int i=0; i<errorPathList.size(); i++)
 			{
 				String path =(String)errorPathList.elementAt(i);
@@ -223,10 +225,10 @@ public class CorrectionWizardController
 	
 	/*
 	 * Returns a UI page for given xml path. If no page can be found, null will be returned.
+	 * The page also contains existed data.
 	 */
 	private AbstractUIPage getUIPage(String path) throws Exception
 	{
-		//Todo
 		AbstractUIPage page = null;
 		String className = null;
 		if (mappingList != null)
@@ -309,14 +311,14 @@ public class CorrectionWizardController
 	
 	
 	/*
-	 * Find out the mapping before xpath and UIPage
+	 * Find out the mapping between xpath and UIPage
 	 */
 	private XPathUIPageMapping getXPathUIPageMapping(String path)
 	{
 		XPathUIPageMapping mapping = null;
 		if(path != null)
 		{
-			//first we need to remove all predicates
+			//first we need to remove all predicates since there is no predicates in the xpath in the configure file
 			path =XMLUtilities.removeAllPredicates(path);
 			// first to check full path mapping
 			Log.debug(48, "the given error path without all predicates is"+path);
@@ -606,7 +608,11 @@ public class CorrectionWizardController
 	
 
 	
-	 
+	 /*
+	  * This class is the listener of CorrectionDataPackageFrame. It will implement the method
+	  * wizardComplete. In this method, it will trigger to start a tree editor correction controller
+	  * if the pathListForTreeEditor is not empty.
+	  */
 	private class CorrectionDataPackageWizardListener implements DataPackageWizardListener
 	{
 
