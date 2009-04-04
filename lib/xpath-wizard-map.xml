@@ -1,13 +1,122 @@
 <mappingList>
-  <mapping>
+   <!-- for metadata-->
+   <mapping>
     <root>/eml:eml/dataset/</root>
     <xpath>title</xpath>
-    <wizardPageClass>General</wizardPageClass>
+    <xpath>abstract</xpath>
+    <loadDataFromRootPath>false</loadDataFromRootPath>
+    <wizardPageClass>edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.General</wizardPageClass>
   </mapping>
   <mapping>
-    <root>/eml:eml/dataset/</root>
-    <xpath>abstract/para</xpath>
-    <wizardPageClass>General</wizardPageClass>
+    <root>/eml:eml/dataset/keywordSet/</root>
+    <xpath>keyword</xpath>
+    <xpath>keywordThesaurus</xpath>
+    <loadDataFromRootPath>true</loadDataFromRootPath>
+    <wizardPageClass>edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.Keywords</wizardPageClass>
+  </mapping>
+  <mapping>
+    <root>/eml:eml/dataset/creator/</root>
+    <xpath>individualName/salutation</xpath>
+    <xpath>individualName/givenName</xpath>
+    <xpath>individualName/surName</xpath>
+    <xpath>organizationName</xpath>
+    <xpath>positionName</xpath>
+    <xpath>address/deliveryPoint</xpath>
+    <xpath>address/city</xpath>
+    <xpath>address/administrativeArea</xpath>
+    <xpath>address/postalCode</xpath>
+    <xpath>address/country</xpath>
+    <xpath>phone</xpath>
+    <xpath>electronicMailAddress</xpath>
+    <xpath>onlineUrl</xpath>
+    <loadDataFromRootPath>true</loadDataFromRootPath>
+    <wizardPageClass>edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.PartyMainPage</wizardPageClass>
+  </mapping>
+   <mapping>
+    <root>/eml:eml/dataset/contact/</root>
+    <xpath>individualName/salutation</xpath>
+    <xpath>individualName/givenName</xpath>
+    <xpath>individualName/surName</xpath>
+    <xpath>organizationName</xpath>
+    <xpath>positionName</xpath>
+    <xpath>address/deliveryPoint</xpath>
+    <xpath>address/city</xpath>
+    <xpath>address/administrativeArea</xpath>
+    <xpath>address/postalCode</xpath>
+    <xpath>address/country</xpath>
+    <xpath>phone</xpath>
+    <xpath>electronicMailAddress</xpath>
+    <xpath>onlineUrl</xpath>
+    <loadDataFromRootPath>true</loadDataFromRootPath>
+    <wizardPageClass>edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.PartyMainPage</wizardPageClass>
+  </mapping>
+   <mapping>
+    <root>/eml:eml/dataset/associatedParty/</root>
+    <xpath>individualName/salutation</xpath>
+    <xpath>individualName/givenName</xpath>
+    <xpath>individualName/surName</xpath>
+    <xpath>organizationName</xpath>
+    <xpath>positionName</xpath>
+    <xpath>address/deliveryPoint</xpath>
+    <xpath>address/city</xpath>
+    <xpath>address/administrativeArea</xpath>
+    <xpath>address/postalCode</xpath>
+    <xpath>address/country</xpath>
+    <xpath>phone</xpath>
+    <xpath>electronicMailAddress</xpath>
+    <xpath>onlineUrl</xpath>
+    <xpath>role</xpath>
+    <loadDataFromRootPath>true</loadDataFromRootPath>
+    <wizardPageClass>edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.PartyMainPage</wizardPageClass>
+  </mapping>
+   <mapping>
+    <root>/eml:eml/dataset/project/</root>
+    <xpath>individualName/salutation</xpath>
+    <xpath>individualName/givenName</xpath>
+    <xpath>individualName/surName</xpath>
+    <xpath>organizationName</xpath>
+    <xpath>positionName</xpath>
+    <xpath>address/deliveryPoint</xpath>
+    <xpath>address/city</xpath>
+    <xpath>address/administrativeArea</xpath>
+    <xpath>address/postalCode</xpath>
+    <xpath>address/country</xpath>
+    <xpath>phone</xpath>
+    <xpath>electronicMailAddress</xpath>
+    <xpath>onlineUrl</xpath>
+    <xpath>role</xpath>
+    <loadDataFromRootPath>true</loadDataFromRootPath>
+    <wizardPageClass>edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.Project</wizardPageClass>
+  </mapping>
+
+
+  <mapping>
+    <root>/eml:eml/access/</root>
+    <xpath>allow/principal</xpath>
+    <xpath>allow/permission</xpath>
+    <xpath>deny/principal</xpath>
+    <xpath>deny/permission</xpath>
+    <loadDataFromRootPath>true</loadDataFromRootPath>
+    <wizardPageClass>edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.Access</wizardPageClass>
+   </mapping>
+   <mapping>
+    <!-- for data-->
+    <root>/eml:eml/dataset/dataTable/physical/distribution/access/</root>
+    <xpath>allow/principal</xpath>
+    <xpath>allow/permission</xpath>
+    <xpath>deny/principal</xpath>
+    <xpath>deny/permission</xpath>
+    <loadDataFromRootPath>true</loadDataFromRootPath>
+    <wizardPageClass>edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.Access</wizardPageClass>
+  </mapping>
+  <mapping>
+    <root>/eml:eml/dataset/dataTable/attributeList/attribute/</root>
+    <xpath>attributeName</xpath>
+    <xpath>attributeLabel</xpath>
+    <xpath>attributeDefinition</xpath>
+    <xpath>deny/permission</xpath>
+    <loadDataFromRootPath>true</loadDataFromRootPath>
+    <wizardPageClass>edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.Attribute</wizardPageClass>
   </mapping>
 </mappingList>
 
