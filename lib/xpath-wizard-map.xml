@@ -71,26 +71,95 @@
   </mapping>
    <mapping>
     <root>/eml:eml/dataset/project/</root>
-    <xpath>individualName/salutation</xpath>
-    <xpath>individualName/givenName</xpath>
-    <xpath>individualName/surName</xpath>
-    <xpath>organizationName</xpath>
-    <xpath>positionName</xpath>
-    <xpath>address/deliveryPoint</xpath>
-    <xpath>address/city</xpath>
-    <xpath>address/administrativeArea</xpath>
-    <xpath>address/postalCode</xpath>
-    <xpath>address/country</xpath>
-    <xpath>phone</xpath>
-    <xpath>electronicMailAddress</xpath>
-    <xpath>onlineUrl</xpath>
-    <xpath>role</xpath>
+    <xpath>title</xpath>
+    <xpath>personnel/individualName/salutation</xpath>
+    <xpath>personnel/individualName/givenName</xpath>
+    <xpath>personnel/individualName/surName</xpath>
+    <xpath>personnel/organizationName</xpath>
+    <xpath>personnel/positionName</xpath>
+    <xpath>personnel/address/deliveryPoint</xpath>
+    <xpath>personnel/address/city</xpath>
+    <xpath>personnel/address/administrativeArea</xpath>
+    <xpath>personnel/address/postalCode</xpath>
+    <xpath>personnel/address/country</xpath>
+    <xpath>personnel/phone</xpath>
+    <xpath>personnel/electronicMailAddress</xpath>
+    <xpath>personnel/onlineUrl</xpath>
+    <xpath>personnel/role</xpath>
+    <xpath>funding</xpath>
     <loadDataFromRootPath>true</loadDataFromRootPath>
     <wizardPageClass>edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.Project</wizardPageClass>
   </mapping>
-
-
-  <mapping>
+   <mapping>
+    <root>/eml:eml/dataset/intellectualRights</root>
+    <loadDataFromRootPath>true</loadDataFromRootPath>
+    <wizardPageClass>edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.UsageRights</wizardPageClass>
+   </mapping>
+    <mapping>
+    <root>/eml:eml/dataset/coverage/geographicCoverage/</root>
+    <xpath>geographicDescription</xpath>
+    <xpath>boundingCoordinates/westBoundingCoordinate</xpath>
+    <xpath>boundingCoordinates/eastBoundingCoordinate</xpath>
+    <xpath>boundingCoordinates/northBoundingCoordinate</xpath>
+    <xpath>boundingCoordinates/southBoundingCoordinate</xpath>
+    <loadDataFromRootPath>true</loadDataFromRootPath>
+    <wizardPageClass>edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.Geographic</wizardPageClass>
+   </mapping>
+    <mapping>
+    <root>/eml:eml/dataset/coverage/temporalCoverage/</root>
+    <xpath>singleDateTime/calendarDate</xpath>
+    <xpath>rangeOfDates/beginDate/calendarDate</xpath>
+    <xpath>rangeOfDates/endDate/calendarDate</xpath>
+    <loadDataFromRootPath>true</loadDataFromRootPath>
+    <wizardPageClass>edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.Temporal</wizardPageClass>
+   </mapping>
+   <mapping>
+    <root>/eml:eml/dataset/coverage/taxonomicCoverage/</root>
+    <xpath>taxonomicSystem/classificationSystem/classificationSystemCitation/title</xath>
+    <xpath>taxonomicSystem/classificationSystem/classificationSystemCitation/creator/individualName/salutation</xpath>
+    <xpath>taxonomicSystem/classificationSystem/classificationSystemCitation/creator/individualName/givenName</xpath>
+    <xpath>taxonomicSystem/classificationSystem/classificationSystemCitation/creator/individualName/surName</xpath>
+    <xpath>taxonomicSystem/classificationSystem/classificationSystemCitation/creator/organizationName</xpath>
+    <xpath>taxonomicSystem/classificationSystem/classificationSystemCitation/creator/positionName</xpath>
+    <xpath>taxonomicSystem/classificationSystem/classificationSystemCitation/creator/address/deliveryPoint</xpath>
+    <xpath>taxonomicSystem/classificationSystem/classificationSystemCitation/creator/address/city</xpath>
+    <xpath>taxonomicSystem/classificationSystem/classificationSystemCitation/creator/address/administrativeArea</xpath>
+    <xpath>taxonomicSystem/classificationSystem/classificationSystemCitation/creator/address/postalCode</xpath>
+    <xpath>taxonomicSystem/classificationSystem/classificationSystemCitation/creator/address/country</xpath>
+    <xpath>taxonomicSystem/classificationSystem/classificationSystemCitation/creator/phone</xpath>
+    <xpath>taxonomicSystem/classificationSystem/classificationSystemCitation/creator/electronicMailAddress</xpath>
+    <xpath>taxonomicSystem/classificationSystem/classificationSystemCitation/creator/onlineUrl</xpath>
+    <xpath>taxonomicSystem/classificationSystem/classificationSystemCitation/pubDate</xath>
+    <xpath>taxonomicSystem/classificationSystem/classificationSystemCitation/book/publisher/organizationName</xath>
+    <xpath>taxonomicSystem/classificationSystem/classificationSystemCitation/book/edition</xath>
+    <xpath>taxonomicSystem/classificationSystem/classificationSystemCitation/book/volume</xath>
+    <xpath>taxonomicSystem/classificationSystem/classificationSystemCitation/book/ISBN</xath>
+    <xpath>taxonomicSystem/classificationSystem/classificationSystemCitation/report/reportNumber</xath>
+    <xpath>taxonomicSystem/classificationSystem/classificationSystemCitation/report/publisher/organizationName</xath>
+    <xpath>taxonomicSystem/classificationSystem/classificationSystemCitation/report/totalPages</xath>
+    <xpath>taxonomicSystem/classificationSystem/classificationSystemCitation/article/journal</xath>
+    <xpath>taxonomicSystem/classificationSystem/classificationSystemCitation/article/volume</xath>
+    <xpath>taxonomicSystem/classificationSystem/classificationSystemCitation/article/issue</xath>
+    <xpath>taxonomicSystem/classificationSystem/classificationSystemCitation/article/pageRange</xath>
+    <xpath>taxonomicSystem/classificationSystem/classificationSystemCitation/article/publisher/organizationName</xath>
+    <xpath>taxonomicClassification/taxonRankName</xpath>
+    <xpath>taxonomicClassification/taxonRankValue</xpath>
+    <xpath>taxonomicClassificatio/taxonomicClassification/taxonRankName</xpath>
+    <xpath>taxonomicClassificatio/taxonomicClassification/taxonRankValue</xpath>
+    <loadDataFromRootPath>true</loadDataFromRootPath>
+    <wizardPageClass>edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.Taxonomic</wizardPageClass>
+   </mapping>
+   <mapping>
+    <root>/eml:eml/dataset/methods/</root>
+    <xpath>methodStep/description/section/title</xpath>
+    <xpath>methodStep/description/section</xpath>
+    <xpath>methodStep/instrumentation</xpath>
+    <xpath>sampling/studyExtent/description</xpath>
+    <xpath>sampling/samplingDescription</xpath>
+    <loadDataFromRootPath>true</loadDataFromRootPath>
+    <wizardPageClass>edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.Methods</wizardPageClass>
+   </mapping>
+   <mapping>
     <root>/eml:eml/access/</root>
     <xpath>allow/principal</xpath>
     <xpath>allow/permission</xpath>
@@ -114,7 +183,27 @@
     <xpath>attributeName</xpath>
     <xpath>attributeLabel</xpath>
     <xpath>attributeDefinition</xpath>
-    <xpath>deny/permission</xpath>
+    <xpath>storageType</xpath>
+    <xpath>measurementScale/ratio/unit/standardUnit</xpath>
+    <xpath>measurementScale/ratio/unit/customUnit</xpath>
+    <xpath>measurementScale/ratio/precision</xpath>
+    <xpath>measurementScale/ratio/numericDomain/numberType</xpath>
+    <xpath>measurementScale/ratio/numericDomain/bounds/minimum</xpath>
+    <xpath>measurementScale/ratio/numericDomain/bounds/maximum</xpath>
+    <xpath>measurementScale/interval/unit/standardUnit</xpath>
+    <xpath>measurementScale/interval/unit/customUnit</xpath>
+    <xpath>measurementScale/interval/precision</xpath>
+    <xpath>measurementScale/interval/numericDomain/numberType</xpath>
+    <xpath>measurementScale/interval/numericDomain/bounds/minimum</xpath>
+    <xpath>measurementScale/interval/numericDomain/bounds/maximum</xpath>
+    <xpath>measurementScale/nominal/nonNumericDomain/enumeratedDomain/codeDefinition/code</xpath>
+    <xpath>measurementScale/nominal/nonNumericDomain/enumeratedDomain/codeDefinition/definition</xpath>
+    <xpath>measurementScale/ordinal/nonNumericDomain/enumeratedDomain/codeDefinition/code</xpath>
+    <xpath>measurementScale/ordinal/nonNumericDomain/enumeratedDomain/codeDefinition/definition</xpath>
+    <xpath>measurementScale/dateTime/formatString</xpath>
+    <xpath>measurementScale/dateTime/precision</xpath>
+    <xpath>measurementScale/dateTime/dateTimeDomain/bounds/minimum</xpath>
+    <xpath>measurementScale/dateTime/dateTimeDomain/bounds/maximum</xpath>
     <loadDataFromRootPath>true</loadDataFromRootPath>
     <wizardPageClass>edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.Attribute</wizardPageClass>
   </mapping>
