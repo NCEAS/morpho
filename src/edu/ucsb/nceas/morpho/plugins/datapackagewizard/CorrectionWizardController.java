@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2009-04-04 00:29:09 $'
- * '$Revision: 1.14 $'
+ *     '$Date: 2009-04-08 22:10:19 $'
+ * '$Revision: 1.15 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -283,7 +283,7 @@ public class CorrectionWizardController
 							xPath = (String)list.elementAt(i);
 							//System.out.println("==========the xpath is "+xPath);
 							xPath = removeParaFromXPath(xPath);
-							nodeList = XMLUtilities.getNodeListWithXPath(dataPackage.getMetadataNode(), mapping.getRoot()+xPath);
+							nodeList = XMLUtilities.getNodeListWithXPath(dataPackage.getMetadataNode(), mapping.getRoot()+SLASH+xPath);
 							Node node = nodeList.item(0);
 							if(firstTime)
 							{
@@ -427,7 +427,7 @@ public class CorrectionWizardController
 				    	  for(int j=0; j<list.size(); j++)
 				    	  {
 				    		  String shortPath = (String)list.elementAt(j);
-				    		  String fullPath = root+shortPath;
+				    		  String fullPath = root+SLASH+shortPath;
 				    		  Log.debug(48, "put "+fullPath+" into full path mapping");
 				    		  Log.debug(48, "put short path "+ shortPath +" into short path mapping");
 				    		  fullPathMapping.put(fullPath, unit);
