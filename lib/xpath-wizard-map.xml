@@ -115,7 +115,7 @@
    </mapping>
    <mapping>
     <root>/eml:eml/dataset/coverage/taxonomicCoverage/</root>
-    <xpath>taxonomicSystem/classificationSystem/classificationSystemCitation/title</xath>
+    <xpath>taxonomicSystem/classificationSystem/classificationSystemCitation/title</xpath>
     <xpath>taxonomicSystem/classificationSystem/classificationSystemCitation/creator/individualName/salutation</xpath>
     <xpath>taxonomicSystem/classificationSystem/classificationSystemCitation/creator/individualName/givenName</xpath>
     <xpath>taxonomicSystem/classificationSystem/classificationSystemCitation/creator/individualName/surName</xpath>
@@ -129,19 +129,19 @@
     <xpath>taxonomicSystem/classificationSystem/classificationSystemCitation/creator/phone</xpath>
     <xpath>taxonomicSystem/classificationSystem/classificationSystemCitation/creator/electronicMailAddress</xpath>
     <xpath>taxonomicSystem/classificationSystem/classificationSystemCitation/creator/onlineUrl</xpath>
-    <xpath>taxonomicSystem/classificationSystem/classificationSystemCitation/pubDate</xath>
-    <xpath>taxonomicSystem/classificationSystem/classificationSystemCitation/book/publisher/organizationName</xath>
-    <xpath>taxonomicSystem/classificationSystem/classificationSystemCitation/book/edition</xath>
-    <xpath>taxonomicSystem/classificationSystem/classificationSystemCitation/book/volume</xath>
-    <xpath>taxonomicSystem/classificationSystem/classificationSystemCitation/book/ISBN</xath>
-    <xpath>taxonomicSystem/classificationSystem/classificationSystemCitation/report/reportNumber</xath>
-    <xpath>taxonomicSystem/classificationSystem/classificationSystemCitation/report/publisher/organizationName</xath>
-    <xpath>taxonomicSystem/classificationSystem/classificationSystemCitation/report/totalPages</xath>
-    <xpath>taxonomicSystem/classificationSystem/classificationSystemCitation/article/journal</xath>
-    <xpath>taxonomicSystem/classificationSystem/classificationSystemCitation/article/volume</xath>
-    <xpath>taxonomicSystem/classificationSystem/classificationSystemCitation/article/issue</xath>
-    <xpath>taxonomicSystem/classificationSystem/classificationSystemCitation/article/pageRange</xath>
-    <xpath>taxonomicSystem/classificationSystem/classificationSystemCitation/article/publisher/organizationName</xath>
+    <xpath>taxonomicSystem/classificationSystem/classificationSystemCitation/pubDate</xpath>
+    <xpath>taxonomicSystem/classificationSystem/classificationSystemCitation/book/publisher/organizationName</xpath>
+    <xpath>taxonomicSystem/classificationSystem/classificationSystemCitation/book/edition</xpath>
+    <xpath>taxonomicSystem/classificationSystem/classificationSystemCitation/book/volume</xpath>
+    <xpath>taxonomicSystem/classificationSystem/classificationSystemCitation/book/ISBN</xpath>
+    <xpath>taxonomicSystem/classificationSystem/classificationSystemCitation/report/reportNumber</xpath>
+    <xpath>taxonomicSystem/classificationSystem/classificationSystemCitation/report/publisher/organizationName</xpath>
+    <xpath>taxonomicSystem/classificationSystem/classificationSystemCitation/report/totalPages</xpath>
+    <xpath>taxonomicSystem/classificationSystem/classificationSystemCitation/article/journal</xpath>
+    <xpath>taxonomicSystem/classificationSystem/classificationSystemCitation/article/volume</xpath>
+    <xpath>taxonomicSystem/classificationSystem/classificationSystemCitation/article/issue</xpath>
+    <xpath>taxonomicSystem/classificationSystem/classificationSystemCitation/article/pageRange</xpath>
+    <xpath>taxonomicSystem/classificationSystem/classificationSystemCitation/article/publisher/organizationName</xpath>
     <xpath>taxonomicClassification/taxonRankName</xpath>
     <xpath>taxonomicClassification/taxonRankValue</xpath>
     <xpath>taxonomicClassificatio/taxonomicClassification/taxonRankName</xpath>
@@ -205,7 +205,7 @@
     <xpath>measurementScale/dateTime/dateTimeDomain/bounds/minimum</xpath>
     <xpath>measurementScale/dateTime/dateTimeDomain/bounds/maximum</xpath>
     <loadDataFromRootPath>true</loadDataFromRootPath>
-    <wizardPageClass>edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.Attribute</wizardPageClass>
+    <wizardPageClass>edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.AttributePage</wizardPageClass>
   </mapping>
 </mappingList>
 
