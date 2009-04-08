@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2008-11-25 20:27:48 $'
- * '$Revision: 1.28 $'
+ *     '$Date: 2009-04-08 23:45:50 $'
+ * '$Revision: 1.29 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -81,7 +81,7 @@ class DateTimePanel extends JPanel implements WizardPageSubPanelAPI {
   private JButton addButton, delButton;
 
   private String dateTimeDomainID = "";
-  private String emlVersion = "";
+  //private String emlVersion = "";
   private boolean precisionRequired = false;
   private static final String EML_VER_200 = "eml-2.0.0";
 
@@ -110,9 +110,9 @@ class DateTimePanel extends JPanel implements WizardPageSubPanelAPI {
 
     this.setPreferredSize(dims);
 
-    emlVersion = ((EML200DataPackage)UIController.getInstance()
+    /*emlVersion = ((EML200DataPackage)UIController.getInstance()
                  .getCurrentAbstractDataPackage()).getEMLVersion();
-    Log.debug(30, "EML version: " + emlVersion);
+    Log.debug(30, "EML version: " + emlVersion);*/
 
     ////////////////////////
 
@@ -135,9 +135,9 @@ class DateTimePanel extends JPanel implements WizardPageSubPanelAPI {
     this.add(formatStringGrid);
 
 
-    if (emlVersion.equals(EML_VER_200)) {
+    /*if (emlVersion.equals(EML_VER_200)) {
         precisionRequired = true;
-    }
+    }*/
     JPanel precisionPanel = WidgetFactory.makePanel();
     precisionLabel = WidgetFactory.makeLabel("Precision:", precisionRequired,
                                              WizardSettings.WIZARD_CONTENT_LABEL_DIMS);
