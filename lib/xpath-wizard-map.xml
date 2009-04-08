@@ -1,21 +1,21 @@
 <mappingList>
    <!-- for metadata-->
    <mapping>
-    <root>/eml:eml/dataset/</root>
+    <root>/eml:eml/dataset</root>
     <xpath>title</xpath>
     <xpath>abstract</xpath>
     <loadDataFromRootPath>false</loadDataFromRootPath>
     <wizardPageClass>edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.General</wizardPageClass>
   </mapping>
   <mapping>
-    <root>/eml:eml/dataset/keywordSet/</root>
+    <root>/eml:eml/dataset/keywordSet</root>
     <xpath>keyword</xpath>
     <xpath>keywordThesaurus</xpath>
     <loadDataFromRootPath>true</loadDataFromRootPath>
     <wizardPageClass>edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.Keywords</wizardPageClass>
   </mapping>
   <mapping>
-    <root>/eml:eml/dataset/creator/</root>
+    <root>/eml:eml/dataset/creator</root>
     <xpath>individualName/salutation</xpath>
     <xpath>individualName/givenName</xpath>
     <xpath>individualName/surName</xpath>
@@ -33,7 +33,7 @@
     <wizardPageClass>edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.PartyMainPage</wizardPageClass>
   </mapping>
    <mapping>
-    <root>/eml:eml/dataset/contact/</root>
+    <root>/eml:eml/dataset/contact</root>
     <xpath>individualName/salutation</xpath>
     <xpath>individualName/givenName</xpath>
     <xpath>individualName/surName</xpath>
@@ -51,7 +51,7 @@
     <wizardPageClass>edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.PartyMainPage</wizardPageClass>
   </mapping>
    <mapping>
-    <root>/eml:eml/dataset/associatedParty/</root>
+    <root>/eml:eml/dataset/associatedParty</root>
     <xpath>individualName/salutation</xpath>
     <xpath>individualName/givenName</xpath>
     <xpath>individualName/surName</xpath>
@@ -70,7 +70,7 @@
     <wizardPageClass>edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.PartyMainPage</wizardPageClass>
   </mapping>
    <mapping>
-    <root>/eml:eml/dataset/project/</root>
+    <root>/eml:eml/dataset/project</root>
     <xpath>title</xpath>
     <xpath>personnel/individualName/salutation</xpath>
     <xpath>personnel/individualName/givenName</xpath>
@@ -96,7 +96,7 @@
     <wizardPageClass>edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.UsageRights</wizardPageClass>
    </mapping>
     <mapping>
-    <root>/eml:eml/dataset/coverage/geographicCoverage/</root>
+    <root>/eml:eml/dataset/coverage/geographicCoverage</root>
     <xpath>geographicDescription</xpath>
     <xpath>boundingCoordinates/westBoundingCoordinate</xpath>
     <xpath>boundingCoordinates/eastBoundingCoordinate</xpath>
@@ -106,7 +106,7 @@
     <wizardPageClass>edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.Geographic</wizardPageClass>
    </mapping>
     <mapping>
-    <root>/eml:eml/dataset/coverage/temporalCoverage/</root>
+    <root>/eml:eml/dataset/coverage/temporalCoverage</root>
     <xpath>singleDateTime/calendarDate</xpath>
     <xpath>rangeOfDates/beginDate/calendarDate</xpath>
     <xpath>rangeOfDates/endDate/calendarDate</xpath>
@@ -114,7 +114,7 @@
     <wizardPageClass>edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.Temporal</wizardPageClass>
    </mapping>
    <mapping>
-    <root>/eml:eml/dataset/coverage/taxonomicCoverage/</root>
+    <root>/eml:eml/dataset/coverage/taxonomicCoverage</root>
     <xpath>taxonomicSystem/classificationSystem/classificationSystemCitation/title</xpath>
     <xpath>taxonomicSystem/classificationSystem/classificationSystemCitation/creator/individualName/salutation</xpath>
     <xpath>taxonomicSystem/classificationSystem/classificationSystemCitation/creator/individualName/givenName</xpath>
@@ -150,7 +150,7 @@
     <wizardPageClass>edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.Taxonomic</wizardPageClass>
    </mapping>
    <mapping>
-    <root>/eml:eml/dataset/methods/</root>
+    <root>/eml:eml/dataset/methods</root>
     <xpath>methodStep/description/section/title</xpath>
     <xpath>methodStep/description/section</xpath>
     <xpath>methodStep/instrumentation</xpath>
@@ -160,7 +160,7 @@
     <wizardPageClass>edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.Methods</wizardPageClass>
    </mapping>
    <mapping>
-    <root>/eml:eml/access/</root>
+    <root>/eml:eml/access</root>
     <xpath>allow/principal</xpath>
     <xpath>allow/permission</xpath>
     <xpath>deny/principal</xpath>
@@ -170,7 +170,7 @@
    </mapping>
    <mapping>
     <!-- for data-->
-    <root>/eml:eml/dataset/dataTable/physical/distribution/access/</root>
+    <root>/eml:eml/dataset/dataTable/physical/distribution/access</root>
     <xpath>allow/principal</xpath>
     <xpath>allow/permission</xpath>
     <xpath>deny/principal</xpath>
@@ -179,7 +179,7 @@
     <wizardPageClass>edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.Access</wizardPageClass>
   </mapping>
   <mapping>
-    <root>/eml:eml/dataset/dataTable/attributeList/attribute/</root>
+    <root>/eml:eml/dataset/dataTable/attributeList/attribute</root>
     <xpath>attributeName</xpath>
     <xpath>attributeLabel</xpath>
     <xpath>attributeDefinition</xpath>
