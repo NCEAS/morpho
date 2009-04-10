@@ -5,9 +5,9 @@
  *    Authors: @authors@
  *    Release: @release@
  *
- *   '$Author: leinfelder $'
- *     '$Date: 2009-02-24 19:34:07 $'
- * '$Revision: 1.139 $'
+ *   '$Author: tao $'
+ *     '$Date: 2009-04-10 18:17:02 $'
+ * '$Revision: 1.140 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -4340,5 +4340,76 @@ public abstract class AbstractDataPackage extends MetadataObject
 	  {
 		  this.dirtyEntityIndexList.removeElement(index);
 	  }
+	  
+	  /**
+	   * Gets attribute column name from a map
+	   * @param map
+	   * @param xPath
+	   * @return
+	   */
+	  public static String getAttributeColumnName(OrderedMap map, String xPath) {
+
+		    Object o1 = map.get(xPath + "/attributeName");
+		    if(o1 == null) return "";
+		    else return (String) o1;
+		  }
+     
+	  /**
+	   * Gets measurement scale from a given map
+	   * @param map
+	   * @param xPath
+	   * @return
+	   */
+	 public static String getMeasurementScale(OrderedMap map, String xPath) {
+
+		    Object o1 = map.get(xPath + "/measurementScale/nominal/nonNumericDomain/enumeratedDomain[1]/codeDefinition[1]/code");
+		    if(o1 != null) return "Nominal";
+		    boolean b1 = map.containsKey(xPath + "/measurementScale/nominal/nonNumericDomain/enumeratedDomain[1]/entityCodeList/entityReference");
+		    if(b1) return "Nominal";
+		    o1 = map.get(xPath + "/measurementScale/nominal/nonNumericDomain/textDomain[1]/definition");
+		    if(o1 != null) return "Nominal";
+
+		    o1 = map.get(xPath + "/measurementScale/ordinal/nonNumericDomain/enumeratedDomain[1]/codeDefinition[1]/code");
+		    if(o1 != null) return "Ordinal";
+		    b1 = map.containsKey(xPath + "/measurementScale/ordinal/nonNumericDomain/enumeratedDomain[1]/entityCodeList/entityReference");
+		    if(b1) return "Ordinal";
+		    o1 = map.get(xPath + "/measurementScale/ordinal/nonNumericDomain/textDomain[1]/definition");
+		    if(o1 != null) return "Ordinal";
+
+		    o1 = map.get(xPath + "/measurementScale/interval/unit/standardUnit");
+		    if(o1 != null) return "Interval";
+				o1 = map.get(xPath + "/measurementScale/interval/unit/customUnit");
+		    if(o1 != null) return "Interval";
+				
+		    o1 = map.get(xPath + "/measurementScale/ratio/unit/standardUnit");
+		    if(o1 != null) return "Ratio";
+				o1 = map.get(xPath + "/measurementScale/ratio/unit/customUnit");
+		    if(o1 != null) return "Ratio";
+
+		    o1 = map.get(xPath + "/measurementScale/dateTime/formatString");
+		    if(o1 != null) return "Datetime";
+
+		    return "";
+		  }
+	    
+	    /**
+	     * Determines if this need a import.
+	     * @param map
+	     * @param xPath
+	     * @param mScale
+	     * @return
+	     */
+		public static boolean isImportNeeded(OrderedMap map, String xPath, String mScale) {
+			
+			mScale = mScale.toLowerCase();
+			if(!(mScale.equals("nominal") || mScale.equals("ordinal"))) return false;
+			String path = xPath + "/measurementScale/" + mScale + "/nonNumericDomain/enumeratedDomain[1]/entityCodeList/entityReference";
+			boolean present = map.containsKey(path);
+			if(!present) return false;
+			String o = (String)map.get(path);
+			if(o == null || o.trim().equals("")) return true;
+			return false;
+		}
+
 }
 
