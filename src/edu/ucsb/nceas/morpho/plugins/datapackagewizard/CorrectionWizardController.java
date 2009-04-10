@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2009-04-08 22:10:19 $'
- * '$Revision: 1.15 $'
+ *     '$Date: 2009-04-10 03:25:48 $'
+ * '$Revision: 1.16 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -107,6 +107,8 @@ public class CorrectionWizardController
 	private final static String LEFTBRACKET = "[";
 	private final static char RIGHTBRACKETCHAR = ']';
 	private final static char LEFTBRACKETCHAR = '[';
+	private final static String DATATABLEPATH = "/eml:eml/dataset/dataTable";
+	private final static String ATTRIBUTEPATH ="//attributeList/attribute";
 	
 	/**
 	 * Constructor
@@ -182,13 +184,13 @@ public class CorrectionWizardController
 				}
 				catch(Exception e)
 				{
-					Log.debug(30, "couldn't find the ui page "+e.getMessage());
+					Log.debug(30, "couldn't find the ui page for path "+path +" since "+e.getMessage());
 				}
 				
 				// found a wizard page for this path
 				if (page != null)
 				{
-					Log.debug(45, "page object is "+page.toString());
+					Log.debug(45, "find a UI page object for path "+path);
 					// set up next id for previous page
 					if (previousPage != null)
 					{
@@ -202,6 +204,7 @@ public class CorrectionWizardController
 				else
 				{
 					//no wizard page found and add a tree editor to the list
+					Log.debug(45, "Put the path "+path+" into tree editor list");
 					path = XMLUtilities.removeAllPredicates(path);
 					pathListForTreeEditor.add(path);
 				}
@@ -231,6 +234,7 @@ public class CorrectionWizardController
 	{
 		AbstractUIPage page = null;
 		String className = null;
+		boolean mapDataFit = false;
 		if (mappingList != null)
 		{
 			XPathUIPageMapping mapping = getXPathUIPageMapping(path);
@@ -246,17 +250,17 @@ public class CorrectionWizardController
 					boolean loadDataFromRoot = mapping.isLoadDataFromRootPath();
 					NodeList nodeList = null;
 					if (loadDataFromRoot)
-					{
-						//load data from root
-						nodeList = XMLUtilities.getNodeListWithXPath(dataPackage.getMetadataNode(), mapping.getRoot());	
-						// we need some mechanism to find out the index. now i just use 0
-						Node node = nodeList.item(0);
-						xpathMap = XMLUtilities.getDOMTreeAsXPathMap(node);
+					{	
 						//page.setXPathRoot(node);
 						if (page instanceof AttributePage)
 						{
 							int entityIndex = getDataTableIndex(path);
 							int attributeIndex = getAttributeIndex(path);
+							nodeList = XMLUtilities.getNodeListWithXPath(dataPackage.getMetadataNode(), DATATABLEPATH);
+							Node entityNode = nodeList.item(entityIndex);
+							nodeList = XMLUtilities.getNodeListWithXPath(dataPackage.getMetadataNode(),ATTRIBUTEPATH);
+							Node node = nodeList.item(attributeIndex);
+							xpathMap = XMLUtilities.getDOMTreeAsXPathMap(node, "/eml:eml/dataset/dataTable/attributeList");							
 							page.setRootNodeIndex(entityIndex);
 							AttributePage aPage =(AttributePage)page;
 							aPage.setAttributeIndex(attributeIndex);
@@ -264,11 +268,17 @@ public class CorrectionWizardController
 						} 
 						else if(page instanceof Entity)
 						{
+							nodeList = XMLUtilities.getNodeListWithXPath(dataPackage.getMetadataNode(), mapping.getRoot());	
+							Node node = nodeList.item(0);
+							xpathMap = XMLUtilities.getDOMTreeAsXPathMap(node, "");
 							int entityIndex = getDataTableIndex(path);
 							page.setRootNodeIndex(entityIndex);
 						}
 						else
 						{
+							nodeList = XMLUtilities.getNodeListWithXPath(dataPackage.getMetadataNode(), mapping.getRoot());	
+							Node node = nodeList.item(0);
+							xpathMap = XMLUtilities.getDOMTreeAsXPathMap(node, "");
 							page.setRootNodeIndex(0);
 						}
 					}
@@ -300,11 +310,16 @@ public class CorrectionWizardController
 						}
 						
 					}	
-					Log.debug(48, "the xmpath map is "+xpathMap.toString());
-					page.setPageData(xpathMap, null);
+					Log.debug(46, "the xmpath map is "+xpathMap.toString());
+					mapDataFit = page.setPageData(xpathMap, "");
 				}
 		
 			}
+		}
+		//The map has more data that our page can handle. so set page to null and let tree editor to handle it.
+		if(!mapDataFit)
+		{
+			page = null;
 		}
 		return page;
 	}
@@ -497,6 +512,10 @@ public class CorrectionWizardController
 		} catch (ClassNotFoundException e) {
 			Log.debug(30, "ClassNotFoundException "+e.getMessage());
 		} 
+		catch(Exception e)
+		{
+			Log.debug(30, "Exception in creating an UI page object through the class name "+className + " is " +e.getMessage());
+		}
 		return (AbstractUIPage)object;
 	}
 	
