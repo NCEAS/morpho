@@ -7,8 +7,8 @@
 *    Release: @release@
 *
 *   '$Author: tao $'
-*     '$Date: 2009-03-31 01:32:23 $'
-* '$Revision: 1.41 $'
+*     '$Date: 2009-04-10 00:07:35 $'
+* '$Revision: 1.42 $'
 *
 * This program is free software; you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -1011,7 +1011,7 @@ public class AttributePage extends AbstractUIPage {
     }
 
     String name = (String)map.get(xPathRoot + "/attributeName[1]");
-    if(name != null)
+    //if(name != null)
       map = stripIndexOneFromMapKeys(map);
     String mScale = findMeasurementScale(map);
 
