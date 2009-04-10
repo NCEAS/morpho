@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2009-02-04 00:38:33 $'
- * '$Revision: 1.21 $'
+ *     '$Date: 2009-04-10 18:19:36 $'
+ * '$Revision: 1.22 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -176,7 +176,6 @@ public class EditColumnMetaDataCommand implements Command
     Node currentAttr = attributes[attrIndex];
     map = XMLUtilities.getDOMTreeAsXPathMap(currentAttr,
                     "/eml:eml/dataset/dataTable/attributeList");
-
     ServiceController sc;
     DataPackageWizardInterface dpwPlugin = null;
     try {
@@ -202,7 +201,6 @@ public class EditColumnMetaDataCommand implements Command
 			wpd.setSize(UISettings.POPUPDIALOG_WIDTH, UISettings.POPUPDIALOG_FOR_ATTR_HEIGHT);
 			wpd.validate();
 			wpd.setVisible(true);
-			
 			if (wpd.USER_RESPONSE == ModalDialog.OK_OPTION) {
 				adp.setLocation("");
 				resultPane.saveDataChanges();  // needed to flag datatable changes
@@ -212,9 +210,9 @@ public class EditColumnMetaDataCommand implements Command
 					return;
 				}
 				
-				columnName = getColumnName(map, xPath );
-				mScale = getMeasurementScale(map, xPath);
-				boolean toImport = isImportNeeded(map, xPath, mScale);
+				columnName = AbstractDataPackage.getAttributeColumnName(map, xPath );
+				mScale = AbstractDataPackage.getMeasurementScale(map, xPath);
+				boolean toImport = AbstractDataPackage.isImportNeeded(map, xPath, mScale);
 				if(toImport) {
 					String entityName = adp.getEntityName(entityIndex);
 					
@@ -265,17 +263,7 @@ public class EditColumnMetaDataCommand implements Command
 
   } // end of execute
 	
-	private boolean isImportNeeded(OrderedMap map, String xPath, String mScale) {
-		
-		mScale = mScale.toLowerCase();
-		if(!(mScale.equals("nominal") || mScale.equals("ordinal"))) return false;
-		String path = xPath + "/measurementScale/" + mScale + "/nonNumericDomain/enumeratedDomain[1]/entityCodeList/entityReference";
-		boolean present = map.containsKey(path);
-		if(!present) return false;
-		String o = (String)map.get(path);
-		if(o == null || o.trim().equals("")) return true;
-		return false;
-	}
+
 	
   private void modifyAttribute()
   {
@@ -317,45 +305,7 @@ public class EditColumnMetaDataCommand implements Command
 
   }//end of modifyAttribute
 
-  private String getColumnName(OrderedMap map, String xPath) {
-
-    Object o1 = map.get(xPath + "/attributeName");
-    if(o1 == null) return "";
-    else return (String) o1;
-  }
-
-  private String getMeasurementScale(OrderedMap map, String xPath) {
-
-    Object o1 = map.get(xPath + "/measurementScale/nominal/nonNumericDomain/enumeratedDomain[1]/codeDefinition[1]/code");
-    if(o1 != null) return "Nominal";
-    boolean b1 = map.containsKey(xPath + "/measurementScale/nominal/nonNumericDomain/enumeratedDomain[1]/entityCodeList/entityReference");
-    if(b1) return "Nominal";
-    o1 = map.get(xPath + "/measurementScale/nominal/nonNumericDomain/textDomain[1]/definition");
-    if(o1 != null) return "Nominal";
-
-    o1 = map.get(xPath + "/measurementScale/ordinal/nonNumericDomain/enumeratedDomain[1]/codeDefinition[1]/code");
-    if(o1 != null) return "Ordinal";
-    b1 = map.containsKey(xPath + "/measurementScale/ordinal/nonNumericDomain/enumeratedDomain[1]/entityCodeList/entityReference");
-    if(b1) return "Ordinal";
-    o1 = map.get(xPath + "/measurementScale/ordinal/nonNumericDomain/textDomain[1]/definition");
-    if(o1 != null) return "Ordinal";
-
-    o1 = map.get(xPath + "/measurementScale/interval/unit/standardUnit");
-    if(o1 != null) return "Interval";
-		o1 = map.get(xPath + "/measurementScale/interval/unit/customUnit");
-    if(o1 != null) return "Interval";
-		
-    o1 = map.get(xPath + "/measurementScale/ratio/unit/standardUnit");
-    if(o1 != null) return "Ratio";
-		o1 = map.get(xPath + "/measurementScale/ratio/unit/customUnit");
-    if(o1 != null) return "Ratio";
-
-    o1 = map.get(xPath + "/measurementScale/dateTime/formatString");
-    if(o1 != null) return "Datetime";
-
-    return "";
-  }
-
+ 
   private String getUnit(OrderedMap map, String xPath) {
 
     Object o1 = map.get(xPath + "/measurementScale/interval/unit/standardUnit");
