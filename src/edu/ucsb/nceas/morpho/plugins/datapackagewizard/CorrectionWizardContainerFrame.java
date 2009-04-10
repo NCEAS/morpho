@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2009-04-01 18:32:12 $'
- * '$Revision: 1.7 $'
+ *     '$Date: 2009-04-10 21:49:16 $'
+ * '$Revision: 1.8 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -93,7 +93,8 @@ public class CorrectionWizardContainerFrame extends WizardContainerFrame
 		       Node newSubTree = null;
 		       if(page != null)
 		       {
-			       wizData = page.getPageData("");
+		    	   Log.debug(30, "the page in collection data is "+page.getPageID());
+			       wizData = page.getPageData(page.getPageDataXPathForCorrection());
 			       String[] listOfGenericPathName = page.getGenericPathName();
 			       if (listOfGenericPathName != null)
 			       {
@@ -303,27 +304,32 @@ public class CorrectionWizardContainerFrame extends WizardContainerFrame
 	  {
 		  if(dataPackage != null && page != null)
 		  {
-			  DOMImplementation impl = DOMImplementationImpl.getDOMImplementation();
-	    	  Document doc = impl.createDocument("", genericName, null);
-	          Node newSubTree = doc.getDocumentElement();
-	          XMLUtilities.getXPathMapAsDOMTree(data, newSubTree);
+			 
 	          if (page instanceof AttributePage)
-	          {	        	    
+	          {	     
+	        	    dataPackage.getEntityArray();
 	        	    AttributePage aPage = (AttributePage)page;
 	        	    int entityIndex = aPage.getRootNodeIndex();
 	        	    int attrIndex = aPage.getAttributeIndex();
+	        	    Log.debug(45, "======attribute is in entity "+entityIndex+ " and postition is "+attrIndex);
 	        	    String oldID = dataPackage.getAttributeID(entityIndex, attrIndex);
+	        	    Log.debug(45, "old id is "+oldID);
 	        		if(oldID == null || oldID.trim().equals("")) oldID = UISettings.getUniqueID();
 	                 data.put("/attribute/@id", oldID);
+	                //Log.debug(45, data.toString());
 	                Attribute attr = new Attribute(data);
 	                dataPackage.insertAttribute(entityIndex, attr, attrIndex);
 	        		dataPackage.deleteAttribute(entityIndex, attrIndex + 1);
 	          }
 	          else
 	          {
-	            dataPackage.deleteSubtree(genericName, page.getRootNodeIndex());
-	            // add to the datapackage
-	            Node check = dataPackage.insertSubtree(genericName, newSubTree, page.getRootNodeIndex());
+	        	  DOMImplementation impl = DOMImplementationImpl.getDOMImplementation();
+		    	  Document doc = impl.createDocument("", genericName, null);
+		          Node newSubTree = doc.getDocumentElement();
+		          XMLUtilities.getXPathMapAsDOMTree(data, newSubTree);
+	              dataPackage.deleteSubtree(genericName, page.getRootNodeIndex());
+	             // add to the datapackage
+	              Node check = dataPackage.insertSubtree(genericName, newSubTree, page.getRootNodeIndex());
 	             if (check != null) 
 		         {
 		            Log.debug(45, "added new abstract details to package...");

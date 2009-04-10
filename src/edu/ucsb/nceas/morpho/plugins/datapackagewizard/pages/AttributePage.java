@@ -7,8 +7,8 @@
 *    Release: @release@
 *
 *   '$Author: tao $'
-*     '$Date: 2009-04-10 00:07:35 $'
-* '$Revision: 1.42 $'
+*     '$Date: 2009-04-10 21:49:16 $'
+* '$Revision: 1.43 $'
 *
 * This program is free software; you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -136,8 +136,12 @@ public class AttributePage extends AbstractUIPage {
   private String xPathRoot = AttributeSettings.Attribute_xPath;
   
   private int attributeIndex = 0;
+  
+  private final String ATTRIBUTE = "attribute";
+  
+  private final String[] genericPathNameList = {ATTRIBUTE};
 
-
+ 
   final String ATTRIB_NAME_HELP
   = WizardSettings.HTML_NO_TABLE_OPENING
   +"Name of the attribute as it appears in the data file"
@@ -691,6 +695,21 @@ public class AttributePage extends AbstractUIPage {
   {
 	  this.attributeIndex = attributeIndex;
   }
+  
+  /**
+   * Gets a list of generic name of path of this page
+   * The order of the list should be as same as the order of subtrees in the page
+   */
+  public String[] getGenericPathName()
+  {
+	  return genericPathNameList;
+  }
+  
+  public String getPageDataXPathForCorrection()
+  {
+      return "/"+ATTRIBUTE;
+  }
+  
   /**
   *  The action to be executed when the "OK" button is pressed. If no onAdvance
   *  processing is required, implementation must return boolean true.

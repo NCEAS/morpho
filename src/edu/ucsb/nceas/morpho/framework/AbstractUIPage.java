@@ -5,8 +5,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2009-03-27 23:23:31 $'
- * '$Revision: 1.9 $'
+ *     '$Date: 2009-04-10 21:49:16 $'
+ * '$Revision: 1.10 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -199,6 +199,15 @@ public abstract class AbstractUIPage extends JPanel {
   public String[] getGenericPathName()
   {
 	  return null;
+  }
+  
+  /**
+   * Get the xpath for getting page data in correction form
+   * @return
+   */
+  public String getPageDataXPathForCorrection()
+  {
+      return "";
   }
 
 }

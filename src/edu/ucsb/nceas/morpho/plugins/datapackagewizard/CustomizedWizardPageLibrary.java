@@ -42,6 +42,7 @@ public class CustomizedWizardPageLibrary implements WizardPageLibraryInterface {
   {
 
      AbstractUIPage page = (AbstractUIPage)pageList.get(pageID);
+     Log.debug(30,  "++++++++++++++++++++++++++the page from statck is "+page.toString());
      return page;
   }
   
@@ -52,7 +53,7 @@ public class CustomizedWizardPageLibrary implements WizardPageLibraryInterface {
    */
   public void addPage(String pageID, AbstractUIPage page)
   {
-	  Log.debug(30, "add "+ pageID+"into CustomizedWizardPageLibrary");
+	  Log.debug(30, "add "+ pageID+" into CustomizedWizardPageLibrary");
 	  pageList.put(pageID, page);
   }
   
