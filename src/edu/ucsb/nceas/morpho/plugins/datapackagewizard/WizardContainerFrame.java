@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2009-03-25 01:33:44 $'
- * '$Revision: 1.74 $'
+ *     '$Date: 2009-04-11 00:38:18 $'
+ * '$Revision: 1.75 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -175,7 +175,9 @@ public class WizardContainerFrame
     setPageCount();
     middlePanel.add(getCurrentPage(), BorderLayout.CENTER);
     getCurrentPage().setOpaque(false);
-
+    //in correction wizard, if the frame displays two attribute page,
+    // the second would not be shown up. If we add the validate method, it can.
+    middlePanel.validate();
     middlePanel.repaint();
     updateButtonsStatus();
 
