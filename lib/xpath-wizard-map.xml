@@ -4,7 +4,19 @@
     <root>/eml:eml/dataset</root>
     <xpath>title</xpath>
     <xpath>abstract</xpath>
-    <loadDataFromRootPath>false</loadDataFromRootPath>
+    <infoForModifyingData>
+	     <loadExistDataPath>/eml:eml/dataset/title</loadExistDataPath>
+	     <xpathForCreatingOrderedMap>""</xpathForCreatingOrderedMap>
+             <newDataDocumentName>title</newDataDocumentName>
+             <xpathForGettingPageData>""</xpathForGettingPageData>
+             <genericName>title</genericName>
+     </infoForModifyingData>
+     <infoForModifyingData>
+	     <loadExistDataPath>/eml:eml/dataset/abstract</loadExistDataPath>
+	     <xpathForOrderedMap>""</xpathForOrderedMap>
+             <newDataDocumentName>abract</newDataDocumentName>
+             <genericName>abstract</genericName>
+     </infoForModifyingData>
     <wizardPageClass>edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.General</wizardPageClass>
   </mapping>
   <mapping>
@@ -204,7 +216,13 @@
     <xpath>measurementScale/dateTime/precision</xpath>
     <xpath>measurementScale/dateTime/dateTimeDomain/bounds/minimum</xpath>
     <xpath>measurementScale/dateTime/dateTimeDomain/bounds/maximum</xpath>
-    <loadDataFromRootPath>true</loadDataFromRootPath>
+     <infoForModifyingData>
+             <loadExistDataPath>/eml:eml/dataset/dataTable</loadExistDataPath>
+             <loadExistDataPath>./attributeList/attribute</loadExistDataPath> 
+             <xpathForCreatingOrderedMap>/eml:eml/dataset/dataTable/attributeList</xpathForCreatingOrderedMap>
+             <newDataDocumentName>attribute</newDataDocumentName>
+             <xpathForGettingPageData>/attribute</xpathForGettingPageData>
+     </infoForModifyingData>
     <wizardPageClass>edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.AttributePage</wizardPageClass>
   </mapping>
 </mappingList>
