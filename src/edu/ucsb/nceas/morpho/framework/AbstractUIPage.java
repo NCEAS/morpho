@@ -5,8 +5,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2009-04-10 21:49:16 $'
- * '$Revision: 1.10 $'
+ *     '$Date: 2009-04-14 20:47:09 $'
+ * '$Revision: 1.11 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,6 +25,9 @@
 
 package edu.ucsb.nceas.morpho.framework;
 
+import java.util.Vector;
+
+import edu.ucsb.nceas.morpho.util.XPathUIPageMapping;
 import edu.ucsb.nceas.utilities.OrderedMap;
 
 import javax.swing.JPanel;
@@ -40,7 +43,9 @@ public abstract class AbstractUIPage extends JPanel {
 	
 	protected String nextPageID = null;
 	
-	protected int rootNodeIndex = 0;
+	private Vector nodeIndex = new Vector();
+	
+	private XPathUIPageMapping xpathUIPageMapping= null;
 
   /**
    *  gets the unique ID for this UI page
@@ -174,40 +179,42 @@ public abstract class AbstractUIPage extends JPanel {
   }
   
   /**
-   * Set the root node index in metadata tree for the UIpage
+   * Add the node index into the UIpage
    * @param xPathRoot
    */
-  public void setRootNodeIndex(int rootNodeIndex)
+  public void addNodeIndex(int index)
   {
-	  this.rootNodeIndex = rootNodeIndex;
+	  this.nodeIndex.add(index);
   }
   
   /**
-   * Get the root node index in the metadata tree for the UIPage
+   * Gets node index of the UIPage
    * @return
    */
   
-  public int getRootNodeIndex()
+  public Vector getNodeIndexList()
   {
-	   return this.rootNodeIndex;  
+	   return this.nodeIndex;  
   }
   
+  
   /**
-   * Gets a list of generic name of path of this page
-   * The order of the list should be as same as the order of subtrees in the page
+   * Sets a XPathUIPageMapping to this page
+   * @param mapping
    */
-  public String[] getGenericPathName()
+  public void setXPathUIPageMapping(XPathUIPageMapping mapping)
   {
-	  return null;
+	  this.xpathUIPageMapping= mapping;
   }
   
   /**
-   * Get the xpath for getting page data in correction form
+   * Gets the XPathUIPageMapping of this page
    * @return
    */
-  public String getPageDataXPathForCorrection()
+  public XPathUIPageMapping getXPathUIPageMapping()
   {
-      return "";
+	 return this.xpathUIPageMapping;  
   }
+  
 
 }

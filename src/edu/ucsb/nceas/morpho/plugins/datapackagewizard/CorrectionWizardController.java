@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2009-04-10 03:25:48 $'
- * '$Revision: 1.16 $'
+ *     '$Date: 2009-04-14 20:47:09 $'
+ * '$Revision: 1.17 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -44,6 +44,8 @@ import edu.ucsb.nceas.morpho.plugins.ServiceProvider;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.AttributePage;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.Entity;
 import edu.ucsb.nceas.morpho.util.Log;
+import edu.ucsb.nceas.morpho.util.ModifyingPageDataInfo;
+import edu.ucsb.nceas.morpho.util.XPathUIPageMapping;
 import edu.ucsb.nceas.utilities.OrderedMap;
 import edu.ucsb.nceas.utilities.XMLUtilities;
 
@@ -94,7 +96,12 @@ public class CorrectionWizardController
 	private static final String XPATH = "xpath";
 	private static final String WIZARDAGECLASS = "wizardPageClass";
 	private static final String ROOT = "root";
-	private static final String LOADDATAFROMROOTPATH = "loadDataFromRootPath";
+	private static final String INFORORMODIFYINGDATA = "infoForModifyingData";
+	private static final String LOADEXISTDATAPATH = "loadExistDataPath";
+	private static final String XPATHFORGETTINGPAGEDATA = "xpathForGettingPageData";
+	private static final String NEWDATADOCUMENTNAME = "newDataDocumentName";
+	private static final String GENERICNAME = "genericName";
+	private static final String XPAHTFORCREATINGORDEREDMAP = "xpathForCreatingOrderedMap";
 	private static final String WIZARDCONTAINERFRAME = "edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardContainerFrame";
 	private static final String CORRECTIONSUMMARY = "edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.CorrectionSummary";
 	private static final String TITLE = "Correction Wizard";
@@ -107,8 +114,7 @@ public class CorrectionWizardController
 	private final static String LEFTBRACKET = "[";
 	private final static char RIGHTBRACKETCHAR = ']';
 	private final static char LEFTBRACKETCHAR = '[';
-	private final static String DATATABLEPATH = "/eml:eml/dataset/dataTable";
-	private final static String ATTRIBUTEPATH ="//attributeList/attribute";
+	
 	
 	/**
 	 * Constructor
@@ -245,26 +251,28 @@ public class CorrectionWizardController
 				{
 					OrderedMap xpathMap = null;
 					page = createAbstractUIpageObject(className, dpWiz);
+					page.setXPathUIPageMapping(mapping);
 					//load data into the page
 					//first we need to check if we should load data from root path.
-					boolean loadDataFromRoot = mapping.isLoadDataFromRootPath();
+				    Vector infoList = mapping.getModifyingPageDataInfoList();
 					NodeList nodeList = null;
-					if (loadDataFromRoot)
+					if (infoList != null && infoList.size() ==1)
 					{	
+						ModifyingPageDataInfo info = (ModifyingPageDataInfo)infoList.elementAt(0);
 						//page.setXPathRoot(node);
 						if (page instanceof AttributePage)
 						{
 							int entityIndex = getDataTableIndex(path);
 							int attributeIndex = getAttributeIndex(path);
-							nodeList = XMLUtilities.getNodeListWithXPath(dataPackage.getMetadataNode(), DATATABLEPATH);
+							page.addNodeIndex(entityIndex);
+							page.addNodeIndex(attributeIndex);
+							Vector loadExistingDataPathList = info.getLoadExistingDataPath();
+							nodeList = XMLUtilities.getNodeListWithXPath(dataPackage.getMetadataNode(),(String)loadExistingDataPathList.elementAt(0));
 							Node entityNode = nodeList.item(entityIndex);
-							nodeList = XMLUtilities.getNodeListWithXPath(dataPackage.getMetadataNode(),ATTRIBUTEPATH);
+							nodeList = XMLUtilities.getNodeListWithXPath(entityNode,(String)loadExistingDataPathList.elementAt(1));
 							Node node = nodeList.item(attributeIndex);
-							xpathMap = XMLUtilities.getDOMTreeAsXPathMap(node, "/eml:eml/dataset/dataTable/attributeList");							
-							page.setRootNodeIndex(entityIndex);
-							AttributePage aPage =(AttributePage)page;
-							aPage.setAttributeIndex(attributeIndex);
-							page = aPage;
+							xpathMap = XMLUtilities.getDOMTreeAsXPathMap(node,info.getPathForCreatingOrderedMap());							
+
 						} 
 						else if(page instanceof Entity)
 						{
@@ -272,32 +280,32 @@ public class CorrectionWizardController
 							Node node = nodeList.item(0);
 							xpathMap = XMLUtilities.getDOMTreeAsXPathMap(node, "");
 							int entityIndex = getDataTableIndex(path);
-							page.setRootNodeIndex(entityIndex);
+							page.addNodeIndex(entityIndex);
 						}
 						else
 						{
 							nodeList = XMLUtilities.getNodeListWithXPath(dataPackage.getMetadataNode(), mapping.getRoot());	
 							Node node = nodeList.item(0);
 							xpathMap = XMLUtilities.getDOMTreeAsXPathMap(node, "");
-							page.setRootNodeIndex(0);
+							page.addNodeIndex(0);
 						}
 					}
-					else
+					else if (infoList != null && infoList.size() > 1)
 					{
-						//load data from every root+xpath(like General page)
-						String xPath = null;
-						Vector list = mapping.getXpath();
+						//like General page
+		
+						Vector list = mapping.getModifyingPageDataInfoList();
 						boolean firstTime = true;
 						for (int i=0; i<list.size(); i++)
 						{
-							xPath = (String)list.elementAt(i);
+							ModifyingPageDataInfo info =(ModifyingPageDataInfo)list.elementAt(i);
+							String xPath = (String)info.getLoadExistingDataPath().elementAt(0);
 							//System.out.println("==========the xpath is "+xPath);
-							xPath = removeParaFromXPath(xPath);
-							nodeList = XMLUtilities.getNodeListWithXPath(dataPackage.getMetadataNode(), mapping.getRoot()+SLASH+xPath);
+							nodeList = XMLUtilities.getNodeListWithXPath(dataPackage.getMetadataNode(), xPath);
 							Node node = nodeList.item(0);
 							if(firstTime)
 							{
-							  xpathMap = XMLUtilities.getDOMTreeAsXPathMap(node);
+							  xpathMap = XMLUtilities.getDOMTreeAsXPathMap(node, info.getPathForCreatingOrderedMap());
 							  firstTime = false;
 							  //we set first child as the root node for not loading data from root path directly
 							  //page.setXPathRoot(node);
@@ -306,16 +314,24 @@ public class CorrectionWizardController
 							{
 								xpathMap.putAll(XMLUtilities.getDOMTreeAsXPathMap(node));
 							}
-							page.setRootNodeIndex(0);
+							page.addNodeIndex(0);
 						}
 						
 					}	
+					else
+					{
+						page = null;
+					}
 					Log.debug(46, "the xmpath map is "+xpathMap.toString());
-					mapDataFit = page.setPageData(xpathMap, "");
+					if (page != null)
+					{
+					   mapDataFit = page.setPageData(xpathMap, "");
+					}
 				}
 		
 			}
 		}
+		Log.debug(46, "The map data fit value is "+mapDataFit);
 		//The map has more data that our page can handle. so set page to null and let tree editor to handle it.
 		if(!mapDataFit)
 		{
@@ -422,16 +438,62 @@ public class CorrectionWizardController
 				            }
 				        }
 			          else if ((cn.getNodeType() == Node.ELEMENT_NODE)
-				              && (cn.getNodeName().equalsIgnoreCase(LOADDATAFROMROOTPATH)))
+				              && (cn.getNodeName().equalsIgnoreCase(INFORORMODIFYINGDATA)))
 				       {
-				            Node ccn = cn.getFirstChild();        // assumed to be a text node
-				            if ((ccn != null) && (ccn.getNodeType() == Node.TEXT_NODE))
-				            {
-				               loadDataFromRoot = ccn.getNodeValue();
-				               boolean loadData = true;
-				               loadData = (new Boolean(loadDataFromRoot)).booleanValue();
-				               unit.setLoadDataFromRootPath(loadData);
-				            }
+				           ModifyingPageDataInfo info = new ModifyingPageDataInfo();
+				           NodeList secondList = cn.getChildNodes();
+				           for (int k=0; k<secondList.getLength(); k++)
+				           {
+				        	   Node node = secondList.item(k);
+				        	   if((node.getNodeType() == Node.ELEMENT_NODE) && 
+				        			   (node.getNodeName().equalsIgnoreCase(LOADEXISTDATAPATH)))
+				        	   {
+				        		   Node textNode = node.getFirstChild();
+				        		   if(textNode != null && textNode.getNodeType() == Node.TEXT_NODE)
+				        		   {
+				        			   info.addLoadExistingDataPath(textNode.getNodeValue());
+				        		   } 
+				        	   }
+				        	   else if ((node.getNodeType() == Node.ELEMENT_NODE) && 
+				        			   (node.getNodeName().equalsIgnoreCase(XPATHFORGETTINGPAGEDATA)))
+				        	   {
+				        		   Node textNode = node.getFirstChild();
+				        		   if(textNode != null && textNode.getNodeType() == Node.TEXT_NODE)
+				        		   {
+				        			   info.setPathForgettingPageData(textNode.getNodeValue());
+				        		   } 
+				        	   }
+				        	   else if ((node.getNodeType() == Node.ELEMENT_NODE) && 
+				        			   (node.getNodeName().equalsIgnoreCase(NEWDATADOCUMENTNAME)))
+				        	   {
+				        		   Node textNode = node.getFirstChild();
+				        		   if(textNode != null && textNode.getNodeType() == Node.TEXT_NODE)
+				        		   {
+				        			   info.setDocumentName(textNode.getNodeValue());
+				        		   } 
+				        	   }
+				        	   else if ((node.getNodeType() == Node.ELEMENT_NODE) && 
+				        			   (node.getNodeName().equalsIgnoreCase(GENERICNAME)))
+				        	   {
+				        		   Node textNode = node.getFirstChild();
+				        		   if(textNode != null && textNode.getNodeType() == Node.TEXT_NODE)
+				        		   {
+				        			   info.setGenericName(textNode.getNodeValue());
+				        		   } 
+				        	   }
+				        	   else if ((node.getNodeType() == Node.ELEMENT_NODE) && 
+				        			   (node.getNodeName().equalsIgnoreCase(XPAHTFORCREATINGORDEREDMAP)))
+				        	   {
+				        		   Node textNode = node.getFirstChild();
+				        		   if(textNode != null && textNode.getNodeType() == Node.TEXT_NODE)
+				        		   {
+				        			   info.setPathForCreatingOrderedMap(textNode.getNodeValue());
+				        		   } 
+				        	   }
+				        	   
+				        		  
+				           }
+				           unit.addModifyingPageDataInfo(info);
 				        }
 			            
 			         }			        

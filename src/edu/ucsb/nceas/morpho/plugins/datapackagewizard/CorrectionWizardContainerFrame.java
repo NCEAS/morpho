@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2009-04-10 21:49:16 $'
- * '$Revision: 1.8 $'
+ *     '$Date: 2009-04-14 20:47:09 $'
+ * '$Revision: 1.9 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -50,7 +50,9 @@ import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.AttributePage;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.General;
 import edu.ucsb.nceas.morpho.util.Log;
+import edu.ucsb.nceas.morpho.util.ModifyingPageDataInfo;
 import edu.ucsb.nceas.morpho.util.UISettings;
+import edu.ucsb.nceas.morpho.util.XPathUIPageMapping;
 import edu.ucsb.nceas.utilities.OrderedMap;
 import edu.ucsb.nceas.utilities.XMLUtilities;
 
@@ -93,19 +95,20 @@ public class CorrectionWizardContainerFrame extends WizardContainerFrame
 		       Node newSubTree = null;
 		       if(page != null)
 		       {
+		    	   XPathUIPageMapping mapping = page.getXPathUIPageMapping();
 		    	   Log.debug(30, "the page in collection data is "+page.getPageID());
-			       wizData = page.getPageData(page.getPageDataXPathForCorrection());
-			       String[] listOfGenericPathName = page.getGenericPathName();
-			       if (listOfGenericPathName != null)
+			       
+			       if (mapping != null)
 			       {
-		    	   
-			    	   if(listOfGenericPathName.length>1)
+		    	       Vector infoList = mapping.getModifyingPageDataInfoList();
+			    	   if(infoList != null && infoList.size()>1)
 			    	   {
+			    		   wizData = page.getPageData(((ModifyingPageDataInfo)infoList.elementAt(0)).getPathForgettingPageData());
 			    		   //This UI page will generate more than one sub trees.
 			    		   //The order of the list of generic path name should be as same as the order of sub trees
-			    	      for(int i=0; i<listOfGenericPathName.length; i++)
+			    	      for(int i=0; i<infoList.size(); i++)
 			    	      {
-			    	    	  String genericName = listOfGenericPathName[i];
+			    	    	  ModifyingPageDataInfo info = (ModifyingPageDataInfo)infoList.elementAt(0);
 			    	    	  //System.out.println("generic name");
 			                   //Go through the every subtree
 				    		   Set set = wizData.keySet();
@@ -121,7 +124,7 @@ public class CorrectionWizardContainerFrame extends WizardContainerFrame
 				    			   try
 				    			   {			    			      
 				    			    
-				    			      modifyDataPackage(data, genericName, page);
+				    			      modifyDataPackage(data, info, page);
 				    			   }
 				    			   catch(Exception e)
 				    			   {
@@ -131,12 +134,13 @@ public class CorrectionWizardContainerFrame extends WizardContainerFrame
 				    		   }
 			    	         }
 			    	      }
-			    	      else if(listOfGenericPathName.length==1)
+			    	      else if(infoList != null && infoList.size()==1)
 			    	      {
-			    	    	  String genericName = listOfGenericPathName[0];
+			    	    	  ModifyingPageDataInfo info = (ModifyingPageDataInfo)infoList.elementAt(0);
+			    	    	  wizData = page.getPageData(info.getPathForgettingPageData());
 			    	    	  try
 			    	    	  {
-			    	    	     modifyDataPackage(wizData, genericName, page);
+			    	    	     modifyDataPackage(wizData, info, page);
 			    	    	  }
 			    	    	   catch(Exception e)
 			    			   {
@@ -300,7 +304,7 @@ public class CorrectionWizardContainerFrame extends WizardContainerFrame
 	/*
 	 *Repalce a subtree of the dataPakcage by a new subtree with given data and position
 	 */
-	  private void modifyDataPackage(OrderedMap data, String genericName, AbstractUIPage page) throws Exception
+	  private void modifyDataPackage(OrderedMap data, ModifyingPageDataInfo info, AbstractUIPage page) throws Exception
 	  {
 		  if(dataPackage != null && page != null)
 		  {
@@ -308,9 +312,8 @@ public class CorrectionWizardContainerFrame extends WizardContainerFrame
 	          if (page instanceof AttributePage)
 	          {	     
 	        	    dataPackage.getEntityArray();
-	        	    AttributePage aPage = (AttributePage)page;
-	        	    int entityIndex = aPage.getRootNodeIndex();
-	        	    int attrIndex = aPage.getAttributeIndex();
+	        	    int entityIndex =   (Integer)page.getNodeIndexList().elementAt(0);
+	        	    int attrIndex    =  (Integer) page.getNodeIndexList().elementAt(1);
 	        	    Log.debug(45, "======attribute is in entity "+entityIndex+ " and postition is "+attrIndex);
 	        	    String oldID = dataPackage.getAttributeID(entityIndex, attrIndex);
 	        	    Log.debug(45, "old id is "+oldID);
@@ -324,12 +327,12 @@ public class CorrectionWizardContainerFrame extends WizardContainerFrame
 	          else
 	          {
 	        	  DOMImplementation impl = DOMImplementationImpl.getDOMImplementation();
-		    	  Document doc = impl.createDocument("", genericName, null);
+		    	  Document doc = impl.createDocument("", info.getDocumentName(), null);
 		          Node newSubTree = doc.getDocumentElement();
 		          XMLUtilities.getXPathMapAsDOMTree(data, newSubTree);
-	              dataPackage.deleteSubtree(genericName, page.getRootNodeIndex());
+	              dataPackage.deleteSubtree(info.getGenericName(), (Integer)page.getNodeIndexList().elementAt(0));
 	             // add to the datapackage
-	              Node check = dataPackage.insertSubtree(genericName, newSubTree, page.getRootNodeIndex());
+	              Node check = dataPackage.insertSubtree(info.getGenericName(), newSubTree, (Integer)page.getNodeIndexList().elementAt(0));
 	             if (check != null) 
 		         {
 		            Log.debug(45, "added new abstract details to package...");
