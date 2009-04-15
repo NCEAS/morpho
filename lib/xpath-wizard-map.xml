@@ -6,15 +6,18 @@
     <xpath>abstract</xpath>
     <infoForModifyingData>
 	     <loadExistDataPath>/eml:eml/dataset/title</loadExistDataPath>
-	     <xpathForCreatingOrderedMap>""</xpathForCreatingOrderedMap>
+	     <xpathForCreatingOrderedMap></xpathForCreatingOrderedMap>
+             <xpathForSettingPageData></xpathForSettingPageData>
              <newDataDocumentName>title</newDataDocumentName>
-             <xpathForGettingPageData>""</xpathForGettingPageData>
+             <xpathForGettingPageData></xpathForGettingPageData>
              <genericName>title</genericName>
      </infoForModifyingData>
      <infoForModifyingData>
 	     <loadExistDataPath>/eml:eml/dataset/abstract</loadExistDataPath>
-	     <xpathForOrderedMap>""</xpathForOrderedMap>
+	     <xpathForCreatingOrderedMap></xpathForCreatingOrderedMap>
+             <xpathForSettingPageData></xpathForSettingPageData>
              <newDataDocumentName>abract</newDataDocumentName>
+             <xpathForGettingPageData></xpathForGettingPageData>
              <genericName>abstract</genericName>
      </infoForModifyingData>
     <wizardPageClass>edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.General</wizardPageClass>
@@ -41,8 +44,16 @@
     <xpath>phone</xpath>
     <xpath>electronicMailAddress</xpath>
     <xpath>onlineUrl</xpath>
-    <loadDataFromRootPath>true</loadDataFromRootPath>
-    <wizardPageClass>edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.PartyMainPage</wizardPageClass>
+    <infoForModifyingData>
+             <loadExistDataPath>/eml:eml/dataset/creator</loadExistDataPath>
+             <xpathForOrderedMap></xpathForOrderedMap>
+             <xpathForSettingPageData>/creator</xpathForSettingPageData>
+             <newDataDocumentName>creator</newDataDocumentName>
+             <xpathForGettingPageData>/creator</xpathForGettingPageData>
+             <genericName>creator</genericName>
+    </infoForModifyingData>
+    <wizardPageClass>edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.PartyPage</wizardPageClass>
+    <wizardPageClassParameter>PARTY_CREATOR</wizardPageClassParameter>
   </mapping>
    <mapping>
     <root>/eml:eml/dataset/contact</root>
@@ -60,7 +71,16 @@
     <xpath>electronicMailAddress</xpath>
     <xpath>onlineUrl</xpath>
     <loadDataFromRootPath>true</loadDataFromRootPath>
-    <wizardPageClass>edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.PartyMainPage</wizardPageClass>
+    <infoForModifyingData>
+             <loadExistDataPath>/eml:eml/dataset/contact</loadExistDataPath>
+             <xpathForOrderedMap></xpathForOrderedMap>
+             <xpathForSettingPageData>/contact</xpathForSettingPageData>
+             <newDataDocumentName>contact</newDataDocumentName>
+             <xpathForGettingPageData>/contact</xpathForGettingPageData>
+             <genericName>contact</genericName>
+    </infoForModifyingData>
+    <wizardPageClass>edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.PartyPage</wizardPageClass>
+    <wizardPageClassParameter>PARTY_CONTACT</wizardPageClassParameter>
   </mapping>
    <mapping>
     <root>/eml:eml/dataset/associatedParty</root>
@@ -79,7 +99,16 @@
     <xpath>onlineUrl</xpath>
     <xpath>role</xpath>
     <loadDataFromRootPath>true</loadDataFromRootPath>
-    <wizardPageClass>edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.PartyMainPage</wizardPageClass>
+    <infoForModifyingData>
+             <loadExistDataPath>/eml:eml/dataset/associatedParty</loadExistDataPath>
+             <xpathForOrderedMap></xpathForOrderedMap>
+             <xpathForSettingPageData>/associatedParty</xpathForSettingPageData>
+             <newDataDocumentName>associatedParty</newDataDocumentName>
+             <xpathForGettingPageData>/associatedParty</xpathForGettingPageData>
+             <genericName>associatedParty</genericName>
+    </infoForModifyingData>
+    <wizardPageClass>edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.PartyPage</wizardPageClass>
+    <wizardPageClassParameter>PARTY_ASSOCIATED</wizardPageClassParameter>
   </mapping>
    <mapping>
     <root>/eml:eml/dataset/project</root>
@@ -220,6 +249,7 @@
              <loadExistDataPath>/eml:eml/dataset/dataTable</loadExistDataPath>
              <loadExistDataPath>./attributeList/attribute</loadExistDataPath> 
              <xpathForCreatingOrderedMap>/eml:eml/dataset/dataTable/attributeList</xpathForCreatingOrderedMap>
+             <xpathForSettingPageData> </xpathForSettingPageData>
              <newDataDocumentName>attribute</newDataDocumentName>
              <xpathForGettingPageData>/attribute</xpathForGettingPageData>
      </infoForModifyingData>
