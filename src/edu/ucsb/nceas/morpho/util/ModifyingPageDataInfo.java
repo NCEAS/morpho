@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2009-04-14 20:46:09 $'
- * '$Revision: 1.1 $'
+ *     '$Date: 2009-04-15 23:52:15 $'
+ * '$Revision: 1.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -43,7 +43,16 @@ public class ModifyingPageDataInfo
 	private String documentName = "";
 	private String genericName = null;
 	private String pathForCreatingOrderedMap = null;
+	private String pathForSettingPageData = "";
 	
+	public String getPathForSettingPageData() {
+		return pathForSettingPageData;
+	}
+
+	public void setPathForSettingPageData(String pathForSettingPageData) {
+		this.pathForSettingPageData = pathForSettingPageData;
+	}
+
 	/**
 	 * Gets the list which which is used to load the existing subtree into wizard page.
 	 * @return

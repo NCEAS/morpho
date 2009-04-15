@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2009-03-13 03:57:28 $'
- * '$Revision: 1.50 $'
+ *     '$Date: 2009-04-15 23:52:15 $'
+ * '$Revision: 1.51 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1419,29 +1419,32 @@ public class PartyPage extends AbstractUIPage {
     }
 
     nextVal = (String)map.get(xpathRootNoPredicates + "/phone[1]");
+    if (nextVal != null) {
+        
+        map.remove(xpathRootNoPredicates + "/phone[1]");
+      }
     String type = (String)map.get(xpathRootNoPredicates
                                   + "/phone[1]/@phonetype");
-
-    if (nextVal != null) {
-      if (type != null) {
+    if (type != null) {
         if (type.equals("voice"))phoneField.setText(nextVal);
         if (type.equals("fax"))faxField.setText(nextVal);
         map.remove(xpathRootNoPredicates + "/phone[1]/@phonetype");
       }
-      map.remove(xpathRootNoPredicates + "/phone[1]");
-    }
+
+   
 
     nextVal = (String)map.get(xpathRootNoPredicates + "/phone[2]");
-    type = (String)map.get(xpathRootNoPredicates + "/phone[2]/@phonetype");
-
     if (nextVal != null) {
-      if (type != null) {
+        
+        map.remove(xpathRootNoPredicates + "/phone[2]");
+      }
+    type = (String)map.get(xpathRootNoPredicates + "/phone[2]/@phonetype");
+    if (type != null) {
         if (type.equals("voice"))phoneField.setText(nextVal);
         if (type.equals("fax"))faxField.setText(nextVal);
         map.remove(xpathRootNoPredicates + "/phone[2]/@phonetype");
       }
-      map.remove(xpathRootNoPredicates + "/phone[2]");
-    }
+   
 
     nextVal = (String)map.get(xpathRootNoPredicates
                               + "/electronicMailAddress[1]");

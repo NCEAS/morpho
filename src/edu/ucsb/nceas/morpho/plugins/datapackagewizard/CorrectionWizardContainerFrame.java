@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2009-04-14 20:47:09 $'
- * '$Revision: 1.9 $'
+ *     '$Date: 2009-04-15 23:52:15 $'
+ * '$Revision: 1.10 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -329,9 +329,12 @@ public class CorrectionWizardContainerFrame extends WizardContainerFrame
 	        	  DOMImplementation impl = DOMImplementationImpl.getDOMImplementation();
 		    	  Document doc = impl.createDocument("", info.getDocumentName(), null);
 		          Node newSubTree = doc.getDocumentElement();
+		          Log.debug(30, "before creating new tree ====================="+data.toString());
 		          XMLUtilities.getXPathMapAsDOMTree(data, newSubTree);
+		          Log.debug(30, "before deleting subtree =====================");
 	              dataPackage.deleteSubtree(info.getGenericName(), (Integer)page.getNodeIndexList().elementAt(0));
-	             // add to the datapackage
+	              Log.debug(30, "after deleting subtree =====================");
+	              // add to the datapackage
 	              Node check = dataPackage.insertSubtree(info.getGenericName(), newSubTree, (Integer)page.getNodeIndexList().elementAt(0));
 	             if (check != null) 
 		         {

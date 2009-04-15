@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2009-04-15 18:52:47 $'
- * '$Revision: 1.18 $'
+ *     '$Date: 2009-04-15 23:52:15 $'
+ * '$Revision: 1.19 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -103,6 +103,7 @@ public class CorrectionWizardController
 	private static final String GENERICNAME = "genericName";
 	private static final String XPAHTFORCREATINGORDEREDMAP = "xpathForCreatingOrderedMap";
 	private static final String WIZARDAGECLASSPARAMETER ="wizardPageClassParameter";
+	private static final String XPATHFORSETTINGPAGEDATA = "xpathForSettingPageData";
 	private static final String WIZARDCONTAINERFRAME = "edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardContainerFrame";
 	private static final String CORRECTIONSUMMARY = "edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.CorrectionSummary";
 	private static final String TITLE = "Correction Wizard";
@@ -257,9 +258,11 @@ public class CorrectionWizardController
 					//first we need to check if we should load data from root path.
 				    Vector infoList = mapping.getModifyingPageDataInfoList();
 					NodeList nodeList = null;
+					String settingPageDataPath = "";
 					if (infoList != null && infoList.size() ==1)
 					{	
 						ModifyingPageDataInfo info = (ModifyingPageDataInfo)infoList.elementAt(0);
+						settingPageDataPath = info.getPathForSettingPageData();
 						//page.setXPathRoot(node);
 						if (page instanceof AttributePage)
 						{
@@ -286,14 +289,15 @@ public class CorrectionWizardController
 						else
 						{
 							Vector loadExistingDataPathList = info.getLoadExistingDataPath();
+							int position = getLastPredicate(path);
 							if (loadExistingDataPathList != null)
 							{
 								Node node = null;
 								for(int k=0; k<loadExistingDataPathList.size(); k++)
 								{
 								  nodeList = XMLUtilities.getNodeListWithXPath(dataPackage.getMetadataNode(), (String)loadExistingDataPathList.elementAt(0));	
-								  node = nodeList.item(0);
-								  page.addNodeIndex(0);
+								  node = nodeList.item(position);
+								  page.addNodeIndex(position);
 								}
 							    xpathMap = XMLUtilities.getDOMTreeAsXPathMap(node, info.getPathForCreatingOrderedMap());
 								  
@@ -309,6 +313,7 @@ public class CorrectionWizardController
 						for (int i=0; i<list.size(); i++)
 						{
 							ModifyingPageDataInfo info =(ModifyingPageDataInfo)list.elementAt(i);
+							settingPageDataPath = info.getPathForSettingPageData();
 							String xPath = (String)info.getLoadExistingDataPath().elementAt(0);
 							//System.out.println("==========the xpath is "+xPath);
 							nodeList = XMLUtilities.getNodeListWithXPath(dataPackage.getMetadataNode(), xPath);
@@ -335,7 +340,7 @@ public class CorrectionWizardController
 					Log.debug(46, "the xmpath map is "+xpathMap.toString());
 					if (page != null)
 					{
-					   mapDataFit = page.setPageData(xpathMap, "");
+					   mapDataFit = page.setPageData(xpathMap, settingPageDataPath);
 					}
 				}
 		
@@ -508,6 +513,15 @@ public class CorrectionWizardController
 				        		   if(textNode != null && textNode.getNodeType() == Node.TEXT_NODE)
 				        		   {
 				        			   info.setPathForCreatingOrderedMap(textNode.getNodeValue());
+				        		   } 
+				        	   }
+				        	   else if ((node.getNodeType() == Node.ELEMENT_NODE) && 
+				        			   (node.getNodeName().equalsIgnoreCase(XPATHFORSETTINGPAGEDATA)))
+				        	   {
+				        		   Node textNode = node.getFirstChild();
+				        		   if(textNode != null && textNode.getNodeType() == Node.TEXT_NODE)
+				        		   {
+				        			   info.setPathForSettingPageData(textNode.getNodeValue());
 				        		   } 
 				        	   }
 				        	   
@@ -732,6 +746,33 @@ public class CorrectionWizardController
 			}
 		}
 		return index;
+	}
+	
+	/*
+	 * Gets the last predicate value in a given xpath. 0 will be returned if it is not found.
+	 */
+	private int getLastPredicate(String path)
+	{
+		int position = 0;
+		if(path != null)
+		{
+			int start = path.lastIndexOf(LEFTBRACKET);
+			int end  = path.lastIndexOf(RIGHTBRACKET);
+			if (start !=-1 && end != -1)
+			{
+				try
+				{
+					String value = path.substring(start+1, end);
+					position = (new Integer(value)).intValue();
+					Log.debug(35, "=============the last predicate is "+position);
+				}
+				catch(Exception e)
+				{
+					Log.debug(30, "couldn't find the last predicate for path "+path+" since "+e.getMessage());
+				}
+			}
+		}
+		return position;
 	}
 	
 
