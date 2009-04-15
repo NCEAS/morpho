@@ -32,6 +32,7 @@ public class XPathUIPageMapping
 	private Vector xpathList = new Vector();
 	private Vector modifyingPageDataInfo = new Vector();
 	private String wizardPageClassName = null;
+	private Vector wizardPageClassParameters = new Vector();
 	//private String genericName = null;
 	/**
 	 * Constructor
@@ -112,6 +113,16 @@ public class XPathUIPageMapping
 	public void addModifyingPageDataInfo(ModifyingPageDataInfo info)
 	{
 		this.modifyingPageDataInfo.add(info);
+	}
+
+	public Vector getWizardPageClassParameters() 
+	{
+		return wizardPageClassParameters;
+	}
+
+	public void addWizardPageClassParameters(String para) 
+	{
+		this.wizardPageClassParameters.add(para);
 	}
 
 	

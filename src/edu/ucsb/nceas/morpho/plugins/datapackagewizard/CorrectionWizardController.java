@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2009-04-14 20:47:09 $'
- * '$Revision: 1.17 $'
+ *     '$Date: 2009-04-15 18:52:47 $'
+ * '$Revision: 1.18 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -102,6 +102,7 @@ public class CorrectionWizardController
 	private static final String NEWDATADOCUMENTNAME = "newDataDocumentName";
 	private static final String GENERICNAME = "genericName";
 	private static final String XPAHTFORCREATINGORDEREDMAP = "xpathForCreatingOrderedMap";
+	private static final String WIZARDAGECLASSPARAMETER ="wizardPageClassParameter";
 	private static final String WIZARDCONTAINERFRAME = "edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardContainerFrame";
 	private static final String CORRECTIONSUMMARY = "edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.CorrectionSummary";
 	private static final String TITLE = "Correction Wizard";
@@ -225,7 +226,7 @@ public class CorrectionWizardController
 					previousPage.setNextPageID(pageIDstr);
 				}
 				//AbstractUIPage summaryPage = WizardPageLibrary.getPage(DataPackageWizardInterface.CORRECTION_SUMMARY);
-				AbstractUIPage summaryPage = createAbstractUIpageObject(CORRECTIONSUMMARY,dpWiz);
+				AbstractUIPage summaryPage = createAbstractUIpageObject(CORRECTIONSUMMARY,dpWiz, null);
 				wizardPageLibrary.addPage(pageIDstr, summaryPage);
 			}
 		}
@@ -250,7 +251,7 @@ public class CorrectionWizardController
 				if(className != null)
 				{
 					OrderedMap xpathMap = null;
-					page = createAbstractUIpageObject(className, dpWiz);
+					page = createAbstractUIpageObject(className, dpWiz, mapping.getWizardPageClassParameters());
 					page.setXPathUIPageMapping(mapping);
 					//load data into the page
 					//first we need to check if we should load data from root path.
@@ -284,10 +285,19 @@ public class CorrectionWizardController
 						}
 						else
 						{
-							nodeList = XMLUtilities.getNodeListWithXPath(dataPackage.getMetadataNode(), mapping.getRoot());	
-							Node node = nodeList.item(0);
-							xpathMap = XMLUtilities.getDOMTreeAsXPathMap(node, "");
-							page.addNodeIndex(0);
+							Vector loadExistingDataPathList = info.getLoadExistingDataPath();
+							if (loadExistingDataPathList != null)
+							{
+								Node node = null;
+								for(int k=0; k<loadExistingDataPathList.size(); k++)
+								{
+								  nodeList = XMLUtilities.getNodeListWithXPath(dataPackage.getMetadataNode(), (String)loadExistingDataPathList.elementAt(0));	
+								  node = nodeList.item(0);
+								  page.addNodeIndex(0);
+								}
+							    xpathMap = XMLUtilities.getDOMTreeAsXPathMap(node, info.getPathForCreatingOrderedMap());
+								  
+							}
 						}
 					}
 					else if (infoList != null && infoList.size() > 1)
@@ -438,6 +448,16 @@ public class CorrectionWizardController
 				            }
 				        }
 			          else if ((cn.getNodeType() == Node.ELEMENT_NODE)
+				              && (cn.getNodeName().equalsIgnoreCase(WIZARDAGECLASSPARAMETER)))
+				       {
+				            Node ccn = cn.getFirstChild();        // assumed to be a text node
+				            if ((ccn != null) && (ccn.getNodeType() == Node.TEXT_NODE))
+				            {
+				               String classParameter = ccn.getNodeValue();
+				               unit.addWizardPageClassParameters(classParameter);
+				            }
+				        }
+			          else if ((cn.getNodeType() == Node.ELEMENT_NODE)
 				              && (cn.getNodeName().equalsIgnoreCase(INFORORMODIFYINGDATA)))
 				       {
 				           ModifyingPageDataInfo info = new ModifyingPageDataInfo();
@@ -544,13 +564,40 @@ public class CorrectionWizardController
 	/*
 	 * Create an object for given class name. This is only for AbractUIPage object
 	 */
-	private static AbstractUIPage createAbstractUIpageObject(String className, WizardContainerFrame frame)  {
+	private static AbstractUIPage createAbstractUIpageObject(String className, WizardContainerFrame frame, Vector parameters)  {
 
 		Object object = null;
 		Class classDefinition = null;
 		try {
 			classDefinition = Class.forName(className);
-			object = classDefinition.newInstance();
+			//we only consider String and boolean
+			if(parameters != null && !parameters.isEmpty())
+			{
+				Class[] parameterList = new Class[parameters.size()];
+				Object[] objectList = new Object[parameters.size()];
+				for(int i=0; i<parameters.size(); i++)
+				{
+					String para = (String)parameters.elementAt(i);
+					if(para.equalsIgnoreCase("false") || para.equalsIgnoreCase("true"))
+					{
+						Class parameter= Class.forName("java.long.Boolean");
+						parameterList[i] = parameter;	
+						objectList[i]= new Boolean(para);
+					}
+					else
+					{
+						Class parameter = Class.forName("java.lang.String");
+						parameterList[i] = parameter;
+						objectList[i] = para;
+					}
+				}
+				Constructor constructor = classDefinition.getDeclaredConstructor(parameterList);
+				object =constructor.newInstance(objectList);
+			} 
+			else
+			{
+			    object = classDefinition.newInstance();
+			}
 		} catch (InstantiationException e) {
 			Log.debug(30, "InstantiationException "+e.getMessage());
 			// couldn't get default constructor. The contructor has a parameter WizardContainerFrame
