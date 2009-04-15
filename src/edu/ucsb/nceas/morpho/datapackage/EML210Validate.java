@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2009-03-31 01:32:23 $'
- * '$Revision: 1.5 $'
+ *     '$Date: 2009-04-15 23:16:42 $'
+ * '$Revision: 1.6 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -70,6 +70,16 @@ public class EML210Validate extends DefaultHandler implements ErrorHandler
 	 private final static String ATTRIBUTE = "attribute";
 	 private final static String RIGHTBRACKET = "]";
 	 private final static String LEFTBRACKET = "[";
+	 private final static String DATASET = "dataset";
+	 private final static String CREATOR = "creator";
+	 private final static String CONTACT = "contact";
+	 private final static String ASSOCIATEDPARTY = "associatedParty";
+	 private final static String PROJECT = "project"; //it is only have once under dataset
+	 private final static String INTERLECTUALRIGHTS = "intellectualRights"; //it is only have once under dataset
+	 private final static String GEOGRAPHICCOVERAGE = "geographicCoverage";
+	 private final static String TEMPORALCOVERAGE = "temporalCoverage";
+	 private final static String TAXONIMICCOVERAGE ="taxonomicCoverage";
+	 private final static String METHODS = "methods"; //it is only have once under dataset
 	 
 	// SAX parser
 	XMLReader parser = null;
@@ -82,6 +92,14 @@ public class EML210Validate extends DefaultHandler implements ErrorHandler
 	private int dataTableIndex = 0;
 	private int attributeIndex = 0; //attribute index is the index of attribute under same entity, it is not DOM tree index.
     private boolean hitDataTable = false;
+    private int creatorIndex = 0;
+    private int contactIndex = 0;
+    private int associatedPartyIndex = 0;
+    private int geoCoverageIndex = 0;
+    private int temporalCoverageIndex = 0;
+    private int taxonCoverageIndex = 0;
+    
+    
 	/**
 	 * Class constructor.
 	 * It will initialize a sax parser.
@@ -191,17 +209,35 @@ public class EML210Validate extends DefaultHandler implements ErrorHandler
         textBuffer = null;
         textBuffer = new StringBuffer();
         //when close an attribute, the attribute index should increase one.(only work with dataTable)
-        if(hitDataTable && localName.equals(ATTRIBUTE))
+        if(hitDataTable && qName.equals(ATTRIBUTE))
         {
         	attributeIndex++;
         }
         
         //when close an entity, the entity index should be increase one and attribute index should be set to 0
-        if(localName.equals(DATATABLE))
+        if(qName.equals(DATATABLE))
         {
         	dataTableIndex++;
         	attributeIndex = 0;
         	hitDataTable = false;
+        }
+        
+        // hit creator, index should be increase
+        if(qName.equals(CREATOR) && isParent(DATASET))
+        {
+        	creatorIndex++;
+        }
+        
+        // hit contact, index should be increase
+        if(qName.equals(CONTACT) && isParent(DATASET))
+        {
+        	contactIndex++;
+        }
+        
+        // hit associatedParty, index should be increase
+        if(qName.equals(ASSOCIATEDPARTY) && isParent(DATASET))
+        {
+        	associatedPartyIndex++;
         }
   
 
@@ -288,6 +324,18 @@ public class EML210Validate extends DefaultHandler implements ErrorHandler
     			{
     				fullPath=fullPath+SLASH+value+LEFTBRACKET+attributeIndex+RIGHTBRACKET;
     			}
+    			else if (value != null && value.equals(CREATOR) && fullPath.endsWith(DATASET))
+    			{
+    				fullPath=fullPath+SLASH+value+LEFTBRACKET+creatorIndex+RIGHTBRACKET;
+    			}
+    			else if (value != null && value.equals(CONTACT) && fullPath.endsWith(DATASET))
+    			{
+    				fullPath=fullPath+SLASH+value+LEFTBRACKET+contactIndex+RIGHTBRACKET;
+    			}
+    			else if (value != null && value.equals(ASSOCIATEDPARTY) && fullPath.endsWith(DATASET))
+    			{
+    				fullPath=fullPath+SLASH+value+LEFTBRACKET+associatedPartyIndex+RIGHTBRACKET;
+    			}
     			else
     			{
     				fullPath=fullPath+SLASH+value;
@@ -296,4 +344,51 @@ public class EML210Validate extends DefaultHandler implements ErrorHandler
     	}
     	return fullPath;
     }
+    
+    /*
+     * Determines if the given path is current path's parent.
+     * Note: when use this method, current node should have been remove out from the node stack.
+     */
+   private boolean isParent(String xpath)
+   {
+	   return isNthParent(xpath, 1);
+   }
+   
+   /*
+    * Determines if the given path is current path's grandparent.
+    * Note: when use this method, current node should have been remove out from the node stack.
+    */
+  private boolean isGrandParent(String xpath)
+  {
+	   return isNthParent(xpath, 2);
+  }
+   
+   
+   /*
+    * Determines if the given path is current path's nth Parent.
+    * Note: when use this method, current node should have been remove out from the node stack.
+    */
+  private boolean isNthParent(String xpath, int nth)
+  {
+	   boolean isNthParent = false;
+	   if (xpath != null)
+	   {
+		   int length = path.size(); 
+		   try
+		   {
+			   String nthParent = (String)path.elementAt(length-nth);
+			   Log.debug(47, "The expected nith parent is "+xpath +" and the actually name in stack is "+nthParent);
+			   if (nthParent != null && nthParent.equals(xpath))
+			   {
+				   isNthParent = true;
+			   }
+		   }
+		   catch(Exception e)
+		   {
+			   Log.debug(30, "Couldn't get nth parent "+e.getMessage());
+		   }
+	   }
+	   return isNthParent;
+  }
+   
 }
