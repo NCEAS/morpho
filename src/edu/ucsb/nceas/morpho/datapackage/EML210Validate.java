@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2009-04-15 23:16:42 $'
- * '$Revision: 1.6 $'
+ *     '$Date: 2009-04-16 20:41:24 $'
+ * '$Revision: 1.7 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -74,6 +74,8 @@ public class EML210Validate extends DefaultHandler implements ErrorHandler
 	 private final static String CREATOR = "creator";
 	 private final static String CONTACT = "contact";
 	 private final static String ASSOCIATEDPARTY = "associatedParty";
+	 private final static String KEYWORDSET ="keywordSet";
+	 private final static String KEYWORD = "keyword";
 	 private final static String PROJECT = "project"; //it is only have once under dataset
 	 private final static String INTERLECTUALRIGHTS = "intellectualRights"; //it is only have once under dataset
 	 private final static String GEOGRAPHICCOVERAGE = "geographicCoverage";
@@ -98,6 +100,8 @@ public class EML210Validate extends DefaultHandler implements ErrorHandler
     private int geoCoverageIndex = 0;
     private int temporalCoverageIndex = 0;
     private int taxonCoverageIndex = 0;
+    private int keywordSetIndex = 0;
+    private int keywordIndex = 0;
     
     
 	/**
@@ -239,6 +243,13 @@ public class EML210Validate extends DefaultHandler implements ErrorHandler
         {
         	associatedPartyIndex++;
         }
+        
+        // hit keywordSet, index should be increase
+        if(qName.equals(KEYWORDSET) && isParent(DATASET))
+        {
+        	keywordSetIndex++;
+        }
+        
   
 
     }
@@ -335,6 +346,10 @@ public class EML210Validate extends DefaultHandler implements ErrorHandler
     			else if (value != null && value.equals(ASSOCIATEDPARTY) && fullPath.endsWith(DATASET))
     			{
     				fullPath=fullPath+SLASH+value+LEFTBRACKET+associatedPartyIndex+RIGHTBRACKET;
+    			}
+    			else if (value != null && value.equals(KEYWORDSET) && fullPath.endsWith(DATASET))
+    			{
+    				fullPath=fullPath+SLASH+value+LEFTBRACKET+keywordSetIndex+RIGHTBRACKET;
     			}
     			else
     			{
