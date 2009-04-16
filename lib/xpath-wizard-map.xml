@@ -26,8 +26,15 @@
     <root>/eml:eml/dataset/keywordSet</root>
     <xpath>keyword</xpath>
     <xpath>keywordThesaurus</xpath>
-    <loadDataFromRootPath>true</loadDataFromRootPath>
-    <wizardPageClass>edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.Keywords</wizardPageClass>
+    <infoForModifyingData>
+             <loadExistDataPath>/eml:eml/dataset/keywordSet</loadExistDataPath>
+             <xpathForCreatingOrderedMap></xpathForCreatingOrderedMap>
+             <xpathForSettingPageData></xpathForSettingPageData>
+             <newDataDocumentName>keywordSet</newDataDocumentName>
+             <xpathForGettingPageData>/keywordSet</xpathForGettingPageData>
+             <genericName>keywordSet</genericName>
+    </infoForModifyingData>
+    <wizardPageClass>edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.KeywordsPage</wizardPageClass>
   </mapping>
   <mapping>
     <root>/eml:eml/dataset/creator</root>
