@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2009-03-13 03:57:28 $'
- * '$Revision: 1.16 $'
+ *     '$Date: 2009-04-16 01:03:15 $'
+ * '$Revision: 1.17 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -35,6 +35,7 @@ import edu.ucsb.nceas.morpho.framework.ModalDialog;
 import edu.ucsb.nceas.morpho.framework.UIController;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.CustomList;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WidgetFactory;
+import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardContainerFrame;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardSettings;
 import edu.ucsb.nceas.morpho.util.Log;
 import edu.ucsb.nceas.morpho.util.UISettings;
@@ -223,7 +224,7 @@ public class KeywordsPage extends AbstractUIPage {
 	    
 	    ModalDialog wpd = new ModalDialog(
 	    		page,
-	    		UIController.getInstance().getCurrentActiveWindow(),
+	    		WizardContainerFrame.getDialogParent(),
 	    		UISettings.POPUPDIALOG_WIDTH,
 	    		UISettings.POPUPDIALOG_HEIGHT, false);
 	    
@@ -231,7 +232,8 @@ public class KeywordsPage extends AbstractUIPage {
 	    wpd.getRootPane().setDefaultButton(null);
 	    wpd.resetBounds();
 	    wpd.setVisible(true);
-
+	    
+	 
 	    if (wpd.USER_RESPONSE == ModalDialog.OK_OPTION) {
 
 			List terms = page.getSelectedTerms();
