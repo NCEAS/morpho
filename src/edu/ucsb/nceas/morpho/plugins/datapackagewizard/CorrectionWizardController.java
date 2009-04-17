@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2009-04-15 23:52:15 $'
- * '$Revision: 1.19 $'
+ *     '$Date: 2009-04-17 23:51:07 $'
+ * '$Revision: 1.20 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -245,10 +245,12 @@ public class CorrectionWizardController
 		boolean mapDataFit = false;
 		if (mappingList != null)
 		{
+			path = removeParaFromXPath(path);
 			XPathUIPageMapping mapping = getXPathUIPageMapping(path);
 			if(mapping != null)
 			{
 				className = mapping.getWizardPageClassName();
+				Log.debug(45, "get the className from mapping "+className);
 				if(className != null)
 				{
 					OrderedMap xpathMap = null;
@@ -288,6 +290,7 @@ public class CorrectionWizardController
 						}
 						else
 						{
+							Log.debug(45, "start to process load data process which has info list size 1");
 							Vector loadExistingDataPathList = info.getLoadExistingDataPath();
 							int position = getLastPredicate(path);
 							if (loadExistingDataPathList != null)
@@ -299,6 +302,7 @@ public class CorrectionWizardController
 								  node = nodeList.item(position);
 								  page.addNodeIndex(position);
 								}
+								Log.debug(45, "before getting ordered map from subtree");
 							    xpathMap = XMLUtilities.getDOMTreeAsXPathMap(node, info.getPathForCreatingOrderedMap());
 								  
 							}
@@ -307,7 +311,7 @@ public class CorrectionWizardController
 					else if (infoList != null && infoList.size() > 1)
 					{
 						//like General page
-		
+						Log.debug(45, "start to process load data process which has info list size more than 1");
 						Vector list = mapping.getModifyingPageDataInfoList();
 						boolean firstTime = true;
 						for (int i=0; i<list.size(); i++)
@@ -367,11 +371,12 @@ public class CorrectionWizardController
 			//first we need to remove all predicates since there is no predicates in the xpath in the configure file
 			path =XMLUtilities.removeAllPredicates(path);
 			// first to check full path mapping
-			Log.debug(48, "the given error path without all predicates is"+path);
+			Log.debug(46, "the given error path without all predicates is"+path);
 			if (fullPathMapping != null)
 			{
+				Log.debug(46, "in fullPathMapping != null");
 				mapping = (XPathUIPageMapping)fullPathMapping.get(path);
-				Log.debug(48, "find the xpath and uipage mapping in full path mapping "+mapping.getClass());
+				Log.debug(46, "find the xpath and uipage mapping in full path mapping "+mapping);
 			}
 			// second to check short mapping if no class name was found in full path mapping
 			/*if (mapping == null)
@@ -425,10 +430,12 @@ public class CorrectionWizardController
 			          if ((cn.getNodeType() == Node.ELEMENT_NODE)
 			              && (cn.getNodeName().equalsIgnoreCase(ROOT)))
 			          {
+			        	
 			            Node ccn = cn.getFirstChild();        // assumed to be a text node
 			            if ((ccn != null) && (ccn.getNodeType() == Node.TEXT_NODE))
 			            {
 			              root = ccn.getNodeValue();
+			              Log.debug(55, "found the root element "+root);
 			              unit.setRoot(root);
 			            }
 			          }
@@ -449,6 +456,7 @@ public class CorrectionWizardController
 				            if ((ccn != null) && (ccn.getNodeType() == Node.TEXT_NODE))
 				            {
 				               className = ccn.getNodeValue();
+				               Log.debug(55, "found the class name "+className);
 				               unit.setWizardPageClassName(className);
 				            }
 				        }
@@ -532,18 +540,29 @@ public class CorrectionWizardController
 			            
 			         }			        
 			          mappingList[i] = unit;
+			          Log.debug(55, "single mapping is "+unit);
 				      Vector list = unit.getXpath();
-				      if (list != null)
+				      Log.debug(55, "xpath list is "+list);
+				      Log.debug(55, "root is "+unit.getRoot());
+				      if (list != null && !list.isEmpty())
 				      {
 				    	  for(int j=0; j<list.size(); j++)
 				    	  {
 				    		  String shortPath = (String)list.elementAt(j);
 				    		  String fullPath = root+SLASH+shortPath;
-				    		  Log.debug(48, "put "+fullPath+" into full path mapping");
-				    		  Log.debug(48, "put short path "+ shortPath +" into short path mapping");
+				    		  Log.debug(55, "put "+fullPath+" into full path mapping");
+				    		  Log.debug(55, "put short path "+ shortPath +" into short path mapping");
 				    		  fullPathMapping.put(fullPath, unit);
 						      shortPathMapping.put(xpath, unit);
 				    	  }
+				      }
+				      else if(unit.getRoot() != null)
+				      {
+				    	  //if there is no xpath, only root. Put the root into full path 
+				    	  String fullPath = unit.getRoot();
+				    	  Log.debug(45, "put "+fullPath+" into full path mapping");
+			    		  fullPathMapping.put(fullPath, unit);
+				    	  
 				      }
 			      }		      
 		      }
@@ -564,8 +583,8 @@ public class CorrectionWizardController
 				   }
 			   }
 		   }*/
-		   Log.debug(48, "full path mapping is "+fullPathMapping);
-		   Log.debug(48, "short path mapping is "+shortPathMapping);
+		   Log.debug(55, "full path mapping is "+fullPathMapping);
+		   Log.debug(55, "short path mapping is "+shortPathMapping);
 		  }
 		}
 		catch (Exception e)
@@ -639,6 +658,7 @@ public class CorrectionWizardController
 		{
 			Log.debug(30, "Exception in creating an UI page object through the class name "+className + " is " +e.getMessage());
 		}
+		Log.debug(30, "successfully create the instance of this class "+className);
 		return (AbstractUIPage)object;
 	}
 	
