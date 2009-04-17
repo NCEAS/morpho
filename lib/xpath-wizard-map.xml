@@ -134,10 +134,26 @@
     <xpath>personnel/onlineUrl</xpath>
     <xpath>personnel/role</xpath>
     <xpath>funding</xpath>
+    <infoForModifyingData>
+             <loadExistDataPath>/eml:eml/dataset/project</loadExistDataPath>
+             <xpathForCreatingOrderedMap></xpathForCreatingOrderedMap>
+             <xpathForSettingPageData>/project/</xpathForSettingPageData>
+             <newDataDocumentName>project</newDataDocumentName>
+             <xpathForGettingPageData>/project</xpathForGettingPageData>
+             <genericName>project</genericName>
+    </infoForModifyingData>
     <wizardPageClass>edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.Project</wizardPageClass>
   </mapping>
    <mapping>
     <root>/eml:eml/dataset/intellectualRights</root>
+    <infoForModifyingData>
+             <loadExistDataPath>/eml:eml/dataset/intellectualRights</loadExistDataPath>
+             <xpathForCreatingOrderedMap></xpathForCreatingOrderedMap>
+             <xpathForSettingPageData>/intellectualRights</xpathForSettingPageData>
+             <newDataDocumentName>intellectualRights</newDataDocumentName>
+             <xpathForGettingPageData>/intellectualRights</xpathForGettingPageData>
+             <genericName>intellectualRights</genericName>
+    </infoForModifyingData>
     <wizardPageClass>edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.UsageRights</wizardPageClass>
    </mapping>
     <mapping>
