@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2009-03-13 03:57:28 $'
- * '$Revision: 1.23 $'
+ *     '$Date: 2009-04-17 01:45:47 $'
+ * '$Revision: 1.24 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -597,7 +597,7 @@ public class TemporalPage extends AbstractUIPage {
   public boolean setPageData(OrderedMap map, String _xPathRoot) { 
 
     if (_xPathRoot!=null && _xPathRoot.trim().length() > 0) this.xPathRoot = _xPathRoot;
-
+    Log.debug(40, "Map at the begining of setPageData with xpathRoot" +_xPathRoot+map.toString());
     String dateString = (String)map.get(xPathRoot + "/singleDateTime[1]/calendarDate[1]");
     if (dateString!=null) {
 		// single date
