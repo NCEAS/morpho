@@ -105,7 +105,6 @@
     <xpath>electronicMailAddress</xpath>
     <xpath>onlineUrl</xpath>
     <xpath>role</xpath>
-    <loadDataFromRootPath>true</loadDataFromRootPath>
     <infoForModifyingData>
              <loadExistDataPath>/eml:eml/dataset/associatedParty</loadExistDataPath>
              <xpathForOrderedMap></xpathForOrderedMap>
@@ -135,12 +134,10 @@
     <xpath>personnel/onlineUrl</xpath>
     <xpath>personnel/role</xpath>
     <xpath>funding</xpath>
-    <loadDataFromRootPath>true</loadDataFromRootPath>
     <wizardPageClass>edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.Project</wizardPageClass>
   </mapping>
    <mapping>
     <root>/eml:eml/dataset/intellectualRights</root>
-    <loadDataFromRootPath>true</loadDataFromRootPath>
     <wizardPageClass>edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.UsageRights</wizardPageClass>
    </mapping>
     <mapping>
@@ -150,17 +147,32 @@
     <xpath>boundingCoordinates/eastBoundingCoordinate</xpath>
     <xpath>boundingCoordinates/northBoundingCoordinate</xpath>
     <xpath>boundingCoordinates/southBoundingCoordinate</xpath>
-    <loadDataFromRootPath>true</loadDataFromRootPath>
-    <wizardPageClass>edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.Geographic</wizardPageClass>
+    <infoForModifyingData>
+             <loadExistDataPath>/eml:eml/dataset/coverage/geographicCoverage</loadExistDataPath>
+             <xpathForCreatingOrderedMap></xpathForCreatingOrderedMap>
+             <xpathForSettingPageData>/geographicCoverage</xpathForSettingPageData>
+             <newDataDocumentName>geographicCoverage</newDataDocumentName>
+             <xpathForGettingPageData>/geographicCoverage</xpathForGettingPageData>
+             <genericName>geographicCoverage</genericName>
+    </infoForModifyingData>
+    <wizardPageClass>edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.GeographicPage</wizardPageClass>
    </mapping>
+    <!--
     <mapping>
     <root>/eml:eml/dataset/coverage/temporalCoverage</root>
     <xpath>singleDateTime/calendarDate</xpath>
     <xpath>rangeOfDates/beginDate/calendarDate</xpath>
     <xpath>rangeOfDates/endDate/calendarDate</xpath>
-    <loadDataFromRootPath>true</loadDataFromRootPath>
-    <wizardPageClass>edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.Temporal</wizardPageClass>
-   </mapping>
+    <infoForModifyingData>
+             <loadExistDataPath>/eml:eml/dataset/coverage/temporalCoverage</loadExistDataPath>
+             <xpathForCreatingOrderedMap></xpathForCreatingOrderedMap>
+             <xpathForSettingPageData>/temporalCoverage</xpathForSettingPageData>
+             <newDataDocumentName>temporalCoverage</newDataDocumentName>
+             <xpathForGettingPageData>/temporalCoverage</xpathForGettingPageData>
+             <genericName>temporalCoverage</genericName>
+    </infoForModifyingData>
+    <wizardPageClass>edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.TemporalPage</wizardPageClass>
+   </mapping> -->
    <mapping>
     <root>/eml:eml/dataset/coverage/taxonomicCoverage</root>
     <xpath>taxonomicSystem/classificationSystem/classificationSystemCitation/title</xpath>
@@ -194,7 +206,14 @@
     <xpath>taxonomicClassification/taxonRankValue</xpath>
     <xpath>taxonomicClassificatio/taxonomicClassification/taxonRankName</xpath>
     <xpath>taxonomicClassificatio/taxonomicClassification/taxonRankValue</xpath>
-    <loadDataFromRootPath>true</loadDataFromRootPath>
+    <infoForModifyingData>
+             <loadExistDataPath>/eml:eml/dataset/coverage/taxonomicCoverage</loadExistDataPath>
+             <xpathForCreatingOrderedMap></xpathForCreatingOrderedMap>
+             <xpathForSettingPageData>/taxonomicCoverage</xpathForSettingPageData>
+             <newDataDocumentName>taxonomicCoverage</newDataDocumentName>
+             <xpathForGettingPageData>/taxonomicCoverage</xpathForGettingPageData>
+             <genericName>taxonomicCoverage</genericName>
+    </infoForModifyingData>
     <wizardPageClass>edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.Taxonomic</wizardPageClass>
    </mapping>
    <mapping>
