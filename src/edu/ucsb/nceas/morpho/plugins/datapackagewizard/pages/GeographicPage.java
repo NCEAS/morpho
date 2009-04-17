@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2009-03-13 03:57:28 $'
- * '$Revision: 1.20 $'
+ *     '$Date: 2009-04-17 01:44:40 $'
+ * '$Revision: 1.21 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -683,16 +683,17 @@ public class GeographicPage extends AbstractUIPage {
   public String getPageNumber() { return pageNumber; }
 
   public boolean setPageData(OrderedMap map, String _xPathRoot) {
-
+    
     if (_xPathRoot!=null && _xPathRoot.trim().length() > 0) this.xPathRoot = _xPathRoot;
-
-    String name = (String)map.get(_xPathRoot + "/geographicDescription[1]");
+    Log.debug(40, "Map at the begining of setPageData with xpathRoot" +_xPathRoot+map.toString());
+    /*String name = (String)map.get(_xPathRoot + "/geographicDescription[1]");
     if(name != null) {
-      map = stripIndexOneFromMapKeys(map);
+      
       map.remove(xPathRoot + "/geographicDescription[1]");
-    }
-
-    name = (String)map.get(xPathRoot + "/geographicDescription");
+    }*/
+    
+    map = stripIndexOneFromMapKeys(map);
+    String name = (String)map.get(xPathRoot + "/geographicDescription");
     if (name!=null) {
       covDescField.setText(name);
       map.remove(xPathRoot + "/geographicDescription");
