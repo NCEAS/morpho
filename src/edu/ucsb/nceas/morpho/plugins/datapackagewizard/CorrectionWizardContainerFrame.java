@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2009-04-15 23:52:15 $'
- * '$Revision: 1.10 $'
+ *     '$Date: 2009-04-17 17:43:24 $'
+ * '$Revision: 1.11 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -49,6 +49,7 @@ import edu.ucsb.nceas.morpho.framework.UIController;
 import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.AttributePage;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.General;
+import edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.Taxonomic;
 import edu.ucsb.nceas.morpho.util.Log;
 import edu.ucsb.nceas.morpho.util.ModifyingPageDataInfo;
 import edu.ucsb.nceas.morpho.util.UISettings;
@@ -153,144 +154,6 @@ public class CorrectionWizardContainerFrame extends WizardContainerFrame
 		  
 		       
 		    }
-		    
-		    /*AbstractUIPage GENERAL
-		        = (AbstractUIPage)pageMap.get(DataPackageWizardInterface.GENERAL);
-		    AbstractUIPage KEYWORDS
-		        = (AbstractUIPage)pageMap.get(DataPackageWizardInterface.KEYWORDS);
-		    AbstractUIPage PARTY_CREATOR_PAGE
-		        = (AbstractUIPage)pageMap.get(DataPackageWizardInterface.PARTY_CREATOR_PAGE);
-		    AbstractUIPage PARTY_CONTACT_PAGE
-		        = (AbstractUIPage)pageMap.get(DataPackageWizardInterface.PARTY_CONTACT_PAGE);
-		    AbstractUIPage PARTY_ASSOCIATED_PAGE
-		        = (AbstractUIPage)pageMap.get(DataPackageWizardInterface.PARTY_ASSOCIATED_PAGE);
-		    AbstractUIPage PROJECT
-		        = (AbstractUIPage)pageMap.get(DataPackageWizardInterface.PROJECT);
-		    AbstractUIPage METHODS
-		        = (AbstractUIPage)pageMap.get(DataPackageWizardInterface.METHODS);
-		    AbstractUIPage USAGE_RIGHTS
-		        = (AbstractUIPage)pageMap.get(DataPackageWizardInterface.USAGE_RIGHTS);
-		    AbstractUIPage GEOGRAPHIC
-		        = (AbstractUIPage)pageMap.get(DataPackageWizardInterface.GEOGRAPHIC);
-		    AbstractUIPage TEMPORAL
-		        = (AbstractUIPage)pageMap.get(DataPackageWizardInterface.TEMPORAL);
-		    AbstractUIPage TAXONOMIC
-		        = (AbstractUIPage)pageMap.get(DataPackageWizardInterface.TAXONOMIC);
-		    AbstractUIPage ACCESS
-		        = (AbstractUIPage)pageMap.get(DataPackageWizardInterface.ACCESS);
-		    AbstractUIPage DATA_LOCATION
-		        = (AbstractUIPage)pageMap.get(DataPackageWizardInterface.DATA_LOCATION);
-		    AbstractUIPage TEXT_IMPORT_WIZARD
-		        = (AbstractUIPage)pageMap.get(DataPackageWizardInterface.TEXT_IMPORT_WIZARD);
-		    AbstractUIPage DATA_FORMAT
-		        = (AbstractUIPage)pageMap.get(DataPackageWizardInterface.DATA_FORMAT);
-		    AbstractUIPage ENTITY
-		        = (AbstractUIPage)pageMap.get(DataPackageWizardInterface.ENTITY);*
-	
-		    //TITLE:
-		    OrderedMap generalMap = null;
-		    
-		    //ACCESS:
-		    if (ACCESS != null) {
-		      addPageDataToResultsMap( ACCESS, wizData);
-		    }
-		    
-		    if (GENERAL != null) {
-	
-		      generalMap = GENERAL.getPageData();
-		      final String titleXPath = "/eml:eml/dataset/title[1]";
-		      Object titleObj = generalMap.get(titleXPath);
-		      if (titleObj != null) {
-		        wizData.put(titleXPath, titleObj);
-	//	                    XMLUtilities.normalize(titleObj));  //avoid double normalization - DFH
-		      }
-		    }
-	
-		    //CREATOR:
-		    if (PARTY_CREATOR_PAGE != null) {
-		      addPageDataToResultsMap( PARTY_CREATOR_PAGE, wizData);
-		    }
-	
-		    //ASSOCIATED PARTY:
-		    if (PARTY_ASSOCIATED_PAGE != null) {
-		      addPageDataToResultsMap( PARTY_ASSOCIATED_PAGE, wizData);
-		    }
-	
-		    //ABSTRACT:
-		    if (generalMap != null) {
-	
-		      final String abstractXPath = "/eml:eml/dataset/abstract/para[1]";
-		      Object abstractObj = generalMap.get(abstractXPath);
-		      if (abstractObj != null) {
-		        wizData.put(abstractXPath,abstractObj);
-	//	                    XMLUtilities.normalize(abstractObj)); //avoid double normalization - DFH
-		      }
-		    }
-	
-		    //KEYWORDS:
-		    if (KEYWORDS != null) {
-		      addPageDataToResultsMap( KEYWORDS, wizData);
-		    }
-	
-		    //INTELLECTUAL RIGHTS:
-		    if (USAGE_RIGHTS != null) {
-		      addPageDataToResultsMap( USAGE_RIGHTS, wizData);
-		    }
-	
-		    //GEOGRAPHIC:
-		    if (GEOGRAPHIC != null) {
-		      addPageDataToResultsMap( GEOGRAPHIC, wizData);
-		    }
-	
-		    //TEMPORAL:
-		    if (TEMPORAL != null) {
-		      addPageDataToResultsMap( TEMPORAL, wizData);
-		    }
-	
-		    //TAXONOMIC
-		    if (TAXONOMIC != null) {
-		      addPageDataToResultsMap( TAXONOMIC, wizData);
-		    }
-	
-		    //CONTACT:
-		    if (PARTY_CONTACT_PAGE != null) {
-		      addPageDataToResultsMap( PARTY_CONTACT_PAGE, wizData);
-		    }
-	
-		    //METHODS:
-		    if (METHODS != null) {
-		      addPageDataToResultsMap( METHODS, wizData);
-		    }
-	
-		    //PROJECT:
-		    if (PROJECT != null) {
-		      addPageDataToResultsMap( PROJECT, wizData);
-		    }
-	
-		   
-	
-		    if (TEXT_IMPORT_WIZARD != null) {
-		      addPageDataToResultsMap( TEXT_IMPORT_WIZARD, wizData);
-		    }
-	
-		    if (ENTITY != null) {
-		      addPageDataToResultsMap( ENTITY, wizData);
-		    }
-	
-		    if (DATA_FORMAT != null) {
-		      addPageDataToResultsMap( DATA_FORMAT, wizData);
-		    }
-	
-		    if (DATA_LOCATION != null) {
-		      addPageDataToResultsMap( DATA_LOCATION, wizData);
-		    }
-		    // now add unique ID's to all dataTables and attributes
-		    addIDs(
-		        new String[] {
-		        "/eml:eml/dataset/dataTable",
-		        "/eml:eml/dataset/dataTable/attributeList/attribute"
-		    }
-		        , wizData);*/
 	
 		  
 		}
@@ -314,7 +177,7 @@ public class CorrectionWizardContainerFrame extends WizardContainerFrame
 	        	    dataPackage.getEntityArray();
 	        	    int entityIndex =   (Integer)page.getNodeIndexList().elementAt(0);
 	        	    int attrIndex    =  (Integer) page.getNodeIndexList().elementAt(1);
-	        	    Log.debug(45, "======attribute is in entity "+entityIndex+ " and postition is "+attrIndex);
+	        	    Log.debug(45, "======attribute is in entity "+entityIndex+ " and postition is "+attrIndex+" with data "+data.toString());
 	        	    String oldID = dataPackage.getAttributeID(entityIndex, attrIndex);
 	        	    Log.debug(45, "old id is "+oldID);
 	        		if(oldID == null || oldID.trim().equals("")) oldID = UISettings.getUniqueID();
@@ -328,28 +191,54 @@ public class CorrectionWizardContainerFrame extends WizardContainerFrame
 	          {
 	        	  DOMImplementation impl = DOMImplementationImpl.getDOMImplementation();
 		    	  Document doc = impl.createDocument("", info.getDocumentName(), null);
-		          Node newSubTree = doc.getDocumentElement();
-		          Log.debug(30, "before creating new tree ====================="+data.toString());
-		          XMLUtilities.getXPathMapAsDOMTree(data, newSubTree);
-		          Log.debug(30, "before deleting subtree =====================");
-	              dataPackage.deleteSubtree(info.getGenericName(), (Integer)page.getNodeIndexList().elementAt(0));
-	              Log.debug(30, "after deleting subtree =====================");
-	              // add to the datapackage
-	              Node check = dataPackage.insertSubtree(info.getGenericName(), newSubTree, (Integer)page.getNodeIndexList().elementAt(0));
-	             if (check != null) 
-		         {
-		            Log.debug(45, "added new abstract details to package...");
-		          } 
-		          else 
+		          Node newSubTree = doc.getDocumentElement();	         
+		          Log.debug(45, "before creating new tree with data ====================="+data.toString());
+		          XMLUtilities.getXPathMapAsDOMTree(data, newSubTree);     
+		          Log.debug(45, "after creating new tree  ====================="+newSubTree);
+		          Node check = null;
+		          if (page instanceof Taxonomic)
 		          {
-		            Log.debug(5, "** ERROR: Unable to add new abstract details to package **");
+		        	  try 
+		        	  {
+		        	      dataPackage.removeTaxonomicNodes();
+		        	      // now the covRoot node may have a number of geographicCoverage children
+		        	      NodeList kids = newSubTree.getChildNodes();
+		        	      //Log.debug(45, "=============new subtree list has the length  "+kids.getLength());
+		        	      for (int i=0;i<kids.getLength();i++) {
+		        	        Node kid = kids.item(i);
+		        	        //Log.debug(45, "kid is ==================="+kid);
+		        	        dataPackage.insertCoverage(kid);          
+		        	      }
+		        	    }
+		        	    catch (Exception w) {
+		        	      Log.debug(5, "Unable to insert new taxomonic page"+w.getMessage());
+		        	    }
+		          }
+		          else
+		          {
+			          if (newSubTree != null)
+			          {
+			        	  Log.debug(45, "before deleting subtree =====================");
+			              dataPackage.deleteSubtree(info.getGenericName(), (Integer)page.getNodeIndexList().elementAt(0));
+			              Log.debug(45, "after deleting subtree and insert new tree====================="+newSubTree);
+			              // add to the datapackage
+			              check = dataPackage.insertSubtree(info.getGenericName(), newSubTree, (Integer)page.getNodeIndexList().elementAt(0));
+			          }
+		             if (check != null) 
+			         {
+			            Log.debug(45, "added new subtree to package...");
+			          } 
+			          else 
+			          {
+			            Log.debug(5, "** ERROR: Unable to add new subtree into package **");
+			          }
 		          }
 	          }
 	
 	          
 	      }
+		  
 	  }
 	  
-
-	 
+	  
 }
