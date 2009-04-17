@@ -210,8 +210,8 @@
              <loadExistDataPath>/eml:eml/dataset/coverage/taxonomicCoverage</loadExistDataPath>
              <xpathForCreatingOrderedMap></xpathForCreatingOrderedMap>
              <xpathForSettingPageData>/taxonomicCoverage</xpathForSettingPageData>
-             <newDataDocumentName>taxonomicCoverage</newDataDocumentName>
-             <xpathForGettingPageData>/taxonomicCoverage</xpathForGettingPageData>
+             <newDataDocumentName>coverage</newDataDocumentName>
+             <xpathForGettingPageData>/coverage/taxonomicCoverage</xpathForGettingPageData>
              <genericName>taxonomicCoverage</genericName>
     </infoForModifyingData>
     <wizardPageClass>edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.Taxonomic</wizardPageClass>
