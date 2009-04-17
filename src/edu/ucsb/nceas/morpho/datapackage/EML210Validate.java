@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2009-04-16 20:41:24 $'
- * '$Revision: 1.7 $'
+ *     '$Date: 2009-04-17 01:47:59 $'
+ * '$Revision: 1.8 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -80,8 +80,9 @@ public class EML210Validate extends DefaultHandler implements ErrorHandler
 	 private final static String INTERLECTUALRIGHTS = "intellectualRights"; //it is only have once under dataset
 	 private final static String GEOGRAPHICCOVERAGE = "geographicCoverage";
 	 private final static String TEMPORALCOVERAGE = "temporalCoverage";
-	 private final static String TAXONIMICCOVERAGE ="taxonomicCoverage";
+	 private final static String TAXONOMICCOVERAGE ="taxonomicCoverage";
 	 private final static String METHODS = "methods"; //it is only have once under dataset
+	 private final static String COVERAGE = "coverage";
 	 
 	// SAX parser
 	XMLReader parser = null;
@@ -250,7 +251,23 @@ public class EML210Validate extends DefaultHandler implements ErrorHandler
         	keywordSetIndex++;
         }
         
-  
+       // hit geographicCoverage, index should be increase
+        if(qName.equals(GEOGRAPHICCOVERAGE) && isGrandParent(DATASET))
+        {
+        	geoCoverageIndex++;
+        }
+        
+        // hit temporalCoverage, index should be increase
+        if(qName.equals(TEMPORALCOVERAGE) && isGrandParent(DATASET))
+        {
+        	temporalCoverageIndex++;
+        }
+        
+        // hit taxonCoverage, index should be increase
+        if(qName.equals(TAXONOMICCOVERAGE) && isGrandParent(DATASET))
+        {
+        	taxonCoverageIndex++;
+        }
 
     }
     
@@ -350,6 +367,18 @@ public class EML210Validate extends DefaultHandler implements ErrorHandler
     			else if (value != null && value.equals(KEYWORDSET) && fullPath.endsWith(DATASET))
     			{
     				fullPath=fullPath+SLASH+value+LEFTBRACKET+keywordSetIndex+RIGHTBRACKET;
+    			}
+    			else if (value != null && value.equals(GEOGRAPHICCOVERAGE) && fullPath.endsWith(DATASET+SLASH+COVERAGE))
+    			{
+    				fullPath=fullPath+SLASH+value+LEFTBRACKET+geoCoverageIndex+RIGHTBRACKET;
+    			}
+    			else if (value != null && value.equals(TEMPORALCOVERAGE) && fullPath.endsWith(DATASET+SLASH+COVERAGE))
+    			{
+    				fullPath=fullPath+SLASH+value+LEFTBRACKET+temporalCoverageIndex+RIGHTBRACKET;
+    			}
+    			else if (value != null && value.equals(TAXONOMICCOVERAGE) && fullPath.endsWith(DATASET+SLASH+COVERAGE))
+    			{
+    				fullPath=fullPath+SLASH+value+LEFTBRACKET+taxonCoverageIndex+RIGHTBRACKET;
     			}
     			else
     			{
