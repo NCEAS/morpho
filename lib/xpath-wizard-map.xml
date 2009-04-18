@@ -149,7 +149,7 @@
     <infoForModifyingData>
              <loadExistDataPath>/eml:eml/dataset/intellectualRights</loadExistDataPath>
              <xpathForCreatingOrderedMap></xpathForCreatingOrderedMap>
-             <xpathForSettingPageData>/intellectualRights</xpathForSettingPageData>
+             <xpathForSettingPageData></xpathForSettingPageData>
              <newDataDocumentName>intellectualRights</newDataDocumentName>
              <xpathForGettingPageData>/intellectualRights</xpathForGettingPageData>
              <genericName>intellectualRights</genericName>
@@ -239,7 +239,14 @@
     <xpath>methodStep/instrumentation</xpath>
     <xpath>sampling/studyExtent/description</xpath>
     <xpath>sampling/samplingDescription</xpath>
-    <loadDataFromRootPath>true</loadDataFromRootPath>
+     <infoForModifyingData>
+             <loadExistDataPath>/eml:eml/dataset/methods</loadExistDataPath>
+             <xpathForCreatingOrderedMap></xpathForCreatingOrderedMap>
+             <xpathForSettingPageData>/methods/</xpathForSettingPageData>
+             <newDataDocumentName>methods</newDataDocumentName>
+             <xpathForGettingPageData>/methods/</xpathForGettingPageData>
+             <genericName>methods</genericName>
+    </infoForModifyingData>
     <wizardPageClass>edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.Methods</wizardPageClass>
    </mapping>
    <mapping>
