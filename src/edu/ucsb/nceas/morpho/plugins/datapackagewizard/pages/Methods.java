@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2009-03-13 03:57:28 $'
- * '$Revision: 1.16 $'
+ *     '$Date: 2009-04-18 02:06:57 $'
+ * '$Revision: 1.17 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -461,6 +461,9 @@ public class Methods
     if (_xPathRoot != null && _xPathRoot.trim().length() > 0) {
       this.xPathRoot = _xPathRoot;
     }
+    Log.debug(45,
+            "=============Methods.setPageData() called with xPathRoot = " + xPathRoot
+            + "\n Map = \n" + map);
 
     if (map == null || map.isEmpty()) {
       this.resetBlankData();
