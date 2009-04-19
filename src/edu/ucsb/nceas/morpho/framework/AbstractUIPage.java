@@ -5,8 +5,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2009-04-14 20:47:09 $'
- * '$Revision: 1.11 $'
+ *     '$Date: 2009-04-19 23:07:49 $'
+ * '$Revision: 1.12 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -43,7 +43,6 @@ public abstract class AbstractUIPage extends JPanel {
 	
 	protected String nextPageID = null;
 	
-	private Vector nodeIndex = new Vector();
 	
 	private XPathUIPageMapping xpathUIPageMapping= null;
 
@@ -176,25 +175,6 @@ public abstract class AbstractUIPage extends JPanel {
   public void setNextPageID(String nextPageID)
   {
 	  this.nextPageID = nextPageID;
-  }
-  
-  /**
-   * Add the node index into the UIpage
-   * @param xPathRoot
-   */
-  public void addNodeIndex(int index)
-  {
-	  this.nodeIndex.add(index);
-  }
-  
-  /**
-   * Gets node index of the UIPage
-   * @return
-   */
-  
-  public Vector getNodeIndexList()
-  {
-	   return this.nodeIndex;  
   }
   
   
