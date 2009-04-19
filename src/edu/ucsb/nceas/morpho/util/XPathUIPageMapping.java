@@ -124,6 +124,55 @@ public class XPathUIPageMapping
 	{
 		this.wizardPageClassParameters.add(para);
 	}
+	
+	
+	/**
+	 * Create a new object of the mapping with same data of the given obj.
+	 * @param mapping
+	 */
+	public static XPathUIPageMapping copy(XPathUIPageMapping mapping)
+	{
+		XPathUIPageMapping newMapping = null;
+		if(mapping != null)
+		{
+			newMapping = new XPathUIPageMapping();
+			newMapping.setRoot(mapping.getRoot());
+			newMapping.setWizardPageClassName(mapping.getWizardPageClassName());
+			//copy parameter
+			Vector classParameterList = mapping.getWizardPageClassParameters();
+			if(classParameterList != null)
+			{
+				for(int i=0; i<classParameterList.size(); i++)
+				{
+					String para = (String)classParameterList.elementAt(i);
+					newMapping.addWizardPageClassParameters(para);
+				}
+			}
+			//copy xpah
+			Vector pathList = mapping.getXpath();
+			if(pathList != null)
+			{
+				for(int i=0; i<pathList.size(); i++)
+				{
+					String singlePath = (String)pathList.elementAt(i);
+				    newMapping.addXpath(singlePath);
+				}
+			}
+			//copy modifyingPageDataInfo
+			Vector modifyingDataInfoList = mapping.getModifyingPageDataInfoList();
+			if(modifyingDataInfoList != null)
+			{
+				for(int i=0; i<modifyingDataInfoList.size();i++)
+				{
+					ModifyingPageDataInfo info = (ModifyingPageDataInfo)modifyingDataInfoList.elementAt(i);
+					ModifyingPageDataInfo newInfo = ModifyingPageDataInfo.copy(info);
+					newMapping.addModifyingPageDataInfo(newInfo);
+				}
+			}
+		
+		}
+		return newMapping;
+	}
 
 	
 
