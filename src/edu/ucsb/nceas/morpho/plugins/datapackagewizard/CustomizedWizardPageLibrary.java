@@ -65,5 +65,14 @@ public class CustomizedWizardPageLibrary implements WizardPageLibraryInterface {
   {
 	  return pageList.isEmpty();
   }
+  
+  /**
+   * Gets the size of pages in the library
+   * @return
+   */
+  public int size()
+  {
+	  return pageList.size();
+  }
 }
 
