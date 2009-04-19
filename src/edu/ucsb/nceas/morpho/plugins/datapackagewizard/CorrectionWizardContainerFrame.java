@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2009-04-17 17:43:24 $'
- * '$Revision: 1.11 $'
+ *     '$Date: 2009-04-19 23:09:08 $'
+ * '$Revision: 1.12 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -50,6 +50,7 @@ import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.AttributePage;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.General;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.Taxonomic;
+import edu.ucsb.nceas.morpho.util.LoadDataPath;
 import edu.ucsb.nceas.morpho.util.Log;
 import edu.ucsb.nceas.morpho.util.ModifyingPageDataInfo;
 import edu.ucsb.nceas.morpho.util.UISettings;
@@ -175,8 +176,11 @@ public class CorrectionWizardContainerFrame extends WizardContainerFrame
 	          if (page instanceof AttributePage)
 	          {	     
 	        	    dataPackage.getEntityArray();
-	        	    int entityIndex =   (Integer)page.getNodeIndexList().elementAt(0);
-	        	    int attrIndex    =  (Integer) page.getNodeIndexList().elementAt(1);
+	        	    Vector pathObjList = info.getLoadExistingDataPath();
+	        	    LoadDataPath pathObj0 = (LoadDataPath) pathObjList.elementAt(0);
+	        	    int entityIndex =   pathObj0.getPosition();
+	        	    LoadDataPath pathObj1 = (LoadDataPath) pathObjList.elementAt(1);
+	        	    int attrIndex    =  pathObj1.getPosition();
 	        	    Log.debug(45, "======attribute is in entity "+entityIndex+ " and postition is "+attrIndex+" with data "+data.toString());
 	        	    String oldID = dataPackage.getAttributeID(entityIndex, attrIndex);
 	        	    Log.debug(45, "old id is "+oldID);
@@ -218,11 +222,14 @@ public class CorrectionWizardContainerFrame extends WizardContainerFrame
 		          {
 			          if (newSubTree != null)
 			          {
+			        	  Vector pathObjList = info.getLoadExistingDataPath();
+			        	  LoadDataPath pathObj0 = (LoadDataPath) pathObjList.elementAt(0);
+			        	    int index =   pathObj0.getPosition();
 			        	  Log.debug(45, "before deleting subtree =====================");
-			              dataPackage.deleteSubtree(info.getGenericName(), (Integer)page.getNodeIndexList().elementAt(0));
+			              dataPackage.deleteSubtree(info.getGenericName(), index);
 			              Log.debug(45, "after deleting subtree and insert new tree====================="+newSubTree);
 			              // add to the datapackage
-			              check = dataPackage.insertSubtree(info.getGenericName(), newSubTree, (Integer)page.getNodeIndexList().elementAt(0));
+			              check = dataPackage.insertSubtree(info.getGenericName(), newSubTree, index);
 			          }
 		             if (check != null) 
 			         {
