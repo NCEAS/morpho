@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2009-04-15 23:52:15 $'
- * '$Revision: 1.2 $'
+ *     '$Date: 2009-04-19 23:11:07 $'
+ * '$Revision: 1.3 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -68,9 +68,27 @@ public class ModifyingPageDataInfo
 	 */
 	public void addLoadExistingDataPath(String path) 
 	{
-		this.loadExistingDataPath.add(path);
+		LoadDataPath newPath = new LoadDataPath(path);
+		this.loadExistingDataPath.add(newPath);
 	}
 	
+	/**
+	 * Adds a path object into a list which is used to load the existing subtree into wizard page.
+	 * @param path
+	 */
+	public void addLoadExistingDataPath(LoadDataPath newPath) 
+	{
+		this.loadExistingDataPath.add(newPath);
+	}
+	
+	/**
+	 * Remove a path object
+	 * @param path
+	 */
+	public void removeLoadExistingDataPath(LoadDataPath path)
+	{
+		this.loadExistingDataPath.remove(path);
+	}
 	/**
 	 * Gets the path for getting page data
 	 * @return
@@ -127,5 +145,33 @@ public class ModifyingPageDataInfo
 		this.pathForCreatingOrderedMap = pathForCreatingOrderedMap;
 	}
 	
-
+	
+	/**
+	 * Clone an object
+	 * @param info
+	 * @return
+	 */
+	public static ModifyingPageDataInfo copy(ModifyingPageDataInfo info)
+	{
+		ModifyingPageDataInfo newInfo = new ModifyingPageDataInfo();
+		if(info != null)
+		{
+			newInfo.setPathForgettingPageData(info.getPathForgettingPageData());
+			newInfo.setDocumentName(info.getDocumentName());
+			newInfo.setGenericName(info.getGenericName());
+			newInfo.setPathForCreatingOrderedMap(info.getPathForCreatingOrderedMap());
+			newInfo.setPathForSettingPageData(info.getPathForSettingPageData());
+			Vector dataPathList = info.getLoadExistingDataPath();
+			if(dataPathList != null)
+			{
+				for(int i=0; i<dataPathList.size(); i++)
+				{
+					LoadDataPath dataPathObj = (LoadDataPath)dataPathList.elementAt(i);
+					LoadDataPath newPathObj = LoadDataPath.copy(dataPathObj);
+					newInfo.addLoadExistingDataPath(newPathObj);
+				}
+			}
+		}
+		return newInfo;
+	}
 }
