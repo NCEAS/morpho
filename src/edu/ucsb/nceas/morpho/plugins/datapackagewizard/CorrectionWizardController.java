@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2009-04-17 23:51:07 $'
- * '$Revision: 1.20 $'
+ *     '$Date: 2009-04-19 23:10:00 $'
+ * '$Revision: 1.21 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -43,6 +43,7 @@ import edu.ucsb.nceas.morpho.plugins.ServiceNotHandledException;
 import edu.ucsb.nceas.morpho.plugins.ServiceProvider;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.AttributePage;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.Entity;
+import edu.ucsb.nceas.morpho.util.LoadDataPath;
 import edu.ucsb.nceas.morpho.util.Log;
 import edu.ucsb.nceas.morpho.util.ModifyingPageDataInfo;
 import edu.ucsb.nceas.morpho.util.XPathUIPageMapping;
@@ -199,6 +200,13 @@ public class CorrectionWizardController
 				if (page != null)
 				{
 					Log.debug(45, "find a UI page object for path "+path);
+					//if a page with same data exists in the library, we should skip this page.
+					boolean checkPageExisted = isUIPageExisted(page);
+					if(checkPageExisted)
+					{
+						Log.debug(45, "The page for path "+path +" already existed in the library. We should skip it");
+						continue;
+					}
 					// set up next id for previous page
 					if (previousPage != null)
 					{
@@ -270,12 +278,14 @@ public class CorrectionWizardController
 						{
 							int entityIndex = getDataTableIndex(path);
 							int attributeIndex = getAttributeIndex(path);
-							page.addNodeIndex(entityIndex);
-							page.addNodeIndex(attributeIndex);
 							Vector loadExistingDataPathList = info.getLoadExistingDataPath();
-							nodeList = XMLUtilities.getNodeListWithXPath(dataPackage.getMetadataNode(),(String)loadExistingDataPathList.elementAt(0));
+							LoadDataPath entityPath = (LoadDataPath)loadExistingDataPathList.elementAt(0);
+							entityPath.setPosition(entityIndex);
+							LoadDataPath attributePath = (LoadDataPath)loadExistingDataPathList.elementAt(1);
+							attributePath.setPosition(attributeIndex);							
+							nodeList = XMLUtilities.getNodeListWithXPath(dataPackage.getMetadataNode(),entityPath.getPath());
 							Node entityNode = nodeList.item(entityIndex);
-							nodeList = XMLUtilities.getNodeListWithXPath(entityNode,(String)loadExistingDataPathList.elementAt(1));
+							nodeList = XMLUtilities.getNodeListWithXPath(entityNode, attributePath.getPath());
 							Node node = nodeList.item(attributeIndex);
 							xpathMap = XMLUtilities.getDOMTreeAsXPathMap(node,info.getPathForCreatingOrderedMap());							
 
@@ -286,7 +296,7 @@ public class CorrectionWizardController
 							Node node = nodeList.item(0);
 							xpathMap = XMLUtilities.getDOMTreeAsXPathMap(node, "");
 							int entityIndex = getDataTableIndex(path);
-							page.addNodeIndex(entityIndex);
+							//page.addNodeIndex(entityIndex);
 						}
 						else
 						{
@@ -298,9 +308,12 @@ public class CorrectionWizardController
 								Node node = null;
 								for(int k=0; k<loadExistingDataPathList.size(); k++)
 								{
-								  nodeList = XMLUtilities.getNodeListWithXPath(dataPackage.getMetadataNode(), (String)loadExistingDataPathList.elementAt(0));	
+								  LoadDataPath loadPath = (LoadDataPath)loadExistingDataPathList.elementAt(k);
+								  // store the position information
+								  loadPath.setPosition(position);
+								  String xpath = loadPath.getPath();
+								  nodeList = XMLUtilities.getNodeListWithXPath(dataPackage.getMetadataNode(), xpath);	
 								  node = nodeList.item(position);
-								  page.addNodeIndex(position);
 								}
 								Log.debug(45, "before getting ordered map from subtree");
 							    xpathMap = XMLUtilities.getDOMTreeAsXPathMap(node, info.getPathForCreatingOrderedMap());
@@ -318,7 +331,9 @@ public class CorrectionWizardController
 						{
 							ModifyingPageDataInfo info =(ModifyingPageDataInfo)list.elementAt(i);
 							settingPageDataPath = info.getPathForSettingPageData();
-							String xPath = (String)info.getLoadExistingDataPath().elementAt(0);
+							LoadDataPath pathObj = (LoadDataPath)info.getLoadExistingDataPath().elementAt(0);
+							String xPath = pathObj.getPath();
+							pathObj.setPosition(0);
 							//System.out.println("==========the xpath is "+xPath);
 							nodeList = XMLUtilities.getNodeListWithXPath(dataPackage.getMetadataNode(), xPath);
 							Node node = nodeList.item(0);
@@ -333,7 +348,6 @@ public class CorrectionWizardController
 							{
 								xpathMap.putAll(XMLUtilities.getDOMTreeAsXPathMap(node));
 							}
-							page.addNodeIndex(0);
 						}
 						
 					}	
@@ -375,7 +389,9 @@ public class CorrectionWizardController
 			if (fullPathMapping != null)
 			{
 				Log.debug(46, "in fullPathMapping != null");
-				mapping = (XPathUIPageMapping)fullPathMapping.get(path);
+				XPathUIPageMapping mappingFromList = (XPathUIPageMapping)fullPathMapping.get(path);
+				//we should clone this object, since it will be assigned to every page.
+				mapping = XPathUIPageMapping.copy(mappingFromList);
 				Log.debug(46, "find the xpath and uipage mapping in full path mapping "+mapping);
 			}
 			// second to check short mapping if no class name was found in full path mapping
@@ -851,5 +867,110 @@ public class CorrectionWizardController
 	          Log.debug(45, "\n\n********** Correction Wizard canceled!");
 	        }
 	}
+	
+	/*
+	 * After getting the error path list, the class will create a wizard UI page for every error path if 
+	 * it can find one. Since two error path can be in the same subtree of wizard UI page, it is possible
+	 * the wizard UI pages can be duplicated. For instance, if we create two pages for 
+	 * /eml:eml/dataset/creator[1]/individualName/salutation and /eml:eml/dataset/creator[1]/individualName/givenName.
+	 * The two pages are duplicated. The criteria of pages are identical:
+	 * 1) Same name (class).
+	 * 2) Same data (subtree). We have a simple way to compare data:  the LoadDataPath is same.
+	 * If they are same, this means the same subtree is loaded into page.
+	 */
+	 private boolean isUIPageExisted(AbstractUIPage page)
+	 {
+		 boolean isExisted = false;
+		 
+		 if(page == null)
+		 {
+			 // we don't want to put a null page into the library. So we assume it is existed.
+			 isExisted = true;
+			 return isExisted;
+		 }
+		 
+		 //wizardPageLibrary is the place to store pages
+		 if (wizardPageLibrary != null)
+		 {
+			 int size = wizardPageLibrary.size();
+			 Log.debug(45, "The size of current library is "+size);
+			 for(int i=0; i<size; i++)
+			 {
+				 // if we found a identical one, we don't need continue.
+				 if(isExisted)
+				 {
+					 break;
+				 }
+				 //we used decrease order
+				 String pageIndex = (new Integer(size-1-i)).toString();
+				 Log.debug(45, "get page "+pageIndex+ " from library");
+				 AbstractUIPage existedPage = wizardPageLibrary.getUIPage(pageIndex);
+				 if (existedPage == null)
+				 {
+					 continue;
+				 }
+				 else
+				 {
+					 String existedClassName = existedPage.getClass().getCanonicalName();
+					 Log.debug(45, "The canonical name of page already in library is "  +existedClassName);
+					 String newClassName = page.getClass().getCanonicalName();
+					 Log.debug(45, "The canonical name of given page is  "  +newClassName);
+					 //they have the same page
+					 if(existedClassName != null && newClassName != null && existedClassName.equals(newClassName))
+					 {
+						 XPathUIPageMapping existedMapping = existedPage.getXPathUIPageMapping();
+						 XPathUIPageMapping newMapping = page.getXPathUIPageMapping();
+						 if (existedMapping != null && newMapping != null);
+						 {
+					
+							 Vector existedModifyingDataInfo = existedMapping.getModifyingPageDataInfoList();
+							 Vector newModifyingDataInfo = newMapping.getModifyingPageDataInfoList();
+							 if(existedModifyingDataInfo != null && newModifyingDataInfo != null &&
+								existedModifyingDataInfo.size() == newModifyingDataInfo.size())
+							 {
+								 boolean allIndexSame = true;
+								 for(int j=0; j<existedModifyingDataInfo.size(); j++)
+								 {
+									 //just out the loop if we already found a not same
+									 if(!allIndexSame)
+									 {
+										 break;
+									 }
+									 ModifyingPageDataInfo existedInfo = (ModifyingPageDataInfo) existedModifyingDataInfo.elementAt(j);
+									 ModifyingPageDataInfo newInfo = (ModifyingPageDataInfo) newModifyingDataInfo.elementAt(j);
+									 Vector existedLoadDataPathList = existedInfo.getLoadExistingDataPath();
+									 Vector newLoadDataPathList = newInfo.getLoadExistingDataPath();
+									 if (existedLoadDataPathList != null && newLoadDataPathList != null &&
+										 existedLoadDataPathList.size() == newLoadDataPathList.size())
+									 {
+										 for(int k=0; k<existedLoadDataPathList.size(); k++)
+										 {
+											   LoadDataPath existedPathObj = (LoadDataPath)existedLoadDataPathList.elementAt(k);
+											   LoadDataPath newPathObj = (LoadDataPath)newLoadDataPathList.elementAt(k);
+										       //find a index is not same, jump out the for loop
+											   if(existedPathObj != null && !existedPathObj.compareTo(newPathObj))
+											   {
+												 Log.debug(45, "find a different node index value, so they are not same page even the page class is same");
+												 allIndexSame = false;
+												 break;
+											   }
+										 }
+									 }
+								 }
+								 //all index are same and we need to assign isExisted = true;
+								 if(allIndexSame)
+								 {
+									 isExisted = true;
+								 }
+							 }
+					    }
+					 }
+					 
+				 }
+			 }
+		 }
+		 Log.debug(45, "return the existed page value "+isExisted);
+		 return isExisted;
+	 }
 
 }
