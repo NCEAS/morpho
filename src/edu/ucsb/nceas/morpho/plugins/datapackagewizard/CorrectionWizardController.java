@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2009-04-19 23:10:00 $'
- * '$Revision: 1.21 $'
+ *     '$Date: 2009-04-19 23:27:28 $'
+ * '$Revision: 1.22 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -829,7 +829,7 @@ public class CorrectionWizardController
 	          Log.debug(30, "AbstractDataPackage complete");
 	          adp.setAccessionNumber("temporary.1.1");
 	          //second, to correct data by tree editor
-			    if(pathListForTreeEditor != null)
+			    if(pathListForTreeEditor != null && !pathListForTreeEditor.isEmpty())
 			    {
 			    	//there is no UIPage returned, we only run tree editor to fix the issue
 					try
