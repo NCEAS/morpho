@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2009-04-01 23:18:33 $'
- * '$Revision: 1.10 $'
+ *     '$Date: 2009-04-20 00:55:38 $'
+ * '$Revision: 1.11 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -95,5 +95,12 @@ public interface EditorInterface
          EditingCompleteListener listener,
          String nodeName, int nodeNumber, boolean returnErrorMessage);
    
-   
+ /**
+  * This method is called to open a XML editor with the indicated
+  * xml structure in a DOM and an editingCompletedListener to be notified when
+  * the editing is completed
+  */
+ public void openEditor(Document doc, String id, String location,
+         EditingCompleteListener listener,
+         String nodeName, int nodeNumber, boolean returnErrorMessage, boolean disableUntrimButtonAndPopUpMenu);
 }
