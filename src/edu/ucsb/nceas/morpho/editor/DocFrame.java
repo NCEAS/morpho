@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2009-04-03 01:00:04 $'
- * '$Revision: 1.188 $'
+ *     '$Date: 2009-04-20 00:54:02 $'
+ * '$Revision: 1.189 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -300,6 +300,8 @@ public class DocFrame extends javax.swing.JFrame
    * Indicate if the doc frame will return error message when it exists.
    */
   boolean returnErrorMessageInExistEditing = true;
+  
+  MouseListener popupListener = new PopupListener();
 
 
   /**
@@ -624,7 +626,7 @@ public class DocFrame extends javax.swing.JFrame
     SymTreeSelection lSymTreeSelection = new SymTreeSelection();
     tree.addTreeSelectionListener(lSymTreeSelection);
 
-    MouseListener popupListener = new PopupListener();
+    
     tree.addMouseListener(popupListener);
     validate();
     setLocation(50, 50);
@@ -771,6 +773,31 @@ public class DocFrame extends javax.swing.JFrame
     } else {
       selectMatchingNode(rootNode, nodeName);
     }
+  }
+  
+  /**
+   * This method will disable Untrim button and right click pop-up menu is disable is true.
+   * Currently it is used to open a tree editor in correction wziard. We don't want to
+   * give user to many options.
+   * @param disable
+   */
+  public void disableUnTrimButtonAndPopUpMenu(boolean disable)
+  {
+	  if (UntrimTreeButton != null)
+	  {
+		  if (disable)
+		  {
+		    UntrimTreeButton.setEnabled(false);	    
+		    if (tree !=null)
+		    {
+		    	tree.removeMouseListener(popupListener);
+		    }
+		  }
+		  else
+		  {
+			  UntrimTreeButton.setEnabled(true);
+		  }
+	  }
   }
 
   /**
