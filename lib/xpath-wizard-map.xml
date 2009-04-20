@@ -4,6 +4,10 @@
     <root>/eml:eml/dataset</root>
     <xpath>title</xpath>
     <xpath>abstract</xpath>
+    <!-- when loadExistDataPath is siblings relationship, we need mutipal infoForModifyingData
+         when loadEXistDataPath is parent to kids relationship, we need one infoForModifyindData, but mutipal loadEXistDataPath--> 
+    <!-- when edit loadExistDataPath, we should modify the EML210Validate.java at source code. We need that class to identify the position of path i.e. the index
+         of node in a node list. If pathes have the parent to kids relationship, the kids' index is base under the same parent node, rather than entire docuemnt-->
     <infoForModifyingData>
 	     <loadExistDataPath>/eml:eml/dataset/title</loadExistDataPath>
 	     <xpathForCreatingOrderedMap></xpathForCreatingOrderedMap>
@@ -253,20 +257,58 @@
     <root>/eml:eml/access</root>
     <xpath>allow/principal</xpath>
     <xpath>allow/permission</xpath>
+    <infoForModifyingData>
+             <loadExistDataPath>/eml:eml/access/allow</loadExistDataPath>
+             <xpathForCreatingOrderedMap></xpathForCreatingOrderedMap>
+             <xpathForSettingPageData>/allow</xpathForSettingPageData>
+             <newDataDocumentName>allow</newDataDocumentName>
+             <xpathForGettingPageData>/allow</xpathForGettingPageData>
+             <genericName>allow</genericName>
+    </infoForModifyingData>
+    <wizardPageClass>edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.AccessPage</wizardPageClass>
+   </mapping>
+    <mapping>
+    <root>/eml:eml/access</root>
     <xpath>deny/principal</xpath>
     <xpath>deny/permission</xpath>
-    <loadDataFromRootPath>true</loadDataFromRootPath>
-    <wizardPageClass>edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.Access</wizardPageClass>
+    <infoForModifyingData>
+             <loadExistDataPath>/eml:eml/access/deny</loadExistDataPath>
+             <xpathForCreatingOrderedMap></xpathForCreatingOrderedMap>
+             <xpathForSettingPageData>/deny</xpathForSettingPageData>
+             <newDataDocumentName>deny</newDataDocumentName>
+             <xpathForGettingPageData>/deny</xpathForGettingPageData>
+             <genericName>deny</genericName>
+    </infoForModifyingData>
+    <wizardPageClass>edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.AccessPage</wizardPageClass>
    </mapping>
+   <!-- datatable -->
    <mapping>
-    <!-- for data-->
+    <root>/eml:eml/dataset/dataTable/physical/distribution/access</root>
+    <xpath>deny/principal</xpath>
+    <xpath>deny/permission</xpath>
+    <infoForModifyingData>
+             <loadExistDataPath>/eml:eml/dataset/dataTable/physical/distribution/access/deny</loadExistDataPath>
+             <xpathForCreatingOrderedMap></xpathForCreatingOrderedMap>
+             <xpathForSettingPageData>/deny</xpathForSettingPageData>
+             <newDataDocumentName>deny</newDataDocumentName>
+             <xpathForGettingPageData>/deny</xpathForGettingPageData>
+             <genericName>deny</genericName>
+    </infoForModifyingData>
+    <wizardPageClass>edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.AccessPage</wizardPageClass>
+  </mapping>
+  <mapping>
     <root>/eml:eml/dataset/dataTable/physical/distribution/access</root>
     <xpath>allow/principal</xpath>
     <xpath>allow/permission</xpath>
-    <xpath>deny/principal</xpath>
-    <xpath>deny/permission</xpath>
-    <loadDataFromRootPath>true</loadDataFromRootPath>
-    <wizardPageClass>edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.Access</wizardPageClass>
+    <infoForModifyingData>
+             <loadExistDataPath>/eml:eml/dataset/dataTable/physical/distribution/access/allow</loadExistDataPath>
+             <xpathForCreatingOrderedMap></xpathForCreatingOrderedMap>
+             <xpathForSettingPageData>/allow</xpathForSettingPageData>
+             <newDataDocumentName>allow</newDataDocumentName>
+             <xpathForGettingPageData>/allow</xpathForGettingPageData>
+             <genericName>allow</genericName>
+    </infoForModifyingData>
+    <wizardPageClass>edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.AccessPage</wizardPageClass>
   </mapping>
   <mapping>
     <root>/eml:eml/dataset/dataTable/attributeList/attribute</root>
