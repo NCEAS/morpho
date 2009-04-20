@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2009-04-01 23:18:33 $'
- * '$Revision: 1.31 $'
+ *     '$Date: 2009-04-20 00:54:49 $'
+ * '$Revision: 1.32 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -214,7 +214,14 @@ public class EditorPlugin implements PluginInterface, ServiceProvider, EditorInt
   public void openEditor(Document doc, String id, String location, 
           EditingCompleteListener listener,
           String nodeName, int cnt, boolean returnErrorMessage) {
-		DocFrame editorframe = new DocFrame();
+	  openEditor(doc, id, location, listener, nodeName, cnt, returnErrorMessage, false);
+	}
+  
+  public void openEditor(Document doc, String id, String location, 
+          EditingCompleteListener listener,
+          String nodeName, int cnt, boolean returnErrorMessage, boolean disableUntrimButtonAndPopUpMenu) {	      
+	    DocFrame editorframe = new DocFrame();
+	    editorframe.disableUnTrimButtonAndPopUpMenu(disableUntrimButtonAndPopUpMenu);
 		editorframe.setController(this);
 		editorframe.setReturnErrorMessageInExistEditing(returnErrorMessage);
 		editorframe.setVisible(true);
@@ -224,7 +231,7 @@ public class EditorPlugin implements PluginInterface, ServiceProvider, EditorInt
 		//MBJ if (framework!=null) {
 		//MBJ framework.addWindow(editorframe);
 		//MBJ }
-		docframes.put(editorframe, listener);
+		docframes.put(editorframe, listener);	      
 	}
 
   public void openEditor(String xmlText, String id, String location, 
