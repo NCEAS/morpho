@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2009-04-19 23:09:08 $'
- * '$Revision: 1.12 $'
+ *     '$Date: 2009-04-20 23:39:13 $'
+ * '$Revision: 1.13 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -222,14 +222,15 @@ public class CorrectionWizardContainerFrame extends WizardContainerFrame
 		          {
 			          if (newSubTree != null)
 			          {
-			        	  Vector pathObjList = info.getLoadExistingDataPath();
+			        	  check = dataPackage.replaceSubtree(info, newSubTree);
+			        	  /*Vector pathObjList = info.getLoadExistingDataPath();
 			        	  LoadDataPath pathObj0 = (LoadDataPath) pathObjList.elementAt(0);
 			        	    int index =   pathObj0.getPosition();
 			        	  Log.debug(45, "before deleting subtree =====================");
 			              dataPackage.deleteSubtree(info.getGenericName(), index);
 			              Log.debug(45, "after deleting subtree and insert new tree====================="+newSubTree);
 			              // add to the datapackage
-			              check = dataPackage.insertSubtree(info.getGenericName(), newSubTree, index);
+			              check = dataPackage.insertSubtree(info.getGenericName(), newSubTree, index);*/
 			          }
 		             if (check != null) 
 			         {
