@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2009-04-10 18:17:02 $'
- * '$Revision: 1.140 $'
+ *     '$Date: 2009-04-20 21:38:26 $'
+ * '$Revision: 1.141 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -39,7 +39,9 @@ import edu.ucsb.nceas.morpho.util.DocumentNotFoundException;
 import edu.ucsb.nceas.morpho.plugins.XMLFactoryInterface;
 import edu.ucsb.nceas.morpho.query.LocalQuery;
 import edu.ucsb.nceas.morpho.util.IOUtil;
+import edu.ucsb.nceas.morpho.util.LoadDataPath;
 import edu.ucsb.nceas.morpho.util.Log;
+import edu.ucsb.nceas.morpho.util.ModifyingPageDataInfo;
 import edu.ucsb.nceas.morpho.util.XMLTransformer;
 import edu.ucsb.nceas.morpho.util.XMLUtil;
 import edu.ucsb.nceas.utilities.XMLUtilities;
@@ -1061,6 +1063,99 @@ public abstract class AbstractDataPackage extends MetadataObject
   }
 
 
+  /**
+   * replaces subtree at location identified by ModifyingPageDataInfo; returns
+   * root Node of replaced subtree, or null if not found, so caller can
+   * determine whether replace was successful
+   * ModifyingPageDataInfo has a vector of LoadDataPath objects. LoadDataPath has the path and
+   * position information. We can use those info to identify the subtree.
+   * Note: if we have more than one LoadDataPath, e.g. /eml:eml/dataset/dataTable and position 0
+   * and ./attributeList/attribute and position 2. This means dataTable is the first one (postion 0) in the 
+   * /eml:eml/dataset/dataTable node list. The position 2 of the second one is the position of ./attributeList/attribute
+   * under the dataTable node. So the second one's information is about the children of first one. 
+   * @param info ModifyingPageDataInfo
+   * @param newSubtreeRootNode the new subtree root Node
+   * @return root Node of replaced subtree, or null if subtree not found, so
+   * caller can determine whether replace was successful
+   */
+  public Node replaceSubtree(ModifyingPageDataInfo info, Node newSubTreeRootNode) 
+  {
+	  
+      Node node = null;
+      if(info != null && newSubTreeRootNode != null)
+      {
+    	  Document thisDom = getMetadataNode().getOwnerDocument();
+    	  Node newSubTree = thisDom.importNode(newSubTreeRootNode, true); // 'true' imports children
+    	  Vector loadPathObjList = info.getLoadExistingDataPath();
+		  if (loadPathObjList != null)
+		  {
+			  Log.debug(46, "In loadPathObjectList is not null branch in replaceSubtree method");
+			  Node parentNode = metadataNode; // start from document root
+			  for(int i=0; i<loadPathObjList.size(); i++)
+			  {
+				  int lastIndexOfPathList = loadPathObjList.size() -1;
+				  LoadDataPath pathObj = (LoadDataPath)loadPathObjList.elementAt(i);
+				  if (pathObj != null)
+				  {
+					  String path = pathObj.getPath();
+					  int position = pathObj.getPosition();
+					  Log.debug(45, "Handle path "+path+" with position "+position +" in replaceSubTree method");
+					  try
+					  {
+					    NodeList nodelist = XMLUtilities.getNodeListWithXPath(parentNode, path);
+					    if(nodelist != null && nodelist.getLength() >0)
+					    {
+					    	if(i != lastIndexOfPathList)
+					    	{
+					    		//this is not the deepest subtree, we should reset parent node and contiue go head.
+					    		parentNode = nodelist.item(position);
+					    		
+					    	}
+					    	else
+					    	{
+					    		//this is the deep subtree and we should replace it.
+					    		Log.debug(30, "find the deepest subtree for path "+path +" with position "+position);
+					    		Node targetNode = nodelist.item(position);
+					    		Node parnode = null;
+					    		if(targetNode != null)
+					    		{
+					    		  Log.debug(45, "Getting the parent node of node "+targetNode);
+					              parnode = targetNode.getParentNode();
+					              if (parnode !=null) 
+						          {
+					            	  Log.debug(35, "Replace an old node by the new node "+newSubTree);
+					            	  Node replaceNode =parnode.replaceChild(newSubTree, targetNode);
+					            	  if (replaceNode != null)
+					            	  {
+					            		  Log.debug(35, "Successfully replace the old node "+targetNode+" with the new node  "+newSubTree);
+					            		  node = replaceNode;
+					            	  }
+						          }
+						           
+					    		}
+					    		
+					           
+					    	}
+					    }
+					    else
+					    {
+					    	Log.debug(30, "Node list for path "+path+" is null or empty");
+					    	return node;
+					    }
+					  }
+					  catch(Exception e)
+					  {
+						  Log.debug(15, "couldn't repalce the subtree "+e.getMessage());
+					  }
+					     				  
+				  }
+			  }
+		  }
+		
+	  }
+	  return node;
+      
+  }
 
 
   /**
