@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2009-04-17 01:47:59 $'
- * '$Revision: 1.8 $'
+ *     '$Date: 2009-04-20 23:38:13 $'
+ * '$Revision: 1.9 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -83,6 +83,12 @@ public class EML210Validate extends DefaultHandler implements ErrorHandler
 	 private final static String TAXONOMICCOVERAGE ="taxonomicCoverage";
 	 private final static String METHODS = "methods"; //it is only have once under dataset
 	 private final static String COVERAGE = "coverage";
+	 private final static String ACCESS = "access";
+	 private final static String ALLOW = "allow";
+	 private final static String DENY ="deny";
+	 private final static String PHYSICAL = "physical";
+	 private final static String DISTRIBUTION = "distribution";
+	 private final static String EML = "eml:eml";
 	 
 	// SAX parser
 	XMLReader parser = null;
@@ -103,6 +109,10 @@ public class EML210Validate extends DefaultHandler implements ErrorHandler
     private int taxonCoverageIndex = 0;
     private int keywordSetIndex = 0;
     private int keywordIndex = 0;
+    private int topAccessAllowIndex = 0;
+    private int topAccessDenyIndex = 0;
+    private int datatableAccessAllowIndex = 0;
+    private int datatableAccessDenyIndex = 0;
     
     
 	/**
@@ -228,45 +238,69 @@ public class EML210Validate extends DefaultHandler implements ErrorHandler
         }
         
         // hit creator, index should be increase
-        if(qName.equals(CREATOR) && isParent(DATASET))
+        if(qName.equals(CREATOR) && isChildOf(DATASET))
         {
         	creatorIndex++;
         }
         
         // hit contact, index should be increase
-        if(qName.equals(CONTACT) && isParent(DATASET))
+        if(qName.equals(CONTACT) && isChildOf(DATASET))
         {
         	contactIndex++;
         }
         
         // hit associatedParty, index should be increase
-        if(qName.equals(ASSOCIATEDPARTY) && isParent(DATASET))
+        if(qName.equals(ASSOCIATEDPARTY) && isChildOf(DATASET))
         {
         	associatedPartyIndex++;
         }
         
         // hit keywordSet, index should be increase
-        if(qName.equals(KEYWORDSET) && isParent(DATASET))
+        if(qName.equals(KEYWORDSET) && isChildOf(DATASET))
         {
         	keywordSetIndex++;
         }
         
        // hit geographicCoverage, index should be increase
-        if(qName.equals(GEOGRAPHICCOVERAGE) && isGrandParent(DATASET))
+        if(qName.equals(GEOGRAPHICCOVERAGE) && isGrandChildOf(DATASET))
         {
         	geoCoverageIndex++;
         }
         
         // hit temporalCoverage, index should be increase
-        if(qName.equals(TEMPORALCOVERAGE) && isGrandParent(DATASET))
+        if(qName.equals(TEMPORALCOVERAGE) && isGrandChildOf(DATASET))
         {
         	temporalCoverageIndex++;
         }
         
         // hit taxonCoverage, index should be increase
-        if(qName.equals(TAXONOMICCOVERAGE) && isGrandParent(DATASET))
+        if(qName.equals(TAXONOMICCOVERAGE) && isGrandChildOf(DATASET))
         {
         	taxonCoverageIndex++;
+        }
+        
+        // hit allow element at top access module, index should be increased
+        if(qName.equals(ALLOW) && isChildOf(ACCESS) && isGrandChildOf(EML))
+        {
+        	topAccessAllowIndex ++;
+        }
+        
+        // hit deny element at top access module, index should be increased
+        if(qName.equals(DENY) && isChildOf(ACCESS) && isGrandChildOf(EML))
+        {
+        	topAccessDenyIndex ++;
+        }
+        
+        // hit allow element at data table access module, index should be increased
+        if(qName.equals(ALLOW) && isChildOf(ACCESS) && isNthChildOf(DATATABLE, 4))
+        {
+        	datatableAccessAllowIndex ++;
+        }
+        
+        // hit allow element at top access module, index should be increased
+        if(qName.equals(DENY) && isChildOf(ACCESS) && isNthChildOf(DATATABLE, 4))
+        {
+        	datatableAccessDenyIndex ++;
         }
 
     }
@@ -380,6 +414,22 @@ public class EML210Validate extends DefaultHandler implements ErrorHandler
     			{
     				fullPath=fullPath+SLASH+value+LEFTBRACKET+taxonCoverageIndex+RIGHTBRACKET;
     			}
+    			else if (value != null && value.equals(ALLOW) && fullPath.endsWith(EML+SLASH+ACCESS))
+    			{
+    				fullPath=fullPath+SLASH+value+LEFTBRACKET+topAccessAllowIndex+RIGHTBRACKET;
+    			}
+    			else if (value != null && value.equals(DENY) && fullPath.endsWith(EML+SLASH+ACCESS))
+    			{
+    				fullPath=fullPath+SLASH+value+LEFTBRACKET+topAccessDenyIndex+RIGHTBRACKET;
+    			}
+    			else if (value != null && value.equals(DENY) && fullPath.endsWith(PHYSICAL+SLASH+DISTRIBUTION+SLASH+ACCESS) && fullPath.contains(DATATABLE) )
+    			{
+    				fullPath=fullPath+SLASH+value+LEFTBRACKET+datatableAccessDenyIndex+RIGHTBRACKET;
+    			}
+    			else if (value != null && value.equals(ALLOW) && fullPath.endsWith(PHYSICAL+SLASH+DISTRIBUTION+SLASH+ACCESS) && fullPath.contains(DATATABLE))
+    			{
+    				fullPath=fullPath+SLASH+value+LEFTBRACKET+datatableAccessAllowIndex+RIGHTBRACKET;
+    			}
     			else
     			{
     				fullPath=fullPath+SLASH+value;
@@ -393,18 +443,18 @@ public class EML210Validate extends DefaultHandler implements ErrorHandler
      * Determines if the given path is current path's parent.
      * Note: when use this method, current node should have been remove out from the node stack.
      */
-   private boolean isParent(String xpath)
+   private boolean isChildOf(String xpath)
    {
-	   return isNthParent(xpath, 1);
+	   return isNthChildOf(xpath, 1);
    }
    
    /*
     * Determines if the given path is current path's grandparent.
     * Note: when use this method, current node should have been remove out from the node stack.
     */
-  private boolean isGrandParent(String xpath)
+  private boolean isGrandChildOf(String xpath)
   {
-	   return isNthParent(xpath, 2);
+	   return isNthChildOf(xpath, 2);
   }
    
    
@@ -412,7 +462,7 @@ public class EML210Validate extends DefaultHandler implements ErrorHandler
     * Determines if the given path is current path's nth Parent.
     * Note: when use this method, current node should have been remove out from the node stack.
     */
-  private boolean isNthParent(String xpath, int nth)
+  private boolean isNthChildOf(String xpath, int nth)
   {
 	   boolean isNthParent = false;
 	   if (xpath != null)
@@ -421,7 +471,7 @@ public class EML210Validate extends DefaultHandler implements ErrorHandler
 		   try
 		   {
 			   String nthParent = (String)path.elementAt(length-nth);
-			   Log.debug(47, "The expected nith parent is "+xpath +" and the actually name in stack is "+nthParent);
+			   Log.debug(45, "The expected nith parent is "+xpath +" and the actually name in stack is "+nthParent);
 			   if (nthParent != null && nthParent.equals(xpath))
 			   {
 				   isNthParent = true;
