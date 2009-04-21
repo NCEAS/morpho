@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2008-12-17 20:05:58 $'
- * '$Revision: 1.38 $'
+ *     '$Date: 2009-04-21 16:54:05 $'
+ * '$Revision: 1.39 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -101,6 +101,8 @@ public class UIController
     public static final String MENU_PATH = "menu_path";
 
     private AbstractDataPackage wizardTempDataPackage = null;
+    private AbstractDataPackage currentPackage = null;
+    private boolean assignCurrentPackage = false;
   /**
    * Creates a new instance of UIController, but is private because this is a
    * singleton.
@@ -579,26 +581,50 @@ public class UIController
      * not contain an AbstractDataPackage
      */
     public AbstractDataPackage getCurrentAbstractDataPackage() {
-
-      if (isWizardRunning()) {
-        // *temporary* AbstractDataPackage that is used to store wizard data
-        // (for references use) while the wizard is running.
-        Log.debug(45, "\n\n***********************************"
-                  + "getCurrentAbstractDataPackage() -"
-                  + " isWizardRunning() == true. pkg = \n"
-                  + this.wizardTempDataPackage);
-        return this.wizardTempDataPackage;
-      }
-
-      MorphoFrame morphoFrame = this.getCurrentActiveWindow();
-
-      if (morphoFrame == null) {
-
-        Log.debug(20, "UIController.getCurrentAbstractDataPackage() - "
-                  +"morphoFrame==null, returning NULL");
-        return null;
-      }
-      return morphoFrame.getAbstractDataPackage();
+    	if(!assignCurrentPackage)
+    	{
+	      if (isWizardRunning()) {
+	        // *temporary* AbstractDataPackage that is used to store wizard data
+	        // (for references use) while the wizard is running.
+	        Log.debug(45, "\n\n***********************************"
+	                  + "getCurrentAbstractDataPackage() -"
+	                  + " isWizardRunning() == true. pkg = \n"
+	                  + this.wizardTempDataPackage);
+	        return this.wizardTempDataPackage;
+	      }
+	
+	      MorphoFrame morphoFrame = this.getCurrentActiveWindow();
+	
+	      if (morphoFrame == null) {
+	
+	        Log.debug(20, "UIController.getCurrentAbstractDataPackage() - "
+	                  +"morphoFrame==null, returning NULL");
+	        return null;
+	      }
+	      return morphoFrame.getAbstractDataPackage();
+    }
+    else
+    {
+    	return currentPackage;
+    }
+  }
+    
+    /**
+     * Set a AbstractDataPackage as currentPackage;
+     * @param currentPackage
+     */
+    public void setCurrentAbstractDataPackage(AbstractDataPackage currentPackage)
+    {
+    	this.currentPackage = currentPackage;
+    }
+    
+    /**
+     * If set this to true, we will get the current package through setCurrentAbstractDataPackage
+     * @param assignPackage
+     */
+    public void setAssignPackage(boolean assignPackage)
+    {
+    	this.assignCurrentPackage = assignPackage;
     }
 
 		/**
