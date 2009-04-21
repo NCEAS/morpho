@@ -337,8 +337,7 @@
     <xpath>measurementScale/dateTime/dateTimeDomain/bounds/minimum</xpath>
     <xpath>measurementScale/dateTime/dateTimeDomain/bounds/maximum</xpath>
      <infoForModifyingData>
-             <loadExistDataPath>/eml:eml/dataset/dataTable</loadExistDataPath>
-             <loadExistDataPath>./attributeList/attribute</loadExistDataPath> 
+             <loadExistDataPath>/eml:eml/dataset/dataTable/attributeList/attribute</loadExistDataPath>
              <xpathForCreatingOrderedMap>/eml:eml/dataset/dataTable/attributeList</xpathForCreatingOrderedMap>
              <xpathForSettingPageData> </xpathForSettingPageData>
              <newDataDocumentName>attribute</newDataDocumentName>
