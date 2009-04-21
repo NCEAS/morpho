@@ -15,6 +15,7 @@
              <xpathForSettingPageData></xpathForSettingPageData>
              <newDataDocumentName>title</newDataDocumentName>
              <xpathForGettingPageData></xpathForGettingPageData>
+             <key>/title[1]</key> <!--the key is key value to get order path value for this subtree-->
              <genericName>title</genericName>
      </infoForModifyingData>
      <infoForModifyingData>
@@ -22,8 +23,9 @@
              <loadExistDataPath>./abstract</loadExistDataPath>
 	     <xpathForCreatingOrderedMap></xpathForCreatingOrderedMap>
              <xpathForSettingPageData></xpathForSettingPageData>
-             <newDataDocumentName>abract</newDataDocumentName>
+             <newDataDocumentName>abstract</newDataDocumentName>
              <xpathForGettingPageData></xpathForGettingPageData>
+             <key>/abstract/para[1]</key>
              <genericName>abstract</genericName>
      </infoForModifyingData>
     <wizardPageClass>edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.General</wizardPageClass>
