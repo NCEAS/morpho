@@ -7,9 +7,9 @@
  *    Authors: Ben Leinfelder
  *    Release: @release@
  *
- *   '$Author: leinfelder $'
- *     '$Date: 2008-11-24 02:10:54 $'
- * '$Revision: 1.1 $'
+ *   '$Author: tao $'
+ *     '$Date: 2009-04-21 21:11:40 $'
+ * '$Revision: 1.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -113,7 +113,7 @@ public class GenericTreeVocabularyPage extends AbstractUIVocabularyPage {
 	private void initVocab(String vocab) {
 		try {
 			String vocabFilePath = 
-				File.separator + vocab + ".xml";
+				SLASH + vocab + ".xml";
 			ConfigXML vocabConfig = new ConfigXML(this.getClass().getResourceAsStream(vocabFilePath));
 			
 			Node xmlRoot = vocabConfig.getRoot();
