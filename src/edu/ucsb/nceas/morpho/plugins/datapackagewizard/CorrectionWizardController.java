@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2009-04-21 01:57:07 $'
- * '$Revision: 1.23 $'
+ *     '$Date: 2009-04-21 04:46:34 $'
+ * '$Revision: 1.24 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -324,7 +324,7 @@ public class CorrectionWizardController
 					if (infoList != null && infoList.size() > 0)
 					{
 						//like General page
-						Log.debug(45, "start to process load data process which has info list size more than 1");
+						Log.debug(45, "start to process load data process which has info list size more than 0");
 						Vector list = mapping.getModifyingPageDataInfoList();
 						boolean firstTime = true;
 						for (int i=0; i<list.size(); i++)
@@ -334,30 +334,44 @@ public class CorrectionWizardController
 							Vector loadDataPathList = info.getLoadExistingDataPath();
 							if (loadDataPathList != null)
 							{
+								Node node = dataPackage.getMetadataNode();
+								//If loadDataPathList has mutiple xpath, the second xpath is kid of the first one.
+								//like : <loadExistDataPath>/eml:eml/dataset</loadExistDataPath>
+					            //        <loadExistDataPath>./title</loadExistDataPath>
+
 								for(int j=0; j<loadDataPathList.size(); j++)
 								{
 									LoadDataPath pathObj = (LoadDataPath)loadDataPathList.elementAt(j);
 									String xPath = pathObj.getPath();
 									String lastElementName = getLastElementName(xPath);
-									int position = getGivenStringIndexAtXPath(lastElementName, path);
-									
+									int position = getGivenStringIndexAtXPath(lastElementName, path);								
 									//System.out.println("==========the xpath is "+xPath);
-									nodeList = XMLUtilities.getNodeListWithXPath(dataPackage.getMetadataNode(), xPath);
-									Node node = nodeList.item(position);
+									Log.debug(46, "Before getting the node list for path"+xPath);
+									nodeList = XMLUtilities.getNodeListWithXPath(node, xPath);
+									Log.debug(46, "After getting the node list for path"+xPath);
+									//reset node
+									node = nodeList.item(position);
+									Log.debug(46, "Getting the node for path"+xPath+" at position "+position+ " "+node);
 									pathObj.setPosition(position);
-									if(firstTime)
-									{
-									  xpathMap = XMLUtilities.getDOMTreeAsXPathMap(node, info.getPathForCreatingOrderedMap());
-									  firstTime = false;
-									  //we set first child as the root node for not loading data from root path directly
-									  //page.setXPathRoot(node);
-									}
-									else
-									{
-										xpathMap.putAll(XMLUtilities.getDOMTreeAsXPathMap(node));
-									}
+									
+								}
+								if(firstTime && node != null)
+								{
+								  Log.debug(46, "Before First time to create xPathMap");
+								  xpathMap = XMLUtilities.getDOMTreeAsXPathMap(node, info.getPathForCreatingOrderedMap());
+								  Log.debug(46, "After First time to create xPathMap");
+								  firstTime = false;
+								  //we set first child as the root node for not loading data from root path directly
+								  //page.setXPathRoot(node);
+								}
+								else if (node != null)
+								{
+									Log.debug(46, "Before second or more time to create xPathMap");
+									xpathMap.putAll(XMLUtilities.getDOMTreeAsXPathMap(node));
+									Log.debug(46, "After second or more time to create xPathMap");
 								}
 							}
+							
 						}
 						
 					}	
