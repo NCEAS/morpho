@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2009-04-21 01:55:34 $'
- * '$Revision: 1.10 $'
+ *     '$Date: 2009-04-21 04:45:45 $'
+ * '$Revision: 1.11 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -471,7 +471,7 @@ public class EML210Validate extends DefaultHandler implements ErrorHandler
 		   try
 		   {
 			   String nthParent = (String)path.elementAt(length-nth);
-			   Log.debug(45, "The expected nith parent is "+xpath +" and the actually name in stack is "+nthParent);
+			   Log.debug(48, "The expected nith parent is "+xpath +" and the actually name in stack is "+nthParent);
 			   if (nthParent != null && nthParent.equals(xpath))
 			   {
 				   isNthParent = true;
@@ -479,7 +479,7 @@ public class EML210Validate extends DefaultHandler implements ErrorHandler
 		   }
 		   catch(Exception e)
 		   {
-			   Log.debug(30, "Couldn't get nth parent "+e.getMessage());
+			   Log.debug(30, "Couldn't get  path "+xpath+ "as "+nth+" generation kid at path vector "+path+e.getMessage());
 		   }
 	   }
 	   return isNthParent;
