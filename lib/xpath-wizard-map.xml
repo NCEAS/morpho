@@ -4,12 +4,13 @@
     <root>/eml:eml/dataset</root>
     <xpath>title</xpath>
     <xpath>abstract</xpath>
-    <!-- when loadExistDataPath is siblings relationship, we need mutipal infoForModifyingData
+    <!-- when loadExistDataPath is siblings relationship, we need mutipal infoForModifyingData. The first of loadExistDataPath should be same since they are siblings.
          when loadEXistDataPath is parent to kids relationship, we need one infoForModifyindData, but mutipal loadEXistDataPath--> 
     <!-- when edit loadExistDataPath, we should modify the EML210Validate.java at source code. We need that class to identify the position of path i.e. the index
          of node in a node list. If pathes have the parent to kids relationship, the kids' index is base under the same parent node, rather than entire docuemnt-->
     <infoForModifyingData>
-	     <loadExistDataPath>/eml:eml/dataset/title</loadExistDataPath>
+	     <loadExistDataPath>/eml:eml/dataset</loadExistDataPath>
+             <loadExistDataPath>./title</loadExistDataPath>
 	     <xpathForCreatingOrderedMap></xpathForCreatingOrderedMap>
              <xpathForSettingPageData></xpathForSettingPageData>
              <newDataDocumentName>title</newDataDocumentName>
@@ -17,7 +18,8 @@
              <genericName>title</genericName>
      </infoForModifyingData>
      <infoForModifyingData>
-	     <loadExistDataPath>/eml:eml/dataset/abstract</loadExistDataPath>
+	     <loadExistDataPath>/eml:eml/dataset</loadExistDataPath>
+             <loadExistDataPath>./abstract</loadExistDataPath>
 	     <xpathForCreatingOrderedMap></xpathForCreatingOrderedMap>
              <xpathForSettingPageData></xpathForSettingPageData>
              <newDataDocumentName>abract</newDataDocumentName>
