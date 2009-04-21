@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2009-04-21 04:46:34 $'
- * '$Revision: 1.24 $'
+ *     '$Date: 2009-04-21 16:34:20 $'
+ * '$Revision: 1.25 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -117,6 +117,7 @@ public class CorrectionWizardController
 	private final static String LEFTBRACKET = "[";
 	private final static char RIGHTBRACKETCHAR = ']';
 	private final static char LEFTBRACKETCHAR = '[';
+	private final static String KEY = "key";
 	
 	
 	/**
@@ -570,6 +571,15 @@ public class CorrectionWizardController
 				        		   if(textNode != null && textNode.getNodeType() == Node.TEXT_NODE)
 				        		   {
 				        			   info.setPathForSettingPageData(textNode.getNodeValue());
+				        		   } 
+				        	   }
+				        	   else if ((node.getNodeType() == Node.ELEMENT_NODE) && 
+				        			   (node.getNodeName().equalsIgnoreCase(KEY)))
+				        	   {
+				        		   Node textNode = node.getFirstChild();
+				        		   if(textNode != null && textNode.getNodeType() == Node.TEXT_NODE)
+				        		   {
+				        			   info.setKey(textNode.getNodeValue());
 				        		   } 
 				        	   }
 				        	   
