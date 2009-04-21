@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2009-04-19 23:27:28 $'
- * '$Revision: 1.22 $'
+ *     '$Date: 2009-04-21 01:57:07 $'
+ * '$Revision: 1.23 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -269,7 +269,7 @@ public class CorrectionWizardController
 				    Vector infoList = mapping.getModifyingPageDataInfoList();
 					NodeList nodeList = null;
 					String settingPageDataPath = "";
-					if (infoList != null && infoList.size() ==1)
+					/*if (infoList != null && infoList.size() < -1)
 					{	
 						ModifyingPageDataInfo info = (ModifyingPageDataInfo)infoList.elementAt(0);
 						settingPageDataPath = info.getPathForSettingPageData();
@@ -289,8 +289,8 @@ public class CorrectionWizardController
 							Node node = nodeList.item(attributeIndex);
 							xpathMap = XMLUtilities.getDOMTreeAsXPathMap(node,info.getPathForCreatingOrderedMap());							
 
-						} 
-						else if(page instanceof Entity)
+						}
+						if(page instanceof Entity)
 						{
 							nodeList = XMLUtilities.getNodeListWithXPath(dataPackage.getMetadataNode(), mapping.getRoot());	
 							Node node = nodeList.item(0);
@@ -320,8 +320,8 @@ public class CorrectionWizardController
 								  
 							}
 						}
-					}
-					else if (infoList != null && infoList.size() > 1)
+					}*/
+					if (infoList != null && infoList.size() > 0)
 					{
 						//like General page
 						Log.debug(45, "start to process load data process which has info list size more than 1");
@@ -331,22 +331,32 @@ public class CorrectionWizardController
 						{
 							ModifyingPageDataInfo info =(ModifyingPageDataInfo)list.elementAt(i);
 							settingPageDataPath = info.getPathForSettingPageData();
-							LoadDataPath pathObj = (LoadDataPath)info.getLoadExistingDataPath().elementAt(0);
-							String xPath = pathObj.getPath();
-							pathObj.setPosition(0);
-							//System.out.println("==========the xpath is "+xPath);
-							nodeList = XMLUtilities.getNodeListWithXPath(dataPackage.getMetadataNode(), xPath);
-							Node node = nodeList.item(0);
-							if(firstTime)
+							Vector loadDataPathList = info.getLoadExistingDataPath();
+							if (loadDataPathList != null)
 							{
-							  xpathMap = XMLUtilities.getDOMTreeAsXPathMap(node, info.getPathForCreatingOrderedMap());
-							  firstTime = false;
-							  //we set first child as the root node for not loading data from root path directly
-							  //page.setXPathRoot(node);
-							}
-							else
-							{
-								xpathMap.putAll(XMLUtilities.getDOMTreeAsXPathMap(node));
+								for(int j=0; j<loadDataPathList.size(); j++)
+								{
+									LoadDataPath pathObj = (LoadDataPath)loadDataPathList.elementAt(j);
+									String xPath = pathObj.getPath();
+									String lastElementName = getLastElementName(xPath);
+									int position = getGivenStringIndexAtXPath(lastElementName, path);
+									
+									//System.out.println("==========the xpath is "+xPath);
+									nodeList = XMLUtilities.getNodeListWithXPath(dataPackage.getMetadataNode(), xPath);
+									Node node = nodeList.item(position);
+									pathObj.setPosition(position);
+									if(firstTime)
+									{
+									  xpathMap = XMLUtilities.getDOMTreeAsXPathMap(node, info.getPathForCreatingOrderedMap());
+									  firstTime = false;
+									  //we set first child as the root node for not loading data from root path directly
+									  //page.setXPathRoot(node);
+									}
+									else
+									{
+										xpathMap.putAll(XMLUtilities.getDOMTreeAsXPathMap(node));
+									}
+								}
 							}
 						}
 						
@@ -735,11 +745,11 @@ public class CorrectionWizardController
 	/*
 	 * Get the given string index for a given xpath.
 	 * If the path is "eml/dataset/datatable[2] and given string is datatable, 2 will be returned.
-	 * if no index found, -1 will be returned
+	 * if no index found, 0 will be returned
 	 */
 	private int getGivenStringIndexAtXPath(String givenString, String path)
 	{
-		int index = -1;
+		int index = 0;
 		if(path != null)
 		{
 			int position = path.lastIndexOf(givenString+LEFTBRACKET);
@@ -781,7 +791,48 @@ public class CorrectionWizardController
 				
 			}
 		}
+		Log.debug(40, "The predication number is "+index+" for elemen"+givenString+" in path "+path);
 		return index;
+	}
+	
+	/*
+	 * Gets the last element name for a given path.
+	 * E.g, "/eml/dataset" will return "dataset", "/eml/dataset/" will return dataset as well.
+	 * "dataset" will return "dataset"
+	 */
+	private String getLastElementName(String path)
+	{
+		String elementName = null;
+		if (path != null)
+		{
+			int end = path.lastIndexOf(SLASH);
+			if (end ==-1)
+			{
+				// no slash at all
+				elementName = path;
+			}
+			else if(end == (path.length() -1)) 
+			{
+				// the last character is "/"
+				if (end != 0)
+				{
+					String pathWithoutLastSlash = path.substring(0, path.length()-1);
+					elementName = getLastElementName(pathWithoutLastSlash);
+				}
+				else
+				{
+					// the given path is "/"
+					return elementName;
+				}
+			}
+			else
+			{
+				// "/eml/dataset" format
+				elementName = path.substring(end+1);
+			}
+		}
+		Log.debug(40, "The last element in the given path "+path + " is "+elementName);
+		return elementName;
 	}
 	
 	/*
