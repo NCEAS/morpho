@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2009-04-20 23:38:13 $'
- * '$Revision: 1.9 $'
+ *     '$Date: 2009-04-21 01:55:34 $'
+ * '$Revision: 1.10 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -233,7 +233,7 @@ public class EML210Validate extends DefaultHandler implements ErrorHandler
         if(qName.equals(DATATABLE))
         {
         	dataTableIndex++;
-        	attributeIndex = 0;
+        	//attributeIndex = 0;
         	hitDataTable = false;
         }
         
