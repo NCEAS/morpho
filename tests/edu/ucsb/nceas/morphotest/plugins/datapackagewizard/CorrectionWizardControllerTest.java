@@ -35,9 +35,10 @@ public class CorrectionWizardControllerTest extends TestCase
 	private static Morpho morpho;
 	private static ConfigXML config = null;
 	private static String docid="tao.12104.1";
+	private static UIController uiController = null;
 	static {
         try {
-        	Log.setDebugLevel(47);
+        	Log.setDebugLevel(46);
             File configDir = new File(ConfigXML.getConfigDirectory());
             File configFile = new File(configDir, "config.xml");
             config = new ConfigXML(configFile.getAbsolutePath());
@@ -52,7 +53,7 @@ public class CorrectionWizardControllerTest extends TestCase
             ConfigXML profile = new ConfigXML(profileLocation.getAbsolutePath());
             ServiceController services = ServiceController.getInstance();
             morpho = new Morpho(config);
-            UIController controller = UIController.initialize(morpho);
+            uiController = UIController.initialize(morpho);
             //register plugins
             DataPackagePlugin plug = new DataPackagePlugin(morpho);
             plug.initialize(morpho);
@@ -109,10 +110,12 @@ public class CorrectionWizardControllerTest extends TestCase
 	  	     EML210Validate validate = new EML210Validate();
 	  	     validate.parse(xml);
 	  	     xml.close();
+	  	     uiController.setCurrentAbstractDataPackage(dataPackage);
+	  	     uiController.setAssignPackage(true);
 	    	 Vector errorList = validate.getInvalidPathList();   	
 	    	 CorrectionWizardController controller = new CorrectionWizardController(errorList, dataPackage);  
 	    	 controller.startWizard();
-	    	 Thread.sleep(15000);
+	    	 Thread.sleep(620000);
     	}
     	catch (Exception e)
     	{
