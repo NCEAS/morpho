@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2009-04-19 23:11:07 $'
- * '$Revision: 1.3 $'
+ *     '$Date: 2009-04-21 16:33:40 $'
+ * '$Revision: 1.4 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -44,6 +44,7 @@ public class ModifyingPageDataInfo
 	private String genericName = null;
 	private String pathForCreatingOrderedMap = null;
 	private String pathForSettingPageData = "";
+	private String key = null;
 	
 	public String getPathForSettingPageData() {
 		return pathForSettingPageData;
@@ -161,6 +162,7 @@ public class ModifyingPageDataInfo
 			newInfo.setGenericName(info.getGenericName());
 			newInfo.setPathForCreatingOrderedMap(info.getPathForCreatingOrderedMap());
 			newInfo.setPathForSettingPageData(info.getPathForSettingPageData());
+			newInfo.setKey(info.getKey());
 			Vector dataPathList = info.getLoadExistingDataPath();
 			if(dataPathList != null)
 			{
@@ -173,5 +175,13 @@ public class ModifyingPageDataInfo
 			}
 		}
 		return newInfo;
+	}
+
+	public String getKey() {
+		return key;
+	}
+
+	public void setKey(String key) {
+		this.key = key;
 	}
 }
