@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2009-04-20 23:39:13 $'
- * '$Revision: 1.13 $'
+ *     '$Date: 2009-04-21 01:56:25 $'
+ * '$Revision: 1.14 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -173,7 +173,7 @@ public class CorrectionWizardContainerFrame extends WizardContainerFrame
 		  if(dataPackage != null && page != null)
 		  {
 			 
-	          if (page instanceof AttributePage)
+	          /*if (page instanceof AttributePage)
 	          {	     
 	        	    dataPackage.getEntityArray();
 	        	    Vector pathObjList = info.getLoadExistingDataPath();
@@ -190,9 +190,28 @@ public class CorrectionWizardContainerFrame extends WizardContainerFrame
 	                Attribute attr = new Attribute(data);
 	                dataPackage.insertAttribute(entityIndex, attr, attrIndex);
 	        		dataPackage.deleteAttribute(entityIndex, attrIndex + 1);
+	          }*/
+			  /* if (page instanceof Taxonomic)
+	          {
+	        	  try 
+	        	  {
+	        	      dataPackage.removeTaxonomicNodes();
+	        	      // now the covRoot node may have a number of geographicCoverage children
+	        	      NodeList kids = newSubTree.getChildNodes();
+	        	      //Log.debug(45, "=============new subtree list has the length  "+kids.getLength());
+	        	      for (int i=0;i<kids.getLength();i++) {
+	        	        Node kid = kids.item(i);
+	        	        //Log.debug(45, "kid is ==================="+kid);
+	        	        dataPackage.insertCoverage(kid);          
+	        	      }
+	        	    }
+	        	    catch (Exception w) {
+	        	      Log.debug(5, "Unable to insert new taxomonic page"+w.getMessage());
+	        	    }
 	          }
 	          else
-	          {
+	          {*/
+
 	        	  DOMImplementation impl = DOMImplementationImpl.getDOMImplementation();
 		    	  Document doc = impl.createDocument("", info.getDocumentName(), null);
 		          Node newSubTree = doc.getDocumentElement();	         
@@ -200,26 +219,7 @@ public class CorrectionWizardContainerFrame extends WizardContainerFrame
 		          XMLUtilities.getXPathMapAsDOMTree(data, newSubTree);     
 		          Log.debug(45, "after creating new tree  ====================="+newSubTree);
 		          Node check = null;
-		          if (page instanceof Taxonomic)
-		          {
-		        	  try 
-		        	  {
-		        	      dataPackage.removeTaxonomicNodes();
-		        	      // now the covRoot node may have a number of geographicCoverage children
-		        	      NodeList kids = newSubTree.getChildNodes();
-		        	      //Log.debug(45, "=============new subtree list has the length  "+kids.getLength());
-		        	      for (int i=0;i<kids.getLength();i++) {
-		        	        Node kid = kids.item(i);
-		        	        //Log.debug(45, "kid is ==================="+kid);
-		        	        dataPackage.insertCoverage(kid);          
-		        	      }
-		        	    }
-		        	    catch (Exception w) {
-		        	      Log.debug(5, "Unable to insert new taxomonic page"+w.getMessage());
-		        	    }
-		          }
-		          else
-		          {
+		         
 			          if (newSubTree != null)
 			          {
 			        	  check = dataPackage.replaceSubtree(info, newSubTree);
@@ -240,8 +240,6 @@ public class CorrectionWizardContainerFrame extends WizardContainerFrame
 			          {
 			            Log.debug(5, "** ERROR: Unable to add new subtree into package **");
 			          }
-		          }
-	          }
 	
 	          
 	      }
