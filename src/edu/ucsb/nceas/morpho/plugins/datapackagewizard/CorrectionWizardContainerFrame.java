@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2009-04-21 01:56:25 $'
- * '$Revision: 1.14 $'
+ *     '$Date: 2009-04-21 16:35:10 $'
+ * '$Revision: 1.15 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -103,51 +103,34 @@ public class CorrectionWizardContainerFrame extends WizardContainerFrame
 			       if (mapping != null)
 			       {
 		    	       Vector infoList = mapping.getModifyingPageDataInfoList();
-			    	   if(infoList != null && infoList.size()>1)
+			    	   if(infoList != null)
 			    	   {
 			    		   wizData = page.getPageData(((ModifyingPageDataInfo)infoList.elementAt(0)).getPathForgettingPageData());
 			    		   //This UI page will generate more than one sub trees.
 			    		   //The order of the list of generic path name should be as same as the order of sub trees
 			    	      for(int i=0; i<infoList.size(); i++)
 			    	      {
-			    	    	  ModifyingPageDataInfo info = (ModifyingPageDataInfo)infoList.elementAt(0);
+			    	    	   ModifyingPageDataInfo info = (ModifyingPageDataInfo)infoList.elementAt(i);
 			    	    	  //System.out.println("generic name");
 			                   //Go through the every subtree
 				    		   Set set = wizData.keySet();
 				    		   Iterator iterator = set.iterator();
-				    		   while(iterator.hasNext())
-				    		   {
-				    			   String key = (String)iterator.next();
-				    			   //System.out.println("key "+key);
-				    			   String value = (String)wizData.get(key);
-				    			   //System.out.println("value "+value);
-				    			   OrderedMap data = new OrderedMap();
-				    			   data.put(key, value);		    			   
-				    			   try
-				    			   {			    			      
-				    			    
-				    			      modifyDataPackage(data, info, page);
-				    			   }
-				    			   catch(Exception e)
-				    			   {
-				    				   Log.debug(30, "Failed to replace old subtree "+e.getMessage());
-				    				   continue;
-				    			   }			    			 
-				    		   }
-			    	         }
-			    	      }
-			    	      else if(infoList != null && infoList.size()==1)
-			    	      {
-			    	    	  ModifyingPageDataInfo info = (ModifyingPageDataInfo)infoList.elementAt(0);
-			    	    	  wizData = page.getPageData(info.getPathForgettingPageData());
-			    	    	  try
-			    	    	  {
-			    	    	     modifyDataPackage(wizData, info, page);
-			    	    	  }
-			    	    	   catch(Exception e)
+				    		   try
+			    			   {			    			      
+			    			       //if(index == i)
+			    			      {
+			    			    	 modifyDataPackage(wizData, info, page);
+			    			    	 
+			    			      }
+			    			      
+			    			   }
+			    			   catch(Exception e)
 			    			   {
+			    				   
 			    				   Log.debug(30, "Failed to replace old subtree "+e.getMessage());
-			    			   }			    
+			    				   continue;
+			    			   }			    			 
+			    	         }
 			    	      }
 		            }
 		    			    	   
@@ -211,12 +194,25 @@ public class CorrectionWizardContainerFrame extends WizardContainerFrame
 	          }
 	          else
 	          {*/
-
+                  OrderedMap newData = new OrderedMap();
+			      Log.debug(45, "The data from page ====================="+data.toString());
 	        	  DOMImplementation impl = DOMImplementationImpl.getDOMImplementation();
+	        	  Log.debug(45, "The document name is ========== "+info.getDocumentName());
 		    	  Document doc = impl.createDocument("", info.getDocumentName(), null);
-		          Node newSubTree = doc.getDocumentElement();	         
-		          Log.debug(45, "before creating new tree with data ====================="+data.toString());
-		          XMLUtilities.getXPathMapAsDOMTree(data, newSubTree);     
+		          Node newSubTree = doc.getDocumentElement();	             
+		          Log.debug(45, "before filling data into new tree  ====================="+newSubTree);
+		          if(info.getKey() != null)
+		          {
+		        	  String key = info.getKey();
+		        	  Log.debug(30, "the key from info is "+key);
+		        	  newData.put(key, data.get(key));
+		          }
+		          else
+		          {
+		        	  newData = data;
+		          }
+		          Log.debug(45, "befor creating the tree with data ====================="+newData.toString());
+		          XMLUtilities.getXPathMapAsDOMTree(newData, newSubTree);     
 		          Log.debug(45, "after creating new tree  ====================="+newSubTree);
 		          Node check = null;
 		         
