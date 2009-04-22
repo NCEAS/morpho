@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2009-04-17 23:49:44 $'
- * '$Revision: 1.47 $'
+ *     '$Date: 2009-04-22 04:37:47 $'
+ * '$Revision: 1.48 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -77,6 +77,8 @@ public class Project extends AbstractUIPage {
   private JPanel dataPanel;
   private JPanel noDataPanel;
   private JPanel currentPanel;
+  private JPanel minRequireLabelPanel = WidgetFactory.makeVerticalPanel(3);
+ 
 
   private final String PROJECT_ROOT        = "project/";
   private final String XPATH_ROOT          = "/eml:eml/dataset[1]/" + PROJECT_ROOT;
@@ -100,12 +102,31 @@ public class Project extends AbstractUIPage {
   private CustomList  partiesList;
   private final String[] colNames =  {"Party", "Role", "Address"};
   private final Object[] editors  =   null; //makes non-directly-editable
+  private boolean checkPersonnel = false;
 
 
 
   public Project() {
 	nextPageID = DataPackageWizardInterface.USAGE_RIGHTS;
     init();
+  }
+  
+  /**
+   * This Constructor will check personnel contains required the path
+   * @param checkPersonnel
+   */
+  public Project(Boolean checkPersonnel)
+  {
+	  this();
+	  try
+	  {
+	    this.checkPersonnel = checkPersonnel.booleanValue();
+	  }
+	  catch(Exception e)
+	  {
+		  Log.debug(30, "couldn't get the boolean value for "+checkPersonnel);
+	  }
+	 	  
   }
 
   /**
@@ -203,11 +224,13 @@ public class Project extends AbstractUIPage {
       "<b>Enter the personnel information</b>. The full name of the people or "
       +"organizations responsible for the project.", 2);
     panel.add(desc);
-    JPanel vPanel = WidgetFactory.makeVerticalPanel(9);
     minRequiredLabel = WidgetFactory.makeLabel(
                                 " One or more Personnel must be defined:", true,
                                 WizardSettings.WIZARD_CONTENT_TEXTFIELD_DIMS);
-    vPanel.add(minRequiredLabel);
+    minRequireLabelPanel.add(minRequiredLabel);
+    panel.add(minRequireLabelPanel);
+    //vPanel.add(minRequiredLabel);
+    JPanel vPanel = WidgetFactory.makeVerticalPanel(9);
     partiesList = WidgetFactory.makeList(colNames, editors, 6,
                                     true, true, false, true, true, true );
     partiesList.setBorder(new EmptyBorder(0,WizardSettings.PADDING, WizardSettings.PADDING,
@@ -482,7 +505,20 @@ public class Project extends AbstractUIPage {
    */
 
   public boolean onAdvanceAction() {
-
+	  
+	  if (checkPersonnel)
+	  {
+		  // check personnel has all requirement path if needed
+		  boolean check = checkPartiesList(partiesList, this.xPathRoot+ PERSONNEL_REL_XPATH,
+	              DataPackageWizardInterface.PARTY_PERSONNEL);
+		  if(check==false)
+		  {
+			  WidgetFactory.hiliteComponent(minRequiredLabel);
+			  validate();
+			  return check;
+		  }
+		  WidgetFactory.unhiliteComponent(minRequiredLabel);
+	  }
     if (currentPanel == dataPanel) {
 
       //if (titleField.getText().trim().equals("")) {
@@ -716,6 +752,71 @@ public class Project extends AbstractUIPage {
     return (returnVal && partyRetVal);
   }
 
+   
+    /*
+     * Check if there is party which doesn't have required fields.
+     */
+	private  boolean checkPartiesList(CustomList partiesCustomList,
+	          String partyXPathRoot,
+	          String pageType) {
+	    String message1 = "Personnel(s) at row(s) ";
+	    String message2 ="";
+	    String message3 =  " miss(es) some required fields. Please edit it(them)";
+		OrderedMap nextPersonnelMap = null;
+		boolean partyRetVal = true;
+		
+		if (!partyXPathRoot.startsWith("/")) 
+		{
+			partyXPathRoot = "/" + partyXPathRoot;
+		}
+		if (!partyXPathRoot.endsWith("["))
+		{
+			partyXPathRoot = partyXPathRoot + "[";
+		}
+		
+		 boolean first = true;
+		 int index = 1;
+		 String comma = ",";
+		 for (Iterator it = partiesList.getListOfRowLists().iterator(); it.hasNext(); ) 
+		 {
+
+	         List nextRowList = (List)it.next();
+	         //column 3 is user object - check it exists and isn't null:
+	         if (nextRowList.size() < 4)continue;
+	         PartyPage nextPage = (PartyPage)nextRowList.get(3);
+	         if (nextPage == null)
+	         {
+	        	 continue;
+	         }
+	         OrderedMap map= nextPage.getPageData("");
+	         boolean check = nextPage.mapContainsRequirePath(map, "", pageType);
+	         if(check == false)
+	         {
+	        	 if(!first)
+	        	 {
+	        		 message2 = message2+comma+index;
+	        	 }
+	        	 else
+	        	 {
+	        		 message2=message2+index;
+	        		 first = false;
+	        	 }
+	        	 partyRetVal = false;
+	         }
+	         index++;
+		
+		 }
+		if(partyRetVal == false)
+		{
+			  minRequireLabelPanel.remove(minRequiredLabel);
+       	      minRequiredLabel = WidgetFactory.makeLabel(
+                    message1+message2+message3, true,
+                    WizardSettings.WIZARD_CONTENT_TEXTFIELD_DIMS);
+       	      minRequireLabelPanel.add(minRequiredLabel);
+		}
+		
+	    return partyRetVal;
+	}
 
 
   // resets all fields to blank
