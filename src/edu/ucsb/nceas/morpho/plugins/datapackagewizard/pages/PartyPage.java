@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2009-04-15 23:52:15 $'
- * '$Revision: 1.51 $'
+ *     '$Date: 2009-04-22 04:36:35 $'
+ * '$Revision: 1.52 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1117,7 +1117,7 @@ public class PartyPage extends AbstractUIPage {
   // returns true if string is not null and not empty.
   // NOTE - assumes string has already been trimmed
   // of leading & trailing whitespace
-  private boolean notNullAndNotEmpty(String arg) {
+  private  boolean notNullAndNotEmpty(String arg) {
     //return (arg != null && !(arg.equals(EMPTY_STRING)));
 	  return (!Util.isBlank(arg));
   }
@@ -1481,6 +1481,93 @@ public class PartyPage extends AbstractUIPage {
     return canHandleAllData;
 
   }
+  
+  
+  /**
+   * This method will check if the given has the required path:
+   * creator, contact and citation author: - indivisulaName/surfName or organizationName or position
+   * associated party and personnel: indivisulaName/surfName or organizationName or position and role
+   * Note: it doesn't make sure the map is a valid party map. It only check if contains above path
+   * @param map
+   * @param xpath
+   * @param type
+   * @return
+   */
+  public static boolean mapContainsRequirePath(OrderedMap map, String rootXPath, String role)
+  {
+	  boolean contain = false;
+	  Log.debug(46, "checking if map has requirement path with rootPath" +rootXPath+" as role "+role+ " and map data is "+map.toString());
+	  if (map == null || rootXPath == null || role == null)
+	  {
+		  return contain;
+	  }
+	  
+	  if(rootXPath.trim().length() > 0) 
+	  {
+
+	      //remove any trailing slashes...
+	      while (rootXPath.endsWith("/")) {
+	        rootXPath = rootXPath.substring(0, rootXPath.length() - 1);
+	      }
+	   }
+
+	  String xpathRootNoPredicates = XMLUtilities.removeAllPredicates(rootXPath);
+
+	   Log.debug(45, "PartyPage.setPageData() xpathRootNoPredicates = "
+		              + xpathRootNoPredicates);
+
+	  map = keepOnlyLastPredicateInKeys(map);
+
+
+	  //get rid of scope attribute, if it exists
+	  /*String scope = (String)map.get(xpathRootNoPredicates + "/@scope");
+	  if (scope != null)  map.remove(xpathRootNoPredicates + "/@scope");*/
+
+
+	  //do role first, since it applies even if this is a reference
+	  //getRoleFromMapAndRemove(map, xpathRootNoPredicates);
+	    if (role.equals(DataPackageWizardInterface.PARTY_ASSOCIATED) ||role.equals(DataPackageWizardInterface.PARTY_PERSONNEL)) 
+	    {
+
+	    	String roleFromMap = (String)map.get(xpathRootNoPredicates + "/role[1]");
+	    	Log.debug(45, "/role = ("+roleFromMap+")");
+	    	//no role here, we should return false;
+	    	if(Util.isBlank(roleFromMap))
+	    	{
+	    		Log.debug(45, "role from map is null or empty as the party "+role+", false will be returned");
+	    		return contain;
+	    	}
+
+	    }
+	    // check if it's a reference:
+	    String ref = (String)map.get(xpathRootNoPredicates + "/references[1]");
+	    if (ref==null) ref = (String)map.get(xpathRootNoPredicates + "/references");
+
+	    Log.debug(45, "/references ref = ("+ref+")");
+        
+	    if (!Util.isBlank(ref)) 
+	    {
+	    	//It is a reference, true will return
+	    	Log.debug(45, "it is reference and role status is good, true will be set");
+	    	contain = true;
+	    }
+	    else
+	    {
+	    	//it is not reference we need to check surname, organization or position
+	    	 String surName = (String)map.get(xpathRootNoPredicates
+                     + "/individualName/surName[1]");
+	    	 String organization = (String)map.get(xpathRootNoPredicates + "/organizationName[1]");
+	    	 String position = (String)map.get(xpathRootNoPredicates + "/positionName[1]");
+	    	 Log.debug(45, "surName is "+surName + " and organization name is"+organization +" and  postion is"+position);
+	    	 if (!Util.isBlank(surName) || !Util.isBlank(organization) || !Util.isBlank(position))
+	    	 {
+	    		 Log.debug(45, "surName, organization or postion is not null, assign true here");
+	    		 contain = true;
+	    	 }
+	    }
+	  Log.debug(45, "the map has requirement path is "+contain);
+	  return contain;
+  }
 
 
   private void getRoleFromMapAndRemove(OrderedMap map, String xpathRootNoPredicates) {
@@ -1495,7 +1582,7 @@ public class PartyPage extends AbstractUIPage {
 
 
 
-  private OrderedMap keepOnlyLastPredicateInKeys(OrderedMap map) {
+  private static OrderedMap keepOnlyLastPredicateInKeys(OrderedMap map) {
 
     OrderedMap newMap = new OrderedMap();
     Iterator it = map.keySet().iterator();
