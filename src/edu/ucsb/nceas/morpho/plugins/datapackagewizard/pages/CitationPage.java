@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2009-03-13 03:57:28 $'
- * '$Revision: 1.26 $'
+ *     '$Date: 2009-04-22 23:34:45 $'
+ * '$Revision: 1.27 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -662,6 +662,13 @@ public class CitationPage extends AbstractUIPage {
       return false;
     }
     WidgetFactory.unhiliteComponent(authorLabel);
+    
+    if (!checkPartiesList(authorList, DataPackageWizardInterface.PARTY_CITATION_AUTHOR)) {
+
+        WidgetFactory.hiliteComponent(authorLabel);
+        return false;
+      }
+      WidgetFactory.unhiliteComponent(authorLabel);
 
 // COMMENTED BY MB - DATE IS NOT REQD?!
 //    String date = this.pubDateField.getText();
@@ -682,6 +689,42 @@ public class CitationPage extends AbstractUIPage {
 
     return ((WizardPageSubPanelAPI)currentPanel).validateUserInput();
   }
+  
+  /*
+   * Check if there is party which doesn't have required fields.
+   */
+	private  boolean checkPartiesList(CustomList partiesCustomList,
+	          String pageType) {
+
+		OrderedMap nextPersonnelMap = null;
+		boolean partyRetVal = true;
+		
+		 boolean first = true;
+		 int index = 1;
+		 String comma = ",";
+		 for (Iterator it = partiesCustomList.getListOfRowLists().iterator(); it.hasNext(); ) 
+		 {
+
+	         List nextRowList = (List)it.next();
+	         //column 3 is user object - check it exists and isn't null:
+	         if (nextRowList.size() < 4)continue;
+	         PartyPage nextPage = (PartyPage)nextRowList.get(3);
+	         if (nextPage == null)
+	         {
+	        	 continue;
+	         }
+	         OrderedMap map= nextPage.getPageData("");
+	         boolean check = nextPage.mapContainsRequirePath(map, "", pageType);
+	         if(check == false)
+	         {
+	        	 partyRetVal = false;
+	        	 break;
+	         }
+		
+		 }
+		
+	    return partyRetVal;
+	}
 
 //  private boolean isDate(String s) {
 //    DateFormat dateFormat;
@@ -727,6 +770,7 @@ public class CitationPage extends AbstractUIPage {
       }
       List row = (List)it.next();
       String party = (String)row.get(0);
+      //Log.debug(40, "Party surrogate?????????????????????????? "+party);
       int idx = party.indexOf(",");
       if(idx >=0) party = party.substring(0, idx);
       creator += party;
@@ -806,17 +850,127 @@ public class CitationPage extends AbstractUIPage {
     return map;
 
   }
+  
+  
+  /**
+   * This method will check if the given map has the required path:
+   * 1. Title.
+   * 2. book - publisher; article - journal, volume and page range; report: publisher and report number
+   * 3. Valid author
+   * Note: it doesn't make sure the map is a valid citation map. It only check if contains above path
+   * @param map
+   * @param xpath
+   * @param type
+   * @return
+   */
+  public static boolean mapContainsRequirePath(OrderedMap map, String rootXPath)
+  {
+	  boolean contain = false;
+	  Log.debug(46, "checking if map has requirement path with rootPath" +rootXPath+ " and map data is "+map.toString());
+	  if (map == null || rootXPath == null)
+	  {
+		  return contain;
+	  }
+	  
+	  /*if(rootXPath.trim().length() > 0) 
+	  {
+
+	      //remove any trailing slashes...
+	      while (rootXPath.endsWith("/")) {
+	        rootXPath = rootXPath.substring(0, rootXPath.length() - 1);
+	      }
+	   }
+
+	  String xpathRootNoPredicates = XMLUtilities.removeAllPredicates(rootXPath);
+
+	   Log.debug(45, "PartyPage.setPageData() xpathRootNoPredicates = "
+		              + xpathRootNoPredicates);*/
+
+	   //map = keepOnlyLastPredicateInKeys(map);
+       //check title
+	   String title = (String)map.get(rootXPath + "/title[1]");
+	   if(Util.isBlank(title))
+	   {
+            contain = false;
+	   }
+	   else
+	   {
+		   String type = findCitationType(map, rootXPath);
+		   if (type.equals("Book"))
+		   {
+			   String bookPublish = (String) map.get(rootXPath + "/book[1]/publisher[1]/organizationName[1]");
+			   if(!Util.isBlank(bookPublish))
+		       {
+				   contain = true;
+		       }
+			   
+		   }
+		   else if (type.equals("Article"))
+		   {
+			   String journal = (String) map.get(rootXPath + "/article[1]/journal[1]");
+			   if (!Util.isBlank(journal))
+			   {
+				   contain = true;
+			   }
+		   }
+		   else
+		   {
+			   contain = true;
+		   }	      
+	    	  
+	   }
+	   
+	  //finally we need to check party list
+	  //contain = checkPartiesList(authorList, DataPackageWizardInterface.PARTY_CITATION_AUTHOR);
+	   for(int idx = 1; ; idx++) 
+	   {
+	    	 //Log.debug(45, "in for loop ");
+	      if(!mapContainsCreator(map, rootXPath, idx)) 
+	      {
+	        break;
+	      }
+	      OrderedMap copyMap = getNewCreatorMap(map, rootXPath, idx);
+	      contain = PartyPage.mapContainsRequirePath(map, rootXPath+"/creator", DataPackageWizardInterface.PARTY_CITATION_AUTHOR );
+	      if(contain == false)
+	      {
+	    	  break;
+	      }
+	    }
+	  Log.debug(45, "the map has requirement path is "+contain);
+	  return contain;
+  }
 
 
 
-  private String findCitationType(OrderedMap map, String xPath) {
+  private static String findCitationType(OrderedMap map, String xPath) {
 
     ///// check for Book
 
     Object o1 = map.get(xPath + "/book[1]/publisher[1]/organizationName[1]");
     if(o1 != null) return "Book";
+    
+    o1 =map.get(xPath + "/book[1]/edition[1]");
+    if(o1 != null) return "Book";
+    
+    o1 =map.get(xPath + "/book[1]/volume[1]");
+    if(o1 != null) return "Book";
+    
+    o1 =map.get(xPath + "/book[1]/ISBN[1]");
+    if(o1 != null) return "Book";
 
     o1 = map.get(xPath + "/article[1]/journal[1]");
+    if(o1 != null) return "Article";
+    
+    o1 = map.get(xPath + "/article[1]/volume[1]");
+    if(o1 != null) return "Article";
+    
+    o1 = map.get(xPath + "/article[1]/issue[1]");
+    if(o1 != null) return "Article";
+    
+    o1 = map.get(xPath + "/article[1]/pageRange[1]");
+    if(o1 != null) return "Article";
+    
+    o1 = map.get(xPath + "/article[1]/publisher[1]/organizationName[1]");
     if(o1 != null) return "Article";
 
 		o1 = map.get(xPath + "/report[1]/publisher[1]/organizationName[1]");
@@ -830,8 +984,8 @@ public class CitationPage extends AbstractUIPage {
     return "";
   }
 
-  private boolean mapContainsCreator(OrderedMap map, String xPath, int idx) {
-
+  private static boolean mapContainsCreator(OrderedMap map, String xPath, int idx) {
+    //Log.debug(45, "xpath is "+xPath+" and index is "+idx+" in mapCotainsCreator and map is"+map.toString());
     boolean b = map.containsKey(xPath + "/creator[" + idx + "]/references[1]");
     if(b) return true;
     b = map.containsKey(xPath + "/creator[" + idx + "]/references");
@@ -843,6 +997,14 @@ public class CitationPage extends AbstractUIPage {
     b = map.containsKey(xPath + "/creator[" +idx+ "]/organizationName[1]");
     if(b) return true;
     b = map.containsKey(xPath + "/creator[" +idx+ "]/positionName[1]");
+    if(b) return true;
+    b = map.containsKey(xPath + "/creator[" +idx+ "]/individualName/givenName[1]");
+    if(b) return true;
+    b = map.containsKey(xPath + "/creator[" +idx+ "]/individualName/salutation[1]");
+    if(b) return true;
+    b = map.containsKey(xPath + "/creator[" +idx+ "]/individualName[1]/givenName[1]");
+    if(b) return true;
+    b = map.containsKey(xPath + "/creator[" +idx+ "]/individualName[1]/salutation[1]");
     if(b) return true;
     return false;
 
@@ -863,22 +1025,29 @@ public class CitationPage extends AbstractUIPage {
    * @return boolean
    */
   public boolean setPageData(OrderedMap map, String xPath) {
+	 Log.debug(45, "set page data into citation page with root "+xPath+map.toString());
 
     this.titleField.setText((String)map.get(xPath + "/title[1]"));
     map.remove(xPath + "/title[1]");
-
+    //Log.debug(45, "before for loop");
     for(int idx = 1; ; idx++) {
-
+    	 //Log.debug(45, "in for loop ");
       if(!mapContainsCreator(map, xPath, idx)) {
         break;
       }
       OrderedMap copyMap = getNewCreatorMap(map, xPath, idx);
+      //Log.debug(45, "%%%%%%%%%%%%%%% new map for creator "+copyMap.toString());
       PartyPage page = (PartyPage)WizardPageLibrary.getPage( DataPackageWizardInterface.PARTY_CITATION_AUTHOR);
+      //Log.debug(45, "%%%%%%%%%%%%%%% generate the empty PartyPage "+page);
       page.setPageData(copyMap, xPath + "/creator[" + idx + "]");
+      //Log.debug(45, "%%%%%%%%%%%%%%% set the page data to the "+page);
       List row = page.getSurrogate();
+      //Log.debug(45, "%%%%%%%%%%%%%%% generate surrogate from the page "+row);
       row.add(page);
+      //Log.debug(45, "%%%%%%%%%%%%%%% add the party page as the fourth colum"+row);
       authorList.addRow(row);
     }
+    //Log.debug(45, "after for loop");
 
     String pubn = (String)map.get(xPath + "/pubDate[1]");
     if(pubn != null) {
@@ -926,7 +1095,7 @@ public class CitationPage extends AbstractUIPage {
 
    }
 
-   private OrderedMap getNewCreatorMap(OrderedMap map, String xPath, int idx) {
+   private static OrderedMap getNewCreatorMap(OrderedMap map, String xPath, int idx) {
 
      OrderedMap newMap = new OrderedMap();
      String searchString = xPath + "/creator[" + idx + "]";

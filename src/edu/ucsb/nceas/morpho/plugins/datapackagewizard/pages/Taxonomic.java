@@ -8,8 +8,8 @@
 *    Release: @release@
 *
 *   '$Author: tao $'
-*     '$Date: 2009-03-13 03:57:28 $'
-* '$Revision: 1.35 $'
+*     '$Date: 2009-04-22 23:34:45 $'
+* '$Revision: 1.36 $'
 *
 * This program is free software; you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -139,11 +139,30 @@ public class Taxonomic extends AbstractUIPage {
   private JDialog importTaxaDialog = null;
   private TaxonImportPanel taxonImportPanel = null;
   private JDialog parentTaxaDialog = null;
+  private boolean checkCitation = false;
 
   private JTextField colObjects[];
   public Taxonomic() {
 	nextPageID = DataPackageWizardInterface.METHODS;
     init();
+  }
+  
+  /**
+   * This Constructor will check citation in onAdvanceAction
+   * @param checkPersonnel
+   */
+  public Taxonomic(Boolean checkCitation)
+  {
+	  this();
+	  try
+	  {
+	    this.checkCitation = checkCitation.booleanValue();
+	  }
+	  catch(Exception e)
+	  {
+		  Log.debug(30, "couldn't get the boolean value for "+checkCitation);
+	  }
+	 	  
   }
 
   /**
@@ -695,6 +714,30 @@ public class Taxonomic extends AbstractUIPage {
 		taxonList.selectAndEditCell(0, 0);
     List rows = this.classList.getListOfRowLists();
     if(rows != null && rows.size() > 0){
+    	
+       if(checkCitation)
+       {
+	    	//make sure very classification has all required fields
+	       for(int i=0; i<rows.size(); i++)
+	       {
+	    	    List nextRowList = (List)rows.get(i);
+	    	   if (nextRowList.size() < 4)continue;
+	    	     Object obj = nextRowList.get(3);
+	    	     Log.debug(30, "object at cloumn 3 is "+obj.getClass().getName());
+		        OrderedMap map = (OrderedMap)obj;
+		         if (map == null)
+		         {
+		        	 continue;
+		         }
+		         boolean check = CitationPage.mapContainsRequirePath(map, "/classificationSystemCitation["+(i+1)+"]");
+		         if(check == false)
+		         {
+		        	 JOptionPane.showMessageDialog(Taxonomic.this, "The Classification system at row "+(i+1)+" is invalide. Please edit it!", "Error", JOptionPane.ERROR_MESSAGE);
+		             return false;
+		         }
+		         
+	       }
+       }
 
       // there must be some taxon data, since citations are there.
 

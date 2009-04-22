@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2009-04-22 04:37:47 $'
- * '$Revision: 1.48 $'
+ *     '$Date: 2009-04-22 23:34:45 $'
+ * '$Revision: 1.49 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -509,7 +509,7 @@ public class Project extends AbstractUIPage {
 	  if (checkPersonnel)
 	  {
 		  // check personnel has all requirement path if needed
-		  boolean check = checkPartiesList(partiesList, this.xPathRoot+ PERSONNEL_REL_XPATH,
+		  boolean check = checkPartiesList(partiesList,
 	              DataPackageWizardInterface.PARTY_PERSONNEL);
 		  if(check==false)
 		  {
@@ -757,7 +757,6 @@ public class Project extends AbstractUIPage {
      * Check if there is party which doesn't have required fields.
      */
 	private  boolean checkPartiesList(CustomList partiesCustomList,
-	          String partyXPathRoot,
 	          String pageType) {
 	    String message1 = "Personnel(s) at row(s) ";
 	    String message2 ="";
@@ -765,19 +764,19 @@ public class Project extends AbstractUIPage {
 		OrderedMap nextPersonnelMap = null;
 		boolean partyRetVal = true;
 		
-		if (!partyXPathRoot.startsWith("/")) 
+		/*if (!partyXPathRoot.startsWith("/")) 
 		{
 			partyXPathRoot = "/" + partyXPathRoot;
 		}
 		if (!partyXPathRoot.endsWith("["))
 		{
 			partyXPathRoot = partyXPathRoot + "[";
-		}
+		}*/
 		
 		 boolean first = true;
 		 int index = 1;
 		 String comma = ",";
-		 for (Iterator it = partiesList.getListOfRowLists().iterator(); it.hasNext(); ) 
+		 for (Iterator it = partiesCustomList.getListOfRowLists().iterator(); it.hasNext(); ) 
 		 {
 
 	         List nextRowList = (List)it.next();

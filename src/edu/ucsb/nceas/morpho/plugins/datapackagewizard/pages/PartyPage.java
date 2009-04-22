@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2009-04-22 04:36:35 $'
- * '$Revision: 1.52 $'
+ *     '$Date: 2009-04-22 23:34:45 $'
+ * '$Revision: 1.53 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1496,7 +1496,6 @@ public class PartyPage extends AbstractUIPage {
   public static boolean mapContainsRequirePath(OrderedMap map, String rootXPath, String role)
   {
 	  boolean contain = false;
-	  Log.debug(46, "checking if map has requirement path with rootPath" +rootXPath+" as role "+role+ " and map data is "+map.toString());
 	  if (map == null || rootXPath == null || role == null)
 	  {
 		  return contain;
@@ -1509,6 +1508,7 @@ public class PartyPage extends AbstractUIPage {
 	      while (rootXPath.endsWith("/")) {
 	        rootXPath = rootXPath.substring(0, rootXPath.length() - 1);
 	      }
+	      
 	   }
 
 	  String xpathRootNoPredicates = XMLUtilities.removeAllPredicates(rootXPath);
@@ -1517,7 +1517,7 @@ public class PartyPage extends AbstractUIPage {
 		              + xpathRootNoPredicates);
 
 	  map = keepOnlyLastPredicateInKeys(map);
-
+	  Log.debug(46, "checking if map has requirement path with rootPath" +xpathRootNoPredicates+" as role "+role+ " and map data is "+map.toString());
 
 	  //get rid of scope attribute, if it exists
 	  /*String scope = (String)map.get(xpathRootNoPredicates + "/@scope");
