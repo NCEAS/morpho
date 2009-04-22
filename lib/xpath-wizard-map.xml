@@ -240,6 +240,7 @@
              <genericName>taxonomicCoverage</genericName>
     </infoForModifyingData>
     <wizardPageClass>edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.Taxonomic</wizardPageClass>
+    <wizardPageClassParameter>true</wizardPageClassParameter>
    </mapping>
    <mapping>
     <root>/eml:eml/dataset/methods</root>
