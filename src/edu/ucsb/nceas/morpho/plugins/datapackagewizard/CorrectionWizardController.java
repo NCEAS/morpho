@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2009-04-21 16:34:20 $'
- * '$Revision: 1.25 $'
+ *     '$Date: 2009-04-22 04:35:25 $'
+ * '$Revision: 1.26 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -663,7 +663,7 @@ public class CorrectionWizardController
 					String para = (String)parameters.elementAt(i);
 					if(para.equalsIgnoreCase("false") || para.equalsIgnoreCase("true"))
 					{
-						Class parameter= Class.forName("java.long.Boolean");
+						Class parameter= Class.forName("java.lang.Boolean");
 						parameterList[i] = parameter;	
 						objectList[i]= new Boolean(para);
 					}
