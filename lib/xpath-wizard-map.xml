@@ -151,6 +151,7 @@
              <genericName>project</genericName>
     </infoForModifyingData>
     <wizardPageClass>edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.Project</wizardPageClass>
+    <wizardPageClassParameter>true</wizardPageClassParameter>
   </mapping>
    <mapping>
     <root>/eml:eml/dataset/intellectualRights</root>
