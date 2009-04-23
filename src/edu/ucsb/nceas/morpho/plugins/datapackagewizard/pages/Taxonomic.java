@@ -8,8 +8,8 @@
 *    Release: @release@
 *
 *   '$Author: tao $'
-*     '$Date: 2009-04-22 23:34:45 $'
-* '$Revision: 1.36 $'
+*     '$Date: 2009-04-23 00:10:53 $'
+* '$Revision: 1.37 $'
 *
 * This program is free software; you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -729,7 +729,7 @@ public class Taxonomic extends AbstractUIPage {
 		         {
 		        	 continue;
 		         }
-		         boolean check = CitationPage.mapContainsRequirePath(map, "/classificationSystemCitation["+(i+1)+"]");
+		         boolean check = CitationPage.mapContainsRequirePath(map, "/classificationSystemCitation[1]");
 		         if(check == false)
 		         {
 		        	 JOptionPane.showMessageDialog(Taxonomic.this, "The Classification system at row "+(i+1)+" is invalide. Please edit it!", "Error", JOptionPane.ERROR_MESSAGE);

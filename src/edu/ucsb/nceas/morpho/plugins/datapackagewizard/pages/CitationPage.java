@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2009-04-22 23:34:45 $'
- * '$Revision: 1.27 $'
+ *     '$Date: 2009-04-23 00:10:53 $'
+ * '$Revision: 1.28 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -920,22 +920,29 @@ public class CitationPage extends AbstractUIPage {
 	    	  
 	   }
 	   
-	  //finally we need to check party list
+	   Log.debug(45, "the map has requirement path (except party) is "+contain);
+	  //finally we need to check party list if above check was passed
 	  //contain = checkPartiesList(authorList, DataPackageWizardInterface.PARTY_CITATION_AUTHOR);
-	   for(int idx = 1; ; idx++) 
+	   if(contain == true)
 	   {
-	    	 //Log.debug(45, "in for loop ");
-	      if(!mapContainsCreator(map, rootXPath, idx)) 
-	      {
-	        break;
-	      }
-	      OrderedMap copyMap = getNewCreatorMap(map, rootXPath, idx);
-	      contain = PartyPage.mapContainsRequirePath(map, rootXPath+"/creator", DataPackageWizardInterface.PARTY_CITATION_AUTHOR );
-	      if(contain == false)
-	      {
-	    	  break;
-	      }
-	    }
+		   for(int idx = 1; ; idx++) 
+		   {
+		    	 //Log.debug(45, "in for loop ");
+		      if(!mapContainsCreator(map, rootXPath, idx)) 
+		      {
+		        break;
+		      }
+		      OrderedMap copyMap = getNewCreatorMap(map, rootXPath, idx);
+		      boolean check  = PartyPage.mapContainsRequirePath(copyMap, rootXPath+"/creator", DataPackageWizardInterface.PARTY_CITATION_AUTHOR );
+		      // find a wrong party, set contain false and break the loop
+		      if(check == false)
+		      {
+		    	  contain = false;
+		    	  break;
+		      }
+		      
+		    }
+	   }
 	  Log.debug(45, "the map has requirement path is "+contain);
 	  return contain;
   }
