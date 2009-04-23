@@ -258,6 +258,7 @@
              <genericName>methods</genericName>
     </infoForModifyingData>
     <wizardPageClass>edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.Methods</wizardPageClass>
+    <wizardPageClassParameter>true</wizardPageClassParameter>
    </mapping>
    <mapping>
     <root>/eml:eml/access</root>
