@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2009-03-13 03:57:28 $'
- * '$Revision: 1.10 $'
+ *     '$Date: 2009-04-23 01:40:36 $'
+ * '$Revision: 1.11 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -326,6 +326,52 @@ public class MethodsPage
    */
   public String getPageNumber() {
     return pageNumber;
+  }
+  
+  
+  /**
+   * This method will check if the given has the required path:
+   *description/para
+   * Note: it doesn't make sure the map is a valid party map. It only check if contains above path
+   * @param map
+   * @param xpath
+   * @param type
+   * @return
+   */
+  public static boolean mapContainsRequirePath(OrderedMap map, String rootXPath)
+  {
+	  boolean contain = false;
+	  if (map == null || rootXPath == null )
+	  {
+		  return contain;
+	  }
+	  
+	  if(rootXPath.trim().length() > 0) 
+	  {
+
+	      //remove any trailing slashes...
+	      while (rootXPath.endsWith("/")) {
+	        rootXPath = rootXPath.substring(0, rootXPath.length() - 1);
+	      }
+	      
+	   }
+
+	  String xpathRootNoPredicates = XMLUtilities.removeAllPredicates(rootXPath);
+
+	   Log.debug(45, "PartyPage.setPageData() xpathRootNoPredicates = "
+		              + xpathRootNoPredicates);
+
+	  //map = keepOnlyLastPredicateInKeys(map);
+	  Log.debug(46, "checking if map has requirement path in MethodsPage with rootPath" +xpathRootNoPredicates+ " and map data is "+map.toString());
+
+	  String description = (String)map.get(rootXPath + "/description/section/para[1]");
+	  String descriptionWithoutSection = (String)map.get(rootXPath + "/description/para[1]");
+	  if(!Util.isBlank(description) || !Util.isBlank(descriptionWithoutSection))
+	  {
+		  contain = true;
+	  }
+	  Log.debug(45, "the map has requirement path is "+contain);
+	  return contain;
   }
 
   public boolean setPageData(OrderedMap map, String xPathRoot) {

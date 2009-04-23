@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2009-04-18 02:06:57 $'
- * '$Revision: 1.17 $'
+ *     '$Date: 2009-04-23 01:40:36 $'
+ * '$Revision: 1.18 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -92,12 +92,31 @@ public class Methods
   private final Object[] editors = null; //makes non-directly-editable
 
   private CustomList methodsList;
+  private boolean checkMethodStep = false;
 
   // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
   public Methods() {
 	nextPageID = DataPackageWizardInterface.ACCESS;
     init();
+  }
+  
+  /**
+   * This Constructor will check citation in onAdvanceAction
+   * @param checkPersonnel
+   */
+  public Methods(Boolean checkMethodStep)
+  {
+	  this();
+	  try
+	  {
+	    this.checkMethodStep = checkMethodStep.booleanValue();
+	  }
+	  catch(Exception e)
+	  {
+		  Log.debug(30, "couldn't get the boolean value for "+checkMethodStep);
+	  }
+	 	  
   }
 
   /**
@@ -314,6 +333,31 @@ public class Methods
                            + "study extent");
       warningPanel.setVisible(true);
       return false;
+    }
+    
+    //in correctionwizard, we need check every methodstep in methodList.
+    //since it necessary that the methodstep is valid (may have whitespace string)
+    if(checkMethodStep && methodsList != null)
+    {
+    	List methodStepRowList = methodsList.getListOfRowLists();
+    	for(int i= 0; i<methodStepRowList.size(); i++)
+    	{
+             List singleRow = (List)methodStepRowList.get(i);
+             MethodsPage page = (MethodsPage)singleRow.get(3);
+             if (page == null)
+             {
+            	 continue;
+             }
+             OrderedMap map = page.getPageData("");
+             boolean check= page.mapContainsRequirePath(map, "");
+    		 if(check == false)
+    		 {
+    			 warningLabel.setText("Method step at row  "+(i+1)
+                         + " misses some requried fields. Please select it and use Edit button to edit it");
+                 warningPanel.setVisible(true);
+                 return false;
+    		 }
+    	}
     }
 
     warningPanel.setVisible(false);
