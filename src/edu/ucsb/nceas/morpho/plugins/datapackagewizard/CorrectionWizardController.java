@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2009-04-22 04:35:25 $'
- * '$Revision: 1.26 $'
+ *     '$Date: 2009-04-24 00:02:05 $'
+ * '$Revision: 1.27 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -35,6 +35,7 @@ import edu.ucsb.nceas.morpho.datapackage.DataPackageFactory;
 import edu.ucsb.nceas.morpho.framework.AbstractUIPage;
 import edu.ucsb.nceas.morpho.framework.ConfigXML;
 import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
+import edu.ucsb.nceas.morpho.framework.MorphoFrame;
 import edu.ucsb.nceas.morpho.framework.UIController;
 import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
 import edu.ucsb.nceas.morpho.plugins.DataPackageWizardListener;
@@ -86,6 +87,8 @@ public class CorrectionWizardController
 	private Hashtable shortPathMapping = new Hashtable();
 	// metadata in AbrstractDataPackage format
 	AbstractDataPackage dataPackage = null;
+	// the old frame need to be disposed.
+	private MorphoFrame oldFrame = null;
 	//private Document metadataDoc = null;
 	private DataPackageWizardListener listener = new CorrectionDataPackageWizardListener();
 	private DataPackageWizardPlugin plugin = new DataPackageWizardPlugin();
@@ -124,10 +127,11 @@ public class CorrectionWizardController
 	 * Constructor
 	 * @param errorPathList the list of paths which contain invalid value
 	 */
-	public CorrectionWizardController(Vector errorPathList, AbstractDataPackage dataPackage)
+	public CorrectionWizardController(Vector errorPathList, AbstractDataPackage dataPackage, MorphoFrame oldFrame)
 	{
 	    this.errorPathList  = errorPathList;
 	    this.dataPackage  = dataPackage;
+	    this.oldFrame       = oldFrame;
 	    dpWiz = new CorrectionWizardContainerFrame(dataPackage);
 	    // find the mapping between xpath and page class name in a file
 	    this.mappingList   = getXPATHMappingUIPage();
@@ -160,7 +164,7 @@ public class CorrectionWizardController
 			//there is no UIPage returned, we only run tree editor to fix the issue
 			try
 			{
-				TreeEditorCorrectionController treeEditorController = new TreeEditorCorrectionController(dataPackage, pathListForTreeEditor);
+				TreeEditorCorrectionController treeEditorController = new TreeEditorCorrectionController(dataPackage, pathListForTreeEditor, oldFrame);
 				treeEditorController.startCorrection();
 			}
 			catch(Exception e)
@@ -875,7 +879,7 @@ public class CorrectionWizardController
 				{
 					String value = path.substring(start+1, end);
 					position = (new Integer(value)).intValue();
-					Log.debug(35, "=============the last predicate is "+position);
+					Log.debug(35, "the last predicate is "+position);
 				}
 				catch(Exception e)
 				{
@@ -901,15 +905,15 @@ public class CorrectionWizardController
 	          Log.debug(30,
 	              "Correction Wizard UI Page complete ");
 	          AbstractDataPackage adp = DataPackageFactory.getDataPackage(newDOM);
-	          Log.debug(30, "AbstractDataPackage complete");
-	          adp.setAccessionNumber("temporary.1.1");
+	          Log.debug(45, "AbstractDataPackage complete");
+	          //adp.setAccessionNumber("temporary.1.1");
 	          //second, to correct data by tree editor
 			    if(pathListForTreeEditor != null && !pathListForTreeEditor.isEmpty())
 			    {
 			    	//there is no UIPage returned, we only run tree editor to fix the issue
 					try
 					{
-						TreeEditorCorrectionController treeEditorController = new TreeEditorCorrectionController(adp, pathListForTreeEditor);
+						TreeEditorCorrectionController treeEditorController = new TreeEditorCorrectionController(adp, pathListForTreeEditor, oldFrame);
 						treeEditorController.startCorrection();
 					}
 					catch(Exception e)
@@ -919,20 +923,27 @@ public class CorrectionWizardController
 			    }
 			    else
 			    {        
-                      //no tree editor is needed, so we can display the data now
+                      //no tree editor is needed, so we can display the data now and dispose the old morpho frame
 			          try {
 			            ServiceController services = ServiceController.getInstance();
 			            ServiceProvider provider =
 			                services.getServiceProvider(DataPackageInterface.class);
 			            DataPackageInterface dataPackage = (DataPackageInterface)provider;
 			            dataPackage.openNewDataPackage(adp, null);
+			            if(oldFrame != null)
+			            {
+			            	oldFrame.setVisible(false);                
+			            	UIController controller = UIController.getInstance();
+			            	controller.removeWindow(oldFrame);
+			            	oldFrame.dispose();	
+			            }
 		
 			          } catch (ServiceNotHandledException snhe) {
 		
 			            Log.debug(6, snhe.getMessage());
 			          }
-			           Log.debug(45, "\n\n********** Correction Wizard finished: DOM:");
-			           Log.debug(45, XMLUtilities.getDOMTreeAsString(adp.getMetadataNode(), false));
+			           //Log.debug(45, "\n\n********** Correction Wizard finished: DOM:");
+			           //Log.debug(45, XMLUtilities.getDOMTreeAsString(adp.getMetadataNode(), false));
 			        }
 		     }
 

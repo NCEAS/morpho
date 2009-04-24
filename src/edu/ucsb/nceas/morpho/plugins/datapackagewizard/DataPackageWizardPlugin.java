@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2009-03-11 03:22:16 $'
- * '$Revision: 1.45 $'
+ *     '$Date: 2009-04-24 00:02:05 $'
+ * '$Revision: 1.46 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,6 +33,7 @@ import edu.ucsb.nceas.morpho.datapackage.AbstractDataPackage;
 import edu.ucsb.nceas.morpho.datapackage.DataPackageFactory;
 import edu.ucsb.nceas.morpho.editor.DocFrame;
 import edu.ucsb.nceas.morpho.framework.AbstractUIPage;
+import edu.ucsb.nceas.morpho.framework.MorphoFrame;
 import edu.ucsb.nceas.morpho.framework.UIController;
 import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
 import edu.ucsb.nceas.morpho.plugins.DataPackageWizardListener;
@@ -49,6 +50,7 @@ import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Vector;
 
 import javax.xml.transform.TransformerException;
 
@@ -162,6 +164,21 @@ public class DataPackageWizardPlugin implements PluginInterface,
 
     startWizardAtPage(DataPackageWizardInterface.CODE_IMPORT_PAGE, false,
                       listener, "Import Code Definitions");
+  }
+  
+  /**
+   * 
+   * start a correction invalid eml document wizard. This wizard always be used to
+   * correct in valid eml document which was transformed from old eml version.
+   *
+   * @param dataPackage  the datapackage will be corrected
+   * @param errorPathes    the list of path which has valid value
+   * @param frame            the old frame which need be disposed after correction is done
+   */
+  public void startCorrectionWizard(AbstractDataPackage dataPackage, Vector errorPathes, MorphoFrame frame)
+  {
+	  CorrectionWizardController controller = new CorrectionWizardController(errorPathes, dataPackage, frame);  
+ 	  controller.startWizard();
   }
 
 

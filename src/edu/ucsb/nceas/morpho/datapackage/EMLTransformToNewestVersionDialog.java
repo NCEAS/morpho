@@ -6,6 +6,9 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Window;
+import java.io.Reader;
+import java.io.StringReader;
+import java.util.Vector;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -22,8 +25,11 @@ import edu.ucsb.nceas.morpho.datapackage.AccessionNumber;
 import edu.ucsb.nceas.morpho.datapackage.DataPackageFactory;
 import edu.ucsb.nceas.morpho.datapackage.DataViewContainerPanel;
 import edu.ucsb.nceas.morpho.datapackage.EML200DataPackage;
+import edu.ucsb.nceas.morpho.framework.ConfigXML;
+import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
 import edu.ucsb.nceas.morpho.framework.MorphoFrame;
 import edu.ucsb.nceas.morpho.framework.UIController;
+import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
 import edu.ucsb.nceas.morpho.plugins.ServiceController;
 import edu.ucsb.nceas.morpho.plugins.ServiceNotHandledException;
 import edu.ucsb.nceas.morpho.plugins.ServiceProvider;
@@ -60,6 +66,11 @@ public class EMLTransformToNewestVersionDialog
 	  
 	  /* the eml2 package embedded in the morpho frame*/
 	  private EML200DataPackage eml200Package = null;
+	  
+	  /* if user want to use correction wizard to correct errors */
+	  //private boolean useCorrectionWizard = true;
+	  
+	  private String USECORRECTIONWIZARD =  "useCorrectionWizard";
 	
 	/**
 	 * Constructor of this dialog
@@ -115,36 +126,81 @@ public class EMLTransformToNewestVersionDialog
 			{
 				//TODO transform the datapakcage to the newest version
 				String id = eml200Package.getAccessionNumber();
-				String newString = eml200Package.transformToLastestEML();
+				String newString = null;
+				boolean hasError = false;
+				try
+				{
+				    newString = eml200Package.transformToLastestEML();
+				}
+				catch(EMLVersionTransformationException e)
+				{
+					hasError = true;
+					newString = e.getNewEMLOutput();//this part of exception is eml output.
+				}
+				
 				if (newString != null)
 				{
-					eml200Package= (EML200DataPackage)DataPackageFactory.getDataPackage(
-		                      new java.io.StringReader(newString), false, true);
-	                eml200Package.setEMLVersion(EML200DataPackage.LATEST_EML_VER);
-	                Morpho morpho = Morpho.thisStaticInstance;
-	                //AccessionNumber an = new AccessionNumber(morpho);
-	                //String newid = an.incRev(id);
-	                //eml200Package.setAccessionNumber(newid);
-	                eml200Package.setLocation("");//not save it yet
-	                try
-	                {
-	                 DataPackagePlugin plugin = new DataPackagePlugin(morpho);
-	                 plugin.openNewDataPackage(eml200Package,null);
-	                  /*ServiceController services = ServiceController.getInstance();
-	                  ServiceProvider provider =
-	                  services.getServiceProvider(DataPackageInterface.class);
-	                  DataPackageInterface dataPackageInt = (DataPackageInterface)provider;
-	                  dataPackageInt.openNewDataPackage(eml200Package, null);*/
-	                  
-	                }
+					try
+		            {
+						Vector errorPathList = null;
+						eml200Package= (EML200DataPackage)DataPackageFactory.getDataPackage(
+			                      new java.io.StringReader(newString), false, true);
+		                eml200Package.setEMLVersion(EML200DataPackage.LATEST_EML_VER);
+		                Morpho morpho = Morpho.thisStaticInstance;
+		                //AccessionNumber an = new AccessionNumber(morpho);
+		                //String newid = an.incRev(id);
+		                //eml200Package.setAccessionNumber(newid);
+		                eml200Package.setLocation("");//not save it yet
+		                
+		                 if(hasError)
+		                 {
+		                	//it may be invalid document since our eml201to210 transform
+		                	//style sheet gives warning to user no matter is really invalid or not.
+		                	// so we use EML210Validate to get error list vector
+		                	 Reader xml = new StringReader(newString);
+		                	 EML210Validate validate = new EML210Validate();
+		        	  	     validate.parse(xml);
+		        	  	     xml.close();
+		        	  	     errorPathList = validate.getInvalidPathList();
+		                }
+		                 
+		                if (errorPathList == null || errorPathList.isEmpty())
+		                {
+		                	Log.debug(40, "In there is no errors path list branch or not useCorrectionWizard");
+		                    //this is a valid new version eml document (or uses don't like to use correctionwizard. Display it and depose old frame
+		                    DataPackagePlugin plugin = new DataPackagePlugin(morpho);
+		                    plugin.openNewDataPackage(eml200Package,null);
+		                    morphoFrame.setVisible(false);                
+			                UIController controller = UIController.getInstance();
+			                controller.removeWindow(morphoFrame);
+			                morphoFrame.dispose();	        
+		                }
+		                else
+		                {
+		                	//it is invalid document. We should start correction wizard to start it.
+		                	
+		                	 try 
+		                	 {
+		                		Log.debug(40, "In there are errors path list branch");
+		 			            ServiceController services = ServiceController.getInstance();
+		 			            ServiceProvider provider =
+		 			                services.getServiceProvider(DataPackageWizardInterface.class);
+		 			            DataPackageWizardInterface wizard = (DataPackageWizardInterface)provider;
+		 			            wizard.startCorrectionWizard(eml200Package, errorPathList, morphoFrame);
+		 		
+		 			         } 
+		                	 catch (ServiceNotHandledException snhe) 
+		 			         {		 		
+		 			               Log.debug(20, snhe.getMessage());
+		 			               throw snhe;
+		 			          }		                	
+		                }
+		            }
 	                catch (Exception snhe)
 	                {
-	                  Log.debug(6, snhe.getMessage());
-	                }
-	                morphoFrame.setVisible(false);                
-	                UIController controller = UIController.getInstance();
-	                controller.removeWindow(morphoFrame);
-	                morphoFrame.dispose();
+	                  Log.debug(20, snhe.getMessage());
+	                  throw new Exception("Couldn't transform it since "+snhe.getMessage());
+	                }	                
 	                
 				}
 				else
@@ -152,6 +208,11 @@ public class EMLTransformToNewestVersionDialog
 					Log.debug(20, "Couldn't tranform the eml document to the newest version");
 				    throw new Exception("Couldn't tranform the eml document to the newest version");
 				}
+			}
+			else
+			{
+				Log.debug(20, "Couldn't transform it since the this morpho frame doesn't contain a package");
+				throw new Exception("Couldn't transform it since the this morpho frame doesn't contain a package");
 			}
 		}
 	}

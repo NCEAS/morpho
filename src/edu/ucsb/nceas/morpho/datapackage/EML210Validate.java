@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2009-04-21 04:45:45 $'
- * '$Revision: 1.11 $'
+ *     '$Date: 2009-04-24 00:02:05 $'
+ * '$Revision: 1.12 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -66,6 +66,7 @@ public class EML210Validate extends DefaultHandler implements ErrorHandler
 	 private final static String RECORDDELIMITER = "recordDelimiter";
 	 private final static String PHYSICALLINEDELIMITER = "physicalLineDelimiter";
 	 private final static String FIELDDELIMITER = "fieldDelimiter";
+	 private final static String PARA = "para";
 	 private final static String DATATABLE = "dataTable";
 	 private final static String ATTRIBUTE = "attribute";
 	 private final static String RIGHTBRACKET = "]";
@@ -210,7 +211,7 @@ public class EML210Validate extends DefaultHandler implements ErrorHandler
 	        // find a white space in the value, get the path from stack and put the path into the 
 	        // invlaidPathList vector.
 	        if ((text == null || text.trim().equals("")) && !RECORDDELIMITER.equals(qName) &&
-	        		!PHYSICALLINEDELIMITER.equals(qName) && !FIELDDELIMITER.equals(qName))
+	        		!PHYSICALLINEDELIMITER.equals(qName) && !FIELDDELIMITER.equals(qName) && !PARA.equals(qName))
 	        {
 	        	String errorPath = transformPathFromStackToString(path);
 	        	Log.debug(30, "ERROR full path "+errorPath);

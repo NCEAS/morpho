@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2009-02-27 00:55:59 $'
- * '$Revision: 1.69 $'
+ *     '$Date: 2009-04-24 00:02:05 $'
+ * '$Revision: 1.70 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -948,7 +948,7 @@ public  class EML200DataPackage extends AbstractDataPackage
    * This is a utility method
    * @return the eml document in string format
    */
-  public String transformToLastestEML()
+  public String transformToLastestEML() throws EMLVersionTransformationException
   {
 	  String result = transformToEML210();
 	  return result;
@@ -957,13 +957,17 @@ public  class EML200DataPackage extends AbstractDataPackage
   /*
    * Transform to eml 210 version. Null will be return if it couldn't be transformed.
    */
-  private String transformToEML210()
+  private String transformToEML210() throws EMLVersionTransformationException
   {
 	  String result = null;
 	  try
 	  {
 		  result= doTransform("./xsl/eml201to210.xsl", XMLUtil.getDOMTreeAsString(
                             getMetadataNode().getOwnerDocument())) ;
+	  }
+	  catch(EMLVersionTransformationException e)
+	  {
+		  throw e;
 	  }
 	  catch(Exception e)
 	  {
@@ -978,7 +982,7 @@ public  class EML200DataPackage extends AbstractDataPackage
    * null will be returned.
    */
   private String doTransform(String styleSheetPath, String XMLinput)
-  throws TransformerException, TransformerConfigurationException, Exception{
+  throws TransformerException, TransformerConfigurationException, EMLVersionTransformationException, Exception{
 	 String output = null;
 	// Instantiate  a TransformerFactory.
 	TransformerFactory tFactory = TransformerFactory.newInstance();
@@ -1021,8 +1025,10 @@ public  class EML200DataPackage extends AbstractDataPackage
 		//System.out.println("==================6 "+output);
 		if (xslErrorListener.getWarningMessage() != null)
 		{
-		   Log.debug(5, "Transforming the eml document to the latest version was done, however it got those warning(s) "+
-				   xslErrorListener.getWarningMessage());
+		   /*Log.debug(5, "Transforming the eml document to the latest version was done, however it got those warning(s) "+
+				   xslErrorListener.getWarningMessage());*/
+			EMLVersionTransformationException exception = new EMLVersionTransformationException(xslErrorListener.getWarningMessage(), output);
+		    throw exception;
 		}
 	
 	}

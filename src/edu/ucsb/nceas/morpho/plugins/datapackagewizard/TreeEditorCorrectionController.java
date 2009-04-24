@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2009-04-20 00:56:48 $'
- * '$Revision: 1.5 $'
+ *     '$Date: 2009-04-24 00:02:05 $'
+ * '$Revision: 1.6 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -42,6 +42,8 @@ import edu.ucsb.nceas.morpho.datapackage.DataPackageFactory;
 import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
 import edu.ucsb.nceas.morpho.framework.EditingCompleteListener;
 import edu.ucsb.nceas.morpho.framework.EditorInterface;
+import edu.ucsb.nceas.morpho.framework.MorphoFrame;
+import edu.ucsb.nceas.morpho.framework.UIController;
 import edu.ucsb.nceas.morpho.plugins.MetaDisplayInterface;
 import edu.ucsb.nceas.morpho.plugins.ServiceController;
 import edu.ucsb.nceas.morpho.plugins.ServiceNotHandledException;
@@ -65,15 +67,17 @@ public class TreeEditorCorrectionController
 	private CorrectionTreeEditingListener listener = new CorrectionTreeEditingListener();
 	private static final String SLASH ="/";
 	private static final String DOUBLESLASH = "//";
+	private MorphoFrame oldFrame = null;
 	
 	/**
 	 * Constructor with parameters datapackage and xpah list
 	 * @param xPathList the list of path will be displayed
 	 */
-	public TreeEditorCorrectionController(AbstractDataPackage dataPackage, Vector xPathList) throws Exception
+	public TreeEditorCorrectionController(AbstractDataPackage dataPackage, Vector xPathList, MorphoFrame oldFame) throws Exception
 	{
 		this.dataPackage = dataPackage;
 		this.xPathList = xPathList;
+		this.oldFrame = oldFrame;
 		//System.out.println("the error list for tree editor is===== "+xPathList);
         try
         {
@@ -143,9 +147,10 @@ public class TreeEditorCorrectionController
 		{
 			if(xPathList != null && xPathList.isEmpty())
 			  {
-				  //no tree editor is needed, so we can display the data now
-				  Log.debug(45, "\n\n********** Correction Wizard by tree editor finished: DOM:");
-		          Log.debug(45, XMLUtilities.getDOMTreeAsString(dataPackage.getMetadataNode(), false));
+				  //Tree editors is done. Tree editor correction is after page wizard correction so we can display the data now
+				  // and we also can dispose the old frame
+				  //Log.debug(45, "\n\n********** Correction Wizard by tree editor finished: DOM:");
+		          //Log.debug(45, XMLUtilities.getDOMTreeAsString(dataPackage.getMetadataNode(), false));
 		          try 
 		          {
 		            ServiceController services = ServiceController.getInstance();
@@ -153,6 +158,13 @@ public class TreeEditorCorrectionController
 		                services.getServiceProvider(DataPackageInterface.class);
 		            DataPackageInterface dataPackageInterface = (DataPackageInterface)provider;
 		            dataPackageInterface.openNewDataPackage(dataPackage, null);
+		            if(oldFrame != null)
+		            {
+		            	oldFrame.setVisible(false);                
+		            	UIController controller = UIController.getInstance();
+		            	controller.removeWindow(oldFrame);
+		            	oldFrame.dispose();	
+		            }
 
 		          } 
 		          catch (ServiceNotHandledException snhe) 

@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2009-03-13 03:38:10 $'
- * '$Revision: 1.25 $'
+ *     '$Date: 2009-04-24 00:02:05 $'
+ * '$Revision: 1.26 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,9 +28,14 @@
 
 package edu.ucsb.nceas.morpho.plugins;
 
+import edu.ucsb.nceas.morpho.datapackage.AbstractDataPackage;
 import edu.ucsb.nceas.morpho.framework.AbstractUIPage;
+import edu.ucsb.nceas.morpho.framework.MorphoFrame;
+
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Vector;
+
 import javax.swing.JFrame;
 /**
  *  Interface for Data Package Wizard Plugin
@@ -131,4 +136,15 @@ public interface DataPackageWizardInterface {
    *  @return  the corresponding WizardPage with this ID
    */
   public AbstractUIPage getPage(String pageID);
+  
+  /**
+   * 
+   * start a correction invalid eml document wizard. This wizard always be used to
+   * correct in valid eml document which was transformed from old eml version.
+   *
+   * @param dataPackage  the datapackage will be corrected
+   * @param errorPathes    the list of path which has valid value
+   * @param frame            the old frame which need be disposed after correction is done
+   */
+  public void startCorrectionWizard(AbstractDataPackage dataPackage, Vector errorPathes, MorphoFrame frame);
 }
