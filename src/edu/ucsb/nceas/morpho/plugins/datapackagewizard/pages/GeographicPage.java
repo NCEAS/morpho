@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2009-04-17 01:44:40 $'
- * '$Revision: 1.21 $'
+ *     '$Date: 2009-04-24 23:06:55 $'
+ * '$Revision: 1.22 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -685,7 +685,7 @@ public class GeographicPage extends AbstractUIPage {
   public boolean setPageData(OrderedMap map, String _xPathRoot) {
     
     if (_xPathRoot!=null && _xPathRoot.trim().length() > 0) this.xPathRoot = _xPathRoot;
-    Log.debug(40, "Map at the begining of setPageData with xpathRoot" +_xPathRoot+map.toString());
+    Log.debug(40, "Map at the begining of setPageData with xpathRoot" +_xPathRoot+map);
     /*String name = (String)map.get(_xPathRoot + "/geographicDescription[1]");
     if(name != null) {
       

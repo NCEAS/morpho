@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2009-04-23 00:10:53 $'
- * '$Revision: 1.28 $'
+ *     '$Date: 2009-04-24 23:06:55 $'
+ * '$Revision: 1.29 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1032,7 +1032,7 @@ public class CitationPage extends AbstractUIPage {
    * @return boolean
    */
   public boolean setPageData(OrderedMap map, String xPath) {
-	 Log.debug(45, "set page data into citation page with root "+xPath+map.toString());
+	 Log.debug(45, "set page data into citation page with root "+xPath+map);
 
     this.titleField.setText((String)map.get(xPath + "/title[1]"));
     map.remove(xPath + "/title[1]");

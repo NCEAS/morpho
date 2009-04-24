@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2009-04-22 23:34:45 $'
- * '$Revision: 1.49 $'
+ *     '$Date: 2009-04-24 23:06:55 $'
+ * '$Revision: 1.50 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -664,7 +664,7 @@ public class Project extends AbstractUIPage {
   public boolean setPageData(OrderedMap map, String _xPathRoot) {
 
     if (_xPathRoot!=null && _xPathRoot.trim().length() > 0) this.xPathRoot = _xPathRoot;
-    Log.debug(40, "Map at the begining of setPageData with xpathRoot" +_xPathRoot+map.toString());
+    Log.debug(40, "Map at the begining of setPageData with xpathRoot" +_xPathRoot+map);
     JCheckBox checkBox = ((JCheckBox)(checkBoxPanel.getComponent(0)));
 
     checkBox.setSelected(true);
