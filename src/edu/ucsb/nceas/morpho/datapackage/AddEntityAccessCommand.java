@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2009-04-23 21:16:46 $'
- * '$Revision: 1.6 $'
+ *     '$Date: 2009-04-24 22:03:01 $'
+ * '$Revision: 1.7 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -41,6 +41,7 @@ import edu.ucsb.nceas.morpho.framework.ModalDialog;
 import edu.ucsb.nceas.morpho.framework.MorphoFrame;
 import edu.ucsb.nceas.morpho.framework.UIController;
 import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
+import edu.ucsb.nceas.morpho.plugins.DataPackageWizardListener;
 import edu.ucsb.nceas.morpho.plugins.ServiceController;
 import edu.ucsb.nceas.morpho.plugins.ServiceNotHandledException;
 import edu.ucsb.nceas.morpho.util.Command;
@@ -52,7 +53,7 @@ import edu.ucsb.nceas.utilities.XMLUtilities;
 /**
  * Class to handle add access command
  */
-public class AddEntityAccessCommand implements Command {
+public class AddEntityAccessCommand implements Command, DataPackageWizardListener {
 
 	// generic name for lookup in eml listings
 	private final String DATAPACKAGE_ACCESS_GENERIC_NAME = "entityAccess";
@@ -75,7 +76,7 @@ public class AddEntityAccessCommand implements Command {
 		  EMLTransformToNewestVersionDialog dialog = null;
 		  try
 		  {
-			  dialog = new EMLTransformToNewestVersionDialog(frame);
+			  dialog = new EMLTransformToNewestVersionDialog(frame, this);
 		  }
 		  catch(Exception e)
 		  {
@@ -88,33 +89,51 @@ public class AddEntityAccessCommand implements Command {
 				return;
 		 }
 
-		int entityIndex = 0;
-
-		DataViewContainerPanel resultPane = null;
-		MorphoFrame morphoFrame = 
-			UIController.getInstance().getCurrentActiveWindow();
-		if (morphoFrame != null) {
-			resultPane = morphoFrame.getDataViewContainerPanel();
-		}
 		
-		// make sure resulPanel is not null
-		if (resultPane != null) {
-			entityIndex = resultPane.getLastTabSelected();
-		}
-		adp = UIController.getInstance().getCurrentAbstractDataPackage();
-
-		if (showAccessDialog(entityIndex)) {
-
-			try {
-				insertAccess(entityIndex);
-				UIController.showNewPackage(adp);
-			} catch (Exception w) {
-				Log.debug(15, "Exception trying to modify access DOM: " + w);
-				w.printStackTrace();
-				Log.debug(5, "Unable to add access details!");
-			}
-		}
 	}
+	
+	/**
+	   * Method from DataPackageWizardListener.
+	   * When correction wizard finished, it will show the dialog.
+	   */
+	  public void wizardComplete(Node newDOM)
+	  {
+		  int entityIndex = 0;
+
+			DataViewContainerPanel resultPane = null;
+			MorphoFrame morphoFrame = 
+				UIController.getInstance().getCurrentActiveWindow();
+			if (morphoFrame != null) {
+				resultPane = morphoFrame.getDataViewContainerPanel();
+			}
+			
+			// make sure resulPanel is not null
+			if (resultPane != null) {
+				entityIndex = resultPane.getLastTabSelected();
+			}
+			adp = UIController.getInstance().getCurrentAbstractDataPackage();
+
+			if (showAccessDialog(entityIndex)) {
+
+				try {
+					insertAccess(entityIndex);
+					UIController.showNewPackage(adp);
+				} catch (Exception w) {
+					Log.debug(15, "Exception trying to modify access DOM: " + w);
+					w.printStackTrace();
+					Log.debug(5, "Unable to add access details!");
+				}
+			}
+	  }
+	  
+	  /**
+	   * Method from DataPackageWizardListener. Do nothing.
+	   */
+	  public void wizardCanceled()
+	  {
+		  Log.debug(45, "Correction wizard cancled");
+		  
+	  }
 
 	private boolean showAccessDialog(int entityIndex) {
 

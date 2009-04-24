@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2009-04-23 21:16:46 $'
- * '$Revision: 1.6 $'
+ *     '$Date: 2009-04-24 22:03:01 $'
+ * '$Revision: 1.7 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -41,6 +41,7 @@ import edu.ucsb.nceas.morpho.framework.MorphoFrame;
 import edu.ucsb.nceas.morpho.framework.ModalDialog;
 import edu.ucsb.nceas.morpho.framework.UIController;
 import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
+import edu.ucsb.nceas.morpho.plugins.DataPackageWizardListener;
 import edu.ucsb.nceas.morpho.plugins.ServiceController;
 import edu.ucsb.nceas.morpho.plugins.ServiceNotHandledException;
 import edu.ucsb.nceas.morpho.util.Command;
@@ -57,7 +58,7 @@ import java.util.List;
  * Class to handle add keyword command
  */
 public class AddKeywordCommand
-    implements Command {
+implements Command, DataPackageWizardListener {
 
   //generic name for lookup in eml listings
   private final String DATAPACKAGE_KEYWORD_GENERIC_NAME = "keywordSet";
@@ -75,7 +76,7 @@ public class AddKeywordCommand
 	EMLTransformToNewestVersionDialog dialog = null;
 	try
 	{
-		  dialog = new EMLTransformToNewestVersionDialog(frame);
+		  dialog = new EMLTransformToNewestVersionDialog(frame, this);
 	}
 	catch(Exception e)
 	{
@@ -86,21 +87,39 @@ public class AddKeywordCommand
 		Log.debug(2,"The current EML document is not the latest version. You should transform it first!");
 		return;
 	}
-    adp = UIController.getInstance().getCurrentAbstractDataPackage();
-	
+   
+  }
+  
+  /**
+   * Method from DataPackageWizardListener.
+   * When correction wizard finished, it will show the dialog.
+   */
+  public void wizardComplete(Node newDOM)
+  {
+	  adp = UIController.getInstance().getCurrentAbstractDataPackage();
+		
 
-    if (showKeywordDialog()) {
+	    if (showKeywordDialog()) {
 
-      try {
-        insertKeyword();
-        UIController.showNewPackage(adp);
-      }
-      catch (Exception w) {
-        Log.debug(15,"Exception trying to modify keyword DOM: " + w);
-        w.printStackTrace();
-        Log.debug(5, "Unable to add keyword details!");
-      }
-    }
+	      try {
+	        insertKeyword();
+	        UIController.showNewPackage(adp);
+	      }
+	      catch (Exception w) {
+	        Log.debug(15,"Exception trying to modify keyword DOM: " + w);
+	        w.printStackTrace();
+	        Log.debug(5, "Unable to add keyword details!");
+	      }
+	    }
+  }
+  
+  /**
+   * Method from DataPackageWizardListener. Do nothing.
+   */
+  public void wizardCanceled()
+  {
+	  Log.debug(45, "Correction wizard cancled");
+	  
   }
 
   private boolean showKeywordDialog() {

@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2009-04-23 21:16:46 $'
- * '$Revision: 1.18 $'
+ *     '$Date: 2009-04-24 22:03:01 $'
+ * '$Revision: 1.19 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,6 +34,7 @@ import edu.ucsb.nceas.morpho.framework.MorphoFrame;
 import edu.ucsb.nceas.morpho.framework.SwingWorker;
 import edu.ucsb.nceas.morpho.framework.UIController;
 import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
+import edu.ucsb.nceas.morpho.plugins.DataPackageWizardListener;
 import edu.ucsb.nceas.morpho.plugins.ServiceController;
 import edu.ucsb.nceas.morpho.plugins.ServiceNotHandledException;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.DataPackageWizardPlugin;
@@ -55,7 +56,7 @@ import javax.swing.JOptionPane;
 /**
  * Class to handle add project command
  */
-public class AddResearchProjectCommand implements Command {
+public class AddResearchProjectCommand implements Command, DataPackageWizardListener {
 
   //generic name for lookup in eml listings
   private final String DATAPACKAGE_PROJECT_GENERIC_NAME = "project";
@@ -95,7 +96,7 @@ public class AddResearchProjectCommand implements Command {
 	  EMLTransformToNewestVersionDialog dialog = null;
 	  try
 	  {
-		  dialog = new EMLTransformToNewestVersionDialog(morphoFrame);
+		  dialog = new EMLTransformToNewestVersionDialog(morphoFrame, this);
 	  }
 	  catch(Exception e)
 	  {
@@ -107,69 +108,88 @@ public class AddResearchProjectCommand implements Command {
 			Log.debug(2,"The current EML document is not the latest version. You should transform it first!");
 			return;
 	 }
-    adp = UIController.getInstance().getCurrentAbstractDataPackage();
+    
+  }
+  
+  
+  /**
+   * Method from DataPackageWizardListener.
+   * When correction wizard finished, it will show the dialog.
+   */
+  public void wizardComplete(Node newDOM)
+  {
+	  adp = UIController.getInstance().getCurrentAbstractDataPackage();
 
-    if (backupSubtreeAndShowProjectDialog()) {
+	    if (backupSubtreeAndShowProjectDialog()) {
 
-      //gets here if user has pressed "OK" on dialog... ////////////////////////
+	      //gets here if user has pressed "OK" on dialog... ////////////////////////
 
-      final MorphoFrame frame
-          = UIController.getInstance().getCurrentActiveWindow();
+	      final MorphoFrame frame
+	          = UIController.getInstance().getCurrentActiveWindow();
 
-      final SwingWorker worker = new SwingWorker() {
+	      final SwingWorker worker = new SwingWorker() {
 
-        public Object construct() {
+	        public Object construct() {
 
-          if (frame!=null) {
-            frame.setBusy(true);
-            frame.setEnabled(false);
-          }
-          try {
-            //replace project in datapackage...
-            List pagesList = new ArrayList();
-            pagesList.add(projectPage);
+	          if (frame!=null) {
+	            frame.setBusy(true);
+	            frame.setEnabled(false);
+	          }
+	          try {
+	            //replace project in datapackage...
+	            List pagesList = new ArrayList();
+	            pagesList.add(projectPage);
 
-            DataPackageWizardPlugin.deleteExistingAndAddPageDataToDOM(
-                UIController.getInstance().getCurrentAbstractDataPackage(),
-                pagesList, PROJECT_SUBTREE_NODENAME,
-                DATAPACKAGE_PROJECT_GENERIC_NAME);
+	            DataPackageWizardPlugin.deleteExistingAndAddPageDataToDOM(
+	                UIController.getInstance().getCurrentAbstractDataPackage(),
+	                pagesList, PROJECT_SUBTREE_NODENAME,
+	                DATAPACKAGE_PROJECT_GENERIC_NAME);
 
-          } catch (Exception w) {
-            Log.debug(15, "Exception trying to modify project DOM: " + w);
-            w.printStackTrace();
-            Log.debug(5, "Unable to add project details!");
-          }
-          return null;
-        }
+	          } catch (Exception w) {
+	            Log.debug(15, "Exception trying to modify project DOM: " + w);
+	            w.printStackTrace();
+	            Log.debug(5, "Unable to add project details!");
+	          }
+	          return null;
+	        }
 
-        //Runs on the event-dispatching thread.
-        public void finished()
-        {
-          if (frame!=null) {
-            frame.setBusy(false);
-            frame.setEnabled(true);
+	        //Runs on the event-dispatching thread.
+	        public void finished()
+	        {
+	          if (frame!=null) {
+	            frame.setBusy(false);
+	            frame.setEnabled(true);
 
-            //update package display in main frame...
-            UIController.showNewPackage(adp);
-          }
-        }
-      };
-      worker.start();
+	            //update package display in main frame...
+	            UIController.showNewPackage(adp);
+	          }
+	        }
+	      };
+	      worker.start();
 
-    } else {
-      //gets here if user has pressed "cancel" on dialog... ////////////////////
+	    } else {
+	      //gets here if user has pressed "cancel" on dialog... ////////////////////
 
-      //Restore project subtree to state it was in when we started...
-      if (existingProjectRoot==null) {
+	      //Restore project subtree to state it was in when we started...
+	      if (existingProjectRoot==null) {
 
-        adp.deleteSubtree(DATAPACKAGE_PROJECT_GENERIC_NAME, 0);
+	        adp.deleteSubtree(DATAPACKAGE_PROJECT_GENERIC_NAME, 0);
 
-      } else {
+	      } else {
 
-        adp.replaceSubtree(
-            DATAPACKAGE_PROJECT_GENERIC_NAME, existingProjectRoot, 0);
-      }
-    }
+	        adp.replaceSubtree(
+	            DATAPACKAGE_PROJECT_GENERIC_NAME, existingProjectRoot, 0);
+	      }
+	    }
+  }
+  
+  /**
+   * Method from DataPackageWizardListener. Do nothing.
+   */
+  public void wizardCanceled()
+  {
+	  Log.debug(45, "Correction wizard cancled");
+	  
   }
 
 

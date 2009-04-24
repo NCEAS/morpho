@@ -6,8 +6,8 @@
 *    Release: @release@
 *
 *   '$Author: tao $'
-*     '$Date: 2009-04-23 21:16:46 $'
-* '$Revision: 1.25 $'
+*     '$Date: 2009-04-24 22:03:01 $'
+* '$Revision: 1.26 $'
 *
 * This program is free software; you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -62,7 +62,7 @@ import org.w3c.dom.Node;
 /**
 * Class to handle insert a cloumn command
 */
-public class InsertColumnCommand implements Command
+public class InsertColumnCommand implements Command, DataPackageWizardListener 
 {
   /* Indicate before selected column */
   private boolean beforeFlag = true;
@@ -149,7 +149,7 @@ public class InsertColumnCommand implements Command
         	  EMLTransformToNewestVersionDialog dialog = null;
         	  try
         	  {
-        		  dialog = new EMLTransformToNewestVersionDialog(morphoFrame);
+        		  dialog = new EMLTransformToNewestVersionDialog(morphoFrame, this);
         	  }
         	  catch(Exception e)
         	  {
@@ -161,17 +161,31 @@ public class InsertColumnCommand implements Command
            			Log.debug(2,"The current EML document is not the latest version. You should transform it first!");
            			return;
                }
-           	 // since morphoFrame object maybe updated, we need to get it again.
-           	 morphoFrame = UIController.getInstance().getCurrentActiveWindow();
-           	 if (morphoFrame != null)
-             {
-               resultPane = morphoFrame.getDataViewContainerPanel();
-             }//if
-           	 if (resultPane != null)
-           	 {
-           		dataView = resultPane.getCurrentDataViewer();
-                if (dataView != null)
-                {
+           	
+        }
+      }
+
+    }//if
+
+  }//execute
+  
+  /**
+   * Method from DataPackageWizardListener.
+   * When correction wizard finished, it will show the dialog.
+   */
+  public void wizardComplete(Node newDOM)
+  {
+	  // since morphoFrame object maybe updated, we need to get it again.
+    	 morphoFrame = UIController.getInstance().getCurrentActiveWindow();
+    	 if (morphoFrame != null)
+        {
+           resultPane = morphoFrame.getDataViewContainerPanel();
+         }//if
+    	 if (resultPane != null)
+    	 {
+    		dataView = resultPane.getCurrentDataViewer();
+	         if (dataView != null)
+	         {
 			        // Get parameters and run it
 			        table=dataView.getDataTable();
 			        ptm = (PersistentTableModel)table.getModel();
@@ -182,14 +196,18 @@ public class InsertColumnCommand implements Command
 			        //         String fieldDelimiter=dataView.getFieldDelimiter();
 			        fieldDelimiter= pv.getFieldDelimiter();
 			        showAttributeDialog();
-                }
-           	 }
-        }
-      }
-
-    }//if
-
-  }//execute
+	         }
+    	 }
+  }
+  
+  /**
+   * Method from DataPackageWizardListener. Do nothing.
+   */
+  public void wizardCanceled()
+  {
+	  Log.debug(45, "Correction wizard cancled");
+	  
+  }
 
 
 

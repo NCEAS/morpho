@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2009-04-23 21:16:46 $'
- * '$Revision: 1.13 $'
+ *     '$Date: 2009-04-24 22:03:01 $'
+ * '$Revision: 1.14 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,6 +32,7 @@ import edu.ucsb.nceas.morpho.framework.ModalDialog;
 import edu.ucsb.nceas.morpho.framework.MorphoFrame;
 import edu.ucsb.nceas.morpho.framework.UIController;
 import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
+import edu.ucsb.nceas.morpho.plugins.DataPackageWizardListener;
 import edu.ucsb.nceas.morpho.plugins.ServiceController;
 import edu.ucsb.nceas.morpho.plugins.ServiceNotHandledException;
 import edu.ucsb.nceas.morpho.util.Command;
@@ -56,7 +57,7 @@ import org.w3c.dom.NodeList;
 /**
  * Class to handle add geographic coverage command
  */
-public class AddGeographicCovCommand implements Command {
+public class AddGeographicCovCommand implements Command, DataPackageWizardListener {
 
   /* Flag if need to add coverage info*/
   private boolean infoAddFlag = false;
@@ -85,7 +86,7 @@ public class AddGeographicCovCommand implements Command {
 	  EMLTransformToNewestVersionDialog dialog = null;
 	  try
 	  {
-		  dialog = new EMLTransformToNewestVersionDialog(frame);
+		  dialog = new EMLTransformToNewestVersionDialog(frame, this);
 	  }
 	  catch(Exception e)
 	  {
@@ -97,33 +98,51 @@ public class AddGeographicCovCommand implements Command {
 			Log.debug(2,"The current EML document is not the latest version. You should transform it first!");
 			return;
 	 }
-    adp = UIController.getInstance().getCurrentAbstractDataPackage();
+    
+  }
+  
+  /**
+   * Method from DataPackageWizardListener.
+   * When correction wizard finished, it will show the dialog.
+   */
+  public void wizardComplete(Node newDOM)
+  {
+	  adp = UIController.getInstance().getCurrentAbstractDataPackage();
 
-    resultPane = null;
-    morphoFrame = UIController.getInstance().getCurrentActiveWindow();
+	    resultPane = null;
+	    morphoFrame = UIController.getInstance().getCurrentActiveWindow();
 
-    if (morphoFrame != null) {
-      resultPane = morphoFrame.getDataViewContainerPanel();
-    }
+	    if (morphoFrame != null) {
+	      resultPane = morphoFrame.getDataViewContainerPanel();
+	    }
 
-    // make sure resulPanel is not null
-    if (resultPane != null) {
+	    // make sure resulPanel is not null
+	    if (resultPane != null) {
 
-      showGeographicDialog();
-      if (infoAddFlag) {
+	      showGeographicDialog();
+	      if (infoAddFlag) {
 
-        try {
-					// inserting new, so remove old
-					adp.removeGeographicNodes();
-          insertNewGeographic();
-          UIController.showNewPackage(adp);
-        }
-        catch (Exception w) {
-          Log.debug(20, "Exception trying to modify coverage DOM");
-        }
-      }
+	        try {
+						// inserting new, so remove old
+						adp.removeGeographicNodes();
+	          insertNewGeographic();
+	          UIController.showNewPackage(adp);
+	        }
+	        catch (Exception w) {
+	          Log.debug(20, "Exception trying to modify coverage DOM");
+	        }
+	      }
 
-    }
+	    }
+  }
+  
+  /**
+   * Method from DataPackageWizardListener. Do nothing.
+   */
+  public void wizardCanceled()
+  {
+	  Log.debug(45, "Correction wizard cancled");
+	  
   }
 
 

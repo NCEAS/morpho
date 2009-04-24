@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2009-04-23 21:16:46 $'
- * '$Revision: 1.112 $'
+ *     '$Date: 2009-04-24 22:03:01 $'
+ * '$Revision: 1.113 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,6 +33,7 @@ import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
 //import edu.ucsb.nceas.morpho.framework.EMLTransformToNewestVersionDialog;
 import edu.ucsb.nceas.morpho.framework.MorphoFrame;
 import edu.ucsb.nceas.morpho.framework.UIController;
+import edu.ucsb.nceas.morpho.plugins.DataPackageWizardListener;
 import edu.ucsb.nceas.morpho.plugins.PluginInterface;
 import edu.ucsb.nceas.morpho.plugins.ServiceController;
 import edu.ucsb.nceas.morpho.plugins.ServiceExistsException;
@@ -886,7 +887,8 @@ public class DataPackagePlugin
 	//check if we should upgrade eml to the newest version
 	try
 	{
-		EMLTransformToNewestVersionDialog dialog = new EMLTransformToNewestVersionDialog(packageWindow);
+		DataPackageWizardListener listener = null; // we don't need it do any thing. so pass null to it.
+		EMLTransformToNewestVersionDialog dialog = new EMLTransformToNewestVersionDialog(packageWindow, listener);
 	}
 	catch(Exception e)
 	{

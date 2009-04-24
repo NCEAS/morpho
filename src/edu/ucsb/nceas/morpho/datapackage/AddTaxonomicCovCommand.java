@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2009-04-23 21:16:46 $'
- * '$Revision: 1.20 $'
+ *     '$Date: 2009-04-24 22:03:01 $'
+ * '$Revision: 1.21 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,6 +30,7 @@ package edu.ucsb.nceas.morpho.datapackage;
 import edu.ucsb.nceas.morpho.framework.MorphoFrame;
 import edu.ucsb.nceas.morpho.framework.UIController;
 import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
+import edu.ucsb.nceas.morpho.plugins.DataPackageWizardListener;
 import edu.ucsb.nceas.morpho.plugins.ServiceController;
 import edu.ucsb.nceas.morpho.plugins.ServiceNotHandledException;
 import edu.ucsb.nceas.morpho.framework.ModalDialog;
@@ -55,7 +56,7 @@ import org.w3c.dom.NodeList;
 /**
  * Class to handle addition of taxonomic coverage to the data package
  */
-public class AddTaxonomicCovCommand implements Command {
+public class AddTaxonomicCovCommand implements Command, DataPackageWizardListener {
 
   private AbstractUIPage taxonomicPage;
 
@@ -84,7 +85,7 @@ public class AddTaxonomicCovCommand implements Command {
 	  EMLTransformToNewestVersionDialog dialog = null;
 	  try
 	  {
-		  dialog = new EMLTransformToNewestVersionDialog(frame);
+		  dialog = new EMLTransformToNewestVersionDialog(frame, this);
 	  }
 	  catch(Exception e)
 	  {
@@ -96,8 +97,26 @@ public class AddTaxonomicCovCommand implements Command {
 			Log.debug(2,"The current EML document is not the latest version. You should transform it first!");
 			return;
 	 }
-    showTaxonomicDialog();
+   
 
+  }
+  
+  /**
+   * Method from DataPackageWizardListener.
+   * When correction wizard finished, it will show the dialog.
+   */
+  public void wizardComplete(Node newDOM)
+  {
+	  showTaxonomicDialog();
+  }
+  
+  /**
+   * Method from DataPackageWizardListener. Do nothing.
+   */
+  public void wizardCanceled()
+  {
+	  Log.debug(45, "Correction wizard cancled");
+	  
   }
 
 
@@ -163,6 +182,9 @@ public class AddTaxonomicCovCommand implements Command {
 
     return;
   }
+  
+  
+  
 
   private void insertTaxonomicNode(OrderedMap map) {
 

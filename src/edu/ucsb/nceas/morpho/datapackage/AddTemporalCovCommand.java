@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2009-04-23 21:16:46 $'
- * '$Revision: 1.18 $'
+ *     '$Date: 2009-04-24 22:03:01 $'
+ * '$Revision: 1.19 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,6 +33,7 @@ import edu.ucsb.nceas.morpho.framework.ModalDialog;
 import edu.ucsb.nceas.morpho.framework.MorphoFrame;
 import edu.ucsb.nceas.morpho.framework.UIController;
 import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
+import edu.ucsb.nceas.morpho.plugins.DataPackageWizardListener;
 import edu.ucsb.nceas.morpho.plugins.ServiceController;
 import edu.ucsb.nceas.morpho.plugins.ServiceProvider;
 import edu.ucsb.nceas.morpho.plugins.ServiceNotHandledException;
@@ -58,7 +59,7 @@ import org.w3c.dom.NodeList;
 /**
  * Class to handle add temporal coverage command
  */
-public class AddTemporalCovCommand implements Command {
+public class AddTemporalCovCommand implements Command, DataPackageWizardListener {
 
   /* Flag if need to add coverage info*/
   private boolean infoAddFlag = false;
@@ -87,7 +88,7 @@ public class AddTemporalCovCommand implements Command {
 	  EMLTransformToNewestVersionDialog dialog = null;
 	  try
 	  {
-		  dialog = new EMLTransformToNewestVersionDialog(frame);
+		  dialog = new EMLTransformToNewestVersionDialog(frame, this);
 	  }
 	  catch(Exception e)
 	  {
@@ -99,33 +100,51 @@ public class AddTemporalCovCommand implements Command {
 			Log.debug(2,"The current EML document is not the latest version. You should transform it first!");
 			return;
 	 }
-    adp = UIController.getInstance().getCurrentAbstractDataPackage();
+    
+  }
+  
+  /**
+   * Method from DataPackageWizardListener.
+   * When correction wizard finished, it will show the dialog.
+   */
+  public void wizardComplete(Node newDOM)
+  {
+	  adp = UIController.getInstance().getCurrentAbstractDataPackage();
 
-    resultPane = null;
-    morphoFrame = UIController.getInstance().getCurrentActiveWindow();
+	    resultPane = null;
+	    morphoFrame = UIController.getInstance().getCurrentActiveWindow();
 
-    if (morphoFrame != null) {
-      resultPane =  morphoFrame.getDataViewContainerPanel();
-    }
+	    if (morphoFrame != null) {
+	      resultPane =  morphoFrame.getDataViewContainerPanel();
+	    }
 
-    // make sure resulPanel is not null
-    if (resultPane != null) {
+	    // make sure resulPanel is not null
+	    if (resultPane != null) {
 
-      showTemporalDialog();
-      if (infoAddFlag) {
+	      showTemporalDialog();
+	      if (infoAddFlag) {
 
-        try {
-					// inserting new, so remove old
-					adp.removeTemporalNodes();
-          insertNewTemporal();
-          UIController.showNewPackage(adp);
-        }
-        catch (Exception w) {
-          Log.debug(20, "Exception trying to modify coverage DOM");
-        }
-      }
+	        try {
+						// inserting new, so remove old
+						adp.removeTemporalNodes();
+	          insertNewTemporal();
+	          UIController.showNewPackage(adp);
+	        }
+	        catch (Exception w) {
+	          Log.debug(20, "Exception trying to modify coverage DOM");
+	        }
+	      }
 
-    }
+	    }
+  }
+  
+  /**
+   * Method from DataPackageWizardListener. Do nothing.
+   */
+  public void wizardCanceled()
+  {
+	  Log.debug(45, "Correction wizard cancled");
+	  
   }
 
 

@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2009-04-23 21:16:46 $'
- * '$Revision: 1.5 $'
+ *     '$Date: 2009-04-24 22:03:01 $'
+ * '$Revision: 1.6 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -41,6 +41,7 @@ import edu.ucsb.nceas.morpho.framework.MorphoFrame;
 import edu.ucsb.nceas.morpho.framework.ModalDialog;
 import edu.ucsb.nceas.morpho.framework.UIController;
 import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
+import edu.ucsb.nceas.morpho.plugins.DataPackageWizardListener;
 import edu.ucsb.nceas.morpho.plugins.ServiceController;
 import edu.ucsb.nceas.morpho.plugins.ServiceNotHandledException;
 import edu.ucsb.nceas.morpho.util.Command;
@@ -56,7 +57,7 @@ import java.util.HashMap;
  * Class to handle add creator command
  */
 public class AddCreatorCommand
-    implements Command {
+implements Command, DataPackageWizardListener {
 
   //generic name for lookup in eml listings
   private final String DATAPACKAGE_CREATOR_GENERIC_NAME = "creator";
@@ -75,7 +76,7 @@ public class AddCreatorCommand
 	  EMLTransformToNewestVersionDialog dialog = null;
 	  try
 	  {
-		  dialog = new EMLTransformToNewestVersionDialog(frame);
+		  dialog = new EMLTransformToNewestVersionDialog(frame, this);
 	  }
 	  catch(Exception e)
 	  {
@@ -87,44 +88,62 @@ public class AddCreatorCommand
 			Log.debug(2,"The current EML document is not the latest version. You should transform it first!");
 			return;
 	 }
-    adp = UIController.getInstance().getCurrentAbstractDataPackage();
-    exsitingCreatorRoot = adp.getSubtrees(DATAPACKAGE_CREATOR_GENERIC_NAME);
+    
+  }
+  
+  /**
+   * Method from DataPackageWizardListener.
+   * When correction wizard finished, it will show the dialog.
+   */
+  public void wizardComplete(Node newDOM)
+  {
+	  adp = UIController.getInstance().getCurrentAbstractDataPackage();
+	    exsitingCreatorRoot = adp.getSubtrees(DATAPACKAGE_CREATOR_GENERIC_NAME);
 
-    if (showCreatorDialog()) {
+	    if (showCreatorDialog()) {
 
-      try {
-        insertCreator();
-        UIController.showNewPackage(adp);
-      }
-      catch (Exception w) {
-        Log.debug(15, "Exception trying to modify creator DOM: " + w);
-        w.printStackTrace();
-        Log.debug(5, "Unable to add creator details!");
-      }
-    } else {
-      //gets here if user has pressed "cancel" on dialog... ////////////////////
+	      try {
+	        insertCreator();
+	        UIController.showNewPackage(adp);
+	      }
+	      catch (Exception w) {
+	        Log.debug(15, "Exception trying to modify creator DOM: " + w);
+	        w.printStackTrace();
+	        Log.debug(5, "Unable to add creator details!");
+	      }
+	    } else {
+	      //gets here if user has pressed "cancel" on dialog... ////////////////////
 
-      //Restore project subtree to state it was in when we started...
-      adp.deleteAllSubtrees(DATAPACKAGE_CREATOR_GENERIC_NAME);
-      if (!exsitingCreatorRoot.isEmpty()) {
-        Object nextXPathObj = null;
+	      //Restore project subtree to state it was in when we started...
+	      adp.deleteAllSubtrees(DATAPACKAGE_CREATOR_GENERIC_NAME);
+	      if (!exsitingCreatorRoot.isEmpty()) {
+	        Object nextXPathObj = null;
 
-        int count = this.exsitingCreatorRoot.size();
-        DOMImplementation impl = DOMImplementationImpl.getDOMImplementation();
-        for(int i = count-1; i>-1; i--){
-          creatorRoot = (Node)exsitingCreatorRoot.get(i);
-          Node check = adp.insertSubtree(DATAPACKAGE_CREATOR_GENERIC_NAME,
-              creatorRoot, 0);
-          if (check != null) {
-            Log.debug(45, "added new creator details to package...");
-          } else {
-            Log.debug(5,
-                "** ERROR: Unable to add new creator details to package **");
-          }
+	        int count = this.exsitingCreatorRoot.size();
+	        DOMImplementation impl = DOMImplementationImpl.getDOMImplementation();
+	        for(int i = count-1; i>-1; i--){
+	          creatorRoot = (Node)exsitingCreatorRoot.get(i);
+	          Node check = adp.insertSubtree(DATAPACKAGE_CREATOR_GENERIC_NAME,
+	              creatorRoot, 0);
+	          if (check != null) {
+	            Log.debug(45, "added new creator details to package...");
+	          } else {
+	            Log.debug(5,
+	                "** ERROR: Unable to add new creator details to package **");
+	          }
 
-        }
-      }
-    }
+	        }
+	      }
+	    }
+  }
+  
+  /**
+   * Method from DataPackageWizardListener. Do nothing.
+   */
+  public void wizardCanceled()
+  {
+	  Log.debug(45, "Correction wizard cancled");
+	  
   }
 
   private boolean showCreatorDialog() {

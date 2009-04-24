@@ -75,30 +75,12 @@ public class EMLTransformToNewestVersionDialog
 	  
 	  private DataPackageWizardListener listener = null;
 	
-	/**
-	 * Constructor of this dialog
-	 * @param frame  parent of this dialog
-	 */
-	public EMLTransformToNewestVersionDialog(MorphoFrame frame) throws Exception
-	{
-		morphoFrame = frame;
-		AbstractDataPackage dataPackage = morphoFrame.getAbstractDataPackage();
-		if (dataPackage != null && dataPackage instanceof EML200DataPackage)
-		{
-			eml200Package = (EML200DataPackage)dataPackage;
-			if(eml200Package != null && !eml200Package.isLatestEMLVersion())
-			{
-				initializeUI(frame);
-				//Only when user choose "Yes", the document will be transformed
-				transfromEMLToNewestVersion();
-			}
-			
-		}
-	}
+
 	
 	/**
 	 * Constructor of this dialog
 	 * @param frame  parent of this dialog
+	 * @param listener  the listener for completing correction wizard
 	 */
 	public EMLTransformToNewestVersionDialog(MorphoFrame frame, DataPackageWizardListener listener) throws Exception
 	{
@@ -113,6 +95,14 @@ public class EMLTransformToNewestVersionDialog
 				initializeUI(frame);
 				//Only when user choose "Yes", the document will be transformed
 				transfromEMLToNewestVersion();
+			}
+			else if(eml200Package != null)
+			{
+				 //calling the wizardComplete method in listener to make the dialog show up.
+                if(listener != null)
+                {
+                	listener.wizardComplete(eml200Package.getMetadataNode());
+                }
 			}
 			
 		}

@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2009-04-23 21:16:46 $'
- * '$Revision: 1.5 $'
+ *     '$Date: 2009-04-24 22:03:01 $'
+ * '$Revision: 1.6 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -41,6 +41,7 @@ import edu.ucsb.nceas.morpho.framework.ModalDialog;
 import edu.ucsb.nceas.morpho.framework.MorphoFrame;
 import edu.ucsb.nceas.morpho.framework.UIController;
 import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
+import edu.ucsb.nceas.morpho.plugins.DataPackageWizardListener;
 import edu.ucsb.nceas.morpho.plugins.ServiceController;
 import edu.ucsb.nceas.morpho.plugins.ServiceNotHandledException;
 import edu.ucsb.nceas.morpho.util.Command;
@@ -56,7 +57,7 @@ import java.util.HashMap;
  * Class to handle add contact command
  */
 public class AddContactCommand
-    implements Command {
+implements Command, DataPackageWizardListener {
 
   //generic name for lookup in eml listings
   private final String DATAPACKAGE_CONTACT_GENERIC_NAME = "contact";
@@ -75,7 +76,7 @@ public class AddContactCommand
 	  EMLTransformToNewestVersionDialog dialog = null;
 	  try
 	  {
-		  dialog = new EMLTransformToNewestVersionDialog(frame);
+		  dialog = new EMLTransformToNewestVersionDialog(frame, this);
 	  }
 	  catch(Exception e)
 	  {
@@ -88,45 +89,63 @@ public class AddContactCommand
 			Log.debug(2,"The current EML document is not the latest version. You should transform it first!");
 			return;
 	 }
-    adp = UIController.getInstance().getCurrentAbstractDataPackage();
-    exsitingContactRoot = adp.getSubtrees(DATAPACKAGE_CONTACT_GENERIC_NAME);
+    
+  }
+  
+  /**
+   * Method from DataPackageWizardListener.
+   * When correction wizard finished, it will show the dialog.
+   */
+  public void wizardComplete(Node newDOM)
+  {
+	  adp = UIController.getInstance().getCurrentAbstractDataPackage();
+	    exsitingContactRoot = adp.getSubtrees(DATAPACKAGE_CONTACT_GENERIC_NAME);
 
-    if (showContactDialog()) {
+	    if (showContactDialog()) {
 
-      try {
-        insertContact();
-        UIController.showNewPackage(adp);
-      }
-      catch (Exception w) {
-        Log.debug(15, "Exception trying to modify contact DOM: " + w);
-        w.printStackTrace();
-        Log.debug(5, "Unable to add contact details!");
-      }
-    }else {
-      //gets here if user has pressed "cancel" on dialog... ////////////////////
+	      try {
+	        insertContact();
+	        UIController.showNewPackage(adp);
+	      }
+	      catch (Exception w) {
+	        Log.debug(15, "Exception trying to modify contact DOM: " + w);
+	        w.printStackTrace();
+	        Log.debug(5, "Unable to add contact details!");
+	      }
+	    }else {
+	      //gets here if user has pressed "cancel" on dialog... ////////////////////
 
-      //Restore project subtree to state it was in when we started...
-      adp.deleteAllSubtrees(DATAPACKAGE_CONTACT_GENERIC_NAME);
-      if (!exsitingContactRoot.isEmpty()) {
-        Object nextXPathObj = null;
+	      //Restore project subtree to state it was in when we started...
+	      adp.deleteAllSubtrees(DATAPACKAGE_CONTACT_GENERIC_NAME);
+	      if (!exsitingContactRoot.isEmpty()) {
+	        Object nextXPathObj = null;
 
-        int count = this.exsitingContactRoot.size();
-        DOMImplementation impl = DOMImplementationImpl.getDOMImplementation();
-        for(int i = count-1; i>-1; i--){
-          contactRoot = (Node)exsitingContactRoot.get(i);
-          Node check = adp.insertSubtree(DATAPACKAGE_CONTACT_GENERIC_NAME,
-              contactRoot, 0);
-          if (check != null) {
-            Log.debug(45, "added new creator details to package...");
-          } else {
-            Log.debug(5,
-                "** ERROR: Unable to add new creator details to package **");
-          }
+	        int count = this.exsitingContactRoot.size();
+	        DOMImplementation impl = DOMImplementationImpl.getDOMImplementation();
+	        for(int i = count-1; i>-1; i--){
+	          contactRoot = (Node)exsitingContactRoot.get(i);
+	          Node check = adp.insertSubtree(DATAPACKAGE_CONTACT_GENERIC_NAME,
+	              contactRoot, 0);
+	          if (check != null) {
+	            Log.debug(45, "added new creator details to package...");
+	          } else {
+	            Log.debug(5,
+	                "** ERROR: Unable to add new creator details to package **");
+	          }
 
-        }
-      }
-    }
+	        }
+	      }
+	    }
 
+  }
+  
+  /**
+   * Method from DataPackageWizardListener. Do nothing.
+   */
+  public void wizardCanceled()
+  {
+	  Log.debug(45, "Correction wizard cancled");
+	  
   }
 
   private boolean showContactDialog() {

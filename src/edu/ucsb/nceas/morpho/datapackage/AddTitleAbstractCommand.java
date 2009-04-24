@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2009-04-23 21:16:46 $'
- * '$Revision: 1.6 $'
+ *     '$Date: 2009-04-24 22:03:01 $'
+ * '$Revision: 1.7 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -41,6 +41,7 @@ import edu.ucsb.nceas.morpho.framework.AbstractUIPage;
 import edu.ucsb.nceas.morpho.framework.ModalDialog;
 import edu.ucsb.nceas.morpho.framework.UIController;
 import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
+import edu.ucsb.nceas.morpho.plugins.DataPackageWizardListener;
 import edu.ucsb.nceas.morpho.plugins.ServiceController;
 import edu.ucsb.nceas.morpho.plugins.ServiceNotHandledException;
 import edu.ucsb.nceas.morpho.util.Command;
@@ -53,7 +54,7 @@ import edu.ucsb.nceas.utilities.XMLUtilities;
  * Class to handle add title and abstract command
  */
 public class AddTitleAbstractCommand
-    implements Command {
+implements Command, DataPackageWizardListener {
 
   //generic name for lookup in eml listings
   private final String DATAPACKAGE_TITLE_GENERIC_NAME = "title";
@@ -73,7 +74,7 @@ public class AddTitleAbstractCommand
 	  EMLTransformToNewestVersionDialog dialog = null;
 	  try
 	  {
-		  dialog = new EMLTransformToNewestVersionDialog(frame);
+		  dialog = new EMLTransformToNewestVersionDialog(frame, this);
 	  }
 	  catch(Exception e)
 	  {
@@ -85,20 +86,38 @@ public class AddTitleAbstractCommand
 			Log.debug(2,"The current EML document is not the latest version. You should transform it first!");
 			return;
 	 }
-    adp = UIController.getInstance().getCurrentAbstractDataPackage();
+    
+  }
+  
+  /**
+   * Method from DataPackageWizardListener.
+   * When correction wizard finished, it will show the dialog.
+   */
+  public void wizardComplete(Node newDOM)
+  {
+	  adp = UIController.getInstance().getCurrentAbstractDataPackage();
 
-    if (showTitleAbstractDialog()) {
+	    if (showTitleAbstractDialog()) {
 
-      try {
-        insertTitleAbstract();
-        UIController.showNewPackage(adp);
-      }
-      catch (Exception w) {
-        Log.debug(15,"Exception trying to modify title and abstract DOM: " + w);
-        w.printStackTrace();
-        Log.debug(5, "Unable to add title and abstract details!");
-      }
-    }
+	      try {
+	        insertTitleAbstract();
+	        UIController.showNewPackage(adp);
+	      }
+	      catch (Exception w) {
+	        Log.debug(15,"Exception trying to modify title and abstract DOM: " + w);
+	        w.printStackTrace();
+	        Log.debug(5, "Unable to add title and abstract details!");
+	      }
+	    }
+  }
+  
+  /**
+   * Method from DataPackageWizardListener. Do nothing.
+   */
+  public void wizardCanceled()
+  {
+	  Log.debug(45, "Correction wizard cancled");
+	  
   }
 
   private boolean showTitleAbstractDialog() {

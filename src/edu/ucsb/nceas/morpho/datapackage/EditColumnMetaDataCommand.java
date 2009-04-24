@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2009-04-23 21:16:46 $'
- * '$Revision: 1.23 $'
+ *     '$Date: 2009-04-24 22:03:01 $'
+ * '$Revision: 1.24 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -57,7 +57,7 @@ import org.w3c.dom.Node;
 /**
  * Class to handle edit column meta data command
  */
-public class EditColumnMetaDataCommand implements Command
+public class EditColumnMetaDataCommand implements Command, DataPackageWizardListener 
 {
   /* Referrence to  morphoframe */
   private MorphoFrame morphoFrame = null;
@@ -92,7 +92,7 @@ public class EditColumnMetaDataCommand implements Command
   {
     
 
-    Node[] attributes = null;
+    
 
     morphoFrame = UIController.getInstance().getCurrentActiveWindow();
     
@@ -134,7 +134,7 @@ public class EditColumnMetaDataCommand implements Command
     EMLTransformToNewestVersionDialog dialog = null;
 	try
 	{
-		  dialog = new EMLTransformToNewestVersionDialog(morphoFrame);
+		  dialog = new EMLTransformToNewestVersionDialog(morphoFrame, this);
 	}
 	catch(Exception e)
 	{
@@ -146,124 +146,141 @@ public class EditColumnMetaDataCommand implements Command
 			Log.debug(2,"The current EML document is not the latest version. You should transform it first!");
 			return;
 	 }
-	// since the morphoFrame may be updated to eml210 document, we need to get the adp again.
-	morphoFrame = UIController.getInstance().getCurrentActiveWindow();
-	if (morphoFrame != null)
-	{
-	       resultPane = morphoFrame.getDataViewContainerPanel();
-	 }//if
-
-	  if ( resultPane != null)
-	  {
-	       adp = resultPane.getAbstractDataPackage();
-	       dataView = resultPane.getCurrentDataViewer();
-	       table = dataView.getDataTable();
-	  }
-
-	  if(adp == null) {
-	      Log.debug(16, " Abstract Data Package is null in the EditColumnMetaDataCommand");
-	      return;
-	  }
-	  
-	  attributes = adp.getAttributeArray(entityIndex);
-
-    if(attributes == null || attrIndex == -1) {
-
-      Log.debug(16, " Couldnt get the attributes in	EditColumnMetaDataCommand for attrIndex = " + attrIndex);
-      return;
-    }
-
-    Node currentAttr = attributes[attrIndex];
-    map = XMLUtilities.getDOMTreeAsXPathMap(currentAttr,
-                    "/eml:eml/dataset/dataTable/attributeList");
-    ServiceController sc;
-    DataPackageWizardInterface dpwPlugin = null;
-    try {
-      sc = ServiceController.getInstance();
-      dpwPlugin = (DataPackageWizardInterface)sc.getServiceProvider(DataPackageWizardInterface.class);
-
-    } catch (ServiceNotHandledException se) {
-      Log.debug(6, se.getMessage());
-    }
-    if(dpwPlugin == null) return;
-
-    AbstractUIPage attributePage = dpwPlugin.getPage(DataPackageWizardInterface.ATTRIBUTE_PAGE);
-    boolean canHandleAllData = attributePage.setPageData(map, "");
-		
-		if(canHandleAllData) {
-			
-			ModalDialog wpd = new ModalDialog(attributePage,
-												UIController.getInstance().getCurrentActiveWindow(),
-												UISettings.POPUPDIALOG_WIDTH,
-												UISettings.POPUPDIALOG_HEIGHT
-												, false);
-			
-			wpd.setSize(UISettings.POPUPDIALOG_WIDTH, UISettings.POPUPDIALOG_FOR_ATTR_HEIGHT);
-			wpd.validate();
-			wpd.setVisible(true);
-			if (wpd.USER_RESPONSE == ModalDialog.OK_OPTION) {
-				adp.setLocation("");
-				resultPane.saveDataChanges();  // needed to flag datatable changes
-				map = attributePage.getPageData(xPath);
-				if(entityIndex == -1) {
-					Log.debug(10, "Unable to get the Index of the current Entity, in EditColumnMetaData.");
-					return;
-				}
-				
-				columnName = AbstractDataPackage.getAttributeColumnName(map, xPath );
-				mScale = AbstractDataPackage.getMeasurementScale(map, xPath);
-				boolean toImport = AbstractDataPackage.isImportNeeded(map, xPath, mScale);
-				if(toImport) {
-					String entityName = adp.getEntityName(entityIndex);
-					
-					adp.addAttributeForImport(entityName, columnName, mScale, map, "/attribute", false);
-					DataPackageWizardListener dpwListener = new DataPackageWizardListener () {
-						public void wizardComplete(Node newDOM) {
-							
-							modifyAttribute();
-							try
-							{
-								ServiceController services = ServiceController.getInstance();
-								ServiceProvider provider =
-								services.getServiceProvider(DataPackageInterface.class);
-								DataPackageInterface dataPackageInt = (DataPackageInterface)provider;
-								dataPackageInt.openNewDataPackage(adp, null);
-							}
-							catch (ServiceNotHandledException snhe)
-							{
-								Log.debug(6, snhe.getMessage());
-							}
-							UIController controller = UIController.getInstance();
-							morphoFrame.setVisible(false);
-							controller.removeWindow(morphoFrame);
-							morphoFrame.dispose();
-						}
-						public void wizardCanceled() {
-							
-							return;
-						}
-					};
-					dpwPlugin.startCodeDefImportWizard(dpwListener);
-					
-				} else { // if import is not needed
-					
-					modifyAttribute();
-				}
-				
-			} // end of if USER_RESPONSE == OK_OPTION
-			
-		} else {
-			
-			if(entityIndex < 0) entityIndex = 0;
-			if(attrIndex < 0) attrIndex = 0;
-			
-			UIController.getInstance().launchEditorAtSubtreeForCurrentFrame(
-          "dataTable["+entityIndex+"]/attribute-", attrIndex);
-		}
+	
 
   } // end of execute
 	
+  /**
+   * Method from DataPackageWizardListener.
+   * When correction wizard finished, it will show the dialog.
+   */
+  public void wizardComplete(Node newDOM)
+  {
+	    Node[] attributes = null;
+	  // since the morphoFrame may be updated to eml210 document, we need to get the adp again.
+		morphoFrame = UIController.getInstance().getCurrentActiveWindow();
+		if (morphoFrame != null)
+		{
+		       resultPane = morphoFrame.getDataViewContainerPanel();
+		 }//if
 
+		  if ( resultPane != null)
+		  {
+		       adp = resultPane.getAbstractDataPackage();
+		       dataView = resultPane.getCurrentDataViewer();
+		       table = dataView.getDataTable();
+		  }
+
+		  if(adp == null) {
+		      Log.debug(16, " Abstract Data Package is null in the EditColumnMetaDataCommand");
+		      return;
+		  }
+		  
+		  attributes = adp.getAttributeArray(entityIndex);
+
+	    if(attributes == null || attrIndex == -1) {
+
+	      Log.debug(16, " Couldnt get the attributes in	EditColumnMetaDataCommand for attrIndex = " + attrIndex);
+	      return;
+	    }
+
+	    Node currentAttr = attributes[attrIndex];
+	    map = XMLUtilities.getDOMTreeAsXPathMap(currentAttr,
+	                    "/eml:eml/dataset/dataTable/attributeList");
+	    ServiceController sc;
+	    DataPackageWizardInterface dpwPlugin = null;
+	    try {
+	      sc = ServiceController.getInstance();
+	      dpwPlugin = (DataPackageWizardInterface)sc.getServiceProvider(DataPackageWizardInterface.class);
+
+	    } catch (ServiceNotHandledException se) {
+	      Log.debug(6, se.getMessage());
+	    }
+	    if(dpwPlugin == null) return;
+
+	    AbstractUIPage attributePage = dpwPlugin.getPage(DataPackageWizardInterface.ATTRIBUTE_PAGE);
+	    boolean canHandleAllData = attributePage.setPageData(map, "");
+			
+			if(canHandleAllData) {
+				
+				ModalDialog wpd = new ModalDialog(attributePage,
+													UIController.getInstance().getCurrentActiveWindow(),
+													UISettings.POPUPDIALOG_WIDTH,
+													UISettings.POPUPDIALOG_HEIGHT
+													, false);
+				
+				wpd.setSize(UISettings.POPUPDIALOG_WIDTH, UISettings.POPUPDIALOG_FOR_ATTR_HEIGHT);
+				wpd.validate();
+				wpd.setVisible(true);
+				if (wpd.USER_RESPONSE == ModalDialog.OK_OPTION) {
+					adp.setLocation("");
+					resultPane.saveDataChanges();  // needed to flag datatable changes
+					map = attributePage.getPageData(xPath);
+					if(entityIndex == -1) {
+						Log.debug(10, "Unable to get the Index of the current Entity, in EditColumnMetaData.");
+						return;
+					}
+					
+					columnName = AbstractDataPackage.getAttributeColumnName(map, xPath );
+					mScale = AbstractDataPackage.getMeasurementScale(map, xPath);
+					boolean toImport = AbstractDataPackage.isImportNeeded(map, xPath, mScale);
+					if(toImport) {
+						String entityName = adp.getEntityName(entityIndex);
+						
+						adp.addAttributeForImport(entityName, columnName, mScale, map, "/attribute", false);
+						DataPackageWizardListener dpwListener = new DataPackageWizardListener () {
+							public void wizardComplete(Node newDOM) {
+								
+								modifyAttribute();
+								try
+								{
+									ServiceController services = ServiceController.getInstance();
+									ServiceProvider provider =
+									services.getServiceProvider(DataPackageInterface.class);
+									DataPackageInterface dataPackageInt = (DataPackageInterface)provider;
+									dataPackageInt.openNewDataPackage(adp, null);
+								}
+								catch (ServiceNotHandledException snhe)
+								{
+									Log.debug(6, snhe.getMessage());
+								}
+								UIController controller = UIController.getInstance();
+								morphoFrame.setVisible(false);
+								controller.removeWindow(morphoFrame);
+								morphoFrame.dispose();
+							}
+							public void wizardCanceled() {
+								
+								return;
+							}
+						};
+						dpwPlugin.startCodeDefImportWizard(dpwListener);
+						
+					} else { // if import is not needed
+						
+						modifyAttribute();
+					}
+					
+				} // end of if USER_RESPONSE == OK_OPTION
+				
+			} else {
+				
+				if(entityIndex < 0) entityIndex = 0;
+				if(attrIndex < 0) attrIndex = 0;
+				
+				UIController.getInstance().launchEditorAtSubtreeForCurrentFrame(
+	          "dataTable["+entityIndex+"]/attribute-", attrIndex);
+			}
+  }
+  
+  /**
+   * Method from DataPackageWizardListener. Do nothing.
+   */
+  public void wizardCanceled()
+  {
+	  Log.debug(45, "Correction wizard cancled");
+	  
+  }
 	
   private void modifyAttribute()
   {
