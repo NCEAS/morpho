@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2009-04-24 00:02:05 $'
- * '$Revision: 1.27 $'
+ *     '$Date: 2009-04-24 17:46:34 $'
+ * '$Revision: 1.28 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -52,6 +52,7 @@ import edu.ucsb.nceas.utilities.OrderedMap;
 import edu.ucsb.nceas.utilities.XMLUtilities;
 
 import java.lang.reflect.Constructor;
+import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Map;
 import java.util.Vector;
@@ -904,6 +905,7 @@ public class CorrectionWizardController
 
 	          Log.debug(30,
 	              "Correction Wizard UI Page complete ");
+	          cleanUpLibrary();
 	          AbstractDataPackage adp = DataPackageFactory.getDataPackage(newDOM);
 	          Log.debug(45, "AbstractDataPackage complete");
 	          //adp.setAccessionNumber("temporary.1.1");
@@ -949,9 +951,24 @@ public class CorrectionWizardController
 
 
 	        public void wizardCanceled() {
-
+	          cleanUpLibrary();
 	          Log.debug(45, "\n\n********** Correction Wizard canceled!");
 	        }
+	}
+	
+	/*
+	 * Destroy the library when wizard is canceled or wizard is done.
+	 */
+	private void cleanUpLibrary()
+	{
+		if (wizardPageLibrary != null)
+		{
+			Hashtable list = wizardPageLibrary.getPageList();
+			if(list != null)
+			{
+                list.clear();
+			}
+		}
 	}
 	
 	/*

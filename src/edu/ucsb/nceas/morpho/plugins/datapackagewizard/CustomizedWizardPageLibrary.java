@@ -74,5 +74,14 @@ public class CustomizedWizardPageLibrary implements WizardPageLibraryInterface {
   {
 	  return pageList.size();
   }
+  
+  /**
+   * Get the page list in the library
+   * @return the list in Hashtable format
+   */
+  public Hashtable getPageList()
+  {
+	  return this.pageList;
+  }
 }
 
