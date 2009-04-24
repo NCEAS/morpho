@@ -113,8 +113,9 @@ public class CorrectionWizardControllerTest extends TestCase
 	  	     uiController.setCurrentAbstractDataPackage(dataPackage);
 	  	     uiController.setAssignPackage(true);
 	    	 Vector errorList = validate.getInvalidPathList();   	
-	    	 CorrectionWizardController controller = new CorrectionWizardController(errorList, dataPackage);  
+	    	 CorrectionWizardController controller = new CorrectionWizardController(errorList, dataPackage, null);  
 	    	 controller.startWizard();
+	    	 //Log.debug(30, "final result is!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1\n"+controller.getResult());
 	    	 Thread.sleep(620000);
     	}
     	catch (Exception e)
