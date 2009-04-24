@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2009-04-24 00:02:05 $'
- * '$Revision: 1.6 $'
+ *     '$Date: 2009-04-24 20:32:17 $'
+ * '$Revision: 1.7 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -44,6 +44,7 @@ import edu.ucsb.nceas.morpho.framework.EditingCompleteListener;
 import edu.ucsb.nceas.morpho.framework.EditorInterface;
 import edu.ucsb.nceas.morpho.framework.MorphoFrame;
 import edu.ucsb.nceas.morpho.framework.UIController;
+import edu.ucsb.nceas.morpho.plugins.DataPackageWizardListener;
 import edu.ucsb.nceas.morpho.plugins.MetaDisplayInterface;
 import edu.ucsb.nceas.morpho.plugins.ServiceController;
 import edu.ucsb.nceas.morpho.plugins.ServiceNotHandledException;
@@ -51,6 +52,7 @@ import edu.ucsb.nceas.morpho.plugins.ServiceProvider;
 import edu.ucsb.nceas.morpho.util.Log;
 import edu.ucsb.nceas.utilities.XMLUtilities;
 
+import org.w3c.dom.Node;
 
 /**
  * This class represents a controller which will display a serial of tree editors to correct
@@ -68,6 +70,7 @@ public class TreeEditorCorrectionController
 	private static final String SLASH ="/";
 	private static final String DOUBLESLASH = "//";
 	private MorphoFrame oldFrame = null;
+	private DataPackageWizardListener externalListener = null; //this listener from AddSthCommand.
 	
 	/**
 	 * Constructor with parameters datapackage and xpah list
@@ -111,6 +114,15 @@ public class TreeEditorCorrectionController
 	public AbstractDataPackage getAbstractDataPackage()
 	{
 		return this.dataPackage;
+	}
+	
+	/**
+	 * Set externalListner for the controller.
+	 * @param externalListener
+	 */
+	public void setExternalListener(DataPackageWizardListener externalListener)
+	{
+		this.externalListener = externalListener;
 	}
 	
 	/*
@@ -165,6 +177,11 @@ public class TreeEditorCorrectionController
 		            	controller.removeWindow(oldFrame);
 		            	oldFrame.dispose();	
 		            }
+		          //calling the wizardComplete method in external listener
+	                if(externalListener != null)
+	                {
+	                	externalListener.wizardComplete(dataPackage.getMetadataNode());
+	                }
 
 		          } 
 		          catch (ServiceNotHandledException snhe) 

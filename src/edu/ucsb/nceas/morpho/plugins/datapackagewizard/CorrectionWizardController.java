@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2009-04-24 17:46:34 $'
- * '$Revision: 1.28 $'
+ *     '$Date: 2009-04-24 20:32:17 $'
+ * '$Revision: 1.29 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -91,7 +91,8 @@ public class CorrectionWizardController
 	// the old frame need to be disposed.
 	private MorphoFrame oldFrame = null;
 	//private Document metadataDoc = null;
-	private DataPackageWizardListener listener = new CorrectionDataPackageWizardListener();
+	private DataPackageWizardListener listener = new CorrectionDataPackageWizardListener(); //this listener is for controller itself.
+	private DataPackageWizardListener externalListener = null; //this listener will do some other action  after the wizard is done, e.g. AddSthCommand.
 	private DataPackageWizardPlugin plugin = new DataPackageWizardPlugin();
 	private CorrectionWizardContainerFrame dpWiz = null;
 	// the file path of mapping properties file (xml format)
@@ -141,13 +142,28 @@ public class CorrectionWizardController
 	}
 	
 	/**
-	 * Start to run the wizard
+	 * Set externalListner for the controller.
+	 * @param externalListener
+	 */
+	public void setExternalListener(DataPackageWizardListener externalListener)
+	{
+		this.externalListener = externalListener;
+	}
+	
+	/**
+	 * Start to run the wizard.
+	 * It has 3 scenarios:
+	 * 1. Run both wizard pages and tree editors.
+	 * 2. Run only wizard pages
+	 * 3. Run only tree editors
+	 * .
 	 */
 	public void startWizard()
 	{
 		// first to run wizard page to fix the issue
 		if(!wizardPageLibrary.isEmpty())
 		{
+			//Scenario 1 and 2. They can be told at the wizardComplete method
 		    //this part will open a tree editor too if pathListForTreeEditor is not empty
 			//the DataPackageWizardListener will trigger to open tree editor
 			dpWiz.setWizardPageLibrary(wizardPageLibrary);
@@ -162,10 +178,12 @@ public class CorrectionWizardController
 		}
 		else if( pathListForTreeEditor != null && !pathListForTreeEditor.isEmpty())
 		{
+			//Scenario 3.
 			//there is no UIPage returned, we only run tree editor to fix the issue
 			try
 			{
 				TreeEditorCorrectionController treeEditorController = new TreeEditorCorrectionController(dataPackage, pathListForTreeEditor, oldFrame);
+				treeEditorController.setExternalListener(externalListener);
 				treeEditorController.startCorrection();
 			}
 			catch(Exception e)
@@ -912,10 +930,12 @@ public class CorrectionWizardController
 	          //second, to correct data by tree editor
 			    if(pathListForTreeEditor != null && !pathListForTreeEditor.isEmpty())
 			    {
-			    	//there is no UIPage returned, we only run tree editor to fix the issue
+			    	//scenario 1. some path can't be fixed by wizard page. we need to start
+			    	// tree editor to fix them
 					try
 					{
 						TreeEditorCorrectionController treeEditorController = new TreeEditorCorrectionController(adp, pathListForTreeEditor, oldFrame);
+						treeEditorController.setExternalListener(externalListener);
 						treeEditorController.startCorrection();
 					}
 					catch(Exception e)
@@ -925,6 +945,7 @@ public class CorrectionWizardController
 			    }
 			    else
 			    {        
+			    	   //scenario 2
                       //no tree editor is needed, so we can display the data now and dispose the old morpho frame
 			          try {
 			            ServiceController services = ServiceController.getInstance();
@@ -932,12 +953,18 @@ public class CorrectionWizardController
 			                services.getServiceProvider(DataPackageInterface.class);
 			            DataPackageInterface dataPackage = (DataPackageInterface)provider;
 			            dataPackage.openNewDataPackage(adp, null);
+			            //dispose old frame
 			            if(oldFrame != null)
 			            {
 			            	oldFrame.setVisible(false);                
 			            	UIController controller = UIController.getInstance();
 			            	controller.removeWindow(oldFrame);
 			            	oldFrame.dispose();	
+			            }
+			            //do some other stuff specified by external listener
+			            if(externalListener != null)
+			            {
+			            	externalListener.wizardComplete(newDOM);
 			            }
 		
 			          } catch (ServiceNotHandledException snhe) {

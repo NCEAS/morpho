@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2009-04-24 00:02:05 $'
- * '$Revision: 1.46 $'
+ *     '$Date: 2009-04-24 20:32:17 $'
+ * '$Revision: 1.47 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -174,10 +174,12 @@ public class DataPackageWizardPlugin implements PluginInterface,
    * @param dataPackage  the datapackage will be corrected
    * @param errorPathes    the list of path which has valid value
    * @param frame            the old frame which need be disposed after correction is done
+   * @param listener         the listener will handle some another action after the wizard is done, e.g .AddAccessCommand
    */
-  public void startCorrectionWizard(AbstractDataPackage dataPackage, Vector errorPathes, MorphoFrame frame)
+  public void startCorrectionWizard(AbstractDataPackage dataPackage, Vector errorPathes, MorphoFrame frame, DataPackageWizardListener listener)
   {
 	  CorrectionWizardController controller = new CorrectionWizardController(errorPathes, dataPackage, frame);  
+	  controller.setExternalListener(listener);
  	  controller.startWizard();
   }
 

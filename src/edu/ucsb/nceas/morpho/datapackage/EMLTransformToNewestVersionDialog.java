@@ -30,6 +30,7 @@ import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
 import edu.ucsb.nceas.morpho.framework.MorphoFrame;
 import edu.ucsb.nceas.morpho.framework.UIController;
 import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
+import edu.ucsb.nceas.morpho.plugins.DataPackageWizardListener;
 import edu.ucsb.nceas.morpho.plugins.ServiceController;
 import edu.ucsb.nceas.morpho.plugins.ServiceNotHandledException;
 import edu.ucsb.nceas.morpho.plugins.ServiceProvider;
@@ -71,6 +72,8 @@ public class EMLTransformToNewestVersionDialog
 	  //private boolean useCorrectionWizard = true;
 	  
 	  private String USECORRECTIONWIZARD =  "useCorrectionWizard";
+	  
+	  private DataPackageWizardListener listener = null;
 	
 	/**
 	 * Constructor of this dialog
@@ -79,6 +82,28 @@ public class EMLTransformToNewestVersionDialog
 	public EMLTransformToNewestVersionDialog(MorphoFrame frame) throws Exception
 	{
 		morphoFrame = frame;
+		AbstractDataPackage dataPackage = morphoFrame.getAbstractDataPackage();
+		if (dataPackage != null && dataPackage instanceof EML200DataPackage)
+		{
+			eml200Package = (EML200DataPackage)dataPackage;
+			if(eml200Package != null && !eml200Package.isLatestEMLVersion())
+			{
+				initializeUI(frame);
+				//Only when user choose "Yes", the document will be transformed
+				transfromEMLToNewestVersion();
+			}
+			
+		}
+	}
+	
+	/**
+	 * Constructor of this dialog
+	 * @param frame  parent of this dialog
+	 */
+	public EMLTransformToNewestVersionDialog(MorphoFrame frame, DataPackageWizardListener listener) throws Exception
+	{
+		this.morphoFrame = frame;
+		this.listener = listener;
 		AbstractDataPackage dataPackage = morphoFrame.getAbstractDataPackage();
 		if (dataPackage != null && dataPackage instanceof EML200DataPackage)
 		{
@@ -173,7 +198,12 @@ public class EMLTransformToNewestVersionDialog
 		                    morphoFrame.setVisible(false);                
 			                UIController controller = UIController.getInstance();
 			                controller.removeWindow(morphoFrame);
-			                morphoFrame.dispose();	        
+			                morphoFrame.dispose();	 
+			                //calling the wizardComplete method in listener
+			                if(listener != null)
+			                {
+			                	listener.wizardComplete(eml200Package.getMetadataNode());
+			                }
 		                }
 		                else
 		                {
@@ -186,7 +216,8 @@ public class EMLTransformToNewestVersionDialog
 		 			            ServiceProvider provider =
 		 			                services.getServiceProvider(DataPackageWizardInterface.class);
 		 			            DataPackageWizardInterface wizard = (DataPackageWizardInterface)provider;
-		 			            wizard.startCorrectionWizard(eml200Package, errorPathList, morphoFrame);
+		 			            //we pass the listener to correction wizard and let it handle the listener.
+		 			            wizard.startCorrectionWizard(eml200Package, errorPathList, morphoFrame, listener);
 		 		
 		 			         } 
 		                	 catch (ServiceNotHandledException snhe) 
