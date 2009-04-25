@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2009-04-24 20:32:17 $'
- * '$Revision: 1.7 $'
+ *     '$Date: 2009-04-25 01:25:16 $'
+ * '$Revision: 1.8 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -76,12 +76,13 @@ public class TreeEditorCorrectionController
 	 * Constructor with parameters datapackage and xpah list
 	 * @param xPathList the list of path will be displayed
 	 */
-	public TreeEditorCorrectionController(AbstractDataPackage dataPackage, Vector xPathList, MorphoFrame oldFame) throws Exception
+	public TreeEditorCorrectionController(AbstractDataPackage dataPackage, Vector xPathList, MorphoFrame oldFrame) throws Exception
 	{
 		this.dataPackage = dataPackage;
 		this.xPathList = xPathList;
 		this.oldFrame = oldFrame;
-		//System.out.println("the error list for tree editor is===== "+xPathList);
+		Log.debug(30, "the error list for tree editor is===== "+xPathList);
+		Log.debug(45,  "The old frame is "+oldFrame);
         try
         {
           ServiceController services = ServiceController.getInstance();
@@ -165,18 +166,21 @@ public class TreeEditorCorrectionController
 		          //Log.debug(45, XMLUtilities.getDOMTreeAsString(dataPackage.getMetadataNode(), false));
 		          try 
 		          {
+		        	 
+		        	
 		            ServiceController services = ServiceController.getInstance();
 		            ServiceProvider provider =
 		                services.getServiceProvider(DataPackageInterface.class);
 		            DataPackageInterface dataPackageInterface = (DataPackageInterface)provider;
 		            dataPackageInterface.openNewDataPackage(dataPackage, null);
 		            if(oldFrame != null)
-		            {
-		            	oldFrame.setVisible(false);                
-		            	UIController controller = UIController.getInstance();
-		            	controller.removeWindow(oldFrame);
-		            	oldFrame.dispose();	
-		            }
+			        {
+		        		    Log.debug(40,  " in the if statement to  close the old frame is "+oldFrame);
+			            	oldFrame.setVisible(false);                
+			            	UIController controller = UIController.getInstance();
+			            	controller.removeWindow(oldFrame);
+			            	oldFrame.dispose();	
+			        }
 		          //calling the wizardComplete method in external listener
 	                if(externalListener != null)
 	                {

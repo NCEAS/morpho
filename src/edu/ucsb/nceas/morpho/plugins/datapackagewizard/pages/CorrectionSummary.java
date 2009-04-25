@@ -29,7 +29,7 @@ public class CorrectionSummary extends AbstractUIPage {
 	  
 	  public final String pageNumber = "15";
 	  public final String CORRECTION_WIZ_SUMMARY_TITLE = "Correction Wizard";
-	  public final String ENTITY_WIZ_SUMMARY_TITLE  = "New Data Table Wizard";
+	  //public final String ENTITY_WIZ_SUMMARY_TITLE  = "New Data Table Wizard";
 	  public final String SUBTITLE                  = "Summary";
 
 	  private JLabel desc1;
@@ -37,10 +37,23 @@ public class CorrectionSummary extends AbstractUIPage {
 	  private JLabel desc4;
 	  private WizardContainerFrame mainWizFrame;
 	  private JComponent showMeButton;
+	  private String message = "";
+	  private static final String FINISH = "This wizard has corrected all invalid fields.";
+	  private static final String NEEDTREEEDITOR = "This wizard has corrected some invalid fields. But some fileds still need tree editors to fix.<<br></br>"
+		                                                                +"<b>Note:<br></br>One tree editor page will show one field with white space value and you should fill some value</b>";
+	                                                                     
 
-	  public CorrectionSummary(WizardContainerFrame mainWizFrame) {
+	  public CorrectionSummary(WizardContainerFrame mainWizFrame, boolean needTreeEditor) {
 		 nextPageID = null;
 	    this.mainWizFrame = mainWizFrame;
+	    if(needTreeEditor)
+	    {
+	    	message = NEEDTREEEDITOR;
+	    }
+	    else
+	    {
+	    	message = FINISH;
+	    }
 	    init();
 	  }
 
@@ -83,58 +96,20 @@ public class CorrectionSummary extends AbstractUIPage {
 	  }
 
 	  private String getSecondParagraph(){
-	    String ID = mainWizFrame.getFirstPageID();
-
-	    if (ID==null) return "";
-
-	    if (ID.equals(DataPackageWizardInterface.INTRODUCTION)) {
-
-	      return "<p>You can press the \"" + WizardSettings.FINISH_BUTTON_TEXT
-	        + "\" button, "
-	        + "or you can use the \"" + WizardSettings.PREV_BUTTON_TEXT
-	        + "\" button to return to previous pages "
-	        + "and change the information you have added.</p>";
-
-	    } else if (ID.equals(DataPackageWizardInterface.DATA_LOCATION)) {
-
-	      return "<p>You can press the \"" + WizardSettings.FINISH_BUTTON_TEXT
-	        + "\" button to add the data table to your package.</p>";
-
-	    }
+	 
 	    return "";
 	  }
 
 
 	  private String getLastParagraph() {
 
-	    String ID = mainWizFrame.getFirstPageID();
-
-	    if (ID==null) return "";
-
-	    if (ID.equals(DataPackageWizardInterface.INTRODUCTION)) {
-
-	      return "<p>After you press \""
-	        + WizardSettings.FINISH_BUTTON_TEXT + "\", you "
-	        +"will see your new package description information displayed in the "
-	        +"Morpho main screen.  If you want to add data tables to your package, "
-	        +"select the \"Create/Import New Data Table...\" option from the \"Data\" menu</p>";
-
-	    } else if (ID.equals(DataPackageWizardInterface.DATA_LOCATION)) {
-
-	      return "<p>If you want to add more data tables to your package, "
-	        +"select the \"Create/Import New Data Table...\" option from the \"Data\" menu</p>";
-
-	    }
+	 
 	    return "";
 	  }
 
 	  private String getProductName() {
 
-	    String ID = mainWizFrame.getFirstPageID();
-	    if (ID==null) return "";
-	    if (ID.equals(DataPackageWizardInterface.DATA_LOCATION))
-	      return "data table";
-	    else return "data package";
+	    return "";
 	  }
 
 	  /**
@@ -144,18 +119,17 @@ public class CorrectionSummary extends AbstractUIPage {
 
 	    desc1.setText(
 	      WizardSettings.HTML_TABLE_LABEL_OPENING
-	      +"<p>This wizard has now collected all the information that is required to "
-	      + "create your new " + getProductName()+".</p>"
+	      +"<p>"+message+"</p>"
 	       +WizardSettings.HTML_TABLE_LABEL_CLOSING);
 
-	    desc2.setText( WizardSettings.HTML_TABLE_LABEL_OPENING
+	    /*desc2.setText( WizardSettings.HTML_TABLE_LABEL_OPENING
 	                  +"<p><b>"+WizardSettings.getSummaryText()
 	                  +this.getDataLocation()
 	                  +"</b></p><br></br>"
 	                  +WizardSettings.HTML_TABLE_LABEL_CLOSING);
 
 	    desc4.setText( WizardSettings.HTML_TABLE_LABEL_OPENING
-	                  +getLastParagraph()+WizardSettings.HTML_TABLE_LABEL_CLOSING);
+	                  +getLastParagraph()+WizardSettings.HTML_TABLE_LABEL_CLOSING);*/
 
 	    updateShowMeButton();
 
@@ -328,12 +302,6 @@ public class CorrectionSummary extends AbstractUIPage {
 	   *  @return   the String title for this wizard page
 	   */
 	  public String getTitle() {
-
-	    if (mainWizFrame.getFirstPageID()
-	        == DataPackageWizardInterface.DATA_LOCATION) {
-	      //if we started at DATA_LOCATION we must be in entity wizard
-	      return ENTITY_WIZ_SUMMARY_TITLE;
-	    }
 	    return CORRECTION_WIZ_SUMMARY_TITLE;
 	  }
 

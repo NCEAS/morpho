@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2009-03-17 00:03:22 $'
- * '$Revision: 1.38 $'
+ *     '$Date: 2009-04-25 01:25:16 $'
+ * '$Revision: 1.39 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -144,9 +144,6 @@ public class WizardPageLibrary implements WizardPageLibraryInterface{
 	  return new GenericVocabularyPage();	
 	if(pageID.equals(DataPackageWizardInterface.NBII_THESAURUS_LOOKUP))
 		  return new ThesaurusLookupPage();
-	if(pageID.equals(DataPackageWizardInterface.CORRECTION_SUMMARY))
-		  return new CorrectionSummary(container);
-
     throw new IllegalArgumentException(
       "WizardPageLibrary - no page registered with identifier: "+pageID);
   }

@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2009-04-24 20:32:17 $'
- * '$Revision: 1.29 $'
+ *     '$Date: 2009-04-25 01:25:16 $'
+ * '$Revision: 1.30 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -43,6 +43,7 @@ import edu.ucsb.nceas.morpho.plugins.ServiceController;
 import edu.ucsb.nceas.morpho.plugins.ServiceNotHandledException;
 import edu.ucsb.nceas.morpho.plugins.ServiceProvider;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.AttributePage;
+import edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.CorrectionSummary;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.Entity;
 import edu.ucsb.nceas.morpho.util.LoadDataPath;
 import edu.ucsb.nceas.morpho.util.Log;
@@ -56,6 +57,8 @@ import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Map;
 import java.util.Vector;
+
+import javax.swing.JOptionPane;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
@@ -123,6 +126,12 @@ public class CorrectionWizardController
 	private final static char RIGHTBRACKETCHAR = ']';
 	private final static char LEFTBRACKETCHAR = '[';
 	private final static String KEY = "key";
+	private final static String INTRODUCTIONPREFIX = "Morpho detected the transformed document in the newer EML version has some invalid values, e.g., white spaces.\nThe following ";
+	private final static String INTRODUCTIONSUFFIX  = " will help you to fix those issues.\n";
+	private final static String INTRODUCTIONWIZARD = INTRODUCTIONPREFIX+ "wizard pages"+INTRODUCTIONSUFFIX;  
+	private final static String MESSAGEFORWIZARD = INTRODUCTIONWIZARD +"Note:\n Some fields are optional. You don't have to fill them and can click OK button to bypass them";
+	private final static String INTRODUCTIONTREEEDITOR = INTRODUCTIONPREFIX+ "tree editor pages"+INTRODUCTIONSUFFIX;
+	private final static String MESSAGEFORTREEEDITOR = INTRODUCTIONTREEEDITOR+  "Note:\n One tree editor page will show one field with white space value and you should fill some value";
 	
 	
 	/**
@@ -134,6 +143,7 @@ public class CorrectionWizardController
 	    this.errorPathList  = errorPathList;
 	    this.dataPackage  = dataPackage;
 	    this.oldFrame       = oldFrame;
+	    //Log.debug(30, "==========old frame in correction wizard controller"+oldFrame);
 	    dpWiz = new CorrectionWizardContainerFrame(dataPackage);
 	    // find the mapping between xpath and page class name in a file
 	    this.mappingList   = getXPATHMappingUIPage();
@@ -163,6 +173,8 @@ public class CorrectionWizardController
 		// first to run wizard page to fix the issue
 		if(!wizardPageLibrary.isEmpty())
 		{
+			JOptionPane.showMessageDialog(null, MESSAGEFORWIZARD, "Warning!",
+                    JOptionPane.WARNING_MESSAGE);
 			//Scenario 1 and 2. They can be told at the wizardComplete method
 		    //this part will open a tree editor too if pathListForTreeEditor is not empty
 			//the DataPackageWizardListener will trigger to open tree editor
@@ -178,6 +190,8 @@ public class CorrectionWizardController
 		}
 		else if( pathListForTreeEditor != null && !pathListForTreeEditor.isEmpty())
 		{
+			JOptionPane.showMessageDialog(null, MESSAGEFORTREEEDITOR, "Warning!",
+                    JOptionPane.WARNING_MESSAGE);
 			//Scenario 3.
 			//there is no UIPage returned, we only run tree editor to fix the issue
 			try
@@ -258,8 +272,13 @@ public class CorrectionWizardController
 				{
 					previousPage.setNextPageID(pageIDstr);
 				}
-				//AbstractUIPage summaryPage = WizardPageLibrary.getPage(DataPackageWizardInterface.CORRECTION_SUMMARY);
-				AbstractUIPage summaryPage = createAbstractUIpageObject(CORRECTIONSUMMARY,dpWiz, null);
+				boolean needTreeEditor = false;
+				if(pathListForTreeEditor != null && !pathListForTreeEditor.isEmpty())
+				{
+					needTreeEditor = true;
+				}
+				//AbstractUIPage summaryPage = createAbstractUIpageObject(CORRECTIONSUMMARY,dpWiz, null);
+				CorrectionSummary summaryPage = new CorrectionSummary(dpWiz, needTreeEditor);
 				wizardPageLibrary.addPage(pageIDstr, summaryPage);
 			}
 		}
@@ -934,6 +953,7 @@ public class CorrectionWizardController
 			    	// tree editor to fix them
 					try
 					{
+						Log.debug(30, "assign the old frame to tree controler "+oldFrame);
 						TreeEditorCorrectionController treeEditorController = new TreeEditorCorrectionController(adp, pathListForTreeEditor, oldFrame);
 						treeEditorController.setExternalListener(externalListener);
 						treeEditorController.startCorrection();
