@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2009-04-25 01:25:16 $'
- * '$Revision: 1.8 $'
+ *     '$Date: 2009-04-26 20:12:54 $'
+ * '$Revision: 1.9 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,6 +30,7 @@
 package edu.ucsb.nceas.morpho.plugins.datapackagewizard;
 
 import java.io.StringReader;
+import java.util.Hashtable;
 import java.util.Vector;
 
 import org.apache.xpath.XPathAPI;
@@ -71,6 +72,9 @@ public class TreeEditorCorrectionController
 	private static final String DOUBLESLASH = "//";
 	private MorphoFrame oldFrame = null;
 	private DataPackageWizardListener externalListener = null; //this listener from AddSthCommand.
+	private Hashtable fullpathPosition = new Hashtable();// this hashtable keeps track of fullpath and positions
+	                                                     // has been display in tree editor. It will be used 
+	                                                     //how to determine index if fullpath is same
 	
 	/**
 	 * Constructor with parameters datapackage and xpah list
@@ -237,7 +241,7 @@ public class TreeEditorCorrectionController
 	}
 	
 	/*
-	 * This is a trick method. In our error path list, the path is full path without predicates, e.g. /eml:eml/dataset/title.
+	 * This is a trick method. In our error path list, the path is full path, such as /eml:eml/dataset/title.
 	 * However, tree editor only uses nodeName, e.g. title and its position for open a subtree.
 	 * So the position (or index) of "/eml:eml/dataset/title" of a node can be different to the one of tile of the same node.
 	 * We need to find out the correspond index base on node name rather than full path
@@ -246,11 +250,13 @@ public class TreeEditorCorrectionController
 	{
 		int position = -1;
 		Node targetNode = null;
-		//System.out.println("in the begin of findPostion method ==========the full path and node name are "+fullPath +" and "+nodeName);
+		Log.debug(40, "in the begin of findPostion method ==========the full path and node name are "+fullPath +" and "+nodeName);
 		try
 		{
 			if (fullPath != null && nodeName != null && fullPath.contains(nodeName))
 			{
+				fullPath = XMLUtilities.removeAllPredicates(fullPath);
+				Log.debug(30, "the full path after removing predict in findPositionOfNodeNameWithBlankValueis "+fullPath);
 				Node rootNode = dataPackage.getMetadataNode();
 				//System.out.println(XMLUtilities.getDOMTreeAsString(dataPackage.getMetadataNode(), false));
 				//System.out.println("==========the full path and node name are "+fullPath +" and "+nodeName);
@@ -261,19 +267,45 @@ public class TreeEditorCorrectionController
 				// for the first node with blank value.
 				if (nodeList != null && nodeList.getLength() != 0)
 				{
-					//System.out.println("=========the list length is "+nodeList.getLength());
+					Log.debug(40, "=========the list length is "+nodeList.getLength());
 					for(int i=0; i < nodeList.getLength(); i++)
 					{
 						Node node = nodeList.item(i);
-						//System.out.println("the node name========== :"+node.getLocalName());
+						Log.debug(50, "the node name========== :"+node.getLocalName());
 						// we only find the first node
 						if(node.hasChildNodes() && node.getFirstChild().getNodeType() == node.TEXT_NODE)
 						{
 							String value = node.getFirstChild().getNodeValue();
-							//System.out.println("the node text child value ========== :"+value);
+							Log.debug(50, "the node text child value ========== :"+value);
 							if (value.trim().equals(""))
 							{
-								//System.out.println("find target node =============== "+node);
+								//we found a empty value index for full path. but we need to determine
+								//if the one is we need.
+								//Here is an example. if the eml has three element /eml:eml/dataset/keywordSet/keword
+								// and the position 1 and position 3 has the empty value.
+								// The tree editor will display the first one first, and put /eml:eml/dataset/keyworSet/keyowrd and 1
+								//into the hashtabl. However, the user didn't fill anything into the tree editor and the document
+								// still has two empty element. So when code handle the second the error path /eml:eml/dataset/keyworSet/keyowrd,
+								// this for loop will hit the first position with empty value first. However, we will
+								//check the hashtable and will find out we already displayed it. So it will go to the third one.
+								Integer indexObj = (Integer)fullpathPosition.get(fullPath);
+								Log.debug(50, "====================== the object from hashtable is "+indexObj);
+								if(indexObj != null)
+								{
+									//we found that the tree editor already displayed the fullpath before
+									int index = indexObj.intValue();
+									Log.debug(40, "tree editor already displayed the fullpaht at postion"+index);
+									if (index >= i)
+									{
+										Log.debug(40,"the current index "+i+
+												" equals or is less than the stored one "+index+". So skip it");
+										continue;
+									}
+								}
+								
+								Log.debug(50, "find target node =============== "+node);
+								//put the fullpath and index which has empty value into hashtable
+								fullpathPosition.put(fullPath, i);
 								targetNode = node;
 								break;
 							}
@@ -281,7 +313,9 @@ public class TreeEditorCorrectionController
 					}
 				}
 				
-				// we found the target node base on full path, then will find the match node selected base on nodename
+				// we found the target node base on full path, then will find the match node selected base on nodename.
+				// the reason we want to find the position base on node name is tree editor open a frame base on node name
+				// and its position, rather than the full path and position
 				if(targetNode != null)
 				{
 					//System.out.println("target node is not null======");
@@ -296,7 +330,7 @@ public class TreeEditorCorrectionController
 							if (targetNode.isSameNode(node))
 							{
 								position = i;
-								//System.out.println("find the position ========== "+position);
+								Log.debug(30, "find the position ========== "+position);
 								break;
 							}
 						}
