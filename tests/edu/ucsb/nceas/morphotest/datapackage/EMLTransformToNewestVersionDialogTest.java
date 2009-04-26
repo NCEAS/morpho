@@ -183,7 +183,7 @@ public class EMLTransformToNewestVersionDialogTest extends TestCase
 		                 StateChangeEvent.CREATE_DATAPACKAGE_FRAME));*/
 		  adp.loadCustomUnits();
 		  packageWindow.setBusy(false);
-		  EMLTransformToNewestVersionDialog dialog = new EMLTransformToNewestVersionDialog(packageWindow);
+		  EMLTransformToNewestVersionDialog dialog = new EMLTransformToNewestVersionDialog(packageWindow, null);
 	  }
 
 
