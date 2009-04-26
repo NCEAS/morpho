@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2009-04-11 00:38:18 $'
- * '$Revision: 1.75 $'
+ *     '$Date: 2009-04-26 21:23:23 $'
+ * '$Revision: 1.76 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -629,8 +629,11 @@ public class WizardContainerFrame
     if (generalMap != null) {
 
       final String abstractXPath = "/eml:eml/dataset/abstract/para[1]";
-      Object abstractObj = generalMap.get(abstractXPath);
-      if (abstractObj != null) {
+      String abstractObj = (String)generalMap.get(abstractXPath);
+      Log.debug(45, "abstract data is "+abstractObj);
+      //since general page allow the empty string in getPageData. so we have to make
+      //sure no empty abstract into document
+      if (abstractObj != null && !abstractObj.trim().equals("")) {
         wizData.put(abstractXPath,abstractObj);
 //                    XMLUtilities.normalize(abstractObj)); //avoid double normalization - DFH
       }
