@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2009-04-26 20:12:54 $'
- * '$Revision: 1.9 $'
+ *     '$Date: 2009-04-27 23:08:28 $'
+ * '$Revision: 1.10 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -70,6 +70,7 @@ public class TreeEditorCorrectionController
 	private CorrectionTreeEditingListener listener = new CorrectionTreeEditingListener();
 	private static final String SLASH ="/";
 	private static final String DOUBLESLASH = "//";
+	private static final String TITLE ="Tree Editor for Correcting Data Package ";
 	private MorphoFrame oldFrame = null;
 	private DataPackageWizardListener externalListener = null; //this listener from AddSthCommand.
 	private Hashtable fullpathPosition = new Hashtable();// this hashtable keeps track of fullpath and positions
@@ -149,7 +150,7 @@ public class TreeEditorCorrectionController
 				if(nodeName != null && subTreeIndex != -1)
 				{
 				  editor.openEditor(dataPackage.getMetadataNode().getOwnerDocument(), dataPackage.getPackageId(), 
-						  dataPackage.getLocation(), listener, nodeName, subTreeIndex, false, true);
+						  dataPackage.getLocation(), listener, nodeName, subTreeIndex, false, true,  TITLE+dataPackage.getAccessionNumber());
 				}
 				else
 				{

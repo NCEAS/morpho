@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2009-04-20 00:55:38 $'
- * '$Revision: 1.11 $'
+ *     '$Date: 2009-04-27 23:08:28 $'
+ * '$Revision: 1.12 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -102,5 +102,5 @@ public interface EditorInterface
   */
  public void openEditor(Document doc, String id, String location,
          EditingCompleteListener listener,
-         String nodeName, int nodeNumber, boolean returnErrorMessage, boolean disableUntrimButtonAndPopUpMenu);
+         String nodeName, int nodeNumber, boolean returnErrorMessage, boolean disableUntrimButtonAndPopUpMenu, String title);
 }

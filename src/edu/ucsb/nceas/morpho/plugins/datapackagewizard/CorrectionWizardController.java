@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2009-04-25 01:25:16 $'
- * '$Revision: 1.30 $'
+ *     '$Date: 2009-04-27 23:08:28 $'
+ * '$Revision: 1.31 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -115,7 +115,7 @@ public class CorrectionWizardController
 	private static final String XPATHFORSETTINGPAGEDATA = "xpathForSettingPageData";
 	private static final String WIZARDCONTAINERFRAME = "edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardContainerFrame";
 	private static final String CORRECTIONSUMMARY = "edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.CorrectionSummary";
-	private static final String TITLE = "Correction Wizard";
+	private static final String TITLE = "Correction Wizard for Data Package ";
 	private static final String STARTPAGEID = "0";
 	private static final String PARA = "para";
 	private static final String SLASH = "/";
@@ -185,7 +185,7 @@ public class CorrectionWizardController
 		                  WizardSettings.WIZARD_WIDTH,   WizardSettings.WIZARD_HEIGHT );
 		    dpWiz.setCurrentPage(STARTPAGEID);
 		    dpWiz.setShowPageCountdown(false);
-		    dpWiz.setTitle(TITLE);
+		    dpWiz.setTitle(TITLE+dataPackage.getAccessionNumber());
 		    dpWiz.setVisible(true);
 		}
 		else if( pathListForTreeEditor != null && !pathListForTreeEditor.isEmpty())
