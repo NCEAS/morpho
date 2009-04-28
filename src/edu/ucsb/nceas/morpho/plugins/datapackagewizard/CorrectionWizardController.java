@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2009-04-28 22:38:21 $'
- * '$Revision: 1.32 $'
+ *     '$Date: 2009-04-28 23:21:15 $'
+ * '$Revision: 1.33 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -126,10 +126,10 @@ public class CorrectionWizardController
 	private final static char RIGHTBRACKETCHAR = ']';
 	private final static char LEFTBRACKETCHAR = '[';
 	private final static String KEY = "key";
-	private final static String INTRODUCTIONPREFIX = "Morpho has detected white space values that are invalid in the newer EML version.\nThe following ";
-	private final static String INTRODUCTIONSUFFIX  = " will allow you to fix the invalid fields";
+	private final static String INTRODUCTIONPREFIX = "Morpho has detected fields containing only whitespace. These are invalid in the newer EML version.\nThe following ";
+	private final static String INTRODUCTIONSUFFIX  = " will allow you to enter valid text in these fields";
 	private final static String INTRODUCTIONWIZARD = INTRODUCTIONPREFIX+ "wizard pages"+INTRODUCTIONSUFFIX+".\n"; 
-	private final static String MESSAGEFORWIZARD = INTRODUCTIONWIZARD +"Note:\n Some fields are optional. If you prefer not to supply any values for these fields, simply click Next to bypass them.";
+	private final static String MESSAGEFORWIZARD = INTRODUCTIONWIZARD +"For optional fields, you may simply choose to leave them blank";
 	private final static String INTRODUCTIONTREEEDITOR = INTRODUCTIONPREFIX+ "series tree editor frames"+INTRODUCTIONSUFFIX;
 	private final static String MESSAGEFORTREEEDITOR = INTRODUCTIONTREEEDITOR+ ", one at a time.";
 	

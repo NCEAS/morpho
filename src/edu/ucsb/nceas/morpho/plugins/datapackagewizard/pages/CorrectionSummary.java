@@ -40,7 +40,7 @@ public class CorrectionSummary extends AbstractUIPage {
 	  private String message = "";
 	  private static final String FINISH = "The wizard has corrected all invalid fields.";
 	  private static final String NEEDTREEEDITOR = "The wizard has corrected some invalid fields, but others can only be fixed using the tree editor.<br></br>"
-		                                                                +"The following series of tree editor frames will allow you to fix the remaining problems, one at a time.";
+		                                                                +"The following series of tree editor frames will allow you enter valid text in the remaining fields, one at a time.";
 	                                                                     
 
 	  public CorrectionSummary(WizardContainerFrame mainWizFrame, boolean needTreeEditor) {
