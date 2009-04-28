@@ -212,21 +212,6 @@
 </ratio>
 </measurementScale>
 </attribute>
-<attribute id="1239064312888"><attributeName>Column 2</attributeName>
-<attributeLabel>attribute</attributeLabel>
-<attributeDefinition> </attributeDefinition>
-<storageType typeSystem="storage system2">storage2</storageType>
-<measurementScale><ratio><unit><customUnit>Uniname</customUnit>
-</unit>
-<precision>2</precision>
-<numericDomain><numberType>natural</numberType>
-<bounds><minimum exclusive="true">2</minimum>
-<maximum exclusive="true">6</maximum>
-</bounds>
-</numericDomain>
-</ratio>
-</measurementScale>
-</attribute>
 <attribute id="1239064312889"><attributeName>Column 3</attributeName>
 <attributeLabel>label3</attributeLabel>
 <attributeDefinition>defainition3</attributeDefinition>
