@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2009-02-18 22:22:27 $'
- * '$Revision: 1.94 $'
+ *     '$Date: 2009-04-28 19:38:29 $'
+ * '$Revision: 1.95 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -195,7 +195,12 @@ public class Morpho
         // we need to revise this to check more often.
         // 05/20/02- Currently, SSL is not used, so will always be false
         sslStatus = (metacatURL.indexOf("https://") == 0);
-
+        System.setProperty("javax.net.ssl.trustStore","./lib/truststore");
+        System.setProperty("javax.net.ssl.trustStorePassword","changeit");
+        System.setProperty("security.provider.3","com.sun.net.ssl.internal.ssl.Provider");
+        //System.setProperty("javax.net.debug","all");
+        //System.setProperty("java.security.policy","/home/rzheva/test/java.policy"); 
+  
         //create URL object to poll for metacat connectivity
         try {
             metacatPingURL = new URL(metacatURL);
