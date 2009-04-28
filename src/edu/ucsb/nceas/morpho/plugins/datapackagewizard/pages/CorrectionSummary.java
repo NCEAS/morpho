@@ -38,9 +38,9 @@ public class CorrectionSummary extends AbstractUIPage {
 	  private WizardContainerFrame mainWizFrame;
 	  private JComponent showMeButton;
 	  private String message = "";
-	  private static final String FINISH = "This wizard has corrected all invalid fields.";
-	  private static final String NEEDTREEEDITOR = "This wizard has corrected some invalid fields. But some fileds still need tree editors to fix.<<br></br>"
-		                                                                +"<b>Note:<br></br>One tree editor page will show one field with white space value and you should fill some value</b>";
+	  private static final String FINISH = "The wizard has corrected all invalid fields.";
+	  private static final String NEEDTREEEDITOR = "The wizard has corrected some invalid fields, but others can only be fixed using the tree editor.<br></br>"
+		                                                                +"The following series of tree editor frames will allow you to fix the remaining problems, one at a time.";
 	                                                                     
 
 	  public CorrectionSummary(WizardContainerFrame mainWizFrame, boolean needTreeEditor) {

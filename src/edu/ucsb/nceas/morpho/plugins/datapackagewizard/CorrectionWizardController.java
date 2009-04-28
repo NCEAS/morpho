@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2009-04-27 23:08:28 $'
- * '$Revision: 1.31 $'
+ *     '$Date: 2009-04-28 22:38:21 $'
+ * '$Revision: 1.32 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -126,12 +126,12 @@ public class CorrectionWizardController
 	private final static char RIGHTBRACKETCHAR = ']';
 	private final static char LEFTBRACKETCHAR = '[';
 	private final static String KEY = "key";
-	private final static String INTRODUCTIONPREFIX = "Morpho detected the transformed document in the newer EML version has some invalid values, e.g., white spaces.\nThe following ";
-	private final static String INTRODUCTIONSUFFIX  = " will help you to fix those issues.\n";
-	private final static String INTRODUCTIONWIZARD = INTRODUCTIONPREFIX+ "wizard pages"+INTRODUCTIONSUFFIX;  
-	private final static String MESSAGEFORWIZARD = INTRODUCTIONWIZARD +"Note:\n Some fields are optional. You don't have to fill them and can click OK button to bypass them";
-	private final static String INTRODUCTIONTREEEDITOR = INTRODUCTIONPREFIX+ "tree editor pages"+INTRODUCTIONSUFFIX;
-	private final static String MESSAGEFORTREEEDITOR = INTRODUCTIONTREEEDITOR+  "Note:\n One tree editor page will show one field with white space value and you should fill some value";
+	private final static String INTRODUCTIONPREFIX = "Morpho has detected white space values that are invalid in the newer EML version.\nThe following ";
+	private final static String INTRODUCTIONSUFFIX  = " will allow you to fix the invalid fields";
+	private final static String INTRODUCTIONWIZARD = INTRODUCTIONPREFIX+ "wizard pages"+INTRODUCTIONSUFFIX+".\n"; 
+	private final static String MESSAGEFORWIZARD = INTRODUCTIONWIZARD +"Note:\n Some fields are optional. If you prefer not to supply any values for these fields, simply click Next to bypass them.";
+	private final static String INTRODUCTIONTREEEDITOR = INTRODUCTIONPREFIX+ "series tree editor frames"+INTRODUCTIONSUFFIX;
+	private final static String MESSAGEFORTREEEDITOR = INTRODUCTIONTREEEDITOR+ ", one at a time.";
 	
 	
 	/**
