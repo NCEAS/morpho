@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2009-04-29 21:51:02 $'
- * '$Revision: 1.32 $'
+ *     '$Date: 2009-04-29 23:39:21 $'
+ * '$Revision: 1.33 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -66,7 +66,7 @@ public class Entity extends AbstractUIPage{
   private final String pageNumber = "";
   private final String title      = "Data Information:";
   private final String subtitle   = "Table (Entity)";
-  private final String xPathRoot  = "/eml:eml/dataset/dataTable";
+  private String xPathRoot  = "/eml:eml/dataset/dataTable";
 
   private final String[] colNames =  {"Attribute Name",
                                       "Attribute Definition",
@@ -78,6 +78,7 @@ public class Entity extends AbstractUIPage{
   private JLabel      entityNameLabel;
   private CustomList  attributeList;
   private JLabel      attributesLabel;
+  private boolean disableAttributeList = false;
 
   //private WizardContainerFrame mainWizFrame;
 
@@ -87,6 +88,16 @@ public class Entity extends AbstractUIPage{
 	nextPageID = DataPackageWizardInterface.SUMMARY;
     //this.mainWizFrame = frame;
     init();
+  }
+  
+  /**
+   * Display the entity page with/without disable attribute list
+   * @param disableAttributeList
+   */
+  public Entity(Boolean disableAttributeList)
+  {
+	  this.disableAttributeList = disableAttributeList.booleanValue();
+	  init();
   }
 
 
@@ -149,23 +160,26 @@ public class Entity extends AbstractUIPage{
     this.add(entityDescPanel);
 
     ////////////////////////////////////////////////////////////////////////////
-    this.add(WidgetFactory.makeDefaultSpacer());
-
-    this.add(WidgetFactory.makeHTMLLabel(
-                      "One or more attributes (columns) must be defined:", 1));
-
-    JPanel attribsPanel = WidgetFactory.makePanel();
-
-    attributesLabel = WidgetFactory.makeLabel("Attributes", true);
-    attribsPanel.add(attributesLabel);
-
-    attributeList = WidgetFactory.makeList(colNames, editors, 4,
-                                    true, true, false, true, true, true );
-    attribsPanel.add(attributeList);
-
-    this.add(attribsPanel);
-
-    initActions();
+    if (!disableAttributeList)
+    {
+	    this.add(WidgetFactory.makeDefaultSpacer());
+	
+	    this.add(WidgetFactory.makeHTMLLabel(
+	                      "One or more attributes (columns) must be defined:", 1));
+	
+	    JPanel attribsPanel = WidgetFactory.makePanel();
+	
+	    attributesLabel = WidgetFactory.makeLabel("Attributes", true);
+	    attribsPanel.add(attributesLabel);
+	
+	    attributeList = WidgetFactory.makeList(colNames, editors, 4,
+	                                    true, true, false, true, true, true );
+	    attribsPanel.add(attributeList);
+	
+	    this.add(attribsPanel);
+	
+	    initActions();
+    }
   }
 
 
@@ -285,71 +299,72 @@ public class Entity extends AbstractUIPage{
       entityNameField.requestFocus();
       return false;
     }
-
-    if (attributeList.getRowCount() < 1) {
-
-      WidgetFactory.hiliteComponent(attributesLabel);
-      return false;
+    if(!disableAttributeList)
+    {
+	    if (attributeList.getRowCount() < 1) {
+	
+	      WidgetFactory.hiliteComponent(attributesLabel);
+	      return false;
+	    }
+	
+	    List colNames = new ArrayList();
+	
+	    boolean importNeeded = false;
+	    AttributePage nextAttributePage = null;
+	    List rowLists = attributeList.getListOfRowLists();
+	    if (rowLists==null) return true;
+	    int index = 1;
+	    int attrsToBeImported = 0;
+	
+	    AbstractDataPackage adp = UIController.getInstance().getCurrentAbstractDataPackage();
+	    if(adp == null) {
+		Log.debug(10, "Error! Unable to obtain the ADP in the Entity page!");
+	    } else {
+		attrsToBeImported = adp.getAttributeImportCount();
+	    }
+	    String entityName = entityNameField.getText().trim();
+	    for (Iterator it = rowLists.iterator(); adp != null && it.hasNext(); ) {
+	
+	      Object nextRowObj = it.next();
+	      if (nextRowObj==null) continue;
+	
+	      List nextRowList = (List)nextRowObj;
+	      //column 2 is user object - check it exists and isn't null:
+	      if (nextRowList.size()<4)     continue;
+	      Object nextUserObject = nextRowList.get(3);
+	      if (nextUserObject==null) continue;
+	
+	      String colName = (String) nextRowList.get(0);
+	      nextAttributePage = (AttributePage)nextUserObject;
+	      if(nextAttributePage.isImportNeeded()) {
+	
+	        OrderedMap map = nextAttributePage.getPageData(xPathRoot + "/attributeList/attribute["+index + "]");
+	        String mScale = (String) nextRowList.get(2);
+	        adp.addAttributeForImport(entityName, colName, mScale, map, xPathRoot + "/attributeList/attribute["+index+ "]", true);
+	        importNeeded = true;
+	      }
+	      colNames.add(colName);
+	      index++;
+	    }
+	    if(adp != null) {
+		adp.setLastImportedEntity(entityName);
+		adp.setLastImportedAttributes(colNames);
+		adp.setLastImportedDataSet(null);
+		/*	if(vec != null) adp.setLastImportedDataSet(vec);
+		else {
+		    adp.setLastImportedDataSet(((UneditableTableModel)table.getModel()).getDataVector());
+		    }*/
+	    } 
+	
+	
+	    if(attrsToBeImported > 0) {
+		this.nextPageID = DataPackageWizardInterface.CODE_DEFINITION;
+	
+	    } else if(importNeeded) {
+		this.nextPageID = DataPackageWizardInterface.CODE_IMPORT_PAGE;
+	
+	    }
     }
-
-    List colNames = new ArrayList();
-
-    boolean importNeeded = false;
-    AttributePage nextAttributePage = null;
-    List rowLists = attributeList.getListOfRowLists();
-    if (rowLists==null) return true;
-    int index = 1;
-    int attrsToBeImported = 0;
-
-    AbstractDataPackage adp = UIController.getInstance().getCurrentAbstractDataPackage();
-    if(adp == null) {
-	Log.debug(10, "Error! Unable to obtain the ADP in the Entity page!");
-    } else {
-	attrsToBeImported = adp.getAttributeImportCount();
-    }
-    String entityName = entityNameField.getText().trim();
-    for (Iterator it = rowLists.iterator(); adp != null && it.hasNext(); ) {
-
-      Object nextRowObj = it.next();
-      if (nextRowObj==null) continue;
-
-      List nextRowList = (List)nextRowObj;
-      //column 2 is user object - check it exists and isn't null:
-      if (nextRowList.size()<4)     continue;
-      Object nextUserObject = nextRowList.get(3);
-      if (nextUserObject==null) continue;
-
-      String colName = (String) nextRowList.get(0);
-      nextAttributePage = (AttributePage)nextUserObject;
-      if(nextAttributePage.isImportNeeded()) {
-
-        OrderedMap map = nextAttributePage.getPageData(xPathRoot + "/attributeList/attribute["+index + "]");
-        String mScale = (String) nextRowList.get(2);
-        adp.addAttributeForImport(entityName, colName, mScale, map, xPathRoot + "/attributeList/attribute["+index+ "]", true);
-        importNeeded = true;
-      }
-      colNames.add(colName);
-      index++;
-    }
-    if(adp != null) {
-	adp.setLastImportedEntity(entityName);
-	adp.setLastImportedAttributes(colNames);
-	adp.setLastImportedDataSet(null);
-	/*	if(vec != null) adp.setLastImportedDataSet(vec);
-	else {
-	    adp.setLastImportedDataSet(((UneditableTableModel)table.getModel()).getDataVector());
-	    }*/
-    } 
-
-
-    if(attrsToBeImported > 0) {
-	this.nextPageID = DataPackageWizardInterface.CODE_DEFINITION;
-
-    } else if(importNeeded) {
-	this.nextPageID = DataPackageWizardInterface.CODE_IMPORT_PAGE;
-
-    }
-
     return true;
   }
 
@@ -376,37 +391,39 @@ public class Entity extends AbstractUIPage{
     if (!Util.isBlank(entityDesc)) {
       returnMap.put(xPathRoot + "/entityDescription", entityDesc);
     }
-
-    returnMap.put(xPathRoot + "/physical/objectName", WizardSettings.UNAVAILABLE);
-    returnMap.put(xPathRoot + "/physical/dataFormat", "");
-
-    int index = 1;
-    Object  nextRowObj      = null;
-    List    nextRowList     = null;
-    Object  nextUserObject  = null;
-    OrderedMap  nextNVPMap  = null;
-    AttributePage nextAttributePage = null;
-
-    List rowLists = attributeList.getListOfRowLists();
-
-    if (rowLists==null) return null;
-
-    for (Iterator it = rowLists.iterator(); it.hasNext(); ) {
-
-      nextRowObj = it.next();
-      if (nextRowObj==null) continue;
-
-      nextRowList = (List)nextRowObj;
-      //column 2 is user object - check it exists and isn't null:
-      if (nextRowList.size()<4)     continue;
-      nextUserObject = nextRowList.get(3);
-      if (nextUserObject==null) continue;
-
-      nextAttributePage = (AttributePage)nextUserObject;
-
-      nextNVPMap = nextAttributePage.getPageData(xPathRoot
-                                + "/attributeList/attribute["+(index++) + "]");
-      returnMap.putAll(nextNVPMap);
+    if(!disableAttributeList)
+    {
+	    returnMap.put(xPathRoot + "/physical/objectName", WizardSettings.UNAVAILABLE);
+	    returnMap.put(xPathRoot + "/physical/dataFormat", "");
+	
+	    int index = 1;
+	    Object  nextRowObj      = null;
+	    List    nextRowList     = null;
+	    Object  nextUserObject  = null;
+	    OrderedMap  nextNVPMap  = null;
+	    AttributePage nextAttributePage = null;
+	
+	    List rowLists = attributeList.getListOfRowLists();
+	
+	    if (rowLists==null) return null;
+	
+	    for (Iterator it = rowLists.iterator(); it.hasNext(); ) {
+	
+	      nextRowObj = it.next();
+	      if (nextRowObj==null) continue;
+	
+	      nextRowList = (List)nextRowObj;
+	      //column 2 is user object - check it exists and isn't null:
+	      if (nextRowList.size()<4)     continue;
+	      nextUserObject = nextRowList.get(3);
+	      if (nextUserObject==null) continue;
+	
+	      nextAttributePage = (AttributePage)nextUserObject;
+	
+	      nextNVPMap = nextAttributePage.getPageData(xPathRoot
+	                                + "/attributeList/attribute["+(index++) + "]");
+	      returnMap.putAll(nextNVPMap);
+	    }
     }
     return returnMap;
   }
@@ -424,8 +441,24 @@ public class Entity extends AbstractUIPage{
    */
   public OrderedMap getPageData(String rootXPath) {
 
-    throw new UnsupportedOperationException(
-      "getPageData(String rootXPath) Method Not Implemented");
+     if (!disableAttributeList)
+     {
+    	 throw new UnsupportedOperationException(
+           "getPageData(String rootXPath) Method Not Implemented");
+     }
+     else
+     {
+    	   returnMap.clear();
+    	   returnMap.put(xPathRoot + "/entityName",
+    	                  entityNameField.getText().trim());
+
+    	    String entityDesc = entityDescField.getText().trim();
+    	    //if (!entityDesc.equals("")) {
+    	    if (!Util.isBlank(entityDesc)) {
+    	      returnMap.put(xPathRoot + "/entityDescription", entityDesc);
+    	    }
+    	    return returnMap;
+     }
   }
 
 
@@ -468,6 +501,48 @@ public class Entity extends AbstractUIPage{
      *  @return the serial number of the page
      */
   public String getPageNumber() { return pageNumber; }
+   
+    /**
+     * Set ordered map to the page
+     */
+    public boolean setPageData(OrderedMap map, String _xPathRoot) 
+    { 
+    	//this method only is implemented when diableAttributeList is true
+    	 if(disableAttributeList)
+    	 {
+	    	 if (_xPathRoot != null )
+	    	 {
+	    		 this.xPathRoot =_xPathRoot;
+	    	 }
+	    	 Log.debug(45,"PartyPage.setPageData() called with rootXPath = " + xPathRoot
+	                 + "\n Map = \n" + map);
+	    	 String nextVal = (String)map.get(xPathRoot+ "/entityName");
+			  if (nextVal != null) 
+			  {
+				  entityNameField.setText(nextVal);
+				  map.remove(xPathRoot+ "/entityName");
+			   }
+				nextVal = (String)map.get(xPathRoot+ "/entityDescription");
+				if (nextVal != null) 
+				{
+					entityDescField.setText(nextVal);
+				   map.remove(xPathRoot+ "/entityDescription");
+				}
+				//if anything left in map, then it included stuff we can't handle...
+			    boolean canHandleAllData = map.isEmpty();
 
-    public boolean setPageData(OrderedMap data, String xPathRoot) { return false; }
+			    if (!canHandleAllData) {
+
+			      Log.debug(20,
+			                "Entity.setPageData returning FALSE! Map still contains:"
+			                + map);
+			    }
+			    return canHandleAllData;
+    	 }
+    	 else
+    	 {
+    		 //TO DO need to be implemented when disableAttributeList is false
+    	    return false;
+    	 }
+    }
 }
