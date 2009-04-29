@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2009-03-13 03:57:28 $'
- * '$Revision: 1.31 $'
+ *     '$Date: 2009-04-29 21:51:02 $'
+ * '$Revision: 1.32 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -79,13 +79,13 @@ public class Entity extends AbstractUIPage{
   private CustomList  attributeList;
   private JLabel      attributesLabel;
 
-  private WizardContainerFrame mainWizFrame;
+  //private WizardContainerFrame mainWizFrame;
 
   // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
-  public Entity(WizardContainerFrame frame) {
+  public Entity() {
 	nextPageID = DataPackageWizardInterface.SUMMARY;
-    this.mainWizFrame = frame;
+    //this.mainWizFrame = frame;
     init();
   }
 
