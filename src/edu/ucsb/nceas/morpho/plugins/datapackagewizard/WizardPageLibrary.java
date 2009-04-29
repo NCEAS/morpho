@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2009-04-25 01:25:16 $'
- * '$Revision: 1.39 $'
+ *     '$Date: 2009-04-29 21:49:50 $'
+ * '$Revision: 1.40 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -115,7 +115,7 @@ public class WizardPageLibrary implements WizardPageLibraryInterface{
     if(pageID.equals(DataPackageWizardInterface.DATA_FORMAT))
       return new DataFormat(container);
     if(pageID.equals(DataPackageWizardInterface.ENTITY))
-      return new Entity(container);
+      return new Entity();
     if(pageID.equals(DataPackageWizardInterface.ATTRIBUTE_PAGE))
       return new AttributePage();
     if(pageID.equals(DataPackageWizardInterface.CODE_IMPORT_PAGE))
