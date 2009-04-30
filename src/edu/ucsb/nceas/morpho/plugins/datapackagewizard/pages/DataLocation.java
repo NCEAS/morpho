@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2009-03-13 03:57:28 $'
- * '$Revision: 1.44 $'
+ *     '$Date: 2009-04-30 23:29:34 $'
+ * '$Revision: 1.45 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -894,20 +894,24 @@ public class DataLocation extends AbstractUIPage {
     switch (distribution) {
 
       case WizardSettings.ONLINE:
+    	  if (getDataFile() != null && !Util.isBlank(getDataFile().getName().trim()))
+          {
+             returnMap.put(OBJECTNAME_XPATH, getDataFile().getName());
+          }
+    	  else if(!Util.isBlank(fileNameFieldOnline.getText().trim()))
+    	  {
+    		  returnMap.put(OBJECTNAME_XPATH, fileNameFieldOnline.getText().trim());
+    	  }
+          else
+          {
+        	  returnMap.put(OBJECTNAME_XPATH, WizardSettings.UNAVAILABLE);
+          }
         if (getDataFile() != null) {
           // if datafile exists, it's a local file referenced by a URN
           String dataFileID = saveDataFileAsTemp(getDataFile());
           returnMap.put(ONLINE_URL_XPATH, URN_ROOT + dataFileID);
         } else {
           // if no datafile, it's an online URL
-          if (!Util.isBlank(fileNameFieldOnline.getText().trim()))
-          {
-             returnMap.put(OBJECTNAME_XPATH, fileNameFieldOnline.getText().trim());
-          }
-          else
-          {
-        	  returnMap.put(OBJECTNAME_XPATH, WizardSettings.UNAVAILABLE);
-          }
           returnMap.put(ONLINE_URL_XPATH, urlFieldOnline.getText().trim());
         }
         break;
