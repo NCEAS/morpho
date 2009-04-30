@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2009-04-21 16:35:10 $'
- * '$Revision: 1.15 $'
+ *     '$Date: 2009-04-30 02:52:11 $'
+ * '$Revision: 1.16 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -205,7 +205,15 @@ public class CorrectionWizardContainerFrame extends WizardContainerFrame
 		          {
 		        	  String key = info.getKey();
 		        	  Log.debug(30, "the key from info is "+key);
-		        	  newData.put(key, data.get(key));
+		        	  String value = (String)data.get(key);
+		        	  Log.debug(30, "the data  for key "+key+" is "+value);
+		        	  if (value == null)
+		        	  {
+		        		  dataPackage.deleteSubTree(info);
+		        		  Log.debug(30, "Since the new value from correction page wizard is null, we need to delete the old subtree, not replace the old tree");
+		        		  return;
+		        	  }
+		        	  newData.put(key, value);
 		          }
 		          else
 		          {
@@ -218,7 +226,7 @@ public class CorrectionWizardContainerFrame extends WizardContainerFrame
 		         
 			          if (newSubTree != null)
 			          {
-			        	  check = dataPackage.replaceSubtree(info, newSubTree);
+			        	  check = dataPackage.replaceSubTree(info, newSubTree);
 			        	  /*Vector pathObjList = info.getLoadExistingDataPath();
 			        	  LoadDataPath pathObj0 = (LoadDataPath) pathObjList.elementAt(0);
 			        	    int index =   pathObj0.getPosition();

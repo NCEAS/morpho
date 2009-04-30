@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2009-04-28 23:21:15 $'
- * '$Revision: 1.33 $'
+ *     '$Date: 2009-04-30 02:52:11 $'
+ * '$Revision: 1.34 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -130,7 +130,7 @@ public class CorrectionWizardController
 	private final static String INTRODUCTIONSUFFIX  = " will allow you to enter valid text in these fields";
 	private final static String INTRODUCTIONWIZARD = INTRODUCTIONPREFIX+ "wizard pages"+INTRODUCTIONSUFFIX+".\n"; 
 	private final static String MESSAGEFORWIZARD = INTRODUCTIONWIZARD +"For optional fields, you may simply choose to leave them blank";
-	private final static String INTRODUCTIONTREEEDITOR = INTRODUCTIONPREFIX+ "series tree editor frames"+INTRODUCTIONSUFFIX;
+	private final static String INTRODUCTIONTREEEDITOR = INTRODUCTIONPREFIX+ "series Morpho editor frames"+INTRODUCTIONSUFFIX;
 	private final static String MESSAGEFORTREEEDITOR = INTRODUCTIONTREEEDITOR+ ", one at a time.";
 	
 	

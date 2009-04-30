@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2009-04-20 21:38:26 $'
- * '$Revision: 1.141 $'
+ *     '$Date: 2009-04-30 02:52:11 $'
+ * '$Revision: 1.142 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -265,6 +265,8 @@ public abstract class AbstractDataPackage extends MetadataObject
   protected static final String INSERTMETACAT = "insert";
   protected static final String UPDATEMETACAT = "update";
   protected static final String DONOTHMETACAT = "donothing";
+  private static final String REPLACE = "replace";
+  private static final String DELETE   = "delete";
 
   /**
    * This abstract method turns the datapackage into a form (e.g. string) that
@@ -1061,10 +1063,30 @@ public abstract class AbstractDataPackage extends MetadataObject
       return null;
     }
   }
-
-
+  
   /**
-   * replaces subtree at location identified by ModifyingPageDataInfo; returns
+   * Replace a subtree base on the given information. If not success, null will return
+   * @param info
+   * @param newSubTreeRootNode
+   * @return
+   */
+  public Node replaceSubTree(ModifyingPageDataInfo info, Node newSubTreeRootNode)
+  {
+	  return handleSubTree(info, newSubTreeRootNode, REPLACE);
+  }
+  
+  /**
+   * Delete a subtree base on the given information. If not success, null will return
+   * @param info
+   * @return
+   */
+  public Node deleteSubTree(ModifyingPageDataInfo info)
+  {
+	  return handleSubTree(info, null, DELETE);
+  }
+
+  /*
+   * replaces or delete subtree at location identified by ModifyingPageDataInfo; returns
    * root Node of replaced subtree, or null if not found, so caller can
    * determine whether replace was successful
    * ModifyingPageDataInfo has a vector of LoadDataPath objects. LoadDataPath has the path and
@@ -1075,21 +1097,30 @@ public abstract class AbstractDataPackage extends MetadataObject
    * under the dataTable node. So the second one's information is about the children of first one. 
    * @param info ModifyingPageDataInfo
    * @param newSubtreeRootNode the new subtree root Node
+   * @param action delete or repalace
    * @return root Node of replaced subtree, or null if subtree not found, so
    * caller can determine whether replace was successful
    */
-  public Node replaceSubtree(ModifyingPageDataInfo info, Node newSubTreeRootNode) 
+  private Node handleSubTree(ModifyingPageDataInfo info, Node newSubTreeRootNode, String action) 
   {
 	  
       Node node = null;
-      if(info != null && newSubTreeRootNode != null)
+      if(action == null || (newSubTreeRootNode == null && action.equals(REPLACE)))
+      {
+    	  return node;
+      }
+      if(info != null)
       {
     	  Document thisDom = getMetadataNode().getOwnerDocument();
-    	  Node newSubTree = thisDom.importNode(newSubTreeRootNode, true); // 'true' imports children
+    	  Node newSubTree = null;
+    	  if(action.equals(REPLACE))
+    	  {
+    		  newSubTree = thisDom.importNode(newSubTreeRootNode, true); // 'true' imports children
+    	  }
     	  Vector loadPathObjList = info.getLoadExistingDataPath();
 		  if (loadPathObjList != null)
 		  {
-			  Log.debug(46, "In loadPathObjectList is not null branch in replaceSubtree method");
+			  Log.debug(46, "In loadPathObjectList is not null branch in handleSubtree method");
 			  Node parentNode = metadataNode; // start from document root
 			  for(int i=0; i<loadPathObjList.size(); i++)
 			  {
@@ -1099,7 +1130,7 @@ public abstract class AbstractDataPackage extends MetadataObject
 				  {
 					  String path = pathObj.getPath();
 					  int position = pathObj.getPosition();
-					  Log.debug(45, "Handle path "+path+" with position "+position +" in replaceSubTree method");
+					  Log.debug(45, "Handle path "+path+" with position "+position +" in handleSubTree method");
 					  try
 					  {
 					    NodeList nodelist = XMLUtilities.getNodeListWithXPath(parentNode, path);
@@ -1123,12 +1154,25 @@ public abstract class AbstractDataPackage extends MetadataObject
 					              parnode = targetNode.getParentNode();
 					              if (parnode !=null) 
 						          {
-					            	  Log.debug(35, "Replace an old node by the new node "+newSubTree);
-					            	  Node replaceNode =parnode.replaceChild(newSubTree, targetNode);
-					            	  if (replaceNode != null)
+					            	  if(action.equals(REPLACE))
 					            	  {
-					            		  Log.debug(35, "Successfully replace the old node "+targetNode+" with the new node  "+newSubTree);
-					            		  node = replaceNode;
+						            	  Log.debug(35, "Replace an old node by the new node "+newSubTree);
+						            	  Node replaceNode =parnode.replaceChild(newSubTree, targetNode);
+						            	  if (replaceNode != null)
+						            	  {
+						            		  Log.debug(35, "Successfully replace the old node "+targetNode+" with the new node  "+newSubTree);
+						            		  node = replaceNode;
+						            	  }
+					            	  }
+					            	  else if(action.equals(DELETE))
+					            	  {
+					            		  Log.debug(35, "Replace an old node by the new node "+newSubTree);
+						            	  Node deleteNode =parnode.removeChild(targetNode);
+						            	  if (deleteNode != null)
+						            	  {
+						            		  Log.debug(35, "Successfully delete the old node "+targetNode);
+						            		  node = deleteNode;
+						            	  }
 					            	  }
 						          }
 						           
@@ -1145,7 +1189,7 @@ public abstract class AbstractDataPackage extends MetadataObject
 					  }
 					  catch(Exception e)
 					  {
-						  Log.debug(15, "couldn't repalce the subtree "+e.getMessage());
+						  Log.debug(15, "couldn't "+action+" the subtree "+e.getMessage());
 					  }
 					     				  
 				  }

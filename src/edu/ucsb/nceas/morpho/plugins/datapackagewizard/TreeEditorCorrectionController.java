@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2009-04-27 23:08:28 $'
- * '$Revision: 1.10 $'
+ *     '$Date: 2009-04-30 02:52:11 $'
+ * '$Revision: 1.11 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,6 +32,8 @@ package edu.ucsb.nceas.morpho.plugins.datapackagewizard;
 import java.io.StringReader;
 import java.util.Hashtable;
 import java.util.Vector;
+
+import javax.swing.JOptionPane;
 
 import org.apache.xpath.XPathAPI;
 import org.w3c.dom.Document;
@@ -76,6 +78,7 @@ public class TreeEditorCorrectionController
 	private Hashtable fullpathPosition = new Hashtable();// this hashtable keeps track of fullpath and positions
 	                                                     // has been display in tree editor. It will be used 
 	                                                     //how to determine index if fullpath is same
+	private final static String CONFORMATION = "Morpho has successfully upgraded your data package to the newest EML version.\n Note: These changes will not become permanent until you save the document.";
 	
 	/**
 	 * Constructor with parameters datapackage and xpah list
@@ -167,12 +170,13 @@ public class TreeEditorCorrectionController
 			  {
 				  //Tree editors is done. Tree editor correction is after page wizard correction so we can display the data now
 				  // and we also can dispose the old frame
-				  //Log.debug(45, "\n\n********** Correction Wizard by tree editor finished: DOM:");
-		          //Log.debug(45, XMLUtilities.getDOMTreeAsString(dataPackage.getMetadataNode(), false));
+				  Log.debug(45, "\n\n********** Correction Wizard by tree editor finished: DOM:");
+		          Log.debug(45, XMLUtilities.getDOMTreeAsString(dataPackage.getMetadataNode(), false));
 		          try 
 		          {
 		        	 
-		        	
+		        	 JOptionPane.showMessageDialog(null, CONFORMATION, "Warning!",
+		                      JOptionPane.WARNING_MESSAGE);
 		            ServiceController services = ServiceController.getInstance();
 		            ServiceProvider provider =
 		                services.getServiceProvider(DataPackageInterface.class);

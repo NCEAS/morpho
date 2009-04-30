@@ -38,9 +38,9 @@ public class CorrectionSummary extends AbstractUIPage {
 	  private WizardContainerFrame mainWizFrame;
 	  private JComponent showMeButton;
 	  private String message = "";
-	  private static final String FINISH = "The wizard has corrected all invalid fields.";
-	  private static final String NEEDTREEEDITOR = "The wizard has corrected some invalid fields, but others can only be fixed using the tree editor.<br></br>"
-		                                                                +"The following series of tree editor frames will allow you enter valid text in the remaining fields, one at a time.";
+	  private static final String FINISH = "Morpho has successfully upgraded your data package to the newest EML version.<br></br> Note: These changes will not become permanent until you save the document.";
+	  private static final String NEEDTREEEDITOR = "The wizard has corrected some invalid fields, but others can only be fixed using the Morpho editor.<br></br>"
+		                                                                +"The following series of editor frames will allow you enter valid text in the remaining fields, one at a time.";
 	                                                                     
 
 	  public CorrectionSummary(WizardContainerFrame mainWizFrame, boolean needTreeEditor) {
