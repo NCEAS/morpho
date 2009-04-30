@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2009-04-30 02:52:11 $'
- * '$Revision: 1.34 $'
+ *     '$Date: 2009-04-30 21:02:36 $'
+ * '$Revision: 1.35 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -381,21 +381,30 @@ public class CorrectionWizardController
 								//If loadDataPathList has mutiple xpath, the second xpath is kid of the first one.
 								//like : <loadExistDataPath>/eml:eml/dataset</loadExistDataPath>
 					            //        <loadExistDataPath>./title</loadExistDataPath>
-
-								for(int j=0; j<loadDataPathList.size(); j++)
+								if(node != null)
 								{
-									LoadDataPath pathObj = (LoadDataPath)loadDataPathList.elementAt(j);
-									String xPath = pathObj.getPath();
-									String lastElementName = getLastElementName(xPath);
-									int position = getGivenStringIndexAtXPath(lastElementName, path);								
-									//System.out.println("==========the xpath is "+xPath);
-									Log.debug(46, "Before getting the node list for path"+xPath);
-									nodeList = XMLUtilities.getNodeListWithXPath(node, xPath);
-									Log.debug(46, "After getting the node list for path"+xPath);
-									//reset node
-									node = nodeList.item(position);
-									Log.debug(46, "Getting the node for path"+xPath+" at position "+position+ " "+node);
-									pathObj.setPosition(position);
+									for(int j=0; j<loadDataPathList.size(); j++)
+									{
+										LoadDataPath pathObj = (LoadDataPath)loadDataPathList.elementAt(j);
+										String xPath = pathObj.getPath();
+										String lastElementName = getLastElementName(xPath);
+										int position = getGivenStringIndexAtXPath(lastElementName, path);								
+										//System.out.println("==========the xpath is "+xPath);
+										Log.debug(46, "Before getting the node list for path"+xPath);
+										nodeList = XMLUtilities.getNodeListWithXPath(node, xPath);
+										Log.debug(46, "After getting the node list for path"+xPath);
+										//reset node
+										if(nodeList != null)
+										{
+											node = nodeList.item(position);
+											Log.debug(46, "Getting the node for path"+xPath+" at position "+position+ " "+node);
+											pathObj.setPosition(position);
+										}
+										else
+										{
+											node = null;
+										}
+									}
 									
 								}
 								if(firstTime && node != null)
