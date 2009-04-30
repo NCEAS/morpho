@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2009-03-13 03:57:28 $'
- * '$Revision: 1.37 $'
+ *     '$Date: 2009-04-30 23:25:06 $'
+ * '$Revision: 1.38 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -134,7 +134,7 @@ public class DataFormat extends AbstractUIPage{
   private CustomList list;
   private WizardContainerFrame mainWizFrame;
   
-  private String fileName = "";
+ // private String fileName = "";
 
   // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
@@ -510,7 +510,7 @@ public class DataFormat extends AbstractUIPage{
 
     AbstractUIPage prevPage = mainWizFrame.getPreviousPage();
     boolean flag = ((DataLocation)prevPage).isCreateChoice();
-    fileName = ((DataLocation)prevPage).getFileName();
+    //fileName = ((DataLocation)prevPage).getFileName();
     Container middlePanel = (Container) radioPanel.getComponent(1);
     JRadioButton jrb = (JRadioButton)middlePanel.getComponent(1);
     if (flag) {
@@ -730,14 +730,14 @@ public class DataFormat extends AbstractUIPage{
 
     } else if (formatXPath==SIMPLE_TEXT_XPATH)  {
       //returnMap.put(PHYSICAL_XPATH+"objectName",fileName);
-      if(!Util.isBlank(fileName))
+      /*if(!Util.isBlank(fileName))
       {
            returnMap.put(PHYSICAL_XPATH+"objectName",fileName);
       }
       else
       {
        	 returnMap.put(PHYSICAL_XPATH+"objectName",WizardSettings.UNAVAILABLE);
-      }
+      }*/
       returnMap.put(TEXT_BASE_XPATH+"attributeOrientation", orientationSimple);
 
       int index=1;
@@ -796,28 +796,28 @@ public class DataFormat extends AbstractUIPage{
 
 
     } else if (formatXPath==COMPLEX_TEXT_XPATH)  {
-      if(!Util.isBlank(fileName))
+      /*if(!Util.isBlank(fileName))
       {
         returnMap.put(PHYSICAL_XPATH+"objectName",fileName);
       }
       else
       {
     	 returnMap.put(PHYSICAL_XPATH+"objectName",WizardSettings.UNAVAILABLE);
-      }
+      }*/
       returnMap.put(TEXT_BASE_XPATH+"attributeOrientation", orientationComplex);
 
       returnMap.putAll(getCmplxDelimListAsNVP());
 
     } else if (formatXPath==PROPRIETARY_XPATH)  {
       //returnMap.put(PHYSICAL_XPATH+"objectName",fileName);
-      if(!Util.isBlank(fileName))
+      /*if(!Util.isBlank(fileName))
       {
            returnMap.put(PHYSICAL_XPATH+"objectName",fileName);
       }
       else
       {
        	 returnMap.put(PHYSICAL_XPATH+"objectName",WizardSettings.UNAVAILABLE);
-      }
+      }*/
       returnMap.put(PROPRIETARY_XPATH, proprietaryText);
 
 //    } else if (formatXPath==RASTER_XPATH) {
