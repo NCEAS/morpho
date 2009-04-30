@@ -289,7 +289,36 @@
     <wizardPageClass>edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.AccessPage</wizardPageClass>
    </mapping>
    <!-- datatable -->
-   <mapping>
+    <mapping>
+    <root>/eml:eml/dataset/dataTable</root>
+    <xpath>entityName</xpath>
+    <xpath>entityDescription</xpath>
+    <!-- when loadExistDataPath is siblings relationship, we need mutipal infoForModifyingData. The first of loadExistDataPath should be same since they are siblings.
+         when loadEXistDataPath is parent to kids relationship, we need one infoForModifyindData, but mutipal loadEXistDataPath-->
+    <!-- when edit loadExistDataPath, we should modify the EML210Validate.java at source code. We need that class to identify the position of path i.e. the index
+         of node in a node list. If pathes have the parent to kids relationship, the kids' index is base under the same parent node, rather than entire docuemnt-->
+    <infoForModifyingData>
+             <loadExistDataPath>/eml:eml/dataset/dataTable</loadExistDataPath>
+             <loadExistDataPath>./entityName</loadExistDataPath>
+             <xpathForCreatingOrderedMap></xpathForCreatingOrderedMap>
+             <xpathForSettingPageData></xpathForSettingPageData>
+             <newDataDocumentName>entityName</newDataDocumentName>
+             <xpathForGettingPageData></xpathForGettingPageData>
+             <key>/entityName</key> <!--the key is key value to get order path value for this subtree-->
+     </infoForModifyingData>
+     <infoForModifyingData>
+             <loadExistDataPath>/eml:eml/dataset/dataTable</loadExistDataPath>
+             <loadExistDataPath>./entityDescription</loadExistDataPath>
+             <xpathForCreatingOrderedMap></xpathForCreatingOrderedMap>
+             <xpathForSettingPageData></xpathForSettingPageData>
+             <newDataDocumentName>entityDescription</newDataDocumentName>
+             <xpathForGettingPageData></xpathForGettingPageData>
+             <key>/entityDescription</key>
+     </infoForModifyingData>
+    <wizardPageClass>edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.Entity</wizardPageClass>
+    <wizardPageClassParameter>true</wizardPageClassParameter>
+  </mapping>
+  <mapping>
     <root>/eml:eml/dataset/dataTable/physical/distribution/access</root>
     <xpath>deny/principal</xpath>
     <xpath>deny/permission</xpath>
