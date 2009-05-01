@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2009-04-30 23:25:06 $'
- * '$Revision: 1.38 $'
+ *     '$Date: 2009-05-01 04:09:40 $'
+ * '$Revision: 1.39 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -133,6 +133,7 @@ public class DataFormat extends AbstractUIPage{
   private boolean delim_other    = false;
   private CustomList list;
   private WizardContainerFrame mainWizFrame;
+  private boolean fromCorrectionWizard = false;
   
  // private String fileName = "";
 
@@ -143,6 +144,17 @@ public class DataFormat extends AbstractUIPage{
     this.mainWizFrame = mainWizFrame;
     init();
   }
+  
+  /**
+   * Constructor for correction wizard 
+   * @param fromCorrectionWizard
+   */
+  public DataFormat(Boolean fromCorrectionWizard)
+  {
+	  this.fromCorrectionWizard = fromCorrectionWizard.booleanValue();
+	  init();
+  }
+  
 
   /**
    * initialize method does frame-specific design - i.e. adding the widgets that
@@ -507,9 +519,12 @@ public class DataFormat extends AbstractUIPage{
    *  The action to be executed when the page is displayed. May be empty
    */
   public void onLoadAction() {
-
-    AbstractUIPage prevPage = mainWizFrame.getPreviousPage();
-    boolean flag = ((DataLocation)prevPage).isCreateChoice();
+	 boolean flag = false;
+	if (!fromCorrectionWizard)
+	{
+       AbstractUIPage prevPage = mainWizFrame.getPreviousPage();
+       flag = ((DataLocation)prevPage).isCreateChoice();
+	}
     //fileName = ((DataLocation)prevPage).getFileName();
     Container middlePanel = (Container) radioPanel.getComponent(1);
     JRadioButton jrb = (JRadioButton)middlePanel.getComponent(1);
@@ -970,6 +985,95 @@ public class DataFormat extends AbstractUIPage{
    *  this is te last page
    */
   public String getNextPageID() { return nextPageID; }
+  
+  /**
+   * Set the data in ordered map format to this page. 
+   * It is always return false. (TODO)
+   */
+  public boolean setPageData(OrderedMap data, String xPathRoot) 
+  {
+	  formatXPath = findFormatType(data, xPathRoot);
+	  if (formatXPath.equals(SIMPLE_TEXT_XPATH))
+	  {
+		  String nextVal = (String)data.get(xPathRoot+ "/textFormat/attributeOrientation");
+		  setOrientation(nextVal);
+		  nextVal = (String)data.get(xPathRoot+ "/textFormat/attributeOrientation");
+		  return false;
+	  }
+	  else if(formatXPath.equals(COMPLEX_TEXT_XPATH))
+	  {		
+		  String nextVal = (String)data.get(xPathRoot+ "/textFormat/attributeOrientation");
+		  setOrientation(nextVal);
+		  //need to be implement
+		  return false;
+	  }
+	  else if(formatXPath.equals(PROPRIETARY_XPATH))
+	  {
+		  return false;
+	  }
+	  else
+	  {
+		  Log.debug(30, "Couldn't find the data format type with xpathroot "+xPathRoot+" in the map"+data);
+		  return false;
+	  }
+	  //return false; 
+  }
+  
+  /*
+   * Find out the text format type base on the data in the given ordered map
+   */
+  private String findFormatType(OrderedMap map, String xPath) {
 
-    public boolean setPageData(OrderedMap data, String xPathRoot) { return false; }
+	    ///// check for simple text
+
+	    Object o1 = map.get(xPath + "/textFormat/simpleDelimited/fieldDelimiter[1]");
+	    if(o1 != null) return SIMPLE_TEXT_XPATH;
+	    
+	    o1 = map.get(xPath + "/textFormat/simpleDelimited/fieldDelimiter[2]");
+	    if(o1 != null) return SIMPLE_TEXT_XPATH;
+	    
+	    o1 = map.get(xPath + "/textFormat/simpleDelimited/fieldDelimiter[3]");
+	    if(o1 != null) return SIMPLE_TEXT_XPATH;
+	    
+	    o1 = map.get(xPath + "/textFormat/simpleDelimited/fieldDelimiter[4]");
+	    if(o1 != null) return SIMPLE_TEXT_XPATH;
+	    
+	    o1 = map.get(xPath + "/textFormat/simpleDelimited/fieldDelimiter[5]");
+	    if(o1 != null) return SIMPLE_TEXT_XPATH;
+	    
+	    o1 = map.get(xPath + "/textFormat/simpleDelimited/fieldDelimiter[6]");
+	    if(o1 != null) return SIMPLE_TEXT_XPATH;
+	    
+	    o1 = map.get(xPath + "/textFormat/simpleDelimited/collapseDelimiters");
+	    if(o1 != null) return SIMPLE_TEXT_XPATH;
+	    
+	    o1 = map.get(xPath + "/textFormat/simpleDelimited/quoteCharacter[1]");
+	    if(o1 != null) return SIMPLE_TEXT_XPATH;
+	    
+	    o1 = map.get(xPath + "/textFormat/simpleDelimited/literalCharacter[1]");
+	    if(o1 != null) return SIMPLE_TEXT_XPATH;
+	    
+	    // check for complex text format
+	    o1 = map.get(xPath + "/textFormat/complex[1]/textFixed");
+	    if(o1 != null) return COMPLEX_TEXT_XPATH;
+	    
+	    o1 = map.get(xPath + "/textFormat/complex[1]/textDelimited");
+	    if(o1 != null) return COMPLEX_TEXT_XPATH;
+	    
+	    o1 = map.get(xPath + "/textFormat/complex[2]/textFixed");
+	    if(o1 != null) return COMPLEX_TEXT_XPATH;
+	    
+	    o1 = map.get(xPath + "/textFormat/complex[2]/textDelimited");
+	    if(o1 != null) return COMPLEX_TEXT_XPATH;
+	    
+	    //check for extenallyDefinedFormat
+	    o1 = map.get(xPath + "/externallyDefinedFormat/formatName");
+	    if(o1 != null) return PROPRIETARY_XPATH;
+	    
+	    o1 = map.get(xPath + "/externallyDefinedFormat/formatVersion");
+	    if(o1 != null) return PROPRIETARY_XPATH;
+	    
+	    return "";
+	  }
+
 }
