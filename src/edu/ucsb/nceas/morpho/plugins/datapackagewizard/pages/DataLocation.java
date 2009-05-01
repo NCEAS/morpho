@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2009-05-01 04:10:38 $'
- * '$Revision: 1.46 $'
+ *     '$Date: 2009-05-01 21:41:04 $'
+ * '$Revision: 1.47 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -148,12 +148,20 @@ public class DataLocation extends AbstractUIPage {
   private WizardContainerFrame mainWizFrame;
 
   // first radio Panel - CREATE/IMPORT/DESCRIBE
-  private JPanel mainRadioPanel;
+  protected JPanel mainRadioPanel;
 
   private JPanel q2RadioPanel_import;
   // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
 
+  /**
+   * Default constructor. Do nothing
+   */
+  public DataLocation()
+  {
+	  
+  }
+  
   public DataLocation(WizardContainerFrame mainWizFrame) {
 
 	nextPageID         = DataPackageWizardInterface.TEXT_IMPORT_WIZARD;
@@ -378,9 +386,9 @@ public class DataLocation extends AbstractUIPage {
   // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
   private JLabel      fileNameLabelNoData;
-  private JTextField  fileNameFieldNoData;
+  protected JTextField  fileNameFieldNoData;
 
-  private JPanel getNoDataPanel() {
+  protected JPanel getNoDataPanel() {
 
     JPanel panel = WidgetFactory.makeVerticalPanel(7);
 
@@ -415,11 +423,11 @@ public class DataLocation extends AbstractUIPage {
   // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
   private JLabel      fileNameLabelOnline;
-  private JTextField  fileNameFieldOnline;
+  protected JTextField  fileNameFieldOnline;
   private JLabel      urlLabelOnline;
-  private JTextField  urlFieldOnline;
+  protected JTextField  urlFieldOnline;
 
-  private JPanel getOnlinePanel() {
+  protected JPanel getOnlinePanel() {
 
     JPanel panel = WidgetFactory.makeVerticalPanel(7);
 
@@ -467,10 +475,10 @@ public class DataLocation extends AbstractUIPage {
 
   private JLabel            objNameLabel;
   private JLabel            medNameLabel;
-  private JTextField        objNameField;
-  private JTextField        medNameField;
+  protected JTextField        objNameField;
+  protected JTextField        medNameField;
 
-  private JPanel getOfflinePanel() {
+  protected JPanel getOfflinePanel() {
 
     JPanel panel = WidgetFactory.makeVerticalPanel(7);
     WidgetFactory.addTitledBorder(panel, Q3_LABELS[2]);
@@ -529,10 +537,10 @@ public class DataLocation extends AbstractUIPage {
   }
 
 
-  private void setLastEvent(short eventFlag) { lastEvent = eventFlag; }
+  protected void setLastEvent(short eventFlag) { lastEvent = eventFlag; }
 
 
-  private short getLastEvent() { return lastEvent; }
+  protected short getLastEvent() { return lastEvent; }
 
 
   private void setQ2(JPanel newPanel) {
@@ -886,7 +894,7 @@ public class DataLocation extends AbstractUIPage {
    * table, or maybe just column headers?
    *
    */
-  private OrderedMap returnMap = new OrderedMap();
+  protected OrderedMap returnMap = new OrderedMap();
 
   public OrderedMap getPageData() {
 
@@ -1103,15 +1111,15 @@ public class DataLocation extends AbstractUIPage {
 ////////////////////////////////////////////////////////////////////////////////
 
   private JPanel filechooserPanel;
-  private JPanel onlinePanel;
-  private JPanel offlinePanel;
-  private JPanel nodataPanel;
-  private JPanel blankPanel;
+  protected JPanel onlinePanel;
+  protected JPanel offlinePanel;
+  protected JPanel nodataPanel;
+  protected JPanel blankPanel;
   private JPanel secondChoiceContainer;
   private JPanel currentSecondChoicePanel;
   private JPanel thirdChoiceContainer;
   private JPanel currentThirdChoicePanel;
-  private JPanel q3Widget;
+  protected JPanel q3Widget;
   private short  INLINE_OR_ONLINE;
   private File   dataFileObj;
 
@@ -1123,12 +1131,12 @@ public class DataLocation extends AbstractUIPage {
   private final short DESCRIBE              = 20;
   private final short DESCRIBE_AUTO         = 22;
   private final short DESCRIBE_MAN          = 24;
-  private final short DESCRIBE_MAN_NODATA   = 30;
-  private final short DESCRIBE_MAN_ONLINE   = 32;
-  private final short DESCRIBE_MAN_OFFLINE  = 34;
+  protected final short DESCRIBE_MAN_NODATA   = 30;
+  protected final short DESCRIBE_MAN_ONLINE   = 32;
+  protected final short DESCRIBE_MAN_OFFLINE  = 34;
 
   private short lastEvent;
-  private short distribution;
+  protected short distribution;
 
   private final String EMPTY_STRING         = "";
 
