@@ -205,4 +205,105 @@ public class CorrectionWizardDataLocation extends DataLocation
       }
 
       
+    /**
+     * Set ordered map to the page
+     */
+    public boolean setPageData(OrderedMap map, String xPathRoot) 
+    { 
+    	 Log.debug(45,
+    		        "AccessPage.setPageData() called with xPathRoot = " + xPathRoot
+    		        + "\n Map = \n" + map);
+    	short type = findDistributionType(map, xPathRoot);
+    	String value = null;
+    	switch(type)
+    	{
+    	    //// Online data case
+    	    case WizardSettings.ONLINE:
+    	            value = (String)map.get(xPathRoot+OBJECTNAMEPATH);
+    	            if (value != null) 
+    				{
+    	            	 fileNameFieldOnline.setText(value);
+    					  map.remove(xPathRoot+ OBJECTNAMEPATH);
+    				}
+    	            value = (String)map.get(xPathRoot+ONLINEPATH);
+    	            if(value != null)
+    	            {
+    	            	urlFieldOnline.setText(value);
+    	            	map.remove(xPathRoot+ONLINEPATH);
+    	            }
+    	            distribution= WizardSettings.ONLINE;	            
+    	            break;
+    	    //OFFline, but has distribution/offline path
+    	    case WizardSettings.OFFLINE:
+    	    	if(getLastEvent() == DESCRIBE_MAN_OFFLINE)
+            	{
+    	    		value = (String)map.get(xPathRoot+OBJECTNAMEPATH);
+            		if(value != null)
+                	{
+                        objNameField.setText(value);
+                        map.remove(xPathRoot+OBJECTNAMEPATH);
+                	}
+                
+                	value = (String)map.get(xPathRoot+OFFLINEMDEIDUMNAMEPATH);
+                	if(value != null)
+                	{
+                        medNameField.setText(value);
+                        map.remove(xPathRoot+OFFLINEMDEIDUMNAMEPATH);
+                	}            
+            	}    	
+    	    	break;
+    	    //No distribution path, only has objectName path.
+    	    case WizardSettings.NODATA:
+    	    	  value = (String)map.get(xPathRoot+OBJECTNAMEPATH);
+    	    	  if (value != null)
+                  {
+                     fileNameFieldNoData.setText(value);
+                     map.remove(xPathRoot+OBJECTNAMEPATH);
+                  }
+    	    	  break;
+    	           
+    	}
+    	 boolean canHandleAllData = map.isEmpty();
+		 if (!canHandleAllData) 
+		 {
+		      Log.debug(20, "CorrectionWizardDataLocation.setPageData returning FALSE! Map still contains:"+ map);
+		 }
+		 return canHandleAllData;
+    }
+    
+    /*
+     * Find out the distribution or OFFLINE even type base on the data in the given ordered map
+     */
+    private short findDistributionType(OrderedMap map, String xPath) 
+    {
+
+  	    //// Online type
+  	    Object o1 = map.get(xPath + "ONLINEPATH");
+  	    if(o1 != null) 
+  	    {
+  	    	setLastEvent(DESCRIBE_MAN_ONLINE);
+  	    	return WizardSettings.ONLINE;
+  	    }
+  	    else
+  	    {
+  	    	o1 = map.get(xPath + "/distribution/offline/mediumName");
+  	    	if(o1 != null) 
+  	    	{
+  	    		 //// Offline type
+  	    	    // 1.have offline element
+  	    		setLastEvent(DESCRIBE_MAN_OFFLINE);
+  	    		return WizardSettings.OFFLINE;
+  	    	}
+  	    	else
+  	    	{
+  	    		//// offine type
+  	    		// 2. have no distribution element.
+  	    		//Actually, this is not right, it can have be inline data. 
+  	    		//But we assume this case is no distribution. This will be sorted out in setPageData to check the if the map eventually is empty.
+  	    		setLastEvent(DESCRIBE_MAN_NODATA);
+  	    		return WizardSettings.NODATA;
+  	    	}
+  	    }
+  	  
+  	  }
 }
