@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2009-04-30 23:29:34 $'
- * '$Revision: 1.45 $'
+ *     '$Date: 2009-05-01 04:10:38 $'
+ * '$Revision: 1.46 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -75,6 +75,7 @@ public class DataLocation extends AbstractUIPage {
   private final String title      = "New Data Table Wizard";
   private final String subtitle   = "Data Location";
   private final String HARDDRIVE = "hard drive";
+  private final String TMPFILENAME = "Unamed-table-";
 
   // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
@@ -652,7 +653,7 @@ public class DataLocation extends AbstractUIPage {
         //create a new empty datafile
         File emptyDataFile = null;
         try {
-          emptyDataFile = File.createTempFile("~deleteme", null);
+          emptyDataFile = File.createTempFile(TMPFILENAME, null);
           FileWriter fileWriter = new FileWriter(emptyDataFile);
           fileWriter.write("");
         } catch (IOException ex) {
