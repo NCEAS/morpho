@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2009-04-30 21:02:36 $'
- * '$Revision: 1.35 $'
+ *     '$Date: 2009-05-02 04:34:42 $'
+ * '$Revision: 1.36 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -409,7 +409,7 @@ public class CorrectionWizardController
 								}
 								if(firstTime && node != null)
 								{
-								  Log.debug(46, "Before First time to create xPathMap");
+								  Log.debug(46, "Before First time to create xPathMap with path for creating ordered map "+info.getPathForCreatingOrderedMap());
 								  xpathMap = XMLUtilities.getDOMTreeAsXPathMap(node, info.getPathForCreatingOrderedMap());
 								  Log.debug(46, "After First time to create xPathMap");
 								  firstTime = false;
@@ -419,7 +419,7 @@ public class CorrectionWizardController
 								else if (node != null)
 								{
 									Log.debug(46, "Before second or more time to create xPathMap");
-									xpathMap.putAll(XMLUtilities.getDOMTreeAsXPathMap(node));
+									xpathMap.putAll(XMLUtilities.getDOMTreeAsXPathMap(node, info.getPathForCreatingOrderedMap()));
 									Log.debug(46, "After second or more time to create xPathMap");
 								}
 							}

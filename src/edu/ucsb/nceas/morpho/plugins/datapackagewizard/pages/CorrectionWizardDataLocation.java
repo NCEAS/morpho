@@ -44,6 +44,7 @@ public class CorrectionWizardDataLocation extends DataLocation
 	private static final String OBJECTNAMEPATH = "/objectName";
 	private static final String ONLINEPATH = "/distribution/online/url";
 	private static final String OFFLINEMDEIDUMNAMEPATH = "/distribution/offline/mediumName";
+	
     public CorrectionWizardDataLocation()
     {
     	setLastEvent(DESCRIBE_MAN_NODATA);
@@ -107,6 +108,19 @@ public class CorrectionWizardDataLocation extends DataLocation
 
       
       
+    }
+    
+    /**
+     *  The action to be executed when the "Next" button (pages 1 to last-but-one)
+     *  or "Finish" button(last page) is pressed. May be empty, but if so, must
+     *  return true
+     *
+     *  @return boolean true if wizard should advance, false if not
+     *          (e.g. if a required field hasn't been filled in)
+     */
+    public boolean onAdvanceAction() {
+
+        return onAdvance(false);
     }
     
     /**
@@ -211,7 +225,7 @@ public class CorrectionWizardDataLocation extends DataLocation
     public boolean setPageData(OrderedMap map, String xPathRoot) 
     { 
     	 Log.debug(45,
-    		        "AccessPage.setPageData() called with xPathRoot = " + xPathRoot
+    		        "CorrectionWizardDataLocation.setPageData() called with xPathRoot = " + xPathRoot
     		        + "\n Map = \n" + map);
     	short type = findDistributionType(map, xPathRoot);
     	String value = null;
@@ -220,16 +234,20 @@ public class CorrectionWizardDataLocation extends DataLocation
     	    //// Online data case
     	    case WizardSettings.ONLINE:
     	            value = (String)map.get(xPathRoot+OBJECTNAMEPATH);
+    	            //Log.debug(45, "value for online ojbect name "+value);
     	            if (value != null) 
     				{
     	            	 fileNameFieldOnline.setText(value);
     					  map.remove(xPathRoot+ OBJECTNAMEPATH);
     				}
     	            value = (String)map.get(xPathRoot+ONLINEPATH);
+    	            //Log.debug(45, "value for online url is "+value);
     	            if(value != null)
     	            {
+    	            	//Log.debug(45, "value for online url is (after if stamente "+value);
     	            	urlFieldOnline.setText(value);
     	            	map.remove(xPathRoot+ONLINEPATH);
+    	            	//Log.debug(45, "value for online url is (after reming from map) "+value);
     	            }
     	            distribution= WizardSettings.ONLINE;	            
     	            break;
@@ -278,7 +296,7 @@ public class CorrectionWizardDataLocation extends DataLocation
     {
 
   	    //// Online type
-  	    Object o1 = map.get(xPath + "ONLINEPATH");
+  	    Object o1 = map.get(xPath + ONLINEPATH);
   	    if(o1 != null) 
   	    {
   	    	setLastEvent(DESCRIBE_MAN_ONLINE);
@@ -286,7 +304,7 @@ public class CorrectionWizardDataLocation extends DataLocation
   	    }
   	    else
   	    {
-  	    	o1 = map.get(xPath + "/distribution/offline/mediumName");
+  	    	o1 = map.get(xPath + OFFLINEMDEIDUMNAMEPATH);
   	    	if(o1 != null) 
   	    	{
   	    		 //// Offline type

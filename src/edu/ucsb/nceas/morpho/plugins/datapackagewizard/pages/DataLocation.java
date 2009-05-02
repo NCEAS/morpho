@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2009-05-01 21:41:04 $'
- * '$Revision: 1.47 $'
+ *     '$Date: 2009-05-02 04:34:42 $'
+ * '$Revision: 1.48 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -638,146 +638,176 @@ public class DataLocation extends AbstractUIPage {
    */
   public boolean onAdvanceAction() {
 
-    /**
-     CREATE               - inline/online;  wizard does: man data + man metadata - no TIW
-     IMPORT
-     IMPORT_AUTO          - inline/online;  wizard does: auto data + auto metadata - File->TIW
-     IMPORT_MAN           - inline/online;  wizard does: auto data + man metadata - no TIW
-     DESCRIBE
-     DESCRIBE_AUTO        - offline/online; wizard does: no data + auto metadata - File->TIW
-     DESCRIBE_MAN
-     DESCRIBE_MAN_NODATA  - nodata;         wizard does: no data + man metadata - no TIW
-     DESCRIBE_MAN_ONLINE  - online;         wizard does: no data + man metadata - no TIW
-     DESCRIBE_MAN_OFFLINE - offline;        wizard does: no data + man metadata - no TIW
-    **/
+      return onAdvance(true);
+  }
+  
+  /*
+   * This method will be call on both this page and CorrectionWizardDataLocation page.
+   * setNextPageID -- need to set the next page or not
+   */
+  protected boolean onAdvance(boolean setNextPageID)
+  {
+	  /**
+	     CREATE               - inline/online;  wizard does: man data + man metadata - no TIW
+	     IMPORT
+	     IMPORT_AUTO          - inline/online;  wizard does: auto data + auto metadata - File->TIW
+	     IMPORT_MAN           - inline/online;  wizard does: auto data + man metadata - no TIW
+	     DESCRIBE
+	     DESCRIBE_AUTO        - offline/online; wizard does: no data + auto metadata - File->TIW
+	     DESCRIBE_MAN
+	     DESCRIBE_MAN_NODATA  - nodata;         wizard does: no data + man metadata - no TIW
+	     DESCRIBE_MAN_ONLINE  - online;         wizard does: no data + man metadata - no TIW
+	     DESCRIBE_MAN_OFFLINE - offline;        wizard does: no data + man metadata - no TIW
+	    **/
 
-    File dataFileObj = null;
+	    File dataFileObj = null;
 
-    switch (getLastEvent()) {
+	    switch (getLastEvent()) {
 
-      case CREATE:
-        //no validation required
-        distribution = INLINE_OR_ONLINE;
-        //create a new empty datafile
-        File emptyDataFile = null;
-        try {
-          emptyDataFile = File.createTempFile(TMPFILENAME, null);
-          FileWriter fileWriter = new FileWriter(emptyDataFile);
-          fileWriter.write("");
-        } catch (IOException ex) {
-          Log.debug(1, "error - cannot create a new empty data file!");
-          ex.printStackTrace();
-          return false;
-        }
-        setDataFile(emptyDataFile);
-        setNextPageID(DataPackageWizardInterface.DATA_FORMAT);
-        break;
-        //////
+	      case CREATE:
+	        //no validation required
+	        distribution = INLINE_OR_ONLINE;
+	        //create a new empty datafile
+	        File emptyDataFile = null;
+	        try {
+	          emptyDataFile = File.createTempFile(TMPFILENAME, null);
+	          FileWriter fileWriter = new FileWriter(emptyDataFile);
+	          fileWriter.write("");
+	        } catch (IOException ex) {
+	          Log.debug(1, "error - cannot create a new empty data file!");
+	          ex.printStackTrace();
+	          return false;
+	        }
+	        setDataFile(emptyDataFile);
+	        if(setNextPageID)
+	        {
+	          setNextPageID(DataPackageWizardInterface.DATA_FORMAT);
+	        }
+	        break;
+	        //////
 
-      case IMPORT:
-      case DESCRIBE:
-        //second choice hasn't been made
-        WidgetFactory.hiliteComponent(
-            getNestedJComponent(currentSecondChoicePanel, 1));
-        return false;
-        //////
+	      case IMPORT:
+	      case DESCRIBE:
+	        //second choice hasn't been made
+	        WidgetFactory.hiliteComponent(
+	            getNestedJComponent(currentSecondChoicePanel, 1));
+	        return false;
+	        //////
 
-      case IMPORT_AUTO:
-        dataFileObj = validateDataFileSelection();
-        if (dataFileObj==null) return false;
-        setDataFile(dataFileObj);
-        distribution = INLINE_OR_ONLINE;
-        setNextPageID(DataPackageWizardInterface.TEXT_IMPORT_WIZARD);
-//      WizardSettings.setSummaryText(WizardSettings.?????????);
-        break;
-        //////
+	      case IMPORT_AUTO:
+	        dataFileObj = validateDataFileSelection();
+	        if (dataFileObj==null) return false;
+	        setDataFile(dataFileObj);
+	        distribution = INLINE_OR_ONLINE;
+	        if(setNextPageID)
+	        {
+	          setNextPageID(DataPackageWizardInterface.TEXT_IMPORT_WIZARD);
+	        }
+//	      WizardSettings.setSummaryText(WizardSettings.?????????);
+	        break;
+	        //////
 
-      case IMPORT_MAN:
-        dataFileObj = validateDataFileSelection();
-        if (dataFileObj==null) return false;
-        setDataFile(dataFileObj);
-        distribution = INLINE_OR_ONLINE;
-        setNextPageID(DataPackageWizardInterface.DATA_FORMAT);
-//      WizardSettings.setSummaryText(WizardSettings.?????????);
-        break;
-        //////
+	      case IMPORT_MAN:
+	        dataFileObj = validateDataFileSelection();
+	        if (dataFileObj==null) return false;
+	        setDataFile(dataFileObj);
+	        distribution = INLINE_OR_ONLINE;
+	        if(setNextPageID)
+	        {
+	          setNextPageID(DataPackageWizardInterface.DATA_FORMAT);
+	        }
+//	      WizardSettings.setSummaryText(WizardSettings.?????????);
+	        break;
+	        //////
 
-      case DESCRIBE_AUTO:
-        dataFileObj = validateDataFileSelection();
-        if (dataFileObj==null) return false;
-        setDataFile(dataFileObj);
-        // assume it's offline for now - when we start supporting auto-metadata
-        // generation form online files, this will change
-        distribution = WizardSettings.OFFLINE;
-        setNextPageID(DataPackageWizardInterface.TEXT_IMPORT_WIZARD);
-//      WizardSettings.setSummaryText(WizardSettings.?????????);
-        break;
-        //////
+	      case DESCRIBE_AUTO:
+	        dataFileObj = validateDataFileSelection();
+	        if (dataFileObj==null) return false;
+	        setDataFile(dataFileObj);
+	        // assume it's offline for now - when we start supporting auto-metadata
+	        // generation form online files, this will change
+	        distribution = WizardSettings.OFFLINE;
+	        if(setNextPageID)
+	        {
+	          setNextPageID(DataPackageWizardInterface.TEXT_IMPORT_WIZARD);
+	        }
+//	      WizardSettings.setSummaryText(WizardSettings.?????????);
+	        break;
+	        //////
 
-      case DESCRIBE_MAN:
-        //should never be called, since next question defaults to "no data"
-        break;
-        //////
+	      case DESCRIBE_MAN:
+	        //should never be called, since next question defaults to "no data"
+	        break;
+	        //////
 
-      case DESCRIBE_MAN_NODATA:
-        // go directly to last page
-//        WizardSettings.setSummaryText(WizardSettings.?????????);
-    	  if (fileNameFieldNoData.getText().trim().equals("")) {
-              WidgetFactory.hiliteComponent(fileNameLabelNoData);
-              fileNameFieldNoData.requestFocus();
-              return false;
-            }
-        distribution = WizardSettings.NODATA;
-        setDataFile(null);
-        setNextPageID(DataPackageWizardInterface.DATA_FORMAT);
-        break;
-        //////
+	      case DESCRIBE_MAN_NODATA:
+	        // go directly to last page
+//	        WizardSettings.setSummaryText(WizardSettings.?????????);
+	    	  if (fileNameFieldNoData.getText().trim().equals("")) {
+	              WidgetFactory.hiliteComponent(fileNameLabelNoData);
+	              fileNameFieldNoData.requestFocus();
+	              return false;
+	            }
+	        distribution = WizardSettings.NODATA;
+	        setDataFile(null);
+	        if(setNextPageID)
+	        {
+	          setNextPageID(DataPackageWizardInterface.DATA_FORMAT);
+	        }
+	        break;
+	        //////
 
-      case DESCRIBE_MAN_ONLINE:
-        if (fileNameFieldOnline.getText().trim().equals("")) {
-          WidgetFactory.hiliteComponent(fileNameLabelOnline);
-          fileNameFieldOnline.requestFocus();
-          return false;
-        }
-        WidgetFactory.unhiliteComponent(fileNameLabelOnline);
+	      case DESCRIBE_MAN_ONLINE:
+	        if (fileNameFieldOnline.getText().trim().equals("")) {
+	          WidgetFactory.hiliteComponent(fileNameLabelOnline);
+	          fileNameFieldOnline.requestFocus();
+	          return false;
+	        }
+	        WidgetFactory.unhiliteComponent(fileNameLabelOnline);
 
-        if (urlFieldOnline.getText().trim().equals("")) {
-          WidgetFactory.hiliteComponent(urlLabelOnline);
-          urlFieldOnline.requestFocus();
-          return false;
-        }
-        WidgetFactory.unhiliteComponent(urlLabelOnline);
+	        if (urlFieldOnline.getText().trim().equals("")) {
+	          WidgetFactory.hiliteComponent(urlLabelOnline);
+	          urlFieldOnline.requestFocus();
+	          return false;
+	        }
+	        WidgetFactory.unhiliteComponent(urlLabelOnline);
 
-        distribution = WizardSettings.ONLINE;
-        setDataFile(null);
-        setNextPageID(DataPackageWizardInterface.DATA_FORMAT);
-//      WizardSettings.setSummaryText(WizardSettings.?????????);
-//      WizardSettings.setDataLocation(urlFieldOnline.getText().trim());
-        break;
-        //////
+	        distribution = WizardSettings.ONLINE;
+	        setDataFile(null);
+	        if(setNextPageID)
+	        {
+	          setNextPageID(DataPackageWizardInterface.DATA_FORMAT);
+	        }
+//	      WizardSettings.setSummaryText(WizardSettings.?????????);
+//	      WizardSettings.setDataLocation(urlFieldOnline.getText().trim());
+	        break;
+	        //////
 
-      case DESCRIBE_MAN_OFFLINE:
+	      case DESCRIBE_MAN_OFFLINE:
 
-        //if (medNameField.getText().trim().equals(EMPTY_STRING)) {
-    	if(Util.isBlank(medNameField.getText())){
-          WidgetFactory.hiliteComponent(medNameLabel);
-          return false;
-        }
-        WidgetFactory.unhiliteComponent(medNameLabel);
+	        //if (medNameField.getText().trim().equals(EMPTY_STRING)) {
+	    	if(Util.isBlank(medNameField.getText())){
+	          WidgetFactory.hiliteComponent(medNameLabel);
+	          return false;
+	        }
+	        WidgetFactory.unhiliteComponent(medNameLabel);
 
-        if (objNameField.getText().trim().equals(EMPTY_STRING)) {
-          WidgetFactory.hiliteComponent(objNameLabel);
-          return false;
-        }
-        WidgetFactory.unhiliteComponent(objNameLabel);
+	        if (objNameField.getText().trim().equals(EMPTY_STRING)) {
+	          WidgetFactory.hiliteComponent(objNameLabel);
+	          return false;
+	        }
+	        WidgetFactory.unhiliteComponent(objNameLabel);
 
-        distribution = WizardSettings.OFFLINE;
-        setDataFile(null);
-        setNextPageID(DataPackageWizardInterface.DATA_FORMAT);
-        break;
-        //////
-    }
-    return true;
+	        distribution = WizardSettings.OFFLINE;
+	        setDataFile(null);
+	        if(setNextPageID)
+	        {
+	          setNextPageID(DataPackageWizardInterface.DATA_FORMAT);
+	        }
+	        break;
+	        //////
+	    }
+	    return true;
   }
 
 
