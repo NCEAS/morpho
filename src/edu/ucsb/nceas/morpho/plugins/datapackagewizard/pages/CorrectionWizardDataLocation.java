@@ -281,6 +281,7 @@ public class CorrectionWizardDataLocation extends DataLocation
     	    	  break;
     	           
     	}
+    	q3Widget.disableAllRadioButtons(); //doesn't allow user to modify the distribution type
     	 boolean canHandleAllData = map.isEmpty();
 		 if (!canHandleAllData) 
 		 {
@@ -300,6 +301,7 @@ public class CorrectionWizardDataLocation extends DataLocation
   	    if(o1 != null) 
   	    {
   	    	setLastEvent(DESCRIBE_MAN_ONLINE);
+  	    	q3Widget.click(1);
   	    	return WizardSettings.ONLINE;
   	    }
   	    else
@@ -310,6 +312,7 @@ public class CorrectionWizardDataLocation extends DataLocation
   	    		 //// Offline type
   	    	    // 1.have offline element
   	    		setLastEvent(DESCRIBE_MAN_OFFLINE);
+  	    		q3Widget.click(2);
   	    		return WizardSettings.OFFLINE;
   	    	}
   	    	else
@@ -319,6 +322,7 @@ public class CorrectionWizardDataLocation extends DataLocation
   	    		//Actually, this is not right, it can have be inline data. 
   	    		//But we assume this case is no distribution. This will be sorted out in setPageData to check the if the map eventually is empty.
   	    		setLastEvent(DESCRIBE_MAN_NODATA);
+  	    		q3Widget.click(0);
   	    		return WizardSettings.NODATA;
   	    	}
   	    }
