@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2009-04-24 20:32:17 $'
- * '$Revision: 1.27 $'
+ *     '$Date: 2009-05-02 21:48:38 $'
+ * '$Revision: 1.28 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -97,6 +97,7 @@ public interface DataPackageWizardInterface {
 	public static final String CUSTOM_UNIT_PAGE	  = "CUSTOM_UNIT_PAGE";
   public static final String GENERIC_VOCABULARY	  = "GENERIC_VOCABULARY";
   public static final String NBII_THESAURUS_LOOKUP	  = "NBII_THESAURUS_LOOKUP";
+  public static final String CORRECTION_DATA_LOCATION = "CORRECTION_DATA_LOCATION";
   
 
 
