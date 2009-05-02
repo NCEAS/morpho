@@ -344,7 +344,7 @@
     <infoForModifyingData>
              <loadExistDataPath>/eml:eml/dataset/dataTable/physical</loadExistDataPath>
              <loadExistDataPath>./distribution/offline/mediumName</loadExistDataPath>
-             <xpathForCreatingOrderedMap></xpathForCreatingOrderedMap>
+             <xpathForCreatingOrderedMap>/distribution/offline</xpathForCreatingOrderedMap>
              <xpathForSettingPageData></xpathForSettingPageData>
              <newDataDocumentName>mediumName</newDataDocumentName>
              <xpathForGettingPageData></xpathForGettingPageData>
