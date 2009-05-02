@@ -7,8 +7,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2009-05-02 04:34:42 $'
- * '$Revision: 1.48 $'
+ *     '$Date: 2009-05-02 20:10:15 $'
+ * '$Revision: 1.49 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1149,7 +1149,7 @@ public class DataLocation extends AbstractUIPage {
   private JPanel currentSecondChoicePanel;
   private JPanel thirdChoiceContainer;
   private JPanel currentThirdChoicePanel;
-  protected JPanel q3Widget;
+  protected ThirdChoiceWidget q3Widget;
   private short  INLINE_OR_ONLINE;
   private File   dataFileObj;
 
@@ -1172,6 +1172,7 @@ public class DataLocation extends AbstractUIPage {
 
 
 
+ 
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
@@ -1180,7 +1181,7 @@ public class DataLocation extends AbstractUIPage {
 
   class ThirdChoiceWidget extends JPanel {
 
-    private JPanel q3RadioPanel;
+    private Container realRadioButtonPanel;
     //private JPanel blankChoicePanel;
     private JPanel currentChoicePanel;
 
@@ -1188,6 +1189,61 @@ public class DataLocation extends AbstractUIPage {
     public ThirdChoiceWidget() {
 
       init();
+    }
+    
+    /**
+     * Programmatically to click a radio button in this widget.
+     * @param key
+     */
+    public void click(int key)
+    {
+    	if(realRadioButtonPanel != null)
+    	{
+    		try
+    		{
+	    		JRadioButton jrb = (JRadioButton)realRadioButtonPanel.getComponent(key);
+	    		Log.debug(40, "The radio button will be click is "+jrb.getText());
+	    		if(jrb != null)
+	    		{
+	    			Log.debug(40, "Click the radio button "+jrb.getText());
+	    			jrb.doClick();
+	    		}
+    		}
+    		catch(Exception e)
+    		{
+    		    Log.debug(30, "Couldn't doClick the button with index "+key +" in ThridQuestionWidget "+e.getMessage());	
+    		}
+    	}
+    }
+    
+    /**
+     * Disable all radio buttons in the widget.
+     */
+    public void disableAllRadioButtons()
+    {
+    	if(realRadioButtonPanel != null)
+    	{
+    		try
+    		{
+    			Component[] list = realRadioButtonPanel.getComponents();
+    			if (list != null)
+    			{
+    				for(int i=0; i<list.length; i++)
+    				{
+			    		JRadioButton jrb = (JRadioButton) list[i];
+			    		Log.debug(40, "The radio button will be disable is "+jrb.getText());
+			    		if(jrb != null)
+			    		{
+			    			jrb.setEnabled(false);
+			    		}
+    				}
+    			}
+    		}
+    		catch(Exception e)
+    		{
+    		    Log.debug(30, "Couldn't disable buttons in ThridQuestionWidget "+e.getMessage());	
+    		}
+    	}
     }
 
     private void init() {
@@ -1208,7 +1264,16 @@ public class DataLocation extends AbstractUIPage {
         public void actionPerformed(ActionEvent e) {
 
           Log.debug(45, "QUESTION 3 - NOT AVAILABLE/ONLINE/ARCHIVED: "+e.getActionCommand());
-
+           /*Component[] list = realRadioButtonPanel.getComponents();
+           if(list != null)
+           {
+        	   Log.debug(5, "Compoent size is "+list.length);
+        	   for(int i =0 ;i <list.length; i++)
+        	   {
+        		   JRadioButton comp = (JRadioButton) list[i];
+        		   Log.debug(5, "the compnet "+i+ "is "+comp.getText());
+        	   }
+           }*/
           if (e.getActionCommand().equals(Q3_LABELS[0])) {
 
             // NOT AVAILABLE
@@ -1246,8 +1311,13 @@ public class DataLocation extends AbstractUIPage {
       q3RadioPanel.setMaximumSize(Q3_RADIOPANEL_DIMS);
 
       q3RadioPanel.add(WidgetFactory.makeLabel(Q3_TITLE, true));
-      q3RadioPanel.add(WidgetFactory.makeRadioPanel(Q3_LABELS, 0, q3Listener));
+      JPanel radioButtonPanel = WidgetFactory.makeRadioPanel(Q3_LABELS, 0, q3Listener);
+      q3RadioPanel.add(radioButtonPanel);
       q3RadioPanel.add(Box.createGlue());
+      
+      //Get the real panel contains the radio button
+      realRadioButtonPanel = (Container)radioButtonPanel.getComponent(1);
+
 
       currentChoicePanel = nodataPanel;
 
