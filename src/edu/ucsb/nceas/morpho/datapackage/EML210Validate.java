@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2009-05-02 01:11:40 $'
- * '$Revision: 1.13 $'
+ *     '$Date: 2009-05-02 01:19:03 $'
+ * '$Revision: 1.14 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -111,7 +111,7 @@ public class EML210Validate extends DefaultHandler implements ErrorHandler
     private int temporalCoverageIndex = 0;
     private int taxonCoverageIndex = 0;
     private int keywordSetIndex = 0;
-    private int keywordIndex = 0;
+    //private int keywordIndex = 0;
     private int topAccessAllowIndex = 0;
     private int topAccessDenyIndex = 0;
     private int datatableAccessAllowIndex = 0;
@@ -228,13 +228,13 @@ public class EML210Validate extends DefaultHandler implements ErrorHandler
         textBuffer = null;
         textBuffer = new StringBuffer();
         //when close an attribute, the attribute index should increase one.(only work with dataTable)
-        if(hitDataTable && qName.equals(ATTRIBUTE))
+        if(hitDataTable && qName.equals(ATTRIBUTE) && isGrandChildOf(DATATABLE))
         {
         	attributeIndex++;
         }
         
         //when close an physical element, physical index should increase one (only work with dataTable)
-        if(hitDataTable && qName.equals(PHYSICAL))
+        if(hitDataTable && qName.equals(PHYSICAL) && isChildOf(DATATABLE))
         {
         	physicalIndex++;
         }
