@@ -319,6 +319,40 @@
     <wizardPageClassParameter>true</wizardPageClassParameter>
   </mapping>
   <mapping>
+    <root>/eml:eml/dataset/dataTable/physical</root>
+    <xpath>objectName</xpath>
+    <xpath>distribution/online/url</xpath>
+    <xpath>distribution/offline/mediumName</xpath>
+    <infoForModifyingData>
+             <loadExistDataPath>/eml:eml/dataset/dataTable/physical</loadExistDataPath>
+             <loadExistDataPath>./objectName</loadExistDataPath>
+             <xpathForCreatingOrderedMap></xpathForCreatingOrderedMap>
+             <xpathForSettingPageData></xpathForSettingPageData>
+             <newDataDocumentName>objectName</newDataDocumentName>
+             <xpathForGettingPageData></xpathForGettingPageData>
+             <key>/objectName</key>
+    </infoForModifyingData>
+    <infoForModifyingData>
+             <loadExistDataPath>/eml:eml/dataset/dataTable/physical</loadExistDataPath>
+             <loadExistDataPath>./distribution/online/url</loadExistDataPath>
+             <xpathForCreatingOrderedMap>/distribution/online</xpathForCreatingOrderedMap>
+             <xpathForSettingPageData></xpathForSettingPageData>
+             <newDataDocumentName>url</newDataDocumentName>
+             <xpathForGettingPageData></xpathForGettingPageData>
+             <key>/distribution/online/url</key>
+    </infoForModifyingData>
+    <infoForModifyingData>
+             <loadExistDataPath>/eml:eml/dataset/dataTable/physical</loadExistDataPath>
+             <loadExistDataPath>./distribution/offline/mediumName</loadExistDataPath>
+             <xpathForCreatingOrderedMap></xpathForCreatingOrderedMap>
+             <xpathForSettingPageData></xpathForSettingPageData>
+             <newDataDocumentName>mediumName</newDataDocumentName>
+             <xpathForGettingPageData></xpathForGettingPageData>
+             <key>/distribution/offline/mediumName</key>
+    </infoForModifyingData>
+    <wizardPageClass>edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.CorrectionWizardDataLocation</wizardPageClass>
+  </mapping>
+   <mapping>
     <root>/eml:eml/dataset/dataTable/physical/distribution/access</root>
     <xpath>deny/principal</xpath>
     <xpath>deny/permission</xpath>
