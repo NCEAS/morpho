@@ -337,7 +337,7 @@
              <loadExistDataPath>./distribution/online/url</loadExistDataPath>
              <xpathForCreatingOrderedMap>/distribution/online</xpathForCreatingOrderedMap>
              <xpathForSettingPageData></xpathForSettingPageData>
-             <newDataDocumentName>url</newDataDocumentName>
+             <newDataDocumentName>distribution</newDataDocumentName>
              <xpathForGettingPageData></xpathForGettingPageData>
              <key>/distribution/online/url</key>
     </infoForModifyingData>
@@ -346,7 +346,7 @@
              <loadExistDataPath>./distribution/offline/mediumName</loadExistDataPath>
              <xpathForCreatingOrderedMap>/distribution/offline</xpathForCreatingOrderedMap>
              <xpathForSettingPageData></xpathForSettingPageData>
-             <newDataDocumentName>mediumName</newDataDocumentName>
+             <newDataDocumentName>distribution</newDataDocumentName>
              <xpathForGettingPageData></xpathForGettingPageData>
              <key>/distribution/offline/mediumName</key>
     </infoForModifyingData>
