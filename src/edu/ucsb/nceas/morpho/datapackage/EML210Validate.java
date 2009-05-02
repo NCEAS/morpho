@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2009-04-24 00:02:05 $'
- * '$Revision: 1.12 $'
+ *     '$Date: 2009-05-02 01:11:40 $'
+ * '$Revision: 1.13 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,6 +31,7 @@ import java.util.Stack;
 import java.util.Vector;
 
 import edu.ucsb.nceas.morpho.util.Log;
+import edu.ucsb.nceas.utilities.XMLUtilities;
 
 import org.xml.sax.Attributes;
 import org.xml.sax.ContentHandler;
@@ -90,6 +91,7 @@ public class EML210Validate extends DefaultHandler implements ErrorHandler
 	 private final static String PHYSICAL = "physical";
 	 private final static String DISTRIBUTION = "distribution";
 	 private final static String EML = "eml:eml";
+	 private final static String ATTRIBUTELIST = "attributeList";
 	 
 	// SAX parser
 	XMLReader parser = null;
@@ -114,6 +116,7 @@ public class EML210Validate extends DefaultHandler implements ErrorHandler
     private int topAccessDenyIndex = 0;
     private int datatableAccessAllowIndex = 0;
     private int datatableAccessDenyIndex = 0;
+    private int physicalIndex = 0;
     
     
 	/**
@@ -230,8 +233,14 @@ public class EML210Validate extends DefaultHandler implements ErrorHandler
         	attributeIndex++;
         }
         
+        //when close an physical element, physical index should increase one (only work with dataTable)
+        if(hitDataTable && qName.equals(PHYSICAL))
+        {
+        	physicalIndex++;
+        }
+        
         //when close an entity, the entity index should be increase one and attribute index should be set to 0
-        if(qName.equals(DATATABLE))
+        if(qName.equals(DATATABLE) && isChildOf(DATASET))
         {
         	dataTableIndex++;
         	//attributeIndex = 0;
@@ -378,58 +387,63 @@ public class EML210Validate extends DefaultHandler implements ErrorHandler
     		int length = stack.size();
     		for (int i= 0; i<length; i++)
     		{
+    			String fullPathWithoutPredicate = XMLUtilities.removeAllPredicates(fullPath);
     			String value =(String)stack.elementAt(i);
-    			if(value != null && value.equals(DATATABLE))
+    			if(value != null && value.equals(DATATABLE) && fullPathWithoutPredicate.endsWith(DATASET))
     			{
     				fullPath=fullPath+SLASH+value+LEFTBRACKET+dataTableIndex+RIGHTBRACKET;
     			}
-    			else if(value != null && hitDataTable && value.equals(ATTRIBUTE))
+    			else if(value != null  && value.equals(ATTRIBUTE) && fullPathWithoutPredicate.endsWith(DATASET+SLASH+DATATABLE+SLASH+ATTRIBUTELIST))
     			{
     				fullPath=fullPath+SLASH+value+LEFTBRACKET+attributeIndex+RIGHTBRACKET;
     			}
-    			else if (value != null && value.equals(CREATOR) && fullPath.endsWith(DATASET))
+    			else if (value != null && value.equals(CREATOR) && fullPathWithoutPredicate.endsWith(DATASET))
     			{
     				fullPath=fullPath+SLASH+value+LEFTBRACKET+creatorIndex+RIGHTBRACKET;
     			}
-    			else if (value != null && value.equals(CONTACT) && fullPath.endsWith(DATASET))
+    			else if (value != null && value.equals(CONTACT) && fullPathWithoutPredicate.endsWith(DATASET))
     			{
     				fullPath=fullPath+SLASH+value+LEFTBRACKET+contactIndex+RIGHTBRACKET;
     			}
-    			else if (value != null && value.equals(ASSOCIATEDPARTY) && fullPath.endsWith(DATASET))
+    			else if (value != null && value.equals(ASSOCIATEDPARTY) && fullPathWithoutPredicate.endsWith(DATASET))
     			{
     				fullPath=fullPath+SLASH+value+LEFTBRACKET+associatedPartyIndex+RIGHTBRACKET;
     			}
-    			else if (value != null && value.equals(KEYWORDSET) && fullPath.endsWith(DATASET))
+    			else if (value != null && value.equals(KEYWORDSET) && fullPathWithoutPredicate.endsWith(DATASET))
     			{
     				fullPath=fullPath+SLASH+value+LEFTBRACKET+keywordSetIndex+RIGHTBRACKET;
     			}
-    			else if (value != null && value.equals(GEOGRAPHICCOVERAGE) && fullPath.endsWith(DATASET+SLASH+COVERAGE))
+    			else if (value != null && value.equals(GEOGRAPHICCOVERAGE) && fullPathWithoutPredicate.endsWith(DATASET+SLASH+COVERAGE))
     			{
     				fullPath=fullPath+SLASH+value+LEFTBRACKET+geoCoverageIndex+RIGHTBRACKET;
     			}
-    			else if (value != null && value.equals(TEMPORALCOVERAGE) && fullPath.endsWith(DATASET+SLASH+COVERAGE))
+    			else if (value != null && value.equals(TEMPORALCOVERAGE) && fullPathWithoutPredicate.endsWith(DATASET+SLASH+COVERAGE))
     			{
     				fullPath=fullPath+SLASH+value+LEFTBRACKET+temporalCoverageIndex+RIGHTBRACKET;
     			}
-    			else if (value != null && value.equals(TAXONOMICCOVERAGE) && fullPath.endsWith(DATASET+SLASH+COVERAGE))
+    			else if (value != null && value.equals(TAXONOMICCOVERAGE) && fullPathWithoutPredicate.endsWith(DATASET+SLASH+COVERAGE))
     			{
     				fullPath=fullPath+SLASH+value+LEFTBRACKET+taxonCoverageIndex+RIGHTBRACKET;
     			}
-    			else if (value != null && value.equals(ALLOW) && fullPath.endsWith(EML+SLASH+ACCESS))
+    			else if (value != null && value.equals(ALLOW) && fullPathWithoutPredicate.endsWith(EML+SLASH+ACCESS))
     			{
     				fullPath=fullPath+SLASH+value+LEFTBRACKET+topAccessAllowIndex+RIGHTBRACKET;
     			}
-    			else if (value != null && value.equals(DENY) && fullPath.endsWith(EML+SLASH+ACCESS))
+    			else if (value != null && value.equals(DENY) && fullPathWithoutPredicate.endsWith(EML+SLASH+ACCESS))
     			{
     				fullPath=fullPath+SLASH+value+LEFTBRACKET+topAccessDenyIndex+RIGHTBRACKET;
     			}
-    			else if (value != null && value.equals(DENY) && fullPath.endsWith(PHYSICAL+SLASH+DISTRIBUTION+SLASH+ACCESS) && fullPath.contains(DATATABLE) )
+    			else if (value != null && value.equals(DENY) && fullPathWithoutPredicate.endsWith(DATATABLE+SLASH+PHYSICAL+SLASH+DISTRIBUTION+SLASH+ACCESS))
     			{
     				fullPath=fullPath+SLASH+value+LEFTBRACKET+datatableAccessDenyIndex+RIGHTBRACKET;
     			}
-    			else if (value != null && value.equals(ALLOW) && fullPath.endsWith(PHYSICAL+SLASH+DISTRIBUTION+SLASH+ACCESS) && fullPath.contains(DATATABLE))
+    			else if (value != null && value.equals(ALLOW) && fullPathWithoutPredicate.endsWith(DATATABLE+SLASH+PHYSICAL+SLASH+DISTRIBUTION+SLASH+ACCESS))
     			{
     				fullPath=fullPath+SLASH+value+LEFTBRACKET+datatableAccessAllowIndex+RIGHTBRACKET;
+    			}
+    			else if (value != null && value.equals(PHYSICAL)  && fullPathWithoutPredicate.endsWith(DATASET+SLASH+DATATABLE))
+    			{
+    				fullPath=fullPath+SLASH+value+LEFTBRACKET+physicalIndex+RIGHTBRACKET;
     			}
     			else
     			{
