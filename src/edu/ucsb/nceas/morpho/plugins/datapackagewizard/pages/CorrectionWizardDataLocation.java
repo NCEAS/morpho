@@ -1,3 +1,28 @@
+/**
+ *  '$RCSfile: CorrectionWizardDataLocation.java,v $'
+ *    Purpose: A widget that displays data of multiple columns from multiple tables
+ *						 in a columnar fashion and allows the user to select multiple columns
+ * 						 using checkboxes
+ *  Copyright: 2000 Regents of the University of California and the
+ *             National Center for Ecological Analysis and Synthesis
+ *    Release: @release@
+ *
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
+
 package edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages;
 
 import java.awt.BorderLayout;
@@ -41,6 +66,7 @@ import edu.ucsb.nceas.utilities.OrderedMap;
  */
 public class CorrectionWizardDataLocation extends DataLocation
 {
+	private final String pageID       = DataPackageWizardInterface.CORRECTION_DATA_LOCATION;
 	private static final String OBJECTNAMEPATH = "/objectName";
 	private static final String ONLINEPATH = "/distribution/online/url";
 	private static final String OFFLINEMDEIDUMNAMEPATH = "/distribution/offline/mediumName";
@@ -66,20 +92,9 @@ public class CorrectionWizardDataLocation extends DataLocation
   	    Box topBox = Box.createVerticalBox();
 
   	    JLabel desc = WidgetFactory.makeHTMLLabel(
-  	       "<p><b>Describe and optionally include a data "
-  	      +"table in your data package.</b> You may create a table from "
-  	      +"scratch and populate it using Morpho's spreadsheet-style data editor, "
-  	      +"or you can import certain types of existing data files and use the "
-  	      +"wizard to automatically extract much of the documentation from the data "
-  	      +"file itself. If you "
-  	      +"choose the second option, you will be prompted to review the "
-  	      +"information that "
-  	      +"is extracted and provide any required fields that can not be generated "
-  	      +"automatically.<br></br></p>"
-  	      +"<p>You can also choose to manually enter all of the required fields "
-  	      +"(rather than using the metadata extractor), which is useful for "
-  	      +"proprietary file types like Excel, or other "
-  	      +"file types that are not yet supported.</p>", 7);
+  	       "<p><b>Describe the data location and/or file name of  "
+  	      +"your data package.</b> This page only helps you to fill some non-empty "
+  	      +"value into the required field. You shouldn't use it to import any new data table.<p>", 7);
   	    topBox.add(desc);
 
   	    onlinePanel  = getOnlinePanel();
@@ -121,6 +136,16 @@ public class CorrectionWizardDataLocation extends DataLocation
     public boolean onAdvanceAction() {
 
         return onAdvance(false);
+    }
+    
+    /**
+     *  gets the unique ID for this wizard page
+     *
+     *  @return   the unique ID String for this wizard page
+     */
+    public String getPageID() 
+    { 
+    	return pageID; 
     }
     
     /**
