@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2009-04-21 16:33:40 $'
- * '$Revision: 1.4 $'
+ *     '$Date: 2009-05-03 01:45:58 $'
+ * '$Revision: 1.5 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -45,6 +45,9 @@ public class ModifyingPageDataInfo
 	private String pathForCreatingOrderedMap = null;
 	private String pathForSettingPageData = "";
 	private String key = null;
+	private Vector prevNodeList = new Vector();// the possible node can be in front of this node.
+	                                                          // for locating the position when inserting the node
+	private Vector nextNodeList = new Vector();// the possible node can be next to this node
 	
 	public String getPathForSettingPageData() {
 		return pathForSettingPageData;
@@ -71,6 +74,24 @@ public class ModifyingPageDataInfo
 	{
 		LoadDataPath newPath = new LoadDataPath(path);
 		this.loadExistingDataPath.add(newPath);
+	}
+	
+	/**
+	 * Add a previous node name into the list
+	 * @param prevNodeName
+	 */
+	public void addPrevNode(String prevNodeName)
+	{
+		this.prevNodeList.add(prevNodeName);
+	}
+	
+	/**
+	 * Add a next node name into the list
+	 * @param prevNodeName
+	 */
+	public void addNextNode(String nextNodeName)
+	{
+		this.nextNodeList.add(nextNodeName);
 	}
 	
 	/**
@@ -163,6 +184,8 @@ public class ModifyingPageDataInfo
 			newInfo.setPathForCreatingOrderedMap(info.getPathForCreatingOrderedMap());
 			newInfo.setPathForSettingPageData(info.getPathForSettingPageData());
 			newInfo.setKey(info.getKey());
+			newInfo.setNextNodeList(info.getNextNodeList());
+			newInfo.setPrevNodeList(info.getPrevNodeList());
 			Vector dataPathList = info.getLoadExistingDataPath();
 			if(dataPathList != null)
 			{
@@ -183,5 +206,21 @@ public class ModifyingPageDataInfo
 
 	public void setKey(String key) {
 		this.key = key;
+	}
+
+	public Vector getPrevNodeList() {
+		return prevNodeList;
+	}
+
+	public void setPrevNodeList(Vector prevNodeList) {
+		this.prevNodeList = prevNodeList;
+	}
+
+	public Vector getNextNodeList() {
+		return nextNodeList;
+	}
+
+	public void setNextNodeList(Vector nextNodeList) {
+		this.nextNodeList = nextNodeList;
 	}
 }
