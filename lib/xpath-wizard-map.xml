@@ -27,6 +27,12 @@
              <xpathForGettingPageData></xpathForGettingPageData>
              <key>/abstract/para[1]</key>
              <genericName>abstract</genericName>
+             <prevNode>series</prevNode>
+             <prevNode>language</prevNode>
+             <prevNode>pubDate</prevNode>
+             <prevNode>associatedParty</prevNode>
+             <prevNode>metadataProvider</prevNode>
+             <prevNode>creator</prevNode>
      </infoForModifyingData>
     <wizardPageClass>edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.General</wizardPageClass>
   </mapping>
@@ -314,6 +320,7 @@
              <newDataDocumentName>entityDescription</newDataDocumentName>
              <xpathForGettingPageData></xpathForGettingPageData>
              <key>/entityDescription</key>
+             <prevNode>entityName</prevNode><!-- for locating the position when inserting the node-->
      </infoForModifyingData>
     <wizardPageClass>edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.Entity</wizardPageClass>
     <wizardPageClassParameter>true</wizardPageClassParameter>
