@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2009-04-30 02:52:11 $'
- * '$Revision: 1.16 $'
+ *     '$Date: 2009-05-03 01:47:43 $'
+ * '$Revision: 1.17 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -207,7 +207,7 @@ public class CorrectionWizardContainerFrame extends WizardContainerFrame
 		        	  Log.debug(30, "the key from info is "+key);
 		        	  String value = (String)data.get(key);
 		        	  Log.debug(30, "the data  for key "+key+" is "+value);
-		        	  if (value == null)
+		        	  if (value == null || value.trim().equals(""))
 		        	  {
 		        		  dataPackage.deleteSubTree(info);
 		        		  Log.debug(30, "Since the new value from correction page wizard is null, we need to delete the old subtree, not replace the old tree");
@@ -227,14 +227,6 @@ public class CorrectionWizardContainerFrame extends WizardContainerFrame
 			          if (newSubTree != null)
 			          {
 			        	  check = dataPackage.replaceSubTree(info, newSubTree);
-			        	  /*Vector pathObjList = info.getLoadExistingDataPath();
-			        	  LoadDataPath pathObj0 = (LoadDataPath) pathObjList.elementAt(0);
-			        	    int index =   pathObj0.getPosition();
-			        	  Log.debug(45, "before deleting subtree =====================");
-			              dataPackage.deleteSubtree(info.getGenericName(), index);
-			              Log.debug(45, "after deleting subtree and insert new tree====================="+newSubTree);
-			              // add to the datapackage
-			              check = dataPackage.insertSubtree(info.getGenericName(), newSubTree, index);*/
 			          }
 		             if (check != null) 
 			         {
@@ -242,8 +234,17 @@ public class CorrectionWizardContainerFrame extends WizardContainerFrame
 			          } 
 			          else 
 			          {
-			            Log.debug(5, "** ERROR: Unable to add new subtree into package **");
-			          }
+			        	//we couldn't replace the subtree. we will try insert
+			        	check = dataPackage.insertSubtree(info, newSubTree);
+			        	if (check == null)
+			        	{
+			               Log.debug(5, "** ERROR: Unable to add new subtree into package **");
+			        	}
+			        	else
+			        	{
+			        		Log.debug(45, "insert new subtree to package...");
+			        	}
+			         }
 	
 	          
 	      }
