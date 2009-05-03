@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2009-04-30 02:52:11 $'
- * '$Revision: 1.142 $'
+ *     '$Date: 2009-05-03 01:49:02 $'
+ * '$Revision: 1.143 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1063,6 +1063,138 @@ public abstract class AbstractDataPackage extends MetadataObject
       return null;
     }
   }
+  
+  
+  /**
+   * inserts subtree rooted at Node, at location identified by MofiyingPageDataInfo
+   * object. Returns root Node of inserted subtree, or null if
+   * target location not found, so caller can determine whether insertion was
+   * successful.
+   * Note: this is only be used in Correction wizard and we have any assumption
+   * that the node doesn't existed (failed to replace, then insert). We should user it
+   * very carefully.
+   *
+   * @param ModifyingPageDataInfo info has the info where to insert.
+   * @param Node subtree root Node
+   * @return root Node of inserted subtree, or null if target location not
+   * found, so caller can determine whether insertion was successful
+   */
+  public Node insertSubtree(ModifyingPageDataInfo info, Node subtreeRootNode) 
+  {
+   
+	  if(info == null || subtreeRootNode == null)
+	  {
+		  Log.debug(30, "the ModifyingPageDataInfo object or the inserting node is null");
+		  return null;
+	  }
+     
+      try
+      {
+    	boolean previous = true;
+    	Vector nodeList = info.getPrevNodeList();
+    	//determine to use which list, previousList or nextList
+    	if (nodeList == null && nodeList.isEmpty())
+    	{
+    		//previous list is empty, try nextList
+    		nodeList = info.getNextNodeList();
+    		if(nodeList != null && !nodeList.isEmpty())
+    		{
+    			//set previous to false (using nextList)
+    			previous = false;
+    		}
+    		else
+    		{
+    			// no previous or next list. return null
+    			 Log.debug(15, "\n** Error in AbstractDataPackage insertSubtree():\n"
+    		                + "There is no neither prevNodeList or nextNodeList in lib/xpath-wizard-map.xml "
+    		                +"for this ModifyingPageDataInfo"+info.getDocumentName());
+    		            return null;
+    		}
+    	}
+         
+  	  Vector loadPathObjList = info.getLoadExistingDataPath();
+	  if (loadPathObjList != null)
+	  {
+		  Document thisDom = getMetadataNode().getOwnerDocument();
+	      Node newSubtree = thisDom.importNode(subtreeRootNode, true); // 'true' imports children
+		  Log.debug(46, "In loadPathObjectList is not null branch in handleSubtree method");
+		  Node parentNode = metadataNode; // start from document root
+		  for(int i=0; i<loadPathObjList.size(); i++)
+		  {
+			  int lastIndexOfPathList = loadPathObjList.size() -1;
+			  LoadDataPath pathObj = (LoadDataPath)loadPathObjList.elementAt(i);
+			  if (pathObj != null)
+			  {
+				  String path = pathObj.getPath();
+				  int position = pathObj.getPosition();
+				  Log.debug(45, "Handle path "+path+" with position "+position +" in insertSubTree method");
+				  NodeList nodelist = XMLUtilities.getNodeListWithXPath(parentNode, path);
+				  if(nodelist != null && nodelist.getLength() >0)
+				  {
+				    	//we still find the the subtree exit, we should reset parent node and contiue go head.
+			    		parentNode = nodelist.item(position);			    		
+				    	if(i == lastIndexOfPathList)
+				    	{
+				    		//this is the deep subtree and it still have value. So we can't insert it (we only insert the subtree doesn' exist).
+				    		Log.debug(30, "find the deepest subtree for path "+path +" still has value. We don't need to insert the new subtee");
+				    		return null;
+				    	}
+				    	
+				    }
+				    else
+				    {
+				    	// at this level, the subtree doesn't exist. This means we can insert the subtree now
+				    	for (int k=0;k<nodeList.size();k++) 
+				    	{
+  				             String  pathFromFile = (String)nodeList.elementAt(k);
+
+				              NodeList temp = XMLUtilities.getNodeListWithXPath(parentNode, pathFromFile);
+				              if ((temp!=null)&&(temp.getLength()>0)) {
+				                Log.debug(40, "found the exist path: "+pathFromFile);
+				                if (!previous)
+				                {
+				                  Log.debug(40, "In using nextNodeList path");
+				                  Node nextNode = temp.item(0);
+				                  Node par = nextNode.getParentNode();
+				                  par.insertBefore(newSubtree, nextNode);
+				                  return newSubtree;
+				                }
+				                else
+				                {
+				                	 Log.debug(40, "In using previousNodeList path"); 
+				                     Node prevNode = temp.item(temp.getLength()-1);
+				                     Document doc = prevNode.getOwnerDocument();
+				                     Node nextNode = prevNode.getNextSibling();
+				                     Node par = prevNode.getParentNode();
+				                     if (nextNode==null) 
+				                     { // no next sibling
+				                       par.appendChild(newSubtree);
+				                     }
+				                     else 
+				                     {
+				                       par.insertBefore(newSubtree, nextNode);
+				                     }
+				                     return newSubtree;
+				                }
+				              }
+				         } //
+				    }
+			
+				     				  
+			  }
+		  }
+	    }     
+      }
+      catch (Exception w) 
+      {
+        Log.debug(15, "Error in 'insertSubtree method in AbstractDataPackage");
+        w.printStackTrace();
+        return null;
+      }
+     
+      return null;
+  }
+   
   
   /**
    * Replace a subtree base on the given information. If not success, null will return
