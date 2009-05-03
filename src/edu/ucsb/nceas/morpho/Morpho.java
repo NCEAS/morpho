@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2009-04-28 19:38:29 $'
- * '$Revision: 1.95 $'
+ *     '$Date: 2009-05-03 22:56:52 $'
+ * '$Revision: 1.96 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -970,16 +970,27 @@ public class Morpho
                                 return null;
                             }
                         }
+                        else if ("https".equals(protocol)) {
+                            try {
+                                URLStreamHandler urlsh =
+                                    new HTTPClient.https.Handler();
+                                return urlsh;
+                            } catch (Exception e) {
+                                System.out.println(
+                                    "Error setting URL StreamHandler!");
+                                return null;
+                            }
+                        }
                         return null;
                     }
                 });
 
             // Set the keystore used
-            System.setProperty("javax.net.ssl.trustStore", "./lib/morphocacerts");
+            //System.setProperty("javax.net.ssl.trustStore", "./lib/morphocacerts");
 
             // add provider for SSL support
-            java.security.Security.addProvider(
-                new com.sun.net.ssl.internal.ssl.Provider());
+            //java.security.Security.addProvider(
+                //new com.sun.net.ssl.internal.ssl.Provider());
 
             //check for override config dir
             if (args.length > 0) {
