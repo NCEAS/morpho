@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2009-05-02 04:34:42 $'
- * '$Revision: 1.36 $'
+ *     '$Date: 2009-05-03 01:46:37 $'
+ * '$Revision: 1.37 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -126,6 +126,8 @@ public class CorrectionWizardController
 	private final static char RIGHTBRACKETCHAR = ']';
 	private final static char LEFTBRACKETCHAR = '[';
 	private final static String KEY = "key";
+	private final static String PREVNODE = "prevNode";
+	private final static String NEXTNODE = "nextNode";
 	private final static String INTRODUCTIONPREFIX = "Morpho has detected fields containing only whitespace. These are invalid in the newer EML version.\nThe following ";
 	private final static String INTRODUCTIONSUFFIX  = " will allow you to enter valid text in these fields";
 	private final static String INTRODUCTIONWIZARD = INTRODUCTIONPREFIX+ "wizard pages"+INTRODUCTIONSUFFIX+".\n"; 
@@ -631,6 +633,24 @@ public class CorrectionWizardController
 				        		   if(textNode != null && textNode.getNodeType() == Node.TEXT_NODE)
 				        		   {
 				        			   info.setKey(textNode.getNodeValue());
+				        		   } 
+				        	   }
+				        	   else if ((node.getNodeType() == Node.ELEMENT_NODE) && 
+				        			   (node.getNodeName().equalsIgnoreCase(PREVNODE)))
+				        	   {
+				        		   Node textNode = node.getFirstChild();
+				        		   if(textNode != null && textNode.getNodeType() == Node.TEXT_NODE)
+				        		   {
+				        			   info.addPrevNode(textNode.getNodeValue());
+				        		   } 
+				        	   }
+				        	   else if ((node.getNodeType() == Node.ELEMENT_NODE) && 
+				        			   (node.getNodeName().equalsIgnoreCase(NEXTNODE)))
+				        	   {
+				        		   Node textNode = node.getFirstChild();
+				        		   if(textNode != null && textNode.getNodeType() == Node.TEXT_NODE)
+				        		   {
+				        			   info.addNextNode(textNode.getNodeValue());
 				        		   } 
 				        	   }
 				        	   
