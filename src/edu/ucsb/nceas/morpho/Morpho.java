@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2009-05-03 22:56:52 $'
- * '$Revision: 1.96 $'
+ *     '$Date: 2009-05-04 03:42:38 $'
+ * '$Revision: 1.97 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -165,6 +165,7 @@ public class Morpho
     private static String profileFileName = "currentprofile.xml";
     private static boolean debug = true;
     private static int debug_level = 9;
+    private static String TRUSTKEYSTORE = "truststore";
     public static Morpho thisStaticInstance;
     /** flag set to indicate that connection to metacat is busy
      *  used by doPing to avoid thread problem
@@ -1544,6 +1545,9 @@ public class Morpho
       MorphoPrefsDialog MorphoPrefsDialog1 = new MorphoPrefsDialog(mf, this);
       MorphoPrefsDialog1.setModal(true);
       MorphoPrefsDialog1.setVisible(true);
+      // need to recheck the ssl status
+      sslStatus = (metacatURL.indexOf("https://") == 0);
+      UIController.getInstance().updateAllStatusBars();
       // when preference change, the lastID should be change too.
       // since the remote server may have different max docid
       String scope = profile.get("scope", 0);
