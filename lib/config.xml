@@ -19,6 +19,7 @@
   <local_catalog_path>catalog/catalog</local_catalog_path>
   <debug_level>30</debug_level>
   <log_file>true</log_file>
+  <back_dot_morpho_dir>true</back_dot_morpho_dir>
   <triplesTag>//triple</triplesTag>
   <saxparser>org.apache.xerces.parsers.SAXParser</saxparser>
   <packageWizardConfig>frames/packagewizard.xml</packageWizardConfig>
