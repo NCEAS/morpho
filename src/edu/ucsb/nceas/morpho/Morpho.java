@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2009-05-04 03:42:38 $'
- * '$Revision: 1.97 $'
+ *     '$Date: 2009-05-04 18:58:59 $'
+ * '$Revision: 1.98 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -165,7 +165,10 @@ public class Morpho
     private static String profileFileName = "currentprofile.xml";
     private static boolean debug = true;
     private static int debug_level = 9;
-    private static String TRUSTKEYSTORE = "truststore";
+    private final static String LIBDIR = "lib/";
+    private final static String TRUSTKEYSTORE = "truststore";
+    private static String keystorePass = "changeit";
+    private static String userKeystore = "";
     public static Morpho thisStaticInstance;
     /** flag set to indicate that connection to metacat is busy
      *  used by doPing to avoid thread problem
@@ -196,11 +199,7 @@ public class Morpho
         // we need to revise this to check more often.
         // 05/20/02- Currently, SSL is not used, so will always be false
         sslStatus = (metacatURL.indexOf("https://") == 0);
-        System.setProperty("javax.net.ssl.trustStore","./lib/truststore");
-        System.setProperty("javax.net.ssl.trustStorePassword","changeit");
-        System.setProperty("security.provider.3","com.sun.net.ssl.internal.ssl.Provider");
-        //System.setProperty("javax.net.debug","all");
-        //System.setProperty("java.security.policy","/home/rzheva/test/java.policy"); 
+        
   
         //create URL object to poll for metacat connectivity
         try {
@@ -986,12 +985,6 @@ public class Morpho
                     }
                 });
 
-            // Set the keystore used
-            //System.setProperty("javax.net.ssl.trustStore", "./lib/morphocacerts");
-
-            // add provider for SSL support
-            //java.security.Security.addProvider(
-                //new com.sun.net.ssl.internal.ssl.Provider());
 
             //check for override config dir
             if (args.length > 0) {
@@ -1004,6 +997,15 @@ public class Morpho
 
             // Set up logging, possibly to a file as appropriate
             initializeLogging(config);
+            
+             // setup keystore
+            initializeKeyStore();
+             //set up properties of 
+   		    System.setProperty("javax.net.ssl.trustStore", userKeystore);
+   	        System.setProperty("javax.net.ssl.trustStorePassword", keystorePass);
+   	        System.setProperty("security.provider.3", "com.sun.net.ssl.internal.ssl.Provider");
+   	        //System.setProperty("javax.net.debug","all");
+   	        //System.setProperty("java.security.policy","/home/rzheva/test/java.policy"); 
 
             // Create a new instance of our application
             Morpho morpho = new Morpho(config);
@@ -1967,6 +1969,49 @@ public class Morpho
             return s;
         }
         return s;
+    }
+    
+    /*
+     * Set up the keystore file during the startup.
+     * Keystore in the lib dir will be copied to ~/.morpho dir if the keystored 
+     * doesn't exist in the ~/.morpho dir. If the file is there, nothing will be done currently.
+     * In the next step, we should merge the two keystore if the ~/.morpho already has the keystore
+     */
+    private static void initializeKeyStore()
+    {
+    	//this method will be called after initializeConfiguration(), 
+    	// so we wouldn't worry about creating configDir (~/.morpho)
+    	try
+    	{
+    		 userKeystore = ConfigXML.getConfigDirectory()+"/"+TRUSTKEYSTORE;
+    		 File userStore = new File(userKeystore);
+    		 if (!userStore.exists()) 
+    		 {
+    			 // ~/.morpho doesn't has the keystore file, copy it.
+                 File morphoKeystore = new File(LIBDIR+TRUSTKEYSTORE);
+                 FileInputStream input = new FileInputStream(morphoKeystore);
+                 FileOutputStream output = new FileOutputStream(userStore);
+                 byte buf[] = new byte[4096];
+                 int len = 0;
+                 while ((len = input.read(buf, 0, 4096)) != -1) {
+                     output.write(buf, 0, len);
+                 }
+                 input.close();
+                 output.close();
+
+             } 
+    		 else 
+    		 {
+                 // now we do nothing
+    			 //TODO we need a smart mechanism to merge the two keystore
+             }
+    		 
+    	}
+    	catch(Exception e)
+    	{
+    		Log.debug(5, "You have to run morpho without secure connection to metacat since "+e.getMessage()
+    				           +".\n You may use file|setup preference menu to change the metacat url from \"https\" to \"http\"");
+    	}
     }
 
     /**
