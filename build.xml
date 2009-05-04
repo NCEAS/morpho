@@ -6,7 +6,7 @@
   *    Copyright: 2000 Regents of the University of California and the
   *               National Center for Ecological Analysis and Synthesis
   *  For Details: http://www.nceas.ucsb.edu/
-  *    File Info: '$Id: build.xml,v 1.136 2009-03-03 00:19:38 tao Exp $'
+  *    File Info: '$Id: build.xml,v 1.137 2009-05-04 22:35:06 tao Exp $'
   *
   *  Build file for the Ant cross-platform build system for metacat
   *  See http://jakarta.apache.org for details on Ant
@@ -30,7 +30,7 @@
       <!-- the following property will be used to get eml210 schemas -->
       <property name="eml-210-schema-tag" value="RELEASE_EML_2_1_0" />
       <!-- eml-210-style-tag only be used to get eml201to210.xsl file -->
-      <property name="eml-210-style-tag" value="RELEASE_EML_UTILS_1_0_0_RC1" />
+      <property name="eml-210-style-tag" value="" />
       <property name="helpjar" value="morphohelp.jar" />
       <filter token="release" value="${release}"/>
       <filter token="muser" value="${muser}"/>
@@ -135,8 +135,12 @@
                 value="${libdir}/jhindexer.jar"/>
       <property name="axis"
    	                value="${libdir}/axis/axis.jar"/>
+      <property name="tar"
+                        value="${libdir}/tar.jar"/>
+      <property name="activation"
+                        value="${libdir}/activation.jar"/>
       <property name="cpath"
-	      value="lib/jsse.jar:lib/jcert.jar:lib/jnet.jar:${jcal}:${xerces}:${apis}:${kunststoff}:${xalan}:${xml4j}:${build.dest}:${sym}:${dtd}:${dom}:${jlf}:${itisjar}:${httpclient}:${lmap}:${morpho-config}:${jhelp}:${utilities}:${axis}"/>
+	      value="lib/jsse.jar:lib/jcert.jar:lib/jnet.jar:${jcal}:${xerces}:${apis}:${kunststoff}:${xalan}:${xml4j}:${build.dest}:${sym}:${dtd}:${dom}:${jlf}:${itisjar}:${httpclient}:${lmap}:${morpho-config}:${jhelp}:${utilities}:${axis}:${tar}:${activation}"/>
       <property name="package.home" value="edu/ucsb/nceas" />
 	   
       <condition property="utilities.required">
