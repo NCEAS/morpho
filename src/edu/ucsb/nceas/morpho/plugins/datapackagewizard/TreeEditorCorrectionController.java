@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2009-04-30 02:52:11 $'
- * '$Revision: 1.11 $'
+ *     '$Date: 2009-05-05 23:26:37 $'
+ * '$Revision: 1.12 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -79,7 +79,16 @@ public class TreeEditorCorrectionController
 	                                                     // has been display in tree editor. It will be used 
 	                                                     //how to determine index if fullpath is same
 	private final static String CONFORMATION = "Morpho has successfully upgraded your data package to the newest EML version.\n Note: These changes will not become permanent until you save the document.";
-	
+	private final static String WESTBOUNDING = "westBoundingCoordinate";
+	private final static String EASTBOUNDING  = "eastBoundingCoordinate";
+	private final static String SOUTHBOUNDING = "southBoundingCoordinate";
+	private final static String NORTHBOUNDING = "northBoundingCoordinate";
+	private final static String ALTITUDEMIN  = "altitudeMinimum";
+	private final static String ALTITUDEMAX  = "altitudeMaximum";
+	 private final static float  NEGTIVE180     = -180;
+	 private final static float POSITIVE180    = 180;
+	 private final static float NEGTIVE90 = -90;
+	 private final static float POSITIVE90 = 90;
 	/**
 	 * Constructor with parameters datapackage and xpah list
 	 * @param xPathList the list of path will be displayed
@@ -149,7 +158,7 @@ public class TreeEditorCorrectionController
 			{
 				
 				String nodeName = getNodeNameFromPath(path);
-				int subTreeIndex = findPositionOfNodeNameWithBlankValue(path, nodeName);
+				int subTreeIndex = findPositionOfNodeNameWithInvalidValue(path, nodeName);
 				if(nodeName != null && subTreeIndex != -1)
 				{
 				  editor.openEditor(dataPackage.getMetadataNode().getOwnerDocument(), dataPackage.getPackageId(), 
@@ -251,7 +260,7 @@ public class TreeEditorCorrectionController
 	 * So the position (or index) of "/eml:eml/dataset/title" of a node can be different to the one of tile of the same node.
 	 * We need to find out the correspond index base on node name rather than full path
 	 */
-	private int findPositionOfNodeNameWithBlankValue(String fullPath, String nodeName) 
+	private int findPositionOfNodeNameWithInvalidValue(String fullPath, String nodeName) 
 	{
 		int position = -1;
 		Node targetNode = null;
@@ -276,44 +285,86 @@ public class TreeEditorCorrectionController
 					for(int i=0; i < nodeList.getLength(); i++)
 					{
 						Node node = nodeList.item(i);
-						Log.debug(50, "the node name========== :"+node.getLocalName());
+						Log.debug(45, "the node name========== :"+node.getLocalName());
+						Log.debug(30, "node has the children "+node.getChildNodes().getLength());
 						// we only find the first node
-						if(node.hasChildNodes() && node.getFirstChild().getNodeType() == node.TEXT_NODE)
+						//handle non-decimal or valid text.
+						boolean valid = true;
+						if(node != null && node.getChildNodes().getLength() ==0)
+						{
+							//this case is for case <element/>
+							valid = false;
+							Log.debug(30, "Find <"+nodeName+"/> and set valid "+valid);
+						}
+						else if(node.hasChildNodes() && node.getFirstChild().getNodeType() == node.TEXT_NODE)
 						{
 							String value = node.getFirstChild().getNodeValue();
 							Log.debug(50, "the node text child value ========== :"+value);
-							if (value.trim().equals(""))
+							if (value != null && value.trim().equals(""))
 							{
-								//we found a empty value index for full path. but we need to determine
-								//if the one is we need.
-								//Here is an example. if the eml has three element /eml:eml/dataset/keywordSet/keword
-								// and the position 1 and position 3 has the empty value.
-								// The tree editor will display the first one first, and put /eml:eml/dataset/keyworSet/keyowrd and 1
-								//into the hashtabl. However, the user didn't fill anything into the tree editor and the document
-								// still has two empty element. So when code handle the second the error path /eml:eml/dataset/keyworSet/keyowrd,
-								// this for loop will hit the first position with empty value first. However, we will
-								//check the hashtable and will find out we already displayed it. So it will go to the third one.
-								Integer indexObj = (Integer)fullpathPosition.get(fullPath);
-								Log.debug(50, "====================== the object from hashtable is "+indexObj);
-								if(indexObj != null)
-								{
-									//we found that the tree editor already displayed the fullpath before
-									int index = indexObj.intValue();
-									Log.debug(40, "tree editor already displayed the fullpaht at postion"+index);
-									if (index >= i)
-									{
-										Log.debug(40,"the current index "+i+
-												" equals or is less than the stored one "+index+". So skip it");
-										continue;
-									}
-								}
-								
-								Log.debug(50, "find target node =============== "+node);
-								//put the fullpath and index which has empty value into hashtable
-								fullpathPosition.put(fullPath, i);
-								targetNode = node;
-								break;
+							   valid = false;
+							   Log.debug(30, "Find empty string and set valid "+valid);
 							}
+							else if(value != null && (nodeName.equals(WESTBOUNDING) || nodeName.equals(EASTBOUNDING) ||
+									nodeName.equals(NORTHBOUNDING)|| nodeName.equals(SOUTHBOUNDING) ||
+									nodeName.equals(ALTITUDEMIN)|| nodeName.equals(ALTITUDEMAX)))
+							{
+								
+								try
+					        	{
+					        		//test if the text is number and between -180 and 180
+					        		float number = (new Float(value)).floatValue();
+					        		if((nodeName.equals(WESTBOUNDING) || nodeName.equals(EASTBOUNDING) ) && (number <NEGTIVE180 || number >POSITIVE180))
+					        		{
+							             valid = false;
+							             Log.debug(30, "value of "+nodeName+" is "+value+". It is out of range -180 to 180.");
+					        		}
+					        		else if((nodeName.equals(NORTHBOUNDING) || nodeName.equals(SOUTHBOUNDING) ) && (number <NEGTIVE90 || number >POSITIVE90))
+					        		{
+					        			valid = false;
+							             Log.debug(30, "value of "+nodeName+" is "+value+". It is out of range -90 to 90.");
+					        		}
+					        		
+					        	}
+					        	catch(NumberFormatException e)
+					        	{				        
+					        		 valid = false;
+						             Log.debug(30, "value of "+nodeName+" is "+value+". It is non-decimal text.");
+					        	}
+							}							
+						
+						}
+						if(!valid)
+						{
+							//we found a empty value or non-decimal text index for full path. but we need to determine
+							//if the one is we need.
+							//Here is an example. if the eml has three element /eml:eml/dataset/keywordSet/keword
+							// and the position 1 and position 3 has the empty value.
+							// The tree editor will display the first one first, and put /eml:eml/dataset/keyworSet/keyowrd and 1
+							//into the hashtabl. However, the user didn't fill anything into the tree editor and the document
+							// still has two empty element. So when code handle the second the error path /eml:eml/dataset/keyworSet/keyowrd,
+							// this for loop will hit the first position with empty value first. However, we will
+							//check the hashtable and will find out we already displayed it. So it will go to the third one.
+							Integer indexObj = (Integer)fullpathPosition.get(fullPath);
+							Log.debug(50, "====================== the object from hashtable is "+indexObj);
+							if(indexObj != null)
+							{
+								//we found that the tree editor already displayed the fullpath before
+								int index = indexObj.intValue();
+								Log.debug(40, "tree editor already displayed the fullpaht at postion"+index);
+								if (index >= i)
+								{
+									Log.debug(40,"the current index "+i+
+											" equals or is less than the stored one "+index+". So skip it");
+									continue;
+								}
+							}
+							
+							Log.debug(50, "find target node =============== "+node);
+							//put the fullpath and index which has empty value into hashtable
+							fullpathPosition.put(fullPath, i);
+							targetNode = node;
+							break;
 						}
 					}
 				}
