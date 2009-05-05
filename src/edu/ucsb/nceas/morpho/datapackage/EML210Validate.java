@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2009-05-02 01:19:03 $'
- * '$Revision: 1.14 $'
+ *     '$Date: 2009-05-05 19:02:52 $'
+ * '$Revision: 1.15 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -92,6 +92,18 @@ public class EML210Validate extends DefaultHandler implements ErrorHandler
 	 private final static String DISTRIBUTION = "distribution";
 	 private final static String EML = "eml:eml";
 	 private final static String ATTRIBUTELIST = "attributeList";
+	 private final static String BOUNDINGCOORDINATES = "boundingCoordinates";
+	 private final static String WESTBOUNDING = "westBoundingCoordinate";
+	 private final static String EASTBOUNDING  = "eastBoundingCoordinate";
+	 private final static String SOUTHBOUNDING = "southBoundingCoordinate";
+	 private final static String NORTHBOUNDING = "northBoundingCoordinate";
+	 private final static String BOUNDINGALTITUDE  = "boundingAltitudes";
+	 private final static String ALTITUDEMIN  = "altitudeMinimum";
+	 private final static String ALTITUDEMAX  = "altitudeMaximum";
+	 private final static float  NEGTIVE180     = -180;
+	 private final static float POSITIVE180    = 180;
+	 private final static float NEGTIVE90 = -90;
+	 private final static float POSITIVE90 = 90;
 	 
 	// SAX parser
 	XMLReader parser = null;
@@ -220,6 +232,73 @@ public class EML210Validate extends DefaultHandler implements ErrorHandler
 	        	Log.debug(30, "ERROR full path "+errorPath);
 	        	invalidPathList.add(errorPath);
 	        }
+	        else if(text != null && !text.trim().equals("") && (WESTBOUNDING.endsWith(qName)|| EASTBOUNDING.equals(qName)) &&
+	        		isGrandChildOf(BOUNDINGCOORDINATES) && isNthChildOf(GEOGRAPHICCOVERAGE, 3))
+	        {
+	        	//actually westBoundingCoordinate(or east) is the child of boundingCoordinate.
+	        	//however, method the isGradChildOf is base on popping the current element first.
+	        	//here, the popping hasn't happened . so we add one more level.
+	        	try
+	        	{
+	        		//test if the text is number and between -180 and 180
+	        		float number = (new Float(text)).floatValue();
+	        		if(number <NEGTIVE180 || number >POSITIVE180)
+	        		{
+	        			String errorPath = transformPathFromStackToString(path);
+			        	Log.debug(30, "ERROR full path "+errorPath);
+			        	invalidPathList.add(errorPath);
+	        		}
+	        	}
+	        	catch(NumberFormatException e)
+	        	{
+	        		String errorPath = transformPathFromStackToString(path);
+		        	Log.debug(30, "ERROR full path "+errorPath);
+		        	invalidPathList.add(errorPath);
+	        	}
+	        }
+	        else if(text != null && !text.trim().equals("") && (NORTHBOUNDING.endsWith(qName)|| SOUTHBOUNDING.equals(qName)) &&
+	        		isGrandChildOf(BOUNDINGCOORDINATES) && isNthChildOf(GEOGRAPHICCOVERAGE, 3))
+	        {
+	        	//actually northBoundingCoordinate(or south) is the child of boundingCoordinate.
+	        	//however, method the isGradChildOf is base on popping the current element first.
+	        	//here, the popping hasn't happened . so we add one more level.
+	        	try
+	        	{
+	        		//test if the text is number and between -90 and 90
+	        		float number = (new Float(text)).floatValue();
+	        		if(number <NEGTIVE90 || number >POSITIVE90)
+	        		{
+	        			String errorPath = transformPathFromStackToString(path);
+			        	Log.debug(30, "ERROR full path "+errorPath);
+			        	invalidPathList.add(errorPath);
+	        		}
+	        	}
+	        	catch(NumberFormatException e)
+	        	{
+	        		String errorPath = transformPathFromStackToString(path);
+		        	Log.debug(30, "ERROR full path "+errorPath);
+		        	invalidPathList.add(errorPath);
+	        	}
+	        }
+	        else if(text != null && !text.trim().equals("") && (ALTITUDEMIN.endsWith(qName)|| ALTITUDEMAX.equals(qName)) &&
+	        		isNthChildOf(BOUNDINGCOORDINATES, 3) && isNthChildOf(GEOGRAPHICCOVERAGE, 4))
+	        {
+	        	//actually altitudeMin(or max) is the grand child of boundingCoordinate.
+	        	//however, method the isGradChildOf is base on popping the current element first.
+	        	//In here, the popping hasn't happened . So we add one more level.
+	        	try
+	        	{
+	        		//test if the text is number and between -180 and 180
+	        		float number = (new Float(text)).floatValue();
+	        	}
+	        	catch(NumberFormatException e)
+	        	{
+	        		String errorPath = transformPathFromStackToString(path);
+		        	Log.debug(30, "ERROR full path "+errorPath);
+		        	invalidPathList.add(errorPath);
+	        	}
+	        }
+	       
         }
         // pop out element from stack
         path.pop();        
