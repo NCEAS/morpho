@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2009-05-04 22:39:05 $'
- * '$Revision: 1.99 $'
+ *     '$Date: 2009-05-05 00:02:46 $'
+ * '$Revision: 1.100 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,6 +31,7 @@ import edu.ucsb.nceas.itis.ItisException;
 import edu.ucsb.nceas.itis.Taxon;
 import edu.ucsb.nceas.morpho.datastore.DataStore;
 import edu.ucsb.nceas.morpho.datastore.FileSystemDataStore;
+import edu.ucsb.nceas.morpho.framework.BackupMorphoDataFrame;
 import edu.ucsb.nceas.morpho.framework.ConfigXML;
 import edu.ucsb.nceas.morpho.framework.ConnectionFrame;
 import edu.ucsb.nceas.morpho.framework.ConnectionListener;
@@ -173,10 +174,6 @@ public class Morpho
     private final static String TRUSTKEYSTORE = "truststore";
     private static String keystorePass = "changeit";
     private static String userKeystore = "";
-    private final static String DOTMORPHOBACKUP = "dotMorphoBackup-";
-    private final static String GZIP = "gz";
-    private final static String TAR   = "tar";
-    private final static String DOT  = ".";
     public static Morpho thisStaticInstance;
     /** flag set to indicate that connection to metacat is busy
      *  used by doPing to avoid thread problem
@@ -1015,9 +1012,6 @@ public class Morpho
    	        //System.setProperty("javax.net.debug","all");
    	        //System.setProperty("java.security.policy","/home/rzheva/test/java.policy"); 
 
-   	        // back up .morpho dir when backup_dot_morpho_dir is not false and 
-   	        // current version of backup file doesn't exist.
-   	         backupDotMorphoDir();
    	         
             // Create a new instance of our application
             Morpho morpho = new Morpho(config);
@@ -1029,7 +1023,11 @@ public class Morpho
 
             // set to the Look and Feel of the native system.
             setLookAndFeel(config.get("lookAndFeel", 0));
-
+            
+            // back up .morpho dir when backup_dot_morpho_dir is not false and 
+   	        // current version of backup file doesn't exist.
+   	         BackupMorphoDataFrame backupFrame = new BackupMorphoDataFrame(morpho);
+   	         backupFrame.doBackup();
 
             // Load the current profile and log in
             morpho.loadProfile(morpho);
@@ -2135,98 +2133,7 @@ public class Morpho
         }
     }
     
-    /*
-     * This method will backup the .morpho directory in case user want to go back.
-     * First, morpho will check the if .morpho dir(configdir) exists. If not, do nothing.
-     * Second, morpho will check if the value of variable back_dot_morpho_dir in configure
-     * file. If the value != false, we will started to backup.
-     * Third, then morpho will check up the DOTMORPHOBACKUP+VERSION.tar.gz file exist or
-     * not. If exist, morpho wouldn't backup (it backuped before).
-     * During the backup, morpho will skip any files starting DOTMORPHOBACKUP in .morpho dir.
-     * Those file are previous backup, there is no reason to backup again.
-     */
-    private static void backupDotMorphoDir()
-    {
-    	try
-    	{
-	    	//check if the .morpho directory exists
-	    	File configDir = new File(ConfigXML.getConfigDirectory());
-	        if (!configDir.exists()) 
-	        {
-	            return;
-	        }
-	        // get  the configuration value of backup .morpho from configure file
-	        boolean backup = true;//true is the default value
-	        try
-	        {
-	        	backup = (new Boolean(config.get("back_dot_morpho_dir", 0))).booleanValue();
-	        }
-	        catch(Exception ee)
-	        {
-	        	Log.debug(30, "We will set up backup to true even we couldn't the configuration value from config file "+ee.getMessage());
-	        }
-	        
-	        // only backup when the back_dot_morpho_dir is not false
-	        if (backup)
-	        {
-	        	//check the bakup file of this version eixisting or not
-	        	File targetFile = new File(ConfigXML.getConfigDirectory()+File.separator+DOTMORPHOBACKUP+VERSION+DOT+TAR+DOT+GZIP);
-	        	if(targetFile.exists())
-	        	{
-	        		return;
-	        	}
-	        	else
-	        	{
-	        		// generte a tar file under the parent dir of .morpho - home dir
-	        		File tarFile = new File(System.getProperty("user.home")+File.separator+DOTMORPHOBACKUP+VERSION+DOT+TAR);
-	        		FileOutputStream tarOutput = new FileOutputStream(tarFile);
-	        		TarArchive tarArchive = new TarArchive(tarOutput);
-	        		//list the .morpho dir (configure dir) and put everything exception previous backup file into tar
-	        		if(configDir.isDirectory())
-	        		{
-	        			File[] children = configDir.listFiles();
-	        			boolean recurse= true;
-	        			if(children != null)
-	        			{
-	        				for (int i=0; i<children.length; i++)
-	        				{
-	        					File kid = children[i];
-	        					if (kid != null && kid.getName() != null && !kid.getName().startsWith(DOTMORPHOBACKUP))
-	        					{
-	        					   TarEntry tarEntry = new TarEntry(kid);
-	        					   tarArchive.writeEntry(tarEntry, recurse);
-	        					}
-	        				}
-	        			}
-	        		}
-	        		tarArchive.closeArchive();
-	        		//gzip the tar file, the gzip file will located under the .morpho
-	        		GZIPOutputStream gzipOutput = new GZIPOutputStream (new FileOutputStream(targetFile));
-	        		FileInputStream input = new FileInputStream(tarFile);
-	        		 int size = 20000000;
-	                 byte buf[] = new byte[size];
-	                 int len = 0;
-	                 while ((len = input.read(buf, 0, size)) != -1) {
-	                     gzipOutput.write(buf, 0, len);
-	                 }
-	                 input.close();
-	                 gzipOutput.close();
-	        		//delete the tar file.
-	                 tarFile.delete();
-	        	}
-	        	
-	        }
-	        else
-	        {
-	        	Log.debug(30, "since morpho is configured not to backup .morph dir, we will skip backup");
-	        }
-    	}
-    	catch(Exception e)
-    	{
-    		Log.debug(30, "Backup .morpho directory failed since "+e.getMessage());
-    	}
-    	
-    }
+  
 
 
   /**
