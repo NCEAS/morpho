@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2009-05-05 00:02:46 $'
- * '$Revision: 1.100 $'
+ *     '$Date: 2009-05-06 01:59:59 $'
+ * '$Revision: 1.101 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1564,6 +1564,12 @@ public class Morpho
       // since the remote server may have different max docid
       String scope = profile.get("scope", 0);
       setLastID(scope);
+     //create URL object to poll for metacat connectivity since the metaca may be changed.
+      try {
+          metacatPingURL = new URL(metacatURL);
+      } catch (MalformedURLException mfue) {
+          Log.debug(5, "unable to read or resolve Metacat URL");
+      }
 
     }
 
