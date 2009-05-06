@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2009-04-24 00:02:05 $'
- * '$Revision: 1.70 $'
+ *     '$Date: 2009-05-06 01:08:57 $'
+ * '$Revision: 1.71 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -266,7 +266,7 @@ public  class EML200DataPackage extends AbstractDataPackage
             	this.setSerializeMetacatSuccess(false);
             	//this.setIdentifierChangedInMetacatSerialization(false);
             	//System.out.println(" in other exception Exception==========  "+e.getMessage());
-                Log.debug(5,"Problem with saving to metacat in EML200DataPackage!");              
+                Log.debug(5,"Problem with saving to metacat in EML200DataPackage!\n"+e.getMessage());              
             }
         }
         else if (statusInMetacat != null && statusInMetacat.equals(DataStoreInterface.NONEXIST))
@@ -281,7 +281,7 @@ public  class EML200DataPackage extends AbstractDataPackage
              {
             	 this.setSerializeMetacatSuccess(false);
             	 //this.setIdentifierChangedInMetacatSerialization(false);
-                 Log.debug(5,"Problem with saving to metacat in EML200DataPackage!");
+                 Log.debug(5,"Problem with saving to metacat in EML200DataPackage!\n"+e.getMessage());
              }
         }
         else
