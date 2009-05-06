@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2009-04-24 23:06:55 $'
- * '$Revision: 1.22 $'
+ *     '$Date: 2009-05-06 00:09:08 $'
+ * '$Revision: 1.23 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -702,36 +702,64 @@ public class GeographicPage extends AbstractUIPage {
 
     name = (String)map.get(xPathRoot + "/boundingCoordinates/northBoundingCoordinate");
     if (name!=null) {
-      Double N = new Double(name);
-      if (N!=null) {
-        north = N.doubleValue();
+      try
+      {
+	      Double N = new Double(name);
+	      if (N!=null) {
+	        north = N.doubleValue();
+	      }
+      }
+      catch(Exception e)
+      {
+    	  Log.debug(30, "Couldn't transform the "+name+ "to northBoundingCoordinate");
       }
       map.remove(xPathRoot + "/boundingCoordinates/northBoundingCoordinate");
     }
 
     name = (String)map.get(xPathRoot + "/boundingCoordinates/westBoundingCoordinate");
     if (name!=null) {
-      Double W = new Double(name);
-      if (W!=null) {
-        west = W.doubleValue();
+      try
+      {
+	      Double W = new Double(name);
+	      if (W!=null) {
+	        west = W.doubleValue();
+	      }
+      }
+      catch(Exception e)
+      {
+    	  Log.debug(30, "Couldn't transform the "+name+ "to westBoundingCoordinate");
       }
       map.remove(xPathRoot + "/boundingCoordinates/westBoundingCoordinate");
     }
 
     name = (String)map.get(xPathRoot + "/boundingCoordinates/southBoundingCoordinate");
     if (name!=null) {
+      try
+      {
       Double S = new Double(name);
       if (S!=null) {
         south = S.doubleValue();
+      }
+      }
+      catch(Exception e)
+      {
+    	  Log.debug(30, "Couldn't transform the "+name+ "to southBoundingCoordinate");
       }
       map.remove(xPathRoot + "/boundingCoordinates/southBoundingCoordinate");
     }
 
     name = (String)map.get(xPathRoot + "/boundingCoordinates/eastBoundingCoordinate");
     if (name!=null) {
-      Double E = new Double(name);
-      if (E!=null) {
-        east = E.doubleValue();
+      try
+      {
+	      Double E = new Double(name);
+	      if (E!=null) {
+	        east = E.doubleValue();
+	      }
+      }
+      catch(Exception e)
+      {
+    	  Log.debug(30, "Couldn't transform the "+name+ "to eastBoundingCoordinate");
       }
       map.remove(xPathRoot + "/boundingCoordinates/eastBoundingCoordinate");
     }
