@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2009-05-06 01:59:59 $'
- * '$Revision: 1.101 $'
+ *     '$Date: 2009-05-08 21:50:34 $'
+ * '$Revision: 1.102 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -117,7 +117,7 @@ import com.ice.tar.TarEntry;
 public class Morpho
 {
     /** The version of this release of Morpho */
-    public static String VERSION = "1.7.0";
+    public static String VERSION = "1.7.0-RC2";
 
     /** Constant to indicate a separator should precede an action */
     public static String SEPARATOR_PRECEDING = "separator_preceding";
@@ -159,6 +159,7 @@ public class Morpho
     private URL metacatPingURL = null;
     private URLConnection urlConn = null;
     private boolean origNetworkStatus = false;
+    private static final String AUTHENTICATEERROR = "peer not authenticated";
     /**
      * The polling interval, in milliSeconds, between attempts to verify that
      * MetaCat is available over the network
@@ -217,8 +218,9 @@ public class Morpho
         // networkStatus = true
         // Boolean "true" tells doPing() method this is startup, so we don't get
         // "No such service registered." exception from getServiceProvider()
-        startPing();
-        finishPing(true);
+        boolean startup = true;
+        startPing(startup);
+        finishPing(startup);
 
         //start a Timer to check periodically whether metacat remains available
         //over the network...
@@ -1800,7 +1802,7 @@ public class Morpho
             {
                 public Object construct()
                 {
-                    startPing();
+                    startPing(isStartUp);
                     return null;
                     //return value not used by this program
                 }
@@ -1820,7 +1822,7 @@ public class Morpho
      * application thread, but later it is used in a distinct thread to keep the
      * application responsive.
      */
-    private void startPing()
+    private void startPing(boolean isStartup)
     {
         //check if metacat can be reached:
         origNetworkStatus = networkStatus;
@@ -1831,7 +1833,14 @@ public class Morpho
             networkStatus = (urlConn.getDate() > 0L);
             Log.debug(55, "... which is: " + networkStatus);
         } catch (IOException ioe) {
-            Log.debug(55, " - unable to open network connection to Metacat");
+        	if(isStartup && ioe.getMessage().contains(AUTHENTICATEERROR))
+        	{
+               Log.debug(5, " - Unable to open network connection to Metacat: "+ioe.getMessage());
+        	}
+        	else
+        	{
+        		Log.debug(55, " - unable to open network connection to Metacat");
+        	}
             networkStatus = false;
             if (profile != null) {
                 profile.set("searchmetacat", 0, "false");

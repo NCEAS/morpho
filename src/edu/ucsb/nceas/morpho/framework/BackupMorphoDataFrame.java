@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2009-05-05 00:02:00 $'
- * '$Revision: 1.1 $'
+ *     '$Date: 2009-05-08 21:50:34 $'
+ * '$Revision: 1.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -118,7 +118,7 @@ public class BackupMorphoDataFrame extends JFrame
 		   getContentPane().add(Box.createVerticalStrut(8));
 		   javax.swing.JLabel loadingLabel = new javax.swing.JLabel();
 		   loadingLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-		   loadingLabel.setText("Backuping Morpho user data. It may take a while...");
+		   loadingLabel.setText("Backuping Morpho user data. This may take a while...");
 		   //loadingLabel.setForeground(java.awt.Color.red);
 		   loadingLabel.setFont(new Font("Dialog", Font.BOLD, 14));
 		   getContentPane().add(loadingLabel);

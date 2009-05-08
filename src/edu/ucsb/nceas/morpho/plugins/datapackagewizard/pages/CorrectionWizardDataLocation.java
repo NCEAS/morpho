@@ -93,8 +93,8 @@ public class CorrectionWizardDataLocation extends DataLocation
 
   	    JLabel desc = WidgetFactory.makeHTMLLabel(
   	       "<p><b>Describe the data location and/or file name of  "
-  	      +"your data package.</b> This page only helps you to fill some non-empty "
-  	      +"value into the required field. You shouldn't use it to import any new data table.<p>", 7);
+  	      +"your data package.</b><br></br>Note that you cannot import a new data table here. <p> ", 7);
+
   	    topBox.add(desc);
 
   	    onlinePanel  = getOnlinePanel();

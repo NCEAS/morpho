@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2009-05-03 01:46:37 $'
- * '$Revision: 1.37 $'
+ *     '$Date: 2009-05-08 21:50:34 $'
+ * '$Revision: 1.38 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -128,8 +128,9 @@ public class CorrectionWizardController
 	private final static String KEY = "key";
 	private final static String PREVNODE = "prevNode";
 	private final static String NEXTNODE = "nextNode";
-	private final static String INTRODUCTIONPREFIX = "Morpho has detected fields containing only whitespace. These are invalid in the newer EML version.\nThe following ";
-	private final static String INTRODUCTIONSUFFIX  = " will allow you to enter valid text in these fields";
+	private final static String INTRODUCTIONPREFIX = "Morpho has detected metadata fields that are invalid in the newer EML version.\n" +
+	                                                                         "This can include whitespace-only fields, and/or non-numeric values where numbers are required.\nThe following ";
+	private final static String INTRODUCTIONSUFFIX  = " will allow you to enter valid information in these fields";
 	private final static String INTRODUCTIONWIZARD = INTRODUCTIONPREFIX+ "wizard pages"+INTRODUCTIONSUFFIX+".\n"; 
 	private final static String MESSAGEFORWIZARD = INTRODUCTIONWIZARD +"For optional fields, you may simply choose to leave them blank";
 	private final static String INTRODUCTIONTREEEDITOR = INTRODUCTIONPREFIX+ "series Morpho editor frames"+INTRODUCTIONSUFFIX;
