@@ -5,9 +5,9 @@
  *    Authors: @tao@
  *    Release: @release@
  *
- *   '$Author: sgarg $'
- *     '$Date: 2004-12-14 22:08:18 $'
- * '$Revision: 1.6 $'
+ *   '$Author: tao $'
+ *     '$Date: 2009-05-13 01:09:53 $'
+ * '$Revision: 1.7 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -54,9 +54,9 @@ public class HelpCommand implements Command
   private String id = null;
   private String errorMessage = null;
   // Size of help window
-  private int helpWidth = 800;
-  private int helpHeight= 520;
-  private Dimension size = new Dimension(helpWidth, helpHeight);
+  public static int helpWidth = 800;
+  public static int helpHeight= 520;
+  public static Dimension size = new Dimension(helpWidth, helpHeight);
   // Location of help window
   private int helpCenterX = caculateCenterX(0, UISettings.CLIENT_SCREEN_WIDTH,
                                             helpWidth );
