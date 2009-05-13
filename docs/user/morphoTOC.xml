@@ -3,19 +3,6 @@
   PUBLIC "-//Sun Microsystems Inc.//DTD JavaHelp TOC Version 1.0//EN"
          "http://java.sun.com/products/javahelp/toc_1_0.dtd">
 <toc version="1.0">
-  <tocitem text="Morpho User Guide">
-    <tocitem text="Introduction" target="introduction" />
-    <tocitem text="Getting Started" target="start"/>
-    <tocitem text="The Main Welcome Screen" target="main_welcome_screen" />
-    <tocitem text="Introduction to Data Packages" target="data_packages_intro" />
-    <tocitem text="Opening an Existing Data Package" target="opening_a_data_package"/>
-    <tocitem text="Searching for Data Packages" target="Searching__for_data_packages" />
-    <tocitem text="Creating a New Data Package" target="Creating_a_data_package"/>
-    <tocitem text="Adding Data to a Data Package" target="Adding_Data_to_a_Data_Package" />
-    <tocitem text="Editing a Data Package" target="Editing_a_data_package" />
-    <tocitem text="Uploading and Downloading Data Packages" target="saving_to_network" />
-    <tocitem text="Frequently Asked Questions" target="faq" />
-  </tocitem>
     <tocitem text="Introduction to Metadata" target="metadata"/>
     <tocitem text="Ecological Metadata Language" target="eml_index"/>
 </toc>
