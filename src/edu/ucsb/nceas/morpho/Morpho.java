@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2009-05-08 21:50:34 $'
- * '$Revision: 1.102 $'
+ *     '$Date: 2009-05-13 01:09:15 $'
+ * '$Revision: 1.103 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -41,6 +41,7 @@ import edu.ucsb.nceas.morpho.framework.HelpMetadataIntroCommand;
 import edu.ucsb.nceas.morpho.framework.HttpMessage;
 import edu.ucsb.nceas.morpho.framework.InitialScreen;
 import edu.ucsb.nceas.morpho.framework.MorphoFrame;
+import edu.ucsb.nceas.morpho.framework.MorphoGuideCommand;
 import edu.ucsb.nceas.morpho.framework.MorphoPrefsDialog;
 import edu.ucsb.nceas.morpho.framework.ProfileAddedListener;
 import edu.ucsb.nceas.morpho.framework.ProfileDialog;
@@ -1459,8 +1460,19 @@ public class Morpho
         aboutItemAction.putValue("menuPosition", new Integer(1));
         aboutItemAction.setMenu("Help", 6);
         controller.addGuiAction(aboutItemAction);
+        
+        Command guideCommand = new MorphoGuideCommand();
+        GUIAction guideItemAction =
+            new GUIAction("Morpho User Guide...", null, guideCommand);
+        guideItemAction.putValue(Action.SHORT_DESCRIPTION, "Morpho User Guide");
+        guideItemAction.putValue(Action.SMALL_ICON,
+                new ImageIcon(getClass().
+                getResource("/toolbarButtonGraphics/general/Help16.gif")));
+        guideItemAction.putValue("menuPosition", new Integer(2));
+        guideItemAction.setMenu("Help", 6);
+        controller.addGuiAction(guideItemAction);
 
-        Command helpCommand = new HelpCommand();
+        /*Command helpCommand = new HelpCommand();
         GUIAction helpItemAction =
             new GUIAction("Morpho User Guide...", null, helpCommand);
         helpItemAction.putValue(Action.SHORT_DESCRIPTION, "Morpho User Guide");
@@ -1469,7 +1481,7 @@ public class Morpho
                 getResource("/toolbarButtonGraphics/general/Help16.gif")));
         helpItemAction.putValue("menuPosition", new Integer(2));
         helpItemAction.setMenu("Help", 6);
-        controller.addGuiAction(helpItemAction);
+        controller.addGuiAction(helpItemAction);*/
 
         Command mdIntroCommand = new HelpCommand("metadata");
         GUIAction mdIntroItemAction =
