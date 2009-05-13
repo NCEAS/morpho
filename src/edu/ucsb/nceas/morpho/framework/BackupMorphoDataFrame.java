@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2009-05-08 21:50:34 $'
- * '$Revision: 1.2 $'
+ *     '$Date: 2009-05-13 22:32:13 $'
+ * '$Revision: 1.3 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -74,7 +74,7 @@ import edu.ucsb.nceas.morpho.util.Log;
 public class BackupMorphoDataFrame extends JFrame 
 {
 	private Morpho morpho = null;
-	private static final String TITLE = "Backup Morpho Data Directory";
+	private static final String TITLE = "Back up Morpho Data Directory";
 	private final static String DOTMORPHOBACKUP = "dotMorphoBackup-";
 	private final static String GZIP = "gz";
 	private final static String TAR   = "tar";
@@ -118,7 +118,7 @@ public class BackupMorphoDataFrame extends JFrame
 		   getContentPane().add(Box.createVerticalStrut(8));
 		   javax.swing.JLabel loadingLabel = new javax.swing.JLabel();
 		   loadingLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-		   loadingLabel.setText("Backuping Morpho user data. This may take a while...");
+		   loadingLabel.setText("Backing up Morpho user data. This may take a while...");
 		   //loadingLabel.setForeground(java.awt.Color.red);
 		   loadingLabel.setFont(new Font("Dialog", Font.BOLD, 14));
 		   getContentPane().add(loadingLabel);

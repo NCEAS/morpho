@@ -54,10 +54,10 @@ public class EMLTransformToNewestVersionDialog
 	private static final int PADDINGWIDTH = 8;
 	private static final int NORTHPADDINGWIDTH = 8;
 	private static final String TITLE = "Upgrade EML Document";
-	private static final String WARNING = "EML version of the package is not the newest version.\n"+
-	                                                 "You are strongly recommended to upgrade to the newest version "
-	                                                 +EML200DataPackage.LATEST_EML_VER+
-	                                                ".\nDo you want to upgrade the data package?";
+	private static final String WARNING = "This data package uses an older version of EML.\n"+
+	                                                 "You will not be able to edit it without upgrading to the newest version ("
+	                                                 +EML200DataPackage.LATEST_EML_VER+")"+
+	                                                ".\nDo you want to upgrade the data package now?";
 	 /* Control button */
 	  private JButton executeButton = null;
 	  private JButton cancelButton = null;

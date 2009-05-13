@@ -220,6 +220,7 @@ public class JPedalFrame extends JFrame {
     cPane.setLayout(new BorderLayout());
     
     JButton open = initOpenBut();//setup open button
+    open.setEnabled(false);//disable the button
     Component[] itemsToAdd = initChangerPanel();//setup page display and changer
     
     JPanel topBar = new JPanel();
