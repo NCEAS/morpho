@@ -1,17 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE map PUBLIC "-//Sun Microsystems Inc.//DTD JavaHelp Map Version 1.0//EN" "http://java.sun.com/products/javahelp/map_1_0.dtd">
 <map xmlns:doc="eml:documentation" xmlns:xs="http://www.w3.org/2001/XMLSchema" version="1.0">
-<mapID target="introduction" url="morphohelp/introduction.html" />
-<mapID target="start" url="morphohelp/getting_started.html" />
-<mapID target="main_welcome_screen" url="morphohelp/main_welcome_screen.html" />
-<mapID target="data_packages_intro" url="morphohelp/data_packages_intro.htm" />
-<mapID target="opening_a_data_package" url="morphohelp/opening_a_data_package.htm"/>
-<mapID target="Searching__for_data_packages" url="morphohelp/Searching_for_data_packages.htm"/>
-<mapID target="Creating_a_data_package" url="morphohelp/Creating_a_new_data_package.htm"/>
-<mapID target="Adding_Data_to_a_Data_Package" url="morphohelp/Adding_Data_to_a_Data_Package.htm" />
-<mapID target="Editing_a_data_package" url="morphohelp/Editing_a_data_package.htm" />
-<mapID target="saving_to_network" url="morphohelp/saving_to_network_synchronizing.htm" />
-<mapID target="faq" url="morphohelp/Morpho_FAQ.html" />
 
 <mapID target="metadata" url="morphohelp/EmlDocs/eml_guidebook/eml_metadata_guide.html"/>
 <mapID target="eml_index" url="morphohelp/eml/index.html"/>
