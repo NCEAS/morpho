@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2009-05-13 01:00:08 $'
- * '$Revision: 1.1 $'
+ *     '$Date: 2009-05-13 22:08:12 $'
+ * '$Revision: 1.2 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -51,7 +51,7 @@ import org.jpedal.examples.simpleviewer.SimpleViewer;
 public class MorphoGuideCommand implements Command 
 {
 	
-	private JFrame frame = null;
+	//private JFrame frame = null;
 	private int helpCenterX = HelpCommand.caculateCenterX(0, UISettings.CLIENT_SCREEN_WIDTH,
              HelpCommand.helpWidth );
     private int helpCenterY = HelpCommand.caculateCenterY(0, UISettings.CLIENT_SCREEN_HEIGHT,
@@ -78,7 +78,7 @@ public class MorphoGuideCommand implements Command
 	   */
 	  public void execute(ActionEvent event)
 	  {
-		  /*MorphoFrame parent = UIController.getInstance().getCurrentActiveWindow();
+		  MorphoFrame parent = UIController.getInstance().getCurrentActiveWindow();
 	       // make sure the morphoFrame is not null
 	      if ( parent != null )
 	      {
@@ -89,15 +89,16 @@ public class MorphoGuideCommand implements Command
 		        double parentY = parent.getLocation().getY();
 		        helpCenterX = HelpCommand.caculateCenterX(parentX, parentWidth, HelpCommand.helpWidth);
 		        helpCenterY = HelpCommand.caculateCenterY(parentY, parentHeight, HelpCommand.helpHeight);
-		        location.setLocation(helpCenterX, helpCenterY);
-		        frame.setLocation(location);	      
-	        }*/
+		        location.setLocation(helpCenterX, helpCenterY);		       
+	        }
 	       
 	        /*Container content = frame.getContentPane();*/
 	        /*SimpleViewer viewer = new SimpleViewer();
 	        viewer.exitOnClose = false;
 	        viewer.setupViewer(GUIDEFILEPATH);*/
 	        JPedalFrame frame = new JPedalFrame(GUIDEFILEPATH);
+	        frame.setLocation(location);	
+	        frame.setSize(UISettings.CLIENT_SCREEN_WIDTH/2, UISettings.CLIENT_SCREEN_HEIGHT/2);
 	        
 	        
 	   
