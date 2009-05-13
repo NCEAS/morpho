@@ -57,7 +57,7 @@ import org.jpedal.examples.simpleviewer.utils.FileFilterer;
 
 
 /**
- * This file was copied from class JPanelDemo in JPedal library
+ * This file was copied from class JPanelDemo in JPedal library and did some modification.
  * @author tao
  *
  */
@@ -78,6 +78,7 @@ public class JPedalFrame extends JFrame {
   private JTextField pageCounter2=new JTextField(4);//000 used to set prefered size
   private JLabel pageCounter3=new JLabel("of");//000 used to set prefered size
   private static final String TITLE = "Morpho Help";
+  private static int scaling = 2;
   
   /**
    * construct a pdf viewer, passing in the full file name
@@ -94,7 +95,7 @@ public class JPedalFrame extends JFrame {
       
       //these 2 lines opens page 1 at 100% scaling
       pdfDecoder.decodePage(currentPage);
-      pdfDecoder.setPageParameters(1,1); //values scaling (1=100%). page number
+      pdfDecoder.setPageParameters(2,1); //values scaling (1=100%). page number
     }catch(Exception e){
       e.printStackTrace();
     }
@@ -159,7 +160,7 @@ public class JPedalFrame extends JFrame {
           
 //          these 2 lines opens page 1 at 100% scaling
           pdfDecoder.decodePage(currentPage);
-          pdfDecoder.setPageParameters(1,1); //values scaling (1=100%). page number
+          pdfDecoder.setPageParameters(scaling,1); //values scaling (1=100%). page number
           pdfDecoder.invalidate();
           
         }catch(Exception e){
@@ -236,8 +237,8 @@ public class JPedalFrame extends JFrame {
     
     pack();
         
-    Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
-    setSize(screen.width/4,screen.height/2);
+    //Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
+    //setSize(screen.width/4,screen.height/2);
     
     setLocationRelativeTo(null);//centre on screen
     
