@@ -6,7 +6,7 @@
   *    Copyright: 2000 Regents of the University of California and the
   *               National Center for Ecological Analysis and Synthesis
   *  For Details: http://www.nceas.ucsb.edu/
-  *    File Info: '$Id: build.xml,v 1.140 2009-05-13 17:30:55 tao Exp $'
+  *    File Info: '$Id: build.xml,v 1.141 2009-05-15 00:36:08 tao Exp $'
   *
   *  Build file for the Ant cross-platform build system for metacat
   *  See http://jakarta.apache.org for details on Ant
@@ -141,8 +141,10 @@
                         value="${libdir}/activation.jar"/>
 	   <property name="jpedal"
                         value="${libdir}/jpedal_lgpl.jar"/>
+	   <property name="PDF"
+                        value="${libdir}/PDFRenderer.jar"/>
       <property name="cpath"
-	      value="lib/jsse.jar:lib/jcert.jar:lib/jnet.jar:${jcal}:${xerces}:${apis}:${kunststoff}:${xalan}:${xml4j}:${build.dest}:${sym}:${dtd}:${dom}:${jlf}:${itisjar}:${httpclient}:${lmap}:${morpho-config}:${jhelp}:${utilities}:${axis}:${tar}:${activation}:${jpedal}"/>
+	      value="lib/jsse.jar:lib/jcert.jar:lib/jnet.jar:${jcal}:${xerces}:${apis}:${kunststoff}:${xalan}:${xml4j}:${build.dest}:${sym}:${dtd}:${dom}:${jlf}:${itisjar}:${httpclient}:${lmap}:${morpho-config}:${jhelp}:${utilities}:${axis}:${tar}:${activation}:${jpedal}:${PDF}"/>
       <property name="package.home" value="edu/ucsb/nceas" />
 	   
       <condition property="utilities.required">
@@ -666,7 +668,8 @@
       			./lib/jcalendar-1.3.2.jar
 		        ./lib/activation.jar
 		        ./lib/tar.jar
-		        ./lib/jpedal_lgpl.jar"
+		        ./lib/jpedal_lgpl.jar
+		        ./lib/PDFRenderer.jar"
             vmoptions="-Xmx512m -Xss5m" >
         </jarbundler>
   </target>
