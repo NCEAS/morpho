@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2009-05-13 22:08:12 $'
- * '$Revision: 1.2 $'
+ *     '$Date: 2009-05-15 00:42:56 $'
+ * '$Revision: 1.3 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,21 +25,22 @@
  */
 package edu.ucsb.nceas.morpho.framework;
 
+
 import java.awt.BorderLayout;
-import java.awt.Container;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
 
 import javax.swing.JFrame;
-import javax.swing.JPanel;
+
+//import com.adobe.acrobat.Viewer;
+//import com.sun.pdfview.PDFViewer;
 
 import edu.ucsb.nceas.morpho.util.Command;
 import edu.ucsb.nceas.morpho.util.Log;
 import edu.ucsb.nceas.morpho.util.UISettings;
-
-import org.jpedal.PdfDecoder;
-import org.jpedal.examples.simpleviewer.Commands;
-import org.jpedal.examples.simpleviewer.SimpleViewer;
 
 /**
  * This class represents a command to open morpho guide. 
@@ -51,7 +52,7 @@ import org.jpedal.examples.simpleviewer.SimpleViewer;
 public class MorphoGuideCommand implements Command 
 {
 	
-	//private JFrame frame = null;
+	private JFrame frame = null;
 	private int helpCenterX = HelpCommand.caculateCenterX(0, UISettings.CLIENT_SCREEN_WIDTH,
              HelpCommand.helpWidth );
     private int helpCenterY = HelpCommand.caculateCenterY(0, UISettings.CLIENT_SCREEN_HEIGHT,
@@ -76,7 +77,7 @@ public class MorphoGuideCommand implements Command
 	/**
 	   * execute opening Morpho Guide command
 	   */
-	  public void execute(ActionEvent event)
+	  public void execute(ActionEvent event) 
 	  {
 		  MorphoFrame parent = UIController.getInstance().getCurrentActiveWindow();
 	       // make sure the morphoFrame is not null
@@ -89,17 +90,60 @@ public class MorphoGuideCommand implements Command
 		        double parentY = parent.getLocation().getY();
 		        helpCenterX = HelpCommand.caculateCenterX(parentX, parentWidth, HelpCommand.helpWidth);
 		        helpCenterY = HelpCommand.caculateCenterY(parentY, parentHeight, HelpCommand.helpHeight);
-		        location.setLocation(helpCenterX, helpCenterY);		       
+		        location.setLocation(helpCenterX, helpCenterY);		   
+		        //frame.setLocation(location);
+	       }
+	      
+	      
+	      PDFViewer viewer;
+		    boolean useThumbs = true;
+          viewer = new PDFViewer(useThumbs);
+          //viewer.setSize(UISettings.CLIENT_SCREEN_WIDTH/2, UISettings.CLIENT_SCREEN_HEIGHT/2);
+          try
+          {
+            viewer.openFile(new File(GUIDEFILEPATH));
+            viewer.setTitle(TITLE);
+            viewer.setLocation(location);
+          }
+          catch(Exception e)
+          {
+          	Log.debug(5, "Couldn't open the pdf file"+e.getMessage());
+          }
+          
+	       /* try
+	        {
+		        Viewer viewer = new Viewer();
+		        frame.add(viewer, BorderLayout.CENTER);
+	        	
+		        InputStream input =
+		            new FileInputStream (new File(GUIDEFILEPATH));
+		        viewer.setDocumentInputStream(input);
+		        viewer.setProperty("Default_Page_Layout", "SinglePage");
+				viewer.setProperty("Default_Zoom_Type", "FitPage");
+				viewer.setProperty("Default_Magnification", "100");
+				viewer.zoomTo(2.0);
+				viewer.activate();
+				frame.setSize(UISettings.CLIENT_SCREEN_WIDTH/2, UISettings.CLIENT_SCREEN_HEIGHT/2);
+				frame.setVisible(true);
+
 	        }
-	       
-	        /*Container content = frame.getContentPane();*/
-	        /*SimpleViewer viewer = new SimpleViewer();
+	        catch (Exception e)
+	        {
+	        	Log.debug(5, "Couldn't open the pdf file"+e.getMessage());
+	        }*/
+            
+	        // SimpleViewer in Jpedal to display pdf
+	        /*Container content = frame.getContentPane();
+	        SimpleViewer viewer = new SimpleViewer();
 	        viewer.exitOnClose = false;
-	        viewer.setupViewer(GUIDEFILEPATH);*/
-	        JPedalFrame frame = new JPedalFrame(GUIDEFILEPATH);
-	        frame.setLocation(location);	
-	        frame.setSize(UISettings.CLIENT_SCREEN_WIDTH/2, UISettings.CLIENT_SCREEN_HEIGHT/2);
+	        Object[] input = new Object[]{GUIDEFILEPATH};
+	        viewer.executeCommand(Commands.OPENFILE, input);*/
+	        // JPedalFrame to display pdf
+	        /*JPedalFrame PDFframe = new JPedalFrame(GUIDEFILEPATH);
+	        PDFframe.setLocation(location);	
+	        PDFframe.setSize(UISettings.CLIENT_SCREEN_WIDTH/2, UISettings.CLIENT_SCREEN_HEIGHT/2);*/
 	        
+		    
 	        
 	   
 	  }//execute

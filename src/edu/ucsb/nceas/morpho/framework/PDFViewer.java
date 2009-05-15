@@ -1,5 +1,5 @@
 /*
- * $Id: PDFViewer.java,v 1.1 2009-05-14 23:27:49 tao Exp $
+ * $Id: PDFViewer.java,v 1.2 2009-05-15 00:42:56 tao Exp $
  *
  * Copyright 2004 Sun Microsystems, Inc., 4150 Network Circle,
  * Santa Clara, California 95054, U.S.A. All rights reserved.
@@ -568,15 +568,20 @@ TreeSelectionListener, PageChangeListener {
 		pageField.setEnabled(fileavailable);
 		printAction.setEnabled(printable);
 		closeAction.setEnabled(fileavailable);
-		fullScreenAction.setEnabled(pageshown);
+		//fullScreenAction.setEnabled(pageshown);
+		fullScreenAction.setEnabled(false);
 		prevAction.setEnabled(pageshown);
 		nextAction.setEnabled(pageshown);
 		firstAction.setEnabled(fileavailable);
 		lastAction.setEnabled(fileavailable);
-		zoomToolAction.setEnabled(pageshown);
-		fitInWindowAction.setEnabled(pageshown);
-		zoomInAction.setEnabled(pageshown);
-		zoomOutAction.setEnabled(pageshown);
+		//zoomToolAction.setEnabled(pageshown);
+		zoomToolAction.setEnabled(false);
+		//fitInWindowAction.setEnabled(pageshown);
+		fitInWindowAction.setEnabled(false);
+		//zoomInAction.setEnabled(pageshown);
+		zoomInAction.setEnabled(false);
+		//zoomOutAction.setEnabled(pageshown);
+		zoomOutAction.setEnabled(false);
 	}
 
 	/**
@@ -632,11 +637,11 @@ TreeSelectionListener, PageChangeListener {
 			outline = curFile.getOutline();
 		} catch (IOException ioe) {
 		}
-		if (outline != null) {
+		/*if (outline != null) {
 			if (outline.getChildCount() > 0) {
 				olf = new JDialog(this , "Outline");
 				olf
-				.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
+				.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 				olf.setLocation(this .getLocation());
 				JTree jt = new JTree(outline);
 				jt.setRootVisible(false);
@@ -651,7 +656,7 @@ TreeSelectionListener, PageChangeListener {
 					olf = null;
 				}
 			}
-		}
+		}*/
 	}
 
 	/**
@@ -800,7 +805,7 @@ TreeSelectionListener, PageChangeListener {
 		//        }
 		doClose();
 		dispose();
-		System.exit(0);
+		//System.exit(0);
 	}
 
 	/**
