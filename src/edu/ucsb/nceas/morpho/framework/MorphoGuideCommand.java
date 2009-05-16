@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2009-05-15 00:42:56 $'
- * '$Revision: 1.3 $'
+ *     '$Date: 2009-05-16 00:05:37 $'
+ * '$Revision: 1.4 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,6 +32,7 @@ import java.awt.event.ActionEvent;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
+import java.lang.reflect.Method;
 
 import javax.swing.JFrame;
 
@@ -59,18 +60,18 @@ public class MorphoGuideCommand implements Command
              HelpCommand.helpHeight);
     private Point location = new Point(helpCenterX, helpCenterY);
 	private static final String TITLE = "Morpho Help";
-	private static final String GUIDEFILEPATH = "docs/user/MorphoUserGuide.pdf";
+	private static final String GUIDEFILEPATH = "docs"+File.separator+"user"+File.separator+"MorphoUserGuide.pdf";
+	private static final String WINDOWS = "rundll32 url.dll,FileProtocolHandler "+GUIDEFILEPATH;
+	private static final String MAC = "open "+GUIDEFILEPATH;
+	private static final String LINUX = " "+GUIDEFILEPATH;
+	private static final String[] pdfApplications = {"evince", "acroread", "okular", "xpdf", "kpdf", "epdfview", "gv"};
 	
 	/**
 	 * Default constructor
 	 */
 	public MorphoGuideCommand()
 	{
-	    //Create display frame
-	    /*frame = new JFrame();
-	    frame.setTitle(TITLE);
-	    frame.setSize(HelpCommand.size);
-	    frame.setLocation(location);*/
+	  
 	}
 	
 	
@@ -78,6 +79,61 @@ public class MorphoGuideCommand implements Command
 	   * execute opening Morpho Guide command
 	   */
 	  public void execute(ActionEvent event) 
+	  {
+		  
+		  String os = System.getProperty("os.name");
+		  String command = null;
+	      if (os.startsWith("Windows"))
+	      {
+	          command = WINDOWS;
+	      }
+	      else if (os.startsWith("Mac OS"))
+	      {
+	          command = MAC;
+	       }
+	       else
+	       {
+	          // os is either unix or linux          
+	          for (int i = 0; i < pdfApplications.length ; i++)
+	          {
+	        	 
+	        	try
+	        	{
+	              if (Runtime.getRuntime().exec(new String[]{"which", pdfApplications[i]}).waitFor() == 0)
+	              {
+	                command = pdfApplications[i]+LINUX;
+	                break;
+	              }
+	        	}
+	        	catch(Exception e)
+	        	{
+	        		Log.debug(50, "Couldn't find the pdf viewer");
+	        	}
+	          }
+	        }
+		    
+	        try
+	        {
+	        	//open the pdf using external application.
+	        	Runtime.getRuntime().exec(command);
+	        	
+	        }
+	        catch(Exception e)
+	        {
+	        	//run PDFRender as backup
+		       displayPDFByJavaLib();
+	        }
+	     
+		    
+	        
+	   
+	  }//execute
+	  
+	  /*
+	   * If we couldn't run the default OS pdf viewer, we will run PDFRenderer to display the file.
+	   * We only run it as a backup
+	   */
+	  private void displayPDFByJavaLib()
 	  {
 		  MorphoFrame parent = UIController.getInstance().getCurrentActiveWindow();
 	       // make sure the morphoFrame is not null
@@ -97,55 +153,18 @@ public class MorphoGuideCommand implements Command
 	      
 	      PDFViewer viewer;
 		    boolean useThumbs = true;
-          viewer = new PDFViewer(useThumbs);
-          //viewer.setSize(UISettings.CLIENT_SCREEN_WIDTH/2, UISettings.CLIENT_SCREEN_HEIGHT/2);
-          try
-          {
-            viewer.openFile(new File(GUIDEFILEPATH));
-            viewer.setTitle(TITLE);
-            viewer.setLocation(location);
-          }
-          catch(Exception e)
-          {
-          	Log.debug(5, "Couldn't open the pdf file"+e.getMessage());
-          }
-          
-	       /* try
-	        {
-		        Viewer viewer = new Viewer();
-		        frame.add(viewer, BorderLayout.CENTER);
-	        	
-		        InputStream input =
-		            new FileInputStream (new File(GUIDEFILEPATH));
-		        viewer.setDocumentInputStream(input);
-		        viewer.setProperty("Default_Page_Layout", "SinglePage");
-				viewer.setProperty("Default_Zoom_Type", "FitPage");
-				viewer.setProperty("Default_Magnification", "100");
-				viewer.zoomTo(2.0);
-				viewer.activate();
-				frame.setSize(UISettings.CLIENT_SCREEN_WIDTH/2, UISettings.CLIENT_SCREEN_HEIGHT/2);
-				frame.setVisible(true);
-
-	        }
-	        catch (Exception e)
-	        {
-	        	Log.debug(5, "Couldn't open the pdf file"+e.getMessage());
-	        }*/
-            
-	        // SimpleViewer in Jpedal to display pdf
-	        /*Container content = frame.getContentPane();
-	        SimpleViewer viewer = new SimpleViewer();
-	        viewer.exitOnClose = false;
-	        Object[] input = new Object[]{GUIDEFILEPATH};
-	        viewer.executeCommand(Commands.OPENFILE, input);*/
-	        // JPedalFrame to display pdf
-	        /*JPedalFrame PDFframe = new JPedalFrame(GUIDEFILEPATH);
-	        PDFframe.setLocation(location);	
-	        PDFframe.setSize(UISettings.CLIENT_SCREEN_WIDTH/2, UISettings.CLIENT_SCREEN_HEIGHT/2);*/
-	        
-		    
-	        
-	   
-	  }//execute
+         viewer = new PDFViewer(useThumbs);
+         //viewer.setSize(UISettings.CLIENT_SCREEN_WIDTH/2, UISettings.CLIENT_SCREEN_HEIGHT/2);
+         try
+         {
+           viewer.openFile(new File(GUIDEFILEPATH));
+           viewer.setTitle(TITLE);
+           viewer.setLocation(location);
+         }
+         catch(Exception e)
+         {
+         	Log.debug(5, "Couldn't open the pdf file"+e.getMessage());
+         }
+	  }
 
 }
