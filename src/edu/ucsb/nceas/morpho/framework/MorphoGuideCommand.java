@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2009-05-16 00:05:37 $'
- * '$Revision: 1.4 $'
+ *     '$Date: 2009-05-18 18:37:59 $'
+ * '$Revision: 1.5 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -46,7 +46,8 @@ import edu.ucsb.nceas.morpho.util.UISettings;
 /**
  * This class represents a command to open morpho guide. 
  * This command will be used in help menu. 
- * We will use Jpedal library to open a pdf file.
+ * First, we will try to open the pdf file by default os application. If failed, 
+ * it will try PDFRenderer to open it.
  * @author tao
  *
  */
