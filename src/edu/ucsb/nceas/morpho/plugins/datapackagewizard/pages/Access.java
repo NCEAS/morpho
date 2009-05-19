@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2009-03-13 03:57:28 $'
- * '$Revision: 1.44 $'
+ *     '$Date: 2009-05-19 22:49:27 $'
+ * '$Revision: 1.45 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -90,7 +90,7 @@ public class Access
   private CustomList accessList;
 
   private String AUTHSYSTEM_VALUE = "knb";
-  private String ORDER_VALUE = "denyFirst";
+  private String ORDER_VALUE = "allowFirst";
 
   public static DefaultMutableTreeNode accessTreeNode = null;
   public static String accessTreeMetacatServerName = null;
@@ -350,11 +350,15 @@ public class Access
     Object nextUserObject = null;
     OrderedMap nextNVPMap = null;
     AccessPage nextAccessPage = null;
+    boolean addedAuthSystem = false;
 
     if (isEntity && inherit) {
     	//we are removing everything
     	return null;
     }
+    
+    List rowLists = accessList.getListOfRowLists();
+    
     if (publicReadAccess) {
       returnMap.put(rootXPath + AUTHSYSTEM_REL_XPATH, AUTHSYSTEM_VALUE);
       returnMap.put(rootXPath + ORDER_REL_XPATH, ORDER_VALUE);
@@ -362,23 +366,27 @@ public class Access
           "public");
       returnMap.put(rootXPath + "allow[" + (allowIndex++) + "]/permission",
           "read");
-    } 
-    else { //if (isEntity) {
-      returnMap.put(rootXPath + AUTHSYSTEM_REL_XPATH, AUTHSYSTEM_VALUE);
-      returnMap.put(rootXPath + ORDER_REL_XPATH, ORDER_VALUE);
-      returnMap.put(rootXPath + "deny[" + (denyIndex) + "]/principal",
-          "public");
-      returnMap.put(rootXPath + "deny[" + (denyIndex++) + "]/permission",
-          "read");
-
-      ///////////////////////////////
+       addedAuthSystem = true;
     }
-
-    List rowLists = accessList.getListOfRowLists();
-
-    if (rowLists != null && rowLists.isEmpty()) {
-      return returnMap;
-    } else if(!publicReadAccess){
+    else if(rowLists == null || rowLists.isEmpty())
+    {
+    	// for non-public readable and there is no another rules,
+    	// we add a specific deny rule for public
+    	returnMap.put(rootXPath + AUTHSYSTEM_REL_XPATH, AUTHSYSTEM_VALUE);
+        returnMap.put(rootXPath + ORDER_REL_XPATH, ORDER_VALUE);
+        returnMap.put(rootXPath + "deny[" + (denyIndex) + "]/principal",
+            "public");
+        returnMap.put(rootXPath + "deny[" + (denyIndex++) + "]/permission",
+            "read");
+        return returnMap;
+    }
+  
+    //now we should go through the list of other rules specifed by user.
+    
+    //First, to check code above added  AUTHSYSTEM and ORDER  or not.
+    // if not, add them
+    if(!addedAuthSystem)
+    {
       // need to add AUTHSYSTEM and ORDER as these were not added earlier not
       // non publicly readable documents.
       returnMap.put(rootXPath + AUTHSYSTEM_REL_XPATH, AUTHSYSTEM_VALUE);
