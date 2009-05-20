@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2009-05-19 22:49:27 $'
- * '$Revision: 1.45 $'
+ *     '$Date: 2009-05-20 18:26:05 $'
+ * '$Revision: 1.46 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -368,10 +368,16 @@ public class Access
           "read");
        addedAuthSystem = true;
     }
-    else if(rowLists == null || rowLists.isEmpty())
+    else if(!isEntity && (rowLists == null || rowLists.isEmpty()))
     {
-    	// for non-public readable and there is no another rules,
-    	// we add a specific deny rule for public
+    	//For top level access, if there is no public readable access and other access rule,
+    	//we should omit the whole access section
+    	return null;
+    }
+    else if(isEntity && (rowLists == null || rowLists.isEmpty()))
+    {
+    	//In entity level, for non-public readable and there is no another rules,
+    	// we add a specific deny rule for public to overwrite the top accesss subtree
     	returnMap.put(rootXPath + AUTHSYSTEM_REL_XPATH, AUTHSYSTEM_VALUE);
         returnMap.put(rootXPath + ORDER_REL_XPATH, ORDER_VALUE);
         returnMap.put(rootXPath + "deny[" + (denyIndex) + "]/principal",

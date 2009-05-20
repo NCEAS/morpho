@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2009-04-24 20:32:17 $'
- * '$Revision: 1.6 $'
+ *     '$Date: 2009-05-20 18:26:05 $'
+ * '$Revision: 1.7 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -181,11 +181,12 @@ public class AddAccessCommand
     OrderedMap map = accessPage.getPageData(ACCESS_SUBTREE_NODENAME);
 
     Log.debug(45, "\n insertAccess() Got access details from Access page -\n"
-              + map.toString());
+              + map);
 
     if (map == null || map.isEmpty()) {
-      Log.debug(5, "Unable to get access details from input!");
-      return;
+    	Log.debug(30, "removing access rules from top level!");
+    	adp.deleteSubtree(DATAPACKAGE_ACCESS_GENERIC_NAME, 0);
+        return;
     }
 
     DOMImplementation impl = DOMImplementationImpl.getDOMImplementation();

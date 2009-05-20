@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2008-12-12 20:32:31 $'
- * '$Revision: 1.76 $'
+ *     '$Date: 2009-05-20 18:26:05 $'
+ * '$Revision: 1.77 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -320,7 +320,21 @@ public class WizardSettings {
   +"   </dataset> "
   +"</eml:eml>";*/
   
-  protected static final String NEW_EML210_DOCUMENT_TEXT =
+  protected static final String NEW_EML210_DOCUMENT_TEXT_WITHOUTACCESS =
+	  "<eml:eml "
+	  +"   packageId=\"\" system=\"knb\" "
+	  +"   xmlns:eml=\"eml://ecoinformatics.org/eml-2.1.0\" "
+	  +"   xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" "
+	  +"   xsi:schemaLocation=\"eml://ecoinformatics.org/eml-2.1.0 eml.xsd\"> "
+	  //+"   <access> "
+  	  //+"   </access>"
+	  +"   <dataset> "
+	  +"   <title> </title> "
+	  +"   <creator> </creator>"
+	  +"   </dataset> "
+	  +"</eml:eml>";
+  
+  protected static final String NEW_EML210_DOCUMENT_TEXT_WITHACCESS =
 	  "<eml:eml "
 	  +"   packageId=\"\" system=\"knb\" "
 	  +"   xmlns:eml=\"eml://ecoinformatics.org/eml-2.1.0\" "

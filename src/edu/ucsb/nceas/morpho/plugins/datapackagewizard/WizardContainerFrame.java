@@ -8,8 +8,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2009-04-26 21:23:23 $'
- * '$Revision: 1.76 $'
+ *     '$Date: 2009-05-20 18:26:05 $'
+ * '$Revision: 1.77 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -541,6 +541,7 @@ public class WizardContainerFrame
 
     //results Map:
     OrderedMap wizData = new OrderedMap();
+    OrderedMap accessData = null;
 
     //NOTE: the order of pages on the stack is *not* the same as the order
     //of writing data to the DOM. We therefore convert the Stack to a Map
@@ -601,6 +602,7 @@ public class WizardContainerFrame
     
     //ACCESS:
     if (ACCESS != null) {
+      accessData = ACCESS.getPageData();
       addPageDataToResultsMap( ACCESS, wizData);
     }
     
@@ -722,7 +724,17 @@ public class WizardContainerFrame
     ////////////////////////////////////////////////////////////////////////////
 
     //create a new empty DOM document to be populated by the wizard values:
-    Node rootNode = getNewEmptyDataPackageDOM(WizardSettings.NEW_EML210_DOCUMENT_TEXT);
+    Node rootNode = null;
+    if(accessData == null || accessData.isEmpty())
+    {
+       // for no access subtree
+       rootNode = getNewEmptyDataPackageDOM(WizardSettings.NEW_EML210_DOCUMENT_TEXT_WITHOUTACCESS);
+    }
+    else
+    {
+    	//for having access subtree
+    	rootNode = getNewEmptyDataPackageDOM(WizardSettings.NEW_EML210_DOCUMENT_TEXT_WITHACCESS);
+    }
 
     //now populate it...
     try {
