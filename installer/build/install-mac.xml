@@ -103,7 +103,7 @@
       <description>The base files</description>		
 			<!--mac file set-->
 			<file src="morpho.app" targetdir="$INSTALL_PATH"/>
-			<fileset dir="" targetdir="$INSTALL_PATH/">
+			<fileset dir="." targetdir="$INSTALL_PATH/">
                 <exclude name="stderr.log"/>
 				<exclude name="src/"/>
 				<exclude name="bin/"/>
