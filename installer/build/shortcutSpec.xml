@@ -4,10 +4,10 @@
 
   <skipIfNotSupported />
 
-  <programGroup defaultName="Morpho.1.7.0-RC3" location="applications"/>
+  <programGroup defaultName="Morpho.1.7.0" location="applications"/>
 
   <shortcut
-     name="Morpho.1.7.0-RC3"
+     name="Morpho.1.7.0"
      programGroup="yes"
      desktop="yes"
      applications="no"
