@@ -6,8 +6,8 @@
  *    Release: @release@
  *
  *   '$Author: tao $'
- *     '$Date: 2009-05-20 21:07:14 $'
- * '$Revision: 1.104 $'
+ *     '$Date: 2009-06-02 16:43:05 $'
+ * '$Revision: 1.105 $'
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -118,7 +118,7 @@ import com.ice.tar.TarEntry;
 public class Morpho
 {
     /** The version of this release of Morpho */
-    public static String VERSION = "1.7.0-RC3";
+    public static String VERSION = "1.7.0";
 
     /** Constant to indicate a separator should precede an action */
     public static String SEPARATOR_PRECEDING = "separator_preceding";
