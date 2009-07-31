@@ -23,6 +23,8 @@
       <property name="muser" value="uid=jones,o=NCEAS,dc=ecoinformatics,dc=org"/>
       <property name="mpass" value="your-pw-goes-here"/>
       <property name="utilities-tag" value="UTILITIES_1_0_0" />
+	   <property name="svn-utilitiesUrl"
+            value="https://code.ecoinformatics.org/code/utilities/tags/${utilities-tag}" />
       <property name="eml-module" value="eml" />
       <!-- the following two properties will be used to get newest eml doc-->
       <property name="eml-tag" value="RELEASE_EML_2_1_0" />
@@ -178,6 +180,22 @@
        </path>
 
        <taskdef resource="axis-tasks.properties" classpathref="classpath"/>
+	   
+		<!-- set up svn -->
+        <property name="svnant.lib" value="lib" />
+        <property name="svnant.jar" value="${svnant.lib}/svnant.jar" />
+        <property name="svnClientAdapter.jar"
+            value="${svnant.lib}/svnClientAdapter.jar" />
+        <property name="svnjavahl.jar"
+            value="${svnant.lib}/svnjavahl.jar" />
+	   <!-- load the svn task -->
+        <path id="svn-classpath">
+            <pathelement location="${svnjavahl.jar}" />
+            <pathelement location="${svnant.jar}" />
+            <pathelement location="${svnClientAdapter.jar}" />
+        </path>
+        <taskdef resource="svntask.properties"
+            classpathref="svn-classpath" />
    </target>
 	
 
@@ -291,13 +309,18 @@
    </target>
 
 
-   <target name="utilities" depends="cvsrootfromenv, cvsrootfrominput" if="utilities.required">
+   <target name="utilities" depends="prepare" if="utilities.required">
      <!-- checkout utilities moduel -->
-     <echo>Enter CVS password for utilities module (${cvsroot}) : </echo>
+     <!--<echo>Enter CVS password for utilities module (${cvsroot}) : </echo>
      <cvs cvsRoot="${cvsroot}"
           package="utilities"
 		  tag="${utilities-tag}"
-          dest="${build.dir}" />
+          dest="${build.dir}" />-->
+	  <echo message="Exporting utiities files from svn repository:" />
+	  <svn>
+            <export srcUrl="${svn-utilitiesUrl}"
+                destPath="${build.dir}/utilities" />
+        </svn>
      <ant inheritAll="false" dir="${build.dir}/utilities" target="jar" />
      <delete file="${utilities}" />
      <copy file="${build.dir}/utilities/build/utilities.jar" todir="${libdir}" />
