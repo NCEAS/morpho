@@ -695,36 +695,46 @@
   </target>
 
 	
-  <target name="setwindowsos">
-  	<property name="os-name" value="windows"/>
-  </target>
+	<!--Generates installer for windows, mac and linux-->
+   <target name="buildallinstallers" depends="clean, buildwininstaller, buildmacinstaller, buildlinuxinstaller" description="build all installlers for windows, mac and linux"/>
+  
    <!--
    This target uses Launch4J (see http://launch4j.sourceforge.net/)
    It will create a file ("morpho-installer.exe" that will install morpho on a Windows box
    Dan Higgins - Jan 2008
 	--> 
-  <target name="buildwininstaller" depends="setwindowsos,installercleanup,buildwinexe, makeinstaller">
+  <target name="buildwininstaller" depends="init,wininstallercleanup,buildwinexe">
+	  <property name="windows" value="windows">
+		  
+	  </property>
+	  <antcall target="makeinstaller">
+		  <param name="os-name" value="${windows}"/>
+          <param name="version" value="${release}"/>
+	  </antcall>
       <taskdef name="launch4j"
                classname="net.sf.launch4j.ant.Launch4jTask"
                classpath="${launch4j.dir}/launch4j.jar:${launch4j.dir}/xstream.jar" 
       onerror="ignore"/>
       <launch4j configFile="./installer/build/launch-installer.xml"
-                outfile="morpho-${release}.exe" jar="morpho-${release}-${os-name}.jar"/>
+                outfile="morpho-${release}.exe" jar="morpho-${release}-${windows}.jar"/>
   </target>
 	
   
-  <target name="setmacos">
-  	<property name="os-name" value="mac"/>
-  </target>
   <!--Builds jar file for mac. Before run it, please edit installer/build/install.xml file  -->
-  <target name="buildmacinstaller" depends="setmacos,installercleanup, macjarbundler,makeinstaller">
+  <target name="buildmacinstaller" depends="init,macinstallercleanup,macjarbundler">
+	  <antcall target="makeinstaller">
+		  <param name="os-name" value="mac"/>
+          <param name="version" value="${release}"/>
+	  </antcall>
   </target>
 	
-  <target name="setlinuxos">
-	 <property name="os-name" value="linux"/>
-   </target>
   <!--Builds jar installer file for linux.   -->
-  <target name="buildlinuxinstaller" depends="setlinuxos,installercleanup,install,makeinstaller"> 
+  <target name="buildlinuxinstaller" depends="init,linuxinstallercleanup,install"> 
+	  
+	  <antcall target="makeinstaller">
+		  <param name="os-name" value="linux"/>
+          <param name="version" value="${release}"/>
+	   </antcall>
   </target>
 
 
@@ -753,12 +763,18 @@
    </target>
 	
 	<!-- the following 3 targets clean up the build for system specific installers -->
-	<target name="installercleanup">
-		 <delete file="morpho-${release}-linux.jar"/>
+	<target name="macinstallercleanup">
 		 <delete file="morpho-${release}-mac.jar"/>
-		 <delete file="morpho-${release}-windows.jar"/>
-		 <delete file="morpho-${release}.exe"/>
 		 <delete dir="morpho.app"/>
+   </target>
+	
+	<target name="wininstallercleanup">
+         <delete file="morpho-${release}-windows.jar"/>
+         <delete file="morpho-${release}.exe"/>
+   </target>
+	
+	<target name="linuxinstallercleanup">
+         <delete file="morpho-${release}-linux.jar"/>
    </target>
 
    <!-- use the ant "junit" task to run JUnit tests. -->
