@@ -17,9 +17,9 @@
 	-->
 	<info>
 		<appname>Morpho</appname>
-		<appversion>1.7.0</appversion>
+		<appversion>@{version}</appversion>
 		<url>http://knb.ecoinformatics.org</url>
-    <appsubpath>morpho-1.7.0</appsubpath>
+    <appsubpath>morpho-@{version}</appsubpath>
 	</info> 
   	
 	<!-- 
@@ -121,6 +121,9 @@
 				<exclude name="lib/LiveMap/"/>
 				<exclude name="lib/HTTPClient/"/>
 				<exclude name="lib/SchemaParser/"/>
+				<exclude name="morpho-@{version}-windows.jar"/>
+				<exclude name="morpho-@{version}.exe"/>
+				<exclude name="morpho-@{version}-mac.jar"/>
 			</fileset>
       		<executable type="bin" stage="never" keep="true" failure="warn" targetfile="$INSTALL_PATH/morpho"/>
     	</pack>

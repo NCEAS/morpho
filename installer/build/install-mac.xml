@@ -11,15 +11,18 @@
 
 <installation version="1.0">
 
+	<variables>
+        <variable name="release" value="@{version}"/>
+    </variables>
 	<!-- 
 		The info section.
 		The meaning of the tags should be natural ...
 	-->
 	<info>
 		<appname>Morpho</appname>
-		<appversion>1.7.0</appversion>
+		<appversion>@{version}</appversion>
 		<url>http://knb.ecoinformatics.org</url>
-    <appsubpath>morpho-1.7.0</appsubpath>
+    <appsubpath>morpho-${release}</appsubpath>
 	</info> 
   	
 	<!-- 
@@ -122,6 +125,9 @@
 				<exclude name="morpho.bat"/>
 				<exclude name="morpho.jnlp"/>
 				<exclude name="morpho.exe"/>
+				<exclude name="morpho-@{version}-windows.jar"/>
+                <exclude name="morpho-@{version}.exe"/>
+                <exclude name="morpho-@{version}-linux.jar"/>
 			</fileset>			
 			<fileset dir="." targetdir="$INSTALL_PATH/">
 			  <include name="docs/user/"/>

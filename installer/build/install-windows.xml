@@ -11,15 +11,18 @@
 
 <installation version="1.0">
 
+	<variables>
+        <variable name="release" value="@{version}"/>
+    </variables>
 	<!-- 
 		The info section.
 		The meaning of the tags should be natural ...
 	-->
 	<info>
 		<appname>Morpho</appname>
-		<appversion>1.7.0</appversion>
+		<appversion>@{version}</appversion>
 		<url>http://knb.ecoinformatics.org</url>
-        <appsubpath>morpho-1.7.0</appsubpath>
+        <appsubpath>morpho-${release}</appsubpath>
         <run-privileged condition="izpack.windowsinstall.vista"/>  
 	</info> 
   	
@@ -120,6 +123,8 @@
 				<exclude name="lib/LiveMap/"/>
 				<exclude name="lib/HTTPClient/"/>
 				<exclude name="lib/SchemaParser/"/>
+				<exclude name="morpho-@{version}-linux.jar"/>
+                <exclude name="morpho-@{version}-mac.jar"/>
 			</fileset>
       		<executable type="bin" stage="never" keep="true" failure="warn" targetfile="$INSTALL_PATH/morpho.bat"/> 
     	</pack>
