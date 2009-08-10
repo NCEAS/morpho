@@ -94,7 +94,7 @@
 		   property will be used in buildwininstaller target. -->
       <property name="launch4j.dir" location="/usr/local/devtools/launch4j" />
       <property name="izpackjar" 
-		            value="/usr/local/devtools/IzPack/lib/standalone-compiler.jar"/>
+		            value="${libdir}/standalone-compiler.jar"/>
       <property name="jcal"
    	                value="${libdir}/jcalendar-1.3.2.jar" />
       <property name="xml4j"
