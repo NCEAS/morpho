@@ -92,7 +92,7 @@
    	
       <!-- NOTE: location is machine specific - insert 'Launch4J' location on your machine! This
 		   property will be used in buildwininstaller target. -->
-      <property name="launch4j.dir" location="/usr/local/devtools/launch4j" />
+      <property name="launch4j.dir" location="${libdir}/launch4j" />
       <property name="izpackjar" 
 		            value="${libdir}/standalone-compiler.jar"/>
       <property name="jcal"
