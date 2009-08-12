@@ -128,6 +128,8 @@
 				<exclude name="morpho-@{version}-windows.jar"/>
                 <exclude name="morpho-@{version}.exe"/>
                 <exclude name="morpho-@{version}-linux.jar"/>
+				<exclude name="@{izpackjar}"/>
+                <exclude name="lib/launch4j/"/>
 			</fileset>			
 			<fileset dir="." targetdir="$INSTALL_PATH/">
 			  <include name="docs/user/"/>

@@ -125,6 +125,8 @@
 				<exclude name="lib/SchemaParser/"/>
 				<exclude name="morpho-@{version}-linux.jar"/>
                 <exclude name="morpho-@{version}-mac.jar"/>
+				<exclude name="@{izpackjar}"/>
+                <exclude name="lib/launch4j/"/>
 			</fileset>
       		<executable type="bin" stage="never" keep="true" failure="warn" targetfile="$INSTALL_PATH/morpho.bat"/> 
     	</pack>
