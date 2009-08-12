@@ -94,7 +94,7 @@
 		   property will be used in buildwininstaller target. -->
       <property name="launch4j.dir" location="${libdir}/launch4j" />
       <property name="izpackjar" 
-		            value="${libdir}/standalone-compiler.jar"/>
+		            value="lib/standalone-compiler.jar"/>
       <property name="jcal"
    	                value="${libdir}/jcalendar-1.3.2.jar" />
       <property name="xml4j"
@@ -710,6 +710,7 @@
 	  <antcall target="makeinstaller">
 		  <param name="os-name" value="${windows}"/>
           <param name="version" value="${release}"/>
+		  <param name="izpackjar" value="${izpackjar}"/>
 	  </antcall>
       <taskdef name="launch4j"
                classname="net.sf.launch4j.ant.Launch4jTask"
@@ -725,6 +726,7 @@
 	  <antcall target="makeinstaller">
 		  <param name="os-name" value="mac"/>
           <param name="version" value="${release}"/>
+		  <param name="izpackjar" value="${izpackjar}"/>
 	  </antcall>
   </target>
 	
@@ -734,6 +736,7 @@
 	  <antcall target="makeinstaller">
 		  <param name="os-name" value="linux"/>
           <param name="version" value="${release}"/>
+		  <param name="izpackjar" value="${izpackjar}"/>
 	   </antcall>
   </target>
 
