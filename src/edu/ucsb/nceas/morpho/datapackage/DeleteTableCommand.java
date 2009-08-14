@@ -38,6 +38,8 @@ import edu.ucsb.nceas.morpho.util.Log;
 
 import java.awt.event.ActionEvent;
 
+import javax.swing.JOptionPane;
+
 /**
  * Class to handle import data file command
  */
@@ -68,6 +70,15 @@ public class DeleteTableCommand implements Command
 
        resultPane = morphoFrame.getDataViewContainerPanel();
     }//if
+    int opt = JOptionPane.showConfirmDialog(morphoFrame,
+            "Are you sure that you want to delete the selected data table?",
+            "DO YOU WANT TO CONTINUE?",
+            JOptionPane.YES_NO_OPTION);
+   if (opt == JOptionPane.NO_OPTION) 
+   {
+        return;
+    }
+        
     // make sure resulPanel is not null
     if ( resultPane != null) {
 

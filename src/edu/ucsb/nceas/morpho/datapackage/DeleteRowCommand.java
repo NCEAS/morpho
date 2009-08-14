@@ -32,6 +32,7 @@ import edu.ucsb.nceas.morpho.util.Command;
 
 import java.awt.event.ActionEvent;
 
+import javax.swing.JOptionPane;
 import javax.swing.JTable;
 
 
@@ -67,6 +68,14 @@ public class DeleteRowCommand implements Command
     {
        resultPane = morphoFrame.getDataViewContainerPanel();
     }//if
+    int opt = JOptionPane.showConfirmDialog(morphoFrame,
+            "Are you sure that you want to delete the selected row?",
+            "DO YOU WANT TO CONTINUE?",
+            JOptionPane.YES_NO_OPTION);
+   if (opt == JOptionPane.NO_OPTION) 
+   {
+        return;
+    }
 
     // make sure resulPanel is not null
     if (resultPane != null)
