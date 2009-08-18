@@ -176,7 +176,7 @@ public class UISettings
      * size of the login button for init screen
      */
     public static final Dimension INIT_SCR_LOGIN_BUTTON_DIMS
-													= new Dimension(50, 25);
+													= new Dimension(70, 25);
 
 
 
