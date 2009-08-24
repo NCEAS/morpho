@@ -7,6 +7,7 @@
   <datadir>data</datadir>
   <cachedir>cache</cachedir>
   <tempdir>temp</tempdir>
+  <incompletedir>incomplete</incompletedir>
   <queriesdir>queries</queriesdir>
   <searchmetacat>true</searchmetacat>
   <searchlocal>true</searchlocal>
