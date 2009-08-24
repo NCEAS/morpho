@@ -622,6 +622,11 @@ public class ProfileDialog extends JDialog
           String tempPath = profilePath + File.separator + tempDirName;
           File tempDir = new File(tempPath);
           success = tempDir.mkdir();
+          
+          String incompleteDirName = profile.get("incompletedir", 0);
+          String incompletePath = profilePath + File.separator + incompleteDirName;
+          File incompleteDir = new File(incompletePath);
+          success = incompleteDir.mkdir();
 
           // Copy sample data to the data directory
           Hashtable tokens = new Hashtable();
