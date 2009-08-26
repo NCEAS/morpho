@@ -60,6 +60,8 @@ public abstract class DataStore implements DataStoreInterface
   protected String cachedir;
   protected String tempdir;
   protected String charset;
+  protected String incompletedir;
+  private final static String INCOMPLATEDIR = "incomplete";
   
   /**
    * create a new FileSystemDataStore for a Morpho
@@ -76,6 +78,16 @@ public abstract class DataStore implements DataStoreInterface
     datadir = profileDirName + File.separator + profile.get("datadir", 0);
     tempdir = profileDirName + File.separator + profile.get("tempdir", 0);
     cachedir = profileDirName + File.separator + profile.get("cachedir", 0);
+    String incomplete = profile.get("cachedir", 0);
+    //in case no incomplete dir in old version profile
+    if(incomplete == null || incomplete.trim().equals(""))
+    {
+    	incompletedir = profileDirName + File.separator + INCOMPLATEDIR;
+    }
+    else
+    {
+    	incompletedir = profileDirName + File.separator + incomplete;
+    }
     separator = profile.get("separator", 0);
     separator = separator.trim();
     charset = config.get("charset", 0);

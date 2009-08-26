@@ -118,6 +118,30 @@ public class FileSystemDataStore extends DataStore
   }
   
   /**
+   * Save an input stream into a file in incomplete dir with the given name.
+   * @param name
+   * @param file
+   * @return
+   */
+		  
+  public File saveIncompleteDataFile(String name, InputStream file)
+  {
+    return saveDataFile(name, file, incompletedir);
+  }
+  
+  /**
+   * Save a reader into a file in incomplete dir with a given name
+   * @param name  name of the file
+   * @param file  source of the file
+   * @return
+   */
+  public File saveIncompleteDataFile(String name, Reader file)
+  {
+    return saveDataFile(name, file, incompletedir);
+  }
+ 
+  
+  /**
    * Check if the given docid exists in local file system.
    * @param docid 
    * @return exists or not
