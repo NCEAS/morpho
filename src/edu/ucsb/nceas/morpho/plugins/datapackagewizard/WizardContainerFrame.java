@@ -775,7 +775,15 @@ public class WizardContainerFrame
     return rootNode;
   }
 
-
+  
+  /*
+   * This method serialize the data in pages which were done by user.
+   * It is useful for saving incomplete document.
+   */
+  private void serializeExistingPages()
+  {
+	 Node temp = collectDataFromPages();  
+  }
 
 
   private final String ID_ATTR_XPATH = "/@id";
