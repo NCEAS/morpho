@@ -87,7 +87,7 @@ public class WizardContainerFrame
 
   private InputMap imap;
   private ActionMap amap;
-
+  private String autoSaveID; //the id of the auto saving file
 
 
 
@@ -102,6 +102,7 @@ public class WizardContainerFrame
     pageStack = new Stack();
     pageLib = new WizardPageLibrary(this);
     init();
+    //autoSaveID = Morpho
 
     this.addWindowListener(new WindowAdapter() {
 
@@ -500,8 +501,10 @@ public class WizardContainerFrame
     Log.debug(45, "nextFinishAction pushing currentPage to Stack ("
               + getCurrentPage().getPageID() + ")");
     pageStack.push(this.getCurrentPage());
-
+    serializeExistingPages();
+    
     String nextPgID = getCurrentPage().getNextPageID();
+
     Log.debug(45, "nextFinishAction - next page ID is: " + nextPgID);
 
     AbstractUIPage nextPage = (AbstractUIPage)pageCache.get(nextPgID);
@@ -548,20 +551,27 @@ public class WizardContainerFrame
     //(indexed by pageID) and access the pages non-sequentially in a flurry of
     //hard-coded madness:
     //
-
-    while (!pageStack.isEmpty()) {
-
-      AbstractUIPage nextPage = (AbstractUIPage)pageStack.pop();
-      String nextPageID = nextPage.getPageID();
-      Log.debug(45, ">> collectDataFromPages() - next pageID = "+nextPageID);
-      if (nextPageID==null || nextPageID.trim().length()<1) {
-
-        Log.debug(15,
-                  "\n*** WARNING - WizardContainerFrame.collectDataFromPages()"
-                  +" has encountered a page with no ID! Object is: "+nextPage);
-        continue;
+    
+    //in order to reuse pageStack, we give up pageStack.pop method
+    //while (!pageStack.isEmpty()) {
+     int size = pageStack.size();
+     if (size >0)
+     {
+      for (int i=0; i< size; i++)
+      {
+	      //AbstractUIPage nextPage = (AbstractUIPage)pageStack.pop();
+	      AbstractUIPage nextPage = (AbstractUIPage)pageStack.elementAt(i);
+	      String nextPageID = nextPage.getPageID();
+	      Log.debug(45, ">> collectDataFromPages() - next pageID = "+nextPageID);
+	      if (nextPageID==null || nextPageID.trim().length()<1) {
+	
+	        Log.debug(15,
+	                  "\n*** WARNING - WizardContainerFrame.collectDataFromPages()"
+	                  +" has encountered a page with no ID! Object is: "+nextPage);
+	        continue;
+	      }
+	      pageMap.put(nextPageID, nextPage);
       }
-      pageMap.put(nextPageID, nextPage);
     }
 
     AbstractUIPage GENERAL
@@ -776,13 +786,41 @@ public class WizardContainerFrame
   }
 
   
+  /**
+   * Manually save incomplete package
+   * @param docid
+   */
+  public void manualSaveInCompletePackage(String docid)
+  {
+	  
+  }
+  
+  /*
+   * save incomplete package automatically
+   */
+  private void autoSaveInCompletePackage()
+  {
+	  
+  }
+  
+  /*
+   * Save incompleted package with given id
+   */
+  private void saveInCompletePackage(String docid)
+  {
+	  
+  }
+  
   /*
    * This method serialize the data in pages which were done by user.
    * It is useful for saving incomplete document.
    */
-  private void serializeExistingPages()
+  private String serializeExistingPages()
   {
-	 Node temp = collectDataFromPages();  
+	 Node temp = collectDataFromPages(); 
+	 String emlDoc = XMLUtilities.getDOMTreeAsString(temp, false);
+	 Log.debug(25, "The partial eml document is :\n"+emlDoc);
+	 return emlDoc;
   }
 
 
