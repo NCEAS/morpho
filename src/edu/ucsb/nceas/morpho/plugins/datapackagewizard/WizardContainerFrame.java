@@ -31,6 +31,7 @@ package edu.ucsb.nceas.morpho.plugins.datapackagewizard;
 import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.datapackage.AbstractDataPackage;
 import edu.ucsb.nceas.morpho.datapackage.DataPackageFactory;
+import edu.ucsb.nceas.morpho.datastore.FileSystemDataStore;
 import edu.ucsb.nceas.morpho.framework.AbstractUIPage;
 import edu.ucsb.nceas.morpho.framework.ConfigXML;
 import edu.ucsb.nceas.morpho.framework.UIController;
@@ -539,7 +540,7 @@ public class WizardContainerFrame
     Log.debug(45, "nextFinishAction pushing currentPage to Stack ("
               + getCurrentPage().getPageID() + ")");
     pageStack.push(this.getCurrentPage());
-    serializeExistingPages();
+    autoSaveInCompletePackage();
     
     String nextPgID = getCurrentPage().getNextPageID();
 
@@ -838,29 +839,26 @@ public class WizardContainerFrame
    */
   private void autoSaveInCompletePackage()
   {
-	  
+	  if(autoSaveID != null)
+	  {
+		  Node temp = collectDataFromPages(); 
+		  String emlDoc = XMLUtilities.getDOMTreeAsString(temp, false);
+		  Log.debug(25, "The partial eml document is :\n"+emlDoc);
+		  saveInCompletePackage(autoSaveID, emlDoc);
+	  }
   }
   
   /*
    * Save incompleted package with given id
    */
-  private void saveInCompletePackage(String docid)
+  private void saveInCompletePackage(String docid, String xml)
   {
-	  
+	  FileSystemDataStore store = new FileSystemDataStore(Morpho.thisStaticInstance);
+	  StringReader reader = new StringReader(xml);
+	  store.saveIncompleteDataFile(docid, reader);
   }
   
-  /*
-   * This method serialize the data in pages which were done by user.
-   * It is useful for saving incomplete document.
-   */
-  private String serializeExistingPages()
-  {
-	 Node temp = collectDataFromPages(); 
-	 String emlDoc = XMLUtilities.getDOMTreeAsString(temp, false);
-	 Log.debug(25, "The partial eml document is :\n"+emlDoc);
-	 return emlDoc;
-  }
-
+ 
 
   private final String ID_ATTR_XPATH = "/@id";
   private final StringBuffer tempBuff = new StringBuffer();
