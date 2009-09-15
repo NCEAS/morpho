@@ -1062,7 +1062,11 @@ public class WizardContainerFrame
     this.setVisible(false);
 
     listener.wizardCanceled();
-
+    if(autoSaveID != null)
+    {
+    	FileSystemDataStore store = new FileSystemDataStore(Morpho.thisStaticInstance);
+    	store.deleteInCompleteFile(autoSaveID);
+    }
     // now clean up
     doCleanUp();
   }
