@@ -78,7 +78,7 @@ public abstract class DataStore implements DataStoreInterface
     datadir = profileDirName + File.separator + profile.get("datadir", 0);
     tempdir = profileDirName + File.separator + profile.get("tempdir", 0);
     cachedir = profileDirName + File.separator + profile.get("cachedir", 0);
-    String incomplete = profile.get("cachedir", 0);
+    String incomplete = profile.get("incompletedir", 0);
     //in case no incomplete dir in old version profile
     if(incomplete == null || incomplete.trim().equals(""))
     {
