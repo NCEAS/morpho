@@ -202,7 +202,7 @@ public class TreeEditorCorrectionController
 		          //calling the wizardComplete method in external listener
 	                if(externalListener != null)
 	                {
-	                	externalListener.wizardComplete(dataPackage.getMetadataNode());
+	                	externalListener.wizardComplete(dataPackage.getMetadataNode(), null);
 	                }
 
 		          } 

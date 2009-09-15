@@ -83,7 +83,7 @@ public class CreateNewDataPackageCommand implements Command
       dpw.startPackageWizard(
           new DataPackageWizardListener() {
 
-        public void wizardComplete(Node newDOM) {
+        public void wizardComplete(Node newDOM, String autoSavedID) {
 
           Log.debug(30,
               "Wizard complete - Will now create an AbstractDataPackage..");

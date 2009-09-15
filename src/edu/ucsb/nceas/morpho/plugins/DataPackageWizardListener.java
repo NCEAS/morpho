@@ -38,12 +38,14 @@ import org.w3c.dom.Node;
 public interface DataPackageWizardListener {
 
 
+  
   /**
    *  callback method when wizard has finished, upon completion
    *
    *  @param newDOM the root Node of the newly-created DOM document
+   *  @param autoSavedID  the file id which saves the incomplete file
    */
-  public void wizardComplete(Node newDOM);
+  public void wizardComplete(Node newDOM, String autoSavedID);
 
   /**
    *  callback method when wizard has been canceled before completion

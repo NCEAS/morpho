@@ -232,7 +232,7 @@ public class DataPackageWizardPlugin implements PluginInterface,
     plugin.startPackageWizard(
       new DataPackageWizardListener() {
 
-        public void wizardComplete(Node newDOM) {
+        public void wizardComplete(Node newDOM, String autoSavedID) {
         Log.debug(1,"Wizard complete - Will now create an AbstractDataPackage..");
           AbstractDataPackage dp = DataPackageFactory.getDataPackage(newDOM);
 

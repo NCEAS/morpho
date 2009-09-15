@@ -101,7 +101,7 @@ public class EMLTransformToNewestVersionDialog
 				 //calling the wizardComplete method in listener to make the dialog show up.
                 if(listener != null)
                 {
-                	listener.wizardComplete(eml200Package.getMetadataNode());
+                	listener.wizardComplete(eml200Package.getMetadataNode(), null);
                 }
 			}
 			
@@ -192,7 +192,7 @@ public class EMLTransformToNewestVersionDialog
 			                //calling the wizardComplete method in listener
 			                if(listener != null)
 			                {
-			                	listener.wizardComplete(eml200Package.getMetadataNode());
+			                	listener.wizardComplete(eml200Package.getMetadataNode(), null);
 			                }
 		                }
 		                else

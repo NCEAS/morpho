@@ -96,7 +96,7 @@ public class AddEntityAccessCommand implements Command, DataPackageWizardListene
 	   * Method from DataPackageWizardListener.
 	   * When correction wizard finished, it will show the dialog.
 	   */
-	  public void wizardComplete(Node newDOM)
+	  public void wizardComplete(Node newDOM, String autoSavedID)
 	  {
 		  int entityIndex = 0;
 

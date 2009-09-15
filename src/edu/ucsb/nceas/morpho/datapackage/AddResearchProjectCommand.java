@@ -116,7 +116,7 @@ public class AddResearchProjectCommand implements Command, DataPackageWizardList
    * Method from DataPackageWizardListener.
    * When correction wizard finished, it will show the dialog.
    */
-  public void wizardComplete(Node newDOM)
+  public void wizardComplete(Node newDOM, String autoSavedID)
   {
 	  adp = UIController.getInstance().getCurrentAbstractDataPackage();
 

@@ -968,7 +968,7 @@ public class CorrectionWizardController
 	private class CorrectionDataPackageWizardListener implements DataPackageWizardListener
 	{
 
-		public void wizardComplete(Node newDOM) {
+		public void wizardComplete(Node newDOM, String autoSavedID) {
 
 	          Log.debug(30,
 	              "Correction Wizard UI Page complete ");
@@ -1014,7 +1014,7 @@ public class CorrectionWizardController
 			            //do some other stuff specified by external listener
 			            if(externalListener != null)
 			            {
-			            	externalListener.wizardComplete(newDOM);
+			            	externalListener.wizardComplete(newDOM,autoSavedID);
 			            }
 		
 			          } catch (ServiceNotHandledException snhe) {

@@ -173,7 +173,7 @@ public class InsertColumnCommand implements Command, DataPackageWizardListener
    * Method from DataPackageWizardListener.
    * When correction wizard finished, it will show the dialog.
    */
-  public void wizardComplete(Node newDOM)
+  public void wizardComplete(Node newDOM, String autoSavedID)
   {
 	  // since morphoFrame object maybe updated, we need to get it again.
     	 morphoFrame = UIController.getInstance().getCurrentActiveWindow();
@@ -402,7 +402,7 @@ public class InsertColumnCommand implements Command, DataPackageWizardListener
 
         adp.addAttributeForImport(entityName, columnName, mScale, map, "/attribute", false);
         DataPackageWizardListener dpwListener = new DataPackageWizardListener () {
-          public void wizardComplete(Node newDOM) {
+          public void wizardComplete(Node newDOM, String autoSavedID) {
             openNewWindow = true;
             insertEml2Column();
 

@@ -154,7 +154,7 @@ public class EditColumnMetaDataCommand implements Command, DataPackageWizardList
    * Method from DataPackageWizardListener.
    * When correction wizard finished, it will show the dialog.
    */
-  public void wizardComplete(Node newDOM)
+  public void wizardComplete(Node newDOM, String autoSavedID)
   {
 	    Node[] attributes = null;
 	  // since the morphoFrame may be updated to eml210 document, we need to get the adp again.
@@ -229,7 +229,7 @@ public class EditColumnMetaDataCommand implements Command, DataPackageWizardList
 						
 						adp.addAttributeForImport(entityName, columnName, mScale, map, "/attribute", false);
 						DataPackageWizardListener dpwListener = new DataPackageWizardListener () {
-							public void wizardComplete(Node newDOM) {
+							public void wizardComplete(Node newDOM, String autoSavedID) {
 								
 								modifyAttribute();
 								try

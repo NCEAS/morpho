@@ -96,7 +96,7 @@ implements Command, DataPackageWizardListener {
    * Method from DataPackageWizardListener.
    * When correction wizard finished, it will show the dialog.
    */
-  public void wizardComplete(Node newDOM)
+  public void wizardComplete(Node newDOM, String autoSavedID)
   {
 	  adp = UIController.getInstance().getCurrentAbstractDataPackage();
 	    exsitingContactRoot = adp.getSubtrees(DATAPACKAGE_CONTACT_GENERIC_NAME);

@@ -570,7 +570,7 @@ public class WizardContainerFrame
     else {
       rootNode = domToReturn;
     }
-    listener.wizardComplete(rootNode);
+    listener.wizardComplete(rootNode, autoSaveID);
 
     // now clean up
     doCleanUp();

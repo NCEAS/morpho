@@ -98,7 +98,7 @@ public class ImportDataCommand implements Command, DataPackageWizardListener
    * Method from DataPackageWizardListener.
    * When correction wizard finished, it will show the dialog.
    */
-  public void wizardComplete(Node newDOM)
+  public void wizardComplete(Node newDOM, String autoSavedID)
   {
 	  DataViewContainerPanel resultPane = null;
 	//Get the frame again since EMLTransformer may generate a new one
@@ -137,7 +137,7 @@ public class ImportDataCommand implements Command, DataPackageWizardListener
 
 	          new DataPackageWizardListener() {
 
-	            public void wizardComplete(Node newDOM) {
+	            public void wizardComplete(Node newDOM, String autoSavedID) {
 
 	              if(newDOM != null) {
 
