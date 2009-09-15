@@ -28,9 +28,11 @@
 
 package edu.ucsb.nceas.morpho.plugins.datapackagewizard;
 
+import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.datapackage.AbstractDataPackage;
 import edu.ucsb.nceas.morpho.datapackage.DataPackageFactory;
 import edu.ucsb.nceas.morpho.framework.AbstractUIPage;
+import edu.ucsb.nceas.morpho.framework.ConfigXML;
 import edu.ucsb.nceas.morpho.framework.UIController;
 import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
 import edu.ucsb.nceas.morpho.plugins.DataPackageWizardListener;
@@ -87,7 +89,10 @@ public class WizardContainerFrame
 
   private InputMap imap;
   private ActionMap amap;
-  private String autoSaveID; //the id of the auto saving file
+  private String autoSaveID = null; //the id of the auto saving file
+  
+  public static final String TEMP = "temp";
+  public static final String VERSION1 = "1";
 
 
 
@@ -102,7 +107,16 @@ public class WizardContainerFrame
     pageStack = new Stack();
     pageLib = new WizardPageLibrary(this);
     init();
-    //autoSaveID = Morpho
+    ConfigXML profile = Morpho.thisStaticInstance.getProfile();
+    if (profile != null)
+    {
+    	String scope = profile.get("scope", 0);
+    	String separator= profile.get("separator", 0);
+    	if(scope != null)
+    	{
+    	   autoSaveID = scope+separator+TEMP+separator+getRandomString()+separator+VERSION1;
+    	}
+    }
 
     this.addWindowListener(new WindowAdapter() {
 
@@ -152,6 +166,14 @@ public class WizardContainerFrame
 
     }
     setCurrentPage(pageForID);
+  }
+  
+  /**
+   * Get the id of the auto-saved file
+   */
+  public String getAutoSaveID()
+  {
+	  return autoSaveID;
   }
 
   /**
@@ -220,6 +242,22 @@ public class WizardContainerFrame
     else {
       stepLabel.setText("");
     }
+  }
+  
+  /*
+   * It will generate a random string (number)
+   */
+  private String getRandomString()
+  {
+	  String random = "";
+	  int size = 3;
+	  for(int i=0; i< size; i++)
+	  {
+		 int number =  (new Double (Math.random()*100)).intValue();
+		 random= random+number;
+	  }
+	  Log.debug(30, "The random number is "+random);
+	  return random;
   }
 
   private void updateButtonsStatus() {
