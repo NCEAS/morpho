@@ -288,6 +288,35 @@ public class FileSystemDataStore extends DataStore
      System.out.println("the success value is "+success);
      return success;
    }
+   
+   /**
+    * deletes a file from incomplete dir in the local file system. returns true if the file is
+    * successfully deleted, false otherwise.
+    * @param name the name of the file to delete
+    */
+    public boolean deleteInCompleteFile(String name)
+    {
+      String path = parseId(name);
+      String filePath = incompletedir + "/" +path;
+      
+      File delfile = new File(filePath); //the path to the file
+    
+      boolean success = false;
+      
+      try
+      {
+     	
+     	 success = delfile.delete();
+     	 
+      }
+      catch(Exception e)
+      {
+     	 //System.out.println("got an exception in deleting the local file");
+     	 e.printStackTrace();
+      }
+      Log.debug(30, "the success value for deleting incomplete file "+name+" is "+success);
+      return success;
+    }
   
   /**
    * Test method
