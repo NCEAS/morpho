@@ -37,6 +37,7 @@ import edu.ucsb.nceas.morpho.framework.UIController;
 import edu.ucsb.nceas.morpho.plugins.ServiceController;
 import edu.ucsb.nceas.morpho.plugins.ServiceProvider;
 import edu.ucsb.nceas.morpho.plugins.ServiceNotHandledException;
+import edu.ucsb.nceas.morpho.datastore.FileSystemDataStore;
 import edu.ucsb.nceas.morpho.datastore.MetacatUploadException;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WidgetFactory;
 
@@ -469,6 +470,13 @@ public class SaveDialog extends JDialog
 
 	  this.setVisible(false);
 	  this.dispose();
+	  //delete the incomplete file
+	  String autoSavedID = adp.getAutoSavedD();
+	  if(autoSavedID != null)
+	  {
+		  FileSystemDataStore store = new FileSystemDataStore(Morpho.thisStaticInstance);
+	      store.deleteInCompleteFile(autoSavedID);
+	  }
 
     if (!problem) {
       if (showPackageFlag) {

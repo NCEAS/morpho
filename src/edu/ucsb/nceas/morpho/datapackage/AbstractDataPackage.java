@@ -267,6 +267,7 @@ public abstract class AbstractDataPackage extends MetadataObject
   protected static final String DONOTHMETACAT = "donothing";
   private static final String REPLACE = "replace";
   private static final String DELETE   = "delete";
+  protected String autoSavedID = null; //file id which stores auto saving doc
 
   /**
    * This abstract method turns the datapackage into a form (e.g. string) that
@@ -4610,6 +4611,24 @@ public abstract class AbstractDataPackage extends MetadataObject
 	  private void removeDirtyEntityIndex(int index)
 	  {
 		  this.dirtyEntityIndexList.removeElement(index);
+	  }
+	  
+	  /**
+	   * Set the auto saved id for this package
+	   * @param autoSavingID
+	   */
+	  public void setAutoSavedID(String autoSavedID)
+	  {
+		  this.autoSavedID = autoSavedID;
+	  }
+	  
+	  /**
+	   * Get the auto saved id for this package
+	   * @return
+	   */
+	  public String getAutoSavedD()
+	  {
+		  return this.autoSavedID;
 	  }
 	  
 	  /**

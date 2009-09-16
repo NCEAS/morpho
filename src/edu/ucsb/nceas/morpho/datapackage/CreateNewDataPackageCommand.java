@@ -91,6 +91,7 @@ public class CreateNewDataPackageCommand implements Command
           AbstractDataPackage adp = DataPackageFactory.getDataPackage(newDOM);
           Log.debug(30, "AbstractDataPackage complete");
           adp.setAccessionNumber("temporary.1.1");
+          adp.setAutoSavedID(autoSavedID);
 
           try {
             ServiceController services = ServiceController.getInstance();
