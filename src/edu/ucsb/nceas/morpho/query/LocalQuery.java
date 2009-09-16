@@ -177,13 +177,26 @@ public class LocalQuery
                               local_dtd_directory.trim()+"/catalog";
   }
 
+  
   /**
    * Run the query against the local document store
    */
   public ResultSet execute()
   {
+	   File xmldir = new File(datadir);
+	   Vector filevector = new Vector();
+	    // get a list of all files to be searched
+	    getFiles(xmldir, filevector);
+
+       return execute(filevector);
+  }
+  /*
+   * Run the query against the local document store
+   */
+  private ResultSet execute(Vector filevector)
+  {
     // first, get a list of all packages that meet the query requirements
-    Vector packageList = executeLocal(this.savedQuery.getQueryGroup());
+    Vector packageList = executeLocal(this.savedQuery.getQueryGroup(), filevector);
     Vector row = null;
     Vector rowCollection = new Vector();
 
@@ -209,7 +222,7 @@ public class LocalQuery
    *
    * @param xpathExpression the XPath query string
    */
-  private Vector executeXPathQuery(String xpathExpression)
+  private Vector executeXPathQuery(String xpathExpression, Vector filevector)
   {
     Vector package_IDs = new Vector();
     Node root;
@@ -238,10 +251,10 @@ public class LocalQuery
     // set start time variable
     starttime = System.currentTimeMillis();
 
-    File xmldir = new File(datadir);
-    Vector filevector = new Vector();
+    //File xmldir = new File(datadir);
+    //Vector filevector = new Vector();
     // get a list of all files to be searched
-    getFiles(xmldir, filevector);
+    //getFiles(xmldir, filevector);
 
     // iterate over all the files that are in the local xml directory
     for (int i=0;i<filevector.size();i++) {
@@ -648,7 +661,7 @@ public class LocalQuery
    *
    * @param qg the QueryGroup containing query parameters
    */
-  private Vector executeLocal(QueryGroup qg)
+  private Vector executeLocal(QueryGroup qg, Vector filevector)
   {
     Vector combined = null;
     Vector currentResults = null;
@@ -658,9 +671,9 @@ public class LocalQuery
       Object child = children.nextElement();
       if (child instanceof QueryTerm) {
         String xpath = QueryTermToXPath((QueryTerm)child);
-        currentResults = executeXPathQuery(xpath);
+        currentResults = executeXPathQuery(xpath, filevector);
       } else {  // QueryGroup
-        currentResults = executeLocal((QueryGroup)child);
+        currentResults = executeLocal((QueryGroup)child, filevector);
       }
 
       if ((currentResults==null) &&
