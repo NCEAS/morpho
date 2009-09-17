@@ -27,9 +27,11 @@
 package edu.ucsb.nceas.morpho.query;
 
 import edu.ucsb.nceas.morpho.Morpho;
+import edu.ucsb.nceas.morpho.datastore.DataStore;
 import edu.ucsb.nceas.morpho.framework.ConfigXML;
 import edu.ucsb.nceas.morpho.util.Log;
 import java.io.*;
+
 import javax.xml.parsers.DocumentBuilder;
 import org.apache.xpath.XPathAPI;
 import org.w3c.dom.Document;
@@ -139,6 +141,9 @@ public class LocalQuery
   private ImageIcon localPackageIcon = null;
   /** The folder icon for representing local storage with data. */
   private ImageIcon localPackageDataIcon = null;
+  
+  /* the directory contains the incomplete documents*/
+  private String incompleteDir;
 
   // create these static caches when class is first loaded
   static {
@@ -190,6 +195,19 @@ public class LocalQuery
 
        return execute(filevector);
   }
+  
+  /**
+   * Run the query against local incomplete doc
+   * @return
+   */
+  public ResultSet executeInInCompleteDoc()
+  {
+	  File xmldir = new File(incompleteDir);
+	  Vector fileVector = new Vector();
+	  getFiles(xmldir, fileVector);
+	  return execute(fileVector);
+  }
+  
   /*
    * Run the query against the local document store
    */
@@ -733,6 +751,16 @@ public class LocalQuery
     dt2bReturned = config.get("returndoc");
     local_dtd_directory = config.get("local_dtd_directory", 0);
     separator = profile.get("separator", 0);
+    String incomplete = profile.get("incompletedir", 0);
+    //in case no incomplete dir in old version profile
+    if(incomplete == null || incomplete.trim().equals(""))
+    {
+    	incompleteDir = profileDir+ File.separator + DataStore.INCOMPLATEDIR;
+    }
+    else
+    {
+    	incompleteDir = profileDir + File.separator + incomplete;
+    }
   }
 
   /*

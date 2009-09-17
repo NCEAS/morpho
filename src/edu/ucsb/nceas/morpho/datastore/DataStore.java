@@ -61,7 +61,7 @@ public abstract class DataStore implements DataStoreInterface
   protected String tempdir;
   protected String charset;
   protected String incompletedir;
-  private final static String INCOMPLATEDIR = "incomplete";
+  public final static String INCOMPLATEDIR = "incomplete";
   
   /**
    * create a new FileSystemDataStore for a Morpho
