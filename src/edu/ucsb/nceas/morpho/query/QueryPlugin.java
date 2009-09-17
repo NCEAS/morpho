@@ -429,6 +429,24 @@ public class QueryPlugin implements PluginInterface, ConnectionListener,
 
     return (ColumnSortableTableModel) originalSet;
   }
+  
+  /**
+   * Gets the list of incomplete document as a ColumnSortableTableMode
+   * @param headNames
+   * @return
+   */
+  public ColumnSortableTableModel getIncompleteDocumentList(String[] headNames)
+  {
+	    OpenDialogBoxCommand odbCmd = new OpenDialogBoxCommand(morpho);
+	    Query ownerQuery = new Query(odbCmd.getOwnerQuery(), morpho);
+	    LocalQuery localOwnerQuery = new LocalQuery(ownerQuery, morpho);
+	    HeadResultSet originalSet = (HeadResultSet)localOwnerQuery.executeInInCompleteDoc();
+	    Vector results = originalSet.getResultsVector();
+	    originalSet.setResultsVector(results);
+	    // reset the header name
+	    originalSet.setHeader(headNames);
+	    return (ColumnSortableTableModel) originalSet;
+  }
 
 
 }
