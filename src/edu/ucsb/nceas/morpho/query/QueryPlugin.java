@@ -27,7 +27,9 @@
 package edu.ucsb.nceas.morpho.query;
 
 import edu.ucsb.nceas.morpho.Morpho;
+import edu.ucsb.nceas.morpho.datastore.FileSystemDataStore;
 import edu.ucsb.nceas.morpho.framework.ConnectionListener;
+import edu.ucsb.nceas.morpho.framework.MorphoFrame;
 import edu.ucsb.nceas.morpho.framework.QueryRefreshInterface;
 import edu.ucsb.nceas.morpho.framework.UIController;
 import edu.ucsb.nceas.morpho.plugins.PluginInterface;
@@ -430,22 +432,22 @@ public class QueryPlugin implements PluginInterface, ConnectionListener,
     return (ColumnSortableTableModel) originalSet;
   }
   
+  
+  
   /**
-   * Gets the list of incomplete document as a ColumnSortableTableMode
-   * @param headNames
-   * @return
+   * List all crashed the document in a dialog box
+   * @param parent the parent frame of the dialog box
    */
-  public ColumnSortableTableModel getIncompleteDocumentList(String[] headNames)
+  public void listCrashedDocument(MorphoFrame parent)
   {
-	    OpenDialogBoxCommand odbCmd = new OpenDialogBoxCommand(morpho);
-	    Query ownerQuery = new Query(odbCmd.getOwnerQuery(), morpho);
-	    LocalQuery localOwnerQuery = new LocalQuery(ownerQuery, morpho);
-	    HeadResultSet originalSet = (HeadResultSet)localOwnerQuery.executeInInCompleteDoc();
-	    Vector results = originalSet.getResultsVector();
-	    originalSet.setResultsVector(results);
-	    // reset the header name
-	    originalSet.setHeader(headNames);
-	    return (ColumnSortableTableModel) originalSet;
+	  //First we will check if there are docs in incomplete dir.
+	  FileSystemDataStore fileStore = new FileSystemDataStore(morpho);
+	  if(fileStore.hasIncompleteFile())
+	  {
+		  OpenDialogBoxCommand odbCmd = new OpenDialogBoxCommand(morpho);
+		  Query ownerQuery = new Query(odbCmd.getOwnerQuery(), morpho);
+		  OpenCrashedDocDialogBox openBox = new OpenCrashedDocDialogBox(parent, Morpho.thisStaticInstance, ownerQuery);
+	  }
   }
 
 

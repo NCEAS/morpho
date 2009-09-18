@@ -317,6 +317,23 @@ public class FileSystemDataStore extends DataStore
       Log.debug(30, "the success value for deleting incomplete file "+name+" is "+success);
       return success;
     }
+   
+   /**
+    * Check if there is files in incomplete dir.
+    * @return true if there are incomplete files
+    */
+   public boolean hasIncompleteFile()
+   {
+	   boolean has = false;
+	   String filePath = incompletedir;
+	   File incompleteDirectory = new File(filePath);
+	   File[] children = incompleteDirectory.listFiles();
+	   if (children != null && children.length > 0 )
+	   {
+		   has = true;
+	   }
+	   return has;
+   }
   
   /**
    * Test method

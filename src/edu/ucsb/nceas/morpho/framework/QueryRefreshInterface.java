@@ -100,5 +100,11 @@ public interface QueryRefreshInterface
    */
   public ColumnSortableTableModel doOwnerQueryForCurrentUser(String[] headName,
                                                            String deletedDocid);
+  
+  /**
+   * List all crashed the document in a dialog box
+   * @param parent the parent frame of the dialog box
+   */
+  public void listCrashedDocument(MorphoFrame parent);
 
 }

@@ -276,12 +276,13 @@ public class OpenCrashedDocDialogBox extends OpenDialogBox
    */
   private void createOwnerPanel()
   {
-    //results = ownerQuery.execute();
+	LocalQuery crashedDocQuery = new LocalQuery(ownerQuery, morpho);
+    results = crashedDocQuery.executeInInCompleteDoc();
     //ownerPanel = new ResultPanel(this, results, mediator);
-    Vector vector = new Vector();
-    String source ="";
-    HeadResultSet results = new HeadResultSet(
-                                       ownerQuery, source, vector, morpho);
+    //Vector vector = new Vector();
+    //String source ="";
+    /*HeadResultSet results = new HeadResultSet(
+                                       ownerQuery, source, vector, morpho);*/
     ownerPanel = new ResultPanel(this, results, mediator);
     ownerPanel.setVisible(true);
     StateChangeEvent event = null;

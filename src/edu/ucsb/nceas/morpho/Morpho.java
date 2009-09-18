@@ -36,6 +36,7 @@ import edu.ucsb.nceas.morpho.framework.ConfigXML;
 import edu.ucsb.nceas.morpho.framework.ConnectionFrame;
 import edu.ucsb.nceas.morpho.framework.ConnectionListener;
 import edu.ucsb.nceas.morpho.framework.CorrectEML201DocsFrame;
+import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
 import edu.ucsb.nceas.morpho.framework.HelpCommand;
 import edu.ucsb.nceas.morpho.framework.HelpMetadataIntroCommand;
 import edu.ucsb.nceas.morpho.framework.HttpMessage;
@@ -45,11 +46,14 @@ import edu.ucsb.nceas.morpho.framework.MorphoGuideCommand;
 import edu.ucsb.nceas.morpho.framework.MorphoPrefsDialog;
 import edu.ucsb.nceas.morpho.framework.ProfileAddedListener;
 import edu.ucsb.nceas.morpho.framework.ProfileDialog;
+import edu.ucsb.nceas.morpho.framework.QueryRefreshInterface;
 import edu.ucsb.nceas.morpho.framework.SplashFrame;
 import edu.ucsb.nceas.morpho.framework.SwingWorker;
 import edu.ucsb.nceas.morpho.framework.UIController;
 import edu.ucsb.nceas.morpho.plugins.PluginInterface;
 import edu.ucsb.nceas.morpho.plugins.ServiceController;
+import edu.ucsb.nceas.morpho.plugins.ServiceNotHandledException;
+import edu.ucsb.nceas.morpho.plugins.ServiceProvider;
 import edu.ucsb.nceas.morpho.util.Command;
 import edu.ucsb.nceas.morpho.util.GUIAction;
 import edu.ucsb.nceas.morpho.util.Log;
@@ -1057,6 +1061,9 @@ public class Morpho
 
             //get rid of the splash window
             sf.dispose();
+            
+            //check if there are crashed documents
+            checkCrashedDocuments();
 
 
         } catch (Throwable t) {
@@ -1634,6 +1641,26 @@ public class Morpho
       initialFrame.setSize((int)UISettings.DEFAULT_WINDOW_WIDTH,
                           (int)UISettings.DEFAULT_WINDOW_HEIGHT);
       initialFrame.setVisible(true);
+    }
+    
+    
+    /*
+     * Check if there is any crashed documents. If there are, display the list of them
+     */
+    private static void checkCrashedDocuments()
+    {
+    	 try 
+         {
+           ServiceController services = ServiceController.getInstance();
+           ServiceProvider provider = 
+                       services.getServiceProvider(QueryRefreshInterface.class);
+           QueryRefreshInterface queryService = (QueryRefreshInterface)provider;
+           queryService.listCrashedDocument(initialFrame);
+         }
+         catch (ServiceNotHandledException snhe) 
+         {
+           Log.debug(6, snhe.getMessage());
+         }
     }
 
     /**
