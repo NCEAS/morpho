@@ -105,7 +105,7 @@ public class OpenCrashedDocDialogBox extends OpenDialogBox
    */
   public OpenCrashedDocDialogBox(MorphoFrame parent, Morpho morpho, Query myQuery)
   {
-    super(parent, morpho, myQuery);
+    super(parent);
     this.parentFrame = parent;
     this.morpho = morpho;
     this.config = morpho.getConfiguration();
@@ -290,8 +290,8 @@ public class OpenCrashedDocDialogBox extends OpenDialogBox
     boolean sort = true;
     int index = 5;
     String order = SortableJTable.DECENDING;
-    ownerQuery.displaySearchResult(parentFrame, ownerPanel, sort,
-                             index, order, showSearchNumber, event);
+    /*ownerQuery.displaySearchResult(parentFrame, ownerPanel, sort,
+                             index, order, showSearchNumber, event);*/
 
 
    }// createOwnerPanel

@@ -204,6 +204,15 @@ public class OpenDialogBox extends JDialog
     setVisible(true);
 
   }
+  
+  /**
+   * Constructor - only set up parent
+   * @param parent parent of this dialog box
+   */
+  public OpenDialogBox(MorphoFrame parent)
+  {
+	  super(parent);
+  }
 
   /**
    * Method to get the parent morphoFrame of dialog
