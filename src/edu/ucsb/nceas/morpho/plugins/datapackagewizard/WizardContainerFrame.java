@@ -92,7 +92,7 @@ public class WizardContainerFrame
   private ActionMap amap;
   private String autoSaveID = null; //the id of the auto saving file
   
-  public static final String TEMP = "temp";
+  //public static final String TEMP = "temp";
   public static final String VERSION1 = "1";
 
 
@@ -115,7 +115,7 @@ public class WizardContainerFrame
     	String separator= profile.get("separator", 0);
     	if(scope != null)
     	{
-    	   autoSaveID = scope+separator+TEMP+separator+getRandomString()+separator+VERSION1;
+    	   autoSaveID = scope+separator+getRandomString()+separator+VERSION1;
     	}
     }
 
