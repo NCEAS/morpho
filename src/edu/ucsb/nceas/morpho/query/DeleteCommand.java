@@ -346,8 +346,9 @@ public class DeleteCommand implements Command
             // The size of resultpanel for morpho frame
              if (!fromDialog)
              {
+            	boolean disableRightClickMenu = false;
                 newResult = new ResultPanel(null, newResultSet, 12, null,
-                                       morphoFrame.getDefaultContentAreaSize());
+                                       morphoFrame.getDefaultContentAreaSize(), disableRightClickMenu);
                 //if the table alread sort the new resul panel should be
                 //sorted too
                 if (sorted)

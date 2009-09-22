@@ -185,18 +185,18 @@ public class OpenCrashedDocDialogBox extends OpenDialogBox
        new SearchCommand(this, morpho));
     searchAction.setToolTipText("Switch to search system to open packages from"
                                 + " the whole network");*/
-    GUIAction searchAction =null;
+    /*GUIAction searchAction =null;
     searchButton = new JButton(searchAction);
     // Set text on the left of icon
     searchButton.setHorizontalTextPosition(SwingConstants.LEFT);
-    controlButtonsBox.add(searchButton);
+    controlButtonsBox.add(searchButton);*/
 
     controlButtonsBox.add(Box.createHorizontalGlue());
 
     // Open button
-    /*GUIAction openAction = new GUIAction("Open", null,
-                                  new OpenPackageCommand(this));*/
-    GUIAction openAction = null;
+    GUIAction openAction = new GUIAction("Open", null,
+                                  new OpenPackageCommand(this));
+    //GUIAction openAction = null;
     openButton = new JButton(openAction);
     // Registor open button to mediator
     mediator.registerOpenButton(openButton);
@@ -302,8 +302,9 @@ public class OpenCrashedDocDialogBox extends OpenDialogBox
     //String source ="";
     /*HeadResultSet results = new HeadResultSet(
                                        ownerQuery, source, vector, morpho);*/
-    ownerPanel = new ResultPanel(this, results, mediator);
-    ownerPanel.setVisible(true);
+    boolean disableRightClickMenu = true;
+    ownerPanel = new ResultPanel(this, results, mediator,disableRightClickMenu);
+    //ownerPanel.setVisible(true);
     StateChangeEvent event = null;
     boolean showSearchNumber = false;
     boolean sort = true;

@@ -132,6 +132,8 @@ public class ResultPanel extends JPanel implements StoreStateChangeEvent
 
   //this variable to indicate disable the mouse listener in streaming search
   private boolean enableMouseListener = true;
+  
+  private boolean disableRightClick = false;
 
 
 
@@ -147,9 +149,15 @@ public class ResultPanel extends JPanel implements StoreStateChangeEvent
   public ResultPanel(OpenDialogBox dialog, ResultSet results,
                                         ResultPanelAndFrameMediator myMediator)
   {
-    this(dialog, results, 12, myMediator, new Dimension(775,500));
+    this(dialog, results, 12, myMediator, new Dimension(775,500), false);
   }
 
+  
+  public ResultPanel(OpenDialogBox dialog, ResultSet results,
+          ResultPanelAndFrameMediator myMediator, boolean disableRightClick)
+{
+    this(dialog, results, 12, myMediator, new Dimension(775,500), disableRightClick);
+}
   /**
    * Construct a new ResultPanel and display the result set.  By default
    * the panel has reset and refresh buttons.
@@ -163,7 +171,7 @@ public class ResultPanel extends JPanel implements StoreStateChangeEvent
   public ResultPanel(OpenDialogBox dialog, ResultSet results,
               ResultPanelAndFrameMediator myMediator, Dimension preferredSize)
   {
-    this(dialog, results, 12, myMediator, preferredSize);
+    this(dialog, results, 12, myMediator, preferredSize, false);
   }
 
 
@@ -175,9 +183,10 @@ public class ResultPanel extends JPanel implements StoreStateChangeEvent
    * @param results the result listing to display
    * @param fontSize the fontsize for the cells of the table
    * @param myMediator the mediaor passed from frame to control table
+   * @param disableRightClickMenu  right click menu will be disable if it is true
    */
   public ResultPanel(OpenDialogBox dialog, ResultSet results, int fontSize,
-            ResultPanelAndFrameMediator myMediator, Dimension preferredSize)
+            ResultPanelAndFrameMediator myMediator, Dimension preferredSize, boolean disableRightClickMenu)
   {
     super();
     this.dialog = dialog;
@@ -187,6 +196,7 @@ public class ResultPanel extends JPanel implements StoreStateChangeEvent
     this.morpho = results.getFramework();
     this.mediator = myMediator;
     this.preferredSize = preferredSize;
+    this.disableRightClick = disableRightClickMenu;
     storedStateChangeEventlist = new Vector();
     // If the panel don't need a mediator, null will be passed here
     if (mediator != null)
@@ -249,67 +259,70 @@ public class ResultPanel extends JPanel implements StoreStateChangeEvent
       //if (dialog == null)
       //{
         //Build the popup menu for the right click functionality
-        popup = new JPopupMenu();
-        // Create a openPackage action
-        GUIAction openAction = new GUIAction("Open Package", null,
-                            new OpenPackageCommand(dialog));
-        openMenu = new JMenuItem(openAction);
-        popup.add(openMenu);
-
-        // Create a OpenPreviousVersion action
-        GUIAction openPreviousAction = new GUIAction("Open Previous Version",null,
-                            new OpenPreviousVersionCommand(dialog, null));
-        openPreviousVersion = new JMenuItem(openPreviousAction);
-        popup.add(openPreviousVersion);
-        openPreviousAction.setEnabled(false);
-
-        // Create a refresh action
-        GUIAction refreshAction = null;
-        if (dialog != null)
-        {
-          // refresh open dialog
-          refreshAction = new GUIAction("Refresh", null,
-                                                new RefreshCommand(dialog));
-        }
-        else
-        {
-          // refresh current acitve frame
-          refreshAction = new GUIAction("Refresh", null, new RefreshCommand());
-        }
-        refreshMenu = new JMenuItem(refreshAction);
-        popup.add(refreshMenu);
-
-        popup.add(new JSeparator());
-
-        // Create a action to open a synchronize dialog
-        GUIAction synchronizeAction = new GUIAction("Synchronize...", null,
-                                      new OpenSynchronizeDialogCommand(dialog));
-        synchronizeMenu = new JMenuItem(synchronizeAction);
-        popup.add(synchronizeMenu);
-
-
-        popup.add(new JSeparator());
-
-        // Create a action to open a delete dialog
-        GUIAction openDeleteDialogAction = new GUIAction("Delete...", null,
-                                         new OpenDeleteDialogCommand(dialog));
-        deleteMenu = new JMenuItem(openDeleteDialogAction);
-        popup.add(deleteMenu);
-
-        popup.add(new JSeparator());
-
-        // Create export
-        GUIAction exportAction = new GUIAction("Export...", null,
-//                            new ExportCommand(dialog, ExportCommand.REGULAR));
-                             new OpenExportDialogCommand(dialog));
-                            exportMenu = new JMenuItem(exportAction);
-        popup.add(exportMenu);
-//        GUIAction exportToZipAction = new GUIAction("Export to Zip...", null,
-  //                            new ExportCommand(dialog, ExportCommand.ZIP));
-//                             new OpenExportDialogCommand(dialog));
-//        exportToZipMenu = new JMenuItem(exportToZipAction);
-//        popup.add(exportToZipMenu);
+       if (!disableRightClick)
+       {
+	        popup = new JPopupMenu();
+	        // Create a openPackage action
+	        GUIAction openAction = new GUIAction("Open Package", null,
+	                            new OpenPackageCommand(dialog));
+	        openMenu = new JMenuItem(openAction);
+	        popup.add(openMenu);
+	
+	        // Create a OpenPreviousVersion action
+	        GUIAction openPreviousAction = new GUIAction("Open Previous Version",null,
+	                            new OpenPreviousVersionCommand(dialog, null));
+	        openPreviousVersion = new JMenuItem(openPreviousAction);
+	        popup.add(openPreviousVersion);
+	        openPreviousAction.setEnabled(false);
+	
+	        // Create a refresh action
+	        GUIAction refreshAction = null;
+	        if (dialog != null)
+	        {
+	          // refresh open dialog
+	          refreshAction = new GUIAction("Refresh", null,
+	                                                new RefreshCommand(dialog));
+	        }
+	        else
+	        {
+	          // refresh current acitve frame
+	          refreshAction = new GUIAction("Refresh", null, new RefreshCommand());
+	        }
+	        refreshMenu = new JMenuItem(refreshAction);
+	        popup.add(refreshMenu);
+	
+	        popup.add(new JSeparator());
+	
+	        // Create a action to open a synchronize dialog
+	        GUIAction synchronizeAction = new GUIAction("Synchronize...", null,
+	                                      new OpenSynchronizeDialogCommand(dialog));
+	        synchronizeMenu = new JMenuItem(synchronizeAction);
+	        popup.add(synchronizeMenu);
+	
+	
+	        popup.add(new JSeparator());
+	
+	        // Create a action to open a delete dialog
+	        GUIAction openDeleteDialogAction = new GUIAction("Delete...", null,
+	                                         new OpenDeleteDialogCommand(dialog));
+	        deleteMenu = new JMenuItem(openDeleteDialogAction);
+	        popup.add(deleteMenu);
+	
+	        popup.add(new JSeparator());
+	
+	        // Create export
+	        GUIAction exportAction = new GUIAction("Export...", null,
+	//                            new ExportCommand(dialog, ExportCommand.REGULAR));
+	                             new OpenExportDialogCommand(dialog));
+	                            exportMenu = new JMenuItem(exportAction);
+	        popup.add(exportMenu);
+	//        GUIAction exportToZipAction = new GUIAction("Export to Zip...", null,
+	  //                            new ExportCommand(dialog, ExportCommand.ZIP));
+	//                             new OpenExportDialogCommand(dialog));
+	//        exportToZipMenu = new JMenuItem(exportToZipAction);
+	//        popup.add(exportToZipMenu);
       //}//if
+       }
 
 
       MouseListener popupListener = new PopupListener(this);
@@ -349,6 +362,7 @@ public class ResultPanel extends JPanel implements StoreStateChangeEvent
   {
     return results;
   }//getResultSet
+  
 
   /**
    * Set the result set for ResultPanel and repaint table
