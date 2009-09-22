@@ -59,6 +59,9 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JDialog;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTextArea;
 import javax.swing.SwingConstants;
 
 /**
@@ -95,6 +98,10 @@ public class OpenCrashedDocDialogBox extends OpenDialogBox
   // DIMENTION Factor to parent
   private static final double DIMENSIONFACTOR = 0.9;
   private static final int PADDINGWIDTH = 8;
+  private static final String INFO = "<html><table width=\"100%\"><tr><td valign=\"top\" width=\"100%\">"+
+   "Morpho did not exit cleanly the last time it was run. The following documents were automatically saved in an incomplete state."+
+  "You may open one of them and continue from the point of the last automatic save, or choose 'Cancel' to return to Morpho."+"</td></tr></table></html>";
+
 
   /**
    * Construct a new instance of the query dialog
@@ -128,7 +135,7 @@ public class OpenCrashedDocDialogBox extends OpenDialogBox
     int dialogY = (new Double(centerY - 0.5 * dialogHeight)).intValue();
     setLocation(dialogX, dialogY);
 
-    setTitle("Open");
+    setTitle("Open Crashed Documents");
     // Set the default close operation is dispose
     setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 
@@ -136,13 +143,25 @@ public class OpenCrashedDocDialogBox extends OpenDialogBox
     getContentPane().setLayout(new BorderLayout(0, 0));
 
     // Create padding
-    getContentPane().add(BorderLayout.NORTH,
-                                      Box.createVerticalStrut(PADDINGWIDTH));
+    /*getContentPane().add(BorderLayout.NORTH,
+                                      Box.createVerticalStrut(PADDINGWIDTH));*/
     getContentPane().add(BorderLayout.EAST,
                                       Box.createHorizontalStrut(PADDINGWIDTH));
     getContentPane().add(BorderLayout.WEST,
                                       Box.createHorizontalStrut(PADDINGWIDTH));
-
+    
+    //create information box
+    Box topBox = Box.createVerticalBox();
+    //Create padding between result panel and Contorl button box
+    topBox.add(Box.createVerticalStrut(PADDINGWIDTH));
+    JLabel info = new JLabel(INFO);
+    Dimension dims = new Dimension(820, 80);
+    info.setPreferredSize(dims);
+    info.setMaximumSize(dims);
+    topBox.add(info);
+    topBox.add(Box.createVerticalStrut(PADDINGWIDTH));
+    getContentPane().add(BorderLayout.NORTH, topBox);
+    
     // Create result panel
     createOwnerPanel();
     ownerPanel.setBackground(Color.white);
