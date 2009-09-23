@@ -61,6 +61,7 @@ public abstract class DataStore implements DataStoreInterface
   protected String tempdir;
   protected String charset;
   protected String incompletedir;
+  protected String scope;
   public final static String INCOMPLATEDIR = "incomplete";
   
   /**
@@ -89,6 +90,7 @@ public abstract class DataStore implements DataStoreInterface
     	incompletedir = profileDirName + File.separator + incomplete;
     }
     separator = profile.get("separator", 0);
+    scope = profile.get("scope", 0);
     separator = separator.trim();
     charset = config.get("charset", 0);
   }

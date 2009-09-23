@@ -326,11 +326,14 @@ public class FileSystemDataStore extends DataStore
    {
 	   boolean has = false;
 	   String filePath = incompletedir;
-	   File incompleteDirectory = new File(filePath);
-	   File[] children = incompleteDirectory.listFiles();
-	   if (children != null && children.length > 0 )
+	   if(scope != null)
 	   {
-		   has = true;
+		   File incompleteDirectory = new File(filePath+File.separator+scope);
+		   File[] children = incompleteDirectory.listFiles();
+		   if (children != null && children.length > 0 )
+		   {
+			   has = true;
+		   }
 	   }
 	   return has;
    }
