@@ -268,6 +268,10 @@ public abstract class AbstractDataPackage extends MetadataObject
   private static final String REPLACE = "replace";
   private static final String DELETE   = "delete";
   protected String autoSavedID = null; //file id which stores auto saving doc
+  protected String completionStatus = null; 
+  public  static final String COMPLETED = "completed";
+  public  static final String INCOMPLETE_NEWPACKAGEWIZARD = "incomplete-new-pakcage-wizard";
+  public  static final String INCOMPLETE_TEXTIMPORTWIZARD  = "incomplete-import-text-wizard";
 
   /**
    * This abstract method turns the datapackage into a form (e.g. string) that
@@ -4547,8 +4551,6 @@ public abstract class AbstractDataPackage extends MetadataObject
 	  }
 	  
 	
-	
-	  
 	  /**
 	   * Gets the value of dataIDChanged
 	   * @return

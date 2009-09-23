@@ -36,6 +36,7 @@ import edu.ucsb.nceas.morpho.framework.DocidIncreaseDialog;
 import edu.ucsb.nceas.morpho.util.Log;
 import edu.ucsb.nceas.utilities.OrderedMap;
 import edu.ucsb.nceas.utilities.XMLUtilities;
+import edu.ucsb.nceas.morpho.util.IncompleteDocSettings;
 import edu.ucsb.nceas.morpho.util.XMLUtil;
 import edu.ucsb.nceas.morpho.util.XMLErrorHandler;
 
@@ -570,6 +571,49 @@ public  class EML200DataPackage extends AbstractDataPackage
 
       return "";
   }
+  
+  /**
+   * Gets the status of the completion of this package 
+   * @return three status - completed, incomplete(new package wizard) or incomplete(text import wizard)
+   */
+  public String getCompletionStatus()
+  {
+	  String packageWizardXpath = "/eml:eml/"+IncompleteDocSettings.ADDITIONALMETADATA+"/"+IncompleteDocSettings.METADATA+
+	                                           "/"+IncompleteDocSettings.PACKAGEWIZARD;
+	  String textImportWizardXPath = "/eml:eml/"+IncompleteDocSettings.ADDITIONALMETADATA+"/"+IncompleteDocSettings.METADATA+
+                                               "/"+IncompleteDocSettings.TEXTIMPORTWIZARD;
+      NodeList nodes = null;
+      try {
+          nodes = XMLUtilities.getNodeListWithXPath(metadataNode, packageWizardXpath);
+          if (nodes != null && nodes.getLength() > 0) 
+          {
+        	  // the status is incomplete_new_package_Wizard.
+        	  completionStatus = AbstractDataPackage.INCOMPLETE_NEWPACKAGEWIZARD;
+          }
+          else
+          {
+        	  nodes = XMLUtilities.getNodeListWithXPath(metadataNode, textImportWizardXPath);
+        	  if (nodes != null && nodes.getLength() >0)
+        	  {
+        		  // the status is incomplete_new_package_Wizard.
+            	  completionStatus = AbstractDataPackage.INCOMPLETE_TEXTIMPORTWIZARD;
+        	  }
+        	  else
+        	  {
+        		  completionStatus = AbstractDataPackage.COMPLETED;
+        	  }
+          }
+      } catch (Exception w) {
+          Log.debug(30, "Problem with getting completion status " + w.toString());
+          completionStatus = AbstractDataPackage.COMPLETED;// setting to complete no matter
+      }
+
+      
+     
+	  return completionStatus;
+  }
+
+  
 
 
   /**

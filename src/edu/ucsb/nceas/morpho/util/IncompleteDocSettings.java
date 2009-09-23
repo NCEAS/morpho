@@ -39,7 +39,8 @@ public class IncompleteDocSettings
    public final static String INCOMPLETE = "incomplete";
    public final static String INCOMPLETEOPENINGTAG = LESSTHAN+INCOMPLETE+GREATERTHAN;
    public final static String INCOMPLETECLOSINGTAG = LESSTHAN+SLASH+INCOMPLETE+GREATERTHAN;
-   public final static String PACKAGEWIZARD = "packagewizard";
+   public final static String PACKAGEWIZARD = "packageWizard";
+   public final static String TEXTIMPORTWIZARD = "textImportWizard";
    public final static String PACKAGEWIZARDOPENINGTAG = LESSTHAN+PACKAGEWIZARD+GREATERTHAN;
    public final static String PACKAGEWIZARDCLOSINGTAG = LESSTHAN+SLASH+PACKAGEWIZARD+GREATERTHAN;
    public final static String TRUE = "true";
