@@ -870,7 +870,7 @@ public class WizardContainerFrame
    */
   private String addPackageWizardIncompleteInfo(String originalEML)
   {
-	  String emlWithIncompleteInfo = null;
+	  String emlWithIncompleteInfo = "";
 	  if(originalEML != null)
 	  {
 		  int index = originalEML.lastIndexOf(IncompleteDocSettings.EMLCLOSINGTAG);
@@ -885,6 +885,11 @@ public class WizardContainerFrame
 			                                       IncompleteDocSettings.METADATACLOSINGTAG+IncompleteDocSettings.ADDITIONALMETADATACLOSINGTAG+
 			                                       IncompleteDocSettings.EMLCLOSINGTAG;
 			                                       
+		  }
+		  else
+		  {
+			  // we couldn't find the eml closing tag, so couldn't append additional metadata part
+			  emlWithIncompleteInfo =  originalEML;
 		  }
 	  }
 	  
