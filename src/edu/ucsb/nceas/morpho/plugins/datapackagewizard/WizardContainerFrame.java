@@ -37,6 +37,7 @@ import edu.ucsb.nceas.morpho.framework.ConfigXML;
 import edu.ucsb.nceas.morpho.framework.UIController;
 import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
 import edu.ucsb.nceas.morpho.plugins.DataPackageWizardListener;
+import edu.ucsb.nceas.morpho.util.IncompleteDocSettings;
 import edu.ucsb.nceas.morpho.util.Log;
 import edu.ucsb.nceas.morpho.util.XMLUtil;
 import edu.ucsb.nceas.morpho.util.UISettings;
@@ -93,7 +94,9 @@ public class WizardContainerFrame
   private String autoSaveID = null; //the id of the auto saving file
   
   //public static final String TEMP = "temp";
-  public static final String VERSION1 = "1";
+  public final static  String VERSION1 = "1";
+  
+  
 
 
 
@@ -843,9 +846,49 @@ public class WizardContainerFrame
 	  {
 		  Node temp = collectDataFromPages(); 
 		  String emlDoc = XMLUtilities.getDOMTreeAsString(temp, false);
+		  System.out.println("the original eml "+emlDoc);
+		  emlDoc = addPackageWizardIncompleteInfo(emlDoc);
 		  Log.debug(25, "The partial eml document is :\n"+emlDoc);
+		  System.out.println("the eml after appending incomplete info  "+emlDoc);
 		  saveInCompletePackage(autoSaveID, emlDoc);
 	  }
+  }
+  
+  /*
+   * Adds some new information into additional part in EML.
+   * In New Package Wizard, it is simple. It will replace the </eml> by
+   * <additionalMetadata>
+   *   <metadata>
+   *      <incomplete>
+   *         <packagewizard>true</packagewizard>
+   *      </incomplete>
+   *   <metadata>
+   * <additonalMetacat>
+   * </eml>
+   *         
+   *    
+   */
+  private String addPackageWizardIncompleteInfo(String originalEML)
+  {
+	  String emlWithIncompleteInfo = null;
+	  if(originalEML != null)
+	  {
+		  int index = originalEML.lastIndexOf(IncompleteDocSettings.EMLCLOSINGTAG);
+		  if (index != -1)
+		  {
+			  //removes the EMLCLOSINGTAG (</eml>) from orignal eml
+			  emlWithIncompleteInfo = originalEML.substring(0,index);
+			  //appends additionalMetadata part into original eml
+			  emlWithIncompleteInfo = emlWithIncompleteInfo+IncompleteDocSettings.ADDITIONALMETADATAOPENINGTAG+
+			                                       IncompleteDocSettings.METADATAOPENINGTAG+IncompleteDocSettings.PACKAGEWIZARDOPENINGTAG+
+			                                       IncompleteDocSettings.TRUE+IncompleteDocSettings.PACKAGEWIZARDCLOSINGTAG+
+			                                       IncompleteDocSettings.METADATACLOSINGTAG+IncompleteDocSettings.ADDITIONALMETADATACLOSINGTAG+
+			                                       IncompleteDocSettings.EMLCLOSINGTAG;
+			                                       
+		  }
+	  }
+	  
+	  return emlWithIncompleteInfo;
   }
   
   /*
