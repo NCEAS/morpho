@@ -29,6 +29,8 @@
 package edu.ucsb.nceas.morpho.plugins.datapackagewizard;
 
 import edu.ucsb.nceas.morpho.datapackage.AbstractDataPackage;
+import edu.ucsb.nceas.morpho.util.IncompleteDocSettings;
+import edu.ucsb.nceas.morpho.util.Log;
 
 /**
  * This class represents a Loader which will load an incomplete eml document to 
@@ -39,15 +41,18 @@ import edu.ucsb.nceas.morpho.datapackage.AbstractDataPackage;
 public class IncompleteDocumentLoader 
 {
 	private AbstractDataPackage dataPackage = null;
+	private String incompletionStatus = null;
 	
 	/**
 	 * Constructs a IncompleteDocumentLoader with a AbstractDataPackage containing 
 	 * meta data information
 	 * @param dataPackage
+	 * @param incompletionStatus 
 	 */
-	public IncompleteDocumentLoader(AbstractDataPackage dataPackage)
+	public IncompleteDocumentLoader(AbstractDataPackage dataPackage, String incompletionStatus)
 	{
 		this.dataPackage = dataPackage;
+		this.incompletionStatus = incompletionStatus;
 	}
 	
 	/**
@@ -55,7 +60,18 @@ public class IncompleteDocumentLoader
 	 */
 	public void load()
 	{
-		
+		if(incompletionStatus == null)
+		{
+			Log.debug(5, "Morpho couldn't open the package since the incompletion status is null");
+		}
+		else if (incompletionStatus.equals(IncompleteDocSettings.PACKAGEWIZARD))
+		{
+			loadToNewPackageWizard();
+		}
+		else if(incompletionStatus.equals(IncompleteDocSettings.TEXTIMPORTWIZARD))
+		{
+			loadToTextImportWizard();
+		}
 	}
 	
 	/*
