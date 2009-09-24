@@ -194,8 +194,9 @@ public class OpenCrashedDocDialogBox extends OpenDialogBox
     controlButtonsBox.add(Box.createHorizontalGlue());
 
     // Open button
+    boolean isCrashedDoc = true;
     GUIAction openAction = new GUIAction("Open", null,
-                                  new OpenPackageCommand(this));
+                                  new OpenPackageCommand(this, isCrashedDoc));
     //GUIAction openAction = null;
     openButton = new JButton(openAction);
     // Registor open button to mediator
