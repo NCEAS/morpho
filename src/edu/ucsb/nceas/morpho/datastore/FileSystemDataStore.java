@@ -74,6 +74,34 @@ public class FileSystemDataStore extends DataStore
     return file;
   }
   
+  /**
+   * opens a file with the given name from incomplete dir.  the name should be in the form
+   * scope.accnum where the scope is unique to this machine.  The file will
+   * be opened from the &lt;datadir&gt;/&lt;scope&gt;/ directory 
+   * where the filename is the accnum.
+   * Example: 
+   *    name=johnson2343.13223
+   *    datadir=data
+   *    complete path=/usr/local/morpho/profiles/johnson/incomplete/johnson2343/13223
+   * Any characters after the first separator are assumed to be part of the 
+   * accession number.  Hence the id johnson2343.13223.5 would produce 
+   * the file johnson2343/13223.5
+   * @param name
+   * @return
+   * @throws FileNotFoundException
+   */
+  public File openIncompelteFile(String name) throws FileNotFoundException
+  {
+	   String path = parseId(name);
+	    path = incompletedir + "/" + path;
+	    File file = new File(path);
+	    if(!file.exists())
+	    {
+	      throw new FileNotFoundException("file " + path + " does not exist");
+	    }	    
+	    return file;
+  }
+  
   
   public File saveFile(String name, Reader file)
   {

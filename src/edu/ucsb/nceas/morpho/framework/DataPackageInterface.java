@@ -93,6 +93,13 @@ public interface DataPackageInterface
   public void openDataPackage(String location, String identifier,
                     Vector relations, ButterflyFlapCoordinator coordinator,
                     String doctype);
+  
+  /**
+   * Opens an incomplete data package
+   * @param identifier he unique identifier to use to open the data
+   * @param coordinator the coordinator for butterfly flapping
+   */
+  public void openIncompleteDataPackage(String identifier, ButterflyFlapCoordinator coordinator);
 
 
   /**

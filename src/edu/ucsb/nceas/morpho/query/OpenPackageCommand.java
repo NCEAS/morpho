@@ -56,8 +56,10 @@ public class OpenPackageCommand implements Command, ButterflyFlapCoordinator
   /** A refernce to the MorphoFrame (for butterfly) */
    private MorphoFrame frame = null;
    
+   private boolean isCrashedDoc = false;
+   
   /**
-   * Constructor of SearcCommand
+   * Constructor of OpenPackageCommand
    * @param dialog the open dialog where the open package command happend  
    */
   public OpenPackageCommand(OpenDialogBox dialog)
@@ -66,7 +68,17 @@ public class OpenPackageCommand implements Command, ButterflyFlapCoordinator
    
   }//OpenPackageCommand
   
-  
+  /**
+   * Constructor of OpenPackageCommand
+   * @param dialog the open dialog where the open package command happend  
+   * @param isCrashedDoc it will be true if this is a crashed doc
+   */
+  public OpenPackageCommand(OpenDialogBox dialog, boolean isCrashedDoc)
+  {
+    open = dialog;
+    this.isCrashedDoc = isCrashedDoc;
+   
+  }//OpenPackageCommand
   /**
    * execute open package command
    */    
@@ -139,7 +151,14 @@ public class OpenPackageCommand implements Command, ButterflyFlapCoordinator
           ServiceProvider provider = 
                       services.getServiceProvider(DataPackageInterface.class);
           DataPackageInterface dataPackage = (DataPackageInterface)provider;
-          dataPackage.openDataPackage(location, docid, null, command, doctype);
+          if (!isCrashedDoc)
+          {
+             dataPackage.openDataPackage(location, docid, null, command, doctype);
+          }
+          else
+          {
+        	  dataPackage.openIncompleteDataPackage(docid, command);
+          }
         }
         catch (ServiceNotHandledException snhe) 
         {

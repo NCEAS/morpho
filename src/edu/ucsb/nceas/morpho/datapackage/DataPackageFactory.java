@@ -178,6 +178,41 @@ public class DataPackageFactory
 
     return dp;
   }
+  
+ 
+ /**
+  * Loads an AbstractDataPackage from incomplete dir with the given docid.
+  * @param docid
+  * @return
+  */
+  public static AbstractDataPackage getDataPackageFromIncompeteDir(String docid) {
+    morpho = Morpho.thisStaticInstance;
+    if (morpho==null)  
+    {
+      Morpho.createMorphoInstance();
+      morpho = Morpho.thisStaticInstance;
+    }
+   
+      Reader in = null;  
+      InputSource source = null;
+      FileSystemDataStore fsds = new FileSystemDataStore(morpho);
+     try 
+     {
+        File file = fsds.openIncompelteFile(docid);
+        in = new FileReader(file);
+        source = new InputSource(in);
+      }
+      catch (Exception w) 
+      {
+    	  Log.debug(20,"Problem opening file!");
+      }
+    
+    AbstractDataPackage dp = null;
+    dp = new EML200DataPackage();
+    dp.load(source);
+    return dp;
+  }
+
 
 
   /**

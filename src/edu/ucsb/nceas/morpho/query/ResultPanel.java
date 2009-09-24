@@ -133,8 +133,7 @@ public class ResultPanel extends JPanel implements StoreStateChangeEvent
   //this variable to indicate disable the mouse listener in streaming search
   private boolean enableMouseListener = true;
   
-  private boolean disableRightClick = false;
-
+  private boolean listCrashedDoc = false;
 
 
   /**
@@ -183,10 +182,10 @@ public class ResultPanel extends JPanel implements StoreStateChangeEvent
    * @param results the result listing to display
    * @param fontSize the fontsize for the cells of the table
    * @param myMediator the mediaor passed from frame to control table
-   * @param disableRightClickMenu  right click menu will be disable if it is true
+   * @param listCrashedDoc  list crashed docs if it is true
    */
   public ResultPanel(OpenDialogBox dialog, ResultSet results, int fontSize,
-            ResultPanelAndFrameMediator myMediator, Dimension preferredSize, boolean disableRightClickMenu)
+            ResultPanelAndFrameMediator myMediator, Dimension preferredSize, boolean listCrashedDocs)
   {
     super();
     this.dialog = dialog;
@@ -196,7 +195,7 @@ public class ResultPanel extends JPanel implements StoreStateChangeEvent
     this.morpho = results.getFramework();
     this.mediator = myMediator;
     this.preferredSize = preferredSize;
-    this.disableRightClick = disableRightClickMenu;
+    this.listCrashedDoc = listCrashedDocs;
     storedStateChangeEventlist = new Vector();
     // If the panel don't need a mediator, null will be passed here
     if (mediator != null)
@@ -259,7 +258,7 @@ public class ResultPanel extends JPanel implements StoreStateChangeEvent
       //if (dialog == null)
       //{
         //Build the popup menu for the right click functionality
-       if (!disableRightClick)
+       if (!listCrashedDoc)
        {
 	        popup = new JPopupMenu();
 	        // Create a openPackage action
@@ -335,7 +334,7 @@ public class ResultPanel extends JPanel implements StoreStateChangeEvent
         {
           if (enableMouseListener)
           {
-            if (2 == e.getClickCount()) {
+            if (2 == e.getClickCount() && !listCrashedDoc) {
               //doOpenDataPackage();
               // Using OpenPackageCommand to open package
               doDoubleClickOpen();
@@ -343,6 +342,7 @@ public class ResultPanel extends JPanel implements StoreStateChangeEvent
           }
         }
       });
+     
     }
   }
   /**
