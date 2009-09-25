@@ -74,13 +74,19 @@ public class IncompleteDocumentLoader
 		{
 			Log.debug(5, "Morpho couldn't open the package since the incompletion status is null");
 		}
-		else if (incompletionStatus.equals(IncompleteDocSettings.PACKAGEWIZARD))
+		else if (incompletionStatus.equals(AbstractDataPackage.INCOMPLETE_NEWPACKAGEWIZARD))
 		{
+			//Log.debug(5, "new package wizard");
 			loadToNewPackageWizard();
 		}
-		else if(incompletionStatus.equals(IncompleteDocSettings.TEXTIMPORTWIZARD))
+		else if(incompletionStatus.equals(AbstractDataPackage.INCOMPLETE_TEXTIMPORTWIZARD))
 		{
+			//Log.debug(5, "In text imorpt wizard");
 			loadToTextImportWizard();
+		}
+		else
+		{
+			Log.debug(5, "Morpho couldn't understand the incompletion status of the package "+incompletionStatus);
 		}
 	}
 	
