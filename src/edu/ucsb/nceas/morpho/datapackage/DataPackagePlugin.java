@@ -33,10 +33,12 @@ import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
 //import edu.ucsb.nceas.morpho.framework.EMLTransformToNewestVersionDialog;
 import edu.ucsb.nceas.morpho.framework.MorphoFrame;
 import edu.ucsb.nceas.morpho.framework.UIController;
+import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
 import edu.ucsb.nceas.morpho.plugins.DataPackageWizardListener;
 import edu.ucsb.nceas.morpho.plugins.PluginInterface;
 import edu.ucsb.nceas.morpho.plugins.ServiceController;
 import edu.ucsb.nceas.morpho.plugins.ServiceExistsException;
+import edu.ucsb.nceas.morpho.plugins.ServiceNotHandledException;
 import edu.ucsb.nceas.morpho.plugins.ServiceProvider;
 
 import edu.ucsb.nceas.morpho.util.Command;
@@ -788,113 +790,21 @@ public class DataPackagePlugin
    */
   private void openIncompleteDataPackage(AbstractDataPackage adp, String identifier, ButterflyFlapCoordinator coordinator)
   {
-	  long starttime = System.currentTimeMillis();
-	    final MorphoFrame packageWindow = UIController.getInstance().addWindow(
-	                "Data Package: "+identifier);
-	    packageWindow.setBusy(true);
-	    packageWindow.setVisible(true);
+	  ServiceController sc;
+	    DataPackageWizardInterface dpwPlugin = null;
+	    try {
+	      sc = ServiceController.getInstance();
+	      EML200DataPackage eml200 = (EML200DataPackage)adp;
+	      String status = eml200.getCompletionStatus();
+	      dpwPlugin = (DataPackageWizardInterface) sc.getServiceProvider(DataPackageWizardInterface.class);
+	      dpwPlugin.loadIncompleteDocument(adp, status);
 
-
-	    packageWindow.addWindowListener(
-	                new WindowAdapter() {
-	                public void windowActivated(WindowEvent e)
-	                {
-	                    Log.debug(50, "Processing window activated event");
-	                    if (hasClipboardData(packageWindow)){
-	                      StateChangeMonitor.getInstance().notifyStateChange(
-	                        new StateChangeEvent(packageWindow,
-	                          StateChangeEvent.CLIPBOARD_HAS_DATA_TO_PASTE));
-	                    }
-	                    else {
-	                      StateChangeMonitor.getInstance().notifyStateChange(
-	                        new StateChangeEvent(packageWindow,
-	                          StateChangeEvent.CLIPBOARD_HAS_NO_DATA_TO_PASTE));
-	                }
-	                }
-	            });
-
-
-	    // Stop butterfly flapping for old window.
-	    //packageWindow.setBusy(true);
-	    if (coordinator != null)
-	    {
-	      coordinator.stopFlap();
 	    }
-	    long stoptime = System.currentTimeMillis();
-	    Log.debug(20,"ViewContainer startUp time: "+(stoptime-starttime));
+	    catch (ServiceNotHandledException se) {
 
-	    long starttime1 = System.currentTimeMillis();
-
-	    DataViewContainerPanel dvcp = null;
-	    dvcp = new DataViewContainerPanel(adp);
-	    dvcp.setFramework(morpho);
-
-	    dvcp.init();
-	    long stoptime1 = System.currentTimeMillis();
-	    Log.debug(20,"DVCP startUp time: "+(stoptime1-starttime1));
-
-	    dvcp.setSize(packageWindow.getDefaultContentAreaSize());
-	    dvcp.setPreferredSize(packageWindow.getDefaultContentAreaSize());
-//	    dvcp.setVisible(true);
-	    packageWindow.setMainContentPane(dvcp);
-
-	    // Broadcast stored event int dvcp
-	    dvcp.broadcastStoredStateChangeEvent();
-
-	    // Create another evnets too
-	    StateChangeMonitor monitor = StateChangeMonitor.getInstance();
-//	    String packageLocation = dp.getLocation();
-	    String packageLocation = DataPackageInterface.BOTH;
-	    if (packageLocation.equals(DataPackageInterface.BOTH))
-	    {
-	      // open a synchronize package
-	      monitor.notifyStateChange(
-	                 new StateChangeEvent(
-	                 dvcp,
-	                 StateChangeEvent.CREATE_DATAPACKAGE_FRAME_SYNCHRONIZED));
+	      Log.debug(6, se.getMessage());
+	      se.printStackTrace();
 	    }
-	    else
-	    {
-	      // open a unsynchronize pakcage
-	      monitor.notifyStateChange(
-	                 new StateChangeEvent(
-	                 dvcp,
-	                 StateChangeEvent.CREATE_DATAPACKAGE_FRAME_UNSYNCHRONIZED));
-	    }
-
-	    // figure out whether there may be multiple versions, based on identifier
-	    int lastDot = identifier.lastIndexOf(".");
-	    String verNum = identifier.substring(lastDot+1,identifier.length());
-	    if (verNum.equals("1")) {
-	      monitor.notifyStateChange(
-	                 new StateChangeEvent(
-	                 dvcp,
-	                 StateChangeEvent.CREATE_DATAPACKAGE_FRAME_NO_VERSIONS));
-	    }
-	    else {
-	      monitor.notifyStateChange(
-	                 new StateChangeEvent(
-	                 dvcp,
-	                 StateChangeEvent.CREATE_DATAPACKAGE_FRAME_VERSIONS));
-	    }
-
-	    monitor.notifyStateChange(
-	                 new StateChangeEvent(
-	                 dvcp,
-	                 StateChangeEvent.CREATE_DATAPACKAGE_FRAME));
-	    adp.loadCustomUnits();
-		packageWindow.setBusy(false);
-		//check if we should upgrade eml to the newest version
-		try
-		{
-			DataPackageWizardListener listener = null; // we don't need it do any thing. so pass null to it.
-			EMLTransformToNewestVersionDialog dialog = new EMLTransformToNewestVersionDialog(packageWindow, listener);
-		}
-		catch(Exception e)
-		{
-			Log.debug(20, "Couldn't upgrade eml to the newest version");
-		}
-
   }
 
   public void openDataPackage(String location, String identifier,

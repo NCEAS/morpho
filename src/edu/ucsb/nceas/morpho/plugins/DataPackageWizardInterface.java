@@ -149,4 +149,11 @@ public interface DataPackageWizardInterface {
    * @param listener          the listener will handle some another action  after the wizard is done, e.g .AddAccessCommand
    */
   public void startCorrectionWizard(AbstractDataPackage dataPackage, Vector errorPathes, MorphoFrame frame, DataPackageWizardListener listener);
+  
+  /**
+   * Load (open) an incomplete document into new package wizard /text import wizard
+   * @param dataPackage the incomplete data package
+   * @param incompletionStatus indication of new package wizard or text import wizard
+   */
+  public void loadIncompleteDocument(AbstractDataPackage dataPackage,String incompletionStatus);
 }

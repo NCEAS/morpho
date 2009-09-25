@@ -543,5 +543,16 @@ public class DataPackageWizardPlugin implements PluginInterface,
     }
     return partyRetVal;
   }
+  
+  /**
+   * Load (open) an incomplete document into new package wizard /text import wizard
+   * @param dataPackage the incomplete data package
+   * @param incompletionStatus indication of new package wizard or text import wizard
+   */
+  public void loadIncompleteDocument(AbstractDataPackage dataPackage,String incompletionStatus)
+  {
+	  IncompleteDocumentLoader loader = new IncompleteDocumentLoader(dataPackage, incompletionStatus);
+	  loader.load();
+  }
 
 }
