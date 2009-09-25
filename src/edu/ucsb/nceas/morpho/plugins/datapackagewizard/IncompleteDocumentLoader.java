@@ -28,6 +28,8 @@
 
 package edu.ucsb.nceas.morpho.plugins.datapackagewizard;
 
+import java.util.Hashtable;
+
 import org.w3c.dom.Node;
 
 import edu.ucsb.nceas.morpho.Morpho;
@@ -40,6 +42,7 @@ import edu.ucsb.nceas.morpho.plugins.ServiceNotHandledException;
 import edu.ucsb.nceas.morpho.plugins.ServiceProvider;
 import edu.ucsb.nceas.morpho.util.IncompleteDocSettings;
 import edu.ucsb.nceas.morpho.util.Log;
+import edu.ucsb.nceas.morpho.util.XPathUIPageMapping;
 import edu.ucsb.nceas.utilities.XMLUtilities;
 
 /**
@@ -52,7 +55,8 @@ public class IncompleteDocumentLoader
 {
 	private AbstractDataPackage dataPackage = null;
 	private String incompletionStatus = null;
-	
+	private Hashtable wizardPageName = new Hashtable();
+
 	/**
 	 * Constructs a IncompleteDocumentLoader with a AbstractDataPackage containing 
 	 * meta data information
@@ -146,6 +150,36 @@ public class IncompleteDocumentLoader
 	private void loadToTextImportWizard()
 	{
 		
+	}
+	
+	/*
+	 * Transform the array to a hashtable. This is for efficiency reason.
+	 * The key of this hastable is the page class name and value is XPathUIPageMapping object.
+	 */
+	private void transformMappingToHashtable()
+	{
+		XPathUIPageMapping[] mappingList = readXpathUIMappingInfo();
+		if(mappingList != null)
+		{
+			int size = mappingList.length;
+			for(int i=0; i<size; i++)
+			{
+				XPathUIPageMapping map = mappingList[i];
+				String className = map.getWizardPageClassName();
+				wizardPageName.put(className, map);
+			}
+		}
+	}
+	
+	/*
+	 * Read xpath-UIpage mapping information
+	 */
+	private XPathUIPageMapping[] readXpathUIMappingInfo()
+	{
+		XPathUIPageMapping[] mappingList =null;
+		XpathUIPageMappingReader reader = new XpathUIPageMappingReader(CorrectionWizardController.MAPPINGFILEPATH);
+	    mappingList   = reader.getXPathUIPageMappingList();
+	    return mappingList;
 	}
 
 }

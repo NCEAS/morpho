@@ -99,7 +99,7 @@ public class CorrectionWizardController
 	private DataPackageWizardPlugin plugin = new DataPackageWizardPlugin();
 	private CorrectionWizardContainerFrame dpWiz = null;
 	// the file path of mapping properties file (xml format)
-	private static final String MAPPINGFILEPATH = "lib/xpath-wizard-map.xml";
+	public static final String MAPPINGFILEPATH = "lib/xpath-wizard-map.xml";
 	// element name used in mapping properties file (xml format)
 	private static final String MAPPING = "mapping";
 	private static final String XPATH = "xpath";
