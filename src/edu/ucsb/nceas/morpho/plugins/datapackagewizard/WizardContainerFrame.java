@@ -846,10 +846,10 @@ public class WizardContainerFrame
 	  {
 		  Node temp = collectDataFromPages(); 
 		  String emlDoc = XMLUtilities.getDOMTreeAsString(temp, false);
-		  System.out.println("the original eml "+emlDoc);
+		  //System.out.println("the original eml "+emlDoc);
 		  emlDoc = addPackageWizardIncompleteInfo(emlDoc);
-		  Log.debug(25, "The partial eml document is :\n"+emlDoc);
-		  System.out.println("the eml after appending incomplete info  "+emlDoc);
+		  Log.debug(40, "The partial eml document is :\n"+emlDoc);
+		  //System.out.println("the eml after appending incomplete info  "+emlDoc);
 		  saveInCompletePackage(autoSaveID, emlDoc);
 	  }
   }
@@ -860,7 +860,9 @@ public class WizardContainerFrame
    * <additionalMetadata>
    *   <metadata>
    *      <incomplete>
-   *         <packagewizard>true</packagewizard>
+   *         <packagewizard>
+   *            <className>edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.PartyIntro</className>
+   *         </packagewizard>
    *      </incomplete>
    *   <metadata>
    * <additonalMetacat>
@@ -873,23 +875,43 @@ public class WizardContainerFrame
 	  String emlWithIncompleteInfo = "";
 	  if(originalEML != null)
 	  {
+		  System.out.println("the original eml is "+originalEML);
 		  int index = originalEML.lastIndexOf(IncompleteDocSettings.EMLCLOSINGTAG);
 		  if (index != -1)
 		  {
-			  //removes the EMLCLOSINGTAG (</eml>) from orignal eml
+			  //it has </eml:eml> closing tag
+			  //removes the </packageWizard></metadata></additionalMetadata></eml:eml> from original eml
 			  emlWithIncompleteInfo = originalEML.substring(0,index);
-			  //appends additionalMetadata part into original eml
+			  //appends additionalMetadata par original eml
 			  emlWithIncompleteInfo = emlWithIncompleteInfo+IncompleteDocSettings.ADDITIONALMETADATAOPENINGTAG+
-			                                       IncompleteDocSettings.METADATAOPENINGTAG+IncompleteDocSettings.PACKAGEWIZARDOPENINGTAG+
-			                                       IncompleteDocSettings.TRUE+IncompleteDocSettings.PACKAGEWIZARDCLOSINGTAG+
-			                                       IncompleteDocSettings.METADATACLOSINGTAG+IncompleteDocSettings.ADDITIONALMETADATACLOSINGTAG+
-			                                       IncompleteDocSettings.EMLCLOSINGTAG;
+              IncompleteDocSettings.METADATAOPENINGTAG+IncompleteDocSettings.PACKAGEWIZARDOPENINGTAG;
+			  if(pageStack != null)
+			  {
+				  int size = pageStack.size();
+				  String className = null;
+				  for(int i=0; i<size; i++)
+				  {
+					  AbstractUIPage page = (AbstractUIPage)pageStack.elementAt(i);
+					  if(page != null)
+					  {
+						  className = page.getClass().getName();
+						  Log.debug(40, "Class name is "+className);
+						  emlWithIncompleteInfo = emlWithIncompleteInfo+IncompleteDocSettings.CLASSNAMEOPENINGTAG+
+						                                      className+IncompleteDocSettings.ADDITIONALMETADATACLOSINGTAG;
+					  }
+				  }
+			  }
+             
+              emlWithIncompleteInfo = emlWithIncompleteInfo+IncompleteDocSettings.PACKAGEWIZARDCLOSINGTAG+
+              IncompleteDocSettings.METADATACLOSINGTAG+IncompleteDocSettings.ADDITIONALMETADATACLOSINGTAG+
+              IncompleteDocSettings.EMLCLOSINGTAG;
 			                                       
 		  }
 		  else
 		  {
-			  // we couldn't find the eml closing tag, so couldn't append additional metadata part
+			  //it doesn't have </eml:eml> closing tag, we use orignal document as modified one.
 			  emlWithIncompleteInfo =  originalEML;
+			  
 		  }
 	  }
 	  
@@ -1202,6 +1224,15 @@ public class WizardContainerFrame
       dialogParent = dummyFrame;
     }
     return dialogParent;
+  }
+  
+  /**
+   * Adds an UIPage into the stack
+   * @param page
+   */
+  public void addPageToStack(AbstractUIPage page)
+  {
+	  pageStack.add(page);
   }
 
 
