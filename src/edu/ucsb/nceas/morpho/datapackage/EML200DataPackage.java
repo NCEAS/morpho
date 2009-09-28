@@ -612,6 +612,55 @@ public  class EML200DataPackage extends AbstractDataPackage
      
 	  return completionStatus;
   }
+  
+  
+  /**
+   * Gets the UIPage class name list after parsing the incomplete information in additional metacat part.
+   * @return
+   */
+  public Vector getIncompleteWizardPageNameList()
+  {
+	  Vector classNameList = new Vector();
+	  String pageClassNameXpath = "/eml:eml/"+IncompleteDocSettings.ADDITIONALMETADATA+"/"+IncompleteDocSettings.METADATA+
+      "/"+IncompleteDocSettings.PACKAGEWIZARD+"/"+IncompleteDocSettings.CLASSNAME;
+	  NodeList nodeList = null;
+      try 
+      {
+          nodeList = XMLUtilities.getNodeListWithXPath(metadataNode, pageClassNameXpath);
+      } 
+      catch (Exception w) 
+      {
+          Log.debug(30, "Problem with getting page class name list in additional metadata part " + w.toString());
+        
+      }
+      if (nodeList != null && nodeList.getLength() > 0) 
+      {
+        	    for(int i=0; i<nodeList.getLength(); i++)
+        	    {
+        	    	Node targetNode = nodeList.item(i);
+        	    	if(targetNode != null)
+        	    	{
+        	    		NodeList children = targetNode.getChildNodes();
+        	    		for (int nodeIndex=0; nodeIndex <children.getLength(); nodeIndex++) 
+        	    		{
+
+        	    		      Node textNode = children.item(nodeIndex);
+        	    		      if (textNode.getNodeType()==Node.TEXT_NODE
+        	    		                          || textNode.getNodeType()==Node.CDATA_SECTION_NODE) 
+        	    		      {
+        	    		    	  String className = textNode.getNodeValue();
+        	    		    	  Log.debug(25, "The read class name from additional metacat is "+className);
+        	    		    	  classNameList.add(className);
+        	    		      }
+//        	    		    
+        	    		}
+        	    		
+        	    	}
+        	    }
+      }
+           
+	  return classNameList;
+  }
 
   
 

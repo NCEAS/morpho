@@ -875,7 +875,7 @@ public class WizardContainerFrame
 	  String emlWithIncompleteInfo = "";
 	  if(originalEML != null)
 	  {
-		  System.out.println("the original eml is "+originalEML);
+		  //System.out.println("the original eml is "+originalEML);
 		  int index = originalEML.lastIndexOf(IncompleteDocSettings.EMLCLOSINGTAG);
 		  if (index != -1)
 		  {
@@ -897,7 +897,7 @@ public class WizardContainerFrame
 						  className = page.getClass().getName();
 						  Log.debug(40, "Class name is "+className);
 						  emlWithIncompleteInfo = emlWithIncompleteInfo+IncompleteDocSettings.CLASSNAMEOPENINGTAG+
-						                                      className+IncompleteDocSettings.ADDITIONALMETADATACLOSINGTAG;
+						                                      className+IncompleteDocSettings.CLASSNAMECLOSINGTAG;
 					  }
 				  }
 			  }

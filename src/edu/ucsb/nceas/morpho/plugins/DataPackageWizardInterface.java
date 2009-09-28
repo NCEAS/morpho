@@ -31,6 +31,8 @@ package edu.ucsb.nceas.morpho.plugins;
 import edu.ucsb.nceas.morpho.datapackage.AbstractDataPackage;
 import edu.ucsb.nceas.morpho.framework.AbstractUIPage;
 import edu.ucsb.nceas.morpho.framework.MorphoFrame;
+import edu.ucsb.nceas.morpho.plugins.datapackagewizard.IncompleteDocumentLoader;
+import edu.ucsb.nceas.morpho.util.IncompleteDocInfo;
 
 import java.util.List;
 import java.util.ArrayList;
@@ -153,7 +155,7 @@ public interface DataPackageWizardInterface {
   /**
    * Load (open) an incomplete document into new package wizard /text import wizard
    * @param dataPackage the incomplete data package
-   * @param incompletionStatus indication of new package wizard or text import wizard
+   * @param incompletionInfo information about the incompletion
    */
-  public void loadIncompleteDocument(AbstractDataPackage dataPackage,String incompletionStatus);
+  public void loadIncompleteDocument(AbstractDataPackage dataPackage, IncompleteDocInfo incompleteDocInfo);
 }

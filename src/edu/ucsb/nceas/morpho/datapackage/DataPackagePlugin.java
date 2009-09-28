@@ -43,6 +43,7 @@ import edu.ucsb.nceas.morpho.plugins.ServiceProvider;
 
 import edu.ucsb.nceas.morpho.util.Command;
 import edu.ucsb.nceas.morpho.util.GUIAction;
+import edu.ucsb.nceas.morpho.util.IncompleteDocInfo;
 import edu.ucsb.nceas.morpho.util.Log;
 import edu.ucsb.nceas.morpho.util.StateChangeEvent;
 import edu.ucsb.nceas.morpho.util.StateChangeMonitor;
@@ -796,8 +797,11 @@ public class DataPackagePlugin
 	      sc = ServiceController.getInstance();
 	      EML200DataPackage eml200 = (EML200DataPackage)adp;
 	      String status = eml200.getCompletionStatus();
+	      Vector classNameList = eml200.getIncompleteWizardPageNameList();
+	      IncompleteDocInfo info = new IncompleteDocInfo(status);
+	      info.setWizardPageClassNameList(classNameList);
 	      dpwPlugin = (DataPackageWizardInterface) sc.getServiceProvider(DataPackageWizardInterface.class);
-	      dpwPlugin.loadIncompleteDocument(adp, status);
+	      dpwPlugin.loadIncompleteDocument(adp, info);
 
 	    }
 	    catch (ServiceNotHandledException se) {

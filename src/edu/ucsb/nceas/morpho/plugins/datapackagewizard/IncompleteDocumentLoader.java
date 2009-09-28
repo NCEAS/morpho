@@ -40,6 +40,7 @@ import edu.ucsb.nceas.morpho.plugins.DataPackageWizardListener;
 import edu.ucsb.nceas.morpho.plugins.ServiceController;
 import edu.ucsb.nceas.morpho.plugins.ServiceNotHandledException;
 import edu.ucsb.nceas.morpho.plugins.ServiceProvider;
+import edu.ucsb.nceas.morpho.util.IncompleteDocInfo;
 import edu.ucsb.nceas.morpho.util.IncompleteDocSettings;
 import edu.ucsb.nceas.morpho.util.Log;
 import edu.ucsb.nceas.morpho.util.XPathUIPageMapping;
@@ -54,6 +55,7 @@ import edu.ucsb.nceas.utilities.XMLUtilities;
 public class IncompleteDocumentLoader 
 {
 	private AbstractDataPackage dataPackage = null;
+	private IncompleteDocInfo incompleteDocInfo = null;
 	private String incompletionStatus = null;
 	private Hashtable wizardPageName = new Hashtable();
 
@@ -61,12 +63,16 @@ public class IncompleteDocumentLoader
 	 * Constructs a IncompleteDocumentLoader with a AbstractDataPackage containing 
 	 * meta data information
 	 * @param dataPackage
-	 * @param incompletionStatus 
+	 * @param incompleteInfo
 	 */
-	public IncompleteDocumentLoader(AbstractDataPackage dataPackage, String incompletionStatus)
+	public IncompleteDocumentLoader(AbstractDataPackage dataPackage, IncompleteDocInfo incompleteDocInfo)
 	{
 		this.dataPackage = dataPackage;
-		this.incompletionStatus = incompletionStatus;
+		this.incompleteDocInfo = incompleteDocInfo;
+		if(this.incompleteDocInfo != null)
+		{
+			incompletionStatus = incompleteDocInfo.getStatus();
+		}
 	}
 	
 	/**

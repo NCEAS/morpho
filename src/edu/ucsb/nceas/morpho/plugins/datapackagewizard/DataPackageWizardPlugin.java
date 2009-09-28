@@ -42,6 +42,7 @@ import edu.ucsb.nceas.morpho.plugins.ServiceController;
 import edu.ucsb.nceas.morpho.plugins.ServiceExistsException;
 import edu.ucsb.nceas.morpho.plugins.ServiceProvider;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.PartyPage;
+import edu.ucsb.nceas.morpho.util.IncompleteDocInfo;
 import edu.ucsb.nceas.morpho.util.Log;
 import edu.ucsb.nceas.utilities.OrderedMap;
 import edu.ucsb.nceas.utilities.XMLUtilities;
@@ -547,11 +548,11 @@ public class DataPackageWizardPlugin implements PluginInterface,
   /**
    * Load (open) an incomplete document into new package wizard /text import wizard
    * @param dataPackage the incomplete data package
-   * @param incompletionStatus indication of new package wizard or text import wizard
+   * @param incompletionInfo information about the incompletion
    */
-  public void loadIncompleteDocument(AbstractDataPackage dataPackage,String incompletionStatus)
+  public void loadIncompleteDocument(AbstractDataPackage dataPackage, IncompleteDocInfo incompleteDocInfo)
   {
-	  IncompleteDocumentLoader loader = new IncompleteDocumentLoader(dataPackage, incompletionStatus);
+	  IncompleteDocumentLoader loader = new IncompleteDocumentLoader(dataPackage, incompleteDocInfo);
 	  loader.load();
   }
 
