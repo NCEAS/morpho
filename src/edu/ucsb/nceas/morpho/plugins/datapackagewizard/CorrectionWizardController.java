@@ -310,7 +310,7 @@ public class CorrectionWizardController
 				if(className != null)
 				{
 					OrderedMap xpathMap = null;
-					page = createAbstractUIpageObject(className, dpWiz, mapping.getWizardPageClassParameters());
+					page = WizardUtil.createAbstractUIpageObject(className, dpWiz, mapping.getWizardPageClassParameters());
 					page.setXPathUIPageMapping(mapping);
 					//load data into the page
 					//first we need to check if we should load data from root path.
@@ -485,76 +485,6 @@ public class CorrectionWizardController
 		return mapping;
 	}
 	
-	
-
-	
-	/*
-	 * Create an object for given class name. This is only for AbractUIPage object
-	 */
-	private static AbstractUIPage createAbstractUIpageObject(String className, WizardContainerFrame frame, Vector parameters)  {
-
-		Object object = null;
-		Class classDefinition = null;
-		try {
-			classDefinition = Class.forName(className);
-			//we only consider String and boolean
-			if(parameters != null && !parameters.isEmpty())
-			{
-				Class[] parameterList = new Class[parameters.size()];
-				Object[] objectList = new Object[parameters.size()];
-				for(int i=0; i<parameters.size(); i++)
-				{
-					String para = (String)parameters.elementAt(i);
-					if(para.equalsIgnoreCase("false") || para.equalsIgnoreCase("true"))
-					{
-						Class parameter= Class.forName("java.lang.Boolean");
-						parameterList[i] = parameter;	
-						objectList[i]= new Boolean(para);
-					}
-					else
-					{
-						Class parameter = Class.forName("java.lang.String");
-						parameterList[i] = parameter;
-						objectList[i] = para;
-					}
-				}
-				Constructor constructor = classDefinition.getDeclaredConstructor(parameterList);
-				object =constructor.newInstance(objectList);
-			} 
-			else
-			{
-			    object = classDefinition.newInstance();
-			}
-		} catch (InstantiationException e) {
-			Log.debug(30, "InstantiationException "+e.getMessage());
-			// couldn't get default constructor. The contructor has a parameter WizardContainerFrame
-			try
-			{
-				if (classDefinition != null)
-				{
-					Class parameter= Class.forName(WIZARDCONTAINERFRAME);
-					Class[] parameterList = new Class[1];
-					parameterList[0] = parameter;
-					Constructor constructor = classDefinition.getDeclaredConstructor(parameterList);
-					object = constructor.newInstance(frame);
-				}
-			}
-			catch(Exception ee)
-			{
-				Log.debug(30, "Exception "+e.getMessage());
-			}
-		} catch (IllegalAccessException e) {
-			Log.debug(30, "IllegalAccessException "+e.getMessage());
-		} catch (ClassNotFoundException e) {
-			Log.debug(30, "ClassNotFoundException "+e.getMessage());
-		} 
-		catch(Exception e)
-		{
-			Log.debug(30, "Exception in creating an UI page object through the class name "+className + " is " +e.getMessage());
-		}
-		Log.debug(30, "successfully create the instance of this class "+className);
-		return (AbstractUIPage)object;
-	}
 	
 	/*
 	 * If the last element of xmpath contains "para", it will be special, we should remove it.
