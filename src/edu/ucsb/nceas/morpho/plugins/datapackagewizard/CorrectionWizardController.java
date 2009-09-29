@@ -305,152 +305,12 @@ public class CorrectionWizardController
 			XPathUIPageMapping mapping = getXPathUIPageMapping(path);
 			if(mapping != null)
 			{
+			    
 				className = mapping.getWizardPageClassName();
 				Log.debug(45, "get the className from mapping "+className);
-				if(className != null)
-				{
-					OrderedMap xpathMap = null;
-					page = WizardUtil.createAbstractUIpageObject(className, dpWiz, mapping.getWizardPageClassParameters());
-					page.setXPathUIPageMapping(mapping);
-					//load data into the page
-					//first we need to check if we should load data from root path.
-				    Vector infoList = mapping.getModifyingPageDataInfoList();
-					NodeList nodeList = null;
-					String settingPageDataPath = "";
-					/*if (infoList != null && infoList.size() < -1)
-					{	
-						ModifyingPageDataInfo info = (ModifyingPageDataInfo)infoList.elementAt(0);
-						settingPageDataPath = info.getPathForSettingPageData();
-						//page.setXPathRoot(node);
-						if (page instanceof AttributePage)
-						{
-							int entityIndex = getDataTableIndex(path);
-							int attributeIndex = getAttributeIndex(path);
-							Vector loadExistingDataPathList = info.getLoadExistingDataPath();
-							LoadDataPath entityPath = (LoadDataPath)loadExistingDataPathList.elementAt(0);
-							entityPath.setPosition(entityIndex);
-							LoadDataPath attributePath = (LoadDataPath)loadExistingDataPathList.elementAt(1);
-							attributePath.setPosition(attributeIndex);							
-							nodeList = XMLUtilities.getNodeListWithXPath(dataPackage.getMetadataNode(),entityPath.getPath());
-							Node entityNode = nodeList.item(entityIndex);
-							nodeList = XMLUtilities.getNodeListWithXPath(entityNode, attributePath.getPath());
-							Node node = nodeList.item(attributeIndex);
-							xpathMap = XMLUtilities.getDOMTreeAsXPathMap(node,info.getPathForCreatingOrderedMap());							
-
-						}
-						if(page instanceof Entity)
-						{
-							nodeList = XMLUtilities.getNodeListWithXPath(dataPackage.getMetadataNode(), mapping.getRoot());	
-							Node node = nodeList.item(0);
-							xpathMap = XMLUtilities.getDOMTreeAsXPathMap(node, "");
-							int entityIndex = getDataTableIndex(path);
-							//page.addNodeIndex(entityIndex);
-						}
-						else
-						{
-							Log.debug(45, "start to process load data process which has info list size 1");
-							Vector loadExistingDataPathList = info.getLoadExistingDataPath();
-							int position = getLastPredicate(path);
-							if (loadExistingDataPathList != null)
-							{
-								Node node = null;
-								for(int k=0; k<loadExistingDataPathList.size(); k++)
-								{
-								  LoadDataPath loadPath = (LoadDataPath)loadExistingDataPathList.elementAt(k);
-								  // store the position information
-								  loadPath.setPosition(position);
-								  String xpath = loadPath.getPath();
-								  nodeList = XMLUtilities.getNodeListWithXPath(dataPackage.getMetadataNode(), xpath);	
-								  node = nodeList.item(position);
-								}
-								Log.debug(45, "before getting ordered map from subtree");
-							    xpathMap = XMLUtilities.getDOMTreeAsXPathMap(node, info.getPathForCreatingOrderedMap());
-								  
-							}
-						}
-					}*/
-					if (infoList != null && infoList.size() > 0)
-					{
-						//like General page
-						Log.debug(45, "start to process load data process which has info list size more than 0");
-						Vector list = mapping.getModifyingPageDataInfoList();
-						boolean firstTime = true;
-						for (int i=0; i<list.size(); i++)
-						{
-							ModifyingPageDataInfo info =(ModifyingPageDataInfo)list.elementAt(i);
-							settingPageDataPath = info.getPathForSettingPageData();
-							Vector loadDataPathList = info.getLoadExistingDataPath();
-							if (loadDataPathList != null)
-							{
-								Node node = dataPackage.getMetadataNode();
-								//If loadDataPathList has mutiple xpath, the second xpath is kid of the first one.
-								//like : <loadExistDataPath>/eml:eml/dataset</loadExistDataPath>
-					            //        <loadExistDataPath>./title</loadExistDataPath>
-								if(node != null)
-								{
-									for(int j=0; j<loadDataPathList.size(); j++)
-									{
-										LoadDataPath pathObj = (LoadDataPath)loadDataPathList.elementAt(j);
-										String xPath = pathObj.getPath();
-										String lastElementName = getLastElementName(xPath);
-										int position = getGivenStringIndexAtXPath(lastElementName, path);								
-										//System.out.println("==========the xpath is "+xPath);
-										Log.debug(46, "Before getting the node list for path"+xPath);
-										nodeList = XMLUtilities.getNodeListWithXPath(node, xPath);
-										Log.debug(46, "After getting the node list for path"+xPath);
-										//reset node
-										if(nodeList != null)
-										{
-											node = nodeList.item(position);
-											Log.debug(46, "Getting the node for path"+xPath+" at position "+position+ " "+node);
-											pathObj.setPosition(position);
-										}
-										else
-										{
-											node = null;
-										}
-									}
-									
-								}
-								if(firstTime && node != null)
-								{
-								  Log.debug(46, "Before First time to create xPathMap with path for creating ordered map "+info.getPathForCreatingOrderedMap());
-								  xpathMap = XMLUtilities.getDOMTreeAsXPathMap(node, info.getPathForCreatingOrderedMap());
-								  Log.debug(46, "After First time to create xPathMap");
-								  firstTime = false;
-								  //we set first child as the root node for not loading data from root path directly
-								  //page.setXPathRoot(node);
-								}
-								else if (node != null)
-								{
-									Log.debug(46, "Before second or more time to create xPathMap");
-									xpathMap.putAll(XMLUtilities.getDOMTreeAsXPathMap(node, info.getPathForCreatingOrderedMap()));
-									Log.debug(46, "After second or more time to create xPathMap");
-								}
-							}
-							
-						}
-						
-					}	
-					else
-					{
-						page = null;
-					}
-					Log.debug(46, "the xmpath map is "+xpathMap.toString());
-					if (page != null)
-					{
-					   mapDataFit = page.setPageData(xpathMap, settingPageDataPath);
-					}
-				}
-		
+				page = WizardUtil.getUIPage(className, mapping, dpWiz, dataPackage, path);
 			}
-		}
-		Log.debug(46, "The map data fit value is "+mapDataFit);
-		//The map has more data that our page can handle. so set page to null and let tree editor to handle it.
-		if(!mapDataFit)
-		{
-			page = null;
-		}
+		}				
 		return page;
 	}
 	
@@ -525,7 +385,7 @@ public class CorrectionWizardController
 	 */
 	private int getDataTableIndex(String path)
 	{
-		int index = getGivenStringIndexAtXPath(DATATABLE, path);
+		int index = WizardUtil.getGivenStringIndexAtXPath(DATATABLE, path);
 		return index;
 	}
 	
@@ -536,103 +396,11 @@ public class CorrectionWizardController
 	 */
 	private int getAttributeIndex(String path)
 	{
-		int index = getGivenStringIndexAtXPath(ATTRIBUTE, path);
+		int index = WizardUtil.getGivenStringIndexAtXPath(ATTRIBUTE, path);
 		return index;
 	}
 	
-	/*
-	 * Get the given string index for a given xpath.
-	 * If the path is "eml/dataset/datatable[2] and given string is datatable, 2 will be returned.
-	 * if no index found, 0 will be returned
-	 */
-	private int getGivenStringIndexAtXPath(String givenString, String path)
-	{
-		int index = 0;
-		if(path != null)
-		{
-			int position = path.lastIndexOf(givenString+LEFTBRACKET);
-			int length = path.length();
-			if (position != -1)
-			{
-				// "dataTable[" exists
-				try
-				{
-				   char singleChar = path.charAt(position);
-				   StringBuffer buffer = new StringBuffer();
-				   boolean startBuffer = false;
-				   while (singleChar != RIGHTBRACKETCHAR && position < length)
-				   {
-					   // start to buffer
-					   if(startBuffer)
-					   {
-						   buffer.append(singleChar);
-					   }
-					   //when we see [, set the flag to bute
-					   if (singleChar == LEFTBRACKETCHAR)
-					   {
-						   startBuffer = true;
-					   }
-					   //increase position number
-					   position++;
-					   singleChar = path.charAt(position);
-				   }
-				   if (buffer.length() != 0)
-				   {
-					   String indexStr = buffer.toString();
-					   index = (new Integer(indexStr)).intValue();
-				   }
-				}
-				catch(Exception e)
-				{
-					Log.debug(30,"Couldn't " +givenString+" index for path "+path+ " "+e.getMessage());
-				}
-				
-			}
-		}
-		Log.debug(40, "The predication number is "+index+" for elemen"+givenString+" in path "+path);
-		return index;
-	}
-	
-	/*
-	 * Gets the last element name for a given path.
-	 * E.g, "/eml/dataset" will return "dataset", "/eml/dataset/" will return dataset as well.
-	 * "dataset" will return "dataset"
-	 */
-	private String getLastElementName(String path)
-	{
-		String elementName = null;
-		if (path != null)
-		{
-			int end = path.lastIndexOf(SLASH);
-			if (end ==-1)
-			{
-				// no slash at all
-				elementName = path;
-			}
-			else if(end == (path.length() -1)) 
-			{
-				// the last character is "/"
-				if (end != 0)
-				{
-					String pathWithoutLastSlash = path.substring(0, path.length()-1);
-					elementName = getLastElementName(pathWithoutLastSlash);
-				}
-				else
-				{
-					// the given path is "/"
-					return elementName;
-				}
-			}
-			else
-			{
-				// "/eml/dataset" format
-				elementName = path.substring(end+1);
-			}
-		}
-		Log.debug(40, "The last element in the given path "+path + " is "+elementName);
-		return elementName;
-	}
-	
+
 	/*
 	 * Gets the last predicate value in a given xpath. 0 will be returned if it is not found.
 	 */
