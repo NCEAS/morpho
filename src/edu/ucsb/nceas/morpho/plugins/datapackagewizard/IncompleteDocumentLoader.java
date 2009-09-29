@@ -29,6 +29,9 @@
 package edu.ucsb.nceas.morpho.plugins.datapackagewizard;
 
 import java.util.Hashtable;
+import java.util.Vector;
+
+import javax.swing.JOptionPane;
 
 import org.w3c.dom.Node;
 
@@ -36,6 +39,7 @@ import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.datapackage.AbstractDataPackage;
 import edu.ucsb.nceas.morpho.datapackage.DataPackageFactory;
 import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
+import edu.ucsb.nceas.morpho.framework.UIController;
 import edu.ucsb.nceas.morpho.plugins.DataPackageWizardListener;
 import edu.ucsb.nceas.morpho.plugins.ServiceController;
 import edu.ucsb.nceas.morpho.plugins.ServiceNotHandledException;
@@ -52,12 +56,20 @@ import edu.ucsb.nceas.utilities.XMLUtilities;
  * @author tao
  *
  */
-public class IncompleteDocumentLoader 
+public class IncompleteDocumentLoader implements  DataPackageWizardListener
 {
 	private AbstractDataPackage dataPackage = null;
 	private IncompleteDocInfo incompleteDocInfo = null;
 	private String incompletionStatus = null;
 	private Hashtable wizardPageName = new Hashtable();
+	
+	/**
+	 * Default constructor
+	 */
+	public IncompleteDocumentLoader()
+	{
+		
+	}
 
 	/**
 	 * Constructs a IncompleteDocumentLoader with a AbstractDataPackage containing 
@@ -105,49 +117,30 @@ public class IncompleteDocumentLoader
 	 */
 	private void loadToNewPackageWizard()
 	{
-		try
-		{
-			DataPackageWizardPlugin plugin = new DataPackageWizardPlugin();
-		    plugin.startPackageWizard(
-		          new DataPackageWizardListener() {
-
-		        public void wizardComplete(Node newDOM, String autoSavedID) {
-
-		          Log.debug(30,
-		              "Wizard complete - Will now create an AbstractDataPackage..");
-
-		          AbstractDataPackage adp = DataPackageFactory.getDataPackage(newDOM);
-		          Log.debug(30, "AbstractDataPackage complete");
-		          adp.setAccessionNumber("temporary.1.1");
-		          adp.setAutoSavedID(autoSavedID);
-
-		          try {
-		            ServiceController services = ServiceController.getInstance();
-		            ServiceProvider provider =
-		                services.getServiceProvider(DataPackageInterface.class);
-		            DataPackageInterface dataPackage = (DataPackageInterface)provider;
-		            dataPackage.openNewDataPackage(adp, null);
-
-		          } catch (ServiceNotHandledException snhe) {
-
-		            Log.debug(6, snhe.getMessage());
-		          }
-		          Log.debug(45, "\n\n********** Wizard finished: DOM:");
-		          Log.debug(45, XMLUtilities.getDOMTreeAsString(newDOM, false));
-		        }
-
-
-		        public void wizardCanceled() {
-
-		          Log.debug(45, "\n\n********** Wizard canceled!");
-		        }
-		      });
-
-		    } catch (Throwable t) {
-
-		      Log.debug(5, "** ERROR: Unable to start wizard!");
-		      t.printStackTrace();
-		    }
+		boolean showPageCount = true;
+		  String currentPageId = WizardSettings.PACKAGE_WIZ_FIRST_PAGE_ID;
+		  WizardContainerFrame dpWiz = new WizardContainerFrame();
+		  Vector classNameFromIncompleteDoc = incompleteDocInfo.getWizardPageClassNameList();
+		  //Go through every page from incomplete doc info
+		  if(classNameFromIncompleteDoc != null && !classNameFromIncompleteDoc.isEmpty())
+		  {
+			  int size = classNameFromIncompleteDoc.size();
+			  for(int i=0; i<size;  i++)
+			  {
+				  String className = (String)classNameFromIncompleteDoc.elementAt(i);
+			  }
+		  }
+		  
+		  IncompleteDocumentLoader dataPackageWizardListener = new IncompleteDocumentLoader();
+		  dpWiz.setDataPackageWizardListener(dataPackageWizardListener);
+		  dpWiz.setBounds(
+		                  WizardSettings.WIZARD_X_COORD, WizardSettings.WIZARD_Y_COORD,
+		                  WizardSettings.WIZARD_WIDTH,   WizardSettings.WIZARD_HEIGHT );
+		  dpWiz.setCurrentPage(currentPageId);
+		  dpWiz.setShowPageCountdown(showPageCount);
+		  dpWiz.setTitle(DataPackageWizardPlugin.NEWPACKAGEWIZARDFRAMETITLE);
+		  dpWiz.setVisible(true);
+	    
 	}
 	
 	/*
@@ -187,5 +180,42 @@ public class IncompleteDocumentLoader
 	    mappingList   = reader.getXPathUIPageMappingList();
 	    return mappingList;
 	}
+	
+	
+	/**
+	 * Methods inherits from DataPackageWizardListener
+	 */
+	public void wizardComplete(Node newDOM, String autoSavedID) {
+
+        Log.debug(30,
+            "Wizard complete - Will now create an AbstractDataPackage..");
+
+        AbstractDataPackage adp = DataPackageFactory.getDataPackage(newDOM);
+        Log.debug(30, "AbstractDataPackage complete");
+        adp.setAccessionNumber("temporary.1.1");
+        adp.setAutoSavedID(autoSavedID);
+
+        try {
+          ServiceController services = ServiceController.getInstance();
+          ServiceProvider provider =
+              services.getServiceProvider(DataPackageInterface.class);
+          DataPackageInterface dataPackage = (DataPackageInterface)provider;
+          dataPackage.openNewDataPackage(adp, null);
+
+        } catch (ServiceNotHandledException snhe) {
+
+          Log.debug(6, snhe.getMessage());
+        }
+        Log.debug(45, "\n\n********** Wizard finished: DOM:");
+        Log.debug(45, XMLUtilities.getDOMTreeAsString(newDOM, false));
+      }
+
+	/**
+	 * Methods inherits from DataPackageWizardListener
+	 */
+      public void wizardCanceled() {
+
+        Log.debug(45, "\n\n********** Wizard canceled!");
+      }
 
 }

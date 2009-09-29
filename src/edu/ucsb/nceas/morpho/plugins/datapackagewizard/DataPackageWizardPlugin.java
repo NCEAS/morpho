@@ -70,6 +70,8 @@ import org.w3c.dom.Node;
 public class DataPackageWizardPlugin implements PluginInterface,
                                                 ServiceProvider,
                                                 DataPackageWizardInterface {
+	
+	public static final String NEWPACKAGEWIZARDFRAMETITLE = "New Data Table Wizard";
 
   /**
    *  Constructor
@@ -122,7 +124,7 @@ public class DataPackageWizardPlugin implements PluginInterface,
     UIController.getInstance().setWizardIsRunning(tempDataPackage);
 
     startWizardAtPage(WizardSettings.PACKAGE_WIZ_FIRST_PAGE_ID, true, listener,
-                      "New Data Package Wizard");
+    		NEWPACKAGEWIZARDFRAMETITLE);
 
   }
 
