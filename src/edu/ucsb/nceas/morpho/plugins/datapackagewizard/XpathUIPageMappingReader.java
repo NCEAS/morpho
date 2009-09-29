@@ -76,6 +76,7 @@ public class XpathUIPageMappingReader
 	private Hashtable fullPathMapping = new Hashtable();
 	private Hashtable shortPathMapping = new Hashtable();
 	private XPathUIPageMapping[] mappingList = null;
+	private Hashtable wizardPageClassName = new Hashtable();
 	
 	/**
 	 * Default constructor. It will read the property file.
@@ -281,6 +282,8 @@ public class XpathUIPageMappingReader
 			    		  fullPathMapping.put(fullPath, unit);
 				    	  
 				      }
+				      //put className-mapping object into a hashtable
+				      wizardPageClassName.put(className, unit);
 			      }		      
 		      }
 		       catch(Exception e)
@@ -336,5 +339,15 @@ public class XpathUIPageMappingReader
 	public Hashtable getShortPathMapping()
 	{
 		return shortPathMapping;
+	}
+	
+	/**
+	 * Gets a hashtable containing className-mappingObject
+	 * @return
+	 */
+	public Hashtable getClassNameMapping()
+	{
+		return wizardPageClassName;
+		
 	}
 }

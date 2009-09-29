@@ -62,6 +62,7 @@ public class IncompleteDocumentLoader implements  DataPackageWizardListener
 	private IncompleteDocInfo incompleteDocInfo = null;
 	private String incompletionStatus = null;
 	private Hashtable wizardPageName = new Hashtable();
+	private XPathUIPageMapping[] mappingList = null;
 	
 	/**
 	 * Default constructor
@@ -85,6 +86,7 @@ public class IncompleteDocumentLoader implements  DataPackageWizardListener
 		{
 			incompletionStatus = incompleteDocInfo.getStatus();
 		}
+		readXpathUIMappingInfo();
 	}
 	
 	/**
@@ -152,33 +154,14 @@ public class IncompleteDocumentLoader implements  DataPackageWizardListener
 	}
 	
 	/*
-	 * Transform the array to a hashtable. This is for efficiency reason.
-	 * The key of this hastable is the page class name and value is XPathUIPageMapping object.
-	 */
-	private void transformMappingToHashtable()
-	{
-		XPathUIPageMapping[] mappingList = readXpathUIMappingInfo();
-		if(mappingList != null)
-		{
-			int size = mappingList.length;
-			for(int i=0; i<size; i++)
-			{
-				XPathUIPageMapping map = mappingList[i];
-				String className = map.getWizardPageClassName();
-				wizardPageName.put(className, map);
-			}
-		}
-	}
-	
-	/*
 	 * Read xpath-UIpage mapping information
 	 */
-	private XPathUIPageMapping[] readXpathUIMappingInfo()
+	private void readXpathUIMappingInfo()
 	{
-		XPathUIPageMapping[] mappingList =null;
 		XpathUIPageMappingReader reader = new XpathUIPageMappingReader(CorrectionWizardController.MAPPINGFILEPATH);
 	    mappingList   = reader.getXPathUIPageMappingList();
-	    return mappingList;
+	    wizardPageName = reader.getClassNameMapping();
+	 
 	}
 	
 	
