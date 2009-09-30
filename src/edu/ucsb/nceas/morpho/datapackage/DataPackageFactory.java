@@ -210,6 +210,7 @@ public class DataPackageFactory
     AbstractDataPackage dp = null;
     dp = new EML200DataPackage();
     dp.load(source);
+    dp.setAutoSavedID(docid);
     return dp;
   }
 
