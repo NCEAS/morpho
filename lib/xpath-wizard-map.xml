@@ -50,6 +50,19 @@
     </infoForModifyingData>
     <wizardPageClass>edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.KeywordsPage</wizardPageClass>
   </mapping>
+   <mapping>
+    <!-- n/a means it is not used for correction wizard matching-->
+    <root>n/a</root> 
+    <infoForModifyingData>
+             <loadExistDataPath>/eml:eml/dataset/keywordSet</loadExistDataPath>
+             <xpathForCreatingOrderedMap></xpathForCreatingOrderedMap>
+             <xpathForSettingPageData></xpathForSettingPageData>
+             <newDataDocumentName>keywordSet</newDataDocumentName><!--only use for correction wizard-->
+             <xpathForGettingPageData>/keywordSet</xpathForGettingPageData><!--only use for correction wizard-->
+             <genericName>keywordSet</genericName>
+    </infoForModifyingData>
+    <wizardPageClass>edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.Keywords</wizardPageClass>
+  </mapping>
   <mapping>
     <root>/eml:eml/dataset/creator</root>
     <xpath>individualName/salutation</xpath>
