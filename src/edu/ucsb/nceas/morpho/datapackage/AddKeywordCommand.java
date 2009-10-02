@@ -47,6 +47,7 @@ import edu.ucsb.nceas.morpho.plugins.ServiceNotHandledException;
 import edu.ucsb.nceas.morpho.util.Command;
 import edu.ucsb.nceas.morpho.util.Log;
 import edu.ucsb.nceas.morpho.util.UISettings;
+import edu.ucsb.nceas.morpho.util.Util;
 import edu.ucsb.nceas.utilities.OrderedMap;
 import edu.ucsb.nceas.utilities.XMLUtilities;
 import java.util.Iterator;
@@ -146,32 +147,8 @@ implements Command, DataPackageWizardListener {
     OrderedMap existingValuesMap = new OrderedMap();
 
     List keywordList = adp.getSubtrees(DATAPACKAGE_KEYWORD_GENERIC_NAME);
+    existingValuesMap = Util.getOrderedMapFromNodeList(keywordList, DATAPACKAGE_KEYWORD_GENERIC_NAME);
 
-    if(!keywordList.isEmpty()){
-      Iterator listIt = keywordList.iterator();
-      Object nextObj = null;
-      Object nextTempObj = null;
-      String nextTempString = null;
-      int count = 1;
-
-      while (listIt.hasNext()) {
-        nextObj = listIt.next();
-        OrderedMap tempMap = XMLUtilities.getDOMTreeAsXPathMap((Node)nextObj);
-        Iterator tempIt = tempMap.keySet().iterator();
-        while(tempIt.hasNext()){
-          nextTempObj = tempIt.next();
-          nextTempString = (String)nextTempObj;
-          if(nextTempString != null){
-            existingValuesMap.put("/" + DATAPACKAGE_KEYWORD_GENERIC_NAME + "["
-                + count + "]" + nextTempString.substring(
-                DATAPACKAGE_KEYWORD_GENERIC_NAME.length() + 1,
-                nextTempString.length()),
-                tempMap.get(nextTempObj));
-          }
-        }
-        count++;
-      }
-    }
 
     Log.debug(45, "sending previous data to keywordPage -\n\n"
               + existingValuesMap);

@@ -25,6 +25,14 @@
  */
 package edu.ucsb.nceas.morpho.util;
 
+import java.util.Iterator;
+import java.util.List;
+
+import org.w3c.dom.Node;
+
+import edu.ucsb.nceas.utilities.OrderedMap;
+import edu.ucsb.nceas.utilities.XMLUtilities;
+
 /**
  * This class presents utility methods which will be repeatly used in morpho code.
  * @author tao
@@ -75,4 +83,48 @@ public class Util
 			}
 			return isNumber;
 		}
+		
+		/**
+		 * Gets an OrderedMap from given nodeList and genericName.
+		 * Note: we add order ( /genericName[1]) in the returned map.
+		 * @param nodeList
+		 * @param genericName
+		 * @return
+		 */
+		public static OrderedMap getOrderedMapFromNodeList(List nodeList, String genericName)
+		{
+			  OrderedMap existingValuesMap = new OrderedMap();
+			  if(nodeList == null || genericName == null || nodeList.isEmpty())
+			  {
+				  return existingValuesMap;
+			  }
+		      Iterator listIt =nodeList.iterator();
+		      Object nextObj = null;
+		      Object nextTempObj = null;
+		      String nextTempString = null;
+		      int count = 1;
+
+		      while (listIt.hasNext()) {
+		        nextObj = listIt.next();
+		        OrderedMap tempMap = XMLUtilities.getDOMTreeAsXPathMap( (Node)
+		            nextObj);
+		        Iterator tempIt = tempMap.keySet().iterator();
+		        while (tempIt.hasNext()) {
+		          nextTempObj = tempIt.next();
+		          nextTempString = (String) nextTempObj;
+		          if (nextTempString != null) {
+		            existingValuesMap.put("/" + genericName +
+		                "["
+		                + count + "]" + nextTempString.substring(
+		                		genericName.length() + 1,
+		                nextTempString.length()),
+		                tempMap.get(nextTempObj));
+		          }
+		        }
+		        count++;
+		      }
+		      return existingValuesMap;
+	}
+		  
+
 }
