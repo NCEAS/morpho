@@ -117,13 +117,13 @@ public class WizardContainerFrame
     	String scope = profile.get("scope", 0);
     	String separator= profile.get("separator", 0);
     	// try to get autoSaveID from adp first.
-    	AbstractDataPackage adp = UIController.getInstance().getCurrentAbstractDataPackage();
-		if(adp != null)
-		{
-			autoSaveID = adp.getAutoSavedD();
-		}
+    	//AbstractDataPackage adp = UIController.getInstance().getCurrentAbstractDataPackage();
+		//if(adp != null)
+		//{
+			//autoSaveID = adp.getAutoSavedD();
+		//}
 		//if we couldn't get the autoSaveID from exist datapackage, get it from random number
-    	if(autoSaveID == null && scope != null)
+    	//if(autoSaveID == null && scope != null)
     	{  	   
     	   autoSaveID = scope+separator+getRandomString()+separator+VERSION1;
     	}

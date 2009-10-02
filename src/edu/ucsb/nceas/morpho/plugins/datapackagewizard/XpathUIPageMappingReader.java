@@ -73,6 +73,7 @@ public class XpathUIPageMappingReader
 	private final static String KEY = "key";
 	private final static String PREVNODE = "prevNode";
 	private final static String NEXTNODE = "nextNode";
+	private static final String LOADINGNODELISTSTATUS = "loadingNodeListStatus";
 	private Hashtable fullPathMapping = new Hashtable();
 	private Hashtable shortPathMapping = new Hashtable();
 	private XPathUIPageMapping[] mappingList = null;
@@ -203,6 +204,15 @@ public class XpathUIPageMappingReader
 				        		   if(textNode != null && textNode.getNodeType() == Node.TEXT_NODE)
 				        		   {
 				        			   info.setGenericName(textNode.getNodeValue());
+				        		   } 
+				        	   }
+				        	   else if ((node.getNodeType() == Node.ELEMENT_NODE) && 
+				        			   (node.getNodeName().equalsIgnoreCase(LOADINGNODELISTSTATUS)))
+				        	   {
+				        		   Node textNode = node.getFirstChild();
+				        		   if(textNode != null && textNode.getNodeType() == Node.TEXT_NODE)
+				        		   {
+				        			   info.setLoadingNodeListStatus(textNode.getNodeValue());
 				        		   } 
 				        	   }
 				        	   else if ((node.getNodeType() == Node.ELEMENT_NODE) && 

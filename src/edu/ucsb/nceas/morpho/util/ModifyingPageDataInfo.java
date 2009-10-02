@@ -48,6 +48,11 @@ public class ModifyingPageDataInfo
 	private Vector prevNodeList = new Vector();// the possible node can be in front of this node.
 	                                                          // for locating the position when inserting the node
 	private Vector nextNodeList = new Vector();// the possible node can be next to this node
+	private String loadingNodeListStatus = null;
+	// use the loading subtree node list to orderedMap directly. Temple and geographical coverage pages belong to this category.
+	public static final String DIRECTLOADINGNODELIST = "directLoadingNodeList"; 
+	// need to transform the loading subtree node list to orderedMap. Keywords, creator, contact and associated party belong to this category.
+	public static final String TRANSFORMLOADINGNODELIST = "transformLoadingNodeList";
 	
 	public String getPathForSettingPageData() {
 		return pathForSettingPageData;
@@ -186,6 +191,7 @@ public class ModifyingPageDataInfo
 			newInfo.setKey(info.getKey());
 			newInfo.setNextNodeList(info.getNextNodeList());
 			newInfo.setPrevNodeList(info.getPrevNodeList());
+			newInfo.setLoadingNodeListStatus(info.getLoadingNodeListStatus());
 			Vector dataPathList = info.getLoadExistingDataPath();
 			if(dataPathList != null)
 			{
@@ -222,5 +228,13 @@ public class ModifyingPageDataInfo
 
 	public void setNextNodeList(Vector nextNodeList) {
 		this.nextNodeList = nextNodeList;
+	}
+
+	public String getLoadingNodeListStatus() {
+		return loadingNodeListStatus;
+	}
+
+	public void setLoadingNodeListStatus(String loadingNodeListStatus) {
+		this.loadingNodeListStatus = loadingNodeListStatus;
 	}
 }

@@ -55,6 +55,7 @@
     <root>n/a</root> 
     <infoForModifyingData>
              <loadExistDataPath>/eml:eml/dataset/keywordSet</loadExistDataPath>
+             <loadingNodeListStatus>transformLoadingNodeList</loadingNodeListStatus>
              <xpathForCreatingOrderedMap></xpathForCreatingOrderedMap>
              <xpathForSettingPageData></xpathForSettingPageData>
              <newDataDocumentName>keywordSet</newDataDocumentName><!--only use for correction wizard-->
