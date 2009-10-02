@@ -29,6 +29,7 @@ package edu.ucsb.nceas.morpho.plugins.datapackagewizard;
 
 import java.lang.reflect.Constructor;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Vector;
 
 import org.w3c.dom.Document;
@@ -41,6 +42,7 @@ import edu.ucsb.nceas.morpho.framework.ConfigXML;
 import edu.ucsb.nceas.morpho.util.LoadDataPath;
 import edu.ucsb.nceas.morpho.util.Log;
 import edu.ucsb.nceas.morpho.util.ModifyingPageDataInfo;
+import edu.ucsb.nceas.morpho.util.Util;
 import edu.ucsb.nceas.morpho.util.XPathUIPageMapping;
 import edu.ucsb.nceas.utilities.OrderedMap;
 import edu.ucsb.nceas.utilities.XMLUtilities;
@@ -187,58 +189,6 @@ public class WizardUtil
 			    Vector infoList = mapping.getModifyingPageDataInfoList();
 				NodeList nodeList = null;
 				String settingPageDataPath = "";
-				/*if (infoList != null && infoList.size() < -1)
-				{	
-					ModifyingPageDataInfo info = (ModifyingPageDataInfo)infoList.elementAt(0);
-					settingPageDataPath = info.getPathForSettingPageData();
-					//page.setXPathRoot(node);
-					if (page instanceof AttributePage)
-					{
-						int entityIndex = getDataTableIndex(path);
-						int attributeIndex = getAttributeIndex(path);
-						Vector loadExistingDataPathList = info.getLoadExistingDataPath();
-						LoadDataPath entityPath = (LoadDataPath)loadExistingDataPathList.elementAt(0);
-						entityPath.setPosition(entityIndex);
-						LoadDataPath attributePath = (LoadDataPath)loadExistingDataPathList.elementAt(1);
-						attributePath.setPosition(attributeIndex);							
-						nodeList = XMLUtilities.getNodeListWithXPath(dataPackage.getMetadataNode(),entityPath.getPath());
-						Node entityNode = nodeList.item(entityIndex);
-						nodeList = XMLUtilities.getNodeListWithXPath(entityNode, attributePath.getPath());
-						Node node = nodeList.item(attributeIndex);
-						xpathMap = XMLUtilities.getDOMTreeAsXPathMap(node,info.getPathForCreatingOrderedMap());							
-
-					}
-					if(page instanceof Entity)
-					{
-						nodeList = XMLUtilities.getNodeListWithXPath(dataPackage.getMetadataNode(), mapping.getRoot());	
-						Node node = nodeList.item(0);
-						xpathMap = XMLUtilities.getDOMTreeAsXPathMap(node, "");
-						int entityIndex = getDataTableIndex(path);
-						//page.addNodeIndex(entityIndex);
-					}
-					else
-					{
-						Log.debug(45, "start to process load data process which has info list size 1");
-						Vector loadExistingDataPathList = info.getLoadExistingDataPath();
-						int position = getLastPredicate(path);
-						if (loadExistingDataPathList != null)
-						{
-							Node node = null;
-							for(int k=0; k<loadExistingDataPathList.size(); k++)
-							{
-							  LoadDataPath loadPath = (LoadDataPath)loadExistingDataPathList.elementAt(k);
-							  // store the position information
-							  loadPath.setPosition(position);
-							  String xpath = loadPath.getPath();
-							  nodeList = XMLUtilities.getNodeListWithXPath(dataPackage.getMetadataNode(), xpath);	
-							  node = nodeList.item(position);
-							}
-							Log.debug(45, "before getting ordered map from subtree");
-						    xpathMap = XMLUtilities.getDOMTreeAsXPathMap(node, info.getPathForCreatingOrderedMap());
-							  
-						}
-					}
-				}*/
 				if (infoList != null && infoList.size() > 0)
 				{
 					//like General page
@@ -250,6 +200,7 @@ public class WizardUtil
 						ModifyingPageDataInfo info =(ModifyingPageDataInfo)list.elementAt(i);
 						settingPageDataPath = info.getPathForSettingPageData();
 						Vector loadDataPathList = info.getLoadExistingDataPath();
+						
 						if (loadDataPathList != null)
 						{
 							Node node = dataPackage.getMetadataNode();
@@ -258,49 +209,73 @@ public class WizardUtil
 				            //        <loadExistDataPath>./title</loadExistDataPath>
 							if(node != null)
 							{
-								for(int j=0; j<loadDataPathList.size(); j++)
+								String loadNodeListStatus = info.getLoadingNodeListStatus();
+								// we only need to a single node to the page as existed metadata. not a list
+								if(loadNodeListStatus == null)
 								{
-									LoadDataPath pathObj = (LoadDataPath)loadDataPathList.elementAt(j);
-									String xPath = pathObj.getPath();
-									int position = 0;
-									if(path != null)
+									for(int j=0; j<loadDataPathList.size(); j++)
 									{
-									   String lastElementName = getLastElementName(xPath);
-									   position = getGivenStringIndexAtXPath(lastElementName, path);	
+										LoadDataPath pathObj = (LoadDataPath)loadDataPathList.elementAt(j);
+										String xPath = pathObj.getPath();
+										int position = 0;
+										if(path != null)
+										{
+										   String lastElementName = getLastElementName(xPath);
+										   position = getGivenStringIndexAtXPath(lastElementName, path);	
+										}
+										//System.out.println("==========the xpath is "+xPath);
+										Log.debug(46, "Before getting the node list for path"+xPath);
+										nodeList = XMLUtilities.getNodeListWithXPath(node, xPath);
+										Log.debug(46, "After getting the node list for path"+xPath);
+										//reset node
+										if(nodeList != null)
+										{
+											node = nodeList.item(position);
+											Log.debug(46, "Getting the node for path"+xPath+" at position "+position+ " "+node);
+											pathObj.setPosition(position);
+										}
+										else
+										{
+											node = null;
+										}
 									}
-									//System.out.println("==========the xpath is "+xPath);
-									Log.debug(46, "Before getting the node list for path"+xPath);
-									nodeList = XMLUtilities.getNodeListWithXPath(node, xPath);
-									Log.debug(46, "After getting the node list for path"+xPath);
-									//reset node
-									if(nodeList != null)
+									if(firstTime && node != null)
 									{
-										node = nodeList.item(position);
-										Log.debug(46, "Getting the node for path"+xPath+" at position "+position+ " "+node);
-										pathObj.setPosition(position);
+									  Log.debug(46, "Before First time to create xPathMap with path for creating ordered map "+info.getPathForCreatingOrderedMap());
+									  xpathMap = XMLUtilities.getDOMTreeAsXPathMap(node, info.getPathForCreatingOrderedMap());
+									  Log.debug(46, "After First time to create xPathMap");
+									  firstTime = false;
+									  //we set first child as the root node for not loading data from root path directly
+									  //page.setXPathRoot(node);
 									}
-									else
+									else if (node != null)
 									{
-										node = null;
+										Log.debug(46, "Before second or more time to create xPathMap");
+										xpathMap.putAll(XMLUtilities.getDOMTreeAsXPathMap(node, info.getPathForCreatingOrderedMap()));
+										Log.debug(46, "After second or more time to create xPathMap");
+									}
+							    }
+								else if(loadNodeListStatus.equals(ModifyingPageDataInfo.TRANSFORMLOADINGNODELIST))
+								{
+									// we need load a node list data into UIPage.
+									//this is for keywords, owner, contact or associated party pages
+									// currently we only handle one loading path in this suitation.
+									LoadDataPath pathObj = (LoadDataPath)loadDataPathList.elementAt(0);
+									String loadPath = pathObj.getPath();
+									if(loadPath != null)
+									{
+										nodeList = XMLUtilities.getNodeListWithXPath(node, loadPath);
+									    List newNodetList = dataPackage.getSubtree(nodeList);
+									    xpathMap = Util.getOrderedMapFromNodeList(newNodetList, info.getGenericName());
 									}
 								}
-								
+								else if(loadNodeListStatus.equals(ModifyingPageDataInfo.DIRECTLOADINGNODELIST))
+								{
+									// we need to load a node list data into ui page.
+									// this is for geographic, time and taxonamic pages.
+								}
 							}
-							if(firstTime && node != null)
-							{
-							  Log.debug(46, "Before First time to create xPathMap with path for creating ordered map "+info.getPathForCreatingOrderedMap());
-							  xpathMap = XMLUtilities.getDOMTreeAsXPathMap(node, info.getPathForCreatingOrderedMap());
-							  Log.debug(46, "After First time to create xPathMap");
-							  firstTime = false;
-							  //we set first child as the root node for not loading data from root path directly
-							  //page.setXPathRoot(node);
-							}
-							else if (node != null)
-							{
-								Log.debug(46, "Before second or more time to create xPathMap");
-								xpathMap.putAll(XMLUtilities.getDOMTreeAsXPathMap(node, info.getPathForCreatingOrderedMap()));
-								Log.debug(46, "After second or more time to create xPathMap");
-							}
+							
 						}
 						
 					}
