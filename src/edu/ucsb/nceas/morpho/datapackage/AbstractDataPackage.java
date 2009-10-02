@@ -712,18 +712,43 @@ public abstract class AbstractDataPackage extends MetadataObject
 
     } else {
 
-      for (int index = 0; index < nodelist.getLength(); index++) {
-        // create deep cloned versions
-        Node deepClone = (nodelist.item(index)).cloneNode(true);
-        DOMImplementation impl = DOMImplementationImpl.getDOMImplementation();
-        Document doc = impl.createDocument("", "tempRoot", null);
-        Node importedClone = doc.importNode(deepClone, true);
-        Node tempRoot = doc.getDocumentElement();
-        doc.replaceChild(importedClone, tempRoot);
-        returnList.add(importedClone);
-      }
+    	returnList = getSubtree(nodelist);
     }
     return returnList;
+  }
+  
+  /**
+   * returns a List of cloned root Nodes of subtrees for a given list
+   *  returns empty list if the given node list is empty or null
+   * NOTE: the cloned subtrees are new nodes. Each new node is copied to a new
+   * Document object and made the root of the new document
+   *
+   * @param nodelist the given subtree node list
+   * @return List containing the cloned root Nodes of subtrees, or an empty list
+   * if none found. Never returns null
+   */
+  public List getSubtree(NodeList nodelist)
+  {
+	  List returnList = new ArrayList();
+	  if ((nodelist == null) || (nodelist.getLength() == 0)) {
+
+	      Log.debug(50, "AbstractDataPackage.getSubtrees() - the pass node list is empty"+
+	    		               " and returning empty List");
+
+	    } else {
+
+	      for (int index = 0; index < nodelist.getLength(); index++) {
+	        // create deep cloned versions
+	        Node deepClone = (nodelist.item(index)).cloneNode(true);
+	        DOMImplementation impl = DOMImplementationImpl.getDOMImplementation();
+	        Document doc = impl.createDocument("", "tempRoot", null);
+	        Node importedClone = doc.importNode(deepClone, true);
+	        Node tempRoot = doc.getDocumentElement();
+	        doc.replaceChild(importedClone, tempRoot);
+	        returnList.add(importedClone);
+	      }
+	    }
+	  return returnList;
   }
 
 
