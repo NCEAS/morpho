@@ -65,6 +65,20 @@
     <wizardPageClass>edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.Keywords</wizardPageClass>
   </mapping>
   <mapping>
+    <root>n/a</root>
+    <infoForModifyingData>
+             <loadExistDataPath>/eml:eml/dataset/creator</loadExistDataPath>
+             <loadingNodeListStatus>transformLoadingNodeList</loadingNodeListStatus>
+             <xpathForOrderedMap></xpathForOrderedMap>
+             <xpathForSettingPageData>/creator</xpathForSettingPageData>
+             <newDataDocumentName>creator</newDataDocumentName>
+             <xpathForGettingPageData>/creator</xpathForGettingPageData>
+             <genericName>creator</genericName>
+    </infoForModifyingData>
+    <wizardPageClass>edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.PartyMainPage</wizardPageClass>
+    <wizardPageClassParameter>PARTY_CREATOR</wizardPageClassParameter>
+  </mapping>
+  <mapping>
     <root>/eml:eml/dataset/creator</root>
     <xpath>individualName/salutation</xpath>
     <xpath>individualName/givenName</xpath>
@@ -90,7 +104,21 @@
     <wizardPageClass>edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.PartyPage</wizardPageClass>
     <wizardPageClassParameter>PARTY_CREATOR</wizardPageClassParameter>
   </mapping>
-   <mapping>
+  <mapping>
+    <root>n/a</root>
+    <infoForModifyingData>
+             <loadExistDataPath>/eml:eml/dataset/contact</loadExistDataPath>
+             <loadingNodeListStatus>transformLoadingNodeList</loadingNodeListStatus>
+             <xpathForOrderedMap></xpathForOrderedMap>
+             <xpathForSettingPageData>/contact</xpathForSettingPageData>
+             <newDataDocumentName>contact</newDataDocumentName>
+             <xpathForGettingPageData>/contact</xpathForGettingPageData>
+             <genericName>contact</genericName>
+    </infoForModifyingData>
+    <wizardPageClass>edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.PartyMainPage</wizardPageClass>
+    <wizardPageClassParameter>PARTY_CONTACT</wizardPageClassParameter>
+  </mapping>
+  <mapping>
     <root>/eml:eml/dataset/contact</root>
     <xpath>individualName/salutation</xpath>
     <xpath>individualName/givenName</xpath>
@@ -117,7 +145,20 @@
     <wizardPageClass>edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.PartyPage</wizardPageClass>
     <wizardPageClassParameter>PARTY_CONTACT</wizardPageClassParameter>
   </mapping>
-   <mapping>
+  <mapping>
+    <root>n/a</root>
+    <infoForModifyingData>
+             <loadExistDataPath>/eml:eml/dataset/associatedParty</loadExistDataPath>
+             <xpathForOrderedMap></xpathForOrderedMap>
+             <xpathForSettingPageData>/associatedParty</xpathForSettingPageData>
+             <newDataDocumentName>associatedParty</newDataDocumentName>
+             <xpathForGettingPageData>/associatedParty</xpathForGettingPageData>
+             <genericName>associatedParty</genericName>
+    </infoForModifyingData>
+    <wizardPageClass>edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.PartyMainPage</wizardPageClass>
+    <wizardPageClassParameter>PARTY_ASSOCIATED</wizardPageClassParameter>
+  </mapping>
+  <mapping>
     <root>/eml:eml/dataset/associatedParty</root>
     <xpath>individualName/salutation</xpath>
     <xpath>individualName/givenName</xpath>
