@@ -243,6 +243,31 @@
     </infoForModifyingData>
     <wizardPageClass>edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.GeographicPage</wizardPageClass>
    </mapping>
+   <mapping>
+    <root>n/a</root>
+    <infoForModifyingData>
+             <loadExistDataPath>/eml:eml/dataset/coverage/geographicCoverage</loadExistDataPath>
+             <loadingNodeListStatus>directLoadingNodeList</loadingNodeListStatus>
+             <xpathForCreatingOrderedMap></xpathForCreatingOrderedMap>
+             <xpathForSettingPageData></xpathForSettingPageData>
+             <newDataDocumentName>geographicCoverage</newDataDocumentName>
+             <xpathForGettingPageData>/geographicCoverage</xpathForGettingPageData>
+             <genericName>geographicCoverage</genericName>
+    </infoForModifyingData>
+    <wizardPageClass>edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.Geographic</wizardPageClass>
+   </mapping>
+   <mapping>
+    <root>/eml:eml/dataset/intellectualRights</root>
+    <infoForModifyingData>
+             <loadExistDataPath>/eml:eml/dataset/intellectualRights</loadExistDataPath>
+             <xpathForCreatingOrderedMap></xpathForCreatingOrderedMap>
+             <xpathForSettingPageData></xpathForSettingPageData>
+             <newDataDocumentName>intellectualRights</newDataDocumentName>
+             <xpathForGettingPageData>/intellectualRights</xpathForGettingPageData>
+             <genericName>intellectualRights</genericName>
+    </infoForModifyingData>
+    <wizardPageClass>edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.UsageRights</wizardPageClass>
+   </mapping>
     <!--
     <mapping>
     <root>/eml:eml/dataset/coverage/temporalCoverage</root>
@@ -259,6 +284,19 @@
     </infoForModifyingData>
     <wizardPageClass>edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.TemporalPage</wizardPageClass>
    </mapping> -->
+   <mapping>
+    <root>n/a</root>
+    <infoForModifyingData>
+             <loadExistDataPath>/eml:eml/dataset/coverage/temporalCoverage</loadExistDataPath>
+             <loadingNodeListStatus>directLoadingNodeList</loadingNodeListStatus>
+             <xpathForCreatingOrderedMap></xpathForCreatingOrderedMap>
+             <xpathForSettingPageData></xpathForSettingPageData>
+             <newDataDocumentName>temporalCoverage</newDataDocumentName>
+             <xpathForGettingPageData>/temporalCoverage</xpathForGettingPageData>
+             <genericName>temporalCoverage</genericName>
+    </infoForModifyingData>
+    <wizardPageClass>edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.Temporal</wizardPageClass>
+   </mapping> 
    <mapping>
     <root>/eml:eml/dataset/coverage/taxonomicCoverage</root>
     <xpath>taxonomicSystem/classificationSystem/classificationSystemCitation/title</xpath>

@@ -273,6 +273,23 @@ public class WizardUtil
 								{
 									// we need to load a node list data into ui page.
 									// this is for geographic, time and taxonamic pages.
+									// currently we only handle one loading path in this suitation.
+									LoadDataPath pathObj = (LoadDataPath)loadDataPathList.elementAt(0);
+									String loadPath = pathObj.getPath();
+									if(loadPath != null)
+									{
+										nodeList = XMLUtilities.getNodeListWithXPath(node, loadPath);
+									    if(nodeList != null)
+									    {
+									    	for(int k=0; k<nodeList.getLength(); k++)
+									    	{
+									    		xpathMap = XMLUtilities.getDOMTreeAsXPathMap(nodeList.item(k));
+									    		page.setPageData(xpathMap, settingPageDataPath);
+					
+									    	}
+									    }
+									}
+									return page;
 								}
 							}
 							
