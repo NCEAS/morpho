@@ -25,6 +25,8 @@
  */
 package edu.ucsb.nceas.morpho.util;
 
+import java.util.Vector;
+
 /**
  * It represents a wizard page information in incomplete-document medata part.
  * It include the wizard page class name and an array of parameter (string)
@@ -34,7 +36,7 @@ package edu.ucsb.nceas.morpho.util;
 public class WizardPageInfo 
 {
     private String className = null;
-    private String[] parameters = null;
+    private Vector parameters = new Vector();
     
     /**
      * Constructor for given className
@@ -58,17 +60,17 @@ public class WizardPageInfo
 	 * Gets the parameter list of the class
 	 * @return
 	 */
-	public String[] getParameters() 
+	public Vector getParameters() 
 	{
 		return parameters;
 	}
 
 	/**
-	 * Sets the parameter list of the class
+	 * Adds a parameter into this object
 	 * @param parameters
 	 */
-	public void setParameters(String[] parameters) 
+	public void addParameter(String parameter) 
 	{
-		this.parameters = parameters;
+		this.parameters.add(parameter);
 	}
 }

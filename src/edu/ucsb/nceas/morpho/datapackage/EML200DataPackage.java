@@ -37,6 +37,7 @@ import edu.ucsb.nceas.morpho.util.Log;
 import edu.ucsb.nceas.utilities.OrderedMap;
 import edu.ucsb.nceas.utilities.XMLUtilities;
 import edu.ucsb.nceas.morpho.util.IncompleteDocSettings;
+import edu.ucsb.nceas.morpho.util.WizardPageInfo;
 import edu.ucsb.nceas.morpho.util.XMLUtil;
 import edu.ucsb.nceas.morpho.util.XMLErrorHandler;
 
@@ -616,13 +617,22 @@ public  class EML200DataPackage extends AbstractDataPackage
   
   /**
    * Gets the UIPage class name list after parsing the incomplete information in additional metacat part.
+   * This eml part looks like
+   *  <additionalMetadata>
+   *      <metadata>
+   *         <packagwizard>
+   *              <class>
+   *                  <name>
+   *                   <parameter>
+   *              </class>
+   *  ............................
    * @return
    */
-  public Vector getIncompleteWizardPageNameList()
+  public WizardPageInfo [] getIncompleteWizardPageInfoList()
   {
-	  Vector classNameList = new Vector();
+	  WizardPageInfo[] classInfoList = null;
 	  String pageClassNameXpath = "/eml:eml/"+IncompleteDocSettings.ADDITIONALMETADATA+"/"+IncompleteDocSettings.METADATA+
-      "/"+IncompleteDocSettings.PACKAGEWIZARD+"/"+IncompleteDocSettings.CLASSNAME;
+      "/"+IncompleteDocSettings.PACKAGEWIZARD+"/"+IncompleteDocSettings.CLASS;
 	  NodeList nodeList = null;
       try 
       {
@@ -635,31 +645,64 @@ public  class EML200DataPackage extends AbstractDataPackage
       }
       if (nodeList != null && nodeList.getLength() > 0) 
       {
-        	    for(int i=0; i<nodeList.getLength(); i++)
-        	    {
-        	    	Node targetNode = nodeList.item(i);
-        	    	if(targetNode != null)
-        	    	{
-        	    		NodeList children = targetNode.getChildNodes();
-        	    		for (int nodeIndex=0; nodeIndex <children.getLength(); nodeIndex++) 
-        	    		{
-
-        	    		      Node textNode = children.item(nodeIndex);
-        	    		      if (textNode.getNodeType()==Node.TEXT_NODE
-        	    		                          || textNode.getNodeType()==Node.CDATA_SECTION_NODE) 
-        	    		      {
-        	    		    	  String className = textNode.getNodeValue();
-        	    		    	  Log.debug(25, "The read class name from additional metacat is "+className);
-        	    		    	  classNameList.add(className);
-        	    		      }
-//        	    		    
-        	    		}
-        	    		
-        	    	}
-        	    }
+    	    classInfoList = new WizardPageInfo[nodeList.getLength()];
+    	  
+    	    for(int i=0; i<nodeList.getLength(); i++)
+    	    {
+    	    	Node targetNode = nodeList.item(i);
+    	    	if(targetNode != null)
+    	    	{
+    	    		NodeList children = targetNode.getChildNodes();
+    	    		WizardPageInfo info = null;
+    	    		for (int nodeIndex=0; nodeIndex <children.getLength(); nodeIndex++) 
+    	    		{
+                          Node kidNode = children.item(nodeIndex);
+                          if(kidNode.getNodeType() ==Node.ELEMENT_NODE && kidNode.getNodeName().equals(IncompleteDocSettings.NAME))
+                          {
+                        	  // this handles class name children
+                        	  NodeList grandChildren = kidNode.getChildNodes();
+                        	  for(int k=0; k<grandChildren.getLength(); k++)
+                        	  {
+		    	    		      Node textNode = grandChildren.item(k);
+		    	    		      if (textNode.getNodeType()==Node.TEXT_NODE
+		    	    		                          || textNode.getNodeType()==Node.CDATA_SECTION_NODE) 
+		    	    		      {
+		    	    		    	  String className = textNode.getNodeValue();
+		    	    		    	  Log.debug(25, "The read class name from additional metacat is "+className);
+		    	                      info = new WizardPageInfo(className);
+		    	    		      }
+                        	  }
+                          }
+                          else if(kidNode.getNodeType() ==Node.ELEMENT_NODE && kidNode.getNodeName().equals(IncompleteDocSettings.PARAMETER))
+                          {
+                        	 // this handles class parameter children
+                        	  NodeList grandChildren = kidNode.getChildNodes();
+                        	  for(int k=0; k<grandChildren.getLength(); k++)
+                        	  {
+		    	    		      Node textNode = grandChildren.item(k);
+		    	    		      if (textNode.getNodeType()==Node.TEXT_NODE
+		    	    		                          || textNode.getNodeType()==Node.CDATA_SECTION_NODE) 
+		    	    		      {
+		    	    		    	  String parameter = textNode.getNodeValue();
+		    	    		    	  Log.debug(25, "The paramter is "+parameter);
+		    	                     if(info != null)
+		    	                     {
+		    	                    	 info.addParameter(parameter);
+		    	                     }
+		    	    		      }
+                        	  }
+                          }                       	
+	    		    
+    	    		}   	    		
+    	    		if (info != null)
+    	    		{
+    	    			classInfoList[i] = info;
+    	    		}
+    	    	}
+    	    }
       }
-           
-	  return classNameList;
+      Log.debug(30, "The class info list is "+classInfoList);
+	  return classInfoList;
   }
 
   

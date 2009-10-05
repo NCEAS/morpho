@@ -37,6 +37,7 @@ import edu.ucsb.nceas.morpho.framework.ConfigXML;
 import edu.ucsb.nceas.morpho.framework.UIController;
 import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
 import edu.ucsb.nceas.morpho.plugins.DataPackageWizardListener;
+import edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.PartyMainPage;
 import edu.ucsb.nceas.morpho.util.IncompleteDocSettings;
 import edu.ucsb.nceas.morpho.util.Log;
 import edu.ucsb.nceas.morpho.util.XMLUtil;
@@ -903,8 +904,16 @@ public class WizardContainerFrame
 					  {
 						  className = page.getClass().getName();
 						  Log.debug(40, "Class name is "+className);
-						  emlWithIncompleteInfo = emlWithIncompleteInfo+IncompleteDocSettings.CLASSNAMEOPENINGTAG+
-						                                      className+IncompleteDocSettings.CLASSNAMECLOSINGTAG;
+						  emlWithIncompleteInfo = emlWithIncompleteInfo+IncompleteDocSettings.CLASSOPENINGTAG+IncompleteDocSettings.NAMEOPENINGTAG+
+						                                      className+IncompleteDocSettings.NAMECLOSINGTAG;
+						  if(page instanceof PartyMainPage)
+						  {
+							  PartyMainPage partPage = (PartyMainPage)page;
+							  String role = partPage.role;
+							  emlWithIncompleteInfo = emlWithIncompleteInfo+IncompleteDocSettings.CLASSPARAMETEROPENINGTAG+
+							                                      role+IncompleteDocSettings.CLASSPARAMETERCLOSINGTAG;
+						  }
+						  emlWithIncompleteInfo = emlWithIncompleteInfo+IncompleteDocSettings.CLASSCLOSINGTAG;
 					  }
 				  }
 			  }

@@ -51,9 +51,16 @@ public class IncompleteDocSettings
    public final static String METADATA= "metadata";
    public final static String METADATAOPENINGTAG = LESSTHAN+METADATA+GREATERTHAN;
    public final static String METADATACLOSINGTAG = LESSTHAN+SLASH+METADATA+GREATERTHAN;
-   public final static String CLASSNAME = "className";
-   public final static String CLASSNAMEOPENINGTAG = LESSTHAN+CLASSNAME+GREATERTHAN;
-   public final static String CLASSNAMECLOSINGTAG =  LESSTHAN+SLASH+CLASSNAME+GREATERTHAN;
+   public final static String CLASS = "class";
+   public final static String CLASSOPENINGTAG = LESSTHAN+CLASS+GREATERTHAN;
+   public final static String CLASSCLOSINGTAG =  LESSTHAN+SLASH+CLASS+GREATERTHAN;
+   public final static String NAME = "name";
+   public final static String NAMEOPENINGTAG = LESSTHAN+NAME+GREATERTHAN;
+   public final static String NAMECLOSINGTAG =  LESSTHAN+SLASH+NAME+GREATERTHAN;
+   public final static String PARAMETER = "parameter";
+   public final static String CLASSPARAMETEROPENINGTAG = LESSTHAN+PARAMETER+GREATERTHAN;
+   public final static String CLASSPARAMETERCLOSINGTAG =  LESSTHAN+SLASH+PARAMETER+GREATERTHAN;
+   
    
 }
 

@@ -35,7 +35,7 @@ import java.util.Vector;
 public class IncompleteDocInfo 
 {
 	private String status;
-	private Vector wizardPageClassNameList = new Vector(); //stores the class name list
+	private WizardPageInfo [] wizardPageClassInfoList = null; //stores the class name list
 	
 	/**
 	 * Default constructor
@@ -49,18 +49,18 @@ public class IncompleteDocInfo
 	 * Sets the list of wizard page name 
 	 * @param wizardPageClassNameList
 	 */
-	public void setWizardPageClassNameList(Vector wizardPageClassNameList)
+	public void setWizardPageClassInfoList(WizardPageInfo [] wizardPageClassNameList)
 	{
-		this.wizardPageClassNameList = wizardPageClassNameList;
+		this.wizardPageClassInfoList = wizardPageClassNameList;
 	}
 	
 	/**
 	 * Gets the list of wizard page name
 	 * @return
 	 */
-	public Vector getWizardPageClassNameList()
+	public WizardPageInfo [] getWizardPageClassInfoList()
 	{
-		return this.wizardPageClassNameList;
+		return this.wizardPageClassInfoList;
 	}
 	
 	/**

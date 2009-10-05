@@ -51,6 +51,7 @@ import edu.ucsb.nceas.morpho.util.IncompleteDocSettings;
 import edu.ucsb.nceas.morpho.util.LoadDataPath;
 import edu.ucsb.nceas.morpho.util.Log;
 import edu.ucsb.nceas.morpho.util.ModifyingPageDataInfo;
+import edu.ucsb.nceas.morpho.util.WizardPageInfo;
 import edu.ucsb.nceas.morpho.util.XPathUIPageMapping;
 import edu.ucsb.nceas.utilities.OrderedMap;
 import edu.ucsb.nceas.utilities.XMLUtilities;
@@ -127,16 +128,20 @@ public class IncompleteDocumentLoader implements  DataPackageWizardListener
 		boolean showPageCount = true;
 		  String currentPageId = WizardSettings.PACKAGE_WIZ_FIRST_PAGE_ID;
 		  WizardContainerFrame dpWiz = new WizardContainerFrame();
-		  Vector classNameFromIncompleteDoc = incompleteDocInfo.getWizardPageClassNameList();
-		  Vector parameters = null;
+		  WizardPageInfo [] classNameFromIncompleteDoc = incompleteDocInfo.getWizardPageClassInfoList();
+		  //Vector parameters = null;
 		  //Go through every page from incomplete doc info
-		  if(classNameFromIncompleteDoc != null && !classNameFromIncompleteDoc.isEmpty())
+		  if(classNameFromIncompleteDoc != null)
 		  {
-			  int size = classNameFromIncompleteDoc.size();
+			  int size = classNameFromIncompleteDoc.length;
 			  AbstractUIPage page = null;
 			  for(int i=0; i<size;  i++)
 			  {
-				  String className = (String)classNameFromIncompleteDoc.elementAt(i);
+				  WizardPageInfo pageClassInfo = classNameFromIncompleteDoc[i];
+				  if(pageClassInfo != null)
+				  {
+				  String className = pageClassInfo.getClassName();
+				  Vector parameters = pageClassInfo.getParameters();
 				  XPathUIPageMapping map = (XPathUIPageMapping)wizardPageName.get(className);
 				  if (map != null)
 				  {
@@ -161,6 +166,7 @@ public class IncompleteDocumentLoader implements  DataPackageWizardListener
 					  // those pages are likely introduction ....
 					  page = WizardUtil.createAbstractUIpageObject(className, dpWiz, parameters);
                   }
+				  }
                   
                   //add page into stack of wizard frame
                   if(page != null)

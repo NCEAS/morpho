@@ -48,6 +48,7 @@ import edu.ucsb.nceas.morpho.util.Log;
 import edu.ucsb.nceas.morpho.util.StateChangeEvent;
 import edu.ucsb.nceas.morpho.util.StateChangeMonitor;
 import edu.ucsb.nceas.morpho.util.UISettings;
+import edu.ucsb.nceas.morpho.util.WizardPageInfo;
 
 import java.util.Vector;
 
@@ -797,9 +798,9 @@ public class DataPackagePlugin
 	      sc = ServiceController.getInstance();
 	      EML200DataPackage eml200 = (EML200DataPackage)adp;
 	      String status = eml200.getCompletionStatus();
-	      Vector classNameList = eml200.getIncompleteWizardPageNameList();
+	      WizardPageInfo [] classNameList = eml200.getIncompleteWizardPageInfoList();
 	      IncompleteDocInfo info = new IncompleteDocInfo(status);
-	      info.setWizardPageClassNameList(classNameList);
+	      info.setWizardPageClassInfoList(classNameList);
 	      dpwPlugin = (DataPackageWizardInterface) sc.getServiceProvider(DataPackageWizardInterface.class);
 	      dpwPlugin.loadIncompleteDocument(adp, info);
 
