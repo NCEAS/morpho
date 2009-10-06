@@ -275,7 +275,7 @@ public class Temporal extends AbstractUIPage{
     }
     System.out.println("TemporalPage returning - " + returnMap.toString());
     // clear the list so that next time old variables dont show up again.
-    timespanList.removeAllRows();
+    //timespanList.removeAllRows();
     return returnMap;
   }
 
