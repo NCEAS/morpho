@@ -387,6 +387,19 @@
     </infoForModifyingData>
     <wizardPageClass>edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.AccessPage</wizardPageClass>
    </mapping>
+    <mapping>
+    <root>n/a</root>
+    <infoForModifyingData>
+             <loadExistDataPath>/eml:eml/access</loadExistDataPath>
+             <xpathForCreatingOrderedMap></xpathForCreatingOrderedMap>
+             <xpathForSettingPageData>/access/</xpathForSettingPageData>
+             <newDataDocumentName></newDataDocumentName>
+             <xpathForGettingPageData></xpathForGettingPageData>
+             <genericName>access</genericName>
+    </infoForModifyingData>
+    <wizardPageClass>edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.Access</wizardPageClass>
+    <wizardPageClassParameter>false</wizardPageClassParameter>
+   </mapping>
    <!-- datatable -->
     <mapping>
     <root>/eml:eml/dataset/dataTable</root>

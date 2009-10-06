@@ -95,7 +95,7 @@ public class Access
   public static DefaultMutableTreeNode accessTreeNode = null;
   public static String accessTreeMetacatServerName = null;
 
-  public Access(boolean isEntity) {
+  public Access(Boolean isEntity) {
 	this.isEntity = isEntity;
 	nextPageID = DataPackageWizardInterface.SUMMARY;
     init();

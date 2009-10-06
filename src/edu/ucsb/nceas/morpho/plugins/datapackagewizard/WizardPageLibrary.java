@@ -125,9 +125,9 @@ public class WizardPageLibrary implements WizardPageLibraryInterface{
     if(pageID.equals(DataPackageWizardInterface.METHODS_PAGE))
       return new MethodsPage();
     if(pageID.equals(DataPackageWizardInterface.ACCESS))
-      return new Access(false);
+      return new Access(new Boolean(false));
     if(pageID.equals(DataPackageWizardInterface.ENTITY_ACCESS))
-        return new Access(true);
+        return new Access(new Boolean(true));
     if(pageID.equals(DataPackageWizardInterface.ACCESS_PAGE))
       return new AccessPage();
     if(pageID.equals(DataPackageWizardInterface.SUMMARY))
