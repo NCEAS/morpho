@@ -30,6 +30,9 @@ import java.util.List;
 
 import org.w3c.dom.Node;
 
+import edu.ucsb.nceas.morpho.Morpho;
+import edu.ucsb.nceas.morpho.datapackage.AbstractDataPackage;
+import edu.ucsb.nceas.morpho.datastore.FileSystemDataStore;
 import edu.ucsb.nceas.utilities.OrderedMap;
 import edu.ucsb.nceas.utilities.XMLUtilities;
 
@@ -124,6 +127,24 @@ public class Util
 		        count++;
 		      }
 		      return existingValuesMap;
+	}
+		
+	/**
+	 * Delete the auto-saved file for given abstract data package.
+	 * @param adp
+	 */
+	public static void deleteAutoSavedFile(AbstractDataPackage adp)
+	{
+	      if(adp != null)
+	      {
+	    	 //delete the incomplete file
+	  	    String autoSavedID = adp.getAutoSavedD();
+	  	    if(autoSavedID != null)
+	  	    {
+	  		    FileSystemDataStore store = new FileSystemDataStore(Morpho.thisStaticInstance);
+	  	        store.deleteInCompleteFile(autoSavedID);
+	  	    }
+	      }
 	}
 		  
 

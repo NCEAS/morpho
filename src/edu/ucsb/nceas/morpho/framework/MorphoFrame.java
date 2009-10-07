@@ -26,12 +26,14 @@
 
 package edu.ucsb.nceas.morpho.framework;
 
+import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.datapackage.DataViewContainerPanel;
 import edu.ucsb.nceas.morpho.datapackage.SavePackageCommand;
 import edu.ucsb.nceas.morpho.util.Command;
 import edu.ucsb.nceas.morpho.util.GUIAction;
 import edu.ucsb.nceas.morpho.util.Log;
 import edu.ucsb.nceas.morpho.util.UISettings;
+import edu.ucsb.nceas.morpho.util.Util;
 
 import java.util.Iterator;
 import java.util.TreeMap;
@@ -66,6 +68,7 @@ import javax.swing.JToolBar;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import edu.ucsb.nceas.morpho.datapackage.AbstractDataPackage;
+import edu.ucsb.nceas.morpho.datastore.FileSystemDataStore;
 
 /**
  * The MorphoFrame is a Window in the Morpho application containing the standard
@@ -630,10 +633,12 @@ public class MorphoFrame extends JFrame
         		 spc = new SavePackageCommand(dvcp.getAbstractDataPackage(), false);
         	 }
              spc.execute(null);
+             
              return;
 //             Log.debug(1, "Save here!");
            } else {
-             // just close
+             // just close and delete the auto-saved file
+        	   Util.deleteAutoSavedFile(dvcp.getAbstractDataPackage());
            }
          }
       }
@@ -646,6 +651,8 @@ public class MorphoFrame extends JFrame
       comp = null;
       System.gc();
     }
+    
+    
 
     /*
      *  returns a flag indicating wheter this window is 'dirty'
