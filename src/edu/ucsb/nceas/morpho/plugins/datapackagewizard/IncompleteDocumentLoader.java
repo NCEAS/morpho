@@ -162,9 +162,18 @@ public class IncompleteDocumentLoader implements  DataPackageWizardListener
 				  //generate empty UIPage if page isnull or map isnull
                   if (map == null || page ==null)
                   {
-                	  Log.debug(30, "There is no map for className --------------------"+className+ " so we just initilize an empty page");
+                	  
 					  // those pages are likely introduction ....
-					  page = WizardUtil.createAbstractUIpageObject(className, dpWiz, parameters);
+                	  if(map != null)
+                	  {
+                		  Log.debug(30, "There is no data for className --------------------"+className+ " so we just initilize an empty page");
+					     page = WizardUtil.createAbstractUIpageObject(className, dpWiz, map.getWizardPageClassParameters() );
+                	  }
+                	  else
+                	  {
+                		  Log.debug(30, "There is no map for className --------------------"+className+ " so we just initilize an empty page");
+                		  page = WizardUtil.createAbstractUIpageObject(className, dpWiz, parameters );
+                	  }
                   }
 				  }
                   
