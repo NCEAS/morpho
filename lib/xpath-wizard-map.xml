@@ -391,8 +391,8 @@
     <root>n/a</root>
     <infoForModifyingData>
              <loadExistDataPath>/eml:eml/access</loadExistDataPath>
-             <xpathForCreatingOrderedMap></xpathForCreatingOrderedMap>
-             <xpathForSettingPageData>/access/</xpathForSettingPageData>
+             <xpathForCreatingOrderedMap>/eml:eml</xpathForCreatingOrderedMap>
+             <xpathForSettingPageData>/eml:eml/access/</xpathForSettingPageData>
              <newDataDocumentName></newDataDocumentName>
              <xpathForGettingPageData></xpathForGettingPageData>
              <genericName>access</genericName>
