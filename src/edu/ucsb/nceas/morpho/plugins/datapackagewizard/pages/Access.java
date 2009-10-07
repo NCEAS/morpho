@@ -522,7 +522,9 @@ public class Access
 
       return true;
     }
-
+    Log.debug(45,
+            "Access.setPageData() called with xPathRoot = " + xPathRoot
+            + "\n Map = \n" + map);
     List toDeleteList = new ArrayList();
     Iterator keyIt = map.keySet().iterator();
     Object nextXPathObj = null;
