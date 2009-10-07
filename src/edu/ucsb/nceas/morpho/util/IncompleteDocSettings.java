@@ -35,7 +35,7 @@ public class IncompleteDocSettings
    
    private final static String LESSTHAN  = "<";
    private final static String GREATERTHAN = ">";
-   private final static String SLASH = "/";
+   public final static String SLASH = "/";
    public final static String INCOMPLETE = "incomplete";
    public final static String INCOMPLETEOPENINGTAG = LESSTHAN+INCOMPLETE+GREATERTHAN;
    public final static String INCOMPLETECLOSINGTAG = LESSTHAN+SLASH+INCOMPLETE+GREATERTHAN;
@@ -44,6 +44,7 @@ public class IncompleteDocSettings
    public final static String PACKAGEWIZARDOPENINGTAG = LESSTHAN+PACKAGEWIZARD+GREATERTHAN;
    public final static String PACKAGEWIZARDCLOSINGTAG = LESSTHAN+SLASH+PACKAGEWIZARD+GREATERTHAN;
    public final static String TRUE = "true";
+   public final static String EML = "eml:eml";
    public final static String EMLCLOSINGTAG = "</eml:eml>";
    public final static String ADDITIONALMETADATA = "additionalMetadata";
    public final static String ADDITIONALMETADATAOPENINGTAG = LESSTHAN+ADDITIONALMETADATA+GREATERTHAN;

@@ -39,6 +39,7 @@ import edu.ucsb.nceas.morpho.util.DocumentNotFoundException;
 import edu.ucsb.nceas.morpho.plugins.XMLFactoryInterface;
 import edu.ucsb.nceas.morpho.query.LocalQuery;
 import edu.ucsb.nceas.morpho.util.IOUtil;
+import edu.ucsb.nceas.morpho.util.IncompleteDocSettings;
 import edu.ucsb.nceas.morpho.util.LoadDataPath;
 import edu.ucsb.nceas.morpho.util.Log;
 import edu.ucsb.nceas.morpho.util.ModifyingPageDataInfo;
@@ -1094,6 +1095,40 @@ public abstract class AbstractDataPackage extends MetadataObject
     }
   }
   
+  public void deletePacakgeWizardIncompleteDocInfo()
+  {
+	    NodeList nodelist = null;
+	   
+	    String genericNamePath = IncompleteDocSettings.SLASH+IncompleteDocSettings.EML+
+	    IncompleteDocSettings.SLASH+IncompleteDocSettings.ADDITIONALMETADATA+IncompleteDocSettings.SLASH+
+	    IncompleteDocSettings.METADATA+IncompleteDocSettings.SLASH+IncompleteDocSettings.INCOMPLETE+
+	    IncompleteDocSettings.PACKAGEWIZARD;
+	    try 
+	    {
+	      
+	      nodelist = XMLUtilities.getNodeListWithXPath(metadataNode,
+	                                                   genericNamePath);
+
+	      if (nodelist == null) return;
+
+	      int startIdx = nodelist.getLength() - 1;
+
+	      for (int index = startIdx; index > -1; index--) {
+
+	        Node node = nodelist.item(index);
+	        Node parnode = node.getParentNode();
+	      
+	      }
+
+	    }
+	    catch (Exception e) 
+	    {
+	      Log.debug(15, "Exception in deletePacakgeWizardIncompleteDocInfo!" + e);
+	      e.printStackTrace();
+	      
+	    }
+	   
+  }
   
   /**
    * inserts subtree rooted at Node, at location identified by MofiyingPageDataInfo
