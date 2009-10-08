@@ -78,6 +78,7 @@ public class CorrectionWizardContainerFrame extends WizardContainerFrame
 	public CorrectionWizardContainerFrame(AbstractDataPackage dataPackage)
 	{
 		this.dataPackage = dataPackage;
+		disableIncompleteSaving = true;
 	}
 	
 	/**

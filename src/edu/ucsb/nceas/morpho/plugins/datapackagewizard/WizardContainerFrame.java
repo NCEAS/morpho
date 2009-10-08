@@ -99,7 +99,7 @@ public class WizardContainerFrame
   //public static final String TEMP = "temp";
   public final static  String VERSION1 = "1";
   
-  
+  protected boolean disableIncompleteSaving = false;
 
 
 
@@ -852,7 +852,7 @@ public class WizardContainerFrame
    */
   private void autoSaveInCompletePackage()
   {
-	  if(autoSaveID != null)
+	  if(autoSaveID != null && !disableIncompleteSaving)
 	  {
 		  Node temp = collectDataFromPages(); 
 		  String emlDoc = XMLUtilities.getDOMTreeAsString(temp, false);
