@@ -84,13 +84,14 @@ public class Entity extends AbstractUIPage{
   private boolean disableAttributeList = false;
   
 
-  //private WizardContainerFrame mainWizFrame;
+  private WizardContainerFrame mainWizFrame;
 
   // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
-  public Entity() {
+  public Entity(WizardContainerFrame frame) {
 	nextPageID = DataPackageWizardInterface.SUMMARY;
-    //this.mainWizFrame = frame;
+    this.mainWizFrame = frame;
+    addTableModelChangeListener(mainWizFrame);
     init();
   }
   

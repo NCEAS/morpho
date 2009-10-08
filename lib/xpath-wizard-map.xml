@@ -428,8 +428,7 @@
              <key>/entityDescription</key>
              <prevNode>entityName</prevNode><!-- for locating the position when inserting the node-->
      </infoForModifyingData>
-    <wizardPageClass>edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.Entity</wizardPageClass>
-    <wizardPageClassParameter>true</wizardPageClassParameter>
+    <wizardPageClass>edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.CorrectionWizardEntity</wizardPageClass>
   </mapping>
   <mapping>
     <root>/eml:eml/dataset/dataTable/physical</root>

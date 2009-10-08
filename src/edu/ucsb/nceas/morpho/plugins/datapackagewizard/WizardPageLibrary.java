@@ -115,7 +115,7 @@ public class WizardPageLibrary implements WizardPageLibraryInterface{
     if(pageID.equals(DataPackageWizardInterface.DATA_FORMAT))
       return new DataFormat(container);
     if(pageID.equals(DataPackageWizardInterface.ENTITY))
-      return new Entity();
+      return new Entity(container);
     if(pageID.equals(DataPackageWizardInterface.ATTRIBUTE_PAGE))
       return new AttributePage();
     if(pageID.equals(DataPackageWizardInterface.CODE_IMPORT_PAGE))

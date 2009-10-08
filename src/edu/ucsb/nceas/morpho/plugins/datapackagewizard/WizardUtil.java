@@ -130,7 +130,7 @@ public class WizardUtil
 			    object = classDefinition.newInstance();
 			}
 		} catch (InstantiationException e) {
-			Log.debug(30, "InstantiationException "+e.getMessage());
+			Log.debug(30, "InstantiationException "+e.getMessage() +" and we will try to instance this object again with parameter WizardContainerFrame.");
 			// couldn't get default constructor. The contructor has a parameter WizardContainerFrame
 			try
 			{
@@ -156,7 +156,7 @@ public class WizardUtil
 		{
 			Log.debug(30, "Exception in creating an UI page object through the class name "+className + " is " +e.getMessage());
 		}
-		Log.debug(30, "successfully create the instance of this class "+className);
+		Log.debug(30, "Finally create the instance "+object);
 		return (AbstractUIPage)object;
 	}
 	
@@ -305,6 +305,7 @@ public class WizardUtil
 				Log.debug(46, "the xmpath map is "+xpathMap.toString());
 				if (page != null)
 				{
+				   Log.debug(46, "We will set map data into map since page is not null");
 				   mapDataFit = page.setPageData(xpathMap, settingPageDataPath);
 				}
 			}
