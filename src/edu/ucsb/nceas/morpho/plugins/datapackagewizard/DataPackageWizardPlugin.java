@@ -150,7 +150,7 @@ public class DataPackageWizardPlugin implements PluginInterface,
    *  @param listener the <code>DataPackageWizardListener</code> to be called
    *                  back when the Entity Wizard has finished
    */
-  public void startEntityWizard(DataPackageWizardListener listener) {
+  public void startEntityWizard(DataPackageWizardListener listener, int entityIndex) {
 
     startWizardAtPage(WizardSettings.ENTITY_WIZ_FIRST_PAGE_ID, false, listener,
                       "New Data Table Wizard");

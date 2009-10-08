@@ -118,8 +118,9 @@ public interface DataPackageWizardInterface {
    *
    *  @param listener the <code>DataPackageWizardListener</code> to be called
    *                  back when the Wizard has finished
-   */
-  public void startEntityWizard(DataPackageWizardListener listener);
+   *  @param entityIndex the index of the new entity in this package
+   */ 
+  public void startEntityWizard(DataPackageWizardListener listener, int entityIndex);
 
 
   /**

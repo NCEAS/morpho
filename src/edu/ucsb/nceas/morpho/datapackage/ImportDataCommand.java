@@ -112,12 +112,14 @@ public class ImportDataCommand implements Command, DataPackageWizardListener
 
 	//DFH      DataPackage dp = resultPane.getDataPackage();
 	      final AbstractDataPackage adp = resultPane.getAbstractDataPackage();
-	      DataViewer dv = resultPane.getCurrentDataViewer();
-	      String entityId = null;
-
-	      if (dv!=null) {
-	        entityId = dv.getEntityFileId();
+	      int nextEntityIndex =0;
+	      if(adp!= null)
+	      {
+	    	  //since index of eneity array in AbstractDataPackage start as 0.
+		      // so the next index of entity is the length of the entity array.
+	    	  nextEntityIndex = adp.getEntityCount();
 	      }
+	      Log.debug(30, "the index of starting eneity will be "+nextEntityIndex);
 	    // new AbstractDataPackage/Wizard calls will go here
 
 	        Log.debug(20, "Action fired: Entity Wizard");
@@ -207,7 +209,7 @@ public class ImportDataCommand implements Command, DataPackageWizardListener
 
 	              Log.debug(45, "\n\n********** Wizard canceled!");
 	            }
-	          });
+	          }, nextEntityIndex);
 
 	    }//if
 
