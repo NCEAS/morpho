@@ -73,6 +73,8 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
+import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener;
 
 import org.w3c.dom.Node;
 
@@ -82,7 +84,7 @@ import org.w3c.dom.Node;
  *  this class, with the AbstractUIPage content being nested inside a central area
  */
 public class WizardContainerFrame
-    extends JFrame {
+    extends JFrame implements TableModelListener {
 
   public static JFrame frame;
   private DataPackageWizardListener listener;
@@ -1249,6 +1251,15 @@ public class WizardContainerFrame
   public void addPageToStack(AbstractUIPage page)
   {
 	  pageStack.add(page);
+  }
+  
+  /**
+   * method inherits from TableModelListener
+   */
+  public void tableChanged(TableModelEvent e)
+  {
+	  Log.debug(30, "Attribute list changed");
+	  
   }
 
 

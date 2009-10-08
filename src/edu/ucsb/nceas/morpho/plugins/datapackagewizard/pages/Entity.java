@@ -55,6 +55,9 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
+import javax.swing.event.TableModelListener;
+import javax.swing.table.TableModel;
+
 import edu.ucsb.nceas.morpho.util.UISettings;
 import edu.ucsb.nceas.morpho.framework.UIController;
 
@@ -79,6 +82,7 @@ public class Entity extends AbstractUIPage{
   private CustomList  attributeList;
   private JLabel      attributesLabel;
   private boolean disableAttributeList = false;
+  
 
   //private WizardContainerFrame mainWizFrame;
 
@@ -259,7 +263,22 @@ public class Entity extends AbstractUIPage{
   }
 
 
-
+  /**
+   * Adds an table model change listener to attribute list
+   * @param tableModelChangeListener
+   */
+  public void addTableModelChangeListener(TableModelListener tableModelChangeListener )
+  {
+	  if(attributeList != null)
+	  {
+		  TableModel model = attributeList.getTAbleModel();
+		  if(model != null)
+		  {
+			  Log.debug(30, "add an table model listener to attribute list");
+			  model.addTableModelListener(tableModelChangeListener);
+		  }
+	  }
+  }
 
 
 

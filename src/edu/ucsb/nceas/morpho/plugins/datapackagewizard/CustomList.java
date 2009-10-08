@@ -80,6 +80,7 @@ import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
+import javax.swing.table.TableModel;
 
 /**
  *  Interface   CustomList
@@ -390,6 +391,15 @@ public class CustomList extends JPanel {
       tableModelEvent = new TableModelEvent(table.getModel());
     }
     return tableModelEvent;
+  }
+  
+  /**
+   * Gets the table model for the list
+   * @return
+   */
+  public TableModel getTAbleModel()
+  {
+	  return model;
   }
 
   private void setColumnSizes(double tableWidth) {
