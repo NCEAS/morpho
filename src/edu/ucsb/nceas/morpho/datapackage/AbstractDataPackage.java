@@ -2017,34 +2017,23 @@ public abstract class AbstractDataPackage extends MetadataObject
    */
   public void replaceEntity(Node node, int index)
   {
+	  
 	  Entity entity = generateEntityFromNode(node);
+	
 	  if(entity != null)
 	  {
+		  
 		  if ( (entityArray == null) || (entityArray.length < index + 1)) 
 		  {
-		      Log.debug(20, "Unable to find entity at index");
+		      Log.debug(20, "Unable to find entity at index, so we just add it");
 		      addEntity(node);
 		  }
 		  else
 		  {
-		    Node oldEntity = (entityArray[index]).getNode();
-		    Node parent = oldEntity.getParentNode();
-		    parent.removeChild(oldEntity);
-		    Entity[] newEntityArray = new Entity[entityArray.length];
-		    int newCount=0;
-		    for(int count=0; count < entityArray.length; count++)
-		    {
-		      if(count != index)
-		      {
-		         newEntityArray[newCount++] = entityArray[count];
-		      }
-		      else
-		      {
-		    	  newEntityArray[newCount++] = entity;
-		      }
-		    }
-		    entityArray = newEntityArray;
-		    addDirtyEntityIndex(index);
+			  Log.debug(20, "in replace branch");
+			  deleteEntity(index);
+			  insertEntity(entity, index);
+		      addDirtyEntityIndex(index);		    
 		  }
 	  }
 		

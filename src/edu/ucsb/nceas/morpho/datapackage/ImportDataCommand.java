@@ -112,13 +112,13 @@ public class ImportDataCommand implements Command, DataPackageWizardListener
 
 	//DFH      DataPackage dp = resultPane.getDataPackage();
 	      final AbstractDataPackage adp = resultPane.getAbstractDataPackage();
-	      int nextEntityIndex =0;
-	      if(adp!= null)
+	     
+	      if(adp == null)
 	      {
-	    	  //since index of eneity array in AbstractDataPackage start as 0.
-		      // so the next index of entity is the length of the entity array.
-	    	  nextEntityIndex = adp.getEntityCount();
+	    	  Log.debug(5, "You can't import a entity to a data package which value is null!");
+	    	  return;
 	      }
+	      final int nextEntityIndex = adp.getEntityCount();
 	      Log.debug(30, "the index of starting eneity will be "+nextEntityIndex);
 	    // new AbstractDataPackage/Wizard calls will go here
 
@@ -144,7 +144,7 @@ public class ImportDataCommand implements Command, DataPackageWizardListener
 	              if(newDOM != null) {
 
 	                Log.debug(30,"Entity Wizard complete - creating Entity object..");
-	                adp.addEntity(newDOM);
+	                adp.replaceEntity(newDOM, nextEntityIndex);//we use replace method here because the auto-save file already adding the entity into datapackage.
 	                adp.setLocation("");  // we've changed it and not yet saved
 
 	              }
