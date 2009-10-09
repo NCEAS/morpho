@@ -1994,6 +1994,110 @@ public abstract class AbstractDataPackage extends MetadataObject
       addDirtyEntityIndex(entityArray.length-1);
     }
   }
+  
+  /**
+   * Add a node which contains entity information into the data package
+   * @param node usually get from entity wizard.
+   */
+  public void addEntity(Node node)
+  {
+	  Log.debug(30,"Adding Entity object to AbstractDataPackage..");
+	  Entity entity = generateEntityFromNode(node);
+	  if(entity != null)
+	  {
+         addEntity(entity);
+	  }
+  }
+  
+  /**
+   * Replace an entity by another one in node format at given position.
+   * If we couldn't find existed entity in the given position, the new entity will be added to. 
+   * @param node
+   * @param index
+   */
+  public void replaceEntity(Node node, int index)
+  {
+	  Entity entity = generateEntityFromNode(node);
+	  if(entity != null)
+	  {
+		  if ( (entityArray == null) || (entityArray.length < index + 1)) 
+		  {
+		      Log.debug(20, "Unable to find entity at index");
+		      addEntity(node);
+		  }
+		  else
+		  {
+		    Node oldEntity = (entityArray[index]).getNode();
+		    Node parent = oldEntity.getParentNode();
+		    parent.removeChild(oldEntity);
+		    Entity[] newEntityArray = new Entity[entityArray.length];
+		    int newCount=0;
+		    for(int count=0; count < entityArray.length; count++)
+		    {
+		      if(count != index)
+		      {
+		         newEntityArray[newCount++] = entityArray[count];
+		      }
+		      else
+		      {
+		    	  newEntityArray[newCount++] = entity;
+		      }
+		    }
+		    entityArray = newEntityArray;
+		    addDirtyEntityIndex(index);
+		  }
+	  }
+		
+  }
+  
+ /*
+  * Generate an Entity object base on given node (usually get from entity wizard)
+  */
+  private Entity generateEntityFromNode(Node node)
+  {
+	  Entity entity = null;
+	  if(node != null)
+	  {
+		   // DFH --- Note: newDOM is root node (eml:eml), not the entity node
+	      Node entNode = null;
+	      String entityXpath = "";
+	      try{
+	        entityXpath = (XMLUtilities.getTextNodeWithXPath(getMetadataPath(),
+	        "/xpathKeyMap/contextNode[@name='package']/entities")).getNodeValue();
+	        NodeList entityNodes = XMLUtilities.getNodeListWithXPath(node,
+	        entityXpath);
+	        entNode = entityNodes.item(0);
+	        
+	        
+	      }
+	      catch (Exception w) {
+	        Log.debug(20, "Error in trying to get entNode in ImportDataCommand");
+	      }
+	      if(entNode != null)
+	      {
+             entity = new Entity(entNode);
+             // there may be some additionalMetadata in the newDOM
+             // e.g. some info about consequtive delimiters
+             // so should add this to the end of the adp
+             try{
+               NodeList ameta = XMLUtilities.getNodeListWithXPath(node, "/eml:eml/additionalMetadata");
+               if (ameta!=null) {
+                 for (int i=0;i<ameta.getLength();i++) {
+                   Node ametaNode = ameta.item(i);
+                   Node movedNode = (getMetadataNode().getOwnerDocument()).importNode(ametaNode, true);
+                   getMetadataNode().appendChild(movedNode);
+                 }
+               }
+             }
+             catch (Exception ee) {
+               Log.debug(30, "Error in trying to copy additionalMetadata"+ee.getMessage());
+               entity = null;
+             }
+	      }
+	  }
+      return entity;
+     
+  }
 
 
   /**

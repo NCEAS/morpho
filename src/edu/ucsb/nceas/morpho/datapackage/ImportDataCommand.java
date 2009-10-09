@@ -144,46 +144,9 @@ public class ImportDataCommand implements Command, DataPackageWizardListener
 	              if(newDOM != null) {
 
 	                Log.debug(30,"Entity Wizard complete - creating Entity object..");
-
-	                // DFH --- Note: newDOM is root node (eml:eml), not the entity node
-	                Node entNode = null;
-	                String entityXpath = "";
-	                try{
-	                  entityXpath = (XMLUtilities.getTextNodeWithXPath(adp.getMetadataPath(),
-	                  "/xpathKeyMap/contextNode[@name='package']/entities")).getNodeValue();
-	                  NodeList entityNodes = XMLUtilities.getNodeListWithXPath(newDOM,
-	                  entityXpath);
-	                  entNode = entityNodes.item(0);
-	                }
-	                catch (Exception w) {
-	                  Log.debug(5, "Error in trying to get entNode in ImportDataCommand");
-	                }
-
-
-	                //              Entity entity = new Entity(newDOM);
-	                Entity entity = new Entity(entNode);
-
-	                Log.debug(30,"Adding Entity object to AbstractDataPackage..");
-	                adp.addEntity(entity);
-
+	                adp.addEntity(newDOM);
 	                adp.setLocation("");  // we've changed it and not yet saved
 
-	                // there may be some additionalMetadata in the newDOM
-	                // e.g. some info about consequtive delimiters
-	                // so should add this to the end of the adp
-	                try{
-	                  NodeList ameta = XMLUtilities.getNodeListWithXPath(newDOM, "/eml:eml/additionalMetadata");
-	                  if (ameta!=null) {
-	                    for (int i=0;i<ameta.getLength();i++) {
-	                      Node ametaNode = ameta.item(i);
-	                      Node movedNode = (adp.getMetadataNode().getOwnerDocument()).importNode(ametaNode, true);
-	                      adp.getMetadataNode().appendChild(movedNode);
-	                    }
-	                  }
-	                }
-	                catch (Exception ee) {
-	                  Log.debug(5, "Error in trying to copy additionalMetadata"+ee.getMessage());
-	                }
 	              }
 
 	              try

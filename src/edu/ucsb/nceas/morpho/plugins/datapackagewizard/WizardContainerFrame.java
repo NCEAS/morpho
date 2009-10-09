@@ -911,7 +911,7 @@ public class WizardContainerFrame
 			  // for entity wizard
 			  if(adp != null)
 			  {
-				  adp.replaceSubtree(ENTITYGENERICNAME, temp, entityIndex);
+				  adp.replaceEntity(temp, entityIndex);
 				  emlDoc = XMLUtilities.getDOMTreeAsString(adp.getMetadataNode(), false);
 				  emlDoc = addEntityWizardIncompleteInfo(emlDoc);
 				  Log.debug(40, "The partial eml document is :\n"+emlDoc);
