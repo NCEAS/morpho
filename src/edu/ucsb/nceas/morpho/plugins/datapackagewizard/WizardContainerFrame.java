@@ -102,8 +102,9 @@ public class WizardContainerFrame
   
   protected boolean disableIncompleteSaving = false;
   private boolean isEntityWizard = false;
-  private int entityIndex = -1;
-  AbstractDataPackage adp = null;
+  private int entityIndex = 0;
+  private  AbstractDataPackage adp = null;
+  private final static String ENTITYGENERICNAME = "entities";
 
   /**
    * Default constructor
@@ -891,13 +892,34 @@ public class WizardContainerFrame
   {
 	  if(autoSaveID != null && !disableIncompleteSaving)
 	  {
-		  Node temp = collectDataFromPages(); 
-		  String emlDoc = XMLUtilities.getDOMTreeAsString(temp, false);
-		  //System.out.println("the original eml "+emlDoc);
-		  emlDoc = addPackageWizardIncompleteInfo(emlDoc);
-		  Log.debug(40, "The partial eml document is :\n"+emlDoc);
-		  //System.out.println("the eml after appending incomplete info  "+emlDoc);
-		  saveInCompletePackage(autoSaveID, emlDoc);
+		  String emlDoc = "";
+		  
+		  Node temp = collectDataFromPages();
+		  if(!isEntityWizard)
+		  {	  
+			  // for datapackage wizard
+		       emlDoc = XMLUtilities.getDOMTreeAsString(temp, false);
+		      //System.out.println("the original eml "+emlDoc);
+		      emlDoc = addPackageWizardIncompleteInfo(emlDoc);
+		      Log.debug(40, "The partial eml document is :\n"+emlDoc);
+		      //System.out.println("the eml after appending incomplete info  "+emlDoc);
+		      saveInCompletePackage(autoSaveID, emlDoc);
+		    
+		  }
+		  else
+		  {
+			  // for entity wizard
+			  if(adp != null)
+			  {
+				  adp.replaceSubtree(ENTITYGENERICNAME, temp, entityIndex);
+				  emlDoc = XMLUtilities.getDOMTreeAsString(adp.getMetadataNode(), false);
+				  emlDoc = addEntityWizardIncompleteInfo(emlDoc);
+				  Log.debug(40, "The partial eml document is :\n"+emlDoc);
+			      //System.out.println("the eml after appending incomplete info  "+emlDoc);
+			      saveInCompletePackage(autoSaveID, emlDoc);
+			  }			  
+		  }
+		 
 	  }
   }
   
@@ -908,7 +930,7 @@ public class WizardContainerFrame
    *   <metadata>
    *      <incomplete>
    *         <packagewizard>
-   *            <className>edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.PartyIntro</className>
+   *            <class><name>edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.PartyIntro</name><para>...<para></class>
    *         </packagewizard>
    *      </incomplete>
    *   <metadata>
@@ -926,7 +948,7 @@ public class WizardContainerFrame
 		  int index = originalEML.lastIndexOf(IncompleteDocSettings.EMLCLOSINGTAG);
 		  if (index != -1)
 		  {
-			  //it has </eml:eml> closing tag
+			  //it has </eml:eml> closing tag. Note: the orignalEML never has the incompleteMetadata since it from abtractDataPackage
 			  //removes the </packageWizard></metadata></additionalMetadata></eml:eml> from original eml
 			  emlWithIncompleteInfo = originalEML.substring(0,index);
 			  //appends additionalMetadata par original eml
@@ -958,6 +980,75 @@ public class WizardContainerFrame
 			  }
              
               emlWithIncompleteInfo = emlWithIncompleteInfo+IncompleteDocSettings.PACKAGEWIZARDCLOSINGTAG+
+              IncompleteDocSettings.METADATACLOSINGTAG+IncompleteDocSettings.ADDITIONALMETADATACLOSINGTAG+
+              IncompleteDocSettings.EMLCLOSINGTAG;
+			                                       
+		  }
+		  else
+		  {
+			  //it doesn't have </eml:eml> closing tag, we use orignal document as modified one.
+			  emlWithIncompleteInfo =  originalEML;
+			  
+		  }
+	  }
+	  
+	  return emlWithIncompleteInfo;
+  }
+  
+  
+  /*
+   * Adds some new information into additional part in EML for entity wizard
+   * In Entity Wizard, it is simple. It will replace the </eml> by
+   * <additionalMetadata>
+   *   <metadata>
+   *      <incomplete>
+   *         <entityWizard>
+   *            <index>1<index>
+   *            <class><name>edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.PartyIntro</name><para>...<para></class>
+   *         </entityWizard>
+   *      </incomplete>
+   *   <metadata>
+   * <additonalMetacat>
+   * </eml>
+   *         
+   *    
+   */
+  private String addEntityWizardIncompleteInfo(String originalEML)
+  {
+	  String emlWithIncompleteInfo = "";
+	  if(originalEML != null)
+	  {
+		  //System.out.println("the original eml is "+originalEML);
+		  int index = originalEML.lastIndexOf(IncompleteDocSettings.EMLCLOSINGTAG);
+		  if (index != -1)
+		  {
+			  //it has </eml:eml> closing tag. Note: orignalEML never has the incompleteMetadata since it from abtractDataPackage.
+			  //removes the </packageWizard></metadata></additionalMetadata></eml:eml> from original eml
+			  emlWithIncompleteInfo = originalEML.substring(0,index);
+			  //appends additionalMetadata par original eml
+			  emlWithIncompleteInfo = emlWithIncompleteInfo+IncompleteDocSettings.ADDITIONALMETADATAOPENINGTAG+
+              IncompleteDocSettings.METADATAOPENINGTAG+IncompleteDocSettings.ENTITYWIZARDOPENINGTAG+
+              IncompleteDocSettings.INDEXOPENINGTAG+entityIndex+IncompleteDocSettings.INDEXCLOSINGTAG;
+			  
+			  if(pageStack != null)
+			  {
+				  int size = pageStack.size();
+				  String className = null;
+				  for(int i=0; i<size; i++)
+				  {
+					  AbstractUIPage page = (AbstractUIPage)pageStack.elementAt(i);
+					  if(page != null)
+					  {
+						  className = page.getClass().getName();
+						  Log.debug(40, "Class name is "+className);
+						  emlWithIncompleteInfo = emlWithIncompleteInfo+IncompleteDocSettings.CLASSOPENINGTAG+IncompleteDocSettings.NAMEOPENINGTAG+
+						                                      className+IncompleteDocSettings.NAMECLOSINGTAG;
+						  emlWithIncompleteInfo = emlWithIncompleteInfo+IncompleteDocSettings.CLASSCLOSINGTAG;
+					  }
+				  }
+			  }
+             
+              emlWithIncompleteInfo = emlWithIncompleteInfo+IncompleteDocSettings.ENTITYWIZARDCLOSINGTAG+
               IncompleteDocSettings.METADATACLOSINGTAG+IncompleteDocSettings.ADDITIONALMETADATACLOSINGTAG+
               IncompleteDocSettings.EMLCLOSINGTAG;
 			                                       
@@ -1296,8 +1387,8 @@ public class WizardContainerFrame
    */
   public void tableChanged(TableModelEvent e)
   {
-	  Log.debug(30, "Attribute list changed");
-	  
+	  Log.debug(30, "Attribute list changed and we need to automatically save the change");
+	  autoSaveInCompletePackage();	  
   }
   
 
