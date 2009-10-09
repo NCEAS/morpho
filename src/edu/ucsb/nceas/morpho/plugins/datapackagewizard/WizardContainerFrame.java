@@ -40,6 +40,7 @@ import edu.ucsb.nceas.morpho.plugins.DataPackageWizardListener;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.PartyMainPage;
 import edu.ucsb.nceas.morpho.util.IncompleteDocSettings;
 import edu.ucsb.nceas.morpho.util.Log;
+import edu.ucsb.nceas.morpho.util.Util;
 import edu.ucsb.nceas.morpho.util.XMLUtil;
 import edu.ucsb.nceas.morpho.util.UISettings;
 import edu.ucsb.nceas.utilities.OrderedMap;
@@ -100,17 +101,27 @@ public class WizardContainerFrame
   public final static  String VERSION1 = "1";
   
   protected boolean disableIncompleteSaving = false;
-
-
+  private boolean isEntityWizard = false;
+  private int entityIndex = -1;
+  AbstractDataPackage adp = null;
 
   /**
-   * Constructor
+   * Default constructor
    */
-  public WizardContainerFrame() {
+  public WizardContainerFrame() 
+  {
+	  this(false);
+  }
+  
+  /**
+   * Constructor with a flag indicating if this is an entity wizard
+   */
+  public WizardContainerFrame(boolean isEntityWizard) {
 
     super();
     frame = this;
     this.listener = listener;
+    this.isEntityWizard = isEntityWizard;
     pageStack = new Stack();
     pageLib = new WizardPageLibrary(this);
     init();
@@ -120,7 +131,7 @@ public class WizardContainerFrame
     	String scope = profile.get("scope", 0);
     	String separator= profile.get("separator", 0);
     	// try to get autoSaveID from adp first.
-    	AbstractDataPackage adp = UIController.getInstance().getCurrentAbstractDataPackage();
+    	adp = UIController.getInstance().getCurrentAbstractDataPackage();
 		if(adp != null)
 		{
 			autoSaveID = adp.getAutoSavedD();
@@ -129,8 +140,15 @@ public class WizardContainerFrame
     	if(autoSaveID == null && scope != null)
     	{  	   
     	   autoSaveID = scope+separator+getRandomString()+separator+VERSION1;
+    	   if(adp != null)
+    	   {
+    		   adp.setAutoSavedID(autoSaveID);
+    		   dumpPackageToAutoSaveFile(autoSaveID);//onlywork for add entity wizard
+    	   }
     	}
     }
+    
+    
 
     this.addWindowListener(new WindowAdapter() {
 
@@ -140,6 +158,25 @@ public class WizardContainerFrame
     });
 
   }
+  
+ 
+  /*
+   * When we try to add an entity to a package, we should first dump 
+   * the package to an auto-saved file as starting point if the package never has
+   * had a auto-saved file 
+   */
+  private void dumpPackageToAutoSaveFile(String fileID)
+  {
+	  if(fileID != null && adp!= null && isEntityWizard)
+	  {
+		  String emlDoc = XMLUtilities.getDOMTreeAsString(adp.getMetadataNode(), false);
+		  //System.out.println("the original eml "+emlDoc);
+		  //System.out.println("the eml after appending incomplete info  "+emlDoc);
+		  saveInCompletePackage(fileID, emlDoc);
+	  }
+  }
+  
+  
 
   /**
    *  sets the <code>DataPackageWizardListener</code> to be called  back when
@@ -1129,7 +1166,7 @@ public class WizardContainerFrame
    */
   public void cancelAction() {
 
-    AbstractDataPackage adp = UIController.getInstance().getCurrentAbstractDataPackage();
+    //AbstractDataPackage adp = UIController.getInstance().getCurrentAbstractDataPackage();
     if(adp != null) {
 
       edu.ucsb.nceas.morpho.datapackage.Entity[] arr = adp.getOriginalEntityArray();
@@ -1152,8 +1189,9 @@ public class WizardContainerFrame
     listener.wizardCanceled();
     if(autoSaveID != null)
     {
-    	FileSystemDataStore store = new FileSystemDataStore(Morpho.thisStaticInstance);
-    	store.deleteInCompleteFile(autoSaveID);
+    	//FileSystemDataStore store = new FileSystemDataStore(Morpho.thisStaticInstance);
+    	//store.deleteInCompleteFile(autoSaveID);
+    	Util.deleteAutoSavedFile(adp);
     }
     // now clean up
     doCleanUp();
@@ -1166,7 +1204,7 @@ public class WizardContainerFrame
 
     //clear out pageStack
     pageStack.clear();
-    AbstractDataPackage adp = UIController.getInstance().getCurrentAbstractDataPackage();
+    //AbstractDataPackage adp = UIController.getInstance().getCurrentAbstractDataPackage();
     if(adp != null) adp.clearAllAttributeImports();
 
   }
@@ -1260,6 +1298,18 @@ public class WizardContainerFrame
   {
 	  Log.debug(30, "Attribute list changed");
 	  
+  }
+  
+
+  
+  /**
+   * Sets the index of the entity which is generating. This number will be valid only
+   * the wizard is set an entity one.
+   * @param entityIndex
+   */
+  public void setEntityIndex(int entityIndex)
+  {
+	  this.entityIndex =entityIndex;
   }
 
 

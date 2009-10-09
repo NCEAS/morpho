@@ -143,6 +143,7 @@ public class Util
 	  	    {
 	  		    FileSystemDataStore store = new FileSystemDataStore(Morpho.thisStaticInstance);
 	  	        store.deleteInCompleteFile(autoSavedID);
+	  	        adp.setAutoSavedID(null);
 	  	    }
 	      }
 	}

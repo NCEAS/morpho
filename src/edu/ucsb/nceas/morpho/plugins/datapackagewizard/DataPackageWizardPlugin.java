@@ -122,9 +122,9 @@ public class DataPackageWizardPlugin implements PluginInterface,
     if(tempDataPackage == null) return;
 
     UIController.getInstance().setWizardIsRunning(tempDataPackage);
-
+    int entityIndex = -1;
     startWizardAtPage(WizardSettings.PACKAGE_WIZ_FIRST_PAGE_ID, true, listener,
-    		NEWPACKAGEWIZARDFRAMETITLE);
+    		NEWPACKAGEWIZARDFRAMETITLE, entityIndex);
 
   }
 
@@ -149,11 +149,12 @@ public class DataPackageWizardPlugin implements PluginInterface,
    *
    *  @param listener the <code>DataPackageWizardListener</code> to be called
    *                  back when the Entity Wizard has finished
+   *  @param entityIndex the index of the new entity in this package
    */
   public void startEntityWizard(DataPackageWizardListener listener, int entityIndex) {
 
     startWizardAtPage(WizardSettings.ENTITY_WIZ_FIRST_PAGE_ID, false, listener,
-                      "New Data Table Wizard");
+                      "New Data Table Wizard", entityIndex);
   }
 
 
@@ -165,8 +166,9 @@ public class DataPackageWizardPlugin implements PluginInterface,
    */
   public void startCodeDefImportWizard(DataPackageWizardListener listener) {
 
+	int entityIndex=-1;
     startWizardAtPage(DataPackageWizardInterface.CODE_IMPORT_PAGE, false,
-                      listener, "Import Code Definitions");
+                      listener, "Import Code Definitions", entityIndex);
   }
   
   /**
@@ -194,11 +196,22 @@ public class DataPackageWizardPlugin implements PluginInterface,
    * @param showPageCount boolean
    * @param listener String
    * @param frameTitle String
+   * @param entityIndex the index of the new entity in this package
    */
   protected void startWizardAtPage(String pageID, boolean showPageCount,
-                        DataPackageWizardListener listener, String frameTitle) {
+                        DataPackageWizardListener listener, String frameTitle, int entityIndex) {
 
-    WizardContainerFrame dpWiz = new WizardContainerFrame();
+    WizardContainerFrame dpWiz = null;
+    if(pageID != null && pageID.equals(WizardSettings.ENTITY_WIZ_FIRST_PAGE_ID))
+    {
+    	boolean isEnity = true;
+    	dpWiz = new WizardContainerFrame(isEnity);
+    	dpWiz.setEntityIndex(entityIndex);
+    }
+    else
+    {
+    	dpWiz = new WizardContainerFrame();
+    }
     dpWiz.setDataPackageWizardListener(listener);
     dpWiz.setBounds(
                   WizardSettings.WIZARD_X_COORD, WizardSettings.WIZARD_Y_COORD,
