@@ -91,8 +91,8 @@ public class Entity extends AbstractUIPage{
   public Entity(WizardContainerFrame frame) {
 	nextPageID = DataPackageWizardInterface.SUMMARY;
     this.mainWizFrame = frame;
-    addTableModelChangeListener(mainWizFrame);
     init();
+    addTableModelChangeListener(mainWizFrame);
   }
   
   /**
