@@ -151,6 +151,7 @@ public class DataLocation extends AbstractUIPage {
   protected JPanel mainRadioPanel;
 
   private JPanel q2RadioPanel_import;
+  private String nextAvailableID = null;
   // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
 
@@ -1041,14 +1042,18 @@ public class DataLocation extends AbstractUIPage {
    */
   private String saveDataFileAsTemp(File f) {
     AccessionNumber an = new AccessionNumber(Morpho.thisStaticInstance);
-    String id = an.getNextId();
+    //String id = an.getNextId();
+    if (nextAvailableID == null)
+    {
+    	nextAvailableID = an.getNextId();
+    }
     FileSystemDataStore fds = new FileSystemDataStore(Morpho.thisStaticInstance);
     try {
-      fds.saveTempDataFile(id, new FileInputStream(f));
+      fds.saveTempDataFile(nextAvailableID, new FileInputStream(f));
     } catch (Exception w) {
       Log.debug(1, "error in TIW saving temp data file!");
     }
-    return id;
+    return nextAvailableID;
   }
 
 
