@@ -37,6 +37,7 @@ import edu.ucsb.nceas.morpho.framework.ConfigXML;
 import edu.ucsb.nceas.morpho.framework.UIController;
 import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
 import edu.ucsb.nceas.morpho.plugins.DataPackageWizardListener;
+import edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.Entity;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.PartyMainPage;
 import edu.ucsb.nceas.morpho.util.IncompleteDocSettings;
 import edu.ucsb.nceas.morpho.util.Log;
@@ -1388,7 +1389,31 @@ public class WizardContainerFrame
   public void tableChanged(TableModelEvent e)
   {
 	  Log.debug(30, "Attribute list changed and we need to automatically save the change");
-	  autoSaveInCompletePackage();	  
+	  //when this method is called, the pageStack doesn't contain the current page -Entity
+	  // so we couldn't get the data in entity page. We have to add the Entity into page stack
+	  //temporarily, then delete it.
+	  synchronized(pageStack)
+	  {
+		  if(currentPage != null && pageStack != null && currentPage instanceof Entity)
+		  {
+			  pageStack.add(currentPage);
+		  }
+		  try
+		  {
+		     autoSaveInCompletePackage();
+		  }
+		  catch(Exception ee)
+		  {
+			  Log.debug(30, "couldn't auto save the updating of attriubte list "+ee.getMessage());
+		  }
+		  finally
+		  {
+		      if(currentPage != null && pageStack != null && currentPage instanceof Entity)
+			  {
+				  pageStack.remove(currentPage);
+			  }
+		  }
+	  }
   }
   
 
