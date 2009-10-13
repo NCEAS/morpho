@@ -275,10 +275,10 @@ public class TextImportWizardEml2 extends JFrame {
     getContentPane().setLayout(new BorderLayout(0, 0));
     setSize(695, 500);
     setVisible(false);
-    saveFileDialog.setMode(FileDialog.SAVE);
-    saveFileDialog.setTitle("Save");
-    openFileDialog.setMode(FileDialog.LOAD);
-    openFileDialog.setTitle("Open");
+    //saveFileDialog.setMode(FileDialog.SAVE);
+    //saveFileDialog.setTitle("Save");
+    //openFileDialog.setMode(FileDialog.LOAD);
+    //openFileDialog.setTitle("Open");
     MainDisplayPanel.setLayout(new BorderLayout(0, 0));
     getContentPane().add(MainDisplayPanel, BorderLayout.CENTER);
     ControlsPlusDataPanel.setLayout(new GridLayout(2, 1, 0, 4));
@@ -1740,8 +1740,8 @@ public class TextImportWizardEml2 extends JFrame {
   }
 
 
-  private FileDialog saveFileDialog = new FileDialog(this);
-  private FileDialog openFileDialog = new FileDialog(this);
+  //private FileDialog saveFileDialog = new FileDialog(this);
+  //private FileDialog openFileDialog = new FileDialog(this);
   private JPanel MainDisplayPanel = new JPanel();
   private JPanel ControlsPlusDataPanel = new JPanel();
   private JPanel ControlsPanel = new JPanel();
