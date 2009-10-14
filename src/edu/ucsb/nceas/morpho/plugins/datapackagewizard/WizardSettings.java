@@ -137,22 +137,22 @@ public class WizardSettings {
   public static final String UNAVAILABLE = "Unavailable";
 
   // x-dimension is ignored:
-  protected static final Dimension TOP_PANEL_DIMS = new Dimension(100,60);
+  public static final Dimension TOP_PANEL_DIMS = new Dimension(100,60);
 
   public static final int PADDING = 5;
 
   public static final Dimension DEFAULT_SPACER_DIMS = new Dimension(15, 15);
 
-  protected static final Font  TITLE_FONT
+  public static final Font  TITLE_FONT
   = new Font("Sans-Serif", Font.BOLD,  13);
 
-  protected static final Color TITLE_TEXT_COLOR
+  public static final Color TITLE_TEXT_COLOR
   = new Color(255,255,255);
 
-  protected static final Font  SUBTITLE_FONT
+  public static final Font  SUBTITLE_FONT
   = new Font("Sans-Serif", Font.PLAIN, 11);
 
-  protected static final Color SUBTITLE_TEXT_COLOR
+  public static final Color SUBTITLE_TEXT_COLOR
   = new Color(255,255,255);
 
   public static final Font  BUTTON_FONT
