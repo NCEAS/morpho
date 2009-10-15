@@ -227,7 +227,8 @@ public class Methods
 
   private void showNewMethodsDialog() {
 
-    MethodsPage methodsPage = (MethodsPage) WizardPageLibrary.getPage(
+	  WizardPageLibrary library = new WizardPageLibrary(null);
+    MethodsPage methodsPage = (MethodsPage) library.getPage(
         DataPackageWizardInterface.METHODS_PAGE);
     ModalDialog wpd = new ModalDialog(methodsPage,
                                       WizardContainerFrame.getDialogParent(),
@@ -585,7 +586,8 @@ public class Methods
         continue;
       }
 
-      MethodsPage nextStep = (MethodsPage) WizardPageLibrary.getPage(
+      WizardPageLibrary library = new WizardPageLibrary(null);
+      MethodsPage nextStep = (MethodsPage) library.getPage(
           DataPackageWizardInterface.METHODS_PAGE);
 
       boolean checkMethod = nextStep.setPageData(nextStepMap,

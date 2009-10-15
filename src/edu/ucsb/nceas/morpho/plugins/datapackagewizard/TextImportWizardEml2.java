@@ -917,7 +917,8 @@ public class TextImportWizardEml2 extends JFrame {
 
       int attrNum = stepNumber - 3;
       if(attrNum >= columnAttributes.size()) {
-        AttributePage ad = (AttributePage)WizardPageLibrary.getPage(
+    	  WizardPageLibrary library = new WizardPageLibrary(mainWizFrame);
+        AttributePage ad = (AttributePage)library.getPage(
           DataPackageWizardInterface.ATTRIBUTE_PAGE);
         ad.setBorder(BorderFactory.createLineBorder(Color.black));
         columnAttributes.add(ad);

@@ -145,7 +145,8 @@ public class Keywords
 
   private void showNewKeywordsDialog() {
 
-    KeywordsPage keywordsPage = (KeywordsPage) WizardPageLibrary.getPage(
+	  WizardPageLibrary library = new WizardPageLibrary(null);
+    KeywordsPage keywordsPage = (KeywordsPage) library.getPage(
         DataPackageWizardInterface.KEYWORDS_PAGE);
     ModalDialog wpd = new ModalDialog(keywordsPage,
         WizardContainerFrame.getDialogParent(),
@@ -394,7 +395,8 @@ public class Keywords
         continue;
       }
 
-      KeywordsPage nextStep = (KeywordsPage) WizardPageLibrary.getPage(
+      WizardPageLibrary library = new WizardPageLibrary(null);
+      KeywordsPage nextStep = (KeywordsPage) library.getPage(
           DataPackageWizardInterface.KEYWORDS_PAGE);
 
       boolean checkMethod = nextStep.setPageData(nextStepMap,

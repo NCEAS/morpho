@@ -232,7 +232,8 @@ public class DataPackageWizardPlugin implements PluginInterface,
    */
   public AbstractUIPage getPage(String pageID) {
 
-    return WizardPageLibrary.getPage(pageID);
+	WizardPageLibrary library = new WizardPageLibrary(null);
+    return library.getPage(pageID);
   }
 
   // for testing/development
@@ -545,7 +546,8 @@ public class DataPackageWizardPlugin implements PluginInterface,
       nextPersonnelMap = (OrderedMap)persIt.next();
       if (nextPersonnelMap == null || nextPersonnelMap.isEmpty()) continue;
 
-      PartyPage nextParty = (PartyPage)WizardPageLibrary.getPage(pageType);
+      WizardPageLibrary library = new WizardPageLibrary(null);
+      PartyPage nextParty = (PartyPage)library.getPage(pageType);
 
       boolean checkParty = nextParty.setPageData(nextPersonnelMap,
                                                  partyXPathRoot

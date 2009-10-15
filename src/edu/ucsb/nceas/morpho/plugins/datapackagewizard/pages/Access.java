@@ -220,7 +220,8 @@ public class Access
 
   protected void showNewAccessDialog() {
 
-    AccessPage accessPage = (AccessPage) WizardPageLibrary.getPage(
+	  WizardPageLibrary library = new WizardPageLibrary(null);
+    AccessPage accessPage = (AccessPage) library.getPage(
         DataPackageWizardInterface.ACCESS_PAGE);
     ModalDialog wpd = new ModalDialog(accessPage,
         WizardContainerFrame.getDialogParent(),
@@ -620,8 +621,8 @@ public class Access
       if (nextStepMap.isEmpty() || nextStepMap == publicMap) {
         continue;
       }
-
-      AccessPage nextStep = (AccessPage) WizardPageLibrary.getPage(
+      WizardPageLibrary library = new WizardPageLibrary(null);
+      AccessPage nextStep = (AccessPage) library.getPage(
           DataPackageWizardInterface.ACCESS_PAGE);
 
       boolean checkAccess = nextStep.setPageData(nextStepMap,
@@ -651,7 +652,8 @@ public class Access
         continue;
       }
 
-      AccessPage nextStep = (AccessPage) WizardPageLibrary.getPage(
+      WizardPageLibrary library = new WizardPageLibrary(null);
+      AccessPage nextStep = (AccessPage) library.getPage(
           DataPackageWizardInterface.ACCESS_PAGE);
 
       boolean checkAccess = nextStep.setPageData(nextStepMap,

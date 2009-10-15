@@ -150,7 +150,8 @@ public class Temporal extends AbstractUIPage{
    */
   private void showNewTemporalDialog() {
 
-    TemporalPage temporalPage = (TemporalPage)WizardPageLibrary.getPage(DataPackageWizardInterface.TEMPORAL_PAGE);
+	 WizardPageLibrary library = new WizardPageLibrary(null);
+    TemporalPage temporalPage = (TemporalPage)library.getPage(DataPackageWizardInterface.TEMPORAL_PAGE);
     ModalDialog wpd = new ModalDialog(temporalPage,
                                 WizardContainerFrame.getDialogParent(),
                                 UISettings.POPUPDIALOG_WIDTH,
@@ -338,7 +339,8 @@ public class Temporal extends AbstractUIPage{
       timespanList.removeAllRows();
     }
     boolean res = true;
-    TemporalPage temporalPage = (TemporalPage)WizardPageLibrary.getPage(
+    WizardPageLibrary library = new WizardPageLibrary(null);
+    TemporalPage temporalPage = (TemporalPage)library.getPage(
       DataPackageWizardInterface.TEMPORAL_PAGE);
     data.remove("/temporalCoverage/@scope");
     data.remove("/temporalCoverage/@id");

@@ -301,8 +301,9 @@ public class Project extends AbstractUIPage {
    */
   private void showNewPartyDialog() {
 
+	  WizardPageLibrary library = new WizardPageLibrary(null);
     PartyPage partyPage
-        = (PartyPage)WizardPageLibrary.getPage(
+        = (PartyPage)library.getPage(
         DataPackageWizardInterface.PARTY_PERSONNEL);
 
     ModalDialog wpd = new ModalDialog(partyPage,

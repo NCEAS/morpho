@@ -138,8 +138,8 @@ public class Geographic extends AbstractUIPage{
   }
 
   private void showNewGeographicDialog() {
-
-    GeographicPage geographicPage = (GeographicPage)WizardPageLibrary.getPage(DataPackageWizardInterface.GEOGRAPHIC_PAGE);
+	  WizardPageLibrary library = new WizardPageLibrary(null);
+    GeographicPage geographicPage = (GeographicPage)library.getPage(DataPackageWizardInterface.GEOGRAPHIC_PAGE);
     ModalDialog wpd = new ModalDialog(geographicPage,
                                 WizardContainerFrame.getDialogParent(),
                                 UISettings.POPUPDIALOG_WIDTH,
@@ -314,7 +314,8 @@ public class Geographic extends AbstractUIPage{
       geographicspanList.removeAllRows();
     }
     boolean res = true;
-    GeographicPage geographicPage = (GeographicPage)WizardPageLibrary.getPage(DataPackageWizardInterface.GEOGRAPHIC_PAGE);
+    WizardPageLibrary library = new WizardPageLibrary(null);
+    GeographicPage geographicPage = (GeographicPage)library.getPage(DataPackageWizardInterface.GEOGRAPHIC_PAGE);
     data.remove("/geographicCoverage/@scope");
     data.remove("/geographicCoverage/@id");
    boolean flag = geographicPage.setPageData(data, "/geographicCoverage");

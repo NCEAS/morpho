@@ -241,7 +241,8 @@ public class PartyMainPage
    */
   private void showNewPartyDialog() {
 
-    PartyPage partyPage = (PartyPage) WizardPageLibrary.getPage(role);
+	  WizardPageLibrary library = new WizardPageLibrary(null);
+    PartyPage partyPage = (PartyPage) library.getPage(role);
 
     ModalDialog wpd = new ModalDialog(partyPage,
         WizardContainerFrame.getDialogParent(),
@@ -642,8 +643,8 @@ public class PartyMainPage
       if (nextStepMap.isEmpty()) {
         continue;
       }
-
-      PartyPage nextStep = (PartyPage) WizardPageLibrary.getPage(role);
+      WizardPageLibrary library = new WizardPageLibrary(null);
+      PartyPage nextStep = (PartyPage) library.getPage(role);
 
       boolean checkMethod = nextStep.setPageData(map,
           "/" + DATAPACKAGE_PARTY_GENERIC_NAME);

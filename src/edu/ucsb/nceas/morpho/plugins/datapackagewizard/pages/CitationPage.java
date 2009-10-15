@@ -276,7 +276,8 @@ public class CitationPage extends AbstractUIPage {
 
   private void showNewAuthorPartyDialog() {
 
-    PartyPage partyPage = (PartyPage) WizardPageLibrary.getPage (DataPackageWizardInterface.PARTY_CITATION_AUTHOR);
+	  WizardPageLibrary library = new WizardPageLibrary(null);
+    PartyPage partyPage = (PartyPage) library.getPage (DataPackageWizardInterface.PARTY_CITATION_AUTHOR);
 
     ModalDialog wpd = new ModalDialog(partyPage,
                                       WizardContainerFrame.getDialogParent(),
@@ -454,7 +455,8 @@ public class CitationPage extends AbstractUIPage {
       nextPersonnelMap = (OrderedMap)persIt.next();
       if (nextPersonnelMap == null || nextPersonnelMap.isEmpty()) continue;
 
-      PartyPage nextParty = (PartyPage)WizardPageLibrary.getPage(
+      WizardPageLibrary library = new WizardPageLibrary(null);
+      PartyPage nextParty = (PartyPage)library.getPage(
                  DataPackageWizardInterface.PARTY_CITATION_AUTHOR);
 
       boolean checkParty = nextParty.setPageData(nextPersonnelMap,
@@ -1044,7 +1046,8 @@ public class CitationPage extends AbstractUIPage {
       }
       OrderedMap copyMap = getNewCreatorMap(map, xPath, idx);
       //Log.debug(45, "%%%%%%%%%%%%%%% new map for creator "+copyMap.toString());
-      PartyPage page = (PartyPage)WizardPageLibrary.getPage( DataPackageWizardInterface.PARTY_CITATION_AUTHOR);
+      WizardPageLibrary library = new WizardPageLibrary(null);
+      PartyPage page = (PartyPage)library.getPage( DataPackageWizardInterface.PARTY_CITATION_AUTHOR);
       //Log.debug(45, "%%%%%%%%%%%%%%% generate the empty PartyPage "+page);
       page.setPageData(copyMap, xPath + "/creator[" + idx + "]");
       //Log.debug(45, "%%%%%%%%%%%%%%% set the page data to the "+page);

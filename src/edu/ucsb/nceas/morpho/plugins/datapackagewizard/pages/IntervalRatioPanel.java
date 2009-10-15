@@ -862,8 +862,9 @@ class UnitsPickList extends JPanel {
     newUnit.addActionListener( new ActionListener() {
 
       public void actionPerformed(ActionEvent ae) {
-
-        customPage = WizardPageLibrary.getPage(DataPackageWizardInterface.CUSTOM_UNIT_PAGE);
+        
+    	 WizardPageLibrary library = new WizardPageLibrary(null);
+        customPage = library.getPage(DataPackageWizardInterface.CUSTOM_UNIT_PAGE);
         int dwd = UISettings.POPUPDIALOG_WIDTH - UISettings.DIALOG_SMALLER_THAN_WIZARD_BY;
 				int dht = UISettings.POPUPDIALOG_HEIGHT - UISettings.DIALOG_SMALLER_THAN_WIZARD_BY;
 

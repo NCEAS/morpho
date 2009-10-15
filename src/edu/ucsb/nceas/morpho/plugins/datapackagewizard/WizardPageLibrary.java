@@ -47,7 +47,7 @@ import edu.ucsb.nceas.morpho.framework.AbstractUIPage;
  */
 public class WizardPageLibrary implements WizardPageLibraryInterface{
 
-  protected static WizardContainerFrame container;
+  protected WizardContainerFrame container;
 
 
   public WizardPageLibrary(WizardContainerFrame container) {
@@ -63,7 +63,7 @@ public class WizardPageLibrary implements WizardPageLibraryInterface{
    *
    *  @return  the corresponding WizardPage with this ID
    */
-  public static AbstractUIPage getPage(String pageID) {
+  public  AbstractUIPage getPage(String pageID) {
 
     if(pageID.equals(DataPackageWizardInterface.INTRODUCTION))
       return new Introduction();
