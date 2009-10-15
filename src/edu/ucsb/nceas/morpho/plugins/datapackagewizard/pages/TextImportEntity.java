@@ -74,6 +74,7 @@ public class TextImportEntity extends AbstractUIPage
 		   File dataFileObj = ((DataLocation)locationPage).getDataFile();
 		   textFile = new ImportedTextFile(dataFileObj);
 		   boolean contin = textFile.parsefile();
+		   nextPageID = DataPackageWizardInterface.TEXT_IMPORT_DELIMITERS;
 		   if(contin == false)
 		   {
 			   return;

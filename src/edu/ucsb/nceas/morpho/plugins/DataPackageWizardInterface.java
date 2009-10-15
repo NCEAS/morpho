@@ -96,11 +96,12 @@ public interface DataPackageWizardInterface {
   public static final String CODE_IMPORT_SUMMARY= "CODE_IMPORT_SUMMARY";
   public static final String CODE_DEFINITION   	= "CODE_DEFINITION";
   public static final String CITATION_PAGE	   	= "CITATION";
-	public static final String CUSTOM_UNIT_PAGE	  = "CUSTOM_UNIT_PAGE";
+  public static final String CUSTOM_UNIT_PAGE	  = "CUSTOM_UNIT_PAGE";
   public static final String GENERIC_VOCABULARY	  = "GENERIC_VOCABULARY";
   public static final String NBII_THESAURUS_LOOKUP	  = "NBII_THESAURUS_LOOKUP";
   public static final String CORRECTION_DATA_LOCATION = "CORRECTION_DATA_LOCATION";
   public static final String TEXT_IMPORT_ENTITY = "TEXT_IMPORT_ENTITY";
+  public static final String TEXT_IMPORT_DELIMITERS = "TEXT_IMPORT_DELIMITERS";
   
 
 
