@@ -100,6 +100,7 @@ public interface DataPackageWizardInterface {
   public static final String GENERIC_VOCABULARY	  = "GENERIC_VOCABULARY";
   public static final String NBII_THESAURUS_LOOKUP	  = "NBII_THESAURUS_LOOKUP";
   public static final String CORRECTION_DATA_LOCATION = "CORRECTION_DATA_LOCATION";
+  public static final String TEXT_IMPORT_ENTITY = "TEXT_IMPORT_ENTITY";
   
 
 

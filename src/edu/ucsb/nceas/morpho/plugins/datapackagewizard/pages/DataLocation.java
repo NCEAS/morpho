@@ -702,7 +702,8 @@ public class DataLocation extends AbstractUIPage {
 	        distribution = INLINE_OR_ONLINE;
 	        if(setNextPageID)
 	        {
-	          setNextPageID(DataPackageWizardInterface.TEXT_IMPORT_WIZARD);
+	          //setNextPageID(DataPackageWizardInterface.TEXT_IMPORT_WIZARD);
+	        	setNextPageID(DataPackageWizardInterface.TEXT_IMPORT_ENTITY);
 	        }
 //	      WizardSettings.setSummaryText(WizardSettings.?????????);
 	        break;

@@ -144,6 +144,8 @@ public class WizardPageLibrary implements WizardPageLibraryInterface{
 	  return new GenericVocabularyPage();	
 	if(pageID.equals(DataPackageWizardInterface.NBII_THESAURUS_LOOKUP))
 		  return new ThesaurusLookupPage();
+	if(pageID.equals(DataPackageWizardInterface.TEXT_IMPORT_ENTITY))
+		  return new TextImportEntity(container);
     throw new IllegalArgumentException(
       "WizardPageLibrary - no page registered with identifier: "+pageID);
   }

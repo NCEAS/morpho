@@ -81,6 +81,16 @@ public class ImportedTextFile
 	  
 	  //represents the unknow delimiter
 	  public static final String  UNKNOWN = "unknown";
+	  
+	  
+	  /**
+	   * Constructor
+	   * @param dataFile
+	   */
+	  public ImportedTextFile(File dataFile)
+	  {
+		  this.dataFile = dataFile;
+	  }
 
 	  /**
 	   * array of line strings
@@ -144,11 +154,7 @@ public class ImportedTextFile
 		return dataFile;
 	}
 
-	public void setDataFile(File dataFile) 
-	{
-		this.dataFile = dataFile;
-	}
-
+	
 	public String getShortFilename() 
 	{
 		return shortFilename;
@@ -175,15 +181,15 @@ public class ImportedTextFile
 	   * @return boolean true if parse was successful (textfile only); false if
 	   *   parse unsuccessful (non-text file)
 	   */
-	  public boolean parsefile(File f) {
+	  public boolean parsefile() {
 
 	    String temp = null;
 
-	    if (isTextFile(f)) {
+	    if (isTextFile(dataFile)) {
 
 	      BufferedReader in = null;
 	      try {
-	        in = new BufferedReader(new FileReader(f));
+	        in = new BufferedReader(new FileReader(dataFile));
 	      } catch (IOException e) {
 	        e.printStackTrace();
 	      }
@@ -342,6 +348,10 @@ public class ImportedTextFile
 	   * @return boolean true if it's a text file, false if not
 	   */
 	  private boolean isTextFile(File file) {
+		 if (file == null)
+		 {
+			 return false;
+		 }
 	     boolean text = true;
 	     int res;
 	     int cnt = 0;
@@ -365,6 +375,6 @@ public class ImportedTextFile
 	     return text;
 	   }
 
-	
+	  
 
 }

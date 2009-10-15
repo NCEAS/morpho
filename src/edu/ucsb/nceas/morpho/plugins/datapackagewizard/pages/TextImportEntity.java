@@ -27,8 +27,10 @@
 package edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages;
 
 import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
+import java.io.File;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -40,6 +42,7 @@ import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 
 import edu.ucsb.nceas.morpho.framework.AbstractUIPage;
+import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WidgetFactory;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardContainerFrame;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardSettings;
@@ -53,11 +56,12 @@ import edu.ucsb.nceas.utilities.OrderedMap;
  */
 public class TextImportEntity extends AbstractUIPage 
 {
-	   private String pageID = null;
-	   private String title = null;
+	   private String pageID = DataPackageWizardInterface.TEXT_IMPORT_ENTITY;
+	   private String title = "Text Import";
 	   private String subTitle = null;
 	   private String pageNumber = null;
 	   private WizardContainerFrame frame = null;
+	   private ImportedTextFile textFile = null;
 	   
 	   /**
 	    * Construct
@@ -66,6 +70,14 @@ public class TextImportEntity extends AbstractUIPage
 	   public TextImportEntity(WizardContainerFrame frame)
 	   {
 		   this.frame = frame;
+		   AbstractUIPage locationPage = frame.getPreviousPage();
+		   File dataFileObj = ((DataLocation)locationPage).getDataFile();
+		   textFile = new ImportedTextFile(dataFileObj);
+		   boolean contin = textFile.parsefile();
+		   if(contin == false)
+		   {
+			   return;
+		   }
 		   init();
 	   }
 	   
@@ -76,79 +88,46 @@ public class TextImportEntity extends AbstractUIPage
 	   {
 		    this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		    JPanel vbox = this;
+		    JLabel desc1 = WidgetFactory.makeHTMLLabel(
+		    	      "<p><b>This set of screens will create metadata based on the content of the specified data file</b></p>", 1);
+		    vbox.add(desc1);
+		    vbox.add(WidgetFactory.makeDefaultSpacer());
 		    
-		    JLabel Step1_titleLabel = new JLabel("Text Import Wizard");
-		    Step1_titleLabel.setFont(WizardSettings.TITLE_FONT);
-		    Step1_titleLabel.setForeground(WizardSettings.TITLE_TEXT_COLOR);
-		    Step1_titleLabel.setBorder(new EmptyBorder(WizardSettings.PADDING,0,WizardSettings.PADDING,0));
-		    JPanel Step1_topPanel = new JPanel();
-		    Step1_topPanel.setLayout(new BorderLayout());
-		    Step1_topPanel.setPreferredSize(WizardSettings.TOP_PANEL_DIMS);
-		    Step1_topPanel.setMaximumSize(WizardSettings.TOP_PANEL_DIMS);
-		    Step1_topPanel.setBorder(new EmptyBorder(0,3*WizardSettings.PADDING,0,3*WizardSettings.PADDING));
-		    Step1_topPanel.setBackground(WizardSettings.TOP_PANEL_BG_COLOR);
-		    Step1_topPanel.setOpaque(true);
-		    Step1_topPanel.add(Step1_titleLabel, BorderLayout.CENTER);
+		    JPanel namePanel = WidgetFactory.makePanel(1);	   
+		    JLabel Step1_NameLabel = WidgetFactory.makeLabel("Title:", true);
+		    namePanel.add(Step1_NameLabel);
+		    TableNameTextField = WidgetFactory.makeOneLineTextField();
+		    namePanel.add(TableNameTextField);
+		    namePanel.setBorder(new javax.swing.border.EmptyBorder(WizardSettings.PADDING, 0, 0,
+		            WizardSettings.PADDING));
+		    vbox.add(namePanel);
+		    vbox.add(WidgetFactory.makeDefaultSpacer());
 		    
-		    vbox.add(Step1_topPanel);
-
-		    JPanel Step1ControlsPanel = new JPanel();
-		    Step1ControlsPanel.setLayout(new BoxLayout(Step1ControlsPanel, BoxLayout.Y_AXIS));
-		    Step1_TopTitlePanel.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
-		    Step1ControlsPanel.add(Step1_TopTitlePanel);
-		    Step1_TopTitleLabel.setText("This set of screens will create metadata based on the content of the specified data file");
-		    Step1_TopTitlePanel.add(Step1_TopTitleLabel);
-		    Step1_TopTitleLabel.setForeground(java.awt.Color.black);
-		    Step1_TopTitleLabel.setFont(new Font("Dialog", Font.BOLD, 12));
-		    Step1_TableNamePanel.setLayout(new BoxLayout(Step1_TableNamePanel,
-		                                                 BoxLayout.X_AXIS));
-		    Step1ControlsPanel.add(Step1_TableNamePanel);
-		    Step1ControlsPanel.add(Box.createGlue());
-		    /*Step1_NameLabel.setText(" Table Name: ");
-		    Step1_NameLabel.setPreferredSize(WizardSettings.WIZARD_CONTENT_LABEL_DIMS);
-		    Step1_NameLabel.setMinimumSize(WizardSettings.WIZARD_CONTENT_LABEL_DIMS);
-		    Step1_NameLabel.setMaximumSize(WizardSettings.WIZARD_CONTENT_LABEL_DIMS);
-		    Step1_TableNamePanel.add(Step1_NameLabel);
-		    Step1_NameLabel.setForeground(java.awt.Color.black);
-		    Step1_NameLabel.setFont(new Font("Dialog", Font.PLAIN, 12));*/
-		    Step1_NameLabel = WidgetFactory.makeLabel(" Title:", true);
-		    Step1_TableNamePanel.add(Step1_NameLabel);
-		    Step1_TableDescriptionLabel.setMaximumSize(WizardSettings.WIZARD_CONTENT_LABEL_DIMS);
-		    Step1_TableDescriptionLabel.setMinimumSize(WizardSettings.WIZARD_CONTENT_LABEL_DIMS);
-		    Step1_TableDescriptionLabel.setPreferredSize(WizardSettings.
-		                                                 WIZARD_CONTENT_LABEL_DIMS);
-		    TableNameTextField.setPreferredSize(WizardSettings.WIZARD_CONTENT_SINGLE_LINE_DIMS);
-		    TableNameTextField.setMaximumSize(WizardSettings.WIZARD_CONTENT_SINGLE_LINE_DIMS);
-		    Step1_TableNamePanel.add(TableNameTextField);
-		    Step1_TableDescriptionPanel.setLayout(new BoxLayout(
-		        Step1_TableDescriptionPanel, BoxLayout.X_AXIS));
-		    Step1ControlsPanel.add(Step1_TableDescriptionPanel);
-		    Step1_TableDescriptionLabel.setText(" Description: ");
-		    Step1ControlsPanel.add(Box.createGlue());
-		    Step1_TableDescriptionPanel.add(Step1_TableDescriptionLabel);
-		    Step1_TableDescriptionLabel.setForeground(java.awt.Color.black);
-		    Step1_TableDescriptionLabel.setFont(new Font("Dialog", Font.PLAIN, 12));
-		    TableDescriptionTextField.setPreferredSize(WizardSettings.WIZARD_CONTENT_SINGLE_LINE_DIMS);
-		    TableDescriptionTextField.setMaximumSize(WizardSettings.WIZARD_CONTENT_SINGLE_LINE_DIMS);
-		    Step1_TableDescriptionPanel.add(TableDescriptionTextField);
-		    StartingLinePanel.setLayout(new FlowLayout(FlowLayout.LEFT, 5, 5));
-		    Step1ControlsPanel.add(StartingLinePanel);
-		    StartingLineLabel.setText("Start import at row: ");
+		    JPanel tableDescriptionPanel = WidgetFactory.makePanel(1);	   
+		    JLabel Step1_TableDescriptionLabel = WidgetFactory.makeLabel("Description:", false);
+		    tableDescriptionPanel.add(Step1_TableDescriptionLabel);
+		    TableDescriptionTextField = WidgetFactory.makeOneLineTextField();
+		    tableDescriptionPanel.add(TableDescriptionTextField);
+		    tableDescriptionPanel.setBorder(new javax.swing.border.EmptyBorder(WizardSettings.PADDING, 0, 0,
+		            WizardSettings.PADDING));
+		    vbox.add(tableDescriptionPanel);
+		    vbox.add(WidgetFactory.makeDefaultSpacer());
+		    
+		    JPanel StartingLinePanel=  WidgetFactory.makePanel(1);	
+		    JLabel StartingLineLabel = WidgetFactory.makeLabel("Start import at row: ", false, new Dimension(120,20));
 		    StartingLinePanel.add(StartingLineLabel);
-		    StartingLineLabel.setForeground(java.awt.Color.black);
-		    StartingLineLabel.setFont(new Font("Dialog", Font.PLAIN, 12));
-		    StartingLineTextField.setText("1");
-		    StartingLineTextField.setColumns(4);
+		    StartingLineTextField = WidgetFactory.makeOneLineShortTextField("1");
 		    StartingLinePanel.add(StartingLineTextField);
-		    ColumnLabelsLabel.setText("     ");
-		    StartingLinePanel.add(ColumnLabelsLabel);
-		    ColumnLabelsCheckBox.setText("Column Labels are in starting row");
+		    JLabel blank = WidgetFactory.makeLabel("      ",false);
+		    StartingLinePanel.add(blank);
+		    ColumnLabelsCheckBox = WidgetFactory.makeCheckBox("Column Labels are in starting row", false);
 		    ColumnLabelsCheckBox.setActionCommand("Column Labels are in starting row");
 		    ColumnLabelsCheckBox.setSelected(false);
-		    StartingLinePanel.add(ColumnLabelsCheckBox);
-		    ColumnLabelsCheckBox.setFont(new Font("Dialog", Font.PLAIN, 12));
-		    
-		    vbox.add(Step1ControlsPanel, BorderLayout.CENTER);
+		    StartingLinePanel.add(ColumnLabelsCheckBox);	    
+		    vbox.add(StartingLinePanel);
+		    vbox.add(WidgetFactory.makeDefaultSpacer());
+		    vbox.add(WidgetFactory.makeDefaultSpacer());
+		    //vbox.add(WidgetFactory.makeDefaultSpacer());
 		    
 		    vbox.add(DataScrollPanel);
 	   }
@@ -293,18 +272,10 @@ public class TextImportEntity extends AbstractUIPage
 	  }
 	  
 	  
-	  private JPanel Step1_TopTitlePanel = new JPanel();
-	  private JLabel Step1_TopTitleLabel = new JLabel();
-	  private JPanel Step1_TableNamePanel = new JPanel();
-	  private JLabel Step1_NameLabel = new JLabel();
+	  
 	  private JTextField TableNameTextField = new JTextField();
-	  private JPanel Step1_TableDescriptionPanel = new JPanel();
-	  private JLabel Step1_TableDescriptionLabel = new JLabel();
 	  private JTextField TableDescriptionTextField = new JTextField();
-	  private JPanel StartingLinePanel = new JPanel();
-	  private JLabel StartingLineLabel = new JLabel();
 	  private JTextField StartingLineTextField = new JTextField();
-	  private JLabel ColumnLabelsLabel = new JLabel();
 	  private JCheckBox ColumnLabelsCheckBox = new JCheckBox();
 	  private JScrollPane DataScrollPanel = new JScrollPane();
 

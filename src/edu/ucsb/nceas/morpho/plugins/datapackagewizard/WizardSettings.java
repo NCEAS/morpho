@@ -188,6 +188,9 @@ public class WizardSettings {
   // x-dimension is ignored:
   public static final  Dimension WIZARD_CONTENT_TEXTFIELD_DIMS
   = new Dimension(2000,20);
+  
+  public static final  Dimension WIZARD_REDUCED_CONTENT_TEXTFIELD_DIMS
+  = new Dimension(80,20);
 
   // x-dimension is ignored:
   public static final  Dimension WIZARD_CONTENT_SINGLE_LINE_DIMS
