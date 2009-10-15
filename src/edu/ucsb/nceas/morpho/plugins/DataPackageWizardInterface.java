@@ -102,6 +102,7 @@ public interface DataPackageWizardInterface {
   public static final String CORRECTION_DATA_LOCATION = "CORRECTION_DATA_LOCATION";
   public static final String TEXT_IMPORT_ENTITY = "TEXT_IMPORT_ENTITY";
   public static final String TEXT_IMPORT_DELIMITERS = "TEXT_IMPORT_DELIMITERS";
+  public static final String TEXT_IMPORT_ATTRIBUTE = "TEXT_IMPORT_ATTRIBUTE";
   
 
 

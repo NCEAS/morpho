@@ -76,6 +76,7 @@ public class TextImportDelimiters extends AbstractUIPage
 	   public TextImportDelimiters(WizardContainerFrame frame)
 	   {
 		   this.frame = frame;
+		   nextPageID = DataPackageWizardInterface.TEXT_IMPORT_ATTRIBUTE;
 		   init();
 	   }
 	   

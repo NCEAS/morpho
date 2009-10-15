@@ -148,6 +148,8 @@ public class WizardPageLibrary implements WizardPageLibraryInterface{
 		  return new TextImportEntity(container);
 	if(pageID.equals(DataPackageWizardInterface.TEXT_IMPORT_DELIMITERS))
 		  return new TextImportDelimiters(container);
+	if(pageID.equals(DataPackageWizardInterface.TEXT_IMPORT_ATTRIBUTE))
+		  return new TextImportAttribute(container);
     throw new IllegalArgumentException(
       "WizardPageLibrary - no page registered with identifier: "+pageID);
   }
