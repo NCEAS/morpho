@@ -39,6 +39,7 @@ import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
 import edu.ucsb.nceas.morpho.plugins.DataPackageWizardListener;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.Entity;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.PartyMainPage;
+import edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.TextImportAttribute;
 import edu.ucsb.nceas.morpho.util.IncompleteDocSettings;
 import edu.ucsb.nceas.morpho.util.Log;
 import edu.ucsb.nceas.morpho.util.Util;
@@ -106,6 +107,8 @@ public class WizardContainerFrame
   private int entityIndex = 0;
   private  AbstractDataPackage adp = null;
   private final static String ENTITYGENERICNAME = "entities";
+  private boolean hasTopPanel = true;
+ 
 
   /**
    * Default constructor
@@ -245,6 +248,23 @@ public class WizardContainerFrame
     //make new page current page
     this.currentPage = newPage;
 
+    if((currentPage instanceof TextImportAttribute) && hasTopPanel)
+    {
+    	//TextImportAttribute page contains Attribute page. 
+    	//The AttributePage can't be displayed completely. So we need to remove top panel
+    	// to make sure the Attribute page can be displayed correctly.
+    	Log.debug(30, "It is removing the top panel==================");
+        this.remove(topPanel);
+    	hasTopPanel = false;
+    }
+    else if(!(currentPage instanceof TextImportAttribute) && !hasTopPanel)
+    {
+    	//if current page is not TextImportAttribute and deosn't have top panel, we need to add it.
+    	Log.debug(30, "It is adding the top panel==================");
+    	initTopPanel();
+    	topPanel.validate();
+    	topPanel.repaint();
+    }
     setpageTitle(newPage.getTitle());
     setpageSubtitle(getCurrentPage().getSubtitle());
     middlePanel.removeAll();
@@ -1309,7 +1329,10 @@ public class WizardContainerFrame
     if (newTitle == null) {
       newTitle = " ";
     }
-    titleLabel.setText(newTitle);
+    if(titleLabel!= null)
+    {
+      titleLabel.setText(newTitle);
+    }
   }
 
   /**
@@ -1321,7 +1344,10 @@ public class WizardContainerFrame
     if (newSubTitle == null) {
       newSubTitle = " ";
     }
-    subtitleLabel.setText(newSubTitle);
+    if(subtitleLabel != null)
+    {
+      subtitleLabel.setText(newSubTitle);
+    }
   }
 
   /**
@@ -1440,7 +1466,8 @@ public class WizardContainerFrame
   private JPanel middlePanel;
   private JPanel bottomBorderPanel;
   private JPanel bottomPanel;
-  private JLabel titleLabel, subtitleLabel;
+  private JLabel titleLabel = new JLabel("");
+  private JLabel subtitleLabel = new JLabel("");
   private JButton nextButton;
   private JButton prevButton;
   private JButton finishButton;
