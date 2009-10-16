@@ -1235,11 +1235,19 @@ public class WizardContainerFrame
     } // end while
   }
 
-
   /**
    *  The action to be executed when the "Prev" button is pressed
    */
   public void previousAction() {
+     boolean storeCurrentPageIntoStack = true;
+     previousAction(storeCurrentPageIntoStack);
+  }
+
+  /**
+   *  The action to be executed when the "Prev" button is pressed
+   *  @param storeCurrentPageIntoStack  indicate if store the current page into stack
+   */
+  public void previousAction(boolean storeCurrentPageIntoStack) {
 
     if (pageStack.isEmpty()) return;
 
@@ -1256,7 +1264,10 @@ public class WizardContainerFrame
     Log.debug(45, "previousAction adding currentPage to pageCache ("
               + currentPage.getPageID() + ")");
     currentPage.onRewindAction();
-    pageCache.put(currentPage.getPageID(), currentPage);
+    if(storeCurrentPageIntoStack)
+    {
+    	pageCache.put(currentPage.getPageID(), currentPage);
+    }
 
     setCurrentPage(previousPage);
   }

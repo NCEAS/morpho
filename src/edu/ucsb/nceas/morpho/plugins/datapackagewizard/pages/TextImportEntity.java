@@ -46,6 +46,7 @@ import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WidgetFactory;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardContainerFrame;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardSettings;
+import edu.ucsb.nceas.morpho.util.Log;
 import edu.ucsb.nceas.utilities.OrderedMap;
 
 /**
@@ -62,6 +63,7 @@ public class TextImportEntity extends AbstractUIPage
 	   private String pageNumber = null;
 	   private WizardContainerFrame frame = null;
 	   private ImportedTextFile textFile = null;
+	   private boolean isTextFile = true;
 	   
 	   /**
 	    * Construct
@@ -69,16 +71,22 @@ public class TextImportEntity extends AbstractUIPage
 	    */
 	   public TextImportEntity(WizardContainerFrame frame)
 	   {
+		   if(frame == null)
+		   {
+			   Log.debug(30, "The WizardContainerFrame is null and we can't initialize TexImpoortEntity");
+			   return;
+		   }
 		   this.frame = frame;
 		   AbstractUIPage locationPage = frame.getPreviousPage();
 		   File dataFileObj = ((DataLocation)locationPage).getDataFile();
+		   Log.debug(35, "The data file from previous page is ============= "+dataFileObj.getAbsolutePath());
 		   textFile = new ImportedTextFile(dataFileObj);
-		   boolean contin = textFile.parsefile();
-		   nextPageID = DataPackageWizardInterface.TEXT_IMPORT_DELIMITERS;
-		   if(contin == false)
+		   isTextFile = textFile.parsefile();		   
+		   if(!isTextFile)
 		   {
 			   return;
 		   }
+		   nextPageID = DataPackageWizardInterface.TEXT_IMPORT_DELIMITERS;
 		   init();
 	   }
 	   
@@ -195,7 +203,12 @@ public class TextImportEntity extends AbstractUIPage
 	   */
 	  public void onLoadAction()
 	  {
-		  
+		  Log.debug(35, "The status of isTextFile is ========"+isTextFile);
+		  if(!isTextFile && frame != null)
+		  {
+			  boolean storeCurrentPageIntoStack = false;
+			  frame.previousAction(storeCurrentPageIntoStack);
+		  }
 	  }
 
 
