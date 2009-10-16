@@ -255,6 +255,8 @@ public class WizardContainerFrame
     	// to make sure the Attribute page can be displayed correctly.
     	Log.debug(30, "It is removing the top panel==================");
         this.remove(topPanel);
+        this.validate();
+        this.repaint();
     	hasTopPanel = false;
     }
     else if(!(currentPage instanceof TextImportAttribute) && !hasTopPanel)
@@ -264,6 +266,7 @@ public class WizardContainerFrame
     	initTopPanel();
     	topPanel.validate();
     	topPanel.repaint();
+    	hasTopPanel = true;
     }
     setpageTitle(newPage.getTitle());
     setpageSubtitle(getCurrentPage().getSubtitle());
