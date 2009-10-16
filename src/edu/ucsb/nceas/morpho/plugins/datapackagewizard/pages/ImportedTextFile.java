@@ -25,8 +25,13 @@
  */
 package edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages;
 
+import edu.ucsb.nceas.morpho.framework.UIController;
+import edu.ucsb.nceas.morpho.plugins.datapackagewizard.UneditableTableModel;
+import edu.ucsb.nceas.morpho.util.Log;
+
 import static javax.swing.JOptionPane.showMessageDialog;
 
+import java.awt.Font;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -34,9 +39,13 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Vector;
 
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
+import javax.swing.table.TableColumn;
+
+
 
 
 /**
@@ -55,7 +64,7 @@ public class ImportedTextFile
 
 	  /**
 	   * 	a global reference to the table used to display the lines read from the file
-	   *	this is the table that is displayed on the first screen of the TIW
+	   *	this is the table that is displayed on the first screen of the TIW (Not delimitered)
 	   */
 	  private JTable linesTable = null;
 
@@ -99,7 +108,7 @@ public class ImportedTextFile
 
 	  private File dataFile;
 
-	  private String shortFilename;
+	  private String shortFileName;
 
 	public JTable getTable() 
 	{
@@ -154,24 +163,66 @@ public class ImportedTextFile
 		return dataFile;
 	}
 
-	
+	/**
+	 * Gets the short file name of the data file.
+	 * null will be return if the data file is null
+	 * @return
+	 */
 	public String getShortFilename() 
 	{
-		return shortFilename;
+		if(dataFile != null)
+		{
+			shortFileName = dataFile.getName();
+		}
+		return shortFileName;
 	}
 
-	public void setShortFilename(String shortFilename) 
-	{
-		this.shortFilename = shortFilename;
-	}
+
 	
-	public String getGuessedDelimiter() {
+	public String getGuessedDelimiter() 
+	{
 		return guessedDelimiter;
 	}
 
-	public void setGuessedDelimiter(String guessedDelimiter) {
+	public void setGuessedDelimiter(String guessedDelimiter) 
+	{
 		this.guessedDelimiter = guessedDelimiter;
 	}
+	
+	
+	
+	
+	/**
+	 * Create a Table which only displays the data lines by lines (not delimitered) 
+	 */
+	public void createLinesTable() {
+
+		    if(linesTable == null) {
+
+		      Vector listOfRows = new Vector();
+		      for (int i = 0; i < nlines; i++) {
+		        Vector row = new Vector();
+		        row.add(new String().valueOf(i + 1));
+		        row.add(lines[i]);
+		        listOfRows.add(row);
+		      }
+		      Vector title = new Vector();
+		      title.add("#");
+		      title.add("Lines in " + dataFile.getName());
+		      UneditableTableModel linesTM = new UneditableTableModel(listOfRows, title);
+		      linesTable = new JTable(linesTM);
+		      linesTable.setFont(new Font("MonoSpaced", Font.PLAIN, 14));
+		      (linesTable.getTableHeader()).setReorderingAllowed(false);
+
+		      TableColumn column = null;
+		      column = linesTable.getColumnModel().getColumn(0);
+		      column.setPreferredWidth(40);
+		      column.setMaxWidth(40);
+		    }
+		    //DataScrollPanel.getViewport().removeAll();
+		    //DataScrollPanel.getViewport().add(linesTable);
+
+		  }
 
 	
 	 /**
@@ -233,9 +284,6 @@ public class ImportedTextFile
 
 	    } else {
 
-	      JOptionPane.showMessageDialog(null, "Selected File is NOT a text file!",
-	                                    "Message",
-	                                    JOptionPane.INFORMATION_MESSAGE, null);
 	      //CancelButton_actionPerformed(null);
 
 	      return false;
@@ -375,6 +423,61 @@ public class ImportedTextFile
 	     return text;
 	   }
 
+	  
+	  /**
+	   * Compares if two ImportedTextFile object are equal.
+	   * 1. If they are some object, they are equal.
+	   * 2. If they contains some File Object, they are equal
+	   * 3. If their data files have same file path, they are equal
+	   * @param secondObj
+	   * @return
+	   */
+	  public boolean equals(ImportedTextFile secondObj)
+	  {
+		  boolean equal = false;
+		  if(secondObj == null)
+		  {
+			  Log.debug(35, "in second file is null branch in ImprtedTExtFile.equal method");
+			  if(this == null)
+			  {
+				  equal = true;
+			  }
+		  }
+		  else
+		  {
+			  Log.debug(35, "in second file is NOT null branch in ImprtedTExtFile.equal method");
+			  if(this == null)
+			  {
+				  equal = true;
+			  }
+			  else
+			  {
+				  if(this == secondObj)
+				  {
+					  Log.debug(35, "They are same object in ImprtedTExtFile.equal method");
+					  equal = true;
+				  }
+				  else
+				  {
+					  File thisFile = this.getDataFile();
+					  File secondFile = secondObj.getDataFile();
+					  if(thisFile == secondFile)
+					  {
+						  Log.debug(35, "They are same File object in ImprtedTExtFile.equal method");
+						  equal = true;
+					  }
+					  else if (thisFile != null && secondFile != null && thisFile.getAbsolutePath() != null&&
+							     secondFile.getAbsolutePath() != null && thisFile.getAbsolutePath().equals(secondFile.getAbsolutePath()))
+					  {
+						  Log.debug(35, "They have same file path string in ImprtedTExtFile.equal method");
+						  equal = true;
+					  }
+				  }
+			  }
+		  }
+		  Log.debug(35, "the return value of ImprtedTExtFile.equal method is "+equal);
+		  return equal;
+	  }
 	  
 
 }

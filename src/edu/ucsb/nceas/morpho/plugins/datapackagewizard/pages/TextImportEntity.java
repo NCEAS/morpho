@@ -36,8 +36,10 @@ import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 
@@ -47,6 +49,7 @@ import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WidgetFactory;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardContainerFrame;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardSettings;
 import edu.ucsb.nceas.morpho.util.Log;
+import edu.ucsb.nceas.morpho.util.Util;
 import edu.ucsb.nceas.utilities.OrderedMap;
 
 /**
@@ -64,6 +67,8 @@ public class TextImportEntity extends AbstractUIPage
 	   private WizardContainerFrame frame = null;
 	   private ImportedTextFile textFile = null;
 	   private boolean isTextFile = true;
+	   private JTable linesTable = null;
+	   private String shortFileName = null;
 	   
 	   /**
 	    * Construct
@@ -76,18 +81,36 @@ public class TextImportEntity extends AbstractUIPage
 			   Log.debug(30, "The WizardContainerFrame is null and we can't initialize TexImpoortEntity");
 			   return;
 		   }
-		   this.frame = frame;
-		   AbstractUIPage locationPage = frame.getPreviousPage();
-		   File dataFileObj = ((DataLocation)locationPage).getDataFile();
-		   Log.debug(35, "The data file from previous page is ============= "+dataFileObj.getAbsolutePath());
-		   textFile = new ImportedTextFile(dataFileObj);
+		   this.frame = frame;	   
+		   textFile = frame.getImportDataTextFile();
+		   buildLinesTable();
+		   nextPageID = DataPackageWizardInterface.TEXT_IMPORT_DELIMITERS;
+		   init();
+	   }
+	   
+	   /*
+	    * Build linesTable which will be displayed on data panel
+	    */
+	   private boolean buildLinesTable()
+	   {
+		   boolean success = true;
+		   if (textFile == null && textFile.getDataFile() == null )
+		   {
+			   Log.debug(30, "The imported data file is null and we can't initialize TexImpoortEntity");
+			   return false;
+		   }
+		   Log.debug(35, "The data file from previous page is ============= "+textFile.getDataFile().getAbsolutePath());		   
 		   isTextFile = textFile.parsefile();		   
 		   if(!isTextFile)
 		   {
-			   return;
+			   JOptionPane.showMessageDialog(frame, "Selected File is NOT a text file!",
+                       "Message",
+                       JOptionPane.INFORMATION_MESSAGE, null);
+			   return false;
 		   }
-		   nextPageID = DataPackageWizardInterface.TEXT_IMPORT_DELIMITERS;
-		   init();
+		   textFile.createLinesTable();
+		   linesTable = textFile.getLinesTable();
+		   return success;
 	   }
 	   
 	   /*
@@ -103,8 +126,8 @@ public class TextImportEntity extends AbstractUIPage
 		    vbox.add(WidgetFactory.makeDefaultSpacer());
 		    
 		    JPanel namePanel = WidgetFactory.makePanel(1);	   
-		    JLabel Step1_NameLabel = WidgetFactory.makeLabel("Title:", true);
-		    namePanel.add(Step1_NameLabel);
+		    nameLabel = WidgetFactory.makeLabel("Title:", true);
+		    namePanel.add(nameLabel);
 		    TableNameTextField = WidgetFactory.makeOneLineTextField();
 		    namePanel.add(TableNameTextField);
 		    namePanel.setBorder(new javax.swing.border.EmptyBorder(WizardSettings.PADDING, 0, 0,
@@ -138,7 +161,18 @@ public class TextImportEntity extends AbstractUIPage
 		    vbox.add(WidgetFactory.makeDefaultSpacer());
 		    //vbox.add(WidgetFactory.makeDefaultSpacer());
 		    
+		    DataScrollPanel.getViewport().removeAll();
+		    DataScrollPanel.getViewport().add(linesTable);
 		    vbox.add(DataScrollPanel);
+	   }
+	   
+	   /*
+	    * Update data panel
+	    */
+	   private void updateDataScrollPanel()
+	   {
+		   DataScrollPanel.getViewport().removeAll();
+		   DataScrollPanel.getViewport().add(linesTable);
 	   }
 	  
 	   /**
@@ -203,11 +237,29 @@ public class TextImportEntity extends AbstractUIPage
 	   */
 	  public void onLoadAction()
 	  {
-		  Log.debug(35, "The status of isTextFile is ========"+isTextFile);
-		  if(!isTextFile && frame != null)
+		  if(frame != null)
 		  {
-			  boolean storeCurrentPageIntoStack = false;
-			  frame.previousAction(storeCurrentPageIntoStack);
+			  Log.debug(35, "The beginning of the onLoadAction");
+			  ImportedTextFile newFile = frame.getImportDataTextFile();
+			  boolean isSame = textFile.equals(newFile);
+			  if(!isSame)
+			  {
+				  //File object was changed we need to update both data file and data panel
+				  textFile = newFile;
+				  buildLinesTable();
+				  updateDataScrollPanel();
+			  }
+			  //set default table name
+			  if(textFile != null)
+			  {
+				  TableNameTextField.setText(textFile.getShortFilename());
+			  }
+			  Log.debug(35, "The status of isTextFile is ========"+isTextFile);
+			  if(!isTextFile)
+			  {
+				  boolean storeCurrentPageIntoStack = false;
+				  frame.previousAction(storeCurrentPageIntoStack);
+			  }
 		  }
 	  }
 
@@ -218,7 +270,7 @@ public class TextImportEntity extends AbstractUIPage
 	   */
 	  public  void onRewindAction()
 	  {
-		  
+		  WidgetFactory.unhiliteComponent(nameLabel);
 	  }
 
 
@@ -231,7 +283,17 @@ public class TextImportEntity extends AbstractUIPage
 	   */
 	  public boolean onAdvanceAction()
 	  {
-		  return true;
+		  if(Util.isBlank(TableNameTextField.getText()))
+		  {
+			 WidgetFactory.hiliteComponent(nameLabel);
+			 TableNameTextField.requestFocus();
+			 return false;  
+		  }
+		  else
+		  {
+			 WidgetFactory.unhiliteComponent(nameLabel);
+		     return true;
+		  }
 	  }
 
 
@@ -286,7 +348,7 @@ public class TextImportEntity extends AbstractUIPage
 	  }
 	  
 	  
-	  
+	  private JLabel nameLabel = null;
 	  private JTextField TableNameTextField = new JTextField();
 	  private JTextField TableDescriptionTextField = new JTextField();
 	  private JTextField StartingLineTextField = new JTextField();

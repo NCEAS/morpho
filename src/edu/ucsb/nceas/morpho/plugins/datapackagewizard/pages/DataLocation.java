@@ -703,7 +703,18 @@ public class DataLocation extends AbstractUIPage {
 	        if(setNextPageID)
 	        {
 	          //setNextPageID(DataPackageWizardInterface.TEXT_IMPORT_WIZARD);
-	        	setNextPageID(DataPackageWizardInterface.TEXT_IMPORT_ENTITY);
+	        	if (mainWizFrame == null)
+	        	{
+	        		return false;
+	        	}
+	        	else
+	        	{
+	        		//stores the data file object into wizard container frame.
+	        		ImportedTextFile dataTextFile = new ImportedTextFile(dataFileObj);
+	        		mainWizFrame.setImportedDataTextFile(dataTextFile);
+	        		setNextPageID(DataPackageWizardInterface.TEXT_IMPORT_ENTITY);
+	        	}
+	        	   
 	        }
 //	      WizardSettings.setSummaryText(WizardSettings.?????????);
 	        break;

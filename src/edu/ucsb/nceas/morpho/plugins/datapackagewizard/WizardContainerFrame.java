@@ -38,6 +38,7 @@ import edu.ucsb.nceas.morpho.framework.UIController;
 import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
 import edu.ucsb.nceas.morpho.plugins.DataPackageWizardListener;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.Entity;
+import edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.ImportedTextFile;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.PartyMainPage;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.TextImportAttribute;
 import edu.ucsb.nceas.morpho.util.IncompleteDocSettings;
@@ -108,6 +109,7 @@ public class WizardContainerFrame
   private  AbstractDataPackage adp = null;
   private final static String ENTITYGENERICNAME = "entities";
   private boolean hasTopPanel = true;
+  private ImportedTextFile importedDataTextFile = null;
  
 
   /**
@@ -232,6 +234,23 @@ public class WizardContainerFrame
 	  return autoSaveID;
   }
 
+  /**
+   * Gets the imported data txxt file associate with the frame
+   * @return
+   */
+  public ImportedTextFile getImportDataTextFile() 
+  {
+		return importedDataTextFile;
+  }
+
+  /**
+   * Sets the imported data text file with the frame
+   * @param dataTextFile
+   */
+  public void setImportedDataTextFile(ImportedTextFile dataTextFile) 
+  {
+		this.importedDataTextFile = dataTextFile;
+  }
   /**
    * sets the wizard content for the center pane
    *
@@ -1494,4 +1513,6 @@ public class WizardContainerFrame
   private String firstPageID;
   private static JFrame dummyFrame;
   private static JFrame dialogParent;
+
+
 }

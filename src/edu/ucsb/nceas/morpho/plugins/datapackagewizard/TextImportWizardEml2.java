@@ -529,16 +529,7 @@ public class TextImportWizardEml2 extends JFrame {
   }
 
 
-  class UneditableTableModel extends DefaultTableModel {
-    public UneditableTableModel(Vector data, Vector columnNames) {
-      super(data, columnNames);
-    }
-
-
-    public boolean isCellEditable(int row, int col) {
-      return false;
-    }
-  }
+  
 
   class SymWindow extends java.awt.event.WindowAdapter {
     public void windowClosing(java.awt.event.WindowEvent event) {
