@@ -62,6 +62,7 @@ import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JTextField;
@@ -711,6 +712,14 @@ public class DataLocation extends AbstractUIPage {
 	        	{
 	        		//stores the data file object into wizard container frame.
 	        		ImportedTextFile dataTextFile = new ImportedTextFile(dataFileObj);
+	        		boolean isTextFile = dataTextFile.isTextFile();
+	        		if(!isTextFile)
+	     		   {
+	     			   JOptionPane.showMessageDialog(mainWizFrame, "Selected File is NOT a text file!",
+	                            "Message",
+	                            JOptionPane.INFORMATION_MESSAGE, null);
+	     			   return false;
+	     		   }
 	        		mainWizFrame.setImportedDataTextFile(dataTextFile);
 	        		setNextPageID(DataPackageWizardInterface.TEXT_IMPORT_ENTITY);
 	        	}

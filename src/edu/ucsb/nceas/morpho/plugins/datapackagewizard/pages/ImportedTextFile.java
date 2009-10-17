@@ -194,6 +194,7 @@ public class ImportedTextFile
 	
 	/**
 	 * Create a Table which only displays the data lines by lines (not delimitered) 
+	 * We should call parse() method before calling this method.
 	 */
 	public void createLinesTable() {
 
@@ -232,11 +233,11 @@ public class ImportedTextFile
 	   * @return boolean true if parse was successful (textfile only); false if
 	   *   parse unsuccessful (non-text file)
 	   */
-	  public boolean parsefile() {
+	  public void parsefile() {
 
 	    String temp = null;
 
-	    if (isTextFile(dataFile)) {
+	    //if (isTextFile(dataFile)) {
 
 	      BufferedReader in = null;
 	      try {
@@ -280,14 +281,14 @@ public class ImportedTextFile
 	      lines = (String[])(linesList.toArray(new String[nlines]));
 	      guessedDelimiter = guessDelimiter();
 
-	      return true;
+	      //return true;
 
-	    } else {
+	    /*} else {
 
 	      //CancelButton_actionPerformed(null);
 
 	      return false;
-	    }
+	    }*/
 	  }
 	  
 	  /**
@@ -395,8 +396,8 @@ public class ImportedTextFile
 	   * @param file the File to be checked
 	   * @return boolean true if it's a text file, false if not
 	   */
-	  private boolean isTextFile(File file) {
-		 if (file == null)
+	  public boolean isTextFile() {
+		 if (dataFile == null)
 		 {
 			 return false;
 		 }
@@ -406,7 +407,7 @@ public class ImportedTextFile
 	     int maxcnt = 2000; // only check this many bytes to avoid performance problems
 	     FileInputStream in = null;
 	     try {
-	       in = new FileInputStream(file);
+	       in = new FileInputStream(dataFile);
 	       while (((res = in.read()) > -1) && (cnt < maxcnt)) {
 	         cnt++;
 	         if (res == 0) {
@@ -415,10 +416,14 @@ public class ImportedTextFile
 	         }
 	       }
 	       in.close();
-	     } catch (Exception e) { e.printStackTrace(); }
+	     } catch (Exception e) { 
+	    	 e.printStackTrace(); 
+	    	 text= false;
+	      }
 	     finally {
 	       try { in.close(); }
 	       catch (IOException e) {}
+	       
 	     }
 	     return text;
 	   }

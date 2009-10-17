@@ -100,14 +100,7 @@ public class TextImportEntity extends AbstractUIPage
 			   return false;
 		   }
 		   Log.debug(35, "The data file from previous page is ============= "+textFile.getDataFile().getAbsolutePath());		   
-		   isTextFile = textFile.parsefile();		   
-		   if(!isTextFile)
-		   {
-			   JOptionPane.showMessageDialog(frame, "Selected File is NOT a text file!",
-                       "Message",
-                       JOptionPane.INFORMATION_MESSAGE, null);
-			   return false;
-		   }
+		   textFile.parsefile();		   
 		   textFile.createLinesTable();
 		   linesTable = textFile.getLinesTable();
 		   return success;
@@ -129,6 +122,10 @@ public class TextImportEntity extends AbstractUIPage
 		    nameLabel = WidgetFactory.makeLabel("Title:", true);
 		    namePanel.add(nameLabel);
 		    TableNameTextField = WidgetFactory.makeOneLineTextField();
+		    if(textFile != null)
+		    {
+		       TableNameTextField.setText(textFile.getShortFilename());
+		    }
 		    namePanel.add(TableNameTextField);
 		    namePanel.setBorder(new javax.swing.border.EmptyBorder(WizardSettings.PADDING, 0, 0,
 		            WizardSettings.PADDING));
@@ -248,18 +245,14 @@ public class TextImportEntity extends AbstractUIPage
 				  textFile = newFile;
 				  buildLinesTable();
 				  updateDataScrollPanel();
+				  //set default table name only when data file was changed
+				  if(textFile != null)
+				  {
+					  TableNameTextField.setText(textFile.getShortFilename());
+				  }
 			  }
-			  //set default table name
-			  if(textFile != null)
-			  {
-				  TableNameTextField.setText(textFile.getShortFilename());
-			  }
+			 
 			  Log.debug(35, "The status of isTextFile is ========"+isTextFile);
-			  if(!isTextFile)
-			  {
-				  boolean storeCurrentPageIntoStack = false;
-				  frame.previousAction(storeCurrentPageIntoStack);
-			  }
 		  }
 	  }
 
