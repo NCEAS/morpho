@@ -38,6 +38,7 @@ import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 
@@ -46,6 +47,7 @@ import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WidgetFactory;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardContainerFrame;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardSettings;
+import edu.ucsb.nceas.morpho.util.Log;
 import edu.ucsb.nceas.utilities.OrderedMap;
 
 /**
@@ -60,6 +62,7 @@ public class TextImportDelimiters extends AbstractUIPage
 	   private String title = "Text Import";
 	   private String subTitle = null;
 	   private String pageNumber = null;
+	   private boolean ignoreConsequtiveDelimiters = false;
 	   private WizardContainerFrame frame = null;
 	   private ImportedTextFile textFile = null;
 	   private static final String TAB = "tab";
@@ -77,6 +80,15 @@ public class TextImportDelimiters extends AbstractUIPage
 	   {
 		   this.frame = frame;
 		   nextPageID = DataPackageWizardInterface.TEXT_IMPORT_ATTRIBUTE;
+		   if(this.frame != null)
+		   {
+			   textFile = frame.getImportDataTextFile();
+		   }
+		   else
+		   {
+			   Log.debug(5, "The WizardContainerFrame is null and we can't initialize TexImportDelimiters");
+		   }
+		   textFile.parseDelimited(ignoreConsequtiveDelimiters, textFile.getGuessedDelimiter());
 		   init();
 	   }
 	   
@@ -131,7 +143,8 @@ public class TextImportDelimiters extends AbstractUIPage
 		    vbox.add(WidgetFactory.makeDefaultSpacer());
 		    vbox.add(WidgetFactory.makeDefaultSpacer());
 			    
-		    
+		    DataScrollPanel.getViewport().removeAll();
+		    DataScrollPanel.getViewport().add(textFile.getTable());
 		    vbox.add(DataScrollPanel);
 	   }
 	  

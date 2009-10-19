@@ -26,6 +26,7 @@
 package edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages;
 
 import edu.ucsb.nceas.morpho.framework.UIController;
+import edu.ucsb.nceas.morpho.plugins.TextImportListener;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.UneditableTableModel;
 import edu.ucsb.nceas.morpho.util.Log;
 
@@ -38,12 +39,16 @@ import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.StringTokenizer;
 import java.util.Vector;
 
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
+import javax.swing.ListSelectionModel;
 import javax.swing.table.TableColumn;
+import javax.swing.table.TableColumnModel;
 
 
 
@@ -98,6 +103,34 @@ public class ImportedTextFile
 	   * The number of data starting line
 	   */
 	  private int dataStartingLineNumber = 1;
+	  
+	  /**
+	   * vector containing column Title strings
+	   */
+	  // contains column titles
+	  private Vector colTitles;
+
+	  /**
+	   * vector containing AttributePage objects
+	   */
+	  private Vector columnAttributes;
+
+		/**
+	   * vector containing Orderedmaps of the AttributePage objects
+	   */
+	  private Vector columnMaps;
+
+	  private boolean[] needToSetPageData;
+
+	  /**
+	   * vector of vectors with table data
+	   */
+	  private Vector vec;
+
+
+	  // Column Model of the table containting all the columns
+	  private TableColumnModel fullColumnModel = null;
+
 	  
 	  //represents the unknow delimiter
 	  public static final String  UNKNOWN = "unknown";
@@ -544,7 +577,124 @@ public class ImportedTextFile
 	  }
 
 	
-	
+	 
+	  /**
+	   * Parse the data file into a JTable with the given delimiter 
+	   * @param ignoreConsequtiveDelimiters
+	   * @param sDelim
+	   */
+	  public void parseDelimited(boolean ignoreConsequtiveDelimiters, String sDelim) {
+
+		    if (lines != null) {
+		      int start = dataStartingLineNumber; // startingLine is 1-based not 0-based
+		      int numcols = 0; // init
+		      /*if (hasReturnedFromScreen2 && isScreen1Unchanged() && colTitles != null) {
+		        //don't redefine column headings etc - keep user's previous values,
+		        // since nothing has changed. In this case colTitles is already set:
+		        numcols = colTitles.size();
+		      } else {*/
+		        if (columnLabelsInStartingLine) {
+		          colTitles = getColumnValues(lines[dataStartingLineNumber - 1],  ignoreConsequtiveDelimiters, sDelim);
+		        } else {
+		          colTitles = getColumnValues(lines[dataStartingLineNumber - 1], ignoreConsequtiveDelimiters, sDelim); // use just to get # of cols
+		          int temp = colTitles.size();
+		          colTitles = new Vector();
+		          for (int l = 0; l < temp; l++) {
+		            colTitles.addElement("Column " + (l + 1));
+		          }
+		          start--; // include first line
+		        }
+		        vec = new Vector();
+		        Vector vec1;
+		        numcols = colTitles.size();
+		        for (int i = start; i < nlines; i++) {
+		          vec1 = getColumnValues(lines[i], ignoreConsequtiveDelimiters, sDelim);
+		          boolean missing = false;
+		          int currSize = vec1.size();
+		          while (currSize < numcols) {
+		            vec1.addElement("");
+		            currSize++;
+		            missing = true;
+		          }
+		          vec.addElement(vec1);
+		        }
+
+		        buildTable();
+		      //}
+		      //if(!hasReturnedFromScreen2) {
+
+		        columnAttributes = new Vector();
+		        needToSetPageData = new boolean[numcols];
+		        Arrays.fill(needToSetPageData, true);
+
+		      //}
+		    }
+		    //DataScrollPanel.getViewport().removeAll();
+		    //DataScrollPanel.getViewport().add(table);
+		    //hasReturnedFromScreen2 = false;
+		  }
+	  
+	      
+	  /*
+	   * parses a line of text data into a Vector of column data for that row
+	   *
+	   * @param str a line of string data from input
+	   * @return a vector with each elements being column data for the row
+	   */
+	  private Vector getColumnValues(String str, boolean ignoreConsequtiveDelimiters, String sDelim) {
+	    //String sDelim = getDelimiterString();
+	    String oldToken = "";
+	    String token = "";
+	    Vector res = new Vector();
+	    //ignoreConsequtiveDelimiters = ConsecutiveCheckBox.isSelected();
+	    if (ignoreConsequtiveDelimiters) {
+	      StringTokenizer st = new StringTokenizer(str, sDelim, false);
+	      while (st.hasMoreTokens()) {
+	        token = st.nextToken().trim();
+	        res.addElement(token);
+	      }
+	    } else {
+	      StringTokenizer st = new StringTokenizer(str, sDelim, true);
+	      while (st.hasMoreTokens()) {
+	        token = st.nextToken().trim();
+	        if (!inDelimiterList(token, sDelim)) {
+	          res.addElement(token);
+	        } else {
+	          if (inDelimiterList(oldToken, sDelim)) {
+	              //&& (inDelimiterList(token, sDelim))) {
+	            res.addElement("");
+	          }
+	        }
+	        oldToken = token;
+	      }
+	    }
+	    return res;
+	  }
+
+	  
+	  private boolean inDelimiterList(String token, String delim) {
+		    boolean result = false;
+		    int test = delim.indexOf(token);
+		    if (test > -1) {
+		      result = true;
+		    }
+		    return result;
+		  }
+
+	  /*
+	   * builds JTable from input data
+	   */
+	  private void buildTable() {
+	    UneditableTableModel myTM = new UneditableTableModel(vec, colTitles);
+	    table = new JTable(myTM);
+
+	    table.setColumnSelectionAllowed(true);
+	    table.setRowSelectionAllowed(false);
+	    table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+	    table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+	    fullColumnModel = table.getColumnModel();
+
+	  }
 	  
 
 }

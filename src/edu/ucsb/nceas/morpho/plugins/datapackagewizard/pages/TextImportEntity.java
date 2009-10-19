@@ -81,7 +81,7 @@ public class TextImportEntity extends AbstractUIPage
 	   {
 		   if(frame == null)
 		   {
-			   Log.debug(30, "The WizardContainerFrame is null and we can't initialize TexImpoortEntity");
+			   Log.debug(5, "The WizardContainerFrame is null and we can't initialize TexImpoortEntity");
 			   return;
 		   }
 		   this.frame = frame;	   
