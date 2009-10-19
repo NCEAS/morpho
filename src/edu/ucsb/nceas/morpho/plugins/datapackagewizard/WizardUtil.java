@@ -28,6 +28,8 @@
 package edu.ucsb.nceas.morpho.plugins.datapackagewizard;
 
 import java.lang.reflect.Constructor;
+import java.text.DateFormat;
+import java.util.Date;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Vector;
@@ -413,5 +415,65 @@ public class WizardUtil
 		Log.debug(40, "The last element in the given path "+path + " is "+elementName);
 		return elementName;
 	}
+	
+	/**
+	 * Check if a string is a integer format
+	 * @param s
+	 * @return
+	 */
+	public static boolean isInteger(String s) {
+		    boolean res = true;
+		    try {
+		      int III = Integer.parseInt(s);
+		    } catch (Exception w) {
+		      res = false;
+		    }
+		    return res;
+		  }
+
+
+	/**
+	 * Check if a string is a double format
+	 * @param s
+	 * @return
+	 */
+	public static boolean isDouble(String s) {
+		    boolean res = true;
+		    try {
+		      Double III = Double.valueOf(s);
+		    } catch (Exception w) {
+		      res = false;
+		    }
+		    return res;
+		  }
+
+    /**
+     * Check if a string is date format.
+     * @param s
+     * @return
+     */
+	public static boolean isDate(String s) {
+		    DateFormat dateFormat;
+		    Date dt;
+		    dateFormat = DateFormat.getDateInstance(DateFormat.SHORT);
+		    boolean res = true;
+		    try {
+		      dt = dateFormat.parse(s);
+		    } catch (Exception w) {
+		      try {
+		        dateFormat = DateFormat.getDateInstance(DateFormat.MEDIUM);
+		        dt = dateFormat.parse(s);
+		      } catch (Exception w1) {
+		        try {
+		          dateFormat = DateFormat.getDateInstance(DateFormat.LONG);
+		          dt = dateFormat.parse(s);
+		        } catch (Exception w2) {
+		          res = false;
+		        }
+		      }
+		    }
+		    return res;
+		  }
+
 	
 }

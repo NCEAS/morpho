@@ -88,8 +88,21 @@ public class ImportedTextFile
 	   */
 	  private String guessedDelimiter = null;
 	  
+	  /*
+	   * indication if  column label is in the starting line
+	   */
+	  private boolean columnLabelsInStartingLine = false;
+	  
+	  
+	  /*
+	   * The number of data starting line
+	   */
+	  private int dataStartingLineNumber = 1;
+	  
 	  //represents the unknow delimiter
 	  public static final String  UNKNOWN = "unknown";
+	  
+	  
 	  
 	  
 	  /**
@@ -178,18 +191,64 @@ public class ImportedTextFile
 	}
 
 
-	
+	/**
+	 * Gets the guessed delimiter
+	 * @return
+	 */
 	public String getGuessedDelimiter() 
 	{
 		return guessedDelimiter;
 	}
 
+	/**
+	 * Set the guessed delimiter
+	 * @param guessedDelimiter
+	 */
 	public void setGuessedDelimiter(String guessedDelimiter) 
 	{
 		this.guessedDelimiter = guessedDelimiter;
 	}
 	
+	/**
+	 * Indicates if the column label is in starting line
+	 * @return
+	 */
+	public boolean isColumnLabelsInStartingLine() 
+	{
+		return columnLabelsInStartingLine;
+	}
+
+	/**
+	 * Sets if the column label is in the starting line
+	 * @param columnLabelsInStartingLine
+	 */
+	public void setColumnLabelsInStartingLine(boolean columnLabelsInStartingLine) 
+	{
+		this.columnLabelsInStartingLine = columnLabelsInStartingLine;
+	}
 	
+	/**
+	 * Gets the number of data starting line
+	 * @return
+	 */
+	public int getDataStartingLineNumber() 
+	{
+		return dataStartingLineNumber;
+	}
+    
+	/**
+	 * Sets the number of data starting line
+	 * @param dataStartingLineNumber
+	 */
+	public void setDataStartingLineNumber(int dataStartingLineNumber) 
+	{
+		if(dataStartingLineNumber <1)
+		{
+			dataStartingLineNumber = 1;
+		}
+		this.dataStartingLineNumber = dataStartingLineNumber;
+	}
+
 	
 	
 	/**
@@ -483,6 +542,9 @@ public class ImportedTextFile
 		  Log.debug(35, "the return value of ImprtedTExtFile.equal method is "+equal);
 		  return equal;
 	  }
+
+	
+	
 	  
 
 }

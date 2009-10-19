@@ -42,12 +42,15 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 
 import edu.ucsb.nceas.morpho.framework.AbstractUIPage;
 import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WidgetFactory;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardContainerFrame;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardSettings;
+import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardUtil;
 import edu.ucsb.nceas.morpho.util.Log;
 import edu.ucsb.nceas.morpho.util.Util;
 import edu.ucsb.nceas.utilities.OrderedMap;
@@ -146,12 +149,18 @@ public class TextImportEntity extends AbstractUIPage
 		    JLabel StartingLineLabel = WidgetFactory.makeLabel("Start import at row: ", false, new Dimension(120,20));
 		    StartingLinePanel.add(StartingLineLabel);
 		    StartingLineTextField = WidgetFactory.makeOneLineShortTextField("1");
+		    TextFieldChangeAction textFieldAction = new TextFieldChangeAction();
+		    StartingLineTextField.addActionListener(textFieldAction);
+		    TextFieldFocusChange textFieldFocus = new TextFieldFocusChange();
+		    StartingLineTextField.addFocusListener(textFieldFocus);
 		    StartingLinePanel.add(StartingLineTextField);
 		    JLabel blank = WidgetFactory.makeLabel("      ",false);
 		    StartingLinePanel.add(blank);
 		    ColumnLabelsCheckBox = WidgetFactory.makeCheckBox("Column Labels are in starting row", false);
 		    ColumnLabelsCheckBox.setActionCommand("Column Labels are in starting row");
 		    ColumnLabelsCheckBox.setSelected(false);
+		    CheckBoxListener checkBoxListener = new CheckBoxListener();
+		    ColumnLabelsCheckBox.addItemListener(checkBoxListener);
 		    StartingLinePanel.add(ColumnLabelsCheckBox);	    
 		    vbox.add(StartingLinePanel);
 		    vbox.add(WidgetFactory.makeDefaultSpacer());
@@ -340,6 +349,96 @@ public class TextImportEntity extends AbstractUIPage
 		  return true;
 	  }
 	  
+	  
+	  /*
+	   * Listener for check box selection
+	   */
+	  class CheckBoxListener implements java.awt.event.ItemListener 
+	  {
+		    public void itemStateChanged(java.awt.event.ItemEvent event) 
+		    {
+		      Object object = event.getSource();
+		      if (object == ColumnLabelsCheckBox)
+		        columnLabelsCheckBox_itemStateChanged(event);
+		    }
+	  }
+
+	   private void columnLabelsCheckBox_itemStateChanged(java.awt.event.ItemEvent event) 
+	   {
+		    boolean labelsInStartingLine = ColumnLabelsCheckBox.isSelected();
+		    textFile.setColumnLabelsInStartingLine(labelsInStartingLine);
+		    
+	   }
+	   
+	  
+	   /*
+	    * Action listener for text field value change
+	    * @author tao
+	    *
+	    */
+	   class TextFieldChangeAction implements java.awt.event.ActionListener 
+	   {
+
+		    public void actionPerformed(java.awt.event.ActionEvent event) 
+		    {
+		      Object object = event.getSource();
+		      if (object == StartingLineTextField)
+		        startingLineTextField_actionPerformed(event);
+		    }
+		  }
+
+	  private void startingLineTextField_actionPerformed(java.awt.event.ActionEvent event) 
+	  {
+		    
+		    String str = StartingLineTextField.getText();
+		    handleStartingLineTextChange(str);
+     }
+	  
+	 /*
+	  * Action to handle starting line text change
+	  */
+	 private void handleStartingLineTextChange(String str)
+	 {
+		 int startingLine =1;
+		 if (WizardUtil.isInteger(str)) 
+		    {
+		      startingLine = (Integer.valueOf(str)).intValue();
+		      // startingLine is assumed to be 1-based
+		      if (startingLine < 1) 
+		      {
+		        startingLine = 1;
+		        StartingLineTextField.setText("1");
+		      }
+		    } 
+		    else 
+		    {
+		      StartingLineTextField.setText(String.valueOf(startingLine));
+		    }
+		    textFile.setDataStartingLineNumber(startingLine);
+	 }
+
+
+	 /*
+	  * Listener for text field focus change event
+	  */
+	 class TextFieldFocusChange extends java.awt.event.FocusAdapter 
+	 {
+		    public void focusLost(java.awt.event.FocusEvent event) 
+		    {
+		      Object object = event.getSource();
+		      if (object == StartingLineTextField)
+		      {
+		        startingLineTextField_focusLost(event);
+		      }
+		    }
+	 }
+
+	 private void startingLineTextField_focusLost(java.awt.event.FocusEvent event) 
+	 {
+		    String str = StartingLineTextField.getText();
+		    handleStartingLineTextChange(str);
+	  }
+		  	  
 	  
 	  private JLabel nameLabel = null;
 	  private JTextField TableNameTextField = new JTextField();
