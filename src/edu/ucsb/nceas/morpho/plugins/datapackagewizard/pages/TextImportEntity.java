@@ -262,6 +262,9 @@ public class TextImportEntity extends AbstractUIPage
 			  {
 				  //File object was changed we need to update both data file and data panel
 				  textFile = newFile;
+				  String str = StartingLineTextField.getText();
+				  handleStartingLineTextChange(str);
+				  textFile.setColumnLabelsInStartingLine(ColumnLabelsCheckBox.isSelected());
 				  buildLinesTable();
 				  updateDataScrollPanel();
 				  //set default table name only when data file was changed
@@ -299,6 +302,10 @@ public class TextImportEntity extends AbstractUIPage
 	   */
 	  public boolean onAdvanceAction()
 	  {
+		  if(textFile == null)
+		  {
+			 Log.debug(5, "Text File objext is null, couldn't continue!");	 
+		  }
 		  if(Util.isBlank(TableNameTextField.getText()))
 		  {
 			 WidgetFactory.hiliteComponent(nameLabel);
@@ -307,7 +314,11 @@ public class TextImportEntity extends AbstractUIPage
 		  }
 		  else
 		  {
-			 WidgetFactory.unhiliteComponent(nameLabel);
+			  //make sure textFile contains current panel setting
+			  String str = StartingLineTextField.getText();
+			  handleStartingLineTextChange(str);
+			  textFile.setColumnLabelsInStartingLine(ColumnLabelsCheckBox.isSelected());			
+			  WidgetFactory.unhiliteComponent(nameLabel);
 		     return true;
 		  }
 	  }

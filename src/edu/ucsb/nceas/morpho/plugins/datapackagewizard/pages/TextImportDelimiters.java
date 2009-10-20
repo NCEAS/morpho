@@ -72,6 +72,9 @@ public class TextImportDelimiters extends AbstractUIPage
 	   private String delimiter = EMPTYSTRING;
 	   private int initDataStartingLineNumber = 1; // store initial dataStaringLineNumber from TextFile
 	   private boolean initColumnLabelsInStartingLine = false;
+	   private CheckBoxItemListener checkBoxListener = new CheckBoxItemListener();
+	   private TextFieldChangeActionListener textChangeListener = new TextFieldChangeActionListener();
+	   private TextFieldFocusChangeListener textFocusChangeListener = new TextFieldFocusChangeListener();
 	
 	   /*
 	    * flag used to avoid parsing everytime a checkbox is changed
@@ -159,8 +162,7 @@ public class TextImportDelimiters extends AbstractUIPage
 		    delimitersPanel.setBorder(new javax.swing.border.EmptyBorder(WizardSettings.PADDING, 0, 0,
 		            WizardSettings.PADDING));
 		    
-		    // guessDelimiter already was called in parseFile in TextImportEntity, so now we know the guessed delimiter
-		    initDelimiterCheckBox(textFile.getGuessedDelimiter());
+		   
 		    vbox.add(delimitersPanel);
 		    vbox.add(WidgetFactory.makeDefaultSpacer());
 		    vbox.add(WidgetFactory.makeDefaultSpacer());
@@ -176,26 +178,21 @@ public class TextImportDelimiters extends AbstractUIPage
 		    vbox.add(consecutivePanel);
 		    vbox.add(WidgetFactory.makeDefaultSpacer());
 		    vbox.add(WidgetFactory.makeDefaultSpacer());
-			
+			registerListener();//it should called before initDelimiterCheckBox
+		    
+		    
+			//intiDelimiterCheckBox only sets up check box correctly, 
+            //it wouldn't cause any action since we unregister listener first, the register listener.
+			// guessDelimiter method already was called in parseFile in TextImportEntity, so now we know the guessed delimiter
+			initDelimiterCheckBox(textFile.getGuessedDelimiter());
 		    delimiter = getRealDelimiterString();
-		    Log.debug(30, "init the data panel with parsed data in init method");
+		    Log.debug(30, "Parsing the delimitered table!!!!! Init the data panel with parsed data in init method");
 		    textFile.parseDelimited(ignoreConsequtiveDelimiters, delimiter);
 		    DataScrollPanel.getViewport().removeAll();
 		    DataScrollPanel.getViewport().add(textFile.getTable());
 		    vbox.add(DataScrollPanel);
 		    
-		    CheckBoxItemListener checkBoxListener = new CheckBoxItemListener();
-		    commaCheckBox.addItemListener(checkBoxListener);
-		    spaceCheckBox.addItemListener(checkBoxListener);
-		    semicolonCheckBox.addItemListener(checkBoxListener);
-		    consecutiveCheckBox.addItemListener(checkBoxListener);
-		    otherCheckBox.addItemListener(checkBoxListener);
-		    tabCheckBox.addItemListener(checkBoxListener);
-		    TextFieldChangeActionListener textChangeListener = new TextFieldChangeActionListener();
-		    TextFieldFocusChangeListener textFocusChangeListener = new TextFieldFocusChangeListener();
-		    otherDelimiterTextField.addActionListener(textChangeListener);
-		    otherDelimiterTextField.addFocusListener(textFocusChangeListener);
-		   
+		    	   
 		    
 	   }
 	  
@@ -282,19 +279,37 @@ public class TextImportDelimiters extends AbstractUIPage
 			   else
 			   {
 				   //check if some values in previous page (ImportEntity) were changed
+				   // the following codes handle click previous button to previous page and come back again(user may did some change in previous page)
 				   int newDataStartingLineNumber = newTextFile.getDataStartingLineNumber();
-				   boolean newColumnLabelsInStartingLine = newTextFile.isColumnLabelsInStartingLine();
-				   if(newDataStartingLineNumber != initDataStartingLineNumber || newColumnLabelsInStartingLine != initColumnLabelsInStartingLine ||
-						 !newTextFile.equals(textFile) )
+				   Log.debug(30, "The init dataStartingLineNumber is "+initDataStartingLineNumber);
+				   Log.debug(30, "The new dataStartingLineNumber is "+newDataStartingLineNumber);
+				   boolean newColumnLabelsInStartingLine= newTextFile.isColumnLabelsInStartingLine();
+				   Log.debug(30, "The init ColumnLabeIsInStartingLine is "+initColumnLabelsInStartingLine);
+				   Log.debug(30, "The new ColumnLabeIsInStartingLine is"+newColumnLabelsInStartingLine);
+				   if( !newTextFile.equals(textFile))
+				   {
+					   Log.debug(30, "Imported text file itself has been changed, we need to re-parse the file");
+					   textFile = newTextFile;
+					   delimiter = textFile.getGuessedDelimiter();
+					   initDelimiterCheckBox(textFile.getGuessedDelimiter());
+					   forceUpdateDataPanel(getRealDelimiterString());
+				   }
+				   else if(newDataStartingLineNumber != initDataStartingLineNumber || newColumnLabelsInStartingLine != initColumnLabelsInStartingLine)
 				   {
 					   textFile = newTextFile;
-					   Log.debug(30, "Some values in previous page(TextImportDelimiter) has been changed, we need to re-parse the file");
+  				       Log.debug(30, "Some values in previous page(TextImportEntity) has been changed, we need to re-parse the file");
 					   forceUpdateDataPanel(getRealDelimiterString());
 				   }
 				   else
 				   {
-					   Log.debug(30, "No values in previous page(TextImportDelimiter) has been changed, we need do nothing");
+					   Log.debug(30, "No values in previous page(TextImportEnity) has been changed, we need do nothing");
 				   }
+				   //reset init value from previous page
+				   initDataStartingLineNumber = newDataStartingLineNumber;
+				   Log.debug(30, "Reset init dataStartingLineNumber with value "+newDataStartingLineNumber);
+				   initColumnLabelsInStartingLine = newColumnLabelsInStartingLine;
+				   Log.debug(30, "Reset init ColunLablesInStartingLine with value "+newColumnLabelsInStartingLine);
+				  
 			   }
 			  
 		   }
@@ -376,16 +391,19 @@ public class TextImportDelimiters extends AbstractUIPage
 	  }
 	  
 	  /*
-	   * Set guessed Delimiter
+	   * Set guessed Delimiter. First we will remove check box listener, then add them back.
+	   * So in the initDelimiterCheckBox method will not cause any table parsing.
 	   *
 	   * @return String
 	   */
 	  private void initDelimiterCheckBox(String delim) {
 	    //parseOn = false;
+		unRegisterListener();
 	    tabCheckBox.setSelected(false);
 	    commaCheckBox.setSelected(false);
 	    spaceCheckBox.setSelected(false);
 	    semicolonCheckBox.setSelected(false);
+	    otherDelimiterTextField.setText(EMPTYSTRING);
 	    otherCheckBox.setSelected(false);
 	    if (delim != null && delim.equals(TAB)) {
 	      tabCheckBox.setSelected(true);
@@ -412,6 +430,79 @@ public class TextImportDelimiters extends AbstractUIPage
 		    otherDelimiterTextField.setText(delim);
 		    //parseOn = true;
 	    }
+	    registerListener();
+	  }
+	  
+	  /*
+	   * Register listener to check box and text field.
+	   */
+	  private void registerListener()
+	  {
+		  if(commaCheckBox!= null)
+		  {
+		     commaCheckBox.addItemListener(checkBoxListener);
+		  }
+		  if(spaceCheckBox != null)
+		  {
+		     spaceCheckBox.addItemListener(checkBoxListener);
+		  }
+		  if(semicolonCheckBox != null)
+		  {
+		     semicolonCheckBox.addItemListener(checkBoxListener);
+		  }
+		  if(consecutiveCheckBox != null)
+		  {
+		     consecutiveCheckBox.addItemListener(checkBoxListener);
+		  }
+		  if(otherCheckBox != null)
+		  {
+			  otherCheckBox.addItemListener(checkBoxListener);
+		  }
+		  if(tabCheckBox != null)
+		  {
+		     tabCheckBox.addItemListener(checkBoxListener);
+		  }
+		  if(otherDelimiterTextField != null)
+		  {
+		     otherDelimiterTextField.addActionListener(textChangeListener);
+		     otherDelimiterTextField.addFocusListener(textFocusChangeListener);
+		  }
+	  }
+	  
+	  /*
+	   * Unregister listener to check box and text field
+	   */
+	  private void unRegisterListener()
+	  {
+		  if(commaCheckBox!= null)
+		  {
+		     commaCheckBox.removeItemListener(checkBoxListener);
+		  }
+		  if(spaceCheckBox != null)
+		  {
+		     spaceCheckBox.removeItemListener(checkBoxListener);
+		  }
+		  if(semicolonCheckBox != null)
+		  {
+		     semicolonCheckBox.removeItemListener(checkBoxListener);
+		  }
+		  if(consecutiveCheckBox != null)
+		  {
+		     consecutiveCheckBox.removeItemListener(checkBoxListener);
+		  }
+		  if(otherCheckBox != null)
+		  {
+			  otherCheckBox.removeItemListener(checkBoxListener);
+		  }
+		  if(tabCheckBox != null)
+		  {
+		     tabCheckBox.removeItemListener(checkBoxListener);
+		  }
+		  if(otherDelimiterTextField != null)
+		  {
+		     otherDelimiterTextField.removeActionListener(textChangeListener);
+		     otherDelimiterTextField.removeFocusListener(textFocusChangeListener);
+		  }
 	  }
 	  
 	  /*
@@ -461,6 +552,7 @@ public class TextImportDelimiters extends AbstractUIPage
 	   */
 	  private void forceUpdateDataPanel(String delim)
 	  {
+		      Log.debug(30, "Parsing the delimitered table!!!!! Update the data panel.");
 			  textFile.parseDelimited(ignoreConsequtiveDelimiters, delim);
 			  DataScrollPanel.getViewport().removeAll();
 			  DataScrollPanel.getViewport().add(textFile.getTable());
@@ -523,15 +615,23 @@ public class TextImportDelimiters extends AbstractUIPage
 			 int stateChange = event.getStateChange();
 			 boolean delim_other = (stateChange==ItemEvent.SELECTED);
 			 Log.debug(32, "The selection status of other box is "+delim_other);
-			 otherDelimiterTextField.setEnabled(stateChange==ItemEvent.SELECTED);
+			 if(!delim_other)
+			 {
+				 //if unselect other check box, we need clear the other delimiter text field
+				 otherDelimiterTextField.setText(EMPTYSTRING);
+			 }
+			 otherDelimiterTextField.setEnabled(delim_other);
 		     updateDataPanel();		    
 		  }
 
+		  /*
+		   * This method will force update data panel even delimiter wasn't changed.
+		   */
 		  private void ConsecutiveCheckBox_itemStateChanged(java.awt.event.ItemEvent event) {
 			  int stateChange = event.getStateChange();
 			  ignoreConsequtiveDelimiters = (stateChange==ItemEvent.SELECTED);
 			  Log.debug(30, "ignoreConsecutive delmiters value is "+ignoreConsequtiveDelimiters);
-			  updateDataPanel();
+			  forceUpdateDataPanel(getRealDelimiterString());
 
 		    
 		  }
