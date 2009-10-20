@@ -114,6 +114,7 @@ public class TextImportDelimiters extends AbstractUIPage
 		   }
 		   initDataStartingLineNumber = textFile.getDataStartingLineNumber();
 		   initColumnLabelsInStartingLine = textFile.isColumnLabelsInStartingLine();
+		   delimiter = textFile.getGuessedDelimiter();
 		   init();
 		   
 	   }
@@ -123,7 +124,7 @@ public class TextImportDelimiters extends AbstractUIPage
 	    */
 	   private void init()
 	   {
-		    CheckBoxItemListener checkBoxListener = new CheckBoxItemListener();
+		    
 		    this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		    JPanel vbox = this;
 		    JLabel desc1 = WidgetFactory.makeHTMLLabel(
@@ -153,18 +154,11 @@ public class TextImportDelimiters extends AbstractUIPage
 		    delimitersPanel.add(otherCheckBox);
 		    otherDelimiterTextField = WidgetFactory.makeOneLineShortTextField();
 		    otherDelimiterTextField.setText(EMPTYSTRING);
-		    TextFieldChangeActionListener textChangeListener = new TextFieldChangeActionListener();
-		    TextFieldFocusChangeListener textFocusChangeListener = new TextFieldFocusChangeListener();
-		    otherDelimiterTextField.addActionListener(textChangeListener);
-		    otherDelimiterTextField.addFocusListener(textFocusChangeListener);
+		   
 		    delimitersPanel.add(otherDelimiterTextField);
 		    delimitersPanel.setBorder(new javax.swing.border.EmptyBorder(WizardSettings.PADDING, 0, 0,
 		            WizardSettings.PADDING));
-		    tabCheckBox.addItemListener(checkBoxListener);
-		    commaCheckBox.addItemListener(checkBoxListener);
-		    spaceCheckBox.addItemListener(checkBoxListener);
-		    semicolonCheckBox.addItemListener(checkBoxListener);
-		    otherCheckBox.addItemListener(checkBoxListener);
+		    
 		    // guessDelimiter already was called in parseFile in TextImportEntity, so now we know the guessed delimiter
 		    initDelimiterCheckBox(textFile.getGuessedDelimiter());
 		    vbox.add(delimitersPanel);
@@ -175,7 +169,7 @@ public class TextImportDelimiters extends AbstractUIPage
 		    JPanel consecutivePanel = WidgetFactory.makePanel(1);	
 		    consecutiveCheckBox = WidgetFactory.makeCheckBox(TREATCONSECUTIVE, false);
 		    consecutiveCheckBox.setActionCommand(TREATCONSECUTIVE);
-		    consecutiveCheckBox.addItemListener(checkBoxListener);
+		    
 		    consecutivePanel.add(consecutiveCheckBox);
 		    consecutivePanel.setBorder(new javax.swing.border.EmptyBorder(WizardSettings.PADDING, 0, 0,
 		            WizardSettings.PADDING));
@@ -183,11 +177,26 @@ public class TextImportDelimiters extends AbstractUIPage
 		    vbox.add(WidgetFactory.makeDefaultSpacer());
 		    vbox.add(WidgetFactory.makeDefaultSpacer());
 			
-		    //delimiter = getRealDelimiterString();
-		    //textFile.parseDelimited(ignoreConsequtiveDelimiters, delimiter);
-		    //DataScrollPanel.getViewport().removeAll();
-		    //DataScrollPanel.getViewport().add(textFile.getTable());
+		    delimiter = getRealDelimiterString();
+		    Log.debug(30, "init the data panel with parsed data in init method");
+		    textFile.parseDelimited(ignoreConsequtiveDelimiters, delimiter);
+		    DataScrollPanel.getViewport().removeAll();
+		    DataScrollPanel.getViewport().add(textFile.getTable());
 		    vbox.add(DataScrollPanel);
+		    
+		    CheckBoxItemListener checkBoxListener = new CheckBoxItemListener();
+		    commaCheckBox.addItemListener(checkBoxListener);
+		    spaceCheckBox.addItemListener(checkBoxListener);
+		    semicolonCheckBox.addItemListener(checkBoxListener);
+		    consecutiveCheckBox.addItemListener(checkBoxListener);
+		    otherCheckBox.addItemListener(checkBoxListener);
+		    tabCheckBox.addItemListener(checkBoxListener);
+		    TextFieldChangeActionListener textChangeListener = new TextFieldChangeActionListener();
+		    TextFieldFocusChangeListener textFocusChangeListener = new TextFieldFocusChangeListener();
+		    otherDelimiterTextField.addActionListener(textChangeListener);
+		    otherDelimiterTextField.addFocusListener(textFocusChangeListener);
+		   
+		    
 	   }
 	  
 	   /**
@@ -273,8 +282,8 @@ public class TextImportDelimiters extends AbstractUIPage
 			   else
 			   {
 				   //check if some values in previous page (ImportEntity) were changed
-				   int newDataStartingLineNumber = textFile.getDataStartingLineNumber();
-				   boolean newColumnLabelsInStartingLine = textFile.isColumnLabelsInStartingLine();
+				   int newDataStartingLineNumber = newTextFile.getDataStartingLineNumber();
+				   boolean newColumnLabelsInStartingLine = newTextFile.isColumnLabelsInStartingLine();
 				   if(newDataStartingLineNumber != initDataStartingLineNumber || newColumnLabelsInStartingLine != initColumnLabelsInStartingLine ||
 						 !newTextFile.equals(textFile) )
 				   {

@@ -91,7 +91,7 @@ public class ImportedTextFile
 	  /*
 	   * guessed delimiter base on parsing the text file
 	   */
-	  private String guessedDelimiter = null;
+	  private String guessedDelimiter = " ";
 	  
 	  /*
 	   * indication if  column label is in the starting line
@@ -411,6 +411,12 @@ public class ImportedTextFile
 	      //SemicolonCheckBox.setSelected(true);
 	      //parseOn = true;
 	      return TextImportDelimiters.SEMICOLON;
+	    } else if (mostFrequent(":") > 0) {
+	      //SpaceCheckBox.setSelected(true);
+	      //OtherCheckBox.setSelected(true);
+	      //OtherTextField.setText(":");
+	      //parseOn = true;
+	      return TextImportDelimiters.COLON;
 	    } else {
 	      //SpaceCheckBox.setSelected(true);
 	      //parseOn = true;
