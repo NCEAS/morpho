@@ -398,25 +398,19 @@ public class ImportedTextFile
 	    if (mostFrequent("\t") > 0) {
 	      //TabCheckBox.setSelected(true);
 	      //parseOn = true;
-	      return "tab";
+	      return TextImportDelimiters.TAB;
 	    } else if (mostFrequent(",") > 0) {
 	      //CommaCheckBox.setSelected(true);
 	      //parseOn = true;
-	      return "comma";
+	      return TextImportDelimiters.COMMA;
 	    } else if (mostFrequent(" ") > 0) {
 	      //SpaceCheckBox.setSelected(true);
 	     // parseOn = true;
-	      return "space";
+	      return TextImportDelimiters.SPACE;
 	    } else if (mostFrequent(";") > 0) {
 	      //SemicolonCheckBox.setSelected(true);
 	      //parseOn = true;
-	      return "semicolon";
-	    } else if (mostFrequent(":") > 0) {
-	      //SpaceCheckBox.setSelected(true);
-	      //OtherCheckBox.setSelected(true);
-	      //OtherTextField.setText(":");
-	      //parseOn = true;
-	      return "colon";
+	      return TextImportDelimiters.SEMICOLON;
 	    } else {
 	      //SpaceCheckBox.setSelected(true);
 	      //parseOn = true;

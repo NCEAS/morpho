@@ -81,11 +81,16 @@ public class TextImportEntity extends AbstractUIPage
 	   {
 		   if(frame == null)
 		   {
-			   Log.debug(5, "The WizardContainerFrame is null and we can't initialize TexImpoortEntity");
+			   Log.debug(5, "The WizardContainerFrame is null and we can't initialize TexImportEntity");
 			   return;
 		   }
 		   this.frame = frame;	   
 		   textFile = frame.getImportDataTextFile();
+		   if(textFile == null)
+		   {
+			   Log.debug(5, "The TextFile object is null and we can't initialize TexImportEntity");
+			   return;
+		   }
 		   buildLinesTable();
 		   nextPageID = DataPackageWizardInterface.TEXT_IMPORT_DELIMITERS;
 		   init();
@@ -247,7 +252,12 @@ public class TextImportEntity extends AbstractUIPage
 		  {
 			  Log.debug(35, "The beginning of the onLoadAction");
 			  ImportedTextFile newFile = frame.getImportDataTextFile();
-			  boolean isSame = textFile.equals(newFile);
+			  if(newFile == null)
+			  {
+				  Log.debug(5, "The ImportedTextFile from WizardContainerFrame is null and we can't load TexImportEntity");
+				  return;
+			  }
+			  boolean isSame = newFile.equals(textFile);
 			  if(!isSame)
 			  {
 				  //File object was changed we need to update both data file and data panel
@@ -262,6 +272,10 @@ public class TextImportEntity extends AbstractUIPage
 			  }
 			 
 			  Log.debug(35, "The status of isTextFile is ========"+isTextFile);
+		  }
+		  else
+		  {
+			  Log.debug(5, "The WizardContainerFrame is null and we can't load TexImportEntity");
 		  }
 	  }
 

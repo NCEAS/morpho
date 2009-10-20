@@ -30,6 +30,7 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
+import java.awt.event.ItemEvent;
 import java.io.File;
 
 import javax.swing.Box;
@@ -47,6 +48,7 @@ import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WidgetFactory;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardContainerFrame;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardSettings;
+import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardUtil;
 import edu.ucsb.nceas.morpho.util.Log;
 import edu.ucsb.nceas.utilities.OrderedMap;
 
@@ -58,18 +60,30 @@ import edu.ucsb.nceas.utilities.OrderedMap;
  */
 public class TextImportDelimiters extends AbstractUIPage 
 {
-	   private String pageID = DataPackageWizardInterface.TEXT_IMPORT_DELIMITERS;
+	   private static final String EMPTYSTRING = "";
+	   private String pageID = DataPackageWizardInterface.TEXT_IMPORT_DELIMITERS; 
 	   private String title = "Text Import";
 	   private String subTitle = null;
 	   private String pageNumber = null;
 	   private boolean ignoreConsequtiveDelimiters = false;
 	   private WizardContainerFrame frame = null;
 	   private ImportedTextFile textFile = null;
-	   private static final String TAB = "tab";
-	   private static final String COMMA = "comma";
-	   private static final String SPACE = "space";
-	   private static final String SEMICOLON = "semicolon";
-	   private static final String OTHER = "other";
+	   private String otherDelimiter= EMPTYSTRING;
+	   private String delimiter = EMPTYSTRING;
+	   private int initDataStartingLineNumber = 1; // store initial dataStaringLineNumber from TextFile
+	   private boolean initColumnLabelsInStartingLine = false;
+	
+	   /*
+	    * flag used to avoid parsing everytime a checkbox is changed
+	    */
+	   //private boolean parseOn = true;
+	  
+	   public static final String TAB = "tab";
+	   public static final String COMMA = "comma";
+	   public static final String SPACE = "space";
+	   public static final String SEMICOLON = "semicolon";
+	   public static final String OTHER = "other";
+	   public static final String COLON ="colon";
 	   private static final String TREATCONSECUTIVE = "Treat consecutive delimiters as one";
 	   
 	   /**
@@ -80,16 +94,28 @@ public class TextImportDelimiters extends AbstractUIPage
 	   {
 		   this.frame = frame;
 		   nextPageID = DataPackageWizardInterface.TEXT_IMPORT_ATTRIBUTE;
-		   if(this.frame != null)
+		   if(this.frame == null)
 		   {
-			   textFile = frame.getImportDataTextFile();
+			   Log.debug(5, "The WizardContainerFrame is null and we can't initialize TexImportDelimiters");
+		       return;
+			 
 		   }
 		   else
 		   {
-			   Log.debug(5, "The WizardContainerFrame is null and we can't initialize TexImportDelimiters");
+			   textFile = frame.getImportDataTextFile();
+			   if(textFile == null)
+			   {
+				 
+				   Log.debug(5, "The TextFile object is null and we can't initialize TexImportDelimiters");
+				   return;
+				   
+			   }
+			  
 		   }
-		   textFile.parseDelimited(ignoreConsequtiveDelimiters, textFile.getGuessedDelimiter());
+		   initDataStartingLineNumber = textFile.getDataStartingLineNumber();
+		   initColumnLabelsInStartingLine = textFile.isColumnLabelsInStartingLine();
 		   init();
+		   
 	   }
 	   
 	   /*
@@ -97,6 +123,7 @@ public class TextImportDelimiters extends AbstractUIPage
 	    */
 	   private void init()
 	   {
+		    CheckBoxItemListener checkBoxListener = new CheckBoxItemListener();
 		    this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		    JPanel vbox = this;
 		    JLabel desc1 = WidgetFactory.makeHTMLLabel(
@@ -110,7 +137,7 @@ public class TextImportDelimiters extends AbstractUIPage
 		    delimitersPanel.add(delimiterLabel);
 		    tabCheckBox = WidgetFactory.makeCheckBox(TAB, false);
 		    tabCheckBox.setActionCommand(TAB);
-		    tabCheckBox.setSelected(true);
+		    //tabCheckBox.setSelected(true);
 		    delimitersPanel.add(tabCheckBox);
 		    commaCheckBox = WidgetFactory.makeCheckBox(COMMA, false);
 		    commaCheckBox.setActionCommand(COMMA);
@@ -125,9 +152,21 @@ public class TextImportDelimiters extends AbstractUIPage
 		    otherCheckBox.setActionCommand(OTHER);
 		    delimitersPanel.add(otherCheckBox);
 		    otherDelimiterTextField = WidgetFactory.makeOneLineShortTextField();
+		    otherDelimiterTextField.setText(EMPTYSTRING);
+		    TextFieldChangeActionListener textChangeListener = new TextFieldChangeActionListener();
+		    TextFieldFocusChangeListener textFocusChangeListener = new TextFieldFocusChangeListener();
+		    otherDelimiterTextField.addActionListener(textChangeListener);
+		    otherDelimiterTextField.addFocusListener(textFocusChangeListener);
 		    delimitersPanel.add(otherDelimiterTextField);
 		    delimitersPanel.setBorder(new javax.swing.border.EmptyBorder(WizardSettings.PADDING, 0, 0,
-		            WizardSettings.PADDING));	    
+		            WizardSettings.PADDING));
+		    tabCheckBox.addItemListener(checkBoxListener);
+		    commaCheckBox.addItemListener(checkBoxListener);
+		    spaceCheckBox.addItemListener(checkBoxListener);
+		    semicolonCheckBox.addItemListener(checkBoxListener);
+		    otherCheckBox.addItemListener(checkBoxListener);
+		    // guessDelimiter already was called in parseFile in TextImportEntity, so now we know the guessed delimiter
+		    initDelimiterCheckBox(textFile.getGuessedDelimiter());
 		    vbox.add(delimitersPanel);
 		    vbox.add(WidgetFactory.makeDefaultSpacer());
 		    vbox.add(WidgetFactory.makeDefaultSpacer());
@@ -136,15 +175,18 @@ public class TextImportDelimiters extends AbstractUIPage
 		    JPanel consecutivePanel = WidgetFactory.makePanel(1);	
 		    consecutiveCheckBox = WidgetFactory.makeCheckBox(TREATCONSECUTIVE, false);
 		    consecutiveCheckBox.setActionCommand(TREATCONSECUTIVE);
+		    consecutiveCheckBox.addItemListener(checkBoxListener);
 		    consecutivePanel.add(consecutiveCheckBox);
 		    consecutivePanel.setBorder(new javax.swing.border.EmptyBorder(WizardSettings.PADDING, 0, 0,
 		            WizardSettings.PADDING));
 		    vbox.add(consecutivePanel);
 		    vbox.add(WidgetFactory.makeDefaultSpacer());
 		    vbox.add(WidgetFactory.makeDefaultSpacer());
-			    
-		    DataScrollPanel.getViewport().removeAll();
-		    DataScrollPanel.getViewport().add(textFile.getTable());
+			
+		    //delimiter = getRealDelimiterString();
+		    //textFile.parseDelimited(ignoreConsequtiveDelimiters, delimiter);
+		    //DataScrollPanel.getViewport().removeAll();
+		    //DataScrollPanel.getViewport().add(textFile.getTable());
 		    vbox.add(DataScrollPanel);
 	   }
 	  
@@ -210,7 +252,44 @@ public class TextImportDelimiters extends AbstractUIPage
 	   */
 	  public void onLoadAction()
 	  {
-		  
+		  this.frame = frame;
+		   nextPageID = DataPackageWizardInterface.TEXT_IMPORT_ATTRIBUTE;
+		   if(this.frame == null)
+		   {
+			   Log.debug(5, "The WizardContainerFrame is null and we can't load TexImportDelimiters");
+		       return;
+			 
+		   }
+		   else
+		   {
+			   ImportedTextFile newTextFile = frame.getImportDataTextFile();
+			   if(newTextFile == null)
+			   {
+				 
+				   Log.debug(5, "The TextFile object is null and we can't load TexImportDelimiters");
+				   return;
+				   
+			   }
+			   else
+			   {
+				   //check if some values in previous page (ImportEntity) were changed
+				   int newDataStartingLineNumber = textFile.getDataStartingLineNumber();
+				   boolean newColumnLabelsInStartingLine = textFile.isColumnLabelsInStartingLine();
+				   if(newDataStartingLineNumber != initDataStartingLineNumber || newColumnLabelsInStartingLine != initColumnLabelsInStartingLine ||
+						 !newTextFile.equals(textFile) )
+				   {
+					   textFile = newTextFile;
+					   Log.debug(30, "Some values in previous page(TextImportDelimiter) has been changed, we need to re-parse the file");
+					   forceUpdateDataPanel(getRealDelimiterString());
+				   }
+				   else
+				   {
+					   Log.debug(30, "No values in previous page(TextImportDelimiter) has been changed, we need do nothing");
+				   }
+			   }
+			  
+		   }
+		   
 	  }
 
 
@@ -287,8 +366,227 @@ public class TextImportDelimiters extends AbstractUIPage
 		  return true;
 	  }
 	  
+	  /*
+	   * Set guessed Delimiter
+	   *
+	   * @return String
+	   */
+	  private void initDelimiterCheckBox(String delim) {
+	    //parseOn = false;
+	    tabCheckBox.setSelected(false);
+	    commaCheckBox.setSelected(false);
+	    spaceCheckBox.setSelected(false);
+	    semicolonCheckBox.setSelected(false);
+	    otherCheckBox.setSelected(false);
+	    if (delim != null && delim.equals(TAB)) {
+	      tabCheckBox.setSelected(true);
+	      //parseOn = true;
+	    } else if (delim != null && delim.equals(COMMA)) {
+	      commaCheckBox.setSelected(true);
+	     // parseOn = true;
+	    } else if (delim != null && delim.equals(SPACE)) {
+	      spaceCheckBox.setSelected(true);
+	     // parseOn = true;
+	    } else if (delim != null && delim.equals(SEMICOLON)) {
+	      semicolonCheckBox.setSelected(true);
+	      //parseOn = true;
+	    } else if (delim != null && delim.equals(COLON)) {
+	      otherCheckBox.setSelected(true);
+	      otherDelimiterTextField.setText(":");
+	      //parseOn = true;
+	    } else {
+	    	if(delim == null)
+	    	{
+	    		delim=EMPTYSTRING;
+	    	}
+	    	otherCheckBox.setSelected(true);
+		    otherDelimiterTextField.setText(delim);
+		    //parseOn = true;
+	    }
+	  }
+	  
+	  /*
+	   * Gets the delimiter from the selected check box
+	   */
+	  private String getRealDelimiterString() {
+		    String str = "";
+		    if (tabCheckBox.isSelected())str = str + "\t";
+		    if (commaCheckBox.isSelected())str = str + ",";
+		    if (spaceCheckBox.isSelected())str = str + " ";
+		    if (semicolonCheckBox.isSelected())str = str + ";";
+		    if (otherCheckBox.isSelected()) {
+		      String temp = otherDelimiterTextField.getText();
+		      if (temp.length() > 0) {
+		        temp = temp.substring(0, 1);
+		        str = str + temp;
+		      }
+		    }
+		    return str;
+		  }
 	  
 	  
+	  /*
+	   * Re-parse the data file and update data panel if it is necessary
+	   */
+	  private void updateDataPanel()
+	  {
+		  String newDelimiterFromPanel = getRealDelimiterString();
+		  // newDelimiterFromPanel is different to the old one we reparse it
+		  Log.debug(32, "The new delimiter from panel is "+newDelimiterFromPanel);
+		  Log.debug(32, "The previous delimiter is "+delimiter);
+		  if(!newDelimiterFromPanel.equals(delimiter))
+		  {
+			  Log.debug(32, "Since they are different, we need to update the data panel");
+			  delimiter = newDelimiterFromPanel;			  
+			  forceUpdateDataPanel(delimiter);
+			  
+		  }
+		  else
+		  {
+			  Log.debug(32, "Since they are same, we need to nothing");
+		  }
+	  }
+	  
+	  /*
+	   * force to re-parse the data file and update data panel
+	   */
+	  private void forceUpdateDataPanel(String delim)
+	  {
+			  textFile.parseDelimited(ignoreConsequtiveDelimiters, delim);
+			  DataScrollPanel.getViewport().removeAll();
+			  DataScrollPanel.getViewport().add(textFile.getTable());
+			  	
+	  }
+	  
+	  /*
+	   * Listener for check box selection
+	   */
+	  class CheckBoxItemListener implements java.awt.event.ItemListener {
+		    public void itemStateChanged(java.awt.event.ItemEvent event) {
+		      Object object = event.getSource();
+		       if (object == tabCheckBox)
+		        TabCheckBox_itemStateChanged(event);
+		      else if (object == commaCheckBox)
+		        CommaCheckBox_itemStateChanged(event);
+		      else if (object == spaceCheckBox)
+		        SpaceCheckBox_itemStateChanged(event);
+		      else if (object == semicolonCheckBox)
+		        SemicolonCheckBox_itemStateChanged(event);
+		      else if (object == otherCheckBox)
+		        OtherCheckBox_itemStateChanged(event);
+		      else if (object == consecutiveCheckBox)
+		        ConsecutiveCheckBox_itemStateChanged(event);
+		    }
+		  }
+
+
+
+		private void TabCheckBox_itemStateChanged(java.awt.event.ItemEvent event) {
+		    
+			updateDataPanel();
+		   
+		  }
+
+
+		private void CommaCheckBox_itemStateChanged(java.awt.event.ItemEvent event) {
+		 
+			updateDataPanel();
+
+		    
+		  }
+
+
+		  private void SpaceCheckBox_itemStateChanged(java.awt.event.ItemEvent event) {
+		  
+			  updateDataPanel();
+		    
+		  }
+
+
+		  private void SemicolonCheckBox_itemStateChanged(java.awt.event.ItemEvent event) {
+		   
+			  updateDataPanel();
+		    
+		  }
+
+
+		  private void OtherCheckBox_itemStateChanged(java.awt.event.ItemEvent event) {
+			 int stateChange = event.getStateChange();
+			 boolean delim_other = (stateChange==ItemEvent.SELECTED);
+			 Log.debug(32, "The selection status of other box is "+delim_other);
+			 otherDelimiterTextField.setEnabled(stateChange==ItemEvent.SELECTED);
+		     updateDataPanel();		    
+		  }
+
+		  private void ConsecutiveCheckBox_itemStateChanged(java.awt.event.ItemEvent event) {
+			  int stateChange = event.getStateChange();
+			  ignoreConsequtiveDelimiters = (stateChange==ItemEvent.SELECTED);
+			  Log.debug(30, "ignoreConsecutive delmiters value is "+ignoreConsequtiveDelimiters);
+			  updateDataPanel();
+
+		    
+		  }
+	  
+		   /*
+		    * Action listener for text field value change
+		    * @author tao
+		    *
+		    */
+		   class TextFieldChangeActionListener implements java.awt.event.ActionListener 
+		   {
+
+			    public void actionPerformed(java.awt.event.ActionEvent event) 
+			    {
+			      Object object = event.getSource();
+			      if (object == otherDelimiterTextField)
+			    	  otherDelimiterTextField_actionPerformed(event);
+			    }
+			  }
+
+		  private void otherDelimiterTextField_actionPerformed(java.awt.event.ActionEvent event) 
+		  {
+			    
+			    String str = otherDelimiterTextField.getText();
+			    handleotherDelimiterTextChange(str);
+	     }
+		  
+		 /*
+		  * Action to handle starting line text change
+		  */
+		 private void handleotherDelimiterTextChange(String str)
+		 {
+			 if(str == null)
+			 {
+				 str = EMPTYSTRING;
+			 }
+			 otherDelimiterTextField.setText(str);
+			 Log.debug(30, "The other delimiter text field value is "+otherDelimiterTextField.getText());
+			 updateDataPanel();
+		 }
+
+
+	 /*
+	  * Listener for text field focus change event
+	  */
+	 class TextFieldFocusChangeListener extends java.awt.event.FocusAdapter 
+	 {
+		    public void focusLost(java.awt.event.FocusEvent event) 
+		    {
+		      Object object = event.getSource();
+		      if (object == otherDelimiterTextField)
+		      {
+		    	  otherDelimiterTextField_focusLost(event);
+		      }
+		    }
+	 }
+
+	 private void otherDelimiterTextField_focusLost(java.awt.event.FocusEvent event) 
+	 {
+		    String str =otherDelimiterTextField.getText();
+		    handleotherDelimiterTextChange(str);
+	  }
+		  	  
+		  
 	  private JCheckBox tabCheckBox = null;
 	  private JCheckBox commaCheckBox = null;
 	  private JCheckBox spaceCheckBox = null;
