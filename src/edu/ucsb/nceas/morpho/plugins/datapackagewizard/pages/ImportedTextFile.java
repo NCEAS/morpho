@@ -290,14 +290,17 @@ public class ImportedTextFile
 	}
 	
 	/**
-	 * Add a Table model change listener to the data model of jtable
+	 * Add a Table model change listener to the data model of jtable.
+	 * We remove the listener first, so we don't have duplicate one.
 	 * @param listener
 	 */
 	public void addJTableModelChangeListener(TableModelListener listener)
 	{
 		if(tableModel != null)
 		{
-			Log.debug(30, "Add a TableMdoleListner to table in ImportedTExtFile");
+			Log.debug(30, "Remove a TableMdoleListner form table in ImportedTExtFile first");
+			tableModel.removeTableModelListener(listener);
+			Log.debug(30, "Then add a TableMdoleListner to table in ImportedTExtFile");
 			tableModel.addTableModelListener(listener);
 		}
 		else

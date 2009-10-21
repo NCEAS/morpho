@@ -1499,6 +1499,42 @@ public class WizardContainerFrame
 	  this.entityIndex =entityIndex;
   }
   
+  /**
+   * Cleans (removes) every TextImportAttribute page in the page stack.
+   * This method will be called when data table was changed.
+   */
+  public void cleanTextImportAttributePagesInCache()
+  {
+     synchronized(pageCache)
+     {
+		  if(pageCache != null)
+		  {
+			  Vector textImportAttributeKeys = new Vector();
+			  int size = pageCache.size();
+			  Log.debug(32, "pageCache is not null in WizardContainerFrame.cleanTextImportAttributePagesInStack and cache has size "+size);
+			  Set keySet = pageCache.keySet();
+			  Iterator iterator = keySet.iterator();
+			  while(iterator.hasNext())
+			  {
+				  String key =(String)iterator.next();
+				  AbstractUIPage page = (AbstractUIPage)pageCache.get(key);
+				  if(page instanceof TextImportAttribute)
+				  {
+					  Log.debug(34, "add a key "+key +" which points to TextImportAttribute into a vector.");
+					  textImportAttributeKeys.add(key);
+				  }
+			  }
+			  for(int i=0; i<textImportAttributeKeys.size(); i++)
+			  {
+				  String key = (String)textImportAttributeKeys.elementAt(i);
+				  pageCache.remove(key);
+				  Log.debug(34, "Successfully remove the page with id "+key+"from the pageChage");
+			  }
+			  Log.debug(32, "after removing TextImportAttribute page in WizardContainerFrame.cleanTextImportAttributePagesInStack and cache now has size "+pageCache.size());
+		  }
+     } 
+  }
+  
 
 
 

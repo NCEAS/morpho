@@ -42,6 +42,8 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
+import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener;
 
 import edu.ucsb.nceas.morpho.framework.AbstractUIPage;
 import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
@@ -60,7 +62,7 @@ import edu.ucsb.nceas.utilities.OrderedMap;
  * @author tao
  *
  */
-public class TextImportDelimiters extends AbstractUIPage 
+public class TextImportDelimiters extends AbstractUIPage implements TableModelListener 
 {
 	   private static final String EMPTYSTRING = "";
 	   private String pageID = DataPackageWizardInterface.TEXT_IMPORT_DELIMITERS; 
@@ -262,7 +264,7 @@ public class TextImportDelimiters extends AbstractUIPage
 	  public void onLoadAction()
 	  {
 		  WidgetFactory.unhiliteComponent(delimiterLabel); 
-		  WidgetFactory.unhiliteComponent(otherDelimiterTextField);
+		  //WidgetFactory.unhiliteComponent(otherDelimiterTextField);
 		  this.frame = frame;
 		   //nextPageID = DataPackageWizardInterface.TEXT_IMPORT_ATTRIBUTE;
 		   if(this.frame == null)
@@ -295,22 +297,28 @@ public class TextImportDelimiters extends AbstractUIPage
 				   {
 					   Log.debug(30, "Imported text file itself has been changed, we need to re-parse the file");
 					   textFile = newTextFile;
+					   textFile.addJTableModelChangeListener(this);
 					   delimiter = textFile.getGuessedDelimiter();
 					   initDelimiterCheckBox(textFile.getGuessedDelimiter());
 					   forceUpdateDataPanel(getRealDelimiterString());
+					   //force to clear cached TextImportAttribute pages
+					   //clearCachedTextImportAttributePageInWizardFrame();					   
 				   }
 				   else if(newDataStartingLineNumber != initDataStartingLineNumber || newColumnLabelsInStartingLine != initColumnLabelsInStartingLine)
 				   {
 					   textFile = newTextFile;
+					   textFile.addJTableModelChangeListener(this);
   				       Log.debug(30, "Some values in previous page(TextImportEntity) has been changed, we need to re-parse the file");
 					   forceUpdateDataPanel(getRealDelimiterString());
 				   }
 				   else
 				   {
 					   Log.debug(30, "No values in previous page(TextImportEnity) has been changed, we don't need to parse table, but we need to repaint table.");
+					   textFile.addJTableModelChangeListener(this);
 					   //if we don't repaint table, we click back button in TextImportAttribute, we will get empty data panel.
 					   repaintDataScrollPanel();
 				   }
+				   
 				   //reset init value from previous page
 				   initDataStartingLineNumber = newDataStartingLineNumber;
 				   Log.debug(30, "Reset init dataStartingLineNumber with value "+newDataStartingLineNumber);
@@ -437,6 +445,30 @@ public class TextImportDelimiters extends AbstractUIPage
 		  return true;
 	  }
 	  
+	  /**
+	   * Method inherits from TableModelListener interface.
+	   * This interface will be added to the JTable in ImportedTextFile.
+	   * So when JTable data model is changed, the method will be called - clear every
+	   * TExtImportAttribute page in WizardContainerFrame pageStack. Otherwise,
+	   * we will still get old data model in those cached pages.
+	   */
+	  public void tableChanged(TableModelEvent e)
+	  {
+		  clearCachedTextImportAttributePageInWizardFrame();
+	  }
+	  
+	  /*
+	   * Removes any cached TextImportAttributePage in WizardFrame
+	   */
+	  private void clearCachedTextImportAttributePageInWizardFrame()
+	  {
+		  if(frame != null)
+		  {
+			  Log.debug(30, "Clear the cached TextTimportAttribute pages!!!!!!!!!!!!!!!!!!!!!!");
+			  frame.cleanTextImportAttributePagesInCache();
+		  }
+	  }
+	  
 	  /*
 	   * Set guessed Delimiter. First we will remove check box listener, then add them back.
 	   * So in the initDelimiterCheckBox method will not cause any table parsing.
@@ -451,6 +483,7 @@ public class TextImportDelimiters extends AbstractUIPage
 	    spaceCheckBox.setSelected(false);
 	    semicolonCheckBox.setSelected(false);
 	    otherDelimiterTextField.setText(EMPTYSTRING);
+	    otherDelimiterTextField.setEnabled(false);
 	    otherCheckBox.setSelected(false);
 	    if (delim != null && delim.equals(TAB)) {
 	      tabCheckBox.setSelected(true);
@@ -466,6 +499,7 @@ public class TextImportDelimiters extends AbstractUIPage
 	      //parseOn = true;
 	    } else if (delim != null && delim.equals(COLON)) {
 	      otherCheckBox.setSelected(true);
+	      otherDelimiterTextField.setEnabled(true);
 	      otherDelimiterTextField.setText(":");
 	      //parseOn = true;
 	    } else {
@@ -474,6 +508,7 @@ public class TextImportDelimiters extends AbstractUIPage
 	    		delim=EMPTYSTRING;
 	    	}
 	    	otherCheckBox.setSelected(true);
+	    	otherDelimiterTextField.setEnabled(true);
 		    otherDelimiterTextField.setText(delim);
 		    //parseOn = true;
 	    }
@@ -602,7 +637,8 @@ public class TextImportDelimiters extends AbstractUIPage
 		      Log.debug(30, "Parsing the delimitered table!!!!! Update the data panel.");
 			  textFile.parseDelimited(ignoreConsequtiveDelimiters, delim);
 			  repaintDataScrollPanel();
-			  	
+			  //force to clean the cached TextImportAttribute pages in Wizard frame since data model is changed
+			   clearCachedTextImportAttributePageInWizardFrame();			  	
 	  }
 	  
 	  /*
