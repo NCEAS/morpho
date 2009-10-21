@@ -63,7 +63,7 @@ import edu.ucsb.nceas.utilities.OrderedMap;
 public class TextImportAttribute extends AbstractUIPage 
 {
 	   public static final int FIRSTINDEX = 0;
-	   private String pageID = DataPackageWizardInterface.TEXT_IMPORT__FIRST_ATTRIBUTE;
+	   private String pageID = DataPackageWizardInterface.TEXT_IMPORT_FIRST_ATTRIBUTE;
 	   private String title = "Text Import";
 	   private String subTitle = null;
 	   private String pageNumber = null;

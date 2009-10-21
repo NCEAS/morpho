@@ -199,7 +199,9 @@ public class WizardPageLibrary implements WizardPageLibraryInterface{
 		  int position = pageId.lastIndexOf(DataPackageWizardInterface.TEXT_IMPORT_ATTRIBUTE);
 		  if (position != -1)
 		  {
-			  String numberStr = pageId.substring(position+1);
+			  
+			  String numberStr = pageId.substring(DataPackageWizardInterface.TEXT_IMPORT_ATTRIBUTE.length());
+			  Log.debug(32, "The number string extracted from "+pageId+ " is "+numberStr);
 			  try
 			  {
 				  Integer number = new Integer(numberStr);

@@ -97,7 +97,8 @@ public class TextImportDelimiters extends AbstractUIPage
 	   public TextImportDelimiters(WizardContainerFrame frame)
 	   {
 		   this.frame = frame;
-		   nextPageID = DataPackageWizardInterface.TEXT_IMPORT__FIRST_ATTRIBUTE;
+		   nextPageID = DataPackageWizardInterface.TEXT_IMPORT_FIRST_ATTRIBUTE;
+		   Log.debug(32, "=========The next page id is "+nextPageID);
 		   if(this.frame == null)
 		   {
 			   Log.debug(5, "The WizardContainerFrame is null and we can't initialize TexImportDelimiters");
@@ -260,7 +261,7 @@ public class TextImportDelimiters extends AbstractUIPage
 	  public void onLoadAction()
 	  {
 		  this.frame = frame;
-		   nextPageID = DataPackageWizardInterface.TEXT_IMPORT_ATTRIBUTE;
+		   //nextPageID = DataPackageWizardInterface.TEXT_IMPORT_ATTRIBUTE;
 		   if(this.frame == null)
 		   {
 			   Log.debug(5, "The WizardContainerFrame is null and we can't load TexImportDelimiters");
