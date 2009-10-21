@@ -110,7 +110,11 @@ public class WizardContainerFrame
   private final static String ENTITYGENERICNAME = "entities";
   private boolean hasTopPanel = true;
   private ImportedTextFile importedDataTextFile = null;
- 
+  protected Stack pageStack;
+  private WizardPageLibraryInterface pageLib;
+  private boolean showPageCount;
+  private Map pageCache;
+  private String firstPageID;
 
   /**
    * Default constructor
@@ -312,6 +316,15 @@ public class WizardContainerFrame
   public void setWizardPageLibrary(WizardPageLibraryInterface pageLib)
   {
 	  this.pageLib = pageLib;
+  }
+  
+  /**
+   * Gets the WizardPageLibrary to this frame.
+   * @return pageLib the specified WizardPageLibrary will be set. 
+   */
+  public WizardPageLibraryInterface getWizardPageLibrary()
+  {
+	  return this.pageLib;
   }
 
   /**
@@ -1496,12 +1509,6 @@ public class WizardContainerFrame
   private JButton prevButton;
   private JButton finishButton;
   private AbstractUIPage currentPage;
-  protected Stack pageStack;
-  private WizardPageLibraryInterface pageLib;
-  private boolean showPageCount;
-  private Map pageCache;
-
-  private String firstPageID;
   private static JFrame dummyFrame;
   private static JFrame dialogParent;
 

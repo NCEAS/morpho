@@ -47,6 +47,7 @@ import edu.ucsb.nceas.morpho.framework.AbstractUIPage;
 import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WidgetFactory;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardContainerFrame;
+import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardPageLibraryInterface;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardSettings;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardUtil;
 import edu.ucsb.nceas.morpho.util.Log;
@@ -96,7 +97,7 @@ public class TextImportDelimiters extends AbstractUIPage
 	   public TextImportDelimiters(WizardContainerFrame frame)
 	   {
 		   this.frame = frame;
-		   nextPageID = DataPackageWizardInterface.TEXT_IMPORT_ATTRIBUTE;
+		   nextPageID = DataPackageWizardInterface.TEXT_IMPORT__FIRST_ATTRIBUTE;
 		   if(this.frame == null)
 		   {
 			   Log.debug(5, "The WizardContainerFrame is null and we can't initialize TexImportDelimiters");
@@ -302,7 +303,9 @@ public class TextImportDelimiters extends AbstractUIPage
 				   }
 				   else
 				   {
-					   Log.debug(30, "No values in previous page(TextImportEnity) has been changed, we need do nothing");
+					   Log.debug(30, "No values in previous page(TextImportEnity) has been changed, we don't need to parse table, but we need to repaint table.");
+					   //if we don't repaint table, we click back button in TextImportAttribute, we will get empty data panel.
+					   repaintDataScrollPanel();
 				   }
 				   //reset init value from previous page
 				   initDataStartingLineNumber = newDataStartingLineNumber;
@@ -336,6 +339,27 @@ public class TextImportDelimiters extends AbstractUIPage
 	   */
 	  public boolean onAdvanceAction()
 	  {
+		  JTable table = textFile.getTable();
+		  if(table == null)
+		  {
+			  Log.debug(5, "The table is null and we couldn't describe it");
+			  return false;
+		  }
+		  else
+		  {
+			  int columnCount = table.getColumnCount();
+			  WizardPageLibraryInterface pageLib = frame.getWizardPageLibrary();
+			  if (pageLib != null)
+			  {
+				 Log.debug(30, "set attribute size "+columnCount+" into WizardPageLibary");
+			     pageLib.setTextImportAttributePagesSize(columnCount);
+			  }
+			  else
+			  {
+				  Log.debug(5, "The WizardPageLibrary is null and we couldn't set attribute size");
+				  return false;
+			  }
+		  }
 		  return true;
 	  }
 
@@ -554,9 +578,17 @@ public class TextImportDelimiters extends AbstractUIPage
 	  {
 		      Log.debug(30, "Parsing the delimitered table!!!!! Update the data panel.");
 			  textFile.parseDelimited(ignoreConsequtiveDelimiters, delim);
-			  DataScrollPanel.getViewport().removeAll();
-			  DataScrollPanel.getViewport().add(textFile.getTable());
+			  repaintDataScrollPanel();
 			  	
+	  }
+	  
+	  /*
+	   * Method to repaint DataScrollPanel
+	   */
+	  private void repaintDataScrollPanel()
+	  {
+		  DataScrollPanel.getViewport().removeAll();
+		  DataScrollPanel.getViewport().add(textFile.getTable());
 	  }
 	  
 	  /*
@@ -625,7 +657,7 @@ public class TextImportDelimiters extends AbstractUIPage
 		  }
 
 		  /*
-		   * This method will force update data panel even delimiter wasn't changed.
+		   * This method will force to update data panel even delimiter wasn't changed.
 		   */
 		  private void ConsecutiveCheckBox_itemStateChanged(java.awt.event.ItemEvent event) {
 			  int stateChange = event.getStateChange();

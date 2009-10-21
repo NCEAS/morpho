@@ -32,6 +32,7 @@ import edu.ucsb.nceas.morpho.datapackage.AbstractDataPackage;
 import edu.ucsb.nceas.morpho.framework.AbstractUIPage;
 import edu.ucsb.nceas.morpho.framework.MorphoFrame;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.IncompleteDocumentLoader;
+import edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.TextImportAttribute;
 import edu.ucsb.nceas.morpho.util.IncompleteDocInfo;
 
 import java.util.List;
@@ -102,7 +103,8 @@ public interface DataPackageWizardInterface {
   public static final String CORRECTION_DATA_LOCATION = "CORRECTION_DATA_LOCATION";
   public static final String TEXT_IMPORT_ENTITY = "TEXT_IMPORT_ENTITY";
   public static final String TEXT_IMPORT_DELIMITERS = "TEXT_IMPORT_DELIMITERS";
-  public static final String TEXT_IMPORT_ATTRIBUTE = "TEXT_IMPORT_ATTRIBUTE";
+  public static final String TEXT_IMPORT_ATTRIBUTE = "TEXT_IMPORT_ATTRIBUTE_";
+  public static final String TEXT_IMPORT__FIRST_ATTRIBUTE = "TEXT_IMPORT_ATTRIBUTE"+TextImportAttribute.FIRSTINDEX;
   
 
 

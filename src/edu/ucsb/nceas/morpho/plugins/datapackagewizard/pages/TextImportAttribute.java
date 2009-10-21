@@ -34,12 +34,16 @@ import java.io.File;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
+import javax.swing.DefaultListSelectionModel;
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
+import javax.swing.table.DefaultTableColumnModel;
+import javax.swing.table.TableColumnModel;
 
 import edu.ucsb.nceas.morpho.framework.AbstractUIPage;
 import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
@@ -47,6 +51,7 @@ import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WidgetFactory;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardContainerFrame;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardPageLibrary;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardSettings;
+import edu.ucsb.nceas.morpho.util.Log;
 import edu.ucsb.nceas.utilities.OrderedMap;
 
 /**
@@ -57,24 +62,71 @@ import edu.ucsb.nceas.utilities.OrderedMap;
  */
 public class TextImportAttribute extends AbstractUIPage 
 {
-	   private String pageID = DataPackageWizardInterface.TEXT_IMPORT_ATTRIBUTE;
+	   public static final int FIRSTINDEX = 0;
+	   private String pageID = DataPackageWizardInterface.TEXT_IMPORT__FIRST_ATTRIBUTE;
 	   private String title = "Text Import";
 	   private String subTitle = null;
 	   private String pageNumber = null;
 	   private WizardContainerFrame frame = null;
 	   private ImportedTextFile textFile = null;
 	   private WizardPageLibrary wizardPageLib = null;
+	   private int columnIndex = 0;
+	   private JTable table = null;
+	   // Column Model of the table containting all the columns
+		private TableColumnModel fullColumnModel = null;
 	   
 	   
 	   /**
 	    * Construct
 	    * @param frame
 	    */
-	   public TextImportAttribute(WizardContainerFrame frame)
+	   public TextImportAttribute(WizardContainerFrame frame,int columnIndex)
 	   {
 		   this.frame = frame;
-		   wizardPageLib = new WizardPageLibrary(frame);
+		   if(this.frame == null)
+		   {
+			   Log.debug(5, "The WizardContainerFrame is null and we can't initialize TexImportAttribute");
+		       return;
+			 
+		   }
+		   else
+		   {
+			   textFile = frame.getImportDataTextFile();
+			   if(textFile == null)
+			   {
+				 
+				   Log.debug(5, "The TextFile object is null and we can't initialize TexImportAttribute");
+				   return;
+				   
+			   }
+			  
+		   }
+		   this.wizardPageLib = new WizardPageLibrary(frame);
+		   setupTableModel(columnIndex);
 		   init();
+	   }
+	   
+	   /*
+	    * Sets up table model
+	    */
+	   private void setupTableModel(int index)
+	   {
+		   this.columnIndex = index;
+		   this.table = textFile.getTable();
+		   this.fullColumnModel = textFile.getFullColumnModel();
+		   if(table != null && fullColumnModel != null)
+		   {
+			   TableColumnModel model = new DefaultTableColumnModel();
+			   model.addColumn(fullColumnModel.getColumn(columnIndex));
+			   DefaultListSelectionModel dlsm = new DefaultListSelectionModel();
+			   dlsm.setSelectionInterval(0, 0);
+			   model.setColumnSelectionAllowed(true);
+			   model.setSelectionModel(dlsm);
+			   table.setColumnModel(model);
+			   table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+			   table.doLayout();
+		   }
+		   
 	   }
 	   
 	   /*
@@ -84,9 +136,30 @@ public class TextImportAttribute extends AbstractUIPage
 	   {
 		    this.setLayout(new BorderLayout());
 		    JPanel vbox = this;
+		    columnDataScrollPanel.setPreferredSize(new Dimension(80, 4000));
+		    repaintColumnDataPanel();
 		    vbox.add(columnDataScrollPanel, BorderLayout.WEST);
 		    AttributePage attributePage = (AttributePage) wizardPageLib.getPage(DataPackageWizardInterface.ATTRIBUTE_PAGE);
 		    vbox.add(attributePage, BorderLayout.CENTER);
+	   }
+	   
+	   /*
+	    * Update data panel
+	    */
+	   private void updateColumnDataPanel()
+	   {
+		   repaintColumnDataPanel();
+	   }
+	   
+	   /*
+	    * Force update data panel
+	    */
+	   private void repaintColumnDataPanel()
+	   {
+		   Log.debug(32, "The column data panel in TextTimportAttribute class is updating ===========");
+		   columnDataScrollPanel.getViewport().removeAll();
+		   columnDataScrollPanel.getViewport().add(table);
+		   //columnDataScrollPanel.setVisible(true);
 	   }
 	  
 	   /**
@@ -97,6 +170,16 @@ public class TextImportAttribute extends AbstractUIPage
 	  public String getPageID()
 	  {
 		 return pageID; 
+	  }
+	  
+	  /**
+	   *  Sets the unique ID for this UI page
+	   *
+	   *  @return   the unique ID String for this UI page
+	   */
+	  public void setPageID(String pageID)
+	  {
+		 this.pageID =pageID; 
 	  }
 
 
@@ -133,6 +216,17 @@ public class TextImportAttribute extends AbstractUIPage
 	  {
 		  return nextPageID;
 	  }
+	  
+	  /**
+	   * Sets a dynamic id for next pageID
+	   *
+	   *  @return the String ID of the page that the user will see next, or null if
+	   *  this is te last page
+	   */
+	  public void setNextPageID(String nextPageID)
+	  {
+		  this.nextPageID = nextPageID;
+	  }
 
 
 	  /**
@@ -161,7 +255,12 @@ public class TextImportAttribute extends AbstractUIPage
 	   */
 	  public  void onRewindAction()
 	  {
-		  
+		  if (table != null && columnIndex == FIRSTINDEX )
+		  {
+			  table.setColumnModel(fullColumnModel);
+			  table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+			  table.doLayout();
+		  }
 	  }
 
 

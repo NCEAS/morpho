@@ -281,6 +281,17 @@ public class ImportedTextFile
 		}
 		this.dataStartingLineNumber = dataStartingLineNumber;
 	}
+	
+	
+	/**
+	 * Gets full columnModel for the JTable
+	 * @return
+	 */
+	public TableColumnModel getFullColumnModel() 
+	{
+		return fullColumnModel;
+	}
+
 
 	
 	
@@ -695,6 +706,8 @@ public class ImportedTextFile
 	    fullColumnModel = table.getColumnModel();
 
 	  }
+
+	
 	  
 
 }
