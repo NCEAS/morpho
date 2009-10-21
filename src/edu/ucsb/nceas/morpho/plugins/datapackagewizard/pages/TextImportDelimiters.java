@@ -51,6 +51,7 @@ import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardPageLibraryInterfac
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardSettings;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardUtil;
 import edu.ucsb.nceas.morpho.util.Log;
+import edu.ucsb.nceas.morpho.util.Util;
 import edu.ucsb.nceas.utilities.OrderedMap;
 
 /**
@@ -139,7 +140,7 @@ public class TextImportDelimiters extends AbstractUIPage
 		    vbox.add(WidgetFactory.makeDefaultSpacer());
 		    
 		    JPanel delimitersPanel = WidgetFactory.makePanel(1);	   
-		    JLabel delimiterLabel = WidgetFactory.makeLabel("Delimiters:", false);
+		    delimiterLabel = WidgetFactory.makeLabel("Delimiters:", false);
 		    delimitersPanel.add(delimiterLabel);
 		    tabCheckBox = WidgetFactory.makeCheckBox(TAB, false);
 		    tabCheckBox.setActionCommand(TAB);
@@ -260,6 +261,8 @@ public class TextImportDelimiters extends AbstractUIPage
 	   */
 	  public void onLoadAction()
 	  {
+		  WidgetFactory.unhiliteComponent(delimiterLabel); 
+		  WidgetFactory.unhiliteComponent(otherDelimiterTextField);
 		  this.frame = frame;
 		   //nextPageID = DataPackageWizardInterface.TEXT_IMPORT_ATTRIBUTE;
 		   if(this.frame == null)
@@ -361,6 +364,25 @@ public class TextImportDelimiters extends AbstractUIPage
 				  return false;
 			  }
 		  }
+		  if (!tabCheckBox.isSelected() && !commaCheckBox.isSelected() && !spaceCheckBox.isSelected()
+	                 && !semicolonCheckBox.isSelected()&& !otherCheckBox.isSelected()) 
+		  {
+
+				 	WidgetFactory.hiliteComponent(delimiterLabel);
+				 	return false;
+		  }
+		  if (otherCheckBox.isSelected()==true) 
+		  {
+
+				 String otherTxt = otherDelimiterTextField.getText();
+				 if (Util.isBlank(otherTxt)) {
+
+					 WidgetFactory.hiliteComponent(otherDelimiterTextField);
+					 otherDelimiterTextField.requestFocus();
+					 return false;
+				 }
+			}
+		  
 		  return true;
 	  }
 
@@ -737,5 +759,6 @@ public class TextImportDelimiters extends AbstractUIPage
 	  private JTextField otherDelimiterTextField = null;
 	  private JCheckBox consecutiveCheckBox = null;
 	  private JScrollPane DataScrollPanel = new JScrollPane();
+	  private JLabel delimiterLabel = null;
 
 }

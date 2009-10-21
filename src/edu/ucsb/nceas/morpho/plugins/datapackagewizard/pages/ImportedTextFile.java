@@ -47,6 +47,7 @@ import java.util.Vector;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
+import javax.swing.event.TableModelListener;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 
@@ -61,12 +62,7 @@ import javax.swing.table.TableColumnModel;
  */
 public class ImportedTextFile 
 {
-	/**
-	   * a global reference to the table used to display the data that is
-	   * being referenced by this text import process
-	   */
-	  private JTable table;
-
+	
 	  /**
 	   * 	a global reference to the table used to display the lines read from the file
 	   *	this is the table that is displayed on the first screen of the TIW (Not delimitered)
@@ -108,7 +104,7 @@ public class ImportedTextFile
 	   * vector containing column Title strings
 	   */
 	  // contains column titles
-	  private Vector colTitles;
+	  private Vector colTitles = new Vector();
 
 	  /**
 	   * vector containing AttributePage objects
@@ -125,7 +121,7 @@ public class ImportedTextFile
 	  /**
 	   * vector of vectors with table data
 	   */
-	  private Vector vec;
+	  private Vector vec = new Vector();
 
 
 	  // Column Model of the table containting all the columns
@@ -135,6 +131,15 @@ public class ImportedTextFile
 	  //represents the unknow delimiter
 	  public static final String  UNKNOWN = "unknown";
 	  
+	 
+	  /**
+	   * a global reference to the table used to display the data that is
+	   * being referenced by this text import process
+	   */
+	  private JTable table;
+
+	  // table model for JTable table (containing the delimitered data)
+	  UneditableTableModel tableModel = new UneditableTableModel(vec, colTitles);
 	  
 	  
 	  
@@ -161,19 +166,11 @@ public class ImportedTextFile
 		return table;
 	}
 
-	public void setTable(JTable table) 
-	{
-		this.table = table;
-	}
 
 	public JTable getLinesTable() {
 		return linesTable;
 	}
 
-	public void setLinesTable(JTable linesTable) 
-	{
-		this.linesTable = linesTable;
-	}
 
 	public int getNlines_actual() 
 	{
@@ -290,6 +287,23 @@ public class ImportedTextFile
 	public TableColumnModel getFullColumnModel() 
 	{
 		return fullColumnModel;
+	}
+	
+	/**
+	 * Add a Table model change listener to the data model of jtable
+	 * @param listener
+	 */
+	public void addJTableModelChangeListener(TableModelListener listener)
+	{
+		if(tableModel != null)
+		{
+			Log.debug(30, "Add a TableMdoleListner to table in ImportedTExtFile");
+			tableModel.addTableModelListener(listener);
+		}
+		else
+		{
+			Log.debug(30, "TableModel object is null, and we couldn't add a TableMdoleListner to table in ImportedTExtFile");
+		}
 	}
 
 
@@ -693,12 +707,11 @@ public class ImportedTextFile
 		  }
 
 	  /*
-	   * builds JTable from input data
+	   * builds JTable from given data
 	   */
 	  private void buildTable() {
-	    UneditableTableModel myTM = new UneditableTableModel(vec, colTitles);
-	    table = new JTable(myTM);
-
+		tableModel = new UneditableTableModel(vec, colTitles);
+	    table = new JTable(tableModel);
 	    table.setColumnSelectionAllowed(true);
 	    table.setRowSelectionAllowed(false);
 	    table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);

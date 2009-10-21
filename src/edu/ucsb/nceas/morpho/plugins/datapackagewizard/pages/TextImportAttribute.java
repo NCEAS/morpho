@@ -102,16 +102,16 @@ public class TextImportAttribute extends AbstractUIPage
 			  
 		   }
 		   this.wizardPageLib = new WizardPageLibrary(frame);
-		   setupTableModel(columnIndex);
+		   this.columnIndex = columnIndex;
 		   init();
 	   }
 	   
 	   /*
 	    * Sets up table model
 	    */
-	   private void setupTableModel(int index)
+	   private void setupTableModel()
 	   {
-		   this.columnIndex = index;
+		   
 		   this.table = textFile.getTable();
 		   this.fullColumnModel = textFile.getFullColumnModel();
 		   if(table != null && fullColumnModel != null)
@@ -137,17 +137,18 @@ public class TextImportAttribute extends AbstractUIPage
 		    this.setLayout(new BorderLayout());
 		    JPanel vbox = this;
 		    columnDataScrollPanel.setPreferredSize(new Dimension(80, 4000));
-		    repaintColumnDataPanel();
+		    //updateColumnDataPanel()
 		    vbox.add(columnDataScrollPanel, BorderLayout.WEST);
 		    AttributePage attributePage = (AttributePage) wizardPageLib.getPage(DataPackageWizardInterface.ATTRIBUTE_PAGE);
 		    vbox.add(attributePage, BorderLayout.CENTER);
 	   }
 	   
 	   /*
-	    * Update data panel
+	    * Update data model and data panel
 	    */
 	   private void updateColumnDataPanel()
 	   {
+		   setupTableModel();
 		   repaintColumnDataPanel();
 	   }
 	   
@@ -245,7 +246,8 @@ public class TextImportAttribute extends AbstractUIPage
 	   */
 	  public void onLoadAction()
 	  {
-		  
+		  Log.debug(30, "The TextImportAttribute page has the index "+columnIndex);
+		  updateColumnDataPanel();
 	  }
 
 

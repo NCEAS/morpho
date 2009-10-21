@@ -248,6 +248,7 @@ public class TextImportEntity extends AbstractUIPage
 	   */
 	  public void onLoadAction()
 	  {
+		  WidgetFactory.unhiliteComponent(nameLabel);
 		  if(frame != null)
 		  {
 			  Log.debug(35, "The beginning of the onLoadAction");
@@ -289,7 +290,7 @@ public class TextImportEntity extends AbstractUIPage
 	   */
 	  public  void onRewindAction()
 	  {
-		  WidgetFactory.unhiliteComponent(nameLabel);
+		  
 	  }
 
 

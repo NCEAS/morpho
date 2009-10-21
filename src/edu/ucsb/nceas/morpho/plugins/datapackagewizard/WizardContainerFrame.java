@@ -655,7 +655,15 @@ public class WizardContainerFrame
 
     AbstractUIPage nextPage = (AbstractUIPage)pageCache.get(nextPgID);
 
-    if (nextPage==null) nextPage = pageLib.getUIPage(nextPgID);
+    if (nextPage==null) 
+    {
+    	Log.debug(30, "!!!We couldn't get page from pageStack, generate new page for the id "+nextPgID);
+    	nextPage = pageLib.getUIPage(nextPgID);
+    }
+    else
+    {
+    	Log.debug(30, "***We could get page from pageStack with the id "+nextPgID);
+    }
 
     setCurrentPage(nextPage);
   }
@@ -1490,6 +1498,7 @@ public class WizardContainerFrame
   {
 	  this.entityIndex =entityIndex;
   }
+  
 
 
 
