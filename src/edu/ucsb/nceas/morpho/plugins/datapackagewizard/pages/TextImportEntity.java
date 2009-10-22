@@ -261,6 +261,7 @@ public class TextImportEntity extends AbstractUIPage
 			  boolean isSame = newFile.equals(textFile);
 			  if(!isSame)
 			  {
+				  Log.debug(30, "in they are not same textFile object and they do not have same data file branch on TextImportDelimiter.onLoadAtcion");
 				  //File object was changed we need to update both data file and data panel
 				  textFile = newFile;
 				  String str = StartingLineTextField.getText();
@@ -274,8 +275,12 @@ public class TextImportEntity extends AbstractUIPage
 					  TableNameTextField.setText(textFile.getShortFilename());
 				  }
 			  }
+			  else
+			  {
+				  Log.debug(30, "in they are same textFile object or they  have same data file branch on TextImportDelimiter.onLoadAtcion");
+			  }
 			 
-			  Log.debug(35, "The status of isTextFile is ========"+isTextFile);
+			  
 		  }
 		  else
 		  {
@@ -316,9 +321,10 @@ public class TextImportEntity extends AbstractUIPage
 		  else
 		  {
 			  //make sure textFile contains current panel setting
+			  Log.debug(30, "TextImporEntity.onAdvanceAction, the final coumnLableInStartingLine is "+ColumnLabelsCheckBox.isSelected());
+			  textFile.setColumnLabelsInStartingLine(ColumnLabelsCheckBox.isSelected());
 			  String str = StartingLineTextField.getText();
-			  handleStartingLineTextChange(str);
-			  textFile.setColumnLabelsInStartingLine(ColumnLabelsCheckBox.isSelected());			
+			  handleStartingLineTextChange(str);			  			
 			  WidgetFactory.unhiliteComponent(nameLabel);
 		     return true;
 		  }
@@ -392,6 +398,7 @@ public class TextImportEntity extends AbstractUIPage
 	   private void columnLabelsCheckBox_itemStateChanged(java.awt.event.ItemEvent event) 
 	   {
 		    boolean labelsInStartingLine = ColumnLabelsCheckBox.isSelected();
+		    Log.debug(30, "Set Column Label check box is selected "+labelsInStartingLine);
 		    textFile.setColumnLabelsInStartingLine(labelsInStartingLine);
 		    
 	   }
@@ -440,6 +447,7 @@ public class TextImportEntity extends AbstractUIPage
 		    {
 		      StartingLineTextField.setText(String.valueOf(startingLine));
 		    }
+		    Log.debug(30, "Set the starting line number to "+startingLine);
 		    textFile.setDataStartingLineNumber(startingLine);
 	 }
 

@@ -595,7 +595,7 @@ public class ImportedTextFile
 			  Log.debug(35, "in second file is NOT null branch in ImprtedTExtFile.equal method");
 			  if(this == null)
 			  {
-				  equal = true;
+				  equal = false;
 			  }
 			  else
 			  {

@@ -720,7 +720,12 @@ public class DataLocation extends AbstractUIPage {
 	                            JOptionPane.INFORMATION_MESSAGE, null);
 	     			   return false;
 	     		   }
-	        		mainWizFrame.setImportedDataTextFile(dataTextFile);
+	        		ImportedTextFile existTextFile = mainWizFrame.getImportDataTextFile();
+	        		//if we already have the text file, we don't need to assign it again.
+	        		if (existTextFile == null  || !existTextFile.equals(dataTextFile))
+	        		{
+	        			mainWizFrame.setImportedDataTextFile(dataTextFile);
+	        		}
 	        		setNextPageID(DataPackageWizardInterface.TEXT_IMPORT_ENTITY);
 	        	}
 	        	   
