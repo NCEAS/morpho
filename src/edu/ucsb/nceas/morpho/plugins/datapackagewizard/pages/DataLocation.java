@@ -756,7 +756,32 @@ public class DataLocation extends AbstractUIPage {
 	        distribution = WizardSettings.OFFLINE;
 	        if(setNextPageID)
 	        {
-	          setNextPageID(DataPackageWizardInterface.TEXT_IMPORT_WIZARD);
+	          //setNextPageID(DataPackageWizardInterface.TEXT_IMPORT_WIZARD);
+	        	if (mainWizFrame == null)
+	        	{
+	        		return false;
+	        	}
+	        	else
+	        	{
+	        		//stores the data file object into wizard container frame.
+	        		ImportedTextFile dataTextFile = new ImportedTextFile(dataFileObj);
+	        		boolean isTextFile = dataTextFile.isTextFile();
+	        		if(!isTextFile)
+	     		   {
+	     			   JOptionPane.showMessageDialog(mainWizFrame, "Selected File is NOT a text file!",
+	                            "Message",
+	                            JOptionPane.INFORMATION_MESSAGE, null);
+	     			   return false;
+	     		   }
+	        		ImportedTextFile existTextFile = mainWizFrame.getImportDataTextFile();
+	        		//if we already have the text file, we don't need to assign it again.
+	        		if (existTextFile == null  || !existTextFile.equals(dataTextFile))
+	        		{
+	        			mainWizFrame.setImportedDataTextFile(dataTextFile);
+	        		}
+	        		setNextPageID(DataPackageWizardInterface.TEXT_IMPORT_ENTITY);
+	        	}
+	        	
 	        }
 //	      WizardSettings.setSummaryText(WizardSettings.?????????);
 	        break;
