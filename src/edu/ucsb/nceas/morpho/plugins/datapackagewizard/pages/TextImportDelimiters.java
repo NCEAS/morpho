@@ -54,6 +54,7 @@ import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardSettings;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardUtil;
 import edu.ucsb.nceas.morpho.util.Log;
 import edu.ucsb.nceas.morpho.util.Util;
+import edu.ucsb.nceas.morpho.util.XMLUtil;
 import edu.ucsb.nceas.utilities.OrderedMap;
 
 /**
@@ -64,6 +65,7 @@ import edu.ucsb.nceas.utilities.OrderedMap;
  */
 public class TextImportDelimiters extends AbstractUIPage implements TableModelListener 
 {
+	   private final String xPathRoot = "/eml:eml/dataset/dataTable/";
 	   private static final String EMPTYSTRING = "";
 	   private String pageID = DataPackageWizardInterface.TEXT_IMPORT_DELIMITERS; 
 	   private String title = "Text Import";
@@ -79,7 +81,7 @@ public class TextImportDelimiters extends AbstractUIPage implements TableModelLi
 	   private CheckBoxItemListener checkBoxListener = new CheckBoxItemListener();
 	   private TextFieldChangeActionListener textChangeListener = new TextFieldChangeActionListener();
 	   private TextFieldFocusChangeListener textFocusChangeListener = new TextFieldFocusChangeListener();
-	
+	   private boolean hasAdditionalMetadataPart = false;
 	   /*
 	    * flag used to avoid parsing everytime a checkbox is changed
 	    */
@@ -404,10 +406,63 @@ public class TextImportDelimiters extends AbstractUIPage implements TableModelLi
 	   */
 	  public OrderedMap getPageData()
 	  {
-		  OrderedMap map = null;
-		  return map;
-	  }
+		    OrderedMap om = new OrderedMap();	 
+		    String delimit = getDelimiterStringAsText();
+		    om.put(xPathRoot
+		           + "physical/dataFormat/textFormat/simpleDelimited/fieldDelimiter",
+		           delimit);
 
+
+		   if(this.ignoreConsequtiveDelimiters) 
+		   {
+			    TextImportEntity previousPage = (TextImportEntity) frame.getPreviousPage();
+			    String physicalID = previousPage.getPhysicalID();
+				// if consecutive delimiters need to be ignored, we have to add this information in the
+				// additionalMetadata section.
+				String addtHeader = "/eml:eml/additionalMetadata";
+				if(!Util.isBlank(physicalID))
+				{
+					 om.put(addtHeader + "/describes", physicalID);
+					 om.put(addtHeader + "/metadata/consecutiveDelimiters", "true");
+					 hasAdditionalMetadataPart = true;
+				}
+				else
+				{
+					Log.debug(10, "We couldn't add additionalMetadataPart for consecutiveDelimiters since physicalID is unkonw!");
+				}
+				
+		   }
+		   return om;
+	  }
+	  
+       /*
+        * Gets delimiter string as text
+        */
+	   private String getDelimiterStringAsText() 
+	   {
+		    String str = "";
+		    if (tabCheckBox.isSelected())str = str + "#x09";
+		    if (commaCheckBox.isSelected())str = str + ",";
+		    if (spaceCheckBox.isSelected())str = str + "#x20";
+		    if (semicolonCheckBox.isSelected())str = str + ";";
+		    if (otherCheckBox.isSelected()) {
+		      String temp = otherDelimiterTextField.getText();
+		      if (temp.length() > 0) {
+		        temp = temp.substring(0, 1);
+		        str = str + temp;
+		      }
+		    }
+		    return str;
+		  }
+       
+	   /**
+	    * If the metadata generate by this page has additionalMetadata part.
+	    * @return true if it has additonal metadata.
+	    */
+	   public boolean hasAdditionalMetadataPart()
+	   {
+		   return hasAdditionalMetadataPart;
+	   }
 
 	  /**
 	   * gets the Map object that contains all the key/value paired settings for
@@ -420,8 +475,8 @@ public class TextImportDelimiters extends AbstractUIPage implements TableModelLi
 	   */
 	  public OrderedMap getPageData(String rootXPath)
 	  {
-		  OrderedMap map = null;
-		  return map;
+		  throw new UnsupportedOperationException(
+	      "getPageData(String rootXPath) Method Not Implemented");
 	  }
 
 

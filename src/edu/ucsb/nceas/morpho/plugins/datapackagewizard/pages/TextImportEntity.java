@@ -31,6 +31,7 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.io.File;
+import java.util.Enumeration;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -53,6 +54,7 @@ import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardSettings;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardUtil;
 import edu.ucsb.nceas.morpho.util.Log;
 import edu.ucsb.nceas.morpho.util.Util;
+import edu.ucsb.nceas.morpho.util.XMLUtil;
 import edu.ucsb.nceas.utilities.OrderedMap;
 
 /**
@@ -63,6 +65,7 @@ import edu.ucsb.nceas.utilities.OrderedMap;
  */
 public class TextImportEntity extends AbstractUIPage 
 {
+	   private final String xPathRoot = "/eml:eml/dataset/dataTable/";
 	   private String pageID = DataPackageWizardInterface.TEXT_IMPORT_ENTITY;
 	   private String title = "Text Import";
 	   private String subTitle = null;
@@ -72,6 +75,7 @@ public class TextImportEntity extends AbstractUIPage
 	   private boolean isTextFile = true;
 	   private JTable linesTable = null;
 	   private String shortFileName = null;
+	   private String physicalID = null;
 	   
 	   /**
 	    * Construct
@@ -241,6 +245,15 @@ public class TextImportEntity extends AbstractUIPage
 	  {
 		  return pageNumber;
 	  }
+	  
+	  /**
+	   * Gets the unique id of this entity
+	   * @return
+	   */
+	  public String getPhysicalID()
+	  {
+		  return physicalID;
+	  }
 
 
 	  /**
@@ -340,8 +353,77 @@ public class TextImportEntity extends AbstractUIPage
 	   */
 	  public OrderedMap getPageData()
 	  {
-		  OrderedMap map = null;
-		  return map;
+		  OrderedMap om = new OrderedMap();
+		  om.put(xPathRoot + "entityName", XMLUtil.normalize(TableNameTextField.getText()));
+		  if(!Util.isBlank(TableDescriptionTextField.getText()))
+		  {
+		       om.put(xPathRoot + "entityDescription",
+		       XMLUtil.normalize(TableDescriptionTextField.getText()));
+		  }
+		    // physical NV pairs are inserted here
+		    if(physicalID == null)
+		    {
+			   physicalID = WizardSettings.getUniqueID();
+		    }
+			om.put(xPathRoot + "physical/@id", physicalID);
+			String shortFileName = null;
+			File dataFile = null;
+			int nlines_actual = 0;
+			if(textFile != null)
+			{
+				shortFileName = textFile.getShortFilename();
+				dataFile = textFile.getDataFile();
+				nlines_actual = textFile.getNlines_actual();
+			}
+			if(!Util.isBlank(shortFileName))
+			{
+		        om.put(xPathRoot + "physical/objectName", shortFileName);
+			}
+			else
+			{
+				om.put(xPathRoot + "physical/objectName", WizardSettings.UNAVAILABLE);
+			}
+		    long filesize = 0;
+		    if(dataFile != null)
+		    {
+		       filesize = dataFile.length();
+		    }
+		    String filesizeString = (new Long(filesize)).toString();
+		    om.put(xPathRoot + "physical/size", filesizeString);
+		    om.put(xPathRoot + "physical/size/@unit", "byte");
+		    String numHeaderLinesStr = StartingLineTextField.getText();
+		    int numHeaderLines = 1;
+		    int startingLine =1;
+		    try
+		    {
+		    	numHeaderLines = (new Integer(numHeaderLinesStr)).intValue();
+		    	startingLine = numHeaderLines;
+		    }
+		    catch(Exception e)
+		    {
+		    	numHeaderLines = 1;
+		    }
+		    if (!ColumnLabelsCheckBox.isSelected())
+		    {
+		    	numHeaderLines = numHeaderLines - 1;
+		    }
+		    om.put(xPathRoot + "physical/dataFormat/textFormat/numHeaderLines",
+		           "" + numHeaderLines);
+		    om.put(xPathRoot + "physical/dataFormat/textFormat/recordDelimiter",
+		           "#x0A");
+		    om.put(xPathRoot + "physical/dataFormat/textFormat/attributeOrientation",
+		           "column");
+		   
+
+		    int temp = 0;
+		    if (ColumnLabelsCheckBox.isSelected())temp = 1;
+		    int numrecs = nlines_actual - startingLine + 1 + temp;
+		    String numRecords = (new Integer(numrecs)).toString();
+		    if(!Util.isBlank(numRecords))
+		    {
+		    	om.put(xPathRoot + "numberOfRecords", XMLUtil.normalize(numRecords));
+		    }
+		    return om;
 	  }
 
 
@@ -356,8 +438,8 @@ public class TextImportEntity extends AbstractUIPage
 	   */
 	  public OrderedMap getPageData(String rootXPath)
 	  {
-		  OrderedMap map = null;
-		  return map;
+		  throw new UnsupportedOperationException(
+	      "getPageData(String rootXPath) Method Not Implemented");
 	  }
 
 

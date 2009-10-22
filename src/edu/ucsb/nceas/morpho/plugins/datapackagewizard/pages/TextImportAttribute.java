@@ -307,6 +307,10 @@ public class TextImportAttribute extends AbstractUIPage
 	  public OrderedMap getPageData()
 	  {
 		  OrderedMap map = null;
+		  if(attributePage != null)
+		  {
+			  map = attributePage.getPageData();
+		  }
 		  return map;
 	  }
 
