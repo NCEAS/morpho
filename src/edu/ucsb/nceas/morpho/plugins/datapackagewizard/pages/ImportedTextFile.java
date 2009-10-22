@@ -121,7 +121,7 @@ public class ImportedTextFile
 	  /**
 	   * vector of vectors with table data
 	   */
-	  private Vector vec = new Vector();
+	  private Vector vectorOfData = new Vector();
 
 
 	  // Column Model of the table containting all the columns
@@ -139,7 +139,7 @@ public class ImportedTextFile
 	  private JTable table;
 
 	  // table model for JTable table (containing the delimitered data)
-	  UneditableTableModel tableModel = new UneditableTableModel(vec, colTitles);
+	  UneditableTableModel tableModel = new UneditableTableModel(vectorOfData, colTitles);
 	  
 	  
 	  
@@ -288,6 +288,28 @@ public class ImportedTextFile
 	{
 		return fullColumnModel;
 	}
+	
+	
+	/**
+	 * Gets the data in the format of vector of vector.
+	 * @return
+	 */
+	public Vector getVectorOfData() 
+	{
+		return vectorOfData;
+	}
+	
+	/**
+	 * Gets the vector containing the column titles.
+	 * @return
+	 */
+	public Vector getColumnTitlesVector() 
+	{
+		return colTitles;
+	}
+
+
+
 	
 	/**
 	 * Add a Table model change listener to the data model of jtable.
@@ -632,7 +654,7 @@ public class ImportedTextFile
 		          }
 		          start--; // include first line
 		        }
-		        vec = new Vector();
+		        vectorOfData = new Vector();
 		        Vector vec1;
 		        numcols = colTitles.size();
 		        for (int i = start; i < nlines; i++) {
@@ -644,7 +666,7 @@ public class ImportedTextFile
 		            currSize++;
 		            missing = true;
 		          }
-		          vec.addElement(vec1);
+		          vectorOfData.addElement(vec1);
 		        }
 
 		        buildTable();
@@ -713,7 +735,7 @@ public class ImportedTextFile
 	   * builds JTable from given data
 	   */
 	  private void buildTable() {
-		tableModel = new UneditableTableModel(vec, colTitles);
+		tableModel = new UneditableTableModel(vectorOfData, colTitles);
 	    table = new JTable(tableModel);
 	    table.setColumnSelectionAllowed(true);
 	    table.setRowSelectionAllowed(false);
@@ -723,6 +745,13 @@ public class ImportedTextFile
 
 	  }
 
+
+	
+
+
+
+
+	
 	
 	  
 
