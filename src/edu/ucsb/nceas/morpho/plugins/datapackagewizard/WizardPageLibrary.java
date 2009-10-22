@@ -179,7 +179,21 @@ public class WizardPageLibrary implements WizardPageLibraryInterface{
 	  else if(index == textImportAttributePagesSize-1)
 	  {
 		 //this is last attribute page, we should set DataPackageWizardInterface.SUMMARY
-		  page.setNextPageID(DataPackageWizardInterface.SUMMARY);
+		  //page.setNextPageID(DataPackageWizardInterface.SUMMARY);
+		  int attrsToBeImported = 0;//To_do
+		  boolean importNeeded = true;
+		  if(attrsToBeImported > 0) 
+		  {
+		      page.setNextPageID(DataPackageWizardInterface.CODE_DEFINITION);
+		  } 
+		  else if(importNeeded) 
+		  {
+		      page.setNextPageID(DataPackageWizardInterface.CODE_IMPORT_SUMMARY);
+		  } 
+		  else 
+		  {
+		     page.setNextPageID(DataPackageWizardInterface.SUMMARY);
+		  }
 	  }
 	  return  page;
   }
