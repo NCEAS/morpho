@@ -415,7 +415,7 @@ public class TextImportDelimiters extends AbstractUIPage implements TableModelLi
 
 		   if(this.ignoreConsequtiveDelimiters) 
 		   {
-			    TextImportEntity previousPage = (TextImportEntity) frame.getPreviousPage();
+			    TextImportEntity previousPage = (TextImportEntity) frame.getPreviousPage(this);
 			    String physicalID = previousPage.getPhysicalID();
 				// if consecutive delimiters need to be ignored, we have to add this information in the
 				// additionalMetadata section.

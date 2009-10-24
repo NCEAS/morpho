@@ -626,7 +626,32 @@ public class WizardContainerFrame
 
     return (AbstractUIPage)pageStack.peek();
   }
-
+  
+  /**
+   * Gets the previous page of the given page in the page stack
+   * @param page
+   * @return
+   */
+  public AbstractUIPage getPreviousPage(AbstractUIPage page)
+  {
+	  AbstractUIPage previousPage = null;
+	  if(page != null)
+	  {
+		  for(int i=0; i< pageStack.size(); i++)
+		  {
+			  AbstractUIPage pageInStack = (AbstractUIPage)pageStack.elementAt(i);
+			  if(pageInStack != null && pageInStack.getPageID().equals(page.getPageID()))
+			 {
+				  if (i>1)
+				  {
+					  previousPage = (AbstractUIPage)pageStack.elementAt(i-1);
+				  }
+			 }
+			  
+		  }
+	  }
+	  return previousPage;
+  }
 
   /**
    *  The action to be executed when the "Next" button (pages 1 to last-but-one)
