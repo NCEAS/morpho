@@ -414,7 +414,33 @@ public class TextImportEntity extends AbstractUIPage
 		    om.put(xPathRoot + "physical/dataFormat/textFormat/attributeOrientation",
 		           "column");
 		   
-
+		    return om;
+	  }
+	  
+	  /**
+	   * Gets the order map contains the number of records. Since the numberOfRecords is the last
+	   * subtree of dataTable in eml/dataTable, we have to append it to dataTable at the last step
+	   * @return
+	   */
+	  public OrderedMap getNumberOfRecordsData()
+	  {
+		    int nlines_actual = 0;
+			if(textFile != null)
+			{
+				File dataFile = textFile.getDataFile();
+				nlines_actual = textFile.getNlines_actual();
+			}
+			 int startingLine =1;
+			    try
+			    {
+			    	startingLine = (new Integer(StartingLineTextField.getText())).intValue();
+			    	
+			    }
+			    catch(Exception e)
+			    {
+			    	startingLine = 1;
+			    }
+		    OrderedMap  om = new OrderedMap();
 		    int temp = 0;
 		    if (ColumnLabelsCheckBox.isSelected())temp = 1;
 		    int numrecs = nlines_actual - startingLine + 1 + temp;

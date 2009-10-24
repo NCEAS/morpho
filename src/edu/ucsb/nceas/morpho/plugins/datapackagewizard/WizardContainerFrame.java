@@ -41,6 +41,7 @@ import edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.Entity;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.ImportedTextFile;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.PartyMainPage;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.TextImportAttribute;
+import edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.TextImportEntity;
 import edu.ucsb.nceas.morpho.util.IncompleteDocSettings;
 import edu.ucsb.nceas.morpho.util.Log;
 import edu.ucsb.nceas.morpho.util.Util;
@@ -699,6 +700,7 @@ public class WizardContainerFrame
     //results Map:
     OrderedMap wizData = new OrderedMap();
     OrderedMap accessData = null;
+    int textImportAttributeSize = 0;
 
     //NOTE: the order of pages on the stack is *not* the same as the order
     //of writing data to the DOM. We therefore convert the Stack to a Map
@@ -723,6 +725,10 @@ public class WizardContainerFrame
 	                  "\n*** WARNING - WizardContainerFrame.collectDataFromPages()"
 	                  +" has encountered a page with no ID! Object is: "+nextPage);
 	        continue;
+	      }
+	      if(nextPageID.startsWith(DataPackageWizardInterface.TEXT_IMPORT_ATTRIBUTE))
+	      {
+	    	  textImportAttributeSize++;
 	      }
 	      pageMap.put(nextPageID, nextPage);
       }
@@ -756,6 +762,10 @@ public class WizardContainerFrame
         = (AbstractUIPage)pageMap.get(DataPackageWizardInterface.DATA_LOCATION);
     AbstractUIPage TEXT_IMPORT_WIZARD
         = (AbstractUIPage)pageMap.get(DataPackageWizardInterface.TEXT_IMPORT_WIZARD);
+    TextImportEntity TEXT_IMPORT_ENTITY 
+        =  (TextImportEntity)pageMap.get(DataPackageWizardInterface.TEXT_IMPORT_ENTITY);
+    AbstractUIPage TEXT_IMPORT_DELIMITER
+        =  (AbstractUIPage)pageMap.get(DataPackageWizardInterface.TEXT_IMPORT_DELIMITERS);
     AbstractUIPage DATA_FORMAT
         = (AbstractUIPage)pageMap.get(DataPackageWizardInterface.DATA_FORMAT);
     AbstractUIPage ENTITY
@@ -858,9 +868,35 @@ public class WizardContainerFrame
     if (DATA_FORMAT != null) {
       addPageDataToResultsMap( DATA_FORMAT, wizData);
     }
+    
+    if(TEXT_IMPORT_ENTITY != null)
+    {
+    	addPageDataToResultsMap(TEXT_IMPORT_ENTITY, wizData);
+    }
+    
+    if(TEXT_IMPORT_DELIMITER != null)
+    {
+    	addPageDataToResultsMap(TEXT_IMPORT_DELIMITER, wizData);
+    }
+    
+    //Text_Import_Attribute pages has different numbers in different importing.
+    // we got it from textImportAttributeSize. The TextImportAttribute index is dynamic too,
+    //it is DataPackageWizardInterface.TEXT_IMPORT_ATTRIBUTE appending a number
+    for (int i=0; i<textImportAttributeSize;i++)
+    {
+    	AbstractUIPage TEXT_IMPORT_ATTRIBUTE
+        =  (AbstractUIPage)pageMap.get(DataPackageWizardInterface.TEXT_IMPORT_ATTRIBUTE+i);
+    	addPageDataToResultsMap(TEXT_IMPORT_ATTRIBUTE, wizData);
+    }
 
     if (DATA_LOCATION != null) {
-      addPageDataToResultsMap( DATA_LOCATION, wizData);
+      addPageDataToResultsMap(DATA_LOCATION, wizData);
+    }
+    
+    //attach the number of records
+    if(TEXT_IMPORT_ENTITY != null)
+    {
+    	addPageDataToResultsMap(TEXT_IMPORT_ENTITY.getNumberOfRecordsData(), wizData);
     }
     // now add unique ID's to all dataTables and attributes
     addIDs(
@@ -1252,27 +1288,32 @@ public class WizardContainerFrame
   protected void addPageDataToResultsMap(AbstractUIPage nextPage,
                                        OrderedMap resultsMap) {
 
-    String nextKey = null;
+    
+      OrderedMap pageData = nextPage.getPageData();
+      addPageDataToResultsMap(pageData, resultsMap);
+    
+  }
+  
+  private void addPageDataToResultsMap(OrderedMap pageData, OrderedMap resultsMap)
+  {
+	  String nextKey = null;
+	  if (pageData == null) return;
 
-    OrderedMap nextPgData = nextPage.getPageData();
+	    Iterator it = pageData.keySet().iterator();
 
-    if (nextPgData == null) return;
+	    if (it == null) return;
 
-    Iterator it = nextPgData.keySet().iterator();
+	    while (it.hasNext()) {
 
-    if (it == null) return;
+	      nextKey = (String) it.next();
 
-    while (it.hasNext()) {
+	      if (nextKey == null || nextKey.trim().equals("")) continue;
 
-      nextKey = (String) it.next();
+	      //now excape all characters that might cause a problem in XML:
+//	      resultsMap.put(nextKey, XMLUtil.normalize(nextPgData.get(nextKey)));
+	      resultsMap.put(nextKey, pageData.get(nextKey));
 
-      if (nextKey == null || nextKey.trim().equals("")) continue;
-
-      //now excape all characters that might cause a problem in XML:
-//      resultsMap.put(nextKey, XMLUtil.normalize(nextPgData.get(nextKey)));
-      resultsMap.put(nextKey, nextPgData.get(nextKey));
-
-    } // end while
+	    } // end while
   }
 
  

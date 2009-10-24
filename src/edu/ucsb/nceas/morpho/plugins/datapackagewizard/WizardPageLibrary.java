@@ -180,8 +180,9 @@ public class WizardPageLibrary implements WizardPageLibraryInterface{
 	  {
 		 //this is last attribute page, we should set DataPackageWizardInterface.SUMMARY
 		  //page.setNextPageID(DataPackageWizardInterface.SUMMARY);
+		  
 		  int attrsToBeImported = 0;//To_do
-		  boolean importNeeded = true;
+		  boolean importNeeded = true;//to_do
 		  if(attrsToBeImported > 0) 
 		  {
 		      page.setNextPageID(DataPackageWizardInterface.CODE_DEFINITION);

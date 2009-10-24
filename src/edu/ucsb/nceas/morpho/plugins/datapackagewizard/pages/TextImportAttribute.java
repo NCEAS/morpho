@@ -309,7 +309,9 @@ public class TextImportAttribute extends AbstractUIPage
 		  OrderedMap map = null;
 		  if(attributePage != null)
 		  {
-			  map = attributePage.getPageData();
+			  //ordered map indext start from 1, but attribute index start 0, so we need to plus 1
+			  int index = columnIndex+1;
+			  map = attributePage.getPageData(AttributeSettings.Attribute_xPath + "[" + index + "]");
 		  }
 		  return map;
 	  }
