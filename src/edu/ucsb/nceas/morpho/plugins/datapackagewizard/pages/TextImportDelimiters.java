@@ -416,20 +416,23 @@ public class TextImportDelimiters extends AbstractUIPage implements TableModelLi
 		   if(this.ignoreConsequtiveDelimiters) 
 		   {
 			    TextImportEntity previousPage = (TextImportEntity) frame.getPreviousPage(this);
-			    String physicalID = previousPage.getPhysicalID();
-				// if consecutive delimiters need to be ignored, we have to add this information in the
-				// additionalMetadata section.
-				String addtHeader = "/eml:eml/additionalMetadata";
-				if(!Util.isBlank(physicalID))
-				{
-					 om.put(addtHeader + "/describes", physicalID);
-					 om.put(addtHeader + "/metadata/consecutiveDelimiters", "true");
-					 hasAdditionalMetadataPart = true;
-				}
-				else
-				{
-					Log.debug(10, "We couldn't add additionalMetadataPart for consecutiveDelimiters since physicalID is unkonw!");
-				}
+			    if(previousPage != null)
+			    {
+				    String physicalID = previousPage.getPhysicalID();
+					// if consecutive delimiters need to be ignored, we have to add this information in the
+					// additionalMetadata section.
+					String addtHeader = "/eml:eml/additionalMetadata";
+					if(!Util.isBlank(physicalID))
+					{
+						 om.put(addtHeader + "/describes", physicalID);
+						 om.put(addtHeader + "/metadata/consecutiveDelimiters", "true");
+						 hasAdditionalMetadataPart = true;
+					}
+					else
+					{
+						Log.debug(10, "We couldn't add additionalMetadataPart for consecutiveDelimiters since physicalID is unkonw!");
+					}
+			    }
 				
 		   }
 		   return om;

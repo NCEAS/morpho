@@ -431,19 +431,19 @@ public class TextImportEntity extends AbstractUIPage
 				nlines_actual = textFile.getNlines_actual();
 			}
 			 int startingLine =1;
-			    try
-			    {
+			 try
+			 {
 			    	startingLine = (new Integer(StartingLineTextField.getText())).intValue();
 			    	
-			    }
-			    catch(Exception e)
-			    {
+			 }
+			 catch(Exception e)
+			 {
 			    	startingLine = 1;
-			    }
+			 }
 		    OrderedMap  om = new OrderedMap();
 		    int temp = 0;
 		    if (ColumnLabelsCheckBox.isSelected())temp = 1;
-		    int numrecs = nlines_actual - startingLine + 1 + temp;
+		    int numrecs = nlines_actual - (startingLine - 1) - temp;
 		    String numRecords = (new Integer(numrecs)).toString();
 		    if(!Util.isBlank(numRecords))
 		    {
