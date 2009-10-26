@@ -116,6 +116,7 @@ public class WizardContainerFrame
   private boolean showPageCount;
   private Map pageCache;
   private String firstPageID;
+  private String entityName = null;
 
   /**
    * Default constructor
@@ -1310,12 +1311,19 @@ public class WizardContainerFrame
    * @param nextPage WizardPage
    * @param resultsMap OrderedMap
    */
-  protected void addPageDataToResultsMap(AbstractUIPage nextPage,
+  protected void addPageDataToResultsMap(AbstractUIPage page,
                                        OrderedMap resultsMap) {
 
     
-      OrderedMap pageData = nextPage.getPageData();
-      addPageDataToResultsMap(pageData, resultsMap);
+	  if(page != null)
+	  {
+        OrderedMap pageData = page.getPageData();
+        addPageDataToResultsMap(pageData, resultsMap);
+	  }
+	  else
+	  {
+		  Log.debug(10, "The page is null in WizardContainerFrame.addPageDataToResultsMap(AbstractUIPage page, OrderedMap resultsMap)");
+	  }
     
   }
   
@@ -1601,6 +1609,54 @@ public class WizardContainerFrame
      } 
   }
   
+  /**
+   * Determines if any TextImportAttribute in page stack needs to import code/definition.
+   * Note:the method doesn't count the the last TextImportAttribute page which is not in stack.
+   * @return
+   */
+  public boolean containsAttributeNeedingImportedCode()
+  {
+	  boolean contain = false;
+	  if(pageStack != null)
+	  {
+		  for(int i=0; i<pageStack.size();i++)
+		  {
+			  AbstractUIPage page = (AbstractUIPage)pageStack.elementAt(i);
+			  {
+				  if (page instanceof TextImportAttribute)
+				  {
+					   TextImportAttribute attribute = (TextImportAttribute)page;
+					   if(attribute.isImportNeeded())
+					   {
+						   Log.debug(32, "Found a attribute in the pageStack need to import code/defintion");
+						   contain = true;
+						   break;
+					   }
+				  }
+			  }
+		  }
+	  }
+	  return contain;
+  }
+  
+  
+  /**
+   * Stores the entity name in entity wizard
+   * @param entityName
+   */
+  public void setEntityName(String entityName)
+  {
+	  this.entityName = entityName;
+  }
+  
+  /**
+   * Gets the entityName in entitywizard
+   * @return
+   */
+  public String getEntityName()
+  {
+	  return this.entityName;
+  }
 
 
 

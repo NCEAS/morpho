@@ -47,7 +47,9 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableColumnModel;
 import javax.swing.table.TableColumnModel;
 
+import edu.ucsb.nceas.morpho.datapackage.AbstractDataPackage;
 import edu.ucsb.nceas.morpho.framework.AbstractUIPage;
+import edu.ucsb.nceas.morpho.framework.UIController;
 import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WidgetFactory;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardContainerFrame;
@@ -84,6 +86,7 @@ public class TextImportAttribute extends AbstractUIPage
 	   // Column Model of the table containting all the columns
 	   private TableColumnModel fullColumnModel = null;
 	   private AttributePage attributePage = null;
+	   private boolean importNeeded = false;
 	   
 	   
 	   /**
@@ -288,11 +291,39 @@ public class TextImportAttribute extends AbstractUIPage
 	  {
 		  if(attributePage != null)
 		  {
+			  //handle
+			  Log.debug(32, "The attriubte page with index "+columnIndex+" is needed imported "+attributePage.isImportNeeded());
+			  if(attributePage.isImportNeeded()) 
+			  {
+				  AbstractDataPackage adp = UIController.getInstance().getCurrentAbstractDataPackage();
+			      if(adp == null) 
+			      {
+					Log.debug(10, "Error! Unable to obtain the ADP in the Entity page!");
+			      }
+			      else
+			      {
+			    	  String prefix = AttributeSettings.Attribute_xPath;
+			    	  OrderedMap map1 = attributePage.getPageData(prefix + "[" + columnIndex + "]");			
+			          String colName = getColumnName(map1, prefix + "[" + columnIndex + "]");
+			          String mScale = getMeasurementScale(map1, prefix + "[" + columnIndex + "]");
+			          //adp.addAttributeForImport(frame.getEntityName(), colName, mScale, map1, prefix + "[" + columnIndex + "]", true);
+			          importNeeded = true;
+			          Log.debug(32, "Set the TextImportAttribute importNeeded(code/definition) true");
+			      }
+			  }
+			  //In WizardPageLibrary, we use method WizardContainerFrame.containsAttributeNeedingImportedCode() to
+			  //determine if pageStack contains any attribute needed import code/definition.
+			  //However, the pageStack doesn't cover the last the attribute. So we should handle the last one here.
+			  if(importNeeded && nextPageID != null && nextPageID.equals(DataPackageWizardInterface.SUMMARY))
+			  {
+				  Log.debug(30, "Since last text import attribute needs import code/definition, we change the nextPageID to DataPackageWizardInterface.CODE_IMPORT_SUMMARY");
+				  nextPageID = DataPackageWizardInterface.CODE_IMPORT_SUMMARY;
+			  }
 		     return attributePage.onAdvanceAction();
 		  }
 		  else
 		  {
-			  return true;
+			  return false;
 		  }
 	  }
 
@@ -351,6 +382,15 @@ public class TextImportAttribute extends AbstractUIPage
 	  public boolean setPageData(OrderedMap data, String rootXPath)
 	  {
 		  return true;
+	  }
+	  
+	  /**
+	   * Is this attribute need importing code/definition
+	   * @return
+	   */
+	  public boolean isImportNeeded()
+	  {
+		  return this.importNeeded;
 	  }
 	  
 	  /**
@@ -539,8 +579,48 @@ public class TextImportAttribute extends AbstractUIPage
 		    }
 		    return "text";
 		  }
+     
+		  private String getColumnName(OrderedMap map, String xPath) 
+		  {
 
-	  
+			    Object o1 = map.get(xPath + "/attributeName");
+			    if(o1 == null) return "";
+			    else return (String) o1;
+		  }
+
+		  private String getMeasurementScale(OrderedMap map, String xPath) 
+		  {
+
+		    Object o1 = map.get(xPath + "/measurementScale/nominal/nonNumericDomain/enumeratedDomain[1]/codeDefinition[1]/code");
+		    if(o1 != null) return "Nominal";
+		    boolean b1 = map.containsKey(xPath + "/measurementScale/nominal/nonNumericDomain/enumeratedDomain[1]/entityCodeList/entityReference");
+		    if(b1) return "Nominal";
+		    o1 = map.get(xPath + "/measurementScale/nominal/nonNumericDomain/textDomain[1]/definition");
+		    if(o1 != null) return "Nominal";
+
+		    o1 = map.get(xPath + "/measurementScale/ordinal/nonNumericDomain/enumeratedDomain[1]/codeDefinition[1]/code");
+		    if(o1 != null) return "Ordinal";
+		    b1 = map.containsKey(xPath + "/measurementScale/ordinal/nonNumericDomain/enumeratedDomain[1]/entityCodeList/entityReference");
+		    if(b1) return "Ordinal";
+		    o1 = map.get(xPath + "/measurementScale/ordinal/nonNumericDomain/textDomain[1]/definition");
+		    if(o1 != null) return "Ordinal";
+
+		    o1 = map.get(xPath + "/measurementScale/interval/unit/standardUnit");
+		    if(o1 != null) return "Interval";
+				o1 = map.get(xPath + "/measurementScale/interval/unit/customUnit");
+		    if(o1 != null) return "Interval";
+
+		    o1 = map.get(xPath + "/measurementScale/ratio/unit/standardUnit");
+		    if(o1 != null) return "Ratio";
+				o1 = map.get(xPath + "/measurementScale/ratio/unit/customUnit");
+		    if(o1 != null) return "Ratio";
+
+		    o1 = map.get(xPath + "/measurementScale/dateTime/formatString");
+		    if(o1 != null) return "Datetime";
+
+		    return "";
+		  }
+  
 	  
 	  
 	 

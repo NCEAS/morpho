@@ -337,7 +337,8 @@ public class TextImportEntity extends AbstractUIPage
 			  Log.debug(30, "TextImporEntity.onAdvanceAction, the final coumnLableInStartingLine is "+ColumnLabelsCheckBox.isSelected());
 			  textFile.setColumnLabelsInStartingLine(ColumnLabelsCheckBox.isSelected());
 			  String str = StartingLineTextField.getText();
-			  handleStartingLineTextChange(str);			  			
+			  handleStartingLineTextChange(str);	
+			  frame.setEntityName(XMLUtil.normalize(TableNameTextField.getText()));
 			  WidgetFactory.unhiliteComponent(nameLabel);
 		     return true;
 		  }

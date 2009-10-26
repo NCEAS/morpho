@@ -37,7 +37,9 @@ import edu.ucsb.nceas.morpho.plugins.vocabulary.ThesaurusLookupPage;
 import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
 import edu.ucsb.nceas.morpho.util.Log;
 
+import edu.ucsb.nceas.morpho.datapackage.AbstractDataPackage;
 import edu.ucsb.nceas.morpho.framework.AbstractUIPage;
+import edu.ucsb.nceas.morpho.framework.UIController;
 
 import edu.ucsb.nceas.morpho.framework.AbstractUIPage;
 
@@ -178,21 +180,36 @@ public class WizardPageLibrary implements WizardPageLibraryInterface{
 	  }
 	  else if(index == textImportAttributePagesSize-1)
 	  {
-		 //this is last attribute page, we should set DataPackageWizardInterface.SUMMARY
+		 //this is last attribute page, we should set to the different page as the last page
 		  //page.setNextPageID(DataPackageWizardInterface.SUMMARY);
 		  
-		  int attrsToBeImported = 0;//To_do
-		  boolean importNeeded = true;//to_do
+		  int attrsToBeImported = 0;
+		  AbstractDataPackage adp = UIController.getInstance().getCurrentAbstractDataPackage();
+		  if(adp == null) 
+		  {
+				Log.debug(10, "Error! Unable to obtain the ADP in TextImportWizard!");
+		  } 
+		  else 
+		  {
+				attrsToBeImported = adp.getAttributeImportCount();
+		  }
+		  boolean importNeeded = container.containsAttributeNeedingImportedCode();
+		  //note: this importeNeeded doesn't cover the last TextImportAttribute page.
+		  //so we have some code in onAdvance method in textImportAttribute to cover the 
+		  //last one.
 		  if(attrsToBeImported > 0) 
 		  {
+			  //this is importing a code/definition table, we need to set the next page to be code_definition
 		      page.setNextPageID(DataPackageWizardInterface.CODE_DEFINITION);
 		  } 
 		  else if(importNeeded) 
 		  {
+			  //there is at least one attribute need a reference from another table, so go to code_import_summary
 		      page.setNextPageID(DataPackageWizardInterface.CODE_IMPORT_SUMMARY);
 		  } 
 		  else 
 		  {
+			 //this is regular text importing, got the summary page
 		     page.setNextPageID(DataPackageWizardInterface.SUMMARY);
 		  }
 	  }
