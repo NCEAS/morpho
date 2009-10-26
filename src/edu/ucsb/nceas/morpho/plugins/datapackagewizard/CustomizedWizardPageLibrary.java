@@ -38,7 +38,7 @@ public class CustomizedWizardPageLibrary implements WizardPageLibraryInterface {
    *
    *  @return  the corresponding WizardPage with this ID
    */
-  public  AbstractUIPage getUIPage(String pageID) 
+  public  AbstractUIPage getPage(String pageID) 
   {
 
      AbstractUIPage page = (AbstractUIPage)pageList.get(pageID);

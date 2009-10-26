@@ -10,7 +10,7 @@ import edu.ucsb.nceas.morpho.framework.AbstractUIPage;
  */
 public interface WizardPageLibraryInterface {
 	
-	public AbstractUIPage getUIPage(String pageID);
+	public AbstractUIPage getPage(String pageID);
 	
 	/**
 	 * Sets the size of TextImportAttributePage. TextImportAttirubtePage

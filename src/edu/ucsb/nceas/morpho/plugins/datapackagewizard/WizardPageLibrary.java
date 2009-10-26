@@ -231,10 +231,6 @@ public class WizardPageLibrary implements WizardPageLibraryInterface{
 	  return index;
   }
   
-  public AbstractUIPage getUIPage(String pageID)
-  {
-	  return getPage(pageID);
-  }
   
   /**
 	 * Sets the size of TextImportAttributePage. TextImportAttirubtePage

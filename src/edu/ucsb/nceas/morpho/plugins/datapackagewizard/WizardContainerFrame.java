@@ -216,7 +216,7 @@ public class WizardContainerFrame
       return;
     }
 
-    AbstractUIPage pageForID = pageLib.getUIPage(pageID);
+    AbstractUIPage pageForID = pageLib.getPage(pageID);
 
     if (pageForID == null) {
       Log.debug(15,
@@ -684,7 +684,7 @@ public class WizardContainerFrame
     if (nextPage==null) 
     {
     	Log.debug(30, "!!!We couldn't get page from pageStack, generate new page for the id "+nextPgID);
-    	nextPage = pageLib.getUIPage(nextPgID);
+    	nextPage = pageLib.getPage(nextPgID);
     }
     else
     {

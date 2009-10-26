@@ -554,7 +554,7 @@ public class CorrectionWizardController
 				 //we used decrease order
 				 String pageIndex = (new Integer(size-1-i)).toString();
 				 Log.debug(45, "get page "+pageIndex+ " from library");
-				 AbstractUIPage existedPage = wizardPageLibrary.getUIPage(pageIndex);
+				 AbstractUIPage existedPage = wizardPageLibrary.getPage(pageIndex);
 				 if (existedPage == null)
 				 {
 					 continue;
