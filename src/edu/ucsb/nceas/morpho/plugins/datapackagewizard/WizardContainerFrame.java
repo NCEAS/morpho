@@ -788,8 +788,8 @@ public class WizardContainerFrame
         = (AbstractUIPage)pageMap.get(DataPackageWizardInterface.ACCESS);
     AbstractUIPage DATA_LOCATION
         = (AbstractUIPage)pageMap.get(DataPackageWizardInterface.DATA_LOCATION);
-    AbstractUIPage TEXT_IMPORT_WIZARD
-        = (AbstractUIPage)pageMap.get(DataPackageWizardInterface.TEXT_IMPORT_WIZARD);
+    /*AbstractUIPage TEXT_IMPORT_WIZARD
+        = (AbstractUIPage)pageMap.get(DataPackageWizardInterface.TEXT_IMPORT_WIZARD);*/
     TextImportEntity TEXT_IMPORT_ENTITY 
         =  (TextImportEntity)pageMap.get(DataPackageWizardInterface.TEXT_IMPORT_ENTITY);
     AbstractUIPage TEXT_IMPORT_DELIMITER
@@ -885,9 +885,9 @@ public class WizardContainerFrame
 
    
 
-    if (TEXT_IMPORT_WIZARD != null) {
+    /*if (TEXT_IMPORT_WIZARD != null) {
       addPageDataToResultsMap( TEXT_IMPORT_WIZARD, wizData);
-    }
+    }*/
 
     if (ENTITY != null) {
       addPageDataToResultsMap( ENTITY, wizData);

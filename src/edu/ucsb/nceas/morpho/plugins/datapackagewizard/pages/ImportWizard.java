@@ -45,7 +45,8 @@ import edu.ucsb.nceas.morpho.util.Log;
 public class ImportWizard extends     AbstractUIPage
                           implements  TextImportListener {
 
-  public final String pageID     = DataPackageWizardInterface.TEXT_IMPORT_WIZARD;
+  //public final String pageID     = DataPackageWizardInterface.TEXT_IMPORT_WIZARD;
+  String pageID = "";
   public final String pageNumber = "";
 
   public final String title      = "Data Package Wizard";

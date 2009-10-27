@@ -166,7 +166,7 @@ public class DataLocation extends AbstractUIPage {
   
   public DataLocation(WizardContainerFrame mainWizFrame) {
 
-	nextPageID         = DataPackageWizardInterface.TEXT_IMPORT_WIZARD;
+	nextPageID         = DataPackageWizardInterface.DATA_FORMAT;
     this.mainWizFrame = mainWizFrame;
 
     INLINE_OR_ONLINE = WizardSettings.ONLINE;

@@ -157,7 +157,8 @@ public class CodeDefinition extends AbstractUIPage {
     adp.setLastImportedDataSet(null);
 
     String prevPageID = mainWizFrame.getPreviousPageID();
-    if(prevPageID.equals(DataPackageWizardInterface.TEXT_IMPORT_WIZARD) || prevPageID.equals(DataPackageWizardInterface.ENTITY)) {
+    //if(prevPageID.equals(DataPackageWizardInterface.TEXT_IMPORT_WIZARD) || prevPageID.equals(DataPackageWizardInterface.ENTITY)) {
+    if(prevPageID.startsWith(DataPackageWizardInterface.TEXT_IMPORT_ATTRIBUTE) || prevPageID.equals(DataPackageWizardInterface.ENTITY)) {
 
         Node newDOM = mainWizFrame.collectDataFromPages();
 

@@ -114,8 +114,8 @@ public class WizardPageLibrary implements WizardPageLibraryInterface{
       return new UsageRights();
     if(pageID.equals(DataPackageWizardInterface.DATA_LOCATION))
       return new DataLocation(container);
-    if(pageID.equals(DataPackageWizardInterface.TEXT_IMPORT_WIZARD))
-      return new ImportWizard(container);
+    /*if(pageID.equals(DataPackageWizardInterface.TEXT_IMPORT_WIZARD))
+      return new ImportWizard(container);*/
     if(pageID.equals(DataPackageWizardInterface.DATA_FORMAT))
       return new DataFormat(container);
     if(pageID.equals(DataPackageWizardInterface.ENTITY))
