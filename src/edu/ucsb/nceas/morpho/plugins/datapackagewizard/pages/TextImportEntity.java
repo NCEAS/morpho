@@ -46,7 +46,9 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
+import edu.ucsb.nceas.morpho.datapackage.AbstractDataPackage;
 import edu.ucsb.nceas.morpho.framework.AbstractUIPage;
+import edu.ucsb.nceas.morpho.framework.UIController;
 import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WidgetFactory;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardContainerFrame;
@@ -333,6 +335,21 @@ public class TextImportEntity extends AbstractUIPage
 		  }
 		  else
 		  {
+			  // to check if this is importing a code/defintion table
+			  int attrsToBeImported = 0;
+			  AbstractDataPackage adp = UIController.getInstance().getCurrentAbstractDataPackage();
+			  if(adp == null) 
+			  {
+					Log.debug(10, "Error! Unable to obtain the ADP in TextImportWizard!");
+			  } 
+			  else 
+			  {
+					attrsToBeImported = adp.getAttributeImportCount();
+			  }
+			  if(attrsToBeImported > 0)
+			  {
+				  frame.setImportCodeDefinitionTable(true);
+			  }
 			  //make sure textFile contains current panel setting
 			  Log.debug(30, "TextImporEntity.onAdvanceAction, the final coumnLableInStartingLine is "+ColumnLabelsCheckBox.isSelected());
 			  textFile.setColumnLabelsInStartingLine(ColumnLabelsCheckBox.isSelected());

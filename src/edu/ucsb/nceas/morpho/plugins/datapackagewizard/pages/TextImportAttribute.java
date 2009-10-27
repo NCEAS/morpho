@@ -306,7 +306,7 @@ public class TextImportAttribute extends AbstractUIPage
 			    	  OrderedMap map1 = attributePage.getPageData(prefix + "[" + columnIndex + "]");			
 			          String colName = getColumnName(map1, prefix + "[" + columnIndex + "]");
 			          String mScale = getMeasurementScale(map1, prefix + "[" + columnIndex + "]");
-			          //adp.addAttributeForImport(frame.getEntityName(), colName, mScale, map1, prefix + "[" + columnIndex + "]", true);
+			          adp.addAttributeForImport(frame.getEntityName(), colName, mScale, map1, prefix + "[" + columnIndex + "]", true);
 			          importNeeded = true;
 			          Log.debug(32, "Set the TextImportAttribute importNeeded(code/definition) true");
 			      }

@@ -106,6 +106,7 @@ public class WizardContainerFrame
   
   protected boolean disableIncompleteSaving = false;
   private boolean isEntityWizard = false;
+  private boolean isImportCodeDefinitionTable = false;
   private int entityIndex = 0;
   private  AbstractDataPackage adp = null;
   private final static String ENTITYGENERICNAME = "entities";
@@ -1657,7 +1658,25 @@ public class WizardContainerFrame
   {
 	  return this.entityName;
   }
+  
+  
+  /**
+   * Set if this frame is importing a code/definition table
+   * @param isImportCodeDefinitionTable
+   */
+  public void setImportCodeDefinitionTable(boolean isImportCodeDefinitionTable)
+  {
+	  this.isImportCodeDefinitionTable = isImportCodeDefinitionTable;
+  }
 
+  /**
+   * Gets if this frame is importing a code/definition table
+   * @return
+   */
+  public boolean isImportCodeDefinitionTable()
+  {
+	  return this.isImportCodeDefinitionTable;
+  }
 
 
 
