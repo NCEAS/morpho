@@ -94,5 +94,15 @@ public class CustomizedWizardPageLibrary implements WizardPageLibraryInterface {
 	{
 		
 	}
+	
+	/**
+	 * Gets the size of text import attribute page size.
+	 * We don't need to implement it in this class.
+	 * @return
+	 */
+	public int getTextImportAttributePagesSize()
+	{
+		return 0;
+	}
 }
 

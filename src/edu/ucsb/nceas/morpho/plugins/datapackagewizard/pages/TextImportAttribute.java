@@ -51,6 +51,7 @@ import edu.ucsb.nceas.morpho.datapackage.AbstractDataPackage;
 import edu.ucsb.nceas.morpho.framework.AbstractUIPage;
 import edu.ucsb.nceas.morpho.framework.UIController;
 import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
+import edu.ucsb.nceas.morpho.plugins.datapackagewizard.UneditableTableModel;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WidgetFactory;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardContainerFrame;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardPageLibrary;
@@ -291,26 +292,53 @@ public class TextImportAttribute extends AbstractUIPage
 	  {
 		  if(attributePage != null)
 		  {
+			  String prefix = AttributeSettings.Attribute_xPath;
+	    	  OrderedMap map1 = attributePage.getPageData(prefix + "[" + columnIndex + "]");			
+	          String colName = getColumnName(map1, prefix + "[" + columnIndex + "]");
+	          AbstractDataPackage adp = UIController.getInstance().getCurrentAbstractDataPackage();
+		      if(adp == null) 
+		      {
+				Log.debug(10, "Error! Unable to obtain the ADP in the Entity page!");
+		      }
+		      else
+		      {
+		    	  frame.addToNewImportedAttributeNameList(columnIndex, colName);
+		      }
 			  //handle
 			  Log.debug(32, "The attriubte page with index "+columnIndex+" is needed imported "+attributePage.isImportNeeded());
 			  if(attributePage.isImportNeeded()) 
 			  {
-				  AbstractDataPackage adp = UIController.getInstance().getCurrentAbstractDataPackage();
-			      if(adp == null) 
-			      {
-					Log.debug(10, "Error! Unable to obtain the ADP in the Entity page!");
-			      }
-			      else
-			      {
-			    	  String prefix = AttributeSettings.Attribute_xPath;
-			    	  OrderedMap map1 = attributePage.getPageData(prefix + "[" + columnIndex + "]");			
-			          String colName = getColumnName(map1, prefix + "[" + columnIndex + "]");
+				 
+			      if(adp != null)
+			      {    	  
 			          String mScale = getMeasurementScale(map1, prefix + "[" + columnIndex + "]");
 			          adp.addAttributeForImport(frame.getEntityName(), colName, mScale, map1, prefix + "[" + columnIndex + "]", true);
 			          importNeeded = true;
 			          Log.debug(32, "Set the TextImportAttribute importNeeded(code/definition) true");
 			      }
 			  }
+			  
+			  if(frame != null && frame.getWizardPageLibrary() != null && columnIndex == frame.getWizardPageLibrary().getTextImportAttributePagesSize()-1)
+			  {
+				  Log.debug(35, "We are handling the last attribute with index "+columnIndex);
+				  //This is the last imported attribute. So we can put the arrayList wich contains
+				  //attribute name into adp.
+				  if(adp != null)
+				  {
+					  Log.debug(35, "Set the last imported entity, attributes and dataset");
+					    adp.setLastImportedEntity(frame.getEntityName());
+						adp.setLastImportedAttributes(frame.getNewImportedAttributeNameList());
+						if(textFile != null && textFile.getVectorOfData() != null)
+						{
+							adp.setLastImportedDataSet(textFile.getVectorOfData());
+						}
+						else 
+						{
+							adp.setLastImportedDataSet(((UneditableTableModel)table.getModel()).getDataVector());
+						}
+				  }
+			  }
+			  
 			  //In WizardPageLibrary, we use method WizardContainerFrame.containsAttributeNeedingImportedCode() to
 			  //determine if pageStack contains any attribute needed import code/definition.
 			  //However, the pageStack doesn't cover the last the attribute. So we should handle the last one here.
@@ -323,6 +351,7 @@ public class TextImportAttribute extends AbstractUIPage
 		  }
 		  else
 		  {
+			  Log.debug(5, "The attribute page is null in the TextImportAttribute page!");
 			  return false;
 		  }
 	  }

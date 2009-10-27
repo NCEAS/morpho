@@ -118,6 +118,7 @@ public class WizardContainerFrame
   private Map pageCache;
   private String firstPageID;
   private String entityName = null;
+  private List newImportedAttributeNameList = new ArrayList();
 
   /**
    * Default constructor
@@ -1676,6 +1677,38 @@ public class WizardContainerFrame
   public boolean isImportCodeDefinitionTable()
   {
 	  return this.isImportCodeDefinitionTable;
+  }
+  
+  /**
+   * Set the attributeName into an arrayList. 
+   * If the attribute index already in the array, we replace it. otherwise we add it to the array
+   * @param index
+   * @param attributeName
+   */
+  public void addToNewImportedAttributeNameList(int index, String attributeName)
+  {
+	  int size = this.newImportedAttributeNameList.size();
+	  if(size  <= index)
+	  {
+		  Log.debug(32, "In WizardContanerFrame.addToNewImportedAttributeNameList, the array list size " +size+
+				      " is less than or equal the attribute index "+index+", so we add "+attributeName+" to the arrary");
+		  this.newImportedAttributeNameList.add(attributeName);
+	  }
+	  else
+	  {
+		  Log.debug(32, "In WizardContanerFrame.addToNewImportedAttributeNameList, the array list size " +size+
+			      " is greater than  the attribute index "+index+", so we should replace the old value with the new value "+attributeName+" in arrary");
+		  this.newImportedAttributeNameList.set(index, attributeName);
+	  }
+  }
+  
+  /**
+   * Gets the new imported attribute name list
+   * @return
+   */
+  public List getNewImportedAttributeNameList()
+  {
+	  return this.newImportedAttributeNameList;
   }
 
 

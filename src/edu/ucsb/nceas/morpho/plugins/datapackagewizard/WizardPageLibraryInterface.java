@@ -18,5 +18,11 @@ public interface WizardPageLibraryInterface {
 	 * @param size
 	 */
 	public void setTextImportAttributePagesSize(int size);
+	
+	/**
+	 * Gets the size of text import attribute page size
+	 * @return
+	 */
+	public int getTextImportAttributePagesSize();
 
 }

@@ -249,6 +249,15 @@ public class WizardPageLibrary implements WizardPageLibraryInterface{
 	{
 		this.textImportAttributePagesSize = size;
 	}
+	
+	/**
+	 * Gets the size of text import attribute page size
+	 * @return
+	 */
+	public int getTextImportAttributePagesSize()
+	{
+		return this.textImportAttributePagesSize;
+	}
 
   
 }
