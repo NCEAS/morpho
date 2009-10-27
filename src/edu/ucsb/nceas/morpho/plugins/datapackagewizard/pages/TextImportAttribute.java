@@ -292,6 +292,11 @@ public class TextImportAttribute extends AbstractUIPage
 	  {
 		  if(attributePage != null)
 		  {
+			  //clear the attribute name list at the first attribute
+			  if(frame != null && columnIndex ==FIRSTINDEX)
+			  {
+				  frame.clearNewImportedAttributeNameList();
+			  }
 			  String prefix = AttributeSettings.Attribute_xPath;
 	    	  OrderedMap map1 = attributePage.getPageData(prefix + "[" + columnIndex + "]");			
 	          String colName = getColumnName(map1, prefix + "[" + columnIndex + "]");
@@ -328,9 +333,11 @@ public class TextImportAttribute extends AbstractUIPage
 					  Log.debug(35, "Set the last imported entity, attributes and dataset");
 					    adp.setLastImportedEntity(frame.getEntityName());
 						adp.setLastImportedAttributes(frame.getNewImportedAttributeNameList());
+						Log.debug(40, "The attributes list is "+frame.getNewImportedAttributeNameList());
 						if(textFile != null && textFile.getVectorOfData() != null)
 						{
 							adp.setLastImportedDataSet(textFile.getVectorOfData());
+							//Log.debug(40, "The data is "+textFile.getVectorOfData());
 						}
 						else 
 						{

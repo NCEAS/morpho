@@ -1710,6 +1710,14 @@ public class WizardContainerFrame
   {
 	  return this.newImportedAttributeNameList;
   }
+  
+  /**
+   * Remove all elements in this list
+   */
+  public void clearNewImportedAttributeNameList()
+  {
+	  this.newImportedAttributeNameList.clear();
+  }
 
 
 
