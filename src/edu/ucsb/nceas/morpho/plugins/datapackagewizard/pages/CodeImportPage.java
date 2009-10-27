@@ -244,7 +244,7 @@ public class CodeImportPage extends AbstractUIPage {
 
   private AbstractDataPackage getADP() {
 		
-    return UIController.getInstance().getCurrentAbstractDataPackage();
+    return mainWizFrame.getAbstractDataPackage();
   }
 
   /**

@@ -253,7 +253,7 @@ public class CodeImportSummary extends AbstractUIPage {
 
   private AbstractDataPackage getADP() {
 
-    AbstractDataPackage dp = UIController.getInstance().getCurrentAbstractDataPackage();
+    AbstractDataPackage dp = mainWizFrame.getAbstractDataPackage();
     return dp;
   }
 

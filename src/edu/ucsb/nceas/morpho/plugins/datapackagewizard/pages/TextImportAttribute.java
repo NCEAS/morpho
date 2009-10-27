@@ -300,7 +300,7 @@ public class TextImportAttribute extends AbstractUIPage
 			  String prefix = AttributeSettings.Attribute_xPath;
 	    	  OrderedMap map1 = attributePage.getPageData(prefix + "[" + columnIndex + "]");			
 	          String colName = getColumnName(map1, prefix + "[" + columnIndex + "]");
-	          AbstractDataPackage adp = UIController.getInstance().getCurrentAbstractDataPackage();
+	          AbstractDataPackage adp = frame.getAbstractDataPackage();
 		      if(adp == null) 
 		      {
 				Log.debug(10, "Error! Unable to obtain the ADP in the Entity page!");

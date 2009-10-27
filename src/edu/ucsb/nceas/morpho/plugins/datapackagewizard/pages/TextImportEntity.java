@@ -337,7 +337,7 @@ public class TextImportEntity extends AbstractUIPage
 		  {
 			  // to check if this is importing a code/defintion table
 			  int attrsToBeImported = 0;
-			  AbstractDataPackage adp = UIController.getInstance().getCurrentAbstractDataPackage();
+			  AbstractDataPackage adp = frame.getAbstractDataPackage();
 			  if(adp == null) 
 			  {
 					Log.debug(10, "Error! Unable to obtain the ADP in TextImportWizard!");

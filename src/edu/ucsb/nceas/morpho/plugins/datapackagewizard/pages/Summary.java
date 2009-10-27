@@ -188,10 +188,10 @@ public class Summary extends AbstractUIPage {
 
     String ID = mainWizFrame.getFirstPageID();
 
-    if (ID==null) return;
+    /*if (ID==null) return;
     if (ID.equals(DataPackageWizardInterface.DATA_LOCATION)) {
       mainWizFrame.setButtonsStatus(false, false, true);
-    }
+    }*/
 
   }
 

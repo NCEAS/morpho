@@ -1401,16 +1401,16 @@ public class WizardContainerFrame
 
     //AbstractDataPackage adp = UIController.getInstance().getCurrentAbstractDataPackage();
     if(adp != null) {
-
+      Log.debug(32, "WizardContainerFrame.cancelAction ==========");
       edu.ucsb.nceas.morpho.datapackage.Entity[] arr = adp.getOriginalEntityArray();
       if(arr != null) {
-        System.out.println("replacing subtree - ");
+        Log.debug(30, "replacing subtree in WizardContainerFrame.cancelAction - ");
         adp.deleteAllEntities();
         /*edu.ucsb.nceas.morpho.datapackage.Entity[] newarr = adp.getEntityArray();
         for(int i = 0; i < newarr.length; i++)
           adp.deleteEntity(0);*/
         for(int i = 0; i < arr.length; i++) {
-          System.out.println("adding entity - " + i);
+        	 Log.debug(32, "adding entity - " + i);
           adp.addEntity(arr[i]);
         }
       }
@@ -1717,6 +1717,15 @@ public class WizardContainerFrame
   public void clearNewImportedAttributeNameList()
   {
 	  this.newImportedAttributeNameList.clear();
+  }
+  
+  /**
+   * Gets the abstract data package associated with the frame
+   * @return
+   */
+  public AbstractDataPackage getAbstractDataPackage()
+  {
+	  return this.adp;
   }
 
 
