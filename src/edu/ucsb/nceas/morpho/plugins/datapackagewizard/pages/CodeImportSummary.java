@@ -55,7 +55,14 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 
-
+/**
+ * This page is a dynamic summary. It can be interim summary when it finishes import code/definition
+ * for one column (it has next button to handle another column). It also can be the final summary 
+ * when user finishes import code/definition for all columns (next button will be disabled and finish button
+ * will be enabled). 
+ * @author tao
+ *
+ */
 public class CodeImportSummary extends AbstractUIPage {
 
   public final String pageID     = DataPackageWizardInterface.CODE_IMPORT_SUMMARY;
@@ -201,7 +208,7 @@ public class CodeImportSummary extends AbstractUIPage {
 
 
       // this is a new data table creation. Need to store this DOM to return it.
-
+      // this is collect data table, not for code/definition table.
       Node newDOM = mainWizFrame.collectDataFromPages();
       mainWizFrame.setDOMToReturn(null);
       if(adp == null)

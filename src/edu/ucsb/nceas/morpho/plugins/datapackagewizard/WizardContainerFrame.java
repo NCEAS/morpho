@@ -119,6 +119,7 @@ public class WizardContainerFrame
   private String firstPageID;
   private String entityName = null;
   private List newImportedAttributeNameList = new ArrayList();
+  private Vector neededCancelingEntityList = new Vector();//this is for clean up.
 
   /**
    * Default constructor
@@ -1567,12 +1568,23 @@ public class WizardContainerFrame
   
   /**
    * Sets the index of the entity which is generating. This number will be valid only
-   * the wizard is set an entity one.
+   * the wizard is set an entity one. It also will add the index to a list which will
+   * be removed in cancel action
    * @param entityIndex
    */
   public void setEntityIndex(int entityIndex)
   {
+	  neededCancelingEntityList.add(entityIndex);
 	  this.entityIndex =entityIndex;
+  }
+  
+  /**
+   * Gets the current working entity index
+   * @return
+   */
+  public int getEnityIndex()
+  {
+	  return this.entityIndex;
   }
   
   /**

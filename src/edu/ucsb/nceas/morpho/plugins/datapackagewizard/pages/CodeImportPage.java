@@ -51,6 +51,14 @@ import javax.swing.JTextField;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+/**
+ * This page will let user to choose to import code/definition from 
+ * a existing table or from  a new table. If from a new table, it will
+ * start DataLocation page to import a new table. The new import code/definition
+ * table will be ended at CodeDefintion page.
+ * @author tao
+ *
+ */
 public class CodeImportPage extends AbstractUIPage {
 
   public final String pageID     = DataPackageWizardInterface.CODE_IMPORT_PAGE;

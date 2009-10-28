@@ -57,7 +57,14 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 
-
+/**
+ * This page will be shown when wizard finish importing a table which contains code/definition. 
+ * The start of importing the code/definition table is at CodeImportPage.
+ * Its previous pages can be TextImportAttribute_index and Entity page.
+ * Note: those previous pages are used to handle code/definition table.
+ * @author tao
+ *
+ */
 public class CodeDefinition extends AbstractUIPage {
 
   public final String pageID = DataPackageWizardInterface.CODE_DEFINITION;
