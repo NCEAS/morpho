@@ -206,7 +206,7 @@ public class CodeImportPage extends AbstractUIPage {
 
     String prevPageID = mainWizFrame.getPreviousPageID();
 
-    if(prevPageID != null && prevPageID.equals(DataPackageWizardInterface.ENTITY)) {
+    /*if(prevPageID != null && prevPageID.equals(DataPackageWizardInterface.ENTITY)) {
 
 
       // create the new data table. Need to store this DOM to return it.
@@ -246,7 +246,7 @@ public class CodeImportPage extends AbstractUIPage {
       adp.setAccessionNumber(newid);
       adp.setLocation("");  // we've changed it and not yet saved
       mainWizFrame.reInitializePageStack();
-    }
+    }*/
 
   }
 

@@ -381,7 +381,7 @@ public class Entity extends AbstractUIPage{
 		this.nextPageID = DataPackageWizardInterface.CODE_DEFINITION;
 	
 	    } else if(importNeeded) {
-		this.nextPageID = DataPackageWizardInterface.CODE_IMPORT_PAGE;
+		this.nextPageID = DataPackageWizardInterface.CODE_IMPORT_SUMMARY;
 	
 	    }
     }

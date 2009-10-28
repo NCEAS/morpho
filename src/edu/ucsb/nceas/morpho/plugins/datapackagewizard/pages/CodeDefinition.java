@@ -58,9 +58,12 @@ import org.w3c.dom.NodeList;
 
 
 /**
- * This page will be shown when wizard finish importing a table which contains code/definition. 
+ * This page will given user an interface to assign which col is code and which col is definition.
+ * In CodeImportPage, user has ability to choose the code/definition was already in package or
+ * need to import a new table. If user chooses "need to import a new table", 
+ * this page will be shown when wizard finish importing a table which contains code/definition. 
  * The start of importing the code/definition table is at CodeImportPage.
- * Its previous pages can be TextImportAttribute_index and Entity page.
+ * Its previous pages can be TextImportAttribute_index or Entity page.
  * Note: those previous pages are used to handle code/definition table.
  * @author tao
  *

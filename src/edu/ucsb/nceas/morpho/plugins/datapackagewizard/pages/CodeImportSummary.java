@@ -188,7 +188,7 @@ public class CodeImportSummary extends AbstractUIPage {
       "<i> "+ currentAttrName + "</i> has been collected</p>"
        +WizardSettings.HTML_TABLE_LABEL_CLOSING);
 
-    } else if( prevID.startsWith(DataPackageWizardInterface.TEXT_IMPORT_ATTRIBUTE)) {
+    } else if( prevID.startsWith(DataPackageWizardInterface.TEXT_IMPORT_ATTRIBUTE)|| prevID.equals(DataPackageWizardInterface.ENTITY)) {
 
 			desc1.setText(
       WizardSettings.HTML_TABLE_LABEL_OPENING
