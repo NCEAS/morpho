@@ -154,6 +154,7 @@ public class TextImportAttribute extends AbstractUIPage
 		    //updateColumnDataPanel()
 		    vbox.add(columnDataScrollPanel, BorderLayout.WEST);
 		    attributePage = (AttributePage) wizardPageLib.getPage(DataPackageWizardInterface.ATTRIBUTE_PAGE);
+		    initiAttributePanel();
 		    vbox.add(attributePage, BorderLayout.CENTER);
 	   }
 	   
@@ -462,6 +463,16 @@ public class TextImportAttribute extends AbstractUIPage
 	   * Fills some metadata into Attribute page
 	   */
 	  private void updateAttributePanel()
+	  {
+		  //attributePage.refreshUI();
+		  attributePage.validate();
+		  attributePage.repaint();
+	  }
+	  
+	  /**
+	   * Fills some metadata into Attribute page
+	   */
+	  private void initiAttributePanel()
 	  {
 		  Vector colTitles = textFile.getColumnTitlesVector();
 		  Vector vectorOfData = textFile.getVectorOfData();
