@@ -189,57 +189,7 @@ public class CodeImportSummary extends AbstractUIPage {
       +"<p>The new data table has been created successfully.</p>"
 			+ WizardSettings.HTML_TABLE_LABEL_CLOSING);
 
-			edu.ucsb.nceas.morpho.datapackage.Entity[] arr = adp.getOriginalEntityArray();
-			if(arr == null) {
 
-				arr = adp.getEntityArray();
-				if(arr == null) {
-				    arr = new edu.ucsb.nceas.morpho.datapackage.Entity[0];
-				}
-				adp.setOriginalEntityArray(arr);
-			}
-
-
-
-      // this is a new data table creation. Need to store this DOM to return it.
-      // this is collect data table, not for code/definition table.
-      Node newDOM = mainWizFrame.collectDataFromPages();
-      mainWizFrame.setDOMToReturn(null);
-      if(adp == null)
-        adp = getADP();
-
-      Node entNode = null;
-      String entityXpath = "";
-      try{
-        entityXpath = (XMLUtilities.getTextNodeWithXPath(adp.getMetadataPath(),
-        "/xpathKeyMap/contextNode[@name='package']/entities")).getNodeValue();
-        NodeList entityNodes = XMLUtilities.getNodeListWithXPath(newDOM,
-        entityXpath);
-        entNode = entityNodes.item(0);
-      }
-      catch (Exception w) {
-        Log.debug(5, "Error in trying to get entNode in ImportDataCommand");
-      }
-
-      //              Entity entity = new Entity(newDOM);
-      edu.ucsb.nceas.morpho.datapackage.Entity entityNode =
-      new edu.ucsb.nceas.morpho.datapackage.Entity(entNode);
-
-      Log.debug(30,"Adding Entity object to AbstractDataPackage..");
-      adp.addEntity(entityNode);
-
-      // ---DFH
-      Morpho morpho = Morpho.thisStaticInstance;
-      AccessionNumber an = new AccessionNumber(morpho);
-      String curid = adp.getAccessionNumber();
-      String newid = null;
-      if (!curid.equals("")) {
-        newid = an.incRev(curid);
-      } else {
-        newid = an.getNextId();
-      }
-      adp.setAccessionNumber(newid);
-      adp.setLocation("");  // we've changed it and not yet saved
 
 
     }
@@ -383,12 +333,12 @@ public class CodeImportSummary extends AbstractUIPage {
 	      // this is a new data table creation. Need to store this DOM to return it.
 	      // this is collect data table, not for code/definition table.
 	      Node newDOM = mainWizFrame.collectDataFromPages();
-	      mainWizFrame.setDOMToReturn(null);
 	      if(adp == null)
 	        adp = getADP();
 	      int entityIndex = mainWizFrame.getEnityIndex();
 	      Log.debug(32, "The index of the entity which was added to abstract package in CodeImportSummary.onAdvanceAction is "+entityIndex);
 	      adp.replaceEntity(newDOM, entityIndex);
+	      mainWizFrame.setDOMToReturn(null);
 	      //since we added/replace an entity into adp, so next available index should be increase too.
 	      mainWizFrame.setEntityIndex(entityIndex++);
 	      adp.setLocation("");  // we've changed it and not yet saved

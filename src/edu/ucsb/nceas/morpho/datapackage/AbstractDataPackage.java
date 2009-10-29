@@ -2025,12 +2025,12 @@ public abstract class AbstractDataPackage extends MetadataObject
 		  
 		  if ( (entityArray == null) || (entityArray.length < index + 1)) 
 		  {
-		      Log.debug(20, "Unable to find entity at index, so we just add it");
+		      Log.debug(20, "Unable to find entity at index, so we just add it in AbstractDataPackage.replaceEntity");
 		      addEntity(node);
 		  }
 		  else
 		  {
-			  Log.debug(20, "in replace branch");
+			  Log.debug(20, "in replace branch in AbstractDataPackage.replaceEntity");
 			  deleteEntity(index);
 			  insertEntity(entity, index);
 		      addDirtyEntityIndex(index);		    
