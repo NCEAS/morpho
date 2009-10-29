@@ -178,31 +178,10 @@ public class WizardPageLibrary implements WizardPageLibraryInterface{
 		  String nextPageID =DataPackageWizardInterface.TEXT_IMPORT_ATTRIBUTE+nexIndex;
 		  page.setNextPageID(nextPageID);
 	  }
-	  else if(index == textImportAttributePagesSize-1 && container !=null)
+	  else if(index == textImportAttributePagesSize-1)
 	  {
-		 //this is last attribute page, we should set to the different page as the last page
-		  //page.setNextPageID(DataPackageWizardInterface.SUMMARY);
-		  
-		 
-		  boolean importNeeded = container.containsAttributeNeedingImportedCode();
-		  //note: this importeNeeded doesn't cover the last TextImportAttribute page.
-		  //so we have some code in onAdvance method in textImportAttribute to cover the 
-		  //last one.
-		  if(container.isImportCodeDefinitionTable()) 
-		  {
-			  //this is importing a code/definition table, we need to set the next page to be code_definition
-		      page.setNextPageID(DataPackageWizardInterface.CODE_DEFINITION);
-		  } 
-		  else if(importNeeded) 
-		  {
-			  //there is at least one attribute need a reference from another table, so go to code_import_summary
-		      page.setNextPageID(DataPackageWizardInterface.CODE_IMPORT_SUMMARY);
-		  } 
-		  else 
-		  {
-			 //this is regular text importing, got the summary page
-		     page.setNextPageID(DataPackageWizardInterface.SUMMARY);
-		  }
+		  //set the default next page id. It may be change on the onAdvance method
+		  page.setNextPageID(DataPackageWizardInterface.SUMMARY);
 	  }
 	  return  page;
   }

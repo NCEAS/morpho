@@ -1653,6 +1653,15 @@ public class WizardContainerFrame
 	  return contain;
   }
   
+  /**
+   * Remove a page from cache
+   * @param pageID of page will be removed
+   */
+  public void removePageFromCache(String pageID)
+  {
+	  Log.debug(30, "remove the page "+pageID+ " from the cache");
+	  pageCache.remove(pageID);
+  }
   
   /**
    * Stores the entity name in entity wizard

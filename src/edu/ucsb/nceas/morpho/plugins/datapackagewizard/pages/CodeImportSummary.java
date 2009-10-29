@@ -77,6 +77,7 @@ public class CodeImportSummary extends AbstractUIPage {
   private JLabel desc4;
   private WizardContainerFrame mainWizFrame;
   private AbstractDataPackage adp = null;
+  private String prevID;
 
   public CodeImportSummary(WizardContainerFrame mainWizFrame) {
 	 nextPageID 		   = DataPackageWizardInterface.CODE_IMPORT_PAGE;
@@ -134,17 +135,7 @@ public class CodeImportSummary extends AbstractUIPage {
   }
 
 
-  private String getActionName() {
-
-    String ID = mainWizFrame.getFirstPageID();
-    if (ID==null) return "";
-    if(ID.equals(DataPackageWizardInterface.CODE_IMPORT_PAGE))
-      return "import the codes for the attribute <i>" + adp.getCurrentImportAttributeName() + "</i>";
-    else if (ID.equals(DataPackageWizardInterface.DATA_LOCATION))
-      return "create your new data table";
-    else return "create your new data package";
-  }
-
+ 
   /**
    *  The action to be executed when the page is displayed. May be empty
    */
@@ -157,8 +148,8 @@ public class CodeImportSummary extends AbstractUIPage {
 			return;
 		}
 
-    String firstPageID = mainWizFrame.getFirstPageID();
-    String prevID = mainWizFrame.getPreviousPageID();
+    //String firstPageID = mainWizFrame.getFirstPageID();
+    prevID = mainWizFrame.getPreviousPageID();
     String currentAttrName = "";
 
     if(prevID.equals(DataPackageWizardInterface.CODE_DEFINITION)) {
@@ -190,6 +181,9 @@ public class CodeImportSummary extends AbstractUIPage {
 
     } else if( prevID.startsWith(DataPackageWizardInterface.TEXT_IMPORT_ATTRIBUTE)|| prevID.equals(DataPackageWizardInterface.ENTITY)) {
 
+    	//previous page is attribute or entity, this means we will start import code/definition
+    	mainWizFrame.setImportCodeDefinitionTable(true);
+    	Log.debug(30, "Starting import code/defintion===================");
 			desc1.setText(
       WizardSettings.HTML_TABLE_LABEL_OPENING
       +"<p>The new data table has been created successfully.</p>"
@@ -349,6 +343,14 @@ public class CodeImportSummary extends AbstractUIPage {
    *
    */
   public void onRewindAction() {
+	  //go back to import data table, not code/defintion table
+	  if(prevID != null && (prevID.startsWith(DataPackageWizardInterface.TEXT_IMPORT_ATTRIBUTE)|| prevID.equals(DataPackageWizardInterface.ENTITY)))
+	  {
+		  mainWizFrame.setImportCodeDefinitionTable(false);
+		  Log.debug(30, "Set ImportCodeDefinitionTable to be false!!!!!!!!!!!!");
+
+	  }
+	  
 
   }
 

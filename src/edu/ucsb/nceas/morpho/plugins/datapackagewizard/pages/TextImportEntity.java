@@ -336,7 +336,7 @@ public class TextImportEntity extends AbstractUIPage
 		  else
 		  {
 			  // to check if this is importing a code/defintion table
-			  int attrsToBeImported = 0;
+			  /*int attrsToBeImported = 0;
 			  AbstractDataPackage adp = frame.getAbstractDataPackage();
 			  if(adp == null) 
 			  {
@@ -349,7 +349,7 @@ public class TextImportEntity extends AbstractUIPage
 			  if(attrsToBeImported > 0)
 			  {
 				  frame.setImportCodeDefinitionTable(true);
-			  }
+			  }*/
 			  //make sure textFile contains current panel setting
 			  Log.debug(30, "TextImporEntity.onAdvanceAction, the final coumnLableInStartingLine is "+ColumnLabelsCheckBox.isSelected());
 			  textFile.setColumnLabelsInStartingLine(ColumnLabelsCheckBox.isSelected());

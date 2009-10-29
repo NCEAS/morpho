@@ -319,8 +319,13 @@ public class TextImportAttribute extends AbstractUIPage
 			          String mScale = getMeasurementScale(map1, prefix + "[" + columnIndex + "]");
 			          adp.addAttributeForImport(frame.getEntityName(), colName, mScale, map1, prefix + "[" + columnIndex + "]", true);
 			          importNeeded = true;
-			          Log.debug(32, "Set the TextImportAttribute importNeeded(code/definition) true");
+			          Log.debug(32, "Set the TextImportAttribute importNeeded(code/definition)  true");
 			      }
+			  }
+			  else
+			  {
+				  importNeeded = false; 
+				  Log.debug(32, "Set the TextImportAttribute importNeeded(code/definition)  false");
 			  }
 			  
 			  if(frame != null && frame.getWizardPageLibrary() != null && columnIndex == frame.getWizardPageLibrary().getTextImportAttributePagesSize()-1)
@@ -344,16 +349,40 @@ public class TextImportAttribute extends AbstractUIPage
 							adp.setLastImportedDataSet(((UneditableTableModel)table.getModel()).getDataVector());
 						}
 				  }
+				  
+				  boolean importNeededInPreviousAttributes = frame.containsAttributeNeedingImportedCode();
+				  Log.debug(30, "The importedNeedInPreiouvsAttribute is "+importNeededInPreviousAttributes);
+				  //note: this importeNeeded doesn't cover the last TextImportAttribute page.
+				  //so we have some code in onAdvance method in textImportAttribute to cover the 
+				  //last one.
+				  if(frame.isImportCodeDefinitionTable()) 
+				  {
+					  //this is importing a code/definition table, we need to set the next page to be code_definition
+					  nextPageID =DataPackageWizardInterface.CODE_DEFINITION;
+					  Log.debug(30, "Set next page id "+DataPackageWizardInterface.CODE_DEFINITION+" for the last attribute");
+				  } 
+				  else if(importNeededInPreviousAttributes || importNeeded) 
+				  {
+					  //there is at least one attribute need a reference from another table, so go to code_import_summary
+					  nextPageID= DataPackageWizardInterface.CODE_IMPORT_SUMMARY;
+					  Log.debug(30, "Set next page id "+DataPackageWizardInterface.CODE_IMPORT_SUMMARY+" for the last attribute");
+				  } 
+				  else
+				  {
+					  nextPageID= DataPackageWizardInterface.SUMMARY;
+					  Log.debug(30, "Set next page id "+DataPackageWizardInterface.SUMMARY+" for the last attribute");
+				  }
+				  
 			  }
 			  
 			  //In WizardPageLibrary, we use method WizardContainerFrame.containsAttributeNeedingImportedCode() to
 			  //determine if pageStack contains any attribute needed import code/definition.
 			  //However, the pageStack doesn't cover the last the attribute. So we should handle the last one here.
-			  if(importNeeded && nextPageID != null && nextPageID.equals(DataPackageWizardInterface.SUMMARY))
+			  /*if(importNeeded && nextPageID != null && nextPageID.equals(DataPackageWizardInterface.SUMMARY))
 			  {
 				  Log.debug(30, "Since last text import attribute needs import code/definition, we change the nextPageID to DataPackageWizardInterface.CODE_IMPORT_SUMMARY");
 				  nextPageID = DataPackageWizardInterface.CODE_IMPORT_SUMMARY;
-			  }
+			  }*/
 		     return attributePage.onAdvanceAction();
 		  }
 		  else
