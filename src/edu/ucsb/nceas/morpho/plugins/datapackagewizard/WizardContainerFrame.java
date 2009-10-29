@@ -120,6 +120,9 @@ public class WizardContainerFrame
   private String entityName = null;
   private List newImportedAttributeNameList = new ArrayList();
   private Vector neededCancelingEntityList = new Vector();//this is for clean up.
+  private String[] entityPageIDList = {DataPackageWizardInterface.DATA_LOCATION, DataPackageWizardInterface.DATA_FORMAT,DataPackageWizardInterface.ENTITY,
+		                                             DataPackageWizardInterface.TEXT_IMPORT_ENTITY, DataPackageWizardInterface.TEXT_IMPORT_DELIMITERS, 
+		                                             DataPackageWizardInterface.TEXT_IMPORT_ATTRIBUTE};
 
   /**
    * Default constructor
@@ -1040,7 +1043,10 @@ public class WizardContainerFrame
 			  // for entity wizard
 			  if(adp != null)
 			  {
-				  adp.replaceEntity(temp, entityIndex);
+				  if(isCurrentPageInEntityPageList())
+				  {
+				     adp.replaceEntity(temp, entityIndex);
+				  }
 				  emlDoc = XMLUtilities.getDOMTreeAsString(adp.getMetadataNode(), false);
 				  emlDoc = addEntityWizardIncompleteInfo(emlDoc);
 				  Log.debug(40, "The partial eml document is :\n"+emlDoc);
@@ -1050,6 +1056,29 @@ public class WizardContainerFrame
 		  }
 		 
 	  }
+  }
+  
+  public boolean isCurrentPageInEntityPageList()
+  {
+	  boolean in = false;
+	  if(currentPage != null)
+	  {
+		  String pageID = currentPage.getPageID();
+		  if(pageID != null)
+		  {
+			  for(int i =0; i<entityPageIDList.length; i++)
+			  {
+				  String entityPageID = entityPageIDList[i];
+				  if(pageID.startsWith(entityPageID))
+				  {
+					  in = true;
+					  Log.debug(35, "find current page id "+pageID+" in the entity id ist");
+					  break;
+				  }
+			  }
+		  }
+	  }
+	  return in;
   }
   
   /*
