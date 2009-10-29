@@ -364,10 +364,42 @@ public class CodeImportSummary extends AbstractUIPage {
    *          (e.g. if a required field hasn't been filled in)
    */
   public boolean onAdvanceAction() {
+	  
+	  if( prevID.startsWith(DataPackageWizardInterface.TEXT_IMPORT_ATTRIBUTE)|| prevID.equals(DataPackageWizardInterface.ENTITY)) {
+
+
+				edu.ucsb.nceas.morpho.datapackage.Entity[] arr = adp.getOriginalEntityArray();
+				if(arr == null) {
+
+					arr = adp.getEntityArray();
+					if(arr == null) {
+					    arr = new edu.ucsb.nceas.morpho.datapackage.Entity[0];
+					}
+					adp.setOriginalEntityArray(arr);
+				}
+
+
+
+	      // this is a new data table creation. Need to store this DOM to return it.
+	      // this is collect data table, not for code/definition table.
+	      Node newDOM = mainWizFrame.collectDataFromPages();
+	      mainWizFrame.setDOMToReturn(null);
+	      if(adp == null)
+	        adp = getADP();
+	      int entityIndex = mainWizFrame.getEnityIndex();
+	      Log.debug(32, "The index of the entity which was added to abstract package in CodeImportSummary.onAdvanceAction is "+entityIndex);
+	      adp.replaceEntity(newDOM, entityIndex);
+	      //since we added/replace an entity into adp, so next available index should be increase too.
+	      mainWizFrame.setEntityIndex(entityIndex++);
+	      adp.setLocation("");  // we've changed it and not yet saved
+
+
+	    }
 
     if(nextPageID.equals(DataPackageWizardInterface.CODE_IMPORT_PAGE)) {
 
       mainWizFrame.reInitializePageStack();
+      mainWizFrame.clearPageCache();
     }
 
     return true;

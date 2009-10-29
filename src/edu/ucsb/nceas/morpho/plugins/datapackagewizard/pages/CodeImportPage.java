@@ -203,8 +203,8 @@ public class CodeImportPage extends AbstractUIPage {
 
     attrField.setText(attr);
     entityField.setText(entity);
-
-    String prevPageID = mainWizFrame.getPreviousPageID();
+    mainWizFrame.setButtonsStatus(false, true, false);//couldn't back again.
+    //String prevPageID = mainWizFrame.getPreviousPageID();
 
     /*if(prevPageID != null && prevPageID.equals(DataPackageWizardInterface.ENTITY)) {
 

@@ -170,30 +170,13 @@ public class CodeDefinition extends AbstractUIPage {
     //if(prevPageID.equals(DataPackageWizardInterface.TEXT_IMPORT_WIZARD) || prevPageID.equals(DataPackageWizardInterface.ENTITY)) {
     if(prevPageID.startsWith(DataPackageWizardInterface.TEXT_IMPORT_ATTRIBUTE) || prevPageID.equals(DataPackageWizardInterface.ENTITY)) {
 
-        Node newDOM = mainWizFrame.collectDataFromPages();
-
-        
-        Node entNode = null;
-        String entityXpath = "";
-        try{
-          entityXpath = (XMLUtilities.getTextNodeWithXPath(adp.getMetadataPath(),
-          "/xpathKeyMap/contextNode[@name='package']/entities")).getNodeValue();
-          NodeList entityNodes = XMLUtilities.getNodeListWithXPath(newDOM,
-          entityXpath);
-          entNode = entityNodes.item(0);
-        }
-        catch (Exception w) {
-          Log.debug(5, "Error in trying to get entNode in ImportDataCommand");
-        }
-
-        //              Entity entity = new Entity(newDOM);
-        edu.ucsb.nceas.morpho.datapackage.Entity entityNode =
-                  new edu.ucsb.nceas.morpho.datapackage.Entity(entNode);
-
-        Log.debug(30,"Adding Entity object to AbstractDataPackage..");
-        adp.addEntity(entityNode);
-
-        adp.setLocation("");  // we've changed it and not yet saved
+        Node newDOM = mainWizFrame.collectDataFromPages();       
+         int entityIndex = mainWizFrame.getEnityIndex();
+	     Log.debug(32, "The index of the entity which was added to abstract package in CodeImportSummary.onAdvanceAction is "+entityIndex);
+	     adp.replaceEntity(newDOM, entityIndex);
+	      //since we added/replace an entity into adp, so next available index should be increase too.
+	      mainWizFrame.setEntityIndex(entityIndex++);
+          adp.setLocation("");  // we've changed it and not yet saved
 
 	if(prevPageID.equals(DataPackageWizardInterface.ENTITY) && rowData == null) { 
 

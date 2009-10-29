@@ -1624,6 +1624,21 @@ public class WizardContainerFrame
   }
   
   /**
+   * Clear whole pageCache
+   */
+  public void clearPageCache()
+  {
+	  if(pageCache != null)
+	  {
+	     synchronized(pageCache)
+	     {
+		    pageCache.clear();	 
+
+	     }
+	  }
+  }
+  
+  /**
    * Determines if any TextImportAttribute in page stack needs to import code/definition.
    * Note:the method doesn't count the the last TextImportAttribute page which is not in stack.
    * @return
