@@ -175,8 +175,9 @@ public class CodeDefinition extends AbstractUIPage {
 	     Log.debug(32, "The index of the entity which was added to abstract package in CodeImportSummary.onAdvanceAction is "+entityIndex);
 	     adp.replaceEntity(newDOM, entityIndex);
 	      //since we added/replace an entity into adp, so next available index should be increase too.
-	      mainWizFrame.setEntityIndex(entityIndex++);
-          adp.setLocation("");  // we've changed it and not yet saved
+	     entityIndex = entityIndex+1;
+	     mainWizFrame.setEntityIndex(entityIndex);
+         adp.setLocation("");  // we've changed it and not yet saved
 
 	if(prevPageID.equals(DataPackageWizardInterface.ENTITY) && rowData == null) { 
 

@@ -340,7 +340,8 @@ public class CodeImportSummary extends AbstractUIPage {
 	      adp.replaceEntity(newDOM, entityIndex);
 	      mainWizFrame.setDOMToReturn(null);
 	      //since we added/replace an entity into adp, so next available index should be increase too.
-	      mainWizFrame.setEntityIndex(entityIndex++);
+	      entityIndex = entityIndex+1;
+	      mainWizFrame.setEntityIndex(entityIndex);
 	      adp.setLocation("");  // we've changed it and not yet saved
 
 
