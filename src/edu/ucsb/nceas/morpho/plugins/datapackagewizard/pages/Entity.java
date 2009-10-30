@@ -336,7 +336,8 @@ public class Entity extends AbstractUIPage{
 	    int index = 1;
 	    int attrsToBeImported = 0;
 	
-	    AbstractDataPackage adp = UIController.getInstance().getCurrentAbstractDataPackage();
+	    //AbstractDataPackage adp = UIController.getInstance().getCurrentAbstractDataPackage();
+	    AbstractDataPackage adp = mainWizFrame.getAbstractDataPackage();
 	    if(adp == null) {
 		Log.debug(10, "Error! Unable to obtain the ADP in the Entity page!");
 	    } else {

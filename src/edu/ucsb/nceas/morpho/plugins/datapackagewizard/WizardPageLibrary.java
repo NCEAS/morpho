@@ -143,7 +143,7 @@ public class WizardPageLibrary implements WizardPageLibraryInterface{
     if(pageID.equals(DataPackageWizardInterface.CITATION_PAGE))
       return new CitationPage();
     if(pageID.equals(DataPackageWizardInterface.CUSTOM_UNIT_PAGE))
-      return new CustomUnitPage();
+      return new CustomUnitPage(container);
 	if(pageID.equals(DataPackageWizardInterface.GENERIC_VOCABULARY))
 	  return new GenericVocabularyPage();	
 	if(pageID.equals(DataPackageWizardInterface.NBII_THESAURUS_LOOKUP))

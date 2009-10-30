@@ -38,6 +38,7 @@ import edu.ucsb.nceas.morpho.datapackage.DataViewContainerPanel;
 import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.CustomList;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WidgetFactory;
+import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardContainerFrame;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardPageSubPanelAPI;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardSettings;
 
@@ -161,9 +162,18 @@ public class CustomUnitPage extends AbstractUIPage {
 	private JLabel categoryLabel;
 	private JPanel centerPanel = new JPanel();
 	private JPanel middleExistingTypePanel;
+	private AbstractDataPackage adp = null;
 	
-	public CustomUnitPage() {
+	public CustomUnitPage(WizardContainerFrame frame) {
 		nextPageID = "";
+		if(frame != null)
+		{
+		    this.adp = frame.getAbstractDataPackage();
+		}
+		else
+		{
+			this.adp = UIController.getInstance().getCurrentAbstractDataPackage();
+		}
 		init();
 	}
 	
@@ -171,7 +181,7 @@ public class CustomUnitPage extends AbstractUIPage {
 		
 		String[] tempUnitTypes = WizardSettings.getUnitDictionaryUnitTypes();
 		String[] customTypes = new String[0];
-		AbstractDataPackage adp = UIController.getInstance().getCurrentAbstractDataPackage();
+		//AbstractDataPackage adp = UIController.getInstance().getCurrentAbstractDataPackage();
 		if(adp != null) {
 			customTypes = adp.getUnitDictionaryCustomUnitTypes();
 		}
