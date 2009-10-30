@@ -69,6 +69,7 @@ import edu.ucsb.nceas.utilities.OrderedMap;
 public class TextImportAttribute extends AbstractUIPage 
 {
 	   public static final int FIRSTINDEX = 0;
+	   private static final int NOIMPORT =  -1;
 	 //number types for interval/ratio number type
 	   private static final String[] numberTypesArray = new String[] {
 	                         "NATURAL (non-zero counting numbers: 1, 2, 3..)",
@@ -88,6 +89,7 @@ public class TextImportAttribute extends AbstractUIPage
 	   private TableColumnModel fullColumnModel = null;
 	   private AttributePage attributePage = null;
 	   private boolean importNeeded = false;
+	   //private int indexInAbsractDataPackageImportList =NOIMPORT; // -1 means not need imported
 	   
 	   
 	   /**
@@ -264,6 +266,7 @@ public class TextImportAttribute extends AbstractUIPage
 		  Log.debug(30, "The TextImportAttribute page has the index "+columnIndex);
 		  updateColumnDataPanel();
 		  updateAttributePanel();
+		  
 	  }
 
 
@@ -279,6 +282,16 @@ public class TextImportAttribute extends AbstractUIPage
 			  table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 			  table.doLayout();
 		  }
+		  if(frame != null)
+		  {
+			  AbstractDataPackage adp = frame.getAbstractDataPackage();
+		      if(adp != null && importNeeded) 
+		      {
+		    	  //onLoadAction, we need to remove the previously stored import attribute.
+		    	  //otherwise, this attribute can be stored twice.
+		    	  adp.removeLastAttributeForImport();
+		      }
+		  }
 	  }
 
 
@@ -291,7 +304,7 @@ public class TextImportAttribute extends AbstractUIPage
 	   */
 	  public boolean onAdvanceAction()
 	  {
-		  if(attributePage != null)
+		  if(attributePage != null && attributePage.onAdvanceAction())
 		  {
 			  //clear the attribute name list at the first attribute
 			  if(frame != null && columnIndex ==FIRSTINDEX)
@@ -325,7 +338,7 @@ public class TextImportAttribute extends AbstractUIPage
 			  }
 			  else
 			  {
-				  importNeeded = false; 
+				  importNeeded = false;
 				  Log.debug(32, "Set the TextImportAttribute importNeeded(code/definition)  false");
 			  }
 			  
@@ -384,11 +397,14 @@ public class TextImportAttribute extends AbstractUIPage
 				  Log.debug(30, "Since last text import attribute needs import code/definition, we change the nextPageID to DataPackageWizardInterface.CODE_IMPORT_SUMMARY");
 				  nextPageID = DataPackageWizardInterface.CODE_IMPORT_SUMMARY;
 			  }*/
-		     return attributePage.onAdvanceAction();
+		     return true;
 		  }
 		  else
 		  {
-			  Log.debug(5, "The attribute page is null in the TextImportAttribute page!");
+			  if (attributePage == null)
+			  {
+				  Log.debug(5, "The attribute page is null in the TextImportAttribute page!");
+			  }
 			  return false;
 		  }
 	  }
@@ -456,7 +472,7 @@ public class TextImportAttribute extends AbstractUIPage
 	   */
 	  public boolean isImportNeeded()
 	  {
-		  return this.importNeeded;
+		 return this.importNeeded;
 	  }
 	  
 	  /**

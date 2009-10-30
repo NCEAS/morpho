@@ -78,6 +78,7 @@ public class CodeImportSummary extends AbstractUIPage {
   private WizardContainerFrame mainWizFrame;
   private AbstractDataPackage adp = null;
   private String prevID;
+  private AbstractUIPage prevPage = null;
 
   public CodeImportSummary(WizardContainerFrame mainWizFrame) {
 	 nextPageID 		   = DataPackageWizardInterface.CODE_IMPORT_PAGE;
@@ -142,14 +143,19 @@ public class CodeImportSummary extends AbstractUIPage {
   public void onLoadAction() {
 
 		adp = getADP();
-		if(adp == null) {
+		if(adp == null || mainWizFrame == null) {
 
-			Log.debug(10, "Error! Unable to obtain the ADP in CodeImportSummary page!");
+			Log.debug(5, "Error! Unable to obtain the ADP in CodeImportSummary page!");
 			return;
 		}
-
+    Log.debug(32, "********The size of attribute needing import is   "+adp.getAttributeImportCount()+" in CodeImportsSummary.onLoad");
     //String firstPageID = mainWizFrame.getFirstPageID();
-    prevID = mainWizFrame.getPreviousPageID();
+    prevPage = mainWizFrame.getPreviousPage();
+    if(prevPage != null)
+    {
+    	prevID = prevPage.getPageID();
+    }
+    
     String currentAttrName = "";
 
     if(prevID.equals(DataPackageWizardInterface.CODE_DEFINITION)) {
@@ -158,7 +164,7 @@ public class CodeImportSummary extends AbstractUIPage {
       currentAttrName = adp.getCurrentImportAttributeName();
       if(adp.isCurrentImportNewTable())
         updateAttributeInNewTable();
-      adp.removeAttributeForImport();
+      adp.removeFirstAttributeForImport();
       desc1.setText(
       WizardSettings.HTML_TABLE_LABEL_OPENING
       +"<p> The new data table has been created and the codes for the attribute " +
@@ -171,7 +177,7 @@ public class CodeImportSummary extends AbstractUIPage {
       currentAttrName = adp.getCurrentImportAttributeName();
       if(adp.isCurrentImportNewTable())
         updateAttributeInNewTable();
-      adp.removeAttributeForImport();
+      adp.removeFirstAttributeForImport();
       // just a summary of import. No further imports
       desc1.setText(
       WizardSettings.HTML_TABLE_LABEL_OPENING
@@ -298,7 +304,16 @@ public class CodeImportSummary extends AbstractUIPage {
 	  {
 		  mainWizFrame.setImportCodeDefinitionTable(false);
 		  Log.debug(30, "Set ImportCodeDefinitionTable to be false!!!!!!!!!!!!");
-
+          if(prevPage != null && prevID.startsWith(DataPackageWizardInterface.TEXT_IMPORT_ATTRIBUTE))
+          {
+        	  TextImportAttribute attributePage = (TextImportAttribute)prevPage;
+        	  if(attributePage.isImportNeeded() && adp != null)
+        	  {
+        		  //we need to remove the last element in importAttriubte in AbatractDataPackage.
+        		  //otherwise, when click next in the Text_import_attribute, the record will be stored again.
+        		  adp.removeLastAttributeForImport();
+        	  }
+          }
 	  }
 	  
 

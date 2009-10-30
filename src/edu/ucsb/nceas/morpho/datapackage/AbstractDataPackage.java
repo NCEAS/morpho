@@ -4303,10 +4303,10 @@ public abstract class AbstractDataPackage extends MetadataObject
 	private Entity[] originalEntities = null;
 
 
-	public void addAttributeForImport(String entityName, String attributeName,
+	public int addAttributeForImport(String entityName, String attributeName,
 	String scale, OrderedMap omap, String xPath,
 	boolean newTable) {
-
+ 
 		List t = new ArrayList();
 		t.add(entityName);
 		t.add(attributeName);
@@ -4321,8 +4321,9 @@ public abstract class AbstractDataPackage extends MetadataObject
 		toBeImported.add(t);
 		toBeImportedCount++;
 		Log.debug(10,
-		"Adding Attr to Import - (" + entityName + ", " + attributeName +
+		"==========Adding Attr to Import - (" + entityName + ", " + attributeName +
 		") ; count = " + toBeImportedCount);
+		return toBeImportedCount-1;//return index of the new object in the list
 	}
 
 
@@ -4409,12 +4410,30 @@ public abstract class AbstractDataPackage extends MetadataObject
 		return toBeImportedCount;
 	}
 
-	public void removeAttributeForImport() {
+	public void removeFirstAttributeForImport() {
 		if (toBeImportedCount == 0) {
 			return;
 		}
 		toBeImported.remove(0);
 		toBeImportedCount--;
+	}
+	
+	/**
+	 * Remove the attribute from the list at the specified index
+	 * @param index
+	 */
+	public void removeLastAttributeForImport() 
+	{
+		if (toBeImportedCount == 0) 
+		{
+			Log.debug(15, ""+
+					toBeImportedCount +"is 0 and we will remove anything in AbstractDataPackage.removeLastAttributeForImport");
+			return;
+		}
+		int index = toBeImportedCount -1;
+		toBeImported.remove(index);
+		toBeImportedCount--;
+		Log.debug(32, "========Remove the attribute from AttriubteImport list in AbstractDataPackage at index "+index);
 	}
 
 	public void setLastImportedEntity(String name) {
