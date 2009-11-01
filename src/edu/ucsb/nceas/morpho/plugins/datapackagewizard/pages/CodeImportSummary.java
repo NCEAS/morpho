@@ -300,10 +300,7 @@ public class CodeImportSummary extends AbstractUIPage {
    */
   public void onRewindAction() {
 	  //go back to import data table, not code/defintion table
-	  if(prevID != null && (prevID.startsWith(DataPackageWizardInterface.TEXT_IMPORT_ATTRIBUTE)|| prevID.equals(DataPackageWizardInterface.ENTITY)))
-	  {
-		  mainWizFrame.setImportCodeDefinitionTable(false);
-		  Log.debug(30, "Set ImportCodeDefinitionTable to be false!!!!!!!!!!!!");
+	 		  
           if(prevPage != null && prevID.startsWith(DataPackageWizardInterface.TEXT_IMPORT_ATTRIBUTE))
           {
         	  TextImportAttribute attributePage = (TextImportAttribute)prevPage;
@@ -312,9 +309,19 @@ public class CodeImportSummary extends AbstractUIPage {
         		  //we need to remove the last element in importAttriubte in AbatractDataPackage.
         		  //otherwise, when click next in the Text_import_attribute, the record will be stored again.
         		  adp.removeLastAttributeForImport();
+        		  
         	  }
+        	  mainWizFrame.setImportCodeDefinitionTable(false);
+    		  Log.debug(30, "Set ImportCodeDefinitionTable to be false!!!!!!!!!!!!");
           }
-	  }
+          else if (prevID != null && prevID.equals(DataPackageWizardInterface.ENTITY))
+          {
+        	  Entity entity = (Entity)prevPage;
+        	  entity.removeAllImportedAttributesFromList();
+        	  mainWizFrame.setImportCodeDefinitionTable(false);
+    		  Log.debug(30, "Set ImportCodeDefinitionTable to be false!!!!!!!!!!!!");
+        	  
+          }
 	  
 
   }

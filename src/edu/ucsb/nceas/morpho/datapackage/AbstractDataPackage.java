@@ -4427,10 +4427,34 @@ public abstract class AbstractDataPackage extends MetadataObject
 		if (toBeImportedCount == 0) 
 		{
 			Log.debug(15, ""+
-					toBeImportedCount +"is 0 and we will remove anything in AbstractDataPackage.removeLastAttributeForImport");
+					toBeImportedCount +"is 0 and we will NOT remove anything in AbstractDataPackage.removeLastAttributeForImport");
 			return;
 		}
 		int index = toBeImportedCount -1;
+		toBeImported.remove(index);
+		toBeImportedCount--;
+		Log.debug(32, "========Remove the attribute from AttriubteImport list in AbstractDataPackage at index "+index);
+	}
+	
+	/**
+	 * Remove a attribute from imported list at specified index
+	 * @param index
+	 */
+	public void removeAttributeForImport(int index) 
+	{
+		if (index >= toBeImportedCount) 
+		{
+			Log.debug(15, "index "+index+ " is equal or greater than the imported attribute list length "+
+					toBeImportedCount +"and we will NOT remove anything in AbstractDataPackage.removeLastAttributeForImport");
+			return;
+		}
+		else if(index < 0)
+		{
+			Log.debug(15, "index "+index+ " counld not be less than 0 "+
+					 "and we will NOT remove anything in AbstractDataPackage.removeLastAttributeForImport");
+			return;
+		}
+		
 		toBeImported.remove(index);
 		toBeImportedCount--;
 		Log.debug(32, "========Remove the attribute from AttriubteImport list in AbstractDataPackage at index "+index);

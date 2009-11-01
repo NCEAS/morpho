@@ -44,6 +44,7 @@ import edu.ucsb.nceas.utilities.OrderedMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Vector;
 
 import java.awt.event.ActionEvent;
 
@@ -85,6 +86,9 @@ public class Entity extends AbstractUIPage{
   
 
   private WizardContainerFrame mainWizFrame;
+  
+  private Vector indexListOfImportAttribute = new Vector();
+  private int indexOfImport = 0;
 
   // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
@@ -342,6 +346,7 @@ public class Entity extends AbstractUIPage{
 		Log.debug(10, "Error! Unable to obtain the ADP in the Entity page!");
 	    } else {
 		attrsToBeImported = adp.getAttributeImportCount();
+		indexOfImport = adp.getAttributeImportCount();
 	    }
 	    String entityName = entityNameField.getText().trim();
 	    for (Iterator it = rowLists.iterator(); adp != null && it.hasNext(); ) {
@@ -362,6 +367,8 @@ public class Entity extends AbstractUIPage{
 	        OrderedMap map = nextAttributePage.getPageData(xPathRoot + "/attributeList/attribute["+index + "]");
 	        String mScale = (String) nextRowList.get(2);
 	        adp.addAttributeForImport(entityName, colName, mScale, map, xPathRoot + "/attributeList/attribute["+index+ "]", true);
+	        indexListOfImportAttribute.add(indexOfImport);
+	        indexOfImport++;
 	        importNeeded = true;
 	      }
 	      colNames.add(colName);
@@ -565,5 +572,33 @@ public class Entity extends AbstractUIPage{
     		 //TO DO need to be implemented when disableAttributeList is false
     	    return false;
     	 }
+    }
+    
+    
+    /**
+     * Removes all imported attributes which are determined in this page
+     */
+    public void removeAllImportedAttributesFromList()
+    {
+    	if(mainWizFrame != null)
+    	{
+    	   AbstractDataPackage adp = mainWizFrame.getAbstractDataPackage();
+    	   if(adp != null && indexListOfImportAttribute != null)
+    	   {
+    		   for(int i=0; i<indexListOfImportAttribute.size(); i++)
+    		   {
+    			   int index = -1;
+    			   try
+    			   {
+    			      index = ((Integer)indexListOfImportAttribute.elementAt(i)).intValue();
+    			      adp.removeAttributeForImport(index);
+    			   }
+    			   catch(Exception e)
+    			   {
+    				   continue;
+    			   }
+    		   }
+    	   }
+    	}
     }
 }
