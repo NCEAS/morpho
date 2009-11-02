@@ -1052,6 +1052,11 @@ public class WizardContainerFrame
 				  Log.debug(40, "The partial eml document is :\n"+emlDoc);
 			      //System.out.println("the eml after appending incomplete info  "+emlDoc);
 			      saveInCompletePackage(autoSaveID, emlDoc);
+			      //remove the entity we needed to adp
+			      if(isCurrentPageInEntityPageList())
+				  {
+				     adp.deleteEntity(entityIndex);
+				  }
 			  }			  
 		  }
 		 
