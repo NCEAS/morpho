@@ -279,13 +279,14 @@ public class CodeImportPage extends AbstractUIPage {
 
     if(importChoice == IMPORT_DONE) {
       if(importPanel.validateUserInput()) {
-				AbstractDataPackage	adp = getADP();
-				if(adp == null) {
-					Log.debug(15, "Unable to obtain the ADP in CodeImportPage");
-					return true;
-				}
+		AbstractDataPackage	adp = getADP();
+		if(adp == null) {
+			Log.debug(15, "Unable to obtain the ADP in CodeImportPage");
+			return true;
+		}
         OrderedMap map = adp.getCurrentImportMap();
-        String relativeXPath = adp.getCurrentImportXPath();
+        CodeDefinition.replaceEmptyReference(map,importPanel, "CodeImportPage");
+        /*String relativeXPath = adp.getCurrentImportXPath();
         String scale = adp.getCurrentImportScale().toLowerCase();
         String path = relativeXPath + "/measurementScale/" + scale + "/nonNumericDomain/enumeratedDomain[1]/entityCodeList";
         if(!map.containsKey(path + "/entityReference")) {
@@ -298,7 +299,7 @@ public class CodeImportPage extends AbstractUIPage {
           OrderedMap importMap = importPanel.getPanelData(path);
           map.putAll(importMap);
 
-        }
+        }*/
         /*if(adp.getAttributeImportCount() > 1) {
           nextPageID = pageID;
           adp.removeAttributeForImport();

@@ -252,36 +252,50 @@ public class CodeDefinition extends AbstractUIPage {
 
     if(importPanel.validateUserInput()) {
       OrderedMap map = adp.getCurrentImportMap();
-      String relativeXPath = adp.getCurrentImportXPath();
-      String scale = adp.getCurrentImportScale().toLowerCase();
-      String path = relativeXPath + "/measurementScale/" + scale + "/nonNumericDomain/enumeratedDomain[1]/entityCodeList";
+      //String relativeXPath = adp.getCurrentImportXPath();
+      //String scale = adp.getCurrentImportScale().toLowerCase();
+      //String path = relativeXPath + "/measurementScale/" + scale + "/nonNumericDomain/enumeratedDomain[1]/entityCodeList";
 
-      Iterator it = map.keySet().iterator();
-      String prefix = "";
-      int pos = -1;
-      while(it.hasNext()) {
-        String k1 = (String) it.next();
-
-        if((pos = k1.indexOf("/entityReference")) > -1) {
-          prefix = k1.substring(0, pos);
-          break;
-        }
-      }
-
-      if(pos == -1) {
-        Log.debug(15, "Error in CodeDefintion!! map doesnt have the entityReference key");
-      } else {
-        map.remove(prefix + "/entityReference");
-        map.remove(prefix + "/valueAttributeReference");
-        map.remove(prefix + "/definitionAttributeReference");
-        OrderedMap importMap = importPanel.getPanelData(prefix);
-        map.putAll(importMap);
-
-      }
+      replaceEmptyReference(map,importPanel, "CodeDefinition");
       return true;
     } else
       return false;
 
+  }
+  
+  /**
+   * Replace empty reference data by real data after importing is done
+   * @param map the original map
+   * @param importPane  panel contains real reference data
+   * @param className  for error message to indicate which class
+   */
+  public static void replaceEmptyReference(OrderedMap map,CodeDefnPanel importPane, String className)
+  {
+	  if(map != null)
+	  {
+		  Iterator it = map.keySet().iterator();
+	      String prefix = "";
+	      int pos = -1;
+	      while(it.hasNext()) {
+	        String k1 = (String) it.next();
+	
+	        if((pos = k1.indexOf("/entityReference")) > -1) {
+	          prefix = k1.substring(0, pos);
+	          break;
+	        }
+	      }
+	
+	      if(pos == -1) {
+	        Log.debug(15, "Error in "+className+"!! map doesnt have the entityReference key");
+	      } else {
+	        map.remove(prefix + "/entityReference");
+	        map.remove(prefix + "/valueAttributeReference");
+	        map.remove(prefix + "/definitionAttributeReference");
+	        OrderedMap importMap = importPane.getPanelData(prefix);
+	        map.putAll(importMap);
+	
+	      }
+	  }
   }
 
 
