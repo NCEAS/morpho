@@ -76,6 +76,7 @@ import javax.swing.InputMap;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.event.TableModelEvent;
@@ -168,7 +169,7 @@ public class WizardContainerFrame
     }
     
     
-
+    setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
     this.addWindowListener(new WindowAdapter() {
 
       public void windowClosing(WindowEvent e) {
@@ -1434,21 +1435,40 @@ public class WizardContainerFrame
    */
   public void cancelAction() {
 
+	  int opt = JOptionPane.showConfirmDialog(this,
+	            "Are you sure that you want to cancel the wizard?",
+	            "DO YOU WANT TO CONTINUE?",
+	            JOptionPane.YES_NO_OPTION);
+	   if (opt == JOptionPane.NO_OPTION) 
+	   {
+	        return;
+	    }
     //AbstractDataPackage adp = UIController.getInstance().getCurrentAbstractDataPackage();
     if(adp != null) {
       Log.debug(32, "WizardContainerFrame.cancelAction ==========");
-      edu.ucsb.nceas.morpho.datapackage.Entity[] arr = adp.getOriginalEntityArray();
+      //deletes all newly needed entities
+      for(int i=0; i<neededCancelingEntityList.size(); i++)
+      {
+    	  int index = -1;
+    	  try
+    	  {
+    		  index = ((Integer)neededCancelingEntityList.elementAt(i)).intValue();
+    	  }
+    	  catch(Exception e)
+    	  {
+    		  continue;
+    	  }
+    	  adp.deleteEntity(index);
+      }
+      /*edu.ucsb.nceas.morpho.datapackage.Entity[] arr = adp.getOriginalEntityArray();
       if(arr != null) {
         Log.debug(30, "replacing subtree in WizardContainerFrame.cancelAction - ");
         adp.deleteAllEntities();
-        /*edu.ucsb.nceas.morpho.datapackage.Entity[] newarr = adp.getEntityArray();
-        for(int i = 0; i < newarr.length; i++)
-          adp.deleteEntity(0);*/
         for(int i = 0; i < arr.length; i++) {
         	 Log.debug(32, "adding entity - " + i);
           adp.addEntity(arr[i]);
         }
-      }
+      }*/
 
     }
 
@@ -1463,6 +1483,7 @@ public class WizardContainerFrame
     }
     // now clean up
     doCleanUp();
+    this.dispose();
   }
 
 

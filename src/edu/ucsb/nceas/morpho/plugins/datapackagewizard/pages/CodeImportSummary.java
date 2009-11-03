@@ -367,7 +367,7 @@ public class CodeImportSummary extends AbstractUIPage {
 	  if( prevID.startsWith(DataPackageWizardInterface.TEXT_IMPORT_ATTRIBUTE)|| prevID.equals(DataPackageWizardInterface.ENTITY)) {
 
 
-				edu.ucsb.nceas.morpho.datapackage.Entity[] arr = adp.getOriginalEntityArray();
+				/*edu.ucsb.nceas.morpho.datapackage.Entity[] arr = adp.getOriginalEntityArray();
 				if(arr == null) {
 
 					arr = adp.getEntityArray();
@@ -375,7 +375,7 @@ public class CodeImportSummary extends AbstractUIPage {
 					    arr = new edu.ucsb.nceas.morpho.datapackage.Entity[0];
 					}
 					adp.setOriginalEntityArray(arr);
-				}
+				}*/
 
 
 
