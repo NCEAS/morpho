@@ -155,6 +155,9 @@ public class WizardContainerFrame
 		if(adp != null)
 		{
 			autoSaveID = adp.getAutoSavedD();
+			//edu.ucsb.nceas.morpho.datapackage.Entity[] arr = adp.getEntityArray();
+			//adp.setOriginalEntityArray(arr);
+			
 		}
 		//if we couldn't get the autoSaveID from exist datapackage, get it from random number
     	if(autoSaveID == null && scope != null)
@@ -1460,13 +1463,14 @@ public class WizardContainerFrame
     	  }
     	  adp.deleteEntity(index);
       }
-      /*edu.ucsb.nceas.morpho.datapackage.Entity[] arr = adp.getOriginalEntityArray();
-      if(arr != null) {
+      /*adp.deleteAllEntities();
+      edu.ucsb.nceas.morpho.datapackage.Entity[] arr = adp.getOriginalEntityArray();
+      if(arr != null) 
+      {
         Log.debug(30, "replacing subtree in WizardContainerFrame.cancelAction - ");
-        adp.deleteAllEntities();
         for(int i = 0; i < arr.length; i++) {
         	 Log.debug(32, "adding entity - " + i);
-          adp.addEntity(arr[i]);
+             adp.addEntity(arr[i]);
         }
       }*/
 

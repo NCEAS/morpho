@@ -1939,7 +1939,7 @@ public abstract class AbstractDataPackage extends MetadataObject
    */
   public void deleteEntity(int entNum) {
     if ( (entityArray == null) || (entityArray.length < (entNum) + 1)) {
-      Log.debug(20, "Unable to find entity at index");
+      Log.debug(20, "AbstractDataPackage.deleteEntity - Unable to find entity at index "+entNum);
       return;
     }
     Node entity = (entityArray[entNum]).getNode();
@@ -1953,6 +1953,7 @@ public abstract class AbstractDataPackage extends MetadataObject
          newEntityArray[newCount++] = entityArray[count];
     }
     entityArray = newEntityArray;
+    Log.debug(20, "AbstractDataPackage.deleteEntity - Delete the entity at index "+entNum);
   }
 
 	/**

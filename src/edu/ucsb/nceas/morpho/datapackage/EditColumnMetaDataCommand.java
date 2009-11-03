@@ -254,7 +254,8 @@ public class EditColumnMetaDataCommand implements Command, DataPackageWizardList
 								return;
 							}
 						};
-						dpwPlugin.startCodeDefImportWizard(dpwListener);
+						int nextEntityIndex = adp.getEntityCount();
+						dpwPlugin.startCodeDefImportWizard(dpwListener, nextEntityIndex);
 						
 					} else { // if import is not needed
 						

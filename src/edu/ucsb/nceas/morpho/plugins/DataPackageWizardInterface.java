@@ -133,8 +133,9 @@ public interface DataPackageWizardInterface {
    *
    *  @param listener the <code>DataPackageWizardListener</code> to be called
    *                  back when the Wizard has finished
+   *  @param entityIndex the index of the entity which wizard will use (next entity index)
    */
-  public void startCodeDefImportWizard(DataPackageWizardListener listener);
+  public void startCodeDefImportWizard(DataPackageWizardListener listener, int entityIndex);
 
 
   /**

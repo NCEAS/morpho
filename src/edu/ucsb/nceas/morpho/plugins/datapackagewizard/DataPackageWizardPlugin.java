@@ -163,10 +163,10 @@ public class DataPackageWizardPlugin implements PluginInterface,
    *
    *  @param listener the <code>DataPackageWizardListener</code> to be called
    *                  back when the Wizard has finished
+   *  @param entityIndex the index of the entity which wizard will use (next entity index)
    */
-  public void startCodeDefImportWizard(DataPackageWizardListener listener) {
+  public void startCodeDefImportWizard(DataPackageWizardListener listener, int entityIndex ) {
 
-	int entityIndex=-1;
     startWizardAtPage(DataPackageWizardInterface.CODE_IMPORT_PAGE, false,
                       listener, "Import Code Definitions", entityIndex);
   }
@@ -202,7 +202,7 @@ public class DataPackageWizardPlugin implements PluginInterface,
                         DataPackageWizardListener listener, String frameTitle, int entityIndex) {
 
     WizardContainerFrame dpWiz = null;
-    if(pageID != null && pageID.equals(WizardSettings.ENTITY_WIZ_FIRST_PAGE_ID))
+    if(pageID != null && (pageID.equals(WizardSettings.ENTITY_WIZ_FIRST_PAGE_ID) || pageID.equals(DataPackageWizardInterface.CODE_IMPORT_PAGE)))
     {
     	boolean isEnity = true;
     	dpWiz = new WizardContainerFrame(isEnity);
