@@ -45,6 +45,7 @@ import edu.ucsb.nceas.morpho.util.Log;
 import edu.ucsb.nceas.utilities.OrderedMap;
 import edu.ucsb.nceas.utilities.XMLUtilities;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 
 import javax.swing.Box;
@@ -79,6 +80,9 @@ public class CodeImportSummary extends AbstractUIPage {
   private AbstractDataPackage adp = null;
   private String prevID;
   private AbstractUIPage prevPage = null;
+  private ArrayList removedAttributeInfo = null;
+  private boolean updatedAttributeInNewTable = false;
+  
 
   public CodeImportSummary(WizardContainerFrame mainWizFrame) {
 	 nextPageID 		   = DataPackageWizardInterface.CODE_IMPORT_PAGE;
@@ -141,7 +145,8 @@ public class CodeImportSummary extends AbstractUIPage {
    *  The action to be executed when the page is displayed. May be empty
    */
   public void onLoadAction() {
-
+	  updatedAttributeInNewTable = false;
+	  removedAttributeInfo = null;
 		adp = getADP();
 		if(adp == null || mainWizFrame == null) {
 
@@ -166,8 +171,9 @@ public class CodeImportSummary extends AbstractUIPage {
       {
     	  Log.debug(30, "====it is in current import new table and previous page is code_definition in CodeImportSummary.onLoad");
     	  updateAttributeInNewTable();
+    	  updatedAttributeInNewTable = true;
       }
-      adp.removeFirstAttributeForImport();
+      removedAttributeInfo = adp.removeFirstAttributeForImport();
       desc1.setText(
       WizardSettings.HTML_TABLE_LABEL_OPENING
       +"<p> The new data table has been created and the codes for the attribute " +
@@ -176,14 +182,15 @@ public class CodeImportSummary extends AbstractUIPage {
 
     } else if (prevID.equals(DataPackageWizardInterface.CODE_IMPORT_PAGE)) {
 
-      String firstPage = mainWizFrame.getFirstPageID();
+      //String firstPage = mainWizFrame.getFirstPageID();
       currentAttrName = adp.getCurrentImportAttributeName();
       if(adp.isCurrentImportNewTable())
       {
     	 Log.debug(30, "====it is in current import new table and previous page is code_import_page in CodeImportSummary.onLoad"); 
          updateAttributeInNewTable();
+         updatedAttributeInNewTable = true;
       }
-      adp.removeFirstAttributeForImport();
+      removedAttributeInfo = adp.removeFirstAttributeForImport();
       // just a summary of import. No further imports
       desc1.setText(
       WizardSettings.HTML_TABLE_LABEL_OPENING
@@ -332,6 +339,16 @@ public class CodeImportSummary extends AbstractUIPage {
     		  Log.debug(30, "Set ImportCodeDefinitionTable to be false!!!!!!!!!!!!");
         	  
           }
+          else if(prevID != null && (prevID.equals(DataPackageWizardInterface.CODE_DEFINITION) || prevID.equals(DataPackageWizardInterface.CODE_IMPORT_PAGE))) 
+          {
+              adp.addFirstAttributeForImport(removedAttributeInfo);
+              if(updatedAttributeInNewTable)
+              {
+            	  
+            	  //we may need to do something here.
+              }
+             
+          } 
 	  
 
   }
@@ -384,7 +401,6 @@ public class CodeImportSummary extends AbstractUIPage {
       mainWizFrame.reInitializePageStack();
       mainWizFrame.clearPageCache();
     }
-
     return true;
   }
 

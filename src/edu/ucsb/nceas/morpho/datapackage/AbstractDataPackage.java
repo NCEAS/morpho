@@ -4325,6 +4325,28 @@ public abstract class AbstractDataPackage extends MetadataObject
 		") ; count = " + toBeImportedCount);
 		return toBeImportedCount-1;//return index of the new object in the list
 	}
+	
+	/**
+	 * Add an arrayList which contains to the import list.
+	 * @param attributeInfo
+	 */
+	public void addFirstAttributeForImport(ArrayList attributeInfo) 
+	{
+		if(attributeInfo != null)
+		{
+				if (toBeImported == null) {
+					toBeImported = new ArrayList();
+					toBeImportedCount = 0;
+				}
+				toBeImported.add(0, attributeInfo);
+				toBeImportedCount++;
+				
+				  Log.debug(10,
+				  "==========Adding Attr to Import - (" + attributeInfo.get(0) + ", " + attributeInfo.get(1) +
+				  ") as an ArrayList ; count = " + toBeImportedCount);
+		}
+				
+	}
 
 
 	public String getCurrentImportEntityName() {
@@ -4410,12 +4432,13 @@ public abstract class AbstractDataPackage extends MetadataObject
 		return toBeImportedCount;
 	}
 
-	public void removeFirstAttributeForImport() {
+	public ArrayList removeFirstAttributeForImport() {
 		if (toBeImportedCount == 0) {
-			return;
+			return null;
 		}
-		toBeImported.remove(0);
+		ArrayList list = (ArrayList)toBeImported.remove(0);
 		toBeImportedCount--;
+		return list;
 	}
 	
 	/**
