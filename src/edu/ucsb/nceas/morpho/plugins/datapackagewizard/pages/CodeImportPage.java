@@ -188,7 +188,7 @@ public class CodeImportPage extends AbstractUIPage {
 			return;
 		}
 		
-		edu.ucsb.nceas.morpho.datapackage.Entity[] arr = adp.getOriginalEntityArray();
+		/*edu.ucsb.nceas.morpho.datapackage.Entity[] arr = adp.getOriginalEntityArray();
 		if(arr == null) {
 			
 			arr = adp.getEntityArray();
@@ -196,7 +196,7 @@ public class CodeImportPage extends AbstractUIPage {
 				arr = new edu.ucsb.nceas.morpho.datapackage.Entity[0];
 			}
 			adp.setOriginalEntityArray(arr);
-		}
+		}*/
 		
 		String attr = adp.getCurrentImportAttributeName();
     String entity = adp.getCurrentImportEntityName();

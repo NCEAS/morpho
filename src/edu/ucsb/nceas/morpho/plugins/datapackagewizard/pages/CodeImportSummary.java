@@ -163,7 +163,10 @@ public class CodeImportSummary extends AbstractUIPage {
       // need to update attribute in entity(if reqd) and remove attribute
       currentAttrName = adp.getCurrentImportAttributeName();
       if(adp.isCurrentImportNewTable())
-        updateAttributeInNewTable();
+      {
+    	  Log.debug(30, "====it is in current import new table and previous page is code_definition in CodeImportSummary.onLoad");
+    	  updateAttributeInNewTable();
+      }
       adp.removeFirstAttributeForImport();
       desc1.setText(
       WizardSettings.HTML_TABLE_LABEL_OPENING
@@ -176,7 +179,10 @@ public class CodeImportSummary extends AbstractUIPage {
       String firstPage = mainWizFrame.getFirstPageID();
       currentAttrName = adp.getCurrentImportAttributeName();
       if(adp.isCurrentImportNewTable())
-        updateAttributeInNewTable();
+      {
+    	 Log.debug(30, "====it is in current import new table and previous page is code_import_page in CodeImportSummary.onLoad"); 
+         updateAttributeInNewTable();
+      }
       adp.removeFirstAttributeForImport();
       // just a summary of import. No further imports
       desc1.setText(
@@ -276,6 +282,10 @@ public class CodeImportSummary extends AbstractUIPage {
     } else {
       mainWizFrame.setButtonsStatus(true, false, true);
     }
+	/*if(adp != null && adp.getAttributeImportCount() == 0) {
+    
+      mainWizFrame.setButtonsStatus(false, false, true);
+    }*/
   }
 
 

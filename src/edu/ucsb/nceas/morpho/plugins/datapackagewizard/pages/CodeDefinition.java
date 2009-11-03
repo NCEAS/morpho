@@ -87,6 +87,7 @@ public class CodeDefinition extends AbstractUIPage {
   private JTextField entityField;
 
   private AbstractDataPackage adp = null;
+  private String prevPageID = null;
 
   public CodeDefinition(WizardContainerFrame mainWizFrame) {
 
@@ -166,67 +167,67 @@ public class CodeDefinition extends AbstractUIPage {
     adp.setLastImportedEntity(null);
     adp.setLastImportedDataSet(null);
 
-    String prevPageID = mainWizFrame.getPreviousPageID();
+    prevPageID = mainWizFrame.getPreviousPageID();
     //if(prevPageID.equals(DataPackageWizardInterface.TEXT_IMPORT_WIZARD) || prevPageID.equals(DataPackageWizardInterface.ENTITY)) {
-    if(prevPageID.startsWith(DataPackageWizardInterface.TEXT_IMPORT_ATTRIBUTE) || prevPageID.equals(DataPackageWizardInterface.ENTITY)) {
+    if(prevPageID != null && (prevPageID.startsWith(DataPackageWizardInterface.TEXT_IMPORT_ATTRIBUTE) || prevPageID.equals(DataPackageWizardInterface.ENTITY))) {
 
         Node newDOM = mainWizFrame.collectDataFromPages();       
          int entityIndex = mainWizFrame.getEnityIndex();
-	     Log.debug(32, "The index of the entity which was added to abstract package in CodeImportSummary.onAdvanceAction is "+entityIndex);
+	     Log.debug(32, "The index of the entity which was added to abstract package in CodeDefintion.onLoadAction is "+entityIndex);
 	     adp.replaceEntity(newDOM, entityIndex);
 	      //since we added/replace an entity into adp, so next available index should be increase too.
 	     entityIndex = entityIndex+1;
 	     mainWizFrame.setEntityIndex(entityIndex);
          adp.setLocation("");  // we've changed it and not yet saved
 
-	if(prevPageID.equals(DataPackageWizardInterface.ENTITY) && rowData == null) { 
-
-	    //data not yet read from the file. This happens when user does a MANUAL import
-	    // read data from the file. If its a non-text file, put "**nontext**" in first row of the columns
-	    // At the end of this, rowData is a valid vector of row data.
-
-
-	    int entityIdx = adp.getEntityCount() - 1;
-	    boolean text_file = false;
-	    String format = adp.getPhysicalFormat(entityIdx, 0);
-	    if(format.indexOf("Text") > -1 || format.indexOf("text") > -1 || format.indexOf("Asci") > -1 || format.indexOf("asci") > -1) {
-		text_file = true;
-	    }
-	    
-	    MorphoFrame morphoFrame = UIController.getInstance().getCurrentActiveWindow();
-	    DataViewContainerPanel resultPane = null;
-	    Morpho morpho = null;
-	    if(morphoFrame != null) {
-		resultPane = morphoFrame.getDataViewContainerPanel();
-	    }
-	    if(resultPane != null) {
-		morpho = resultPane.getFramework();
-	    }
-
-	    File entityFile = CodeDefnPanel.getEntityFile(morpho, adp, entityIdx);
-	    if(entityFile == null) return;
-	    Vector colsToExtract = new Vector();
-	    for(int ci = 0; ci < attrs.size(); ci++) colsToExtract.add(new Integer(ci));
-	    int numHeaderLines = 0;
-	    String field_delimiter = adp.getPhysicalFieldDelimiter(entityIdx, 0);
-	    String delimiter = getDelimiterString(field_delimiter);
-	    boolean ignoreConsecutiveDelimiters = adp.ignoreConsecutiveDelimiters(entityIdx, 0);
-	    List data = null;
-	    if(text_file) {
-		data = CodeDefnPanel.getColumnValues(entityFile, colsToExtract, numHeaderLines, delimiter, ignoreConsecutiveDelimiters, WizardSettings.MAX_IMPORTED_ROWS_DISPLAYED_IN_CODE_IMPORT);
-	    } else {
-		// not a displayable data; hence just create a single empty row (with the necessary columns) to add to the resultset
-		data = new ArrayList();
-		List row1 = new ArrayList();
-		for(int ci = 0; ci < colsToExtract.size(); ci++) row1.add("**nontext**");
-		data.add(row1);
-	    }
-	    rowData = new Vector();
-	    TaxonImportPanel.addColumnsToRowData(rowData, data);
-	    importPanel.setTable(tableName, attrs, rowData);
-	    importPanel.invalidate();
-
-	} 
+		if(prevPageID.equals(DataPackageWizardInterface.ENTITY) && rowData == null) { 
+	
+		    //data not yet read from the file. This happens when user does a MANUAL import
+		    // read data from the file. If its a non-text file, put "**nontext**" in first row of the columns
+		    // At the end of this, rowData is a valid vector of row data.
+	
+	
+		    int entityIdx = adp.getEntityCount() - 1;
+		    boolean text_file = false;
+		    String format = adp.getPhysicalFormat(entityIdx, 0);
+		    if(format.indexOf("Text") > -1 || format.indexOf("text") > -1 || format.indexOf("Asci") > -1 || format.indexOf("asci") > -1) {
+			text_file = true;
+		    }
+		    
+		    MorphoFrame morphoFrame = UIController.getInstance().getCurrentActiveWindow();
+		    DataViewContainerPanel resultPane = null;
+		    Morpho morpho = null;
+		    if(morphoFrame != null) {
+			resultPane = morphoFrame.getDataViewContainerPanel();
+		    }
+		    if(resultPane != null) {
+			morpho = resultPane.getFramework();
+		    }
+	
+		    File entityFile = CodeDefnPanel.getEntityFile(morpho, adp, entityIdx);
+		    if(entityFile == null) return;
+		    Vector colsToExtract = new Vector();
+		    for(int ci = 0; ci < attrs.size(); ci++) colsToExtract.add(new Integer(ci));
+		    int numHeaderLines = 0;
+		    String field_delimiter = adp.getPhysicalFieldDelimiter(entityIdx, 0);
+		    String delimiter = getDelimiterString(field_delimiter);
+		    boolean ignoreConsecutiveDelimiters = adp.ignoreConsecutiveDelimiters(entityIdx, 0);
+		    List data = null;
+		    if(text_file) {
+			data = CodeDefnPanel.getColumnValues(entityFile, colsToExtract, numHeaderLines, delimiter, ignoreConsecutiveDelimiters, WizardSettings.MAX_IMPORTED_ROWS_DISPLAYED_IN_CODE_IMPORT);
+		    } else {
+			// not a displayable data; hence just create a single empty row (with the necessary columns) to add to the resultset
+			data = new ArrayList();
+			List row1 = new ArrayList();
+			for(int ci = 0; ci < colsToExtract.size(); ci++) row1.add("**nontext**");
+			data.add(row1);
+		    }
+		    rowData = new Vector();
+		    TaxonImportPanel.addColumnsToRowData(rowData, data);
+		    importPanel.setTable(tableName, attrs, rowData);
+		    importPanel.invalidate();
+	
+		} 
 
     }
 
@@ -239,7 +240,15 @@ public class CodeDefinition extends AbstractUIPage {
    */
   public void onRewindAction() {
 
-    //never used
+	  if(prevPageID != null && (prevPageID.startsWith(DataPackageWizardInterface.TEXT_IMPORT_ATTRIBUTE) || prevPageID.equals(DataPackageWizardInterface.ENTITY))) {
+    
+	         int entityIndex = mainWizFrame.getEnityIndex();
+	         entityIndex = entityIndex -1;//since the mainWizFrame stores the next available index, so we should minus 1 when we go back. 
+		     Log.debug(32, "The index of the entity which was deleted to abstract package in CodeDefinition.onRewindAction is "+entityIndex);
+		     adp.deleteEntity(entityIndex);
+		     mainWizFrame.setEntityIndex(entityIndex);
+	         adp.setLocation("");  // we've changed it and not yet saved
+	  }
   }
 
   /**
