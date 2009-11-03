@@ -29,9 +29,6 @@ package edu.ucsb.nceas.morpho.datastore;
 import java.io.*;
 import java.util.*;
 
-import javax.swing.*;
-import java.awt.*;
-
 import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.framework.ConfigXML;
 import edu.ucsb.nceas.morpho.util.Log;
@@ -771,6 +768,148 @@ public class MetacatDataStore extends DataStore implements DataStoreInterface
     {//something weird happened.
       Morpho.connectionBusy = false;
       return false;
+    } 
+  }
+
+/**
+   * sets access to a document in metacat. 
+   * @param docid id to set permission for
+   * @param accessBlock eml-access XML block
+   * @return true if successful
+   */
+  public boolean setAccess(String docid, String accessBlock)
+  {
+    StringBuffer messageBuf = new StringBuffer();
+    Properties prop = new Properties();
+    prop.put("action", "setaccess");
+    prop.put("docid", docid);
+    prop.put("accessBlock", accessBlock);
+
+    Log.debug(11, "setting accessBlock for docid: " + docid + " on metacat");
+    
+    InputStream metacatInput = null;
+    metacatInput = morpho.getMetacatInputStream(prop, true);
+    Morpho.connectionBusy = true;
+    InputStreamReader metacatInputReader = new InputStreamReader(metacatInput);
+    BufferedReader bmetacatInputReader = new BufferedReader(metacatInputReader);
+    try
+    {
+      int d = bmetacatInputReader.read();
+      while(d != -1)
+      {
+        messageBuf.append((char)d);
+        d = bmetacatInputReader.read();
+      }
+    }
+    catch(IOException ioe)
+    {
+      Log.debug(0, "Error setting accessBlock in metacat: " + 
+                            ioe.getMessage());
+      Morpho.connectionBusy = false;
+      return false;
+    }
+    
+    String message = messageBuf.toString();
+    Log.debug(11, "message from server: " + message);
+    
+    if(message.indexOf("<error>") != -1)
+    { //there was an error
+      try
+      {
+        bmetacatInputReader.close();
+        metacatInput.close();
+      }
+      catch(Exception e)
+      {}
+      Morpho.connectionBusy = false;
+      return false;
+    }
+    else if(message.indexOf("<success>") != -1)
+    { //the operation worked
+      try
+      {
+        bmetacatInputReader.close();
+        metacatInput.close();
+      }
+      catch(Exception e)
+      {}
+      Morpho.connectionBusy = false;
+      return true;
+    }
+    else
+    {//something weird happened.
+      Morpho.connectionBusy = false;
+      return false;
+    } 
+  }
+
+/**
+   * gets access control block for a document in metacat. 
+   * @param docid id to set permission for
+   * @return String with XML access block
+   */
+  public String getAccess(String docid)
+  {
+    StringBuffer messageBuf = new StringBuffer();
+    Properties prop = new Properties();
+    prop.put("action", "getaccesscontrol");
+    prop.put("docid", docid);
+    
+    Log.debug(11, "getting access for docid: " + docid + " on metacat");
+    
+    InputStream metacatInput = null;
+    metacatInput = morpho.getMetacatInputStream(prop, true);
+    Morpho.connectionBusy = true;
+    InputStreamReader metacatInputReader = new InputStreamReader(metacatInput);
+    BufferedReader bmetacatInputReader = new BufferedReader(metacatInputReader);
+    try
+    {
+      int d = bmetacatInputReader.read();
+      while(d != -1)
+      {
+        messageBuf.append((char)d);
+        d = bmetacatInputReader.read();
+      }
+    }
+    catch(IOException ioe)
+    {
+      Log.debug(0, "Error getting access in metacat: " + 
+                            ioe.getMessage());
+      Morpho.connectionBusy = false;
+      return null;
+    }
+    
+    String message = messageBuf.toString();
+    Log.debug(11, "message from server: " + message);
+    
+    if(message.indexOf("<error>") != -1)
+    { //there was an error
+      try
+      {
+        bmetacatInputReader.close();
+        metacatInput.close();
+      }
+      catch(Exception e)
+      {}
+      Morpho.connectionBusy = false;
+      return null;
+    }
+    else if(message.indexOf("access>") != -1)
+    { //the operation worked
+      try
+      {
+        bmetacatInputReader.close();
+        metacatInput.close();
+      }
+      catch(Exception e)
+      {}
+      Morpho.connectionBusy = false;
+      return message;
+    }
+    else
+    {//something weird happened.
+      Morpho.connectionBusy = false;
+      return null;
     } 
   }
   
