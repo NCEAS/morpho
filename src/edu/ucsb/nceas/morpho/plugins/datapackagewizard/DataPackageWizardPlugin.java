@@ -167,7 +167,7 @@ public class DataPackageWizardPlugin implements PluginInterface,
    */
   public void startCodeDefImportWizard(DataPackageWizardListener listener, int entityIndex ) {
 
-    startWizardAtPage(DataPackageWizardInterface.CODE_IMPORT_PAGE, false,
+    startWizardAtPage(DataPackageWizardInterface.CODE_IMPORT_SUMMARY, false,
                       listener, "Import Code Definitions", entityIndex);
   }
   
@@ -202,7 +202,7 @@ public class DataPackageWizardPlugin implements PluginInterface,
                         DataPackageWizardListener listener, String frameTitle, int entityIndex) {
 
     WizardContainerFrame dpWiz = null;
-    if(pageID != null && (pageID.equals(WizardSettings.ENTITY_WIZ_FIRST_PAGE_ID) || pageID.equals(DataPackageWizardInterface.CODE_IMPORT_PAGE)))
+    if(pageID != null && (pageID.equals(WizardSettings.ENTITY_WIZ_FIRST_PAGE_ID) || pageID.equals(DataPackageWizardInterface.CODE_IMPORT_SUMMARY)))
     {
     	boolean isEnity = true;
     	dpWiz = new WizardContainerFrame(isEnity);

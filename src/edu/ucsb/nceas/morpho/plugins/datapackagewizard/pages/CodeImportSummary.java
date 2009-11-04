@@ -72,13 +72,14 @@ public class CodeImportSummary extends AbstractUIPage {
   public final String PACKAGE_WIZ_SUMMARY_TITLE = "New Data Package Wizard";
   public final String ENTITY_WIZ_SUMMARY_TITLE  = "New Data Table Wizard";
   public final String SUBTITLE                  = "Summary";
+  private final String STARTIMPORTWIZARD = "STARTIMPORTWIZARD";
 
   private JLabel desc1;
 	private JLabel desc3;
   private JLabel desc4;
   private WizardContainerFrame mainWizFrame;
   private AbstractDataPackage adp = null;
-  private String prevID;
+  private String prevID = STARTIMPORTWIZARD;
   private AbstractUIPage prevPage = null;
   private ArrayList removedAttributeInfo = null;
   private boolean updatedAttributeInNewTable = false;
@@ -128,8 +129,12 @@ public class CodeImportSummary extends AbstractUIPage {
   private String getLastParagraph() {
 
     String ID = mainWizFrame.getFirstPageID();
-
-    if (ID==null) return "";
+    if (ID==null || ID.equals(DataPackageWizardInterface.CODE_IMPORT_SUMMARY)) 
+    {
+    	//this is for starting import wizard from editing attribute menu
+    	desc3.setText("");
+    	return "";
+    }
     int remaining = adp.getAttributeImportCount();
     if(remaining > 0) {
 			desc3.setText("");
@@ -212,6 +217,17 @@ public class CodeImportSummary extends AbstractUIPage {
 
 
     }
+    else if(prevID.equals(STARTIMPORTWIZARD))
+    {
+    	currentAttrName = adp.getCurrentImportAttributeName();
+    	mainWizFrame.setImportCodeDefinitionTable(true);
+    	Log.debug(30, "CodeImportSummary.onLoadAction - Starting Import Code Wizard (from editing attribute menu===================");
+    	desc1.setText(
+    		      WizardSettings.HTML_TABLE_LABEL_OPENING
+    		      +"<p>Proceed to define or import data tables for the attribute <i> "+ currentAttrName + "</i></p>"
+    					+ WizardSettings.HTML_TABLE_LABEL_CLOSING);
+    }
+    	
 
     desc4.setText( WizardSettings.HTML_TABLE_LABEL_OPENING
                   +getLastParagraph()+WizardSettings.HTML_TABLE_LABEL_CLOSING);
@@ -284,7 +300,13 @@ public class CodeImportSummary extends AbstractUIPage {
 
   private void updateButtonsStatus() {
 
-    if(adp != null && adp.getAttributeImportCount() > 0) {
+	if (prevID.equals(STARTIMPORTWIZARD))
+	{
+		//this is starting import code wizard from editing attribute menu.
+		//this page is the first page. so the previous button should be disabled
+		mainWizFrame.setButtonsStatus(false, true, false);
+	}
+	else if(adp != null && adp.getAttributeImportCount() > 0) {
       mainWizFrame.setButtonsStatus(true, true, false);
     } else {
       mainWizFrame.setButtonsStatus(true, false, true);
