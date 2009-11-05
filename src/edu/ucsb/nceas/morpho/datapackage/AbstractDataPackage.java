@@ -257,6 +257,33 @@ public abstract class AbstractDataPackage extends MetadataObject
   private final String METADATAHTML = "metadata";
   private final String EXPORTSYLE = "export";
   private final int ORIGINAL_REVISION = 1;
+  private final static String OPEN = "<";
+  private final static String SLASH = "/";
+  private final static String CLOSE = ">";
+  private final static String IMPORTATTRIBUTES = "importAttributes";
+  private final static String OPENIMPORTATTRIBUTES = OPEN+IMPORTATTRIBUTES+CLOSE;
+  private final static String CLOSEIMPORTATTRIBUTES = OPEN+SLASH+IMPORTATTRIBUTES+CLOSE;
+  private final static String ATTRIBUTE = "attribute";
+  private final static String OPENATTRIBUTE = OPEN+ATTRIBUTE+CLOSE;
+  private final static String CLOSEATTRIBUTE = OPEN+SLASH+ATTRIBUTE+CLOSE;
+  private final static String ENTITYNAME = "entityName";
+  private final static String OPENENTITYNAME = OPEN+ENTITYNAME+CLOSE;
+  private final static String CLOSEENTITYNAME = OPEN+SLASH+ENTITYNAME+CLOSE;
+  private final static String ATTRIBUTENAME = "attributeName";
+  private final static String OPENATTRIBUTENAME = OPEN+ATTRIBUTENAME+CLOSE;
+  private final static String CLOSEATTRIBUTENAME = OPEN+SLASH+ATTRIBUTENAME+CLOSE;
+  private final static String SCALE = "scale";
+  private final static String OPENSCALE = OPEN+SCALE+CLOSE;
+  private final static String CLOSESCALE = OPEN+SLASH+SCALE+CLOSE;
+  private final static String ORDEREDMAP = "orderedMap";
+  private final static String OPENORDEREDMAP = OPEN+ORDEREDMAP+CLOSE;
+  private final static String CLOSEORDEREDMAP = OPEN+SLASH+ORDEREDMAP+CLOSE;
+  private final static String XPATH = "xPath";
+  private final static String OPENXPATH = OPEN+XPATH+CLOSE;
+  private final static String CLOSEXPATH = OPEN+SLASH+XPATH+CLOSE;
+  private final static String NEWTABLE = "newTable";
+  private final static String OPENNEWTABLE = OPEN+NEWTABLE+CLOSE;
+  private final static String CLOSENEWTABLE = OPEN+SLASH+NEWTABLE+CLOSE;
   private boolean serializeLocalSuccess = false;
   private boolean serializeMetacatSuccess = false;
   //private boolean identifierChangedInMetacatSerialization = false;
@@ -4302,6 +4329,12 @@ public abstract class AbstractDataPackage extends MetadataObject
 	private String lastImportedEntityName;
 	private Vector lastImportedDataSet;
 	private Entity[] originalEntities = null;
+	private final static int ENTITYNAMEINDEX = 0;
+	private final static int ATTRIBUTENAMEINDEX = 1;
+	private final static int SCALEINDEX = 2;
+	private final static int ORDEREDMAPINDEX = 3;
+	private final static int XPATHINDEX = 4;
+	private final static int NEWTABLEINDEX = 5;
 
 
 	public int addAttributeForImport(String entityName, String attributeName,
@@ -4359,7 +4392,7 @@ public abstract class AbstractDataPackage extends MetadataObject
 		if (t == null) {
 			return null;
 		}
-		return (String) t.get(0);
+		return (String) t.get(ENTITYNAMEINDEX);
 	}
 
 	public String getCurrentImportAttributeName() {
@@ -4371,7 +4404,7 @@ public abstract class AbstractDataPackage extends MetadataObject
 		if (t == null) {
 			return null;
 		}
-		return (String) t.get(1);
+		return (String) t.get(ATTRIBUTENAMEINDEX);
 	}
 
 	public String getCurrentImportScale() {
@@ -4382,7 +4415,7 @@ public abstract class AbstractDataPackage extends MetadataObject
 		if (t == null) {
 			return null;
 		}
-		return (String) t.get(2);
+		return (String) t.get(SCALEINDEX);
 	}
 
 	public OrderedMap getCurrentImportMap() {
@@ -4393,7 +4426,7 @@ public abstract class AbstractDataPackage extends MetadataObject
 		if (t == null) {
 			return null;
 		}
-		return (OrderedMap) t.get(3);
+		return (OrderedMap) t.get(ORDEREDMAPINDEX);
 	}
 
 	public OrderedMap getSecondImportMap() {
@@ -4404,7 +4437,7 @@ public abstract class AbstractDataPackage extends MetadataObject
 		if (t == null) {
 			return null;
 		}
-		return (OrderedMap) t.get(3);
+		return (OrderedMap) t.get(ORDEREDMAPINDEX);
 	}
 
 	public String getCurrentImportXPath() {
@@ -4415,7 +4448,7 @@ public abstract class AbstractDataPackage extends MetadataObject
 		if (t == null) {
 			return null;
 		}
-		return (String) t.get(4);
+		return (String) t.get(XPATHINDEX);
 	}
 
 	public boolean isCurrentImportNewTable() {
@@ -4426,7 +4459,7 @@ public abstract class AbstractDataPackage extends MetadataObject
 		if (t == null) {
 			return false;
 		}
-		return ( (Boolean) t.get(5)).booleanValue();
+		return ( (Boolean) t.get(NEWTABLEINDEX)).booleanValue();
 	}
 
 	public int getAttributeImportCount() {
@@ -4525,6 +4558,48 @@ public abstract class AbstractDataPackage extends MetadataObject
 		lastImportedEntityName = null;
 		lastImportedDataSet = null;
 
+	}
+	
+	/**
+	 * Dump the import attributes information to xml representation.
+	 * If there is no import attribute information, blank string will be returned.
+	 * @return
+	 */
+	public String importAttributesToXML()
+	{
+		StringBuffer xml = new StringBuffer();
+		if(toBeImported != null && !toBeImported.isEmpty())
+		{
+			xml.append(OPENIMPORTATTRIBUTES+"\n");
+			for(int i=0; i<toBeImported.size(); i++)
+			{
+				ArrayList list = (ArrayList)toBeImported.get(i);
+				if(list != null && !list.isEmpty())
+				{
+					xml.append(OPENATTRIBUTE);
+					String entityName =(String)list.get(ENTITYNAMEINDEX);
+					xml.append(OPENENTITYNAME+entityName+CLOSEENTITYNAME);
+					String attributeName = (String)list.get(ATTRIBUTENAMEINDEX);
+					xml.append(OPENATTRIBUTENAME+attributeName+CLOSEATTRIBUTENAME);
+					String scale = (String)list.get(SCALEINDEX);
+					xml.append(OPENSCALE+scale+CLOSESCALE);
+					OrderedMap map = (OrderedMap)list.get(ORDEREDMAPINDEX);
+					xml.append(OPENORDEREDMAP);
+					if(map != null)
+					{
+						xml.append(map.toXML());
+					}
+					xml.append(CLOSEORDEREDMAP);
+					String xpath = (String)list.get(XPATHINDEX);
+					xml.append(OPENXPATH+xpath+CLOSEXPATH);
+					String newTable = ((Boolean)list.get(NEWTABLEINDEX)).toString();
+					xml.append(OPENNEWTABLE+newTable+CLOSENEWTABLE);
+					xml.append(CLOSEATTRIBUTE+"\n");
+				}
+			}
+			xml.append(CLOSEIMPORTATTRIBUTES);
+		}
+		return xml.toString();
 	}
 	
 	/**
