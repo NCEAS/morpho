@@ -82,7 +82,7 @@ public class CodeImportSummary extends AbstractUIPage {
   private String prevID = STARTIMPORTWIZARD;
   private AbstractUIPage prevPage = null;
   private ArrayList removedAttributeInfo = null;
-  private boolean updatedAttributeInNewTable = false;
+  private boolean updateImportAttributeInNewTable = false;
   
 
   public CodeImportSummary(WizardContainerFrame mainWizFrame) {
@@ -150,7 +150,7 @@ public class CodeImportSummary extends AbstractUIPage {
    *  The action to be executed when the page is displayed. May be empty
    */
   public void onLoadAction() {
-	  updatedAttributeInNewTable = false;
+	  updateImportAttributeInNewTable = false;
 	  removedAttributeInfo = null;
 		adp = getADP();
 		if(adp == null || mainWizFrame == null) {
@@ -175,8 +175,8 @@ public class CodeImportSummary extends AbstractUIPage {
       if(adp.isCurrentImportNewTable())
       {
     	  Log.debug(30, "====it is in current import new table and previous page is code_definition in CodeImportSummary.onLoad");
-    	  updateAttributeInNewTable();
-    	  updatedAttributeInNewTable = true;
+    	  updateImportAttributeInNewTable();
+    	  updateImportAttributeInNewTable = true;
       }
       removedAttributeInfo = adp.removeFirstAttributeForImport();
       desc1.setText(
@@ -192,8 +192,8 @@ public class CodeImportSummary extends AbstractUIPage {
       if(adp.isCurrentImportNewTable())
       {
     	 Log.debug(30, "====it is in current import new table and previous page is code_import_page in CodeImportSummary.onLoad"); 
-         updateAttributeInNewTable();
-         updatedAttributeInNewTable = true;
+    	 updateImportAttributeInNewTable();
+    	 updateImportAttributeInNewTable = true;
       }
       removedAttributeInfo = adp.removeFirstAttributeForImport();
       // just a summary of import. No further imports
@@ -243,9 +243,15 @@ public class CodeImportSummary extends AbstractUIPage {
     return dp;
   }
 
-  private void updateAttributeInNewTable() {
-
-		OrderedMap map = adp.getCurrentImportMap();
+  /*
+   * This is the real method to put referenced id into the attribute which need to be imported.
+   * In CodeDefinition.replaceEmptyReference method, the curretnImportMap was modified
+   * (added referenced id information), this method will put the map information into attribute.
+   */
+  private void updateImportAttributeInNewTable() {
+   
+	//Gets modified map (having the referenced id information)
+    OrderedMap map = adp.getCurrentImportMap();
     adp = getADP();
     if(adp == null)
       return;
@@ -258,7 +264,7 @@ public class CodeImportSummary extends AbstractUIPage {
 
 
     String firstKey = (String)map.keySet().iterator().next();
-
+    //if key of themap doesn't start with /attribute, we need to change the key path.
     if(!firstKey.startsWith("/attribute")) {
       OrderedMap newMap = new OrderedMap();
       Iterator it1 = map.keySet().iterator();
@@ -364,11 +370,11 @@ public class CodeImportSummary extends AbstractUIPage {
           else if(prevID != null && (prevID.equals(DataPackageWizardInterface.CODE_DEFINITION) || prevID.equals(DataPackageWizardInterface.CODE_IMPORT_PAGE))) 
           {
               adp.addFirstAttributeForImport(removedAttributeInfo);
-              if(updatedAttributeInNewTable)
+              /*if(updateImportAttributeInNewTable)
               {
             	  
             	  //we may need to do something here.
-              }
+              }*/
              
           } 
 	  
@@ -512,5 +518,15 @@ public class CodeImportSummary extends AbstractUIPage {
   public String getPageNumber() { return pageNumber; }
 
     public boolean setPageData(OrderedMap data, String xPathRoot) { return false; }
+    
+    
+    /**
+     * Check if the import attribute in new table was updated (the reference id was added)
+     * @return
+     */
+    public boolean isImportAttributeInNewTableUpdated()
+    {
+    	return this.updateImportAttributeInNewTable;
+    }
 }
 
