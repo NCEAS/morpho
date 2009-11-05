@@ -1449,8 +1449,9 @@ public class WizardContainerFrame
     //AbstractDataPackage adp = UIController.getInstance().getCurrentAbstractDataPackage();
     if(adp != null) {
       Log.debug(32, "WizardContainerFrame.cancelAction ==========");
-      //deletes all newly needed entities
-      for(int i=0; i<neededCancelingEntityList.size(); i++)
+      //deletes all newly needed entities. We must delete the entity by the order from big to small
+      int size = neededCancelingEntityList.size()-1;
+      for(int i=size; i>=0; i--)
       {
     	  int index = -1;
     	  try
