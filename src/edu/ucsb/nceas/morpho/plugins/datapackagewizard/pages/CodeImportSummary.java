@@ -314,8 +314,8 @@ public class CodeImportSummary extends AbstractUIPage {
           }
           else if (prevID != null && prevID.equals(DataPackageWizardInterface.ENTITY))
           {
-        	  Entity entity = (Entity)prevPage;
-        	  entity.removeAllImportedAttributesFromList();
+        	  //Entity entity = (Entity)prevPage;
+        	  //entity.removeAllImportedAttributesFromList();
         	  mainWizFrame.setImportCodeDefinitionTable(false);
     		  Log.debug(30, "Set ImportCodeDefinitionTable to be false!!!!!!!!!!!!");
         	  

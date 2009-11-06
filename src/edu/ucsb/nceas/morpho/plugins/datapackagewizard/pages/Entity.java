@@ -293,6 +293,7 @@ public class Entity extends AbstractUIPage{
   public void onLoadAction() {
 
     entityNameField.requestFocus();
+    removeAllImportedAttributesFromList();
   }
 
 
