@@ -42,6 +42,7 @@ import edu.ucsb.nceas.utilities.XMLUtilities;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 
 import javax.swing.BoxLayout;
 import javax.swing.JLabel;
@@ -82,6 +83,9 @@ public class CodeImportPage extends AbstractUIPage {
   private JTextField entityField;
 
   private JLabel choiceLabel;
+  private ArrayList removedAttributeInfo = null;
+  private AbstractDataPackage adp = null;
+  private String handledImportAttributeName = null;
 
   private short importChoice = 0;
   private static final short IMPORT_DONE = 10;
@@ -181,72 +185,21 @@ public class CodeImportPage extends AbstractUIPage {
    *  The action to be executed when the page is displayed. May be empty
    */
   public void onLoadAction() {
-		
-		AbstractDataPackage	adp = getADP();
+	    removedAttributeInfo = null;
+		adp = getADP();
 		if(adp == null) {
 			Log.debug(15, "Unable to obtain the ADP in CodeImportPage");
 			return;
 		}
 		
-		/*edu.ucsb.nceas.morpho.datapackage.Entity[] arr = adp.getOriginalEntityArray();
-		if(arr == null) {
-			
-			arr = adp.getEntityArray();
-			if(arr == null) {
-				arr = new edu.ucsb.nceas.morpho.datapackage.Entity[0];
-			}
-			adp.setOriginalEntityArray(arr);
-		}*/
 		
-		String attr = adp.getCurrentImportAttributeName();
+	handledImportAttributeName = adp.getCurrentImportAttributeName();
     String entity = adp.getCurrentImportEntityName();
 
-    attrField.setText(attr);
+    attrField.setText(handledImportAttributeName);
     entityField.setText(entity);
     mainWizFrame.setButtonsStatus(false, true, false);//couldn't back again.
-    //String prevPageID = mainWizFrame.getPreviousPageID();
-
-    /*if(prevPageID != null && prevPageID.equals(DataPackageWizardInterface.ENTITY)) {
-
-
-      // create the new data table. Need to store this DOM to return it.
-      Node newDOM = mainWizFrame.collectDataFromPages();
-      mainWizFrame.setDOMToReturn(null);
-
-      Node entNode = null;
-      String entityXpath = "";
-      try{
-        entityXpath = (XMLUtilities.getTextNodeWithXPath(adp.getMetadataPath(),
-        "/xpathKeyMap/contextNode[@name='package']/entities")).getNodeValue();
-        NodeList entityNodes = XMLUtilities.getNodeListWithXPath(newDOM,
-        entityXpath);
-        entNode = entityNodes.item(0);
-      }
-      catch (Exception w) {
-        Log.debug(5, "Error in trying to get entNode in ImportDataCommand");
-      }
-
-      //              Entity entity = new Entity(newDOM);
-      edu.ucsb.nceas.morpho.datapackage.Entity entityNode =
-      new edu.ucsb.nceas.morpho.datapackage.Entity(entNode);
-
-      Log.debug(30,"Adding Entity object to AbstractDataPackage..");
-      adp.addEntity(entityNode);
-
-      // ---DFH
-      Morpho morpho = Morpho.thisStaticInstance;
-      AccessionNumber an = new AccessionNumber(morpho);
-      String curid = adp.getAccessionNumber();
-      String newid = null;
-      if (!curid.equals("")) {
-        newid = an.incRev(curid);
-      } else {
-        newid = an.getNextId();
-      }
-      adp.setAccessionNumber(newid);
-      adp.setLocation("");  // we've changed it and not yet saved
-      mainWizFrame.reInitializePageStack();
-    }*/
+    
 
   }
 
@@ -260,7 +213,8 @@ public class CodeImportPage extends AbstractUIPage {
    */
   public void onRewindAction() {
 
-    //never used
+	 //adp.addFirstAttributeForImport(removedAttributeInfo);
+ 
   }
 
   /**
@@ -279,33 +233,21 @@ public class CodeImportPage extends AbstractUIPage {
 
     if(importChoice == IMPORT_DONE) {
       if(importPanel.validateUserInput()) {
-		AbstractDataPackage	adp = getADP();
+		//AbstractDataPackage	adp = getADP();
 		if(adp == null) {
 			Log.debug(15, "Unable to obtain the ADP in CodeImportPage");
 			return true;
 		}
         OrderedMap map = adp.getCurrentImportMap();
         CodeDefinition.replaceEmptyReference(map,importPanel, "CodeImportPage");
-        /*String relativeXPath = adp.getCurrentImportXPath();
-        String scale = adp.getCurrentImportScale().toLowerCase();
-        String path = relativeXPath + "/measurementScale/" + scale + "/nonNumericDomain/enumeratedDomain[1]/entityCodeList";
-        if(!map.containsKey(path + "/entityReference")) {
-          Log.debug(15, "Error in CodeImportPage!! map doesnt have the key - "+path);
-
-        } else {
-          map.remove(path + "/entityReference");
-          map.remove(path + "/valueAttributeReference");
-          map.remove(path + "/definitionAttributeReference");
-          OrderedMap importMap = importPanel.getPanelData(path);
-          map.putAll(importMap);
-
-        }*/
-        /*if(adp.getAttributeImportCount() > 1) {
-          nextPageID = pageID;
-          adp.removeAttributeForImport();
+        if(adp.isCurrentImportNewTable())
+        {
+      	  Log.debug(30, "====it is in current import new table and update attribute reference in CodeImportPage"); 
+      	  CodeDefinition.updateImportAttributeInNewTable(adp);
+  
         }
-        else */
-          nextPageID = DataPackageWizardInterface.CODE_IMPORT_SUMMARY;
+        removedAttributeInfo = adp.removeFirstAttributeForImport();
+        nextPageID = DataPackageWizardInterface.CODE_IMPORT_SUMMARY;
 
         return true;
       } else
@@ -380,4 +322,23 @@ public class CodeImportPage extends AbstractUIPage {
   public String getPageNumber() { return pageNumber; }
 
     public boolean setPageData(OrderedMap data, String xPathRoot) { return false; }
+   
+   /**
+    * Gets the attribute name be handle (imported in this page)
+    * @return
+    */
+   public String getHandledImportAttributeName()
+   {
+	   return this.handledImportAttributeName;
+   }
+   
+   /**
+    * Gets the import attribute info which was removed in this page's advanceAction.
+    * @return
+    */
+   public ArrayList getRemovedImportAttributeInfo()
+   {
+ 	  return this.removedAttributeInfo;
+   }
+   
 }

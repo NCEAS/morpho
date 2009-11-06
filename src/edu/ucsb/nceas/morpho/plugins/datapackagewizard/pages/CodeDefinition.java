@@ -27,6 +27,7 @@ package edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages;
 import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.datapackage.AbstractDataPackage;
 import edu.ucsb.nceas.morpho.datapackage.AccessionNumber;
+import edu.ucsb.nceas.morpho.datapackage.Attribute;
 import edu.ucsb.nceas.morpho.datapackage.DataViewContainerPanel;
 import edu.ucsb.nceas.morpho.framework.AbstractUIPage;
 import edu.ucsb.nceas.morpho.framework.MorphoFrame;
@@ -88,6 +89,8 @@ public class CodeDefinition extends AbstractUIPage {
 
   private AbstractDataPackage adp = null;
   private String prevPageID = null;
+  private ArrayList removedAttributeInfo = null;
+  private String handledImportAttributeName = null;
 
   public CodeDefinition(WizardContainerFrame mainWizFrame) {
 
@@ -144,17 +147,17 @@ public class CodeDefinition extends AbstractUIPage {
    *  The action to be executed when the page is displayed. May be empty
    */
   public void onLoadAction() {
-		
+	 removedAttributeInfo = null;
      adp = getADP();
      if(adp == null) {
 	Log.debug(10, "Error! Unable to obtain the ADP in CodeDefinition page!");
 	return;
      }
 		
-    String attr = adp.getCurrentImportAttributeName();
+    handledImportAttributeName = adp.getCurrentImportAttributeName();
     String entity = adp.getCurrentImportEntityName();
 
-    attrField.setText(attr);
+    attrField.setText(handledImportAttributeName);
     entityField.setText(entity);
 
     String tableName = adp.getLastImportedEntity();
@@ -249,6 +252,7 @@ public class CodeDefinition extends AbstractUIPage {
 		     mainWizFrame.setEntityIndex(entityIndex);
 	         adp.setLocation("");  // we've changed it and not yet saved
 	  }
+	  //adp.addFirstAttributeForImport(removedAttributeInfo);
   }
 
   /**
@@ -264,8 +268,17 @@ public class CodeDefinition extends AbstractUIPage {
       //String relativeXPath = adp.getCurrentImportXPath();
       //String scale = adp.getCurrentImportScale().toLowerCase();
       //String path = relativeXPath + "/measurementScale/" + scale + "/nonNumericDomain/enumeratedDomain[1]/entityCodeList";
-
+      
+      //get new  map for reference id in import attribute
       replaceEmptyReference(map,importPanel, "CodeDefinition");
+      //replace the attribute with the new reference ids
+      if(adp.isCurrentImportNewTable())
+      {
+    	  Log.debug(30, "====it is in current import new table and previous page is code_definition in CodeImportSummary.onLoad");
+    	  updateImportAttributeInNewTable(adp);
+
+      }
+      removedAttributeInfo = adp.removeFirstAttributeForImport();
       return true;
     } else
       return false;
@@ -377,6 +390,86 @@ public class CodeDefinition extends AbstractUIPage {
   public String getPageNumber() { return pageNumber; }
 
   public boolean setPageData(OrderedMap data, String xPathRoot) { return false; }
+  
+  /**
+   * Gets the attribute name be handle (imported in this page)
+   * @return
+   */
+  public String getHandledImportAttributeName()
+  {
+	   return this.handledImportAttributeName;
+  }
+  
+  /**
+   * Gets the import attribute info which was removed in this page's advanceAction.
+   * @return
+   */
+  public ArrayList getRemovedImportAttributeInfo()
+  {
+	  return this.removedAttributeInfo;
+  }
+  
+  
+  /*
+   * This is the real method to put referenced id into the attribute which need to be imported.
+   * In CodeDefinition.replaceEmptyReference method, the curretnImportMap was modified
+   * (added referenced id information), this method will put the map information into attribute.
+   */
+  public static void updateImportAttributeInNewTable(AbstractDataPackage dataPackage) {
+   
+	//Gets modified map (having the referenced id information)
+    OrderedMap map = dataPackage.getCurrentImportMap();
+    //adp = getADP();
+    if(dataPackage == null)
+      return;
+    String eName = dataPackage.getCurrentImportEntityName();
+    String aName = dataPackage.getCurrentImportAttributeName();
+    String xPath = dataPackage.getCurrentImportXPath();
+
+    int entityIndex = dataPackage.getEntityIndex(eName);
+    int attrIndex = dataPackage.getAttributeIndex(entityIndex, aName);
+
+
+    String firstKey = (String)map.keySet().iterator().next();
+    //if key of themap doesn't start with /attribute, we need to change the key path.
+    if(!firstKey.startsWith("/attribute")) {
+      OrderedMap newMap = new OrderedMap();
+      Iterator it1 = map.keySet().iterator();
+      while(it1.hasNext()) {
+        String k = (String)it1.next();
+        // get index of first '/' after 'attributeList'
+        int idx1 = k.indexOf("/attributeList") + new String("/attributeList").length();
+        // get the substring following the '/'. this starts with 'attribute'
+        String tk = k.substring(idx1 + 1); //
+        int idx2 = tk.indexOf("/");
+        // remove the existing 'attribute' and add 'attribute' so that we handle cases
+        // like 'attribute[2]'
+        String newKey = "/attribute" + tk.substring(idx2);
+        newMap.put(newKey, (String)map.get(k));
+      }
+      map = newMap;
+      xPath = "/attribute";
+    }
+
+    // get the ID of old attribute and set it for the new one
+    String oldID = dataPackage.getAttributeID(entityIndex, attrIndex);
+    map.put(xPath + "/@id", oldID);
+
+    /*System.out.println("New Keys in CIS page are - ");
+    Iterator it = map.keySet().iterator();
+    while(it.hasNext()) {
+      String kk = (String) it.next();
+      System.out.println(kk + " - " + (String)map.get(kk));
+    }*/
+
+    Attribute attr = new Attribute(map);
+
+    dataPackage.insertAttribute(entityIndex, attr, attrIndex);
+    dataPackage.deleteAttribute(entityIndex, attrIndex + 1);
+
+
+  }
+
 
 
   private String getDelimiterString(String field_delimiter) {

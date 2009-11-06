@@ -151,7 +151,7 @@ public class CodeImportSummary extends AbstractUIPage {
    */
   public void onLoadAction() {
 	  updateImportAttributeInNewTable = false;
-	  removedAttributeInfo = null;
+	  //removedAttributeInfo = null;
 		adp = getADP();
 		if(adp == null || mainWizFrame == null) {
 
@@ -169,16 +169,21 @@ public class CodeImportSummary extends AbstractUIPage {
     String currentAttrName = "";
 
     if(prevID.equals(DataPackageWizardInterface.CODE_DEFINITION)) {
-
-      // need to update attribute in entity(if reqd) and remove attribute
-      currentAttrName = adp.getCurrentImportAttributeName();
-      if(adp.isCurrentImportNewTable())
+      
+      //currentAttrName = adp.getCurrentImportAttributeName()
+      if (prevPage instanceof CodeDefinition)
+      {
+         CodeDefinition page = (CodeDefinition)prevPage;
+         currentAttrName = page.getHandledImportAttributeName();
+         removedAttributeInfo = page.getRemovedImportAttributeInfo();
+      }
+      /*if(adp.isCurrentImportNewTable())
       {
     	  Log.debug(30, "====it is in current import new table and previous page is code_definition in CodeImportSummary.onLoad");
     	  updateImportAttributeInNewTable();
     	  updateImportAttributeInNewTable = true;
       }
-      removedAttributeInfo = adp.removeFirstAttributeForImport();
+      removedAttributeInfo = adp.removeFirstAttributeForImport();*/
       desc1.setText(
       WizardSettings.HTML_TABLE_LABEL_OPENING
       +"<p> The new data table has been created and the codes for the attribute " +
@@ -188,14 +193,20 @@ public class CodeImportSummary extends AbstractUIPage {
     } else if (prevID.equals(DataPackageWizardInterface.CODE_IMPORT_PAGE)) {
 
       //String firstPage = mainWizFrame.getFirstPageID();
-      currentAttrName = adp.getCurrentImportAttributeName();
-      if(adp.isCurrentImportNewTable())
+      //currentAttrName = adp.getCurrentImportAttributeName();
+    	 if (prevPage instanceof CodeImportPage)
+         {
+            CodeImportPage page = (CodeImportPage)prevPage;
+            currentAttrName = page.getHandledImportAttributeName();
+            removedAttributeInfo = page.getRemovedImportAttributeInfo();
+         }
+      /*if(adp.isCurrentImportNewTable())
       {
     	 Log.debug(30, "====it is in current import new table and previous page is code_import_page in CodeImportSummary.onLoad"); 
     	 updateImportAttributeInNewTable();
     	 updateImportAttributeInNewTable = true;
       }
-      removedAttributeInfo = adp.removeFirstAttributeForImport();
+      removedAttributeInfo = adp.removeFirstAttributeForImport();*/
       // just a summary of import. No further imports
       desc1.setText(
       WizardSettings.HTML_TABLE_LABEL_OPENING
@@ -243,65 +254,7 @@ public class CodeImportSummary extends AbstractUIPage {
     return dp;
   }
 
-  /*
-   * This is the real method to put referenced id into the attribute which need to be imported.
-   * In CodeDefinition.replaceEmptyReference method, the curretnImportMap was modified
-   * (added referenced id information), this method will put the map information into attribute.
-   */
-  private void updateImportAttributeInNewTable() {
-   
-	//Gets modified map (having the referenced id information)
-    OrderedMap map = adp.getCurrentImportMap();
-    adp = getADP();
-    if(adp == null)
-      return;
-    String eName = adp.getCurrentImportEntityName();
-    String aName = adp.getCurrentImportAttributeName();
-    String xPath = adp.getCurrentImportXPath();
-
-    int entityIndex = adp.getEntityIndex(eName);
-    int attrIndex = adp.getAttributeIndex(entityIndex, aName);
-
-
-    String firstKey = (String)map.keySet().iterator().next();
-    //if key of themap doesn't start with /attribute, we need to change the key path.
-    if(!firstKey.startsWith("/attribute")) {
-      OrderedMap newMap = new OrderedMap();
-      Iterator it1 = map.keySet().iterator();
-      while(it1.hasNext()) {
-        String k = (String)it1.next();
-        // get index of first '/' after 'attributeList'
-        int idx1 = k.indexOf("/attributeList") + new String("/attributeList").length();
-        // get the substring following the '/'. this starts with 'attribute'
-        String tk = k.substring(idx1 + 1); //
-        int idx2 = tk.indexOf("/");
-        // remove the existing 'attribute' and add 'attribute' so that we handle cases
-        // like 'attribute[2]'
-        String newKey = "/attribute" + tk.substring(idx2);
-        newMap.put(newKey, (String)map.get(k));
-      }
-      map = newMap;
-      xPath = "/attribute";
-    }
-
-    // get the ID of old attribute and set it for the new one
-    String oldID = adp.getAttributeID(entityIndex, attrIndex);
-    map.put(xPath + "/@id", oldID);
-
-    /*System.out.println("New Keys in CIS page are - ");
-    Iterator it = map.keySet().iterator();
-    while(it.hasNext()) {
-      String kk = (String) it.next();
-      System.out.println(kk + " - " + (String)map.get(kk));
-    }*/
-
-    Attribute attr = new Attribute(map);
-
-		adp.insertAttribute(entityIndex, attr, attrIndex);
-    adp.deleteAttribute(entityIndex, attrIndex + 1);
-
-
-  }
+ 
 
 
   private void updateButtonsStatus() {
@@ -376,7 +329,7 @@ public class CodeImportSummary extends AbstractUIPage {
             	  //we may need to do something here.
               }*/
              
-          } 
+          }
 	  
 
   }
