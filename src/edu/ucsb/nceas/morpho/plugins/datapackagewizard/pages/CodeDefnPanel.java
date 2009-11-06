@@ -367,36 +367,40 @@ public class CodeDefnPanel extends JPanel implements WizardPageSubPanelAPI {
 
   public void setTable(String tableName, List columns, Vector data) {
 
-    entityNames = new String[1];
-    entityNames[0] = tableName;
-    attrNames = new String[columns.size()];
-
-    this.tableNames = new Vector();
-    this.colNames = new Vector();
-    this.rowData = data;
-
-    Iterator it = columns.iterator();
-    int cnt = 0;
-    while(it.hasNext()) {
-
-      String col = (String)it.next();
-      tableNames.add(tableName);
-      colNames.add(col);
-      attrNames[cnt++] = col;
-    }
-
-    Vector headerInfo = new Vector();
-    headerInfo.add(tableNames);
-    headerInfo.add(colNames);
-
-    if(table != null)
-      definitionsPanel.remove(table);
-    table = new CustomTable(headerInfo, rowData);
-    table.addPopupListener(new CustomPopupHandler());
-
-    definitionsPanel.add(table, BorderLayout.CENTER);
-    definitionsPanel.validate();
-    definitionsPanel.repaint();
+	if(columns != null)
+	{
+	    entityNames = new String[1];
+	    Log.debug(30, "The table name in CodeDefPanel.setTable is ++++++++++++ "+tableName);
+	    entityNames[0] = tableName;
+	    attrNames = new String[columns.size()];
+	
+	    this.tableNames = new Vector();
+	    this.colNames = new Vector();
+	    this.rowData = data;
+	
+	    Iterator it = columns.iterator();
+	    int cnt = 0;
+	    while(it.hasNext()) {
+	
+	      String col = (String)it.next();
+	      tableNames.add(tableName);
+	      colNames.add(col);
+	      attrNames[cnt++] = col;
+	    }
+	
+	    Vector headerInfo = new Vector();
+	    headerInfo.add(tableNames);
+	    headerInfo.add(colNames);
+	
+	    if(table != null)
+	      definitionsPanel.remove(table);
+	    table = new CustomTable(headerInfo, rowData);
+	    table.addPopupListener(new CustomPopupHandler());
+	
+	    definitionsPanel.add(table, BorderLayout.CENTER);
+	    definitionsPanel.validate();
+	    definitionsPanel.repaint();
+	}
   }
 
 

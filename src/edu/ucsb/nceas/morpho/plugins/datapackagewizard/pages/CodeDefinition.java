@@ -91,6 +91,7 @@ public class CodeDefinition extends AbstractUIPage {
   private String prevPageID = null;
   private ArrayList removedAttributeInfo = null;
   private String handledImportAttributeName = null;
+  private boolean entityAdded = false;//indicates if entity already added to adp
 
   public CodeDefinition(WizardContainerFrame mainWizFrame) {
 
@@ -172,7 +173,7 @@ public class CodeDefinition extends AbstractUIPage {
 
     prevPageID = mainWizFrame.getPreviousPageID();
     //if(prevPageID.equals(DataPackageWizardInterface.TEXT_IMPORT_WIZARD) || prevPageID.equals(DataPackageWizardInterface.ENTITY)) {
-    if(prevPageID != null && (prevPageID.startsWith(DataPackageWizardInterface.TEXT_IMPORT_ATTRIBUTE) || prevPageID.equals(DataPackageWizardInterface.ENTITY))) {
+    if(prevPageID != null && !entityAdded && (prevPageID.startsWith(DataPackageWizardInterface.TEXT_IMPORT_ATTRIBUTE) || prevPageID.equals(DataPackageWizardInterface.ENTITY))) {
 
         Node newDOM = mainWizFrame.collectDataFromPages();       
          int entityIndex = mainWizFrame.getEnityIndex();
@@ -182,7 +183,7 @@ public class CodeDefinition extends AbstractUIPage {
 	     entityIndex = entityIndex+1;
 	     mainWizFrame.setEntityIndex(entityIndex);
          adp.setLocation("");  // we've changed it and not yet saved
-
+         entityAdded = true;// change the variable to be true, so next time load would NOT modify adp again
 		if(prevPageID.equals(DataPackageWizardInterface.ENTITY) && rowData == null) { 
 	
 		    //data not yet read from the file. This happens when user does a MANUAL import
@@ -251,6 +252,7 @@ public class CodeDefinition extends AbstractUIPage {
 		     adp.deleteEntity(entityIndex);
 		     mainWizFrame.setEntityIndex(entityIndex);
 	         adp.setLocation("");  // we've changed it and not yet saved
+	         entityAdded = false; //since we deleted the added entity, we need to set it to be false.
 	  }
 	  //adp.addFirstAttributeForImport(removedAttributeInfo);
   }
