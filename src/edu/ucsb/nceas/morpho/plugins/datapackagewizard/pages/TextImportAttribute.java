@@ -263,6 +263,17 @@ public class TextImportAttribute extends AbstractUIPage
 	   */
 	  public void onLoadAction()
 	  {
+		  if(frame != null)
+		  {
+			  AbstractDataPackage adp = frame.getAbstractDataPackage();
+		      if(adp != null && importNeeded) 
+		      {
+		    	  //onLoadAction, we need to remove the previously stored import attribute.
+		    	  //otherwise, this attribute can be stored twice.
+		    	  adp.removeLastAttributeForImport();
+		    	  importNeeded = false;
+		      }
+		  }
 		  Log.debug(30, "The TextImportAttribute page has the index "+columnIndex);
 		  updateColumnDataPanel();
 		  updateAttributePanel();
@@ -281,16 +292,6 @@ public class TextImportAttribute extends AbstractUIPage
 			  table.setColumnModel(fullColumnModel);
 			  table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 			  table.doLayout();
-		  }
-		  if(frame != null)
-		  {
-			  AbstractDataPackage adp = frame.getAbstractDataPackage();
-		      if(adp != null && importNeeded) 
-		      {
-		    	  //onLoadAction, we need to remove the previously stored import attribute.
-		    	  //otherwise, this attribute can be stored twice.
-		    	  adp.removeLastAttributeForImport();
-		      }
 		  }
 	  }
 

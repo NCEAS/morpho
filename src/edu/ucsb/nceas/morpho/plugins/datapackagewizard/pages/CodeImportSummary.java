@@ -301,14 +301,14 @@ public class CodeImportSummary extends AbstractUIPage {
 	 		  
           if(prevPage != null && prevID.startsWith(DataPackageWizardInterface.TEXT_IMPORT_ATTRIBUTE))
           {
-        	  TextImportAttribute attributePage = (TextImportAttribute)prevPage;
+        	  /*TextImportAttribute attributePage = (TextImportAttribute)prevPage;
         	  if(attributePage.isImportNeeded() && adp != null)
         	  {
         		  //we need to remove the last element in importAttriubte in AbatractDataPackage.
         		  //otherwise, when click next in the Text_import_attribute, the record will be stored again.
         		  adp.removeLastAttributeForImport();
         		  
-        	  }
+        	  }*/
         	  mainWizFrame.setImportCodeDefinitionTable(false);
     		  Log.debug(30, "Set ImportCodeDefinitionTable to be false!!!!!!!!!!!!");
           }
