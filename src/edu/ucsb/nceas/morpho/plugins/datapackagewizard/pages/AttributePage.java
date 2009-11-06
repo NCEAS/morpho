@@ -748,16 +748,7 @@ public class AttributePage extends AbstractUIPage {
     if(!valid) return false;
     return true;
 
-    /*
-    if(this.isImportNeeded()) {
-
-      AbstractDataPackage adp = UIController.getInstance().getCurrentAbstractDataPackage();
-      if(adp == null) {
-        Log.debug(10, "Error trying to import codes for this attribute - in AttributePage");
-        return true;
-      }
-
-    }*/
+    
 
   }
 
@@ -901,36 +892,7 @@ public class AttributePage extends AbstractUIPage {
     return returnMap;
   }
 
-  /*private void insertIntoDOMTree(OrderedMap map) {
-
-    AbstractDataPackage adp = UIController.getInstance().getCurrentAbstractDataPackage();
-    DOMImplementation impl = DOMImplementationImpl.getDOMImplementation();
-    Document doc = impl.createDocument("", "additionalMetadata", null);
-    System.out.println("metadata xpaths = " + map.toString());
-    Node metadataRoot = doc.getDocumentElement();
-    try {
-      XMLUtilities.getXPathMapAsDOMTree(map, metadataRoot);
-
-    }
-    catch (TransformerException w) {
-      Log.debug(5, "Unable to add addtmetadata details to package!");
-      Log.debug(15, "TransformerException (" + w + ") calling "
-      + "XMLUtilities.getXPathMapAsDOMTree(map, metadataRoot) with \n"
-      + "map = " + map
-      + " and methodRoot = " + metadataRoot);
-      w.printStackTrace();
-      return;
-    }
-    System.out.println("DOM tree of addt metadatas - " + XMLUtilities.getDOMTreeAsString(metadataRoot));
-    Node check1 = adp.appendAdditionalMetadata(metadataRoot);
-    if (check1 != null) {
-      Log.debug(45, "added new addt metadata details to package...");
-    } else {
-      Log.debug(45, "cldnt added new metadata details to package...");
-    }
-
-
-  }*/
+  
 
   
 

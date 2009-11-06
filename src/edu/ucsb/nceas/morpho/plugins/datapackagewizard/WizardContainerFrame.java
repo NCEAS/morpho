@@ -104,6 +104,8 @@ public class WizardContainerFrame
   
   //public static final String TEMP = "temp";
   public final static  String VERSION1 = "1";
+  private final static String INCOMPLETEDIR ="incompleteDir";
+  private final static String DATADIR = "dataDir";
   
   protected boolean disableIncompleteSaving = false;
   private boolean isEntityWizard = false;
@@ -1026,7 +1028,15 @@ public class WizardContainerFrame
    */
   private void autoSaveInCompletePackage()
   {
-	  if(autoSaveID != null && !disableIncompleteSaving)
+	  saveInCompletePackage(autoSaveID, INCOMPLETEDIR);
+  }
+  
+  /*
+   * save incomplete package with given id and location
+   */
+  private void saveInCompletePackage(String saveID, String location)
+  {
+	  if(saveID != null && !disableIncompleteSaving)
 	  {
 		  String emlDoc = "";
 		  
@@ -1039,7 +1049,14 @@ public class WizardContainerFrame
 		      emlDoc = addPackageWizardIncompleteInfo(emlDoc);
 		      Log.debug(40, "The partial eml document is :\n"+emlDoc);
 		      //System.out.println("the eml after appending incomplete info  "+emlDoc);
-		      saveInCompletePackage(autoSaveID, emlDoc);
+		      if(location != null && location.equals(INCOMPLETEDIR))
+		      {
+		         savePackageInCompleteDir(saveID, emlDoc);
+		      }
+		      else if(location != null && location.equals(DATADIR))
+		      {
+		    	  //TO-DO need to implement the saving to data dir method
+		      }
 		    
 		  }
 		  else
@@ -1055,7 +1072,14 @@ public class WizardContainerFrame
 				  emlDoc = addEntityWizardIncompleteInfo(emlDoc);
 				  Log.debug(40, "The partial eml document is :\n"+emlDoc);
 			      //System.out.println("the eml after appending incomplete info  "+emlDoc);
-			      saveInCompletePackage(autoSaveID, emlDoc);
+				  if(location != null && location.equals(INCOMPLETEDIR))
+			      {
+			         savePackageInCompleteDir(saveID, emlDoc);
+			      }
+			      else if(location != null && location.equals(DATADIR))
+			      {
+			    	  //TO-DO need to implement the saving to data dir method
+			      }
 			      //remove the entity we needed to adp
 			      if(isCurrentPageInEntityPageList())
 				  {
@@ -1066,6 +1090,18 @@ public class WizardContainerFrame
 		 
 	  }
   }
+  
+  /*
+   * Save package into incomplete dir with given id
+   */
+  private void savePackageInCompleteDir(String docid, String xml)
+  {
+	  FileSystemDataStore store = new FileSystemDataStore(Morpho.thisStaticInstance);
+	  StringReader reader = new StringReader(xml);
+	  store.saveIncompleteDataFile(docid, reader);
+  }
+  
+ 
   
   public boolean isCurrentPageInEntityPageList()
   {
@@ -1229,16 +1265,6 @@ public class WizardContainerFrame
 	  }
 	  
 	  return emlWithIncompleteInfo;
-  }
-  
-  /*
-   * Save incompleted package with given id
-   */
-  private void saveInCompletePackage(String docid, String xml)
-  {
-	  FileSystemDataStore store = new FileSystemDataStore(Morpho.thisStaticInstance);
-	  StringReader reader = new StringReader(xml);
-	  store.saveIncompleteDataFile(docid, reader);
   }
   
  
