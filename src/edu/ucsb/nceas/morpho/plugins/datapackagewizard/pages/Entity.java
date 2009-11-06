@@ -586,7 +586,8 @@ public class Entity extends AbstractUIPage{
     	   AbstractDataPackage adp = mainWizFrame.getAbstractDataPackage();
     	   if(adp != null && indexListOfImportAttribute != null)
     	   {
-    		   for(int i=0; i<indexListOfImportAttribute.size(); i++)
+    		   int size = indexListOfImportAttribute.size();
+    		   for(int i=size; i>=0; i--)
     		   {
     			   int index = -1;
     			   try
@@ -600,6 +601,7 @@ public class Entity extends AbstractUIPage{
     			   }
     		   }
     	   }
+    	   indexListOfImportAttribute = new Vector();
     	}
     }
 }
