@@ -1144,7 +1144,7 @@ public class WizardContainerFrame
    */
   private String addPackageWizardIncompleteInfo(String originalEML)
   {
-	  String emlWithIncompleteInfo = "";
+	  StringBuffer emlWithIncompleteInfo = new StringBuffer();
 	  if(originalEML != null)
 	  {
 		  //System.out.println("the original eml is "+originalEML);
@@ -1153,10 +1153,10 @@ public class WizardContainerFrame
 		  {
 			  //it has </eml:eml> closing tag. Note: the orignalEML never has the incompleteMetadata since it from abtractDataPackage
 			  //removes the </packageWizard></metadata></additionalMetadata></eml:eml> from original eml
-			  emlWithIncompleteInfo = originalEML.substring(0,index);
+			  emlWithIncompleteInfo.append(originalEML.substring(0,index));
 			  //appends additionalMetadata par original eml
-			  emlWithIncompleteInfo = emlWithIncompleteInfo+IncompleteDocSettings.ADDITIONALMETADATAOPENINGTAG+
-              IncompleteDocSettings.METADATAOPENINGTAG+IncompleteDocSettings.PACKAGEWIZARDOPENINGTAG;
+			  emlWithIncompleteInfo.append(IncompleteDocSettings.ADDITIONALMETADATAOPENINGTAG+
+              IncompleteDocSettings.METADATAOPENINGTAG+IncompleteDocSettings.PACKAGEWIZARDOPENINGTAG);
 			  if(pageStack != null)
 			  {
 				  int size = pageStack.size();
@@ -1168,34 +1168,34 @@ public class WizardContainerFrame
 					  {
 						  className = page.getClass().getName();
 						  Log.debug(40, "Class name is "+className);
-						  emlWithIncompleteInfo = emlWithIncompleteInfo+IncompleteDocSettings.CLASSOPENINGTAG+IncompleteDocSettings.NAMEOPENINGTAG+
-						                                      className+IncompleteDocSettings.NAMECLOSINGTAG;
+						  emlWithIncompleteInfo.append(IncompleteDocSettings.CLASSOPENINGTAG+IncompleteDocSettings.NAMEOPENINGTAG+
+						                                      className+IncompleteDocSettings.NAMECLOSINGTAG);
 						  if(page instanceof PartyMainPage)
 						  {
 							  PartyMainPage partPage = (PartyMainPage)page;
 							  String role = partPage.role;
-							  emlWithIncompleteInfo = emlWithIncompleteInfo+IncompleteDocSettings.CLASSPARAMETEROPENINGTAG+
-							                                      role+IncompleteDocSettings.CLASSPARAMETERCLOSINGTAG;
+							  emlWithIncompleteInfo.append(IncompleteDocSettings.CLASSPARAMETEROPENINGTAG+
+							                                      role+IncompleteDocSettings.CLASSPARAMETERCLOSINGTAG);
 						  }
-						  emlWithIncompleteInfo = emlWithIncompleteInfo+IncompleteDocSettings.CLASSCLOSINGTAG;
+						  emlWithIncompleteInfo.append(IncompleteDocSettings.CLASSCLOSINGTAG);
 					  }
 				  }
 			  }
              
-              emlWithIncompleteInfo = emlWithIncompleteInfo+IncompleteDocSettings.PACKAGEWIZARDCLOSINGTAG+
+              emlWithIncompleteInfo.append(IncompleteDocSettings.PACKAGEWIZARDCLOSINGTAG+
               IncompleteDocSettings.METADATACLOSINGTAG+IncompleteDocSettings.ADDITIONALMETADATACLOSINGTAG+
-              IncompleteDocSettings.EMLCLOSINGTAG;
+              IncompleteDocSettings.EMLCLOSINGTAG);
 			                                       
 		  }
 		  else
 		  {
 			  //it doesn't have </eml:eml> closing tag, we use orignal document as modified one.
-			  emlWithIncompleteInfo =  originalEML;
+			  emlWithIncompleteInfo.append(originalEML);
 			  
 		  }
 	  }
 	  
-	  return emlWithIncompleteInfo;
+	  return emlWithIncompleteInfo.toString();
   }
   
   
