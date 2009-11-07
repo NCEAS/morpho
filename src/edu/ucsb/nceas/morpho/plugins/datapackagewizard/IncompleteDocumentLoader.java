@@ -140,17 +140,29 @@ public class IncompleteDocumentLoader implements  DataPackageWizardListener
 				  WizardPageInfo pageClassInfo = classNameFromIncompleteDoc[i];
 				  if(pageClassInfo != null)
 				  {
+				  String classNamePlusParameter ="";
 				  String className = pageClassInfo.getClassName();
+				  classNamePlusParameter = classNamePlusParameter+className;
 				  Vector parameters = pageClassInfo.getParameters();
-				  XPathUIPageMapping map = (XPathUIPageMapping)wizardPageName.get(className);
+				  if(parameters != null && !parameters.isEmpty())
+				  {
+					  for(int k=0; k<parameters.size(); k++)
+					  {
+						  String param = (String)parameters.elementAt(k);
+						  classNamePlusParameter = classNamePlusParameter +param;
+					  }
+					  
+				  }
+				  XPathUIPageMapping map = (XPathUIPageMapping)wizardPageName.get(classNamePlusParameter.trim());
 				  if (map != null)
 				  {
 					  //loading exist data into UIPage
 					  String path = null;
 					  try
 					  {
-						  Log.debug(30, "There is map for className ~~~~~~~~~~~~~~"+className+ " so we create an page with data (if have)");
-					      page= WizardUtil.getUIPage(className, map, dpWiz, dataPackage, null );
+						  Log.debug(30, "There is map for classNamePlusParamer ~~~~~~~~~~~~~~"+classNamePlusParameter+ " so we create an page with data (if have)");
+					      Log.debug(30, "the className from metadata is "+className);
+						  page= WizardUtil.getUIPage(className, map, dpWiz, dataPackage, null );
 					  }
 					  catch(Exception e)
 					  {
@@ -171,7 +183,7 @@ public class IncompleteDocumentLoader implements  DataPackageWizardListener
                 	  }
                 	  else
                 	  {
-                		  Log.debug(30, "There is no map for className --------------------"+className+ " so we just initilize an empty page");
+                		  Log.debug(30, "There is no map for classNamePlusParameter --------------------"+classNamePlusParameter+ " so we just initilize an empty page for class "+className);
                 		  page = WizardUtil.createAbstractUIpageObject(className, dpWiz, parameters );
                 	  }
                   }
@@ -219,7 +231,7 @@ public class IncompleteDocumentLoader implements  DataPackageWizardListener
 	{
 		XpathUIPageMappingReader reader = new XpathUIPageMappingReader(CorrectionWizardController.MAPPINGFILEPATH);
 	    mappingList   = reader.getXPathUIPageMappingList();
-	    wizardPageName = reader.getClassNameMapping();	 
+	    wizardPageName = reader.getClassNamePlusParameterMapping();	 
 	}
 	
 	

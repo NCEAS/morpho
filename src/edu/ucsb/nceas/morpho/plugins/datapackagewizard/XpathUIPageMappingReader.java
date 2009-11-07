@@ -77,7 +77,7 @@ public class XpathUIPageMappingReader
 	private Hashtable fullPathMapping = new Hashtable();
 	private Hashtable shortPathMapping = new Hashtable();
 	private XPathUIPageMapping[] mappingList = null;
-	private Hashtable wizardPageClassName = new Hashtable();
+	private Hashtable wizardPageClassNamePlustParameter = new Hashtable();
 	
 	/**
 	 * Default constructor. It will read the property file.
@@ -109,6 +109,7 @@ public class XpathUIPageMappingReader
 		    	{
 			      NodeList children = nl.item(i).getChildNodes();
 			      XPathUIPageMapping unit = new XPathUIPageMapping();
+			      String classNamePlustParameter = "";
 			      String root = null;
 		          String xpath = null;
 		          String className = null;
@@ -148,6 +149,7 @@ public class XpathUIPageMappingReader
 				            if ((ccn != null) && (ccn.getNodeType() == Node.TEXT_NODE))
 				            {
 				               className = ccn.getNodeValue();
+				               classNamePlustParameter = classNamePlustParameter+className;
 				               Log.debug(55, "found the class name "+className);
 				               unit.setWizardPageClassName(className);
 				            }
@@ -159,6 +161,7 @@ public class XpathUIPageMappingReader
 				            if ((ccn != null) && (ccn.getNodeType() == Node.TEXT_NODE))
 				            {
 				               String classParameter = ccn.getNodeValue();
+				               classNamePlustParameter = classNamePlustParameter+classParameter;
 				               unit.addWizardPageClassParameters(classParameter);
 				            }
 				        }
@@ -292,8 +295,9 @@ public class XpathUIPageMappingReader
 			    		  fullPathMapping.put(fullPath, unit);
 				    	  
 				      }
+				      Log.debug(30, "In XpathUIPageMapping.readMappingFromfile method - Put classNamePlstParamter "+classNamePlustParameter+" into a hash");
 				      //put className-mapping object into a hashtable
-				      wizardPageClassName.put(className, unit);
+				      wizardPageClassNamePlustParameter.put(classNamePlustParameter.trim(), unit);
 			      }		      
 		      }
 		       catch(Exception e)
@@ -352,12 +356,12 @@ public class XpathUIPageMappingReader
 	}
 	
 	/**
-	 * Gets a hashtable containing className-mappingObject
+	 * Gets a hashtable containing classNamePlustParameter-mappingObject
 	 * @return
 	 */
-	public Hashtable getClassNameMapping()
+	public Hashtable getClassNamePlusParameterMapping()
 	{
-		return wizardPageClassName;
+		return wizardPageClassNamePlustParameter;
 		
 	}
 }

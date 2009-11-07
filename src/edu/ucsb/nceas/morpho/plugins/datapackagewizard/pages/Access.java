@@ -774,6 +774,15 @@ public class Access
           "**** ERROR - Access.addToAccess() - predicate > accessstepList.size()");
     }
   }
+  
+  /**
+   * Determine if this page is for an entity access
+   * If it is entity, it will return true.
+   */
+  public boolean isEntity()
+  {
+	  return this.isEntity;
+  }
 
   private int getFirstPredicate(String xpath, String firstSegment) {
 

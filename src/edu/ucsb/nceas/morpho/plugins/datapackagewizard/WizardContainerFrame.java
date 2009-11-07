@@ -37,9 +37,13 @@ import edu.ucsb.nceas.morpho.framework.ConfigXML;
 import edu.ucsb.nceas.morpho.framework.UIController;
 import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
 import edu.ucsb.nceas.morpho.plugins.DataPackageWizardListener;
+import edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.Access;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.Entity;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.ImportedTextFile;
+import edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.Methods;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.PartyMainPage;
+import edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.Project;
+import edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.Taxonomic;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.TextImportAttribute;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.TextImportEntity;
 import edu.ucsb.nceas.morpho.util.IncompleteDocSettings;
@@ -1177,6 +1181,30 @@ public class WizardContainerFrame
 							  emlWithIncompleteInfo.append(IncompleteDocSettings.CLASSPARAMETEROPENINGTAG+
 							                                      role+IncompleteDocSettings.CLASSPARAMETERCLOSINGTAG);
 						  }
+						  else if(page instanceof Project)
+						  {
+							  emlWithIncompleteInfo.append(IncompleteDocSettings.CLASSPARAMETEROPENINGTAG+
+                                      "true"+IncompleteDocSettings.CLASSPARAMETERCLOSINGTAG);
+						  }
+						  else if(page instanceof Access)
+						  {
+							  Access accessPage = (Access)page;
+							  boolean isEntity = accessPage.isEntity();
+							  emlWithIncompleteInfo.append(IncompleteDocSettings.CLASSPARAMETEROPENINGTAG+
+                                      isEntity+IncompleteDocSettings.CLASSPARAMETERCLOSINGTAG);
+						  }
+						  else if(page instanceof Methods)
+						  {
+							  emlWithIncompleteInfo.append(IncompleteDocSettings.CLASSPARAMETEROPENINGTAG+
+                                      "true"+IncompleteDocSettings.CLASSPARAMETERCLOSINGTAG);
+						  }
+						  else if(page instanceof Taxonomic)
+						  {
+							  emlWithIncompleteInfo.append(IncompleteDocSettings.CLASSPARAMETEROPENINGTAG+
+                                      "true"+IncompleteDocSettings.CLASSPARAMETERCLOSINGTAG);
+						  }
+						  
+						  
 						  emlWithIncompleteInfo.append(IncompleteDocSettings.CLASSCLOSINGTAG);
 					  }
 				  }
