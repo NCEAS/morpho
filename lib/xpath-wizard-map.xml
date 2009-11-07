@@ -149,6 +149,7 @@
     <root>n/a</root>
     <infoForModifyingData>
              <loadExistDataPath>/eml:eml/dataset/associatedParty</loadExistDataPath>
+             <loadingNodeListStatus>transformLoadingNodeList</loadingNodeListStatus>
              <xpathForOrderedMap></xpathForOrderedMap>
              <xpathForSettingPageData>/associatedParty</xpathForSettingPageData>
              <newDataDocumentName>associatedParty</newDataDocumentName>
