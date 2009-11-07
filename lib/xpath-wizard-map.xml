@@ -70,7 +70,7 @@
              <loadExistDataPath>/eml:eml/dataset/creator</loadExistDataPath>
              <loadingNodeListStatus>transformLoadingNodeList</loadingNodeListStatus>
              <xpathForOrderedMap></xpathForOrderedMap>
-             <xpathForSettingPageData>/creator</xpathForSettingPageData>
+             <xpathForSettingPageData>/eml:eml/dataset/creator[</xpathForSettingPageData>
              <newDataDocumentName>creator</newDataDocumentName>
              <xpathForGettingPageData>/creator</xpathForGettingPageData>
              <genericName>creator</genericName>
@@ -110,7 +110,7 @@
              <loadExistDataPath>/eml:eml/dataset/contact</loadExistDataPath>
              <loadingNodeListStatus>transformLoadingNodeList</loadingNodeListStatus>
              <xpathForOrderedMap></xpathForOrderedMap>
-             <xpathForSettingPageData>/contact</xpathForSettingPageData>
+             <xpathForSettingPageData>/eml:eml/dataset/contact[</xpathForSettingPageData>
              <newDataDocumentName>contact</newDataDocumentName>
              <xpathForGettingPageData>/contact</xpathForGettingPageData>
              <genericName>contact</genericName>
@@ -151,7 +151,7 @@
              <loadExistDataPath>/eml:eml/dataset/associatedParty</loadExistDataPath>
              <loadingNodeListStatus>transformLoadingNodeList</loadingNodeListStatus>
              <xpathForOrderedMap></xpathForOrderedMap>
-             <xpathForSettingPageData>/associatedParty</xpathForSettingPageData>
+             <xpathForSettingPageData>/eml:eml/dataset/associatedParty[</xpathForSettingPageData>
              <newDataDocumentName>associatedParty</newDataDocumentName>
              <xpathForGettingPageData>/associatedParty</xpathForGettingPageData>
              <genericName>associatedParty</genericName>
