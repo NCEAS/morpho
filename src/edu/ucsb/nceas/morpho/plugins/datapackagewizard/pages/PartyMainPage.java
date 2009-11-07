@@ -661,7 +661,7 @@ public class PartyMainPage
     //check method return valuse...
     if (!partyRetVal) {
 
-      Log.debug(20, "Keyword.setPageData - Method sub-class returned FALSE");
+      Log.debug(20, "PartyMainPage.setPageData - Method sub-class returned FALSE");
     }
 
     //remove entries we have used from map:
@@ -675,7 +675,7 @@ public class PartyMainPage
 
     if (!returnVal) {
 
-      Log.debug(20, "Keyword.setPageData returning FALSE! Map still contains:"
+      Log.debug(20, "PartyMainPage.setPageData returning FALSE! Map still contains:"
           + map);
     }
     return (returnVal && partyRetVal);
@@ -704,7 +704,7 @@ public class PartyMainPage
       nextMap.put(nextPersonnelXPathObj, nextPersonnelVal);
     } else {
       Log.debug(15,
-          "**** ERROR - KeywordsaddToKeywordSet() - predicate >"
+          "**** ERROR - PartyMainPage.addPartySet() - predicate >"
           + " partySet.size()");
     }
   }
