@@ -201,7 +201,7 @@ public class WizardContainerFrame
 		  String emlDoc = XMLUtilities.getDOMTreeAsString(adp.getMetadataNode(), false);
 		  //System.out.println("the original eml "+emlDoc);
 		  //System.out.println("the eml after appending incomplete info  "+emlDoc);
-		  saveInCompletePackage(fileID, emlDoc);
+		  savePackageInCompleteDir(fileID, emlDoc);
 	  }
   }
   
@@ -1579,11 +1579,17 @@ public class WizardContainerFrame
     this.setVisible(false);
 
     listener.wizardCanceled();
-    if(autoSaveID != null)
+    Log.debug(30, "the autosaved id is "+autoSaveID+" in WizardContainerFrame.cancel method");
+    if(autoSaveID != null && !isEntityWizard)
     {
     	//FileSystemDataStore store = new FileSystemDataStore(Morpho.thisStaticInstance);
     	//store.deleteInCompleteFile(autoSaveID);
     	Util.deleteAutoSavedFile(adp);
+    }
+    else if(autoSaveID != null)
+    {
+    	Log.debug(30, "The entity wizard is canceled and we need to dump the adp to auto-saved file");
+    	dumpPackageToAutoSaveFile(autoSaveID);
     }
     // now clean up
     doCleanUp();

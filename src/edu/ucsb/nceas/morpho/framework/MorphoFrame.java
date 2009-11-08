@@ -636,11 +636,16 @@ public class MorphoFrame extends JFrame
              
              return;
 //             Log.debug(1, "Save here!");
-           } else {
+           } 
+           /*else 
+           {
              // just close and delete the auto-saved file
         	   Util.deleteAutoSavedFile(dvcp.getAbstractDataPackage());
-           }
+           }*/
+           
          }
+         Log.debug(30, "MorphoFrame.close method to delete the autosaved file ");
+         Util.deleteAutoSavedFile(dvcp.getAbstractDataPackage());
       }
       this.setVisible(false);
       UIController controller = UIController.getInstance();
