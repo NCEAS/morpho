@@ -236,7 +236,7 @@ public class CodeImportPage extends AbstractUIPage {
 		//AbstractDataPackage	adp = getADP();
 		if(adp == null) {
 			Log.debug(15, "Unable to obtain the ADP in CodeImportPage");
-			return true;
+			return false;
 		}
         OrderedMap map = adp.getCurrentImportMap();
         CodeDefinition.replaceEmptyReference(map,importPanel, "CodeImportPage");
@@ -247,13 +247,17 @@ public class CodeImportPage extends AbstractUIPage {
   
         }
         removedAttributeInfo = adp.removeFirstAttributeForImport();
-        nextPageID = DataPackageWizardInterface.CODE_IMPORT_SUMMARY;
-
+        nextPageID = DataPackageWizardInterface.CODE_IMPORT_SUMMARY;     
+        
+        mainWizFrame.clearPageCache();
+        mainWizFrame.reInitializePageStack();    
         return true;
       } else
         return false;
     } else {
       this.nextPageID = DataPackageWizardInterface.DATA_LOCATION;
+      mainWizFrame.clearPageCache();
+      mainWizFrame.reInitializePageStack();      
       return true;
     }
 

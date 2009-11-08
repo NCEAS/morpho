@@ -377,11 +377,7 @@ public class CodeImportSummary extends AbstractUIPage {
 
 	    }
 
-    if(nextPageID.equals(DataPackageWizardInterface.CODE_IMPORT_PAGE)) {
-
-      mainWizFrame.reInitializePageStack();
-      mainWizFrame.clearPageCache();
-    }
+   
     return true;
   }
 

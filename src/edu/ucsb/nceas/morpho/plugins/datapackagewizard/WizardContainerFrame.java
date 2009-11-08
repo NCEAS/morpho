@@ -1043,15 +1043,33 @@ public class WizardContainerFrame
 	  if(saveID != null && !disableIncompleteSaving)
 	  {
 		  String emlDoc = "";
-		  
-		  Node temp = collectDataFromPages();
+		  Node temp = null;
+		  try
+		  {
+		      temp = collectDataFromPages();
+		  }
+		  catch(Exception e)
+		  {
+			  Log.debug(30, "Some error happens in collecting page data in WizardContainerFrame.savInCompletePackage "+e.getMessage()+
+					    " and the saving will be terminated ");
+			  return;
+		  }
 		  if(!isEntityWizard)
 		  {	  
-			  // for datapackage wizard
-		       emlDoc = XMLUtilities.getDOMTreeAsString(temp, false);
-		      //System.out.println("the original eml "+emlDoc);
-		      emlDoc = addPackageWizardIncompleteInfo(emlDoc);
+			  try
+			  {
+			     // for datapackage wizard
+		         emlDoc = XMLUtilities.getDOMTreeAsString(temp, false);
+		         //System.out.println("the original eml "+emlDoc);
+		         emlDoc = addPackageWizardIncompleteInfo(emlDoc);
 		      Log.debug(40, "The partial eml document is :\n"+emlDoc);
+			  }
+			  catch(Exception e)
+			  {
+				  Log.debug(30, "Some error happens in WizardContainerFrame.savInCompletePackage "+e.getMessage()+
+				    " and the saving will be terminated ");
+		          return;
+			  }
 		      //System.out.println("the eml after appending incomplete info  "+emlDoc);
 		      if(location != null && location.equals(INCOMPLETEDIR))
 		      {
@@ -1070,11 +1088,34 @@ public class WizardContainerFrame
 			  {
 				  if(isCurrentPageInEntityPageList())
 				  {
-				     adp.replaceEntity(temp, entityIndex);
+					 try
+					 {
+				       adp.replaceEntity(temp, entityIndex);
+					 }
+					 catch(Exception e)
+					 {
+						 Log.debug(30, "Some error happens in replaceEntity in WizardContainerFrame.savInCompletePackage "+e.getMessage()+
+						    " and the saving will be terminated ");
+				         return;
+					 }
 				  }
-				  emlDoc = XMLUtilities.getDOMTreeAsString(adp.getMetadataNode(), false);
-				  emlDoc = addEntityWizardIncompleteInfo(emlDoc);
-				  Log.debug(40, "The partial eml document is :\n"+emlDoc);
+				  try
+				  {
+				    emlDoc = XMLUtilities.getDOMTreeAsString(adp.getMetadataNode(), false);
+				    emlDoc = addEntityWizardIncompleteInfo(emlDoc);
+				    Log.debug(40, "The partial eml document is :\n"+emlDoc);
+				  }
+				  catch(Exception e)
+				  {
+					  //remove the entity we needed to adp
+				      if(isCurrentPageInEntityPageList())
+					  {
+					     adp.deleteEntity(entityIndex);
+					  }
+					  Log.debug(30, "Some error happens in collecting page data in WizardContainerFrame.savInCompletePackage "+e.getMessage()+
+					    " and the saving will be terminated ");
+			          return;
+				  }
 			      //System.out.println("the eml after appending incomplete info  "+emlDoc);
 				  if(location != null && location.equals(INCOMPLETEDIR))
 			      {
