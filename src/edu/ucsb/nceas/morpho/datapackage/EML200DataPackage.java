@@ -579,9 +579,9 @@ public  class EML200DataPackage extends AbstractDataPackage
    */
   public String getCompletionStatus()
   {
-	  String packageWizardXpath = "/eml:eml/"+IncompleteDocSettings.ADDITIONALMETADATA+"/"+IncompleteDocSettings.METADATA+
+	  String packageWizardXpath = IncompleteDocSettings.EMLPATH+IncompleteDocSettings.ADDITIONALMETADATA+"/"+IncompleteDocSettings.METADATA+
 	                                           "/"+IncompleteDocSettings.PACKAGEWIZARD;
-	  String textImportWizardXPath = "/eml:eml/"+IncompleteDocSettings.ADDITIONALMETADATA+"/"+IncompleteDocSettings.METADATA+
+	  String textImportWizardXPath = IncompleteDocSettings.EMLPATH+IncompleteDocSettings.ADDITIONALMETADATA+"/"+IncompleteDocSettings.METADATA+
                                                "/"+IncompleteDocSettings.TEXTIMPORTWIZARD;
       NodeList nodes = null;
       try {
@@ -631,7 +631,7 @@ public  class EML200DataPackage extends AbstractDataPackage
   public WizardPageInfo [] getIncompleteWizardPageInfoList()
   {
 	  WizardPageInfo[] classInfoList = null;
-	  String pageClassNameXpath = "/eml:eml/"+IncompleteDocSettings.ADDITIONALMETADATA+"/"+IncompleteDocSettings.METADATA+
+	  String pageClassNameXpath = IncompleteDocSettings.EMLPATH+IncompleteDocSettings.ADDITIONALMETADATA+"/"+IncompleteDocSettings.METADATA+
       "/"+IncompleteDocSettings.PACKAGEWIZARD+"/"+IncompleteDocSettings.CLASS;
 	  NodeList nodeList = null;
       try 
@@ -703,6 +703,197 @@ public  class EML200DataPackage extends AbstractDataPackage
       }
       Log.debug(30, "The class info list is "+classInfoList);
 	  return classInfoList;
+  }
+  
+  /**
+   * Read the import attribute information from incomplete additionMetadata part.
+   */
+  public void readImportAttributeInfoFromIncompleteDoc()
+  {
+	  String path = IncompleteDocSettings.EMLPATH+IncompleteDocSettings.ADDITIONALMETADATA+"/"+IncompleteDocSettings.METADATA+
+      "/"+IncompleteDocSettings.ENTITYWIZARD+"/"+this.IMPORTATTRIBUTES+"/"+this.ATTRIBUTE;
+	  NodeList nodeList = null;
+      try 
+      {
+          nodeList = XMLUtilities.getNodeListWithXPath(metadataNode, path);
+      } 
+      catch (Exception w) 
+      {
+          Log.debug(30, "Problem with getting imported attribute list in additional metadata part " + w.getMessage());
+        
+      }
+      if (nodeList != null && nodeList.getLength() > 0) 
+      {
+    	for(int i=0; i<nodeList.getLength(); i++)
+  	    {
+    		List t = new ArrayList();
+			String entityName = null;
+			String attributeName = null;
+			String scale = null;
+			OrderedMap omap = new OrderedMap();
+			String xPath = null;
+			String newTable = null;
+  	    	Node targetNode = nodeList.item(i);
+  	    	NodeList children = targetNode.getChildNodes();
+  	    	for (int nodeIndex=0; nodeIndex <children.getLength(); nodeIndex++) 
+    		{
+                  Node kidNode = children.item(nodeIndex);
+                  if(kidNode.getNodeType() ==Node.ELEMENT_NODE && kidNode.getNodeName().equals(this.ENTITYNAME))
+                  {
+                	  // this handles class name children
+                	  NodeList grandChildren = kidNode.getChildNodes();
+                	  for(int k=0; k<grandChildren.getLength(); k++)
+                	  {
+    	    		      Node textNode = grandChildren.item(k);
+    	    		      if (textNode.getNodeType()==Node.TEXT_NODE
+    	    		                          || textNode.getNodeType()==Node.CDATA_SECTION_NODE) 
+    	    		      {
+    	    		    	  entityName = textNode.getNodeValue();
+    	    		    	  Log.debug(30, "The read entity name from additional in EML200Package. readImportAttributeInfoFromIncompleteDoc is "+entityName);
+    	                      
+    	    		      }
+                	  }
+                  }
+                  else if(kidNode.getNodeType() ==Node.ELEMENT_NODE && kidNode.getNodeName().equals(this.ATTRIBUTENAME))
+                  {
+                	 // this handles class parameter children
+                	  NodeList grandChildren = kidNode.getChildNodes();
+                	  for(int k=0; k<grandChildren.getLength(); k++)
+                	  {
+    	    		      Node textNode = grandChildren.item(k);
+    	    		      if (textNode.getNodeType()==Node.TEXT_NODE
+    	    		                          || textNode.getNodeType()==Node.CDATA_SECTION_NODE) 
+    	    		      {
+    	    		    	  attributeName = textNode.getNodeValue();
+    	    		    	  Log.debug(30, "The read attributeName from additional in EML200Package. readImportAttributeInfoFromIncompleteDoc is "+attributeName);    	                     
+    	    		      }
+                	  }
+                  } 
+                  else if(kidNode.getNodeType() ==Node.ELEMENT_NODE && kidNode.getNodeName().equals(this.SCALE))
+                  {
+                	 // this handles class parameter children
+                	  NodeList grandChildren = kidNode.getChildNodes();
+                	  for(int k=0; k<grandChildren.getLength(); k++)
+                	  {
+    	    		      Node textNode = grandChildren.item(k);
+    	    		      if (textNode.getNodeType()==Node.TEXT_NODE
+    	    		                          || textNode.getNodeType()==Node.CDATA_SECTION_NODE) 
+    	    		      {
+    	    		    	  scale = textNode.getNodeValue();
+    	    		    	  Log.debug(30, "The read scale from additional in EML200Package. readImportAttributeInfoFromIncompleteDoc is "+scale);    	                     
+    	    		      }
+                	  }
+                  }
+                  else if(kidNode.getNodeType() ==Node.ELEMENT_NODE && kidNode.getNodeName().equals(this.ORDEREDMAP))
+                  {
+                	 // this handles class parameter children
+                	  NodeList list = null;
+                	  try 
+                      {
+                          list = XMLUtilities.getNodeListWithXPath(kidNode, OrderedMap.PAIR);
+                      } 
+                      catch (Exception w) 
+                      {
+                          Log.debug(30, "Problem with getting orderedMp list in additional metadata part " + w.getMessage());
+                        
+                      }
+                      if(list != null)
+                      {
+                	  
+	                	  for(int m=0; m<list.getLength(); m++)
+	                	  {
+	                		  String key = null;
+	    	    		      String value = null;
+	    	    		      Node node = list.item(m);
+	    	    		      NodeList anotherChildren = node.getChildNodes();
+	    	    		      for(int n=0; i<anotherChildren.getLength(); n++)
+	    	    		      {
+	    	    		    	  Node anotherGrandChild = anotherChildren.item(n);
+		    	    		      if (anotherGrandChild.getNodeType()==Node.ELEMENT_NODE && anotherGrandChild.getNodeName().equals(OrderedMap.KEY)) 
+		    	    		      {
+		    	    		    	  Node firstChild = node.getFirstChild();
+		    	    		    	  if(firstChild != null && (firstChild.getNodeType()==Node.TEXT_NODE
+		    	    		                          || firstChild.getNodeType()==Node.CDATA_SECTION_NODE))
+		    	    		    	  {
+		    	    		    	      key = firstChild.getNodeValue();
+		    	    		    		  Log.debug(30, "The key of order map from additional in EML200Package. readImportAttributeInfoFromIncompleteDoc is "+key);
+		    	    		    	    
+		    	    		    	  }
+		    	    		      }
+		    	    		      else if (anotherGrandChild.getNodeType()==Node.ELEMENT_NODE && anotherGrandChild.getNodeName().equals(OrderedMap.VALUE)) 
+		    	    		      {
+		    	    		    	  Node firstChild = node.getFirstChild();
+		    	    		    	  if(firstChild != null && (firstChild.getNodeType()==Node.TEXT_NODE
+		    	    		                          || firstChild.getNodeType()==Node.CDATA_SECTION_NODE))
+		    	    		    	  {
+		    	    		    	      value = firstChild.getNodeValue();
+		    	    		    	     
+		    	    		    		  Log.debug(30, "The value of order map from additional in EML200Package. readImportAttributeInfoFromIncompleteDoc is "+value);
+		    	    		    	    
+		    	    		    	  }    	                     
+		    	    		      }
+		    	    		      if(key != null )
+		    	    		      {
+		    	    		    	  omap.put(key, value);
+		    	    		    	  Log.debug(30, "Put key "+key+ " and value "+value+"  in ordered map in EML200Package. readImportAttributeInfoFromIncompleteDoc is "+value);
+		    	    		    	 	    	    		    	 
+		    	    		      }
+	                	    }
+	                	  }
+                     }
+                  }                 
+                  else if(kidNode.getNodeType() ==Node.ELEMENT_NODE && kidNode.getNodeName().equals(this.XPATH))
+                  {
+                	 // this handles class parameter children
+                	  NodeList grandChildren = kidNode.getChildNodes();
+                	  for(int k=0; k<grandChildren.getLength(); k++)
+                	  {
+    	    		      Node textNode = grandChildren.item(k);
+    	    		      if (textNode.getNodeType()==Node.TEXT_NODE
+    	    		                          || textNode.getNodeType()==Node.CDATA_SECTION_NODE) 
+    	    		      {
+    	    		    	  xPath = textNode.getNodeValue();
+    	    		    	  Log.debug(30, "The read xPath from additional in EML200Package. readImportAttributeInfoFromIncompleteDoc is "+xPath);    	                     
+    	    		      }
+                	  }
+                  }
+                  else if(kidNode.getNodeType() ==Node.ELEMENT_NODE && kidNode.getNodeName().equals(this.NEWTABLE))
+                  {
+                	 // this handles class parameter children
+                	  NodeList grandChildren = kidNode.getChildNodes();
+                	  for(int k=0; k<grandChildren.getLength(); k++)
+                	  {
+    	    		      Node textNode = grandChildren.item(k);
+    	    		      if (textNode.getNodeType()==Node.TEXT_NODE
+    	    		                          || textNode.getNodeType()==Node.CDATA_SECTION_NODE) 
+    	    		      {
+    	    		    	  newTable = textNode.getNodeValue();
+    	    		    	  Log.debug(30, "The read newTable from additional in EML200Package. readImportAttributeInfoFromIncompleteDoc is "+newTable);    	                     
+    	    		      }
+                	  }
+                  }           
+		    
+    		}   	    
+  	    	t.add(entityName);
+			t.add(attributeName);
+			t.add(scale);
+			t.add(omap);
+			t.add(xPath);
+			t.add(new Boolean(newTable));
+			if (toBeImported == null) 
+			{
+				toBeImported = new ArrayList();
+				toBeImportedCount = 0;
+			}
+			toBeImported.add(t);
+			toBeImportedCount++;
+			Log.debug(10,
+			"==========Adding Attr to Import - (" + entityName + ", " + attributeName +
+			") ; count = " + toBeImportedCount);
+			
+  	    }
+      }
+		
   }
 
   

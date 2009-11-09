@@ -260,28 +260,28 @@ public abstract class AbstractDataPackage extends MetadataObject
   private final static String OPEN = "<";
   private final static String SLASH = "/";
   private final static String CLOSE = ">";
-  private final static String IMPORTATTRIBUTES = "importAttributes";
+  protected final static String IMPORTATTRIBUTES = "importAttributes";
   private final static String OPENIMPORTATTRIBUTES = OPEN+IMPORTATTRIBUTES+CLOSE;
   private final static String CLOSEIMPORTATTRIBUTES = OPEN+SLASH+IMPORTATTRIBUTES+CLOSE;
-  private final static String ATTRIBUTE = "attribute";
+  protected final static String ATTRIBUTE = "attribute";
   private final static String OPENATTRIBUTE = OPEN+ATTRIBUTE+CLOSE;
   private final static String CLOSEATTRIBUTE = OPEN+SLASH+ATTRIBUTE+CLOSE;
-  private final static String ENTITYNAME = "entityName";
+  protected final static String ENTITYNAME = "entityName";
   private final static String OPENENTITYNAME = OPEN+ENTITYNAME+CLOSE;
   private final static String CLOSEENTITYNAME = OPEN+SLASH+ENTITYNAME+CLOSE;
-  private final static String ATTRIBUTENAME = "attributeName";
+  protected final static String ATTRIBUTENAME = "attributeName";
   private final static String OPENATTRIBUTENAME = OPEN+ATTRIBUTENAME+CLOSE;
   private final static String CLOSEATTRIBUTENAME = OPEN+SLASH+ATTRIBUTENAME+CLOSE;
-  private final static String SCALE = "scale";
+  protected final static String SCALE = "scale";
   private final static String OPENSCALE = OPEN+SCALE+CLOSE;
   private final static String CLOSESCALE = OPEN+SLASH+SCALE+CLOSE;
-  private final static String ORDEREDMAP = "orderedMap";
+  protected final static String ORDEREDMAP = "orderedMap";
   private final static String OPENORDEREDMAP = OPEN+ORDEREDMAP+CLOSE;
   private final static String CLOSEORDEREDMAP = OPEN+SLASH+ORDEREDMAP+CLOSE;
-  private final static String XPATH = "xPath";
+  protected final static String XPATH = "xPath";
   private final static String OPENXPATH = OPEN+XPATH+CLOSE;
   private final static String CLOSEXPATH = OPEN+SLASH+XPATH+CLOSE;
-  private final static String NEWTABLE = "newTable";
+  protected final static String NEWTABLE = "newTable";
   private final static String OPENNEWTABLE = OPEN+NEWTABLE+CLOSE;
   private final static String CLOSENEWTABLE = OPEN+SLASH+NEWTABLE+CLOSE;
   private boolean serializeLocalSuccess = false;
@@ -4322,8 +4322,8 @@ public abstract class AbstractDataPackage extends MetadataObject
 
 	// Code Import stuff
 
-	private List toBeImported = null;
-	private int toBeImportedCount = 0;
+	protected List toBeImported = null;
+	protected int toBeImportedCount = 0;
 
 	private List lastImportedAttributes;
 	private String lastImportedEntityName;

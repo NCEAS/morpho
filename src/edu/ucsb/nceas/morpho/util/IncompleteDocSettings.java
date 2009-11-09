@@ -45,6 +45,7 @@ public class IncompleteDocSettings
    public final static String PACKAGEWIZARDOPENINGTAG = LESSTHAN+PACKAGEWIZARD+GREATERTHAN;
    public final static String PACKAGEWIZARDCLOSINGTAG = LESSTHAN+SLASH+PACKAGEWIZARD+GREATERTHAN;
    public final static String TRUE = "true";
+   public final static String EMLPATH = "/eml:eml/";
    public final static String EML = "eml:eml";
    public final static String EMLCLOSINGTAG = "</eml:eml>";
    public final static String ADDITIONALMETADATA = "additionalMetadata";
