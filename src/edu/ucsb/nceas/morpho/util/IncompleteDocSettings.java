@@ -41,7 +41,7 @@ public class IncompleteDocSettings
    public final static String INCOMPLETECLOSINGTAG = LESSTHAN+SLASH+INCOMPLETE+GREATERTHAN;
    public final static String PACKAGEWIZARD = "packageWizard";
    public final static String ENTITYWIZARD = "enityWizard";
-   public final static String TEXTIMPORTWIZARD = "textImportWizard";
+   //public final static String TEXTIMPORTWIZARD = "textImportWizard";
    public final static String PACKAGEWIZARDOPENINGTAG = LESSTHAN+PACKAGEWIZARD+GREATERTHAN;
    public final static String PACKAGEWIZARDCLOSINGTAG = LESSTHAN+SLASH+PACKAGEWIZARD+GREATERTHAN;
    public final static String TRUE = "true";
@@ -68,7 +68,9 @@ public class IncompleteDocSettings
    public final static String ENTITYWIZARDCLOSINGTAG = LESSTHAN+SLASH+ENTITYWIZARD+GREATERTHAN;
    public final static String INDEXOPENINGTAG = LESSTHAN+INDEX+GREATERTHAN;
    public final static String INDEXCLOSINGTAG = LESSTHAN+SLASH+INDEX+GREATERTHAN;
-   
+   public  static final String INCOMPLETE_PACKAGE_WIZARD = "incomplete-pakcage-wizard";
+   public  static final String INCOMPLETE_ENTITY_WIZARD  = "incomplete-entity-wizard";
+
    
 }
 

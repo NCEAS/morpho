@@ -582,14 +582,14 @@ public  class EML200DataPackage extends AbstractDataPackage
 	  String packageWizardXpath = IncompleteDocSettings.EMLPATH+IncompleteDocSettings.ADDITIONALMETADATA+"/"+IncompleteDocSettings.METADATA+
 	                                           "/"+IncompleteDocSettings.PACKAGEWIZARD;
 	  String textImportWizardXPath = IncompleteDocSettings.EMLPATH+IncompleteDocSettings.ADDITIONALMETADATA+"/"+IncompleteDocSettings.METADATA+
-                                               "/"+IncompleteDocSettings.TEXTIMPORTWIZARD;
+                                               "/"+IncompleteDocSettings.ENTITYWIZARD;
       NodeList nodes = null;
       try {
           nodes = XMLUtilities.getNodeListWithXPath(metadataNode, packageWizardXpath);
           if (nodes != null && nodes.getLength() > 0) 
           {
         	  // the status is incomplete_new_package_Wizard.
-        	  completionStatus = AbstractDataPackage.INCOMPLETE_NEWPACKAGEWIZARD;
+        	  completionStatus = IncompleteDocSettings.INCOMPLETE_PACKAGE_WIZARD;
           }
           else
           {
@@ -597,7 +597,7 @@ public  class EML200DataPackage extends AbstractDataPackage
         	  if (nodes != null && nodes.getLength() >0)
         	  {
         		  // the status is incomplete_new_package_Wizard.
-            	  completionStatus = AbstractDataPackage.INCOMPLETE_TEXTIMPORTWIZARD;
+            	  completionStatus = IncompleteDocSettings.INCOMPLETE_ENTITY_WIZARD;
         	  }
         	  else
         	  {
@@ -628,15 +628,49 @@ public  class EML200DataPackage extends AbstractDataPackage
    *  ............................
    * @return
    */
-  public WizardPageInfo [] getIncompleteWizardPageInfoList()
+  public WizardPageInfo [] getIncompletePacakgeWizardPageInfoList()
   {
 	  WizardPageInfo[] classInfoList = null;
 	  String pageClassNameXpath = IncompleteDocSettings.EMLPATH+IncompleteDocSettings.ADDITIONALMETADATA+"/"+IncompleteDocSettings.METADATA+
       "/"+IncompleteDocSettings.PACKAGEWIZARD+"/"+IncompleteDocSettings.CLASS;
+	  classInfoList = getIncompleteWizardPageInfoList(pageClassNameXpath);
+	  return classInfoList;
+	  
+  }
+  
+  /**
+   * Gets the UIPage class name list after parsing the incomplete information in additional metacat part.
+   * This eml part looks like
+   *  <additionalMetadata>
+   *      <metadata>
+   *         <entityWizard>
+   *              <class>
+   *                  <name>
+   *                   <parameter>
+   *              </class>
+   *  ............................
+   * @return
+   */
+  public WizardPageInfo [] getIncompleteEntityWizardPageInfoList()
+  {
+	  WizardPageInfo[] classInfoList = null;
+	  String pageClassNameXpath = IncompleteDocSettings.EMLPATH+IncompleteDocSettings.ADDITIONALMETADATA+"/"+IncompleteDocSettings.METADATA+
+      "/"+IncompleteDocSettings.ENTITYWIZARD+"/"+IncompleteDocSettings.CLASS;
+	  classInfoList = getIncompleteWizardPageInfoList(pageClassNameXpath);
+	  return classInfoList;
+	  
+  }
+  
+  /*
+   * Gets the page class information in given path
+   */
+  private  WizardPageInfo [] getIncompleteWizardPageInfoList(String path)
+  {
+	  WizardPageInfo[] classInfoList = null;
 	  NodeList nodeList = null;
       try 
       {
-          nodeList = XMLUtilities.getNodeListWithXPath(metadataNode, pageClassNameXpath);
+          nodeList = XMLUtilities.getNodeListWithXPath(metadataNode, path);
       } 
       catch (Exception w) 
       {
@@ -703,6 +737,40 @@ public  class EML200DataPackage extends AbstractDataPackage
       }
       Log.debug(30, "The class info list is "+classInfoList);
 	  return classInfoList;
+  }
+  
+  /**
+   * Gets the entity index stores in incomplete doc info part
+   * @return
+   */
+  public int getEntityIndexInIncompleteDocInfo()
+  {
+	  int index = -1;
+	  String path = IncompleteDocSettings.EMLPATH+IncompleteDocSettings.ADDITIONALMETADATA+"/"+IncompleteDocSettings.METADATA+
+      "/"+IncompleteDocSettings.ENTITYWIZARD+"/"+IncompleteDocSettings.INDEX;
+	  NodeList nodeList = null;
+      try 
+      {
+          nodeList = XMLUtilities.getNodeListWithXPath(metadataNode, path);
+          Node node = nodeList.item(0);
+          if(node != null)
+          {
+        	  Node textNode = node.getFirstChild();
+        	  if(textNode != null && (textNode.getNodeType()==Node.TEXT_NODE
+                      || textNode.getNodeType()==Node.CDATA_SECTION_NODE))
+        	  {
+        		  String indexStr = textNode.getNodeValue();
+        		  index = (new Integer(indexStr)).intValue();
+        		  Log.debug(30, "The index of entity in incomplete doc inforamtion is "+index);
+        	  }
+          }
+      } 
+      catch (Exception w) 
+      {
+          Log.debug(30, "Problem with getEntityIndexIncompleteDocInfo in additional metadata part " + w.getMessage());
+        
+      }
+	  return index;
   }
   
   /**

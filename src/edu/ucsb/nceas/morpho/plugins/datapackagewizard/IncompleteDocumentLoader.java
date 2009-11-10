@@ -104,12 +104,12 @@ public class IncompleteDocumentLoader implements  DataPackageWizardListener
 		{
 			Log.debug(5, "Morpho couldn't open the package since the incompletion status is null");
 		}
-		else if (incompletionStatus.equals(AbstractDataPackage.INCOMPLETE_NEWPACKAGEWIZARD))
+		else if (incompletionStatus.equals(IncompleteDocSettings.INCOMPLETE_PACKAGE_WIZARD))
 		{
 			//Log.debug(5, "new package wizard");
 			loadToNewPackageWizard();
 		}
-		else if(incompletionStatus.equals(AbstractDataPackage.INCOMPLETE_TEXTIMPORTWIZARD))
+		else if(incompletionStatus.equals(IncompleteDocSettings.INCOMPLETE_ENTITY_WIZARD))
 		{
 			//Log.debug(5, "In text imorpt wizard");
 			loadToTextImportWizard();

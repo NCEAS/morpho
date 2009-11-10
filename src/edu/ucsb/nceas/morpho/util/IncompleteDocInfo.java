@@ -36,6 +36,7 @@ public class IncompleteDocInfo
 {
 	private String status;
 	private WizardPageInfo [] wizardPageClassInfoList = null; //stores the class name list
+	private int entityIndex = -1;//stores entity index if this is an entity wizard.
 	
 	/**
 	 * Default constructor
@@ -70,6 +71,24 @@ public class IncompleteDocInfo
 	public String getStatus()
 	{
 		return status;
+	}
+	
+	/**
+	 * Gets the entity index 
+	 * @return
+	 */
+	public int getEntityIndex()
+	{
+		return this.entityIndex;
+	}
+	
+	/**
+	 * Sets the entity index
+	 * @param entityIndex
+	 */
+	public void setEntityIndex(int entityIndex)
+	{
+		this.entityIndex = entityIndex;
 	}
 
 }

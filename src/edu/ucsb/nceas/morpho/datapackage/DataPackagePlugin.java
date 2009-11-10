@@ -44,6 +44,7 @@ import edu.ucsb.nceas.morpho.plugins.ServiceProvider;
 import edu.ucsb.nceas.morpho.util.Command;
 import edu.ucsb.nceas.morpho.util.GUIAction;
 import edu.ucsb.nceas.morpho.util.IncompleteDocInfo;
+import edu.ucsb.nceas.morpho.util.IncompleteDocSettings;
 import edu.ucsb.nceas.morpho.util.Log;
 import edu.ucsb.nceas.morpho.util.StateChangeEvent;
 import edu.ucsb.nceas.morpho.util.StateChangeMonitor;
@@ -798,9 +799,22 @@ public class DataPackagePlugin
 	      sc = ServiceController.getInstance();
 	      EML200DataPackage eml200 = (EML200DataPackage)adp;
 	      String status = eml200.getCompletionStatus();
-	      WizardPageInfo [] classNameList = eml200.getIncompleteWizardPageInfoList();
+	      WizardPageInfo [] classNameList = null;
+	      int index =-1;
+	      Log.debug(30, "The status of incomplete is "+status+" in DataPackagePlugin.openIncompleteDataPackage");
+	      if(status != null && status.equals(IncompleteDocSettings.INCOMPLETE_PACKAGE_WIZARD))
+	      {
+	    	  classNameList = eml200.getIncompletePacakgeWizardPageInfoList();
+	      }
+	      else if(status != null && status.equals(IncompleteDocSettings.INCOMPLETE_ENTITY_WIZARD))
+	      {
+	    	  classNameList = eml200.getIncompleteEntityWizardPageInfoList();
+	    	  index = eml200.getEntityIndexInIncompleteDocInfo();
+	      }
+	      
 	      IncompleteDocInfo info = new IncompleteDocInfo(status);
 	      info.setWizardPageClassInfoList(classNameList);
+	      info.setEntityIndex(index);
 	      dpwPlugin = (DataPackageWizardInterface) sc.getServiceProvider(DataPackageWizardInterface.class);
 	      dpwPlugin.loadIncompleteDocument(adp, info);
 
