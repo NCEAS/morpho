@@ -70,6 +70,15 @@ public class IncompleteDocSettings
    public final static String INDEXCLOSINGTAG = LESSTHAN+SLASH+INDEX+GREATERTHAN;
    public  static final String INCOMPLETE_PACKAGE_WIZARD = "incomplete-pakcage-wizard";
    public  static final String INCOMPLETE_ENTITY_WIZARD  = "incomplete-entity-wizard";
+   public  static final String VARIABLE = "variable";
+   public  static final String VARIABLEOPENINGTAG = LESSTHAN+VARIABLE+GREATERTHAN;
+   public  static final String VARIABLECLOSINGTAG  = LESSTHAN+SLASH+VARIABLE+GREATERTHAN;
+   public  static final String KEY = "key";
+   public  static final String KEYOPENINGTAG = LESSTHAN+KEY+GREATERTHAN;
+   public  static final String KEYCLOSINGTAG  = LESSTHAN+SLASH+KEY+GREATERTHAN;
+   public  static final String VALUE = "value";
+   public  static final String VALUEOPENINGTAG = LESSTHAN+VALUE+GREATERTHAN;
+   public  static final String VALUECLOSINGTAG = LESSTHAN+SLASH+VALUE+GREATERTHAN;
 
    
 }

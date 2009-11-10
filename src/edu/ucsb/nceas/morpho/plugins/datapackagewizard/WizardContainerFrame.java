@@ -38,6 +38,7 @@ import edu.ucsb.nceas.morpho.framework.UIController;
 import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
 import edu.ucsb.nceas.morpho.plugins.DataPackageWizardListener;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.Access;
+import edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.DataLocation;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.Entity;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.ImportedTextFile;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.Methods;
@@ -54,6 +55,7 @@ import edu.ucsb.nceas.morpho.util.UISettings;
 import edu.ucsb.nceas.utilities.OrderedMap;
 import edu.ucsb.nceas.utilities.XMLUtilities;
 
+import java.io.File;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -1319,6 +1321,21 @@ public class WizardContainerFrame
 						  Log.debug(40, "Class name is "+className);
 						  emlWithIncompleteInfo.append(IncompleteDocSettings.CLASSOPENINGTAG+IncompleteDocSettings.NAMEOPENINGTAG+
 						                                      className+IncompleteDocSettings.NAMECLOSINGTAG);
+						  if(page instanceof DataLocation)
+						  {
+							  //add data location into variable pair - key and value
+							  DataLocation location = (DataLocation)page;
+							  File dataFile = location.getDataFile();
+							  if (dataFile != null)
+							  {
+								  String dataFileName = dataFile.getName();
+								  emlWithIncompleteInfo.append(IncompleteDocSettings.VARIABLEOPENINGTAG+IncompleteDocSettings.KEYOPENINGTAG+
+										  DataLocation.TEXTFILEPATH+IncompleteDocSettings.KEYCLOSINGTAG+
+										  IncompleteDocSettings.VALUEOPENINGTAG+dataFileName+IncompleteDocSettings.VALUECLOSINGTAG+
+										  IncompleteDocSettings.VARIABLECLOSINGTAG);						  
+								  
+							  }
+						  }
 						  emlWithIncompleteInfo.append(IncompleteDocSettings.CLASSCLOSINGTAG);
 					  }
 				  }

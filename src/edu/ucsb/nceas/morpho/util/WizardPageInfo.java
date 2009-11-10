@@ -25,6 +25,7 @@
  */
 package edu.ucsb.nceas.morpho.util;
 
+import java.util.Hashtable;
 import java.util.Vector;
 
 /**
@@ -37,6 +38,7 @@ public class WizardPageInfo
 {
     private String className = null;
     private Vector parameters = new Vector();
+    private Hashtable variablesValues = new Hashtable();//stores variable as key and value pair. 
     
     /**
      * Constructor for given className
@@ -72,5 +74,27 @@ public class WizardPageInfo
 	public void addParameter(String parameter) 
 	{
 		this.parameters.add(parameter);
+	}
+	
+	/**
+	 * Gets variables value as pairs of key and values
+	 */
+	public Hashtable getVariablesValues()
+	{
+		return this.variablesValues;
+	}
+	
+	/**
+	 * Puts the key-value pair into the variablesValues hashtable.
+	 * @param key
+	 * @param value
+	 */
+	public void putVariableValue(String key, String value)
+	{
+		if(key != null)
+		{
+			Log.debug(35, "In IncompleteDocInfo.putVariableValue put key "+key+" and value "+value+ " into variablesValue hastable");
+			variablesValues.put(key, value);
+		}
 	}
 }

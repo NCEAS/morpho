@@ -70,6 +70,7 @@ import javax.swing.JTextField;
 
 public class DataLocation extends AbstractUIPage {
 
+  public static final String TEXTFILEPATH = "TextFilePath";//used to store a key in incomplete info
   private final String pageID       = DataPackageWizardInterface.DATA_LOCATION;
   private final String pageNumber   = "1";
 
@@ -1207,7 +1208,7 @@ public class DataLocation extends AbstractUIPage {
   private JPanel currentThirdChoicePanel;
   protected ThirdChoiceWidget q3Widget;
   private short  INLINE_OR_ONLINE;
-  private File   dataFileObj;
+  private File   dataFileObj = null;
 
   //status flags
   private final short CREATE                = 0;
