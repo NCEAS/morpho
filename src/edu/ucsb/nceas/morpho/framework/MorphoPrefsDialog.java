@@ -28,6 +28,7 @@ package edu.ucsb.nceas.morpho.framework;
 
 import java.awt.*;
 import javax.swing.*;
+
 import edu.ucsb.nceas.morpho.framework.ConfigXML;
 import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.util.Log;
@@ -227,11 +228,19 @@ public class MorphoPrefsDialog extends javax.swing.JDialog
 				cancelButton_actionPerformed(event);
       }
 			else if (object == clearButton) {
-        Morpho.thisStaticInstance.cleanCache();
-        Morpho.thisStaticInstance.cleanTemp();
-        JOptionPane.showMessageDialog(null, "Temporary Storage Areas Emptied!",
-               "Message", JOptionPane.INFORMATION_MESSAGE);
-			}
+				int opt = JOptionPane.showConfirmDialog(null,
+			            "Are you sure that you want to delete the temparory files?\n Before deleting them, you should make sure there is no crashed wizard and no wizard is running in Morpho.",
+			            "DO YOU WANT TO CONTINUE?",
+			            JOptionPane.YES_NO_OPTION);
+			   if (opt == JOptionPane.NO_OPTION) 
+			   {
+			        return;
+			    }
+	            Morpho.thisStaticInstance.cleanCache();
+	            Morpho.thisStaticInstance.cleanTemp();
+	            JOptionPane.showMessageDialog(null, "Temporary Storage Areas Emptied!",
+	               "Message", JOptionPane.INFORMATION_MESSAGE);
+				}
 		}
 	}
 
