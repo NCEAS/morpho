@@ -1332,10 +1332,11 @@ public class WizardContainerFrame
 							  File dataFile = location.getDataFile();
 							  if (dataFile != null)
 							  {
-								  String dataFileName = dataFile.getName();
+								  //we need to store the full path of the file
+								  String dataFilePath = dataFile.getAbsolutePath();
 								  emlWithIncompleteInfo.append(IncompleteDocSettings.VARIABLEOPENINGTAG+IncompleteDocSettings.KEYOPENINGTAG+
 										  DataLocation.TEXTFILEPATH+IncompleteDocSettings.KEYCLOSINGTAG+
-										  IncompleteDocSettings.VALUEOPENINGTAG+dataFileName+IncompleteDocSettings.VALUECLOSINGTAG+
+										  IncompleteDocSettings.VALUEOPENINGTAG+dataFilePath+IncompleteDocSettings.VALUECLOSINGTAG+
 										  IncompleteDocSettings.VARIABLECLOSINGTAG);						  
 								  
 							  }
