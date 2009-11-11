@@ -27,8 +27,6 @@ package edu.ucsb.nceas.morpho.datapackage;
 
 import java.awt.*;
 import javax.swing.*;
-import javax.swing.JDialog;
-import javax.swing.JOptionPane;
 import javax.swing.event.*;
 import javax.swing.table.*;
 import java.io.*;
@@ -553,6 +551,12 @@ public class DataViewer extends javax.swing.JPanel
     public JPanel getDataViewerPanel() {
 		return DataViewerPanel;
 	}
+    
+    // allow other plugins to modify this pop up
+    public void addPopupMenuItem(GUIAction guiAction) {
+		JMenuItem menuItem = new JMenuItem(guiAction);
+		popup.add(menuItem);
+    }
 
 	/**
      * Method to get persistent talbe model
