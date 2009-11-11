@@ -172,7 +172,7 @@ public class WizardUtil
 	 * @return
 	 * @throws Exception
 	 */
-  	public static AbstractUIPage getUIPage(String className, XPathUIPageMapping mapping, WizardContainerFrame dpWiz, AbstractDataPackage dataPackage, String path) throws Exception
+  	public static AbstractUIPage getUIPage(String className, XPathUIPageMapping mapping, WizardContainerFrame dpWiz, Node node, String path) throws Exception
   	{
   		AbstractUIPage page = null;
   		boolean mapDataFit = false;
@@ -205,7 +205,7 @@ public class WizardUtil
 						
 						if (loadDataPathList != null)
 						{
-							Node node = dataPackage.getMetadataNode();
+							//Node node = dataPackage.getMetadataNode();
 							//If loadDataPathList has mutiple xpath, the second xpath is kid of the first one.
 							//like : <loadExistDataPath>/eml:eml/dataset</loadExistDataPath>
 				            //        <loadExistDataPath>./title</loadExistDataPath>
@@ -267,7 +267,7 @@ public class WizardUtil
 									if(loadPath != null)
 									{
 										nodeList = XMLUtilities.getNodeListWithXPath(node, loadPath);
-									    List newNodetList = dataPackage.getSubtree(nodeList);
+									    List newNodetList = AbstractDataPackage.getSubtree(nodeList);
 									    xpathMap = Util.getOrderedMapFromNodeList(newNodetList, info.getGenericName());
 									}
 								}

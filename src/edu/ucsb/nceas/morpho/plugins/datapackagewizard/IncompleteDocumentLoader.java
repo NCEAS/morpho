@@ -210,7 +210,7 @@ public class IncompleteDocumentLoader
 							  {
 								  Log.debug(30, "There is map for classNamePlusParamer ~~~~~~~~~~~~~~"+classNamePlusParameter+ " so we create an page with data (if have)");
 							      Log.debug(30, "the className from metadata is "+className);
-								  page= WizardUtil.getUIPage(className, map, dpWiz, dataPackage, null );
+								  page= WizardUtil.getUIPage(className, map, dpWiz, dataPackage.getMetadataNode(), null );
 							  }
 							  catch(Exception e)
 							  {

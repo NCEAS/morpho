@@ -753,7 +753,7 @@ public abstract class AbstractDataPackage extends MetadataObject
    * @return List containing the cloned root Nodes of subtrees, or an empty list
    * if none found. Never returns null
    */
-  public List getSubtree(NodeList nodelist)
+  public static List getSubtree(NodeList nodelist)
   {
 	  List returnList = new ArrayList();
 	  if ((nodelist == null) || (nodelist.getLength() == 0)) {
