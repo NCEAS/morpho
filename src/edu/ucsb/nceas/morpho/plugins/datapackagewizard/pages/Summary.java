@@ -158,7 +158,7 @@ public class Summary extends AbstractUIPage {
   private String getProductName() {
 
     String ID = mainWizFrame.getFirstPageID();
-    if (ID==null) return "";
+    if (ID==null) return "package";
     if (ID.equals(DataPackageWizardInterface.DATA_LOCATION))
       return "data table";
     else return "data package";

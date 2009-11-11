@@ -720,7 +720,11 @@ public class WizardContainerFrame
 
     // * * * F I N I S H * * *
     pageStack.push(this.getCurrentPage());
-
+    //if we add auto save method in finish action, it will store the last page.
+    //however, the last page is summary, it has no metadata. Moreover, the collection data
+    // will be execute twice ("auto save" is the first one, line 731 is the second one.
+    //so I decided not to save automatically here.
+    //autoSaveInCompletePackage();
     this.setVisible(false);
 
     Node rootNode = null;
