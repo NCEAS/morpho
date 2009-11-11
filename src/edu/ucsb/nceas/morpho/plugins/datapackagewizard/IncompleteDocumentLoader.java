@@ -62,7 +62,7 @@ import edu.ucsb.nceas.utilities.XMLUtilities;
  * @author tao
  *
  */
-public class IncompleteDocumentLoader implements  DataPackageWizardListener
+public class IncompleteDocumentLoader 
 {
 	private AbstractDataPackage dataPackage = null;
 	private IncompleteDocInfo incompleteDocInfo = null;
@@ -107,12 +107,12 @@ public class IncompleteDocumentLoader implements  DataPackageWizardListener
 		else if (incompletionStatus.equals(IncompleteDocSettings.INCOMPLETE_PACKAGE_WIZARD))
 		{
 			//Log.debug(5, "new package wizard");
-			loadToNewPackageWizard();
+			loadNewPackageWizard();
 		}
 		else if(incompletionStatus.equals(IncompleteDocSettings.INCOMPLETE_ENTITY_WIZARD))
 		{
 			//Log.debug(5, "In text imorpt wizard");
-			loadToTextImportWizard();
+			loadEntityWizard();
 		}
 		else
 		{
@@ -123,88 +123,19 @@ public class IncompleteDocumentLoader implements  DataPackageWizardListener
 	/*
 	 * Loads the incomplete AbstractDataPackage into new package wizard
 	 */
-	private void loadToNewPackageWizard()
+	private void loadNewPackageWizard()
 	{
 		boolean showPageCount = true;
-		  String currentPageId = WizardSettings.PACKAGE_WIZ_FIRST_PAGE_ID;
+		  
 		  WizardContainerFrame dpWiz = new WizardContainerFrame();
-		  WizardPageInfo [] classNameFromIncompleteDoc = incompleteDocInfo.getWizardPageClassInfoList();
-		  //Vector parameters = null;
-		  //Go through every page from incomplete doc info
-		  if(classNameFromIncompleteDoc != null)
-		  {
-			  int size = classNameFromIncompleteDoc.length;
-			  AbstractUIPage page = null;
-			  for(int i=0; i<size;  i++)
-			  {
-				  WizardPageInfo pageClassInfo = classNameFromIncompleteDoc[i];
-				  if(pageClassInfo != null)
-				  {
-				  String classNamePlusParameter ="";
-				  String className = pageClassInfo.getClassName();
-				  classNamePlusParameter = classNamePlusParameter+className;
-				  Vector parameters = pageClassInfo.getParameters();
-				  if(parameters != null && !parameters.isEmpty())
-				  {
-					  for(int k=0; k<parameters.size(); k++)
-					  {
-						  String param = (String)parameters.elementAt(k);
-						  classNamePlusParameter = classNamePlusParameter +param;
-					  }
-					  
-				  }
-				  XPathUIPageMapping map = (XPathUIPageMapping)wizardPageName.get(classNamePlusParameter.trim());
-				  if (map != null)
-				  {
-					  //loading exist data into UIPage
-					  String path = null;
-					  try
-					  {
-						  Log.debug(30, "There is map for classNamePlusParamer ~~~~~~~~~~~~~~"+classNamePlusParameter+ " so we create an page with data (if have)");
-					      Log.debug(30, "the className from metadata is "+className);
-						  page= WizardUtil.getUIPage(className, map, dpWiz, dataPackage, null );
-					  }
-					  catch(Exception e)
-					  {
-						  Log.debug(20, "Couldn't create the page with className "+className+" "+e.getMessage());
-						  page = null;
-					  }
-					 
-				  }
-				  //generate empty UIPage if page isnull or map isnull
-                  if (map == null || page ==null)
-                  {
-                	  
-					  // those pages are likely introduction ....
-                	  if(map != null)
-                	  {
-                		  Log.debug(30, "There is no data for className --------------------"+className+ " so we just initilize an empty page");
-					     page = WizardUtil.createAbstractUIpageObject(className, dpWiz, map.getWizardPageClassParameters() );
-                	  }
-                	  else
-                	  {
-                		  Log.debug(30, "There is no map for classNamePlusParameter --------------------"+classNamePlusParameter+ " so we just initilize an empty page for class "+className);
-                		  page = WizardUtil.createAbstractUIpageObject(className, dpWiz, parameters );
-                	  }
-                  }
-				  }
-                  
-                  //add page into stack of wizard frame
-                  if(page != null)
-                  {
-                	  dpWiz.addPageToStack(page);
-                  }
-				  // set the current page to the last page
-                  if((i == (size-1)) && page != null)
-                  {
-                	  
-                	  currentPageId = page.getNextPageID();
-                	  Log.debug(20, "in getting current id!!!!!!!!!!!!!!!"+currentPageId);
-                  }
-			  }
-		  }
+	      String currentPageId = loadPagesIntoWizard(dpWiz);
+	      if(currentPageId == null)
+	      {
+	    	  Log.debug(5, "The new package wizard couldn't load the existing eml document!");
+	    	  return;
+	      }
 		  Log.debug(25, "The current page id is "+currentPageId);
-		  IncompleteDocumentLoader dataPackageWizardListener = new IncompleteDocumentLoader();
+		  PackageWizardListener dataPackageWizardListener = new PackageWizardListener();
 		  dpWiz.setDataPackageWizardListener(dataPackageWizardListener);
 		  dpWiz.setBounds(
 		                  WizardSettings.WIZARD_X_COORD, WizardSettings.WIZARD_Y_COORD,
@@ -219,9 +150,97 @@ public class IncompleteDocumentLoader implements  DataPackageWizardListener
 	/*
 	 * Loads the incomplete AbstractDataPackage into text import wizard
 	 */
-	private void loadToTextImportWizard()
+	private void loadEntityWizard()
 	{
 		
+	}
+	
+	/*
+	 * Load Wizard pages into a given Wizard. Return currentPage id
+	 */
+	private String loadPagesIntoWizard(WizardContainerFrame dpWiz)
+	{
+		String currentPageID = null;
+		if(dpWiz != null)
+		{
+			  WizardPageInfo [] classNameFromIncompleteDoc = incompleteDocInfo.getWizardPageClassInfoList();
+			  //Vector parameters = null;
+			  //Go through every page from incomplete doc info
+			  if(classNameFromIncompleteDoc != null)
+			  {
+				  int size = classNameFromIncompleteDoc.length;
+				  AbstractUIPage page = null;
+				  for(int i=0; i<size;  i++)
+				  {
+					  WizardPageInfo pageClassInfo = classNameFromIncompleteDoc[i];
+					  if(pageClassInfo != null)
+					  {
+					  String classNamePlusParameter ="";
+					  String className = pageClassInfo.getClassName();
+					  classNamePlusParameter = classNamePlusParameter+className;
+					  Vector parameters = pageClassInfo.getParameters();
+					  if(parameters != null && !parameters.isEmpty())
+					  {
+						  for(int k=0; k<parameters.size(); k++)
+						  {
+							  String param = (String)parameters.elementAt(k);
+							  classNamePlusParameter = classNamePlusParameter +param;
+						  }
+						  
+					  }
+					  XPathUIPageMapping map = (XPathUIPageMapping)wizardPageName.get(classNamePlusParameter.trim());
+					  if (map != null)
+					  {
+						  //loading exist data into UIPage
+						  String path = null;
+						  try
+						  {
+							  Log.debug(30, "There is map for classNamePlusParamer ~~~~~~~~~~~~~~"+classNamePlusParameter+ " so we create an page with data (if have)");
+						      Log.debug(30, "the className from metadata is "+className);
+							  page= WizardUtil.getUIPage(className, map, dpWiz, dataPackage, null );
+						  }
+						  catch(Exception e)
+						  {
+							  Log.debug(20, "Couldn't create the page with className "+className+" "+e.getMessage());
+							  page = null;
+						  }
+						 
+					  }
+					  //generate empty UIPage if page isnull or map isnull
+	                  if (map == null || page ==null)
+	                  {
+	                	  
+						  // those pages are likely introduction ....
+	                	  if(map != null)
+	                	  {
+	                		  Log.debug(30, "There is no data for className --------------------"+className+ " so we just initilize an empty page");
+						     page = WizardUtil.createAbstractUIpageObject(className, dpWiz, map.getWizardPageClassParameters() );
+	                	  }
+	                	  else
+	                	  {
+	                		  Log.debug(30, "There is no map for classNamePlusParameter --------------------"+classNamePlusParameter+ " so we just initilize an empty page for class "+className);
+	                		  page = WizardUtil.createAbstractUIpageObject(className, dpWiz, parameters );
+	                	  }
+	                  }
+					  }
+	                  
+	                  //add page into stack of wizard frame
+	                  if(page != null)
+	                  {
+	                	  dpWiz.addPageToStack(page);
+	                  }
+					  // set the current page to the last page
+	                  if((i == (size-1)) && page != null)
+	                  {
+	                	  
+	                	  currentPageID = page.getPageID();
+	                	  
+	                  }
+				  }
+			  }
+		}
+		Log.debug(20, "in getting current id!!!!!!!!!!!!!!!"+currentPageID);
+		return currentPageID;
 	}
 	
 	/*
@@ -234,7 +253,13 @@ public class IncompleteDocumentLoader implements  DataPackageWizardListener
 	    wizardPageName = reader.getClassNamePlusParameterMapping();	 
 	}
 	
-	
+	/**
+	 * Listener class for New Package Wizard
+	 * @author tao
+	 *
+	 */
+	class PackageWizardListener implements  DataPackageWizardListener
+	{
 	/**
 	 * Methods inherits from DataPackageWizardListener
 	 */
@@ -271,7 +296,7 @@ public class IncompleteDocumentLoader implements  DataPackageWizardListener
         Log.debug(45, "\n\n********** Wizard canceled!");
       }
       
-      
+	} 
   
 
 }
