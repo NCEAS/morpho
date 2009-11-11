@@ -152,34 +152,8 @@ public class WizardContainerFrame
     this.isEntityWizard = isEntityWizard;
     pageStack = new Stack();
     pageLib = new WizardPageLibrary(this);
-    init();
-    ConfigXML profile = Morpho.thisStaticInstance.getProfile();
-    if (profile != null)
-    {
-    	String scope = profile.get("scope", 0);
-    	String separator= profile.get("separator", 0);
-    	// try to get autoSaveID from adp first.
-    	adp = UIController.getInstance().getCurrentAbstractDataPackage();
-		if(adp != null)
-		{
-			autoSaveID = adp.getAutoSavedD();
-			//edu.ucsb.nceas.morpho.datapackage.Entity[] arr = adp.getEntityArray();
-			//adp.setOriginalEntityArray(arr);
-			
-		}
-		//if we couldn't get the autoSaveID from exist datapackage, get it from random number
-    	if(autoSaveID == null && scope != null)
-    	{  	   
-    	   autoSaveID = scope+separator+getRandomString()+separator+VERSION1;
-    	   if(adp != null)
-    	   {
-    		   adp.setAutoSavedID(autoSaveID);
-    		   dumpPackageToAutoSaveFile(autoSaveID);//onlywork for add entity wizard
-    	   }
-    	}
-    }
-    
-    
+    adp = UIController.getInstance().getCurrentAbstractDataPackage();
+    init();    
     setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
     this.addWindowListener(new WindowAdapter() {
 
@@ -188,6 +162,42 @@ public class WizardContainerFrame
       }
     });
 
+  }
+  
+  
+  /**
+   * Initialize auto saving. This mainly initialize the id for auto-saved file.
+   * For entity wizard, it will dump the adp to the saved file too. 
+   * If we will use an adp rather than the one from UIController.getInstance().getCurrentAbstractDataPackage(),
+   * We should call setAbstractDataPackage method prior to call this method.
+   */
+  public void initialAutoSaving()
+  {
+	  ConfigXML profile = Morpho.thisStaticInstance.getProfile();   
+	    if (profile != null)
+	    {
+	    	String scope = profile.get("scope", 0);
+	    	String separator= profile.get("separator", 0);
+	    	// try to get autoSaveID from adp first.
+	    	
+			if(adp != null)
+			{
+				autoSaveID = adp.getAutoSavedD();
+				//edu.ucsb.nceas.morpho.datapackage.Entity[] arr = adp.getEntityArray();
+				//adp.setOriginalEntityArray(arr);
+				
+			}
+			//if we couldn't get the autoSaveID from exist datapackage, get it from random number
+	    	if(autoSaveID == null && scope != null)
+	    	{  	   
+	    	   autoSaveID = scope+separator+getRandomString()+separator+VERSION1;
+	    	   if(adp != null)
+	    	   {
+	    		   adp.setAutoSavedID(autoSaveID);
+	    		   dumpPackageToAutoSaveFile(autoSaveID);//onlywork for add entity wizard
+	    	   }
+	    	}
+	    }
   }
   
  
@@ -1949,6 +1959,15 @@ public class WizardContainerFrame
   public AbstractDataPackage getAbstractDataPackage()
   {
 	  return this.adp;
+  }
+  
+  /**
+   * Sets the abstract data package associated with fthe frame.
+   * @param pack
+   */
+  public void setAbstractDataPackage(AbstractDataPackage pack)
+  {
+	  this.adp = pack;
   }
 
 

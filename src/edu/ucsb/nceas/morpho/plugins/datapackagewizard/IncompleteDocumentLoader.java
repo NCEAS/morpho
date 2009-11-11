@@ -41,7 +41,9 @@ import edu.ucsb.nceas.morpho.datapackage.AbstractDataPackage;
 import edu.ucsb.nceas.morpho.datapackage.DataPackageFactory;
 import edu.ucsb.nceas.morpho.framework.AbstractUIPage;
 import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
+import edu.ucsb.nceas.morpho.framework.MorphoFrame;
 import edu.ucsb.nceas.morpho.framework.UIController;
+import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
 import edu.ucsb.nceas.morpho.plugins.DataPackageWizardListener;
 import edu.ucsb.nceas.morpho.plugins.ServiceController;
 import edu.ucsb.nceas.morpho.plugins.ServiceNotHandledException;
@@ -70,13 +72,6 @@ public class IncompleteDocumentLoader
 	private Hashtable wizardPageName = new Hashtable();
 	private XPathUIPageMapping[] mappingList = null;
 	
-	/**
-	 * Default constructor
-	 */
-	public IncompleteDocumentLoader()
-	{
-		
-	}
 
 	/**
 	 * Constructs a IncompleteDocumentLoader with a AbstractDataPackage containing 
@@ -128,6 +123,7 @@ public class IncompleteDocumentLoader
 		boolean showPageCount = true;
 		  
 		  WizardContainerFrame dpWiz = new WizardContainerFrame();
+		  dpWiz.initialAutoSaving();
 		  AbstractUIPage currentPage = loadPagesIntoWizard(dpWiz);
 	      if(currentPage == null)
 	      {
@@ -142,7 +138,7 @@ public class IncompleteDocumentLoader
 		                  WizardSettings.WIZARD_WIDTH,   WizardSettings.WIZARD_HEIGHT );
 		  dpWiz.setCurrentPage(currentPage);
 		  dpWiz.setShowPageCountdown(showPageCount);
-		  dpWiz.setTitle(DataPackageWizardPlugin.NEWPACKAGEWIZARDFRAMETITLE);
+		  dpWiz.setTitle(DataPackageWizardInterface.NEWPACKAGEWIZARDFRAMETITLE);
 		  dpWiz.setVisible(true);
 	    
 	}
@@ -152,7 +148,24 @@ public class IncompleteDocumentLoader
 	 */
 	private void loadEntityWizard()
 	{
-		
+		  boolean showPageCount = false;
+		  boolean isEntity = true;
+		  WizardContainerFrame dpWiz = new WizardContainerFrame(isEntity);
+		  AbstractUIPage currentPage = loadPagesIntoWizard(dpWiz);
+	      if(currentPage == null)
+	      {
+	    	  Log.debug(5, "The new package wizard couldn't load the existing eml document!");
+	    	  return;
+	      }
+		  Log.debug(25, "The current page id in IncompleteDocument.loadNewPackageWizard is "+currentPage.getPageID());
+		  PackageWizardListener dataPackageWizardListener = new PackageWizardListener();
+		  dpWiz.setDataPackageWizardListener(dataPackageWizardListener);
+		  dpWiz.setBounds(
+		                  WizardSettings.WIZARD_X_COORD, WizardSettings.WIZARD_Y_COORD,
+		                  WizardSettings.WIZARD_WIDTH,   WizardSettings.WIZARD_HEIGHT );
+		  dpWiz.setCurrentPage(currentPage);
+		  dpWiz.setTitle(DataPackageWizardInterface.NEWTABLEEWIZARDFRAMETITLE);
+		  dpWiz.setVisible(true);
 	}
 	
 	/*
@@ -301,6 +314,61 @@ public class IncompleteDocumentLoader
 
         Log.debug(45, "\n\n********** Wizard canceled!");
       }
+      
+	} 
+	
+	
+	/**
+	 * Listener class for New Package Wizard
+	 * @author tao
+	 *
+	 */
+	class TableWizardListener implements  DataPackageWizardListener
+	{
+		private AbstractDataPackage adp = null;
+		private int nextEntityIndex = 0;
+		private MorphoFrame oldMorphoFrame = null;
+		
+		public TableWizardListener(AbstractDataPackage adp, int nextEntityIndex, MorphoFrame oldMorphoFrame)
+		{
+			this.adp = adp;
+			this.nextEntityIndex = nextEntityIndex;
+			this.oldMorphoFrame = oldMorphoFrame;
+		}
+		
+		public void wizardComplete(Node newDOM, String autoSavedID) {
+
+            if(newDOM != null) {
+
+              Log.debug(30,"Entity Wizard complete - creating Entity object..");
+              adp.replaceEntity(newDOM, nextEntityIndex);//we use replace method here because the auto-save file already adding the entity into datapackage.
+              adp.setLocation("");  // we've changed it and not yet saved
+
+            }
+
+            try
+            {
+              ServiceController services = ServiceController.getInstance();
+              ServiceProvider provider =
+              services.getServiceProvider(DataPackageInterface.class);
+              DataPackageInterface dataPackageInt = (DataPackageInterface)provider;
+              dataPackageInt.openNewDataPackage(adp, null);
+            }
+            catch (ServiceNotHandledException snhe)
+            {
+              Log.debug(6, snhe.getMessage());
+            }
+            oldMorphoFrame.setVisible(false);
+            UIController controller = UIController.getInstance();
+            controller.removeWindow(oldMorphoFrame);
+            oldMorphoFrame.dispose();
+
+          }
+
+          public void wizardCanceled() {
+
+            Log.debug(45, "\n\n********** Wizard canceled!");
+          }
       
 	} 
   

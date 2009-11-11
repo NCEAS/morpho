@@ -71,7 +71,7 @@ public class DataPackageWizardPlugin implements PluginInterface,
                                                 ServiceProvider,
                                                 DataPackageWizardInterface {
 	
-	public static final String NEWPACKAGEWIZARDFRAMETITLE = "New Data Table Wizard";
+	
 
   /**
    *  Constructor
@@ -154,7 +154,7 @@ public class DataPackageWizardPlugin implements PluginInterface,
   public void startEntityWizard(DataPackageWizardListener listener, int entityIndex) {
 
     startWizardAtPage(WizardSettings.ENTITY_WIZ_FIRST_PAGE_ID, false, listener,
-                      "New Data Table Wizard", entityIndex);
+    		NEWTABLEEWIZARDFRAMETITLE, entityIndex);
   }
 
 
@@ -168,7 +168,7 @@ public class DataPackageWizardPlugin implements PluginInterface,
   public void startCodeDefImportWizard(DataPackageWizardListener listener, int entityIndex ) {
 
     startWizardAtPage(DataPackageWizardInterface.CODE_IMPORT_SUMMARY, false,
-                      listener, "Import Code Definitions", entityIndex);
+                      listener, NEWCODEDEFINITIONWIZARDFRAMETITLE, entityIndex);
   }
   
   /**
@@ -212,6 +212,7 @@ public class DataPackageWizardPlugin implements PluginInterface,
     {
     	dpWiz = new WizardContainerFrame();
     }
+    dpWiz.initialAutoSaving();
     dpWiz.setDataPackageWizardListener(listener);
     dpWiz.setBounds(
                   WizardSettings.WIZARD_X_COORD, WizardSettings.WIZARD_Y_COORD,

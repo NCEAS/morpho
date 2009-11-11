@@ -106,7 +106,9 @@ public interface DataPackageWizardInterface {
   public static final String TEXT_IMPORT_ATTRIBUTE = "TEXT_IMPORT_ATTRIBUTE_";
   public static final String TEXT_IMPORT_FIRST_ATTRIBUTE = TEXT_IMPORT_ATTRIBUTE+TextImportAttribute.FIRSTINDEX;
   
-
+  public static final String NEWPACKAGEWIZARDFRAMETITLE = "New Data Package Wizard";
+  public static final String NEWTABLEEWIZARDFRAMETITLE = "New Data Table Wizard";
+  public static final String NEWCODEDEFINITIONWIZARDFRAMETITLE = "Import Code Definitions";
 
 
   /**
