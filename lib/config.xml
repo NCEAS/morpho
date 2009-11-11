@@ -4,6 +4,7 @@
   <dataLocationInlineOnline>online</dataLocationInlineOnline>
   <plugin>edu.ucsb.nceas.morpho.query.QueryPlugin</plugin>
   <plugin>edu.ucsb.nceas.morpho.datapackage.DataPackagePlugin</plugin>
+  <plugin>org.ecoinformatics.sms.plugins.AnnotationPlugin</plugin>
   <plugin>edu.ucsb.nceas.morpho.editor.EditorPlugin</plugin>
   <plugin>edu.ucsb.nceas.morpho.plugins.metadisplay.MetaDisplayPlugin</plugin>
   <plugin>edu.ucsb.nceas.morpho.plugins.xsltresolver.XSLTResolverPlugin</plugin>
