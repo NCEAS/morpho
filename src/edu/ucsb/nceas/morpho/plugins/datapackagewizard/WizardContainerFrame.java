@@ -30,6 +30,7 @@ package edu.ucsb.nceas.morpho.plugins.datapackagewizard;
 
 import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.datapackage.AbstractDataPackage;
+import edu.ucsb.nceas.morpho.datapackage.AccessionNumber;
 import edu.ucsb.nceas.morpho.datapackage.DataPackageFactory;
 import edu.ucsb.nceas.morpho.datastore.FileSystemDataStore;
 import edu.ucsb.nceas.morpho.framework.AbstractUIPage;
@@ -173,31 +174,29 @@ public class WizardContainerFrame
    */
   public void initialAutoSaving()
   {
-	  ConfigXML profile = Morpho.thisStaticInstance.getProfile();   
-	    if (profile != null)
+	      
+	    if(adp == null)
 	    {
-	    	String scope = profile.get("scope", 0);
-	    	String separator= profile.get("separator", 0);
-	    	// try to get autoSaveID from adp first.
-	    	
-			if(adp != null)
-			{
-				autoSaveID = adp.getAutoSavedD();
-				//edu.ucsb.nceas.morpho.datapackage.Entity[] arr = adp.getEntityArray();
-				//adp.setOriginalEntityArray(arr);
-				
-			}
-			//if we couldn't get the autoSaveID from exist datapackage, get it from random number
-	    	if(autoSaveID == null && scope != null)
-	    	{  	   
-	    	   autoSaveID = scope+separator+getRandomString()+separator+VERSION1;
-	    	   if(adp != null)
-	    	   {
-	    		   adp.setAutoSavedID(autoSaveID);
-	    		   dumpPackageToAutoSaveFile(autoSaveID);//onlywork for add entity wizard
-	    	   }
-	    	}
+	    	Log.debug(5, "The abstract package assoicates with the WizardContainerframe is null and we couldn't initialize the auto save id.");
 	    }
+	   
+	    	// try to get autoSaveID from adp first.
+	   		autoSaveID = adp.getAutoSavedD();		
+			//if we couldn't get the autoSaveID from exist datapackage, get it from package id.
+			//if auto save id is still null or empty, get it for next available id
+	    	if(autoSaveID == null )
+	    	{ 
+	    	   autoSaveID = adp.getAccessionNumber();
+	    	   if(autoSaveID == null || autoSaveID.trim().equals(""))
+	    	   {
+	    		   AccessionNumber an = new AccessionNumber(Morpho.thisStaticInstance);
+	    	        autoSaveID = an.getNextId();
+	    		    	 
+	    	   }
+	    	   adp.setAutoSavedID(autoSaveID);	    
+	    	}
+	    	dumpPackageToAutoSaveFile(autoSaveID);//onlywork for add entity wizard
+	    
   }
   
  
