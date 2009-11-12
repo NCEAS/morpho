@@ -617,6 +617,56 @@ public  class EML200DataPackage extends AbstractDataPackage
 	  return completionStatus;
   }
   
+  /**
+   * Removes the information on additional metadata for incomplete entity
+   */
+  public void removeInfoForIncompleteEntity()
+  {
+	    NodeList incompleteInfoList = null;
+	    String path = IncompleteDocSettings.EMLPATH+IncompleteDocSettings.ADDITIONALMETADATA+"/"+IncompleteDocSettings.METADATA+
+                         "/"+IncompleteDocSettings.ENTITYWIZARD;
+	    try 
+	    {
+	      
+	      incompleteInfoList = XMLUtilities.getNodeListWithXPath(metadataNode, path);
+	    }
+	    catch (Exception w) 
+	    {
+	      Log.debug(50, "exception in getting tempoNodeLIst");
+	    }
+	     if (incompleteInfoList==null) 
+	     {
+	    	 return;
+	     }
+	     for (int i=0;i<incompleteInfoList.getLength();i++) 
+	     {
+	       Node entityWizardNode = incompleteInfoList.item(i);
+	       Node metadataNode = null;
+	       Node additionalMetadataNode = null;
+	       Node emlNode = null;
+	       if(entityWizardNode != null)
+	       {
+		       metadataNode = entityWizardNode.getParentNode();
+		       if(metadataNode != null)
+		       {
+		    	   additionalMetadataNode = metadataNode.getParentNode();
+		    	   if(additionalMetadataNode != null)
+		    	   {
+		    		   emlNode = additionalMetadataNode.getParentNode();
+		    		   if(emlNode != null)
+		    		   {
+		    			   Log.debug(32, "in EMl200DataPackage.removeInofForIncompleteEntity, the additionalMetadata node is removed");
+				          emlNode.removeChild(additionalMetadataNode);
+		    		   }
+		    	   }
+			      
+		       }
+		      
+	       }
+	       
+	     }
+  }
+  
   
   /**
    * Gets the UIPage class name list after parsing the incomplete information in additional metacat part.
@@ -993,56 +1043,7 @@ public  class EML200DataPackage extends AbstractDataPackage
 		
   }
   
-  /**
-   * Removes the information on additional metadata for incomplete entity
-   */
-  public void removeInofForIncompleteEntity()
-  {
-	    NodeList incompleteInfoList = null;
-	    String path = IncompleteDocSettings.EMLPATH+IncompleteDocSettings.ADDITIONALMETADATA+"/"+IncompleteDocSettings.METADATA+
-                         "/"+IncompleteDocSettings.ENTITYWIZARD;
-	    try 
-	    {
-	      
-	      incompleteInfoList = XMLUtilities.getNodeListWithXPath(metadataNode, path);
-	    }
-	    catch (Exception w) 
-	    {
-	      Log.debug(50, "exception in getting tempoNodeLIst");
-	    }
-	     if (incompleteInfoList==null) 
-	     {
-	    	 return;
-	     }
-	     for (int i=0;i<incompleteInfoList.getLength();i++) 
-	     {
-	       Node entityWizardNode = incompleteInfoList.item(i);
-	       Node metadataNode = null;
-	       Node additionalMetadataNode = null;
-	       Node emlNode = null;
-	       if(entityWizardNode != null)
-	       {
-		       metadataNode = entityWizardNode.getParentNode();
-		       if(metadataNode != null)
-		       {
-		    	   additionalMetadataNode = metadataNode.getParentNode();
-		    	   if(additionalMetadataNode != null)
-		    	   {
-		    		   emlNode = additionalMetadataNode.getParentNode();
-		    		   if(emlNode != null)
-		    		   {
-		    			   Log.debug(32, "in EMl200DataPackage.removeInofForIncompleteEntity, the additionalMetadata node is removed");
-				          emlNode.removeChild(additionalMetadataNode);
-		    		   }
-		    	   }
-			      
-		       }
-		      
-	       }
-	       
-	     }
-  }
-
+  
   
 
 

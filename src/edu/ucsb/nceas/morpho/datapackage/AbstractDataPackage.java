@@ -43,6 +43,7 @@ import edu.ucsb.nceas.morpho.util.IncompleteDocSettings;
 import edu.ucsb.nceas.morpho.util.LoadDataPath;
 import edu.ucsb.nceas.morpho.util.Log;
 import edu.ucsb.nceas.morpho.util.ModifyingPageDataInfo;
+import edu.ucsb.nceas.morpho.util.WizardPageInfo;
 import edu.ucsb.nceas.morpho.util.XMLTransformer;
 import edu.ucsb.nceas.morpho.util.XMLUtil;
 import edu.ucsb.nceas.utilities.XMLUtilities;
@@ -1549,54 +1550,57 @@ public abstract class AbstractDataPackage extends MetadataObject
   }
   
   /**
+   * Gets the status of the completion of this package 
+   * @return three status - completed, incomplete(new package wizard) or incomplete(text import wizard)
+   */
+  abstract public  String getCompletionStatus();
+  
+  /**
    * Removes the information on additional metadata for incomplete entity
    */
-  public void removeInofForIncompleteEntity()
-  {
-	    NodeList incompleteInfoList = null;
-	    String path = IncompleteDocSettings.EMLPATH+IncompleteDocSettings.ADDITIONALMETADATA+"/"+IncompleteDocSettings.METADATA+
-                         "/"+IncompleteDocSettings.ENTITYWIZARD;
-	    try 
-	    {
-	      
-	      incompleteInfoList = XMLUtilities.getNodeListWithXPath(metadataNode, path);
-	    }
-	    catch (Exception w) 
-	    {
-	      Log.debug(50, "exception in getting tempoNodeLIst");
-	    }
-	     if (incompleteInfoList==null) 
-	     {
-	    	 return;
-	     }
-	     for (int i=0;i<incompleteInfoList.getLength();i++) 
-	     {
-	       Node entityWizardNode = incompleteInfoList.item(i);
-	       Node metadataNode = null;
-	       Node additionalMetadataNode = null;
-	       Node emlNode = null;
-	       if(entityWizardNode != null)
-	       {
-		       metadataNode = entityWizardNode.getParentNode();
-		       if(metadataNode != null)
-		       {
-		    	   additionalMetadataNode = metadataNode.getParentNode();
-		    	   if(additionalMetadataNode != null)
-		    	   {
-		    		   emlNode = additionalMetadataNode.getParentNode();
-		    		   if(emlNode != null)
-		    		   {
-		    			   Log.debug(32, "in EMl200DataPackage.removeInofForIncompleteEntity, the additionalMetadata node is removed");
-				          emlNode.removeChild(additionalMetadataNode);
-		    		   }
-		    	   }
-			      
-		       }
-		      
-	       }
-	       
-	     }
-  }
+  abstract public void removeInfoForIncompleteEntity();
+  
+  /**
+   * Gets the UIPage class name list after parsing the incomplete information in additional metacat part.
+   * This eml part looks like
+   *  <additionalMetadata>
+   *      <metadata>
+   *         <packagwizard>
+   *              <class>
+   *                  <name>
+   *                   <parameter>
+   *              </class>
+   *  ............................
+   * @return
+   */
+  abstract public WizardPageInfo [] getIncompletePacakgeWizardPageInfoList();
+  
+  /**
+   * Gets the UIPage class name list after parsing the incomplete information in additional metacat part.
+   * This eml part looks like
+   *  <additionalMetadata>
+   *      <metadata>
+   *         <entityWizard>
+   *              <class>
+   *                  <name>
+   *                   <parameter>
+   *              </class>
+   *  ............................
+   * @return
+   */
+  abstract public WizardPageInfo [] getIncompleteEntityWizardPageInfoList();
+  
+  /**
+   * Gets the entity index stores in incomplete doc info part
+   * @return
+   */
+  abstract public int getEntityIndexInIncompleteDocInfo();
+  
+  /**
+   * Read the import attribute information from incomplete additionMetadata part.
+   */
+  abstract public void readImportAttributeInfoFromIncompleteDoc();
+
 
 
     /**

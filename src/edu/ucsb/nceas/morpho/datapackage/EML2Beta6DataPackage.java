@@ -33,6 +33,7 @@ import edu.ucsb.nceas.morpho.datastore.MetacatDataStore;
 import edu.ucsb.nceas.morpho.datastore.MetacatUploadException;
 import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
 import edu.ucsb.nceas.morpho.util.Log;
+import edu.ucsb.nceas.morpho.util.WizardPageInfo;
 import edu.ucsb.nceas.utilities.XMLUtilities;
 
 import java.io.BufferedInputStream;
@@ -584,5 +585,88 @@ public class EML2Beta6DataPackage extends AbstractDataPackage
       "EML2Beta6DataPackage - method not implemented - "
      +"getSubtreesThatReferences()");
   }
+  
+  /**
+   * Read the import attribute information from incomplete additionMetadata part.
+   */
+  public void readImportAttributeInfoFromIncompleteDoc()
+  {
+	  throw new java.lang.UnsupportedOperationException(
+		      "EML2Beta6DataPackage - method not implemented - "
+		     +"readImportAttributeInfoFromIncompleteDoc()");
+  }
+  
+  /**
+   * Gets the status of the completion of this package 
+   * @return three status - completed, incomplete(new package wizard) or incomplete(text import wizard)
+   */
+  public  String getCompletionStatus()
+  {
+	  throw new java.lang.UnsupportedOperationException(
+		      "EML2Beta6DataPackage - method not implemented - "
+		     +"getCompletionStatus()");
+  }
+  
+  /**
+   * Removes the information on additional metadata for incomplete entity
+   */
+  public void removeInfoForIncompleteEntity()
+  {
+	  throw new java.lang.UnsupportedOperationException(
+		      "EML2Beta6DataPackage - method not implemented - "
+		     +"removeInfoForIncompleteEntity()");  
+  }
+  
+  /**
+   * Gets the UIPage class name list after parsing the incomplete information in additional metacat part.
+   * This eml part looks like
+   *  <additionalMetadata>
+   *      <metadata>
+   *         <packagwizard>
+   *              <class>
+   *                  <name>
+   *                   <parameter>
+   *              </class>
+   *  ............................
+   * @return
+   */
+   public WizardPageInfo [] getIncompletePacakgeWizardPageInfoList()
+   {
+	   throw new java.lang.UnsupportedOperationException(
+			      "EML2Beta6DataPackage - method not implemented - "
+			     +"getIncompletePacakgeWizardPageInfoList()");
+   }
+  
+  /**
+   * Gets the UIPage class name list after parsing the incomplete information in additional metacat part.
+   * This eml part looks like
+   *  <additionalMetadata>
+   *      <metadata>
+   *         <entityWizard>
+   *              <class>
+   *                  <name>
+   *                   <parameter>
+   *              </class>
+   *  ............................
+   * @return
+   */
+  public WizardPageInfo [] getIncompleteEntityWizardPageInfoList()
+  {
+	  throw new java.lang.UnsupportedOperationException(
+		      "EML2Beta6DataPackage - method not implemented - "
+		     +"getIncompleteEntityWizardPageInfoList()");
+  }
+  
+  /**
+   * Gets the entity index stores in incomplete doc info part
+   * @return
+   */
+  public int getEntityIndexInIncompleteDocInfo()
+  {
+	  throw new java.lang.UnsupportedOperationException(
+		      "EML2Beta6DataPackage - method not implemented - "
+		     +"getEntityIndexInIncompleteDocInfo()");
+  }
+  
 }
 

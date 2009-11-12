@@ -797,19 +797,19 @@ public class DataPackagePlugin
 	    DataPackageWizardInterface dpwPlugin = null;
 	    try {
 	      sc = ServiceController.getInstance();
-	      EML200DataPackage eml200 = (EML200DataPackage)adp;
-	      String status = eml200.getCompletionStatus();
+	      //EML200DataPackage eml200 = (EML200DataPackage)adp;
+	      String status = adp.getCompletionStatus();
 	      WizardPageInfo [] classNameList = null;
 	      int index =-1;
 	      Log.debug(30, "The status of incomplete is "+status+" in DataPackagePlugin.openIncompleteDataPackage");
 	      if(status != null && status.equals(IncompleteDocSettings.INCOMPLETE_PACKAGE_WIZARD))
 	      {
-	    	  classNameList = eml200.getIncompletePacakgeWizardPageInfoList();
+	    	  classNameList = adp.getIncompletePacakgeWizardPageInfoList();
 	      }
 	      else if(status != null && status.equals(IncompleteDocSettings.INCOMPLETE_ENTITY_WIZARD))
 	      {
-	    	  classNameList = eml200.getIncompleteEntityWizardPageInfoList();
-	    	  index = eml200.getEntityIndexInIncompleteDocInfo();
+	    	  classNameList = adp.getIncompleteEntityWizardPageInfoList();
+	    	  index = adp.getEntityIndexInIncompleteDocInfo();
 	      }
 	      
 	      IncompleteDocInfo info = new IncompleteDocInfo(status);

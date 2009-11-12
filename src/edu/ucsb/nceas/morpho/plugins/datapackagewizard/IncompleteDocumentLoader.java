@@ -169,7 +169,7 @@ public class IncompleteDocumentLoader
 			  Log.debug(25, "The current page id in IncompleteDocument.loadEntityWizard is "+currentPage.getPageID());
 			  //remove the entity with the index (this entity is the unfinished one)
 			  dataPackage.deleteEntity(index);
-			  dataPackage.removeInofForIncompleteEntity();
+			  dataPackage.removeInfoForIncompleteEntity();
 			  dpWiz.setEntityIndex(index);
 			  MorphoFrame frame = openMorphoFrameForDataPackage(dataPackage);
 			  if(frame != null)
