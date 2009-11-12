@@ -91,7 +91,7 @@ public class WizardPageInfo
 	 */
 	public void putVariableValue(String key, String value)
 	{
-		if(key != null)
+		if(key != null && value != null)
 		{
 			Log.debug(35, "In IncompleteDocInfo.putVariableValue put key "+key+" and value "+value+ " into variablesValue hastable");
 			variablesValues.put(key, value);
