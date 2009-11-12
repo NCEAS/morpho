@@ -121,8 +121,8 @@ public class AnnotationCommand implements Command {
 				String packageId = adp.getAccessionNumber();
 				String dataTable = String.valueOf(entityIndex);
 				
-				//List<Annotation> annotations = SMS.getInstance().getAnnotationManager().getAnnotations(packageId, dataTable);
-				List<Annotation> annotations = new ArrayList<Annotation>();
+				List<Annotation> annotations = SMS.getInstance().getAnnotationManager().getAnnotations(packageId, dataTable);
+				//List<Annotation> annotations = new ArrayList<Annotation>();
 
 				if (annotations.size() > 0) {
 					annotation = annotations.get(0);
@@ -148,7 +148,8 @@ public class AnnotationCommand implements Command {
 					AccessionNumber accNum = new AccessionNumber(Morpho.thisStaticInstance);
 					annotation.setURI(accNum.getNextId());
 					
-					saveAnnotation();
+					//FIXME: what kind of saving?
+					//saveAnnotation();
 					
 				}
 			}
@@ -179,15 +180,23 @@ public class AnnotationCommand implements Command {
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
 			annotation.write(baos);
 			
+			AccessionNumber accNum = new AccessionNumber(Morpho.thisStaticInstance);
+			String id = annotation.getURI();
+			// increment if needed
+			if (!fds.status(id).equals(FileSystemDataStore.NONEXIST)) {
+				id = accNum.incRev(id);
+				annotation.setURI(id);
+			}
+			
 			//save in local store
-			File annotationFile = fds.saveFile(annotation.getURI(), new StringReader(baos.toString()));
+			File annotationFile = fds.saveFile(id, new StringReader(baos.toString()));
 			
 			//save in the manager - probably don't need this since it's all in memory and referencing the same annotation object
-//			if (SMS.getInstance().getAnnotationManager().isAnnotation(annotation.getURI())) {
-//				SMS.getInstance().getAnnotationManager().updateAnnotation(new FileInputStream(annotationFile), annotation.getURI());
-//			} else {
-//				SMS.getInstance().getAnnotationManager().importAnnotation(new FileInputStream(annotationFile), annotation.getURI());
-//			}
+			if (SMS.getInstance().getAnnotationManager().isAnnotation(annotation.getURI())) {
+				SMS.getInstance().getAnnotationManager().updateAnnotation(new FileInputStream(annotationFile), annotation.getURI());
+			} else {
+				SMS.getInstance().getAnnotationManager().importAnnotation(new FileInputStream(annotationFile), annotation.getURI());
+			}
 		}
 		catch (Exception e) {
 			e.printStackTrace();

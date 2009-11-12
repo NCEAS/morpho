@@ -28,6 +28,10 @@
 
 package org.ecoinformatics.sms.plugins;
 
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+
 import javax.swing.BoxLayout;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -40,10 +44,15 @@ import org.ecoinformatics.sms.annotation.Measurement;
 import org.ecoinformatics.sms.annotation.Observation;
 import org.ecoinformatics.sms.annotation.Standard;
 
+import com.sun.tools.doclets.formats.html.resources.standard;
+
 import edu.ucsb.nceas.morpho.framework.AbstractUIPage;
+import edu.ucsb.nceas.morpho.framework.ModalDialog;
+import edu.ucsb.nceas.morpho.framework.UIController;
 import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WidgetFactory;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardSettings;
+import edu.ucsb.nceas.morpho.util.UISettings;
 import edu.ucsb.nceas.utilities.OrderedMap;
 
 
@@ -88,6 +97,15 @@ public class AnnotationPage extends AbstractUIPage{
 
     this.add(WidgetFactory.makeDefaultSpacer());
 
+    MouseListener mListener = 
+    	new MouseAdapter() {
+
+			public void mouseClicked(MouseEvent e) {
+				JTextField source = (JTextField) e.getSource();
+				showDialog(source);
+			}
+    	
+    };
     JPanel classesPanel = WidgetFactory.makePanel();
     classesPanel.setLayout(new BoxLayout(classesPanel, BoxLayout.Y_AXIS));
     
@@ -95,6 +113,7 @@ public class AnnotationPage extends AbstractUIPage{
     JPanel entityPanel = WidgetFactory.makePanel(1);
     entityPanel.add(WidgetFactory.makeLabel("Entity:", false));
     observationEntity = WidgetFactory.makeOneLineTextField("<entity>");
+    observationEntity.addMouseListener(mListener);
     entityPanel.add(observationEntity);
     entityPanel.setBorder(new javax.swing.border.EmptyBorder(0, 0, 0, 8 * WizardSettings.PADDING));
     
@@ -102,6 +121,8 @@ public class AnnotationPage extends AbstractUIPage{
     JPanel characteristicPanel = WidgetFactory.makePanel(1);
     characteristicPanel.add(WidgetFactory.makeLabel("Characteristic:", false));
     observationCharacteristic = WidgetFactory.makeOneLineTextField("<characteristic>");
+    observationCharacteristic.addMouseListener(mListener);
+
     characteristicPanel.add(observationCharacteristic);
     characteristicPanel.setBorder(new javax.swing.border.EmptyBorder(0, 0, 0, 8 * WizardSettings.PADDING));
     
@@ -109,6 +130,8 @@ public class AnnotationPage extends AbstractUIPage{
     JPanel standardPanel = WidgetFactory.makePanel(1);
     standardPanel.add(WidgetFactory.makeLabel("Standard:", false));
     observationStandard = WidgetFactory.makeOneLineTextField("<standard>");
+    observationStandard.addMouseListener(mListener);
+
     standardPanel.add(observationStandard);
     standardPanel.setBorder(new javax.swing.border.EmptyBorder(0, 0, 0, 8 * WizardSettings.PADDING));
     
@@ -125,9 +148,44 @@ public class AnnotationPage extends AbstractUIPage{
     this.add(WidgetFactory.makeDefaultSpacer());
 
   }
+
+  private void showDialog(JTextField source) {
+		OntologyClassSelectionPage page = new OntologyClassSelectionPage();
+		
+		// show the dialog
+		ModalDialog dialog = 
+			new ModalDialog(
+					page,
+					UIController.getInstance().getCurrentActiveWindow(),
+					UISettings.POPUPDIALOG_WIDTH,
+					UISettings.POPUPDIALOG_HEIGHT);
+		
+		//get the response back
+		if (dialog.USER_RESPONSE == ModalDialog.OK_OPTION) {
+			source.setText(page.getSelectedTerms().get(0));
+		}
+		page = null;
+	}
   
   public void setAnnotation(Annotation a) {
 	  this.annotation = a;
+	  
+	  //try to set the text field values
+	  try {
+		  String entity = annotation.getObservations().get(0).getEntity().getURI();
+		  this.observationEntity.setText(entity);
+	  }
+	  catch (Exception e) {}
+	  try {
+		  String characteristic = annotation.getObservations().get(0).getMeasurements().get(0).getCharacteristics().get(0).getURI();
+		  this.observationCharacteristic.setText(characteristic);
+	  }
+	  catch (Exception e) {}
+	  try {
+		  String standard = annotation.getObservations().get(0).getMeasurements().get(0).getStandard().getURI();
+		  this.observationStandard.setText(standard);
+	  }
+	  catch (Exception e) {}
   }
 
   public Annotation getAnnotation() {
