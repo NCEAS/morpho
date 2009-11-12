@@ -81,6 +81,11 @@ public class IncompleteDocumentLoader
 	 */
 	public IncompleteDocumentLoader(AbstractDataPackage dataPackage, IncompleteDocInfo incompleteDocInfo)
 	{
+		if(dataPackage == null)
+		{
+			Log.debug(5, "Morpho couldn't open the incomplete document since the document is null");
+			return;
+		}
 		this.dataPackage = dataPackage;
 		this.incompleteDocInfo = incompleteDocInfo;
 		if(this.incompleteDocInfo != null)
@@ -120,27 +125,28 @@ public class IncompleteDocumentLoader
 	 */
 	private void loadNewPackageWizard()
 	{
-		boolean showPageCount = true;
-		  
-		  WizardContainerFrame dpWiz = new WizardContainerFrame();
-		  dpWiz.initialAutoSaving();
-		  AbstractUIPage currentPage = loadPagesIntoWizard(dpWiz);
-	      if(currentPage == null)
-	      {
-	    	  Log.debug(5, "The new package wizard couldn't load the existing eml document!");
-	    	  return;
-	      }
-		  Log.debug(25, "The current page id in IncompleteDocument.loadNewPackageWizard is "+currentPage.getPageID());
-		  PackageWizardListener dataPackageWizardListener = new PackageWizardListener();
-		  dpWiz.setDataPackageWizardListener(dataPackageWizardListener);
-		  dpWiz.setBounds(
-		                  WizardSettings.WIZARD_X_COORD, WizardSettings.WIZARD_Y_COORD,
-		                  WizardSettings.WIZARD_WIDTH,   WizardSettings.WIZARD_HEIGHT );
-		  dpWiz.setCurrentPage(currentPage);
-		  dpWiz.setShowPageCountdown(showPageCount);
-		  dpWiz.setTitle(DataPackageWizardInterface.NEWPACKAGEWIZARDFRAMETITLE);
-		  dpWiz.setVisible(true);
-	    
+		  if(incompleteDocInfo != null)
+		  {
+			  boolean showPageCount = true;	  
+			  WizardContainerFrame dpWiz = new WizardContainerFrame();
+			  dpWiz.initialAutoSaving();
+			  AbstractUIPage currentPage = loadPagesIntoWizard(dpWiz);
+		      if(currentPage == null)
+		      {
+		    	  Log.debug(5, "The new package wizard couldn't load the existing eml document!");
+		    	  return;
+		      }
+			  Log.debug(25, "The current page id in IncompleteDocument.loadNewPackageWizard is "+currentPage.getPageID());
+			  PackageWizardListener dataPackageWizardListener = new PackageWizardListener();
+			  dpWiz.setDataPackageWizardListener(dataPackageWizardListener);
+			  dpWiz.setBounds(
+			                  WizardSettings.WIZARD_X_COORD, WizardSettings.WIZARD_Y_COORD,
+			                  WizardSettings.WIZARD_WIDTH,   WizardSettings.WIZARD_HEIGHT );
+			  dpWiz.setCurrentPage(currentPage);
+			  dpWiz.setShowPageCountdown(showPageCount);
+			  dpWiz.setTitle(DataPackageWizardInterface.NEWPACKAGEWIZARDFRAMETITLE);
+			  dpWiz.setVisible(true);
+		  }
 	}
 	
 	/*
@@ -148,24 +154,35 @@ public class IncompleteDocumentLoader
 	 */
 	private void loadEntityWizard()
 	{
-		  boolean showPageCount = false;
-		  boolean isEntity = true;
-		  WizardContainerFrame dpWiz = new WizardContainerFrame(isEntity);
-		  AbstractUIPage currentPage = loadPagesIntoWizard(dpWiz);
-	      if(currentPage == null)
-	      {
-	    	  Log.debug(5, "The new package wizard couldn't load the existing eml document!");
-	    	  return;
-	      }
-		  Log.debug(25, "The current page id in IncompleteDocument.loadNewPackageWizard is "+currentPage.getPageID());
-		  PackageWizardListener dataPackageWizardListener = new PackageWizardListener();
-		  dpWiz.setDataPackageWizardListener(dataPackageWizardListener);
-		  dpWiz.setBounds(
-		                  WizardSettings.WIZARD_X_COORD, WizardSettings.WIZARD_Y_COORD,
-		                  WizardSettings.WIZARD_WIDTH,   WizardSettings.WIZARD_HEIGHT );
-		  dpWiz.setCurrentPage(currentPage);
-		  dpWiz.setTitle(DataPackageWizardInterface.NEWTABLEEWIZARDFRAMETITLE);
-		  dpWiz.setVisible(true);
+		  if(incompleteDocInfo != null)
+		  {
+			  boolean showPageCount = false;
+			  boolean isEntity = true;
+			  int index = incompleteDocInfo.getEntityIndex();
+			  WizardContainerFrame dpWiz = new WizardContainerFrame(isEntity);
+			  AbstractUIPage currentPage = loadPagesIntoWizard(dpWiz);
+		      if(currentPage == null)
+		      {
+		    	  Log.debug(5, "The new entity wizard couldn't load the existing eml document!");
+		    	  return;
+		      }
+			  Log.debug(25, "The current page id in IncompleteDocument.loadEntityWizard is "+currentPage.getPageID());
+			  //remove the entity with the index (this entity is the unfinished one)
+			  dataPackage.deleteEntity(index);
+			  dpWiz.setEntityIndex(index);
+			  MorphoFrame frame = openMorphoFrameForDataPackage(dataPackage);
+			  if(frame != null)
+			  {
+				  TableWizardListener dataPackageWizardListener = new TableWizardListener(dataPackage, index, frame);
+				  dpWiz.setDataPackageWizardListener(dataPackageWizardListener);
+				  dpWiz.setBounds(
+				                  WizardSettings.WIZARD_X_COORD, WizardSettings.WIZARD_Y_COORD,
+				                  WizardSettings.WIZARD_WIDTH,   WizardSettings.WIZARD_HEIGHT );
+				  dpWiz.setCurrentPage(currentPage);
+				  dpWiz.setTitle(DataPackageWizardInterface.NEWTABLEEWIZARDFRAMETITLE);
+				  dpWiz.setVisible(true);
+			  }
+		  }
 	}
 	
 	/*
@@ -174,7 +191,7 @@ public class IncompleteDocumentLoader
 	private AbstractUIPage loadPagesIntoWizard(WizardContainerFrame dpWiz)
 	{
 		AbstractUIPage currentPage = null;
-		if(dpWiz != null)
+		if(dpWiz != null && incompleteDocInfo != null)
 		{
 			  WizardPageInfo [] classNameFromIncompleteDoc = incompleteDocInfo.getWizardPageClassInfoList();
 			  //Vector parameters = null;
@@ -291,18 +308,7 @@ public class IncompleteDocumentLoader
         Log.debug(30, "AbstractDataPackage complete");
         adp.setAccessionNumber("temporary.1.1");
         adp.setAutoSavedID(autoSavedID);
-
-        try {
-          ServiceController services = ServiceController.getInstance();
-          ServiceProvider provider =
-              services.getServiceProvider(DataPackageInterface.class);
-          DataPackageInterface dataPackage = (DataPackageInterface)provider;
-          dataPackage.openNewDataPackage(adp, null);
-
-        } catch (ServiceNotHandledException snhe) {
-
-          Log.debug(6, snhe.getMessage());
-        }
+        openMorphoFrameForDataPackage(adp);
         Log.debug(45, "\n\n********** Wizard finished: DOM:");
         Log.debug(45, XMLUtilities.getDOMTreeAsString(newDOM, false));
       }
@@ -345,23 +351,14 @@ public class IncompleteDocumentLoader
               adp.setLocation("");  // we've changed it and not yet saved
 
             }
-
-            try
+            MorphoFrame frame = openMorphoFrameForDataPackage(adp);
+            if(frame != null)
             {
-              ServiceController services = ServiceController.getInstance();
-              ServiceProvider provider =
-              services.getServiceProvider(DataPackageInterface.class);
-              DataPackageInterface dataPackageInt = (DataPackageInterface)provider;
-              dataPackageInt.openNewDataPackage(adp, null);
+              oldMorphoFrame.setVisible(false);
+              UIController controller = UIController.getInstance();
+              controller.removeWindow(oldMorphoFrame);
+              oldMorphoFrame.dispose();
             }
-            catch (ServiceNotHandledException snhe)
-            {
-              Log.debug(6, snhe.getMessage());
-            }
-            oldMorphoFrame.setVisible(false);
-            UIController controller = UIController.getInstance();
-            controller.removeWindow(oldMorphoFrame);
-            oldMorphoFrame.dispose();
 
           }
 
@@ -371,6 +368,25 @@ public class IncompleteDocumentLoader
           }
       
 	} 
-  
+	
+	/*
+	 * Open a morpho frame for given abstractDataPacakge
+	 */
+	private MorphoFrame openMorphoFrameForDataPackage(AbstractDataPackage adp)
+	{
+		 MorphoFrame frame = null;
+		 try {
+	          ServiceController services = ServiceController.getInstance();
+	          ServiceProvider provider =
+	              services.getServiceProvider(DataPackageInterface.class);
+	          DataPackageInterface dataPackage = (DataPackageInterface)provider;
+	          frame = dataPackage.openNewDataPackage(adp, null);
+            
+	        } catch (ServiceNotHandledException snhe) {
+
+	          Log.debug(6, snhe.getMessage());
+	        }
+	        return frame;
+	}
 
 }

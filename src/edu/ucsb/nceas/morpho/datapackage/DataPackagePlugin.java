@@ -958,7 +958,7 @@ public class DataPackagePlugin
    *  This method is to be used to display a newly created AbstractDataPackage
    *  location and identifier have not yet been established
    */
-  public void openNewDataPackage(AbstractDataPackage adp, ButterflyFlapCoordinator coordinator)
+  public MorphoFrame openNewDataPackage(AbstractDataPackage adp, ButterflyFlapCoordinator coordinator)
   {
     Log.debug(11, "DataPackage: Got service request to open a newly created AbstractDataPackage");
     boolean metacat = false;
@@ -1046,7 +1046,8 @@ public class DataPackagePlugin
                  dvcp,
                  StateChangeEvent.CREATE_DATAPACKAGE_FRAME));
     adp.loadCustomUnits();
-		packageWindow.setBusy(false);
+	packageWindow.setBusy(false);
+	return packageWindow;
   }
 
    /*

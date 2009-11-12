@@ -743,7 +743,7 @@ public  class EML200DataPackage extends AbstractDataPackage
 		    	    		      }
 		    	    		      else  if (node.getNodeType()==Node.ELEMENT_NODE && node.getNodeName().equals(IncompleteDocSettings.VALUE)) 
 		    	    		      {
-		    	    		    	  key = node.getFirstChild().getNodeValue();	    		    	  
+		    	    		    	  value = node.getFirstChild().getNodeValue();	    		    	  
 		    	    		    	  Log.debug(25, "In EML200DataPackage.getIncompleteWizardPageInfoList - the value is "+value);		    	                    
 		    	    		      }
                         	  }

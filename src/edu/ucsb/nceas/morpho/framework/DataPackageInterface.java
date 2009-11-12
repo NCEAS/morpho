@@ -71,7 +71,7 @@ public interface DataPackageInterface
    * @param adp indicates the location from which to open the data
    * @param coordinator the coordinator for butterfly flapping
    */
-  public void openNewDataPackage( AbstractDataPackage adp,
+  public MorphoFrame openNewDataPackage( AbstractDataPackage adp,
                                   ButterflyFlapCoordinator coordinator);
 
   /**
