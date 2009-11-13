@@ -25,8 +25,11 @@
  */
 package edu.ucsb.nceas.morpho.util;
 
+import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Vector;
+
+import edu.ucsb.nceas.utilities.OrderedMap;
 
 /**
  * It represents a wizard page information in incomplete-document medata part.
@@ -38,7 +41,7 @@ public class WizardPageInfo
 {
     private String className = null;
     private Vector parameters = new Vector();//parameters is for the class' constructor.
-    private Hashtable variablesValues = new Hashtable();//stores variable as key and value pair. 
+    private OrderedMap variablesValues = new OrderedMap();//stores variable as key and value pair. 
                                                                                 //if eml itself doesn't have enough info for 
                                                                                 //for loading a page. We store extral info here.
     
@@ -82,7 +85,7 @@ public class WizardPageInfo
 	 * Gets variables value as pairs of key and values.
 	 * This stores extra info if eml itself is not enough to load an page.
 	 */
-	public Hashtable getVariablesValues()
+	public OrderedMap getVariablesValuesMap()
 	{
 		return this.variablesValues;
 	}
@@ -93,12 +96,14 @@ public class WizardPageInfo
 	 * @param key
 	 * @param value
 	 */
-	public void putVariableValue(String key, String value)
+	public void putVariableValueMap(String key, String value)
 	{
 		if(key != null && value != null)
 		{
-			Log.debug(35, "In IncompleteDocInfo.putVariableValue put key "+key+" and value "+value+ " into variablesValue hastable");
+			Log.debug(35, "In IncompleteDocInfo.putVariableValue put key "+key+" and value "+value+ " into variablesValue OrderedMap");
 			variablesValues.put(key, value);
 		}
 	}
+	
+	
 }

@@ -802,7 +802,7 @@ public  class EML200DataPackage extends AbstractDataPackage
                         	  }
                         	  if(info != null)
                         	  {
-	    	                    	 info.putVariableValue(key, value);
+	    	                    	 info.putVariableValueMap(key, value);
 	    	                  }
                           }
 	    		    
