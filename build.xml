@@ -688,7 +688,7 @@
 		    stubfile="${morpho.basedir}/installer/build/mac/JavaApplicationStub"
             mainclass="edu.ucsb.nceas.morpho.Morpho"
             jvmversion="1.5"
-            jar="${morpho.basedir}/lib/morpho.jar"
+            jar="${build.lib}/${name}.jar"
             icon="${morpho.basedir}/lib/DesktopIcon32x32.icns" 
       	    extraclasspath="./lib/xercesImpl.jar
       			./lib/xml-apis.jar
