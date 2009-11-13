@@ -115,7 +115,7 @@
       <property name="dom"
                 value="${libdir}/dom4j.jar" />
       <property name="morpho"
-                value="${libdir}/${name}.jar" />
+                value="${build.lib}/${name}.jar" />
       <property name="jlf"
                 value="${libdir}/shippedIcons.jar" />
       <property name="itisjar"
@@ -137,7 +137,7 @@
       <property name="kunststoff"
                 value="${libdir}/kunststoff.jar" />
       <property name="morpho-config"
-                value="${libdir}/morpho-config.jar" />
+                value="${build.lib}/${name}-config.jar" />
       <property name="utilities"
                 value="${libdir}/utilities.jar" />
       <property name="index"
@@ -185,6 +185,12 @@
    				<include name="*.jar" />
    			</fileset>
        </path>
+   	
+   		<path id="classpath.runtime">
+   			<fileset dir="${build.lib}">
+   				<include name="*.jar" />
+   			</fileset>
+		</path>
 
        <taskdef resource="axis-tasks.properties" classpathref="classpath"/>
 	   
@@ -406,7 +412,7 @@
              classpathref="classpath" />
    </target>
 
-   <target name="jar" depends="compile,config-init">
+   <target name="jar" depends="compile,prepare-lib">
       <delete file="${build.dir}/${name}.jar" />
       <delete file="${build.dir}/${name}-config.jar" />
       <copy todir="${build.dest}/${package.home}/morpho/framework" filtering="no">
@@ -450,23 +456,30 @@
            excludes="*.jar,HTTPClient/**,SchemaParser/**,LiveMap/**,*.zip,*.gz"/>
    </target>
 
-	<target name="config-init" depends="">
+	<!-- copy necessary resources to build lib -->
+	<target name="prepare-lib" depends="prepare">
 		<copy todir="${build.lib}" filtering="no">
 		        <fileset dir="${libdir}" 
 		        	excludes="*.jar,HTTPClient/**,SchemaParser/**,LiveMap/**,*.zip,*.gz"/>
 		</copy>
+		<copy todir="${build.lib}" filtering="no">
+		        <fileset dir="${libdir}" 
+		        	includes="*.jar"/>
+			<fileset dir="${libdir}/axis" 
+					 includes="*.jar"/>
+		</copy>
 	</target>
 	
    <target name="install" depends="jar">
-      <copy file="${build.dir}/${name}.jar" todir="${libdir}" />
-      <copy file="${build.dir}/${name}-config.jar" todir="${libdir}" />
+      <copy file="${build.dir}/${name}.jar" todir="${build.lib}" />
+      <copy file="${build.dir}/${name}-config.jar" todir="${build.lib}" />
       <echo message="Install complete. Use the morpho script to run it." />
    </target>
-
+	
    <target name="sign" depends="install">
-      <signjar jar="${libdir}/${name}.jar" alias="myself"
+      <signjar jar="${build.lib}/${name}.jar" alias="myself"
                storepass="${storepass}" keystore="${keystore}"/>
-      <signjar jar="${libdir}/${name}-config.jar" alias="myself"
+      <signjar jar="${build.lib}/${name}-config.jar" alias="myself"
                storepass="${storepass}" keystore="${keystore}"/>
    </target>
 
@@ -476,7 +489,7 @@
         <fileset dir=".">
           <include name="*.jnlp"/>
         </fileset>
-        <fileset dir="${libdir}">
+        <fileset dir="${build.lib}">
           <include name="*.jar"/>
         </fileset>
       </copy>
@@ -512,10 +525,7 @@
       </copy>
    	
     <copy todir="${morpho.lib}">
-        <fileset dir="${libdir}" >
-        	<include name="*.jar"/>
-        </fileset>
-    	<fileset dir="${libdir}/axis" >
+        <fileset dir="${build.lib}" >
         	<include name="*.jar"/>
         </fileset>
    	</copy>
@@ -569,8 +579,6 @@
    <target name="clean" depends="init">
        <delete dir="${build.dir}" />
        <delete dir="${morpho.dir}" />
-       <delete file="${libdir}/${name}.jar" />
-       <delete file="${libdir}/${name}-config.jar" />
        <delete dir="${dist.dir}"/>
    </target>
 	
@@ -578,7 +586,8 @@
 		Those files are checked out from another cvs.-->
    <target name="fullclean" depends="clean">
        <delete dir="${schemadir}/eml-2.1.0" />
-       <delete file="${libdir}/utilities.jar" />
+       <delete file="${utilities}" />
+    	<delete file="${httpclient}" />
 		<delete file="${xsldir}/eml201to210.xsl" />
    </target>
 
@@ -627,9 +636,9 @@
 
    <target name="morpho" depends="install">
      <java classname="edu.ucsb.nceas.morpho.Morpho"
-           fork="yes" >
+           fork="yes" dir="${morpho.basedir}" >
      	<classpath>
-     		<path refid="classpath" />
+     		<path refid="classpath.runtime" />
      		<pathelement path="${morpho}:${help}"/>
      	</classpath>
        <jvmarg value="-Xmx512m"/>
