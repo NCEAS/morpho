@@ -688,29 +688,11 @@
 		    stubfile="${morpho.basedir}/installer/build/mac/JavaApplicationStub"
             mainclass="edu.ucsb.nceas.morpho.Morpho"
             jvmversion="1.5"
-            jar="${build.lib}/${name}.jar"
-            icon="${morpho.basedir}/lib/DesktopIcon32x32.icns" 
-      	    extraclasspath="./lib/xercesImpl.jar
-      			./lib/xml-apis.jar
-      			./lib/xalan.jar
-      			./lib/morpho-config.jar
-      			./lib/jhall.jar
-      			./lib/shippedIcons.jar
-      			./lib/morphohelp.jar
-      			./lib/httpclient.jar
-      			./lib/itislib.jar
-      			./lib/jsse.jar
-      			./lib/jcert.jar
-      			./lib/jnet.jar  
-      			./lib/kunststoff.jar 
-      			./lib/liveMap.jar 
-      			./lib/utilities.jar
-      			./lib/dom4j.jar
-      			./lib/jcalendar-1.3.2.jar
-		        ./lib/activation.jar
-		        ./lib/tar.jar
-		        ./lib/PDFRenderer.jar"
+            icon="${morpho.basedir}/lib/DesktopIcon32x32.icns"
             vmoptions="-Xmx512m -Xss5m" >
+      		<jarfileset dir="${build.lib}">
+      			<include name="*.jar" />
+      		</jarfileset>
         </jarbundler>
   </target>
 

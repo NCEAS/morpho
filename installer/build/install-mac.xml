@@ -116,6 +116,7 @@
 				<exclude name="installer/"/>
 				<exclude name="morpho.app/Contents/"/>
 				<exclude name="docs/"/>
+				<exclude name="lib/axis/"/>
 				<exclude name="lib/MemoryMonitor/"/>
 				<exclude name="lib/installer/"/>
 				<exclude name="lib/LiveMap/"/>
@@ -130,7 +131,14 @@
                 <exclude name="morpho-@{version}-linux.jar"/>
 				<exclude name="@{izpackjar}"/>
                 <exclude name="lib/launch4j/"/>
-			</fileset>			
+                <exclude name="lib/**/*.jar"/>
+			</fileset>
+			<!-- for mac these are in the .app -->
+			<!--  
+			<fileset dir="build/lib" targetdir="$INSTALL_PATH/lib/">
+			  <include name="*.jar"/>
+			</fileset>		
+			-->
 			<fileset dir="." targetdir="$INSTALL_PATH/">
 			  <include name="docs/user/"/>
 			  <include name="docs/licenses/"/>
@@ -142,7 +150,7 @@
     
     
 		<pack name="Sources" required="no">
-			<description>Morphor Source Files</description>
+			<description>Morpho Source Files</description>
 			<fileset dir="src" targetdir="$INSTALL_PATH/src">
 			</fileset>
 		</pack>	 
