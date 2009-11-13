@@ -453,7 +453,7 @@
         </manifest>
 	  </jar>
       <jar jarfile="${build.dir}/${name}-config.jar" basedir="${build.lib}"
-           excludes="*.jar,HTTPClient/**,SchemaParser/**,LiveMap/**,*.zip,*.gz"/>
+           excludes="*.jar,HTTPClient/**,SchemaParser/**,LiveMap/**,*.zip,*.gz,axis/**,launch4j/**"/>
    </target>
 
 	<!-- copy necessary resources to build lib -->
