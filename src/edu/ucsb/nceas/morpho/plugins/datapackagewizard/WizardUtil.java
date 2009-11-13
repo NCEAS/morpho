@@ -85,6 +85,7 @@ public class WizardUtil
 	private final static String KEY = "key";
 	private final static String PREVNODE = "prevNode";
 	private final static String NEXTNODE = "nextNode";
+	private static final String DATALOCATIONCLASSNAME = "edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.DataLocation";
 	public static Hashtable fullPathMapping = new Hashtable();
 	public static Hashtable shortPathMapping = new Hashtable();
 	
@@ -101,49 +102,50 @@ public class WizardUtil
 
 		Object object = null;
 		Class classDefinition = null;
+		
 		try {
 			classDefinition = Class.forName(className);
-			//we only consider String and boolean
-			if(parameters != null && !parameters.isEmpty())
+			if(className != null && className.equals(DATALOCATIONCLASSNAME))
 			{
-				Class[] parameterList = new Class[parameters.size()];
-				Object[] objectList = new Object[parameters.size()];
-				for(int i=0; i<parameters.size(); i++)
-				{
-					String para = (String)parameters.elementAt(i);
-					if(para.equalsIgnoreCase("false") || para.equalsIgnoreCase("true"))
-					{
-						Class parameter= Class.forName("java.lang.Boolean");
-						parameterList[i] = parameter;	
-						objectList[i]= new Boolean(para);
-					}
-					else
-					{
-						Class parameter = Class.forName("java.lang.String");
-						parameterList[i] = parameter;
-						objectList[i] = para;
-					}
-				}
-				Constructor constructor = classDefinition.getDeclaredConstructor(parameterList);
-				object =constructor.newInstance(objectList);
-			} 
+				object = createClassWithWizardContainerAsPara(classDefinition, frame); 
+			}
 			else
-			{
-			    object = classDefinition.newInstance();
+			{				
+				//we only consider String and boolean
+				if(parameters != null && !parameters.isEmpty())
+				{
+					Class[] parameterList = new Class[parameters.size()];
+					Object[] objectList = new Object[parameters.size()];
+					for(int i=0; i<parameters.size(); i++)
+					{
+						String para = (String)parameters.elementAt(i);
+						if(para.equalsIgnoreCase("false") || para.equalsIgnoreCase("true"))
+						{
+							Class parameter= Class.forName("java.lang.Boolean");
+							parameterList[i] = parameter;	
+							objectList[i]= new Boolean(para);
+						}
+						else
+						{
+							Class parameter = Class.forName("java.lang.String");
+							parameterList[i] = parameter;
+							objectList[i] = para;
+						}
+					}
+					Constructor constructor = classDefinition.getDeclaredConstructor(parameterList);
+					object =constructor.newInstance(objectList);
+				} 
+				else
+				{
+				    object = classDefinition.newInstance();
+				}
 			}
 		} catch (InstantiationException e) {
 			Log.debug(30, "InstantiationException "+e.getMessage() +" and we will try to instance this object again with parameter WizardContainerFrame.");
 			// couldn't get default constructor. The contructor has a parameter WizardContainerFrame
 			try
 			{
-				if (classDefinition != null)
-				{
-					Class parameter= Class.forName(WIZARDCONTAINERFRAME);
-					Class[] parameterList = new Class[1];
-					parameterList[0] = parameter;
-					Constructor constructor = classDefinition.getDeclaredConstructor(parameterList);
-					object = constructor.newInstance(frame);
-				}
+				object = createClassWithWizardContainerAsPara(classDefinition, frame); 
 			}
 			catch(Exception ee)
 			{
@@ -160,6 +162,23 @@ public class WizardUtil
 		}
 		Log.debug(30, "Finally create the instance "+object);
 		return (AbstractUIPage)object;
+	}
+	
+	/*
+	 * Create an object with a wizard container frame as parameter.
+	 */
+	private static Object createClassWithWizardContainerAsPara(Class classDefinition, WizardContainerFrame frame) throws Exception
+	{
+		Object object = null;
+		if (classDefinition != null)
+		{
+			Class parameter= Class.forName(WIZARDCONTAINERFRAME);
+			Class[] parameterList = new Class[1];
+			parameterList[0] = parameter;
+			Constructor constructor = classDefinition.getDeclaredConstructor(parameterList);
+			object = constructor.newInstance(frame);
+		}
+		return object;
 	}
 	
 	
