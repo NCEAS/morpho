@@ -1341,6 +1341,7 @@ public class WizardContainerFrame
 							  File dataFile = location.getDataFile();
 							  if (dataFile != null)
 							  {
+					
 								  //we need to store the full path of the file
 								  String dataFilePath = dataFile.getAbsolutePath();
 								  emlWithIncompleteInfo.append(IncompleteDocSettings.VARIABLEOPENINGTAG+IncompleteDocSettings.KEYOPENINGTAG+
@@ -1349,6 +1350,12 @@ public class WizardContainerFrame
 										  IncompleteDocSettings.VARIABLECLOSINGTAG);						  
 								  
 							  }
+							  short lastEvent = location.getLastEvent();
+							  Log.debug(35, "last event is"+lastEvent);
+							  emlWithIncompleteInfo.append(IncompleteDocSettings.VARIABLEOPENINGTAG+IncompleteDocSettings.KEYOPENINGTAG+
+									  DataLocation.LASTEVENT+IncompleteDocSettings.KEYCLOSINGTAG+
+									  IncompleteDocSettings.VALUEOPENINGTAG+lastEvent+IncompleteDocSettings.VALUECLOSINGTAG+
+									  IncompleteDocSettings.VARIABLECLOSINGTAG);
 						  }
 						  emlWithIncompleteInfo.append(IncompleteDocSettings.CLASSCLOSINGTAG);
 					  }

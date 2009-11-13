@@ -37,8 +37,10 @@ import java.util.Vector;
 public class WizardPageInfo 
 {
     private String className = null;
-    private Vector parameters = new Vector();
+    private Vector parameters = new Vector();//parameters is for the class' constructor.
     private Hashtable variablesValues = new Hashtable();//stores variable as key and value pair. 
+                                                                                //if eml itself doesn't have enough info for 
+                                                                                //for loading a page. We store extral info here.
     
     /**
      * Constructor for given className
@@ -59,7 +61,7 @@ public class WizardPageInfo
 	}
 
 	/**
-	 * Gets the parameter list of the class
+	 * Gets the parameter list of the class. Parameters is for UIPage's constructor
 	 * @return
 	 */
 	public Vector getParameters() 
@@ -68,7 +70,7 @@ public class WizardPageInfo
 	}
 
 	/**
-	 * Adds a parameter into this object
+	 * Adds a parameter into this object. Parameters is for UIPage's constructor.
 	 * @param parameters
 	 */
 	public void addParameter(String parameter) 
@@ -77,7 +79,8 @@ public class WizardPageInfo
 	}
 	
 	/**
-	 * Gets variables value as pairs of key and values
+	 * Gets variables value as pairs of key and values.
+	 * This stores extra info if eml itself is not enough to load an page.
 	 */
 	public Hashtable getVariablesValues()
 	{
@@ -86,6 +89,7 @@ public class WizardPageInfo
 	
 	/**
 	 * Puts the key-value pair into the variablesValues hashtable.
+	 * This stores extra info if eml itself is not enough to load an page.
 	 * @param key
 	 * @param value
 	 */

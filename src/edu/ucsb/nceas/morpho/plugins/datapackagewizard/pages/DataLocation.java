@@ -70,7 +70,8 @@ import javax.swing.JTextField;
 
 public class DataLocation extends AbstractUIPage {
 
-  public static final String TEXTFILEPATH = "TextFilePath";//used to store a key in incomplete info
+  public static final String LASTEVENT = "lastEvent";
+  public static final String TEXTFILEPATH = "textFilePath";//used to store a key in incomplete info
   private final String pageID       = DataPackageWizardInterface.DATA_LOCATION;
   private final String pageNumber   = "1";
 
@@ -543,7 +544,7 @@ public class DataLocation extends AbstractUIPage {
   protected void setLastEvent(short eventFlag) { lastEvent = eventFlag; }
 
 
-  protected short getLastEvent() { return lastEvent; }
+  public short getLastEvent() { return lastEvent; }
 
 
   private void setQ2(JPanel newPanel) {
