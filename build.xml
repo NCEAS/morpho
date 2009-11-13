@@ -61,6 +61,7 @@
       <property name="build.dir" value="${morpho.basedir}/build"/>
       <property name="build.src" value="${build.dir}/src"/>
       <property name="build.dest" value="${build.dir}/classes"/>
+   	  <property name="build.lib" value="${build.dir}/lib"/>
       <property name="build.docs" value="${build.dir}/docs"/>
       <property name="build.samples" value="${build.dir}/samples"/>
       <property name="build.tests" value="${build.dir}/tests"/>
@@ -229,6 +230,7 @@
       <mkdir dir="${build.dir}"/>
       <mkdir dir="${build.src}"/>
       <mkdir dir="${build.dest}"/>
+   	  <mkdir dir="${build.lib}"/>
       <mkdir dir="${build.javadocs}"/>
 
        <!--
@@ -404,7 +406,7 @@
              classpathref="classpath" />
    </target>
 
-   <target name="jar" depends="compile">
+   <target name="jar" depends="compile,config-init">
       <delete file="${build.dir}/${name}.jar" />
       <delete file="${build.dir}/${name}-config.jar" />
       <copy todir="${build.dest}/${package.home}/morpho/framework" filtering="no">
@@ -444,10 +446,17 @@
 			<attribute name="Class-Path" value="../ ../lib/"/>       
         </manifest>
 	  </jar>
-      <jar jarfile="${build.dir}/${name}-config.jar" basedir="${libdir}"
+      <jar jarfile="${build.dir}/${name}-config.jar" basedir="${build.lib}"
            excludes="*.jar,HTTPClient/**,SchemaParser/**,LiveMap/**,*.zip,*.gz"/>
    </target>
 
+	<target name="config-init" depends="">
+		<copy todir="${build.lib}" filtering="no">
+		        <fileset dir="${libdir}" 
+		        	excludes="*.jar,HTTPClient/**,SchemaParser/**,LiveMap/**,*.zip,*.gz"/>
+		</copy>
+	</target>
+	
    <target name="install" depends="jar">
       <copy file="${build.dir}/${name}.jar" todir="${libdir}" />
       <copy file="${build.dir}/${name}-config.jar" todir="${libdir}" />
