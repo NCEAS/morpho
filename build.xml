@@ -14,6 +14,8 @@
   * usage: ant [compile|jar|install|jdoc]
 -->
 <project name="morpho" default="install" basedir=".">
+	<!-- include basedir so that this ant project can be imported by other's -->
+	<dirname property="morpho.basedir" file="${ant.file.morpho}"/>
    <target name="init">
       <property name="name" value="morpho"/>
       <property name="Name" value="Morpho Data Management Client"/>
@@ -29,7 +31,7 @@
 	   <property name="eml-svn-base-url" value="https://code.ecoinformatics.org/code/eml/tags"/>
       <!-- the following two properties will be used to get newest eml doc-->
       <property name="eml-doc-tag" value="RELEASE_EML_2_1_0" />
-      <property name="eml.doc.dir" value="docs/eml-2.1.0" />
+      <property name="eml.doc.dir" value="${morpho.basedir}/docs/eml-2.1.0" />
 	  <property name="eml-doc-svn-url" value="${eml-svn-base-url}/${eml-doc-tag}"/>
       <!-- the following property will be used to get eml210 schemas -->
       <property name="eml-210-schema-tag" value="RELEASE_EML_2_1_0" />
@@ -45,18 +47,18 @@
       <filter token="server" value="http://knb.ecoinformatics.org"/>
       <filter token="docrooturl" value="/"/>
 
-      <property name="itisdir" value="../itislib" />
-      <property name="srcdir" value="./src" />
+      <property name="itisdir" value="${morpho.basedir}/../itislib" />
+      <property name="srcdir" value="${morpho.basedir}/src" />
 
-      <property name="libdir" value="./lib" />
-      <property name="xsldir" value="./xsl" />
-      <property name="schemadir" value="./xsd"/>
-      <property name="docuserdir" value="./docs/user" />
+      <property name="libdir" value="${morpho.basedir}/lib" />
+      <property name="xsldir" value="${morpho.basedir}/xsl" />
+      <property name="schemadir" value="${morpho.basedir}/xsd"/>
+      <property name="docuserdir" value="${morpho.basedir}/docs/user" />
       <property name="jwsdir"
                 value="/var/www/org.ecoinformatics.knb/software/dist/morpho" />
-      <property name="testdir" value="./tests" />
+      <property name="testdir" value="${morpho.basedir}/tests" />
 
-      <property name="build.dir" value="./build"/>
+      <property name="build.dir" value="${morpho.basedir}/build"/>
       <property name="build.src" value="${build.dir}/src"/>
       <property name="build.dest" value="${build.dir}/classes"/>
       <property name="build.docs" value="${build.dir}/docs"/>
@@ -67,14 +69,14 @@
       <property name="build.xsl" value="${build.dir}/xsl"/>
       <property name="build.schema" value="${build.dir}/schema"/>
       <!-- don't modify this value-->
-      <property name="java.help.doc.dir" value="./morphohelp" />
-      <property name="searchDB" value="./JavaHelpSearch"/>
+      <property name="java.help.doc.dir" value="${morpho.basedir}/morphohelp" />
+      <property name="searchDB" value="${morpho.basedir}/JavaHelpSearch"/>
       <property name="help.system.file" value="morpho.hs"/>
       <property name="map.file" value="Map.jhm"/>
       <property name="help.toc" value="morphoTOC.xml"/>
       <property name="help.index" value="morphoIndex.xml"/>
 
-      <property name="dist.dir" value="./dist"/>
+      <property name="dist.dir" value="${morpho.basedir}/dist"/>
       <property name="morpho.dir" value="${dist.dir}/morpho-${release}"/>
       <property name="morpho.lib" value="${morpho.dir}/lib"/>
       <property name="morpho.xsl" value="${morpho.dir}/xsl"/>
@@ -94,7 +96,7 @@
 		   property will be used in buildwininstaller target. -->
       <property name="launch4j.dir" location="${libdir}/launch4j" />
       <property name="izpackjar" 
-		            value="lib/standalone-compiler.jar"/>
+		            value="${libdir}/standalone-compiler.jar"/>
       <property name="jcal"
    	                value="${libdir}/jcalendar-1.3.2.jar" />
       <property name="xml4j"
@@ -148,7 +150,7 @@
 	   <property name="PDF"
                         value="${libdir}/PDFRenderer.jar"/>
       <property name="cpath"
-	      value="lib/jsse.jar:lib/jcert.jar:lib/jnet.jar:${jcal}:${xerces}:${apis}:${kunststoff}:${xalan}:${xml4j}:${build.dest}:${sym}:${dtd}:${dom}:${jlf}:${itisjar}:${httpclient}:${lmap}:${morpho-config}:${jhelp}:${utilities}:${axis}:${tar}:${activation}:${PDF}"/>
+	      value="${libdir}/jsse.jar:${libdir}/jcert.jar:${libdir}/jnet.jar:${jcal}:${xerces}:${apis}:${kunststoff}:${xalan}:${xml4j}:${build.dest}:${sym}:${dtd}:${dom}:${jlf}:${itisjar}:${httpclient}:${lmap}:${morpho-config}:${jhelp}:${utilities}:${axis}:${tar}:${activation}:${PDF}"/>
       <property name="package.home" value="edu/ucsb/nceas" />
 	   
       <condition property="utilities.required">
@@ -186,7 +188,7 @@
        <taskdef resource="axis-tasks.properties" classpathref="classpath"/>
 	   
 		<!-- set up svn -->
-        <property name="svnant.lib" value="lib" />
+        <property name="svnant.lib" value="${morpho.basedir}/lib" />
         <property name="svnant.jar" value="${svnant.lib}/svnant.jar" />
         <property name="svnClientAdapter.jar"
             value="${svnant.lib}/svnClientAdapter.jar" />
@@ -264,7 +266,7 @@
 
    </target>
    <target name="transform" depends="prepare">
-      <property name="input" value="tests/testfiles/eml201withadditionalMetacat.xml" />
+      <property name="input" value="${morpho.basedir}/tests/testfiles/eml201withadditionalMetacat.xml" />
      <property name="output" value="eml210" />
      <property name="stylesheetname" value="eml201to210.xsl" />
       <xslt in="${input}" out="${output}" style="${xsldir}/${stylesheetname}">
@@ -392,8 +394,8 @@
    -->
    <target name="compile" depends="prepare, utilities, geteml210">
 
-      <jar jarfile="lib/httpclient.jar">
-        <fileset dir="lib" includes="HTTPClient/**/*.class"/>
+      <jar jarfile="${morpho.basedir}/lib/httpclient.jar">
+        <fileset dir="${morpho.basedir}/lib" includes="HTTPClient/**/*.class"/>
       </jar>
 
       <javac srcdir="${srcdir}"
@@ -481,15 +483,15 @@
       <mkdir dir="${morpho.xsl}"/>
       <mkdir dir="${morpho.docs.dev}"/>
       <mkdir dir="${morpho.docs.dev.api}"/>
-      <copy file="./LICENSE" todir="${morpho.dir}"/>
-      <copy file="./morpho" todir="${morpho.dir}"/>
-      <copy file="./morpho.bat" todir="${morpho.dir}"/>
-      <copy file="./README.txt" todir="${morpho.dir}"/>
+      <copy file="${morpho.basedir}/LICENSE" todir="${morpho.dir}"/>
+      <copy file="${morpho.basedir}/morpho" todir="${morpho.dir}"/>
+      <copy file="${morpho.basedir}/morpho.bat" todir="${morpho.dir}"/>
+      <copy file="${morpho.basedir}/README.txt" todir="${morpho.dir}"/>
       <copy todir="${morpho.lib.sampledata}">
-        <fileset dir="./lib/sampledata"/>
+        <fileset dir="${morpho.basedir}/lib/sampledata"/>
       </copy>
       <copy todir="${morpho.xsl}">
-        <fileset dir="./xsl"/>
+        <fileset dir="${morpho.basedir}/xsl"/>
       </copy>
       <copy todir="${morpho.docs}">
         <fileset dir="${build.docs}">
@@ -527,32 +529,32 @@
       <copy file="./lib/morphohelp.jar" todir="${morpho.lib}"/>
 -->
 
-      <delete file="./lib/morpho-${release}.zip"/>
-      <zip zipfile="./lib/morpho-${release}.zip" basedir="${dist.dir}"/>
-      <delete file="./lib/morpho-${release}.tar.gz" />
-      <tar tarfile="./lib/morpho-${release}.tar" basedir="${dist.dir}"/>
-      <gzip zipfile="./lib/morpho-${release}.tar.gz"
-                src="./lib/morpho-${release}.tar"/>
-      <delete file="./lib/morpho-${release}.tar" />
+      <delete file="${morpho.basedir}/lib/morpho-${release}.zip"/>
+      <zip zipfile="${morpho.basedir}/lib/morpho-${release}.zip" basedir="${dist.dir}"/>
+      <delete file="${morpho.basedir}/lib/morpho-${release}.tar.gz" />
+      <tar tarfile="${morpho.basedir}/lib/morpho-${release}.tar" basedir="${dist.dir}"/>
+      <gzip zipfile="${morpho.basedir}/lib/morpho-${release}.tar.gz"
+                src="${morpho.basedir}/lib/morpho-${release}.tar"/>
+      <delete file="${morpho.basedir}/lib/morpho-${release}.tar" />
   </target>
 
   <target name="distsrc" depends="dist">
       <mkdir dir="${morpho.src}"/>
       <copy todir="${morpho.src}">
-        <fileset dir="./src"/>
+        <fileset dir="${morpho.basedir}/src"/>
       </copy>
       <mkdir dir="${morpho.lib.HTTPClient}"/>
       <copy todir="${morpho.lib.HTTPClient}">
-        <fileset dir="./lib/HTTPClient"/>
+        <fileset dir="${morpho.basedir}/lib/HTTPClient"/>
       </copy>
 
-      <delete file="./lib/morpho-src-${release}.zip"/>
-      <zip zipfile="./lib/morpho-src-${release}.zip" basedir="${dist.dir}"/>
-      <delete file="./lib/morpho-src-${release}.tar.gz" />
-      <tar tarfile="./lib/morpho-src-${release}.tar" basedir="${dist.dir}"/>
-      <gzip zipfile="./lib/morpho-src-${release}.tar.gz"
-                src="./lib/morpho-src-${release}.tar"/>
-      <delete file="./lib/morpho-src-${release}.tar" />
+      <delete file="${morpho.basedir}/lib/morpho-src-${release}.zip"/>
+      <zip zipfile="${morpho.basedir}/lib/morpho-src-${release}.zip" basedir="${dist.dir}"/>
+      <delete file="${morpho.basedir}/lib/morpho-src-${release}.tar.gz" />
+      <tar tarfile="${morpho.basedir}/lib/morpho-src-${release}.tar" basedir="${dist.dir}"/>
+      <gzip zipfile="${morpho.basedir}/lib/morpho-src-${release}.tar.gz"
+                src="${morpho.basedir}/lib/morpho-src-${release}.tar"/>
+      <delete file="${morpho.basedir}/lib/morpho-src-${release}.tar" />
   </target>
 
    <target name="clean" depends="init">
@@ -576,24 +578,24 @@
      <mkdir dir="${build.docs}/user"/>
      <mkdir dir="${build.docs}/user/advanced"/>
      <mkdir dir="${build.docs}/licenses"/>
-     <copy file="./docs/README.txt" todir="${build.docs}"/>
+     <copy file="${morpho.basedir}/docs/README.txt" todir="${build.docs}"/>
      <copy todir="${build.docs}/licenses" filtering="no">
-       <fileset dir="./docs/licenses">
+       <fileset dir="${morpho.basedir}/docs/licenses">
           <exclude name="**/*.html"/>
        </fileset>
      </copy>
      <copy todir="${build.docs}/user" filtering="no">
-       <fileset dir="./docs/user">
+       <fileset dir="${morpho.basedir}/docs/user">
           <exclude name="**/*.html"/>
        </fileset>
      </copy>
      <copy todir="${build.docs}/user" filtering="yes">
-       <fileset dir="./docs/user">
+       <fileset dir="${morpho.basedir}/docs/user">
          <include name="*.html"/>
        </fileset>
      </copy>
      <copy todir="${build.docs}/user/advanced" filtering="yes">
-       <fileset dir="./docs/user/advanced">
+       <fileset dir="${morpho.basedir}/docs/user/advanced">
          <include name="*.html"/>
        </fileset>
      </copy>
@@ -639,7 +641,7 @@
                classname="net.sf.launch4j.ant.Launch4jTask"
                classpath="${launch4j.dir}/launch4j.jar:${launch4j.dir}/lib/xstream.jar" 
       onerror="ignore"/>
-      <launch4j configFile="./installer/build/launch-morpho.xml"/>
+      <launch4j configFile="${morpho.basedir}/installer/build/launch-morpho.xml"/>
   </target> 
 	
 	<!-- The target 'macjarbundler' builds a Mac OS X application bundle.
@@ -660,16 +662,16 @@
 -->          
   <target name="macjarbundler" depends="install">
       <taskdef name="jarbundler" 
-         classpath="lib/jarbundler-1.9.jar"
+         classpath="${morpho.basedir}/lib/jarbundler-1.9.jar"
          classname="net.sourceforge.jarbundler.JarBundler" 
          onerror="ignore" />
-      <jarbundler dir="./"
+      <jarbundler dir="${morpho.basedir}/"
             name="morpho"
-		    stubfile="./installer/build/mac/JavaApplicationStub"
+		    stubfile="${morpho.basedir}/installer/build/mac/JavaApplicationStub"
             mainclass="edu.ucsb.nceas.morpho.Morpho"
             jvmversion="1.5"
-            jar="lib/morpho.jar"
-            icon="lib/DesktopIcon32x32.icns" 
+            jar="${morpho.basedir}/lib/morpho.jar"
+            icon="${morpho.basedir}/lib/DesktopIcon32x32.icns" 
       	    extraclasspath="./lib/xercesImpl.jar
       			./lib/xml-apis.jar
       			./lib/xalan.jar
@@ -716,8 +718,8 @@
                classname="net.sf.launch4j.ant.Launch4jTask"
                classpath="${launch4j.dir}/launch4j.jar:${launch4j.dir}/xstream.jar" 
       onerror="ignore"/>
-      <launch4j configFile="./installer/build/launch-installer.xml"
-                outfile="morpho-${release}.exe" jar="morpho-${release}-${windows}.jar"/>
+      <launch4j configFile="${morpho.basedir}/installer/build/launch-installer.xml"
+                outfile="${morpho.basedir}/morpho-${release}.exe" jar="${morpho.basedir}/morpho-${release}-${windows}.jar"/>
   </target>
 	
   
@@ -758,26 +760,26 @@
 
   <!-- We call IzPack -->
     <echo message="Makes the installer using IzPack"/>
-    <izpack input="./installer/build/install-${os-name}.xml"
-        output="morpho-${release}-${os-name}.jar"
+    <izpack input="${morpho.basedir}/installer/build/install-${os-name}.xml"
+        output="${morpho.basedir}/morpho-${release}-${os-name}.jar"
         installerType="standard"
-        basedir="./" 
+        basedir="${morpho.basedir}/" 
     	inheritAll="true"/>
    </target>
 	
 	<!-- the following 3 targets clean up the build for system specific installers -->
 	<target name="macinstallercleanup">
-		 <delete file="morpho-${release}-mac.jar"/>
-		 <delete dir="morpho.app"/>
+		 <delete file="${morpho.basedir}/morpho-${release}-mac.jar"/>
+		 <delete dir="${morpho.basedir}/morpho.app"/>
    </target>
 	
 	<target name="wininstallercleanup">
-         <delete file="morpho-${release}-windows.jar"/>
-         <delete file="morpho-${release}.exe"/>
+         <delete file="${morpho.basedir}/morpho-${release}-windows.jar"/>
+         <delete file="${morpho.basedir}/morpho-${release}.exe"/>
    </target>
 	
 	<target name="linuxinstallercleanup">
-         <delete file="morpho-${release}-linux.jar"/>
+         <delete file="${morpho.basedir}/morpho-${release}-linux.jar"/>
    </target>
 
    <!-- use the ant "junit" task to run JUnit tests. -->
