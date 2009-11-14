@@ -184,25 +184,28 @@ public class WizardUtil
 	
 	/**
 	 * Gets an AbstractUIPage base on the given information. This page will contain exist data
-	 * @param className  the class name of UIPage
-	 * @param mapping     the mapping info for this class
+	 * @param mapping     the mapping info for this class (mapping has the class name info)
 	 * @param dpWiz        the containFrame which the page will stay
 	 * @param path           the path contains empty value (for correction wizard only). If it is null, this method will not be used by correction wizard.
 	 * @return
 	 * @throws Exception
 	 */
-  	public static AbstractUIPage getUIPage(String className, XPathUIPageMapping mapping, WizardContainerFrame dpWiz, Node node, String path) throws Exception
+  	public static AbstractUIPage getUIPage(XPathUIPageMapping mapping, WizardContainerFrame dpWiz, OrderedMap additionalInfo, Node node, String path) throws Exception
   	{
   		AbstractUIPage page = null;
   		boolean mapDataFit = false;
   				
 		if(mapping != null)
 		{
-			className = mapping.getWizardPageClassName();
+			String className = mapping.getWizardPageClassName();
 			Log.debug(45, "get the className from mapping "+className);
 			if(className != null)
 			{
-				OrderedMap xpathMap = null;
+				OrderedMap xpathMap = new OrderedMap();
+				if(additionalInfo != null && !additionalInfo.isEmpty())
+				{
+					xpathMap.putAll(additionalInfo);
+				}
 				page = WizardUtil.createAbstractUIpageObject(className, dpWiz, mapping.getWizardPageClassParameters());
 				page.setXPathUIPageMapping(mapping);
 				//load data into the page
@@ -214,11 +217,11 @@ public class WizardUtil
 				{
 					//like General page
 					Log.debug(45, "start to process load data process which has info list size more than 0");
-					Vector list = mapping.getModifyingPageDataInfoList();
-					boolean firstTime = true;
-					for (int i=0; i<list.size(); i++)
+					//Vector list = mapping.getModifyingPageDataInfoList();
+					//boolean firstTime = true;
+					for (int i=0; i<infoList.size(); i++)
 					{
-						ModifyingPageDataInfo info =(ModifyingPageDataInfo)list.elementAt(i);
+						ModifyingPageDataInfo info =(ModifyingPageDataInfo)infoList.elementAt(i);
 						settingPageDataPath = info.getPathForSettingPageData();
 						Vector loadDataPathList = info.getLoadExistingDataPath();
 						
@@ -241,6 +244,7 @@ public class WizardUtil
 										int position = 0;
 										if(path != null)
 										{
+											//this is used in correction wizard, we need to determine the path index which contains empty value
 										   String lastElementName = getLastElementName(xPath);
 										   position = getGivenStringIndexAtXPath(lastElementName, path);	
 										}
@@ -260,7 +264,7 @@ public class WizardUtil
 											node = null;
 										}
 									}
-									if(firstTime && node != null)
+									/*if(firstTime && node != null)
 									{
 									  Log.debug(46, "Before First time to create xPathMap with path for creating ordered map "+info.getPathForCreatingOrderedMap());
 									  xpathMap = XMLUtilities.getDOMTreeAsXPathMap(node, info.getPathForCreatingOrderedMap());
@@ -268,8 +272,9 @@ public class WizardUtil
 									  firstTime = false;
 									  //we set first child as the root node for not loading data from root path directly
 									  //page.setXPathRoot(node);
-									}
-									else if (node != null)
+									}*/
+									//else if (node != null)
+									if(node != null)
 									{
 										Log.debug(46, "Before second or more time to create xPathMap");
 										xpathMap.putAll(XMLUtilities.getDOMTreeAsXPathMap(node, info.getPathForCreatingOrderedMap()));
@@ -287,7 +292,8 @@ public class WizardUtil
 									{
 										nodeList = XMLUtilities.getNodeListWithXPath(node, loadPath);
 									    List newNodetList = AbstractDataPackage.getSubtree(nodeList);
-									    xpathMap = Util.getOrderedMapFromNodeList(newNodetList, info.getGenericName());
+									   // xpathMap = Util.getOrderedMapFromNodeList(newNodetList, info.getGenericName());
+									    xpathMap.putAll(Util.getOrderedMapFromNodeList(newNodetList, info.getGenericName()));
 									}
 								}
 								else if(loadNodeListStatus.equals(ModifyingPageDataInfo.DIRECTLOADINGNODELIST))

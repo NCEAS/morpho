@@ -308,7 +308,8 @@ public class CorrectionWizardController
 			    
 				className = mapping.getWizardPageClassName();
 				Log.debug(45, "get the className from mapping "+className);
-				page = WizardUtil.getUIPage(className, mapping, dpWiz, dataPackage.getMetadataNode(), path);
+				OrderedMap additionalInfo = null;
+				page = WizardUtil.getUIPage(mapping, dpWiz, additionalInfo, dataPackage.getMetadataNode(), path);
 			}
 		}				
 		return page;

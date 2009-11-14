@@ -209,7 +209,8 @@ public class IncompleteDocumentLoader
 						  String classNamePlusParameter ="";
 						  String className = pageClassInfo.getClassName();
 						  classNamePlusParameter = classNamePlusParameter+className;
-						  Vector parameters = pageClassInfo.getParameters();
+						  Vector parameters = pageClassInfo.getParameters();//this one is for constructor
+						  OrderedMap variables = pageClassInfo.getVariablesValuesMap();//some additional info, which is not in eml itself
 						  if(parameters != null && !parameters.isEmpty())
 						  {
 							  for(int k=0; k<parameters.size(); k++)
@@ -228,7 +229,7 @@ public class IncompleteDocumentLoader
 							  {
 								  Log.debug(30, "There is map for classNamePlusParamer ~~~~~~~~~~~~~~"+classNamePlusParameter+ " so we create an page with data (if have)");
 							      Log.debug(30, "the className from metadata is "+className);
-								  page= WizardUtil.getUIPage(className, map, dpWiz, dataPackage.getMetadataNode(), null );
+								  page= WizardUtil.getUIPage(map, dpWiz,  variables, dataPackage.getMetadataNode(), null );
 							  }
 							  catch(Exception e)
 							  {
