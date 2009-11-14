@@ -126,13 +126,18 @@
 				<exclude name="morpho-@{version}-mac.jar"/>
 				<exclude name="@{izpackjar}"/>
 				<exclude name="lib/launch4j/"/>
+				<exclude name="lib/**/*.jar"/>
+				<exclude name="lib/axis/"/>
+			</fileset>
+			<fileset dir="build/lib" targetdir="$INSTALL_PATH/lib/">
+			  <include name="*.jar"/>
 			</fileset>
       		<executable type="bin" stage="never" keep="true" failure="warn" targetfile="$INSTALL_PATH/morpho"/>
     	</pack>
     
     
 		<pack name="Sources" required="no">
-			<description>Morphor Source Files</description>
+			<description>Morpho Source Files</description>
 			<fileset dir="src" targetdir="$INSTALL_PATH/src">
 			</fileset>
 		</pack>	 
