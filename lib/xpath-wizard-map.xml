@@ -321,7 +321,8 @@
     <xpath>taxonomicClassificatio/taxonomicClassification/taxonRankValue</xpath>
     <infoForModifyingData>
              <loadExistDataPath>/eml:eml/dataset/coverage/taxonomicCoverage</loadExistDataPath>
-             <xpathForCreatingOrderedMap></xpathForCreatingOrderedMap>
+             <loadingNodeListStatus>directLoadingNodeList</loadingNodeListStatus>
+		     <xpathForCreatingOrderedMap></xpathForCreatingOrderedMap>
              <xpathForSettingPageData>/taxonomicCoverage</xpathForSettingPageData>
              <newDataDocumentName>coverage</newDataDocumentName>
              <xpathForGettingPageData>/coverage/taxonomicCoverage</xpathForGettingPageData>
