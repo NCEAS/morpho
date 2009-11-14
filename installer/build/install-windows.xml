@@ -105,7 +105,7 @@
   
     <pack name="Base" required="yes">
       <description>The base files</description>		
-      		<!-- windwos file set-->	
+      		<!-- windows file set-->	
 			<fileset dir="." targetdir="$INSTALL_PATH/">				
 				<exclude name="stderr.log"/>
 				<exclude name="src/"/>
@@ -118,6 +118,7 @@
 				<exclude name="morpho"/>
 				<exclude name="morpho.jnlp"/>
 				<exclude name="docs/dev/"/>
+				<exclude name="lib/axis/"/>
 				<exclude name="lib/MemoryMonitor/"/>
 				<exclude name="lib/installer/"/>
 				<exclude name="lib/LiveMap/"/>
@@ -127,7 +128,11 @@
                 <exclude name="morpho-@{version}-mac.jar"/>
 				<exclude name="@{izpackjar}"/>
                 <exclude name="lib/launch4j/"/>
+                <exclude name="lib/**/*.jar"/>
 			</fileset>
+			<fileset dir="build/lib" targetdir="$INSTALL_PATH/lib/">
+			  <include name="*.jar"/>
+			</fileset>	
       		<executable type="bin" stage="never" keep="true" failure="warn" targetfile="$INSTALL_PATH/morpho.bat"/> 
     	</pack>
     
