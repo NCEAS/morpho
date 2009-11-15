@@ -668,13 +668,13 @@ public class Project extends AbstractUIPage {
     Log.debug(40, "Map at the begining of setPageData with xpathRoot" +_xPathRoot+map);
     JCheckBox checkBox = ((JCheckBox)(checkBoxPanel.getComponent(0)));
 
-    checkBox.setSelected(true);
+    
 
     if (map==null || map.isEmpty()) {
       this.resetBlankData();
       return true;
     }
-
+    checkBox.setSelected(true);
     List toDeleteList = new ArrayList();
     Object nextXPathObj = null;
     String nextXPath = null;
