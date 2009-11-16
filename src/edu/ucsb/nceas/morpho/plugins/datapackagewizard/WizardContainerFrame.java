@@ -133,6 +133,9 @@ public class WizardContainerFrame
   private String[] entityPageIDList = {DataPackageWizardInterface.DATA_LOCATION, DataPackageWizardInterface.DATA_FORMAT,DataPackageWizardInterface.ENTITY,
 		                                             DataPackageWizardInterface.TEXT_IMPORT_ENTITY, DataPackageWizardInterface.TEXT_IMPORT_DELIMITERS, 
 		                                             DataPackageWizardInterface.TEXT_IMPORT_ATTRIBUTE};
+  private static final String EMPTYPROJECTTITLE = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"+
+                                                  "<project><title> </title></project>";
+
 
   /**
    * Default constructor
@@ -154,6 +157,7 @@ public class WizardContainerFrame
     pageStack = new Stack();
     pageLib = new WizardPageLibrary(this);
     adp = UIController.getInstance().getCurrentAbstractDataPackage();
+    addEmptyProjectTileSubtree();
     init();    
     setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
     this.addWindowListener(new WindowAdapter() {
@@ -1690,6 +1694,42 @@ public class WizardContainerFrame
     bottomPanel.add(button);
     bottomPanel.add(Box.createHorizontalStrut(PADDING));
     return button;
+  }
+  
+  
+  /*
+   * In new data package wizard, it should have a project/title subtree for inserting project personnel.
+   * However, if we open a crashed datapackage and it may not have this subtree. This will cause
+   * an error when user tries to insert a new personnel. So we added this method.
+   */
+  private void addEmptyProjectTileSubtree()
+  {
+	  if(adp != null && !isEntityWizard)
+	  {
+		  
+		  String subtreeGenericName = "projectTitle";
+	      int index = 0;
+	      Node projectTitleNode = adp.getSubtreeNoClone(subtreeGenericName, index);
+	      if( projectTitleNode == null)
+	      {
+	    	    Node rootNode = null;
+	    	    try 
+	    	    {
+	    	      rootNode = XMLUtilities.getXMLReaderAsDOMTreeRootNode(new StringReader(EMPTYPROJECTTITLE));
+	    	    } 
+	    	    catch (Exception e) 
+	    	    {
+	    	      e.printStackTrace();
+	    	      Log.debug(5, "unexpected error trying to create new XML document");
+	    	      
+	    	    }
+	    	    if(rootNode != null)
+	    	    {
+	    	    	adp.insertSubtree(subtreeGenericName, rootNode, index);
+	    	    }
+	            
+	      }
+	  }
   }
 
   /**
