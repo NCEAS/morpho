@@ -229,7 +229,18 @@ public class IncompleteDocumentLoader
 							  {
 								  Log.debug(30, "There is map for classNamePlusParamer ~~~~~~~~~~~~~~"+classNamePlusParameter+ " so we create an page with data (if have)");
 							      Log.debug(30, "the className from metadata is "+className);
-								  page= WizardUtil.getUIPage(map, dpWiz,  variables, dataPackage.getMetadataNode(), null );
+							      if(incompletionStatus.equals(IncompleteDocSettings.INCOMPLETE_PACKAGE_WIZARD))
+							      {
+								    page= WizardUtil.getUIPage(map, dpWiz,  variables, dataPackage.getMetadataNode(), null );
+							      }
+							      else if(incompletionStatus.equals(IncompleteDocSettings.INCOMPLETE_ENTITY_WIZARD))  	  
+							      {
+							    	  int index = incompleteDocInfo.getEntityIndex();
+							    	  if(dataPackage.getEntity(index) != null)
+							    	  {
+							    		  page= WizardUtil.getUIPage(map, dpWiz,  variables, dataPackage.getEntity(index).getNode(), null );
+							    	  }
+							      }
 							  }
 							  catch(Exception e)
 							  {

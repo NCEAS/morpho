@@ -1737,6 +1737,23 @@ public abstract class AbstractDataPackage extends MetadataObject
     return entityArray;
   }
 
+  /**
+   * Gets the entity at the index. null will return if we couldn't find it.
+   */
+   public Entity getEntity(int index)
+   {
+	   Entity entity = null;
+	   if(entityArray == null || entityArray.length ==0)
+	   {
+		   getEntityArray();
+	   }
+	   
+	   if (entityArray != null && entityArray.length >0 && index>=0 && index <entityArray.length)
+	   {
+		   entity = entityArray[index];
+	   }
+	   return entity;
+   }
 
   /**
    * This method retrieves entityName information, given the index of the entity

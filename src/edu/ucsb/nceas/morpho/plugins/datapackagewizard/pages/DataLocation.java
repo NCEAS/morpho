@@ -145,6 +145,7 @@ public class DataLocation extends AbstractUIPage {
     "Online URL",
     "Archived"
   };
+  private String xPathRoot  = "/eml:eml/dataset/dataTable/physical";
 
   private final Dimension Q3_RADIOPANEL_DIMS = new Dimension(120, 300);
 
@@ -1183,7 +1184,228 @@ public class DataLocation extends AbstractUIPage {
      */
   public String getPageNumber() { return pageNumber; }
 
-    public boolean setPageData(OrderedMap data, String xPathRoot) { return false; }
+  /**
+   * Populate the metadata from eml to this page.
+   * However, this page needs some additional metadata such as last event,
+   * text data file full path and et al.
+   */
+  public boolean setPageData(OrderedMap map, String _xPathRoot) 
+  {
+	  boolean empty = false;
+	  if (_xPathRoot != null )
+ 	 {
+ 		 this.xPathRoot =_xPathRoot;
+ 	 }
+ 	 Log.debug(30,"DataLocation.setPageData() called with rootXPath = " + xPathRoot
+              + "\n Map = \n" + map);
+ 	 String lastEventInMap = (String)map.get(LASTEVENT);
+ 	 Log.debug(20, "The last event from map in DataLoacation.setPageData is "+lastEventInMap);
+ 	short lastEventNumber = 1;
+ 	 try
+ 	 {
+ 		 lastEventNumber = (new Short(lastEventInMap)).shortValue();
+ 	 }
+     catch(Exception e)
+     {
+    	 Log.debug(30, "Last event "+lastEventInMap+ " in the map is not a number and we couldn't handle it in DataLocation.setPageData");
+         return empty;
+     }
+     setLastEvent(lastEventNumber);
+     String objectName = null;
+     objectName = (String)map.get(_xPathRoot+"/objectName");
+     Log.debug(32, "The object name in the map is "+objectName+ " in DataLocation.setPageData");
+     String onlineUrl = null;
+     String offlineMediumName = null;
+     String textFilePath = null;
+     onlineUrl = (String)map.get(_xPathRoot+"/distribution/online/url");
+     Log.debug(32, "The oneline url is "+onlineUrl+" in DataLocation.setPageData");
+     textFilePath = (String)map.get(TEXTFILEPATH);
+     Log.debug(32, "The text file path is "+textFilePath+" in DataLocation.setPageData");
+     offlineMediumName = (String)map.get(_xPathRoot+"/distribution/offline/mediumName");
+     Log.debug(32, "The offline mediu name is "+offlineMediumName+" in DataLocation.setPageData");
+     switch (lastEventNumber) 
+     {
+      
+      case CREATE:
+      
+       //no validation required
+       distribution = INLINE_OR_ONLINE;
+       //create a new empty datafile
+       File emptyDataFile = new File(textFilePath);
+       if(!emptyDataFile.exists())
+       {
+	       try 
+	       {
+	         emptyDataFile = File.createTempFile(TMPFILENAME, null);
+	         FileWriter fileWriter = new FileWriter(emptyDataFile);
+	         fileWriter.write("");
+	       } 
+	       catch (IOException ex) 
+	       {
+	         Log.debug(1, "error - cannot create a new empty data file!");
+	         ex.printStackTrace();
+	         return empty;
+	       }
+       }
+       setDataFile(emptyDataFile);
+       setNextPageID(DataPackageWizardInterface.DATA_FORMAT);
+      
+       break;
+       //////
+
+
+     case IMPORT_AUTO:
+       dataFileObj = validateDataFileSelection();
+       if (dataFileObj==null) return false;
+       setDataFile(dataFileObj);
+       distribution = INLINE_OR_ONLINE;
+       //setNextPageID(DataPackageWizardInterface.TEXT_IMPORT_WIZARD);
+       	if (mainWizFrame == null)
+       	{
+       		return false;
+       	}
+       	else
+       	{
+       		//stores the data file object into wizard container frame.
+       		ImportedTextFile dataTextFile = new ImportedTextFile(dataFileObj);
+       		boolean isTextFile = dataTextFile.isTextFile();
+       		if(!isTextFile)
+    		   {
+    			   JOptionPane.showMessageDialog(mainWizFrame, "Selected File is NOT a text file!",
+                           "Message",
+                           JOptionPane.INFORMATION_MESSAGE, null);
+    			   return false;
+    		   }
+       		ImportedTextFile existTextFile = mainWizFrame.getImportDataTextFile();
+       		//if we already have the text file, we don't need to assign it again.
+       		if (existTextFile == null  || !existTextFile.equals(dataTextFile))
+       		{
+       			mainWizFrame.setImportedDataTextFile(dataTextFile);
+       		}
+       		setNextPageID(DataPackageWizardInterface.TEXT_IMPORT_ENTITY);
+       	}
+       	   
+       
+//     WizardSettings.setSummaryText(WizardSettings.?????????);
+       break;
+       //////
+
+     case IMPORT_MAN:
+       dataFileObj = validateDataFileSelection();
+       if (dataFileObj==null) return false;
+       setDataFile(dataFileObj);
+       distribution = INLINE_OR_ONLINE;
+       setNextPageID(DataPackageWizardInterface.DATA_FORMAT);
+       
+//     WizardSettings.setSummaryText(WizardSettings.?????????);
+       break;
+       //////
+
+     case DESCRIBE_AUTO:
+       dataFileObj = validateDataFileSelection();
+       if (dataFileObj==null) return false;
+       setDataFile(dataFileObj);
+       // assume it's offline for now - when we start supporting auto-metadata
+       // generation form online files, this will change
+       distribution = WizardSettings.OFFLINE;
+        //setNextPageID(DataPackageWizardInterface.TEXT_IMPORT_WIZARD);
+       	if (mainWizFrame == null)
+       	{
+       		return false;
+       	}
+       	else
+       	{
+       		//stores the data file object into wizard container frame.
+       		ImportedTextFile dataTextFile = new ImportedTextFile(dataFileObj);
+       		boolean isTextFile = dataTextFile.isTextFile();
+       		if(!isTextFile)
+    		   {
+    			   JOptionPane.showMessageDialog(mainWizFrame, "Selected File is NOT a text file!",
+                           "Message",
+                           JOptionPane.INFORMATION_MESSAGE, null);
+    			   return false;
+    		   }
+       		ImportedTextFile existTextFile = mainWizFrame.getImportDataTextFile();
+       		//if we already have the text file, we don't need to assign it again.
+       		if (existTextFile == null  || !existTextFile.equals(dataTextFile))
+       		{
+       			mainWizFrame.setImportedDataTextFile(dataTextFile);
+       		}
+       		setNextPageID(DataPackageWizardInterface.TEXT_IMPORT_ENTITY);
+       	}
+       	
+      
+//     WizardSettings.setSummaryText(WizardSettings.?????????);
+       break;
+       //////
+
+  
+
+     case DESCRIBE_MAN_NODATA:
+       // go directly to last page
+//       WizardSettings.setSummaryText(WizardSettings.?????????);
+   	  if (fileNameFieldNoData.getText().trim().equals("")) {
+             WidgetFactory.hiliteComponent(fileNameLabelNoData);
+             fileNameFieldNoData.requestFocus();
+             return false;
+           }
+       distribution = WizardSettings.NODATA;
+       setDataFile(null);
+       setNextPageID(DataPackageWizardInterface.DATA_FORMAT);
+    
+       break;
+       //////
+
+     case DESCRIBE_MAN_ONLINE:
+       if (fileNameFieldOnline.getText().trim().equals("")) {
+         WidgetFactory.hiliteComponent(fileNameLabelOnline);
+         fileNameFieldOnline.requestFocus();
+         return false;
+       }
+       WidgetFactory.unhiliteComponent(fileNameLabelOnline);
+
+       if (urlFieldOnline.getText().trim().equals("")) {
+         WidgetFactory.hiliteComponent(urlLabelOnline);
+         urlFieldOnline.requestFocus();
+         return false;
+       }
+       WidgetFactory.unhiliteComponent(urlLabelOnline);
+
+       distribution = WizardSettings.ONLINE;
+       setDataFile(null);
+       setNextPageID(DataPackageWizardInterface.DATA_FORMAT);
+       
+//     WizardSettings.setSummaryText(WizardSettings.?????????);
+//     WizardSettings.setDataLocation(urlFieldOnline.getText().trim());
+       break;
+       //////
+
+     case DESCRIBE_MAN_OFFLINE:
+
+       //if (medNameField.getText().trim().equals(EMPTY_STRING)) {
+   	if(Util.isBlank(medNameField.getText())){
+         WidgetFactory.hiliteComponent(medNameLabel);
+         return false;
+       }
+       WidgetFactory.unhiliteComponent(medNameLabel);
+
+       if (objNameField.getText().trim().equals(EMPTY_STRING)) {
+         WidgetFactory.hiliteComponent(objNameLabel);
+         return false;
+       }
+       WidgetFactory.unhiliteComponent(objNameLabel);
+
+       distribution = WizardSettings.OFFLINE;
+       setDataFile(null);
+       setNextPageID(DataPackageWizardInterface.DATA_FORMAT);
+       
+       break;
+       //////
+     default:
+    	 Log.debug(20, "Morpho don't support this event "+lastEventNumber);
+   }
+	 return empty;
+  }
 
   private JPanel getRadioPanel(String title, String[] buttonLabels,
                    ActionListener listener, int selected, boolean hiliteReqd) {
