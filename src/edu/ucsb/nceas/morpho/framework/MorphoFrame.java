@@ -158,34 +158,36 @@ public class MorphoFrame extends JFrame
         getContentPane().add(BorderLayout.SOUTH, statusBar);
 
         // Register listeners
-        this.addWindowListener(
-            new WindowAdapter() {
-                public void windowActivated(WindowEvent e)
-                {
-                    Log.debug(50, "Processing window activated event");
-                    gp.setVisible(false);
-                    UIController controller = UIController.getInstance();
-                    controller.setCurrentActiveWindow(instance);
-                    controller.refreshWindows();
-                    indicator.repaint();
+        WindowAdapter windowListener = new WindowAdapter() {
+            public void windowActivated(WindowEvent e)
+            {
+                Log.debug(50, "Processing window activated event");
+                gp.setVisible(false);
+                UIController controller = UIController.getInstance();
+                controller.setCurrentActiveWindow(instance);
+                controller.refreshWindows();
+                indicator.repaint();
+            }
+            public void windowClosing(WindowEvent event)
+            {
+                Object object = event.getSource();
+                if (object == MorphoFrame.this) {
+                    close();
                 }
-                public void windowClosing(WindowEvent event)
-                {
-                    Object object = event.getSource();
-                    if (object == MorphoFrame.this) {
-                        close();
-                    }
-                }
-                public void windowDeactivated(WindowEvent event)
-                {
-                   Object object = event.getSource();
-                   if (object == MorphoFrame.this) {
-                     gp.setVisible(true);
-                   }
-                }
+            }
+            public void windowDeactivated(WindowEvent event)
+            {
+            	Log.debug(50, "Processing window DEactivated event");
+               Object object = event.getSource();
+               if (object == MorphoFrame.this) {
+                 gp.setVisible(true);
+               }
+            }
 
 
-            });
+        };
+        
+        this.addWindowListener(windowListener);
         this.addComponentListener(
             new ComponentAdapter() {
                 public void componentResized (ComponentEvent e)

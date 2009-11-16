@@ -64,7 +64,7 @@ public class ConnectionFrame  extends javax.swing.JDialog
     /*
     super((Frame)cont, modal);
     */
-    super();
+    super(UIController.getInstance().getCurrentActiveWindow());
     this.setModal(true);
     
     container = cont;

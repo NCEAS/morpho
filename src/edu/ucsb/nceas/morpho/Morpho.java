@@ -1554,7 +1554,8 @@ public class Morpho
         }
 
         // Pop up a dialog with the choices
-        String newProfile = (String)JOptionPane.showInputDialog(null,
+        MorphoFrame frame = UIController.getInstance().getCurrentActiveWindow();
+        String newProfile = (String)JOptionPane.showInputDialog(frame,
                 "Select from existing profiles:", "Input",
                 JOptionPane.INFORMATION_MESSAGE, null,
                 profilesList, profilesList[selection]);

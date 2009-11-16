@@ -143,6 +143,7 @@ public class SaveDialog extends JDialog
    */
   public SaveDialog(AbstractDataPackage adp)
   {
+	  super(UIController.getInstance().getCurrentActiveWindow());
     setModal(true);
     this.adp = adp;
     morphoFrame = UIController.getInstance().getCurrentActiveWindow();

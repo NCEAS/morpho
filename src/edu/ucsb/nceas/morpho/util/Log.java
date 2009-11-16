@@ -28,6 +28,9 @@ package edu.ucsb.nceas.morpho.util;
 
 import javax.swing.JOptionPane;
 
+import edu.ucsb.nceas.morpho.framework.MorphoFrame;
+import edu.ucsb.nceas.morpho.framework.UIController;
+
 /**
  * The Log is a utility class for logging messages to stdout, stderr,
  * a file, or a dialog box.  By default you can call just the static method
@@ -102,11 +105,19 @@ public class Log
     if (debug) {
       if (debugLevel > 0 && severity <= debugLevel) {
         // Show a dialog for severe errors
+    	  MorphoFrame frame = null;
+    	  if (severity < 10) {
+	    	  try {
+	    		  frame = UIController.getInstance().getCurrentActiveWindow();
+	    	  } catch (Exception e) {
+	    		  System.err.println("No active window for logging severe messages");
+			  }
+    	  }
         if (severity < 5) {
-          JOptionPane.showMessageDialog(null, message, "Error!",
+          JOptionPane.showMessageDialog(frame, message, "Error!",
                                         JOptionPane.ERROR_MESSAGE);
         } else if (severity < 10) {
-          JOptionPane.showMessageDialog(null, message, "Warning!",
+          JOptionPane.showMessageDialog(frame, message, "Warning!",
                                         JOptionPane.WARNING_MESSAGE);
         }
 

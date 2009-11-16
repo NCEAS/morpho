@@ -80,7 +80,7 @@ public class ProfileDialog extends JDialog
    */
   public ProfileDialog(Morpho cont, boolean modal)
   {
-    super();
+    super(UIController.getInstance().getCurrentActiveWindow());
     setModal(true);
     framework = cont;
 
