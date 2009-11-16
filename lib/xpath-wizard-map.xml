@@ -395,22 +395,22 @@
     <root>n/a</root>
     <infoForModifyingData>
              <loadExistDataPath>physical/objectName</loadExistDataPath>
-             <xpathForCreatingOrderedMap></xpathForCreatingOrderedMap>
-             <xpathForSettingPageData></xpathForSettingPageData>
+             <xpathForCreatingOrderedMap>physical</xpathForCreatingOrderedMap>
+             <xpathForSettingPageData>physical</xpathForSettingPageData>
              <newDataDocumentName></newDataDocumentName>
              <xpathForGettingPageData></xpathForGettingPageData>
      </infoForModifyingData>
      <infoForModifyingData>
              <loadExistDataPath>physical/distribution/online/url</loadExistDataPath>
-             <xpathForCreatingOrderedMap></xpathForCreatingOrderedMap>
-             <xpathForSettingPageData></xpathForSettingPageData>
+             <xpathForCreatingOrderedMap>physical/distribution/online</xpathForCreatingOrderedMap>
+             <xpathForSettingPageData>physical</xpathForSettingPageData>
              <newDataDocumentName></newDataDocumentName>
              <xpathForGettingPageData></xpathForGettingPageData>
      </infoForModifyingData>
      <infoForModifyingData>
              <loadExistDataPath>physical/distribution/offline/mediumName</loadExistDataPath>
-             <xpathForCreatingOrderedMap></xpathForCreatingOrderedMap>
-             <xpathForSettingPageData></xpathForSettingPageData>
+             <xpathForCreatingOrderedMap>physical/distribution/offline</xpathForCreatingOrderedMap>
+             <xpathForSettingPageData>physical</xpathForSettingPageData>
              <newDataDocumentName></newDataDocumentName>
              <xpathForGettingPageData></xpathForGettingPageData>
      </infoForModifyingData>
