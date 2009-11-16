@@ -391,6 +391,31 @@
     <wizardPageClassParameter>false</wizardPageClassParameter>
    </mapping>
    <!-- datatable -->
+	<mapping>
+    <root>n/a</root>
+    <infoForModifyingData>
+             <loadExistDataPath>physical/objectName</loadExistDataPath>
+             <xpathForCreatingOrderedMap></xpathForCreatingOrderedMap>
+             <xpathForSettingPageData></xpathForSettingPageData>
+             <newDataDocumentName></newDataDocumentName>
+             <xpathForGettingPageData></xpathForGettingPageData>
+     </infoForModifyingData>
+     <infoForModifyingData>
+             <loadExistDataPath>physical/distribution/online/url</loadExistDataPath>
+             <xpathForCreatingOrderedMap></xpathForCreatingOrderedMap>
+             <xpathForSettingPageData></xpathForSettingPageData>
+             <newDataDocumentName></newDataDocumentName>
+             <xpathForGettingPageData></xpathForGettingPageData>
+     </infoForModifyingData>
+     <infoForModifyingData>
+             <loadExistDataPath>physical/distribution/offline/mediumName</loadExistDataPath>
+             <xpathForCreatingOrderedMap></xpathForCreatingOrderedMap>
+             <xpathForSettingPageData></xpathForSettingPageData>
+             <newDataDocumentName></newDataDocumentName>
+             <xpathForGettingPageData></xpathForGettingPageData>
+     </infoForModifyingData>
+    <wizardPageClass>edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.DataLocation</wizardPageClass>
+  </mapping>	
     <mapping>
     <root>/eml:eml/dataset/dataTable</root>
     <xpath>entityName</xpath>
