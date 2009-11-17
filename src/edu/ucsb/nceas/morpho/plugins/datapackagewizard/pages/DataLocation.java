@@ -1206,7 +1206,7 @@ public class DataLocation extends AbstractUIPage {
  	 {
  		 this.xPathRoot =_xPathRoot;
  	 }
- 	 Log.debug(30,"DataLocation.setPageData() called with rootXPath = " + xPathRoot
+ 	 Log.debug(45,"DataLocation.setPageData() called with rootXPath = " + xPathRoot
               + "\n Map = \n" + map);
  	 String lastEventInMap = (String)map.get(LASTEVENT);
  	 Log.debug(20, "The last event from map in DataLoacation.setPageData is "+lastEventInMap);

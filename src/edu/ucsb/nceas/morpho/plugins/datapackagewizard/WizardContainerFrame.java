@@ -1361,6 +1361,16 @@ public class WizardContainerFrame
 									  IncompleteDocSettings.VALUEOPENINGTAG+lastEvent+IncompleteDocSettings.VALUECLOSINGTAG+
 									  IncompleteDocSettings.VARIABLECLOSINGTAG);
 						  }
+						  else if(page instanceof TextImportEntity)
+						  {
+							  //add additional info about if ColumnLabelInStartingRow box is checked
+							  TextImportEntity textEntity = (TextImportEntity)page;
+							  boolean isSelected = textEntity.isColumnLabelInStartingRowCheckBoxChecked();
+							  emlWithIncompleteInfo.append(IncompleteDocSettings.VARIABLEOPENINGTAG+IncompleteDocSettings.KEYOPENINGTAG+
+									  textEntity.COLUMNLABELINSTARTINGROW+IncompleteDocSettings.KEYCLOSINGTAG+
+									  IncompleteDocSettings.VALUEOPENINGTAG+isSelected+IncompleteDocSettings.VALUECLOSINGTAG+
+									  IncompleteDocSettings.VARIABLECLOSINGTAG);
+						  }
 						  emlWithIncompleteInfo.append(IncompleteDocSettings.CLASSCLOSINGTAG);
 					  }
 				  }

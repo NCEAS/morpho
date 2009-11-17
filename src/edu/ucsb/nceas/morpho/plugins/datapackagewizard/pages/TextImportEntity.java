@@ -78,6 +78,7 @@ public class TextImportEntity extends AbstractUIPage
 	   private JTable linesTable = null;
 	   private String shortFileName = null;
 	   private String physicalID = null;
+	   public static final String COLUMNLABELINSTARTINGROW = "columnLabelInStartingRow";
 	   
 	   /**
 	    * Construct
@@ -256,6 +257,15 @@ public class TextImportEntity extends AbstractUIPage
 	  {
 		  return physicalID;
 	  }
+	  
+	  /**
+	   * If the columnLabelsInStartingRow check box was selected 
+	   * @return
+	   */
+	  public boolean isColumnLabelInStartingRowCheckBoxChecked()
+	  {
+		  return ColumnLabelsCheckBox.isSelected();
+	  }
 
 
 	  /**
@@ -411,11 +421,11 @@ public class TextImportEntity extends AbstractUIPage
 		    om.put(xPathRoot + "physical/size/@unit", "byte");
 		    String numHeaderLinesStr = StartingLineTextField.getText();
 		    int numHeaderLines = 1;
-		    int startingLine =1;
+		    //int startingLine =1;
 		    try
 		    {
 		    	numHeaderLines = (new Integer(numHeaderLinesStr)).intValue();
-		    	startingLine = numHeaderLines;
+		    	//startingLine = numHeaderLines;
 		    }
 		    catch(Exception e)
 		    {
@@ -431,7 +441,7 @@ public class TextImportEntity extends AbstractUIPage
 		           "#x0A");
 		    om.put(xPathRoot + "physical/dataFormat/textFormat/attributeOrientation",
 		           "column");
-		   
+		    Log.debug(32, "The map in TextImportEntity.getPageData is "+om.toString());
 		    return om;
 	  }
 	  
@@ -504,7 +514,70 @@ public class TextImportEntity extends AbstractUIPage
 	   */
 	  public boolean setPageData(OrderedMap data, String rootXPath)
 	  {
-		  return true;
+		  if (rootXPath == null )
+	 	 {
+	 		 rootXPath = this.xPathRoot;
+	 	 }
+	 	 Log.debug(32,"DataLocation.setPageData() called with rootXPath = " + rootXPath
+	              + "\n Map = \n" +data);
+	      String isColumnLabelInStartingRowSelected = (String)data.get(COLUMNLABELINSTARTINGROW);
+	      Log.debug(32, "IsColumnLabelInStartingRowSelected value is "+isColumnLabelInStartingRowSelected+
+	    		          " in TextImportEntity.setPageData method");
+	      boolean isSelected = false;
+	      try
+	      {
+	    	  isSelected = (new Boolean(isColumnLabelInStartingRowSelected)).booleanValue();
+	    	  ColumnLabelsCheckBox.setSelected(isSelected);
+	    	  
+	      }
+	      catch(Exception e)
+	      {
+	    	  Log.debug(5, "Couldn't transform "+isColumnLabelInStartingRowSelected+" to boolean variable in TextImportEntity.setPageData");
+	    	  return false;
+	      }
+	      String entityName = (String)data.get("/entityName");
+	      TableNameTextField.setText(entityName);
+	      Log.debug(32, "The entity  name from map is "+entityName+" in TextImportEntity.setPageData");
+		  if(entityName == null || entityName.trim().equals(""))
+		  {
+			  Log.debug(5, "Entity name is null or blank string in map!");
+			  return false;
+		  }
+	      String entityDescription = (String)data.get("/entityDescription");
+	      Log.debug(32, "The entity  description from map is "+entityDescription+" in TextImportEntity.setPageData");
+	      if(entityDescription != null)
+	      {
+	    	  TableDescriptionTextField.setText(entityDescription);
+	      }
+	      String physicalId = (String)data.get("physical/id");
+	      Log.debug(32, "The physical id from map is "+physicalId+" in TextImportEntity.setPageData");
+	      if(physicalId != null)
+	      {
+	    	  physicalID = physicalId;
+	      }
+	      String numberOfHeaderLineStr = (String)data.get("physical/dataFormat/textFormat/numHeaderLines");
+	      Log.debug(32, "The numberofLine string is "+numberOfHeaderLineStr+" in the map in TextImportEntity.setPageData");
+	      int numberOfHeaderLine = 0;
+	      try
+	      {
+	    	  numberOfHeaderLine = (new Integer(numberOfHeaderLineStr)).intValue();
+	      }
+	      catch(Exception e)
+	      {
+	    	  Log.debug(30, "couldn't transform the number of header line "+numberOfHeaderLineStr+" to an integer in TextImportEntity.setPageData");
+	      }
+	      int startLineNumber = 1;
+	      if (!ColumnLabelsCheckBox.isSelected())
+		  {
+	    	  startLineNumber =  numberOfHeaderLine + 1;
+		  }
+	      else
+	      {
+	    	  startLineNumber =  numberOfHeaderLine;
+	      }
+	      Log.debug(32, "The starting row number is "+startLineNumber+" in the map in TextImportEntity.setPageData");
+	      StartingLineTextField.setText((new Integer(startLineNumber)).toString());
+	      return true;
 	  }
 	  
 	  
