@@ -416,6 +416,40 @@
      </infoForModifyingData>
     <wizardPageClass>edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.DataLocation</wizardPageClass>
   </mapping>	
+	
+	<mapping>
+    <root>n/a</root>
+    <infoForModifyingData>
+             <loadExistDataPath>entityName</loadExistDataPath>
+             <xpathForCreatingOrderedMap></xpathForCreatingOrderedMap>
+             <xpathForSettingPageData></xpathForSettingPageData>
+             <newDataDocumentName></newDataDocumentName>
+             <xpathForGettingPageData></xpathForGettingPageData>
+     </infoForModifyingData>
+     <infoForModifyingData>
+             <loadExistDataPath>entityDescription</loadExistDataPath>
+             <xpathForCreatingOrderedMap></xpathForCreatingOrderedMap>
+             <xpathForSettingPageData></xpathForSettingPageData>
+             <newDataDocumentName></newDataDocumentName>
+             <xpathForGettingPageData></xpathForGettingPageData>
+     </infoForModifyingData>
+     <infoForModifyingData>
+             <loadExistDataPath>physical/@id</loadExistDataPath>
+             <xpathForCreatingOrderedMap>physical</xpathForCreatingOrderedMap>
+             <xpathForSettingPageData></xpathForSettingPageData>
+             <newDataDocumentName></newDataDocumentName>
+             <xpathForGettingPageData></xpathForGettingPageData>
+     </infoForModifyingData>
+	 <infoForModifyingData>
+             <loadExistDataPath>physical/dataFormat/textFormat/numHeaderLines</loadExistDataPath>
+             <xpathForCreatingOrderedMap>physical/dataFormat/textFormat</xpathForCreatingOrderedMap>
+             <xpathForSettingPageData></xpathForSettingPageData>
+             <newDataDocumentName></newDataDocumentName>
+             <xpathForGettingPageData></xpathForGettingPageData>
+     </infoForModifyingData>
+    <wizardPageClass>edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.TextImportEntity</wizardPageClass>
+  </mapping>    
+	
     <mapping>
     <root>/eml:eml/dataset/dataTable</root>
     <xpath>entityName</xpath>
