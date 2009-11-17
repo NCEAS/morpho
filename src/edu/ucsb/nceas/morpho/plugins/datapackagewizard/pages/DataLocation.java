@@ -120,6 +120,14 @@ public class DataLocation extends AbstractUIPage {
   private final static int CREATE_CHOICE = 0;
   private final static int IMPORT_CHOICE = 1;
   private final static int DESCRIBE_CHOICE = 2;
+  private final static int IMPORT_AUTO_CHOICE =0;
+  private final static int IMPORT_MANUAL_CHOICE = 1;
+  private final static int DESCRIBE_AUTO_CHOICE =0;
+  private final static int DESCRIBE_MANUAL_CHOICE = 1;
+  private final static int THIRD_PANEL_NOT_AVAILABLE_CHOICE =0;
+  private final static int THIRD_PANEL_ONLINE_CHOICE = 1;
+  private final static int THIRD_PANEL_ARCHIVE_CHOICE = 2;
+  
 
   private final String Q2_TITLE_IMPORT
                         = "How do you want to enter the documentation for "
@@ -155,6 +163,7 @@ public class DataLocation extends AbstractUIPage {
   protected JPanel mainRadioPanel;
 
   private JPanel q2RadioPanel_import;
+  private JPanel q2RadioPanel_describe;
   private String nextAvailableID = null;
   // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
@@ -291,7 +300,7 @@ public class DataLocation extends AbstractUIPage {
                                 = getRadioPanel(Q2_TITLE_IMPORT,
                                                 Q2_LABELS_IMPORT,
                                                 q2Listener_import, -1, true);
-    final JPanel q2RadioPanel_describe
+    q2RadioPanel_describe
                                 = getRadioPanel(Q2_TITLE_DESCRIBE,
                                                 Q2_LABELS_DESCRIBE,
                                                 q2Listener_describe, -1, true);
@@ -894,7 +903,7 @@ public class DataLocation extends AbstractUIPage {
     try {
       fileObj = new File(fileURL.trim());
     } catch (Exception ex) {
-      Log.debug(1, "error - cannot read your data file!");
+      Log.debug(1, "error - cannot read your data file - "+fileURL+"!");
       ex.printStackTrace();
       WidgetFactory.hiliteComponent(fileChooserWidget.getLabel());
       fileChooserWidget.getButton().requestFocus();
@@ -1004,6 +1013,7 @@ public class DataLocation extends AbstractUIPage {
           // if datafile exists, it's a local file referenced by a URN
           String dataFileID = saveDataFileAsTemp(getDataFile());
           returnMap.put(ONLINE_URL_XPATH, URN_ROOT + dataFileID);
+          
         } else {
           // if no datafile, it's an online URL
           returnMap.put(ONLINE_URL_XPATH, urlFieldOnline.getText().trim());
@@ -1189,7 +1199,7 @@ public class DataLocation extends AbstractUIPage {
    * However, this page needs some additional metadata such as last event,
    * text data file full path and et al.
    */
-  public boolean setPageData(OrderedMap map, String _xPathRoot) 
+  public boolean setPageData(OrderedMap map, String _xPathRoot)
   {
 	  boolean empty = false;
 	  if (_xPathRoot != null )
@@ -1223,11 +1233,12 @@ public class DataLocation extends AbstractUIPage {
      Log.debug(32, "The text file path is "+textFilePath+" in DataLocation.setPageData");
      offlineMediumName = (String)map.get(_xPathRoot+"/distribution/offline/mediumName");
      Log.debug(32, "The offline mediu name is "+offlineMediumName+" in DataLocation.setPageData");
+ 
      switch (lastEventNumber) 
      {
       
       case CREATE:
-      
+        clickFirstQuestionRadioButton(CREATE_CHOICE);
        //no validation required
        distribution = INLINE_OR_ONLINE;
        //create a new empty datafile
@@ -1248,21 +1259,35 @@ public class DataLocation extends AbstractUIPage {
 	       }
        }
        setDataFile(emptyDataFile);
+       if(onlineUrl != null)
+       {
+         nextAvailableID = getFileNameFromURL(onlineUrl);
+       }
        setNextPageID(DataPackageWizardInterface.DATA_FORMAT);
-      
+       empty = true;
        break;
        //////
 
 
      case IMPORT_AUTO:
+       clickFirstQuestionRadioButton(IMPORT_CHOICE);
+       clickSecondImportQuestionRadionButton(IMPORT_AUTO_CHOICE);
+       fileChooserWidget.setChosenFileName(textFilePath);
        dataFileObj = validateDataFileSelection();
-       if (dataFileObj==null) return false;
+       if (dataFileObj==null)
+       {
+    	   return empty;
+       }
        setDataFile(dataFileObj);
        distribution = INLINE_OR_ONLINE;
+       if(onlineUrl != null)
+       {
+         nextAvailableID = getFileNameFromURL(onlineUrl);
+       }
        //setNextPageID(DataPackageWizardInterface.TEXT_IMPORT_WIZARD);
        	if (mainWizFrame == null)
        	{
-       		return false;
+       		return empty;
        	}
        	else
        	{
@@ -1270,12 +1295,12 @@ public class DataLocation extends AbstractUIPage {
        		ImportedTextFile dataTextFile = new ImportedTextFile(dataFileObj);
        		boolean isTextFile = dataTextFile.isTextFile();
        		if(!isTextFile)
-    		   {
+    		{
     			   JOptionPane.showMessageDialog(mainWizFrame, "Selected File is NOT a text file!",
                            "Message",
                            JOptionPane.INFORMATION_MESSAGE, null);
-    			   return false;
-    		   }
+    			   return empty;
+    		}
        		ImportedTextFile existTextFile = mainWizFrame.getImportDataTextFile();
        		//if we already have the text file, we don't need to assign it again.
        		if (existTextFile == null  || !existTextFile.equals(dataTextFile))
@@ -1284,26 +1309,41 @@ public class DataLocation extends AbstractUIPage {
        		}
        		setNextPageID(DataPackageWizardInterface.TEXT_IMPORT_ENTITY);
        	}
-       	   
+       	empty = true;
        
 //     WizardSettings.setSummaryText(WizardSettings.?????????);
        break;
        //////
 
-     case IMPORT_MAN:
-       dataFileObj = validateDataFileSelection();
-       if (dataFileObj==null) return false;
-       setDataFile(dataFileObj);
-       distribution = INLINE_OR_ONLINE;
-       setNextPageID(DataPackageWizardInterface.DATA_FORMAT);
-       
-//     WizardSettings.setSummaryText(WizardSettings.?????????);
+     case IMPORT_MAN:        
+    	 clickFirstQuestionRadioButton(IMPORT_CHOICE);
+    	 clickSecondImportQuestionRadionButton(IMPORT_MANUAL_CHOICE);
+         fileChooserWidget.setChosenFileName(textFilePath);
+         dataFileObj = validateDataFileSelection();
+         if (dataFileObj==null)
+         {
+      	   return empty;
+         }
+         if(onlineUrl != null)
+         {
+           nextAvailableID = getFileNameFromURL(onlineUrl);
+         }
+        setDataFile(dataFileObj);
+        distribution = INLINE_OR_ONLINE;
+        setNextPageID(DataPackageWizardInterface.DATA_FORMAT);
+        empty = true;
        break;
        //////
 
      case DESCRIBE_AUTO:
+    	 clickFirstQuestionRadioButton(DESCRIBE_CHOICE);
+    	 clickSecondDescribeQuestionRadionButton(DESCRIBE_AUTO_CHOICE);
+         fileChooserWidget.setChosenFileName(textFilePath);
        dataFileObj = validateDataFileSelection();
-       if (dataFileObj==null) return false;
+       if (dataFileObj==null)
+       {
+    	   return empty;
+       }
        setDataFile(dataFileObj);
        // assume it's offline for now - when we start supporting auto-metadata
        // generation form online files, this will change
@@ -1311,7 +1351,7 @@ public class DataLocation extends AbstractUIPage {
         //setNextPageID(DataPackageWizardInterface.TEXT_IMPORT_WIZARD);
        	if (mainWizFrame == null)
        	{
-       		return false;
+       		return empty;
        	}
        	else
        	{
@@ -1323,7 +1363,7 @@ public class DataLocation extends AbstractUIPage {
     			   JOptionPane.showMessageDialog(mainWizFrame, "Selected File is NOT a text file!",
                            "Message",
                            JOptionPane.INFORMATION_MESSAGE, null);
-    			   return false;
+    			   return empty;
     		   }
        		ImportedTextFile existTextFile = mainWizFrame.getImportDataTextFile();
        		//if we already have the text file, we don't need to assign it again.
@@ -1334,77 +1374,116 @@ public class DataLocation extends AbstractUIPage {
        		setNextPageID(DataPackageWizardInterface.TEXT_IMPORT_ENTITY);
        	}
        	
-      
-//     WizardSettings.setSummaryText(WizardSettings.?????????);
-       break;
+        empty = true;
+        break;
        //////
 
   
 
      case DESCRIBE_MAN_NODATA:
-       // go directly to last page
-//       WizardSettings.setSummaryText(WizardSettings.?????????);
-   	  if (fileNameFieldNoData.getText().trim().equals("")) {
-             WidgetFactory.hiliteComponent(fileNameLabelNoData);
-             fileNameFieldNoData.requestFocus();
-             return false;
-           }
+       clickFirstQuestionRadioButton(DESCRIBE_CHOICE);
+       clickSecondDescribeQuestionRadionButton(DESCRIBE_MANUAL_CHOICE);
+       q3Widget.click(THIRD_PANEL_NOT_AVAILABLE_CHOICE);
+       fileNameFieldNoData.setText(objectName);
        distribution = WizardSettings.NODATA;
        setDataFile(null);
        setNextPageID(DataPackageWizardInterface.DATA_FORMAT);
-    
+       empty = true;
        break;
        //////
 
      case DESCRIBE_MAN_ONLINE:
-       if (fileNameFieldOnline.getText().trim().equals("")) {
-         WidgetFactory.hiliteComponent(fileNameLabelOnline);
-         fileNameFieldOnline.requestFocus();
-         return false;
-       }
-       WidgetFactory.unhiliteComponent(fileNameLabelOnline);
-
-       if (urlFieldOnline.getText().trim().equals("")) {
-         WidgetFactory.hiliteComponent(urlLabelOnline);
-         urlFieldOnline.requestFocus();
-         return false;
-       }
-       WidgetFactory.unhiliteComponent(urlLabelOnline);
-
+       clickFirstQuestionRadioButton(DESCRIBE_CHOICE);
+       clickSecondDescribeQuestionRadionButton(DESCRIBE_MANUAL_CHOICE);
+       q3Widget.click(this.THIRD_PANEL_ONLINE_CHOICE);
+       fileNameFieldOnline.setText(objectName);       
+       urlFieldOnline.setText(onlineUrl);
        distribution = WizardSettings.ONLINE;
        setDataFile(null);
        setNextPageID(DataPackageWizardInterface.DATA_FORMAT);
-       
-//     WizardSettings.setSummaryText(WizardSettings.?????????);
-//     WizardSettings.setDataLocation(urlFieldOnline.getText().trim());
+       empty=true;
        break;
        //////
 
      case DESCRIBE_MAN_OFFLINE:
-
-       //if (medNameField.getText().trim().equals(EMPTY_STRING)) {
-   	if(Util.isBlank(medNameField.getText())){
-         WidgetFactory.hiliteComponent(medNameLabel);
-         return false;
-       }
-       WidgetFactory.unhiliteComponent(medNameLabel);
-
-       if (objNameField.getText().trim().equals(EMPTY_STRING)) {
-         WidgetFactory.hiliteComponent(objNameLabel);
-         return false;
-       }
-       WidgetFactory.unhiliteComponent(objNameLabel);
-
-       distribution = WizardSettings.OFFLINE;
-       setDataFile(null);
-       setNextPageID(DataPackageWizardInterface.DATA_FORMAT);
-       
+    	 clickFirstQuestionRadioButton(DESCRIBE_CHOICE);
+    	 clickSecondDescribeQuestionRadionButton(DESCRIBE_MANUAL_CHOICE);
+    	 q3Widget.click(this.THIRD_PANEL_ARCHIVE_CHOICE);
+         medNameField.setText(offlineMediumName);
+         WidgetFactory.unhiliteComponent(medNameLabel);
+        objNameField.setText(objectName);
+        distribution = WizardSettings.OFFLINE;
+        setDataFile(null);
+        setNextPageID(DataPackageWizardInterface.DATA_FORMAT);
+        empty=true;
        break;
        //////
      default:
     	 Log.debug(20, "Morpho don't support this event "+lastEventNumber);
    }
 	 return empty;
+  }
+  
+  
+  /*
+   * Click radion button for first question.
+   * 0 - create
+   * 1- import
+   * 2- describe
+   */
+  private void clickFirstQuestionRadioButton(int index)
+  {
+	     Container radioPanel = (Container)mainRadioPanel.getComponent(1);
+	     Container middlePanel = (Container) radioPanel.getComponent(1);
+	     //first three buttons
+	     JRadioButton button = (JRadioButton)middlePanel.getComponent(index);
+	     button.doClick();
+  }
+  
+  /*
+   * When first radio button is chosen to be import. Then this one will
+   * click for second question
+   * 0 - auto
+   * 1 - manual
+   */
+  private void clickSecondImportQuestionRadionButton(int index)
+  {
+	  Container radioPanel = (Container)q2RadioPanel_import.getComponent(1);
+      Container middlePanel = (Container) radioPanel.getComponent(1);
+      JRadioButton button = (JRadioButton)middlePanel.getComponent(index);
+      button.doClick();
+  }
+  
+  /*
+   * When first radio button is chosen to be describe. Then this one will
+   * click for second question
+   * 0 - auto
+   * 1 - manual
+   */
+  private void clickSecondDescribeQuestionRadionButton(int index)
+  {
+	  Container radioPanel = (Container)q2RadioPanel_describe.getComponent(1);
+      Container middlePanel = (Container) radioPanel.getComponent(1);
+      JRadioButton button = (JRadioButton)middlePanel.getComponent(index);
+      button.doClick();
+  }
+  
+  
+  /*
+   * Get rid of ecogrid://knb from "ecogird://knb/john.12.3"
+   */
+   private String getFileNameFromURL(String onlineUrl)
+  {
+	  String fileName = null;
+	  if(onlineUrl != null && onlineUrl.startsWith(URN_ROOT))
+	  {
+		  fileName = onlineUrl.substring(URN_ROOT.length());
+	  }
+	  else
+	  {
+		  fileName = onlineUrl;
+	  }
+	  return fileName;
   }
 
   private JPanel getRadioPanel(String title, String[] buttonLabels,
@@ -1750,5 +1829,18 @@ class FileChooserWidget extends JPanel {
   protected void setImportFileURL(String filePath) {
 
     this.importFileURL = filePath;
+  }
+  
+  /**
+   * Sets the chosen file name
+   * @param fileName
+   */
+  public void setChosenFileName(String fileName)
+  {
+	  if(fileName != null)
+	  {
+		  fileNameField.setText(fileName);
+		  setImportFileURL(fileName);
+	  }
   }
 }

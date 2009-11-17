@@ -257,7 +257,7 @@ public class IncompleteDocumentLoader
 		                	  if(map != null)
 		                	  {
 		                		  Log.debug(30, "There is no data for className --------------------"+className+ " so we just initilize an empty page");
-							     page = WizardUtil.createAbstractUIpageObject(className, dpWiz, map.getWizardPageClassParameters() );
+							      //page = WizardUtil.createAbstractUIpageObject(className, dpWiz, map.getWizardPageClassParameters() );
 		                	  }
 		                	  else
 		                	  {
