@@ -89,6 +89,7 @@ public class TextImportAttribute extends AbstractUIPage
 	   private TableColumnModel fullColumnModel = null;
 	   private AttributePage attributePage = null;
 	   private boolean importNeeded = false;
+	   private String xPathRoot = AttributeSettings.Attribute_xPath;
 	   //private int indexInAbsractDataPackageImportList =NOIMPORT; // -1 means not need imported
 	   public static final String CLASSFULLNAME = "edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.TextImportAttribute";
 	   public static final String ATTRIBUTELISTPATH   = "attributeList";
@@ -467,7 +468,18 @@ public class TextImportAttribute extends AbstractUIPage
 	   */
 	  public boolean setPageData(OrderedMap data, String rootXPath)
 	  {
-		  return true;
+		  if (rootXPath == null )
+		 {
+		 		 rootXPath = this.xPathRoot;
+		 }
+		 Log.debug(32,"TextImportAttribute.setPageData() called with rootXPath = " + rootXPath
+		              + "\n Map = \n" +data);
+		  boolean success = false;
+		  if(attributePage != null)
+		  {
+			  success = attributePage.setPageData(data, "/"+ATTRIBUTEPATH);
+		  }
+		  return success;
 	  }
 	  
 	  /**

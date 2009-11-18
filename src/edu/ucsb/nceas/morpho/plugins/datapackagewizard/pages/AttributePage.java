@@ -972,7 +972,9 @@ public class AttributePage extends AbstractUIPage {
   public boolean setPageData(OrderedMap map, String _xPathRoot) {
 
     if (_xPathRoot!=null && _xPathRoot.trim().length() > 0) this.xPathRoot = _xPathRoot;
-
+     
+    Log.debug(32,"AttributePage.setPageData() called with rootXPath = " + xPathRoot
+            + "\n Map = \n" +map);
     // future enhancements to this AttributePage dialog should map
     // the following 3 xml attributes to appropriate widgets
     String id = (String)map.get(xPathRoot + "/@id");

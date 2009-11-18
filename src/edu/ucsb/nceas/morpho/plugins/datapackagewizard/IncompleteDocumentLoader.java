@@ -49,6 +49,7 @@ import edu.ucsb.nceas.morpho.plugins.DataPackageWizardListener;
 import edu.ucsb.nceas.morpho.plugins.ServiceController;
 import edu.ucsb.nceas.morpho.plugins.ServiceNotHandledException;
 import edu.ucsb.nceas.morpho.plugins.ServiceProvider;
+import edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.AttributeSettings;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.TextImportAttribute;
 import edu.ucsb.nceas.morpho.util.IncompleteDocInfo;
 import edu.ucsb.nceas.morpho.util.IncompleteDocSettings;
@@ -424,6 +425,7 @@ public class IncompleteDocumentLoader
   private AbstractUIPage generateTextImportAttributePage(WizardContainerFrame dpWiz, Node dataTableNode, int index)
   {
 	  TextImportAttribute page = null;
+	  boolean success = false;
 	  if(dpWiz != null && index >= 0 && dataTableNode != null)
 	  {
 		NodeList attributeList = null;
@@ -444,7 +446,11 @@ public class IncompleteDocumentLoader
 		    if(page != null)
 		    {
 		    	OrderedMap xpathMap = XMLUtilities.getDOMTreeAsXPathMap(attributeNode);
-		    	page.setPageData(xpathMap, TextImportAttribute.ATTRIBUTEPAGEORDEREDMAPPATH);
+		    	success = page.setPageData(xpathMap, TextImportAttribute.ATTRIBUTEPAGEORDEREDMAPPATH);
+		        if(!success)
+		        {
+		        	page = null;
+		        }
 		    }
 		}
 	  }
