@@ -448,6 +448,18 @@
              <xpathForGettingPageData></xpathForGettingPageData>
      </infoForModifyingData>
     <wizardPageClass>edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.TextImportEntity</wizardPageClass>
+  </mapping>
+	
+	<mapping>
+    <root>n/a</root>
+     <infoForModifyingData>
+             <loadExistDataPath>physical/dataFormat/textFormat/simpleDelimited/fieldDelimiter</loadExistDataPath>
+             <xpathForCreatingOrderedMap>physical/dataFormat/textFormat/simpleDelimited</xpathForCreatingOrderedMap>
+             <xpathForSettingPageData>physical/dataFormat/textFormat/simpleDelimited</xpathForSettingPageData>
+             <newDataDocumentName></newDataDocumentName>
+             <xpathForGettingPageData></xpathForGettingPageData>
+     </infoForModifyingData>
+    <wizardPageClass>edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.TextImportDelimiters</wizardPageClass>
   </mapping>    
 	
     <mapping>
