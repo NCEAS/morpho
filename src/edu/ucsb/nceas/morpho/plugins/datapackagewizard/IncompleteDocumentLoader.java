@@ -33,6 +33,7 @@ import java.util.Vector;
 
 import javax.swing.JOptionPane;
 
+import org.apache.xpath.XPathAPI;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
@@ -48,6 +49,7 @@ import edu.ucsb.nceas.morpho.plugins.DataPackageWizardListener;
 import edu.ucsb.nceas.morpho.plugins.ServiceController;
 import edu.ucsb.nceas.morpho.plugins.ServiceNotHandledException;
 import edu.ucsb.nceas.morpho.plugins.ServiceProvider;
+import edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.TextImportAttribute;
 import edu.ucsb.nceas.morpho.util.IncompleteDocInfo;
 import edu.ucsb.nceas.morpho.util.IncompleteDocSettings;
 import edu.ucsb.nceas.morpho.util.LoadDataPath;
@@ -71,6 +73,7 @@ public class IncompleteDocumentLoader
 	private String incompletionStatus = null;
 	private Hashtable wizardPageName = new Hashtable();
 	private XPathUIPageMapping[] mappingList = null;
+	
 	
 
 	/**
@@ -181,6 +184,7 @@ public class IncompleteDocumentLoader
 				                  WizardSettings.WIZARD_WIDTH,   WizardSettings.WIZARD_HEIGHT );
 				  dpWiz.setCurrentPage(currentPage);
 				  dpWiz.setTitle(DataPackageWizardInterface.NEWTABLEEWIZARDFRAMETITLE);
+				  dpWiz.initialAutoSaving();
 				  dpWiz.setVisible(true);
 			  }
 		  }
@@ -192,6 +196,7 @@ public class IncompleteDocumentLoader
 	private AbstractUIPage loadPagesIntoWizard(WizardContainerFrame dpWiz)
 	{
 		AbstractUIPage currentPage = null;
+		int textImportAttributePageIndex = 0;
 		if(dpWiz != null && incompleteDocInfo != null)
 		{
 			  WizardPageInfo [] classNameFromIncompleteDoc = incompleteDocInfo.getWizardPageClassInfoList();
@@ -208,63 +213,73 @@ public class IncompleteDocumentLoader
 					  {
 						  String classNamePlusParameter ="";
 						  String className = pageClassInfo.getClassName();
-						  classNamePlusParameter = classNamePlusParameter+className;
-						  Vector parameters = pageClassInfo.getParameters();//this one is for constructor
-						  OrderedMap variables = pageClassInfo.getVariablesValuesMap();//some additional info, which is not in eml itself
-						  if(parameters != null && !parameters.isEmpty())
+						  if(className !=null && className.equals(TextImportAttribute.CLASSFULLNAME))
 						  {
-							  for(int k=0; k<parameters.size(); k++)
-							  {
-								  String param = (String)parameters.elementAt(k);
-								  classNamePlusParameter = classNamePlusParameter +param;
-							  }
-							  
+							  //load TextImportAttribute from a special method
+							  int entityIndex = incompleteDocInfo.getEntityIndex();				  
+							  page = generateTextImportAttributePage(dpWiz, dataPackage.getEntity(entityIndex).getNode(), textImportAttributePageIndex);
+							  textImportAttributePageIndex++;
 						  }
-						  XPathUIPageMapping map = (XPathUIPageMapping)wizardPageName.get(classNamePlusParameter.trim());
-						  if (map != null)
+						  else
 						  {
-							  //loading exist data into UIPage
-							  String path = null;
-							  try
+							  classNamePlusParameter = classNamePlusParameter+className;
+							  Vector parameters = pageClassInfo.getParameters();//this one is for constructor
+							  OrderedMap variables = pageClassInfo.getVariablesValuesMap();//some additional info, which is not in eml itself
+							  if(parameters != null && !parameters.isEmpty())
 							  {
-								  Log.debug(30, "There is map for classNamePlusParamer ~~~~~~~~~~~~~~"+classNamePlusParameter+ " so we create an page with data (if have)");
-							      Log.debug(30, "the className from metadata is "+className);
-							      if(incompletionStatus.equals(IncompleteDocSettings.INCOMPLETE_PACKAGE_WIZARD))
-							      {
-								    page= WizardUtil.getUIPage(map, dpWiz,  variables, dataPackage.getMetadataNode(), null );
-							      }
-							      else if(incompletionStatus.equals(IncompleteDocSettings.INCOMPLETE_ENTITY_WIZARD))  	  
-							      {
-							    	  int index = incompleteDocInfo.getEntityIndex();
-							    	  if(dataPackage.getEntity(index) != null)
-							    	  {
-							    		  page= WizardUtil.getUIPage(map, dpWiz,  variables, dataPackage.getEntity(index).getNode(), null );
-							    	  }
-							      }
+								  for(int k=0; k<parameters.size(); k++)
+								  {
+									  String param = (String)parameters.elementAt(k);
+									  classNamePlusParameter = classNamePlusParameter +param;
+								  }
+								  
 							  }
-							  catch(Exception e)
+							  XPathUIPageMapping map = (XPathUIPageMapping)wizardPageName.get(classNamePlusParameter.trim());
+							  if (map != null)
 							  {
-								  Log.debug(20, "Couldn't create the page with className "+className+" "+e.getMessage());
-								  page = null;
+								  //loading exist data into UIPage
+								  String path = null;
+								  try
+								  {
+									  Log.debug(30, "There is map for classNamePlusParamer ~~~~~~~~~~~~~~"+classNamePlusParameter+ " so we create an page with data (if have)");
+								      Log.debug(30, "the className from metadata is "+className);
+								      if(incompletionStatus.equals(IncompleteDocSettings.INCOMPLETE_PACKAGE_WIZARD))
+								      {
+									    page= WizardUtil.getUIPage(map, dpWiz,  variables, dataPackage.getMetadataNode(), null );
+								      }
+								      else if(incompletionStatus.equals(IncompleteDocSettings.INCOMPLETE_ENTITY_WIZARD))  	  
+								      {
+								    	  int index = incompleteDocInfo.getEntityIndex();
+								    	  if(dataPackage.getEntity(index) != null)
+								    	  {
+								    		  page= WizardUtil.getUIPage(map, dpWiz,  variables, dataPackage.getEntity(index).getNode(), null );
+								    	  }
+								      }
+								  }
+								  catch(Exception e)
+								  {
+									  Log.debug(20, "Couldn't create the page with className "+className+" "+e.getMessage());
+									  page = null;
+								  }
+								 
 							  }
-							 
+							  //generate empty UIPage if page isnull or map isnull
+			                  if (map == null || page ==null)
+			                  {
+			                	  
+								  // those pages are likely introduction ....
+			                	  if(map != null)
+			                	  {
+			                		  Log.debug(30, "There is no data for className --------------------"+className+ " so we just initilize an empty page");
+								      //page = WizardUtil.createAbstractUIpageObject(className, dpWiz, map.getWizardPageClassParameters() );
+			                	  }
+			                	  else
+			                	  {
+			                		  Log.debug(30, "There is no map for classNamePlusParameter --------------------"+classNamePlusParameter+ " so we just initilize an empty page for class "+className);
+			                		  page = WizardUtil.createAbstractUIpageObject(className, dpWiz, parameters );
+			                	  }
+			                  }
 						  }
-						  //generate empty UIPage if page isnull or map isnull
-		                  if (map == null || page ==null)
-		                  {
-		                	  
-							  // those pages are likely introduction ....
-		                	  if(map != null)
-		                	  {
-		                		  Log.debug(30, "There is no data for className --------------------"+className+ " so we just initilize an empty page");
-							      //page = WizardUtil.createAbstractUIpageObject(className, dpWiz, map.getWizardPageClassParameters() );
-		                	  }
-		                	  else
-		                	  {
-		                		  Log.debug(30, "There is no map for classNamePlusParameter --------------------"+classNamePlusParameter+ " so we just initilize an empty page for class "+className);
-		                		  page = WizardUtil.createAbstractUIpageObject(className, dpWiz, parameters );
-		                	  }
-		                  }
 					  }
 					  
 					  //if we can't get any page, we shouldn't load it. Otherwise, the result will be unpredicable.
@@ -401,5 +416,38 @@ public class IncompleteDocumentLoader
 	        }
 	        return frame;
 	}
-
+	
+	/*
+	 * Generates a TextImportAttribute page. This page is kind of special, so we don't
+	 * generates from configuration.
+	 */
+  private AbstractUIPage generateTextImportAttributePage(WizardContainerFrame dpWiz, Node dataTableNode, int index)
+  {
+	  TextImportAttribute page = null;
+	  if(dpWiz != null && index >= 0 && dataTableNode != null)
+	  {
+		NodeList attributeList = null;
+		Node attributeNode = null;
+		try
+		{
+			attributeList = XPathAPI.selectNodeList(dataTableNode, TextImportAttribute.ATTRIBUTELISTPATH+"/"+TextImportAttribute.ATTRIBUTEPATH);
+			attributeNode = attributeList.item(index);
+		}
+		catch(Exception e)
+		{
+			Log.debug(30, "Couldn't get attribute node from entity node in IncompleteDocumentLoader.generateTextImportAttributePage since "+e.getMessage());
+			return page;
+		}
+		if(attributeNode != null)
+		{
+		    page = new TextImportAttribute(dpWiz, index);
+		    if(page != null)
+		    {
+		    	OrderedMap xpathMap = XMLUtilities.getDOMTreeAsXPathMap(attributeNode);
+		    	page.setPageData(xpathMap, TextImportAttribute.ATTRIBUTEPAGEORDEREDMAPPATH);
+		    }
+		}
+	  }
+	  return page;
+  }
 }

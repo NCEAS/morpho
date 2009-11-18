@@ -90,13 +90,16 @@ public class TextImportAttribute extends AbstractUIPage
 	   private AttributePage attributePage = null;
 	   private boolean importNeeded = false;
 	   //private int indexInAbsractDataPackageImportList =NOIMPORT; // -1 means not need imported
-	   
-	   
+	   public static final String CLASSFULLNAME = "edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.TextImportAttribute";
+	   public static final String ATTRIBUTELISTPATH   = "attributeList";
+	   public static final String ATTRIBUTEPATH = "attribute";
+	   public static final String ATTRIBUTEPAGEORDEREDMAPPATH = "";
 	   /**
 	    * Construct
 	    * @param frame
+	    * @param index of column. It starts from 0.
 	    */
-	   public TextImportAttribute(WizardContainerFrame frame,int columnIndex)
+	   public TextImportAttribute(WizardContainerFrame frame,int index)
 	   {
 		   this.frame = frame;
 		   if(this.frame == null)
@@ -118,7 +121,7 @@ public class TextImportAttribute extends AbstractUIPage
 			  
 		   }
 		   this.wizardPageLib = new WizardPageLibrary(frame);
-		   this.columnIndex = columnIndex;
+		   this.columnIndex = index;
 		   init();
 	   }
 	   
