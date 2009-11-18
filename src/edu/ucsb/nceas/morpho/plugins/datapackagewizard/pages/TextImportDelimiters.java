@@ -362,16 +362,9 @@ public class TextImportDelimiters extends AbstractUIPage implements TableModelLi
 		  }
 		  else
 		  {
-			  int columnCount = table.getColumnCount();
-			  WizardPageLibraryInterface pageLib = frame.getWizardPageLibrary();
-			  if (pageLib != null)
+			  boolean success = setImportAttributeSizeToWizardLibarary(table);
+			  if(!success)
 			  {
-				 Log.debug(30, "set attribute size "+columnCount+" into WizardPageLibary");
-			     pageLib.setTextImportAttributePagesSize(columnCount);
-			  }
-			  else
-			  {
-				  Log.debug(5, "The WizardPageLibrary is null and we couldn't set attribute size");
 				  return false;
 			  }
 		  }
@@ -596,6 +589,8 @@ public class TextImportDelimiters extends AbstractUIPage implements TableModelLi
 			 Log.debug(32, "TextImportDelimiter.setPageData the ignoreConsequtiveDelimiters is false, but conescutiveCheckBox is selected, so we should click on it to unselect it");
 			 consecutiveCheckBox.doClick();
 		 }
+		 JTable table = textFile.getTable();
+		 setImportAttributeSizeToWizardLibarary(table);
 		 
 		 return true;
 	  }
@@ -835,6 +830,36 @@ public class TextImportDelimiters extends AbstractUIPage implements TableModelLi
 		  }
 
 
+	   /*
+	    * Set import attribute size to wizard libarary
+	    */
+       private boolean setImportAttributeSizeToWizardLibarary(JTable table)
+       {
+    	      boolean success = false;
+    	      if(table == null)
+    	      {
+    	    	  Log.debug(5, "The JTable  is null and we couldn't set attribute size");
+    	    	  return success;
+    	      }
+    	      int columnCount = table.getColumnCount();
+			  WizardPageLibraryInterface pageLib = null;
+			  if(frame != null)
+			  {
+				  pageLib= frame.getWizardPageLibrary();
+			  }
+			  if (pageLib != null)
+			  {
+				 Log.debug(30, "set attribute size "+columnCount+" into WizardPageLibary");
+			     pageLib.setTextImportAttributePagesSize(columnCount);
+			     success = true;
+			  }
+			  else
+			  {
+				  Log.debug(5, "The WizardPageLibrary is null and we couldn't set attribute size");
+				  
+			  }
+			  return success;
+       }
 
 		private void TabCheckBox_itemStateChanged(java.awt.event.ItemEvent event) {
 		    

@@ -424,7 +424,7 @@ public class IncompleteDocumentLoader
 	 */
   private AbstractUIPage generateTextImportAttributePage(WizardContainerFrame dpWiz, Node dataTableNode, int index)
   {
-	  TextImportAttribute page = null;
+	  AbstractUIPage page = null;
 	  boolean success = false;
 	  if(dpWiz != null && index >= 0 && dataTableNode != null)
 	  {
@@ -442,7 +442,11 @@ public class IncompleteDocumentLoader
 		}
 		if(attributeNode != null)
 		{
-		    page = new TextImportAttribute(dpWiz, index);
+			WizardPageLibraryInterface lib = dpWiz.getWizardPageLibrary();
+		    if(lib != null)
+		    {
+		    	page = lib.getPage(DataPackageWizardInterface.TEXT_IMPORT_ATTRIBUTE+index);
+		    }
 		    if(page != null)
 		    {
 		    	OrderedMap xpathMap = XMLUtilities.getDOMTreeAsXPathMap(attributeNode);
