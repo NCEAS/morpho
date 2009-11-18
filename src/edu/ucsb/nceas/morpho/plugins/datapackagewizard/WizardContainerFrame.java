@@ -47,6 +47,7 @@ import edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.PartyMainPage;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.Project;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.Taxonomic;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.TextImportAttribute;
+import edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.TextImportDelimiters;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.TextImportEntity;
 import edu.ucsb.nceas.morpho.util.IncompleteDocSettings;
 import edu.ucsb.nceas.morpho.util.Log;
@@ -1369,6 +1370,16 @@ public class WizardContainerFrame
 							  emlWithIncompleteInfo.append(IncompleteDocSettings.VARIABLEOPENINGTAG+IncompleteDocSettings.KEYOPENINGTAG+
 									  textEntity.COLUMNLABELINSTARTINGROW+IncompleteDocSettings.KEYCLOSINGTAG+
 									  IncompleteDocSettings.VALUEOPENINGTAG+isSelected+IncompleteDocSettings.VALUECLOSINGTAG+
+									  IncompleteDocSettings.VARIABLECLOSINGTAG);
+						  }
+						  else if(page instanceof TextImportDelimiters)
+						  {
+							  //add additional info about if ColumnLabelInStartingRow box is checked
+							  TextImportDelimiters textDelimiter = (TextImportDelimiters)page;
+							  boolean ingoreConsecutiveDelimiters = textDelimiter.ignoreConsequtiveDelimiters();
+							  emlWithIncompleteInfo.append(IncompleteDocSettings.VARIABLEOPENINGTAG+IncompleteDocSettings.KEYOPENINGTAG+
+									  textDelimiter.IGNORECONSECUTIVEDELIMITERS+IncompleteDocSettings.KEYCLOSINGTAG+
+									  IncompleteDocSettings.VALUEOPENINGTAG+ingoreConsecutiveDelimiters+IncompleteDocSettings.VALUECLOSINGTAG+
 									  IncompleteDocSettings.VARIABLECLOSINGTAG);
 						  }
 						  emlWithIncompleteInfo.append(IncompleteDocSettings.CLASSCLOSINGTAG);

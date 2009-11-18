@@ -82,6 +82,7 @@ public class TextImportDelimiters extends AbstractUIPage implements TableModelLi
 	   private TextFieldChangeActionListener textChangeListener = new TextFieldChangeActionListener();
 	   private TextFieldFocusChangeListener textFocusChangeListener = new TextFieldFocusChangeListener();
 	   private boolean hasAdditionalMetadataPart = false;
+	   public static final String IGNORECONSECUTIVEDELIMITERS = "ignoreConsecutiveDelimiters";
 	   /*
 	    * flag used to avoid parsing everytime a checkbox is changed
 	    */
@@ -435,19 +436,24 @@ public class TextImportDelimiters extends AbstractUIPage implements TableModelLi
 			    }
 				
 		   }
+		   Log.debug(35, "The ordered map in TextImportDelimiter.setPageData is "+om.toString());
 		   return om;
 	  }
 	  
+	  private static final String TABTEXT = "#x09";
+	  private static final String COMMATEXT = ",";
+	  private static final String SPACETEXT = "#x20";
+	  private static final String SEMICOLONTEXT = ";";
        /*
         * Gets delimiter string as text
         */
 	   private String getDelimiterStringAsText() 
 	   {
 		    String str = "";
-		    if (tabCheckBox.isSelected())str = str + "#x09";
-		    if (commaCheckBox.isSelected())str = str + ",";
-		    if (spaceCheckBox.isSelected())str = str + "#x20";
-		    if (semicolonCheckBox.isSelected())str = str + ";";
+		    if (tabCheckBox.isSelected())str = str + TABTEXT;
+		    if (commaCheckBox.isSelected())str = str + COMMATEXT;
+		    if (spaceCheckBox.isSelected())str = str + SPACETEXT ;
+		    if (semicolonCheckBox.isSelected())str = str +SEMICOLONTEXT;
 		    if (otherCheckBox.isSelected()) {
 		      String temp = otherDelimiterTextField.getText();
 		      if (temp.length() > 0) {
@@ -457,6 +463,58 @@ public class TextImportDelimiters extends AbstractUIPage implements TableModelLi
 		    }
 		    return str;
 		  }
+	   
+	   /*
+	    * When we get a delimiter from eml, we need to select check box base 
+	    * on the delimiter. It is for setPageData method
+	    */
+	   private boolean updateCheckBoxBaseOnEMLDelimiter(String delimiterStr)
+	   {		   
+		   boolean success = false;
+		   if(delimiterStr != null)
+		   {
+			    unRegisterListener();
+			    tabCheckBox.setSelected(false);
+			    commaCheckBox.setSelected(false);
+			    spaceCheckBox.setSelected(false);
+			    semicolonCheckBox.setSelected(false);
+			    otherDelimiterTextField.setText(EMPTYSTRING);
+			    otherDelimiterTextField.setEnabled(false);
+			    otherCheckBox.setSelected(false);
+				registerListener();
+			   if(delimiterStr.indexOf(TABTEXT)!= -1)
+			   {
+				   tabCheckBox.doClick();
+				   delimiterStr = delimiterStr.replaceAll(TABTEXT, EMPTYSTRING);
+			   }
+			   
+			   if(delimiterStr.indexOf(COMMATEXT) != -1)
+			   {
+				   commaCheckBox.doClick();
+				   delimiterStr = delimiterStr.replaceAll(COMMATEXT, EMPTYSTRING);
+			   }
+			   
+			   if(delimiterStr.indexOf(SPACETEXT) != -1)
+			   {
+				   spaceCheckBox.doClick();
+				   delimiterStr = delimiterStr.replaceAll(SPACETEXT, EMPTYSTRING);
+			   }
+			   
+			   if(delimiterStr.indexOf(SEMICOLONTEXT) != -1)
+			   {
+				   semicolonCheckBox.doClick();
+				   delimiterStr = delimiterStr.replaceAll(SEMICOLONTEXT, EMPTYSTRING);
+			   }
+			   //now if delimiterStr still has something, it must be other delimiter			   
+			   if(!delimiterStr.trim().equals(EMPTYSTRING))
+			   {
+				   otherCheckBox.doClick();
+				   otherDelimiterTextField.setText(delimiterStr);
+			   }
+			   success = true;
+		   }
+		   return success;
+	   }
        
 	   /**
 	    * If the metadata generate by this page has additionalMetadata part.
@@ -500,7 +558,46 @@ public class TextImportDelimiters extends AbstractUIPage implements TableModelLi
 	   */
 	  public boolean setPageData(OrderedMap data, String rootXPath)
 	  {
-		  return true;
+		  if (rootXPath == null )
+		 {
+		 	 rootXPath = this.xPathRoot;
+		 }
+		 Log.debug(32,"TexImportDelimiter.setPageData() called with rootXPath = " + rootXPath
+		              + "\n Map = \n" +data);
+		 String delimiterStr = (String)data.get(rootXPath+"/fieldDelimiter") ;
+		 Log.debug(30, "The delimiter from eml is "+delimiterStr+" in TextImportDelimiter.setPage");
+		 if(delimiterStr== null)
+		 {
+			 Log.debug(5, "Couldn't get delimiter from eml in TextImportDelimiter.setPageData");
+			 return false;
+		 }
+		 // update check box base on the delimiter from eml
+		 updateCheckBoxBaseOnEMLDelimiter(delimiterStr);
+		 //get delimiter based on check box selection
+		 delimiter = getRealDelimiterString();
+		 String ignoreConsecutiveDelStr = (String)data.get(this.IGNORECONSECUTIVEDELIMITERS);
+		 Log.debug(30, "Ignore consecutive delimiter is "+ignoreConsecutiveDelStr+" in TextImportDelimiter.setPageData");
+		 try
+		 {
+			 this.ignoreConsequtiveDelimiters = (new Boolean(ignoreConsecutiveDelStr)).booleanValue();
+		 }
+		 catch(Exception e )
+		 {
+			 Log.debug(5, "Couldn't parse the string "+ignoreConsequtiveDelimiters+" into boolean value in TextImportDelimiter.setPageData method");
+		     return false;
+		 }
+		 if(this.ignoreConsequtiveDelimiters && !consecutiveCheckBox.isSelected())
+		 {
+			 Log.debug(32, "TextImportDelimiter.setPageData the ignoreConsequtiveDelimiters is true, but conescutiveCheckBox is not selected, so we should click on it to select it");
+			 consecutiveCheckBox.doClick();
+		 }
+		 else if (!this.ignoreConsequtiveDelimiters && consecutiveCheckBox.isSelected())
+		 {
+			 Log.debug(32, "TextImportDelimiter.setPageData the ignoreConsequtiveDelimiters is false, but conescutiveCheckBox is selected, so we should click on it to unselect it");
+			 consecutiveCheckBox.doClick();
+		 }
+		 
+		 return true;
 	  }
 	  
 	  /**
@@ -515,6 +612,14 @@ public class TextImportDelimiters extends AbstractUIPage implements TableModelLi
 		  clearCachedTextImportAttributePageInWizardFrame();
 	  }
 	  
+	  /**
+	   * If ignore the consecutive delimiters.
+	   * @return true if we want to ignore them
+	   */
+	  public boolean  ignoreConsequtiveDelimiters()
+	  {
+		  return this.ignoreConsequtiveDelimiters;
+	  }
 	  /*
 	   * Removes any cached TextImportAttributePage in WizardFrame
 	   */

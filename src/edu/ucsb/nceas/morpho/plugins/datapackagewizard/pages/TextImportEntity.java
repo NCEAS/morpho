@@ -518,7 +518,7 @@ public class TextImportEntity extends AbstractUIPage
 	 	 {
 	 		 rootXPath = this.xPathRoot;
 	 	 }
-	 	 Log.debug(32,"DataLocation.setPageData() called with rootXPath = " + rootXPath
+	 	 Log.debug(32,"TextImportEntity.setPageData() called with rootXPath = " + rootXPath
 	              + "\n Map = \n" +data);
 	      String isColumnLabelInStartingRowSelected = (String)data.get(COLUMNLABELINSTARTINGROW);
 	      Log.debug(32, "IsColumnLabelInStartingRowSelected value is "+isColumnLabelInStartingRowSelected+
