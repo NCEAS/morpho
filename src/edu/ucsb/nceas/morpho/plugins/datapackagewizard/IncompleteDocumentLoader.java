@@ -171,6 +171,7 @@ public class IncompleteDocumentLoader
 		    	  return;
 		      }
 			  Log.debug(25, "The current page id in IncompleteDocument.loadEntityWizard is "+currentPage.getPageID());
+			  dpWiz.initialAutoSaving();
 			  //remove the entity with the index (this entity is the unfinished one)
 			  dataPackage.deleteEntity(index);
 			  dataPackage.removeInfoForIncompleteEntity();
@@ -185,7 +186,6 @@ public class IncompleteDocumentLoader
 				                  WizardSettings.WIZARD_WIDTH,   WizardSettings.WIZARD_HEIGHT );
 				  dpWiz.setCurrentPage(currentPage);
 				  dpWiz.setTitle(DataPackageWizardInterface.NEWTABLEEWIZARDFRAMETITLE);
-				  dpWiz.initialAutoSaving();
 				  dpWiz.setVisible(true);
 			  }
 		  }
