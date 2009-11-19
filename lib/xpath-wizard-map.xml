@@ -450,7 +450,7 @@
     <wizardPageClass>edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.TextImportEntity</wizardPageClass>
   </mapping>
 	
-	<mapping>
+  <mapping>
     <root>n/a</root>
      <infoForModifyingData>
              <loadExistDataPath>physical/dataFormat/textFormat/simpleDelimited/fieldDelimiter</loadExistDataPath>
@@ -460,7 +460,26 @@
              <xpathForGettingPageData></xpathForGettingPageData>
      </infoForModifyingData>
     <wizardPageClass>edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.TextImportDelimiters</wizardPageClass>
-  </mapping>    
+  </mapping> 
+     
+  <mapping>
+    <root>n/a</root>
+     <infoForModifyingData>
+             <loadExistDataPath>physical/dataFormat/textFormat/simpleDelimited</loadExistDataPath>
+             <xpathForCreatingOrderedMap>physical/dataFormat/textFormat</xpathForCreatingOrderedMap>
+             <xpathForSettingPageData>physical/dataFormat</xpathForSettingPageData>
+             <newDataDocumentName></newDataDocumentName>
+             <xpathForGettingPageData></xpathForGettingPageData>
+     </infoForModifyingData>
+     <infoForModifyingData>
+             <loadExistDataPath>physical/dataFormat/textFormat/attributeOrientation</loadExistDataPath>
+             <xpathForCreatingOrderedMap>physical/dataFormat/textFormat</xpathForCreatingOrderedMap>
+             <xpathForSettingPageData>physical/dataFormat</xpathForSettingPageData>
+             <newDataDocumentName></newDataDocumentName>
+             <xpathForGettingPageData></xpathForGettingPageData>
+     </infoForModifyingData>
+    <wizardPageClass>edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.DataFormat</wizardPageClass>
+  </mapping>
 	
     <mapping>
     <root>/eml:eml/dataset/dataTable</root>
