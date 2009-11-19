@@ -38,6 +38,7 @@ import edu.ucsb.nceas.morpho.util.Util;
 import edu.ucsb.nceas.utilities.OrderedMap;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardContainerFrame;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -103,6 +104,8 @@ public class DataFormat extends AbstractUIPage{
   private JPanel orientationComplexTextPanel = null;
   private JPanel simpleDelimiterCheckBoxPanel = null;
   private JLabel radioButtonGrpLabel = null;
+ 
+  
   private final String[] buttonsText = new String[] {
     "Simple delimited text format (uses one or more delimiters throughout the "
     + "file).",
@@ -124,10 +127,14 @@ public class DataFormat extends AbstractUIPage{
     "semicolon",
     OTHER_LABEL
   };
-
+  
+  private static final String FIXEDWIDTHLABEL = "Fixed-Width";
+  private static final String TEXTFIXED = "textFixed";
+  private static final String DELIMITEDLABEL = "Delimited";
+  private static final String TEXTDELIMITED = "textDelimited";
   private String[] pickListVals = new String[] {
-    "Fixed-Width",
-    "Delimited"
+	FIXEDWIDTHLABEL,
+	DELIMITEDLABEL
   };
 
   private String delim_tab       = null;
@@ -1202,10 +1209,53 @@ public class DataFormat extends AbstractUIPage{
 	  }
 	  else if(formatXPath.equals(COMPLEX_TEXT_XPATH))
 	  {		
-		  nextVal = (String)data.get(xPathRoot+ "/textFormat/attributeOrientation");
-		  setOrientation(nextVal);
-		  //need to be implement
-		  return false;
+		  try
+		  {
+			  clickDataFormatRadioButton(COMPLEXTEXTCHOICE);
+			  list.removeAllRows();
+			  while(keyIt.hasNext())
+			  {
+				 nextXPath = (String)keyIt.next();
+			     if(nextXPath == null)
+			     {
+			    	 continue;
+			     }
+			     else if(nextXPath.equals(xPathRoot+ "/textFormat/attributeOrientation"))
+			     {
+				   nextVal = (String)data.get(nextXPath);
+				   Log.debug(35, "DataFormat.setPageData - in complex text format to set Orientaion to "+nextVal);
+			       setOrientation(nextVal);
+			       clickDataOrientationButtonInComplexTextFormat(nextVal);
+			       
+			     }
+			     else if(nextXPath.startsWith(xPathRoot+"/textFormat/complex/"+TEXTFIXED))
+			     {
+			    	 nextVal = (String)data.get(nextXPath);
+			    	 Log.debug(35, "DataFormat.setPageData - in complex text format to get textFixed value "+nextVal);
+			    	 addRowToComplexFormatList(FIXEDWIDTHLABEL, nextVal);
+			    	
+			    	
+			     }
+			     else if(nextXPath.startsWith(xPathRoot+"/textFormat/complex/"+TEXTDELIMITED))
+		    	 {
+			    	 nextVal = (String)data.get(nextXPath);
+		    		 Log.debug(35, "DataFormat.setPageData - in complex text format to get textFixed value "+nextVal);
+		    		 addRowToComplexFormatList(DELIMITEDLABEL, nextVal);
+		    	 }
+			     else
+		    	 {
+		    		 throw new Exception("Morpho couldn't understander the complex format "+nextXPath);
+		    	 }
+			     keyNeedToDelete.add(nextXPath);			     
+			  }
+		  }
+		  catch(Exception e)
+		  {
+			  Log.debug(5, "Couldn't popluate metadata into DataForat page since "+e.getMessage());
+		      return success;
+		  }
+		  success = removeAllDataInMap(data, keyNeedToDelete);
+		  return success;
 	  }
 	  else if(formatXPath.equals(PROPRIETARY_XPATH))
 	  {
@@ -1218,6 +1268,60 @@ public class DataFormat extends AbstractUIPage{
 	  } 
   }
   
+  /*
+   * Add a row to complext format list. It either be fixed-width or delimited
+   */
+  private void addRowToComplexFormatList(String path, String value) throws Exception
+  {
+	  if(path != null && value != null)
+	  {
+		  List newRow = new ArrayList();
+		  
+		  if(path.equals(FIXEDWIDTHLABEL))
+		  {
+             try
+             {
+            	 Float num =Float.parseFloat(value);
+            	 if(num <0)
+            	 {
+            		 throw new Exception("The value for fixed text "+value+" couldn't be less than 0");
+            	 }
+             }
+             catch(Exception e)
+             {
+            	 throw new Exception("The value for fixed text "+value+"is  not a number");
+             }
+			 newRow.add(FIXEDWIDTHLABEL);  
+		  }
+		  else if(path.equals(DELIMITEDLABEL))
+		  {
+			  newRow.add(DELIMITEDLABEL);
+			  if (value.equals(WizardSettings.HEX_VALUE_TAB)) 
+			  {
+				  value = "\\t";
+			  }
+			  else if (value.equals(WizardSettings.HEX_VALUE_SPACE)) 
+		      {
+		    	  value  = " ";
+		      }
+		  }
+		  else
+		  {
+			  throw new Exception ("Morpho couldn't recognize the complex format "+path);
+		  }
+		  newRow.add(value);
+		  list.addRow(newRow);
+	  }
+	  else
+	  {
+		  throw new Exception("Could add a row to complex format list in DataLocation since the key/value is null ");
+	  }
+  }
+  
+  /*
+   * Removes the key which stored in keyList from the map.
+   * After removing, it returns true if map is empty.
+   */
   private boolean removeAllDataInMap(OrderedMap map, Vector keyList)
   {
 	  boolean success = false;
@@ -1262,55 +1366,48 @@ public class DataFormat extends AbstractUIPage{
   private String findFormatType(OrderedMap map, String xPath) {
 
 	    ///// check for simple text
-
-	    Object o1 = map.get(xPath + "/textFormat/simpleDelimited/fieldDelimiter[1]");
-	    if(o1 != null) return SIMPLE_TEXT_XPATH;
-	    
-	    o1 = map.get(xPath + "/textFormat/simpleDelimited/fieldDelimiter[2]");
-	    if(o1 != null) return SIMPLE_TEXT_XPATH;
-	    
-	    o1 = map.get(xPath + "/textFormat/simpleDelimited/fieldDelimiter[3]");
-	    if(o1 != null) return SIMPLE_TEXT_XPATH;
-	    
-	    o1 = map.get(xPath + "/textFormat/simpleDelimited/fieldDelimiter[4]");
-	    if(o1 != null) return SIMPLE_TEXT_XPATH;
-	    
-	    o1 = map.get(xPath + "/textFormat/simpleDelimited/fieldDelimiter[5]");
-	    if(o1 != null) return SIMPLE_TEXT_XPATH;
-	    
-	    o1 = map.get(xPath + "/textFormat/simpleDelimited/fieldDelimiter[6]");
-	    if(o1 != null) return SIMPLE_TEXT_XPATH;
-	    
-	    o1 = map.get(xPath + "/textFormat/simpleDelimited/collapseDelimiters");
-	    if(o1 != null) return SIMPLE_TEXT_XPATH;
-	    
-	    o1 = map.get(xPath + "/textFormat/simpleDelimited/quoteCharacter[1]");
-	    if(o1 != null) return SIMPLE_TEXT_XPATH;
-	    
-	    o1 = map.get(xPath + "/textFormat/simpleDelimited/literalCharacter[1]");
-	    if(o1 != null) return SIMPLE_TEXT_XPATH;
-	    
-	    // check for complex text format
-	    o1 = map.get(xPath + "/textFormat/complex[1]/textFixed");
-	    if(o1 != null) return COMPLEX_TEXT_XPATH;
-	    
-	    o1 = map.get(xPath + "/textFormat/complex[1]/textDelimited");
-	    if(o1 != null) return COMPLEX_TEXT_XPATH;
-	    
-	    o1 = map.get(xPath + "/textFormat/complex[2]/textFixed");
-	    if(o1 != null) return COMPLEX_TEXT_XPATH;
-	    
-	    o1 = map.get(xPath + "/textFormat/complex[2]/textDelimited");
-	    if(o1 != null) return COMPLEX_TEXT_XPATH;
-	    
-	    //check for extenallyDefinedFormat
-	    o1 = map.get(xPath + "/externallyDefinedFormat/formatName");
-	    if(o1 != null) return PROPRIETARY_XPATH;
-	    
-	    o1 = map.get(xPath + "/externallyDefinedFormat/formatVersion");
-	    if(o1 != null) return PROPRIETARY_XPATH;
-	    
-	    return "";
-	  }
+	    if(map != null)
+	    {
+	    	Iterator keyIt = map.keySet().iterator();
+	    	while(keyIt.hasNext())
+			{
+				 String nextPath = (String)keyIt.next();
+			     if(nextPath == null)
+			     {
+			    	 continue;
+			     }
+			     else if(nextPath.startsWith(xPath + "/textFormat/simpleDelimited"))
+			     {
+			    	 Object o1 = map.get(nextPath);
+			 	     if(o1 != null) 
+			 	     {
+			 	    	 return SIMPLE_TEXT_XPATH;
+			 	     }
+			     }
+			     else if (nextPath.startsWith(xPath + "/textFormat/complex"))
+			     {
+			    	 Object o1 = map.get(nextPath);
+			 	     if(o1 != null) 
+			 	     {
+			 	    	 return COMPLEX_TEXT_XPATH;
+			 	     }
+			     }
+			     else if (nextPath.startsWith(xPath + "/externallyDefinedFormat"))
+			     {
+			    	 Object o1 = map.get(nextPath);
+			 	     if(o1 != null) 
+			 	     {
+			 	    	 return PROPRIETARY_XPATH;
+			 	     }
+			     }
+			     
+			 }
+	    	 return "";
+	    }
+	    else
+	    {
+	    	return "";
+	    }
+	 }
 
 }
