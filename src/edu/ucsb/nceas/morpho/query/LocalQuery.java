@@ -176,6 +176,9 @@ public class LocalQuery
     this.config = morpho.getConfiguration();
 
     loadConfigurationParameters();
+    
+    //use the given doctypes for return
+    dt2bReturned = query.getReturnDocList();
 
     datadir = datadir.trim();
     xmlcatalogfile = config.getConfigDirectory() + File.separator +
@@ -324,11 +327,12 @@ public class LocalQuery
           if (temp==null) temp = root.getNodeName();
           doctype_collection.put(docid,temp);
           currentDoctype = temp;
-          if ((dt2bReturned.contains("any")) || (dt2bReturned.contains(currentDoctype))) {
-              addToPackageList(root, docid);
-          }
         } // end else
-
+        
+        if ((dt2bReturned.contains("any")) || (dt2bReturned.contains(currentDoctype))) {
+            addToPackageList(root, docid);
+        }
+        
         String rootname = root.getNodeName();
         NodeList nl = null;
         try {
@@ -356,15 +360,18 @@ public class LocalQuery
               try {
                 // If this docid is in any packages, record those package ids
                 if (dataPackage_collection.containsKey(docid)) {
-                  Vector ids = (Vector)dataPackage_collection.get(docid);
-                  Enumeration q = ids.elements();
-                  while (q.hasMoreElements()) {
-                    Object id = q.nextElement();
-                    // don't repeat elements
-                    if (!package_IDs.contains(id)) {
-                      package_IDs.addElement(id);
-                    }
-                  }
+                	String doctype = (String) doctype_collection.get(docid);
+                	if (dt2bReturned.contains(doctype)) {
+		                  Vector ids = (Vector)dataPackage_collection.get(docid);
+		                  Enumeration q = ids.elements();
+		                  while (q.hasMoreElements()) {
+		                    Object id = q.nextElement();
+		                    // don't repeat elements
+		                    if (!package_IDs.contains(id)) {
+		                      package_IDs.addElement(id);
+		                    }
+		                  }
+                	}
                 }
               } catch (Exception rogue) {
                 Log.debug(1, "Fatal error: " +
