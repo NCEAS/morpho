@@ -136,7 +136,10 @@ public class IncompleteDocumentLoader
 			  dpWiz.initialAutoSaving();
 			  AbstractUIPage currentPage = loadPagesIntoWizard(dpWiz);
 		      if(currentPage == null)
-		      {
+		      {	    	  
+		    	  UIController.getInstance().setWizardNotRunning();
+		    	  dpWiz.dispose();
+		    	  dpWiz = null;
 		    	  Log.debug(5, "The new package wizard couldn't load the existing eml document!");
 		    	  return;
 		      }
@@ -167,6 +170,9 @@ public class IncompleteDocumentLoader
 			  AbstractUIPage currentPage = loadPagesIntoWizard(dpWiz);
 		      if(currentPage == null)
 		      {
+		    	  UIController.getInstance().setWizardNotRunning();
+		    	  dpWiz.dispose();
+		    	  dpWiz = null;
 		    	  Log.debug(5, "The new entity wizard couldn't load the existing eml document!");
 		    	  return;
 		      }
