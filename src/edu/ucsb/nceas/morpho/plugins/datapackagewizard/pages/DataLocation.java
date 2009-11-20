@@ -1079,6 +1079,7 @@ public class DataLocation extends AbstractUIPage {
     	 
       
     }
+    Log.debug(32, "The map in DataLocation.getPageData is "+returnMap.toString());
     return returnMap;
   }
 
@@ -1201,12 +1202,17 @@ public class DataLocation extends AbstractUIPage {
    */
   public boolean setPageData(OrderedMap map, String _xPathRoot)
   {
-	  boolean empty = false;
-	  if (_xPathRoot != null )
+	 boolean empty = false;
+	 if(map == null)
+	  {
+		  Log.debug(30, "The map in DataLocation.setPageData and return false");
+		  return empty;
+	  }
+	 if (_xPathRoot == null )
  	 {
- 		 this.xPathRoot =_xPathRoot;
+ 		 _xPathRoot = this.xPathRoot;
  	 }
- 	 Log.debug(45,"DataLocation.setPageData() called with rootXPath = " + xPathRoot
+ 	 Log.debug(45,"DataLocation.setPageData() called with rootXPath = " + _xPathRoot
               + "\n Map = \n" + map);
  	 String lastEventInMap = (String)map.get(LASTEVENT);
  	 Log.debug(20, "The last event from map in DataLoacation.setPageData is "+lastEventInMap);
