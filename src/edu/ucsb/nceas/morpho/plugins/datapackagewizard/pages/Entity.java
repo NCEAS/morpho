@@ -536,9 +536,11 @@ public class Entity extends AbstractUIPage{
      */
     public boolean setPageData(OrderedMap map, String _xPathRoot) 
     { 
-    	//this method only is implemented when diableAttributeList is true
+    	
     	 if(disableAttributeList)
     	 {
+    		//this method only is implemented when diableAttributeList is true
+    	    //this is for correction wizard.
 	    	 if (_xPathRoot != null )
 	    	 {
 	    		 this.xPathRoot =_xPathRoot;
@@ -570,8 +572,56 @@ public class Entity extends AbstractUIPage{
     	 }
     	 else
     	 {
-    		 //TO DO need to be implemented when disableAttributeList is false
-    	    return false;
+    		 //this is regular wizard
+    		 if (_xPathRoot == null )
+	    	 {
+	    		 _xPathRoot = this.xPathRoot;
+	    	 }
+	    	 Log.debug(35,"Entity.setPageData() called with rootXPath = " + _xPathRoot
+	                 + "\n Map = \n" + map);
+	    	 String nextVal = (String)map.get(_xPathRoot+ "/entityName");
+			  if (nextVal != null) 
+			  {
+				  entityNameField.setText(nextVal);
+				  map.remove(_xPathRoot+ "/entityName");
+			   }
+				nextVal = (String)map.get(_xPathRoot+ "/entityDescription");
+				if (nextVal != null) 
+				{
+					entityDescField.setText(nextVal);
+				   map.remove(_xPathRoot+ "/entityDescription");
+				}
+				int size = map.size();//in case in infinite loop
+				for(int i=0; i<size; i++)
+				{
+					//this method will get one attribute map from original map.
+	    	        OrderedMap attributeMap = Util.getFirstPartialMapForPath(map, "/attributeList/attribute");
+				    if(attributeMap.isEmpty())
+				    {
+				    	break;//when returned map is empty, we can break the loop
+				    }
+				    else
+				    {
+				    	AttributePage attributePage = new AttributePage();
+				    	boolean success = attributePage.setPageData(attributeMap, "");
+				    	if(!success)
+				    	{
+				    		return false;
+				    	}
+				    	List newRow = attributePage.getSurrogate();
+				        newRow.add(attributePage);
+				        attributeList.addRow(newRow);
+				    }
+				}
+				if(map.isEmpty())
+				{
+					return true;
+				}
+				else
+				{
+					Log.debug(35, "In Entity.setPageData, the map is not empty and remained one is "+map.toString());
+					return false;
+				}
     	 }
     }
     

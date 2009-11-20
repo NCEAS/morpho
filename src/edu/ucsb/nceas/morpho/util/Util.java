@@ -205,7 +205,14 @@ public class Util
     			}
     			else if(index != -1)
     			{
-    				 newKey = key.substring(index+newPath.length());
+    				 try
+    				 {
+    				    newKey = key.substring(index+newPath.length());
+    				 }
+    				 catch(Exception e)
+    				 {
+    					 newKey = "";
+    				 }
     				 String value = (String)originalMap.get(key);
                      if(newKey != null && value != null)
                      {

@@ -971,7 +971,7 @@ public class AttributePage extends AbstractUIPage {
   */
   public boolean setPageData(OrderedMap map, String _xPathRoot) {
 
-    if (_xPathRoot!=null && _xPathRoot.trim().length() > 0) this.xPathRoot = _xPathRoot;
+    if (_xPathRoot!=null) this.xPathRoot = _xPathRoot;
      
     Log.debug(32,"AttributePage.setPageData() called with rootXPath = " + xPathRoot
             + "\n Map = \n" +map);
