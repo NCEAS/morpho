@@ -478,6 +478,20 @@
              <newDataDocumentName></newDataDocumentName>
              <xpathForGettingPageData></xpathForGettingPageData>
      </infoForModifyingData>
+	 <infoForModifyingData>
+             <loadExistDataPath>physical/dataFormat/textFormat/complex</loadExistDataPath>
+             <xpathForCreatingOrderedMap>physical/dataFormat/textFormat</xpathForCreatingOrderedMap>
+             <xpathForSettingPageData>physical/dataFormat</xpathForSettingPageData>
+             <newDataDocumentName></newDataDocumentName>
+             <xpathForGettingPageData></xpathForGettingPageData>
+     </infoForModifyingData>
+	  <infoForModifyingData>
+             <loadExistDataPath>physical/dataFormat/externallyDefinedFormat/formatName</loadExistDataPath>
+             <xpathForCreatingOrderedMap>physical/dataFormat/externallyDefinedFormat</xpathForCreatingOrderedMap>
+             <xpathForSettingPageData>physical/dataFormat</xpathForSettingPageData>
+             <newDataDocumentName></newDataDocumentName>
+             <xpathForGettingPageData></xpathForGettingPageData>
+     </infoForModifyingData>
     <wizardPageClass>edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.DataFormat</wizardPageClass>
   </mapping>
 	
