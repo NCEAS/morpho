@@ -105,6 +105,8 @@ public class DataFormat extends AbstractUIPage{
   private JPanel simpleDelimiterCheckBoxPanel = null;
   private  JPanel proprietaryRadioPanel = null;
   private JLabel radioButtonGrpLabel = null;
+  
+  private String xRootPath = PHYSICAL_XPATH+"dataFormat";
  
   
   private final String[] buttonsText = new String[] {
@@ -1163,12 +1165,18 @@ public class DataFormat extends AbstractUIPage{
   public boolean setPageData(OrderedMap data, String xPathRoot) 
   {
 	  boolean success = false;
-	  Log.debug(35, "In DataFormat.setPageData, the xpathRoot is "+xPathRoot+" and map is "+data.toString() );
-	  if(data == null && xPathRoot == null)
+	  
+	  if(data == null)
 	  {
-		  Log.debug(30, "The map or xpathroot is null in DataFormat.setPageData and return false");
+		  Log.debug(30, "The map in DataFormat.setPageData and return false");
 		  return success;
 	  }
+	  if(xPathRoot == null)
+	  {
+		  xPathRoot = this.xRootPath;
+	  }
+	  
+	  Log.debug(35, "In DataFormat.setPageData, the xpathRoot is "+xPathRoot+" and map is "+data.toString() );
 	  Vector keyNeedToDelete = new Vector();
 	  formatXPath = findFormatType(data, xPathRoot);
 	  Iterator keyIt = data.keySet().iterator();
