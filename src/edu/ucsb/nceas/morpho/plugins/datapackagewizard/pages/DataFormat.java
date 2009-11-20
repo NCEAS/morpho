@@ -103,6 +103,7 @@ public class DataFormat extends AbstractUIPage{
   private JPanel orientationSimpleTextPanel = null;
   private JPanel orientationComplexTextPanel = null;
   private JPanel simpleDelimiterCheckBoxPanel = null;
+  private  JPanel proprietaryRadioPanel = null;
   private JLabel radioButtonGrpLabel = null;
  
   
@@ -155,6 +156,12 @@ public class DataFormat extends AbstractUIPage{
   private static final int SPACECHOICE = 2;
   private static final int SEMICOLONCHOICE = 3;
   private static final int OTHERCHOICE= 4;
+  
+  private final Map mimeMap = WizardSettings.getSupportedMIMETypesForEntity(
+          WizardSettings.ENTITY_DATATABLE);
+  // proprietaryButtonsText array is one elem larger than mime map, because
+  // we need to add an entry for "other"...
+  final String [] proprietaryButtonsText = new String[mimeMap.size() + 1];
  
  // private String fileName = "";
 
@@ -386,12 +393,9 @@ public class DataFormat extends AbstractUIPage{
 
     panel.add(WidgetFactory.makeDefaultSpacer());
 
-    final Map mimeMap = WizardSettings.getSupportedMIMETypesForEntity(
-                                              WizardSettings.ENTITY_DATATABLE);
+    
 
-    // proprietaryButtonsText array is one elem larger than mime map, because
-    // we need to add an entry for "other"...
-    final String [] proprietaryButtonsText = new String[mimeMap.size() + 1];
+   
 
     int i = 0;
 
@@ -442,7 +446,7 @@ public class DataFormat extends AbstractUIPage{
 
     final int INITIAL_SELECTION = 0;
 
-    JPanel radioPanel = WidgetFactory.makeRadioPanel( proprietaryButtonsText,
+    proprietaryRadioPanel = WidgetFactory.makeRadioPanel( proprietaryButtonsText,
                                                       INITIAL_SELECTION,
                                                       listener);
     setProprietaryText(proprietaryButtonsText[INITIAL_SELECTION], mimeMap);
@@ -451,7 +455,7 @@ public class DataFormat extends AbstractUIPage{
     radioJustifyPanel.setLayout(new BoxLayout(radioJustifyPanel,
                                               BoxLayout.X_AXIS));
     radioJustifyPanel.add(WidgetFactory.makeLabel(EMPTY_STRING, false));
-    radioJustifyPanel.add(radioPanel);
+    radioJustifyPanel.add(proprietaryRadioPanel);
     proprietaryPanel.add(radioJustifyPanel);
 
     JPanel otherJustifyPanel = new JPanel();
@@ -1259,13 +1263,77 @@ public class DataFormat extends AbstractUIPage{
 	  }
 	  else if(formatXPath.equals(PROPRIETARY_XPATH))
 	  {
-		  return false;
+		  try
+		  {
+			  clickDataFormatRadioButton(PROPRIETARYCHOICE);
+			  while(keyIt.hasNext())
+			  {
+				 nextXPath = (String)keyIt.next();
+			     if(nextXPath == null)
+			     {
+			    	 continue;
+			     }
+			     else if(nextXPath.equals(xPathRoot+ "/externallyDefinedFormat/formatName"))
+			     {
+                    nextVal = (String)data.get(nextXPath);
+                    Log.debug(35, "DataFormat.setPageData - in external format the format name is "+nextVal);
+			        setProprietaryCheckBox(nextVal);	       
+			     }
+			     keyNeedToDelete.add(nextXPath);			     
+			  }
+		  }
+		  catch(Exception e)
+		  {
+			  Log.debug(5, "Couldn't popluate metadata into DataForat page since "+e.getMessage());
+		      return success;
+		  }
+		  success = this.removeAllDataInMap(data, keyNeedToDelete);
+		  return success;
 	  }
 	  else
 	  {
 		  Log.debug(30, "Couldn't find the data format type with xpathroot "+xPathRoot+" in the map"+data);
 		  return false;
 	  } 
+  }
+  
+  /*
+   * Sets the check box for given proprietary name
+   */
+  private void setProprietaryCheckBox(String proprietaryName) throws Exception
+  {
+	  if (mimeMap != null && proprietaryName != null)
+	  {
+		
+			  Iterator it = mimeMap.keySet().iterator();
+			  int index = 0;
+			  while( it.hasNext() ) 
+			  {
+
+			      String key = (String)it.next();
+			      String value = (String)mimeMap.get(key);
+			      if(value != null && value.trim().equals(proprietaryName.trim()))
+			      {
+			    	  Log.debug(30, "We found the label "+key+" for mime type "+value);
+			    	  otherProprietaryTextField.setEnabled(false);
+			    	  clickRadionButton(this.proprietaryRadioPanel, index);
+			          proprietaryText = value;
+			    	  return;
+			      }
+			      index++;
+			  }
+			  //it is other field.
+			  Log.debug(30, "We found don't find a label for mime type "+proprietaryName+". It clicks other button.");
+			  clickRadionButton(proprietaryRadioPanel, mimeMap.size());
+			  otherProprietaryTextField.setEnabled(true);
+			  otherProprietaryTextField.setText(proprietaryName);
+		      proprietaryText = proprietaryName;
+		
+	  }
+	  else
+	  {
+		  throw new Exception("Morpho couldn't get mine-type configuration for data format");
+	  }
   }
   
   /*
