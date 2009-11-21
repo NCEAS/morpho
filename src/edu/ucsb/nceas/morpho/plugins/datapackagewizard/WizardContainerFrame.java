@@ -625,7 +625,22 @@ public class WizardContainerFrame
    */
   public String getFirstPageID() {
 
-    return firstPageID;
+    if(pageStack == null || pageStack.isEmpty())
+    {
+    	return null;
+    }
+    else
+    {
+    	AbstractUIPage page = (AbstractUIPage)pageStack.elementAt(0);
+    	if(page != null)
+    	{
+    		return page.getPageID();
+    	}
+    	else
+    	{
+    		return null;
+    	}
+    }
   }
 
   /**

@@ -129,6 +129,7 @@ public class CodeImportSummary extends AbstractUIPage {
   private String getLastParagraph() {
 
     String ID = mainWizFrame.getFirstPageID();
+    Log.debug(32, "The first id is "+ID+" in wizard frame in CodeImportSummary.getLastParagraph");
     if (ID==null || ID.equals(DataPackageWizardInterface.CODE_IMPORT_SUMMARY)) 
     {
     	//this is for starting import wizard from editing attribute menu
@@ -370,8 +371,8 @@ public class CodeImportSummary extends AbstractUIPage {
 	      adp.replaceEntity(newDOM, entityIndex);
 	      mainWizFrame.setDOMToReturn(null);
 	      //since we added/replace an entity into adp, so next available index should be increase too.
-	      entityIndex = entityIndex+1;
-	      mainWizFrame.setEntityIndex(entityIndex);
+	      //entityIndex = entityIndex+1;
+	      //mainWizFrame.setEntityIndex(entityIndex);
 	      adp.setLocation("");  // we've changed it and not yet saved
 
 

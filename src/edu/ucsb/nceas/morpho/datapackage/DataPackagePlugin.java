@@ -798,6 +798,7 @@ public class DataPackagePlugin
 	      sc = ServiceController.getInstance();
 	      //EML200DataPackage eml200 = (EML200DataPackage)adp;
 	      String status = adp.getCompletionStatus();
+	      adp.readImportAttributeInfoFromIncompleteDoc();
 	      WizardPageInfo [] classNameList = null;
 	      int index =-1;
 	      Log.debug(30, "The status of incomplete is "+status+" in DataPackagePlugin.openIncompleteDataPackage");
