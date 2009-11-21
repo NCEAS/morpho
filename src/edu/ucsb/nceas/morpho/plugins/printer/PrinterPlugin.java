@@ -114,7 +114,7 @@ public class PrinterPlugin implements       PrinterInterface,
 							null, new PageSetupCommand());
 				pageSetupAction.setMenuItemPosition(6);
 				pageSetupAction.setSeparatorPosition(SEPARATOR_PRECEDING);
-				pageSetupAction.setMenu("File", 0);
+				pageSetupAction.setMenu(Morpho.FILE_MENU_LABEL, Morpho.FILEMENUPOSITION);
 				pageSetupAction.setEnabled(false);  //default
 				controller.addGuiAction(pageSetupAction);
 				pageSetupAction.setEnabledOnStateChange(
@@ -128,7 +128,7 @@ public class PrinterPlugin implements       PrinterInterface,
 				GUIAction previewAction = new GUIAction("Print preview...",
 							null, new PreviewCommand(this.instanceOfMorpho, this));
 				previewAction.setMenuItemPosition(7);
-				previewAction.setMenu("File", 0);
+				previewAction.setMenu(Morpho.FILE_MENU_LABEL, Morpho.FILEMENUPOSITION);
 				previewAction.setEnabled(false);  //default
 				controller.addGuiAction(previewAction);
 				previewAction.setEnabledOnStateChange(
@@ -143,7 +143,7 @@ public class PrinterPlugin implements       PrinterInterface,
 							null, new PrintCommand(this.instanceOfMorpho, this));
 				printAction.setMenuItemPosition(8);
 
-				printAction.setMenu("File", 0);
+				printAction.setMenu(Morpho.FILE_MENU_LABEL, Morpho.FILEMENUPOSITION);
 				printAction.setEnabled(false);  //default
 				controller.addGuiAction(printAction);
 				printAction.setEnabledOnStateChange(

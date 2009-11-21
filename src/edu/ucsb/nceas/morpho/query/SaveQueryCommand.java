@@ -164,7 +164,7 @@ public class SaveQueryCommand implements Command
       // Create a GUIAction to run saved query
       GUIAction savedSearchItemAction = 
                 new GUIAction(query.getQueryTitle(), null,command);
-      savedSearchItemAction.setMenu("Search", 2);  
+      savedSearchItemAction.setMenu(QueryPlugin.SEARCH_MENU_LABEL, QueryPlugin.SEARCHMENUPOSITION);  
       savedSearchItemAction.setMenuItemPosition(index);  
       savedSearchItemAction.setToolTipText("Execute saved search");
       UIController.getInstance().addGuiAction(savedSearchItemAction);

@@ -71,19 +71,18 @@ public class DataPackagePlugin
   /** A reference to the container framework */
   private Morpho morpho = null;
 
-  public static final String FILE_MENU_LABEL = "File";
   public static final String EDIT_MENU_LABEL = "Edit";
   public static final String METADATA_MENU_LABEL = "Documentation";
   public static final String DATA_MENU_LABEL = "Data";
 
-  /** Constant int for data menu position */
-  public static final int DOCUMENTATIONMENUPOSITION = 3;
+  /** Constant int for documentation menu position */
+  public static final int DOCUMENTATIONMENUPOSITION = 30;
 
   /** Constant int for data menu position */
-  public static final int DATAMENUPOSITION = 4;
+  public static final int DATAMENUPOSITION = 40;
 
   /** Constant int for edit menu position */
-  public static final int EDITMENUPOSITION = 1;
+  public static final int EDITMENUPOSITION = 10;
 
   /** String for accelerator key */
   public static final String COPYKEY  = "control c";
@@ -150,7 +149,7 @@ public class DataPackagePlugin
                                               new SavePackageCommand());
     saveAction.setMenuItemPosition(4);
     saveAction.setToolTipText("Save...");
-    saveAction.setMenu(FILE_MENU_LABEL, 0);
+    saveAction.setMenu(Morpho.FILE_MENU_LABEL, Morpho.FILEMENUPOSITION);
     saveAction.setToolbarPosition(2);
     saveAction.setEnabled(false);
     saveAction.setEnabledOnStateChange(
@@ -167,7 +166,7 @@ public class DataPackagePlugin
                                               new SavePackageCopyCommand());
     saveCopyAction.setMenuItemPosition(5);
     saveCopyAction.setToolTipText("Duplicate this data package and save locally...");
-    saveCopyAction.setMenu(FILE_MENU_LABEL, 0);
+    saveCopyAction.setMenu(Morpho.FILE_MENU_LABEL, Morpho.FILEMENUPOSITION);
     saveCopyAction.setToolbarPosition(3);
     saveCopyAction.setEnabled(false);
     saveCopyAction.setEnabledOnStateChange(
@@ -761,7 +760,7 @@ public class DataPackagePlugin
            getResource("/toolbarButtonGraphics/general/New16.gif")));
     createNewDataPackage.setToolTipText("Create a new data package");
     createNewDataPackage.setMenuItemPosition(1);
-    createNewDataPackage.setMenu(FILE_MENU_LABEL, 0);
+    createNewDataPackage.setMenu(Morpho.FILE_MENU_LABEL, Morpho.FILEMENUPOSITION);
     createNewDataPackage.setToolbarPosition(0);
     controller.addGuiAction(createNewDataPackage);
 

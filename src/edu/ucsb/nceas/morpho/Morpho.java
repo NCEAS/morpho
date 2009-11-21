@@ -29,6 +29,7 @@ package edu.ucsb.nceas.morpho;
 import edu.ucsb.nceas.itis.Itis;
 import edu.ucsb.nceas.itis.ItisException;
 import edu.ucsb.nceas.itis.Taxon;
+import edu.ucsb.nceas.morpho.datapackage.DataPackagePlugin;
 import edu.ucsb.nceas.morpho.datastore.DataStore;
 import edu.ucsb.nceas.morpho.datastore.FileSystemDataStore;
 import edu.ucsb.nceas.morpho.framework.BackupMorphoDataFrame;
@@ -130,6 +131,25 @@ public class Morpho
     public static String SEPARATOR_FOLLOWING = "separator_following";
     /** Constant of initial morpho frame name */
     public static final String INITIALFRAMENAME = "Morpho";
+    
+    /** Constant int for File menu position */
+    public static final int FILEMENUPOSITION = 0;
+    
+    /** Constant String for File menu label */
+    public static final String FILE_MENU_LABEL = "File";
+    
+    /** Constant int for Window menu position */
+    public static final int WINDOWMENUPOSITION = 50;
+    
+    /** Constant String for Window menu label */
+    public static final String WINDOW_MENU_LABEL = "Window";
+    
+    /** Constant int for Help menu position */
+    public static final int HELPMENUPOSITION = 60;
+    
+    /** Constant String for Help menu label */
+    public static final String HELP_MENU_LABEL = "Help";
+
 
     /** if windows, need to increase widthof JSplitPane divider,
         otherwise max/min arrows don't render properly */
@@ -1378,7 +1398,7 @@ public class Morpho
         connectItemAction.setToolTipText("Login/Logout...");
         connectItemAction.setMenuItemPosition(9);
         connectItemAction.setSeparatorPosition(SEPARATOR_PRECEDING);
-        connectItemAction.setMenu("File", 0);
+        connectItemAction.setMenu(FILE_MENU_LABEL, FILEMENUPOSITION);
         controller.addGuiAction(connectItemAction);
 
 
@@ -1388,7 +1408,7 @@ public class Morpho
             new GUIAction("New profile...", null, profileCommand);
         profileItemAction.setToolTipText("New Profile...");
         profileItemAction.setMenuItemPosition(10);
-        profileItemAction.setMenu("File", 0);
+        profileItemAction.setMenu(FILE_MENU_LABEL, FILEMENUPOSITION);
         controller.addGuiAction(profileItemAction);
 
         Command switchCommand = new Command() {
@@ -1401,7 +1421,7 @@ public class Morpho
         switchItemAction.setToolTipText("Switch Profile...");
         switchItemAction.setMenuItemPosition(11);
         switchItemAction.setSeparatorPosition(SEPARATOR_FOLLOWING);
-        switchItemAction.setMenu("File", 0);
+        switchItemAction.setMenu(FILE_MENU_LABEL, FILEMENUPOSITION);
         controller.addGuiAction(switchItemAction);
 
         Command prefsCommand = new Command() {
@@ -1414,7 +1434,7 @@ public class Morpho
         prefsItemAction.setToolTipText("Set Preferences...");
         prefsItemAction.setMenuItemPosition(12);
         prefsItemAction.setSeparatorPosition(SEPARATOR_FOLLOWING);
-        prefsItemAction.setMenu("File", 0);
+        prefsItemAction.setMenu(FILE_MENU_LABEL, FILEMENUPOSITION);
         controller.addGuiAction(prefsItemAction);
 
 
@@ -1429,7 +1449,7 @@ public class Morpho
         exitItemAction.setToolTipText("Exit Morpho");
         exitItemAction.setSeparatorPosition(SEPARATOR_PRECEDING);
         exitItemAction.putValue("menuPosition", new Integer(20));
-        exitItemAction.setMenu("File", 0);
+        exitItemAction.setMenu(FILE_MENU_LABEL, FILEMENUPOSITION);
         controller.addGuiAction(exitItemAction);
 
 /*
@@ -1465,7 +1485,7 @@ public class Morpho
                 new ImageIcon(getClass().
                 getResource("/toolbarButtonGraphics/general/About16.gif")));
         aboutItemAction.putValue("menuPosition", new Integer(1));
-        aboutItemAction.setMenu("Help", 6);
+        aboutItemAction.setMenu(HELP_MENU_LABEL, HELPMENUPOSITION);
         controller.addGuiAction(aboutItemAction);
         
         Command guideCommand = new MorphoGuideCommand();
@@ -1476,7 +1496,7 @@ public class Morpho
                 new ImageIcon(getClass().
                 getResource("/toolbarButtonGraphics/general/Help16.gif")));
         guideItemAction.putValue("menuPosition", new Integer(2));
-        guideItemAction.setMenu("Help", 6);
+        guideItemAction.setMenu(HELP_MENU_LABEL, HELPMENUPOSITION);
         controller.addGuiAction(guideItemAction);
 
         /*Command helpCommand = new HelpCommand();
@@ -1498,7 +1518,7 @@ public class Morpho
                 new ImageIcon(getClass().
                 getResource("/toolbarButtonGraphics/general/Help16.gif")));
         mdIntroItemAction.putValue("menuPosition", new Integer(3));
-        mdIntroItemAction.setMenu("Help", 6);
+        mdIntroItemAction.setMenu(HELP_MENU_LABEL, HELPMENUPOSITION);
         controller.addGuiAction(mdIntroItemAction);
 
         Command mdEMLSpecCommand = new HelpCommand("eml_index");
@@ -1509,7 +1529,7 @@ public class Morpho
             new ImageIcon(getClass().
             getResource("/toolbarButtonGraphics/general/Help16.gif")));
         mdEMLSpecItemAction.putValue("menuPosition", new Integer(4));
-        mdEMLSpecItemAction.setMenu("Help", 6);
+        mdEMLSpecItemAction.setMenu(HELP_MENU_LABEL, HELPMENUPOSITION);
         controller.addGuiAction(mdEMLSpecItemAction);
 
     }

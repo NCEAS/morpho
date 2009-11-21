@@ -53,8 +53,15 @@ import javax.swing.table.AbstractTableModel;
 public class QueryPlugin implements PluginInterface, ConnectionListener,
                                     ServiceProvider, QueryRefreshInterface
 {
-  /** A reference to the container framework */
-  private static Morpho morpho = null;
+  
+    /** Constant int for Window menu position */
+    public static final int SEARCHMENUPOSITION = 20;
+    
+    /** Constant String for Window menu label */
+    public static final String SEARCH_MENU_LABEL = "Search";
+	
+	/** A reference to the container framework */
+    private static Morpho morpho = null;
 
   /**
    * Construct the query plugin.  Initialize our one tab for the
@@ -106,7 +113,7 @@ public class QueryPlugin implements PluginInterface, ConnectionListener,
                                                new SearchCommand(null, morpho));
     searchItemAction.setToolTipText("Search for data");
     searchItemAction.setMenuItemPosition(0);
-    searchItemAction.setMenu("Search", 2);
+    searchItemAction.setMenu(SEARCH_MENU_LABEL, SEARCHMENUPOSITION);
     searchItemAction.setToolbarPosition(4);
     controller.addGuiAction(searchItemAction);
 
@@ -117,7 +124,7 @@ public class QueryPlugin implements PluginInterface, ConnectionListener,
             = new GUIAction("Refresh", UISettings.REFRESH_ICON, refreshCommand);
     refreshItemAction.setToolTipText("Refresh...");
     refreshItemAction.setMenuItemPosition(1);
-    refreshItemAction.setMenu("Search", 2);
+    refreshItemAction.setMenu(SEARCH_MENU_LABEL, SEARCHMENUPOSITION);
     refreshItemAction.setToolbarPosition(5);
     refreshItemAction.setEnabled(false);  //default
     refreshItemAction.setEnabledOnStateChange(
@@ -138,7 +145,7 @@ public class QueryPlugin implements PluginInterface, ConnectionListener,
               = new GUIAction("Save Search", UISettings.SAVE_QUERY_ICON, saveCommand);
     saveQueryItemAction.setToolTipText("Save search");
     saveQueryItemAction.setMenuItemPosition(2);
-    saveQueryItemAction.setMenu("Search", 2);
+    saveQueryItemAction.setMenu(SEARCH_MENU_LABEL, SEARCHMENUPOSITION);
     saveQueryItemAction.setToolbarPosition(6);
     saveQueryItemAction.setEnabled(false);  //default
     saveQueryItemAction.setEnabledOnStateChange(
@@ -160,7 +167,7 @@ public class QueryPlugin implements PluginInterface, ConnectionListener,
     reviseSearchItemAction.setToolTipText("Revise search");
     reviseSearchItemAction.setMenuItemPosition(3);
     reviseSearchItemAction.setSeparatorPosition(Morpho.SEPARATOR_FOLLOWING);
-    reviseSearchItemAction.setMenu("Search", 2);
+    reviseSearchItemAction.setMenu(SEARCH_MENU_LABEL, SEARCHMENUPOSITION);
     reviseSearchItemAction.setToolbarPosition(7);
     reviseSearchItemAction.setEnabled(false);  //default
     reviseSearchItemAction.setEnabledOnStateChange(
@@ -183,7 +190,7 @@ public class QueryPlugin implements PluginInterface, ConnectionListener,
                                               new OpenDialogBoxCommand(morpho));
     openDialogBoxAction.setMenuItemPosition(2);
     openDialogBoxAction.setToolTipText("Open...");
-    openDialogBoxAction.setMenu("File", 0);
+    openDialogBoxAction.setMenu(Morpho.FILE_MENU_LABEL, Morpho.FILEMENUPOSITION);
     openDialogBoxAction.setToolbarPosition(1);
     controller.addGuiAction(openDialogBoxAction);
 
@@ -200,7 +207,7 @@ public class QueryPlugin implements PluginInterface, ConnectionListener,
                                 new OpenPreviousVersionCommand(null, morpho));
     openPreviousAction.setMenuItemPosition(3);
     openPreviousAction.setToolTipText("Open a previous version...");
-    openPreviousAction.setMenu("File", 0);
+    openPreviousAction.setMenu(Morpho.FILE_MENU_LABEL, Morpho.FILEMENUPOSITION);
     openPreviousAction.setEnabledOnStateChange(
                       StateChangeEvent.CREATE_DATAPACKAGE_FRAME_VERSIONS,
                       true, GUIAction.EVENT_LOCAL);
@@ -225,7 +232,7 @@ public class QueryPlugin implements PluginInterface, ConnectionListener,
     synchronizeAction.setMenuItemPosition(13);
     synchronizeAction.setToolTipText("Synchronize...");
     synchronizeAction.setSeparatorPosition(Morpho.SEPARATOR_FOLLOWING);
-    synchronizeAction.setMenu("File", 0);
+    synchronizeAction.setMenu(Morpho.FILE_MENU_LABEL, Morpho.FILEMENUPOSITION);
     synchronizeAction.setEnabledOnStateChange(
                       StateChangeEvent.CREATE_DATAPACKAGE_FRAME_UNSYNCHRONIZED,
                       true, GUIAction.EVENT_LOCAL);
@@ -260,7 +267,7 @@ public class QueryPlugin implements PluginInterface, ConnectionListener,
                       StateChangeEvent.SEARCH_RESULT_NONSELECTED,
                       false, GUIAction.EVENT_LOCAL);
     deleteDialogAction.setEnabled(false);
-    deleteDialogAction.setMenu("File", 0);
+    deleteDialogAction.setMenu(Morpho.FILE_MENU_LABEL, Morpho.FILEMENUPOSITION);
 
     controller.addGuiAction(deleteDialogAction);
 
@@ -270,7 +277,7 @@ public class QueryPlugin implements PluginInterface, ConnectionListener,
                              new OpenExportDialogCommand());
     exportAction.setMenuItemPosition(16);
     exportAction.setToolTipText("Export data package...");
-    exportAction.setMenu("File", 0);
+    exportAction.setMenu(Morpho.FILE_MENU_LABEL, Morpho.FILEMENUPOSITION);
     exportAction.setEnabledOnStateChange(
                       StateChangeEvent.CREATE_DATAPACKAGE_FRAME,
                       true, GUIAction.EVENT_LOCAL);

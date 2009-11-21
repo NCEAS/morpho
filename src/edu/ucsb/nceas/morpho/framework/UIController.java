@@ -805,7 +805,7 @@ public class UIController
             }
         };
         GUIAction action = new GUIAction(title, null, command);
-        action.setMenu("Window", 5);
+        action.setMenu(Morpho.WINDOW_MENU_LABEL, Morpho.WINDOWMENUPOSITION);
         action.setToolTipText("Select Window");
         windowList.put(action, window);
         addGuiAction(action);

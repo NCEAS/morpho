@@ -23,6 +23,7 @@ import org.xml.sax.SAXException;
 
 import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.datapackage.AbstractDataPackage;
+import edu.ucsb.nceas.morpho.datapackage.DataPackagePlugin;
 import edu.ucsb.nceas.morpho.datapackage.DataViewContainerPanel;
 import edu.ucsb.nceas.morpho.datapackage.Entity;
 import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
@@ -51,7 +52,7 @@ public class ImportDataTableNodes implements PluginInterface, ServiceProvider, C
 	 */
 
 	private Morpho myMorpho;
-	private static final String DATA_MENU_LABEL = "Data";
+
 	/* Referrence to  morphoframe */
 	private MorphoFrame morphoFrame = null;
 	private DataViewContainerPanel resultPane;
@@ -78,7 +79,7 @@ public class ImportDataTableNodes implements PluginInterface, ServiceProvider, C
 		ImportDataTableNodesAction.setToolTipText(
 			"Imports the data table descriptions from an existing EML document");
 		ImportDataTableNodesAction.setMenuItemPosition(0);
-		ImportDataTableNodesAction.setMenu(DATA_MENU_LABEL, 0);
+		ImportDataTableNodesAction.setMenu(DataPackagePlugin.DATA_MENU_LABEL, DataPackagePlugin.DATAMENUPOSITION);
 		ImportDataTableNodesAction.setEnabled(false);
 		ImportDataTableNodesAction.setEnabledOnStateChange(
 			StateChangeEvent.CREATE_DATAPACKAGE_FRAME,
