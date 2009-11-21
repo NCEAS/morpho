@@ -124,10 +124,10 @@ public class CodeDefnPanel extends JPanel implements WizardPageSubPanelAPI {
   private static final String TRUNCATE_STRING = "--truncated--";
 
   private int entityIdx = -1;
-  public String IMPORTLATER = "importLater";
-  private String currentEntityID = IMPORTLATER;
-  private String codeAttributeID =IMPORTLATER;
-  private String defnAttributeID = IMPORTLATER;
+  
+  private String currentEntityID = AbstractDataPackage.IMPORTLATER;
+  private String codeAttributeID =AbstractDataPackage.IMPORTLATER;
+  private String defnAttributeID = AbstractDataPackage.IMPORTLATER;
 
   private static Node[] attributeArray = null;
 
@@ -675,13 +675,13 @@ public class CodeDefnPanel extends JPanel implements WizardPageSubPanelAPI {
     OrderedMap map = new OrderedMap();
 		
 		int eIdx = getSelectedEntityIndex();
-    if(adp!=null && currentEntityID.equals(IMPORTLATER)) {
+    if(adp!=null && currentEntityID.equals(AbstractDataPackage.IMPORTLATER)) {
 			if(eIdx >= 0) currentEntityID = adp.getEntityID(eIdx);
     }
-    if(adp!=null && codeAttributeID.equals(IMPORTLATER)) {
+    if(adp!=null && codeAttributeID.equals(AbstractDataPackage.IMPORTLATER)) {
       if(eIdx >= 0) codeAttributeID = adp.getAttributeID(eIdx, getCodeColumnIndex());
     }
-    if(adp!=null && defnAttributeID.equals(IMPORTLATER)) {
+    if(adp!=null && defnAttributeID.equals(AbstractDataPackage.IMPORTLATER)) {
       if(eIdx >= 0) defnAttributeID = adp.getAttributeID(eIdx, getDefnColumnIndex());
     }
 

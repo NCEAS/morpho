@@ -199,7 +199,7 @@ public class EditColumnMetaDataCommand implements Command, DataPackageWizardList
 	    if(dpwPlugin == null) return;
 
 	    AbstractUIPage attributePage = dpwPlugin.getPage(DataPackageWizardInterface.ATTRIBUTE_PAGE);
-	    boolean canHandleAllData = attributePage.setPageData(map, "");
+	    boolean canHandleAllData = attributePage.setPageData(map, null);
 			
 			if(canHandleAllData) {
 				

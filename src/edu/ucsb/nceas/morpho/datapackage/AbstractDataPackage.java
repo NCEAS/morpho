@@ -299,6 +299,7 @@ public abstract class AbstractDataPackage extends MetadataObject
   protected String autoSavedID = null; //file id which stores auto saving doc
   protected String completionStatus = null; 
   public  static final String COMPLETED = "completed";
+  public static final String IMPORTLATER = "importLater";
  
   /**
    * This abstract method turns the datapackage into a form (e.g. string) that
@@ -5064,7 +5065,7 @@ public abstract class AbstractDataPackage extends MetadataObject
 			boolean present = map.containsKey(path);
 			if(!present) return false;
 			String o = (String)map.get(path);
-			if(o == null || o.trim().equals("")) return true;
+			if(o == null || o.trim().equals(IMPORTLATER)) return true;
 			return false;
 		}
 
