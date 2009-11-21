@@ -165,6 +165,7 @@ public class DataLocation extends AbstractUIPage {
   private JPanel q2RadioPanel_import;
   private JPanel q2RadioPanel_describe;
   private String nextAvailableID = null;
+  private String prevPageID = null;
   // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
 
@@ -590,7 +591,7 @@ public class DataLocation extends AbstractUIPage {
     WidgetFactory.unhiliteComponent(objNameLabel);
     WidgetFactory.unhiliteComponent(medNameLabel);
 
-    String prevPageID = mainWizFrame.getPreviousPageID();
+    prevPageID = mainWizFrame.getPreviousPageID();
     if(prevPageID != null && prevPageID.equals(DataPackageWizardInterface.CODE_IMPORT_PAGE)) {
 
       // allow only import
@@ -620,7 +621,20 @@ public class DataLocation extends AbstractUIPage {
    *  The action to be executed when the "Prev" button is pressed. May be empty
    *
    */
-  public void onRewindAction() {}
+  public void onRewindAction() 
+  {
+	  //since we increase entity in advanceAction in CodeImportPage
+	  //when next page is DataLocation, we should descrease when we go back
+	    Log.debug(35, "In DataLocation.oneREwindAction and previous page id is "+prevPageID);
+	    if(prevPageID != null && prevPageID.equals(DataPackageWizardInterface.CODE_IMPORT_PAGE))
+	    {
+	      
+	      int entityIndex = mainWizFrame.getEnityIndex();
+          entityIndex = entityIndex-1;
+          Log.debug(30, "In DataLocation.onRewindAction, since previous page is code_import_page, we need to decrease to "+entityIndex);
+          mainWizFrame.setEntityIndex(entityIndex);
+	    }
+  }
 
 
 

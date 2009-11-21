@@ -180,8 +180,8 @@ public class CodeDefinition extends AbstractUIPage {
 	     Log.debug(32, "The index of the entity which was added to abstract package in CodeDefintion.onLoadAction is "+entityIndex);
 	     adp.replaceEntity(newDOM, entityIndex);
 	      //since we added/replace an entity into adp, so next available index should be increase too.
-	     entityIndex = entityIndex+1;
-	     mainWizFrame.setEntityIndex(entityIndex);
+	     //entityIndex = entityIndex+1;
+	     //mainWizFrame.setEntityIndex(entityIndex);
          adp.setLocation("");  // we've changed it and not yet saved
          entityAdded = true;// change the variable to be true, so next time load would NOT modify adp again
 		if(prevPageID.equals(DataPackageWizardInterface.ENTITY) && rowData == null) { 
@@ -247,10 +247,10 @@ public class CodeDefinition extends AbstractUIPage {
 	  if(prevPageID != null && (prevPageID.startsWith(DataPackageWizardInterface.TEXT_IMPORT_ATTRIBUTE) || prevPageID.equals(DataPackageWizardInterface.ENTITY))) {
     
 	         int entityIndex = mainWizFrame.getEnityIndex();
-	         entityIndex = entityIndex -1;//since the mainWizFrame stores the next available index, so we should minus 1 when we go back. 
+	         //entityIndex = entityIndex -1;//since the mainWizFrame stores the next available index, so we should minus 1 when we go back. 
 		     Log.debug(32, "The index of the entity which was deleted to abstract package in CodeDefinition.onRewindAction is "+entityIndex);
 		     adp.deleteEntity(entityIndex);
-		     mainWizFrame.setEntityIndex(entityIndex);
+		     //mainWizFrame.setEntityIndex(entityIndex);
 	         adp.setLocation("");  // we've changed it and not yet saved
 	         entityAdded = false; //since we deleted the added entity, we need to set it to be false.
 	  }
@@ -277,7 +277,7 @@ public class CodeDefinition extends AbstractUIPage {
       if(adp.isCurrentImportNewTable())
       {
     	  Log.debug(30, "====it is in current import new table and previous page is code_definition in CodeImportSummary.onLoad");
-    	  updateImportAttributeInNewTable(adp);
+    	  updateImportAttributeInNewTable(adp, map);
 
       }
       removedAttributeInfo = adp.removeFirstAttributeForImport();
@@ -417,12 +417,12 @@ public class CodeDefinition extends AbstractUIPage {
    * In CodeDefinition.replaceEmptyReference method, the curretnImportMap was modified
    * (added referenced id information), this method will put the map information into attribute.
    */
-  public static void updateImportAttributeInNewTable(AbstractDataPackage dataPackage) {
+  public static void updateImportAttributeInNewTable(AbstractDataPackage dataPackage, OrderedMap map) {
    
 	//Gets modified map (having the referenced id information)
-    OrderedMap map = dataPackage.getCurrentImportMap();
+    //OrderedMap map = dataPackage.getCurrentImportMap();
     //adp = getADP();
-    if(dataPackage == null)
+    if(dataPackage == null || map == null)
       return;
     String eName = dataPackage.getCurrentImportEntityName();
     String aName = dataPackage.getCurrentImportAttributeName();

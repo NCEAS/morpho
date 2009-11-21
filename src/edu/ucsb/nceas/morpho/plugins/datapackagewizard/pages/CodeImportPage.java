@@ -243,7 +243,7 @@ public class CodeImportPage extends AbstractUIPage {
         if(adp.isCurrentImportNewTable())
         {
       	  Log.debug(30, "====it is in current import new table and update attribute reference in CodeImportPage"); 
-      	  CodeDefinition.updateImportAttributeInNewTable(adp);
+      	  CodeDefinition.updateImportAttributeInNewTable(adp, map);
   
         }
         removedAttributeInfo = adp.removeFirstAttributeForImport();
@@ -257,7 +257,11 @@ public class CodeImportPage extends AbstractUIPage {
     } else {
       this.nextPageID = DataPackageWizardInterface.DATA_LOCATION;
       mainWizFrame.clearPageCache();
-      mainWizFrame.reInitializePageStack();      
+      mainWizFrame.reInitializePageStack();    
+      //since we will start a new entity, we need to increase the index.
+      int entityIndex = mainWizFrame.getEnityIndex();
+      entityIndex = entityIndex+1;
+      mainWizFrame.setEntityIndex(entityIndex);
       return true;
     }
 
