@@ -795,10 +795,14 @@ public class DataPackagePlugin
 	  ServiceController sc;
 	    DataPackageWizardInterface dpwPlugin = null;
 	    try {
+	      if(adp == null)
+	      {
+	    	  Log.debug(5, "The data package which will be opened is null!");
+    		  return;
+	      }
 	      sc = ServiceController.getInstance();
 	      //EML200DataPackage eml200 = (EML200DataPackage)adp;
 	      String status = adp.getCompletionStatus();
-	      adp.readImportAttributeInfoFromIncompleteDoc();
 	      WizardPageInfo [] classNameList = null;
 	      int index =-1;
 	      Log.debug(30, "The status of incomplete is "+status+" in DataPackagePlugin.openIncompleteDataPackage");
@@ -809,7 +813,21 @@ public class DataPackagePlugin
 	      else if(status != null && status.equals(IncompleteDocSettings.INCOMPLETE_ENTITY_WIZARD))
 	      {
 	    	  classNameList = adp.getIncompleteEntityWizardPageInfoList();
+	    	  try
+	    	  {
+	    	    adp.readImportAttributeInfoFromIncompleteDocInEntityWizard();
+	    	  }
+	    	  catch(Exception e)
+	    	  {
+	    		  Log.debug(5, "Couldn't read import attribute information in incomplete document "+e.getMessage());
+	    		  return;
+	    	  }
 	    	  index = adp.getEntityIndexInIncompleteDocInfo();
+	      }
+	      else
+	      {
+	    	  Log.debug(5, "Morpho couldn't understand the incomplete status "+status);
+	    	  return;
 	      }
 	      
 	      IncompleteDocInfo info = new IncompleteDocInfo(status);

@@ -589,7 +589,7 @@ public class EML2Beta6DataPackage extends AbstractDataPackage
   /**
    * Read the import attribute information from incomplete additionMetadata part.
    */
-  public void readImportAttributeInfoFromIncompleteDoc()
+  public void readImportAttributeInfoFromIncompleteDocInEntityWizard() throws Exception
   {
 	  throw new java.lang.UnsupportedOperationException(
 		      "EML2Beta6DataPackage - method not implemented - "

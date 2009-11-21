@@ -1600,7 +1600,7 @@ public abstract class AbstractDataPackage extends MetadataObject
   /**
    * Read the import attribute information from incomplete additionMetadata part.
    */
-  abstract public void readImportAttributeInfoFromIncompleteDoc();
+  abstract public void readImportAttributeInfoFromIncompleteDocInEntityWizard() throws Exception;
 
 
 

@@ -853,21 +853,30 @@ public  class EML200DataPackage extends AbstractDataPackage
   }
   
   /**
-   * Read the import attribute information from incomplete additionMetadata part.
+   * Read the import attribute information from incomplete additionMetadata part in entity wizard.
    */
-  public void readImportAttributeInfoFromIncompleteDoc()
+  public void readImportAttributeInfoFromIncompleteDocInEntityWizard() throws Exception
   {
 	  String path = IncompleteDocSettings.EMLPATH+IncompleteDocSettings.ADDITIONALMETADATA+"/"+IncompleteDocSettings.METADATA+
       "/"+IncompleteDocSettings.ENTITYWIZARD+"/"+this.IMPORTATTRIBUTES+"/"+this.ATTRIBUTE;
+	  readImportAttributeInfoFromIncompleteDoc(path);
+  }
+  
+  /*
+   * Read the import attribute information from incompleteDoc from given path
+   */
+  private void readImportAttributeInfoFromIncompleteDoc(String xpath) throws Exception
+  {
+	 
 	  NodeList nodeList = null;
       try 
       {
-          nodeList = XMLUtilities.getNodeListWithXPath(metadataNode, path);
+          nodeList = XMLUtilities.getNodeListWithXPath(metadataNode, xpath);
       } 
       catch (Exception w) 
       {
           Log.debug(30, "Problem with getting imported attribute list in additional metadata part " + w.getMessage());
-        
+          throw w;
       }
       if (nodeList != null && nodeList.getLength() > 0) 
       {
@@ -942,7 +951,7 @@ public  class EML200DataPackage extends AbstractDataPackage
                       catch (Exception w) 
                       {
                           Log.debug(30, "Problem with getting orderedMp list in additional metadata part " + w.getMessage());
-                        
+                          throw w;
                       }
                       if(list != null)
                       {
