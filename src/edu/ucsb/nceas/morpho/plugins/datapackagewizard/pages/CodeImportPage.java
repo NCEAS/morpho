@@ -255,13 +255,34 @@ public class CodeImportPage extends AbstractUIPage {
       } else
         return false;
     } else {
-      this.nextPageID = DataPackageWizardInterface.DATA_LOCATION;
-      mainWizFrame.clearPageCache();
-      mainWizFrame.reInitializePageStack();    
+      this.nextPageID = DataPackageWizardInterface.DATA_LOCATION; 
+      AbstractUIPage previousPage = mainWizFrame.getPreviousPage();
+      boolean needIncreaseEntityID = true;
+      if(previousPage != null && previousPage instanceof CodeImportSummary)
+      {
+    	  CodeImportSummary codeSummary = (CodeImportSummary )previousPage;
+    	  String previousPreviousID = codeSummary.getPreviousPageID();
+    	  Log.debug(30, "This CodeImportSummary's previous id is "+previousPreviousID);
+    	  if(previousPreviousID != null && previousPreviousID.equals(CodeImportSummary.STARTIMPORTWIZARD))
+    	  {
+    		  Log.debug(30, "This CodeImportPage is first CodeImportPage in CodeDefinitionWizard, we don't need to increase entity id");
+    		  needIncreaseEntityID = false;
+    	  }
+      }
       //since we will start a new entity, we need to increase the index.
       int entityIndex = mainWizFrame.getEnityIndex();
-      entityIndex = entityIndex+1;
-      mainWizFrame.setEntityIndex(entityIndex);
+      if(needIncreaseEntityID)
+      {
+    	  entityIndex = entityIndex+1;
+    	  mainWizFrame.setEntityIndex(entityIndex);
+    	  Log.debug(30, "In CodeImportPage.onAdvance to increase entity id to "+entityIndex);
+      }
+      else
+      {
+    	  Log.debug(30, "In CodeImportPage.onAdvance to keep (NOT increase) entity id to "+entityIndex);
+      }
+      mainWizFrame.clearPageCache();
+      mainWizFrame.reInitializePageStack();   
       return true;
     }
 

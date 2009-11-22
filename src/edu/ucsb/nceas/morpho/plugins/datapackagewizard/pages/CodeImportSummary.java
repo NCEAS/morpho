@@ -72,7 +72,7 @@ public class CodeImportSummary extends AbstractUIPage {
   public final String PACKAGE_WIZ_SUMMARY_TITLE = "New Data Package Wizard";
   public final String ENTITY_WIZ_SUMMARY_TITLE  = "New Data Table Wizard";
   public final String SUBTITLE                  = "Summary";
-  private final String STARTIMPORTWIZARD = "STARTIMPORTWIZARD";
+  public static final String STARTIMPORTWIZARD = "STARTIMPORTWIZARD";
 
   private JLabel desc1;
 	private JLabel desc3;
@@ -467,7 +467,15 @@ public class CodeImportSummary extends AbstractUIPage {
      */
   public String getPageNumber() { return pageNumber; }
 
-    public boolean setPageData(OrderedMap data, String xPathRoot) { return false; }
+    public boolean setPageData(OrderedMap data, String xPathRoot) 
+    { 
+    	prevPage = mainWizFrame.getPreviousPage();
+        if(prevPage != null)
+        {
+        	prevID = prevPage.getPageID();
+        }
+    	return false; 
+    }
     
     
     /**
@@ -477,6 +485,15 @@ public class CodeImportSummary extends AbstractUIPage {
     public boolean isImportAttributeInNewTableUpdated()
     {
     	return this.updateImportAttributeInNewTable;
+    }
+    
+    /**
+     * Gets the previous page id for this page.
+     * @return
+     */
+    public String getPreviousPageID()
+    {
+    	return prevID;
     }
 }
 
