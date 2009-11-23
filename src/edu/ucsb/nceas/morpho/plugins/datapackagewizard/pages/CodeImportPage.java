@@ -88,8 +88,8 @@ public class CodeImportPage extends AbstractUIPage {
   private String handledImportAttributeName = null;
 
   private short importChoice = 0;
-  private static final short IMPORT_DONE = 10;
-  private static final short INVOKE_TIW = 20;
+  public static final short IMPORT_DONE = 10;
+  public static final short INVOKE_TIW = 20;
   private int selectedEntityIndex = -1;
   private int selectedCodeColumnIndex = -1;
   private int selectedDefinitionColumnIndex = -1;
@@ -256,6 +256,9 @@ public class CodeImportPage extends AbstractUIPage {
   
         }
         removedAttributeInfo = adp.removeFirstAttributeForImport();
+        selectedEntityIndex = importPanel.getSelectedEntityIndex();
+        selectedCodeColumnIndex = importPanel.getCodeColumnIndex();
+        selectedDefinitionColumnIndex = importPanel.getDefnColumnIndex();
         nextPageID = DataPackageWizardInterface.CODE_IMPORT_SUMMARY;     
         
         mainWizFrame.clearPageCache();

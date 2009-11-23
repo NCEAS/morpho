@@ -308,6 +308,7 @@ public class CodeDefinition extends AbstractUIPage {
    */
   public static void replaceEmptyReference(OrderedMap map,CodeDefnPanel importPane, String className)
   {
+
 	  if(map != null)
 	  {
 		  Iterator it = map.keySet().iterator();

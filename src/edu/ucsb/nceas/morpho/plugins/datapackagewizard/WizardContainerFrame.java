@@ -1407,9 +1407,13 @@ public class WizardContainerFrame
 							  emlWithIncompleteInfo.append(IncompleteDocSettings.KEYOPENINGTAG+
 									  CodeDefnPanel.SELECTEDENTITYINDEX+IncompleteDocSettings.KEYCLOSINGTAG+
 									  IncompleteDocSettings.VALUEOPENINGTAG+codeDef.getSelectedEntityIndex()+IncompleteDocSettings.VALUECLOSINGTAG);
+							  emlWithIncompleteInfo.append(IncompleteDocSettings.VARIABLECLOSINGTAG);
+							  emlWithIncompleteInfo.append(IncompleteDocSettings.VARIABLEOPENINGTAG);
 							  emlWithIncompleteInfo.append(IncompleteDocSettings.KEYOPENINGTAG+
 									  CodeDefnPanel.CODECOLUMNINDEX+IncompleteDocSettings.KEYCLOSINGTAG+
 									  IncompleteDocSettings.VALUEOPENINGTAG+codeDef.getSelectedCodeColumnIndex()+IncompleteDocSettings.VALUECLOSINGTAG);
+							  emlWithIncompleteInfo.append(IncompleteDocSettings.VARIABLECLOSINGTAG);
+							  emlWithIncompleteInfo.append(IncompleteDocSettings.VARIABLEOPENINGTAG);
 							  emlWithIncompleteInfo.append(IncompleteDocSettings.KEYOPENINGTAG+
 									  CodeDefnPanel.DEFINITIONCOLUMNINDEX+IncompleteDocSettings.KEYCLOSINGTAG+
 									  IncompleteDocSettings.VALUEOPENINGTAG+codeDef.getSelectedDefinitionColumnIndex()+IncompleteDocSettings.VALUECLOSINGTAG);
@@ -1423,7 +1427,36 @@ public class WizardContainerFrame
 						  }
 						  else if(page instanceof CodeImportPage)
 						  {
-							  
+						    CodeImportPage codeImport = (CodeImportPage)page;
+						    short importChoice = codeImport.getImportChoice();
+						    emlWithIncompleteInfo.append(IncompleteDocSettings.VARIABLEOPENINGTAG);
+                emlWithIncompleteInfo.append(IncompleteDocSettings.KEYOPENINGTAG+
+                    CodeImportPage.IMMPORTCHOICE+IncompleteDocSettings.KEYCLOSINGTAG+
+                    IncompleteDocSettings.VALUEOPENINGTAG+importChoice+IncompleteDocSettings.VALUECLOSINGTAG);
+                emlWithIncompleteInfo.append(IncompleteDocSettings.VARIABLECLOSINGTAG);
+						    if(importChoice == CodeImportPage.IMPORT_DONE)
+						    {
+  						    emlWithIncompleteInfo.append(IncompleteDocSettings.VARIABLEOPENINGTAG);
+                  emlWithIncompleteInfo.append(IncompleteDocSettings.KEYOPENINGTAG+
+                      CodeDefnPanel.SELECTEDENTITYINDEX+IncompleteDocSettings.KEYCLOSINGTAG+
+                      IncompleteDocSettings.VALUEOPENINGTAG+codeImport.getSelectedEntityIndex()+IncompleteDocSettings.VALUECLOSINGTAG);
+                  emlWithIncompleteInfo.append(IncompleteDocSettings.VARIABLECLOSINGTAG);
+                  emlWithIncompleteInfo.append(IncompleteDocSettings.VARIABLEOPENINGTAG);
+                  emlWithIncompleteInfo.append(IncompleteDocSettings.KEYOPENINGTAG+
+                      CodeDefnPanel.CODECOLUMNINDEX+IncompleteDocSettings.KEYCLOSINGTAG+
+                      IncompleteDocSettings.VALUEOPENINGTAG+codeImport.getSelectedCodeColumnIndex()+IncompleteDocSettings.VALUECLOSINGTAG);
+                  emlWithIncompleteInfo.append(IncompleteDocSettings.VARIABLECLOSINGTAG);
+                  emlWithIncompleteInfo.append(IncompleteDocSettings.VARIABLEOPENINGTAG);
+                  emlWithIncompleteInfo.append(IncompleteDocSettings.KEYOPENINGTAG+
+                      CodeDefnPanel.DEFINITIONCOLUMNINDEX+IncompleteDocSettings.KEYCLOSINGTAG+
+                      IncompleteDocSettings.VALUEOPENINGTAG+codeImport.getSelectedDefinitionColumnIndex()+IncompleteDocSettings.VALUECLOSINGTAG);
+                  emlWithIncompleteInfo.append(IncompleteDocSettings.VARIABLECLOSINGTAG);
+                  emlWithIncompleteInfo.append(IncompleteDocSettings.ADDITIONALINFOOPENINGTAG);
+                  emlWithIncompleteInfo.append(IncompleteDocSettings.REMOVEDIMPORTATTRIBUTEOPENINGTAG);
+                  emlWithIncompleteInfo.append(AbstractDataPackage.transformOneImportAttributeToXML(codeImport.getRemovedImportAttributeInfo()));
+                  emlWithIncompleteInfo.append(IncompleteDocSettings.REMOVEDIMPORTATTRIBUTECLOSINGTAG);
+                  emlWithIncompleteInfo.append(IncompleteDocSettings.ADDITIONALINFOCLOSINGTAG);
+						    }
 						  }
 						  emlWithIncompleteInfo.append(IncompleteDocSettings.CLASSCLOSINGTAG);
 					  }
@@ -1445,6 +1478,8 @@ public class WizardContainerFrame
 	  
 	  return emlWithIncompleteInfo.toString();
   }
+  
+ 
   
  
 
