@@ -185,11 +185,15 @@ public class CodeImportPage extends AbstractUIPage {
    *  The action to be executed when the page is displayed. May be empty
    */
   public void onLoadAction() {
-	    removedAttributeInfo = null;
+	    //removedAttributeInfo = null;
 		adp = getADP();
 		if(adp == null) {
 			Log.debug(15, "Unable to obtain the ADP in CodeImportPage");
 			return;
+		}
+		if(removedAttributeInfo != null)
+		{
+			adp.addFirstAttributeForImport(removedAttributeInfo);
 		}
 		
 		
@@ -214,6 +218,7 @@ public class CodeImportPage extends AbstractUIPage {
   public void onRewindAction() {
 
 	 //adp.addFirstAttributeForImport(removedAttributeInfo);
+	  removedAttributeInfo = null;
  
   }
 

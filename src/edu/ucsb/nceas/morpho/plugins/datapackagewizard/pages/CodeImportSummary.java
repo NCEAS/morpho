@@ -81,7 +81,7 @@ public class CodeImportSummary extends AbstractUIPage {
   private AbstractDataPackage adp = null;
   private String prevID = STARTIMPORTWIZARD;
   private AbstractUIPage prevPage = null;
-  private ArrayList removedAttributeInfo = null;
+  //private ArrayList removedAttributeInfo = null;
   private boolean updateImportAttributeInNewTable = false;
   
 
@@ -176,7 +176,7 @@ public class CodeImportSummary extends AbstractUIPage {
       {
          CodeDefinition page = (CodeDefinition)prevPage;
          currentAttrName = page.getHandledImportAttributeName();
-         removedAttributeInfo = page.getRemovedImportAttributeInfo();
+         //removedAttributeInfo = page.getRemovedImportAttributeInfo();
       }
       /*if(adp.isCurrentImportNewTable())
       {
@@ -199,7 +199,7 @@ public class CodeImportSummary extends AbstractUIPage {
          {
             CodeImportPage page = (CodeImportPage)prevPage;
             currentAttrName = page.getHandledImportAttributeName();
-            removedAttributeInfo = page.getRemovedImportAttributeInfo();
+            //removedAttributeInfo = page.getRemovedImportAttributeInfo();
          }
       /*if(adp.isCurrentImportNewTable())
       {
@@ -321,16 +321,16 @@ public class CodeImportSummary extends AbstractUIPage {
     		  Log.debug(30, "Set ImportCodeDefinitionTable to be false!!!!!!!!!!!!");
         	  
           }
-          else if(prevID != null && (prevID.equals(DataPackageWizardInterface.CODE_DEFINITION) || prevID.equals(DataPackageWizardInterface.CODE_IMPORT_PAGE))) 
-          {
-              adp.addFirstAttributeForImport(removedAttributeInfo);
+          //else if(prevID != null && (prevID.equals(DataPackageWizardInterface.CODE_DEFINITION) || prevID.equals(DataPackageWizardInterface.CODE_IMPORT_PAGE))) 
+          //{
+              //adp.addFirstAttributeForImport(removedAttributeInfo);
               /*if(updateImportAttributeInNewTable)
               {
             	  
             	  //we may need to do something here.
               }*/
              
-          }
+          //}
 	  
 
   }

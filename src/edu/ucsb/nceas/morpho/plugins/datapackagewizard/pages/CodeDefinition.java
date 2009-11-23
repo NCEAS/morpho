@@ -148,13 +148,17 @@ public class CodeDefinition extends AbstractUIPage {
    *  The action to be executed when the page is displayed. May be empty
    */
   public void onLoadAction() {
-	 removedAttributeInfo = null;
+	 //removedAttributeInfo = null;
      adp = getADP();
      if(adp == null) {
 	Log.debug(10, "Error! Unable to obtain the ADP in CodeDefinition page!");
 	return;
      }
 		
+    if(removedAttributeInfo != null)
+    {
+    	adp.addFirstAttributeForImport(removedAttributeInfo);
+    }
     handledImportAttributeName = adp.getCurrentImportAttributeName();
     String entity = adp.getCurrentImportEntityName();
 
@@ -253,6 +257,7 @@ public class CodeDefinition extends AbstractUIPage {
 		     //mainWizFrame.setEntityIndex(entityIndex);
 	         adp.setLocation("");  // we've changed it and not yet saved
 	         entityAdded = false; //since we deleted the added entity, we need to set it to be false.
+	         removedAttributeInfo = null;//clicking back button will set this value to null.
 	  }
 	  //adp.addFirstAttributeForImport(removedAttributeInfo);
   }
