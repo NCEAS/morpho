@@ -4647,28 +4647,43 @@ public abstract class AbstractDataPackage extends MetadataObject
 				ArrayList list = (ArrayList)toBeImported.get(i);
 				if(list != null && !list.isEmpty())
 				{
-					xml.append(OPENATTRIBUTE);
-					String entityName =(String)list.get(ENTITYNAMEINDEX);
-					xml.append(OPENENTITYNAME+entityName+CLOSEENTITYNAME);
-					String attributeName = (String)list.get(ATTRIBUTENAMEINDEX);
-					xml.append(OPENATTRIBUTENAME+attributeName+CLOSEATTRIBUTENAME);
-					String scale = (String)list.get(SCALEINDEX);
-					xml.append(OPENSCALE+scale+CLOSESCALE);
-					OrderedMap map = (OrderedMap)list.get(ORDEREDMAPINDEX);
-					xml.append(OPENORDEREDMAP);
-					if(map != null)
-					{
-						xml.append(map.toXML());
-					}
-					xml.append(CLOSEORDEREDMAP);
-					String xpath = (String)list.get(XPATHINDEX);
-					xml.append(OPENXPATH+xpath+CLOSEXPATH);
-					String newTable = ((Boolean)list.get(NEWTABLEINDEX)).toString();
-					xml.append(OPENNEWTABLE+newTable+CLOSENEWTABLE);
-					xml.append(CLOSEATTRIBUTE+"\n");
+					xml.append(transformOneImportAttributeToXML(list));
 				}
 			}
 			xml.append(CLOSEIMPORTATTRIBUTES);
+		}
+		return xml.toString();
+	}
+	
+	/**
+	 * Transform one importAttribute ojbect (arraryList) to xml format
+	 * @param list
+	 * @return xml presentation of the importAttribute object
+	 */
+	public static String transformOneImportAttributeToXML(ArrayList list)
+	{
+		StringBuffer xml = new StringBuffer();
+		if(list != null && !list.isEmpty())
+		{
+			xml.append(OPENATTRIBUTE);
+			String entityName =(String)list.get(ENTITYNAMEINDEX);
+			xml.append(OPENENTITYNAME+entityName+CLOSEENTITYNAME);
+			String attributeName = (String)list.get(ATTRIBUTENAMEINDEX);
+			xml.append(OPENATTRIBUTENAME+attributeName+CLOSEATTRIBUTENAME);
+			String scale = (String)list.get(SCALEINDEX);
+			xml.append(OPENSCALE+scale+CLOSESCALE);
+			OrderedMap map = (OrderedMap)list.get(ORDEREDMAPINDEX);
+			xml.append(OPENORDEREDMAP);
+			if(map != null)
+			{
+				xml.append(map.toXML());
+			}
+			xml.append(CLOSEORDEREDMAP);
+			String xpath = (String)list.get(XPATHINDEX);
+			xml.append(OPENXPATH+xpath+CLOSEXPATH);
+			String newTable = ((Boolean)list.get(NEWTABLEINDEX)).toString();
+			xml.append(OPENNEWTABLE+newTable+CLOSENEWTABLE);
+			xml.append(CLOSEATTRIBUTE+"\n");
 		}
 		return xml.toString();
 	}
