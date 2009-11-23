@@ -147,6 +147,10 @@ public class CodeDefnPanel extends JPanel implements WizardPageSubPanelAPI {
   // flag to indicate if the data from the tables need to imported into the CustomTable
   // It is possible to set the table data at runtime using the setTable() interface.
   private boolean createDataTable = true;
+  
+  public static final String SELECTEDENTITYINDEX = "selectedEntityIndex";
+  public static final String CODECOLUMNINDEX = "codeColumnIndex";
+  public static final String DEFINITIONCOLUMNINDEX = "definitionColumnIndex";
 
   public CodeDefnPanel(){
 
@@ -611,7 +615,11 @@ public class CodeDefnPanel extends JPanel implements WizardPageSubPanelAPI {
     return getPanelData("");
   }
 
-  private int getCodeColumnIndex() {
+  /**
+   * Gets the selected column index for code. -1 will be returned if we couldn't find it
+   * @return
+   */
+  public int getCodeColumnIndex() {
 
     if(adp == null) {
       return -1;
@@ -636,7 +644,11 @@ public class CodeDefnPanel extends JPanel implements WizardPageSubPanelAPI {
     return -1;
   }
 
-  private int getDefnColumnIndex() {
+  /**
+   * Gets the selected column index for defintion. -1 will be returned if we couldn't find it
+   * @return
+   */
+  public int getDefnColumnIndex() {
 
     if(adp == null)
       return -1;

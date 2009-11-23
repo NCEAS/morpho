@@ -79,7 +79,12 @@ public class IncompleteDocSettings
    public  static final String VALUE = "value";
    public  static final String VALUEOPENINGTAG = LESSTHAN+VALUE+GREATERTHAN;
    public  static final String VALUECLOSINGTAG = LESSTHAN+SLASH+VALUE+GREATERTHAN;
-
+   public  static final String ADDITIONALINFO = "additionInfo";
+   public  static final String ADDITIONALINFOOPENINGTAG = LESSTHAN+ADDITIONALINFO+GREATERTHAN;
+   public  static final String ADDITIONALINFOCLOSINGTAG = LESSTHAN+SLASH+ADDITIONALINFO+GREATERTHAN;
+   public  static final String REMOVEDIMPORTATTRIBUTE = "removedImortAttribute";
+   public  static final String REMOVEDIMPORTATTRIBUTEOPENINGTAG = LESSTHAN+REMOVEDIMPORTATTRIBUTE+GREATERTHAN;
+   public  static final String REMOVEDIMPORTATTRIBUTECLOSINGTAG = LESSTHAN+SLASH+REMOVEDIMPORTATTRIBUTE+GREATERTHAN;
    
 }
 

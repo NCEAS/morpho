@@ -270,22 +270,14 @@ public class IncompleteDocumentLoader
 								  }
 								 
 							  }
-							  //generate empty UIPage if page isnull or map isnull
-			                  if (map == null || page ==null)
-			                  {
+							  //generate empty UIPage if page isnull and map isnull
+							  if (map == null && page ==null)
+							  {
 			                	  
-								  // those pages are likely introduction ....
-			                	  if(map != null)
-			                	  {
-			                		  Log.debug(30, "There is no data for className --------------------"+className+ " so we just initilize an empty page");
-								      //page = WizardUtil.createAbstractUIpageObject(className, dpWiz, map.getWizardPageClassParameters() );
-			                	  }
-			                	  else
-			                	  {
-			                		  Log.debug(30, "There is no map for classNamePlusParameter --------------------"+classNamePlusParameter+ " so we just initilize an empty page for class "+className);
-			                		  page = WizardUtil.createAbstractUIpageObject(className, dpWiz, parameters );
-			                	  }
-			                  }
+								 	  Log.debug(30, "There is no map for classNamePlusParameter --------------------"+classNamePlusParameter+ " so we just initilize an empty page for class "+className);
+									  page = WizardUtil.createAbstractUIpageObject(className, dpWiz, parameters );
+								 
+							  }
 						  }
 					  }
 					  
@@ -294,19 +286,19 @@ public class IncompleteDocumentLoader
 					  {
 						  break;
 					  }
-					  
-	                  if(i == (size-1))
-	                  {
-	                	// set the current page to the last page
-	                	  //since we will use setCurrent page in loadNewPackageWizard 
-	                	  // and loadEntityWizard method, so we should NOT add it the stack
-	                	  currentPage = page;                	 	                	  
-	                  }
-	                  else
-	                  {
-	                	  //add other page into stack of wizard frame
-	                	  dpWiz.addPageToStack(page);
-	                  }	                  
+	  
+					  if(i == (size-1))
+					  {
+						  // set the current page to the last page
+						  //since we will use setCurrent page in loadNewPackageWizard 
+						  // and loadEntityWizard method, so we should NOT add it the stack
+						  currentPage = page;                	 	                	  
+					  }
+					  else
+					  {
+						  //add other page into stack of wizard frame
+						  dpWiz.addPageToStack(page);
+					  }	                  
 					 
 				  }
 			  }
@@ -334,7 +326,8 @@ public class IncompleteDocumentLoader
 	/**
 	 * Methods inherits from DataPackageWizardListener
 	 */
-	public void wizardComplete(Node newDOM, String autoSavedID) {
+	public void wizardComplete(Node newDOM, String autoSavedID) 
+	{
 
         Log.debug(30,
             "Wizard complete - Will now create an AbstractDataPackage..");
@@ -351,7 +344,8 @@ public class IncompleteDocumentLoader
 	/**
 	 * Methods inherits from DataPackageWizardListener
 	 */
-      public void wizardCanceled() {
+      public void wizardCanceled() 
+      {
 
         Log.debug(45, "\n\n********** Wizard canceled!");
       }
@@ -377,7 +371,8 @@ public class IncompleteDocumentLoader
 			this.oldMorphoFrame = oldMorphoFrame;
 		}
 		
-		public void wizardComplete(Node newDOM, String autoSavedID) {
+		public void wizardComplete(Node newDOM, String autoSavedID) 
+		{
 
             if(newDOM != null) {
 
@@ -397,7 +392,8 @@ public class IncompleteDocumentLoader
 
           }
 
-          public void wizardCanceled() {
+          public void wizardCanceled() 
+          {
 
             Log.debug(45, "\n\n********** Wizard canceled!");
           }
@@ -410,14 +406,17 @@ public class IncompleteDocumentLoader
 	private MorphoFrame openMorphoFrameForDataPackage(AbstractDataPackage adp)
 	{
 		 MorphoFrame frame = null;
-		 try {
+		 try 
+		 {
 	          ServiceController services = ServiceController.getInstance();
 	          ServiceProvider provider =
 	              services.getServiceProvider(DataPackageInterface.class);
 	          DataPackageInterface dataPackage = (DataPackageInterface)provider;
 	          frame = dataPackage.openNewDataPackage(adp, null);
             
-	        } catch (ServiceNotHandledException snhe) {
+	        } 
+		    catch (ServiceNotHandledException snhe) 
+		    {
 
 	          Log.debug(6, snhe.getMessage());
 	        }

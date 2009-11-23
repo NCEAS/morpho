@@ -90,6 +90,10 @@ public class CodeImportPage extends AbstractUIPage {
   private short importChoice = 0;
   private static final short IMPORT_DONE = 10;
   private static final short INVOKE_TIW = 20;
+  private int selectedEntityIndex = -1;
+  private int selectedCodeColumnIndex = -1;
+  private int selectedDefinitionColumnIndex = -1;
+  public static String IMMPORTCHOICE = "importChoice";
 
 
   public CodeImportPage(WizardContainerFrame mainWizFrame) {
@@ -374,5 +378,41 @@ public class CodeImportPage extends AbstractUIPage {
    {
  	  return this.removedAttributeInfo;
    }
+   
+   /**
+    * Gets the selected entity index (not id) from CodeDefnPanel
+    * @return
+    */
+   public int getSelectedEntityIndex() 
+   {
+		return selectedEntityIndex;
+   }
+
+   /**
+    * Gets the selected code column index (not id) from CodeDefnPanel
+    * @return
+    */
+	public int getSelectedCodeColumnIndex() 
+	{
+		return selectedCodeColumnIndex;
+	}
+
+	 /**
+	    * Gets the selected definition column index (not id) from CodeDefnPanel
+	    * @return
+	    */
+	public int getSelectedDefinitionColumnIndex() 
+	{
+		return selectedDefinitionColumnIndex;
+	}
+	
+	/**
+	 * Gets the import choice
+	 * @return
+	 */
+	public short getImportChoice()
+	{
+		return this.importChoice;
+	}
    
 }

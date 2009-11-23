@@ -39,6 +39,9 @@ import edu.ucsb.nceas.morpho.framework.UIController;
 import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
 import edu.ucsb.nceas.morpho.plugins.DataPackageWizardListener;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.Access;
+import edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.CodeDefinition;
+import edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.CodeDefnPanel;
+import edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.CodeImportPage;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.DataLocation;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.Entity;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.ImportedTextFile;
@@ -1396,6 +1399,31 @@ public class WizardContainerFrame
 									  textDelimiter.IGNORECONSECUTIVEDELIMITERS+IncompleteDocSettings.KEYCLOSINGTAG+
 									  IncompleteDocSettings.VALUEOPENINGTAG+ingoreConsecutiveDelimiters+IncompleteDocSettings.VALUECLOSINGTAG+
 									  IncompleteDocSettings.VARIABLECLOSINGTAG);
+						  }
+						  else if(page instanceof CodeDefinition)
+						  {
+							  CodeDefinition codeDef = (CodeDefinition)page;
+							  emlWithIncompleteInfo.append(IncompleteDocSettings.VARIABLEOPENINGTAG);
+							  emlWithIncompleteInfo.append(IncompleteDocSettings.KEYOPENINGTAG+
+									  CodeDefnPanel.SELECTEDENTITYINDEX+IncompleteDocSettings.KEYCLOSINGTAG+
+									  IncompleteDocSettings.VALUEOPENINGTAG+codeDef.getSelectedEntityIndex()+IncompleteDocSettings.VALUECLOSINGTAG);
+							  emlWithIncompleteInfo.append(IncompleteDocSettings.KEYOPENINGTAG+
+									  CodeDefnPanel.CODECOLUMNINDEX+IncompleteDocSettings.KEYCLOSINGTAG+
+									  IncompleteDocSettings.VALUEOPENINGTAG+codeDef.getSelectedCodeColumnIndex()+IncompleteDocSettings.VALUECLOSINGTAG);
+							  emlWithIncompleteInfo.append(IncompleteDocSettings.KEYOPENINGTAG+
+									  CodeDefnPanel.DEFINITIONCOLUMNINDEX+IncompleteDocSettings.KEYCLOSINGTAG+
+									  IncompleteDocSettings.VALUEOPENINGTAG+codeDef.getSelectedDefinitionColumnIndex()+IncompleteDocSettings.VALUECLOSINGTAG);
+							  emlWithIncompleteInfo.append(IncompleteDocSettings.VARIABLECLOSINGTAG);
+							  emlWithIncompleteInfo.append(IncompleteDocSettings.ADDITIONALINFOOPENINGTAG);
+							  emlWithIncompleteInfo.append(IncompleteDocSettings.REMOVEDIMPORTATTRIBUTEOPENINGTAG);
+							  emlWithIncompleteInfo.append(AbstractDataPackage.transformOneImportAttributeToXML(codeDef.getRemovedImportAttributeInfo()));
+							  emlWithIncompleteInfo.append(IncompleteDocSettings.REMOVEDIMPORTATTRIBUTECLOSINGTAG);
+							  emlWithIncompleteInfo.append(IncompleteDocSettings.ADDITIONALINFOCLOSINGTAG);
+							  
+						  }
+						  else if(page instanceof CodeImportPage)
+						  {
+							  
 						  }
 						  emlWithIncompleteInfo.append(IncompleteDocSettings.CLASSCLOSINGTAG);
 					  }

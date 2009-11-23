@@ -92,6 +92,11 @@ public class CodeDefinition extends AbstractUIPage {
   private ArrayList removedAttributeInfo = null;
   private String handledImportAttributeName = null;
   private boolean entityAdded = false;//indicates if entity already added to adp
+  private int selectedEntityIndex = -1;
+  private int selectedCodeColumnIndex = -1;
+  private int selectedDefinitionColumnIndex = -1;
+  
+ 
 
   public CodeDefinition(WizardContainerFrame mainWizFrame) {
 
@@ -286,6 +291,9 @@ public class CodeDefinition extends AbstractUIPage {
 
       }
       removedAttributeInfo = adp.removeFirstAttributeForImport();
+      selectedEntityIndex = importPanel.getSelectedEntityIndex();
+      selectedCodeColumnIndex = importPanel.getCodeColumnIndex();
+      selectedDefinitionColumnIndex = importPanel.getDefnColumnIndex();
       return true;
     } else
       return false;
@@ -416,6 +424,33 @@ public class CodeDefinition extends AbstractUIPage {
 	  return this.removedAttributeInfo;
   }
   
+   /**
+    * Gets the selected entity index (not id) from CodeDefnPanel
+    * @return
+    */
+   public int getSelectedEntityIndex() 
+   {
+		return selectedEntityIndex;
+   }
+
+   /**
+    * Gets the selected code column index (not id) from CodeDefnPanel
+    * @return
+    */
+	public int getSelectedCodeColumnIndex() 
+	{
+		return selectedCodeColumnIndex;
+	}
+
+	 /**
+	    * Gets the selected definition column index (not id) from CodeDefnPanel
+	    * @return
+	    */
+	public int getSelectedDefinitionColumnIndex() 
+	{
+		return selectedDefinitionColumnIndex;
+	}
+  
   
   /*
    * This is the real method to put referenced id into the attribute which need to be imported.
@@ -493,5 +528,7 @@ public class CodeDefinition extends AbstractUIPage {
     }
     return str;
   }
+
+
 
 }
