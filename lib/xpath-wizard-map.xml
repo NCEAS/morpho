@@ -520,6 +520,28 @@
      </infoForModifyingData>
     <wizardPageClass>edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.Entity</wizardPageClass>
   </mapping>
+  <mapping>
+    <root>n/a</root>
+    <infoForModifyingData>
+             <loadExistDataPath>attributeList</loadExistDataPath>
+             <xpathForCreatingOrderedMap></xpathForCreatingOrderedMap>
+             <xpathForSettingPageData></xpathForSettingPageData>
+             <newDataDocumentName></newDataDocumentName>
+             <xpathForGettingPageData></xpathForGettingPageData>
+     </infoForModifyingData>
+    <wizardPageClass>edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.CodeDefinition</wizardPageClass>
+  </mapping>
+	<mapping>
+    <root>n/a</root>
+    <infoForModifyingData>
+             <loadExistDataPath>na</loadExistDataPath>
+             <xpathForCreatingOrderedMap></xpathForCreatingOrderedMap>
+             <xpathForSettingPageData></xpathForSettingPageData>
+             <newDataDocumentName></newDataDocumentName>
+             <xpathForGettingPageData></xpathForGettingPageData>
+     </infoForModifyingData>
+    <wizardPageClass>edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.CodeImportPage</wizardPageClass>
+  </mapping>
 	
     <mapping>
     <root>/eml:eml/dataset/dataTable</root>

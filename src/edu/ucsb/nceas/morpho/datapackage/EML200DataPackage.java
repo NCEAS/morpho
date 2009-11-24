@@ -750,14 +750,14 @@ public  class EML200DataPackage extends AbstractDataPackage
                         	  NodeList grandChildren = kidNode.getChildNodes();
                         	  for(int k=0; k<grandChildren.getLength(); k++)
                         	  {
-		    	    		      Node textNode = grandChildren.item(k);
-		    	    		      if (textNode.getNodeType()==Node.TEXT_NODE
-		    	    		                          || textNode.getNodeType()==Node.CDATA_SECTION_NODE) 
-		    	    		      {
-		    	    		    	  String className = textNode.getNodeValue();
-		    	    		    	  Log.debug(25, "The read class name from additional metacat is "+className);
-		    	                      info = new WizardPageInfo(className);
-		    	    		      }
+      		    	    		      Node textNode = grandChildren.item(k);
+      		    	    		      if (textNode.getNodeType()==Node.TEXT_NODE
+      		    	    		                          || textNode.getNodeType()==Node.CDATA_SECTION_NODE) 
+      		    	    		      {
+      		    	    		    	  String className = textNode.getNodeValue();
+      		    	    		    	  Log.debug(25, "The read class name from additional metacat is "+className);
+      		    	                      info = new WizardPageInfo(className);
+      		    	    		      }
                         	  }
                           }
                           else if(kidNode.getNodeType() ==Node.ELEMENT_NODE && kidNode.getNodeName().equals(IncompleteDocSettings.PARAMETER))
@@ -766,17 +766,17 @@ public  class EML200DataPackage extends AbstractDataPackage
                         	  NodeList grandChildren = kidNode.getChildNodes();
                         	  for(int k=0; k<grandChildren.getLength(); k++)
                         	  {
-		    	    		      Node textNode = grandChildren.item(k);
-		    	    		      if (textNode.getNodeType()==Node.TEXT_NODE
-		    	    		                          || textNode.getNodeType()==Node.CDATA_SECTION_NODE) 
-		    	    		      {
-		    	    		    	  String parameter = textNode.getNodeValue();
-		    	    		    	  Log.debug(25, "The paramter is "+parameter);
-		    	                     if(info != null)
-		    	                     {
-		    	                    	 info.addParameter(parameter);
-		    	                     }
-		    	    		      }
+      		    	    		      Node textNode = grandChildren.item(k);
+      		    	    		      if (textNode.getNodeType()==Node.TEXT_NODE
+      		    	    		                          || textNode.getNodeType()==Node.CDATA_SECTION_NODE) 
+      		    	    		      {
+      		    	    		    	  String parameter = textNode.getNodeValue();
+      		    	    		    	  Log.debug(25, "The paramter is "+parameter);
+      		    	                     if(info != null)
+      		    	                     {
+      		    	                    	 info.addParameter(parameter);
+      		    	                     }
+      		    	    		      }
                         	  }
                           } 
                           else if(kidNode.getNodeType() ==Node.ELEMENT_NODE && kidNode.getNodeName().equals(IncompleteDocSettings.VARIABLE))
@@ -787,23 +787,32 @@ public  class EML200DataPackage extends AbstractDataPackage
                         	  String value = null;
                         	  for(int k=0; k<grandChildren.getLength(); k++)
                         	  {
-		    	    		      Node node = grandChildren.item(k);
-		    	    		      
-		    	    		      if (node.getNodeType()==Node.ELEMENT_NODE && node.getNodeName().equals(IncompleteDocSettings.KEY)) 
-		    	    		      {
-		    	    		    	  key = node.getFirstChild().getNodeValue();	    		    	  
-		    	    		    	  Log.debug(25, "In EML200DataPackage.getIncompleteWizardPageInfoList - the key is "+key);		    	                    
-		    	    		      }
-		    	    		      else  if (node.getNodeType()==Node.ELEMENT_NODE && node.getNodeName().equals(IncompleteDocSettings.VALUE)) 
-		    	    		      {
-		    	    		    	  value = node.getFirstChild().getNodeValue();	    		    	  
-		    	    		    	  Log.debug(25, "In EML200DataPackage.getIncompleteWizardPageInfoList - the value is "+value);		    	                    
-		    	    		      }
+      		    	    		      Node node = grandChildren.item(k);
+      		    	    		      
+      		    	    		      if (node.getNodeType()==Node.ELEMENT_NODE && node.getNodeName().equals(IncompleteDocSettings.KEY)) 
+      		    	    		      {
+      		    	    		    	  key = node.getFirstChild().getNodeValue();	    		    	  
+      		    	    		    	  Log.debug(25, "In EML200DataPackage.getIncompleteWizardPageInfoList - the key is "+key);		    	                    
+      		    	    		      }
+      		    	    		      else  if (node.getNodeType()==Node.ELEMENT_NODE && node.getNodeName().equals(IncompleteDocSettings.VALUE)) 
+      		    	    		      {
+      		    	    		    	  value = node.getFirstChild().getNodeValue();	    		    	  
+      		    	    		    	  Log.debug(25, "In EML200DataPackage.getIncompleteWizardPageInfoList - the value is "+value);		    	                    
+      		    	    		      }
                         	  }
                         	  if(info != null)
                         	  {
 	    	                    	 info.putVariableValueMap(key, value);
-	    	                  }
+	    	                    }
+                          }
+                          else if(kidNode.getNodeType() ==Node.ELEMENT_NODE && kidNode.getNodeName().equals(IncompleteDocSettings.ADDITIONALINFO))
+                          {
+                           
+                            OrderedMap additionalInfo =  XMLUtilities.getDOMTreeAsXPathMap(kidNode);
+                            if(info != null)
+                            {
+                               info.addAdditionalInfo(additionalInfo);
+                            }
                           }
 	    		    
     	    		}   	    		
@@ -814,7 +823,7 @@ public  class EML200DataPackage extends AbstractDataPackage
     	    	}
     	    }
       }
-      Log.debug(35, "The class info list is "+classInfoList);
+      Log.debug(45, "The class info list is "+classInfoList);
 	  return classInfoList;
   }
   

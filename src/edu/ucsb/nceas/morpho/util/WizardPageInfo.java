@@ -41,10 +41,10 @@ public class WizardPageInfo
 {
     private String className = null;
     private Vector parameters = new Vector();//parameters is for the class' constructor.
-    private OrderedMap variablesValues = new OrderedMap();//stores variable as key and value pair. 
+    private OrderedMap variablesValues = new OrderedMap();//stores variable as key and value pair.
+                                                                                 // or some other map value.
                                                                                 //if eml itself doesn't have enough info for 
-                                                                                //for loading a page. We store extral info here.
-    
+                                                                              //for loading a page. We store extral info here.
     /**
      * Constructor for given className
      * @param className
@@ -104,6 +104,17 @@ public class WizardPageInfo
 			variablesValues.put(key, value);
 		}
 	}
+  
+
+
+  /**
+   * Adds some additional information to the class
+   * @param additionalInfo
+   */
+  public void addAdditionalInfo(OrderedMap additionalInformation)
+  {
+    this.variablesValues.putAll(additionalInformation);
+  }
 	
 	
 }

@@ -4400,12 +4400,12 @@ public abstract class AbstractDataPackage extends MetadataObject
 	private String lastImportedEntityName;
 	private Vector lastImportedDataSet;
 	private Entity[] originalEntities = null;
-	private final static int ENTITYNAMEINDEX = 0;
-	private final static int ATTRIBUTENAMEINDEX = 1;
-	private final static int SCALEINDEX = 2;
-	private final static int ORDEREDMAPINDEX = 3;
-	private final static int XPATHINDEX = 4;
-	private final static int NEWTABLEINDEX = 5;
+	public final static int ENTITYNAMEINDEX = 0;
+	public final static int ATTRIBUTENAMEINDEX = 1;
+	public final static int SCALEINDEX = 2;
+	public final static int ORDEREDMAPINDEX = 3;
+	public final static int XPATHINDEX = 4;
+	public final static int NEWTABLEINDEX = 5;
 
 
 	public int addAttributeForImport(String entityName, String attributeName,

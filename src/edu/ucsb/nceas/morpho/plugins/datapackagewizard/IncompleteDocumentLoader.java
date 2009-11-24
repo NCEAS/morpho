@@ -135,14 +135,14 @@ public class IncompleteDocumentLoader
 			  WizardContainerFrame dpWiz = new WizardContainerFrame();
 			  dpWiz.initialAutoSaving();
 			  AbstractUIPage currentPage = loadPagesIntoWizard(dpWiz);
-		      if(currentPage == null)
-		      {	    	  
-		    	  UIController.getInstance().setWizardNotRunning();
-		    	  dpWiz.dispose();
-		    	  dpWiz = null;
-		    	  Log.debug(5, "The new package wizard couldn't load the existing eml document!");
-		    	  return;
-		      }
+			  if(currentPage == null)
+		          {	    	  
+		    	    UIController.getInstance().setWizardNotRunning();
+		    	    dpWiz.dispose();
+		    	    dpWiz = null;
+		    	    Log.debug(5, "The new package wizard couldn't load the existing eml document!");
+		    	    return;
+		          }
 			  Log.debug(25, "The current page id in IncompleteDocument.loadNewPackageWizard is "+currentPage.getPageID());
 			  PackageWizardListener dataPackageWizardListener = new PackageWizardListener();
 			  dpWiz.setDataPackageWizardListener(dataPackageWizardListener);
@@ -168,14 +168,14 @@ public class IncompleteDocumentLoader
 			  int index = incompleteDocInfo.getEntityIndex();
 			  WizardContainerFrame dpWiz = new WizardContainerFrame(isEntity);
 			  AbstractUIPage currentPage = loadPagesIntoWizard(dpWiz);
-		      if(currentPage == null)
-		      {
-		    	  UIController.getInstance().setWizardNotRunning();
-		    	  dpWiz.dispose();
-		    	  dpWiz = null;
-		    	  Log.debug(5, "The new entity wizard couldn't load the existing eml document!");
-		    	  return;
-		      }
+		          if(currentPage == null)
+		          {
+		    	     UIController.getInstance().setWizardNotRunning();
+		    	     dpWiz.dispose();
+		    	     dpWiz = null;
+		    	     Log.debug(5, "The new entity wizard couldn't load the existing eml document!");
+		    	     return;
+		          }
 			  Log.debug(25, "The current page id in IncompleteDocument.loadEntityWizard is "+currentPage.getPageID());
 			  dpWiz.initialAutoSaving();
 			  //remove the entity with the index (this entity is the unfinished one)
@@ -311,7 +311,7 @@ public class IncompleteDocumentLoader
 	 */
 	private void readXpathUIMappingInfo()
 	{
-		XpathUIPageMappingReader reader = new XpathUIPageMappingReader(CorrectionWizardController.MAPPINGFILEPATH);
+	    XpathUIPageMappingReader reader = new XpathUIPageMappingReader(CorrectionWizardController.MAPPINGFILEPATH);
 	    mappingList   = reader.getXPathUIPageMappingList();
 	    wizardPageName = reader.getClassNamePlusParameterMapping();	 
 	}
@@ -323,32 +323,32 @@ public class IncompleteDocumentLoader
 	 */
 	class PackageWizardListener implements  DataPackageWizardListener
 	{
-	/**
-	 * Methods inherits from DataPackageWizardListener
-	 */
-	public void wizardComplete(Node newDOM, String autoSavedID) 
-	{
-
-        Log.debug(30,
-            "Wizard complete - Will now create an AbstractDataPackage..");
-
-        AbstractDataPackage adp = DataPackageFactory.getDataPackage(newDOM);
-        Log.debug(30, "AbstractDataPackage complete");
-        adp.setAccessionNumber("temporary.1.1");
-        adp.setAutoSavedID(autoSavedID);
-        openMorphoFrameForDataPackage(adp);
-        Log.debug(45, "\n\n********** Wizard finished: DOM:");
-        Log.debug(45, XMLUtilities.getDOMTreeAsString(newDOM, false));
-      }
-
-	/**
-	 * Methods inherits from DataPackageWizardListener
-	 */
-      public void wizardCanceled() 
-      {
-
-        Log.debug(45, "\n\n********** Wizard canceled!");
-      }
+		/**
+		 * Methods inherits from DataPackageWizardListener
+		 */
+		public void wizardComplete(Node newDOM, String autoSavedID) 
+		{
+		
+		    Log.debug(30,
+		        "Wizard complete - Will now create an AbstractDataPackage..");
+		
+		    AbstractDataPackage adp = DataPackageFactory.getDataPackage(newDOM);
+		    Log.debug(30, "AbstractDataPackage complete");
+		    adp.setAccessionNumber("temporary.1.1");
+		    adp.setAutoSavedID(autoSavedID);
+		    openMorphoFrameForDataPackage(adp);
+		    Log.debug(45, "\n\n********** Wizard finished: DOM:");
+		    Log.debug(45, XMLUtilities.getDOMTreeAsString(newDOM, false));
+		  }
+		
+		/**
+		 * Methods inherits from DataPackageWizardListener
+		 */
+		  public void wizardCanceled() 
+		  {
+		
+		    Log.debug(45, "\n\n********** Wizard canceled!");
+		  }
       
 	} 
 	
@@ -374,29 +374,30 @@ public class IncompleteDocumentLoader
 		public void wizardComplete(Node newDOM, String autoSavedID) 
 		{
 
-            if(newDOM != null) {
+            		if(newDOM != null) 
+            		{
 
-              Log.debug(30,"Entity Wizard complete - creating Entity object..");
-              adp.replaceEntity(newDOM, nextEntityIndex);//we use replace method here because the auto-save file already adding the entity into datapackage.
-              adp.setLocation("");  // we've changed it and not yet saved
+              			Log.debug(30,"Entity Wizard complete - creating Entity object..");
+              			adp.replaceEntity(newDOM, nextEntityIndex);//we use replace method here because the auto-save file already adding the entity into datapackage.
+              			adp.setLocation("");  // we've changed it and not yet saved
 
-            }
-            MorphoFrame frame = openMorphoFrameForDataPackage(adp);
-            if(frame != null)
-            {
-              oldMorphoFrame.setVisible(false);
-              UIController controller = UIController.getInstance();
-              controller.removeWindow(oldMorphoFrame);
-              oldMorphoFrame.dispose();
-            }
+            		}
+            		MorphoFrame frame = openMorphoFrameForDataPackage(adp);
+            		if(frame != null)
+            		{
+              			oldMorphoFrame.setVisible(false);
+              			UIController controller = UIController.getInstance();
+              			controller.removeWindow(oldMorphoFrame);
+              			oldMorphoFrame.dispose();
+            		}
 
-          }
+          	}
 
-          public void wizardCanceled() 
-          {
+          	public void wizardCanceled() 
+          	{
 
-            Log.debug(45, "\n\n********** Wizard canceled!");
-          }
+            		Log.debug(45, "\n\n********** Wizard canceled!");
+         	}
       
 	} 
 	
@@ -414,12 +415,12 @@ public class IncompleteDocumentLoader
 	          DataPackageInterface dataPackage = (DataPackageInterface)provider;
 	          frame = dataPackage.openNewDataPackage(adp, null);
             
-	        } 
-		    catch (ServiceNotHandledException snhe) 
-		    {
+	         } 
+		 catch (ServiceNotHandledException snhe) 
+		 {
 
 	          Log.debug(6, snhe.getMessage());
-	        }
+	         }
 	        return frame;
 	}
 	
@@ -427,8 +428,8 @@ public class IncompleteDocumentLoader
 	 * Generates a TextImportAttribute page. This page is kind of special, so we don't
 	 * generates from configuration.
 	 */
-  private AbstractUIPage generateTextImportAttributePage(WizardContainerFrame dpWiz, Node dataTableNode, int index)
-  {
+	private AbstractUIPage generateTextImportAttributePage(WizardContainerFrame dpWiz, Node dataTableNode, int index)
+	{
 	  AbstractUIPage page = null;
 	  boolean success = false;
 	  if(dpWiz != null && index >= 0 && dataTableNode != null)
@@ -464,5 +465,5 @@ public class IncompleteDocumentLoader
 		}
 	  }
 	  return page;
-  }
+	}
 }

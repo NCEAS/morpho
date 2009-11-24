@@ -43,6 +43,8 @@ import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 import javax.swing.BoxLayout;
 import javax.swing.JLabel;
@@ -362,7 +364,169 @@ public class CodeImportPage extends AbstractUIPage {
      */
   public String getPageNumber() { return pageNumber; }
 
-    public boolean setPageData(OrderedMap data, String xPathRoot) { return false; }
+    public boolean setPageData(OrderedMap data, String xPathRoot) 
+    {
+      boolean success = false;
+      
+      if(data == null)
+      {
+        Log.debug(30, "The map in CodeImportPage.setPageData and return false");
+        return success;
+      }    
+      Log.debug(35, "In CodeImportPage.setPageData, the xpathRoot is "+xPathRoot+" and map is "+data.toString() );
+      String importChoiceStr = (String)data.get(IMMPORTCHOICE);
+      data.remove(IMMPORTCHOICE);
+      String selectedEntityIndexStr = (String)data.get(CodeDefnPanel.SELECTEDENTITYINDEX);
+      data.remove(CodeDefnPanel.SELECTEDENTITYINDEX);
+      String codeColumnStr = (String)data.get(CodeDefnPanel.CODECOLUMNINDEX);
+      data.remove(CodeDefnPanel.CODECOLUMNINDEX);
+      String definitionColumnStr = (String)data.get(CodeDefnPanel.DEFINITIONCOLUMNINDEX);
+      try
+      {
+        importChoice =(new Short(importChoiceStr)).shortValue();
+        selectedEntityIndex = (new Integer(selectedEntityIndexStr)).intValue();
+        selectedCodeColumnIndex = (new Integer(codeColumnStr)).intValue();
+        this.selectedDefinitionColumnIndex = (new Integer(definitionColumnStr)).intValue();
+      }
+      catch(Exception e)
+      {
+        Log.debug(30, "Couldn't get importChocie entity in CodeImportPage.setPageData since "+e.getMessage());
+        return success;
+      }
+      if(importChoice == INVOKE_TIW)
+      {
+        success = true;
+        return success;
+      }
+      else if(importChoice == IMPORT_DONE)
+      {
+        removedAttributeInfo = extactRemovedImportAttribute(data);
+        if(removedAttributeInfo == null)
+        {
+          Log.debug(30, "In CodeImportPage.setPageData, morpho couldn't get the removed the import attribute info.");
+          return success;
+        }
+        success = true;
+        return success;
+      }
+      else
+      {
+        Log.debug(30, "In CodeImportPage.setPageData, morpho couldn't understand the import choice "+importChoice);
+        return success;
+      }
+      
+       
+    }
+    
+    /**
+     * Extract import attribute from a map like:
+     * /additionInfo/removedImortAttribute[1]/attribute[1]/entityName[1]   =  test-2
+     * /additionInfo/removedImortAttribute[1]/attribute[1]/attributeName[1]   =  Column 1
+     * /additionInfo/removedImortAttribute[1]/attribute[1]/scale[1]   =  Nominal
+     * /additionInfo/removedImortAttribute[1]/attribute[1]/orderedMap[1]/pair[1]/key[1]   =  /eml:eml/dataset/dataTable/attributeList/attribute[1]/attributeName
+     * /additionInfo/removedImortAttribute[1]/attribute[1]/orderedMap[1]/pair[1]/value[1]   =  Column 1
+     * /additionInfo/removedImortAttribute[1]/attribute[1]/orderedMap[1]/pair[2]/key[1]   =  /eml:eml/dataset/dataTable/attributeList/attribute[1]/attributeDefinition
+     * /additionInfo/removedImortAttribute[1]/attribute[1]/orderedMap[1]/pair[2]/value[1]   =  1
+     * /additionInfo/removedImortAttribute[1]/attribute[1]/orderedMap[1]/pair[3]/key[1]   =  /eml:eml/dataset/dataTable/attributeList/attribute[1]/measurementScale/nominal/nonNumericDomain/enumeratedDomain[1]/entityCodeList/entityReference
+     * /additionInfo/removedImortAttribute[1]/attribute[1]/orderedMap[1]/pair[3]/value[1]   =  1258843292741
+     * /additionInfo/removedImortAttribute[1]/attribute[1]/orderedMap[1]/pair[4]/key[1]   =  /eml:eml/dataset/dataTable/attributeList/attribute[1]/measurementScale/nominal/nonNumericDomain/enumeratedDomain[1]/entityCodeList/valueAttributeReference
+     * /additionInfo/removedImortAttribute[1]/attribute[1]/orderedMap[1]/pair[4]/value[1]   =  1258843292742
+     * /additionInfo/removedImortAttribute[1]/attribute[1]/orderedMap[1]/pair[5]/key[1]   =  /eml:eml/dataset/dataTable/attributeList/attribute[1]/measurementScale/nominal/nonNumericDomain/enumeratedDomain[1]/entityCodeList/definitionAttributeReference
+     * /additionInfo/removedImortAttribute[1]/attribute[1]/orderedMap[1]/pair[5]/value[1]   =  1258843292743
+     * /additionInfo/removedImortAttribute[1]/attribute[1]/xPath[1]   =  /eml:eml/dataset/dataTable/attributeList/attribute[0]
+     * /additionInfo/removedImortAttribute[1]/attribute[1]/newTable[1]  =  true
+     * @param map
+     * @return null will be returned if we couldn't extract the list
+     */
+    public static ArrayList extactRemovedImportAttribute(OrderedMap map) 
+    {
+       ArrayList list = null;
+       if(map != null)
+       {
+         Iterator it = map.keySet().iterator();
+         String keyInMap = null;
+         String valueInMap = null;
+         OrderedMap mapForImportAttribute = new OrderedMap();
+         while (it.hasNext())
+         {
+            String key = (String)it.next();
+            if(key == null)
+            {
+              continue;
+            }
+            boolean getKey = false;
+            boolean getValue = false;
+           
+            if(key.startsWith("/additionInfo/removedImortAttribute[1]/attribute[1]/entityName"))
+            {
+               String entityName= (String)map.get(key);
+               Log.debug(40, "In CodeImportPage.extactRemovedImportAttribute, the entityName from order map is "+entityName);
+               if(entityName != null)
+               {
+                 list.add(AbstractDataPackage.ENTITYNAMEINDEX, entityName);
+               }
+               else
+               {
+                 list = null;
+                 break;
+               }
+               
+            }
+            else if(key.startsWith("/additionInfo/removedImortAttribute[1]/attribute[1]/attributeName"))
+            {
+               String attributeName= (String)map.get(key);
+               Log.debug(40, "In CodeImportPage.extactRemovedImportAttribute, the attribureName from order map is "+attributeName);
+               if(attributeName != null)
+               {
+                 list.add(AbstractDataPackage.ATTRIBUTENAMEINDEX, attributeName);
+               }
+               else
+               {
+                 list = null;
+                 break;
+               }
+            }
+            else if(key.startsWith("/additionInfo/removedImortAttribute[1]/attribute[1]/scale"))
+            {
+              String scale= (String)map.get(key);
+              Log.debug(40, "In CodeImportPage.extactRemovedImportAttribute, the scale from order map is "+scale);
+              list.add(AbstractDataPackage.SCALEINDEX, scale);
+              
+            }
+            else if(key.startsWith("/additionInfo/removedImortAttribute[1]/attribute[1]/xPath"))
+            {
+              String xpath = (String)map.get(key);
+              list.add(AbstractDataPackage.XPATHINDEX, xpath);
+            }
+            else if(key.startsWith("/additionInfo/removedImortAttribute[1]/attribute[1]/newTable"))
+            {
+              String newTable = (String)map.get(key);
+              list.add(AbstractDataPackage.NEWTABLEINDEX, newTable);
+            }
+            else if(key.startsWith("/additionInfo/removedImortAttribute[1]/attribute[1]/orderedMap[1]/pair"))
+            {
+               if(key.indexOf("key") != -1)
+               {
+                  keyInMap = (String)map.get(key);
+                  getKey= true;
+               }
+               else if(key.indexOf("value") != -1)
+               {
+                  valueInMap = (String)map.get(key);
+                  getValue = true;
+               }
+               if(getKey && getValue)
+               {
+                 mapForImportAttribute.put(keyInMap, valueInMap);
+                 Log.debug(40, "In CodeImportPage.extactRemovedImportAttribute, put key "+keyInMap+" and value "+valueInMap+" into a map");
+               }
+            }            
+            
+         }
+         list.add(AbstractDataPackage.ORDEREDMAPINDEX, mapForImportAttribute);
+       }     
+       return list;
+    }
    
    /**
     * Gets the attribute name be handle (imported in this page)
