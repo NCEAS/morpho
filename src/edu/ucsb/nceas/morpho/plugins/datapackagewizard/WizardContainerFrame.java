@@ -1436,11 +1436,11 @@ public class WizardContainerFrame
                 emlWithIncompleteInfo.append(IncompleteDocSettings.VARIABLECLOSINGTAG);
 						    if(importChoice == CodeImportPage.IMPORT_DONE)
 						    {
-  						    emlWithIncompleteInfo.append(IncompleteDocSettings.VARIABLEOPENINGTAG);
+  						    /*emlWithIncompleteInfo.append(IncompleteDocSettings.VARIABLEOPENINGTAG);
                   emlWithIncompleteInfo.append(IncompleteDocSettings.KEYOPENINGTAG+
                       CodeDefnPanel.SELECTEDENTITYINDEX+IncompleteDocSettings.KEYCLOSINGTAG+
                       IncompleteDocSettings.VALUEOPENINGTAG+codeImport.getSelectedEntityIndex()+IncompleteDocSettings.VALUECLOSINGTAG);
-                  emlWithIncompleteInfo.append(IncompleteDocSettings.VARIABLECLOSINGTAG);
+                  emlWithIncompleteInfo.append(IncompleteDocSettings.VARIABLECLOSINGTAG);*/
                   emlWithIncompleteInfo.append(IncompleteDocSettings.VARIABLEOPENINGTAG);
                   emlWithIncompleteInfo.append(IncompleteDocSettings.KEYOPENINGTAG+
                       CodeDefnPanel.CODECOLUMNINDEX+IncompleteDocSettings.KEYCLOSINGTAG+

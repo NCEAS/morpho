@@ -69,401 +69,401 @@ import edu.ucsb.nceas.utilities.XMLUtilities;
  */
 public class IncompleteDocumentLoader 
 {
-	private AbstractDataPackage dataPackage = null;
-	private IncompleteDocInfo incompleteDocInfo = null;
-	private String incompletionStatus = null;
-	private Hashtable wizardPageName = new Hashtable();
-	private XPathUIPageMapping[] mappingList = null;
+  private AbstractDataPackage dataPackage = null;
+  private IncompleteDocInfo incompleteDocInfo = null;
+  private String incompletionStatus = null;
+  private Hashtable wizardPageName = new Hashtable();
+  private XPathUIPageMapping[] mappingList = null;
 	
 	
 
-	/**
-	 * Constructs a IncompleteDocumentLoader with a AbstractDataPackage containing 
-	 * meta data information
-	 * @param dataPackage
-	 * @param incompleteInfo
-	 */
-	public IncompleteDocumentLoader(AbstractDataPackage dataPackage, IncompleteDocInfo incompleteDocInfo)
-	{
-		if(dataPackage == null)
-		{
-			Log.debug(5, "Morpho couldn't open the incomplete document since the document is null");
-			return;
-		}
-		this.dataPackage = dataPackage;
-		this.incompleteDocInfo = incompleteDocInfo;
-		if(this.incompleteDocInfo != null)
-		{
-			this.incompletionStatus = incompleteDocInfo.getStatus();
-		}
-		readXpathUIMappingInfo();
-	}
-	
-	/**
-	 * Loads the incomplete AbstractDataPackage into new package wizard or text import wizard
-	 */
-	public void load()
-	{
-		if(incompletionStatus == null)
-		{
-			Log.debug(5, "Morpho couldn't open the package since the incompletion status is null");
-		}
-		else if (incompletionStatus.equals(IncompleteDocSettings.INCOMPLETE_PACKAGE_WIZARD))
-		{
-			//Log.debug(5, "new package wizard");
-			loadNewPackageWizard();
-		}
-		else if(incompletionStatus.equals(IncompleteDocSettings.INCOMPLETE_ENTITY_WIZARD))
-		{
-			//Log.debug(5, "In text imorpt wizard");
-			loadEntityWizard();
-		}
-		else
-		{
-			Log.debug(5, "Morpho couldn't understand the incompletion status of the package "+incompletionStatus);
-		}
-	}
-	
-	/*
-	 * Loads the incomplete AbstractDataPackage into new package wizard
-	 */
-	private void loadNewPackageWizard()
-	{
-		  if(incompleteDocInfo != null)
-		  {
-			  boolean showPageCount = true;	  
-			  WizardContainerFrame dpWiz = new WizardContainerFrame();
-			  dpWiz.initialAutoSaving();
-			  AbstractUIPage currentPage = loadPagesIntoWizard(dpWiz);
-			  if(currentPage == null)
-		          {	    	  
-		    	    UIController.getInstance().setWizardNotRunning();
-		    	    dpWiz.dispose();
-		    	    dpWiz = null;
-		    	    Log.debug(5, "The new package wizard couldn't load the existing eml document!");
-		    	    return;
-		          }
-			  Log.debug(25, "The current page id in IncompleteDocument.loadNewPackageWizard is "+currentPage.getPageID());
-			  PackageWizardListener dataPackageWizardListener = new PackageWizardListener();
-			  dpWiz.setDataPackageWizardListener(dataPackageWizardListener);
-			  dpWiz.setBounds(
-			                  WizardSettings.WIZARD_X_COORD, WizardSettings.WIZARD_Y_COORD,
-			                  WizardSettings.WIZARD_WIDTH,   WizardSettings.WIZARD_HEIGHT );
-			  dpWiz.setCurrentPage(currentPage);
-			  dpWiz.setShowPageCountdown(showPageCount);
-			  dpWiz.setTitle(DataPackageWizardInterface.NEWPACKAGEWIZARDFRAMETITLE);
-			  dpWiz.setVisible(true);
-		  }
-	}
-	
-	/*
-	 * Loads the incomplete AbstractDataPackage into text import wizard
-	 */
-	private void loadEntityWizard()
-	{
-		  if(incompleteDocInfo != null)
-		  {
-			  boolean showPageCount = false;
-			  boolean isEntity = true;
-			  int index = incompleteDocInfo.getEntityIndex();
-			  WizardContainerFrame dpWiz = new WizardContainerFrame(isEntity);
-			  AbstractUIPage currentPage = loadPagesIntoWizard(dpWiz);
-		          if(currentPage == null)
-		          {
-		    	     UIController.getInstance().setWizardNotRunning();
-		    	     dpWiz.dispose();
-		    	     dpWiz = null;
-		    	     Log.debug(5, "The new entity wizard couldn't load the existing eml document!");
-		    	     return;
-		          }
-			  Log.debug(25, "The current page id in IncompleteDocument.loadEntityWizard is "+currentPage.getPageID());
-			  dpWiz.initialAutoSaving();
-			  //remove the entity with the index (this entity is the unfinished one)
-			  dataPackage.deleteEntity(index);
-			  dataPackage.removeInfoForIncompleteEntity();
-			  dpWiz.setEntityIndex(index);
-			  MorphoFrame frame = openMorphoFrameForDataPackage(dataPackage);
-			  if(frame != null)
-			  {
-				  TableWizardListener dataPackageWizardListener = new TableWizardListener(dataPackage, index, frame);
-				  dpWiz.setDataPackageWizardListener(dataPackageWizardListener);
-				  dpWiz.setBounds(
-				                  WizardSettings.WIZARD_X_COORD, WizardSettings.WIZARD_Y_COORD,
-				                  WizardSettings.WIZARD_WIDTH,   WizardSettings.WIZARD_HEIGHT );
-				  dpWiz.setCurrentPage(currentPage);
-				  dpWiz.setTitle(DataPackageWizardInterface.NEWTABLEEWIZARDFRAMETITLE);
-				  dpWiz.setVisible(true);
-			  }
-		  }
-	}
-	
-	/*
-	 * Load Wizard pages into a given Wizard. Return currentPage 
-	 */
-	private AbstractUIPage loadPagesIntoWizard(WizardContainerFrame dpWiz)
-	{
-		AbstractUIPage currentPage = null;
-		int textImportAttributePageIndex = 0;
-		if(dpWiz != null && incompleteDocInfo != null)
-		{
-			  WizardPageInfo [] classNameFromIncompleteDoc = incompleteDocInfo.getWizardPageClassInfoList();
-			  //Vector parameters = null;
-			  //Go through every page from incomplete doc info
-			  if(classNameFromIncompleteDoc != null)
-			  {
-				  int size = classNameFromIncompleteDoc.length;
-				  AbstractUIPage page = null;
-				  for(int i=0; i<size;  i++)
-				  {
-					  WizardPageInfo pageClassInfo = classNameFromIncompleteDoc[i];
-					  if(pageClassInfo != null)
-					  {
-						  String classNamePlusParameter ="";
-						  String className = pageClassInfo.getClassName();
-						  if(className !=null && className.equals(TextImportAttribute.CLASSFULLNAME))
-						  {
-							  //load TextImportAttribute from a special method
-							  int entityIndex = incompleteDocInfo.getEntityIndex();				  
-							  page = generateTextImportAttributePage(dpWiz, dataPackage.getEntity(entityIndex).getNode(), textImportAttributePageIndex);
-							  textImportAttributePageIndex++;
-						  }
-						  else
-						  {
-							  classNamePlusParameter = classNamePlusParameter+className;
-							  Vector parameters = pageClassInfo.getParameters();//this one is for constructor
-							  OrderedMap variables = pageClassInfo.getVariablesValuesMap();//some additional info, which is not in eml itself
-							  if(parameters != null && !parameters.isEmpty())
-							  {
-								  for(int k=0; k<parameters.size(); k++)
-								  {
-									  String param = (String)parameters.elementAt(k);
-									  classNamePlusParameter = classNamePlusParameter +param;
-								  }
-								  
-							  }
-							  XPathUIPageMapping map = (XPathUIPageMapping)wizardPageName.get(classNamePlusParameter.trim());
-							  if (map != null)
-							  {
-								  //loading exist data into UIPage
-								  String path = null;
-								  try
-								  {
-									  Log.debug(30, "There is map for classNamePlusParamer ~~~~~~~~~~~~~~"+classNamePlusParameter+ " so we create an page with data (if have)");
-								      Log.debug(30, "the className from metadata is "+className);
-								      if(incompletionStatus.equals(IncompleteDocSettings.INCOMPLETE_PACKAGE_WIZARD))
-								      {
-									    page= WizardUtil.getUIPage(map, dpWiz,  variables, dataPackage.getMetadataNode(), null );
-								      }
-								      else if(incompletionStatus.equals(IncompleteDocSettings.INCOMPLETE_ENTITY_WIZARD))  	  
-								      {
-								    	  int index = incompleteDocInfo.getEntityIndex();
-								    	  if(dataPackage.getEntity(index) != null)
-								    	  {
-								    		  page= WizardUtil.getUIPage(map, dpWiz,  variables, dataPackage.getEntity(index).getNode(), null );
-								    	  }
-								      }
-								  }
-								  catch(Exception e)
-								  {
-									  Log.debug(20, "Couldn't create the page with className "+className+" "+e.getMessage());
-									  page = null;
-								  }
-								 
-							  }
-							  //generate empty UIPage if page isnull and map isnull
-							  if (map == null && page ==null)
-							  {
-			                	  
-								 	  Log.debug(30, "There is no map for classNamePlusParameter --------------------"+classNamePlusParameter+ " so we just initilize an empty page for class "+className);
-									  page = WizardUtil.createAbstractUIpageObject(className, dpWiz, parameters );
-								 
-							  }
-						  }
-					  }
-					  
-					  //if we can't get any page, we shouldn't load it. Otherwise, the result will be unpredicable.
-					  if(page == null)
-					  {
-						  break;
-					  }
-	  
-					  if(i == (size-1))
-					  {
-						  // set the current page to the last page
-						  //since we will use setCurrent page in loadNewPackageWizard 
-						  // and loadEntityWizard method, so we should NOT add it the stack
-						  currentPage = page;                	 	                	  
-					  }
-					  else
-					  {
-						  //add other page into stack of wizard frame
-						  dpWiz.addPageToStack(page);
-					  }	                  
-					 
-				  }
-			  }
-		}
-		return currentPage;
-	}
-	
-	/*
-	 * Read xpath-UIpage mapping information
-	 */
-	private void readXpathUIMappingInfo()
-	{
-	    XpathUIPageMappingReader reader = new XpathUIPageMappingReader(CorrectionWizardController.MAPPINGFILEPATH);
-	    mappingList   = reader.getXPathUIPageMappingList();
-	    wizardPageName = reader.getClassNamePlusParameterMapping();	 
-	}
-	
-	/**
-	 * Listener class for New Package Wizard
-	 * @author tao
-	 *
-	 */
-	class PackageWizardListener implements  DataPackageWizardListener
-	{
-		/**
-		 * Methods inherits from DataPackageWizardListener
-		 */
-		public void wizardComplete(Node newDOM, String autoSavedID) 
-		{
-		
-		    Log.debug(30,
-		        "Wizard complete - Will now create an AbstractDataPackage..");
-		
-		    AbstractDataPackage adp = DataPackageFactory.getDataPackage(newDOM);
-		    Log.debug(30, "AbstractDataPackage complete");
-		    adp.setAccessionNumber("temporary.1.1");
-		    adp.setAutoSavedID(autoSavedID);
-		    openMorphoFrameForDataPackage(adp);
-		    Log.debug(45, "\n\n********** Wizard finished: DOM:");
-		    Log.debug(45, XMLUtilities.getDOMTreeAsString(newDOM, false));
-		  }
-		
-		/**
-		 * Methods inherits from DataPackageWizardListener
-		 */
-		  public void wizardCanceled() 
-		  {
-		
-		    Log.debug(45, "\n\n********** Wizard canceled!");
-		  }
-      
-	} 
-	
-	
-	/**
-	 * Listener class for New Package Wizard
-	 * @author tao
-	 *
-	 */
-	class TableWizardListener implements  DataPackageWizardListener
-	{
-		private AbstractDataPackage adp = null;
-		private int nextEntityIndex = 0;
-		private MorphoFrame oldMorphoFrame = null;
-		
-		public TableWizardListener(AbstractDataPackage adp, int nextEntityIndex, MorphoFrame oldMorphoFrame)
-		{
-			this.adp = adp;
-			this.nextEntityIndex = nextEntityIndex;
-			this.oldMorphoFrame = oldMorphoFrame;
-		}
-		
-		public void wizardComplete(Node newDOM, String autoSavedID) 
-		{
+  /**
+   * Constructs a IncompleteDocumentLoader with a AbstractDataPackage containing 
+   * meta data information
+   * @param dataPackage
+   * @param incompleteInfo
+  */
+  public IncompleteDocumentLoader(AbstractDataPackage dataPackage, IncompleteDocInfo incompleteDocInfo)
+  {
+    if(dataPackage == null)
+    {
+      Log.debug(5, "Morpho couldn't open the incomplete document since the document is null");
+      return;
+    }
+    this.dataPackage = dataPackage;
+    this.incompleteDocInfo = incompleteDocInfo;
+    if(this.incompleteDocInfo != null)
+    {
+      this.incompletionStatus = incompleteDocInfo.getStatus();
+    }
+    readXpathUIMappingInfo();
+  }
 
-            		if(newDOM != null) 
-            		{
-
-              			Log.debug(30,"Entity Wizard complete - creating Entity object..");
-              			adp.replaceEntity(newDOM, nextEntityIndex);//we use replace method here because the auto-save file already adding the entity into datapackage.
-              			adp.setLocation("");  // we've changed it and not yet saved
-
-            		}
-            		MorphoFrame frame = openMorphoFrameForDataPackage(adp);
-            		if(frame != null)
-            		{
-              			oldMorphoFrame.setVisible(false);
-              			UIController controller = UIController.getInstance();
-              			controller.removeWindow(oldMorphoFrame);
-              			oldMorphoFrame.dispose();
-            		}
-
-          	}
-
-          	public void wizardCanceled() 
-          	{
-
-            		Log.debug(45, "\n\n********** Wizard canceled!");
-         	}
-      
-	} 
-	
-	/*
-	 * Open a morpho frame for given abstractDataPacakge
-	 */
-	private MorphoFrame openMorphoFrameForDataPackage(AbstractDataPackage adp)
-	{
-		 MorphoFrame frame = null;
-		 try 
-		 {
-	          ServiceController services = ServiceController.getInstance();
-	          ServiceProvider provider =
-	              services.getServiceProvider(DataPackageInterface.class);
-	          DataPackageInterface dataPackage = (DataPackageInterface)provider;
-	          frame = dataPackage.openNewDataPackage(adp, null);
+  /**
+   * Loads the incomplete AbstractDataPackage into new package wizard or text import wizard
+   */
+  public void load()
+  {
+    if(incompletionStatus == null)
+    {
+      Log.debug(5, "Morpho couldn't open the package since the incompletion status is null");
+    }
+    else if (incompletionStatus.equals(IncompleteDocSettings.INCOMPLETE_PACKAGE_WIZARD))
+    {
+      //Log.debug(5, "new package wizard");
+      loadNewPackageWizard();
+    }
+    else if(incompletionStatus.equals(IncompleteDocSettings.INCOMPLETE_ENTITY_WIZARD))
+    {
+      //Log.debug(5, "In text imorpt wizard");
+      loadEntityWizard();
+    }
+    else
+    {
+      Log.debug(5, "Morpho couldn't understand the incompletion status of the package "+incompletionStatus);
+    }
+  }
+  
+  /*
+   * Loads the incomplete AbstractDataPackage into new package wizard
+   */
+  private void loadNewPackageWizard()
+  {
+    if(incompleteDocInfo != null)
+    {
+      boolean showPageCount = true;    
+      WizardContainerFrame dpWiz = new WizardContainerFrame();
+      dpWiz.initialAutoSaving();
+      AbstractUIPage currentPage = loadPagesIntoWizard(dpWiz);
+      if(currentPage == null)
+      {          
+          UIController.getInstance().setWizardNotRunning();
+          dpWiz.dispose();
+          dpWiz = null;
+          Log.debug(5, "The new package wizard couldn't load the existing eml document!");
+          return;
+      }
+      Log.debug(25, "The current page id in IncompleteDocument.loadNewPackageWizard is "+currentPage.getPageID());
+      PackageWizardListener dataPackageWizardListener = new PackageWizardListener();
+      dpWiz.setDataPackageWizardListener(dataPackageWizardListener);
+      dpWiz.setBounds(
+                      WizardSettings.WIZARD_X_COORD, WizardSettings.WIZARD_Y_COORD,
+                      WizardSettings.WIZARD_WIDTH,   WizardSettings.WIZARD_HEIGHT );
+      dpWiz.setCurrentPage(currentPage);
+      dpWiz.setShowPageCountdown(showPageCount);
+      dpWiz.setTitle(DataPackageWizardInterface.NEWPACKAGEWIZARDFRAMETITLE);
+      dpWiz.setVisible(true);
+    }
+  }
+  
+  /*
+   * Loads the incomplete AbstractDataPackage into text import wizard
+   */
+  private void loadEntityWizard()
+  {
+    if(incompleteDocInfo != null)
+    {
+      boolean showPageCount = false;
+      boolean isEntity = true;
+      int index = incompleteDocInfo.getEntityIndex();
+      WizardContainerFrame dpWiz = new WizardContainerFrame(isEntity);
+      AbstractUIPage currentPage = loadPagesIntoWizard(dpWiz);
+      if(currentPage == null)
+      {
+         UIController.getInstance().setWizardNotRunning();
+         dpWiz.dispose();
+         dpWiz = null;
+         Log.debug(5, "The new entity wizard couldn't load the existing eml document!");
+         return;
+      }
+      Log.debug(25, "The current page id in IncompleteDocument.loadEntityWizard is "+currentPage.getPageID());
+      dpWiz.initialAutoSaving();
+      //remove the entity with the index (this entity is the unfinished one)
+      dataPackage.deleteEntity(index);
+      dataPackage.removeInfoForIncompleteEntity();
+      dpWiz.setEntityIndex(index);
+      MorphoFrame frame = openMorphoFrameForDataPackage(dataPackage);
+      if(frame != null)
+      {
+        TableWizardListener dataPackageWizardListener = new TableWizardListener(dataPackage, index, frame);
+        dpWiz.setDataPackageWizardListener(dataPackageWizardListener);
+        dpWiz.setBounds(
+                        WizardSettings.WIZARD_X_COORD, WizardSettings.WIZARD_Y_COORD,
+                        WizardSettings.WIZARD_WIDTH,   WizardSettings.WIZARD_HEIGHT );
+        dpWiz.setCurrentPage(currentPage);
+        dpWiz.setTitle(DataPackageWizardInterface.NEWTABLEEWIZARDFRAMETITLE);
+        dpWiz.setVisible(true);
+      }
+    }
+  }
+  
+  /*
+   * Load Wizard pages into a given Wizard. Return currentPage 
+   */
+  private AbstractUIPage loadPagesIntoWizard(WizardContainerFrame dpWiz)
+  {
+    AbstractUIPage currentPage = null;
+    int textImportAttributePageIndex = 0;
+    if(dpWiz != null && incompleteDocInfo != null)
+    {
+        WizardPageInfo [] classNameFromIncompleteDoc = incompleteDocInfo.getWizardPageClassInfoList();
+        //Vector parameters = null;
+        //Go through every page from incomplete doc info
+        if(classNameFromIncompleteDoc != null)
+        {
+          int size = classNameFromIncompleteDoc.length;
+          AbstractUIPage page = null;
+          for(int i=0; i<size;  i++)
+          {
+            WizardPageInfo pageClassInfo = classNameFromIncompleteDoc[i];
+            if(pageClassInfo != null)
+            {
+              String classNamePlusParameter ="";
+              String className = pageClassInfo.getClassName();
+              if(className !=null && className.equals(TextImportAttribute.CLASSFULLNAME))
+              {
+                //load TextImportAttribute from a special method
+                int entityIndex = incompleteDocInfo.getEntityIndex();          
+                page = generateTextImportAttributePage(dpWiz, dataPackage.getEntity(entityIndex).getNode(), textImportAttributePageIndex);
+                textImportAttributePageIndex++;
+              }
+              else
+              {
+                classNamePlusParameter = classNamePlusParameter+className;
+                Vector parameters = pageClassInfo.getParameters();//this one is for constructor
+                OrderedMap variables = pageClassInfo.getVariablesValuesMap();//some additional info, which is not in eml itself
+                if(parameters != null && !parameters.isEmpty())
+                {
+                  for(int k=0; k<parameters.size(); k++)
+                  {
+                    String param = (String)parameters.elementAt(k);
+                    classNamePlusParameter = classNamePlusParameter +param;
+                  }
+                  
+                }
+                XPathUIPageMapping map = (XPathUIPageMapping)wizardPageName.get(classNamePlusParameter.trim());
+                if (map != null)
+                {
+                  //loading exist data into UIPage
+                  String path = null;
+                  try
+                  {
+                    Log.debug(30, "There is map for classNamePlusParamer ~~~~~~~~~~~~~~"+classNamePlusParameter+ " so we create an page with data (if have)");
+                      Log.debug(30, "the className from metadata is "+className);
+                      if(incompletionStatus.equals(IncompleteDocSettings.INCOMPLETE_PACKAGE_WIZARD))
+                      {
+                      page= WizardUtil.getUIPage(map, dpWiz,  variables, dataPackage.getMetadataNode(), null );
+                      }
+                      else if(incompletionStatus.equals(IncompleteDocSettings.INCOMPLETE_ENTITY_WIZARD))      
+                      {
+                        int index = incompleteDocInfo.getEntityIndex();
+                        if(dataPackage.getEntity(index) != null)
+                        {
+                          page= WizardUtil.getUIPage(map, dpWiz,  variables, dataPackage.getEntity(index).getNode(), null );
+                        }
+                      }
+                  }
+                  catch(Exception e)
+                  {
+                    Log.debug(20, "Couldn't create the page with className "+className+" "+e.getMessage());
+                    page = null;
+                  }
+                 
+                }
+                //generate empty UIPage if page isnull and map isnull
+                if (map == null && page ==null)
+                {
+                          
+                     Log.debug(30, "There is no map for classNamePlusParameter --------------------"+classNamePlusParameter+ " so we just initilize an empty page for class "+className);
+                    page = WizardUtil.createAbstractUIpageObject(className, dpWiz, parameters );
+                 
+                }
+              }
+            }
             
-	         } 
-		 catch (ServiceNotHandledException snhe) 
-		 {
+            //if we can't get any page, we shouldn't load it. Otherwise, the result will be unpredicable.
+            if(page == null)
+            {
+              break;
+            }
+    
+            if(i == (size-1))
+            {
+              // set the current page to the last page
+              //since we will use setCurrent page in loadNewPackageWizard 
+              // and loadEntityWizard method, so we should NOT add it the stack
+              currentPage = page;                                         
+            }
+            else
+            {
+              //add other page into stack of wizard frame
+              dpWiz.addPageToStack(page);
+            }                    
+           
+          }
+        }
+    }
+    return currentPage;
+  }
+  
+  /*
+   * Read xpath-UIpage mapping information
+   */
+  private void readXpathUIMappingInfo()
+  {
+    XpathUIPageMappingReader reader = new XpathUIPageMappingReader(CorrectionWizardController.MAPPINGFILEPATH);
+    mappingList   = reader.getXPathUIPageMappingList();
+    wizardPageName = reader.getClassNamePlusParameterMapping();   
+  }
+  
+  /**
+   * Listener class for New Package Wizard
+   * @author tao
+   *
+   */
+  class PackageWizardListener implements  DataPackageWizardListener
+  {
+    /**
+     * Methods inherits from DataPackageWizardListener
+     */
+    public void wizardComplete(Node newDOM, String autoSavedID) 
+    {
+    
+      Log.debug(30,
+          "Wizard complete - Will now create an AbstractDataPackage..");
+  
+      AbstractDataPackage adp = DataPackageFactory.getDataPackage(newDOM);
+      Log.debug(30, "AbstractDataPackage complete");
+      adp.setAccessionNumber("temporary.1.1");
+      adp.setAutoSavedID(autoSavedID);
+      openMorphoFrameForDataPackage(adp);
+      Log.debug(45, "\n\n********** Wizard finished: DOM:");
+      Log.debug(45, XMLUtilities.getDOMTreeAsString(newDOM, false));
+    }
+    
+    /**
+     * Methods inherits from DataPackageWizardListener
+     */
+    public void wizardCanceled() 
+    {
+    
+       Log.debug(45, "\n\n********** Wizard canceled!");
+     }
+      
+  } 
+  
+  
+  /**
+   * Listener class for New Package Wizard
+   * @author tao
+   *
+   */
+  class TableWizardListener implements  DataPackageWizardListener
+  {
+    private AbstractDataPackage adp = null;
+    private int nextEntityIndex = 0;
+    private MorphoFrame oldMorphoFrame = null;
+    
+    public TableWizardListener(AbstractDataPackage adp, int nextEntityIndex, MorphoFrame oldMorphoFrame)
+    {
+      this.adp = adp;
+      this.nextEntityIndex = nextEntityIndex;
+      this.oldMorphoFrame = oldMorphoFrame;
+    }
+    
+    public void wizardComplete(Node newDOM, String autoSavedID) 
+    {
 
-	          Log.debug(6, snhe.getMessage());
-	         }
-	        return frame;
-	}
-	
-	/*
-	 * Generates a TextImportAttribute page. This page is kind of special, so we don't
-	 * generates from configuration.
-	 */
-	private AbstractUIPage generateTextImportAttributePage(WizardContainerFrame dpWiz, Node dataTableNode, int index)
-	{
-	  AbstractUIPage page = null;
-	  boolean success = false;
-	  if(dpWiz != null && index >= 0 && dataTableNode != null)
-	  {
-		NodeList attributeList = null;
-		Node attributeNode = null;
-		try
-		{
-			attributeList = XPathAPI.selectNodeList(dataTableNode, TextImportAttribute.ATTRIBUTELISTPATH+"/"+TextImportAttribute.ATTRIBUTEPATH);
-			attributeNode = attributeList.item(index);
-		}
-		catch(Exception e)
-		{
-			Log.debug(30, "Couldn't get attribute node from entity node in IncompleteDocumentLoader.generateTextImportAttributePage since "+e.getMessage());
-			return page;
-		}
-		if(attributeNode != null)
-		{
-			WizardPageLibraryInterface lib = dpWiz.getWizardPageLibrary();
-		    if(lib != null)
-		    {
-		    	page = lib.getPage(DataPackageWizardInterface.TEXT_IMPORT_ATTRIBUTE+index);
-		    }
-		    if(page != null)
-		    {
-		    	OrderedMap xpathMap = XMLUtilities.getDOMTreeAsXPathMap(attributeNode);
-		    	success = page.setPageData(xpathMap, TextImportAttribute.ATTRIBUTEPAGEORDEREDMAPPATH);
-		        if(!success)
-		        {
-		        	page = null;
-		        }
-		    }
-		}
-	  }
-	  return page;
-	}
+      if(newDOM != null) 
+      {
+
+        Log.debug(30,"Entity Wizard complete - creating Entity object..");
+        adp.replaceEntity(newDOM, nextEntityIndex);//we use replace method here because the auto-save file already adding the entity into datapackage.
+        adp.setLocation("");  // we've changed it and not yet saved
+
+      }
+      MorphoFrame frame = openMorphoFrameForDataPackage(adp);
+      if(frame != null)
+      {
+        oldMorphoFrame.setVisible(false);
+        UIController controller = UIController.getInstance();
+        controller.removeWindow(oldMorphoFrame);
+        oldMorphoFrame.dispose();
+      }
+
+    }
+
+     public void wizardCanceled() 
+     {
+
+        Log.debug(45, "\n\n********** Wizard canceled!");
+     }
+      
+  } 
+  
+  /*
+   * Open a morpho frame for given abstractDataPacakge
+   */
+  private MorphoFrame openMorphoFrameForDataPackage(AbstractDataPackage adp)
+  {
+     MorphoFrame frame = null;
+     try 
+     {
+      ServiceController services = ServiceController.getInstance();
+      ServiceProvider provider =
+            services.getServiceProvider(DataPackageInterface.class);
+      DataPackageInterface dataPackage = (DataPackageInterface)provider;
+      frame = dataPackage.openNewDataPackage(adp, null);
+            
+     } 
+     catch (ServiceNotHandledException snhe) 
+     {
+
+       Log.debug(6, snhe.getMessage());
+     }
+     return frame;
+  }
+  
+  /*
+   * Generates a TextImportAttribute page. This page is kind of special, so we don't
+   * generates from configuration.
+   */
+  private AbstractUIPage generateTextImportAttributePage(WizardContainerFrame dpWiz, Node dataTableNode, int index)
+  {
+    AbstractUIPage page = null;
+    boolean success = false;
+    if(dpWiz != null && index >= 0 && dataTableNode != null)
+    {
+      NodeList attributeList = null;
+      Node attributeNode = null;
+      try
+      {
+        attributeList = XPathAPI.selectNodeList(dataTableNode, TextImportAttribute.ATTRIBUTELISTPATH+"/"+TextImportAttribute.ATTRIBUTEPATH);
+        attributeNode = attributeList.item(index);
+      }
+      catch(Exception e)
+      {
+        Log.debug(30, "Couldn't get attribute node from entity node in IncompleteDocumentLoader.generateTextImportAttributePage since "+e.getMessage());
+        return page;
+      }
+      if(attributeNode != null)
+      {
+        WizardPageLibraryInterface lib = dpWiz.getWizardPageLibrary();
+        if(lib != null)
+        {
+          page = lib.getPage(DataPackageWizardInterface.TEXT_IMPORT_ATTRIBUTE+index);
+        }
+        if(page != null)
+        {
+          OrderedMap xpathMap = XMLUtilities.getDOMTreeAsXPathMap(attributeNode);
+          success = page.setPageData(xpathMap, TextImportAttribute.ATTRIBUTEPAGEORDEREDMAPPATH);
+          if(!success)
+          {
+            page = null;
+          }
+        }
+      }
+     }
+     return page;
+  }
 }

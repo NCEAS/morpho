@@ -292,8 +292,8 @@ public class CodeDefinition extends AbstractUIPage {
       }
       removedAttributeInfo = adp.removeFirstAttributeForImport();
       selectedEntityIndex = importPanel.getSelectedEntityIndex();
-      selectedCodeColumnIndex = importPanel.getCodeColumnIndex();
-      selectedDefinitionColumnIndex = importPanel.getDefnColumnIndex();
+      selectedCodeColumnIndex = importPanel.getSelectedCodeColumnIndexInTable();
+      selectedDefinitionColumnIndex = importPanel.getSelectedDefColumnIndexInTable();
       return true;
     } else
       return false;
@@ -405,7 +405,48 @@ public class CodeDefinition extends AbstractUIPage {
      */
   public String getPageNumber() { return pageNumber; }
 
-  public boolean setPageData(OrderedMap data, String xPathRoot) { return false; }
+  public boolean setPageData(OrderedMap data, String xPathRoot) 
+  {
+    boolean success = false;    
+    if(data == null)
+    {
+      Log.debug(30, "The map in CodeDefinition.setPageData and return false");
+      return success;
+    }    
+    Log.debug(35, "In CodeDefinition.setPageData, the xpathRoot is "+xPathRoot+" and map is "+data.toString() );
+    String codeColumnStr = (String)data.get(CodeDefnPanel.CODECOLUMNINDEX);
+    data.remove(CodeDefnPanel.CODECOLUMNINDEX);
+    String definitionColumnStr = (String)data.get(CodeDefnPanel.DEFINITIONCOLUMNINDEX);
+    try
+    {
+      selectedCodeColumnIndex = (new Integer(codeColumnStr)).intValue();
+      selectedDefinitionColumnIndex = (new Integer(definitionColumnStr)).intValue();
+    }
+    catch(Exception e)
+    {
+      Log.debug(30, "Couldn't get importChocie entity in CodeImportPage.setPageData since "+e.getMessage());
+      return success;
+    }
+    removedAttributeInfo = CodeImportPage.extactRemovedImportAttribute(data);
+    if(removedAttributeInfo == null)
+    {
+      Log.debug(30, "In CodeDefinition.setPageData, morpho couldn't get the removed the import attribute info.");
+      return success;
+    }
+    
+    try
+    {
+      importPanel.setSelectedCodeColumnInTable(selectedCodeColumnIndex);
+      importPanel.setSelectedDefColumnInTable(selectedDefinitionColumnIndex);
+    }
+    catch(Exception e)
+    {
+      Log.debug(30, "Morpho couldn't click the radion button or select code-definition table");
+      return success;
+    }    
+     success = true;
+     return success;
+   }
   
   /**
    * Gets the attribute name be handle (imported in this page)

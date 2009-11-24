@@ -148,6 +148,9 @@ public class CodeDefnPanel extends JPanel implements WizardPageSubPanelAPI {
   // It is possible to set the table data at runtime using the setTable() interface.
   private boolean createDataTable = true;
   
+  private int selectedCodeColumnIndexInTable = -1;
+  private int selectedDefColumnIndexInTable = -1;
+  
   public static final String SELECTEDENTITYINDEX = "selectedEntityIndex";
   public static final String CODECOLUMNINDEX = "codeColumnIndex";
   public static final String DEFINITIONCOLUMNINDEX = "definitionColumnIndex";
@@ -459,6 +462,55 @@ public class CodeDefnPanel extends JPanel implements WizardPageSubPanelAPI {
   */
 
   public void onLoadAction() {}
+  
+  
+  /**
+   * Gets the selected code column index in JTable.
+   * -1 will be returned, if we can't find it.
+   * @return
+   */
+  public int getSelectedCodeColumnIndexInTable()
+  {
+    return this.selectedCodeColumnIndexInTable;
+  }
+  
+  /**
+   * Sets and selects a column as code in the table
+   * @param index of the column
+   */
+  public void setSelectedCodeColumnInTable(int index) throws Exception
+  {
+     this.selectedCodeColumnIndexInTable = index;
+     int select[] = new int[1];
+     select[0] = index;
+     table.setExtraColumnHeaderInfo(index, "Code");
+     table.setSelectedColumns(select);
+     
+  }
+  
+  /**
+   * Sets and selects a column as definition in the table
+   * @param index of the column
+   */
+  public void setSelectedDefColumnInTable(int index) throws Exception
+  {
+    this.selectedDefColumnIndexInTable = index;
+    int select[] = new int[1];
+    select[0] = index;
+    table.setExtraColumnHeaderInfo(index, "Definition");
+    table.setSelectedColumns(select);
+    
+  }
+
+  /**
+   * Gets the selected definition column index in JTable.
+   * -1 will be returned, if we can't find it.
+   * @return
+   */
+  public int getSelectedDefColumnIndexInTable()
+  {
+    return this.selectedDefColumnIndexInTable;
+  }
 
   /**
    *  checks that the user has filled in required fields - if not, highlights
@@ -521,8 +573,8 @@ public class CodeDefnPanel extends JPanel implements WizardPageSubPanelAPI {
 
     if(adp != null) {
 
-      int codeIndex = getCodeColumnIndex();
-      int defnIndex = getDefnColumnIndex();
+      int codeIndex = getCodeColumnIndexInAtractPackage();
+      int defnIndex = getDefnColumnIndexInAtractPackage();
 
       if(currentEntityID.trim().equals("")) {
 
@@ -615,11 +667,11 @@ public class CodeDefnPanel extends JPanel implements WizardPageSubPanelAPI {
     return getPanelData("");
   }
 
-  /**
+  /*
    * Gets the selected column index for code. -1 will be returned if we couldn't find it
    * @return
    */
-  public int getCodeColumnIndex() {
+  private int getCodeColumnIndexInAtractPackage() {
 
     if(adp == null) {
       return -1;
@@ -632,6 +684,7 @@ public class CodeDefnPanel extends JPanel implements WizardPageSubPanelAPI {
     String colType = (String)header.get(2);
     if(colType.equalsIgnoreCase("Code")) {
       String colName = (String)header.get(1);
+      selectedCodeColumnIndexInTable = arr[0];
       return adp.getAttributeIndex(getSelectedEntityIndex(), colName);
     }
 
@@ -639,6 +692,7 @@ public class CodeDefnPanel extends JPanel implements WizardPageSubPanelAPI {
     colType = (String)header.get(2);
     if(colType.equalsIgnoreCase("Code")) {
       String colName = (String)header.get(1);
+      selectedCodeColumnIndexInTable = arr[1];
       return adp.getAttributeIndex(getSelectedEntityIndex(), colName);
     }
     return -1;
@@ -648,7 +702,7 @@ public class CodeDefnPanel extends JPanel implements WizardPageSubPanelAPI {
    * Gets the selected column index for defintion. -1 will be returned if we couldn't find it
    * @return
    */
-  public int getDefnColumnIndex() {
+  private int getDefnColumnIndexInAtractPackage() {
 
     if(adp == null)
       return -1;
@@ -658,6 +712,7 @@ public class CodeDefnPanel extends JPanel implements WizardPageSubPanelAPI {
     String colType = (String)header.get(2);
     if(colType.equalsIgnoreCase("Definition")) {
       String colName = (String)header.get(1);
+      selectedDefColumnIndexInTable = arr[0];
       return adp.getAttributeIndex(getSelectedEntityIndex(), colName);
     }
 
@@ -665,6 +720,7 @@ public class CodeDefnPanel extends JPanel implements WizardPageSubPanelAPI {
     colType = (String)header.get(2);
     if(colType.equalsIgnoreCase("Definition")) {
       String colName = (String)header.get(1);
+      selectedDefColumnIndexInTable = arr[1];
       return adp.getAttributeIndex(getSelectedEntityIndex(), colName);
 
     }
@@ -691,10 +747,10 @@ public class CodeDefnPanel extends JPanel implements WizardPageSubPanelAPI {
 			if(eIdx >= 0) currentEntityID = adp.getEntityID(eIdx);
     }
     if(adp!=null && codeAttributeID.equals(AbstractDataPackage.IMPORTLATER)) {
-      if(eIdx >= 0) codeAttributeID = adp.getAttributeID(eIdx, getCodeColumnIndex());
+      if(eIdx >= 0) codeAttributeID = adp.getAttributeID(eIdx, getCodeColumnIndexInAtractPackage());
     }
     if(adp!=null && defnAttributeID.equals(AbstractDataPackage.IMPORTLATER)) {
-      if(eIdx >= 0) defnAttributeID = adp.getAttributeID(eIdx, getDefnColumnIndex());
+      if(eIdx >= 0) defnAttributeID = adp.getAttributeID(eIdx, getDefnColumnIndexInAtractPackage());
     }
 
     map.put(xPath + "/entityReference", this.currentEntityID);
@@ -1176,6 +1232,8 @@ public class CodeDefnPanel extends JPanel implements WizardPageSubPanelAPI {
     }
     return str;
   }
+
+ 
 
 }
 

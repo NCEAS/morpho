@@ -40,6 +40,7 @@ import edu.ucsb.nceas.utilities.OrderedMap;
 import edu.ucsb.nceas.utilities.XMLUtilities;
 
 import java.awt.BorderLayout;
+import java.awt.Container;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -49,6 +50,7 @@ import java.util.List;
 import javax.swing.BoxLayout;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JRadioButton;
 import javax.swing.JTextField;
 
 import org.w3c.dom.Node;
@@ -92,7 +94,6 @@ public class CodeImportPage extends AbstractUIPage {
   private short importChoice = 0;
   public static final short IMPORT_DONE = 10;
   public static final short INVOKE_TIW = 20;
-  private int selectedEntityIndex = -1;
   private int selectedCodeColumnIndex = -1;
   private int selectedDefinitionColumnIndex = -1;
   public static String IMMPORTCHOICE = "importChoice";
@@ -258,9 +259,9 @@ public class CodeImportPage extends AbstractUIPage {
   
         }
         removedAttributeInfo = adp.removeFirstAttributeForImport();
-        selectedEntityIndex = importPanel.getSelectedEntityIndex();
-        selectedCodeColumnIndex = importPanel.getCodeColumnIndex();
-        selectedDefinitionColumnIndex = importPanel.getDefnColumnIndex();
+        //selectedEntityIndex = importPanel.getSelectedEntityIndex();
+        selectedCodeColumnIndex = importPanel.getSelectedCodeColumnIndexInTable();
+        selectedDefinitionColumnIndex = importPanel.getSelectedDefColumnIndexInTable();
         nextPageID = DataPackageWizardInterface.CODE_IMPORT_SUMMARY;     
         
         mainWizFrame.clearPageCache();
@@ -375,18 +376,10 @@ public class CodeImportPage extends AbstractUIPage {
       }    
       Log.debug(35, "In CodeImportPage.setPageData, the xpathRoot is "+xPathRoot+" and map is "+data.toString() );
       String importChoiceStr = (String)data.get(IMMPORTCHOICE);
-      data.remove(IMMPORTCHOICE);
-      String selectedEntityIndexStr = (String)data.get(CodeDefnPanel.SELECTEDENTITYINDEX);
-      data.remove(CodeDefnPanel.SELECTEDENTITYINDEX);
-      String codeColumnStr = (String)data.get(CodeDefnPanel.CODECOLUMNINDEX);
-      data.remove(CodeDefnPanel.CODECOLUMNINDEX);
-      String definitionColumnStr = (String)data.get(CodeDefnPanel.DEFINITIONCOLUMNINDEX);
+      data.remove(IMMPORTCHOICE);    
       try
       {
         importChoice =(new Short(importChoiceStr)).shortValue();
-        selectedEntityIndex = (new Integer(selectedEntityIndexStr)).intValue();
-        selectedCodeColumnIndex = (new Integer(codeColumnStr)).intValue();
-        this.selectedDefinitionColumnIndex = (new Integer(definitionColumnStr)).intValue();
       }
       catch(Exception e)
       {
@@ -395,17 +388,64 @@ public class CodeImportPage extends AbstractUIPage {
       }
       if(importChoice == INVOKE_TIW)
       {
+        Log.debug(30, "In create another new table wizard branch at CodeImportPage.setPageData method");
+        try
+        {
+          clickRadionButton(radioPanel, 1);
+        }
+        catch(Exception e)
+        {
+          Log.debug(30, "Morpho couldn't click the radion button for the choice -Import Done or - Import a New Table");
+          return success;
+        }      
         success = true;
         return success;
       }
       else if(importChoice == IMPORT_DONE)
       {
+        Log.debug(30, "In import is done branch at CodeImportPage.setPageData method");
+        //String selectedEntityIndexStr = (String)data.get(CodeDefnPanel.SELECTEDENTITYINDEX);
+        //data.remove(CodeDefnPanel.SELECTEDENTITYINDEX);
+        String codeColumnStr = (String)data.get(CodeDefnPanel.CODECOLUMNINDEX);
+        data.remove(CodeDefnPanel.CODECOLUMNINDEX);
+        Log.debug(30, "The code column index is "+codeColumnStr+" int CodeImportPage.setPage method");
+        String definitionColumnStr = (String)data.get(CodeDefnPanel.DEFINITIONCOLUMNINDEX);
+        data.remove(CodeDefnPanel.DEFINITIONCOLUMNINDEX);
+        Log.debug(30, "The definition column index is "+definitionColumnStr+" int CodeImportPage.setPage method");
+        try
+        {
+          clickRadionButton(radioPanel, 0);
+          selectedCodeColumnIndex = (new Integer(codeColumnStr)).intValue();         
+          selectedDefinitionColumnIndex = (new Integer(definitionColumnStr)).intValue();
+        }
+        catch(Exception e)
+        {
+          Log.debug(30, "Couldn't get importChocie entity in CodeImportPage.setPageData since "+e.getMessage());
+          return success;
+        }
+        Log.debug(35, "Before generating removedAttributeInfo in CodeImportPage.setPageData");
         removedAttributeInfo = extactRemovedImportAttribute(data);
+        Log.debug(35, "AFter generating removedAttributeInfo in CodeImportPage.setPageData");
         if(removedAttributeInfo == null)
         {
           Log.debug(30, "In CodeImportPage.setPageData, morpho couldn't get the removed the import attribute info.");
           return success;
         }
+        try
+        {
+          
+          Log.debug(35, "AFter clicking the first radion button in CodeImportPage.setPageData");
+          //importPanel.setSelectedCodeColumnInTable(selectedCodeColumnIndex);
+          Log.debug(35, "AFter selecting the code column in CodeImportPage.setPageData "+selectedCodeColumnIndex);
+          //importPanel.setSelectedDefColumnInTable(selectedDefinitionColumnIndex);
+          Log.debug(35, "AFter selecting the definition column in CodeImportPage.setPageData "+selectedDefinitionColumnIndex);
+        }
+        catch(Exception e)
+        {
+          Log.debug(30, "Morpho couldn't  select code-definition table");
+          return success;
+        }
+        
         success = true;
         return success;
       }
@@ -443,10 +483,13 @@ public class CodeImportPage extends AbstractUIPage {
        ArrayList list = null;
        if(map != null)
        {
+         list = new ArrayList();
          Iterator it = map.keySet().iterator();
          String keyInMap = null;
          String valueInMap = null;
          OrderedMap mapForImportAttribute = new OrderedMap();
+         boolean getKey = false;
+         boolean getValue = false;
          while (it.hasNext())
          {
             String key = (String)it.next();
@@ -454,8 +497,7 @@ public class CodeImportPage extends AbstractUIPage {
             {
               continue;
             }
-            boolean getKey = false;
-            boolean getValue = false;
+            
            
             if(key.startsWith("/additionInfo/removedImortAttribute[1]/attribute[1]/entityName"))
             {
@@ -468,6 +510,7 @@ public class CodeImportPage extends AbstractUIPage {
                else
                {
                  list = null;
+                 Log.debug(30, "couldn't get the entityName for importAttributeImport info CodeImportPage.inextactRemovedImportAttribute ");
                  break;
                }
                
@@ -483,6 +526,7 @@ public class CodeImportPage extends AbstractUIPage {
                else
                {
                  list = null;
+                 Log.debug(30, "couldn't get the attributeName for importAttributeImport info CodeImportPage.inextactRemovedImportAttribute ");
                  break;
                }
             }
@@ -495,12 +539,16 @@ public class CodeImportPage extends AbstractUIPage {
             }
             else if(key.startsWith("/additionInfo/removedImortAttribute[1]/attribute[1]/xPath"))
             {
+              //order map is before xpath. So we should add it first.
+              list.add(AbstractDataPackage.ORDEREDMAPINDEX, mapForImportAttribute);
               String xpath = (String)map.get(key);
+              Log.debug(40, "In CodeImportPage.extactRemovedImportAttribute, the xpath from order map is "+xpath);
               list.add(AbstractDataPackage.XPATHINDEX, xpath);
             }
             else if(key.startsWith("/additionInfo/removedImortAttribute[1]/attribute[1]/newTable"))
             {
               String newTable = (String)map.get(key);
+              Log.debug(40, "In CodeImportPage.extactRemovedImportAttribute, the newTable from order map is "+newTable);
               list.add(AbstractDataPackage.NEWTABLEINDEX, newTable);
             }
             else if(key.startsWith("/additionInfo/removedImortAttribute[1]/attribute[1]/orderedMap[1]/pair"))
@@ -518,12 +566,14 @@ public class CodeImportPage extends AbstractUIPage {
                if(getKey && getValue)
                {
                  mapForImportAttribute.put(keyInMap, valueInMap);
+                 getKey = false;
+                 getValue = false;
                  Log.debug(40, "In CodeImportPage.extactRemovedImportAttribute, put key "+keyInMap+" and value "+valueInMap+" into a map");
                }
             }            
             
          }
-         list.add(AbstractDataPackage.ORDEREDMAPINDEX, mapForImportAttribute);
+         
        }     
        return list;
     }
@@ -546,14 +596,6 @@ public class CodeImportPage extends AbstractUIPage {
  	  return this.removedAttributeInfo;
    }
    
-   /**
-    * Gets the selected entity index (not id) from CodeDefnPanel
-    * @return
-    */
-   public int getSelectedEntityIndex() 
-   {
-		return selectedEntityIndex;
-   }
 
    /**
     * Gets the selected code column index (not id) from CodeDefnPanel
@@ -581,5 +623,30 @@ public class CodeImportPage extends AbstractUIPage {
 	{
 		return this.importChoice;
 	}
+	
+	/*
+   * Click button in radio panel
+   */
+  private void clickRadionButton(JPanel container, int index) throws Exception
+  {
+    if(container != null)
+    {
+     try
+     {
+         Container radio = (Container)container.getComponent(1);
+         JRadioButton button = (JRadioButton)radio.getComponent(index);
+         button.doClick();
+     }
+     catch(Exception e)
+     {
+       throw e;
+     }
+    }
+    else
+    {
+     Log.debug(10, "The Radion button container is null and we couldn't click it in DataFormat.clickRadioButton");
+       throw new Exception("The Radion button container is null and we couldn't click it in DataFormat.clickRadioButton");
+    }
+  }
    
 }
