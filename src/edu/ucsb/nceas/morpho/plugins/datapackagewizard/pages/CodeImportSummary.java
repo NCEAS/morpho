@@ -470,11 +470,18 @@ public class CodeImportSummary extends AbstractUIPage {
     public boolean setPageData(OrderedMap data, String xPathRoot) 
     { 
     	prevPage = mainWizFrame.getPreviousPage();
-        if(prevPage != null)
-        {
-        	prevID = prevPage.getPageID();
-        }
-    	return false; 
+      if(prevPage != null)
+      {
+         prevID = prevPage.getPageID();
+      }
+      if(prevID != null && (prevID.startsWith(DataPackageWizardInterface.TEXT_IMPORT_ATTRIBUTE)|| prevID.equals(DataPackageWizardInterface.ENTITY) || prevID.equals(STARTIMPORTWIZARD))) 
+      {
+        //previous page is attribute or entity, this means we will start import code/definition
+        mainWizFrame.setImportCodeDefinitionTable(true);
+        Log.debug(40, "Set the importwizard to be true in CodeImportSummary.setPage");
+      }
+      
+    	return true; 
     }
     
     

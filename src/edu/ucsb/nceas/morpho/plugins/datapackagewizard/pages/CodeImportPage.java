@@ -244,7 +244,8 @@ public class CodeImportPage extends AbstractUIPage {
       return false;
     }
     WidgetFactory.unhiliteComponent(choiceLabel);
-
+    mainWizFrame.setImportCodeDefinitionTable(true);
+    Log.debug(40, "Set the importwizard to be true in CodeImportPage.setPage");
     if(importChoice == IMPORT_DONE) {
       if(importPanel.validateUserInput()) {
 		//AbstractDataPackage	adp = getADP();
