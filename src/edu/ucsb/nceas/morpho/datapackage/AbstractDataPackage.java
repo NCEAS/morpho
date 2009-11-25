@@ -380,6 +380,11 @@ public abstract class AbstractDataPackage extends MetadataObject
    * used to signify that this package is stored on metacat and locally.
    */
   public static final String BOTH = "localmetacat";
+  
+  /**
+   * used to signify that this package is not stored.
+   */
+  public static final String TEMPLOCATION = "";
 
   // util to read the file from either FileSystemDataStore or MetacatDataStore
   protected File getFileWithID(String ID, Morpho morpho) throws Throwable {

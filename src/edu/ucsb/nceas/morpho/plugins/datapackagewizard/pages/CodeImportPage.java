@@ -97,6 +97,8 @@ public class CodeImportPage extends AbstractUIPage {
   private int selectedCodeColumnIndex = -1;
   private int selectedDefinitionColumnIndex = -1;
   public static String IMMPORTCHOICE = "importChoice";
+  private static final int SLEEPINGTIME = 1000;
+  private static final int TIME =20;
 
 
   public CodeImportPage(WizardContainerFrame mainWizFrame) {
@@ -433,12 +435,32 @@ public class CodeImportPage extends AbstractUIPage {
         }
         try
         {
-          
-          Log.debug(35, "AFter clicking the first radion button in CodeImportPage.setPageData");
-          //importPanel.setSelectedCodeColumnInTable(selectedCodeColumnIndex);
-          Log.debug(35, "AFter selecting the code column in CodeImportPage.setPageData "+selectedCodeColumnIndex);
-          //importPanel.setSelectedDefColumnInTable(selectedDefinitionColumnIndex);
-          Log.debug(35, "AFter selecting the definition column in CodeImportPage.setPageData "+selectedDefinitionColumnIndex);
+          int index = 0;
+          while(importPanel == null && index <TIME)
+          {
+             try
+             {
+               Thread.sleep(1000);
+               index++;
+             }
+             catch(Exception e)
+             {
+                Log.debug(30, "Main thread couldn't sleep in CodeImportPage.setPageData");
+             }
+          }
+          if(importPanel != null)
+          {
+            
+            Log.debug(35, "Before selecting the code and defintion columns in CodeImportPage.setPageData "+selectedCodeColumnIndex);
+            int[] columnsIndex = {selectedCodeColumnIndex, selectedDefinitionColumnIndex};//the first is code, the second is definition
+            importPanel.setSelectedCodeDefColumnInTable(columnsIndex);
+            Log.debug(35, "After selecting the code and defintion columns in CodeImportPage.setPageData "+selectedCodeColumnIndex);
+          }
+          else
+          {
+            Log.debug(30, "Couldn't get import panel in CodeImmportPage.setPageData");
+            return success;
+          }
         }
         catch(Exception e)
         {
@@ -549,7 +571,18 @@ public class CodeImportPage extends AbstractUIPage {
             {
               String newTable = (String)map.get(key);
               Log.debug(40, "In CodeImportPage.extactRemovedImportAttribute, the newTable from order map is "+newTable);
-              list.add(AbstractDataPackage.NEWTABLEINDEX, newTable);
+              Boolean newTableBoolean = null;
+              try
+              {
+                newTableBoolean = new Boolean(newTable);
+              }
+              catch(Exception e)
+              {
+                list = null;
+                Log.debug(30,"Couldn't transform string "+newTable+" to a boolean value in CodeImportPage.extactRemovedImportAttribute");
+                return list;
+              }
+              list.add(AbstractDataPackage.NEWTABLEINDEX, newTableBoolean);
             }
             else if(key.startsWith("/additionInfo/removedImortAttribute[1]/attribute[1]/orderedMap[1]/pair"))
             {

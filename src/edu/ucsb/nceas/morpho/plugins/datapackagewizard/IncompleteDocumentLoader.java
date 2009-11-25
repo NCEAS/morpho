@@ -91,6 +91,7 @@ public class IncompleteDocumentLoader
       return;
     }
     this.dataPackage = dataPackage;
+    this.dataPackage.setLocation(AbstractDataPackage.TEMPLOCATION);
     this.incompleteDocInfo = incompleteDocInfo;
     if(this.incompleteDocInfo != null)
     {

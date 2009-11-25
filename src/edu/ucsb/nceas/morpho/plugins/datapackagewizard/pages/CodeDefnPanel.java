@@ -134,9 +134,6 @@ public class CodeDefnPanel extends JPanel implements WizardPageSubPanelAPI {
   // AbstractDataPackage of the current package
   private AbstractDataPackage adp = null;
 
-  // DataViewContainerPanel of current package
-  private DataViewContainerPanel resultPane = null;
-
   private ItemListener namePickListListener;
 
   // flag to indicate if the panel is to only allow the user to define codes,
@@ -238,9 +235,7 @@ public class CodeDefnPanel extends JPanel implements WizardPageSubPanelAPI {
       return panel;
     }
 
-    Morpho morpho = null;
-    if(resultPane != null)
-	morpho = resultPane.getFramework();
+    Morpho morpho = Morpho.thisStaticInstance;
 
     entityNames = getEntityNames();
     tableNames = new Vector();
@@ -318,10 +313,7 @@ public class CodeDefnPanel extends JPanel implements WizardPageSubPanelAPI {
   private void getADP() {
 
     adp = UIController.getInstance().getCurrentAbstractDataPackage();
-    MorphoFrame morphoFrame = UIController.getInstance().getCurrentActiveWindow();
-    if (morphoFrame != null) {
-      resultPane = morphoFrame.getDataViewContainerPanel();
-    }
+   
   }
 
   private String[] getEntityNames() {
@@ -474,32 +466,23 @@ public class CodeDefnPanel extends JPanel implements WizardPageSubPanelAPI {
     return this.selectedCodeColumnIndexInTable;
   }
   
-  /**
-   * Sets and selects a column as code in the table
-   * @param index of the column
-   */
-  public void setSelectedCodeColumnInTable(int index) throws Exception
-  {
-     this.selectedCodeColumnIndexInTable = index;
-     int select[] = new int[1];
-     select[0] = index;
-     table.setExtraColumnHeaderInfo(index, "Code");
-     table.setSelectedColumns(select);
-     
-  }
+
   
   /**
-   * Sets and selects a column as definition in the table
-   * @param index of the column
+   * Sets and selects a column as code and definition in the table
+   * @param int array. It should has two elements. The first is code, and second is definition
    */
-  public void setSelectedDefColumnInTable(int index) throws Exception
+  public void setSelectedCodeDefColumnInTable(int[] index) throws Exception
   {
-    this.selectedDefColumnIndexInTable = index;
-    int select[] = new int[1];
-    select[0] = index;
-    table.setExtraColumnHeaderInfo(index, "Definition");
-    table.setSelectedColumns(select);
-    
+    if(index == null || index.length != 2)
+    {
+      throw new Exception("The arrary size of code and definition columns should be two");
+    }
+    this.selectedCodeColumnIndexInTable = index[0];
+    this.selectedDefColumnIndexInTable = index[1];
+    table.setExtraColumnHeaderInfo(selectedCodeColumnIndexInTable, "Code");
+    table.setExtraColumnHeaderInfo(selectedDefColumnIndexInTable, "Definition");
+    table.setSelectedColumns(index);    
   }
 
   /**
