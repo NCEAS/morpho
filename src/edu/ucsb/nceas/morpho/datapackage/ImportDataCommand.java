@@ -144,6 +144,7 @@ public class ImportDataCommand implements Command, DataPackageWizardListener
 	              if(newDOM != null) {
 
 	                Log.debug(30,"Entity Wizard complete - creating Entity object..");
+	                Log.debug(35, "Add/replace entity on ImportDataCommand with entity index"+nextEntityIndex);
 	                adp.replaceEntity(newDOM, nextEntityIndex);//we use replace method here because the auto-save file already adding the entity into datapackage.
 	                adp.setLocation("");  // we've changed it and not yet saved
 

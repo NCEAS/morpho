@@ -187,7 +187,9 @@ public class CodeDefinition extends AbstractUIPage {
         Node newDOM = mainWizFrame.collectDataFromPages();       
          int entityIndex = mainWizFrame.getEnityIndex();
 	     Log.debug(32, "The index of the entity which was added to abstract package in CodeDefintion.onLoadAction is "+entityIndex);
+	     Log.debug(35, "Add/replace entity on CodeDefinition.onLoad method with index "+entityIndex);
 	     adp.replaceEntity(newDOM, entityIndex);
+	     mainWizFrame.setDOMToReturn(null);
 	      //since we added/replace an entity into adp, so next available index should be increase too.
 	     //entityIndex = entityIndex+1;
 	     //mainWizFrame.setEntityIndex(entityIndex);

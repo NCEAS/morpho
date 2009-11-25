@@ -97,8 +97,10 @@ public class CodeImportPage extends AbstractUIPage {
   private int selectedCodeColumnIndex = -1;
   private int selectedDefinitionColumnIndex = -1;
   public static String IMMPORTCHOICE = "importChoice";
+  public static String ENTITYINDEXINCREASED = "entityIndexIncreased";
   private static final int SLEEPINGTIME = 1000;
   private static final int TIME =20;
+  private boolean entityIndexIncreased = false;
 
 
   public CodeImportPage(WizardContainerFrame mainWizFrame) {
@@ -205,8 +207,18 @@ public class CodeImportPage extends AbstractUIPage {
 			adp.addFirstAttributeForImport(removedAttributeInfo);
 		}
 		
+		  //since we increase entity in advanceAction in CodeImportPage
+      // and this page couldn't go back (back button was disabled.
+		  //so we can decrease it when it loads again.
+      if(entityIndexIncreased)
+      {      
+         int entityIndex = mainWizFrame.getEnityIndex();
+          entityIndex = entityIndex-1;
+          Log.debug(30, "On CodeImportPage.onLoad method, we need to decrease entity index to "+entityIndex);
+          mainWizFrame.setEntityIndex(entityIndex);
+      }
 		
-	handledImportAttributeName = adp.getCurrentImportAttributeName();
+	  handledImportAttributeName = adp.getCurrentImportAttributeName();
     String entity = adp.getCurrentImportEntityName();
 
     attrField.setText(handledImportAttributeName);
@@ -293,6 +305,7 @@ public class CodeImportPage extends AbstractUIPage {
       {
     	  entityIndex = entityIndex+1;
     	  mainWizFrame.setEntityIndex(entityIndex);
+    	  entityIndexIncreased = true;
     	  Log.debug(30, "In CodeImportPage.onAdvance to increase entity id to "+entityIndex);
       }
       else
@@ -379,14 +392,19 @@ public class CodeImportPage extends AbstractUIPage {
       }    
       Log.debug(35, "In CodeImportPage.setPageData, the xpathRoot is "+xPathRoot+" and map is "+data.toString() );
       String importChoiceStr = (String)data.get(IMMPORTCHOICE);
-      data.remove(IMMPORTCHOICE);    
+      Log.debug(35, "The importChoice in CodeImportPage.setPageData method is "+importChoiceStr);
+      data.remove(IMMPORTCHOICE);
+      String entityIndexIncreasedStr = (String)data.get(ENTITYINDEXINCREASED);
+      Log.debug(35, "The entityIndexIncreased value in CodeImportPage.setPageData method is "+entityIndexIncreasedStr);
+      data.remove(ENTITYINDEXINCREASED);
       try
       {
         importChoice =(new Short(importChoiceStr)).shortValue();
+        entityIndexIncreased = (new Boolean(entityIndexIncreasedStr)).booleanValue();
       }
       catch(Exception e)
       {
-        Log.debug(30, "Couldn't get importChocie entity in CodeImportPage.setPageData since "+e.getMessage());
+        Log.debug(30, "Couldn't get importChocie or entityIndexIncreased value in CodeImportPage.setPageData since "+e.getMessage());
         return success;
       }
       if(importChoice == INVOKE_TIW)
@@ -406,6 +424,7 @@ public class CodeImportPage extends AbstractUIPage {
       }
       else if(importChoice == IMPORT_DONE)
       {
+       
         Log.debug(30, "In import is done branch at CodeImportPage.setPageData method");
         //String selectedEntityIndexStr = (String)data.get(CodeDefnPanel.SELECTEDENTITYINDEX);
         //data.remove(CodeDefnPanel.SELECTEDENTITYINDEX);
@@ -656,6 +675,15 @@ public class CodeImportPage extends AbstractUIPage {
 	public short getImportChoice()
 	{
 		return this.importChoice;
+	}
+	
+	/**
+	 * Gets if entity index was increased.
+	 * @return true if index was increased
+	 */
+	public boolean isEntityIndexIncreased()
+	{
+	  return this.entityIndexIncreased;
 	}
 	
 	/*

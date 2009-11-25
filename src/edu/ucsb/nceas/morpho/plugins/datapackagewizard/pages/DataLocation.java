@@ -623,17 +623,7 @@ public class DataLocation extends AbstractUIPage {
    */
   public void onRewindAction() 
   {
-	  //since we increase entity in advanceAction in CodeImportPage
-	  //when next page is DataLocation, we should descrease when we go back
-	    Log.debug(35, "In DataLocation.oneREwindAction and previous page id is "+prevPageID);
-	    if(prevPageID != null && prevPageID.equals(DataPackageWizardInterface.CODE_IMPORT_PAGE))
-	    {
-	      
-	      int entityIndex = mainWizFrame.getEnityIndex();
-          entityIndex = entityIndex-1;
-          Log.debug(30, "In DataLocation.onRewindAction, since previous page is code_import_page, we need to decrease to "+entityIndex);
-          mainWizFrame.setEntityIndex(entityIndex);
-	    }
+	   
   }
 
 
