@@ -164,7 +164,6 @@ public interface DataPackageWizardInterface {
   /**
    * Load (open) an incomplete document into new package wizard /text import wizard
    * @param dataPackage the incomplete data package
-   * @param incompletionInfo information about the incompletion
    */
-  public void loadIncompleteDocument(AbstractDataPackage dataPackage, IncompleteDocInfo incompleteDocInfo);
+  public void loadIncompleteDocument(AbstractDataPackage dataPackage);
 }

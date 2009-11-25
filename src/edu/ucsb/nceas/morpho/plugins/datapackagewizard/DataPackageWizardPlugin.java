@@ -566,9 +566,8 @@ public class DataPackageWizardPlugin implements PluginInterface,
   /**
    * Load (open) an incomplete document into new package wizard /text import wizard
    * @param dataPackage the incomplete data package
-   * @param incompletionInfo information about the incompletion
    */
-  public void loadIncompleteDocument(AbstractDataPackage dataPackage, IncompleteDocInfo incompleteDocInfo)
+  public void loadIncompleteDocument(AbstractDataPackage dataPackage)
   {
 	  boolean isRunning = UIController.getInstance().isWizardRunning();
 	  if (isRunning) {
@@ -581,7 +580,7 @@ public class DataPackageWizardPlugin implements PluginInterface,
 	    }
 	  if(dataPackage == null) return;
 	  UIController.getInstance().setWizardIsRunning(dataPackage);
-	  IncompleteDocumentLoader loader = new IncompleteDocumentLoader(dataPackage, incompleteDocInfo);
+	  IncompleteDocumentLoader loader = new IncompleteDocumentLoader(dataPackage);
 	  loader.load();
   }
 

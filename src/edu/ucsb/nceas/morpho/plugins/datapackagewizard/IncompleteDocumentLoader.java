@@ -78,12 +78,10 @@ public class IncompleteDocumentLoader
 	
 
   /**
-   * Constructs a IncompleteDocumentLoader with a AbstractDataPackage containing 
-   * meta data information
+   * Constructs a IncompleteDocumentLoader with an AbstractDataPackage object
    * @param dataPackage
-   * @param incompleteInfo
   */
-  public IncompleteDocumentLoader(AbstractDataPackage dataPackage, IncompleteDocInfo incompleteDocInfo)
+  public IncompleteDocumentLoader(AbstractDataPackage dataPackage)
   {
     if(dataPackage == null)
     {
@@ -92,12 +90,45 @@ public class IncompleteDocumentLoader
     }
     this.dataPackage = dataPackage;
     this.dataPackage.setLocation(AbstractDataPackage.TEMPLOCATION);
-    this.incompleteDocInfo = incompleteDocInfo;
-    if(this.incompleteDocInfo != null)
-    {
-      this.incompletionStatus = incompleteDocInfo.getStatus();
-    }
+    init();
     readXpathUIMappingInfo();
+  }
+  
+  /*
+   * Initializes incompletion status and IncompleteDocInfo object
+   */
+  private void init()
+  {
+    this.incompletionStatus = dataPackage.getCompletionStatus();
+    WizardPageInfo [] classNameList = null;
+    int index =-1;
+    Log.debug(30, "The status of incomplete document is "+incompletionStatus+" in DataPackagePlugin.openIncompleteDataPackage");
+    if( incompletionStatus != null && incompletionStatus.equals(IncompleteDocSettings.INCOMPLETE_PACKAGE_WIZARD))
+    {
+      classNameList = dataPackage.getIncompletePacakgeWizardPageInfoList();
+    }
+    else if( incompletionStatus != null && incompletionStatus.equals(IncompleteDocSettings.INCOMPLETE_ENTITY_WIZARD))
+    {
+      classNameList = dataPackage.getIncompleteEntityWizardPageInfoList();
+      try
+      {
+        dataPackage.readImportAttributeInfoFromIncompleteDocInEntityWizard();
+      }
+      catch(Exception e)
+      {
+        Log.debug(5, "Couldn't read import attribute information in incomplete document "+e.getMessage());
+        return;
+      }
+      index = dataPackage.getEntityIndexInIncompleteDocInfo();
+    }
+    else
+    {
+      Log.debug(5, "Morpho couldn't understand the incomplete status "+incompletionStatus);
+      return;
+    }   
+    incompleteDocInfo = new IncompleteDocInfo(incompletionStatus);
+    incompleteDocInfo.setWizardPageClassInfoList(classNameList);
+    incompleteDocInfo.setEntityIndex(index);
   }
 
   /**
@@ -253,15 +284,18 @@ public class IncompleteDocumentLoader
                       Log.debug(30, "the className from metadata is "+className);
                       if(incompletionStatus.equals(IncompleteDocSettings.INCOMPLETE_PACKAGE_WIZARD))
                       {
-                      page= WizardUtil.getUIPage(map, dpWiz,  variables, dataPackage.getMetadataNode(), null );
+                        page= WizardUtil.getUIPage(map, dpWiz,  variables, dataPackage.getMetadataNode(), null );
                       }
                       else if(incompletionStatus.equals(IncompleteDocSettings.INCOMPLETE_ENTITY_WIZARD))      
                       {
                         int index = incompleteDocInfo.getEntityIndex();
+                        Node entityNode = null;
                         if(dataPackage.getEntity(index) != null)
                         {
-                          page= WizardUtil.getUIPage(map, dpWiz,  variables, dataPackage.getEntity(index).getNode(), null );
+                          entityNode = dataPackage.getEntity(index).getNode();
+                          
                         }
+                        page= WizardUtil.getUIPage(map, dpWiz,  variables, entityNode, null );
                       }
                   }
                   catch(Exception e)
