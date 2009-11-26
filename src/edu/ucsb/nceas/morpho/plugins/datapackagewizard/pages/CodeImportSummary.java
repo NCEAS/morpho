@@ -83,6 +83,8 @@ public class CodeImportSummary extends AbstractUIPage {
   private AbstractUIPage prevPage = null;
   //private ArrayList removedAttributeInfo = null;
   private boolean updateImportAttributeInNewTable = false;
+  private boolean entityAddedInCycle = false;//indicate if a entity was added in a cycle (from dataLocation to this page).
+                                                       //if this is start a page of import wizard, it will be false.
   
 
   public CodeImportSummary(WizardContainerFrame mainWizFrame) {
@@ -190,6 +192,7 @@ public class CodeImportSummary extends AbstractUIPage {
       +"<p> The new data table has been created and the codes for the attribute " +
       "<i> "+ currentAttrName + "</i> have been imported</p>"
        +WizardSettings.HTML_TABLE_LABEL_CLOSING);
+      entityAddedInCycle = true;// CodeDefinition will definition add a new entity
 
     } else if (prevID.equals(DataPackageWizardInterface.CODE_IMPORT_PAGE)) {
 
@@ -321,6 +324,8 @@ public class CodeImportSummary extends AbstractUIPage {
     		  Log.debug(30, "Set ImportCodeDefinitionTable to be false!!!!!!!!!!!!");
         	  
           }
+          //reset the this variable
+          entityAddedInCycle = false;
           //else if(prevID != null && (prevID.equals(DataPackageWizardInterface.CODE_DEFINITION) || prevID.equals(DataPackageWizardInterface.CODE_IMPORT_PAGE))) 
           //{
               //adp.addFirstAttributeForImport(removedAttributeInfo);
@@ -375,6 +380,7 @@ public class CodeImportSummary extends AbstractUIPage {
 	      //entityIndex = entityIndex+1;
 	      //mainWizFrame.setEntityIndex(entityIndex);
 	      adp.setLocation("");  // we've changed it and not yet saved
+	      entityAddedInCycle = true;// we added entity here.
 
 
 	    }
@@ -481,6 +487,10 @@ public class CodeImportSummary extends AbstractUIPage {
         mainWizFrame.setImportCodeDefinitionTable(true);
         Log.debug(40, "Set the importwizard to be true in CodeImportSummary.setPage");
       }
+      else if(prevID != null && prevID.equals(DataPackageWizardInterface.CODE_DEFINITION))
+      {
+        entityAddedInCycle = true;
+      }
       
     	return true; 
     }
@@ -502,6 +512,15 @@ public class CodeImportSummary extends AbstractUIPage {
     public String getPreviousPageID()
     {
     	return prevID;
+    }
+    
+    /**
+     * Determines if an entity was added in a cycle (from DataLocation to this page)
+     * @return
+     */
+    public boolean isEntityAddedInCyle()
+    {
+       return this.entityAddedInCycle;
     }
 }
 

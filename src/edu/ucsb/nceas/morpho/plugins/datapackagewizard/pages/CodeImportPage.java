@@ -209,7 +209,7 @@ public class CodeImportPage extends AbstractUIPage {
 		
 		  //since we increase entity in advanceAction in CodeImportPage
       // and this page couldn't go back (back button was disabled.
-		  //so we can decrease it when it loads again.
+		  //so we can decrease it when it loads again (click backup in the next package)
       if(entityIndexIncreased)
       {      
          int entityIndex = mainWizFrame.getEnityIndex();
@@ -258,6 +258,30 @@ public class CodeImportPage extends AbstractUIPage {
     WidgetFactory.unhiliteComponent(choiceLabel);
     mainWizFrame.setImportCodeDefinitionTable(true);
     Log.debug(40, "Set the importwizard to be true in CodeImportPage.setPage");
+    //figure out if it need to increase id here.
+    AbstractUIPage previousPage = mainWizFrame.getPreviousPage();
+    boolean needIncreaseEntityID = true;
+    if(previousPage != null && previousPage instanceof CodeImportSummary)
+    {
+      CodeImportSummary codeSummary = (CodeImportSummary )previousPage;
+      needIncreaseEntityID = codeSummary.isEntityAddedInCyle();
+      Log.debug(30, "In CodeImportPage.onAdvance method, the isEntityAddedInCycle value from previous ImportSummary page is "+needIncreaseEntityID);
+    
+    }
+    //since we will start a new entity, we need to increase the index.
+    int entityIndex = mainWizFrame.getEnityIndex();
+    if(needIncreaseEntityID)
+    {
+      entityIndex = entityIndex+1;
+      mainWizFrame.setEntityIndex(entityIndex);
+      entityIndexIncreased = true;
+      Log.debug(30, "In CodeImportPage.onAdvance to increase entity id to "+entityIndex);
+    }
+    else
+    {
+      Log.debug(30, "In CodeImportPage.onAdvance to keep (NOT increase) entity id to "+entityIndex);
+    }
+    
     if(importChoice == IMPORT_DONE) {
       if(importPanel.validateUserInput()) {
 		//AbstractDataPackage	adp = getADP();
@@ -285,35 +309,9 @@ public class CodeImportPage extends AbstractUIPage {
       } else
         return false;
     } else {
-      this.nextPageID = DataPackageWizardInterface.DATA_LOCATION; 
-      AbstractUIPage previousPage = mainWizFrame.getPreviousPage();
-      boolean needIncreaseEntityID = true;
-      if(previousPage != null && previousPage instanceof CodeImportSummary)
-      {
-    	  CodeImportSummary codeSummary = (CodeImportSummary )previousPage;
-    	  String previousPreviousID = codeSummary.getPreviousPageID();
-    	  Log.debug(30, "This CodeImportSummary's previous id is "+previousPreviousID);
-    	  if(previousPreviousID != null && previousPreviousID.equals(CodeImportSummary.STARTIMPORTWIZARD))
-    	  {
-    		  Log.debug(30, "This CodeImportPage is first CodeImportPage in CodeDefinitionWizard, we don't need to increase entity id");
-    		  needIncreaseEntityID = false;
-    	  }
-      }
-      //since we will start a new entity, we need to increase the index.
-      int entityIndex = mainWizFrame.getEnityIndex();
-      if(needIncreaseEntityID)
-      {
-    	  entityIndex = entityIndex+1;
-    	  mainWizFrame.setEntityIndex(entityIndex);
-    	  entityIndexIncreased = true;
-    	  Log.debug(30, "In CodeImportPage.onAdvance to increase entity id to "+entityIndex);
-      }
-      else
-      {
-    	  Log.debug(30, "In CodeImportPage.onAdvance to keep (NOT increase) entity id to "+entityIndex);
-      }
+      this.nextPageID = DataPackageWizardInterface.DATA_LOCATION;      
       mainWizFrame.clearPageCache();
-      mainWizFrame.reInitializePageStack();   
+      mainWizFrame.reInitializePageStack(); 
       return true;
     }
 
