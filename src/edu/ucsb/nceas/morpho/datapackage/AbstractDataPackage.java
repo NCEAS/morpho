@@ -2040,10 +2040,10 @@ public abstract class AbstractDataPackage extends MetadataObject
    *
    * @param entNum int
    */
-  public void deleteEntity(int entNum) {
+  public Node deleteEntity(int entNum) {
     if ( (entityArray == null) || (entityArray.length < (entNum) + 1)) {
       Log.debug(20, "AbstractDataPackage.deleteEntity - Unable to find entity at index "+entNum);
-      return;
+      return null;
     }
     Node entity = (entityArray[entNum]).getNode();
     Node parent = entity.getParentNode();
@@ -2057,6 +2057,7 @@ public abstract class AbstractDataPackage extends MetadataObject
     }
     entityArray = newEntityArray;
     Log.debug(20, "AbstractDataPackage.deleteEntity - Delete the entity at index "+entNum);
+    return entity;
   }
 
 	/**

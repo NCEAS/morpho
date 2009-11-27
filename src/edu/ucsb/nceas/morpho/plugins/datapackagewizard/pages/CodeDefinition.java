@@ -183,18 +183,8 @@ public class CodeDefinition extends AbstractUIPage {
     prevPageID = mainWizFrame.getPreviousPageID();
     //if(prevPageID.equals(DataPackageWizardInterface.TEXT_IMPORT_WIZARD) || prevPageID.equals(DataPackageWizardInterface.ENTITY)) {
     if(prevPageID != null && !entityAdded && (prevPageID.startsWith(DataPackageWizardInterface.TEXT_IMPORT_ATTRIBUTE) || prevPageID.equals(DataPackageWizardInterface.ENTITY))) {
-
-        Node newDOM = mainWizFrame.collectDataFromPages();       
-         int entityIndex = mainWizFrame.getEnityIndex();
-	     Log.debug(32, "The index of the entity which was added to abstract package in CodeDefintion.onLoadAction is "+entityIndex);
-	     Log.debug(35, "Add/replace entity on CodeDefinition.onLoad method with index "+entityIndex);
-	     adp.replaceEntity(newDOM, entityIndex);
-	     mainWizFrame.setDOMToReturn(null);
-	      //since we added/replace an entity into adp, so next available index should be increase too.
-	     //entityIndex = entityIndex+1;
-	     //mainWizFrame.setEntityIndex(entityIndex);
-         adp.setLocation("");  // we've changed it and not yet saved
-         entityAdded = true;// change the variable to be true, so next time load would NOT modify adp again
+      //adds the the new entity collected from previous pages into package.
+      addNewEntityToAbstractDataPackage();
 		if(prevPageID.equals(DataPackageWizardInterface.ENTITY) && rowData == null) { 
 	
 		    //data not yet read from the file. This happens when user does a MANUAL import
@@ -438,14 +428,17 @@ public class CodeDefinition extends AbstractUIPage {
     
     try
     {
-      Log.debug(35, "Before selecting the code and defintion columns in CodeImportPage.setPageData "+selectedCodeColumnIndex);
+      onLoadAction();
+      Log.debug(35, "Before selecting the code column "+selectedCodeColumnIndex+" and defintion columns "+selectedDefinitionColumnIndex+" in CodeImportPage.setPageData ");
       int[] columnsIndex = {selectedCodeColumnIndex, selectedDefinitionColumnIndex};//the first is code, the second is definition
+      Log.debug(5, "import panel is "+importPanel);
       importPanel.setSelectedCodeDefColumnInTable(columnsIndex);
       Log.debug(35, "After selecting the code and defintion columns in CodeImportPage.setPageData "+selectedCodeColumnIndex);
+      
     }
     catch(Exception e)
     {
-      Log.debug(30, "Morpho couldn't click the radion button or select code-definition table");
+      Log.debug(30, "Morpho couldn't click the radion button or select code-definition table or adds an entity into data package "+e.getMessage());
       return success;
     }    
      success = true;
@@ -559,6 +552,23 @@ public class CodeDefinition extends AbstractUIPage {
   }
 
 
+  /*
+   * Add an entity to AbstractDataPacakge
+   */
+  private void addNewEntityToAbstractDataPackage()
+  {
+    Node newDOM = mainWizFrame.collectDataFromPages();       
+    int entityIndex = mainWizFrame.getEnityIndex();
+    Log.debug(32, "The index of the entity which was added to abstract package in CodeDefintion.onLoadAction is "+entityIndex);
+    Log.debug(35, "Add/replace entity on CodeDefinition.onLoad method with index "+entityIndex);
+    adp.replaceEntity(newDOM, entityIndex);
+    mainWizFrame.setDOMToReturn(null);
+    //since we added/replace an entity into adp, so next available index should be increase too.
+    //entityIndex = entityIndex+1;
+    //mainWizFrame.setEntityIndex(entityIndex);
+    adp.setLocation("");  // we've changed it and not yet saved
+    entityAdded = true;// change the variable to be true, so next time load would NOT modify adp again
+  }
 
   private String getDelimiterString(String field_delimiter) {
     String str = "";

@@ -166,7 +166,7 @@ public class IncompleteDocumentLoader
       boolean showPageCount = true;    
       WizardContainerFrame dpWiz = new WizardContainerFrame();
       dpWiz.initialAutoSaving();
-      AbstractUIPage currentPage = loadPagesIntoWizard(dpWiz);
+      AbstractUIPage currentPage = loadPagesIntoWizard(dpWiz, dataPackage.getMetadataNode());
       if(currentPage == null)
       {          
           UIController.getInstance().setWizardNotRunning();
@@ -198,8 +198,11 @@ public class IncompleteDocumentLoader
       boolean showPageCount = false;
       boolean isEntity = true;
       int index = incompleteDocInfo.getEntityIndex();
+      //remove the entity with the index (this entity is the unfinished one)
+      Node entityNode = dataPackage.deleteEntity(index);
       WizardContainerFrame dpWiz = new WizardContainerFrame(isEntity);
-      AbstractUIPage currentPage = loadPagesIntoWizard(dpWiz);
+      dpWiz.setEntityIndex(index);
+      AbstractUIPage currentPage = loadPagesIntoWizard(dpWiz, entityNode);
       if(currentPage == null)
       {
          UIController.getInstance().setWizardNotRunning();
@@ -210,10 +213,7 @@ public class IncompleteDocumentLoader
       }
       Log.debug(25, "The current page id in IncompleteDocument.loadEntityWizard is "+currentPage.getPageID());
       dpWiz.initialAutoSaving();
-      //remove the entity with the index (this entity is the unfinished one)
-      dataPackage.deleteEntity(index);
       dataPackage.removeInfoForIncompleteEntity();
-      dpWiz.setEntityIndex(index);
       MorphoFrame frame = openMorphoFrameForDataPackage(dataPackage);
       if(frame != null)
       {
@@ -232,7 +232,7 @@ public class IncompleteDocumentLoader
   /*
    * Load Wizard pages into a given Wizard. Return currentPage 
    */
-  private AbstractUIPage loadPagesIntoWizard(WizardContainerFrame dpWiz)
+  private AbstractUIPage loadPagesIntoWizard(WizardContainerFrame dpWiz, Node node)
   {
     AbstractUIPage currentPage = null;
     int textImportAttributePageIndex = 0;
@@ -256,7 +256,7 @@ public class IncompleteDocumentLoader
               {
                 //load TextImportAttribute from a special method
                 int entityIndex = incompleteDocInfo.getEntityIndex();          
-                page = generateTextImportAttributePage(dpWiz, dataPackage.getEntity(entityIndex).getNode(), textImportAttributePageIndex);
+                page = generateTextImportAttributePage(dpWiz, node, textImportAttributePageIndex);
                 textImportAttributePageIndex++;
               }
               else
@@ -281,22 +281,9 @@ public class IncompleteDocumentLoader
                   try
                   {
                     Log.debug(30, "There is map for classNamePlusParamer ~~~~~~~~~~~~~~"+classNamePlusParameter+ " so we create an page with data (if have)");
-                      Log.debug(30, "the className from metadata is "+className);
-                      if(incompletionStatus.equals(IncompleteDocSettings.INCOMPLETE_PACKAGE_WIZARD))
-                      {
-                        page= WizardUtil.getUIPage(map, dpWiz,  variables, dataPackage.getMetadataNode(), null );
-                      }
-                      else if(incompletionStatus.equals(IncompleteDocSettings.INCOMPLETE_ENTITY_WIZARD))      
-                      {
-                        int index = incompleteDocInfo.getEntityIndex();
-                        Node entityNode = null;
-                        if(dataPackage.getEntity(index) != null)
-                        {
-                          entityNode = dataPackage.getEntity(index).getNode();
-                          
-                        }
-                        page= WizardUtil.getUIPage(map, dpWiz,  variables, entityNode, null );
-                      }
+                    Log.debug(30, "the className from metadata is "+className);
+                    page= WizardUtil.getUIPage(map, dpWiz,  variables, node, null );
+                     
                   }
                   catch(Exception e)
                   {
