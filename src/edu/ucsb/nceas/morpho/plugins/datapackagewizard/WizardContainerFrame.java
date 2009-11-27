@@ -2029,19 +2029,19 @@ public class WizardContainerFrame
    * Stores the entity name in entity wizard
    * @param entityName
    */
-  public void setEntityName(String entityName)
+  /*public void setEntityName(String entityName)
   {
 	  this.entityName = entityName;
-  }
+  }*/
   
   /**
    * Gets the entityName in entitywizard
    * @return
    */
-  public String getEntityName()
+  /*public String getEntityName()
   {
 	  return this.entityName;
-  }
+  }*/
   
   
   /**
@@ -2068,7 +2068,7 @@ public class WizardContainerFrame
    * @param index
    * @param attributeName
    */
-  public void addToNewImportedAttributeNameList(int index, String attributeName)
+  /*public void addToNewImportedAttributeNameList(int index, String attributeName)
   {
 	  int size = this.newImportedAttributeNameList.size();
 	  if(size  <= index)
@@ -2083,24 +2083,24 @@ public class WizardContainerFrame
 			      " is greater than  the attribute index "+index+", so we should replace the old value with the new value "+attributeName+" in arrary");
 		  this.newImportedAttributeNameList.set(index, attributeName);
 	  }
-  }
+  }*/
   
   /**
    * Gets the new imported attribute name list
    * @return
    */
-  public List getNewImportedAttributeNameList()
+  /*public List getNewImportedAttributeNameList()
   {
 	  return this.newImportedAttributeNameList;
-  }
+  }*/
   
   /**
    * Remove all elements in this list
    */
-  public void clearNewImportedAttributeNameList()
+  /*public void clearNewImportedAttributeNameList()
   {
 	  this.newImportedAttributeNameList.clear();
-  }
+  }*/
   
   /**
    * Gets the abstract data package associated with the frame
@@ -2115,10 +2115,10 @@ public class WizardContainerFrame
    * Sets the abstract data package associated with fthe frame.
    * @param pack
    */
-  public void setAbstractDataPackage(AbstractDataPackage pack)
+  /*public void setAbstractDataPackage(AbstractDataPackage pack)
   {
 	  this.adp = pack;
-  }
+  }*/
 
 
 

@@ -365,10 +365,33 @@ public class TextImportEntity extends AbstractUIPage
 			  textFile.setColumnLabelsInStartingLine(ColumnLabelsCheckBox.isSelected());
 			  String str = StartingLineTextField.getText();
 			  handleStartingLineTextChange(str);	
-			  frame.setEntityName(XMLUtil.normalize(TableNameTextField.getText()));
+			  //frame.setEntityName(XMLUtil.normalize(TableNameTextField.getText()));
+			  boolean success = setLastImportEntityName();
+			  if(!success)
+			  {
+			    return false;
+			  }
 			  WidgetFactory.unhiliteComponent(nameLabel);
 		     return true;
 		  }
+	  }
+	  
+	  /*
+	   * Set last importEntityName
+	   */
+	  private boolean setLastImportEntityName()
+	  {
+	    AbstractDataPackage adp = frame.getAbstractDataPackage();
+      if(adp == null) 
+      {
+        Log.debug(10, "Error! Unable to obtain the ADP in TextImportEntity!");
+        return false;
+      } 
+      else 
+      {
+         adp.setLastImportedEntity(XMLUtil.normalize(TableNameTextField.getText()));
+         return true;
+      }
 	  }
 
 
@@ -577,6 +600,12 @@ public class TextImportEntity extends AbstractUIPage
 	      }
 	      Log.debug(32, "The starting row number is "+startLineNumber+" in the map in TextImportEntity.setPageData");
 	      StartingLineTextField.setText((new Integer(startLineNumber)).toString());
+	      boolean success = setLastImportEntityName();
+	      if(!success)
+	      {
+	        Log.debug(5, "Couldn't set up last import entity name to data package");
+	        return false;
+	      }
 	      return true;
 	  }
 	  

@@ -779,6 +779,17 @@ public class AttributePage extends AbstractUIPage {
 
     return surrogate;
   }
+  
+  /**
+   * Gets attribute name from this page
+   * @return
+   */
+  public String getAttributeName()
+  {
+    String attribName   = attribNameField.getText().trim();
+    if (attribName==null) attribName = "";
+    return attribName;
+  }
 
   /**
   *  gets the Map object that contains all the key/value paired

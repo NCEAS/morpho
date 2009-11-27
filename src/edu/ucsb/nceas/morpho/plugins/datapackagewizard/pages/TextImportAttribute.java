@@ -311,24 +311,22 @@ public class TextImportAttribute extends AbstractUIPage
 	  {
 		  if(attributePage != null && attributePage.onAdvanceAction())
 		  {
+		    AbstractDataPackage adp = frame.getAbstractDataPackage();
+        if(adp == null || frame == null) 
+        {
+            Log.debug(5, "Error! Unable to obtain the ADP or Wizard Frame in the TextImportEntity page!");
+            return false;
+        }
 			  //clear the attribute name list at the first attribute
-			  if(frame != null && columnIndex ==FIRSTINDEX)
+			  if(columnIndex ==FIRSTINDEX)
 			  {
-				  frame.clearNewImportedAttributeNameList();
-			  }
+				  adp.setLastImportedAttributes(null);
+			  }       
 			  String prefix = AttributeSettings.Attribute_xPath;
-	    	  OrderedMap map1 = attributePage.getPageData(prefix + "[" + columnIndex + "]");			
-	          String colName = getColumnName(map1, prefix + "[" + columnIndex + "]");
-	          AbstractDataPackage adp = frame.getAbstractDataPackage();
-		      if(adp == null) 
-		      {
-				Log.debug(10, "Error! Unable to obtain the ADP in the Entity page!");
-		      }
-		      else
-		      {
-		    	  frame.addToNewImportedAttributeNameList(columnIndex, colName);
-		      }
-			  //handle
+	    	OrderedMap map1 = attributePage.getPageData(prefix + "[" + columnIndex + "]");			
+	      String colName = getColumnName(map1, prefix + "[" + columnIndex + "]");
+	      adp.addToLastImportedAttributeNameList(columnIndex, colName);
+        //frame.addToNewImportedAttributeNameList(columnIndex, colName);
 			  Log.debug(32, "The attriubte page with index "+columnIndex+" is needed imported "+attributePage.isImportNeeded());
 			  if(attributePage.isImportNeeded()) 
 			  {
@@ -336,7 +334,7 @@ public class TextImportAttribute extends AbstractUIPage
 			      if(adp != null)
 			      {    	  
 			          String mScale = getMeasurementScale(map1, prefix + "[" + columnIndex + "]");
-			          adp.addAttributeForImport(frame.getEntityName(), colName, mScale, map1, prefix + "[" + columnIndex + "]", true);
+			          adp.addAttributeForImport(adp.getLastImportedEntity(), colName, mScale, map1, prefix + "[" + columnIndex + "]", true);
 			          importNeeded = true;
 			          Log.debug(32, "Set the TextImportAttribute importNeeded(code/definition)  true");
 			      }
@@ -354,19 +352,7 @@ public class TextImportAttribute extends AbstractUIPage
 				  //attribute name into adp.
 				  if(adp != null)
 				  {
-					  Log.debug(35, "Set the last imported entity, attributes and dataset");
-					    adp.setLastImportedEntity(frame.getEntityName());
-						adp.setLastImportedAttributes(frame.getNewImportedAttributeNameList());
-						Log.debug(40, "The attributes list is "+frame.getNewImportedAttributeNameList());
-						if(textFile != null && textFile.getVectorOfData() != null)
-						{
-							adp.setLastImportedDataSet(textFile.getVectorOfData());
-							//Log.debug(40, "The data is "+textFile.getVectorOfData());
-						}
-						else 
-						{
-							adp.setLastImportedDataSet(((UneditableTableModel)table.getModel()).getDataVector());
-						}
+				     setLastImportDataSet(adp);
 				  }
 				  
 				  boolean importNeededInPreviousAttributes = frame.containsAttributeNeedingImportedCode();
@@ -412,6 +398,30 @@ public class TextImportAttribute extends AbstractUIPage
 			  }
 			  return false;
 		  }
+	  }
+	  
+	  /*
+	   *Sets last imported data set
+	   */
+	  private void setLastImportDataSet(AbstractDataPackage adp)
+	  {
+	    Log.debug(35, "Set the last dataset");
+      //adp.setLastImportedEntity(frame.getEntityName());
+      //adp.setLastImportedAttributes(frame.getNewImportedAttributeNameList());
+      //Log.debug(40, "The attributes list is "+frame.getNewImportedAttributeNameList());
+      if(textFile != null && textFile.getVectorOfData() != null)
+      {
+        adp.setLastImportedDataSet(textFile.getVectorOfData());
+        //Log.debug(40, "The data is "+textFile.getVectorOfData());
+      }
+      else if(table != null)
+      {
+        adp.setLastImportedDataSet(((UneditableTableModel)table.getModel()).getDataVector());
+      }
+      else
+      {
+        adp.setLastImportedDataSet(null);
+      }
 	  }
 
 
@@ -481,6 +491,51 @@ public class TextImportAttribute extends AbstractUIPage
 		  }
 		  return success;
 	  }
+	  
+	  /**
+	   * sets the fields in the UI page using the Map object that contains all
+     * the key/value paired
+	   * @param data
+	   * @param rootXPath
+	   * @param index
+	   * @param lastOne
+	   * @return
+	   */
+    public boolean setPageData(OrderedMap data, String rootXPath, int index)
+    {
+      if (rootXPath == null )
+     {
+         rootXPath = this.xPathRoot;
+     }
+     Log.debug(32,"TextImportAttribute.setPageData() called with rootXPath = " + rootXPath
+                  + "\n Map = \n" +data);
+      boolean success = false;
+      if(attributePage != null)
+      {
+        success = attributePage.setPageData(data, "/"+ATTRIBUTEPATH);
+      }
+      if(!success)
+      {
+        return success;
+      }
+      AbstractDataPackage adp = frame.getAbstractDataPackage();
+      if(adp == null || frame == null) 
+      {
+          Log.debug(5, "Error! Unable to obtain the ADP or Wizard Frame in the TextImportEntity page!");
+          return false;
+      }
+      columnIndex = index;
+      //clear the attribute name list at the first attribute
+      if(columnIndex == FIRSTINDEX)
+      {
+        adp.setLastImportedAttributes(null);
+      }
+      String attributeName = attributePage.getAttributeName();
+      Log.debug(30, "The attributeName in TextImportAttribute.setPageData is "+attributeName);
+      adp.addToLastImportedAttributeNameList(columnIndex, attributeName);
+      setLastImportDataSet(adp);
+      return success;
+    }
 	  
 	  /**
 	   * Is this attribute need importing code/definition

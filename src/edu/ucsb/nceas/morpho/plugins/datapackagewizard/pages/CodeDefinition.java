@@ -170,72 +170,70 @@ public class CodeDefinition extends AbstractUIPage {
     attrField.setText(handledImportAttributeName);
     entityField.setText(entity);
 
-    String tableName = adp.getLastImportedEntity();
-    List attrs =  adp.getLastImportedAttributes();
+   
     Vector rowData = adp.getLastImportedDataSet();
-    importPanel.setTable(tableName, attrs, rowData);
-    importPanel.invalidate();
-
-    adp.setLastImportedAttributes(null);
-    adp.setLastImportedEntity(null);
-    adp.setLastImportedDataSet(null);
-
     prevPageID = mainWizFrame.getPreviousPageID();
     //if(prevPageID.equals(DataPackageWizardInterface.TEXT_IMPORT_WIZARD) || prevPageID.equals(DataPackageWizardInterface.ENTITY)) {
     if(prevPageID != null && !entityAdded && (prevPageID.startsWith(DataPackageWizardInterface.TEXT_IMPORT_ATTRIBUTE) || prevPageID.equals(DataPackageWizardInterface.ENTITY))) {
       //adds the the new entity collected from previous pages into package.
       addNewEntityToAbstractDataPackage();
-		if(prevPageID.equals(DataPackageWizardInterface.ENTITY) && rowData == null) { 
-	
-		    //data not yet read from the file. This happens when user does a MANUAL import
-		    // read data from the file. If its a non-text file, put "**nontext**" in first row of the columns
-		    // At the end of this, rowData is a valid vector of row data.
-	
-	
-		    int entityIdx = adp.getEntityCount() - 1;
-		    boolean text_file = false;
-		    String format = adp.getPhysicalFormat(entityIdx, 0);
-		    if(format.indexOf("Text") > -1 || format.indexOf("text") > -1 || format.indexOf("Asci") > -1 || format.indexOf("asci") > -1) {
-			text_file = true;
-		    }
-		    
-		    MorphoFrame morphoFrame = UIController.getInstance().getCurrentActiveWindow();
-		    DataViewContainerPanel resultPane = null;
-		    Morpho morpho = null;
-		    if(morphoFrame != null) {
-			resultPane = morphoFrame.getDataViewContainerPanel();
-		    }
-		    if(resultPane != null) {
-			morpho = resultPane.getFramework();
-		    }
-	
-		    File entityFile = CodeDefnPanel.getEntityFile(morpho, adp, entityIdx);
-		    if(entityFile == null) return;
-		    Vector colsToExtract = new Vector();
-		    for(int ci = 0; ci < attrs.size(); ci++) colsToExtract.add(new Integer(ci));
-		    int numHeaderLines = 0;
-		    String field_delimiter = adp.getPhysicalFieldDelimiter(entityIdx, 0);
-		    String delimiter = getDelimiterString(field_delimiter);
-		    boolean ignoreConsecutiveDelimiters = adp.ignoreConsecutiveDelimiters(entityIdx, 0);
-		    List data = null;
-		    if(text_file) {
-			data = CodeDefnPanel.getColumnValues(entityFile, colsToExtract, numHeaderLines, delimiter, ignoreConsecutiveDelimiters, WizardSettings.MAX_IMPORTED_ROWS_DISPLAYED_IN_CODE_IMPORT);
-		    } else {
-			// not a displayable data; hence just create a single empty row (with the necessary columns) to add to the resultset
-			data = new ArrayList();
-			List row1 = new ArrayList();
-			for(int ci = 0; ci < colsToExtract.size(); ci++) row1.add("**nontext**");
-			data.add(row1);
-		    }
-		    rowData = new Vector();
-		    TaxonImportPanel.addColumnsToRowData(rowData, data);
-		    importPanel.setTable(tableName, attrs, rowData);
-		    importPanel.invalidate();
-	
-		} 
-
+     
     }
+    String tableName = adp.getLastImportedEntity();
+    List attrs =  adp.getLastImportedAttributes();
+    
+    if(prevPageID.equals(DataPackageWizardInterface.ENTITY) && rowData == null) { 
+      
+      //data not yet read from the file. This happens when user does a MANUAL import
+      // read data from the file. If its a non-text file, put "**nontext**" in first row of the columns
+      // At the end of this, rowData is a valid vector of row data.
 
+
+      int entityIdx = adp.getEntityCount() - 1;
+      boolean text_file = false;
+      String format = adp.getPhysicalFormat(entityIdx, 0);
+      if(format.indexOf("Text") > -1 || format.indexOf("text") > -1 || format.indexOf("Asci") > -1 || format.indexOf("asci") > -1) {
+    text_file = true;
+      }
+      
+      MorphoFrame morphoFrame = UIController.getInstance().getCurrentActiveWindow();
+      DataViewContainerPanel resultPane = null;
+      Morpho morpho = null;
+      if(morphoFrame != null) {
+    resultPane = morphoFrame.getDataViewContainerPanel();
+      }
+      if(resultPane != null) {
+    morpho = resultPane.getFramework();
+      }
+
+      File entityFile = CodeDefnPanel.getEntityFile(morpho, adp, entityIdx);
+      if(entityFile == null) return;
+      Vector colsToExtract = new Vector();
+      for(int ci = 0; ci < attrs.size(); ci++) colsToExtract.add(new Integer(ci));
+      int numHeaderLines = 0;
+      String field_delimiter = adp.getPhysicalFieldDelimiter(entityIdx, 0);
+      String delimiter = getDelimiterString(field_delimiter);
+      boolean ignoreConsecutiveDelimiters = adp.ignoreConsecutiveDelimiters(entityIdx, 0);
+      List data = null;
+      if(text_file) {
+    data = CodeDefnPanel.getColumnValues(entityFile, colsToExtract, numHeaderLines, delimiter, ignoreConsecutiveDelimiters, WizardSettings.MAX_IMPORTED_ROWS_DISPLAYED_IN_CODE_IMPORT);
+      } else {
+    // not a displayable data; hence just create a single empty row (with the necessary columns) to add to the resultset
+    data = new ArrayList();
+    List row1 = new ArrayList();
+    for(int ci = 0; ci < colsToExtract.size(); ci++) row1.add("**nontext**");
+    data.add(row1);
+      }
+      rowData = new Vector();
+      TaxonImportPanel.addColumnsToRowData(rowData, data);
+
+  } 
+    
+    importPanel.setTable(tableName, attrs, rowData);
+    importPanel.invalidate();
+    adp.setLastImportedAttributes(null);
+    adp.setLastImportedEntity(null);
+    adp.setLastImportedDataSet(null);
 
   }
 

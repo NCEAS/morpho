@@ -592,10 +592,11 @@ public class Entity extends AbstractUIPage{
 				   map.remove(_xPathRoot+ "/entityDescription");
 				}
 				int size = map.size();//in case in infinite loop
+				List colNameList = new ArrayList();
 				for(int i=0; i<size; i++)
 				{
 					//this method will get one attribute map from original map.
-	    	        OrderedMap attributeMap = Util.getFirstPartialMapForPath(map, "/attributeList/attribute");
+	    	    OrderedMap attributeMap = Util.getFirstPartialMapForPath(map, "/attributeList/attribute");
 				    if(attributeMap.isEmpty())
 				    {
 				    	break;//when returned map is empty, we can break the loop
@@ -608,13 +609,26 @@ public class Entity extends AbstractUIPage{
 				    	{
 				    		return false;
 				    	}
+				    	String attributeName =attributePage.getAttributeName();
+	            Log.debug(30, "The column name in Entity.setPageData is "+attributeName);
+	            colNameList.add(attributeName);
 				    	List newRow = attributePage.getSurrogate();
-				        newRow.add(attributePage);
-				        attributeList.addRow(newRow);
+				      newRow.add(attributePage);
+				      attributeList.addRow(newRow);
 				    }
 				}
+				
 				if(map.isEmpty())
 				{
+				  AbstractDataPackage adp = mainWizFrame.getAbstractDataPackage();
+		      if(adp == null) 
+		      {
+		         Log.debug(10, "Error! Unable to obtain the ADP in the Entity page!");
+		         return false;
+		      } 
+				  adp.setLastImportedEntity(entityNameField.getText().trim());
+	        adp.setLastImportedAttributes(colNameList);
+	        adp.setLastImportedDataSet(null);
 					return true;
 				}
 				else

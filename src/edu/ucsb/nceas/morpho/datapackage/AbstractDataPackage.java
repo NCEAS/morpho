@@ -4613,6 +4613,33 @@ public abstract class AbstractDataPackage extends MetadataObject
 	public List getLastImportedAttributes() {
 		return lastImportedAttributes;
 	}
+	
+	/**
+   * Set the attributeName into an arrayList. 
+   * If the attribute index already in the array, we replace it. otherwise we add it to the array
+   * @param index
+   * @param attributeName
+   */
+	 public void addToLastImportedAttributeNameList(int index, String attributeName)
+	 {
+	   if(lastImportedAttributes == null)
+	   {
+	     lastImportedAttributes = new ArrayList();
+	   }
+	    int size = this.lastImportedAttributes.size();
+	    if(size  <= index)
+	    {
+	      Log.debug(32, "In AbstractDataPackage.addToLastImportedAttributeNameList, the array list size " +size+
+	              " is less than or equal the attribute index "+index+", so we add "+attributeName+" to the arrary");
+	      this.lastImportedAttributes.add(attributeName);
+	    }
+	    else
+	    {
+	      Log.debug(32, "In AbstractDataPackage.addToLastImportedAttributeNameList, the array list size " +size+
+	            " is greater than  the attribute index "+index+", so we should replace the old value with the new value "+attributeName+" in arrary");
+	      this.lastImportedAttributes.set(index, attributeName);
+	    }
+	 }
 
 	public Vector getLastImportedDataSet() {
 		return lastImportedDataSet;
