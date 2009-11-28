@@ -429,7 +429,7 @@ public class CodeDefinition extends AbstractUIPage {
       onLoadAction();
       Log.debug(35, "Before selecting the code column "+selectedCodeColumnIndex+" and defintion columns "+selectedDefinitionColumnIndex+" in CodeImportPage.setPageData ");
       int[] columnsIndex = {selectedCodeColumnIndex, selectedDefinitionColumnIndex};//the first is code, the second is definition
-      Log.debug(5, "import panel is "+importPanel);
+      //Log.debug(5, "import panel is "+importPanel);
       importPanel.setSelectedCodeDefColumnInTable(columnsIndex);
       Log.debug(35, "After selecting the code and defintion columns in CodeImportPage.setPageData "+selectedCodeColumnIndex);
       

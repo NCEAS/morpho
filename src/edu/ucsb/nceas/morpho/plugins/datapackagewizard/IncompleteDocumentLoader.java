@@ -138,6 +138,7 @@ public class IncompleteDocumentLoader
   {
     if(incompletionStatus == null)
     {
+      UIController.getInstance().setWizardNotRunning();
       Log.debug(5, "Morpho couldn't open the package since the incompletion status is null");
     }
     else if (incompletionStatus.equals(IncompleteDocSettings.INCOMPLETE_PACKAGE_WIZARD))
@@ -152,6 +153,7 @@ public class IncompleteDocumentLoader
     }
     else
     {
+      UIController.getInstance().setWizardNotRunning();
       Log.debug(5, "Morpho couldn't understand the incompletion status of the package "+incompletionStatus);
     }
   }
@@ -200,6 +202,9 @@ public class IncompleteDocumentLoader
       int index = incompleteDocInfo.getEntityIndex();
       //remove the entity with the index (this entity is the unfinished one)
       Node entityNode = dataPackage.deleteEntity(index);
+      //incomplete information was read in init method and we can delete it now
+      dataPackage.removeInfoForIncompleteEntity();
+      MorphoFrame frame = openMorphoFrameForDataPackage(dataPackage);
       WizardContainerFrame dpWiz = new WizardContainerFrame(isEntity);
       dpWiz.setEntityIndex(index);
       AbstractUIPage currentPage = loadPagesIntoWizard(dpWiz, entityNode);
@@ -207,14 +212,14 @@ public class IncompleteDocumentLoader
       {
          UIController.getInstance().setWizardNotRunning();
          dpWiz.dispose();
+         UIController.getInstance().removeWindow(frame);
+         frame.dispose();
          dpWiz = null;
          Log.debug(5, "The new entity wizard couldn't load the existing eml document!");
          return;
       }
       Log.debug(25, "The current page id in IncompleteDocument.loadEntityWizard is "+currentPage.getPageID());
       dpWiz.initialAutoSaving();
-      dataPackage.removeInfoForIncompleteEntity();
-      MorphoFrame frame = openMorphoFrameForDataPackage(dataPackage);
       if(frame != null)
       {
         TableWizardListener dataPackageWizardListener = new TableWizardListener(dataPackage, index, frame);
