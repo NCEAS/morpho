@@ -418,6 +418,7 @@ public class CodeImportPage extends AbstractUIPage {
           return success;
         }      
         success = true;
+        mainWizFrame.setImportCodeDefinitionTable(true);
         return success;
       }
       else if(importChoice == IMPORT_DONE)
@@ -487,6 +488,7 @@ public class CodeImportPage extends AbstractUIPage {
         }
         
         success = true;
+        mainWizFrame.setImportCodeDefinitionTable(true);//when this page shows up, it is definitely a importCodeDefinitionTable
         return success;
       }
       else

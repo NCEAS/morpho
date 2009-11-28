@@ -269,7 +269,7 @@ public class CodeDefinition extends AbstractUIPage {
 		     //mainWizFrame.setEntityIndex(entityIndex);
 	         adp.setLocation("");  // we've changed it and not yet saved
 	         entityAdded = false; //since we deleted the added entity, we need to set it to be false.
-	         removedAttributeInfo = null;//clicking back button will set this value to null.
+	         //removedAttributeInfo = null;//clicking back button will set this value to null.
 	  }
 	  //adp.addFirstAttributeForImport(removedAttributeInfo);
 	  selectedCodeColumnIndex = -1;
@@ -447,14 +447,30 @@ public class CodeDefinition extends AbstractUIPage {
     
     try
     {
-      onLoadAction(); 
+      /*adp = getADP();
+      if(adp == null) 
+      {
+         Log.debug(10, "Error! Unable to obtain the ADP in CodeDefinition.setPageData page!");
+         return success;
+      }
+      prevPageID = mainWizFrame.getPreviousPageID();
+      //if(prevPageID.equals(DataPackageWizardInterface.TEXT_IMPORT_WIZARD) || prevPageID.equals(DataPackageWizardInterface.ENTITY)) {
+      if(prevPageID != null && !entityAdded && (prevPageID.startsWith(DataPackageWizardInterface.TEXT_IMPORT_ATTRIBUTE) || prevPageID.equals(DataPackageWizardInterface.ENTITY))) 
+      {
+        //adds the the new entity collected from previous pages into package.
+        addNewEntityToAbstractDataPackage();
+       
+      }
+      handledImportAttributeName =(String) removedAttributeInfo.get(AbstractDataPackage.ATTRIBUTENAMEINDEX);*/
+      onLoadAction();
+      success = onAdvanceAction();
     }
     catch(Exception e)
     {
       Log.debug(30, "Morpho couldn't click the radion button or select code-definition table or adds an entity into data package "+e.getMessage());
-      return success;
+      return false;
     }    
-     success = true;
+     //success = true;
      return success;
    }
   
