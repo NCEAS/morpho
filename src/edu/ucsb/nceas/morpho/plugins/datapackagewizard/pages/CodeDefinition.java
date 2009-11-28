@@ -163,6 +163,7 @@ public class CodeDefinition extends AbstractUIPage {
     if(removedAttributeInfo != null)
     {
     	adp.addFirstAttributeForImport(removedAttributeInfo);
+    	removedAttributeInfo = null;
     }
     handledImportAttributeName = adp.getCurrentImportAttributeName();
     String entity = adp.getCurrentImportEntityName();
@@ -181,6 +182,7 @@ public class CodeDefinition extends AbstractUIPage {
     }
     String tableName = adp.getLastImportedEntity();
     List attrs =  adp.getLastImportedAttributes();
+    //Log.debug(5, "The attribtue list "+attrs);
     
     if(prevPageID.equals(DataPackageWizardInterface.ENTITY) && rowData == null) { 
       
@@ -231,9 +233,9 @@ public class CodeDefinition extends AbstractUIPage {
     
     importPanel.setTable(tableName, attrs, rowData);
     importPanel.invalidate();
-    adp.setLastImportedAttributes(null);
-    adp.setLastImportedEntity(null);
-    adp.setLastImportedDataSet(null);
+    //adp.setLastImportedAttributes(null);
+    //adp.setLastImportedEntity(null);
+    //adp.setLastImportedDataSet(null);
 
   }
 
@@ -284,6 +286,8 @@ public class CodeDefinition extends AbstractUIPage {
       selectedEntityIndex = importPanel.getSelectedEntityIndex();
       selectedCodeColumnIndex = importPanel.getSelectedCodeColumnIndexInTable();
       selectedDefinitionColumnIndex = importPanel.getSelectedDefColumnIndexInTable();
+      //Log.debug(5, "The name of handledImport attributeName is "+handledImportAttributeName);
+      //Log.debug(5, "the size of imported attribute is "+adp.getAttributeImportCount());
       return true;
     } else
       return false;

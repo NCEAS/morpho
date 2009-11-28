@@ -385,7 +385,9 @@ public class CodeImportSummary extends AbstractUIPage {
 
 	    }
 
-   
+    adp.setLastImportedAttributes(null);
+    adp.setLastImportedEntity(null);
+    adp.setLastImportedDataSet(null);
     return true;
   }
 
