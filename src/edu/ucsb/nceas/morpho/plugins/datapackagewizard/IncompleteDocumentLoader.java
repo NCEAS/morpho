@@ -252,6 +252,7 @@ public class IncompleteDocumentLoader
           AbstractUIPage page = null;
           for(int i=0; i<size;  i++)
           {
+            page = null;
             WizardPageInfo pageClassInfo = classNameFromIncompleteDoc[i];
             if(pageClassInfo != null)
             {
