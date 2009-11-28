@@ -1403,11 +1403,11 @@ public class WizardContainerFrame
 						  else if(page instanceof CodeDefinition)
 						  {
 							  CodeDefinition codeDef = (CodeDefinition)page;
-							  emlWithIncompleteInfo.append(IncompleteDocSettings.VARIABLEOPENINGTAG);
+							  /*emlWithIncompleteInfo.append(IncompleteDocSettings.VARIABLEOPENINGTAG);
 							  emlWithIncompleteInfo.append(IncompleteDocSettings.KEYOPENINGTAG+
 									  CodeDefnPanel.SELECTEDENTITYINDEX+IncompleteDocSettings.KEYCLOSINGTAG+
 									  IncompleteDocSettings.VALUEOPENINGTAG+codeDef.getSelectedEntityIndex()+IncompleteDocSettings.VALUECLOSINGTAG);
-							  emlWithIncompleteInfo.append(IncompleteDocSettings.VARIABLECLOSINGTAG);
+							  emlWithIncompleteInfo.append(IncompleteDocSettings.VARIABLECLOSINGTAG);*/
 							  emlWithIncompleteInfo.append(IncompleteDocSettings.VARIABLEOPENINGTAG);
 							  emlWithIncompleteInfo.append(IncompleteDocSettings.KEYOPENINGTAG+
 									  CodeDefnPanel.CODECOLUMNINDEX+IncompleteDocSettings.KEYCLOSINGTAG+

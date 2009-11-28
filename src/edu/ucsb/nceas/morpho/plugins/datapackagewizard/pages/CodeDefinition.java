@@ -92,7 +92,7 @@ public class CodeDefinition extends AbstractUIPage {
   private ArrayList removedAttributeInfo = null;
   private String handledImportAttributeName = null;
   private boolean entityAdded = false;//indicates if entity already added to adp
-  private int selectedEntityIndex = -1;
+  //private int selectedEntityIndex = -1;
   private int selectedCodeColumnIndex = -1;
   private int selectedDefinitionColumnIndex = -1;
   
@@ -233,6 +233,21 @@ public class CodeDefinition extends AbstractUIPage {
     
     importPanel.setTable(tableName, attrs, rowData);
     importPanel.invalidate();
+    if(selectedCodeColumnIndex != -1 && selectedDefinitionColumnIndex != -1 )
+    {
+      Log.debug(35, "Before selecting the code column "+selectedCodeColumnIndex+" and defintion columns "+selectedDefinitionColumnIndex+" in CodeImportPage.onLoad ");
+      int[] columnsIndex = {selectedCodeColumnIndex, selectedDefinitionColumnIndex};//the first is code, the second is definition
+      //Log.debug(5, "import panel is "+importPanel);
+      try
+      {
+         importPanel.setSelectedCodeDefColumnInTable(columnsIndex);
+      }
+      catch(Exception e)
+      {
+        Log.debug(35, "Couldn't select code/definition column in CodeDefinition.onLoad since "+e.getMessage());
+      }
+      Log.debug(35, "After selecting the code and defintion columns in CodeImportPage.onLoad "+selectedCodeColumnIndex);
+    }
     //adp.setLastImportedAttributes(null);
     //adp.setLastImportedEntity(null);
     //adp.setLastImportedDataSet(null);
@@ -257,6 +272,8 @@ public class CodeDefinition extends AbstractUIPage {
 	         removedAttributeInfo = null;//clicking back button will set this value to null.
 	  }
 	  //adp.addFirstAttributeForImport(removedAttributeInfo);
+	  selectedCodeColumnIndex = -1;
+	  selectedDefinitionColumnIndex = -1;
   }
 
   /**
@@ -283,7 +300,7 @@ public class CodeDefinition extends AbstractUIPage {
 
       }
       removedAttributeInfo = adp.removeFirstAttributeForImport();
-      selectedEntityIndex = importPanel.getSelectedEntityIndex();
+      //selectedEntityIndex = importPanel.getSelectedEntityIndex();
       selectedCodeColumnIndex = importPanel.getSelectedCodeColumnIndexInTable();
       selectedDefinitionColumnIndex = importPanel.getSelectedDefColumnIndexInTable();
       //Log.debug(5, "The name of handledImport attributeName is "+handledImportAttributeName);
@@ -430,13 +447,7 @@ public class CodeDefinition extends AbstractUIPage {
     
     try
     {
-      onLoadAction();
-      Log.debug(35, "Before selecting the code column "+selectedCodeColumnIndex+" and defintion columns "+selectedDefinitionColumnIndex+" in CodeImportPage.setPageData ");
-      int[] columnsIndex = {selectedCodeColumnIndex, selectedDefinitionColumnIndex};//the first is code, the second is definition
-      //Log.debug(5, "import panel is "+importPanel);
-      importPanel.setSelectedCodeDefColumnInTable(columnsIndex);
-      Log.debug(35, "After selecting the code and defintion columns in CodeImportPage.setPageData "+selectedCodeColumnIndex);
-      
+      onLoadAction(); 
     }
     catch(Exception e)
     {
@@ -465,14 +476,7 @@ public class CodeDefinition extends AbstractUIPage {
 	  return this.removedAttributeInfo;
   }
   
-   /**
-    * Gets the selected entity index (not id) from CodeDefnPanel
-    * @return
-    */
-   public int getSelectedEntityIndex() 
-   {
-		return selectedEntityIndex;
-   }
+  
 
    /**
     * Gets the selected code column index (not id) from CodeDefnPanel
