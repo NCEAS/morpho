@@ -102,7 +102,7 @@ public class InsertColumnCommand implements Command, DataPackageWizardListener
   private Vector columnLabels;
   private String fieldDelimiter;
   private JPanel tablePanel;
-  private Document attributeDoc;
+  //private Document attributeDoc;
 
   /**
    * Constructor of Import data command
@@ -191,7 +191,7 @@ public class InsertColumnCommand implements Command, DataPackageWizardListener
 			        ptm = (PersistentTableModel)table.getModel();
 			        pv = dataView.getPV();
 			        Morpho morph=dataView.getMorpho();
-			        attributeDoc = dataView.getAttributeDoc();
+			        //attributeDoc = dataView.getAttributeDoc();
 			        columnLabels=dataView.getColumnLabels();
 			        //         String fieldDelimiter=dataView.getFieldDelimiter();
 			        fieldDelimiter= pv.getFieldDelimiter();
@@ -222,11 +222,11 @@ public class InsertColumnCommand implements Command, DataPackageWizardListener
     {
       if (beforeFlag)
       {
-        insertNewAttributeAt(selectedCol, attributeDoc);
+        insertNewAttributeAt(selectedCol);
       }
       else
       {
-        insertNewAttributeAt((selectedCol+1), attributeDoc);
+        insertNewAttributeAt((selectedCol+1));
       }
 
     }//try
@@ -342,7 +342,7 @@ public class InsertColumnCommand implements Command, DataPackageWizardListener
 		return "";
   }
 
-  void insertNewAttributeAt(int index, Document doc)
+  void insertNewAttributeAt(int index)
   {
     if(map == null) {
       Log.debug(15,"Error retrieving OrderedMap while Inserting Column");
