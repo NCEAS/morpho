@@ -34,6 +34,7 @@ import edu.ucsb.nceas.morpho.framework.MorphoFrame;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.IncompleteDocumentLoader;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.TextImportAttribute;
 import edu.ucsb.nceas.morpho.util.IncompleteDocInfo;
+import edu.ucsb.nceas.utilities.OrderedMap;
 
 import java.util.List;
 import java.util.ArrayList;
@@ -136,8 +137,12 @@ public interface DataPackageWizardInterface {
    *  @param listener the <code>DataPackageWizardListener</code> to be called
    *                  back when the Wizard has finished
    *  @param entityIndex the index of the entity which wizard will use (next entity index)
+   *  @param attributeMap  the ordered map for the editing attribute
+   *  @param editingEntityIndex  the index of the entity which is editing
+   *  @param editingAttributeIndex the index of the attribute which is editing
+   *  @param beforeFlag if the new column is before the select column. If it is null, it means editing rather than inserting
    */
-  public void startCodeDefImportWizard(DataPackageWizardListener listener, int entityIndex);
+  public void startCodeDefImportWizard(DataPackageWizardListener listener, int entityIndex, OrderedMap attributeMap, int editingEntityIndex, int editingAttributeIndex, Boolean beforeFlag);
 
 
   /**

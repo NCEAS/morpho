@@ -43,6 +43,7 @@ import edu.ucsb.nceas.morpho.plugins.ServiceExistsException;
 import edu.ucsb.nceas.morpho.plugins.ServiceProvider;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.PartyPage;
 import edu.ucsb.nceas.morpho.util.IncompleteDocInfo;
+import edu.ucsb.nceas.morpho.util.IncompleteDocSettings;
 import edu.ucsb.nceas.morpho.util.Log;
 import edu.ucsb.nceas.utilities.OrderedMap;
 import edu.ucsb.nceas.utilities.XMLUtilities;
@@ -164,11 +165,23 @@ public class DataPackageWizardPlugin implements PluginInterface,
    *  @param listener the <code>DataPackageWizardListener</code> to be called
    *                  back when the Wizard has finished
    *  @param entityIndex the index of the entity which wizard will use (next entity index)
+   *  @param attributeMap  the ordered map for the editing attribute
+   *  @param editingEntityIndex  the index of the entity which is editing
+   *  @param editingAttributeIndex the index of the attribute which is editing
+   *  @param beforeFlag if the new column is before the select column. If it is null, it means editing rather than inserting
    */
-  public void startCodeDefImportWizard(DataPackageWizardListener listener, int entityIndex ) {
+  public void startCodeDefImportWizard(DataPackageWizardListener listener, int entityIndex, OrderedMap attributeMap, 
+		  int editingEntityIndex, int editingAttributeIndex, Boolean beforeFlag) {
 
-    startWizardAtPage(DataPackageWizardInterface.CODE_IMPORT_SUMMARY, false,
+	  WizardContainerFrame wizard = startWizardAtPage(DataPackageWizardInterface.CODE_IMPORT_SUMMARY, false,
                       listener, NEWCODEDEFINITIONWIZARDFRAMETITLE, entityIndex);
+	  if(wizard != null)
+	  {
+	    wizard.setEditingEntityIndex(editingEntityIndex);
+	    wizard.setEditingAttributeIndex(editingAttributeIndex);
+	    wizard.setEditingAttributeMap(attributeMap);
+	    wizard.setBeforeSelectionFlag(beforeFlag);
+	  }
   }
   
   /**
@@ -198,15 +211,20 @@ public class DataPackageWizardPlugin implements PluginInterface,
    * @param frameTitle String
    * @param entityIndex the index of the new entity in this package
    */
-  protected void startWizardAtPage(String pageID, boolean showPageCount,
+  protected WizardContainerFrame startWizardAtPage(String pageID, boolean showPageCount,
                         DataPackageWizardListener listener, String frameTitle, int entityIndex) {
 
     WizardContainerFrame dpWiz = null;
-    if(pageID != null && (pageID.equals(WizardSettings.ENTITY_WIZ_FIRST_PAGE_ID) || pageID.equals(DataPackageWizardInterface.CODE_IMPORT_SUMMARY)))
+    if(pageID != null && pageID.equals(WizardSettings.ENTITY_WIZ_FIRST_PAGE_ID))
     {
-    	boolean isEnity = true;
-    	dpWiz = new WizardContainerFrame(isEnity);
+    	//boolean isEnity = true;
+    	dpWiz = new WizardContainerFrame(IncompleteDocSettings.ENTITYWIZARD);
     	dpWiz.setEntityIndex(entityIndex);
+    }
+    else if(pageID != null && pageID.equals(DataPackageWizardInterface.CODE_IMPORT_SUMMARY))
+    {
+      dpWiz = new WizardContainerFrame(IncompleteDocSettings.CODEDEFINITIONWIZARD);
+      dpWiz.setEntityIndex(entityIndex);
     }
     else
     {
@@ -221,6 +239,7 @@ public class DataPackageWizardPlugin implements PluginInterface,
     dpWiz.setShowPageCountdown(showPageCount);
     dpWiz.setTitle(frameTitle);
     dpWiz.setVisible(true);
+    return dpWiz;
   }
 
 

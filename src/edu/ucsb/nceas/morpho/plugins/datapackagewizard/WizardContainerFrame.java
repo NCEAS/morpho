@@ -119,7 +119,8 @@ public class WizardContainerFrame
   private final static String DATADIR = "dataDir";
   
   protected boolean disableIncompleteSaving = false;
-  private boolean isEntityWizard = false;
+  //private boolean isEntityWizard = false;
+  private String status = IncompleteDocSettings.PACKAGEWIZARD;
   private boolean isImportCodeDefinitionTable = false;
   private int entityIndex = 0;
   private  AbstractDataPackage adp = null;
@@ -134,6 +135,12 @@ public class WizardContainerFrame
   private String entityName = null;
   private List newImportedAttributeNameList = new ArrayList();
   private Vector neededCancelingEntityList = new Vector();//this is for clean up.
+  private OrderedMap editingAttributeMap = null;//stores the attribute map which is edited by editing command
+                                                //This is for code-def wizard
+  private int editingEntityIndex = -1;
+  private int editingAttributeIndex = -1;
+  private Boolean beforeSelectionFlag = null; //stores the inserting column is before or after selection
+  
   private String[] entityPageIDList = {DataPackageWizardInterface.DATA_LOCATION, DataPackageWizardInterface.DATA_FORMAT,DataPackageWizardInterface.ENTITY,
 		                                             DataPackageWizardInterface.TEXT_IMPORT_ENTITY, DataPackageWizardInterface.TEXT_IMPORT_DELIMITERS, 
 		                                             DataPackageWizardInterface.TEXT_IMPORT_ATTRIBUTE};
@@ -146,18 +153,18 @@ public class WizardContainerFrame
    */
   public WizardContainerFrame() 
   {
-	  this(false);
+	  this(IncompleteDocSettings.PACKAGEWIZARD);
   }
   
   /**
    * Constructor with a flag indicating if this is an entity wizard
    */
-  public WizardContainerFrame(boolean isEntityWizard) {
+  public WizardContainerFrame(String status) {
 
     super();
     frame = this;
     this.listener = listener;
-    this.isEntityWizard = isEntityWizard;
+    this.status = status;
     pageStack = new Stack();
     pageLib = new WizardPageLibrary(this);
     adp = UIController.getInstance().getCurrentAbstractDataPackage();
@@ -215,7 +222,8 @@ public class WizardContainerFrame
    */
   private void dumpPackageToAutoSaveFile(String fileID)
   {
-	  if(fileID != null && adp!= null && isEntityWizard)
+	  if(fileID != null && adp!= null && status != null && 
+	      (status.equals(IncompleteDocSettings.ENTITYWIZARD) ||status.equals(IncompleteDocSettings.CODEDEFINITIONWIZARD)))
 	  {
 		  String emlDoc = XMLUtilities.getDOMTreeAsString(adp.getMetadataNode(), false);
 		  //System.out.println("the original eml "+emlDoc);
@@ -1092,7 +1100,7 @@ public class WizardContainerFrame
 					    " and the saving will be terminated ");
 			  return;
 		  }
-		  if(!isEntityWizard)
+		  if(status != null && status.equals(IncompleteDocSettings.PACKAGEWIZARD))
 		  {	  
 			  try
 			  {
@@ -1119,7 +1127,7 @@ public class WizardContainerFrame
 		      }
 		    
 		  }
-		  else
+		  else if(status != null && (status.equals(IncompleteDocSettings.ENTITYWIZARD) ||status.equals(IncompleteDocSettings.CODEDEFINITIONWIZARD)) )
 		  {
 			  // for entity wizard
 			  if(adp != null)
@@ -1140,7 +1148,15 @@ public class WizardContainerFrame
 				  try
 				  {
 				    emlDoc = XMLUtilities.getDOMTreeAsString(adp.getMetadataNode(), false);
-				    emlDoc = addEntityWizardIncompleteInfo(emlDoc);
+				    if(status.equals(IncompleteDocSettings.ENTITYWIZARD))
+				    {
+				      emlDoc = addEntityWizardIncompleteInfo(emlDoc);
+				    }
+				    else
+				    {
+				      emlDoc = addCodeDefinitionWizardIncompleteInfo(emlDoc);
+				    }
+				    
 				    Log.debug(40, "The partial eml document is :\n"+emlDoc);
 				  }
 				  catch(Exception e)
@@ -1338,139 +1354,11 @@ public class WizardContainerFrame
 			  //appends additionalMetadata par original eml
 			  emlWithIncompleteInfo.append(IncompleteDocSettings.ADDITIONALMETADATAOPENINGTAG+
               IncompleteDocSettings.METADATAOPENINGTAG+IncompleteDocSettings.ENTITYWIZARDOPENINGTAG+
-              IncompleteDocSettings.INDEXOPENINGTAG+entityIndex+IncompleteDocSettings.INDEXCLOSINGTAG);
-			  if(adp != null)
-			  {
-				  //put the import attribute information into metadata.
-				  emlWithIncompleteInfo.append(adp.importAttributesToXML());
-			  }
-			  if(pageStack != null)
-			  {
-				  int size = pageStack.size();
-				  String className = null;
-				  for(int i=0; i<size; i++)
-				  {
-					  AbstractUIPage page = (AbstractUIPage)pageStack.elementAt(i);
-					  if(page != null)
-					  {
-						  className = page.getClass().getName();
-						  Log.debug(40, "Class name is "+className);
-						  emlWithIncompleteInfo.append(IncompleteDocSettings.CLASSOPENINGTAG+IncompleteDocSettings.NAMEOPENINGTAG+
-						                                      className+IncompleteDocSettings.NAMECLOSINGTAG);
-						  if(page instanceof DataLocation)
-						  {
-							  //add data location into variable pair - key and value
-							  DataLocation location = (DataLocation)page;
-							  File dataFile = location.getDataFile();
-							  if (dataFile != null)
-							  {
-					
-								  //we need to store the full path of the file
-								  String dataFilePath = dataFile.getAbsolutePath();
-								  emlWithIncompleteInfo.append(IncompleteDocSettings.VARIABLEOPENINGTAG+IncompleteDocSettings.KEYOPENINGTAG+
-										  DataLocation.TEXTFILEPATH+IncompleteDocSettings.KEYCLOSINGTAG+
-										  IncompleteDocSettings.VALUEOPENINGTAG+dataFilePath+IncompleteDocSettings.VALUECLOSINGTAG+
-										  IncompleteDocSettings.VARIABLECLOSINGTAG);						  
-								  
-							  }
-							  short lastEvent = location.getLastEvent();
-							  Log.debug(35, "last event is"+lastEvent);
-							  emlWithIncompleteInfo.append(IncompleteDocSettings.VARIABLEOPENINGTAG+IncompleteDocSettings.KEYOPENINGTAG+
-									  DataLocation.LASTEVENT+IncompleteDocSettings.KEYCLOSINGTAG+
-									  IncompleteDocSettings.VALUEOPENINGTAG+lastEvent+IncompleteDocSettings.VALUECLOSINGTAG+
-									  IncompleteDocSettings.VARIABLECLOSINGTAG);
-						  }
-						  else if(page instanceof TextImportEntity)
-						  {
-							  //add additional info about if ColumnLabelInStartingRow box is checked
-							  TextImportEntity textEntity = (TextImportEntity)page;
-							  boolean isSelected = textEntity.isColumnLabelInStartingRowCheckBoxChecked();
-							  emlWithIncompleteInfo.append(IncompleteDocSettings.VARIABLEOPENINGTAG+IncompleteDocSettings.KEYOPENINGTAG+
-									  textEntity.COLUMNLABELINSTARTINGROW+IncompleteDocSettings.KEYCLOSINGTAG+
-									  IncompleteDocSettings.VALUEOPENINGTAG+isSelected+IncompleteDocSettings.VALUECLOSINGTAG+
-									  IncompleteDocSettings.VARIABLECLOSINGTAG);
-						  }
-						  else if(page instanceof TextImportDelimiters)
-						  {
-							  //add additional info about if ColumnLabelInStartingRow box is checked
-							  TextImportDelimiters textDelimiter = (TextImportDelimiters)page;
-							  boolean ingoreConsecutiveDelimiters = textDelimiter.ignoreConsequtiveDelimiters();
-							  emlWithIncompleteInfo.append(IncompleteDocSettings.VARIABLEOPENINGTAG+IncompleteDocSettings.KEYOPENINGTAG+
-									  textDelimiter.IGNORECONSECUTIVEDELIMITERS+IncompleteDocSettings.KEYCLOSINGTAG+
-									  IncompleteDocSettings.VALUEOPENINGTAG+ingoreConsecutiveDelimiters+IncompleteDocSettings.VALUECLOSINGTAG+
-									  IncompleteDocSettings.VARIABLECLOSINGTAG);
-						  }
-						  else if(page instanceof CodeDefinition)
-						  {
-							  CodeDefinition codeDef = (CodeDefinition)page;
-							  /*emlWithIncompleteInfo.append(IncompleteDocSettings.VARIABLEOPENINGTAG);
-							  emlWithIncompleteInfo.append(IncompleteDocSettings.KEYOPENINGTAG+
-									  CodeDefnPanel.SELECTEDENTITYINDEX+IncompleteDocSettings.KEYCLOSINGTAG+
-									  IncompleteDocSettings.VALUEOPENINGTAG+codeDef.getSelectedEntityIndex()+IncompleteDocSettings.VALUECLOSINGTAG);
-							  emlWithIncompleteInfo.append(IncompleteDocSettings.VARIABLECLOSINGTAG);*/
-							  emlWithIncompleteInfo.append(IncompleteDocSettings.VARIABLEOPENINGTAG);
-							  emlWithIncompleteInfo.append(IncompleteDocSettings.KEYOPENINGTAG+
-									  CodeDefnPanel.CODECOLUMNINDEX+IncompleteDocSettings.KEYCLOSINGTAG+
-									  IncompleteDocSettings.VALUEOPENINGTAG+codeDef.getSelectedCodeColumnIndex()+IncompleteDocSettings.VALUECLOSINGTAG);
-							  emlWithIncompleteInfo.append(IncompleteDocSettings.VARIABLECLOSINGTAG);
-							  emlWithIncompleteInfo.append(IncompleteDocSettings.VARIABLEOPENINGTAG);
-							  emlWithIncompleteInfo.append(IncompleteDocSettings.KEYOPENINGTAG+
-									  CodeDefnPanel.DEFINITIONCOLUMNINDEX+IncompleteDocSettings.KEYCLOSINGTAG+
-									  IncompleteDocSettings.VALUEOPENINGTAG+codeDef.getSelectedDefinitionColumnIndex()+IncompleteDocSettings.VALUECLOSINGTAG);
-							  emlWithIncompleteInfo.append(IncompleteDocSettings.VARIABLECLOSINGTAG);
-							  emlWithIncompleteInfo.append(IncompleteDocSettings.ADDITIONALINFOOPENINGTAG);
-							  emlWithIncompleteInfo.append(IncompleteDocSettings.REMOVEDIMPORTATTRIBUTEOPENINGTAG);
-							  emlWithIncompleteInfo.append(AbstractDataPackage.transformOneImportAttributeToXML(codeDef.getRemovedImportAttributeInfo()));
-							  emlWithIncompleteInfo.append(IncompleteDocSettings.REMOVEDIMPORTATTRIBUTECLOSINGTAG);
-							  emlWithIncompleteInfo.append(IncompleteDocSettings.ADDITIONALINFOCLOSINGTAG);
-							  
-						  }
-						  else if(page instanceof CodeImportPage)
-						  {
-						    CodeImportPage codeImport = (CodeImportPage)page;
-						    short importChoice = codeImport.getImportChoice();
-						    emlWithIncompleteInfo.append(IncompleteDocSettings.VARIABLEOPENINGTAG);
-                emlWithIncompleteInfo.append(IncompleteDocSettings.KEYOPENINGTAG+
-                    CodeImportPage.IMMPORTCHOICE+IncompleteDocSettings.KEYCLOSINGTAG+
-                    IncompleteDocSettings.VALUEOPENINGTAG+importChoice+IncompleteDocSettings.VALUECLOSINGTAG);
-                emlWithIncompleteInfo.append(IncompleteDocSettings.VARIABLECLOSINGTAG);
-                emlWithIncompleteInfo.append(IncompleteDocSettings.VARIABLEOPENINGTAG);
-                emlWithIncompleteInfo.append(IncompleteDocSettings.KEYOPENINGTAG+
-                    CodeImportPage.ENTITYINDEXINCREASED+IncompleteDocSettings.KEYCLOSINGTAG+
-                    IncompleteDocSettings.VALUEOPENINGTAG+codeImport.isEntityIndexIncreased()+IncompleteDocSettings.VALUECLOSINGTAG);
-                emlWithIncompleteInfo.append(IncompleteDocSettings.VARIABLECLOSINGTAG);
-						    if(importChoice == CodeImportPage.IMPORT_DONE)
-						    {
-  						    /*emlWithIncompleteInfo.append(IncompleteDocSettings.VARIABLEOPENINGTAG);
-                  emlWithIncompleteInfo.append(IncompleteDocSettings.KEYOPENINGTAG+
-                      CodeDefnPanel.SELECTEDENTITYINDEX+IncompleteDocSettings.KEYCLOSINGTAG+
-                      IncompleteDocSettings.VALUEOPENINGTAG+codeImport.getSelectedEntityIndex()+IncompleteDocSettings.VALUECLOSINGTAG);
-                  emlWithIncompleteInfo.append(IncompleteDocSettings.VARIABLECLOSINGTAG);*/
-                  emlWithIncompleteInfo.append(IncompleteDocSettings.VARIABLEOPENINGTAG);
-                  emlWithIncompleteInfo.append(IncompleteDocSettings.KEYOPENINGTAG+
-                      CodeDefnPanel.CODECOLUMNINDEX+IncompleteDocSettings.KEYCLOSINGTAG+
-                      IncompleteDocSettings.VALUEOPENINGTAG+codeImport.getSelectedCodeColumnIndex()+IncompleteDocSettings.VALUECLOSINGTAG);
-                  emlWithIncompleteInfo.append(IncompleteDocSettings.VARIABLECLOSINGTAG);
-                  emlWithIncompleteInfo.append(IncompleteDocSettings.VARIABLEOPENINGTAG);
-                  emlWithIncompleteInfo.append(IncompleteDocSettings.KEYOPENINGTAG+
-                      CodeDefnPanel.DEFINITIONCOLUMNINDEX+IncompleteDocSettings.KEYCLOSINGTAG+
-                      IncompleteDocSettings.VALUEOPENINGTAG+codeImport.getSelectedDefinitionColumnIndex()+IncompleteDocSettings.VALUECLOSINGTAG);
-                  emlWithIncompleteInfo.append(IncompleteDocSettings.VARIABLECLOSINGTAG);
-                  emlWithIncompleteInfo.append(IncompleteDocSettings.ADDITIONALINFOOPENINGTAG);
-                  emlWithIncompleteInfo.append(IncompleteDocSettings.REMOVEDIMPORTATTRIBUTEOPENINGTAG);
-                  emlWithIncompleteInfo.append(AbstractDataPackage.transformOneImportAttributeToXML(codeImport.getRemovedImportAttributeInfo()));
-                  emlWithIncompleteInfo.append(IncompleteDocSettings.REMOVEDIMPORTATTRIBUTECLOSINGTAG);
-                  emlWithIncompleteInfo.append(IncompleteDocSettings.ADDITIONALINFOCLOSINGTAG);
-						    }
-						  }
-						  emlWithIncompleteInfo.append(IncompleteDocSettings.CLASSCLOSINGTAG);
-					  }
-				  }
-			  }
-             
-              emlWithIncompleteInfo.append(IncompleteDocSettings.ENTITYWIZARDCLOSINGTAG+
-              IncompleteDocSettings.METADATACLOSINGTAG+IncompleteDocSettings.ADDITIONALMETADATACLOSINGTAG+
-              IncompleteDocSettings.EMLCLOSINGTAG);
+              IncompleteDocSettings.INDEXOPENINGTAG+entityIndex+IncompleteDocSettings.INDEXCLOSINGTAG);			  
+        emlWithIncompleteInfo.append(getsImportAndPageInfo());   
+        emlWithIncompleteInfo.append(IncompleteDocSettings.ENTITYWIZARDCLOSINGTAG+
+        IncompleteDocSettings.METADATACLOSINGTAG+IncompleteDocSettings.ADDITIONALMETADATACLOSINGTAG+
+        IncompleteDocSettings.EMLCLOSINGTAG);
 			                                       
 		  }
 		  else
@@ -1483,7 +1371,212 @@ public class WizardContainerFrame
 	  
 	  return emlWithIncompleteInfo.toString();
   }
+
+  /*
+   * Adds some new information into additional part in EML for entity wizard
+   * In Entity Wizard, it is simple. It will replace the </eml> by
+   * <additionalMetadata>
+   *   <metadata>
+   *      <incomplete>
+   *         <codeDefinitionWizard>
+   *            <index>1<index>
+   *            <class><name>edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.PartyIntro</name><para>...<para></class>
+   *         </codeDefinitionWizard>
+   *      </incomplete>
+   *   <metadata>
+   * <additonalMetacat>
+   * </eml>
+   *         
+   *    
+   */
+  private String addCodeDefinitionWizardIncompleteInfo(String originalEML)
+  {
+    StringBuffer emlWithIncompleteInfo = new StringBuffer();
+    if(originalEML != null)
+    {
+      //System.out.println("the original eml is "+originalEML);
+      int index = originalEML.lastIndexOf(IncompleteDocSettings.EMLCLOSINGTAG);
+      if (index != -1)
+      {
+        //it has </eml:eml> closing tag. Note: orignalEML never has the incompleteMetadata since it from abtractDataPackage.
+        //removes the </packageWizard></metadata></additionalMetadata></eml:eml> from original eml
+        emlWithIncompleteInfo.append(originalEML.substring(0,index));
+        //appends additionalMetadata par original eml
+        emlWithIncompleteInfo.append(IncompleteDocSettings.ADDITIONALMETADATAOPENINGTAG+
+              IncompleteDocSettings.METADATAOPENINGTAG+IncompleteDocSettings.CODEDEFINITIONWIZARDOPENINGTAG+
+              IncompleteDocSettings.INDEXOPENINGTAG+entityIndex+IncompleteDocSettings.INDEXCLOSINGTAG);
+        emlWithIncompleteInfo.append(IncompleteDocSettings.EDITINGATTRIBUTEOPENINGTAG);
+        emlWithIncompleteInfo.append(IncompleteDocSettings.EDITINGENTITYINDEXOPENINGTAG);
+        emlWithIncompleteInfo.append(editingEntityIndex);
+        emlWithIncompleteInfo.append(IncompleteDocSettings.EDITINGENTITYINDEXCLOSINGTAG);
+        emlWithIncompleteInfo.append(IncompleteDocSettings.EDITINGATTRIBUTEINDEXOPENINGTAG);
+        emlWithIncompleteInfo.append(editingAttributeIndex);
+        emlWithIncompleteInfo.append(IncompleteDocSettings.EDITINGATTRIBUTEINDEXCLOSINGTAG);
+        if(beforeSelectionFlag != null)
+        {
+          emlWithIncompleteInfo.append(IncompleteDocSettings.EDITINGATTRIBUTEINSERTIONOPENINGTAG);
+          emlWithIncompleteInfo.append(beforeSelectionFlag.booleanValue());
+          emlWithIncompleteInfo.append(IncompleteDocSettings.EDITINGATTRIBUTEINSERTIONCLOSINGTAG);
+        }
+        if(editingAttributeMap != null)
+        {
+          emlWithIncompleteInfo.append(IncompleteDocSettings.EDITINGATTRIBUTEMAPOPENINGTAG);
+          emlWithIncompleteInfo.append(editingAttributeMap.toXML());
+          emlWithIncompleteInfo.append(IncompleteDocSettings.EDITINGATTRIBUTEMAPCLOSINGTAG);
+        }
+        emlWithIncompleteInfo.append(IncompleteDocSettings.EDITINGATTRIBUTECLOSINGNGTAG);
+        emlWithIncompleteInfo.append(getsImportAndPageInfo());
+        emlWithIncompleteInfo.append(IncompleteDocSettings.CODEDEFINITIONWIZARDCLOSINGTAG+
+        IncompleteDocSettings.METADATACLOSINGTAG+IncompleteDocSettings.ADDITIONALMETADATACLOSINGTAG+
+        IncompleteDocSettings.EMLCLOSINGTAG);
+                                             
+      }
+      else
+      {
+        //it doesn't have </eml:eml> closing tag, we use orignal document as modified one.
+        emlWithIncompleteInfo.append(originalEML);
+        
+      }
+    }
+    return emlWithIncompleteInfo.toString();
+  }
   
+  /*
+   * Gets attributeImport information and Page info
+   */
+  private String getsImportAndPageInfo()
+  {
+    StringBuffer emlWithIncompleteInfo = new StringBuffer();
+    if(adp != null)
+    {
+      //put the import attribute information into metadata.
+      emlWithIncompleteInfo.append(adp.importAttributesToXML());
+    }
+    if(pageStack != null)
+    {
+      int size = pageStack.size();
+      String className = null;
+      for(int i=0; i<size; i++)
+      {
+        AbstractUIPage page = (AbstractUIPage)pageStack.elementAt(i);
+        if(page != null)
+        {
+          className = page.getClass().getName();
+          Log.debug(40, "Class name is "+className);
+          emlWithIncompleteInfo.append(IncompleteDocSettings.CLASSOPENINGTAG+IncompleteDocSettings.NAMEOPENINGTAG+
+                                              className+IncompleteDocSettings.NAMECLOSINGTAG);
+          if(page instanceof DataLocation)
+          {
+            //add data location into variable pair - key and value
+            DataLocation location = (DataLocation)page;
+            File dataFile = location.getDataFile();
+            if (dataFile != null)
+            {
+      
+              //we need to store the full path of the file
+              String dataFilePath = dataFile.getAbsolutePath();
+              emlWithIncompleteInfo.append(IncompleteDocSettings.VARIABLEOPENINGTAG+IncompleteDocSettings.KEYOPENINGTAG+
+                  DataLocation.TEXTFILEPATH+IncompleteDocSettings.KEYCLOSINGTAG+
+                  IncompleteDocSettings.VALUEOPENINGTAG+dataFilePath+IncompleteDocSettings.VALUECLOSINGTAG+
+                  IncompleteDocSettings.VARIABLECLOSINGTAG);              
+              
+            }
+            short lastEvent = location.getLastEvent();
+            Log.debug(35, "last event is"+lastEvent);
+            emlWithIncompleteInfo.append(IncompleteDocSettings.VARIABLEOPENINGTAG+IncompleteDocSettings.KEYOPENINGTAG+
+                DataLocation.LASTEVENT+IncompleteDocSettings.KEYCLOSINGTAG+
+                IncompleteDocSettings.VALUEOPENINGTAG+lastEvent+IncompleteDocSettings.VALUECLOSINGTAG+
+                IncompleteDocSettings.VARIABLECLOSINGTAG);
+          }
+          else if(page instanceof TextImportEntity)
+          {
+            //add additional info about if ColumnLabelInStartingRow box is checked
+            TextImportEntity textEntity = (TextImportEntity)page;
+            boolean isSelected = textEntity.isColumnLabelInStartingRowCheckBoxChecked();
+            emlWithIncompleteInfo.append(IncompleteDocSettings.VARIABLEOPENINGTAG+IncompleteDocSettings.KEYOPENINGTAG+
+                textEntity.COLUMNLABELINSTARTINGROW+IncompleteDocSettings.KEYCLOSINGTAG+
+                IncompleteDocSettings.VALUEOPENINGTAG+isSelected+IncompleteDocSettings.VALUECLOSINGTAG+
+                IncompleteDocSettings.VARIABLECLOSINGTAG);
+          }
+          else if(page instanceof TextImportDelimiters)
+          {
+            //add additional info about if ColumnLabelInStartingRow box is checked
+            TextImportDelimiters textDelimiter = (TextImportDelimiters)page;
+            boolean ingoreConsecutiveDelimiters = textDelimiter.ignoreConsequtiveDelimiters();
+            emlWithIncompleteInfo.append(IncompleteDocSettings.VARIABLEOPENINGTAG+IncompleteDocSettings.KEYOPENINGTAG+
+                textDelimiter.IGNORECONSECUTIVEDELIMITERS+IncompleteDocSettings.KEYCLOSINGTAG+
+                IncompleteDocSettings.VALUEOPENINGTAG+ingoreConsecutiveDelimiters+IncompleteDocSettings.VALUECLOSINGTAG+
+                IncompleteDocSettings.VARIABLECLOSINGTAG);
+          }
+          else if(page instanceof CodeDefinition)
+          {
+            CodeDefinition codeDef = (CodeDefinition)page;
+            /*emlWithIncompleteInfo.append(IncompleteDocSettings.VARIABLEOPENINGTAG);
+            emlWithIncompleteInfo.append(IncompleteDocSettings.KEYOPENINGTAG+
+                CodeDefnPanel.SELECTEDENTITYINDEX+IncompleteDocSettings.KEYCLOSINGTAG+
+                IncompleteDocSettings.VALUEOPENINGTAG+codeDef.getSelectedEntityIndex()+IncompleteDocSettings.VALUECLOSINGTAG);
+            emlWithIncompleteInfo.append(IncompleteDocSettings.VARIABLECLOSINGTAG);*/
+            emlWithIncompleteInfo.append(IncompleteDocSettings.VARIABLEOPENINGTAG);
+            emlWithIncompleteInfo.append(IncompleteDocSettings.KEYOPENINGTAG+
+                CodeDefnPanel.CODECOLUMNINDEX+IncompleteDocSettings.KEYCLOSINGTAG+
+                IncompleteDocSettings.VALUEOPENINGTAG+codeDef.getSelectedCodeColumnIndex()+IncompleteDocSettings.VALUECLOSINGTAG);
+            emlWithIncompleteInfo.append(IncompleteDocSettings.VARIABLECLOSINGTAG);
+            emlWithIncompleteInfo.append(IncompleteDocSettings.VARIABLEOPENINGTAG);
+            emlWithIncompleteInfo.append(IncompleteDocSettings.KEYOPENINGTAG+
+                CodeDefnPanel.DEFINITIONCOLUMNINDEX+IncompleteDocSettings.KEYCLOSINGTAG+
+                IncompleteDocSettings.VALUEOPENINGTAG+codeDef.getSelectedDefinitionColumnIndex()+IncompleteDocSettings.VALUECLOSINGTAG);
+            emlWithIncompleteInfo.append(IncompleteDocSettings.VARIABLECLOSINGTAG);
+            emlWithIncompleteInfo.append(IncompleteDocSettings.ADDITIONALINFOOPENINGTAG);
+            emlWithIncompleteInfo.append(IncompleteDocSettings.REMOVEDIMPORTATTRIBUTEOPENINGTAG);
+            emlWithIncompleteInfo.append(AbstractDataPackage.transformOneImportAttributeToXML(codeDef.getRemovedImportAttributeInfo()));
+            emlWithIncompleteInfo.append(IncompleteDocSettings.REMOVEDIMPORTATTRIBUTECLOSINGTAG);
+            emlWithIncompleteInfo.append(IncompleteDocSettings.ADDITIONALINFOCLOSINGTAG);
+            
+          }
+          else if(page instanceof CodeImportPage)
+          {
+            CodeImportPage codeImport = (CodeImportPage)page;
+            short importChoice = codeImport.getImportChoice();
+            emlWithIncompleteInfo.append(IncompleteDocSettings.VARIABLEOPENINGTAG);
+            emlWithIncompleteInfo.append(IncompleteDocSettings.KEYOPENINGTAG+
+                CodeImportPage.IMMPORTCHOICE+IncompleteDocSettings.KEYCLOSINGTAG+
+                IncompleteDocSettings.VALUEOPENINGTAG+importChoice+IncompleteDocSettings.VALUECLOSINGTAG);
+            emlWithIncompleteInfo.append(IncompleteDocSettings.VARIABLECLOSINGTAG);
+            emlWithIncompleteInfo.append(IncompleteDocSettings.VARIABLEOPENINGTAG);
+            emlWithIncompleteInfo.append(IncompleteDocSettings.KEYOPENINGTAG+
+                CodeImportPage.ENTITYINDEXINCREASED+IncompleteDocSettings.KEYCLOSINGTAG+
+                IncompleteDocSettings.VALUEOPENINGTAG+codeImport.isEntityIndexIncreased()+IncompleteDocSettings.VALUECLOSINGTAG);
+            emlWithIncompleteInfo.append(IncompleteDocSettings.VARIABLECLOSINGTAG);
+            if(importChoice == CodeImportPage.IMPORT_DONE)
+            {
+              /*emlWithIncompleteInfo.append(IncompleteDocSettings.VARIABLEOPENINGTAG);
+              emlWithIncompleteInfo.append(IncompleteDocSettings.KEYOPENINGTAG+
+                  CodeDefnPanel.SELECTEDENTITYINDEX+IncompleteDocSettings.KEYCLOSINGTAG+
+                  IncompleteDocSettings.VALUEOPENINGTAG+codeImport.getSelectedEntityIndex()+IncompleteDocSettings.VALUECLOSINGTAG);
+              emlWithIncompleteInfo.append(IncompleteDocSettings.VARIABLECLOSINGTAG);*/
+              emlWithIncompleteInfo.append(IncompleteDocSettings.VARIABLEOPENINGTAG);
+              emlWithIncompleteInfo.append(IncompleteDocSettings.KEYOPENINGTAG+
+                  CodeDefnPanel.CODECOLUMNINDEX+IncompleteDocSettings.KEYCLOSINGTAG+
+                  IncompleteDocSettings.VALUEOPENINGTAG+codeImport.getSelectedCodeColumnIndex()+IncompleteDocSettings.VALUECLOSINGTAG);
+              emlWithIncompleteInfo.append(IncompleteDocSettings.VARIABLECLOSINGTAG);
+              emlWithIncompleteInfo.append(IncompleteDocSettings.VARIABLEOPENINGTAG);
+              emlWithIncompleteInfo.append(IncompleteDocSettings.KEYOPENINGTAG+
+                  CodeDefnPanel.DEFINITIONCOLUMNINDEX+IncompleteDocSettings.KEYCLOSINGTAG+
+                  IncompleteDocSettings.VALUEOPENINGTAG+codeImport.getSelectedDefinitionColumnIndex()+IncompleteDocSettings.VALUECLOSINGTAG);
+              emlWithIncompleteInfo.append(IncompleteDocSettings.VARIABLECLOSINGTAG);
+              emlWithIncompleteInfo.append(IncompleteDocSettings.ADDITIONALINFOOPENINGTAG);
+              emlWithIncompleteInfo.append(IncompleteDocSettings.REMOVEDIMPORTATTRIBUTEOPENINGTAG);
+              emlWithIncompleteInfo.append(AbstractDataPackage.transformOneImportAttributeToXML(codeImport.getRemovedImportAttributeInfo()));
+              emlWithIncompleteInfo.append(IncompleteDocSettings.REMOVEDIMPORTATTRIBUTECLOSINGTAG);
+              emlWithIncompleteInfo.append(IncompleteDocSettings.ADDITIONALINFOCLOSINGTAG);
+            }
+          }
+          emlWithIncompleteInfo.append(IncompleteDocSettings.CLASSCLOSINGTAG);
+        }
+      }
+    }
+    return emlWithIncompleteInfo.toString();
+  }
  
   
  
@@ -1726,7 +1819,7 @@ public class WizardContainerFrame
 
     listener.wizardCanceled();
     Log.debug(30, "the autosaved id is "+autoSaveID+" in WizardContainerFrame.cancel method");
-    if(autoSaveID != null && !isEntityWizard)
+    if(autoSaveID != null && status.equals(IncompleteDocSettings.PACKAGEWIZARD))
     {
     	//FileSystemDataStore store = new FileSystemDataStore(Morpho.thisStaticInstance);
     	//store.deleteInCompleteFile(autoSaveID);
@@ -1808,7 +1901,7 @@ public class WizardContainerFrame
    */
   private void addEmptyProjectTileSubtree()
   {
-	  if(adp != null && !isEntityWizard)
+	  if(adp != null && status.equals(IncompleteDocSettings.PACKAGEWIZARD))
 	  {
 		  
 		  String subtreeGenericName = "projectTitle";
@@ -2063,6 +2156,79 @@ public class WizardContainerFrame
   }
   
   /**
+   * Gets the order map of the editing attribute
+   * @return
+   */
+  public OrderedMap getEditingAttributeMap()
+  {
+    return editingAttributeMap;
+  }
+
+  /**
+   * Sets the ordered map for editing attribute
+   * @param editingAttributeMap
+   */
+  public void setEditingAttributeMap(OrderedMap editingAttributeMap)
+  {
+    this.editingAttributeMap = editingAttributeMap;
+  }
+
+  /**
+   * Gets the index of the editing entity
+   * @return
+   */
+  public int getEditingEntityIndex()
+  {
+    return editingEntityIndex;
+  }
+
+  /**
+   * Sets the index of the editing entity
+   * @param editingEntityIndex
+   */
+  public void setEditingEntityIndex(int editingEntityIndex)
+  {
+    this.editingEntityIndex = editingEntityIndex;
+  }
+
+  /**
+   * Gets the index of the editing attribute
+   * @return
+   */
+  public int getEditingAttributeIndex()
+  {
+    return editingAttributeIndex;
+  }
+
+  /**
+   * Sets the index of the editing attribute
+   * @param editingAttributeIndex
+   */
+  public void setEditingAttributeIndex(int editingAttributeIndex)
+  {
+    this.editingAttributeIndex = editingAttributeIndex;
+  }
+
+  /**
+   * Gets if inserting is before selection column
+   * @return
+   */
+  public Boolean getBeforeSelectionFlag()
+  {
+    return beforeSelectionFlag;
+  }
+
+  /**
+   * Sets if the inserting is before selection column
+   * @param beforeSelectionFlag
+   */
+  public void setBeforeSelectionFlag(Boolean beforeSelectionFlag)
+  {
+    this.beforeSelectionFlag = beforeSelectionFlag;
+  }
+
+  
+  /**
    * Set the attributeName into an arrayList. 
    * If the attribute index already in the array, we replace it. otherwise we add it to the array
    * @param index
@@ -2140,5 +2306,7 @@ public class WizardContainerFrame
   private static JFrame dummyFrame;
   private static JFrame dialogParent;
 
+
+  
 
 }

@@ -205,7 +205,7 @@ public class IncompleteDocumentLoader
       //incomplete information was read in init method and we can delete it now
       dataPackage.removeInfoForIncompleteEntity();
       MorphoFrame frame = openMorphoFrameForDataPackage(dataPackage);
-      WizardContainerFrame dpWiz = new WizardContainerFrame(isEntity);
+      WizardContainerFrame dpWiz = new WizardContainerFrame(IncompleteDocSettings.ENTITYWIZARD);
       dpWiz.setEntityIndex(index);
       AbstractUIPage currentPage = loadPagesIntoWizard(dpWiz, entityNode);
       if(currentPage == null)

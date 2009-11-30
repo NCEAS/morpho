@@ -77,13 +77,15 @@ public class EditingAttributeImportWizardListener implements DataPackageWizardLi
 
     String unit = getUnit(map, xPath);
     String sType = (String)map.get(xPath + "/storageType");
-    if(sType == null) sType = "";
+    String mScale = AbstractDataPackage.getMeasurementScale(map, xPath);
+    if(sType == null) sType = mScale;
     String columnName = AbstractDataPackage.getAttributeColumnName(map, xPath );
     // modify the
     String newHeader = "<html><font face=\"Courier\"><center><small>"+ sType +
     "</small><br><small>"+unit +"</small><br><b>"+
     columnName +"</b></center></font></html>";
-    if(dataView != null) {
+    if(dataView != null) 
+    {
 
       Vector colLabels = dataView.getColumnLabels();
       colLabels.set(attrIndex, newHeader);
