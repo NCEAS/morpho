@@ -165,13 +165,12 @@ public class DataPackageWizardPlugin implements PluginInterface,
    *  @param listener the <code>DataPackageWizardListener</code> to be called
    *                  back when the Wizard has finished
    *  @param entityIndex the index of the entity which wizard will use (next entity index)
-   *  @param attributeMap  the ordered map for the editing attribute
    *  @param editingEntityIndex  the index of the entity which is editing
    *  @param editingAttributeIndex the index of the attribute which is editing
    *  @param beforeFlag if the new column is before the select column. If it is null, it means editing rather than inserting
    */
-  public void startCodeDefImportWizard(DataPackageWizardListener listener, int entityIndex, OrderedMap attributeMap, 
-		  int editingEntityIndex, int editingAttributeIndex, Boolean beforeFlag) {
+  public void startCodeDefImportWizard(DataPackageWizardListener listener, int entityIndex,Boolean beforeFlag, 
+		  int editingEntityIndex, int editingAttributeIndex) {
 
 	  WizardContainerFrame wizard = startWizardAtPage(DataPackageWizardInterface.CODE_IMPORT_SUMMARY, false,
                       listener, NEWCODEDEFINITIONWIZARDFRAMETITLE, entityIndex);
@@ -179,7 +178,7 @@ public class DataPackageWizardPlugin implements PluginInterface,
 	  {
 	    wizard.setEditingEntityIndex(editingEntityIndex);
 	    wizard.setEditingAttributeIndex(editingAttributeIndex);
-	    wizard.setEditingAttributeMap(attributeMap);
+	    //wizard.setEditingAttributeMap(attributeMap);
 	    wizard.setBeforeSelectionFlag(beforeFlag);
 	  }
   }

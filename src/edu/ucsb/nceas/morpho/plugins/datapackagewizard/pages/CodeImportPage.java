@@ -298,6 +298,7 @@ public class CodeImportPage extends AbstractUIPage {
   
         }
         removedAttributeInfo = adp.removeFirstAttributeForImport();
+        mainWizFrame.setEditingAttributeMapFromRemovedImportAttribute(removedAttributeInfo);
         //selectedEntityIndex = importPanel.getSelectedEntityIndex();
         selectedCodeColumnIndex = importPanel.getSelectedCodeColumnIndexInTable();
         selectedDefinitionColumnIndex = importPanel.getSelectedDefColumnIndexInTable();

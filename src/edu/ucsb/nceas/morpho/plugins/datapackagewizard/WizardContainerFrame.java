@@ -2165,12 +2165,21 @@ public class WizardContainerFrame
   }
 
   /**
-   * Sets the ordered map for editing attribute
+   * Sets the ordered map for editing attribute.
+   * First we need to check if it is for newTable, if it is. We would not store it
    * @param editingAttributeMap
    */
-  public void setEditingAttributeMap(OrderedMap editingAttributeMap)
+  public void setEditingAttributeMapFromRemovedImportAttribute(ArrayList removedImportAttribute)
   {
-    this.editingAttributeMap = editingAttributeMap;
+    if(removedImportAttribute != null)
+    {
+      Boolean fromNewTable = (Boolean)removedImportAttribute.get(AbstractDataPackage.NEWTABLEINDEX);
+      if(!fromNewTable.booleanValue())
+      {
+        this.editingAttributeMap = (OrderedMap)removedImportAttribute.get(AbstractDataPackage.ORDEREDMAPINDEX);
+      }
+      
+    }
   }
 
   /**

@@ -142,7 +142,7 @@ public interface DataPackageWizardInterface {
    *  @param editingAttributeIndex the index of the attribute which is editing
    *  @param beforeFlag if the new column is before the select column. If it is null, it means editing rather than inserting
    */
-  public void startCodeDefImportWizard(DataPackageWizardListener listener, int entityIndex, OrderedMap attributeMap, int editingEntityIndex, int editingAttributeIndex, Boolean beforeFlag);
+  public void startCodeDefImportWizard(DataPackageWizardListener listener, int entityIndex,  Boolean beforeFlag, int editingEntityIndex, int editingAttributeIndex);
 
 
   /**
