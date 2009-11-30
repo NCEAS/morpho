@@ -89,6 +89,7 @@ public class IncompleteDocSettings
    public final static String INDEXCLOSINGTAG = LESSTHAN+SLASH+INDEX+GREATERTHAN;
    public  static final String INCOMPLETE_PACKAGE_WIZARD = "incomplete-pakcage-wizard";
    public  static final String INCOMPLETE_ENTITY_WIZARD  = "incomplete-entity-wizard";
+   public  static final String INCOMPLETE_CODE_DEFINITION_WIZARD  = "incomplete-code-definition-wizard";
    public  static final String VARIABLE = "variable";
    public  static final String VARIABLEOPENINGTAG = LESSTHAN+VARIABLE+GREATERTHAN;
    public  static final String VARIABLECLOSINGTAG  = LESSTHAN+SLASH+VARIABLE+GREATERTHAN;

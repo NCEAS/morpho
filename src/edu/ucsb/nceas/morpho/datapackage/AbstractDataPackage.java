@@ -36,6 +36,7 @@ import edu.ucsb.nceas.morpho.datastore.MetacatUploadException;
 import edu.ucsb.nceas.morpho.framework.ConfigXML;
 import edu.ucsb.nceas.morpho.framework.DocidIncreaseDialog;
 import edu.ucsb.nceas.morpho.util.DocumentNotFoundException;
+import edu.ucsb.nceas.morpho.plugins.IncompleteDocInfo;
 import edu.ucsb.nceas.morpho.plugins.XMLFactoryInterface;
 import edu.ucsb.nceas.morpho.query.LocalQuery;
 import edu.ucsb.nceas.morpho.util.IOUtil;
@@ -1555,57 +1556,33 @@ public abstract class AbstractDataPackage extends MetadataObject
     return tempNodes;
   }
   
-  /**
-   * Gets the status of the completion of this package 
-   * @return three status - completed, incomplete(new package wizard) or incomplete(text import wizard)
-   */
-  abstract public  String getCompletionStatus();
-  
+ 
   /**
    * Removes the information on additional metadata for incomplete entity
    */
   abstract public void removeInfoForIncompleteEntity();
   
   /**
-   * Gets the UIPage class name list after parsing the incomplete information in additional metacat part.
-   * This eml part looks like
-   *  <additionalMetadata>
-   *      <metadata>
-   *         <packagwizard>
-   *              <class>
-   *                  <name>
-   *                   <parameter>
-   *              </class>
-   *  ............................
-   * @return
+   * Removes the information on additional metadata for incomplete code-definition
+   * 
    */
-  abstract public WizardPageInfo [] getIncompletePacakgeWizardPageInfoList();
+  abstract public void removeInfoForIncompleteCodeDef();
   
   /**
-   * Gets the UIPage class name list after parsing the incomplete information in additional metacat part.
-   * This eml part looks like
-   *  <additionalMetadata>
-   *      <metadata>
-   *         <entityWizard>
-   *              <class>
-   *                  <name>
-   *                   <parameter>
-   *              </class>
-   *  ............................
-   * @return
+   * Read the import attribute information from incomplete additionMetadata part for entity wizard.
    */
-  abstract public WizardPageInfo [] getIncompleteEntityWizardPageInfoList();
+  abstract public void readImportAttributeInfoFromIncompleteDocInEntityWizard() throws Exception;
   
   /**
-   * Gets the entity index stores in incomplete doc info part
-   * @return
+   * Read the import attribute information from incomplete additionMetadata part for code-definition wizard
    */
-  abstract public int getEntityIndexInIncompleteDocInfo();
+  abstract public void readImportAttributeInfoFromIncompleteDocInCodeDefWizard() throws Exception;
   
   /**
    * Read the import attribute information from incomplete additionMetadata part.
+   * @return the IncompleteDocInfo contains the info morpho needs.
    */
-  abstract public void readImportAttributeInfoFromIncompleteDocInEntityWizard() throws Exception;
+  abstract public IncompleteDocInfo readIncompleteDocInformation() throws Exception;
 
 
 

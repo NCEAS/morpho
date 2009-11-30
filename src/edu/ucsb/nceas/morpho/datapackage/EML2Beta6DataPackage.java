@@ -33,6 +33,7 @@ import edu.ucsb.nceas.morpho.datastore.MetacatDataStore;
 import edu.ucsb.nceas.morpho.datastore.MetacatUploadException;
 import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
 import edu.ucsb.nceas.morpho.util.Log;
+import edu.ucsb.nceas.morpho.plugins.IncompleteDocInfo;
 import edu.ucsb.nceas.morpho.plugins.WizardPageInfo;
 import edu.ucsb.nceas.utilities.XMLUtilities;
 
@@ -596,16 +597,7 @@ public class EML2Beta6DataPackage extends AbstractDataPackage
 		     +"readImportAttributeInfoFromIncompleteDoc()");
   }
   
-  /**
-   * Gets the status of the completion of this package 
-   * @return three status - completed, incomplete(new package wizard) or incomplete(text import wizard)
-   */
-  public  String getCompletionStatus()
-  {
-	  throw new java.lang.UnsupportedOperationException(
-		      "EML2Beta6DataPackage - method not implemented - "
-		     +"getCompletionStatus()");
-  }
+  
   
   /**
    * Removes the information on additional metadata for incomplete entity
@@ -617,56 +609,40 @@ public class EML2Beta6DataPackage extends AbstractDataPackage
 		     +"removeInfoForIncompleteEntity()");  
   }
   
-  /**
-   * Gets the UIPage class name list after parsing the incomplete information in additional metacat part.
-   * This eml part looks like
-   *  <additionalMetadata>
-   *      <metadata>
-   *         <packagwizard>
-   *              <class>
-   *                  <name>
-   *                   <parameter>
-   *              </class>
-   *  ............................
-   * @return
-   */
-   public WizardPageInfo [] getIncompletePacakgeWizardPageInfoList()
-   {
-	   throw new java.lang.UnsupportedOperationException(
-			      "EML2Beta6DataPackage - method not implemented - "
-			     +"getIncompletePacakgeWizardPageInfoList()");
-   }
   
   /**
-   * Gets the UIPage class name list after parsing the incomplete information in additional metacat part.
-   * This eml part looks like
-   *  <additionalMetadata>
-   *      <metadata>
-   *         <entityWizard>
-   *              <class>
-   *                  <name>
-   *                   <parameter>
-   *              </class>
-   *  ............................
-   * @return
+   * Removes the information on additional metadata for incomplete code-definition
+   * 
    */
-  public WizardPageInfo [] getIncompleteEntityWizardPageInfoList()
+  public void removeInfoForIncompleteCodeDef()
   {
-	  throw new java.lang.UnsupportedOperationException(
-		      "EML2Beta6DataPackage - method not implemented - "
-		     +"getIncompleteEntityWizardPageInfoList()");
+    throw new java.lang.UnsupportedOperationException(
+          "EML2Beta6DataPackage - method not implemented - "
+         +"removeInfoForIncompleteCodeDef()");  
+  }
+ 
+  /**
+   * Read the import attribute information from incomplete additionMetadata part for code-definition wizard
+   */
+  public void readImportAttributeInfoFromIncompleteDocInCodeDefWizard() throws Exception
+  {
+    throw new java.lang.UnsupportedOperationException(
+        "EML2Beta6DataPackage - method not implemented - "
+       +"readImportAttributeInfoFromIncompleteDocInCodeDefWizard()");  
   }
   
   /**
-   * Gets the entity index stores in incomplete doc info part
-   * @return
+   * Read the import attribute information from incomplete additionMetadata part.
+   * @return the IncompleteDocInfo contains the info morpho needs.
    */
-  public int getEntityIndexInIncompleteDocInfo()
+  public IncompleteDocInfo readIncompleteDocInformation() throws Exception
   {
-	  throw new java.lang.UnsupportedOperationException(
-		      "EML2Beta6DataPackage - method not implemented - "
-		     +"getEntityIndexInIncompleteDocInfo()");
+    throw new java.lang.UnsupportedOperationException(
+        "EML2Beta6DataPackage - method not implemented - "
+       +"readIncompleteDocInformation()");  
   }
+  
+ 
   
 }
 

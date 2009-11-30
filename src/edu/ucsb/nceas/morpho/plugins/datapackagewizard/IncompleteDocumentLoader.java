@@ -99,17 +99,19 @@ public class IncompleteDocumentLoader
    */
   private void init()
   {
-    this.incompletionStatus = dataPackage.getCompletionStatus();
-    WizardPageInfo [] classNameList = null;
-    int index =-1;
-    Log.debug(30, "The status of incomplete document is "+incompletionStatus+" in DataPackagePlugin.openIncompleteDataPackage");
-    if( incompletionStatus != null && incompletionStatus.equals(IncompleteDocSettings.INCOMPLETE_PACKAGE_WIZARD))
+    try
     {
-      classNameList = dataPackage.getIncompletePacakgeWizardPageInfoList();
+      incompleteDocInfo = dataPackage.readIncompleteDocInformation();
     }
-    else if( incompletionStatus != null && incompletionStatus.equals(IncompleteDocSettings.INCOMPLETE_ENTITY_WIZARD))
+    catch(Exception e)
     {
-      classNameList = dataPackage.getIncompleteEntityWizardPageInfoList();
+      Log.debug(5, "Couldn't read incomplete information in incomplete document "+e.getMessage());
+      return;
+    }   
+    incompletionStatus = incompleteDocInfo.getStatus();
+    WizardPageInfo [] classNameList = null;
+    if( incompletionStatus != null && incompletionStatus.equals(IncompleteDocSettings.INCOMPLETE_ENTITY_WIZARD))
+    {
       try
       {
         dataPackage.readImportAttributeInfoFromIncompleteDocInEntityWizard();
@@ -119,16 +121,20 @@ public class IncompleteDocumentLoader
         Log.debug(5, "Couldn't read import attribute information in incomplete document "+e.getMessage());
         return;
       }
-      index = dataPackage.getEntityIndexInIncompleteDocInfo();
     }
-    else
+    else if (incompletionStatus != null && incompletionStatus.equals(IncompleteDocSettings.INCOMPLETE_CODE_DEFINITION_WIZARD))
     {
-      Log.debug(5, "Morpho couldn't understand the incomplete status "+incompletionStatus);
-      return;
-    }   
-    incompleteDocInfo = new IncompleteDocInfo(incompletionStatus);
-    incompleteDocInfo.setWizardPageClassInfoList(classNameList);
-    incompleteDocInfo.setEntityIndex(index);
+      try
+      {
+        dataPackage.readImportAttributeInfoFromIncompleteDocInCodeDefWizard();
+      }
+      catch(Exception e)
+      {
+        Log.debug(5, "Couldn't read import attribute information in incomplete document "+e.getMessage());
+        return;
+      }
+    }
+ 
   }
 
   /**

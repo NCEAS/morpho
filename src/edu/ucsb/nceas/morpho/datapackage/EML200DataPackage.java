@@ -37,6 +37,8 @@ import edu.ucsb.nceas.morpho.util.Log;
 import edu.ucsb.nceas.utilities.OrderedMap;
 import edu.ucsb.nceas.utilities.XMLUtilities;
 import edu.ucsb.nceas.morpho.util.IncompleteDocSettings;
+import edu.ucsb.nceas.morpho.plugins.EditingAttributeInfo;
+import edu.ucsb.nceas.morpho.plugins.IncompleteDocInfo;
 import edu.ucsb.nceas.morpho.plugins.WizardPageInfo;
 import edu.ucsb.nceas.morpho.util.XMLUtil;
 import edu.ucsb.nceas.morpho.util.XMLErrorHandler;
@@ -576,16 +578,18 @@ public  class EML200DataPackage extends AbstractDataPackage
       return "";
   }
   
-  /**
+  /*
    * Gets the status of the completion of this package 
    * @return three status - completed, incomplete(new package wizard) or incomplete(text import wizard)
    */
-  public String getCompletionStatus()
+  private String getCompletionStatus()
   {
 	  String packageWizardXpath = IncompleteDocSettings.EMLPATH+IncompleteDocSettings.ADDITIONALMETADATA+"/"+IncompleteDocSettings.METADATA+
 	                                           "/"+IncompleteDocSettings.PACKAGEWIZARD;
-	  String textImportWizardXPath = IncompleteDocSettings.EMLPATH+IncompleteDocSettings.ADDITIONALMETADATA+"/"+IncompleteDocSettings.METADATA+
+	  String entityWizardXPath = IncompleteDocSettings.EMLPATH+IncompleteDocSettings.ADDITIONALMETADATA+"/"+IncompleteDocSettings.METADATA+
                                                "/"+IncompleteDocSettings.ENTITYWIZARD;
+	  String codeDefWizardXPath = IncompleteDocSettings.EMLPATH+IncompleteDocSettings.ADDITIONALMETADATA+"/"+IncompleteDocSettings.METADATA+
+                                              "/"+IncompleteDocSettings.CODEDEFINITIONWIZARD;
       NodeList nodes = null;
       try {
           nodes = XMLUtilities.getNodeListWithXPath(metadataNode, packageWizardXpath);
@@ -596,7 +600,7 @@ public  class EML200DataPackage extends AbstractDataPackage
           }
           else
           {
-        	  nodes = XMLUtilities.getNodeListWithXPath(metadataNode, textImportWizardXPath);
+        	  nodes = XMLUtilities.getNodeListWithXPath(metadataNode, entityWizardXPath);
         	  if (nodes != null && nodes.getLength() >0)
         	  {
         		  // the status is incomplete_new_package_Wizard.
@@ -604,7 +608,17 @@ public  class EML200DataPackage extends AbstractDataPackage
         	  }
         	  else
         	  {
-        		  completionStatus = AbstractDataPackage.COMPLETED;
+        	    nodes = XMLUtilities.getNodeListWithXPath(metadataNode, codeDefWizardXPath);
+        	    if (nodes != null && nodes.getLength() >0)
+              {
+                // the status is incomplete_new_package_Wizard.
+                  completionStatus = IncompleteDocSettings.INCOMPLETE_CODE_DEFINITION_WIZARD;
+              }
+        	    else
+        	    {
+        	      completionStatus = AbstractDataPackage.COMPLETED;
+        	    }
+        		  
         	  }
           }
       } catch (Exception w) {
@@ -622,53 +636,73 @@ public  class EML200DataPackage extends AbstractDataPackage
    */
   public void removeInfoForIncompleteEntity()
   {
-	    NodeList incompleteInfoList = null;
+	   
 	    String path = IncompleteDocSettings.EMLPATH+IncompleteDocSettings.ADDITIONALMETADATA+"/"+IncompleteDocSettings.METADATA+
                          "/"+IncompleteDocSettings.ENTITYWIZARD;
-	    try 
-	    {
-	      
-	      incompleteInfoList = XMLUtilities.getNodeListWithXPath(metadataNode, path);
-	    }
-	    catch (Exception w) 
-	    {
-	      Log.debug(50, "exception in getting tempoNodeLIst");
-	    }
-	     if (incompleteInfoList==null) 
-	     {
-	    	 return;
-	     }
-	     for (int i=0;i<incompleteInfoList.getLength();i++) 
-	     {
-	       Node entityWizardNode = incompleteInfoList.item(i);
-	       Node metadataNode = null;
-	       Node additionalMetadataNode = null;
-	       Node emlNode = null;
-	       if(entityWizardNode != null)
-	       {
-		       metadataNode = entityWizardNode.getParentNode();
-		       if(metadataNode != null)
-		       {
-		    	   additionalMetadataNode = metadataNode.getParentNode();
-		    	   if(additionalMetadataNode != null)
-		    	   {
-		    		   emlNode = additionalMetadataNode.getParentNode();
-		    		   if(emlNode != null)
-		    		   {
-		    			   Log.debug(32, "in EMl200DataPackage.removeInofForIncompleteEntity, the additionalMetadata node is removed");
-				          emlNode.removeChild(additionalMetadataNode);
-		    		   }
-		    	   }
-			      
-		       }
-		      
-	       }
-	       
-	     }
+	    removeIncompleteInformation(path);
+  }
+  
+  /**
+   * Removes the information on additional metadata for incomplete code-definition
+   * 
+   */
+  public void removeInfoForIncompleteCodeDef()
+  {
+    String path = IncompleteDocSettings.EMLPATH+IncompleteDocSettings.ADDITIONALMETADATA+"/"+IncompleteDocSettings.METADATA+
+    "/"+IncompleteDocSettings.CODEDEFINITIONWIZARD;
+    removeIncompleteInformation(path);
+  }
+  
+  /*
+   * Removes the in complete information at given path
+   */
+  private void removeIncompleteInformation(String path)
+  {
+    NodeList incompleteInfoList = null;
+    try 
+    {
+      
+      incompleteInfoList = XMLUtilities.getNodeListWithXPath(metadataNode, path);
+    }
+    catch (Exception w) 
+    {
+      Log.debug(50, "exception in getting tempoNodeLIst");
+    }
+     if (incompleteInfoList==null) 
+     {
+       return;
+     }
+     for (int i=0;i<incompleteInfoList.getLength();i++) 
+     {
+       Node entityWizardNode = incompleteInfoList.item(i);
+       Node metadataNode = null;
+       Node additionalMetadataNode = null;
+       Node emlNode = null;
+       if(entityWizardNode != null)
+       {
+         metadataNode = entityWizardNode.getParentNode();
+         if(metadataNode != null)
+         {
+           additionalMetadataNode = metadataNode.getParentNode();
+           if(additionalMetadataNode != null)
+           {
+             emlNode = additionalMetadataNode.getParentNode();
+             if(emlNode != null)
+             {
+               Log.debug(32, "in EMl200DataPackage.removeInofForIncompleteEntity, the additionalMetadata node is removed");
+                emlNode.removeChild(additionalMetadataNode);
+             }
+           }
+          
+         }
+        
+       }
+       
+     }
   }
   
   
-  /**
+  /*
    * Gets the UIPage class name list after parsing the incomplete information in additional metacat part.
    * This eml part looks like
    *  <additionalMetadata>
@@ -681,7 +715,7 @@ public  class EML200DataPackage extends AbstractDataPackage
    *  ............................
    * @return
    */
-  public WizardPageInfo [] getIncompletePacakgeWizardPageInfoList()
+  private WizardPageInfo [] getIncompletePacakgeWizardPageInfoList()
   {
 	  WizardPageInfo[] classInfoList = null;
 	  String pageClassNameXpath = IncompleteDocSettings.EMLPATH+IncompleteDocSettings.ADDITIONALMETADATA+"/"+IncompleteDocSettings.METADATA+
@@ -691,7 +725,7 @@ public  class EML200DataPackage extends AbstractDataPackage
 	  
   }
   
-  /**
+  /*
    * Gets the UIPage class name list after parsing the incomplete information in additional metacat part.
    * This eml part looks like
    *  <additionalMetadata>
@@ -702,9 +736,9 @@ public  class EML200DataPackage extends AbstractDataPackage
    *                   <parameter>
    *              </class>
    *  ............................
-   * @return
+   * 
    */
-  public WizardPageInfo [] getIncompleteEntityWizardPageInfoList()
+  private WizardPageInfo [] getIncompleteEntityWizardPageInfoList()
   {
 	  WizardPageInfo[] classInfoList = null;
 	  String pageClassNameXpath = IncompleteDocSettings.EMLPATH+IncompleteDocSettings.ADDITIONALMETADATA+"/"+IncompleteDocSettings.METADATA+
@@ -712,6 +746,18 @@ public  class EML200DataPackage extends AbstractDataPackage
 	  classInfoList = getIncompleteWizardPageInfoList(pageClassNameXpath);
 	  return classInfoList;
 	  
+  }
+  
+  /*
+   * Gets the UIPage class name list in CodeDefinition wizard incomplete doc info
+   */
+  private WizardPageInfo[] getIncompleteCodeDefWizardPageInfoList()
+  {
+    WizardPageInfo[] classInfoList = null;
+    String pageClassNameXpath = IncompleteDocSettings.EMLPATH+IncompleteDocSettings.ADDITIONALMETADATA+"/"+IncompleteDocSettings.METADATA+
+      "/"+IncompleteDocSettings.CODEDEFINITIONWIZARD+"/"+IncompleteDocSettings.CLASS;
+    classInfoList = getIncompleteWizardPageInfoList(pageClassNameXpath);
+    return classInfoList;
   }
   
   /*
@@ -827,30 +873,48 @@ public  class EML200DataPackage extends AbstractDataPackage
 	  return classInfoList;
   }
   
-  /**
+  /*
    * Gets the entity index stores in incomplete doc info part
-   * @return
+   *
    */
-  public int getEntityIndexInIncompleteDocInfo()
+  private int getEntityIndexInEntityWizardIncompleteDocInfo()
   {
-	  int index = -1;
 	  String path = IncompleteDocSettings.EMLPATH+IncompleteDocSettings.ADDITIONALMETADATA+"/"+IncompleteDocSettings.METADATA+
       "/"+IncompleteDocSettings.ENTITYWIZARD+"/"+IncompleteDocSettings.INDEX;
-	  NodeList nodeList = null;
+	  return getEntityIndexInIncompleteDocInfo(path);
+  }
+  
+  /*
+   * Gets the entity index in code-definition wizard incomplete info
+   */
+  private int getEntityIndexInCodeDefWizardIncompleteDocInfo()
+  {
+    String path = IncompleteDocSettings.EMLPATH+IncompleteDocSettings.ADDITIONALMETADATA+"/"+IncompleteDocSettings.METADATA+
+    "/"+IncompleteDocSettings.CODEDEFINITIONWIZARD+"/"+IncompleteDocSettings.INDEX;
+    return getEntityIndexInIncompleteDocInfo(path);
+  }
+  
+  /*
+   * Gets the entity index for different path.
+   */
+  private int getEntityIndexInIncompleteDocInfo(String path)
+  {
+    int index = -1;
+    NodeList nodeList = null;
       try 
       {
           nodeList = XMLUtilities.getNodeListWithXPath(metadataNode, path);
           Node node = nodeList.item(0);
           if(node != null)
           {
-        	  Node textNode = node.getFirstChild();
-        	  if(textNode != null && (textNode.getNodeType()==Node.TEXT_NODE
+            Node textNode = node.getFirstChild();
+            if(textNode != null && (textNode.getNodeType()==Node.TEXT_NODE
                       || textNode.getNodeType()==Node.CDATA_SECTION_NODE))
-        	  {
-        		  String indexStr = textNode.getNodeValue();
-        		  index = (new Integer(indexStr)).intValue();
-        		  Log.debug(30, "The index of entity in incomplete doc inforamtion is "+index);
-        	  }
+            {
+              String indexStr = textNode.getNodeValue();
+              index = (new Integer(indexStr)).intValue();
+              Log.debug(30, "The index of entity in incomplete doc inforamtion is "+index);
+            }
           }
       } 
       catch (Exception w) 
@@ -858,8 +922,10 @@ public  class EML200DataPackage extends AbstractDataPackage
           Log.debug(30, "Problem with getEntityIndexIncompleteDocInfo in additional metadata part " + w.getMessage());
         
       }
-	  return index;
+    return index;
   }
+  
+  
   
   /**
    * Read the import attribute information from incomplete additionMetadata part in entity wizard.
@@ -869,6 +935,16 @@ public  class EML200DataPackage extends AbstractDataPackage
 	  String path = IncompleteDocSettings.EMLPATH+IncompleteDocSettings.ADDITIONALMETADATA+"/"+IncompleteDocSettings.METADATA+
       "/"+IncompleteDocSettings.ENTITYWIZARD+"/"+this.IMPORTATTRIBUTES+"/"+this.ATTRIBUTE;
 	  readImportAttributeInfoFromIncompleteDoc(path);
+  }
+  
+  /**
+   * Read the import attribute information from incomplete additionMetadata part for code-definition wizard
+   */
+  public void readImportAttributeInfoFromIncompleteDocInCodeDefWizard() throws Exception
+  {
+    String path = IncompleteDocSettings.EMLPATH+IncompleteDocSettings.ADDITIONALMETADATA+"/"+IncompleteDocSettings.METADATA+
+    "/"+IncompleteDocSettings.CODEDEFINITIONWIZARD+"/"+this.IMPORTATTRIBUTES+"/"+this.ATTRIBUTE;
+    readImportAttributeInfoFromIncompleteDoc(path);
   }
   
   /*
@@ -1097,6 +1173,112 @@ public  class EML200DataPackage extends AbstractDataPackage
 			
 	    }
 	    return t;
+  }
+  
+  
+  /**
+   * Read the import attribute information from incomplete additionMetadata part.
+   * @return the IncompleteDocInfo contains the info morpho needs.
+   */
+  public IncompleteDocInfo readIncompleteDocInformation() throws Exception
+  {
+     String status = getCompletionStatus();
+     IncompleteDocInfo docInfo = new IncompleteDocInfo(status);
+     if(status != null && status.equals(IncompleteDocSettings.INCOMPLETE_PACKAGE_WIZARD))
+     {
+       WizardPageInfo [] pages = getIncompletePacakgeWizardPageInfoList();
+       docInfo.setWizardPageClassInfoList(pages);
+     }
+     else if(status != null && status.equals(IncompleteDocSettings.INCOMPLETE_ENTITY_WIZARD))
+     {
+       WizardPageInfo [] pages = getIncompleteEntityWizardPageInfoList();
+       docInfo.setWizardPageClassInfoList(pages);
+       int index = getEntityIndexInEntityWizardIncompleteDocInfo();
+       docInfo.setEntityIndex(index);
+     }
+     else if(status != null && status.equals(IncompleteDocSettings.INCOMPLETE_CODE_DEFINITION_WIZARD))
+     {
+       WizardPageInfo[] pages = getIncompleteCodeDefWizardPageInfoList();
+       docInfo.setWizardPageClassInfoList(pages);
+       int index = getEntityIndexInCodeDefWizardIncompleteDocInfo();
+       docInfo.setEntityIndex(index);
+       EditingAttributeInfo attributeInfo = readEditingAttributeInfoInCodeDefWizardIncompleteDocInfo();
+       docInfo.setEditingAttributeInfo(attributeInfo);
+     }
+     return docInfo;
+  }
+  
+  /*
+   * Read editing attribute info from incomplete metadata.
+   */
+  private EditingAttributeInfo readEditingAttributeInfoInCodeDefWizardIncompleteDocInfo() throws Exception
+  {
+    EditingAttributeInfo info = null;
+    String path = IncompleteDocSettings.EMLPATH+IncompleteDocSettings.ADDITIONALMETADATA+"/"+IncompleteDocSettings.METADATA+
+    "/"+IncompleteDocSettings.CODEDEFINITIONWIZARD+"/"+IncompleteDocSettings.EDITINGATTRIBUTE; 
+    NodeList nodeList = null;
+    try 
+    {
+        nodeList = XMLUtilities.getNodeListWithXPath(metadataNode, path);
+    } 
+    catch (Exception w) 
+    {
+        Log.debug(30, "Problem with getting editing attribute info in additional metadata part " + w.getMessage());
+        throw w;
+    }
+    if (nodeList != null && nodeList.getLength() > 0) 
+    {
+      Node editingAttributeNode = nodeList.item(0);//we only have one editing attribute
+      NodeList children = editingAttributeNode.getChildNodes();
+      int editingEntityIndex = -1;
+      int editingAttributeIndex = -1;
+      Boolean insertion = null;
+      if(children != null)
+      {
+        for(int i=0; i<children.getLength(); i++)
+        {
+          Node kidNode = children.item(i);
+          if(kidNode.getNodeType() ==Node.ELEMENT_NODE && kidNode.getNodeName().equals(IncompleteDocSettings.EDITINGENTITYINDEX))
+          {
+            // this handles class name children
+            NodeList grandChildren = kidNode.getChildNodes();
+            String entityIndexStr = "";
+            for(int k=0; k<grandChildren.getLength(); k++)
+            {
+              Node textNode = grandChildren.item(k);
+              if (textNode.getNodeType()==Node.TEXT_NODE
+                                  || textNode.getNodeType()==Node.CDATA_SECTION_NODE) 
+              {
+                entityIndexStr= textNode.getNodeValue();
+                Log.debug(30, "The read editing entity index from additional in EML200Package. readEditingAttributeInfoInCodeDefWizardIncompleteDocInfo is "+entityIndexStr);
+                      
+              }
+            }
+            editingEntityIndex = (new Integer(entityIndexStr)).intValue();
+          }
+          else if(kidNode.getNodeType() ==Node.ELEMENT_NODE && kidNode.getNodeName().equals(IncompleteDocSettings.EDITINATTRIBUTEINDEX))
+          {
+         // this handles class name children
+            NodeList grandChildren = kidNode.getChildNodes();
+            String attributeIndexStr = "";
+            for(int k=0; k<grandChildren.getLength(); k++)
+            {
+              Node textNode = grandChildren.item(k);
+              if (textNode.getNodeType()==Node.TEXT_NODE
+                                  || textNode.getNodeType()==Node.CDATA_SECTION_NODE) 
+              {
+                attributeIndexStr= textNode.getNodeValue();
+                Log.debug(30, "The read editing entity index from additional in EML200Package. readEditingAttributeInfoInCodeDefWizardIncompleteDocInfo is "+attributeIndexStr);
+                      
+              }
+            }
+            editingAttributeIndex = (new Integer(attributeIndexStr)).intValue();
+          }
+          
+        }
+      }
+    }
+    return info;
   }
   
   
