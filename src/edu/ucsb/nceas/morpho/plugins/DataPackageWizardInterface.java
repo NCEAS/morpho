@@ -33,7 +33,7 @@ import edu.ucsb.nceas.morpho.framework.AbstractUIPage;
 import edu.ucsb.nceas.morpho.framework.MorphoFrame;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.IncompleteDocumentLoader;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.TextImportAttribute;
-import edu.ucsb.nceas.morpho.util.IncompleteDocInfo;
+import edu.ucsb.nceas.morpho.plugins.IncompleteDocInfo;
 import edu.ucsb.nceas.utilities.OrderedMap;
 
 import java.util.List;

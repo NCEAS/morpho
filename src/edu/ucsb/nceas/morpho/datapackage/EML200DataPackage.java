@@ -37,7 +37,7 @@ import edu.ucsb.nceas.morpho.util.Log;
 import edu.ucsb.nceas.utilities.OrderedMap;
 import edu.ucsb.nceas.utilities.XMLUtilities;
 import edu.ucsb.nceas.morpho.util.IncompleteDocSettings;
-import edu.ucsb.nceas.morpho.util.WizardPageInfo;
+import edu.ucsb.nceas.morpho.plugins.WizardPageInfo;
 import edu.ucsb.nceas.morpho.util.XMLUtil;
 import edu.ucsb.nceas.morpho.util.XMLErrorHandler;
 

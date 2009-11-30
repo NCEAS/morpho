@@ -43,13 +43,13 @@ import edu.ucsb.nceas.morpho.plugins.ServiceProvider;
 
 import edu.ucsb.nceas.morpho.util.Command;
 import edu.ucsb.nceas.morpho.util.GUIAction;
-import edu.ucsb.nceas.morpho.util.IncompleteDocInfo;
+import edu.ucsb.nceas.morpho.plugins.IncompleteDocInfo;
 import edu.ucsb.nceas.morpho.util.IncompleteDocSettings;
 import edu.ucsb.nceas.morpho.util.Log;
 import edu.ucsb.nceas.morpho.util.StateChangeEvent;
 import edu.ucsb.nceas.morpho.util.StateChangeMonitor;
 import edu.ucsb.nceas.morpho.util.UISettings;
-import edu.ucsb.nceas.morpho.util.WizardPageInfo;
+import edu.ucsb.nceas.morpho.plugins.WizardPageInfo;
 
 import java.util.Vector;
 

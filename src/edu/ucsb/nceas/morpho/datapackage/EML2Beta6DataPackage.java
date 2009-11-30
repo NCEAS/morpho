@@ -33,7 +33,7 @@ import edu.ucsb.nceas.morpho.datastore.MetacatDataStore;
 import edu.ucsb.nceas.morpho.datastore.MetacatUploadException;
 import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
 import edu.ucsb.nceas.morpho.util.Log;
-import edu.ucsb.nceas.morpho.util.WizardPageInfo;
+import edu.ucsb.nceas.morpho.plugins.WizardPageInfo;
 import edu.ucsb.nceas.utilities.XMLUtilities;
 
 import java.io.BufferedInputStream;
