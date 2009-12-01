@@ -119,6 +119,7 @@ public class Access
 
     JLabel desc = null; 
     if (isEntity) {	
+    	inherit = true;
     	buttonsText = 
     		new String[] {
     		      "Yes, give read-only access to public.",
@@ -751,10 +752,12 @@ public class Access
             allowReadAccess.setSelected(true);
             denyReadAccess.setSelected(false);
             publicReadAccess = true;
+            inherit = false;
           } else {
             allowReadAccess.setSelected(false);
             denyReadAccess.setSelected(true);
             publicReadAccess = false;
+            inherit = false;
           }
 
         } else if (nextVal.compareTo("public") == 0) {
@@ -777,8 +780,12 @@ public class Access
         allowReadAccess.setSelected(false);
         denyReadAccess.setSelected(true);
         publicReadAccess = false;
+        inherit = false;
     }
 
+    //force the order to refresh
+    setOrderValue(orderValue);
+    
     return (returnVal && accessAllowRetVal && accessDenyRetVal);
   }
 
@@ -839,6 +846,8 @@ public class Access
 		 allowFirst.setSelected(false);
 		 denyFirst.setSelected(true);
 	  }
+	  allowFirst.setEnabled( !(inherit && isEntity) );
+	  denyFirst.setEnabled( !(inherit && isEntity) );
   }
   private int getFirstPredicate(String xpath, String firstSegment) {
 
