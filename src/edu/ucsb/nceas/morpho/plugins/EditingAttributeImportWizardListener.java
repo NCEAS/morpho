@@ -163,7 +163,7 @@ public class EditingAttributeImportWizardListener implements DataPackageWizardLi
 
   }//end of modifyAttribute
   
-  private static String getUnit(OrderedMap map, String xPath) {
+  public static String getUnit(OrderedMap map, String xPath) {
 
     Object o1 = map.get(xPath + "/measurementScale/interval/unit/standardUnit");
     if(o1 != null) return (String)o1;

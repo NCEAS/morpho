@@ -48,6 +48,7 @@ import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
 import edu.ucsb.nceas.morpho.plugins.DataPackageWizardListener;
 import edu.ucsb.nceas.morpho.plugins.EditingAttributeImportWizardListener;
 import edu.ucsb.nceas.morpho.plugins.EditingAttributeInfo;
+import edu.ucsb.nceas.morpho.plugins.InsertingAttributeImportWizardListener;
 import edu.ucsb.nceas.morpho.plugins.ServiceController;
 import edu.ucsb.nceas.morpho.plugins.ServiceNotHandledException;
 import edu.ucsb.nceas.morpho.plugins.ServiceProvider;
@@ -243,7 +244,7 @@ public class IncompleteDocumentLoader
       }
       int editingEntityIndex = editingAttributeInfo.getEntityIndex();
       int editingAttributeIndex = editingAttributeInfo.getAttributeIndex();
-      Boolean insertBeforeSeletion = editingAttributeInfo.getInsertionBeforeSelection();
+      Boolean insertBeforeSelection = editingAttributeInfo.getInsertionBeforeSelection();
       OrderedMap map = editingAttributeInfo.getData();
       //remove the entity with the index (this entity is the unfinished one)
       Node entityNode = dataPackage.deleteEntity(index);
@@ -263,7 +264,7 @@ public class IncompleteDocumentLoader
         }
         try
         {
-          if(insertBeforeSeletion == null)
+          if(insertBeforeSelection == null)
           {
             //this is for editing an attribute
             listener = new EditingAttributeImportWizardListener(frame, dataPackage, 
@@ -273,6 +274,9 @@ public class IncompleteDocumentLoader
           else
           {
             //for inserting a new column
+            listener = new InsertingAttributeImportWizardListener(frame, dataPackage, 
+                wizard,  editingEntityIndex, editingAttributeIndex, insertBeforeSelection);   
+            wizard.setDataPackageWizardListener(listener); 
           }
         }
         catch(Exception e)
