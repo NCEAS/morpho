@@ -14,6 +14,7 @@ import edu.ucsb.nceas.morpho.datapackage.PersistentVector;
 import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
 import edu.ucsb.nceas.morpho.framework.MorphoFrame;
 import edu.ucsb.nceas.morpho.framework.UIController;
+import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardContainerFrame;
 import edu.ucsb.nceas.morpho.util.Command;
 import edu.ucsb.nceas.morpho.util.Log;
 import edu.ucsb.nceas.morpho.util.StateChangeEvent;
@@ -32,7 +33,7 @@ public class EditingAttributeImportWizardListener implements DataPackageWizardLi
   
   private MorphoFrame morphoFrame = null;
   private AbstractDataPackage adp = null;
-  private OrderedMap map = null;
+  private WizardContainerFrame wizardFrame = null;
   private int entityIndex = -1;
   private int attributeIndex = -1;
   private String xPath = "/attribute";
@@ -47,15 +48,15 @@ public class EditingAttributeImportWizardListener implements DataPackageWizardLi
    * @param attributeIndex the index of editing attribute
    */
   public EditingAttributeImportWizardListener(MorphoFrame morphoFrame, AbstractDataPackage adp, 
-                                                                OrderedMap map,  int entityIndex, int attributeIndex) throws Exception
+                                                                WizardContainerFrame wizardFrame,  int entityIndex, int attributeIndex) throws Exception
   {
     this.morphoFrame = morphoFrame;
     this.adp = adp;
-    if(morphoFrame == null || adp == null)
+    if(morphoFrame == null || adp == null || wizardFrame == null)
     {
       throw new Exception("The morpho frame or dataPackage is null in EditingAttributeImportWizardListener");
     }
-    this.map = map;
+    this.wizardFrame = wizardFrame;
     this.entityIndex = entityIndex;
     this.attributeIndex = attributeIndex;
     //Log.debug(5, "in constructor the entity index and attribute index are "+this.entityIndex+ " and "+this.attributeIndex);
@@ -70,7 +71,8 @@ public class EditingAttributeImportWizardListener implements DataPackageWizardLi
   {
     
     DataViewer dataView = morphoFrame.getDataViewContainerPanel().getCurrentDataViewer();
-     modifyAttribute(adp, dataView , entityIndex, attributeIndex, map, xPath);
+    OrderedMap map = wizardFrame.getEditingAttributeMap(); 
+    modifyAttribute(adp, dataView , entityIndex, attributeIndex, map, xPath);
     try
     {
       ServiceController services = ServiceController.getInstance();

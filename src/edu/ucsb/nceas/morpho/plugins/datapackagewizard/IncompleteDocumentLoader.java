@@ -252,13 +252,23 @@ public class IncompleteDocumentLoader
       if(frame != null)
       {
         DataPackageWizardListener  listener = null;
+        WizardContainerFrame wizard =loadEntityWizard(frame, IncompleteDocSettings.CODEDEFINITIONWIZARD, 
+            listener, index, entityNode);
+        if(wizard == null)
+        {
+          UIController.getInstance().setWizardNotRunning();
+          Log.debug(5, "Morpho couldn't get wizard container frame!");
+          return;
+        }
+        wizard.setEditingAttributeMap(map);
         try
         {
           if(insertBeforeSeletion == null)
           {
             //this is for editing an attribute
             listener = new EditingAttributeImportWizardListener(frame, dataPackage, 
-                                                          map,  editingEntityIndex, editingAttributeIndex);            
+                                                          wizard,  editingEntityIndex, editingAttributeIndex);   
+            wizard.setDataPackageWizardListener(listener);          
           }
           else
           {
@@ -271,12 +281,7 @@ public class IncompleteDocumentLoader
           Log.debug(5, "Morpho couldn't get the listener for editing attribute in order to load the wizard");
           return;
         }
-        WizardContainerFrame wizard =loadEntityWizard(frame, IncompleteDocSettings.CODEDEFINITIONWIZARD, 
-            listener, index, entityNode);
-        if(wizard != null)
-        {
-          wizard.setEditingAttributeMap(map);
-        }
+             
       }
     }
   }
