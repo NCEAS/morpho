@@ -1064,73 +1064,7 @@ public  class EML200DataPackage extends AbstractDataPackage
 	            else if(kidNode.getNodeType() ==Node.ELEMENT_NODE && kidNode.getNodeName().equals(ORDEREDMAP))
 	            {
 	          	 // this handles class parameter children
-	          	  NodeList list = null;
-	          	  try 
-	                {
-	                    list = XMLUtilities.getNodeListWithXPath(kidNode, OrderedMap.PAIR);
-	                } 
-	                catch (Exception w) 
-	                {
-	                    Log.debug(30, "Problem with getting orderedMp list in additional metadata part " + w.getMessage());
-	                    throw w;
-	                }
-	                if(list != null)
-	                {
-	          	  
-	              	  for(int m=0; m<list.getLength(); m++)
-	              	  {
-	              		  String key = null;
-	  	    		      String value = null;
-	  	    		      Node node = list.item(m);
-	  	    		      Log.debug(40, "The node of element Pair should have node name "+node.getNodeName());
-	  	    		      NodeList anotherChildren = node.getChildNodes();
-	  	    		      for(int n=0; n<anotherChildren.getLength(); n++)
-	  	    		      {
-	  	    		    	  Node anotherGrandChild = anotherChildren.item(n);
-	  	    		    	  if(anotherGrandChild != null)
-	  	    		    	  {
-		    	    		    	  Log.debug(40, "The child node of element Pair  have node name "+anotherGrandChild.getNodeName());
-			    	    		      if (anotherGrandChild.getNodeType()==Node.ELEMENT_NODE && anotherGrandChild.getNodeName().equals(OrderedMap.KEY)) 
-			    	    		      {
-			    	    		    	  NodeList grandChildren = anotherGrandChild.getChildNodes();
-			    	                	  for(int l=0; l<grandChildren.getLength(); l++)
-			    	                	  {
-			    	    	    		      Node textNode = grandChildren.item(l);
-			    	    	    		      Log.debug(40, "The text node under Key element has node type "+textNode.getNodeType()+ " and has node value "+textNode.getNodeValue()+" and has node name  "+textNode.getNodeName());
-			    	    	    		      if (textNode.getNodeType()==Node.TEXT_NODE
-			    	    	    		                          || textNode.getNodeType()==Node.CDATA_SECTION_NODE) 
-			    	    	    		      {
-			    	    	    		    	  key = textNode.getNodeValue();
-			    	    	    		    	  Log.debug(30, "The key of order map from additional in EML200Package. readImportAttributeInfoFromIncompleteDoc is "+key);    	                     
-			    	    	    		      }
-			    	                	  }
-			    	    		      }
-			    	    		      else if (anotherGrandChild.getNodeType()==Node.ELEMENT_NODE && anotherGrandChild.getNodeName().equals(OrderedMap.VALUE)) 
-			    	    		      {
-			    	    		    	  NodeList grandChildren = anotherGrandChild.getChildNodes();
-			    	    		    	  for(int l=0; l<grandChildren.getLength(); l++)
-			    	                	  {
-			    	    	    		      Node textNode = grandChildren.item(l);
-			    	    	    		      Log.debug(40, "The text node under Value element has node type "+textNode.getNodeType()+ "and has node value "+textNode.getNodeValue()+" and has node name  "+textNode.getNodeName());
-			    	    	    		      if (textNode.getNodeType()==Node.TEXT_NODE
-			    	    	    		                          || textNode.getNodeType()==Node.CDATA_SECTION_NODE) 
-			    	    	    		      {
-			    	    	    		    	  value = textNode.getNodeValue();
-			    	    	    		    	  Log.debug(30, "The value of order map from additional in EML200Package. readImportAttributeInfoFromIncompleteDoc is "+value);   	                     
-			    	    	    		      }
-			    	                	  }
-			       
-			    	    		      }
-	  	    		          }
-	              	       }
-	  	    		      if(key != null )
-	  	    		      {
-	  	    		    	  omap.put(key, value);
-	  	    		    	  Log.debug(30, "Put key "+key+ " and value "+value+"  in ordered map in EML200Package. readImportAttributeInfoFromIncompleteDoc is "+value);
-	  	    		    	 	    	    		    	 
-	  	    		      }
-	              	  }
-	               }
+	              omap = handleOrderedMap(kidNode);
 	            }                 
 	            else if(kidNode.getNodeType() ==Node.ELEMENT_NODE && kidNode.getNodeName().equals(XPATH))
 	            {
@@ -1232,7 +1166,8 @@ public  class EML200DataPackage extends AbstractDataPackage
       NodeList children = editingAttributeNode.getChildNodes();
       int editingEntityIndex = -1;
       int editingAttributeIndex = -1;
-      Boolean insertion = null;
+      Boolean insertionBeforeColumn = null;
+      OrderedMap map = null;
       if(children != null)
       {
         for(int i=0; i<children.getLength(); i++)
@@ -1240,7 +1175,7 @@ public  class EML200DataPackage extends AbstractDataPackage
           Node kidNode = children.item(i);
           if(kidNode.getNodeType() ==Node.ELEMENT_NODE && kidNode.getNodeName().equals(IncompleteDocSettings.EDITINGENTITYINDEX))
           {
-            // this handles class name children
+            // this handles entity index
             NodeList grandChildren = kidNode.getChildNodes();
             String entityIndexStr = "";
             for(int k=0; k<grandChildren.getLength(); k++)
@@ -1258,7 +1193,7 @@ public  class EML200DataPackage extends AbstractDataPackage
           }
           else if(kidNode.getNodeType() ==Node.ELEMENT_NODE && kidNode.getNodeName().equals(IncompleteDocSettings.EDITINATTRIBUTEINDEX))
           {
-         // this handles class name children
+            // this handles attribute index
             NodeList grandChildren = kidNode.getChildNodes();
             String attributeIndexStr = "";
             for(int k=0; k<grandChildren.getLength(); k++)
@@ -1274,11 +1209,109 @@ public  class EML200DataPackage extends AbstractDataPackage
             }
             editingAttributeIndex = (new Integer(attributeIndexStr)).intValue();
           }
+          else if(kidNode.getNodeType() ==Node.ELEMENT_NODE && kidNode.getNodeName().equals(IncompleteDocSettings.EDITINATTRIBUTEINSERTION))
+          {
+            // this handles the value of insertion before selection column
+            NodeList grandChildren = kidNode.getChildNodes();
+            String insertion = "";
+            for(int k=0; k<grandChildren.getLength(); k++)
+            {
+              Node textNode = grandChildren.item(k);
+              if (textNode.getNodeType()==Node.TEXT_NODE
+                                  || textNode.getNodeType()==Node.CDATA_SECTION_NODE) 
+              {
+                insertion= textNode.getNodeValue();
+                Log.debug(30, "The read insertionBeforeColumn from additional in EML200Package. readEditingAttributeInfoInCodeDefWizardIncompleteDocInfo is "+insertion);
+                      
+              }
+            }
+            insertionBeforeColumn = new Boolean(insertion);
+          }
+          else if(kidNode.getNodeType() ==Node.ELEMENT_NODE && kidNode.getNodeName().equals(IncompleteDocSettings.EDITINATTRIBUTEMAP))
+          {
+             map = handleOrderedMap(kidNode);
+          }         
           
         }
       }
     }
     return info;
+  }
+  
+  /*
+   * Put the node presentation of an oderedMap into an oderedMap
+   */
+  private static OrderedMap handleOrderedMap(Node parentNode) throws Exception
+  {
+    OrderedMap map = new OrderedMap();
+    NodeList list = null;
+    try 
+    {
+          list = XMLUtilities.getNodeListWithXPath(parentNode, OrderedMap.PAIR);
+    } 
+    catch (Exception w) 
+    {
+          Log.debug(30, "Problem with getting orderedMp list in additional metadata part " + w.getMessage());
+          throw w;
+    }
+      if(list != null)
+      {
+    
+        for(int m=0; m<list.getLength(); m++)
+        {
+          String key = null;
+        String value = null;
+        Node node = list.item(m);
+        Log.debug(40, "The node of element Pair should have node name "+node.getNodeName());
+        NodeList anotherChildren = node.getChildNodes();
+        for(int n=0; n<anotherChildren.getLength(); n++)
+        {
+          Node anotherGrandChild = anotherChildren.item(n);
+          if(anotherGrandChild != null)
+          {
+              Log.debug(40, "The child node of element Pair  have node name "+anotherGrandChild.getNodeName());
+              if (anotherGrandChild.getNodeType()==Node.ELEMENT_NODE && anotherGrandChild.getNodeName().equals(OrderedMap.KEY)) 
+              {
+                NodeList grandChildren = anotherGrandChild.getChildNodes();
+                    for(int l=0; l<grandChildren.getLength(); l++)
+                    {
+                    Node textNode = grandChildren.item(l);
+                    Log.debug(40, "The text node under Key element has node type "+textNode.getNodeType()+ " and has node value "+textNode.getNodeValue()+" and has node name  "+textNode.getNodeName());
+                    if (textNode.getNodeType()==Node.TEXT_NODE
+                                        || textNode.getNodeType()==Node.CDATA_SECTION_NODE) 
+                    {
+                      key = textNode.getNodeValue();
+                      Log.debug(30, "The key of order map from additional in EML200Package. readImportAttributeInfoFromIncompleteDoc is "+key);                          
+                    }
+                    }
+              }
+              else if (anotherGrandChild.getNodeType()==Node.ELEMENT_NODE && anotherGrandChild.getNodeName().equals(OrderedMap.VALUE)) 
+              {
+                NodeList grandChildren = anotherGrandChild.getChildNodes();
+                for(int l=0; l<grandChildren.getLength(); l++)
+                    {
+                    Node textNode = grandChildren.item(l);
+                    Log.debug(40, "The text node under Value element has node type "+textNode.getNodeType()+ "and has node value "+textNode.getNodeValue()+" and has node name  "+textNode.getNodeName());
+                    if (textNode.getNodeType()==Node.TEXT_NODE
+                                        || textNode.getNodeType()==Node.CDATA_SECTION_NODE) 
+                    {
+                      value = textNode.getNodeValue();
+                      Log.debug(30, "The value of order map from additional in EML200Package. readImportAttributeInfoFromIncompleteDoc is "+value);                          
+                    }
+                    }
+ 
+              }
+            }
+         }
+        if(key != null )
+        {
+          map.put(key, value);
+          Log.debug(30, "Put key "+key+ " and value "+value+"  in ordered map in EML200Package. readImportAttributeInfoFromIncompleteDoc is "+value);
+                               
+        }
+       }
+     }
+      return map;
   }
   
   
