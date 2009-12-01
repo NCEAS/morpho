@@ -395,7 +395,7 @@ public class InsertColumnCommand implements Command, DataPackageWizardListener
 
       columnName = getColumnName(map, xPath );
       mScale = getMeasurementScale(map, xPath);
-			boolean toImport = isImportNeeded(map, xPath, mScale);
+      boolean toImport = AbstractDataPackage.isImportNeeded(map, xPath, mScale);
 			
       if(toImport) {
         String entityName = adp.getEntityName(entityIndex);
@@ -422,17 +422,6 @@ public class InsertColumnCommand implements Command, DataPackageWizardListener
     return;
   }
 
-	private boolean isImportNeeded(OrderedMap map, String xPath, String mScale) {
-		
-		mScale = mScale.toLowerCase();
-		if(!(mScale.equals("nominal") || mScale.equals("ordinal"))) return false;
-		String path = xPath + "/measurementScale/" + mScale + "/nonNumericDomain/enumeratedDomain[1]/entityCodeList/entityReference";
-		boolean present = map.containsKey(path);
-		if(!present) return false;
-		String o = (String)map.get(path);
-		if(o == null || o.trim().equals("")) return true;
-		return false;
-	}
 	
   private void setUpDelimiterEditor()
   {
