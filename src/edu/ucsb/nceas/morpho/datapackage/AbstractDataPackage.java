@@ -2611,6 +2611,15 @@ public abstract class AbstractDataPackage extends MetadataObject
     }
     return id;
   }
+  
+  public List<String> getAttributeNames(int entityIndex) {
+	  List<String> attributes = new ArrayList<String>();
+	  int attributeCount = getAttributeCountForAnEntity(entityIndex);
+	  for (int i = 0; i < attributeCount; i++) {
+		  attributes.add(getAttributeName(entityIndex, i));
+	  }
+	  return attributes;
+  }
 
   /*
    *  This method retreives the attribute datatype at attributeIndex for
