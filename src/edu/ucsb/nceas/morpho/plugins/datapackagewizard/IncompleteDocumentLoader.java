@@ -46,6 +46,8 @@ import edu.ucsb.nceas.morpho.framework.MorphoFrame;
 import edu.ucsb.nceas.morpho.framework.UIController;
 import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
 import edu.ucsb.nceas.morpho.plugins.DataPackageWizardListener;
+import edu.ucsb.nceas.morpho.plugins.EditingAttributeImportWizardListener;
+import edu.ucsb.nceas.morpho.plugins.EditingAttributeInfo;
 import edu.ucsb.nceas.morpho.plugins.ServiceController;
 import edu.ucsb.nceas.morpho.plugins.ServiceNotHandledException;
 import edu.ucsb.nceas.morpho.plugins.ServiceProvider;
@@ -157,6 +159,10 @@ public class IncompleteDocumentLoader
       //Log.debug(5, "In text imorpt wizard");
       loadEntityWizard();
     }
+    else if(incompletionStatus.equals(IncompleteDocSettings.INCOMPLETE_CODE_DEFINITION_WIZARD))
+    {
+      loadCodeDefWizard();
+    }
     else
     {
       UIController.getInstance().setWizardNotRunning();
@@ -197,21 +203,93 @@ public class IncompleteDocumentLoader
   }
   
   /*
-   * Loads the incomplete AbstractDataPackage into text import wizard
+   * Loads the incomplete AbstractDataPackage into an entity wizard
    */
   private void loadEntityWizard()
   {
     if(incompleteDocInfo != null)
     {
-      boolean showPageCount = false;
-      boolean isEntity = true;
       int index = incompleteDocInfo.getEntityIndex();
       //remove the entity with the index (this entity is the unfinished one)
       Node entityNode = dataPackage.deleteEntity(index);
       //incomplete information was read in init method and we can delete it now
       dataPackage.removeInfoForIncompleteEntity();
       MorphoFrame frame = openMorphoFrameForDataPackage(dataPackage);
-      WizardContainerFrame dpWiz = new WizardContainerFrame(IncompleteDocSettings.ENTITYWIZARD);
+      if(frame != null)
+      {
+        TableWizardListener dataPackageWizardListener = new TableWizardListener(dataPackage, index, frame);
+        loadEntityWizard(frame, IncompleteDocSettings.ENTITYWIZARD, 
+                                dataPackageWizardListener, index, entityNode);
+      }
+     
+    }
+  }
+  
+  /*
+   * Loads CodeDefinitionWziard from an incomplete document
+   */
+  private void loadCodeDefWizard()
+  {
+    if(incompleteDocInfo != null)
+    {
+      int index = incompleteDocInfo.getEntityIndex();
+      EditingAttributeInfo editingAttributeInfo = incompleteDocInfo.getEditingAttributeInfo();
+      if(editingAttributeInfo == null)
+      {
+        UIController.getInstance().setWizardNotRunning();
+        Log.debug(5, "Morpho couldn't get the information for editing attribute in order to load the wizard");
+        return;
+      }
+      int editingEntityIndex = editingAttributeInfo.getEntityIndex();
+      int editingAttributeIndex = editingAttributeInfo.getAttributeIndex();
+      Boolean insertBeforeSeletion = editingAttributeInfo.getInsertionBeforeSelection();
+      OrderedMap map = editingAttributeInfo.getData();
+      //remove the entity with the index (this entity is the unfinished one)
+      Node entityNode = dataPackage.deleteEntity(index);
+      //incomplete information was read in init method and we can delete it now
+      dataPackage.removeInfoForIncompleteCodeDef();
+      MorphoFrame frame = openMorphoFrameForDataPackage(dataPackage);
+      if(frame != null)
+      {
+        DataPackageWizardListener  listener = null;
+        try
+        {
+          if(insertBeforeSeletion == null)
+          {
+            //this is for editing an attribute
+            listener = new EditingAttributeImportWizardListener(frame, dataPackage, 
+                                                          map,  editingEntityIndex, editingAttributeIndex);            
+          }
+          else
+          {
+            //for inserting a new column
+          }
+        }
+        catch(Exception e)
+        {
+          UIController.getInstance().setWizardNotRunning();
+          Log.debug(5, "Morpho couldn't get the listener for editing attribute in order to load the wizard");
+          return;
+        }
+        WizardContainerFrame wizard =loadEntityWizard(frame, IncompleteDocSettings.CODEDEFINITIONWIZARD, 
+            listener, index, entityNode);
+        if(wizard != null)
+        {
+          wizard.setEditingAttributeMap(map);
+        }
+      }
+    }
+  }
+  
+  /*
+   * Loads an entity wizard with specified morpho frame, wizard type, a listener, entity index and entity node
+   */
+  private WizardContainerFrame loadEntityWizard(MorphoFrame frame, String wizardType, DataPackageWizardListener listener, int index, Node entityNode)
+  {
+    WizardContainerFrame dpWiz = null;
+    if(frame != null)
+    {
+      dpWiz = new WizardContainerFrame(wizardType);      
       dpWiz.setEntityIndex(index);
       AbstractUIPage currentPage = loadPagesIntoWizard(dpWiz, entityNode);
       if(currentPage == null)
@@ -222,22 +300,21 @@ public class IncompleteDocumentLoader
          frame.dispose();
          dpWiz = null;
          Log.debug(5, "The new entity wizard couldn't load the existing eml document!");
-         return;
+         return dpWiz;
       }
       Log.debug(25, "The current page id in IncompleteDocument.loadEntityWizard is "+currentPage.getPageID());
-      dpWiz.initialAutoSaving();
-      if(frame != null)
-      {
-        TableWizardListener dataPackageWizardListener = new TableWizardListener(dataPackage, index, frame);
-        dpWiz.setDataPackageWizardListener(dataPackageWizardListener);
-        dpWiz.setBounds(
-                        WizardSettings.WIZARD_X_COORD, WizardSettings.WIZARD_Y_COORD,
-                        WizardSettings.WIZARD_WIDTH,   WizardSettings.WIZARD_HEIGHT );
-        dpWiz.setCurrentPage(currentPage);
-        dpWiz.setTitle(DataPackageWizardInterface.NEWTABLEEWIZARDFRAMETITLE);
-        dpWiz.setVisible(true);
-      }
+      dpWiz.initialAutoSaving();   
+      dpWiz.setDataPackageWizardListener(listener);
+      dpWiz.setBounds(
+                      WizardSettings.WIZARD_X_COORD, WizardSettings.WIZARD_Y_COORD,
+                      WizardSettings.WIZARD_WIDTH,   WizardSettings.WIZARD_HEIGHT );
+      dpWiz.setCurrentPage(currentPage);
+      boolean showPageCount = false;
+      dpWiz.setShowPageCountdown(showPageCount);
+      dpWiz.setTitle(DataPackageWizardInterface.NEWTABLEEWIZARDFRAMETITLE);
+      dpWiz.setVisible(true);
     }
+    return dpWiz;
   }
   
   /*

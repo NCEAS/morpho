@@ -2163,6 +2163,16 @@ public class WizardContainerFrame
   {
     return editingAttributeMap;
   }
+  
+  /**
+   * Sets the ordered map for editing attribute.
+   * First we need to check if it is for newTable, if it is. We would not store it
+   * @param editingAttributeMap
+   */
+  public void setEditingAttributeMap(OrderedMap map)
+  {
+    this.editingAttributeMap = map;
+  }
 
   /**
    * Sets the ordered map for editing attribute.

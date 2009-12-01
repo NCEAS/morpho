@@ -32,12 +32,44 @@ public class EditingAttributeImportWizardListener implements DataPackageWizardLi
   
   private MorphoFrame morphoFrame = null;
   private AbstractDataPackage adp = null;
+  private OrderedMap map = null;
+  private int entityIndex = -1;
+  private int attributeIndex = -1;
+  private String xPath = "/attribute";
   
 
+  /**
+   * Constructor
+   * @param morphoFrame the frame which user starts to edit an attribute
+   * @param adp the abstract data package which contains the attribute
+   * @param map the ordered map will contains the edited data
+   * @param entityIndex the index of entity which contains the editing attribute
+   * @param attributeIndex the index of editing attribute
+   */
+  public EditingAttributeImportWizardListener(MorphoFrame morphoFrame, AbstractDataPackage adp, 
+                                                                OrderedMap map,  int entityIndex, int attributeIndex) throws Exception
+  {
+    this.morphoFrame = morphoFrame;
+    this.adp = adp;
+    if(morphoFrame == null || adp == null)
+    {
+      throw new Exception("The morpho frame or dataPackage is null in EditingAttributeImportWizardListener");
+    }
+    this.map = map;
+    this.entityIndex = entityIndex;
+    this.attributeIndex = attributeIndex;
+  }
+  
+ 
+  /**
+   * Inheritance method from  DataPackageWizardListener.
+   * It will be called when wizard is done.
+   */
   public void wizardComplete(Node newDOM, String autoSavedID) 
   {
     
-     //modifyAttribute();
+    DataViewer dataView = morphoFrame.getDataViewContainerPanel().getCurrentDataViewer();
+     modifyAttribute(adp, dataView , entityIndex, attributeIndex, map, xPath);
     try
     {
       ServiceController services = ServiceController.getInstance();
@@ -57,50 +89,72 @@ public class EditingAttributeImportWizardListener implements DataPackageWizardLi
   }
   
   
+  /**
+   * Inheritance method from  DataPackageWizardListener.
+   * It will be called when wizard is canceled.
+   */
   public void wizardCanceled() 
   {
     return;
   }
   
+  
+  /**
+   * Modify the attribute with new data
+   * @param adp the abstract data package contains the attribute
+   * @param dataView dataView of the entity
+   * @param enIndex index of the entity
+   * @param attrIndex index of the attribute
+   * @param map new attribute data
+   * @param xPath path to get data from ordered map
+   */
   public static void modifyAttribute(AbstractDataPackage adp, DataViewer dataView ,
-                                        int enIndex, int attrIndex, OrderedMap map, String xPath)
+                                        int enIndex, int attrIndex, OrderedMap map, String xPath) 
   {
-    JTable table = dataView.getDataTable();
-    // get the ID of old attribute and set it for the new one
-    String oldID = adp.getAttributeID(enIndex, attrIndex);
-    if(oldID == null || oldID.trim().equals("")) oldID = UISettings.getUniqueID();
-    map.put("/attribute/@id", oldID);
-
-    Attribute attr = new Attribute(map);
-    adp.insertAttribute(enIndex, attr, attrIndex);
-    adp.deleteAttribute(enIndex, attrIndex + 1);
-
-    String unit = getUnit(map, xPath);
-    String sType = (String)map.get(xPath + "/storageType");
-    String mScale = AbstractDataPackage.getMeasurementScale(map, xPath);
-    if(sType == null) sType = mScale;
-    String columnName = AbstractDataPackage.getAttributeColumnName(map, xPath );
-    // modify the
-    String newHeader = "<html><font face=\"Courier\"><center><small>"+ sType +
-    "</small><br><small>"+unit +"</small><br><b>"+
-    columnName +"</b></center></font></html>";
-    if(dataView != null) 
+    if(adp != null && map != null)
     {
-
-      Vector colLabels = dataView.getColumnLabels();
-      colLabels.set(attrIndex, newHeader);
-
-      PersistentVector pv = dataView.getPV();
-      PersistentTableModel ptm = new PersistentTableModel(pv, colLabels);
-      table.setModel(ptm);
-      //DefaultListSelectionModel dlsm = new DefaultListSelectionModel();
-      //dlsm.addSelectionInterval(attrIndex, attrIndex);
-      table.setColumnSelectionInterval(attrIndex, attrIndex);
-      StateChangeEvent stateEvent = new
-      StateChangeEvent(table,StateChangeEvent.SELECT_DATATABLE_COLUMN);
-      StateChangeMonitor stateMonitor = StateChangeMonitor.getInstance();
-      stateMonitor.notifyStateChange(stateEvent);
-
+      JTable table = dataView.getDataTable();
+      // get the ID of old attribute and set it for the new one
+      String oldID = adp.getAttributeID(enIndex, attrIndex);
+      if(oldID == null || oldID.trim().equals("")) oldID = UISettings.getUniqueID();
+      map.put("/attribute/@id", oldID);
+    
+      Attribute attr = new Attribute(map);
+      adp.insertAttribute(enIndex, attr, attrIndex);
+      adp.deleteAttribute(enIndex, attrIndex + 1);
+    
+      String unit = getUnit(map, xPath);
+      String sType = (String)map.get(xPath + "/storageType");
+      String mScale = AbstractDataPackage.getMeasurementScale(map, xPath);
+      if(sType == null) sType = mScale;
+      String columnName = AbstractDataPackage.getAttributeColumnName(map, xPath );
+      // modify the
+      String newHeader = "<html><font face=\"Courier\"><center><small>"+ sType +
+      "</small><br><small>"+unit +"</small><br><b>"+
+      columnName +"</b></center></font></html>";
+      if(dataView != null) 
+      {
+    
+        Vector colLabels = dataView.getColumnLabels();
+        colLabels.set(attrIndex, newHeader);
+        if(table != null)
+        {
+        PersistentVector pv = dataView.getPV();
+        PersistentTableModel ptm = new PersistentTableModel(pv, colLabels);
+        table.setModel(ptm);
+        //DefaultListSelectionModel dlsm = new DefaultListSelectionModel();
+        //dlsm.addSelectionInterval(attrIndex, attrIndex);
+        table.setColumnSelectionInterval(attrIndex, attrIndex);
+        StateChangeEvent stateEvent = new
+        StateChangeEvent(table,StateChangeEvent.SELECT_DATATABLE_COLUMN);
+        StateChangeMonitor stateMonitor = StateChangeMonitor.getInstance();
+        stateMonitor.notifyStateChange(stateEvent);
+        }
+      }
+    }
+    else
+    {
+       Log.debug(5, "The data map or abstract data package is null in EditingAttributeImportListener.modifyAttribute");
     }
 
   }//end of modifyAttribute
