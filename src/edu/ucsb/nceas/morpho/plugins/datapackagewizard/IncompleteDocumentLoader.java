@@ -218,8 +218,9 @@ public class IncompleteDocumentLoader
       if(frame != null)
       {
         TableWizardListener dataPackageWizardListener = new TableWizardListener(dataPackage, index, frame);
+        OrderedMap editingAttributeMap = null;
         loadEntityWizard(frame, IncompleteDocSettings.ENTITYWIZARD, 
-                                dataPackageWizardListener, index, entityNode);
+                                dataPackageWizardListener, index, entityNode,editingAttributeMap);
       }
      
     }
@@ -253,14 +254,13 @@ public class IncompleteDocumentLoader
       {
         DataPackageWizardListener  listener = null;
         WizardContainerFrame wizard =loadEntityWizard(frame, IncompleteDocSettings.CODEDEFINITIONWIZARD, 
-            listener, index, entityNode);
+            listener, index, entityNode, map);
         if(wizard == null)
         {
           UIController.getInstance().setWizardNotRunning();
           Log.debug(5, "Morpho couldn't get wizard container frame!");
           return;
         }
-        wizard.setEditingAttributeMap(map);
         try
         {
           if(insertBeforeSeletion == null)
@@ -287,14 +287,16 @@ public class IncompleteDocumentLoader
   }
   
   /*
-   * Loads an entity wizard with specified morpho frame, wizard type, a listener, entity index and entity node
+   * Loads an entity wizard with specified morpho frame, wizard type, a listener, entity index, entity node and an attribute orderedMap
    */
-  private WizardContainerFrame loadEntityWizard(MorphoFrame frame, String wizardType, DataPackageWizardListener listener, int index, Node entityNode)
+  private WizardContainerFrame loadEntityWizard(MorphoFrame frame, String wizardType, DataPackageWizardListener listener,
+        int index, Node entityNode, OrderedMap  attributeMap)
   {
     WizardContainerFrame dpWiz = null;
     if(frame != null)
     {
-      dpWiz = new WizardContainerFrame(wizardType);      
+      dpWiz = new WizardContainerFrame(wizardType);
+      dpWiz.setEditingAttributeMap(attributeMap);
       dpWiz.setEntityIndex(index);
       AbstractUIPage currentPage = loadPagesIntoWizard(dpWiz, entityNode);
       if(currentPage == null)
