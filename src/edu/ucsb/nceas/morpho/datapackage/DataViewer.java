@@ -344,9 +344,11 @@ public class DataViewer extends javax.swing.JPanel
 
     headerLabel = new JLabel("DataTitle");
     headerLabel.setForeground(Color.white);
+    headerLabel.setHorizontalAlignment(SwingConstants.CENTER);
     HeaderPanel.setBackground(Color.gray);
-    HeaderPanel.add(headerLabel);
-		DataViewerPanel.add(BorderLayout.NORTH, HeaderPanel);
+    HeaderPanel.setLayout(new BorderLayout(0,0));
+    HeaderPanel.add(BorderLayout.SOUTH,headerLabel);
+	DataViewerPanel.add(BorderLayout.NORTH, HeaderPanel);
 
 	  thisRef = this;
 
@@ -550,6 +552,10 @@ public class DataViewer extends javax.swing.JPanel
 
     public JPanel getDataViewerPanel() {
 		return DataViewerPanel;
+	}
+    
+    public JPanel getHeaderPanel() {
+		return HeaderPanel;
 	}
     
     // allow other plugins to modify this pop up
