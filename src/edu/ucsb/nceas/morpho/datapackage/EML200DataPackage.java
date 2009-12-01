@@ -1233,6 +1233,7 @@ public  class EML200DataPackage extends AbstractDataPackage
           }         
           
         }
+        info = new EditingAttributeInfo(editingEntityIndex, editingAttributeIndex, map, insertionBeforeColumn);
       }
     }
     return info;

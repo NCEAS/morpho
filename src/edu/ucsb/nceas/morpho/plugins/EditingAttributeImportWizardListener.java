@@ -58,6 +58,7 @@ public class EditingAttributeImportWizardListener implements DataPackageWizardLi
     this.map = map;
     this.entityIndex = entityIndex;
     this.attributeIndex = attributeIndex;
+    //Log.debug(5, "in constructor the entity index and attribute index are "+this.entityIndex+ " and "+this.attributeIndex);
   }
   
  
@@ -120,6 +121,7 @@ public class EditingAttributeImportWizardListener implements DataPackageWizardLi
       map.put("/attribute/@id", oldID);
     
       Attribute attr = new Attribute(map);
+      //Log.debug(5, "The entity index is "+enIndex+" and attribute index is "+attrIndex);
       adp.insertAttribute(enIndex, attr, attrIndex);
       adp.deleteAttribute(enIndex, attrIndex + 1);
     
@@ -139,16 +141,16 @@ public class EditingAttributeImportWizardListener implements DataPackageWizardLi
         colLabels.set(attrIndex, newHeader);
         if(table != null)
         {
-        PersistentVector pv = dataView.getPV();
-        PersistentTableModel ptm = new PersistentTableModel(pv, colLabels);
-        table.setModel(ptm);
-        //DefaultListSelectionModel dlsm = new DefaultListSelectionModel();
-        //dlsm.addSelectionInterval(attrIndex, attrIndex);
-        table.setColumnSelectionInterval(attrIndex, attrIndex);
-        StateChangeEvent stateEvent = new
-        StateChangeEvent(table,StateChangeEvent.SELECT_DATATABLE_COLUMN);
-        StateChangeMonitor stateMonitor = StateChangeMonitor.getInstance();
-        stateMonitor.notifyStateChange(stateEvent);
+          PersistentVector pv = dataView.getPV();
+          PersistentTableModel ptm = new PersistentTableModel(pv, colLabels);
+          table.setModel(ptm);
+          //DefaultListSelectionModel dlsm = new DefaultListSelectionModel();
+          //dlsm.addSelectionInterval(attrIndex, attrIndex);
+          table.setColumnSelectionInterval(attrIndex, attrIndex);
+          StateChangeEvent stateEvent = new
+          StateChangeEvent(table,StateChangeEvent.SELECT_DATATABLE_COLUMN);
+          StateChangeMonitor stateMonitor = StateChangeMonitor.getInstance();
+          stateMonitor.notifyStateChange(stateEvent);
         }
       }
     }
