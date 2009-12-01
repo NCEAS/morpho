@@ -68,6 +68,7 @@ public class Access
   public final String subtitle = " ";
 
   private JPanel radioPanel;
+  private JPanel orderPanel;
   private String xPathRoot = "/eml:eml/access/";
   
   protected boolean isEntity = false;
@@ -90,7 +91,11 @@ public class Access
   private CustomList accessList;
 
   private String AUTHSYSTEM_VALUE = "knb";
-  private String ORDER_VALUE = "allowFirst";
+  private String orderValue = "allowFirst";
+  private String[] orderValues = new String[] {
+	      "Allow First",
+	      "Deny First"
+	  };
 
   public static DefaultMutableTreeNode accessTreeNode = null;
   public static String accessTreeMetacatServerName = null;
@@ -122,14 +127,14 @@ public class Access
     		  };
     	desc =
     		WidgetFactory.makeHTMLLabel(
-	        "<p><b>Would you like the allow the public to read your data entity?"
-	        + "</b></p>", 3);
+	        "<p><b>Would you like to allow the public to read your data entity?"
+	        + "</b></p>", 2);
     }
     else {
     	desc =
     		WidgetFactory.makeHTMLLabel(
-	        "<p><b>Would you like the allow the public to read your data package?"
-	        + "</b></p>", 3);
+	        "<p><b>Would you like to allow the public to read your data package?"
+	        + "</b></p>", 2);
     }
     vBox.add(desc);
 
@@ -150,6 +155,8 @@ public class Access
 	            inherit = true;
             }
         }
+        //force the order section to update
+        setOrderValue(orderValue);
       }
     };
 
@@ -158,8 +165,41 @@ public class Access
         PADDING, 0, 0));
 
     vBox.add(radioPanel);
-    vBox.add(WidgetFactory.makeDefaultSpacer());
 
+    ///
+    JLabel orderDesc = null; 
+    
+    orderDesc =
+    		WidgetFactory.makeHTMLLabel(
+	        "<p><b>Process access rules in this order: "
+	        + "</b></p>", 2);
+    vBox.add(orderDesc);
+
+    ActionListener orderListener = new ActionListener() {
+
+      public void actionPerformed(ActionEvent e) {
+        Log.debug(45, "got orderradiobutton command: " + e.getActionCommand());
+        if (e.getActionCommand().equals(orderValues[0])) {
+        	orderValue = "allowFirst";
+        }
+        if (e.getActionCommand().equals(orderValues[1])) {
+        	orderValue = "denyFirst";
+        }
+      }
+    };
+
+    orderPanel = WidgetFactory.makeRadioPanel(orderValues, 0, orderListener);
+    //force the enable/disable of the radio
+    if (isEntity) {
+    	setOrderValue(orderValue);
+    }
+    orderPanel.setBorder(new javax.swing.border.EmptyBorder(0, WizardSettings.
+        PADDING, 0, 0));
+
+    vBox.add(orderPanel);
+    vBox.add(WidgetFactory.makeDefaultSpacer());
+    ///
+    
     JLabel desc1 = null;
 	if (isEntity) {	
 	    desc1 = WidgetFactory.makeHTMLLabel(
@@ -362,7 +402,7 @@ public class Access
     
     if (publicReadAccess) {
       returnMap.put(rootXPath + AUTHSYSTEM_REL_XPATH, AUTHSYSTEM_VALUE);
-      returnMap.put(rootXPath + ORDER_REL_XPATH, ORDER_VALUE);
+      returnMap.put(rootXPath + ORDER_REL_XPATH, orderValue);
       returnMap.put(rootXPath + "allow[" + (allowIndex) + "]/principal",
           "public");
       returnMap.put(rootXPath + "allow[" + (allowIndex++) + "]/permission",
@@ -380,7 +420,7 @@ public class Access
     	//In entity level, for non-public readable and there is no another rules,
     	// we add a specific deny rule for public to overwrite the top accesss subtree
     	returnMap.put(rootXPath + AUTHSYSTEM_REL_XPATH, AUTHSYSTEM_VALUE);
-        returnMap.put(rootXPath + ORDER_REL_XPATH, ORDER_VALUE);
+        returnMap.put(rootXPath + ORDER_REL_XPATH, orderValue);
         returnMap.put(rootXPath + "deny[" + (denyIndex) + "]/principal",
             "public");
         returnMap.put(rootXPath + "deny[" + (denyIndex++) + "]/permission",
@@ -397,7 +437,7 @@ public class Access
       // need to add AUTHSYSTEM and ORDER as these were not added earlier not
       // non publicly readable documents.
       returnMap.put(rootXPath + AUTHSYSTEM_REL_XPATH, AUTHSYSTEM_VALUE);
-      returnMap.put(rootXPath + ORDER_REL_XPATH, ORDER_VALUE);
+      returnMap.put(rootXPath + ORDER_REL_XPATH, orderValue);
     }
 
     Vector pagesProcessed = new Vector();
@@ -562,7 +602,7 @@ public class Access
         AUTHSYSTEM_VALUE = nextVal;
         toDeleteList.add(nextXPathObj);
       } else if (nextXPath.startsWith(ORDER_REL_XPATH)) {
-        ORDER_VALUE = nextVal;
+        setOrderValue(nextVal);
         toDeleteList.add(nextXPathObj);
       } else if (nextXPath.startsWith(ALLOW_REL_XPATH)) {
 
@@ -784,6 +824,22 @@ public class Access
 	  return this.isEntity;
   }
 
+  private void setOrderValue(String value) {
+	  orderValue = value;
+	  JPanel innerPanel = ( (JPanel) (orderPanel.getComponent(1)));
+      JRadioButton allowFirst = ( (JRadioButton) (innerPanel.
+          getComponent(0)));
+      JRadioButton denyFirst = ( (JRadioButton) (innerPanel.
+          getComponent(1)));
+	  if (orderValue.equals("allowFirst")) {
+		 allowFirst.setSelected(true);
+		 denyFirst.setSelected(false);
+	  }
+	  if (orderValue.equals("denyFirst")) {
+		 allowFirst.setSelected(false);
+		 denyFirst.setSelected(true);
+	  }
+  }
   private int getFirstPredicate(String xpath, String firstSegment) {
 
     String tempXPath
