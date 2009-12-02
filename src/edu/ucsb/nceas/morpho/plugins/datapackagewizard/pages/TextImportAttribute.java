@@ -88,7 +88,7 @@ public class TextImportAttribute extends AbstractUIPage
 	   // Column Model of the table containting all the columns
 	   private TableColumnModel fullColumnModel = null;
 	   private AttributePage attributePage = null;
-	   private boolean importNeeded = false;
+	   private boolean importAttributeAdded = false;
 	   private String xPathRoot = AttributeSettings.Attribute_xPath;
 	   //private int indexInAbsractDataPackageImportList =NOIMPORT; // -1 means not need imported
 	   public static final String CLASSFULLNAME = "edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.TextImportAttribute";
@@ -270,12 +270,12 @@ public class TextImportAttribute extends AbstractUIPage
 		  if(frame != null)
 		  {
 			  AbstractDataPackage adp = frame.getAbstractDataPackage();
-		      if(adp != null && importNeeded) 
+		      if(adp != null && importAttributeAdded) 
 		      {
 		    	  //onLoadAction, we need to remove the previously stored import attribute.
 		    	  //otherwise, this attribute can be stored twice.
 		    	  adp.removeLastAttributeForImport();
-		    	  importNeeded = false;
+		    	  importAttributeAdded = false;
 		      }
 		  }
 		  Log.debug(30, "The TextImportAttribute page has the index "+columnIndex);
@@ -335,13 +335,13 @@ public class TextImportAttribute extends AbstractUIPage
 			      {    	  
 			          String mScale = getMeasurementScale(map1, prefix + "[" + columnIndex + "]");
 			          adp.addAttributeForImport(adp.getLastImportedEntity(), colName, mScale, map1, prefix + "[" + columnIndex + "]", true);
-			          importNeeded = true;
+			          importAttributeAdded = true;
 			          Log.debug(32, "Set the TextImportAttribute importNeeded(code/definition)  true");
 			      }
 			  }
 			  else
 			  {
-				  importNeeded = false;
+			    importAttributeAdded = false;
 				  Log.debug(32, "Set the TextImportAttribute importNeeded(code/definition)  false");
 			  }
 			  
@@ -366,7 +366,7 @@ public class TextImportAttribute extends AbstractUIPage
 					  nextPageID =DataPackageWizardInterface.CODE_DEFINITION;
 					  Log.debug(30, "Set next page id "+DataPackageWizardInterface.CODE_DEFINITION+" for the last attribute");
 				  } 
-				  else if(importNeededInPreviousAttributes || importNeeded) 
+				  else if(importNeededInPreviousAttributes || importAttributeAdded) 
 				  {
 					  //there is at least one attribute need a reference from another table, so go to code_import_summary
 					  nextPageID= DataPackageWizardInterface.CODE_IMPORT_SUMMARY;
@@ -530,6 +530,10 @@ public class TextImportAttribute extends AbstractUIPage
       {
         adp.setLastImportedAttributes(null);
       }
+      if(attributePage.isImportNeeded()) 
+      {
+        importAttributeAdded = true;
+      }
       String attributeName = attributePage.getAttributeName();
       Log.debug(30, "The attributeName in TextImportAttribute.setPageData is "+attributeName);
       adp.addToLastImportedAttributeNameList(columnIndex, attributeName);
@@ -541,9 +545,9 @@ public class TextImportAttribute extends AbstractUIPage
 	   * Is this attribute need importing code/definition
 	   * @return
 	   */
-	  public boolean isImportNeeded()
+	  public boolean isImportAttributeAdded()
 	  {
-		 return this.importNeeded;
+		 return this.importAttributeAdded;
 	  }
 	  
 	  /**

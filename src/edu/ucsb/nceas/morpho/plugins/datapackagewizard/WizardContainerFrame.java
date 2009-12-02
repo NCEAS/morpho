@@ -2095,7 +2095,7 @@ public class WizardContainerFrame
 				  if (page instanceof TextImportAttribute)
 				  {
 					   TextImportAttribute attribute = (TextImportAttribute)page;
-					   if(attribute.isImportNeeded())
+					   if(attribute.isImportAttributeAdded())
 					   {
 						   Log.debug(32, "Found a attribute in the pageStack need to import code/defintion");
 						   contain = true;
