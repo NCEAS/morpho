@@ -2208,6 +2208,24 @@ public class Morpho
         }
     }
     
+    /**
+     * Gets the flag of disable saving incomplete doc.
+     * @return true if we want to disable the incomplete saving feature
+     */
+    public static boolean getFlagofDisableSavingIncompleteDoc()
+    {
+      boolean disable = false;
+      try
+      {
+        disable = (new Boolean(config.get("disableSavingIncompleteDoc", 0))).booleanValue();
+      }
+      catch(Exception e)
+      {
+        Log.debug(20, "Couldn't get the flag of disable incomplete saving and default value false will be applied");
+      }
+      return disable;
+    }
+    
   
 
 

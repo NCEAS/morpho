@@ -196,5 +196,19 @@ public abstract class AbstractUIPage extends JPanel {
 	 return this.xpathUIPageMapping;  
   }
   
+  /**
+   * Action will be executed when "Save for Later" button is clicked
+   * @return true if the action can continue
+   */
+  public boolean onSaveForLaterAction()
+  {
+    boolean success = false;
+    if(onAdvanceAction())
+    {
+      success = true;
+    }
+    return success;
+  }
+  
 
 }

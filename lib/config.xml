@@ -20,6 +20,7 @@
   <debug_level>30</debug_level>
   <log_file>true</log_file>
   <back_dot_morpho_dir>true</back_dot_morpho_dir>
+  <disableSavingIncompleteDoc>false</disableSavingIncompleteDoc>
   <triplesTag>//triple</triplesTag>
   <saxparser>org.apache.xerces.parsers.SAXParser</saxparser>
   <packageWizardConfig>frames/packagewizard.xml</packageWizardConfig>

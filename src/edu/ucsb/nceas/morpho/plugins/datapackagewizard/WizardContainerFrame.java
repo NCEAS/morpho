@@ -118,7 +118,7 @@ public class WizardContainerFrame
   private final static String INCOMPLETEDIR ="incompleteDir";
   private final static String DATADIR = "dataDir";
   
-  protected boolean disableIncompleteSaving = false;
+  protected  boolean disableIncompleteSaving = Morpho.getFlagofDisableSavingIncompleteDoc();
   //private boolean isEntityWizard = false;
   private String status = IncompleteDocSettings.PACKAGEWIZARD;
   private boolean isImportCodeDefinitionTable = false;
@@ -189,6 +189,8 @@ public class WizardContainerFrame
    */
   public void initialAutoSaving()
   {
+    if(!disableIncompleteSaving)
+    {
 	      
 	    if(adp == null)
 	    {
@@ -211,7 +213,7 @@ public class WizardContainerFrame
 	    	   adp.setAutoSavedID(autoSaveID);	    
 	    	}
 	    	dumpPackageToAutoSaveFile(autoSaveID);//onlywork for add entity wizard
-	    
+    }
   }
   
  
@@ -222,14 +224,17 @@ public class WizardContainerFrame
    */
   private void dumpPackageToAutoSaveFile(String fileID)
   {
-	  if(fileID != null && adp!= null && status != null && 
-	      (status.equals(IncompleteDocSettings.ENTITYWIZARD) ||status.equals(IncompleteDocSettings.CODEDEFINITIONWIZARD)))
-	  {
-		  String emlDoc = XMLUtilities.getDOMTreeAsString(adp.getMetadataNode(), false);
-		  //System.out.println("the original eml "+emlDoc);
-		  //System.out.println("the eml after appending incomplete info  "+emlDoc);
-		  savePackageInCompleteDir(fileID, emlDoc);
-	  }
+    if(!disableIncompleteSaving)
+    {
+  	  if(fileID != null && adp!= null && status != null && 
+  	      (status.equals(IncompleteDocSettings.ENTITYWIZARD) ||status.equals(IncompleteDocSettings.CODEDEFINITIONWIZARD)))
+  	  {
+  		  String emlDoc = XMLUtilities.getDOMTreeAsString(adp.getMetadataNode(), false);
+  		  //System.out.println("the original eml "+emlDoc);
+  		  //System.out.println("the eml after appending incomplete info  "+emlDoc);
+  		  savePackageInCompleteDir(fileID, emlDoc);
+  	  }
+    }
   }
   
   
