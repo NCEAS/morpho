@@ -208,6 +208,16 @@ public class InsertColumnCommand implements Command, DataPackageWizardListener
 	  Log.debug(45, "Correction wizard cancled");
 	  
   }
+  
+  /**
+   *  Method from DataPackageWizardListener. Do nothing.
+   *
+   */
+  public void wizardSavedForLater()
+  {
+    Log.debug(45, "Correction wizard was saved for later usage");
+  }
+
 
 
 
@@ -409,6 +419,20 @@ public class InsertColumnCommand implements Command, DataPackageWizardListener
           }
           public void wizardCanceled() {
             return;
+          }
+          /**
+           * Methods inherits from DataPackageWizardListener.
+           */
+          public void wizardSavedForLater()
+          {
+            if(morphoFrame != null)
+            {
+              morphoFrame.setVisible(false);
+              UIController controller = UIController.getInstance();
+              controller.removeWindow(morphoFrame);
+              morphoFrame.dispose();
+            }
+            Log.debug(45, "\n\n********** Wizard saved for later!");
           }
         };
         int nextEntityIndex = adp.getEntityCount();

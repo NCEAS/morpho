@@ -33,6 +33,7 @@ import edu.ucsb.nceas.morpho.framework.MorphoFrame;
 import edu.ucsb.nceas.morpho.framework.UIController;
 import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
 import edu.ucsb.nceas.morpho.plugins.DataPackageWizardListener;
+import edu.ucsb.nceas.morpho.plugins.EntityWizardListener;
 import edu.ucsb.nceas.morpho.plugins.ServiceController;
 import edu.ucsb.nceas.morpho.plugins.ServiceNotHandledException;
 import edu.ucsb.nceas.morpho.plugins.ServiceProvider;
@@ -134,46 +135,8 @@ public class ImportDataCommand implements Command, DataPackageWizardListener
 
 	          Log.debug(6, snhe.getMessage());
 	        }
-
-	        dpw.startEntityWizard(
-
-	          new DataPackageWizardListener() {
-
-	            public void wizardComplete(Node newDOM, String autoSavedID) {
-
-	              if(newDOM != null) {
-
-	                Log.debug(30,"Entity Wizard complete - creating Entity object..");
-	                Log.debug(35, "Add/replace entity on ImportDataCommand with entity index"+nextEntityIndex);
-	                adp.replaceEntity(newDOM, nextEntityIndex);//we use replace method here because the auto-save file already adding the entity into datapackage.
-	                adp.setLocation("");  // we've changed it and not yet saved
-
-	              }
-
-	              try
-	              {
-	                ServiceController services = ServiceController.getInstance();
-	                ServiceProvider provider =
-	                services.getServiceProvider(DataPackageInterface.class);
-	                DataPackageInterface dataPackageInt = (DataPackageInterface)provider;
-	                dataPackageInt.openNewDataPackage(adp, null);
-	              }
-	              catch (ServiceNotHandledException snhe)
-	              {
-	                Log.debug(6, snhe.getMessage());
-	              }
-	              morphoFrame.setVisible(false);
-	              UIController controller = UIController.getInstance();
-	              controller.removeWindow(morphoFrame);
-	              morphoFrame.dispose();
-
-	            }
-
-	            public void wizardCanceled() {
-
-	              Log.debug(45, "\n\n********** Wizard canceled!");
-	            }
-	          }, nextEntityIndex);
+	        EntityWizardListener dataPackageWizardListener = new EntityWizardListener(adp, nextEntityIndex, morphoFrame);
+	        dpw.startEntityWizard(dataPackageWizardListener, nextEntityIndex);
 
 	    }//if
 
@@ -187,6 +150,16 @@ public class ImportDataCommand implements Command, DataPackageWizardListener
 	  Log.debug(45, "Correction wizard cancled");
 	  
   }
+  
+  /**
+   *  Method from DataPackageWizardListener. Do nothing.
+   *
+   */
+  public void wizardSavedForLater()
+  {
+    Log.debug(45, "Correction wizard was saved for later usage");
+  }
+
 
 
   /**

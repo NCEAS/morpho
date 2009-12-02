@@ -112,6 +112,21 @@ public class InsertingAttributeImportWizardListener implements DataPackageWizard
     return;
   }
   
+  /**
+   * Methods inherits from DataPackageWizardListener.
+   */
+  public void wizardSavedForLater()
+  {
+    if(morphoFrame != null)
+    {
+      morphoFrame.setVisible(false);
+      UIController controller = UIController.getInstance();
+      controller.removeWindow(morphoFrame);
+      morphoFrame.dispose();
+    }
+    Log.debug(45, "\n\n********** Wizard saved for later!");
+  }
+  
   
   /*
    * Inserts a column in both data package and gui

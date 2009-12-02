@@ -253,6 +253,20 @@ public class EditColumnMetaDataCommand implements Command, DataPackageWizardList
 								
 								return;
 							}
+							 /**
+						    * Methods inherits from DataPackageWizardListener.
+						    */
+						   public void wizardSavedForLater()
+						   {
+						     if(morphoFrame != null)
+						     {
+						       morphoFrame.setVisible(false);
+						       UIController controller = UIController.getInstance();
+						       controller.removeWindow(morphoFrame);
+						       morphoFrame.dispose();
+						     }
+						     Log.debug(45, "\n\n********** Wizard saved for later!");
+						   }
 						};
 						int nextEntityIndex = adp.getEntityCount();
 						Boolean beforeFlag = null;//this variable is for inserting, so we just use null here.
@@ -283,6 +297,16 @@ public class EditColumnMetaDataCommand implements Command, DataPackageWizardList
 	  Log.debug(45, "Correction wizard cancled");
 	  
   }
+  
+  /**
+   *  Method from DataPackageWizardListener. Do nothing.
+   *
+   */
+  public void wizardSavedForLater()
+  {
+    Log.debug(45, "Correction wizard was saved for later usage");
+  }
+
 	
   private void modifyAttribute()
   {

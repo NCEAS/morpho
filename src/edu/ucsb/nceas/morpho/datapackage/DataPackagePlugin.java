@@ -58,6 +58,7 @@ import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.Reader;
 
 import javax.swing.ImageIcon;
 
@@ -1453,6 +1454,42 @@ public class DataPackagePlugin
             e.fillInStackTrace();
             throw e;
     }
+  }
+  
+  /**
+   * Save the incomplete xml document into local file system
+   * @param xml the source of xml
+   */
+  public void saveIncompleteDocumentForLater(Reader xml)
+  {
+    EML200DataPackage adp = (EML200DataPackage)DataPackageFactory.getDataPackage(xml, false, true);
+    ((EML200DataPackage)adp).setEMLVersion(EML200DataPackage.LATEST_EML_VER);
+    String nextid = null;
+    try
+    {
+      String id = adp.getAccessionNumber();
+      if (id.indexOf("temporary")>-1) 
+      {
+        AccessionNumber an = new AccessionNumber(morpho);
+        nextid = an.getNextId();
+        adp.setAccessionNumber(nextid);
+      } 
+      else 
+      {
+        AccessionNumber an = new AccessionNumber(morpho);
+        nextid = an.incRev(id);
+        adp.setAccessionNumber(nextid);
+      }
+    }
+    catch (Exception www) 
+    {
+      // no valid accession number; thus create one
+      AccessionNumber an = new AccessionNumber(morpho);
+      nextid = an.getNextId();
+      adp.setAccessionNumber(nextid);
+    } 
+    adp.serializeData(AbstractDataPackage.LOCAL);
+    adp.serialize(AbstractDataPackage.LOCAL);
   }
 
 

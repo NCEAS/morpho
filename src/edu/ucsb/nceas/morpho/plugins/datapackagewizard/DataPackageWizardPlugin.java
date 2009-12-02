@@ -289,6 +289,16 @@ public class DataPackageWizardPlugin implements PluginInterface,
           Log.debug(45, "\n\n********** Wizard canceled!");
           System.exit(0);
         }
+        
+        /**
+         *  Method from DataPackageWizardListener. Do nothing.
+         *
+         */
+        public void wizardSavedForLater()
+        {
+          Log.debug(45, "Correction wizard was saved for later usage");
+        }
+
       }
     );
   }

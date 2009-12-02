@@ -35,9 +35,13 @@ import edu.ucsb.nceas.morpho.datapackage.DataPackageFactory;
 import edu.ucsb.nceas.morpho.datastore.FileSystemDataStore;
 import edu.ucsb.nceas.morpho.framework.AbstractUIPage;
 import edu.ucsb.nceas.morpho.framework.ConfigXML;
+import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
 import edu.ucsb.nceas.morpho.framework.UIController;
 import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
 import edu.ucsb.nceas.morpho.plugins.DataPackageWizardListener;
+import edu.ucsb.nceas.morpho.plugins.ServiceController;
+import edu.ucsb.nceas.morpho.plugins.ServiceNotHandledException;
+import edu.ucsb.nceas.morpho.plugins.ServiceProvider;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.Access;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.CodeDefinition;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.CodeDefnPanel;
@@ -784,6 +788,27 @@ public class WizardContainerFrame
     // now clean up
     doCleanUp();
   }
+  
+  /**
+   * Action will be executed when "Save For Later" button is clicked.
+   * It will save incomplete document and data file into morpho dir.
+   */
+  public void saveForLaterAction()
+  {
+    if(!disableIncompleteSaving)
+    {
+      if(currentPage != null)
+      {
+        currentPage.onSaveForLaterAction();
+        String id = "dummy";
+        manualSaveInCompletePackage(id);
+        listener.wizardSavedForLater();
+        doCleanUp();
+      }
+    
+     
+    }
+  }
 
   public Node collectDataFromPages() {
 
@@ -1075,7 +1100,7 @@ public class WizardContainerFrame
    */
   public void manualSaveInCompletePackage(String docid)
   {
-	  
+    saveInCompletePackage(docid, DATADIR);
   }
   
   /*
@@ -1128,7 +1153,7 @@ public class WizardContainerFrame
 		      }
 		      else if(location != null && location.equals(DATADIR))
 		      {
-		    	  //TO-DO need to implement the saving to data dir method
+		        savePackageInDataDir(saveID, emlDoc);
 		      }
 		    
 		  }
@@ -1182,7 +1207,7 @@ public class WizardContainerFrame
 			      }
 			      else if(location != null && location.equals(DATADIR))
 			      {
-			    	  //TO-DO need to implement the saving to data dir method
+			        savePackageInDataDir(saveID, emlDoc);
 			      }
 			      //remove the entity we needed to adp
 			      if(isCurrentPageInEntityPageList())
@@ -1203,6 +1228,30 @@ public class WizardContainerFrame
 	  FileSystemDataStore store = new FileSystemDataStore(Morpho.thisStaticInstance);
 	  StringReader reader = new StringReader(xml);
 	  store.saveIncompleteDataFile(docid, reader);
+  }
+  
+  /*
+   * Save package into incomplete dir with given id
+   */
+  private void savePackageInDataDir(String docid, String xml)
+  {
+    //FileSystemDataStore store = new FileSystemDataStore(Morpho.thisStaticInstance);
+    StringReader reader = new StringReader(xml);
+  //store.saveFile(docid, reader);
+    try 
+    {
+     ServiceController services = ServiceController.getInstance();
+     ServiceProvider provider =
+           services.getServiceProvider(DataPackageInterface.class);
+     DataPackageInterface dataPackage = (DataPackageInterface)provider;
+     dataPackage.saveIncompleteDocumentForLater(reader);          
+    } 
+    catch (ServiceNotHandledException snhe) 
+    {
+
+      Log.debug(6, snhe.getMessage());
+    }
+    
   }
   
  

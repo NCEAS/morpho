@@ -101,6 +101,21 @@ public class EditingAttributeImportWizardListener implements DataPackageWizardLi
     return;
   }
   
+  /**
+   * Methods inherits from DataPackageWizardListener.
+   */
+  public void wizardSavedForLater()
+  {
+    if(morphoFrame != null)
+    {
+      morphoFrame.setVisible(false);
+      UIController controller = UIController.getInstance();
+      controller.removeWindow(morphoFrame);
+      morphoFrame.dispose();
+    }
+    Log.debug(45, "\n\n********** Wizard saved for later!");
+  }
+  
   
   /**
    * Modify the attribute with new data

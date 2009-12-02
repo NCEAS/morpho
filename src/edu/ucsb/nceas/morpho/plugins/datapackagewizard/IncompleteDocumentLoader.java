@@ -48,7 +48,9 @@ import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
 import edu.ucsb.nceas.morpho.plugins.DataPackageWizardListener;
 import edu.ucsb.nceas.morpho.plugins.EditingAttributeImportWizardListener;
 import edu.ucsb.nceas.morpho.plugins.EditingAttributeInfo;
+import edu.ucsb.nceas.morpho.plugins.EntityWizardListener;
 import edu.ucsb.nceas.morpho.plugins.InsertingAttributeImportWizardListener;
+import edu.ucsb.nceas.morpho.plugins.NewPackageWizardListener;
 import edu.ucsb.nceas.morpho.plugins.ServiceController;
 import edu.ucsb.nceas.morpho.plugins.ServiceNotHandledException;
 import edu.ucsb.nceas.morpho.plugins.ServiceProvider;
@@ -191,7 +193,7 @@ public class IncompleteDocumentLoader
           return;
       }
       Log.debug(25, "The current page id in IncompleteDocument.loadNewPackageWizard is "+currentPage.getPageID());
-      PackageWizardListener dataPackageWizardListener = new PackageWizardListener();
+      NewPackageWizardListener dataPackageWizardListener = new NewPackageWizardListener();
       dpWiz.setDataPackageWizardListener(dataPackageWizardListener);
       dpWiz.setBounds(
                       WizardSettings.WIZARD_X_COORD, WizardSettings.WIZARD_Y_COORD,
@@ -218,7 +220,7 @@ public class IncompleteDocumentLoader
       MorphoFrame frame = openMorphoFrameForDataPackage(dataPackage);
       if(frame != null)
       {
-        TableWizardListener dataPackageWizardListener = new TableWizardListener(dataPackage, index, frame);
+        EntityWizardListener dataPackageWizardListener = new EntityWizardListener(dataPackage, index, frame);
         OrderedMap editingAttributeMap = null;
         loadEntityWizard(frame, IncompleteDocSettings.ENTITYWIZARD, 
                                 dataPackageWizardListener, index, entityNode,editingAttributeMap);
@@ -438,92 +440,10 @@ public class IncompleteDocumentLoader
     wizardPageName = reader.getClassNamePlusParameterMapping();   
   }
   
-  /**
-   * Listener class for New Package Wizard
-   * @author tao
-   *
-   */
-  class PackageWizardListener implements  DataPackageWizardListener
-  {
-    /**
-     * Methods inherits from DataPackageWizardListener
-     */
-    public void wizardComplete(Node newDOM, String autoSavedID) 
-    {
-    
-      Log.debug(30,
-          "Wizard complete - Will now create an AbstractDataPackage..");
-  
-      AbstractDataPackage adp = DataPackageFactory.getDataPackage(newDOM);
-      Log.debug(30, "AbstractDataPackage complete");
-      adp.setAccessionNumber("temporary.1.1");
-      adp.setAutoSavedID(autoSavedID);
-      openMorphoFrameForDataPackage(adp);
-      Log.debug(45, "\n\n********** Wizard finished: DOM:");
-      Log.debug(45, XMLUtilities.getDOMTreeAsString(newDOM, false));
-    }
-    
-    /**
-     * Methods inherits from DataPackageWizardListener
-     */
-    public void wizardCanceled() 
-    {
-    
-       Log.debug(45, "\n\n********** Wizard canceled!");
-     }
-      
-  } 
   
   
-  /**
-   * Listener class for New Package Wizard
-   * @author tao
-   *
-   */
-  class TableWizardListener implements  DataPackageWizardListener
-  {
-    private AbstractDataPackage adp = null;
-    private int nextEntityIndex = 0;
-    private MorphoFrame oldMorphoFrame = null;
-    
-    public TableWizardListener(AbstractDataPackage adp, int nextEntityIndex, MorphoFrame oldMorphoFrame)
-    {
-      this.adp = adp;
-      this.nextEntityIndex = nextEntityIndex;
-      this.oldMorphoFrame = oldMorphoFrame;
-    }
-    
-    public void wizardComplete(Node newDOM, String autoSavedID) 
-    {
-
-      if(newDOM != null) 
-      {
-
-        Log.debug(30,"Entity Wizard complete - creating Entity object..");
-        Log.debug(35, "Add/replace entity in incompleteDocumentloader.TableWizardListener with entity index "+nextEntityIndex);
-        adp.replaceEntity(newDOM, nextEntityIndex);//we use replace method here because the auto-save file already adding the entity into datapackage.
-        adp.setLocation("");  // we've changed it and not yet saved
-
-      }
-      MorphoFrame frame = openMorphoFrameForDataPackage(adp);
-      if(frame != null)
-      {
-        oldMorphoFrame.setVisible(false);
-        UIController controller = UIController.getInstance();
-        controller.removeWindow(oldMorphoFrame);
-        oldMorphoFrame.dispose();
-      }
-
-    }
-
-     public void wizardCanceled() 
-     {
-
-        Log.debug(45, "\n\n********** Wizard canceled!");
-     }
-      
-  } 
   
+
   /*
    * Open a morpho frame for given abstractDataPacakge
    */

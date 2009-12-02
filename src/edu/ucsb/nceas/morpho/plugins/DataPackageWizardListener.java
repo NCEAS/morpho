@@ -53,4 +53,11 @@ public interface DataPackageWizardListener {
    *  @param newDOM the root Node of the newly-created DOM document
    */
   public void wizardCanceled();
+  
+  /**
+   *  callback method when wizard has been saved for later before completion
+   *
+   */
+  public void wizardSavedForLater();
+  
 }

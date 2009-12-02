@@ -192,6 +192,15 @@ public class AddResearchProjectCommand implements Command, DataPackageWizardList
 	  
   }
 
+  /**
+   *  Method from DataPackageWizardListener. Do nothing.
+   *
+   */
+  public void wizardSavedForLater()
+  {
+    Log.debug(45, "Correction wizard was saved for later usage");
+  }
+
 
   private boolean backupSubtreeAndShowProjectDialog() {
 

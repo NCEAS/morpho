@@ -31,6 +31,7 @@ import edu.ucsb.nceas.morpho.datapackage.AbstractDataPackage;
 import edu.ucsb.nceas.morpho.datastore.MetacatUploadException;
 import edu.ucsb.nceas.morpho.util.Command;
 
+import java.io.Reader;
 import java.util.Vector;
 
 /**
@@ -224,5 +225,11 @@ public interface DataPackageInterface
    */
   public Command getCommandObject(int commandIdentifier)
                                                 throws ClassNotFoundException;
+  
+  /**
+   * Save the incomplete xml document into local file system
+   * @param xml the source of xml
+   */
+  public void saveIncompleteDocumentForLater(Reader xml);
 
 }

@@ -31,6 +31,7 @@ import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
 import edu.ucsb.nceas.morpho.framework.UIController;
 import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
 import edu.ucsb.nceas.morpho.plugins.DataPackageWizardListener;
+import edu.ucsb.nceas.morpho.plugins.NewPackageWizardListener;
 import edu.ucsb.nceas.morpho.plugins.ServiceController;
 import edu.ucsb.nceas.morpho.plugins.ServiceNotHandledException;
 import edu.ucsb.nceas.morpho.plugins.ServiceProvider;
@@ -80,40 +81,8 @@ public class CreateNewDataPackageCommand implements Command
     }
 
     try {
-      dpw.startPackageWizard(
-          new DataPackageWizardListener() {
-
-        public void wizardComplete(Node newDOM, String autoSavedID) {
-
-          Log.debug(30,
-              "Wizard complete - Will now create an AbstractDataPackage..");
-
-          AbstractDataPackage adp = DataPackageFactory.getDataPackage(newDOM);
-          Log.debug(30, "AbstractDataPackage complete");
-          adp.setAccessionNumber("temporary.1.1");
-          adp.setAutoSavedID(autoSavedID);
-
-          try {
-            ServiceController services = ServiceController.getInstance();
-            ServiceProvider provider =
-                services.getServiceProvider(DataPackageInterface.class);
-            DataPackageInterface dataPackage = (DataPackageInterface)provider;
-            dataPackage.openNewDataPackage(adp, null);
-
-          } catch (ServiceNotHandledException snhe) {
-
-            Log.debug(6, snhe.getMessage());
-          }
-          Log.debug(45, "\n\n********** Wizard finished: DOM:");
-          Log.debug(45, XMLUtilities.getDOMTreeAsString(newDOM, false));
-        }
-
-
-        public void wizardCanceled() {
-
-          Log.debug(45, "\n\n********** Wizard canceled!");
-        }
-      });
+      NewPackageWizardListener dataPackageWizardListener = new NewPackageWizardListener();
+      dpw.startPackageWizard(dataPackageWizardListener);
 
     } catch (Throwable t) {
 
