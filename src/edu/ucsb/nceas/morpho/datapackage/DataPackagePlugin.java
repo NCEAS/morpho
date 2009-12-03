@@ -49,6 +49,7 @@ import edu.ucsb.nceas.morpho.util.Log;
 import edu.ucsb.nceas.morpho.util.StateChangeEvent;
 import edu.ucsb.nceas.morpho.util.StateChangeMonitor;
 import edu.ucsb.nceas.morpho.util.UISettings;
+import edu.ucsb.nceas.morpho.util.Util;
 import edu.ucsb.nceas.morpho.plugins.WizardPageInfo;
 
 import java.util.Vector;
@@ -61,6 +62,8 @@ import java.awt.event.WindowEvent;
 import java.io.Reader;
 
 import javax.swing.ImageIcon;
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 
 
 /**
@@ -1459,8 +1462,10 @@ public class DataPackagePlugin
   /**
    * Save the incomplete xml document into local file system
    * @param xml the source of xml
+   * * @param autoSavedID the id for auto saved file
+   * @return the id of saved data package.
    */
-  public void saveIncompleteDocumentForLater(Reader xml)
+  public String saveIncompleteDocumentForLater( Reader xml, String autoSavedID) throws Exception
   {
     EML200DataPackage adp = (EML200DataPackage)DataPackageFactory.getDataPackage(xml, false, true);
     ((EML200DataPackage)adp).setEMLVersion(EML200DataPackage.LATEST_EML_VER);
@@ -1490,6 +1495,8 @@ public class DataPackagePlugin
     } 
     adp.serializeData(AbstractDataPackage.LOCAL);
     adp.serialize(AbstractDataPackage.LOCAL);
+    Util.deleteAutoSavedFile(autoSavedID);
+    return adp.getAccessionNumber();
   }
 
 

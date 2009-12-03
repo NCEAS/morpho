@@ -229,7 +229,9 @@ public interface DataPackageInterface
   /**
    * Save the incomplete xml document into local file system
    * @param xml the source of xml
+   * @param autoSavedID the id for auto saved file
+   * @return id of the saved data package
    */
-  public void saveIncompleteDocumentForLater(Reader xml);
+  public String saveIncompleteDocumentForLater(Reader xml, String autoSavedID) throws Exception;
 
 }

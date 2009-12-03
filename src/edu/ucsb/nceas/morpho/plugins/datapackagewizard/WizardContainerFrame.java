@@ -858,11 +858,31 @@ public class WizardContainerFrame
     {
       if(currentPage != null)
       {
-        currentPage.onSaveForLaterAction();
-        String id = "dummy";
-        manualSaveInCompletePackage(id);
-        listener.wizardSavedForLater();
-        doCleanUp();
+        boolean success = currentPage.onSaveForLaterAction();
+        if(!success)
+        {
+          JOptionPane.showMessageDialog(frame, "Please fill out the required fields before click Save for Later button.", "Warning!",
+              JOptionPane.WARNING_MESSAGE);
+          return;
+        }
+        int choice = JOptionPane.showConfirmDialog(frame, "This incomplete data package will be saved locally and the wizard window will be closed.\n"+
+                                                     "Are you sure to cointue this action?", "Save ?",JOptionPane.YES_NO_OPTION);
+        if(choice == JOptionPane.YES_OPTION)
+        {
+          try
+          {
+            manualSaveInCompletePackage();
+          }
+          catch(Exception e)
+          {
+            Log.debug(5, "Couldn't save the incomplete document "+e.getMessage());
+            return;
+          }
+          listener.wizardSavedForLater();
+          doCleanUp();
+          this.setVisible(false);
+          this.dispose();
+        }
       }
     
      
@@ -1157,9 +1177,10 @@ public class WizardContainerFrame
    * Manually save incomplete package
    * @param docid
    */
-  public void manualSaveInCompletePackage(String docid)
+  public void manualSaveInCompletePackage() throws Exception
   {
-    saveInCompletePackage(docid, DATADIR);
+    String id = "dummy";
+    saveInCompletePackage(id, DATADIR);
   }
   
   /*
@@ -1167,13 +1188,20 @@ public class WizardContainerFrame
    */
   private void autoSaveInCompletePackage()
   {
-	  saveInCompletePackage(autoSaveID, INCOMPLETEDIR);
+    try
+    {
+	    saveInCompletePackage(autoSaveID, INCOMPLETEDIR);
+    }
+    catch(Exception e)
+    {
+      Log.debug(10, "Auto saving failes since "+e.getMessage());
+    }
   }
   
   /*
    * save incomplete package with given id and location
    */
-  private void saveInCompletePackage(String saveID, String location)
+  private void saveInCompletePackage(String saveID, String location) throws Exception
   {
 	  if(saveID != null && !disableIncompleteSaving)
 	  {
@@ -1187,7 +1215,7 @@ public class WizardContainerFrame
 		  {
 			  Log.debug(30, "Some error happens in collecting page data in WizardContainerFrame.savInCompletePackage "+e.getMessage()+
 					    " and the saving will be terminated ");
-			  return;
+			  throw e;
 		  }
 		  if(status != null && status.equals(IncompleteDocSettings.PACKAGEWIZARD))
 		  {	  
@@ -1203,7 +1231,7 @@ public class WizardContainerFrame
 			  {
 				  Log.debug(30, "Some error happens in WizardContainerFrame.savInCompletePackage "+e.getMessage()+
 				    " and the saving will be terminated ");
-		          return;
+		      throw e;
 			  }
 		      //System.out.println("the eml after appending incomplete info  "+emlDoc);
 		      if(location != null && location.equals(INCOMPLETEDIR))
@@ -1212,7 +1240,7 @@ public class WizardContainerFrame
 		      }
 		      else if(location != null && location.equals(DATADIR))
 		      {
-		        savePackageInDataDir(saveID, emlDoc);
+		        savePackageInDataDir(emlDoc);
 		      }
 		    
 		  }
@@ -1231,7 +1259,7 @@ public class WizardContainerFrame
 					 {
 						 Log.debug(30, "Some error happens in replaceEntity in WizardContainerFrame.savInCompletePackage "+e.getMessage()+
 						    " and the saving will be terminated ");
-				         return;
+				      throw e;
 					 }
 				  }
 				  try
@@ -1257,19 +1285,19 @@ public class WizardContainerFrame
 					  }
 					  Log.debug(30, "Some error happens in collecting page data in WizardContainerFrame.savInCompletePackage "+e.getMessage()+
 					    " and the saving will be terminated ");
-			          return;
+			      throw e;
 				  }
 			      //System.out.println("the eml after appending incomplete info  "+emlDoc);
 				  if(location != null && location.equals(INCOMPLETEDIR))
-			      {
+			    {
 			         savePackageInCompleteDir(saveID, emlDoc);
-			      }
-			      else if(location != null && location.equals(DATADIR))
-			      {
-			        savePackageInDataDir(saveID, emlDoc);
-			      }
-			      //remove the entity we needed to adp
-			      if(isCurrentPageInEntityPageList())
+			    }
+			    else if(location != null && location.equals(DATADIR))
+			    {
+			        savePackageInDataDir(emlDoc);
+			    }
+			    //remove the entity we needed to adp
+			    if(isCurrentPageInEntityPageList())
 				  {
 				     adp.deleteEntity(entityIndex);
 				  }
@@ -1292,7 +1320,7 @@ public class WizardContainerFrame
   /*
    * Save package into incomplete dir with given id
    */
-  private void savePackageInDataDir(String docid, String xml)
+  private void savePackageInDataDir(String xml) throws Exception
   {
     //FileSystemDataStore store = new FileSystemDataStore(Morpho.thisStaticInstance);
     StringReader reader = new StringReader(xml);
@@ -1303,12 +1331,19 @@ public class WizardContainerFrame
      ServiceProvider provider =
            services.getServiceProvider(DataPackageInterface.class);
      DataPackageInterface dataPackage = (DataPackageInterface)provider;
-     dataPackage.saveIncompleteDocumentForLater(reader);          
+     String id = dataPackage.saveIncompleteDocumentForLater(reader, autoSaveID);
+     JOptionPane.showMessageDialog(frame, "Data package was saved as id "+id, "Information",
+         JOptionPane.PLAIN_MESSAGE);
     } 
     catch (ServiceNotHandledException snhe) 
     {
 
       Log.debug(6, snhe.getMessage());
+      throw snhe;
+    }
+    catch(Exception e)
+    {
+      throw e;
     }
     
   }

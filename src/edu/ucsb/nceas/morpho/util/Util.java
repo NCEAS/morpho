@@ -284,11 +284,23 @@ public class Util
 	  	    String autoSavedID = adp.getAutoSavedD();
 	  	    if(autoSavedID != null)
 	  	    {
-	  		    FileSystemDataStore store = new FileSystemDataStore(Morpho.thisStaticInstance);
-	  	        store.deleteInCompleteFile(autoSavedID);
-	  	        adp.setAutoSavedID(null);
+	  	      deleteAutoSavedFile(autoSavedID);
+	  	      adp.setAutoSavedID(null);
 	  	    }
 	      }
+	}
+	
+	/**
+	 * Delete the auto-saved file for given file id.
+	 * @param autoSavedID
+	 */
+	public static void deleteAutoSavedFile(String autoSavedID)
+	{
+	  if(autoSavedID != null)
+    {
+      FileSystemDataStore store = new FileSystemDataStore(Morpho.thisStaticInstance);
+      store.deleteInCompleteFile(autoSavedID);
+    }
 	}
 		  
 
