@@ -122,7 +122,7 @@ public class WizardContainerFrame
   private final static String INCOMPLETEDIR ="incompleteDir";
   private final static String DATADIR = "dataDir";
   
-  protected  boolean disableIncompleteSaving = Morpho.getFlagofDisableSavingIncompleteDoc();
+  private  boolean disableIncompleteSaving = Morpho.getFlagofDisableSavingIncompleteDoc();
   //private boolean isEntityWizard = false;
   private String status = IncompleteDocSettings.PACKAGEWIZARD;
   private boolean isImportCodeDefinitionTable = false;
@@ -151,29 +151,39 @@ public class WizardContainerFrame
   private static final String EMPTYPROJECTTITLE = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"+
                                                   "<project><title> </title></project>";
 
-
+  
   /**
-   * Default constructor
+   * Constructor with parameter to disable incomplete doc saving feature.
    */
-  public WizardContainerFrame() 
+  public WizardContainerFrame(boolean disableIncompleteSaving)
   {
-	  this(IncompleteDocSettings.PACKAGEWIZARD);
+    super();
+    this.status = IncompleteDocSettings.PACKAGEWIZARD;
+    this.disableIncompleteSaving = disableIncompleteSaving;
+    init();
   }
   
   /**
-   * Constructor with a flag indicating if this is an entity wizard
+   * Constructor with a flag indicating if this is an entity wizard.
+   * In this constructor, disableIncompleteSaving value is determined by configure file.
    */
   public WizardContainerFrame(String status) {
 
-    super();
-    frame = this;
-    this.listener = listener;
+    super();    
     this.status = status;
+    init();
+
+  }
+  
+  
+  private void init()
+  {
+    frame = this;
     pageStack = new Stack();
     pageLib = new WizardPageLibrary(this);
     adp = UIController.getInstance().getCurrentAbstractDataPackage();
     addEmptyProjectTileSubtree();
-    init();    
+    initGUI();    
     setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
     this.addWindowListener(new WindowAdapter() {
 
@@ -181,7 +191,6 @@ public class WizardContainerFrame
         cancelAction();
       }
     });
-
   }
   
   
@@ -430,6 +439,10 @@ public class WizardContainerFrame
 
       prevButton.setEnabled(false);
       nextButton.setEnabled(false);
+      if(!disableIncompleteSaving)
+      {
+        saveLaterButton.setEnabled(false);
+      }
       return;
 
     }
@@ -437,6 +450,10 @@ public class WizardContainerFrame
 
       prevButton.setEnabled(true);
       nextButton.setEnabled(true);
+      if(!disableIncompleteSaving)
+      {
+        saveLaterButton.setEnabled(true);
+      }
     }
 
     // prev button enable/disable:
@@ -447,11 +464,19 @@ public class WizardContainerFrame
     // finish button:
     if (getCurrentPage().getNextPageID() == null) {
       nextButton.setEnabled(false);
+      if(!disableIncompleteSaving)
+      {
+        saveLaterButton.setEnabled(false);
+      }
       finishButton.setEnabled(true);
       finishButton.grabFocus();
     }
     else {
       nextButton.setEnabled(true);
+      if(!disableIncompleteSaving)
+      {
+        saveLaterButton.setEnabled(true);
+      }
       nextButton.grabFocus();
       finishButton.setEnabled(false);
     }
@@ -460,6 +485,8 @@ public class WizardContainerFrame
   /** Method to set the enabled/disabled state of the three buttons in the
    *		WizardContainerFrame. The Cancel button is always enabled.
    *
+   *@param prevStatus - the state of the 'Save for Later' Button. If true, it enables the button,
+   *                    else it disables the button
    *	@param prevStatus - the state of the 'prev' Button. If true, it enables the button,
    *										else it disables the button
    *	@param nextStatus - the state of the 'next' Button. If true, it enables the button,
@@ -469,15 +496,18 @@ public class WizardContainerFrame
    *
    */
 
-  public void setButtonsStatus(boolean prevStatus, boolean nextStatus,
+  public void setButtonsStatus(boolean saveLaterStatus, boolean prevStatus, boolean nextStatus,
                                boolean finishStatus) {
-
+    if(!disableIncompleteSaving)
+    {
+      saveLaterButton.setEnabled(saveLaterStatus);
+    }
     prevButton.setEnabled(prevStatus);
     nextButton.setEnabled(nextStatus);
     finishButton.setEnabled(finishStatus);
   }
 
-  private void init() {
+  private void initGUI() {
 
     pageCache = new HashMap();
     initContentPane();
@@ -584,11 +614,13 @@ public class WizardContainerFrame
                                         WizardSettings.TOP_PANEL_BG_COLOR));
     bottomPanel.setBorder(new EmptyBorder(PADDING, PADDING, PADDING, PADDING));
 
-    stepLabel = new JLabel();
+    /*stepLabel = new JLabel();
     stepLabel.setBorder(BorderFactory.createEmptyBorder(3, 10, 3, 3));
-    stepLabel.setText("Step 1 of " + WizardSettings.NUMBER_OF_STEPS);
+    stepLabel.setText("Step 1 of " + WizardSettings.NUMBER_OF_STEPS);*/
 
-    bottomBorderPanel.add(stepLabel, BorderLayout.WEST);
+    initLeftBottomPanel();
+    
+    bottomBorderPanel.add(leftBottomPanel, BorderLayout.WEST);
     bottomBorderPanel.add(bottomPanel, BorderLayout.CENTER);
     //bottomBorderPanel.add(WidgetFactory.makeHalfSpacer(), BorderLayout.NORTH);
 
@@ -597,8 +629,35 @@ public class WizardContainerFrame
     bottomBorderPanel.setActionMap(amap);
     contentPane.add(bottomBorderPanel, BorderLayout.SOUTH);
   }
+  
+  /*
+   * Init the left bottom panel. It contains step label and SaveLater button
+   */
+  private void initLeftBottomPanel()
+  {
+    leftBottomPanel = new JPanel();
+    leftBottomPanel.setLayout(new BoxLayout(leftBottomPanel, BoxLayout.X_AXIS));
+    leftBottomPanel.setOpaque(false);
+    leftBottomPanel.setBorder(new EmptyBorder(PADDING, PADDING, PADDING, PADDING));
+    if(!disableIncompleteSaving)
+    {
+      ActionListener actionListener = new ActionListener() {
+        public void actionPerformed(ActionEvent e) {
+          saveForLaterAction();
+        }
+      };
+      saveLaterButton = WidgetFactory.makeJButton(WizardSettings.SAVE_LATER_BUTTON_TEXT, actionListener,
+          WizardSettings.LONG_BUTTON_DIMS);
+      leftBottomPanel.add(saveLaterButton);
+    }
+    stepLabel = new JLabel();
+    stepLabel.setBorder(BorderFactory.createEmptyBorder(3, 10, 3, 3));
+    stepLabel.setText("Step 1 of " + WizardSettings.NUMBER_OF_STEPS);
+    leftBottomPanel.add(stepLabel);
+  }
 
   private void initButtons() {
+    
 
     addButton(WizardSettings.CANCEL_BUTTON_TEXT, new ActionListener() {
       public void actionPerformed(ActionEvent e) {
@@ -2302,46 +2361,6 @@ public class WizardContainerFrame
 
   
   /**
-   * Set the attributeName into an arrayList. 
-   * If the attribute index already in the array, we replace it. otherwise we add it to the array
-   * @param index
-   * @param attributeName
-   */
-  /*public void addToNewImportedAttributeNameList(int index, String attributeName)
-  {
-	  int size = this.newImportedAttributeNameList.size();
-	  if(size  <= index)
-	  {
-		  Log.debug(32, "In WizardContanerFrame.addToNewImportedAttributeNameList, the array list size " +size+
-				      " is less than or equal the attribute index "+index+", so we add "+attributeName+" to the arrary");
-		  this.newImportedAttributeNameList.add(attributeName);
-	  }
-	  else
-	  {
-		  Log.debug(32, "In WizardContanerFrame.addToNewImportedAttributeNameList, the array list size " +size+
-			      " is greater than  the attribute index "+index+", so we should replace the old value with the new value "+attributeName+" in arrary");
-		  this.newImportedAttributeNameList.set(index, attributeName);
-	  }
-  }*/
-  
-  /**
-   * Gets the new imported attribute name list
-   * @return
-   */
-  /*public List getNewImportedAttributeNameList()
-  {
-	  return this.newImportedAttributeNameList;
-  }*/
-  
-  /**
-   * Remove all elements in this list
-   */
-  /*public void clearNewImportedAttributeNameList()
-  {
-	  this.newImportedAttributeNameList.clear();
-  }*/
-  
-  /**
    * Gets the abstract data package associated with the frame
    * @return
    */
@@ -2350,14 +2369,6 @@ public class WizardContainerFrame
 	  return this.adp;
   }
   
-  /**
-   * Sets the abstract data package associated with fthe frame.
-   * @param pack
-   */
-  /*public void setAbstractDataPackage(AbstractDataPackage pack)
-  {
-	  this.adp = pack;
-  }*/
 
 
 
@@ -2368,10 +2379,12 @@ public class WizardContainerFrame
   private Container contentPane;
   private JPanel topPanel;
   private JPanel middlePanel;
+  private JPanel leftBottomPanel;
   private JPanel bottomBorderPanel;
   private JPanel bottomPanel;
   private JLabel titleLabel = new JLabel("");
   private JLabel subtitleLabel = new JLabel("");
+  private JButton saveLaterButton = null;
   private JButton nextButton;
   private JButton prevButton;
   private JButton finishButton;

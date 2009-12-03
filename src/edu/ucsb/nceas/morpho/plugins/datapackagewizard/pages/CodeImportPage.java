@@ -223,7 +223,7 @@ public class CodeImportPage extends AbstractUIPage {
 
     attrField.setText(handledImportAttributeName);
     entityField.setText(entity);
-    mainWizFrame.setButtonsStatus(false, true, false);//couldn't back again.
+    mainWizFrame.setButtonsStatus(true,false, true, false);//couldn't back again.
     
 
   }

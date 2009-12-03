@@ -137,7 +137,7 @@ public class CorrectionSummary extends AbstractUIPage {
 
 	    if (ID==null) return;
 	    if (ID.equals(DataPackageWizardInterface.DATA_LOCATION)) {
-	      mainWizFrame.setButtonsStatus(false, false, true);
+	      mainWizFrame.setButtonsStatus(false,false, false, true);
 	    }
 
 	  }

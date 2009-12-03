@@ -267,12 +267,12 @@ public class CodeImportSummary extends AbstractUIPage {
 	{
 		//this is starting import code wizard from editing attribute menu.
 		//this page is the first page. so the previous button should be disabled
-		mainWizFrame.setButtonsStatus(false, true, false);
+		mainWizFrame.setButtonsStatus(true,false, true, false);
 	}
 	else if(adp != null && adp.getAttributeImportCount() > 0) {
-      mainWizFrame.setButtonsStatus(true, true, false);
+      mainWizFrame.setButtonsStatus(true, true, true, false);
     } else {
-      mainWizFrame.setButtonsStatus(true, false, true);
+      mainWizFrame.setButtonsStatus(false, true, false, true);
     }
 	/*if(adp != null && adp.getAttributeImportCount() == 0) {
     

@@ -70,6 +70,7 @@ public class CorrectionWizardContainerFrame extends WizardContainerFrame
 	private AbstractDataPackage dataPackage = null;
 	private Node rootNode = null;
 	//private Vector pathListForTreeEditor = new Vector();
+	private static final boolean disableAutoSavingFeature = true;
 	
 	/**
 	 * Constructor
@@ -77,8 +78,8 @@ public class CorrectionWizardContainerFrame extends WizardContainerFrame
 	 */
 	public CorrectionWizardContainerFrame(AbstractDataPackage dataPackage)
 	{
+	  super(disableAutoSavingFeature);
 		this.dataPackage = dataPackage;
-		disableIncompleteSaving = true;
 	}
 	
 	/**

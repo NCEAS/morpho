@@ -227,7 +227,7 @@ public class DataPackageWizardPlugin implements PluginInterface,
     }
     else
     {
-    	dpWiz = new WizardContainerFrame();
+    	dpWiz = new WizardContainerFrame(IncompleteDocSettings.PACKAGEWIZARD);
     }
     dpWiz.initialAutoSaving();
     dpWiz.setDataPackageWizardListener(listener);

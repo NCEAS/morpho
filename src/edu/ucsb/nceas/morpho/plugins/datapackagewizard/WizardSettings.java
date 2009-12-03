@@ -221,7 +221,10 @@ public class WizardSettings {
   public static final String HTML_NO_TABLE_CLOSING = "</html>";
 
   public static final Dimension NAV_BUTTON_DIMS
-      = new Dimension(70, 25);
+      = new Dimension(80, 25);
+  
+  public static final Dimension LONG_BUTTON_DIMS
+  = new Dimension(120, 25);
 
   public static final Dimension LIST_BUTTON_DIMS
       = new Dimension(85, 30);
@@ -229,6 +232,8 @@ public class WizardSettings {
   public static final Dimension LIST_BUTTON_DIMS_SMALL
       = new Dimension(60, 25);
 
+  public    static final String SAVE_LATER_BUTTON_TEXT = "Save for Later";
+ 
   public    static final String IMPORT_BUTTON_TEXT  = "Import";
 
   public    static final String FINISH_BUTTON_TEXT  = "Finish";

@@ -181,7 +181,7 @@ public class IncompleteDocumentLoader
     if(incompleteDocInfo != null)
     {
       boolean showPageCount = true;    
-      WizardContainerFrame dpWiz = new WizardContainerFrame();
+      WizardContainerFrame dpWiz = new WizardContainerFrame(IncompleteDocSettings.PACKAGEWIZARD);
       dpWiz.initialAutoSaving();
       AbstractUIPage currentPage = loadPagesIntoWizard(dpWiz, dataPackage.getMetadataNode());
       if(currentPage == null)
@@ -441,9 +441,6 @@ public class IncompleteDocumentLoader
   }
   
   
-  
-  
-
   /*
    * Open a morpho frame for given abstractDataPacakge
    */
