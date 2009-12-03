@@ -785,14 +785,14 @@ public class WizardContainerFrame
    *  is pressed. It's up to the content to know whether it's the last page or
    *  not
    */
-  public void nextAction() {
+  public boolean nextAction() {
 
     Log.debug(45, "nextFinishAction called");
 
     // if the page's onAdvanceAction() returns false, don't advance...
-    if (! (getCurrentPage().onAdvanceAction())) return;
+    if (! (getCurrentPage().onAdvanceAction())) return false;
 
-    if (getCurrentPage().getNextPageID() == null) return;
+    if (getCurrentPage().getNextPageID() == null) return false;
 
     // * * * N E X T * * *
 
@@ -819,6 +819,7 @@ public class WizardContainerFrame
     }
 
     setCurrentPage(nextPage);
+    return true;
   }
 
   /**
@@ -856,9 +857,8 @@ public class WizardContainerFrame
   {
     if(!disableIncompleteSaving)
     {
-      if(currentPage != null)
-      {
-        boolean success = currentPage.onSaveForLaterAction();
+     
+        boolean success = nextAction();
         if(!success)
         {
           JOptionPane.showMessageDialog(frame, "Please fill out the required fields before click Save for Later button.", "Warning!",
@@ -882,9 +882,8 @@ public class WizardContainerFrame
           doCleanUp();
           this.setVisible(false);
           this.dispose();
-        }
-      }
-    
+        
+      }   
      
     }
   }
