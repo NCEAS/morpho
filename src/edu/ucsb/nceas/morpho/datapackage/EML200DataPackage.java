@@ -578,11 +578,11 @@ public  class EML200DataPackage extends AbstractDataPackage
       return "";
   }
   
-  /*
+  /**
    * Gets the status of the completion of this package 
    * @return three status - completed, incomplete(new package wizard) or incomplete(text import wizard)
    */
-  private String getCompletionStatus()
+  public String getCompletionStatus()
   {
 	  String packageWizardXpath = IncompleteDocSettings.EMLPATH+IncompleteDocSettings.ADDITIONALMETADATA+"/"+IncompleteDocSettings.METADATA+
 	                                           "/"+IncompleteDocSettings.PACKAGEWIZARD;
@@ -629,6 +629,16 @@ public  class EML200DataPackage extends AbstractDataPackage
       
      
 	  return completionStatus;
+  }
+  
+  /**
+   * Removes the information on additional metadata for incomplete data package
+   */
+  public void removeInfoForIncompletePackage()
+  {
+    String path = IncompleteDocSettings.EMLPATH+IncompleteDocSettings.ADDITIONALMETADATA+"/"+IncompleteDocSettings.METADATA+
+    "/"+IncompleteDocSettings.PACKAGEWIZARD;
+    removeIncompleteInformation(path);
   }
   
   /**

@@ -1556,6 +1556,18 @@ public abstract class AbstractDataPackage extends MetadataObject
     return tempNodes;
   }
   
+  
+  /**
+   * Gets the status of the completion of this package 
+   * @return three status - completed, incomplete(new package wizard) or incomplete(text import wizard)
+   */
+  abstract public String getCompletionStatus();
+  
+  /**
+   * Removes the information on additional metadata for incomplete data package
+   */
+  abstract public void removeInfoForIncompletePackage();
+  
  
   /**
    * Removes the information on additional metadata for incomplete entity

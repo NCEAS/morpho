@@ -788,13 +788,13 @@ public class DataPackagePlugin
   {
 	  AbstractDataPackage adp = null;
 	  adp =DataPackageFactory.getDataPackageFromIncompeteDir(identifier);
-	  openIncompleteDataPackage(adp, identifier, coordinator);
+	  openIncompleteDataPackage(adp, coordinator);
   }
   
   /*
    * Opens an incomplete data pacakge base on an AbstractDataPackage 
    */
-  private void openIncompleteDataPackage(AbstractDataPackage adp, String identifier, ButterflyFlapCoordinator coordinator)
+  private void openIncompleteDataPackage(AbstractDataPackage adp, ButterflyFlapCoordinator coordinator)
   {
 	  ServiceController sc;
 	    DataPackageWizardInterface dpwPlugin = null;
@@ -834,7 +834,14 @@ public class DataPackagePlugin
     //Log.debug(11, "location: " + location + " identifier: " + identifier +
     //                " relations: " + relations.toString());
 
-
+    String completionStatus = adp.getCompletionStatus();
+    if(completionStatus != null && !completionStatus.equals(AbstractDataPackage.COMPLETED))
+    {
+      //open incomplete data package.
+      openIncompleteDataPackage(adp, coordinator);
+      return;
+    }
+    //open complete data package.
     long starttime = System.currentTimeMillis();
     final MorphoFrame packageWindow = UIController.getInstance().addWindow(
                 "Data Package: "+identifier);

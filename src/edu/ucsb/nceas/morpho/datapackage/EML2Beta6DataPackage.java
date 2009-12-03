@@ -642,6 +642,27 @@ public class EML2Beta6DataPackage extends AbstractDataPackage
        +"readIncompleteDocInformation()");  
   }
   
+  /**
+   * Gets the status of the completion of this package 
+   * @return three status - completed, incomplete(new package wizard) or incomplete(text import wizard)
+   */
+  public String getCompletionStatus()
+  {
+    throw new java.lang.UnsupportedOperationException(
+        "EML2Beta6DataPackage - method not implemented - "
+       +"getCompletionStatus()");  
+  }
+  
+  /**
+   * Removes the information on additional metadata for incomplete data package
+   */
+  public void removeInfoForIncompletePackage()
+  {
+    throw new java.lang.UnsupportedOperationException(
+        "EML2Beta6DataPackage - method not implemented - "
+       +"removeInfoForIncompletePackage");  
+  }
+  
  
   
 }
