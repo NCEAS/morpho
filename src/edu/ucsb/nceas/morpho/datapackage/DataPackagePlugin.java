@@ -35,6 +35,7 @@ import edu.ucsb.nceas.morpho.framework.MorphoFrame;
 import edu.ucsb.nceas.morpho.framework.UIController;
 import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
 import edu.ucsb.nceas.morpho.plugins.DataPackageWizardListener;
+import edu.ucsb.nceas.morpho.plugins.NewPackageWizardListener;
 import edu.ucsb.nceas.morpho.plugins.PluginInterface;
 import edu.ucsb.nceas.morpho.plugins.ServiceController;
 import edu.ucsb.nceas.morpho.plugins.ServiceExistsException;
@@ -780,7 +781,9 @@ public class DataPackagePlugin
   
   
   /**
-   * Opens an incomplete data package
+   * Opens an incomplete data package from incomplete dir.
+   * Note: opens an incomplete data package from data dir will use openDataPackage method.
+   * They user different accessNumber.
    * @param identifier
    * @param coordinator the coordinator for butterfly flapping
    */
@@ -788,6 +791,7 @@ public class DataPackagePlugin
   {
 	  AbstractDataPackage adp = null;
 	  adp =DataPackageFactory.getDataPackageFromIncompeteDir(identifier);
+	  adp.setAccessionNumber(NewPackageWizardListener.TEMPORARYID);
 	  openIncompleteDataPackage(adp, coordinator);
   }
   

@@ -43,6 +43,26 @@ import edu.ucsb.nceas.utilities.XMLUtilities;
    */
 public class NewPackageWizardListener implements  DataPackageWizardListener
 {
+  
+   private String accessionNumber = null;
+   public static final String TEMPORARYID = "temporary.1.1";
+   /**
+    * Default constructor
+    */
+   public NewPackageWizardListener()
+   {
+     accessionNumber = TEMPORARYID;
+   }
+   
+   /**
+    * Constructor with sepcified accessionNumber
+    * @param accessionNumber
+    */
+   public NewPackageWizardListener(String accessionNumber )
+   {
+     this.accessionNumber = accessionNumber;
+   }
+   
     /**
      * Methods inherits from DataPackageWizardListener
      */
@@ -54,7 +74,7 @@ public class NewPackageWizardListener implements  DataPackageWizardListener
   
       AbstractDataPackage adp = DataPackageFactory.getDataPackage(newDOM);
       Log.debug(30, "AbstractDataPackage complete");
-      adp.setAccessionNumber("temporary.1.1");
+      adp.setAccessionNumber(accessionNumber);
       adp.setAutoSavedID(autoSavedID);
       openMorphoFrameForDataPackage(adp);
       Log.debug(45, "\n\n********** Wizard finished: DOM:");
