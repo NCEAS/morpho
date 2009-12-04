@@ -782,8 +782,7 @@ public class DataPackagePlugin
   
   /**
    * Opens an incomplete data package from incomplete dir.
-   * Note: opens an incomplete data package from data dir will use openDataPackage method.
-   * They user different accessNumber.
+   * Note: opening an incomplete data package from data dir will use openDataPackage method.
    * @param identifier
    * @param coordinator the coordinator for butterfly flapping
    */
@@ -791,7 +790,10 @@ public class DataPackagePlugin
   {
 	  AbstractDataPackage adp = null;
 	  adp =DataPackageFactory.getDataPackageFromIncompeteDir(identifier);
-	  adp.setAccessionNumber(NewPackageWizardListener.TEMPORARYID);
+	  if(adp.getCompletionStatus().equals(IncompleteDocSettings.INCOMPLETE_PACKAGE_WIZARD))
+	  {
+	    adp.setAccessionNumber(NewPackageWizardListener.TEMPORARYID);
+	  }  
 	  openIncompleteDataPackage(adp, coordinator);
   }
   
