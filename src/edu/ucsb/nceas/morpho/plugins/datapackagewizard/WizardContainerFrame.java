@@ -785,14 +785,14 @@ public class WizardContainerFrame
    *  is pressed. It's up to the content to know whether it's the last page or
    *  not
    */
-  public boolean nextAction() {
+  public void nextAction() {
 
     Log.debug(45, "nextFinishAction called");
 
     // if the page's onAdvanceAction() returns false, don't advance...
-    if (! (getCurrentPage().onAdvanceAction())) return false;
+    if (! (getCurrentPage().onAdvanceAction())) return;
 
-    if (getCurrentPage().getNextPageID() == null) return false;
+    if (getCurrentPage().getNextPageID() == null) return;
 
     // * * * N E X T * * *
 
@@ -819,7 +819,7 @@ public class WizardContainerFrame
     }
 
     setCurrentPage(nextPage);
-    return true;
+    
   }
 
   /**
@@ -857,33 +857,36 @@ public class WizardContainerFrame
   {
     if(!disableIncompleteSaving)
     {
-     
-        boolean success = nextAction();
-        if(!success)
+        if(currentPage != null)
         {
-          JOptionPane.showMessageDialog(frame, "Please fill out the required fields before click Save for Later button.", "Warning!",
-              JOptionPane.WARNING_MESSAGE);
-          return;
-        }
-        int choice = JOptionPane.showConfirmDialog(frame, "This incomplete data package will be saved locally and the wizard window will be closed.\n"+
-                                                     "Are you sure to cointue this action?", "Save ?",JOptionPane.YES_NO_OPTION);
-        if(choice == JOptionPane.YES_OPTION)
-        {
-          try
+          boolean success = currentPage.onAdvanceAction();
+          if(!success)
           {
-            manualSaveInCompletePackage();
-          }
-          catch(Exception e)
-          {
-            Log.debug(5, "Couldn't save the incomplete document "+e.getMessage());
+            JOptionPane.showMessageDialog(frame, "Please fill out the required fields before click Save for Later button.", "Warning!",
+                JOptionPane.WARNING_MESSAGE);
             return;
           }
-          listener.wizardSavedForLater();
-          doCleanUp();
-          this.setVisible(false);
-          this.dispose();
-        
-      }   
+          pageStack.push(currentPage);
+          int choice = JOptionPane.showConfirmDialog(frame, "This incomplete data package will be saved locally and the wizard window will be closed.\n"+
+                                                       "Are you sure to cointue this action?", "Save ?",JOptionPane.YES_NO_OPTION);
+          if(choice == JOptionPane.YES_OPTION)
+          {
+            try
+            {
+              manualSaveInCompletePackage();
+            }
+            catch(Exception e)
+            {
+              Log.debug(5, "Couldn't save the incomplete document "+e.getMessage());
+              return;
+            }
+            listener.wizardSavedForLater();
+            doCleanUp();
+            this.setVisible(false);
+            this.dispose();
+          
+        }   
+      }
      
     }
   }
