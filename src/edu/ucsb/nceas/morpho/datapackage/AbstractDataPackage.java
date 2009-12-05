@@ -3439,7 +3439,9 @@ public abstract class AbstractDataPackage extends MetadataObject
     		Log.debug(30, "url "+docid+" with index "+i+" is dirty "+isDirty);
     		// Detects if docid conflict occurs
 	        //boolean updateFlag = !(version.equals("1"));
-	        boolean existFlag = false;
+	        //boolean existFlag = false;
+    		  boolean existInMetacat = false;
+    		  boolean existInLocal = false;
 	        String statusInMetacat = null;
 	        String statusInLocal = null;
 	        String conflictLocation = null;
@@ -3451,7 +3453,8 @@ public abstract class AbstractDataPackage extends MetadataObject
 	    	    if (statusInMetacat != null && statusInMetacat.equals(DataStoreInterface.CONFLICT))
 	    	    {
 	    	    	conflictLocation = DocidIncreaseDialog.METACAT;
-	    	    	existFlag = true;
+	    	    	existInMetacat = true;
+	    	    	//existFlag = true;
 	    	    }
 	        }
 	        else if((dataDestination.equals(AbstractDataPackage.LOCAL))) 
@@ -3461,7 +3464,8 @@ public abstract class AbstractDataPackage extends MetadataObject
 	        	if (statusInLocal != null && statusInLocal.equals(DataStoreInterface.CONFLICT))
 	    	    {
 	    	    	conflictLocation = DocidIncreaseDialog.LOCAL;
-	    	    	existFlag = true;
+	    	    	existInLocal = true;
+	    	    	//existFlag = true;
 	    	    }
 	        }
 	        else if (dataDestination.equals(AbstractDataPackage.BOTH))
@@ -3473,55 +3477,59 @@ public abstract class AbstractDataPackage extends MetadataObject
         				statusInLocal.equals(DataStoreInterface.CONFLICT) && statusInMetacat.equals(DataStoreInterface.CONFLICT))
 	        	{
 	        			conflictLocation =  DocidIncreaseDialog.LOCAL + " and "+ DocidIncreaseDialog.METACAT;
-	        			existFlag = true;
+	        			existInMetacat = true;
+	        			existInLocal = true;
+	        			//existFlag = true;
 	        		    //this.setIdentifierChangedInLocalSerialization(true);
 	        		    //this.setIdentifierChangedInMetacatSerialization(true);
 	        	}
 	        	else if (statusInMetacat != null  && statusInMetacat.equals(DataStoreInterface.CONFLICT))
 	        	{
 	        			conflictLocation =  DocidIncreaseDialog.METACAT;
-	        			existFlag = true;
+	        			existInMetacat = true;
+	        			//existFlag = true;
 	        			//this.setIdentifierChangedInMetacatSerialization(true);
 	        	}
 	        	else if (statusInLocal != null && statusInLocal.equals(DataStoreInterface.CONFLICT))
 	        	{
 	        			conflictLocation =  DocidIncreaseDialog.LOCAL;
-	        			existFlag = true;
+	        			existInLocal = true;
+	        			//existFlag = true;
 	        			//this.setIdentifierChangedInLocalSerialization(true);
 	        	}
 	        	
 	        }
 	      
-	        if (existFlag && isDirty)
+	        if (conflictLocation != null && isDirty)
 	        {
 	        	 // If docid conflict and the entity is dirty, we need to
 		        // pop-out an window to change the docid
 	        	Log.debug(30, "The docid "+docid+" exists and has unsaved data. So increase docid for it");
-	        	docid = handleDataIdConfiction(docid, conflictLocation);
-	        	
+	        	docid = handleDataIdConfiction(docid, conflictLocation);      	
 	        	
 	        }
-	        else if(existFlag)
-	        {
-	        	// if docid conflict, but entity wasn't changed, do nothing (skip the saving steps)
-	        	Log.debug(30, "The docid "+docid+" exists and but was NOT changed. So skip serializedata");
-	        	continue;
-	        }
-	        
+	     
 	        // reset urlinfo with new docid (if docid was not changed, the url will still be same).
 	        
 	        // urlinfo should be the id in a string
-	        if (dataDestination.equals(LOCAL))  {
-	          handleLocal(docid);
+	        if (dataDestination.equals(LOCAL) || dataDestination.equals(BOTH))  {
+	          if( isDirty || !existInLocal )
+	          {
+	            handleLocal(docid);
+	          }
 	        }
-	        else if (dataDestination.equals(METACAT)) {
-	          handleMetacat(docid, objectName);
+	        
+	        if (dataDestination.equals(METACAT) || dataDestination.equals(BOTH)) {
+	          if(isDirty || !existInMetacat)
+	          {
+	             handleMetacat(docid, objectName);
+	          }
 	        }
-	        else if (dataDestination.equals(BOTH)) {
+	        /*else if (dataDestination.equals(BOTH)) {
 	        	//Log.debug(1, "~~~~~~~~~~~~~~~~~~~~~~set bothLoation true ");
 	          //serializeDataAtBothLocation =true;
 	          handleBoth(docid, objectName);
-	        }
+	        }*/
 	        // reset the map after finishing save. There is no need for this pair after saving
 	        original_new_id_map = new Hashtable();
 	        
