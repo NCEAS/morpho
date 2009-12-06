@@ -859,6 +859,10 @@ public class WizardContainerFrame
     {
         if(currentPage != null)
         {
+          if(!currentPage.onSaveForLaterAction())
+          {
+            return;
+          }
           boolean success = currentPage.onAdvanceAction();
           if(!success)
           {

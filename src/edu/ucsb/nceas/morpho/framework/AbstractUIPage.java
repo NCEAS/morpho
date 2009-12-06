@@ -202,11 +202,7 @@ public abstract class AbstractUIPage extends JPanel {
    */
   public boolean onSaveForLaterAction()
   {
-    boolean success = false;
-    if(onAdvanceAction())
-    {
-      success = true;
-    }
+    boolean success = true;
     return success;
   }
   
