@@ -1056,6 +1056,9 @@ public class Morpho
    	         BackupMorphoDataFrame backupFrame = new BackupMorphoDataFrame(morpho);
    	         backupFrame.doBackup();
 
+   	        // Set up the User Interface controller (UIController)
+             UIController controller = UIController.initialize(morpho);
+             
             // Load the current profile and log in
             morpho.loadProfile(morpho);
             
@@ -1066,8 +1069,7 @@ public class Morpho
             // Set up the Service Controller
             ServiceController services = ServiceController.getInstance();
 
-            // Set up the User Interface controller (UIController)
-            UIController controller = UIController.initialize(morpho);
+            
 
             // Add the default menus and toolbars
              morpho.initializeActions();
