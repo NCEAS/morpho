@@ -234,7 +234,7 @@ public class ColImpl implements Col
 
 		String attDef = (String) this.getProperty(PROPNAME_DESCRIPTION);
 		if (attDef == null)
-			attDef = new String("");
+			attDef = new String(TableImpl.UNKNOW);
 		Element attributeDef = attribute.addElement("attributeDefinition");
 		attributeDef.setText(attDef);
 
