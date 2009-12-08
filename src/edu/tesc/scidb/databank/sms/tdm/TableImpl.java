@@ -2,6 +2,7 @@ package edu.tesc.scidb.databank.sms.tdm;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
@@ -66,20 +67,28 @@ public class TableImpl implements Table
 	 *@since
 	 */
 	public final static Comparator DEFAULT_SORTORDER = PROP_ORDER_SORTORDER;
+	/**
+	 * Fill some element with unknown value
+	 */
+	public final static String UNKNOW = "unknown";
+	private final static String HARDDIRVE = "hard drive";	
 	private String name;
 	//private List cols;
 	private Map cols;
+	private File databasePhysicalFile;
 
 
 	/**
 	 *  Constructor for the TableImpl object
 	 *
 	 *@param  name  Description of Parameter
+	 *@param  databasePhysicalFile  the file of the database
 	 *@since
 	 */
-	public TableImpl(String name)
+	public TableImpl(String name, File databasePhysicalFile)
 	{
 		this.name = name;
+		this.databasePhysicalFile = databasePhysicalFile;
 		this.cols = new TreeMap();
 	}
 
@@ -318,6 +327,19 @@ public class TableImpl implements Table
 		// 	TODO - add a better physical section for morpho		
 		Element physical = table.addElement("physical");
 		Element objectName = physical.addElement("objectName");
+		String objectNameString = null;
+		if(databasePhysicalFile != null)
+		{
+		    objectNameString = databasePhysicalFile.getName();
+		}
+		if(objectNameString != null && !objectNameString.equals(""))
+		{
+		    objectName.setText(objectNameString);
+		}
+		else
+		{
+		    objectName.setText(UNKNOW);
+		}
 		Element dataFormat = physical.addElement("dataFormat");
 		Element externallyDefinedFormat = dataFormat.addElement("externallyDefinedFormat");
 		Element formatName = externallyDefinedFormat.addElement("formatName");
@@ -325,6 +347,8 @@ public class TableImpl implements Table
 		formatName.setText("Microsoft Access");
 		Element distribution = physical.addElement("distribution");
 		Element offline = distribution.addElement("offline");
+		Element mediumName = offline.addElement("mediumName");
+		mediumName.setText(HARDDIRVE);
 
 		Element attributeList = table.addElement("attributeList");
 
