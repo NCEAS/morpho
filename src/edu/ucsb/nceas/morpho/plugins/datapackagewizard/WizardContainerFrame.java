@@ -883,7 +883,7 @@ public class WizardContainerFrame
           }
           pageStack.push(currentPage);
           int choice = JOptionPane.showConfirmDialog(frame, "This incomplete data package will be saved locally and the wizard window will be closed.\n"+
-                                                       "Are you sure to cointue this action?", "Save ?",JOptionPane.YES_NO_OPTION);
+                                                       "Are you sure to continue this action?", "Save?",JOptionPane.YES_NO_OPTION);
           if(choice == JOptionPane.YES_OPTION)
           {
             try
