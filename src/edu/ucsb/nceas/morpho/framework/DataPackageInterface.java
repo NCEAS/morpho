@@ -228,10 +228,11 @@ public interface DataPackageInterface
   
   /**
    * Save the incomplete xml document into local file system
+   * @param docid if xml doesn't have id, this given id will be used as package id
    * @param xml the source of xml
    * @param autoSavedID the id for auto saved file
    * @return id of the saved data package
    */
-  public String saveIncompleteDocumentForLater(Reader xml, String autoSavedID) throws Exception;
+  public String saveIncompleteDocumentForLater(String docid, Reader xml, String autoSavedID) throws Exception;
 
 }

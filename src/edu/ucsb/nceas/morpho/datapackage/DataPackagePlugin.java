@@ -1474,38 +1474,50 @@ public class DataPackagePlugin
   
   /**
    * Save the incomplete xml document into local file system
+   * @param docid if xml doesn't have id, this given id will be used as package id
    * @param xml the source of xml
-   * * @param autoSavedID the id for auto saved file
+   * @param autoSavedID the id for auto saved file
    * @return the id of saved data package.
    */
-  public String saveIncompleteDocumentForLater( Reader xml, String autoSavedID) throws Exception
+  public String saveIncompleteDocumentForLater(String docid,  Reader xml, String autoSavedID) throws Exception
   {
+    Log.debug(30, "given docid is "+docid +" and autosave id is "+autoSavedID+" in DataPackagePlugin.saveIncompleteDocumentForLater");
     EML200DataPackage adp = (EML200DataPackage)DataPackageFactory.getDataPackage(xml, false, true);
     ((EML200DataPackage)adp).setEMLVersion(EML200DataPackage.LATEST_EML_VER);
     String nextid = null;
+    String id = null;
     try
     {
-      String id = adp.getAccessionNumber();
-      if (id.indexOf("temporary")>-1) 
-      {
-        AccessionNumber an = new AccessionNumber(morpho);
-        nextid = an.getNextId();
-        adp.setAccessionNumber(nextid);
-      } 
-      else 
-      {
-        AccessionNumber an = new AccessionNumber(morpho);
-        nextid = an.incRev(id);
-        adp.setAccessionNumber(nextid);
-      }
+       id = adp.getAccessionNumber();
+       //Log.debug(5, "After get adp access number and id is "+id);
+       if(id == null || id.trim().equals(""))
+       {
+         id = docid;
+       }
     }
     catch (Exception www) 
     {
-      // no valid accession number; thus create one
-      AccessionNumber an = new AccessionNumber(morpho);
-      nextid = an.getNextId();
+      // no valid accession number; use the given one
+      id = docid;
+    } 
+   //Log.debug(5, "re-signed an id "+id);
+    if (id.indexOf("temporary")>-1) 
+    { 
+      //this is new data package wizard. In order to avoid saving one
+      //package couple times will create different package id, we use auto-saved id as id.
+      //Log.debug(5, "in tempoary branch");
+      //AccessionNumber an = new AccessionNumber(morpho);
+      nextid = autoSavedID;
       adp.setAccessionNumber(nextid);
     } 
+    else 
+    {
+      //Log.debug(5, "in another branch");
+      AccessionNumber an = new AccessionNumber(morpho);
+      nextid = an.incRev(id);
+      adp.setAccessionNumber(nextid);
+    }
+    //Log.debug(5, "final next id is "+nextid);
     adp.serializeData(AbstractDataPackage.LOCAL);
     adp.serialize(AbstractDataPackage.LOCAL);
     Util.deleteAutoSavedFile(autoSavedID);

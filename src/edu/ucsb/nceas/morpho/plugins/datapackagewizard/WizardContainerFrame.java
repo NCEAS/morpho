@@ -39,6 +39,7 @@ import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
 import edu.ucsb.nceas.morpho.framework.UIController;
 import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
 import edu.ucsb.nceas.morpho.plugins.DataPackageWizardListener;
+import edu.ucsb.nceas.morpho.plugins.NewPackageWizardListener;
 import edu.ucsb.nceas.morpho.plugins.ServiceController;
 import edu.ucsb.nceas.morpho.plugins.ServiceNotHandledException;
 import edu.ucsb.nceas.morpho.plugins.ServiceProvider;
@@ -150,6 +151,7 @@ public class WizardContainerFrame
 		                                             DataPackageWizardInterface.TEXT_IMPORT_ATTRIBUTE};
   private static final String EMPTYPROJECTTITLE = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"+
                                                   "<project><title> </title></project>";
+  private String manuallySaveID = null;
 
   
   /**
@@ -220,10 +222,19 @@ public class WizardContainerFrame
 	    	   if(autoSaveID == null || autoSaveID.trim().equals(""))
 	    	   {
 	    		   AccessionNumber an = new AccessionNumber(Morpho.thisStaticInstance);
-	    	        autoSaveID = an.getNextId();
+	    	     autoSaveID = an.getNextId();
+	    	     manuallySaveID = NewPackageWizardListener.TEMPORARYID;
 	    		    	 
 	    	   }
+	    	   else
+	    	   {
+	    	     manuallySaveID = autoSaveID;
+	    	   }
 	    	   adp.setAutoSavedID(autoSaveID);	    
+	    	}
+	    	else
+	    	{
+	    	  manuallySaveID = autoSaveID;
 	    	}
 	    	dumpPackageToAutoSaveFile(autoSaveID);//onlywork for add entity wizard
     }
@@ -1185,8 +1196,7 @@ public class WizardContainerFrame
    */
   public void manualSaveInCompletePackage() throws Exception
   {
-    String id = "dummy";
-    saveInCompletePackage(id, DATADIR);
+    saveInCompletePackage(manuallySaveID, DATADIR);
   }
   
   /*
@@ -1246,7 +1256,7 @@ public class WizardContainerFrame
 		      }
 		      else if(location != null && location.equals(DATADIR))
 		      {
-		        savePackageInDataDir(emlDoc);
+		        savePackageInDataDir(saveID, emlDoc);
 		      }
 		    
 		  }
@@ -1300,7 +1310,7 @@ public class WizardContainerFrame
 			    }
 			    else if(location != null && location.equals(DATADIR))
 			    {
-			        savePackageInDataDir(emlDoc);
+			        savePackageInDataDir(saveID, emlDoc);
 			    }
 			    //remove the entity we needed to adp
 			    if(isCurrentPageInEntityPageList())
@@ -1326,7 +1336,7 @@ public class WizardContainerFrame
   /*
    * Save package into incomplete dir with given id
    */
-  private void savePackageInDataDir(String xml) throws Exception
+  private void savePackageInDataDir(String docid, String xml) throws Exception
   {
     //FileSystemDataStore store = new FileSystemDataStore(Morpho.thisStaticInstance);
     StringReader reader = new StringReader(xml);
@@ -1337,7 +1347,7 @@ public class WizardContainerFrame
      ServiceProvider provider =
            services.getServiceProvider(DataPackageInterface.class);
      DataPackageInterface dataPackage = (DataPackageInterface)provider;
-     String id = dataPackage.saveIncompleteDocumentForLater(reader, autoSaveID);
+     String id = dataPackage.saveIncompleteDocumentForLater(docid, reader, autoSaveID);
      JOptionPane.showMessageDialog(frame, "Data package was saved as id "+id, "Information",
          JOptionPane.PLAIN_MESSAGE);
     } 
