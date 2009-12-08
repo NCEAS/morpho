@@ -71,12 +71,12 @@ public class CreateTdmRep {
         
         // begin putting together the TDM representation of this db
         Database db = new DatabaseImpl(filename.toString());
-        addTables(db, metadata);
+        addTables(db, metadata, mdbFile);
         
         return db;
     }
     
-    private static void addTables(Database db, DatabaseMetaData metadata) {
+    private static void addTables(Database db, DatabaseMetaData metadata, File mdbFile) {
         ResultSet rs     = null;
         Vector    tables = new Vector();
         
@@ -87,7 +87,7 @@ public class CreateTdmRep {
             rs = metadata.getTables(null, null, "%", tableTypesAllowed);
             
             while(rs.next())
-                tables.add(new TableImpl(rs.getString("TABLE_NAME")));
+                tables.add(new TableImpl(rs.getString("TABLE_NAME"), mdbFile));
         }
         catch (SQLException e) {
             return;
