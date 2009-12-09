@@ -841,7 +841,10 @@
       <junit printsummary="yes" haltonfailure="no" fork="yes"
              haltonerror="no" showoutput="yes">
         <classpath>
-        	<path refid="classpath" />
+          <fileset dir="${build.lib}">
+                <include name="*.jar" />
+			    <exclude name="standalone-compiler.jar"/>
+            </fileset>
           <pathelement path="${build.dir}/${name}-test.jar" />
         </classpath>
 
