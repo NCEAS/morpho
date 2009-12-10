@@ -293,6 +293,7 @@ public abstract class AbstractDataPackage extends MetadataObject
   private final static String MAILTO = "mailto";
   private final static String TELNET = "telnet";
   private final static String ECOGRID = "ecogrid";
+  private final static String FILE = "file";
   private final static String[] PROTOCOLLIST = {HTTPS, HTTP, FTP, NEWS, MAILTO,TELNET, ECOGRID};
   private boolean serializeLocalSuccess = false;
   private boolean serializeMetacatSuccess = false;
@@ -3581,6 +3582,11 @@ public abstract class AbstractDataPackage extends MetadataObject
       String protocol = getUrlProtocol(URLinfo);
       if(!isProtocolInList(protocol))
       {
+        if(protocol != null && protocol.equalsIgnoreCase(FILE))
+        {
+          //this is  a file protocol. we may try to remove the file protocol and to see if it is a local file
+          URLinfo = removeFileProtocol(URLinfo);
+        }
         //This is not online url. It may be a local file.
         File localFile = null;
         try
@@ -3638,6 +3644,24 @@ public abstract class AbstractDataPackage extends MetadataObject
       }
     }
     return inList;
+  }
+  
+  /*
+   * Remove prfix "file://" from the given url.
+   */
+  private String removeFileProtocol(String url)
+  {
+    String fileName = "";
+    String prefix = FILE+"://";
+    if(url != null)
+    {
+      if(url.indexOf(prefix) != -1)
+      {
+        fileName = url.replaceAll(prefix, "");
+      }
+    }
+    System.out.println("The file name with out file protocol is "+fileName);
+    return fileName;
   }
   
   
