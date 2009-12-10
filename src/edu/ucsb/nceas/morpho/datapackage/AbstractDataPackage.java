@@ -286,6 +286,14 @@ public abstract class AbstractDataPackage extends MetadataObject
   protected final static String NEWTABLE = "newTable";
   private final static String OPENNEWTABLE = OPEN+NEWTABLE+CLOSE;
   private final static String CLOSENEWTABLE = OPEN+SLASH+NEWTABLE+CLOSE;
+  private final static String HTTP = "http";
+  private final static String HTTPS = "https";
+  private final static String FTP = "ftp";
+  private final static String NEWS = "news";
+  private final static String MAILTO = "mailto";
+  private final static String TELNET = "telnet";
+  private final static String ECOGRID = "ecogrid";
+  private final static String[] PROTOCOLLIST = {HTTPS, HTTP, FTP, NEWS, MAILTO,TELNET, ECOGRID};
   private boolean serializeLocalSuccess = false;
   private boolean serializeMetacatSuccess = false;
   //private boolean identifierChangedInMetacatSerialization = false;
@@ -301,6 +309,7 @@ public abstract class AbstractDataPackage extends MetadataObject
   protected String completionStatus = null; 
   public  static final String COMPLETED = "completed";
   public static final String IMPORTLATER = "importLater";
+ 
  
   /**
    * This abstract method turns the datapackage into a form (e.g. string) that
@@ -3423,12 +3432,13 @@ public abstract class AbstractDataPackage extends MetadataObject
     
     setDataIDChanged(false);
     for (int i = 0; i < entityArray.length; i++) {
-      String protocol = getUrlProtocol(i);
+      String URLinfo = getDistributionUrl(i, 0, 0);
+      String protocol = getUrlProtocol(URLinfo);
       String objectName = getPhysicalName(i, 0);
       Log.debug(25, "object name is ===================== "+ objectName);
-      if(protocol != null && protocol.equals("ecogrid:") ) {
+      if(protocol != null && protocol.equals(ECOGRID) ) {
     	  
-        String docid = getUrlInfo(i);
+        String docid = getUrlInfo(URLinfo);
         Log.debug(30, "handle data file  with index "+i+ ""+docid);
         //if (urlinfo != null)
         //{
@@ -3551,6 +3561,86 @@ public abstract class AbstractDataPackage extends MetadataObject
     //serializeDataAtBothLocation =false;
   }
    
+  
+  /**
+   * Serialize data into morpho locally when user imports an external EML file to morpho.
+   * This method will be called in ImportEMLFileCommand.
+   * This method only serialize local file (on distrubition url) to morpho. It wouldn't
+   * serialize any http, ftp and ecogrid url into morpho
+   */
+  public void serializeDataInImportExternalEMLFile()
+  {
+    if (entityArray == null) 
+    {
+      Log.debug(30, "Entity array is null, no need to serialize data in AbstractDataPackage.serializeDataInImportExternalEMLFile()");
+      return; // there is no data!
+    }
+    for (int i = 0; i < entityArray.length; i++) 
+    {
+      String URLinfo = getDistributionUrl(i, 0, 0);
+      String protocol = getUrlProtocol(URLinfo);
+      if(!isProtocolInList(protocol))
+      {
+        //This is not online url. It may be a local file.
+        File localFile = null;
+        try
+        {
+          localFile = new File(URLinfo);
+        }
+        catch(Exception e)
+        {
+          Log.debug(30, "The online url "+URLinfo+" couldn't be found in file stystem since "+e.getMessage());
+          return;
+        }
+        if(localFile != null && localFile.isFile())
+        {
+          //now we copy the file into morpho
+          AccessionNumber an = new AccessionNumber(Morpho.thisStaticInstance);
+          FileSystemDataStore fds = new FileSystemDataStore(Morpho.thisStaticInstance);
+          String identifier = an.getNextId();
+          try
+          {
+            InputStream dfis = new FileInputStream(localFile);
+            fds.saveDataFile(identifier, dfis);
+            //now we can modify the online url in metadata.
+            String url = ECOGRID+"://knb/"+identifier;
+            setDistributionUrl(i, 0, 0, url);
+            
+          }
+          catch(Exception e)
+          {
+            Log.debug(30, "couldn't serialize local file "+localFile.getAbsolutePath()+" into morpho "+
+                  " in AbstractDataPacakge.serializeDataInImportExternalEMLFile");
+          }
+        }
+      }
+    }
+  }
+  
+  
+  
+  /*
+   * Determine if the specified protocol is in PROTOCOLLIST.
+   */
+  private boolean isProtocolInList(String protocol)
+  {
+    boolean inList = false;
+    if(protocol != null)
+    {
+      for(int i=0; i<PROTOCOLLIST.length; i++)
+      {
+        String value = PROTOCOLLIST[i];
+        if(protocol.equalsIgnoreCase(value))
+        {
+          inList = true;
+          break;
+        }
+      }
+    }
+    return inList;
+  }
+  
+  
   /*
    * Strips docid (e.g tao.1.1) out from ecogrid url (e.g. ecogrid://knb/tao.1.1).
    * Null will be returned if docid couldn't be found.
@@ -3830,8 +3920,8 @@ public abstract class AbstractDataPackage extends MetadataObject
     handleMetacat(docid, objectName);   
   }
 
-  private String getUrlInfo(int entityIndex) {
-    String urlinfo = getDistributionUrl(entityIndex, 0, 0);
+  private String getUrlInfo(String urlinfo) {
+    //String urlinfo = getDistributionUrl(entityIndex, 0, 0);
     // assumed that urlinfo is of the form 'protocol://systemname/localid/other'
     // protocol is probably 'ecogrid'; system name is 'knb'
     // we just want the local id here
@@ -3856,9 +3946,9 @@ public abstract class AbstractDataPackage extends MetadataObject
     return urlinfo;
 }
 
-  private String getUrlProtocol(int entityIndex) {
-    String urlinfo = getDistributionUrl(entityIndex, 0, 0);
-    int indx2 = urlinfo.indexOf("//");
+  private String getUrlProtocol(String urlinfo) {
+    //String urlinfo = getDistributionUrl(entityIndex, 0, 0);
+    int indx2 = urlinfo.indexOf("://");
     if (indx2<0) return "";
     return urlinfo.substring(0,indx2);
   }
