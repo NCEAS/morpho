@@ -66,14 +66,14 @@ public class AccessionNumber
    */
   public synchronized String getNextId()
   {
-	 int idFromMetacatAndLocalSystem = -1;
-	 int lastid = -1;
+	 long idFromMetacatAndLocalSystem = -1;
+	 long lastid = -1;
     String scope = profile.get("scope", 0);
     //Get last id from metacat and local system
     String IDFromMetacatAndLocal = morpho.getLastID(scope);
     if (IDFromMetacatAndLocal != null)
     {
-    	idFromMetacatAndLocalSystem = (new Integer(IDFromMetacatAndLocal).intValue());
+    	idFromMetacatAndLocalSystem = (new Long(IDFromMetacatAndLocal).longValue());
     	//in order to get next id, this number should be increase 1
     	idFromMetacatAndLocalSystem++;
     }
@@ -81,7 +81,7 @@ public class AccessionNumber
     String lastidS = profile.get("lastId", 0);
     try
     {
-        lastid = (new Integer(lastidS)).intValue();
+        lastid = (new Long(lastidS)).longValue();
     }
     catch(Exception e)
     {

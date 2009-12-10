@@ -384,6 +384,16 @@ public class Morpho
         }
     }
 
+    private void deleteProfile(String profileName)
+    {
+        String profileDir = config.getConfigDirectory() + File.separator +
+                config.get("profile_directory", 0);
+        String profilePath = 
+        	profileDir + File.separator + profileName;
+        File profileFile = new File(profilePath);
+        Util.deleteDirectory(profileFile);
+    }
+    
     /**
      *  delete all files in cache
      */
@@ -1205,13 +1215,13 @@ public class Morpho
         //if (networkStatus) {
             String id = getLastID(scope);
             if (id != null) {
-                int num = (new Integer(id)).intValue();
+                long num = (new Long(id)).longValue();
                 String curval = profile.get("lastId", 0);
-                int curnum = (new Integer(curval)).intValue();
+                long curnum = (new Long(curval)).longValue();
                 if (curnum <= num) {
                     num = num + 1;
                     // required because Metacat does not return the latest id
-                    id = (new Integer(num)).toString();
+                    id = (new Long(num)).toString();
                     profile.set("lastId", 0, id);
                     profile.save();
                 }
@@ -1423,9 +1433,21 @@ public class Morpho
             new GUIAction("Switch profile...", null, switchCommand);
         switchItemAction.setToolTipText("Switch Profile...");
         switchItemAction.setMenuItemPosition(11);
-        switchItemAction.setSeparatorPosition(SEPARATOR_FOLLOWING);
         switchItemAction.setMenu(FILE_MENU_LABEL, FILEMENUPOSITION);
         controller.addGuiAction(switchItemAction);
+        
+        Command removeCommand = new Command() {
+            public void execute(ActionEvent e) {
+                removeProfile();
+            }
+        };
+        GUIAction removeProfileAction =
+            new GUIAction("Remove profile...", null, removeCommand);
+        removeProfileAction.setToolTipText("Remove Profile...");
+        removeProfileAction.setMenuItemPosition(12);
+        removeProfileAction.setSeparatorPosition(SEPARATOR_FOLLOWING);
+        removeProfileAction.setMenu(FILE_MENU_LABEL, FILEMENUPOSITION);
+        controller.addGuiAction(removeProfileAction);
 
         Command prefsCommand = new Command() {
             public void execute(ActionEvent e) {
@@ -1435,7 +1457,7 @@ public class Morpho
         GUIAction prefsItemAction =
             new GUIAction("Set preferences...", null, prefsCommand);
         prefsItemAction.setToolTipText("Set Preferences...");
-        prefsItemAction.setMenuItemPosition(12);
+        prefsItemAction.setMenuItemPosition(13);
         prefsItemAction.setSeparatorPosition(SEPARATOR_FOLLOWING);
         prefsItemAction.setMenu(FILE_MENU_LABEL, FILEMENUPOSITION);
         controller.addGuiAction(prefsItemAction);
@@ -2294,7 +2316,51 @@ public class Morpho
         }
     }
 
-    public static class CreateNewProfileCommand implements Command {
+    /** Switch profiles (from one existing profile to another) */
+	private void removeProfile()
+	{
+    logOut();
+    String currentProfile = getCurrentProfileName();
+
+    String[] profilesList = getProfilesList();
+
+    int selection = 0;
+    for (selection = 0; selection < profilesList.length; selection++) {
+        if (currentProfile.equals(profilesList[selection])) {
+            break;
+        }
+    }
+
+    // Pop up a dialog with the choices
+    MorphoFrame frame = UIController.getInstance().getCurrentActiveWindow();
+    String newProfile = (String)JOptionPane.showInputDialog(frame,
+            "Select from existing profiles:", "Input",
+            JOptionPane.INFORMATION_MESSAGE, null,
+            profilesList, profilesList[selection]);
+
+    // Set the new profile to the one selected if it is different
+    if (null != newProfile) {
+        if (currentProfile.equals(newProfile)) {
+            Log.debug(0, "Cannot delete current profile!");
+        } else {
+        	int deleteContents = 
+        		JOptionPane.showConfirmDialog(
+        				frame, 
+        				"Are you sure you want to delete this profile?" +
+        				"\nALL data will be discarded." +
+        				"\nThis action is not undoable.", 
+        				"DESTRUCTIVE ACTION!", JOptionPane.YES_NO_OPTION);
+        	if (deleteContents == JOptionPane.YES_OPTION) {
+	            deleteProfile(newProfile);
+	            // close all old windows
+	            cleanUpFrames();
+	            Log.debug(9, "Removed profile: " + newProfile);
+        	}
+        }
+    }
+}
+
+	public static class CreateNewProfileCommand implements Command {
         public void execute(ActionEvent e) {
             createNewProfile();
         }
