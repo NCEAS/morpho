@@ -111,7 +111,7 @@ public class ImportEMLFileCommand implements Command
           dataPackage.serialize(AbstractDataPackage.LOCAL);
           //dataPackage.setLocation(AbstractDataPackage.LOCAL);
           //open the package.
-          DataPackagePlugin dataPackagePlugin = new DataPackagePlugin();
+          DataPackagePlugin dataPackagePlugin = new DataPackagePlugin(Morpho.thisStaticInstance);
           dataPackagePlugin.openDataPackage(AbstractDataPackage.LOCAL, identifier, null, null, null);
         }
       }

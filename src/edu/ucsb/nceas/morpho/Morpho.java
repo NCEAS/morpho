@@ -30,6 +30,7 @@ import edu.ucsb.nceas.itis.Itis;
 import edu.ucsb.nceas.itis.ItisException;
 import edu.ucsb.nceas.itis.Taxon;
 import edu.ucsb.nceas.morpho.datapackage.DataPackagePlugin;
+import edu.ucsb.nceas.morpho.datapackage.ImportEMLFileCommand;
 import edu.ucsb.nceas.morpho.datastore.DataStore;
 import edu.ucsb.nceas.morpho.datastore.FileSystemDataStore;
 import edu.ucsb.nceas.morpho.framework.BackupMorphoDataFrame;
@@ -1438,7 +1439,15 @@ public class Morpho
         prefsItemAction.setSeparatorPosition(SEPARATOR_FOLLOWING);
         prefsItemAction.setMenu(FILE_MENU_LABEL, FILEMENUPOSITION);
         controller.addGuiAction(prefsItemAction);
-
+        
+        Command importEMLDocument = new ImportEMLFileCommand();
+        GUIAction importEMLDocumentAction =
+          new GUIAction("Import...", null, importEMLDocument);
+        importEMLDocumentAction.setToolTipText("Import an EML Document...");
+        importEMLDocumentAction.setMenuItemPosition(15);
+        //importEMLDocumentAction.setSeparatorPosition(SEPARATOR_FOLLOWING);
+        importEMLDocumentAction.setMenu(FILE_MENU_LABEL, FILEMENUPOSITION);
+        controller.addGuiAction(importEMLDocumentAction);
 
         Command exitCommand = new Command() {
             public void execute(ActionEvent event) {

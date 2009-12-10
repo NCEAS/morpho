@@ -229,7 +229,7 @@ public class QueryPlugin implements PluginInterface, ConnectionListener,
     // Synchronize action
     GUIAction synchronizeAction = new GUIAction("Synchronize...", null,
                           new OpenSynchronizeDialogCommand());
-    synchronizeAction.setMenuItemPosition(13);
+    synchronizeAction.setMenuItemPosition(14);
     synchronizeAction.setToolTipText("Synchronize...");
     synchronizeAction.setSeparatorPosition(Morpho.SEPARATOR_FOLLOWING);
     synchronizeAction.setMenu(Morpho.FILE_MENU_LABEL, Morpho.FILEMENUPOSITION);
