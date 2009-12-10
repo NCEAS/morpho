@@ -181,6 +181,15 @@ public class DataPackagePlugin
                       StateChangeEvent.CREATE_ENTITY_DATAPACKAGE_FRAME,
                       true, GUIAction.EVENT_LOCAL);
     controller.addGuiAction(saveCopyAction);
+    
+    Command importEMLDocument = new ImportEMLFileCommand();
+    GUIAction importEMLDocumentAction =
+      new GUIAction("Import...", null, importEMLDocument);
+    importEMLDocumentAction.setToolTipText("Import an EML Document...");
+    importEMLDocumentAction.setMenuItemPosition(15);
+    //importEMLDocumentAction.setSeparatorPosition(SEPARATOR_FOLLOWING);
+    importEMLDocumentAction.setMenu(Morpho.FILE_MENU_LABEL, Morpho.FILEMENUPOSITION);
+    controller.addGuiAction(importEMLDocumentAction);
 
 
     GUIAction revertTab = new GUIAction("Revert Entity to Saved Version",
