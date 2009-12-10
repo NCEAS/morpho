@@ -1,0 +1,163 @@
+<?xml version="1.0"?>
+<eml:eml packageId="tao.14056.6" system="knb" xmlns:eml="eml://ecoinformatics.org/eml-2.1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="eml://ecoinformatics.org/eml-2.1.0 eml.xsd"> <access authSystem="knb" order="allowFirst"> <allow><principal>public</principal>
+ <permission>read</permission>
+ </allow>
+ </access>
+ <dataset> <title>test again2</title>
+ <creator id="1260317107285"> <individualName><surName>twere</surName>
+ </individualName>
+ </creator>
+ <keywordSet><keyword>kewyord</keyword>
+ </keywordSet>
+ <contact id="1260317111782"><individualName><surName>were</surName>
+ </individualName>
+ </contact>
+ <dataTable id="1260404561402"><entityName>test</entityName>
+ <physical id="1260404547649"><objectName>test</objectName>
+ <size unit="byte">12</size>
+ <dataFormat><textFormat><numHeaderLines>0</numHeaderLines>
+ <recordDelimiter>#x0A</recordDelimiter>
+ <attributeOrientation>column</attributeOrientation>
+ <simpleDelimited><fieldDelimiter>#x09</fieldDelimiter>
+ </simpleDelimited>
+ </textFormat>
+ </dataFormat>
+ <distribution><online><url>ecogrid://knb/tao.59.1</url>
+ </online>
+ </distribution>
+ </physical>
+ <attributeList><attribute id="1260404561403"><attributeName>Column 1</attributeName>
+ <attributeDefinition>1</attributeDefinition>
+ <measurementScale><dateTime><formatString>1</formatString>
+ </dateTime>
+ </measurementScale>
+ </attribute>
+ <attribute id="1260404561404"><attributeName>Column 2</attributeName>
+ <attributeDefinition>2</attributeDefinition>
+ <measurementScale><dateTime><formatString>2</formatString>
+ </dateTime>
+ </measurementScale>
+ </attribute>
+ <attribute id="1260404561405"><attributeName>Column 3</attributeName>
+ <attributeDefinition>3</attributeDefinition>
+ <measurementScale><dateTime><formatString>3</formatString>
+ </dateTime>
+ </measurementScale>
+ </attribute>
+ </attributeList>
+ <numberOfRecords>2</numberOfRecords>
+ </dataTable>
+ <dataTable id="1260404825752"><entityName>test-2</entityName>
+ <physical id="1260404819670"><objectName>test-2</objectName>
+ <size unit="byte">6</size>
+ <dataFormat><textFormat><numHeaderLines>0</numHeaderLines>
+ <recordDelimiter>#x0A</recordDelimiter>
+ <attributeOrientation>column</attributeOrientation>
+ <simpleDelimited><fieldDelimiter>u</fieldDelimiter>
+ </simpleDelimited>
+ </textFormat>
+ </dataFormat>
+ <distribution><online><url>/home/tao/project/morpho/test-2</url>
+ </online>
+ </distribution>
+ </physical>
+ <attributeList><attribute id="1260404825753"><attributeName>Column 1</attributeName>
+ <attributeDefinition>1</attributeDefinition>
+ <measurementScale><dateTime><formatString>1</formatString>
+ </dateTime>
+ </measurementScale>
+ </attribute>
+ </attributeList>
+ <numberOfRecords>3</numberOfRecords>
+ </dataTable>
+ <dataTable id="1260407874854"><entityName>test3</entityName>
+<physical id="1260407859279"><objectName>test3</objectName>
+<size unit="byte">19</size>
+<dataFormat><textFormat><numHeaderLines>0</numHeaderLines>
+<recordDelimiter>#x0A</recordDelimiter>
+<attributeOrientation>column</attributeOrientation>
+<simpleDelimited><fieldDelimiter>#x09</fieldDelimiter>
+</simpleDelimited>
+</textFormat>
+</dataFormat>
+<distribution><online><url>file:///home/tao/project/morpho/test3</url>
+</online>
+</distribution>
+</physical>
+<attributeList><attribute id="1260407874855"><attributeName>Column 1</attributeName>
+<attributeDefinition>2</attributeDefinition>
+<measurementScale><dateTime><formatString>2</formatString>
+</dateTime>
+</measurementScale>
+</attribute>
+<attribute id="1260407874856"><attributeName>Column 2</attributeName>
+<attributeDefinition>3</attributeDefinition>
+<measurementScale><dateTime><formatString>3</formatString>
+</dateTime>
+</measurementScale>
+</attribute>
+<attribute id="1260407874857"><attributeName>Column 3</attributeName>
+<attributeDefinition>3</attributeDefinition>
+<measurementScale><dateTime><formatString>3</formatString>
+</dateTime>
+</measurementScale>
+</attribute>
+</attributeList>
+<numberOfRecords>3</numberOfRecords>
+</dataTable>
+<dataTable id="1260407929137"><entityName>table</entityName>
+<physical><objectName>file name</objectName>
+<dataFormat> <textFormat><attributeOrientation>column</attributeOrientation>
+<simpleDelimited><fieldDelimiter>,</fieldDelimiter>
+</simpleDelimited>
+</textFormat>
+</dataFormat>
+<distribution><online><url>http://knb.ecoinformatics.org</url>
+</online>
+</distribution>
+</physical>
+<attributeList><attribute id="1260407929138"><attributeName>1</attributeName>
+<attributeDefinition>1</attributeDefinition>
+<measurementScale><dateTime><formatString>1</formatString>
+</dateTime>
+</measurementScale>
+</attribute>
+</attributeList>
+</dataTable>
+<dataTable id="1260407971131"><entityName>offline table</entityName>
+<physical><objectName>file name2</objectName>
+<dataFormat> <textFormat><attributeOrientation>column</attributeOrientation>
+<simpleDelimited><fieldDelimiter>#x20</fieldDelimiter>
+</simpleDelimited>
+</textFormat>
+</dataFormat>
+</physical>
+<attributeList><attribute id="1260407971132"><attributeName>2</attributeName>
+<attributeDefinition>2</attributeDefinition>
+<measurementScale><dateTime><formatString>2</formatString>
+</dateTime>
+</measurementScale>
+</attribute>
+</attributeList>
+</dataTable>
+ <dataTable id="1260408433094"><entityName>offline table2</entityName>
+<physical><objectName>file name</objectName>
+<dataFormat> <textFormat><attributeOrientation>column</attributeOrientation>
+<simpleDelimited><fieldDelimiter>;</fieldDelimiter>
+</simpleDelimited>
+</textFormat>
+</dataFormat>
+<distribution><offline><mediumName>hard drive</mediumName>
+</offline>
+</distribution>
+</physical>
+<attributeList><attribute id="1260408433095"><attributeName>4</attributeName>
+<attributeDefinition>4</attributeDefinition>
+<measurementScale><dateTime><formatString>4</formatString>
+</dateTime>
+</measurementScale>
+</attribute>
+</attributeList>
+</dataTable>
+</dataset>
+ </eml:eml>
