@@ -94,8 +94,7 @@ public class ImportEMLFileCommand implements Command
       Log.debug(30, "The chooser file is "+emlFile.getAbsolutePath());
       try
       {
-        FileReader reader = new FileReader(emlFile);
-        AbstractDataPackage dataPackage = DataPackageFactory.getDataPackage(reader);
+        AbstractDataPackage dataPackage = DataPackageFactory.getDataPackage(emlFile);
         if(dataPackage == null)
         {
           throw new Exception("Morpho couldn't create a data package from the given file.");
@@ -110,7 +109,7 @@ public class ImportEMLFileCommand implements Command
           dataPackage.setAccessionNumber(identifier);
           //serialize metadata to local 
           dataPackage.serialize(AbstractDataPackage.LOCAL);
-          dataPackage.setLocation(AbstractDataPackage.LOCAL);
+          //dataPackage.setLocation(AbstractDataPackage.LOCAL);
           //open the package.
           DataPackagePlugin dataPackagePlugin = new DataPackagePlugin();
           dataPackagePlugin.openDataPackage(AbstractDataPackage.LOCAL, identifier, null, null, null);

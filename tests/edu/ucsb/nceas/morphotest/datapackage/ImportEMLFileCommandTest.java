@@ -97,42 +97,11 @@ public class ImportEMLFileCommandTest extends TestCase
      */
     public void testExecute() throws IOException, Exception
     {
-       UIController.initialize(getMorphoInstance());
+       Morpho.createMorphoInstance();
+       UIController.initialize(Morpho.thisStaticInstance);
        ImportEMLFileCommand importEML = new ImportEMLFileCommand();
        importEML.execute(null);
         
-    }
-    
-    /**
-     * Gets an instance of Morpho 
-     * @return
-     */
-    public static Morpho getMorphoInstance()
-    {
-      Morpho morpho = null;
-      ConfigXML config = null;  
-      try 
-      {
-            Log.setDebugLevel(46);
-            File configDir = new File(ConfigXML.getConfigDirectory());
-            File configFile = new File(configDir, "config.xml");
-            config = new ConfigXML(configFile.getAbsolutePath());
-            File currentProfileLocation = new File(configDir, "currentprofile.xml");
-            ConfigXML currentProfileConfig = new ConfigXML(currentProfileLocation.getAbsolutePath());
-            String currentProfileName = currentProfileConfig.get("current_profile", 0);
-            String profileDirName = config.getConfigDirectory()+
-             File.separator+config.get("profile_directory", 0)+
-             File.separator+currentProfileName;
-            //System.out.println("the profile dir is "+profileDirName);
-            File profileLocation = new File(profileDirName, currentProfileName+".xml");
-            ConfigXML profile = new ConfigXML(profileLocation.getAbsolutePath());
-            morpho = new Morpho(config);
-       } 
-       catch (IOException ioe) 
-       {
-          fail("Test failed, couldn't create morpho instance."+ioe.getMessage());
-       }
-       return morpho;
     }
     
 

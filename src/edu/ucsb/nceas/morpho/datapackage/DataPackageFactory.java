@@ -260,31 +260,39 @@ public class DataPackageFactory
   
   
   /**
-   *  Given a xml reader, create an AbstractDataPackage object
+   *  Given a xml file, create an AbstractDataPackage object
    *
    */
-  public static AbstractDataPackage getDataPackage(FileReader reader) {
+  public static AbstractDataPackage getDataPackage(File file) {
     AbstractDataPackage dp = null;
-    String doctype = getDocTypeInfo(reader);
-   
-    //Log.debug(50, "doctype: "+doctype);
     String errorMessage = "";
-    if(doctype.indexOf("eml-2.0")>-1|| doctype.indexOf("eml-2.1")>-1) {
-      // Note: assumed that this is ok for any 'eml-2.0.n' mod to eml2.0
-      try
+    try
+    {
+      FileReader reader = new FileReader(file);
+      String doctype = getDocTypeInfo(reader);
+      if(reader != null)
       {
-        reader.reset();
-        dp = new EML200DataPackage();
-        dp.load(new InputSource(reader));
+        reader.close();
       }
-      catch(Exception e)
+      //Log.debug(50, "doctype: "+doctype);
+      
+      if(doctype.indexOf("eml-2.0")>-1|| doctype.indexOf("eml-2.1")>-1) 
       {
-        dp = null;
-        errorMessage = e.getMessage();
+        // Note: assumed that this is ok for any 'eml-2.0.n' mod to eml2.0
+          reader = new FileReader(file);
+          dp = new EML200DataPackage();
+          dp.load(new InputSource(reader));
+       
       }
     }
+    catch(Exception e)
+    {
+      dp = null;
+      errorMessage = e.getMessage();
+    }
    // handlers for other types of documents hosuld be inserted here !!!
-    if (dp==null) {
+    if (dp==null) 
+    {
       Log.debug(1,"We couldn't get the abstract datapackage object ! (DataPackaqeFactory.getDataPackage) for doctype "+docType+"\n"+errorMessage);
     }
     return dp;
