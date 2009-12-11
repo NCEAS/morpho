@@ -176,6 +176,11 @@ public class StateChangeEvent extends ChangeEvent
         = "searchResultSelectedVersionAvailable";
  
 
+    /**
+     *  Public constant to denote that a data viewer has changed
+     */
+    public static String SELECT_DATA_VIEWER
+        = "selectDataViewer";
  
 
     /**

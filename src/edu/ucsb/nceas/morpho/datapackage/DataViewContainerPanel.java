@@ -939,6 +939,10 @@ public class DataViewContainerPanel extends javax.swing.JPanel
         //frame already has, borading the event
         dv.broadcastStoredStateChangeEvent();
      }
+      
+      //alert others to the state change
+      StateChangeEvent selectionEvent = new StateChangeEvent(this, StateChangeEvent.SELECT_DATA_VIEWER);
+      StateChangeMonitor.getInstance().notifyStateChange(selectionEvent);
 
   }
 
