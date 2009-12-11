@@ -1437,12 +1437,13 @@ public  class EML200DataPackage extends AbstractDataPackage
     Morpho morpho = Morpho.thisStaticInstance;
     //load(AbstractDataPackage.METACAT, id, Morpho.thisStaticInstance);
     try {
+      serializeData(AbstractDataPackage.LOCAL);
       serialize(AbstractDataPackage.LOCAL);
     } catch (Exception w) {
         Log.debug(5,"Exception serializing local package in 'download'");
     }
     // now download the associated data files
-    Vector idlist = getAssociatedDataFiles();
+    /*Vector idlist = getAssociatedDataFiles();
     Enumeration e = idlist.elements();
     MetacatDataStore mds = new MetacatDataStore(morpho);
     FileSystemDataStore fds = new FileSystemDataStore(morpho);
@@ -1456,7 +1457,7 @@ public  class EML200DataPackage extends AbstractDataPackage
       catch (Exception q3) {
         Log.debug(5,"Exception opening datafile from metacat and saving locally");
       }
-    }
+    }*/
     return this;
   }
 
