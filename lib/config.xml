@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <config>
-  <version>1.7.0</version>
+  <version>1.8.0_Beta1</version>
   <dataLocationInlineOnline>online</dataLocationInlineOnline>
   <plugin>edu.ucsb.nceas.morpho.query.QueryPlugin</plugin>
   <plugin>edu.ucsb.nceas.morpho.datapackage.DataPackagePlugin</plugin>
@@ -304,4 +304,12 @@
       <doctype>-//ecoinformatics.org//eml-dataset-2.0.0beta4//EN</doctype>
       <xslt>style/eml-dataset-2.0.0beta4.xsl</xslt>
   </doctype_xslt_mappings>
+  <styleSheetList>
+      <!-- when you add a style sheet, you must fill out name, label and location three elements-->
+       <styleSheet>
+          <name>NBII</name>
+          <label>NBII</label>
+          <location>./lib/style/eml2tonbii.xsl</location>
+       </styleSheet>
+  </styleSheetList>
 </config>
