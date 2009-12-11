@@ -123,7 +123,7 @@ import com.ice.tar.TarEntry;
 public class Morpho
 {
     /** The version of this release of Morpho */
-    public static String VERSION = "1.7.0";
+    public static String VERSION = "1.8.0_Beta1";
 
     /** Constant to indicate a separator should precede an action */
     public static String SEPARATOR_PRECEDING = "separator_preceding";
@@ -2158,7 +2158,6 @@ public class Morpho
                     copyConfig = true;
                 }
             }
-
             // If the config file is out-of-date, replace it,
             // keeping a copy of the old version
             if (copyConfig) {
