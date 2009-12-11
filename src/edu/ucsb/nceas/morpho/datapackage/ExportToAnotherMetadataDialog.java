@@ -25,15 +25,27 @@
  */
 package edu.ucsb.nceas.morpho.datapackage;
 
+import java.awt.BorderLayout;
+import java.awt.Container;
+import java.awt.Dimension;
+import java.awt.Rectangle;
+import java.awt.Toolkit;
 import java.util.Vector;
 
+import javax.swing.BoxLayout;
 import javax.swing.JDialog;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
 
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.framework.ConfigXML;
+import edu.ucsb.nceas.morpho.framework.UIController;
 import edu.ucsb.nceas.morpho.util.Log;
 
 /**
@@ -52,20 +64,74 @@ public class ExportToAnotherMetadataDialog extends JDialog
   private static final String SLASH = "/";
   
   Vector<StyleSheet> styleSheetList = new Vector();
+  
+  private JPanel centralPanel  = null;
+  private JPanel buttonPanel = null;
+  private JLabel outputFileLocationLabel = null;
+  private JTextField outputFileLocationField = null;
+  private JLabel metadataLanguageLabel = null;
+  private JList metadataLanguageList = null;
+  private JLabel otherStyleSheetLocationLabel = null;
+  private JTextField otherStyleSheetLocationField = null;
 
   /**
    * Default constructor
    */
   public ExportToAnotherMetadataDialog()
   {
-   
+    super(UIController.getInstance().getCurrentActiveWindow());
+    readStyleSheetList();
+    initGUI();
+  }
+  
+  /*
+   * Initialize GUI for this dialog
+   */
+  private void initGUI()
+  {
+    setModal(true);
+    setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+    setTitle("Export to Another Metadata Language");
+    createCentralPanel();
+    createButtonPanel();
+    Container contentPanel = getContentPane();
+    contentPanel.setLayout(new BorderLayout());
+    contentPanel.add(centralPanel, BorderLayout.CENTER);
+    contentPanel.add(buttonPanel, BorderLayout.SOUTH);
+    setResizable(false);
+    Dimension screenDim = Toolkit.getDefaultToolkit().getScreenSize();
+    Rectangle frameDim = getBounds();
+    setLocation((screenDim.width - frameDim.width) / 2 ,
+            (screenDim.height - frameDim.height) /2);
+  }
+  
+  /*
+   * Create central panel. It contains output file location field, output file
+   * locator button, metadata language list and style sheet locator (optional).
+   * This panel will locate on central position of the dialog
+   */
+  private void createCentralPanel()
+  {
+    centralPanel = new JPanel();
+    centralPanel.setLayout(new BoxLayout(centralPanel, BoxLayout.Y_AXIS));
+    JPanel outputFilePanel = new JPanel();
+    
+  }
+  
+  /*
+   * Create a panel containing cancel and transform button.
+   * It will locate on south of dialog.
+   */
+  private void createButtonPanel()
+  {
+    buttonPanel = new JPanel();
   }
   
   
   /*
    * Read the style sheet list from configure file
    */
-  public void readStyleSheetList()
+  private void readStyleSheetList()
   {
     if(Morpho.thisStaticInstance != null)
     {
@@ -110,11 +176,6 @@ public class ExportToAnotherMetadataDialog extends JDialog
         }
       }
     }
-  }
-  
-  public Vector getStyleSheetList()
-  {
-    return this.styleSheetList;
   }
   
   /*

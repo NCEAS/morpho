@@ -25,16 +25,24 @@
  */
 package edu.ucsb.nceas.morpho.util;
 
+import java.awt.Color;
+import java.awt.Dimension;
 import java.io.File;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
+
+import javax.swing.BorderFactory;
+import javax.swing.JComponent;
+import javax.swing.JLabel;
+import javax.swing.SwingConstants;
 
 import org.w3c.dom.Node;
 
 import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.datapackage.AbstractDataPackage;
 import edu.ucsb.nceas.morpho.datastore.FileSystemDataStore;
+import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardSettings;
 import edu.ucsb.nceas.utilities.OrderedMap;
 import edu.ucsb.nceas.utilities.XMLUtilities;
 
@@ -317,6 +325,50 @@ public class Util
 		}
 		return (path.delete());
 	}
+	
+	/**
+	 * Makes label for given text
+	 * @param text text of the label
+	 * @param hiliteRequired if it can be high lighted.
+	 * @param dims the size of label
+	 * @param debugHilite if user want to debugHilite.
+	 * @return
+	 */
+	public static JLabel makeLabel( String text,
+      boolean hiliteRequired, Dimension dims, boolean debugHilite) {
+
+    if (text==null) text="";
+    JLabel label = new JLabel(text);
+    
+    setPrefMaxSizes(label, dims);
+    label.setMinimumSize(dims);
+    label.setAlignmentX(SwingConstants.LEADING);
+    label.setFont(WizardSettings.WIZARD_CONTENT_FONT);
+    
+    label.setBorder(BorderFactory.createMatteBorder(1,3,1,3, (Color)null));
+    if (hiliteRequired) {
+    label.setForeground(WizardSettings.WIZARD_CONTENT_REQD_TEXT_COLOR);
+    } else {
+    label.setForeground(WizardSettings.WIZARD_CONTENT_TEXT_COLOR);
+    }
+    
+    if (debugHilite) {
+    label.setBackground(java.awt.Color.blue);
+    label.setOpaque(true);
+    }
+    return label;
+}
+	
+	/**
+	 * Sets preference max size for given compoent
+	 * @param component
+	 * @param dims
+	 */
+	 public static void setPrefMaxSizes(JComponent component, Dimension dims) {
+
+	    component.setPreferredSize(dims);
+	    component.setMaximumSize(dims);
+	  }
 		  
 
 }

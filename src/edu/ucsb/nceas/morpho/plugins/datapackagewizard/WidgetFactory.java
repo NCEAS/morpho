@@ -6,6 +6,7 @@ import edu.ucsb.nceas.morpho.util.Log;
 import edu.ucsb.nceas.morpho.util.StateChangeEvent;
 import edu.ucsb.nceas.morpho.util.StateChangeListener;
 import edu.ucsb.nceas.morpho.util.StateChangeMonitor;
+import edu.ucsb.nceas.morpho.util.Util;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -95,26 +96,7 @@ public class WidgetFactory {
   public static JLabel makeLabel( String text,
                                   boolean hiliteRequired, Dimension dims) {
 
-    if (text==null) text="";
-    JLabel label = new JLabel(text);
-
-    setPrefMaxSizes(label, dims);
-    label.setMinimumSize(dims);
-    label.setAlignmentX(SwingConstants.LEADING);
-    label.setFont(WizardSettings.WIZARD_CONTENT_FONT);
-
-    label.setBorder(BorderFactory.createMatteBorder(1,3,1,3, (Color)null));
-    if (hiliteRequired) {
-      label.setForeground(WizardSettings.WIZARD_CONTENT_REQD_TEXT_COLOR);
-    } else {
-      label.setForeground(WizardSettings.WIZARD_CONTENT_TEXT_COLOR);
-    }
-
-    if (debugHilite) {
-      label.setBackground(java.awt.Color.blue);
-      label.setOpaque(true);
-    }
-    return label;
+    return Util.makeLabel(text, hiliteRequired, dims, debugHilite);
   }
 
   public static JButton makeJButton(String title, ActionListener actionListener) {
@@ -411,8 +393,7 @@ public class WidgetFactory {
 
   public static void setPrefMaxSizes(JComponent component, Dimension dims) {
 
-    component.setPreferredSize(dims);
-    component.setMaximumSize(dims);
+    Util.setPrefMaxSizes(component, dims);
   }
 
 
