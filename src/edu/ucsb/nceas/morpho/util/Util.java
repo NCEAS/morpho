@@ -326,38 +326,7 @@ public class Util
 		return (path.delete());
 	}
 	
-	/**
-	 * Makes label for given text
-	 * @param text text of the label
-	 * @param hiliteRequired if it can be high lighted.
-	 * @param dims the size of label
-	 * @param debugHilite if user want to debugHilite.
-	 * @return
-	 */
-	public static JLabel makeLabel( String text,
-      boolean hiliteRequired, Dimension dims, boolean debugHilite) {
-
-    if (text==null) text="";
-    JLabel label = new JLabel(text);
-    
-    setPrefMaxSizes(label, dims);
-    label.setMinimumSize(dims);
-    label.setAlignmentX(SwingConstants.LEADING);
-    label.setFont(WizardSettings.WIZARD_CONTENT_FONT);
-    
-    label.setBorder(BorderFactory.createMatteBorder(1,3,1,3, (Color)null));
-    if (hiliteRequired) {
-    label.setForeground(WizardSettings.WIZARD_CONTENT_REQD_TEXT_COLOR);
-    } else {
-    label.setForeground(WizardSettings.WIZARD_CONTENT_TEXT_COLOR);
-    }
-    
-    if (debugHilite) {
-    label.setBackground(java.awt.Color.blue);
-    label.setOpaque(true);
-    }
-    return label;
-}
+	
 	
 	/**
 	 * Sets preference max size for given compoent
