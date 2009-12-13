@@ -87,6 +87,7 @@ public class ExportToAnotherMetadataDialog extends JDialog
   private static final int PADDING = 5;
   private static final int HEADER = 30;
   private static final String SELECT = "Select";
+  private static final String INITFIELDVALUE = "  Use button to select a file -->";
   
   Vector<StyleSheet> styleSheetList = new Vector();
   private boolean debugHilite = false;
@@ -104,6 +105,7 @@ public class ExportToAnotherMetadataDialog extends JDialog
   private JComboBox metadataLanguageList = null;
   private JLabel otherStyleSheetLocationLabel = null;
   private JTextField otherStyleSheetLocationField = null;
+  private JTextField otherStyleSheetcation = null;
   
   
 
@@ -161,7 +163,7 @@ public class ExportToAnotherMetadataDialog extends JDialog
     outputFilePanel.add(outputFileLocationLabel);
     JPanel outputFileRightPanel = new JPanel();
     outputFileRightPanel.setLayout(new BoxLayout(outputFileRightPanel, BoxLayout.X_AXIS));
-    outputFileLocationField = makeOneLineTextField("  Use button to select a file -->"); 
+    outputFileLocationField = makeOneLineTextField(INITFIELDVALUE); 
     outputFileLocationField.setEditable(false);
     outputFileRightPanel.add(outputFileLocationField);
     outputFileRightPanel.add(Box.createHorizontalStrut(PADDING));
@@ -221,7 +223,15 @@ public class ExportToAnotherMetadataDialog extends JDialog
       
       JPanel otherStyleSheetRightPanel = new JPanel();
       otherStyleSheetRightPanel.setLayout(new BoxLayout(otherStyleSheetRightPanel, BoxLayout.X_AXIS));
-      otherStyleSheetLocationField =  makeOneLineTextField("  Use button to select a file -->"); 
+      if(otherStyleSheetLocationField == null)
+      {
+        otherStyleSheetLocationField =  makeOneLineTextField(INITFIELDVALUE); 
+      }
+      else
+      {
+       String fieldValue = otherStyleSheetLocationField.getText();
+       otherStyleSheetLocationField =  makeOneLineTextField(fieldValue);
+      }
       otherStyleSheetLocationField.setEditable(false);
       otherStyleSheetRightPanel.add(otherStyleSheetLocationField);
       
