@@ -267,21 +267,12 @@ public class WidgetFactory {
 
   public static void hiliteComponent(JComponent component) {
 
-    if (component==null) return;
-    component.setOpaque(true);
-    component.setBackground(
-                    WizardSettings.WIZARD_CONTENT_HILITE_BG_COLOR);
-    component.setForeground(
-                    WizardSettings.WIZARD_CONTENT_HILITE_FG_COLOR);
+    Util.hiliteComponent(component, WizardSettings.WIZARD_CONTENT_HILITE_BG_COLOR, 
+        WizardSettings.WIZARD_CONTENT_HILITE_FG_COLOR);
   }
 
   public static void unhiliteComponent(JComponent component) {
-
-    if (component==null) return;
-    component.setOpaque(false);
-    component.setForeground(
-                    WizardSettings.WIZARD_CONTENT_REQD_TEXT_COLOR);
-    component.setBackground(null);
+    Util.unhiliteComponent(component, null, WizardSettings.WIZARD_CONTENT_REQD_TEXT_COLOR);
   }
 
 

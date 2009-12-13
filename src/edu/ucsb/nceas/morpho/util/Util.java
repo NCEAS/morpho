@@ -42,7 +42,6 @@ import org.w3c.dom.Node;
 import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.datapackage.AbstractDataPackage;
 import edu.ucsb.nceas.morpho.datastore.FileSystemDataStore;
-import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardSettings;
 import edu.ucsb.nceas.utilities.OrderedMap;
 import edu.ucsb.nceas.utilities.XMLUtilities;
 
@@ -337,6 +336,33 @@ public class Util
 
 	    component.setPreferredSize(dims);
 	    component.setMaximumSize(dims);
+	  }
+	 
+	 /**
+	  * Highlight a component with given color
+	  * @param component
+	  * @param backGround
+	  * @param foreGround
+	  */
+	 public static void hiliteComponent(JComponent component, Color backGround, Color foreGround) {
+
+	    if (component==null) return;
+	    component.setOpaque(true);
+	    component.setBackground(backGround);
+	    component.setForeground(foreGround);
+	  }
+   
+	 /**
+	  * Unhighlight a component with given color
+	  * @param component
+	  * @param foreGround
+	  */
+	 public static void unhiliteComponent(JComponent component, Color bakcGround, Color foreGround) {
+
+	    if (component==null) return;
+	    component.setOpaque(false);
+	    component.setForeground(foreGround);
+	    component.setBackground(bakcGround);
 	  }
 		  
 
