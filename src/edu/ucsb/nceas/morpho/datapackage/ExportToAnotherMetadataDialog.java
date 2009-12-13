@@ -26,6 +26,7 @@
 package edu.ucsb.nceas.morpho.datapackage;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
@@ -34,6 +35,11 @@ import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.Reader;
+import java.io.StringReader;
 import java.util.Vector;
 
 import javax.swing.Box;
@@ -45,6 +51,7 @@ import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
@@ -62,6 +69,8 @@ import edu.ucsb.nceas.morpho.framework.UIController;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardSettings;
 import edu.ucsb.nceas.morpho.util.Log;
 import edu.ucsb.nceas.morpho.util.Util;
+import edu.ucsb.nceas.morpho.util.XMLTransformer;
+import edu.ucsb.nceas.utilities.XMLUtilities;
 
 /**
  * Represents a dialog which can transform current data package to another metadata
@@ -88,12 +97,14 @@ public class ExportToAnotherMetadataDialog extends JDialog
   private static final int HEADER = 30;
   private static final String SELECT = "Select";
   private static final String INITFIELDVALUE = "  Use button to select a file -->";
+  private static final Color CONTENT_HILITE_BG_COLOR = new Color(175, 0, 0);
+  private static final Color CONTENT_HILITE_FG_COLOR = new Color(255, 255, 255);
+  private static final Color REGULAR_TEXT_COLOR = Color.BLACK;
   
-  Vector<StyleSheet> styleSheetList = new Vector();
+  Vector<StyleSheet> styleSheetList = new Vector<StyleSheet>();
   private boolean debugHilite = false;
   private File lastChosenOutputDir = null;
   private File lastChosenStyleSheetDir = null;
-  private File outputFile = null;
   private File styleSheetFile = null;
   
   private JPanel centralPanel  = null;
@@ -105,7 +116,7 @@ public class ExportToAnotherMetadataDialog extends JDialog
   private JComboBox metadataLanguageList = null;
   private JLabel otherStyleSheetLocationLabel = null;
   private JTextField otherStyleSheetLocationField = null;
-  private JTextField otherStyleSheetcation = null;
+ 
   
   
 
@@ -402,15 +413,6 @@ public class ExportToAnotherMetadataDialog extends JDialog
     return value;
   }
   
-  /*
-   * Create a one linespacer for layout
-   */
-  private Component makeSpacer() 
-  {
-    return Box.createRigidArea(new Dimension( DEFAULT_SPACER_DIMS.width,
-                     DEFAULT_SPACER_DIMS.height));
-  }
-
   
   /*
    * Make one line text field for given initialValue
@@ -482,8 +484,120 @@ public class ExportToAnotherMetadataDialog extends JDialog
      */
     public void actionPerformed(ActionEvent e) 
     {
-      
+      Util.unhiliteComponent(outputFileLocationLabel, null, REGULAR_TEXT_COLOR);
+      Util.unhiliteComponent(otherStyleSheetLocationLabel, null, REGULAR_TEXT_COLOR);
+      String outputFileName = outputFileLocationField.getText();
+      String styleSheetLocation = null;
+      if(outputFileName == null || outputFileName.trim().equals("")||
+          outputFileName.equals(INITFIELDVALUE))
+      {
+        Util.hiliteComponent(outputFileLocationLabel, CONTENT_HILITE_BG_COLOR, CONTENT_HILITE_FG_COLOR);
+        //Util.unhiliteComponent(outputFileLocationLabel, null, REGULAR_TEXT_COLOR);
+        return;
+      }
+      else if(((String)metadataLanguageList.getSelectedItem()).equals(OTHER))
+      {
+        //this is on "Other" option
+        styleSheetLocation = otherStyleSheetLocationField.getText();
+        if(styleSheetLocation ==null || styleSheetLocation.trim().equals("") ||
+            styleSheetLocation.equals(INITFIELDVALUE))
+        {
+          Util.hiliteComponent(otherStyleSheetLocationLabel, CONTENT_HILITE_BG_COLOR, CONTENT_HILITE_FG_COLOR);
+          return;
+        }
+      }
+      else
+      {
+        //this is on chosen a given metadata language option
+        int index = metadataLanguageList.getSelectedIndex();
+        StyleSheet styleSheet = styleSheetList.elementAt(index);
+        styleSheetLocation = styleSheet.getLocation();
+        if(styleSheetLocation ==null || styleSheetLocation.trim().equals("") ||
+            styleSheetLocation.equals(INITFIELDVALUE))
+        {
+          Log.debug(5, "The Metadata format "+metadataLanguageList.getSelectedItem()+" doesn't have a valid "+
+                   "style sheet location. Please check the config.xml in your .morpho folder.");
+          return;
+        }
+      }
+      Log.debug(30, "The output file location in ExportToAnotherMedataDialog is "+outputFileName);
+      Log.debug(30, "The style sheet location in ExportToAnotherMedataDialog is "+styleSheetLocation);
+      export(outputFileName,styleSheetLocation);
     }
+  }
+  
+  /*
+   * Export the current data package to output file name in another metadata format.
+   * Note: this method doesn't check if the parameters are null since they were checked
+   * on method actionPerformed.
+   */
+  private void export(String outputFileName, String styleSheetLocation)
+  {
+    //get output file writer
+    File outputFile = new File(outputFileName);
+    FileWriter outputFileWriter = null;
+    try
+    {
+      outputFileWriter = new FileWriter(outputFile);
+    }
+    catch(IOException e)
+    {
+      Log.debug(5, "Morpho couldn't write the output file to "+outputFileName+ " since "+e.getMessage());
+      return;
+    }
+    
+    //get style sheet reader
+    File styleSheetFile = new File(styleSheetLocation);
+    FileReader styleSheetReader = null;
+    File styleSheetDir = null;
+    try
+    {
+      styleSheetReader = new FileReader(styleSheetFile);
+      styleSheetDir = styleSheetFile.getParentFile();
+    }
+    catch(Exception e)
+    {
+      Log.debug(5, "Morpho couldn't find a style sheet file at location "+styleSheetLocation);
+      return;
+    }
+    
+    //Get eml reader
+    AbstractDataPackage dataPackage = UIController.getInstance().getCurrentAbstractDataPackage();
+    if(dataPackage == null)
+    {
+      Log.debug(5, "The current data package is null and we couldn't transform it to another metadata format. ");
+      return;
+    }
+    String eml = XMLUtilities.getDOMTreeAsString(dataPackage.getMetadataNode());
+    StringReader emlReader = new StringReader(eml);
+    //Document emlDoc = dataPackage.
+    
+    //transform
+    XMLTransformer transformer = XMLTransformer.getInstance();
+    try
+    {
+      Reader anotherMetadataReader = transformer.transform(emlReader,styleSheetReader, 
+                                        styleSheetDir.getAbsolutePath());
+      char[] chartArray = new char[4*1024];
+      int index = anotherMetadataReader.read(chartArray);
+      while(index != -1)
+      {
+        outputFileWriter.write(chartArray, 0, index);
+        outputFileWriter.flush();
+        index = anotherMetadataReader.read(chartArray);
+      }
+      anotherMetadataReader.close();
+      outputFileWriter.close();
+      JOptionPane.showMessageDialog(this, "Package export is complete!");
+      this.setVisible(false);
+      this.dispose();
+    }
+    catch(Exception e)
+    {
+      Log.debug(5, "Morpho couldn't transform the eml to the metadata language "+
+                   "since "+e.getMessage());
+    }
+   
   }
   
   
@@ -563,7 +677,7 @@ public class ExportToAnotherMetadataDialog extends JDialog
       int returnValue = outPutFileChooser.showDialog(parent, "Select");
       if(returnValue == JFileChooser.APPROVE_OPTION)
       {
-        outputFile = outPutFileChooser.getSelectedFile();
+        File outputFile = outPutFileChooser.getSelectedFile();
         if(outputFile != null)
         {
           outputFileLocationField.setText(outputFile.getAbsolutePath());
