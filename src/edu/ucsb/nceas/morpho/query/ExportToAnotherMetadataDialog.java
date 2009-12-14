@@ -32,6 +32,7 @@ import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Rectangle;
 import java.awt.Toolkit;
+import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -67,6 +68,7 @@ import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.datapackage.AbstractDataPackage;
 import edu.ucsb.nceas.morpho.framework.ConfigXML;
 import edu.ucsb.nceas.morpho.framework.UIController;
+import edu.ucsb.nceas.morpho.util.Command;
 import edu.ucsb.nceas.morpho.util.Log;
 import edu.ucsb.nceas.morpho.util.Util;
 import edu.ucsb.nceas.morpho.util.XMLTransformer;
@@ -78,7 +80,7 @@ import edu.ucsb.nceas.utilities.XMLUtilities;
  * @author tao
  *
  */
-public class ExportToAnotherMetadataDialog extends JDialog
+public class ExportToAnotherMetadataDialog extends JDialog implements Command
 {
   private static final String STYLESHEETLIST = "styleSheetList";
   private static final String STYLESHEET = "styleSheet";
@@ -116,18 +118,39 @@ public class ExportToAnotherMetadataDialog extends JDialog
   private JComboBox metadataLanguageList = null;
   private JLabel otherStyleSheetLocationLabel = null;
   private JTextField otherStyleSheetLocationField = null;
- 
+  private JDialog parent = null;
   
   
-
   /**
-   * Default constructor
+   * Constructor with JDialog as parent
+   * @param parent 
+   * @param docid  the docid which will be exported
+   * @param documentLocation the document location (local/metacat)
    */
-  public ExportToAnotherMetadataDialog()
+  public ExportToAnotherMetadataDialog(JDialog parent, String docid, String documentLocation)
   {
-    super(UIController.getInstance().getCurrentActiveWindow());
+    super(parent);
+    this.parent = parent;
     readStyleSheetList();
+   
+  }
+  
+  /**
+   * Initialize the GUI when the command executes
+   */    
+  public void execute(ActionEvent event)
+  { 
+    if(parent != null)
+    {
+      parent.setVisible(false);
+    }
     initGUI();
+    if(parent != null)
+    {
+      Log.debug(5, "dipose the parent dialog");
+      parent.dispose();
+    }
+    
   }
   
   /*
@@ -144,12 +167,27 @@ public class ExportToAnotherMetadataDialog extends JDialog
     contentPanel.setLayout(new BorderLayout());
     contentPanel.add(centralPanel, BorderLayout.CENTER);
     contentPanel.add(buttonPanel, BorderLayout.SOUTH);
-    Dimension screenDim = Toolkit.getDefaultToolkit().getScreenSize();
-    Rectangle frameDim = getBounds();
-    /*setLocation((screenDim.width - frameDim.width) / 2 ,
-            (screenDim.height - frameDim.height) /2);*/
-    this.setBounds((screenDim.width - frameDim.width) / 2, (screenDim.height - frameDim.height) /2,  
-                          WIDTH, HEIGHT);
+    if(parent == null)
+    {
+      Dimension screenDim = Toolkit.getDefaultToolkit().getScreenSize();
+      Rectangle frameDim = getBounds();
+      /*setLocation((screenDim.width - frameDim.width) / 2 ,
+              (screenDim.height - frameDim.height) /2);*/
+      this.setBounds((screenDim.width - frameDim.width) / 2, (screenDim.height - frameDim.height) /2,  
+                            WIDTH, HEIGHT);
+    }
+    else
+    {
+      double parentX = parent.getLocation().getX();
+      double parentY = parent.getLocation().getY();
+      int parentWidth = parent.getWidth();
+      int parentHeight = parent.getHeight();
+      double centerX = parentX + 0.5 * parentWidth;
+      double centerY = parentY + 0.5 * parentHeight;
+      int dialogX = (new Double(centerX - 0.5 * WIDTH)).intValue();
+      int dialogY = (new Double(centerY - 0.5 * HEIGHT)).intValue();
+      this.setBounds(dialogX, dialogY,  WIDTH, HEIGHT);
+    }
     setResizable(false);
     setVisible(true);
   }
@@ -536,16 +574,7 @@ public class ExportToAnotherMetadataDialog extends JDialog
     //get output file writer
     File outputFile = new File(outputFileName);
     FileWriter outputFileWriter = null;
-    try
-    {
-      outputFileWriter = new FileWriter(outputFile);
-    }
-    catch(IOException e)
-    {
-      Log.debug(5, "Morpho couldn't write the output file to "+outputFileName+ " since "+e.getMessage());
-      return;
-    }
-    
+      
     //get style sheet reader
     File styleSheetFile = new File(styleSheetLocation);
     FileReader styleSheetReader = null;
@@ -571,13 +600,13 @@ public class ExportToAnotherMetadataDialog extends JDialog
     String eml = XMLUtilities.getDOMTreeAsString(dataPackage.getMetadataNode());
     StringReader emlReader = new StringReader(eml);
     //Document emlDoc = dataPackage.
-    
     //transform
     XMLTransformer transformer = XMLTransformer.getInstance();
     try
     {
       Reader anotherMetadataReader = transformer.transform(emlReader,styleSheetReader, 
                                         styleSheetDir.getAbsolutePath());
+      outputFileWriter = new FileWriter(outputFile);
       char[] chartArray = new char[4*1024];
       int index = anotherMetadataReader.read(chartArray);
       while(index != -1)

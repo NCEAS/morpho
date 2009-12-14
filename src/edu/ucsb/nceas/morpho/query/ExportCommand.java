@@ -164,12 +164,12 @@ public class ExportCommand implements Command
       if ( selectDocId != null && !selectDocId.equals(""))
       {
         // Destroy the dialog
-        if (dialog != null)
+        /*if (dialog != null)
         {
           dialog.setVisible(false);
           dialog.dispose();
           dialog = null;
-        }
+        }*/
         doExport(selectDocId, morphoFrame);
         
       }//if
@@ -242,7 +242,7 @@ public class ExportCommand implements Command
   private void exportDataset(String id)
   {
     if (location==null) {
-      location = getLocation();
+      location = ExportDialog.getLocation(metacatLoc, localLoc);
     }
     if ((location.trim()).equals("")) {
       Log.debug(3, "Sorry, Package must be saved before it can be exported!");
@@ -320,7 +320,7 @@ public class ExportCommand implements Command
         String fileName = exportDir.getAbsolutePath();
         if (fileName != null)
         {
-          String location = getLocation();
+          String location =  ExportDialog.getLocation(metacatLoc, localLoc);
           //export it.
           dataPackage.exportToEml2(id, fileName, location);
         }
@@ -408,7 +408,7 @@ public class ExportCommand implements Command
     exportDir = filechooser.getSelectedFile();
     if (result==JFileChooser.APPROVE_OPTION) {
       //now we know where to export the files to, so export them.
-      String location = getLocation();
+      location = ExportDialog.getLocation(metacatLoc, localLoc);
       if ( exportDir != null)
       {
         // Check the file name if it has .zip extension
@@ -431,30 +431,7 @@ public class ExportCommand implements Command
     }
   }
   
-  /*
-   * Determine the location of data package
-   */
-   private String getLocation()
-   {
-     String location = null;
-     //figure out where this thing is.
-      if(metacatLoc && localLoc)
-      {
-        location = DataPackageInterface.BOTH;
-      }
-      else if(metacatLoc && !localLoc)
-      {
-        location = DataPackageInterface.METACAT;
-      }
-      else if(!metacatLoc && localLoc)
-      {
-        location = DataPackageInterface.LOCAL;
-      }
-      else {
-        location = "";
-      }
-      return location;
-   }
+  
  
    /**
     * could also have undo functionality; disabled for now

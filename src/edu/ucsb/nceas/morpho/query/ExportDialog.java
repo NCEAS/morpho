@@ -77,6 +77,7 @@ public class ExportDialog extends JDialog
   /** Radio button */
   private JRadioButton exportToDir = new JRadioButton("Export to a Directory...");
   private JRadioButton exportToZip = new JRadioButton("Export to a Zip File...");
+  private JRadioButton exportToAnotherMetadata = new JRadioButton("Export to Another Metadata Format...");
   
   private static final int PADDINGWIDTH = 8;
   private static String WARNING =
@@ -184,15 +185,17 @@ public class ExportDialog extends JDialog
     // Initially set radio button disable
     exportToDir.setEnabled(true);
     exportToZip.setEnabled(true);
+    exportToAnotherMetadata.setEnabled(true);
     // Put them into group
     ButtonGroup group = new ButtonGroup();
     group.add(exportToDir);
     group.add(exportToZip);
+    group.add(exportToAnotherMetadata);
     // Vector to keep track of enabled radio button
     Vector enabledRadioButtonList = new Vector();
       enabledRadioButtonList.add(exportToDir);
       enabledRadioButtonList.add(exportToZip);
-    
+      enabledRadioButtonList.add(exportToAnotherMetadata);
     // Create JPanel and set it border layout
     JPanel mainPanel = new JPanel();
     mainPanel.setLayout(new BorderLayout(0, 0));
@@ -215,7 +218,7 @@ public class ExportDialog extends JDialog
     Box radioBox = Box.createVerticalBox();
     radioBox.add(exportToDir);
     radioBox.add(exportToZip);
-    
+    radioBox.add(exportToAnotherMetadata);
     // create another center box which will put radion box in the center
     // and it will be add into center of mainPanel
     Box centerBox = Box.createHorizontalBox();
@@ -269,7 +272,7 @@ public class ExportDialog extends JDialog
     RadioButtonListener listener = new RadioButtonListener(this);
     exportToDir.addItemListener(listener);
     exportToZip.addItemListener(listener);
-    
+    exportToAnotherMetadata.addItemListener(listener);
     setVisible(false);
    
   }
@@ -301,6 +304,14 @@ public class ExportDialog extends JDialog
           executeAction.setCommand( new ExportCommand(null, ExportCommand.ZIP, this));
         }
       }
+      else if (object == exportToAnotherMetadata) 
+      {
+        // Enable execute button
+        Log.debug(20, "In export to another metadata language branch");
+        executeAction.setEnabled(true);
+        String location = getLocation(inNetwork, inLocal);
+        executeAction.setCommand(new ExportToAnotherMetadataDialog(this, selectDocId, location));
+      }
    }//enableExecuteButton
  
 
@@ -320,5 +331,31 @@ public class ExportDialog extends JDialog
       enableExecuteButton(obj, dialogs);
     }//itemStateChagned
   }//RadioButtonListener
+  
+  
+  /*
+   * Determine the location of data package
+   */
+   public static String getLocation(boolean metacatLoc, boolean localLoc)
+   {
+     String location = null;
+     //figure out where this thing is.
+      if(metacatLoc && localLoc)
+      {
+        location = DataPackageInterface.BOTH;
+      }
+      else if(metacatLoc && !localLoc)
+      {
+        location = DataPackageInterface.METACAT;
+      }
+      else if(!metacatLoc && localLoc)
+      {
+        location = DataPackageInterface.LOCAL;
+      }
+      else {
+        location = "";
+      }
+      return location;
+   }
  
 }//ExportDialog
