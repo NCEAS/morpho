@@ -66,6 +66,8 @@ import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
+import org.w3c.dom.Document;
+
 
 /**
  * Class that implements the plugin for package editing
@@ -1408,6 +1410,36 @@ public class DataPackagePlugin
         Log.debug(50, "docid is in network");
       }//if
     return flagInNetwork;
+  }
+  
+  /**
+   * Method to get a Document node as a representation of data package for
+   * given id and location
+   * @param docid the identifier of the package
+   * @param location the location of the package
+   * @return
+   */
+  public Document getDocumentNode(String docid, String location)
+  {
+    Document doc = null;
+    boolean local = false;
+    boolean metacat = false;
+    if (location.equals(AbstractDataPackage.LOCAL)) {
+      local = true;
+    }
+    else if (location.equals(AbstractDataPackage.METACAT)) {
+      metacat = true;
+    }
+    else if (location.equals(AbstractDataPackage.BOTH)) {
+      local = true;
+      metacat = true;
+    }
+    AbstractDataPackage adp = DataPackageFactory.getDataPackage(docid, metacat, local);
+    if(adp != null)
+    {
+      doc = adp.getDocument();
+    }
+    return doc;
   }
 
 

@@ -34,6 +34,8 @@ import edu.ucsb.nceas.morpho.util.Command;
 import java.io.Reader;
 import java.util.Vector;
 
+import org.w3c.dom.Document;
+
 /**
  * All component plugins that handle access to data packages should implement
  * this interface and register themselves as a service provider for the
@@ -203,6 +205,16 @@ public interface DataPackageInterface
    * @return boolean
    */
   public boolean isDataPackageInLocal(MorphoFrame morphoFrame);
+  
+  
+  /**
+   * Method to get a Document node as a representation of data package for
+   * given id and location
+   * @param docid the identifier of the package
+   * @param location the location of the package
+   * @return
+   */
+  public Document getDocumentNode(String docid, String location);
 
 
   /**

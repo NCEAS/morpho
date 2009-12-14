@@ -61,7 +61,7 @@ public class MetadataObject
   /**
    * Document node of the in-memory DOM structure
    */
-  static protected Document doc;
+  protected Document doc;
   /**
    * root node of the in-memory DOM structure
    */
@@ -145,6 +145,10 @@ public class MetadataObject
 	
   public void setMetadataPath(Node nd) {
     metadataPathNode = nd;
+  }
+  
+  public Document getDocument(){
+    return doc;
   }
 
   public String getGenericValue(String genericName) {

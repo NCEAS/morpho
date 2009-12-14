@@ -61,13 +61,16 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
+import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import edu.ucsb.nceas.morpho.Morpho;
-import edu.ucsb.nceas.morpho.datapackage.AbstractDataPackage;
 import edu.ucsb.nceas.morpho.framework.ConfigXML;
+import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
 import edu.ucsb.nceas.morpho.framework.UIController;
+import edu.ucsb.nceas.morpho.plugins.ServiceController;
+import edu.ucsb.nceas.morpho.plugins.ServiceProvider;
 import edu.ucsb.nceas.morpho.util.Command;
 import edu.ucsb.nceas.morpho.util.Log;
 import edu.ucsb.nceas.morpho.util.Util;
@@ -119,6 +122,8 @@ public class ExportToAnotherMetadataDialog extends JDialog implements Command
   private JLabel otherStyleSheetLocationLabel = null;
   private JTextField otherStyleSheetLocationField = null;
   private JDialog parent = null;
+  private String docid = null;
+  private String documentLocation = null;
   
   
   /**
@@ -131,6 +136,8 @@ public class ExportToAnotherMetadataDialog extends JDialog implements Command
   {
     super(parent);
     this.parent = parent;
+    this.docid = docid;
+    this.documentLocation = documentLocation;
     readStyleSheetList();
    
   }
@@ -147,8 +154,8 @@ public class ExportToAnotherMetadataDialog extends JDialog implements Command
     initGUI();
     if(parent != null)
     {
-      Log.debug(5, "dipose the parent dialog");
       parent.dispose();
+      parent = null;
     }
     
   }
@@ -522,6 +529,22 @@ public class ExportToAnotherMetadataDialog extends JDialog implements Command
      */
     public void actionPerformed(ActionEvent e) 
     {
+      if(docid == null || docid.equals(""))
+      {
+        Log.debug(5, "There is no docid specified for export!");
+        return;
+      }
+      if(documentLocation == null )
+      {
+        Log.debug(5, "Morpho couldn't find the location of this document and couldn't exmport it.");
+        return;
+      }     
+      if(documentLocation.equals("") )
+      {
+        Log.debug(5, "Please save the document first before exmporting it.");
+        return;
+      }
+      
       Util.unhiliteComponent(outputFileLocationLabel, null, REGULAR_TEXT_COLOR);
       Util.unhiliteComponent(otherStyleSheetLocationLabel, null, REGULAR_TEXT_COLOR);
       String outputFileName = outputFileLocationField.getText();
@@ -591,20 +614,31 @@ public class ExportToAnotherMetadataDialog extends JDialog implements Command
     }
     
     //Get eml reader
-    AbstractDataPackage dataPackage = UIController.getInstance().getCurrentAbstractDataPackage();
+    /*AbstractDataPackage dataPackage = UIController.getInstance().getCurrentAbstractDataPackage();
     if(dataPackage == null)
     {
       Log.debug(5, "The current data package is null and we couldn't transform it to another metadata format. ");
       return;
-    }
-    String eml = XMLUtilities.getDOMTreeAsString(dataPackage.getMetadataNode());
-    StringReader emlReader = new StringReader(eml);
+    }*/
+    //String eml = XMLUtilities.getDOMTreeAsString(dataPackage.getMetadataNode());
+    //StringReader emlReader = new StringReader(eml);
     //Document emlDoc = dataPackage.
     //transform
-    XMLTransformer transformer = XMLTransformer.getInstance();
+    
     try
     {
-      Reader anotherMetadataReader = transformer.transform(emlReader,styleSheetReader, 
+      XMLTransformer transformer = XMLTransformer.getInstance();
+      ServiceController services = ServiceController.getInstance();
+      ServiceProvider provider = 
+                 services.getServiceProvider(DataPackageInterface.class);
+      DataPackageInterface dataPackage = (DataPackageInterface)provider;
+      Document emlDoc = dataPackage.getDocumentNode(docid, documentLocation);
+      if(emlDoc == null)
+      {
+        Log.debug(5, "Morpho couldn't generate the document for the package "+docid);
+        return;
+      }
+      Reader anotherMetadataReader = transformer.transform(emlDoc, styleSheetReader, 
                                         styleSheetDir.getAbsolutePath());
       outputFileWriter = new FileWriter(outputFile);
       char[] chartArray = new char[4*1024];
