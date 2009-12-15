@@ -192,7 +192,7 @@ public class ExportToAnotherMetadataDialog extends JDialog implements Command
       double centerX = parentX + 0.5 * parentWidth;
       double centerY = parentY + 0.5 * parentHeight;
       int dialogX = (new Double(centerX - 0.5 * WIDTH)).intValue();
-      int dialogY = (new Double(centerY - 0.5 * HEIGHT)).intValue();
+      int dialogY = (new Double((centerY - 0.5 * HEIGHT)*1.3)).intValue();
       this.setBounds(dialogX, dialogY,  WIDTH, HEIGHT);
     }
     setResizable(false);
@@ -331,18 +331,18 @@ public class ExportToAnotherMetadataDialog extends JDialog implements Command
   private void createButtonPanel()
   {
     buttonPanel = new JPanel();
-    JButton cancelButton = new JButton("Cancel");
-    ActionListener cancelAction = new DialogCancelAction(this);
-    cancelButton.addActionListener(cancelAction);
     JButton exportButton = new JButton("Export");
     ActionListener exportAction = new DialogExportAction();
     exportButton.addActionListener(exportAction);
+    JButton cancelButton = new JButton("Cancel");
+    ActionListener cancelAction = new DialogCancelAction(this);
+    cancelButton.addActionListener(cancelAction);    
     buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.X_AXIS));
     buttonPanel.setBorder(new EmptyBorder(PADDING, PADDING, PADDING, PADDING));
     buttonPanel.add(Box.createHorizontalGlue());
-    buttonPanel.add(cancelButton);
-    buttonPanel.add(Box.createHorizontalStrut(PADDING));
     buttonPanel.add(exportButton);
+    buttonPanel.add(Box.createHorizontalStrut(PADDING));
+    buttonPanel.add(cancelButton);
   }
   
   /*
