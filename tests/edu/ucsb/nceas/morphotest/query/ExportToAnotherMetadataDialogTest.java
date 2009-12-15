@@ -37,6 +37,9 @@ import java.util.Enumeration;
 import java.util.Vector;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+
+import javax.swing.JDialog;
+
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestResult;
@@ -101,7 +104,11 @@ public class  ExportToAnotherMetadataDialogTest extends TestCase
     {
        Morpho.createMorphoInstance();
        UIController.initialize(Morpho.thisStaticInstance);
-       ExportToAnotherMetadataDialog dialog = new  ExportToAnotherMetadataDialog();
+       String docid= "jscientist.7.2";
+       String location = "local";
+       JDialog parent = new JDialog();
+       ExportToAnotherMetadataDialog dialog = new  ExportToAnotherMetadataDialog(parent, docid, location);
+       dialog.execute(null);
         
     }
     
