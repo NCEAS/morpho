@@ -509,6 +509,11 @@ public class DataViewer extends javax.swing.JPanel
     {
       return table;
     }
+    
+    public JScrollPane getDataScrollPanel()
+    {
+      return DataScrollPanel;
+    }
 
     /**
      * Method to get the attribute documentation
