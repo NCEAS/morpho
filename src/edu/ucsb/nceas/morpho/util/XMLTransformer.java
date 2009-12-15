@@ -440,8 +440,8 @@ public class XMLTransformer
                     +"Nested TransformerConfigurationException="+e.getMessage();
             e.printStackTrace();
             Log.debug(12, msg);
-            outputWriter.write(msg.toCharArray(),0,msg.length());
-            e.printStackTrace(new PrintWriter(outputWriter));
+            //outputWriter.write(msg.toCharArray(),0,msg.length());
+            //e.printStackTrace(new PrintWriter(outputWriter));
         }
         transformer.setErrorListener(new CustomErrorListener());
         Enumeration propertyNames = getTransformerPropertyNames();
@@ -464,16 +464,16 @@ public class XMLTransformer
                                 +" Nested TransformerException="+e.getMessage();
             e.printStackTrace();
             Log.debug(12, msg);
-            outputWriter.write(msg.toCharArray(),0,msg.length());
-            e.printStackTrace(new PrintWriter(outputWriter));
+            //outputWriter.write(msg.toCharArray(),0,msg.length());
+            //e.printStackTrace(new PrintWriter(outputWriter));
         } catch (Exception e) {
             String msg
                 = "XMLTransformer.transform(): Unrecognized Error transforming"
                                 +" document: "+e.getMessage();
             e.printStackTrace();
             Log.debug(12, msg);
-            outputWriter.write(msg.toCharArray(),0,msg.length());
-            e.printStackTrace(new PrintWriter(outputWriter));
+            //outputWriter.write(msg.toCharArray(),0,msg.length());
+            //e.printStackTrace(new PrintWriter(outputWriter));
         } finally {
             outputWriter.flush();
             outputWriter.close();
