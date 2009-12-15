@@ -166,9 +166,10 @@
         </or>
       </condition>
 	   
-      <condition property="eml201-210stylesheet.needed">
+      <condition property="transformstylesheet.needed">
         <or>
           <not><available file="${xsldir}/eml201to210.xsl" type="file"/></not>
+		  <not><available file="${xsldir}/eml2tonbii.xsl" type="file"/></not>
         </or>
       </condition>
    	
@@ -284,9 +285,9 @@
     </xslt>
    </target>
 	
-   <target name="geteml201to210stylesheet" depends="prepare" if="eml201-210stylesheet.needed">
-     <!-- checkout eml/eml201to210.xsl file -->
-     <echo>Check out eml201to210.xsl from SVN</echo>
+   <target name="getetransformstylesheet" depends="prepare" if="transformstylesheet.needed">
+     <!-- checkout eml/eml201to210.xsl and eml2tonbii.xsl file -->
+     <echo>Check out eml201to210.xsl and NBII style sheet from SVN</echo>
      <!--<cvs cvsRoot="${cvsroot}"
           package="${eml-module}/style/eml201to210.xsl"
           tag="${eml-210-style-tag}"
@@ -295,11 +296,16 @@
             <export srcUrl="${eml-style-svn-url}/style"
                 destPath="${build.xsl}/eml_${eml-style-tag}/style" />
         </svn>
+	   <svn>
+            <export srcUrl="${eml-style-svn-url}/lib/eml2tonbii"
+                destPath="${build.xsl}/eml_${eml-style-tag}/lib/eml2tonbii" />
+        </svn>
 	<copy file="${build.xsl}/eml_${eml-style-tag}/style/eml201to210.xsl" todir="${xsldir}" />
+	<copy file="${build.xsl}/eml_${eml-style-tag}/lib/eml2tonbii/eml2tonbii.xsl" todir="${xsldir}" />
    </target>
 
 	
-   <target name="geteml210" depends="geteml201to210stylesheet" if="eml210schema.needed">
+   <target name="geteml210" depends="prepare" if="eml210schema.needed">
      <!-- checkout eml moduel -->
      <echo>Check out EML 2.1.0 schema from SVN</echo>
      <!--<cvs cvsRoot="${cvsroot}"
@@ -400,7 +406,7 @@
    <!--
    <target name="compile" depends="clean,itis,prepare">
    -->
-   <target name="compile" depends="prepare, utilities, geteml210">
+   <target name="compile" depends="prepare, utilities, geteml210, getetransformstylesheet">
 
       <jar jarfile="${morpho.basedir}/lib/httpclient.jar">
         <fileset dir="${morpho.basedir}/lib" includes="HTTPClient/**/*.class"/>

@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <config>
-  <version>1.8.0_Beta1</version>
+  <version>1.8.0_Beta2</version>
   <dataLocationInlineOnline>online</dataLocationInlineOnline>
   <plugin>edu.ucsb.nceas.morpho.query.QueryPlugin</plugin>
   <plugin>edu.ucsb.nceas.morpho.datapackage.DataPackagePlugin</plugin>
@@ -307,9 +307,9 @@
   <styleSheetList>
       <!-- when you add a style sheet, you must fill out name, label and location three elements-->
        <styleSheet>
-          <name>NBII</name>
-          <label>NBII</label>
-          <location>./lib/style/eml2tonbii.xsl</location>
+          <name>FGDC</name>
+          <label>Biological Data Profile (BDP)</label>
+          <location>xsl/eml2tonbii.xsl</location>
        </styleSheet>
   </styleSheetList>
 </config>

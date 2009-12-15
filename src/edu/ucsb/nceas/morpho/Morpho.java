@@ -123,7 +123,7 @@ import com.ice.tar.TarEntry;
 public class Morpho
 {
     /** The version of this release of Morpho */
-    public static String VERSION = "1.8.0_Beta1";
+    public static String VERSION = "1.8.0_Beta2";
 
     /** Constant to indicate a separator should precede an action */
     public static String SEPARATOR_PRECEDING = "separator_preceding";
