@@ -541,7 +541,7 @@ public class ExportToAnotherMetadataDialog extends JDialog implements Command
       }     
       if(documentLocation.equals("") )
       {
-        Log.debug(5, "Please save the document first before exmporting it.");
+        Log.debug(5, "Please save the document first before exporting it.");
         return;
       }
       
