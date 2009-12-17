@@ -1482,7 +1482,12 @@ public class DataViewer extends javax.swing.JPanel
       if (table.getRowCount()>0) {
           table.setRowSelectionInterval(0, table.getRowCount()-1);
       }
-      table.setColumnSelectionInterval(index, index);
+      boolean isMulti = (event.isMetaDown() || event.isControlDown()); //TODO: try in windows
+      if (isMulti) {
+      		table.addColumnSelectionInterval(index, index);
+      } else {
+    	  table.setColumnSelectionInterval(index, index);
+      }
       if (event.isPopupTrigger())
       {
         // Show popup menu
@@ -1514,7 +1519,9 @@ public class DataViewer extends javax.swing.JPanel
       }
     }
     //public void mouseReleased(MouseEvent event){}
-    public void mousePressed(MouseEvent event) {}
+    public void mousePressed(MouseEvent event) {
+    	maybeShowPopup(event);
+    }
     public void mouseEntered(MouseEvent event) {}
     public void mouseExited(MouseEvent event) {}
   }
