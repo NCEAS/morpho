@@ -98,10 +98,11 @@ public class CodeImportPage extends AbstractUIPage {
   private int selectedDefinitionColumnIndex = -1;
   public static String IMMPORTCHOICE = "importChoice";
   public static String ENTITYINDEXINCREASED = "entityIndexIncreased";
+  public static String ISENTITYADDEDINPREVIOUSCLYCLE = "isEntityAddedInPreviousCycle";
   private static final int SLEEPINGTIME = 1000;
   private static final int TIME =20;
   private boolean entityIndexIncreased = false;
-
+  private boolean isEntityAddedInPreviousCycle = true;
 
   public CodeImportPage(WizardContainerFrame mainWizFrame) {
 
@@ -260,17 +261,17 @@ public class CodeImportPage extends AbstractUIPage {
     Log.debug(40, "Set the importwizard to be true in CodeImportPage.setPage");
     //figure out if it need to increase id here.
     AbstractUIPage previousPage = mainWizFrame.getPreviousPage();
-    boolean needIncreaseEntityID = true;
+    //boolean needIncreaseEntityID = true;
     if(previousPage != null && previousPage instanceof CodeImportSummary)
     {
       CodeImportSummary codeSummary = (CodeImportSummary )previousPage;
-      needIncreaseEntityID = codeSummary.isEntityAddedInCyle();
-      Log.debug(30, "In CodeImportPage.onAdvance method, the isEntityAddedInCycle value from previous ImportSummary page is "+needIncreaseEntityID);
+      isEntityAddedInPreviousCycle = codeSummary.isEntityAddedInCyle();
+      Log.debug(30, "In CodeImportPage.onAdvance method, the isEntityAddedInCycle value from previous ImportSummary page is "+isEntityAddedInPreviousCycle);
     
     }
     //since we will start a new entity, we need to increase the index.
     int entityIndex = mainWizFrame.getEnityIndex();
-    if(needIncreaseEntityID)
+    if(isEntityAddedInPreviousCycle)
     {
       entityIndex = entityIndex+1;
       mainWizFrame.setEntityIndex(entityIndex);
@@ -399,14 +400,16 @@ public class CodeImportPage extends AbstractUIPage {
       String entityIndexIncreasedStr = (String)data.get(ENTITYINDEXINCREASED);
       Log.debug(35, "The entityIndexIncreased value in CodeImportPage.setPageData method is "+entityIndexIncreasedStr);
       data.remove(ENTITYINDEXINCREASED);
+      String isEntityAddedInPreviousCycleStr = (String)data.get(ISENTITYADDEDINPREVIOUSCLYCLE);     
       try
       {
         importChoice =(new Short(importChoiceStr)).shortValue();
         entityIndexIncreased = (new Boolean(entityIndexIncreasedStr)).booleanValue();
+        isEntityAddedInPreviousCycle = (new Boolean(isEntityAddedInPreviousCycleStr)).booleanValue();
       }
       catch(Exception e)
       {
-        Log.debug(30, "Couldn't get importChocie or entityIndexIncreased value in CodeImportPage.setPageData since "+e.getMessage());
+        Log.debug(30, "Couldn't get importChocie or entityIndexIncreased or isEntityAddedInPreviousCycle value in CodeImportPage.setPageData since "+e.getMessage());
         return success;
       }
       if(importChoice == INVOKE_TIW)
@@ -690,6 +693,15 @@ public class CodeImportPage extends AbstractUIPage {
 	  return this.entityIndexIncreased;
 	}
 	
+  /**
+   * Determines if entity was added in previous cycle
+   * @return
+   */
+	public boolean isEntityAddedInPreviousCycle()
+  {
+    return isEntityAddedInPreviousCycle;
+  }
+	
 	/*
    * Click button in radio panel
    */
@@ -714,5 +726,6 @@ public class CodeImportPage extends AbstractUIPage {
        throw new Exception("The Radion button container is null and we couldn't click it in DataFormat.clickRadioButton");
     }
   }
+
    
 }
