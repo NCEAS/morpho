@@ -142,7 +142,8 @@ public class InsertColumnCommand implements Command, DataPackageWizardListener
       {
     	  tablePanel=dataView.getTablePanel();
     	  table=dataView.getDataTable();
-          selectedCol = table.getSelectedColumn();       
+    	  int viewIndex = table.getSelectedColumn();
+    	  selectedCol =  table.getColumnModel().getColumn(viewIndex).getModelIndex();
           if (selectedCol > -1) 
           {
         	  //Check if the eml document is the current version before editing it.

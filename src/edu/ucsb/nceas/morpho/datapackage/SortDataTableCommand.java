@@ -93,7 +93,8 @@ public class SortDataTableCommand implements Command
               PersistentTableModel ptm, PersistentVector pv, int sortdirection)
   {
     frame.setBusy(true);
-    int colsel = table.getSelectedColumn();
+    int viewIndex = table.getSelectedColumn();
+	int colsel =  table.getColumnModel().getColumn(viewIndex).getModelIndex();
     int rowsel = table.getSelectedRow();
     if (colsel>-1) {
       ptm.sort(colsel, sortdirection);

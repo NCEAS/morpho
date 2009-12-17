@@ -122,7 +122,8 @@ public class EditColumnMetaDataCommand implements Command, DataPackageWizardList
           //DataPackage dataPackage = resultPane.getDataPackage();
           String entityId = dataView.getEntityFileId();
           table = dataView.getDataTable();
-          attrIndex = table.getSelectedColumn();
+          int viewIndex = table.getSelectedColumn();
+    	  attrIndex =  table.getColumnModel().getColumn(viewIndex).getModelIndex();
           entityIndex = dataView.getEntityIndex();
           //attributes = adp.getAttributeArray(entityIndex);
        }

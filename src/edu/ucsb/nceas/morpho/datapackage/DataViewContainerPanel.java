@@ -622,8 +622,10 @@ public class DataViewContainerPanel extends javax.swing.JPanel
     {
       // Get attribute file id and show it the metacat panel
       if (event.getSource() instanceof JTable) {
-        showDataViewAndAttributePanel(
-                            ( (JTable)event.getSource() ).getSelectedColumn());
+    	  JTable table = (JTable)event.getSource();
+    	  int viewIndex = table.getSelectedColumn();
+    	  int modelIndex =  table.getColumnModel().getColumn(viewIndex).getModelIndex();
+    	  showDataViewAndAttributePanel(modelIndex);
       } else {
         showDataViewAndAttributePanel(0);
       }

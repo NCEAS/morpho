@@ -160,7 +160,8 @@ public class TablePasteCommand implements Command
   // Subclasses may override this to provide custom processing.
   protected void applySelection(JTable tbl, String[][] data) {
     int row = tbl.getSelectedRow();
-    int col = tbl.getSelectedColumn();
+    int viewIndex = tbl.getSelectedColumn();
+	int col =  tbl.getColumnModel().getColumn(viewIndex).getModelIndex();
     int selRows = tbl.getSelectedRowCount();
     int selCols = tbl.getSelectedColumnCount();
     int dataRows = data.length;

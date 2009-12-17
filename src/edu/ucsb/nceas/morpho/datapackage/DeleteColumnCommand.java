@@ -122,7 +122,8 @@ public class DeleteColumnCommand implements Command
                            PersistentVector pv, AbstractDataPackage adp,
                            int entityIndex, Vector column_labels)
   {
-    int sel = table.getSelectedColumn();
+	  int viewIndex = table.getSelectedColumn();
+	  int sel =  table.getColumnModel().getColumn(viewIndex).getModelIndex();
     if (sel>-1)
     {
       adp.deleteAttribute(entityIndex, sel);
@@ -151,7 +152,8 @@ public class DeleteColumnCommand implements Command
                            PersistentVector pv, Document attributeDoc,
                            Vector column_labels)
   {
-    int sel = table.getSelectedColumn();
+	  int viewIndex = table.getSelectedColumn();
+	  int sel =  table.getColumnModel().getColumn(viewIndex).getModelIndex();
     if (sel>-1)
     {
       // remove the attribute node associated with the column

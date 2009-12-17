@@ -1188,7 +1188,7 @@ public class DataViewer extends javax.swing.JPanel
     table.setColumnSelectionAllowed(true);
     table.setRowSelectionAllowed(true);
     table.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
-    (table.getTableHeader()).setReorderingAllowed(false);
+    //(table.getTableHeader()).setReorderingAllowed(false);
     table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 
     table.registerKeyboardAction (new GUIAction("Copy", null, new TableCopyCommand()),
@@ -1482,7 +1482,7 @@ public class DataViewer extends javax.swing.JPanel
       if (table.getRowCount()>0) {
           table.setRowSelectionInterval(0, table.getRowCount()-1);
       }
-      table.setColumnSelectionInterval(modelIndex, modelIndex);
+      table.setColumnSelectionInterval(index, index);
       if (event.isPopupTrigger())
       {
         // Show popup menu

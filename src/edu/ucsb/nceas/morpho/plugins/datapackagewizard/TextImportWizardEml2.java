@@ -547,12 +547,13 @@ public class TextImportWizardEml2 extends JFrame {
 
 
   public void resetColumnHeader(String newColHeader) {
-    int selectedCol = table.getSelectedColumn();
+	  int viewIndex = table.getSelectedColumn();
+	  int selectedCol =  table.getColumnModel().getColumn(viewIndex).getModelIndex();
     if ((selectedCol > -1) && (colTitles.size() > 0)) {
       colTitles.removeElementAt(selectedCol);
       colTitles.insertElementAt(newColHeader, selectedCol);
       buildTable();
-      table.setColumnSelectionInterval(selectedCol, selectedCol);
+      table.setColumnSelectionInterval(viewIndex, viewIndex);
     }
   }
 
