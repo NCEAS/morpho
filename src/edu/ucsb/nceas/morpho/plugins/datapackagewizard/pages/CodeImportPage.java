@@ -305,14 +305,17 @@ public class CodeImportPage extends AbstractUIPage {
         nextPageID = DataPackageWizardInterface.CODE_IMPORT_SUMMARY;     
         
         mainWizFrame.clearPageCache();
-        mainWizFrame.reInitializePageStack();    
+        mainWizFrame.reInitializePageStack();
+        Log.debug(35, "In CodeImportPage.onAdvance the value of imported attribute  "+adp.getAttributeImportCount());
         return true;
       } else
         return false;
     } else {
-      this.nextPageID = DataPackageWizardInterface.DATA_LOCATION;      
+      this.nextPageID = DataPackageWizardInterface.DATA_LOCATION;  
+      removedAttributeInfo = null;
       mainWizFrame.clearPageCache();
       mainWizFrame.reInitializePageStack(); 
+      Log.debug(35, "In CodeImportPage.onAdvance the value of imported attribute  "+adp.getAttributeImportCount());
       return true;
     }
 
