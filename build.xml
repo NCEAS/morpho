@@ -460,6 +460,7 @@
 	  </jar>
       <jar jarfile="${build.dir}/${name}-config.jar" basedir="${build.lib}"
            excludes="*.jar,HTTPClient/**,SchemaParser/**,LiveMap/**,*.zip,*.gz,axis/**,launch4j/**"/>
+	   <copyfile src="${build.dir}/${name}-config.jar" dest="${libdir}/${name}-config.jar"/>
    </target>
 
 	<!-- copy necessary resources to build lib -->
