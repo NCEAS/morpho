@@ -865,26 +865,6 @@ public class DataPackagePlugin
     packageWindow.setBusy(true);
     packageWindow.setVisible(true);
 
-
-    packageWindow.addWindowListener(
-                new WindowAdapter() {
-                public void windowActivated(WindowEvent e)
-                {
-                    Log.debug(50, "Processing window activated event");
-                    if (hasClipboardData(packageWindow)){
-                      StateChangeMonitor.getInstance().notifyStateChange(
-                        new StateChangeEvent(packageWindow,
-                          StateChangeEvent.CLIPBOARD_HAS_DATA_TO_PASTE));
-                    }
-                    else {
-                      StateChangeMonitor.getInstance().notifyStateChange(
-                        new StateChangeEvent(packageWindow,
-                          StateChangeEvent.CLIPBOARD_HAS_NO_DATA_TO_PASTE));
-                }
-                }
-            });
-
-
     // Stop butterfly flapping for old window.
     //packageWindow.setBusy(true);
     if (coordinator != null)
@@ -955,6 +935,31 @@ public class DataPackagePlugin
                  StateChangeEvent.CREATE_DATAPACKAGE_FRAME));
     adp.loadCustomUnits();
 	packageWindow.setBusy(false);
+	
+	final DataViewContainerPanel dvcpReference = dvcp;
+    packageWindow.addWindowListener(
+                new WindowAdapter() {
+                public void windowActivated(WindowEvent e)
+                {
+                    Log.debug(50, "Processing window activated event");
+                    if (hasClipboardData(packageWindow)){
+                      StateChangeMonitor.getInstance().notifyStateChange(
+                        new StateChangeEvent(packageWindow,
+                          StateChangeEvent.CLIPBOARD_HAS_DATA_TO_PASTE));
+                    }
+                    else {
+                      StateChangeMonitor.getInstance().notifyStateChange(
+                        new StateChangeEvent(packageWindow,
+                          StateChangeEvent.CLIPBOARD_HAS_NO_DATA_TO_PASTE));
+                    }
+                }
+                public void windowClosed(WindowEvent e) {
+                	//remove the listeners
+                	StateChangeMonitor.getInstance().removeStateChangeListener(StateChangeEvent.SELECT_DATATABLE_COLUMN, dvcpReference);
+                	StateChangeMonitor.getInstance().removeStateChangeListener(StateChangeEvent.METAVIEWER_HISTORY_BACK, dvcpReference);
+                }
+            });
+    
 	//check if we should upgrade eml to the newest version
 	try
 	{
@@ -984,26 +989,6 @@ public class DataPackagePlugin
                 "Data Package: "+adp.getAccessionNumber());
     packageWindow.setBusy(true);
     packageWindow.setVisible(true);
-
-
-    packageWindow.addWindowListener(
-                new WindowAdapter() {
-                public void windowActivated(WindowEvent e)
-                {
-                    Log.debug(50, "Processing window activated event");
-                    if (hasClipboardData(packageWindow)){
-                      StateChangeMonitor.getInstance().notifyStateChange(
-                        new StateChangeEvent(packageWindow,
-                          StateChangeEvent.CLIPBOARD_HAS_DATA_TO_PASTE));
-                    }
-                    else {
-                      StateChangeMonitor.getInstance().notifyStateChange(
-                        new StateChangeEvent(packageWindow,
-                          StateChangeEvent.CLIPBOARD_HAS_NO_DATA_TO_PASTE));
-                }
-                }
-            });
-
 
     // Stop butterfly flapping for old window.
     //packageWindow.setBusy(true);
@@ -1062,6 +1047,30 @@ public class DataPackagePlugin
                  StateChangeEvent.CREATE_DATAPACKAGE_FRAME));
     adp.loadCustomUnits();
 	packageWindow.setBusy(false);
+	final DataViewContainerPanel dvcpReference = dvcp;
+	packageWindow.addWindowListener(
+            new WindowAdapter() {
+            public void windowActivated(WindowEvent e)
+            {
+                Log.debug(50, "Processing window activated event");
+                if (hasClipboardData(packageWindow)){
+                  StateChangeMonitor.getInstance().notifyStateChange(
+                    new StateChangeEvent(packageWindow,
+                      StateChangeEvent.CLIPBOARD_HAS_DATA_TO_PASTE));
+                }
+                else {
+                  StateChangeMonitor.getInstance().notifyStateChange(
+                    new StateChangeEvent(packageWindow,
+                      StateChangeEvent.CLIPBOARD_HAS_NO_DATA_TO_PASTE));
+                }
+            }
+            public void windowClosed(WindowEvent e) {
+            	//remove the listeners
+            	StateChangeMonitor.getInstance().removeStateChangeListener(StateChangeEvent.SELECT_DATATABLE_COLUMN, dvcpReference);
+            	StateChangeMonitor.getInstance().removeStateChangeListener(StateChangeEvent.METAVIEWER_HISTORY_BACK, dvcpReference);
+            }
+        });
+	    
 	return packageWindow;
   }
 
@@ -1083,23 +1092,7 @@ public class DataPackagePlugin
     packageWindow.setBusy(true);
 
 
-    packageWindow.addWindowListener(
-                new WindowAdapter() {
-                public void windowActivated(WindowEvent e)
-                {
-                    Log.debug(50, "Processing window activated event");
-                    if (hasClipboardData(packageWindow)){
-                      StateChangeMonitor.getInstance().notifyStateChange(
-                        new StateChangeEvent(packageWindow,
-                          StateChangeEvent.CLIPBOARD_HAS_DATA_TO_PASTE));
-                    }
-                    else {
-                      StateChangeMonitor.getInstance().notifyStateChange(
-                        new StateChangeEvent(packageWindow,
-                          StateChangeEvent.CLIPBOARD_HAS_NO_DATA_TO_PASTE));
-                }
-                }
-            });
+    
 
 
     // Stop butterfly flapping for old window.
@@ -1166,6 +1159,31 @@ public class DataPackagePlugin
                  dvcp,
                  StateChangeEvent.CREATE_DATAPACKAGE_FRAME));
     packageWindow.setBusy(false);
+    
+    final DataViewContainerPanel dvcpReference = dvcp;
+    packageWindow.addWindowListener(
+            new WindowAdapter() {
+            public void windowActivated(WindowEvent e)
+            {
+                Log.debug(50, "Processing window activated event");
+                if (hasClipboardData(packageWindow)){
+                  StateChangeMonitor.getInstance().notifyStateChange(
+                    new StateChangeEvent(packageWindow,
+                      StateChangeEvent.CLIPBOARD_HAS_DATA_TO_PASTE));
+                }
+                else {
+                  StateChangeMonitor.getInstance().notifyStateChange(
+                    new StateChangeEvent(packageWindow,
+                      StateChangeEvent.CLIPBOARD_HAS_NO_DATA_TO_PASTE));
+                }
+            }
+            public void windowClosed(WindowEvent e) {
+            	//remove the listeners
+            	StateChangeMonitor.getInstance().removeStateChangeListener(StateChangeEvent.SELECT_DATATABLE_COLUMN, dvcpReference);
+            	StateChangeMonitor.getInstance().removeStateChangeListener(StateChangeEvent.METAVIEWER_HISTORY_BACK, dvcpReference);
+            }
+            
+        });
 
     UIController.getInstance().setCurrentActiveWindow(packageWindow);
   }
