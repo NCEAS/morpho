@@ -183,7 +183,7 @@ public class HeaderPanel extends JPanel
         buttonBox.add(Box.createVerticalGlue());
         buttonBox.add(editButton);
         buttonBox.add(Box.createVerticalGlue());
-        pathBar.add(buttonBox, BorderLayout.EAST);
+        //pathBar.add(buttonBox, BorderLayout.EAST);
     }
 
     private void addBottomLine() 
