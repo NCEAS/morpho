@@ -1475,6 +1475,10 @@ public class DataViewer extends javax.swing.JPanel
     private boolean trigger = false;
     public void mouseClicked(MouseEvent event)
     {
+    	//ignore double clicks
+    	if (event.getClickCount() > 1) {
+    		return;
+    	}
       TableColumnModel colModel = table.getColumnModel();
       int index = colModel.getColumnIndexAtX(event.getX());
       TableColumn column = colModel.getColumn(index);
