@@ -60,6 +60,7 @@ import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import javax.swing.filechooser.FileFilter;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
@@ -83,7 +84,7 @@ import edu.ucsb.nceas.utilities.XMLUtilities;
  * @author tao
  *
  */
-public class ExportToAnotherMetadataDialog extends JDialog implements Command
+public class ExportToAnotherMetadataDialog implements Command
 {
   private static final String STYLESHEETLIST = "styleSheetList";
   private static final String STYLESHEET = "styleSheet";
@@ -91,39 +92,18 @@ public class ExportToAnotherMetadataDialog extends JDialog implements Command
   private static final String LABEL = "label";
   private static final String LOCATION = "location";
   private static final String SLASH = "/";
-  private static final String OTHER = "Other";
-  private static final  Dimension TEXTFIELD_DIMS = new Dimension(400,20);
-  private static final  Dimension LABEL_DIMS = new Dimension(150,20);
-  private static final Dimension DEFAULT_SPACER_DIMS = new Dimension(15, 15);
-  private static final int WIDTH = 800;
-  private static final int HEIGHT = 350;
-  private static final int EXTRAL = 75;
-  private static final int PADDING = 5;
-  private static final int HEADER = 30;
-  private static final String SELECT = "Select";
-  private static final String INITFIELDVALUE = "  Use button to select a file -->";
-  private static final Color CONTENT_HILITE_BG_COLOR = new Color(175, 0, 0);
-  private static final Color CONTENT_HILITE_FG_COLOR = new Color(255, 255, 255);
-  private static final Color REGULAR_TEXT_COLOR = Color.BLACK;
+  private static final String TITLE = "Export to Another Metadata Language";
+  private static final String EXPORTBUTTONNAME = "Export";
   
   Vector<StyleSheet> styleSheetList = new Vector<StyleSheet>();
   private boolean debugHilite = false;
   private File lastChosenOutputDir = null;
-  private File lastChosenStyleSheetDir = null;
   private File styleSheetFile = null;
-  
-  private JPanel centralPanel  = null;
-  private JPanel buttonPanel = null;
-  private JPanel otherStyleSheetLocationPanel = null;
-  private JLabel outputFileLocationLabel = null;
-  private JTextField outputFileLocationField = null;
-  private JLabel metadataLanguageLabel = null;
-  private JComboBox metadataLanguageList = null;
-  private JLabel otherStyleSheetLocationLabel = null;
-  private JTextField otherStyleSheetLocationField = null;
+  private File outputFile = null;
   private JDialog parent = null;
   private String docid = null;
   private String documentLocation = null;
+  private JFileChooser exportFileChooser = new JFileChooser();
   
   
   /**
@@ -134,7 +114,6 @@ public class ExportToAnotherMetadataDialog extends JDialog implements Command
    */
   public ExportToAnotherMetadataDialog(JDialog parent, String docid, String documentLocation)
   {
-    super(parent);
     this.parent = parent;
     this.docid = docid;
     this.documentLocation = documentLocation;
@@ -147,6 +126,27 @@ public class ExportToAnotherMetadataDialog extends JDialog implements Command
    */    
   public void execute(ActionEvent event)
   { 
+    if(styleSheetList.size()==0)
+    {
+      Log.debug(5, "Morpho couldn't find any configuration for another metadata language at configure file!");
+      return;
+    }
+    if(docid == null || docid.equals(""))
+    {
+      Log.debug(5, "There is no docid specified for export!");
+      return;
+    }
+    if(documentLocation == null )
+    {
+      Log.debug(5, "Morpho couldn't find the location of this document and couldn't exmport it.");
+      return;
+    }     
+    if(documentLocation.equals("") )
+    {
+      Log.debug(5, "Please save the document first before exporting it.");
+      return;
+    }
+    
     if(parent != null)
     {
       parent.setVisible(false);
@@ -161,211 +161,48 @@ public class ExportToAnotherMetadataDialog extends JDialog implements Command
   }
   
   /*
-   * Initialize GUI for this dialog
+   * Initialize GUI for this a file chooser
    */
   private void initGUI()
   {
-    setModal(true);
-    setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-    setTitle("Export to Another Metadata Language");
-    createCentralPanel();
-    createButtonPanel();
-    Container contentPanel = getContentPane();
-    contentPanel.setLayout(new BorderLayout());
-    contentPanel.add(centralPanel, BorderLayout.CENTER);
-    contentPanel.add(buttonPanel, BorderLayout.SOUTH);
-    if(parent == null)
+    if(lastChosenOutputDir != null)
     {
-      Dimension screenDim = Toolkit.getDefaultToolkit().getScreenSize();
-      Rectangle frameDim = getBounds();
-      /*setLocation((screenDim.width - frameDim.width) / 2 ,
-              (screenDim.height - frameDim.height) /2);*/
-      this.setBounds((screenDim.width - frameDim.width) / 2, (screenDim.height - frameDim.height) /2,  
-                            WIDTH, HEIGHT);
+      exportFileChooser.setCurrentDirectory(lastChosenOutputDir);
+    }
+    exportFileChooser.setDialogTitle(TITLE);
+    exportFileChooser.setAcceptAllFileFilterUsed(false);
+    exportFileChooser.resetChoosableFileFilters();
+    for(int i=0; i<styleSheetList.size(); i++)
+    {
+      StyleSheet sheet = styleSheetList.elementAt(i);
+      MetadataLanguageFileFilter fileFilter = new MetadataLanguageFileFilter(sheet);
+      exportFileChooser.addChoosableFileFilter(fileFilter);
+    }
+    //exportFileChooser.addActionListener(new ExportAction());
+    int returnValue = exportFileChooser.showDialog(parent, EXPORTBUTTONNAME);
+    if(returnValue == JFileChooser.APPROVE_OPTION)
+    {
+      outputFile = exportFileChooser.getSelectedFile();
+      if(outputFile != null)
+      {
+        lastChosenOutputDir = outputFile.getParentFile();
+      }
+      String styleSheetLocation = null;
+      Log.debug(35, "Export");
+      //export(outputFile,styleSheetLocation);
     }
     else
     {
-      double parentX = parent.getLocation().getX();
-      double parentY = parent.getLocation().getY();
-      int parentWidth = parent.getWidth();
-      int parentHeight = parent.getHeight();
-      double centerX = parentX + 0.5 * parentWidth;
-      double centerY = parentY + 0.5 * parentHeight;
-      int dialogX = (new Double(centerX - 0.5 * WIDTH)).intValue();
-      int dialogY = (new Double((centerY - 0.5 * HEIGHT)*1.3)).intValue();
-      this.setBounds(dialogX, dialogY,  WIDTH, HEIGHT);
-    }
-    setResizable(false);
-    setVisible(true);
-  }
-  
-  /*
-   * Create central panel. It contains output file location field, output file
-   * locator button, metadata language list and style sheet locator (optional).
-   * This panel will locate on central position of the dialog
-   */
-  private void createCentralPanel()
-  {
-    centralPanel = new JPanel();
-    centralPanel.setLayout(new BoxLayout(centralPanel, BoxLayout.Y_AXIS));
-    
-    centralPanel.add(Box.createVerticalStrut(HEADER));
-    
-    //makeSpacer();
-    //output fiel panel : lable, field and button
-    JPanel outputFilePanel = new JPanel();
-    outputFilePanel.setLayout(new BoxLayout(outputFilePanel, BoxLayout.X_AXIS));
-    outputFileLocationLabel = makeLabel("Output File Name:", LABEL_DIMS);
-    outputFilePanel.add(outputFileLocationLabel);
-    JPanel outputFileRightPanel = new JPanel();
-    outputFileRightPanel.setLayout(new BoxLayout(outputFileRightPanel, BoxLayout.X_AXIS));
-    outputFileLocationField = makeOneLineTextField(INITFIELDVALUE); 
-    outputFileLocationField.setEditable(false);
-    outputFileRightPanel.add(outputFileLocationField);
-    outputFileRightPanel.add(Box.createHorizontalStrut(PADDING));
-    JButton outputFileLocationButton = new JButton(SELECT);
-    ActionListener outputFileLocationButtonListener = new OutputFileLocationListener(this);
-    outputFileLocationButton.addActionListener(outputFileLocationButtonListener);
-    outputFileRightPanel.add(outputFileLocationButton);
-    outputFilePanel.add(outputFileRightPanel);
-    centralPanel.add(outputFilePanel);
-    //makeSpacer();
-    
-    //metadata language select panel
-    JPanel metadataSelectionPanel = new JPanel();
-    metadataSelectionPanel.setLayout(new BoxLayout(metadataSelectionPanel, BoxLayout.X_AXIS));
-    metadataLanguageLabel = makeLabel("Metadata Format:",  LABEL_DIMS);
-    metadataSelectionPanel.add(metadataLanguageLabel);
-    JPanel metadataRightPanel = new JPanel();
-    metadataRightPanel.setLayout(new BoxLayout(metadataRightPanel, BoxLayout.X_AXIS));
-    metadataLanguageList = makeMetadataLanguageSelectionList();
-    metadataRightPanel.add(metadataLanguageList);
-    metadataRightPanel.add(Box.createHorizontalStrut(EXTRAL));
-    metadataSelectionPanel.add(metadataRightPanel);
-    //System.out.println("the button size is "+outputFileLocationButton.getPreferredSize().getWidth());
-    //metadataSelectionPanel.add(Box.createHorizontalStrut(outputFileLocationButton.getWidth()));
-    centralPanel.add(metadataSelectionPanel);
-    
-    otherStyleSheetLocationPanel = new JPanel();
-    centralPanel.add(otherStyleSheetLocationPanel);
-    
-    //centralPanel.add(Box.createVerticalGlue());
-    
-    //if there is only "other" option, we should display the style sheet locator widget
-    if(metadataLanguageList != null)
-    {
-      String initialValue = (String)metadataLanguageList.getSelectedItem();
-      if(initialValue != null && initialValue.equals(OTHER))
-      {
-        createCentralPanelWithStyleSheetLocator();
-      }
+      Log.debug(35, "Cancel");
+      Log.debug(30, "File choosing was canceled in ExportToAnotherMetadataLanguageDialog select style sheet location");
     }
   }
   
-  /*
-   * When user choose "other" option in metadata list, we should bring a 
-   * new widget for user to choose a style sheet from file system directly.
-   */
-  private void createCentralPanelWithStyleSheetLocator()
-  {
-    if(otherStyleSheetLocationPanel != null && centralPanel != null)
-    {
-      centralPanel.remove(otherStyleSheetLocationPanel);
-      otherStyleSheetLocationPanel = new JPanel();
-      
-      otherStyleSheetLocationPanel.setLayout(new BoxLayout(otherStyleSheetLocationPanel, BoxLayout.X_AXIS));
-      otherStyleSheetLocationLabel = makeLabel("Style Sheet Name", LABEL_DIMS);
-      otherStyleSheetLocationPanel.add(otherStyleSheetLocationLabel);
-      
-      JPanel otherStyleSheetRightPanel = new JPanel();
-      otherStyleSheetRightPanel.setLayout(new BoxLayout(otherStyleSheetRightPanel, BoxLayout.X_AXIS));
-      if(otherStyleSheetLocationField == null)
-      {
-        otherStyleSheetLocationField =  makeOneLineTextField(INITFIELDVALUE); 
-      }
-      else
-      {
-       String fieldValue = otherStyleSheetLocationField.getText();
-       otherStyleSheetLocationField =  makeOneLineTextField(fieldValue);
-      }
-      otherStyleSheetLocationField.setEditable(false);
-      otherStyleSheetRightPanel.add(otherStyleSheetLocationField);
-      
-      
-      otherStyleSheetRightPanel.add(Box.createHorizontalStrut(PADDING));
-      JButton styleSheetLocationButton = new JButton(SELECT);
-      ActionListener styleSheetLocationButtonListener = new StyleSheetFileLocationListener(this);
-      styleSheetLocationButton.addActionListener(styleSheetLocationButtonListener);
-      otherStyleSheetRightPanel.add(styleSheetLocationButton);
-      
-      otherStyleSheetLocationPanel.add(otherStyleSheetRightPanel);
-      centralPanel.add(otherStyleSheetLocationPanel);
-      
-      validate();
-      repaint();
-    }
-  }
-  
-  /*
-   * When user choose an option (rather than "Other" in metadata list, we should bring a 
-   * new widget for user without the style sheet location chooser.
-   */
-  private void createCentralPanelWithoutStyleSheetLocator()
-  {
-    if(otherStyleSheetLocationPanel != null && centralPanel != null)
-    {
-      centralPanel.remove(otherStyleSheetLocationPanel);
-      otherStyleSheetLocationPanel = new JPanel();
-      centralPanel.add(otherStyleSheetLocationPanel);
-      
-      invalidate();
-      repaint();
-    }
-  }
+ 
   
   
-  /*
-   * Create a panel containing cancel and transform button.
-   * It will locate on south of dialog.
-   */
-  private void createButtonPanel()
-  {
-    buttonPanel = new JPanel();
-    JButton exportButton = new JButton("Export");
-    ActionListener exportAction = new DialogExportAction();
-    exportButton.addActionListener(exportAction);
-    JButton cancelButton = new JButton("Cancel");
-    ActionListener cancelAction = new DialogCancelAction(this);
-    cancelButton.addActionListener(cancelAction);    
-    buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.X_AXIS));
-    buttonPanel.setBorder(new EmptyBorder(PADDING, PADDING, PADDING, PADDING));
-    buttonPanel.add(Box.createHorizontalGlue());
-    buttonPanel.add(exportButton);
-    buttonPanel.add(Box.createHorizontalStrut(PADDING));
-    buttonPanel.add(cancelButton);
-  }
   
-  /*
-   * Makes a metadata language selection list.
-   */
-  private JComboBox makeMetadataLanguageSelectionList()
-  {
-    JComboBox selectionList = null;
-    // the size lable list should be 1 more than the style sheet list, since it has "Other" option.
-    String[] styleSheetLabelList = new String[styleSheetList.size()+1];
-    for(int i=0; i<styleSheetList.size(); i++)
-    {
-      styleSheetLabelList[i]= ((StyleSheet)styleSheetList.elementAt(i)).getLabel();
-    }
-    //add other to be the last option
-    styleSheetLabelList[styleSheetList.size()] = OTHER;
-    selectionList = new JComboBox(styleSheetLabelList);
-    MetadataLanguageSelectionListener listener = new MetadataLanguageSelectionListener();
-    selectionList.addActionListener(listener);
-    selectionList.setEditable(false);
-    Util.setPrefMaxSizes(selectionList, TEXTFIELD_DIMS);
-    return selectionList;
-  }
+  
   
   /*
    * Make label for given text and dimension
@@ -458,144 +295,16 @@ public class ExportToAnotherMetadataDialog extends JDialog implements Command
     return value;
   }
   
-  
-  /*
-   * Make one line text field for given initialValue
-   */
-  private static JTextField makeOneLineTextField(String initialValue) 
-  {
-    if (initialValue==null) initialValue="";
-    JTextField field = new JTextField();
-    Util.setPrefMaxSizes(field, TEXTFIELD_DIMS);
-    field.setText(initialValue);
-    return field;
-  }
-  
-  /*
-   * Represents a listener to metadata language selection list
-   */
-  private class MetadataLanguageSelectionListener implements ActionListener
-  {
-    public void actionPerformed(ActionEvent e) 
-    {
-      if(metadataLanguageList != null)
-      {
-        String selectedValue = (String)metadataLanguageList.getSelectedItem();
-        Log.debug(30, "In ExportToAnotherMetadataDialog.MetadataLanguageSelectionListener,  the selected value is "+selectedValue);
-        if(selectedValue != null && selectedValue.equals(OTHER) )
-        {
-          createCentralPanelWithStyleSheetLocator();
-        }
-        else
-        {
-          createCentralPanelWithoutStyleSheetLocator();
-        }
-      }
-    }
-  }
-  
-  /*
-   * Represents the action when user click cancel action on this dialog
-   */
-  private class DialogCancelAction implements ActionListener
-  {
-    private JDialog dialog = null;
-    /**
-     * Consturctor
-     * @param dialog
-     */
-    public DialogCancelAction(JDialog dialog)
-    {
-      this.dialog = dialog;
-    }
-    /**
-     * Cancel the dialog
-     */
-    public void actionPerformed(ActionEvent e) 
-    {
-      dialog.setVisible(false);
-      dialog.dispose();
-    }
-  }
-  
-  /*
-   * Represents the action when user click export action on this dialog
-   */
-  private class DialogExportAction implements ActionListener
-  {
-   
-    /**
-     * Does transform action
-     */
-    public void actionPerformed(ActionEvent e) 
-    {
-      if(docid == null || docid.equals(""))
-      {
-        Log.debug(5, "There is no docid specified for export!");
-        return;
-      }
-      if(documentLocation == null )
-      {
-        Log.debug(5, "Morpho couldn't find the location of this document and couldn't exmport it.");
-        return;
-      }     
-      if(documentLocation.equals("") )
-      {
-        Log.debug(5, "Please save the document first before exporting it.");
-        return;
-      }
-      
-      Util.unhiliteComponent(outputFileLocationLabel, null, REGULAR_TEXT_COLOR);
-      Util.unhiliteComponent(otherStyleSheetLocationLabel, null, REGULAR_TEXT_COLOR);
-      String outputFileName = outputFileLocationField.getText();
-      String styleSheetLocation = null;
-      if(outputFileName == null || outputFileName.trim().equals("")||
-          outputFileName.equals(INITFIELDVALUE))
-      {
-        Util.hiliteComponent(outputFileLocationLabel, CONTENT_HILITE_BG_COLOR, CONTENT_HILITE_FG_COLOR);
-        //Util.unhiliteComponent(outputFileLocationLabel, null, REGULAR_TEXT_COLOR);
-        return;
-      }
-      else if(((String)metadataLanguageList.getSelectedItem()).equals(OTHER))
-      {
-        //this is on "Other" option
-        styleSheetLocation = otherStyleSheetLocationField.getText();
-        if(styleSheetLocation ==null || styleSheetLocation.trim().equals("") ||
-            styleSheetLocation.equals(INITFIELDVALUE))
-        {
-          Util.hiliteComponent(otherStyleSheetLocationLabel, CONTENT_HILITE_BG_COLOR, CONTENT_HILITE_FG_COLOR);
-          return;
-        }
-      }
-      else
-      {
-        //this is on chosen a given metadata language option
-        int index = metadataLanguageList.getSelectedIndex();
-        StyleSheet styleSheet = styleSheetList.elementAt(index);
-        styleSheetLocation = styleSheet.getLocation();
-        if(styleSheetLocation ==null || styleSheetLocation.trim().equals("") ||
-            styleSheetLocation.equals(INITFIELDVALUE))
-        {
-          Log.debug(5, "The Metadata format "+metadataLanguageList.getSelectedItem()+" doesn't have a valid "+
-                   "style sheet location. Please check the config.xml in your .morpho folder.");
-          return;
-        }
-      }
-      Log.debug(30, "The output file location in ExportToAnotherMedataDialog is "+outputFileName);
-      Log.debug(30, "The style sheet location in ExportToAnotherMedataDialog is "+styleSheetLocation);
-      export(outputFileName,styleSheetLocation);
-    }
-  }
+ 
   
   /*
    * Export the current data package to output file name in another metadata format.
    * Note: this method doesn't check if the parameters are null since they were checked
    * on method actionPerformed.
    */
-  private void export(String outputFileName, String styleSheetLocation)
+  private void export(File outputFile, String styleSheetLocation)
   {
     //get output file writer
-    File outputFile = new File(outputFileName);
     FileWriter outputFileWriter = null;
       
     //get style sheet reader
@@ -651,9 +360,9 @@ public class ExportToAnotherMetadataDialog extends JDialog implements Command
       }
       anotherMetadataReader.close();
       outputFileWriter.close();
-      JOptionPane.showMessageDialog(this, "Package export is complete!");
-      this.setVisible(false);
-      this.dispose();
+      JOptionPane.showMessageDialog(parent, "Package export is complete!");
+      //this.setVisible(false);
+      //this.dispose();
     }
     catch(Exception e)
     {
@@ -664,96 +373,7 @@ public class ExportToAnotherMetadataDialog extends JDialog implements Command
   }
   
   
-  /*
-   * When user choose "other" option in metadata list. it will bring new panel for
-   * selecting style sheet directly from file system. This listener is for the style sheet
-   * file selection button
-   * It will bring a file selector.
-   */
-  private class StyleSheetFileLocationListener implements ActionListener
-  {
-    private Component parent = null;
-    /**
-     * Constructor
-     * @param parent of the button
-     */
-    public StyleSheetFileLocationListener(Component parent)
-    {
-      this.parent = parent;
-    }
-    
-    /**
-     * When the button is executed. It will bring a file chooser for user
-     * to select output file location
-     */
-    public void actionPerformed(ActionEvent e) 
-    {
-      JFileChooser styleSheetFileChooser = new JFileChooser();
-      if(lastChosenStyleSheetDir != null)
-      {
-        styleSheetFileChooser.setCurrentDirectory(lastChosenStyleSheetDir);
-      }
-      int returnValue = styleSheetFileChooser.showOpenDialog(parent);
-      if(returnValue == JFileChooser.APPROVE_OPTION)
-      {
-        styleSheetFile = styleSheetFileChooser.getSelectedFile();
-        if(styleSheetFile != null)
-        {
-          otherStyleSheetLocationField.setText(styleSheetFile.getAbsolutePath());
-          lastChosenStyleSheetDir = styleSheetFile.getParentFile();
-        }
-      }
-      else
-      {
-        Log.debug(30, "File choosing was canceled in ExportToAnotherMetadataLanguageDialog select style sheet location");
-      }
-    }
-  }
-  
-  /*
-   * Represents a listener when output file location button is clicked.
-   * It will bring a file selector.
-   */
-  private class OutputFileLocationListener implements ActionListener
-  {
-    private Component parent = null;
-    /**
-     * Constructor
-     * @param parent of the button
-     */
-    public OutputFileLocationListener(Component parent)
-    {
-      this.parent = parent;
-    }
-    
-    /**
-     * When the button is executed. It will bring a file chooser for user
-     * to select output file location
-     */
-    public void actionPerformed(ActionEvent e) 
-    {
-      JFileChooser outPutFileChooser = new JFileChooser();
-      if(lastChosenOutputDir != null)
-      {
-        outPutFileChooser.setCurrentDirectory(lastChosenOutputDir);
-      }
-      int returnValue = outPutFileChooser.showDialog(parent, "Select");
-      if(returnValue == JFileChooser.APPROVE_OPTION)
-      {
-        File outputFile = outPutFileChooser.getSelectedFile();
-        if(outputFile != null)
-        {
-          outputFileLocationField.setText(outputFile.getAbsolutePath());
-          lastChosenOutputDir = outputFile.getParentFile();
-        }
-        
-      }
-      else
-      {
-        Log.debug(30, "File choosing was canceled in ExportToAnotherMetadataLanguageDialog select output file location");
-      }
-    }
-  }
+ 
   
   /*
    * represents a configuration for a style sheet
@@ -807,6 +427,46 @@ public class ExportToAnotherMetadataDialog extends JDialog implements Command
     public String getLocation()
     {
       return this.location;
+    }
+  }
+  
+  /*
+   * Represents a customized file filter for JFileChooser. It will used the StyleSheet
+   * label as file description
+   */
+  private class MetadataLanguageFileFilter extends FileFilter
+  {
+    private StyleSheet sheet = null;
+    /**
+     * Constructor
+     */
+    public MetadataLanguageFileFilter(StyleSheet sheet)
+    {
+      this.sheet = sheet;
+    }
+    
+    /**
+     * Accepts any file type
+     */
+    public boolean accept(File file)
+    {
+      return true;
+    }
+    
+    /**
+     * Gets the description from style sheet label. If style sheet is null, empty
+     * String will be returned.
+     */
+    public String getDescription()
+    {
+      if(sheet != null)
+      {
+        return sheet.getLabel();
+      }
+      else
+      {
+        return "";
+      }
     }
   }
   
