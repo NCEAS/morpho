@@ -33,6 +33,8 @@ import javax.swing.border.*;
 import javax.swing.event.ChangeListener;
 import java.io.*;
 import java.util.*;
+import java.util.concurrent.Executors;
+
 import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.datastore.MetacatUploadException;
 
@@ -625,9 +627,9 @@ public class DataViewContainerPanel extends javax.swing.JPanel
     	  JTable table = (JTable)event.getSource();
     	  int viewIndex = table.getSelectedColumn();
     	  int modelIndex =  table.getColumnModel().getColumn(viewIndex).getModelIndex();
-    	  showDataViewAndAttributePanel(modelIndex);
+    	  runShowDataViewAndAttributePanel(modelIndex);
       } else {
-        showDataViewAndAttributePanel(0);
+        runShowDataViewAndAttributePanel(0);
       }
     }
     if (event.getChangedState().equals(StateChangeEvent.METAVIEWER_HISTORY_BACK)
@@ -964,6 +966,19 @@ public class DataViewContainerPanel extends javax.swing.JPanel
     return entityPanel;
   }
 
+  /**
+   * Run the rendering in a background thread
+   * @param selectedColIndex
+   */
+  private void runShowDataViewAndAttributePanel(int selectedColIndex) {
+	  final int index = selectedColIndex;
+	  Executors.newSingleThreadExecutor().execute(new Runnable() {
+		public void run() {
+			showDataViewAndAttributePanel(index);
+		} 
+	  });
+  }
+  
   /*  Method to create a attribute panel to replace entity */
   private void showDataViewAndAttributePanel(int selectedColIndex)
   {
