@@ -574,8 +574,13 @@ public class GUIAction extends AbstractAction implements StateChangeListener
         return getMorphoFrameAncestor((Component)parent);
     }
 
-    //returns true if event originated in same MorphoFrame as this GUIAction
-    private boolean isLocalEvent(StateChangeEvent event)
+    private boolean isLocalEvent(StateChangeEvent event) {
+    	 MorphoFrame thisAncestor = UIController.getMorphoFrameContainingGUIAction(this);
+    	 return isLocalEvent(event, thisAncestor);
+    }
+
+    //returns true if event originated in same MorphoFrame
+    public static boolean isLocalEvent(StateChangeEvent event, MorphoFrame thisAncestor)
     {
         Object source = event.getSource();
         if (source==null) {
@@ -593,10 +598,8 @@ public class GUIAction extends AbstractAction implements StateChangeListener
         } else {
           return false;
         }
-        MorphoFrame thisAncestor
-                        = UIController.getMorphoFrameContainingGUIAction(this);
+       
         Log.debug(52,"\n# # GUIAction.isLocalEvent: "+
-                "GUIAction name:: "+this.getTextLabel()+
                  " thisAncestor="+thisAncestor +
                  " And!!!! event name: "+event.getChangedState()+
                  " comparing eventAncestor=" +eventAncestor);

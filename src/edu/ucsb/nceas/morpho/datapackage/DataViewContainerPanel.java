@@ -619,6 +619,12 @@ public class DataViewContainerPanel extends javax.swing.JPanel
    */
   public void handleStateChange(StateChangeEvent event)
   {
+	  //check if this is for our frame
+	  MorphoFrame thisAncestor = GUIAction.getMorphoFrameAncestor(this);
+	  if (!GUIAction.isLocalEvent(event, thisAncestor)) {
+		  return;
+	  }
+	  
     // Handle select data table column
     if ((event.getChangedState()).equals(StateChangeEvent.SELECT_DATATABLE_COLUMN))
     {
