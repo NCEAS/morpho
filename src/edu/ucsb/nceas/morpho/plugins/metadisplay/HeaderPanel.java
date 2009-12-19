@@ -30,6 +30,7 @@ import java.awt.Font;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.BorderLayout;
+import java.awt.event.ActionEvent;
 
 import javax.swing.Box;
 import javax.swing.Action;
@@ -42,9 +43,12 @@ import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 
 import  edu.ucsb.nceas.morpho.util.Command;
+import edu.ucsb.nceas.morpho.util.DocumentNotFoundException;
 import  edu.ucsb.nceas.morpho.util.GUIAction;
 import  edu.ucsb.nceas.morpho.util.UISettings;
+import edu.ucsb.nceas.morpho.util.XMLTransformer;
 
+import edu.ucsb.nceas.morpho.framework.UIController;
 import edu.ucsb.nceas.morpho.plugins.MetaDisplayInterface;
 
 //import edu.ucsb.nceas.morpho.plugins.DocumentNotFoundException;
@@ -61,7 +65,7 @@ public class HeaderPanel extends JPanel
     
     // * * * * * * * *  D E F A U L T   T E X T   L A B E L S   * * * * * * * * 
     private static final String BACK_BUTTON_TEXT    = "< back";
-    private static final String EDIT_BUTTON_TEXT    = "edit";
+    private static final String ENTITY_BUTTON_TEXT    = "entity";
     private static final String CLOSE_BUTTON_TEXT   = "hide X";
     private static final String TITLEBAR_INIT_TEXT  = "Documentation";
     private static final String PATH_INIT_TEXT      = ""; //You are here:\n";
@@ -168,22 +172,40 @@ public class HeaderPanel extends JPanel
         pathDisplayComponent.setText(PATH_INIT_TEXT);
         pathDisplayComponent.setEditable(false);
         
-        //add edit button:
-        GUIAction editAction
-            = new GUIAction(EDIT_BUTTON_TEXT, null,new EditCommand(controller));
-        eJButton editButton = new eJButton(editAction);
-        editButton.setBackground(UISettings.EDITBUTTON_COLOR);
-        editButton.setForeground(UISettings.EDITBUTTON_TEXT_COLOR);
-        editButton.setFocusPainted(false);
-        editButton.setFont(UISettings.BUTTON_FONT);
-        editButton.setPreferredSize(closeButton.getPreferredSize());
-        editButton.setMinimumSize(closeButton.getMinimumSize());
-        editButton.setMaximumSize(closeButton.getMaximumSize());
+        //add entity button:
+        GUIAction entityAction
+        	= new GUIAction(ENTITY_BUTTON_TEXT, null, new Command() {
+
+				public void execute(ActionEvent event) {
+					try {
+						int entityTab = UIController.getInstance().getCurrentActiveWindow().getDataViewContainerPanel().getLastTabSelected();
+						 controller.useTransformerProperty(XMLTransformer.SELECTED_DISPLAY_XSLPROP,
+				                  XMLTransformer.XSLVALU_DISPLAY_ENTITY);
+						 controller.useTransformerProperty(XMLTransformer.SELECTED_ENTITY_XSLPROP,
+				                                String.valueOf(entityTab+1));
+						 UIController.getInstance().getCurrentActiveWindow().getDataViewContainerPanel().resetTableSelection();
+						 controller.display(controller.getIdentifier());
+					} catch (DocumentNotFoundException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+        		
+        	});
+
+        eJButton entityButton = new eJButton(entityAction);
+        entityButton.setBackground(UISettings.EDITBUTTON_COLOR);
+        entityButton.setForeground(UISettings.EDITBUTTON_TEXT_COLOR);
+        entityButton.setFocusPainted(false);
+        entityButton.setFont(UISettings.BUTTON_FONT);
+        entityButton.setPreferredSize(closeButton.getPreferredSize());
+        entityButton.setMinimumSize(closeButton.getMinimumSize());
+        entityButton.setMaximumSize(closeButton.getMaximumSize());
         Box buttonBox = Box.createVerticalBox();
         buttonBox.add(Box.createVerticalGlue());
-        buttonBox.add(editButton);
+        buttonBox.add(entityButton);
         buttonBox.add(Box.createVerticalGlue());
-        //pathBar.add(buttonBox, BorderLayout.EAST);
+        pathBar.add(buttonBox, BorderLayout.EAST);
     }
 
     private void addBottomLine() 
