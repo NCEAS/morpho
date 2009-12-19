@@ -680,7 +680,7 @@ public class DataViewContainerPanel extends javax.swing.JPanel
     }
   }
 
-  private void resetTableSelection()
+  public void resetTableSelection()
   {
     if (dv!=null && dv.getDataTable()!=null) {
       JTable table = dv.getDataTable();
@@ -688,6 +688,7 @@ public class DataViewContainerPanel extends javax.swing.JPanel
       if (table.getRowCount()>0 && table.getColumnCount()>0) {
         table.setRowSelectionInterval(0,0);
         table.setColumnSelectionInterval(0,0);
+        table.changeSelection(0, 0, true, false);
       }
     }
   }

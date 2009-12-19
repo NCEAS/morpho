@@ -1212,6 +1212,7 @@ public class DataViewer extends javax.swing.JPanel
     if (table.getRowCount()>0) {
         table.setRowSelectionInterval(0,0);
         table.setColumnSelectionInterval(0,0);
+        table.changeSelection(0, 0, true, false);
     }
     setUpDelimiterEditor(table, field_delimiter, TablePanel);
 
