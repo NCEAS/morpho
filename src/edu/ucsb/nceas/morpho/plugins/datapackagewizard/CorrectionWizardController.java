@@ -189,7 +189,9 @@ public class CorrectionWizardController
 		                  WizardSettings.WIZARD_X_COORD, WizardSettings.WIZARD_Y_COORD,
 		                  WizardSettings.WIZARD_WIDTH,   WizardSettings.WIZARD_HEIGHT );
 		    dpWiz.setCurrentPage(STARTPAGEID);
-		    dpWiz.setShowPageCountdown(false);
+		    String totalPageNumber = (new Integer(wizardPageLibrary.size())).toString();
+		    Log.debug(35, "total number is "+totalPageNumber);
+		    dpWiz.setShowPageCountdown(true, totalPageNumber);
 		    dpWiz.setTitle(TITLE+dataPackage.getAccessionNumber());
 		    dpWiz.setVisible(true);
 		}
@@ -257,8 +259,11 @@ public class CorrectionWizardController
 					}
 					previousPage = page;
 					// find a wizard page and add it to the list
+					
 					wizardPageLibrary.addPage(pageIDstr, page);
 					pageID ++;
+					Log.debug(35, "The page number was set  "+(new Integer(pageID)).toString());
+					page.setTemporaryPageNumber((new Integer(pageID)).toString());
 				}
 				else
 				{
@@ -284,6 +289,7 @@ public class CorrectionWizardController
 				}
 				//AbstractUIPage summaryPage = createAbstractUIpageObject(CORRECTIONSUMMARY,dpWiz, null);
 				CorrectionSummary summaryPage = new CorrectionSummary(dpWiz, needTreeEditor);
+				summaryPage.setTemporaryPageNumber((new Integer(pageID+1)).toString());
 				wizardPageLibrary.addPage(pageIDstr, summaryPage);
 			}
 		}

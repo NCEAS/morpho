@@ -134,7 +134,7 @@ public class WizardContainerFrame
   private ImportedTextFile importedDataTextFile = null;
   protected Stack pageStack;
   private WizardPageLibraryInterface pageLib;
-  private boolean showPageCount;
+  protected boolean showPageCount;
   private Map pageCache;
   private String firstPageID;
   private String entityName = null;
@@ -416,10 +416,18 @@ public class WizardContainerFrame
    *
    *  @sets the page count on the wizard page
    */
-  private void setPageCount() {
+  protected void setPageCount() {
+    setPageCount(getCurrentPage().getPageNumber(), WizardSettings.NUMBER_OF_STEPS);
+  }
+  
+  /*
+   * Show page account with given total page number
+   */
+  protected void setPageCount(String pageNumber, String total)
+  {
     if (showPageCount) {
-      stepLabel.setText("Step " + getCurrentPage().getPageNumber()
-                        + " of " + WizardSettings.NUMBER_OF_STEPS);
+      stepLabel.setText("Step " + pageNumber
+                        + " of " + total);
     }
     else {
       stepLabel.setText("");

@@ -45,6 +45,8 @@ public abstract class AbstractUIPage extends JPanel {
 	
 	
 	private XPathUIPageMapping xpathUIPageMapping= null;
+	
+	private String temporaryPageNumber = "-1";
 
   /**
    *  gets the unique ID for this UI page
@@ -204,6 +206,24 @@ public abstract class AbstractUIPage extends JPanel {
   {
     boolean success = true;
     return success;
+  }
+  
+  /**
+   * Gets a temporary page number assigned to a page.
+   * @return
+   */
+  public String getTemporaryPageNumber()
+  {
+    return this.temporaryPageNumber;
+  }
+  
+  /**
+   * Sets a temporary page number to a page
+   * @param temporaryPageNumber
+   */
+  public void setTemporaryPageNumber(String temporaryPageNumber)
+  {
+    this.temporaryPageNumber = temporaryPageNumber;
   }
   
 

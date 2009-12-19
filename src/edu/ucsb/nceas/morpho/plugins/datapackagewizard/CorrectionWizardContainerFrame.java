@@ -71,6 +71,7 @@ public class CorrectionWizardContainerFrame extends WizardContainerFrame
 	private Node rootNode = null;
 	//private Vector pathListForTreeEditor = new Vector();
 	private static final boolean disableAutoSavingFeature = true;
+	private String totalNumber = "-1";
 	
 	/**
 	 * Constructor
@@ -81,6 +82,26 @@ public class CorrectionWizardContainerFrame extends WizardContainerFrame
 	  super(disableAutoSavingFeature);
 		this.dataPackage = dataPackage;
 	}
+	
+	 /**
+   * if true is passed, the "page # of ##" counter will be shown in the footer
+   *
+   * @param show boolean
+   */
+  public void setShowPageCountdown(boolean show, String total) {
+    showPageCount = show;
+    totalNumber = total;
+    this.setPageCount();
+  }
+  
+  /**
+   *  Overwrite the setPageCount method. 
+   *
+   *  @sets the page count on the wizard page
+   */
+  protected void setPageCount() {
+    setPageCount(getCurrentPage().getTemporaryPageNumber(), totalNumber);
+  }
 	
 	/**
 	 * The method to collect data from pages in node format
