@@ -305,9 +305,9 @@
       <xslt>style/eml-dataset-2.0.0beta4.xsl</xslt>
   </doctype_xslt_mappings>
   <styleSheetList>
-      <!-- when you add a style sheet, you must fill out name, label and location three elements-->
+      <!-- when you add a style sheet, you must fill out name, label and location elements-->
        <styleSheet>
-          <name>FGDC</name>
+          <name>Biological Data Profile</name>
           <label>Biological Data Profile (BDP)</label>
           <location>xsl/eml2tonbii.xsl</location>
        </styleSheet>

@@ -31,6 +31,7 @@ import edu.ucsb.nceas.morpho.datapackage.AbstractDataPackage;
 import edu.ucsb.nceas.morpho.datastore.MetacatUploadException;
 import edu.ucsb.nceas.morpho.util.Command;
 
+import java.io.File;
 import java.io.Reader;
 import java.util.Vector;
 
@@ -246,5 +247,14 @@ public interface DataPackageInterface
    * @return id of the saved data package
    */
   public String saveIncompleteDocumentForLater(String docid, Reader xml, String autoSavedID) throws Exception;
+  
+  /**
+   * Export a data package to files with Biological Data Profile format
+   * @param outputFile the output file 
+   * @param styleSheetLocation the style sheet location
+   * @param docid the docid of the data package
+   * @param documentLocation the document location 
+   */
+  public void exportToBDP(File outputFile, String styleSheetLocation, String docid, String documentLocation) throws Exception;
 
 }

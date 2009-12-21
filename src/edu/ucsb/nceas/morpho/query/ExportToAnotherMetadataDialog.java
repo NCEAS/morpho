@@ -69,6 +69,8 @@ import org.w3c.dom.NodeList;
 import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.framework.ConfigXML;
 import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
+import edu.ucsb.nceas.morpho.framework.MorphoFrame;
+import edu.ucsb.nceas.morpho.framework.SwingWorker;
 import edu.ucsb.nceas.morpho.framework.UIController;
 import edu.ucsb.nceas.morpho.plugins.ServiceController;
 import edu.ucsb.nceas.morpho.plugins.ServiceProvider;
@@ -94,6 +96,7 @@ public class ExportToAnotherMetadataDialog implements Command
   private static final String SLASH = "/";
   private static final String TITLE = "Export to Another Metadata Language";
   private static final String EXPORTBUTTONNAME = "Export";
+  private static final String BDP = "Biological Data Profile";
   
   Vector<StyleSheet> styleSheetList = new Vector<StyleSheet>();
   private boolean debugHilite = false;
@@ -104,19 +107,23 @@ public class ExportToAnotherMetadataDialog implements Command
   private String docid = null;
   private String documentLocation = null;
   private JFileChooser exportFileChooser = new JFileChooser();
+  private MorphoFrame sourceMorphoFrame = null;
   
   
   /**
    * Constructor with JDialog as parent
-   * @param parent 
+   * @param parent the export dialog
    * @param docid  the docid which will be exported
    * @param documentLocation the document location (local/metacat)
+   * @param the source morpho frame calling this the command. For package and search result frame, the
+   * source frame is itself. For openDialog, the source frame is openDialog's parent.
    */
-  public ExportToAnotherMetadataDialog(JDialog parent, String docid, String documentLocation)
+  public ExportToAnotherMetadataDialog(JDialog parent, String docid, String documentLocation, MorphoFrame sourceMorphoFrame)
   {
     this.parent = parent;
     this.docid = docid;
     this.documentLocation = documentLocation;
+    this.sourceMorphoFrame = sourceMorphoFrame;
     readStyleSheetList();
    
   }
@@ -150,20 +157,18 @@ public class ExportToAnotherMetadataDialog implements Command
     if(parent != null)
     {
       parent.setVisible(false);
-    }
-    initGUI();
-    if(parent != null)
-    {
       parent.dispose();
       parent = null;
     }
+    showGUI();
+    
     
   }
   
   /*
    * Initialize GUI for this a file chooser
    */
-  private void initGUI()
+  private void showGUI()
   {
     if(lastChosenOutputDir != null)
     {
@@ -179,7 +184,7 @@ public class ExportToAnotherMetadataDialog implements Command
       exportFileChooser.addChoosableFileFilter(fileFilter);
     }
     //exportFileChooser.addActionListener(new ExportAction());
-    int returnValue = exportFileChooser.showDialog(parent, EXPORTBUTTONNAME);
+    int returnValue = exportFileChooser.showDialog(sourceMorphoFrame, EXPORTBUTTONNAME);
     if(returnValue == JFileChooser.APPROVE_OPTION)
     {
       outputFile = exportFileChooser.getSelectedFile();
@@ -187,9 +192,27 @@ public class ExportToAnotherMetadataDialog implements Command
       {
         lastChosenOutputDir = outputFile.getParentFile();
       }
-      String styleSheetLocation = null;
-      Log.debug(35, "Export");
-      //export(outputFile,styleSheetLocation);
+      FileFilter selectedFileFilter = exportFileChooser.getFileFilter();
+      MetadataLanguageFileFilter metadataFormat = (MetadataLanguageFileFilter)selectedFileFilter;
+      StyleSheet styleSheet = metadataFormat.getStyleSheet();
+      if(styleSheet == null)
+      {
+        Log.debug(5, "The style sheet associated witht the file filter is null");
+        return;
+      }
+      else
+      {
+        String styleSheetLocation = styleSheet.getLocation();;
+        Log.debug(35, "Export");
+        String name = styleSheet.getName();
+        boolean exportBDP = false;
+        if(name != null && name.equals(BDP))
+        {
+          exportBDP = true;
+        }
+        doExport(exportBDP, outputFile, styleSheetLocation, sourceMorphoFrame);
+       
+      }
     }
     else
     {
@@ -198,24 +221,74 @@ public class ExportToAnotherMetadataDialog implements Command
     }
   }
   
- 
-  
-  
-  
-  
-  
-  /*
-   * Make label for given text and dimension
+  /**
+   * Using SwingWorket class to export package to another metadata language
+   *
    */
-  private JLabel makeLabel(String text, Dimension dims)
+ private void doExport(final boolean exportToBDP, final File outputFile, final String styleSheetLocation, final MorphoFrame frame) 
+ {
+  final SwingWorker worker = new SwingWorker() 
   {
-    if (text==null) text="";
-    JLabel label = new JLabel(text);    
-    Util.setPrefMaxSizes(label, dims);
-    label.setMinimumSize(dims);
-    label.setAlignmentX(SwingConstants.LEADING);
-    return label;
+        public Object construct() 
+        {
+          if (frame!= null)
+          {
+            frame.setBusy(true);
+          }
+          if(exportToBDP)
+          {
+            exportBDP(outputFile, styleSheetLocation);
+          }
+          else
+          {
+            export(outputFile, styleSheetLocation);
+          }
+          
+          return null;  
+          
+        }
+
+        //Runs on the event-dispatching thread.
+        public void finished() 
+        {
+          // Stop butterfly
+          if ( frame != null)
+          {
+            frame.setBusy(false);
+          }
+        }
+    };//final
+    worker.start();  //required for SwingWorker 3
+  
   }
+  
+ 
+  /*
+   * Export the package to DBP. Since BDP style sheet only support one entity,
+   * it need a special method to handle
+   */
+  private void exportBDP(File outputFil, String styleSheetLocation)
+  {
+    try
+    {
+      XMLTransformer transformer = XMLTransformer.getInstance();
+      ServiceController services = ServiceController.getInstance();
+      ServiceProvider provider = 
+                 services.getServiceProvider(DataPackageInterface.class);
+      DataPackageInterface dataPackage = (DataPackageInterface)provider;
+      dataPackage.exportToBDP(outputFile, styleSheetLocation, docid, documentLocation);
+      JOptionPane.showMessageDialog(sourceMorphoFrame, "Package export is complete!");
+    }
+    catch(Exception e)
+    {
+      Log.debug(5, "Morpho couldn't transform the eml to the metadata language "+
+                   "since "+e.getMessage());
+    }
+  }
+  
+  
+  
+  
   
   
   /*
@@ -360,7 +433,7 @@ public class ExportToAnotherMetadataDialog implements Command
       }
       anotherMetadataReader.close();
       outputFileWriter.close();
-      JOptionPane.showMessageDialog(parent, "Package export is complete!");
+      JOptionPane.showMessageDialog(sourceMorphoFrame, "Package export is complete!");
       //this.setVisible(false);
       //this.dispose();
     }
@@ -393,6 +466,14 @@ public class ExportToAnotherMetadataDialog implements Command
       this.name = name;
     }
     
+    /**
+     * Gets the name of the style sheet
+     * @return
+     */
+    public String getName()
+    {
+      return this.name;
+    }
     /**
      * Sets the label of the style sheet
      * @param label
@@ -467,6 +548,15 @@ public class ExportToAnotherMetadataDialog implements Command
       {
         return "";
       }
+    }
+    
+    /**
+     * Gets the style sheet associating with the file filter
+     * @return
+     */
+    public StyleSheet getStyleSheet()
+    {
+      return this.sheet;
     }
   }
   

@@ -30,6 +30,7 @@ import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.framework.ConfigXML;
 import edu.ucsb.nceas.morpho.framework.MorphoFrame;
 import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
+import edu.ucsb.nceas.morpho.framework.UIController;
 import edu.ucsb.nceas.morpho.util.Command;
 import edu.ucsb.nceas.morpho.util.GUIAction;
 import edu.ucsb.nceas.morpho.util.Log;
@@ -310,7 +311,15 @@ public class ExportDialog extends JDialog
         Log.debug(20, "In export to another metadata language branch");
         executeAction.setEnabled(true);
         String location = getLocation(inNetwork, inLocal);
-        executeAction.setCommand(new ExportToAnotherMetadataDialog(this, selectDocId, location));
+        if(openDialog != null)
+        {
+          executeAction.setCommand(new ExportToAnotherMetadataDialog(dialog, selectDocId, location, openDialog.getParentFrame()));
+        }
+        else
+        {
+          executeAction.setCommand(new ExportToAnotherMetadataDialog(dialog, selectDocId, location, UIController.getInstance().getCurrentActiveWindow()));
+        }
+        
       }
    }//enableExecuteButton
  

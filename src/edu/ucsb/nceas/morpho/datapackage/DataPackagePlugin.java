@@ -60,6 +60,7 @@ import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.File;
 import java.io.Reader;
 
 import javax.swing.ImageIcon;
@@ -1581,6 +1582,18 @@ public class DataPackagePlugin
     adp.serialize(AbstractDataPackage.LOCAL);
     Util.deleteAutoSavedFile(autoSavedID);
     return adp.getAccessionNumber();
+  }
+  
+  /**
+   * Export a data package to files with Biological Data Profile format
+   * @param outputFile the output file 
+   * @param styleSheetLocation the style sheet location
+   * @param docid the docid of the data package
+   * @param documentLocation the document location 
+   */
+  public void exportToBDP(File outputFile, String styleSheetLocation, String docid, String documentLocation) throws Exception
+  {
+    Log.debug(5, "exporting to BDP hasn't done yet");
   }
 
 
