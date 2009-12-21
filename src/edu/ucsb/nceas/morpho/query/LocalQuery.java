@@ -608,8 +608,13 @@ public class LocalQuery
     if (!caseSensitive) {
       value = value.toLowerCase();
     }
-    String pathExpression = qt.getPathExpression();
 
+    String pathExpression = qt.getPathExpression();
+    String textSelector = "text()";
+    // attribute nodes do not have text nodes
+    if (pathExpression != null && pathExpression.contains("@")) {
+    	textSelector = ".";
+    }
     // construct path part of XPath
     if (pathExpression==null) {
       xpath = "//*";
@@ -624,56 +629,56 @@ public class LocalQuery
     // wild card text search case
     if ((value==null) || (value.equals("%")) || (value.equals("*")) ||
         (value.equals("")) ) {
-      xpath = xpath+"[text()]";
+      xpath = xpath+"["+textSelector+"]";
       return xpath;
     } else {
       if (!caseSensitive) {
         // use translate function to convert text() to lowercase
         // check on searchMode
         if (searchMode.equals("starts-with")) {
-          xpath = xpath+"[starts-with(translate(text(),"
+          xpath = xpath+"[starts-with(translate("+textSelector+","
             +"\"ABCDEFGHIJKLMNOPQRSTUVWXYZ\",\"abcdefghijklmnopqrstuvwxyz\"),\""
             +value+"\")]";
         } else if (searchMode.equals("ends-with")) {
-          xpath = xpath+"[contains(translate(text(),"
+          xpath = xpath+"[contains(translate("+textSelector+","
             +"\"ABCDEFGHIJKLMNOPQRSTUVWXYZ\",\"abcdefghijklmnopqrstuvwxyz\"),\""
             +value+"\")]";
           // not correct - fix later
         } else if (searchMode.equals("contains")) {
-          xpath = xpath+"[contains(translate(text(),"
+          xpath = xpath+"[contains(translate("+textSelector+","
             +"\"ABCDEFGHIJKLMNOPQRSTUVWXYZ\",\"abcdefghijklmnopqrstuvwxyz\"),\""
             +value+"\")]";
         } else if (searchMode.equals("equals")) {
-          xpath = xpath+"[translate(text(),"
+          xpath = xpath+"[translate("+textSelector+","
             +"\"ABCDEFGHIJKLMNOPQRSTUVWXYZ\",\"abcdefghijklmnopqrstuvwxyz\")=\""
             +value+"\"]";
         } else if (searchMode.equals("less-than")) {
-          xpath = xpath+"[number(text()) < "+value+"]";
+          xpath = xpath+"[number("+textSelector+") < "+value+"]";
         } else if (searchMode.equals("greater-than")) {
-          xpath = xpath+"[number(text()) > "+value+"]";
+          xpath = xpath+"[number("+textSelector+") > "+value+"]";
         } else if (searchMode.equals("greater-than-equals")) {
-          xpath = xpath+"[number(text()) >= "+value+"]";
+          xpath = xpath+"[number("+textSelector+") >= "+value+"]";
         } else if (searchMode.equals("less-than-equals")) {
-          xpath = xpath+"[number(text()) <= "+value+"]";
+          xpath = xpath+"[number("+textSelector+") <= "+value+"]";
         }
       } else {
         if (searchMode.equals("starts-with")) {
-          xpath = xpath+"[starts-with(text(),\""+value+"\")]";
+          xpath = xpath+"[starts-with("+textSelector+",\""+value+"\")]";
         } else if (searchMode.equals("ends-with")) {
-          xpath = xpath+"[contains(text(),\""+value+"\")]";
+          xpath = xpath+"[contains("+textSelector+",\""+value+"\")]";
                           // not correct - fix later
         } else if (searchMode.equals("contains")) {
-          xpath = xpath+"[contains(text(),\""+value+"\")]";
+          xpath = xpath+"[contains("+textSelector+",\""+value+"\")]";
         } else if (searchMode.equals("equals")) {
-          xpath = xpath+"[text()=\""+value+"\"]";
+          xpath = xpath+"["+textSelector+"=\""+value+"\"]";
         } else if (searchMode.equals("less-than")) {
-          xpath = xpath+"[number(text()) < "+value+"]";
+          xpath = xpath+"[number("+textSelector+") < "+value+"]";
         } else if (searchMode.equals("greater-than")) {
-          xpath = xpath+"[number(text()) > "+value+"]";
+          xpath = xpath+"[number("+textSelector+") > "+value+"]";
         } else if (searchMode.equals("greater-than-equals")) {
-          xpath = xpath+"[number(text()) >= "+value+"]";
+          xpath = xpath+"[number("+textSelector+") >= "+value+"]";
         } else if (searchMode.equals("less-than-equals")) {
-          xpath = xpath+"[number(text()) <= "+value+"]";
+          xpath = xpath+"[number("+textSelector+") <= "+value+"]";
         }
       }
     }
@@ -691,6 +696,9 @@ public class LocalQuery
     Vector combined = null;
     Vector currentResults = null;
 
+    if (qg == null) {
+    	return new Vector();
+    }
     Enumeration children = qg.getChildren();
     while (children.hasMoreElements()) {
       Object child = children.nextElement();
