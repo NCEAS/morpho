@@ -1303,9 +1303,13 @@ public class WizardContainerFrame
 				  catch(Exception e)
 				  {
 					  //remove the entity we needed to adp
-				      if(isCurrentPageInEntityPageList())
+				    if(isCurrentPageInEntityPageList())
 					  {
-					     adp.deleteEntity(entityIndex);
+					     //Node entityNode = adp.deleteEntity(entityIndex);
+					     //if(entityNode == null)
+					     //{
+					       adp.deleteLastEntity();
+					     //}
 					  }
 					  Log.debug(30, "Some error happens in collecting page data in WizardContainerFrame.savInCompletePackage "+e.getMessage()+
 					    " and the saving will be terminated ");
@@ -1323,7 +1327,8 @@ public class WizardContainerFrame
 			    //remove the entity we needed to adp
 			    if(isCurrentPageInEntityPageList())
 				  {
-				     adp.deleteEntity(entityIndex);
+				     //adp.deleteEntity(entityIndex);
+			      adp.deleteLastEntity();
 				  }
 			  }			  
 		  }

@@ -2058,6 +2058,20 @@ public abstract class AbstractDataPackage extends MetadataObject
     Log.debug(20, "AbstractDataPackage.deleteEntity - Delete the entity at index "+entNum);
     return entity;
   }
+  
+  /**
+   * Delete the last entity
+   * @return
+   */
+  public Node deleteLastEntity()
+  {
+    if ( (entityArray == null)  ) {
+      Log.debug(20, "AbstractDataPackage.deleteEntity - Unable to find an entity");
+      return null;
+    }
+    int size = entityArray.length;
+    return deleteEntity(size-1);
+  }
 
 	/**
 	* This method deletes the indexed entity from the DOM
