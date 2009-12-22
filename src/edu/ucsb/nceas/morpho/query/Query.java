@@ -1002,6 +1002,19 @@ public class Query extends DefaultHandler {
     resultDisplayPanel.setResultSet(localResults);
     return localResults;
  }
+ 
+ /*
+  * Method to display local search incomplete result
+  */
+ private HeadResultSet doLocalSearchIncompleteDocDisplay(final ResultPanel resultDisplayPanel,
+                                   final Morpho morpho)
+ {
+    final Query query = this;
+    LocalQuery lq = new LocalQuery(query, morpho);
+    HeadResultSet localResults = (HeadResultSet)lq.executeInInCompleteDoc();
+    resultDisplayPanel.setResultSet(localResults);
+    return localResults;
+ }
 
 
   /**
