@@ -26,9 +26,7 @@
 
 package edu.ucsb.nceas.morpho.plugins.metadisplay;
 
-import java.awt.Font;
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 
@@ -37,7 +35,6 @@ import javax.swing.Action;
 import javax.swing.JPanel;
 import javax.swing.JLabel;
 import javax.swing.JButton;
-import javax.swing.JTextArea;
 import javax.swing.UIManager;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
@@ -45,11 +42,11 @@ import javax.swing.border.EmptyBorder;
 import  edu.ucsb.nceas.morpho.util.Command;
 import edu.ucsb.nceas.morpho.util.DocumentNotFoundException;
 import  edu.ucsb.nceas.morpho.util.GUIAction;
+import edu.ucsb.nceas.morpho.util.HyperlinkButton;
 import  edu.ucsb.nceas.morpho.util.UISettings;
 import edu.ucsb.nceas.morpho.util.XMLTransformer;
 
 import edu.ucsb.nceas.morpho.framework.UIController;
-import edu.ucsb.nceas.morpho.plugins.MetaDisplayInterface;
 
 //import edu.ucsb.nceas.morpho.plugins.DocumentNotFoundException;
 
@@ -65,10 +62,10 @@ public class HeaderPanel extends JPanel
     
     // * * * * * * * *  D E F A U L T   T E X T   L A B E L S   * * * * * * * * 
     private static final String BACK_BUTTON_TEXT    = "< back";
-    private static final String ENTITY_BUTTON_TEXT    = "entity";
+    private static final String ENTITY_BUTTON_TEXT    = "entity metadata";
     private static final String CLOSE_BUTTON_TEXT   = "hide X";
     private static final String TITLEBAR_INIT_TEXT  = "Documentation";
-    private static final String PATH_INIT_TEXT      = ""; //You are here:\n";
+    private static final String PATH_INIT_TEXT      = "Selected column or"; //You are here:\n";
     private static final String PATH_SEPARATOR      = ">>";
  
 
@@ -166,11 +163,9 @@ public class HeaderPanel extends JPanel
         this.add(pathBar, BorderLayout.CENTER);
  
         //add path display
-        JTextArea pathDisplayComponent = new JTextArea();
+        JLabel pathDisplayComponent = new JLabel();
         pathBar.add(pathDisplayComponent, BorderLayout.CENTER);
-        pathDisplayComponent.setBackground(pathBar.getBackground());
         pathDisplayComponent.setText(PATH_INIT_TEXT);
-        pathDisplayComponent.setEditable(false);
         
         //add entity button:
         GUIAction entityAction
@@ -193,14 +188,16 @@ public class HeaderPanel extends JPanel
         		
         	});
 
-        eJButton entityButton = new eJButton(entityAction);
+        //eJButton entityButton = new eJButton(entityAction);
+        JButton entityButton = new HyperlinkButton(entityAction);
+
         entityButton.setBackground(UISettings.EDITBUTTON_COLOR);
-        entityButton.setForeground(UISettings.EDITBUTTON_TEXT_COLOR);
-        entityButton.setFocusPainted(false);
-        entityButton.setFont(UISettings.BUTTON_FONT);
-        entityButton.setPreferredSize(closeButton.getPreferredSize());
-        entityButton.setMinimumSize(closeButton.getMinimumSize());
-        entityButton.setMaximumSize(closeButton.getMaximumSize());
+//        entityButton.setForeground(UISettings.EDITBUTTON_TEXT_COLOR);
+//        entityButton.setFocusPainted(false);
+//        entityButton.setFont(UISettings.BUTTON_FONT);
+//        entityButton.setPreferredSize(closeButton.getPreferredSize());
+//        entityButton.setMinimumSize(closeButton.getMinimumSize());
+//        entityButton.setMaximumSize(closeButton.getMaximumSize());
         Box buttonBox = Box.createVerticalBox();
         buttonBox.add(Box.createVerticalGlue());
         buttonBox.add(entityButton);
