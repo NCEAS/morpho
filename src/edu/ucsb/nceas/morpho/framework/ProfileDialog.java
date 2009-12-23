@@ -27,7 +27,12 @@
 package edu.ucsb.nceas.morpho.framework;
 
 import edu.ucsb.nceas.morpho.Morpho;
+import edu.ucsb.nceas.morpho.datapackage.RefreshAccessCommand;
+import edu.ucsb.nceas.morpho.util.GUIAction;
 import edu.ucsb.nceas.morpho.util.Log;
+import edu.ucsb.nceas.morpho.util.StateChangeEvent;
+import edu.ucsb.nceas.morpho.util.StateChangeListener;
+import edu.ucsb.nceas.morpho.util.StateChangeMonitor;
 
 import java.net.*;
 import java.io.*;
@@ -40,7 +45,7 @@ import javax.swing.*;
  * A graphical window for creating a new user profile with user provided
  * information.
  */
-public class ProfileDialog extends JDialog
+public class ProfileDialog extends JDialog implements StateChangeListener
 {
   ConfigXML config;
   Morpho framework = null;
@@ -198,6 +203,9 @@ public class ProfileDialog extends JDialog
     //this.addKeyListener(keyPressListener);
 
     config = framework.getConfiguration();
+    
+    StateChangeMonitor.getInstance().addStateChangeListener(StateChangeEvent.ACCESS_LIST_MODIFIED, this);
+    
   }
 
   /**
@@ -384,41 +392,48 @@ public class ProfileDialog extends JDialog
       addLabelTextRows(labels, textFields, gridbag, screenPanel);
       addKeyListenerToComponents(textFields);
     } else if (1 == currentScreen) {
-      String helpText = "<html><p>Enter the information you submitted "
-          + "when you registered for the Knowledge Network for Biocomplexity "
-          + "(KNB). "
-          + "<br>If you have not registered for the KNB yet, go to: "
-          + "<i>http://knb.ecoinformatics.org/</i>."
-          + " This will allow you to login to the network and collaborate with"
-          + " other researchers through the KNB.</p></html>";
-      helpLabel.setText(helpText);
-      screenPanel.setBorder(BorderFactory.createTitledBorder(
-                            BorderFactory.createEmptyBorder(8,8,8,8),
-                            "Network Account Information"));
-      JLabel usernameLabel = new JLabel();
-      JLabel orgLabel = new JLabel();
-      usernameLabel.setText("Username: ");
-      orgLabel.setText("Organization: ");
-      usernameLabel.setForeground(Color.black);
-      orgLabel.setForeground(Color.black);
-      usernameLabel.setFont(new Font("Dialog", Font.PLAIN, 12));
-      orgLabel.setFont(new Font("Dialog", Font.PLAIN, 12));
-      usernameLabel.setHorizontalAlignment(SwingConstants.RIGHT);
-      orgLabel.setHorizontalAlignment(SwingConstants.RIGHT);
-      userIdField.setColumns(15);
-      Vector orgs = config.get("organization");
-      String[] organizations = (String[])orgs.toArray(new String[0]);
-      orgList = new JList(organizations);
-      orgList.setSelectionMode(1);
-      orgList.setVisibleRowCount(3);
-      orgList.setSelectedIndex(0);
-      JScrollPane orgScrollPane = new JScrollPane(orgList);
-      JLabel[] labels = {usernameLabel, orgLabel};
-      JComponent[] components = {userIdField,
-                            orgScrollPane};
-      addLabelTextRows(labels, components, gridbag, screenPanel);
-      addKeyListenerToComponents(components);
-      userIdField.requestFocus();
+    	String helpText = "<html><p>Enter the information you submitted "
+            + "when you registered for the Knowledge Network for Biocomplexity "
+            + "(KNB). "
+            + "<br>If you have not registered for the KNB yet, go to: "
+            + "<i>http://knb.ecoinformatics.org/</i>."
+            + " This will allow you to login to the network and collaborate with"
+            + " other researchers through the KNB.</p></html>";
+        helpLabel.setText(helpText);
+        screenPanel.setBorder(BorderFactory.createTitledBorder(
+                              BorderFactory.createEmptyBorder(8,8,8,8),
+                              "Network Account Information"));
+        JLabel usernameLabel = new JLabel();
+        JLabel orgLabel = new JLabel();
+        JLabel refreshLabel = new JLabel();
+        usernameLabel.setText("Username: ");
+        orgLabel.setText("Organization: ");
+        refreshLabel.setText("Refresh: ");
+        usernameLabel.setForeground(Color.black);
+        orgLabel.setForeground(Color.black);
+        refreshLabel.setForeground(Color.black);
+        usernameLabel.setFont(new Font("Dialog", Font.PLAIN, 12));
+        orgLabel.setFont(new Font("Dialog", Font.PLAIN, 12));
+        refreshLabel.setFont(new Font("Dialog", Font.PLAIN, 12));
+        usernameLabel.setHorizontalAlignment(SwingConstants.RIGHT);
+        orgLabel.setHorizontalAlignment(SwingConstants.RIGHT);
+        refreshLabel.setHorizontalAlignment(SwingConstants.RIGHT);
+        userIdField.setColumns(15);
+        Vector orgs = config.get("organization");
+        String[] organizations = (String[])orgs.toArray(new String[0]);
+        orgList = new JList(organizations);
+        orgList.setSelectionMode(1);
+        orgList.setVisibleRowCount(3);
+        orgList.setSelectedIndex(0);
+        JButton refreshAccessButton = new JButton(
+  			  new GUIAction("Refresh", null, new RefreshAccessCommand()));
+        JScrollPane orgScrollPane = new JScrollPane(orgList);
+        JLabel[] labels = {usernameLabel, orgLabel, refreshLabel};
+        JComponent[] components = {userIdField,
+                              orgScrollPane, refreshAccessButton};
+        addLabelTextRows(labels, components, gridbag, screenPanel);
+        addKeyListenerToComponents(components);
+        userIdField.requestFocus();
     } else if (2 == currentScreen) {
       String helpText = "<html><p>Enter a short identifier prefix for this "
           + "profile. All data packages you create under this profile will "
@@ -657,6 +672,9 @@ public class ProfileDialog extends JDialog
           // Log into metacat
           framework.setProfile(profile);
 
+          //stop listening
+          StateChangeMonitor.getInstance().removeStateChangeListener(StateChangeEvent.ACCESS_LIST_MODIFIED, this);
+
           // Get rid of the dialog
           setVisible(false);
           dispose();
@@ -689,6 +707,13 @@ public class ProfileDialog extends JDialog
     }
     return list;
   }
+
+  public void handleStateChange(StateChangeEvent event) {
+	if (event.getChangedState().equals(StateChangeEvent.ACCESS_LIST_MODIFIED)) {
+		layoutScreen();
+	}
+	
+}
 
 
 
