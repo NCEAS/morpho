@@ -202,7 +202,7 @@ public class AttributePage extends AbstractUIPage {
     +" values from a scale with equidistant points "
     +"(statistically &nbsp;<b>interval</b>) "
     +WizardSettings.HTML_EXAMPLE_FONT_OPENING
-    +"e.g: 12.2 meters"
+    +"e.g: 12.2 degrees Celsius"
     +WizardSettings.HTML_EXAMPLE_FONT_CLOSING
     +WizardSettings.HTML_NO_TABLE_CLOSING,
 
