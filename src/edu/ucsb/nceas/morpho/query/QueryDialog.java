@@ -87,7 +87,7 @@ public class QueryDialog extends JDialog
   String titleSearchPath = "title";
 
   /** default search path for abstract   */
-  String abstractSearchPath = "abstract";
+  String abstractSearchPath = "abstract/para";
 
   /** default search path for keyword   */
   String keywordSearchPath = "keyword";
