@@ -68,6 +68,7 @@ import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.framework.AbstractUIPage;
 import edu.ucsb.nceas.morpho.framework.ConfigXML;
 import edu.ucsb.nceas.morpho.framework.ModalDialog;
+import edu.ucsb.nceas.morpho.framework.UIController;
 import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WidgetFactory;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardSettings;
@@ -233,9 +234,9 @@ public class AccessPage
    *  @return
    */
 
-  protected void generateAccessTree() {
-    Document doc = null;
-    if ( (doc = getDocumentFromFile()) == null) {
+  public void generateAccessTree(boolean force) {
+    Document doc = getDocumentFromFile();
+    if (doc == null || force) {
       pbt = new AccessProgressThread(this);
       pbt.start();
 
@@ -1148,7 +1149,7 @@ public class AccessPage
         /**
          * accessTreePane is null... so we have to generate Access.accessTreeNode
          */
-        generateAccessTree();
+        generateAccessTree(false);
       } else if (Access.accessTreeNode != null &&
           Access.accessTreeMetacatServerName.compareTo(Morpho.
           thisStaticInstance.
@@ -1160,7 +1161,7 @@ public class AccessPage
           Access.accessTreeMetacatServerName.compareTo(Morpho.
           thisStaticInstance.
           getMetacatURLString()) != 0) {
-      generateAccessTree();
+      generateAccessTree(false);
     }
   }
 
@@ -1419,20 +1420,11 @@ class AccessProgressThread
 
   public void run() {
 
-    // wait for accessPage to show....
-    while (!accessPage.isShowing()) {
-      try {
-        this.sleep(10);
-      }
-      catch (java.lang.InterruptedException e) {
-        this.exitProgressBarThread();
-      }
-    }
 
     // get the ModalDialog which parent of accessPage shown...
     // the JDialog will be tied to this Dialog
     Component parentDialog = accessPage.getParent();
-    while (! (parentDialog instanceof ModalDialog)) {
+    while ( (parentDialog != null) && !(parentDialog instanceof ModalDialog)) {
       parentDialog = parentDialog.getParent();
     }
     this.setParentDialog( (JDialog) parentDialog);

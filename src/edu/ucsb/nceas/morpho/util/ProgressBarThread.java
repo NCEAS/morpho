@@ -36,6 +36,9 @@ import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.Timer;
+
+import edu.ucsb.nceas.morpho.framework.MorphoFrame;
+import edu.ucsb.nceas.morpho.framework.UIController;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WidgetFactory;
 import javax.swing.Action;
 
@@ -94,7 +97,8 @@ public class ProgressBarThread
           "Generating Access Tree", // title
           true); // modal
     } else {
-      dialog = new JDialog((java.awt.Frame)null, //owner
+    	MorphoFrame defaultOwner = UIController.getInstance().getCurrentActiveWindow();
+    	dialog = new JDialog(defaultOwner, //owner
                "Generating Access Tree", // title
                true); // modal
     }
