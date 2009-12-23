@@ -209,6 +209,7 @@ public class AccessPage
     }
 
     config = Morpho.getConfiguration();
+    accessListFilePath = ConfigXML.getConfigDirectory() + "/" + Morpho.ACCESS_FILE_NAME;
     orgList = config.get("organization");
   }
 
@@ -217,7 +218,7 @@ public class AccessPage
    * 0. show a progress bar with text at the bottom showing which step
    *    is being performed and a cancel button .. if cancel button is pressed,
    *    thing on step 4 are performed....
-   * 1. try to read accesslist.xml and find if there is an entry for current
+   * 1. try to read accessListFilePath and find if there is an entry for current
    *    metacat server name...
    * 2. if there is an entry generate the dom for the <result></result> and
    *    send it domToTreeNode() funtion.
@@ -263,7 +264,7 @@ public class AccessPage
       Document doc = accessXML.getDocument();
       NodeList nl = doc.getElementsByTagName("server");
       if (nl.getLength() < 1) {
-        Log.debug(45, "No server nodes found in accesslist.xml");
+        Log.debug(45, "No server nodes found in " + accessListFilePath);
         return null;
       }
 
@@ -283,7 +284,7 @@ public class AccessPage
       if (serverNode == null) {
         Log.debug(45,
             "No server nodes found with current metacat server name " +
-            "found in accesslist.xml");
+            "found in " + accessListFilePath);
         return null;
       }
 
@@ -299,12 +300,12 @@ public class AccessPage
       return tempDoc;
     }
     catch (FileNotFoundException e) {
-      Log.debug(10, "accesslist.xml not found in /lib/ directory.");
+      Log.debug(10, accessListFilePath + " not found");
       Log.debug(45, "Exception in AccessPage class in getDocumentfromFile(). "
           + "Exception:" + e.getClass());
       Log.debug(45, e.getMessage());
 
-      // creating accesslist.xml....
+      // creating accessListFilePath....
       try {
         String xmlSource =
             "<?xml version=\"1.0\"?>\n<accesslist></accesslist>\n";
@@ -314,7 +315,7 @@ public class AccessPage
         f1.close();
       }
       catch (Exception e1) {
-        Log.debug(10, "Unable to create accesslist.xml in /lib/");
+        Log.debug(10, "Unable to create " + accessListFilePath);
         Log.debug(45,
             "Exception in AccessPage class in getDocumentfromFile(). "
             + "Exception:" + e1.getClass());
@@ -350,11 +351,11 @@ public class AccessPage
     boolean fileExists = false;
 
     try {
-      accessXML = new ConfigXML("./lib/accesslist.xml");
+      accessXML = new ConfigXML(accessListFilePath);
       fileExists = true;
     }
     catch (FileNotFoundException e) {
-      Log.debug(10, "accesslist.xml not found in /lib/ directory.");
+      Log.debug(10, accessListFilePath + " not found.");
       Log.debug(45, "Exception in AccessPage class in getDocumentfromFile(). "
           + "Exception:" + e.getClass());
       Log.debug(45, e.getMessage());
@@ -363,7 +364,7 @@ public class AccessPage
 
     try {
       if (!fileExists) {
-        // creating accesslist.xml....
+        // creating accessListFilePath....
         try {
           String xmlSource =
               "<?xml version=\"1.0\"?>\n<accesslist></accesslist>\n";
@@ -373,21 +374,21 @@ public class AccessPage
           f1.close();
         }
         catch (Exception e1) {
-          Log.debug(10, "Unable to create accesslist.xml in /lib/");
+          Log.debug(10, "Unable to create " + accessListFilePath);
           Log.debug(45,
               "Exception in AccessPage class in getDocumentfromFile(). "
               + "Exception:" + e1.getClass());
           Log.debug(45, e1.getMessage());
         }
 
-        accessXML = new ConfigXML("./lib/accesslist.xml");
+        accessXML = new ConfigXML(accessListFilePath);
       }
 
       Document doc1 = accessXML.getDocument();
       NodeList nl = doc1.getElementsByTagName("server");
       if (nl.getLength() < 1) {
-        Log.debug(45, "No server nodes found in accesslist.xml. "
-            + "Inserting new entry for current document in the document");
+        Log.debug(45, "No server nodes found in " + accessListFilePath
+            + " Inserting new entry for current document in the document");
         insertNewEntryInAccessList(accessXML, doc);
         return;
       }
@@ -421,7 +422,7 @@ public class AccessPage
   }
 
   private void insertNewEntryInAccessList(ConfigXML accessXML, Document doc) {
-    Log.debug(10, "Inserting a new entry in accesslist.xml");
+    Log.debug(10, "Inserting a new entry in " + accessListFilePath);
 
     Document doc1 = accessXML.getDocument();
     Node node = doc1.getFirstChild();
@@ -450,7 +451,7 @@ public class AccessPage
 
   private void modifyOldEntryInAccessList(ConfigXML accessXML, Document doc) {
 
-    Log.debug(10, "Modifying an old entry in accesslist.xml");
+    Log.debug(10, "Modifying an old entry in " + accessListFilePath);
 
     Document doc1 = accessXML.getDocument();
 

@@ -193,6 +193,7 @@ public class Morpho
 
     /** The hardcoded XML configuration file */
     private static String configFile = "config.xml";
+    public static final String ACCESS_FILE_NAME = "accesslist.xml";
     private static String profileFileName = "currentprofile.xml";
     private static boolean debug = true;
     private static int debug_level = 9;
@@ -1039,6 +1040,9 @@ public class Morpho
 
             // Set up logging, possibly to a file as appropriate
             initializeLogging(config);
+            
+            // set up access list
+            initializeAccessList();
             
              // setup keystore
             initializeKeyStore();
@@ -2098,15 +2102,7 @@ public class Morpho
     		 {
     			 // ~/.morpho doesn't has the keystore file, copy it.
                  File morphoKeystore = new File(LIBDIR+TRUSTKEYSTORE);
-                 FileInputStream input = new FileInputStream(morphoKeystore);
-                 FileOutputStream output = new FileOutputStream(userStore);
-                 byte buf[] = new byte[4096];
-                 int len = 0;
-                 while ((len = input.read(buf, 0, 4096)) != -1) {
-                     output.write(buf, 0, len);
-                 }
-                 input.close();
-                 output.close();
+                 fileCopy(morphoKeystore, userStore);
 
              } 
     		 else 
@@ -2121,6 +2117,18 @@ public class Morpho
     		Log.debug(5, "You have to run morpho without secure connection to metacat since "+e.getMessage()
     				           +".\n You may use file|setup preference menu to change the metacat url from \"https\" to \"http\"");
     	}
+    }
+    
+    private static void fileCopy(File src, File dest) throws Exception {
+    	FileInputStream input = new FileInputStream(src);
+        FileOutputStream output = new FileOutputStream(dest);
+        byte buf[] = new byte[4096];
+        int len = 0;
+        while ((len = input.read(buf, 0, 4096)) != -1) {
+            output.write(buf, 0, len);
+        }
+        input.close();
+        output.close();
     }
 
     /**
@@ -2200,6 +2208,17 @@ public class Morpho
         }
     }
 
+    public static void initializeAccessList() {
+    	try {
+	    	File accessFile = new File( ConfigXML.getConfigDirectory() + "/" + ACCESS_FILE_NAME);
+	    	if (!accessFile.exists()) {
+	        	File sourceAccessFile = new File( LIBDIR + "/" + ACCESS_FILE_NAME);
+	        	fileCopy(sourceAccessFile, accessFile);
+	    	}
+    	} catch(Exception e) {
+    		Log.debug(5, "Could not initialize access list: " + e.getMessage());
+    	}
+	}
 
     /**
      * Set up the logging system during startup
