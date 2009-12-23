@@ -77,6 +77,8 @@ import edu.ucsb.nceas.morpho.util.GUIAction;
 import edu.ucsb.nceas.morpho.util.HyperlinkButton;
 import edu.ucsb.nceas.morpho.util.Log;
 import edu.ucsb.nceas.morpho.util.ProgressBarThread;
+import edu.ucsb.nceas.morpho.util.StateChangeEvent;
+import edu.ucsb.nceas.morpho.util.StateChangeMonitor;
 import edu.ucsb.nceas.utilities.OrderedMap;
 
 public class AccessPage
@@ -448,6 +450,8 @@ public class AccessPage
     node.appendChild(result);
 
     accessXML.save();
+    
+    StateChangeMonitor.getInstance().notifyStateChange(new StateChangeEvent(this, StateChangeEvent.ACCESS_LIST_MODIFIED));
   }
 
   private void modifyOldEntryInAccessList(ConfigXML accessXML, Document doc) {
@@ -490,6 +494,8 @@ public class AccessPage
     node.appendChild(result);
 
     accessXML.save();
+    
+    StateChangeMonitor.getInstance().notifyStateChange(new StateChangeEvent(this, StateChangeEvent.ACCESS_LIST_MODIFIED));
 
   }
 

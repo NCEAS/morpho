@@ -235,6 +235,13 @@ public class StateChangeEvent extends ChangeEvent
     public static String DOM_EDITOR_FINISHED_EDITING
         = "domEditorFinishedEditing";
     
+    /**
+     *  Public constant to denote that the Access List
+     *  has been revised
+     */
+    public static String ACCESS_LIST_MODIFIED
+        = "accessListModified";
+    
     
     
         
