@@ -94,6 +94,13 @@ public  class EML200DataPackage extends AbstractDataPackage
   public static final String LATEST_EML_VER = "eml-2.1.0";
   public static final String EML200NAMESPACE = "eml://ecoinformatics.org/eml-2.0.0";
   public static final String EML201NAMESPACE =  "eml://ecoinformatics.org/eml-2.0.1";
+  
+  private static final String packageWizardXpath = IncompleteDocSettings.EMLPATH+IncompleteDocSettings.ADDITIONALMETADATA+"/"+IncompleteDocSettings.METADATA+
+  "/"+IncompleteDocSettings.PACKAGEWIZARD;
+  private static final String entityWizardXPath = IncompleteDocSettings.EMLPATH+IncompleteDocSettings.ADDITIONALMETADATA+"/"+IncompleteDocSettings.METADATA+
+    "/"+IncompleteDocSettings.ENTITYWIZARD;
+  private static final String codeDefWizardXPath = IncompleteDocSettings.EMLPATH+IncompleteDocSettings.ADDITIONALMETADATA+"/"+IncompleteDocSettings.METADATA+
+   "/"+IncompleteDocSettings.CODEDEFINITIONWIZARD;
  
   /**
    * Serialize the DOM tree to file system. This method would not overwrite
@@ -579,17 +586,112 @@ public  class EML200DataPackage extends AbstractDataPackage
   }
   
   /**
+   *If this package for tracing the change
+   * @return true if it is for tracing the change
+   */
+  public boolean isTracingChange()
+  {
+    boolean isTracing = false;
+    String packageTracePath = packageWizardXpath +"/"+IncompleteDocSettings.TRACINGCHANGE;
+    String entityTracePath =entityWizardXPath + "/"+IncompleteDocSettings.TRACINGCHANGE;
+    String codeDefTracePath = codeDefWizardXPath +"/"+IncompleteDocSettings.TRACINGCHANGE;
+    NodeList nodes = null;
+    try {
+        nodes = XMLUtilities.getNodeListWithXPath(metadataNode, packageTracePath);
+        if (nodes != null && nodes.getLength() > 0) 
+        {
+          isTracing = true;
+        }
+        else
+        {
+          nodes = XMLUtilities.getNodeListWithXPath(metadataNode,entityTracePath);
+          if (nodes != null && nodes.getLength() >0)
+          {
+            isTracing = true;
+          }
+          else
+          {
+            nodes = XMLUtilities.getNodeListWithXPath(metadataNode, codeDefTracePath);
+            if (nodes != null && nodes.getLength() >0)
+            {
+              isTracing = true;
+            }
+            
+          }
+        }
+    } catch (Exception w) {
+        Log.debug(30, "Problem with getting isTracingChange " + w.toString());
+
+    }
+    return isTracing;
+  }
+  
+  /**
+   * Remove the tracingChangeElement from package tree.
+   */
+  public void removeTracingChangeElement()
+  {
+    String packageTracePath = packageWizardXpath +"/"+IncompleteDocSettings.TRACINGCHANGE;
+    String entityTracePath =entityWizardXPath + "/"+IncompleteDocSettings.TRACINGCHANGE;
+    String codeDefTracePath = codeDefWizardXPath +"/"+IncompleteDocSettings.TRACINGCHANGE;
+    NodeList nodes = null;
+    try {
+        nodes = XMLUtilities.getNodeListWithXPath(metadataNode, packageTracePath);
+        if (nodes != null && nodes.getLength() > 0) 
+        {
+          Node node = nodes.item(0);
+          removeTheNode(node);
+        }
+        else
+        {
+          nodes = XMLUtilities.getNodeListWithXPath(metadataNode,entityTracePath);
+          if (nodes != null && nodes.getLength() >0)
+          {
+            Node node = nodes.item(0);
+            removeTheNode(node);
+          }
+          else
+          {
+            nodes = XMLUtilities.getNodeListWithXPath(metadataNode, codeDefTracePath);
+            if (nodes != null && nodes.getLength() >0)
+            {
+              Node node = nodes.item(0);
+              removeTheNode(node);
+            }
+            
+          }
+        }
+    } catch (Exception w) {
+        Log.debug(30, "Couldn't remove the tracingChange element " + w.toString());
+
+    }
+  }
+  
+  /*
+   * Remove the given node
+   */
+  private void removeTheNode(Node node)
+  {
+    if(node != null)
+    {
+      Node parentNode = node.getParentNode();
+      if(parentNode != null)
+      {
+        Log.debug(35, "remove the node in EML200DataPackage. removeTheNode");
+        parentNode.removeChild(node);
+      }
+     
+    }
+  }
+  
+  
+  /**
    * Gets the status of the completion of this package 
    * @return three status - completed, incomplete(new package wizard) or incomplete(text import wizard)
    */
   public String getCompletionStatus()
   {
-	  String packageWizardXpath = IncompleteDocSettings.EMLPATH+IncompleteDocSettings.ADDITIONALMETADATA+"/"+IncompleteDocSettings.METADATA+
-	                                           "/"+IncompleteDocSettings.PACKAGEWIZARD;
-	  String entityWizardXPath = IncompleteDocSettings.EMLPATH+IncompleteDocSettings.ADDITIONALMETADATA+"/"+IncompleteDocSettings.METADATA+
-                                               "/"+IncompleteDocSettings.ENTITYWIZARD;
-	  String codeDefWizardXPath = IncompleteDocSettings.EMLPATH+IncompleteDocSettings.ADDITIONALMETADATA+"/"+IncompleteDocSettings.METADATA+
-                                              "/"+IncompleteDocSettings.CODEDEFINITIONWIZARD;
+	
       NodeList nodes = null;
       try {
           nodes = XMLUtilities.getNodeListWithXPath(metadataNode, packageWizardXpath);

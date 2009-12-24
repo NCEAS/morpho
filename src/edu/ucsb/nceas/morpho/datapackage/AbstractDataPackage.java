@@ -1574,6 +1574,17 @@ public abstract class AbstractDataPackage extends MetadataObject
   abstract public String getCompletionStatus();
   
   /**
+   *If this package for tracing the change
+   * @return true if it is for tracing the change
+   */
+  abstract public boolean isTracingChange();
+  
+  /**
+   * Remove the tracingChangeElement from package tree.
+   */
+  abstract public void removeTracingChangeElement();
+  
+  /**
    * Removes the information on additional metadata for incomplete data package
    */
   abstract public void removeInfoForIncompletePackage();

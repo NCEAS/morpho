@@ -663,6 +663,28 @@ public class EML2Beta6DataPackage extends AbstractDataPackage
        +"removeInfoForIncompletePackage");  
   }
   
+  /**
+   *If this package for tracing the change
+   * @return true if it is for tracing the change
+   */
+  public boolean isTracingChange()
+  {
+    throw new java.lang.UnsupportedOperationException(
+        "EML2Beta6DataPackage - method not implemented - "
+       +"isTracingChange");  
+  }
+  
+  /**
+   * Remove the tracingChangeElement from package tree.
+   */
+  public void removeTracingChangeElement()
+  {
+    throw new java.lang.UnsupportedOperationException(
+        "EML2Beta6DataPackage - method not implemented - "
+       +"removeTracingChangeElement");  
+  }
+  
+  
  
   
 }

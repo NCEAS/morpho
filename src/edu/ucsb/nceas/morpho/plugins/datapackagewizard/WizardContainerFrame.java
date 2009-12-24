@@ -1433,6 +1433,8 @@ public class WizardContainerFrame
 			  //appends additionalMetadata par original eml
 			  emlWithIncompleteInfo.append(IncompleteDocSettings.ADDITIONALMETADATAOPENINGTAG+
               IncompleteDocSettings.METADATAOPENINGTAG+IncompleteDocSettings.PACKAGEWIZARDOPENINGTAG);
+			  emlWithIncompleteInfo.append(IncompleteDocSettings.TRACINGCHANGEOPENINGTAG+IncompleteDocSettings.TRUE+
+			                                             IncompleteDocSettings.TRACINGCHANGECLOSINGTAG);
 			  if(pageStack != null)
 			  {
 				  int size = pageStack.size();
@@ -1530,8 +1532,10 @@ public class WizardContainerFrame
 			  emlWithIncompleteInfo.append(originalEML.substring(0,index));
 			  //appends additionalMetadata par original eml
 			  emlWithIncompleteInfo.append(IncompleteDocSettings.ADDITIONALMETADATAOPENINGTAG+
-              IncompleteDocSettings.METADATAOPENINGTAG+IncompleteDocSettings.ENTITYWIZARDOPENINGTAG+
-              IncompleteDocSettings.INDEXOPENINGTAG+entityIndex+IncompleteDocSettings.INDEXCLOSINGTAG);			  
+              IncompleteDocSettings.METADATAOPENINGTAG+IncompleteDocSettings.ENTITYWIZARDOPENINGTAG);
+			  emlWithIncompleteInfo.append(IncompleteDocSettings.TRACINGCHANGEOPENINGTAG+IncompleteDocSettings.TRUE+
+            IncompleteDocSettings.TRACINGCHANGECLOSINGTAG);
+        emlWithIncompleteInfo.append(IncompleteDocSettings.INDEXOPENINGTAG+entityIndex+IncompleteDocSettings.INDEXCLOSINGTAG);			  
         emlWithIncompleteInfo.append(getsImportAndPageInfo());   
         emlWithIncompleteInfo.append(IncompleteDocSettings.ENTITYWIZARDCLOSINGTAG+
         IncompleteDocSettings.METADATACLOSINGTAG+IncompleteDocSettings.ADDITIONALMETADATACLOSINGTAG+
@@ -1580,8 +1584,10 @@ public class WizardContainerFrame
         emlWithIncompleteInfo.append(originalEML.substring(0,index));
         //appends additionalMetadata par original eml
         emlWithIncompleteInfo.append(IncompleteDocSettings.ADDITIONALMETADATAOPENINGTAG+
-              IncompleteDocSettings.METADATAOPENINGTAG+IncompleteDocSettings.CODEDEFINITIONWIZARDOPENINGTAG+
-              IncompleteDocSettings.INDEXOPENINGTAG+entityIndex+IncompleteDocSettings.INDEXCLOSINGTAG);
+              IncompleteDocSettings.METADATAOPENINGTAG+IncompleteDocSettings.CODEDEFINITIONWIZARDOPENINGTAG);
+        emlWithIncompleteInfo.append(IncompleteDocSettings.TRACINGCHANGEOPENINGTAG+IncompleteDocSettings.TRUE+
+            IncompleteDocSettings.TRACINGCHANGECLOSINGTAG);
+        emlWithIncompleteInfo.append(IncompleteDocSettings.INDEXOPENINGTAG+entityIndex+IncompleteDocSettings.INDEXCLOSINGTAG);
         emlWithIncompleteInfo.append(IncompleteDocSettings.EDITINGATTRIBUTEOPENINGTAG);
         emlWithIncompleteInfo.append(IncompleteDocSettings.EDITINGENTITYINDEXOPENINGTAG);
         emlWithIncompleteInfo.append(editingEntityIndex);
