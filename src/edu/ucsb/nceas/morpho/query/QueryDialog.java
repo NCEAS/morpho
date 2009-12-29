@@ -87,7 +87,7 @@ public class QueryDialog extends JDialog
   String titleSearchPath = "title";
 
   /** default search path for abstract   */
-  String abstractSearchPath = "abstract/para";
+  Vector<String> abstractSearchPaths = new Vector<String>();
 
   /** default search path for keyword   */
   String keywordSearchPath = "keyword";
@@ -182,9 +182,12 @@ public class QueryDialog extends JDialog
     if (temp != null) {
       titleSearchPath = temp;
     }
-    temp = config.get("abstractSearchPath", 0);
-    if (temp != null) {
-      abstractSearchPath = temp;
+    // default abstract paths
+    abstractSearchPaths.add("abstract/para");
+    abstractSearchPaths.add("abstract");
+    Vector tempList = config.get("abstractSearchPath");
+    if (tempList != null && !tempList.isEmpty()) {
+      abstractSearchPaths = tempList;
     }
     temp = config.get("keywordSearchPath", 0);
     if (temp != null) {
@@ -728,11 +731,13 @@ public class QueryDialog extends JDialog
           termGroup.addChild(newTerm);
         }
         if (tqtp.getAbstractState()) {
-          path = abstractSearchPath;
-          if (!value.equals("")) {
-            QueryTerm newTerm = new QueryTerm(caseSensitive, mode, value, path);
-            termGroup.addChild(newTerm);
-          }
+        	for (String asp: abstractSearchPaths) {
+	          path = asp;
+	          if (!value.equals("")) {
+	            QueryTerm newTerm = new QueryTerm(caseSensitive, mode, value, path);
+	            termGroup.addChild(newTerm);
+	          }
+        	}
         }
         if (tqtp.getKeywordsState()) {
           path = keywordSearchPath;
@@ -1019,7 +1024,7 @@ public class QueryDialog extends JDialog
         String path = tempQT.getPathExpression();
         if ( (path == null)||
              (path.equals(titleSearchPath)) ||
-             (path.equals(abstractSearchPath)) ||
+             abstractSearchPaths.contains(path) ||
              (path.equals(keywordSearchPath)) ) {
           foundSubjectGroup = true;
           subjectGroup = tempSubjectGroup;
@@ -1076,7 +1081,7 @@ public class QueryDialog extends JDialog
               tq.setAllState(false);
               if (pathExpression.equals(titleSearchPath)) {
                 tq.setTitleState(true);
-              } else if (pathExpression.equals(abstractSearchPath)) {
+              } else if (abstractSearchPaths.contains(pathExpression)) {
                 tq.setAbstractState(true);
               } else if (pathExpression.equals(keywordSearchPath)) {
                 tq.setKeywordsState(true);
