@@ -51,6 +51,7 @@ import edu.ucsb.nceas.morpho.util.StateChangeEvent;
 import edu.ucsb.nceas.morpho.util.StateChangeMonitor;
 import edu.ucsb.nceas.morpho.util.UISettings;
 import edu.ucsb.nceas.morpho.util.Util;
+import edu.ucsb.nceas.morpho.util.XMLTransformer;
 import edu.ucsb.nceas.morpho.plugins.WizardPageInfo;
 
 import java.util.Vector;
@@ -61,6 +62,8 @@ import java.awt.datatransfer.Transferable;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.Reader;
 
 import javax.swing.ImageIcon;
@@ -68,6 +71,7 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
 import org.w3c.dom.Document;
+import org.w3c.dom.Node;
 
 
 /**
@@ -1440,7 +1444,20 @@ public class DataPackagePlugin
    */
   public Document getDocumentNode(String docid, String location)
   {
-    Document doc = null;
+    Document doc = null; 
+    AbstractDataPackage adp = getAbstractDataPackage(docid, location);
+    if(adp != null)
+    {
+      doc = adp.getDocument();
+    }
+    return doc;
+  }
+  
+  /*
+   * Gets the abstract dataPackage from given docid and location
+   */
+  private AbstractDataPackage getAbstractDataPackage(String docid, String location)
+  {
     boolean local = false;
     boolean metacat = false;
     if (location.equals(AbstractDataPackage.LOCAL)) {
@@ -1454,11 +1471,7 @@ public class DataPackagePlugin
       metacat = true;
     }
     AbstractDataPackage adp = DataPackageFactory.getDataPackage(docid, metacat, local);
-    if(adp != null)
-    {
-      doc = adp.getDocument();
-    }
-    return doc;
+    return adp;
   }
 
 
@@ -1593,8 +1606,163 @@ public class DataPackagePlugin
    */
   public void exportToBDP(File outputFile, String styleSheetLocation, String docid, String documentLocation) throws Exception
   {
-    Log.debug(5, "exporting to BDP hasn't done yet");
+    //Log.debug(5, "exporting to BDP hasn't done yet");
+    //get output file writer
+    FileWriter outputFileWriter = null;
+      
+    //get style sheet reader
+    File styleSheetFile = new File(styleSheetLocation);
+    FileReader styleSheetReader = null;
+    File styleSheetDir = null;
+    try
+    {
+      styleSheetReader = new FileReader(styleSheetFile);
+      styleSheetDir = styleSheetFile.getParentFile();
+    }
+    catch(Exception e)
+    {
+      //Log.debug(5, "Morpho couldn't find a style sheet file at location "+styleSheetLocation);
+      //return; 
+      throw new Exception("Morpho couldn't find a style sheet file at location "+styleSheetLocation);
+      
+    }
+      
+    AbstractDataPackage dataPackage = getAbstractDataPackage(docid, documentLocation);
+    if(dataPackage == null)
+    {
+      throw new Exception("Morpho couldn't open the data package with docid "+docid+" at the location "+documentLocation);
+    }
+    XMLTransformer transformer = XMLTransformer.getInstance();
+    //since BDP only support one entity, we have to separately 
+    int size = dataPackage.getEntityCount();
+    if( size <= 1 )
+    {
+      doTransform(transformer, dataPackage.getDocument(), styleSheetReader, styleSheetDir.getAbsolutePath(), outputFile);
+    }
+    else
+    {
+      //we have to handle multiple entities by different file name.
+      FileName name = new FileName(outputFile);
+      String fileName = name.getFileName();
+      String extension = name.getExtension();
+      if(fileName != null)
+      {
+        //store the entity node into an array
+        //note: entityArrary[0] contains the last entity.
+        Node[] entityArray = new Node[size];
+        for(int i=0; i<size; i++)
+        {
+          
+          entityArray[i] = dataPackage.deleteLastEntity();
+        }
+        //now, datapackage doesn't have any entity
+        for(int i=0; i<size; i++)
+        {
+          Node node = entityArray[size-i-1];
+          if(node != null)
+          {
+            Entity entity = new Entity(node);
+            dataPackage.insertEntity(entity, 0);
+            File newOutPutFile = new File(fileName+i+extension);          
+            styleSheetReader = new FileReader(styleSheetFile);
+            doTransform(transformer, dataPackage.getDocument(), styleSheetReader, styleSheetDir.getAbsolutePath(), newOutPutFile);
+            dataPackage.deleteEntity(0);
+          }
+        }
+      }
+      else
+      {
+        throw new Exception("The output file name is null");
+      }
+    }
+    
+  }
+  
+  /*
+   * Transform a document to another metadata format and write it to an output file
+   */
+  private void doTransform(XMLTransformer transformer, Document emlDoc, 
+      Reader styleSheetReader, String xslLocation, File outputFile) throws Exception
+  {
+    Reader anotherMetadataReader = transformer.transform(emlDoc, styleSheetReader, xslLocation);
+    FileWriter outputFileWriter = new FileWriter(outputFile);
+    char[] chartArray = new char[4*1024];
+    int index = anotherMetadataReader.read(chartArray);
+    while(index != -1)
+    {
+      outputFileWriter.write(chartArray, 0, index);
+      outputFileWriter.flush();
+      index = anotherMetadataReader.read(chartArray);
+    }
+    anotherMetadataReader.close();
+    outputFileWriter.close();
   }
 
 
+  /*
+   * Represents a file name in two parts: file name and extension.
+   * For instance, file name "example.xml" will be split into example and .xml
+   * file name "example" will be splict into example and "".
+   */
+  private class FileName
+  {
+    private String fileName = null;
+    private String extension = "";
+    private File file = null;
+    private static final String DOT = ".";
+    
+    /**
+     * Constructor will parse the file name
+     * @param file
+     */
+    public FileName(File file)
+    {
+        this.file = file;
+        parse();
+     
+    }
+    
+    /*
+     * Parse the file name into two parts
+     */
+    private void parse()
+    {
+      if(file != null)
+      {
+        String name = file.getName();
+        Log.debug(30, "file name in DataPkcagPlugin. parser() "+ name);
+        String path = file.getParent();
+        Log.debug(30, "file path in DataPkcagPlugin. parser() "+ path);
+        int position = name.lastIndexOf(DOT);
+        if(position != -1)
+        {
+          fileName = path+File.separator+name.substring(0, position);
+          extension = name.substring(position);
+        }
+        else
+        {
+          fileName = path+File.separator+name;
+          extension = "";
+        }
+      }
+    }
+    
+    /**
+     * Gets file name part
+     * @return
+     */
+    public String getFileName()
+    {
+      return this.fileName;
+    }
+    
+    /**
+     * Gets the extension part
+     * @return
+     */
+    public String getExtension()
+    {
+      return this.extension;
+    }
+  }
 }//DataPackagePlugin
