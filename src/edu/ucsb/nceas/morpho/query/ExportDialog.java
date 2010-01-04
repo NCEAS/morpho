@@ -240,18 +240,20 @@ public class ExportDialog extends JDialog
     Box controlButtonsBox = Box.createHorizontalBox();
     controlButtonsBox.add(Box.createHorizontalGlue());
     
-    // Diable the execute action
-    executeAction.setEnabled(false);
-    executeButton = new JButton(executeAction);   
-    controlButtonsBox.add(executeButton);
-    controlButtonsBox.add(Box.createHorizontalStrut(PADDINGWIDTH));
-    
     //Cancel button
     GUIAction cancelAction = new GUIAction("Cancel", null, 
                                                       new CancelCommand(this));
     cancelButton = new JButton(cancelAction);
     controlButtonsBox.add(cancelButton);
     controlButtonsBox.add(Box.createHorizontalStrut(PADDINGWIDTH));
+    
+    // Diable the execute action
+    executeAction.setEnabled(false);
+    executeButton = new JButton(executeAction);   
+    controlButtonsBox.add(executeButton);
+    controlButtonsBox.add(Box.createHorizontalStrut(PADDINGWIDTH));
+    
+   
     
     // Add controlButtonsBox to bottomBox
     bottomBox.add(controlButtonsBox);
