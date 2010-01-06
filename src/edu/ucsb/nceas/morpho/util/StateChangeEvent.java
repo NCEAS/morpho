@@ -242,6 +242,12 @@ public class StateChangeEvent extends ChangeEvent
     public static String ACCESS_LIST_MODIFIED
         = "accessListModified";
     
+    /**
+     *  Public constant to denote that the Save has occurred  
+     */
+    public static String SAVE_DATAPACKAGE
+        = "saveDatapackage";
+    
     
     
         

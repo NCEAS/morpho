@@ -33,6 +33,9 @@ import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
 import edu.ucsb.nceas.morpho.util.Command;
 import edu.ucsb.nceas.morpho.util.GUIAction;
 import edu.ucsb.nceas.morpho.util.Log;
+import edu.ucsb.nceas.morpho.util.SaveEvent;
+import edu.ucsb.nceas.morpho.util.StateChangeEvent;
+import edu.ucsb.nceas.morpho.util.StateChangeMonitor;
 import edu.ucsb.nceas.morpho.util.Util;
 import edu.ucsb.nceas.morpho.framework.UIController;
 import edu.ucsb.nceas.morpho.plugins.ServiceController;
@@ -338,6 +341,8 @@ public class SaveDialog extends JDialog
     boolean problem = false;
     Morpho morpho = Morpho.thisStaticInstance;
     String location = adp.getLocation();
+    // track the save event
+    SaveEvent saveEvent = new SaveEvent(this, StateChangeEvent.SAVE_DATAPACKAGE);
     if (location.equals("")) { // only update version if new
       try {
           if (upgradeEml.isSelected()) {
@@ -373,6 +378,8 @@ public class SaveDialog extends JDialog
 
       try{
         String id = adp.getAccessionNumber();
+        // initial id
+        saveEvent.setInitialId(id);
         if (id.indexOf("temporary")>-1) {
           AccessionNumber an = new AccessionNumber(morpho);
           String nextid = an.getNextId();
@@ -470,12 +477,15 @@ public class SaveDialog extends JDialog
 				problem = true;
 		}
 
+		saveEvent.setFinalId(adp.getAccessionNumber());
 	  this.setVisible(false);
 	  this.dispose();
 	  //delete the incomplete file
 	  Util.deleteAutoSavedFile(adp);
 
     if (!problem) {
+    	 //alert listeners
+        StateChangeMonitor.getInstance().notifyStateChange(saveEvent);
       if (showPackageFlag) {
         UIController.showNewPackageNoLocChange(adp);
       }
