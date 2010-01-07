@@ -359,7 +359,7 @@ public class WidgetFactory {
   };
 
 
-  public static JComboBox makePickList(String[] listValues, boolean isEditable,
+  public static JComboBox makePickList(Object[] listValues, boolean isEditable,
                                     int selectedIndex, ItemListener listener) {
 
     if (listValues==null) listValues = new String[] { "" };
