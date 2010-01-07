@@ -564,7 +564,10 @@ public class DataViewer extends javax.swing.JPanel
 	}
     
     // allow other plugins to modify this pop up
-    public void addPopupMenuItem(GUIAction guiAction) {
+    public void addPopupMenuItem(GUIAction guiAction, boolean sep) {
+    	if (sep) {
+    		popup.add(new JSeparator());
+    	}
 		JMenuItem menuItem = new JMenuItem(guiAction);
 		popup.add(menuItem);
     }
