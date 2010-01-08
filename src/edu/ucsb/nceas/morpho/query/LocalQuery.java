@@ -29,6 +29,7 @@ package edu.ucsb.nceas.morpho.query;
 import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.datastore.DataStore;
 import edu.ucsb.nceas.morpho.framework.ConfigXML;
+import edu.ucsb.nceas.morpho.framework.QueryRefreshInterface;
 import edu.ucsb.nceas.morpho.util.Log;
 import java.io.*;
 
@@ -195,8 +196,8 @@ public class LocalQuery
 	   Vector filevector = new Vector();
 	    // get a list of all files to be searched
 	    getFiles(xmldir, filevector);
-
-       return execute(filevector);
+      boolean fromDataDir = true;
+       return execute(filevector, fromDataDir);
   }
   
   /**
@@ -208,13 +209,14 @@ public class LocalQuery
 	  File xmldir = new File(incompleteDir);
 	  Vector fileVector = new Vector();
 	  getFiles(xmldir, fileVector);
-	  return execute(fileVector);
+	  boolean fromDataDir = false;
+	  return execute(fileVector, fromDataDir);
   }
   
   /*
    * Run the query against the local document store
    */
-  private ResultSet execute(Vector filevector)
+  private ResultSet execute(Vector filevector, boolean fromDataDir)
   {
     // first, get a list of all packages that meet the query requirements
     Vector packageList = executeLocal(this.savedQuery.getQueryGroup(), filevector);
@@ -227,11 +229,16 @@ public class LocalQuery
       Enumeration pl = packageList.elements();
       while (pl.hasMoreElements()) {
         String packageName = (String)pl.nextElement();
-        row = createRSRow(packageName);
+        String status = QueryRefreshInterface.LOCALCOMPLETE;
+        if(!fromDataDir)
+        {
+          //TODO we need to decide status for incomplete document.
+        }
+        row = createRSRow(packageName, status);
         rowCollection.addElement(row);
       }
       //rs = new ResultSet(savedQuery, "local", rowCollection, morpho);
-      rs = new HeadResultSet(savedQuery, "local", rowCollection, morpho);
+      rs = new HeadResultSet(savedQuery, rowCollection, morpho);
     }
 
     return rs;
@@ -405,7 +412,7 @@ public class LocalQuery
   }
 
   /** Create a row vector that matches that needed for the ResultSet vector */
-  private Vector createRSRow(String docid) {
+  private Vector createRSRow(String docid, String localStatus) {
     int firstSep = docid.indexOf(separator);
     String filename = docid.substring(0,firstSep) + File.separator +
                       docid.substring(firstSep+1, docid.length());
@@ -465,8 +472,10 @@ public class LocalQuery
     rss.addElement(docname);                              // docname
     String thisDoctype = (String)doctype_collection.get(docid);
     rss.addElement(thisDoctype);                          // doctype
-    rss.addElement(new Boolean(true));                    // isLocal
-    rss.addElement(new Boolean(false));                   // isMetacat
+    //rss.addElement(new Boolean(true));                    // isLocal
+    //rss.addElement(new Boolean(false));                   // isMetacat
+    rss.addElement(localStatus);                    // isLocal
+    rss.addElement(QueryRefreshInterface.NONEXIST); // isMetacat
     // Note that this tripleList does not contain the types of the
     // subject and objects identified inthe triple, so it differs
     // from the tripleList generated for metacat results

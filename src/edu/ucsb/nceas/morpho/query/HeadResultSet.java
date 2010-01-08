@@ -27,6 +27,7 @@
 package edu.ucsb.nceas.morpho.query;
 
 import edu.ucsb.nceas.morpho.Morpho;
+import edu.ucsb.nceas.morpho.framework.QueryRefreshInterface;
 import edu.ucsb.nceas.morpho.util.*;
 import java.io.InputStream;
 import java.util.Collections;
@@ -62,10 +63,10 @@ public class HeadResultSet extends ResultSet
    * Construct a HeadResultSet instance from a vector of vectors;
    * for use with LocalQuery
    */
-  public HeadResultSet(Query query, String source,
+  public HeadResultSet(Query query,
                        Vector vec, Morpho morpho)
   {
-    super(query, source, vec, morpho);
+    super(query, vec, morpho);
     consolidateResults();
 
   }
@@ -112,8 +113,8 @@ public class HeadResultSet extends ResultSet
       if (col == 6)
       {
         // cast value to Boolean object
-        Boolean isLocally = (Boolean)value;
-        if (isLocally.booleanValue())
+        String localStatus = (String)value;
+        if (localStatus != null && localStatus.equals(QueryRefreshInterface.LOCALCOMPLETE))
         {
           // If is local, the value will be a local icon
           value = localIcon;
@@ -129,8 +130,8 @@ public class HeadResultSet extends ResultSet
       if (col == 7)
       {
         // cast value to Boolean object
-        Boolean isNet = (Boolean)value;
-        if (isNet.booleanValue())
+        String netStatus = (String)value;
+        if (netStatus != null && netStatus.equals(QueryRefreshInterface.NETWWORKCOMPLETE))
         {
           // If is local, the value will be a local icon
           value = metacatIcon;

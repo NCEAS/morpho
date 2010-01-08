@@ -51,13 +51,18 @@ public interface QueryRefreshInterface
   public static final String NET          ="Net";
   
   /** Local complete document*/
-  public static final String LOCALCOMPLETE = "local";
+  public static final String LOCALCOMPLETE = "local-complete";
+  
+  /** network complete document*/
+  public static final String NETWWORKCOMPLETE = "net-complete";
   
   /** Local crashed document */
   public static final String LOCALCRASH = "auto-saved-incomplete";
   
   /** local saved incomplete document*/
   public static final String LOCALINCOMPLETE = "user-saved-incomplete";
+  
+  public static final String NONEXIST = "non-exsit";
 
 
   /**

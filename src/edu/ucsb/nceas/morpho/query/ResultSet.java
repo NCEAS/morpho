@@ -181,10 +181,10 @@ public class ResultSet extends AbstractTableModel implements ColumnSortableTable
    * Construct a ResultSet instance from a vector of vectors;
    * for use with LocalQuery
    */
-  public ResultSet(Query query, String source, Vector vec, Morpho morpho) {
+  public ResultSet(Query query, Vector vec, Morpho morpho) {
 
     initIcons();
-    init(query, source, morpho);
+    init(query, morpho);
     initMapping();
     this.resultsVector = vec;
   }
@@ -197,7 +197,7 @@ public class ResultSet extends AbstractTableModel implements ColumnSortableTable
                     InputStream resultsXMLStream, Morpho morpho) {
 
     initIcons();
-    init(query, source, morpho);
+    init(query, morpho);
     initMapping();
     Log.debug(30, "(2.41) Creating result set ...");
      resultsVector = new Vector();
@@ -225,7 +225,7 @@ public class ResultSet extends AbstractTableModel implements ColumnSortableTable
 
 
   // common initialization functionality for constructors
-  private void init(Query query, String source, Morpho morpho) {
+  private void init(Query query, Morpho morpho) {
 
     this.savedQuery   = query;
     this.morpho       = morpho;

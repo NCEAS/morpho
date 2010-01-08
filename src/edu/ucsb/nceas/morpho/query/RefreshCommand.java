@@ -166,9 +166,9 @@ public class RefreshCommand implements Command
      {
        Morpho morphoInQuery = query.getMorpho();
        Vector vector = new Vector();
-       String source ="";
+       //String source ="";
        HeadResultSet results = new HeadResultSet(
-                                       query, source, vector, morphoInQuery);
+                                       query, vector, morphoInQuery);
        ResultPanel resultDisplayPanel = new ResultPanel(dialog, results, null);
        resultDisplayPanel.setVisible(true);
        dialog.setResultPanel(resultDisplayPanel);

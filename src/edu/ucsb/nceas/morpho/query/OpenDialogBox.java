@@ -287,9 +287,9 @@ public class OpenDialogBox extends JDialog
     //results = ownerQuery.execute();
     //ownerPanel = new ResultPanel(this, results, mediator);
     Vector vector = new Vector();
-    String source ="";
+    //String source ="";
     HeadResultSet results = new HeadResultSet(
-                                       ownerQuery, source, vector, morpho);
+                                       ownerQuery, vector, morpho);
     ownerPanel = new ResultPanel(this, results, mediator);
     ownerPanel.setVisible(true);
     StateChangeEvent event = null;

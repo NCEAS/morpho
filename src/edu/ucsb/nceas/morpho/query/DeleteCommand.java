@@ -340,9 +340,9 @@ public class DeleteCommand implements Command
             resultVector = updateResultVector(resultVector);
             //create a new HeadResultSet base on the modified resultSet vector
             // null is source(local or metacat)
-            String source ="both";
+            //String source ="both";
             HeadResultSet newResultSet =
-                         new HeadResultSet(query, source, resultVector,morpho);
+                         new HeadResultSet(query, resultVector,morpho);
             // The size of resultpanel for morpho frame
              if (!fromDialog)
              {

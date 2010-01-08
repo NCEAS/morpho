@@ -117,9 +117,9 @@ public class SearchCommand implements Command
      Morpho morphoInQuery = query.getMorpho();
      resultWindow.setVisible(true);
      Vector vector = new Vector();
-     String source ="";
+     //String source ="";
      HeadResultSet results = new HeadResultSet(
-                                         query, source, vector, morphoInQuery);
+                                         query, vector, morphoInQuery);
      boolean listCrashedDoc = false;
      ResultPanel resultDisplayPanel = new ResultPanel(
      null,results, 12, null, resultWindow.getDefaultContentAreaSize(),  listCrashedDoc);
