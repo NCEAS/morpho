@@ -49,6 +49,15 @@ public interface QueryRefreshInterface
   public static final String LASTMODIFIED = "Last Modified";
   public static final String LOCAL        ="Local";
   public static final String NET          ="Net";
+  
+  /** Local complete document*/
+  public static final String LOCALCOMPLETE = "local";
+  
+  /** Local crashed document */
+  public static final String LOCALCRASH = "auto-saved-incomplete";
+  
+  /** local saved incomplete document*/
+  public static final String LOCALINCOMPLETE = "user-saved-incomplete";
 
 
   /**

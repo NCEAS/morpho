@@ -171,15 +171,6 @@ public class ResultSet extends AbstractTableModel implements ColumnSortableTable
   /** Store the index of triple in resultsVector*/
   public static final int TRIPLEINDEX =11;
   
-  /** Local document*/
-  public static final String LOCAL = "local";
-  
-  /** Local crashed document */
-  public static final String LOCALCRASH = "localCrash";
-  
-  /** local saved incomplete document*/
-  public static final String LOCALINCOMPLETE = "localIncomplete";
-
   /** Store the height fact for table row height */
   private static final int HEIGHTFACTOR = 2;
 
