@@ -600,9 +600,11 @@ public class ResultSet extends AbstractTableModel implements ColumnSortableTable
             originalRow.setElementAt(packageIcon, PACKAGEICONINDEX);
           }
           //originalRow.setElementAt(new Boolean(true), numColumns+5);
-          originalRow.setElementAt(new Boolean(true), ISLOCALINDEX);
+          //originalRow.setElementAt(new Boolean(true), ISLOCALINDEX);
+          originalRow.setElementAt(QueryRefreshInterface.LOCALCOMPLETE, ISLOCALINDEX);
           //originalRow.setElementAt(new Boolean(true), numColumns+6);
-          originalRow.setElementAt(new Boolean(true), ISMETACATINDEX);
+          //originalRow.setElementAt(new Boolean(true), ISMETACATINDEX);
+          originalRow.setElementAt(QueryRefreshInterface.NETWWORKCOMPLETE, ISMETACATINDEX);
         } else {
           resultsVector.addElement(row);
         }
