@@ -193,7 +193,7 @@ public class ResultSet extends AbstractTableModel implements ColumnSortableTable
    * Construct a ResultSet instance given a query object and a
    * InputStream that represents an XML encoding of the results.
    */
-  public ResultSet( Query query, String source,
+  public ResultSet( Query query, String localStatus, String metacatStatus,
                     InputStream resultsXMLStream, Morpho morpho) {
 
     initIcons();
@@ -207,7 +207,7 @@ public class ResultSet extends AbstractTableModel implements ColumnSortableTable
     // Set up the SAX document handlers for parsing
     try {
       // Get an instance of the parser
-      ResultsetHandler handler = new ResultsetHandler(morpho, source);
+      ResultsetHandler handler = new ResultsetHandler(morpho, localStatus, metacatStatus);
       parser = Morpho.createSaxParser(handler, null);
       Log.debug(30, "(2.43) Creating result set ...");
       // Set the ContentHandler to this instance

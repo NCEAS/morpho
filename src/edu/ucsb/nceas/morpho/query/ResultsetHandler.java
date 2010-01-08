@@ -50,15 +50,15 @@ public class ResultsetHandler implements ContentHandler, Runnable
   // global for accumulating characters in SAX parser
   private String accumulatedCharacters = null;
   //Flag indicating whether the results are from a local query
-  private boolean isLocal = false;
+  private String localStatus = null;
   // Flag indicating whether the results are from a metacat query
-  private boolean isMetacat = false;
+  private String metacatStatus = null;
   //Vetor to store the data
   private SynchronizeVector resultsVector;
   //input stream
   private InputStream resultsXMLStream;
   // source the location of search, local or network
-  private String source;
+  //private String source;
   // indicator if the parsing is done;
   private boolean isdone = false;
 
@@ -72,7 +72,7 @@ public class ResultsetHandler implements ContentHandler, Runnable
    */
   public ResultsetHandler(InputStream resultsXMLStream,
                           SynchronizeVector resultsVector,
-                          Morpho morpho, String source)
+                          Morpho morpho, String localStatus, String metacatStatus)
   {
      if (resultsXMLStream == null)
      {
@@ -81,7 +81,8 @@ public class ResultsetHandler implements ContentHandler, Runnable
      this.resultsXMLStream = resultsXMLStream;
      this.resultsVector = resultsVector;
      this.morpho = morpho;
-     this.source = source;
+     this.localStatus = localStatus;
+     this.metacatStatus = metacatStatus;
      init();
   }
 
@@ -90,11 +91,12 @@ public class ResultsetHandler implements ContentHandler, Runnable
    * @param morpho Morpho  contains configration info
    * @param source String  the location of search, local or network
    */
-  public ResultsetHandler(Morpho morpho, String source)
+  public ResultsetHandler(Morpho morpho, String localStatus, String metacatStatus)
  {
     resultsVector = new SynchronizeVector();
     this.morpho = morpho;
-    this.source = source;
+    this.localStatus = localStatus;
+    this.metacatStatus = metacatStatus;
     init();
  }
 
@@ -105,7 +107,7 @@ public class ResultsetHandler implements ContentHandler, Runnable
  {
    ConfigXML config = morpho.getConfiguration();
    returnFields = config.get("returnfield");
-   if (source.equals("local"))
+   /*if (source.equals("local"))
    {
      isLocal = true;
      isMetacat = false;
@@ -114,7 +116,7 @@ public class ResultsetHandler implements ContentHandler, Runnable
    {
      isLocal = false;
      isMetacat = true;
-   }
+   }*/
 
  }
 
@@ -267,8 +269,8 @@ public class ResultsetHandler implements ContentHandler, Runnable
      row.addElement(docid);
      row.addElement(docname);
      row.addElement(doctype);
-     row.addElement(new Boolean(isLocal));
-     row.addElement(new Boolean(isMetacat));
+     row.addElement(localStatus);
+     row.addElement(metacatStatus);
      row.addElement(tripleList);
 
      // Add this document row to the list of results

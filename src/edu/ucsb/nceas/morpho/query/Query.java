@@ -29,6 +29,7 @@ package edu.ucsb.nceas.morpho.query;
 import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.framework.ConfigXML;
 import edu.ucsb.nceas.morpho.framework.MorphoFrame;
+import edu.ucsb.nceas.morpho.framework.QueryRefreshInterface;
 import edu.ucsb.nceas.morpho.framework.SwingWorker;
 import edu.ucsb.nceas.morpho.util.Log;
 import edu.ucsb.nceas.morpho.util.SortableJTable;
@@ -834,7 +835,7 @@ public class Query extends DefaultHandler {
 // end looking at result
 */
 
-      metacatResults = new HeadResultSet(this, "metacat",
+      metacatResults = new HeadResultSet(this, QueryRefreshInterface.NONEXIST, QueryRefreshInterface.NETWWORKCOMPLETE,
                                      queryMetacat(), morpho);
 
     }
@@ -950,10 +951,12 @@ public class Query extends DefaultHandler {
 
 
          SynchronizeVector dataVector = new SynchronizeVector();
-         String source = "metacat";
+         //String source = "metacat";
          // parsing result set
+         String localStatus = QueryRefreshInterface.NONEXIST;
+         String metacatStatus = QueryRefreshInterface.NETWWORKCOMPLETE;
          ResultsetHandler handler = new ResultsetHandler(queryMetacat(),
-                                            dataVector,  morpho, source);
+                                            dataVector,  morpho, localStatus, metacatStatus);
          // start another thread for parser
          Thread parserThread = new Thread(handler);
          parserThread.start();

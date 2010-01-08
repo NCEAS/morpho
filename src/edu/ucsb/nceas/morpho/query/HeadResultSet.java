@@ -51,10 +51,10 @@ public class HeadResultSet extends ResultSet
    * Construct a HeadResultSet instance given a query object and a
    * InputStream that represents an XML encoding of the results.
    */
-  public HeadResultSet(Query query, String source,
+  public HeadResultSet(Query query, String localStatus, String metacatStatus,
                        InputStream resultsXMLStream, Morpho morpho)
   {
-    super(query, source, resultsXMLStream, morpho);
+    super(query, localStatus, metacatStatus, resultsXMLStream, morpho);
     consolidateResults();
   }
 
