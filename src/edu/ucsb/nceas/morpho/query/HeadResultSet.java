@@ -161,7 +161,7 @@ public class HeadResultSet extends ResultSet
   /**
    * Open a given row index of the result set using a delegated handler class
    */
-  public void openResultRecord(int row)
+  /*public void openResultRecord(int row)
   {
     try {
       Vector rowVector = (Vector)headResultsVector.elementAt(row);
@@ -169,7 +169,7 @@ public class HeadResultSet extends ResultSet
     } catch (ArrayIndexOutOfBoundsException aioobe) {
       Log.debug(1, "array index out of bounds");
     }
-  }
+  }*/
 
   /**
    * Merge a ResultSet onto this one using the docid as the join column

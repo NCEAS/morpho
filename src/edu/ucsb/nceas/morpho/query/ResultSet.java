@@ -490,7 +490,7 @@ public class ResultSet extends AbstractTableModel implements ColumnSortableTable
   /**
    * Open a given row index of the result set using a delegated handler class
    */
-  public void openResultRecord(int row)
+  /*public void openResultRecord(int row)
   {
     try {
       Vector rowVector = (Vector)resultsVector.elementAt(row);
@@ -498,12 +498,12 @@ public class ResultSet extends AbstractTableModel implements ColumnSortableTable
     } catch (ArrayIndexOutOfBoundsException aioobe) {
       Log.debug(1, "array index out of bounds");
     }
-  }
+  }*/
 
   /**
    * Open a given row of the result set using a delegated handler class
    */
-  protected void openResultRecord(Vector rowVector)
+  /*protected void openResultRecord(Vector rowVector)
   {
     int numHeaders = headers.length;
     String docid = null;
@@ -544,7 +544,7 @@ public class ResultSet extends AbstractTableModel implements ColumnSortableTable
     } catch (ServiceNotHandledException snhe) {
       Log.debug(6, snhe.getMessage());
     }
-  }
+  }*/
 
 
   /**

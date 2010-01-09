@@ -31,6 +31,7 @@ import edu.ucsb.nceas.morpho.datastore.MetacatUploadException;
 import edu.ucsb.nceas.morpho.framework.ConfigXML;
 import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
 import edu.ucsb.nceas.morpho.framework.MorphoFrame;
+import edu.ucsb.nceas.morpho.framework.QueryRefreshInterface;
 import edu.ucsb.nceas.morpho.framework.SwingWorker;
 import edu.ucsb.nceas.morpho.framework.UIController;
 import edu.ucsb.nceas.morpho.plugins.ServiceController;
@@ -117,8 +118,8 @@ public class ResultPanel extends JPanel implements StoreStateChangeEvent
   /**a string to keep track of the selected row's id*/
   private String selectedId = "";
   /**the location of the data package*/
-  boolean metacatLoc = false;
-  boolean localLoc = false;
+  private String metacatStatus = null;
+  private String localStatus = null;
   private String doctype = "";
   private Dimension preferredSize;
 
@@ -429,7 +430,14 @@ public class ResultPanel extends JPanel implements StoreStateChangeEvent
    */
   public boolean getMetacatLocation()
   {
-    return metacatLoc;
+    if(metacatStatus != null && metacatStatus.equals(QueryRefreshInterface.NETWWORKCOMPLETE))
+    {
+      return true;
+    }
+    else
+    {
+      return false;
+    }
   }
 
   /**
@@ -437,7 +445,14 @@ public class ResultPanel extends JPanel implements StoreStateChangeEvent
    */
   public boolean getLocalLocation()
   {
-    return localLoc;
+    if(localStatus != null && localStatus.equals(QueryRefreshInterface.LOCALCOMPLETE))
+    {
+      return true;
+    }
+    else
+    {
+      return false;
+    }
   }
 
   /**
@@ -626,8 +641,24 @@ public class ResultPanel extends JPanel implements StoreStateChangeEvent
     }//if
   }
 
-
-
+  /*
+   * Return true if the synchronize menu need be enable
+   */
+   private boolean enableSynchronizeMenu()
+   {
+     if ((localStatus == null && metacatStatus != null && metacatStatus.equals(QueryRefreshInterface.NETWWORKCOMPLETE)) ||
+         (metacatStatus == null && localStatus != null && localStatus.equals(QueryRefreshInterface.LOCALCOMPLETE))||
+         (localStatus != null && localStatus.equals(QueryRefreshInterface.NONEXIST) && metacatStatus != null && metacatStatus.equals(QueryRefreshInterface.NETWWORKCOMPLETE))||
+         (metacatStatus != null && metacatStatus.equals(QueryRefreshInterface.NONEXIST) && localStatus.equals(QueryRefreshInterface.LOCALCOMPLETE)))
+     {
+       return true;
+     }
+     else
+     {
+       return false;
+     }
+         
+   }
 
   class PopupListener extends MouseAdapter {
     // on the Mac, popups are triggered on mouse pressed, while mouseReleased triggers them
@@ -663,8 +694,10 @@ public class ResultPanel extends JPanel implements StoreStateChangeEvent
         docid = (String) rowV.elementAt(6);
         selectedId = docid;
         Log.debug(30, "selectedId is: " + docid);
-        localLoc = ( (Boolean) rowV.elementAt(9)).booleanValue();
-        metacatLoc = ( (Boolean) rowV.elementAt(10)).booleanValue();
+        //localLoc = ( (Boolean) rowV.elementAt(9)).booleanValue();
+        localStatus = (String) rowV.elementAt(ResultSet.ISLOCALINDEX);
+        //metacatLoc = ( (Boolean) rowV.elementAt(10)).booleanValue();
+        metacatStatus = (String) rowV.elementAt(ResultSet.ISMETACATINDEX);
         packageName = getIdWithoutVersion(selectedId);
         Log.debug(30, "the package name is: " + packageName);
         vers = getNumberOfPrevVersions(selectedId);
@@ -679,7 +712,7 @@ public class ResultPanel extends JPanel implements StoreStateChangeEvent
               new StateChangeEvent(
               pane,
               StateChangeEvent.SEARCH_RESULT_SELECTED));
-          if (localLoc ^ metacatLoc) {
+          if (enableSynchronizeMenu()) {
             // unsynchronized package
             monitor.notifyStateChange(
                 new StateChangeEvent(
@@ -738,7 +771,7 @@ public class ResultPanel extends JPanel implements StoreStateChangeEvent
         }
 
         synchronizeMenu.setEnabled
-                      ((localLoc && !metacatLoc)||(metacatLoc && !localLoc));
+                      (enableSynchronizeMenu());
         //uploadMenu.setEnabled(localLoc && !metacatLoc);
         //downloadMenu.setEnabled(metacatLoc && !localLoc);
         // delete menu always enable
