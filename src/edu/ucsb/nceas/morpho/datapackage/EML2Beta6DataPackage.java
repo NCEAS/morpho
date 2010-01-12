@@ -684,6 +684,16 @@ public class EML2Beta6DataPackage extends AbstractDataPackage
        +"removeTracingChangeElement");  
   }
   
+  /**
+   * Serialize metadata into into incomplete directory
+   */
+  public void serializeIncompleteMetadata()
+  {
+    throw new java.lang.UnsupportedOperationException(
+        "EML2Beta6DataPackage - method not implemented - "
+       +"serializeIncompleteMetadata");  
+  }
+  
   
  
   

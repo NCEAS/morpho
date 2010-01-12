@@ -151,7 +151,7 @@ public class WizardContainerFrame
 		                                             DataPackageWizardInterface.TEXT_IMPORT_ATTRIBUTE};
   private static final String EMPTYPROJECTTITLE = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"+
                                                   "<project><title> </title></project>";
-  private String manuallySaveID = null;
+  //private String manuallySaveID = null;
 
   
   /**
@@ -223,18 +223,18 @@ public class WizardContainerFrame
 	    	   {
 	    		   AccessionNumber an = new AccessionNumber(Morpho.thisStaticInstance);
 	    	     autoSaveID = an.getNextId();
-	    	     manuallySaveID = NewPackageWizardListener.TEMPORARYID;
+	    	     //manuallySaveID = NewPackageWizardListener.TEMPORARYID;
 	    		    	 
 	    	   }
 	    	   else
 	    	   {
-	    	     manuallySaveID = autoSaveID;
+	    	     //manuallySaveID = autoSaveID;
 	    	   }
 	    	   adp.setAutoSavedID(autoSaveID);	    
 	    	}
 	    	else
 	    	{
-	    	  manuallySaveID = autoSaveID;
+	    	 // manuallySaveID = autoSaveID;
 	    	}
 	    	dumpPackageToAutoSaveFile(autoSaveID);//onlywork for add entity wizard
     }
@@ -256,7 +256,7 @@ public class WizardContainerFrame
   		  String emlDoc = XMLUtilities.getDOMTreeAsString(adp.getMetadataNode(), false);
   		  //System.out.println("the original eml "+emlDoc);
   		  //System.out.println("the eml after appending incomplete info  "+emlDoc);
-  		  savePackageInCompleteDir(fileID, emlDoc);
+  		  autoSavingPackageInCompleteDir(fileID, emlDoc);
   	  }
     }
   }
@@ -1204,7 +1204,8 @@ public class WizardContainerFrame
    */
   public void manualSaveInCompletePackage() throws Exception
   {
-    saveInCompletePackage(manuallySaveID, DATADIR);
+    boolean userSaved = true;
+    saveInCompletePackage(autoSaveID, userSaved);
   }
   
   /*
@@ -1214,7 +1215,8 @@ public class WizardContainerFrame
   {
     try
     {
-	    saveInCompletePackage(autoSaveID, INCOMPLETEDIR);
+      boolean userSaved = false;
+	    saveInCompletePackage(autoSaveID, userSaved);
     }
     catch(Exception e)
     {
@@ -1223,9 +1225,9 @@ public class WizardContainerFrame
   }
   
   /*
-   * save incomplete package with given id and location
+   * save incomplete package with given id and if it is user saved
    */
-  private void saveInCompletePackage(String saveID, String location) throws Exception
+  private void saveInCompletePackage(String saveID, boolean userSaved) throws Exception
   {
 	  if(saveID != null && !disableIncompleteSaving)
 	  {
@@ -1258,13 +1260,13 @@ public class WizardContainerFrame
 		      throw e;
 			  }
 		      //System.out.println("the eml after appending incomplete info  "+emlDoc);
-		      if(location != null && location.equals(INCOMPLETEDIR))
+		      if(!userSaved)
 		      {
-		         savePackageInCompleteDir(saveID, emlDoc);
+		        autoSavingPackageInCompleteDir(saveID, emlDoc);
 		      }
-		      else if(location != null && location.equals(DATADIR))
+		      else
 		      {
-		        savePackageInDataDir(saveID, emlDoc);
+		        userSavingPackageInCompleteDir(saveID, emlDoc);
 		      }
 		    
 		  }
@@ -1316,13 +1318,13 @@ public class WizardContainerFrame
 			      throw e;
 				  }
 			      //System.out.println("the eml after appending incomplete info  "+emlDoc);
-				  if(location != null && location.equals(INCOMPLETEDIR))
+				  if(!userSaved)
 			    {
-			         savePackageInCompleteDir(saveID, emlDoc);
+				    autoSavingPackageInCompleteDir(saveID, emlDoc);
 			    }
-			    else if(location != null && location.equals(DATADIR))
+			    else
 			    {
-			        savePackageInDataDir(saveID, emlDoc);
+			      userSavingPackageInCompleteDir(saveID, emlDoc);
 			    }
 			    //remove the entity we needed to adp
 			    if(isCurrentPageInEntityPageList())
@@ -1339,7 +1341,7 @@ public class WizardContainerFrame
   /*
    * Save package into incomplete dir with given id
    */
-  private void savePackageInCompleteDir(String docid, String xml)
+  private void autoSavingPackageInCompleteDir(String docid, String xml)
   {
 	  FileSystemDataStore store = new FileSystemDataStore(Morpho.thisStaticInstance);
 	  StringReader reader = new StringReader(xml);
@@ -1349,7 +1351,7 @@ public class WizardContainerFrame
   /*
    * Save package into incomplete dir with given id
    */
-  private void savePackageInDataDir(String docid, String xml) throws Exception
+  private void userSavingPackageInCompleteDir(String docid, String xml) throws Exception
   {
     //FileSystemDataStore store = new FileSystemDataStore(Morpho.thisStaticInstance);
     StringReader reader = new StringReader(xml);
@@ -1360,8 +1362,8 @@ public class WizardContainerFrame
      ServiceProvider provider =
            services.getServiceProvider(DataPackageInterface.class);
      DataPackageInterface dataPackage = (DataPackageInterface)provider;
-     String id = dataPackage.saveIncompleteDocumentForLater(docid, reader, autoSaveID);
-     JOptionPane.showMessageDialog(frame, "Data package was saved as id "+id, "Information",
+     dataPackage.saveIncompleteDocumentForLater(docid, reader);
+     JOptionPane.showMessageDialog(frame, "Data package was saved as id "+docid, "Information",
          JOptionPane.PLAIN_MESSAGE);
     } 
     catch (ServiceNotHandledException snhe) 

@@ -310,6 +310,7 @@ public abstract class AbstractDataPackage extends MetadataObject
   protected String completionStatus = null; 
   public  static final String COMPLETED = "completed";
   public static final String IMPORTLATER = "importLater";
+  public static final String INCOMPLETEDIR = "impleteDir";
  
  
   /**
@@ -3561,6 +3562,11 @@ public abstract class AbstractDataPackage extends MetadataObject
 	             handleMetacat(docid, objectName);
 	          }
 	        }
+	        
+	        if(dataDestination.equals(INCOMPLETEDIR) && isDirty)
+	        {
+	          handleIncompleteDir(docid);
+	         }
 	        /*else if (dataDestination.equals(BOTH)) {
 	        	//Log.debug(1, "~~~~~~~~~~~~~~~~~~~~~~set bothLoation true ");
 	          //serializeDataAtBothLocation =true;
@@ -3585,6 +3591,23 @@ public abstract class AbstractDataPackage extends MetadataObject
     
     //Log.debug(1, "~~~~~~~~~~~~~~~~~~~~~~set bothLoation false ");
     //serializeDataAtBothLocation =false;
+  }
+  
+  
+  /**
+   * Serialize data into into incomplete directory
+   */
+  public void serializeIncompleteData()
+  {
+    serializeData(INCOMPLETEDIR);
+  }
+  
+  /**
+   * Serialize metadata into into incomplete directory
+   */
+  public void serializeIncompleteMetadata()
+  {
+    
   }
    
   
@@ -3710,6 +3733,61 @@ public abstract class AbstractDataPackage extends MetadataObject
 	   Log.debug(30, "the docid stripped from ecogridURL is "+docid);
 	   return docid;
    }
+   
+   /*
+    * Save the data file inot incomplete dir
+    */
+   private void handleIncompleteDir(String docid)
+   {
+     Log.debug(30, "~~~~~~~~~~~~~~~~~~~~~~handle incomplete "+docid);
+     Morpho morpho = Morpho.thisStaticInstance;
+     FileSystemDataStore fds = new FileSystemDataStore(morpho);
+     File dataFile = null;
+     try
+     {
+       dataFile = fds.openIncompelteFile(docid);
+       Log.debug(30, "Docid "+docid+" exist in incomplete dir in AbstractDataPackage.handleIncompleteDir");
+       return;
+     }
+     catch(Exception e)
+     {
+       ConfigXML profile = morpho.getProfile();
+       String separator = profile.get("separator", 0);
+       separator = separator.trim();
+       String temp = new String();
+       temp = docid.substring(0, docid.indexOf(separator));
+       temp += "/" +
+             docid.substring(docid.indexOf(separator) + 1, docid.length());
+       Log.debug(30, "The temp file path is "+temp);
+       try 
+       {
+         dataFile = fds.openTempFile(temp);
+         InputStream dfis = new FileInputStream(dataFile);
+         fds.saveIncompleteDataFile(docid, dfis);
+         dfis.close();
+       }
+       catch (Exception qq) 
+       {
+        // if a datafile is on metacat and user wants to save locally
+        try
+        {
+          MetacatDataStore mds = new MetacatDataStore(morpho);
+          //open old file name (if no file change, the old file name will be as same as docid).
+          InputStream dfis = new FileInputStream(dataFile);
+          fds.saveIncompleteDataFile(docid, dfis);
+          dfis.close();
+        }
+        catch (Exception qqq) 
+        {
+          // some other problem has occured
+          Log.debug(5, "Some problem with saving local data files has occurred! "+qqq.getMessage());
+          qq.printStackTrace();
+        }//end catch
+      }
+    
+     }
+     
+   }
 
   /*
    * Saves the entity into local system
@@ -3755,19 +3833,33 @@ public abstract class AbstractDataPackage extends MetadataObject
           dfis.close();
 //          dataFile.delete();
       }catch (Exception qq) {
-        // if a datafile is on metacat and one wants to save locally
-        try{
-          MetacatDataStore mds = new MetacatDataStore(morpho);
-          //open old file name (if no file change, the old file name will be as same as docid).
-          dataFile = mds.openDataFile(oldDocid);
+        //try to open incomplete file
+        try
+        {
+          dataFile = fds.openIncompelteFile(oldDocid);
+         //open old file name (if no file change, the old file name will be as same as docid).
           InputStream dfis = new FileInputStream(dataFile);
-          fds.saveDataFile(docid, dfis);
-          dfis.close();
-        }catch (Exception qqq) {
-          // some other problem has occured
-          Log.debug(5, "Some problem with saving local data files has occurred! "+qqq.getMessage());
-          qq.printStackTrace();
-        }//end catch
+         //Log.debug(1, "ready to save: urlinfo: "+urlinfo);
+         fds.saveDataFile(docid, dfis);
+         // the temp file has been saved; thus delete
+         dfis.close();
+        }
+        catch(Exception e)
+        {
+          // if a datafile is on metacat and one wants to save locally
+          try{
+            MetacatDataStore mds = new MetacatDataStore(morpho);
+            //open old file name (if no file change, the old file name will be as same as docid).
+            dataFile = mds.openDataFile(oldDocid);
+            InputStream dfis = new FileInputStream(dataFile);
+            fds.saveDataFile(docid, dfis);
+            dfis.close();
+          }catch (Exception qqq) {
+            // some other problem has occured
+            Log.debug(5, "Some problem with saving local data files has occurred! "+qqq.getMessage());
+            qq.printStackTrace();
+          }//end catch
+        }
       }
     
   }
@@ -3814,6 +3906,7 @@ public abstract class AbstractDataPackage extends MetadataObject
 	    }
 	    catch(FileNotFoundException e)
 	    {
+	      
 	    	try
 	    	{
 	    	    dataFile =  fds.openFile(oldDocid);
@@ -3821,8 +3914,16 @@ public abstract class AbstractDataPackage extends MetadataObject
 	    	}
 	    	catch(Exception ee)
 	    	{
-	    		Log.debug(5, "Couldn't find "+oldDocid+" in local system, so morpho couldn't upload it to metacat");
+	    	  try
+	    	  {
+	    	    dataFile =  fds.openIncompelteFile(oldDocid);
+	    	    sourceFromTemp = false;
+	    	  }
+	    	  catch(Exception eee)
+	    	  {
+	    	    Log.debug(5, "Couldn't find "+oldDocid+" in local system, so morpho couldn't upload it to metacat");
 	    	    return;
+	    	  }
 	    	}   	
 	    }
 	  

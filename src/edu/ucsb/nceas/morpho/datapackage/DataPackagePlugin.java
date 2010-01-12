@@ -1549,15 +1549,15 @@ public class DataPackagePlugin
    * Save the incomplete xml document into local file system
    * @param docid if xml doesn't have id, this given id will be used as package id
    * @param xml the source of xml
-   * @param autoSavedID the id for auto saved file
    * @return the id of saved data package.
    */
-  public String saveIncompleteDocumentForLater(String docid,  Reader xml, String autoSavedID) throws Exception
+  public void saveIncompleteDocumentForLater(String docid,  Reader xml) throws Exception
   {
-    Log.debug(30, "given docid is "+docid +" and autosave id is "+autoSavedID+" in DataPackagePlugin.saveIncompleteDocumentForLater");
+    Log.debug(30, "given docid is "+docid +" in DataPackagePlugin.saveIncompleteDocumentForLater");
     EML200DataPackage adp = (EML200DataPackage)DataPackageFactory.getDataPackage(xml, false, true);
     ((EML200DataPackage)adp).setEMLVersion(EML200DataPackage.LATEST_EML_VER);
-    String nextid = null;
+    adp.setAccessionNumber(docid);
+    /*String nextid = null;
     String id = null;
     try
     {
@@ -1572,9 +1572,9 @@ public class DataPackagePlugin
     {
       // no valid accession number; use the given one
       id = docid;
-    } 
+    }*/ 
    //Log.debug(5, "re-signed an id "+id);
-    if (id.indexOf("temporary")>-1) 
+    /*if (id.indexOf("temporary")>-1) 
     { 
       //this is new data package wizard. In order to avoid saving one
       //package couple times will create different package id, we use auto-saved id as id.
@@ -1589,12 +1589,12 @@ public class DataPackagePlugin
       AccessionNumber an = new AccessionNumber(morpho);
       nextid = an.incRev(id);
       adp.setAccessionNumber(nextid);
-    }
+    }*/
     //Log.debug(5, "final next id is "+nextid);
-    adp.serializeData(AbstractDataPackage.LOCAL);
-    adp.serialize(AbstractDataPackage.LOCAL);
-    Util.deleteAutoSavedFile(autoSavedID);
-    return adp.getAccessionNumber();
+    adp.serializeIncompleteData();
+    adp.serializeIncompleteMetadata();
+    //Util.deleteAutoSavedFile(autoSavedID);
+    //return adp.getAccessionNumber();
   }
   
   /**

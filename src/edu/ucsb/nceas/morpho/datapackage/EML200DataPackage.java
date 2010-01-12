@@ -122,6 +122,15 @@ public  class EML200DataPackage extends AbstractDataPackage
 	   serialize(AbstractDataPackage.LOCAL, overwrite);
    }
    
+   /**
+    * Serialize metadata into into incomplete directory
+    */
+   public void serializeIncompleteMetadata()
+   {
+     boolean overwrite = true;
+     serialize(AbstractDataPackage.INCOMPLETEDIR, overwrite);
+   }
+   
   // serialize to the indicated location
   private void serialize(String location, boolean overWrite)
   {
@@ -320,6 +329,21 @@ public  class EML200DataPackage extends AbstractDataPackage
         	  //this.setIdentifierChangedInLocalSerialization(false);
           }
        }
+      else if(location.equals(AbstractDataPackage.INCOMPLETEDIR))
+      {
+        String id = getAccessionNumber();
+        Log.debug(30, "Serialize metadata into incomplete dir with docid "+id);
+        File newFile = fsds.saveIncompleteDataFile(id, sr);
+        if (newFile != null)
+        {
+           this.setSerializeLocalSuccess(true);
+        }
+        else
+        {
+          this.setSerializeLocalSuccess(false);
+          //this.setIdentifierChangedInLocalSerialization(false);
+        }
+      }
   }
   
  
