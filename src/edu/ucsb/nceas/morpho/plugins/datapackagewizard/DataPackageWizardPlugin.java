@@ -30,6 +30,7 @@ package edu.ucsb.nceas.morpho.plugins.datapackagewizard;
 
 import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.datapackage.AbstractDataPackage;
+import edu.ucsb.nceas.morpho.datapackage.AccessionNumber;
 import edu.ucsb.nceas.morpho.datapackage.DataPackageFactory;
 import edu.ucsb.nceas.morpho.editor.DocFrame;
 import edu.ucsb.nceas.morpho.framework.AbstractUIPage;
@@ -121,7 +122,9 @@ public class DataPackageWizardPlugin implements PluginInterface,
     AbstractDataPackage tempDataPackage = DataPackageFactory.getDataPackage(
       getNewEmptyDataPackageDOM(WizardSettings.TEMP_REFS_EML210_DOCUMENT_TEXT));
     if(tempDataPackage == null) return;
-
+    AccessionNumber accessionNumber = new AccessionNumber(Morpho.thisStaticInstance);
+    String tempID = accessionNumber.getNextTempID();
+    tempDataPackage.setAccessionNumber(tempID);
     UIController.getInstance().setWizardIsRunning(tempDataPackage);
     int entityIndex = -1;
     startWizardAtPage(WizardSettings.PACKAGE_WIZ_FIRST_PAGE_ID, true, listener,

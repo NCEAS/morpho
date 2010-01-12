@@ -53,6 +53,8 @@ public class AccessionNumber
 {
   private Morpho morpho;
   private ConfigXML profile;
+  public static final String TEMP = "temp";
+  private static final String TEMPIDNAME = "lastTempId";
   
   public AccessionNumber(Morpho morpho)
   {
@@ -115,6 +117,52 @@ public class AccessionNumber
     {
       Log.debug(1, "Error incrementing the accession number id");
       return null;
+    }
+    else
+    {
+      profile.save();
+      Log.debug(30, "the next id is "+identifier+".1");
+      return identifier + ".1"; 
+    }
+  }
+  
+  /**
+   * Gets the next available temp id from profile file.
+   * @return the next available id
+   */
+  public synchronized String getNextTempID()
+  {
+    long startID = 1;
+    long lastid = -1;
+    //Gets last id from profile
+    String lastidS = profile.get(TEMPIDNAME, 0);
+    String separator = profile.get("separator", 0);
+    try
+    {
+        lastid = (new Long(lastidS)).longValue();
+    }
+    catch(Exception e)
+    {
+      Log.debug(30, "couldn't get lastid for temp from profile");
+      lastid = startID;
+    }
+    String identifier = TEMP + separator + lastid;
+    lastid++;
+    String s = "" + lastid;
+    if(!profile.set(TEMPIDNAME, 0, s))
+    {
+      
+      boolean success = profile.insert(TEMPIDNAME, s);
+      if(success)
+      {
+        profile.save();
+        return identifier + ".1"; 
+      }
+      else
+      {
+        Log.debug(1, "Error incrementing the accession number id");
+        return null;
+      }
     }
     else
     {
