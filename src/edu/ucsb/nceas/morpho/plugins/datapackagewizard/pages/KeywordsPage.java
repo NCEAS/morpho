@@ -87,6 +87,7 @@ public class KeywordsPage extends AbstractUIPage {
 
   private     String xPathRoot  = "/eml:eml/dataset/keywordSet[1]";
   private final String KEYWORD_REL_XPATH = "keyword[";
+  private final String KEYWORD_TYPE_REL_XPATH = "@keywordType";
   private final String THESAURUS_REL_XPATH = "keywordThesaurus[1]";
 
   ////
@@ -502,7 +503,15 @@ public class KeywordsPage extends AbstractUIPage {
             + nextXPathObj + "; nextValObj=" + nextValObj);
         List newRow = new ArrayList();
         newRow.add(nextVal);
-        kwList.addRow(newRow);
+        if (!nextXPath.endsWith(KEYWORD_TYPE_REL_XPATH))  {
+        	// check for keyword type attribute
+        	String keywordTypeXpath = nextXPath + "/" + KEYWORD_TYPE_REL_XPATH;
+        	String typeValue = (String) map.get(keywordTypeXpath);
+        	if (typeValue != null) {
+        		newRow.add(1, typeValue);
+        	}
+            kwList.addRow(newRow);
+        }
         toDeleteList.add(nextXPathObj);
       } else if (nextXPath.indexOf(THESAURUS_REL_XPATH) > -1) {
 
