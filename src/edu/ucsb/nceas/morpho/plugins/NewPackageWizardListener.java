@@ -45,22 +45,12 @@ public class NewPackageWizardListener implements  DataPackageWizardListener
 {
   
    private String accessionNumber = null;
-   public static final String TEMPORARYID = "temporary.1.1";
    /**
     * Default constructor
     */
    public NewPackageWizardListener()
    {
-     accessionNumber = TEMPORARYID;
-   }
-   
-   /**
-    * Constructor with sepcified accessionNumber
-    * @param accessionNumber
-    */
-   public NewPackageWizardListener(String accessionNumber )
-   {
-     this.accessionNumber = accessionNumber;
+     
    }
    
     /**
@@ -73,8 +63,12 @@ public class NewPackageWizardListener implements  DataPackageWizardListener
           "Wizard complete - Will now create an AbstractDataPackage..");
   
       AbstractDataPackage adp = DataPackageFactory.getDataPackage(newDOM);
+      accessionNumber = adp.getAccessionNumber();
+      if(accessionNumber == null || accessionNumber.equals(""))
+      {
+        adp.setAccessionNumber(autoSavedID);
+      }
       Log.debug(30, "AbstractDataPackage complete");
-      adp.setAccessionNumber(accessionNumber);
       adp.setAutoSavedID(autoSavedID);
       openMorphoFrameForDataPackage(adp);
       Log.debug(45, "\n\n********** Wizard finished: DOM:");

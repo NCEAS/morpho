@@ -1127,6 +1127,11 @@ public class WizardContainerFrame
         "/eml:eml/dataset/dataTable/attributeList/attribute"
     }
         , wizData);
+    
+    if(status != null && status.equals(IncompleteDocSettings.PACKAGEWIZARD))
+    {
+      addPageDataToResultsMap(generatePackageIDMap(autoSaveID), wizData);
+    }
 
     Log.debug(45, "\n\n********** Wizard finished: NVPs:");
     Log.debug(45, wizData.toString());
@@ -1177,6 +1182,16 @@ public class WizardContainerFrame
     Log.debug(45, "\n\n********** Wizard finished: DOM:");
     Log.debug(45, XMLUtilities.getDOMTreeAsString(rootNode));
     return rootNode;
+  }
+  
+  /*
+   * Generate ordered map contains package id info
+   */
+  private OrderedMap generatePackageIDMap(String docid)
+  {
+    OrderedMap map = new OrderedMap();
+    map.put("/eml:eml/@packageId", docid);
+    return map;
   }
 
 

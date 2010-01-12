@@ -380,7 +380,7 @@ public class SaveDialog extends JDialog
         String id = adp.getAccessionNumber();
         // initial id
         saveEvent.setInitialId(id);
-        if (id.indexOf("temporary")>-1) {
+        if (id.indexOf(AccessionNumber.TEMP)>-1) {
           AccessionNumber an = new AccessionNumber(morpho);
           String nextid = an.getNextId();
           adp.setAccessionNumber(nextid);

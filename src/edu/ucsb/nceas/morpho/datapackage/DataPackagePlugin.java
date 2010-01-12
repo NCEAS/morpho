@@ -806,10 +806,10 @@ public class DataPackagePlugin
   {
 	  AbstractDataPackage adp = null;
 	  adp =DataPackageFactory.getDataPackageFromIncompeteDir(identifier);
-	  if(adp.getCompletionStatus().equals(IncompleteDocSettings.INCOMPLETE_PACKAGE_WIZARD))
+	  /*if(adp.getCompletionStatus().equals(IncompleteDocSettings.INCOMPLETE_PACKAGE_WIZARD))
 	  {
 	    adp.setAccessionNumber(NewPackageWizardListener.TEMPORARYID);
-	  }  
+	  }*/  
 	  openIncompleteDataPackage(adp, coordinator);
   }
   

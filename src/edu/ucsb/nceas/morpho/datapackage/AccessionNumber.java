@@ -53,7 +53,7 @@ public class AccessionNumber
 {
   private Morpho morpho;
   private ConfigXML profile;
-  public static final String TEMP = "temp";
+  public static final String TEMP = "temporary";
   private static final String TEMPIDNAME = "lastTempId";
   
   public AccessionNumber(Morpho morpho)

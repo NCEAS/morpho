@@ -193,7 +193,8 @@ public class IncompleteDocumentLoader
           return;
       }
       Log.debug(25, "The current page id in IncompleteDocument.loadNewPackageWizard is "+currentPage.getPageID());
-      NewPackageWizardListener dataPackageWizardListener = new NewPackageWizardListener(dataPackage.getAccessionNumber());
+      //NewPackageWizardListener dataPackageWizardListener = new NewPackageWizardListener(dataPackage.getAccessionNumber());
+      NewPackageWizardListener dataPackageWizardListener = new NewPackageWizardListener();
       dpWiz.setDataPackageWizardListener(dataPackageWizardListener);
       dpWiz.setBounds(
                       WizardSettings.WIZARD_X_COORD, WizardSettings.WIZARD_Y_COORD,
