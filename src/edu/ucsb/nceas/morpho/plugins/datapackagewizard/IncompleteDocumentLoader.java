@@ -166,6 +166,11 @@ public class IncompleteDocumentLoader
     {
       loadCodeDefWizard();
     }
+    else if(incompletionStatus.equals(AbstractDataPackage.COMPLETED))
+    {
+      //UIController.getInstance().setWizardNotRunning();
+      openMorphoFrameForDataPackage(dataPackage);
+    }
     else
     {
       UIController.getInstance().setWizardNotRunning();
@@ -180,6 +185,18 @@ public class IncompleteDocumentLoader
   {
     if(incompleteDocInfo != null)
     {
+      boolean isRunning = UIController.getInstance().isWizardRunning();
+      if (isRunning) 
+      {
+          JOptionPane.showConfirmDialog(null,
+            "Sorry, only one instance of the Data Package Wizard can be running at a time!",
+                                       "Wizard already running",
+                                       JOptionPane.DEFAULT_OPTION,
+                                       JOptionPane.WARNING_MESSAGE);
+          return;
+      }
+      //Log.debug(5, "The datatpackage is "+dataPackage);
+      UIController.getInstance().setWizardIsRunning(dataPackage);
       boolean showPageCount = true;    
       WizardContainerFrame dpWiz = new WizardContainerFrame(IncompleteDocSettings.PACKAGEWIZARD);
       dpWiz.initialAutoSaving();
@@ -203,6 +220,7 @@ public class IncompleteDocumentLoader
       dpWiz.setShowPageCountdown(showPageCount);
       dpWiz.setTitle(DataPackageWizardInterface.NEWPACKAGEWIZARDFRAMETITLE);
       dpWiz.setVisible(true);
+     
     }
   }
   

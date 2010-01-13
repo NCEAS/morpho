@@ -600,17 +600,8 @@ public class DataPackageWizardPlugin implements PluginInterface,
    */
   public void loadIncompleteDocument(AbstractDataPackage dataPackage)
   {
-	  boolean isRunning = UIController.getInstance().isWizardRunning();
-	  if (isRunning) {
-	      JOptionPane.showConfirmDialog(null,
-	        "Sorry, only one instance of the Data Package Wizard can be running at a time!",
-	                                   "Wizard already running",
-	                                   JOptionPane.DEFAULT_OPTION,
-	                                   JOptionPane.WARNING_MESSAGE);
-	      return;
-	    }
+	  
 	  if(dataPackage == null) return;
-	  UIController.getInstance().setWizardIsRunning(dataPackage);
 	  IncompleteDocumentLoader loader = new IncompleteDocumentLoader(dataPackage);
 	  loader.load();
   }
