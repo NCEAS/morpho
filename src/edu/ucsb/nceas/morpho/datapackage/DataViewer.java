@@ -1191,7 +1191,7 @@ public class DataViewer extends javax.swing.JPanel
     table.setColumnSelectionAllowed(true);
     table.setRowSelectionAllowed(true);
     table.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
-    //(table.getTableHeader()).setReorderingAllowed(false);
+    (table.getTableHeader()).setReorderingAllowed(false);
     table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 
     table.registerKeyboardAction (new GUIAction("Copy", null, new TableCopyCommand()),
