@@ -2103,6 +2103,26 @@ public abstract class AbstractDataPackage extends MetadataObject
 		}
 		entityArray = null;
 	}
+	
+	/**
+	 * Deletes all associated data files in incomplete dir
+	 */
+	public void deleteDataFilesInIncompleteFolder()
+	{
+	  for (int i = 0; i < entityArray.length; i++) 
+	  {
+      String URLinfo = getDistributionUrl(i, 0, 0);
+      String protocol = getUrlProtocol(URLinfo);
+      FileSystemDataStore fsd = new FileSystemDataStore(Morpho.thisStaticInstance);
+      if(protocol != null && protocol.equals(ECOGRID) ) 
+      {
+        
+        String docid = getUrlInfo(URLinfo);
+        Log.debug(30, "handle data file  with index "+i+ ""+docid);
+        fsd.deleteInCompleteFile(docid);
+      }
+	  }
+	}
 
 
 
@@ -3563,7 +3583,7 @@ public abstract class AbstractDataPackage extends MetadataObject
 	          }
 	        }
 	        
-	        if(dataDestination.equals(INCOMPLETEDIR) && isDirty)
+	        if(dataDestination.equals(INCOMPLETEDIR))
 	        {
 	          handleIncompleteDir(docid);
 	         }
