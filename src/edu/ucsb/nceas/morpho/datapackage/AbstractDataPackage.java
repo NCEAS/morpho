@@ -3745,7 +3745,7 @@ public abstract class AbstractDataPackage extends MetadataObject
      File dataFile = null;
      try
      {
-       dataFile = fds.openIncompelteFile(docid);
+       dataFile = fds.openIncompleteFile(docid);
        Log.debug(30, "Docid "+docid+" exist in incomplete dir in AbstractDataPackage.handleIncompleteDir");
        return;
      }
@@ -3759,17 +3759,17 @@ public abstract class AbstractDataPackage extends MetadataObject
        }
        catch(Exception m)
        {
-         ConfigXML profile = morpho.getProfile();
+         /*ConfigXML profile = morpho.getProfile();
          String separator = profile.get("separator", 0);
          separator = separator.trim();
          String temp = new String();
          temp = docid.substring(0, docid.indexOf(separator));
          temp += "/" +
                docid.substring(docid.indexOf(separator) + 1, docid.length());
-         Log.debug(30, "The temp file path is "+temp);
+         Log.debug(30, "The temp file path is "+temp);*/
          try 
          {
-           dataFile = fds.openTempFile(temp);
+           dataFile = fds.openTempFile(docid);
            InputStream dfis = new FileInputStream(dataFile);
            fds.saveIncompleteDataFile(docid, dfis);
            dfis.close();
@@ -3825,16 +3825,17 @@ public abstract class AbstractDataPackage extends MetadataObject
     	  oldDocid = docid;
       }
       Log.debug(30, "~~~~~~~~~~~~~~~~~~~~~~eventually old id is  " +oldDocid); 
-      ConfigXML profile = morpho.getProfile();
+      /*ConfigXML profile = morpho.getProfile();
       String separator = profile.get("separator", 0);
       separator = separator.trim();
       String temp = new String();
       temp = oldDocid.substring(0, oldDocid.indexOf(separator));
       temp += "/" +
             oldDocid.substring(oldDocid.indexOf(separator) + 1, oldDocid.length());
-      Log.debug(30, "The temp file path is "+temp);
+      Log.debug(30, "The temp file path is "+temp);*/
       try {
-           dataFile = fds.openTempFile(temp);
+           //dataFile = fds.openTempFile(temp);
+           dataFile = fds.openTempFile(oldDocid);
           //open old file name (if no file change, the old file name will be as same as docid).
            InputStream dfis = new FileInputStream(dataFile);
           //Log.debug(1, "ready to save: urlinfo: "+urlinfo);
@@ -3846,7 +3847,7 @@ public abstract class AbstractDataPackage extends MetadataObject
         //try to open incomplete file
         try
         {
-          dataFile = fds.openIncompelteFile(oldDocid);
+          dataFile = fds.openIncompleteFile(oldDocid);
          //open old file name (if no file change, the old file name will be as same as docid).
           InputStream dfis = new FileInputStream(dataFile);
          //Log.debug(1, "ready to save: urlinfo: "+urlinfo);
@@ -3906,7 +3907,7 @@ public abstract class AbstractDataPackage extends MetadataObject
 	      {
 	    	  oldDocid = docid;
 	      }
-	    temp = oldDocid.substring(0, oldDocid.indexOf(separator));
+	    /*temp = oldDocid.substring(0, oldDocid.indexOf(separator));
 	    temp = temp + "/" +
 	        oldDocid.substring(oldDocid.indexOf(separator) + 1, oldDocid.length());
 	    // Check where is the source data file (from temp or from data file)
@@ -3935,9 +3936,17 @@ public abstract class AbstractDataPackage extends MetadataObject
 	    	    return;
 	    	  }
 	    	}   	
-	    }
-	  
-	    uploadDataFileToMetacat(docid, dataFile, objectName, sourceFromTemp, mds);
+	    }*/
+	      try
+	      {
+	        dataFile = fds.getDataFileFromAllLocalSources(docid);
+	      }
+	      catch(Exception eee)
+        {
+          Log.debug(5, "Couldn't find "+oldDocid+" in local system, so morpho couldn't upload it to metacat");
+          return;
+        }
+	      uploadDataFileToMetacat(docid, dataFile, objectName, mds);
 	
 	  }
 
@@ -3946,7 +3955,7 @@ public abstract class AbstractDataPackage extends MetadataObject
   /*
    * Loads the data file to metacat
    */
-  private void uploadDataFileToMetacat(String identifier, File dataFile, String objectName, boolean fromTemp, 
+  private void uploadDataFileToMetacat(String identifier, File dataFile, String objectName,  
                                                          MetacatDataStore mds)
   {
 	        try
@@ -3963,10 +3972,10 @@ public abstract class AbstractDataPackage extends MetadataObject
 		          	 
 		          }
 	              // the temp file has been saved; thus delete
-		          if (fromTemp)
+		          /*if (fromTemp)
 		          {
 	                  dataFile.delete();
-		          }
+		          }*/
 	          } 
               catch (Exception qqq) 
               {
@@ -4428,6 +4437,10 @@ public abstract class AbstractDataPackage extends MetadataObject
    * by 'path'. Files are given the original file name, if available
    */
   public void exportDataFiles(String path) {
+    if(location.equals(TEMPLOCATION))
+    {
+      Log.debug(5, "Morpho couldn't import a package which has been saved!");
+    }
     String origFileName;
     File dataFile = null;
     Morpho morpho = Morpho.thisStaticInstance;
@@ -4481,15 +4494,16 @@ public abstract class AbstractDataPackage extends MetadataObject
         // this indicates that the datafile with the url has NOT been saved
         // the datafile should be stored in the profile temp dir
         //Log.debug(1, "FileNotFoundException");
-        ConfigXML profile = morpho.getProfile();
+        /*ConfigXML profile = morpho.getProfile();
         String separator = profile.get("separator", 0);
         separator = separator.trim();
         String temp = new String();
         temp = urlinfo.substring(0, urlinfo.indexOf(separator));
         temp += "/" +
-            urlinfo.substring(urlinfo.indexOf(separator) + 1, urlinfo.length());
+            urlinfo.substring(urlinfo.indexOf(separator) + 1, urlinfo.length());*/
         try {
-          dataFile = fds.openTempFile(temp);
+          //dataFile = fds.openTempFile(temp);
+          dataFile = fds.openTempFile(urlinfo);
         }
         catch (Exception ex) {
           Log.debug(5, "Some problem while writing data files has occurred!");

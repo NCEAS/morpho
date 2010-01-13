@@ -53,7 +53,7 @@ import com.arbortext.catalog.*;
  */
 public abstract class DataStore implements DataStoreInterface
 {
-  private Morpho morpho;
+  protected Morpho morpho;
   private ConfigXML config;
   protected String datadir;
   protected String separator;

@@ -70,6 +70,7 @@ public class NewPackageWizardListener implements  DataPackageWizardListener
       }
       Log.debug(30, "AbstractDataPackage complete");
       adp.setAutoSavedID(autoSavedID);
+      adp.setLocation(AbstractDataPackage.TEMPLOCATION);
       openMorphoFrameForDataPackage(adp);
       Log.debug(45, "\n\n********** Wizard finished: DOM:");
       Log.debug(45, XMLUtilities.getDOMTreeAsString(newDOM, false));

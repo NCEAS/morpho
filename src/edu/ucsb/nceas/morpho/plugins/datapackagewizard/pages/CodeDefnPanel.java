@@ -959,36 +959,56 @@ public class CodeDefnPanel extends JPanel implements WizardPageSubPanelAPI {
           entityFile = mds.openFile(urlinfo);
         }
         else if (loc.equals("")) {  // just created the package; not yet saved!!!
-          try{
+          FileSystemDataStore fds = new FileSystemDataStore(morpho);
+          try
+          {
+            entityFile = fds.getDataFileFromAllSources(urlinfo);
+          }
+          catch(Exception eee)
+          {
+            Log.debug(15,"Exception opening datafile after trying all sources!");
+            return null;
+          }
+          
+          /*try{
             // first try looking in the profile temp dir
             ConfigXML profile = morpho.getProfile();
             String separator = profile.get("separator", 0);
             separator = separator.trim();
-            FileSystemDataStore fds = new FileSystemDataStore(morpho);
             String temp = new String();
             temp = urlinfo.substring(0, urlinfo.indexOf(separator));
             temp += "/" + urlinfo.substring(urlinfo.indexOf(separator) + 1, urlinfo.length());
             entityFile = fds.openTempFile(temp);
           }
           catch (Exception q1) {
+            
             // oops - now try locally
             try{
-              FileSystemDataStore fds = new FileSystemDataStore(morpho);
+              
               entityFile = fds.openFile(urlinfo);
             }
             catch (Exception q2) {
-              // now try metacat
-              try{
-                MetacatDataStore mds = new MetacatDataStore(morpho);
-                entityFile = mds.openFile(urlinfo);
+              try
+              {
+                entityFile = fds.openIncompelteFile(urlinfo);
               }
-              catch (Exception q3) {
-                // give up!
-                Log.debug(15,"Exception opening datafile after trying all sources!");
-                return null;
+              catch(Exception q)
+              {
+                // now try metacat
+                try{
+                  MetacatDataStore mds = new MetacatDataStore(morpho);
+                  entityFile = mds.openFile(urlinfo);
+                }
+                catch (Exception q3) {
+                  // give up!
+                  Log.debug(15,"Exception opening datafile after trying all sources!");
+                  return null;
+                }
               }
+              
+            
             }
-          }
+          }*/
         }
       }
       catch (Exception q) {

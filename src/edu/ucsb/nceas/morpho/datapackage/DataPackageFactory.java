@@ -198,7 +198,7 @@ public class DataPackageFactory
       FileSystemDataStore fsds = new FileSystemDataStore(morpho);
      try 
      {
-        File file = fsds.openIncompelteFile(docid);
+        File file = fsds.openIncompleteFile(docid);
         in = new FileReader(file);
         source = new InputSource(in);
       }

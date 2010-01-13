@@ -853,8 +853,12 @@ public class DataViewContainerPanel extends javax.swing.JPanel
                 MetacatDataStore mds = new MetacatDataStore(morpho);
                 displayFile = mds.openDataFile(urlinfo);
               }
-              else if (loc.equals("")) {  // just created the package; not yet saved!!!
-                try{
+              else if (loc.equals("")) {
+                //Log.debug(5, "here");
+               // just created the package; not yet saved!!!
+                FileSystemDataStore fds = new FileSystemDataStore(morpho);
+                displayFile = fds.getDataFileFromAllSources(urlinfo);
+                /*try{
                   // first try looking in the profile temp dir
                   ConfigXML profile = morpho.getProfile();
                   String separator = profile.get("separator", 0);
@@ -882,7 +886,7 @@ public class DataViewContainerPanel extends javax.swing.JPanel
                       Log.debug(5,"Exception opening datafile after trying all sources!");
                     }
                   }
-                }
+                }*/
               }
             }
             catch (Exception q) {

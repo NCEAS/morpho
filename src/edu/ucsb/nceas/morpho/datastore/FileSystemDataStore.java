@@ -90,7 +90,7 @@ public class FileSystemDataStore extends DataStore
    * @return
    * @throws FileNotFoundException
    */
-  public File openIncompelteFile(String name) throws FileNotFoundException
+  public File openIncompleteFile(String name) throws FileNotFoundException
   {
 	   String path = parseId(name);
 	    path = incompletedir + "/" + path;
@@ -116,7 +116,8 @@ public class FileSystemDataStore extends DataStore
   public File openTempFile(String name) throws FileNotFoundException
   {
     Log.debug(21, "opening "+name+" from temp dir - temp: "+tempdir);
-    File file = new File(tempdir+"/"+name);
+    String path = parseId(name);
+    File file = new File(tempdir+"/"+path);
     if(!file.exists())
     {
       throw new FileNotFoundException("file " + tempdir + "/" + name + " does not exist");
@@ -519,4 +520,132 @@ public class FileSystemDataStore extends DataStore
     }
   }
   
+  
+  /**
+   * Gets a metadata file from all local source. It will looks file in data dir, then in temporary dir, 
+   * finally the incomplete dir
+   * @param doicd
+   * @return
+   */
+  public File getMetadataFileFromAllLocalSources(String docid) throws FileNotFoundException
+  {
+    return getDataFileFromAllLocalSources(docid);
+  }
+  
+  /**
+   * Gets metadata file from both local and metacata source
+   * @param docid
+   * @return
+   */
+  public File getMetadataFileFromAllSources(String docid) throws FileNotFoundException
+  {
+    File file = null;  
+    if(docid != null && !docid.equals(""))
+    {
+      try
+      {
+        //try local resrouce
+        file = getMetadataFileFromAllLocalSources(docid);
+      }
+      catch(Exception e)
+      {
+        MetacatDataStore mds = new MetacatDataStore(super.morpho);
+        try
+        {
+          file = mds.openFile(docid);
+        }
+        catch(Exception ee)
+        {
+          throw new FileNotFoundException("Couldn't find docid "+docid+" in metacat");
+        }
+        
+      }
+    }
+    if(file == null)
+    {
+      throw new FileNotFoundException("Couldn't find docid "+docid+" in morpho file system");
+    }
+    return file;
+  }
+  
+  /**
+   * Gets a data file from all local source. It will looks file in data dir, then in temporary dir, 
+   * finally the incomplete dir
+   * @param doicd
+   * @return
+   */
+  public File getDataFileFromAllLocalSources(String docid) throws FileNotFoundException
+  {
+     File file = null;  
+     if(docid != null && !docid.equals(""))
+     {
+       try
+       {
+         //try data file dir
+         file = openFile(docid);
+       }
+       catch(Exception e)
+       {
+         try
+         {
+           //try temp file dir
+           file = openTempFile(docid);
+           //Log.debug(5, "from temp");
+         }
+         catch(Exception ee)
+         {
+           try
+           {
+             file = openIncompleteFile(docid);
+           }
+           catch(Exception eee)
+           {
+             throw new FileNotFoundException(eee.getMessage());
+           }
+         }
+         
+       }
+     }
+     if(file == null)
+     {
+       throw new FileNotFoundException("Couldn't find docid "+docid+" in morpho file system");
+     }
+     return file;
+  }
+  
+  /**
+   * Gets data file from both local and metacata source
+   * @param docid
+   * @return
+   */
+  public File getDataFileFromAllSources(String docid) throws FileNotFoundException
+  {
+    File file = null;  
+    if(docid != null && !docid.equals(""))
+    {
+      try
+      {
+        //try local resrouce
+        file = getDataFileFromAllLocalSources(docid);
+      }
+      catch(Exception e)
+      {
+        MetacatDataStore mds = new MetacatDataStore(super.morpho);
+        try
+        {
+          file = mds.openDataFile(docid);
+        }
+        catch(Exception ee)
+        {
+          throw new FileNotFoundException("Couldn't find docid "+docid+" in metacat");
+        }
+        
+      }
+    }
+    if(file == null)
+    {
+      throw new FileNotFoundException("Couldn't find docid "+docid+" in morpho file system");
+    }
+    return file;
+  }
 }
