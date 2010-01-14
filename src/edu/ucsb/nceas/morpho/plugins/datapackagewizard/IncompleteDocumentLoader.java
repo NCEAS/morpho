@@ -169,7 +169,8 @@ public class IncompleteDocumentLoader
     else if(incompletionStatus.equals(AbstractDataPackage.COMPLETED))
     {
       //UIController.getInstance().setWizardNotRunning();
-      openMorphoFrameForDataPackage(dataPackage);
+      MorphoFrame frame = openMorphoFrameForDataPackage(dataPackage);
+      frame.setVisible(true);
     }
     else
     {
@@ -280,6 +281,11 @@ public class IncompleteDocumentLoader
         if(wizard == null)
         {
           UIController.getInstance().setWizardNotRunning();
+          if(frame != null)
+          {
+            frame.setVisible(false);
+            frame.dispose();
+          }
           Log.debug(5, "Morpho couldn't get wizard container frame!");
           return;
         }
@@ -303,6 +309,11 @@ public class IncompleteDocumentLoader
         catch(Exception e)
         {
           UIController.getInstance().setWizardNotRunning();
+          if(frame != null)
+          {
+            frame.setVisible(false);
+            frame.dispose();
+          }
           Log.debug(5, "Morpho couldn't get the listener for editing attribute in order to load the wizard");
           return;
         }
@@ -344,6 +355,7 @@ public class IncompleteDocumentLoader
       boolean showPageCount = false;
       dpWiz.setShowPageCountdown(showPageCount);
       dpWiz.setTitle(DataPackageWizardInterface.NEWTABLEEWIZARDFRAMETITLE);
+      frame.setVisible(true);
       dpWiz.setVisible(true);
     }
     return dpWiz;
@@ -472,7 +484,8 @@ public class IncompleteDocumentLoader
       ServiceProvider provider =
             services.getServiceProvider(DataPackageInterface.class);
       DataPackageInterface dataPackage = (DataPackageInterface)provider;
-      frame = dataPackage.openNewDataPackage(adp, null);
+      boolean visible = false;
+      frame = dataPackage.openNewDataPackage(adp, null, visible);
             
      } 
      catch (ServiceNotHandledException snhe) 

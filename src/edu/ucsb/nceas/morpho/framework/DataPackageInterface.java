@@ -77,7 +77,15 @@ public interface DataPackageInterface
    */
   public MorphoFrame openNewDataPackage( AbstractDataPackage adp,
                                   ButterflyFlapCoordinator coordinator);
-
+  
+  /**
+   * Display a newly created abstract data package
+   * @param adp  the data package will be display
+   * @param coordinator the coordinator for butterfly flapping
+   * @param visible if this frame visible
+   * @return a MorphoFrame which displays the data package
+   */
+  public MorphoFrame openNewDataPackage(AbstractDataPackage adp, ButterflyFlapCoordinator coordinator, boolean visible);
   /**
    *  same as openNewDataPackage except the frame is notVisible
    */                                 

@@ -977,13 +977,38 @@ public class DataPackagePlugin
 	}
 		
   }
+  
+ 
+/**
+ * Display a newly created abstract data package
+ * @param adp  the data package will be display
+ * @param coordinator the coordinator 
+ * @param visible if this frame visible
+ * @return a MorphoFrame which displays the data package
+ */
+  public MorphoFrame openNewDataPackage(AbstractDataPackage adp, ButterflyFlapCoordinator coordinator, boolean visible)
+  {
+    return openNewDataPackageFrame(adp, coordinator, visible);
+  }
+  
+  /**
+   * Display a newly created abstract data package
+   * @param adp  the data package will be display
+   * @param coordinator the coordinator 
+   * @return a MorphoFrame which displays the data package
+   */
+    public MorphoFrame openNewDataPackage(AbstractDataPackage adp, ButterflyFlapCoordinator coordinator)
+    {
+      boolean visible = true;
+      return openNewDataPackageFrame(adp, coordinator, visible);
+    }
 
-
+  
   /*
    *  This method is to be used to display a newly created AbstractDataPackage
    *  location and identifier have not yet been established
    */
-  public MorphoFrame openNewDataPackage(AbstractDataPackage adp, ButterflyFlapCoordinator coordinator)
+  private MorphoFrame openNewDataPackageFrame(AbstractDataPackage adp, ButterflyFlapCoordinator coordinator, boolean visible)
   {
     Log.debug(11, "DataPackage: Got service request to open a newly created AbstractDataPackage");
     boolean metacat = false;
@@ -992,8 +1017,12 @@ public class DataPackagePlugin
     long starttime = System.currentTimeMillis();
     final MorphoFrame packageWindow = UIController.getInstance().addWindow(
                 "Data Package: "+adp.getAccessionNumber());
-    packageWindow.setBusy(true);
-    packageWindow.setVisible(true);
+    if(visible)
+    {
+      packageWindow.setBusy(true);
+      packageWindow.setVisible(true);
+    }
+   
 
     // Stop butterfly flapping for old window.
     //packageWindow.setBusy(true);
@@ -1051,7 +1080,11 @@ public class DataPackagePlugin
                  dvcp,
                  StateChangeEvent.CREATE_DATAPACKAGE_FRAME));
     adp.loadCustomUnits();
-	packageWindow.setBusy(false);
+  if(visible)
+  {
+    packageWindow.setBusy(false);
+  }
+	
 	final DataViewContainerPanel dvcpReference = dvcp;
 	packageWindow.addWindowListener(
             new WindowAdapter() {
