@@ -2109,18 +2109,21 @@ public abstract class AbstractDataPackage extends MetadataObject
 	 */
 	public void deleteDataFilesInIncompleteFolder()
 	{
-	  for (int i = 0; i < entityArray.length; i++) 
-	  {
-      String URLinfo = getDistributionUrl(i, 0, 0);
-      String protocol = getUrlProtocol(URLinfo);
-      FileSystemDataStore fsd = new FileSystemDataStore(Morpho.thisStaticInstance);
-      if(protocol != null && protocol.equals(ECOGRID) ) 
-      {
-        
-        String docid = getUrlInfo(URLinfo);
-        Log.debug(30, "handle data file  with index "+i+ ""+docid);
-        fsd.deleteInCompleteFile(docid);
-      }
+	  if(entityArray != null)
+	  { 
+  	  for (int i = 0; i < entityArray.length; i++) 
+  	  {
+        String URLinfo = getDistributionUrl(i, 0, 0);
+        String protocol = getUrlProtocol(URLinfo);
+        FileSystemDataStore fsd = new FileSystemDataStore(Morpho.thisStaticInstance);
+        if(protocol != null && protocol.equals(ECOGRID) ) 
+        {
+          
+          String docid = getUrlInfo(URLinfo);
+          Log.debug(30, "handle data file  with index "+i+ ""+docid);
+          fsd.deleteInCompleteFile(docid);
+        }
+  	  }
 	  }
 	}
 
