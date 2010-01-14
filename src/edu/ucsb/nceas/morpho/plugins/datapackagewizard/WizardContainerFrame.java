@@ -250,14 +250,22 @@ public class WizardContainerFrame
   {
     if(!disableIncompleteSaving)
     {
-  	  if(fileID != null && adp!= null && status != null && 
-  	      (status.equals(IncompleteDocSettings.ENTITYWIZARD) ||status.equals(IncompleteDocSettings.CODEDEFINITIONWIZARD)))
+  	  if(fileID != null && adp!= null && status != null && status.equals(IncompleteDocSettings.ENTITYWIZARD))
   	  {
   		  String emlDoc = XMLUtilities.getDOMTreeAsString(adp.getMetadataNode(), false);
+  		  String emlDocWithIncompleteInfo = addEntityWizardIncompleteInfo(emlDoc);
   		  //System.out.println("the original eml "+emlDoc);
   		  //System.out.println("the eml after appending incomplete info  "+emlDoc);
-  		  autoSavingPackageInCompleteDir(fileID, emlDoc);
+  		  autoSavingPackageInCompleteDir(fileID, emlDocWithIncompleteInfo);
   	  }
+  	  else if(fileID != null && adp!= null && status != null && status.equals(IncompleteDocSettings.CODEDEFINITIONWIZARD))
+      {
+        String emlDoc = XMLUtilities.getDOMTreeAsString(adp.getMetadataNode(), false);
+        String emlDocWithIncompleteInfo = addCodeDefinitionWizardIncompleteInfo(emlDoc);
+        //System.out.println("the original eml "+emlDoc);
+        //System.out.println("the eml after appending incomplete info  "+emlDoc);
+        autoSavingPackageInCompleteDir(fileID, emlDocWithIncompleteInfo);
+      }
     }
   }
   
@@ -2026,6 +2034,8 @@ public class WizardContainerFrame
 
     listener.wizardCanceled();
     Log.debug(30, "the autosaved id is "+autoSaveID+" in WizardContainerFrame.cancel method");
+    // now clean up
+    doCleanUp();
     if(autoSaveID != null && status.equals(IncompleteDocSettings.PACKAGEWIZARD))
     {
     	//FileSystemDataStore store = new FileSystemDataStore(Morpho.thisStaticInstance);
@@ -2036,9 +2046,7 @@ public class WizardContainerFrame
     {
     	Log.debug(30, "The entity wizard is canceled and we need to dump the adp to auto-saved file");
     	dumpPackageToAutoSaveFile(autoSaveID);
-    }
-    // now clean up
-    doCleanUp();
+    }  
     this.dispose();
   }
 

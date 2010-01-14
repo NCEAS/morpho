@@ -232,6 +232,12 @@ public class IncompleteDocumentLoader
   {
     if(incompleteDocInfo != null)
     {
+      //handle there is no page info - just open a frame.
+      if(incompleteDocInfo.getWizardPageClassInfoList() == null)
+      {
+        openVisibleMorphoFrame(dataPackage);
+        return;
+      }
       int index = incompleteDocInfo.getEntityIndex();
       //remove the entity with the index (this entity is the unfinished one)
       Node entityNode = dataPackage.deleteEntity(index);
@@ -256,6 +262,12 @@ public class IncompleteDocumentLoader
   {
     if(incompleteDocInfo != null)
     {
+      //handle there is no page info - just open a frame.
+      if(incompleteDocInfo.getWizardPageClassInfoList() == null)
+      {
+        openVisibleMorphoFrame(dataPackage);
+        return;
+      }
       int index = incompleteDocInfo.getEntityIndex();
       EditingAttributeInfo editingAttributeInfo = incompleteDocInfo.getEditingAttributeInfo();
       if(editingAttributeInfo == null)
@@ -496,6 +508,21 @@ public class IncompleteDocumentLoader
      return frame;
   }
   
+  /*
+   * Opens a visible morpho frame
+   */
+   private void openVisibleMorphoFrame(AbstractDataPackage adp)
+   {
+     MorphoFrame frame = openMorphoFrameForDataPackage(adp);
+     if(frame != null)
+     {
+       frame.setVisible(true);
+     }
+     else
+     {
+       Log.debug(5, "Morpho frame couldn't open a frame for the package!");
+     }
+   }
   /*
    * Generates a TextImportAttribute page. This page is kind of special, so we don't
    * generates from configuration.
