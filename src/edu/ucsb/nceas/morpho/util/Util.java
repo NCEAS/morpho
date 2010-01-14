@@ -294,6 +294,8 @@ public class Util
 	  	    {
 	  	      deleteAutoSavedFile(autoSavedID);
 	  	      adp.setAutoSavedID(null);
+	  	      //delete the data file too
+	  	      adp.deleteDataFilesInIncompleteFolder();
 	  	    }
 	      }
 	}

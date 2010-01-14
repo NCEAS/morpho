@@ -1557,41 +1557,8 @@ public class DataPackagePlugin
     EML200DataPackage adp = (EML200DataPackage)DataPackageFactory.getDataPackage(xml, false, true);
     ((EML200DataPackage)adp).setEMLVersion(EML200DataPackage.LATEST_EML_VER);
     adp.setAccessionNumber(docid);
-    /*String nextid = null;
-    String id = null;
-    try
-    {
-       id = adp.getAccessionNumber();
-       //Log.debug(5, "After get adp access number and id is "+id);
-       if(id == null || id.trim().equals(""))
-       {
-         id = docid;
-       }
-    }
-    catch (Exception www) 
-    {
-      // no valid accession number; use the given one
-      id = docid;
-    }*/ 
-   //Log.debug(5, "re-signed an id "+id);
-    /*if (id.indexOf("temporary")>-1) 
-    { 
-      //this is new data package wizard. In order to avoid saving one
-      //package couple times will create different package id, we use auto-saved id as id.
-      //Log.debug(5, "in tempoary branch");
-      //AccessionNumber an = new AccessionNumber(morpho);
-      nextid = autoSavedID;
-      adp.setAccessionNumber(nextid);
-    } 
-    else 
-    {
-      //Log.debug(5, "in another branch");
-      AccessionNumber an = new AccessionNumber(morpho);
-      nextid = an.incRev(id);
-      adp.setAccessionNumber(nextid);
-    }*/
-    //Log.debug(5, "final next id is "+nextid);
     adp.serializeIncompleteData();
+    adp.removeTracingChangeElement();
     adp.serializeIncompleteMetadata();
     //Util.deleteAutoSavedFile(autoSavedID);
     //return adp.getAccessionNumber();
