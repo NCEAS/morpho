@@ -326,7 +326,7 @@ public class IncompleteDocumentLoader
       AbstractUIPage currentPage = loadPagesIntoWizard(dpWiz, entityNode);
       if(currentPage == null)
       {
-         UIController.getInstance().setWizardNotRunning();
+         //UIController.getInstance().setWizardNotRunning();
          dpWiz.dispose();
          UIController.getInstance().removeWindow(frame);
          frame.dispose();

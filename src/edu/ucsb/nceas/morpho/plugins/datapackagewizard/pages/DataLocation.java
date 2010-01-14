@@ -915,7 +915,7 @@ public class DataLocation extends AbstractUIPage {
     }
 
     if (!fileObj.exists()) {
-      Log.debug(1, "error - your data file appears to have been moved or deleted!");
+      Log.debug(1, "Error -  the importing data file "+fileObj.getAbsolutePath()+ " appears to have been moved or deleted!");
       WidgetFactory.hiliteComponent(fileChooserWidget.getLabel());
       fileChooserWidget.getButton().requestFocus();
       return null;

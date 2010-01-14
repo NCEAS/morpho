@@ -3763,59 +3763,49 @@ public abstract class AbstractDataPackage extends MetadataObject
      Morpho morpho = Morpho.thisStaticInstance;
      FileSystemDataStore fds = new FileSystemDataStore(morpho);
      File dataFile = null;
+   
      try
      {
-       dataFile = fds.openIncompleteFile(docid);
-       Log.debug(30, "Docid "+docid+" exist in incomplete dir in AbstractDataPackage.handleIncompleteDir");
+       dataFile = fds.openFile(docid);
+       Log.debug(30, "Docid "+docid+" exist in data dir in AbstractDataPackage.handleIncompleteDir");
        return;
      }
-     catch(Exception e)
+     catch(Exception m)
      {
-       try
+       /*ConfigXML profile = morpho.getProfile();
+       String separator = profile.get("separator", 0);
+       separator = separator.trim();
+       String temp = new String();
+       temp = docid.substring(0, docid.indexOf(separator));
+       temp += "/" +
+             docid.substring(docid.indexOf(separator) + 1, docid.length());
+       Log.debug(30, "The temp file path is "+temp);*/
+       try 
        {
-         dataFile = fds.openFile(docid);
-         Log.debug(30, "Docid "+docid+" exist in data dir in AbstractDataPackage.handleIncompleteDir");
-         return;
+         dataFile = fds.openTempFile(docid);
+         InputStream dfis = new FileInputStream(dataFile);
+         fds.saveIncompleteDataFile(docid, dfis);
+         dfis.close();
        }
-       catch(Exception m)
+       catch (Exception qq) 
        {
-         /*ConfigXML profile = morpho.getProfile();
-         String separator = profile.get("separator", 0);
-         separator = separator.trim();
-         String temp = new String();
-         temp = docid.substring(0, docid.indexOf(separator));
-         temp += "/" +
-               docid.substring(docid.indexOf(separator) + 1, docid.length());
-         Log.debug(30, "The temp file path is "+temp);*/
-         try 
-         {
-           dataFile = fds.openTempFile(docid);
-           InputStream dfis = new FileInputStream(dataFile);
-           fds.saveIncompleteDataFile(docid, dfis);
-           dfis.close();
-         }
-         catch (Exception qq) 
-         {
-          // if a datafile is on metacat and user wants to save locally
-          try
-          {
-            MetacatDataStore mds = new MetacatDataStore(morpho);
-            //open old file name (if no file change, the old file name will be as same as docid).
-            InputStream dfis = new FileInputStream(dataFile);
-            fds.saveIncompleteDataFile(docid, dfis);
-            dfis.close();
-          }
-          catch (Exception qqq) 
-          {
-            // some other problem has occured
-            Log.debug(5, "Some problem with saving local data files has occurred! "+qqq.getMessage());
-            qq.printStackTrace();
-          }//end catch
+        // if a datafile is on metacat and user wants to save locally
+        try
+        {
+          MetacatDataStore mds = new MetacatDataStore(morpho);
+          //open old file name (if no file change, the old file name will be as same as docid).
+          InputStream dfis = new FileInputStream(dataFile);
+          fds.saveIncompleteDataFile(docid, dfis);
+          dfis.close();
         }
-       }
-      
-    
-     }
+        catch (Exception qqq) 
+        {
+          // some other problem has occured
+          Log.debug(5, "Some problem with saving local data files has occurred! "+qqq.getMessage());
+          qq.printStackTrace();
+        }//end catch
+      }
+     }     
      
    }
 
