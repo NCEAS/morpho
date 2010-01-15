@@ -2068,6 +2068,8 @@ public abstract class AbstractDataPackage extends MetadataObject
     }
     entityArray = newEntityArray;
     Log.debug(20, "AbstractDataPackage.deleteEntity - Delete the entity at index "+entNum);
+    lastEntityIndex = -1;
+    lastAttributeArray = null;
     return entity;
   }
   
