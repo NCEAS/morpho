@@ -43,7 +43,7 @@ import java.util.Vector;
 public class HeadResultSet extends ResultSet
 {
   /** Store the most recent revision in a vector */
-  private Vector headResultsVector = null;
+  //private Vector headResultsVector = null;
 
 
 
@@ -55,7 +55,7 @@ public class HeadResultSet extends ResultSet
                        InputStream resultsXMLStream, Morpho morpho)
   {
     super(query, localStatus, metacatStatus, resultsXMLStream, morpho);
-    consolidateResults();
+    //consolidateResults();
   }
 
 
@@ -67,7 +67,7 @@ public class HeadResultSet extends ResultSet
                        Vector vec, Morpho morpho)
   {
     super(query, vec, morpho);
-    consolidateResults();
+    //consolidateResults();
 
   }
 
@@ -75,26 +75,26 @@ public class HeadResultSet extends ResultSet
   /**
    * Return the number of records in this result set
    */
-  public int getRowCount()
+  /*public int getRowCount()
   {
     return headResultsVector.size();
-  }
+  }*/
 
   /**
    *  get the resultsVector
    */
-  public Vector getResultsVector() {
+  /*public Vector getResultsVector() {
     return headResultsVector;
-  }
+  }*/
 
   /**
    *  Set results vector
    * @param vector Vector
    */
-  public void setResultsVector(Vector vector)
+  /*public void setResultsVector(Vector vector)
   {
     headResultsVector = vector;
-  }
+  }*/
 
   /**
    * Determine the value of a column by its row and column index
@@ -104,7 +104,8 @@ public class HeadResultSet extends ResultSet
 
     Object value = null;
     try {
-      Vector rowVector = (Vector)headResultsVector.elementAt(row);
+      //Vector rowVector = (Vector)headResultsVector.elementAt(row);
+      Vector rowVector = (Vector)resultsVector.elementAt(row);
       // The oder of header is different to resultsVector, so we need a
       // conversion
       value = rowVector.elementAt(lookupResultsVectorIndex(col));
@@ -164,16 +165,16 @@ public class HeadResultSet extends ResultSet
   public void mergeFromMetacat(Vector vector2)
   {
     super.mergeFromMetacat(vector2);
-    consolidateResults();
+    //consolidateResults();
   }
 
 
-  /**
+  /*
    * Consolidate the results Vector to produce a new Vector with only the
    * most recent revision of each document in the Vector. Warning: this
    * implementation doesn't preserve sort order of the results
    */
-  private void consolidateResults()
+  /*private void consolidateResults()
   {
     int numHeaders = getColumnCount();
     Hashtable maxRevHash = new Hashtable();
@@ -226,7 +227,7 @@ public class HeadResultSet extends ResultSet
           headResultsVector.addElement(enumeration.nextElement());
       }
 
-  }
+  }*/
 
    /**
    * Method implements from SortTableModel. To make sure a col can be sort
@@ -236,6 +237,7 @@ public class HeadResultSet extends ResultSet
    */
   public void sortTableByColumn(int col, String order)
   {
-    sortVector(headResultsVector, col, order);
+    //sortVector(headResultsVector, col, order);
+    sortVector(resultsVector, col, order);
   }//sortColumn
 }

@@ -583,7 +583,59 @@ public class LocalQuery
    *  This is to reduce the search time by avoiding older versions
    */
   private void getLatestVersion(Vector vec) {
-    Vector newvec = new Vector();
+      
+    String dot = ".";
+    if(vec != null)
+    {
+      Hashtable<String, Integer> maxVersions = new Hashtable<String, Integer>();
+      for(int i=0; i<vec.size();i++)
+      {
+        File file = (File)(vec.elementAt(i));
+        if(file != null)
+        {
+          String name1 = file.getAbsolutePath();
+          try
+          {
+            int periodloc = name1.lastIndexOf(dot);
+            String namestart = name1.substring(0,periodloc);
+            if(namestart != null)
+            {
+              String vernum = name1.substring(periodloc+1,name1.length());
+              Integer intVer = new Integer(vernum);
+              if(maxVersions.contains(namestart))
+              {
+                Integer currentMax = maxVersions.get(namestart);
+                if(currentMax != null && currentMax.intValue() > intVer.intValue())
+                {
+                  //we already stored a greater version, so skip this one
+                  continue;
+                }
+              }
+              maxVersions.put(namestart, intVer);
+            }
+          }
+          catch(Exception e)
+          {
+            continue;
+          }
+        }
+      }
+      //put maxVersions into the new vector
+      Enumeration enumeration = maxVersions.keys();
+      vec.removeAllElements();
+      while (enumeration.hasMoreElements()) {
+          String nameStart = (String)enumeration.nextElement();
+          if(nameStart != null)
+          {
+            Integer version  = maxVersions.get(nameStart);
+            if(version != null)
+            {
+              vec.add(new File(nameStart+dot+version.toString()));
+            }
+          }
+      }
+    }
+    /*Vector newvec = new Vector();
     for (int j=0;j<vec.size();j++) {
       File file = (File)vec.elementAt(j);
       String name = file.getName();
@@ -603,7 +655,7 @@ public class LocalQuery
         vec.removeElementAt(k - cnt);
         cnt++;
       }
-    }
+    }*/
   }
 
   /**
