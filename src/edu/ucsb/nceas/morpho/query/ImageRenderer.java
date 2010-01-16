@@ -45,6 +45,8 @@ public class ImageRenderer extends DefaultTableCellRenderer
 {
  
   public static final String LOCALTOOLTIP = "Stored on my computer";
+  public static final String LOCALUSERSAVEDINCOMPLETETOOLTIP = "Incompete documentation stored on my computer";
+  public static final String LOCALAUTOSAVEDINCOMPLETETOOLTIP = "Crashed documentation stored on my computer";
   public static final String METACATTOOLTIP = "Stored on network";
   public static final String BLANK = "Blank";
   public static final String PACKAGETOOLTIP = "Documentation only";

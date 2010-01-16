@@ -36,18 +36,16 @@ import edu.ucsb.nceas.morpho.plugins.ServiceNotHandledException;
 import edu.ucsb.nceas.morpho.util.*;
 
 import java.io.*;
-import java.io.InputStream;
 
 import java.util.Enumeration;
+import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Stack;
 import java.util.Vector;
 import java.util.Collections;
 
 import javax.swing.*;
-import javax.swing.ImageIcon;
 import javax.swing.table.*;
-import javax.swing.table.AbstractTableModel;
 
 import org.w3c.dom.*;
 import org.xml.sax.Attributes;
@@ -104,6 +102,8 @@ public class ResultSet extends AbstractTableModel implements ColumnSortableTable
   private String updatedate;
   private String paramName;
   private Hashtable params;
+  protected HashSet<String> incompleteDocidSet = new HashSet<String>();
+  protected static final boolean alwaysShowingIncompleteDoc = true;
   /**
    * used to save package info for each doc returned during SAX parsing
    * Hashtable has up to five fields with the following String keys:
@@ -117,6 +117,10 @@ public class ResultSet extends AbstractTableModel implements ColumnSortableTable
 
   /** The icon for representing local storage. */
   public static ImageIcon localIcon = null;
+  /** The icon for representing usere saved incomplete package*/
+  public static ImageIcon localUserSavedIncompleteIcon = null;
+  /** The icon for representing automatically saved incomplete package*/
+  public static ImageIcon localAutoSavedIncompleteIcon = null;
   /** The icon for representing metacat storage. */
   public static ImageIcon metacatIcon = null;
   /** the icon for blank, nothing there */
@@ -249,6 +253,12 @@ public class ResultSet extends AbstractTableModel implements ColumnSortableTable
     localIcon
       = new ImageIcon(getClass().getResource("local-package-small.png"));
     localIcon.setDescription(ImageRenderer.LOCALTOOLTIP);
+    localUserSavedIncompleteIcon
+    = new ImageIcon(getClass().getResource("local-user-saved-inomplete-package-small.png"));
+    localUserSavedIncompleteIcon.setDescription(ImageRenderer.LOCALUSERSAVEDINCOMPLETETOOLTIP);
+    localAutoSavedIncompleteIcon
+    = new ImageIcon(getClass().getResource("local-atuo-saved-inomplete-package-small.png"));
+    localAutoSavedIncompleteIcon.setDescription(ImageRenderer.LOCALAUTOSAVEDINCOMPLETETOOLTIP);
     metacatIcon
       = new ImageIcon(getClass().getResource("network-package-small.png"));
     metacatIcon.setDescription(ImageRenderer.METACATTOOLTIP);
@@ -487,85 +497,11 @@ public class ResultSet extends AbstractTableModel implements ColumnSortableTable
     this.savedQuery = query;
   }
 
-  /**
-   * Open a given row index of the result set using a delegated handler class
-   */
-  /*public void openResultRecord(int row)
-  {
-    try {
-      Vector rowVector = (Vector)resultsVector.elementAt(row);
-      openResultRecord(rowVector);
-    } catch (ArrayIndexOutOfBoundsException aioobe) {
-      Log.debug(1, "array index out of bounds");
-    }
-  }*/
-
-  /**
-   * Open a given row of the result set using a delegated handler class
-   */
-  /*protected void openResultRecord(Vector rowVector)
-  {
-    int numHeaders = headers.length;
-    String docid = null;
-    boolean openLocal = false;
-    boolean openMetacat = false;
-    Vector rowTriples = null;
-    try {
-      docid = (String)rowVector.elementAt(DOCIDINDEX);
-      openLocal = ((Boolean)rowVector.elementAt(ISLOCALINDEX)).booleanValue();
-      openMetacat =
-                ((Boolean)rowVector.elementAt(ISMETACATINDEX)).booleanValue();
-      //rowTriples = (Vector)rowVector.get(numHeaders+7);
-    } catch (ArrayIndexOutOfBoundsException aioobe) {
-      Log.debug(1, "array index out of bounds");
-      docid = null;
-    } catch (NullPointerException npe) {
-      Log.debug(1, "null pointer exception");
-      docid = null;
-    }
-
-    String location = "";
-    if (openLocal) {
-      location = "local";
-    }
-
-    if (openMetacat) {
-      location += "metacat";
-    }
-
-    location = location.trim();
-
-    try {
-      ServiceController services = ServiceController.getInstance();
-      ServiceProvider provider =
-                      services.getServiceProvider(DataPackageInterface.class);
-      DataPackageInterface dataPackage = (DataPackageInterface)provider;
-      dataPackage.openDataPackage(location, docid, rowTriples, null, null);
-    } catch (ServiceNotHandledException snhe) {
-      Log.debug(6, snhe.getMessage());
-    }
-  }*/
-
-
-  /**
-   * Merge a ResultSet onto this one using the docid as the join column
-   */
-  public void merge(ResultSet r2)
-  {
-    if (r2 != null)
-    {
-      // Step through all of the rows of the results in r2 and
-      // see if there is a docid match
-      Vector r2Rows = r2.getResultsVector();
-      merge(r2Rows);
-
-    }
-  }
 
   /**
   * Merge a vector onto this one using the docid as the join column
   */
-  public void merge(Vector r2Rows)
+  protected void mergeFromMetacat(Vector metacatRows)
   {
     // Create a hash of our docids for easy comparison
       Hashtable docidList = new Hashtable();
@@ -573,10 +509,13 @@ public class ResultSet extends AbstractTableModel implements ColumnSortableTable
       for (int i=0; i < getRowCount(); i++) {
         Vector rowVector = (Vector)resultsVector.elementAt(i);
         String currentDocid = (String)rowVector.elementAt(DOCIDINDEX);
+        ImageIcon locationIcon
+        = (ImageIcon)rowVector.elementAt(PACKAGEICONINDEX);
+        putDocidIntoIncompleteSetBaseOnLocationIcon(currentDocid, locationIcon);
         docidList.put(currentDocid, new Integer(i));
       }
 
-      Enumeration ee = r2Rows.elements();
+      Enumeration ee = metacatRows.elements();
       while (ee.hasMoreElements()) {
         Vector row = (Vector)ee.nextElement();
         String currentDocid = (String)row.elementAt(DOCIDINDEX);
@@ -611,7 +550,20 @@ public class ResultSet extends AbstractTableModel implements ColumnSortableTable
       }
 
   }
-
+  
+  /*
+   * Base on the description to decide if we put the given docid into the incomplete set.
+   * Note: docid and icon should come from the same vector row.
+   */
+   private void putDocidIntoIncompleteSetBaseOnLocationIcon(String docid, ImageIcon locationIcon)
+   {
+     if(docid != null && locationIcon != null && 
+          (locationIcon.getDescription().equals(localUserSavedIncompleteIcon.getDescription()) || 
+           locationIcon.getDescription().equals(localAutoSavedIncompleteIcon.getDescription())))
+     {
+       incompleteDocidSet.add(docid);        
+     }
+   }
 
   /**
    * Get a reference to the Morpho application framework

@@ -159,33 +159,11 @@ public class HeadResultSet extends ResultSet
 
 
   /**
-   * Open a given row index of the result set using a delegated handler class
-   */
-  /*public void openResultRecord(int row)
-  {
-    try {
-      Vector rowVector = (Vector)headResultsVector.elementAt(row);
-      openResultRecord(rowVector);
-    } catch (ArrayIndexOutOfBoundsException aioobe) {
-      Log.debug(1, "array index out of bounds");
-    }
-  }*/
-
-  /**
-   * Merge a ResultSet onto this one using the docid as the join column
-   */
-  public void merge(ResultSet r2)
-  {
-    super.merge(r2);
-    consolidateResults();
-  }
-
-  /**
   * Merge a ResultSet onto this one using the docid as the join column
   */
-  public void merge(Vector vector2)
+  public void mergeFromMetacat(Vector vector2)
   {
-    super.merge(vector2);
+    super.mergeFromMetacat(vector2);
     consolidateResults();
   }
 
