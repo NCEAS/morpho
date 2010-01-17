@@ -34,7 +34,6 @@ import edu.ucsb.nceas.morpho.datastore.FileSystemDataStore;
 import edu.ucsb.nceas.morpho.datastore.MetacatDataStore;
 import edu.ucsb.nceas.morpho.datastore.MetacatUploadException;
 import edu.ucsb.nceas.morpho.framework.ConfigXML;
-import edu.ucsb.nceas.morpho.framework.DocidIncreaseDialog;
 import edu.ucsb.nceas.morpho.util.DocumentNotFoundException;
 import edu.ucsb.nceas.morpho.plugins.IncompleteDocInfo;
 import edu.ucsb.nceas.morpho.plugins.XMLFactoryInterface;
@@ -3514,7 +3513,7 @@ public abstract class AbstractDataPackage extends MetadataObject
 	    	    Log.debug(30, "docid "+docid+ " status in metacat is "+statusInMetacat);
 	    	    if (statusInMetacat != null && statusInMetacat.equals(DataStoreInterface.CONFLICT))
 	    	    {
-	    	    	conflictLocation = DocidIncreaseDialog.METACAT;
+	    	    	conflictLocation = DocidConflictHandler.METACAT;
 	    	    	existInMetacat = true;
 	    	    	//existFlag = true;
 	    	    }
@@ -3525,7 +3524,7 @@ public abstract class AbstractDataPackage extends MetadataObject
 	        	Log.debug(30, "docid "+docid+ " status in local is "+statusInLocal);
 	        	if (statusInLocal != null && statusInLocal.equals(DataStoreInterface.CONFLICT))
 	    	    {
-	    	    	conflictLocation = DocidIncreaseDialog.LOCAL;
+	    	    	conflictLocation = DocidConflictHandler.LOCAL;
 	    	    	existInLocal = true;
 	    	    	//existFlag = true;
 	    	    }
@@ -3538,7 +3537,7 @@ public abstract class AbstractDataPackage extends MetadataObject
         		if (statusInMetacat != null && statusInLocal != null && 
         				statusInLocal.equals(DataStoreInterface.CONFLICT) && statusInMetacat.equals(DataStoreInterface.CONFLICT))
 	        	{
-	        			conflictLocation =  DocidIncreaseDialog.LOCAL + " and "+ DocidIncreaseDialog.METACAT;
+	        			conflictLocation =  DocidConflictHandler.LOCAL + " and "+ DocidConflictHandler.METACAT;
 	        			existInMetacat = true;
 	        			existInLocal = true;
 	        			//existFlag = true;
@@ -3547,14 +3546,14 @@ public abstract class AbstractDataPackage extends MetadataObject
 	        	}
 	        	else if (statusInMetacat != null  && statusInMetacat.equals(DataStoreInterface.CONFLICT))
 	        	{
-	        			conflictLocation =  DocidIncreaseDialog.METACAT;
+	        			conflictLocation =  DocidConflictHandler.METACAT;
 	        			existInMetacat = true;
 	        			//existFlag = true;
 	        			//this.setIdentifierChangedInMetacatSerialization(true);
 	        	}
 	        	else if (statusInLocal != null && statusInLocal.equals(DataStoreInterface.CONFLICT))
 	        	{
-	        			conflictLocation =  DocidIncreaseDialog.LOCAL;
+	        			conflictLocation =  DocidConflictHandler.LOCAL;
 	        			existInLocal = true;
 	        			//existFlag = true;
 	        			//this.setIdentifierChangedInLocalSerialization(true);
@@ -4039,9 +4038,10 @@ public abstract class AbstractDataPackage extends MetadataObject
 		  //if it is update, we need give user options to choose: increase docid or revision number
 		  if (update)
 		  {
-			  DocidIncreaseDialog docidIncreaseDialog = new DocidIncreaseDialog(identifier, conflictLocation);
-		      String choice = docidIncreaseDialog.getUserChoice();
-		      if (choice != null && choice.equals(DocidIncreaseDialog.INCEASEID))
+		    DocidConflictHandler docidIncreaseDialog = new DocidConflictHandler(identifier, conflictLocation);
+			  String choice = docidIncreaseDialog.showDialog();
+	       //Log.debug(5, "choice is "+choice);
+		      if (choice != null && choice.equals(DocidConflictHandler.INCREASEID))
 		      {
 		            update =false;
 		      }

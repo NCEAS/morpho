@@ -32,7 +32,6 @@ import edu.ucsb.nceas.morpho.datastore.FileSystemDataStore;
 import edu.ucsb.nceas.morpho.datastore.LocalFileExistingException;
 import edu.ucsb.nceas.morpho.datastore.MetacatDataStore;
 import edu.ucsb.nceas.morpho.datastore.MetacatUploadException;
-import edu.ucsb.nceas.morpho.framework.DocidIncreaseDialog;
 import edu.ucsb.nceas.morpho.util.Log;
 import edu.ucsb.nceas.utilities.OrderedMap;
 import edu.ucsb.nceas.utilities.XMLUtilities;
@@ -177,7 +176,7 @@ public  class EML200DataPackage extends AbstractDataPackage
 	    statusInMetacat = mds.status(getAccessionNumber());
 	    if (statusInMetacat != null && statusInMetacat.equals(DataStoreInterface.CONFLICT))
 	    {
-	    	conflictLocation = DocidIncreaseDialog.METACAT;
+	    	conflictLocation = DocidConflictHandler.METACAT;
 	    	//this.setIdentifierChangedInMetacatSerialization(true);
 	    }
     }
@@ -187,7 +186,7 @@ public  class EML200DataPackage extends AbstractDataPackage
     	//existFlag = existInLocal;
     	if (statusInLocal != null && statusInLocal.equals(DataStoreInterface.CONFLICT))
 	    {
-	    	conflictLocation = DocidIncreaseDialog.LOCAL;
+	    	conflictLocation = DocidConflictHandler.LOCAL;
 	    	//this.setIdentifierChangedInLocalSerialization(true);
 	    }
     }
@@ -200,18 +199,18 @@ public  class EML200DataPackage extends AbstractDataPackage
     		if (statusInMetacat != null && statusInLocal != null && 
     				statusInLocal.equals(DataStoreInterface.CONFLICT) && statusInMetacat.equals(DataStoreInterface.CONFLICT) )
     		{
-    			conflictLocation =  DocidIncreaseDialog.LOCAL + " and "+ DocidIncreaseDialog.METACAT;
+    			conflictLocation =  DocidConflictHandler.LOCAL + " and "+ DocidConflictHandler.METACAT;
     		    //this.setIdentifierChangedInLocalSerialization(true);
     		    //this.setIdentifierChangedInMetacatSerialization(true);
     		}
     		else if (statusInMetacat != null && statusInMetacat.equals(DataStoreInterface.CONFLICT))
     		{
-    			conflictLocation =  DocidIncreaseDialog.METACAT;
+    			conflictLocation =  DocidConflictHandler.METACAT;
     			//this.setIdentifierChangedInMetacatSerialization(true);
     		}
     		else if (statusInLocal != null && statusInLocal.equals(DataStoreInterface.CONFLICT))
     		{
-    			conflictLocation =  DocidIncreaseDialog.LOCAL;
+    			conflictLocation =  DocidConflictHandler.LOCAL;
     			//this.setIdentifierChangedInLocalSerialization(true);
     		}
     	//}
@@ -229,9 +228,10 @@ public  class EML200DataPackage extends AbstractDataPackage
     {
     	Log.debug(30, "=============In existFlag and update branch");
     	// ToDo - add a frame to give user option to increase docid or revision
-    	 DocidIncreaseDialog docidIncreaseDialog = new DocidIncreaseDialog(identifier, conflictLocation);
-    	 String choice = docidIncreaseDialog.getUserChoice();
-    	 if (choice != null && choice.equals(DocidIncreaseDialog.INCEASEID))
+    	DocidConflictHandler docidIncreaseDialog = new DocidConflictHandler(identifier, conflictLocation);
+    	 String choice = docidIncreaseDialog.showDialog();
+    	 //Log.debug(5, "choice is "+choice);
+    	 if (choice != null && choice.equals(DocidConflictHandler.INCREASEID))
     	 {
     		 // increase to a new id
     	    AccessionNumber an = new AccessionNumber(morpho);
