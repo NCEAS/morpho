@@ -18,6 +18,7 @@ import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.border.EmptyBorder;
 
+
 import edu.ucsb.nceas.morpho.framework.MorphoFrame;
 import edu.ucsb.nceas.morpho.framework.UIController;
 import edu.ucsb.nceas.morpho.util.Log;
@@ -37,11 +38,11 @@ public class DocidConflictHandler
        public static final String METACAT = "Metacat";
        public static final String LOCAL  = "local system";
        private static final int PADDING = 5;
-       private static final int WIDTH = 800;
-       private static final int HEIGHT = 350;
+       private static final int WIDTH = 680;
+       private static final int HEIGHT = 280;
        private static final int EXTRAL = 75;
-       private static final int HEADER = 30;
-       private static final  Dimension LABELDIMENSION = new Dimension(WIDTH,60);
+       private static final int HEADER = 20;
+       private static final  Dimension LABELDIMENSION = new Dimension(WIDTH,80);
        private String docid = null;
        private String location = null;
        private String userChoice = null;
@@ -65,9 +66,9 @@ public class DocidConflictHandler
     	    this.docid = docid;
     	    this.location = location;
     	    this.userChoice = INCREASEREVISION;
-    	    message =  "Document id "+docid +" already exists in "+location+
-            ". If the saving document is an updated version of the document, increment the revision number. "+ 
-            "Otherwise, generate a new document id.";
+    	    message =  "<html><br>  Document id "+docid +" already exists in "+location+
+            ". <br>  If the saving document is an updated version of the document, increment the revision number. "+ 
+            "<br>  Otherwise, generate a new document id.</html>";
     	    //intialGUI();
        }
        
@@ -111,9 +112,11 @@ public class DocidConflictHandler
        private void createMessagePanel()
        {
          messagePanel = new JPanel();
+         messagePanel.setBorder(new EmptyBorder(PADDING, PADDING, PADDING, PADDING));
+         messagePanel.setLayout(new BorderLayout());
          JLabel messageLabel = new JLabel(message);
          Util.setPrefMaxSizes(messageLabel, LABELDIMENSION);
-         messagePanel.add(messageLabel);
+         messagePanel.add(messageLabel, BorderLayout.CENTER);
        }
        
        /*
@@ -121,9 +124,8 @@ public class DocidConflictHandler
         */
        private void createChoicePanel()
        {
-         choicePanel = new JPanel();
-         choicePanel.setLayout(new BoxLayout(choicePanel, BoxLayout.Y_AXIS));
-         choicePanel.add(Box.createVerticalStrut(HEADER));
+         Box radioBox = Box.createVerticalBox();
+         radioBox.add(Box.createVerticalStrut(HEADER));
          //Creates two radio button for options
          increaseRevision = new JRadioButton(LABELINCREASEREVISION);
          increaseRevision.setSelected(true);
@@ -131,8 +133,15 @@ public class DocidConflictHandler
          ButtonGroup group = new ButtonGroup();
          group.add(increaseRevision);
          group.add(increaseDocid);
-         choicePanel.add(increaseRevision);
-         choicePanel.add(increaseDocid);
+         radioBox.add(increaseRevision);
+         radioBox.add(increaseDocid);
+         Box centerBox = Box.createHorizontalBox();
+         centerBox.add(Box.createHorizontalGlue());
+         centerBox.add(radioBox);
+         centerBox.add(Box.createHorizontalGlue());
+         choicePanel = new JPanel();
+         choicePanel.setLayout(new BorderLayout());
+         choicePanel.add(centerBox, BorderLayout.CENTER);
        }
        
        
@@ -144,7 +153,7 @@ public class DocidConflictHandler
        private void createOKButtonPanel()
        {
          okButtonPanel = new JPanel();
-         JButton okButton = new JButton("Ok");
+         JButton okButton = new JButton(" Ok ");
          ActionListener okAction = new DialogOKAction();
          okButton.addActionListener(okAction);
          okButtonPanel.setLayout(new BoxLayout(okButtonPanel, BoxLayout.X_AXIS));
