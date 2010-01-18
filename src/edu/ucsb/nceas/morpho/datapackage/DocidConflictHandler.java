@@ -38,11 +38,11 @@ public class DocidConflictHandler
        public static final String METACAT = "Metacat";
        public static final String LOCAL  = "local system";
        private static final int PADDING = 5;
-       private static final int WIDTH = 680;
+       private static final int WIDTH = 580;
        private static final int HEIGHT = 280;
        private static final int EXTRAL = 75;
        private static final int HEADER = 16;
-       private static final int LEFTSPACE = 220;
+       private static final int LEFTSPACE = 190;
        private static final  Dimension LABELDIMENSION = new Dimension(WIDTH,80);
        private String docid = null;
        private String location = null;
@@ -67,9 +67,9 @@ public class DocidConflictHandler
     	    this.docid = docid;
     	    this.location = location;
     	    this.userChoice = INCREASEREVISION;
-    	    message =  "<html><br>&#x0020;&#x0020;Document id "+docid +" already exists in "+location+
+    	    message =  "<html><font style=\"font-size: 9px;\" color=\"#666666\"><br>&#x0020;&#x0020;Document id "+docid +" already exists in "+location+
             ". <br>&#x0020;&#x0020;If the saving document is an updated version of the document, increment the revision number. "+ 
-            "<br>&#x0020;&#x0020;Otherwise, generate a new document id.</html>";
+            "<br>&#x0020;&#x0020;Otherwise, generate a new document id.<font></html>";
     	    //intialGUI();
        }
        
@@ -100,9 +100,9 @@ public class DocidConflictHandler
          createMessagePanel();
          createChoicePanel();
          createOKButtonPanel();
-         dialog.add(messagePanel, BorderLayout.NORTH);
-         dialog.add(choicePanel, BorderLayout.CENTER);
-         dialog.add(okButtonPanel, BorderLayout.SOUTH);
+         dialog.getContentPane().add(messagePanel, BorderLayout.NORTH);
+         dialog.getContentPane().add(choicePanel, BorderLayout.CENTER);
+         dialog.getContentPane().add(okButtonPanel, BorderLayout.SOUTH);
     	   dialog.setVisible(true);
     	   return userChoice;
        }
