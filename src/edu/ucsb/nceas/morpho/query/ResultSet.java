@@ -257,7 +257,7 @@ public class ResultSet extends AbstractTableModel implements ColumnSortableTable
     = new ImageIcon(getClass().getResource("local-user-saved-inomplete-package-small.png"));
     localUserSavedIncompleteIcon.setDescription(ImageRenderer.LOCALUSERSAVEDINCOMPLETETOOLTIP);
     localAutoSavedIncompleteIcon
-    = new ImageIcon(getClass().getResource("local-atuo-saved-inomplete-package-small.png"));
+    = new ImageIcon(getClass().getResource("local-auto-saved-inomplete-package-small.png"));
     localAutoSavedIncompleteIcon.setDescription(ImageRenderer.LOCALAUTOSAVEDINCOMPLETETOOLTIP);
     metacatIcon
       = new ImageIcon(getClass().getResource("network-package-small.png"));
