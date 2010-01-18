@@ -156,7 +156,11 @@ public class DataPackageWizardPlugin implements PluginInterface,
    *  @param entityIndex the index of the new entity in this package
    */
   public void startEntityWizard(DataPackageWizardListener listener, int entityIndex) {
-
+    boolean running = checkIsEntityWizardRunning();
+    if(running)
+    {
+      return;
+    }
     startWizardAtPage(WizardSettings.ENTITY_WIZ_FIRST_PAGE_ID, false, listener,
     		NEWTABLEEWIZARDFRAMETITLE, entityIndex);
   }
@@ -174,7 +178,11 @@ public class DataPackageWizardPlugin implements PluginInterface,
    */
   public void startCodeDefImportWizard(DataPackageWizardListener listener, int entityIndex,Boolean beforeFlag, 
 		  int editingEntityIndex, int editingAttributeIndex) {
-
+    boolean running = checkIsEntityWizardRunning();
+    if(running)
+    {
+      return;
+    }
 	  WizardContainerFrame wizard = startWizardAtPage(DataPackageWizardInterface.CODE_IMPORT_SUMMARY, false,
                       listener, NEWCODEDEFINITIONWIZARDFRAMETITLE, entityIndex);
 	  if(wizard != null)
@@ -184,6 +192,27 @@ public class DataPackageWizardPlugin implements PluginInterface,
 	    //wizard.setEditingAttributeMap(attributeMap);
 	    wizard.setBeforeSelectionFlag(beforeFlag);
 	  }
+  }
+  
+  /*
+   * Check if an entity wizard is running on the current active window.
+   */
+  private boolean checkIsEntityWizardRunning()
+  {
+    boolean running  = false;
+    String docid  = null;
+    AbstractDataPackage adp = UIController.getInstance().getCurrentAbstractDataPackage();
+    if(adp != null)
+    {
+      docid = adp.getAccessionNumber();
+      running = UIController.getInstance().isEntityWizardRunning(docid);
+    }
+    if(running)
+    {
+      Log.debug(5, "Sorry, there is another entity wizard running from the package "+docid+
+          ". \nMorpho only allows one entity wizard from the same package running at a time.");
+    }
+    return running;
   }
   
   /**

@@ -183,7 +183,8 @@ public class WizardContainerFrame
     frame = this;
     pageStack = new Stack();
     pageLib = new WizardPageLibrary(this);
-    adp = UIController.getInstance().getCurrentAbstractDataPackage();
+    adp = UIController.getInstance().getCurrentAbstractDataPackage(); 
+    setDocidToEntityWizardRunningRecorder();//only works for entity wizard or import wizard
     addEmptyProjectTileSubtree();
     initGUI();    
     setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
@@ -195,6 +196,17 @@ public class WizardContainerFrame
     });
   }
   
+  /*
+   * Add the id to entityWziardRunningRecorder if this entity wizard or code import wizard.
+   */
+  private void setDocidToEntityWizardRunningRecorder()
+  {
+    if(adp != null && status != null && (status.equals(IncompleteDocSettings.ENTITYWIZARD) ||status.equals(IncompleteDocSettings.CODEDEFINITIONWIZARD)))
+    {
+      String docid = adp.getAccessionNumber();
+      UIController.getInstance().addDocidToEntityWizardRunningRecorder(docid);
+    }
+  }
   
   /**
    * Initialize auto saving. This mainly initialize the id for auto-saved file.
@@ -2054,7 +2066,12 @@ public class WizardContainerFrame
   private void doCleanUp() {
 
     UIController.getInstance().setWizardNotRunning();
-
+    //remove the docid from the entity wizard running record.
+    if(adp != null && status != null && (status.equals(IncompleteDocSettings.ENTITYWIZARD) ||status.equals(IncompleteDocSettings.CODEDEFINITIONWIZARD)))
+    {
+      String docid = adp.getAccessionNumber();
+      UIController.getInstance().removeDocidFromEntityWizardRunningRecorder(docid);
+    }
     //clear out pageStack
     pageStack.clear();
     //AbstractDataPackage adp = UIController.getInstance().getCurrentAbstractDataPackage();

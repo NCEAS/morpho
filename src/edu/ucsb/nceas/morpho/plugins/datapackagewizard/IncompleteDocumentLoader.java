@@ -350,6 +350,9 @@ public class IncompleteDocumentLoader
       if(currentPage == null)
       {
          //UIController.getInstance().setWizardNotRunning();
+        
+         String docid = dataPackage.getAccessionNumber();
+         UIController.getInstance().removeDocidFromEntityWizardRunningRecorder(docid);   
          dpWiz.dispose();
          UIController.getInstance().removeWindow(frame);
          frame.dispose();
