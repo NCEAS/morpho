@@ -445,12 +445,16 @@ public class ProfileDialog extends JDialog implements StateChangeListener
                             BorderFactory.createEmptyBorder(8,8,8,8),
                             "Data Package Identification"));
       JLabel scopeLabel = new JLabel("Identifier prefix: ");
+      JLabel noteLabel = new JLabel("Note: ");
+      JLabel space1 = new JLabel(" ");
       scopeLabel.setForeground(Color.black);
       scopeLabel.setFont(new Font("Dialog", Font.PLAIN, 12));
       scopeField.setColumns(15);
       scopeField.setText(userIdField.getText());
-      JLabel[] labels = {scopeLabel};
-      JTextField[] textFields = {scopeField};
+      JLabel noteContent= new JLabel("Please do not use \"temporary\" because it is a reserved word.");
+      JLabel space2 = new JLabel(" ");
+      JLabel[] labels = {scopeLabel, space1, noteLabel};
+      JComponent[] textFields = {scopeField, space2, noteContent};
       addLabelTextRows(labels, textFields, gridbag, screenPanel);
       addKeyListenerToComponents(textFields);
       scopeField.requestFocus();
