@@ -37,6 +37,7 @@ import java.awt.event.ActionEvent;
 import java.awt.Point;
 import java.awt.Dimension;
 import java.util.Enumeration;
+import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Vector;
 import javax.swing.AbstractAction;
@@ -83,6 +84,7 @@ public class UIController
     private static Vector orderedMenuList;
     private static Hashtable orderedMenuActions;
     private static Vector toolbarList;
+    private static HashSet<String> entityWizardRunningRecorder = null;
     // A hashtable to store the pair: submenu-path,
     // such as synchronize - file/synchroize
     private static Hashtable subMenuAndPath;
@@ -120,6 +122,7 @@ public class UIController
         orderedMenuActions = new Hashtable();
         toolbarList = new Vector();
         subMenuAndPath = new Hashtable();
+        entityWizardRunningRecorder = new HashSet<String>();
     }
 
 
@@ -669,6 +672,40 @@ public class UIController
     public void setWizardIsRunning(AbstractDataPackage tempDataPackage) {
 
       this.wizardTempDataPackage = tempDataPackage;
+    }
+    
+    /**
+     * Add a docid to entityWizardRunningRecorder
+     * @param docid the id will be added
+     */
+    public void addDocidToEntityWizardRunningRecorder(String docid)
+    {
+      if(docid != null || !docid.trim().equals(""))
+      {
+        entityWizardRunningRecorder.add(docid);
+      }
+    }
+    
+    /**
+     * Remove a docid from entityWizardRunningRecorder
+     * @param docid the id will be removed
+     */
+    public void removeDocidFromEntityWizardRunningRecorder(String docid)
+    {
+      if(docid != null || !docid.trim().equals(""))
+      {
+        entityWizardRunningRecorder.remove(docid);
+      }
+    }
+    
+    /**
+     * Check if an entity wizard is running for this docid
+     * @param docid the docid which will be check
+     * @return true if there is an entity wizard is running against the docid
+     */
+    public boolean isEntityWizardRunning(String docid)
+    {
+      return entityWizardRunningRecorder.contains(docid);
     }
 
 
