@@ -41,7 +41,8 @@ public class DocidConflictHandler
        private static final int WIDTH = 680;
        private static final int HEIGHT = 280;
        private static final int EXTRAL = 75;
-       private static final int HEADER = 20;
+       private static final int HEADER = 16;
+       private static final int LEFTSPACE = 220;
        private static final  Dimension LABELDIMENSION = new Dimension(WIDTH,80);
        private String docid = null;
        private String location = null;
@@ -66,9 +67,9 @@ public class DocidConflictHandler
     	    this.docid = docid;
     	    this.location = location;
     	    this.userChoice = INCREASEREVISION;
-    	    message =  "<html><br>  Document id "+docid +" already exists in "+location+
-            ". <br>  If the saving document is an updated version of the document, increment the revision number. "+ 
-            "<br>  Otherwise, generate a new document id.</html>";
+    	    message =  "<html><br>&#x0020;&#x0020;Document id "+docid +" already exists in "+location+
+            ". <br>&#x0020;&#x0020;If the saving document is an updated version of the document, increment the revision number. "+ 
+            "<br>&#x0020;&#x0020;Otherwise, generate a new document id.</html>";
     	    //intialGUI();
        }
        
@@ -136,7 +137,7 @@ public class DocidConflictHandler
          radioBox.add(increaseRevision);
          radioBox.add(increaseDocid);
          Box centerBox = Box.createHorizontalBox();
-         centerBox.add(Box.createHorizontalGlue());
+         centerBox.add(Box.createHorizontalStrut(LEFTSPACE));
          centerBox.add(radioBox);
          centerBox.add(Box.createHorizontalGlue());
          choicePanel = new JPanel();
