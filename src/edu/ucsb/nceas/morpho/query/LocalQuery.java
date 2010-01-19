@@ -30,6 +30,7 @@ import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.datastore.DataStore;
 import edu.ucsb.nceas.morpho.framework.ConfigXML;
 import edu.ucsb.nceas.morpho.framework.QueryRefreshInterface;
+import edu.ucsb.nceas.morpho.framework.UIController;
 import edu.ucsb.nceas.morpho.util.IncompleteDocSettings;
 import edu.ucsb.nceas.morpho.util.Log;
 import java.io.*;
@@ -241,14 +242,55 @@ public class LocalQuery
       Enumeration pl = packageList.elements();
       while (pl.hasMoreElements()) {
         String packageName = (String)pl.nextElement();
-        row = createRSRow(packageName, fromDataDir);
-        rowCollection.addElement(row);
+        //Log.debug(5, "package name is "+packageName);
+        if(!belongToWizard(packageName, fromDataDir))
+        {
+          row = createRSRow(packageName, fromDataDir);
+          rowCollection.addElement(row);
+        }
+        else
+        {
+          Log.debug(30, "The docid "+packageName+" is skipped on LocalQuery.execute since it is a tracing-wizard-change document");
+        }
       }
       //rs = new ResultSet(savedQuery, "local", rowCollection, morpho);
       rs = new HeadResultSet(savedQuery, rowCollection, morpho);
     }
 
     return rs;
+  }
+  
+  /*
+   * Check if the package id on incomplete dir belongs a wizard (package wizard or entity wizard)
+   * 
+   */
+  private boolean belongToWizard(String packageID, String sourceDir)
+  {
+    boolean belong = false;
+    if(packageID != null && !packageID.trim().equals(""))
+    {
+      if(sourceDir != null && sourceDir.equals(incompleteDir))
+      {
+        //check entity wizard (and code import wizard) first
+        if(UIController.getInstance().isEntityWizardRunning(packageID))
+        {
+          belong = true;
+        }
+        else
+        {
+          //check package wizard
+          String packageWizardRunningID = UIController.getInstance().getRunningWizardPackageID();
+          if(packageWizardRunningID != null)
+          {
+            if(packageID.equals(packageWizardRunningID.trim()))
+            {
+              belong = true;
+            }
+          }
+        }
+      }
+    }  
+    return belong;
   }
 
   /**

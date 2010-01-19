@@ -745,6 +745,21 @@ public class UIController
 
       return (this.wizardTempDataPackage != null);
     }
+    
+    /**
+     * Gets the package id of the wizard temp data package. If wizard is not running,
+     * null will be returned.
+     * @return the package id
+     */
+    public String getRunningWizardPackageID()
+    {
+      String packageID = null;
+      if(this.wizardTempDataPackage != null)
+      {
+        packageID =this.wizardTempDataPackage.getAccessionNumber();
+      }
+      return packageID;
+    }
 
 
     /**
