@@ -414,8 +414,12 @@ public class LocalQuery
     File fn = new File(sourceDirectory, filename);
     String fullfilename = fn.getPath();
     String localStatus = QueryRefreshInterface.LOCALCOMPLETE;
+    Hashtable domCollection = null;
+    Hashtable doctypeCollection = null;
     if(sourceDirectory != null && sourceDirectory.equals(incompleteDir))
     {
+      domCollection = dom_incomplete_collection;
+      doctypeCollection = doctype_incomplete_collection;
       String traceValue = getValueForPath(IncompleteDocSettings.TRACINGCHANGEPATH, fullfilename, incompleteDir);
       //Log.debug(5, "traceValue on LocalQuery.createRSRow is "+traceValue);
       if(traceValue != null && traceValue.equals(IncompleteDocSettings.TRUE))
@@ -426,6 +430,11 @@ public class LocalQuery
       {
         localStatus = QueryRefreshInterface.LOCALUSERSAVEDINCOMPLETE;
       }
+    }
+    else
+    {
+      domCollection = dom_collection;
+      doctypeCollection = doctype_collection;
     }
 
     // Get the triples for this package
@@ -476,10 +485,10 @@ public class LocalQuery
     rss.addElement(date);                                 // create date
     rss.addElement(date);                                 // update date
     rss.addElement(docid);                                // docid
-    Document doc = (Document)dom_collection.get(docid);
+    Document doc = (Document)domCollection.get(docid);
     String docname = doc.getNodeName();
     rss.addElement(docname);                              // docname
-    String thisDoctype = (String)doctype_collection.get(docid);
+    String thisDoctype = (String)doctypeCollection.get(docid);
     rss.addElement(thisDoctype);                          // doctype
     //rss.addElement(new Boolean(true));                    // isLocal
     //rss.addElement(new Boolean(false));                   // isMetacat
