@@ -98,6 +98,7 @@ public class LocalQuery
    * as the values
    */
   private static Hashtable dataPackage_collection;
+  private static Hashtable dataPackage_incomplete_collection;
  
 
   /**
@@ -160,6 +161,7 @@ public class LocalQuery
     doctype_collection = new Hashtable();
     doctype_incomplete_collection = new Hashtable();
     dataPackage_collection = new Hashtable();
+    dataPackage_incomplete_collection = new Hashtable();
     packageTriples = new Hashtable();
   }
 
@@ -253,7 +255,7 @@ public class LocalQuery
    * @param xpathExpression the XPath query string
    */
   private Vector executeXPathQuery(String xpathExpression, Vector filevector, Hashtable domCollection,
-                                                   Vector doNotParseCollection, Hashtable docTypeCollection)
+                                                   Vector doNotParseCollection, Hashtable docTypeCollection, Hashtable dataPackageCollection)
   {
     Vector package_IDs = new Vector();
     Node root;
@@ -340,7 +342,7 @@ public class LocalQuery
         } // end else
         
         if ((dt2bReturned.contains("any")) || (dt2bReturned.contains(currentDoctype))) {
-            addToPackageList(root, docid);
+            addToPackageList(root, docid, dataPackageCollection);
         }
         
         String rootname = root.getNodeName();
@@ -369,10 +371,10 @@ public class LocalQuery
             if ((nl != null && nl.getLength()>0)||allHits) {
               try {
                 // If this docid is in any packages, record those package ids
-                if (dataPackage_collection.containsKey(docid)) {
-                	String doctype = (String) doctype_collection.get(docid);
+                if (dataPackageCollection.containsKey(docid)) {
+                	String doctype = (String) docTypeCollection.get(docid);
                 	if (dt2bReturned.contains(doctype)) {
-		                  Vector ids = (Vector)dataPackage_collection.get(docid);
+		                  Vector ids = (Vector)dataPackageCollection.get(docid);
 		                  Enumeration q = ids.elements();
 		                  while (q.hasMoreElements()) {
 		                    Object id = q.nextElement();
@@ -796,12 +798,12 @@ public class LocalQuery
         if(sourceDir != null && sourceDir.equals(incompleteDir))
         {
           currentResults = executeXPathQuery(xpath, filevector, dom_incomplete_collection,
-                                  doNotParse_incomplete_collection, doctype_incomplete_collection);
+                                  doNotParse_incomplete_collection, doctype_incomplete_collection, dataPackage_incomplete_collection);
         }
         else
         {
           currentResults = executeXPathQuery(xpath, filevector,dom_collection,
-                   doNotParse_collection, doctype_collection);
+                   doNotParse_collection, doctype_collection, dataPackage_collection);
         }
         
       } else {  // QueryGroup
@@ -919,7 +921,7 @@ public class LocalQuery
  /**
   * build hashtable of package elements called by buildPackageList
   */
-  private void addToPackageList(Node docNode, String packageDocid) {
+  private void addToPackageList(Node docNode, String packageDocid, Hashtable dataPackageCollection) {
     String subject = "";
     String relationship = "";
     String object = "";
@@ -973,48 +975,48 @@ public class LocalQuery
         tripleList.addElement(triple);
 
         // add the packageDocid itself
-        if (dataPackage_collection.containsKey(packageDocid)) {
+        if (dataPackageCollection.containsKey(packageDocid)) {
           // already in collection
           // don't do anything
         } else {  // new
           Vector vec = new Vector();
           vec.addElement(packageDocid);
-          dataPackage_collection.put(packageDocid, vec);
+          dataPackageCollection.put(packageDocid, vec);
         }
 
         // add subject to the collection
-        if (dataPackage_collection.containsKey(subject)) {
+        if (dataPackageCollection.containsKey(subject)) {
           // already in collection
-          Vector curvec = (Vector)dataPackage_collection.get(subject);
+          Vector curvec = (Vector)dataPackageCollection.get(subject);
           curvec.addElement(packageDocid);
         } else {  // new
           Vector vec = new Vector();
           vec.addElement(packageDocid);
-          dataPackage_collection.put(subject, vec);
+          dataPackageCollection.put(subject, vec);
         }
 
         // add object to the collection
-        if (dataPackage_collection.containsKey(object)) {
+        if (dataPackageCollection.containsKey(object)) {
           // already in collection
-          Vector curvec = (Vector)dataPackage_collection.get(object);
+          Vector curvec = (Vector)dataPackageCollection.get(object);
           curvec.addElement(packageDocid);
         } else {  // new
           Vector vec = new Vector();
           vec.addElement(packageDocid);
-          dataPackage_collection.put(object, vec);
+          dataPackageCollection.put(object, vec);
         }
       }
     }
 
     // add the packageDocid itself
     // needed here to handle case where packageDoc does NOT contain triple (e.g. eml2)
-    if (dataPackage_collection.containsKey(packageDocid)) {
+    if (dataPackageCollection.containsKey(packageDocid)) {
       // already in collection
       // don't do anything
     } else {  // new
       Vector vec = new Vector();
       vec.addElement(packageDocid);
-      dataPackage_collection.put(packageDocid, vec);
+      dataPackageCollection.put(packageDocid, vec);
     }
 
     // Add the tripleList to the static cache of tripleLists
