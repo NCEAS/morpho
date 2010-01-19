@@ -375,7 +375,7 @@ public class FileSystemDataStore extends DataStore
 			   
 		 }
 	   
-	   Log.debug(5, "The return is "+has);
+	   //Log.debug(5, "The return is "+has);
 	   return has;
    }
   

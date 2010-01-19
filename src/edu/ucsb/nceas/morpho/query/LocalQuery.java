@@ -78,7 +78,7 @@ public class LocalQuery
    */
   public static Hashtable dom_collection;
   //storing the  dom tree from in incomplete dir
-  private static Hashtable dom_incomplete_collection;
+  private Hashtable dom_incomplete_collection = new Hashtable();
 
   /**
    * The query on which this LocalQuery is based.
@@ -90,7 +90,7 @@ public class LocalQuery
    * the locally stored XML documents
    */
   private static Hashtable doctype_collection;
-  private static Hashtable doctype_incomplete_collection;
+  private Hashtable doctype_incomplete_collection = new Hashtable();
   
 
   /**
@@ -98,7 +98,7 @@ public class LocalQuery
    * as the values
    */
   private static Hashtable dataPackage_collection;
-  private static Hashtable dataPackage_incomplete_collection;
+  private  Hashtable dataPackage_incomplete_collection = new Hashtable();
  
 
   /**
@@ -157,11 +157,11 @@ public class LocalQuery
   // create these static caches when class is first loaded
   static {
     dom_collection = new Hashtable();
-    dom_incomplete_collection = new Hashtable();
+    //dom_incomplete_collection = new Hashtable();
     doctype_collection = new Hashtable();
-    doctype_incomplete_collection = new Hashtable();
+    //doctype_incomplete_collection = new Hashtable();
     dataPackage_collection = new Hashtable();
-    dataPackage_incomplete_collection = new Hashtable();
+    //dataPackage_incomplete_collection = new Hashtable();
     packageTriples = new Hashtable();
   }
 
@@ -219,6 +219,9 @@ public class LocalQuery
 	  File xmldir = new File(incompleteDir);
 	  Vector fileVector = new Vector();
 	  getFiles(xmldir, fileVector);
+	  dom_incomplete_collection = new Hashtable();
+	  doctype_incomplete_collection = new Hashtable();
+	  dataPackage_incomplete_collection = new Hashtable();
 	  return execute(fileVector, incompleteDir);
   }
   
