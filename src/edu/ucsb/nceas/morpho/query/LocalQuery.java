@@ -196,8 +196,7 @@ public class LocalQuery
 	   Vector filevector = new Vector();
 	    // get a list of all files to be searched
 	    getFiles(xmldir, filevector);
-      boolean fromDataDir = true;
-       return execute(filevector, fromDataDir);
+      return execute(filevector, datadir);
   }
   
   /**
@@ -209,14 +208,13 @@ public class LocalQuery
 	  File xmldir = new File(incompleteDir);
 	  Vector fileVector = new Vector();
 	  getFiles(xmldir, fileVector);
-	  boolean fromDataDir = false;
-	  return execute(fileVector, fromDataDir);
+	  return execute(fileVector, incompleteDir);
   }
   
   /*
    * Run the query against the local document store
    */
-  private ResultSet execute(Vector filevector, boolean fromDataDir)
+  private ResultSet execute(Vector filevector, String fromDataDir)
   {
     // first, get a list of all packages that meet the query requirements
     Vector packageList = executeLocal(this.savedQuery.getQueryGroup(), filevector);
@@ -230,11 +228,11 @@ public class LocalQuery
       while (pl.hasMoreElements()) {
         String packageName = (String)pl.nextElement();
         String status = QueryRefreshInterface.LOCALCOMPLETE;
-        if(!fromDataDir)
+        if(fromDataDir != null && fromDataDir.equals(incompleteDir))
         {
           //TODO we need to decide status for incomplete document.
         }
-        row = createRSRow(packageName, status);
+        row = createRSRow(packageName, status, fromDataDir);
         rowCollection.addElement(row);
       }
       //rs = new ResultSet(savedQuery, "local", rowCollection, morpho);
@@ -412,11 +410,11 @@ public class LocalQuery
   }
 
   /** Create a row vector that matches that needed for the ResultSet vector */
-  private Vector createRSRow(String docid, String localStatus) {
+  private Vector createRSRow(String docid, String localStatus, String directory) {
     int firstSep = docid.indexOf(separator);
     String filename = docid.substring(0,firstSep) + File.separator +
                       docid.substring(firstSep+1, docid.length());
-    File fn = new File(datadir, filename);
+    File fn = new File(directory, filename);
     String fullfilename = fn.getPath();
 
     // Get the triples for this package
