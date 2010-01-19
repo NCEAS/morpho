@@ -632,7 +632,7 @@ public class LocalQuery
             {
               String vernum = name1.substring(periodloc+1,name1.length());
               Integer intVer = new Integer(vernum);
-              if(maxVersions.contains(namestart))
+              if(maxVersions.containsKey(namestart))
               {
                 Integer currentMax = maxVersions.get(namestart);
                 if(currentMax != null && currentMax.intValue() > intVer.intValue())
