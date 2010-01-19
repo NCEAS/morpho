@@ -355,15 +355,27 @@ public class FileSystemDataStore extends DataStore
    {
 	   boolean has = false;
 	   String filePath = incompletedir;
-	   if(scope != null)
-	   {
-		   File incompleteDirectory = new File(filePath+File.separator+scope);
-		   File[] children = incompleteDirectory.listFiles();
-		   if (children != null && children.length > 0 )
+		 File incompleteDirectory = new File(filePath);
+		 File[] children = incompleteDirectory.listFiles();
+		 if (children != null && children.length > 0 )
+		 {
+		   for(int i=0; i<children.length; i++)
 		   {
-			   has = true;
+		     File childDir = new File(filePath+File.separator+children[i].getName());
+		     if(childDir != null && childDir.isDirectory())
+		     {
+		       File[] grandChildren = childDir.listFiles();
+	         if(grandChildren != null && grandChildren.length > 0)
+	         {
+	           has = true;
+	           break;
+	         }
+		     }	    
 		   }
-	   }
+			   
+		 }
+	   
+	   Log.debug(5, "The return is "+has);
 	   return has;
    }
   
