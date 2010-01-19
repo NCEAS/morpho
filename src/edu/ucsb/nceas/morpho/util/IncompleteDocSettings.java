@@ -108,5 +108,8 @@ public class IncompleteDocSettings
    public  static final String TRACINGCHANGE = "tracingChange";
    public  static final String TRACINGCHANGEOPENINGTAG = LESSTHAN+TRACINGCHANGE+GREATERTHAN;
    public  static final String TRACINGCHANGECLOSINGTAG = LESSTHAN+SLASH+TRACINGCHANGE+GREATERTHAN;
+   public  static final String TRACINGCHANGEPATH = EMLPATH+ADDITIONALMETADATA+SLASH+
+                                       INCOMPLETE_ENTITY_WIZARD+SLASH+TRACINGCHANGE+" | "+ 
+                                       EMLPATH+ADDITIONALMETADATA+SLASH+INCOMPLETE_CODE_DEFINITION_WIZARD+SLASH+TRACINGCHANGE;
 }
 

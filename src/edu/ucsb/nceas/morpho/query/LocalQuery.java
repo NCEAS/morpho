@@ -30,6 +30,7 @@ import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.datastore.DataStore;
 import edu.ucsb.nceas.morpho.framework.ConfigXML;
 import edu.ucsb.nceas.morpho.framework.QueryRefreshInterface;
+import edu.ucsb.nceas.morpho.util.IncompleteDocSettings;
 import edu.ucsb.nceas.morpho.util.Log;
 import java.io.*;
 
@@ -75,6 +76,8 @@ public class LocalQuery
    * match document id.
    */
   public static Hashtable dom_collection;
+  //storing the  dom tree from in incomplete dir
+  private static Hashtable dom_incomplete_collection;
 
   /**
    * The query on which this LocalQuery is based.
@@ -149,6 +152,7 @@ public class LocalQuery
   // create these static caches when class is first loaded
   static {
     dom_collection = new Hashtable();
+    dom_incomplete_collection = new Hashtable();
     doctype_collection = new Hashtable();
     dataPackage_collection = new Hashtable();
     packageTriples = new Hashtable();
@@ -227,12 +231,7 @@ public class LocalQuery
       Enumeration pl = packageList.elements();
       while (pl.hasMoreElements()) {
         String packageName = (String)pl.nextElement();
-        String status = QueryRefreshInterface.LOCALCOMPLETE;
-        if(fromDataDir != null && fromDataDir.equals(incompleteDir))
-        {
-          //TODO we need to decide status for incomplete document.
-        }
-        row = createRSRow(packageName, status, fromDataDir);
+        row = createRSRow(packageName, fromDataDir);
         rowCollection.addElement(row);
       }
       //rs = new ResultSet(savedQuery, "local", rowCollection, morpho);
@@ -410,12 +409,26 @@ public class LocalQuery
   }
 
   /** Create a row vector that matches that needed for the ResultSet vector */
-  private Vector createRSRow(String docid, String localStatus, String directory) {
+  private Vector createRSRow(String docid, String sourceDirectory) {
     int firstSep = docid.indexOf(separator);
     String filename = docid.substring(0,firstSep) + File.separator +
                       docid.substring(firstSep+1, docid.length());
-    File fn = new File(directory, filename);
+    File fn = new File(sourceDirectory, filename);
     String fullfilename = fn.getPath();
+    String localStatus = QueryRefreshInterface.LOCALCOMPLETE;
+    if(sourceDirectory != null && sourceDirectory.equals(incompleteDir))
+    {
+      String traceValue = getValueForPath(IncompleteDocSettings.TRACINGCHANGEPATH, fullfilename);
+      //Log.debug(5, "traceValue on LocalQuery.createRSRow is "+traceValue);
+      if(traceValue != null && traceValue.equals(IncompleteDocSettings.TRUE))
+      {
+        localStatus = QueryRefreshInterface.LOCALAUTOSAVEDINCOMPLETE;
+      }
+      else
+      {
+        localStatus = QueryRefreshInterface.LOCALUSERSAVEDINCOMPLETE;
+      }
+    }
 
     // Get the triples for this package
     Vector tripleList = (Vector)packageTriples.get(docid);
@@ -494,6 +507,7 @@ public class LocalQuery
     if (!pathstring.startsWith("/")) {
       pathstring = "//"+pathstring;
     }
+    Log.debug(40, "filename in getValueForpath is "+filename);
     try{
       // assume that the filename file has already been parsed
       if (dom_collection.containsKey(filename)){

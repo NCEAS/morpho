@@ -57,10 +57,10 @@ public interface QueryRefreshInterface
   public static final String NETWWORKCOMPLETE = "net-complete";
   
   /** Local crashed document */
-  public static final String LOCALCRASH = "auto-saved-incomplete";
+  public static final String LOCALAUTOSAVEDINCOMPLETE = "auto-saved-incomplete";
   
   /** local saved incomplete document*/
-  public static final String LOCALINCOMPLETE = "user-saved-incomplete";
+  public static final String LOCALUSERSAVEDINCOMPLETE = "user-saved-incomplete";
   
   public static final String NONEXIST = "non-exsit";
 
