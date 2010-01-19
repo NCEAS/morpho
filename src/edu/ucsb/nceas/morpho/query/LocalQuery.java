@@ -68,6 +68,7 @@ public class LocalQuery
    * parsing again
    */
   private static Vector doNotParse_collection = new Vector();
+  private static Vector doNotParse_incomplete_collection = new Vector();
 
   /**
    * hash table with dom objects from previously scanned local XML
@@ -89,12 +90,15 @@ public class LocalQuery
    * the locally stored XML documents
    */
   private static Hashtable doctype_collection;
+  private static Hashtable doctype_incomplete_collection;
+  
 
   /**
    * hash table with docids as key and a Vector of package IDs
    * as the values
    */
   private static Hashtable dataPackage_collection;
+ 
 
   /**
    * hash table with docids as key and a Vector of package IDs
@@ -154,6 +158,7 @@ public class LocalQuery
     dom_collection = new Hashtable();
     dom_incomplete_collection = new Hashtable();
     doctype_collection = new Hashtable();
+    doctype_incomplete_collection = new Hashtable();
     dataPackage_collection = new Hashtable();
     packageTriples = new Hashtable();
   }
@@ -221,7 +226,7 @@ public class LocalQuery
   private ResultSet execute(Vector filevector, String fromDataDir)
   {
     // first, get a list of all packages that meet the query requirements
-    Vector packageList = executeLocal(this.savedQuery.getQueryGroup(), filevector);
+    Vector packageList = executeLocal(this.savedQuery.getQueryGroup(), filevector, fromDataDir);
     Vector row = null;
     Vector rowCollection = new Vector();
 
@@ -247,7 +252,8 @@ public class LocalQuery
    *
    * @param xpathExpression the XPath query string
    */
-  private Vector executeXPathQuery(String xpathExpression, Vector filevector)
+  private Vector executeXPathQuery(String xpathExpression, Vector filevector, Hashtable domCollection,
+                                                   Vector doNotParseCollection, Hashtable docTypeCollection)
   {
     Vector package_IDs = new Vector();
     Node root;
@@ -291,14 +297,14 @@ public class LocalQuery
       String docid = parentFile.getName() + separator + currentfile.getName();
 
       // skips subdirectories and docs in doNotParse collection
-      if ((currentfile.isFile())&&(!doNotParse_collection.contains(docid))) {
+      if ((currentfile.isFile())&&(!doNotParseCollection.contains(docid))) {
         // checks to see if doc has already been placed in DOM cache
         // if so, no need to parse again
         //Log.debug(10,"current id: "+docid);
-        if (dom_collection.containsKey(docid)){
-          root = ((Document)dom_collection.get(docid)).getDocumentElement();
-          if (doctype_collection.containsKey(docid)) {
-            currentDoctype = ((String)doctype_collection.get(docid));
+        if (domCollection.containsKey(docid)){
+          root = ((Document)domCollection.get(docid)).getDocumentElement();
+          if (docTypeCollection.containsKey(docid)) {
+            currentDoctype = ((String)docTypeCollection.get(docid));
           }
         } else {
         //  Log.debug(10,"parsing "+docid);
@@ -319,17 +325,17 @@ public class LocalQuery
             // Either this isn't an XML doc, or its broken, so skip it
             Log.debug(20,"Parsing error: " + filename);
             Log.debug(20,e1.toString());
-            doNotParse_collection.addElement(docid);
+            doNotParseCollection.addElement(docid);
             continue;
           }
 
           // Get the documentElement from the parser, which is what
           // the selectNodeList method expects
           root = current_doc.getDocumentElement();
-          dom_collection.put(docid,current_doc);
+          domCollection.put(docid,current_doc);
           String temp = getDocTypeFromDOM(current_doc);
           if (temp==null) temp = root.getNodeName();
-          doctype_collection.put(docid,temp);
+          docTypeCollection.put(docid,temp);
           currentDoctype = temp;
         } // end else
         
@@ -399,14 +405,6 @@ public class LocalQuery
   }
 
 
-  /** Determine the document type for a given file */
-  private String getDoctypeFor(String docid) {
-    String ret = "";
-    if (doctype_collection.containsKey(docid)) {
-      ret = (String)doctype_collection.get(docid);
-    }
-    return ret;
-  }
 
   /** Create a row vector that matches that needed for the ResultSet vector */
   private Vector createRSRow(String docid, String sourceDirectory) {
@@ -418,7 +416,7 @@ public class LocalQuery
     String localStatus = QueryRefreshInterface.LOCALCOMPLETE;
     if(sourceDirectory != null && sourceDirectory.equals(incompleteDir))
     {
-      String traceValue = getValueForPath(IncompleteDocSettings.TRACINGCHANGEPATH, fullfilename);
+      String traceValue = getValueForPath(IncompleteDocSettings.TRACINGCHANGEPATH, fullfilename, incompleteDir);
       //Log.debug(5, "traceValue on LocalQuery.createRSRow is "+traceValue);
       if(traceValue != null && traceValue.equals(IncompleteDocSettings.TRUE))
       {
@@ -451,7 +449,7 @@ public class LocalQuery
         }
     }
     // now consider eml2 case where there are no triples
-    String ent = getValueForPath("entityName", docid);
+    String ent = getValueForPath("entityName", docid, sourceDirectory);
     if (ent.length()>0) hasData = true;
 
     if (hasData) {
@@ -468,7 +466,7 @@ public class LocalQuery
 // MUST be listed AFTER title, surname, and keyword returnFields]
     for (int i=0;i<3;i++) {
       String fieldName = (String)returnFields.elementAt(i);
-      rss.addElement(getValueForPath(fieldName,docid));
+      rss.addElement(getValueForPath(fieldName,docid, sourceDirectory));
     }
     File fl = new File(fullfilename);
     // Create a time stamp for modified date. So local and metacat will have
@@ -502,16 +500,25 @@ public class LocalQuery
    *  a specified XPath; used to build result set from local
    *  queries
    */
-  private String getValueForPath(String pathstring, String filename) {
+  private String getValueForPath(String pathstring, String filename, String sourceDir) {
     String val = "";
     if (!pathstring.startsWith("/")) {
       pathstring = "//"+pathstring;
     }
+    Hashtable domCollection = null;
+    if(sourceDir != null && sourceDir.equals(incompleteDir))
+    {
+      domCollection = dom_incomplete_collection;
+    }
+    else
+    {
+      domCollection = dom_collection;
+    }
     Log.debug(40, "filename in getValueForpath is "+filename);
     try{
       // assume that the filename file has already been parsed
-      if (dom_collection.containsKey(filename)){
-        Node doc = ((Document)dom_collection.get(filename)).
+      if (domCollection.containsKey(filename)){
+        Node doc = ((Document)domCollection.get(filename)).
                    getDocumentElement();
         NodeList nl = null;
         nl = XPathAPI.selectNodeList(doc, pathstring);
@@ -764,7 +771,7 @@ public class LocalQuery
    *
    * @param qg the QueryGroup containing query parameters
    */
-  private Vector executeLocal(QueryGroup qg, Vector filevector)
+  private Vector executeLocal(QueryGroup qg, Vector filevector, String sourceDir)
   {
     Vector combined = null;
     Vector currentResults = null;
@@ -777,9 +784,19 @@ public class LocalQuery
       Object child = children.nextElement();
       if (child instanceof QueryTerm) {
         String xpath = QueryTermToXPath((QueryTerm)child);
-        currentResults = executeXPathQuery(xpath, filevector);
+        if(sourceDir != null && sourceDir.equals(incompleteDir))
+        {
+          currentResults = executeXPathQuery(xpath, filevector, dom_incomplete_collection,
+                                  doNotParse_incomplete_collection, doctype_incomplete_collection);
+        }
+        else
+        {
+          currentResults = executeXPathQuery(xpath, filevector,dom_collection,
+                   doNotParse_collection, doctype_collection);
+        }
+        
       } else {  // QueryGroup
-        currentResults = executeLocal((QueryGroup)child, filevector);
+        currentResults = executeLocal((QueryGroup)child, filevector, sourceDir);
       }
 
       if ((currentResults==null) &&
