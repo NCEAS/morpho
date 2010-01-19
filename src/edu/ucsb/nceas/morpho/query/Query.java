@@ -766,6 +766,79 @@ public class Query extends DefaultHandler {
   public String toString() {
     return toXml();
   }
+  
+  /**
+   * Run the query against the local data store and metacat, depending
+   * on how the searchMetacat and searchLocal flags are set.  If both
+   * local and metacat searches are run, merge the results into a single
+   * ResultSet and return it.
+   *
+   * @returns ResultSet the results of the query(s)
+   */
+  public ResultSet execute()
+  {
+    ResultSet results = null;
+
+    // TODO: Run these queries in parallel threads
+
+    Log.debug(30, "(1) Executing result set...");
+    // if appropriate, query metacat
+    ResultSet metacatResults = null;
+    if (searchMetacat) {
+      Log.debug(30, "(2) Executing metacat query...");
+
+
+// write the query result xml to a file for debugging
+// remove the '/*' to enable
+// take a look at the result
+/*
+      try{
+        InputStreamReader isr = new InputStreamReader(queryMetacat());
+        File resfile = new File("resultFile");
+        FileWriter fw = new FileWriter(resfile);
+        int res = isr.read();
+        while (res>-1) {
+          fw.write(res);
+          res = isr.read();
+        }
+        fw.close();
+        isr.close();
+      }
+      catch (Exception www) {
+        Log.debug(1, "problem writing query result to file!");
+      }
+// end looking at result
+*/
+
+      metacatResults = new HeadResultSet(this, QueryRefreshInterface.NONEXIST, QueryRefreshInterface.NETWWORKCOMPLETE,
+                                     queryMetacat(), morpho);
+
+    }
+
+    Log.debug(30, "(2.5) Executing result set...");
+    // if appropriate, query locally
+    ResultSet localResults = null;
+    if (searchLocal) {
+      Log.debug(30, "(3) Executing local query...");
+      LocalQuery lq = new LocalQuery(this, morpho);
+      localResults = lq.execute();
+    }
+
+    // merge the results if needed, and return the right result set
+    if (!searchLocal) {
+      results = metacatResults;
+    } else if (!searchMetacat) {
+      results = localResults;
+    } else {
+      // must merge results
+      //metacatResults.merge(localResults);
+      //results = metacatResults;
+      localResults.merge(metacatResults);
+      results = localResults;
+    }
+    // return the merged results
+    return results;
+  }
 
   /** Send the query to metacat, get back the XML resultset */
   private InputStream queryMetacat()
