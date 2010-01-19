@@ -425,7 +425,7 @@ public class LocalQuery
     {
       domCollection = dom_incomplete_collection;
       doctypeCollection = doctype_incomplete_collection;
-      String traceValue = getValueForPath(IncompleteDocSettings.TRACINGCHANGEPATH, fullfilename, incompleteDir);
+      String traceValue = getValueForPath(IncompleteDocSettings.TRACINGCHANGEPATH, docid, incompleteDir);
       //Log.debug(5, "traceValue on LocalQuery.createRSRow is "+traceValue);
       if(traceValue != null && traceValue.equals(IncompleteDocSettings.TRUE))
       {
