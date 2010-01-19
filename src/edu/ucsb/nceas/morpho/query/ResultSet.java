@@ -496,6 +496,21 @@ public class ResultSet extends AbstractTableModel implements ColumnSortableTable
   public void setQuery(Query query) {
     this.savedQuery = query;
   }
+  
+  /**
+   * Merge a ResultSet onto this one using the docid as the join column
+   */
+  public void merge(ResultSet r2)
+  {
+    if (r2 != null)
+    {
+      // Step through all of the rows of the results in r2 and
+      // see if there is a docid match
+      Vector r2Rows = r2.getResultsVector();
+      mergeFromMetacat(r2Rows);
+
+    }
+  }
 
 
   /**
