@@ -227,6 +227,9 @@ public class DataViewContainerPanel extends javax.swing.JPanel
                             XMLTransformer.XSLVALU_DISPLAY_ENTITY);
             mdi.useTransformerProperty(XMLTransformer.SELECTED_ENTITY_XSLPROP,
                 String.valueOf(lastTabSelected + 1));
+            String entityType = adp.getEntityType(lastTabSelected);
+			mdi.useTransformerProperty(XMLTransformer.SELECTED_ENTIY_TYPE_XSLPROP,
+					 entityType);
             mdi.display(id);
           } catch (DocumentNotFoundException m) {
             Log.debug(5, "Unable to display Entity:\n"+m.getMessage());
@@ -451,6 +454,9 @@ public class DataViewContainerPanel extends javax.swing.JPanel
                   XMLTransformer.XSLVALU_DISPLAY_ENTITY);
       md.useTransformerProperty(XMLTransformer.SELECTED_ENTITY_XSLPROP,
                                 "1");
+      String entityType = adp.getEntityType(0);
+      md.useTransformerProperty(XMLTransformer.SELECTED_ENTIY_TYPE_XSLPROP,
+				 entityType);
 
 
       Component mdcomponent = null;

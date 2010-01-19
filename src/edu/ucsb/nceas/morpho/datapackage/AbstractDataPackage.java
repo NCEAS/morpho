@@ -1803,6 +1803,33 @@ public abstract class AbstractDataPackage extends MetadataObject
     return temp;
   }
 
+  /**
+   * This method retrieves entityName information, given the index of the entity
+   * in the entityNode array
+   *
+   * @param entNum int
+   * @return String
+   */
+  public String getEntityType(int entNum) {
+    String temp = "";
+    if(entNum < 0)
+        return "No such entity!";
+    if ( (entityArray == null) || (entityArray.length < (entNum) + 1)) {
+      return "No such entity!";
+    }
+    Node entity = (entityArray[entNum]).getNode();
+    String entityTypeXpath = "";
+    try {
+    	entityTypeXpath = (XMLUtilities.getTextNodeWithXPath(getMetadataPath(),
+          "/xpathKeyMap/contextNode[@name='entity']/type")).getNodeValue();
+      XObject typeObj = XPathAPI.eval(entity, entityTypeXpath);
+      temp = typeObj.str();
+    }
+    catch (Exception w) {
+      Log.debug(50, "exception in getting entity type" + w.toString());
+    }
+    return temp;
+  }
 
   /**
    * This method retrieves entity index information, given the name of the entity

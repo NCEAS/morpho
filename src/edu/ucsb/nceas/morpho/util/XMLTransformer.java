@@ -111,6 +111,11 @@ public class XMLTransformer
      *  XSLVALU_DISPLAY_ENTITY is the value to display entity
      */
     public static final String XSLVALU_DISPLAY_ENTITY = "entity";
+    
+    /**
+     *  SELECTED_ENTIY_TYPE_XSLPROP used to identify the entity type
+     */
+    public static final String SELECTED_ENTIY_TYPE_XSLPROP = "entitytype";
 
     /**
      *  XSLVALU_DISPLAY_ATTRB is the value to display attributes

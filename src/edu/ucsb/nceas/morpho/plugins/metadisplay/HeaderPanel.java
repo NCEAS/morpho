@@ -178,6 +178,10 @@ public class HeaderPanel extends JPanel
 				                  XMLTransformer.XSLVALU_DISPLAY_ENTITY);
 						 controller.useTransformerProperty(XMLTransformer.SELECTED_ENTITY_XSLPROP,
 				                                String.valueOf(entityTab+1));
+						 String entityType = UIController.getInstance().getCurrentActiveWindow().getAbstractDataPackage().getEntityType(entityTab);
+						 controller.useTransformerProperty(XMLTransformer.SELECTED_ENTIY_TYPE_XSLPROP,
+								 entityType);
+						 
 						 UIController.getInstance().getCurrentActiveWindow().getDataViewContainerPanel().resetTableSelection();
 						 controller.display(controller.getIdentifier());
 					} catch (DocumentNotFoundException e) {

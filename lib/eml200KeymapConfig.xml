@@ -28,6 +28,7 @@
   </contextNode>
   <!-- Xpaths for entity values are defined as relative to top node of entity -->
   <contextNode name="entity">
+    <type>name(.)</type>
     <name>entityName</name>
     <numRecords>numberOfRecords</numRecords>
     <entityDescription>entityDescription</entityDescription>
