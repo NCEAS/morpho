@@ -229,6 +229,7 @@ public abstract class AbstractDataPackage extends MetadataObject
   protected MetacatDataStore metacatDataStore;
 
 	protected static Map  customUnitDictionaryUnitsCacheMap = new HashMap();
+	protected static Map  customUnitDictionaryAdditionalMetadataMap = new HashMap();
 	private static String[] customUnitDictionaryUnitTypesArray = new String[0];
 
   // added by D Higgins on 29 Aug 2005
@@ -2436,9 +2437,35 @@ public abstract class AbstractDataPackage extends MetadataObject
 		}
 		Log.debug(40, "End of Extracted units -- \n");
 	}
+	
+	public boolean definesCustomUnit(String unit) {
+
+		Document thisDom = getMetadataNode().getOwnerDocument();
+		Node rootNode = thisDom.getDocumentElement();
+		NodeList nodeList = rootNode.getChildNodes();
+		for(int i = 0; i < nodeList.getLength(); i++) {
+
+			Node child = nodeList.item(i);
+			if (child.getNodeName().equals("additionalMetadata")) {
+				OrderedMap map = XMLUtilities.getDOMTreeAsXPathMap(child);
+				Log.debug(40, "got Map as - " + map.toString());
+				// is this unit in the custom units?
+				for (Object keyObj: map.keySet()) {
+					String key = (String) keyObj;
+					if (key.indexOf("unit") > -1 && key.endsWith("@name")) {
+						String value = (String) map.get(key);
+						if (value.equals(unit)) {
+							return true;
+						}
+					}
+				}
+			}
+		}
+		return false;
+	}
 
 
-	protected void extractUnits(OrderedMap map, String xPath) {
+	protected static void extractUnits(OrderedMap map, String xPath) {
 
 		xPath += "/unitList[1]";
 		int cnt = 1;
@@ -2447,12 +2474,12 @@ public abstract class AbstractDataPackage extends MetadataObject
 			String name = (String)map.get(xPath + "/unit[" + cnt + "]/@name");
 			if(name == null) break;
 			String type = (String)map.get(xPath + "/unit[" + cnt + "]/@unitType");
-			addNewUnit(type, name);
+			addNewUnit(type, name, map);
 			cnt++;
 		}
 	}
 
-	public String[] getUnitDictionaryCustomUnitTypes() {
+	public static String[] getUnitDictionaryCustomUnitTypes() {
 
 		return customUnitDictionaryUnitTypesArray;
 		/*int len = customUnitDictionaryUnitsCacheMap.keySet().size();
@@ -2465,7 +2492,7 @@ public abstract class AbstractDataPackage extends MetadataObject
 		return returnArr;*/
 	}
 
-	public String[] getUnitDictionaryUnitsOfType(String type) {
+	public static String[] getUnitDictionaryUnitsOfType(String type) {
 
 		String[] ret = (String[]) customUnitDictionaryUnitsCacheMap.get(type);
 		if(ret == null) return new String[0];
@@ -2486,7 +2513,7 @@ public abstract class AbstractDataPackage extends MetadataObject
 		return;
 	}
 
-	public boolean isNewCustomUnit(String type, String unit) {
+	public static boolean isNewCustomUnit(String type, String unit) {
 
 		boolean newT = customUnitDictionaryUnitsCacheMap.containsKey(type);
 		if(newT) {
@@ -2499,7 +2526,7 @@ public abstract class AbstractDataPackage extends MetadataObject
 
 	}
 
-	public void addNewUnit(String unitType, String unit) {
+	public static void addNewUnit(String unitType, String unit, OrderedMap additionalMetadataMap) {
 
 		int idx = Arrays.binarySearch(customUnitDictionaryUnitTypesArray, unitType);
 		if(idx < 0) {
@@ -2517,7 +2544,13 @@ public abstract class AbstractDataPackage extends MetadataObject
 			insertObjectIntoArray(units, unit, newUnitArr);
 			customUnitDictionaryUnitsCacheMap.put(unitType, newUnitArr);
 		}
+		//save the additional metadata map we need for the given unit
+		customUnitDictionaryAdditionalMetadataMap.put(unit, additionalMetadataMap);
 
+	}
+	
+	public static OrderedMap getCustomUnitDictionaryAdditionalMetadataMap(String unit) {
+		return (OrderedMap) customUnitDictionaryAdditionalMetadataMap.get(unit);
 	}
 
 

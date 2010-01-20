@@ -332,6 +332,33 @@ public class IntervalRatioPanel extends JPanel implements WizardPageSubPanelAPI 
 
 
   }
+  
+  protected static void insertIntoDOMTree(AbstractDataPackage adp, OrderedMap map) {
+
+		DOMImplementation impl = DOMImplementationImpl.getDOMImplementation();
+		Document doc = impl.createDocument("", "additionalMetadata", null);
+		Node metadataRoot = doc.getDocumentElement();
+		try {
+			XMLUtilities.getXPathMapAsDOMTree(map, metadataRoot);
+
+		}
+		catch (TransformerException w) {
+			Log.debug(5, "Unable to add addtmetadata details to package!");
+			Log.debug(15, "TransformerException (" + w + ") calling "
+			+ "XMLUtilities.getXPathMapAsDOMTree(map, metadataRoot) with \n"
+			+ "map = " + map
+			+ " and methodRoot = " + metadataRoot);
+			w.printStackTrace();
+			return;
+		}
+		Node check1 = adp.appendAdditionalMetadata(metadataRoot);
+		if (check1 != null) {
+			Log.debug(30, "====================added new addt metadata details to package...");
+		} else {
+			Log.debug(30, "cldnt added new metadata details to package...");
+		}
+
+	}
 
   private JLabel getLabel(String text) {
 
@@ -511,6 +538,18 @@ public class IntervalRatioPanel extends JPanel implements WizardPageSubPanelAPI 
 				cnt++;
 				returnMap.putAll(map);
 			}*/
+			
+			//put additional metadata in the adp
+			AbstractDataPackage adp = UIController.getInstance().getCurrentAbstractDataPackage();
+			if (adp == null) {
+				Log.debug(7, "Error obtaining the datapackage while trying to add a custom unit!!");
+			} else {
+				// add the unit if it is not already present in the additional metadata
+				if (!adp.definesCustomUnit(unit)) {
+					OrderedMap map = AbstractDataPackage.getCustomUnitDictionaryAdditionalMetadataMap(unit);
+					insertIntoDOMTree(adp, map);
+				}
+			}
 			returnMap.put(  xPathRoot + "/unit/customUnit", unit);
 
 
@@ -951,39 +990,12 @@ class UnitsPickList extends JPanel {
 
 			Log.debug(7, "Error obtaining the datapackage while trying to add a custom unit!!");
 		} else {
-			adp.addNewUnit(stdType, newUnit);
+			adp.addNewUnit(stdType, newUnit, map);
 			insertIntoDOMTree(adp, map);
 		}
     return;
   }
 
-
-	private void insertIntoDOMTree(AbstractDataPackage adp, OrderedMap map) {
-
-		DOMImplementation impl = DOMImplementationImpl.getDOMImplementation();
-		Document doc = impl.createDocument("", "additionalMetadata", null);
-		Node metadataRoot = doc.getDocumentElement();
-		try {
-			XMLUtilities.getXPathMapAsDOMTree(map, metadataRoot);
-
-		}
-		catch (TransformerException w) {
-			Log.debug(5, "Unable to add addtmetadata details to package!");
-			Log.debug(15, "TransformerException (" + w + ") calling "
-			+ "XMLUtilities.getXPathMapAsDOMTree(map, metadataRoot) with \n"
-			+ "map = " + map
-			+ " and methodRoot = " + metadataRoot);
-			w.printStackTrace();
-			return;
-		}
-		Node check1 = adp.appendAdditionalMetadata(metadataRoot);
-		if (check1 != null) {
-			Log.debug(30, "====================added new addt metadata details to package...");
-		} else {
-			Log.debug(30, "cldnt added new metadata details to package...");
-		}
-
-	}
 
   private String getUnitTypeOfNewUnit( OrderedMap map, String xPath) {
 

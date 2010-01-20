@@ -578,7 +578,7 @@ public  class EML200DataPackage extends AbstractDataPackage
 				else
 				{
 					Log.debug(30, "in eml 210 and higher version ..... addtionalMetacat unit");
-					extractUnits(map, "/additionalMetadata/metadata");
+					extractUnits(map, "/additionalMetadata/metadata[1]");
 				}
 			}
 		}
