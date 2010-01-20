@@ -120,9 +120,9 @@ public class SearchCommand implements Command
      //String source ="";
      HeadResultSet results = new HeadResultSet(
                                          query, vector, morphoInQuery);
-     boolean listCrashedDoc = false;
+     //boolean listCrashedDoc = false;
      ResultPanel resultDisplayPanel = new ResultPanel(
-     null,results, 12, null, resultWindow.getDefaultContentAreaSize(),  listCrashedDoc);
+     null,results, 12, null, resultWindow.getDefaultContentAreaSize());
      resultDisplayPanel.setVisible(true);
      resultWindow.setMainContentPane(resultDisplayPanel);
      boolean showSearchNumber = true;

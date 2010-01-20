@@ -346,9 +346,9 @@ public class DeleteCommand implements Command
             // The size of resultpanel for morpho frame
              if (!fromDialog)
              {
-            	boolean listCrashedDoc = false;
+            	  //boolean listCrashedDoc = false;
                 newResult = new ResultPanel(null, newResultSet, 12, null,
-                                       morphoFrame.getDefaultContentAreaSize(), listCrashedDoc);
+                                       morphoFrame.getDefaultContentAreaSize());
                 //if the table alread sort the new resul panel should be
                 //sorted too
                 if (sorted)

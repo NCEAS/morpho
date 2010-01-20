@@ -134,7 +134,7 @@ public class ResultPanel extends JPanel implements StoreStateChangeEvent
   //this variable to indicate disable the mouse listener in streaming search
   private boolean enableMouseListener = true;
   
-  private boolean listCrashedDoc = false;
+  //private boolean listCrashedDoc = false;
 
 
   /**
@@ -149,15 +149,15 @@ public class ResultPanel extends JPanel implements StoreStateChangeEvent
   public ResultPanel(OpenDialogBox dialog, ResultSet results,
                                         ResultPanelAndFrameMediator myMediator)
   {
-    this(dialog, results, 12, myMediator, new Dimension(775,500), false);
+    this(dialog, results, 12, myMediator, new Dimension(775,500));
   }
 
   
-  public ResultPanel(OpenDialogBox dialog, ResultSet results,
+  /*public ResultPanel(OpenDialogBox dialog, ResultSet results,
           ResultPanelAndFrameMediator myMediator, boolean disableRightClick)
 {
-    this(dialog, results, 12, myMediator, new Dimension(775,500), disableRightClick);
-}
+    this(dialog, results, 12, myMediator, new Dimension(775,500));
+}*/
   /**
    * Construct a new ResultPanel and display the result set.  By default
    * the panel has reset and refresh buttons.
@@ -171,7 +171,7 @@ public class ResultPanel extends JPanel implements StoreStateChangeEvent
   public ResultPanel(OpenDialogBox dialog, ResultSet results,
               ResultPanelAndFrameMediator myMediator, Dimension preferredSize)
   {
-    this(dialog, results, 12, myMediator, preferredSize, false);
+    this(dialog, results, 12, myMediator, preferredSize);
   }
 
 
@@ -183,10 +183,9 @@ public class ResultPanel extends JPanel implements StoreStateChangeEvent
    * @param results the result listing to display
    * @param fontSize the fontsize for the cells of the table
    * @param myMediator the mediaor passed from frame to control table
-   * @param listCrashedDoc  list crashed docs if it is true
    */
   public ResultPanel(OpenDialogBox dialog, ResultSet results, int fontSize,
-            ResultPanelAndFrameMediator myMediator, Dimension preferredSize, boolean listCrashedDocs)
+            ResultPanelAndFrameMediator myMediator, Dimension preferredSize)
   {
     super();
     this.dialog = dialog;
@@ -196,7 +195,7 @@ public class ResultPanel extends JPanel implements StoreStateChangeEvent
     this.morpho = results.getFramework();
     this.mediator = myMediator;
     this.preferredSize = preferredSize;
-    this.listCrashedDoc = listCrashedDocs;
+    //this.listCrashedDoc = listCrashedDocs;
     storedStateChangeEventlist = new Vector();
     // If the panel don't need a mediator, null will be passed here
     if (mediator != null)
@@ -259,7 +258,7 @@ public class ResultPanel extends JPanel implements StoreStateChangeEvent
       //if (dialog == null)
       //{
         //Build the popup menu for the right click functionality
-       if (!listCrashedDoc)
+       //if (!listCrashedDoc)
        {
 	        popup = new JPopupMenu();
 	        // Create a openPackage action
@@ -335,7 +334,8 @@ public class ResultPanel extends JPanel implements StoreStateChangeEvent
         {
           if (enableMouseListener)
           {
-            if (2 == e.getClickCount() && !listCrashedDoc) {
+            //if (2 == e.getClickCount() && !listCrashedDoc) {
+            if (2 == e.getClickCount()) {
               //doOpenDataPackage();
               // Using OpenPackageCommand to open package
               doDoubleClickOpen();

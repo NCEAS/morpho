@@ -303,8 +303,8 @@ public class OpenCrashedDocDialogBox extends OpenDialogBox
     //String source ="";
     /*HeadResultSet results = new HeadResultSet(
                                        ownerQuery, source, vector, morpho);*/
-    boolean disableRightClickMenu = true;
-    ownerPanel = new ResultPanel(this, results, mediator,disableRightClickMenu);
+    //boolean disableRightClickMenu = true;
+    ownerPanel = new ResultPanel(this, results, mediator);
     //ownerPanel.setVisible(true);
     StateChangeEvent event = null;
     boolean showSearchNumber = false;
