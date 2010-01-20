@@ -152,6 +152,9 @@ public class WizardContainerFrame
   private static final String EMPTYPROJECTTITLE = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"+
                                                   "<project><title> </title></project>";
   //private String manuallySaveID = null;
+  private static final String CACELSOURCE = "Cancel";
+  private static final String FINISHSOURCE = "Finish";
+  private static final String SAVELATERSOURCE = "SaveForLater";
 
   
   /**
@@ -885,7 +888,7 @@ public class WizardContainerFrame
     listener.wizardComplete(rootNode, autoSaveID);
 
     // now clean up
-    doCleanUp();
+    doCleanUp(FINISHSOURCE);
   }
   
   /**
@@ -924,7 +927,7 @@ public class WizardContainerFrame
               return;
             }
             listener.wizardSavedForLater();
-            doCleanUp();
+            doCleanUp(SAVELATERSOURCE);
             this.setVisible(false);
             this.dispose();
           
@@ -2047,7 +2050,7 @@ public class WizardContainerFrame
     listener.wizardCanceled();
     Log.debug(30, "the autosaved id is "+autoSaveID+" in WizardContainerFrame.cancel method");
     // now clean up
-    doCleanUp();
+    doCleanUp(CACELSOURCE);
     if(autoSaveID != null && status.equals(IncompleteDocSettings.PACKAGEWIZARD))
     {
     	//FileSystemDataStore store = new FileSystemDataStore(Morpho.thisStaticInstance);
@@ -2063,14 +2066,26 @@ public class WizardContainerFrame
   }
 
 
-  private void doCleanUp() {
+  private void doCleanUp(String source) {
 
     UIController.getInstance().setWizardNotRunning();
+    String docid = null;
+    if(adp != null)
+    {
+      docid = adp.getAccessionNumber();
+    }  
     //remove the docid from the entity wizard running record.
     if(adp != null && status != null && (status.equals(IncompleteDocSettings.ENTITYWIZARD) ||status.equals(IncompleteDocSettings.CODEDEFINITIONWIZARD)))
-    {
-      String docid = adp.getAccessionNumber();
+    {      
       UIController.getInstance().removeDocidFromEntityWizardRunningRecorder(docid);
+      if(source != null && source.equals(CACELSOURCE))
+      {
+        UIController.getInstance().addDocidToIdleWizardRecorder(autoSaveID);
+      }
+    }
+    if(source != null && source.equals(FINISHSOURCE))
+    {
+      UIController.getInstance().addDocidToIdleWizardRecorder(autoSaveID);
     }
     //clear out pageStack
     pageStack.clear();

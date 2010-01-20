@@ -84,7 +84,11 @@ public class UIController
     private static Vector orderedMenuList;
     private static Hashtable orderedMenuActions;
     private static Vector toolbarList;
+    //keep the record that the entity wizards are running (base on docid)
     private static HashSet<String> entityWizardRunningRecorder = null;
+    //keep the record that the package (or entity) wizard are idle 
+    //(user clicked finish/cancel button. cancel button is only for entity)
+    private static HashSet<String>packageEntityWizardIdleRecorder = null;
     // A hashtable to store the pair: submenu-path,
     // such as synchronize - file/synchroize
     private static Hashtable subMenuAndPath;
@@ -123,6 +127,7 @@ public class UIController
         toolbarList = new Vector();
         subMenuAndPath = new Hashtable();
         entityWizardRunningRecorder = new HashSet<String>();
+        packageEntityWizardIdleRecorder = new HashSet<String>();
     }
 
 
@@ -680,7 +685,7 @@ public class UIController
      */
     public void addDocidToEntityWizardRunningRecorder(String docid)
     {
-      if(docid != null || !docid.trim().equals(""))
+      if(docid != null && !docid.trim().equals(""))
       {
         entityWizardRunningRecorder.add(docid);
       }
@@ -692,7 +697,7 @@ public class UIController
      */
     public void removeDocidFromEntityWizardRunningRecorder(String docid)
     {
-      if(docid != null || !docid.trim().equals(""))
+      if(docid != null && !docid.trim().equals(""))
       {
         entityWizardRunningRecorder.remove(docid);
       }
@@ -707,6 +712,45 @@ public class UIController
     {
       return entityWizardRunningRecorder.contains(docid);
     }
+    
+    /**
+     * Adds a docid to idle wizard recorder. It happens when
+     * user click finish/cancel button. Now the wizard is not running, but
+     * tracing document still exists
+     * @param docid the docid which has a idle wizard
+     */
+    public void addDocidToIdleWizardRecorder(String docid)
+    {
+      //Log.debug(5, "adds docid "+docid+" from idle wizard recorder");
+      if(docid != null && !docid.trim().equals(""))
+      {      
+        packageEntityWizardIdleRecorder.add(docid);
+      }
+    }
+    
+    /**
+     * Removes a docid from the idle wizard recorder
+     * @param docid the docid 
+     */
+    public void removeDocidFromIdleWizardRecorder(String docid)
+    {
+      //Log.debug(5, "removes docid "+docid+" from idle wizard recorder");
+      if(docid != null && !docid.trim().equals(""))
+      {       
+        packageEntityWizardIdleRecorder.remove(docid);
+      }
+    }
+    
+    /**
+     * Is the ldle wizard recorder has the docid
+     * @param docid
+     * @return true if the idle wizard recorder has it
+     */
+    public boolean isWizardIdle(String docid)
+    {
+      return packageEntityWizardIdleRecorder.contains(docid);
+    }
+    
 
 
     /**

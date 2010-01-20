@@ -262,7 +262,7 @@ public class LocalQuery
   
   /*
    * Check if the package id on incomplete dir belongs a wizard (package wizard or entity wizard)
-   * 
+   * It can be a running wizard or idle wizard(user click finish button, but not save)
    */
   private boolean belongToWizard(String packageID, String sourceDir)
   {
@@ -272,7 +272,7 @@ public class LocalQuery
       if(sourceDir != null && sourceDir.equals(incompleteDir))
       {
         //check entity wizard (and code import wizard) first
-        if(UIController.getInstance().isEntityWizardRunning(packageID))
+        if(UIController.getInstance().isEntityWizardRunning(packageID) ||UIController.getInstance().isWizardIdle(packageID))
         {
           belong = true;
         }

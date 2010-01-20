@@ -647,7 +647,15 @@ public class MorphoFrame extends JFrame
            
          }
          Log.debug(30, "MorphoFrame.close method to delete the autosaved file ");
-         Util.deleteAutoSavedFile(dvcp.getAbstractDataPackage());
+         AbstractDataPackage dataPackage = dvcp.getAbstractDataPackage();
+         if(dataPackage != null)
+         {
+           String docid = dataPackage.getAutoSavedD();
+           UIController.getInstance().removeDocidFromIdleWizardRecorder(docid);
+         }
+         Util.deleteAutoSavedFile(dataPackage);
+        
+        
       }
       this.setVisible(false);
       UIController controller = UIController.getInstance();

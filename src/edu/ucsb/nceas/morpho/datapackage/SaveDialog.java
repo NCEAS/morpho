@@ -480,8 +480,11 @@ public class SaveDialog extends JDialog
 		saveEvent.setFinalId(adp.getAccessionNumber());
 	  this.setVisible(false);
 	  this.dispose();
+	  UIController.getInstance().removeDocidFromIdleWizardRecorder(adp.getAutoSavedD());
 	  //delete the incomplete file
 	  Util.deleteAutoSavedFile(adp);
+    
+    
 
     if (!problem) {
     	 //alert listeners
