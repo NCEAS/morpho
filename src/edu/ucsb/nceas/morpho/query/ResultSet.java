@@ -103,7 +103,7 @@ public class ResultSet extends AbstractTableModel implements ColumnSortableTable
   private String paramName;
   private Hashtable params;
   protected HashSet<String> incompleteDocidSet = new HashSet<String>();
-  protected static final boolean alwaysShowingIncompleteDoc = true;
+  //protected static final boolean alwaysShowingIncompleteDoc = true;
   /**
    * used to save package info for each doc returned during SAX parsing
    * Hashtable has up to five fields with the following String keys:
@@ -589,17 +589,17 @@ public class ResultSet extends AbstractTableModel implements ColumnSortableTable
           }
           else
           {
-            if(alwaysShowingIncompleteDoc)
+            //check if the docid is in complete docid map too. If it doesn, merge it.
+            if(completeDocidMap.containsKey(newDocidWithoutRev))
             {
-              resultsVector.addElement(row);
+              DocInfo completeInfo = completeDocidMap.get(newDocidWithoutRev);
+              mergeLocalAndNetworkCompleteDoc(completeInfo, newRev, row);
             }
             else
             {
-              int rowIndex = info.getRowNumber();
-              Vector originalRow = (Vector)resultsVector.elementAt(rowIndex);
-              replaceResultRowValue(originalRow, row);
-              
-            }
+              resultsVector.addElement(row);
+            }          
+          
           }
           
         } 
@@ -607,26 +607,7 @@ public class ResultSet extends AbstractTableModel implements ColumnSortableTable
         {
           //merge two complete documents vector
           DocInfo info = completeDocidMap.get(newDocidWithoutRev);
-          int existRev = info.getRev();
-          if(existRev >newRev)
-          {
-            //do nothing
-          }
-          else if(existRev < newRev)
-          {
-            int rowIndex = info.getRowNumber();
-            Vector originalRow = (Vector)resultsVector.elementAt(rowIndex);
-            replaceResultRowValue(originalRow, row);
-          }
-          else
-          {
-            // existRev == newRev
-            int rowIndex = info.getRowNumber();
-            Vector originalRow = (Vector)resultsVector.elementAt(rowIndex);
-            originalRow.setElementAt(QueryRefreshInterface.LOCALCOMPLETE, ISLOCALINDEX);
-            originalRow.setElementAt(QueryRefreshInterface.NETWWORKCOMPLETE, ISMETACATINDEX);
-          }
-          
+          mergeLocalAndNetworkCompleteDoc(info, newRev, row);      
         }          
         else 
         {
@@ -641,6 +622,44 @@ public class ResultSet extends AbstractTableModel implements ColumnSortableTable
   
   
   /*
+   * merge local and newwork complete doc base on the revision
+   */
+  private void mergeLocalAndNetworkCompleteDoc(DocInfo info, int newRev, Vector newRow)
+  {
+    if(info != null)
+    {
+      //merge two complete documents vector
+      int existRev = info.getRev();
+      if(existRev >newRev)
+      {
+        //do nothing
+      }
+      else if(existRev < newRev)
+      {
+        int rowIndex = info.getRowNumber();
+        Vector originalRow = (Vector)resultsVector.elementAt(rowIndex);
+        replaceResultRowValue(originalRow, newRow);
+      }
+      else
+      {
+        // existRev == newRev
+        int rowIndex = info.getRowNumber();
+        Vector originalRow = (Vector)resultsVector.elementAt(rowIndex);
+        originalRow.setElementAt(QueryRefreshInterface.LOCALCOMPLETE, ISLOCALINDEX);
+        originalRow.setElementAt(QueryRefreshInterface.NETWWORKCOMPLETE, ISMETACATINDEX);
+      }
+    }
+    else 
+    {
+      //Log.debug(5, "add directly2");
+      //a totally new record, just add it.
+      resultsVector.addElement(newRow);
+    }
+   
+  }
+  
+  
+  /*
    * Replace a row vector's element value
    */
   private void replaceResultRowValue(Vector original, Vector newValue)
@@ -649,7 +668,7 @@ public class ResultSet extends AbstractTableModel implements ColumnSortableTable
     {
       int size = original.size();
       original.removeAllElements();
-      for(int i=0; i<original.size(); i++)
+      for(int i=0; i<size; i++)
       {
         original.add(newValue.elementAt(i));
       }
