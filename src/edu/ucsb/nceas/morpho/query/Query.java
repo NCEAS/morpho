@@ -833,7 +833,7 @@ public class Query extends DefaultHandler {
       // must merge results
       //metacatResults.merge(localResults);
       //results = metacatResults;
-      localResults.merge(metacatResults);
+      localResults.mergeWithMetacatResultset(metacatResults);
       results = localResults;
     }
     // return the merged results
@@ -988,7 +988,7 @@ public class Query extends DefaultHandler {
          // merge the allResult into local result if it is not null
           if ( localResult != null )
           {
-            localResult.mergeFromMetacat(allResults);
+            localResult.mergeWithMetacatResults(allResults);
             // transfer the mergered vector to reslult panel
             resultDisplayPanel.resetResultsVector(
                                                 localResult.getResultsVector());
@@ -998,16 +998,25 @@ public class Query extends DefaultHandler {
  }
 
  /*
-  * Method to display local search result
+  * Method to display local search result. This include incomplete documents list too.
   */
  private HeadResultSet doLocalSearchDisplay(final ResultPanel resultDisplayPanel,
                                    final Morpho morpho)
  {
+    HeadResultSet incompleteLocalResults = doLocalSearchIncompleteDocDisplay(resultDisplayPanel, morpho);
     final Query query = this;
     LocalQuery lq = new LocalQuery(query, morpho);
     HeadResultSet localResults = (HeadResultSet)lq.execute();
-    resultDisplayPanel.setResultSet(localResults);
-    return localResults;
+    if(incompleteLocalResults != null)
+    {
+      incompleteLocalResults.mergeWithLocalResults(localResults);
+    }
+    else
+    {
+      incompleteLocalResults = localResults;
+    }
+    resultDisplayPanel.setResultSet(incompleteLocalResults);
+    return incompleteLocalResults;
  }
  
  /*

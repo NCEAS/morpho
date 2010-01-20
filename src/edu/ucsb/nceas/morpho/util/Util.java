@@ -55,6 +55,7 @@ public class Util
 	    private static final String LEFTBRACKET = "[";
 	    private static final String RIGHTBRACKET = "]";
 	    private static final String SLASH = "/";
+	    private static final String DOT = ".";
 		/**
 		 * Determine if the specified string is blank or not. If string is null, it will be false.
 		 * @param input the specified string
@@ -366,6 +367,59 @@ public class Util
 	    component.setForeground(foreGround);
 	    component.setBackground(bakcGround);
 	  }
+	 
+	 /**
+	  * Gets a revision number from the given docid. 
+	  * -1 will be returned if we couldn't find it.
+	  * @param docid the specified docid
+	  * @return the revision number
+	  */
+	 public static int getRevisionNumber(String docid)
+	 {
+	   int iver = -1;
+	   if(docid != null)
+	   {
+	     try
+	     {
+  	     int periodloc = docid.lastIndexOf(DOT);
+  	     String vernum = docid.substring(periodloc+1,docid.length());
+  	     Integer Intver = new Integer(vernum);
+  	     iver = Intver.intValue();
+	     }
+	     catch(Exception e)
+	     {
+	       iver = -1;
+	     }
+	   }	   
+	   Log.debug(40, "Util.getRevisionNumber - the revision is "+iver+" from given docid "+docid);
+     return iver;
+	 }
+	 
+	 
+	 /**
+    * Gets a docid without rev from the given docid. 
+    * null will be returned if we couldn't find it.
+    * @param docid the specified docid
+    * @return the revision number
+    */
+	 public static String getDocIDWithoutRev(String docidWithRev)
+	 {
+	   String docidWithoutRev = null;
+	   if(docidWithRev != null)
+     {
+       try
+       {
+         int periodloc = docidWithRev.lastIndexOf(DOT);
+         docidWithoutRev = docidWithRev.substring(0,periodloc);
+       }
+       catch(Exception e)
+       {
+         docidWithoutRev = null;
+       }
+     }     
+     Log.debug(40, "Util.getDocIDWithoutRev - the docidWithoutRev is "+docidWithoutRev+" from given docid "+docidWithRev);
+    return docidWithoutRev;
+	 }
 		  
 
 }

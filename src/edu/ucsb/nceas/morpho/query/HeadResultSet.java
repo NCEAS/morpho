@@ -110,24 +110,34 @@ public class HeadResultSet extends ResultSet
       // conversion
       value = rowVector.elementAt(lookupResultsVectorIndex(col));
 
-      // Add icon rather than ture or false value to col6 and col7
+      // Add local icons
       if (col == 6)
       {
-        // cast value to Boolean object
+        
         String localStatus = (String)value;
         if (localStatus != null && localStatus.equals(QueryRefreshInterface.LOCALCOMPLETE))
         {
           // If is local, the value will be a local icon
           value = localIcon;
         }//if
-        else
+        else if(localStatus != null && localStatus.equals(QueryRefreshInterface.LOCALUSERSAVEDINCOMPLETE))
         {
           // If there isnot local, value is empty String
+          value = localUserSavedIncompleteIcon;
+        }
+        else if(localStatus != null && localStatus.equals(QueryRefreshInterface.LOCALAUTOSAVEDINCOMPLETE))
+        {
+          value = localAutoSavedIncompleteIcon;
+        }
+        else
+        {
           value = blankIcon;
-        }//else
+        }
+          
+          
       }//if
 
-      // Add icon for col6 and col7
+      // Add network icons
       if (col == 7)
       {
         // cast value to Boolean object
@@ -160,13 +170,16 @@ public class HeadResultSet extends ResultSet
 
 
   /**
-  * Merge a ResultSet onto this one using the docid as the join column
+  * Merge a ResultSet onto this one using the docid as the join column.
+  * Merging also conslidate results
   */
-  public void mergeFromMetacat(Vector vector2)
+  public void mergeWithMetacatResults(Vector metacatVector)
   {
-    super.mergeFromMetacat(vector2);
+    mergeWithCompleteDocResultVectors(metacatVector);
     //consolidateResults();
   }
+  
+ 
 
 
   /*

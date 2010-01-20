@@ -116,19 +116,19 @@ public class ResultSet extends AbstractTableModel implements ColumnSortableTable
   private Hashtable mapColumnNameAndVectorIndex = new Hashtable();
 
   /** The icon for representing local storage. */
-  public static ImageIcon localIcon = null;
+  protected static ImageIcon localIcon = null;
   /** The icon for representing usere saved incomplete package*/
-  public static ImageIcon localUserSavedIncompleteIcon = null;
+  protected static ImageIcon localUserSavedIncompleteIcon = null;
   /** The icon for representing automatically saved incomplete package*/
-  public static ImageIcon localAutoSavedIncompleteIcon = null;
+  protected static ImageIcon localAutoSavedIncompleteIcon = null;
   /** The icon for representing metacat storage. */
-  public static ImageIcon metacatIcon = null;
+  protected static ImageIcon metacatIcon = null;
   /** the icon for blank, nothing there */
-  public static ImageIcon blankIcon = null;
+  protected static ImageIcon blankIcon = null;
   /** The icon for representing package */
-  public static ImageIcon packageIcon = null;
+  protected static ImageIcon packageIcon = null;
   /** The icon for representing pakcage and data file */
-  public static ImageIcon packageDataIcon = null;
+  protected static ImageIcon packageDataIcon = null;
 
   /** The icon for representing both local and metacat storage. */
   //private ImageIcon bothIcon = null;
@@ -498,88 +498,164 @@ public class ResultSet extends AbstractTableModel implements ColumnSortableTable
   }
   
   /**
-   * Merge a ResultSet onto this one using the docid as the join column
+   * Merge a ResultSet onto this one.
+   * Merging also consolidate results.
    */
-  public void merge(ResultSet r2)
+  public void mergeWithMetacatResultset(ResultSet metacatResults)
   {
-    if (r2 != null)
+    if (metacatResults != null)
     {
-      // Step through all of the rows of the results in r2 and
-      // see if there is a docid match
-      Vector r2Rows = r2.getResultsVector();
-      mergeFromMetacat(r2Rows);
-
+      mergeWithCompleteDocResultset(metacatResults);  
     }
   }
 
 
   /**
-  * Merge a vector onto this one using the docid as the join column
-  */
-  protected void mergeFromMetacat(Vector metacatRows)
+   * Merge a ResultSet onto this one using the docid as the join column.
+   * Merging also consolidate results.
+   */
+   public void mergeWithLocalResults(ResultSet localResults)
+   {
+     mergeWithCompleteDocResultset(localResults);  
+   }
+   
+   /*
+    * Merge a complete-document search result set onto this one.
+    * Merging also consolidate the reuslt.
+    */
+   private void mergeWithCompleteDocResultset(ResultSet anotherResultSet)
+   {
+     if(anotherResultSet != null)
+     {
+       Vector r2Rows = anotherResultSet.getResultsVector();
+       mergeWithCompleteDocResultVectors(r2Rows);
+     }
+   }
+ 
+  
+  /*
+   * resultsVector may contain incomplete doc information. Merge it with
+   * another resultVector which only contains complete document information.
+   * The completeDocResult comes from either local data folder or network.
+   * This merge also consolidate the results.
+   * Note: if order changed, the result may be wrong
+   */
+  protected void mergeWithCompleteDocResultVectors(Vector completeDocResult)
   {
-    // Create a hash of our docids for easy comparison
-      Hashtable docidList = new Hashtable();
-      int numColumns = getColumnCount();
-      for (int i=0; i < getRowCount(); i++) {
-        Vector rowVector = (Vector)resultsVector.elementAt(i);
-        String currentDocid = (String)rowVector.elementAt(DOCIDINDEX);
-        ImageIcon locationIcon
-        = (ImageIcon)rowVector.elementAt(PACKAGEICONINDEX);
-        putDocidIntoIncompleteSetBaseOnLocationIcon(currentDocid, locationIcon);
-        docidList.put(currentDocid, new Integer(i));
-      }
-
-      Enumeration ee = metacatRows.elements();
-      while (ee.hasMoreElements()) {
-        Vector row = (Vector)ee.nextElement();
-        String currentDocid = (String)row.elementAt(DOCIDINDEX);
-        // if docids match, change the icon and location flags
-        if (docidList.containsKey(currentDocid)) {
-          int rowIndex = ((Integer)docidList.get(currentDocid)).intValue();
-          Vector originalRow = (Vector)resultsVector.elementAt(rowIndex);
-
-          // Determine which icon to use based on the current setting
-          ImageIcon currentIcon
-            = (ImageIcon)originalRow.elementAt(PACKAGEICONINDEX);
-
-          if ((currentIcon.getDescription()).
-                          equals(packageDataIcon.getDescription())) {
-            //originalRow.setElementAt(bothDataIcon, 0);
-
-            originalRow.setElementAt(packageDataIcon, PACKAGEICONINDEX);
-          } else {
-
-            //originalRow.setElementAt(bothIcon, 0);
-            originalRow.setElementAt(packageIcon, PACKAGEICONINDEX);
+    // Create a hash of  docids for easy comparison, key is docidWithoutRev, value is DocInfo object
+    Hashtable<String, DocInfo> completeDocidMap = new Hashtable<String, DocInfo>();
+    Hashtable<String, DocInfo> incompleteDocidMap = new Hashtable<String, DocInfo>();
+    for (int i=0; i < getRowCount(); i++) 
+    {
+      Vector rowVector = (Vector)resultsVector.elementAt(i);
+      String currentDocid = (String)rowVector.elementAt(DOCIDINDEX);
+      String docidWithoutRev = Util.getDocIDWithoutRev(currentDocid);
+      int rev = Util.getRevisionNumber(currentDocid);
+      if(docidWithoutRev != null && rev != -1)
+      {
+        DocInfo currentDocInfo = new DocInfo(docidWithoutRev, rev, i);
+        String localStatus = (String)rowVector.elementAt(ISLOCALINDEX);
+        if(localStatus != null && (localStatus.equals(QueryRefreshInterface.LOCALAUTOSAVEDINCOMPLETE)||
+            localStatus.equals(QueryRefreshInterface.LOCALUSERSAVEDINCOMPLETE)))
+        {
+          incompleteDocidMap.put(docidWithoutRev, currentDocInfo);
+        }
+        else
+        {
+          completeDocidMap.put(docidWithoutRev, currentDocInfo);
+        }
+      }    
+    }
+    
+    Enumeration ee =completeDocResult.elements();
+    while (ee.hasMoreElements()) 
+    {
+      Vector row = (Vector)ee.nextElement();
+      String currentDocid = (String)row.elementAt(DOCIDINDEX);
+      String newDocidWithoutRev = Util.getDocIDWithoutRev(currentDocid);
+      int newRev = Util.getRevisionNumber(currentDocid);
+      if(newDocidWithoutRev != null && newRev != -1)
+      {
+        if (incompleteDocidMap.containsKey(newDocidWithoutRev)) 
+        {
+         //merge a complete documents vector to a incomplete documents vector
+          DocInfo info = incompleteDocidMap.get(newDocidWithoutRev);
+          int existRev = info.getRev();
+          if(existRev >= newRev)
+          {
+            Log.debug(30, "ResultSet.mergeWithCompleteDocResult - the exist revision "+existRev+
+                           " of docid "+ newDocidWithoutRev+" is greater than or equals the complete doc revision  "+newRev+
+                           ". So the complete document will be hidden on the search result");
           }
-          //originalRow.setElementAt(new Boolean(true), numColumns+5);
-          //originalRow.setElementAt(new Boolean(true), ISLOCALINDEX);
-          originalRow.setElementAt(QueryRefreshInterface.LOCALCOMPLETE, ISLOCALINDEX);
-          //originalRow.setElementAt(new Boolean(true), numColumns+6);
-          //originalRow.setElementAt(new Boolean(true), ISMETACATINDEX);
-          originalRow.setElementAt(QueryRefreshInterface.NETWWORKCOMPLETE, ISMETACATINDEX);
-        } else {
+          else
+          {
+            if(alwaysShowingIncompleteDoc)
+            {
+              resultsVector.addElement(row);
+            }
+            else
+            {
+              int rowIndex = info.getRowNumber();
+              Vector originalRow = (Vector)resultsVector.elementAt(rowIndex);
+              replaceResultRowValue(originalRow, row);
+              
+            }
+          }
+          
+        } 
+        else if(completeDocidMap.containsKey(newDocidWithoutRev))
+        {
+          //merge two complete documents vector
+          DocInfo info = completeDocidMap.get(newDocidWithoutRev);
+          int existRev = info.getRev();
+          if(existRev >newRev)
+          {
+            //do nothing
+          }
+          else if(existRev < newRev)
+          {
+            int rowIndex = info.getRowNumber();
+            Vector originalRow = (Vector)resultsVector.elementAt(rowIndex);
+            replaceResultRowValue(originalRow, row);
+          }
+          else
+          {
+            // existRev == newRev
+            int rowIndex = info.getRowNumber();
+            Vector originalRow = (Vector)resultsVector.elementAt(rowIndex);
+            originalRow.setElementAt(QueryRefreshInterface.LOCALCOMPLETE, ISLOCALINDEX);
+            originalRow.setElementAt(QueryRefreshInterface.NETWWORKCOMPLETE, ISMETACATINDEX);
+          }
+          
+        }          
+        else 
+        {
+          //a totally new record, just add it.
           resultsVector.addElement(row);
         }
       }
+   
+    }
 
   }
   
+  
   /*
-   * Base on the description to decide if we put the given docid into the incomplete set.
-   * Note: docid and icon should come from the same vector row.
+   * Replace a row vector's element value
    */
-   private void putDocidIntoIncompleteSetBaseOnLocationIcon(String docid, ImageIcon locationIcon)
-   {
-     if(docid != null && locationIcon != null && 
-          (locationIcon.getDescription().equals(localUserSavedIncompleteIcon.getDescription()) || 
-           locationIcon.getDescription().equals(localAutoSavedIncompleteIcon.getDescription())))
-     {
-       incompleteDocidSet.add(docid);        
-     }
-   }
-
+  private void replaceResultRowValue(Vector original, Vector newValue)
+  {
+    if(original != null && newValue != null)
+    {
+      int size = original.size();
+      original.removeAllElements();
+      for(int i=0; i<original.size(); i++)
+      {
+        original.add(newValue.elementAt(i));
+      }
+    }
+  }
+  
   /**
    * Get a reference to the Morpho application framework
    */
@@ -633,5 +709,59 @@ public class ResultSet extends AbstractTableModel implements ColumnSortableTable
 
    }
 
+  }
+  
+  /**
+   * This class represents the following info for document: docidWithoutRev, rev and row number
+   * in resultset vector.
+   *
+   * @author tao
+   *
+   */
+  private class DocInfo
+  {
+    private String docidWithoutRev = null;
+    private int rev = -1;
+    private int rowNumber = -1;
+    
+    /**
+     * Constructor
+     * @param docidWithoutRev
+     * @param rev
+     * @param rowNumber
+     */
+    public DocInfo(String docidWithoutRev, int rev, int rowNumber)
+    {
+      this.docidWithoutRev =docidWithoutRev;
+      this.rev = rev;
+      this.rowNumber = rowNumber;
+    }
+    
+    /**
+     * Gets the docid without rev
+     * @return
+     */
+    public String getDocidWithoutRev()
+    {
+      return this.docidWithoutRev;
+    }
+    
+    /**
+     * Gets the revision
+     * @return
+     */
+    public int getRev()
+    {
+      return this.rev;
+    }
+    
+    /**
+     * Gets row number
+     * @return
+     */
+    public int getRowNumber()
+    {
+      return this.rowNumber;
+    }
   }
 }
