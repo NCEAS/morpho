@@ -208,7 +208,13 @@ public class HttpMessage
    */
   private void sendNameValuePair(String name, String data) throws IOException
   {
-    Log.debug(15, "Name: " + name + " => " + data);
+	  // do not log passwords
+	  // http://bugzilla.ecoinformatics.org/show_bug.cgi?id=4687
+	  if (name.indexOf("password") > -1) {
+		  Log.debug(15, "Name: " + name + " => " + "*****");
+	  } else {
+		  Log.debug(15, "Name: " + name + " => " + data);
+	  }
     ((DataOutputStream)out).writeBytes(URLEncoder.encode(name));
     ((DataOutputStream)out).writeBytes("=");
     ((DataOutputStream)out).writeBytes(URLEncoder.encode(data));
