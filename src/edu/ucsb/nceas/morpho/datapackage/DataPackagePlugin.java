@@ -27,9 +27,11 @@
 package edu.ucsb.nceas.morpho.datapackage;
 
 import edu.ucsb.nceas.morpho.Morpho;
+import edu.ucsb.nceas.morpho.datastore.FileSystemDataStore;
 import edu.ucsb.nceas.morpho.datastore.MetacatUploadException;
 import edu.ucsb.nceas.morpho.framework.ButterflyFlapCoordinator;
 import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
+import edu.ucsb.nceas.morpho.framework.QueryRefreshInterface;
 //import edu.ucsb.nceas.morpho.framework.EMLTransformToNewestVersionDialog;
 import edu.ucsb.nceas.morpho.framework.MorphoFrame;
 import edu.ucsb.nceas.morpho.framework.UIController;
@@ -1286,18 +1288,33 @@ public class DataPackagePlugin
   {
 //    DataPackage dp = new DataPackage(location, docid, null, morpho, false);
 //    dp.delete(location);
-    boolean metacat = false;
-    boolean local = false;
-    if (location.equals(AbstractDataPackage.METACAT)) metacat = true;
-    if (location.equals(AbstractDataPackage.LOCAL)) local = true;
-    if (location.equals(AbstractDataPackage.BOTH)) {
-      metacat = true;
-      local = true;
+    if(location != null && location.equals(QueryRefreshInterface.LOCALINCOMPLETEPACKAGE))
+    {
+      FileSystemDataStore store = new FileSystemDataStore(Morpho.thisStaticInstance);
+      File incompleteFile = store.openIncompleteFile(docid);
+      AbstractDataPackage adp = DataPackageFactory.getDataPackage(incompleteFile);
+      if(adp != null)
+      {
+        adp.deleteDataFilesInIncompleteFolder();
+      }
+      store.deleteInCompleteFile(docid);      
     }
-    AbstractDataPackage adp = DataPackageFactory.getDataPackage(docid, metacat, local);
-    if (adp!=null) {
-      adp.delete(location);
+    else
+    {
+      boolean metacat = false;
+      boolean local = false;
+      if (location.equals(AbstractDataPackage.METACAT)) metacat = true;
+      if (location.equals(AbstractDataPackage.LOCAL)) local = true;
+      if (location.equals(AbstractDataPackage.BOTH)) {
+        metacat = true;
+        local = true;
+      }
+      AbstractDataPackage adp = DataPackageFactory.getDataPackage(docid, metacat, local);
+      if (adp!=null) {
+        adp.delete(location);
+      }
     }
+   
   }
 
   /**

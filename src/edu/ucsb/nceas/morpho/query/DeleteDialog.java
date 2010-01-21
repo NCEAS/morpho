@@ -30,6 +30,7 @@ import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.framework.ConfigXML;
 import edu.ucsb.nceas.morpho.framework.MorphoFrame;
 import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
+import edu.ucsb.nceas.morpho.framework.QueryRefreshInterface;
 import edu.ucsb.nceas.morpho.util.Command;
 import edu.ucsb.nceas.morpho.util.GUIAction;
 import edu.ucsb.nceas.morpho.util.Log;
@@ -78,6 +79,7 @@ public class DeleteDialog extends JDialog
   private JRadioButton deleteLocal = new JRadioButton("Delete local copy");
   private JRadioButton deleteNetwork = new JRadioButton("Delete network copy");
   private JRadioButton deleteBoth = new JRadioButton("Delete both copies");
+  private JRadioButton deleteIncomplete = new JRadioButton("Delete local incomplete copy");
   
   private static final int PADDINGWIDTH = 8;
   private static String WARNING =
@@ -97,10 +99,10 @@ public class DeleteDialog extends JDialog
   String selectDocId = null;
     
   /** flag to indicate selected data package has local copy */
-  private boolean inLocal = false;
+  private String  packageLocalStatus = null;
   
   /** flag to indicate selected data package has local copy */
-  private boolean inNetwork = false;
+  private String packageNetworkStatus = null;
 
   
   /**
@@ -109,19 +111,19 @@ public class DeleteDialog extends JDialog
    * @param myParent  The parent frame for this dialog
    * @param frameType the frame is result search result frame or data package
    * @param mySelecteDocId the selected docid
-   * @param myInLocal if the datapackage is in local
-   * @param myInNetwork if the datapackage is in network
+   * @param myInLocal the local status of the datapackage 
+   * @param myInNetwork the new status of  datapackage
    */
   public DeleteDialog(MorphoFrame myParent, String frameType, 
-                      String mySelectedDocId, boolean myInLocal, 
-                      boolean myInNetwork)
+                      String mySelectedDocId, String myInLocal, 
+                      String myInNetwork)
   {
     super(myParent);
     morphoFrame = myParent;
     morphoFrameType = frameType;
     selectDocId = mySelectedDocId;
-    inLocal = myInLocal;
-    inNetwork = myInNetwork;
+    packageLocalStatus = myInLocal;
+    packageNetworkStatus = myInNetwork;
     initialize(morphoFrame);
  
   }
@@ -136,14 +138,14 @@ public class DeleteDialog extends JDialog
    * @param myInNetwork if the datapackage is in network
    */
   public DeleteDialog(OpenDialogBox myParent, MorphoFrame grandParent, 
-              String mySelectedDocId, boolean myInLocal, boolean myInNetwork)
+              String mySelectedDocId, String myInLocal, String myInNetwork)
   {
     super(myParent); 
     openDialog = myParent;
     morphoFrame = grandParent;
     selectDocId = mySelectedDocId;
-    inLocal = myInLocal;
-    inNetwork = myInNetwork;
+    packageLocalStatus = myInLocal;
+    packageNetworkStatus = myInNetwork;
     initialize(openDialog);
  
   }
@@ -185,34 +187,50 @@ public class DeleteDialog extends JDialog
     deleteLocal.setEnabled(false);
     deleteNetwork.setEnabled(false);
     deleteBoth.setEnabled(false);
+    deleteIncomplete.setEnabled(false);
     // Put them into group
     ButtonGroup group = new ButtonGroup();
     group.add(deleteLocal);
     group.add(deleteNetwork);
     group.add(deleteBoth);
+    group.add(deleteIncomplete);
     // Vector to keep track of enabled radio button
     Vector enabledRadioButtonList = new Vector();
-    // If has local copy
-    if (inLocal)
+    
+    if(packageLocalStatus != null && 
+      (packageLocalStatus.equals(QueryRefreshInterface.LOCALAUTOSAVEDINCOMPLETE)|| 
+       packageLocalStatus.equals(QueryRefreshInterface.LOCALUSERSAVEDINCOMPLETE)))
     {
-      deleteLocal.setEnabled(true);
-      // Add to the list
-      enabledRadioButtonList.add(deleteLocal);
+      deleteIncomplete.setEnabled(true);
+      enabledRadioButtonList.add(deleteIncomplete);
     }
-    // If has network copy
-    if (inNetwork)
+    else
     {
-      deleteNetwork.setEnabled(true);
-      // Add to the list
-      enabledRadioButtonList.add(deleteNetwork);
+      // If has local copy
+      if (packageLocalStatus != null && packageLocalStatus.equals(DataPackageInterface.LOCAL))
+      {
+        deleteLocal.setEnabled(true);
+        // Add to the list
+        enabledRadioButtonList.add(deleteLocal);
+      }
+      // If has network copy
+      if (packageNetworkStatus != null && packageNetworkStatus.equals(DataPackageInterface.METACAT))
+      {
+        deleteNetwork.setEnabled(true);
+        // Add to the list
+        enabledRadioButtonList.add(deleteNetwork);
+      }
+      // If have both
+      if (packageLocalStatus != null && packageLocalStatus.equals(DataPackageInterface.LOCAL)&&
+          packageNetworkStatus != null && packageNetworkStatus.equals(DataPackageInterface.METACAT))
+      {
+        deleteBoth.setEnabled(true);
+        // Add to the list
+        enabledRadioButtonList.add(deleteBoth);
+      }
     }
-    // If have both
-    if (inLocal && inNetwork)
-    {
-      deleteBoth.setEnabled(true);
-      // Add to the list
-      enabledRadioButtonList.add(deleteBoth);
-    }
+   
+    
     
     // Create JPanel and set it border layout
     JPanel mainPanel = new JPanel();
@@ -237,6 +255,7 @@ public class DeleteDialog extends JDialog
     radioBox.add(deleteLocal);
     radioBox.add(deleteNetwork);
     radioBox.add(deleteBoth);
+    radioBox.add(deleteIncomplete);
     
     // create another center box which will put radion box in the center
     // and it will be add into center of mainPanel
@@ -292,7 +311,7 @@ public class DeleteDialog extends JDialog
     deleteLocal.addItemListener(listener);
     deleteNetwork.addItemListener(listener);
     deleteBoth.addItemListener(listener);
-    
+    deleteIncomplete.addItemListener(listener);
     setVisible(false);
    
   }
@@ -300,6 +319,8 @@ public class DeleteDialog extends JDialog
     /** Method to enable executeButton and assign command */
    private void enableExecuteButton(Object object, JDialog dialog)
    {
+     /*Log.debug(5, "local status is "+packageLocalStatus+
+         "\nnewtwork status is "+packageNetworkStatus+"\non search DeleteDialog");*/
       if (object == deleteLocal) 
       {
         // Enable execute button
@@ -307,7 +328,7 @@ public class DeleteDialog extends JDialog
         executeAction.setEnabled(true);
         executeAction.setCommand( new DeleteCommand(openDialog, dialog, 
                        morphoFrame, morphoFrameType, DataPackageInterface.LOCAL, 
-                       selectDocId, inLocal, inNetwork));
+                       selectDocId, packageLocalStatus, packageNetworkStatus));
       } 
       else if (object == deleteNetwork) 
       {
@@ -316,7 +337,7 @@ public class DeleteDialog extends JDialog
         executeAction.setEnabled(true);
         executeAction.setCommand( new DeleteCommand(openDialog, dialog,
                      morphoFrame, morphoFrameType, DataPackageInterface.METACAT, 
-                     selectDocId, inLocal, inNetwork));
+                     selectDocId, packageLocalStatus, packageNetworkStatus));
       }
       else if (object == deleteBoth)
       {
@@ -325,7 +346,15 @@ public class DeleteDialog extends JDialog
         executeAction.setEnabled(true);
         executeAction.setCommand( new DeleteCommand(openDialog, dialog, 
                         morphoFrame,morphoFrameType, DataPackageInterface.BOTH, 
-                        selectDocId, inLocal, inNetwork));
+                        selectDocId, packageLocalStatus, packageNetworkStatus));
+      }
+      else if(object == deleteIncomplete)
+      {
+        Log.debug(50, "In delete both branch");
+        executeAction.setEnabled(true);
+        executeAction.setCommand( new DeleteCommand(openDialog, dialog, 
+                        morphoFrame,morphoFrameType, QueryRefreshInterface.LOCALINCOMPLETEPACKAGE, 
+                        selectDocId, packageLocalStatus, packageNetworkStatus));
       }
    }//enableExecuteButton
  

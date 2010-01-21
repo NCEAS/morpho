@@ -27,6 +27,7 @@ package edu.ucsb.nceas.morpho.query;
 
 import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
 import edu.ucsb.nceas.morpho.framework.MorphoFrame;
+import edu.ucsb.nceas.morpho.framework.QueryRefreshInterface;
 import edu.ucsb.nceas.morpho.framework.UIController;
 import edu.ucsb.nceas.morpho.plugins.ServiceController;
 import edu.ucsb.nceas.morpho.plugins.ServiceNotHandledException;
@@ -74,8 +75,8 @@ public class OpenDeleteDialogCommand implements Command
     DeleteDialog deleteDialog  = null;
     boolean parentIsOpenDialog = false;
     String selectDocId         = null;
-    boolean inNetwork          = false;
-    boolean inLocal            = false;
+    String networkStatus          = null;
+    String localStatus           = null;
     // Get result panle from open dialog if open dialog is not null
     if ( openDialog != null)
     {
@@ -97,9 +98,11 @@ public class OpenDeleteDialogCommand implements Command
     if ( resultPane != null)
     {
         selectDocId = resultPane.getSelectedId();
-        inNetwork = resultPane.getMetacatLocation();
-        inLocal = resultPane.getLocalLocation();
-      
+        networkStatus = resultPane.getMetacatStatus();
+        localStatus = resultPane.getLocalStatus();
+        /*Log.debug(5, "local status is "+localStatus+
+            "\nnewtwork status is "+networkStatus+"\non search result.openDeleteDialogCommand");*/
+         
         // Make sure selected a id, and there no package in metacat
         if ( selectDocId != null && !selectDocId.equals(""))
         {
@@ -107,13 +110,13 @@ public class OpenDeleteDialogCommand implements Command
           if (parentIsOpenDialog)
           {
             deleteDialog = 
-           new DeleteDialog(openDialog, frame, selectDocId, inLocal, inNetwork);
+           new DeleteDialog(openDialog, frame, selectDocId, localStatus, networkStatus);
           }
           else
           {
             deleteDialog = 
               new DeleteDialog(frame, MorphoFrame.SEARCHRESULTFRAME, 
-                               selectDocId, inLocal, inNetwork);
+                               selectDocId, localStatus, networkStatus);
           }
           deleteDialog.setModal(true);
           deleteDialog.setVisible(true);
@@ -138,15 +141,34 @@ public class OpenDeleteDialogCommand implements Command
       }
        //Try if it is datapackage frame
       selectDocId = dataPackage.getDocIdFromMorphoFrame(frame);
-      inNetwork   = dataPackage.isDataPackageInNetwork(frame);
-      inLocal     = dataPackage.isDataPackageInLocal(frame);
+      boolean inNetwork   = dataPackage.isDataPackageInNetwork(frame);
+      boolean inLocal     = dataPackage.isDataPackageInLocal(frame);
+      if(inNetwork)
+      {
+        networkStatus = DataPackageInterface.METACAT;
+      }
+      else
+      {
+        networkStatus = QueryRefreshInterface.NONEXIST;
+      }
+      if(inLocal)
+      {
+        localStatus = DataPackageInterface.LOCAL;
+      }
+      else
+      {
+        localStatus = QueryRefreshInterface.NONEXIST;
+      }
+      /*Log.debug(5, "local status is "+localStatus+
+          "\nnewtwork status is "+networkStatus+"\non datapackage. openDeleteDialogCommand");*/
+
        // Make sure selected a id, and there is local pacakge
       if ( selectDocId != null && !selectDocId.equals(""))
       {
         
         deleteDialog = 
               new DeleteDialog(frame, MorphoFrame.DATAPACKAGEFRAME, 
-                               selectDocId, inLocal, inNetwork);
+                               selectDocId, localStatus, networkStatus);
         deleteDialog.setModal(true);
         deleteDialog.setVisible(true);
         

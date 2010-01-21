@@ -454,6 +454,24 @@ public class ResultPanel extends JPanel implements StoreStateChangeEvent
       return false;
     }
   }
+  
+  /**
+   * Gets the localStatus as a String. 
+   * @return
+   */
+  public String getLocalStatus()
+  {
+    return localStatus;
+  }
+  
+  /**
+   * Gets the metacatStatus as a string
+   * @return
+   */
+  public String getMetacatStatus()
+  {
+    return metacatStatus;
+  }
 
   /**
    * Get the package name (docid without version). This method is for

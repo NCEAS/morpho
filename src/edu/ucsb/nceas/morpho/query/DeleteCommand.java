@@ -28,6 +28,7 @@ package edu.ucsb.nceas.morpho.query;
 
 import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
 import edu.ucsb.nceas.morpho.framework.MorphoFrame;
+import edu.ucsb.nceas.morpho.framework.QueryRefreshInterface;
 import edu.ucsb.nceas.morpho.framework.SwingWorker;
 import edu.ucsb.nceas.morpho.framework.UIController;
 import edu.ucsb.nceas.morpho.Morpho;
@@ -66,10 +67,14 @@ public class DeleteCommand implements Command
    private ResultPanel resultPane = null;
 
   /** State of the delete */
-  private String state = null;
+  private String chosenDeletingStatus = null;
 
   /** Warning message */
   private String message = null;
+  /** Constant String Warning message for warning message */
+  private static final String LOCALINCOMPLETEWARNING =
+                          "Are you sure you want to delete \nthe incomplete package from "
+                            + "your local file system?";
 
   /** Constant String Warning message for warning message */
   private static final String LOCALWARNING =
@@ -86,14 +91,11 @@ public class DeleteCommand implements Command
   /** selected docid to delete */
   String selectDocId = null;
 
-  /** flag to indicate a deletion can be execute, it depends package location */
-  private boolean execute = false;
+  /** flag to indicate selected data package has local copy */
+  private String packageLocalStatus = null;
 
   /** flag to indicate selected data package has local copy */
-  private boolean inLocal = false;
-
-  /** flag to indicate selected data package has local copy */
-  private boolean inNetwork = false;
+  private String packageNetworkStatus = null;
 
   /** flag for if the delete command come from a open dialog */
   private boolean comeFromOpenDialog = false;
@@ -112,12 +114,12 @@ public class DeleteCommand implements Command
    * @param frameType the parent frame's type, search result or datapackage
    * @param selectId the id of data package need to be deleted
    * @param myState which deletion will happend, local, network or both
-   * @param myInLocal if the datapackage has a local copy
+   * @param localStatus the local status of the data package
    * @param myInNetwork if the datapackage has a network copy
    */
   public DeleteCommand(OpenDialogBox myOpenDialog, JDialog myDeleteDialog,
                       MorphoFrame myFrame, String frameType,  String myState,
-                      String selectId, boolean myInLocal, boolean myInNetwork)
+                      String selectId, String localStatus, String networkStatus)
   {
     if ( myOpenDialog != null)
     {
@@ -135,9 +137,9 @@ public class DeleteCommand implements Command
     deleteDialog = myDeleteDialog;
     morphoFrame = myFrame;
     selectDocId = selectId;
-    state = myState;
-    inLocal = myInLocal;
-    inNetwork = myInNetwork;
+    chosenDeletingStatus = myState;
+    packageLocalStatus = localStatus;
+    packageNetworkStatus = networkStatus;
 
   }//LocalToNetworkCommand
 
@@ -147,35 +149,58 @@ public class DeleteCommand implements Command
    */
   public void execute(ActionEvent event)
   {
+      //Log.debug(5, "chosenDeltingStatus is "+chosenDeletingStatus+".\n local status is "+packageLocalStatus+".\n network status is "+packageNetworkStatus);
 
-      if (state.equals(DataPackageInterface.LOCAL))
+      if (chosenDeletingStatus != null && chosenDeletingStatus.equals(DataPackageInterface.LOCAL))
       {
         // Delete local copy
         message = LOCALWARNING;
         // If has local copy, can execute delete local
-        execute = inLocal;
+        if(packageLocalStatus == null || !packageLocalStatus.equals(DataPackageInterface.LOCAL))
+        {
+          showWarningPanel("Morpho couldn't delete the local copy of the data package since it doesn't exist");
+          return;
+        }
       }
-      else if (state.equals(DataPackageInterface.METACAT))
+      else if (chosenDeletingStatus != null && chosenDeletingStatus.equals(DataPackageInterface.METACAT))
       {
         // Delete network copy
         message = NETWORKWARNING;
         // If has network copy can delete network copy
-        execute = inNetwork;
+        if(packageNetworkStatus == null  || !packageNetworkStatus.equals(DataPackageInterface.METACAT))
+        {
+          showWarningPanel("Morpho couldn't delete the network copy of the data package since it doesn't exist");
+          return;
+        }
       }
-      else if (state.equals(DataPackageInterface.BOTH))
+      else if (chosenDeletingStatus != null && chosenDeletingStatus.equals(DataPackageInterface.BOTH))
       {
        // Delete both
        message = BOTHWARNING;
-       // if has both copy can delete both.
-       execute = inLocal && inNetwork;
+       if(packageLocalStatus == null  || packageNetworkStatus == null || !packageLocalStatus.equals(DataPackageInterface.LOCAL) ||
+           !packageNetworkStatus.equals(DataPackageInterface.METACAT))
+       {
+         showWarningPanel("Morpho couldn't delete the both local and network copy of the data package since they don't exist");
+         return;
+       }
+      }
+      else if(chosenDeletingStatus != null && chosenDeletingStatus.equals(QueryRefreshInterface.LOCALINCOMPLETEPACKAGE))
+      {
+        message =  LOCALINCOMPLETEWARNING;
+        if(packageLocalStatus == null ||!(packageLocalStatus.equals(QueryRefreshInterface.LOCALAUTOSAVEDINCOMPLETE) || packageLocalStatus.equals(QueryRefreshInterface.LOCALUSERSAVEDINCOMPLETE)))
+        {
+          showWarningPanel("Morpho couldn't delete the incomplete copy of the data package since it doesn't exist");
+          return;
+        }
       }
       else
       {
         Log.debug(20, "Unkown deletion command!");
+        return;
       }
 
       // Make sure selected a id, and there is local pacakge
-      if ( selectDocId != null && !selectDocId.equals("") && execute)
+      if ( selectDocId != null && !selectDocId.equals(""))
       {
         // Destroy the delete dialog
         if (deleteDialog != null)
@@ -188,6 +213,12 @@ public class DeleteCommand implements Command
       }
 
   }//execute
+  
+  private void showWarningPanel(String message)
+  {
+    JOptionPane.showMessageDialog(deleteDialog, message, "Warning!",
+        JOptionPane.WARNING_MESSAGE);
+  }
 
   /**
    * Using SwingWorket class to delete a local package
@@ -251,7 +282,7 @@ public class DeleteCommand implements Command
               // this is for open dialg box
               try
               {
-                dataPackage.delete(docid, state);
+                dataPackage.delete(docid, chosenDeletingStatus);
               }
               catch (Exception e)
               {
@@ -269,7 +300,7 @@ public class DeleteCommand implements Command
               //for search result frame
               try
               {
-                dataPackage.delete(docid, state);
+                dataPackage.delete(docid, chosenDeletingStatus);
               }
               catch (Exception e)
               {
@@ -289,7 +320,7 @@ public class DeleteCommand implements Command
               //morphoFrame.setBusy(true);
               try
               {
-                dataPackage.delete(docid, state);
+                dataPackage.delete(docid, chosenDeletingStatus);
               }
               catch (Exception e)
               {
@@ -406,42 +437,48 @@ public class DeleteCommand implements Command
            {
              // find the deleted package and get rid of from resultset vector
              Log.debug(30, "finding the delete packagid: "+docid);
-             if (state.equals(DataPackageInterface.LOCAL) && inLocal
-                 && inNetwork)
+             if (chosenDeletingStatus.equals(DataPackageInterface.LOCAL) && 
+                      packageLocalStatus.equals(DataPackageInterface.LOCAL) &&
+                 packageNetworkStatus.equals(DataPackageInterface.METACAT))
              {
                 Log.debug(30, "delete local copy from local copy "
                           +"and networkcopy - delete the local icon");
                 // set index= ISLOCALINDEX value flase
-                row.set(ResultSet.ISLOCALINDEX, new Boolean(false));
+                row.set(ResultSet.ISLOCALINDEX, QueryRefreshInterface.NONEXIST);
 
              }
-             else if (state.equals(DataPackageInterface.LOCAL) && inLocal
-                      && !inNetwork)
+             else if (chosenDeletingStatus.equals(DataPackageInterface.LOCAL) && packageLocalStatus.equals(DataPackageInterface.LOCAL)
+                 && !packageNetworkStatus.equals(DataPackageInterface.METACAT))
              {
                 Log.debug(30,"delete local copy from local copy - get rid "+
                           "this row");
                 resultVector.remove(i);
              }
-             else if (state.equals(DataPackageInterface.METACAT) && inLocal
-                       && inNetwork)
+             else if (chosenDeletingStatus.equals(DataPackageInterface.METACAT) && packageLocalStatus.equals(DataPackageInterface.LOCAL)
+                 && packageNetworkStatus.equals(DataPackageInterface.METACAT))
              {
                 Log.debug(30, "delete network copy from local copy and "+
                           "network copy - delete network icon");
                 // set index=ISMETACATINDEX value false
-                row.set(ResultSet.ISMETACATINDEX, new Boolean(false));
+                row.set(ResultSet.ISMETACATINDEX, QueryRefreshInterface.NONEXIST);
              }
-             else if (state.equals(DataPackageInterface.METACAT) && !inLocal
-                     && inNetwork)
+             else if (chosenDeletingStatus.equals(DataPackageInterface.METACAT) && !packageLocalStatus.equals(DataPackageInterface.LOCAL)
+                     && packageNetworkStatus.equals(DataPackageInterface.METACAT))
              {
                 Log.debug(30, "delete network copy from "+
                          "network copy - delete the row");
                 resultVector.remove(i);
              }
-             else if (state.equals(DataPackageInterface.BOTH) && inLocal
-                      && inNetwork)
+             else if (chosenDeletingStatus.equals(DataPackageInterface.BOTH) && packageLocalStatus.equals(DataPackageInterface.LOCAL)
+                 && packageNetworkStatus.equals(DataPackageInterface.METACAT))
              {
                 Log.debug(30,"delete both copy, so remove this row");
                 resultVector.remove(i);
+             }
+             else if(chosenDeletingStatus.equals(QueryRefreshInterface.LOCALINCOMPLETEPACKAGE) && (packageLocalStatus.equals(QueryRefreshInterface.LOCALAUTOSAVEDINCOMPLETE) || packageLocalStatus.equals(QueryRefreshInterface.LOCALUSERSAVEDINCOMPLETE)))
+             {
+               Log.debug(30,"delete incomplete copy, so remove this row");
+               resultVector.remove(i);
              }
              else
              {
@@ -462,21 +499,21 @@ public class DeleteCommand implements Command
 
           // if pakcage have local and network copy and not delete both
           // reopen the package
-          if ( inLocal && inNetwork && !state.equals(DataPackageInterface.BOTH))
+          // the location of data package after deleting
+          String location = null;
+          if ( packageLocalStatus.equals(DataPackageInterface.LOCAL) && 
+               packageNetworkStatus.equals(DataPackageInterface.METACAT) && 
+               chosenDeletingStatus.equals(DataPackageInterface.LOCAL))
           {
-
-            // the location of data package after deleting
-            String location = null;
-            if (state.equals(DataPackageInterface.LOCAL))
-            {
-              location = DataPackageInterface.METACAT;
-            }
-            else
-            {
-              location = DataPackageInterface.LOCAL;
-            }
+            location = DataPackageInterface.METACAT;
             dataPackage.openDataPackage(location, selectDocId, null, null, null);
-
+          }
+          else if(packageLocalStatus.equals(DataPackageInterface.LOCAL) && 
+                    packageNetworkStatus.equals(DataPackageInterface.METACAT) && 
+                    chosenDeletingStatus.equals(DataPackageInterface.METACAT))
+          {
+            location = DataPackageInterface.LOCAL;
+            dataPackage.openDataPackage(location, selectDocId, null, null, null);
           }
           else
           {
