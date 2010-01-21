@@ -29,6 +29,7 @@ package edu.ucsb.nceas.morpho.query;
 
 import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
 import edu.ucsb.nceas.morpho.framework.MorphoFrame;
+import edu.ucsb.nceas.morpho.framework.QueryRefreshInterface;
 import edu.ucsb.nceas.morpho.framework.SwingWorker;
 import edu.ucsb.nceas.morpho.framework.UIController;
 import edu.ucsb.nceas.morpho.Morpho;
@@ -67,7 +68,7 @@ public class OpenPreviousVersionCommand implements Command
    /** version number */
    int version = -1;
    /** DataPackage in network */
-   boolean metacatLoc = false;
+   //boolean metacatLoc = false;
    /** DataPackage in local */
    boolean localLoc = false;
   
@@ -126,8 +127,19 @@ public class OpenPreviousVersionCommand implements Command
     {
       packageName = resultPane.getPackageName();
       version = resultPane.getPreviousVersions();
-      metacatLoc = resultPane.getMetacatLocation();
-      localLoc = resultPane.getLocalLocation();
+      //metacatLoc = resultPane.getMetacatLocation();
+      String localStatus = resultPane.getLocalStatus();
+      if(localStatus != null && (localStatus.equals(DataPackageInterface.LOCAL) ||
+          localStatus.equals(QueryRefreshInterface.LOCALAUTOSAVEDINCOMPLETE)||
+          localStatus.equals(QueryRefreshInterface.LOCALUSERSAVEDINCOMPLETE)))
+      {
+        localLoc = true;
+      }
+      else
+      {
+        localLoc = false;
+      }
+      
     
     }//if
     else
