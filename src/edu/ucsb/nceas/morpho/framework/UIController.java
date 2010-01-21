@@ -107,8 +107,8 @@ public class UIController
     public static final String MENU_PATH = "menu_path";
 
     private AbstractDataPackage wizardTempDataPackage = null;
-    private AbstractDataPackage currentPackage = null;
-    private boolean assignCurrentPackage = false;
+    //private AbstractDataPackage currentPackage = null;
+    //private boolean assignCurrentPackage = false;
   /**
    * Creates a new instance of UIController, but is private because this is a
    * singleton.
@@ -589,8 +589,7 @@ public class UIController
      * not contain an AbstractDataPackage
      */
     public AbstractDataPackage getCurrentAbstractDataPackage() {
-    	if(!assignCurrentPackage)
-    	{
+    
 	      if (isWizardRunning()) {
 	        // *temporary* AbstractDataPackage that is used to store wizard data
 	        // (for references use) while the wizard is running.
@@ -610,30 +609,26 @@ public class UIController
 	        return null;
 	      }
 	      return morphoFrame.getAbstractDataPackage();
-    }
-    else
-    {
-    	return currentPackage;
-    }
+  
   }
     
     /**
      * Set a AbstractDataPackage as currentPackage;
      * @param currentPackage
      */
-    public void setCurrentAbstractDataPackage(AbstractDataPackage currentPackage)
+    /*public void setCurrentAbstractDataPackage(AbstractDataPackage currentPackage)
     {
     	this.currentPackage = currentPackage;
-    }
+    }*/
     
     /**
      * If set this to true, we will get the current package through setCurrentAbstractDataPackage
      * @param assignPackage
      */
-    public void setAssignPackage(boolean assignPackage)
+    /*public void setAssignPackage(boolean assignPackage)
     {
     	this.assignCurrentPackage = assignPackage;
-    }
+    }*/
 
 		/**
      * get AbstractDataPackage from currently active window. Even if a wizard is running
