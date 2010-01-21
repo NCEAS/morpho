@@ -29,6 +29,7 @@ package edu.ucsb.nceas.morpho.query;
 import edu.ucsb.nceas.morpho.framework.ButterflyFlapCoordinator;
 import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
 import edu.ucsb.nceas.morpho.framework.MorphoFrame;
+import edu.ucsb.nceas.morpho.framework.QueryRefreshInterface;
 import edu.ucsb.nceas.morpho.framework.SwingWorker;
 import edu.ucsb.nceas.morpho.framework.UIController;
 import edu.ucsb.nceas.morpho.plugins.ServiceController;
@@ -38,6 +39,7 @@ import edu.ucsb.nceas.morpho.util.Command;
 import edu.ucsb.nceas.morpho.util.Log;
 import edu.ucsb.nceas.morpho.util.StateChangeEvent;
 import edu.ucsb.nceas.morpho.util.StateChangeListener;
+import edu.ucsb.nceas.morpho.util.StateChangeMonitor;
 
 import java.awt.event.ActionEvent;
 import javax.swing.JDialog;
@@ -45,7 +47,7 @@ import javax.swing.JDialog;
 /**
  * Class to handle open package command
  */
-public class OpenPackageCommand implements Command, ButterflyFlapCoordinator, StateChangeListener
+public class OpenPackageCommand implements Command, ButterflyFlapCoordinator
 {
   /** the doctype */ 
   private String doctype = "";
@@ -104,23 +106,32 @@ public class OpenPackageCommand implements Command, ButterflyFlapCoordinator, St
     if (resultPanel != null)
     {
       String selectDocId = resultPanel.getSelectedId();
-      boolean metacatLoc = resultPanel.getMetacatLocation();
-      boolean localLoc = resultPanel.getLocalLocation();
+      String metacatStatus = resultPanel.getMetacatStatus();
+      String localStatus = resultPanel.getLocalStatus();
       String location = null;
-      if(metacatLoc && localLoc)
+      if(localStatus != null && metacatStatus != null && 
+          localStatus.equals(DataPackageInterface.LOCAL) && 
+          metacatStatus.equals(DataPackageInterface.METACAT))
       {
         location = DataPackageInterface.BOTH;
       }
-      else if(metacatLoc && !localLoc)
+      else if( (localStatus == null  || !localStatus.equals(DataPackageInterface.LOCAL))  && 
+          metacatStatus != null && metacatStatus.equals(DataPackageInterface.METACAT))
       {
         location = DataPackageInterface.METACAT;
       }
-      else if(!metacatLoc && localLoc)
+      else if( localStatus != null  && localStatus.equals(DataPackageInterface.LOCAL) && 
+             (metacatStatus == null || !metacatStatus.equals(DataPackageInterface.METACAT)))
       {
         location = DataPackageInterface.LOCAL;
       }
+      else if(localStatus != null && (localStatus.equals(QueryRefreshInterface.LOCALAUTOSAVEDINCOMPLETE)||
+               localStatus.equals(QueryRefreshInterface.LOCALUSERSAVEDINCOMPLETE)))
+      {
+        isIncompleteDoc = true;
+      }
       this.doctype = resultPanel.getDocType();
-      
+      //Log.debug(5, "location is "+location+"\n is incomplete doc "+isIncompleteDoc);
       // close the openDialogBox
       if ( open != null)
       {
@@ -209,33 +220,7 @@ public class OpenPackageCommand implements Command, ButterflyFlapCoordinator, St
    */ 
   // public void undo();
   
-  /**
-   * Method inherits from StateChangeListener. This will get the information that
-   * if user choose an incomplete data package 
-   */
-  public void handleStateChange(StateChangeEvent event)
-  {
-    if(event != null)
-    {
-      String changedState = event.getChangedState();
-      if(changedState != null && changedState.equals(StateChangeEvent.CHOOSE_INCOMPLETE_DATAPACKAGE))
-      {
-        Log.debug(35, "OpenPackageCommand.handleStateChange - user choose an incomplete doc");
-        isIncompleteDoc = true;
-      }
-      else if(changedState != null && changedState.equals(StateChangeEvent.CHOOSE_COMPLETE_DATAPACKAGE))
-      {
-        Log.debug(35, "OpenPackageCommand.handleStateChange - user choose a complete doc");
-        isIncompleteDoc = false;
-      }
-      else
-      {
-        Log.debug(30, "OpenPackageCommand.handleStateChange - morpho couldn't recognize the StateChangeEvent "+changedState+
-        " and it will use default isIncompleteDoc value true");
-        isIncompleteDoc = true;
-      }
-        
-    }
-  }
+  
+  
 
 }//class CancelCommand
