@@ -248,8 +248,15 @@ public class StateChangeEvent extends ChangeEvent
     public static String SAVE_DATAPACKAGE
         = "saveDatapackage";
     
+    /**
+     * Public constant to denote that an incomplete data package has been chosen
+     */
+    public static String CHOOSE_INCOMPLETE_DATAPACKAGE = "chooseIncompleteDataPackage";
     
-    
+    /**
+     * Public constant to denote that a complete data package has been chosen
+     */
+    public static String CHOOSE_COMPLETE_DATAPACKAGE = "chooseCompleteDataPackage";
         
 /////////////////////////////////////////////s/////////////////////////////////// 
 //////////////////////////////////////////////////////////////////////////////// 

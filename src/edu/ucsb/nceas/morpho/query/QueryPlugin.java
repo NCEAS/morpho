@@ -287,6 +287,12 @@ public class QueryPlugin implements PluginInterface, ConnectionListener,
     exportAction.setEnabledOnStateChange(
                       StateChangeEvent.SEARCH_RESULT_NONSELECTED,
                       false, GUIAction.EVENT_LOCAL);
+    exportAction.setEnabledOnStateChange(
+        StateChangeEvent.CHOOSE_COMPLETE_DATAPACKAGE, 
+        true, GUIAction.EVENT_LOCAL);
+    exportAction.setEnabledOnStateChange(
+        StateChangeEvent.CHOOSE_INCOMPLETE_DATAPACKAGE,
+        false, GUIAction.EVENT_LOCAL);
     exportAction.setEnabled(false);
     controller.addGuiAction(exportAction);
 

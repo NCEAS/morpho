@@ -270,6 +270,12 @@ public class ResultPanel extends JPanel implements StoreStateChangeEvent
 	        // Create a OpenPreviousVersion action
 	        GUIAction openPreviousAction = new GUIAction("Open Previous Version",null,
 	                            new OpenPreviousVersionCommand(dialog, null));
+	        /*openPreviousAction.setEnabledOnStateChange(
+	            StateChangeEvent.SEARCH_RESULT_SELECTED_VERSIONS, 
+	            true, GUIAction.EVENT_LOCAL);
+	        openPreviousAction.setEnabledOnStateChange(
+              StateChangeEvent.SEARCH_RESULT_SELECTED_NO_VERSIONS,
+              false, GUIAction.EVENT_LOCAL);*/
 	        openPreviousVersion = new JMenuItem(openPreviousAction);
 	        popup.add(openPreviousVersion);
 	        openPreviousAction.setEnabled(false);
@@ -295,6 +301,12 @@ public class ResultPanel extends JPanel implements StoreStateChangeEvent
 	        // Create a action to open a synchronize dialog
 	        GUIAction synchronizeAction = new GUIAction("Synchronize...", null,
 	                                      new OpenSynchronizeDialogCommand(dialog));
+	        /*synchronizeAction.setEnabledOnStateChange(
+	            StateChangeEvent.SEARCH_RESULT_SELECTED_UNSYNCHRONIZED,
+	            true, GUIAction.EVENT_LOCAL);
+	        synchronizeAction.setEnabledOnStateChange(
+              StateChangeEvent.SEARCH_RESULT_SELECTED_SYNCHRONIZED,
+              false, GUIAction.EVENT_LOCAL);*/
 	        synchronizeMenu = new JMenuItem(synchronizeAction);
 	        popup.add(synchronizeMenu);
 	
@@ -313,7 +325,13 @@ public class ResultPanel extends JPanel implements StoreStateChangeEvent
 	        GUIAction exportAction = new GUIAction("Export...", null,
 	//                            new ExportCommand(dialog, ExportCommand.REGULAR));
 	                             new OpenExportDialogCommand(dialog));
-	                            exportMenu = new JMenuItem(exportAction);
+	        /*exportAction.setEnabledOnStateChange(
+	            StateChangeEvent.CHOOSE_COMPLETE_DATAPACKAGE, 
+	            true, GUIAction.EVENT_LOCAL);
+	        exportAction.setEnabledOnStateChange(
+	            StateChangeEvent.CHOOSE_INCOMPLETE_DATAPACKAGE,
+	            false, GUIAction.EVENT_LOCAL);*/
+	        exportMenu = new JMenuItem(exportAction);
 	        popup.add(exportMenu);
 	//        GUIAction exportToZipAction = new GUIAction("Export to Zip...", null,
 	  //                            new ExportCommand(dialog, ExportCommand.ZIP));
@@ -677,6 +695,25 @@ public class ResultPanel extends JPanel implements StoreStateChangeEvent
      }
          
    }
+   
+   /*
+    * Return true if user selected an incomplete document row.
+    */
+   private boolean selectedIncompleteDocument()
+   {
+     if(localStatus != null && 
+         (localStatus.equals(QueryRefreshInterface.LOCALAUTOSAVEDINCOMPLETE) || 
+         localStatus.equals(QueryRefreshInterface.LOCALUSERSAVEDINCOMPLETE)))    
+     {
+       return true;
+     }
+     else
+     {
+       return false;
+     }
+   }
+   
+   
 
   class PopupListener extends MouseAdapter {
     // on the Mac, popups are triggered on mouse pressed, while mouseReleased triggers them
@@ -722,7 +759,8 @@ public class ResultPanel extends JPanel implements StoreStateChangeEvent
         Log.debug(30, "the number of previous version is: " + vers);
         doctype = (String) rowV.elementAt(8);
         // Fire state change event only in morpho frame
-        if (dialog == null) {
+        if (dialog == null) 
+        {
 
           StateChangeMonitor monitor = StateChangeMonitor.getInstance();
           // select a data package event
@@ -732,21 +770,42 @@ public class ResultPanel extends JPanel implements StoreStateChangeEvent
               StateChangeEvent.SEARCH_RESULT_SELECTED));
           if (enableSynchronizeMenu()) {
             // unsynchronized package
+            //Log.debug(5, "enable synchorize menu");
             monitor.notifyStateChange(
                 new StateChangeEvent(
                 pane,
                 StateChangeEvent.SEARCH_RESULT_SELECTED_UNSYNCHRONIZED));
           }
           else {
+            //Log.debug(5, "disable synchorize menu");
             // synchronized package
             monitor.notifyStateChange(
                 new StateChangeEvent(
                 pane,
                 StateChangeEvent.SEARCH_RESULT_SELECTED_SYNCHRONIZED));
           }
+          
+          if(selectedIncompleteDocument())
+          {
+            //Log.debug(5, "disable export");
+            monitor.notifyStateChange(
+                new StateChangeEvent(
+                pane, 
+                StateChangeEvent.CHOOSE_INCOMPLETE_DATAPACKAGE));
+          }
+          else
+          {
+            //Log.debug(5, "enable export");
+            monitor.notifyStateChange(
+                new StateChangeEvent(
+                 pane,
+                 StateChangeEvent.CHOOSE_COMPLETE_DATAPACKAGE));
+                
+          }
 
           if (vers > 0) {
             // mutipleversion package
+            //Log.debug(5, "enable open previous");
             monitor.notifyStateChange(
                 new StateChangeEvent(
                 pane,
@@ -754,6 +813,7 @@ public class ResultPanel extends JPanel implements StoreStateChangeEvent
           }
           else {
             // one version package
+            //Log.debug(5, "disable open previous");
             monitor.notifyStateChange(
                 new StateChangeEvent(
                 pane,
@@ -790,12 +850,10 @@ public class ResultPanel extends JPanel implements StoreStateChangeEvent
 
         synchronizeMenu.setEnabled
                       (enableSynchronizeMenu());
-        //uploadMenu.setEnabled(localLoc && !metacatLoc);
-        //downloadMenu.setEnabled(metacatLoc && !localLoc);
+        exportMenu.setEnabled(!selectedIncompleteDocument());
         // delete menu always enable
         deleteMenu.setEnabled(true);
-
-              trigger = false;
+        trigger = false;
         popup.show(e.getComponent(), e.getX(), e.getY());
 
       }

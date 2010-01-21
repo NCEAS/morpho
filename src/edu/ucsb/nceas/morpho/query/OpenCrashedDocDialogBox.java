@@ -249,9 +249,9 @@ public class OpenCrashedDocDialogBox extends OpenDialogBox
     controlButtonsBox.add(Box.createHorizontalGlue());
 
     // Open button
-    boolean isCrashedDoc = true;
+    //boolean isCrashedDoc = true;
     GUIAction openAction = new GUIAction("Open", null,
-                                  new OpenPackageCommand(this, isCrashedDoc));
+                                  new OpenPackageCommand(this));
     //GUIAction openAction = null;
     openButton = new JButton(openAction);
     // Registor open button to mediator
@@ -275,7 +275,7 @@ public class OpenCrashedDocDialogBox extends OpenDialogBox
     bottomBox.add(Box.createVerticalStrut(10));
 
     // Add a keyPressActionListener
-    this.addKeyListener(new KeyPressActionListener());
+    //this.addKeyListener(new KeyPressActionListener());
     setModal(true);
     setVisible(true);
 

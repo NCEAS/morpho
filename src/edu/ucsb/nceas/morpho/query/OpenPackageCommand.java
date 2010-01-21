@@ -36,13 +36,16 @@ import edu.ucsb.nceas.morpho.plugins.ServiceProvider;
 import edu.ucsb.nceas.morpho.plugins.ServiceNotHandledException;
 import edu.ucsb.nceas.morpho.util.Command;
 import edu.ucsb.nceas.morpho.util.Log;
+import edu.ucsb.nceas.morpho.util.StateChangeEvent;
+import edu.ucsb.nceas.morpho.util.StateChangeListener;
+
 import java.awt.event.ActionEvent;
 import javax.swing.JDialog;
 
 /**
  * Class to handle open package command
  */
-public class OpenPackageCommand implements Command, ButterflyFlapCoordinator 
+public class OpenPackageCommand implements Command, ButterflyFlapCoordinator, StateChangeListener
 {
   /** the doctype */ 
   private String doctype = "";
@@ -56,7 +59,7 @@ public class OpenPackageCommand implements Command, ButterflyFlapCoordinator
   /** A refernce to the MorphoFrame (for butterfly) */
    private MorphoFrame frame = null;
    
-   private boolean isCrashedDoc = false;
+   private boolean isIncompleteDoc = false;
    
   /**
    * Constructor of OpenPackageCommand
@@ -73,12 +76,12 @@ public class OpenPackageCommand implements Command, ButterflyFlapCoordinator
    * @param dialog the open dialog where the open package command happend  
    * @param isCrashedDoc it will be true if this is a crashed doc
    */
-  public OpenPackageCommand(OpenDialogBox dialog, boolean isCrashedDoc)
+  /*public OpenPackageCommand(OpenDialogBox dialog, boolean isCrashedDoc)
   {
     open = dialog;
     this.isCrashedDoc = isCrashedDoc;
    
-  }//OpenPackageCommand
+  }//OpenPackageCommand*/
   /**
    * execute open package command
    */    
@@ -151,7 +154,7 @@ public class OpenPackageCommand implements Command, ButterflyFlapCoordinator
           ServiceProvider provider = 
                       services.getServiceProvider(DataPackageInterface.class);
           DataPackageInterface dataPackage = (DataPackageInterface)provider;
-          if (!isCrashedDoc)
+          if (!isIncompleteDoc)
           {
              dataPackage.openDataPackage(location, docid, null, command, doctype);
           }
@@ -205,5 +208,34 @@ public class OpenPackageCommand implements Command, ButterflyFlapCoordinator
     * could also have undo functionality; disabled for now
    */ 
   // public void undo();
+  
+  /**
+   * Method inherits from StateChangeListener. This will get the information that
+   * if user choose an incomplete data package 
+   */
+  public void handleStateChange(StateChangeEvent event)
+  {
+    if(event != null)
+    {
+      String changedState = event.getChangedState();
+      if(changedState != null && changedState.equals(StateChangeEvent.CHOOSE_INCOMPLETE_DATAPACKAGE))
+      {
+        Log.debug(35, "OpenPackageCommand.handleStateChange - user choose an incomplete doc");
+        isIncompleteDoc = true;
+      }
+      else if(changedState != null && changedState.equals(StateChangeEvent.CHOOSE_COMPLETE_DATAPACKAGE))
+      {
+        Log.debug(35, "OpenPackageCommand.handleStateChange - user choose a complete doc");
+        isIncompleteDoc = false;
+      }
+      else
+      {
+        Log.debug(30, "OpenPackageCommand.handleStateChange - morpho couldn't recognize the StateChangeEvent "+changedState+
+        " and it will use default isIncompleteDoc value true");
+        isIncompleteDoc = true;
+      }
+        
+    }
+  }
 
 }//class CancelCommand

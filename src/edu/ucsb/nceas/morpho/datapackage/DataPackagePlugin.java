@@ -848,6 +848,12 @@ public class DataPackagePlugin
     AbstractDataPackage adp = null;
     Log.debug(11, "DataPackage: Got service request to open: " +
                     identifier + " from " + location + ".");
+    if(location == null || ( !location.equals(DataPackageInterface.METACAT) &&
+        !location.equals(DataPackageInterface.LOCAL) && !location.equals(DataPackageInterface.BOTH)))
+    {
+      Log.debug(5, "Morpho couldn't open the package at this location - "+location);
+      return;
+    }
       boolean metacat = false;
       boolean local = false;
       if ((location.equals(DataPackageInterface.METACAT))||
@@ -858,13 +864,13 @@ public class DataPackagePlugin
     //Log.debug(11, "location: " + location + " identifier: " + identifier +
     //                " relations: " + relations.toString());
 
-    String completionStatus = adp.getCompletionStatus();
+    /*String completionStatus = adp.getCompletionStatus();
     if(completionStatus != null && !completionStatus.equals(AbstractDataPackage.COMPLETED))
     {
       //open incomplete data package.
       openIncompleteDataPackage(adp, coordinator);
       return;
-    }
+    }*/
     //open complete data package.
     long starttime = System.currentTimeMillis();
     final MorphoFrame packageWindow = UIController.getInstance().addWindow(
