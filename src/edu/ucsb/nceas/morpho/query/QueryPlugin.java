@@ -449,7 +449,7 @@ public class QueryPlugin implements PluginInterface, ConnectionListener,
   {
 	  //First we will check if there are docs in incomplete dir.
 	  FileSystemDataStore fileStore = new FileSystemDataStore(morpho);
-	  if(fileStore.hasIncompleteFile())
+	  //if(fileStore.hasIncompleteFile())
 	  {
 		  OpenDialogBoxCommand odbCmd = new OpenDialogBoxCommand(morpho);
 		  Query ownerQuery = new Query(odbCmd.getOwnerQuery(), morpho);

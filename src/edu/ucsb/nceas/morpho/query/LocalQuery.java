@@ -632,8 +632,9 @@ public class LocalQuery
     */
    private void getFiles(File directoryFile, Vector vec) {
       String[] files = directoryFile.list();
-
-      for (int i=0;i<files.length;i++)
+      if(files != null)
+      {
+        for (int i=0;i<files.length;i++)
         {
             String filename = files[i];
             File currentfile = new File(directoryFile, filename);
@@ -650,6 +651,8 @@ public class LocalQuery
             }
         }
         getLatestVersion(vec);
+      }
+     
    }
 
   /**

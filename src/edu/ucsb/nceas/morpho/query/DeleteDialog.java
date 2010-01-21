@@ -157,7 +157,7 @@ public class DeleteDialog extends JDialog
     int parentWidth = parent.getWidth();
     int parentHeight = parent.getHeight();
     int dialogWidth = 400;
-    int dialogHeight = 270;
+    int dialogHeight = 300;
     setSize(dialogWidth, dialogHeight);
     setResizable(false);
     

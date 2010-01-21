@@ -29,6 +29,7 @@ package edu.ucsb.nceas.morpho.query;
 import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.framework.ConfigXML;
 import edu.ucsb.nceas.morpho.framework.MorphoFrame;
+import edu.ucsb.nceas.morpho.framework.QueryRefreshInterface;
 import edu.ucsb.nceas.morpho.util.Command;
 import edu.ucsb.nceas.morpho.util.GUIAction;
 import edu.ucsb.nceas.morpho.util.Log;
@@ -118,17 +119,71 @@ public class OpenCrashedDocDialogBox extends OpenDialogBox
     this.config = morpho.getConfiguration();
     this.mediator = new ResultPanelAndFrameMediator();
     this.ownerQuery = myQuery;
-
-    // Set OpenDialog size depent on parent size
-    int parentWidth = parent.getWidth();
-    int parentHeight = parent.getHeight();
+    boolean findCrachedDoc = query();
+    if(findCrachedDoc)
+    {
+      initGUI();
+    }
+    else
+    {
+      this.setVisible(false);
+      this.dispose();
+    }
+   
+    
+  }
+  
+  /*
+   * Query incomplete directory. If no crashed documents find, false will be returned.
+   */
+  private boolean query()
+  {
+    LocalQuery crashedDocQuery = new LocalQuery(ownerQuery, morpho);
+    Vector resultVector = null;
+    Vector resultVectorWithCrashedDoc = new Vector();
+    results = crashedDocQuery.executeInInCompleteDoc();
+    if(results != null)
+    {
+      resultVector = results.getResultsVector();
+      if(resultVector != null)
+      {
+        for(int i=0; i<resultVector.size(); i++)
+        {
+          Vector row = (Vector)resultVector.elementAt(i);
+          String localStatus = (String)row.get(ResultSet.ISLOCALINDEX);
+          Log.debug(30, "OpenCrashedDocDialog.query - the docid "+row.elementAt(6)+" has the local status is "+localStatus);
+          if(localStatus != null  && localStatus.equals(QueryRefreshInterface.LOCALAUTOSAVEDINCOMPLETE))
+          {
+            Log.debug(30, "OpenCrashedDocDialog.query - add docid "+row.elementAt(6)+" into results");
+            resultVectorWithCrashedDoc.add(row);
+          }
+        }
+      }
+    }
+    if(resultVectorWithCrashedDoc == null || resultVectorWithCrashedDoc.isEmpty())
+    {
+      return false;
+    }
+    else
+    {
+      Log.debug(30, "OpenCrashedDocDialog.query - result vector size is "+resultVectorWithCrashedDoc.size());
+      results.setResultsVector(resultVectorWithCrashedDoc);
+      return true;
+    }   
+  }
+  
+  private void initGUI()
+  {
+ // Set OpenDialog size depent on parent size
+    int parentWidth = parentFrame.getWidth();
+    int parentHeight = parentFrame.getHeight();
     int dialogWidth = 820;
     int dialogHeight = 500;
     setSize(dialogWidth, dialogHeight);
 
     // Set location of dialog, it shared same center of parent
-    double parentX = parent.getLocation().getX();
-    double parentY = parent.getLocation().getY();
+    double parentX = parentFrame.getLocation().getX();
+    double parentY = parentFrame.getLocation().getY();
     double centerX = parentX + 0.5 * parentWidth;
     double centerY = parentY + 0.5 * parentHeight;
     int dialogX = (new Double(centerX - 0.5 * dialogWidth)).intValue();
@@ -296,14 +351,8 @@ public class OpenCrashedDocDialogBox extends OpenDialogBox
    */
   private void createOwnerPanel()
   {
-	LocalQuery crashedDocQuery = new LocalQuery(ownerQuery, morpho);
-    results = crashedDocQuery.executeInInCompleteDoc();
-    //ownerPanel = new ResultPanel(this, results, mediator);
-    //Vector vector = new Vector();
-    //String source ="";
-    /*HeadResultSet results = new HeadResultSet(
-                                       ownerQuery, source, vector, morpho);*/
-    //boolean disableRightClickMenu = true;
+	  //LocalQuery crashedDocQuery = new LocalQuery(ownerQuery, morpho);
+    //results = crashedDocQuery.executeInInCompleteDoc();
     ownerPanel = new ResultPanel(this, results, mediator);
     //ownerPanel.setVisible(true);
     StateChangeEvent event = null;
