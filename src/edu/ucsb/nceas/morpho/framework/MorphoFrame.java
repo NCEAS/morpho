@@ -623,7 +623,7 @@ public class MorphoFrame extends JFrame
          if (loc.equals("")) {
            int res = JOptionPane.showConfirmDialog(null,
                  "Would you like to save the current package?",
-                 "Save ?", JOptionPane.YES_NO_OPTION);
+                 "Save ?", JOptionPane.YES_NO_CANCEL_OPTION);
            if (res==JOptionPane.YES_OPTION) {
              //save here using the save command implementation used by the frame
         	 GUIAction saveAction = this.lookupGuiActionByCommand(SaveCommandInterface.class);
@@ -637,13 +637,10 @@ public class MorphoFrame extends JFrame
              spc.execute(null);
              
              return;
-//             Log.debug(1, "Save here!");
            } 
-           /*else 
-           {
-             // just close and delete the auto-saved file
-        	   Util.deleteAutoSavedFile(dvcp.getAbstractDataPackage());
-           }*/
+           else if (res==JOptionPane.CANCEL_OPTION) {
+        	   return;
+           }
            
          }
          Log.debug(30, "MorphoFrame.close method to delete the autosaved file ");
