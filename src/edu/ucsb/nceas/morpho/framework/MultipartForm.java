@@ -25,7 +25,7 @@
  *
  *
  *  Portions of this file were derived from the HTTPClient package
- *  Copyright (C) 1996-2001 Ronald Tschalär
+ *  Copyright (C) 1996-2001 Ronald Tschalar
  *
  *  The HTTPClient's home page is located at:
  *
