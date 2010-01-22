@@ -365,6 +365,14 @@ public class XMLTransformer
           identifier = domDoc.getDoctype().getPublicId();
           Log.debug(50,"getPublicId() gives: "+identifier);
         }
+        
+        //if this is null, then try to get namespace of root node:
+        if (identifier==null || identifier.trim().equals("")) {
+
+          identifier = rootNode.getNamespaceURI();
+          Log.debug(50,"rootNode.getNamespaceURI() gives: "+identifier);
+        }
+        
         //if this is null, then try to get schemaLocation:
         if (identifier==null || identifier.trim().equals("")) {
           identifier = rootNode.getAttributeNS(NAMESPACE_FOR_SCHEMA_LOCATION,
@@ -375,13 +383,6 @@ public class XMLTransformer
             identifier = identifier.trim().substring(0, identifier.indexOf(" "));
             Log.debug(50,"getAttributeNS schemaLocation is: "+identifier);
           }
-        }
-
-        //if this is null, then try to get namespace of root node:
-        if (identifier==null || identifier.trim().equals("")) {
-
-          identifier = rootNode.getNamespaceURI();
-          Log.debug(50,"rootNode.getNamespaceURI() gives: "+identifier);
         }
 
         //finally, if this is null, use generic stylesheet:
