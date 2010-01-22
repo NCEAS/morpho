@@ -112,6 +112,18 @@ public class ImageRenderer extends DefaultTableCellRenderer
      // Add tool tip for package data icon
      comp.setToolTipText(PACKAGEDATATOOLTIP);
    }//else
+   else if ((valueIcon.getDescription())
+       .equals((ResultSet.localUserSavedIncompleteIcon).getDescription()))
+   {
+     // Add tool tip for package data icon
+     comp.setToolTipText((ResultSet.localUserSavedIncompleteIcon).getDescription());
+   }//else
+   else if ((valueIcon.getDescription())
+       .equals((ResultSet.localAutoSavedIncompleteIcon).getDescription()))
+   {
+     // Add tool tip for package data icon
+     comp.setToolTipText((ResultSet.localAutoSavedIncompleteIcon).getDescription());
+   }//else
    
    
     return comp;
