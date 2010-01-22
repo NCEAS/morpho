@@ -1845,6 +1845,10 @@ class CustomJTable extends JTable{
                             boolean extend) {
 
 
+	  // check for out of bounds first
+	  if (currentRow >= getRowCount()) {
+		  currentRow = getRowCount()-1;
+	  }
     if(rowIndex != currentRow || columnIndex != currentCol) {
 
       if(editors != null && currentCol >= 0 && currentCol < editors.length && editors[currentCol] != null) {
