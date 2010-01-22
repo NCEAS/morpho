@@ -127,6 +127,7 @@ public class DataLocation extends AbstractUIPage {
   private final static int THIRD_PANEL_NOT_AVAILABLE_CHOICE =0;
   private final static int THIRD_PANEL_ONLINE_CHOICE = 1;
   private final static int THIRD_PANEL_ARCHIVE_CHOICE = 2;
+  private final static int THIRD_PNAL_RADIOBUTTON_SIZE = 3;
   
 
   private final String Q2_TITLE_IMPORT
@@ -289,7 +290,8 @@ public class DataLocation extends AbstractUIPage {
           Log.debug(45, "DESCRIBE - MANUAL");
           setQ3(q3Widget);
           objNameField.requestFocus();
-          setLastEvent(DESCRIBE_MAN_NODATA);  //on Q3 panel, "Not Available" is
+          setLastEvent(q3Widget.getSelectedLastEvent());//use exist selected radio button
+          //setLastEvent(DESCRIBE_MAN_NODATA);  //on Q3 panel, "Not Available" is
                                               //selected by default
         }
         instance.validate();
@@ -1583,6 +1585,52 @@ public class DataLocation extends AbstractUIPage {
     		    Log.debug(30, "Couldn't doClick the button with index "+key +" in ThridQuestionWidget "+e.getMessage());	
     		}
     	}
+    }
+    
+    /**
+     * Gets existing selected radio button. If no existing one, default value DESCRIBE_MAN_NODATA
+     * will be returned
+     * @return
+     */
+    public short getSelectedLastEvent()
+    {
+      short lastSelectedEvent = DESCRIBE_MAN_NODATA;
+      if(realRadioButtonPanel != null)
+      {
+        try
+        {
+          int selectedIndex = 0;
+          for(int i=0; i<THIRD_PNAL_RADIOBUTTON_SIZE; i++)
+          {
+            JRadioButton jrb = (JRadioButton)realRadioButtonPanel.getComponent(i);
+           
+            if(jrb != null && jrb.isSelected())
+            {
+              Log.debug(45, "The radio button will be click is "+i);
+              selectedIndex = i;
+              break;
+            }                
+          }
+          if(selectedIndex == THIRD_PANEL_NOT_AVAILABLE_CHOICE)
+          {
+            lastSelectedEvent = DESCRIBE_MAN_NODATA;
+          }
+          else if(selectedIndex== THIRD_PANEL_ONLINE_CHOICE)
+          {
+            lastSelectedEvent = DESCRIBE_MAN_ONLINE;
+          }
+          else if(selectedIndex== THIRD_PANEL_ARCHIVE_CHOICE)
+          {
+            lastSelectedEvent = DESCRIBE_MAN_OFFLINE;
+          }
+         
+        }
+        catch(Exception e)
+        {
+            Log.debug(30, "Couldn't go through the radio buttons in ThridQuestionWidget "+e.getMessage());  
+        }
+      }
+      return lastSelectedEvent;
     }
     
     /**
