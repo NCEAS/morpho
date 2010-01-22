@@ -308,7 +308,8 @@ public class DataPackageFactory
    *  data)
    */
   protected static String getDocTypeInfo(Reader in) {
-    String temp = getSchemaLine(in,2);
+    String temp = getSchemaLine(in);
+    
     //Log.debug(1,"line is:"+temp);
     // this should return a line of text which is either the DOCTYPE declaraton or the root node
     if (temp.indexOf("DOCTYPE")>-1) {
@@ -361,7 +362,8 @@ public class DataPackageFactory
 
   // 'borrowed' from MetaCatServlet class of metacat
   // this method should return everything inside the linenum set of angle brackets
-    protected static String getSchemaLine(Reader xml, int linenum)   {
+    protected static String getSchemaLine(Reader xml)   {
+    int linenum = 1;
     // find the line
     String secondLine = null;
     int count =0;
@@ -413,8 +415,13 @@ public class DataPackageFactory
 
       }
       secondLine = buffer.toString();
-      Log.debug(25, "the second line string is: "+secondLine);
-//      xml.reset();
+      Log.debug(25, "possible schema/doctype string is: " + secondLine);
+      //skip over processing instructions and other lines starting with ?
+      if (secondLine.startsWith("?")) {
+    	  Log.debug(25, "recursing...");
+    	  secondLine = getSchemaLine(xml);
+      }
+      //xml.reset();
      //xml.close();
     } catch (Exception e) {
     Log.debug(6, "Sorry - Unable to Open the Requested Data Package!");
