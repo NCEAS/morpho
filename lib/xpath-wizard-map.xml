@@ -600,20 +600,20 @@
     <infoForModifyingData>
              <loadExistDataPath>/eml:eml/dataset/dataTable/physical</loadExistDataPath>
              <loadExistDataPath>./distribution/online/url</loadExistDataPath>
-             <xpathForCreatingOrderedMap>/distribution/online</xpathForCreatingOrderedMap>
+             <xpathForCreatingOrderedMap></xpathForCreatingOrderedMap>
              <xpathForSettingPageData></xpathForSettingPageData>
-             <newDataDocumentName>distribution</newDataDocumentName>
+             <newDataDocumentName>url</newDataDocumentName>
              <xpathForGettingPageData></xpathForGettingPageData>
-             <key>/distribution/online/url</key>
+             <key>/url</key>
     </infoForModifyingData>
     <infoForModifyingData>
              <loadExistDataPath>/eml:eml/dataset/dataTable/physical</loadExistDataPath>
              <loadExistDataPath>./distribution/offline/mediumName</loadExistDataPath>
-             <xpathForCreatingOrderedMap>/distribution/offline</xpathForCreatingOrderedMap>
+             <xpathForCreatingOrderedMap></xpathForCreatingOrderedMap>
              <xpathForSettingPageData></xpathForSettingPageData>
-             <newDataDocumentName>distribution</newDataDocumentName>
+             <newDataDocumentName>mediumName</newDataDocumentName>
              <xpathForGettingPageData></xpathForGettingPageData>
-             <key>/distribution/offline/mediumName</key>
+             <key>/mediumName</key>
     </infoForModifyingData>
     <wizardPageClass>edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.CorrectionWizardDataLocation</wizardPageClass>
   </mapping>

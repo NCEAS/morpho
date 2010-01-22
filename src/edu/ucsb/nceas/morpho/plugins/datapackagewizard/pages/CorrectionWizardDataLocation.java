@@ -68,8 +68,8 @@ public class CorrectionWizardDataLocation extends DataLocation
 {
 	private final String pageID       = DataPackageWizardInterface.CORRECTION_DATA_LOCATION;
 	private static final String OBJECTNAMEPATH = "/objectName";
-	private static final String ONLINEPATH = "/distribution/online/url";
-	private static final String OFFLINEMDEIDUMNAMEPATH = "/distribution/offline/mediumName";
+	private static final String ONLINEPATH = "/url";
+	private static final String OFFLINEMDEIDUMNAMEPATH = "/mediumName";
 	
     public CorrectionWizardDataLocation()
     {
