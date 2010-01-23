@@ -23,7 +23,7 @@
 		<appversion>@{version}</appversion>
 		<url>http://knb.ecoinformatics.org</url>
         <appsubpath>morpho-${release}</appsubpath>
-        <run-privileged condition="izpack.windowsinstall.vista"/>  
+        <run-privileged/>  
 	</info> 
   	
 	<!-- 
