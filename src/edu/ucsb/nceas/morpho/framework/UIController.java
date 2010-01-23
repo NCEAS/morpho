@@ -709,6 +709,22 @@ public class UIController
     }
     
     /**
+     * Check if any entity wizard is running on morpho
+     * @return true if there is any entity wizard is running
+     */
+    public boolean isAnyEntityWizardRunning()
+    {
+      if(entityWizardRunningRecorder != null)
+      {
+        return !entityWizardRunningRecorder.isEmpty();
+      }
+      else
+      {
+        return false;
+      }
+    }
+    
+    /**
      * Adds a docid to idle wizard recorder. It happens when
      * user click finish/cancel button. Now the wizard is not running, but
      * tracing document still exists

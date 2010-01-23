@@ -109,15 +109,11 @@ public class DataPackageWizardPlugin implements PluginInterface,
    */
   public void startPackageWizard(DataPackageWizardListener listener) {
 
-    boolean isRunning = UIController.getInstance().isWizardRunning();
-    if (isRunning) {
-      JOptionPane.showConfirmDialog(null,
-        "Sorry, only one instance of the Data Package Wizard can be running at a time!",
-                                   "Wizard already running",
-                                   JOptionPane.DEFAULT_OPTION,
-                                   JOptionPane.WARNING_MESSAGE);
-      return;
-    }
+   boolean ableStart = ableStartNewPackageWizard();
+   if(!ableStart)
+   {
+     return;
+   }
 
     AbstractDataPackage tempDataPackage = DataPackageFactory.getDataPackage(
       getNewEmptyDataPackageDOM(WizardSettings.TEMP_REFS_EML210_DOCUMENT_TEXT));
@@ -156,8 +152,8 @@ public class DataPackageWizardPlugin implements PluginInterface,
    *  @param entityIndex the index of the new entity in this package
    */
   public void startEntityWizard(DataPackageWizardListener listener, int entityIndex) {
-    boolean running = checkIsEntityWizardRunning();
-    if(running)
+    boolean ableStart = ableStartEntityPackageWizard();
+    if(!ableStart)
     {
       return;
     }
@@ -178,8 +174,8 @@ public class DataPackageWizardPlugin implements PluginInterface,
    */
   public void startCodeDefImportWizard(DataPackageWizardListener listener, int entityIndex,Boolean beforeFlag, 
 		  int editingEntityIndex, int editingAttributeIndex) {
-    boolean running = checkIsEntityWizardRunning();
-    if(running)
+    boolean ableStart = ableStartEntityPackageWizard();
+    if(!ableStart)
     {
       return;
     }
@@ -194,10 +190,95 @@ public class DataPackageWizardPlugin implements PluginInterface,
 	  }
   }
   
+  /**
+   * Check if a new package wizard can be run.
+   * 1. No any new package wizard is running.
+   * 2. No any entity package wizard is running
+   * @return true if morpho can start new package wizard
+   */
+  public static boolean ableStartNewPackageWizard()
+  {
+     boolean ableStart = false;
+     boolean existingRunningWizard = checkIsNewPackageWizardRunning();
+     if(!existingRunningWizard)
+     {
+       Log.debug(30, "DataPackageWizardPlugin.ableStartNewPackageWizard() - There is no existing new package wizard");
+       ableStart = true;
+     }
+     else
+     {
+       ableStart = false;
+       return ableStart;
+     }
+     existingRunningWizard = UIController.getInstance().isAnyEntityWizardRunning();
+     if(!existingRunningWizard)
+     {
+       Log.debug(30, "DataPackageWizardPlugin.ableStartNewPackageWizard() - There is no existing enity package wizard");
+       ableStart = true;
+     }
+     else
+     {
+       Log.debug(5, "Sorry, there is another entity wizard running on a package."+ 
+       "\nPlease finish that entity wizard first.");
+       ableStart = false;
+     }
+     return ableStart;
+  }
+  
+  
+  /**
+   * Check if an entity package wizard can be run.
+   * 1. No any new package wizard is running.
+   * 2. No any other entity package wizard is running on the same morpho frame (data package)
+   * @return true if morpho can start an entity package wizard
+   */
+  public static boolean ableStartEntityPackageWizard()
+  {
+    boolean ableStart = false;
+    boolean existingRunningWizard = checkIsNewPackageWizardRunning();
+    if(!existingRunningWizard)
+    {
+      Log.debug(30, "DataPackageWizardPlugin.ableStartEntityPackageWizard() - There is no existing new package wizard");
+      ableStart = true;
+    }
+    else
+    {
+      ableStart = false;
+      return ableStart;
+    }
+    existingRunningWizard = checkIsEntityWizardRunningOnSameMorphoFrame();
+    if(!existingRunningWizard)
+    {
+      Log.debug(30, "DataPackageWizardPlugin.ableStartEntityPackageWizard() - There is no existing enity package wizard on the frame");
+      ableStart = true;
+    }
+    else
+    {
+      ableStart = false;
+    }
+    return ableStart;
+  }
+  
+  /*
+   * Check if any new package wizard is running on the morpho
+   */
+  private static boolean checkIsNewPackageWizardRunning()
+  {
+    boolean isRunning = UIController.getInstance().isWizardRunning();
+    if (isRunning) {
+      JOptionPane.showConfirmDialog(null,
+        "Sorry, a Data Package Wizard is running. Please finish the wizard first!",
+                                   "Wizard already running",
+                                   JOptionPane.DEFAULT_OPTION,
+                                   JOptionPane.WARNING_MESSAGE);
+    }
+    return isRunning;
+  }
+  
   /*
    * Check if an entity wizard is running on the current active window.
    */
-  private boolean checkIsEntityWizardRunning()
+  private static boolean checkIsEntityWizardRunningOnSameMorphoFrame()
   {
     boolean running  = false;
     String docid  = null;
@@ -209,8 +290,8 @@ public class DataPackageWizardPlugin implements PluginInterface,
     }
     if(running)
     {
-      Log.debug(5, "Sorry, there is another entity wizard running from the package "+docid+
-          ". \nMorpho only allows one entity wizard from the same package running at a time.");
+      Log.debug(5, "Sorry, there is another Entity Wizard running on data package "+docid+
+          ". \nPlease finish that entity wizard first.");
     }
     return running;
   }

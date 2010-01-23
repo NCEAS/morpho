@@ -186,15 +186,10 @@ public class IncompleteDocumentLoader
   {
     if(incompleteDocInfo != null)
     {
-      boolean isRunning = UIController.getInstance().isWizardRunning();
-      if (isRunning) 
+      boolean ableStart = DataPackageWizardPlugin.ableStartNewPackageWizard();
+      if(!ableStart)
       {
-          JOptionPane.showConfirmDialog(null,
-            "Sorry, only one instance of the Data Package Wizard can be running at a time!",
-                                       "Wizard already running",
-                                       JOptionPane.DEFAULT_OPTION,
-                                       JOptionPane.WARNING_MESSAGE);
-          return;
+        return;
       }
       //Log.debug(5, "The datatpackage is "+dataPackage);
       UIController.getInstance().setWizardIsRunning(dataPackage);
@@ -238,6 +233,11 @@ public class IncompleteDocumentLoader
         openVisibleMorphoFrame(dataPackage);
         return;
       }
+      boolean ableStart = DataPackageWizardPlugin.ableStartEntityPackageWizard();
+      if(!ableStart)
+      {
+        return;
+      }
       int index = incompleteDocInfo.getEntityIndex();
       //remove the entity with the index (this entity is the unfinished one)
       Node entityNode = dataPackage.deleteEntity(index);
@@ -266,6 +266,11 @@ public class IncompleteDocumentLoader
       if(incompleteDocInfo.getWizardPageClassInfoList() == null)
       {
         openVisibleMorphoFrame(dataPackage);
+        return;
+      }
+      boolean ableStart = DataPackageWizardPlugin.ableStartEntityPackageWizard();
+      if(!ableStart)
+      {
         return;
       }
       int index = incompleteDocInfo.getEntityIndex();
