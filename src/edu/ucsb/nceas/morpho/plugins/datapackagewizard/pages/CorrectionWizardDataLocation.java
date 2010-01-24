@@ -31,6 +31,7 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Iterator;
 
 import javax.swing.Box;
 import javax.swing.JLabel;
@@ -70,6 +71,10 @@ public class CorrectionWizardDataLocation extends DataLocation
 	private static final String OBJECTNAMEPATH = "/objectName";
 	private static final String ONLINEPATH = "/url";
 	private static final String OFFLINEMDEIDUMNAMEPATH = "/mediumName";
+	private static final String FULLONLINEPATH = "/eml:eml/dataset/dataTable/physical/distribution/online/url";
+	private static final String FULLOFFLINEPATH = "/eml:eml/dataset/dataTable/physical/distribution/offline/mediumName";
+	private OrderedMap storedMap = new OrderedMap();
+	private String rootPath = null;
 	
     public CorrectionWizardDataLocation()
     {
@@ -121,7 +126,7 @@ public class CorrectionWizardDataLocation extends DataLocation
     public void onLoadAction() 
     {
 
-      
+      initializeGUI(storedMap, rootPath);
       
     }
     
@@ -252,67 +257,27 @@ public class CorrectionWizardDataLocation extends DataLocation
     	 Log.debug(45,
     		        "CorrectionWizardDataLocation.setPageData() called with xPathRoot = " + xPathRoot
     		        + "\n Map = \n" + map);
-    	short type = findDistributionType(map, xPathRoot);
-    	String value = null;
-    	switch(type)
+    	rootPath = xPathRoot;
+    	if(map != null)
     	{
-    	    //// Online data case
-    	    case WizardSettings.ONLINE:
-    	            value = (String)map.get(xPathRoot+OBJECTNAMEPATH);
-    	            //Log.debug(45, "value for online ojbect name "+value);
-    	            if (value != null) 
-    				{
-    	            	 fileNameFieldOnline.setText(value);
-    					  map.remove(xPathRoot+ OBJECTNAMEPATH);
-    				}
-    	            value = (String)map.get(xPathRoot+ONLINEPATH);
-    	            //Log.debug(45, "value for online url is "+value);
-    	            if(value != null)
-    	            {
-    	            	//Log.debug(45, "value for online url is (after if stamente "+value);
-    	            	urlFieldOnline.setText(value);
-    	            	map.remove(xPathRoot+ONLINEPATH);
-    	            	//Log.debug(45, "value for online url is (after reming from map) "+value);
-    	            }
-    	            distribution= WizardSettings.ONLINE;	            
-    	            break;
-    	    //OFFline, but has distribution/offline path
-    	    case WizardSettings.OFFLINE:
-    	    	if(getLastEvent() == DESCRIBE_MAN_OFFLINE)
-            	{
-    	    		value = (String)map.get(xPathRoot+OBJECTNAMEPATH);
-            		if(value != null)
-                	{
-                        objNameField.setText(value);
-                        map.remove(xPathRoot+OBJECTNAMEPATH);
-                	}
-                
-                	value = (String)map.get(xPathRoot+OFFLINEMDEIDUMNAMEPATH);
-                	if(value != null)
-                	{
-                        medNameField.setText(value);
-                        map.remove(xPathRoot+OFFLINEMDEIDUMNAMEPATH);
-                	}            
-            	}    	
-    	    	break;
-    	    //No distribution path, only has objectName path.
-    	    case WizardSettings.NODATA:
-    	    	  value = (String)map.get(xPathRoot+OBJECTNAMEPATH);
-    	    	  if (value != null)
-                  {
-                     fileNameFieldNoData.setText(value);
-                     map.remove(xPathRoot+OBJECTNAMEPATH);
-                  }
-    	    	  break;
-    	           
+    	  storedMap.clear();
+    	  Iterator iterator = map.keySet().iterator();
+    	  while(iterator.hasNext())
+    	  {
+    	    String key = (String)iterator.next();
+    	    String value = (String)map.get(key);
+    	    storedMap.put(key, value);
+    	  }
     	}
-    	q3Widget.disableAllRadioButtons(); //doesn't allow user to modify the distribution type
-    	 boolean canHandleAllData = map.isEmpty();
-		 if (!canHandleAllData) 
-		 {
+    	map.remove(xPathRoot+OBJECTNAMEPATH);
+    	map.remove(xPathRoot+ONLINEPATH);
+    	map.remove(xPathRoot+OFFLINEMDEIDUMNAMEPATH);   
+    	boolean canHandleAllData = map.isEmpty();
+    	if (!canHandleAllData) 
+    	{  
 		      Log.debug(20, "CorrectionWizardDataLocation.setPageData returning FALSE! Map still contains:"+ map);
-		 }
-		 return canHandleAllData;
+    	}
+    	return canHandleAllData;
     }
     
     /*
@@ -353,4 +318,112 @@ public class CorrectionWizardDataLocation extends DataLocation
   	    }
   	  
   	  }
+    
+    /*
+     * Find out the distribution or OFFLINE even type base on the data in the 
+     * from the xpathWithEmptyValueSet
+     */
+    private short findDistributionType() 
+    {
+
+        //// Online type
+        if(this.containsXpathWithEmptyValue(FULLONLINEPATH)) 
+        {
+          setLastEvent(DESCRIBE_MAN_ONLINE);
+          q3Widget.click(1);
+          return WizardSettings.ONLINE;
+        }
+        else
+        {
+          if(this.containsXpathWithEmptyValue(FULLOFFLINEPATH)) 
+          {
+             //// Offline type
+            setLastEvent(DESCRIBE_MAN_OFFLINE);
+            q3Widget.click(2);
+            return WizardSettings.OFFLINE;
+          }
+          else
+          {
+            
+            //have no distribution element.
+            //Actually, this is not right, it can have be inline data. 
+            //But we assume this case is no distribution. This will be sorted out in setPageData to check the if the map eventually is empty.
+            setLastEvent(DESCRIBE_MAN_NODATA);
+            q3Widget.click(0);
+            return WizardSettings.NODATA;
+          }
+        }
+        
+      }
+    
+    /*
+     * Set ordered map to the page
+     */
+    private boolean initializeGUI(OrderedMap map, String xPathRoot) 
+    { 
+       Log.debug(45,
+                "CorrectionWizardDataLocation.setPageData() called with xPathRoot = " + xPathRoot
+                + "\n Map = \n" + map);
+      short type = findDistributionType();
+      String value = null;
+      switch(type)
+      {
+          //// Online data case
+          case WizardSettings.ONLINE:
+                  value = (String)map.get(xPathRoot+OBJECTNAMEPATH);
+                  //Log.debug(45, "value for online ojbect name "+value);
+                  if (value != null) 
+                  {
+                     fileNameFieldOnline.setText(value);
+                     map.remove(xPathRoot+ OBJECTNAMEPATH);
+                  }
+                  value = (String)map.get(xPathRoot+ONLINEPATH);
+                  //Log.debug(45, "value for online url is "+value);
+                  if(value != null)
+                  {
+                    //Log.debug(45, "value for online url is (after if stamente "+value);
+                    urlFieldOnline.setText(value);
+                    map.remove(xPathRoot+ONLINEPATH);
+                    //Log.debug(45, "value for online url is (after reming from map) "+value);
+                  }
+                  distribution= WizardSettings.ONLINE;              
+                  break;
+          //OFFline, but has distribution/offline path
+          case WizardSettings.OFFLINE:
+            if(getLastEvent() == DESCRIBE_MAN_OFFLINE)
+              {
+              value = (String)map.get(xPathRoot+OBJECTNAMEPATH);
+                if(value != null)
+                  {
+                        objNameField.setText(value);
+                        map.remove(xPathRoot+OBJECTNAMEPATH);
+                  }
+                
+                  value = (String)map.get(xPathRoot+OFFLINEMDEIDUMNAMEPATH);
+                  if(value != null)
+                  {
+                        medNameField.setText(value);
+                        map.remove(xPathRoot+OFFLINEMDEIDUMNAMEPATH);
+                  }            
+              }     
+            break;
+          //No distribution path, only has objectName path.
+          case WizardSettings.NODATA:
+              value = (String)map.get(xPathRoot+OBJECTNAMEPATH);
+              if (value != null)
+                  {
+                     fileNameFieldNoData.setText(value);
+                     map.remove(xPathRoot+OBJECTNAMEPATH);
+                  }
+              break;
+                 
+      }
+      q3Widget.disableAllRadioButtons(); //doesn't allow user to modify the distribution type
+       boolean canHandleAllData = map.isEmpty();
+     if (!canHandleAllData) 
+     {
+          Log.debug(20, "CorrectionWizardDataLocation.setPageData returning FALSE! Map still contains:"+ map);
+     }
+     return canHandleAllData;
+    }
 }

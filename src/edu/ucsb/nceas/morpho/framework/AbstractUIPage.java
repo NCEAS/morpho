@@ -25,14 +25,19 @@
 
 package edu.ucsb.nceas.morpho.framework;
 
+import java.util.HashSet;
 import java.util.Vector;
 
+import edu.ucsb.nceas.morpho.util.Log;
 import edu.ucsb.nceas.morpho.util.XPathUIPageMapping;
 import edu.ucsb.nceas.utilities.OrderedMap;
+import edu.ucsb.nceas.utilities.XMLUtilities;
 
 import javax.swing.JPanel;
 
 import org.w3c.dom.Node;
+
+
 
 
 /**
@@ -47,6 +52,13 @@ public abstract class AbstractUIPage extends JPanel {
 	private XPathUIPageMapping xpathUIPageMapping= null;
 	
 	private String temporaryPageNumber = "-1";
+	
+	//In eml 201, it can have some empty string as element value.
+	//However, eml210 doesn't allow that. We need a correction wizard to allow user
+	//to replace those empty strings.
+	//It will store the xpath which contains empty string value for
+	//correction wizard during transform eml 201 to 210.
+	private HashSet<String> emptyValuePathSet = new HashSet<String>();
 
   /**
    *  gets the unique ID for this UI page
@@ -226,5 +238,29 @@ public abstract class AbstractUIPage extends JPanel {
     this.temporaryPageNumber = temporaryPageNumber;
   }
   
-
+  
+  /**
+   * Adds the specified path to the set containing xpath with empty value.
+   * @param path the xpath to be added. This method will remove the predicates of path.
+   */
+  public void addXPathWithEmptyValue(String path)
+  {
+    if(path != null || !path.trim().equals(""))
+    {
+      path =XMLUtilities.removeAllPredicates(path);
+      //Log.debug(5, "adding path "+path);
+      emptyValuePathSet.add(path);
+    }   
+  }
+  
+  /**
+   * Returns true if this set contains the specified path.
+   * @param path the path whose presence is to be tested
+   * @return true if the set contains it.
+   */
+  public boolean containsXpathWithEmptyValue(String path)
+  {
+    //Log.debug(5, "the size of set is "+emptyValuePathSet.size());
+    return emptyValuePathSet.contains(path);
+  }
 }

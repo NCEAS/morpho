@@ -245,13 +245,15 @@ public class CorrectionWizardController
 				if (page != null)
 				{
 					Log.debug(45, "find a UI page object for path "+path);
+					page.addXPathWithEmptyValue(path);
 					//if a page with same data exists in the library, we should skip this page.
-					boolean checkPageExisted = isUIPageExisted(page);
+					boolean checkPageExisted = isUIPageExisted(page, path);
 					if(checkPageExisted)
 					{
 						Log.debug(45, "The page for path "+path +" already existed in the library. We should skip it");
 						continue;
 					}
+					
 					// set up next id for previous page
 					if (previousPage != null)
 					{
@@ -545,7 +547,7 @@ public class CorrectionWizardController
 	 * 2) Same data (subtree). We have a simple way to compare data:  the LoadDataPath is same.
 	 * If they are same, this means the same subtree is loaded into page.
 	 */
-	 private boolean isUIPageExisted(AbstractUIPage page)
+	 private boolean isUIPageExisted(AbstractUIPage page, String errorPath)
 	 {
 		 boolean isExisted = false;
 		 
@@ -627,6 +629,8 @@ public class CorrectionWizardController
 								 //all index are same and we need to assign isExisted = true;
 								 if(allIndexSame)
 								 {
+								   existedPage.addXPathWithEmptyValue(errorPath);
+								   page = null;
 									 isExisted = true;
 								 }
 							 }
