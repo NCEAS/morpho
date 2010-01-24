@@ -71,8 +71,10 @@ public class CorrectionWizardDataLocation extends DataLocation
 	private static final String OBJECTNAMEPATH = "/objectName";
 	private static final String ONLINEPATH = "/url";
 	private static final String OFFLINEMDEIDUMNAMEPATH = "/mediumName";
+	private static final String OFFLINEPATH = "/offline";
 	private static final String FULLONLINEPATH = "/eml:eml/dataset/dataTable/physical/distribution/online/url";
 	private static final String FULLOFFLINEPATH = "/eml:eml/dataset/dataTable/physical/distribution/offline/mediumName";
+	private static final String FULLOFFLINEPATH2 = "/eml:eml/dataset/dataTable/physical/distribution/offline";
 	private OrderedMap storedMap = new OrderedMap();
 	private String rootPath = null;
 	
@@ -180,7 +182,6 @@ public class CorrectionWizardDataLocation extends DataLocation
     public OrderedMap getPageData(String rootXPath) {
 
         returnMap.clear();
-
         switch (distribution) {
 
           case WizardSettings.ONLINE:
@@ -218,13 +219,22 @@ public class CorrectionWizardDataLocation extends DataLocation
             		returnMap.put(rootXPath+OBJECTNAMEPATH, WizardSettings.UNAVAILABLE);
             	}
             	
+        		  String offlinePath = rootXPath;
+        		  if(this.containsXpathWithEmptyValue(FULLOFFLINEPATH2))
+        		  {
+        		    offlinePath = offlinePath+OFFLINEPATH+OFFLINEMDEIDUMNAMEPATH;
+        		  }
+        		  else
+        		  {
+        		    offlinePath = offlinePath+OFFLINEMDEIDUMNAMEPATH;
+        		  }
             	if(!Util.isBlank(medNameField.getText().trim()))
             	{
-                    returnMap.put(rootXPath+OFFLINEMDEIDUMNAMEPATH, medNameField.getText().trim());
+                    returnMap.put(offlinePath, medNameField.getText().trim());
             	}
             	else
             	{
-            		returnMap.put(rootXPath+OFFLINEMDEIDUMNAMEPATH, WizardSettings.UNAVAILABLE);
+            		returnMap.put(offlinePath, WizardSettings.UNAVAILABLE);
             	}
         	}    	
             break;
@@ -245,6 +255,7 @@ public class CorrectionWizardDataLocation extends DataLocation
         	 
           
         }
+        Log.debug(5, "map is "+returnMap.toString());
         return returnMap;
       }
 
@@ -271,7 +282,8 @@ public class CorrectionWizardDataLocation extends DataLocation
     	}
     	map.remove(xPathRoot+OBJECTNAMEPATH);
     	map.remove(xPathRoot+ONLINEPATH);
-    	map.remove(xPathRoot+OFFLINEMDEIDUMNAMEPATH);   
+    	map.remove(xPathRoot+OFFLINEMDEIDUMNAMEPATH); 
+    	map.remove(xPathRoot+OFFLINEPATH);
     	boolean canHandleAllData = map.isEmpty();
     	if (!canHandleAllData) 
     	{  
@@ -280,44 +292,7 @@ public class CorrectionWizardDataLocation extends DataLocation
     	return canHandleAllData;
     }
     
-    /*
-     * Find out the distribution or OFFLINE even type base on the data in the given ordered map
-     */
-    private short findDistributionType(OrderedMap map, String xPath) 
-    {
-
-  	    //// Online type
-  	    Object o1 = map.get(xPath + ONLINEPATH);
-  	    if(o1 != null) 
-  	    {
-  	    	setLastEvent(DESCRIBE_MAN_ONLINE);
-  	    	q3Widget.click(1);
-  	    	return WizardSettings.ONLINE;
-  	    }
-  	    else
-  	    {
-  	    	o1 = map.get(xPath + OFFLINEMDEIDUMNAMEPATH);
-  	    	if(o1 != null) 
-  	    	{
-  	    		 //// Offline type
-  	    	    // 1.have offline element
-  	    		setLastEvent(DESCRIBE_MAN_OFFLINE);
-  	    		q3Widget.click(2);
-  	    		return WizardSettings.OFFLINE;
-  	    	}
-  	    	else
-  	    	{
-  	    		//// offine type
-  	    		// 2. have no distribution element.
-  	    		//Actually, this is not right, it can have be inline data. 
-  	    		//But we assume this case is no distribution. This will be sorted out in setPageData to check the if the map eventually is empty.
-  	    		setLastEvent(DESCRIBE_MAN_NODATA);
-  	    		q3Widget.click(0);
-  	    		return WizardSettings.NODATA;
-  	    	}
-  	    }
-  	  
-  	  }
+ 
     
     /*
      * Find out the distribution or OFFLINE even type base on the data in the 
@@ -335,7 +310,7 @@ public class CorrectionWizardDataLocation extends DataLocation
         }
         else
         {
-          if(this.containsXpathWithEmptyValue(FULLOFFLINEPATH)) 
+          if(this.containsXpathWithEmptyValue(FULLOFFLINEPATH) || this.containsXpathWithEmptyValue(FULLOFFLINEPATH2)) 
           {
              //// Offline type
             setLastEvent(DESCRIBE_MAN_OFFLINE);
