@@ -165,6 +165,7 @@ public class MorphoFrame extends JFrame
                 gp.setVisible(false);
                 UIController controller = UIController.getInstance();
                 controller.setCurrentActiveWindow(instance);
+                controller.setNewDataPackageWizardWindowIsActive(false);
                 controller.refreshWindows();
                 indicator.repaint();
             }

@@ -123,7 +123,8 @@ public class DataPackageWizardPlugin implements PluginInterface,
     tempDataPackage.setAccessionNumber(tempID);
     UIController.getInstance().setWizardIsRunning(tempDataPackage);
     int entityIndex = -1;
-    startWizardAtPage(WizardSettings.PACKAGE_WIZ_FIRST_PAGE_ID, true, listener,
+    MorphoFrame originatingMorphoFrame = null;
+    startWizardAtPage(originatingMorphoFrame, WizardSettings.PACKAGE_WIZ_FIRST_PAGE_ID, true, listener,
     		NEWPACKAGEWIZARDFRAMETITLE, entityIndex);
 
   }
@@ -146,18 +147,18 @@ public class DataPackageWizardPlugin implements PluginInterface,
   /**
    *  Required by DataPackageWizardInterface:
    *  method to start the Entity wizard
-   *
+   *  @param originatingMorphoFrame the frame which started the wizard.
    *  @param listener the <code>DataPackageWizardListener</code> to be called
    *                  back when the Entity Wizard has finished
    *  @param entityIndex the index of the new entity in this package
    */
-  public void startEntityWizard(DataPackageWizardListener listener, int entityIndex) {
+  public void startEntityWizard(MorphoFrame originatingMorphoFrame,DataPackageWizardListener listener, int entityIndex) {
     boolean ableStart = ableStartEntityPackageWizard();
     if(!ableStart)
     {
       return;
     }
-    startWizardAtPage(WizardSettings.ENTITY_WIZ_FIRST_PAGE_ID, false, listener,
+    startWizardAtPage(originatingMorphoFrame, WizardSettings.ENTITY_WIZ_FIRST_PAGE_ID, false, listener,
     		NEWTABLEEWIZARDFRAMETITLE, entityIndex);
   }
 
@@ -165,6 +166,7 @@ public class DataPackageWizardPlugin implements PluginInterface,
   /**
    *  method to start the Code Definitions Import wizard
    *
+   *  @param originatingMorphoFrame the frame which started the wizard.
    *  @param listener the <code>DataPackageWizardListener</code> to be called
    *                  back when the Wizard has finished
    *  @param entityIndex the index of the entity which wizard will use (next entity index)
@@ -172,14 +174,14 @@ public class DataPackageWizardPlugin implements PluginInterface,
    *  @param editingAttributeIndex the index of the attribute which is editing
    *  @param beforeFlag if the new column is before the select column. If it is null, it means editing rather than inserting
    */
-  public void startCodeDefImportWizard(DataPackageWizardListener listener, int entityIndex,Boolean beforeFlag, 
+  public void startCodeDefImportWizard(MorphoFrame originatingMorphoFrame, DataPackageWizardListener listener, int entityIndex,Boolean beforeFlag, 
 		  int editingEntityIndex, int editingAttributeIndex) {
     boolean ableStart = ableStartEntityPackageWizard();
     if(!ableStart)
     {
       return;
     }
-	  WizardContainerFrame wizard = startWizardAtPage(DataPackageWizardInterface.CODE_IMPORT_SUMMARY, false,
+	  WizardContainerFrame wizard = startWizardAtPage(originatingMorphoFrame,DataPackageWizardInterface.CODE_IMPORT_SUMMARY, false,
                       listener, NEWCODEDEFINITIONWIZARDFRAMETITLE, entityIndex);
 	  if(wizard != null)
 	  {
@@ -317,30 +319,31 @@ public class DataPackageWizardPlugin implements PluginInterface,
   /**
    * method to start the wizard at a given page
    *
+   * @param originatingMorphoFrame the frame which started the wizard.
    * @param pageID the ID of the page from where the wizard is to be started
    * @param showPageCount boolean
    * @param listener String
    * @param frameTitle String
    * @param entityIndex the index of the new entity in this package
    */
-  protected WizardContainerFrame startWizardAtPage(String pageID, boolean showPageCount,
+  protected WizardContainerFrame startWizardAtPage(MorphoFrame originatingMorphoFrame, String pageID, boolean showPageCount,
                         DataPackageWizardListener listener, String frameTitle, int entityIndex) {
 
     WizardContainerFrame dpWiz = null;
     if(pageID != null && pageID.equals(WizardSettings.ENTITY_WIZ_FIRST_PAGE_ID))
     {
     	//boolean isEnity = true;
-    	dpWiz = new WizardContainerFrame(IncompleteDocSettings.ENTITYWIZARD);
+    	dpWiz = new WizardContainerFrame(IncompleteDocSettings.ENTITYWIZARD, originatingMorphoFrame);
     	dpWiz.setEntityIndex(entityIndex);
     }
     else if(pageID != null && pageID.equals(DataPackageWizardInterface.CODE_IMPORT_SUMMARY))
     {
-      dpWiz = new WizardContainerFrame(IncompleteDocSettings.CODEDEFINITIONWIZARD);
+      dpWiz = new WizardContainerFrame(IncompleteDocSettings.CODEDEFINITIONWIZARD, originatingMorphoFrame);
       dpWiz.setEntityIndex(entityIndex);
     }
     else
     {
-    	dpWiz = new WizardContainerFrame(IncompleteDocSettings.PACKAGEWIZARD);
+    	dpWiz = new WizardContainerFrame(IncompleteDocSettings.PACKAGEWIZARD, originatingMorphoFrame);
     }
     dpWiz.initialAutoSaving();
     dpWiz.setDataPackageWizardListener(listener);

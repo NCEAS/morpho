@@ -271,7 +271,7 @@ public class EditColumnMetaDataCommand implements Command, DataPackageWizardList
 						};
 						int nextEntityIndex = adp.getEntityCount();
 						Boolean beforeFlag = null;//this variable is for inserting, so we just use null here.
-						dpwPlugin.startCodeDefImportWizard(dpwListener, nextEntityIndex, beforeFlag, entityIndex, attrIndex);
+						dpwPlugin.startCodeDefImportWizard(morphoFrame, dpwListener, nextEntityIndex, beforeFlag, entityIndex, attrIndex);
 						
 					} else { // if import is not needed
 						

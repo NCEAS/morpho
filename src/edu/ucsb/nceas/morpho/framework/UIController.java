@@ -93,6 +93,7 @@ public class UIController
     // such as synchronize - file/synchroize
     private static Hashtable subMenuAndPath;
     private static int count = 0; // count create how many frames
+    private static boolean newDataPackageWziardWindowIsActive = false;
 
     private static int windowXcoord, windowYcoord;
     private static int windowXcoordUpperBound, windowYcoordUpperBound;
@@ -105,6 +106,7 @@ public class UIController
     public static final String PULL_RIGHT_MENU = "pull_right_menu";
     public static final String YES = "yes";
     public static final String MENU_PATH = "menu_path";
+    
 
     private AbstractDataPackage wizardTempDataPackage = null;
     //private AbstractDataPackage currentPackage = null;
@@ -590,10 +592,10 @@ public class UIController
      */
     public AbstractDataPackage getCurrentAbstractDataPackage() {
     
-	      if (isWizardRunning()) {
+	      if (isWizardRunning() && newDataPackageWziardWindowIsActive) {
 	        // *temporary* AbstractDataPackage that is used to store wizard data
-	        // (for references use) while the wizard is running.
-	        Log.debug(45, "\n\n***********************************"
+	        // (for references use) while the wizard is running and the window is active.
+	        Log.debug(50, "\n\n***********************************"
 	                  + "getCurrentAbstractDataPackage() -"
 	                  + " isWizardRunning() == true. pkg = \n"
 	                  + this.wizardTempDataPackage);
@@ -608,9 +610,22 @@ public class UIController
 	                  +"morphoFrame==null, returning NULL");
 	        return null;
 	      }
+	      Log.debug(50, "\n\n========================="
+            + "getCurrentAbstractDataPackage() from morpho frame!!!");
 	      return morphoFrame.getAbstractDataPackage();
   
   }
+    
+    /**
+     * Specifies weather the new data package wizard window is active.
+     * Note: morpho only allow one new data package wizard run.
+     * @param active true if the wizard window is active.
+     */
+    public void setNewDataPackageWizardWindowIsActive(boolean active)
+    {
+      //Log.debug(30, "~~~~~~~~~~~~~The status of Activating the New Data Package Wizard is "+active); 
+      newDataPackageWziardWindowIsActive = active;
+    }
     
     /**
      * Set a AbstractDataPackage as currentPackage;

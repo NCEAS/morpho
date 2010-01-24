@@ -123,17 +123,19 @@ public interface DataPackageWizardInterface {
 
   /**
    *  method to start the Entity wizard
-   *
+   
+   *  @param originatingMorphoFrame the frame which started the wizard.
    *  @param listener the <code>DataPackageWizardListener</code> to be called
    *                  back when the Wizard has finished
    *  @param entityIndex the index of the new entity in this package
    */ 
-  public void startEntityWizard(DataPackageWizardListener listener, int entityIndex);
+  public void startEntityWizard(MorphoFrame originatingMorphoFrame, DataPackageWizardListener listener, int entityIndex);
 
 
   /**
    *  method to start the Code Definitions Import wizard
    *
+   *  @param originatingMorphoFrame the frame which started the wizard.
    *  @param listener the <code>DataPackageWizardListener</code> to be called
    *                  back when the Wizard has finished
    *  @param entityIndex the index of the entity which wizard will use (next entity index)
@@ -142,7 +144,7 @@ public interface DataPackageWizardInterface {
    *  @param editingAttributeIndex the index of the attribute which is editing
    *  @param beforeFlag if the new column is before the select column. If it is null, it means editing rather than inserting
    */
-  public void startCodeDefImportWizard(DataPackageWizardListener listener, int entityIndex,  Boolean beforeFlag, int editingEntityIndex, int editingAttributeIndex);
+  public void startCodeDefImportWizard(MorphoFrame originatingMorphoFrame, DataPackageWizardListener listener, int entityIndex,  Boolean beforeFlag, int editingEntityIndex, int editingAttributeIndex);
 
 
   /**

@@ -36,6 +36,7 @@ import edu.ucsb.nceas.morpho.datastore.FileSystemDataStore;
 import edu.ucsb.nceas.morpho.framework.AbstractUIPage;
 import edu.ucsb.nceas.morpho.framework.ConfigXML;
 import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
+import edu.ucsb.nceas.morpho.framework.MorphoFrame;
 import edu.ucsb.nceas.morpho.framework.UIController;
 import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
 import edu.ucsb.nceas.morpho.plugins.DataPackageWizardListener;
@@ -145,7 +146,7 @@ public class WizardContainerFrame
   private int editingEntityIndex = -1;
   private int editingAttributeIndex = -1;
   private Boolean beforeSelectionFlag = null; //stores the inserting column is before or after selection
-  
+  private MorphoFrame originatingMorphoFrame = null; // the morpho frame which was clicked to initialize the Wizard. For new package wizard, it is not important. It is meaningful on entity/codeDef wizard.
   private String[] entityPageIDList = {DataPackageWizardInterface.DATA_LOCATION, DataPackageWizardInterface.DATA_FORMAT,DataPackageWizardInterface.ENTITY,
 		                                             DataPackageWizardInterface.TEXT_IMPORT_ENTITY, DataPackageWizardInterface.TEXT_IMPORT_DELIMITERS, 
 		                                             DataPackageWizardInterface.TEXT_IMPORT_ATTRIBUTE};
@@ -172,10 +173,11 @@ public class WizardContainerFrame
    * Constructor with a flag indicating if this is an entity wizard.
    * In this constructor, disableIncompleteSaving value is determined by configure file.
    */
-  public WizardContainerFrame(String status) {
+  public WizardContainerFrame(String status, MorphoFrame orginatingMorphoFrame) {
 
     super();    
     this.status = status;
+    this.originatingMorphoFrame = orginatingMorphoFrame;
     init();
 
   }
@@ -186,6 +188,7 @@ public class WizardContainerFrame
     frame = this;
     pageStack = new Stack();
     pageLib = new WizardPageLibrary(this);
+    setNewDataPackageWizardWindowsActive();
     adp = UIController.getInstance().getCurrentAbstractDataPackage(); 
     setDocidToEntityWizardRunningRecorder();//only works for entity wizard or import wizard
     addEmptyProjectTileSubtree();
@@ -193,10 +196,38 @@ public class WizardContainerFrame
     setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
     this.addWindowListener(new WindowAdapter() {
 
+      public void windowActivated(WindowEvent e)
+      {
+        setNewDataPackageWizardWindowsActive();// for new data package wizard
+        setOriginatingMorphoFrameAsCurrentActiveWindow();//for entity/codeDef wizard
+      }
       public void windowClosing(WindowEvent e) {
         cancelAction();
       }
     });
+  }
+  
+  /*
+   * Set the new data package wizard window to be true.
+   */
+  private void setNewDataPackageWizardWindowsActive()
+  {
+    if(status != null && status.equals(IncompleteDocSettings.PACKAGEWIZARD))
+    {         
+      UIController.getInstance().setNewDataPackageWizardWindowIsActive(true);
+    }
+  }
+  
+  /*
+   * Set oringinatingMorphoFrame as the currnetActive window on UIController
+   */
+  private void setOriginatingMorphoFrameAsCurrentActiveWindow()
+  {
+    if(originatingMorphoFrame != null &&status != null && 
+        (status.equals(IncompleteDocSettings.ENTITYWIZARD) ||status.equals(IncompleteDocSettings.CODEDEFINITIONWIZARD)))
+    {         
+      UIController.getInstance().setCurrentActiveWindow(originatingMorphoFrame);
+    }
   }
   
   /*

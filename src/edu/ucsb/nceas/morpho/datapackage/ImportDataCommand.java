@@ -136,7 +136,7 @@ public class ImportDataCommand implements Command, DataPackageWizardListener
 	          Log.debug(6, snhe.getMessage());
 	        }
 	        EntityWizardListener dataPackageWizardListener = new EntityWizardListener(adp, nextEntityIndex, morphoFrame);
-	        dpw.startEntityWizard(dataPackageWizardListener, nextEntityIndex);
+	        dpw.startEntityWizard(morphoFrame, dataPackageWizardListener, nextEntityIndex);
 
 	    }//if
 

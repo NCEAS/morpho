@@ -194,7 +194,8 @@ public class IncompleteDocumentLoader
       //Log.debug(5, "The datatpackage is "+dataPackage);
       UIController.getInstance().setWizardIsRunning(dataPackage);
       boolean showPageCount = true;    
-      WizardContainerFrame dpWiz = new WizardContainerFrame(IncompleteDocSettings.PACKAGEWIZARD);
+      MorphoFrame originatingMorphoFrame = null;
+      WizardContainerFrame dpWiz = new WizardContainerFrame(IncompleteDocSettings.PACKAGEWIZARD, originatingMorphoFrame);
       dpWiz.initialAutoSaving();
       AbstractUIPage currentPage = loadPagesIntoWizard(dpWiz, dataPackage.getMetadataNode());
       if(currentPage == null)
@@ -227,17 +228,17 @@ public class IncompleteDocumentLoader
   {
     if(incompleteDocInfo != null)
     {
-      //handle there is no page info - just open a frame.
-      if(incompleteDocInfo.getWizardPageClassInfoList() == null)
-      {
-        openVisibleMorphoFrame(dataPackage);
-        return;
-      }
       boolean ableStart = DataPackageWizardPlugin.ableStartEntityPackageWizard();
       if(!ableStart)
       {
         return;
       }
+      //handle there is no page info - just open a frame.
+      if(incompleteDocInfo.getWizardPageClassInfoList() == null)
+      {
+        openVisibleMorphoFrame(dataPackage);
+        return;
+      }   
       int index = incompleteDocInfo.getEntityIndex();
       //remove the entity with the index (this entity is the unfinished one)
       Node entityNode = dataPackage.deleteEntity(index);
@@ -262,15 +263,15 @@ public class IncompleteDocumentLoader
   {
     if(incompleteDocInfo != null)
     {
+      boolean ableStart = DataPackageWizardPlugin.ableStartEntityPackageWizard();
+      if(!ableStart)
+      {
+        return;
+      }
       //handle there is no page info - just open a frame.
       if(incompleteDocInfo.getWizardPageClassInfoList() == null)
       {
         openVisibleMorphoFrame(dataPackage);
-        return;
-      }
-      boolean ableStart = DataPackageWizardPlugin.ableStartEntityPackageWizard();
-      if(!ableStart)
-      {
         return;
       }
       int index = incompleteDocInfo.getEntityIndex();
@@ -348,7 +349,7 @@ public class IncompleteDocumentLoader
     WizardContainerFrame dpWiz = null;
     if(frame != null)
     {
-      dpWiz = new WizardContainerFrame(wizardType);
+      dpWiz = new WizardContainerFrame(wizardType, frame);
       dpWiz.setEditingAttributeMap(attributeMap);
       dpWiz.setEntityIndex(index);
       AbstractUIPage currentPage = loadPagesIntoWizard(dpWiz, entityNode);
@@ -361,6 +362,7 @@ public class IncompleteDocumentLoader
          dpWiz.dispose();
          UIController.getInstance().removeWindow(frame);
          frame.dispose();
+         dpWiz.dispose();
          dpWiz = null;
          Log.debug(5, "The new entity wizard couldn't load the existing eml document!");
          return dpWiz;

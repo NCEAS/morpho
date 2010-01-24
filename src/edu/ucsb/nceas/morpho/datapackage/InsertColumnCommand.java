@@ -437,7 +437,7 @@ public class InsertColumnCommand implements Command, DataPackageWizardListener
           }
         };
         int nextEntityIndex = adp.getEntityCount();
-        dpwPlugin.startCodeDefImportWizard(dpwListener, nextEntityIndex, new Boolean(beforeFlag), entityIndex, selectedCol);
+        dpwPlugin.startCodeDefImportWizard(morphoFrame, dpwListener, nextEntityIndex, new Boolean(beforeFlag), entityIndex, selectedCol);
 
       } else { // if import is not needed
         insertEml2Column();
