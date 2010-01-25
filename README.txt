@@ -72,13 +72,14 @@ Further documentation is available under the help menu in Morpho (after it has b
 INSTALLATION
 ------------
 1. Uninstall old versions of Morpho.
-Windows may get confused when there are multiple versions of Morpho installed, so we recommend that you uninstall previous version using the Windows control panel "Add/Remove Programs" before proceeding with the installation. Note, however, that previously created data packages will NOT be deleted because they are stored in a separate directory. Older packages will contnue to be available when new versions of Morpho are installed.
+Windows may get confused when there are multiple versions of Morpho installed, so we recommend that you uninstall previous version using the Windows control panel "Add/Remove Programs" before proceeding with the installation. Alternately, you may uninstall Morpho by running Morpho Uninstaller.
+Note, however, that previously created data packages will NOT be deleted because they are stored in a separate directory. Older packages will contnue to be available when new versions of Morpho are installed.
 
 2. Download a JVM if necessary. 
 Morpho and the installers are Java applications. One thus needs to have a Java Virtual  Machine (JVM) installed on the machine that will install and run Morpho, preferably  version 1.5 or later.  If you don't have JVM on the machine, the installers will help you to get one from the Internet.
 
 3. Run the installer.
-Download and run the installation executable. This process will be different depending on your operating system. For windows and mac, simply double-click on the executable file that you downloaded. For Linux, run the following command from a terminal window: java -jar morpho-1.6.2-linux.jar
+Download and run the installation executable. This process will be different depending on your operating system. For windows and mac, simply double-click on the executable file that you downloaded. For Linux, run the following command from a terminal window: java -jar morpho-1.8.0-linux.jar
 
 STARTING MORPHO
 ---------------
@@ -110,6 +111,9 @@ See http://bugzilla.ecoinformatics.org where we maintain a comprehensive list of
 
 Version History
 -------------------------------
+***
+Version 1.8.0 is a major update to 1.7 with new features and bugs fixed.  The new features are that Morpho supports user saving and opening a unfinished New Data Package/Entity wizard, recovers the crashed New Data Package/Entity wizard, imports the external EML file to Morpho, and exports EML document to Biological Data Profile format file.
+
 ***
 Version 1.7 is a major update to 1.6.1 with bug fixed and new features. The new features are that Morpho now supports EML 2.1.0, connects Metacat through SSL, seperates access rules of entities from the package itself and backups user data. This release also includes bug fixes for, among other things, dealing with docid conflicts that may occur during the saving process, and for correcting local invalid eml 201 documents.
 
