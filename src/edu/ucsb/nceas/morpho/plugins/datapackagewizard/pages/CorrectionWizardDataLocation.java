@@ -83,6 +83,7 @@ public class CorrectionWizardDataLocation extends DataLocation
 	private static final String FULLOFFLINEPATH = DISTRIBUTION+"/offline/mediumName";
 	private static final String FULLOFFLINEPATH2 = DISTRIBUTION+"/offline";
 	private static final String DOT = ".";
+	private static final String POSITION1 ="[1]";
 	private OrderedMap storedMap = new OrderedMap();
 	private String rootPath = null;
 	
@@ -294,6 +295,7 @@ public class CorrectionWizardDataLocation extends DataLocation
     	map.remove(xPathRoot+ONLINEPATH);
     	map.remove(xPathRoot+OFFLINEMDEIDUMNAMEPATH); 
     	map.remove(xPathRoot+OFFLINEPATH);
+    	map.remove(xPathRoot+OFFLINEPATH+OFFLINEMDEIDUMNAMEPATH+POSITION1);
     	boolean canHandleAllData = map.isEmpty();
     	if (!canHandleAllData) 
     	{  
@@ -302,13 +304,49 @@ public class CorrectionWizardDataLocation extends DataLocation
     	return canHandleAllData;
     }
     
+    /*
+     * Find out the distribution or OFFLINE even type base on the data in the given ordered map
+     */
+    private short findDistributionType(OrderedMap map, String xPath) 
+    {
+
+        //// Online type
+        Object o1 = map.get(xPath + ONLINEPATH);
+        if(o1 != null) 
+        {
+          setLastEvent(DESCRIBE_MAN_ONLINE);
+          q3Widget.click(1);
+          return WizardSettings.ONLINE;
+        }
+        else
+        {
+          o1 = map.get(xPath + OFFLINEMDEIDUMNAMEPATH);
+          if(o1 != null) 
+          {
+             //// Offline type
+              // 1.have offline element
+            setLastEvent(DESCRIBE_MAN_OFFLINE);
+            q3Widget.click(2);
+            return WizardSettings.OFFLINE;
+          }
+          else
+          {
+             // 2. have no distribution element.
+            // we couldn't find distribution information in page map.
+            // However, it may be because the distribution information
+            // has empty value. So we should try find the distribution from path with empty value
+            return findDistributionTypeFromPathWithEmptyValue() ;
+          }
+        }
+      
+      }
  
     
     /*
      * Find out the distribution or OFFLINE even type base on the data in the 
      * from the xpathWithEmptyValueSet
      */
-    private short findDistributionType() 
+    private short findDistributionTypeFromPathWithEmptyValue() 
     {
 
         //// Online type
@@ -349,7 +387,7 @@ public class CorrectionWizardDataLocation extends DataLocation
        Log.debug(45,
                 "CorrectionWizardDataLocation.setPageData() called with xPathRoot = " + xPathRoot
                 + "\n Map = \n" + map);
-      short type = findDistributionType();
+      short type = findDistributionType(map, xPathRoot);
       String value = null;
       switch(type)
       {
