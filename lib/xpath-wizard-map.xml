@@ -588,6 +588,7 @@
     <xpath>objectName</xpath>
     <xpath>distribution/online/url</xpath>
     <xpath>distribution/offline/mediumName</xpath>
+	<xpath>distribution/offline</xpath>
     <infoForModifyingData>
              <loadExistDataPath>/eml:eml/dataset/dataTable/physical</loadExistDataPath>
              <loadExistDataPath>./objectName</loadExistDataPath>
@@ -606,7 +607,7 @@
              <xpathForGettingPageData></xpathForGettingPageData>
              <key>/url</key>
     </infoForModifyingData>
-    <infoForModifyingData>
+	 <infoForModifyingData>
              <loadExistDataPath>/eml:eml/dataset/dataTable/physical</loadExistDataPath>
              <loadExistDataPath>./distribution/offline/mediumName</loadExistDataPath>
              <xpathForCreatingOrderedMap></xpathForCreatingOrderedMap>
@@ -614,6 +615,15 @@
              <newDataDocumentName>mediumName</newDataDocumentName>
              <xpathForGettingPageData></xpathForGettingPageData>
              <key>/mediumName</key>
+    </infoForModifyingData>
+	<infoForModifyingData>
+             <loadExistDataPath>/eml:eml/dataset/dataTable/physical</loadExistDataPath>
+             <loadExistDataPath>./distribution/offline</loadExistDataPath>
+             <xpathForCreatingOrderedMap></xpathForCreatingOrderedMap>
+             <xpathForSettingPageData></xpathForSettingPageData>
+             <newDataDocumentName>offline</newDataDocumentName>
+             <xpathForGettingPageData></xpathForGettingPageData>
+             <key>/offline/mediumName</key>
     </infoForModifyingData>
     <wizardPageClass>edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.CorrectionWizardDataLocation</wizardPageClass>
   </mapping>

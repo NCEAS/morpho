@@ -32,6 +32,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Iterator;
+import java.util.Vector;
 
 import javax.swing.Box;
 import javax.swing.JLabel;
@@ -41,8 +42,11 @@ import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WidgetFactory;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardSettings;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.DataLocation.ThirdChoiceWidget;
+import edu.ucsb.nceas.morpho.util.LoadDataPath;
 import edu.ucsb.nceas.morpho.util.Log;
+import edu.ucsb.nceas.morpho.util.ModifyingPageDataInfo;
 import edu.ucsb.nceas.morpho.util.Util;
+import edu.ucsb.nceas.morpho.util.XPathUIPageMapping;
 import edu.ucsb.nceas.utilities.OrderedMap;
 
 
@@ -72,9 +76,13 @@ public class CorrectionWizardDataLocation extends DataLocation
 	private static final String ONLINEPATH = "/url";
 	private static final String OFFLINEMDEIDUMNAMEPATH = "/mediumName";
 	private static final String OFFLINEPATH = "/offline";
-	private static final String FULLONLINEPATH = "/eml:eml/dataset/dataTable/physical/distribution/online/url";
-	private static final String FULLOFFLINEPATH = "/eml:eml/dataset/dataTable/physical/distribution/offline/mediumName";
-	private static final String FULLOFFLINEPATH2 = "/eml:eml/dataset/dataTable/physical/distribution/offline";
+	private static final String PHYSICAL = "/eml:eml/dataset/dataTable/physical";
+	private static final String DISTRISTRING = "/distribution";
+	private static final String DISTRIBUTION = PHYSICAL+DISTRISTRING;
+	private static final String FULLONLINEPATH = DISTRIBUTION+"/online/url";
+	private static final String FULLOFFLINEPATH = DISTRIBUTION+"/offline/mediumName";
+	private static final String FULLOFFLINEPATH2 = DISTRIBUTION+"/offline";
+	private static final String DOT = ".";
 	private OrderedMap storedMap = new OrderedMap();
 	private String rootPath = null;
 	
@@ -222,10 +230,12 @@ public class CorrectionWizardDataLocation extends DataLocation
         		  String offlinePath = rootXPath;
         		  if(this.containsXpathWithEmptyValue(FULLOFFLINEPATH2))
         		  {
+        		    removeMoidyingDataInfo(PHYSICAL+DOT+DISTRISTRING+OFFLINEPATH+OFFLINEMDEIDUMNAMEPATH);
         		    offlinePath = offlinePath+OFFLINEPATH+OFFLINEMDEIDUMNAMEPATH;
         		  }
         		  else
         		  {
+        		    removeMoidyingDataInfo(PHYSICAL+DOT+DISTRISTRING+OFFLINEPATH);
         		    offlinePath = offlinePath+OFFLINEMDEIDUMNAMEPATH;
         		  }
             	if(!Util.isBlank(medNameField.getText().trim()))
@@ -255,7 +265,7 @@ public class CorrectionWizardDataLocation extends DataLocation
         	 
           
         }
-        Log.debug(5, "map is "+returnMap.toString());
+        //Log.debug(5, "map is "+returnMap.toString());
         return returnMap;
       }
 
@@ -400,5 +410,54 @@ public class CorrectionWizardDataLocation extends DataLocation
           Log.debug(20, "CorrectionWizardDataLocation.setPageData returning FALSE! Map still contains:"+ map);
      }
      return canHandleAllData;
+    }
+    
+    /*
+     * Remove a info list from mapping
+     */
+    private void removeMoidyingDataInfo(String xpath)
+    {
+      Log.debug(45, "given path is "+xpath);
+      XPathUIPageMapping map = this.getXPathUIPageMapping();
+      int targetInfoIndex = -1;
+      if(map != null)
+      {
+        Vector infoList = map.getModifyingPageDataInfoList();
+        if(infoList != null)
+        {
+          for(int i= 0;i<infoList.size(); i++)
+          {
+            String targetPath ="";
+            ModifyingPageDataInfo info = (ModifyingPageDataInfo)infoList.elementAt(i);
+            Vector pathVector = info.getLoadExistingDataPath();
+            if(pathVector != null)
+            {
+              
+              for(int j=0; j<pathVector.size(); j++)
+              {
+                LoadDataPath loadPath = (LoadDataPath)pathVector.elementAt(j);
+                if(loadPath != null)
+                {
+                  String path = loadPath.getPath();
+                  targetPath = targetPath+path;
+                }
+                
+              }
+            }
+            Log.debug(45, "Target path at index "+i+" is "+targetPath);
+            if(targetPath != null && targetPath.equals(xpath))
+            {
+              targetInfoIndex = i;
+              break;
+            }
+          }
+          Log.debug(45, "removing index "+targetInfoIndex);
+          if(targetInfoIndex != -1)
+          {
+            infoList.remove(targetInfoIndex);
+          }
+          
+        }      
+      }
     }
 }
