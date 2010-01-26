@@ -101,7 +101,7 @@ public class OpenCrashedDocDialogBox extends OpenDialogBox
   private static final int PADDINGWIDTH = 8;
   private static final String INFO = "<html><table width=\"100%\"><tr><td valign=\"top\" width=\"100%\">"+
    "Morpho did not exit cleanly the last time it was run. The following documents were automatically saved in an incomplete state."+
-  "You may open one of them and continue from the point of the last automatic save, or choose 'Cancel' to return to Morpho."+"</td></tr></table></html>";
+  " You may open one of them now to continue from the point of the last automatic save.  If you cancel, you will still be able to access these documents later by using the Open dialog"+"</td></tr></table></html>";
 
 
   /**
@@ -190,7 +190,7 @@ public class OpenCrashedDocDialogBox extends OpenDialogBox
     int dialogY = (new Double(centerY - 0.5 * dialogHeight)).intValue();
     setLocation(dialogX, dialogY);
 
-    setTitle("Open Crashed Documents");
+    setTitle("Open Recovered Documents");
     // Set the default close operation is dispose
     setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 
