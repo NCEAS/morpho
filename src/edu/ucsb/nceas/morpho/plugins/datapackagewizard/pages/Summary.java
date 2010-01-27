@@ -238,7 +238,7 @@ public class Summary extends AbstractUIPage {
       });
 
       showMeButton = new HyperlinkButton(newDataTableAction);
-      final Dimension DIM = new Dimension(400,20);
+      final Dimension DIM = new Dimension(420,22);
       showMeButton.setMinimumSize(DIM);
       showMeButton.setPreferredSize(DIM);
       showMeButton.setMaximumSize(DIM);
