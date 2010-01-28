@@ -2331,39 +2331,40 @@ public class Morpho
     logOut();
     String currentProfile = getCurrentProfileName();
 
-    String[] profilesList = getProfilesList();
-
-    int selection = 0;
-    for (selection = 0; selection < profilesList.length; selection++) {
-        if (currentProfile.equals(profilesList[selection])) {
-            break;
+    String[] allProfilesList = getProfilesList();
+    List<String> profileList = new ArrayList<String>();
+    for (int selection = 0; selection < allProfilesList.length; selection++) {
+        if (currentProfile.equals(allProfilesList[selection])) {
+            continue;
         }
+        profileList.add(allProfilesList[selection]);
     }
 
     // Pop up a dialog with the choices
     MorphoFrame frame = UIController.getInstance().getCurrentActiveWindow();
-    String newProfile = (String)JOptionPane.showInputDialog(frame,
-            "Select from existing profiles:", "Input",
+    String selectedProfile = (String)JOptionPane.showInputDialog(frame,
+            "Select profile to delete:", "Input",
             JOptionPane.INFORMATION_MESSAGE, null,
-            profilesList, profilesList[selection]);
+            profileList.toArray(), 0);
 
-    // Set the new profile to the one selected if it is different
-    if (null != newProfile) {
-        if (currentProfile.equals(newProfile)) {
+    // double check that we are not deleting what we shouldn't
+    if (null != selectedProfile) {
+        if (currentProfile.equals(selectedProfile)) {
             Log.debug(0, "Cannot delete current profile!");
         } else {
         	int deleteContents = 
         		JOptionPane.showConfirmDialog(
         				frame, 
-        				"Are you sure you want to delete this profile?" +
+        				"Are you sure you want to delete this profile: " + 
+        				selectedProfile + "?" +
         				"\nALL data will be discarded." +
         				"\nThis action is not undoable.", 
         				"DESTRUCTIVE ACTION!", JOptionPane.YES_NO_OPTION);
         	if (deleteContents == JOptionPane.YES_OPTION) {
-	            deleteProfile(newProfile);
+	            deleteProfile(selectedProfile);
 	            // close all old windows
 	            cleanUpFrames();
-	            Log.debug(9, "Removed profile: " + newProfile);
+	            Log.debug(9, "Removed profile: " + selectedProfile);
         	}
         }
     }
