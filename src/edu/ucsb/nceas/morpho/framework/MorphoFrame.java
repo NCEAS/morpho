@@ -622,7 +622,7 @@ public class MorphoFrame extends JFrame
          dvcp.saveDataChanges();
          String loc = dvcp.getPackageLocation();
          if (loc.equals("")) {
-           int res = JOptionPane.showConfirmDialog(null,
+           int res = JOptionPane.showConfirmDialog(this,
                  "Would you like to save the current package?",
                  "Save ?", JOptionPane.YES_NO_CANCEL_OPTION);
            if (res==JOptionPane.YES_OPTION) {
