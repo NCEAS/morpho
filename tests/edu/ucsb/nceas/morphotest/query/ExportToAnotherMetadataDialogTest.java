@@ -107,7 +107,7 @@ public class  ExportToAnotherMetadataDialogTest extends TestCase
        String docid= "jscientist.7.2";
        String location = "local";
        JDialog parent = new JDialog();
-       ExportToAnotherMetadataDialog dialog = new  ExportToAnotherMetadataDialog(parent, docid, location);
+       ExportToAnotherMetadataDialog dialog = new  ExportToAnotherMetadataDialog(parent, docid, location, null);
        dialog.execute(null);
         
     }

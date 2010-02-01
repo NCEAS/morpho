@@ -2038,7 +2038,8 @@ public class WizardContainerFrame
   public void cancelAction() {
 
 	  int opt = JOptionPane.showConfirmDialog(this,
-	            "Are you sure that you want to cancel the wizard?",
+	            "If you cancel, *all* work done in this wizard "+
+	            "will be lost.\nIf you want to resume the wizard later, choose \"No\", then click on the \"Save for Later\" button.\nAre you sure you want to cancel? ",
 	            "DO YOU WANT TO CONTINUE?",
 	            JOptionPane.YES_NO_OPTION);
 	   if (opt == JOptionPane.NO_OPTION) 

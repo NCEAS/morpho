@@ -123,6 +123,10 @@ public class EditColumnMetaDataCommand implements Command, DataPackageWizardList
           String entityId = dataView.getEntityFileId();
           table = dataView.getDataTable();
           int viewIndex = table.getSelectedColumn();
+          if(viewIndex == -1)
+          {
+            Log.debug(5, "Please select a column first!");
+          }
     	  attrIndex =  table.getColumnModel().getColumn(viewIndex).getModelIndex();
           entityIndex = dataView.getEntityIndex();
           //attributes = adp.getAttributeArray(entityIndex);
@@ -181,7 +185,7 @@ public class EditColumnMetaDataCommand implements Command, DataPackageWizardList
 
 	    if(attributes == null || attrIndex == -1) {
 
-	      Log.debug(16, " Couldnt get the attributes in	EditColumnMetaDataCommand for attrIndex = " + attrIndex);
+	      Log.debug(5, " Couldnt get the attributes in	EditColumnMetaDataCommand for attrIndex = " + attrIndex);
 	      return;
 	    }
 

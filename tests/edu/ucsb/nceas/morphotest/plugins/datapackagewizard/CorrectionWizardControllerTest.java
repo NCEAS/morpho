@@ -110,8 +110,8 @@ public class CorrectionWizardControllerTest extends TestCase
 	  	     EML210Validate validate = new EML210Validate();
 	  	     validate.parse(xml);
 	  	     xml.close();
-	  	     uiController.setCurrentAbstractDataPackage(dataPackage);
-	  	     uiController.setAssignPackage(true);
+	  	     //uiController.setCurrentAbstractDataPackage(dataPackage);
+	  	     //uiController.setAssignPackage(true);
 	    	 Vector errorList = validate.getInvalidPathList();   	
 	    	 CorrectionWizardController controller = new CorrectionWizardController(errorList, dataPackage, null);  
 	    	 controller.startWizard();
