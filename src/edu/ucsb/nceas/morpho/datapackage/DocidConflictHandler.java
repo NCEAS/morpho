@@ -48,7 +48,7 @@ public class DocidConflictHandler
        private String location = null;
        private String userChoice = null;
        private static final String LABELINCEASEDOCID = "Generate new document id";
-       private static final String LABELINCREASEREVISION = "Increment revsion number";
+       private static final String LABELINCREASEREVISION = "Increment revision number";
        private static final String TITLE = "Resolve Identifier Conflict";
        private String message = null;
        private JPanel okButtonPanel = null;
