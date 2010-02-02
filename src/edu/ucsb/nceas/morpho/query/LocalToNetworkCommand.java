@@ -173,7 +173,7 @@ public class LocalToNetworkCommand implements Command
               {
             	  // create a local copy for the new document.
             	  //dataPackage.download(metacatDocid);
-            	  JOptionPane.showMessageDialog(null, ""+selectDocId+ " exists in metacat and morpho assigns new docid "+
+            	  JOptionPane.showMessageDialog(morphoFrame, ""+selectDocId+ " exists in metacat and morpho assigns new docid "+
             			  metacatDocid+ " for it.", "Information",
                           JOptionPane.INFORMATION_MESSAGE);
               }

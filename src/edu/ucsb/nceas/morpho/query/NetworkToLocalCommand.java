@@ -165,7 +165,7 @@ public class NetworkToLocalCommand implements Command
           String localDocid = dataPackage.download(docid);
           if (localDocid != null && !localDocid.equals(selectDocId))
           {
-        	  JOptionPane.showMessageDialog(null, ""+selectDocId+ " exists in local system and morpho assigns new docid "+
+        	  JOptionPane.showMessageDialog(morphoFrame, ""+selectDocId+ " exists in local system and morpho assigns new docid "+
         			  localDocid+ " for it.", "Information",
                       JOptionPane.INFORMATION_MESSAGE);
           }

@@ -472,7 +472,7 @@ public class ConfigXML
   {
     File outfile = new File(fileName);
    if (!outfile.canWrite()) {
-  JOptionPane.showMessageDialog(null, "Cannot Save configuration information to "+fileName+ " !", "alert",  JOptionPane.ERROR_MESSAGE);
+  Log.debug(5, "Cannot Save configuration information to "+fileName+ " !");
     }
    else {
     try

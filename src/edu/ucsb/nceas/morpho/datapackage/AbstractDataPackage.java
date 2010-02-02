@@ -34,6 +34,7 @@ import edu.ucsb.nceas.morpho.datastore.FileSystemDataStore;
 import edu.ucsb.nceas.morpho.datastore.MetacatDataStore;
 import edu.ucsb.nceas.morpho.datastore.MetacatUploadException;
 import edu.ucsb.nceas.morpho.framework.ConfigXML;
+import edu.ucsb.nceas.morpho.framework.UIController;
 import edu.ucsb.nceas.morpho.util.DocumentNotFoundException;
 import edu.ucsb.nceas.morpho.plugins.IncompleteDocInfo;
 import edu.ucsb.nceas.morpho.plugins.XMLFactoryInterface;
@@ -4367,7 +4368,7 @@ public abstract class AbstractDataPackage extends MetadataObject
     }
 
     exportDataFiles(savedirDataSub.getAbsolutePath());
-    JOptionPane.showMessageDialog(null,
+    JOptionPane.showMessageDialog(UIController.getInstance().getCurrentActiveWindow(),
                                   "Package export is complete ! ");
   }
 

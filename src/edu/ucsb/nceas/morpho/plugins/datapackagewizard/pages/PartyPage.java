@@ -580,7 +580,7 @@ public class PartyPage extends AbstractUIPage {
               "Do you want to :\nEdit the original entry (and therefore change "
               +"all entries that refer to the original), or \n"
               +"Create a copy of the original and edit that?");
-          optPane.createDialog(instance, "Select an option...").show();
+          optPane.createDialog(instance, "Select an option...").setVisible(true);
           Object selectedValue = optPane.getValue();
 
           if (selectedValue == optionArray[0]) {

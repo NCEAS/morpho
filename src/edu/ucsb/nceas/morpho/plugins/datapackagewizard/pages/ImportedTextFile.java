@@ -414,7 +414,7 @@ public class ImportedTextFile
 	      }
 
 	      if (nlines_actual > nlines_max) {
-	    	  JOptionPane.showMessageDialog(null,
+	    	  JOptionPane.showMessageDialog(UIController.getInstance().getCurrentActiveWindow(),
 	          "Data File parsing has been truncated due to large size! (Note: NO data has been lost!)",
 	          "Message",
 	          JOptionPane.INFORMATION_MESSAGE, null);

@@ -366,7 +366,7 @@ public class SaveDialog extends JDialog
               }
               else
               {
-            	  JOptionPane.showMessageDialog(null, "Morpho couldn't transform it to the newest version of EML.", "Information",
+            	  JOptionPane.showMessageDialog(morphoFrame, "Morpho couldn't transform it to the newest version of EML.", "Information",
                           JOptionPane.INFORMATION_MESSAGE);
               }
 

@@ -268,7 +268,7 @@ public class DataPackageWizardPlugin implements PluginInterface,
   {
     boolean isRunning = UIController.getInstance().isWizardRunning();
     if (isRunning) {
-      JOptionPane.showConfirmDialog(null,
+      JOptionPane.showConfirmDialog(UIController.getInstance().getCurrentActiveWindow(),
         "Sorry, a Data Package Wizard is running. Please finish the wizard first!",
                                    "Wizard already running",
                                    JOptionPane.DEFAULT_OPTION,

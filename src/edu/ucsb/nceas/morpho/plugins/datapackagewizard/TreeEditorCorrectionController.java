@@ -184,7 +184,7 @@ public class TreeEditorCorrectionController
 		          try 
 		          {
 		        	 
-		        	 JOptionPane.showMessageDialog(null, CONFORMATION, "Warning!",
+		        	 JOptionPane.showMessageDialog(oldFrame, CONFORMATION, "Warning!",
 		                      JOptionPane.WARNING_MESSAGE);
 		            ServiceController services = ServiceController.getInstance();
 		            ServiceProvider provider =

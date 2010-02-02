@@ -3120,7 +3120,7 @@ public class DocFrame extends javax.swing.JFrame
 	                   "You can save it locally and fix the problem later,\n"+
 	                   "but you will be unable to submit it to the network storage system.\n"+
 	                   "\nDo you want to Continue Exiting the Editor?";
-	      int opt1 = JOptionPane.showConfirmDialog(null,
+	      int opt1 = JOptionPane.showConfirmDialog(currentDocFrameInstance,
 	         msg,
 	         "Validation Problem!",
 	         JOptionPane.YES_NO_OPTION);

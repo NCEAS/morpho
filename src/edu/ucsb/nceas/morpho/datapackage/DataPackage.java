@@ -1241,7 +1241,7 @@ public class DataPackage implements XMLFactoryInterface
     }
     savedirSub.delete();
 
-    JOptionPane.showMessageDialog(null,
+    JOptionPane.showMessageDialog(UIController.getInstance().getCurrentActiveWindow(),
                     "Conversion to EML2 Complete ! ");
 
   }
@@ -1978,7 +1978,7 @@ public class DataPackage implements XMLFactoryInterface
       Log.debug(11, "No access file in package!!!!");
     }
     if (missingIds.size()>0) {
-      int choice = JOptionPane.showConfirmDialog(null,
+      int choice = JOptionPane.showConfirmDialog(UIController.getInstance().getCurrentActiveWindow(),
                    "This package is missing some access\n"+
                    "control information, possibly\n"+
                    "because it was created using an\n"+

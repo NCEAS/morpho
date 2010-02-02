@@ -947,7 +947,7 @@ public class Morpho
 //        if ((iver0 == 1) && (iver1 < 3)) {
         if (iver1 < 4) {
             versionFlag = false;
-            JOptionPane.showMessageDialog(null,
+            JOptionPane.showMessageDialog(initialFrame,
                     "Version " + ver + " of the Java Virtual Machine(JVM) " +
                     "is currently in use.\n" +
                     "Although most of Morpho will operate using early " +
@@ -958,7 +958,7 @@ public class Morpho
             if (System.getProperty("os.name").equalsIgnoreCase("Linux")
                         && ver.compareTo("1.4") < 0)
             {
-                JOptionPane.showMessageDialog(null,
+                JOptionPane.showMessageDialog(initialFrame,
                     "You are currently using version " + ver + " of the Java "
                     +"Virtual Machine(JVM) on a Linux system.\n\n"
                     +"Unfortunately, Morpho's initial \"Welcome\" screen may "
@@ -2308,7 +2308,7 @@ public class Morpho
             dialog.setVisible(true);
             // Make sure they actually created a profile
             if (getProfile() == null) {
-                JOptionPane.showMessageDialog(null,
+                JOptionPane.showMessageDialog(initialFrame,
                     "You must create a profile in order " +
                     "to configure Morpho  \n" +
                     "correctly.  Please restart Morpho " +
