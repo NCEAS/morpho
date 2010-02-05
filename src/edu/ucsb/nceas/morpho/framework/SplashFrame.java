@@ -55,6 +55,7 @@ public class SplashFrame extends javax.swing.JFrame
                                      "Jing Tao",
                                      "Christy Bowles",
                                      "Saurabh Garg",
+                                     "Ben Leinfelder",
                                      "Perumal Sambasivam",
                                      "Andrea Chadden",
                                      "Rick Reeves",
