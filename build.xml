@@ -24,7 +24,7 @@
       <property name="storepass" value="your-pw-goes-here"/>
       <property name="muser" value="uid=jones,o=NCEAS,dc=ecoinformatics,dc=org"/>
       <property name="mpass" value="your-pw-goes-here"/>
-      <property name="utilities-tag" value="trunk" />
+      <property name="utilities-tag" value="tags/MORPHO_1_8_0" />
 	  <property name="svn-utilitiesUrl"
             value="https://code.ecoinformatics.org/code/utilities/${utilities-tag}" />
       <property name="eml-module" value="eml" />
@@ -38,7 +38,7 @@
 	  <property name="eml-210-schema-svn-url" value="${eml-svn-base-url}/tags/${eml-210-schema-tag}"/>
       <!-- eml-style-tag only be used to get eml201to210.xsl and eml2tonbii.xsl files -->
       <!--<property name="eml-style-tag" value="RELEASE_EML_UTILS_0_9_1" />-->
-	  <property name="eml-style-tag" value="trunk" />
+	  <property name="eml-style-tag" value="tags/MORPHO_1_8_0" />
 	  <property name="eml-style-svn-url" value="${eml-svn-base-url}/${eml-style-tag}"/>
       <property name="helpjar" value="morphohelp.jar" />
       <filter token="release" value="${release}"/>
