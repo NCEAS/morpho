@@ -85,7 +85,19 @@ public class WidgetFactory {
 
   }
 
+  public static JLabel makeHelpLabel(String text) {
 
+		if (text == null)
+			text = "";
+		JLabel label = new JLabel(text);
+
+		label.setAlignmentX(1.0f);
+		label.setFont(WizardSettings.WIZARD_CONTENT_FONT);
+		label.setBorder(BorderFactory.createMatteBorder(1, 10, 1, 3,
+				(Color) null));
+
+		return label;
+	}
 
   public static JLabel makeLabel(String text, boolean hiliteRequired) {
 

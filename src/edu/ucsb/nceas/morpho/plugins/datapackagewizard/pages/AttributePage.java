@@ -27,50 +27,25 @@
 
 package edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages;
 
-import edu.ucsb.nceas.morpho.Morpho;
-import edu.ucsb.nceas.morpho.datapackage.AbstractDataPackage;
-import edu.ucsb.nceas.morpho.framework.ConfigXML;
-import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
-import edu.ucsb.nceas.morpho.framework.AbstractUIPage;
-import edu.ucsb.nceas.morpho.framework.UIController;
-import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WidgetFactory;
-import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardPageSubPanelAPI;
-import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardSettings;
-import edu.ucsb.nceas.morpho.util.Log;
-import edu.ucsb.nceas.morpho.util.Util;
-import edu.ucsb.nceas.utilities.OrderedMap;
-import edu.ucsb.nceas.utilities.XMLUtilities;
-
-import org.apache.xerces.dom.DOMImplementationImpl;
-import org.w3c.dom.DOMImplementation;
-import org.w3c.dom.Document;
-import org.w3c.dom.Node;
-import javax.xml.transform.TransformerException;
-
-
-import java.io.File;
-import java.io.PrintWriter;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Container;
 import java.awt.Dimension;
-import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.Insets;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JDialog;
-import javax.swing.JEditorPane;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
@@ -78,7 +53,17 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
-import javax.swing.border.EmptyBorder;
+
+import edu.ucsb.nceas.morpho.Morpho;
+import edu.ucsb.nceas.morpho.framework.AbstractUIPage;
+import edu.ucsb.nceas.morpho.framework.ConfigXML;
+import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
+import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WidgetFactory;
+import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardPageSubPanelAPI;
+import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardSettings;
+import edu.ucsb.nceas.morpho.util.Log;
+import edu.ucsb.nceas.morpho.util.Util;
+import edu.ucsb.nceas.utilities.OrderedMap;
 
 
 public class AttributePage extends AbstractUIPage {
@@ -235,9 +220,6 @@ public class AttributePage extends AbstractUIPage {
   public static final int MEASUREMENTSCALE_RATIO    = 3;
   public static final int MEASUREMENTSCALE_DATETIME = 4;
 
-  private final Dimension HELP_DIALOG_SIZE = new Dimension(400, 500);
-
-
   public AttributePage() {
 	nextPageID = "";
     initNames();
@@ -302,7 +284,7 @@ public class AttributePage extends AbstractUIPage {
     attribNamePanel.add(attribNameLabel);
     attribNameField = WidgetFactory.makeOneLineTextField();
     attribNamePanel.add(attribNameField);
-    JLabel attribNameHelpLabel = getLabel(this.ATTRIB_NAME_HELP);
+    JLabel attribNameHelpLabel = WidgetFactory.makeHelpLabel(this.ATTRIB_NAME_HELP);
     namePanel.add(attribNamePanel);
     namePanel.add(attribNameHelpLabel);
     // the following three fields are not added to the panel, but are just used
@@ -324,7 +306,7 @@ public class AttributePage extends AbstractUIPage {
     attribLabelPanel.add(attribLabelLabel);
     attribLabelField = WidgetFactory.makeOneLineTextField();
     attribLabelPanel.add(attribLabelField);
-    JLabel attribLabelHelpLabel = getLabel(this.ATTRIB_LABEL_HELP);
+    JLabel attribLabelHelpLabel = WidgetFactory.makeHelpLabel(this.ATTRIB_LABEL_HELP);
 
     labelPanel.add(attribLabelPanel);
     labelPanel.add(attribLabelHelpLabel);
@@ -347,7 +329,7 @@ public class AttributePage extends AbstractUIPage {
     attribDefinitionField = WidgetFactory.makeTextArea("", 3, true);
     JScrollPane jscrl = new JScrollPane(attribDefinitionField);
     attribDefinitionPanel.add(jscrl);
-    JLabel attribDefnHelpLabel = getLabel(this.ATTRIB_DEFN_HELP);
+    JLabel attribDefnHelpLabel = WidgetFactory.makeHelpLabel(this.ATTRIB_DEFN_HELP);
 
     defnPanel.add(attribDefinitionPanel);
     defnPanel.add(attribDefnHelpLabel);
@@ -367,7 +349,7 @@ public class AttributePage extends AbstractUIPage {
 
     attribStorageField = WidgetFactory.makeOneLineTextField();
     attribStoragePanel.add(attribStorageField);
-    JLabel attribStorageHelpLabel = getLabel(this.ATTRIB_STORAGE_TYPE_HELP);
+    JLabel attribStorageHelpLabel = WidgetFactory.makeHelpLabel(this.ATTRIB_STORAGE_TYPE_HELP);
 
     storagePanel.add(attribStoragePanel);
     storagePanel.add(attribStorageHelpLabel);
@@ -386,7 +368,7 @@ public class AttributePage extends AbstractUIPage {
 
     attribStorageSystemField = WidgetFactory.makeOneLineTextField();
     attribStorageSystemPanel.add(attribStorageSystemField);
-    JLabel attribStorageSystemHelpLabel = getLabel(this.ATTRIB_STORAGE_SYSTEM_HELP);
+    JLabel attribStorageSystemHelpLabel = WidgetFactory.makeHelpLabel(this.ATTRIB_STORAGE_SYSTEM_HELP);
 
     storageSystemPanel.add(attribStorageSystemPanel);
     storageSystemPanel.add(attribStorageSystemHelpLabel);
@@ -458,15 +440,26 @@ public class AttributePage extends AbstractUIPage {
       public void actionPerformed(ActionEvent ae) {
 
         if(helpDialog == null) {
-          helpDialog = new CategoryHelpDialog();
+        	String title = "Help on Choosing a Measurement Scale (Category)";
+        	
+        	 String helpText = "<html> <body>"
+    			+ "<p>The concept of a measurement scale as defined by Stevens is useful for classifying data despite the weaknesses of the approach that have been pointed out by several practitioners. In particular, the classification allows us to determine some of the mathematical operations that are appropriate for a given set of data, and allows us to determine which types of metadata are needed for a given set of data.  For example, categorical data never have a \"unit\" of measurement. </p>"
+    			+ "<p> Here is a brief overview of the measurement scales we have employed in EML. They are based on Steven's original typology, with the addition of \"Date-Time\"  for purely pragmatic reasons (we need to distinguish date time values in order to collect certain essential metadata about date and time representation).</p>"
+    			+ "<p><b>NOMINAL</b><br></br>  &nbsp;&nbsp;&nbsp;&nbsp;The nominal scale places values into named categories. The different values within a set are unordered.  Some examples of nominal scales include gender (Male/Female) and marital status (single/married/divorced).  Text fields should be classified as nominal.</p>"
+    			+ "<p><b>ORDINAL</b><br></br>&nbsp;&nbsp;&nbsp;&nbsp;The ordinal scale places values in a set order. All ordinal values are also nominal. Ordinal data show a particular value's position relative to other values, such as \"low, medium, high, etc.\" The ordinal scale doesn't indicate the distance between each item.</p>"
+    			+ "<p><b>INTERVAL</b><br></br>&nbsp;&nbsp;&nbsp;&nbsp;The interval scale uses equal-sized units of measurement on a scale between values. It therefore allows the comparison of the differences between two values on the scale. With interval data, the allowable values start from an arbitrary point (not a meaningful zero), and so there is no concept of 'zero' of the measured quantity. Consequently, ratios of interval values are not meaningful. For example, one can not infer that someone with a value of 80 on an ecology test knows twice as much ecology as someone who scores 40 on the test, or that an object at 40 degrees C has twice the kinetic energy as an object at 20 degrees C. All interval values are also ordered and therefore are ordinal scale values as well.</p>"
+    			+ "<p><b>RATIO</b><br></br>&nbsp;&nbsp;&nbsp;&nbsp;The ratio scale is an interval scale with a meaningful zero point. The ratio scale begins at a true zero point that represents an absolute lack of the quality being measured.  Thus, ratios of values are meaningful. For example, an object that is at elevation of 100 meters above sea level is twice as high as an object that is at an elevation of 50 meters above sea level (where sea level is the zero point).  Also, an object at 300 degrees Kelvin has three times the kinetic energy of an object at 100 degrees Kelvin (where absolute zero (no motion) defines the zero point of the Kelvin scale).  Interval values can often be converted to ratio values in order to make ratio comparisons legitimate. For example, an object at 40 degrees C is 313.15 degrees Kelvin, an object at 20 degrees C is 293.15 degrees Kelvin, and so the first object has approximately 1.07 times more kinetic energy (note the wrong answer you would have gotten had you taken the ratio of the values in Celsius).</p>"
+    			+ "<p><b>DATE-TIME</b><br></br>&nbsp;&nbsp;&nbsp;&nbsp;Date and time values in the Gregorian calendar are very strange to use in calculations in that they have properties of both interval and ratio scales.  They also have some properties that do not conform to the interval scale because of the adjustments that are made to time to account for the variations in the period of the Earth around the sun. While the Gregorian calendar has a meaningful zero point, it would be difficult to say that a value taken on midnight January 1, 1000 is twice as old as a value taken on midnight January 1 2000 because the scale has many irregularities in length in practice. However, over short intervals the scale has equidistant points based on the SI second, and so can be considered interval for some purposes, especially with respect to measuring the timing of short-term ecological events.  Date and time values can be represented using several distinct notations, and so we have distinct metadata needs in terms of specifying the format of the value representation.  Because of these pragmatic issues, we separated Date-time into its own measurement scale.  Examples of date-time values are '2003-05-05', '1999/10/10', and '2001-10-10T14:23:20.3'.</p>"
+    			+ "</body> </html>";
+          helpDialog = new HelpDialog(title, helpText);
         }
         Point loc = getLocationOnScreen();
         int wd = getWidth();
         int ht = getHeight();
-        int dwd = HELP_DIALOG_SIZE.width;
-        int dht = HELP_DIALOG_SIZE.height;
+        int dwd = HelpDialog.HELP_DIALOG_SIZE.width;
+        int dht = HelpDialog.HELP_DIALOG_SIZE.height;
         helpDialog.setLocation( (int)loc.getX() + wd/2 - dwd/2, (int)loc.getY() + ht/2 - dht/2);
-        helpDialog.setSize(HELP_DIALOG_SIZE);
+        helpDialog.setSize(HelpDialog.HELP_DIALOG_SIZE);
         helpDialog.setVisible(true);
         helpDialog.toFront();
 
@@ -599,17 +592,6 @@ public class AttributePage extends AbstractUIPage {
     return panel;
   }
 
-  private JLabel getLabel(String text) {
-
-    if (text==null) text="";
-    JLabel label = new JLabel(text);
-
-    label.setAlignmentX(1.0f);
-    label.setFont(WizardSettings.WIZARD_CONTENT_FONT);
-    label.setBorder(BorderFactory.createMatteBorder(1,10,1,3, (Color)null));
-
-    return label;
-  }
 
   // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
@@ -1465,66 +1447,4 @@ public class AttributePage extends AbstractUIPage {
     return FULL_STYLE_PATH;
   }
 
-
-  class CategoryHelpDialog extends JDialog {
-
-    private final Color TOP_PANEL_BG_COLOR = new Color(11,85,112);
-
-    private final Font  TITLE_FONT  = new Font("Sans-Serif", Font.BOLD,  13);
-
-    private final Color TITLE_TEXT_COLOR  = new Color(255,255,255);
-
-    private final Dimension TOP_PANEL_DIMS = new Dimension(100,40);
-
-    private String helpText = "<html> <body>"
-    + "<p>The concept of a measurement scale as defined by Stevens is useful for classifying data despite the weaknesses of the approach that have been pointed out by several practitioners. In particular, the classification allows us to determine some of the mathematical operations that are appropriate for a given set of data, and allows us to determine which types of metadata are needed for a given set of data.  For example, categorical data never have a \"unit\" of measurement. </p>"
-    + "<p> Here is a brief overview of the measurement scales we have employed in EML. They are based on Steven's original typology, with the addition of \"Date-Time\"  for purely pragmatic reasons (we need to distinguish date time values in order to collect certain essential metadata about date and time representation).</p>"
-    + "<p><b>NOMINAL</b><br></br>  &nbsp;&nbsp;&nbsp;&nbsp;The nominal scale places values into named categories. The different values within a set are unordered.  Some examples of nominal scales include gender (Male/Female) and marital status (single/married/divorced).  Text fields should be classified as nominal.</p>"
-    + "<p><b>ORDINAL</b><br></br>&nbsp;&nbsp;&nbsp;&nbsp;The ordinal scale places values in a set order. All ordinal values are also nominal. Ordinal data show a particular value's position relative to other values, such as \"low, medium, high, etc.\" The ordinal scale doesn't indicate the distance between each item.</p>"
-    + "<p><b>INTERVAL</b><br></br>&nbsp;&nbsp;&nbsp;&nbsp;The interval scale uses equal-sized units of measurement on a scale between values. It therefore allows the comparison of the differences between two values on the scale. With interval data, the allowable values start from an arbitrary point (not a meaningful zero), and so there is no concept of 'zero' of the measured quantity. Consequently, ratios of interval values are not meaningful. For example, one can not infer that someone with a value of 80 on an ecology test knows twice as much ecology as someone who scores 40 on the test, or that an object at 40 degrees C has twice the kinetic energy as an object at 20 degrees C. All interval values are also ordered and therefore are ordinal scale values as well.</p>"
-    + "<p><b>RATIO</b><br></br>&nbsp;&nbsp;&nbsp;&nbsp;The ratio scale is an interval scale with a meaningful zero point. The ratio scale begins at a true zero point that represents an absolute lack of the quality being measured.  Thus, ratios of values are meaningful. For example, an object that is at elevation of 100 meters above sea level is twice as high as an object that is at an elevation of 50 meters above sea level (where sea level is the zero point).  Also, an object at 300 degrees Kelvin has three times the kinetic energy of an object at 100 degrees Kelvin (where absolute zero (no motion) defines the zero point of the Kelvin scale).  Interval values can often be converted to ratio values in order to make ratio comparisons legitimate. For example, an object at 40 degrees C is 313.15 degrees Kelvin, an object at 20 degrees C is 293.15 degrees Kelvin, and so the first object has approximately 1.07 times more kinetic energy (note the wrong answer you would have gotten had you taken the ratio of the values in Celsius).</p>"
-    + "<p><b>DATE-TIME</b><br></br>&nbsp;&nbsp;&nbsp;&nbsp;Date and time values in the Gregorian calendar are very strange to use in calculations in that they have properties of both interval and ratio scales.  They also have some properties that do not conform to the interval scale because of the adjustments that are made to time to account for the variations in the period of the Earth around the sun. While the Gregorian calendar has a meaningful zero point, it would be difficult to say that a value taken on midnight January 1, 1000 is twice as old as a value taken on midnight January 1 2000 because the scale has many irregularities in length in practice. However, over short intervals the scale has equidistant points based on the SI second, and so can be considered interval for some purposes, especially with respect to measuring the timing of short-term ecological events.  Date and time values can be represented using several distinct notations, and so we have distinct metadata needs in terms of specifying the format of the value representation.  Because of these pragmatic issues, we separated Date-time into its own measurement scale.  Examples of date-time values are '2003-05-05', '1999/10/10', and '2001-10-10T14:23:20.3'.</p>"
-    + "</body> </html>";
-
-
-    CategoryHelpDialog() {
-      super();
-      init();
-      setVisible(false);
-    }
-
-    void init() {
-
-      setTitle("Help");
-      setModal(true);
-
-      Container contentPane = this.getContentPane();
-      contentPane.setLayout(new BorderLayout());
-
-      JLabel titleLabel = new JLabel("Help on Choosing a Measurement Scale (Category)");
-      titleLabel.setFont(TITLE_FONT);
-      titleLabel.setForeground(TITLE_TEXT_COLOR);
-      titleLabel.setBorder(new EmptyBorder(WizardSettings.PADDING,0,WizardSettings.PADDING,0));
-
-      JPanel topPanel = new JPanel();
-      topPanel.setLayout(new BoxLayout(topPanel, BoxLayout.Y_AXIS));
-      topPanel.setPreferredSize(TOP_PANEL_DIMS);
-      topPanel.setBorder(new EmptyBorder(0,2*WizardSettings.PADDING,0,2*WizardSettings.PADDING));
-      topPanel.setBackground(TOP_PANEL_BG_COLOR);
-      topPanel.setOpaque(true);
-      topPanel.add(titleLabel);
-
-      contentPane.add(topPanel, BorderLayout.NORTH);
-
-
-      JEditorPane editor = new JEditorPane();
-      editor.setEditable(false);
-      editor.setContentType("text/html");
-      editor.setText(helpText);
-      editor.setCaretPosition(0);
-
-      contentPane.add(new JScrollPane(editor, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
-      JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED), BorderLayout.CENTER);
-    }
-  }
 }
