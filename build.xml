@@ -293,10 +293,12 @@
           package="${eml-module}/style/eml201to210.xsl"
           tag="${eml-210-style-tag}"
           dest="${build.xsl}/eml_${eml-210-style-tag}" />-->
+	 <mkdir dir="${build.xsl}/eml_${eml-style-tag}" />
 	 <svn>
             <export srcUrl="${eml-style-svn-url}/style"
                 destPath="${build.xsl}/eml_${eml-style-tag}/style" />
         </svn>
+	   <mkdir dir="${build.xsl}/eml_${eml-style-tag}/lib" />
 	   <svn>
             <export srcUrl="${eml-style-svn-url}/lib/eml2tonbii"
                 destPath="${build.xsl}/eml_${eml-style-tag}/lib/eml2tonbii" />
@@ -313,6 +315,7 @@
           package="${eml-module}"
           tag="${eml-210-schema-tag}"
           dest="${build.schema}/eml_${eml-210-schema-tag}" />-->
+	   <mkdir dir="${build.schema}"/>
 	   <svn>
             <export srcUrl="${eml-210-schema-svn-url}"
                 destPath="${build.schema}/eml_${eml-210-schema-tag}" />
