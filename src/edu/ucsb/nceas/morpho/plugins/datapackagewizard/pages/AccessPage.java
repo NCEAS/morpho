@@ -704,6 +704,8 @@ public class AccessPage
 
     if (treeNode != null) {
       treeTable = new JTreeTable(new AccessTreeModel(treeNode));
+      treeTable.getTree().setCellRenderer(new AccessTreeCellRenderer());
+
       accessTreePane = new JScrollPane(treeTable);
       accessTreePane.setPreferredSize(new java.awt.Dimension(500, 500));
 

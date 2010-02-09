@@ -82,9 +82,6 @@ public class JTreeTable extends JTable {
 	    }
 	});
 
-
-        tree.setCellRenderer(new AccessTreeCellRenderer());
-
 	// Make the tree and table row heights the same.
 	tree.setRowHeight(getRowHeight());
 
@@ -98,6 +95,10 @@ public class JTreeTable extends JTable {
     }
 
 
+    public JTree getTree() {
+    	return tree;
+    }
+    
     public void expandIt(int row){
       tree.expandRow(row);
     }
