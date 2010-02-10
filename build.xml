@@ -94,6 +94,9 @@
       <property name="morpho.docs.licenses" value="${morpho.docs}/licenses"/>
       <property name="morpho.docs.dev.api" value="${morpho.docs.dev}/api"/>
    	
+	<!-- override the morpho property for other builds -->
+   	<property name="morpho.args" value=""/>
+   	   	
       <!-- NOTE: location is machine specific - insert 'Launch4J' location on your machine! This
 		   property will be used in buildwininstaller target. -->
       <property name="launch4j.dir" location="/usr/local/devtools/launch4j" />
@@ -665,12 +668,36 @@
 --> 
   <target name="buildwinexe" depends="install"> 
        <!-- NOTE: location is machine specific - insert 'Launch4J' location on your machine!  -->
-      <delete file="morpho.exe"/>
+      <delete file="${morpho.basedir}/morpho.exe"/>
       <taskdef name="launch4j"
                classname="net.sf.launch4j.ant.Launch4jTask"
                classpath="${launch4j.dir}/launch4j.jar:${launch4j.dir}/lib/xstream.jar" 
       onerror="ignore"/>
-      <launch4j configFile="${morpho.basedir}/installer/build/launch-morpho.xml"/>
+      <!--launch4j configFile="${morpho.basedir}/installer/build/launch-morpho.xml"/-->
+    <launch4j>
+      	<config 
+      		dontwrapjar="true" 
+      		headertype="gui" 
+      		outfile="${morpho.basedir}/morpho.exe" 
+      		errtitle="Morpho" 
+      		cmdline="${morpho.args}" 
+      		chdir="." 
+      		priority="normal" 
+      		downloadurl="http://java.com/download" 
+      		customprocname="false" 
+      		stayalive="false" 
+      		icon="${libdir}/DesktopIcon32x32.ico">
+      	  <classPath mainClass="edu.ucsb.nceas.morpho.Morpho">
+      	    <cp>%EXEDIR%/lib/*.jar</cp>    
+      	  </classPath>
+      	  <jre minVersion="1.5.0" jdkPreference="preferJre">
+      	    <opt>-Xmx512m</opt>
+      	    <opt>-Xss5m</opt>
+      	    <opt>-Djava.endorsed.dirs=&quot;%EXEDIR%/lib/jar/apache&quot;</opt>
+      	    <opt>-Djava.library.path=&quot;%EXEDIR%/lib&quot;</opt>
+      	  </jre>
+      	</config>
+		</launch4j>
   </target> 
 	
 	<!-- The target 'macjarbundler' builds a Mac OS X application bundle.
@@ -694,13 +721,15 @@
          classpath="${morpho.basedir}/lib/jarbundler-1.9.jar"
          classname="net.sourceforge.jarbundler.JarBundler" 
          onerror="ignore" />
+  	<echo message="Using morpho args: ${morpho.args}"></echo>
       <jarbundler dir="${morpho.basedir}/"
             name="morpho"
 		    stubfile="${morpho.basedir}/installer/build/mac/JavaApplicationStub"
             mainclass="edu.ucsb.nceas.morpho.Morpho"
             jvmversion="1.5"
             icon="${morpho.basedir}/lib/DesktopIcon32x32.icns"
-            vmoptions="-Xmx512m -Xss5m" >
+            vmoptions="-Xmx512m -Xss5m" 
+      		arguments="${morpho.args}">
       		<jarfileset dir="${build.lib}">
       			<include name="*.jar" />
       		</jarfileset>
