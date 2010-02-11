@@ -48,11 +48,12 @@ import javax.swing.event.*;
  * @author Philip Milne
  */
 
-public abstract class AbstractTreeTableModel implements TreeTableModel {
+public abstract class AbstractTreeTableModel extends DefaultTreeModel implements TreeTableModel {
     protected Object root;     
     protected EventListenerList listenerList = new EventListenerList();
   
-    public AbstractTreeTableModel(Object root) {
+    public AbstractTreeTableModel(TreeNode root) {
+    	super(root);
         this.root = root; 
     }
 

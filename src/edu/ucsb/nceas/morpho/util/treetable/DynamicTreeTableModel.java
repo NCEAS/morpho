@@ -268,7 +268,7 @@ public class DynamicTreeTableModel extends AbstractTreeTableModel {
      * @return an array of TreeNodes giving the path from the root to the
      *         specified node 
      */
-    private TreeNode[] getPathToRoot(TreeNode aNode, int depth) {
+    protected TreeNode[] getPathToRoot(TreeNode aNode, int depth) {
         TreeNode[]              retNodes;
 	// This method recurses, traversing towards the root in order
 	// size the array. On the way back, it fills in the nodes,
