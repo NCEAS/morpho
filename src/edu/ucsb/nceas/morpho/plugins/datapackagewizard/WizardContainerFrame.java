@@ -2119,6 +2119,10 @@ public class WizardContainerFrame
     {
       UIController.getInstance().addDocidToIdleWizardRecorder(autoSaveID);
     }
+    else if(source != null && source.equals(SAVELATERSOURCE))
+    {
+      UIController.getInstance().removeDocidFromIdleWizardRecorder(autoSaveID);
+    }
     //clear out pageStack
     pageStack.clear();
     //AbstractDataPackage adp = UIController.getInstance().getCurrentAbstractDataPackage();
