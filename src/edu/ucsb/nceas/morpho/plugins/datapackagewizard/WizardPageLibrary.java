@@ -166,9 +166,9 @@ public class WizardPageLibrary implements WizardPageLibraryInterface{
 	  int index = parseTextImmportAttributePageID(pageId);
 	  if(index < 0 || index >= textImportAttributePagesSize)
 	  {
-		  Log.debug(5, "WizardPageLibrary - couldn't dynamically generate TextImmportAttribute page  with identifier: "+pageId);
-		  throw new IllegalArgumentException(
-			      "WizardPageLibrary - couldn't dynamically generate TextImmportAttribute page  with identifier: "+pageId);
+		  Log.debug(5, "WizardPageLibrary - couldn't dynamically generate TextImmportAttribute page  with identifier: "+pageId+
+		      " since index "+index+" is out of range from 0 to "+textImportAttributePagesSize);
+		  return null;
 	  }
 	  TextImportAttribute page = new TextImportAttribute(container, index);
 	  page.setPageID(pageId);
