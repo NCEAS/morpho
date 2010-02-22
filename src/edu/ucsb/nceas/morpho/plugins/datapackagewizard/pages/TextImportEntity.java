@@ -598,6 +598,11 @@ public class TextImportEntity extends AbstractUIPage
 	      {
 	    	  startLineNumber =  numberOfHeaderLine;
 	      }
+	      if(textFile != null)
+	      {
+	        textFile.setDataStartingLineNumber(startLineNumber);
+	        textFile.setColumnLabelsInStartingLine(isSelected);
+	      }
 	      Log.debug(32, "The starting row number is "+startLineNumber+" in the map in TextImportEntity.setPageData");
 	      StartingLineTextField.setText((new Integer(startLineNumber)).toString());
 	      boolean success = setLastImportEntityName();
