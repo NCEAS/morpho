@@ -438,7 +438,9 @@ public class DataViewContainerPanel extends javax.swing.JPanel
 
 //      String location = dp.getLocation();
 
-      JPanel currentEntityMetadataPanel = (JPanel)currentEntityPanel.getRightComponent();
+        JTabbedPane entityTabbedPane = (JTabbedPane) currentEntityPanel.getRightComponent();
+
+      JPanel currentEntityMetadataPanel = (JPanel) entityTabbedPane.getComponent(0);
 
     MetaDisplayInterface md = null;
 //DFH    if (dp!=null) {  // old datapackage
@@ -602,7 +604,14 @@ public class DataViewContainerPanel extends javax.swing.JPanel
     return dv;
   }
 
-  public void setTopPanel(JPanel jp) {
+  public JTabbedPane getEntityTabbedPane() {
+	  TabbedContainer container = 
+		  (TabbedContainer) tabbedEntitiesPanel.getComponentAt(lastTabSelected);
+	  return (JTabbedPane) container.getSplitPane().getRightComponent();
+}
+
+
+public void setTopPanel(JPanel jp) {
     this.toppanel = jp;
     this.toppanel.setVisible(true);
   }
@@ -970,10 +979,12 @@ public class DataViewContainerPanel extends javax.swing.JPanel
   private JSplitPane createEntityPanel() {
     JPanel entityMetadataPanel = new JPanel();
     entityMetadataPanel.setLayout(new BorderLayout(0,0));
+    JTabbedPane entityTabbedPane  = new JTabbedPane();
+    entityTabbedPane.addTab("Metadata", entityMetadataPanel);
     dataViewPanel = new JPanel();
     dataViewPanel.setLayout(new BorderLayout(0,0));
 
-    entityPanel = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,dataViewPanel, entityMetadataPanel);
+    entityPanel = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,dataViewPanel, entityTabbedPane);
     if (UIManager.getSystemLookAndFeelClassName().indexOf("WindowsLookAndFeel")>-1) {
       entityPanel.setUI(new javax.swing.plaf.metal.MetalSplitPaneUI());
     }
