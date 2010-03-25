@@ -122,6 +122,31 @@ public class StateChangeMonitor
             }
         }
     }
+    
+    /**
+     * This method is called by objects to remove a listener for
+     * all state changes they may have registered for
+     *
+     * @param listener  a reference to the object to be removed
+     */
+    public void removeStateChangeListener(StateChangeListener listener)
+    {
+        Vector currentStateListeners = null;
+        Vector removeStates = new Vector();
+        for (Object stateChange: listeners.keySet()) {
+            currentStateListeners = (Vector)listeners.get(stateChange);
+            currentStateListeners.removeElement(listener);
+            if (currentStateListeners.size() == 0) {
+                removeStates.add(stateChange);
+            }
+        }
+        // clean up
+        for (Object stateChange: removeStates) {
+        	listeners.remove(stateChange);
+        }
+    }
+    
+    
 
     /**
      * Notify the monitor of an application state change so that it in turn
