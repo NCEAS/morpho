@@ -41,7 +41,6 @@ import java.util.Comparator;
 import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Hashtable;
-import java.util.List;
 import java.util.Stack;
 import java.util.Vector;
 import java.util.Collections;
@@ -685,31 +684,8 @@ public class ResultSet extends AbstractTableModel implements ColumnSortableTable
     return this.morpho;
   }
 
-  public void sortTableByColumn(int col, List orderedValues) {
-	  final int resultColIndex = lookupResultsVectorIndex(col);
-	  final List values = orderedValues;
-	  Collections.sort(
-			  resultsVector,
-              new Comparator() {
-
-				public int compare(Object o1, Object o2) {
-					// look up the value from the column in the two rows
-					Object value1 = ((Vector)o1).get(resultColIndex);
-					Object value2 = ((Vector)o2).get(resultColIndex);
-
-					// find the indexes of those two values in the ordered list
-					Integer orderIndex1 = values.indexOf(value1);
-					Integer orderIndex2 = values.indexOf(value2);
-					
-					// compare those
-					if (orderIndex1 != null && orderIndex2 != null) {
-						return orderIndex1.compareTo(orderIndex2);
-					}
-					// if null then just put them wherever
-					return 0;
-				}
-		  
-	  });
+  public void sortTable(Comparator comparator) { 
+	  Collections.sort(resultsVector, comparator);
   }
 
   /**

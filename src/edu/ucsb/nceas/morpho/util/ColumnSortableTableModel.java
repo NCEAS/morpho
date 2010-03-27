@@ -25,7 +25,7 @@
  */
 package edu.ucsb.nceas.morpho.util;
 
-import java.util.List;
+import java.util.Comparator;
 
 import javax.swing.table.TableModel;
 
@@ -37,7 +37,7 @@ public interface ColumnSortableTableModel extends TableModel
   // Method to sort table
   public void sortTableByColumn(int col, String order);
   
-  public void sortTableByColumn(int col, List orderedValues);
+  public void sortTable(Comparator c);
 
 }
 
