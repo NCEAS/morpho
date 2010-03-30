@@ -371,6 +371,11 @@ public class CustomList extends JPanel {
             column.setCellEditor(cellEd);
 
           }
+          else if (editor instanceof TableCellEditor) {
+        	  Log.debug(51, "(CellEditor)");
+        	  TableCellEditor cellEd = (TableCellEditor) editor;
+              column.setCellEditor(cellEd);
+          }
           else {
 
             Log.debug(51, "(NOT RECOGNIZED - SETTING NON-EDITABLE)");
