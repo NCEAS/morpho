@@ -1664,6 +1664,11 @@ class CustomJTable extends JTable{
 
     if (editors != null && editors[col] != null) {
       colClass = editors[col].getClass();
+      // if an editor is given, then let's use it
+      if (editors[col] instanceof TableCellRenderer) {
+    	  TableCellRenderer renderer = (TableCellRenderer) editors[col];
+    	  return renderer;
+      }
 
     }
     if (colClass == null) {
