@@ -1159,6 +1159,10 @@ public class CustomList extends JPanel {
   public void setCustomAddAction(Action a) {
 
     this.customAddAction = a;
+    Object actionName = a.getValue(Action.NAME);
+    if (actionName!=null) {
+    	this.addButton.setText(actionName.toString());
+    }
   }
 
   /**
@@ -1189,6 +1193,10 @@ public class CustomList extends JPanel {
   public void setCustomEditAction(Action a) {
 
     this.customEditAction = a;
+    Object actionName = a.getValue(Action.NAME);
+    if (actionName!=null) {
+    	this.editButton.setText(actionName.toString());
+    }
   }
 
   /**
@@ -1246,6 +1254,10 @@ public class CustomList extends JPanel {
   public void setCustomDeleteAction(Action a) {
 
     this.customDeleteAction = a;
+    Object actionName = a.getValue(Action.NAME);
+    if (actionName!=null) {
+    	this.deleteButton.setText(actionName.toString());
+    }
   }
 
   /**
