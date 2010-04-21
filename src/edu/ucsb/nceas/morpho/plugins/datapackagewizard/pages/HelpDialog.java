@@ -3,8 +3,10 @@ package edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Container;
+import java.awt.Dialog;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.Frame;
 
 import javax.swing.BoxLayout;
 import javax.swing.JDialog;
@@ -32,18 +34,25 @@ public class HelpDialog extends JDialog {
 	
 	private String titleText = null;
 
-	public HelpDialog(String titleText, String bodyText) {
-		super();
+	public HelpDialog(Frame owner, String titleText, String bodyText) {
+		super(owner);
 		this.helpText = bodyText;
 		this.titleText = titleText;
 		init();
-		setVisible(false);
+	}
+	public HelpDialog(Dialog owner, String titleText, String bodyText) {
+		super(owner);
+		this.helpText = bodyText;
+		this.titleText = titleText;
+		init();
 	}
 
 	void init() {
 
 		setTitle("Help");
 		setModal(true);
+		setVisible(false);
+		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 
 		Container contentPane = this.getContentPane();
 		contentPane.setLayout(new BorderLayout());

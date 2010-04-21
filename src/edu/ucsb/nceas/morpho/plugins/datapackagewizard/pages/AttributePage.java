@@ -30,10 +30,13 @@ package edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Container;
+import java.awt.Dialog;
 import java.awt.Dimension;
+import java.awt.Frame;
 import java.awt.GridLayout;
 import java.awt.Insets;
 import java.awt.Point;
+import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -53,6 +56,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
 
 import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.framework.AbstractUIPage;
@@ -435,6 +439,7 @@ public class AttributePage extends AbstractUIPage {
     helpButton.setToolTipText("More Information about the Categories");
     Point loc1 = getLocation();
 
+    final AttributePage pageRef = this;
     helpButton.addActionListener( new ActionListener() {
       private JDialog helpDialog = null;
       public void actionPerformed(ActionEvent ae) {
@@ -451,7 +456,13 @@ public class AttributePage extends AbstractUIPage {
     			+ "<p><b>RATIO</b><br></br>&nbsp;&nbsp;&nbsp;&nbsp;The ratio scale is an interval scale with a meaningful zero point. The ratio scale begins at a true zero point that represents an absolute lack of the quality being measured.  Thus, ratios of values are meaningful. For example, an object that is at elevation of 100 meters above sea level is twice as high as an object that is at an elevation of 50 meters above sea level (where sea level is the zero point).  Also, an object at 300 degrees Kelvin has three times the kinetic energy of an object at 100 degrees Kelvin (where absolute zero (no motion) defines the zero point of the Kelvin scale).  Interval values can often be converted to ratio values in order to make ratio comparisons legitimate. For example, an object at 40 degrees C is 313.15 degrees Kelvin, an object at 20 degrees C is 293.15 degrees Kelvin, and so the first object has approximately 1.07 times more kinetic energy (note the wrong answer you would have gotten had you taken the ratio of the values in Celsius).</p>"
     			+ "<p><b>DATE-TIME</b><br></br>&nbsp;&nbsp;&nbsp;&nbsp;Date and time values in the Gregorian calendar are very strange to use in calculations in that they have properties of both interval and ratio scales.  They also have some properties that do not conform to the interval scale because of the adjustments that are made to time to account for the variations in the period of the Earth around the sun. While the Gregorian calendar has a meaningful zero point, it would be difficult to say that a value taken on midnight January 1, 1000 is twice as old as a value taken on midnight January 1 2000 because the scale has many irregularities in length in practice. However, over short intervals the scale has equidistant points based on the SI second, and so can be considered interval for some purposes, especially with respect to measuring the timing of short-term ecological events.  Date and time values can be represented using several distinct notations, and so we have distinct metadata needs in terms of specifying the format of the value representation.  Because of these pragmatic issues, we separated Date-time into its own measurement scale.  Examples of date-time values are '2003-05-05', '1999/10/10', and '2001-10-10T14:23:20.3'.</p>"
     			+ "</body> </html>";
-          helpDialog = new HelpDialog(title, helpText);
+        	 Window owner = SwingUtilities.getWindowAncestor(pageRef);
+			if (owner instanceof Frame) {
+				helpDialog = new HelpDialog((Frame)owner, title, helpText);
+			}
+			if (owner instanceof Dialog) {
+				helpDialog = new HelpDialog((Dialog)owner, title, helpText);
+			}
         }
         Point loc = getLocationOnScreen();
         int wd = getWidth();
