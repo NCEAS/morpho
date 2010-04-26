@@ -478,6 +478,7 @@ public class SaveDialog extends JDialog
 		}
 
 		saveEvent.setFinalId(adp.getAccessionNumber());
+		saveEvent.setLocation(adp.getLocation());
 	  this.setVisible(false);
 	  this.dispose();
 	  UIController.getInstance().removeDocidFromIdleWizardRecorder(adp.getAutoSavedD());

@@ -36,6 +36,7 @@ public class SaveEvent extends StateChangeEvent
 
 	private String initialId;
 	private String finalId;
+	private String location;
 	
 	public SaveEvent(Component source, String changedState) {
 		super(source, changedState);
@@ -55,6 +56,14 @@ public class SaveEvent extends StateChangeEvent
 
 	public void setFinalId(String finalId) {
 		this.finalId = finalId;
+	}
+
+	public String getLocation() {
+		return location;
+	}
+
+	public void setLocation(String location) {
+		this.location = location;
 	}
 
 }
