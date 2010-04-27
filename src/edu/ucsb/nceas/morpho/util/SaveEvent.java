@@ -37,6 +37,7 @@ public class SaveEvent extends StateChangeEvent
 	private String initialId;
 	private String finalId;
 	private String location;
+	private boolean duplicate = false;
 	
 	public SaveEvent(Component source, String changedState) {
 		super(source, changedState);
@@ -64,6 +65,14 @@ public class SaveEvent extends StateChangeEvent
 
 	public void setLocation(String location) {
 		this.location = location;
+	}
+
+	public boolean isDuplicate() {
+		return duplicate;
+	}
+
+	public void setDuplicate(boolean duplicate) {
+		this.duplicate = duplicate;
 	}
 
 }
