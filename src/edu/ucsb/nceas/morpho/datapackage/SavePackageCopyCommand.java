@@ -35,6 +35,10 @@ import edu.ucsb.nceas.morpho.plugins.ServiceProvider;
 import edu.ucsb.nceas.morpho.util.Command;
 import edu.ucsb.nceas.morpho.util.GUIAction;
 import edu.ucsb.nceas.morpho.util.Log;
+import edu.ucsb.nceas.morpho.util.SaveEvent;
+import edu.ucsb.nceas.morpho.util.StateChangeEvent;
+import edu.ucsb.nceas.morpho.util.StateChangeMonitor;
+
 import java.awt.event.ActionEvent;
 import javax.swing.JDialog;
 import edu.ucsb.nceas.morpho.datastore.MetacatUploadException;
@@ -110,6 +114,12 @@ public class SavePackageCopyCommand implements Command
       adp.serialize(AbstractDataPackage.LOCAL);
       adp.setLocation(AbstractDataPackage.LOCAL);
       adp.serializeData(AbstractDataPackage.LOCAL);
+      SaveEvent saveEvent = new SaveEvent(morphoFrame, StateChangeEvent.SAVE_DATAPACKAGE);
+      saveEvent.setInitialId(oldid);
+      saveEvent.setFinalId(nextid);
+      saveEvent.setLocation(AbstractDataPackage.LOCAL);
+      saveEvent.setDuplicate(true);
+      StateChangeMonitor.getInstance().notifyStateChange(saveEvent);
     } catch (MetacatUploadException e){
       Log.debug(5, "Problem Saving Datapackage Locally");
     }
