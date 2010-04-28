@@ -47,6 +47,7 @@ import edu.ucsb.nceas.morpho.plugins.ServiceProvider;
 import edu.ucsb.nceas.morpho.util.Command;
 import edu.ucsb.nceas.morpho.util.GUIAction;
 import edu.ucsb.nceas.morpho.plugins.IncompleteDocInfo;
+import edu.ucsb.nceas.morpho.util.DeleteEvent;
 import edu.ucsb.nceas.morpho.util.IncompleteDocSettings;
 import edu.ucsb.nceas.morpho.util.Log;
 import edu.ucsb.nceas.morpho.util.StateChangeEvent;
@@ -1318,6 +1319,11 @@ public class DataPackagePlugin
       AbstractDataPackage adp = DataPackageFactory.getDataPackage(docid, metacat, local);
       if (adp!=null) {
         adp.delete(location);
+        // notify listeners of the delete
+        DeleteEvent deleteEvent = new DeleteEvent(UIController.getInstance().getCurrentActiveWindow(), StateChangeEvent.DELETE_DATAPACKAGE);
+        deleteEvent.setId(docid);
+        deleteEvent.setLocation(location);
+        StateChangeMonitor.getInstance().notifyStateChange(deleteEvent);
       }
     }
    

@@ -249,6 +249,12 @@ public class StateChangeEvent extends ChangeEvent
         = "saveDatapackage";
     
     /**
+     *  Public constant to denote that the Delete has occurred  
+     */
+    public static String DELETE_DATAPACKAGE
+        = "deleteDatapackage";
+    
+    /**
      * Public constant to denote that an incomplete data package has been chosen
      */
     public static String CHOOSE_INCOMPLETE_DATAPACKAGE = "chooseIncompleteDataPackage";
