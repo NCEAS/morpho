@@ -3042,6 +3042,39 @@ public abstract class AbstractDataPackage extends MetadataObject
       Log.debug(50, "exception in getting physical size" + w.toString());
     }
   }
+  
+  /**
+   *  This method sets the size for the indexed entity and
+   *  physical object.
+   */
+  public void setPhysicalName(int entityIndex, int physicalIndex, String name) {
+    if ( (entityArray == null) || (entityArray.length < (entityIndex) + 1)) {
+      Log.debug(20, "No such entity!");
+      return;
+    }
+    Node[] physicals = getPhysicalArray(entityIndex);
+    if ( (physicals == null) || (physicals.length < 1)) {
+      return;
+    }
+    if (physicalIndex > (physicals.length - 1)) {
+      return;
+    }
+    Node physical = physicals[physicalIndex];
+    String physXpath = "";
+    try {
+      physXpath = (XMLUtilities.getTextNodeWithXPath(getMetadataPath(),
+          "/xpathKeyMap/contextNode[@name='physical']/name")).getNodeValue();
+      NodeList aNodes = XPathAPI.selectNodeList(physical, physXpath);
+      if (aNodes == null) {
+        return;
+      }
+      Node child = aNodes.item(0).getFirstChild(); // get first ?; (only 1?)
+      child.setNodeValue(name);
+    }
+    catch (Exception w) {
+      Log.debug(50, "exception in setting physical name" + w.toString());
+    }
+  }
 
   /**
    *  This method returns the FieldDelimiter for the indexed entity and

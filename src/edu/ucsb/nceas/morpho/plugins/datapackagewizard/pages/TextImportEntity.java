@@ -67,7 +67,7 @@ import edu.ucsb.nceas.utilities.OrderedMap;
  */
 public class TextImportEntity extends AbstractUIPage 
 {
-	   private final String xPathRoot = "/eml:eml/dataset/dataTable/";
+	   public static final String xPathRoot = "/eml:eml/dataset/dataTable/";
 	   private String pageID = DataPackageWizardInterface.TEXT_IMPORT_ENTITY;
 	   private String title = "Text Import";
 	   private String subTitle = null;

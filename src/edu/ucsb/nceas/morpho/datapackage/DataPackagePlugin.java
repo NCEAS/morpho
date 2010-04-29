@@ -545,6 +545,27 @@ public class DataPackagePlugin
 
 
     i = i+1;
+    GUIAction replaceDatatable = new GUIAction("Replace Current Data Table...", null,
+                                                      new ReplaceDataCommand());
+    replaceDatatable.setToolTipText("Replace the currently displayed data");
+    replaceDatatable.setMenuItemPosition(i);
+    replaceDatatable.setMenu(DATA_MENU_LABEL, DATAMENUPOSITION);
+    //replaceDatatable.setSeparatorPosition(Morpho.SEPARATOR_FOLLOWING);
+    replaceDatatable.setEnabledOnStateChange(
+                      StateChangeEvent.CREATE_EDITABLE_ENTITY_DATAPACKAGE_FRAME,
+                      true, GUIAction.EVENT_LOCAL);
+    replaceDatatable.setEnabledOnStateChange(
+                            StateChangeEvent.CREATE_SEARCH_RESULT_FRAME,
+                            false, GUIAction.EVENT_LOCAL);
+    replaceDatatable.setEnabledOnStateChange(
+                            StateChangeEvent.CREATE_NOENTITY_DATAPACKAGE_FRAME,
+                            false, GUIAction.EVENT_LOCAL);
+    replaceDatatable.setEnabledOnStateChange(
+                   StateChangeEvent.CREATE_NONEDITABLE_ENTITY_DATAPACKAGE_FRAME,
+                   false, GUIAction.EVENT_LOCAL);
+    controller.addGuiAction(replaceDatatable);
+    
+    i = i+1;
     GUIAction deleteDatatable = new GUIAction("Delete Current Data Table", null,
                                                       new DeleteTableCommand());
     deleteDatatable.setToolTipText("Remove the currently displayed table");
