@@ -774,6 +774,7 @@ public class DataPackagePlugin
     addDocumentation.setEnabled(false);
 		viewDocumentation.setEnabled(false);
     createNewDatatable.setEnabled(false);
+    replaceDatatable.setEnabled(false);
     deleteDatatable.setEnabled(false);
     editDatatableAccess.setEnabled(false);
     addTitleAbstractAction.setEnabled(false);
