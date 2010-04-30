@@ -29,15 +29,11 @@ package edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages;
 
 import java.awt.BorderLayout;
 import java.io.File;
-import java.io.FileInputStream;
 
 import javax.swing.BoxLayout;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-import edu.ucsb.nceas.morpho.Morpho;
-import edu.ucsb.nceas.morpho.datapackage.AccessionNumber;
-import edu.ucsb.nceas.morpho.datastore.FileSystemDataStore;
 import edu.ucsb.nceas.morpho.framework.AbstractUIPage;
 import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WidgetFactory;
@@ -203,9 +199,10 @@ public class ReplaceDataPage extends AbstractUIPage {
 		File dataFile = getDataFile();
 		if (dataFile != null) {
 			// if datafile exists, it's a local file referenced by a URN
-			String dataFileID = saveDataFileAsTemp(dataFile);
-			returnMap.put(DataLocation.ONLINE_URL_XPATH, DataLocation.URN_ROOT
-					+ dataFileID);
+			//String dataFileID = saveDataFileAsTemp(dataFile);
+			returnMap.put(
+					DataLocation.ONLINE_URL_XPATH, dataFile.getAbsolutePath());
+					//DataLocation.ONLINE_URL_XPATH, DataLocation.URN_ROOT + dataFileID);
 			returnMap.put(DataLocation.OBJECTNAME_XPATH, dataFile.getName());
 
 			long fileSize = dataFile.length();
@@ -242,30 +239,6 @@ public class ReplaceDataPage extends AbstractUIPage {
     throw new UnsupportedOperationException(
       "getPageData(String rootXPath) Method Not Implemented");
   }
-
-
-  /*
-   * create a new id,
-   * assign id to the data file and save a copy with that id as the
-   * name
-   */
-  private String saveDataFileAsTemp(File f) {
-    AccessionNumber an = new AccessionNumber(Morpho.thisStaticInstance);
-    String nextAvailableID = null;
-	//String id = an.getNextId();
-    if (nextAvailableID  == null)
-    {
-    	nextAvailableID = an.getNextId();
-    }
-    FileSystemDataStore fds = new FileSystemDataStore(Morpho.thisStaticInstance);
-    try {
-      fds.saveTempDataFile(nextAvailableID, new FileInputStream(f));
-    } catch (Exception w) {
-      Log.debug(1, "error in TIW saving temp data file!");
-    }
-    return nextAvailableID;
-  }
-
 
   /**
    *  gets the unique ID for this wizard page
@@ -333,25 +306,6 @@ public class ReplaceDataPage extends AbstractUIPage {
      
 	 return empty;
   }
-  
-  
-  /*
-   * Get rid of ecogrid://knb from "ecogird://knb/john.12.3"
-   */
-   private String getFileNameFromURL(String onlineUrl)
-  {
-	  String fileName = null;
-	  if(onlineUrl != null && onlineUrl.startsWith(DataLocation.URN_ROOT))
-	  {
-		  fileName = onlineUrl.substring(DataLocation.URN_ROOT.length());
-	  }
-	  else
-	  {
-		  fileName = onlineUrl;
-	  }
-	  return fileName;
-  }
-
 
 ////////////////////////////////////////////////////////////////////////////////
 // variables and non-editable constants

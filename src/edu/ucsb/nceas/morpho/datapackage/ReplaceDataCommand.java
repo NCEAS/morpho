@@ -26,6 +26,8 @@
 
 package edu.ucsb.nceas.morpho.datapackage;
 
+import edu.ucsb.nceas.morpho.Morpho;
+import edu.ucsb.nceas.morpho.datastore.FileSystemDataStore;
 import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
 import edu.ucsb.nceas.morpho.framework.ModalDialog;
 import edu.ucsb.nceas.morpho.framework.MorphoFrame;
@@ -43,6 +45,8 @@ import edu.ucsb.nceas.morpho.util.UISettings;
 import edu.ucsb.nceas.utilities.OrderedMap;
 
 import java.awt.event.ActionEvent;
+import java.io.File;
+import java.io.FileInputStream;
 
 
 /**
@@ -87,9 +91,19 @@ public class ReplaceDataCommand implements Command {
 				
 					OrderedMap dataTableMap = replaceDataPage.getPageData();
 					
-					// TODO: handle more than just the local url
-					String dataURL = (String) dataTableMap.get(DataLocation.ONLINE_URL_XPATH);
-					adp.setDistributionUrl(entityIndex, 0, 0, dataURL);
+					// TODO: handle more than just the local file selection?
+					String dataFilePath = (String) dataTableMap.get(DataLocation.ONLINE_URL_XPATH);
+					// increment revision if we have the id
+					String currentOnlineUrl = adp.getDistributionUrl(entityIndex, 0, 0);
+					String currentId = null;
+					if (currentOnlineUrl.startsWith(DataLocation.URN_ROOT)) {
+						currentId = DataLocation.getFileNameFromURL(currentOnlineUrl);
+					}
+					//save the data to local cache
+					File dataFile = new File(dataFilePath);
+					String nexDocId = saveDataFileAsTemp(dataFile, currentId);
+					adp.setDistributionUrl(entityIndex, 0, 0, DataLocation.URN_ROOT + nexDocId);
+					
 					String objectName = (String) dataTableMap.get(DataLocation.OBJECTNAME_XPATH);
 					adp.setPhysicalName(entityIndex, 0, objectName);
 					String numRecS = (String) dataTableMap.get(TextImportEntity.xPathRoot + "numberOfRecords");
@@ -150,5 +164,25 @@ public class ReplaceDataCommand implements Command {
 		}
 		return false;
 	}
+	
+	  /*
+	   * increment revision or create a new id,
+	   * assign id to the data file and save it with that id
+	   */
+	  private String saveDataFileAsTemp(File f, String currentId) {
+	    AccessionNumber an = new AccessionNumber(Morpho.thisStaticInstance);
+	    if (currentId  == null) {
+	    	currentId = an.getNextId();
+	    } else {
+	    	currentId = an.incRev(currentId);
+	    }
+	    FileSystemDataStore fds = new FileSystemDataStore(Morpho.thisStaticInstance);
+	    try {
+	      fds.saveTempDataFile(currentId, new FileInputStream(f));
+	    } catch (Exception w) {
+	      Log.debug(1, "Error saving replacement data file!");
+	    }
+	    return currentId;
+	  }
 
 }
