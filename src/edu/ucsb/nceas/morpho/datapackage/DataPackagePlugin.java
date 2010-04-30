@@ -566,6 +566,26 @@ public class DataPackagePlugin
     controller.addGuiAction(replaceDatatable);
     
     i = i+1;
+    GUIAction convertOtherEntity = new GUIAction("Convert to Data Table...", null,
+                                                      new ConvertDataCommand());
+    convertOtherEntity.setToolTipText("Convert the currently displayed data to a table");
+    convertOtherEntity.setMenuItemPosition(i);
+    convertOtherEntity.setMenu(DATA_MENU_LABEL, DATAMENUPOSITION);
+    convertOtherEntity.setEnabledOnStateChange(
+            StateChangeEvent.CREATE_EDITABLE_ENTITY_DATAPACKAGE_FRAME,
+            true, GUIAction.EVENT_LOCAL);
+    convertOtherEntity.setEnabledOnStateChange(
+	                  StateChangeEvent.CREATE_SEARCH_RESULT_FRAME,
+	                  false, GUIAction.EVENT_LOCAL);
+    convertOtherEntity.setEnabledOnStateChange(
+	                  StateChangeEvent.CREATE_NOENTITY_DATAPACKAGE_FRAME,
+	                  false, GUIAction.EVENT_LOCAL);
+    convertOtherEntity.setEnabledOnStateChange(
+         StateChangeEvent.CREATE_ENTITY_DATAPACKAGE_FRAME,
+         true, GUIAction.EVENT_LOCAL);
+    controller.addGuiAction(convertOtherEntity);
+    
+    i = i+1;
     GUIAction deleteDatatable = new GUIAction("Delete Current Data Table", null,
                                                       new DeleteTableCommand());
     deleteDatatable.setToolTipText("Remove the currently displayed table");
@@ -772,9 +792,10 @@ public class DataPackagePlugin
     controller.addGuiAction(editColumnMetadata);
 
     addDocumentation.setEnabled(false);
-		viewDocumentation.setEnabled(false);
+	viewDocumentation.setEnabled(false);
     createNewDatatable.setEnabled(false);
     replaceDatatable.setEnabled(false);
+    convertOtherEntity.setEnabled(false);
     deleteDatatable.setEnabled(false);
     editDatatableAccess.setEnabled(false);
     addTitleAbstractAction.setEnabled(false);

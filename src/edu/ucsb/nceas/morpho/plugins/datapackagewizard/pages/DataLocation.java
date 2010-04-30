@@ -48,19 +48,15 @@ import java.io.FileInputStream;
 import java.io.IOException;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
-import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
-import javax.swing.JButton;
 import javax.swing.JComponent;
-import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -613,9 +609,39 @@ public class DataLocation extends AbstractUIPage {
       setQ2(q2RadioPanel_import);
       setQ3(blankPanel);
       setLastEvent(IMPORT);
-
-
     }
+    
+    // if we are converting from an otherEntity, or have otherwise set the import file already
+    String filePath = null;
+    try {
+        filePath = mainWizFrame.getImportDataTextFile().getDataFile().getAbsolutePath();
+        if (filePath != null) {
+
+            // allow only import
+            Container radioPanel = (Container)mainRadioPanel.getComponent(1);
+            Container middlePanel = (Container) radioPanel.getComponent(1);
+
+            // for CREATE
+            JRadioButton jrb = (JRadioButton)middlePanel.getComponent(CREATE_CHOICE);
+            jrb.setEnabled(false);
+            // for DESCRIBE
+            jrb = (JRadioButton)middlePanel.getComponent(DESCRIBE_CHOICE);
+            jrb.setEnabled(false);
+
+            // select the IMPORT_CHOICE
+            jrb = (JRadioButton)middlePanel.getComponent(IMPORT_CHOICE);
+            jrb.setSelected(true);
+            setQ2(q2RadioPanel_import);
+            setQ3(filechooserPanel);
+            setLastEvent(IMPORT);
+
+            fileChooserWidget.setChosenFileName(filePath);
+
+        }
+    } catch (Exception e) {
+		//do nothing, there was no file
+	}
+ 
   }
 
 
@@ -1484,7 +1510,7 @@ public class DataLocation extends AbstractUIPage {
   /*
    * Get rid of ecogrid://knb from "ecogird://knb/john.12.3"
    */
-   private String getFileNameFromURL(String onlineUrl)
+   public static String getFileNameFromURL(String onlineUrl)
   {
 	  String fileName = null;
 	  if(onlineUrl != null && onlineUrl.startsWith(URN_ROOT))
