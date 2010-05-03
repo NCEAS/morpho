@@ -1832,6 +1832,31 @@ public abstract class AbstractDataPackage extends MetadataObject
     }
     return temp;
   }
+  
+  /**
+   * Return the entity index for a given type of entity (grouped index)
+   * If there are 5 entities and the last entity is a dataTable, then calling this method like:
+   * getEntityIndexForType(4, "dataTable")
+   * would give 0 because it is the first (and only) dataTable in the entity list.
+   * @param index the index in the whole list of entities
+   * @param type the type of entity we want the index for
+   * @return the index of the entity for the given type
+   */
+  public int getEntityIndexForType(int index, String type) {
+	  int count = -1;
+	  for (int i = 0; i < getEntityCount(); i++) {
+		  String currentType = getEntityType(i);
+		  if (currentType.equals(type)) {
+			  count++;
+		  }
+		  // if we got to the index, then we have the index (count) for that type
+		  if (i == index) {
+			  break;
+		  }
+	  }
+	  
+	  return count;
+  }
 
   /**
    * This method retrieves entity index information, given the name of the entity

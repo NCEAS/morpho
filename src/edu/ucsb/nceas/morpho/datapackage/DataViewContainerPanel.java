@@ -225,11 +225,12 @@ public class DataViewContainerPanel extends javax.swing.JPanel
           try {
             mdi.useTransformerProperty(XMLTransformer.SELECTED_DISPLAY_XSLPROP,
                             XMLTransformer.XSLVALU_DISPLAY_ENTITY);
-            mdi.useTransformerProperty(XMLTransformer.SELECTED_ENTITY_XSLPROP,
-                String.valueOf(lastTabSelected + 1));
             String entityType = adp.getEntityType(lastTabSelected);
 			mdi.useTransformerProperty(XMLTransformer.SELECTED_ENTIY_TYPE_XSLPROP,
 					 entityType);
+			int indexForEntityType = adp.getEntityIndexForType(lastTabSelected, entityType);
+			mdi.useTransformerProperty(XMLTransformer.SELECTED_ENTITY_XSLPROP,
+	                String.valueOf(indexForEntityType + 1));
             mdi.display(id);
           } catch (DocumentNotFoundException m) {
             Log.debug(5, "Unable to display Entity:\n"+m.getMessage());
@@ -1022,10 +1023,14 @@ public void setTopPanel(JPanel jp) {
     {
       meta.useTransformerProperty(XMLTransformer.SELECTED_DISPLAY_XSLPROP,
                 XMLTransformer.XSLVALU_DISPLAY_ATTRB);
-      meta.useTransformerProperty(XMLTransformer.SELECTED_ENTITY_XSLPROP,
-                String.valueOf(lastTabSelected + 1));
       meta.useTransformerProperty(XMLTransformer.SELECTED_ATTRIBS_XSLPROP,
                                   String.valueOf(selectedColIndex + 1));
+      // set index for the entity type
+      String entityType = adp.getEntityType(lastTabSelected);
+      int indexForEntityType = adp.getEntityIndexForType(lastTabSelected, entityType);
+      meta.useTransformerProperty(XMLTransformer.SELECTED_ENTITY_XSLPROP,
+              String.valueOf(indexForEntityType + 1));
+      
       meta.display(identifier);
 
     } catch (DocumentNotFoundException m) {

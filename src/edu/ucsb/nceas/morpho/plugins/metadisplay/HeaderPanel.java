@@ -176,11 +176,13 @@ public class HeaderPanel extends JPanel
 						int entityTab = UIController.getInstance().getCurrentActiveWindow().getDataViewContainerPanel().getLastTabSelected();
 						 controller.useTransformerProperty(XMLTransformer.SELECTED_DISPLAY_XSLPROP,
 				                  XMLTransformer.XSLVALU_DISPLAY_ENTITY);
-						 controller.useTransformerProperty(XMLTransformer.SELECTED_ENTITY_XSLPROP,
-				                                String.valueOf(entityTab+1));
 						 String entityType = UIController.getInstance().getCurrentActiveWindow().getAbstractDataPackage().getEntityType(entityTab);
 						 controller.useTransformerProperty(XMLTransformer.SELECTED_ENTIY_TYPE_XSLPROP,
 								 entityType);
+						 int indexForEntityType = 
+							 UIController.getInstance().getCurrentActiveWindow().getAbstractDataPackage().getEntityIndexForType(entityTab, entityType);
+						 controller.useTransformerProperty(XMLTransformer.SELECTED_ENTITY_XSLPROP,
+					                String.valueOf(indexForEntityType + 1));
 						 
 						 UIController.getInstance().getCurrentActiveWindow().getDataViewContainerPanel().resetTableSelection();
 						 controller.display(controller.getIdentifier());
