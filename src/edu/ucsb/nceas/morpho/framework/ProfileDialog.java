@@ -68,6 +68,9 @@ public class ProfileDialog extends JDialog implements StateChangeListener
   JTextField scopeField = new JTextField();
   JList orgList = null;
   public static final String CORRECTIONEMLPROFILEPATH = "eml201corrected";
+  
+  public static final String[] ILLEGAL_SCOPE_CHARACTERS = 
+	  new String[] {"", " ", "&", "#", ",", ".", "+", "-", "(", ")"};
 
   KeyPressActionListener keyPressListener = new KeyPressActionListener();
 
@@ -445,16 +448,22 @@ public class ProfileDialog extends JDialog implements StateChangeListener
                             BorderFactory.createEmptyBorder(8,8,8,8),
                             "Data Package Identification"));
       JLabel scopeLabel = new JLabel("Identifier prefix: ");
-      JLabel noteLabel = new JLabel("Note: ");
+      JLabel noteLabel = new JLabel("Reserved words: ");
+      JLabel illegalCharactersLabel = new JLabel("Illegal characters: ");
+      noteLabel.setForeground(Color.black);
+      noteLabel.setFont(new Font("Dialog", Font.PLAIN, 12));
+      illegalCharactersLabel.setForeground(Color.black);
+      illegalCharactersLabel.setFont(new Font("Dialog", Font.PLAIN, 12));
       JLabel space1 = new JLabel(" ");
       scopeLabel.setForeground(Color.black);
       scopeLabel.setFont(new Font("Dialog", Font.PLAIN, 12));
       scopeField.setColumns(15);
       scopeField.setText(userIdField.getText());
-      JLabel noteContent= new JLabel("Please do not use \"temporary\" because it is a reserved word.");
+      JLabel noteContent = new JLabel("Please do not use \"temporary\".");
+      JLabel illegalContent = new JLabel(getIllegalScopeCharacterNote());
       JLabel space2 = new JLabel(" ");
-      JLabel[] labels = {scopeLabel, space1, noteLabel};
-      JComponent[] textFields = {scopeField, space2, noteContent};
+      JLabel[] labels = {scopeLabel, space1, noteLabel, illegalCharactersLabel};
+      JComponent[] textFields = {scopeField, space2, noteContent, illegalContent};
       addLabelTextRows(labels, textFields, gridbag, screenPanel);
       addKeyListenerToComponents(textFields);
       scopeField.requestFocus();
@@ -483,6 +492,17 @@ public class ProfileDialog extends JDialog implements StateChangeListener
     screenPanel.paint(screenPanel.getGraphics());
   }
 
+  private String getIllegalScopeCharacterNote() {
+	  StringBuffer sb = new StringBuffer();
+	  for (String ch: ILLEGAL_SCOPE_CHARACTERS) {
+		  sb.append("'");
+		  sb.append(ch);
+		  sb.append("', ");
+	  }
+	  sb.delete(sb.lastIndexOf(","), sb.length());
+	  return sb.toString();
+  }
+  
   /**
    * Validate the contents of required and critical fields before actually
    * creating the profile.  If there are problems, return false, otherwise true
@@ -507,11 +527,15 @@ public class ProfileDialog extends JDialog implements StateChangeListener
         fieldsAreValid = false;
       }
 
-    if (scopeField.getText() == null || (scopeField.getText().equals(""))|| scopeField.getText().contains(" ")
-    	||scopeField.getText().contains("&")||scopeField.getText().contains("#")||scopeField.getText().contains(",")
-    	||scopeField.getText().contains("+")||scopeField.getText().contains("-")||scopeField.getText().contains("(")) 
-    {
+    if (scopeField.getText() == null) {
       fieldsAreValid = false;
+    } else {
+	    for (String ch: ILLEGAL_SCOPE_CHARACTERS) {
+	    	if (scopeField.getText().contains(ch)) {
+	    		fieldsAreValid = false;
+	    		break;
+	    	}
+	    }
     }
 
     return fieldsAreValid;
@@ -697,7 +721,9 @@ public class ProfileDialog extends JDialog implements StateChangeListener
       String messageText = "Some required information was invalid.\n\n" +
                            "Please check that you have provided a\n" +
                            "profile name, a user name, an organization,\n" +
-                           "and an identifer prefix (It couldn't have space, &, comma, -, (, # and +) .\n";
+                           "and an identifer prefix (the following characters are not permitted: "
+                           + getIllegalScopeCharacterNote() 
+                           + ").\n";
       JOptionPane.showMessageDialog(this, messageText);
     }
   }
