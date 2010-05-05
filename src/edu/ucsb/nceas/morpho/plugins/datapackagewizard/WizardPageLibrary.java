@@ -116,6 +116,8 @@ public class WizardPageLibrary implements WizardPageLibraryInterface{
       return new DataLocation(container);
     if(pageID.equals(DataPackageWizardInterface.REPLACE_DATA_LOCATION))
         return new ReplaceDataPage();
+    if(pageID.equals(DataPackageWizardInterface.OTHER_ENTITY))
+        return new OtherEntityPage();
     /*if(pageID.equals(DataPackageWizardInterface.TEXT_IMPORT_WIZARD))
       return new ImportWizard(container);*/
     if(pageID.equals(DataPackageWizardInterface.DATA_FORMAT))

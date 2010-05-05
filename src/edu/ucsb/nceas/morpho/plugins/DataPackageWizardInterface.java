@@ -84,6 +84,7 @@ public interface DataPackageWizardInterface {
   public static final String USAGE_RIGHTS       = "USAGE_RIGHTS";
   public static final String DATA_LOCATION      = "DATA_LOCATION";
   public static final String REPLACE_DATA_LOCATION      = "REPLACE_DATA_LOCATION";
+  public static final String OTHER_ENTITY             = "OTHER_ENTITY";
   //public static final String TEXT_IMPORT_WIZARD = "TEXT_IMPORT_WIZARD";
   public static final String DATA_FORMAT        = "DATA_FORMAT";
   public static final String ENTITY             = "ENTITY";

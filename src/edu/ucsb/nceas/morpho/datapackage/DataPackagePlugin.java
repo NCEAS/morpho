@@ -550,7 +550,6 @@ public class DataPackagePlugin
     replaceDatatable.setToolTipText("Replace the currently displayed data file");
     replaceDatatable.setMenuItemPosition(i);
     replaceDatatable.setMenu(DATA_MENU_LABEL, DATAMENUPOSITION);
-    //replaceDatatable.setSeparatorPosition(Morpho.SEPARATOR_FOLLOWING);
     replaceDatatable.setEnabledOnStateChange(
                       StateChangeEvent.CREATE_EDITABLE_ENTITY_DATAPACKAGE_FRAME,
                       true, GUIAction.EVENT_LOCAL);
@@ -565,33 +564,13 @@ public class DataPackagePlugin
                    false, GUIAction.EVENT_LOCAL);
     controller.addGuiAction(replaceDatatable);
     
-    i = i+1;
-    GUIAction convertOtherEntity = new GUIAction("Convert Data to Table...", null,
-                                                      new ConvertDataCommand());
-    convertOtherEntity.setToolTipText("Convert the currently displayed data to a table");
-    convertOtherEntity.setMenuItemPosition(i);
-    convertOtherEntity.setMenu(DATA_MENU_LABEL, DATAMENUPOSITION);
-    convertOtherEntity.setEnabledOnStateChange(
-            StateChangeEvent.CREATE_EDITABLE_ENTITY_DATAPACKAGE_FRAME,
-            true, GUIAction.EVENT_LOCAL);
-    convertOtherEntity.setEnabledOnStateChange(
-	                  StateChangeEvent.CREATE_SEARCH_RESULT_FRAME,
-	                  false, GUIAction.EVENT_LOCAL);
-    convertOtherEntity.setEnabledOnStateChange(
-	                  StateChangeEvent.CREATE_NOENTITY_DATAPACKAGE_FRAME,
-	                  false, GUIAction.EVENT_LOCAL);
-    convertOtherEntity.setEnabledOnStateChange(
-         StateChangeEvent.CREATE_ENTITY_DATAPACKAGE_FRAME,
-         true, GUIAction.EVENT_LOCAL);
-    controller.addGuiAction(convertOtherEntity);
-    
-    i = i+1;
-    GUIAction deleteDatatable = new GUIAction("Delete Current Data Entity", null,
+    i = i+2;
+    GUIAction deleteDatatable = new GUIAction("Delete Current Data", null,
                                                       new DeleteTableCommand());
     deleteDatatable.setToolTipText("Remove the currently displayed entity");
     deleteDatatable.setMenuItemPosition(i);
     deleteDatatable.setMenu(DATA_MENU_LABEL, DATAMENUPOSITION);
-    //deleteDatatable.setSeparatorPosition(Morpho.SEPARATOR_FOLLOWING);
+    deleteDatatable.setSeparatorPosition(Morpho.SEPARATOR_PRECEDING);
     deleteDatatable.setEnabledOnStateChange(
                       StateChangeEvent.CREATE_EDITABLE_ENTITY_DATAPACKAGE_FRAME,
                       true, GUIAction.EVENT_LOCAL);
@@ -606,13 +585,13 @@ public class DataPackagePlugin
             true, GUIAction.EVENT_LOCAL);
     controller.addGuiAction(deleteDatatable);
     
-    i = i+1;
+    i = i+2;
     GUIAction editDatatableAccess = new GUIAction("Edit Data Access", null,
                                                       new AddEntityAccessCommand());
     editDatatableAccess.setToolTipText("Edit Access rights for currently displayed data");
     editDatatableAccess.setMenuItemPosition(i);
     editDatatableAccess.setMenu(DATA_MENU_LABEL, DATAMENUPOSITION);
-    editDatatableAccess.setSeparatorPosition(Morpho.SEPARATOR_FOLLOWING);
+    //editDatatableAccess.setSeparatorPosition(Morpho.SEPARATOR_FOLLOWING);
     editDatatableAccess.setEnabledOnStateChange(
                       StateChangeEvent.CREATE_EDITABLE_ENTITY_DATAPACKAGE_FRAME,
                       true, GUIAction.EVENT_LOCAL);
@@ -627,6 +606,41 @@ public class DataPackagePlugin
                    true, GUIAction.EVENT_LOCAL);
     controller.addGuiAction(editDatatableAccess);
 
+    i = i+2;
+    GUIAction importOtherEntity = new GUIAction("Import Other Data...", null,
+            new ImportOtherEntityCommand());
+    importOtherEntity.setToolTipText("Add other entity data");
+    importOtherEntity.setMenuItemPosition(i);
+    importOtherEntity.setSeparatorPosition(Morpho.SEPARATOR_PRECEDING);
+    importOtherEntity.setMenu(DATA_MENU_LABEL, DATAMENUPOSITION);
+    importOtherEntity.setEnabledOnStateChange(
+		StateChangeEvent.CREATE_DATAPACKAGE_FRAME,
+		true, GUIAction.EVENT_LOCAL);
+    importOtherEntity.setEnabledOnStateChange(
+		StateChangeEvent.CREATE_SEARCH_RESULT_FRAME,
+		false, GUIAction.EVENT_LOCAL);
+	controller.addGuiAction(importOtherEntity);
+
+    i = i+2;
+    GUIAction convertOtherEntity = new GUIAction("Convert Data to Table...", null,
+                                                      new ConvertDataCommand());
+    convertOtherEntity.setToolTipText("Convert the currently displayed data to a table");
+    convertOtherEntity.setMenuItemPosition(i);
+    convertOtherEntity.setSeparatorPosition(Morpho.SEPARATOR_FOLLOWING);
+    convertOtherEntity.setMenu(DATA_MENU_LABEL, DATAMENUPOSITION);
+    convertOtherEntity.setEnabledOnStateChange(
+            StateChangeEvent.CREATE_EDITABLE_ENTITY_DATAPACKAGE_FRAME,
+            true, GUIAction.EVENT_LOCAL);
+    convertOtherEntity.setEnabledOnStateChange(
+	                  StateChangeEvent.CREATE_SEARCH_RESULT_FRAME,
+	                  false, GUIAction.EVENT_LOCAL);
+    convertOtherEntity.setEnabledOnStateChange(
+	                  StateChangeEvent.CREATE_NOENTITY_DATAPACKAGE_FRAME,
+	                  false, GUIAction.EVENT_LOCAL);
+    convertOtherEntity.setEnabledOnStateChange(
+         StateChangeEvent.CREATE_ENTITY_DATAPACKAGE_FRAME,
+         true, GUIAction.EVENT_LOCAL);
+    controller.addGuiAction(convertOtherEntity);
 
     i= i+2; // separator will take a position so add 2
     GUIAction sortBySelectedColumn = new GUIAction("Sort by Selected Column",
