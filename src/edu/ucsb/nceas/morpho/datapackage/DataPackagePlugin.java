@@ -602,8 +602,8 @@ public class DataPackagePlugin
                             StateChangeEvent.CREATE_NOENTITY_DATAPACKAGE_FRAME,
                             false, GUIAction.EVENT_LOCAL);
     deleteDatatable.setEnabledOnStateChange(
-                   StateChangeEvent.CREATE_NONEDITABLE_ENTITY_DATAPACKAGE_FRAME,
-                   false, GUIAction.EVENT_LOCAL);
+            StateChangeEvent.CREATE_ENTITY_DATAPACKAGE_FRAME,
+            true, GUIAction.EVENT_LOCAL);
     controller.addGuiAction(deleteDatatable);
     
     i = i+1;
@@ -781,7 +781,7 @@ public class DataPackagePlugin
     editColumnMetadata.setMenu(DATA_MENU_LABEL, DATAMENUPOSITION);
     //editColumnMetadata.setSeparatorPosition(Morpho.SEPARATOR_FOLLOWING);
     editColumnMetadata.setEnabledOnStateChange(
-                            StateChangeEvent.CREATE_ENTITY_DATAPACKAGE_FRAME,
+                            StateChangeEvent.CREATE_EDITABLE_ENTITY_DATAPACKAGE_FRAME,
                             true, GUIAction.EVENT_LOCAL);
     editColumnMetadata.setEnabledOnStateChange(
                             StateChangeEvent.CREATE_SEARCH_RESULT_FRAME,
@@ -789,6 +789,9 @@ public class DataPackagePlugin
     editColumnMetadata.setEnabledOnStateChange(
                             StateChangeEvent.CREATE_NOENTITY_DATAPACKAGE_FRAME,
                             false, GUIAction.EVENT_LOCAL);
+    editColumnMetadata.setEnabledOnStateChange(
+				            StateChangeEvent.CREATE_NONEDITABLE_ENTITY_DATAPACKAGE_FRAME,
+				            false, GUIAction.EVENT_LOCAL);
     controller.addGuiAction(editColumnMetadata);
 
     addDocumentation.setEnabled(false);
