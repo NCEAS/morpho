@@ -545,9 +545,9 @@ public class DataPackagePlugin
 
 
     i = i+1;
-    GUIAction replaceDatatable = new GUIAction("Replace Current Data Table...", null,
+    GUIAction replaceDatatable = new GUIAction("Replace Current Data...", null,
                                                       new ReplaceDataCommand());
-    replaceDatatable.setToolTipText("Replace the currently displayed data");
+    replaceDatatable.setToolTipText("Replace the currently displayed data file");
     replaceDatatable.setMenuItemPosition(i);
     replaceDatatable.setMenu(DATA_MENU_LABEL, DATAMENUPOSITION);
     //replaceDatatable.setSeparatorPosition(Morpho.SEPARATOR_FOLLOWING);
@@ -566,7 +566,7 @@ public class DataPackagePlugin
     controller.addGuiAction(replaceDatatable);
     
     i = i+1;
-    GUIAction convertOtherEntity = new GUIAction("Convert to Data Table...", null,
+    GUIAction convertOtherEntity = new GUIAction("Convert Data to Table...", null,
                                                       new ConvertDataCommand());
     convertOtherEntity.setToolTipText("Convert the currently displayed data to a table");
     convertOtherEntity.setMenuItemPosition(i);
@@ -586,9 +586,9 @@ public class DataPackagePlugin
     controller.addGuiAction(convertOtherEntity);
     
     i = i+1;
-    GUIAction deleteDatatable = new GUIAction("Delete Current Data Table", null,
+    GUIAction deleteDatatable = new GUIAction("Delete Current Data Entity", null,
                                                       new DeleteTableCommand());
-    deleteDatatable.setToolTipText("Remove the currently displayed table");
+    deleteDatatable.setToolTipText("Remove the currently displayed entity");
     deleteDatatable.setMenuItemPosition(i);
     deleteDatatable.setMenu(DATA_MENU_LABEL, DATAMENUPOSITION);
     //deleteDatatable.setSeparatorPosition(Morpho.SEPARATOR_FOLLOWING);
@@ -607,9 +607,9 @@ public class DataPackagePlugin
     controller.addGuiAction(deleteDatatable);
     
     i = i+1;
-    GUIAction editDatatableAccess = new GUIAction("Edit Data Table Access", null,
+    GUIAction editDatatableAccess = new GUIAction("Edit Data Access", null,
                                                       new AddEntityAccessCommand());
-    editDatatableAccess.setToolTipText("Edit Access rights for currently displayed table");
+    editDatatableAccess.setToolTipText("Edit Access rights for currently displayed data");
     editDatatableAccess.setMenuItemPosition(i);
     editDatatableAccess.setMenu(DATA_MENU_LABEL, DATAMENUPOSITION);
     editDatatableAccess.setSeparatorPosition(Morpho.SEPARATOR_FOLLOWING);
