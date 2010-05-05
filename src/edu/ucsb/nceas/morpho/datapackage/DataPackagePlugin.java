@@ -813,6 +813,7 @@ public class DataPackagePlugin
     createNewDatatable.setEnabled(false);
     replaceDatatable.setEnabled(false);
     convertOtherEntity.setEnabled(false);
+    importOtherEntity.setEnabled(false);
     deleteDatatable.setEnabled(false);
     editDatatableAccess.setEnabled(false);
     addTitleAbstractAction.setEnabled(false);
