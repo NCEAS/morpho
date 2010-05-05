@@ -718,18 +718,7 @@ public class DataViewer extends javax.swing.JPanel
           }
         }
 
-
-
-      // now examine format info and see if we want to simply display a text
-      // file, create a table, or display an image
-      if (missing_metadata_flag) {
-        // try displaying as text since don't know what else to do
-
-        // add text display here!!!
-        Log.debug(30, "attempting to display as text");
-        buildTextDisplay();
-      }
-      else {
+      
         //Log.debug(1,"format: "+format);
         if (format.indexOf("text")>-1){
           text_flag=true;
@@ -845,6 +834,15 @@ public class DataViewer extends javax.swing.JPanel
           }
         }
         else {
+            if (missing_metadata_flag) {
+              // try displaying as text since don't know what else to do
+
+              // add text display here!!!
+              Log.debug(30, "attempting to display as text");
+              buildTextDisplay();
+              return;
+            }
+        	
           // Couldn't show data view
           // create an empty table that cannot be edited since
           // do not know how to display
@@ -869,7 +867,6 @@ public class DataViewer extends javax.swing.JPanel
                  StateChangeEvent.CREATE_NONEDITABLE_ENTITY_DATAPACKAGE_FRAME));
 
         }
-      }
 
     }
 
