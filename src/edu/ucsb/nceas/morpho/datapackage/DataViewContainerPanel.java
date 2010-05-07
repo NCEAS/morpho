@@ -929,7 +929,7 @@ public void setTopPanel(JPanel jp) {
         dv.setEntityIndex(index);
 
         dv.setDataFile(displayFile);
-        dv.setCurrentURLInfo(currentURLInfo);
+        //dv.setCurrentURLInfo(currentURLInfo);
         dv.init();
         dvArray[index] = dv;
     } else {
