@@ -48,6 +48,8 @@ import java.awt.event.ActionEvent;
 import java.io.File;
 import java.io.FileInputStream;
 
+import javax.activation.FileDataSource;
+
 
 /**
  * Class to handle import data file command
@@ -103,6 +105,8 @@ public class ReplaceDataCommand implements Command {
 					File dataFile = new File(dataFilePath);
 					String nexDocId = saveDataFileAsTemp(dataFile, currentId);
 					adp.setDistributionUrl(entityIndex, 0, 0, DataLocation.URN_ROOT + nexDocId);
+					String format = new FileDataSource(dataFile).getContentType();
+					adp.setPhysicalFormat(entityIndex, 0, format);
 					
 					// NOTE: this path includes "dataTable" as the entity, but since we don't actually use it in the EML,
 					// it's not a problem for otherEntity and other entity types

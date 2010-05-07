@@ -3208,6 +3208,41 @@ public abstract class AbstractDataPackage extends MetadataObject
                 "exception in getting physical field delimiter" + w.toString());
     }
   }
+  
+  /**
+   *  This method sets the FieldDelimiter for the indexed entity and
+   *  physical object.
+   */
+  public void setPhysicalFormat(int entityIndex, int physicalIndex, String format) {
+    if ( (entityArray == null) || (entityArray.length < (entityIndex) + 1)) {
+      Log.debug(20, "No such entity!");
+      return;
+    }
+    Node[] physicals = getPhysicalArray(entityIndex);
+    if ( (physicals == null) || (physicals.length < 1)) {
+      return;
+    }
+    if (physicalIndex > (physicals.length - 1)) {
+      return;
+    }
+    Node physical = physicals[physicalIndex];
+    String physXpath = "";
+    try {
+      physXpath = (XMLUtilities.getTextNodeWithXPath(getMetadataPath(),
+          "/xpathKeyMap/contextNode[@name='physical']/format")).
+          getNodeValue();
+      NodeList aNodes = XPathAPI.selectNodeList(physical, physXpath);
+      if (aNodes == null) {
+        return;
+      }
+      Node child = aNodes.item(0).getFirstChild(); // get first ?; (only 1?)
+      child.setNodeValue(format);
+    }
+    catch (Exception w) {
+      Log.debug(50,
+                "exception in setting physical format" + w.toString());
+    }
+  }
 
   /**
    *  This method returns the number of header lines for the indexed entity and
