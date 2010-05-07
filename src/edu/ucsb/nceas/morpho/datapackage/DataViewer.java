@@ -63,6 +63,7 @@ import edu.ucsb.nceas.morpho.util.DocumentNotFoundException;
 import edu.ucsb.nceas.morpho.plugins.ServiceController;
 import edu.ucsb.nceas.morpho.plugins.ServiceProvider;
 import edu.ucsb.nceas.morpho.plugins.ServiceNotHandledException;
+import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WidgetFactory;
 import edu.ucsb.nceas.morpho.datastore.FileSystemDataStore;
 import edu.ucsb.nceas.morpho.datastore.MetacatDataStore;
 import edu.ucsb.nceas.morpho.datastore.CacheAccessException;
@@ -650,225 +651,196 @@ public class DataViewer extends javax.swing.JPanel
      * be displayed
      */
     public void init() {
-      missing_metadata_flag = false;
-        if (entityIndex == -1) {
-          Log.debug(1, "Entity index has not been set!");
-          return;
-        } else {
-          Node[] physicalArray = adp.getPhysicalArray(entityIndex);
-          if (physicalArray.length==0) {
-            Log.debug(15, "Physical information about the data is missing!");
-            missing_metadata_flag = true;
-          } else {
-          // get format, recordDelimiter, field delimiter
-          // in general, get all info need to read a record
-          this.format = adp.getPhysicalFormat(entityIndex, 0);
-          if ((format.trim()).length()<1) missing_metadata_flag = true;
-              // assume that we always use the first physical object
-          Log.debug(20, "format: "+format);
-          this.field_delimiter = adp.getPhysicalFieldDelimiter(entityIndex, 0);
-          this.ignoreConsecutiveDelimiters = adp.ignoreConsecutiveDelimiters(entityIndex, 0);
-          this.delimiter_string = getDelimiterString();
-          Log.debug(20, "delimiter_string: "+delimiter_string);
-          String nhl = adp.getPhysicalNumberHeaderLines(entityIndex, 0);
-          if (nhl.length()>0) {
-            this.numHeaderLines = nhl;
-          } else {
-            this.numHeaderLines = "0";
-          }
-          Log.debug(20, "numHeaderLines: "+numHeaderLines);
-          }
-          // get entity info (number of records, etc)
-          String s = adp.getEntityNumRecords(entityIndex);
-          if ((s!=null)&&(s.length()>0))  {
-            try {
-              num_records = (new Integer(s.trim())).intValue();
-            }
-            catch(Exception w) {Log.debug(20, "error converting to integer");}
-          }
-          entityName = adp.getEntityName(entityIndex).trim();
-          entityDescription = adp.getEntityDescription(entityIndex).trim();
-          if (entityName.length()>0) {
-            headerLabel.setText(entityName);
-          }
-          if (entityDescription.length()>0) {
-            headerLabel.setText(entityDescription);
-          }
-          Node[] attributeArray = adp.getAttributeArray(entityIndex);
-          if (attributeArray == null || attributeArray.length==0) {
-            Log.debug(15, "Attribute information about the data is missing!");
-            missing_metadata_flag = true;
-          } else {
-            column_labels = new Vector();
-            for (int i=0;i<attributeArray.length;i++) {
-              String unitString = "";
-              String dataTypeString = "";
-              String temp = adp.getAttributeName(entityIndex, i);
-              // attribute Name is a required node; we want the associated
-              // unit and dataType node values, which are NOT required
-              dataTypeString = adp.getAttributeDataType(entityIndex, i);
-              unitString = adp.getAttributeUnit(entityIndex, i);
+		missing_metadata_flag = false;
+		if (entityIndex == -1) {
+			Log.debug(1, "Entity index has not been set!");
+			return;
+		} else {
+			Node[] physicalArray = adp.getPhysicalArray(entityIndex);
+			if (physicalArray.length == 0) {
+				Log
+						.debug(15,
+								"Physical information about the data is missing!");
+				missing_metadata_flag = true;
+			} else {
+				// get format, recordDelimiter, field delimiter
+				// in general, get all info need to read a record
+				this.format = adp.getPhysicalFormat(entityIndex, 0);
+				if ((format.trim()).length() < 1)
+					missing_metadata_flag = true;
+				// assume that we always use the first physical object
+				Log.debug(20, "format: " + format);
+				this.field_delimiter = adp.getPhysicalFieldDelimiter(
+						entityIndex, 0);
+				this.ignoreConsecutiveDelimiters = adp
+						.ignoreConsecutiveDelimiters(entityIndex, 0);
+				this.delimiter_string = getDelimiterString();
+				Log.debug(20, "delimiter_string: " + delimiter_string);
+				String nhl = adp.getPhysicalNumberHeaderLines(entityIndex, 0);
+				if (nhl.length() > 0) {
+					this.numHeaderLines = nhl;
+				} else {
+					this.numHeaderLines = "0";
+				}
+				Log.debug(20, "numHeaderLines: " + numHeaderLines);
+			}
+			// get entity info (number of records, etc)
+			String s = adp.getEntityNumRecords(entityIndex);
+			if ((s != null) && (s.length() > 0)) {
+				try {
+					num_records = (new Integer(s.trim())).intValue();
+				} catch (Exception w) {
+					Log.debug(20, "error converting to integer");
+				}
+			}
+			entityName = adp.getEntityName(entityIndex).trim();
+			entityDescription = adp.getEntityDescription(entityIndex).trim();
+			if (entityName.length() > 0) {
+				headerLabel.setText(entityName);
+			}
+			if (entityDescription.length() > 0) {
+				headerLabel.setText(entityDescription);
+			}
+			Node[] attributeArray = adp.getAttributeArray(entityIndex);
+			if (attributeArray == null || attributeArray.length == 0) {
+				Log.debug(15,
+						"Attribute information about the data is missing!");
+				missing_metadata_flag = true;
+			} else {
+				column_labels = new Vector();
+				for (int i = 0; i < attributeArray.length; i++) {
+					String unitString = "";
+					String dataTypeString = "";
+					String temp = adp.getAttributeName(entityIndex, i);
+					// attribute Name is a required node; we want the associated
+					// unit and dataType node values, which are NOT required
+					dataTypeString = adp.getAttributeDataType(entityIndex, i);
+					unitString = adp.getAttributeUnit(entityIndex, i);
 
-              temp = "<html><font face=\"Courier\"> <center><small><nobr>"+dataTypeString
-                                                  +"</nobr><br><nobr>"+unitString
-                                                  +"</nobr><br></small><b><nobr>"
-                                                  +temp+"</nobr></b></center></font></html>";
-              column_labels.addElement(temp);
-            }
-          }
-        }
+					temp = "<html><font face=\"Courier\"> <center><small><nobr>"
+							+ dataTypeString
+							+ "</nobr><br><nobr>"
+							+ unitString
+							+ "</nobr><br></small><b><nobr>"
+							+ temp
+							+ "</nobr></b></center></font></html>";
+					column_labels.addElement(temp);
+				}
+			}
+		}
 
-      
-        //Log.debug(1,"format: "+format);
-        if (format.indexOf("text")>-1){
-          text_flag=true;
-        }
-        else if (format.indexOf("Text")>-1) {
-          text_flag=true;
-        }
-        else if (format.indexOf("asci")>-1) {
-          text_flag=true;
-        }
-        else if (format.indexOf("Asci")>-1) {
-          text_flag=true;
-        }
-        else if (format.indexOf("ASCI")>-1) {
-          text_flag=true;
-        }
-        else if ((format.trim()).length()<1) {
-          Log.debug(1, "Format string in physical module is empty!");
-        }
+		// Log.debug(1,"format: "+format);
+		if (format.indexOf("text") > -1) {
+			text_flag = true;
+		} else if (format.indexOf("Text") > -1) {
+			text_flag = true;
+		} else if (format.indexOf("asci") > -1) {
+			text_flag = true;
+		} else if (format.indexOf("Asci") > -1) {
+			text_flag = true;
+		} else if (format.indexOf("ASCI") > -1) {
+			text_flag = true;
+		} else if ((format.trim()).length() < 1) {
+			Log.debug(1, "Format string in physical module is empty!");
+		}
 
-        boolean image_flag = false;
-        if (format.indexOf("image")>-1){
-          image_flag=true;
-        }
-        else if (format.indexOf("Image")>-1){
-          image_flag=true;
-        }
-        else if (format.indexOf("IMAGE")>-1){
-          image_flag=true;
-        }
-        else if (format.indexOf("gif")>-1) {
-          image_flag=true;
-        }
-        else if (format.indexOf("GIF")>-1) {
-          image_flag=true;
-        }
-        else if (format.indexOf("jpeg")>-1) {
-          image_flag=true;
-        }
-        else if (format.indexOf("JPEG")>-1) {
-          image_flag=true;
-        }
-        else if (format.indexOf("jpg")>-1) {
-          image_flag=true;
-        }
-        else if (format.indexOf("JPG")>-1) {
-          image_flag=true;
-        }
+		boolean image_flag = false;
+		if (format.indexOf("image") > -1) {
+			image_flag = true;
+		} else if (format.indexOf("Image") > -1) {
+			image_flag = true;
+		} else if (format.indexOf("IMAGE") > -1) {
+			image_flag = true;
+		} else if (format.indexOf("gif") > -1) {
+			image_flag = true;
+		} else if (format.indexOf("GIF") > -1) {
+			image_flag = true;
+		} else if (format.indexOf("jpeg") > -1) {
+			image_flag = true;
+		} else if (format.indexOf("JPEG") > -1) {
+			image_flag = true;
+		} else if (format.indexOf("jpg") > -1) {
+			image_flag = true;
+		} else if (format.indexOf("JPG") > -1) {
+			image_flag = true;
+		}
 
-        if (image_flag) {
-          // try to display image here
-          String filename = dataFile.getPath();
-          Log.debug(30, "trying to display image! "+filename);
-          ImageIcon icon = new ImageIcon(filename);
-          JLabel imagelabel = new JLabel(icon);
-          DataScrollPanel.getViewport().removeAll();
-          DataScrollPanel.getViewport().add(imagelabel);
-          /*StateChangeMonitor.getInstance().notifyStateChange(
-               new StateChangeEvent(
-               DataViewerPanel,
-               StateChangeEvent.CREATE_NONEDITABLE_ENTITY_DATAPACKAGE_FRAME));*/
-         // Store this event
-         storingStateChangeEvent( new StateChangeEvent(
-               DataViewerPanel,
-               StateChangeEvent.CREATE_NONEDITABLE_ENTITY_DATAPACKAGE_FRAME));
+		if (image_flag) {
+			// try to display image here
+			String filename = dataFile.getPath();
+			Log.debug(30, "trying to display image! " + filename);
+			ImageIcon icon = new ImageIcon(filename);
+			JLabel imagelabel = new JLabel(icon);
+			DataScrollPanel.getViewport().removeAll();
+			DataScrollPanel.getViewport().add(imagelabel);
+			// Store this event
+			storingStateChangeEvent(new StateChangeEvent(
+					DataViewerPanel,
+					StateChangeEvent.CREATE_NONEDITABLE_ENTITY_DATAPACKAGE_FRAME));
 
-        }
-        else if ((text_flag)&&(dataFile!=null)) {
-          // try building a table
-          if ((column_labels!=null)&&(column_labels.size()>0)) {
-            if ((field_delimiter.trim().length()>0)&&
-                (dataFile.length()>0)) {
-              buildTable();
-              /*StateChangeMonitor.getInstance().notifyStateChange(
-                   new StateChangeEvent(
-                   DataViewerPanel,
-                  StateChangeEvent.CREATE_EDITABLE_ENTITY_DATAPACKAGE_FRAME));*/
-              storingStateChangeEvent( new StateChangeEvent(
-                    DataViewerPanel,
-                    StateChangeEvent.CREATE_EDITABLE_ENTITY_DATAPACKAGE_FRAME));
+		} else if ((text_flag) && (dataFile != null)) {
+			// try building a table
+			if ((column_labels != null) && (column_labels.size() > 0)) {
+				if ((field_delimiter.trim().length() > 0) && (dataFile.length() > 0)) {
+					buildTable();
+					storingStateChangeEvent(new StateChangeEvent(
+							DataViewerPanel,
+							StateChangeEvent.CREATE_EDITABLE_ENTITY_DATAPACKAGE_FRAME));
+				} else if ((dataFile == null) || ((dataFile.length() < 1))) {
+					numHeaderLines = "0";
+					buildTable();
 
-              /*tcuta.setSource(table);
-              tca.setSource(table);
-              tpa.setTarget(table);*/
-              //MouseListener popupListener = new PopupListener();
-              //table.addMouseListener(popupListener);
-            }
-            else if ((dataFile==null)||((dataFile.length()<1))) {
-              numHeaderLines = "0";
-              buildTable();
-              /*StateChangeMonitor.getInstance().notifyStateChange(
-                  new StateChangeEvent(
-                  DataViewerPanel,
-                  StateChangeEvent.CREATE_EDITABLE_ENTITY_DATAPACKAGE_FRAME));*/
-              storingStateChangeEvent( new StateChangeEvent(
-                    DataViewerPanel,
-                    StateChangeEvent.CREATE_EDITABLE_ENTITY_DATAPACKAGE_FRAME));
+					storingStateChangeEvent(new StateChangeEvent(
+							DataViewerPanel,
+							StateChangeEvent.CREATE_EDITABLE_ENTITY_DATAPACKAGE_FRAME));
 
-              //MouseListener popupListener = new PopupListener();
-              //table.addMouseListener(popupListener);
-            }
-            else {
-              buildTextDisplay();
-              /*StateChangeMonitor.getInstance().notifyStateChange(
-                 new StateChangeEvent(
-                 DataViewerPanel,
-               StateChangeEvent.CREATE_NONEDITABLE_ENTITY_DATAPACKAGE_FRAME));*/
-              storingStateChangeEvent( new StateChangeEvent(
-                 DataViewerPanel,
-                 StateChangeEvent.CREATE_NONEDITABLE_ENTITY_DATAPACKAGE_FRAME));
+				}
+			}
+			else {
+				if (text_flag) {
+					buildTextDisplay();
+				} else {
+					buildBinaryDisplay();
+				}
+				storingStateChangeEvent(new StateChangeEvent(
+						DataViewerPanel,
+						StateChangeEvent.CREATE_NONEDITABLE_ENTITY_DATAPACKAGE_FRAME));
+			}
+		} else {
+			if (missing_metadata_flag) {
+				// add text display here!!!
+				if (text_flag) {
+					Log.debug(30, "attempting to display as text");
+					buildTextDisplay();
+				} else {
+					buildBinaryDisplay();
+				}
+				return;
+			}
 
-            }
-          }
-        }
-        else {
-            if (missing_metadata_flag) {
-              // try displaying as text since don't know what else to do
+			// Couldn't show data view
+			// create an empty table that cannot be edited since
+			// do not know how to display
+			String msg = "Unable to display this data."
+					+ "\nHowever, an empty table with"
+					+ " the column header information will be shown.";
+			if ((currentURLInfo != null) && (currentURLInfo.length() > 0)) {
+				msg = msg + "\nData is referenced by the URL \n"
+						+ currentURLInfo;
+			}
+			Log.debug(9, msg);
+			showDataView = false;
+			dataFile = null;
+			buildTable();
+			table.setBackground(table.getParent().getBackground());
+			table.setEnabled(false);
+			storingStateChangeEvent(new StateChangeEvent(
+					DataViewerPanel,
+					StateChangeEvent.CREATE_NONEDITABLE_ENTITY_DATAPACKAGE_FRAME));
 
-              // add text display here!!!
-              Log.debug(30, "attempting to display as text");
-              buildTextDisplay();
-              return;
-            }
-        	
-          // Couldn't show data view
-          // create an empty table that cannot be edited since
-          // do not know how to display
-          String msg = "Unable to display this data."+"\nHowever, an empty table with"
-                    +" the column header information will be shown.";
-          if ((currentURLInfo!=null)&&(currentURLInfo.length()>0)) {
-            msg = msg +"\nData is referenced by the URL \n"+currentURLInfo;
-          }
-          Log.debug(9, msg);
-          showDataView = false;
-          dataFile = null;
-          buildTable();
-//          table.setBackground(UISettings.NONEDITABLE_BACKGROUND_COLOR);
-          table.setBackground(table.getParent().getBackground());
-          table.setEnabled(false);
-          /*StateChangeMonitor.getInstance().notifyStateChange(
-                 new StateChangeEvent(
-                 DataViewerPanel,
-               StateChangeEvent.CREATE_NONEDITABLE_ENTITY_DATAPACKAGE_FRAME));*/
-          storingStateChangeEvent( new StateChangeEvent(
-                 DataViewerPanel,
-                 StateChangeEvent.CREATE_NONEDITABLE_ENTITY_DATAPACKAGE_FRAME));
+		}
 
-        }
-
-    }
+	}
 
     public void setAbstractDataPackage(AbstractDataPackage adp) {
       this.adp = adp;
@@ -1138,6 +1110,16 @@ public class DataViewer extends javax.swing.JPanel
         DataScrollPanel.getViewport().removeAll();
         DataScrollPanel.getViewport().add(ta);
 
+     }
+     
+     private void buildBinaryDisplay() {
+    	 JPanel binPanel = WidgetFactory.makePanel();
+    	 binPanel.add(WidgetFactory.makeLabel("Entity Name:", false));
+    	 binPanel.add(WidgetFactory.makeLabel(entityName, false));
+    	 //binPanel.add(WidgetFactory.makeJButton("Export", null));
+    	 
+         DataScrollPanel.getViewport().removeAll();
+         DataScrollPanel.getViewport().add(binPanel);
      }
 
 	/**
