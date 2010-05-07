@@ -89,60 +89,55 @@ public class ImportOtherEntityCommand implements Command {
 		if (resultPane != null) {
 
 			final AbstractDataPackage adp = resultPane.getAbstractDataPackage();
-			DataViewer dv = resultPane.getCurrentDataViewer();
 			int entityIndex = adp.getEntityCount();
-			// do we have a data panel already?
-			if (dv != null) {
 				
-				// show the dialog
-				if (showDialog()) {
+			// show the dialog
+			if (showDialog()) {
+			
+				OrderedMap dataTableMap = replaceDataPage.getPageData();
 				
-					OrderedMap dataTableMap = replaceDataPage.getPageData();
-					
-					// get the local file
-					String dataFilePath = (String) dataTableMap.get(OtherEntityPage.ONLINE_URL_XPATH);
+				// get the local file
+				String dataFilePath = (String) dataTableMap.get(OtherEntityPage.ONLINE_URL_XPATH);
 
-					//save the data to local cache
-					File dataFile = new File(dataFilePath);
-					String nexDocId = saveDataFileAsTemp(dataFile, null);
-					dataTableMap.put(OtherEntityPage.ONLINE_URL_XPATH, DataLocation.URN_ROOT + nexDocId);
-					
-					// put it in the dom
-					 DOMImplementation impl = DOMImplementationImpl.getDOMImplementation();
-					 Document doc = impl.createDocument("", "otherEntity", null);
+				//save the data to local cache
+				File dataFile = new File(dataFilePath);
+				String nexDocId = saveDataFileAsTemp(dataFile, null);
+				dataTableMap.put(OtherEntityPage.ONLINE_URL_XPATH, DataLocation.URN_ROOT + nexDocId);
+				
+				// put it in the dom
+				 DOMImplementation impl = DOMImplementationImpl.getDOMImplementation();
+				 Document doc = impl.createDocument("", "otherEntity", null);
 
-					 Element otherEntityRoot = doc.getDocumentElement();
+				 Element otherEntityRoot = doc.getDocumentElement();
 
-					    try {
-					      XMLUtilities.getXPathMapAsDOMTree(dataTableMap, otherEntityRoot);
-					      Entity newEntity = new Entity(otherEntityRoot);
-						  adp.insertEntity(newEntity, entityIndex);
-					    }
-					    catch (TransformerException w) {
-					      Log.debug(5, "Unable to add otherEntity to package!");
-					      w.printStackTrace();
-					      return;
-					    }
-					
-					// refresh the window
-					adp.setLocation(""); // we've changed it and not yet saved
-					try {
-						ServiceController services = ServiceController.getInstance();
-						ServiceProvider provider = 
-							services.getServiceProvider(DataPackageInterface.class);
-						DataPackageInterface dataPackageInt = (DataPackageInterface) provider;
-						dataPackageInt.openNewDataPackage(adp, null);
-					} catch (ServiceNotHandledException snhe) {
-						Log.debug(6, snhe.getMessage());
-					}
-					morphoFrame.setVisible(false);
-					UIController controller = UIController.getInstance();
-					controller.removeWindow(morphoFrame);
-					morphoFrame.dispose();
-				}	
-			}
+				    try {
+				      XMLUtilities.getXPathMapAsDOMTree(dataTableMap, otherEntityRoot);
+				      Entity newEntity = new Entity(otherEntityRoot);
+					  adp.insertEntity(newEntity, entityIndex);
+				    }
+				    catch (TransformerException w) {
+				      Log.debug(5, "Unable to add otherEntity to package!");
+				      w.printStackTrace();
+				      return;
+				    }
+				
+				// refresh the window
+				adp.setLocation(""); // we've changed it and not yet saved
+				try {
+					ServiceController services = ServiceController.getInstance();
+					ServiceProvider provider = 
+						services.getServiceProvider(DataPackageInterface.class);
+					DataPackageInterface dataPackageInt = (DataPackageInterface) provider;
+					dataPackageInt.openNewDataPackage(adp, null);
+				} catch (ServiceNotHandledException snhe) {
+					Log.debug(6, snhe.getMessage());
+				}
+				morphoFrame.setVisible(false);
+				UIController controller = UIController.getInstance();
+				controller.removeWindow(morphoFrame);
+				morphoFrame.dispose();
+			}	
 		}
-
 	}// execute
 	
 	
