@@ -163,4 +163,11 @@
   <insertionList name="additionalMetadata">
       <prevNode>/eml:eml/dataset</prevNode>
   </insertionList>
+  <insertionList name="otherEntity">
+    <prevNode>/eml:eml/dataset/project</prevNode>
+    <prevNode>/eml:eml/dataset/methods</prevNode>
+    <prevNode>/eml:eml/dataset/pubPlace</prevNode>
+    <prevNode>/eml:eml/dataset/publisher</prevNode>
+    <prevNode>/eml:eml/dataset/contact</prevNode>
+  </insertionList>
 </xpathKeyMap>
