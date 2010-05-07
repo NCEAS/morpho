@@ -560,8 +560,8 @@ public class DataPackagePlugin
                             StateChangeEvent.CREATE_NOENTITY_DATAPACKAGE_FRAME,
                             false, GUIAction.EVENT_LOCAL);
     replaceDatatable.setEnabledOnStateChange(
-                   StateChangeEvent.CREATE_NONEDITABLE_ENTITY_DATAPACKAGE_FRAME,
-                   false, GUIAction.EVENT_LOCAL);
+                   StateChangeEvent.CREATE_ENTITY_DATAPACKAGE_FRAME,
+                   true, GUIAction.EVENT_LOCAL);
     controller.addGuiAction(replaceDatatable);
     
     i = i+2;

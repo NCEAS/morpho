@@ -104,8 +104,11 @@ public class ReplaceDataCommand implements Command {
 					String nexDocId = saveDataFileAsTemp(dataFile, currentId);
 					adp.setDistributionUrl(entityIndex, 0, 0, DataLocation.URN_ROOT + nexDocId);
 					
+					// NOTE: this path includes "dataTable" as the entity, but since we don't actually use it in the EML,
+					// it's not a problem for otherEntity and other entity types
 					String objectName = (String) dataTableMap.get(DataLocation.OBJECTNAME_XPATH);
 					adp.setPhysicalName(entityIndex, 0, objectName);
+					adp.setEntityName(entityIndex, objectName);
 					String numRecS = (String) dataTableMap.get(TextImportEntity.xPathRoot + "numberOfRecords");
 					adp.setEntityNumRecords(entityIndex, numRecS);
 					String sizeS = (String) dataTableMap.get(TextImportEntity.xPathRoot + "physical/size");

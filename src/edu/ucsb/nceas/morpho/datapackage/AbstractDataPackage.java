@@ -1988,8 +1988,37 @@ public abstract class AbstractDataPackage extends MetadataObject
       Log.debug(50, "exception in setting entity numRecords" + w.toString());
     }
   }
-
-
+  
+  /**
+   * This method sets the number of records in the entity, given the index of
+   * the entity in the entityNode array
+   *
+   * @param entNum int
+   * @param numRecS String
+   */
+  public void setEntityName(int entNum, String name) {
+    if ( (entityArray == null) || (entityArray.length < (entNum) + 1)) {
+      Log.debug(20, "No such entity!");
+      return;
+    }
+    Node entity = (entityArray[entNum]).getNode();
+    String entityNumRecordsXpath = "";
+    try {
+      entityNumRecordsXpath = (XMLUtilities.getTextNodeWithXPath(
+          getMetadataPath(),
+          "/xpathKeyMap/contextNode[@name='entity']/name")).getNodeValue();
+      NodeList eNodes = XPathAPI.selectNodeList(entity, entityNumRecordsXpath);
+      if (eNodes == null) {
+        return;
+      }
+      Node child = eNodes.item(0).getFirstChild();
+      child.setNodeValue(name);
+    }
+    catch (Exception w) {
+      Log.debug(50, "exception in setting entity name" + w.toString());
+    }
+  }
+  
   /**
    * This method retrieves the entity Description, given the index of the entity
    * in the entityNode array
