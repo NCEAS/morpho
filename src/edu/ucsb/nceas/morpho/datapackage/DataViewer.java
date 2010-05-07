@@ -765,7 +765,7 @@ public class DataViewer extends javax.swing.JPanel
 			image_flag = true;
 		}
 
-		if (image_flag) {
+		if (image_flag && dataFile != null) {
 			// try to display image here
 			String filename = dataFile.getPath();
 			Log.debug(30, "trying to display image! " + filename);
