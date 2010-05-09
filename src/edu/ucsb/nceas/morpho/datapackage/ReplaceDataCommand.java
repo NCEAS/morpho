@@ -83,58 +83,54 @@ public class ReplaceDataCommand implements Command {
 		if (resultPane != null) {
 
 			final AbstractDataPackage adp = resultPane.getAbstractDataPackage();
-			DataViewer dv = resultPane.getCurrentDataViewer();
 			int entityIndex = resultPane.getLastTabSelected();
-			// do we have a data panel already?
-			if (dv != null) {
 				
-				// show the dialog
-				if (showDialog()) {
+			// show the dialog
+			if (showDialog()) {
+			
+				OrderedMap dataTableMap = replaceDataPage.getPageData();
 				
-					OrderedMap dataTableMap = replaceDataPage.getPageData();
-					
-					// TODO: handle more than just the local file selection?
-					String dataFilePath = (String) dataTableMap.get(DataLocation.ONLINE_URL_XPATH);
-					// increment revision if we have the id
-					String currentOnlineUrl = adp.getDistributionUrl(entityIndex, 0, 0);
-					String currentId = null;
-					if (currentOnlineUrl.startsWith(DataLocation.URN_ROOT)) {
-						currentId = DataLocation.getFileNameFromURL(currentOnlineUrl);
-					}
-					//save the data to local cache
-					File dataFile = new File(dataFilePath);
-					String nexDocId = saveDataFileAsTemp(dataFile, currentId);
-					adp.setDistributionUrl(entityIndex, 0, 0, DataLocation.URN_ROOT + nexDocId);
-					String format = new FileDataSource(dataFile).getContentType();
-					adp.setPhysicalFormat(entityIndex, 0, format);
-					
-					// NOTE: this path includes "dataTable" as the entity, but since we don't actually use it in the EML,
-					// it's not a problem for otherEntity and other entity types
-					String objectName = (String) dataTableMap.get(DataLocation.OBJECTNAME_XPATH);
-					adp.setPhysicalName(entityIndex, 0, objectName);
-					adp.setEntityName(entityIndex, objectName);
-					String numRecS = (String) dataTableMap.get(TextImportEntity.xPathRoot + "numberOfRecords");
-					adp.setEntityNumRecords(entityIndex, numRecS);
-					String sizeS = (String) dataTableMap.get(TextImportEntity.xPathRoot + "physical/size");
-					adp.setPhysicalSize(entityIndex, 0, sizeS);
-					
-					// refresh the window
-					adp.setLocation(""); // we've changed it and not yet saved
-					try {
-						ServiceController services = ServiceController.getInstance();
-						ServiceProvider provider = 
-							services.getServiceProvider(DataPackageInterface.class);
-						DataPackageInterface dataPackageInt = (DataPackageInterface) provider;
-						dataPackageInt.openNewDataPackage(adp, null);
-					} catch (ServiceNotHandledException snhe) {
-						Log.debug(6, snhe.getMessage());
-					}
-					morphoFrame.setVisible(false);
-					UIController controller = UIController.getInstance();
-					controller.removeWindow(morphoFrame);
-					morphoFrame.dispose();
-				}	
-			}
+				// TODO: handle more than just the local file selection?
+				String dataFilePath = (String) dataTableMap.get(DataLocation.ONLINE_URL_XPATH);
+				// increment revision if we have the id
+				String currentOnlineUrl = adp.getDistributionUrl(entityIndex, 0, 0);
+				String currentId = null;
+				if (currentOnlineUrl.startsWith(DataLocation.URN_ROOT)) {
+					currentId = DataLocation.getFileNameFromURL(currentOnlineUrl);
+				}
+				//save the data to local cache
+				File dataFile = new File(dataFilePath);
+				String nexDocId = saveDataFileAsTemp(dataFile, currentId);
+				adp.setDistributionUrl(entityIndex, 0, 0, DataLocation.URN_ROOT + nexDocId);
+				String format = new FileDataSource(dataFile).getContentType();
+				adp.setPhysicalFormat(entityIndex, 0, format);
+				
+				// NOTE: this path includes "dataTable" as the entity, but since we don't actually use it in the EML,
+				// it's not a problem for otherEntity and other entity types
+				String objectName = (String) dataTableMap.get(DataLocation.OBJECTNAME_XPATH);
+				adp.setPhysicalName(entityIndex, 0, objectName);
+				adp.setEntityName(entityIndex, objectName);
+				String numRecS = (String) dataTableMap.get(TextImportEntity.xPathRoot + "numberOfRecords");
+				adp.setEntityNumRecords(entityIndex, numRecS);
+				String sizeS = (String) dataTableMap.get(TextImportEntity.xPathRoot + "physical/size");
+				adp.setPhysicalSize(entityIndex, 0, sizeS);
+				
+				// refresh the window
+				adp.setLocation(""); // we've changed it and not yet saved
+				try {
+					ServiceController services = ServiceController.getInstance();
+					ServiceProvider provider = 
+						services.getServiceProvider(DataPackageInterface.class);
+					DataPackageInterface dataPackageInt = (DataPackageInterface) provider;
+					dataPackageInt.openNewDataPackage(adp, null);
+				} catch (ServiceNotHandledException snhe) {
+					Log.debug(6, snhe.getMessage());
+				}
+				morphoFrame.setVisible(false);
+				UIController controller = UIController.getInstance();
+				controller.removeWindow(morphoFrame);
+				morphoFrame.dispose();
+			}	
 		}
 
 	}// execute
