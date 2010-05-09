@@ -658,9 +658,7 @@ public class DataViewer extends javax.swing.JPanel
 		} else {
 			Node[] physicalArray = adp.getPhysicalArray(entityIndex);
 			if (physicalArray.length == 0) {
-				Log
-						.debug(15,
-								"Physical information about the data is missing!");
+				Log.debug(15, "Physical information about the data is missing!");
 				missing_metadata_flag = true;
 			} else {
 				// get format, recordDelimiter, field delimiter
@@ -703,8 +701,7 @@ public class DataViewer extends javax.swing.JPanel
 			}
 			Node[] attributeArray = adp.getAttributeArray(entityIndex);
 			if (attributeArray == null || attributeArray.length == 0) {
-				Log.debug(15,
-						"Attribute information about the data is missing!");
+				Log.debug(15, "Attribute information about the data is missing!");
 				missing_metadata_flag = true;
 			} else {
 				column_labels = new Vector();
@@ -765,58 +762,52 @@ public class DataViewer extends javax.swing.JPanel
 			image_flag = true;
 		}
 
-		if (image_flag && dataFile != null) {
-			// try to display image here
-			String filename = dataFile.getPath();
-			Log.debug(30, "trying to display image! " + filename);
-			ImageIcon icon = new ImageIcon(filename);
-			JLabel imagelabel = new JLabel(icon);
-			DataScrollPanel.getViewport().removeAll();
-			DataScrollPanel.getViewport().add(imagelabel);
-			// Store this event
-			storingStateChangeEvent(new StateChangeEvent(
-					DataViewerPanel,
-					StateChangeEvent.CREATE_NONEDITABLE_ENTITY_DATAPACKAGE_FRAME));
-
-		} else if ((text_flag) && (dataFile != null)) {
-			// try building a table
-			if ((column_labels != null) && (column_labels.size() > 0)) {
-				if ((field_delimiter.trim().length() > 0) && (dataFile.length() > 0)) {
+		// we can display DATA
+		if (dataFile != null) {
+			// IMAGE
+			if (image_flag) {
+				// try to display image here
+				String filename = dataFile.getPath();
+				Log.debug(30, "trying to display image! " + filename);
+				ImageIcon icon = new ImageIcon(filename);
+				JLabel imagelabel = new JLabel(icon);
+				DataScrollPanel.getViewport().removeAll();
+				DataScrollPanel.getViewport().add(imagelabel);
+				// Store this event
+				storingStateChangeEvent(new StateChangeEvent(
+						DataViewerPanel,
+						StateChangeEvent.CREATE_NONEDITABLE_ENTITY_DATAPACKAGE_FRAME));
+				return;
+			}
+			// TEXT
+			if (text_flag) {
+				// TABLE with data
+				if (column_labels != null && column_labels.size() > 0 && field_delimiter.trim().length() > 0 && dataFile.length() > 0) {
 					buildTable();
 					storingStateChangeEvent(new StateChangeEvent(
 							DataViewerPanel,
 							StateChangeEvent.CREATE_EDITABLE_ENTITY_DATAPACKAGE_FRAME));
-				} else if ((dataFile == null) || ((dataFile.length() < 1))) {
-					numHeaderLines = "0";
-					buildTable();
-
+					return;
+				}
+				// just text
+				else {
+					buildTextDisplay();
 					storingStateChangeEvent(new StateChangeEvent(
 							DataViewerPanel,
-							StateChangeEvent.CREATE_EDITABLE_ENTITY_DATAPACKAGE_FRAME));
-
+							StateChangeEvent.CREATE_NONEDITABLE_ENTITY_DATAPACKAGE_FRAME));
 				}
 			}
 			else {
-				if (text_flag) {
-					buildTextDisplay();
-				} else {
-					buildBinaryDisplay();
-				}
+				buildBinaryDisplay();
+				
+				// Store this event
 				storingStateChangeEvent(new StateChangeEvent(
 						DataViewerPanel,
 						StateChangeEvent.CREATE_NONEDITABLE_ENTITY_DATAPACKAGE_FRAME));
 			}
-		} else {
-			if (missing_metadata_flag) {
-				// add text display here!!!
-				if (text_flag) {
-					Log.debug(30, "attempting to display as text");
-					buildTextDisplay();
-				} else {
-					buildBinaryDisplay();
-				}
-				return;
-			}
+		}
+		// NO DATA
+		else {
 
 			// Couldn't show data view
 			// create an empty table that cannot be edited since
