@@ -84,7 +84,7 @@ public class FileChooserWidget extends JPanel {
 	                } else {  // use previous dataDirectory
 	                  fc.setCurrentDirectory(lastDataDir);
 	                }
-	                int returnVal = fc.showOpenDialog(WizardContainerFrame.frame);
+	                int returnVal = fc.showOpenDialog(null);
 	                File file = null;
 	                if (returnVal == JFileChooser.APPROVE_OPTION) {
 
