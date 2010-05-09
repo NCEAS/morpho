@@ -1107,7 +1107,24 @@ public class DataViewer extends javax.swing.JPanel
     	 JPanel binPanel = WidgetFactory.makePanel();
     	 binPanel.add(WidgetFactory.makeLabel("Entity Name:", false));
     	 binPanel.add(WidgetFactory.makeLabel(entityName, false));
-    	 //binPanel.add(WidgetFactory.makeJButton("Export", null));
+    	 ActionListener exportListener = new ActionListener() {
+
+			public void actionPerformed(ActionEvent e) {
+				String curdir = System.getProperty("user.dir");
+				JFileChooser jfc = new JFileChooser(curdir);
+				jfc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+				jfc.setDialogTitle("Export data entity to directory");
+				int response = jfc.showSaveDialog(DataScrollPanel);
+				if (response == JFileChooser.APPROVE_OPTION) {
+					File saveTarget = jfc.getSelectedFile();
+					adp.exportDataFiles(
+							saveTarget.getAbsolutePath(), 
+							new Integer(entityIndex));
+					JOptionPane.showMessageDialog(DataScrollPanel, "Export Complete");
+				}
+			}
+    	 };
+    	 binPanel.add(WidgetFactory.makeJButton("Export...", exportListener));
     	 
          DataScrollPanel.getViewport().removeAll();
          DataScrollPanel.getViewport().add(binPanel);

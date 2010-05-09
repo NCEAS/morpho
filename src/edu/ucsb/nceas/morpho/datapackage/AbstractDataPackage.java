@@ -4489,7 +4489,8 @@ public abstract class AbstractDataPackage extends MetadataObject
                 + w.getMessage());
     }
 
-    exportDataFiles(savedirDataSub.getAbsolutePath());
+    // export all entities
+    exportDataFiles(savedirDataSub.getAbsolutePath(), null);
     JOptionPane.showMessageDialog(UIController.getInstance().getCurrentActiveWindow(),
                                   "Package export is complete ! ");
   }
@@ -4634,10 +4635,10 @@ public abstract class AbstractDataPackage extends MetadataObject
    * copies all the data files in a package to a directory indicated
    * by 'path'. Files are given the original file name, if available
    */
-  public void exportDataFiles(String path) {
+  public void exportDataFiles(String path, Integer entityIndex) {
     if(location.equals(TEMPLOCATION))
     {
-      Log.debug(5, "Morpho couldn't import a package which has been saved!");
+      Log.debug(5, "Morpho cannot export a data package that has not been saved!");
     }
     String origFileName;
     File dataFile = null;
@@ -4651,6 +4652,10 @@ public abstract class AbstractDataPackage extends MetadataObject
     }
     // assume the package has been saved so that location is either LOCAL or METACAT
     for (int i = 0; i < entityArray.length; i++) {
+    	// if given a particular entity, on;y export it, otherwise do all
+    	if (entityIndex != null && i != entityIndex) {
+    		continue;
+    	}
       String urlinfo = getDistributionUrl(i, 0, 0);
       // assumed that urlinfo is of the form 'protocol://systemname/localid/other'
       // protocol is probably 'ecogrid'; system name is 'knb'
