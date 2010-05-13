@@ -1117,10 +1117,12 @@ public class DataViewer extends javax.swing.JPanel
 				int response = jfc.showSaveDialog(DataScrollPanel);
 				if (response == JFileChooser.APPROVE_OPTION) {
 					File saveTarget = jfc.getSelectedFile();
-					adp.exportDataFiles(
+					boolean success = adp.exportDataFiles(
 							saveTarget.getAbsolutePath(), 
 							new Integer(entityIndex));
-					JOptionPane.showMessageDialog(DataScrollPanel, "Export Complete");
+					if (success) {
+						JOptionPane.showMessageDialog(DataScrollPanel, "Export Complete");
+					}
 				}
 			}
     	 };

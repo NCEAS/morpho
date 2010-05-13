@@ -4635,10 +4635,11 @@ public abstract class AbstractDataPackage extends MetadataObject
    * copies all the data files in a package to a directory indicated
    * by 'path'. Files are given the original file name, if available
    */
-  public void exportDataFiles(String path, Integer entityIndex) {
+  public boolean exportDataFiles(String path, Integer entityIndex) {
     if(location.equals(TEMPLOCATION))
     {
       Log.debug(5, "Morpho cannot export a data package that has not been saved!");
+      return false;
     }
     String origFileName;
     File dataFile = null;
@@ -4648,7 +4649,7 @@ public abstract class AbstractDataPackage extends MetadataObject
     getEntityArray();
     if (entityArray == null) {
       Log.debug(20, "there is no data!");
-      return; // there is no data!
+      return true; // there is no data, but is that an error?!
     }
     // assume the package has been saved so that location is either LOCAL or METACAT
     for (int i = 0; i < entityArray.length; i++) {
@@ -4711,12 +4712,14 @@ public abstract class AbstractDataPackage extends MetadataObject
         catch (Exception ex) {
           Log.debug(5, "Some problem while writing data files has occurred!");
           ex.printStackTrace();
+          return false;
         }
       }
       catch (Exception q) {
         // some other problem has occured
         Log.debug(5, "Some problem with saving data files has occurred!");
         q.printStackTrace();
+        return false;
       }
       // now copy dataFile
       try{
@@ -4741,9 +4744,11 @@ public abstract class AbstractDataPackage extends MetadataObject
       }
       catch (Exception f) {
         Log.debug(20, "Error exporting data file! (AbstractDataPackage)");
+        return false;
       }
 
     }
+    return true;
   }
 
 
