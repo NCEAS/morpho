@@ -348,9 +348,9 @@ public class Taxonomic extends AbstractUIPage {
     taxonImportPanel = null;
 
     JButton importButton = new HyperlinkButton(action);
-    importButton.setPreferredSize(UISettings.INIT_SCR_LINKBUTTON_DIMS);
-    importButton.setMinimumSize(UISettings.INIT_SCR_LINKBUTTON_DIMS);
-    importButton.setMaximumSize(UISettings.INIT_SCR_LINKBUTTON_DIMS);
+//    importButton.setPreferredSize(UISettings.INIT_SCR_LINKBUTTON_DIMS);
+//    importButton.setMinimumSize(UISettings.INIT_SCR_LINKBUTTON_DIMS);
+//    importButton.setMaximumSize(UISettings.INIT_SCR_LINKBUTTON_DIMS);
     JLabel headLabel = null;
     if(displayTable == false){
       headLabel = WidgetFactory.makeHTMLLabel(headingNoImportTable, 6, false);

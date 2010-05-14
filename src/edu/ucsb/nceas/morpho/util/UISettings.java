@@ -170,7 +170,7 @@ public class UISettings
      *  size of the hyperlink buttons on the left side of the initial screen
      */
     public static final Dimension INIT_SCR_LINKBUTTON_DIMS
-                                                    = new Dimension(280, 20);
+                                                    = new Dimension(290, 20);
 
     /**
      * size of the login button for init screen
