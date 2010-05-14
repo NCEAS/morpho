@@ -1025,9 +1025,9 @@ public void setTopPanel(JPanel jp) {
                 XMLTransformer.XSLVALU_DISPLAY_ATTRB);
       meta.useTransformerProperty(XMLTransformer.SELECTED_ATTRIBS_XSLPROP,
                                   String.valueOf(selectedColIndex + 1));
-      // set index for the entity type
-      String entityType = adp.getEntityType(lastTabSelected);
-      int indexForEntityType = adp.getEntityIndexForType(lastTabSelected, entityType);
+      // do not set the entity type/special index for displaying attributes
+      //String entityType = adp.getEntityType(lastTabSelected);
+      int indexForEntityType = lastTabSelected; //adp.getEntityIndexForType(lastTabSelected, entityType);
       meta.useTransformerProperty(XMLTransformer.SELECTED_ENTITY_XSLPROP,
               String.valueOf(indexForEntityType + 1));
       
