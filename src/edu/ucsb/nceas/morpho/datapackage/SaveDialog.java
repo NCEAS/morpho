@@ -343,6 +343,9 @@ public class SaveDialog extends JDialog
     String location = adp.getLocation();
     // track the save event
     SaveEvent saveEvent = new SaveEvent(this, StateChangeEvent.SAVE_DATAPACKAGE);
+    String id = adp.getAccessionNumber();
+    // initial id
+    saveEvent.setInitialId(id);
     if (location.equals("")) { // only update version if new
       try {
           if (upgradeEml.isSelected()) {
@@ -377,9 +380,6 @@ public class SaveDialog extends JDialog
       }
 
       try{
-        String id = adp.getAccessionNumber();
-        // initial id
-        saveEvent.setInitialId(id);
         if (id.indexOf(AccessionNumber.TEMP)>-1) {
           AccessionNumber an = new AccessionNumber(morpho);
           String nextid = an.getNextId();
