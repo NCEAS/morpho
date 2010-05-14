@@ -620,6 +620,26 @@ public class DataPackagePlugin
 		StateChangeEvent.CREATE_SEARCH_RESULT_FRAME,
 		false, GUIAction.EVENT_LOCAL);
 	controller.addGuiAction(importOtherEntity);
+	
+	i = i+1;
+    GUIAction exportData = new GUIAction("Export Data...", null,
+            new ExportDataCommand());
+    exportData.setToolTipText("Export data");
+    exportData.setMenuItemPosition(i);
+    exportData.setMenu(DATA_MENU_LABEL, DATAMENUPOSITION);
+    exportData.setEnabledOnStateChange(
+            StateChangeEvent.CREATE_EDITABLE_ENTITY_DATAPACKAGE_FRAME,
+            true, GUIAction.EVENT_LOCAL);
+    exportData.setEnabledOnStateChange(
+	                  StateChangeEvent.CREATE_SEARCH_RESULT_FRAME,
+	                  false, GUIAction.EVENT_LOCAL);
+    exportData.setEnabledOnStateChange(
+	                  StateChangeEvent.CREATE_NOENTITY_DATAPACKAGE_FRAME,
+	                  false, GUIAction.EVENT_LOCAL);
+    exportData.setEnabledOnStateChange(
+         StateChangeEvent.CREATE_ENTITY_DATAPACKAGE_FRAME,
+         true, GUIAction.EVENT_LOCAL);
+	controller.addGuiAction(exportData);
 
     i = i+2;
     GUIAction convertOtherEntity = new GUIAction("Convert Data to Table...", null,
@@ -812,6 +832,7 @@ public class DataPackagePlugin
 	viewDocumentation.setEnabled(false);
     createNewDatatable.setEnabled(false);
     replaceDatatable.setEnabled(false);
+    exportData.setEnabled(false);
     convertOtherEntity.setEnabled(false);
     importOtherEntity.setEnabled(false);
     deleteDatatable.setEnabled(false);

@@ -25,55 +25,59 @@
 
 package edu.ucsb.nceas.morpho.datapackage;
 
-import java.awt.*;
-import javax.swing.*;
-import javax.swing.event.*;
-import javax.swing.table.*;
-import java.io.*;
-import java.net.*;
-import java.util.Vector;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.FlowLayout;
+import java.awt.Point;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.util.EventObject;
 import java.util.StringTokenizer;
-import java.util.Date;
-import java.util.Enumeration;
-import java.util.EventObject;
-import java.awt.event.*;
-import java.util.Stack;
-import java.util.EventObject;
+import java.util.Vector;
 
+import javax.swing.DefaultCellEditor;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JComponent;
+import javax.swing.JDialog;
+import javax.swing.JLabel;
+import javax.swing.JMenuItem;
+import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
+import javax.swing.JScrollPane;
+import javax.swing.JSeparator;
+import javax.swing.JTable;
+import javax.swing.JTextArea;
+import javax.swing.KeyStroke;
+import javax.swing.ListSelectionModel;
+import javax.swing.SwingConstants;
+import javax.swing.UIManager;
+import javax.swing.table.JTableHeader;
+import javax.swing.table.TableColumn;
+import javax.swing.table.TableColumnModel;
 
-//import org.apache.xalan.xpath.xml.FormatterToXML;
-//import org.apache.xalan.xpath.xml.TreeWalker;
-import org.w3c.dom.Attr;
-import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-import org.w3c.dom.DocumentType;
-import org.xml.sax.SAXException;
-import org.xml.sax.InputSource;
 
 import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.framework.ConfigXML;
 import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
-import edu.ucsb.nceas.morpho.framework.EditingCompleteListener;
-import edu.ucsb.nceas.morpho.framework.EditorInterface;
 import edu.ucsb.nceas.morpho.framework.MorphoFrame;
 import edu.ucsb.nceas.morpho.framework.UIController;
-import edu.ucsb.nceas.morpho.util.DocumentNotFoundException;
 import edu.ucsb.nceas.morpho.plugins.ServiceController;
 import edu.ucsb.nceas.morpho.plugins.ServiceProvider;
-import edu.ucsb.nceas.morpho.plugins.ServiceNotHandledException;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WidgetFactory;
-import edu.ucsb.nceas.morpho.datastore.FileSystemDataStore;
-import edu.ucsb.nceas.morpho.datastore.MetacatDataStore;
-import edu.ucsb.nceas.morpho.datastore.CacheAccessException;
-
 import edu.ucsb.nceas.morpho.util.GUIAction;
+import edu.ucsb.nceas.morpho.util.HyperlinkButton;
 import edu.ucsb.nceas.morpho.util.Log;
 import edu.ucsb.nceas.morpho.util.StateChangeEvent;
 import edu.ucsb.nceas.morpho.util.StateChangeMonitor;
 import edu.ucsb.nceas.morpho.util.StoreStateChangeEvent;
-import edu.ucsb.nceas.morpho.util.UISettings;
 
 
 /*
@@ -1106,27 +1110,9 @@ public class DataViewer extends javax.swing.JPanel
      private void buildBinaryDisplay() {
     	 JPanel binPanel = WidgetFactory.makePanel();
     	 binPanel.add(WidgetFactory.makeLabel("Entity Name:", false));
-    	 binPanel.add(WidgetFactory.makeLabel(entityName, false));
-    	 ActionListener exportListener = new ActionListener() {
-
-			public void actionPerformed(ActionEvent e) {
-				String curdir = System.getProperty("user.dir");
-				JFileChooser jfc = new JFileChooser(curdir);
-				jfc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-				jfc.setDialogTitle("Export data entity to directory");
-				int response = jfc.showSaveDialog(DataScrollPanel);
-				if (response == JFileChooser.APPROVE_OPTION) {
-					File saveTarget = jfc.getSelectedFile();
-					boolean success = adp.exportDataFiles(
-							saveTarget.getAbsolutePath(), 
-							new Integer(entityIndex));
-					if (success) {
-						JOptionPane.showMessageDialog(DataScrollPanel, "Export Complete");
-					}
-				}
-			}
-    	 };
-    	 binPanel.add(WidgetFactory.makeJButton("Export...", exportListener));
+    	 binPanel.add(WidgetFactory.makeLabel(entityName, false, null));
+    	 GUIAction exportDataAction = new GUIAction("Export data...", null, new ExportDataCommand());
+    	 binPanel.add(new HyperlinkButton(exportDataAction));
     	 
          DataScrollPanel.getViewport().removeAll();
          DataScrollPanel.getViewport().add(binPanel);
