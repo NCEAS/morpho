@@ -2529,6 +2529,7 @@ public abstract class AbstractDataPackage extends MetadataObject
 			String name = (String)map.get(xPath + "/unit[" + cnt + "]/@name");
 			if(name == null) break;
 			String type = (String)map.get(xPath + "/unit[" + cnt + "]/@unitType");
+			if(type == null) break;
 			addNewUnit(type, name, map);
 			cnt++;
 		}
