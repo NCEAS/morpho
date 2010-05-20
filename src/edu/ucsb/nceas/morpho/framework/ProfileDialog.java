@@ -70,7 +70,7 @@ public class ProfileDialog extends JDialog implements StateChangeListener
   public static final String CORRECTIONEMLPROFILEPATH = "eml201corrected";
   
   public static final String[] ILLEGAL_SCOPE_CHARACTERS = 
-	  new String[] {"", " ", "&", "#", ",", ".", "+", "-", "(", ")"};
+	  new String[] {" ", "&", "#", ",", ".", "+", "-", "(", ")"};
 
   KeyPressActionListener keyPressListener = new KeyPressActionListener();
 
@@ -527,7 +527,7 @@ public class ProfileDialog extends JDialog implements StateChangeListener
         fieldsAreValid = false;
       }
 
-    if (scopeField.getText() == null) {
+    if (scopeField.getText() == null || scopeField.getText().length() == 0) {
       fieldsAreValid = false;
     } else {
 	    for (String ch: ILLEGAL_SCOPE_CHARACTERS) {
