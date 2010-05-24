@@ -1254,6 +1254,9 @@ public class DataPackagePlugin
     	Log.debug(30,"Couldn't sleep the thread");
     }
     packageWindow.setMainContentPane(dvcp);
+    
+    // [re]set the current window here in case any oher windows were activated during the construction 
+    UIController.getInstance().setCurrentActiveWindow(packageWindow);
 
     // Broadcast stored event int dvcp
     dvcp.broadcastStoredStateChangeEvent();
@@ -1314,7 +1317,7 @@ public class DataPackagePlugin
             
         });
 
-    UIController.getInstance().setCurrentActiveWindow(packageWindow);
+    //UIController.getInstance().setCurrentActiveWindow(packageWindow);
   }
 
 

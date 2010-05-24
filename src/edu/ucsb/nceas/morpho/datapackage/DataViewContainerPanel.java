@@ -950,6 +950,9 @@ public void setTopPanel(JPanel jp) {
       currentDataPanel.setLayout(new BorderLayout(0,0));
       currentDataPanel.add(BorderLayout.CENTER,tablePanel);
       currentDataPanel.setBackground(UISettings.NONEDITABLE_BACKGROUND_COLOR);
+      //alert others to the state change
+      StateChangeEvent selectionEvent = new StateChangeEvent(this, StateChangeEvent.SELECT_DATA_VIEWER);
+      
       if (GUIAction.getMorphoFrameAncestor(this) == null)
       {
         //Store the event create from its kid - DataViewer
@@ -963,17 +966,16 @@ public void setTopPanel(JPanel jp) {
             storingStateChangeEvent(eventInKid);
           }//for
         }//if
-
+        storingStateChangeEvent(selectionEvent);
       }//if
       else
       {
         //frame already has, borading the event
         dv.broadcastStoredStateChangeEvent();
+        StateChangeMonitor.getInstance().notifyStateChange(selectionEvent);
      }
       
-      //alert others to the state change
-      StateChangeEvent selectionEvent = new StateChangeEvent(this, StateChangeEvent.SELECT_DATA_VIEWER);
-      StateChangeMonitor.getInstance().notifyStateChange(selectionEvent);
+      
 
   }
 
