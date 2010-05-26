@@ -1445,68 +1445,87 @@ public class DataViewer extends javax.swing.JPanel
   }
 
 
-
+  /**
+   * Mouse click event handler
+   */
   class HeaderMouseListener implements MouseListener {
+	  	
+	  	private boolean trigger = false;
+    	public void mouseClicked(MouseEvent event) {
+			// ignore double clicks
+			if (event.getClickCount() > 1) {
+				return;
+			}
+			TableColumnModel colModel = table.getColumnModel();
+			int index = colModel.getColumnIndexAtX(event.getX());
+			TableColumn column = colModel.getColumn(index);
+			int modelIndex = column.getModelIndex();
+			
+			// TODO: test multi in windows
+			boolean isMulti = (event.isMetaDown() || event.isControlDown()); 														
+			if (isMulti) {
+				table.addColumnSelectionInterval(index, index);
+			} else {
+				table.setColumnSelectionInterval(index, index);
+			}
 
-    /**
-     * Mouse click event handler
-     */
-    private boolean trigger = false;
-    public void mouseClicked(MouseEvent event)
-    {
-    	//ignore double clicks
-    	if (event.getClickCount() > 1) {
-    		return;
-    	}
-      TableColumnModel colModel = table.getColumnModel();
-      int index = colModel.getColumnIndexAtX(event.getX());
-      TableColumn column = colModel.getColumn(index);
-      int modelIndex = column.getModelIndex();
-      if (table.getRowCount()>0) {
-          table.setRowSelectionInterval(0, table.getRowCount()-1);
-      }
-      boolean isMulti = (event.isMetaDown() || event.isControlDown()); //TODO: try in windows
-      if (isMulti) {
-      		table.addColumnSelectionInterval(index, index);
-      } else {
-    	  table.setColumnSelectionInterval(index, index);
-      }
-      if (event.isPopupTrigger())
-      {
-        // Show popup menu
-        trigger = true;
-      }
-      else
-      {
-        // Fire a state change event to show attribute file in meta panel
-        StateChangeEvent stateEvent = new
-              StateChangeEvent(table,StateChangeEvent.SELECT_DATATABLE_COLUMN);
-        StateChangeMonitor stateMonitor = StateChangeMonitor.getInstance();
-        stateMonitor.notifyStateChange(stateEvent);
-      }
-    }
+			// stop if we were prevented from selecting the column by an
+			// alternative selection model
+			boolean selectionSuccess = (index == table.getSelectedColumn());
+			// check for multi-select if we don't already have it
+			if (!selectionSuccess) {
+				int[] selectedColumns = table.getSelectedColumns();
+				for (int col: selectedColumns) {
+					if (col == index) {
+						selectionSuccess = true;
+						break;
+					}
+				}
+			}
+			
+			// don't continue because it was intercepted
+			if (!selectionSuccess) {
+				return;
+			}
 
-    public void mouseReleased(MouseEvent e)
-    {
-      maybeShowPopup(e);
-    }
+			// select the rows for visual consistency
+			if (table.getRowCount() > 0) {
+				table.setRowSelectionInterval(0, table.getRowCount() - 1);
+			}
 
-    private void maybeShowPopup(MouseEvent e)
-    {
-      if(e.isPopupTrigger() || trigger)
-      {
+			// possibly show popup menu
+			if (event.isPopupTrigger()) {
+				trigger = true;
+			} else {
+				// Fire a state change event to show attribute file in meta
+				// panel and alert other listeners
+				StateChangeEvent stateEvent = 
+					new StateChangeEvent(table, StateChangeEvent.SELECT_DATATABLE_COLUMN);
+				StateChangeMonitor stateMonitor = StateChangeMonitor.getInstance();
+				stateMonitor.notifyStateChange(stateEvent);
+			}
+		}
 
-	      trigger = false;
-        popup.show(e.getComponent(), e.getX(), e.getY());
+    	public void mouseReleased(MouseEvent e) {
+			maybeShowPopup(e);
+		}
 
-      }
-    }
-    //public void mouseReleased(MouseEvent event){}
-    public void mousePressed(MouseEvent event) {
-    	maybeShowPopup(event);
-    }
-    public void mouseEntered(MouseEvent event) {}
-    public void mouseExited(MouseEvent event) {}
-  }
+		private void maybeShowPopup(MouseEvent e) {
+			if (e.isPopupTrigger() || trigger) {
+				trigger = false;
+				popup.show(e.getComponent(), e.getX(), e.getY());
+			}
+		}
+
+		public void mousePressed(MouseEvent event) {
+			maybeShowPopup(event);
+		}
+
+		public void mouseEntered(MouseEvent event) {
+		}
+
+		public void mouseExited(MouseEvent event) {
+		}
+	}
 
 }
