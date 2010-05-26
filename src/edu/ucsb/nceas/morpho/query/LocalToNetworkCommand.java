@@ -199,75 +199,7 @@ public class LocalToNetworkCommand implements Command
                 Log.debug(1,"Synchonization failed!");
                 Log.debug(20, "MetacatUploadException: "+errorMsg);
                 return null;
-              /*} else {
-              //ask the user if he is sure he wants to overwrite the package
-              //if he is do it, otherwise return
-              String message="A conflict has been found in one or more of the "+ 
-               "identifiers \nin your package.  It is possible that you or \n" + 
-               "someone else has made a change on the server that has not \n" +
-               "been reflected on your local copy. If you proceed the identifier \n"+
-               "for this package will be changed.  Are you sure you want to \n"+
-               "proceed with the upload?";
-              int choice = JOptionPane.YES_OPTION;
-              // JOptionPane has different parent depend it has open or not
-              if (hasOpen)
-              {
-                choice = JOptionPane.showConfirmDialog(open, message, 
-                                 "Morpho", 
-                                 JOptionPane.YES_NO_CANCEL_OPTION,
-                                 JOptionPane.WARNING_MESSAGE);
-              }
-              else
-              {
-                choice = JOptionPane.showConfirmDialog(frame, message, 
-                                 "Morpho", 
-                                 JOptionPane.YES_NO_CANCEL_OPTION,
-                                 JOptionPane.WARNING_MESSAGE);
-              }
               
-              if(choice == JOptionPane.YES_OPTION)
-              {
-                try
-                {
-                  // a new id or orignal id will be returned.
-                  Log.debug(30, "the docid before upload: "+selectDocId);
-                  String docid = dataPackage.upload(selectDocId, true);
-                  Log.debug(30, "docid after upload: "+docid);
-                  if (docid != null && !docid.equals(selectDocId))
-                 {
-                	  // create a local copy for the new document.
-                	  //dataPackage.download(metacatDocid);
-            	      JOptionPane.showMessageDialog(null, ""+selectDocId+ " exists in local system and morpho assigns new docid "+
-            			  docid+ " for it.", "Information",
-                          JOptionPane.INFORMATION_MESSAGE);
-                  };
-                  refreshFlag = true;
-                  // for search result 
-                  if ( comeFromOpenDialog || (morphoFrameType != null &&
-                      morphoFrameType.equals(morphoFrame.SEARCHRESULTFRAME)))
-                  {
-                    refresh.execute(null);
-                  }
-                  else if (morphoFrameType != null &&
-                     morphoFrameType.equals(morphoFrame.DATAPACKAGEFRAME))
-                  {
-                   
-                    // for data package frame
-                    refreshDataPackageFrame(docid);
-                  }
-                }
-                catch(MetacatUploadException mue2)
-                {
-                  Log.debug(0, mue2.getMessage());
-                  
-                }
-              }
-              else
-              {
-                
-                return null;
-              }
-            }*/
             }
           
           
@@ -305,10 +237,5 @@ public class LocalToNetworkCommand implements Command
     worker.start();  //required for SwingWorker 3
   
   }
- 
-   /**
-    * could also have undo functionality; disabled for now
-   */ 
-  // public void undo();
 
-}//class CancelCommand
+}
