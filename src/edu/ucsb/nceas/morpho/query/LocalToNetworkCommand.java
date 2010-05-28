@@ -25,6 +25,7 @@
  */
 package edu.ucsb.nceas.morpho.query;
 
+import edu.ucsb.nceas.morpho.datapackage.AbstractDataPackage;
 import edu.ucsb.nceas.morpho.datastore.MetacatUploadException;
 import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
 import edu.ucsb.nceas.morpho.framework.MorphoFrame;
@@ -35,6 +36,10 @@ import edu.ucsb.nceas.morpho.plugins.ServiceProvider;
 import edu.ucsb.nceas.morpho.plugins.ServiceNotHandledException;
 import edu.ucsb.nceas.morpho.util.Command;
 import edu.ucsb.nceas.morpho.util.Log;
+import edu.ucsb.nceas.morpho.util.SaveEvent;
+import edu.ucsb.nceas.morpho.util.StateChangeEvent;
+import edu.ucsb.nceas.morpho.util.StateChangeMonitor;
+
 import java.awt.event.ActionEvent;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
@@ -168,6 +173,7 @@ public class LocalToNetworkCommand implements Command
             Log.debug(20, "Uploading package.");
             try
             {
+            	
               String metacatDocid = dataPackage.upload(selectDocId, false);
               if (metacatDocid != null && !metacatDocid.equals(selectDocId))
               {
@@ -177,6 +183,14 @@ public class LocalToNetworkCommand implements Command
             			  metacatDocid+ " for it.", "Information",
                           JOptionPane.INFORMATION_MESSAGE);
               }
+              
+              SaveEvent saveEvent = new SaveEvent(morphoFrame, StateChangeEvent.SAVE_DATAPACKAGE);
+              saveEvent.setSynchronize(true);
+              saveEvent.setInitialId(selectDocId);
+              saveEvent.setFinalId(metacatDocid);
+              saveEvent.setLocation(AbstractDataPackage.METACAT);
+              StateChangeMonitor.getInstance().notifyStateChange(saveEvent);
+              
               refreshFlag = true;
               
               if ( comeFromOpenDialog || (morphoFrameType != null &&

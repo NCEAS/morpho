@@ -25,6 +25,7 @@
  */
 package edu.ucsb.nceas.morpho.query;
 
+import edu.ucsb.nceas.morpho.datapackage.AbstractDataPackage;
 import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
 import edu.ucsb.nceas.morpho.framework.MorphoFrame;
 import edu.ucsb.nceas.morpho.framework.SwingWorker;
@@ -34,6 +35,10 @@ import edu.ucsb.nceas.morpho.plugins.ServiceProvider;
 import edu.ucsb.nceas.morpho.plugins.ServiceNotHandledException;
 import edu.ucsb.nceas.morpho.util.Command;
 import edu.ucsb.nceas.morpho.util.Log;
+import edu.ucsb.nceas.morpho.util.SaveEvent;
+import edu.ucsb.nceas.morpho.util.StateChangeEvent;
+import edu.ucsb.nceas.morpho.util.StateChangeMonitor;
+
 import java.awt.event.ActionEvent;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
@@ -169,6 +174,14 @@ public class NetworkToLocalCommand implements Command
         			  localDocid+ " for it.", "Information",
                       JOptionPane.INFORMATION_MESSAGE);
           }
+          
+          SaveEvent saveEvent = new SaveEvent(morphoFrame, StateChangeEvent.SAVE_DATAPACKAGE);
+          saveEvent.setSynchronize(true);
+          saveEvent.setInitialId(selectDocId);
+          saveEvent.setFinalId(localDocid);
+          saveEvent.setLocation(AbstractDataPackage.LOCAL);
+          StateChangeMonitor.getInstance().notifyStateChange(saveEvent);
+          
           refreshFlag = true;
           //refresh.execute(null);
           if ( comeFromOpenDialog || (morphoFrameType != null &&
