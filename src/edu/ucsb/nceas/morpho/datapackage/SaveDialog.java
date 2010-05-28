@@ -389,6 +389,7 @@ public class SaveDialog extends JDialog {
 		}
 
 		try {
+			// BOTH
 			if ((localLoc.isSelected()) && (localLoc.isEnabled())
 					&& (networkLoc.isSelected()) && (networkLoc.isEnabled())) {
 				adp.serializeData(AbstractDataPackage.BOTH);
@@ -403,7 +404,7 @@ public class SaveDialog extends JDialog {
 				} else {
 					adp.setLocation("");
 				}
-
+			// LOCAL
 			} else if ((localLoc.isSelected()) && (localLoc.isEnabled())) {
 				adp.serializeData(AbstractDataPackage.LOCAL);
 				adp.serialize(AbstractDataPackage.LOCAL);
@@ -412,7 +413,7 @@ public class SaveDialog extends JDialog {
 				} else {
 					adp.setLocation("");
 				}
-
+			// METACAT
 			} else if ((networkLoc.isSelected()) && (networkLoc.isEnabled())) {
 				adp.serializeData(AbstractDataPackage.METACAT);
 				adp.serialize(AbstractDataPackage.METACAT);
@@ -426,9 +427,13 @@ public class SaveDialog extends JDialog {
 				} else {
 					adp.setLocation("");
 				}
+			// NOTHING	
 			} else {
 				Log.debug(1, "No location for saving is selected!");
+				// don't refresh the screen - nothing has been done
+				problem = true;
 			}
+		// TODO: these exceptions seem to be caught earlier in the serialize steps	
 		} catch (MetacatUploadException mue) {
 			String errormsg = mue.getMessage();
 			if (errormsg.indexOf("ERROR SAVING DATA TO METACAT") > -1) {
@@ -437,12 +442,9 @@ public class SaveDialog extends JDialog {
 			} else if (errormsg.indexOf("is already in use") > -1) {
 				// metadata insert error
 				Log.debug(5, "Problem Saving Data: Id already in use");
-			} else if (errormsg
-					.indexOf("Document not found for Accession number") > -1) {
+			} else if (errormsg.indexOf("Document not found for Accession number") > -1) {
 				// error in updating data file
-				Log
-						.debug(5,
-								"Problem Saving Data: Document not found for Accession number");
+				Log.debug(5, "Problem Saving Data: Document not found for Accession number");
 			} else if (errormsg.indexOf("Invalid content") > -1) {
 				// validation error
 				Log.debug(5, "Problem Saving Data due to invalid content");
@@ -451,19 +453,22 @@ public class SaveDialog extends JDialog {
 			Log.debug(20, "Problem Saving\n" + mue.getMessage());
 			problem = true;
 		}
-
-		saveEvent.setFinalId(adp.getAccessionNumber());
-		saveEvent.setLocation(adp.getLocation());
+		
 		this.setVisible(false);
 		this.dispose();
-		UIController.getInstance().removeDocidFromIdleWizardRecorder(
-				adp.getAutoSavedD());
-		// delete the incomplete file
-		Util.deleteAutoSavedFile(adp);
 
 		if (!problem) {
+			UIController.getInstance().removeDocidFromIdleWizardRecorder(
+					adp.getAutoSavedD());
+			// delete the incomplete file
+			Util.deleteAutoSavedFile(adp);
+			
 			// alert listeners
+			saveEvent.setFinalId(adp.getAccessionNumber());
+			saveEvent.setLocation(adp.getLocation());
 			StateChangeMonitor.getInstance().notifyStateChange(saveEvent);
+			
+			// refresh
 			if (showPackageFlag) {
 				UIController.showNewPackageNoLocChange(adp);
 			} else {
