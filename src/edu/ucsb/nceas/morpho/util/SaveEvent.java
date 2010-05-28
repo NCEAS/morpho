@@ -38,6 +38,7 @@ public class SaveEvent extends StateChangeEvent
 	private String finalId;
 	private String location;
 	private boolean duplicate = false;
+	private boolean synchronize = false;
 	
 	public SaveEvent(Component source, String changedState) {
 		super(source, changedState);
@@ -73,6 +74,14 @@ public class SaveEvent extends StateChangeEvent
 
 	public void setDuplicate(boolean duplicate) {
 		this.duplicate = duplicate;
+	}
+
+	public boolean isSynchronize() {
+		return synchronize;
+	}
+
+	public void setSynchronize(boolean synchronize) {
+		this.synchronize = synchronize;
 	}
 
 }
