@@ -552,7 +552,7 @@ public class DataPackagePlugin
 
 
     i = i+1;
-    GUIAction replaceDatatable = new GUIAction("Replace Current Data...", null,
+    GUIAction replaceDatatable = new GUIAction(Language.getInstance().getMessage("ReplaceCurrentData"), null,
                                                       new ReplaceDataCommand());
     replaceDatatable.setToolTipText("Replace the currently displayed data file");
     replaceDatatable.setMenuItemPosition(i);
@@ -572,7 +572,7 @@ public class DataPackagePlugin
     controller.addGuiAction(replaceDatatable);
     
     i = i+2;
-    GUIAction deleteDatatable = new GUIAction("Delete Current Data", null,
+    GUIAction deleteDatatable = new GUIAction(Language.getInstance().getMessage("DeleteCurrentData"), null,
                                                       new DeleteTableCommand());
     deleteDatatable.setToolTipText("Remove the currently displayed entity");
     deleteDatatable.setMenuItemPosition(i);
@@ -593,7 +593,7 @@ public class DataPackagePlugin
     controller.addGuiAction(deleteDatatable);
     
     i = i+2;
-    GUIAction editDatatableAccess = new GUIAction("Edit Data Access", null,
+    GUIAction editDatatableAccess = new GUIAction(Language.getInstance().getMessage("EditDataAccess"), null,
                                                       new AddEntityAccessCommand());
     editDatatableAccess.setToolTipText("Edit Access rights for currently displayed data");
     editDatatableAccess.setMenuItemPosition(i);
@@ -614,7 +614,7 @@ public class DataPackagePlugin
     controller.addGuiAction(editDatatableAccess);
 
     i = i+2;
-    GUIAction importOtherEntity = new GUIAction("Import Other Data...", null,
+    GUIAction importOtherEntity = new GUIAction(Language.getInstance().getMessage("ImportOtherData"), null,
             new ImportOtherEntityCommand());
     importOtherEntity.setToolTipText("Add other entity data");
     importOtherEntity.setMenuItemPosition(i);
@@ -629,7 +629,7 @@ public class DataPackagePlugin
 	controller.addGuiAction(importOtherEntity);
 	
 	i = i+1;
-    GUIAction exportData = new GUIAction("Export Data...", null,
+    GUIAction exportData = new GUIAction(Language.getInstance().getMessage("ExportData"), null,
             new ExportDataCommand());
     exportData.setToolTipText("Export data");
     exportData.setMenuItemPosition(i);
@@ -649,7 +649,7 @@ public class DataPackagePlugin
 	controller.addGuiAction(exportData);
 
     i = i+2;
-    GUIAction convertOtherEntity = new GUIAction("Convert Data to Table...", null,
+    GUIAction convertOtherEntity = new GUIAction(Language.getInstance().getMessage("ConvertDataToTable"), null,
                                                       new ConvertDataCommand());
     convertOtherEntity.setToolTipText("Convert the currently displayed data to a table");
     convertOtherEntity.setMenuItemPosition(i);
