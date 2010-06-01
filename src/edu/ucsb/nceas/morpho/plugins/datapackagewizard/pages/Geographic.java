@@ -53,17 +53,26 @@ import edu.ucsb.nceas.morpho.util.UISettings;
 import edu.ucsb.nceas.morpho.framework.UIController;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardContainerFrame;
 
+import edu.ucsb.nceas.morpho.Language;//pstango 2010/03/15
+
 public class Geographic extends AbstractUIPage{
+	
+    /**
+     *Import Language into Morpho
+     *by pstango 2010/03/15 
+     */
+    public static Language lan = new Language();	
 
   // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
   private final String pageID     = DataPackageWizardInterface.GEOGRAPHIC;
-  private final String title      = "Geographic Coverage";
+  private final String title      = /*"Geographic Coverage"*/ lan.getMessages("GeographicCoverage");
   private final String subtitle   = "";
   private final String xPathRoot  = "/eml:eml/dataset/coverage/geographicCoverage[";
   private final String pageNumber  = "10";
 
-  private final String[] colNames =  {"Description", "Geographic Coverage", };
+  private final String[] colNames =  {/*"Description"*/ lan.getMessages("Description"),
+		  							  /*"Geographic Coverage"*/ lan.getMessages("GeographicCoverage"), };
   private final Object[] editors  =   null; //makes non-directly-editable
 
   private CustomList  geographicspanList;
@@ -89,9 +98,14 @@ public class Geographic extends AbstractUIPage{
     vbox.add(WidgetFactory.makeDefaultSpacer());
 
     JLabel desc = WidgetFactory.makeHTMLLabel(
-      "<b>Describe the geographic region covered by your "
-      + "data</b>. Use the following screen to provide a complete "
-      + "description or assign one of the existing descriptions.", 3);
+      /*"<b>Describe the geographic region covered by your data</b>. "*/
+      "<b>" + lan.getMessages("Geographic.desc_1") + "</b> " 
+      /*
+      + "Use the following screen to provide a complete "
+      + "description or assign one of the existing descriptions."
+      */
+      + lan.getMessages("Geographic.desc_2")
+      , 3);
     vbox.add(desc);
     vbox.add(WidgetFactory.makeDefaultSpacer());
     vbox.add(WidgetFactory.makeDefaultSpacer());

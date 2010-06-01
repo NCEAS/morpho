@@ -36,6 +36,8 @@ import java.awt.*;
 import javax.swing.*;
 import java.awt.event.KeyEvent;
 
+import edu.ucsb.nceas.morpho.Language;//pstango 2010/03/15
+
 /**
  * A graphical window for obtaining login information from the
  * user and logging into Metacat
@@ -43,6 +45,13 @@ import java.awt.event.KeyEvent;
 public class ConnectionFrame  extends javax.swing.JDialog 
                               implements LoginClientInterface
 {
+	
+    /**
+     *Import Language into Morpho
+     *by pstango 2010/03/15 
+     */
+    public static Language lan = new Language();	
+	
   Morpho container = null;
   javax.swing.ImageIcon still = null;
   javax.swing.ImageIcon flapping = null;
@@ -76,12 +85,12 @@ public class ConnectionFrame  extends javax.swing.JDialog
     // parse your Java file into its visual environment.
     //{{INIT_CONTROLS
     setDefaultCloseOperation(javax.swing.JFrame.DISPOSE_ON_CLOSE);
-    setTitle("Network Login");
+    setTitle(/*"Network Login"*/ lan.getMessages("NetworkLogin"));
     getContentPane().setLayout(new BorderLayout(0,0));
     //setSize(315,290);
     setVisible(false);
     JLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-    JLabel1.setText("Network Login");
+    JLabel1.setText(/*"Network Login"*/ lan.getMessages("NetworkLogin"));
     getContentPane().add(BorderLayout.NORTH,JLabel1);
     JLabel1.setForeground(java.awt.Color.black);
     JLabel1.setFont(new Font("Dialog", Font.BOLD, 14));
@@ -97,19 +106,21 @@ public class ConnectionFrame  extends javax.swing.JDialog
     JLabel instructLabel = new JLabel();
     instructLabel.setFont(new Font("Dialog", Font.BOLD, 12));
     instructLabel.setForeground(java.awt.Color.black);
-    instructLabel.setText("Enter your Network password in order to log in.");
+    instructLabel.setText(/*"Enter your Network password in order to log in."*/
+    						lan.getMessages("UISettings.RequirePassword")
+    						);
     instructPanel.add(instructLabel);
 
     JPanel3.setLayout(new FlowLayout(FlowLayout.LEFT,5,5));
     JButtonGroupPanel1.add(JPanel3);
-    Name.setText("Name");
+    Name.setText(/*"Name"*/ lan.getMessages("Name"));
     JPanel3.add(Name);
     Name.setForeground(java.awt.Color.black);
     Name.setFont(new Font("Dialog", Font.PLAIN, 12));
     JPanel3.add(NameLabel);
     JPanel4.setLayout(new FlowLayout(FlowLayout.LEFT,5,5));
     JButtonGroupPanel1.add(JPanel4);
-    Password.setText("Password");
+    Password.setText(/*"Password"*/ lan.getMessages("Password"));
     JPanel4.add(Password);
     Password.setForeground(java.awt.Color.black);
     Password.setFont(new Font("Dialog", Font.PLAIN, 12));
@@ -124,19 +135,19 @@ public class ConnectionFrame  extends javax.swing.JDialog
 
     JPanel1.setLayout(new FlowLayout(FlowLayout.CENTER,5,5));
     getContentPane().add(BorderLayout.SOUTH,JPanel1);
-    connectButton.setText("Login");
+    connectButton.setText(/*"Login"*/ lan.getMessages("Login"));
     connectButton.setActionCommand("OK");
     connectButton.setMnemonic(KeyEvent.VK_L);
     addKeyListenerToComponent(connectButton);
     JPanel1.add(connectButton);
     connectButton.isDefaultButton();
-    DisconnectButton.setText("Logout");
+    DisconnectButton.setText(/*"Logout"*/ lan.getMessages("Logout"));
     DisconnectButton.setActionCommand("Disconnect");
     DisconnectButton.setMnemonic(KeyEvent.VK_O);
     addKeyListenerToComponent(DisconnectButton);
     DisconnectButton.setEnabled(false);
     JPanel1.add(DisconnectButton);
-    CancelButton.setText("Skip Login");
+    CancelButton.setText(/*"Skip Login"*/ lan.getMessages("SkipLogin"));
     CancelButton.setActionCommand("Cancel");
     CancelButton.setMnemonic(KeyEvent.VK_S);
     addKeyListenerToComponent(CancelButton);
@@ -362,8 +373,10 @@ public class ConnectionFrame  extends javax.swing.JDialog
     if (success) {
       dispose();
     } else {
-      Log.debug(9, "Login failed.\n" + 
-            "Please check the Caps Lock key and try again.");
+      Log.debug(9, 
+    		  	/*"Login failed.\n"*/ lan.getMessages("LoginFailed") + "\n"
+    		  	+ /*"Please check the Caps Lock key and try again."*/ lan.getMessages("CheckCaps")
+    		  	);
 //      DisconnectButton.setEnabled(false);
       updateEnabeDisable();
       ActivityLabel.setIcon(still);

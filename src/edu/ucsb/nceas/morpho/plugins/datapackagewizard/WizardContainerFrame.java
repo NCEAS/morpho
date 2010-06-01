@@ -101,6 +101,8 @@ import javax.swing.event.TableModelListener;
 
 import org.w3c.dom.Node;
 
+import edu.ucsb.nceas.morpho.Language;//pstango 2010/03/15
+
 /**
  *  provides a top-level container for AbstractUIPage objects. The top (title) panel
  *  and bottom button panel (including the navigation buttons) are all part of
@@ -108,6 +110,12 @@ import org.w3c.dom.Node;
  */
 public class WizardContainerFrame
     extends JFrame implements TableModelListener {
+	
+    /**
+     *Import Language into Morpho
+     *by pstango 2010/03/15 
+     */
+    public static Language lan = new Language();
 
   public static JFrame frame;
   private DataPackageWizardListener listener;
@@ -944,8 +952,11 @@ public class WizardContainerFrame
             return;
           }
           pageStack.push(currentPage);
-          int choice = JOptionPane.showConfirmDialog(frame, "This incomplete data package will be saved locally and the wizard window will be closed.\n"+
-                                                       "Are you sure to continue this action?", "Save?",JOptionPane.YES_NO_OPTION);
+          int choice = JOptionPane.showConfirmDialog(frame,
+        		  										/*"This incomplete data package will be saved locally and the wizard window will be closed.\n"
+        		  										+"Are you sure to continue this action?",*/
+        		  										lan.getMessages("SaveIncompleteWarning"),
+        		  										"Save?",JOptionPane.YES_NO_OPTION);
           if(choice == JOptionPane.YES_OPTION)
           {
             try
@@ -2038,8 +2049,13 @@ public class WizardContainerFrame
   public void cancelAction() {
 
 	  int opt = JOptionPane.showConfirmDialog(this,
-	            "If you cancel, *all* work done in this wizard "+
-	            "will be lost.\nIf you want to resume the wizard later, choose \"No\", then click on the \"Save for Later\" button.\nAre you sure you want to cancel? ",
+	            /*"If you cancel, *all* work done in this wizard "+
+	            "will be lost.\nIf you want to resume the wizard later, choose \"No\", then click on the \"Save for Later\" button.\nAre you sure you want to cancel? ",*/
+			  	lan.getMessages("CancelWarning_1")
+			  	+"\n"
+			  	+lan.getMessages("CancelWarning_2")
+			  	+"\n"
+			  	+ lan.getMessages("CancelWarning_3"),
 	            "DO YOU WANT TO CONTINUE?",
 	            JOptionPane.YES_NO_OPTION);
 	   if (opt == JOptionPane.NO_OPTION) 

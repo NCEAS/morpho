@@ -41,6 +41,8 @@ package edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages;
 
 import java.util.Enumeration;
 import javax.swing.tree.DefaultMutableTreeNode;
+
+import edu.ucsb.nceas.morpho.Language;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardSettings;
 
 /**
@@ -54,10 +56,18 @@ import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardSettings;
 public class AccessTreeModel
     extends AbstractTreeTableModel
     implements TreeTableModel {
+	
+    /**
+     *Import Language into Morpho
+     *by pstango 2010/03/15 
+     */
+    public static Language lan = new Language();	
 
   // Names of the columns.
   static protected String[] cNames = {
-      "Name", "Email / Description / Distinguished Name"};
+      /*"Name"*/ lan.getMessages("Name"),
+      /*"Email / Description / Distinguished Name"*/ lan.getMessages("Email") + " / "+ lan.getMessages("Description") + " / " + lan.getMessages("DistinguishedName")
+      };
 
   // Types of the columns.
   static protected Class[] cTypes = {

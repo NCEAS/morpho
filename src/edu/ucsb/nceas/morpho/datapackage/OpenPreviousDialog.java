@@ -38,8 +38,17 @@ import edu.ucsb.nceas.morpho.plugins.ServiceProvider;
 import edu.ucsb.nceas.morpho.plugins.ServiceNotHandledException;
 import edu.ucsb.nceas.morpho.util.Log;
 
+import edu.ucsb.nceas.morpho.Language;//pstango 2010/03/15
+
 public class OpenPreviousDialog extends javax.swing.JDialog
 {
+	
+    /**
+     *Import Language into Morpho
+     *by pstango 2010/03/15 
+     */
+    public static Language lan = new Language();	
+	
   String packageName = "";
   Morpho morpho;
   boolean localLoc;
@@ -54,9 +63,9 @@ public class OpenPreviousDialog extends javax.swing.JDialog
 		setVisible(false);
 		ControlPanel.setLayout(new FlowLayout(FlowLayout.RIGHT,5,5));
 		getContentPane().add(BorderLayout.SOUTH,ControlPanel);
-		CancelButton.setText("Cancel");
+		CancelButton.setText(/*"Cancel"*/ lan.getMessages("Cancel"));
 		ControlPanel.add(CancelButton);
-		OpenButton.setText("Open");
+		OpenButton.setText(/*"Open"*/ lan.getMessages("Open"));
 		ControlPanel.add(OpenButton);
 		CenterPanel.setLayout(new BorderLayout(0,0));
 		getContentPane().add(BorderLayout.CENTER,CenterPanel);

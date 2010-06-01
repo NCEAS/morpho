@@ -26,6 +26,7 @@
 
 package edu.ucsb.nceas.morpho.datapackage;
 
+import edu.ucsb.nceas.morpho.Language;
 import edu.ucsb.nceas.morpho.framework.MorphoFrame;
 import edu.ucsb.nceas.morpho.framework.UIController;
 import edu.ucsb.nceas.morpho.util.Command;
@@ -41,6 +42,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import edu.ucsb.nceas.morpho.Language;//pstango 2010/03/15
 
 /**
  * Class to handle delete  a column command
@@ -48,6 +50,11 @@ import org.w3c.dom.NodeList;
 public class DeleteColumnCommand implements Command
 {
 
+    /**
+     *Import Language into Morpho
+     *by pstango 2010/03/15 
+     */
+    public static Language lan = new Language();	
 
   /* Referrence to  morphoframe */
   private MorphoFrame morphoFrame = null;
@@ -77,8 +84,8 @@ public class DeleteColumnCommand implements Command
     }//if
     
     int opt = JOptionPane.showConfirmDialog(morphoFrame,
-            "Are you sure that you want to delete the selected data column?",
-            "DO YOU WANT TO CONTINUE?",
+            /*"Are you sure that you want to delete the selected data column?"*/ lan.getMessages("DeleteColumnWarning") + "?",
+            /*"DO YOU WANT TO CONTINUE?"*/ lan.getMessages("Warning_Continue") + "?",
             JOptionPane.YES_NO_OPTION);
    if (opt == JOptionPane.NO_OPTION) 
    {

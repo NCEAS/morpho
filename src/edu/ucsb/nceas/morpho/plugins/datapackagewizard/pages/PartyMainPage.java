@@ -58,8 +58,16 @@ import javax.swing.border.EmptyBorder;
 import org.w3c.dom.Node;
 import java.util.ArrayList;
 
+import edu.ucsb.nceas.morpho.Language;//pstango 2010/03/15
+
 public class PartyMainPage
     extends AbstractUIPage {
+	
+    /**
+     *Import Language into Morpho
+     *by pstango 2010/03/15 
+     */
+    public static Language lan = new Language();	
 
   private String pageID;
   //private String nextPageID;
@@ -71,10 +79,14 @@ public class PartyMainPage
   private String DATAPACKAGE_PARTY_REL_XPATH;
 
   private final String[] colNames = {
-      "Party", "Role", "Address"};
+      /*"Party"*/ lan.getMessages("Party"),
+      /*"Role"*/ lan.getMessages("Role"),
+      /*"Address"*/ lan.getMessages("Address")};
   private final Object[] editors = null; //makes non-directly-editable
   public final String title =
-      "People or Organizations Associated With This Data Package";
+      /*"People or Organizations Associated With This Data Package"*/
+	  lan.getMessages("PatryMainPage.title")
+	  ;
   public final String role;
 
   private JLabel minRequiredLabel;
@@ -106,18 +118,24 @@ public class PartyMainPage
       pageID = DataPackageWizardInterface.PARTY_CREATOR_PAGE;
       nextPageID = DataPackageWizardInterface.PARTY_CONTACT_PAGE;
       pageNumber = "5";
-      subtitle = "Owners";
+      subtitle = /*"Owners"*/ lan.getMessages("Owner");
       xPathRoot = "/eml:eml/dataset/creator[";
       DATAPACKAGE_PARTY_GENERIC_NAME = "creator";
       DATAPACKAGE_PARTY_REL_XPATH = "/creator[";
       description =
+    	  /*
           "<p><b>Enter information about the Owners</b>: This is information "
           + "about the persons or organizations certified as data owners "
           + "(e.g. the principal investigator(s) of the project). "
           + "The list of data owners should include all people and "
           + "organizations who should be cited "
           + "for the data. Select Add to add an owner."
-          + "<br></br></p>";
+          + "<br></br></p>"
+          */
+    	  "<p><b>" + lan.getMessages("PatryMainPage.Owner.description_1") +"</b> "
+    	  + lan.getMessages("PatryMainPage.Owner.description_2")
+    	  +"<br></br></p>"
+          ;
 
     } else if (role.equals(DataPackageWizardInterface.PARTY_CONTACT)) {
 
@@ -125,14 +143,18 @@ public class PartyMainPage
       pageID = DataPackageWizardInterface.PARTY_CONTACT_PAGE;
       nextPageID = DataPackageWizardInterface.PARTY_ASSOCIATED_PAGE;
       pageNumber = "6";
-      subtitle = "Contacts";
+      subtitle = /*"Contacts"*/ lan.getMessages("Contact");
       xPathRoot = "/eml:eml/dataset/contact[";
       DATAPACKAGE_PARTY_GENERIC_NAME = "contact";
       DATAPACKAGE_PARTY_REL_XPATH = "/contact[";
       description =
-          "<p><b>Enter information about contacts</b>. This is information "
+          /*
+    	  "<p><b>Enter information about contacts</b>. This is information "
           + "about the people or organizations who would be contacted with "
           + "questions about the use or interpretation of a data package. "
+          */
+    	  "<p><b>" + lan.getMessages("PatryMainPage.Contact.description_1") +"</b> "
+    	  + lan.getMessages("PatryMainPage.Contact.description_2")
           + "<br></br></p>";
 
     } else if (role.equals(DataPackageWizardInterface.PARTY_ASSOCIATED)) {
@@ -141,16 +163,22 @@ public class PartyMainPage
       pageID = DataPackageWizardInterface.PARTY_ASSOCIATED_PAGE;
       nextPageID = DataPackageWizardInterface.PROJECT;
       pageNumber = "7";
-      subtitle = "Associated Parties";
+      subtitle = /*"Associated Parties"*/ lan.getMessages("AssociatedParties");
       xPathRoot = "/eml:eml/dataset/associatedParty[";
       DATAPACKAGE_PARTY_GENERIC_NAME = "associatedParty";
       DATAPACKAGE_PARTY_REL_XPATH = "/associatedParty[";
       description =
+    	  /*
           "<p><b>Enter associated parties information</b>.  These are persons "
           + "or organizations functionally associated with the dataset. "
           + "Enter the nature of the relationship in the role field. "
           + "For example, the person who maintains the database is an "
-          + "associated party with the role of 'custodian'.<br></br><p>";
+          + "associated party with the role of 'custodian'.<br></br><p>"
+          */
+    	  "<p><b>" + lan.getMessages("PatryMainPage.AssociatedParties.description_1") +"</b> "
+    	  + lan.getMessages("PatryMainPage.AssociatedParties.description_2")
+    	  +"<br></br><p>"
+          ;
 
     } else {
 
@@ -173,7 +201,9 @@ public class PartyMainPage
 
     if (oneOrMoreRequired) {
       minRequiredLabel = WidgetFactory.makeLabel(
-          " One or more " + subtitle + " must be defined:", true,
+          /*" One or more " + subtitle + " must be defined:"*/
+    	  lan.getMessages("PatryMainPage.minRequiredLabel_1") + " " + subtitle + " "+ lan.getMessages("PatryMainPage.minRequiredLabel_2") +":"
+          , true,
           WizardSettings.WIZARD_CONTENT_TEXTFIELD_DIMS);
       vPanel.add(minRequiredLabel);
     }

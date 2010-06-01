@@ -38,6 +38,7 @@ table has to be imported after that.
 
 package edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages;
 
+import edu.ucsb.nceas.morpho.Language;
 import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.datapackage.AbstractDataPackage;
 import edu.ucsb.nceas.morpho.datapackage.DataViewContainerPanel;
@@ -89,16 +90,24 @@ import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 
 public class CodeDefnPanel extends JPanel implements WizardPageSubPanelAPI {
+	
+    /**
+     *Import Language into Morpho
+     *by pstango 2010/03/15 
+     */
+    public static Language lan = new Language();	
 
-  private final String title      = "Import Codes and Definitions";
+  private final String title      = /*"Import Codes and Definitions"*/ lan.getMessages("ImportCodesAndDefinitions");
   private final String subtitle   = "";
 
   public short USER_RESPONSE;
   public static final short CANCEL_OPTION  = 20;
 
 
-  private String[] importChoiceText = {"Import the definitions table into Morpho later",
-  "The definitions table has already been included in this package"};
+  private String[] importChoiceText = {
+		  /*"Import the definitions table into Morpho later"*/ lan.getMessages("CodeDefnPanel.importChoiceText_1"),
+		  /*"The definitions table has already been included in this package"*/ lan.getMessages("CodeDefnPanel.importChoiceText_2")
+		  };
 
   private JLabel choiceLabel;
   private JPanel radioPanel;
@@ -182,7 +191,8 @@ public class CodeDefnPanel extends JPanel implements WizardPageSubPanelAPI {
     JPanel topPanel = new JPanel();
     topPanel.setLayout(new BoxLayout(topPanel, BoxLayout.Y_AXIS));
 
-    choiceLabel = WidgetFactory.makeHTMLLabel("Select one of the following",1,true);
+    choiceLabel = WidgetFactory.makeHTMLLabel(/*"Select one of the following"*/ lan.getMessages("CodeDefnPanel.choiceLabel"),
+    											1,true);
     topPanel.add(choiceLabel);
     topPanel.add(WidgetFactory.makeDefaultSpacer());
 
@@ -223,7 +233,10 @@ public class CodeDefnPanel extends JPanel implements WizardPageSubPanelAPI {
 
     JPanel panel = new JPanel();
     panel.setLayout(new BorderLayout());
-    JLabel headLabel = WidgetFactory.makeHTMLLabel("Select the two columns that define 	the codes and definitions. The selected columns should be in the same data table.", 2 , false);
+    JLabel headLabel = WidgetFactory.makeHTMLLabel(
+    		/*"Select the two columns that define 	the codes and definitions."*/ lan.getMessages("CodeDefnPanel.headLabel_1") +" "
+    		+/*" The selected columns should be in the same data table."*/ lan.getMessages("CodeDefnPanel.headLabel_2"),
+    		2 , false);
 
     panel.add(headLabel, BorderLayout.NORTH);
 
@@ -517,7 +530,10 @@ public class CodeDefnPanel extends JPanel implements WizardPageSubPanelAPI {
     int sel[] = table.getSelectedColumns();
     if(sel.length != 2) {
 
-      JOptionPane.showMessageDialog(this, "Select exactly two columns", "Error", JOptionPane.ERROR_MESSAGE);
+      JOptionPane.showMessageDialog(this,
+    		  						/*"Select exactly two columns"*/ lan.getMessages("CodeDefnPanel.SelectExactlyTwoColumns"),
+    		  						/*"Error"*/ lan.getMessages("Error"),
+    		  						JOptionPane.ERROR_MESSAGE);
       return false;
     }
 
@@ -528,13 +544,19 @@ public class CodeDefnPanel extends JPanel implements WizardPageSubPanelAPI {
     String table2 = (String)header2.get(0);
     if(!(table1.equals(table2))) {
 
-      JOptionPane.showMessageDialog(this, "Both columns need to be selected from the same data table", "Error", JOptionPane.ERROR_MESSAGE);
+      JOptionPane.showMessageDialog(this, 
+    		  						/*"Both columns need to be selected from the same data table"*/ lan.getMessages("CodeDefnPanel.ColumnsFromTheSameDataTable"),
+    		  						/*"Error"*/ lan.getMessages("Error"),
+    		  						JOptionPane.ERROR_MESSAGE);
       return false;
     }
 
     if(header1.size() < 3 || header2.size() < 3) {
 
-      JOptionPane.showMessageDialog(this, "Select the data type (Code/Definition) for both the columns", "Error", JOptionPane.ERROR_MESSAGE);
+      JOptionPane.showMessageDialog(this,
+    		  						/*"Select the data type (Code/Definition) for both the columns"*/ lan.getMessages("CodeDefnPanel.DataTypeForColumns"),
+    		  						/*"Error"*/ lan.getMessages("Error"),
+    		  						JOptionPane.ERROR_MESSAGE);
       return false;
     }
 
@@ -543,7 +565,10 @@ public class CodeDefnPanel extends JPanel implements WizardPageSubPanelAPI {
 
     if(type1.equals(type2)) {
 
-      JOptionPane.showMessageDialog(this, "Select one column for codes and one for definition", "Error", JOptionPane.ERROR_MESSAGE);
+      JOptionPane.showMessageDialog(this,
+    		  						/*"Select one column for codes and one for definition"*/ lan.getMessages("CodeDefnPanel.OneForCodeOneForDefinition"),
+    		  						/*"Error"*/ lan.getMessages("Error"),
+    		  						JOptionPane.ERROR_MESSAGE);
       return false;
     }
 
@@ -1250,10 +1275,18 @@ public class CodeDefnPanel extends JPanel implements WizardPageSubPanelAPI {
 
 class CustomPopupHandler extends AbstractCustomTablePopupHandler {
 
+    /**
+     *Import Language into Morpho
+     *by pstango 2010/03/15 
+     */
+    public static Language lan = new Language();	
+	
   private Vector taxonData = null;
   private String displayString = null;
   private ButtonGroup grp;
-  private String[] data = new String[] { "Code", "Definition"};
+  private String[] data = new String[] { /*"Code"*/ lan.getMessages("Code"),
+		  								 /*"Definition"*/ lan.getMessages("Definition")
+		  								};
   private JRadioButton jrb1, jrb2, dummyButton;
 
   CustomPopupHandler() {
@@ -1267,7 +1300,9 @@ class CustomPopupHandler extends AbstractCustomTablePopupHandler {
   private void init() {
 
     JPanel panel = new JPanel(new BorderLayout());
-    JLabel headLabel = WidgetFactory.makeHTMLLabel("Is this a Code or Definition?", 2, false);
+    JLabel headLabel = WidgetFactory.makeHTMLLabel(
+    												/*"Is this a Code or Definition?"*/ lan.getMessages("CodeOrDefinition")+"?",
+    												2, false);
 
     JPanel middlePanel = new JPanel();
     middlePanel.setLayout(new BoxLayout(middlePanel, BoxLayout.Y_AXIS));

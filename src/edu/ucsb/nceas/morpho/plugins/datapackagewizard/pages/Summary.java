@@ -51,13 +51,21 @@ import javax.swing.BoxLayout;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 
+import edu.ucsb.nceas.morpho.Language;//pstango 2010/03/15
+
 public class Summary extends AbstractUIPage {
+	
+    /**
+     *Import Language into Morpho
+     *by pstango 2010/03/15 
+     */
+    public static Language lan = new Language();	
 
   public final String pageID     = DataPackageWizardInterface.SUMMARY;
   public final String pageNumber = "15";
-  public final String PACKAGE_WIZ_SUMMARY_TITLE = "New Data Package Wizard";
-  public final String ENTITY_WIZ_SUMMARY_TITLE  = "New Data Table Wizard";
-  public final String SUBTITLE                  = "Summary";
+  public final String PACKAGE_WIZ_SUMMARY_TITLE = /*"New Data Package Wizard"*/ lan.getMessages("NewDataPackageWizard");
+  public final String ENTITY_WIZ_SUMMARY_TITLE  = /*"New Data Table Wizard"*/ lan.getMessages("NewDataTableWizard");
+  public final String SUBTITLE                  = /*"Summary"*/ lan.getMessages("Summary");
 
   private JLabel desc1;
   private JLabel desc2;
@@ -116,16 +124,26 @@ public class Summary extends AbstractUIPage {
 
     if (ID.equals(DataPackageWizardInterface.INTRODUCTION)) {
 
-      return "<p>You can press the \"" + WizardSettings.FINISH_BUTTON_TEXT
+      return 
+      	"<p>" 
+      	/*+"You can press the \"" + WizardSettings.FINISH_BUTTON_TEXT
         + "\" button, "
         + "or you can use the \"" + WizardSettings.PREV_BUTTON_TEXT
         + "\" button to return to previous pages "
-        + "and change the information you have added.</p>";
+        + "and change the information you have added."
+        */ 
+      	+ lan.getMessages("Summary.getSecondParagraph_1")
+        + "</p>";
 
     } else if (ID.equals(DataPackageWizardInterface.DATA_LOCATION)) {
 
-      return "<p>You can press the \"" + WizardSettings.FINISH_BUTTON_TEXT
-        + "\" button to add the data table to your package.</p>";
+      return 
+      	"<p>" 
+      	/*+ "You can press the \"" + WizardSettings.FINISH_BUTTON_TEXT
+        + "\" button to add the data table to your package." 
+        */
+        + lan.getMessages("Summary.getSecondParagraph_2")
+        + "</p>";
 
     }
     return "";
@@ -140,16 +158,29 @@ public class Summary extends AbstractUIPage {
 
     if (ID.equals(DataPackageWizardInterface.INTRODUCTION)) {
 
-      return "<p>After you press \""
+      return 
+      	"<p>" 
+      	/*+ "After you press \""
         + WizardSettings.FINISH_BUTTON_TEXT + "\", you "
         +"will see your new package description information displayed in the "
-        +"Morpho main screen.  If you want to add data tables to your package, "
-        +"select the \"Create/Import New Data Table...\" option from the \"Data\" menu</p>";
+        +"Morpho main screen.  " 
+        */      
+      	+ lan.getMessages("Summary.getLastParagraph_1")
+        /*+ "If you want to add data tables to your package, "
+        +"select the \"Create/Import New Data Table...\" option from the \"Data\" menu"
+        */
+        + lan.getMessages("Summary.getLastParagraph_2")
+        + "</p>";
 
     } else if (ID.equals(DataPackageWizardInterface.DATA_LOCATION)) {
 
-      return "<p>If you want to add more data tables to your package, "
-        +"select the \"Create/Import New Data Table...\" option from the \"Data\" menu</p>";
+      return 
+      	"<p>" 
+      	/*+"If you want to add more data tables to your package, "
+        +"select the \"Create/Import New Data Table...\" option from the \"Data\" menu" 
+        */
+        + lan.getMessages("Summary.getLastParagraph_3")
+        +"</p>";
 
     }
     return "";
@@ -171,8 +202,9 @@ public class Summary extends AbstractUIPage {
 
     desc1.setText(
       WizardSettings.HTML_TABLE_LABEL_OPENING
-      +"<p>This wizard has now collected all the information that is required to "
-      + "create your new " + getProductName()+".</p>"
+      +"<p>" 
+      + /*"This wizard has now collected all the information that is required to create your new data package."*/ lan.getMessages("Summary.desc")
+      +".</p>"
        +WizardSettings.HTML_TABLE_LABEL_CLOSING);
 
     desc2.setText( WizardSettings.HTML_TABLE_LABEL_OPENING
@@ -213,8 +245,7 @@ public class Summary extends AbstractUIPage {
       final DataPackageInterface finalDataPackagePlugin = dataPackagePlugin;
 
       GUIAction newDataTableAction
-        = new GUIAction("or click here to finish this wizard and add a new " +
-                        "data table now.",
+        = new GUIAction(/*"or click here to finish this wizard and add a new data table now."*/ lan.getMessages("Summary.AddNewDataTable"),
                         null,
                         new Command() {
 

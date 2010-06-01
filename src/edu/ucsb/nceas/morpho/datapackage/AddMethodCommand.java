@@ -50,11 +50,19 @@ import edu.ucsb.nceas.morpho.util.UISettings;
 import edu.ucsb.nceas.utilities.OrderedMap;
 import edu.ucsb.nceas.utilities.XMLUtilities;
 
+import edu.ucsb.nceas.morpho.Language;//pstango 2010/03/15
+
 /**
  * Class to handle add method command
  */
 public class AddMethodCommand
 implements Command, DataPackageWizardListener {
+
+    /**
+     *Import Language into Morpho
+     *by pstango 2010/03/15 
+     */
+    public static Language lan = new Language();
 
   //generic name for lookup in eml listings
   private final String DATAPACKAGE_METHOD_GENERIC_NAME = "methods";
@@ -85,7 +93,10 @@ implements Command, DataPackageWizardListener {
 	  if (dialog.getUserChoice() == JOptionPane.NO_OPTION)
 	 {
 		   // if user choose not transform it, stop the action.
-			Log.debug(2,"The current EML document is not the latest version. You should transform it first!");
+			Log.debug(2,
+					/*"The current EML document is not the latest version."*/ lan.getMessages("EMLDocumentIsNotTheLatestVersion_1") + " "
+					+/*" You should transform it first!"*/ lan.getMessages("EMLDocumentIsNotTheLatestVersion_2") + "!"
+					);
 			return;
 	 }
     

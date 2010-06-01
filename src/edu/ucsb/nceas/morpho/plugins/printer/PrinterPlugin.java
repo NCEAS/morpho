@@ -26,6 +26,7 @@
 
 package edu.ucsb.nceas.morpho.plugins.printer;
 
+import edu.ucsb.nceas.morpho.Language;
 import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.framework.ConfigXML;
 
@@ -59,6 +60,12 @@ public class PrinterPlugin implements       PrinterInterface,
 																						PluginInterface,
                                             ServiceProvider
 {
+	
+    /**
+     *Import Language into Morpho
+     *by pstango 2010/03/15 
+     */
+    public static Language lan = new Language();
 
 	private Morpho instanceOfMorpho;
 	private final ClassLoader classLoader;
@@ -110,7 +117,7 @@ public class PrinterPlugin implements       PrinterInterface,
 				UIController controller = UIController.getInstance();
 
 				// Action for Page setup
-				GUIAction pageSetupAction = new GUIAction("Page setup...",
+				GUIAction pageSetupAction = new GUIAction(/*"Page setup..."*/ lan.getMessages("PageSetup"),
 							null, new PageSetupCommand());
 				pageSetupAction.setMenuItemPosition(6);
 				pageSetupAction.setSeparatorPosition(SEPARATOR_PRECEDING);
@@ -125,7 +132,7 @@ public class PrinterPlugin implements       PrinterInterface,
                             false, GUIAction.EVENT_LOCAL);
 
 				// Action for preview
-				GUIAction previewAction = new GUIAction("Print preview...",
+				GUIAction previewAction = new GUIAction(/*"Print preview..."*/ lan.getMessages("PrintPreview"),
 							null, new PreviewCommand(this.instanceOfMorpho, this));
 				previewAction.setMenuItemPosition(7);
 				previewAction.setMenu(Morpho.FILE_MENU_LABEL, Morpho.FILEMENUPOSITION);
@@ -139,7 +146,7 @@ public class PrinterPlugin implements       PrinterInterface,
                             false, GUIAction.EVENT_LOCAL);
 
 				// Action for Print
-				GUIAction printAction = new GUIAction("Print...",
+				GUIAction printAction = new GUIAction(/*"Print..."*/ lan.getMessages("Print"),
 							null, new PrintCommand(this.instanceOfMorpho, this));
 				printAction.setMenuItemPosition(8);
 

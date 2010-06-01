@@ -1,5 +1,6 @@
 package edu.ucsb.nceas.morpho.plugins.datapackagewizard;
 
+import edu.ucsb.nceas.morpho.Language;
 import edu.ucsb.nceas.morpho.datapackage.AbstractDataPackage;
 import edu.ucsb.nceas.morpho.framework.UIController;
 import edu.ucsb.nceas.morpho.util.Log;
@@ -45,6 +46,12 @@ import com.toedter.calendar.JYearChooser;
 
 
 public class WidgetFactory {
+	
+    /**
+     *Import Language into Morpho
+     *by pstango 2010/03/15 
+     */
+    public static Language lan = new Language();
 
   private static boolean debugHilite = false;
 
@@ -441,7 +448,7 @@ public class WidgetFactory {
 
   public static JDialog makeContainerDialog(JPanel centerPanel, ActionListener okListener, ActionListener cancelListener) {
 
-    return makeContainerDialog(centerPanel, okListener, cancelListener, "OK", "Cancel");
+    return makeContainerDialog(centerPanel, okListener, cancelListener, /*"OK"*/lan.getMessages("OK"), /*"Cancel"*/lan.getMessages("Cancel"));
   }
 
   /**
@@ -461,7 +468,7 @@ public class WidgetFactory {
 
   public static JDialog makeContainerDialog(JPanel centerPanel, ActionListener okListener, ActionListener cancelListener, String okCaption, String cancelCaption){
 
-    return makeContainerDialog(centerPanel, okListener, cancelListener, "OK", "Cancel", true, true);
+    return makeContainerDialog(centerPanel, okListener, cancelListener, /*"OK"*/ lan.getMessages("OK"), /*"Cancel"*/ lan.getMessages("Cancel"), true, true);
   }
 
   /**
@@ -524,7 +531,7 @@ public class WidgetFactory {
 
   public static JDialog makeContainerDialogNoParent(JPanel centerPanel, ActionListener okListener, ActionListener cancelListener) {
 
-    return makeContainerDialogNoParent(centerPanel, okListener, cancelListener, "OK", "Cancel");
+    return makeContainerDialogNoParent(centerPanel, okListener, cancelListener, /*"OK"*/ lan.getMessages("OK"), /*"Cancel"*/ lan.getMessages("Cancel"));
   }
 
 

@@ -37,6 +37,8 @@ import java.awt.Toolkit;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 
+import edu.ucsb.nceas.morpho.Language;//pstango 2010/03/15
+
 /**
  *  This is a class containing static methods and attributes that define global
  *  display settings in Morpho, which can't be represented directly by string
@@ -55,6 +57,12 @@ import javax.swing.ImageIcon;
  */
 public class UISettings
 {
+	
+    /**
+     *Import Language into Morpho
+     *by pstango 2010/03/15 
+     */
+  public static Language lan = new Language();
 
     private static final Dimension scrDim
                                   = Toolkit.getDefaultToolkit().getScreenSize();
@@ -443,7 +451,7 @@ public class UISettings
                     = "<html><p style=\"color: #ffffff; "
                         +"font-family: Verdana, Arial, Helvetica, sans-serif; "
                         +"font-size: 9px; align: left;\">&nbsp;"
-                        +"Current profile:"
+                        +/*"Current profile:"*/ lan.getMessages("CurrentProfile")+":"
                         +"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
                         +"&nbsp;&nbsp;";
 
@@ -455,7 +463,7 @@ public class UISettings
                     = "<html><p style=\"color: #ffffff; "
                         +"font-family: Verdana, Arial, Helvetica, sans-serif; "
                         +"font-size: 9px; align: left;\">&nbsp;"
-                        +"Network Status:"
+                        +/*"Network Status:"*/ lan.getMessages("NetworkStatus")+":"
                         +"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
                         +"&nbsp;";
 
@@ -467,7 +475,7 @@ public class UISettings
                     = "<html><p style=\"color: #ffffff; "
                         +"font-family: Verdana, Arial, Helvetica, sans-serif; "
                         +"font-size: 9px; align: left;\">&nbsp;"
-                        +"Work with your data...";
+                        +/*"Work with your data..."*/ lan.getMessages("WorkWithYourData") + ":";
 
     /**
      *  common to the above 3: closing html tags and text for title bar on the
@@ -477,63 +485,73 @@ public class UISettings
                     = "</p></html>";
 
     public static final String NEW_DATAPACKAGE_LINK_TEXT
-                    = "Create a <b>new</b> data package...";
+                    = /*"Create a <b>new</b> data package..."*/ lan.getMessages("CreateANewDataPackage");
 
     public static final String OPEN_DATAPACKAGE_LINK_TEXT
-                    = "Open an <b>existing</b> data package...";
+                    = /*"Open an <b>existing</b> data package..."*/ lan.getMessages("OpenAnExistingDataPackage");
 
     public static final String SEARCH_LINK_TEXT
-                    = "<b>Search</b> for an existing data package...";
+                    = /*"<b>Search</b> for an existing data package..."*/ 
+                    lan.getMessages("UISettings_SEARCH_LINK_TEXT");
 
     public static final String NEW_PROFILE_LINK_TEXT
-                                    = "Create a new profile...";
+                                    = /*"Create a new profile..."*/ lan.getMessages("CreateANewProfile");
 
     public static final String LOGOUT_LINK_TEXT
-                                 = "<b>Logout</b> from network...";
+                                 = /*"<b>Logout</b> from network..."*/ lan.getMessages("LogoutFromNetwork");
 
     public static final String CHANGE_PROFILE_LABEL_TEXT
                     = "<html><p style=\"color: #000000; align: left; "
                         +"font-family: Verdana, Arial, Helvetica, sans-serif; "
                         +"font-size: 9px;\">&nbsp;"
-                        +"<b>Change profile:</b></p></html>";
+                        +"<b>" + /*Change profile*/ lan.getMessages("ChangeProfile") +":</b>" 
+                        +"</p></html>";
 
 
     public static final String PASSWORD_LABEL_TEXT
                     = "<html><p style=\"color: #000000; align: left; "
                         +"font-family: Verdana, Arial, Helvetica, sans-serif; "
                         +"font-size: 9px;\">&nbsp;"
-                        +"Password:</p></html>";
+                        +/*"Password:"*/ lan.getMessages("Password") +":"
+                        +"</p></html>";
 
     public static final String INIT_SCR_LOGIN_MESSAGE
-                    = "If you do not choose to login, you will "
-                        +"be able to access only \"public\" network "
-                        +"files as a Guest User";
+                    = /*"If you do not choose to login, you will "
+                    	+"be able to access only \"public\" network "
+                        +"files as a Guest User"
+                        */
+                    	lan.getMessages("UISettings.INIT_SCR_LOGIN_MESSAGE")
+                        ;
 
     public static final String INIT_SCR_LOGGED_IN_MESSAGE
-                    = "You are logged into the network, and may "
+                    =  /*"You are logged into the network, and may "
                         +"work with all files for which you have "
-                        +"access privileges ";
+                        +"access privileges "
+                        */
+                    	lan.getMessages("UISettings.INIT_SCR_LOGGED_IN_MESSAGE")
+                        ;
 
     public static final String INIT_SCR_LOGIN_BUTTON_TEXT
                     = "<html><p style=\"color: #000000; "
                         +"font-family: Verdana, Arial, Helvetica, sans-serif; "
                         +"font-size: 9px; align: left;\">"
-                        +"login</p></html>";
+                        +/*"login"*/ lan.getMessages("login")
+                        +"</p></html>";
 
     public static final String INIT_SCR_LOGIN_HEADER
                     = "<html><p style=\"color: #000000; align: left; "
                         +"font-family: Verdana, Arial, Helvetica, sans-serif; "
                         +"font-size: 9px;font-weight: bold;\">"
-                        +"Login to network using current profile:"
+                        +/*"Login to network using current profile:"*/ lan.getMessages("UISettings.INIT_SCR_LOGIN_HEADER") + ":"
                         +"</p></html>";
 
-    public static final String INIT_SCR_LOGGED_IN_STATUS = "Logged In";
+    public static final String INIT_SCR_LOGGED_IN_STATUS = /*"Logged In"*/ lan.getMessages("LoggedIn");
 
-    public static final String INIT_SCR_LOGGEDOUT_STATUS = "NOT Logged In";
+    public static final String INIT_SCR_LOGGEDOUT_STATUS = /*"NOT Logged In"*/ lan.getMessages("NOTLoggedIn");
 
-    public static final String OK_BUTTON_TEXT = "OK";
+    public static final String OK_BUTTON_TEXT = /*"OK"*/ lan.getMessages("OK");
 
-    public static final String CANCEL_BUTTON_TEXT = "Cancel";
+    public static final String CANCEL_BUTTON_TEXT = /*"Cancel"*/ lan.getMessages("Cancel");
 
 
 

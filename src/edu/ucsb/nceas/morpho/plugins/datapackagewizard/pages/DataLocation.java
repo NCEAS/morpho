@@ -63,29 +63,39 @@ import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JTextField;
 
+import edu.ucsb.nceas.morpho.Language;//pstango 2010/03/15
 
 public class DataLocation extends AbstractUIPage {
+	
+    /**
+     *Import Language into Morpho
+     *by pstango 2010/03/15 
+     */
+    public static Language lan = new Language();	
 
   public static final String LASTEVENT = "lastEvent";
   public static final String TEXTFILEPATH = "textFilePath";//used to store a key in incomplete info
   private final String pageID       = DataPackageWizardInterface.DATA_LOCATION;
   private final String pageNumber   = "1";
 
-  private final String title      = "New Data Table Wizard";
-  private final String subtitle   = "Data Location";
+  private final String title      = /*"New Data Table Wizard"*/ lan.getMessages("NewDataTableWizard");
+  private final String subtitle   = /*"Data Location"*/ lan.getMessages("DataLocation");
   private final String HARDDRIVE = "hard drive";
   private final String TMPFILENAME = "Unamed-table-";
 
   // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
-  public static final String FILE_LOCATOR_FIELD_FILENAME_LABEL = "File Name:";
-  public static final String FILE_LOCATOR_FIELD_OBJNAME_LABEL  = "Name/Title:";
+  public static final String FILE_LOCATOR_FIELD_FILENAME_LABEL = /*"File Name:"*/ lan.getMessages("File") + " " + lan.getMessages("Name") +" :";
+  public static final String FILE_LOCATOR_FIELD_OBJNAME_LABEL  = /*"Name/Title:"*/ lan.getMessages("Name") + " / " +lan.getMessages("Title") +" :";
 
   public static final String INIT_FILE_LOCATOR_TEXT
-                                  = "   use button to select a file -->";
+                                  = /*"   use button to select a file -->"*/
+                                	  "   " + lan.getMessages("DataLocaltion.INIT_FILE_LOCATOR_TEXT") + " -->"
+                                	  ;
   public static final String FILE_LOCATOR_IMPORT_DESC_INLINE
         = WizardSettings.HTML_TABLE_LABEL_OPENING
-        +"Use the \"locate\" button to locate the data file on your computer:"
+        /*+"Use the \"locate\" button to locate the data file on your computer:"*/
+        + lan.getMessages("DataLocaltion.FILE_LOCATOR_IMPORT_DESC_INLINE") +":"
         +WizardSettings.HTML_TABLE_LABEL_CLOSING;
 
   public static final String URN_ROOT = "ecogrid://knb/";
@@ -102,15 +112,20 @@ public class DataLocation extends AbstractUIPage {
   public static final String ONLINE_URL_XPATH
       = "/eml:eml/dataset/dataTable/physical/distribution/online/url";
 
-  public static final String FILECHOOSER_PANEL_TITLE = "File Location:";
+  public static final String FILECHOOSER_PANEL_TITLE = /*"File Location:"*/ lan.getMessages("File") + " " + lan.getMessages("Location") +":";
 
-  private final String Q1_TITLE = "What do you want to do?";
+  public final String Q1_TITLE = /*"What do you want to do?"*/ lan.getMessages("DataLocaltion.Q1_TITLE") + "?";
 
   private final String[] Q1_LABELS = new String[] {
-    "CREATE - Create a new, empty data table.",
+    /*
+	"CREATE - Create a new, empty data table.",
     "IMPORT - Import a data file into the package.",
     "DESCRIBE - Include only the data file documentation (but not the data "
     + "file itself) in the package."
+    */
+	lan.getMessages("CREATE") + " - " + lan.getMessages("DataLocaltion.CREATE"),
+	lan.getMessages("IMPORT") + " - " + lan.getMessages("DataLocaltion.IMPORT"),
+	lan.getMessages("DESCRIBE") + " - " + lan.getMessages("DataLocaltion.DESCRIBE")
   };
 
   private final static int CREATE_CHOICE = 0;
@@ -127,28 +142,46 @@ public class DataLocation extends AbstractUIPage {
   
 
   private final String Q2_TITLE_IMPORT
-                        = "How do you want to enter the documentation for "
-                        + "the data?";
+                        =
+                        /*
+                        "How do you want to enter the documentation for "
+                        + "the data?"
+                        */
+                        lan.getMessages("DataLocaltion.Q2_TITLE_IMPORT") + "?"
+                        ;
   private final String[] Q2_LABELS_IMPORT = new String[] {
-    "AUTOMATIC - Import the data file and extract the documentation for review.",
+    /*
+	"AUTOMATIC - Import the data file and extract the documentation for review.",
     "MANUAL - Import the data file but enter the documentation manually."
+    */
+	lan.getMessages("AUTOMATIC") +" - " + lan.getMessages("DataLocation.IMPORT_AUTOMATIC"),
+	lan.getMessages("MANUAL") +" - " + lan.getMessages("DataLocation.IMPORT_MANUAL")
   };
 
   private final String Q2_TITLE_DESCRIBE
-                        = "How do you want to enter the documentation for "
-                        + "the data?";
+                        = 
+                        /*
+                        "How do you want to enter the documentation for "
+                        + "the data?"
+                        */
+                        lan.getMessages("DataLocaltion.Q2_TITLE_IMPORT") + "?"
+                        ;
   private final String[] Q2_LABELS_DESCRIBE = new String[] {
-    "AUTOMATIC - Create the documentation by inspecting the data file (but "
-    + "omit the data file from the package).",
+    /*
+	"AUTOMATIC - Create the documentation by inspecting the data file (but "
+    + "omit the data file from the package).",	
     "MANUAL - Enter the documentation manually."
+    */
+    lan.getMessages("AUTOMATIC") +" - " + lan.getMessages("DataLocation.DESCRIBE_AUTOMATIC"),
+    lan.getMessages("MANUAL") +" - " + lan.getMessages("DataLocation.DESCRIBE_MANUAL")
   };
 
-  private final String Q3_TITLE = "Data Location?";
+  private final String Q3_TITLE = /*"Data Location?"*/ lan.getMessages("DataLocation") + "?" ;
 
   private final String[] Q3_LABELS = new String[] {
-    "Not available",
-    "Online URL",
-    "Archived"
+    /*"Not available"*/ lan.getMessages("NotAvailable"),
+    /*"Online URL"*/ lan.getMessages("OnlineURL"),
+    /*"Archived"*/ lan.getMessages("Archived")
   };
   private String xPathRoot  = "/eml:eml/dataset/dataTable/physical";
 
@@ -205,20 +238,39 @@ public class DataLocation extends AbstractUIPage {
     Box topBox = Box.createVerticalBox();
 
     JLabel desc = WidgetFactory.makeHTMLLabel(
-       "<p><b>Describe and optionally include a data "
-      +"table in your data package.</b> You may create a table from "
+       "<p><b>" 
+      /*
+      +"Describe and optionally include a data "
+      +"table in your data package."
+      */
+      + lan.getMessages("DataLocation.desc_1")	
+      +"</b> " 
+      /*
+      +"You may create a table from "
       +"scratch and populate it using Morpho's spreadsheet-style data editor, "
       +"or you can import certain types of existing data files and use the "
       +"wizard to automatically extract much of the documentation from the data "
-      +"file itself. If you "
+      +"file itself. " 
+      */
+      + lan.getMessages("DataLocation.desc_2")	+" "
+      /*
+      +"If you "
       +"choose the second option, you will be prompted to review the "
       +"information that "
       +"is extracted and provide any required fields that can not be generated "
-      +"automatically.<br></br></p>"
-      +"<p>You can also choose to manually enter all of the required fields "
+      +"automatically."
+      */
+      + lan.getMessages("DataLocation.desc_3")
+      +"<br></br></p>"
+      +"<p>" 
+      /*
+      +"You can also choose to manually enter all of the required fields "
       +"(rather than using the metadata extractor), which is useful for "
       +"proprietary file types like Excel, or other "
-      +"file types that are not yet supported.</p>", 7);
+      +"file types that are not yet supported." 
+      */
+      + lan.getMessages("DataLocation.desc_4")
+      + "</p>", 7);
     topBox.add(desc);
 
     final JPanel instance = this;
@@ -413,7 +465,8 @@ public class DataLocation extends AbstractUIPage {
     ////
     JPanel fileNamePanel = WidgetFactory.makePanel(1);
 
-    fileNameLabelNoData = WidgetFactory.makeLabel("File Name:", true);
+    fileNameLabelNoData = WidgetFactory.makeLabel(/*"File Name:"*/ lan.getMessages("File") + " " + lan.getMessages("Name") + ":", 
+    												true);
 
     fileNamePanel.add(fileNameLabelNoData);
 
@@ -451,7 +504,8 @@ public class DataLocation extends AbstractUIPage {
     ////
     JPanel fileNamePanel = WidgetFactory.makePanel(1);
 
-    fileNameLabelOnline = WidgetFactory.makeLabel("File Name:", true);
+    fileNameLabelOnline = WidgetFactory.makeLabel(/*"File Name:"*/ lan.getMessages("File") + " " + lan.getMessages("Name") + ":",
+    												true);
 
     fileNamePanel.add(fileNameLabelOnline);
 
@@ -465,7 +519,8 @@ public class DataLocation extends AbstractUIPage {
     ////
     JPanel urlPanel = WidgetFactory.makePanel(1);
 
-    urlLabelOnline = WidgetFactory.makeLabel("URL:", true);
+    urlLabelOnline = WidgetFactory.makeLabel(/*"URL:"*/ lan.getMessages("URL") + ":",
+    											true);
 
     urlPanel.add(urlLabelOnline);
 
@@ -497,8 +552,12 @@ public class DataLocation extends AbstractUIPage {
     WidgetFactory.addTitledBorder(panel, Q3_LABELS[2]);
 
     panel.add(WidgetFactory.makeHTMLLabel(
+      /*
       "Archived data may be stored on digital media (tapes, disks), "
-      +"or printed media (hardcopy).", 1));
+      +"or printed media (hardcopy).",
+      */
+      lan.getMessages("DataLocaltion.getOfflinePanel_1"),
+      1));
 
     JPanel objNamePanel = WidgetFactory.makePanel();
     objNameLabel = WidgetFactory.makeLabel(
@@ -508,7 +567,8 @@ public class DataLocation extends AbstractUIPage {
     objNamePanel.add(objNameField);
 
     JPanel medNamePanel = WidgetFactory.makePanel();
-    medNameLabel = WidgetFactory.makeLabel("Medium Type:", true);
+    medNameLabel = WidgetFactory.makeLabel(/*"Medium Type:"*/ lan.getMessages("MediumType") + ":",
+    										true);
     medNameField = WidgetFactory.makeOneLineTextField();
     medNamePanel.add(medNameLabel);
     medNamePanel.add(medNameField);
@@ -516,9 +576,11 @@ public class DataLocation extends AbstractUIPage {
     panel.add(WidgetFactory.makeHalfSpacer());
 
     panel.add(WidgetFactory.makeHTMLLabel(
-                    "Type of medium on which data is distributed. "
+                    /*"Type of medium on which data is distributed. "*/
+    				lan.getMessages("DataLocaltion.getOfflinePanel_2") +" "
                     +WizardSettings.HTML_EXAMPLE_FONT_OPENING
-                    +"eg: Tape,&nbsp;3.5 inch Floppy Disk,&nbsp;hardcopy"
+                    /*+"eg: Tape,&nbsp;3.5 inch Floppy Disk,&nbsp;hardcopy"*/
+                    + lan.getMessages("DataLocaltion.getOfflinePanel_3")
                     +WizardSettings.HTML_EXAMPLE_FONT_CLOSING, 1));
 
 
@@ -527,9 +589,11 @@ public class DataLocation extends AbstractUIPage {
     panel.add(WidgetFactory.makeHalfSpacer());
 
     panel.add(WidgetFactory.makeHTMLLabel(
-                    "Enter an identifying name in the space below&nbsp;"
+                    /*"Enter an identifying name in the space below&nbsp;"*/
+    				lan.getMessages("DataLocaltion.getOfflinePanel_4") + " : "
                     +WizardSettings.HTML_EXAMPLE_FONT_OPENING
-                    +" eg a title for hardcopy, or a filename for digital media"
+                    /*+" eg a title for hardcopy, or a filename for digital media"*/
+                    + lan.getMessages("DataLocaltion.getOfflinePanel_5")
                     +WizardSettings.HTML_EXAMPLE_FONT_CLOSING, 1));
 
     panel.add(objNamePanel);

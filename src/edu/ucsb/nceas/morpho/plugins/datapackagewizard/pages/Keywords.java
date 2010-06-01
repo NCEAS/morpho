@@ -28,6 +28,7 @@
 
 package edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages;
 
+import edu.ucsb.nceas.morpho.Language;
 import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
 import edu.ucsb.nceas.morpho.framework.AbstractUIPage;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.CustomList;
@@ -55,18 +56,26 @@ import java.util.ArrayList;
 
 public class Keywords
     extends AbstractUIPage {
+	
+    /**
+     *Import Language into Morpho
+     *by pstango 2010/03/15 
+     */
+    public static Language lan = new Language();
 
   // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
   private final String pageID = DataPackageWizardInterface.KEYWORDS;
-  private final String title = "Keywords";
+  private final String title = /*"Keywords"*/ lan.getMessages("Keywords");
   private final String subtitle = "";
   private final String KEYWORDSET_REL_XPATH = "/keywordSet[";
   private String xPathRoot = "/eml:eml/dataset/keywordSet[";
   private final String pageNumber = "3";
 
   private final String[] colNames = {
-      "Keywords", "Thesaurus"};
+      /*"Keywords"*/ lan.getMessages("Keywords"),
+      /*"Thesaurus"*/ lan.getMessages("Thesaurus")
+      };
   private final Object[] editors = null; //makes non-directly-editable
 
   private CustomList keywordsList;
@@ -90,15 +99,17 @@ public class Keywords
     vbox.add(WidgetFactory.makeDefaultSpacer());
 
     JLabel desc1 = WidgetFactory.makeHTMLLabel(
-        "<b>Enter the keywords.</b> A data package may have multiple keywords "
-        + "associated with it to enable "
-        +
-        "easy searching and categorization.  In addition, one or more keywords "
-        +
-        "may be associated with a &quot;keyword thesaurus&quot;, which allows "
-        +
-        "the association of a data package with an authoritative definition. "
-        + "Thesauri may also be used for internal categorization.", 3);
+    	/*"<b>Enter the keywords.</b>*/
+    	"<b>" + lan.getMessages("Keywords.desc1_1") + "</b> "
+    	/*
+    	+ "A data package may have multiple keywords associated with it to enable "
+        + "easy searching and categorization.  In addition, one or more keywords "
+        + "may be associated with a &quot;keyword thesaurus&quot;, which allows "
+        + "the association of a data package with an authoritative definition. "
+        + "Thesauri may also be used for internal categorization."
+        */
+    	+ lan.getMessages("Keywords.desc1_2")
+        , 3);
     vbox.add(desc1);
     vbox.add(WidgetFactory.makeDefaultSpacer());
 

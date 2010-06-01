@@ -28,6 +28,7 @@
 package edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages;
 
 
+import edu.ucsb.nceas.morpho.Language;
 import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.datapackage.AbstractDataPackage;
 import edu.ucsb.nceas.morpho.datapackage.AccessionNumber;
@@ -65,13 +66,19 @@ import org.w3c.dom.NodeList;
  *
  */
 public class CodeImportSummary extends AbstractUIPage {
+	
+    /**
+     *Import Language into Morpho
+     *by pstango 2010/03/15 
+     */
+    public static Language lan = new Language();	
 
   public final String pageID     = DataPackageWizardInterface.CODE_IMPORT_SUMMARY;
   
   public final String pageNumber = "13";
-  public final String PACKAGE_WIZ_SUMMARY_TITLE = "New Data Package Wizard";
-  public final String ENTITY_WIZ_SUMMARY_TITLE  = "New Data Table Wizard";
-  public final String SUBTITLE                  = "Summary";
+  public final String PACKAGE_WIZ_SUMMARY_TITLE = /*"New Data Package Wizard"*/ lan.getMessages("NewDataPackageWizard");
+  public final String ENTITY_WIZ_SUMMARY_TITLE  = /*"New Data Table Wizard"*/ lan.getMessages("NewDataTableWizard");
+  public final String SUBTITLE                  = /*"Summary"*/ lan.getMessages("Summary");
   public static final String STARTIMPORTWIZARD = "STARTIMPORTWIZARD";
 
   private JLabel desc1;
@@ -239,8 +246,11 @@ public class CodeImportSummary extends AbstractUIPage {
     	Log.debug(30, "CodeImportSummary.onLoadAction - Starting Import Code Wizard (from editing attribute menu===================");
     	desc1.setText(
     		      WizardSettings.HTML_TABLE_LABEL_OPENING
-    		      +"<p>Proceed to define or import data tables for the attribute <i> "+ currentAttrName + "</i></p>"
-    					+ WizardSettings.HTML_TABLE_LABEL_CLOSING);
+    		      +"<p>" 
+    		      +/*"Proceed to define or import data tables for the attribute"*/ lan.getMessages("CodeImportSummary.desc1") + " : "
+    		      +" <i> "
+    		      + currentAttrName + "</i></p>"
+    			  + WizardSettings.HTML_TABLE_LABEL_CLOSING);
     }
     	
 

@@ -62,19 +62,28 @@ import javax.swing.table.TableModel;
 import edu.ucsb.nceas.morpho.util.UISettings;
 import edu.ucsb.nceas.morpho.framework.UIController;
 
+import edu.ucsb.nceas.morpho.Language;//pstango 2010/03/15
+
 public class Entity extends AbstractUIPage{
+	
+    /**
+     *Import Language into Morpho
+     *by pstango 2010/03/15 
+     */
+    public static Language lan = new Language();	
 
   // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
   private final String pageID     = DataPackageWizardInterface.ENTITY;
   private final String pageNumber = "";
-  private final String title      = "Data Information:";
-  private final String subtitle   = "Table (Entity)";
+  private final String title      = /*"Data Information:"*/ lan.getMessages("DataInformation");
+  private final String subtitle   = /*"Table (Entity)"*/ lan.getMessages("Table") + " (" + lan.getMessages("Entity")+ ")";
   private String xPathRoot  = "/eml:eml/dataset/dataTable";
 
-  private final String[] colNames =  {"Attribute Name",
-                                      "Attribute Definition",
-                                      "Measurement Scale"};
+  private final String[] colNames =  {/*"Attribute Name"*/ lan.getMessages("AttributeName") ,
+                                      /*"Attribute Definition"*/ lan.getMessages("AttributeDefinition") ,
+                                      /*"Measurement Scale"*/ lan.getMessages("MeasurementScale")
+                                      };
   private final Object[] editors  =   null; //makes non-directly-editable
 
   private JTextField  entityNameField;
@@ -122,11 +131,15 @@ public class Entity extends AbstractUIPage{
     this.add(WidgetFactory.makeDefaultSpacer());
 
     JLabel desc1 = WidgetFactory.makeHTMLLabel(
-      "<b>Enter some information about the data table contained in your "
-      +"file.</b> "
-      +"If you have more than one data table, additional tables may be added "
-      +"after the completion of this wizard.",
-                                                                             2);
+      "<b>" 
+      /*+"Enter some information about the data table contained in your "
+      +"file."*/
+      + lan.getMessages("Entity.desc1_1")		
+      +"</b> "
+      /*+"If you have more than one data table, additional tables may be added "
+      +"after the completion of this wizard.",*/
+      +lan.getMessages("Entity.desc1_2"),
+                                   2);
     this.add(desc1);
 
     this.add(WidgetFactory.makeDefaultSpacer());
@@ -135,7 +148,9 @@ public class Entity extends AbstractUIPage{
     ///
     JPanel attributePanel = WidgetFactory.makePanel(1);
 
-    entityNameLabel = WidgetFactory.makeLabel("Table name:", true);
+    entityNameLabel = WidgetFactory.makeLabel(/*"Table name:"*/ 
+    										lan.getMessages("TableName") + ":"	
+    										, true);
 
     attributePanel.add(entityNameLabel);
 
@@ -149,16 +164,22 @@ public class Entity extends AbstractUIPage{
     ////////////////////////////////////////////////////////////////////////////
 
     JLabel entityDesc = WidgetFactory.makeHTMLLabel(
-    "Enter a paragraph that describes the table or entity, its type, and "
-    +"relevant information about the data that it contains.<br></br>"
-    +"<font color=\"666666\">&nbsp;&nbsp;[Example:&nbsp;&nbsp;&nbsp;Species "
-    +"abundance data for 1996 at the VCR LTER site]</font>", 3);
+    /*"Enter a paragraph that describes the table or entity, its type, and "
+    +"relevant information about the data that it contains." */
+    lan.getMessages("Entity.entityDesc")
+    +"<br></br>"
+    +"<font color=\"666666\">&nbsp;&nbsp;" 
+    +"[" 
+    + /*"Example:"*/ lan.getMessages("Example") + ":"
+    +"&nbsp;&nbsp;&nbsp;" 
+    +"Species abundance data for 1996 at the VCR LTER site"
+    +"]</font>", 3);
 
     this.add(entityDesc);
 
     JPanel entityDescPanel = WidgetFactory.makePanel();
 
-    JLabel entityLabel = WidgetFactory.makeLabel("Description", false);
+    JLabel entityLabel = WidgetFactory.makeLabel(/*"Description"*/ lan.getMessages("Description"), false);
     entityLabel.setVerticalAlignment(SwingConstants.TOP);
     entityLabel.setAlignmentY(SwingConstants.TOP);
     entityDescPanel.add(entityLabel);
@@ -174,11 +195,13 @@ public class Entity extends AbstractUIPage{
 	    this.add(WidgetFactory.makeDefaultSpacer());
 	
 	    this.add(WidgetFactory.makeHTMLLabel(
-	                      "One or more attributes (columns) must be defined:", 1));
+	                      /*"One or more attributes (columns) must be defined:"*/
+	    				lan.getMessages("Entity.AttributeMustBeDefine") + ":"
+	    				, 1));
 	
 	    JPanel attribsPanel = WidgetFactory.makePanel();
 	
-	    attributesLabel = WidgetFactory.makeLabel("Attributes", true);
+	    attributesLabel = WidgetFactory.makeLabel(/*"Attributes"*/ lan.getMessages("Attributes"), true);
 	    attribsPanel.add(attributesLabel);
 	
 	    attributeList = WidgetFactory.makeList(colNames, editors, 4,

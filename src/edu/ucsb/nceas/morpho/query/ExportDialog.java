@@ -26,6 +26,7 @@
  */
 package edu.ucsb.nceas.morpho.query;
 
+import edu.ucsb.nceas.morpho.Language;
 import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.framework.ConfigXML;
 import edu.ucsb.nceas.morpho.framework.MorphoFrame;
@@ -67,23 +68,31 @@ import javax.swing.SwingConstants;
  */
 public class ExportDialog extends JDialog
 {
+	
+    /**
+     *Import Language into Morpho
+     *by pstango 2010/03/15 
+     */
+    public static Language lan = new Language();	
  
   /** Contorl button */ 
   private JButton executeButton = null;
   private JButton cancelButton = null;
   
   /** Action for executeButton */
-  private GUIAction executeAction = new GUIAction("Export", null, null);
+  private GUIAction executeAction = new GUIAction(/*"Export"*/ lan.getMessages("Export"), null, null);
   
   /** Radio button */
-  private JRadioButton exportToDir = new JRadioButton("Export to a Directory...");
-  private JRadioButton exportToZip = new JRadioButton("Export to a Zip File...");
-  private JRadioButton exportToAnotherMetadata = new JRadioButton("Export to Another Metadata Format...");
+  private JRadioButton exportToDir = new JRadioButton(/*"Export to a Directory..."*/ lan.getMessages("ExportToDirectory")+"...");
+  private JRadioButton exportToZip = new JRadioButton(/*"Export to a Zip File..."*/ lan.getMessages("ExportToZipFile")+"...");
+  private JRadioButton exportToAnotherMetadata = new JRadioButton(/*"Export to Another Metadata Format..."*/ lan.getMessages("ExportToAnotherMetadataFormat")+"...");
   
   private static final int PADDINGWIDTH = 8;
   private static String WARNING =
-      "\nPlease choose the type of export function desired" +
-      " and click the Export button."; 
+      "\n" 
+      /*+ "Please choose the type of export function desired and click the Export button."*/
+      + lan.getMessages("ExportDialog.Warning")
+      ; 
 
   /** A reference to morpho frame */
   MorphoFrame morphoFrame = null;
@@ -170,7 +179,7 @@ public class ExportDialog extends JDialog
     int dialogY = (new Double(centerY - 0.5 * dialogHeight)).intValue();
     setLocation(dialogX, dialogY);
     
-    setTitle("Export");
+    setTitle(/*"Export"*/ lan.getMessages("Export"));
     // Set the default close operation is dispose
     setDefaultCloseOperation(DISPOSE_ON_CLOSE);
     
@@ -241,7 +250,7 @@ public class ExportDialog extends JDialog
     controlButtonsBox.add(Box.createHorizontalGlue());
     
     //Cancel button
-    GUIAction cancelAction = new GUIAction("Cancel", null, 
+    GUIAction cancelAction = new GUIAction(/*"Cancel"*/ lan.getMessages("Cancel"), null, 
                                                       new CancelCommand(this));
     cancelButton = new JButton(cancelAction);
     controlButtonsBox.add(cancelButton);

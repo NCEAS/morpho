@@ -64,6 +64,8 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import edu.ucsb.nceas.morpho.Language;//pstango 2010/03/15
+
 /**
  * This class represents a controller which will start a process to 
  * correct valid values in eml 210 documents. This class will be passed a list
@@ -76,6 +78,13 @@ import org.w3c.dom.NodeList;
  */
 public class CorrectionWizardController 
 {
+	
+    /**
+     *Import Language into Morpho
+     *by pstango 2010/03/15 
+     */
+    public static Language lan = new Language();
+	
 	private Vector errorPathList = null;
 	// page library to store wizard page
 	private CustomizedWizardPageLibrary wizardPageLibrary = new CustomizedWizardPageLibrary();
@@ -128,11 +137,23 @@ public class CorrectionWizardController
 	private final static String KEY = "key";
 	private final static String PREVNODE = "prevNode";
 	private final static String NEXTNODE = "nextNode";
-	private final static String INTRODUCTIONPREFIX = "Morpho has detected metadata fields that are invalid in the newer EML version.\n" +
-	                                                                         "This can include whitespace-only fields, and/or non-numeric values where numbers are required.\nThe following ";
-	private final static String INTRODUCTIONSUFFIX  = " will allow you to enter valid information in these fields";
-	private final static String INTRODUCTIONWIZARD = INTRODUCTIONPREFIX+ "wizard pages"+INTRODUCTIONSUFFIX+".\n"; 
-	private final static String MESSAGEFORWIZARD = INTRODUCTIONWIZARD +"For optional fields, you may simply choose to leave them blank";
+	private final static String INTRODUCTIONPREFIX = 
+		/*"Morpho has detected metadata fields that are invalid in the newer EML version.\n"*/ 
+		lan.getMessages("CorrectionWizardController.INTRODUCTIONPREFIX_1") + "\n"
+	    /*+"This can include whitespace-only fields, and/or non-numeric values where numbers are required.\n "*/
+	    + lan.getMessages("CorrectionWizardController.INTRODUCTIONPREFIX_2") +"\n"
+	    ;
+	
+	private final static String INTRODUCTIONSUFFIX  = 
+									/*"The following wizard pages will allow you to enter valid information in these fields."*/
+									lan.getMessages("CorrectionWizardController.INTRODUCTIONPREFIX_3")
+									;
+	private final static String INTRODUCTIONWIZARD = INTRODUCTIONPREFIX /*+ "wizard pages"*/ + INTRODUCTIONSUFFIX+".\n"; 
+	private final static String MESSAGEFORWIZARD = INTRODUCTIONWIZARD +
+			/*"For optional fields, you may simply choose to leave them blank"*/
+		    lan.getMessages("CorrectionWizardController.INTRODUCTIONPREFIX_4")
+			;
+			
 	private final static String INTRODUCTIONTREEEDITOR = INTRODUCTIONPREFIX+ "series Morpho editor frames"+INTRODUCTIONSUFFIX;
 	private final static String MESSAGEFORTREEEDITOR = INTRODUCTIONTREEEDITOR+ ", one at a time.";
 	

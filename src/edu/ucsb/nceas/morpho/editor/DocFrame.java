@@ -104,6 +104,7 @@ the template using the SchemaParser.
 package edu.ucsb.nceas.morpho.editor;
 import com.arbortext.catalog.*;
 
+import edu.ucsb.nceas.morpho.Language;
 import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.framework.ConfigXML;
 import edu.ucsb.nceas.morpho.framework.SwingWorker;
@@ -143,6 +144,13 @@ import edu.ucsb.nceas.morpho.datapackage.EML200DataPackage;
  */
 public class DocFrame extends javax.swing.JFrame
 {
+	
+    /**
+     *Import Language into Morpho
+     *by pstango 2010/03/15 
+     */
+    public static Language lan = new Language();	
+
 
   // various global variables
   public DefaultTreeModel treeModel;

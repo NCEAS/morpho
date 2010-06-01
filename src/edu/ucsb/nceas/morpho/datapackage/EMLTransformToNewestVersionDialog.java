@@ -19,6 +19,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
+import edu.ucsb.nceas.morpho.Language;
 import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.datapackage.AbstractDataPackage;
 import edu.ucsb.nceas.morpho.datapackage.AccessionNumber;
@@ -48,16 +49,26 @@ import edu.ucsb.nceas.morpho.util.Log;
  */
 public class EMLTransformToNewestVersionDialog 
 {
+	
+    /**
+     *Import Language into Morpho
+     *by pstango 2010/03/15 
+     */
+    public static Language lan = new Language();	
+	
 	//Dialog will base on this frame.
 	MorphoFrame morphoFrame = null;
 	
 	private static final int PADDINGWIDTH = 8;
 	private static final int NORTHPADDINGWIDTH = 8;
 	private static final String TITLE = "Upgrade EML Document";
-	private static final String WARNING = "This data package uses an older version of EML.\n"+
-	                                                 "You will not be able to edit it without upgrading to the newest version ("
-	                                                 +EML200DataPackage.LATEST_EML_VER+")"+
-	                                                ".\nDo you want to upgrade the data package now?";
+	private static final String WARNING = 
+				/*"This data package uses an older version of EML.\n"*/ lan.getMessages("UpgradeToNewEMLVersion_1") + "\n"
+	            +/*"You will not be able to edit it without upgrading to the newest version"*/ lan.getMessages("UpgradeToNewEMLVersion_2") + " (" 
+	            +EML200DataPackage.LATEST_EML_VER+")\n"
+	            +/*".\nDo you want to upgrade the data package now?"*/ lan.getMessages("UpgradeToNewEMLVersion_3") + "?"
+	            ;
+	
 	 /* Control button */
 	  private JButton executeButton = null;
 	  private JButton cancelButton = null;
@@ -114,7 +125,9 @@ public class EMLTransformToNewestVersionDialog
 	private void initializeUI(Window parent)
 	{
 	   
- 	   Object[] choices = {"Yes", "No"};
+ 	   Object[] choices = {/*"Yes"*/ lan.getMessages("Yes"),
+ 			   				/*"No"*/ lan.getMessages("No")
+ 			   				};
  	   userChoice= JOptionPane.showOptionDialog(parent, //parent
                 WARNING, // Message
                 TITLE, //title

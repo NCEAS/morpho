@@ -31,6 +31,8 @@ import edu.ucsb.nceas.morpho.util.ColumnSortableTableModel;
 import edu.ucsb.nceas.morpho.Morpho;
 import javax.swing.table.AbstractTableModel;
 
+import edu.ucsb.nceas.morpho.Language;//pstango 2010/03/15
+
 /**
  * This service allows plugins to request that the query results be
  * refreshed when they have made a change that should affect the resultset.
@@ -40,15 +42,22 @@ import javax.swing.table.AbstractTableModel;
  */
 public interface QueryRefreshInterface
 {
+
+    /**
+     *Import Language into Morpho
+     *by pstango 2010/03/15 
+     */
+    public static Language lan = new Language();	
+	
   //Constant for column name:
   public static final String HASDATA      = " ";
-  public static final String TITLE        = "Title";
-  public static final String DOCID        = "Document ID";
-  public static final String SURNAME      = "Surname";
-  public static final String KEYWORDS     = "Keywords";
-  public static final String LASTMODIFIED = "Last Modified";
-  public static final String LOCAL        ="Local";
-  public static final String NET          ="Net";
+  public static final String TITLE        = /*"Title"*/ lan.getMessages("Title");
+  public static final String DOCID        = /*"Document ID"*/ lan.getMessages("DocumentID");
+  public static final String SURNAME      = /*"Surname"*/ lan.getMessages("Surname");
+  public static final String KEYWORDS     = /*"Keywords"*/ lan.getMessages("Keywords");
+  public static final String LASTMODIFIED = /*"Last Modified"*/ lan.getMessages("LastModified");
+  public static final String LOCAL        =/*"Local"*/ lan.getMessages("Local");
+  public static final String NET          =/*"Net"*/ lan.getMessages("Net");
   
   /** Local complete document*/
   public static final String LOCALCOMPLETE = DataPackageInterface.LOCAL;

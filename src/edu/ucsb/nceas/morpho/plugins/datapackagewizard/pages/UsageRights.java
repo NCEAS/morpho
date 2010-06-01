@@ -28,6 +28,7 @@
 
 package edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages;
 
+import edu.ucsb.nceas.morpho.Language;
 import edu.ucsb.nceas.morpho.framework.AbstractUIPage;
 import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WidgetFactory;
@@ -44,14 +45,19 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
 
-
 public class UsageRights extends AbstractUIPage{
 
+    /**
+     *Import Language into Morpho
+     *by pstango 2010/03/15 
+     */
+    public static Language lan = new Language();	
+	
   // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
   private final String pageID     = DataPackageWizardInterface.USAGE_RIGHTS;
   private final String pageNumber = "9";
-  private final String title      = "Usage Rights";
+  private final String title      = /*"Usage Rights"*/ lan.getMessages("UsageRights");
   private final String subtitle   = "";
 
   private final String USAGE_ROOT      = "intellectualRights/";
@@ -82,17 +88,22 @@ public class UsageRights extends AbstractUIPage{
     vbox.add(WidgetFactory.makeDefaultSpacer());
 
     JLabel desc = WidgetFactory.makeHTMLLabel(
-      "<b>Enter a paragraph that describes the intended usage rights of the "
-      +"data package.</b> Specifically, include any restrictions (scientific,"
-      +" technical, ethical) to sharing your data within the"
-      +" public scientific domain. ", 3);
+      /*"<b>Enter a paragraph that describes the intended usage rights of the data package.</b>"*/
+      "<b>"  + lan.getMessages("UsageRights.desc_1") + "</b>"
+      /*
+      +"Specifically, include any restrictions (scientific, technical, ethical) to sharing your data within the"
+      +" public scientific domain. "
+      */
+      + lan.getMessages("UsageRights.desc_2")
+      , 3);
     vbox.add(desc);
 
     vbox.add(WidgetFactory.makeDefaultSpacer());
 
     JPanel usagePanel = WidgetFactory.makePanel();
 
-    JLabel usageLabel = WidgetFactory.makeLabel("Usage Rights:", false);
+    JLabel usageLabel = WidgetFactory.makeLabel(/*"Usage Rights:"*/ lan.getMessages("UsageRights") + ":"
+    											, false);
     usagePanel.add(usageLabel);
 
     usageField = WidgetFactory.makeTextArea("", 18, true);

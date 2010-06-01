@@ -45,14 +45,23 @@ import javax.swing.BoxLayout;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 
+import edu.ucsb.nceas.morpho.Language;//pstango 2010/03/15
+
 public class Introduction extends AbstractUIPage {
+	
+    /**
+     *Import Language into Morpho
+     *by pstango 2010/03/15 
+     */
+    public static Language lan = new Language();
 
   public final String pageID     = DataPackageWizardInterface.INTRODUCTION;
   public final String pageNumber = "1";
 
 //////////////////////////////////////////////////////////
   private JComponent metadataIntroLink;
-  public final String title      = "Welcome to the New Data Package Wizard";
+  public final String title      = /*"Welcome to the New Data Package Wizard"*/ 
+	  								lan.getMessages("Introduction.title");
   public final String subtitle   = " ";
 
 
@@ -71,25 +80,42 @@ public class Introduction extends AbstractUIPage {
     this.add(WidgetFactory.makeHalfSpacer());
 
     JLabel desc1 = WidgetFactory.makeHTMLLabel(
-    "<p>This wizard creates a"
+    /*"<p>This wizard creates a"
     +" <i>Data Package</i>, consisting of the structured documentation that "
     +"describes your data (i.e., metadata), and the "
     +"data themselves. <br></br></p>"
-
+    */
+    "<p>"
+    +lan.getMessages("Introduction.desc1_1")
+    +"<br></br></p>"
+    /*
     +"If you wish to improve your understanding of metadata "
-    +"and related concepts, you should start by reading ", 3);
+    +"and related concepts, you should start by reading "
+    */ 
+    +lan.getMessages("Introduction.desc1_2")
+    ,3);
 
     JLabel desc2 = WidgetFactory.makeHTMLLabel(
+    /*
     "which provides background information and examples of metadata. "
     +"The wizard uses a subset of EML to describe your data. If "
     +"additional documentation is needed to adequately document your data, use "
     +"<i>Morpho Editor</i> (after you finish this wizard, choose \"Add/"
     +"Edit Documentation\" from the \"Documentation\" menu on the main Morpho screen).<br></br></p>"
+    */
+    lan.getMessages("Introduction.desc2_1")
+    +"<br></br></p>"
 
+    /*
     +"<p>Before beginning you should have your data "
     +"(electronic or hardcopy format) available. You can provide the following "
     +"types of "
     +"information using this wizard: </p>"
+    */
+    +"<br><p>"
+    +lan.getMessages("Introduction.desc2_2")
+    +"</p>"
+    /*
     +"<li><b>Title and abstract</b><br></br></li>"
     +"<li><b>Keywords</b><br></br></li>"
     +"<li><b>People and Organizations</b><br></br></li>"
@@ -101,7 +127,22 @@ public class Introduction extends AbstractUIPage {
     +"<p><b>Note:</b> Required information includes the title and personnel "
     +"information for your data set.  The rest of the information collected here "
     +"is optional, however it is highly recommended that you fill in as much as "
-    +"possible.</p>", 19);
+    +"possible.</p>"
+	*/
+
+    +"<li><b>"+ lan.getMessages("TitleAndAbstract") +"</b><br></br></li>"
+    +"<li><b>"+ lan.getMessages("Keywords") +"</b><br></br></li>"
+    +"<li><b>"+ lan.getMessages("PeopleAndOrganizations") +"</b><br></br></li>"
+    +"<li><b>"+ lan.getMessages("UsageRights") +"</b><br></br></li>"
+    +"<li><b>"+ lan.getMessages("ResearchProjectInformation") +"</b><br></br></li>"
+    +"<li><b>"+ lan.getMessages("CoverageDetails") +"</b><br></br></li>"
+    +"<li><b>"+ lan.getMessages("MethodsAndSampling") +"</b><br></br></li>"
+    +"<li><b>"+ lan.getMessages("AccessInformation") +"</b></li></ul>"
+
+    +"<p><b>"+ lan.getMessages("Note")+":</b>"
+    +lan.getMessages("Introduction.desc2_3")
+    +"</p>"
+    , 19);
 
     this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
     this.add(desc1);
@@ -119,7 +160,7 @@ public class Introduction extends AbstractUIPage {
     if (metadataIntroLink==null) {
 
       GUIAction newDataTableAction
-        = new GUIAction("An Introduction to Ecological Metadata Language (EML) ",
+        = new GUIAction(/*"An Introduction to Ecological Metadata Language (EML) "*/ lan.getMessages("EML_Introduction"),
                         null,
                         new Command() {
 

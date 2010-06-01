@@ -66,6 +66,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import edu.ucsb.nceas.morpho.Language;
 import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.framework.ConfigXML;
 import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
@@ -88,6 +89,13 @@ import edu.ucsb.nceas.utilities.XMLUtilities;
  */
 public class ExportToAnotherMetadataDialog implements Command
 {
+
+    /**
+     *Import Language into Morpho
+     *by pstango 2010/03/15 
+     */
+    public static Language lan = new Language();	
+	
   private static final String STYLESHEETLIST = "styleSheetList";
   private static final String STYLESHEET = "styleSheet";
   private static final String NAME = "name";
@@ -95,7 +103,7 @@ public class ExportToAnotherMetadataDialog implements Command
   private static final String LOCATION = "location";
   private static final String SLASH = "/";
   private static final String TITLE = "Export to Another Metadata Language";
-  private static final String EXPORTBUTTONNAME = "Export";
+  private static final String EXPORTBUTTONNAME = /*"Export"*/ lan.getMessages("Export");
   private static final String BDP = "Biological Data Profile";
   
   Vector<StyleSheet> styleSheetList = new Vector<StyleSheet>();
@@ -277,7 +285,9 @@ public class ExportToAnotherMetadataDialog implements Command
                  services.getServiceProvider(DataPackageInterface.class);
       DataPackageInterface dataPackage = (DataPackageInterface)provider;
       dataPackage.exportToBDP(outputFile, styleSheetLocation, docid, documentLocation);
-      JOptionPane.showMessageDialog(sourceMorphoFrame, "Package export is complete!");
+      JOptionPane.showMessageDialog(sourceMorphoFrame,
+    		  						/*"Package export is complete ! "*/ lan.getMessages("PackageExportComplete") + " !"
+    		  						);
     }
     catch(Exception e)
     {
@@ -433,7 +443,9 @@ public class ExportToAnotherMetadataDialog implements Command
       }
       anotherMetadataReader.close();
       outputFileWriter.close();
-      JOptionPane.showMessageDialog(sourceMorphoFrame, "Package export is complete!");
+      JOptionPane.showMessageDialog(sourceMorphoFrame,
+    		  						/*"Package export is complete ! "*/ lan.getMessages("PackageExportComplete") + " !"
+    		  						);
       //this.setVisible(false);
       //this.dispose();
     }

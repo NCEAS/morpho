@@ -76,6 +76,8 @@ import javax.swing.JOptionPane;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 
+import edu.ucsb.nceas.morpho.Language;//pstango 2010/03/15
+
 
 /**
  * Class that implements the plugin for package editing
@@ -83,12 +85,19 @@ import org.w3c.dom.Node;
 public class DataPackagePlugin
        implements PluginInterface, ServiceProvider, DataPackageInterface
 {
+	
+    /**
+     *Import Language into Morpho
+     *by pstango 2010/03/15 
+     */
+  public static Language lan = new Language();
+	
   /** A reference to the container framework */
   private Morpho morpho = null;
 
-  public static final String EDIT_MENU_LABEL = "Edit";
-  public static final String METADATA_MENU_LABEL = "Documentation";
-  public static final String DATA_MENU_LABEL = "Data";
+  public static final String EDIT_MENU_LABEL = /*"Edit"*/ lan.getMessages("Edit");
+  public static final String METADATA_MENU_LABEL = /*"Documentation"*/ lan.getMessages("Documentation");
+  public static final String DATA_MENU_LABEL = /*"Data"*/ lan.getMessages("Data");
 
   /** Constant int for documentation menu position */
   public static final int DOCUMENTATIONMENUPOSITION = 30;
@@ -159,7 +168,7 @@ public class DataPackagePlugin
     UIController controller = UIController.getInstance();
 
     // Save dialog box action
-    GUIAction saveAction = new GUIAction("Save...",
+    GUIAction saveAction = new GUIAction(/*"Save..."*/ lan.getMessages("Save") ,
                                               UISettings.SAVE_ICON,
                                               new SavePackageCommand());
     saveAction.setMenuItemPosition(4);
@@ -176,7 +185,7 @@ public class DataPackagePlugin
     controller.addGuiAction(saveAction);
 
     // Save dialog box action
-    GUIAction saveCopyAction = new GUIAction("Save Duplicate...",
+    GUIAction saveCopyAction = new GUIAction(/*"Save Duplicate..."*/ lan.getMessages("SaveDuplicate") ,
                                               UISettings.DUPLICATE_ICON,
                                               new SavePackageCopyCommand());
     saveCopyAction.setMenuItemPosition(5);
@@ -194,7 +203,8 @@ public class DataPackagePlugin
     
     Command importEMLDocument = new ImportEMLFileCommand();
     GUIAction importEMLDocumentAction =
-      new GUIAction("Import...", null, importEMLDocument);
+      new GUIAction(/*"Import..."*/ lan.getMessages("Import") , 
+    		  null, importEMLDocument);
     importEMLDocumentAction.setToolTipText("Import an EML Document...");
     importEMLDocumentAction.setMenuItemPosition(15);
     //importEMLDocumentAction.setSeparatorPosition(SEPARATOR_FOLLOWING);
@@ -202,7 +212,7 @@ public class DataPackagePlugin
     controller.addGuiAction(importEMLDocumentAction);
 
 
-    GUIAction revertTab = new GUIAction("Revert Entity to Saved Version",
+    GUIAction revertTab = new GUIAction(/*"Revert Entity to Saved Version"*/ lan.getMessages("RevertEntityToSavedVersion"),
         null, new RevertCommand());
     revertTab.setToolTipText("Revert to original data shown in current tab");
     revertTab.setMenuItemPosition(0);
@@ -222,7 +232,7 @@ public class DataPackagePlugin
                    false, GUIAction.EVENT_LOCAL);
     controller.addGuiAction(revertTab);
 
-    GUIAction revertAll = new GUIAction("Revert All Entities to Saved Version",
+    GUIAction revertAll = new GUIAction(/*"Revert All Entities to Saved Version"*/ lan.getMessages("RevertAllEntitiesToSavedVersion"),
         null, new RevertAllCommand());
     revertAll.setToolTipText("Revert to original data shown in all tabs");
     revertAll.setMenuItemPosition(1);
@@ -242,7 +252,8 @@ public class DataPackagePlugin
                    false, GUIAction.EVENT_LOCAL);
     controller.addGuiAction(revertAll);
 
-    GUIAction cut = new GUIAction("Cut", null, new TableCutCommand());
+    GUIAction cut = new GUIAction(/*"Cut"*/ lan.getMessages("Cut"),
+    		null, new TableCutCommand());
     cut.setToolTipText("Cut value in data table cells");
     cut.setSmallIcon(new ImageIcon(getClass().
            getResource("/toolbarButtonGraphics/general/Cut16.gif")));
@@ -265,7 +276,8 @@ public class DataPackagePlugin
     controller.addGuiAction(cut);
 
     // For edit menu
-    GUIAction copy = new GUIAction("Copy", null, new TableCopyCommand());
+    GUIAction copy = new GUIAction(/*"Copy"*/ lan.getMessages("Copy"),
+    		null, new TableCopyCommand());
     copy.setToolTipText("Copy value in data table cells");
     copy.setSmallIcon(new ImageIcon(getClass().
            getResource("/toolbarButtonGraphics/general/Copy16.gif")));
@@ -288,7 +300,8 @@ public class DataPackagePlugin
     controller.addGuiAction(copy);
 
 
-    GUIAction paste = new GUIAction("Paste", null, new TablePasteCommand());
+    GUIAction paste = new GUIAction(/*"Paste"*/ lan.getMessages("Paste"),
+    		null, new TablePasteCommand());
     paste.setToolTipText("Paste value in data table cells");
     paste.setSmallIcon(new ImageIcon(getClass().
            getResource("/toolbarButtonGraphics/general/Paste16.gif")));
@@ -322,8 +335,8 @@ public class DataPackagePlugin
     paste.setEnabled(false);
 
     int i = 0; // postition for menu item
-    GUIAction addDocumentation = new GUIAction("Add/Edit Documentation...", null,
-                                          new AddDocumentationCommand());
+    GUIAction addDocumentation = new GUIAction(/*"Add/Edit Documentation..."*/ lan.getMessages("Add/EditDocumentation"),
+    		null, new AddDocumentationCommand());
     addDocumentation.setToolTipText("Add/Edit XML documentation...");
     addDocumentation.setMenuItemPosition(i);
     addDocumentation.setMenu(METADATA_MENU_LABEL, DOCUMENTATIONMENUPOSITION);
@@ -337,8 +350,8 @@ public class DataPackagePlugin
 
 
     i++;
-    GUIAction viewDocumentation = new GUIAction("View Documentation...", null,
-                                          new ViewDocumentationCommand());
+    GUIAction viewDocumentation = new GUIAction(/*"View Documentation..."*/ lan.getMessages("ViewDocumentation"),
+    		null, new ViewDocumentationCommand());
     viewDocumentation.setToolTipText("View Documentation as HTML...");
     viewDocumentation.setMenuItemPosition(i);
     viewDocumentation.setMenu(METADATA_MENU_LABEL, DOCUMENTATIONMENUPOSITION);
@@ -353,7 +366,7 @@ public class DataPackagePlugin
 
     i++;
     GUIAction addTitleAbstractAction = new GUIAction(
-        "Title & Abstract...",
+        /*"Title & Abstract..."*/ lan.getMessages("TitleAndAbstract"),
         null, new AddTitleAbstractCommand());
     addTitleAbstractAction.setToolTipText("Edit Title & Abstract...");
     addTitleAbstractAction.setMenuItemPosition(i);
@@ -367,7 +380,7 @@ public class DataPackagePlugin
     controller.addGuiAction(addTitleAbstractAction);
 
     i++;
-    GUIAction addKeywordAction = new GUIAction("Keywords...",
+    GUIAction addKeywordAction = new GUIAction(/*"Keywords..."*/ lan.getMessages("Keywords"),
         null, new AddKeywordCommand());
     addKeywordAction.setToolTipText("Add, edit or delete Keywords...");
     addKeywordAction.setMenuItemPosition(i);
@@ -381,7 +394,7 @@ public class DataPackagePlugin
     controller.addGuiAction(addKeywordAction);
 
     i++;
-    GUIAction addCreatorAction = new GUIAction("Owners...",
+    GUIAction addCreatorAction = new GUIAction(/*"Owners..."*/ lan.getMessages("Owner"),
         null, new AddCreatorCommand());
     addCreatorAction.setToolTipText("Add, edit or delete Owners...");
     addCreatorAction.setMenuItemPosition(i);
@@ -395,7 +408,7 @@ public class DataPackagePlugin
     controller.addGuiAction(addCreatorAction);
 
     i++;
-    GUIAction addContactAction = new GUIAction("Contacts...",
+    GUIAction addContactAction = new GUIAction(/*"Contacts..."*/ lan.getMessages("Contact"),
         null, new AddContactCommand());
     addContactAction.setToolTipText("Add, edit or delete Contacts...");
     addContactAction.setMenuItemPosition(i);
@@ -409,7 +422,7 @@ public class DataPackagePlugin
     controller.addGuiAction(addContactAction);
 
     i++;
-    GUIAction addAdditionalPartyAction = new GUIAction("Associated Parties...",
+    GUIAction addAdditionalPartyAction = new GUIAction(/*"Associated Parties..."*/ lan.getMessages("AssociatedParties"),
         null, new AddAdditionalPartyCommand());
     addAdditionalPartyAction.setToolTipText(
         "Add, edit or delete Associated Parties...");
@@ -425,7 +438,7 @@ public class DataPackagePlugin
 
     i++;
     GUIAction addResearchProjectAction = new GUIAction(
-        "Research Project...",
+        /*"Research Project..."*/ lan.getMessages("ResearchProject"),
         null, new AddResearchProjectCommand());
     addResearchProjectAction.setToolTipText("Edit Research Project details...");
     addResearchProjectAction.setMenuItemPosition(i);
@@ -440,7 +453,7 @@ public class DataPackagePlugin
 
     i++;
     GUIAction addUsageRightsAction = new GUIAction(
-        "Usage Rights...",
+        /*"Usage Rights..."*/ lan.getMessages("UsageRights"),
         null, new AddUsageRightsCommand());
     addUsageRightsAction.setToolTipText("Edit Usage Rights...");
     addUsageRightsAction.setMenuItemPosition(i);
@@ -455,7 +468,7 @@ public class DataPackagePlugin
 
 
     i++;
-    GUIAction addGeographicCovAction = new GUIAction("Geographic Coverage...",
+    GUIAction addGeographicCovAction = new GUIAction(/*"Geographic Coverage..."*/ lan.getMessages("GeographicCoverage"),
                                            null, new AddGeographicCovCommand());
     addGeographicCovAction.setToolTipText("Geographic Coverage...");
     addGeographicCovAction.setMenuItemPosition(i);
@@ -469,7 +482,7 @@ public class DataPackagePlugin
     controller.addGuiAction(addGeographicCovAction);
 
     i++;
-    GUIAction addTemporalCovAction = new GUIAction("Temporal Coverage...",
+    GUIAction addTemporalCovAction = new GUIAction(/*"Temporal Coverage..."*/ lan.getMessages("TemporalCoverage"),
                                            null, new AddTemporalCovCommand());
     addTemporalCovAction.setToolTipText("Temporal Coverage...");
     addTemporalCovAction.setMenuItemPosition(i);
@@ -483,7 +496,7 @@ public class DataPackagePlugin
     controller.addGuiAction(addTemporalCovAction);
 
     i++;
-    GUIAction addTaxonomicCovAction = new GUIAction("Taxonomic Coverage...",
+    GUIAction addTaxonomicCovAction = new GUIAction(/*"Taxonomic Coverage..."*/ lan.getMessages("TaxonomicCoverage"),
                                            null, new AddTaxonomicCovCommand());
     addTaxonomicCovAction.setToolTipText("Taxonomic Coverage...");
     addTaxonomicCovAction.setMenuItemPosition(i);
@@ -498,7 +511,7 @@ public class DataPackagePlugin
 
     i++;
     GUIAction addMethodAction = new GUIAction(
-        "Methods...",
+        /*"Methods..."*/ lan.getMessages("Methods") ,
         null, new AddMethodCommand());
     addMethodAction.setToolTipText("Edit Methods...");
     addMethodAction.setMenuItemPosition(i);
@@ -513,7 +526,7 @@ public class DataPackagePlugin
 
     i++;
     GUIAction addAccessAction = new GUIAction(
-        "Access Information...",
+        /*"Access Information..."*/ lan.getMessages("AccessInformation"),
         null, new AddAccessCommand());
     addAccessAction.setToolTipText("Add, edit or delete Access Permissions...");
     addAccessAction.setMenuItemPosition(i);
@@ -530,8 +543,8 @@ public class DataPackagePlugin
     i = 0; // postition for menu item in data menu
 
 
-    GUIAction createNewDatatable = new GUIAction("Create/Import New Data Table...", null,
-                                                      new ImportDataCommand());
+    GUIAction createNewDatatable = new GUIAction(/*"Create/Import New Data Table..."*/ lan.getMessages("Create/ImportNewDataTable"),
+    		null, new ImportDataCommand());
     createNewDatatable.setToolTipText("Add a new table");
     createNewDatatable.setMenuItemPosition(i);
     createNewDatatable.setMenu(DATA_MENU_LABEL, DATAMENUPOSITION);
@@ -663,7 +676,7 @@ public class DataPackagePlugin
     controller.addGuiAction(convertOtherEntity);
 
     i= i+2; // separator will take a position so add 2
-    GUIAction sortBySelectedColumn = new GUIAction("Sort by Selected Column",
+    GUIAction sortBySelectedColumn = new GUIAction(/*"Sort by Selected Column"*/ lan.getMessages("SortBySelectedColumn"),
                                            null, new SortDataTableCommand());
     sortBySelectedColumn.setToolTipText("Sort table by selected column");
     sortBySelectedColumn.setMenuItemPosition(i);
@@ -684,7 +697,7 @@ public class DataPackagePlugin
     controller.addGuiAction(sortBySelectedColumn);
 
     i = i+2;
-    GUIAction insertRowAfter = new GUIAction("Insert Row After Selection",
+    GUIAction insertRowAfter = new GUIAction(/*"Insert Row After Selection"*/ lan.getMessages("InsertRowAfterSelection"),
                             null, new InsertRowCommand(InsertRowCommand.AFTER));
     insertRowAfter.setToolTipText("Insert a row after selected row");
     insertRowAfter.setMenuItemPosition(i);
@@ -705,7 +718,7 @@ public class DataPackagePlugin
     controller.addGuiAction(insertRowAfter);
 
     i = i+1;
-    GUIAction insertRowBefore = new GUIAction("Insert Row Before Selection",
+    GUIAction insertRowBefore = new GUIAction(/*"Insert Row Before Selection"*/ lan.getMessages("InsertRowBeforeSelection"),
                            null, new InsertRowCommand(InsertRowCommand.BEFORE));
     insertRowBefore.setToolTipText("Insert a row before selected row");
     insertRowBefore.setMenuItemPosition(i);
@@ -725,8 +738,8 @@ public class DataPackagePlugin
     controller.addGuiAction(insertRowBefore);
 
     i = i+1;
-    GUIAction deleteRow = new GUIAction("Delete Selected Row", null,
-                              new DeleteRowCommand());
+    GUIAction deleteRow = new GUIAction(/*"Delete Selected Row"*/ lan.getMessages("DeleteSelectedRow"), 
+    		null, new DeleteRowCommand());
     deleteRow.setToolTipText("Delete a selected row");
     deleteRow.setMenuItemPosition(i);
     deleteRow.setMenu(DATA_MENU_LABEL, DATAMENUPOSITION);
@@ -746,7 +759,7 @@ public class DataPackagePlugin
     controller.addGuiAction(deleteRow);
 
     i = i+2;
-    GUIAction insertColumnAfter = new GUIAction("Insert Column After Selection",
+    GUIAction insertColumnAfter = new GUIAction(/*"Insert Column After Selection"*/ lan.getMessages("InsertColumnAfterSelection"),
                     null, new InsertColumnCommand(InsertColumnCommand.AFTER));
     insertColumnAfter.setToolTipText("Insert a column after selected column");
     insertColumnAfter.setMenuItemPosition(i);
@@ -767,8 +780,8 @@ public class DataPackagePlugin
 
     i = i+1;
     GUIAction insertColumnBefore =
-                  new GUIAction("Insert Column Before Selection", null,
-                           new InsertColumnCommand(InsertColumnCommand.BEFORE));
+                  new GUIAction(/*"Insert Column Before Selection"*/ lan.getMessages("InsertColumnBeforeSelection"), 
+                		  null, new InsertColumnCommand(InsertColumnCommand.BEFORE));
     insertColumnBefore.setToolTipText("Insert a column before selected column");
     insertColumnBefore.setMenuItemPosition(i);
     insertColumnBefore.setMenu(DATA_MENU_LABEL, DATAMENUPOSITION);
@@ -787,8 +800,8 @@ public class DataPackagePlugin
     controller.addGuiAction(insertColumnBefore);
 
     i = i+1;
-    GUIAction deleteColumn = new GUIAction("Delete Selected Column", null,
-                                  new DeleteColumnCommand());
+    GUIAction deleteColumn = new GUIAction(/*"Delete Selected Column"*/ lan.getMessages("DeleteSelectedColumn"),
+    		null, new DeleteColumnCommand());
     deleteColumn.setToolTipText("Delete a selected column");
     deleteColumn.setMenuItemPosition(i);
     deleteColumn.setMenu(DATA_MENU_LABEL, DATAMENUPOSITION);
@@ -808,8 +821,8 @@ public class DataPackagePlugin
     controller.addGuiAction(deleteColumn);
 
     i = i+2;
-    GUIAction editColumnMetadata = new GUIAction("Edit Column "+METADATA_MENU_LABEL, null,
-                                      new EditColumnMetaDataCommand());
+    GUIAction editColumnMetadata = new GUIAction(/*"Edit Column "+METADATA_MENU_LABEL*/ lan.getMessages("EditColumnDocumentation"),
+    		null, new EditColumnMetaDataCommand());
     editColumnMetadata.setToolTipText("Edit selected column "+METADATA_MENU_LABEL);
     editColumnMetadata.setMenuItemPosition(i);
     editColumnMetadata.setMenu(DATA_MENU_LABEL, DATAMENUPOSITION);
@@ -859,7 +872,7 @@ public class DataPackagePlugin
     editColumnMetadata.setEnabled(false);
 
     // create new data package menu in file menu
-    GUIAction createNewDataPackage = new GUIAction("New Data Package...",
+    GUIAction createNewDataPackage = new GUIAction(/*"New Data Package..."*/ lan.getMessages("NewDataPackage"),
                                       UISettings.NEW_DATAPACKAGE_ICON,
                                       new CreateNewDataPackageCommand(morpho));
     createNewDataPackage.setSmallIcon(new ImageIcon(getClass().

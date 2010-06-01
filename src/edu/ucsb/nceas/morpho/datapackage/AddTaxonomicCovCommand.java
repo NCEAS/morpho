@@ -52,11 +52,18 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import edu.ucsb.nceas.morpho.Language;//pstango 2010/03/15
 
 /**
  * Class to handle addition of taxonomic coverage to the data package
  */
 public class AddTaxonomicCovCommand implements Command, DataPackageWizardListener {
+
+    /**
+     *Import Language into Morpho
+     *by pstango 2010/03/15 
+     */
+    public static Language lan = new Language();
 
   private AbstractUIPage taxonomicPage;
 
@@ -94,7 +101,10 @@ public class AddTaxonomicCovCommand implements Command, DataPackageWizardListene
 	  if (dialog.getUserChoice() == JOptionPane.NO_OPTION)
 	 {
 		   // if user choose not transform it, stop the action.
-			Log.debug(2,"The current EML document is not the latest version. You should transform it first!");
+			Log.debug(2,
+					/*"The current EML document is not the latest version."*/ lan.getMessages("EMLDocumentIsNotTheLatestVersion_1") + " "
+					+/*" You should transform it first!"*/ lan.getMessages("EMLDocumentIsNotTheLatestVersion_2") + "!"
+					);
 			return;
 	 }
    

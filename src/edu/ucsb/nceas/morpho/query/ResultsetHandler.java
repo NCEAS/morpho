@@ -133,7 +133,7 @@ public class ResultsetHandler implements ContentHandler, Runnable
      parser = Morpho.createSaxParser((ContentHandler)this, null);
      Log.debug(30, "(2.43) Creating result set ...");
      // Set the ContentHandler to this instance
-     parser.parse(new InputSource(new InputStreamReader(resultsXMLStream)));
+     parser.parse(new InputSource(new InputStreamReader(resultsXMLStream, "UTF-8")));
      Log.debug(30, "(2.44) Creating result set ...");
     } catch (Exception e) {
      isdone = true;

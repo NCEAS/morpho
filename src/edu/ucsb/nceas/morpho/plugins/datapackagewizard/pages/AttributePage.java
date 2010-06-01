@@ -70,7 +70,15 @@ import edu.ucsb.nceas.morpho.util.Util;
 import edu.ucsb.nceas.utilities.OrderedMap;
 
 
+import edu.ucsb.nceas.morpho.Language;//pstango 2010/03/15
+
 public class AttributePage extends AbstractUIPage {
+	
+	 /**
+     *Import Language into Morpho
+     *by pstango 2010/03/15 
+     */
+    public static Language lan = new Language();	
 
   private final String pageID     = DataPackageWizardInterface.ATTRIBUTE_PAGE;
   private final String pageNumber = "";
@@ -133,82 +141,95 @@ public class AttributePage extends AbstractUIPage {
  
   final String ATTRIB_NAME_HELP
   = WizardSettings.HTML_NO_TABLE_OPENING
-  +"Name of the attribute as it appears in the data file"
+  +/*"Name of the attribute as it appears in the data file"*/ lan.getMessages("AttributePage.ATTRIB_NAME_HELP")
   +WizardSettings.HTML_NO_TABLE_CLOSING;
 
   final String ATTRIB_LABEL_HELP
   = WizardSettings.HTML_NO_TABLE_OPENING
-  +"A more readable label for the attribute"
+  +/*"A more readable label for the attribute"*/ lan.getMessages("AttributePage.ATTRIB_LABEL_HELP")
   +WizardSettings.HTML_NO_TABLE_CLOSING;
 
   final String ATTRIB_STORAGE_TYPE_HELP
   = WizardSettings.HTML_NO_TABLE_OPENING
-  +"Storage type for this field"
+  +/*"Storage type for this field"*/ lan.getMessages("AttributePage.ATTRIB_STORAGE_TYPE_HELP") + " "
   +WizardSettings.HTML_EXAMPLE_FONT_OPENING
-  +" e.g:&nbsp;  integer, float"
+  +/*" e.g"*/ lan.getMessages("e.g") 
+  +":&nbsp;  " 
+  + /*"integer, float"*/ lan.getMessages("integer") + ", " + lan.getMessages("float")
   +WizardSettings.HTML_EXAMPLE_FONT_CLOSING
   +WizardSettings.HTML_NO_TABLE_CLOSING;
 
   final String ATTRIB_STORAGE_SYSTEM_HELP
   = WizardSettings.HTML_NO_TABLE_OPENING
-  +"The system used to define the storage types"
+  +/*"The system used to define the storage types"*/ lan.getMessages("AttributePage.ATTRIB_STORAGE_SYSTEM_HELP") + " "
   +WizardSettings.HTML_EXAMPLE_FONT_OPENING
-  +" e.g:&nbsp; C, Java, Oracle"
+  +/*" e.g"*/ lan.getMessages("e.g") 
+  +":&nbsp; C, Java, Oracle"
   +WizardSettings.HTML_EXAMPLE_FONT_CLOSING
   +WizardSettings.HTML_NO_TABLE_CLOSING;
 
   final String ATTRIB_DEFN_HELP
   = WizardSettings.HTML_NO_TABLE_OPENING
+  /*
   +"Define the contents of the attribute (or column) precisely, "
-  +"so that a data user could interpret the attribute accurately.<br></br>"
+  +"so that a data user could interpret the attribute accurately." 
+  */
+  + lan.getMessages("AttributePage.ATTRIB_DEFN_HELP_1")
+  +"<br></br>"
   +WizardSettings.HTML_EXAMPLE_FONT_OPENING
-  +"e.g:&nbsp;&nbsp;&nbsp;"
+  +/*"e.g"*/ lan.getMessages("e.g") + ":&nbsp;&nbsp;&nbsp;"
+  /*
   +"\"spden\" is the number of individuals of all macro "
   +"invertebrate species found in the plot"
+  */
+  + lan.getMessages("AttributePage.ATTRIB_DEFN_HELP_2")
   +WizardSettings.HTML_EXAMPLE_FONT_CLOSING
   +WizardSettings.HTML_NO_TABLE_OPENING;
 
   private final String[] buttonsText
   = {
     WizardSettings.HTML_NO_TABLE_OPENING
-    +"Unordered:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
-    +" unordered categories or text   (statistically &nbsp;<b>nominal</b>) "
+    +/*"Unordered"*/ lan.getMessages("Unordered") + " :&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
+    +/*" unordered categories or text   "*/ lan.getMessages("Unordered.desc")
+    +" (" + /*"statistically"*/ lan.getMessages("statistically") + "&nbsp;<b>" + /*"nominal"*/ lan.getMessages("nominal") + "</b>) "
     +WizardSettings.HTML_EXAMPLE_FONT_OPENING
-    + "e.g: Male, Female"
+    + /*"e.g"*/ lan.getMessages("e.g") +": " + /*"Male"*/ lan.getMessages("Male") +", " + /*"Female"*/ lan.getMessages("Female")
     +WizardSettings.HTML_EXAMPLE_FONT_CLOSING
     +WizardSettings.HTML_NO_TABLE_CLOSING,
 
     WizardSettings.HTML_NO_TABLE_OPENING
-    +"Ordered:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
-    +"ordered categories (statistically &nbsp;<b>ordinal</b>) "
+    +/*"Ordered"*/ lan.getMessages("Ordered") + " :&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
+    +/*" ordered categories  "*/ lan.getMessages("Ordered.desc")
+    +" (" + /*"statistically"*/ lan.getMessages("statistically") + "&nbsp;<b>" + /*"ordinal"*/ lan.getMessages("ordinal") + "</b>) "
     +WizardSettings.HTML_EXAMPLE_FONT_OPENING
-    +"e.g: Low, High"
+    +WizardSettings.HTML_EXAMPLE_FONT_OPENING
+    + /*"e.g"*/ lan.getMessages("e.g") +" : " + /*"Low"*/ lan.getMessages("Low") +", " + /*"High"*/ lan.getMessages("High") 
     +WizardSettings.HTML_EXAMPLE_FONT_CLOSING
     +WizardSettings.HTML_NO_TABLE_CLOSING,
 
     WizardSettings.HTML_NO_TABLE_OPENING
-    +"Relative:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
-    +" values from a scale with equidistant points "
-    +"(statistically &nbsp;<b>interval</b>) "
+    +/*"Relative*/ lan.getMessages("Relative") + " :&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
+    +/*" values from a scale with equidistant points "*/ lan.getMessages("Relative.desc") + " "
+    +" (" + /*"statistically"*/ lan.getMessages("statistically") + "&nbsp;<b>" + /*"interval"*/ lan.getMessages("interval") + "</b>) "
     +WizardSettings.HTML_EXAMPLE_FONT_OPENING
-    +"e.g: 12.2 degrees Celsius"
+    + /*"e.g"*/ lan.getMessages("e.g") +" : 12.2 " + /*"degrees Celsius"*/ lan.getMessages("DegreesCelsius") 
     +WizardSettings.HTML_EXAMPLE_FONT_CLOSING
     +WizardSettings.HTML_NO_TABLE_CLOSING,
 
     WizardSettings.HTML_NO_TABLE_OPENING
-    +"Absolute:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
-    +"measurement scale with a meaningful zero point "
-    +"(statistically &nbsp;<b>ratio</b>) "
+    +/*"Absolute"*/ lan.getMessages("Absolute") + " :&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
+    +/*"measurement scale with a meaningful zero point "*/ lan.getMessages("Absolute.desc") + " "
+    +" (" + /*"statistically"*/ lan.getMessages("statistically") + "&nbsp;<b>" + /*"ratio"*/ lan.getMessages("ratio") + "</b>) "
     +WizardSettings.HTML_EXAMPLE_FONT_OPENING
-    +"e.g: 273 Kelvin"
+    + /*"e.g"*/ lan.getMessages("e.g") +" : 273 " + /*"degrees Celsius"*/ lan.getMessages("Kelvin")
     +WizardSettings.HTML_EXAMPLE_FONT_CLOSING
     +WizardSettings.HTML_NO_TABLE_CLOSING,
 
     WizardSettings.HTML_NO_TABLE_OPENING
-    +"Date-Time:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
-    +"date or time values from the Gregorian calendar "
+    +/*"Date-Time*/ lan.getMessages("Date-Time") + " :&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
+    +/*"date or time values from the Gregorian calendar "*/ lan.getMessages("Date-Time.desc") + " "
     +WizardSettings.HTML_EXAMPLE_FONT_OPENING
-    +"e.g: 2002-10-24"
+    + /*"e.g"*/ lan.getMessages("e.g") +" : 2002-10-24" 
     +WizardSettings.HTML_EXAMPLE_FONT_CLOSING
     +WizardSettings.HTML_NO_TABLE_CLOSING
   };
@@ -238,11 +259,11 @@ public class AttributePage extends AbstractUIPage {
     measScaleElemNames[MEASUREMENTSCALE_RATIO]    = "ratio";
     measScaleElemNames[MEASUREMENTSCALE_DATETIME] = "dateTime";
 
-    measScaleDisplayNames[MEASUREMENTSCALE_NOMINAL]  = "Unordered";
-    measScaleDisplayNames[MEASUREMENTSCALE_ORDINAL]  = "Ordered";
-    measScaleDisplayNames[MEASUREMENTSCALE_INTERVAL] = "Relative";
-    measScaleDisplayNames[MEASUREMENTSCALE_RATIO]    = "Absolute";
-    measScaleDisplayNames[MEASUREMENTSCALE_DATETIME] = "Datetime";
+    measScaleDisplayNames[MEASUREMENTSCALE_NOMINAL]  = /*"Unordered"*/ lan.getMessages("Unordered");
+    measScaleDisplayNames[MEASUREMENTSCALE_ORDINAL]  = /*"Ordered"*/ lan.getMessages("Ordered");
+    measScaleDisplayNames[MEASUREMENTSCALE_INTERVAL] = /*"Relative"*/ lan.getMessages("Relative");
+    measScaleDisplayNames[MEASUREMENTSCALE_RATIO]    = /*"Absolute"*/ lan.getMessages("Absolute");
+    measScaleDisplayNames[MEASUREMENTSCALE_DATETIME] = /*"Datetime"*/ lan.getMessages("Date-Time");
   }
 
 
@@ -273,7 +294,9 @@ public class AttributePage extends AbstractUIPage {
 
     topMiddlePanel.setLayout(new BoxLayout(topMiddlePanel, BoxLayout.Y_AXIS));
     topMiddlePanel.add(WidgetFactory.makeHTMLLabel(
-    "<font size=\"4\"><b>Define Attribute or Column:</b></font>", 1));
+    "<font size=\"4\"><b>" 
+    +/*"DefineAttribute/Column"*/ lan.getMessages("DefineAttribute/Column")
+    +":</b></font>", 1));
 
     topMiddlePanel.add(WidgetFactory.makeDefaultSpacer());
 
@@ -284,7 +307,8 @@ public class AttributePage extends AbstractUIPage {
     namePanel.setLayout(new GridLayout(1,2));
 
     JPanel attribNamePanel = WidgetFactory.makePanel(1);
-    attribNameLabel = WidgetFactory.makeLabel("Name:", true, WizardSettings.WIZARD_CONTENT_LABEL_DIMS);
+    attribNameLabel = WidgetFactory.makeLabel(/*"Name:"*/ lan.getMessages("Name") + ":", 
+    										  true, WizardSettings.WIZARD_CONTENT_LABEL_DIMS);
     attribNamePanel.add(attribNameLabel);
     attribNameField = WidgetFactory.makeOneLineTextField();
     attribNamePanel.add(attribNameField);
@@ -306,7 +330,8 @@ public class AttributePage extends AbstractUIPage {
     labelPanel.setLayout(new GridLayout(1,2));
 
     JPanel attribLabelPanel = WidgetFactory.makePanel(1);
-    attribLabelLabel = WidgetFactory.makeLabel("Label:", false, WizardSettings.WIZARD_CONTENT_LABEL_DIMS);
+    attribLabelLabel = WidgetFactory.makeLabel(/*"Label:"*/ lan.getMessages("Label") + ":",
+    											false, WizardSettings.WIZARD_CONTENT_LABEL_DIMS);
     attribLabelPanel.add(attribLabelLabel);
     attribLabelField = WidgetFactory.makeOneLineTextField();
     attribLabelPanel.add(attribLabelField);
@@ -325,7 +350,8 @@ public class AttributePage extends AbstractUIPage {
     defnPanel.setLayout(new GridLayout(1,2));
     JPanel attribDefinitionPanel = WidgetFactory.makePanel(2);
 
-    attribDefinitionLabel = WidgetFactory.makeLabel("Definition:", true, WizardSettings.WIZARD_CONTENT_LABEL_DIMS);
+    attribDefinitionLabel = WidgetFactory.makeLabel(/*"Definition:"*/ lan.getMessages("Definition") + ":",
+    												true, WizardSettings.WIZARD_CONTENT_LABEL_DIMS);
     attribDefinitionLabel.setVerticalAlignment(SwingConstants.TOP);
     attribDefinitionLabel.setAlignmentY(SwingConstants.TOP);
     attribDefinitionPanel.add(attribDefinitionLabel);
@@ -348,7 +374,8 @@ public class AttributePage extends AbstractUIPage {
     storagePanel.setLayout(new GridLayout(1,2));
     JPanel attribStoragePanel = WidgetFactory.makePanel(1);
 
-    attribStorageLabel = WidgetFactory.makeLabel("Storage:", false, WizardSettings.WIZARD_CONTENT_LABEL_DIMS);
+    attribStorageLabel = WidgetFactory.makeLabel(/*"Storage:"*/ lan.getMessages("Storage") + ":",
+    											false, WizardSettings.WIZARD_CONTENT_LABEL_DIMS);
     attribStoragePanel.add(attribStorageLabel);
 
     attribStorageField = WidgetFactory.makeOneLineTextField();
@@ -367,7 +394,8 @@ public class AttributePage extends AbstractUIPage {
     storageSystemPanel.setLayout(new GridLayout(1,2));
     JPanel attribStorageSystemPanel = WidgetFactory.makePanel(1);
 
-    attribStorageSystemLabel = WidgetFactory.makeLabel("Storage System:", false, WizardSettings.WIZARD_CONTENT_LABEL_DIMS);
+    attribStorageSystemLabel = WidgetFactory.makeLabel(/*"Storage System:"*/ lan.getMessages("StorageSystem") + ":",
+    													false, WizardSettings.WIZARD_CONTENT_LABEL_DIMS);
     attribStorageSystemPanel.add(attribStorageSystemLabel);
 
     attribStorageSystemField = WidgetFactory.makeOneLineTextField();
@@ -424,12 +452,13 @@ public class AttributePage extends AbstractUIPage {
 
     measScaleLabel = WidgetFactory.makeLabel(
     //"Select and define a Measurement Scale:"
-    "Category:", true,
+    /*"Category:"*/ lan.getMessages("Category")+ ":",
+    true,
     WizardSettings.WIZARD_CONTENT_LABEL_DIMS);
 
     measScaleLabel.setAlignmentY(measScaleLabel.CENTER_ALIGNMENT);
 
-    JButton helpButton = new JButton("Help");
+    JButton helpButton = new JButton(/*"Help"*/ lan.getMessages("Help"));
     helpButton.setMinimumSize(new Dimension(35,15));
     helpButton.setMaximumSize(new Dimension(35,15));
     helpButton.setMargin(new Insets(0, 2, 1, 2));

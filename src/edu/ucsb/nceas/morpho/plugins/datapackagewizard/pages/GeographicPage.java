@@ -28,6 +28,7 @@
 
 package edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages;
 
+import edu.ucsb.nceas.morpho.Language;
 import edu.ucsb.nceas.morpho.framework.AbstractUIPage;
 import edu.ucsb.nceas.morpho.framework.ConfigXML;
 import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
@@ -76,6 +77,12 @@ import org.w3c.dom.Node;
 
 
 public class GeographicPage extends AbstractUIPage {
+	
+    /**
+     *Import Language into Morpho
+     *by pstango 2010/03/15 
+     */
+    public static Language lan = new Language();	
 
   public final String pageID     = DataPackageWizardInterface.GEOGRAPHIC;
   public final String pageNumber = "1";
@@ -121,14 +128,19 @@ public class GeographicPage extends AbstractUIPage {
 //DFH    vbox.add(WidgetFactory.makeHalfSpacer());
 
     JLabel coverageDesc = WidgetFactory.makeHTMLLabel(
-        "<b>Enter a description of the geographic coverage.</b> Enter a general "
-        +"description of the geographic area in which the data were collected. "
-        +"This can be a simple place name (e.g., Santa Barbara) or a fuller description.", 2);
+        /*"<b>Enter a description of the geographic coverage.</b> "*/
+    	"<b>" + lan.getMessages("GeographicPage.coverageDesc_1") +"</b> "	
+        /*
+        + "Enter a general description of the geographic area in which the data were collected. "
+        +"This can be a simple place name (e.g., Santa Barbara) or a fuller description."
+        */
+    	+ lan.getMessages("GeographicPage.coverageDesc_2")
+        , 2);
     vbox.add(coverageDesc);
 
     JPanel covDescPanel = WidgetFactory.makePanel();
 
-    covDescLabel = WidgetFactory.makeLabel(" Description:", true);
+    covDescLabel = WidgetFactory.makeLabel(/*" Description:"*/ " " + lan.getMessages("Description") + ":" , true);
     covDescLabel.setVerticalAlignment(SwingConstants.TOP);
     covDescLabel.setAlignmentY(SwingConstants.TOP);
     covDescPanel.add(covDescLabel);
@@ -147,17 +159,24 @@ public class GeographicPage extends AbstractUIPage {
     vbox.add(WidgetFactory.makeHalfSpacer());
 
     JLabel bbDesc = WidgetFactory.makeHTMLLabel(
-        "<p><b>Set the geographic coordinates which bound the coverage:</b> Latitude and longitude "
+        "<p>" 
+        /*+"<b>Set the geographic coordinates which bound the coverage:</b> "*/
+       +"<b>" + lan.getMessages("GeographicPage.bbDesc_1") + " :</b> "
+       /*
+       + "Latitude and longitude "
        +"values are used to create a 'bounding box' containing the region of interest. "
        +"Drag or click on the map and then edit the text boxes if necessary. "
        +"[Default entries are in fractional degrees. To enter in degrees/minutes/seconds, simply "
-       +"type a space between the degrees, minutes, and seconds values]</p>", 3);
+       +"type a space between the degrees, minutes, and seconds values]" 
+       */
+       + lan.getMessages("GeographicPage.bbDesc_2")
+       +"</p>", 3);
     vbox.add(bbDesc);
 
 
     JPanel bboxPanel = WidgetFactory.makePanel();
 
-    JLabel bboxLabel = WidgetFactory.makeLabel(" Bounding Box:", true);
+    JLabel bboxLabel = WidgetFactory.makeLabel(/*" Bounding Box:"*/ " " + lan.getMessages("BoundingBox") + ":", true);
     bboxLabel.setVerticalAlignment(SwingConstants.TOP);
     bboxLabel.setAlignmentY(SwingConstants.TOP);
     bboxPanel.add(bboxLabel);
@@ -174,7 +193,8 @@ public class GeographicPage extends AbstractUIPage {
     regionPanel.setLayout(new GridLayout(1,2));
     JPanel regionSelectionPanel = WidgetFactory.makePanel(4);
 
-    regionSelectionLabel = WidgetFactory.makeLabel(" Named Regions:", false, WizardSettings.WIZARD_CONTENT_LABEL_DIMS);
+    regionSelectionLabel = WidgetFactory.makeLabel(/*" Named Regions:"*/ " " + lan.getMessages("GeographicPage.NamedRegions") + ":"
+    												, false, WizardSettings.WIZARD_CONTENT_LABEL_DIMS);
     regionSelectionLabel.setVerticalAlignment(SwingConstants.TOP);
     regionSelectionLabel.setAlignmentY(SwingConstants.TOP);
     regionSelectionPanel.add(regionSelectionLabel);
@@ -219,11 +239,11 @@ public class GeographicPage extends AbstractUIPage {
 
     final GeographicPage currentInstance = this;
     final JTextField textField = new JTextField(20);
-    final String msg1 = "Enter short name to appear in list.";
+    final String msg1 = /*"Enter short name to appear in list."*/ lan.getMessages("GeographicPage.ShortNameList");
     final Object[] array = {msg1, textField};
     final String descText = (covDescField.getText()).trim();
-    JLabel addHelpLabel = getLabel("Click to add current selection to list.");
-    JButton addButton = new JButton("Add");
+    JLabel addHelpLabel = getLabel(/*"Click to add current selection to list."*/ lan.getMessages("GeographicPage.AddToList"));
+    JButton addButton = new JButton(/*"Add"*/ lan.getMessages("Add"));
     addButton.setPreferredSize(new Dimension(60,24));
     addButton.setMaximumSize(new Dimension(60,24));
     addButton.setMargin(new Insets(0, 2, 1, 2));
@@ -233,8 +253,8 @@ public class GeographicPage extends AbstractUIPage {
     addButton.addActionListener( new ActionListener() {
       public void actionPerformed(ActionEvent ae) {
 
-        String btnString1 = "Enter";
-        String btnString2 = "Cancel";
+        String btnString1 = /*"Enter"*/ lan.getMessages("Enter");
+        String btnString2 = /*"Cancel"*/ lan.getMessages("Cancel");
         Object[] options = {btnString1, btnString2};
 
         JOptionPane optionPane = new JOptionPane(array,
@@ -244,7 +264,8 @@ public class GeographicPage extends AbstractUIPage {
                                     options,
                                     options[0]);
         JDialog dialog = optionPane.createDialog(currentInstance,
-           "Add Current Selection to Named Region List?");
+           /*"Add Current Selection to Named Region List?"*/ lan.getMessages("GeographicPage.AddCurrentSelectToList")+"?"
+        	);
         dialog.show();
         String selectedValue = (String)(optionPane.getValue());
         if ((selectedValue!=null)&&(selectedValue.equals("Enter"))) {
@@ -268,8 +289,9 @@ public class GeographicPage extends AbstractUIPage {
       }
     });
 
-    JLabel deleteHelpLabel = getLabel("Click to remove selected region from list.");
-    JButton deleteButton = new JButton("Delete");
+    JLabel deleteHelpLabel = getLabel(/*"Click to remove selected region from list."*/ 
+    									lan.getMessages("GeographicPage.RemoveFromList"));
+    JButton deleteButton = new JButton(/*"Delete"*/ lan.getMessages("Delete"));
     deleteButton.setPreferredSize(new Dimension(60,24));
     deleteButton.setMaximumSize(new Dimension(60,24));
     deleteButton.setMargin(new Insets(0, 2, 1, 2));
@@ -288,8 +310,9 @@ public class GeographicPage extends AbstractUIPage {
       }
     });
 
-    JLabel sortHelpLabel = getLabel("Click to sort the list of locations.");
-    JButton sortButton = new JButton("Sort");
+    JLabel sortHelpLabel = getLabel(/*"Click to sort the list of locations."*/
+    								lan.getMessages("GeographicPage.SortList"));
+    JButton sortButton = new JButton(/*"Sort"*/ lan.getMessages("Sort"));
     sortButton.setPreferredSize(new Dimension(60,24));
     sortButton.setMaximumSize(new Dimension(60,24));
     sortButton.setMargin(new Insets(0, 2, 1, 2));

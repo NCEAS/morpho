@@ -35,6 +35,8 @@ import org.apache.xerces.dom.DOMImplementationImpl;
 import org.w3c.dom.DOMImplementation;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
+
+import edu.ucsb.nceas.morpho.Language;
 import edu.ucsb.nceas.morpho.framework.AbstractUIPage;
 //import edu.ucsb.nceas.morpho.framework.EMLTransformToNewestVersionDialog;
 import edu.ucsb.nceas.morpho.framework.ModalDialog;
@@ -54,11 +56,19 @@ import java.util.List;
 import java.util.Iterator;
 import java.util.HashMap;
 
+import edu.ucsb.nceas.morpho.Language;//pstango 2010/03/15
+
 /**
  * Class to handle add additionalParty command
  */
 public class AddAdditionalPartyCommand
 implements Command, DataPackageWizardListener {
+	
+    /**
+     *Import Language into Morpho
+     *by pstango 2010/03/15 
+     */
+    public static Language lan = new Language();	
 
   //generic name for lookup in eml listings
   private final String DATAPACKAGE_ASSOCIATED_PARTY_GENERIC_NAME
@@ -88,7 +98,10 @@ implements Command, DataPackageWizardListener {
 	  if (dialog.getUserChoice() == JOptionPane.NO_OPTION)
 	 {
 		   // if user choose not transform it, stop the action.
-			Log.debug(2,"The current EML document is not the latest version. You should transform it first!");
+			Log.debug(2,
+					/*"The current EML document is not the latest version."*/ lan.getMessages("EMLDocumentIsNotTheLatestVersion_1") + " "
+					+/*" You should transform it first!"*/ lan.getMessages("EMLDocumentIsNotTheLatestVersion_2") + "!"
+					);
 			return;
 	 }
     

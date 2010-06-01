@@ -50,15 +50,24 @@ import java.util.Hashtable;
 import java.util.Vector;
 import javax.swing.table.AbstractTableModel;
 
+import edu.ucsb.nceas.morpho.Language;//pstango 2010/03/15
+
+
 public class QueryPlugin implements PluginInterface, ConnectionListener,
                                     ServiceProvider, QueryRefreshInterface
 {
-  
+
+    /**
+     *Import Language into Morpho
+     *by pstango 2010/03/15 
+     */
+  public static Language lan = new Language();
+	
     /** Constant int for Window menu position */
     public static final int SEARCHMENUPOSITION = 20;
     
     /** Constant String for Window menu label */
-    public static final String SEARCH_MENU_LABEL = "Search";
+    public static final String SEARCH_MENU_LABEL = /*"Search"*/ lan.getMessages("Search");
 	
 	/** A reference to the container framework */
     private static Morpho morpho = null;
@@ -108,7 +117,7 @@ public class QueryPlugin implements PluginInterface, ConnectionListener,
     UIController controller = UIController.getInstance();
 
     // Action for search
-    GUIAction searchItemAction = new GUIAction("Search...",
+    GUIAction searchItemAction = new GUIAction(/*"Search..."*/ lan.getMessages("Search"),
                                                UISettings.SEARCH_ICON,
                                                new SearchCommand(null, morpho));
     searchItemAction.setToolTipText("Search for data");
@@ -121,8 +130,9 @@ public class QueryPlugin implements PluginInterface, ConnectionListener,
     // Action for refresh
     RefreshCommand refreshCommand = new RefreshCommand();
     GUIAction refreshItemAction
-            = new GUIAction("Refresh", UISettings.REFRESH_ICON, refreshCommand);
-    refreshItemAction.setToolTipText("Refresh...");
+            = new GUIAction(/*"Refresh..."*/ lan.getMessages("Refresh"),
+            		UISettings.REFRESH_ICON, refreshCommand);
+    refreshItemAction.setToolTipText("Refresh");
     refreshItemAction.setMenuItemPosition(1);
     refreshItemAction.setMenu(SEARCH_MENU_LABEL, SEARCHMENUPOSITION);
     refreshItemAction.setToolbarPosition(5);
@@ -142,7 +152,8 @@ public class QueryPlugin implements PluginInterface, ConnectionListener,
     // Action for save query
     SaveQueryCommand saveCommand = new SaveQueryCommand(morpho);
     GUIAction saveQueryItemAction
-              = new GUIAction("Save Search", UISettings.SAVE_QUERY_ICON, saveCommand);
+              = new GUIAction(/*"Save Search"*/ lan.getMessages("SaveSearch"),
+            		  UISettings.SAVE_QUERY_ICON, saveCommand);
     saveQueryItemAction.setToolTipText("Save search");
     saveQueryItemAction.setMenuItemPosition(2);
     saveQueryItemAction.setMenu(SEARCH_MENU_LABEL, SEARCHMENUPOSITION);
@@ -160,8 +171,8 @@ public class QueryPlugin implements PluginInterface, ConnectionListener,
     controller.addGuiAction(saveQueryItemAction);
 
     // RevisedSearch action
-    GUIAction reviseSearchItemAction = new GUIAction("Revise Search", null,
-                                            new ReviseSearchCommand(morpho));
+    GUIAction reviseSearchItemAction = new GUIAction(/*"Revise Search"*/ lan.getMessages("ReviseSearch"), 
+    		null, new ReviseSearchCommand(morpho));
     reviseSearchItemAction.setSmallIcon(new ImageIcon(getClass().
            getResource("revisesearch16.gif")));
     reviseSearchItemAction.setToolTipText("Revise search");
@@ -185,7 +196,7 @@ public class QueryPlugin implements PluginInterface, ConnectionListener,
     saveCommand.loadSavedQueries();
 
     // Open dialog box action
-    GUIAction openDialogBoxAction = new GUIAction("Open...",
+    GUIAction openDialogBoxAction = new GUIAction(/*"Open..."*/ lan.getMessages("Open"),
                                               UISettings.OPEN_DATAPACKAGE_ICON,
                                               new OpenDialogBoxCommand(morpho));
     openDialogBoxAction.setMenuItemPosition(2);
@@ -203,8 +214,8 @@ public class QueryPlugin implements PluginInterface, ConnectionListener,
 //    controller.addGuiAction(openPackageAction);
 
     // Create a OpenPreviousVersion action
-    GUIAction openPreviousAction = new GUIAction("Open Previous Version",null,
-                                new OpenPreviousVersionCommand(null, morpho));
+    GUIAction openPreviousAction = new GUIAction(/*"Open Previous Version"*/ lan.getMessages("OpenPreviousVersion"),
+    		null, new OpenPreviousVersionCommand(null, morpho));
     openPreviousAction.setMenuItemPosition(3);
     openPreviousAction.setToolTipText("Open a previous version...");
     openPreviousAction.setMenu(Morpho.FILE_MENU_LABEL, Morpho.FILEMENUPOSITION);
@@ -227,8 +238,8 @@ public class QueryPlugin implements PluginInterface, ConnectionListener,
     controller.addGuiAction(openPreviousAction);
 
     // Synchronize action
-    GUIAction synchronizeAction = new GUIAction("Synchronize...", null,
-                          new OpenSynchronizeDialogCommand());
+    GUIAction synchronizeAction = new GUIAction(/*"Synchronize..."*/ lan.getMessages("Synchronize"), 
+    		null, new OpenSynchronizeDialogCommand());
     synchronizeAction.setMenuItemPosition(14);
     synchronizeAction.setToolTipText("Synchronize...");
     synchronizeAction.setSeparatorPosition(Morpho.SEPARATOR_FOLLOWING);
@@ -252,8 +263,8 @@ public class QueryPlugin implements PluginInterface, ConnectionListener,
     controller.addGuiAction(synchronizeAction);
 
     // DeleteDialogAction
-    GUIAction deleteDialogAction = new GUIAction("Delete...", null,
-                                          new OpenDeleteDialogCommand());
+    GUIAction deleteDialogAction = new GUIAction(/*"Delete..."*/ lan.getMessages("Delete"),
+    		null, new OpenDeleteDialogCommand());
     deleteDialogAction.setMenuItemPosition(13);
     deleteDialogAction.setToolTipText("Delete...");
     deleteDialogAction.setSeparatorPosition(Morpho.SEPARATOR_FOLLOWING);
@@ -272,7 +283,8 @@ public class QueryPlugin implements PluginInterface, ConnectionListener,
     controller.addGuiAction(deleteDialogAction);
 
     // Export action
-    GUIAction exportAction = new GUIAction("Export...", null,
+    GUIAction exportAction = new GUIAction(/*"Export..."*/ lan.getMessages("Export"),
+    		null,
 //                            new ExportCommand(null, ExportCommand.REGULAR));
                              new OpenExportDialogCommand());
     exportAction.setMenuItemPosition(16);

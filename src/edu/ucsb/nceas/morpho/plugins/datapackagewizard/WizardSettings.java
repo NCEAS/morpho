@@ -57,6 +57,8 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import edu.ucsb.nceas.morpho.util.UISettings;
 
+import edu.ucsb.nceas.morpho.Language;//pstango 2010/03/15
+
 /**
  *  WizardSettings
  *
@@ -64,6 +66,12 @@ import edu.ucsb.nceas.morpho.util.UISettings;
 
 public class WizardSettings {
 
+    /**
+     *Import Language into Morpho
+     *by pstango 2010/03/15 
+     */
+  public static Language lan = new Language();
+	
   private static final String ALL_UNIT_TYPES_XPATH
                                       = "/stmml:unitList/stmml:unitType/@name";
 
@@ -232,19 +240,19 @@ public class WizardSettings {
   public static final Dimension LIST_BUTTON_DIMS_SMALL
       = new Dimension(60, 25);
 
-  public    static final String SAVE_LATER_BUTTON_TEXT = "Save for Later";
+  public    static final String SAVE_LATER_BUTTON_TEXT = /*"Save for Later"*/ lan.getMessages("SaveForLater");
  
-  public    static final String IMPORT_BUTTON_TEXT  = "Import";
+  public    static final String IMPORT_BUTTON_TEXT  = /*"Import"*/ lan.getMessages("Import");
 
-  public    static final String FINISH_BUTTON_TEXT  = "Finish";
+  public    static final String FINISH_BUTTON_TEXT  = /*"Finish"*/ lan.getMessages("Finish");
 
-  public    static final String PREV_BUTTON_TEXT    = "< Back";
+  public    static final String PREV_BUTTON_TEXT    = /*"< Back"*/ lan.getMessages("Back");
 
-  protected static final String NEXT_BUTTON_TEXT    = "Next >";
+  protected static final String NEXT_BUTTON_TEXT    = /*"Next >"*/ lan.getMessages("Next");
 
-  protected static final String CANCEL_BUTTON_TEXT  = "Cancel";
+  protected static final String CANCEL_BUTTON_TEXT  = /*"Cancel"*/ lan.getMessages("Cancel");
 
-  protected static final String OK_BUTTON_TEXT      = "OK";
+  protected static final String OK_BUTTON_TEXT      = /*"OK"*/ lan.getMessages("OK");
 
   public static String NUMBER_OF_STEPS              = "15";
 

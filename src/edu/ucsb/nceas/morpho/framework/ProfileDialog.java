@@ -26,6 +26,7 @@
 
 package edu.ucsb.nceas.morpho.framework;
 
+import edu.ucsb.nceas.morpho.Language;
 import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.datapackage.RefreshAccessCommand;
 import edu.ucsb.nceas.morpho.util.GUIAction;
@@ -47,6 +48,12 @@ import javax.swing.*;
  */
 public class ProfileDialog extends JDialog implements StateChangeListener
 {
+    /**
+     *Import Language into Morpho
+     *by pstango 2010/03/15 
+     */
+    public static Language lan = new Language();
+	
   ConfigXML config;
   Morpho framework = null;
   /** the total number of screens to be processed */
@@ -96,7 +103,7 @@ public class ProfileDialog extends JDialog implements StateChangeListener
     currentScreen = 0;
 
     setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-    setTitle("New Profile");
+    setTitle(/*"New Profile"*/ lan.getMessages("NewProfile"));
     getContentPane().setLayout(new BoxLayout(getContentPane(),
                                BoxLayout.X_AXIS));
     setVisible(false);
@@ -130,7 +137,7 @@ public class ProfileDialog extends JDialog implements StateChangeListener
     entryPanel.add(Box.createVerticalStrut(8));
 
     JLabel headLabel = new JLabel();
-    headLabel.setText("New Profile");
+    headLabel.setText(/*"New Profile"*/ lan.getMessages("NewProfile"));
     ImageIcon head = new ImageIcon(
                          getClass().getResource("smallheader-bg.gif"));
     headLabel.setIcon(head);
@@ -156,14 +163,15 @@ public class ProfileDialog extends JDialog implements StateChangeListener
     JPanel buttonPanel = new JPanel();
     buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.X_AXIS));
     buttonPanel.add(Box.createHorizontalGlue());
-    cancelButton.setText("Cancel");
+    cancelButton.setText(/*"Cancel"*/ lan.getMessages("Cancel"));
     cancelButton.setActionCommand("Cancel");
     cancelButton.setMnemonic(KeyEvent.VK_C);
     cancelButton.setEnabled(true);
     addKeyListenerToComponent(cancelButton);
     buttonPanel.add(cancelButton);
     buttonPanel.add(Box.createHorizontalStrut(8));
-    previousButton = new JButton("Previous", new ImageIcon( getClass().
+    previousButton = new JButton(/*"Previous"*/ lan.getMessages("Previous"),
+    								new ImageIcon( getClass().
           getResource("/toolbarButtonGraphics/navigation/Back16.gif")));
     previousButton.setHorizontalTextPosition(SwingConstants.RIGHT);
     previousButton.setMnemonic(KeyEvent.VK_P);
@@ -361,20 +369,21 @@ public class ProfileDialog extends JDialog implements StateChangeListener
     screenPanel.setLayout(gridbag);
 
     if (0 == currentScreen) {
-      String helpText = "<html><p>Enter the name for this profile " +
-                        " and your first and last name." +
-                        "</p></html>";
+      String helpText = "<html><p>"
+    	  				/*+ "Enter the name for this profile and your first and last name."*/ 
+                        + lan.getMessages("BasicInformation.helpText")
+                        + "</p></html>";
       helpLabel.setText(helpText);
 
       screenPanel.setBorder(BorderFactory.createTitledBorder(
                             BorderFactory.createEmptyBorder(8,8,8,8),
-                            "Basic Information"));
+                            /*"Basic Information"*/ lan.getMessages("BasicInformation")));
       JLabel profileNameLabel = new JLabel();
       JLabel firstNameLabel = new JLabel();
       JLabel lastNameLabel = new JLabel();
-      profileNameLabel.setText("Name of profile: ");
-      firstNameLabel.setText("First name: ");
-      lastNameLabel.setText("Last name: ");
+      profileNameLabel.setText(/*"Name of profile: "*/ lan.getMessages("NameOfProfile") + ": ");
+      firstNameLabel.setText(/*"First name: "*/ lan.getMessages("FirstName") + ": ");
+      lastNameLabel.setText(/*"Last name: "*/ lan.getMessages("LastName") + ": ");
       profileNameLabel.setForeground(Color.black);
       firstNameLabel.setForeground(Color.black);
       lastNameLabel.setForeground(Color.black);
@@ -395,23 +404,27 @@ public class ProfileDialog extends JDialog implements StateChangeListener
       addLabelTextRows(labels, textFields, gridbag, screenPanel);
       addKeyListenerToComponents(textFields);
     } else if (1 == currentScreen) {
-    	String helpText = "<html><p>Enter the information you submitted "
-            + "when you registered for the Knowledge Network for Biocomplexity "
-            + "(KNB). "
-            + "<br>If you have not registered for the KNB yet, go to: "
-            + "<i>http://knb.ecoinformatics.org/</i>."
-            + " This will allow you to login to the network and collaborate with"
-            + " other researchers through the KNB.</p></html>";
+    	String helpText = 
+    		"<html><p>"
+    		/*+ "Enter the information you submitted when you registered for the Knowledge Network for Biocomplexity (KNB). "*/
+    		+ lan.getMessages("NetworkAccountInformation.helpText_1")
+            /*+ "<br>If you have not registered for the KNB yet, go to: "*/
+    		+ "<br>" + lan.getMessages("NetworkAccountInformation.helpText_2") + ":"
+            /*+ "<i>http://knb.ecoinformatics.org/</i>."*/
+    		+ "<i>" + lan.getMessages("KNB_UEL") + "</i>"
+            /*+ " This will allow you to login to the network and collaborate with other researchers through the KNB."*/
+    		+ "<br>" + lan.getMessages("NetworkAccountInformation.helpText_3")
+            + "</p></html>";
         helpLabel.setText(helpText);
         screenPanel.setBorder(BorderFactory.createTitledBorder(
                               BorderFactory.createEmptyBorder(8,8,8,8),
-                              "Network Account Information"));
+                              /*"Network Account Information"*/ lan.getMessages("NetworkAccountInformation")));
         JLabel usernameLabel = new JLabel();
         JLabel orgLabel = new JLabel();
         JLabel refreshLabel = new JLabel();
-        usernameLabel.setText("Username: ");
-        orgLabel.setText("Organization: ");
-        refreshLabel.setText("Refresh: ");
+        usernameLabel.setText(/*"Username: "*/ lan.getMessages("Username") + ": ");
+        orgLabel.setText(/*"Organization: "*/ lan.getMessages("Organization") + ": ");
+        refreshLabel.setText(/*"Refresh: "*/ lan.getMessages("Refresh") + ": ");
         usernameLabel.setForeground(Color.black);
         orgLabel.setForeground(Color.black);
         refreshLabel.setForeground(Color.black);
@@ -438,17 +451,27 @@ public class ProfileDialog extends JDialog implements StateChangeListener
         addKeyListenerToComponents(components);
         userIdField.requestFocus();
     } else if (2 == currentScreen) {
-      String helpText = "<html><p>Enter a short identifier prefix for this "
-          + "profile. All data packages you create under this profile will "
-          + "bear this identifier prefix. For example, using the prefix "
+      String helpText = 
+    	  "<html><p>"
+    	  /*+ "Enter a short identifier prefix for this profile. "*/ 
+    	  + lan.getMessages("DataPackageIdentification.helpText_1")
+    	  /*
+    	  + " All data packages you create under this profile will bear this identifier prefix. "
+    	  */
+    	  + "<br>" + lan.getMessages("DataPackageIdentification.helpText_2")
+    	  /*
+          + " For example, using the prefix "
           + "\'jane_doe\', data packages will have names like jane_doe.1.1, "
-          + "jane_doe.2.1, etc.</p></html>";
+          + "jane_doe.2.1, etc." 
+          */
+    	  + " " + lan.getMessages("DataPackageIdentification.helpText_3")
+          + "</p></html>";
       helpLabel.setText(helpText);
       screenPanel.setBorder(BorderFactory.createTitledBorder(
                             BorderFactory.createEmptyBorder(8,8,8,8),
-                            "Data Package Identification"));
-      JLabel scopeLabel = new JLabel("Identifier prefix: ");
-      JLabel noteLabel = new JLabel("Reserved words: ");
+                            /*"Data Package Identification"*/ lan.getMessages("DataPackageIdentification")));
+      JLabel scopeLabel = new JLabel(/*"Identifier prefix: "*/ lan.getMessages("IdentifierPrefix") + ": ");
+      JLabel noteLabel = new JLabel(/*"Note: "*/ lan.getMessages("Note") + ": ");
       JLabel illegalCharactersLabel = new JLabel("Illegal characters: ");
       noteLabel.setForeground(Color.black);
       noteLabel.setFont(new Font("Dialog", Font.PLAIN, 12));
@@ -459,7 +482,10 @@ public class ProfileDialog extends JDialog implements StateChangeListener
       scopeLabel.setFont(new Font("Dialog", Font.PLAIN, 12));
       scopeField.setColumns(15);
       scopeField.setText(userIdField.getText());
-      JLabel noteContent = new JLabel("Please do not use \"temporary\".");
+      JLabel noteContent= new JLabel(
+    		  							/*"Please do not use \"temporary\" because it is a reserved word."*/
+    		  							lan.getMessages("DataPackageIdentification.Note")
+    		  						);
       JLabel illegalContent = new JLabel(getIllegalScopeCharacterNote());
       JLabel space2 = new JLabel(" ");
       JLabel[] labels = {scopeLabel, space1, noteLabel, illegalCharactersLabel};
@@ -478,11 +504,11 @@ public class ProfileDialog extends JDialog implements StateChangeListener
 
     if (currentScreen == numScreens-1) {
       nextButton.setEnabled(true);
-      nextButton.setText("Finished");
+      nextButton.setText(/*"Finished"*/ lan.getMessages("Finish"));
       nextButton.setIcon(null);
     } else {
       nextButton.setEnabled(true);
-      nextButton.setText("Next");
+      nextButton.setText(/*"Next"*/ lan.getMessages("Next"));
       nextButton.setIcon(forwardIcon);
     }
     nextButton.isDefaultButton();

@@ -28,6 +28,7 @@
 
 package edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages;
 
+import edu.ucsb.nceas.morpho.Language;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.CustomList;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WidgetFactory;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardPageSubPanelAPI;
@@ -61,9 +62,13 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 
-
-
 class DateTimePanel extends JPanel implements WizardPageSubPanelAPI {
+	
+    /**
+     *Import Language into Morpho
+     *by pstango 2010/03/15 
+     */
+    public static Language lan = new Language();	
 
   private JLabel     formatStringLabel;
   private JLabel     precisionLabel;
@@ -117,7 +122,8 @@ class DateTimePanel extends JPanel implements WizardPageSubPanelAPI {
     ////////////////////////
 
     JPanel formatStringPanel = WidgetFactory.makePanel();
-    formatStringLabel    = WidgetFactory.makeLabel("Format:", true, WizardSettings.WIZARD_CONTENT_LABEL_DIMS);
+    formatStringLabel    = WidgetFactory.makeLabel(/*"Format:"*/ lan.getMessages("Format") + ":",
+    												true, WizardSettings.WIZARD_CONTENT_LABEL_DIMS);
     formatStringPanel.add(formatStringLabel);
     formatStringField = WidgetFactory.makeOneLineTextField();
     formatStringPanel.add(formatStringField);
@@ -127,7 +133,8 @@ class DateTimePanel extends JPanel implements WizardPageSubPanelAPI {
     formatStringGrid.add(this.getLabel(
         WizardSettings.HTML_NO_TABLE_OPENING
         +WizardSettings.HTML_EXAMPLE_FONT_OPENING
-        +"e.g: YYYY-MM-DDThh:mm:ss ,&nbsp;&nbsp;YYYY-MM-DD ,&nbsp;&nbsp;hh:mm:ss.sss"
+        +/*"e.g: "*/ lan.getMessages("e.g") + ": " 
+        +"YYYY-MM-DDThh:mm:ss ,&nbsp;&nbsp;YYYY-MM-DD ,&nbsp;&nbsp;hh:mm:ss.sss"
         +WizardSettings.HTML_EXAMPLE_FONT_CLOSING
         +WizardSettings.HTML_NO_TABLE_CLOSING));
 
@@ -139,7 +146,8 @@ class DateTimePanel extends JPanel implements WizardPageSubPanelAPI {
         precisionRequired = true;
     }*/
     JPanel precisionPanel = WidgetFactory.makePanel();
-    precisionLabel = WidgetFactory.makeLabel("Precision:", precisionRequired,
+    precisionLabel = WidgetFactory.makeLabel(/*"Precision:"*/ lan.getMessages("Precision") +":",
+    										precisionRequired,
                                              WizardSettings.WIZARD_CONTENT_LABEL_DIMS);
     precisionPanel.add(precisionLabel);
     precisionField = WidgetFactory.makeOneLineTextField();
@@ -149,11 +157,15 @@ class DateTimePanel extends JPanel implements WizardPageSubPanelAPI {
     precisionGrid.add(precisionPanel);
     precisionGrid.add(this.getLabel	(
         WizardSettings.HTML_NO_TABLE_OPENING
+        /*
         +"Precision of a date or time measurement, interpreted in the "
         +"smallest units represented by the datetime format."
+        */
+        + lan.getMessages("DataTimePanel.Desc_1")
         +"&nbsp;&nbsp;"+WizardSettings.HTML_NO_TABLE_OPENING
-        +WizardSettings.HTML_EXAMPLE_FONT_OPENING + "e.g: 1 day, 1 hour, "
-        +"1 minute"
+        +WizardSettings.HTML_EXAMPLE_FONT_OPENING 
+        + /*"e.g"*/ lan.getMessages("e.g") + ": "
+        + /*" 1 day, 1 hour, 1 minute"*/ lan.getMessages("DataTimePanel.Desc_2")
         +WizardSettings.HTML_EXAMPLE_FONT_CLOSING
         +WizardSettings.HTML_NO_TABLE_CLOSING));
 
@@ -183,7 +195,8 @@ class DateTimePanel extends JPanel implements WizardPageSubPanelAPI {
     JPanel boundsPanel = WidgetFactory.makePanel(3);//new JPanel();
     //boundsPanel.setLayout(new BoxLayout(boundsPanel, BoxLayout.X_AXIS));
 
-    boundsPanel.add(WidgetFactory.makeLabel("Bounds:", false, WizardSettings.WIZARD_CONTENT_LABEL_DIMS));
+    boundsPanel.add(WidgetFactory.makeLabel(/*"Bounds:"*/ lan.getMessages("Bounds") + ":",
+    										false, WizardSettings.WIZARD_CONTENT_LABEL_DIMS));
 
     boundsList = WidgetFactory.makeList(colNames, colTemplates, 2,
                                         false, false, false, false, false, false);
@@ -199,12 +212,12 @@ class DateTimePanel extends JPanel implements WizardPageSubPanelAPI {
     JPanel buttonPanel = new JPanel();
     buttonPanel.setLayout(new BoxLayout(buttonPanel,BoxLayout.Y_AXIS));
 
-    addButton = new JButton("Add");
+    addButton = new JButton(/*"Add"*/ lan.getMessages("Add"));
     addButton.setPreferredSize(WizardSettings.LIST_BUTTON_DIMS_SMALL);
     addButton.setMaximumSize(WizardSettings.LIST_BUTTON_DIMS_SMALL);
     addButton.setFont(WizardSettings.WIZARD_CONTENT_FONT);
 
-    delButton = new JButton("Delete");
+    delButton = new JButton(/*"Delete"*/ lan.getMessages("Delete"));
     delButton.setPreferredSize(WizardSettings.LIST_BUTTON_DIMS_SMALL);
     delButton.setMaximumSize(WizardSettings.LIST_BUTTON_DIMS_SMALL);
     delButton.setFont(WizardSettings.WIZARD_CONTENT_FONT);
@@ -240,10 +253,17 @@ class DateTimePanel extends JPanel implements WizardPageSubPanelAPI {
     //new BoxLayout(boundsHelpPanel, BoxLayout.Y_AXIS));
     JLabel helpLabel = new JLabel(
     WizardSettings.HTML_NO_TABLE_OPENING
-    +"Range of permitted values, in same date-time format as used in the format "
-    +"description above.&nbsp;&nbsp;&nbsp;"+WizardSettings.HTML_NO_TABLE_OPENING
+    /*
+    +"Range of permitted values, in same date-time format as used in the format description above." 
+    */
+    + lan.getMessages("DateTimePanel.BoundsDesc_1")
+    +"&nbsp;&nbsp;&nbsp;"+WizardSettings.HTML_NO_TABLE_OPENING
     +WizardSettings.HTML_EXAMPLE_FONT_OPENING
-    +"e.g: if format is \"YYYY-MM-DD\", a valid minimum would be \"2001-05-29\""
+    +/*"e.g:"*/ lan.getMessages("e.g") +": " 
+    /*
+    + " if format is \"YYYY-MM-DD\", a valid minimum would be \"2001-05-29\""
+    */
+    + lan.getMessages("DateTimePanel.BoundsDesc_2")
     +WizardSettings.HTML_EXAMPLE_FONT_CLOSING+"<br></br>"
     +WizardSettings.HTML_NO_TABLE_CLOSING);
 

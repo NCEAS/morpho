@@ -43,6 +43,8 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
+import edu.ucsb.nceas.morpho.Language;//pstango 2010/03/15
+
 /**
  * This panel contains all the elements for a single taxon
  * query term. It is repeated for multiple combined queries.
@@ -53,6 +55,12 @@ import javax.swing.JTextField;
 public class TaxonTermPanel extends JComponent
 {
 
+    /**
+     *Import Language into Morpho
+     *by pstango 2010/03/15 
+     */
+    public static Language lan = new Language();	
+	
   //{{DECLARE_CONTROLS
   private JComboBox rankComboBox = new JComboBox();
   private JComboBox searchModeComboBox = new JComboBox();
@@ -102,10 +110,10 @@ public class TaxonTermPanel extends JComponent
     rankComboBox.setBackground(java.awt.Color.white);
     queryTermPanel.add(rankComboBox);
 
-    searchModeComboBox.addItem("contains");
-    searchModeComboBox.addItem("starts-with");
-    searchModeComboBox.addItem("ends-with");
-    searchModeComboBox.addItem("equals");
+    searchModeComboBox.addItem(/*"contains"*/ lan.getMessages("contains"));
+    searchModeComboBox.addItem(/*"starts-with"*/ lan.getMessages("starts-with"));
+    searchModeComboBox.addItem(/*"ends-with"*/ lan.getMessages("ends-with"));
+    searchModeComboBox.addItem(/*"equals"*/ lan.getMessages("equals"));
     searchModeComboBox.setSelectedIndex(0);
     searchModeComboBox.setBackground(java.awt.Color.white);
     queryTermPanel.add(searchModeComboBox);

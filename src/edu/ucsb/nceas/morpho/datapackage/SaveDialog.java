@@ -26,6 +26,7 @@
  */
 package edu.ucsb.nceas.morpho.datapackage;
 
+import edu.ucsb.nceas.morpho.Language;
 import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.framework.ConfigXML;
 import edu.ucsb.nceas.morpho.framework.MorphoFrame;
@@ -100,20 +101,30 @@ import edu.ucsb.nceas.morpho.util.XMLUtil;
  */
 public class SaveDialog extends JDialog {
 
+    /**
+     *Import Language into Morpho
+     *by pstango 2010/03/15 
+     */
+    public static Language lan = new Language();
+    
 	/** Control button */
 	private JButton executeButton = null;
 	private JButton cancelButton = null;
 
 	private boolean showPackageFlag = true;
 
-	/** Radio button */
-	private JCheckBox localLoc = new JCheckBox("Save Locally");
-	private JCheckBox networkLoc = new JCheckBox("Save to Network.");
-	private JCheckBox upgradeEml = new JCheckBox("Upgrade to latest EML ("
-			+ EML200DataPackage.LATEST_EML_VER + ")");
+ /** Radio button */
+  private JCheckBox localLoc = new JCheckBox(/*"Save Locally"*/ lan.getMessages("SaveLocally"));
+  private JCheckBox networkLoc = new JCheckBox(/*"Save to Network."*/ lan.getMessages("SaveToNetwork"));
+  private JCheckBox upgradeEml = new JCheckBox(/*"Upgrade to latest EML "*/ lan.getMessages("UpgradeToLatestEML") 
+  												+"(" 
+  												+ EML200DataPackage.LATEST_EML_VER + ")");
 
 	private static final int PADDINGWIDTH = 8;
-	private static String WARNING = "Please choose where you would like to save the data package.";
+	  private static String WARNING =
+      /*"Please choose where you would like to save the data package."*/
+	  lan.getMessages("ChooseWhereToSave")
+	  ;
 
 	/** A reference to morpho frame */
 	MorphoFrame morphoFrame = null;
@@ -170,8 +181,8 @@ public class SaveDialog extends JDialog {
 		int dialogY = (new Double(centerY - 0.5 * dialogHeight)).intValue();
 		setLocation(dialogX, dialogY);
 
-		setTitle("Save Current DataPackage");
-		// Set the default close operation is dispose
+		setTitle(/*"Save Current DataPackage"*/ lan.getMessages("SaveCurrentDataPackage"));
+    	// Set the default close operation is dispose
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 
 		// Set the border layout as layout
@@ -226,12 +237,12 @@ public class SaveDialog extends JDialog {
 		controlButtonsBox.add(Box.createHorizontalGlue());
 
 		// Save button
-		executeButton = new JButton("Save");
+		executeButton = new JButton(/*"Save"*/ lan.getMessages("Save"));
 		controlButtonsBox.add(executeButton);
 		controlButtonsBox.add(Box.createHorizontalStrut(PADDINGWIDTH));
 
 		// Cancel button
-		cancelButton = new JButton("Cancel");
+		cancelButton = new JButton(/*"Cancel"*/ lan.getMessages("Cancel"));
 		controlButtonsBox.add(cancelButton);
 		controlButtonsBox.add(Box.createHorizontalStrut(PADDINGWIDTH));
 

@@ -61,11 +61,20 @@ import javax.swing.JCheckBox;
 import javax.swing.JDialog;
 import javax.swing.SwingConstants;
 
+import edu.ucsb.nceas.morpho.Language;//pstango 2010/03/15
+
 /**
  * A dialog box for user to open a datapakcage
  */
 public class OpenDialogBox extends JDialog
 {
+	
+    /**
+     *Import Language into Morpho
+     *by pstango 2010/03/15 
+     */
+    public static Language lan = new Language();	
+	
   /** A reference to the container Morpho application */
   private Morpho morpho = null;
 
@@ -128,7 +137,7 @@ public class OpenDialogBox extends JDialog
     int dialogY = (new Double(centerY - 0.5 * dialogHeight)).intValue();
     setLocation(dialogX, dialogY);
 
-    setTitle("Open");
+    setTitle(/*"Open"*/ lan.getMessages("Open"));
     // Set the default close operation is dispose
     setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 
@@ -161,7 +170,7 @@ public class OpenDialogBox extends JDialog
     controlButtonsBox.add(Box.createHorizontalStrut(PADDINGWIDTH));
 
     // Search button
-    GUIAction searchAction = new GUIAction("Search...", new ImageIcon
+    GUIAction searchAction = new GUIAction(/*"Search..."*/ lan.getMessages("Search")+"...", new ImageIcon
        (getClass().getResource("/toolbarButtonGraphics/general/Search16.gif")),
        new SearchCommand(this, morpho));
     searchAction.setToolTipText("Switch to search system to open packages from"
@@ -175,7 +184,7 @@ public class OpenDialogBox extends JDialog
     controlButtonsBox.add(Box.createHorizontalGlue());
 
     // Open button
-    GUIAction openAction = new GUIAction("Open", null,
+    GUIAction openAction = new GUIAction(/*"Open"*/ lan.getMessages("Open"), null,
                                   new OpenPackageCommand(this));
     openButton = new JButton(openAction);
     // Registor open button to mediator
@@ -187,7 +196,7 @@ public class OpenDialogBox extends JDialog
     controlButtonsBox.add(Box.createHorizontalStrut(PADDINGWIDTH));
 
     //Cancel button
-    GUIAction cancelAction = new GUIAction("Cancel", null,
+    GUIAction cancelAction = new GUIAction(/*"Cancel"*/ lan.getMessages("Cancel"), null,
                                                       new CancelCommand(this));
     cancelButton = new JButton(cancelAction);
     controlButtonsBox.add(cancelButton);

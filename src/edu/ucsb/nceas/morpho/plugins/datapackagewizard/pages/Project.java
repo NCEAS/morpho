@@ -65,11 +65,19 @@ import javax.swing.border.EmptyBorder;
 
 import org.w3c.dom.Node;
 
+import edu.ucsb.nceas.morpho.Language;//pstango 2010/03/15
+
 public class Project extends AbstractUIPage {
 
+    /**
+     *Import Language into Morpho
+     *by pstango 2010/03/15 
+     */
+    public static Language lan = new Language();	
+	
   public final String pageID     = DataPackageWizardInterface.PROJECT;
 
-  public final String title      = "Research Project Information";
+  public final String title      = /*"Research Project Information"*/ lan.getMessages("Project.title");
   public final String subtitle   = " ";
   public final String pageNumber = "8";
 
@@ -91,7 +99,8 @@ public class Project extends AbstractUIPage {
   private String xPathRoot = PROJECT_ROOT;
 
   private final String[] buttonsText = new String[] {
-      "This project is part of a larger umbrella research project."
+      /*"This project is part of a larger umbrella research project."*/
+	  lan.getMessages("Project.SubProject")
   };
 
   private JLabel      titleLabel;
@@ -100,7 +109,10 @@ public class Project extends AbstractUIPage {
   private JTextField  fundingField;
   private JLabel minRequiredLabel;
   private CustomList  partiesList;
-  private final String[] colNames =  {"Party", "Role", "Address"};
+  private final String[] colNames =  {/*"Party"*/ lan.getMessages("Party"),
+		  							  /*"Role"*/ lan.getMessages("Role") , 
+		  							  /*"Address"*/ lan.getMessages("Address")
+		  							  };
   private final Object[] editors  =   null; //makes non-directly-editable
   private boolean checkPersonnel = false;
 
@@ -142,12 +154,16 @@ public class Project extends AbstractUIPage {
     //topBox.add(WidgetFactory.makeHalfSpacer());
 
     JLabel desc = WidgetFactory.makeHTMLLabel(
-        "<b>Is your project part of a larger umbrella research project?</b> "
+        /*"<b>Is your project part of a larger umbrella research project?</b> "*/
+    	"<b>" + lan.getMessages("Party.desc_1") + " ?</b>"
+    	/*	
         +"Data may be collected as part of a large research program with many "
         +"sub-projects or they may be associated with a single, independent "
         +"investigation. For example, a large NSF grant may provide funds for "
-        +"several primary investigators to collect data at various locations. ",
-        4);
+        +"several primary investigators to collect data at various locations. "
+        */
+    	+ lan.getMessages("Party.desc_2")
+        ,4);
 
     topBox.add(WidgetFactory.makeHalfSpacer());
     topBox.add(desc);
@@ -190,14 +206,20 @@ public class Project extends AbstractUIPage {
 
   private JPanel getDataPanel() {
     JPanel panel = WidgetFactory.makeVerticalPanel(6);
-    WidgetFactory.addTitledBorder(panel, "Enter Project Information");
+    WidgetFactory.addTitledBorder(panel, 
+    							  /*"Enter Project Information"*/ lan.getMessages("Project.titleDesc")
+    							 );
     //panel.add(WidgetFactory.makeDefaultSpacer());
     ////
     JPanel titlePanel = WidgetFactory.makePanel(1);
     JLabel titleDesc = WidgetFactory.makeHTMLLabel(
-       "<b>Enter the title of the project.</b> ", 1);
+       "<b>" 
+       + /*"Enter the title of the project."*/ lan.getMessages("Project.titleDesc") 
+       + "</b> "
+    	, 1);
     panel.add(titleDesc);
-    titleLabel = WidgetFactory.makeLabel(" Title", true);
+    titleLabel = WidgetFactory.makeLabel(/*" Title"*/ " " + lan.getMessages("Title")
+    									, true);
     titlePanel.add(titleLabel);
     titleField = WidgetFactory.makeOneLineTextField();
     titlePanel.add(titleField);
@@ -207,11 +229,15 @@ public class Project extends AbstractUIPage {
     panel.add(WidgetFactory.makeHalfSpacer());
     JPanel fundingPanel = WidgetFactory.makePanel(1);
     JLabel fundingDesc = WidgetFactory.makeHTMLLabel(
-      "<b>Enter the funding sources that support this project.</b> This"
-      + " may include agency names and grant or contract numbers.", 2);
+      /*"<b>Enter the funding sources that support this project.</b> "*/
+      "<b>" + lan.getMessages("Project.fundingDesc_1") + "</b> "
+      /*+"This may include agency names and grant or contract numbers."*/
+      + lan.getMessages("Project.fundingDesc_2")
+      , 2);
 
     panel.add(fundingDesc);
-    fundingLabel = WidgetFactory.makeLabel(" Funding Source", false);
+    fundingLabel = WidgetFactory.makeLabel(/*" Funding Source"*/ " " + lan.getMessages("FundingSource")
+    										, false);
     fundingPanel.add(fundingLabel);
     fundingField = WidgetFactory.makeOneLineTextField();
     fundingPanel.add(fundingField);
@@ -221,11 +247,16 @@ public class Project extends AbstractUIPage {
     panel.add(WidgetFactory.makeHalfSpacer());
     ////
     JLabel desc = WidgetFactory.makeHTMLLabel(
-      "<b>Enter the personnel information</b>. The full name of the people or "
-      +"organizations responsible for the project.", 2);
+      /*"<b>Enter the personnel information</b>."*/
+     "<b>" + lan.getMessages("Project.desc_1") + "</b>"
+     /*+"The full name of the people or organizations responsible for the project."*/
+     + lan.getMessages("Project.desc_2")
+      
+      , 2);
     panel.add(desc);
     minRequiredLabel = WidgetFactory.makeLabel(
-                                " One or more Personnel must be defined:", true,
+                                /*" One or more Personnel must be defined:"*/ " " + lan.getMessages("Project.minRequiredLabel") + ":"
+    							, true,
                                 WizardSettings.WIZARD_CONTENT_TEXTFIELD_DIMS);
     minRequireLabelPanel.add(minRequiredLabel);
     panel.add(minRequireLabelPanel);

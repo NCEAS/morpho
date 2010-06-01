@@ -54,11 +54,19 @@ import java.util.List;
 import java.util.Iterator;
 import java.util.HashMap;
 
+import edu.ucsb.nceas.morpho.Language;//pstango 2010/03/15
+
 /**
  * Class to handle add creator command
  */
 public class AddCreatorCommand
 implements Command, DataPackageWizardListener {
+
+    /**
+     *Import Language into Morpho
+     *by pstango 2010/03/15 
+     */
+    public static Language lan = new Language();
 
   //generic name for lookup in eml listings
   private final String DATAPACKAGE_CREATOR_GENERIC_NAME = "creator";
@@ -86,7 +94,10 @@ implements Command, DataPackageWizardListener {
 	  if (dialog.getUserChoice() == JOptionPane.NO_OPTION)
 	 {
 		   // if user choose not transform it, stop the action.
-			Log.debug(2,"The current EML document is not the latest version. You should transform it first!");
+			Log.debug(2,
+					/*"The current EML document is not the latest version."*/ lan.getMessages("EMLDocumentIsNotTheLatestVersion_1") + " "
+					+/*" You should transform it first!"*/ lan.getMessages("EMLDocumentIsNotTheLatestVersion_2") + "!"
+					);
 			return;
 	 }
     

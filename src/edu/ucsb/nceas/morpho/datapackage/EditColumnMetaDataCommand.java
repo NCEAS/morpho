@@ -26,6 +26,7 @@
 
 package edu.ucsb.nceas.morpho.datapackage;
 
+import edu.ucsb.nceas.morpho.Language;
 import edu.ucsb.nceas.morpho.framework.AbstractUIPage;
 //import edu.ucsb.nceas.morpho.framework.EMLTransformToNewestVersionDialog;
 import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
@@ -59,6 +60,13 @@ import org.w3c.dom.Node;
  */
 public class EditColumnMetaDataCommand implements Command, DataPackageWizardListener 
 {
+	
+	   /**
+     *Import Language into Morpho
+     *by pstango 2010/03/15 
+     */
+    public static Language lan = new Language();	
+	
   /* Referrence to  morphoframe */
   private MorphoFrame morphoFrame = null;
 
@@ -125,7 +133,9 @@ public class EditColumnMetaDataCommand implements Command, DataPackageWizardList
           int viewIndex = table.getSelectedColumn();
           if(viewIndex == -1)
           {
-            Log.debug(5, "Please select a column first!");
+            Log.debug(5, 
+            		  /*"Please select a column first!"*/ lan.getMessages("SelectColumnFirst") + "!"
+            		);
           }
     	  attrIndex =  table.getColumnModel().getColumn(viewIndex).getModelIndex();
           entityIndex = dataView.getEntityIndex();
@@ -148,7 +158,10 @@ public class EditColumnMetaDataCommand implements Command, DataPackageWizardList
 	 if (dialog.getUserChoice() == JOptionPane.NO_OPTION)
 	 {
 		   // if user choose not transform it, stop the action.
-			Log.debug(2,"The current EML document is not the latest version. You should transform it first!");
+			Log.debug(2,
+					/*"The current EML document is not the latest version."*/ lan.getMessages("EMLDocumentIsNotTheLatestVersion_1") + " "
+					+/*" You should transform it first!"*/ lan.getMessages("EMLDocumentIsNotTheLatestVersion_2") + "!"
+					);
 			return;
 	 }
 	
