@@ -28,22 +28,18 @@ package edu.ucsb.nceas.morpho.query;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Component;
-import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.event.KeyAdapter;
+
 import javax.swing.BorderFactory;
-import javax.swing.Box;
 import javax.swing.BoxLayout;
-import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-import edu.ucsb.nceas.morpho.Language;//pstango 2010/03/15
 
 /**
  * This panel contains all the elements for a single taxon
@@ -104,10 +100,10 @@ public class TaxonTermPanel extends JComponent
     rankComboBox.setBackground(java.awt.Color.white);
     queryTermPanel.add(rankComboBox);
 
-    searchModeComboBox.addItem(/*"contains"*/ Language.getInstance().getMessages("contains"));
-    searchModeComboBox.addItem(/*"starts-with"*/ Language.getInstance().getMessages("starts-with"));
-    searchModeComboBox.addItem(/*"ends-with"*/ Language.getInstance().getMessages("ends-with"));
-    searchModeComboBox.addItem(/*"equals"*/ Language.getInstance().getMessages("equals"));
+    searchModeComboBox.addItem("contains");
+    searchModeComboBox.addItem("starts-with");
+    searchModeComboBox.addItem("ends-with");
+    searchModeComboBox.addItem("equals");
     searchModeComboBox.setSelectedIndex(0);
     searchModeComboBox.setBackground(java.awt.Color.white);
     queryTermPanel.add(searchModeComboBox);

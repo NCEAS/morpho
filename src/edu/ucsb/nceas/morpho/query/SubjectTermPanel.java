@@ -132,10 +132,10 @@ public class SubjectTermPanel extends JComponent
     setChoicesPanel.add(Box.createVerticalGlue());
     setChoicesPanel.add(Box.createRigidArea(new Dimension(8, 8)));
     //}}
-    searchModeComboBox.addItem(/*"contains"*/ Language.getInstance().getMessages("contains"));
-    searchModeComboBox.addItem(/*"starts-with"*/ Language.getInstance().getMessages("starts-with"));
-    searchModeComboBox.addItem(/*"ends-with"*/ Language.getInstance().getMessages("ends-with"));
-    searchModeComboBox.addItem(/*"equals"*/ Language.getInstance().getMessages("equals"));
+    searchModeComboBox.addItem("contains");
+    searchModeComboBox.addItem("starts-with");
+    searchModeComboBox.addItem("ends-with");
+    searchModeComboBox.addItem("equals");
     searchModeComboBox.setSelectedIndex(0);
 
     setChoicesPanel.setBorder(BorderFactory.createLineBorder(Color.black));
