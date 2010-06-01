@@ -92,23 +92,23 @@ public class CustomUnitPage extends AbstractUIPage {
 
 	private final String pageID     = DataPackageWizardInterface.CUSTOM_UNIT_PAGE;
   private final String pageNumber = "";
-  private final String title      = /*"Custom Unit Definition"*/ Language.getInstance().getMessages("CustomUnitDefinition");
+  private final String title      = /*"Custom Unit Definition"*/ Language.getInstance().getMessage("CustomUnitDefinition");
   private final String subtitle   = "";
 	
 	
 	private static final String TOP_LABEL_STRING = 
 					/*"Enter a name and an optional description for your custom unit."*/
-					Language.getInstance().getMessages("CustomUnitpage.TOP_LABEL_STRING")
+					Language.getInstance().getMessage("CustomUnitpage.TOP_LABEL_STRING")
 					;
 	
 	private static final String CATEGORY_HEAD_LABEL = 
 					/*"What category does the new unit belong to?"*/
-					Language.getInstance().getMessages("CustomUnitpage.CATEGORY_HEAD_LABEL") + "?"
+					Language.getInstance().getMessage("CustomUnitpage.CATEGORY_HEAD_LABEL") + "?"
 					;
 	
 	
-	private final String[] categoryLabels = {	/*"One of the existing unit types"*/ Language.getInstance().getMessages("CustomUnitpage.categoryLabels_1"), 
-												/*"A new custom unit type"*/ Language.getInstance().getMessages("CustomUnitpage.categoryLabels_2")
+	private final String[] categoryLabels = {	/*"One of the existing unit types"*/ Language.getInstance().getMessage("CustomUnitpage.categoryLabels_1"), 
+												/*"A new custom unit type"*/ Language.getInstance().getMessage("CustomUnitpage.categoryLabels_2")
 												};
 																						
 	private final Color disabledBackgroundColor = new Color(192, 192, 192);
@@ -117,15 +117,15 @@ public class CustomUnitPage extends AbstractUIPage {
 	private JComboBox typeNameComboBox;
 	private static final String UNIT_TYPE_LABEL = 
 						/*"Select the unit type that the new unit belongs to"*/
-						Language.getInstance().getMessages("CustomUnitpage.UNIT_TYPE_LABEL")
+						Language.getInstance().getMessage("CustomUnitpage.UNIT_TYPE_LABEL")
 						;
 	
 	private JLabel existingTypeDefnLabel;
 	private CustomList existingTypeDefnList;
 	private static final String EXISTING_TYPE_DEFN_LABEL = 
 					WizardSettings.HTML_NO_TABLE_OPENING 
-					+ /*"Definition for the selected unit category. "*/ Language.getInstance().getMessages("CustomUnitpage.EXISTING_TYPE_DEFN_LABEL_1") + " "
-					+/*"It is represented as a product of the basic unit types and an exponential (power) factor."*/ Language.getInstance().getMessages("CustomUnitpage.EXISTING_TYPE_DEFN_LABEL_2")  
+					+ /*"Definition for the selected unit category. "*/ Language.getInstance().getMessage("CustomUnitpage.EXISTING_TYPE_DEFN_LABEL_1") + " "
+					+/*"It is represented as a product of the basic unit types and an exponential (power) factor."*/ Language.getInstance().getMessage("CustomUnitpage.EXISTING_TYPE_DEFN_LABEL_2")  
 					+ "<br>" 
 					+ WizardSettings.HTML_EXAMPLE_FONT_CLOSING + WizardSettings.HTML_NO_TABLE_CLOSING;
 	
@@ -133,24 +133,24 @@ public class CustomUnitPage extends AbstractUIPage {
 	private JLabel newTypeNameLabel;
 	private JTextField newTypeNameField;
 	private static final String NEW_TYPE_NAME_HEADER_LABEL = 
-						/*"Enter the name of the new unit type"*/ Language.getInstance().getMessages("CustomUnitpage.NEW_TYPE_NAME_HEADER_LABEL");
+						/*"Enter the name of the new unit type"*/ Language.getInstance().getMessage("CustomUnitpage.NEW_TYPE_NAME_HEADER_LABEL");
 	
 	private JLabel newTypeDefnLabel;
 	private CustomList newTypeDefnList;
 	private static final String NEW_TYPE_DEFN_HEADER_LABEL = 
 		/*"Provide a definition for this custom unit, in terms of the basic unit types shown," +
 		" and an exponential (power) factor"*/
-		Language.getInstance().getMessages("CustomUnitpage.NEW_TYPE_DEFN_HEADER_LABEL")
+		Language.getInstance().getMessage("CustomUnitpage.NEW_TYPE_DEFN_HEADER_LABEL")
 		;
 	
 	private static final String NEW_TYPE_DEFN_EXPL_LABEL =
 		WizardSettings.HTML_NO_TABLE_OPENING + 
 		WizardSettings.HTML_EXAMPLE_FONT_OPENING 
-		+ /*"e.g:&nbsp; "*/ Language.getInstance().getMessages("e.g") + ":&nbsp; " 
+		+ /*"e.g:&nbsp; "*/ Language.getInstance().getMessage("e.g") + ":&nbsp; " 
 		/*
 		+"for a unit type like 'velocity', which is given by meterPerSecond, the definition would be - " 
 		*/
-		+ Language.getInstance().getMessages("CustomUnitpage.NEW_TYPE_DEFN_EXPL_LABEL") + " -"
+		+ Language.getInstance().getMessage("CustomUnitpage.NEW_TYPE_DEFN_EXPL_LABEL") + " -"
 		+"<br>" 
 		+ "Unit = Length &nbsp;&nbsp;&nbsp; Power = 1 <br>Unit = Time &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Power = -1" 
 		+ WizardSettings.HTML_EXAMPLE_FONT_CLOSING + WizardSettings.HTML_NO_TABLE_CLOSING;
@@ -159,39 +159,39 @@ public class CustomUnitPage extends AbstractUIPage {
 	private JTextField unitNameField;
 	private static final String UNIT_NAME_LABEL = 
 				WizardSettings.HTML_NO_TABLE_OPENING 
-				+ /*"Specify the name of the unit. "*/ Language.getInstance().getMessages("CustomUnitpage.UNIT_NAME_LABEL") + " "
+				+ /*"Specify the name of the unit. "*/ Language.getInstance().getMessage("CustomUnitpage.UNIT_NAME_LABEL") + " "
 				+ WizardSettings.HTML_EXAMPLE_FONT_OPENING 
-				+ /*"e.g*/ Language.getInstance().getMessages("e.g") +":&nbsp; " + /*"meterPerSecond"*/ Language.getInstance().getMessages("CustomUnitpage.meterPerSecond")
+				+ /*"e.g*/ Language.getInstance().getMessage("e.g") +":&nbsp; " + /*"meterPerSecond"*/ Language.getInstance().getMessage("CustomUnitpage.meterPerSecond")
 				+ WizardSettings.HTML_EXAMPLE_FONT_CLOSING + WizardSettings.HTML_NO_TABLE_CLOSING;
 	
 	private JLabel unitDescLabel;
 	private JTextArea unitDescField;
 	private static final String UNIT_DEFN_LABEL = 
 				WizardSettings.HTML_NO_TABLE_OPENING 
-				+ /*"Provide a description of the unit. "*/ Language.getInstance().getMessages("CustomUnitpage.UNIT_DEFN_LABEL_1") +" "
+				+ /*"Provide a description of the unit. "*/ Language.getInstance().getMessage("CustomUnitpage.UNIT_DEFN_LABEL_1") +" "
 				+ WizardSettings.HTML_EXAMPLE_FONT_OPENING 
-				+ /*"e.g*/ Language.getInstance().getMessages("e.g") + ":&nbsp; " + /*"SI unit of velocity"*/ Language.getInstance().getMessages("CustomUnitpage.UNIT_DEFN_LABEL_2")  
+				+ /*"e.g*/ Language.getInstance().getMessage("e.g") + ":&nbsp; " + /*"SI unit of velocity"*/ Language.getInstance().getMessage("CustomUnitpage.UNIT_DEFN_LABEL_2")  
 				+ WizardSettings.HTML_EXAMPLE_FONT_CLOSING + WizardSettings.HTML_NO_TABLE_CLOSING;
 	
 	private JLabel existingSIunitNameLabel;
 	private JTextField existingSIunitNameField;
 	private static final String EXISTING_SI_UNIT_NAME_LABEL = 
 				WizardSettings.HTML_NO_TABLE_OPENING 
-				+ /*"SI unit for the selected unit category. "*/ Language.getInstance().getMessages("CustomUnitpage.EXISTING_SI_UNIT_NAME_LABEL") 
+				+ /*"SI unit for the selected unit category. "*/ Language.getInstance().getMessage("CustomUnitpage.EXISTING_SI_UNIT_NAME_LABEL") 
 				+ WizardSettings.HTML_NO_TABLE_CLOSING;
 	
 	private JLabel newSIunitNameLabel;
 	private JComboBox newSIunitNameBox;
 	private static final String NEW_SI_UNIT_HEADER_LABEL = 
 		/*"Choose the SI unit for this unit type and optionally define the multiplier to convert the new unit to the chosen SI unit"*/
-		Language.getInstance().getMessages("CustomUnitpage.NEW_SI_UNIT_HEADER_LABEL")
+		Language.getInstance().getMessage("CustomUnitpage.NEW_SI_UNIT_HEADER_LABEL")
 		;
 	
 	private static final String SI_UNIT_NAME_LABEL = 
 				WizardSettings.HTML_NO_TABLE_OPENING 
-				+ /*"Specify the SI unit for this Unit Type. "*/ Language.getInstance().getMessages("CustomUnitpage.SI_UNIT_NAME_LABEL") +" "
+				+ /*"Specify the SI unit for this Unit Type. "*/ Language.getInstance().getMessage("CustomUnitpage.SI_UNIT_NAME_LABEL") +" "
 				+ WizardSettings.HTML_EXAMPLE_FONT_OPENING 
-				+ /*"e.g*/ Language.getInstance().getMessages("e.g") + ":&nbsp; " +  /*"meter"*/ Language.getInstance().getMessages("meter") 
+				+ /*"e.g*/ Language.getInstance().getMessage("e.g") + ":&nbsp; " +  /*"meter"*/ Language.getInstance().getMessage("meter") 
 				
 				+ WizardSettings.HTML_EXAMPLE_FONT_CLOSING + WizardSettings.HTML_NO_TABLE_CLOSING;
 	
@@ -203,7 +203,7 @@ public class CustomUnitPage extends AbstractUIPage {
 				WizardSettings.HTML_NO_TABLE_OPENING 
 				+ //"Define the multiplier to convert this unit to the SI unit. " +
 				 WizardSettings.HTML_EXAMPLE_FONT_OPENING 
-				 + /*"e.g*/ Language.getInstance().getMessages("e.g") + ":&nbsp; " +  "0.001" 
+				 + /*"e.g*/ Language.getInstance().getMessage("e.g") + ":&nbsp; " +  "0.001" 
 				 + WizardSettings.HTML_EXAMPLE_FONT_CLOSING + WizardSettings.HTML_NO_TABLE_CLOSING;
 	
 	
@@ -271,7 +271,7 @@ public class CustomUnitPage extends AbstractUIPage {
 		topPanel.add(WidgetFactory.makeDefaultSpacer());
 		
 		//// unit name
-		unitNameLabel = WidgetFactory.makeLabel(/*"Unit Name:"*/ Language.getInstance().getMessages("UnitName") + ":" ,
+		unitNameLabel = WidgetFactory.makeLabel(/*"Unit Name:"*/ Language.getInstance().getMessage("UnitName") + ":" ,
 												true);
 		unitNameField = WidgetFactory.makeOneLineTextField();
 		JPanel unitNamePanel = WidgetFactory.makePanel();
@@ -284,7 +284,7 @@ public class CustomUnitPage extends AbstractUIPage {
 		topPanel.add(WidgetFactory.makeDefaultSpacer());
 		
 		//// unit description
-		unitDescLabel = WidgetFactory.makeLabel(/*"Description:"*/ Language.getInstance().getMessages("Description") +":" ,
+		unitDescLabel = WidgetFactory.makeLabel(/*"Description:"*/ Language.getInstance().getMessage("Description") +":" ,
 												false);
 		unitDescField = WidgetFactory.makeTextArea("", 3, true);
 		JPanel unitDescPanel = WidgetFactory.makePanel();
@@ -344,7 +344,7 @@ public class CustomUnitPage extends AbstractUIPage {
 		existingTypePanel.add(unitTypeLabel);
 		
 		// type name combobox
-		typeNameLabel = WidgetFactory.makeLabel(/*"Unit Type:"*/ Language.getInstance().getMessages("UnitType") + ":",
+		typeNameLabel = WidgetFactory.makeLabel(/*"Unit Type:"*/ Language.getInstance().getMessage("UnitType") + ":",
 												true);
 		typeNameComboBox = new JComboBox(unitTypes);
 		typeNameComboBox.addItemListener( new ItemListener() {
@@ -388,8 +388,8 @@ public class CustomUnitPage extends AbstractUIPage {
 		
 		// defn for existing types
 		
-		String[] colHeaders = new String[] {/*"Unit"*/ Language.getInstance().getMessages("Unit"),
-											/*"Power"*/ Language.getInstance().getMessages("Power")
+		String[] colHeaders = new String[] {/*"Unit"*/ Language.getInstance().getMessage("Unit"),
+											/*"Power"*/ Language.getInstance().getMessage("Power")
 											};
 		double[] colWidths = new double[] {75.0, 25.0};
 		Object[] existingColObjects = new Object[2];
@@ -411,7 +411,7 @@ public class CustomUnitPage extends AbstractUIPage {
 		//existingTypeDefnList.setMinimumSize(WidgetFactory.getDimForNumberOfLines(4));
 		
 		JPanel typeDefnPanel = WidgetFactory.makePanel();
-		existingTypeDefnLabel = WidgetFactory.makeLabel(/*"Unit Type Defintion:"*/ Language.getInstance().getMessages("UnitTypeDefintion") + ":"
+		existingTypeDefnLabel = WidgetFactory.makeLabel(/*"Unit Type Defintion:"*/ Language.getInstance().getMessage("UnitTypeDefintion") + ":"
 														, false);
 		typeDefnPanel.add(existingTypeDefnLabel);
 		JPanel typeDefnGrid = new JPanel(new GridLayout(1,2));
@@ -426,7 +426,7 @@ public class CustomUnitPage extends AbstractUIPage {
 		// SI unit for existing panel
 		
 		JPanel SIunitNamePanel = WidgetFactory.makePanel();
-		existingSIunitNameLabel = WidgetFactory.makeLabel(/*"SI Unit:"*/ Language.getInstance().getMessages("SI_Unit") + ":",
+		existingSIunitNameLabel = WidgetFactory.makeLabel(/*"SI Unit:"*/ Language.getInstance().getMessage("SI_Unit") + ":",
 															false);
 		existingSIunitNameField = WidgetFactory.makeOneLineTextField();
 		existingSIunitNameField.setEditable(false);
@@ -443,7 +443,7 @@ public class CustomUnitPage extends AbstractUIPage {
 		/////////////////
 		
 		JPanel unitFactorPanel = WidgetFactory.makePanel();
-		existingUnitFactorLabel = WidgetFactory.makeLabel(/*"Multiplier:"*/ Language.getInstance().getMessages("Multiplier") + ":",
+		existingUnitFactorLabel = WidgetFactory.makeLabel(/*"Multiplier:"*/ Language.getInstance().getMessage("Multiplier") + ":",
 															false);
 		existingUnitFactorField = WidgetFactory.makeOneLineTextField();
 		unitFactorPanel.add(existingUnitFactorLabel);
@@ -469,7 +469,7 @@ public class CustomUnitPage extends AbstractUIPage {
 		//////////////////
 		//// new type name textfield
 		
-		newTypeNameLabel = WidgetFactory.makeLabel(/*"Unit Type:"*/ Language.getInstance().getMessages("UnitType") + ":",
+		newTypeNameLabel = WidgetFactory.makeLabel(/*"Unit Type:"*/ Language.getInstance().getMessage("UnitType") + ":",
 													 true);
 		newTypeNameField = WidgetFactory.makeOneLineTextField();
 		JPanel newTypeNamePanel = WidgetFactory.makePanel();
@@ -504,7 +504,7 @@ public class CustomUnitPage extends AbstractUIPage {
 		newTypeDefnTopPanel.add(WidgetFactory.makeHalfSpacer());
 		
 		JPanel newTypeDefnPanel = WidgetFactory.makePanel();
-		newTypeDefnLabel = WidgetFactory.makeLabel(/*"Unit Type Defintion:"*/ Language.getInstance().getMessages("UnitTypeDefintion") + ":",
+		newTypeDefnLabel = WidgetFactory.makeLabel(/*"Unit Type Defintion:"*/ Language.getInstance().getMessage("UnitTypeDefintion") + ":",
 													true);
 		newTypeDefnPanel.add(newTypeDefnLabel);
 		JPanel newTypeDefnGrid = new JPanel(new GridLayout(1,2));
@@ -527,7 +527,7 @@ public class CustomUnitPage extends AbstractUIPage {
 		newSIunitNameTopPanel.add(WidgetFactory.makeHalfSpacer());
 		
 		JPanel newSIunitNamePanel = WidgetFactory.makePanel();
-		newSIunitNameLabel = WidgetFactory.makeLabel(/*"SI Unit:"*/ Language.getInstance().getMessages("SI_Unit") + ":",
+		newSIunitNameLabel = WidgetFactory.makeLabel(/*"SI Unit:"*/ Language.getInstance().getMessage("SI_Unit") + ":",
 														true);
 		newSIunitNameBox = new JComboBox(SIUnits);
 		newSIunitNamePanel.add(newSIunitNameLabel);
@@ -545,7 +545,7 @@ public class CustomUnitPage extends AbstractUIPage {
 		//// multiplier field for new type panel
 		
 		JPanel newUnitFactorPanel = WidgetFactory.makePanel();
-		newUnitFactorLabel = WidgetFactory.makeLabel(/*"Multiplier:"*/ Language.getInstance().getMessages("Multiplier") + ":" ,
+		newUnitFactorLabel = WidgetFactory.makeLabel(/*"Multiplier:"*/ Language.getInstance().getMessage("Multiplier") + ":" ,
 														false);
 		newUnitFactorField = WidgetFactory.makeOneLineTextField();
 		newUnitFactorPanel.add(newUnitFactorLabel);

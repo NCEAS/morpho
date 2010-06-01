@@ -111,7 +111,7 @@ public class PrinterPlugin implements       PrinterInterface,
 				UIController controller = UIController.getInstance();
 
 				// Action for Page setup
-				GUIAction pageSetupAction = new GUIAction(/*"Page setup..."*/ Language.getInstance().getMessages("PageSetup"),
+				GUIAction pageSetupAction = new GUIAction(/*"Page setup..."*/ Language.getInstance().getMessage("PageSetup"),
 							null, new PageSetupCommand());
 				pageSetupAction.setMenuItemPosition(6);
 				pageSetupAction.setSeparatorPosition(SEPARATOR_PRECEDING);
@@ -126,7 +126,7 @@ public class PrinterPlugin implements       PrinterInterface,
                             false, GUIAction.EVENT_LOCAL);
 
 				// Action for preview
-				GUIAction previewAction = new GUIAction(/*"Print preview..."*/ Language.getInstance().getMessages("PrintPreview"),
+				GUIAction previewAction = new GUIAction(/*"Print preview..."*/ Language.getInstance().getMessage("PrintPreview"),
 							null, new PreviewCommand(this.instanceOfMorpho, this));
 				previewAction.setMenuItemPosition(7);
 				previewAction.setMenu(Morpho.FILE_MENU_LABEL, Morpho.FILEMENUPOSITION);
@@ -140,7 +140,7 @@ public class PrinterPlugin implements       PrinterInterface,
                             false, GUIAction.EVENT_LOCAL);
 
 				// Action for Print
-				GUIAction printAction = new GUIAction(/*"Print..."*/ Language.getInstance().getMessages("Print"),
+				GUIAction printAction = new GUIAction(/*"Print..."*/ Language.getInstance().getMessage("Print"),
 							null, new PrintCommand(this.instanceOfMorpho, this));
 				printAction.setMenuItemPosition(8);
 

@@ -76,8 +76,8 @@ public class CodeDefinition extends AbstractUIPage {
   
   public final String pageNumber = "";
   
-  public final String title      = /*"Code Defintions Import Page"*/ Language.getInstance().getMessages("CodeDefintionsImportPage");
-  public final String subtitle   = /*"Define the columns for the codes and definitions"*/ Language.getInstance().getMessages("CodeDefinition.subtitle");
+  public final String title      = /*"Code Defintions Import Page"*/ Language.getInstance().getMessage("CodeDefintionsImportPage");
+  public final String subtitle   = /*"Define the columns for the codes and definitions"*/ Language.getInstance().getMessage("CodeDefinition.subtitle");
 
   private WizardContainerFrame mainWizFrame;
   private OrderedMap resultsMap;
@@ -118,7 +118,7 @@ public class CodeDefinition extends AbstractUIPage {
     infoPanel.setLayout(new BoxLayout(infoPanel, BoxLayout.Y_AXIS));
     JLabel label = WidgetFactory.makeHTMLLabel("Identify the columns of the new data table that contain the Codes and Definitions for the following Attribute - ", 1, false);
 
-    JLabel attrLabel = WidgetFactory.makeLabel(/*"Attribute Name:"*/ Language.getInstance().getMessages("AttributeName") + ":",
+    JLabel attrLabel = WidgetFactory.makeLabel(/*"Attribute Name:"*/ Language.getInstance().getMessage("AttributeName") + ":",
     											false, WizardSettings.WIZARD_CONTENT_LABEL_DIMS);
     attrField = WidgetFactory.makeOneLineTextField();
     attrField.setEditable(false);
@@ -127,7 +127,7 @@ public class CodeDefinition extends AbstractUIPage {
     attrPanel.add(attrLabel);
     attrPanel.add(attrField);
 
-    JLabel entityLabel = WidgetFactory.makeLabel(/*"Entity Name:"*/ Language.getInstance().getMessages("EntityName") + ":",
+    JLabel entityLabel = WidgetFactory.makeLabel(/*"Entity Name:"*/ Language.getInstance().getMessage("EntityName") + ":",
     												false, WizardSettings.WIZARD_CONTENT_LABEL_DIMS);
     entityField = WidgetFactory.makeOneLineTextField();
     entityField.setEditable(false);

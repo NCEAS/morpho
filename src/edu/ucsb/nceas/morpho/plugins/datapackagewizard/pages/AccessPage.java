@@ -121,15 +121,15 @@ public class AccessPage
   private Vector orgList;
 
   private final String[] accessTypeText = new String[] {
-      /*"  Allow"*/ " " + Language.getInstance().getMessages("Allow"),
-      /*"  Deny"*/ " " + Language.getInstance().getMessages("Deny")
+      /*"  Allow"*/ " " + Language.getInstance().getMessage("Allow"),
+      /*"  Deny"*/ " " + Language.getInstance().getMessage("Deny")
   };
 
   private final String[] accessText = new String[] {
-      /*"  Read"*/ " " + Language.getInstance().getMessages("Read"),
-      /*"  Read & Write"*/ " " + Language.getInstance().getMessages("Read") + " & " + Language.getInstance().getMessages("Write"),
-      /*"  Read, Write & Change Permissions"*/ " " + Language.getInstance().getMessages("Read") + ", " + Language.getInstance().getMessages("Write") + " & " + Language.getInstance().getMessages("ChangePermissions"),
-      /*"  All "*/  " " + Language.getInstance().getMessages("All")
+      /*"  Read"*/ " " + Language.getInstance().getMessage("Read"),
+      /*"  Read & Write"*/ " " + Language.getInstance().getMessage("Read") + " & " + Language.getInstance().getMessage("Write"),
+      /*"  Read, Write & Change Permissions"*/ " " + Language.getInstance().getMessage("Read") + ", " + Language.getInstance().getMessage("Write") + " & " + Language.getInstance().getMessage("ChangePermissions"),
+      /*"  All "*/  " " + Language.getInstance().getMessage("All")
   };
 
   public boolean accessIsAllow = true;
@@ -159,13 +159,13 @@ public class AccessPage
     topPanel.setBorder(new javax.swing.border.EmptyBorder(
         0, 4 * WizardSettings.PADDING, 0, 0));
     JLabel desc = WidgetFactory.makeHTMLLabel(
-        "<font size=\"4\"><b>" + /*Define Access*/ Language.getInstance().getMessages("DefineAccess") + " :</b></font>"
+        "<font size=\"4\"><b>" + /*Define Access*/ Language.getInstance().getMessage("DefineAccess") + " :</b></font>"
     		, 1);
     topPanel.add(desc);
     topPanel.add(WidgetFactory.makeHalfSpacer());
     introLabel = WidgetFactory.makeHTMLLabel(
         /*"<b>Select a user or group from the list below:</b>"*/
-    	"<b>" + Language.getInstance().getMessages("AccessPage.SelectUser") + " :</b>"	
+    	"<b>" + Language.getInstance().getMessage("AccessPage.SelectUser") + " :</b>"	
     		, 1);
     topPanel.add(introLabel);
     this.add(topPanel, BorderLayout.NORTH);
@@ -190,24 +190,24 @@ public class AccessPage
     accessDefinitionPanel.setLayout(new BorderLayout());
 
     JLabel accessDefinitionLabel = WidgetFactory.makeHTMLLabel(
-        "<b>&nbsp;" + /*Description of access levels*/ Language.getInstance().getMessages("AccessPage.AccesLevel")+ " :</b>"
+        "<b>&nbsp;" + /*Description of access levels*/ Language.getInstance().getMessage("AccessPage.AccesLevel")+ " :</b>"
         + "<ul>" 
        /*+ "<li>Read: Able to view data package.</li>"*/
-        + "<li>" + /*Read*/ Language.getInstance().getMessages("Read") 
-        + " : "+ /*"Able to view data package.*/ Language.getInstance().getMessages("ReadDescription")+"</li>"
+        + "<li>" + /*Read*/ Language.getInstance().getMessage("Read") 
+        + " : "+ /*"Able to view data package.*/ Language.getInstance().getMessage("ReadDescription")+"</li>"
         
        /*+ "<li>Read & Write: Able to view and modify data package.</li>"*/
-        + "<li>"+ /*Read & Write*/ Language.getInstance().getMessages("Read") + " & " +Language.getInstance().getMessages("Read") 
-        + " : " + /*"Able to view and modify data package.*/ Language.getInstance().getMessages("ReadWriteDescription") + "</li>"
+        + "<li>"+ /*Read & Write*/ Language.getInstance().getMessage("Read") + " & " +Language.getInstance().getMessage("Read") 
+        + " : " + /*"Able to view and modify data package.*/ Language.getInstance().getMessage("ReadWriteDescription") + "</li>"
         
        /*+ "<li>Read, Write & Change Permissions: Able to view and modify "
         + "datapackage, and modify access permissions.</li>"*/
-        + "<li>" + Language.getInstance().getMessages("Read") + ", " + Language.getInstance().getMessages("Write") + " & " + Language.getInstance().getMessages("ChangePermissions")
-        + " : " + Language.getInstance().getMessages("ReadWriteChangePermissionsDescription") + "</li>"
+        + "<li>" + Language.getInstance().getMessage("Read") + ", " + Language.getInstance().getMessage("Write") + " & " + Language.getInstance().getMessage("ChangePermissions")
+        + " : " + Language.getInstance().getMessage("ReadWriteChangePermissionsDescription") + "</li>"
         
         /*+ "<li>All: Able to do everything (this is the same as Read, Write "
         + "& Change Permissions)*/
-        + "<li>" + Language.getInstance().getMessages("All") + " : " + Language.getInstance().getMessages("AllAccessDescription") + "</li>"
+        + "<li>" + Language.getInstance().getMessage("All") + " : " + Language.getInstance().getMessage("AllAccessDescription") + "</li>"
         
         +"</li></ul>", 5);
 
@@ -559,7 +559,7 @@ public class AccessPage
     JPanel panel = null;
 
     panel = WidgetFactory.makePanel(1);
-    JLabel dnLabel = WidgetFactory.makeLabel(/*"Distinguished Name"*/ Language.getInstance().getMessages("DistinguishedName"),
+    JLabel dnLabel = WidgetFactory.makeLabel(/*"Distinguished Name"*/ Language.getInstance().getMessage("DistinguishedName"),
      										false);
     panel.add(dnLabel);
     dnField = WidgetFactory.makeOneLineTextField();
@@ -574,10 +574,10 @@ public class AccessPage
 
     middlePanel.add(panel, BorderLayout.CENTER);
     middlePanel.add(getAccessControlPanel(true, 
-    									/*"Retrieve the user list ..."*/ Language.getInstance().getMessages("AccessPage.RetrieveUserList") + " ..."),
+    									/*"Retrieve the user list ..."*/ Language.getInstance().getMessage("AccessPage.RetrieveUserList") + " ..."),
         BorderLayout.SOUTH);
     introLabel.setText(/*"Specify a Distinguished Name in text field below:"*/
-    					Language.getInstance().getMessages("AccessPage.SpecifyDistinguishedName") + " :"
+    					Language.getInstance().getMessage("AccessPage.SpecifyDistinguishedName") + " :"
     					);
     middlePanel.revalidate();
     middlePanel.repaint();
@@ -590,8 +590,8 @@ public class AccessPage
   private JPanel getAccessControlPanel(boolean withRefreshLink,
       String refreshString) {
 
-    accessDesc1 = WidgetFactory.makeLabel(/*" selected user(s)"*/ " " + Language.getInstance().getMessages("AccessPage.SelectedUser") , false);
-    accessDesc2 = WidgetFactory.makeLabel(/*"   access"*/ "   " + Language.getInstance().getMessages("access") , false);
+    accessDesc1 = WidgetFactory.makeLabel(/*" selected user(s)"*/ " " + Language.getInstance().getMessage("AccessPage.SelectedUser") , false);
+    accessDesc2 = WidgetFactory.makeLabel(/*"   access"*/ "   " + Language.getInstance().getMessage("access") , false);
 
     // define item listener for allow-deny list....
     ItemListener accessTypeListener = new ItemListener() {
@@ -765,7 +765,7 @@ public class AccessPage
     if (accessTreePane != null) {
       middlePanel.add(accessTreePane, BorderLayout.CENTER);
       middlePanel.add(getAccessControlPanel(true, 
-    		  								/*"Refresh the user list..."*/ Language.getInstance().getMessages("AccessPage.RefreshUserList") + " ..."
+    		  								/*"Refresh the user list..."*/ Language.getInstance().getMessage("AccessPage.RefreshUserList") + " ..."
     		  								),
           BorderLayout.SOUTH);
     } else {
@@ -976,9 +976,9 @@ public class AccessPage
       int[] i = treeTable.getSelectedRows();
       if (i.length == 0) {
         warnLabel.setText(/*"Warning: Invalid input. Please make a selection."*/
-        					Language.getInstance().getMessages("Warning") + " : "
-        					+ Language.getInstance().getMessages("AccessPage.InvalidInput_1") + "! "
-        					+ Language.getInstance().getMessages("AccessPage.InvalidInput_2")
+        					Language.getInstance().getMessage("Warning") + " : "
+        					+ Language.getInstance().getMessage("AccessPage.InvalidInput_1") + "! "
+        					+ Language.getInstance().getMessage("AccessPage.InvalidInput_2")
         					);
         return false;
       }
@@ -999,9 +999,9 @@ public class AccessPage
           } else {
             warnLabel.setText(
                 /*"Warning: Invalid input. Please select a user or a group."*/
-            	Language.getInstance().getMessages("Warning") + " : "
-            	+ Language.getInstance().getMessages("AccessPage.InvalidInput_1") + " "
-            	+ Language.getInstance().getMessages("AccessPage.InvalidInput_3")
+            	Language.getInstance().getMessage("Warning") + " : "
+            	+ Language.getInstance().getMessage("AccessPage.InvalidInput_1") + " "
+            	+ Language.getInstance().getMessage("AccessPage.InvalidInput_3")
             	);
             return false;
           }
@@ -1018,9 +1018,9 @@ public class AccessPage
       } else {
         warnLabel.setText(
             /*"Warning: Distinguished Name field can not be empty."*/
-        	Language.getInstance().getMessages("Warning") + " : "
-        	+ Language.getInstance().getMessages("DistinguishedName") + " "
-        	+ Language.getInstance().getMessages("AccessPage.DistinguishedNameEmpty") 
+        	Language.getInstance().getMessage("Warning") + " : "
+        	+ Language.getInstance().getMessage("DistinguishedName") + " "
+        	+ Language.getInstance().getMessage("AccessPage.DistinguishedNameEmpty") 
         	);
       }
     }

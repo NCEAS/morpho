@@ -55,7 +55,7 @@ public class Introduction extends AbstractUIPage {
 //////////////////////////////////////////////////////////
   private JComponent metadataIntroLink;
   public final String title      = /*"Welcome to the New Data Package Wizard"*/ 
-	  								Language.getInstance().getMessages("Introduction.title");
+	  								Language.getInstance().getMessage("Introduction.title");
   public final String subtitle   = " ";
 
 
@@ -80,13 +80,13 @@ public class Introduction extends AbstractUIPage {
     +"data themselves. <br></br></p>"
     */
     "<p>"
-    +Language.getInstance().getMessages("Introduction.desc1_1")
+    +Language.getInstance().getMessage("Introduction.desc1_1")
     +"<br></br></p>"
     /*
     +"If you wish to improve your understanding of metadata "
     +"and related concepts, you should start by reading "
     */ 
-    +Language.getInstance().getMessages("Introduction.desc1_2")
+    +Language.getInstance().getMessage("Introduction.desc1_2")
     ,3);
 
     JLabel desc2 = WidgetFactory.makeHTMLLabel(
@@ -97,7 +97,7 @@ public class Introduction extends AbstractUIPage {
     +"<i>Morpho Editor</i> (after you finish this wizard, choose \"Add/"
     +"Edit Documentation\" from the \"Documentation\" menu on the main Morpho screen).<br></br></p>"
     */
-    Language.getInstance().getMessages("Introduction.desc2_1")
+    Language.getInstance().getMessage("Introduction.desc2_1")
     +"<br></br></p>"
 
     /*
@@ -107,7 +107,7 @@ public class Introduction extends AbstractUIPage {
     +"information using this wizard: </p>"
     */
     +"<br><p>"
-    +Language.getInstance().getMessages("Introduction.desc2_2")
+    +Language.getInstance().getMessage("Introduction.desc2_2")
     +"</p>"
     /*
     +"<li><b>Title and abstract</b><br></br></li>"
@@ -124,17 +124,17 @@ public class Introduction extends AbstractUIPage {
     +"possible.</p>"
 	*/
 
-    +"<li><b>"+ Language.getInstance().getMessages("TitleAndAbstract") +"</b><br></br></li>"
-    +"<li><b>"+ Language.getInstance().getMessages("Keywords") +"</b><br></br></li>"
-    +"<li><b>"+ Language.getInstance().getMessages("PeopleAndOrganizations") +"</b><br></br></li>"
-    +"<li><b>"+ Language.getInstance().getMessages("UsageRights") +"</b><br></br></li>"
-    +"<li><b>"+ Language.getInstance().getMessages("ResearchProjectInformation") +"</b><br></br></li>"
-    +"<li><b>"+ Language.getInstance().getMessages("CoverageDetails") +"</b><br></br></li>"
-    +"<li><b>"+ Language.getInstance().getMessages("MethodsAndSampling") +"</b><br></br></li>"
-    +"<li><b>"+ Language.getInstance().getMessages("AccessInformation") +"</b></li></ul>"
+    +"<li><b>"+ Language.getInstance().getMessage("TitleAndAbstract") +"</b><br></br></li>"
+    +"<li><b>"+ Language.getInstance().getMessage("Keywords") +"</b><br></br></li>"
+    +"<li><b>"+ Language.getInstance().getMessage("PeopleAndOrganizations") +"</b><br></br></li>"
+    +"<li><b>"+ Language.getInstance().getMessage("UsageRights") +"</b><br></br></li>"
+    +"<li><b>"+ Language.getInstance().getMessage("ResearchProjectInformation") +"</b><br></br></li>"
+    +"<li><b>"+ Language.getInstance().getMessage("CoverageDetails") +"</b><br></br></li>"
+    +"<li><b>"+ Language.getInstance().getMessage("MethodsAndSampling") +"</b><br></br></li>"
+    +"<li><b>"+ Language.getInstance().getMessage("AccessInformation") +"</b></li></ul>"
 
-    +"<p><b>"+ Language.getInstance().getMessages("Note")+":</b>"
-    +Language.getInstance().getMessages("Introduction.desc2_3")
+    +"<p><b>"+ Language.getInstance().getMessage("Note")+":</b>"
+    +Language.getInstance().getMessage("Introduction.desc2_3")
     +"</p>"
     , 19);
 
@@ -154,7 +154,7 @@ public class Introduction extends AbstractUIPage {
     if (metadataIntroLink==null) {
 
       GUIAction newDataTableAction
-        = new GUIAction(/*"An Introduction to Ecological Metadata Language (EML) "*/ Language.getInstance().getMessages("EML_Introduction"),
+        = new GUIAction(/*"An Introduction to Ecological Metadata Language (EML) "*/ Language.getInstance().getMessage("EML_Introduction"),
                         null,
                         new Command() {
 

@@ -133,19 +133,19 @@ public class CorrectionWizardController
 	private final static String NEXTNODE = "nextNode";
 	private final static String INTRODUCTIONPREFIX = 
 		/*"Morpho has detected metadata fields that are invalid in the newer EML version.\n"*/ 
-		Language.getInstance().getMessages("CorrectionWizardController.INTRODUCTIONPREFIX_1") + "\n"
+		Language.getInstance().getMessage("CorrectionWizardController.INTRODUCTIONPREFIX_1") + "\n"
 	    /*+"This can include whitespace-only fields, and/or non-numeric values where numbers are required.\n "*/
-	    + Language.getInstance().getMessages("CorrectionWizardController.INTRODUCTIONPREFIX_2") +"\n"
+	    + Language.getInstance().getMessage("CorrectionWizardController.INTRODUCTIONPREFIX_2") +"\n"
 	    ;
 	
 	private final static String INTRODUCTIONSUFFIX  = 
 									/*"The following wizard pages will allow you to enter valid information in these fields."*/
-									Language.getInstance().getMessages("CorrectionWizardController.INTRODUCTIONPREFIX_3")
+									Language.getInstance().getMessage("CorrectionWizardController.INTRODUCTIONPREFIX_3")
 									;
 	private final static String INTRODUCTIONWIZARD = INTRODUCTIONPREFIX /*+ "wizard pages"*/ + INTRODUCTIONSUFFIX+".\n"; 
 	private final static String MESSAGEFORWIZARD = INTRODUCTIONWIZARD +
 			/*"For optional fields, you may simply choose to leave them blank"*/
-		    Language.getInstance().getMessages("CorrectionWizardController.INTRODUCTIONPREFIX_4")
+		    Language.getInstance().getMessage("CorrectionWizardController.INTRODUCTIONPREFIX_4")
 			;
 			
 	private final static String INTRODUCTIONTREEEDITOR = INTRODUCTIONPREFIX+ "series Morpho editor frames"+INTRODUCTIONSUFFIX;

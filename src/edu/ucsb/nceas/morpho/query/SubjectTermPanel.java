@@ -82,7 +82,7 @@ public class SubjectTermPanel extends JComponent
     JPanel queryTermHelpPanel = new JPanel();
     queryTermHelpPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 5, 5));
     JLabel helpLabel = new JLabel();
-    helpLabel.setText(/*"Check boxes determine which metadata fields are searched."*/ Language.getInstance().getMessages("CheckBoxes")
+    helpLabel.setText(/*"Check boxes determine which metadata fields are searched."*/ Language.getInstance().getMessage("CheckBoxes")
     					);
     queryTermHelpPanel.add(helpLabel);
     setChoicesPanel.add(queryTermHelpPanel);
@@ -90,7 +90,7 @@ public class SubjectTermPanel extends JComponent
     JPanel queryTermPanel = new JPanel();
     queryTermPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 5, 5));
     Box checkBoxHorizontal = Box.createHorizontalBox();
-    allCheckBox.setText(/*"All"*/ Language.getInstance().getMessages("All"));
+    allCheckBox.setText(/*"All"*/ Language.getInstance().getMessage("All"));
     allCheckBox.setActionCommand("All");
     //allCheckBox.setSelected(true);
     allCheckBox.setAlignmentX(Component.LEFT_ALIGNMENT);
@@ -100,17 +100,17 @@ public class SubjectTermPanel extends JComponent
     checkBoxVertical.setLayout(new BoxLayout(checkBoxVertical,
                                              BoxLayout.Y_AXIS));
     checkBoxVertical.setAlignmentX(Component.LEFT_ALIGNMENT);
-    titleCheckBox.setText(/*"Title"*/ Language.getInstance().getMessages("Title"));
+    titleCheckBox.setText(/*"Title"*/ Language.getInstance().getMessage("Title"));
     titleCheckBox.setActionCommand("Title");
     titleCheckBox.setSelected(true);
     //titleCheckBox.setEnabled(false);
     checkBoxVertical.add(titleCheckBox);
-    abstractCheckBox.setText(/*"Abstract"*/ Language.getInstance().getMessages("Abstract"));
+    abstractCheckBox.setText(/*"Abstract"*/ Language.getInstance().getMessage("Abstract"));
     abstractCheckBox.setActionCommand("Abstract");
     abstractCheckBox.setSelected(true);
     //abstractCheckBox.setEnabled(false);
     checkBoxVertical.add(abstractCheckBox);
-    keywordsCheckBox.setText(/*"Keywords"*/ Language.getInstance().getMessages("Keywords"));
+    keywordsCheckBox.setText(/*"Keywords"*/ Language.getInstance().getMessage("Keywords"));
     keywordsCheckBox.setActionCommand("Keywords");
     keywordsCheckBox.setSelected(true);
     //keywordsCheckBox.setEnabled(false);

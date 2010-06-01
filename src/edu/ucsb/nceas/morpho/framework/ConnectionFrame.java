@@ -79,12 +79,12 @@ public class ConnectionFrame  extends javax.swing.JDialog
     // parse your Java file into its visual environment.
     //{{INIT_CONTROLS
     setDefaultCloseOperation(javax.swing.JFrame.DISPOSE_ON_CLOSE);
-    setTitle(/*"Network Login"*/ Language.getInstance().getMessages("NetworkLogin"));
+    setTitle(/*"Network Login"*/ Language.getInstance().getMessage("NetworkLogin"));
     getContentPane().setLayout(new BorderLayout(0,0));
     //setSize(315,290);
     setVisible(false);
     JLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-    JLabel1.setText(/*"Network Login"*/ Language.getInstance().getMessages("NetworkLogin"));
+    JLabel1.setText(/*"Network Login"*/ Language.getInstance().getMessage("NetworkLogin"));
     getContentPane().add(BorderLayout.NORTH,JLabel1);
     JLabel1.setForeground(java.awt.Color.black);
     JLabel1.setFont(new Font("Dialog", Font.BOLD, 14));
@@ -101,20 +101,20 @@ public class ConnectionFrame  extends javax.swing.JDialog
     instructLabel.setFont(new Font("Dialog", Font.BOLD, 12));
     instructLabel.setForeground(java.awt.Color.black);
     instructLabel.setText(/*"Enter your Network password in order to log in."*/
-    						Language.getInstance().getMessages("UISettings.RequirePassword")
+    						Language.getInstance().getMessage("UISettings.RequirePassword")
     						);
     instructPanel.add(instructLabel);
 
     JPanel3.setLayout(new FlowLayout(FlowLayout.LEFT,5,5));
     JButtonGroupPanel1.add(JPanel3);
-    Name.setText(/*"Name"*/ Language.getInstance().getMessages("Name"));
+    Name.setText(/*"Name"*/ Language.getInstance().getMessage("Name"));
     JPanel3.add(Name);
     Name.setForeground(java.awt.Color.black);
     Name.setFont(new Font("Dialog", Font.PLAIN, 12));
     JPanel3.add(NameLabel);
     JPanel4.setLayout(new FlowLayout(FlowLayout.LEFT,5,5));
     JButtonGroupPanel1.add(JPanel4);
-    Password.setText(/*"Password"*/ Language.getInstance().getMessages("Password"));
+    Password.setText(/*"Password"*/ Language.getInstance().getMessage("Password"));
     JPanel4.add(Password);
     Password.setForeground(java.awt.Color.black);
     Password.setFont(new Font("Dialog", Font.PLAIN, 12));
@@ -129,19 +129,19 @@ public class ConnectionFrame  extends javax.swing.JDialog
 
     JPanel1.setLayout(new FlowLayout(FlowLayout.CENTER,5,5));
     getContentPane().add(BorderLayout.SOUTH,JPanel1);
-    connectButton.setText(/*"Login"*/ Language.getInstance().getMessages("Login"));
+    connectButton.setText(/*"Login"*/ Language.getInstance().getMessage("Login"));
     connectButton.setActionCommand("OK");
     connectButton.setMnemonic(KeyEvent.VK_L);
     addKeyListenerToComponent(connectButton);
     JPanel1.add(connectButton);
     connectButton.isDefaultButton();
-    DisconnectButton.setText(/*"Logout"*/ Language.getInstance().getMessages("Logout"));
+    DisconnectButton.setText(/*"Logout"*/ Language.getInstance().getMessage("Logout"));
     DisconnectButton.setActionCommand("Disconnect");
     DisconnectButton.setMnemonic(KeyEvent.VK_O);
     addKeyListenerToComponent(DisconnectButton);
     DisconnectButton.setEnabled(false);
     JPanel1.add(DisconnectButton);
-    CancelButton.setText(/*"Skip Login"*/ Language.getInstance().getMessages("SkipLogin"));
+    CancelButton.setText(/*"Skip Login"*/ Language.getInstance().getMessage("SkipLogin"));
     CancelButton.setActionCommand("Cancel");
     CancelButton.setMnemonic(KeyEvent.VK_S);
     addKeyListenerToComponent(CancelButton);
@@ -368,8 +368,8 @@ public class ConnectionFrame  extends javax.swing.JDialog
       dispose();
     } else {
       Log.debug(9, 
-    		  	/*"Login failed.\n"*/ Language.getInstance().getMessages("LoginFailed") + "\n"
-    		  	+ /*"Please check the Caps Lock key and try again."*/ Language.getInstance().getMessages("CheckCaps")
+    		  	/*"Login failed.\n"*/ Language.getInstance().getMessage("LoginFailed") + "\n"
+    		  	+ /*"Please check the Caps Lock key and try again."*/ Language.getInstance().getMessage("CheckCaps")
     		  	);
 //      DisconnectButton.setEnabled(false);
       updateEnabeDisable();

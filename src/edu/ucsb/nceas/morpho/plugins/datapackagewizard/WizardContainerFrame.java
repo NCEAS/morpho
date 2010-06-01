@@ -949,7 +949,7 @@ public class WizardContainerFrame
           int choice = JOptionPane.showConfirmDialog(frame,
         		  										/*"This incomplete data package will be saved locally and the wizard window will be closed.\n"
         		  										+"Are you sure to continue this action?",*/
-        		  										Language.getInstance().getMessages("SaveIncompleteWarning"),
+        		  										Language.getInstance().getMessage("SaveIncompleteWarning"),
         		  										"Save?",JOptionPane.YES_NO_OPTION);
           if(choice == JOptionPane.YES_OPTION)
           {
@@ -2045,11 +2045,11 @@ public class WizardContainerFrame
 	  int opt = JOptionPane.showConfirmDialog(this,
 	            /*"If you cancel, *all* work done in this wizard "+
 	            "will be lost.\nIf you want to resume the wizard later, choose \"No\", then click on the \"Save for Later\" button.\nAre you sure you want to cancel? ",*/
-			  	Language.getInstance().getMessages("CancelWarning_1")
+			  	Language.getInstance().getMessage("CancelWarning_1")
 			  	+"\n"
-			  	+Language.getInstance().getMessages("CancelWarning_2")
+			  	+Language.getInstance().getMessage("CancelWarning_2")
 			  	+"\n"
-			  	+ Language.getInstance().getMessages("CancelWarning_3"),
+			  	+ Language.getInstance().getMessage("CancelWarning_3"),
 	            "DO YOU WANT TO CONTINUE?",
 	            JOptionPane.YES_NO_OPTION);
 	   if (opt == JOptionPane.NO_OPTION) 

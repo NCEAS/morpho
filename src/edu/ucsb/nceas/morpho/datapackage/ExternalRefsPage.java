@@ -88,7 +88,7 @@ public class ExternalRefsPage extends AbstractUIPage
 
   // constant
   private static final int       DOCIDINDEX = 1;
-  private static final String SELECTPACKAGE = "1) "+ /*Select a data package*/ Language.getInstance().getMessages("SelectADataPackage");
+  private static final String SELECTPACKAGE = "1) "+ /*Select a data package*/ Language.getInstance().getMessage("SelectADataPackage");
   private static final int           TOPGAP = 0;
   private static final int        BOTTOMGAP = 8;
   private static final int       BIGSIDEGAP = 16;
@@ -152,7 +152,7 @@ public class ExternalRefsPage extends AbstractUIPage
 
     // right panel is the reference id panel
     JPanel refsPanel = new JPanel();
-    String selectRefsString = "2) "+ /*Select a previous entry from this data package*/ Language.getInstance().getMessages("SelectAPreviousEntryFromThisDataPackage");
+    String selectRefsString = "2) "+ /*Select a previous entry from this data package*/ Language.getInstance().getMessage("SelectAPreviousEntryFromThisDataPackage");
     JLabel selectedRefsLabel = new JLabel(selectRefsString);
     selectedRefsLabel.setFont(LABELFONT);
     selectedRefsLabel.setBorder(BorderFactory.createEmptyBorder

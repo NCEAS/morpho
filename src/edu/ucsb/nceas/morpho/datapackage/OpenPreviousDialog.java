@@ -57,9 +57,9 @@ public class OpenPreviousDialog extends javax.swing.JDialog
 		setVisible(false);
 		ControlPanel.setLayout(new FlowLayout(FlowLayout.RIGHT,5,5));
 		getContentPane().add(BorderLayout.SOUTH,ControlPanel);
-		CancelButton.setText(/*"Cancel"*/ Language.getInstance().getMessages("Cancel"));
+		CancelButton.setText(/*"Cancel"*/ Language.getInstance().getMessage("Cancel"));
 		ControlPanel.add(CancelButton);
-		OpenButton.setText(/*"Open"*/ Language.getInstance().getMessages("Open"));
+		OpenButton.setText(/*"Open"*/ Language.getInstance().getMessage("Open"));
 		ControlPanel.add(OpenButton);
 		CenterPanel.setLayout(new BorderLayout(0,0));
 		getContentPane().add(BorderLayout.CENTER,CenterPanel);

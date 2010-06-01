@@ -87,8 +87,8 @@ public class KeywordsPage extends AbstractUIPage {
     "These keywords are not chosen from a predefined list",
     "These keywords are chosen from a predefined list:"
     */
-    Language.getInstance().getMessages("Keywords.buttonsText_1"),
-    Language.getInstance().getMessages("Keywords.buttonsText_2")
+    Language.getInstance().getMessage("Keywords.buttonsText_1"),
+    Language.getInstance().getMessage("Keywords.buttonsText_2")
   };
 
   private     String xPathRoot  = "/eml:eml/dataset/keywordSet[1]";
@@ -147,7 +147,7 @@ public class KeywordsPage extends AbstractUIPage {
 
     JLabel desc = WidgetFactory.makeHTMLLabel(
                       "<font size=\"4\"><b>" 
-                      +/*"Define Keyword Set:"*/ Language.getInstance().getMessages("DefineKeywordSet") 
+                      +/*"Define Keyword Set:"*/ Language.getInstance().getMessage("DefineKeywordSet") 
                       +"</b></font>"
                       , 1);
     middlePanel.add(desc);
@@ -158,7 +158,7 @@ public class KeywordsPage extends AbstractUIPage {
     middlePanel.add(radioPanel);
 
     JPanel thesaurusPanel = WidgetFactory.makePanel(1);
-    thesaurusLabel = WidgetFactory.makeLabel(/*"Thesaurus name:"*/ Language.getInstance().getMessages("ThesaurusName")+":"
+    thesaurusLabel = WidgetFactory.makeLabel(/*"Thesaurus name:"*/ Language.getInstance().getMessage("ThesaurusName")+":"
     											, false);
     thesaurusPanel.add(thesaurusLabel);
     thesaurusLabel.setVisible(false);
@@ -174,11 +174,11 @@ public class KeywordsPage extends AbstractUIPage {
 
     ////
     JPanel kwPanel = WidgetFactory.makePanel(16);
-    kwLabel = WidgetFactory.makeLabel(/*"Keywords:"*/ Language.getInstance().getMessages("Keywords")+":"
+    kwLabel = WidgetFactory.makeLabel(/*"Keywords:"*/ Language.getInstance().getMessage("Keywords")+":"
     									, true);
     kwPanel.add(kwLabel);
 
-    kwList = WidgetFactory.makeList(new String[]{ /*"Keyword"*/ Language.getInstance().getMessages("Keywords")},
+    kwList = WidgetFactory.makeList(new String[]{ /*"Keyword"*/ Language.getInstance().getMessage("Keywords")},
                                     new Object[]{ new JTextField()},
                                     8, true, false, false, true, true, true );
     

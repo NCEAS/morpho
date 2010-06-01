@@ -131,7 +131,7 @@ public class OpenDialogBox extends JDialog
     int dialogY = (new Double(centerY - 0.5 * dialogHeight)).intValue();
     setLocation(dialogX, dialogY);
 
-    setTitle(/*"Open"*/ Language.getInstance().getMessages("Open"));
+    setTitle(/*"Open"*/ Language.getInstance().getMessage("Open"));
     // Set the default close operation is dispose
     setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 
@@ -164,7 +164,7 @@ public class OpenDialogBox extends JDialog
     controlButtonsBox.add(Box.createHorizontalStrut(PADDINGWIDTH));
 
     // Search button
-    GUIAction searchAction = new GUIAction(/*"Search..."*/ Language.getInstance().getMessages("Search")+"...", new ImageIcon
+    GUIAction searchAction = new GUIAction(/*"Search..."*/ Language.getInstance().getMessage("Search")+"...", new ImageIcon
        (getClass().getResource("/toolbarButtonGraphics/general/Search16.gif")),
        new SearchCommand(this, morpho));
     searchAction.setToolTipText("Switch to search system to open packages from"
@@ -178,7 +178,7 @@ public class OpenDialogBox extends JDialog
     controlButtonsBox.add(Box.createHorizontalGlue());
 
     // Open button
-    GUIAction openAction = new GUIAction(/*"Open"*/ Language.getInstance().getMessages("Open"), null,
+    GUIAction openAction = new GUIAction(/*"Open"*/ Language.getInstance().getMessage("Open"), null,
                                   new OpenPackageCommand(this));
     openButton = new JButton(openAction);
     // Registor open button to mediator
@@ -190,7 +190,7 @@ public class OpenDialogBox extends JDialog
     controlButtonsBox.add(Box.createHorizontalStrut(PADDINGWIDTH));
 
     //Cancel button
-    GUIAction cancelAction = new GUIAction(/*"Cancel"*/ Language.getInstance().getMessages("Cancel"), null,
+    GUIAction cancelAction = new GUIAction(/*"Cancel"*/ Language.getInstance().getMessage("Cancel"), null,
                                                       new CancelCommand(this));
     cancelButton = new JButton(cancelAction);
     controlButtonsBox.add(cancelButton);

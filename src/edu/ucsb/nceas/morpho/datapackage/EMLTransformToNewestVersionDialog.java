@@ -57,10 +57,10 @@ public class EMLTransformToNewestVersionDialog
 	private static final int NORTHPADDINGWIDTH = 8;
 	private static final String TITLE = "Upgrade EML Document";
 	private static final String WARNING = 
-				/*"This data package uses an older version of EML.\n"*/ Language.getInstance().getMessages("UpgradeToNewEMLVersion_1") + "\n"
-	            +/*"You will not be able to edit it without upgrading to the newest version"*/ Language.getInstance().getMessages("UpgradeToNewEMLVersion_2") + " (" 
+				/*"This data package uses an older version of EML.\n"*/ Language.getInstance().getMessage("UpgradeToNewEMLVersion_1") + "\n"
+	            +/*"You will not be able to edit it without upgrading to the newest version"*/ Language.getInstance().getMessage("UpgradeToNewEMLVersion_2") + " (" 
 	            +EML200DataPackage.LATEST_EML_VER+")\n"
-	            +/*".\nDo you want to upgrade the data package now?"*/ Language.getInstance().getMessages("UpgradeToNewEMLVersion_3") + "?"
+	            +/*".\nDo you want to upgrade the data package now?"*/ Language.getInstance().getMessage("UpgradeToNewEMLVersion_3") + "?"
 	            ;
 	
 	 /* Control button */
@@ -119,8 +119,8 @@ public class EMLTransformToNewestVersionDialog
 	private void initializeUI(Window parent)
 	{
 	   
- 	   Object[] choices = {/*"Yes"*/ Language.getInstance().getMessages("Yes"),
- 			   				/*"No"*/ Language.getInstance().getMessages("No")
+ 	   Object[] choices = {/*"Yes"*/ Language.getInstance().getMessage("Yes"),
+ 			   				/*"No"*/ Language.getInstance().getMessage("No")
  			   				};
  	   userChoice= JOptionPane.showOptionDialog(parent, //parent
                 WARNING, // Message

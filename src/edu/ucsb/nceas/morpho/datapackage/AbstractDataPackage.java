@@ -4494,7 +4494,7 @@ public abstract class AbstractDataPackage extends MetadataObject
     // export all entities
     exportDataFiles(savedirDataSub.getAbsolutePath(), null);
     JOptionPane.showMessageDialog(UIController.getInstance().getCurrentActiveWindow(),
-                                  /*"Package export is complete ! "*/ Language.getInstance().getMessages("PackageExportComplete") + " !"
+                                  /*"Package export is complete ! "*/ Language.getInstance().getMessage("PackageExportComplete") + " !"
     							);
   }
 

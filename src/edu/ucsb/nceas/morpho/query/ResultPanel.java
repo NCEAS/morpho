@@ -264,13 +264,13 @@ public class ResultPanel extends JPanel implements StoreStateChangeEvent
        {
 	        popup = new JPopupMenu();
 	        // Create a openPackage action
-	        GUIAction openAction = new GUIAction(/*"Open Package"*/ Language.getInstance().getMessages("OpenPackage"), null,
+	        GUIAction openAction = new GUIAction(/*"Open Package"*/ Language.getInstance().getMessage("OpenPackage"), null,
 	                            new OpenPackageCommand(dialog));
 	        openMenu = new JMenuItem(openAction);
 	        popup.add(openMenu);
 	
 	        // Create a OpenPreviousVersion action
-	        GUIAction openPreviousAction = new GUIAction(/*"Open Previous Version"*/ Language.getInstance().getMessages("OpenPreviousVersion") ,
+	        GUIAction openPreviousAction = new GUIAction(/*"Open Previous Version"*/ Language.getInstance().getMessage("OpenPreviousVersion") ,
 	        					null,
 	                            new OpenPreviousVersionCommand(dialog, null));
 	        /*openPreviousAction.setEnabledOnStateChange(
@@ -288,14 +288,14 @@ public class ResultPanel extends JPanel implements StoreStateChangeEvent
 	        if (dialog != null)
 	        {
 	          // refresh open dialog
-	          refreshAction = new GUIAction(/*"Refresh"*/ Language.getInstance().getMessages("Refresh") ,
+	          refreshAction = new GUIAction(/*"Refresh"*/ Language.getInstance().getMessage("Refresh") ,
 	        		  						null,
 	                                                new RefreshCommand(dialog));
 	        }
 	        else
 	        {
 	          // refresh current acitve frame
-	          refreshAction = new GUIAction(/*"Refresh"*/ Language.getInstance().getMessages("Refresh"),
+	          refreshAction = new GUIAction(/*"Refresh"*/ Language.getInstance().getMessage("Refresh"),
 	        		  							null, new RefreshCommand());
 	        }
 	        refreshMenu = new JMenuItem(refreshAction);
@@ -304,7 +304,7 @@ public class ResultPanel extends JPanel implements StoreStateChangeEvent
 	        popup.add(new JSeparator());
 	
 	        // Create a action to open a synchronize dialog
-	        GUIAction synchronizeAction = new GUIAction(/*"Synchronize..."*/ Language.getInstance().getMessages("Synchronize"), 
+	        GUIAction synchronizeAction = new GUIAction(/*"Synchronize..."*/ Language.getInstance().getMessage("Synchronize"), 
 	        								null,
 	                                      new OpenSynchronizeDialogCommand(dialog));
 	        /*synchronizeAction.setEnabledOnStateChange(
@@ -320,7 +320,7 @@ public class ResultPanel extends JPanel implements StoreStateChangeEvent
 	        popup.add(new JSeparator());
 	
 	        // Create a action to open a delete dialog
-	        GUIAction openDeleteDialogAction = new GUIAction(/*"Delete..."*/ Language.getInstance().getMessages("Delete"), null,
+	        GUIAction openDeleteDialogAction = new GUIAction(/*"Delete..."*/ Language.getInstance().getMessage("Delete"), null,
 	                                         new OpenDeleteDialogCommand(dialog));
 	        deleteMenu = new JMenuItem(openDeleteDialogAction);
 	        popup.add(deleteMenu);
@@ -328,7 +328,7 @@ public class ResultPanel extends JPanel implements StoreStateChangeEvent
 	        popup.add(new JSeparator());
 	
 	        // Create export
-	        GUIAction exportAction = new GUIAction(/*"Export..."*/ Language.getInstance().getMessages("Export"), null,
+	        GUIAction exportAction = new GUIAction(/*"Export..."*/ Language.getInstance().getMessage("Export"), null,
 	//                            new ExportCommand(dialog, ExportCommand.REGULAR));
 	                             new OpenExportDialogCommand(dialog));
 	        /*exportAction.setEnabledOnStateChange(

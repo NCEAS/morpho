@@ -59,8 +59,8 @@ public class AccessTreeModel
 	
   // Names of the columns.
   static protected String[] cNames = {
-      /*"Name"*/ Language.getInstance().getMessages("Name"),
-      /*"Email / Description / Distinguished Name"*/ Language.getInstance().getMessages("Email") + " / "+ Language.getInstance().getMessages("Description") + " / " + Language.getInstance().getMessages("DistinguishedName")
+      /*"Name"*/ Language.getInstance().getMessage("Name"),
+      /*"Email / Description / Distinguished Name"*/ Language.getInstance().getMessage("Email") + " / "+ Language.getInstance().getMessage("Description") + " / " + Language.getInstance().getMessage("DistinguishedName")
       };
 
   // Types of the columns.

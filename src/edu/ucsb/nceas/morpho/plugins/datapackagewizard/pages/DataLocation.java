@@ -72,24 +72,24 @@ public class DataLocation extends AbstractUIPage {
   private final String pageID       = DataPackageWizardInterface.DATA_LOCATION;
   private final String pageNumber   = "1";
 
-  private final String title      = /*"New Data Table Wizard"*/ Language.getInstance().getMessages("NewDataTableWizard");
-  private final String subtitle   = /*"Data Location"*/ Language.getInstance().getMessages("DataLocation");
+  private final String title      = /*"New Data Table Wizard"*/ Language.getInstance().getMessage("NewDataTableWizard");
+  private final String subtitle   = /*"Data Location"*/ Language.getInstance().getMessage("DataLocation");
   private final String HARDDRIVE = "hard drive";
   private final String TMPFILENAME = "Unamed-table-";
 
   // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
-  public static final String FILE_LOCATOR_FIELD_FILENAME_LABEL = /*"File Name:"*/ Language.getInstance().getMessages("File") + " " + Language.getInstance().getMessages("Name") +" :";
-  public static final String FILE_LOCATOR_FIELD_OBJNAME_LABEL  = /*"Name/Title:"*/ Language.getInstance().getMessages("Name") + " / " +Language.getInstance().getMessages("Title") +" :";
+  public static final String FILE_LOCATOR_FIELD_FILENAME_LABEL = /*"File Name:"*/ Language.getInstance().getMessage("File") + " " + Language.getInstance().getMessage("Name") +" :";
+  public static final String FILE_LOCATOR_FIELD_OBJNAME_LABEL  = /*"Name/Title:"*/ Language.getInstance().getMessage("Name") + " / " +Language.getInstance().getMessage("Title") +" :";
 
   public static final String INIT_FILE_LOCATOR_TEXT
                                   = /*"   use button to select a file -->"*/
-                                	  "   " + Language.getInstance().getMessages("DataLocaltion.INIT_FILE_LOCATOR_TEXT") + " -->"
+                                	  "   " + Language.getInstance().getMessage("DataLocaltion.INIT_FILE_LOCATOR_TEXT") + " -->"
                                 	  ;
   public static final String FILE_LOCATOR_IMPORT_DESC_INLINE
         = WizardSettings.HTML_TABLE_LABEL_OPENING
         /*+"Use the \"locate\" button to locate the data file on your computer:"*/
-        + Language.getInstance().getMessages("DataLocaltion.FILE_LOCATOR_IMPORT_DESC_INLINE") +":"
+        + Language.getInstance().getMessage("DataLocaltion.FILE_LOCATOR_IMPORT_DESC_INLINE") +":"
         +WizardSettings.HTML_TABLE_LABEL_CLOSING;
 
   public static final String URN_ROOT = "ecogrid://knb/";
@@ -106,9 +106,9 @@ public class DataLocation extends AbstractUIPage {
   public static final String ONLINE_URL_XPATH
       = "/eml:eml/dataset/dataTable/physical/distribution/online/url";
 
-  public static final String FILECHOOSER_PANEL_TITLE = /*"File Location:"*/ Language.getInstance().getMessages("File") + " " + Language.getInstance().getMessages("Location") +":";
+  public static final String FILECHOOSER_PANEL_TITLE = /*"File Location:"*/ Language.getInstance().getMessage("File") + " " + Language.getInstance().getMessage("Location") +":";
 
-  public final String Q1_TITLE = /*"What do you want to do?"*/ Language.getInstance().getMessages("DataLocaltion.Q1_TITLE") + "?";
+  public final String Q1_TITLE = /*"What do you want to do?"*/ Language.getInstance().getMessage("DataLocaltion.Q1_TITLE") + "?";
 
   private final String[] Q1_LABELS = new String[] {
     /*
@@ -117,9 +117,9 @@ public class DataLocation extends AbstractUIPage {
     "DESCRIBE - Include only the data file documentation (but not the data "
     + "file itself) in the package."
     */
-	Language.getInstance().getMessages("CREATE") + " - " + Language.getInstance().getMessages("DataLocaltion.CREATE"),
-	Language.getInstance().getMessages("IMPORT") + " - " + Language.getInstance().getMessages("DataLocaltion.IMPORT"),
-	Language.getInstance().getMessages("DESCRIBE") + " - " + Language.getInstance().getMessages("DataLocaltion.DESCRIBE")
+	Language.getInstance().getMessage("CREATE") + " - " + Language.getInstance().getMessage("DataLocaltion.CREATE"),
+	Language.getInstance().getMessage("IMPORT") + " - " + Language.getInstance().getMessage("DataLocaltion.IMPORT"),
+	Language.getInstance().getMessage("DESCRIBE") + " - " + Language.getInstance().getMessage("DataLocaltion.DESCRIBE")
   };
 
   private final static int CREATE_CHOICE = 0;
@@ -141,15 +141,15 @@ public class DataLocation extends AbstractUIPage {
                         "How do you want to enter the documentation for "
                         + "the data?"
                         */
-                        Language.getInstance().getMessages("DataLocaltion.Q2_TITLE_IMPORT") + "?"
+                        Language.getInstance().getMessage("DataLocaltion.Q2_TITLE_IMPORT") + "?"
                         ;
   private final String[] Q2_LABELS_IMPORT = new String[] {
     /*
 	"AUTOMATIC - Import the data file and extract the documentation for review.",
     "MANUAL - Import the data file but enter the documentation manually."
     */
-	Language.getInstance().getMessages("AUTOMATIC") +" - " + Language.getInstance().getMessages("DataLocation.IMPORT_AUTOMATIC"),
-	Language.getInstance().getMessages("MANUAL") +" - " + Language.getInstance().getMessages("DataLocation.IMPORT_MANUAL")
+	Language.getInstance().getMessage("AUTOMATIC") +" - " + Language.getInstance().getMessage("DataLocation.IMPORT_AUTOMATIC"),
+	Language.getInstance().getMessage("MANUAL") +" - " + Language.getInstance().getMessage("DataLocation.IMPORT_MANUAL")
   };
 
   private final String Q2_TITLE_DESCRIBE
@@ -158,7 +158,7 @@ public class DataLocation extends AbstractUIPage {
                         "How do you want to enter the documentation for "
                         + "the data?"
                         */
-                        Language.getInstance().getMessages("DataLocaltion.Q2_TITLE_IMPORT") + "?"
+                        Language.getInstance().getMessage("DataLocaltion.Q2_TITLE_IMPORT") + "?"
                         ;
   private final String[] Q2_LABELS_DESCRIBE = new String[] {
     /*
@@ -166,16 +166,16 @@ public class DataLocation extends AbstractUIPage {
     + "omit the data file from the package).",	
     "MANUAL - Enter the documentation manually."
     */
-    Language.getInstance().getMessages("AUTOMATIC") +" - " + Language.getInstance().getMessages("DataLocation.DESCRIBE_AUTOMATIC"),
-    Language.getInstance().getMessages("MANUAL") +" - " + Language.getInstance().getMessages("DataLocation.DESCRIBE_MANUAL")
+    Language.getInstance().getMessage("AUTOMATIC") +" - " + Language.getInstance().getMessage("DataLocation.DESCRIBE_AUTOMATIC"),
+    Language.getInstance().getMessage("MANUAL") +" - " + Language.getInstance().getMessage("DataLocation.DESCRIBE_MANUAL")
   };
 
-  private final String Q3_TITLE = /*"Data Location?"*/ Language.getInstance().getMessages("DataLocation") + "?" ;
+  private final String Q3_TITLE = /*"Data Location?"*/ Language.getInstance().getMessage("DataLocation") + "?" ;
 
   private final String[] Q3_LABELS = new String[] {
-    /*"Not available"*/ Language.getInstance().getMessages("NotAvailable"),
-    /*"Online URL"*/ Language.getInstance().getMessages("OnlineURL"),
-    /*"Archived"*/ Language.getInstance().getMessages("Archived")
+    /*"Not available"*/ Language.getInstance().getMessage("NotAvailable"),
+    /*"Online URL"*/ Language.getInstance().getMessage("OnlineURL"),
+    /*"Archived"*/ Language.getInstance().getMessage("Archived")
   };
   private String xPathRoot  = "/eml:eml/dataset/dataTable/physical";
 
@@ -237,7 +237,7 @@ public class DataLocation extends AbstractUIPage {
       +"Describe and optionally include a data "
       +"table in your data package."
       */
-      + Language.getInstance().getMessages("DataLocation.desc_1")	
+      + Language.getInstance().getMessage("DataLocation.desc_1")	
       +"</b> " 
       /*
       +"You may create a table from "
@@ -246,7 +246,7 @@ public class DataLocation extends AbstractUIPage {
       +"wizard to automatically extract much of the documentation from the data "
       +"file itself. " 
       */
-      + Language.getInstance().getMessages("DataLocation.desc_2")	+" "
+      + Language.getInstance().getMessage("DataLocation.desc_2")	+" "
       /*
       +"If you "
       +"choose the second option, you will be prompted to review the "
@@ -254,7 +254,7 @@ public class DataLocation extends AbstractUIPage {
       +"is extracted and provide any required fields that can not be generated "
       +"automatically."
       */
-      + Language.getInstance().getMessages("DataLocation.desc_3")
+      + Language.getInstance().getMessage("DataLocation.desc_3")
       +"<br></br></p>"
       +"<p>" 
       /*
@@ -263,7 +263,7 @@ public class DataLocation extends AbstractUIPage {
       +"proprietary file types like Excel, or other "
       +"file types that are not yet supported." 
       */
-      + Language.getInstance().getMessages("DataLocation.desc_4")
+      + Language.getInstance().getMessage("DataLocation.desc_4")
       + "</p>", 7);
     topBox.add(desc);
 
@@ -459,7 +459,7 @@ public class DataLocation extends AbstractUIPage {
     ////
     JPanel fileNamePanel = WidgetFactory.makePanel(1);
 
-    fileNameLabelNoData = WidgetFactory.makeLabel(/*"File Name:"*/ Language.getInstance().getMessages("File") + " " + Language.getInstance().getMessages("Name") + ":", 
+    fileNameLabelNoData = WidgetFactory.makeLabel(/*"File Name:"*/ Language.getInstance().getMessage("File") + " " + Language.getInstance().getMessage("Name") + ":", 
     												true);
 
     fileNamePanel.add(fileNameLabelNoData);
@@ -498,7 +498,7 @@ public class DataLocation extends AbstractUIPage {
     ////
     JPanel fileNamePanel = WidgetFactory.makePanel(1);
 
-    fileNameLabelOnline = WidgetFactory.makeLabel(/*"File Name:"*/ Language.getInstance().getMessages("File") + " " + Language.getInstance().getMessages("Name") + ":",
+    fileNameLabelOnline = WidgetFactory.makeLabel(/*"File Name:"*/ Language.getInstance().getMessage("File") + " " + Language.getInstance().getMessage("Name") + ":",
     												true);
 
     fileNamePanel.add(fileNameLabelOnline);
@@ -513,7 +513,7 @@ public class DataLocation extends AbstractUIPage {
     ////
     JPanel urlPanel = WidgetFactory.makePanel(1);
 
-    urlLabelOnline = WidgetFactory.makeLabel(/*"URL:"*/ Language.getInstance().getMessages("URL") + ":",
+    urlLabelOnline = WidgetFactory.makeLabel(/*"URL:"*/ Language.getInstance().getMessage("URL") + ":",
     											true);
 
     urlPanel.add(urlLabelOnline);
@@ -550,7 +550,7 @@ public class DataLocation extends AbstractUIPage {
       "Archived data may be stored on digital media (tapes, disks), "
       +"or printed media (hardcopy).",
       */
-      Language.getInstance().getMessages("DataLocaltion.getOfflinePanel_1"),
+      Language.getInstance().getMessage("DataLocaltion.getOfflinePanel_1"),
       1));
 
     JPanel objNamePanel = WidgetFactory.makePanel();
@@ -561,7 +561,7 @@ public class DataLocation extends AbstractUIPage {
     objNamePanel.add(objNameField);
 
     JPanel medNamePanel = WidgetFactory.makePanel();
-    medNameLabel = WidgetFactory.makeLabel(/*"Medium Type:"*/ Language.getInstance().getMessages("MediumType") + ":",
+    medNameLabel = WidgetFactory.makeLabel(/*"Medium Type:"*/ Language.getInstance().getMessage("MediumType") + ":",
     										true);
     medNameField = WidgetFactory.makeOneLineTextField();
     medNamePanel.add(medNameLabel);
@@ -571,10 +571,10 @@ public class DataLocation extends AbstractUIPage {
 
     panel.add(WidgetFactory.makeHTMLLabel(
                     /*"Type of medium on which data is distributed. "*/
-    				Language.getInstance().getMessages("DataLocaltion.getOfflinePanel_2") +" "
+    				Language.getInstance().getMessage("DataLocaltion.getOfflinePanel_2") +" "
                     +WizardSettings.HTML_EXAMPLE_FONT_OPENING
                     /*+"eg: Tape,&nbsp;3.5 inch Floppy Disk,&nbsp;hardcopy"*/
-                    + Language.getInstance().getMessages("DataLocaltion.getOfflinePanel_3")
+                    + Language.getInstance().getMessage("DataLocaltion.getOfflinePanel_3")
                     +WizardSettings.HTML_EXAMPLE_FONT_CLOSING, 1));
 
 
@@ -584,10 +584,10 @@ public class DataLocation extends AbstractUIPage {
 
     panel.add(WidgetFactory.makeHTMLLabel(
                     /*"Enter an identifying name in the space below&nbsp;"*/
-    				Language.getInstance().getMessages("DataLocaltion.getOfflinePanel_4") + " : "
+    				Language.getInstance().getMessage("DataLocaltion.getOfflinePanel_4") + " : "
                     +WizardSettings.HTML_EXAMPLE_FONT_OPENING
                     /*+" eg a title for hardcopy, or a filename for digital media"*/
-                    + Language.getInstance().getMessages("DataLocaltion.getOfflinePanel_5")
+                    + Language.getInstance().getMessage("DataLocaltion.getOfflinePanel_5")
                     +WizardSettings.HTML_EXAMPLE_FONT_CLOSING, 1));
 
     panel.add(objNamePanel);

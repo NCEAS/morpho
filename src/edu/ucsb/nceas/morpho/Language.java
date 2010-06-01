@@ -30,7 +30,7 @@ public class Language {
 		return instance;
 	}
 	
-	public String getMessages(String  key) {
+	public String getMessage(String  key) {
 		String message = null;
 		try {
 			message = lan.getString(key);

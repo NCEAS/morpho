@@ -108,16 +108,16 @@ public class SaveDialog extends JDialog {
 	private boolean showPackageFlag = true;
 
  /** Radio button */
-  private JCheckBox localLoc = new JCheckBox(/*"Save Locally"*/ Language.getInstance().getMessages("SaveLocally"));
-  private JCheckBox networkLoc = new JCheckBox(/*"Save to Network."*/ Language.getInstance().getMessages("SaveToNetwork"));
-  private JCheckBox upgradeEml = new JCheckBox(/*"Upgrade to latest EML "*/ Language.getInstance().getMessages("UpgradeToLatestEML") 
+  private JCheckBox localLoc = new JCheckBox(/*"Save Locally"*/ Language.getInstance().getMessage("SaveLocally"));
+  private JCheckBox networkLoc = new JCheckBox(/*"Save to Network."*/ Language.getInstance().getMessage("SaveToNetwork"));
+  private JCheckBox upgradeEml = new JCheckBox(/*"Upgrade to latest EML "*/ Language.getInstance().getMessage("UpgradeToLatestEML") 
   												+"(" 
   												+ EML200DataPackage.LATEST_EML_VER + ")");
 
 	private static final int PADDINGWIDTH = 8;
 	  private static String WARNING =
       /*"Please choose where you would like to save the data package."*/
-	  Language.getInstance().getMessages("ChooseWhereToSave")
+	  Language.getInstance().getMessage("ChooseWhereToSave")
 	  ;
 
 	/** A reference to morpho frame */
@@ -175,7 +175,7 @@ public class SaveDialog extends JDialog {
 		int dialogY = (new Double(centerY - 0.5 * dialogHeight)).intValue();
 		setLocation(dialogX, dialogY);
 
-		setTitle(/*"Save Current DataPackage"*/ Language.getInstance().getMessages("SaveCurrentDataPackage"));
+		setTitle(/*"Save Current DataPackage"*/ Language.getInstance().getMessage("SaveCurrentDataPackage"));
     	// Set the default close operation is dispose
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 
@@ -231,12 +231,12 @@ public class SaveDialog extends JDialog {
 		controlButtonsBox.add(Box.createHorizontalGlue());
 
 		// Save button
-		executeButton = new JButton(/*"Save"*/ Language.getInstance().getMessages("Save"));
+		executeButton = new JButton(/*"Save"*/ Language.getInstance().getMessage("Save"));
 		controlButtonsBox.add(executeButton);
 		controlButtonsBox.add(Box.createHorizontalStrut(PADDINGWIDTH));
 
 		// Cancel button
-		cancelButton = new JButton(/*"Cancel"*/ Language.getInstance().getMessages("Cancel"));
+		cancelButton = new JButton(/*"Cancel"*/ Language.getInstance().getMessage("Cancel"));
 		controlButtonsBox.add(cancelButton);
 		controlButtonsBox.add(Box.createHorizontalStrut(PADDINGWIDTH));
 

@@ -68,12 +68,12 @@ public class DataFormat extends AbstractUIPage{
   private final String pageID     = DataPackageWizardInterface.DATA_FORMAT;
   private final String pageNumber = "";
 
-  private final String title      = /*"Data File Information:"*/ Language.getInstance().getMessages("DataFileInformation");
-  private final String subtitle   = /*"File Format"*/ Language.getInstance().getMessages("File") + " " + Language.getInstance().getMessages("Format") ;
+  private final String title      = /*"Data File Information:"*/ Language.getInstance().getMessage("DataFileInformation");
+  private final String subtitle   = /*"File Format"*/ Language.getInstance().getMessage("File") + " " + Language.getInstance().getMessage("Format") ;
 
   // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
-  private final String OTHER_LABEL = /*"other"*/ Language.getInstance().getMessages("other");
+  private final String OTHER_LABEL = /*"other"*/ Language.getInstance().getMessage("other");
   private final String EMPTY_STRING = "";
 
   private final String COLUMN_MAJOR = "column";
@@ -119,27 +119,27 @@ public class DataFormat extends AbstractUIPage{
     "Non-text or proprietary formatted file that is externally defined "
     + "(e.g. 'Microsoft Excel')."
     */
-	Language.getInstance().getMessages("DataFormat.buttonsText_1"),
-	Language.getInstance().getMessages("DataFormat.buttonsText_2"),
-	Language.getInstance().getMessages("DataFormat.buttonsText_3")
+	Language.getInstance().getMessage("DataFormat.buttonsText_1"),
+	Language.getInstance().getMessage("DataFormat.buttonsText_2"),
+	Language.getInstance().getMessage("DataFormat.buttonsText_3")
   };
 
   private final String[] orientButtonsText = new String[] {
-      /*"Columns"*/ Language.getInstance().getMessages("Columns"),
-      /*"Rows"*/ Language.getInstance().getMessages("Rows")
+      /*"Columns"*/ Language.getInstance().getMessage("Columns"),
+      /*"Rows"*/ Language.getInstance().getMessage("Rows")
     };
 
   private final String[] delimiterCheckBoxesText = new String[] {
-    /*"tab"*/ Language.getInstance().getMessages("tab"),
-    /*"comma"*/ Language.getInstance().getMessages("comma"),
-    /*"space"*/ Language.getInstance().getMessages("space"),
-    /*"semicolon"*/ Language.getInstance().getMessages("semicolon"),
+    /*"tab"*/ Language.getInstance().getMessage("tab"),
+    /*"comma"*/ Language.getInstance().getMessage("comma"),
+    /*"space"*/ Language.getInstance().getMessage("space"),
+    /*"semicolon"*/ Language.getInstance().getMessage("semicolon"),
     OTHER_LABEL
   };
   
-  private static final String FIXEDWIDTHLABEL = /*"Fixed-Width"*/ Language.getInstance().getMessages("Fixed-Width");
+  private static final String FIXEDWIDTHLABEL = /*"Fixed-Width"*/ Language.getInstance().getMessage("Fixed-Width");
   private static final String TEXTFIXED = "textFixed";
-  private static final String DELIMITEDLABEL = /*"Delimited"*/ Language.getInstance().getMessages("Delimited");
+  private static final String DELIMITEDLABEL = /*"Delimited"*/ Language.getInstance().getMessage("Delimited");
   private static final String TEXTDELIMITED = "textDelimited";
   private String[] pickListVals = new String[] {
 	FIXEDWIDTHLABEL,
@@ -204,14 +204,14 @@ public class DataFormat extends AbstractUIPage{
 
     JLabel desc = WidgetFactory.makeHTMLLabel(
       "<b>" 
-      +/*"Enter some information about your data file"*/ Language.getInstance().getMessages("DataFormat.desc") 
+      +/*"Enter some information about your data file"*/ Language.getInstance().getMessage("DataFormat.desc") 
       +"</b>.", 2);
     topBox.add(desc);
     topBox.add(WidgetFactory.makeDefaultSpacer());
 
     radioButtonGrpLabel
           = WidgetFactory.makeHTMLLabel(/*"What is the format of your data?"*/
-        		  						Language.getInstance().getMessages("DataFormat.WhatFormat") +"?"	
+        		  						Language.getInstance().getMessage("DataFormat.WhatFormat") +"?"	
         		  						, 1);
     topBox.add(radioButtonGrpLabel);
 
@@ -293,7 +293,7 @@ public class DataFormat extends AbstractUIPage{
 
     ////
     panel.add(WidgetFactory.makeHTMLLabel(/*"Data Attributes are arranged in:"*/
-    										Language.getInstance().getMessages("DataFormat.DataAttributesArrange") + " : "
+    										Language.getInstance().getMessage("DataFormat.DataAttributesArrange") + " : "
     										, 1));
 
     JPanel orientationPanel = WidgetFactory.makePanel(2);
@@ -313,13 +313,13 @@ public class DataFormat extends AbstractUIPage{
     ////
     panel.add(WidgetFactory.makeHTMLLabel(
       /*"Define one or more delimiters used to indicate the ends of fields:",*/
-    	Language.getInstance().getMessages("DataFormat.DefineDelimiters") + " : ",
+    	Language.getInstance().getMessage("DataFormat.DefineDelimiters") + " : ",
       
       1));
 
     JPanel delimiterPanel = WidgetFactory.makePanel(8);
 
-    delimiterLabel = WidgetFactory.makeLabel(/*"Delimiter(s)"*/ Language.getInstance().getMessages("Delimiter(s)"), true);
+    delimiterLabel = WidgetFactory.makeLabel(/*"Delimiter(s)"*/ Language.getInstance().getMessage("Delimiter(s)"), true);
 
     delimiterPanel.add(delimiterLabel);
 
@@ -347,7 +347,7 @@ public class DataFormat extends AbstractUIPage{
 
     ////
     panel.add(WidgetFactory.makeHTMLLabel(/*"Data Attributes are arranged in:"*/
-											Language.getInstance().getMessages("DataFormat.DataAttributesArrange") + " : "
+											Language.getInstance().getMessage("DataFormat.DataAttributesArrange") + " : "
 											, 1));
 
     JPanel orientationPanel = WidgetFactory.makePanel(2);
@@ -370,7 +370,7 @@ public class DataFormat extends AbstractUIPage{
     					"Define the delimited fields and/or fixed width fields "
                         +"that describe how the data is structured:",
                         */
-    					Language.getInstance().getMessages("DataFormat.DefineDelimited/FixWithFields"),
+    					Language.getInstance().getMessage("DataFormat.DefineDelimited/FixWithFields"),
                         1);
 
     panel.add(listLabel);
@@ -394,8 +394,8 @@ public class DataFormat extends AbstractUIPage{
       "Fixed-Width or Delimited?",
       "Width or Delimiter Character:"
       */
-      Language.getInstance().getMessages("Fixed-Width") + " " +Language.getInstance().getMessages("Or") + " " + Language.getInstance().getMessages("Delimited"),
-      Language.getInstance().getMessages("Width") + " " + Language.getInstance().getMessages("Or") + " " + Language.getInstance().getMessages("DelimiterCharacter")
+      Language.getInstance().getMessage("Fixed-Width") + " " +Language.getInstance().getMessage("Or") + " " + Language.getInstance().getMessage("Delimited"),
+      Language.getInstance().getMessage("Width") + " " + Language.getInstance().getMessage("Or") + " " + Language.getInstance().getMessage("DelimiterCharacter")
     };
 
     list = WidgetFactory.makeList(colNames, colTemplates, 4,
@@ -465,7 +465,7 @@ public class DataFormat extends AbstractUIPage{
     proprietaryPanel.setLayout(new BoxLayout(proprietaryPanel,
                                               BoxLayout.Y_AXIS));
 
-    proprietaryLabel = WidgetFactory.makeLabel(/*"Format:"*/ Language.getInstance().getMessages("Format")+":", true);
+    proprietaryLabel = WidgetFactory.makeLabel(/*"Format:"*/ Language.getInstance().getMessage("Format")+":", true);
     JPanel leftJustifyPanel = WidgetFactory.makePanel(1);
     leftJustifyPanel.add(proprietaryLabel);
     leftJustifyPanel.add(Box.createGlue());
@@ -506,14 +506,14 @@ public class DataFormat extends AbstractUIPage{
       +OTHER_LABEL+"\" and enter a description in the field "
       +"above. " 
       */
-      + Language.getInstance().getMessages("DataFormat.help_1")
+      + Language.getInstance().getMessage("DataFormat.help_1")
       +"<br>" 
       /*
       + "This would preferably be in the form of a standard MIME "
       +"type (e.g: application/msword ), but if you do not know the MIME type, "
       +"enter a text description"
       */
-      + Language.getInstance().getMessages("DataFormat.help_2")
+      + Language.getInstance().getMessage("DataFormat.help_2")
       +WizardSettings.HTML_EXAMPLE_FONT_CLOSING,4);
 
     Dimension helpDim = new Dimension(

@@ -60,13 +60,13 @@ public class Geographic extends AbstractUIPage{
   // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
   private final String pageID     = DataPackageWizardInterface.GEOGRAPHIC;
-  private final String title      = /*"Geographic Coverage"*/ Language.getInstance().getMessages("GeographicCoverage");
+  private final String title      = /*"Geographic Coverage"*/ Language.getInstance().getMessage("GeographicCoverage");
   private final String subtitle   = "";
   private final String xPathRoot  = "/eml:eml/dataset/coverage/geographicCoverage[";
   private final String pageNumber  = "10";
 
-  private final String[] colNames =  {/*"Description"*/ Language.getInstance().getMessages("Description"),
-		  							  /*"Geographic Coverage"*/ Language.getInstance().getMessages("GeographicCoverage"), };
+  private final String[] colNames =  {/*"Description"*/ Language.getInstance().getMessage("Description"),
+		  							  /*"Geographic Coverage"*/ Language.getInstance().getMessage("GeographicCoverage"), };
   private final Object[] editors  =   null; //makes non-directly-editable
 
   private CustomList  geographicspanList;
@@ -93,12 +93,12 @@ public class Geographic extends AbstractUIPage{
 
     JLabel desc = WidgetFactory.makeHTMLLabel(
       /*"<b>Describe the geographic region covered by your data</b>. "*/
-      "<b>" + Language.getInstance().getMessages("Geographic.desc_1") + "</b> " 
+      "<b>" + Language.getInstance().getMessage("Geographic.desc_1") + "</b> " 
       /*
       + "Use the following screen to provide a complete "
       + "description or assign one of the existing descriptions."
       */
-      + Language.getInstance().getMessages("Geographic.desc_2")
+      + Language.getInstance().getMessage("Geographic.desc_2")
       , 3);
     vbox.add(desc);
     vbox.add(WidgetFactory.makeDefaultSpacer());

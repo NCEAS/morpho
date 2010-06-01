@@ -234,19 +234,19 @@ public class WizardSettings {
   public static final Dimension LIST_BUTTON_DIMS_SMALL
       = new Dimension(60, 25);
 
-  public    static final String SAVE_LATER_BUTTON_TEXT = /*"Save for Later"*/ Language.getInstance().getMessages("SaveForLater");
+  public    static final String SAVE_LATER_BUTTON_TEXT = /*"Save for Later"*/ Language.getInstance().getMessage("SaveForLater");
  
-  public    static final String IMPORT_BUTTON_TEXT  = /*"Import"*/ Language.getInstance().getMessages("Import");
+  public    static final String IMPORT_BUTTON_TEXT  = /*"Import"*/ Language.getInstance().getMessage("Import");
 
-  public    static final String FINISH_BUTTON_TEXT  = /*"Finish"*/ Language.getInstance().getMessages("Finish");
+  public    static final String FINISH_BUTTON_TEXT  = /*"Finish"*/ Language.getInstance().getMessage("Finish");
 
-  public    static final String PREV_BUTTON_TEXT    = /*"< Back"*/ Language.getInstance().getMessages("Back");
+  public    static final String PREV_BUTTON_TEXT    = /*"< Back"*/ Language.getInstance().getMessage("Back");
 
-  protected static final String NEXT_BUTTON_TEXT    = /*"Next >"*/ Language.getInstance().getMessages("Next");
+  protected static final String NEXT_BUTTON_TEXT    = /*"Next >"*/ Language.getInstance().getMessage("Next");
 
-  protected static final String CANCEL_BUTTON_TEXT  = /*"Cancel"*/ Language.getInstance().getMessages("Cancel");
+  protected static final String CANCEL_BUTTON_TEXT  = /*"Cancel"*/ Language.getInstance().getMessage("Cancel");
 
-  protected static final String OK_BUTTON_TEXT      = /*"OK"*/ Language.getInstance().getMessages("OK");
+  protected static final String OK_BUTTON_TEXT      = /*"OK"*/ Language.getInstance().getMessage("OK");
 
   public static String NUMBER_OF_STEPS              = "15";
 

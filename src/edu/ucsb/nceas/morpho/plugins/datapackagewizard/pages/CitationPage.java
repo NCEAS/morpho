@@ -83,9 +83,9 @@ public class CitationPage extends AbstractUIPage {
   private JLabel authorLabel;
   private CustomList authorList;
 
-  private final String[] authorListNames = {/*"Party"*/ Language.getInstance().getMessages("Party"),
-		  									/*"Role"*/ Language.getInstance().getMessages("Role"),
-		  									/*"Address"*/ Language.getInstance().getMessages("Address")
+  private final String[] authorListNames = {/*"Party"*/ Language.getInstance().getMessage("Party"),
+		  									/*"Role"*/ Language.getInstance().getMessage("Role"),
+		  									/*"Address"*/ Language.getInstance().getMessage("Address")
 		  									};
   private final Object[] editors = null; //makes non-directly-editable
 
@@ -130,9 +130,9 @@ public class CitationPage extends AbstractUIPage {
 
   private void initNames() {
 
-    typeElemNames[CITATIONTYPE_BOOK]  = /*"Book"*/ Language.getInstance().getMessages("Book");
-    typeElemNames[CITATIONTYPE_ARTICLE]  = /*"Article"*/ Language.getInstance().getMessages("Article");
-    typeElemNames[CITATIONTYPE_REPORT]  = /*"Report"*/ Language.getInstance().getMessages("Report");
+    typeElemNames[CITATIONTYPE_BOOK]  = /*"Book"*/ Language.getInstance().getMessage("Book");
+    typeElemNames[CITATIONTYPE_ARTICLE]  = /*"Article"*/ Language.getInstance().getMessage("Article");
+    typeElemNames[CITATIONTYPE_REPORT]  = /*"Report"*/ Language.getInstance().getMessage("Report");
 
   }
 
@@ -152,7 +152,7 @@ public class CitationPage extends AbstractUIPage {
     topMiddlePanel.setLayout(new BoxLayout(topMiddlePanel, BoxLayout.Y_AXIS));
     topMiddlePanel.add(WidgetFactory.makeHTMLLabel(
               "<font size=\"4\"><b>" 
-              + /*"Define the Citation Details"*/ Language.getInstance().getMessages("CitationPage.DefineCitationDetails") 
+              + /*"Define the Citation Details"*/ Language.getInstance().getMessage("CitationPage.DefineCitationDetails") 
               + " :</b></font>", 1));
 
     topMiddlePanel.add(WidgetFactory.makeDefaultSpacer());
@@ -163,7 +163,7 @@ public class CitationPage extends AbstractUIPage {
 
     // Title
     JPanel titlePanel = WidgetFactory.makePanel(1);
-    titleLabel = WidgetFactory.makeLabel(/*"Title:"*/ Language.getInstance().getMessages("Title")+":", true);
+    titleLabel = WidgetFactory.makeLabel(/*"Title:"*/ Language.getInstance().getMessage("Title")+":", true);
     titlePanel.add(titleLabel);
     titleField = WidgetFactory.makeOneLineTextField();
     titlePanel.add(titleField);
@@ -173,7 +173,7 @@ public class CitationPage extends AbstractUIPage {
 
     // Author custom list
     JPanel authorPanel = WidgetFactory.makePanel(-1);
-    authorLabel = WidgetFactory.makeLabel(/*"Author(s):"*/ Language.getInstance().getMessages("Author(s)")+":", true);
+    authorLabel = WidgetFactory.makeLabel(/*"Author(s):"*/ Language.getInstance().getMessage("Author(s)")+":", true);
     authorPanel.add(authorLabel);
 
     authorList = WidgetFactory.makeList(authorListNames, editors, -1,
@@ -202,7 +202,7 @@ public class CitationPage extends AbstractUIPage {
 
     // Pub Date
     JPanel pubDatePanel = WidgetFactory.makePanel(1);
-    pubDateLabel = WidgetFactory.makeLabel(/*"Publication Date:"*/ Language.getInstance().getMessages("PublicationDate")+":", false);
+    pubDateLabel = WidgetFactory.makeLabel(/*"Publication Date:"*/ Language.getInstance().getMessage("PublicationDate")+":", false);
     pubDatePanel.add(pubDateLabel);
     pubDateField = WidgetFactory.makeOneLineTextField();
     pubDatePanel.add(pubDateField);
@@ -214,7 +214,7 @@ public class CitationPage extends AbstractUIPage {
     JPanel dataHelpPanel = WidgetFactory.makePanel(1);
     JLabel spacer = WidgetFactory.makeLabel("", false);
     JLabel datehelp = WidgetFactory.makeHTMLLabel(/*"Use the YYYY-MM-DD format - (e.g. 1989-02-24)"*/
-    												Language.getInstance().getMessages("CitationPage.datehelp")
+    												Language.getInstance().getMessage("CitationPage.datehelp")
     												, 1);
     dataHelpPanel.add(spacer);
     dataHelpPanel.add(datehelp);
@@ -251,7 +251,7 @@ public class CitationPage extends AbstractUIPage {
       }
     };
 
-    citationTypeLabel = WidgetFactory.makeLabel(/*"Category:"*/ Language.getInstance().getMessages("Category")+":",
+    citationTypeLabel = WidgetFactory.makeLabel(/*"Category:"*/ Language.getInstance().getMessage("Category")+":",
     		true, WizardSettings.WIZARD_CONTENT_LABEL_DIMS);
 
     radioPanel = WidgetFactory.makeRadioPanel(typeElemNames, -1, listener);
@@ -1156,7 +1156,7 @@ class BookPanel extends JPanel implements WizardPageSubPanelAPI{
 
     // Publisher (Organization)
     JPanel publisherPanel = WidgetFactory.makePanel(1);
-    publisherLabel = WidgetFactory.makeLabel(/*"Publisher:"*/ Language.getInstance().getMessages("Publisher")+":" , true);
+    publisherLabel = WidgetFactory.makeLabel(/*"Publisher:"*/ Language.getInstance().getMessage("Publisher")+":" , true);
     publisherPanel.add(publisherLabel);
     publisherField = WidgetFactory.makeOneLineTextField();
     publisherPanel.add(publisherField);
@@ -1167,7 +1167,7 @@ class BookPanel extends JPanel implements WizardPageSubPanelAPI{
 
     // Edition Name
     JPanel editionPanel = WidgetFactory.makePanel(1);
-    editionLabel = WidgetFactory.makeLabel(/*"Edition:"*/ Language.getInstance().getMessages("Edition")+":", false);
+    editionLabel = WidgetFactory.makeLabel(/*"Edition:"*/ Language.getInstance().getMessage("Edition")+":", false);
     editionPanel.add(editionLabel);
     editionField = WidgetFactory.makeOneLineTextField();
     editionPanel.add(editionField);
@@ -1178,7 +1178,7 @@ class BookPanel extends JPanel implements WizardPageSubPanelAPI{
 
     // Volume
     JPanel volumePanel = WidgetFactory.makePanel(1);
-    volumeLabel = WidgetFactory.makeLabel(/*"Volume:"*/ Language.getInstance().getMessages("Volume")+":", false);
+    volumeLabel = WidgetFactory.makeLabel(/*"Volume:"*/ Language.getInstance().getMessage("Volume")+":", false);
     volumePanel.add(volumeLabel);
     volumeField = WidgetFactory.makeOneLineTextField();
     volumePanel.add(volumeField);
@@ -1189,7 +1189,7 @@ class BookPanel extends JPanel implements WizardPageSubPanelAPI{
 
     // ISBN
     JPanel isbnPanel = WidgetFactory.makePanel(1);
-    isbnLabel = WidgetFactory.makeLabel(/*"ISBN:"*/ Language.getInstance().getMessages("ISBN")+":" , false);
+    isbnLabel = WidgetFactory.makeLabel(/*"ISBN:"*/ Language.getInstance().getMessage("ISBN")+":" , false);
     isbnPanel.add(isbnLabel);
     isbnField = WidgetFactory.makeOneLineTextField();
     isbnPanel.add(isbnField);
@@ -1335,7 +1335,7 @@ class ArticlePanel extends JPanel  implements WizardPageSubPanelAPI{
 
     // Journal
     JPanel journalPanel = WidgetFactory.makePanel(1);
-    journalLabel = WidgetFactory.makeLabel(/*"Journal:"*/ Language.getInstance().getMessages("Journal")+":", true);
+    journalLabel = WidgetFactory.makeLabel(/*"Journal:"*/ Language.getInstance().getMessage("Journal")+":", true);
     journalPanel.add(journalLabel);
     journalField = WidgetFactory.makeOneLineTextField();
     journalPanel.add(journalField);
@@ -1346,7 +1346,7 @@ class ArticlePanel extends JPanel  implements WizardPageSubPanelAPI{
 
     // Volume
     JPanel volumePanel = WidgetFactory.makePanel(1);
-    volumeLabel = WidgetFactory.makeLabel(/*"Volume:"*/ Language.getInstance().getMessages("Volume")+":", true);
+    volumeLabel = WidgetFactory.makeLabel(/*"Volume:"*/ Language.getInstance().getMessage("Volume")+":", true);
     volumePanel.add(volumeLabel);
     volumeField = WidgetFactory.makeOneLineTextField();
     volumePanel.add(volumeField);
@@ -1358,7 +1358,7 @@ class ArticlePanel extends JPanel  implements WizardPageSubPanelAPI{
 
     // Issue
     JPanel issuePanel = WidgetFactory.makePanel(1);
-    issueLabel = WidgetFactory.makeLabel(/*"Issue:"*/ Language.getInstance().getMessages("Issue")+":", false);
+    issueLabel = WidgetFactory.makeLabel(/*"Issue:"*/ Language.getInstance().getMessage("Issue")+":", false);
     issuePanel.add(issueLabel);
     issueField = WidgetFactory.makeOneLineTextField();
     issuePanel.add(issueField);
@@ -1370,7 +1370,7 @@ class ArticlePanel extends JPanel  implements WizardPageSubPanelAPI{
 
     // Page Range
     JPanel rangePanel = WidgetFactory.makePanel(1);
-    rangeLabel = WidgetFactory.makeLabel(/*"Page Range:"*/ Language.getInstance().getMessages("PageRange")+":", true);
+    rangeLabel = WidgetFactory.makeLabel(/*"Page Range:"*/ Language.getInstance().getMessage("PageRange")+":", true);
     rangePanel.add(rangeLabel);
     rangeField = WidgetFactory.makeOneLineTextField();
     rangePanel.add(rangeField);
@@ -1382,7 +1382,7 @@ class ArticlePanel extends JPanel  implements WizardPageSubPanelAPI{
 
     // Publisher (Organization)
     JPanel publisherPanel = WidgetFactory.makePanel(1);
-    publisherLabel = WidgetFactory.makeLabel(/*"Publisher:"*/ Language.getInstance().getMessages("Publisher")+":", false);
+    publisherLabel = WidgetFactory.makeLabel(/*"Publisher:"*/ Language.getInstance().getMessage("Publisher")+":", false);
     publisherPanel.add(publisherLabel);
     publisherField = WidgetFactory.makeOneLineTextField();
     publisherPanel.add(publisherField);
@@ -1532,7 +1532,7 @@ class ReportPanel extends JPanel  implements WizardPageSubPanelAPI{
 
     // Publisher (Organization)
     JPanel publisherPanel = WidgetFactory.makePanel(1);
-    publisherLabel = WidgetFactory.makeLabel(/*"Publisher:"*/ Language.getInstance().getMessages("Publisher")+":", true);
+    publisherLabel = WidgetFactory.makeLabel(/*"Publisher:"*/ Language.getInstance().getMessage("Publisher")+":", true);
     publisherPanel.add(publisherLabel);
     publisherField = WidgetFactory.makeOneLineTextField();
     publisherPanel.add(publisherField);
@@ -1544,7 +1544,7 @@ class ReportPanel extends JPanel  implements WizardPageSubPanelAPI{
 
     // Report Number
     JPanel numberPanel = WidgetFactory.makePanel(1);
-    numberLabel = WidgetFactory.makeLabel(/*"Report Number:"*/ Language.getInstance().getMessages("ReportNumber")+":", true);
+    numberLabel = WidgetFactory.makeLabel(/*"Report Number:"*/ Language.getInstance().getMessage("ReportNumber")+":", true);
     numberPanel.add(numberLabel);
     numberField = WidgetFactory.makeOneLineTextField();
     numberPanel.add(numberField);
@@ -1555,7 +1555,7 @@ class ReportPanel extends JPanel  implements WizardPageSubPanelAPI{
 
     // Report Pages
     JPanel pagesPanel = WidgetFactory.makePanel(1);
-    pagesLabel = WidgetFactory.makeLabel(/*"Number of Pages:"*/ Language.getInstance().getMessages("NumberOfPages")+":", false);
+    pagesLabel = WidgetFactory.makeLabel(/*"Number of Pages:"*/ Language.getInstance().getMessage("NumberOfPages")+":", false);
     pagesPanel.add(pagesLabel);
     pagesField = WidgetFactory.makeOneLineTextField();
     pagesPanel.add(pagesField);

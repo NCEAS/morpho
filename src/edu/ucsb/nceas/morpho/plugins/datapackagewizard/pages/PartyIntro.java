@@ -40,7 +40,7 @@ import javax.swing.JLabel;
 public class PartyIntro extends AbstractUIPage{
 
   public final String pageID = DataPackageWizardInterface.PARTY_INTRO;
-  public final String title = /*"People and Organizations"*/ Language.getInstance().getMessages("PeopleAndOrganizations");
+  public final String title = /*"People and Organizations"*/ Language.getInstance().getMessage("PeopleAndOrganizations");
   public final String subtitle = "";
   public final String pageNumber = "4";
 
@@ -74,11 +74,11 @@ public class PartyIntro extends AbstractUIPage{
         + "they may have created documentation for the "
         + "data.<br></br></li>",
         */
-    	"<p><b>" + Language.getInstance().getMessages("PeopleAndOrganizations.desc_1") +"</b>"	
-    	+ Language.getInstance().getMessages("PeopleAndOrganizations.desc_2") + ":</p><br></br>"
-    	+ "<li><b>" + Language.getInstance().getMessages("Owner")+ " : </b>" + Language.getInstance().getMessages("PeopleAndOrganizations.desc.Owner") +"<br></br></li>"
-    	+ "<li><b>" + Language.getInstance().getMessages("Contact")+ " : </b>" + Language.getInstance().getMessages("PeopleAndOrganizations.desc.Contact") +"<br></br></li>"
-    	+ "<li><b>" + Language.getInstance().getMessages("AssociatedParties")+ " : </b>" + Language.getInstance().getMessages("PeopleAndOrganizations.desc.AssociatedParties") +"<br></br></li>"
+    	"<p><b>" + Language.getInstance().getMessage("PeopleAndOrganizations.desc_1") +"</b>"	
+    	+ Language.getInstance().getMessage("PeopleAndOrganizations.desc_2") + ":</p><br></br>"
+    	+ "<li><b>" + Language.getInstance().getMessage("Owner")+ " : </b>" + Language.getInstance().getMessage("PeopleAndOrganizations.desc.Owner") +"<br></br></li>"
+    	+ "<li><b>" + Language.getInstance().getMessage("Contact")+ " : </b>" + Language.getInstance().getMessage("PeopleAndOrganizations.desc.Contact") +"<br></br></li>"
+    	+ "<li><b>" + Language.getInstance().getMessage("AssociatedParties")+ " : </b>" + Language.getInstance().getMessage("PeopleAndOrganizations.desc.AssociatedParties") +"<br></br></li>"
     	,13);
 
     this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));

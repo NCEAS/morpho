@@ -57,9 +57,9 @@ public class Summary extends AbstractUIPage {
 
   public final String pageID     = DataPackageWizardInterface.SUMMARY;
   public final String pageNumber = "15";
-  public final String PACKAGE_WIZ_SUMMARY_TITLE = /*"New Data Package Wizard"*/ Language.getInstance().getMessages("NewDataPackageWizard");
-  public final String ENTITY_WIZ_SUMMARY_TITLE  = /*"New Data Table Wizard"*/ Language.getInstance().getMessages("NewDataTableWizard");
-  public final String SUBTITLE                  = /*"Summary"*/ Language.getInstance().getMessages("Summary");
+  public final String PACKAGE_WIZ_SUMMARY_TITLE = /*"New Data Package Wizard"*/ Language.getInstance().getMessage("NewDataPackageWizard");
+  public final String ENTITY_WIZ_SUMMARY_TITLE  = /*"New Data Table Wizard"*/ Language.getInstance().getMessage("NewDataTableWizard");
+  public final String SUBTITLE                  = /*"Summary"*/ Language.getInstance().getMessage("Summary");
 
   private JLabel desc1;
   private JLabel desc2;
@@ -126,7 +126,7 @@ public class Summary extends AbstractUIPage {
         + "\" button to return to previous pages "
         + "and change the information you have added."
         */ 
-      	+ Language.getInstance().getMessages("Summary.getSecondParagraph_1")
+      	+ Language.getInstance().getMessage("Summary.getSecondParagraph_1")
         + "</p>";
 
     } else if (ID.equals(DataPackageWizardInterface.DATA_LOCATION)) {
@@ -136,7 +136,7 @@ public class Summary extends AbstractUIPage {
       	/*+ "You can press the \"" + WizardSettings.FINISH_BUTTON_TEXT
         + "\" button to add the data table to your package." 
         */
-        + Language.getInstance().getMessages("Summary.getSecondParagraph_2")
+        + Language.getInstance().getMessage("Summary.getSecondParagraph_2")
         + "</p>";
 
     }
@@ -159,11 +159,11 @@ public class Summary extends AbstractUIPage {
         +"will see your new package description information displayed in the "
         +"Morpho main screen.  " 
         */      
-      	+ Language.getInstance().getMessages("Summary.getLastParagraph_1")
+      	+ Language.getInstance().getMessage("Summary.getLastParagraph_1")
         /*+ "If you want to add data tables to your package, "
         +"select the \"Create/Import New Data Table...\" option from the \"Data\" menu"
         */
-        + Language.getInstance().getMessages("Summary.getLastParagraph_2")
+        + Language.getInstance().getMessage("Summary.getLastParagraph_2")
         + "</p>";
 
     } else if (ID.equals(DataPackageWizardInterface.DATA_LOCATION)) {
@@ -173,7 +173,7 @@ public class Summary extends AbstractUIPage {
       	/*+"If you want to add more data tables to your package, "
         +"select the \"Create/Import New Data Table...\" option from the \"Data\" menu" 
         */
-        + Language.getInstance().getMessages("Summary.getLastParagraph_3")
+        + Language.getInstance().getMessage("Summary.getLastParagraph_3")
         +"</p>";
 
     }
@@ -197,7 +197,7 @@ public class Summary extends AbstractUIPage {
     desc1.setText(
       WizardSettings.HTML_TABLE_LABEL_OPENING
       +"<p>" 
-      + /*"This wizard has now collected all the information that is required to create your new data package."*/ Language.getInstance().getMessages("Summary.desc")
+      + /*"This wizard has now collected all the information that is required to create your new data package."*/ Language.getInstance().getMessage("Summary.desc")
       +".</p>"
        +WizardSettings.HTML_TABLE_LABEL_CLOSING);
 
@@ -239,7 +239,7 @@ public class Summary extends AbstractUIPage {
       final DataPackageInterface finalDataPackagePlugin = dataPackagePlugin;
 
       GUIAction newDataTableAction
-        = new GUIAction(/*"or click here to finish this wizard and add a new data table now."*/ Language.getInstance().getMessages("Summary.AddNewDataTable"),
+        = new GUIAction(/*"or click here to finish this wizard and add a new data table now."*/ Language.getInstance().getMessage("Summary.AddNewDataTable"),
                         null,
                         new Command() {
 

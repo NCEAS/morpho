@@ -88,8 +88,8 @@ implements Command, DataPackageWizardListener {
 	if (dialog.getUserChoice() == JOptionPane.NO_OPTION)
 	{
 		Log.debug(2,
-					/*"The current EML document is not the latest version."*/ Language.getInstance().getMessages("EMLDocumentIsNotTheLatestVersion_1") + " "
-					+/*" You should transform it first!"*/ Language.getInstance().getMessages("EMLDocumentIsNotTheLatestVersion_2") + "!"
+					/*"The current EML document is not the latest version."*/ Language.getInstance().getMessage("EMLDocumentIsNotTheLatestVersion_1") + " "
+					+/*" You should transform it first!"*/ Language.getInstance().getMessage("EMLDocumentIsNotTheLatestVersion_2") + "!"
 					);
 		return;
 	}

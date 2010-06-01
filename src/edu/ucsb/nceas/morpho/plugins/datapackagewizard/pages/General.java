@@ -55,7 +55,7 @@ public class General extends AbstractUIPage{
   // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
   private final String pageID     = DataPackageWizardInterface.GENERAL;
-  private final String title      = /*"Title and Abstract"*/ Language.getInstance().getMessages("TitleAndAbstract");
+  private final String title      = /*"Title and Abstract"*/ Language.getInstance().getMessage("TitleAndAbstract");
   private final String subtitle   = "";
   public  final String pageNumber = "2";
 
@@ -91,21 +91,21 @@ public class General extends AbstractUIPage{
 
     JLabel titleDesc = WidgetFactory.makeHTMLLabel(
       /*  "<b>Enter the title of the data package.</b> "*/
-      "<b>" + Language.getInstance().getMessages("General.titleDesc_1") + "</b> "		
+      "<b>" + Language.getInstance().getMessage("General.titleDesc_1") + "</b> "		
       /*
       +"The title field provides a "
       +"description of the data that is long enough to differentiate it from "
       +"other similar data. e.g.
       */
-      + Language.getInstance().getMessages("General.titleDesc_2")
-      + Language.getInstance().getMessages("e.g")
+      + Language.getInstance().getMessage("General.titleDesc_2")
+      + Language.getInstance().getMessage("e.g")
       + " Vernal Pool Amphibian Density Data, Isla Vista, CA USA, 1990-1996"     	
       , 3);
     vbox.add(titleDesc);
 
     JPanel titlePanel = WidgetFactory.makePanel(1);
 
-    titleLabel = WidgetFactory.makeLabel(/*" Title:"*/ Language.getInstance().getMessages("Title")+":",
+    titleLabel = WidgetFactory.makeLabel(/*" Title:"*/ Language.getInstance().getMessage("Title")+":",
     									true);
     titlePanel.add(titleLabel);
 
@@ -121,19 +121,19 @@ public class General extends AbstractUIPage{
 
     JLabel absDesc = WidgetFactory.makeHTMLLabel(
     /*"<b>Enter an abstract that describes the data package.</b> */
-    "<b>" + Language.getInstance().getMessages("General.absDesc_1") + "</b> "
+    "<b>" + Language.getInstance().getMessage("General.absDesc_1") + "</b> "
     /* 
     +This abstract is a paragraph or more that describes the particular data that are being "
     +"documented. You may want to describe the objectives, key aspects, "
     +"design or methods of the study."
     */
-    +Language.getInstance().getMessages("General.absDesc_2")
+    +Language.getInstance().getMessage("General.absDesc_2")
     , 3);
     vbox.add(absDesc);
 
     JPanel abstractPanel = WidgetFactory.makePanel();
 
-    JLabel absLabel = WidgetFactory.makeLabel(/*" Abstract:"*/ Language.getInstance().getMessages("Abstract")+":"
+    JLabel absLabel = WidgetFactory.makeLabel(/*" Abstract:"*/ Language.getInstance().getMessage("Abstract")+":"
     											, false);
     absLabel.setVerticalAlignment(SwingConstants.TOP);
     absLabel.setAlignmentY(SwingConstants.TOP);

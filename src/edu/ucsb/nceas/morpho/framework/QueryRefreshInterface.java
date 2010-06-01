@@ -45,13 +45,13 @@ public interface QueryRefreshInterface
 
   //Constant for column name:
   public static final String HASDATA      = " ";
-  public static final String TITLE        = /*"Title"*/ Language.getInstance().getMessages("Title");
-  public static final String DOCID        = /*"Document ID"*/ Language.getInstance().getMessages("DocumentID");
-  public static final String SURNAME      = /*"Surname"*/ Language.getInstance().getMessages("Surname");
-  public static final String KEYWORDS     = /*"Keywords"*/ Language.getInstance().getMessages("Keywords");
-  public static final String LASTMODIFIED = /*"Last Modified"*/ Language.getInstance().getMessages("LastModified");
-  public static final String LOCAL        =/*"Local"*/ Language.getInstance().getMessages("Local");
-  public static final String NET          =/*"Net"*/ Language.getInstance().getMessages("Net");
+  public static final String TITLE        = /*"Title"*/ Language.getInstance().getMessage("Title");
+  public static final String DOCID        = /*"Document ID"*/ Language.getInstance().getMessage("DocumentID");
+  public static final String SURNAME      = /*"Surname"*/ Language.getInstance().getMessage("Surname");
+  public static final String KEYWORDS     = /*"Keywords"*/ Language.getInstance().getMessage("Keywords");
+  public static final String LASTMODIFIED = /*"Last Modified"*/ Language.getInstance().getMessage("LastModified");
+  public static final String LOCAL        =/*"Local"*/ Language.getInstance().getMessage("Local");
+  public static final String NET          =/*"Net"*/ Language.getInstance().getMessage("Net");
   
   /** Local complete document*/
   public static final String LOCALCOMPLETE = DataPackageInterface.LOCAL;

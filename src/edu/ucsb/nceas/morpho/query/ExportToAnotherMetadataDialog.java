@@ -97,7 +97,7 @@ public class ExportToAnotherMetadataDialog implements Command
   private static final String LOCATION = "location";
   private static final String SLASH = "/";
   private static final String TITLE = "Export to Another Metadata Language";
-  private static final String EXPORTBUTTONNAME = /*"Export"*/ Language.getInstance().getMessages("Export");
+  private static final String EXPORTBUTTONNAME = /*"Export"*/ Language.getInstance().getMessage("Export");
   private static final String BDP = "Biological Data Profile";
   
   Vector<StyleSheet> styleSheetList = new Vector<StyleSheet>();
@@ -280,7 +280,7 @@ public class ExportToAnotherMetadataDialog implements Command
       DataPackageInterface dataPackage = (DataPackageInterface)provider;
       dataPackage.exportToBDP(outputFile, styleSheetLocation, docid, documentLocation);
       JOptionPane.showMessageDialog(sourceMorphoFrame,
-    		  						/*"Package export is complete ! "*/ Language.getInstance().getMessages("PackageExportComplete") + " !"
+    		  						/*"Package export is complete ! "*/ Language.getInstance().getMessage("PackageExportComplete") + " !"
     		  						);
     }
     catch(Exception e)
@@ -438,7 +438,7 @@ public class ExportToAnotherMetadataDialog implements Command
       anotherMetadataReader.close();
       outputFileWriter.close();
       JOptionPane.showMessageDialog(sourceMorphoFrame,
-    		  						/*"Package export is complete ! "*/ Language.getInstance().getMessages("PackageExportComplete") + " !"
+    		  						/*"Package export is complete ! "*/ Language.getInstance().getMessage("PackageExportComplete") + " !"
     		  						);
       //this.setVisible(false);
       //this.dispose();

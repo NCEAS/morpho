@@ -445,7 +445,7 @@ public class UISettings
                     = "<html><p style=\"color: #ffffff; "
                         +"font-family: Verdana, Arial, Helvetica, sans-serif; "
                         +"font-size: 9px; align: left;\">&nbsp;"
-                        +/*"Current profile:"*/ Language.getInstance().getMessages("CurrentProfile")+":"
+                        +/*"Current profile:"*/ Language.getInstance().getMessage("CurrentProfile")+":"
                         +"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
                         +"&nbsp;&nbsp;";
 
@@ -457,7 +457,7 @@ public class UISettings
                     = "<html><p style=\"color: #ffffff; "
                         +"font-family: Verdana, Arial, Helvetica, sans-serif; "
                         +"font-size: 9px; align: left;\">&nbsp;"
-                        +/*"Network Status:"*/ Language.getInstance().getMessages("NetworkStatus")+":"
+                        +/*"Network Status:"*/ Language.getInstance().getMessage("NetworkStatus")+":"
                         +"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
                         +"&nbsp;";
 
@@ -469,7 +469,7 @@ public class UISettings
                     = "<html><p style=\"color: #ffffff; "
                         +"font-family: Verdana, Arial, Helvetica, sans-serif; "
                         +"font-size: 9px; align: left;\">&nbsp;"
-                        +/*"Work with your data..."*/ Language.getInstance().getMessages("WorkWithYourData") + ":";
+                        +/*"Work with your data..."*/ Language.getInstance().getMessage("WorkWithYourData") + ":";
 
     /**
      *  common to the above 3: closing html tags and text for title bar on the
@@ -479,26 +479,26 @@ public class UISettings
                     = "</p></html>";
 
     public static final String NEW_DATAPACKAGE_LINK_TEXT
-                    = /*"Create a <b>new</b> data package..."*/ Language.getInstance().getMessages("CreateANewDataPackage");
+                    = /*"Create a <b>new</b> data package..."*/ Language.getInstance().getMessage("CreateANewDataPackage");
 
     public static final String OPEN_DATAPACKAGE_LINK_TEXT
-                    = /*"Open an <b>existing</b> data package..."*/ Language.getInstance().getMessages("OpenAnExistingDataPackage");
+                    = /*"Open an <b>existing</b> data package..."*/ Language.getInstance().getMessage("OpenAnExistingDataPackage");
 
     public static final String SEARCH_LINK_TEXT
                     = /*"<b>Search</b> for an existing data package..."*/ 
-                    Language.getInstance().getMessages("UISettings_SEARCH_LINK_TEXT");
+                    Language.getInstance().getMessage("UISettings_SEARCH_LINK_TEXT");
 
     public static final String NEW_PROFILE_LINK_TEXT
-                                    = /*"Create a new profile..."*/ Language.getInstance().getMessages("CreateANewProfile");
+                                    = /*"Create a new profile..."*/ Language.getInstance().getMessage("CreateANewProfile");
 
     public static final String LOGOUT_LINK_TEXT
-                                 = /*"<b>Logout</b> from network..."*/ Language.getInstance().getMessages("LogoutFromNetwork");
+                                 = /*"<b>Logout</b> from network..."*/ Language.getInstance().getMessage("LogoutFromNetwork");
 
     public static final String CHANGE_PROFILE_LABEL_TEXT
                     = "<html><p style=\"color: #000000; align: left; "
                         +"font-family: Verdana, Arial, Helvetica, sans-serif; "
                         +"font-size: 9px;\">&nbsp;"
-                        +"<b>" + /*Change profile*/ Language.getInstance().getMessages("ChangeProfile") +":</b>" 
+                        +"<b>" + /*Change profile*/ Language.getInstance().getMessage("ChangeProfile") +":</b>" 
                         +"</p></html>";
 
 
@@ -506,7 +506,7 @@ public class UISettings
                     = "<html><p style=\"color: #000000; align: left; "
                         +"font-family: Verdana, Arial, Helvetica, sans-serif; "
                         +"font-size: 9px;\">&nbsp;"
-                        +/*"Password:"*/ Language.getInstance().getMessages("Password") +":"
+                        +/*"Password:"*/ Language.getInstance().getMessage("Password") +":"
                         +"</p></html>";
 
     public static final String INIT_SCR_LOGIN_MESSAGE
@@ -514,7 +514,7 @@ public class UISettings
                     	+"be able to access only \"public\" network "
                         +"files as a Guest User"
                         */
-                    	Language.getInstance().getMessages("UISettings.INIT_SCR_LOGIN_MESSAGE")
+                    	Language.getInstance().getMessage("UISettings.INIT_SCR_LOGIN_MESSAGE")
                         ;
 
     public static final String INIT_SCR_LOGGED_IN_MESSAGE
@@ -522,30 +522,30 @@ public class UISettings
                         +"work with all files for which you have "
                         +"access privileges "
                         */
-                    	Language.getInstance().getMessages("UISettings.INIT_SCR_LOGGED_IN_MESSAGE")
+                    	Language.getInstance().getMessage("UISettings.INIT_SCR_LOGGED_IN_MESSAGE")
                         ;
 
     public static final String INIT_SCR_LOGIN_BUTTON_TEXT
                     = "<html><p style=\"color: #000000; "
                         +"font-family: Verdana, Arial, Helvetica, sans-serif; "
                         +"font-size: 9px; align: left;\">"
-                        +/*"login"*/ Language.getInstance().getMessages("login")
+                        +/*"login"*/ Language.getInstance().getMessage("login")
                         +"</p></html>";
 
     public static final String INIT_SCR_LOGIN_HEADER
                     = "<html><p style=\"color: #000000; align: left; "
                         +"font-family: Verdana, Arial, Helvetica, sans-serif; "
                         +"font-size: 9px;font-weight: bold;\">"
-                        +/*"Login to network using current profile:"*/ Language.getInstance().getMessages("UISettings.INIT_SCR_LOGIN_HEADER") + ":"
+                        +/*"Login to network using current profile:"*/ Language.getInstance().getMessage("UISettings.INIT_SCR_LOGIN_HEADER") + ":"
                         +"</p></html>";
 
-    public static final String INIT_SCR_LOGGED_IN_STATUS = /*"Logged In"*/ Language.getInstance().getMessages("LoggedIn");
+    public static final String INIT_SCR_LOGGED_IN_STATUS = /*"Logged In"*/ Language.getInstance().getMessage("LoggedIn");
 
-    public static final String INIT_SCR_LOGGEDOUT_STATUS = /*"NOT Logged In"*/ Language.getInstance().getMessages("NOTLoggedIn");
+    public static final String INIT_SCR_LOGGEDOUT_STATUS = /*"NOT Logged In"*/ Language.getInstance().getMessage("NOTLoggedIn");
 
-    public static final String OK_BUTTON_TEXT = /*"OK"*/ Language.getInstance().getMessages("OK");
+    public static final String OK_BUTTON_TEXT = /*"OK"*/ Language.getInstance().getMessage("OK");
 
-    public static final String CANCEL_BUTTON_TEXT = /*"Cancel"*/ Language.getInstance().getMessages("Cancel");
+    public static final String CANCEL_BUTTON_TEXT = /*"Cancel"*/ Language.getInstance().getMessage("Cancel");
 
 
 

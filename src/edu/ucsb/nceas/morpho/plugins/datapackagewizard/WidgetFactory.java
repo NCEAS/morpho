@@ -442,7 +442,7 @@ public class WidgetFactory {
 
   public static JDialog makeContainerDialog(JPanel centerPanel, ActionListener okListener, ActionListener cancelListener) {
 
-    return makeContainerDialog(centerPanel, okListener, cancelListener, /*"OK"*/Language.getInstance().getMessages("OK"), /*"Cancel"*/Language.getInstance().getMessages("Cancel"));
+    return makeContainerDialog(centerPanel, okListener, cancelListener, /*"OK"*/Language.getInstance().getMessage("OK"), /*"Cancel"*/Language.getInstance().getMessage("Cancel"));
   }
 
   /**
@@ -462,7 +462,7 @@ public class WidgetFactory {
 
   public static JDialog makeContainerDialog(JPanel centerPanel, ActionListener okListener, ActionListener cancelListener, String okCaption, String cancelCaption){
 
-    return makeContainerDialog(centerPanel, okListener, cancelListener, /*"OK"*/ Language.getInstance().getMessages("OK"), /*"Cancel"*/ Language.getInstance().getMessages("Cancel"), true, true);
+    return makeContainerDialog(centerPanel, okListener, cancelListener, /*"OK"*/ Language.getInstance().getMessage("OK"), /*"Cancel"*/ Language.getInstance().getMessage("Cancel"), true, true);
   }
 
   /**
@@ -525,7 +525,7 @@ public class WidgetFactory {
 
   public static JDialog makeContainerDialogNoParent(JPanel centerPanel, ActionListener okListener, ActionListener cancelListener) {
 
-    return makeContainerDialogNoParent(centerPanel, okListener, cancelListener, /*"OK"*/ Language.getInstance().getMessages("OK"), /*"Cancel"*/ Language.getInstance().getMessages("Cancel"));
+    return makeContainerDialogNoParent(centerPanel, okListener, cancelListener, /*"OK"*/ Language.getInstance().getMessage("OK"), /*"Cancel"*/ Language.getInstance().getMessage("Cancel"));
   }
 
 

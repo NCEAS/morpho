@@ -70,9 +70,9 @@ public class CodeImportSummary extends AbstractUIPage {
   public final String pageID     = DataPackageWizardInterface.CODE_IMPORT_SUMMARY;
   
   public final String pageNumber = "13";
-  public final String PACKAGE_WIZ_SUMMARY_TITLE = /*"New Data Package Wizard"*/ Language.getInstance().getMessages("NewDataPackageWizard");
-  public final String ENTITY_WIZ_SUMMARY_TITLE  = /*"New Data Table Wizard"*/ Language.getInstance().getMessages("NewDataTableWizard");
-  public final String SUBTITLE                  = /*"Summary"*/ Language.getInstance().getMessages("Summary");
+  public final String PACKAGE_WIZ_SUMMARY_TITLE = /*"New Data Package Wizard"*/ Language.getInstance().getMessage("NewDataPackageWizard");
+  public final String ENTITY_WIZ_SUMMARY_TITLE  = /*"New Data Table Wizard"*/ Language.getInstance().getMessage("NewDataTableWizard");
+  public final String SUBTITLE                  = /*"Summary"*/ Language.getInstance().getMessage("Summary");
   public static final String STARTIMPORTWIZARD = "STARTIMPORTWIZARD";
 
   private JLabel desc1;
@@ -241,7 +241,7 @@ public class CodeImportSummary extends AbstractUIPage {
     	desc1.setText(
     		      WizardSettings.HTML_TABLE_LABEL_OPENING
     		      +"<p>" 
-    		      +/*"Proceed to define or import data tables for the attribute"*/ Language.getInstance().getMessages("CodeImportSummary.desc1") + " : "
+    		      +/*"Proceed to define or import data tables for the attribute"*/ Language.getInstance().getMessage("CodeImportSummary.desc1") + " : "
     		      +" <i> "
     		      + currentAttrName + "</i></p>"
     			  + WizardSettings.HTML_TABLE_LABEL_CLOSING);

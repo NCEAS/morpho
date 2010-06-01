@@ -73,13 +73,13 @@ public class PartyMainPage
   private String DATAPACKAGE_PARTY_REL_XPATH;
 
   private final String[] colNames = {
-      /*"Party"*/ Language.getInstance().getMessages("Party"),
-      /*"Role"*/ Language.getInstance().getMessages("Role"),
-      /*"Address"*/ Language.getInstance().getMessages("Address")};
+      /*"Party"*/ Language.getInstance().getMessage("Party"),
+      /*"Role"*/ Language.getInstance().getMessage("Role"),
+      /*"Address"*/ Language.getInstance().getMessage("Address")};
   private final Object[] editors = null; //makes non-directly-editable
   public final String title =
       /*"People or Organizations Associated With This Data Package"*/
-	  Language.getInstance().getMessages("PatryMainPage.title")
+	  Language.getInstance().getMessage("PatryMainPage.title")
 	  ;
   public final String role;
 
@@ -112,7 +112,7 @@ public class PartyMainPage
       pageID = DataPackageWizardInterface.PARTY_CREATOR_PAGE;
       nextPageID = DataPackageWizardInterface.PARTY_CONTACT_PAGE;
       pageNumber = "5";
-      subtitle = /*"Owners"*/ Language.getInstance().getMessages("Owner");
+      subtitle = /*"Owners"*/ Language.getInstance().getMessage("Owner");
       xPathRoot = "/eml:eml/dataset/creator[";
       DATAPACKAGE_PARTY_GENERIC_NAME = "creator";
       DATAPACKAGE_PARTY_REL_XPATH = "/creator[";
@@ -126,8 +126,8 @@ public class PartyMainPage
           + "for the data. Select Add to add an owner."
           + "<br></br></p>"
           */
-    	  "<p><b>" + Language.getInstance().getMessages("PatryMainPage.Owner.description_1") +"</b> "
-    	  + Language.getInstance().getMessages("PatryMainPage.Owner.description_2")
+    	  "<p><b>" + Language.getInstance().getMessage("PatryMainPage.Owner.description_1") +"</b> "
+    	  + Language.getInstance().getMessage("PatryMainPage.Owner.description_2")
     	  +"<br></br></p>"
           ;
 
@@ -137,7 +137,7 @@ public class PartyMainPage
       pageID = DataPackageWizardInterface.PARTY_CONTACT_PAGE;
       nextPageID = DataPackageWizardInterface.PARTY_ASSOCIATED_PAGE;
       pageNumber = "6";
-      subtitle = /*"Contacts"*/ Language.getInstance().getMessages("Contact");
+      subtitle = /*"Contacts"*/ Language.getInstance().getMessage("Contact");
       xPathRoot = "/eml:eml/dataset/contact[";
       DATAPACKAGE_PARTY_GENERIC_NAME = "contact";
       DATAPACKAGE_PARTY_REL_XPATH = "/contact[";
@@ -147,8 +147,8 @@ public class PartyMainPage
           + "about the people or organizations who would be contacted with "
           + "questions about the use or interpretation of a data package. "
           */
-    	  "<p><b>" + Language.getInstance().getMessages("PatryMainPage.Contact.description_1") +"</b> "
-    	  + Language.getInstance().getMessages("PatryMainPage.Contact.description_2")
+    	  "<p><b>" + Language.getInstance().getMessage("PatryMainPage.Contact.description_1") +"</b> "
+    	  + Language.getInstance().getMessage("PatryMainPage.Contact.description_2")
           + "<br></br></p>";
 
     } else if (role.equals(DataPackageWizardInterface.PARTY_ASSOCIATED)) {
@@ -157,7 +157,7 @@ public class PartyMainPage
       pageID = DataPackageWizardInterface.PARTY_ASSOCIATED_PAGE;
       nextPageID = DataPackageWizardInterface.PROJECT;
       pageNumber = "7";
-      subtitle = /*"Associated Parties"*/ Language.getInstance().getMessages("AssociatedParties");
+      subtitle = /*"Associated Parties"*/ Language.getInstance().getMessage("AssociatedParties");
       xPathRoot = "/eml:eml/dataset/associatedParty[";
       DATAPACKAGE_PARTY_GENERIC_NAME = "associatedParty";
       DATAPACKAGE_PARTY_REL_XPATH = "/associatedParty[";
@@ -169,8 +169,8 @@ public class PartyMainPage
           + "For example, the person who maintains the database is an "
           + "associated party with the role of 'custodian'.<br></br><p>"
           */
-    	  "<p><b>" + Language.getInstance().getMessages("PatryMainPage.AssociatedParties.description_1") +"</b> "
-    	  + Language.getInstance().getMessages("PatryMainPage.AssociatedParties.description_2")
+    	  "<p><b>" + Language.getInstance().getMessage("PatryMainPage.AssociatedParties.description_1") +"</b> "
+    	  + Language.getInstance().getMessage("PatryMainPage.AssociatedParties.description_2")
     	  +"<br></br><p>"
           ;
 
@@ -196,7 +196,7 @@ public class PartyMainPage
     if (oneOrMoreRequired) {
       minRequiredLabel = WidgetFactory.makeLabel(
           /*" One or more " + subtitle + " must be defined:"*/
-    	  Language.getInstance().getMessages("PatryMainPage.minRequiredLabel_1") + " " + subtitle + " "+ Language.getInstance().getMessages("PatryMainPage.minRequiredLabel_2") +":"
+    	  Language.getInstance().getMessage("PatryMainPage.minRequiredLabel_1") + " " + subtitle + " "+ Language.getInstance().getMessage("PatryMainPage.minRequiredLabel_2") +":"
           , true,
           WizardSettings.WIZARD_CONTENT_TEXTFIELD_DIMS);
       vPanel.add(minRequiredLabel);

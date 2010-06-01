@@ -368,56 +368,56 @@ public class DataViewer extends javax.swing.JPanel
 //Build the popup menu for the right click functionality
     popup = new JPopupMenu();
     // Create a add documentation menu item
-    addDocumentationAction = new GUIAction(/*"Add Documentation..."*/ Language.getInstance().getMessages("AddDocumentation") + "...",
+    addDocumentationAction = new GUIAction(/*"Add Documentation..."*/ Language.getInstance().getMessage("AddDocumentation") + "...",
     										null,
                                           new AddDocumentationCommand());
     addDocumentation = new JMenuItem(addDocumentationAction);
     popup.add(addDocumentation);
-    createNewDatatableAction = new GUIAction(/*"Create/Import New Data Table..."*/ Language.getInstance().getMessages("Create/ImportNewDataTable") + "...",
+    createNewDatatableAction = new GUIAction(/*"Create/Import New Data Table..."*/ Language.getInstance().getMessage("Create/ImportNewDataTable") + "...",
     											null,
                                                 new ImportDataCommand());
     createNewDatatable = new JMenuItem(createNewDatatableAction);
     popup.add(createNewDatatable);
-    deleteDatatableAction = new GUIAction(/*"Delete Current Data Table"*/ Language.getInstance().getMessages("DeleteCurrentDataTable"),
+    deleteDatatableAction = new GUIAction(/*"Delete Current Data Table"*/ Language.getInstance().getMessage("DeleteCurrentDataTable"),
     											null,
                                                 new DeleteTableCommand());
     deleteDatatable = new JMenuItem(deleteDatatableAction);
     popup.add(deleteDatatable);
     popup.add(new JSeparator());
 
-    sortAction = new GUIAction(/*"Sort by Selected Column"*/ Language.getInstance().getMessages("SortBySelectedColumn"),
+    sortAction = new GUIAction(/*"Sort by Selected Column"*/ Language.getInstance().getMessage("SortBySelectedColumn"),
     											null,
                                                 new SortDataTableCommand());
     sortBySelectedColumn = new JMenuItem(sortAction);
     popup.add(sortBySelectedColumn);
     popup.add(new JSeparator());
 
-    insertRowAfterAction = new GUIAction(/*"Insert Row After Selection"*/ Language.getInstance().getMessages("InsertRowAfterSelection"),
+    insertRowAfterAction = new GUIAction(/*"Insert Row After Selection"*/ Language.getInstance().getMessage("InsertRowAfterSelection"),
     								null,
                                   new InsertRowCommand(InsertRowCommand.AFTER));
     insertRowAfter = new JMenuItem(insertRowAfterAction);
     popup.add(insertRowAfter);
-    insertRowBeforeAction = new GUIAction(/*"Insert Row Before Selection"*/ Language.getInstance().getMessages("InsertRowBeforeSelection"),
+    insertRowBeforeAction = new GUIAction(/*"Insert Row Before Selection"*/ Language.getInstance().getMessage("InsertRowBeforeSelection"),
     								null,
                                   new InsertRowCommand(InsertRowCommand.BEFORE));
     insertRowBefore = new JMenuItem(insertRowBeforeAction);
     popup.add(insertRowBefore);
-    deleteRowAction = new GUIAction(/*"Delete Selected Row"*/ Language.getInstance().getMessages("DeleteSelectedRow"),
+    deleteRowAction = new GUIAction(/*"Delete Selected Row"*/ Language.getInstance().getMessage("DeleteSelectedRow"),
     								null,
                                     new DeleteRowCommand());
     deleteRow = new JMenuItem(deleteRowAction);
     popup.add(deleteRow);
     popup.add(new JSeparator());
 
-    insertColumnAfterAction = new GUIAction(/*"Insert Column After Selection"*/ Language.getInstance().getMessages("InsertColumnAfterSelection"),
+    insertColumnAfterAction = new GUIAction(/*"Insert Column After Selection"*/ Language.getInstance().getMessage("InsertColumnAfterSelection"),
                       null, new InsertColumnCommand(InsertColumnCommand.AFTER));
     insertColumnAfter = new JMenuItem(insertColumnAfterAction);
     popup.add(insertColumnAfter);
-    insertColumnBeforeAction = new GUIAction(/*"Insert Column Before Selection"*/ Language.getInstance().getMessages("InsertColumnBeforeSelection"),
+    insertColumnBeforeAction = new GUIAction(/*"Insert Column Before Selection"*/ Language.getInstance().getMessage("InsertColumnBeforeSelection"),
                      null, new InsertColumnCommand(InsertColumnCommand.BEFORE));
     insertColumnBefore = new JMenuItem(insertColumnBeforeAction);
     popup.add(insertColumnBefore);
-    deleteColumnAction = new GUIAction(/*"Delete Selected Column"*/ Language.getInstance().getMessages("DeleteSelectedColumn"),
+    deleteColumnAction = new GUIAction(/*"Delete Selected Column"*/ Language.getInstance().getMessage("DeleteSelectedColumn"),
     										null,
                                            new DeleteColumnCommand());
     deleteColumn = new JMenuItem(deleteColumnAction);
@@ -425,7 +425,7 @@ public class DataViewer extends javax.swing.JPanel
     popup.add(new JSeparator());
 
     editColumnMetadataAction = new GUIAction(
-    								/*"Edit Column "+ DataPackagePlugin.METADATA_MENU_LABEL*/ Language.getInstance().getMessages("EditColumnDocumentation"),
+    								/*"Edit Column "+ DataPackagePlugin.METADATA_MENU_LABEL*/ Language.getInstance().getMessage("EditColumnDocumentation"),
                                null,
                                new EditColumnMetaDataCommand());
     editColumnMetadata = new JMenuItem(editColumnMetadataAction);

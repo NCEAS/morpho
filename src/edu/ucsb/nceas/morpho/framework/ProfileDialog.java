@@ -98,7 +98,7 @@ public class ProfileDialog extends JDialog implements StateChangeListener
     currentScreen = 0;
 
     setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-    setTitle(/*"New Profile"*/ Language.getInstance().getMessages("NewProfile"));
+    setTitle(/*"New Profile"*/ Language.getInstance().getMessage("NewProfile"));
     getContentPane().setLayout(new BoxLayout(getContentPane(),
                                BoxLayout.X_AXIS));
     setVisible(false);
@@ -132,7 +132,7 @@ public class ProfileDialog extends JDialog implements StateChangeListener
     entryPanel.add(Box.createVerticalStrut(8));
 
     JLabel headLabel = new JLabel();
-    headLabel.setText(/*"New Profile"*/ Language.getInstance().getMessages("NewProfile"));
+    headLabel.setText(/*"New Profile"*/ Language.getInstance().getMessage("NewProfile"));
     ImageIcon head = new ImageIcon(
                          getClass().getResource("smallheader-bg.gif"));
     headLabel.setIcon(head);
@@ -158,14 +158,14 @@ public class ProfileDialog extends JDialog implements StateChangeListener
     JPanel buttonPanel = new JPanel();
     buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.X_AXIS));
     buttonPanel.add(Box.createHorizontalGlue());
-    cancelButton.setText(/*"Cancel"*/ Language.getInstance().getMessages("Cancel"));
+    cancelButton.setText(/*"Cancel"*/ Language.getInstance().getMessage("Cancel"));
     cancelButton.setActionCommand("Cancel");
     cancelButton.setMnemonic(KeyEvent.VK_C);
     cancelButton.setEnabled(true);
     addKeyListenerToComponent(cancelButton);
     buttonPanel.add(cancelButton);
     buttonPanel.add(Box.createHorizontalStrut(8));
-    previousButton = new JButton(/*"Previous"*/ Language.getInstance().getMessages("Previous"),
+    previousButton = new JButton(/*"Previous"*/ Language.getInstance().getMessage("Previous"),
     								new ImageIcon( getClass().
           getResource("/toolbarButtonGraphics/navigation/Back16.gif")));
     previousButton.setHorizontalTextPosition(SwingConstants.RIGHT);
@@ -366,19 +366,19 @@ public class ProfileDialog extends JDialog implements StateChangeListener
     if (0 == currentScreen) {
       String helpText = "<html><p>"
     	  				/*+ "Enter the name for this profile and your first and last name."*/ 
-                        + Language.getInstance().getMessages("BasicInformation.helpText")
+                        + Language.getInstance().getMessage("BasicInformation.helpText")
                         + "</p></html>";
       helpLabel.setText(helpText);
 
       screenPanel.setBorder(BorderFactory.createTitledBorder(
                             BorderFactory.createEmptyBorder(8,8,8,8),
-                            /*"Basic Information"*/ Language.getInstance().getMessages("BasicInformation")));
+                            /*"Basic Information"*/ Language.getInstance().getMessage("BasicInformation")));
       JLabel profileNameLabel = new JLabel();
       JLabel firstNameLabel = new JLabel();
       JLabel lastNameLabel = new JLabel();
-      profileNameLabel.setText(/*"Name of profile: "*/ Language.getInstance().getMessages("NameOfProfile") + ": ");
-      firstNameLabel.setText(/*"First name: "*/ Language.getInstance().getMessages("FirstName") + ": ");
-      lastNameLabel.setText(/*"Last name: "*/ Language.getInstance().getMessages("LastName") + ": ");
+      profileNameLabel.setText(/*"Name of profile: "*/ Language.getInstance().getMessage("NameOfProfile") + ": ");
+      firstNameLabel.setText(/*"First name: "*/ Language.getInstance().getMessage("FirstName") + ": ");
+      lastNameLabel.setText(/*"Last name: "*/ Language.getInstance().getMessage("LastName") + ": ");
       profileNameLabel.setForeground(Color.black);
       firstNameLabel.setForeground(Color.black);
       lastNameLabel.setForeground(Color.black);
@@ -402,24 +402,24 @@ public class ProfileDialog extends JDialog implements StateChangeListener
     	String helpText = 
     		"<html><p>"
     		/*+ "Enter the information you submitted when you registered for the Knowledge Network for Biocomplexity (KNB). "*/
-    		+ Language.getInstance().getMessages("NetworkAccountInformation.helpText_1")
+    		+ Language.getInstance().getMessage("NetworkAccountInformation.helpText_1")
             /*+ "<br>If you have not registered for the KNB yet, go to: "*/
-    		+ "<br>" + Language.getInstance().getMessages("NetworkAccountInformation.helpText_2") + ":"
+    		+ "<br>" + Language.getInstance().getMessage("NetworkAccountInformation.helpText_2") + ":"
             /*+ "<i>http://knb.ecoinformatics.org/</i>."*/
-    		+ "<i>" + Language.getInstance().getMessages("KNB_UEL") + "</i>"
+    		+ "<i>" + Language.getInstance().getMessage("KNB_UEL") + "</i>"
             /*+ " This will allow you to login to the network and collaborate with other researchers through the KNB."*/
-    		+ "<br>" + Language.getInstance().getMessages("NetworkAccountInformation.helpText_3")
+    		+ "<br>" + Language.getInstance().getMessage("NetworkAccountInformation.helpText_3")
             + "</p></html>";
         helpLabel.setText(helpText);
         screenPanel.setBorder(BorderFactory.createTitledBorder(
                               BorderFactory.createEmptyBorder(8,8,8,8),
-                              /*"Network Account Information"*/ Language.getInstance().getMessages("NetworkAccountInformation")));
+                              /*"Network Account Information"*/ Language.getInstance().getMessage("NetworkAccountInformation")));
         JLabel usernameLabel = new JLabel();
         JLabel orgLabel = new JLabel();
         JLabel refreshLabel = new JLabel();
-        usernameLabel.setText(/*"Username: "*/ Language.getInstance().getMessages("Username") + ": ");
-        orgLabel.setText(/*"Organization: "*/ Language.getInstance().getMessages("Organization") + ": ");
-        refreshLabel.setText(/*"Refresh: "*/ Language.getInstance().getMessages("Refresh") + ": ");
+        usernameLabel.setText(/*"Username: "*/ Language.getInstance().getMessage("Username") + ": ");
+        orgLabel.setText(/*"Organization: "*/ Language.getInstance().getMessage("Organization") + ": ");
+        refreshLabel.setText(/*"Refresh: "*/ Language.getInstance().getMessage("Refresh") + ": ");
         usernameLabel.setForeground(Color.black);
         orgLabel.setForeground(Color.black);
         refreshLabel.setForeground(Color.black);
@@ -449,24 +449,24 @@ public class ProfileDialog extends JDialog implements StateChangeListener
       String helpText = 
     	  "<html><p>"
     	  /*+ "Enter a short identifier prefix for this profile. "*/ 
-    	  + Language.getInstance().getMessages("DataPackageIdentification.helpText_1")
+    	  + Language.getInstance().getMessage("DataPackageIdentification.helpText_1")
     	  /*
     	  + " All data packages you create under this profile will bear this identifier prefix. "
     	  */
-    	  + "<br>" + Language.getInstance().getMessages("DataPackageIdentification.helpText_2")
+    	  + "<br>" + Language.getInstance().getMessage("DataPackageIdentification.helpText_2")
     	  /*
           + " For example, using the prefix "
           + "\'jane_doe\', data packages will have names like jane_doe.1.1, "
           + "jane_doe.2.1, etc." 
           */
-    	  + " " + Language.getInstance().getMessages("DataPackageIdentification.helpText_3")
+    	  + " " + Language.getInstance().getMessage("DataPackageIdentification.helpText_3")
           + "</p></html>";
       helpLabel.setText(helpText);
       screenPanel.setBorder(BorderFactory.createTitledBorder(
                             BorderFactory.createEmptyBorder(8,8,8,8),
-                            /*"Data Package Identification"*/ Language.getInstance().getMessages("DataPackageIdentification")));
-      JLabel scopeLabel = new JLabel(/*"Identifier prefix: "*/ Language.getInstance().getMessages("IdentifierPrefix") + ": ");
-      JLabel noteLabel = new JLabel(/*"Note: "*/ Language.getInstance().getMessages("Note") + ": ");
+                            /*"Data Package Identification"*/ Language.getInstance().getMessage("DataPackageIdentification")));
+      JLabel scopeLabel = new JLabel(/*"Identifier prefix: "*/ Language.getInstance().getMessage("IdentifierPrefix") + ": ");
+      JLabel noteLabel = new JLabel(/*"Note: "*/ Language.getInstance().getMessage("Note") + ": ");
       JLabel illegalCharactersLabel = new JLabel("Illegal characters: ");
       noteLabel.setForeground(Color.black);
       noteLabel.setFont(new Font("Dialog", Font.PLAIN, 12));
@@ -479,7 +479,7 @@ public class ProfileDialog extends JDialog implements StateChangeListener
       scopeField.setText(userIdField.getText());
       JLabel noteContent= new JLabel(
     		  							/*"Please do not use \"temporary\" because it is a reserved word."*/
-    		  							Language.getInstance().getMessages("DataPackageIdentification.Note")
+    		  							Language.getInstance().getMessage("DataPackageIdentification.Note")
     		  						);
       JLabel illegalContent = new JLabel(getIllegalScopeCharacterNote());
       JLabel space2 = new JLabel(" ");
@@ -499,11 +499,11 @@ public class ProfileDialog extends JDialog implements StateChangeListener
 
     if (currentScreen == numScreens-1) {
       nextButton.setEnabled(true);
-      nextButton.setText(/*"Finished"*/ Language.getInstance().getMessages("Finish"));
+      nextButton.setText(/*"Finished"*/ Language.getInstance().getMessage("Finish"));
       nextButton.setIcon(null);
     } else {
       nextButton.setEnabled(true);
-      nextButton.setText(/*"Next"*/ Language.getInstance().getMessages("Next"));
+      nextButton.setText(/*"Next"*/ Language.getInstance().getMessage("Next"));
       nextButton.setIcon(forwardIcon);
     }
     nextButton.isDefaultButton();

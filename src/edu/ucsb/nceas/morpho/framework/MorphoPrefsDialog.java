@@ -114,12 +114,12 @@ public class MorphoPrefsDialog extends javax.swing.JDialog
     
 		ControlPanel.setLayout(new FlowLayout(FlowLayout.CENTER,5,5));
 		getContentPane().add(BorderLayout.SOUTH,ControlPanel);
-		setButton.setText(/*"Set"*/ Language.getInstance().getMessages("Set"));
+		setButton.setText(/*"Set"*/ Language.getInstance().getMessage("Set"));
 		setButton.setActionCommand("OK");
 		setButton.setOpaque(false);
 		setButton.setMnemonic((int)'O');
 		ControlPanel.add(setButton);
-		cancelButton.setText(/*"Cancel"*/ Language.getInstance().getMessages("Cancel"));
+		cancelButton.setText(/*"Cancel"*/ Language.getInstance().getMessage("Cancel"));
 		ControlPanel.add(cancelButton);
 		//}}
 

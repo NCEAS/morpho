@@ -626,8 +626,8 @@ public class MorphoFrame extends JFrame
          String loc = dvcp.getPackageLocation();
          if (loc.equals("")) {
            int res = JOptionPane.showConfirmDialog(this,
-                 /*"Would you like to save the current package?"*/ Language.getInstance().getMessages("MorphoFrame.SaveCurrentPackage") + "?",
-                 /*"Save ?"*/ Language.getInstance().getMessages("Save") + " ?", JOptionPane.YES_NO_CANCEL_OPTION);
+                 /*"Would you like to save the current package?"*/ Language.getInstance().getMessage("MorphoFrame.SaveCurrentPackage") + "?",
+                 /*"Save ?"*/ Language.getInstance().getMessage("Save") + " ?", JOptionPane.YES_NO_CANCEL_OPTION);
            if (res==JOptionPane.YES_OPTION) {
              //save here using the save command implementation used by the frame
         	 GUIAction saveAction = this.lookupGuiActionByCommand(SaveCommandInterface.class);

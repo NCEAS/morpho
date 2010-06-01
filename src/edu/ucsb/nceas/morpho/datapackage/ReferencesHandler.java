@@ -59,7 +59,7 @@ public class ReferencesHandler {
 
   private final String DEFAULT_DROPDOWN_ITEM = " ";
 
-  private final String EXT_DIALOG_DROPDOWN_ITEM = /*"Select from a different data package"*/ Language.getInstance().getMessages("SelectFromADifferentDataPackage");
+  private final String EXT_DIALOG_DROPDOWN_ITEM = /*"Select from a different data package"*/ Language.getInstance().getMessage("SelectFromADifferentDataPackage");
 
   private String displayName;
   private String genericName;

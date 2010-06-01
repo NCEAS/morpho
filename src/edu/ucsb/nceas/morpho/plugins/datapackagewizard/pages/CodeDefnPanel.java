@@ -91,7 +91,7 @@ import org.w3c.dom.Node;
 
 public class CodeDefnPanel extends JPanel implements WizardPageSubPanelAPI {
 
-  private final String title      = /*"Import Codes and Definitions"*/ Language.getInstance().getMessages("ImportCodesAndDefinitions");
+  private final String title      = /*"Import Codes and Definitions"*/ Language.getInstance().getMessage("ImportCodesAndDefinitions");
   private final String subtitle   = "";
 
   public short USER_RESPONSE;
@@ -99,8 +99,8 @@ public class CodeDefnPanel extends JPanel implements WizardPageSubPanelAPI {
 
 
   private String[] importChoiceText = {
-		  /*"Import the definitions table into Morpho later"*/ Language.getInstance().getMessages("CodeDefnPanel.importChoiceText_1"),
-		  /*"The definitions table has already been included in this package"*/ Language.getInstance().getMessages("CodeDefnPanel.importChoiceText_2")
+		  /*"Import the definitions table into Morpho later"*/ Language.getInstance().getMessage("CodeDefnPanel.importChoiceText_1"),
+		  /*"The definitions table has already been included in this package"*/ Language.getInstance().getMessage("CodeDefnPanel.importChoiceText_2")
 		  };
 
   private JLabel choiceLabel;
@@ -185,7 +185,7 @@ public class CodeDefnPanel extends JPanel implements WizardPageSubPanelAPI {
     JPanel topPanel = new JPanel();
     topPanel.setLayout(new BoxLayout(topPanel, BoxLayout.Y_AXIS));
 
-    choiceLabel = WidgetFactory.makeHTMLLabel(/*"Select one of the following"*/ Language.getInstance().getMessages("CodeDefnPanel.choiceLabel"),
+    choiceLabel = WidgetFactory.makeHTMLLabel(/*"Select one of the following"*/ Language.getInstance().getMessage("CodeDefnPanel.choiceLabel"),
     											1,true);
     topPanel.add(choiceLabel);
     topPanel.add(WidgetFactory.makeDefaultSpacer());
@@ -228,8 +228,8 @@ public class CodeDefnPanel extends JPanel implements WizardPageSubPanelAPI {
     JPanel panel = new JPanel();
     panel.setLayout(new BorderLayout());
     JLabel headLabel = WidgetFactory.makeHTMLLabel(
-    		/*"Select the two columns that define 	the codes and definitions."*/ Language.getInstance().getMessages("CodeDefnPanel.headLabel_1") +" "
-    		+/*" The selected columns should be in the same data table."*/ Language.getInstance().getMessages("CodeDefnPanel.headLabel_2"),
+    		/*"Select the two columns that define 	the codes and definitions."*/ Language.getInstance().getMessage("CodeDefnPanel.headLabel_1") +" "
+    		+/*" The selected columns should be in the same data table."*/ Language.getInstance().getMessage("CodeDefnPanel.headLabel_2"),
     		2 , false);
 
     panel.add(headLabel, BorderLayout.NORTH);
@@ -525,8 +525,8 @@ public class CodeDefnPanel extends JPanel implements WizardPageSubPanelAPI {
     if(sel.length != 2) {
 
       JOptionPane.showMessageDialog(this,
-    		  						/*"Select exactly two columns"*/ Language.getInstance().getMessages("CodeDefnPanel.SelectExactlyTwoColumns"),
-    		  						/*"Error"*/ Language.getInstance().getMessages("Error"),
+    		  						/*"Select exactly two columns"*/ Language.getInstance().getMessage("CodeDefnPanel.SelectExactlyTwoColumns"),
+    		  						/*"Error"*/ Language.getInstance().getMessage("Error"),
     		  						JOptionPane.ERROR_MESSAGE);
       return false;
     }
@@ -539,8 +539,8 @@ public class CodeDefnPanel extends JPanel implements WizardPageSubPanelAPI {
     if(!(table1.equals(table2))) {
 
       JOptionPane.showMessageDialog(this, 
-    		  						/*"Both columns need to be selected from the same data table"*/ Language.getInstance().getMessages("CodeDefnPanel.ColumnsFromTheSameDataTable"),
-    		  						/*"Error"*/ Language.getInstance().getMessages("Error"),
+    		  						/*"Both columns need to be selected from the same data table"*/ Language.getInstance().getMessage("CodeDefnPanel.ColumnsFromTheSameDataTable"),
+    		  						/*"Error"*/ Language.getInstance().getMessage("Error"),
     		  						JOptionPane.ERROR_MESSAGE);
       return false;
     }
@@ -548,8 +548,8 @@ public class CodeDefnPanel extends JPanel implements WizardPageSubPanelAPI {
     if(header1.size() < 3 || header2.size() < 3) {
 
       JOptionPane.showMessageDialog(this,
-    		  						/*"Select the data type (Code/Definition) for both the columns"*/ Language.getInstance().getMessages("CodeDefnPanel.DataTypeForColumns"),
-    		  						/*"Error"*/ Language.getInstance().getMessages("Error"),
+    		  						/*"Select the data type (Code/Definition) for both the columns"*/ Language.getInstance().getMessage("CodeDefnPanel.DataTypeForColumns"),
+    		  						/*"Error"*/ Language.getInstance().getMessage("Error"),
     		  						JOptionPane.ERROR_MESSAGE);
       return false;
     }
@@ -560,8 +560,8 @@ public class CodeDefnPanel extends JPanel implements WizardPageSubPanelAPI {
     if(type1.equals(type2)) {
 
       JOptionPane.showMessageDialog(this,
-    		  						/*"Select one column for codes and one for definition"*/ Language.getInstance().getMessages("CodeDefnPanel.OneForCodeOneForDefinition"),
-    		  						/*"Error"*/ Language.getInstance().getMessages("Error"),
+    		  						/*"Select one column for codes and one for definition"*/ Language.getInstance().getMessage("CodeDefnPanel.OneForCodeOneForDefinition"),
+    		  						/*"Error"*/ Language.getInstance().getMessage("Error"),
     		  						JOptionPane.ERROR_MESSAGE);
       return false;
     }
@@ -1272,8 +1272,8 @@ class CustomPopupHandler extends AbstractCustomTablePopupHandler {
   private Vector taxonData = null;
   private String displayString = null;
   private ButtonGroup grp;
-  private String[] data = new String[] { /*"Code"*/ Language.getInstance().getMessages("Code"),
-		  								 /*"Definition"*/ Language.getInstance().getMessages("Definition")
+  private String[] data = new String[] { /*"Code"*/ Language.getInstance().getMessage("Code"),
+		  								 /*"Definition"*/ Language.getInstance().getMessage("Definition")
 		  								};
   private JRadioButton jrb1, jrb2, dummyButton;
 
@@ -1289,7 +1289,7 @@ class CustomPopupHandler extends AbstractCustomTablePopupHandler {
 
     JPanel panel = new JPanel(new BorderLayout());
     JLabel headLabel = WidgetFactory.makeHTMLLabel(
-    												/*"Is this a Code or Definition?"*/ Language.getInstance().getMessages("CodeOrDefinition")+"?",
+    												/*"Is this a Code or Definition?"*/ Language.getInstance().getMessage("CodeOrDefinition")+"?",
     												2, false);
 
     JPanel middlePanel = new JPanel();

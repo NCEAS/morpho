@@ -87,14 +87,14 @@ public class SynchronizeDialog extends JDialog
       + "identical with those on the network. "
       + "In order to do this, Morpho will copy the Data Package as shown below:"
       */
-	  Language.getInstance().getMessages("SynchronizeDialog.Description") +" :"
+	  Language.getInstance().getMessage("SynchronizeDialog.Description") +" :"
       ;
  
   private static String WARNING =
-      /*"Note:\n"*/ Language.getInstance().getMessages("Note") + " :\n  "
+      /*"Note:\n"*/ Language.getInstance().getMessage("Note") + " :\n  "
       /*+"  If you are copying from local to network, you may be"
       + " prompted to renumber the Data Package"*/
-      + Language.getInstance().getMessages("SynchronizeDialog.Warning_1")
+      + Language.getInstance().getMessage("SynchronizeDialog.Warning_1")
       ;
 
   /** A reference to morpho frame */
@@ -186,7 +186,7 @@ public class SynchronizeDialog extends JDialog
     int dialogY = (new Double(centerY - 0.5 * dialogHeight)).intValue();
     setLocation(dialogX, dialogY);
     
-    setTitle(/*"Synchronize"*/ Language.getInstance().getMessages("Synchronize"));
+    setTitle(/*"Synchronize"*/ Language.getInstance().getMessage("Synchronize"));
     // Set the default close operation is dispose
     setDefaultCloseOperation(DISPOSE_ON_CLOSE);
     
@@ -224,7 +224,7 @@ public class SynchronizeDialog extends JDialog
     {
      
       arrowIcon = new ImageIcon(getClass().getResource("rightarrow.gif"));
-      executeAction = new GUIAction(/*"Execute"*/ Language.getInstance().getMessages("Execute"), null, new LocalToNetworkCommand
+      executeAction = new GUIAction(/*"Execute"*/ Language.getInstance().getMessage("Execute"), null, new LocalToNetworkCommand
                                    (openDialog, this, morphoFrame, 
                                    morphoFrameType, docid, inLocal, inNetwork)); 
       warningMessage = WARNING;
@@ -234,7 +234,7 @@ public class SynchronizeDialog extends JDialog
     {
       
       arrowIcon = new ImageIcon(getClass().getResource("leftarrow.gif"));
-      executeAction = new GUIAction(/*"Execute"*/ Language.getInstance().getMessages(""), null, new NetworkToLocalCommand
+      executeAction = new GUIAction(/*"Execute"*/ Language.getInstance().getMessage(""), null, new NetworkToLocalCommand
                                    (openDialog, this, morphoFrame, 
                                    morphoFrameType, docid, inLocal, inNetwork));
       warningMessage = "";
@@ -242,10 +242,10 @@ public class SynchronizeDialog extends JDialog
     
      // Create icon box
     Box iconBox = Box.createHorizontalBox();
-    JLabel localLabel = new JLabel(/*"Local"*/ Language.getInstance().getMessages("Local") , localIcon, SwingConstants.RIGHT);
+    JLabel localLabel = new JLabel(/*"Local"*/ Language.getInstance().getMessage("Local") , localIcon, SwingConstants.RIGHT);
     //localLabel.setText("Local");
     localLabel.setHorizontalTextPosition(SwingConstants.RIGHT);
-    JLabel networkLabel = new JLabel(/*"Network"*/ Language.getInstance().getMessages("Network"), networkIcon, 
+    JLabel networkLabel = new JLabel(/*"Network"*/ Language.getInstance().getMessage("Network"), networkIcon, 
                                                       SwingConstants.RIGHT );
     //networkLabel.setText("Network");
     networkLabel.setHorizontalTextPosition(SwingConstants.RIGHT);
@@ -287,7 +287,7 @@ public class SynchronizeDialog extends JDialog
     controlButtonsBox.add(Box.createHorizontalStrut(PADDINGWIDTH));
     
     //Cancel button
-    GUIAction cancelAction = new GUIAction(/*"Cancel"*/ Language.getInstance().getMessages("Cancel"), null, 
+    GUIAction cancelAction = new GUIAction(/*"Cancel"*/ Language.getInstance().getMessage("Cancel"), null, 
                                                       new CancelCommand(this));
     cancelButton = new JButton(cancelAction);
     controlButtonsBox.add(cancelButton);

@@ -1398,7 +1398,7 @@ class AddAction
 
   public AddAction(CustomJTable table, CustomList parentList) {
 
-    super(/*"Add"*/ Language.getInstance().getMessages("Add") );
+    super(/*"Add"*/ Language.getInstance().getMessage("Add") );
     this.table = table;
     this.parentList = parentList;
   }
@@ -1460,7 +1460,7 @@ class EditAction
 
   public EditAction(CustomJTable table, CustomList parentList) {
 
-    super(/*"Edit"*/ Language.getInstance().getMessages("Edit"));
+    super(/*"Edit"*/ Language.getInstance().getMessage("Edit"));
     this.parentList = parentList;
     this.table = table;
   }
@@ -1492,7 +1492,7 @@ class DuplicateAction
 
   public DuplicateAction(CustomJTable table, CustomList parentList) {
 
-    super(/*"Duplicate"*/ Language.getInstance().getMessages("Duplicate"));
+    super(/*"Duplicate"*/ Language.getInstance().getMessage("Duplicate"));
     this.table = table;
     this.parentList = parentList;
   }
@@ -1525,7 +1525,7 @@ class DeleteAction
 
   public DeleteAction(CustomJTable table, CustomList parentList) {
 
-    super(/*"Delete"*/ Language.getInstance().getMessages("Delete"));
+    super(/*"Delete"*/ Language.getInstance().getMessage("Delete"));
     this.table = table;
     this.parentList = parentList;
   }
@@ -1565,7 +1565,7 @@ class MoveUpAction
 
   public MoveUpAction(CustomJTable table, CustomList parentList) {
 
-    super(/*"Move Up"*/ Language.getInstance().getMessages("MoveUp"));
+    super(/*"Move Up"*/ Language.getInstance().getMessage("MoveUp"));
     this.table = table;
     this.parentList = parentList;
     model = (DefaultTableModel) (table.getModel());
@@ -1599,7 +1599,7 @@ class MoveDownAction
 
   public MoveDownAction(CustomJTable table, CustomList parentList) {
 
-    super(/*"Move Down"*/ Language.getInstance().getMessages("MoveDown"));
+    super(/*"Move Down"*/ Language.getInstance().getMessage("MoveDown"));
     this.table = table;
     this.parentList = parentList;
     model = (DefaultTableModel) (table.getModel());

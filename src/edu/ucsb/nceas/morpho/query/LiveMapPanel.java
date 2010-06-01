@@ -266,10 +266,10 @@ public class LiveMapPanel extends JPanel
     entryPanel.add(posPanel);
 
     // Zoom Panel
-    zoom_in = new JButton(/*"Zoom In"*/ Language.getInstance().getMessages("ZoomIn"));
-    zoom_out = new JButton(/*"Zoom Out"*/ Language.getInstance().getMessages("ZoomOut"));
-    boxTool = new JRadioButton(/*"Box Tool"*/ Language.getInstance().getMessages("BoxTool"), true);
-    ptTool = new JRadioButton(/*"Point Tool"*/ Language.getInstance().getMessages("PointTool"), false);
+    zoom_in = new JButton(/*"Zoom In"*/ Language.getInstance().getMessage("ZoomIn"));
+    zoom_out = new JButton(/*"Zoom Out"*/ Language.getInstance().getMessage("ZoomOut"));
+    boxTool = new JRadioButton(/*"Box Tool"*/ Language.getInstance().getMessage("BoxTool"), true);
+    ptTool = new JRadioButton(/*"Point Tool"*/ Language.getInstance().getMessage("PointTool"), false);
     ButtonGroup group = new ButtonGroup();
     group.add(boxTool);
     group.add(ptTool);

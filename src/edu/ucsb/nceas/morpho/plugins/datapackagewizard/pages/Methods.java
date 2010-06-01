@@ -64,7 +64,7 @@ public class Methods
   // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
   private final String pageID = DataPackageWizardInterface.METHODS;
-  private final String title = /*"Methods and Sampling"*/ Language.getInstance().getMessages("MethodsAndSampling");
+  private final String title = /*"Methods and Sampling"*/ Language.getInstance().getMessage("MethodsAndSampling");
   private final String subtitle = "";
   private final String pageNumber = "13";
   private final String EMPTY_STRING = "";
@@ -90,9 +90,9 @@ public class Methods
   private static final Dimension FULL_LABEL_DIMS = new Dimension(700, 20);
 
   private final String[] colNames = {
-      /*"Method Step Title"*/ Language.getInstance().getMessages("MethodStepTitle"),
-      /*"Method Step Description"*/Language.getInstance().getMessages("MethodStepDescription"),
-      /*"Instrumentation"*/ Language.getInstance().getMessages("Instrumentation")
+      /*"Method Step Title"*/ Language.getInstance().getMessage("MethodStepTitle"),
+      /*"Method Step Description"*/Language.getInstance().getMessage("MethodStepDescription"),
+      /*"Instrumentation"*/ Language.getInstance().getMessage("Instrumentation")
       };
   private final Object[] editors = null; //makes non-directly-editable
 
@@ -136,13 +136,13 @@ public class Methods
     vbox.add(WidgetFactory.makeDefaultSpacer());
     JLabel desc1 = WidgetFactory.makeHTMLLabel(
       "<p>"
-      + /*"<b>Enter method step description.</b> "*/ "<b>" + Language.getInstance().getMessages("Methods.desc1_1") + "</b> "
+      + /*"<b>Enter method step description.</b> "*/ "<b>" + Language.getInstance().getMessage("Methods.desc1_1") + "</b> "
       /*
       + "Method steps describe a "
       + "single step in the implementation of a methodology for an "
       + "experiment." 
       */
-      + Language.getInstance().getMessages("Methods.desc1_2")
+      + Language.getInstance().getMessage("Methods.desc1_2")
       + "</p>", 1);
     vbox.add(desc1);
     vbox.add(WidgetFactory.makeHalfSpacer());
@@ -159,14 +159,14 @@ public class Methods
 
     JLabel studyDesc = WidgetFactory.makeHTMLLabel(
         "<p>" 
-        + /*"<b>Study extent description</b>. "*/ "<b>" + Language.getInstance().getMessages("Methods.studyDesc_1") + "</b> "
-        + /*"Describe the temporal, spatial and taxonomic extent of the study.  " */ Language.getInstance().getMessages("Methods.studyDesc_2") + " "
-        + /*"This information supplements the coverage information you may have provided in a previous step."*/ Language.getInstance().getMessages("Methods.studyDesc_3")
+        + /*"<b>Study extent description</b>. "*/ "<b>" + Language.getInstance().getMessage("Methods.studyDesc_1") + "</b> "
+        + /*"Describe the temporal, spatial and taxonomic extent of the study.  " */ Language.getInstance().getMessage("Methods.studyDesc_2") + " "
+        + /*"This information supplements the coverage information you may have provided in a previous step."*/ Language.getInstance().getMessage("Methods.studyDesc_3")
         + "</p>", 3);
     vbox.add(studyDesc);
 
     JPanel studyPanel = WidgetFactory.makePanel(10);
-    studyLabel = WidgetFactory.makeLabel(/*" Study Extent"*/ " " + Language.getInstance().getMessages("StudyExtent"), false);
+    studyLabel = WidgetFactory.makeLabel(/*" Study Extent"*/ " " + Language.getInstance().getMessage("StudyExtent"), false);
     studyPanel.add(studyLabel);
 
     studyArea = WidgetFactory.makeTextArea("", 3, true);
@@ -177,17 +177,17 @@ public class Methods
     //vbox.add(WidgetFactory.makeDefaultSpacer());
 
     JLabel sampleDesc = WidgetFactory.makeHTMLLabel(
-        /*"<b>Sampling description</b>. "*/ "<b>" + Language.getInstance().getMessages("sampleDesc_1") + "</b> " 
-        /*+ "Describe the sampling design of the study."*/ + Language.getInstance().getMessages("sampleDesc_2") + " "
+        /*"<b>Sampling description</b>. "*/ "<b>" + Language.getInstance().getMessage("sampleDesc_1") + "</b> " 
+        /*+ "Describe the sampling design of the study."*/ + Language.getInstance().getMessage("sampleDesc_2") + " "
         
         /*+ " For example, you might describe the way in which treatments were "
         + "assigned to sampling units."*/
-        + Language.getInstance().getMessages("sampleDesc_3")
+        + Language.getInstance().getMessage("sampleDesc_3")
         , 2);
     vbox.add(sampleDesc);
 
     JPanel samplePanel = WidgetFactory.makePanel(10);
-    sampleLabel = WidgetFactory.makeLabel(/*" Sampling"*/ " " + Language.getInstance().getMessages("Sampling") , false);
+    sampleLabel = WidgetFactory.makeLabel(/*" Sampling"*/ " " + Language.getInstance().getMessage("Sampling") , false);
     samplePanel.add(sampleLabel);
 
     sampleArea = WidgetFactory.makeTextArea("", 3, true);
@@ -332,7 +332,7 @@ public class Methods
       warningLabel.setText(
     		  			   /*"Method steps are required if you provide either a "
                            + "study extent or smapling description"*/
-                           Language.getInstance().getMessages("Methods.Warning_1")
+                           Language.getInstance().getMessage("Methods.Warning_1")
                            );
       warningPanel.setVisible(true);
       return false;
@@ -344,7 +344,7 @@ public class Methods
       warningLabel.setText(
     		  			   /*"Study extent is required if you provide "
                            + "sampling description"*/
-    		  				Language.getInstance().getMessages("Methods.Warning_2")
+    		  				Language.getInstance().getMessage("Methods.Warning_2")
                            );
       warningPanel.setVisible(true);
       return false;
@@ -355,7 +355,7 @@ public class Methods
       warningLabel.setText(
     		  			   /*"Sampling description is required if you provide "
                            + "study extent"*/
-    		               Language.getInstance().getMessages("Methods.Warning_3")
+    		               Language.getInstance().getMessage("Methods.Warning_3")
                            );
       warningPanel.setVisible(true);
       return false;

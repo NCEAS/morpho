@@ -70,13 +70,13 @@ public class Entity extends AbstractUIPage{
 
   private final String pageID     = DataPackageWizardInterface.ENTITY;
   private final String pageNumber = "";
-  private final String title      = /*"Data Information:"*/ Language.getInstance().getMessages("DataInformation");
-  private final String subtitle   = /*"Table (Entity)"*/ Language.getInstance().getMessages("Table") + " (" + Language.getInstance().getMessages("Entity")+ ")";
+  private final String title      = /*"Data Information:"*/ Language.getInstance().getMessage("DataInformation");
+  private final String subtitle   = /*"Table (Entity)"*/ Language.getInstance().getMessage("Table") + " (" + Language.getInstance().getMessage("Entity")+ ")";
   private String xPathRoot  = "/eml:eml/dataset/dataTable";
 
-  private final String[] colNames =  {/*"Attribute Name"*/ Language.getInstance().getMessages("AttributeName") ,
-                                      /*"Attribute Definition"*/ Language.getInstance().getMessages("AttributeDefinition") ,
-                                      /*"Measurement Scale"*/ Language.getInstance().getMessages("MeasurementScale")
+  private final String[] colNames =  {/*"Attribute Name"*/ Language.getInstance().getMessage("AttributeName") ,
+                                      /*"Attribute Definition"*/ Language.getInstance().getMessage("AttributeDefinition") ,
+                                      /*"Measurement Scale"*/ Language.getInstance().getMessage("MeasurementScale")
                                       };
   private final Object[] editors  =   null; //makes non-directly-editable
 
@@ -128,11 +128,11 @@ public class Entity extends AbstractUIPage{
       "<b>" 
       /*+"Enter some information about the data table contained in your "
       +"file."*/
-      + Language.getInstance().getMessages("Entity.desc1_1")		
+      + Language.getInstance().getMessage("Entity.desc1_1")		
       +"</b> "
       /*+"If you have more than one data table, additional tables may be added "
       +"after the completion of this wizard.",*/
-      +Language.getInstance().getMessages("Entity.desc1_2"),
+      +Language.getInstance().getMessage("Entity.desc1_2"),
                                    2);
     this.add(desc1);
 
@@ -143,7 +143,7 @@ public class Entity extends AbstractUIPage{
     JPanel attributePanel = WidgetFactory.makePanel(1);
 
     entityNameLabel = WidgetFactory.makeLabel(/*"Table name:"*/ 
-    										Language.getInstance().getMessages("TableName") + ":"	
+    										Language.getInstance().getMessage("TableName") + ":"	
     										, true);
 
     attributePanel.add(entityNameLabel);
@@ -160,11 +160,11 @@ public class Entity extends AbstractUIPage{
     JLabel entityDesc = WidgetFactory.makeHTMLLabel(
     /*"Enter a paragraph that describes the table or entity, its type, and "
     +"relevant information about the data that it contains." */
-    Language.getInstance().getMessages("Entity.entityDesc")
+    Language.getInstance().getMessage("Entity.entityDesc")
     +"<br></br>"
     +"<font color=\"666666\">&nbsp;&nbsp;" 
     +"[" 
-    + /*"Example:"*/ Language.getInstance().getMessages("Example") + ":"
+    + /*"Example:"*/ Language.getInstance().getMessage("Example") + ":"
     +"&nbsp;&nbsp;&nbsp;" 
     +"Species abundance data for 1996 at the VCR LTER site"
     +"]</font>", 3);
@@ -173,7 +173,7 @@ public class Entity extends AbstractUIPage{
 
     JPanel entityDescPanel = WidgetFactory.makePanel();
 
-    JLabel entityLabel = WidgetFactory.makeLabel(/*"Description"*/ Language.getInstance().getMessages("Description"), false);
+    JLabel entityLabel = WidgetFactory.makeLabel(/*"Description"*/ Language.getInstance().getMessage("Description"), false);
     entityLabel.setVerticalAlignment(SwingConstants.TOP);
     entityLabel.setAlignmentY(SwingConstants.TOP);
     entityDescPanel.add(entityLabel);
@@ -190,12 +190,12 @@ public class Entity extends AbstractUIPage{
 	
 	    this.add(WidgetFactory.makeHTMLLabel(
 	                      /*"One or more attributes (columns) must be defined:"*/
-	    				Language.getInstance().getMessages("Entity.AttributeMustBeDefine") + ":"
+	    				Language.getInstance().getMessage("Entity.AttributeMustBeDefine") + ":"
 	    				, 1));
 	
 	    JPanel attribsPanel = WidgetFactory.makePanel();
 	
-	    attributesLabel = WidgetFactory.makeLabel(/*"Attributes"*/ Language.getInstance().getMessages("Attributes"), true);
+	    attributesLabel = WidgetFactory.makeLabel(/*"Attributes"*/ Language.getInstance().getMessage("Attributes"), true);
 	    attribsPanel.add(attributesLabel);
 	
 	    attributeList = WidgetFactory.makeList(colNames, editors, 4,

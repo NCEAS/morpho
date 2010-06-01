@@ -70,8 +70,8 @@ public class DeleteRowCommand implements Command
        resultPane = morphoFrame.getDataViewContainerPanel();
     }//if
     int opt = JOptionPane.showConfirmDialog(morphoFrame,
-            /*"Are you sure that you want to delete the selected row?"*/ Language.getInstance().getMessages("DeleteRowWarning") + "?",
-            /*"DO YOU WANT TO CONTINUE?"*/ Language.getInstance().getMessages("Warning_Continue") + "?",
+            /*"Are you sure that you want to delete the selected row?"*/ Language.getInstance().getMessage("DeleteRowWarning") + "?",
+            /*"DO YOU WANT TO CONTINUE?"*/ Language.getInstance().getMessage("Warning_Continue") + "?",
             JOptionPane.YES_NO_OPTION);
    if (opt == JOptionPane.NO_OPTION) 
    {

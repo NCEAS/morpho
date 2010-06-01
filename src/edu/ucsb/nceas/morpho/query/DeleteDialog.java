@@ -75,18 +75,18 @@ public class DeleteDialog extends JDialog
   private JButton cancelButton = null;
   
   /** Action for executeButton */
-  private GUIAction executeAction = new GUIAction(/*"Delete"*/ Language.getInstance().getMessages("Delete"), null, null);
+  private GUIAction executeAction = new GUIAction(/*"Delete"*/ Language.getInstance().getMessage("Delete"), null, null);
   
   /** Radio button */
-  private JRadioButton deleteLocal = new JRadioButton(/*"Delete local copy"*/ Language.getInstance().getMessages("DeleteLocalCopy"));
-  private JRadioButton deleteNetwork = new JRadioButton(/*"Delete network copy"*/ Language.getInstance().getMessages("DeleteNetworkCopy"));
-  private JRadioButton deleteBoth = new JRadioButton(/*"Delete both copies"*/ Language.getInstance().getMessages("DeleteBothCopies"));
-  private JRadioButton deleteIncomplete = new JRadioButton(/*"Delete local incomplete copy"*/ Language.getInstance().getMessages("DeleteLocalIncompleteCopy"));
+  private JRadioButton deleteLocal = new JRadioButton(/*"Delete local copy"*/ Language.getInstance().getMessage("DeleteLocalCopy"));
+  private JRadioButton deleteNetwork = new JRadioButton(/*"Delete network copy"*/ Language.getInstance().getMessage("DeleteNetworkCopy"));
+  private JRadioButton deleteBoth = new JRadioButton(/*"Delete both copies"*/ Language.getInstance().getMessage("DeleteBothCopies"));
+  private JRadioButton deleteIncomplete = new JRadioButton(/*"Delete local incomplete copy"*/ Language.getInstance().getMessage("DeleteLocalIncompleteCopy"));
   
   private static final int PADDINGWIDTH = 8;
   private static String WARNING =
-      /*"Are you sure you want to delete the data package"*/ Language.getInstance().getMessages("Delete.Warring_1") +"? \n" +
-      /*"If yes, please choose one option and click the Delete button."*/ Language.getInstance().getMessages("Delete.Warring_2"); 
+      /*"Are you sure you want to delete the data package"*/ Language.getInstance().getMessage("Delete.Warring_1") +"? \n" +
+      /*"If yes, please choose one option and click the Delete button."*/ Language.getInstance().getMessage("Delete.Warring_2"); 
 
   /** A reference to morpho frame */
   MorphoFrame morphoFrame = null;
@@ -172,7 +172,7 @@ public class DeleteDialog extends JDialog
     int dialogY = (new Double(centerY - 0.5 * dialogHeight)).intValue();
     setLocation(dialogX, dialogY);
     
-    setTitle(/*"Delete"*/ Language.getInstance().getMessages("Delete"));
+    setTitle(/*"Delete"*/ Language.getInstance().getMessage("Delete"));
     // Set the default close operation is dispose
     setDefaultCloseOperation(DISPOSE_ON_CLOSE);
     
@@ -286,7 +286,7 @@ public class DeleteDialog extends JDialog
     controlButtonsBox.add(Box.createHorizontalStrut(PADDINGWIDTH));
     
     //Cancel button
-    GUIAction cancelAction = new GUIAction(/*"Cancel"*/ Language.getInstance().getMessages("Cancel"), null, 
+    GUIAction cancelAction = new GUIAction(/*"Cancel"*/ Language.getInstance().getMessage("Cancel"), null, 
                                                       new CancelCommand(this));
     cancelButton = new JButton(cancelAction);
     controlButtonsBox.add(cancelButton);
