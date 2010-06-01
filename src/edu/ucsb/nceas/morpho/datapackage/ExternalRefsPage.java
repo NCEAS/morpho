@@ -67,13 +67,6 @@ import org.w3c.dom.Node;
 
 public class ExternalRefsPage extends AbstractUIPage
 {
-
-    /**
-     *Import Language into Morpho
-     *by pstango 2010/03/15 
-     */
-    public static Language lan = new Language();
-
   private ReferencesHandler referenceHandler;
   private SortableJTable dataPackageTable;
   private JTable referenceIdTable;
@@ -95,7 +88,7 @@ public class ExternalRefsPage extends AbstractUIPage
 
   // constant
   private static final int       DOCIDINDEX = 1;
-  private static final String SELECTPACKAGE = "1) "+ /*Select a data package*/ lan.getMessages("SelectADataPackage");
+  private static final String SELECTPACKAGE = "1) "+ /*Select a data package*/ Language.getInstance().getMessages("SelectADataPackage");
   private static final int           TOPGAP = 0;
   private static final int        BOTTOMGAP = 8;
   private static final int       BIGSIDEGAP = 16;
@@ -159,7 +152,7 @@ public class ExternalRefsPage extends AbstractUIPage
 
     // right panel is the reference id panel
     JPanel refsPanel = new JPanel();
-    String selectRefsString = "2) "+ /*Select a previous entry from this data package*/ lan.getMessages("SelectAPreviousEntryFromThisDataPackage");
+    String selectRefsString = "2) "+ /*Select a previous entry from this data package*/ Language.getInstance().getMessages("SelectAPreviousEntryFromThisDataPackage");
     JLabel selectedRefsLabel = new JLabel(selectRefsString);
     selectedRefsLabel.setFont(LABELFONT);
     selectedRefsLabel.setBorder(BorderFactory.createEmptyBorder

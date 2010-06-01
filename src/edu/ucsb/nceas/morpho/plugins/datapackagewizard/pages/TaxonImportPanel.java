@@ -81,13 +81,7 @@ import org.w3c.dom.Node;
 
 public class TaxonImportPanel extends JPanel implements WizardPageSubPanelAPI
 {
-	
-    /**
-     *Import Language into Morpho
-     *by pstango 2010/03/15 
-     */
-    public static Language lan = new Language();
-	
+
 	private static final int LABEL_WIDTH = 85;
 	private static final int LABEL_HEIGHT = 17;
 
@@ -108,8 +102,8 @@ public class TaxonImportPanel extends JPanel implements WizardPageSubPanelAPI
   private static final String nominal_xPath= "/attribute/measurementScale[1]/nominal[1]/nonNumericDomain[1]";
   private static final String ordinal_xPath= "/attribute/measurementScale[1]/ordinal[1]/nonNumericDomain[1]";
 
-  private String[] importChoiceText = {/*"Import all values"*/ lan.getMessages("TaxonImportPanel.importChoiceText_1"),
-		  								/*"Import only the values used in the dataset"*/ lan.getMessages("TaxonImportPanel.importChoiceText_2")
+  private String[] importChoiceText = {/*"Import all values"*/ Language.getInstance().getMessages("TaxonImportPanel.importChoiceText_1"),
+		  								/*"Import only the values used in the dataset"*/ Language.getInstance().getMessages("TaxonImportPanel.importChoiceText_2")
 		  							   };
 
   private int selectedImportChoice = 0;
@@ -130,7 +124,7 @@ public class TaxonImportPanel extends JPanel implements WizardPageSubPanelAPI
 
     JPanel topPanel = new JPanel();
     topPanel.setLayout(new BoxLayout(topPanel, BoxLayout.Y_AXIS));
-    JLabel topLabel = WidgetFactory.makeHTMLLabel(/*"Select the columns to import "*/ lan.getMessages("TaxonImportPanel.topLabel") + " ",
+    JLabel topLabel = WidgetFactory.makeHTMLLabel(/*"Select the columns to import "*/ Language.getInstance().getMessages("TaxonImportPanel.topLabel") + " ",
     											  1, false);
     topPanel.add(WidgetFactory.makeDefaultSpacer());
     topPanel.add(topLabel);
@@ -164,9 +158,9 @@ public class TaxonImportPanel extends JPanel implements WizardPageSubPanelAPI
 		subLabelPanel.setLayout(new BoxLayout(subLabelPanel, BoxLayout.Y_AXIS));
 		subLabelPanel.add(getLabel(""));
 		subLabelPanel.add(getLabel(""));
-		subLabelPanel.add(getLabel(/*"Table Name:"*/ lan.getMessages("TaxonImportPanel.TableName")+":"));
-		subLabelPanel.add(getLabel(/*"Column Name:"*/ lan.getMessages("TaxonImportPanel.ColumnName")+":"));
-		subLabelPanel.add(getLabel(/*"Column Type:"*/ lan.getMessages("TaxonImportPanel.ColumnType")+":"));
+		subLabelPanel.add(getLabel(/*"Table Name:"*/ Language.getInstance().getMessages("TaxonImportPanel.TableName")+":"));
+		subLabelPanel.add(getLabel(/*"Column Name:"*/ Language.getInstance().getMessages("TaxonImportPanel.ColumnName")+":"));
+		subLabelPanel.add(getLabel(/*"Column Type:"*/ Language.getInstance().getMessages("TaxonImportPanel.ColumnType")+":"));
 		subLabelPanel.setMaximumSize(new Dimension(LABEL_WIDTH, ht));
 		subLabelPanel.setMinimumSize(new Dimension(LABEL_WIDTH, ht));
 		subLabelPanel.setPreferredSize(new Dimension(LABEL_WIDTH, ht));
@@ -193,7 +187,7 @@ public class TaxonImportPanel extends JPanel implements WizardPageSubPanelAPI
 
     ///////////////////
     JLabel choiceLabel = WidgetFactory.makeHTMLLabel(/*"What data should be imported from these columns? ",*/
-    													lan.getMessages("TaxonImportPanel.choiceLabel")+"? ",
+    													Language.getInstance().getMessages("TaxonImportPanel.choiceLabel")+"? ",
     													1, true);
 		if(displayTable) {
 			add(choiceLabel);
@@ -753,12 +747,6 @@ public class TaxonImportPanel extends JPanel implements WizardPageSubPanelAPI
 
 class PopupHandler extends AbstractCustomTablePopupHandler {
 
-    /**
-     *Import Language into Morpho
-     *by pstango 2010/03/15 
-     */
-    public static Language lan = new Language();	
-
   private JList list;
   private Vector taxonData = null;
   private String displayString = null;
@@ -777,7 +765,7 @@ class PopupHandler extends AbstractCustomTablePopupHandler {
   private void init() {
 
     fillTaxonData();
-    JLabel headLabel = WidgetFactory.makeHTMLLabel(/*"Select the taxon category"*/ lan.getMessages("TaxonImportPanel.headLabel"),
+    JLabel headLabel = WidgetFactory.makeHTMLLabel(/*"Select the taxon category"*/ Language.getInstance().getMessages("TaxonImportPanel.headLabel"),
     												1, false);
 
     JPanel panel = new JPanel(new BorderLayout());

@@ -66,12 +66,6 @@ import edu.ucsb.nceas.morpho.plugins.vocabulary.VocabularyPlugin;
 import edu.ucsb.nceas.morpho.Language;//pstango 2010/03/15
 
 public class KeywordsPage extends AbstractUIPage {
-	
-    /**
-     *Import Language into Morpho
-     *by pstango 2010/03/15 
-     */
-    public static Language lan = new Language();	
 
   private final String pageID     = DataPackageWizardInterface.KEYWORDS_PAGE;
   private final String pageNumber = "";
@@ -93,8 +87,8 @@ public class KeywordsPage extends AbstractUIPage {
     "These keywords are not chosen from a predefined list",
     "These keywords are chosen from a predefined list:"
     */
-    lan.getMessages("Keywords.buttonsText_1"),
-    lan.getMessages("Keywords.buttonsText_2")
+    Language.getInstance().getMessages("Keywords.buttonsText_1"),
+    Language.getInstance().getMessages("Keywords.buttonsText_2")
   };
 
   private     String xPathRoot  = "/eml:eml/dataset/keywordSet[1]";
@@ -153,7 +147,7 @@ public class KeywordsPage extends AbstractUIPage {
 
     JLabel desc = WidgetFactory.makeHTMLLabel(
                       "<font size=\"4\"><b>" 
-                      +/*"Define Keyword Set:"*/ lan.getMessages("DefineKeywordSet") 
+                      +/*"Define Keyword Set:"*/ Language.getInstance().getMessages("DefineKeywordSet") 
                       +"</b></font>"
                       , 1);
     middlePanel.add(desc);
@@ -164,7 +158,7 @@ public class KeywordsPage extends AbstractUIPage {
     middlePanel.add(radioPanel);
 
     JPanel thesaurusPanel = WidgetFactory.makePanel(1);
-    thesaurusLabel = WidgetFactory.makeLabel(/*"Thesaurus name:"*/ lan.getMessages("ThesaurusName")+":"
+    thesaurusLabel = WidgetFactory.makeLabel(/*"Thesaurus name:"*/ Language.getInstance().getMessages("ThesaurusName")+":"
     											, false);
     thesaurusPanel.add(thesaurusLabel);
     thesaurusLabel.setVisible(false);
@@ -180,11 +174,11 @@ public class KeywordsPage extends AbstractUIPage {
 
     ////
     JPanel kwPanel = WidgetFactory.makePanel(16);
-    kwLabel = WidgetFactory.makeLabel(/*"Keywords:"*/ lan.getMessages("Keywords")+":"
+    kwLabel = WidgetFactory.makeLabel(/*"Keywords:"*/ Language.getInstance().getMessages("Keywords")+":"
     									, true);
     kwPanel.add(kwLabel);
 
-    kwList = WidgetFactory.makeList(new String[]{ /*"Keyword"*/ lan.getMessages("Keywords")},
+    kwList = WidgetFactory.makeList(new String[]{ /*"Keyword"*/ Language.getInstance().getMessages("Keywords")},
                                     new Object[]{ new JTextField()},
                                     8, true, false, false, true, true, true );
     

@@ -83,12 +83,7 @@ import edu.ucsb.nceas.morpho.Language;//pstango 2010/03/15
  */
 public class MorphoFrame extends JFrame
 {
-    /**
-     *Import Language into Morpho
-     *by pstango 2010/03/15 
-     */
-    public static Language lan = new Language();	
-	
+
     Component gp;
 
     private JMenuBar menuBar;
@@ -631,8 +626,8 @@ public class MorphoFrame extends JFrame
          String loc = dvcp.getPackageLocation();
          if (loc.equals("")) {
            int res = JOptionPane.showConfirmDialog(this,
-                 /*"Would you like to save the current package?"*/ lan.getMessages("MorphoFrame.SaveCurrentPackage") + "?",
-                 /*"Save ?"*/ lan.getMessages("Save") + " ?", JOptionPane.YES_NO_CANCEL_OPTION);
+                 /*"Would you like to save the current package?"*/ Language.getInstance().getMessages("MorphoFrame.SaveCurrentPackage") + "?",
+                 /*"Save ?"*/ Language.getInstance().getMessages("Save") + " ?", JOptionPane.YES_NO_CANCEL_OPTION);
            if (res==JOptionPane.YES_OPTION) {
              //save here using the save command implementation used by the frame
         	 GUIAction saveAction = this.lookupGuiActionByCommand(SaveCommandInterface.class);

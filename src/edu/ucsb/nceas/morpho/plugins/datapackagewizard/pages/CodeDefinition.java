@@ -71,19 +71,13 @@ import edu.ucsb.nceas.morpho.Language;//pstango 2010/03/15
  *
  */
 public class CodeDefinition extends AbstractUIPage {
-	
-    /**
-     *Import Language into Morpho
-     *by pstango 2010/03/15 
-     */
-    public static Language lan = new Language();	
 
   public final String pageID = DataPackageWizardInterface.CODE_DEFINITION;
   
   public final String pageNumber = "";
   
-  public final String title      = /*"Code Defintions Import Page"*/ lan.getMessages("CodeDefintionsImportPage");
-  public final String subtitle   = /*"Define the columns for the codes and definitions"*/ lan.getMessages("CodeDefinition.subtitle");
+  public final String title      = /*"Code Defintions Import Page"*/ Language.getInstance().getMessages("CodeDefintionsImportPage");
+  public final String subtitle   = /*"Define the columns for the codes and definitions"*/ Language.getInstance().getMessages("CodeDefinition.subtitle");
 
   private WizardContainerFrame mainWizFrame;
   private OrderedMap resultsMap;
@@ -124,7 +118,7 @@ public class CodeDefinition extends AbstractUIPage {
     infoPanel.setLayout(new BoxLayout(infoPanel, BoxLayout.Y_AXIS));
     JLabel label = WidgetFactory.makeHTMLLabel("Identify the columns of the new data table that contain the Codes and Definitions for the following Attribute - ", 1, false);
 
-    JLabel attrLabel = WidgetFactory.makeLabel(/*"Attribute Name:"*/ lan.getMessages("AttributeName") + ":",
+    JLabel attrLabel = WidgetFactory.makeLabel(/*"Attribute Name:"*/ Language.getInstance().getMessages("AttributeName") + ":",
     											false, WizardSettings.WIZARD_CONTENT_LABEL_DIMS);
     attrField = WidgetFactory.makeOneLineTextField();
     attrField.setEditable(false);
@@ -133,7 +127,7 @@ public class CodeDefinition extends AbstractUIPage {
     attrPanel.add(attrLabel);
     attrPanel.add(attrField);
 
-    JLabel entityLabel = WidgetFactory.makeLabel(/*"Entity Name:"*/ lan.getMessages("EntityName") + ":",
+    JLabel entityLabel = WidgetFactory.makeLabel(/*"Entity Name:"*/ Language.getInstance().getMessages("EntityName") + ":",
     												false, WizardSettings.WIZARD_CONTENT_LABEL_DIMS);
     entityField = WidgetFactory.makeOneLineTextField();
     entityField.setEditable(false);

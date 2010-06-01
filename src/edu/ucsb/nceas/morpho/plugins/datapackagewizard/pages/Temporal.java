@@ -61,23 +61,17 @@ import edu.ucsb.nceas.morpho.Language;//pstango 2010/03/15
  * the dialog</p>
  */
 public class Temporal extends AbstractUIPage{
-	
-    /**
-     *Import Language into Morpho
-     *by pstango 2010/03/15 
-     */
-    public static Language lan = new Language();
-	   	
+
 
   // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
   private final String pageID     = DataPackageWizardInterface.TEMPORAL;
-  private final String title      = /*"Temporal Coverage"*/ lan.getMessages("TemporalCoverage");
+  private final String title      = /*"Temporal Coverage"*/ Language.getInstance().getMessages("TemporalCoverage");
   private final String subtitle   = "";
   private final String xPathRoot  = "/eml:eml/dataset/coverage/temporalCoverage[";
   private final String pageNumber  = "11";
 
-  private final String[] colNames =  {/*"Time Coverages"*/ lan.getMessages("TimeCoverages")};
+  private final String[] colNames =  {/*"Time Coverages"*/ Language.getInstance().getMessages("TimeCoverages")};
   private final Object[] editors  =   null; //makes non-directly-editable
 
 
@@ -105,13 +99,13 @@ public class Temporal extends AbstractUIPage{
 
     JLabel desc = WidgetFactory.makeHTMLLabel(
       /*"<b>Enter information about temporal coverage.</b> "*/
-      "<b>" + lan.getMessages("Temporal.desc_1") + "</b> "
+      "<b>" + Language.getInstance().getMessages("Temporal.desc_1") + "</b> "
       /*
       +"Temporal coverage "
       +"can be specified as a single point in time, multiple points in time, "
       +"or a range thereof. "
       */
-      + lan.getMessages("Temporal.desc_2")
+      + Language.getInstance().getMessages("Temporal.desc_2")
       , 3);
     vbox.add(desc);
     vbox.add(WidgetFactory.makeDefaultSpacer());

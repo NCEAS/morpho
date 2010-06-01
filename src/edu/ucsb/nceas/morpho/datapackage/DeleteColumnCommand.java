@@ -50,12 +50,6 @@ import edu.ucsb.nceas.morpho.Language;//pstango 2010/03/15
 public class DeleteColumnCommand implements Command
 {
 
-    /**
-     *Import Language into Morpho
-     *by pstango 2010/03/15 
-     */
-    public static Language lan = new Language();	
-
   /* Referrence to  morphoframe */
   private MorphoFrame morphoFrame = null;
 
@@ -84,8 +78,8 @@ public class DeleteColumnCommand implements Command
     }//if
     
     int opt = JOptionPane.showConfirmDialog(morphoFrame,
-            /*"Are you sure that you want to delete the selected data column?"*/ lan.getMessages("DeleteColumnWarning") + "?",
-            /*"DO YOU WANT TO CONTINUE?"*/ lan.getMessages("Warning_Continue") + "?",
+            /*"Are you sure that you want to delete the selected data column?"*/ Language.getInstance().getMessages("DeleteColumnWarning") + "?",
+            /*"DO YOU WANT TO CONTINUE?"*/ Language.getInstance().getMessages("Warning_Continue") + "?",
             JOptionPane.YES_NO_OPTION);
    if (opt == JOptionPane.NO_OPTION) 
    {

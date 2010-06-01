@@ -56,17 +56,10 @@ import org.w3c.dom.Node;
 import edu.ucsb.nceas.morpho.Language;//pstango 2010/03/15
 
 public class ReferencesHandler {
-	
-    /**
-     *Import Language into Morpho
-     *by pstango 2010/03/15 
-     */
-    public static Language lan = new Language();
-
 
   private final String DEFAULT_DROPDOWN_ITEM = " ";
 
-  private final String EXT_DIALOG_DROPDOWN_ITEM = /*"Select from a different data package"*/ lan.getMessages("SelectFromADifferentDataPackage");
+  private final String EXT_DIALOG_DROPDOWN_ITEM = /*"Select from a different data package"*/ Language.getInstance().getMessages("SelectFromADifferentDataPackage");
 
   private String displayName;
   private String genericName;

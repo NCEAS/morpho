@@ -69,30 +69,24 @@ import edu.ucsb.nceas.morpho.Language;//pstango 2010/03/15
  */
 public class DeleteDialog extends JDialog
 {
-	
-    /**
-     *Import Language into Morpho
-     *by pstango 2010/03/15 
-     */
-    public static Language lan = new Language();	
- 
+
   /** Contorl button */ 
   private JButton executeButton = null;
   private JButton cancelButton = null;
   
   /** Action for executeButton */
-  private GUIAction executeAction = new GUIAction(/*"Delete"*/ lan.getMessages("Delete"), null, null);
+  private GUIAction executeAction = new GUIAction(/*"Delete"*/ Language.getInstance().getMessages("Delete"), null, null);
   
   /** Radio button */
-  private JRadioButton deleteLocal = new JRadioButton(/*"Delete local copy"*/ lan.getMessages("DeleteLocalCopy"));
-  private JRadioButton deleteNetwork = new JRadioButton(/*"Delete network copy"*/ lan.getMessages("DeleteNetworkCopy"));
-  private JRadioButton deleteBoth = new JRadioButton(/*"Delete both copies"*/ lan.getMessages("DeleteBothCopies"));
-  private JRadioButton deleteIncomplete = new JRadioButton(/*"Delete local incomplete copy"*/ lan.getMessages("DeleteLocalIncompleteCopy"));
+  private JRadioButton deleteLocal = new JRadioButton(/*"Delete local copy"*/ Language.getInstance().getMessages("DeleteLocalCopy"));
+  private JRadioButton deleteNetwork = new JRadioButton(/*"Delete network copy"*/ Language.getInstance().getMessages("DeleteNetworkCopy"));
+  private JRadioButton deleteBoth = new JRadioButton(/*"Delete both copies"*/ Language.getInstance().getMessages("DeleteBothCopies"));
+  private JRadioButton deleteIncomplete = new JRadioButton(/*"Delete local incomplete copy"*/ Language.getInstance().getMessages("DeleteLocalIncompleteCopy"));
   
   private static final int PADDINGWIDTH = 8;
   private static String WARNING =
-      /*"Are you sure you want to delete the data package"*/ lan.getMessages("Delete.Warring_1") +"? \n" +
-      /*"If yes, please choose one option and click the Delete button."*/ lan.getMessages("Delete.Warring_2"); 
+      /*"Are you sure you want to delete the data package"*/ Language.getInstance().getMessages("Delete.Warring_1") +"? \n" +
+      /*"If yes, please choose one option and click the Delete button."*/ Language.getInstance().getMessages("Delete.Warring_2"); 
 
   /** A reference to morpho frame */
   MorphoFrame morphoFrame = null;
@@ -178,7 +172,7 @@ public class DeleteDialog extends JDialog
     int dialogY = (new Double(centerY - 0.5 * dialogHeight)).intValue();
     setLocation(dialogX, dialogY);
     
-    setTitle(/*"Delete"*/ lan.getMessages("Delete"));
+    setTitle(/*"Delete"*/ Language.getInstance().getMessages("Delete"));
     // Set the default close operation is dispose
     setDefaultCloseOperation(DISPOSE_ON_CLOSE);
     
@@ -292,7 +286,7 @@ public class DeleteDialog extends JDialog
     controlButtonsBox.add(Box.createHorizontalStrut(PADDINGWIDTH));
     
     //Cancel button
-    GUIAction cancelAction = new GUIAction(/*"Cancel"*/ lan.getMessages("Cancel"), null, 
+    GUIAction cancelAction = new GUIAction(/*"Cancel"*/ Language.getInstance().getMessages("Cancel"), null, 
                                                       new CancelCommand(this));
     cancelButton = new JButton(cancelAction);
     controlButtonsBox.add(cancelButton);

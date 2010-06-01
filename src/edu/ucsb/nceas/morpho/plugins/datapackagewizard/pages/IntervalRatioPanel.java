@@ -80,12 +80,6 @@ import javax.swing.JOptionPane;
 import edu.ucsb.nceas.morpho.Language;//pstango 2010/03/15
 
 public class IntervalRatioPanel extends JPanel implements WizardPageSubPanelAPI {
-	
-    /**
-     *Import Language into Morpho
-     *by pstango 2010/03/15 
-     */
-    public static Language lan = new Language();	
 
   private JLabel     unitsPickListLabel;
   private JLabel     precisionLabel;
@@ -105,17 +99,17 @@ public class IntervalRatioPanel extends JPanel implements WizardPageSubPanelAPI 
 
   // note - order must match numberEMLVals array!
   private String[] numberTypesDisplayVals = new String[] {
-                        /*"NATURAL "*/ lan.getMessages("NATURAL") + " " 
-                        +"(" + /*"non-zero counting numbers: 1, 2, 3.."*/ lan.getMessages("NATURAL.Desc") + ")",
+                        /*"NATURAL "*/ Language.getInstance().getMessages("NATURAL") + " " 
+                        +"(" + /*"non-zero counting numbers: 1, 2, 3.."*/ Language.getInstance().getMessages("NATURAL.Desc") + ")",
                                               
-                        /*"WHOLE "*/ lan.getMessages("WHOLE") + " " 
-                        +"(" + /*"counting numbers & zero: 0, 1, 2, 3.."*/ lan.getMessages("WHOLE.Desc") + ")",
+                        /*"WHOLE "*/ Language.getInstance().getMessages("WHOLE") + " " 
+                        +"(" + /*"counting numbers & zero: 0, 1, 2, 3.."*/ Language.getInstance().getMessages("WHOLE.Desc") + ")",
                         
-                        /*"INTEGER "*/ lan.getMessages("INTEGER") + " "
-                        +"(" + /*"+/- counting nums & zero: -2, -1, 0, 1.."*/ lan.getMessages("INTEGER.Desc") + ")",
+                        /*"INTEGER "*/ Language.getInstance().getMessages("INTEGER") + " "
+                        +"(" + /*"+/- counting nums & zero: -2, -1, 0, 1.."*/ Language.getInstance().getMessages("INTEGER.Desc") + ")",
                         
-                        /*"REAL  "*/ /*"NATURAL "*/ lan.getMessages("REAL") + " " 
-                        +"(" + /*"+/- fractions & non-fractions: -1/2, 3.14.."*/ lan.getMessages("REAL.Desc") + ")"
+                        /*"REAL  "*/ /*"NATURAL "*/ Language.getInstance().getMessages("REAL") + " " 
+                        +"(" + /*"+/- fractions & non-fractions: -1/2, 3.14.."*/ Language.getInstance().getMessages("REAL.Desc") + ")"
                     };
 
   // note - order must match numberTypesDisplayVals array!
@@ -201,7 +195,7 @@ public class IntervalRatioPanel extends JPanel implements WizardPageSubPanelAPI 
     //this.setMaximumSize(dims);
 
     ////////////////////////
-    unitsPickListLabel    = WidgetFactory.makeLabel(/*"Standard Unit:"*/ lan.getMessages("StandardUnit") + ":" ,
+    unitsPickListLabel    = WidgetFactory.makeLabel(/*"Standard Unit:"*/ Language.getInstance().getMessages("StandardUnit") + ":" ,
     		true, WizardSettings.WIZARD_CONTENT_LABEL_DIMS);
     unitsPickList = new UnitsPickList(parentPage, unitsPickListLabel);
     /*
@@ -216,7 +210,7 @@ public class IntervalRatioPanel extends JPanel implements WizardPageSubPanelAPI 
     ////////////////////////
 
     JPanel precisionPanel = WidgetFactory.makePanel();
-    precisionLabel    = WidgetFactory.makeLabel(/*"Precision:"*/ lan.getMessages("Precision") + ":",
+    precisionLabel    = WidgetFactory.makeLabel(/*"Precision:"*/ Language.getInstance().getMessages("Precision") + ":",
     											true, WizardSettings.WIZARD_CONTENT_LABEL_DIMS);
     precisionPanel.add(precisionLabel);
     precisionField = WidgetFactory.makeOneLineTextField();
@@ -227,13 +221,13 @@ public class IntervalRatioPanel extends JPanel implements WizardPageSubPanelAPI 
     precisionGrid.add(this.getLabel(
         WizardSettings.HTML_NO_TABLE_OPENING
         +WizardSettings.HTML_EXAMPLE_FONT_OPENING
-        +/*"e.g:"*/ lan.getMessages("e.g") + ": " 
+        +/*"e.g:"*/ Language.getInstance().getMessages("e.g") + ": " 
         /*
         +" for an attribute with unit \"meter\", "
         +"a precision of \"0.1\" would be interpreted as precise to the "
         +"nearest 1/10th of a meter"
         */
-        + lan.getMessages("IntervalRatioPanel.PrecisionDesc")
+        + Language.getInstance().getMessages("IntervalRatioPanel.PrecisionDesc")
         +WizardSettings.HTML_EXAMPLE_FONT_CLOSING
         +WizardSettings.HTML_NO_TABLE_CLOSING));
 
@@ -262,7 +256,7 @@ public class IntervalRatioPanel extends JPanel implements WizardPageSubPanelAPI 
     numberTypePickList.setPreferredSize(new Dimension(200,10));
 
     JPanel numberTypePanel = WidgetFactory.makePanel();
-    numberTypeLabel = WidgetFactory.makeLabel(/*"Number Type:"*/ lan.getMessages("NumberType") + ":" ,
+    numberTypeLabel = WidgetFactory.makeLabel(/*"Number Type:"*/ Language.getInstance().getMessages("NumberType") + ":" ,
     											true, WizardSettings.WIZARD_CONTENT_LABEL_DIMS);
     numberTypePanel.add(numberTypeLabel);
     numberTypePanel.add(numberTypePickList);
@@ -279,7 +273,7 @@ public class IntervalRatioPanel extends JPanel implements WizardPageSubPanelAPI 
 
     JPanel boundsPanel = WidgetFactory.makePanel(3);;
 
-    boundsLabel = WidgetFactory.makeLabel(/*"Bounds:"*/ lan.getMessages("Bounds") + ":",
+    boundsLabel = WidgetFactory.makeLabel(/*"Bounds:"*/ Language.getInstance().getMessages("Bounds") + ":",
     		false,
             WizardSettings.WIZARD_CONTENT_LABEL_DIMS);
     boundsPanel.add(boundsLabel);
@@ -306,12 +300,12 @@ public class IntervalRatioPanel extends JPanel implements WizardPageSubPanelAPI 
     JPanel buttonPanel = new JPanel();
     buttonPanel.setLayout(new BoxLayout(buttonPanel,BoxLayout.Y_AXIS));
 
-    addButton = new JButton(/*"Add"*/ lan.getMessages("Add"));
+    addButton = new JButton(/*"Add"*/ Language.getInstance().getMessages("Add"));
     addButton.setPreferredSize(WizardSettings.LIST_BUTTON_DIMS_SMALL);
     addButton.setMaximumSize(WizardSettings.LIST_BUTTON_DIMS_SMALL);
     addButton.setFont(WizardSettings.WIZARD_CONTENT_FONT);
 
-    delButton = new JButton(/*"Delete"*/ lan.getMessages("Delete"));
+    delButton = new JButton(/*"Delete"*/ Language.getInstance().getMessages("Delete"));
     delButton.setPreferredSize(WizardSettings.LIST_BUTTON_DIMS_SMALL);
     delButton.setMaximumSize(WizardSettings.LIST_BUTTON_DIMS_SMALL);
     delButton.setFont(WizardSettings.WIZARD_CONTENT_FONT);
@@ -849,7 +843,7 @@ class UnitsPickList extends JPanel {
 
   private final JComboBox unitTypesList  = new JComboBox();
   private final JComboBox unitsList      = new JComboBox();
-  private final String UNITLIST_DEFAULT  = /*"- Select a Unit Type -"*/ "- " + lan.getMessages("SelectUnitType") + " -" ;
+  private final String UNITLIST_DEFAULT  = /*"- Select a Unit Type -"*/ "- " + Language.getInstance().getMessages("SelectUnitType") + " -" ;
   private JButton newUnit;
   private JLabel unitTypeLabel;
   private JPanel parentPanel;
@@ -920,7 +914,7 @@ class UnitsPickList extends JPanel {
       });
     setUI(unitsList);
 
-    newUnit = new JButton(/*"Define new unit"*/ lan.getMessages("DefineNewUnit") );
+    newUnit = new JButton(/*"Define new unit"*/ Language.getInstance().getMessages("DefineNewUnit") );
     newUnit.addActionListener( new ActionListener() {
 
       public void actionPerformed(ActionEvent ae) {
@@ -942,7 +936,7 @@ class UnitsPickList extends JPanel {
 				};
 				customUnitDialog = WidgetFactory.makeContainerDialogNoParent(customPage, okAction, cancelAction);
 
-				customUnitDialog.setTitle(/*"New Unit Definition"*/ lan.getMessages("NewUnitDefinition"));
+				customUnitDialog.setTitle(/*"New Unit Definition"*/ Language.getInstance().getMessages("NewUnitDefinition"));
 				Point loc = parentPanel.getLocationOnScreen();
 				int wd = parentPanel.getWidth();
 				int ht = parentPanel.getHeight();

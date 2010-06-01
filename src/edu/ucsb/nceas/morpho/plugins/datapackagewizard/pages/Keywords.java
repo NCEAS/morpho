@@ -56,25 +56,19 @@ import java.util.ArrayList;
 
 public class Keywords
     extends AbstractUIPage {
-	
-    /**
-     *Import Language into Morpho
-     *by pstango 2010/03/15 
-     */
-    public static Language lan = new Language();
 
   // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
   private final String pageID = DataPackageWizardInterface.KEYWORDS;
-  private final String title = /*"Keywords"*/ lan.getMessages("Keywords");
+  private final String title = /*"Keywords"*/ Language.getInstance().getMessages("Keywords");
   private final String subtitle = "";
   private final String KEYWORDSET_REL_XPATH = "/keywordSet[";
   private String xPathRoot = "/eml:eml/dataset/keywordSet[";
   private final String pageNumber = "3";
 
   private final String[] colNames = {
-      /*"Keywords"*/ lan.getMessages("Keywords"),
-      /*"Thesaurus"*/ lan.getMessages("Thesaurus")
+      /*"Keywords"*/ Language.getInstance().getMessages("Keywords"),
+      /*"Thesaurus"*/ Language.getInstance().getMessages("Thesaurus")
       };
   private final Object[] editors = null; //makes non-directly-editable
 
@@ -100,7 +94,7 @@ public class Keywords
 
     JLabel desc1 = WidgetFactory.makeHTMLLabel(
     	/*"<b>Enter the keywords.</b>*/
-    	"<b>" + lan.getMessages("Keywords.desc1_1") + "</b> "
+    	"<b>" + Language.getInstance().getMessages("Keywords.desc1_1") + "</b> "
     	/*
     	+ "A data package may have multiple keywords associated with it to enable "
         + "easy searching and categorization.  In addition, one or more keywords "
@@ -108,7 +102,7 @@ public class Keywords
         + "the association of a data package with an authoritative definition. "
         + "Thesauri may also be used for internal categorization."
         */
-    	+ lan.getMessages("Keywords.desc1_2")
+    	+ Language.getInstance().getMessages("Keywords.desc1_2")
         , 3);
     vbox.add(desc1);
     vbox.add(WidgetFactory.makeDefaultSpacer());

@@ -47,17 +47,11 @@ import javax.swing.JTextArea;
 
 public class UsageRights extends AbstractUIPage{
 
-    /**
-     *Import Language into Morpho
-     *by pstango 2010/03/15 
-     */
-    public static Language lan = new Language();	
-	
   // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
   private final String pageID     = DataPackageWizardInterface.USAGE_RIGHTS;
   private final String pageNumber = "9";
-  private final String title      = /*"Usage Rights"*/ lan.getMessages("UsageRights");
+  private final String title      = /*"Usage Rights"*/ Language.getInstance().getMessages("UsageRights");
   private final String subtitle   = "";
 
   private final String USAGE_ROOT      = "intellectualRights/";
@@ -89,12 +83,12 @@ public class UsageRights extends AbstractUIPage{
 
     JLabel desc = WidgetFactory.makeHTMLLabel(
       /*"<b>Enter a paragraph that describes the intended usage rights of the data package.</b>"*/
-      "<b>"  + lan.getMessages("UsageRights.desc_1") + "</b>"
+      "<b>"  + Language.getInstance().getMessages("UsageRights.desc_1") + "</b>"
       /*
       +"Specifically, include any restrictions (scientific, technical, ethical) to sharing your data within the"
       +" public scientific domain. "
       */
-      + lan.getMessages("UsageRights.desc_2")
+      + Language.getInstance().getMessages("UsageRights.desc_2")
       , 3);
     vbox.add(desc);
 
@@ -102,7 +96,7 @@ public class UsageRights extends AbstractUIPage{
 
     JPanel usagePanel = WidgetFactory.makePanel();
 
-    JLabel usageLabel = WidgetFactory.makeLabel(/*"Usage Rights:"*/ lan.getMessages("UsageRights") + ":"
+    JLabel usageLabel = WidgetFactory.makeLabel(/*"Usage Rights:"*/ Language.getInstance().getMessages("UsageRights") + ":"
     											, false);
     usagePanel.add(usageLabel);
 

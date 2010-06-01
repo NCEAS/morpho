@@ -65,24 +65,18 @@ import edu.ucsb.nceas.morpho.framework.UIController;
 import edu.ucsb.nceas.morpho.Language;//pstango 2010/03/15
 
 public class Entity extends AbstractUIPage{
-	
-    /**
-     *Import Language into Morpho
-     *by pstango 2010/03/15 
-     */
-    public static Language lan = new Language();	
 
   // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
   private final String pageID     = DataPackageWizardInterface.ENTITY;
   private final String pageNumber = "";
-  private final String title      = /*"Data Information:"*/ lan.getMessages("DataInformation");
-  private final String subtitle   = /*"Table (Entity)"*/ lan.getMessages("Table") + " (" + lan.getMessages("Entity")+ ")";
+  private final String title      = /*"Data Information:"*/ Language.getInstance().getMessages("DataInformation");
+  private final String subtitle   = /*"Table (Entity)"*/ Language.getInstance().getMessages("Table") + " (" + Language.getInstance().getMessages("Entity")+ ")";
   private String xPathRoot  = "/eml:eml/dataset/dataTable";
 
-  private final String[] colNames =  {/*"Attribute Name"*/ lan.getMessages("AttributeName") ,
-                                      /*"Attribute Definition"*/ lan.getMessages("AttributeDefinition") ,
-                                      /*"Measurement Scale"*/ lan.getMessages("MeasurementScale")
+  private final String[] colNames =  {/*"Attribute Name"*/ Language.getInstance().getMessages("AttributeName") ,
+                                      /*"Attribute Definition"*/ Language.getInstance().getMessages("AttributeDefinition") ,
+                                      /*"Measurement Scale"*/ Language.getInstance().getMessages("MeasurementScale")
                                       };
   private final Object[] editors  =   null; //makes non-directly-editable
 
@@ -134,11 +128,11 @@ public class Entity extends AbstractUIPage{
       "<b>" 
       /*+"Enter some information about the data table contained in your "
       +"file."*/
-      + lan.getMessages("Entity.desc1_1")		
+      + Language.getInstance().getMessages("Entity.desc1_1")		
       +"</b> "
       /*+"If you have more than one data table, additional tables may be added "
       +"after the completion of this wizard.",*/
-      +lan.getMessages("Entity.desc1_2"),
+      +Language.getInstance().getMessages("Entity.desc1_2"),
                                    2);
     this.add(desc1);
 
@@ -149,7 +143,7 @@ public class Entity extends AbstractUIPage{
     JPanel attributePanel = WidgetFactory.makePanel(1);
 
     entityNameLabel = WidgetFactory.makeLabel(/*"Table name:"*/ 
-    										lan.getMessages("TableName") + ":"	
+    										Language.getInstance().getMessages("TableName") + ":"	
     										, true);
 
     attributePanel.add(entityNameLabel);
@@ -166,11 +160,11 @@ public class Entity extends AbstractUIPage{
     JLabel entityDesc = WidgetFactory.makeHTMLLabel(
     /*"Enter a paragraph that describes the table or entity, its type, and "
     +"relevant information about the data that it contains." */
-    lan.getMessages("Entity.entityDesc")
+    Language.getInstance().getMessages("Entity.entityDesc")
     +"<br></br>"
     +"<font color=\"666666\">&nbsp;&nbsp;" 
     +"[" 
-    + /*"Example:"*/ lan.getMessages("Example") + ":"
+    + /*"Example:"*/ Language.getInstance().getMessages("Example") + ":"
     +"&nbsp;&nbsp;&nbsp;" 
     +"Species abundance data for 1996 at the VCR LTER site"
     +"]</font>", 3);
@@ -179,7 +173,7 @@ public class Entity extends AbstractUIPage{
 
     JPanel entityDescPanel = WidgetFactory.makePanel();
 
-    JLabel entityLabel = WidgetFactory.makeLabel(/*"Description"*/ lan.getMessages("Description"), false);
+    JLabel entityLabel = WidgetFactory.makeLabel(/*"Description"*/ Language.getInstance().getMessages("Description"), false);
     entityLabel.setVerticalAlignment(SwingConstants.TOP);
     entityLabel.setAlignmentY(SwingConstants.TOP);
     entityDescPanel.add(entityLabel);
@@ -196,12 +190,12 @@ public class Entity extends AbstractUIPage{
 	
 	    this.add(WidgetFactory.makeHTMLLabel(
 	                      /*"One or more attributes (columns) must be defined:"*/
-	    				lan.getMessages("Entity.AttributeMustBeDefine") + ":"
+	    				Language.getInstance().getMessages("Entity.AttributeMustBeDefine") + ":"
 	    				, 1));
 	
 	    JPanel attribsPanel = WidgetFactory.makePanel();
 	
-	    attributesLabel = WidgetFactory.makeLabel(/*"Attributes"*/ lan.getMessages("Attributes"), true);
+	    attributesLabel = WidgetFactory.makeLabel(/*"Attributes"*/ Language.getInstance().getMessages("Attributes"), true);
 	    attribsPanel.add(attributesLabel);
 	
 	    attributeList = WidgetFactory.makeList(colNames, editors, 4,

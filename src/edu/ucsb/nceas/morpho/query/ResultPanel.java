@@ -79,13 +79,7 @@ import edu.ucsb.nceas.morpho.Language;//pstango 2010/03/15
  */
 public class ResultPanel extends JPanel implements StoreStateChangeEvent
 {
-	
-    /**
-     *Import Language into Morpho
-     *by pstango 2010/03/15 
-     */
-    public static Language lan = new Language();	
-	
+
   /** A reference to the ResultSet being displayed */
   private ResultSet results = null;
   /** A reference to the framework */
@@ -270,13 +264,13 @@ public class ResultPanel extends JPanel implements StoreStateChangeEvent
        {
 	        popup = new JPopupMenu();
 	        // Create a openPackage action
-	        GUIAction openAction = new GUIAction(/*"Open Package"*/ lan.getMessages("OpenPackage"), null,
+	        GUIAction openAction = new GUIAction(/*"Open Package"*/ Language.getInstance().getMessages("OpenPackage"), null,
 	                            new OpenPackageCommand(dialog));
 	        openMenu = new JMenuItem(openAction);
 	        popup.add(openMenu);
 	
 	        // Create a OpenPreviousVersion action
-	        GUIAction openPreviousAction = new GUIAction(/*"Open Previous Version"*/ lan.getMessages("OpenPreviousVersion") ,
+	        GUIAction openPreviousAction = new GUIAction(/*"Open Previous Version"*/ Language.getInstance().getMessages("OpenPreviousVersion") ,
 	        					null,
 	                            new OpenPreviousVersionCommand(dialog, null));
 	        /*openPreviousAction.setEnabledOnStateChange(
@@ -294,14 +288,14 @@ public class ResultPanel extends JPanel implements StoreStateChangeEvent
 	        if (dialog != null)
 	        {
 	          // refresh open dialog
-	          refreshAction = new GUIAction(/*"Refresh"*/ lan.getMessages("Refresh") ,
+	          refreshAction = new GUIAction(/*"Refresh"*/ Language.getInstance().getMessages("Refresh") ,
 	        		  						null,
 	                                                new RefreshCommand(dialog));
 	        }
 	        else
 	        {
 	          // refresh current acitve frame
-	          refreshAction = new GUIAction(/*"Refresh"*/ lan.getMessages("Refresh"),
+	          refreshAction = new GUIAction(/*"Refresh"*/ Language.getInstance().getMessages("Refresh"),
 	        		  							null, new RefreshCommand());
 	        }
 	        refreshMenu = new JMenuItem(refreshAction);
@@ -310,7 +304,7 @@ public class ResultPanel extends JPanel implements StoreStateChangeEvent
 	        popup.add(new JSeparator());
 	
 	        // Create a action to open a synchronize dialog
-	        GUIAction synchronizeAction = new GUIAction(/*"Synchronize..."*/ lan.getMessages("Synchronize"), 
+	        GUIAction synchronizeAction = new GUIAction(/*"Synchronize..."*/ Language.getInstance().getMessages("Synchronize"), 
 	        								null,
 	                                      new OpenSynchronizeDialogCommand(dialog));
 	        /*synchronizeAction.setEnabledOnStateChange(
@@ -326,7 +320,7 @@ public class ResultPanel extends JPanel implements StoreStateChangeEvent
 	        popup.add(new JSeparator());
 	
 	        // Create a action to open a delete dialog
-	        GUIAction openDeleteDialogAction = new GUIAction(/*"Delete..."*/ lan.getMessages("Delete"), null,
+	        GUIAction openDeleteDialogAction = new GUIAction(/*"Delete..."*/ Language.getInstance().getMessages("Delete"), null,
 	                                         new OpenDeleteDialogCommand(dialog));
 	        deleteMenu = new JMenuItem(openDeleteDialogAction);
 	        popup.add(deleteMenu);
@@ -334,7 +328,7 @@ public class ResultPanel extends JPanel implements StoreStateChangeEvent
 	        popup.add(new JSeparator());
 	
 	        // Create export
-	        GUIAction exportAction = new GUIAction(/*"Export..."*/ lan.getMessages("Export"), null,
+	        GUIAction exportAction = new GUIAction(/*"Export..."*/ Language.getInstance().getMessages("Export"), null,
 	//                            new ExportCommand(dialog, ExportCommand.REGULAR));
 	                             new OpenExportDialogCommand(dialog));
 	        /*exportAction.setEnabledOnStateChange(

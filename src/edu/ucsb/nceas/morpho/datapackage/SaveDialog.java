@@ -101,12 +101,6 @@ import edu.ucsb.nceas.morpho.util.XMLUtil;
  */
 public class SaveDialog extends JDialog {
 
-    /**
-     *Import Language into Morpho
-     *by pstango 2010/03/15 
-     */
-    public static Language lan = new Language();
-    
 	/** Control button */
 	private JButton executeButton = null;
 	private JButton cancelButton = null;
@@ -114,16 +108,16 @@ public class SaveDialog extends JDialog {
 	private boolean showPackageFlag = true;
 
  /** Radio button */
-  private JCheckBox localLoc = new JCheckBox(/*"Save Locally"*/ lan.getMessages("SaveLocally"));
-  private JCheckBox networkLoc = new JCheckBox(/*"Save to Network."*/ lan.getMessages("SaveToNetwork"));
-  private JCheckBox upgradeEml = new JCheckBox(/*"Upgrade to latest EML "*/ lan.getMessages("UpgradeToLatestEML") 
+  private JCheckBox localLoc = new JCheckBox(/*"Save Locally"*/ Language.getInstance().getMessages("SaveLocally"));
+  private JCheckBox networkLoc = new JCheckBox(/*"Save to Network."*/ Language.getInstance().getMessages("SaveToNetwork"));
+  private JCheckBox upgradeEml = new JCheckBox(/*"Upgrade to latest EML "*/ Language.getInstance().getMessages("UpgradeToLatestEML") 
   												+"(" 
   												+ EML200DataPackage.LATEST_EML_VER + ")");
 
 	private static final int PADDINGWIDTH = 8;
 	  private static String WARNING =
       /*"Please choose where you would like to save the data package."*/
-	  lan.getMessages("ChooseWhereToSave")
+	  Language.getInstance().getMessages("ChooseWhereToSave")
 	  ;
 
 	/** A reference to morpho frame */
@@ -181,7 +175,7 @@ public class SaveDialog extends JDialog {
 		int dialogY = (new Double(centerY - 0.5 * dialogHeight)).intValue();
 		setLocation(dialogX, dialogY);
 
-		setTitle(/*"Save Current DataPackage"*/ lan.getMessages("SaveCurrentDataPackage"));
+		setTitle(/*"Save Current DataPackage"*/ Language.getInstance().getMessages("SaveCurrentDataPackage"));
     	// Set the default close operation is dispose
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 
@@ -237,12 +231,12 @@ public class SaveDialog extends JDialog {
 		controlButtonsBox.add(Box.createHorizontalGlue());
 
 		// Save button
-		executeButton = new JButton(/*"Save"*/ lan.getMessages("Save"));
+		executeButton = new JButton(/*"Save"*/ Language.getInstance().getMessages("Save"));
 		controlButtonsBox.add(executeButton);
 		controlButtonsBox.add(Box.createHorizontalStrut(PADDINGWIDTH));
 
 		// Cancel button
-		cancelButton = new JButton(/*"Cancel"*/ lan.getMessages("Cancel"));
+		cancelButton = new JButton(/*"Cancel"*/ Language.getInstance().getMessages("Cancel"));
 		controlButtonsBox.add(cancelButton);
 		controlButtonsBox.add(Box.createHorizontalStrut(PADDINGWIDTH));
 

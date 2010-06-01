@@ -78,13 +78,7 @@ import edu.ucsb.nceas.morpho.Language;//pstango 2010/03/15
  */
 public class CorrectionWizardController 
 {
-	
-    /**
-     *Import Language into Morpho
-     *by pstango 2010/03/15 
-     */
-    public static Language lan = new Language();
-	
+
 	private Vector errorPathList = null;
 	// page library to store wizard page
 	private CustomizedWizardPageLibrary wizardPageLibrary = new CustomizedWizardPageLibrary();
@@ -139,19 +133,19 @@ public class CorrectionWizardController
 	private final static String NEXTNODE = "nextNode";
 	private final static String INTRODUCTIONPREFIX = 
 		/*"Morpho has detected metadata fields that are invalid in the newer EML version.\n"*/ 
-		lan.getMessages("CorrectionWizardController.INTRODUCTIONPREFIX_1") + "\n"
+		Language.getInstance().getMessages("CorrectionWizardController.INTRODUCTIONPREFIX_1") + "\n"
 	    /*+"This can include whitespace-only fields, and/or non-numeric values where numbers are required.\n "*/
-	    + lan.getMessages("CorrectionWizardController.INTRODUCTIONPREFIX_2") +"\n"
+	    + Language.getInstance().getMessages("CorrectionWizardController.INTRODUCTIONPREFIX_2") +"\n"
 	    ;
 	
 	private final static String INTRODUCTIONSUFFIX  = 
 									/*"The following wizard pages will allow you to enter valid information in these fields."*/
-									lan.getMessages("CorrectionWizardController.INTRODUCTIONPREFIX_3")
+									Language.getInstance().getMessages("CorrectionWizardController.INTRODUCTIONPREFIX_3")
 									;
 	private final static String INTRODUCTIONWIZARD = INTRODUCTIONPREFIX /*+ "wizard pages"*/ + INTRODUCTIONSUFFIX+".\n"; 
 	private final static String MESSAGEFORWIZARD = INTRODUCTIONWIZARD +
 			/*"For optional fields, you may simply choose to leave them blank"*/
-		    lan.getMessages("CorrectionWizardController.INTRODUCTIONPREFIX_4")
+		    Language.getInstance().getMessages("CorrectionWizardController.INTRODUCTIONPREFIX_4")
 			;
 			
 	private final static String INTRODUCTIONTREEEDITOR = INTRODUCTIONPREFIX+ "series Morpho editor frames"+INTRODUCTIONSUFFIX;

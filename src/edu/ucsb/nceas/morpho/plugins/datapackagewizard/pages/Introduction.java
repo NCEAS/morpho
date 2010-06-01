@@ -48,12 +48,6 @@ import javax.swing.JLabel;
 import edu.ucsb.nceas.morpho.Language;//pstango 2010/03/15
 
 public class Introduction extends AbstractUIPage {
-	
-    /**
-     *Import Language into Morpho
-     *by pstango 2010/03/15 
-     */
-    public static Language lan = new Language();
 
   public final String pageID     = DataPackageWizardInterface.INTRODUCTION;
   public final String pageNumber = "1";
@@ -61,7 +55,7 @@ public class Introduction extends AbstractUIPage {
 //////////////////////////////////////////////////////////
   private JComponent metadataIntroLink;
   public final String title      = /*"Welcome to the New Data Package Wizard"*/ 
-	  								lan.getMessages("Introduction.title");
+	  								Language.getInstance().getMessages("Introduction.title");
   public final String subtitle   = " ";
 
 
@@ -86,13 +80,13 @@ public class Introduction extends AbstractUIPage {
     +"data themselves. <br></br></p>"
     */
     "<p>"
-    +lan.getMessages("Introduction.desc1_1")
+    +Language.getInstance().getMessages("Introduction.desc1_1")
     +"<br></br></p>"
     /*
     +"If you wish to improve your understanding of metadata "
     +"and related concepts, you should start by reading "
     */ 
-    +lan.getMessages("Introduction.desc1_2")
+    +Language.getInstance().getMessages("Introduction.desc1_2")
     ,3);
 
     JLabel desc2 = WidgetFactory.makeHTMLLabel(
@@ -103,7 +97,7 @@ public class Introduction extends AbstractUIPage {
     +"<i>Morpho Editor</i> (after you finish this wizard, choose \"Add/"
     +"Edit Documentation\" from the \"Documentation\" menu on the main Morpho screen).<br></br></p>"
     */
-    lan.getMessages("Introduction.desc2_1")
+    Language.getInstance().getMessages("Introduction.desc2_1")
     +"<br></br></p>"
 
     /*
@@ -113,7 +107,7 @@ public class Introduction extends AbstractUIPage {
     +"information using this wizard: </p>"
     */
     +"<br><p>"
-    +lan.getMessages("Introduction.desc2_2")
+    +Language.getInstance().getMessages("Introduction.desc2_2")
     +"</p>"
     /*
     +"<li><b>Title and abstract</b><br></br></li>"
@@ -130,17 +124,17 @@ public class Introduction extends AbstractUIPage {
     +"possible.</p>"
 	*/
 
-    +"<li><b>"+ lan.getMessages("TitleAndAbstract") +"</b><br></br></li>"
-    +"<li><b>"+ lan.getMessages("Keywords") +"</b><br></br></li>"
-    +"<li><b>"+ lan.getMessages("PeopleAndOrganizations") +"</b><br></br></li>"
-    +"<li><b>"+ lan.getMessages("UsageRights") +"</b><br></br></li>"
-    +"<li><b>"+ lan.getMessages("ResearchProjectInformation") +"</b><br></br></li>"
-    +"<li><b>"+ lan.getMessages("CoverageDetails") +"</b><br></br></li>"
-    +"<li><b>"+ lan.getMessages("MethodsAndSampling") +"</b><br></br></li>"
-    +"<li><b>"+ lan.getMessages("AccessInformation") +"</b></li></ul>"
+    +"<li><b>"+ Language.getInstance().getMessages("TitleAndAbstract") +"</b><br></br></li>"
+    +"<li><b>"+ Language.getInstance().getMessages("Keywords") +"</b><br></br></li>"
+    +"<li><b>"+ Language.getInstance().getMessages("PeopleAndOrganizations") +"</b><br></br></li>"
+    +"<li><b>"+ Language.getInstance().getMessages("UsageRights") +"</b><br></br></li>"
+    +"<li><b>"+ Language.getInstance().getMessages("ResearchProjectInformation") +"</b><br></br></li>"
+    +"<li><b>"+ Language.getInstance().getMessages("CoverageDetails") +"</b><br></br></li>"
+    +"<li><b>"+ Language.getInstance().getMessages("MethodsAndSampling") +"</b><br></br></li>"
+    +"<li><b>"+ Language.getInstance().getMessages("AccessInformation") +"</b></li></ul>"
 
-    +"<p><b>"+ lan.getMessages("Note")+":</b>"
-    +lan.getMessages("Introduction.desc2_3")
+    +"<p><b>"+ Language.getInstance().getMessages("Note")+":</b>"
+    +Language.getInstance().getMessages("Introduction.desc2_3")
     +"</p>"
     , 19);
 
@@ -160,7 +154,7 @@ public class Introduction extends AbstractUIPage {
     if (metadataIntroLink==null) {
 
       GUIAction newDataTableAction
-        = new GUIAction(/*"An Introduction to Ecological Metadata Language (EML) "*/ lan.getMessages("EML_Introduction"),
+        = new GUIAction(/*"An Introduction to Ecological Metadata Language (EML) "*/ Language.getInstance().getMessages("EML_Introduction"),
                         null,
                         new Command() {
 

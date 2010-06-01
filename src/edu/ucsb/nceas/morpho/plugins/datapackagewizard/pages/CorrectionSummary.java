@@ -25,19 +25,13 @@ import edu.ucsb.nceas.morpho.util.Log;
 import edu.ucsb.nceas.utilities.OrderedMap;
 
 public class CorrectionSummary extends AbstractUIPage {
-	
-    /**
-     *Import Language into Morpho
-     *by pstango 2010/03/15 
-     */
-    public static Language lan = new Language();	
 
 	  public final String pageID     = DataPackageWizardInterface.CORRECTION_SUMMARY;
 	  
 	  public final String pageNumber = "15";
-	  public final String CORRECTION_WIZ_SUMMARY_TITLE = /*"Correction Wizard"*/ lan.getMessages("CorrectionWizard");
+	  public final String CORRECTION_WIZ_SUMMARY_TITLE = /*"Correction Wizard"*/ Language.getInstance().getMessages("CorrectionWizard");
 	  //public final String ENTITY_WIZ_SUMMARY_TITLE  = "New Data Table Wizard";
-	  public final String SUBTITLE                  = /*"Summary"*/ lan.getMessages("Summary");
+	  public final String SUBTITLE                  = /*"Summary"*/ Language.getInstance().getMessages("Summary");
 
 	  private JLabel desc1;
 	  private JLabel desc2;
@@ -47,11 +41,11 @@ public class CorrectionSummary extends AbstractUIPage {
 	  private String message = "";
 	  private static final String FINISH = 
 		  /*"Morpho has successfully upgraded your data package to the newest EML version."*/
-		  lan.getMessages("CorrectionSummary.Desc_1")
+		  Language.getInstance().getMessages("CorrectionSummary.Desc_1")
 		  +"<br></br> " 
-		  +/*"Note: "*/ lan.getMessages("Note") + ": " 
+		  +/*"Note: "*/ Language.getInstance().getMessages("Note") + ": " 
 		  /*+" These changes will not become permanent until you save the document."*/
-		  + lan.getMessages("CorrectionSummary.Desc_2")	  
+		  + Language.getInstance().getMessages("CorrectionSummary.Desc_2")	  
 		  ;
 	  
 	  private static final String NEEDTREEEDITOR = "The wizard has corrected some invalid fields, but others can only be fixed using the Morpho editor.<br></br>"

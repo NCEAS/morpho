@@ -40,13 +40,7 @@ import edu.ucsb.nceas.morpho.Language;//pstango 2010/03/15
  */
 public class MorphoPrefsDialog extends javax.swing.JDialog
 {
-	
-    /**
-     *Import Language into Morpho
-     *by pstango 2010/03/15 
-     */
-    public static Language lan = new Language();	
-	
+
   Morpho morpho;
   ConfigXML config;
   
@@ -120,12 +114,12 @@ public class MorphoPrefsDialog extends javax.swing.JDialog
     
 		ControlPanel.setLayout(new FlowLayout(FlowLayout.CENTER,5,5));
 		getContentPane().add(BorderLayout.SOUTH,ControlPanel);
-		setButton.setText(/*"Set"*/ lan.getMessages("Set"));
+		setButton.setText(/*"Set"*/ Language.getInstance().getMessages("Set"));
 		setButton.setActionCommand("OK");
 		setButton.setOpaque(false);
 		setButton.setMnemonic((int)'O');
 		ControlPanel.add(setButton);
-		cancelButton.setText(/*"Cancel"*/ lan.getMessages("Cancel"));
+		cancelButton.setText(/*"Cancel"*/ Language.getInstance().getMessages("Cancel"));
 		ControlPanel.add(cancelButton);
 		//}}
 

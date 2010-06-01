@@ -110,12 +110,6 @@ import edu.ucsb.nceas.morpho.Language;//pstango 2010/03/15
  */
 public class WizardContainerFrame
     extends JFrame implements TableModelListener {
-	
-    /**
-     *Import Language into Morpho
-     *by pstango 2010/03/15 
-     */
-    public static Language lan = new Language();
 
   public static JFrame frame;
   private DataPackageWizardListener listener;
@@ -955,7 +949,7 @@ public class WizardContainerFrame
           int choice = JOptionPane.showConfirmDialog(frame,
         		  										/*"This incomplete data package will be saved locally and the wizard window will be closed.\n"
         		  										+"Are you sure to continue this action?",*/
-        		  										lan.getMessages("SaveIncompleteWarning"),
+        		  										Language.getInstance().getMessages("SaveIncompleteWarning"),
         		  										"Save?",JOptionPane.YES_NO_OPTION);
           if(choice == JOptionPane.YES_OPTION)
           {
@@ -2051,11 +2045,11 @@ public class WizardContainerFrame
 	  int opt = JOptionPane.showConfirmDialog(this,
 	            /*"If you cancel, *all* work done in this wizard "+
 	            "will be lost.\nIf you want to resume the wizard later, choose \"No\", then click on the \"Save for Later\" button.\nAre you sure you want to cancel? ",*/
-			  	lan.getMessages("CancelWarning_1")
+			  	Language.getInstance().getMessages("CancelWarning_1")
 			  	+"\n"
-			  	+lan.getMessages("CancelWarning_2")
+			  	+Language.getInstance().getMessages("CancelWarning_2")
 			  	+"\n"
-			  	+ lan.getMessages("CancelWarning_3"),
+			  	+ Language.getInstance().getMessages("CancelWarning_3"),
 	            "DO YOU WANT TO CONTINUE?",
 	            JOptionPane.YES_NO_OPTION);
 	   if (opt == JOptionPane.NO_OPTION) 

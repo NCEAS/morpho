@@ -125,12 +125,6 @@ import edu.ucsb.nceas.morpho.Language;//pstango 2010/03/15
  */
 public class Morpho
 {
-    /**
-     *Import Language into Morpho
-     *by pstango 2010/03/15 
-     */
-    public static Language lan = new Language();
-	   
     /** The version of this release of Morpho */
     public static String VERSION = "1.8.0";
 
@@ -145,19 +139,19 @@ public class Morpho
     public static final int FILEMENUPOSITION = 0;
     
     /** Constant String for File menu label */
-    public static final String FILE_MENU_LABEL = /*"File"*/ lan.getMessages("File") ;
+    public static final String FILE_MENU_LABEL = /*"File"*/ Language.getInstance().getMessages("File") ;
     
     /** Constant int for Window menu position */
     public static final int WINDOWMENUPOSITION = 50;
     
     /** Constant String for Window menu label */
-    public static final String WINDOW_MENU_LABEL = /*"Window"*/ lan.getMessages("Window");
+    public static final String WINDOW_MENU_LABEL = /*"Window"*/ Language.getInstance().getMessages("Window");
     
     /** Constant int for Help menu position */
     public static final int HELPMENUPOSITION = 60;
     
     /** Constant String for Help menu label */
-    public static final String HELP_MENU_LABEL = /*"Help"*/ lan.getMessages("Help");
+    public static final String HELP_MENU_LABEL = /*"Help"*/ Language.getInstance().getMessages("Help");
 
 
     /** if windows, need to increase widthof JSplitPane divider,
@@ -1419,7 +1413,7 @@ public class Morpho
             }
         };
         GUIAction connectItemAction =
-            new GUIAction(/*"Login/Logout"*/ lan.getMessages("Login/Logout") + "...",
+            new GUIAction(/*"Login/Logout"*/ Language.getInstance().getMessages("Login/Logout") + "...",
             		null, connectCommand);
         connectItemAction.setToolTipText("Login/Logout...");
         connectItemAction.setMenuItemPosition(9);
@@ -1431,7 +1425,7 @@ public class Morpho
         Command profileCommand = new CreateNewProfileCommand();
 
         GUIAction profileItemAction =
-            new GUIAction(/*"New profile..."*/ lan.getMessages("NewProfile") +"...",
+            new GUIAction(/*"New profile..."*/ Language.getInstance().getMessages("NewProfile") +"...",
             		null, profileCommand);
         profileItemAction.setToolTipText("New Profile...");
         profileItemAction.setMenuItemPosition(10);
@@ -1444,7 +1438,7 @@ public class Morpho
             }
         };
         GUIAction switchItemAction =
-            new GUIAction(/*"Switch profile..."*/ lan.getMessages("SwitchProfile") +"...",
+            new GUIAction(/*"Switch profile..."*/ Language.getInstance().getMessages("SwitchProfile") +"...",
             		null, switchCommand);
         switchItemAction.setToolTipText("Switch Profile...");
         switchItemAction.setMenuItemPosition(11);
@@ -1457,7 +1451,7 @@ public class Morpho
             }
         };
         GUIAction removeProfileAction =
-            new GUIAction(/*"Remove profile..."*/ lan.getMessages("RemoveProfile") + "...",
+            new GUIAction(/*"Remove profile..."*/ Language.getInstance().getMessages("RemoveProfile") + "...",
             		null, removeCommand);
         removeProfileAction.setToolTipText("Remove Profile...");
         removeProfileAction.setMenuItemPosition(12);
@@ -1471,7 +1465,7 @@ public class Morpho
             }
         };
         GUIAction prefsItemAction =
-            new GUIAction(/*"Set preferences..."*/ lan.getMessages("SetPreferences") + "..."
+            new GUIAction(/*"Set preferences..."*/ Language.getInstance().getMessages("SetPreferences") + "..."
             		, null, prefsCommand);
         prefsItemAction.setToolTipText("Set Preferences...");
         prefsItemAction.setMenuItemPosition(13);
@@ -1485,7 +1479,7 @@ public class Morpho
                 exitApplication();
             }
         };
-        GUIAction exitItemAction = new GUIAction(/*"Exit"*/ lan.getMessages("Exit"),
+        GUIAction exitItemAction = new GUIAction(/*"Exit"*/ Language.getInstance().getMessages("Exit"),
         		null, exitCommand);
         exitItemAction.putValue(Action.ACCELERATOR_KEY,
                 KeyStroke.getKeyStroke("control Q"));
@@ -1522,7 +1516,7 @@ public class Morpho
             }
         };
         GUIAction aboutItemAction =
-            new GUIAction(/*"About..."*/ lan.getMessages("About"),
+            new GUIAction(/*"About..."*/ Language.getInstance().getMessages("About"),
             		null, aboutCommand);
         aboutItemAction.putValue(Action.SHORT_DESCRIPTION, "About Morpho");
         aboutItemAction.putValue(Action.SMALL_ICON,
@@ -1534,7 +1528,7 @@ public class Morpho
         
         Command guideCommand = new MorphoGuideCommand();
         GUIAction guideItemAction =
-            new GUIAction(/*"Morpho User Guide..."*/ lan.getMessages("MorphoUserGuide"),
+            new GUIAction(/*"Morpho User Guide..."*/ Language.getInstance().getMessages("MorphoUserGuide"),
             		null, guideCommand);
         guideItemAction.putValue(Action.SHORT_DESCRIPTION, "Morpho User Guide");
         guideItemAction.putValue(Action.SMALL_ICON,
@@ -1557,7 +1551,7 @@ public class Morpho
 
         Command mdIntroCommand = new HelpCommand("metadata");
         GUIAction mdIntroItemAction =
-            new GUIAction(/*"Intro to Metadata..."*/ lan.getMessages("IntroToMetadata"),
+            new GUIAction(/*"Intro to Metadata..."*/ Language.getInstance().getMessages("IntroToMetadata"),
             		null, mdIntroCommand);
         mdIntroItemAction.putValue(Action.SHORT_DESCRIPTION, "Intro to Metadata");
         mdIntroItemAction.putValue(Action.SMALL_ICON,
@@ -1569,7 +1563,7 @@ public class Morpho
 
         Command mdEMLSpecCommand = new HelpCommand("eml_index");
         GUIAction mdEMLSpecItemAction =
-            new GUIAction(/*"EML Specifications..."*/ lan.getMessages("EMLSpecifications"),
+            new GUIAction(/*"EML Specifications..."*/ Language.getInstance().getMessages("EMLSpecifications"),
             		null, mdEMLSpecCommand);
         mdEMLSpecItemAction.putValue(Action.SHORT_DESCRIPTION, "EML Specifications");
         mdEMLSpecItemAction.putValue(Action.SMALL_ICON,
@@ -1591,7 +1585,7 @@ public class Morpho
             profile.set("searchmetacat", 0, "false");
             Log.debug(6,
             			/*"No network connection available - can't log in"*/
-            		   lan.getMessages("Morpho.NoNetworkConnection")
+            		   Language.getInstance().getMessages("Morpho.NoNetworkConnection")
             			);
         }
     }
@@ -1626,8 +1620,8 @@ public class Morpho
         // Pop up a dialog with the choices
         MorphoFrame frame = UIController.getInstance().getCurrentActiveWindow();
         String newProfile = (String)JOptionPane.showInputDialog(frame,
-                /*"Select from existing profiles:"*/ lan.getMessages("SelectExistingProfile") + ":",
-                /*"Input"*/ lan.getMessages("Input"),
+                /*"Select from existing profiles:"*/ Language.getInstance().getMessages("SelectExistingProfile") + ":",
+                /*"Input"*/ Language.getInstance().getMessages("Input"),
                 JOptionPane.INFORMATION_MESSAGE, null,
                 profilesList, profilesList[selection]);
 
@@ -2334,9 +2328,9 @@ public class Morpho
                 JOptionPane.showMessageDialog(
                 	initialFrame,
                     /*"You must create a profile in order to configure Morpho correctly. "*/
-                	lan.getMessages("Morpho.CreateProfileWarning_1") + " \n"
+                	Language.getInstance().getMessages("Morpho.CreateProfileWarning_1") + " \n"
                 	/*+"Please restart Morpho and try again."*/
-                	+ lan.getMessages("Morpho.CreateProfileWarning_2")
+                	+ Language.getInstance().getMessages("Morpho.CreateProfileWarning_2")
                 	);
                 exitApplication();
             }
@@ -2368,8 +2362,8 @@ public class Morpho
     // Pop up a dialog with the choices
     MorphoFrame frame = UIController.getInstance().getCurrentActiveWindow();
     String selectedProfile = (String)JOptionPane.showInputDialog(frame,
-            /*"Select profile to delete:"*/ lan.getMessages("SelectProfileToDelete") + ":",
-            /*"Input"*/ lan.getMessages("Input"),
+            /*"Select profile to delete:"*/ Language.getInstance().getMessages("SelectProfileToDelete") + ":",
+            /*"Input"*/ Language.getInstance().getMessages("Input"),
             JOptionPane.INFORMATION_MESSAGE, null,
             profileList.toArray(), 0);
 
@@ -2381,17 +2375,17 @@ public class Morpho
         	int deleteContents = 
         		JOptionPane.showConfirmDialog(
         				frame, 
-        				/*"Are you sure you want to delete this profile: "*/ lan.getMessages("Warning.DeleteProfile_1") + ": "  
+        				/*"Are you sure you want to delete this profile: "*/ Language.getInstance().getMessages("Warning.DeleteProfile_1") + ": "  
         				+ selectedProfile + " ?\n" 
-        				+/*"\nALL data will be discarded."*/ lan.getMessages("Warning.DeleteProfile_2") + "\n" 
-        				+/*"\nThis action is not undoable."*/ lan.getMessages("Warning.DeleteProfile_3"), 
+        				+/*"\nALL data will be discarded."*/ Language.getInstance().getMessages("Warning.DeleteProfile_2") + "\n" 
+        				+/*"\nThis action is not undoable."*/ Language.getInstance().getMessages("Warning.DeleteProfile_3"), 
         				"DESTRUCTIVE ACTION!", JOptionPane.YES_NO_OPTION);
         	if (deleteContents == JOptionPane.YES_OPTION) {
 	            deleteProfile(selectedProfile);
 	            // close all old windows
 	            cleanUpFrames();
 	            Log.debug(9, 
-	            		  /*"Removed profile: "*/ lan.getMessages("Warning.DeleteProfile_4") + ": "
+	            		  /*"Removed profile: "*/ Language.getInstance().getMessages("Warning.DeleteProfile_4") + ": "
 	            		  + selectedProfile);
         	}
         }

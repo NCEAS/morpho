@@ -68,12 +68,6 @@ import org.w3c.dom.Node;
 
 
 public class PartyPage extends AbstractUIPage {
-	
-    /**
-     *Import Language into Morpho
-     *by pstango 2010/03/15 
-     */
-    public static Language lan = new Language();
 
   // define standard variables describing the page
 
@@ -198,7 +192,7 @@ public class PartyPage extends AbstractUIPage {
   private final String[] checkBoxArray
       = new String[] { 
 		  /*"Do you want to edit the above information?"*/
-		  lan.getMessages("PartyPage.checkBoxArray")
+		  Language.getInstance().getMessages("PartyPage.checkBoxArray")
   			};
 
 
@@ -226,8 +220,8 @@ public class PartyPage extends AbstractUIPage {
 
     pageDescriptionLabel
         = WidgetFactory.makeHTMLLabel("<font size=\"4\"><b>&nbsp;&nbsp;"
-                                       + /*roleString*/ lan.getMessages("Owner") + " "
-                                       + /*" Details"*/ lan.getMessages("Details")
+                                       + /*roleString*/ Language.getInstance().getMessages("Owner") + " "
+                                       + /*" Details"*/ Language.getInstance().getMessages("Details")
                                        +"</b></font>"
                                        , 1);
     middlePanel = new JPanel();
@@ -336,7 +330,7 @@ public class PartyPage extends AbstractUIPage {
          "You can pick from one of the earlier "
         + "entries that you have made."
         */
-        lan.getMessages("PartyPage.listLabel")
+        Language.getInstance().getMessages("PartyPage.listLabel")
         , false);
     setPrefMinMaxSizes(listLabel, PARTY_HALF_LABEL_DIMS);
     listPanel.add(listLabel);
@@ -369,7 +363,7 @@ public class PartyPage extends AbstractUIPage {
 
     // Salutation
     JPanel salutationPanel = WidgetFactory.makePanel(1);
-    salutationPanel.add(WidgetFactory.makeLabel(/*"Salutation:"*/ lan.getMessages("Salutation") +":"
+    salutationPanel.add(WidgetFactory.makeLabel(/*"Salutation:"*/ Language.getInstance().getMessages("Salutation") +":"
     											, false));
     salutationField = WidgetFactory.makeOneLineTextField();
     salutationPanel.add(salutationField);
@@ -381,7 +375,7 @@ public class PartyPage extends AbstractUIPage {
 
     // First Name
     JPanel firstNamePanel = WidgetFactory.makePanel(1);
-    firstNamePanel.add(WidgetFactory.makeLabel(/*"First Name:"*/ lan.getMessages("FirstName") +":"
+    firstNamePanel.add(WidgetFactory.makeLabel(/*"First Name:"*/ Language.getInstance().getMessages("FirstName") +":"
     											, false));
     firstNameField = WidgetFactory.makeOneLineTextField();
     firstNamePanel.add(firstNameField);
@@ -433,7 +427,7 @@ public class PartyPage extends AbstractUIPage {
 
     // Last Name
     JPanel lastNamePanel = WidgetFactory.makePanel(1);
-    lastNameLabel = WidgetFactory.makeLabel(/*"Last Name:"*/ lan.getMessages("LastName") +":"
+    lastNameLabel = WidgetFactory.makeLabel(/*"Last Name:"*/ Language.getInstance().getMessages("LastName") +":"
     										, true);
     lastNamePanel.add(lastNameLabel);
     lastNameField = WidgetFactory.makeOneLineTextField();
@@ -445,7 +439,7 @@ public class PartyPage extends AbstractUIPage {
 
     // Organization
     JPanel organizationPanel = WidgetFactory.makePanel(1);
-    organizationLabel = WidgetFactory.makeLabel(/*"Organization:"*/ lan.getMessages("Organization") +":"
+    organizationLabel = WidgetFactory.makeLabel(/*"Organization:"*/ Language.getInstance().getMessages("Organization") +":"
     											, true);
     organizationPanel.add(organizationLabel);
     organizationField = WidgetFactory.makeOneLineTextField();
@@ -457,7 +451,7 @@ public class PartyPage extends AbstractUIPage {
 
     // Position Name
     JPanel positionNamePanel = WidgetFactory.makePanel(1);
-    positionNameLabel = WidgetFactory.makeLabel(/*"Position Name:"*/ lan.getMessages("PositionName") +":"
+    positionNameLabel = WidgetFactory.makeLabel(/*"Position Name:"*/ Language.getInstance().getMessages("PositionName") +":"
     											, true);
     positionNamePanel.add(positionNameLabel);
     positionNameField = WidgetFactory.makeOneLineTextField();
@@ -472,7 +466,7 @@ public class PartyPage extends AbstractUIPage {
 
     // Address 1
     JPanel address1Panel = WidgetFactory.makePanel(1);
-    address1Panel.add(WidgetFactory.makeLabel(/*"Address 1:"*/ lan.getMessages("Address") +" 1:" 
+    address1Panel.add(WidgetFactory.makeLabel(/*"Address 1:"*/ Language.getInstance().getMessages("Address") +" 1:" 
     											, false));
     address1Field = WidgetFactory.makeOneLineTextField();
     address1Panel.add(address1Field);
@@ -484,7 +478,7 @@ public class PartyPage extends AbstractUIPage {
 
     // Address 2
     JPanel address2Panel = WidgetFactory.makePanel(1);
-    address2Panel.add(WidgetFactory.makeLabel(/*"Address 2:"*/ lan.getMessages("Address") +" 2:" 
+    address2Panel.add(WidgetFactory.makeLabel(/*"Address 2:"*/ Language.getInstance().getMessages("Address") +" 2:" 
     											, false));
     address2Field = WidgetFactory.makeOneLineTextField();
     address2Panel.add(address2Field);
@@ -496,12 +490,12 @@ public class PartyPage extends AbstractUIPage {
 
     // City & State
     JPanel cityStatePanel = WidgetFactory.makePanel(1);
-    cityStatePanel.add(WidgetFactory.makeLabel(/*"City:"*/ lan.getMessages("City") +":" 
+    cityStatePanel.add(WidgetFactory.makeLabel(/*"City:"*/ Language.getInstance().getMessages("City") +":" 
     											, false));
     cityField = WidgetFactory.makeOneLineTextField();
     cityStatePanel.add(cityField);
     cityStatePanel.add(WidgetFactory.makeDefaultSpacer());
-    JLabel stateLabel = WidgetFactory.makeLabel(/*"State:"*/ lan.getMessages("State") +":" 
+    JLabel stateLabel = WidgetFactory.makeLabel(/*"State:"*/ Language.getInstance().getMessages("State") +":" 
     											, false);
     setPrefMinMaxSizes(stateLabel, PARTY_2COL_LABEL_DIMS);
     cityStatePanel.add(stateLabel);
@@ -515,12 +509,12 @@ public class PartyPage extends AbstractUIPage {
 
     // Zip & Country
     JPanel zipCountryPanel = WidgetFactory.makePanel(1);
-    zipCountryPanel.add(WidgetFactory.makeLabel(/*"Postal Code:"*/ lan.getMessages("PostalCode") +":"
+    zipCountryPanel.add(WidgetFactory.makeLabel(/*"Postal Code:"*/ Language.getInstance().getMessages("PostalCode") +":"
     											, false));
     zipField = WidgetFactory.makeOneLineTextField();
     zipCountryPanel.add(zipField);
     zipCountryPanel.add(WidgetFactory.makeDefaultSpacer());
-    JLabel countryLabel = WidgetFactory.makeLabel(/*"Country:"*/ lan.getMessages("Country") +":"
+    JLabel countryLabel = WidgetFactory.makeLabel(/*"Country:"*/ Language.getInstance().getMessages("Country") +":"
     												, false);
     setPrefMinMaxSizes(countryLabel, PARTY_2COL_LABEL_DIMS);
     zipCountryPanel.add(countryLabel);
@@ -534,12 +528,12 @@ public class PartyPage extends AbstractUIPage {
 
     // Phone & Fax
     JPanel phoneFaxPanel = WidgetFactory.makePanel(1);
-    phoneFaxPanel.add(WidgetFactory.makeLabel(/*"Phone:"*/ lan.getMessages("Phone") +":"
+    phoneFaxPanel.add(WidgetFactory.makeLabel(/*"Phone:"*/ Language.getInstance().getMessages("Phone") +":"
     											, false));
     phoneField = WidgetFactory.makeOneLineTextField();
     phoneFaxPanel.add(phoneField);
     phoneFaxPanel.add(WidgetFactory.makeDefaultSpacer());
-    JLabel faxLabel = WidgetFactory.makeLabel(/*"Fax:"*/ lan.getMessages("Fax") +":"
+    JLabel faxLabel = WidgetFactory.makeLabel(/*"Fax:"*/ Language.getInstance().getMessages("Fax") +":"
     											, false);
     setPrefMinMaxSizes(faxLabel, PARTY_2COL_LABEL_DIMS);
     phoneFaxPanel.add(faxLabel);
@@ -553,12 +547,12 @@ public class PartyPage extends AbstractUIPage {
 
     // Email and URL
     JPanel emailUrlPanel = WidgetFactory.makePanel(1);
-    emailUrlPanel.add(WidgetFactory.makeLabel(/*"Email:"*/ lan.getMessages("Email") +":"
+    emailUrlPanel.add(WidgetFactory.makeLabel(/*"Email:"*/ Language.getInstance().getMessages("Email") +":"
     											, false));
     emailField = WidgetFactory.makeOneLineTextField();
     emailUrlPanel.add(emailField);
     emailUrlPanel.add(WidgetFactory.makeDefaultSpacer());
-    JLabel urlLabel = WidgetFactory.makeLabel(/*"Online URL:"*/ lan.getMessages("OnlineURL") +":"
+    JLabel urlLabel = WidgetFactory.makeLabel(/*"Online URL:"*/ Language.getInstance().getMessages("OnlineURL") +":"
     											, false);
     setPrefMinMaxSizes(urlLabel, PARTY_2COL_LABEL_DIMS);
     emailUrlPanel.add(urlLabel);
@@ -603,27 +597,27 @@ public class PartyPage extends AbstractUIPage {
           // and edit that one
           Object[] optionArray
               = new String[] {
-                /*"Edit original"*/ lan.getMessages("EditOriginal"),
-                /*"Copy original and edit"*/ lan.getMessages("CopyOriginalAndEdit"),
-                /*"Cancel"*/ lan.getMessages("Cancel")
+                /*"Edit original"*/ Language.getInstance().getMessages("EditOriginal"),
+                /*"Copy original and edit"*/ Language.getInstance().getMessages("CopyOriginalAndEdit"),
+                /*"Cancel"*/ Language.getInstance().getMessages("Cancel")
                 
           		};
           JOptionPane optPane = new JOptionPane();
           optPane.setOptions(optionArray);
           optPane.setMessage(
-              /*"Do you want to :\n"*/ lan.getMessages("PartyPage.optPane.setMessage_1")
+              /*"Do you want to :\n"*/ Language.getInstance().getMessages("PartyPage.optPane.setMessage_1")
         	  +" :\n"
               /*
               +"Edit the original entry (and therefore change "
               +"all entries that refer to the original), or \n"
               */
-        	  + lan.getMessages("PartyPage.optPane.setMessage_2")
-        	  + ", " + lan.getMessages("Or") + " \n"
+        	  + Language.getInstance().getMessages("PartyPage.optPane.setMessage_2")
+        	  + ", " + Language.getInstance().getMessages("Or") + " \n"
         	  /*+"Create a copy of the original and edit that?"*/
-        	  + lan.getMessages("PartyPage.optPane.setMessage_3")
+        	  + Language.getInstance().getMessages("PartyPage.optPane.setMessage_3")
         	  + " ?"
               );
-          optPane.createDialog(instance, /*"Select an option..."*/ lan.getMessages("SelectAnOption")).setVisible(true);
+          optPane.createDialog(instance, /*"Select an option..."*/ Language.getInstance().getMessages("SelectAnOption")).setVisible(true);
           Object selectedValue = optPane.getValue();
 
           if (selectedValue == optionArray[0]) {
@@ -672,7 +666,7 @@ public class PartyPage extends AbstractUIPage {
   private void initRolePanel() {
 
     rolePanel = WidgetFactory.makePanel(1);
-    roleLabel = WidgetFactory.makeLabel(/*"Role:"*/ lan.getMessages("Role") + ":"
+    roleLabel = WidgetFactory.makeLabel(/*"Role:"*/ Language.getInstance().getMessages("Role") + ":"
     									, true);
   }
 
@@ -690,30 +684,30 @@ public class PartyPage extends AbstractUIPage {
 
     if (role.equals(DataPackageWizardInterface.PARTY_CREATOR)) {
 
-      roleString = /*"Owner"*/ lan.getMessages("Owner");
+      roleString = /*"Owner"*/ Language.getInstance().getMessages("Owner");
       backupXPath = "/creator";
       rolePicklistShouldBeHidden = true;
 
     } else if (role.equals(DataPackageWizardInterface.PARTY_CONTACT)) {
 
-      roleString = /*"Contact"*/ lan.getMessages("Contact");
+      roleString = /*"Contact"*/ Language.getInstance().getMessages("Contact");
       backupXPath = "/contact";
       rolePicklistShouldBeHidden = true;
 
     } else if (role.equals(DataPackageWizardInterface.PARTY_CITATION_AUTHOR)) {
 
-      roleString = /*"Author"*/ lan.getMessages("Author");
+      roleString = /*"Author"*/ Language.getInstance().getMessages("Author");
       backupXPath = "/creator";
       rolePicklistShouldBeHidden = true;
 
     } else if (role.equals(DataPackageWizardInterface.PARTY_ASSOCIATED)) {
 
-      roleString = /*"Associated Party"*/ lan.getMessages("AssociatedParty");
+      roleString = /*"Associated Party"*/ Language.getInstance().getMessages("AssociatedParty");
       backupXPath = "/associatedParty";
 
     } else if (role.equals(DataPackageWizardInterface.PARTY_PERSONNEL)) {
 
-      roleString = /*"Personnel"*/ lan.getMessages("Personnel");
+      roleString = /*"Personnel"*/ Language.getInstance().getMessages("Personnel");
       backupXPath = "/personnel";
     }
     //set display name for external refs dialog...
@@ -825,8 +819,8 @@ public class PartyPage extends AbstractUIPage {
         					/*"Warning: If you provide a salutation and/or "
                              + "first name, a last name must also be provided"
                              */
-        					lan.getMessages("Warning") + ": "
-        					+ lan.getMessages("PartyPage.warningLabel_1")
+        					Language.getInstance().getMessages("Warning") + ": "
+        					+ Language.getInstance().getMessages("PartyPage.warningLabel_1")
         					);
 
         warningPanel.setVisible(true);
@@ -867,12 +861,12 @@ public class PartyPage extends AbstractUIPage {
     		  			   "Warning: at least one of the three entries is "
                            + "required: Last Name, Position Name or Organization"
                           */
-    		              lan.getMessages("Warning") + ": "
-    		  			  + lan.getMessages("PartyPage.warningLabel_2") + ": "
-    		  			  + lan.getMessages("LastName") + ", "
-    		  			  + lan.getMessages("PositionName") + ", "
-    		  			  + lan.getMessages("Or") + " "
-    		  			  + lan.getMessages("Organization")
+    		              Language.getInstance().getMessages("Warning") + ": "
+    		  			  + Language.getInstance().getMessages("PartyPage.warningLabel_2") + ": "
+    		  			  + Language.getInstance().getMessages("LastName") + ", "
+    		  			  + Language.getInstance().getMessages("PositionName") + ", "
+    		  			  + Language.getInstance().getMessages("Or") + " "
+    		  			  + Language.getInstance().getMessages("Organization")
                            );
       warningPanel.setVisible(true);
       WidgetFactory.hiliteComponent(warningLabel);

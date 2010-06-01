@@ -57,16 +57,10 @@ public class AccessTreeModel
     extends AbstractTreeTableModel
     implements TreeTableModel {
 	
-    /**
-     *Import Language into Morpho
-     *by pstango 2010/03/15 
-     */
-    public static Language lan = new Language();	
-
   // Names of the columns.
   static protected String[] cNames = {
-      /*"Name"*/ lan.getMessages("Name"),
-      /*"Email / Description / Distinguished Name"*/ lan.getMessages("Email") + " / "+ lan.getMessages("Description") + " / " + lan.getMessages("DistinguishedName")
+      /*"Name"*/ Language.getInstance().getMessages("Name"),
+      /*"Email / Description / Distinguished Name"*/ Language.getInstance().getMessages("Email") + " / "+ Language.getInstance().getMessages("Description") + " / " + Language.getInstance().getMessages("DistinguishedName")
       };
 
   // Types of the columns.

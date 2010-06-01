@@ -43,21 +43,15 @@ import edu.ucsb.nceas.morpho.Language;//pstango 2010/03/15
 public interface QueryRefreshInterface
 {
 
-    /**
-     *Import Language into Morpho
-     *by pstango 2010/03/15 
-     */
-    public static Language lan = new Language();	
-	
   //Constant for column name:
   public static final String HASDATA      = " ";
-  public static final String TITLE        = /*"Title"*/ lan.getMessages("Title");
-  public static final String DOCID        = /*"Document ID"*/ lan.getMessages("DocumentID");
-  public static final String SURNAME      = /*"Surname"*/ lan.getMessages("Surname");
-  public static final String KEYWORDS     = /*"Keywords"*/ lan.getMessages("Keywords");
-  public static final String LASTMODIFIED = /*"Last Modified"*/ lan.getMessages("LastModified");
-  public static final String LOCAL        =/*"Local"*/ lan.getMessages("Local");
-  public static final String NET          =/*"Net"*/ lan.getMessages("Net");
+  public static final String TITLE        = /*"Title"*/ Language.getInstance().getMessages("Title");
+  public static final String DOCID        = /*"Document ID"*/ Language.getInstance().getMessages("DocumentID");
+  public static final String SURNAME      = /*"Surname"*/ Language.getInstance().getMessages("Surname");
+  public static final String KEYWORDS     = /*"Keywords"*/ Language.getInstance().getMessages("Keywords");
+  public static final String LASTMODIFIED = /*"Last Modified"*/ Language.getInstance().getMessages("LastModified");
+  public static final String LOCAL        =/*"Local"*/ Language.getInstance().getMessages("Local");
+  public static final String NET          =/*"Net"*/ Language.getInstance().getMessages("Net");
   
   /** Local complete document*/
   public static final String LOCALCOMPLETE = DataPackageInterface.LOCAL;

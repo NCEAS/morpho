@@ -42,13 +42,7 @@ import edu.ucsb.nceas.morpho.Language;//pstango 2010/03/15
 
 public class OpenPreviousDialog extends javax.swing.JDialog
 {
-	
-    /**
-     *Import Language into Morpho
-     *by pstango 2010/03/15 
-     */
-    public static Language lan = new Language();	
-	
+
   String packageName = "";
   Morpho morpho;
   boolean localLoc;
@@ -63,9 +57,9 @@ public class OpenPreviousDialog extends javax.swing.JDialog
 		setVisible(false);
 		ControlPanel.setLayout(new FlowLayout(FlowLayout.RIGHT,5,5));
 		getContentPane().add(BorderLayout.SOUTH,ControlPanel);
-		CancelButton.setText(/*"Cancel"*/ lan.getMessages("Cancel"));
+		CancelButton.setText(/*"Cancel"*/ Language.getInstance().getMessages("Cancel"));
 		ControlPanel.add(CancelButton);
-		OpenButton.setText(/*"Open"*/ lan.getMessages("Open"));
+		OpenButton.setText(/*"Open"*/ Language.getInstance().getMessages("Open"));
 		ControlPanel.add(OpenButton);
 		CenterPanel.setLayout(new BorderLayout(0,0));
 		getContentPane().add(BorderLayout.CENTER,CenterPanel);

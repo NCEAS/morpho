@@ -66,25 +66,19 @@ import org.w3c.dom.NodeList;
  *
  */
 public class CodeImportPage extends AbstractUIPage {
-	
-    /**
-     *Import Language into Morpho
-     *by pstango 2010/03/15 
-     */
-    public static Language lan = new Language();	
 
   public final String pageID     = DataPackageWizardInterface.CODE_IMPORT_PAGE;
   public final String pageNumber = "";
 
-  public final String title      = /*"Code Defintions Import Page"*/ lan.getMessages("CodeDefintionsImportPage");
-  public final String subtitle   = /*"Import/Define the codes and definitions"*/ lan.getMessages("CodeImportPage.subtitle");
+  public final String title      = /*"Code Defintions Import Page"*/ Language.getInstance().getMessages("CodeDefintionsImportPage");
+  public final String subtitle   = /*"Import/Define the codes and definitions"*/ Language.getInstance().getMessages("CodeImportPage.subtitle");
 
   private WizardContainerFrame mainWizFrame;
   private OrderedMap resultsMap;
 
   private String[] importChoiceText = {
-		  /*"The table containing the definitions has already been imported into Morpho"*/ lan.getMessages("CodeImportPage.importChoiceText_1"),
-  		  /*"The table containing the definitions needs to be imported into Morpho"*/ lan.getMessages("CodeImportPage.importChoiceText_2")
+		  /*"The table containing the definitions has already been imported into Morpho"*/ Language.getInstance().getMessages("CodeImportPage.importChoiceText_1"),
+  		  /*"The table containing the definitions needs to be imported into Morpho"*/ Language.getInstance().getMessages("CodeImportPage.importChoiceText_2")
 		  };
 
   private boolean importCompletedOK = false;
@@ -130,10 +124,10 @@ public class CodeImportPage extends AbstractUIPage {
 
     JPanel infoPanel = new JPanel();
     infoPanel.setLayout(new BoxLayout(infoPanel, BoxLayout.Y_AXIS));
-    JLabel label = WidgetFactory.makeHTMLLabel(/*"Import Codes and Definitions for the following Attribute - "*/ lan.getMessages("CodeImportPage.Desc") + " - ",
+    JLabel label = WidgetFactory.makeHTMLLabel(/*"Import Codes and Definitions for the following Attribute - "*/ Language.getInstance().getMessages("CodeImportPage.Desc") + " - ",
     											1, false);
 
-    JLabel attrLabel = WidgetFactory.makeLabel(/*"Attribute Name:"*/ lan.getMessages("AttributeName") + ":",
+    JLabel attrLabel = WidgetFactory.makeLabel(/*"Attribute Name:"*/ Language.getInstance().getMessages("AttributeName") + ":",
     											false, WizardSettings.WIZARD_CONTENT_LABEL_DIMS);
     attrField = WidgetFactory.makeOneLineTextField();
     attrField.setEditable(false);
@@ -142,7 +136,7 @@ public class CodeImportPage extends AbstractUIPage {
     attrPanel.add(attrLabel);
     attrPanel.add(attrField);
 
-    JLabel entityLabel = WidgetFactory.makeLabel(/*"Entity Name:"*/ lan.getMessages("EntityName") + ":",
+    JLabel entityLabel = WidgetFactory.makeLabel(/*"Entity Name:"*/ Language.getInstance().getMessages("EntityName") + ":",
     											false, WizardSettings.WIZARD_CONTENT_LABEL_DIMS);
     entityField = WidgetFactory.makeOneLineTextField();
     entityField.setEditable(false);
@@ -158,7 +152,7 @@ public class CodeImportPage extends AbstractUIPage {
     infoPanel.add(entityPanel);
     infoPanel.add(WidgetFactory.makeDefaultSpacer());
 
-    choiceLabel = WidgetFactory.makeHTMLLabel(/*"Select one of the following"*/ lan.getMessages("CodeImportPage.choiceLabel"),
+    choiceLabel = WidgetFactory.makeHTMLLabel(/*"Select one of the following"*/ Language.getInstance().getMessages("CodeImportPage.choiceLabel"),
     											1,true);
     infoPanel.add(choiceLabel);
     infoPanel.add(WidgetFactory.makeDefaultSpacer());

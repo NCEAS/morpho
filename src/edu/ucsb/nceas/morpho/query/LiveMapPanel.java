@@ -104,12 +104,6 @@ import java.awt.Container; //1.0
 public class LiveMapPanel extends JPanel
     implements MapConstants
 {
-	
-    /**
-     *Import Language into Morpho
-     *by pstango 2010/03/15 
-     */
-    public static Language lan = new Language();	
 
   boolean toolFlag = false;
 
@@ -272,10 +266,10 @@ public class LiveMapPanel extends JPanel
     entryPanel.add(posPanel);
 
     // Zoom Panel
-    zoom_in = new JButton(/*"Zoom In"*/ lan.getMessages("ZoomIn"));
-    zoom_out = new JButton(/*"Zoom Out"*/ lan.getMessages("ZoomOut"));
-    boxTool = new JRadioButton(/*"Box Tool"*/ lan.getMessages("BoxTool"), true);
-    ptTool = new JRadioButton(/*"Point Tool"*/ lan.getMessages("PointTool"), false);
+    zoom_in = new JButton(/*"Zoom In"*/ Language.getInstance().getMessages("ZoomIn"));
+    zoom_out = new JButton(/*"Zoom Out"*/ Language.getInstance().getMessages("ZoomOut"));
+    boxTool = new JRadioButton(/*"Box Tool"*/ Language.getInstance().getMessages("BoxTool"), true);
+    ptTool = new JRadioButton(/*"Point Tool"*/ Language.getInstance().getMessages("PointTool"), false);
     ButtonGroup group = new ButtonGroup();
     group.add(boxTool);
     group.add(ptTool);

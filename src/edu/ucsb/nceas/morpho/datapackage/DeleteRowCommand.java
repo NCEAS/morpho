@@ -43,12 +43,6 @@ import edu.ucsb.nceas.morpho.Language;//pstango 2010/03/15
 public class DeleteRowCommand implements Command
 {
 
-    /**
-     *Import Language into Morpho
-     *by pstango 2010/03/15 
-     */
-    public static Language lan = new Language();
-	
   /* Referrence to  morphoframe */
   private MorphoFrame morphoFrame = null;
 
@@ -76,8 +70,8 @@ public class DeleteRowCommand implements Command
        resultPane = morphoFrame.getDataViewContainerPanel();
     }//if
     int opt = JOptionPane.showConfirmDialog(morphoFrame,
-            /*"Are you sure that you want to delete the selected row?"*/ lan.getMessages("DeleteRowWarning") + "?",
-            /*"DO YOU WANT TO CONTINUE?"*/ lan.getMessages("Warning_Continue") + "?",
+            /*"Are you sure that you want to delete the selected row?"*/ Language.getInstance().getMessages("DeleteRowWarning") + "?",
+            /*"DO YOU WANT TO CONTINUE?"*/ Language.getInstance().getMessages("Warning_Continue") + "?",
             JOptionPane.YES_NO_OPTION);
    if (opt == JOptionPane.NO_OPTION) 
    {

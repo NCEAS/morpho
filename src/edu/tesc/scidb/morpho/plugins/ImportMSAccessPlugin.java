@@ -46,16 +46,8 @@ import edu.ucsb.nceas.morpho.util.GUIAction;
 import edu.ucsb.nceas.morpho.util.Log;
 import edu.ucsb.nceas.morpho.util.StateChangeEvent;
 
-import edu.ucsb.nceas.morpho.Language;//pstango 2010/03/15
-
 public class ImportMSAccessPlugin
 	implements PluginInterface, ServiceProvider, Command {
-	
-    /**
-     *Import Language into Morpho
-     *by pstango 2010/03/15 
-     */
-    public static Language lan = new Language();	
 		
 	private MorphoFrame morphoFrame = null;
 	private Morpho myMorpho;

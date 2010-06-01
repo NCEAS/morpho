@@ -87,19 +87,13 @@ import org.w3c.dom.NodeList;
 import edu.ucsb.nceas.morpho.Language;//pstango 2010/03/15
 
 public class Taxonomic extends AbstractUIPage {
-	
-    /**
-     *Import Language into Morpho
-     *by pstango 2010/03/15 
-     */
-    public static Language lan = new Language();	
 
   public final String pageID     = DataPackageWizardInterface.TAXONOMIC;
   public final String pageNumber = "12";
 
   //////////////////////////////////////////////////////////
 
-  public final String title      = /*"Taxonomic Coverage"*/ lan.getMessages("TaxonomicCoverage") ;
+  public final String title      = /*"Taxonomic Coverage"*/ Language.getInstance().getMessages("TaxonomicCoverage") ;
   public final String subtitle   = "";
   private final String xPathRoot  = "/eml:eml/dataset/coverage/taxonomicCoverage[1]";
 
@@ -107,43 +101,43 @@ public class Taxonomic extends AbstractUIPage {
 
   private final String heading
     = "<p>" 
-    + /*"<b>Enter information about the Taxonomic Coverage. </b>"*/ "<b>" + lan.getMessages("Taxonomic.heading_1") + " </b>"
-    + /*"By default, you may enter information on Genus and Species.  "*/ lan.getMessages("Taxonomic.heading_2") + " "
+    + /*"<b>Enter information about the Taxonomic Coverage. </b>"*/ "<b>" + Language.getInstance().getMessages("Taxonomic.heading_1") + " </b>"
+    + /*"By default, you may enter information on Genus and Species.  "*/ Language.getInstance().getMessages("Taxonomic.heading_2") + " "
     /*+ "If you would like to enter information at another classification rank or "
       + "would like to change the default classification rank, click the edit button."*/
-    + lan.getMessages("Taxonomic.heading_3") + " "    
+    + Language.getInstance().getMessages("Taxonomic.heading_3") + " "    
     /*+ "Note that the field 'Higher Level Taxa' is dynamically "
       + "generated from your entries and is not manually editable."*/
-    + lan.getMessages("Taxonomic.heading_4")
+    + Language.getInstance().getMessages("Taxonomic.heading_4")
     + "</p>";
 
   private final String headingNoImportTable
     = "<p>" 
-    + /*"<b>Enter information about the Taxonomic Coverage. </b>"*/ "<b>" + lan.getMessages("Taxonomic.heading_1") + " </b>"
-    + /*"By default, you may enter information on Genus and Species.  "*/ lan.getMessages("Taxonomic.heading_2") + " " 
+    + /*"<b>Enter information about the Taxonomic Coverage. </b>"*/ "<b>" + Language.getInstance().getMessages("Taxonomic.heading_1") + " </b>"
+    + /*"By default, you may enter information on Genus and Species.  "*/ Language.getInstance().getMessages("Taxonomic.heading_2") + " " 
     /*+ "If you would like to enter information at another classification rank or "
       + "would like to change the default classification rank, click the edit button.  "*/
-    + lan.getMessages("Taxonomic.heading_3") + " "
+    + Language.getInstance().getMessages("Taxonomic.heading_3") + " "
     /*+ "Note that the field 'Higher Level Taxa' is dynamically "
       + "generated from your entries and is not manually editable." */
-    + lan.getMessages("Taxonomic.heading_4")
+    + Language.getInstance().getMessages("Taxonomic.heading_4")
     + "</p>"
     + "<br><p>" 
     /*+ "If your information about the taxonomic coverage is extensive "
       + "(e.g., an extensive list of species), you can import this information "
       + "in the form of a table. " */
-    + lan.getMessages("Taxonomic.headingNoImportTable_1")
+    + Language.getInstance().getMessages("Taxonomic.headingNoImportTable_1")
     /*+ "See the Frequently Asked Questions section of the Morpho User Guide to find out how to do this."*/
-    + lan.getMessages("Taxonomic.headingNoImportTable_2")
+    + Language.getInstance().getMessages("Taxonomic.headingNoImportTable_2")
     + "</p>";
 
   // column titles for the customlist in the main-page
-  private String colNames[] = {/*"Higher Level Taxa"*/ lan.getMessages("Taxonomic.HigherLevelTaxa"),
-		  					   /*"Rank"*/ lan.getMessages("Taxonomic.Rank"),
-		  					   /*"Name"*/ lan.getMessages("Name"),
-		  					   /*"Rank"*/ lan.getMessages("Taxonomic.Rank"),
-		  					   /*"Name"*/ lan.getMessages("Name"),
-                               /*"Common Name(s)"*/ lan.getMessages("Taxonomic.CommonName(s)")
+  private String colNames[] = {/*"Higher Level Taxa"*/ Language.getInstance().getMessages("Taxonomic.HigherLevelTaxa"),
+		  					   /*"Rank"*/ Language.getInstance().getMessages("Taxonomic.Rank"),
+		  					   /*"Name"*/ Language.getInstance().getMessages("Name"),
+		  					   /*"Rank"*/ Language.getInstance().getMessages("Taxonomic.Rank"),
+		  					   /*"Name"*/ Language.getInstance().getMessages("Name"),
+                               /*"Common Name(s)"*/ Language.getInstance().getMessages("Taxonomic.CommonName(s)")
                                };
 
   // selectedRowIdx is used to store the value of the selected row.
@@ -153,9 +147,9 @@ public class Taxonomic extends AbstractUIPage {
   private int selectedRowIdx = 0;
 
   // column titles for the classification CustomList
-  private final String[] classColNames = {/*"Citation Title"*/ lan.getMessages("Taxonomic.CitationTitle"),
-		  								  /*"Creator"*/ lan.getMessages("Creator"),
-		  								  /*"Citation Type"*/ lan.getMessages("Taxonomic.CitationType")
+  private final String[] classColNames = {/*"Citation Title"*/ Language.getInstance().getMessages("Taxonomic.CitationTitle"),
+		  								  /*"Creator"*/ Language.getInstance().getMessages("Creator"),
+		  								  /*"Citation Type"*/ Language.getInstance().getMessages("Taxonomic.CitationType")
 		  								  };
   private final Object[] classEditors = {null, null, null}; //makes non-directly-editable
 
@@ -345,7 +339,7 @@ public class Taxonomic extends AbstractUIPage {
     taxonPanel.setLayout(new BoxLayout(taxonPanel, BoxLayout.Y_AXIS));
 
     GUIAction action = new GUIAction(/*"Import Taxon Information from Data table..."*/ 
-    								lan.getMessages("Taxonomic.ImportTaxon") +"...",
+    								Language.getInstance().getMessages("Taxonomic.ImportTaxon") +"...",
     null,	new Command() {
       public void execute(ActionEvent ae) {
 
@@ -416,10 +410,10 @@ public class Taxonomic extends AbstractUIPage {
     JPanel classTablePanel = WidgetFactory.makeVerticalPanel(-1);
 
     classTablePanel.add(WidgetFactory.makeHTMLLabel("<b>" 
-    												+ /*"Classification System"*/ lan.getMessages("Taxonomic.ClassificationSystem") +" : "
+    												+ /*"Classification System"*/ Language.getInstance().getMessages("Taxonomic.ClassificationSystem") +" : "
     												+ " </b>" 
     												/*+ "If the list of taxa belong to one or more different classification systems, list the citations for those systems.",*/
-    												+ lan.getMessages("Taxonomic.ClassificationSystemDesc"),
+    												+ Language.getInstance().getMessages("Taxonomic.ClassificationSystemDesc"),
     												2, false));
     classTablePanel.add(Box.createVerticalGlue());
     JPanel classPanel = new JPanel(new BorderLayout());
@@ -796,8 +790,8 @@ public class Taxonomic extends AbstractUIPage {
 
       JOptionPane.showMessageDialog(
     		  Taxonomic.this, 
-    		  /*"You must enter the Taxonomic information along with the Citation details!"*/ lan.getMessages("Taxonomic.MustEnterTaxonInfo")+"!", 
-    		  /*"Error"*/ lan.getMessages("Error"),
+    		  /*"You must enter the Taxonomic information along with the Citation details!"*/ Language.getInstance().getMessages("Taxonomic.MustEnterTaxonInfo")+"!", 
+    		  /*"Error"*/ Language.getInstance().getMessages("Error"),
     		  JOptionPane.ERROR_MESSAGE);
       return false;
     }
@@ -1605,12 +1599,6 @@ public class Taxonomic extends AbstractUIPage {
 
 
 class ParentTaxaPanel extends JPanel implements WizardPageSubPanelAPI{
-	
-    /**
-     *Import Language into Morpho
-     *by pstango 2010/03/15 
-     */
-    public static Language lan = new Language();		
 
   public static final int DIALOG_WIDTH = 450;
   public static final int DIALOG_HEIGHT = 500;
@@ -1633,15 +1621,15 @@ class ParentTaxaPanel extends JPanel implements WizardPageSubPanelAPI{
     sub.add(WidgetFactory.makeDefaultSpacer());
 
     headLabel = WidgetFactory.makeLabel(
-      /*"Enter the Taxonomic Hierarchy (in descending order):"*/ lan.getMessages("Taxonomic.headLabel") +" : ",
+      /*"Enter the Taxonomic Hierarchy (in descending order):"*/ Language.getInstance().getMessages("Taxonomic.headLabel") +" : ",
          false,
       WizardSettings.WIZARD_CONTENT_LABEL_DIMS);
     JPanel labelPanel = new JPanel(new BorderLayout());
     labelPanel.add(headLabel, BorderLayout.CENTER);
 
-    String colNames2 []= new String[] {/*"Rank"*/ lan.getMessages("Taxonomic.Rank"),
-			   							/*"Name"*/ lan.getMessages("Name"),
-			   							/*"Common Name(s)"*/ lan.getMessages("Taxonomic.CommonName(s)")
+    String colNames2 []= new String[] {/*"Rank"*/ Language.getInstance().getMessages("Taxonomic.Rank"),
+			   							/*"Name"*/ Language.getInstance().getMessages("Name"),
+			   							/*"Common Name(s)"*/ Language.getInstance().getMessages("Taxonomic.CommonName(s)")
     								   };
     JTextField jtf2[] = new JTextField[3];
     for(int i=0;i<3;i++)
@@ -1867,8 +1855,8 @@ class ParentTaxaPanel extends JPanel implements WizardPageSubPanelAPI{
     }
 
     if(!dataPresent) {
-      JOptionPane.showMessageDialog(this, /*"Atleast one taxonomic level must be defined"*/ lan.getMessages("Taxonomic.Error_1") + "!",
-    		  							  /*"Error"*/ lan.getMessages("Error"),
+      JOptionPane.showMessageDialog(this, /*"Atleast one taxonomic level must be defined"*/ Language.getInstance().getMessages("Taxonomic.Error_1") + "!",
+    		  							  /*"Error"*/ Language.getInstance().getMessages("Error"),
     		  							  JOptionPane.ERROR_MESSAGE);
       return false;
     }

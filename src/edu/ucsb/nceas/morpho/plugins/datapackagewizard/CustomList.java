@@ -1393,18 +1393,12 @@ public class CustomList extends JPanel {
 class AddAction
     extends AbstractAction {
 
-    /**
-     *Import Language into Morpho
-     *by pstango 2010/03/15 
-     */
-  public static Language lan = new Language();
-	
   private CustomJTable table;
   private CustomList parentList;
 
   public AddAction(CustomJTable table, CustomList parentList) {
 
-    super(/*"Add"*/ lan.getMessages("Add") );
+    super(/*"Add"*/ Language.getInstance().getMessages("Add") );
     this.table = table;
     this.parentList = parentList;
   }
@@ -1461,18 +1455,12 @@ class AddAction
 class EditAction
     extends AbstractAction {
 
-    /**
-     *Import Language into Morpho
-     *by pstango 2010/03/15 
-     */
-  public static Language lan = new Language();
-	
   private CustomJTable table;
   private CustomList parentList;
 
   public EditAction(CustomJTable table, CustomList parentList) {
 
-    super(/*"Edit"*/ lan.getMessages("Edit"));
+    super(/*"Edit"*/ Language.getInstance().getMessages("Edit"));
     this.parentList = parentList;
     this.table = table;
   }
@@ -1499,18 +1487,12 @@ class EditAction
 class DuplicateAction
     extends AbstractAction {
 
-    /**
-     *Import Language into Morpho
-     *by pstango 2010/03/15 
-     */
-  public static Language lan = new Language();
-	
   private CustomJTable table;
   private CustomList parentList;
 
   public DuplicateAction(CustomJTable table, CustomList parentList) {
 
-    super(/*"Duplicate"*/ lan.getMessages("Duplicate"));
+    super(/*"Duplicate"*/ Language.getInstance().getMessages("Duplicate"));
     this.table = table;
     this.parentList = parentList;
   }
@@ -1537,19 +1519,13 @@ class DuplicateAction
 
 class DeleteAction
     extends AbstractAction {
-	
-    /**
-     *Import Language into Morpho
-     *by pstango 2010/03/15 
-     */
-  public static Language lan = new Language();
 
   private CustomJTable table;
   private CustomList parentList;
 
   public DeleteAction(CustomJTable table, CustomList parentList) {
 
-    super(/*"Delete"*/ lan.getMessages("Delete"));
+    super(/*"Delete"*/ Language.getInstance().getMessages("Delete"));
     this.table = table;
     this.parentList = parentList;
   }
@@ -1583,19 +1559,13 @@ class DeleteAction
 class MoveUpAction
     extends AbstractAction {
 
-    /**
-     *Import Language into Morpho
-     *by pstango 2010/03/15 
-     */
-  public static Language lan = new Language();
-	
   private CustomJTable table;
   private CustomList parentList;
   private DefaultTableModel model;
 
   public MoveUpAction(CustomJTable table, CustomList parentList) {
 
-    super(/*"Move Up"*/ lan.getMessages("MoveUp"));
+    super(/*"Move Up"*/ Language.getInstance().getMessages("MoveUp"));
     this.table = table;
     this.parentList = parentList;
     model = (DefaultTableModel) (table.getModel());
@@ -1623,19 +1593,13 @@ class MoveUpAction
 class MoveDownAction
     extends AbstractAction {
 
-    /**
-     *Import Language into Morpho
-     *by pstango 2010/03/15 
-     */
-  public static Language lan = new Language();
-	
   private CustomJTable table;
   private CustomList parentList;
   private DefaultTableModel model;
 
   public MoveDownAction(CustomJTable table, CustomList parentList) {
 
-    super(/*"Move Down"*/ lan.getMessages("MoveDown"));
+    super(/*"Move Down"*/ Language.getInstance().getMessages("MoveDown"));
     this.table = table;
     this.parentList = parentList;
     model = (DefaultTableModel) (table.getModel());

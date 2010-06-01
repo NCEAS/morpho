@@ -66,13 +66,7 @@ import javax.swing.JTextField;
  */
 public class QueryDialog extends JDialog
 {
-	
-    /**
-     *Import Language into Morpho
-     *by pstango 2010/03/15 
-     */
-    public static Language lan = new Language();
-	
+
   /** A reference to the container framework */
   private Morpho morpho = null;
 
@@ -168,9 +162,9 @@ public class QueryDialog extends JDialog
   private JButton executeButton = new JButton();
   private JButton cancelButton = new JButton();
   private JPanel queryOptionsPanel = new JPanel();
-  private JCheckBox caseSensitiveCheckBox = new JCheckBox(/*"Case sensitive match"*/ lan.getMessages("CaseSensitiveMatch"));
+  private JCheckBox caseSensitiveCheckBox = new JCheckBox(/*"Case sensitive match"*/ Language.getInstance().getMessages("CaseSensitiveMatch"));
   private JCheckBox includeItisSynonymsCheckBox = new JCheckBox(
-          /*"Include taxon synonyms from ITIS in query"*/ lan.getMessages("QueryITIS"));
+          /*"Include taxon synonyms from ITIS in query"*/ Language.getInstance().getMessages("QueryITIS"));
   private JButton saveDefaultsButton = new JButton();
   KeyPressActionListener keyPressListener = new KeyPressActionListener();
   //}}
@@ -241,7 +235,7 @@ public class QueryDialog extends JDialog
     taxonPanels = new Vector();
 
     //{{INIT_CONTROLS
-    setTitle(/*"Search"*/ lan.getMessages("Search"));
+    setTitle(/*"Search"*/ Language.getInstance().getMessages("Search"));
     getContentPane().setLayout(new BorderLayout(0, 0));
 
     // Set dialog size
@@ -271,7 +265,7 @@ public class QueryDialog extends JDialog
     titlePanel.setLayout(new BoxLayout(titlePanel, BoxLayout.X_AXIS));
     titlePanel.add(Box.createHorizontalStrut(8));
     JLabel queryTitleLabel = new JLabel();
-    queryTitleLabel.setText(/*"Query Title "*/ lan.getMessages("QueryTitle") + " ");
+    queryTitleLabel.setText(/*"Query Title "*/ Language.getInstance().getMessages("QueryTitle") + " ");
     titlePanel.add(queryTitleLabel);
     titlePanel.add(Box.createHorizontalStrut(8));
     queryTitleTF.setText("Untitled-Search-" + untitledCounter);
@@ -293,11 +287,11 @@ public class QueryDialog extends JDialog
     titlePanel.add(Box.createHorizontalGlue());
     JPanel searchChoicePanel = new JPanel();
     searchChoicePanel.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
-    catalogSearchCheckBox.setText(/*"Network Search"*/ lan.getMessages("NetworkSearch"));
+    catalogSearchCheckBox.setText(/*"Network Search"*/ Language.getInstance().getMessages("NetworkSearch"));
     catalogSearchCheckBox.setActionCommand("Network Search");
     catalogSearchCheckBox.setSelected(searchMetacat);
     searchChoicePanel.add(catalogSearchCheckBox);
-    localSearchCheckBox.setText(/*"Local Search"*/ lan.getMessages("LocalSearch"));
+    localSearchCheckBox.setText(/*"Local Search"*/ Language.getInstance().getMessages("LocalSearch"));
     localSearchCheckBox.setActionCommand("Local Search");
     localSearchCheckBox.setSelected(searchLocal);
     searchChoicePanel.add(localSearchCheckBox);
@@ -327,10 +321,10 @@ public class QueryDialog extends JDialog
     subjectMoreLessPanel.setLayout(new BoxLayout(subjectMoreLessPanel,
                                                   BoxLayout.X_AXIS));
     subjectMoreLessPanel.add(Box.createHorizontalStrut(8));
-    andRadioButton.setText(/*"And"*/ lan.getMessages("And"));
+    andRadioButton.setText(/*"And"*/ Language.getInstance().getMessages("And"));
     andRadioButton.setActionCommand("And");
     subjectMoreLessPanel.add(andRadioButton);
-    orRadioButton.setText(/*"Or"*/ lan.getMessages("Or"));
+    orRadioButton.setText(/*"Or"*/ Language.getInstance().getMessages("Or"));
     orRadioButton.setActionCommand("Or");
     orRadioButton.setSelected(true);
     ButtonGroup subjectRadioGroup = new ButtonGroup();
@@ -338,10 +332,10 @@ public class QueryDialog extends JDialog
     subjectRadioGroup.add(orRadioButton);
     subjectMoreLessPanel.add(orRadioButton);
     subjectMoreLessPanel.add(Box.createHorizontalStrut(8));
-    moreButton.setText(/*"More"*/ lan.getMessages("More"));
+    moreButton.setText(/*"More"*/ Language.getInstance().getMessages("More"));
     moreButton.setActionCommand("More");
     subjectMoreLessPanel.add(moreButton);
-    lessButton.setText(/*"Fewer"*/ lan.getMessages("Fewer"));
+    lessButton.setText(/*"Fewer"*/ Language.getInstance().getMessages("Fewer"));
     lessButton.setActionCommand("Fewer");
     lessButton.setEnabled(false);
     subjectMoreLessPanel.add(lessButton);
@@ -369,10 +363,10 @@ public class QueryDialog extends JDialog
     taxonMoreLessPanel.setLayout(new BoxLayout(taxonMoreLessPanel,
                                                   BoxLayout.X_AXIS));
     taxonMoreLessPanel.add(Box.createHorizontalStrut(8));
-    taxonAndRadioButton.setText(/*"And"*/ lan.getMessages("And"));
+    taxonAndRadioButton.setText(/*"And"*/ Language.getInstance().getMessages("And"));
     taxonAndRadioButton.setActionCommand("And");
     taxonMoreLessPanel.add(taxonAndRadioButton);
-    taxonOrRadioButton.setText(/*"Or"*/ lan.getMessages("Or"));
+    taxonOrRadioButton.setText(/*"Or"*/ Language.getInstance().getMessages("Or"));
     taxonOrRadioButton.setActionCommand("Or");
     taxonOrRadioButton.setSelected(true);
     ButtonGroup taxonRadioGroup = new ButtonGroup();
@@ -380,10 +374,10 @@ public class QueryDialog extends JDialog
     taxonRadioGroup.add(taxonOrRadioButton);
     taxonMoreLessPanel.add(taxonOrRadioButton);
     taxonMoreLessPanel.add(Box.createHorizontalStrut(8));
-    taxonMoreButton.setText(/*"More"*/ lan.getMessages("More"));
+    taxonMoreButton.setText(/*"More"*/ Language.getInstance().getMessages("More"));
     taxonMoreButton.setActionCommand("More");
     taxonMoreLessPanel.add(taxonMoreButton);
-    taxonLessButton.setText(/*"Fewer"*/ lan.getMessages("Fewer"));
+    taxonLessButton.setText(/*"Fewer"*/ Language.getInstance().getMessages("Fewer"));
     taxonLessButton.setActionCommand("Fewer");
     taxonLessButton.setEnabled(false);
     taxonMoreLessPanel.add(taxonLessButton);
@@ -406,7 +400,7 @@ public class QueryDialog extends JDialog
     JPanel optionsListPanel = new JPanel();
     optionsListPanel.setLayout(new BoxLayout(optionsListPanel, BoxLayout.Y_AXIS));
     optionsListPanel.add(Box.createVerticalStrut(8));
-    optionsListPanel.add(new JLabel(/*"Choose search options for this query:"*/ lan.getMessages("ChooseSearchOptions") + ":"));
+    optionsListPanel.add(new JLabel(/*"Choose search options for this query:"*/ Language.getInstance().getMessages("ChooseSearchOptions") + ":"));
     optionsListPanel.add(Box.createVerticalStrut(8));
     String caseSensitiveString = profile.get("casesensitive", 0);
     caseSensitive = (new Boolean(caseSensitiveString)).booleanValue();
@@ -417,7 +411,7 @@ public class QueryDialog extends JDialog
     includeItisSynonymsCheckBox.setSelected(includeSynonyms);
     optionsListPanel.add(includeItisSynonymsCheckBox);
     optionsListPanel.add(Box.createVerticalGlue());
-    saveDefaultsButton.setText(/*"Save Default Options"*/ lan.getMessages("SaveDefaultOptions"));
+    saveDefaultsButton.setText(/*"Save Default Options"*/ Language.getInstance().getMessages("SaveDefaultOptions"));
     saveDefaultsButton.setActionCommand("Save Default Options");
     optionsListPanel.add(saveDefaultsButton);
     optionsListPanel.add(Box.createVerticalStrut(8));
@@ -427,10 +421,10 @@ public class QueryDialog extends JDialog
     // Set the titles of the tabs
     queryTabs.setSelectedIndex(0);
     queryTabs.setSelectedComponent(subjectPanel);
-    queryTabs.setTitleAt(0, /*"Subject"*/ lan.getMessages("Subject"));
-    queryTabs.setTitleAt(1, /*"Taxonomic"*/ lan.getMessages("Taxonomic"));
-    queryTabs.setTitleAt(2, /*"Spatial"*/ lan.getMessages("Spatial"));
-    queryTabs.setTitleAt(3, /*"Options"*/ lan.getMessages("Options"));
+    queryTabs.setTitleAt(0, /*"Subject"*/ Language.getInstance().getMessages("Subject"));
+    queryTabs.setTitleAt(1, /*"Taxonomic"*/ Language.getInstance().getMessages("Taxonomic"));
+    queryTabs.setTitleAt(2, /*"Spatial"*/ Language.getInstance().getMessages("Spatial"));
+    queryTabs.setTitleAt(3, /*"Options"*/ Language.getInstance().getMessages("Options"));
 
     // Configure the control buttons area
     queryPanel.add(Box.createVerticalStrut(8));
@@ -438,14 +432,14 @@ public class QueryDialog extends JDialog
     controlButtonsPanel.setLayout(new BoxLayout(controlButtonsPanel,
                                   BoxLayout.X_AXIS));
     controlButtonsPanel.add(Box.createHorizontalStrut(8));
-    allTabsCheckBox.setText(/*"Combine constraints from all tabs"*/ lan.getMessages("CombineConstraints"));
+    allTabsCheckBox.setText(/*"Combine constraints from all tabs"*/ Language.getInstance().getMessages("CombineConstraints"));
     allTabsCheckBox.setActionCommand("Combine constraints from all tabs");
     controlButtonsPanel.add(allTabsCheckBox);
     controlButtonsPanel.add(Box.createHorizontalGlue());
-    executeButton.setText(/*"Search"*/ lan.getMessages("Search"));
+    executeButton.setText(/*"Search"*/ Language.getInstance().getMessages("Search"));
     executeButton.setActionCommand("Search");
     controlButtonsPanel.add(executeButton);
-    cancelButton.setText(/*"Cancel"*/ lan.getMessages("Cancel"));
+    cancelButton.setText(/*"Cancel"*/ Language.getInstance().getMessages("Cancel"));
     cancelButton.setActionCommand("Cancel");
     controlButtonsPanel.add(Box.createHorizontalStrut(8));
     controlButtonsPanel.add(cancelButton);
@@ -608,11 +602,11 @@ public class QueryDialog extends JDialog
     Object object = event.getItemSelectable();
 
     if (event.getStateChange() == ItemEvent.DESELECTED) {
-      String messageText = /*"You must select at least one of "*/ lan.getMessages("QueryDailog.messageText_1")
-      						+ /*"\"Network Search\"*/ "\"" + lan.getMessages("NetworkSearch") + "\"" 
-    	  					+ /*"or"*/ lan.getMessages("Or")  
-    	  					+ /*"\"Local Search\". "*/ "\"" + lan.getMessages("LocalSearch") + "\"\n"
-    	  					+ /*"You can not deselect both.*/ lan.getMessages("QueryDailog.messageText_2") + "\n";
+      String messageText = /*"You must select at least one of "*/ Language.getInstance().getMessages("QueryDailog.messageText_1")
+      						+ /*"\"Network Search\"*/ "\"" + Language.getInstance().getMessages("NetworkSearch") + "\"" 
+    	  					+ /*"or"*/ Language.getInstance().getMessages("Or")  
+    	  					+ /*"\"Local Search\". "*/ "\"" + Language.getInstance().getMessages("LocalSearch") + "\"\n"
+    	  					+ /*"You can not deselect both.*/ Language.getInstance().getMessages("QueryDailog.messageText_2") + "\n";
       if (object == catalogSearchCheckBox &&
           localSearchCheckBox.isSelected() == false) {
         catalogSearchCheckBox.setSelected(true);

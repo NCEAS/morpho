@@ -55,12 +55,6 @@ import edu.ucsb.nceas.morpho.Language;//pstango 2010/03/15
 public class TaxonTermPanel extends JComponent
 {
 
-    /**
-     *Import Language into Morpho
-     *by pstango 2010/03/15 
-     */
-    public static Language lan = new Language();	
-	
   //{{DECLARE_CONTROLS
   private JComboBox rankComboBox = new JComboBox();
   private JComboBox searchModeComboBox = new JComboBox();
@@ -110,10 +104,10 @@ public class TaxonTermPanel extends JComponent
     rankComboBox.setBackground(java.awt.Color.white);
     queryTermPanel.add(rankComboBox);
 
-    searchModeComboBox.addItem(/*"contains"*/ lan.getMessages("contains"));
-    searchModeComboBox.addItem(/*"starts-with"*/ lan.getMessages("starts-with"));
-    searchModeComboBox.addItem(/*"ends-with"*/ lan.getMessages("ends-with"));
-    searchModeComboBox.addItem(/*"equals"*/ lan.getMessages("equals"));
+    searchModeComboBox.addItem(/*"contains"*/ Language.getInstance().getMessages("contains"));
+    searchModeComboBox.addItem(/*"starts-with"*/ Language.getInstance().getMessages("starts-with"));
+    searchModeComboBox.addItem(/*"ends-with"*/ Language.getInstance().getMessages("ends-with"));
+    searchModeComboBox.addItem(/*"equals"*/ Language.getInstance().getMessages("equals"));
     searchModeComboBox.setSelectedIndex(0);
     searchModeComboBox.setBackground(java.awt.Color.white);
     queryTermPanel.add(searchModeComboBox);

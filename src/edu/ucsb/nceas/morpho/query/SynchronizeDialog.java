@@ -68,12 +68,6 @@ import edu.ucsb.nceas.morpho.Language;//pstango 2010/03/15
 public class SynchronizeDialog extends JDialog
 {
  
-    /**
-     *Import Language into Morpho
-     *by pstango 2010/03/15 
-     */
-    public static Language lan = new Language();	
-	
   /** Contorl button */ 
   private JButton executeButton = null;
   private JButton cancelButton = null;
@@ -93,14 +87,14 @@ public class SynchronizeDialog extends JDialog
       + "identical with those on the network. "
       + "In order to do this, Morpho will copy the Data Package as shown below:"
       */
-	  lan.getMessages("SynchronizeDialog.Description") +" :"
+	  Language.getInstance().getMessages("SynchronizeDialog.Description") +" :"
       ;
  
   private static String WARNING =
-      /*"Note:\n"*/ lan.getMessages("Note") + " :\n  "
+      /*"Note:\n"*/ Language.getInstance().getMessages("Note") + " :\n  "
       /*+"  If you are copying from local to network, you may be"
       + " prompted to renumber the Data Package"*/
-      + lan.getMessages("SynchronizeDialog.Warning_1")
+      + Language.getInstance().getMessages("SynchronizeDialog.Warning_1")
       ;
 
   /** A reference to morpho frame */
@@ -192,7 +186,7 @@ public class SynchronizeDialog extends JDialog
     int dialogY = (new Double(centerY - 0.5 * dialogHeight)).intValue();
     setLocation(dialogX, dialogY);
     
-    setTitle(/*"Synchronize"*/ lan.getMessages("Synchronize"));
+    setTitle(/*"Synchronize"*/ Language.getInstance().getMessages("Synchronize"));
     // Set the default close operation is dispose
     setDefaultCloseOperation(DISPOSE_ON_CLOSE);
     
@@ -230,7 +224,7 @@ public class SynchronizeDialog extends JDialog
     {
      
       arrowIcon = new ImageIcon(getClass().getResource("rightarrow.gif"));
-      executeAction = new GUIAction(/*"Execute"*/ lan.getMessages("Execute"), null, new LocalToNetworkCommand
+      executeAction = new GUIAction(/*"Execute"*/ Language.getInstance().getMessages("Execute"), null, new LocalToNetworkCommand
                                    (openDialog, this, morphoFrame, 
                                    morphoFrameType, docid, inLocal, inNetwork)); 
       warningMessage = WARNING;
@@ -240,7 +234,7 @@ public class SynchronizeDialog extends JDialog
     {
       
       arrowIcon = new ImageIcon(getClass().getResource("leftarrow.gif"));
-      executeAction = new GUIAction(/*"Execute"*/ lan.getMessages(""), null, new NetworkToLocalCommand
+      executeAction = new GUIAction(/*"Execute"*/ Language.getInstance().getMessages(""), null, new NetworkToLocalCommand
                                    (openDialog, this, morphoFrame, 
                                    morphoFrameType, docid, inLocal, inNetwork));
       warningMessage = "";
@@ -248,10 +242,10 @@ public class SynchronizeDialog extends JDialog
     
      // Create icon box
     Box iconBox = Box.createHorizontalBox();
-    JLabel localLabel = new JLabel(/*"Local"*/ lan.getMessages("Local") , localIcon, SwingConstants.RIGHT);
+    JLabel localLabel = new JLabel(/*"Local"*/ Language.getInstance().getMessages("Local") , localIcon, SwingConstants.RIGHT);
     //localLabel.setText("Local");
     localLabel.setHorizontalTextPosition(SwingConstants.RIGHT);
-    JLabel networkLabel = new JLabel(/*"Network"*/ lan.getMessages("Network"), networkIcon, 
+    JLabel networkLabel = new JLabel(/*"Network"*/ Language.getInstance().getMessages("Network"), networkIcon, 
                                                       SwingConstants.RIGHT );
     //networkLabel.setText("Network");
     networkLabel.setHorizontalTextPosition(SwingConstants.RIGHT);
@@ -293,7 +287,7 @@ public class SynchronizeDialog extends JDialog
     controlButtonsBox.add(Box.createHorizontalStrut(PADDINGWIDTH));
     
     //Cancel button
-    GUIAction cancelAction = new GUIAction(/*"Cancel"*/ lan.getMessages("Cancel"), null, 
+    GUIAction cancelAction = new GUIAction(/*"Cancel"*/ Language.getInstance().getMessages("Cancel"), null, 
                                                       new CancelCommand(this));
     cancelButton = new JButton(cancelAction);
     controlButtonsBox.add(cancelButton);

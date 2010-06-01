@@ -54,12 +54,6 @@ import edu.ucsb.nceas.morpho.Language;//pstango 2010/03/15
  */
 public class SubjectTermPanel extends JComponent
 {
-	
-    /**
-     *Import Language into Morpho
-     *by pstango 2010/03/15 
-     */
-    public static Language lan = new Language();	
 
   //{{DECLARE_CONTROLS
   private JCheckBox titleCheckBox = new JCheckBox();
@@ -88,7 +82,7 @@ public class SubjectTermPanel extends JComponent
     JPanel queryTermHelpPanel = new JPanel();
     queryTermHelpPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 5, 5));
     JLabel helpLabel = new JLabel();
-    helpLabel.setText(/*"Check boxes determine which metadata fields are searched."*/ lan.getMessages("CheckBoxes")
+    helpLabel.setText(/*"Check boxes determine which metadata fields are searched."*/ Language.getInstance().getMessages("CheckBoxes")
     					);
     queryTermHelpPanel.add(helpLabel);
     setChoicesPanel.add(queryTermHelpPanel);
@@ -96,7 +90,7 @@ public class SubjectTermPanel extends JComponent
     JPanel queryTermPanel = new JPanel();
     queryTermPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 5, 5));
     Box checkBoxHorizontal = Box.createHorizontalBox();
-    allCheckBox.setText(/*"All"*/ lan.getMessages("All"));
+    allCheckBox.setText(/*"All"*/ Language.getInstance().getMessages("All"));
     allCheckBox.setActionCommand("All");
     //allCheckBox.setSelected(true);
     allCheckBox.setAlignmentX(Component.LEFT_ALIGNMENT);
@@ -106,17 +100,17 @@ public class SubjectTermPanel extends JComponent
     checkBoxVertical.setLayout(new BoxLayout(checkBoxVertical,
                                              BoxLayout.Y_AXIS));
     checkBoxVertical.setAlignmentX(Component.LEFT_ALIGNMENT);
-    titleCheckBox.setText(/*"Title"*/ lan.getMessages("Title"));
+    titleCheckBox.setText(/*"Title"*/ Language.getInstance().getMessages("Title"));
     titleCheckBox.setActionCommand("Title");
     titleCheckBox.setSelected(true);
     //titleCheckBox.setEnabled(false);
     checkBoxVertical.add(titleCheckBox);
-    abstractCheckBox.setText(/*"Abstract"*/ lan.getMessages("Abstract"));
+    abstractCheckBox.setText(/*"Abstract"*/ Language.getInstance().getMessages("Abstract"));
     abstractCheckBox.setActionCommand("Abstract");
     abstractCheckBox.setSelected(true);
     //abstractCheckBox.setEnabled(false);
     checkBoxVertical.add(abstractCheckBox);
-    keywordsCheckBox.setText(/*"Keywords"*/ lan.getMessages("Keywords"));
+    keywordsCheckBox.setText(/*"Keywords"*/ Language.getInstance().getMessages("Keywords"));
     keywordsCheckBox.setActionCommand("Keywords");
     keywordsCheckBox.setSelected(true);
     //keywordsCheckBox.setEnabled(false);
@@ -138,10 +132,10 @@ public class SubjectTermPanel extends JComponent
     setChoicesPanel.add(Box.createVerticalGlue());
     setChoicesPanel.add(Box.createRigidArea(new Dimension(8, 8)));
     //}}
-    searchModeComboBox.addItem(/*"contains"*/ lan.getMessages("contains"));
-    searchModeComboBox.addItem(/*"starts-with"*/ lan.getMessages("starts-with"));
-    searchModeComboBox.addItem(/*"ends-with"*/ lan.getMessages("ends-with"));
-    searchModeComboBox.addItem(/*"equals"*/ lan.getMessages("equals"));
+    searchModeComboBox.addItem(/*"contains"*/ Language.getInstance().getMessages("contains"));
+    searchModeComboBox.addItem(/*"starts-with"*/ Language.getInstance().getMessages("starts-with"));
+    searchModeComboBox.addItem(/*"ends-with"*/ Language.getInstance().getMessages("ends-with"));
+    searchModeComboBox.addItem(/*"equals"*/ Language.getInstance().getMessages("equals"));
     searchModeComboBox.setSelectedIndex(0);
 
     setChoicesPanel.setBorder(BorderFactory.createLineBorder(Color.black));

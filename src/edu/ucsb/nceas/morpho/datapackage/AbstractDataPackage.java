@@ -223,12 +223,6 @@ import edu.ucsb.nceas.morpho.Language;//pstango 2010/03/15
 public abstract class AbstractDataPackage extends MetadataObject
                                           implements XMLFactoryInterface {
 	
-    /**
-     *Import Language into Morpho
-     *by pstango 2010/03/15 
-     */
-    public static Language lan = new Language();	
-	
   protected String location = "";
   protected String id;
   protected ConfigXML config;
@@ -4500,7 +4494,7 @@ public abstract class AbstractDataPackage extends MetadataObject
     // export all entities
     exportDataFiles(savedirDataSub.getAbsolutePath(), null);
     JOptionPane.showMessageDialog(UIController.getInstance().getCurrentActiveWindow(),
-                                  /*"Package export is complete ! "*/ lan.getMessages("PackageExportComplete") + " !"
+                                  /*"Package export is complete ! "*/ Language.getInstance().getMessages("PackageExportComplete") + " !"
     							);
   }
 

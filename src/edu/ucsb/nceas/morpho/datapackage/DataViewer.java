@@ -101,12 +101,6 @@ public class DataViewer extends javax.swing.JPanel
             implements StoreStateChangeEvent
 {
 
-    /**
-     *Import Language into Morpho
-     *by pstango 2010/03/15 
-     */
-    public static Language lan = new Language();
-	
   /**popup menu for right clicks*/
   private JPopupMenu popup;
   /**menu items for the popup menu*/
@@ -374,56 +368,56 @@ public class DataViewer extends javax.swing.JPanel
 //Build the popup menu for the right click functionality
     popup = new JPopupMenu();
     // Create a add documentation menu item
-    addDocumentationAction = new GUIAction(/*"Add Documentation..."*/ lan.getMessages("AddDocumentation") + "...",
+    addDocumentationAction = new GUIAction(/*"Add Documentation..."*/ Language.getInstance().getMessages("AddDocumentation") + "...",
     										null,
                                           new AddDocumentationCommand());
     addDocumentation = new JMenuItem(addDocumentationAction);
     popup.add(addDocumentation);
-    createNewDatatableAction = new GUIAction(/*"Create/Import New Data Table..."*/ lan.getMessages("Create/ImportNewDataTable") + "...",
+    createNewDatatableAction = new GUIAction(/*"Create/Import New Data Table..."*/ Language.getInstance().getMessages("Create/ImportNewDataTable") + "...",
     											null,
                                                 new ImportDataCommand());
     createNewDatatable = new JMenuItem(createNewDatatableAction);
     popup.add(createNewDatatable);
-    deleteDatatableAction = new GUIAction(/*"Delete Current Data Table"*/ lan.getMessages("DeleteCurrentDataTable"),
+    deleteDatatableAction = new GUIAction(/*"Delete Current Data Table"*/ Language.getInstance().getMessages("DeleteCurrentDataTable"),
     											null,
                                                 new DeleteTableCommand());
     deleteDatatable = new JMenuItem(deleteDatatableAction);
     popup.add(deleteDatatable);
     popup.add(new JSeparator());
 
-    sortAction = new GUIAction(/*"Sort by Selected Column"*/ lan.getMessages("SortBySelectedColumn"),
+    sortAction = new GUIAction(/*"Sort by Selected Column"*/ Language.getInstance().getMessages("SortBySelectedColumn"),
     											null,
                                                 new SortDataTableCommand());
     sortBySelectedColumn = new JMenuItem(sortAction);
     popup.add(sortBySelectedColumn);
     popup.add(new JSeparator());
 
-    insertRowAfterAction = new GUIAction(/*"Insert Row After Selection"*/ lan.getMessages("InsertRowAfterSelection"),
+    insertRowAfterAction = new GUIAction(/*"Insert Row After Selection"*/ Language.getInstance().getMessages("InsertRowAfterSelection"),
     								null,
                                   new InsertRowCommand(InsertRowCommand.AFTER));
     insertRowAfter = new JMenuItem(insertRowAfterAction);
     popup.add(insertRowAfter);
-    insertRowBeforeAction = new GUIAction(/*"Insert Row Before Selection"*/ lan.getMessages("InsertRowBeforeSelection"),
+    insertRowBeforeAction = new GUIAction(/*"Insert Row Before Selection"*/ Language.getInstance().getMessages("InsertRowBeforeSelection"),
     								null,
                                   new InsertRowCommand(InsertRowCommand.BEFORE));
     insertRowBefore = new JMenuItem(insertRowBeforeAction);
     popup.add(insertRowBefore);
-    deleteRowAction = new GUIAction(/*"Delete Selected Row"*/ lan.getMessages("DeleteSelectedRow"),
+    deleteRowAction = new GUIAction(/*"Delete Selected Row"*/ Language.getInstance().getMessages("DeleteSelectedRow"),
     								null,
                                     new DeleteRowCommand());
     deleteRow = new JMenuItem(deleteRowAction);
     popup.add(deleteRow);
     popup.add(new JSeparator());
 
-    insertColumnAfterAction = new GUIAction(/*"Insert Column After Selection"*/ lan.getMessages("InsertColumnAfterSelection"),
+    insertColumnAfterAction = new GUIAction(/*"Insert Column After Selection"*/ Language.getInstance().getMessages("InsertColumnAfterSelection"),
                       null, new InsertColumnCommand(InsertColumnCommand.AFTER));
     insertColumnAfter = new JMenuItem(insertColumnAfterAction);
     popup.add(insertColumnAfter);
-    insertColumnBeforeAction = new GUIAction(/*"Insert Column Before Selection"*/ lan.getMessages("InsertColumnBeforeSelection"),
+    insertColumnBeforeAction = new GUIAction(/*"Insert Column Before Selection"*/ Language.getInstance().getMessages("InsertColumnBeforeSelection"),
                      null, new InsertColumnCommand(InsertColumnCommand.BEFORE));
     insertColumnBefore = new JMenuItem(insertColumnBeforeAction);
     popup.add(insertColumnBefore);
-    deleteColumnAction = new GUIAction(/*"Delete Selected Column"*/ lan.getMessages("DeleteSelectedColumn"),
+    deleteColumnAction = new GUIAction(/*"Delete Selected Column"*/ Language.getInstance().getMessages("DeleteSelectedColumn"),
     										null,
                                            new DeleteColumnCommand());
     deleteColumn = new JMenuItem(deleteColumnAction);
@@ -431,7 +425,7 @@ public class DataViewer extends javax.swing.JPanel
     popup.add(new JSeparator());
 
     editColumnMetadataAction = new GUIAction(
-    								/*"Edit Column "+ DataPackagePlugin.METADATA_MENU_LABEL*/ lan.getMessages("EditColumnDocumentation"),
+    								/*"Edit Column "+ DataPackagePlugin.METADATA_MENU_LABEL*/ Language.getInstance().getMessages("EditColumnDocumentation"),
                                null,
                                new EditColumnMetaDataCommand());
     editColumnMetadata = new JMenuItem(editColumnMetadataAction);

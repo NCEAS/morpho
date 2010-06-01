@@ -66,12 +66,6 @@ import com.toedter.calendar.JCalendar;
  */
 public class TemporalPage extends AbstractUIPage {
 
-    /**
-     *Import Language into Morpho
-     *by pstango 2010/03/15 
-     */
-    public static Language lan = new Language();	
-	
   private final String pageID     = DataPackageWizardInterface.TEMPORAL_PAGE;
   private final String pageNumber = "";
   private final String title      = "Access Page";
@@ -97,14 +91,14 @@ public class TemporalPage extends AbstractUIPage {
   private JCalendar endTimeCalendar;
 
   private final String[] timeTypeText = new String[] {
-    /*"Single Point in Time"*/ lan.getMessages("SinglePoint"),
-    /*"Range of Date/Time"*/ lan.getMessages("RangTime")
+    /*"Single Point in Time"*/ Language.getInstance().getMessages("SinglePoint"),
+    /*"Range of Date/Time"*/ Language.getInstance().getMessages("RangTime")
   };
 
   private final String[] timeText = new String[] {
-    /*"Enter Year Only"*/ lan.getMessages("YearOnly"),
+    /*"Enter Year Only"*/ Language.getInstance().getMessages("YearOnly"),
     //"Enter Month and Year",
-    /*"Enter Day, Month and Year"*/ lan.getMessages("DayMonthYear")
+    /*"Enter Day, Month and Year"*/ Language.getInstance().getMessages("DayMonthYear")
   };
 
   private final String[] Months = new String[] {
@@ -138,7 +132,7 @@ public class TemporalPage extends AbstractUIPage {
     topPanel.setLayout(new BoxLayout(topPanel, BoxLayout.Y_AXIS));
     JLabel desc = WidgetFactory.makeHTMLLabel(
                       "<font size=\"4\"><b>"
-    				  + /*Define Temporal Coverage*/ lan.getMessages("DefineTemporalCoverage")
+    				  + /*Define Temporal Coverage*/ Language.getInstance().getMessages("DefineTemporalCoverage")
     				  +"</b></font>", 1);
     topPanel.add(desc);
 
@@ -166,7 +160,7 @@ public class TemporalPage extends AbstractUIPage {
     topPanel.add(WidgetFactory.makeDefaultSpacer());
 
     descLabel = WidgetFactory.makeHTMLLabel(
-        "<p><b>"+ /*Choose date type*/ lan.getMessages("ChooseDateType") + " :</b>", 1);
+        "<p><b>"+ /*Choose date type*/ Language.getInstance().getMessages("ChooseDateType") + " :</b>", 1);
     topPanel.add(descLabel);
     topPanel.add(dateTypeRadioOuterPanel);
 
@@ -239,7 +233,7 @@ public class TemporalPage extends AbstractUIPage {
 	}
     startTimeCalendar.setVisible(true);
 
-    JPanel startingPanel = getDateTimePanel(/*"Enter starting date:"*/ lan.getMessages("DateStart") + ":",
+    JPanel startingPanel = getDateTimePanel(/*"Enter starting date:"*/ Language.getInstance().getMessages("DateStart") + ":",
                                             startTimeTF,
                                             startTimeCalendar, selDateTypeStart);
     panel.add(Box.createGlue());
@@ -254,7 +248,7 @@ public class TemporalPage extends AbstractUIPage {
 	}
     endTimeCalendar.setVisible(true);
 
-    JPanel endingPanel = getDateTimePanel(/*"Enter ending date:"*/ lan.getMessages("DateEnd") + ":",
+    JPanel endingPanel = getDateTimePanel(/*"Enter ending date:"*/ Language.getInstance().getMessages("DateEnd") + ":",
                                           endTimeTF, endTimeCalendar, selDateTypeEnd);
     panel.add(endingPanel);
 
@@ -453,7 +447,7 @@ public class TemporalPage extends AbstractUIPage {
       Calendar eCalendar = endTimeCalendar.getCalendar();
       if(sCalendar.after(eCalendar)){
         Log.debug(1,
-        		  /*"Starting date should be before ending date."*/ lan.getMessages("StartDateBeforeEnd")
+        		  /*"Starting date should be before ending date."*/ Language.getInstance().getMessages("StartDateBeforeEnd")
         		  );
         return false;
       }

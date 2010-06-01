@@ -53,12 +53,6 @@ import java.util.Iterator;
 
 public class MethodsPage
     extends AbstractUIPage {
-	
-    /**
-     *Import Language into Morpho
-     *by pstango 2010/03/15 
-     */
-    public static Language lan = new Language();	
 
   private final String pageID = DataPackageWizardInterface.METHODS_PAGE;
   private final String pageNumber = "";
@@ -95,7 +89,7 @@ public class MethodsPage
 
     JLabel desc = WidgetFactory.makeHTMLLabel(
         "<font size=\"4\"><b>"
-    	+ /*"Enter Method Step Information"*/ lan.getMessages("MethodsPage.desc") 
+    	+ /*"Enter Method Step Information"*/ Language.getInstance().getMessages("MethodsPage.desc") 
     	+ " : </b></font>", 1);
     middlePanel.add(desc);
 
@@ -104,7 +98,7 @@ public class MethodsPage
 
     JLabel titleDesc = WidgetFactory.makeHTMLLabel(
         "<b>"
-    	+ /*"Enter title"*/ lan.getMessages("MethodsPage.titleDesc")
+    	+ /*"Enter title"*/ Language.getInstance().getMessages("MethodsPage.titleDesc")
     	+ "</b> "
     	, 1);
     middlePanel.add(titleDesc);
@@ -112,7 +106,7 @@ public class MethodsPage
 
     JPanel titlePanel = WidgetFactory.makePanel(1);
 
-    titleLabel = WidgetFactory.makeLabel(/*" Title"*/ " " + lan.getMessages("Title"), false);
+    titleLabel = WidgetFactory.makeLabel(/*" Title"*/ " " + Language.getInstance().getMessages("Title"), false);
     titlePanel.add(titleLabel);
 
     titleField = WidgetFactory.makeOneLineTextField();
@@ -126,12 +120,12 @@ public class MethodsPage
     middlePanel.add(WidgetFactory.makeDefaultSpacer());
 
     JLabel descTitle = WidgetFactory.makeHTMLLabel(
-        "<b>" + /*"Enter description"*/ lan.getMessages("MethodsPage.descTitle") +"</b> ", 1);
+        "<b>" + /*"Enter description"*/ Language.getInstance().getMessages("MethodsPage.descTitle") +"</b> ", 1);
     middlePanel.add(descTitle);
     middlePanel.add(WidgetFactory.makeHalfSpacer());
 
     JPanel descPanel = WidgetFactory.makePanel(25);
-    descLabel = WidgetFactory.makeLabel(/*"Description:"*/  lan.getMessages("Description") + " : ", true);
+    descLabel = WidgetFactory.makeLabel(/*"Description:"*/  Language.getInstance().getMessages("Description") + " : ", true);
     descPanel.add(descLabel);
 
     descField = WidgetFactory.makeTextArea("", 7, true);
@@ -145,12 +139,12 @@ public class MethodsPage
     middlePanel.add(WidgetFactory.makeDefaultSpacer());
 
     JLabel instrumentationTitle = WidgetFactory.makeHTMLLabel(
-        "<b>" + /*"Enter Instrumentation Details"*/ lan.getMessages("MethodsPage.instrumentationTitle") + "</b> ", 1);
+        "<b>" + /*"Enter Instrumentation Details"*/ Language.getInstance().getMessages("MethodsPage.instrumentationTitle") + "</b> ", 1);
     middlePanel.add(instrumentationTitle);
     middlePanel.add(WidgetFactory.makeHalfSpacer());
 
     JPanel instPanel = WidgetFactory.makePanel(25);
-    instLabel = WidgetFactory.makeLabel(/*"Instrumentation:"*/ lan.getMessages("Instrumentation") + " : ", false);
+    instLabel = WidgetFactory.makeLabel(/*"Instrumentation:"*/ Language.getInstance().getMessages("Instrumentation") + " : ", false);
     instPanel.add(instLabel);
 
     instField = WidgetFactory.makeTextArea("", 7, true);

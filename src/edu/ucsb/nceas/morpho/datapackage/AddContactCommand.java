@@ -61,12 +61,6 @@ import java.util.HashMap;
  */
 public class AddContactCommand
 implements Command, DataPackageWizardListener {
-	
-    /**
-     *Import Language into Morpho
-     *by pstango 2010/03/15 
-     */
-    public static Language lan = new Language();	
 
   //generic name for lookup in eml listings
   private final String DATAPACKAGE_CONTACT_GENERIC_NAME = "contact";
@@ -96,8 +90,8 @@ implements Command, DataPackageWizardListener {
 	 {
 		   // if user choose not transform it, stop the action.
 			Log.debug(2,
-					/*"The current EML document is not the latest version."*/ lan.getMessages("EMLDocumentIsNotTheLatestVersion_1") + " "
-					+/*" You should transform it first!"*/ lan.getMessages("EMLDocumentIsNotTheLatestVersion_2") + "!"
+					/*"The current EML document is not the latest version."*/ Language.getInstance().getMessages("EMLDocumentIsNotTheLatestVersion_1") + " "
+					+/*" You should transform it first!"*/ Language.getInstance().getMessages("EMLDocumentIsNotTheLatestVersion_2") + "!"
 					);
 			return;
 	 }

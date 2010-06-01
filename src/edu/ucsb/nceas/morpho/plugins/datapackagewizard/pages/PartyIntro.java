@@ -38,15 +38,9 @@ import javax.swing.JLabel;
 
 
 public class PartyIntro extends AbstractUIPage{
-	
-    /**
-     *Import Language into Morpho
-     *by pstango 2010/03/15 
-     */
-    public static Language lan = new Language();
 
   public final String pageID = DataPackageWizardInterface.PARTY_INTRO;
-  public final String title = /*"People and Organizations"*/ lan.getMessages("PeopleAndOrganizations");
+  public final String title = /*"People and Organizations"*/ Language.getInstance().getMessages("PeopleAndOrganizations");
   public final String subtitle = "";
   public final String pageNumber = "4";
 
@@ -80,11 +74,11 @@ public class PartyIntro extends AbstractUIPage{
         + "they may have created documentation for the "
         + "data.<br></br></li>",
         */
-    	"<p><b>" + lan.getMessages("PeopleAndOrganizations.desc_1") +"</b>"	
-    	+ lan.getMessages("PeopleAndOrganizations.desc_2") + ":</p><br></br>"
-    	+ "<li><b>" + lan.getMessages("Owner")+ " : </b>" + lan.getMessages("PeopleAndOrganizations.desc.Owner") +"<br></br></li>"
-    	+ "<li><b>" + lan.getMessages("Contact")+ " : </b>" + lan.getMessages("PeopleAndOrganizations.desc.Contact") +"<br></br></li>"
-    	+ "<li><b>" + lan.getMessages("AssociatedParties")+ " : </b>" + lan.getMessages("PeopleAndOrganizations.desc.AssociatedParties") +"<br></br></li>"
+    	"<p><b>" + Language.getInstance().getMessages("PeopleAndOrganizations.desc_1") +"</b>"	
+    	+ Language.getInstance().getMessages("PeopleAndOrganizations.desc_2") + ":</p><br></br>"
+    	+ "<li><b>" + Language.getInstance().getMessages("Owner")+ " : </b>" + Language.getInstance().getMessages("PeopleAndOrganizations.desc.Owner") +"<br></br></li>"
+    	+ "<li><b>" + Language.getInstance().getMessages("Contact")+ " : </b>" + Language.getInstance().getMessages("PeopleAndOrganizations.desc.Contact") +"<br></br></li>"
+    	+ "<li><b>" + Language.getInstance().getMessages("AssociatedParties")+ " : </b>" + Language.getInstance().getMessages("PeopleAndOrganizations.desc.AssociatedParties") +"<br></br></li>"
     	,13);
 
     this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));

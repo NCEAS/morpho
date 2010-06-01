@@ -60,19 +60,13 @@ import edu.ucsb.nceas.morpho.Language;//pstango 2010/03/15
 
 public class Access
     extends AbstractUIPage {
-	
-    /**
-     *Import Language into Morpho
-     *by pstango 2010/03/15 
-     */
-    public static Language lan = new Language();	
 
   public final String pageID = DataPackageWizardInterface.ACCESS;
   public final String pageNumber = "14";
 
   /////////////////////////////////////////////////////////
 
-  public final String title = /*"Access Information"*/ lan.getMessages("AccessInformation");
+  public final String title = /*"Access Information"*/ Language.getInstance().getMessages("AccessInformation");
   public final String subtitle = " ";
 
   private JPanel radioPanel;
@@ -84,8 +78,8 @@ public class Access
   private boolean publicReadAccess = true;
   private boolean inherit = false;
   private String[] buttonsText = new String[] {
-      /*"Yes, give read-only access to public."*/ lan.getMessages("Access.PublicYes"),
-      /*"No."*/ lan.getMessages("No")
+      /*"Yes, give read-only access to public."*/ Language.getInstance().getMessages("Access.PublicYes"),
+      /*"No."*/ Language.getInstance().getMessages("No")
   };
 
   private final String ALLOW_REL_XPATH = "allow[";
@@ -94,10 +88,10 @@ public class Access
   private final String ORDER_REL_XPATH = "@order";
 
   private final String[] colNames = {
-      /*"Name"*/ lan.getMessages("Name"), 
-      /*"Organization"*/ lan.getMessages("Organization"),
-      /*"Email/Description"*/ lan.getMessages("Email/Description"),
-      /*"Permissions"*/ lan.getMessages("Permissions")
+      /*"Name"*/ Language.getInstance().getMessages("Name"), 
+      /*"Organization"*/ Language.getInstance().getMessages("Organization"),
+      /*"Email/Description"*/ Language.getInstance().getMessages("Email/Description"),
+      /*"Permissions"*/ Language.getInstance().getMessages("Permissions")
       };
   private final Object[] editors = null;
   private CustomList accessList;
@@ -105,8 +99,8 @@ public class Access
   private String AUTHSYSTEM_VALUE = "knb";
   private String orderValue = "allowFirst";
   private String[] orderValues = new String[] {
-	      /*"Allow First"*/ lan.getMessages("AllowFirst"),
-	      /*"Deny First"*/ lan.getMessages("DenyFirst")
+	      /*"Allow First"*/ Language.getInstance().getMessages("AllowFirst"),
+	      /*"Deny First"*/ Language.getInstance().getMessages("DenyFirst")
 	  };
 
   public static DefaultMutableTreeNode accessTreeNode = null;
@@ -134,15 +128,15 @@ public class Access
     	inherit = true;
     	buttonsText = 
     		new String[] {
-    		      /*"Yes, give read-only access to public."*/ lan.getMessages("Access.PublicYes"),
-    		      /*"No."*/ lan.getMessages("No"),
-    		      /*"Same as Metadata."*/ lan.getMessages("SameAsMetadata")
+    		      /*"Yes, give read-only access to public."*/ Language.getInstance().getMessages("Access.PublicYes"),
+    		      /*"No."*/ Language.getInstance().getMessages("No"),
+    		      /*"Same as Metadata."*/ Language.getInstance().getMessages("SameAsMetadata")
     		  };
     	desc =
     		WidgetFactory.makeHTMLLabel(
 	        "<p><b>" 
 	        /*+"Would you like to allow the public to read your data entity?"*/
-    		+ lan.getMessages("Access.dsc")+"?"		
+    		+ Language.getInstance().getMessages("Access.dsc")+"?"		
 	        + "</b></p>", 2);
     }
     else {
@@ -150,7 +144,7 @@ public class Access
     		WidgetFactory.makeHTMLLabel(
 	        "<p><b>" 
 	        /*+"Would you like to allow the public to read your data package?"*/
-    		+ lan.getMessages("Access.dsc")+"?"		
+    		+ Language.getInstance().getMessages("Access.dsc")+"?"		
 	        + "</b></p>", 2);
     }
     vBox.add(desc);
@@ -189,7 +183,7 @@ public class Access
     orderDesc =
     		WidgetFactory.makeHTMLLabel(
 	        "<p><b>"
-	        + /*"Process access rules in this order: "*/ lan.getMessages("Access.orderDesc") + " :"
+	        + /*"Process access rules in this order: "*/ Language.getInstance().getMessages("Access.orderDesc") + " :"
 	        + "</b></p>", 2);
     vBox.add(orderDesc);
 
@@ -223,34 +217,34 @@ public class Access
 	    desc1 = WidgetFactory.makeHTMLLabel(
 	    		"<p>"
 	    		/*+ "<b>Would you like to give special access rights to other people?</b>"*/
-	    		+ "<b>" + lan.getMessages("Access.desc1_1") + " ?</b>"
+	    		+ "<b>" + Language.getInstance().getMessages("Access.desc1_1") + " ?</b>"
 	    		/*
 				+ "You can specify access for other members of your team or any "
 		        + "other person. "
 		        */
-	    		+ lan.getMessages("Access.desc1_2")
+	    		+ Language.getInstance().getMessages("Access.desc1_2")
 	    		/*
 		        + "Use the table below to add, edit and "
 		        + "delete access rights to your data package." 
 		        */
-	    		+ lan.getMessages("Access.desc1_3")
+	    		+ Language.getInstance().getMessages("Access.desc1_3")
 		        + "</p>", 3);
 	}
 	else {
 		desc1 = WidgetFactory.makeHTMLLabel(
 				"<p>"
 	    		/*+ "<b>Would you like to give special access rights to other people?</b>"*/
-	    		+ "<b>" + lan.getMessages("Access.desc1_1") + " ?</b>"
+	    		+ "<b>" + Language.getInstance().getMessages("Access.desc1_1") + " ?</b>"
 	    		/*
 				+ "You can specify access for other members of your team or any "
 		        + "other person. "
 		        */
-	    		+ lan.getMessages("Access.desc1_2")
+	    		+ Language.getInstance().getMessages("Access.desc1_2")
 	    		/*
 		        + "Use the table below to add, edit and "
 		        + "delete access rights to your data package." 
 		        */
-	    		+ lan.getMessages("Access.desc1_3")
+	    		+ Language.getInstance().getMessages("Access.desc1_3")
 		        + "</p>", 3);
 	}
     vBox.add(desc1);

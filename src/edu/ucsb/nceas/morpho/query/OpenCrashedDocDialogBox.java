@@ -71,12 +71,6 @@ import javax.swing.SwingConstants;
  */
 public class OpenCrashedDocDialogBox extends OpenDialogBox
 {
-    /**
-     *Import Language into Morpho
-     *by pstango 2010/03/15 
-     */
-    public static Language lan = new Language();	
-	
   /** A reference to the container Morpho application */
   private Morpho morpho = null;
 
@@ -108,13 +102,13 @@ public class OpenCrashedDocDialogBox extends OpenDialogBox
   private static final int PADDINGWIDTH = 8;
   private static final String INFO = "<html><table width=\"100%\"><tr><td valign=\"top\" width=\"100%\">"
   /*+"Morpho did not exit cleanly the last time it was run. "*/
-  + lan.getMessages("OpenCrashedDocDialogBox.INFO_1") + " "
+  + Language.getInstance().getMessages("OpenCrashedDocDialogBox.INFO_1") + " "
   /*+"The following documents were automatically saved in an incomplete state. "*/
-  + lan.getMessages("OpenCrashedDocDialogBox.INFO_2") + " "
+  + Language.getInstance().getMessages("OpenCrashedDocDialogBox.INFO_2") + " "
   /*+"You may open one of them now to continue from the point of the last automatic save.  "*/ 
-  + lan.getMessages("OpenCrashedDocDialogBox.INFO_3") + " "
+  + Language.getInstance().getMessages("OpenCrashedDocDialogBox.INFO_3") + " "
   /*+"If you cancel, you will still be able to access these documents later by using the Open dialog"*/
-  + lan.getMessages("OpenCrashedDocDialogBox.INFO_4")
+  + Language.getInstance().getMessages("OpenCrashedDocDialogBox.INFO_4")
   +"</td></tr></table></html>";
 
 
@@ -264,7 +258,7 @@ public class OpenCrashedDocDialogBox extends OpenDialogBox
 
     // Open button
     //boolean isCrashedDoc = true;
-    GUIAction openAction = new GUIAction(/*"Open"*/ lan.getMessages("Open"), null,
+    GUIAction openAction = new GUIAction(/*"Open"*/ Language.getInstance().getMessages("Open"), null,
                                   new OpenPackageCommand(this));
     //GUIAction openAction = null;
     openButton = new JButton(openAction);
@@ -277,7 +271,7 @@ public class OpenCrashedDocDialogBox extends OpenDialogBox
     controlButtonsBox.add(Box.createHorizontalStrut(PADDINGWIDTH));
 
     //Cancel button
-    GUIAction cancelAction = new GUIAction(/*"Cancel"*/ lan.getMessages("Cancel"), null,
+    GUIAction cancelAction = new GUIAction(/*"Cancel"*/ Language.getInstance().getMessages("Cancel"), null,
                                                       new CancelCommand(this));
     cancelButton = new JButton(cancelAction);
     controlButtonsBox.add(cancelButton);

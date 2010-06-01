@@ -72,12 +72,6 @@ import javax.swing.border.EmptyBorder;
 import edu.ucsb.nceas.morpho.Language;//pstango 2010/03/15
 
 class NominalOrdinalPanel extends JPanel implements WizardPageSubPanelAPI {
-	
-    /**
-     *Import Language into Morpho
-     *by pstango 2010/03/15 
-     */
-    public static Language lan = new Language();	
 
   private JPanel currentSubPanel;
   private JPanel textSubPanel;
@@ -99,8 +93,8 @@ class NominalOrdinalPanel extends JPanel implements WizardPageSubPanelAPI {
   private JLabel      codeLocationLabel;
   private JComboBox    codeLocationPickList;
   private final String[] codeLocationPicklistVals
-  = { /*"Codes are defined here"*/ lan.getMessages("CodesDefinedHere"),
-  /*"Codes are imported from another table"*/ lan.getMessages("CodesImportFromAnotherTable")
+  = { /*"Codes are defined here"*/ Language.getInstance().getMessages("CodesDefinedHere"),
+  /*"Codes are imported from another table"*/ Language.getInstance().getMessages("CodesImportFromAnotherTable")
 		  };
 
   private JPanel tablePanel;
@@ -113,12 +107,12 @@ class NominalOrdinalPanel extends JPanel implements WizardPageSubPanelAPI {
   private JCheckBox enumDefinitionFreeTextCheckBox;
 
   private final String[] textEnumPicklistVals
-  = { /*"Enumerated values*/ lan.getMessages("EnumeratedValues") + " " +/*"(belong to predefined list)"*/ "(" + lan.getMessages("EnumeratedValues.desc")+ ")",
-	 /*"Text values*/ lan.getMessages("TextValues") + " " +/*"(belong to predefined list)"*/ "(" + lan.getMessages("TextValues.desc")+ ")"	  
+  = { /*"Enumerated values*/ Language.getInstance().getMessages("EnumeratedValues") + " " +/*"(belong to predefined list)"*/ "(" + Language.getInstance().getMessages("EnumeratedValues.desc")+ ")",
+	 /*"Text values*/ Language.getInstance().getMessages("TextValues") + " " +/*"(belong to predefined list)"*/ "(" + Language.getInstance().getMessages("TextValues.desc")+ ")"	  
   };
 
-  private static final String TO_BE_IMPORTED = /*"Imported later"*/ lan.getMessages("ImportedLater");
-  private static final String SELECT_TABLE = /*"--select table--"*/ "--" + lan.getMessages("SelectTable") + "--";
+  private static final String TO_BE_IMPORTED = /*"Imported later"*/ Language.getInstance().getMessages("ImportedLater");
+  private static final String SELECT_TABLE = /*"--select table--"*/ "--" + Language.getInstance().getMessages("SelectTable") + "--";
 
   private static final short CODES_DEFINED_HERE = 10;
   private static final short CODES_IMPORTED = 20;
@@ -174,13 +168,13 @@ class NominalOrdinalPanel extends JPanel implements WizardPageSubPanelAPI {
     final String TEXT_HELP
     = WizardSettings.HTML_NO_TABLE_OPENING
     /*+"Describe a free text domain for the attribute."*/
-    + lan.getMessages("NominalOrdinalPanel.TEXT_HELP")
+    + Language.getInstance().getMessages("NominalOrdinalPanel.TEXT_HELP")
     +WizardSettings.HTML_NO_TABLE_CLOSING;
 
     final String ENUM_HELP
     = WizardSettings.HTML_NO_TABLE_OPENING
     /*+"Describe any codes that are used as values of the attribute."*/
-    + lan.getMessages("NominalOrdinalPanel.ENUM_HELP")
+    + Language.getInstance().getMessages("NominalOrdinalPanel.ENUM_HELP")
     +WizardSettings.HTML_NO_TABLE_CLOSING;
 
     final JLabel helpTextLabel = getLabel(ENUM_HELP);
@@ -222,7 +216,7 @@ class NominalOrdinalPanel extends JPanel implements WizardPageSubPanelAPI {
 
 
     JPanel pickListPanel = WidgetFactory.makePanel();
-    chooseLabel = WidgetFactory.makeLabel(/*"Choose:"*/ lan.getMessages("Choose") + ":" ,
+    chooseLabel = WidgetFactory.makeLabel(/*"Choose:"*/ Language.getInstance().getMessages("Choose") + ":" ,
     									true, WizardSettings.WIZARD_CONTENT_LABEL_DIMS);
     pickListPanel.add(chooseLabel);
     pickListPanel.add(domainPickList);
@@ -276,7 +270,7 @@ class NominalOrdinalPanel extends JPanel implements WizardPageSubPanelAPI {
     topHorizPanel.setLayout(new GridLayout(1,2));
 
     JPanel defFieldPanel = WidgetFactory.makePanel();
-    textDefinitionLabel = WidgetFactory.makeLabel(/*"Definition:"*/ lan.getMessages("Definition") + ":",
+    textDefinitionLabel = WidgetFactory.makeLabel(/*"Definition:"*/ Language.getInstance().getMessages("Definition") + ":",
     												true, WizardSettings.WIZARD_CONTENT_LABEL_DIMS);
     defFieldPanel.add(textDefinitionLabel);
     textDefinitionField = WidgetFactory.makeOneLineTextField();
@@ -287,9 +281,9 @@ class NominalOrdinalPanel extends JPanel implements WizardPageSubPanelAPI {
     topHorizPanel.add(getLabel(
     WizardSettings.HTML_NO_TABLE_OPENING
     +WizardSettings.HTML_EXAMPLE_FONT_OPENING
-    +/*"e.g: "*/ lan.getMessages("e.g") 
+    +/*"e.g: "*/ Language.getInstance().getMessages("e.g") 
     +" <i>" 
-    +/*"U.S. telephone numbers in the format "*/ lan.getMessages("USTelephoneNumberFormat")
+    +/*"U.S. telephone numbers in the format "*/ Language.getInstance().getMessages("USTelephoneNumberFormat")
     +" (999) 888-7777</i>"
     +WizardSettings.HTML_EXAMPLE_FONT_CLOSING
     +WizardSettings.HTML_NO_TABLE_CLOSING));
@@ -304,7 +298,7 @@ class NominalOrdinalPanel extends JPanel implements WizardPageSubPanelAPI {
     middleHorizPanel.setLayout(new GridLayout(1,2));
 
     JPanel srcFieldPanel = WidgetFactory.makePanel();
-    srcFieldPanel.add(WidgetFactory.makeLabel(/*"Source:"*/ lan.getMessages("Source") + ":",
+    srcFieldPanel.add(WidgetFactory.makeLabel(/*"Source:"*/ Language.getInstance().getMessages("Source") + ":",
     											false, WizardSettings.WIZARD_CONTENT_LABEL_DIMS));
     textSourceField = WidgetFactory.makeOneLineTextField();
     srcFieldPanel.add(textSourceField);
@@ -314,9 +308,9 @@ class NominalOrdinalPanel extends JPanel implements WizardPageSubPanelAPI {
     middleHorizPanel.add(getLabel(
     WizardSettings.HTML_NO_TABLE_OPENING
     +WizardSettings.HTML_EXAMPLE_FONT_OPENING
-    +/*"e.g: "*/ lan.getMessages("e.g") 
+    +/*"e.g: "*/ Language.getInstance().getMessages("e.g") 
     +" <i>" 
-    +/*"FIPS standard for postal abbreviations for U.S. states"*/ lan.getMessages("FIPS_Standard")
+    +/*"FIPS standard for postal abbreviations for U.S. states"*/ Language.getInstance().getMessages("FIPS_Standard")
     +"</i>"
     +WizardSettings.HTML_EXAMPLE_FONT_CLOSING
     +WizardSettings.HTML_NO_TABLE_CLOSING));
@@ -333,10 +327,10 @@ class NominalOrdinalPanel extends JPanel implements WizardPageSubPanelAPI {
     Object[] colTemplates = new Object[] { new JTextField() };
 
     JPanel patternPanel = WidgetFactory.makePanel();
-    patternPanel.add(WidgetFactory.makeLabel(/*"Pattern(s):"*/ lan.getMessages("Pattern(s)") + ":",
+    patternPanel.add(WidgetFactory.makeLabel(/*"Pattern(s):"*/ Language.getInstance().getMessages("Pattern(s)") + ":",
     										false, WizardSettings.WIZARD_CONTENT_LABEL_DIMS));
-    String[] colNames = new String[] {  /*"Pattern(s)"*/ lan.getMessages("Pattern(s)") + " "
-    									+/*"(optional)"*/ "(" + lan.getMessages("optional") +")"
+    String[] colNames = new String[] {  /*"Pattern(s)"*/ Language.getInstance().getMessages("Pattern(s)") + " "
+    									+/*"(optional)"*/ "(" + Language.getInstance().getMessages("optional") +")"
     									+":" };
 
 
@@ -355,11 +349,11 @@ class NominalOrdinalPanel extends JPanel implements WizardPageSubPanelAPI {
     +"are interpreted as regular expressions constraining allowable "
     +"character sequences."
     */
-    +lan.getMessages("NominalOrdinalPanel.PatternsDesc_1") + " "
+    +Language.getInstance().getMessages("NominalOrdinalPanel.PatternsDesc_1") + " "
     +WizardSettings.HTML_EXAMPLE_FONT_OPENING
-    +/*"  e.g: "*/ lan.getMessages("e.g") 
+    +/*"  e.g: "*/ Language.getInstance().getMessages("e.g") 
     +" <i>'[0-9]{3}-[0-9]{3}-[0-9]{4}' " 
-    +/*"allows only numeric digits in the pattern of US phone numbers"*/ lan.getMessages("NominalOrdinalPanel.PatternsDesc_2")
+    +/*"allows only numeric digits in the pattern of US phone numbers"*/ Language.getInstance().getMessages("NominalOrdinalPanel.PatternsDesc_2")
     +"</i>"+WizardSettings.HTML_EXAMPLE_FONT_CLOSING
     +WizardSettings.HTML_NO_TABLE_CLOSING));
 
@@ -379,7 +373,7 @@ class NominalOrdinalPanel extends JPanel implements WizardPageSubPanelAPI {
     ///////////////////////////
 
     JPanel locationPanel = WidgetFactory.makePanel();
-    codeLocationLabel = WidgetFactory.makeLabel(/*"Location:"*/ lan.getMessages("Location") +":",
+    codeLocationLabel = WidgetFactory.makeLabel(/*"Location:"*/ Language.getInstance().getMessages("Location") +":",
     											true, WizardSettings.WIZARD_CONTENT_LABEL_DIMS);
     locationPanel.add(codeLocationLabel);
 
@@ -417,7 +411,7 @@ class NominalOrdinalPanel extends JPanel implements WizardPageSubPanelAPI {
     locationPanel.add(codeLocationPickList);
 
     tablePanel = WidgetFactory.makePanel();
-    tableNameLabel = getLabel(/*"Table Name:  "*/ lan.getMessages("TableName") + ":  ");
+    tableNameLabel = getLabel(/*"Table Name:  "*/ Language.getInstance().getMessages("TableName") + ":  ");
     tableNameLabel.setForeground(WizardSettings.WIZARD_CONTENT_REQD_TEXT_COLOR);
     tablePanel.add(tableNameLabel);
     tableNameTextField = WidgetFactory.makeOneLineTextField(SELECT_TABLE);
@@ -425,7 +419,7 @@ class NominalOrdinalPanel extends JPanel implements WizardPageSubPanelAPI {
     tablePanel.add(tableNameTextField);
 
     locateAction = new LocateAction(this.wizardPage);
-    tableNameButton = WidgetFactory.makeJButton(/*"locate"*/ lan.getMessages("locate"), locateAction);
+    tableNameButton = WidgetFactory.makeJButton(/*"locate"*/ Language.getInstance().getMessages("locate"), locateAction);
     tableNameButton.setMinimumSize(new Dimension(55,17));
     tableNameButton.setMaximumSize(new Dimension(55,17));
     tableNameButton.setMargin(new Insets(0,2,1,2));
@@ -459,11 +453,11 @@ class NominalOrdinalPanel extends JPanel implements WizardPageSubPanelAPI {
     = new Object[] { new JTextField(), new JTextField()};
 
     String[] colNames
-    = new String[] { /*"Code"*/ lan.getMessages("Code"),
-    				/*"Definition"*/ lan.getMessages("Definition") };
+    = new String[] { /*"Code"*/ Language.getInstance().getMessages("Code"),
+    				/*"Definition"*/ Language.getInstance().getMessages("Definition") };
 
     enumPanel = WidgetFactory.makePanel();
-    enumDefinitionLabel = WidgetFactory.makeLabel(/*"Definitions:"*/ lan.getMessages("Definitions") + ":",
+    enumDefinitionLabel = WidgetFactory.makeLabel(/*"Definitions:"*/ Language.getInstance().getMessages("Definitions") + ":",
     												true, WizardSettings.WIZARD_CONTENT_LABEL_DIMS);
     enumPanel.add(enumDefinitionLabel);
 
@@ -522,7 +516,7 @@ class NominalOrdinalPanel extends JPanel implements WizardPageSubPanelAPI {
     panel.add(WidgetFactory.makeHalfSpacer());
 
     enumDefinitionFreeTextCheckBox = WidgetFactory.makeCheckBox(
-    /*"Attribute contains free-text in addition to those values listed above"*/ lan.getMessages("NominalOrdinalPanel.FreeTextCheckBox"),
+    /*"Attribute contains free-text in addition to those values listed above"*/ Language.getInstance().getMessages("NominalOrdinalPanel.FreeTextCheckBox"),
     false);
 
     JPanel cbPanel = WidgetFactory.makePanel();
