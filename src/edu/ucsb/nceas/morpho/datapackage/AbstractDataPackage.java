@@ -3133,6 +3133,44 @@ public abstract class AbstractDataPackage extends MetadataObject
   }
 
   /**
+   *  This method removes the given distribution element from the entity
+   */
+  public Node removePhysicalDistribution(int entityIndex, int physicalIndex, int distributionIndex) {
+    if ( (entityArray == null) || (entityArray.length < (entityIndex) + 1)) {
+      Log.debug(20, "No such entity!");
+      return null;
+    }
+    Node[] physicals = getPhysicalArray(entityIndex);
+    if ( (physicals == null) || (physicals.length < 1)) {
+      return null;
+    }
+    if (physicalIndex > (physicals.length - 1)) {
+      return null;
+    }
+    Node physical = physicals[physicalIndex];
+    String physXpath = "";
+    try {
+      physXpath = (XMLUtilities.getTextNodeWithXPath(getMetadataPath(),
+          "/xpathKeyMap/contextNode[@name='physical']/distribution")).getNodeValue();
+      NodeList aNodes = XPathAPI.selectNodeList(physical, physXpath);
+      if (aNodes == null) {
+        return null;
+      }
+      // look up the distribution node
+      Node child = aNodes.item(distributionIndex);
+      Node parnode = child.getParentNode();
+      if (parnode==null) {
+    	  return null;
+      }
+      return parnode.removeChild(child);
+    }
+    catch (Exception w) {
+      Log.debug(50, "exception in removing physical distribution" + w.toString());
+    }
+    return null;
+  }
+  
+  /**
    *  This method returns the FieldDelimiter for the indexed entity and
    *  physical object. An empty string is returned when there is no
    *  meaningful fieldDelimiter (e.g. not a text format)
@@ -3491,13 +3529,12 @@ public abstract class AbstractDataPackage extends MetadataObject
         String urlxpath = (XMLUtilities.getTextNodeWithXPath(getMetadataPath(),
             "/xpathKeyMap/contextNode[@name='distribution']/url")).getNodeValue();
         Node entnode = entityArray[entityIndex].getNode();
-        String distxpath = entityPar + "/" + entnode.getNodeName() + "[" +
-            (entityIndex + 1) + "]/"
+        // get the correct index for the entity type we are adding
+        String entityType = entnode.getNodeName();
+        int entityIndexForType = this.getEntityIndexForType(entityIndex, entityType);
+        String distxpath = entityPar + "/" + entityType + "[" +
+            (entityIndexForType + 1) + "]/"
             + physicalXpath + "/" + distributionXpath + "/" + urlxpath;
-//Log.debug(1,"Distribution path: "+distxpath);
-        // there is a problem in the above logic for creating a path if all the
-        // entity nodes are not to the same type (e.g. not all are 'dataTable')
-        // the index is incorrect in that case - DFH
         XMLUtilities.addTextNodeToDOMTree(getMetadataNode(), distxpath, urlS);
       }
       catch (Exception w) {

@@ -101,6 +101,11 @@ public class ReplaceDataCommand implements Command {
 				//save the data to local cache
 				File dataFile = new File(dataFilePath);
 				String nexDocId = saveDataFileAsTemp(dataFile, currentId);
+				
+				//clear out the old distribution info
+				adp.removePhysicalDistribution(entityIndex, 0, 0);
+				
+				// set the new information
 				adp.setDistributionUrl(entityIndex, 0, 0, DataLocation.URN_ROOT + nexDocId);
 				String format = new FileDataSource(dataFile).getContentType();
 				adp.setPhysicalFormat(entityIndex, 0, format);
