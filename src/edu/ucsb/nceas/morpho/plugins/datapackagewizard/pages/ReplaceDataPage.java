@@ -33,7 +33,9 @@ import java.io.File;
 import javax.swing.BoxLayout;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JTextField;
 
+import edu.ucsb.nceas.morpho.Language;
 import edu.ucsb.nceas.morpho.framework.AbstractUIPage;
 import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WidgetFactory;
@@ -47,6 +49,9 @@ public class ReplaceDataPage extends AbstractUIPage {
 
   private final String title      = "Replace Data Table Wizard";
   private final String subtitle   = "Data Location";
+
+  private FileChooserWidget  fileChooserWidget;
+  private JTextField entityName;
 
   // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
@@ -69,9 +74,10 @@ public class ReplaceDataPage extends AbstractUIPage {
     this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
     JLabel desc = WidgetFactory.makeHTMLLabel(
-    		"<p><b>Choose a new data file.</b> " +
-    		"The metadata will remain unchanged - please make sure the attribute number and order are correct." +
-    		"</p>", 2);
+    		"<b>Choose a new data file.</b> " +
+    		"For data tables, attribute metadata will remain unchanged. " +
+    		"Please make sure the attribute number and order are correct. " +
+    		"Basic file metadata will be updated automatically (file size, type)", 4);
     this.add(desc);
     
     JPanel panel =  WidgetFactory.makePanel(5);
@@ -81,20 +87,20 @@ public class ReplaceDataPage extends AbstractUIPage {
     		DataLocation.FILE_LOCATOR_FIELD_FILENAME_LABEL,
     		DataLocation.FILE_LOCATOR_IMPORT_DESC_INLINE,
     		DataLocation.INIT_FILE_LOCATOR_TEXT);
-    
     panel.add(fileChooserWidget);
-    
     this.add(panel);
-
+    
+    this.add(WidgetFactory.makeDefaultSpacer());
+    
+    JPanel entityPanel = WidgetFactory.makePanel();
+    entityPanel.add(WidgetFactory.makeLabel(Language.getInstance().getMessage("EntityName") + ":", false));
+    entityName = WidgetFactory.makeOneLineTextField();
+    entityPanel.add(entityName);
+    entityPanel.add(WidgetFactory.makeLabel("(file name will be used if left blank)", false, null));
+    
+    this.add(entityPanel);
 
   }
-
-
-  // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-
-  private FileChooserWidget  fileChooserWidget;
-
-  // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
   /**
    *  The action to be executed when the page is displayed. May be empty
@@ -199,17 +205,13 @@ public class ReplaceDataPage extends AbstractUIPage {
 		File dataFile = getDataFile();
 		if (dataFile != null) {
 			// if datafile exists, it's a local file referenced by a URN
-			//String dataFileID = saveDataFileAsTemp(dataFile);
-			returnMap.put(
-					DataLocation.ONLINE_URL_XPATH, dataFile.getAbsolutePath());
-					//DataLocation.ONLINE_URL_XPATH, DataLocation.URN_ROOT + dataFileID);
+			returnMap.put(DataLocation.ONLINE_URL_XPATH, dataFile.getAbsolutePath());
 			returnMap.put(DataLocation.OBJECTNAME_XPATH, dataFile.getName());
-
+			returnMap.put(TextImportEntity.xPathRoot + "entityName", entityName.getText());
+			
 			long fileSize = dataFile.length();
-			returnMap.put(TextImportEntity.xPathRoot + "physical/size", String
-					.valueOf(fileSize));
-			returnMap.put(TextImportEntity.xPathRoot + "physical/size/@unit",
-					"byte");
+			returnMap.put(TextImportEntity.xPathRoot + "physical/size", String.valueOf(fileSize));
+			returnMap.put(TextImportEntity.xPathRoot + "physical/size/@unit", "byte");
 
 			// is it a text file (get more metadata)
 			ImportedTextFile importedTextFile = new ImportedTextFile(dataFile);

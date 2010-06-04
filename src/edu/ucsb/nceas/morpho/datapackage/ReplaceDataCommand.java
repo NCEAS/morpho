@@ -89,8 +89,8 @@ public class ReplaceDataCommand implements Command {
 			if (showDialog()) {
 			
 				OrderedMap dataTableMap = replaceDataPage.getPageData();
-				
-				// TODO: handle more than just the local file selection?
+
+				// get the file they selected
 				String dataFilePath = (String) dataTableMap.get(DataLocation.ONLINE_URL_XPATH);
 				// increment revision if we have the id
 				String currentOnlineUrl = adp.getDistributionUrl(entityIndex, 0, 0);
@@ -114,7 +114,11 @@ public class ReplaceDataCommand implements Command {
 				// it's not a problem for otherEntity and other entity types
 				String objectName = (String) dataTableMap.get(DataLocation.OBJECTNAME_XPATH);
 				adp.setPhysicalName(entityIndex, 0, objectName);
-				adp.setEntityName(entityIndex, objectName);
+				String entityName = (String) dataTableMap.get(TextImportEntity.xPathRoot + "entityName");
+				if (entityName == null || entityName.length() < 1) {
+					entityName = objectName;
+				}
+				adp.setEntityName(entityIndex, entityName);
 				String numRecS = (String) dataTableMap.get(TextImportEntity.xPathRoot + "numberOfRecords");
 				adp.setEntityNumRecords(entityIndex, numRecS);
 				String sizeS = (String) dataTableMap.get(TextImportEntity.xPathRoot + "physical/size");
