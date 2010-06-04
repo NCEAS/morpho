@@ -79,8 +79,8 @@ public class DataLocation extends AbstractUIPage {
 
   // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
-  public static final String FILE_LOCATOR_FIELD_FILENAME_LABEL = /*"File Name:"*/ Language.getInstance().getMessage("File") + " " + Language.getInstance().getMessage("Name") +" :";
-  public static final String FILE_LOCATOR_FIELD_OBJNAME_LABEL  = /*"Name/Title:"*/ Language.getInstance().getMessage("Name") + " / " +Language.getInstance().getMessage("Title") +" :";
+  public static final String FILE_LOCATOR_FIELD_FILENAME_LABEL = /*"File Name:"*/ Language.getInstance().getMessage("File") + " " + Language.getInstance().getMessage("Name") + ":";
+  public static final String FILE_LOCATOR_FIELD_OBJNAME_LABEL  = /*"Name/Title:"*/ Language.getInstance().getMessage("Name") + " / " +Language.getInstance().getMessage("Title") + ":";
 
   public static final String INIT_FILE_LOCATOR_TEXT
                                   = /*"   use button to select a file -->"*/
@@ -89,7 +89,7 @@ public class DataLocation extends AbstractUIPage {
   public static final String FILE_LOCATOR_IMPORT_DESC_INLINE
         = WizardSettings.HTML_TABLE_LABEL_OPENING
         /*+"Use the \"locate\" button to locate the data file on your computer:"*/
-        + Language.getInstance().getMessage("DataLocaltion.FILE_LOCATOR_IMPORT_DESC_INLINE") +":"
+        + Language.getInstance().getMessage("DataLocaltion.FILE_LOCATOR_IMPORT_DESC_INLINE") + ":"
         +WizardSettings.HTML_TABLE_LABEL_CLOSING;
 
   public static final String URN_ROOT = "ecogrid://knb/";
