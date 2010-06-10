@@ -19,7 +19,7 @@
    <target name="init">
       <property name="name" value="morpho"/>
       <property name="Name" value="Morpho Data Management Client"/>
-      <property name="release" value="1.8.0"/>
+      <property name="release" value="1.8.1-language"/>
       <property name="keystore" value="myKeystore"/>
       <property name="storepass" value="your-pw-goes-here"/>
       <property name="muser" value="uid=jones,o=NCEAS,dc=ecoinformatics,dc=org"/>
@@ -693,7 +693,7 @@
       	  <classPath mainClass="edu.ucsb.nceas.morpho.Morpho">
       	    <cp>%EXEDIR%/lib/*.jar</cp>    
       	  </classPath>
-      	  <jre minVersion="1.5.0" jdkPreference="preferJre">
+      	  <jre minVersion="1.6.0" jdkPreference="preferJre">
       	    <opt>-Xmx512m</opt>
       	    <opt>-Xss5m</opt>
       	    <opt>-Djava.endorsed.dirs=&quot;%EXEDIR%/lib/jar/apache&quot;</opt>
@@ -729,7 +729,7 @@
             name="morpho"
 		    stubfile="${morpho.basedir}/installer/build/mac/JavaApplicationStub"
             mainclass="edu.ucsb.nceas.morpho.Morpho"
-            jvmversion="1.5"
+            jvmversion="1.6"
             icon="${morpho.basedir}/lib/DesktopIcon32x32.icns"
             vmoptions="-Xmx512m -Xss5m" 
       		arguments="${morpho.args}">
