@@ -210,6 +210,7 @@ public class ModalDialog extends JDialog {
       this.parent.toFront();
     }
     USER_RESPONSE = OK_OPTION;
+    this.dispose();
   }
 
   private void cancelAction() {
@@ -220,6 +221,7 @@ public class ModalDialog extends JDialog {
       this.parent.toFront();
     }
     USER_RESPONSE = CANCEL_OPTION;
+    this.dispose();
   }
 
 
