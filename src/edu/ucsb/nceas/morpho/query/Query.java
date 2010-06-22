@@ -447,7 +447,12 @@ public class Query extends DefaultHandler {
         this.searchMetacat = false;
       }
     } else if (currentTag.equals("querytitle")) {
-      queryTitle = inputString;
+    	// the whole string was not included in one call - collecting the complete value 
+    	if (queryTitle == null) {
+    	      queryTitle = inputString;
+    	} else {
+    		queryTitle += inputString;
+    	}
     } else if (currentTag.equals("value")) {
       currentValue = inputString;
     } else if (currentTag.equals("pathexpr")) {
