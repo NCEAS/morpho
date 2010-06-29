@@ -675,7 +675,8 @@ public class Access
     Iterator denyIt = accessDenyList.iterator();
     Object nextStepMapObj = null;
     OrderedMap nextStepMap = null;
-    int accessPredicate = 1;
+    int allowPredicate = 1;
+    int denyPredicate = 1;
 
     accessList.removeAllRows();
     boolean accessAllowRetVal = true;
@@ -688,7 +689,11 @@ public class Access
         continue;
       }
       nextStepMap = (OrderedMap) nextStepMapObj;
-      if (nextStepMap.isEmpty() || nextStepMap == publicMap) {
+      if (nextStepMap.isEmpty()) {
+        continue;
+      }
+      if (nextStepMap == publicMap) {
+        allowPredicate++;
         continue;
       }
       WizardPageLibrary library = new WizardPageLibrary(null);
@@ -697,7 +702,7 @@ public class Access
 
       boolean checkAccess = nextStep.setPageData(nextStepMap,
           this.xPathRoot + "allow[" +
-          + (accessPredicate++) + "]");
+          + (allowPredicate++) + "]");
 
       if (!checkAccess) {
         accessAllowRetVal = false;
@@ -718,17 +723,20 @@ public class Access
         continue;
       }
       nextStepMap = (OrderedMap) nextStepMapObj;
-      if (nextStepMap.isEmpty() || nextStepMap == publicMap) {
+      if (nextStepMap.isEmpty()) {
         continue;
       }
-
+      if (nextStepMap == publicMap) {
+        denyPredicate++;
+        continue;
+      }
       WizardPageLibrary library = new WizardPageLibrary(null);
       AccessPage nextStep = (AccessPage) library.getPage(
           DataPackageWizardInterface.ACCESS_PAGE);
 
       boolean checkAccess = nextStep.setPageData(nextStepMap,
           this.xPathRoot + "deny[" +
-          + (accessPredicate++) + "]/");
+          + (denyPredicate++) + "]");
 
       if (!checkAccess) {
         accessDenyRetVal = false;
@@ -827,17 +835,18 @@ public class Access
     }
     String nextPersonnelXPath = (String) nextPersonnelXPathObj;
     int predicate = getFirstPredicate(nextPersonnelXPath, xPath);
+    int index = predicate - 1;
 
     // NOTE predicate is 1-relative, but List indices are 0-relative!!!
-    if (predicate >= accessstepList.size()) {
+    if (predicate > accessstepList.size()) {
 
-      for (int i = accessstepList.size(); i <= predicate; i++) {
+      for (int i = accessstepList.size(); i < predicate; i++) {
         accessstepList.add(new OrderedMap());
       }
     }
 
-    if (predicate < accessstepList.size()) {
-      Object nextMapObj = accessstepList.get(predicate);
+    if (index < accessstepList.size()) {
+      Object nextMapObj = accessstepList.get(index);
       OrderedMap nextMap = (OrderedMap) nextMapObj;
       nextMap.put(nextPersonnelXPathObj, nextPersonnelVal);
 
