@@ -234,7 +234,7 @@ public class SynchronizeDialog extends JDialog
     {
       
       arrowIcon = new ImageIcon(getClass().getResource("leftarrow.gif"));
-      executeAction = new GUIAction(/*"Execute"*/ Language.getInstance().getMessage(""), null, new NetworkToLocalCommand
+      executeAction = new GUIAction(/*"Execute"*/ Language.getInstance().getMessage("Execute"), null, new NetworkToLocalCommand
                                    (openDialog, this, morphoFrame, 
                                    morphoFrameType, docid, inLocal, inNetwork));
       warningMessage = "";
