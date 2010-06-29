@@ -148,8 +148,8 @@ public class CorrectionWizardController
 		    Language.getInstance().getMessage("CorrectionWizardController.INTRODUCTIONPREFIX_4")
 			;
 			
-	private final static String INTRODUCTIONTREEEDITOR = INTRODUCTIONPREFIX+ "series Morpho editor frames"+INTRODUCTIONSUFFIX;
-	private final static String MESSAGEFORTREEEDITOR = INTRODUCTIONTREEEDITOR+ ", one at a time.";
+	private final static String INTRODUCTIONTREEEDITOR = INTRODUCTIONPREFIX + INTRODUCTIONSUFFIX;
+	private final static String MESSAGEFORTREEEDITOR = INTRODUCTIONTREEEDITOR;
 	
 	
 	/**
