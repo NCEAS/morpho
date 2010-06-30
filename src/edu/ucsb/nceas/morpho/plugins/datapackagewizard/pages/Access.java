@@ -136,7 +136,7 @@ public class Access
     		WidgetFactory.makeHTMLLabel(
 	        "<p><b>" 
 	        /*+"Would you like to allow the public to read your data entity?"*/
-    		+ Language.getInstance().getMessage("Access.dsc")+"?"		
+    		+ Language.getInstance().getMessage("Access.dsc")		
 	        + "</b></p>", 2);
     }
     else {
@@ -144,7 +144,7 @@ public class Access
     		WidgetFactory.makeHTMLLabel(
 	        "<p><b>" 
 	        /*+"Would you like to allow the public to read your data package?"*/
-    		+ Language.getInstance().getMessage("Access.dsc")+"?"		
+    		+ Language.getInstance().getMessage("Access.dsc")		
 	        + "</b></p>", 2);
     }
     vBox.add(desc);
@@ -183,7 +183,7 @@ public class Access
     orderDesc =
     		WidgetFactory.makeHTMLLabel(
 	        "<p><b>"
-	        + /*"Process access rules in this order: "*/ Language.getInstance().getMessage("Access.orderDesc") + " :"
+	        + /*"Process access rules in this order: "*/ Language.getInstance().getMessage("Access.orderDesc") + ":"
 	        + "</b></p>", 2);
     vBox.add(orderDesc);
 
@@ -217,12 +217,12 @@ public class Access
 	    desc1 = WidgetFactory.makeHTMLLabel(
 	    		"<p>"
 	    		/*+ "<b>Would you like to give special access rights to other people?</b>"*/
-	    		+ "<b>" + Language.getInstance().getMessage("Access.desc1_1") + " ?</b>"
+	    		+ "<b>" + Language.getInstance().getMessage("Access.desc1_1") + " </b>"
 	    		/*
 				+ "You can specify access for other members of your team or any "
 		        + "other person. "
 		        */
-	    		+ Language.getInstance().getMessage("Access.desc1_2")
+	    		+ Language.getInstance().getMessage("Access.desc1_2") + " "
 	    		/*
 		        + "Use the table below to add, edit and "
 		        + "delete access rights to your data package." 
@@ -234,12 +234,12 @@ public class Access
 		desc1 = WidgetFactory.makeHTMLLabel(
 				"<p>"
 	    		/*+ "<b>Would you like to give special access rights to other people?</b>"*/
-	    		+ "<b>" + Language.getInstance().getMessage("Access.desc1_1") + " ?</b>"
+	    		+ "<b>" + Language.getInstance().getMessage("Access.desc1_1") + " </b>"
 	    		/*
 				+ "You can specify access for other members of your team or any "
 		        + "other person. "
 		        */
-	    		+ Language.getInstance().getMessage("Access.desc1_2")
+	    		+ Language.getInstance().getMessage("Access.desc1_2") + " "
 	    		/*
 		        + "Use the table below to add, edit and "
 		        + "delete access rights to your data package." 
