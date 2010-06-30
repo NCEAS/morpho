@@ -13,6 +13,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
+import edu.ucsb.nceas.morpho.Language;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WidgetFactory;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardContainerFrame;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardSettings;
@@ -62,14 +63,14 @@ public class FileChooserWidget extends JPanel {
 	                                      WizardSettings.WIZARD_CONTENT_TEXT_COLOR);
 	    fileNamePanel.add(fileNameField, BorderLayout.CENTER);
 
-	    fileNameButton = WidgetFactory.makeJButton("locate...",
+	    fileNameButton = WidgetFactory.makeJButton(Language.getInstance().getMessage("locate"),
 
 	            new ActionListener() {
 
 	              public void actionPerformed(ActionEvent e) {
 
 	                final JFileChooser fc = new JFileChooser();
-	                fc.setDialogTitle("Select a data file to import...");
+	                fc.setDialogTitle(Language.getInstance().getMessage("SelectDataFile") /*"Select a data file to import..."*/);
 	                String userdir = System.getProperty("user.dir");
 	                String homedir = System.getProperty("user.home");
 	                String osname = System.getProperty("os.name");

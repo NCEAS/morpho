@@ -74,10 +74,13 @@ public class ReplaceDataPage extends AbstractUIPage {
     this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
     JLabel desc = WidgetFactory.makeHTMLLabel(
-    		"<b>Choose a new data file.</b> " +
-    		"For data tables, attribute metadata will remain unchanged. " +
-    		"Please make sure the attribute number and order are correct. " +
-    		"Basic file metadata will be updated automatically (file size, type)", 4);
+    		"<b>" +
+    		Language.getInstance().getMessage("DataLocation.SelectData") +
+    		"</b> " +
+    		Language.getInstance().getMessage("ReplaceData.desc1") + " " +
+    		Language.getInstance().getMessage("ReplaceData.desc2") + " " +
+    		Language.getInstance().getMessage("ReplaceData.desc3")
+    		, 4);
     this.add(desc);
     
     JPanel panel =  WidgetFactory.makePanel(5);
@@ -93,10 +96,10 @@ public class ReplaceDataPage extends AbstractUIPage {
     this.add(WidgetFactory.makeDefaultSpacer());
     
     JPanel entityPanel = WidgetFactory.makePanel();
-    entityPanel.add(WidgetFactory.makeLabel(Language.getInstance().getMessage("EntityName") + ":", false));
+    entityPanel.add(WidgetFactory.makeLabel(Language.getInstance().getMessage("EntityName") + ":", false, null));
     entityName = WidgetFactory.makeOneLineTextField();
     entityPanel.add(entityName);
-    entityPanel.add(WidgetFactory.makeLabel("(file name will be used if left blank)", false, null));
+    entityPanel.add(WidgetFactory.makeLabel(Language.getInstance().getMessage("fileNameWillBeUsed"), false, null));
     
     this.add(entityPanel);
 
