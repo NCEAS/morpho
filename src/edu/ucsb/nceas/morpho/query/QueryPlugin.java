@@ -27,6 +27,7 @@
 package edu.ucsb.nceas.morpho.query;
 
 import edu.ucsb.nceas.morpho.Morpho;
+import edu.ucsb.nceas.morpho.datapackage.OpenByIdCommand;
 import edu.ucsb.nceas.morpho.datastore.FileSystemDataStore;
 import edu.ucsb.nceas.morpho.framework.ConnectionListener;
 import edu.ucsb.nceas.morpho.framework.MorphoFrame;
@@ -198,6 +199,14 @@ public class QueryPlugin implements PluginInterface, ConnectionListener,
     openDialogBoxAction.setToolbarPosition(1);
     controller.addGuiAction(openDialogBoxAction);
 
+    GUIAction openByIdAction = new GUIAction(Language.getInstance().getMessage("OpenPackage"),
+            UISettings.OPEN_DATAPACKAGE_ICON,
+            new OpenByIdCommand());
+    openByIdAction.setMenuItemPosition(3);
+    openByIdAction.setToolTipText("Open by ID...");
+    openByIdAction.setMenu(Morpho.FILE_MENU_LABEL, Morpho.FILEMENUPOSITION);
+	controller.addGuiAction(openByIdAction);
+    
     // Open a data package action
 //    GUIAction openPackageAction = new GUIAction("Open Package", null,
 //                            new OpenPackageCommand(null));
