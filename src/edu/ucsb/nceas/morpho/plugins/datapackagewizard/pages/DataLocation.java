@@ -108,7 +108,7 @@ public class DataLocation extends AbstractUIPage {
 
   public static final String FILECHOOSER_PANEL_TITLE = /*"File Location:"*/ Language.getInstance().getMessage("File") + " " + Language.getInstance().getMessage("Location") +":";
 
-  public final String Q1_TITLE = /*"What do you want to do?"*/ Language.getInstance().getMessage("DataLocaltion.Q1_TITLE") + "?";
+  public final String Q1_TITLE = /*"What do you want to do?"*/ Language.getInstance().getMessage("DataLocaltion.Q1_TITLE");
 
   private final String[] Q1_LABELS = new String[] {
     /*
@@ -141,7 +141,7 @@ public class DataLocation extends AbstractUIPage {
                         "How do you want to enter the documentation for "
                         + "the data?"
                         */
-                        Language.getInstance().getMessage("DataLocaltion.Q2_TITLE_IMPORT") + "?"
+                        Language.getInstance().getMessage("DataLocaltion.Q2_TITLE_IMPORT")
                         ;
   private final String[] Q2_LABELS_IMPORT = new String[] {
     /*
@@ -158,7 +158,7 @@ public class DataLocation extends AbstractUIPage {
                         "How do you want to enter the documentation for "
                         + "the data?"
                         */
-                        Language.getInstance().getMessage("DataLocaltion.Q2_TITLE_IMPORT") + "?"
+                        Language.getInstance().getMessage("DataLocaltion.Q2_TITLE_IMPORT")
                         ;
   private final String[] Q2_LABELS_DESCRIBE = new String[] {
     /*
@@ -170,7 +170,7 @@ public class DataLocation extends AbstractUIPage {
     Language.getInstance().getMessage("MANUAL") +" - " + Language.getInstance().getMessage("DataLocation.DESCRIBE_MANUAL")
   };
 
-  private final String Q3_TITLE = /*"Data Location?"*/ Language.getInstance().getMessage("DataLocation") + "?" ;
+  private final String Q3_TITLE = /*"Data Location?"*/ Language.getInstance().getMessage("DataLocation");
 
   private final String[] Q3_LABELS = new String[] {
     /*"Not available"*/ Language.getInstance().getMessage("NotAvailable"),
