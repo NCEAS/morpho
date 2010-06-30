@@ -199,11 +199,11 @@ public class QueryPlugin implements PluginInterface, ConnectionListener,
     openDialogBoxAction.setToolbarPosition(1);
     controller.addGuiAction(openDialogBoxAction);
 
-    GUIAction openByIdAction = new GUIAction(Language.getInstance().getMessage("OpenPackage"),
+    GUIAction openByIdAction = new GUIAction(Language.getInstance().getMessage("OpenById"),
             UISettings.OPEN_DATAPACKAGE_ICON,
             new OpenByIdCommand());
     openByIdAction.setMenuItemPosition(3);
-    openByIdAction.setToolTipText("Open by ID...");
+    openByIdAction.setToolTipText("Open by Data Pacakge Id...");
     openByIdAction.setMenu(Morpho.FILE_MENU_LABEL, Morpho.FILEMENUPOSITION);
 	controller.addGuiAction(openByIdAction);
     
@@ -218,7 +218,7 @@ public class QueryPlugin implements PluginInterface, ConnectionListener,
     // Create a OpenPreviousVersion action
     GUIAction openPreviousAction = new GUIAction(/*"Open Previous Version"*/ Language.getInstance().getMessage("OpenPreviousVersion"),
     		null, new OpenPreviousVersionCommand(null, morpho));
-    openPreviousAction.setMenuItemPosition(3);
+    openPreviousAction.setMenuItemPosition(4);
     openPreviousAction.setToolTipText("Open a previous version...");
     openPreviousAction.setMenu(Morpho.FILE_MENU_LABEL, Morpho.FILEMENUPOSITION);
     openPreviousAction.setEnabledOnStateChange(
