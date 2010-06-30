@@ -36,6 +36,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 import edu.ucsb.nceas.morpho.Language;
+import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
 import edu.ucsb.nceas.morpho.plugins.ServiceController;
 import edu.ucsb.nceas.morpho.plugins.ServiceNotHandledException;
@@ -130,6 +131,16 @@ public class OpenByIdDialog extends JDialog {
 		// check id
 		String id = packageId.getText();
 		if (id == null || id.length() == 0) {
+			Log.debug(5, Language.getInstance().getMessage("InvalidId"));
+			return;
+		}
+		
+		// check that the id is formatted correctly
+		try {
+			AccessionNumber an = new AccessionNumber(Morpho.thisStaticInstance);
+			an.getParts(id);
+		} catch (Exception e) {
+			Log.debug(5, Language.getInstance().getMessage("InvalidId"));
 			return;
 		}
 
