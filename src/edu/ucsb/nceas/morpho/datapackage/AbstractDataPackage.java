@@ -2308,9 +2308,24 @@ public abstract class AbstractDataPackage extends MetadataObject
              // so should add this to the end of the adp
              try{
                NodeList ameta = XMLUtilities.getNodeListWithXPath(node, "/eml:eml/additionalMetadata");
+
                if (ameta!=null) {
+                   NodeList exitsingAdditionalMetadataDescribes = XMLUtilities.getNodeListWithXPath(getMetadataNode(), "/eml:eml/additionalMetadata/describes");
+                   List<String> existingDescribesIds = new ArrayList<String>();
+                   if (exitsingAdditionalMetadataDescribes != null) {
+                	   for (int index = 0; index < exitsingAdditionalMetadataDescribes.getLength(); index++) {
+                		   Node existingDescribesNode = exitsingAdditionalMetadataDescribes.item(index);
+                		   existingDescribesIds.add(existingDescribesNode.getTextContent());
+                	   }
+                   }
                  for (int i=0;i<ameta.getLength();i++) {
                    Node ametaNode = ameta.item(i);
+                   // skip it if we already have it
+                   Node describesNode = XMLUtilities.getTextNodeWithXPath(ametaNode, "describes");
+                   String describesValue = describesNode.getTextContent();
+                   if (existingDescribesIds.contains(describesValue)) {
+                	   continue;
+                   }
                    Node movedNode = (getMetadataNode().getOwnerDocument()).importNode(ametaNode, true);
                    getMetadataNode().appendChild(movedNode);
                  }
