@@ -26,6 +26,7 @@
 
 package edu.ucsb.nceas.morpho.framework;
 
+import edu.ucsb.nceas.morpho.Language;
 import edu.ucsb.nceas.morpho.Morpho;
 
 import java.awt.*;
@@ -71,7 +72,8 @@ public class SplashFrame extends javax.swing.JFrame
                  "National Center for Ecological Analysis and Synthesis",
                  "Long Term Ecological Research Network Office",
                  "San Diego Supercomputer Center",
-                 "Texas Tech University" };
+                 "Texas Tech University",
+                 "Tawain Forestry Research Institute"};
 
   private static String credit =
                   "This material is based upon work supported\n" +
@@ -124,7 +126,7 @@ public class SplashFrame extends javax.swing.JFrame
     getContentPane().add(Box.createVerticalStrut(8));
 
     loadingLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-    loadingLabel.setText("Morpho is loading...");
+    loadingLabel.setText(Language.getInstance().getMessage("MorphoIsLoading"));
     loadingLabel.setForeground(java.awt.Color.red);
     loadingLabel.setFont(new Font("Dialog", Font.BOLD, 14));
     loadingLabel.setVisible(false);
@@ -152,7 +154,7 @@ public class SplashFrame extends javax.swing.JFrame
     subTitleBox.add(Box.createVerticalStrut(4));
 
     subTitleLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-    subTitleLabel.setText("Data Management for Ecologists");
+    subTitleLabel.setText(Language.getInstance().getMessage("DataManagementForEcologists"));
     subTitleLabel.setForeground(java.awt.Color.black);
     subTitleLabel.setFont(new Font("Dialog", Font.BOLD, 14));
     subTitleBox.add(subTitleLabel);
@@ -170,7 +172,7 @@ public class SplashFrame extends javax.swing.JFrame
     contribPanel.setLayout(new BoxLayout(contribPanel, BoxLayout.Y_AXIS));
     contribPanel.setAlignmentY(Component.TOP_ALIGNMENT);
     contribPanel.setBackground(java.awt.Color.white);
-    JLabel contributorsLabel = new JLabel("Contributors:");
+    JLabel contributorsLabel = new JLabel(Language.getInstance().getMessage("Contributors"));
     contributorsLabel.setForeground(java.awt.Color.black);
     contributorsLabel.setFont(new Font("Dialog", Font.BOLD, 12));
     contribPanel.add(contributorsLabel);
@@ -187,7 +189,7 @@ public class SplashFrame extends javax.swing.JFrame
     orgPanel.setLayout(new BoxLayout(orgPanel, BoxLayout.Y_AXIS));
     orgPanel.setAlignmentY(Component.TOP_ALIGNMENT);
     orgPanel.setBackground(java.awt.Color.white);
-    JLabel orgLabel = new JLabel("Sponsoring Organizations:");
+    JLabel orgLabel = new JLabel(Language.getInstance().getMessage("SponsoringOrganizations"));
     orgLabel.setForeground(java.awt.Color.black);
     orgLabel.setFont(new Font("Dialog", Font.BOLD, 12));
     orgPanel.add(orgLabel);
@@ -219,10 +221,10 @@ public class SplashFrame extends javax.swing.JFrame
     versionLabel.setForeground(java.awt.Color.black);
     versionLabel.setFont(new Font("Dialog", Font.BOLD, 12));
 
-    fundingButton.setText("Credits...");
+    fundingButton.setText(Language.getInstance().getMessage("Credits"));
     fundingButton.setActionCommand("Credits...");
 
-    closeButton.setText("Close");
+    closeButton.setText(Language.getInstance().getMessage("Close"));
     closeButton.setActionCommand("Close");
 
     Box footerBox = Box.createHorizontalBox();
