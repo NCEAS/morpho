@@ -126,7 +126,7 @@ import edu.ucsb.nceas.morpho.Language;//pstango 2010/03/15
 public class Morpho
 {
     /** The version of this release of Morpho */
-    public static String VERSION = "1.8.0";
+    public static String VERSION = "1.8.1semtools7";
 
     /** Constant to indicate a separator should precede an action */
     public static String SEPARATOR_PRECEDING = "separator_preceding";
@@ -1413,7 +1413,7 @@ public class Morpho
             }
         };
         GUIAction connectItemAction =
-            new GUIAction(/*"Login/Logout"*/ Language.getInstance().getMessage("Login/Logout") + "...",
+            new GUIAction(/*"Login/Logout"*/ Language.getInstance().getMessage("Login/Logout"),
             		null, connectCommand);
         connectItemAction.setToolTipText("Login/Logout...");
         connectItemAction.setMenuItemPosition(9);
@@ -1425,7 +1425,7 @@ public class Morpho
         Command profileCommand = new CreateNewProfileCommand();
 
         GUIAction profileItemAction =
-            new GUIAction(/*"New profile..."*/ Language.getInstance().getMessage("NewProfile") +"...",
+            new GUIAction(/*"New profile..."*/ Language.getInstance().getMessage("NewProfile"),
             		null, profileCommand);
         profileItemAction.setToolTipText("New Profile...");
         profileItemAction.setMenuItemPosition(10);
@@ -1438,7 +1438,7 @@ public class Morpho
             }
         };
         GUIAction switchItemAction =
-            new GUIAction(/*"Switch profile..."*/ Language.getInstance().getMessage("SwitchProfile") +"...",
+            new GUIAction(/*"Switch profile..."*/ Language.getInstance().getMessage("SwitchProfile"),
             		null, switchCommand);
         switchItemAction.setToolTipText("Switch Profile...");
         switchItemAction.setMenuItemPosition(11);
@@ -1451,7 +1451,7 @@ public class Morpho
             }
         };
         GUIAction removeProfileAction =
-            new GUIAction(/*"Remove profile..."*/ Language.getInstance().getMessage("RemoveProfile") + "...",
+            new GUIAction(/*"Remove profile..."*/ Language.getInstance().getMessage("RemoveProfile"),
             		null, removeCommand);
         removeProfileAction.setToolTipText("Remove Profile...");
         removeProfileAction.setMenuItemPosition(12);
@@ -1465,8 +1465,8 @@ public class Morpho
             }
         };
         GUIAction prefsItemAction =
-            new GUIAction(/*"Set preferences..."*/ Language.getInstance().getMessage("SetPreferences") + "..."
-            		, null, prefsCommand);
+            new GUIAction(/*"Set preferences..."*/ Language.getInstance().getMessage("SetPreferences"),
+            		null, prefsCommand);
         prefsItemAction.setToolTipText("Set Preferences...");
         prefsItemAction.setMenuItemPosition(13);
         prefsItemAction.setSeparatorPosition(SEPARATOR_FOLLOWING);

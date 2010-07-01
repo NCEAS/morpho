@@ -368,17 +368,17 @@ public class DataViewer extends javax.swing.JPanel
 //Build the popup menu for the right click functionality
     popup = new JPopupMenu();
     // Create a add documentation menu item
-    addDocumentationAction = new GUIAction(/*"Add Documentation..."*/ Language.getInstance().getMessage("AddDocumentation") + "...",
+    addDocumentationAction = new GUIAction(/*"Add Documentation..."*/ Language.getInstance().getMessage("AddDocumentation"),
     										null,
                                           new AddDocumentationCommand());
     addDocumentation = new JMenuItem(addDocumentationAction);
     popup.add(addDocumentation);
-    createNewDatatableAction = new GUIAction(/*"Create/Import New Data Table..."*/ Language.getInstance().getMessage("Create/ImportNewDataTable") + "...",
+    createNewDatatableAction = new GUIAction(/*"Create/Import New Data Table..."*/ Language.getInstance().getMessage("Create/ImportNewDataTable"),
     											null,
                                                 new ImportDataCommand());
     createNewDatatable = new JMenuItem(createNewDatatableAction);
     popup.add(createNewDatatable);
-    deleteDatatableAction = new GUIAction(/*"Delete Current Data Table"*/ Language.getInstance().getMessage("DeleteCurrentDataTable"),
+    deleteDatatableAction = new GUIAction(/*"Delete Current Data Table"*/ Language.getInstance().getMessage("DeleteCurrentData"),
     											null,
                                                 new DeleteTableCommand());
     deleteDatatable = new JMenuItem(deleteDatatableAction);

@@ -339,7 +339,7 @@ public class Taxonomic extends AbstractUIPage {
     taxonPanel.setLayout(new BoxLayout(taxonPanel, BoxLayout.Y_AXIS));
 
     GUIAction action = new GUIAction(/*"Import Taxon Information from Data table..."*/ 
-    								Language.getInstance().getMessage("Taxonomic.ImportTaxon") +"...",
+    								Language.getInstance().getMessage("Taxonomic.ImportTaxon"),
     null,	new Command() {
       public void execute(ActionEvent ae) {
 

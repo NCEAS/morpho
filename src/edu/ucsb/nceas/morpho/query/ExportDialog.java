@@ -77,9 +77,9 @@ public class ExportDialog extends JDialog
   private GUIAction executeAction = new GUIAction(/*"Export"*/ Language.getInstance().getMessage("Export"), null, null);
   
   /** Radio button */
-  private JRadioButton exportToDir = new JRadioButton(/*"Export to a Directory..."*/ Language.getInstance().getMessage("ExportToDirectory")+"...");
-  private JRadioButton exportToZip = new JRadioButton(/*"Export to a Zip File..."*/ Language.getInstance().getMessage("ExportToZipFile")+"...");
-  private JRadioButton exportToAnotherMetadata = new JRadioButton(/*"Export to Another Metadata Format..."*/ Language.getInstance().getMessage("ExportToAnotherMetadataFormat")+"...");
+  private JRadioButton exportToDir = new JRadioButton(/*"Export to a Directory..."*/ Language.getInstance().getMessage("ExportToDirectory"));
+  private JRadioButton exportToZip = new JRadioButton(/*"Export to a Zip File..."*/ Language.getInstance().getMessage("ExportToZipFile"));
+  private JRadioButton exportToAnotherMetadata = new JRadioButton(/*"Export to Another Metadata Format..."*/ Language.getInstance().getMessage("ExportToAnotherMetadataFormat"));
   
   private static final int PADDINGWIDTH = 8;
   private static String WARNING =
