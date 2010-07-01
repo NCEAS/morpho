@@ -60,7 +60,7 @@ public class EMLTransformToNewestVersionDialog
 				/*"This data package uses an older version of EML.\n"*/ Language.getInstance().getMessage("UpgradeToNewEMLVersion_1") + "\n"
 	            +/*"You will not be able to edit it without upgrading to the newest version"*/ Language.getInstance().getMessage("UpgradeToNewEMLVersion_2") + " (" 
 	            +EML200DataPackage.LATEST_EML_VER+")\n"
-	            +/*".\nDo you want to upgrade the data package now?"*/ Language.getInstance().getMessage("UpgradeToNewEMLVersion_3") + "?"
+	            +/*".\nDo you want to upgrade the data package now?"*/ Language.getInstance().getMessage("UpgradeToNewEMLVersion_3")
 	            ;
 	
 	 /* Control button */

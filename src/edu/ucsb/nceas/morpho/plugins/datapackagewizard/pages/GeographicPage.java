@@ -258,7 +258,7 @@ public class GeographicPage extends AbstractUIPage {
                                     options,
                                     options[0]);
         JDialog dialog = optionPane.createDialog(currentInstance,
-           /*"Add Current Selection to Named Region List?"*/ Language.getInstance().getMessage("GeographicPage.AddCurrentSelectToList")+"?"
+           /*"Add Current Selection to Named Region List?"*/ Language.getInstance().getMessage("GeographicPage.AddCurrentSelectToList")
         	);
         dialog.show();
         String selectedValue = (String)(optionPane.getValue());

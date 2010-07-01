@@ -75,8 +75,8 @@ public class DeleteTableCommand implements Command
        resultPane = morphoFrame.getDataViewContainerPanel();
     }//if
     int opt = JOptionPane.showConfirmDialog(morphoFrame,
-            /*"Are you sure that you want to delete the selected data table?"*/ Language.getInstance().getMessage("DeleteTableWarning") + "?",
-            /*"DO YOU WANT TO CONTINUE?"*/ Language.getInstance().getMessage("Warning_Continue") + "?",
+            /*"Are you sure that you want to delete the selected data table?"*/ Language.getInstance().getMessage("DeleteTableWarning"),
+            /*"DO YOU WANT TO CONTINUE?"*/ Language.getInstance().getMessage("Warning_Continue"),
             JOptionPane.YES_NO_OPTION);
    if (opt == JOptionPane.NO_OPTION) 
    {

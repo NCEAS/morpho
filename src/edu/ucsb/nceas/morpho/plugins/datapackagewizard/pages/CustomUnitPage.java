@@ -103,7 +103,7 @@ public class CustomUnitPage extends AbstractUIPage {
 	
 	private static final String CATEGORY_HEAD_LABEL = 
 					/*"What category does the new unit belong to?"*/
-					Language.getInstance().getMessage("CustomUnitpage.CATEGORY_HEAD_LABEL") + "?"
+					Language.getInstance().getMessage("CustomUnitpage.CATEGORY_HEAD_LABEL")
 					;
 	
 	

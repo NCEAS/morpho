@@ -1289,7 +1289,7 @@ class CustomPopupHandler extends AbstractCustomTablePopupHandler {
 
     JPanel panel = new JPanel(new BorderLayout());
     JLabel headLabel = WidgetFactory.makeHTMLLabel(
-    												/*"Is this a Code or Definition?"*/ Language.getInstance().getMessage("CodeOrDefinition")+"?",
+    												/*"Is this a Code or Definition?"*/ Language.getInstance().getMessage("CodeOrDefinition"),
     												2, false);
 
     JPanel middlePanel = new JPanel();

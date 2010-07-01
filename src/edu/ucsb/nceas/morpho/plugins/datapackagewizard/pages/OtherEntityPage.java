@@ -35,6 +35,7 @@ import javax.swing.BoxLayout;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import edu.ucsb.nceas.morpho.Language;
 import edu.ucsb.nceas.morpho.framework.AbstractUIPage;
 import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WidgetFactory;
@@ -76,8 +77,11 @@ public class OtherEntityPage extends AbstractUIPage {
     this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
     JLabel desc = WidgetFactory.makeHTMLLabel(
-    		"<p><b>Select a data file.</b> " +
-    		"Basic metadata about the file will be generated automatically" +
+    		"<p>" +
+    		"<b>" +
+    		Language.getInstance().getMessage("SelectDataFile") +
+    		"</b> " +
+    		Language.getInstance().getMessage("BasicMetadataGenerated") + //"Basic metadata about the file will be generated automatically" +
     		"</p>", 2);
     this.add(desc);
     

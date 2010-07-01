@@ -211,7 +211,7 @@ public class DataFormat extends AbstractUIPage{
 
     radioButtonGrpLabel
           = WidgetFactory.makeHTMLLabel(/*"What is the format of your data?"*/
-        		  						Language.getInstance().getMessage("DataFormat.WhatFormat") +"?"	
+        		  						Language.getInstance().getMessage("DataFormat.WhatFormat")	
         		  						, 1);
     topBox.add(radioButtonGrpLabel);
 
