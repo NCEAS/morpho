@@ -26,13 +26,13 @@
 
 package edu.ucsb.nceas.morpho.framework;
 
+import java.awt.Color;
+import java.awt.Font;
 import java.awt.Insets;
 import java.awt.Graphics;
 import java.awt.Dimension;
 import java.awt.Component;
 import java.awt.BorderLayout;
-import java.awt.event.WindowEvent;
-import java.awt.event.WindowAdapter;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemListener;
@@ -48,6 +48,7 @@ import javax.swing.SwingConstants;
 import javax.swing.JPasswordField;
 import javax.swing.DefaultComboBoxModel;
 
+import edu.ucsb.nceas.morpho.Language;
 import edu.ucsb.nceas.morpho.Morpho;
 
 import edu.ucsb.nceas.morpho.framework.MorphoFrame;
@@ -760,6 +761,12 @@ public class InitialScreen extends JPanel
         super.paintComponent(g);
         
         g.drawImage(UISettings.INIT_SCR_BACKGROUND, 0, 0, this);
+        
+        Font f = new Font(Font.SANS_SERIF, Font.BOLD, 32);
+        g.setFont(f);
+        g.setColor(Color.WHITE);
+        g.drawString(Language.getInstance().getMessage("Welcome"), 375, 120);
+
     }
     
 }
