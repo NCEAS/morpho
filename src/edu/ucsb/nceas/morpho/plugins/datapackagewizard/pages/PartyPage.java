@@ -615,7 +615,6 @@ public class PartyPage extends AbstractUIPage {
         	  + ", " + Language.getInstance().getMessage("Or") + " \n"
         	  /*+"Create a copy of the original and edit that?"*/
         	  + Language.getInstance().getMessage("PartyPage.optPane.setMessage_3")
-        	  + " ?"
               );
           optPane.createDialog(instance, /*"Select an option..."*/ Language.getInstance().getMessage("SelectAnOption")).setVisible(true);
           Object selectedValue = optPane.getValue();
