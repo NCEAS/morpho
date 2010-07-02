@@ -1,7 +1,7 @@
 Morpho: XML Metadata Client  
 ---------------------------
 
-Version: 1.8.0
+Version: 1.8.1
 
 Feedback and bugs to: morpho-dev@ecoinformatics.org
                       http://bugzilla.ecoinformatics.org
@@ -27,9 +27,9 @@ Contributors:
     Callie Bowdish (bowdish@nceas.ucsb.edu)
     Veronique Connolly (connolly@nceas.ucsb.edu)
     Will Tyburczy (tyburczy@nceas.ucsb.edu)
-    Jim Regetz(regetz@nceas.ucsb.edu)
-    Judith Kruger(JudithW@sanparks.org)
-    Margaret O'Brien(mob@icess.ucsb.edu)
+    Jim Regetz (regetz@nceas.ucsb.edu)
+    Judith Kruger (JudithW@sanparks.org)
+    Margaret O'Brien (mob@icess.ucsb.edu)
     
 This is Morpho, a data management application for managing ecological data.
 Morpho allows researchers to describe their data using a comprehensive and
@@ -62,8 +62,6 @@ A significant effort has also been spent in creating a new Data Package Wizard t
 make it easier for a user to create a package without learning all the details of
 EML 2.0.0. The user can also edit many of the features of a document using forms
 from the Data Package Wizard called up from the Documentation menu.
-
-
 
 
 **************************************************
@@ -112,6 +110,16 @@ See http://bugzilla.ecoinformatics.org where we maintain a comprehensive list of
 
 Version History
 -------------------------------
+***
+Version 1.8.1 is a significant update to 1.8.0 with new features and bug fixes. 
+	Multi-lingual support has been added in this release, and language packs for English, Spanish, Portuguese, French, Japanese, and Chinese are included. 
+	Data entity management has been enhanced to allow import and export of non-tabular data files as well as the ability to view and convert these other data entities into data tables with attribute-level metadata descriptions.
+	Data packages can now be directly retrieved from the network or the local store using their Id.
+	Important bug fixes include: 
+		-handling access control permissions in cases where there are mixed allow/deny rules
+		-effectively capturing consecutive column delimiters when importing data tables
+		-validating user profile creation
+
 ***
 Version 1.8.0 is a major update to 1.7 with new features and bugs fixed.  The new features are that Morpho supports user saving and opening a unfinished New Data Package/Entity wizard, recovers the crashed New Data Package/Entity wizard, imports the external EML file to Morpho, and exports EML document to Biological Data Profile format file.
 
@@ -205,6 +213,13 @@ of Aqua series (http://www.iconfactory.com), and icons from Everaldo Coelho's
 Conectiva Crystal Series (http://www.everaldo.com).  Please see the 
 licenses/ICONREADME.txt for more information about the IconFactory icons.  
 
+Language Contributors:
+--------------
+Akiko Ogawa (aogawa@kais.kyoto-u.ac.jp) - Japanese
+Dr. Chau Chin Lin (chin@tfri.gov.tw) and his team (icefish24@gmail.com) - Chinese (Taiwan)
+TBD - Portuguese
+TBD - Spanish
+TBD - French
 
 Legalese
 --------
