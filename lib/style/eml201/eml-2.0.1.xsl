@@ -78,28 +78,32 @@
       <body>
 
         <div id="{$mainTableAligmentStyle}">
-          <script language="JavaScript" type="text/JavaScript">
-	     <xsl:if test="$insertTemplate='0'">
-                 <xsl:comment>insertTemplateOpening();//</xsl:comment>
-             </xsl:if>
-	     <xsl:if test="$insertTemplate='1'">
-                 insertTemplateOpening();
-             </xsl:if>
-          </script>
+         <!-- 
+		<xsl:if test="$insertTemplate='0'">
+			<xsl:comment>insertTemplateOpening();//</xsl:comment>
+		</xsl:if>
+	    -->
+		<xsl:if test="$insertTemplate='1'">
+			<script language="JavaScript" type="text/JavaScript">
+				insertTemplateOpening();
+			</script>         
+		</xsl:if>
 
           <table xsl:use-attribute-sets="cellspacing" width="100%"
                                         class="{$mainContainerTableStyle}">
           <xsl:apply-templates select="*[local-name()='eml']"/>
           </table>
-
-	  <script language="JavaScript" type="text/JavaScript">
-	     <xsl:if test="$insertTemplate='0'">
+		
+		<!--
+		<xsl:if test="$insertTemplate='0'">
                <xsl:comment>insertTemplateClosing();//</xsl:comment>
-             </xsl:if>
-	     <xsl:if test="$insertTemplate='1'">
+		</xsl:if>
+		-->
+		<xsl:if test="$insertTemplate='1'">
+	     	<script language="JavaScript" type="text/JavaScript">
                  insertTemplateClosing();
-             </xsl:if>
-          </script>
+         	 </script>
+		</xsl:if>
         </div>
       </body>
     </html>
