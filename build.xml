@@ -19,12 +19,12 @@
    <target name="init">
       <property name="name" value="morpho"/>
       <property name="Name" value="Morpho Data Management Client"/>
-      <property name="release" value="1.8.1"/>
+      <property name="release" value="1.8.1-RC1"/>
       <property name="keystore" value="myKeystore"/>
       <property name="storepass" value="your-pw-goes-here"/>
       <property name="muser" value="uid=jones,o=NCEAS,dc=ecoinformatics,dc=org"/>
       <property name="mpass" value="your-pw-goes-here"/>
-      <property name="utilities-tag" value="tags/MORPHO_1_8_0" />
+      <property name="utilities-tag" value="tags/MORPHO_1_8_1" />
 	  <property name="svn-utilitiesUrl"
             value="https://code.ecoinformatics.org/code/utilities/${utilities-tag}" />
       <property name="eml-module" value="eml" />
@@ -38,7 +38,7 @@
 	  <property name="eml-210-schema-svn-url" value="${eml-svn-base-url}/tags/${eml-210-schema-tag}"/>
       <!-- eml-style-tag only be used to get eml201to210.xsl and eml2tonbii.xsl files -->
       <!--<property name="eml-style-tag" value="RELEASE_EML_UTILS_0_9_1" />-->
-	  <property name="eml-style-tag" value="tags/MORPHO_1_8_0" />
+	  <property name="eml-style-tag" value="tags/MORPHO_1_8_1" />
 	  <property name="eml-style-svn-url" value="${eml-svn-base-url}/${eml-style-tag}"/>
       <property name="helpjar" value="morphohelp.jar" />
       <filter token="release" value="${release}"/>
@@ -77,6 +77,10 @@
       <property name="map.file" value="Map.jhm"/>
       <property name="help.toc" value="morphoTOC.xml"/>
       <property name="help.index" value="morphoIndex.xml"/>
+   	
+   		<!-- userguide in LaTex -->
+    	<property name="userguide.basedir" value="${docuserdir}/latex"/>
+		<property name="userguide.fileprefix" value="MorphoUserGuide"/>
 
       <property name="dist.dir" value="${morpho.basedir}/dist"/>
       <property name="morpho.dir" value="${dist.dir}/morpho-${release}"/>
@@ -100,6 +104,10 @@
       <!-- NOTE: location is machine specific - insert 'Launch4J' location on your machine! This
 		   property will be used in buildwininstaller target. -->
       <property name="launch4j.dir" location="/Applications/launch4j" />
+    <!-- NOTE: location is machine specific - insert LaTex bin path on your machine! This
+		   property will be used in 'helppdf' target. -->
+		<property name="latex.path" value="/usr/local/texlive/2009/bin/universal-darwin"/>   	
+
       <property name="izpackjar" 
 		            value="${libdir}/standalone-compiler.jar"/>
       <property name="jcal"
@@ -197,7 +205,10 @@
    			</fileset>
 		</path>
 
-       <taskdef resource="axis-tasks.properties" classpathref="classpath"/>
+		<taskdef resource="axis-tasks.properties" classpathref="classpath"/>
+   		
+   		<!-- set up the latex task -->
+   		<taskdef name="latex" classname="de.dokutransdata.antlatex.LaTeX" classpathref="classpath" />
 	   
 		<!-- set up svn -->
         <property name="svnant.lib" value="${morpho.basedir}/lib" />
@@ -409,6 +420,31 @@
       <delete dir="${java.help.doc.dir}"/>
       <delete dir="${searchDB}" />
    </target>
+
+	 <target name="helppdf" depends="init">
+        <echo message="Creating ${userguide.fileprefix}.pdf from ${userguide.fileprefix}.tex" />
+        <latex 
+            latexfile="${userguide.fileprefix}.tex"
+            verbose="on"
+            clean="on"
+            pdftex="on"
+        	path="${latex.path}"
+            workingDir="${userguide.basedir}">
+                <makeindex
+                run="on"
+                workingDir="${userguide.basedir}"
+                path="${latex.path}">
+                <fileset dir="${userguide.basedir}">
+                   <include name="*.nlo" />
+                </fileset>
+            </makeindex>
+            <bibtex
+                run="on"
+                workingDir="${userguide.basedir}"
+            	path="${latex.path}"
+            	/>
+        </latex>
+    </target>
 
    <!--
    <target name="compile" depends="clean,itis,prepare">
