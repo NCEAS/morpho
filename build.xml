@@ -421,7 +421,7 @@
       <delete dir="${searchDB}" />
    </target>
 
-	 <target name="helppdf" depends="init">
+	 <target name="userguidepdf" depends="init">
         <echo message="Creating ${userguide.fileprefix}.pdf from ${userguide.fileprefix}.tex" />
         <latex 
             latexfile="${userguide.fileprefix}.tex"
