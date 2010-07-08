@@ -304,7 +304,7 @@ public class ResultPanel extends JPanel implements StoreStateChangeEvent
 	        popup.add(new JSeparator());
 	
 	        // Create a action to open a synchronize dialog
-	        GUIAction synchronizeAction = new GUIAction(/*"Synchronize..."*/ Language.getInstance().getMessage("Synchronize"), 
+	        GUIAction synchronizeAction = new GUIAction(/*"Synchronize..."*/ Language.getInstance().getMessage("Synchronize") + Language.getInstance().getMessage("..."), 
 	        								null,
 	                                      new OpenSynchronizeDialogCommand(dialog));
 	        /*synchronizeAction.setEnabledOnStateChange(
@@ -320,17 +320,20 @@ public class ResultPanel extends JPanel implements StoreStateChangeEvent
 	        popup.add(new JSeparator());
 	
 	        // Create a action to open a delete dialog
-	        GUIAction openDeleteDialogAction = new GUIAction(/*"Delete..."*/ Language.getInstance().getMessage("Delete"), null,
-	                                         new OpenDeleteDialogCommand(dialog));
+	        GUIAction openDeleteDialogAction = new GUIAction(
+	        		/*"Delete..."*/ Language.getInstance().getMessage("Delete") + Language.getInstance().getMessage("..."), 
+	        		null,
+	        		new OpenDeleteDialogCommand(dialog));
 	        deleteMenu = new JMenuItem(openDeleteDialogAction);
 	        popup.add(deleteMenu);
 	
 	        popup.add(new JSeparator());
 	
 	        // Create export
-	        GUIAction exportAction = new GUIAction(/*"Export..."*/ Language.getInstance().getMessage("Export"), null,
-	//                            new ExportCommand(dialog, ExportCommand.REGULAR));
-	                             new OpenExportDialogCommand(dialog));
+	        GUIAction exportAction = new GUIAction(
+	        		/*"Export..."*/ Language.getInstance().getMessage("Export") + Language.getInstance().getMessage("..."), 
+	        		null,
+	        		new OpenExportDialogCommand(dialog));
 	        /*exportAction.setEnabledOnStateChange(
 	            StateChangeEvent.CHOOSE_COMPLETE_DATAPACKAGE, 
 	            true, GUIAction.EVENT_LOCAL);

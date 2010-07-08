@@ -368,7 +368,7 @@ public class DataViewer extends javax.swing.JPanel
 //Build the popup menu for the right click functionality
     popup = new JPopupMenu();
     // Create a add documentation menu item
-    addDocumentationAction = new GUIAction(/*"Add Documentation..."*/ Language.getInstance().getMessage("AddDocumentation"),
+    addDocumentationAction = new GUIAction(/*"Add/Edit Documentation..."*/ Language.getInstance().getMessage("Add/EditDocumentation") + Language.getInstance().getMessage("..."),
     										null,
                                           new AddDocumentationCommand());
     addDocumentation = new JMenuItem(addDocumentationAction);

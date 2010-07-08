@@ -162,7 +162,7 @@ public class DataPackagePlugin
     UIController controller = UIController.getInstance();
 
     // Save dialog box action
-    GUIAction saveAction = new GUIAction(/*"Save..."*/ Language.getInstance().getMessage("Save") ,
+    GUIAction saveAction = new GUIAction(/*"Save..."*/ Language.getInstance().getMessage("Save") + Language.getInstance().getMessage("..."),
                                               UISettings.SAVE_ICON,
                                               new SavePackageCommand());
     saveAction.setMenuItemPosition(4);
@@ -197,7 +197,7 @@ public class DataPackagePlugin
     
     Command importEMLDocument = new ImportEMLFileCommand();
     GUIAction importEMLDocumentAction =
-      new GUIAction(/*"Import..."*/ Language.getInstance().getMessage("Import") , 
+      new GUIAction(/*"Import..."*/ Language.getInstance().getMessage("Import") + Language.getInstance().getMessage("..."), 
     		  null, importEMLDocument);
     importEMLDocumentAction.setToolTipText("Import an EML Document...");
     importEMLDocumentAction.setMenuItemPosition(15);
@@ -329,7 +329,7 @@ public class DataPackagePlugin
     paste.setEnabled(false);
 
     int i = 0; // postition for menu item
-    GUIAction addDocumentation = new GUIAction(/*"Add/Edit Documentation..."*/ Language.getInstance().getMessage("Add/EditDocumentation"),
+    GUIAction addDocumentation = new GUIAction(/*"Add/Edit Documentation..."*/ Language.getInstance().getMessage("Add/EditDocumentation") + Language.getInstance().getMessage("..."),
     		null, new AddDocumentationCommand());
     addDocumentation.setToolTipText("Add/Edit XML documentation...");
     addDocumentation.setMenuItemPosition(i);
@@ -344,7 +344,7 @@ public class DataPackagePlugin
 
 
     i++;
-    GUIAction viewDocumentation = new GUIAction(/*"View Documentation..."*/ Language.getInstance().getMessage("ViewDocumentation"),
+    GUIAction viewDocumentation = new GUIAction(/*"View Documentation..."*/ Language.getInstance().getMessage("ViewDocumentation") + Language.getInstance().getMessage("..."),
     		null, new ViewDocumentationCommand());
     viewDocumentation.setToolTipText("View Documentation as HTML...");
     viewDocumentation.setMenuItemPosition(i);
@@ -360,7 +360,7 @@ public class DataPackagePlugin
 
     i++;
     GUIAction addTitleAbstractAction = new GUIAction(
-        /*"Title & Abstract..."*/ Language.getInstance().getMessage("TitleAndAbstract"),
+        /*"Title & Abstract..."*/ Language.getInstance().getMessage("TitleAndAbstract") + Language.getInstance().getMessage("..."),
         null, new AddTitleAbstractCommand());
     addTitleAbstractAction.setToolTipText("Edit Title & Abstract...");
     addTitleAbstractAction.setMenuItemPosition(i);
@@ -374,7 +374,7 @@ public class DataPackagePlugin
     controller.addGuiAction(addTitleAbstractAction);
 
     i++;
-    GUIAction addKeywordAction = new GUIAction(/*"Keywords..."*/ Language.getInstance().getMessage("Keywords"),
+    GUIAction addKeywordAction = new GUIAction(/*"Keywords..."*/ Language.getInstance().getMessage("Keywords") + Language.getInstance().getMessage("..."),
         null, new AddKeywordCommand());
     addKeywordAction.setToolTipText("Add, edit or delete Keywords...");
     addKeywordAction.setMenuItemPosition(i);
@@ -388,7 +388,7 @@ public class DataPackagePlugin
     controller.addGuiAction(addKeywordAction);
 
     i++;
-    GUIAction addCreatorAction = new GUIAction(/*"Owners..."*/ Language.getInstance().getMessage("Owner"),
+    GUIAction addCreatorAction = new GUIAction(/*"Owners..."*/ Language.getInstance().getMessage("Owner") + Language.getInstance().getMessage("..."),
         null, new AddCreatorCommand());
     addCreatorAction.setToolTipText("Add, edit or delete Owners...");
     addCreatorAction.setMenuItemPosition(i);
@@ -402,7 +402,7 @@ public class DataPackagePlugin
     controller.addGuiAction(addCreatorAction);
 
     i++;
-    GUIAction addContactAction = new GUIAction(/*"Contacts..."*/ Language.getInstance().getMessage("Contact"),
+    GUIAction addContactAction = new GUIAction(/*"Contacts..."*/ Language.getInstance().getMessage("Contact") + Language.getInstance().getMessage("..."),
         null, new AddContactCommand());
     addContactAction.setToolTipText("Add, edit or delete Contacts...");
     addContactAction.setMenuItemPosition(i);
@@ -416,7 +416,7 @@ public class DataPackagePlugin
     controller.addGuiAction(addContactAction);
 
     i++;
-    GUIAction addAdditionalPartyAction = new GUIAction(/*"Associated Parties..."*/ Language.getInstance().getMessage("AssociatedParties"),
+    GUIAction addAdditionalPartyAction = new GUIAction(/*"Associated Parties..."*/ Language.getInstance().getMessage("AssociatedParties") + Language.getInstance().getMessage("..."),
         null, new AddAdditionalPartyCommand());
     addAdditionalPartyAction.setToolTipText(
         "Add, edit or delete Associated Parties...");
@@ -432,7 +432,7 @@ public class DataPackagePlugin
 
     i++;
     GUIAction addResearchProjectAction = new GUIAction(
-        /*"Research Project..."*/ Language.getInstance().getMessage("ResearchProject"),
+        /*"Research Project..."*/ Language.getInstance().getMessage("ResearchProject") + Language.getInstance().getMessage("..."),
         null, new AddResearchProjectCommand());
     addResearchProjectAction.setToolTipText("Edit Research Project details...");
     addResearchProjectAction.setMenuItemPosition(i);
@@ -447,7 +447,7 @@ public class DataPackagePlugin
 
     i++;
     GUIAction addUsageRightsAction = new GUIAction(
-        /*"Usage Rights..."*/ Language.getInstance().getMessage("UsageRights"),
+        /*"Usage Rights..."*/ Language.getInstance().getMessage("UsageRights") + Language.getInstance().getMessage("..."),
         null, new AddUsageRightsCommand());
     addUsageRightsAction.setToolTipText("Edit Usage Rights...");
     addUsageRightsAction.setMenuItemPosition(i);
@@ -462,7 +462,7 @@ public class DataPackagePlugin
 
 
     i++;
-    GUIAction addGeographicCovAction = new GUIAction(/*"Geographic Coverage..."*/ Language.getInstance().getMessage("GeographicCoverage"),
+    GUIAction addGeographicCovAction = new GUIAction(/*"Geographic Coverage..."*/ Language.getInstance().getMessage("GeographicCoverage") + Language.getInstance().getMessage("..."),
                                            null, new AddGeographicCovCommand());
     addGeographicCovAction.setToolTipText("Geographic Coverage...");
     addGeographicCovAction.setMenuItemPosition(i);
@@ -476,7 +476,7 @@ public class DataPackagePlugin
     controller.addGuiAction(addGeographicCovAction);
 
     i++;
-    GUIAction addTemporalCovAction = new GUIAction(/*"Temporal Coverage..."*/ Language.getInstance().getMessage("TemporalCoverage"),
+    GUIAction addTemporalCovAction = new GUIAction(/*"Temporal Coverage..."*/ Language.getInstance().getMessage("TemporalCoverage") + Language.getInstance().getMessage("..."),
                                            null, new AddTemporalCovCommand());
     addTemporalCovAction.setToolTipText("Temporal Coverage...");
     addTemporalCovAction.setMenuItemPosition(i);
@@ -490,7 +490,7 @@ public class DataPackagePlugin
     controller.addGuiAction(addTemporalCovAction);
 
     i++;
-    GUIAction addTaxonomicCovAction = new GUIAction(/*"Taxonomic Coverage..."*/ Language.getInstance().getMessage("TaxonomicCoverage"),
+    GUIAction addTaxonomicCovAction = new GUIAction(/*"Taxonomic Coverage..."*/ Language.getInstance().getMessage("TaxonomicCoverage") + Language.getInstance().getMessage("..."),
                                            null, new AddTaxonomicCovCommand());
     addTaxonomicCovAction.setToolTipText("Taxonomic Coverage...");
     addTaxonomicCovAction.setMenuItemPosition(i);
@@ -505,7 +505,7 @@ public class DataPackagePlugin
 
     i++;
     GUIAction addMethodAction = new GUIAction(
-        /*"Methods..."*/ Language.getInstance().getMessage("Methods") ,
+        /*"Methods..."*/ Language.getInstance().getMessage("Methods") + Language.getInstance().getMessage("..."),
         null, new AddMethodCommand());
     addMethodAction.setToolTipText("Edit Methods...");
     addMethodAction.setMenuItemPosition(i);
@@ -520,7 +520,7 @@ public class DataPackagePlugin
 
     i++;
     GUIAction addAccessAction = new GUIAction(
-        /*"Access Information..."*/ Language.getInstance().getMessage("AccessInformation"),
+        /*"Access Information..."*/ Language.getInstance().getMessage("AccessInformation") + Language.getInstance().getMessage("..."),
         null, new AddAccessCommand());
     addAccessAction.setToolTipText("Add, edit or delete Access Permissions...");
     addAccessAction.setMenuItemPosition(i);

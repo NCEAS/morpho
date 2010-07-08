@@ -529,7 +529,7 @@ public class UISettings
                     = "<html><p style=\"color: #000000; "
                         +"font-family: Verdana, Arial, Helvetica, sans-serif; "
                         +"font-size: 9px; align: left;\">"
-                        +/*"login"*/ Language.getInstance().getMessage("login")
+                        +/*"Login"*/ Language.getInstance().getMessage("Login")
                         +"</p></html>";
 
     public static final String INIT_SCR_LOGIN_HEADER

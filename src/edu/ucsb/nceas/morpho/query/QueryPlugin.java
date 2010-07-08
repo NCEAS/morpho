@@ -111,7 +111,7 @@ public class QueryPlugin implements PluginInterface, ConnectionListener,
     UIController controller = UIController.getInstance();
 
     // Action for search
-    GUIAction searchItemAction = new GUIAction(/*"Search..."*/ Language.getInstance().getMessage("Search"),
+    GUIAction searchItemAction = new GUIAction(/*"Search..."*/ Language.getInstance().getMessage("Search") + Language.getInstance().getMessage("..."),
                                                UISettings.SEARCH_ICON,
                                                new SearchCommand(null, morpho));
     searchItemAction.setToolTipText("Search for data");
@@ -124,7 +124,7 @@ public class QueryPlugin implements PluginInterface, ConnectionListener,
     // Action for refresh
     RefreshCommand refreshCommand = new RefreshCommand();
     GUIAction refreshItemAction
-            = new GUIAction(/*"Refresh..."*/ Language.getInstance().getMessage("Refresh"),
+            = new GUIAction(/*"Refresh"*/ Language.getInstance().getMessage("Refresh"),
             		UISettings.REFRESH_ICON, refreshCommand);
     refreshItemAction.setToolTipText("Refresh");
     refreshItemAction.setMenuItemPosition(1);
@@ -165,7 +165,7 @@ public class QueryPlugin implements PluginInterface, ConnectionListener,
     controller.addGuiAction(saveQueryItemAction);
 
     // RevisedSearch action
-    GUIAction reviseSearchItemAction = new GUIAction(/*"Revise Search"*/ Language.getInstance().getMessage("ReviseSearch"), 
+    GUIAction reviseSearchItemAction = new GUIAction(/*"Revise Search..."*/ Language.getInstance().getMessage("ReviseSearch") + Language.getInstance().getMessage("..."), 
     		null, new ReviseSearchCommand(morpho));
     reviseSearchItemAction.setSmallIcon(new ImageIcon(getClass().
            getResource("revisesearch16.gif")));
@@ -190,7 +190,8 @@ public class QueryPlugin implements PluginInterface, ConnectionListener,
     saveCommand.loadSavedQueries();
 
     // Open dialog box action
-    GUIAction openDialogBoxAction = new GUIAction(/*"Open..."*/ Language.getInstance().getMessage("Open"),
+    GUIAction openDialogBoxAction = new GUIAction(
+    											/*"Open..."*/ Language.getInstance().getMessage("Open") + Language.getInstance().getMessage("..."),
                                               UISettings.OPEN_DATAPACKAGE_ICON,
                                               new OpenDialogBoxCommand(morpho));
     openDialogBoxAction.setMenuItemPosition(2);
@@ -199,7 +200,7 @@ public class QueryPlugin implements PluginInterface, ConnectionListener,
     openDialogBoxAction.setToolbarPosition(1);
     controller.addGuiAction(openDialogBoxAction);
 
-    GUIAction openByIdAction = new GUIAction(Language.getInstance().getMessage("OpenById"),
+    GUIAction openByIdAction = new GUIAction(Language.getInstance().getMessage("OpenById") + Language.getInstance().getMessage("..."),
             UISettings.OPEN_DATAPACKAGE_ICON,
             new OpenByIdCommand());
     openByIdAction.setMenuItemPosition(3);
@@ -216,7 +217,7 @@ public class QueryPlugin implements PluginInterface, ConnectionListener,
 //    controller.addGuiAction(openPackageAction);
 
     // Create a OpenPreviousVersion action
-    GUIAction openPreviousAction = new GUIAction(/*"Open Previous Version"*/ Language.getInstance().getMessage("OpenPreviousVersion"),
+    GUIAction openPreviousAction = new GUIAction(/*"Open Previous Version"*/ Language.getInstance().getMessage("OpenPreviousVersion") + Language.getInstance().getMessage("..."),
     		null, new OpenPreviousVersionCommand(null, morpho));
     openPreviousAction.setMenuItemPosition(4);
     openPreviousAction.setToolTipText("Open a previous version...");
@@ -240,7 +241,7 @@ public class QueryPlugin implements PluginInterface, ConnectionListener,
     controller.addGuiAction(openPreviousAction);
 
     // Synchronize action
-    GUIAction synchronizeAction = new GUIAction(/*"Synchronize..."*/ Language.getInstance().getMessage("Synchronize"), 
+    GUIAction synchronizeAction = new GUIAction(/*"Synchronize..."*/ Language.getInstance().getMessage("Synchronize") + Language.getInstance().getMessage("..."), 
     		null, new OpenSynchronizeDialogCommand());
     synchronizeAction.setMenuItemPosition(14);
     synchronizeAction.setToolTipText("Synchronize...");
@@ -265,7 +266,7 @@ public class QueryPlugin implements PluginInterface, ConnectionListener,
     controller.addGuiAction(synchronizeAction);
 
     // DeleteDialogAction
-    GUIAction deleteDialogAction = new GUIAction(/*"Delete..."*/ Language.getInstance().getMessage("Delete"),
+    GUIAction deleteDialogAction = new GUIAction(/*"Delete..."*/ Language.getInstance().getMessage("Delete") + Language.getInstance().getMessage("..."),
     		null, new OpenDeleteDialogCommand());
     deleteDialogAction.setMenuItemPosition(13);
     deleteDialogAction.setToolTipText("Delete...");
@@ -285,7 +286,7 @@ public class QueryPlugin implements PluginInterface, ConnectionListener,
     controller.addGuiAction(deleteDialogAction);
 
     // Export action
-    GUIAction exportAction = new GUIAction(/*"Export..."*/ Language.getInstance().getMessage("Export"),
+    GUIAction exportAction = new GUIAction(/*"Export..."*/ Language.getInstance().getMessage("Export") + Language.getInstance().getMessage("..."),
     		null,
 //                            new ExportCommand(null, ExportCommand.REGULAR));
                              new OpenExportDialogCommand());

@@ -1516,7 +1516,7 @@ public class Morpho
             }
         };
         GUIAction aboutItemAction =
-            new GUIAction(/*"About..."*/ Language.getInstance().getMessage("About"),
+            new GUIAction(/*"About..."*/ Language.getInstance().getMessage("About") + Language.getInstance().getMessage("..."),
             		null, aboutCommand);
         aboutItemAction.putValue(Action.SHORT_DESCRIPTION, "About Morpho");
         aboutItemAction.putValue(Action.SMALL_ICON,
