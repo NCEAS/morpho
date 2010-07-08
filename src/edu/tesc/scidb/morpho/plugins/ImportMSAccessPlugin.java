@@ -28,6 +28,7 @@ import org.w3c.dom.Node;
 import edu.tesc.scidb.MetadataChecker.CreateTdmRep;
 import edu.tesc.scidb.databank.sms.tdm.Database;
 import edu.tesc.scidb.databank.sms.tdm.Table;
+import edu.ucsb.nceas.morpho.Language;
 import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.datapackage.AbstractDataPackage;
 import edu.ucsb.nceas.morpho.datapackage.DataPackagePlugin;
@@ -172,11 +173,6 @@ public class ImportMSAccessPlugin
 	 */
 	public void initialize(Morpho morpho) {
 
-		String OS = System.getProperty("os.name").toLowerCase();
-		
-		// if they are NOT using windows don't even load the plugin
-		if(OS.indexOf("windows") <= -1)
-			return;
 
 		myMorpho = morpho;
 
@@ -192,7 +188,7 @@ public class ImportMSAccessPlugin
 
 		GUIAction ImportMSAccessDesign =
 			new GUIAction(
-				"Import MS Access Database",
+				Language.getInstance().getMessage("ImportMSAccessDatabase") + Language.getInstance().getMessage("..."),
 				null,
 				new ImportMSAccessPlugin());
 		ImportMSAccessDesign.setToolTipText(
@@ -203,15 +199,22 @@ public class ImportMSAccessPlugin
 		ImportMSAccessDesign.setMenu(DataPackagePlugin.DATA_MENU_LABEL, DataPackagePlugin.DATAMENUPOSITION);
 		ImportMSAccessDesign.setEnabled(false);
 
-		ImportMSAccessDesign.setEnabledOnStateChange(
-			StateChangeEvent.CREATE_DATAPACKAGE_FRAME,
-			true,
-			GUIAction.EVENT_LOCAL);
-
-		ImportMSAccessDesign.setEnabledOnStateChange(
-			StateChangeEvent.CREATE_SEARCH_RESULT_FRAME,
-			false,
-			GUIAction.EVENT_LOCAL);
+		// if they are NOT using windows don't enable the plugin
+		String OS = System.getProperty("os.name").toLowerCase();
+		if(OS.indexOf("windows") <= -1) {
+			// do nothing to enable
+		} else {
+			// enable it for data packages
+			ImportMSAccessDesign.setEnabledOnStateChange(
+				StateChangeEvent.CREATE_DATAPACKAGE_FRAME,
+				true,
+				GUIAction.EVENT_LOCAL);
+	
+			ImportMSAccessDesign.setEnabledOnStateChange(
+				StateChangeEvent.CREATE_SEARCH_RESULT_FRAME,
+				false,
+				GUIAction.EVENT_LOCAL);
+		}
 
 		UIController controller = UIController.getInstance();
 
