@@ -2363,7 +2363,7 @@ public class Morpho
     MorphoFrame frame = UIController.getInstance().getCurrentActiveWindow();
     String selectedProfile = (String)JOptionPane.showInputDialog(frame,
             /*"Select profile to delete:"*/ Language.getInstance().getMessage("SelectProfileToDelete") + ":",
-            /*"Input"*/ Language.getInstance().getMessage("Input"),
+            /*"Input"*/ Language.getInstance().getMessage("SelectProfileToDelete"),
             JOptionPane.INFORMATION_MESSAGE, null,
             profileList.toArray(), 0);
 
@@ -2375,8 +2375,10 @@ public class Morpho
         	int deleteContents = 
         		JOptionPane.showConfirmDialog(
         				frame, 
-        				/*"Are you sure you want to delete this profile: "*/ Language.getInstance().getMessage("Warning.DeleteProfile_1") + ": "  
-        				+ selectedProfile + " ?\n" 
+        				/*"Are you sure you want to delete this profile: "*/ Language.getInstance().getMessage("Warning.DeleteProfile_1") 
+        				+ "\n"  
+        				+ selectedProfile 
+        				+ "\n" 
         				+/*"\nALL data will be discarded."*/ Language.getInstance().getMessage("Warning.DeleteProfile_2") + "\n" 
         				+/*"\nThis action is not undoable."*/ Language.getInstance().getMessage("Warning.DeleteProfile_3"), 
         				"DESTRUCTIVE ACTION!", JOptionPane.YES_NO_OPTION);
