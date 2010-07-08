@@ -8,7 +8,7 @@ Recommended system requirements for running Morpho:
 \begin{itemize}
  \item a minimum of 256 MB of RAM 
  \item a minimum of 700MHz CPU 
- \item Java 1.5 or greater 
+ \item Java 1.6 or greater 
 \end{itemize}
 
 Morpho will run on slower systems with less RAM, but some operations may
@@ -22,7 +22,7 @@ To download Morpho, go to
 %{\nolinkurl{http://knb.ecoinformatics.org/morphoportal.jsp}}
 \url{http://knb.ecoinformatics.org/morphoportal.jsp}
 and choose the link corresponding to your platform (Morpho can be used
-on Windows, Linux, and Mac). You will need to have Java 1.5 or later
+on Windows, Linux, and Mac). You will need to have Java 1.6 or later
 installed on your system.
 
 If you have used a previous version of Morpho, we recommend that you
@@ -65,7 +65,7 @@ log in to the KNB to create or edit data sets that are stored remotely.
 To register for the KNB network, go to
 \url{http://knb.ecoinformatics.org/}, select the 'Create new account'
 link, and fill out the form (\autoref{fig:register-knb}). Write down
-your user name and password—you will need this information when you
+your user name and password as you will need this information when you
 create a Morpho user profile.
 
 \begin{figure}
@@ -83,7 +83,7 @@ create, access, edit, and search for metadata and data on the KNB.
 
 First-time users will automatically be prompted to create a new profile
 when they open Morpho. Users upgrading Morpho from a previous version
-will also be prompted to create a new profile. To continue using your
+may also be prompted to create a new profile. To continue using your
 old profile(s) (so that your locally-stored data continue to be
 visible), simply enter a ``new profile'' with the same user name as the
 old one (e.g., if your old profile is named ``jdoe'', then enter
@@ -127,7 +127,8 @@ your old profile existed.
     files you import using Morpho. For example, specifying the prefix
     ``jane\_doe'' will result in document IDs like jane\_doe.1.1,
     jane\_doe.2.1, etc. \emph{\textbf{Do not use the reserved prefix
-    ``temporary''.}}
+    ``temporary''.}} Other non-alphanumeric characters like periods, 
+    commas, and quotation marks are also not allowed in the prefix.
 
   \begin{figure}
     \centering
@@ -142,7 +143,8 @@ your old profile existed.
 \begin{shaded}
   \textbf{NOTE} The Morpho interface currently supports deleting
   profiles that you no longer need through the Remove Profile menu item
-  from the File menu. \textbf{However, if you delete a profile, you also
+  from the File menu (see \autoref{sec:removing-a-profile}).
+   \textbf{However, if you delete a profile, you also
   delete all local copies of data packages created or saved using that
   profile}. Unless you first extract the data packages and save them
   elsewhere on your computer (or to a network server, like Metacat), you
@@ -154,7 +156,7 @@ your old profile existed.
 After you have created a user profile (see
 \autoref{sec:before-you-begin}), you will see the Main Morpho screen.
 Enter your KNB password in the ``Network Status'' panel and click
-``login'' (\autoref{fig:panel-login}). If you choose not to log in, you
+``Login'' (\autoref{fig:panel-login}). If you choose not to log in, you
 will be able to create, edit, search, access, and manage data that are
 stored locally, and may search for public data sets on the KNB network.
 However, you will not be allowed to create or edit data sets on the KNB
@@ -166,3 +168,34 @@ network.
   \caption{Log in to the KNB network.}
   \label{fig:panel-login}
 \end{figure}
+
+\subsection{Removing a profile} \label{sec:removing-a-profile}
+
+Profiles may be removed from Morpho if they are no longer needed.
+When you remove a profile, all the metadata and data that has been created 
+with that profile is deleted locally. Network copies remain untouched.
+
+\paragraph{To remove a user profile:}
+\begin{enumerate}
+  \item From the File menu, choose ``Remove profile''
+  \item Select the profile that should be removed (\autoref{fig:remove-profile-select}).
+  Note: The current active profile cannot be removed (switch to a different profile in order to remove it).
+  
+  
+  \begin{figure}
+  \centering
+    \includegraphics[width=0.7\textwidth]{images/remove-profile-select.png}
+  \caption{Select profile to remove}
+  \label{fig:remove-profile-select}
+\end{figure}
+  
+  \item Confirm the removal in the dialog box (\autoref{fig:remove-profile-confirm}).
+  \begin{figure}
+  \centering
+    \includegraphics[width=0.7\textwidth]{images/remove-profile-confirm.png}
+  \caption{Confirm profile removal.}
+  \label{fig:remove-profile-confirm}
+\end{figure}
+
+\end{enumerate}
+
