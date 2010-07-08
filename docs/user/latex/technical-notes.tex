@@ -1,0 +1,14 @@
+\section{Technical Notes} \label{sec:technical-notes}
+
+For those who are interested in technical details, the Morpho editor is
+an XML editor. It works by first reading an XML file and building an
+outline (tree) view of the XML document. XML files can have formalized
+templates called ``DTD's'' (Document Type Definition), which describe how
+the document can be constructed. If the XML document indicates that its
+structure should conform to a DTD, then the DTD is scanned and a single
+instance of any optional nodes not present in the original is added to
+the hierarchy. Finally, if the editor has additional data about the
+document type, it will add that data as custom displays or help
+information about the node, as is shown in the above examples. The
+editor can thus be customized to display the XML data in a variety of
+ways.

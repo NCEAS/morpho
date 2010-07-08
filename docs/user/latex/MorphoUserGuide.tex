@@ -1,0 +1,102 @@
+% Main LaTeX file for the Morpho User Guide 
+% 
+% Designed to be compiled using pdflatex, as in:
+%  $ pdflatex MorphoUserGuide.tex
+%
+% The section-specific tex files (referenced in the 'include' statements
+% below) must be present in the current directory, and all included
+% graphics must be present in ./images.
+%
+% TODO:
+% - Update to reflect 1.8.1 changes
+% - Say something about how to remove profiles (currently there is just
+%   a warning about doing this, in getting-started.tex)
+% - compress figures to reduce file size?
+% - make a better color for internal links?
+% - [preferences.tex] replace Morpho preferences figure with one that
+%   shows the default Metacat URL (rather than dev)
+% - [searching.tex] Add a figure for the Search box 'Options' tab?
+%
+% Jim Regetz
+% NCEAS
+%
+\documentclass[11pt]{article}
+
+% load required packages
+\usepackage{graphicx}
+\usepackage{array}
+\usepackage{color}
+\usepackage[hang,small,bf]{caption}
+\usepackage{framed}
+\usepackage[colorlinks=true,linkcolor=magenta,urlcolor=blue,breaklinks]{hyperref}
+
+% use Helvetica
+\renewcommand{\rmdefault}{phv}
+
+% use #.#-style figure numbering
+\renewcommand{\thefigure}{\thesection.\arabic{figure}}
+
+% make autoref use 'section' label for all section levels
+\def\subsectionautorefname{section}
+\def\subsubsectionautorefname{section}
+
+% make URLs have same font as regular text
+\urlstyle{same}
+
+% define shadedcolor for shaded frame environment
+\definecolor{shadecolor}{gray}{0.95}
+
+\begin{document}
+
+  \pagestyle{empty}
+
+  % title
+  \begin{titlepage}
+    \begin{center}
+    \includegraphics[width=2cm]{images/logo-morpho.png}\\[0.5cm]
+    \textsc{\LARGE Morpho 1.8.0 User Guide}\\[1cm]
+    \textsc{Guide Version 1.2}\\
+    \textsc{July 6, 2010}
+    \vfill
+    \includegraphics[width=1.5cm]{images/logo-nceas.jpg}\\[0.5cm]
+    \textsc{National Center for Ecological\\Analysis and Synthesis}\\[1cm]
+    \includegraphics[width=1.5cm]{images/logo-knb.jpg}\\[0.2cm]
+    \textsc{Knowledge Network for Biocomplexity}
+    \end{center}
+  \end{titlepage}
+  \pagebreak
+
+  % table of contents
+  \tableofcontents
+  \pagebreak
+
+  % main content
+  \include{introduction}
+    \setcounter{figure}{0} 
+  \include{getting-started}
+    \setcounter{figure}{0} 
+  \include{morpho-main}
+    \setcounter{figure}{0} 
+  \include{viewing}
+    \setcounter{figure}{0} 
+  \include{searching}
+    \setcounter{figure}{0} 
+  \include{creating}
+    \setcounter{figure}{0} 
+  \include{adding-data}
+    \setcounter{figure}{0} 
+  \include{editing}
+    \setcounter{figure}{0} 
+  \include{sharing}
+    \setcounter{figure}{0} 
+  \include{deleting}
+    \setcounter{figure}{0} 
+  \include{preferences}
+    \setcounter{figure}{0} 
+  \include{upgrading-eml}
+    \setcounter{figure}{0} 
+  \include{technical-notes}
+
+  %\include{index}
+
+\end{document}
