@@ -809,13 +809,13 @@ documentation or change erroneous documentation in the fields provided.
 For more information about the fields in the Data Table wizard, please
 see \autoref{sec:table-documenting}.
 
-\subsection[Adding Other Data Types]{Adding Other Data Types (E.g.,
-Excel, Mathematica, HTML, or image files)} \label{sec:table-other-types}
+\subsection[Adding Other Data Table Types]{Adding Other Data Table Types (E.g. 
+Excel, Mathematica, HTML, or XML)} \label{sec:table-other-types}
 
 Data stored in proprietary binary formats such as Excel, Mathematica, or
-Word documents, as well as image formats such as .gif or .jpg, can be
+Word documents, can be
 added to data packages using the Data Table wizard. Although the current
-version of Morpho does not support displaying the content of proprietary
+version of Morpho does not support displaying the content of most proprietary
 formats, such files can still be documented using the Morpho wizards and
 saved to a data package. If your data package contains data files stored
 in a proprietary format, you can view the data by exporting the data
@@ -832,8 +832,7 @@ and choosing the ``Text (Tab-delimited)'' format from the ``Save as
 type'' menu. Note that chart objects in Excel cannot be saved as text
 files. 
 
-To add a non-text (e.g., a .jpg or .gif) or proprietary file to a data
-package:
+To add a proprietary file to a data package:
 \begin{enumerate}
   \item Open the data package to which you wish to save the data file.
     From the Data menu at the top of the Data Package screen, select
@@ -845,15 +844,16 @@ package:
     or proprietary format that is externally defined,'' and then choose
     the appropriate format from the list
     (\autoref{fig:wizard-table-import-nontext}), or ``other'' if the
-    data format does not appear in the list (e.g., if your data file is
-    an image, select ``other'' and specify image, or .jpg or .gif, etc
-    as the description).
+    data format does not appear in the list (e.g the MIME type or a short
+    description). 
+    Note: It is often preferable to import image files as ``other entities'' 
+    as described in \autoref{sec:importing-other-entities}.
 \end{enumerate}
 
 \begin{figure}
   \centering
     \includegraphics[width=0.7\textwidth]{images/wizard-table-filelocation.jpg}
-  \caption{Adding an Excel, image, or other non-delimited data file to a
+  \caption{Adding an Excel or other proprietary data file to a
     data package.}
   \label{fig:wizard-table-filelocation}
 \end{figure}
@@ -873,10 +873,116 @@ more information about using the Data Table Wizard to document data, see
 \begin{shaded}
   \textbf{NOTE} Complex, geospatially indexed images can be included in
   data packages and described in EML 2.0 and newer versions using the
-  ``spatialRaster'' or ``spatialVector'' entity modules.  However, the
+  ``spatialRaster'' or ``spatialVector'' entity modules. However, the
   Morpho wizards currently do not support adding documentation to these
   modules. For more information about EML, please see the Guide to EML.
 \end{shaded}
+
+\subsection[Adding Other Data Entities]{Adding Other Data Entities (E.g. 
+binary files, images, PDFs)} \label{sec:importing-other-entities}
+
+While the Data Table import wizard can be used to import binary and proprietary 
+data files, it should only used when the file contains a describable data structure 
+such that attribute-level documentation can be entered (as is the case with a 
+tabular Excel worksheet). Data files that do not adhere to an entity/attribute 
+structure (e.g. digitized field notes in PDF, specimen jpeg images) should be 
+imported as ``other entities''.
+
+To add other data entities to a data package:
+\begin{enumerate}
+  \item Open the data package to which you wish to save the data file.
+    From the Data menu at the top of the Data Package screen, select
+    ``Import Other Data''.
+  \item Select the file to be imported (\autoref{fig:import-other-entity-location}). 
+  Click the ``locate'' button to select the file to import.
+  \item Click ``Ok''.
+  Basic file metadata (file type and file size) will be collected automatically .
+\end{enumerate}
+
+\begin{figure}
+  \centering
+    \includegraphics[width=0.7\textwidth]{images/import-other-entity-location.png}
+  \caption{Adding a binary or non-tabular data file to a data package.}
+  \label{fig:import-other-entity-location}
+\end{figure}
+
+\subsection[Converting Other Entities to Data Tables]{Converting 
+Other Entities to Data Tables}
+\label{sec:converting-other-entities}
+
+If tabular data has previously been added to a Data Package as 
+an ``other entity'' (e.g. using the KNB online data registry) it can be converted
+to a Data Table using the Data Table wizard. Attribute-level metadata
+is entered in the same way as it is when importing a new data table,
+but after the conversion, the old data entity will need to be explicitly removed 
+from the data package.
+
+To convert an other entity to a data table:
+\begin{enumerate}
+  \item From the Data menu at the top of the Data Package screen, select
+    ``Convert Data to Table''.
+  \item The New Data Table Wizard will launch with the Data Location fields
+  pre-populated (\autoref{fig:convert-other-entity-location}). 
+  \item Click ``Next'' to continue through the Data Table import wizard as described in
+  \autoref{sec:table-import}
+  \item When the wizard has completed, the original entity can be removed and the new
+  table will be unaffected. See \autoref{sec:deleting-current-data} for instructions on removing
+  data entities.
+\end{enumerate}
+
+\begin{figure}
+  \centering
+    \includegraphics[width=0.7\textwidth]{images/convert-other-entity-location.png}
+  \caption{Converting an other entity to a data table.}
+  \label{fig:convert-other-entity-location}
+\end{figure}
+
+\subsection[Replacing Data]{Replacing Data}
+\label{sec:replacing-data}
+
+Existing Data Tables can have their data replaced while still 
+preserving the original metadata that was so meticulously entered during the initial import.
+This allows a data table to be described before the data is fully cleaned and finalized, 
+thereby making Morpho useful for active data management.
+
+\begin{shaded}
+  \textbf{NOTE} When replacing the data content of a table, close attention must me paid to the table structure. 
+  The order and number of columns/attributes must remain the same or else the metadata will not match the new data.
+\end{shaded}
+
+To replace a data file:
+\begin{enumerate}
+  \item From the Data menu at the top of the Data Package screen, select
+    ``Replace Current Data''.
+  \item Select the new data file to import (\autoref{fig:replace-data-location}). 
+  \item Enter an optional name for the entity (the file name will be used if this is omitted).
+  \item Click ``Ok''. The file size, and row count metadata will be recalculated automatically 
+  and saved in the entity metadata.
+\end{enumerate}
+
+\begin{figure}
+  \centering
+    \includegraphics[width=0.7\textwidth]{images/replace-data-location.png}
+  \caption{Replacing a data file.}
+  \label{fig:replace-data-location}
+\end{figure}
+
+\subsection[Exporting Data Entities]{Exporting Data Entities}
+\label{sec:exporting-entities}
+
+In addition to the Data Package Export feature (see \autoref{sec:exporting-data-packages}),
+individual data entities can be exported. This is useful for binary or proprietary 
+data files that cannot be displayed inside Morpho.
+
+To export data entities:
+\begin{enumerate}
+  \item Open the data package containing the data file.
+  \item From the Data menu at the top of the Data Package screen, 
+  select ``Export Data''.
+  \item Specify a directory where the data will be exported.
+   For organization, a subdirectory with the package ID will 
+   automatically be created in the directory you select.
+\end{enumerate}
 
 \subsection{Saving Incomplete Data Tables }
 
@@ -909,6 +1015,7 @@ table.
   \item \nameref{sec:edit-table-col-copypaste}
   \item \nameref{sec:edit-table-access}
   \item \nameref{sec:edit-table-revert}
+  \item \nameref{sec:deleting-current-data}
 \end{itemize}
 
 \subsubsection{Sorting Table Rows}
@@ -1043,3 +1150,13 @@ last time you saved the data package will be reversed.
 
 To undo changes made to all of the tables in the data package, select
 ``Revert All Entities to Saved Version'' from the Edit menu.
+
+\subsubsection{Deleting Data}
+\label{sec:deleting-current-data}
+
+Data Tables and Entities can be removed from the Data Package 
+using the ``Data $>$ Delete Current Data'' menu option. Before invoking 
+this command, select the tab for the data that should be removed.
+
+To undo this action, simply close the data package without saving it 
+and then reopen the package.
