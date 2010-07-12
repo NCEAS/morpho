@@ -98,7 +98,7 @@ the listing of available packages.
   \autoref{sec:upgrading-eml}.
 \end{shaded}
 
-\subsubsection*{Opening a Shared Data Package}
+\subsubsection{Opening a Shared Data Package}
 
 To locate and view data packages other than those you have created, use
 the \hyperref[sec:searching]{Search} feature, which is described later
@@ -111,6 +111,29 @@ If you are not logged in to the KNB, but have network access, the only
 network data packages that will appear in your search are those that
 have ``public'' access privileges. To view additional data sets from the
 KNB network, log in to the network.
+
+\subsubsection{Opening a Data Package by Package Id}
+
+Data packages may quickly be opened using their ``Package Id''.
+This is the unique identifier assigned to the data package when it is created.
+The package id ``jscientist.7.2'' is a combination of three fields:
+\begin{itemize}
+  \item scope or identifier prefix (jscientist)
+  \item id (7)
+  \item revision (2)
+\end{itemize}
+
+To open a data package by id, select the ``File $>$ Open by Id'' option. 
+Note: all three parts of the package id are required. 
+Local and network copies can be opened, but protected data packages on the 
+network can only opened if a user with appropriate permissions is currently logged in.
+
+\begin{figure}
+  \centering
+    \includegraphics[width=0.7\textwidth]{images/open-by-id.png}
+  \caption{Open a data package by package id.}
+  \label{fig:open-by-id}
+\end{figure}
 
 \subsection{Viewing a Data Package: The Data Package Interface}
 
@@ -136,7 +159,7 @@ package is located on the local machine, on the network, or both
 (\autoref{fig:viewer-table-top}). No icons will appear if the data
 package has not yet been saved, or has been modified since it was last
 saved.
- 
+
 \begin{figure}
   \centering
     \includegraphics[width=0.7\textwidth]{images/viewer-table-top.jpg}
