@@ -1342,12 +1342,6 @@ public class PartyPage extends AbstractUIPage {
 
     map = keepOnlyLastPredicateInKeys(map);
 
-
-    //get rid of scope attribute, if it exists
-    String scope = (String)map.get(xpathRootNoPredicates + "/@scope");
-    if (scope != null)  map.remove(xpathRootNoPredicates + "/@scope");
-
-
     //do role first, since it applies even if this is a reference
     getRoleFromMapAndRemove(map, xpathRootNoPredicates);
 
@@ -1510,6 +1504,18 @@ public class PartyPage extends AbstractUIPage {
       map.remove(xpathRootNoPredicates + "/onlineUrl[1]");
     }
 
+    //get rid of scope attribute, if it exists
+    // BRL 07/12/2010 - now removing any @scope keys that we find after processing the other keys
+    //String scope = (String)map.get(xpathRootNoPredicates + "/@scope");
+    //if (scope != null)  map.remove(xpathRootNoPredicates + "/@scope");
+    OrderedMap keysToRemove = new OrderedMap();
+	for (Object key: map.keySet()) {
+		if ( ((String)key).endsWith("@scope") ) {
+			keysToRemove.put(key, map.get(key));
+		}
+	}
+	map.removeAll(keysToRemove);
+  
     //if anything left in map, then it included stuff we can't handle...
     boolean canHandleAllData = map.isEmpty();
 
