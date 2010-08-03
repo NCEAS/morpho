@@ -39,6 +39,7 @@ import javax.swing.JFrame;
 //import com.adobe.acrobat.Viewer;
 //import com.sun.pdfview.PDFViewer;
 
+import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.util.Command;
 import edu.ucsb.nceas.morpho.util.Log;
 import edu.ucsb.nceas.morpho.util.UISettings;
@@ -61,7 +62,7 @@ public class MorphoGuideCommand implements Command
              HelpCommand.helpHeight);
     private Point location = new Point(helpCenterX, helpCenterY);
 	private static final String TITLE = "Morpho Help";
-	private static final String GUIDEFILEPATH = "docs"+File.separator+"user"+File.separator+"MorphoUserGuide.pdf";
+	private static final String GUIDEFILEPATH = Morpho.getConfiguration().get("userguide", 0);
 	private static final String WINDOWS = "rundll32 url.dll,FileProtocolHandler "+GUIDEFILEPATH;
 	private static final String MAC = "open "+GUIDEFILEPATH;
 	private static final String LINUX = " "+GUIDEFILEPATH;

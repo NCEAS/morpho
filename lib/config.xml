@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <config>
-  <version>1.8.1</version>
+  <version>1.8.1-RC2</version>
   <dataLocationInlineOnline>online</dataLocationInlineOnline>
   <plugin>edu.ucsb.nceas.morpho.query.QueryPlugin</plugin>
   <plugin>edu.ucsb.nceas.morpho.datapackage.DataPackagePlugin</plugin>
@@ -14,6 +14,7 @@
   <metacat_url>https://knb.ecoinformatics.org/knb/metacat</metacat_url>
   <profile_directory>profiles</profile_directory>
   <samples_directory>./lib/sampledata</samples_directory>
+  <userguide>docs/user/latex/MorphoUserGuide.pdf</userguide>
   <default_profile>default-profile.xml</default_profile>
   <local_dtd_directory>catalog</local_dtd_directory>
   <local_catalog_path>catalog/catalog</local_catalog_path>
