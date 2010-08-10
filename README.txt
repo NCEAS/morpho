@@ -215,9 +215,9 @@ licenses/ICONREADME.txt for more information about the IconFactory icons.
 
 Language Contributors:
 --------------
-Akiko Ogawa (aogawa@kais.kyoto-u.ac.jp) - Japanese
-Dr. Chau Chin Lin (chin@tfri.gov.tw) and his team (icefish24@gmail.com) - Chinese (Taiwan)
-TBD - Portuguese
+Akiko Ogawa <aogawa@kais.kyoto-u.ac.jp>, Eiichi Maita <maita.eiichi@nies.go.jp> - Japanese
+Chau Chin Lin <chin@tfri.gov.tw>, Meei-ru Jeng <beer@tfri.gov.tw>, TFRI team <icefish24@gmail.com> - Chinese (Taiwan)
+Debora Drucker <deboradrucker@gmail.com>, Fl‡via Pezzini <flaviapezzini@gmail.com> - Portuguese
 TBD - Spanish
 TBD - French
 
