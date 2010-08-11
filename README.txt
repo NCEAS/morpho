@@ -7,29 +7,7 @@ Feedback and bugs to: morpho-dev@ecoinformatics.org
                       http://bugzilla.ecoinformatics.org
 
 Contributors: 
-    Matt Jones (jones@nceas.ucsb.edu)
-    Dan Higgins (higgins@nceas.ucsb.edu)
-    Chad Berkley (berkley@nceas.ucsb.edu)
-    Jivka Bojilova (bojilova@nceas.ucsb.edu)
-    Chris Jones (cjones@lifesci.ucsb.edu)
-    Mark Schildhauer (schild@nceas.ucsb.edu)
-    Eric Fegraus (fegraus@nceas.ucsb.edu)
-    Matthew Brooke (brooke@nceas.ucsb.edu)
-    Jing Tao (tao@nceas.ucsb.edu)
-    Christy Bowles (bowles@nceas.ucsb.edu)
-    Saurabh Garg (sgarg@nceas.ucsb.edu)
-    Ben Leinfelder (leinfelder@nceas.ucsb.edu)
-    Perumal Sambasivam (sambasiv@nceas.ucsb.edu)
-    Andrea Chadden (chadden@nceas.ucsb.edu)
-    Rick Reeves (reeves@nceas.ucsb.edu)
-    Sandy Andelman (andelman@nceas.ucsb.edu)
-    P. Mark Anderson (anderson@nceas.ucsb.edu)
-    Callie Bowdish (bowdish@nceas.ucsb.edu)
-    Veronique Connolly (connolly@nceas.ucsb.edu)
-    Will Tyburczy (tyburczy@nceas.ucsb.edu)
-    Jim Regetz (regetz@nceas.ucsb.edu)
-    Judith Kruger (JudithW@sanparks.org)
-    Margaret O'Brien (mob@icess.ucsb.edu)
+    Please see the CONTRIBUTORS.txt file in this directory.
     
 This is Morpho, a data management application for managing ecological data.
 Morpho allows researchers to describe their data using a comprehensive and
@@ -212,14 +190,6 @@ have be modified for Morpho.  They include incons from the IconFactory's World
 of Aqua series (http://www.iconfactory.com), and icons from Everaldo Coelho's
 Conectiva Crystal Series (http://www.everaldo.com).  Please see the 
 licenses/ICONREADME.txt for more information about the IconFactory icons.  
-
-Language Contributors:
---------------
-Akiko Ogawa <aogawa@kais.kyoto-u.ac.jp>, Eiichi Maita <maita.eiichi@nies.go.jp> - Japanese
-Chau Chin Lin <chin@tfri.gov.tw>, Meei-ru Jeng <beer@tfri.gov.tw>, TFRI team <icefish24@gmail.com> - Chinese (Taiwan)
-Debora Drucker <deboradrucker@gmail.com>, Fl‡via Pezzini <flaviapezzini@gmail.com> - Portuguese
-TBD - Spanish
-TBD - French
 
 Legalese
 --------
