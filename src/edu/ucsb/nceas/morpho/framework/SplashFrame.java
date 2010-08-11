@@ -48,38 +48,6 @@ public class SplashFrame extends javax.swing.JFrame
   // Used by addNotify
   private boolean frameSizeAdjusted = false;
 
-  // the version number
-  //private static String version = "Version 0.0.0 Alpha 3";
-  private static String[] coders = { "Matt Jones",
-                                     "Dan Higgins",
-                                     "Chad Berkley",
-                                     "Jivka Bojilova",
-                                     "Chris Jones",
-                                     "Mark Schildhauer",
-                                     "Eric Fegraus",
-                                     "Matthew Brooke",
-                                     "Jing Tao",
-                                     "Christy Bowles",
-                                     "Saurabh Garg",
-                                     "Ben Leinfelder",
-                                     "Perumal Sambasivam",
-                                     "Andrea Chadden",
-                                     "Rick Reeves",
-                                     "Sandy Andelman",
-                                     "P. Mark Anderson",
-                                     "Callie Bowdish",
-                                     "Veronique Connolly",
-                                     "Will Tyburczy",  
-                                     "Judith Kruger",
-                                     "Margaret O'Brien"
-                                    };
-  private static String[] orgs = {
-                 "National Center for Ecological Analysis and Synthesis",
-                 "Long Term Ecological Research Network Office",
-                 "San Diego Supercomputer Center",
-                 "Texas Tech University",
-                 "Tawain Forestry Research Institute"};
-
   private static String credit =
                   "This material is based upon work supported\n" +
                   "by the National Science Foundation under Grant\n" +
