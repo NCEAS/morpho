@@ -1,0 +1,45 @@
+Contributors:
+-------------
+National Center for Ecological Analysis and Synthesis (NCEAS):
+	Matt Jones (jones@nceas.ucsb.edu)
+	Dan Higgins (higgins@nceas.ucsb.edu)
+	Chad Berkley (berkley@nceas.ucsb.edu)
+	Jivka Bojilova (bojilova@nceas.ucsb.edu)
+	Mark Schildhauer (schild@nceas.ucsb.edu)
+	Eric Fegraus (fegraus@nceas.ucsb.edu)
+	Matthew Brooke (brooke@nceas.ucsb.edu)
+	Jing Tao (tao@nceas.ucsb.edu)
+	Christy Bowles (bowles@nceas.ucsb.edu)
+	Saurabh Garg (sgarg@nceas.ucsb.edu)
+	Ben Leinfelder (leinfelder@nceas.ucsb.edu)
+	Perumal Sambasivam (sambasiv@nceas.ucsb.edu)
+	Andrea Chadden (chadden@nceas.ucsb.edu)
+	Rick Reeves (reeves@nceas.ucsb.edu)
+	Sandy Andelman (andelman@nceas.ucsb.edu)
+	P. Mark Anderson (anderson@nceas.ucsb.edu)
+	Callie Bowdish (bowdish@nceas.ucsb.edu)
+	Veronique Connolly (connolly@nceas.ucsb.edu)
+	Will Tyburczy (tyburczy@nceas.ucsb.edu)
+	Jim Regetz (regetz@nceas.ucsb.edu)
+    
+Partnership for Interdisciplinary Studies of Coastal Oceans (PISCO):
+	Chris Jones (cjones@lifesci.ucsb.edu)
+    
+South Africa National Parks (SANParks)
+	Judith Kruger (JudithW@sanparks.org)
+    
+Santa Barbara Coastal LTER:
+	Margaret O'Brien (mob@icess.ucsb.edu)
+    
+Taiwan Forestry Research Institute (TFRI):
+	Chau Chin Lin (chin@tfri.gov.tw)
+	Meei-ru Jeng (beer@tfri.gov.tw)
+	TFRI team (icefish24@gmail.com)
+
+Japan LTER:
+	Akiko Ogawa (aogawa@kais.kyoto-u.ac.jp)
+	Eiichi Maita (maita.eiichi@nies.go.jp)
+	
+Instituto Nacional de Pesquisas da Amazonia (INPA):
+	Flavia Fonseca Pezzini (pezzini@inpa.gov.br)
+	Debora Drucker (deboradrucker@gmail.com)

@@ -28,9 +28,14 @@ package edu.ucsb.nceas.morpho.framework;
 
 import edu.ucsb.nceas.morpho.Language;
 import edu.ucsb.nceas.morpho.Morpho;
+import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WidgetFactory;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+
 import javax.swing.*;
 import javax.swing.event.*;
 
@@ -168,49 +173,22 @@ public class SplashFrame extends javax.swing.JFrame
 
     getContentPane().add(Box.createVerticalStrut(8));
 
-    JPanel contribPanel = new JPanel();
-    contribPanel.setLayout(new BoxLayout(contribPanel, BoxLayout.Y_AXIS));
-    contribPanel.setAlignmentY(Component.TOP_ALIGNMENT);
+    JPanel contribPanel = WidgetFactory.makePanel();
     contribPanel.setBackground(java.awt.Color.white);
-    JLabel contributorsLabel = new JLabel(Language.getInstance().getMessage("Contributors"));
-    contributorsLabel.setForeground(java.awt.Color.black);
-    contributorsLabel.setFont(new Font("Dialog", Font.BOLD, 12));
-    contribPanel.add(contributorsLabel);
-    for (int i = 0; i < coders.length; i++) {
-      JLabel coderLabel = new JLabel();
-      coderLabel.setBackground(java.awt.Color.white);
-      coderLabel.setForeground(java.awt.Color.black);
-      coderLabel.setFont(new Font("Dialog", Font.PLAIN, 12));
-      coderLabel.setText("    " + coders[i]);
-      contribPanel.add(coderLabel);
-    }
-
-    JPanel orgPanel = new JPanel();
-    orgPanel.setLayout(new BoxLayout(orgPanel, BoxLayout.Y_AXIS));
-    orgPanel.setAlignmentY(Component.TOP_ALIGNMENT);
-    orgPanel.setBackground(java.awt.Color.white);
-    JLabel orgLabel = new JLabel(Language.getInstance().getMessage("SponsoringOrganizations"));
-    orgLabel.setForeground(java.awt.Color.black);
-    orgLabel.setFont(new Font("Dialog", Font.BOLD, 12));
-    orgPanel.add(orgLabel);
-    for (int i = 0; i < orgs.length; i++) {
-      JLabel instLabel = new JLabel();
-      instLabel.setBackground(java.awt.Color.white);
-      instLabel.setForeground(java.awt.Color.black);
-      instLabel.setFont(new Font("Dialog", Font.PLAIN, 12));
-      instLabel.setText("    " + orgs[i]);
-      orgPanel.add(instLabel);
-    }
-
-    Box creditsBox = Box.createHorizontalBox();
-    creditsBox.setBackground(Color.white);
-    creditsBox.add(Box.createHorizontalStrut(8));
-    creditsBox.add(contribPanel);
-    creditsBox.add(Box.createHorizontalStrut(8));
-    creditsBox.add(Box.createHorizontalGlue());
-    creditsBox.add(orgPanel);
-    creditsBox.add(Box.createHorizontalStrut(8));
-    getContentPane().add(creditsBox);
+    //load from file
+    String contributors = null;
+    try {
+		contributors = loadContributors();
+	} catch (Exception e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	}
+    JTextArea contributorsArea = new JTextArea(contributors);
+    JScrollPane scrollPane = new JScrollPane(contributorsArea);
+    contribPanel.add(scrollPane);
+    contribPanel.setBorder(BorderFactory.createEmptyBorder(0, 8, 0, 8));
+    contribPanel.setPreferredSize(new Dimension(400,400));
+    getContentPane().add(contribPanel);
 
     getContentPane().add(Box.createVerticalStrut(8));
     getContentPane().add(Box.createVerticalGlue());
@@ -305,6 +283,22 @@ public class SplashFrame extends javax.swing.JFrame
   {
     super.setVisible(b);
   }
+  
+  private String loadContributors() throws Exception {
+		StringBuilder sb = new StringBuilder();
+		String line;
+		InputStream is = null;
+		try {
+			is = getClass().getResourceAsStream("/CONTRIBUTORS.txt");
+			BufferedReader reader = new BufferedReader(new InputStreamReader(is, "UTF-8"));
+			while ((line = reader.readLine()) != null) {
+				sb.append(line).append("\n");
+			}
+		} finally {
+			is.close();
+		}
+		return sb.toString();
+	}
 
   /** Test the frame */
   static public void main(String args[])
