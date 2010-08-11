@@ -260,7 +260,7 @@ public abstract class AbstractDataPackage extends MetadataObject
   private final String HTMLEXTENSION = ".html";
   private final String METADATAHTML = "metadata";
   private final String EXPORTSYLE = "export";
-  private final int ORIGINAL_REVISION = 1;
+  private static final int ORIGINAL_REVISION = 1;
   private final static String OPEN = "<";
   private final static String SLASH = "/";
   private final static String CLOSE = ">";
@@ -475,7 +475,7 @@ public abstract class AbstractDataPackage extends MetadataObject
    *  null will be returned if no scope found.
    * @return the scope of this id
    */
-  private String getIdScope(String id)
+  private static String getIdScope(String id)
   {
 	  String scope = null;
 	  if (id != null)
@@ -5277,12 +5277,36 @@ public abstract class AbstractDataPackage extends MetadataObject
 		return version;
 	}
 	
-	/*
+	/**
+	 * Gets next revision for this doc for the given location
+	 * @param docid the partial identifier (no rev)
+	 * @param location of the doc
+	 * @return  the next revision number
+	 */
+	public static int getNextRevisionNumber(String docid, String location)
+	{
+		int version = ORIGINAL_REVISION;
+		if (location.equals(LOCAL)) {
+			version = getNextRevisionNumberFromLocal(docid);
+		}
+		if (location.equals(METACAT)) {
+			version = getNextRevisionNumberFromMetacat(docid);
+		}
+		if (location.equals(BOTH)) {
+			int localNextRevision = getNextRevisionNumberFromLocal(docid);
+			int metacatNextRevision = getNextRevisionNumberFromMetacat(docid);
+			version = Math.max(localNextRevision, metacatNextRevision);
+		}
+		
+		return version;
+	}
+	
+	/**
 	 * Gets next revisons from metacat. This method will look at the profile/scope dir and figure
 	 * it out the maximum revision. This number will be  increase 1 to get the next revision number.
 	 * If local file system doesn't have this docid, 1 will be returned
 	 */
-	private int getNextRevisionNumberFromLocal(String identifier)
+	public static int getNextRevisionNumberFromLocal(String identifier)
 	{
 		int version = ORIGINAL_REVISION;
 		String dataDir = null;
@@ -5292,18 +5316,22 @@ public abstract class AbstractDataPackage extends MetadataObject
 		}
 		//Get Data dir
 		// intialize filesystem datastore if it is null
-		if (this.fileSysDataStore == null)
+		FileSystemDataStore fileSysDataStore = null;
+		
+		if (fileSysDataStore == null)
 		{
-			this.fileSysDataStore = new FileSystemDataStore(Morpho.thisStaticInstance);
+			fileSysDataStore = new FileSystemDataStore(Morpho.thisStaticInstance);
 		}
 		
-		if (this.fileSysDataStore != null)
+		if (fileSysDataStore != null)
 		{
-		     dataDir = this.fileSysDataStore.getDataDir();
+		     dataDir = fileSysDataStore.getDataDir();
 		}
-		else if (this.metacatDataStore != null)
-		{
-			dataDir = this.metacatDataStore.getDataDir();
+		else {
+			MetacatDataStore metacatDataStore = new MetacatDataStore(Morpho.thisStaticInstance);
+			if (metacatDataStore != null) {
+				dataDir = metacatDataStore.getDataDir();
+			}
 		}
 		
 		String targetDocid = getDocIdPart(identifier);
@@ -5368,7 +5396,7 @@ public abstract class AbstractDataPackage extends MetadataObject
 		{
 			version++;
 		}
-		Log.debug(30, "The next version for docid "+getPackageId()+ " in local file system is "+version);
+		Log.debug(30, "The next version for docid " + identifier + " in local file system is "+version);
 		return version;
 	}
 	
@@ -5377,7 +5405,7 @@ public abstract class AbstractDataPackage extends MetadataObject
 	 * It will return the substring from the second last dot to the last dot.
 	 * null will return if no docid part found
 	 */
-	private String getDocIdPart(String identifier)
+	private static String getDocIdPart(String identifier)
 	{
 	  String docid = null;
 	  //String identifier = null;
@@ -5421,7 +5449,7 @@ public abstract class AbstractDataPackage extends MetadataObject
 	 * return the max version of metacat. So we should increase 1 to get next version number.
 	 * If couldn't connect metacat or metacat doesn't have this docid, 1 will be returned.
 	 */
-	private int getNextRevisionNumberFromMetacat(String identifier)
+	public static int getNextRevisionNumberFromMetacat(String identifier)
 	{
 		int version = ORIGINAL_REVISION;
 		String semiColon = ";";

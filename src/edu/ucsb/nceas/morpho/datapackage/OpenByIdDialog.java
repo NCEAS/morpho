@@ -53,7 +53,7 @@ public class OpenByIdDialog extends JDialog {
 	private JPanel centerPanel = null;
 	private JTextField packageId = null;
 	private JPanel optionsPanel;
-	private String location = "";
+	private String location = AbstractDataPackage.LOCAL;
 
 	public OpenByIdDialog(Frame parent) {
 		super(parent);
@@ -136,12 +136,26 @@ public class OpenByIdDialog extends JDialog {
 		}
 		
 		// check that the id is formatted correctly
+		AccessionNumber an = null;
 		try {
-			AccessionNumber an = new AccessionNumber(Morpho.thisStaticInstance);
+			an = new AccessionNumber(Morpho.thisStaticInstance);
 			an.getParts(id);
 		} catch (Exception e) {
-			Log.debug(5, Language.getInstance().getMessage("InvalidId"));
-			return;
+			// try to look up the last revision
+			Log.debug(30, "Looking up latest revision");
+			// check it again
+			try {
+				// append a fake revision to use these methods
+				String syntheticId = id + ".1";
+				int nextRevision = AbstractDataPackage.getNextRevisionNumber(syntheticId, location);
+				int revision = nextRevision - 1;
+				id = id + "." + revision;
+				an = new AccessionNumber(Morpho.thisStaticInstance);
+				an.getParts(id);
+			} catch (Exception e2) {
+				Log.debug(5, Language.getInstance().getMessage("InvalidId"));
+				return;
+			}
 		}
 
 		// open it
