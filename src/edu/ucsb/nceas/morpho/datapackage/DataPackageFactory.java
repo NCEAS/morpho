@@ -375,10 +375,12 @@ public class DataPackageFactory
     char secondPreviousCharacter ='?';
     char previousCharacter = '?';
     char currentCharacter = '?';
+	int currentInt;
 
     try {
-
-      while ( (currentCharacter = (char) xml.read()) != -1)
+    	currentInt = xml.read();
+    	currentCharacter = (char) currentInt;
+      while (currentInt != -1)
       {
         //in a comment
         if (currentCharacter =='-' && previousCharacter == '-'  &&
@@ -412,6 +414,10 @@ public class DataPackageFactory
         thirdPreviousCharacter = secondPreviousCharacter;
         secondPreviousCharacter = previousCharacter;
         previousCharacter = currentCharacter;
+        
+        //Log.debug(25, currentInt + ":" + currentCharacter);
+        currentInt = xml.read();
+    	currentCharacter = (char) currentInt;
 
       }
       secondLine = buffer.toString();

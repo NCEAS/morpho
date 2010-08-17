@@ -170,8 +170,14 @@ public class OpenByIdDialog extends JDialog {
 			return;
 		}
 
-		dataPackage.openDataPackage(location, id, null, null, null);
-		this.setVisible(false);
-		this.dispose();
+		try {
+			dataPackage.openDataPackage(location, id, null, null, null);
+			this.setVisible(false);
+			this.dispose();
+		} catch (Exception e) {
+			Log.debug(5, Language.getInstance().getMessage("InvalidId"));
+			return;
+		}
+		
 	}
 }
