@@ -28,6 +28,7 @@
 
 package edu.ucsb.nceas.morpho.plugins;
 
+import edu.ucsb.nceas.morpho.Language;
 import edu.ucsb.nceas.morpho.datapackage.AbstractDataPackage;
 import edu.ucsb.nceas.morpho.framework.AbstractUIPage;
 import edu.ucsb.nceas.morpho.framework.MorphoFrame;
@@ -109,9 +110,9 @@ public interface DataPackageWizardInterface {
   public static final String TEXT_IMPORT_ATTRIBUTE = "TEXT_IMPORT_ATTRIBUTE_";
   public static final String TEXT_IMPORT_FIRST_ATTRIBUTE = TEXT_IMPORT_ATTRIBUTE+TextImportAttribute.FIRSTINDEX;
   
-  public static final String NEWPACKAGEWIZARDFRAMETITLE = "New Data Package Wizard";
-  public static final String NEWTABLEEWIZARDFRAMETITLE = "New Data Table Wizard";
-  public static final String NEWCODEDEFINITIONWIZARDFRAMETITLE = "Import Code Definitions";
+  public static final String NEWPACKAGEWIZARDFRAMETITLE = Language.getInstance().getMessage("NewDataPackageWizard");
+  public static final String NEWTABLEEWIZARDFRAMETITLE = Language.getInstance().getMessage("NewDataTableWizard");
+  public static final String NEWCODEDEFINITIONWIZARDFRAMETITLE = Language.getInstance().getMessage("ImportCodesAndDefinitions");
 
 
   /**
