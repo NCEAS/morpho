@@ -482,8 +482,7 @@ public class WizardContainerFrame
   protected void setPageCount(String pageNumber, String total)
   {
     if (showPageCount) {
-      stepLabel.setText("Step " + pageNumber
-                        + " of " + total);
+      stepLabel.setText(pageNumber + " / " + total);
     }
     else {
       stepLabel.setText("");
@@ -689,10 +688,6 @@ public class WizardContainerFrame
                                         WizardSettings.TOP_PANEL_BG_COLOR));
     bottomPanel.setBorder(new EmptyBorder(PADDING, PADDING, PADDING, PADDING));
 
-    /*stepLabel = new JLabel();
-    stepLabel.setBorder(BorderFactory.createEmptyBorder(3, 10, 3, 3));
-    stepLabel.setText("Step 1 of " + WizardSettings.NUMBER_OF_STEPS);*/
-
     initLeftBottomPanel();
     
     bottomBorderPanel.add(leftBottomPanel, BorderLayout.WEST);
@@ -727,7 +722,7 @@ public class WizardContainerFrame
     }
     stepLabel = new JLabel();
     stepLabel.setBorder(BorderFactory.createEmptyBorder(3, 10, 3, 3));
-    stepLabel.setText("Step 1 of " + WizardSettings.NUMBER_OF_STEPS);
+    stepLabel.setText("1 / " + WizardSettings.NUMBER_OF_STEPS);
     leftBottomPanel.add(stepLabel);
   }
 
