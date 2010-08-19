@@ -599,10 +599,10 @@ public class AccessPage
         Log.debug(45, "got itemStateChanged command in access type list");
 
         if (e.getItem().toString().compareTo(accessTypeText[0]) == 0) {
-          userAccessType = "  Allow";
+          userAccessType = accessTypeText[0];
           accessIsAllow = true;
         } else if (e.getItem().toString().compareTo(accessTypeText[1]) == 0) {
-          userAccessType = "  Deny ";
+          userAccessType = accessTypeText[1];
           accessIsAllow = false;
         }
       }
@@ -611,7 +611,7 @@ public class AccessPage
     typeComboBox = WidgetFactory.makePickList(accessTypeText, false,
         0, accessTypeListener);
     typeComboBox.setEnabled(false);
-    if (userAccessType.compareTo("  Deny ") == 0) {
+    if (userAccessType.compareTo(accessTypeText[1]) == 0) {
       typeComboBox.setSelectedIndex(1);
     }
 
@@ -620,13 +620,13 @@ public class AccessPage
         Log.debug(45, "got itemStateChanged command in access list");
 
         if (e.getItem().toString().compareTo(accessText[0]) == 0) {
-          userAccess = "Read";
+          userAccess = accessText[0];
         } else if (e.getItem().toString().compareTo(accessText[1]) == 0) {
-          userAccess = "Read & Write";
+          userAccess = accessText[1];
         } else if (e.getItem().toString().compareTo(accessText[2]) == 0) {
-          userAccess = "Read, Write & Change Permissions";
+          userAccess = accessText[2];
         } else if (e.getItem().toString().compareTo(accessText[3]) == 0) {
-          userAccess = "All";
+          userAccess = accessText[3];
         }
       }
     };
@@ -634,11 +634,11 @@ public class AccessPage
     accessComboBox = WidgetFactory.makePickList(accessText, false, 0,
         accessListener);
     accessComboBox.setEnabled(false);
-    if (userAccess.compareTo("Read & Write") == 0) {
+    if (userAccess.compareTo(accessText[1]) == 0) {
       accessComboBox.setSelectedIndex(1);
-    } else if (userAccess.compareTo("Read, Write & Change Permissions") == 0) {
+    } else if (userAccess.compareTo(accessText[2]) == 0) {
       accessComboBox.setSelectedIndex(2);
-    } else if (userAccess.compareTo("All") == 0) {
+    } else if (userAccess.compareTo(accessText[3]) == 0) {
       accessComboBox.setSelectedIndex(3);
     }
 
@@ -1155,16 +1155,16 @@ public class AccessPage
       returnMap.put(xPathRoot + "/principal", dnField.getText().trim());
     }
 
-    if (userAccess.compareTo("Read") == 0) {
+    if (userAccess.compareTo(accessText[0]) == 0) {
       returnMap.put(xPathRoot + "/permission", "read");
-    } else if (userAccess.compareTo("Read & Write") == 0) {
+    } else if (userAccess.compareTo(accessText[1]) == 0) {
       returnMap.put(xPathRoot + "/permission[1]", "read");
       returnMap.put(xPathRoot + "/permission[2]", "write");
-    } else if (userAccess.compareTo("Read, Write & Change Permissions") == 0) {
+    } else if (userAccess.compareTo(accessText[2]) == 0) {
       returnMap.put(xPathRoot + "/permission[1]", "read");
       returnMap.put(xPathRoot + "/permission[2]", "write");
       returnMap.put(xPathRoot + "/permission[3]", "changePermission");
-    } else if (userAccess.compareTo("All") == 0) {
+    } else if (userAccess.compareTo(accessText[3]) == 0) {
       returnMap.put(xPathRoot + "/permission", "all");
     }
     return returnMap;
@@ -1272,9 +1272,9 @@ public class AccessPage
     int access = 0;
 
     if (xPathRoot.indexOf("allow") > -1) {
-      userAccessType = "  Allow";
+      userAccessType = accessTypeText[0];
     } else {
-      userAccessType = "  Deny ";
+      userAccessType = accessTypeText[1];
     }
 
     List toDeleteList = new ArrayList();
@@ -1362,11 +1362,11 @@ public class AccessPage
 
     Log.debug(45, "Access type found to be" + access);
     if (access == 3) {
-      userAccess = "Read & Write";
+      userAccess = accessText[1];
     } else if (access == 7) {
-      userAccess = "Read, Write & Change Permissions";
+      userAccess = accessText[2];
     } else if (access == 8) {
-      userAccess = "All";
+      userAccess = accessText[3];
     }
 
     //remove entries we have used from map:
