@@ -262,7 +262,7 @@ public class GeographicPage extends AbstractUIPage {
         	);
         dialog.show();
         String selectedValue = (String)(optionPane.getValue());
-        if ((selectedValue!=null)&&(selectedValue.equals("Enter"))) {
+        if ((selectedValue!=null)&&(selectedValue.equals(btnString1))) {
           String inputName = (textField.getText()).trim();
           if (inputName.length()==0) {
             Log.debug(1, "Sorry, but a Name must be entered.");

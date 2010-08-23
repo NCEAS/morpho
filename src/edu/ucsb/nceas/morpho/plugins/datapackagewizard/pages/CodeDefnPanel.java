@@ -487,7 +487,7 @@ public class CodeDefnPanel extends JPanel implements WizardPageSubPanelAPI {
     }
     this.selectedCodeColumnIndexInTable = index[0];
     this.selectedDefColumnIndexInTable = index[1];
-    table.setExtraColumnHeaderInfo(selectedCodeColumnIndexInTable, "Code");
+    table.setExtraColumnHeaderInfo(selectedCodeColumnIndexInTable, Language.getInstance().getMessage("Code"));
     table.setExtraColumnHeaderInfo(selectedDefColumnIndexInTable, "Definition");
     table.setSelectedColumns(index);    
   }
@@ -684,7 +684,7 @@ public class CodeDefnPanel extends JPanel implements WizardPageSubPanelAPI {
     }
     Vector header = table.getColumnHeaderStrings(arr[0]);
     String colType = (String)header.get(2);
-    if(colType.equalsIgnoreCase("Code")) {
+    if(colType.equalsIgnoreCase(Language.getInstance().getMessage("Code"))) {
       String colName = (String)header.get(1);
       selectedCodeColumnIndexInTable = arr[0];
       return adp.getAttributeIndex(getSelectedEntityIndex(), colName);
@@ -692,7 +692,7 @@ public class CodeDefnPanel extends JPanel implements WizardPageSubPanelAPI {
 
     header = table.getColumnHeaderStrings(arr[1]);
     colType = (String)header.get(2);
-    if(colType.equalsIgnoreCase("Code")) {
+    if(colType.equalsIgnoreCase(Language.getInstance().getMessage("Code"))) {
       String colName = (String)header.get(1);
       selectedCodeColumnIndexInTable = arr[1];
       return adp.getAttributeIndex(getSelectedEntityIndex(), colName);
@@ -845,12 +845,12 @@ public class CodeDefnPanel extends JPanel implements WizardPageSubPanelAPI {
         String ID = adp.getAttributeID(entIdx, j);
         if(ID.equals(codeAttributeID)) {
           selectedCols[0] = colCount;
-          table.setExtraColumnHeaderInfo(colCount, "Code");
+          table.setExtraColumnHeaderInfo(colCount, Language.getInstance().getMessage("Code"));
           codeSelected = true;
 
         } else if(ID.equals(defnAttributeID)) {
           selectedCols[1] = colCount;
-          table.setExtraColumnHeaderInfo(colCount, "Definition");
+          table.setExtraColumnHeaderInfo(colCount, Language.getInstance().getMessage("Definition"));
           defnSelected = true;
 
         }
@@ -907,7 +907,7 @@ public class CodeDefnPanel extends JPanel implements WizardPageSubPanelAPI {
     if(header.size() < 3) return null;
 
     String type = (String) header.get(2);
-    if(type.equalsIgnoreCase("Definition")) {
+    if(type.equalsIgnoreCase(Language.getInstance().getMessage("Definition"))) {
       codeIdx = cols[1];
       defnIdx = cols[0];
     }
