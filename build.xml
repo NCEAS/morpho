@@ -520,6 +520,7 @@
 			<fileset dir="${libdir}/axis" 
 					 includes="*.jar"/>
 		</copy>
+		<copy file="${morpho.basedir}/CONTRIBUTORS.txt" todir="${build.lib}" filtering="no" />
 	</target>
 	
    <target name="install" depends="jar">
