@@ -197,7 +197,7 @@ public class AccessPage
         + " : "+ /*"Able to view data package.*/ Language.getInstance().getMessage("ReadDescription")+"</li>"
         
        /*+ "<li>Read & Write: Able to view and modify data package.</li>"*/
-        + "<li>"+ /*Read & Write*/ Language.getInstance().getMessage("Read") + " & " +Language.getInstance().getMessage("Read") 
+        + "<li>"+ /*Read & Write*/ Language.getInstance().getMessage("Read") + " & " +Language.getInstance().getMessage("Write") 
         + " : " + /*"Able to view and modify data package.*/ Language.getInstance().getMessage("ReadWriteDescription") + "</li>"
         
        /*+ "<li>Read, Write & Change Permissions: Able to view and modify "
