@@ -51,6 +51,7 @@ import org.xml.sax.InputSource;
 import com.ice.tar.TarArchive;
 import com.ice.tar.TarEntry;
 
+import edu.ucsb.nceas.morpho.Language;
 import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.util.EML201DocumentCorrector;
 import edu.ucsb.nceas.morpho.util.Log;
@@ -74,7 +75,7 @@ import edu.ucsb.nceas.morpho.util.Log;
 public class BackupMorphoDataFrame extends JFrame 
 {
 	private Morpho morpho = null;
-	private static final String TITLE = "Back up Morpho Data Directory";
+	private static final String TITLE = Language.getInstance().getMessage("MorphoDataDirectory"); //"Morpho Data Directory"
 	private final static String DOTMORPHOBACKUP = "dotMorphoBackup-";
 	private final static String GZIP = "gz";
 	private final static String TAR   = "tar";
@@ -118,7 +119,10 @@ public class BackupMorphoDataFrame extends JFrame
 		   getContentPane().add(Box.createVerticalStrut(8));
 		   javax.swing.JLabel loadingLabel = new javax.swing.JLabel();
 		   loadingLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-		   loadingLabel.setText("Backing up Morpho user data. This may take a while...");
+		   loadingLabel.setText(
+				   Language.getInstance().getMessage("BackingUpMorpho")
+				   + Language.getInstance().getMessage("...")
+		   ); //"Backing up Morpho user data. This may take a while..."
 		   //loadingLabel.setForeground(java.awt.Color.red);
 		   loadingLabel.setFont(new Font("Dialog", Font.BOLD, 14));
 		   getContentPane().add(loadingLabel);
