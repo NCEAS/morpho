@@ -28,33 +28,21 @@
 package edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages;
 
 
-import edu.ucsb.nceas.morpho.Language;
-import edu.ucsb.nceas.morpho.Morpho;
-import edu.ucsb.nceas.morpho.datapackage.AbstractDataPackage;
-import edu.ucsb.nceas.morpho.datapackage.AccessionNumber;
-import edu.ucsb.nceas.morpho.datapackage.Attribute;
-import edu.ucsb.nceas.morpho.datapackage.DataViewContainerPanel;
-import edu.ucsb.nceas.morpho.framework.AbstractUIPage;
-import edu.ucsb.nceas.morpho.framework.MorphoFrame;
-import edu.ucsb.nceas.morpho.framework.UIController;
-import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
-import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WidgetFactory;
-import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardContainerFrame;
-import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardPageLibrary;
-import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardSettings;
-import edu.ucsb.nceas.morpho.util.Log;
-import edu.ucsb.nceas.utilities.OrderedMap;
-import edu.ucsb.nceas.utilities.XMLUtilities;
-
-import java.util.ArrayList;
-import java.util.Iterator;
-
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JLabel;
 
 import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
+
+import edu.ucsb.nceas.morpho.Language;
+import edu.ucsb.nceas.morpho.datapackage.AbstractDataPackage;
+import edu.ucsb.nceas.morpho.framework.AbstractUIPage;
+import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
+import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WidgetFactory;
+import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardContainerFrame;
+import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardSettings;
+import edu.ucsb.nceas.morpho.util.Log;
+import edu.ucsb.nceas.utilities.OrderedMap;
 
 
 /**
@@ -111,11 +99,11 @@ public class CodeImportSummary extends AbstractUIPage {
     this.add(desc1);
 
     desc3 = WidgetFactory.makeHTMLLabel(
-        "<p>You can press the \"" + WizardSettings.FINISH_BUTTON_TEXT
-        + "\" button, "
-        + "or you can use the \"" + WizardSettings.PREV_BUTTON_TEXT
-        + "\" button to return to previous pages "
-        + "and change the information you have added.</p>", 2);
+        "<p>" +
+        Language.getInstance().getMessage("CodeImportSummary.button.desc1") + //"You can press " +
+        " \"" + WizardSettings.PREV_BUTTON_TEXT + "\" " +
+        Language.getInstance().getMessage("CodeImportSummary.buttons.desc3") + //"to return to previous pages and change the information you have added." +
+        "</p>", 2);
     this.add(desc3);
 
     desc4 = WidgetFactory.makeHTMLLabel("", 2);
@@ -141,10 +129,14 @@ public class CodeImportSummary extends AbstractUIPage {
     }
     int remaining = adp.getAttributeImportCount();
     if(remaining > 0) {
-			desc3.setText("");
-      return "<p>Proceed to define or import data tables for the other attributes</p>";
-		} else {
-      return "<p>All necessary imports have been completed</p>";
+		desc3.setText("");
+		return "<p>" +
+				Language.getInstance().getMessage("CodeImportSummary.defineOrImportOther") + //"Proceed to define or import data tables for the other attributes" +
+				"</p>";
+	} else {
+		return "<p>" +
+				Language.getInstance().getMessage("CodeImportSummary.importsCompleted") + //"All necessary imports have been completed" +
+				"</p>";
     }
   }
 
@@ -190,9 +182,11 @@ public class CodeImportSummary extends AbstractUIPage {
       removedAttributeInfo = adp.removeFirstAttributeForImport();*/
       desc1.setText(
       WizardSettings.HTML_TABLE_LABEL_OPENING
-      +"<p> The new data table has been created and the codes for the attribute " +
-      "<i> "+ currentAttrName + "</i> have been imported</p>"
-       +WizardSettings.HTML_TABLE_LABEL_CLOSING);
+      + "<p>" +
+      Language.getInstance().getMessage("CodeImportSummary.newDataTableCreated") + //"The new data table has been created and the codes have been imported for the attribute:" +
+      "<i> "+ currentAttrName + "</i> " +
+      "</p>"
+       + WizardSettings.HTML_TABLE_LABEL_CLOSING);
       entityAddedInCycle = true;// CodeDefinition will definition add a new entity
 
     } else if (prevID.equals(DataPackageWizardInterface.CODE_IMPORT_PAGE)) {
@@ -215,9 +209,11 @@ public class CodeImportSummary extends AbstractUIPage {
       // just a summary of import. No further imports
       desc1.setText(
       WizardSettings.HTML_TABLE_LABEL_OPENING
-      +"<p>All the information required to import the codes for the attribute " +
-      "<i> "+ currentAttrName + "</i> has been collected</p>"
-       +WizardSettings.HTML_TABLE_LABEL_CLOSING);
+      + "<p>" +
+      Language.getInstance().getMessage("CodeImportSummary.allInformationRequiredCollected") + //"All required information has been collected to import the codes for the attribute: " +
+      " <i>"+ currentAttrName + "</i> " +
+      "</p>"
+       + WizardSettings.HTML_TABLE_LABEL_CLOSING);
 
     } else if( prevID.startsWith(DataPackageWizardInterface.TEXT_IMPORT_ATTRIBUTE)|| prevID.equals(DataPackageWizardInterface.ENTITY)) {
 
@@ -226,8 +222,10 @@ public class CodeImportSummary extends AbstractUIPage {
     	Log.debug(30, "Starting import code/defintion===================");
 			desc1.setText(
       WizardSettings.HTML_TABLE_LABEL_OPENING
-      +"<p>The new data table has been created successfully.</p>"
-			+ WizardSettings.HTML_TABLE_LABEL_CLOSING);
+      + "<p>" +
+      Language.getInstance().getMessage("CodeImportSummary.newDataTableCreatedSuccessfully") + //"The new data table has been created successfully." +
+      "</p>"
+      + WizardSettings.HTML_TABLE_LABEL_CLOSING);
 
 
 
