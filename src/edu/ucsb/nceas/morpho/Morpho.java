@@ -126,7 +126,7 @@ import edu.ucsb.nceas.morpho.Language;//pstango 2010/03/15
 public class Morpho
 {
     /** The version of this release of Morpho */
-    public static String VERSION = "1.8.1-RC2";
+    public static String VERSION = "1.8.1-RC3";
 
     /** Constant to indicate a separator should precede an action */
     public static String SEPARATOR_PRECEDING = "separator_preceding";
