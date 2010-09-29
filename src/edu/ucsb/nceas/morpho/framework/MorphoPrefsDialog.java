@@ -48,7 +48,7 @@ public class MorphoPrefsDialog extends javax.swing.JDialog
 	{
 		super(parentFrame);
     this.morpho = morpho;
-		setTitle("Morpho Preferences");
+		setTitle(Language.getInstance().getMessage("MorphoPreferences"));
 		setModal(true);
 		getContentPane().setLayout(new BorderLayout(0,0));
 		setSize(560,400);
@@ -56,14 +56,14 @@ public class MorphoPrefsDialog extends javax.swing.JDialog
 		CenterPanel.setLayout(new GridLayout(7,1,0,0));
 		getContentPane().add(BorderLayout.CENTER,CenterPanel);
 		aboutLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-		aboutLabel.setText("Morpho Preferences");
+		aboutLabel.setText(Language.getInstance().getMessage("MorphoPreferences"));
     aboutLabel.setFont(new Font("Dialog", Font.BOLD, 12));
 		CenterPanel.add(aboutLabel);
 		JPanel2.setLayout(new FlowLayout(FlowLayout.CENTER,5,5));
 		CenterPanel.add(JPanel2);
 		metacatURLLabel.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
 		metacatURLLabel.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-		metacatURLLabel.setText("Metacat URL: ");
+		metacatURLLabel.setText(Language.getInstance().getMessage("MetacatURL"));
 		JPanel2.add(metacatURLLabel);
 		metacatURLLabel.setForeground(java.awt.Color.black);
 		metacatURLLabel.setFont(new Font("Dialog", Font.PLAIN, 12));
@@ -71,7 +71,7 @@ public class MorphoPrefsDialog extends javax.swing.JDialog
 		JPanel2.add(metacataURLTextField);
 		JPanel3.setLayout(new FlowLayout(FlowLayout.CENTER,5,5));
 		CenterPanel.add(JPanel3);
-		loggingLabel.setText("Log Messages?     ");
+		loggingLabel.setText(Language.getInstance().getMessage("LogMessages"));
 		JPanel3.add(loggingLabel);
 		loggingLabel.setForeground(java.awt.Color.black);
 		loggingLabel.setFont(new Font("Dialog", Font.PLAIN, 12));
@@ -82,7 +82,7 @@ public class MorphoPrefsDialog extends javax.swing.JDialog
 		JPanel3.add(logNo);
 		JPanel4.setLayout(new FlowLayout(FlowLayout.CENTER,5,5));
 		CenterPanel.add(JPanel4);
-		debugLevelLabel.setText("Debug Level (1-100)    ");
+		debugLevelLabel.setText(Language.getInstance().getMessage("DebugLevel") + " (1-100)");
 		JPanel4.add(debugLevelLabel);
 		debugLevelLabel.setForeground(java.awt.Color.black);
 		debugLevelLabel.setFont(new Font("Dialog", Font.PLAIN, 12));
@@ -91,7 +91,7 @@ public class MorphoPrefsDialog extends javax.swing.JDialog
     
 		JPanel5.setLayout(new FlowLayout(FlowLayout.CENTER,5,5));
 		CenterPanel.add(JPanel5);
-		LFLabel.setText("'Look and Feel'    ");
+		LFLabel.setText(Language.getInstance().getMessage("LookandFeel"));
 		JPanel5.add(LFLabel);
 		LFLabel.setForeground(java.awt.Color.black);
 		LFLabel.setFont(new Font("Dialog", Font.PLAIN, 12));
@@ -103,7 +103,7 @@ public class MorphoPrefsDialog extends javax.swing.JDialog
     LFCombo.addItem("motif L&F");
     LFCombo.setSelectedIndex(0);
     
-    clearButton.setText("Clear Temporary Storage");
+    clearButton.setText(Language.getInstance().getMessage("ClearTemporaryStorage"));
 		JPanel6.setLayout(new FlowLayout(FlowLayout.CENTER,5,5));
     JPanel6.add(clearButton);
 		CenterPanel.add(JPanel6);
@@ -232,7 +232,9 @@ public class MorphoPrefsDialog extends javax.swing.JDialog
       }
 			else if (object == clearButton) {
 				int opt = JOptionPane.showConfirmDialog(UIController.getInstance().getCurrentActiveWindow(),
-			            "Are you sure that you want to delete the temparory files?\n Before deleting them, you should make sure there is no crashed wizard and no wizard is running in Morpho.",
+			            "Are you sure that you want to delete the temparory files?" +
+			            "\n " +
+			            "Before deleting them, you should make sure there is no crashed wizard and no wizard is running in Morpho.",
 			            "DO YOU WANT TO CONTINUE?",
 			            JOptionPane.YES_NO_OPTION);
 			   if (opt == JOptionPane.NO_OPTION) 
