@@ -231,11 +231,12 @@ public class MorphoPrefsDialog extends javax.swing.JDialog
 				cancelButton_actionPerformed(event);
       }
 			else if (object == clearButton) {
-				int opt = JOptionPane.showConfirmDialog(UIController.getInstance().getCurrentActiveWindow(),
-			            "Are you sure that you want to delete the temparory files?" +
+				int opt = JOptionPane.showConfirmDialog(
+						UIController.getInstance().getCurrentActiveWindow(),
+			            Language.getInstance().getMessage("MorphoPrefs.clear.confirm1") + //"Are you sure you want to delete the temporary files?" +
 			            "\n " +
-			            "Before deleting them, you should make sure there is no crashed wizard and no wizard is running in Morpho.",
-			            "DO YOU WANT TO CONTINUE?",
+			            Language.getInstance().getMessage("MorphoPrefs.clear.confirm2"), //"Before deleting them, you should make sure there is no crashed wizard and no wizard is running in Morpho.",
+			            Language.getInstance().getMessage("MorphoPrefs.clear.title"), //"DO YOU WANT TO CONTINUE?",
 			            JOptionPane.YES_NO_OPTION);
 			   if (opt == JOptionPane.NO_OPTION) 
 			   {
@@ -243,8 +244,11 @@ public class MorphoPrefsDialog extends javax.swing.JDialog
 			    }
 	            Morpho.thisStaticInstance.cleanCache();
 	            Morpho.thisStaticInstance.cleanTemp();
-	            JOptionPane.showMessageDialog(UIController.getInstance().getCurrentActiveWindow(), "Temporary Storage Areas Emptied!",
-	               "Message", JOptionPane.INFORMATION_MESSAGE);
+	            JOptionPane.showMessageDialog(
+	            		UIController.getInstance().getCurrentActiveWindow(), 
+	            		Language.getInstance().getMessage("MorphoPrefs.clear.emptied"), //"Temporary Storage Areas Emptied!",
+	            		null, 
+	            		JOptionPane.INFORMATION_MESSAGE);
 				}
 		}
 	}
