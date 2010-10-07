@@ -41,5 +41,5 @@ Japan LTER:
 	Eiichi Maita (maita.eiichi@nies.go.jp)
 	
 Instituto Nacional de Pesquisas da Amazonia (INPA):
-	Flavia Fonseca Pezzini (pezzini@inpa.gov.br)
 	Debora Drucker (deboradrucker@gmail.com)
+	Flavia Fonseca Pezzini (pezzini@inpa.gov.br)
