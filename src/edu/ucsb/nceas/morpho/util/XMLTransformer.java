@@ -37,6 +37,8 @@ import edu.ucsb.nceas.morpho.plugins.ServiceController;
 import edu.ucsb.nceas.morpho.plugins.ServiceNotHandledException;
 import edu.ucsb.nceas.morpho.util.DocumentNotFoundException;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.Reader;
 import java.io.IOException;
 import java.io.StringReader;
@@ -805,6 +807,17 @@ public class XMLTransformer
 
             InputStream stream
                       = classLoader.getResourceAsStream(resolution.toString());
+            
+            // fall back on file system for the resolver
+            if (stream == null) {
+            	try {
+					stream = new FileInputStream(resolution.toString());
+				} catch (FileNotFoundException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+            }
+            
             Log.debug(50,"CustomURIResolver.resolve() returning StreamSource \n"
                                         +"for InputStream = "+stream
                                         +"\nfor path = "+resolution.toString());
