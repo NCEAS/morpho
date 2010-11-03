@@ -90,6 +90,8 @@ public class ReplaceDataCommand implements Command {
 			
 				OrderedMap dataTableMap = replaceDataPage.getPageData();
 
+				boolean useNewId = replaceDataPage.getNewId();
+				
 				// get the file they selected
 				String dataFilePath = (String) dataTableMap.get(DataLocation.ONLINE_URL_XPATH);
 				// increment revision if we have the id
@@ -100,7 +102,7 @@ public class ReplaceDataCommand implements Command {
 				}
 				//save the data to local cache
 				File dataFile = new File(dataFilePath);
-				String nexDocId = saveDataFileAsTemp(dataFile, currentId);
+				String nexDocId = saveDataFileAsTemp(dataFile, currentId, useNewId);
 				
 				//clear out the old distribution info
 				adp.removePhysicalDistribution(entityIndex, 0, 0);
@@ -181,8 +183,12 @@ public class ReplaceDataCommand implements Command {
 	   * increment revision or create a new id,
 	   * assign id to the data file and save it with that id
 	   */
-	  private String saveDataFileAsTemp(File f, String currentId) {
+	  private String saveDataFileAsTemp(File f, String currentId, boolean useNewId) {
 	    AccessionNumber an = new AccessionNumber(Morpho.thisStaticInstance);
+	    // force new id generation
+	    if (useNewId) {
+	    	currentId = null;
+	    }
 	    if (currentId  == null) {
 	    	currentId = an.getNextId();
 	    } else {

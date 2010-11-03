@@ -39,6 +39,7 @@ import javax.swing.UIManager;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 
+import edu.ucsb.nceas.morpho.Language;
 import  edu.ucsb.nceas.morpho.util.Command;
 import edu.ucsb.nceas.morpho.util.DocumentNotFoundException;
 import  edu.ucsb.nceas.morpho.util.GUIAction;
@@ -61,11 +62,11 @@ public class HeaderPanel extends JPanel
 {
     
     // * * * * * * * *  D E F A U L T   T E X T   L A B E L S   * * * * * * * * 
-    private static final String BACK_BUTTON_TEXT    = "< back";
-    private static final String ENTITY_BUTTON_TEXT    = "entity metadata";
-    private static final String CLOSE_BUTTON_TEXT   = "hide X";
-    private static final String TITLEBAR_INIT_TEXT  = "Documentation";
-    private static final String PATH_INIT_TEXT      = "Selected column or"; //You are here:\n";
+    private static final String BACK_BUTTON_TEXT    = Language.getInstance().getMessage("Back"); //"< back";
+    private static final String ENTITY_BUTTON_TEXT    = Language.getInstance().getMessage("Entity"); //"entity metadata";
+    private static final String CLOSE_BUTTON_TEXT   = Language.getInstance().getMessage("hide"); //"hide X";
+    private static final String TITLEBAR_INIT_TEXT  = Language.getInstance().getMessage("Documentation"); //"Documentation";
+    private static final String PATH_INIT_TEXT      = Language.getInstance().getMessage("selectedColumn"); //"Selected column or"; //You are here:\n";
     private static final String PATH_SEPARATOR      = ">>";
  
 

@@ -30,7 +30,9 @@ package edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages;
 import java.awt.BorderLayout;
 import java.io.File;
 
+import javax.swing.Box;
 import javax.swing.BoxLayout;
+import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
@@ -52,6 +54,7 @@ public class ReplaceDataPage extends AbstractUIPage {
 
   private FileChooserWidget  fileChooserWidget;
   private JTextField entityName;
+  private JCheckBox newId;
 
   // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
@@ -102,6 +105,15 @@ public class ReplaceDataPage extends AbstractUIPage {
     entityPanel.add(WidgetFactory.makeLabel(Language.getInstance().getMessage("fileNameWillBeUsed"), false, null));
     
     this.add(entityPanel);
+    
+    JPanel checkBoxPanel = WidgetFactory.makePanel();
+    newId = WidgetFactory.makeCheckBox(Language.getInstance().getMessage("newId"), false);    
+    checkBoxPanel.add(newId);
+    checkBoxPanel.add(Box.createHorizontalGlue());
+    
+    this.add(WidgetFactory.makeDefaultSpacer());
+
+    this.add(checkBoxPanel);
 
   }
 
@@ -136,6 +148,14 @@ public class ReplaceDataPage extends AbstractUIPage {
      return (dataFileObj != null);
   }
 
+  /**
+   * Should a new ID be generated for the selected data file
+   * @return true if a new id should be used for the data replacement
+   */
+  public boolean getNewId() {
+	  return newId.isSelected();
+  }
+  
   /**
    * returns data file object
    *

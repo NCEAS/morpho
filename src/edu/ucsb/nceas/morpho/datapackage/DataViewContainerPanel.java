@@ -35,6 +35,7 @@ import java.io.*;
 import java.util.*;
 import java.util.concurrent.Executors;
 
+import edu.ucsb.nceas.morpho.Language;
 import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.datastore.MetacatUploadException;
 
@@ -89,12 +90,16 @@ public class DataViewContainerPanel extends javax.swing.JPanel
   /**
    * top-panel metaviewer default title at startup
    */
-  private static final String TOP_METAVIEW_TITLE = "Data Package Documentation";
+  private static final String TOP_METAVIEW_TITLE = 
+	  Language.getInstance().getMessage("DataPackageDocumentation"); //"Data Package Documentation";
 
   /**
    * top-panel metaviewer default title at startup
    */
-  private static final String RIGHT_METAVIEW_TITLE = "Entity/Attribute";
+  private static final String RIGHT_METAVIEW_TITLE = 
+	  Language.getInstance().getMessage("Entity") 
+	  + "/" 
+	  + Language.getInstance().getMessage("Attribute"); //"Entity/Attribute";
 
 
   /**

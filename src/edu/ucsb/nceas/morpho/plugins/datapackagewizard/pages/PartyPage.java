@@ -399,22 +399,22 @@ public class PartyPage extends AbstractUIPage {
     reqWarningPanel.setLayout(new BoxLayout(reqWarningPanel, BoxLayout.Y_AXIS));
     reqWarningPanel.add(WidgetFactory.makeHalfSpacer());
 
-    JLabel warn1Label = new JLabel(" One of");
+    JLabel warn1Label = new JLabel(Language.getInstance().getMessage("oneOfThreeRequired.line1"));//" One of");
     warn1Label.setFont(WizardSettings.WIZARD_CONTENT_FONT);
     warn1Label.setForeground(WizardSettings.WIZARD_CONTENT_REQD_TEXT_COLOR);
     reqWarningPanel.add(warn1Label);
 
-    JLabel warn2Label = new JLabel("    the");
+    JLabel warn2Label = new JLabel(Language.getInstance().getMessage("oneOfThreeRequired.line2"));//"    the");
     warn2Label.setFont(WizardSettings.WIZARD_CONTENT_FONT);
     warn2Label.setForeground(WizardSettings.WIZARD_CONTENT_REQD_TEXT_COLOR);
     reqWarningPanel.add(warn2Label);
 
-    JLabel warn3Label = new JLabel("  three");
+    JLabel warn3Label = new JLabel(Language.getInstance().getMessage("oneOfThreeRequired.line3"));//"  three");
     warn3Label.setFont(WizardSettings.WIZARD_CONTENT_FONT);
     warn3Label.setForeground(WizardSettings.WIZARD_CONTENT_REQD_TEXT_COLOR);
     reqWarningPanel.add(warn3Label);
 
-    JLabel warn4Label = new JLabel("required");
+    JLabel warn4Label = new JLabel(Language.getInstance().getMessage("oneOfThreeRequired.line4"));//"required");
     warn4Label.setFont(WizardSettings.WIZARD_CONTENT_FONT);
     warn4Label.setForeground(WizardSettings.WIZARD_CONTENT_REQD_TEXT_COLOR);
     reqWarningPanel.add(warn4Label);
