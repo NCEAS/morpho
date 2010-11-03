@@ -307,7 +307,11 @@ public class PartyPage extends AbstractUIPage {
               editingAllowed = true;
               instance.setEditable(true);
               instance.setPageData(event.getXPathValsMap(), rxp);
-
+              
+              // get a new id for use in this package
+              referenceIdString = null;
+              referenceIdString = getRefID();
+              
               checkBoxPanel.setVisible(false);
               Log.debug(45,
                         " ...setting page data to: " + event.getXPathValsMap());
