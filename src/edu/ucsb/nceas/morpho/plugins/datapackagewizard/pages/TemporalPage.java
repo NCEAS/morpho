@@ -447,7 +447,7 @@ public class TemporalPage extends AbstractUIPage {
       Calendar eCalendar = endTimeCalendar.getCalendar();
       if(sCalendar.after(eCalendar)){
         Log.debug(1,
-        		  /*"Starting date should be before ending date."*/ Language.getInstance().getMessage("StartDateBeforeEnd")
+        		  /*"Starting date should be before ending date."*/ Language.getInstance().getMessage("StartDateBeforEnd")
         		  );
         return false;
       }
