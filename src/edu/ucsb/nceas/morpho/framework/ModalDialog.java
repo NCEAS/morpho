@@ -204,23 +204,23 @@ public class ModalDialog extends JDialog {
 
   public void okAction() {
 
-    if (onAdvanceAction()) this.setVisible(false);
-    if (this.parent != null)
-    {
-      this.parent.toFront();
-    }
     USER_RESPONSE = OK_OPTION;
-    this.dispose();
+    if (onAdvanceAction()) {
+    	this.setVisible(false);
+    	if (this.parent != null) {
+          this.parent.toFront();
+        }
+        this.dispose();
+    }
   }
 
   private void cancelAction() {
 
+    USER_RESPONSE = CANCEL_OPTION;
     this.setVisible(false);
-    if (this.parent != null)
-    {
+    if (this.parent != null) {
       this.parent.toFront();
     }
-    USER_RESPONSE = CANCEL_OPTION;
     this.dispose();
   }
 
