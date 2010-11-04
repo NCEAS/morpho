@@ -217,7 +217,7 @@ public class UISettings
         = WIZARD_HEIGHT - DIALOG_SMALLER_THAN_WIZARD_BY;
 
     public static final int POPUPDIALOG_FOR_ATTR_HEIGHT
-        = 30 + POPUPDIALOG_HEIGHT;
+        = 130 + POPUPDIALOG_HEIGHT;
 
 
 

@@ -162,6 +162,16 @@ public class AttributePage extends AbstractUIPage {
   +WizardSettings.HTML_EXAMPLE_FONT_CLOSING
   +WizardSettings.HTML_NO_TABLE_CLOSING;
 
+  final String MISSING_VALUE_CODE_HELP
+  = WizardSettings.HTML_NO_TABLE_OPENING
+  + Language.getInstance().getMessage("AttributePage.MISSING_VALUE_CODE_HELP")
+  + WizardSettings.HTML_NO_TABLE_CLOSING;
+  
+  final String MISSING_VALUE_EXPLN_HELP
+  = WizardSettings.HTML_NO_TABLE_OPENING
+  + Language.getInstance().getMessage("AttributePage.MISSING_VALUE_EXPLN_HELP")
+  + WizardSettings.HTML_NO_TABLE_CLOSING;
+  
   final String ATTRIB_DEFN_HELP
   = WizardSettings.HTML_NO_TABLE_OPENING
   /*
@@ -309,15 +319,10 @@ public class AttributePage extends AbstractUIPage {
     JLabel attribNameHelpLabel = WidgetFactory.makeHelpLabel(this.ATTRIB_NAME_HELP);
     namePanel.add(attribNamePanel);
     namePanel.add(attribNameHelpLabel);
-    // the following three fields are not added to the panel, but are just used
-    // as placeholders
-    missingValueCodeField = WidgetFactory.makeOneLineTextField();
-    missingValueExplnField = WidgetFactory.makeOneLineTextField();
 
     topMiddlePanel.add(namePanel);
     topMiddlePanel.add(WidgetFactory.makeHalfSpacer());
-
-
+    
     /////////////////////////////////////////////
 
     JPanel labelPanel = new JPanel();
@@ -400,10 +405,38 @@ public class AttributePage extends AbstractUIPage {
     storageSystemPanel.add(attribStorageSystemHelpLabel);
 
     topMiddlePanel.add(storageSystemPanel);
-    topMiddlePanel.add(WidgetFactory.makeDefaultSpacer());
+    topMiddlePanel.add(WidgetFactory.makeHalfSpacer());
 
     ////////////////////////////////////////////
+    
+    
+    // missing values
+    JPanel missingValuePanel = new JPanel();
+    missingValuePanel.setLayout(new GridLayout(1,2));
+    
+    ///////////missing value code
+    JPanel missingValueCodePanel = WidgetFactory.makePanel();
+    JLabel missingValueCodeLabel = WidgetFactory.makeLabel(Language.getInstance().getMessage("AttributePage.MissingValueCode") + ":", 
+    										  false, null);
+    missingValueCodePanel.add(missingValueCodeLabel);
+    missingValueCodeField = WidgetFactory.makeOneLineTextField();
+    missingValueCodePanel.add(missingValueCodeField);
 
+    ///////////missing value explanation
+    JPanel missingValueExplnPanel = WidgetFactory.makePanel();
+    JLabel missingValueExplnLabel = WidgetFactory.makeLabel(Language.getInstance().getMessage("AttributePage.MissingValueExpln") + ":", 
+    										  false, null);
+    missingValueExplnPanel.add(missingValueExplnLabel);
+    missingValueExplnField = WidgetFactory.makeOneLineTextField();
+    missingValueExplnPanel.add(missingValueExplnField);
+   
+    //////////
+    missingValuePanel.add(missingValueCodePanel);
+    missingValuePanel.add(missingValueExplnPanel);
+
+    topMiddlePanel.add(missingValuePanel);
+    topMiddlePanel.add(WidgetFactory.makeHalfSpacer());
+    /////////
 
     ActionListener listener = new ActionListener() {
 
