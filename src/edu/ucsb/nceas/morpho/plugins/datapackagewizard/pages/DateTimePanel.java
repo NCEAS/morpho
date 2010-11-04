@@ -485,31 +485,36 @@ class DateTimePanel extends JPanel implements WizardPageSubPanelAPI {
     int index = 1;
     while (true) {
       List row = new ArrayList();
-      String min = (String)map.get(xPathRoot + "/dateTimeDomain/bounds["
-                                   + index + "]/minimum");
-      if (min != null)map.remove(xPathRoot + "/dateTimeDomain/bounds["
-              + index + "]/minimum");
+      // handle minimum bounds
+      String min = (String) map.get(xPathRoot + "/dateTimeDomain/bounds[" + index + "]/minimum");
+      if (min != null) {
+    	  map.remove(xPathRoot + "/dateTimeDomain/bounds[" + index + "]/minimum");
+      }     
       if (index == 1 && min == null) {
-        min = (String)map.get(xPathRoot + "/dateTimeDomain/bounds/minimum");
+        min = (String) map.get(xPathRoot + "/dateTimeDomain/bounds/minimum");
         if (min != null) {
         	map.remove(xPathRoot + "/dateTimeDomain/bounds/minimum");
         }
       }
       if (min != null) {
         row.add(min);
-        String excl = (String)map.get(xPathRoot + "/dateTimeDomain/bounds["
-                                        + index + "]/minimum/@exclusive");
-        if (excl != null)map.remove(xPathRoot + "/dateTimeDomain/bounds["
-                                    + index + "]/minimum/@exclusive");
-
+        String excl = (String) map.get(xPathRoot + "/dateTimeDomain/bounds[" + index + "]/minimum/@exclusive");
+        if (excl != null) {
+        	map.remove(xPathRoot + "/dateTimeDomain/bounds[" + index + "]/minimum/@exclusive");
+        }
         if (index == 1 && excl == null) {
-          excl = (String)map.get(xPathRoot+ "/dateTimeDomain/bounds/minimum/@exclusive");
-          if(excl!=null)map.remove(xPathRoot+"/dateTimeDomain/bounds/minimum/@exclusive");
+          excl = (String) map.get(xPathRoot+ "/dateTimeDomain/bounds/minimum/@exclusive");
+          if (excl != null) {
+        	  map.remove(xPathRoot+"/dateTimeDomain/bounds/minimum/@exclusive");
+          }
         }
         if (excl != null) {
-
-          if (excl.equalsIgnoreCase("true")) row.add("<");
-          else row.add("<=");
+          if (excl.equalsIgnoreCase("true")) {
+        	  row.add("<");
+          }
+          else {
+        	  row.add("<=");
+          }
         }
 
       } else {
@@ -517,44 +522,48 @@ class DateTimePanel extends JPanel implements WizardPageSubPanelAPI {
         row.add("<");
       }
       row.add("value");
-      String max = (String)map.get(xPathRoot + "/dateTimeDomain/bounds["
-                                   + index + "]/maximum");
-      if (max != null)map.remove(xPathRoot + "/dateTimeDomain/bounds["
-                                 + index + "]/maximum");
-
+      
+      // handle maximum bounds
+      String max = (String) map.get(xPathRoot + "/dateTimeDomain/bounds[" + index + "]/maximum");
+      if (max != null) {
+    	  map.remove(xPathRoot + "/dateTimeDomain/bounds[" + index + "]/maximum");
+      }
       if (index == 1 && max == null) {
-        max = (String)map.get(xPathRoot + "/dateTimeDomain/bounds/maximum");
+        max = (String) map.get(xPathRoot + "/dateTimeDomain/bounds/maximum");
         if (max != null) {
         	map.remove(xPathRoot + "/dateTimeDomain/bounds/maximum");
         }
       }
       if (max != null) {
-
-        String excl = (String)map.get(xPathRoot + "/dateTimeDomain/bounds["
-                                        + index + "]/maximum/@exclusive");
-        if(excl != null) map.remove(xPathRoot + "/dateTimeDomain/bounds["
-                                        + index + "]/maximum/@exclusive");
-        if (index == 1 && excl == null) {
-          excl = (String)map.get(xPathRoot +
-                                  "/dateTimeDomain/bounds/maximum/@exclusive");
-          if(excl != null) map.remove(xPathRoot + "/dateTimeDomain/bounds/maximum/@exclusive");
+        String excl = (String) map.get(xPathRoot + "/dateTimeDomain/bounds[" + index + "]/maximum/@exclusive");
+        if (excl != null) { 
+        	map.remove(xPathRoot + "/dateTimeDomain/bounds[" + index + "]/maximum/@exclusive");
         }
-
+        if (index == 1 && excl == null) {
+          excl = (String) map.get(xPathRoot + "/dateTimeDomain/bounds/maximum/@exclusive");
+          if (excl != null) {
+        	  map.remove(xPathRoot + "/dateTimeDomain/bounds/maximum/@exclusive");
+          }
+        }
         if (excl != null) {
-          if (excl.equalsIgnoreCase("true"))row.add("<");
-          else row.add("<=");
+          if (excl.equalsIgnoreCase("true")) {
+        	  row.add("<");
+          }
+          else {
+        	  row.add("<=");
+          }
         }
         row.add(max);
-
       } else {
-
         row.add("<");
         row.add("");
       }
-      if (min == null && max == null)
+      if (min == null && max == null) {
         break;
-      else
+      }
+      else {
         boundsList.addRow(row);
+      }
       index++;
     }
 
