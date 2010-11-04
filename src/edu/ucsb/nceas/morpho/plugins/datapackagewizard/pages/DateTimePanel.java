@@ -487,8 +487,12 @@ class DateTimePanel extends JPanel implements WizardPageSubPanelAPI {
       List row = new ArrayList();
       String min = (String)map.get(xPathRoot + "/dateTimeDomain/bounds["
                                    + index + "]/minimum");
-      if (index == 1 && min == null)
+      if (index == 1 && min == null) {
         min = (String)map.get(xPathRoot + "/dateTimeDomain/bounds/minimum");
+        if (min != null) {
+        	map.remove(xPathRoot + "/dateTimeDomain/bounds/minimum");
+        }
+      }
       if (min != null) {
         row.add(min);
         String excl = (String)map.get(xPathRoot + "/dateTimeDomain/bounds["
@@ -516,8 +520,12 @@ class DateTimePanel extends JPanel implements WizardPageSubPanelAPI {
       if (max != null)map.remove(xPathRoot + "/dateTimeDomain/bounds["
                                  + index + "]/maximum");
 
-      if (index == 1 && max == null)
+      if (index == 1 && max == null) {
         max = (String)map.get(xPathRoot + "/dateTimeDomain/bounds/maximum");
+        if (max != null) {
+        	map.remove(xPathRoot + "/dateTimeDomain/bounds/maximum");
+        }
+      }
       if (max != null) {
 
         String excl = (String)map.get(xPathRoot + "/dateTimeDomain/bounds["
