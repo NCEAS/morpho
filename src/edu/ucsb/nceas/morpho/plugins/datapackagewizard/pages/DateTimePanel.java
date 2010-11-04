@@ -487,6 +487,8 @@ class DateTimePanel extends JPanel implements WizardPageSubPanelAPI {
       List row = new ArrayList();
       String min = (String)map.get(xPathRoot + "/dateTimeDomain/bounds["
                                    + index + "]/minimum");
+      if (min != null)map.remove(xPathRoot + "/dateTimeDomain/bounds["
+              + index + "]/minimum");
       if (index == 1 && min == null) {
         min = (String)map.get(xPathRoot + "/dateTimeDomain/bounds/minimum");
         if (min != null) {
