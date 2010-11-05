@@ -34,6 +34,9 @@ import javax.activation.FileDataSource;
 import javax.swing.BoxLayout;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
 
 import edu.ucsb.nceas.morpho.Language;
 import edu.ucsb.nceas.morpho.framework.AbstractUIPage;
@@ -97,6 +100,30 @@ public class OtherEntityPage extends AbstractUIPage {
     
     this.add(panel);
 
+    this.add(WidgetFactory.makeDefaultSpacer());
+    
+    // entity name
+    JPanel entityPanel = WidgetFactory.makePanel();
+    entityPanel.add(WidgetFactory.makeLabel(Language.getInstance().getMessage("EntityName") + ":", false, null));
+    entityName = WidgetFactory.makeOneLineTextField();
+    entityPanel.add(entityName);
+    entityPanel.add(WidgetFactory.makeLabel(Language.getInstance().getMessage("fileNameWillBeUsed"), false, null));
+    entityPanel.setBorder(
+    		new javax.swing.border.EmptyBorder(0, WizardSettings.PADDING, 0, WizardSettings.PADDING));
+    this.add(entityPanel);
+    
+    this.add(WidgetFactory.makeDefaultSpacer());
+    
+    //entity description
+    JPanel entityDescPanel = WidgetFactory.makePanel(3);
+    entityDescPanel.add(WidgetFactory.makeLabel(Language.getInstance().getMessage("Description") + ":", false, null));
+    entityDescription = WidgetFactory.makeTextArea(null, 3, true);
+    entityDescPanel.add(new JScrollPane(entityDescription));
+    entityDescPanel.setBorder(
+    		new javax.swing.border.EmptyBorder(0, WizardSettings.PADDING, 0, WizardSettings.PADDING));
+    
+    this.add(entityDescPanel);
+    
 
   }
 
@@ -215,34 +242,43 @@ public class OtherEntityPage extends AbstractUIPage {
 //			<otherEntity id="ee8e652bbcd535cdd7a15ba462d48f773e5d8b5c001" scope="document">
 			  //returnMap.put(xPathRoot + "@id", WizardSettings.getUniqueID());
 //					<entityName>Readme SF_met.txt</entityName>
-			  returnMap.put(xPathRoot + "entityName", dataFileName);
+			String name = entityName.getText();
+			if (name == null || name.trim().length() == 0) {
+				name = dataFileName;
+			}
+			returnMap.put(xPathRoot + "entityName", name);
+//			<entityDescription>Something about the file</entityDescription>
+			String desc = entityDescription.getText();
+			if (desc != null && desc.trim().length() > 0) {
+				returnMap.put(xPathRoot + "entityDescription", desc);
+			}
 //					<physical scope="document">
 //						<objectName>Readme SF_met.txt</objectName>
-			  returnMap.put(xPathRoot + "physical/objectName", dataFileName);
+			returnMap.put(xPathRoot + "physical/objectName", dataFileName);
 //						<size unit="byte">1806</size>
-			  long fileSize = dataFile.length();
-			  returnMap.put(xPathRoot + "physical/size", String.valueOf(fileSize));
-			  returnMap.put(xPathRoot + "physical/size/@unit", "byte");
+			long fileSize = dataFile.length();
+			returnMap.put(xPathRoot + "physical/size", String.valueOf(fileSize));
+			returnMap.put(xPathRoot + "physical/size/@unit", "byte");
 //						<dataFormat>
 //							<externallyDefinedFormat>
 //								<formatName>text/plain</formatName>
-			  String fileType = new FileDataSource(dataFile).getContentType();
+			String fileType = new FileDataSource(dataFile).getContentType();
 			  //String fileType = dataFileName.substring(dataFileName.lastIndexOf("."));
 			  
-			  returnMap.put(xPathRoot + "physical/dataFormat/externallyDefinedFormat/formatName", fileType);
+			returnMap.put(xPathRoot + "physical/dataFormat/externallyDefinedFormat/formatName", fileType);
 //							</externallyDefinedFormat>
 //						</dataFormat>
 //						<distribution id="ee8e652bbcd535cdd7a15ba462d48f773e5d8b5c002" scope="document">
-			  returnMap.put(xPathRoot + "physical/distribution/@id", WizardSettings.getUniqueID());
+			returnMap.put(xPathRoot + "physical/distribution/@id", WizardSettings.getUniqueID());
 //							<online>
 //								<url function="download">ecogrid://knb/nceas.888.1</url>
-			  returnMap.put(xPathRoot + "physical/distribution/online/url", dataFile.getAbsolutePath());
-			  returnMap.put(xPathRoot + "physical/distribution/online/url/@function", "download");
+			returnMap.put(xPathRoot + "physical/distribution/online/url", dataFile.getAbsolutePath());
+			returnMap.put(xPathRoot + "physical/distribution/online/url/@function", "download");
 //							</online>
 //						</distribution>
 //					</physical>
 //					<entityType>Other</entityType>
-			  returnMap.put(xPathRoot + "entityType", "Other");
+			returnMap.put(xPathRoot + "entityType", "Other");
 //				</otherEntity>
 			  
 		}
@@ -326,7 +362,7 @@ public class OtherEntityPage extends AbstractUIPage {
      onlineUrl = (String)map.get(_xPathRoot+"/distribution/online/url");
      Log.debug(32, "The oneline url is "+onlineUrl+" in DataLocation.setPageData");
      offlineMediumName = (String)map.get(_xPathRoot+"/distribution/offline/mediumName");
-     Log.debug(32, "The offline mediu name is "+offlineMediumName+" in DataLocation.setPageData");
+     Log.debug(32, "The offline medium name is "+offlineMediumName+" in DataLocation.setPageData");
  
      empty = true;
      
@@ -342,6 +378,9 @@ public class OtherEntityPage extends AbstractUIPage {
   protected JPanel nodataPanel;
   protected JPanel blankPanel;
   private File   dataFileObj = null;
+  private JTextField entityName;
+  private JTextArea entityDescription;
+
 
   protected final short DESCRIBE_MAN_NODATA   = 30;
   protected final short DESCRIBE_MAN_ONLINE   = 32;
