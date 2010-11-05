@@ -125,7 +125,8 @@ public class SavePackageCopyCommand implements Command
     }
 
     if (showPackageFlag) {
-      UIController.showNewPackage(adp);
+    	// this is in  a saved state, so no location change
+      UIController.showNewPackageNoLocChange(adp);
     }
     else {
       MorphoFrame morphoFrame = UIController.getInstance().getCurrentActiveWindow();
