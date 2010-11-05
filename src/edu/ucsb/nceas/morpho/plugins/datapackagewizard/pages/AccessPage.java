@@ -28,11 +28,14 @@
 
 package edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
@@ -688,8 +691,19 @@ public class AccessPage
 
       /// define and add refresh tree button....
       refreshButton = new HyperlinkButton(refreshListAction);
-
       panel.add(refreshButton, BorderLayout.EAST);
+      
+      // show when the list was last refreshed
+      File accessFile = new File(ConfigXML.getConfigDirectory() + "/" + Morpho.ACCESS_FILE_NAME);
+      //File accessFile = new File(accessListFilePath);
+      Calendar lastModified = Calendar.getInstance();
+      lastModified.setTimeInMillis(accessFile.lastModified());
+      SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy hh:mm:ss");
+      JLabel dateLabel = 
+    	  new JLabel(
+    			  Language.getInstance().getMessage("LastModified") + ": " + sdf.format(lastModified.getTime()));
+      panel.add(dateLabel, BorderLayout.WEST);
+
     }
     panel.add(controlPanel, BorderLayout.SOUTH);
     return panel;
