@@ -45,7 +45,9 @@ import javax.xml.parsers.DocumentBuilder;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
+import java.awt.Cursor;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import javax.swing.AbstractAction;
@@ -73,7 +75,6 @@ import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.framework.AbstractUIPage;
 import edu.ucsb.nceas.morpho.framework.ConfigXML;
 import edu.ucsb.nceas.morpho.framework.ModalDialog;
-import edu.ucsb.nceas.morpho.framework.UIController;
 import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WidgetFactory;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardSettings;
@@ -95,6 +96,7 @@ public class AccessPage
   private final String subtitle = "";
   private final String EMPTY_STRING = "";
 
+  private JTextField treeFilterField;
   protected JTree accessTree;
   private JPanel bottomPanel;
   private JPanel topPanel;
@@ -174,6 +176,8 @@ public class AccessPage
     this.add(topPanel, BorderLayout.NORTH);
     ///////////////////////////////////////////////////////
 
+    // tree filtering
+	treeFilterField = WidgetFactory.makeOneLineTextField();
 
     // Define the middle panel which has the  accessTree ....
     middlePanel = new JPanel();
@@ -777,6 +781,28 @@ public class AccessPage
     }
 
     if (accessTreePane != null) {
+    	// filter the tree
+    	JPanel filterPanel = WidgetFactory.makePanel();
+    	final AccessPage accessP = this;
+    	// add a button for executing the filter
+    	JButton filterButton = WidgetFactory.makeJButton(Language.getInstance().getMessage("Search"), new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				accessP.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+				try {
+					generateAccessTree(false);
+				}
+				finally {
+					accessP.setCursor(Cursor.getDefaultCursor());
+				}
+			}
+    	});
+    	filterPanel.add(treeFilterField);
+    	filterPanel.add(filterButton);
+    	
+    	// add the tree filter
+    	middlePanel.add(filterPanel, BorderLayout.NORTH);
+    	
+    	
       middlePanel.add(accessTreePane, BorderLayout.CENTER);
       middlePanel.add(getAccessControlPanel(true, 
     		  								/*"Refresh the user list..."*/ Language.getInstance().getMessage("AccessPage.RefreshUserList") + " ..."
@@ -806,7 +832,15 @@ public class AccessPage
       nl = doc.getElementsByTagName("authSystem");
 
       if (nl != null) {
-        createSubTree(nl, topNode);
+    	  // filter using the string given
+    	  String filter = treeFilterField.getText();
+    	  if (filter != null && filter.length() == 0) {
+    		  filter = null;
+    	  }
+    	  if (filter != null) {
+    		  filter = ".*" + filter + ".*";
+    	  }
+        createSubTree(nl, topNode, filter);
       }
       treeNode = topNode;
     }
@@ -824,7 +858,7 @@ public class AccessPage
   }
 
   DefaultMutableTreeNode createSubTree(NodeList nl,
-      DefaultMutableTreeNode top) {
+      DefaultMutableTreeNode top, String filter) {
     Node tempNode;
     AccessTreeNodeObject nodeObject = null;
     DefaultMutableTreeNode tempTreeNode = null;
@@ -855,7 +889,7 @@ public class AccessPage
           tempTreeNode = new DefaultMutableTreeNode();
           tempTreeNode.setUserObject(nodeObject);
 
-          tempTreeNode = createSubTree(tempNode.getChildNodes(), tempTreeNode);
+          tempTreeNode = createSubTree(tempNode.getChildNodes(), tempTreeNode, filter);
 
           top.add(tempTreeNode);
           done = true;
@@ -915,6 +949,14 @@ public class AccessPage
 
           while (it.hasNext()) {
             nodeObject = (AccessTreeNodeObject) it.next();
+            // if we have a filter, apply it
+            if (filter != null) {
+            	if (nodeObject.toString() != null) {
+            		if (!nodeObject.toString().toLowerCase().matches(filter.toLowerCase())) {
+            			continue;
+            		}
+            	}
+            }
             tempUserNode = new DefaultMutableTreeNode();
             tempUserNode.setUserObject(nodeObject);
             tempTreeNode.add(tempUserNode);
@@ -969,6 +1011,14 @@ public class AccessPage
     Iterator it = userList.iterator();
     while (it.hasNext()) {
       nodeObject = (AccessTreeNodeObject) it.next();
+      // if we have a filter, apply it
+      if (filter != null) {
+      	if (nodeObject.toString() != null) {
+      		if (!nodeObject.toString().toLowerCase().matches(filter.toLowerCase())) {
+      			continue;
+      		}
+      	}
+      }
       tempTreeNode = new DefaultMutableTreeNode();
       tempTreeNode.setUserObject(nodeObject);
       top.add(tempTreeNode);
