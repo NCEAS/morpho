@@ -62,6 +62,7 @@ import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.framework.AbstractUIPage;
 import edu.ucsb.nceas.morpho.framework.ConfigXML;
 import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
+import edu.ucsb.nceas.morpho.plugins.datapackagewizard.CustomList;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WidgetFactory;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardPageSubPanelAPI;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardSettings;
@@ -120,9 +121,8 @@ public class AttributePage extends AbstractUIPage {
   private JPanel topMiddlePanel;
 
   private String measurementScale;
-  // both missing value fields are not presented, so no labels here
-  private JTextField missingValueCodeField;
-  private JTextField missingValueExplnField;
+  // name/value pairs for missing value code/explanation
+  private CustomList missingValueCodes;
 
   private String xPathRoot = AttributeSettings.Attribute_xPath;
   
@@ -408,36 +408,26 @@ public class AttributePage extends AbstractUIPage {
     topMiddlePanel.add(WidgetFactory.makeHalfSpacer());
 
     ////////////////////////////////////////////
-    
-    
-    // missing values
-    JPanel missingValuePanel = new JPanel();
-    missingValuePanel.setLayout(new GridLayout(1,2));
-    
-    ///////////missing value code
-    JPanel missingValueCodePanel = WidgetFactory.makePanel();
-    JLabel missingValueCodeLabel = WidgetFactory.makeLabel(Language.getInstance().getMessage("AttributePage.MissingValueCode") + ":", 
-    										  false, null);
-    missingValueCodePanel.add(missingValueCodeLabel);
-    missingValueCodeField = WidgetFactory.makeOneLineTextField();
-    missingValueCodePanel.add(missingValueCodeField);
-
-    ///////////missing value explanation
-    JPanel missingValueExplnPanel = WidgetFactory.makePanel();
-    JLabel missingValueExplnLabel = WidgetFactory.makeLabel(Language.getInstance().getMessage("AttributePage.MissingValueExpln") + ":", 
-    										  false, null);
-    missingValueExplnPanel.add(missingValueExplnLabel);
-    missingValueExplnField = WidgetFactory.makeOneLineTextField();
-    missingValueExplnPanel.add(missingValueExplnField);
-   
-    //////////
-    missingValuePanel.add(missingValueCodePanel);
-    missingValuePanel.add(missingValueExplnPanel);
-
-    topMiddlePanel.add(missingValuePanel);
+        
+    // multiple missing value codes
+    JPanel missingValueCodesPanel = WidgetFactory.makePanel(4);
+    missingValueCodesPanel.add(WidgetFactory.makeLabel(Language.getInstance().getMessage("AttributePage.MissingValues") + ":", false));
+    String[] colNames = 
+    	new String[] {
+    		Language.getInstance().getMessage("AttributePage.MissingValueCode"),
+    		Language.getInstance().getMessage("AttributePage.MissingValueExpln")
+    };
+    Object[] columnEditors = 
+    	new Object[] {
+    		new JTextField(),
+    		new JTextField()
+    	};
+    missingValueCodes = WidgetFactory.makeList(colNames, columnEditors, 2, true, false, false, true, false, false);
+    missingValueCodesPanel.add(missingValueCodes);
+    topMiddlePanel.add(missingValueCodesPanel);
     topMiddlePanel.add(WidgetFactory.makeHalfSpacer());
-    /////////
 
+    ////////
     ActionListener listener = new ActionListener() {
 
       public void actionPerformed(ActionEvent e) {
@@ -938,15 +928,27 @@ public class AttributePage extends AbstractUIPage {
 
     }*/
 
-    String missingValueCode = missingValueCodeField.getText().trim();
-    if(!Util.isBlank(missingValueCode)) {
-      returnMap.put(xPath + "/missingValueCode/code", missingValueCode);
-    }
-
-    String missingValueExpln = missingValueExplnField.getText().trim();
-    if(!Util.isBlank(missingValueExpln)) {
-      returnMap.put(xPath + "/missingValueCode/codeExplanation",
-      missingValueExpln);
+    // missing value codes
+    List<List<String>> missingCodes = missingValueCodes.getListOfRowLists();
+    int index = 1;
+    String codeXpath = xPath + "/missingValueCode/code";
+	String explnXpath = xPath + "/missingValueCode/codeExplanation";
+    for (List<String> row: missingCodes) {
+    	// use the correct xPath
+    	if (missingCodes.size() > 1) {
+    		codeXpath = xPath + "/missingValueCode[" + index + "]/code";
+    		explnXpath = xPath + "/missingValueCode[" + index + "]/codeExplanation";
+    	}
+    	// put the values in the map
+    	String missingValueCode = row.get(0);
+    	if (!Util.isBlank(missingValueCode)) {
+		  returnMap.put(codeXpath, missingValueCode);
+		}
+    	String missingValueExpln = row.get(1);
+    	if(!Util.isBlank(missingValueExpln)) {
+	      returnMap.put(explnXpath, missingValueExpln);
+	    }
+    	index++;
     }
 
     return returnMap;
@@ -1145,21 +1147,43 @@ public class AttributePage extends AbstractUIPage {
     }
 
     // handle missing value code definitions
-    // this should handle repeated missing value codes in future revisions
-    String missingValueCode =
-    (String)map.get(xPathRoot + "/missingValueCode/code");
-    if(missingValueCode != null) {
-      missingValueCodeField.setText(missingValueCode);
-      map.remove(xPathRoot + "/missingValueCode/code");
-    }
+    int index = 1;
+    while (true) {
+    	// use the correct xpath for the content
+    	String codeXpath = xPathRoot + "/missingValueCode/code";
+    	if (!map.containsKey(codeXpath)) {
+    		codeXpath = xPathRoot + "/missingValueCode[" + index + "]/code";
+    	}
+    	String explnXpath = xPathRoot + "/missingValueCode/codeExplanation";
+    	if (!map.containsKey(explnXpath)) {
+    		explnXpath = xPathRoot + "/missingValueCode[" + index + "]/codeExplanation";
+    	}
+    	
+	    // look up the code and explanation
+	    String missingValueCode = (String) map.get(codeXpath);
+	    if (missingValueCode != null) {
+	      map.remove(codeXpath);
+	    }
+	    String missingValueExpln = (String) map.get(explnXpath);
+	    if (missingValueExpln != null) {
+	      map.remove(explnXpath);
+	    }
+	    
+	    // check if we are done
+	    if (missingValueCode == null && missingValueExpln == null) {
+	    	break;
+	    }
+	   
+	    // set the values
+	    List<String> rowList = new ArrayList<String>();
+	    rowList.add(missingValueCode);
+	    rowList.add(missingValueExpln);
+	    missingValueCodes.addRow(rowList);
+	    
+	    // continue
+	    index++;
 
-    String missingValueExpln =
-    (String)map.get(xPathRoot + "/missingValueCode/codeExplanation");
-    if(missingValueExpln != null) {
-      missingValueExplnField.setText(missingValueExpln);
-      map.remove(xPathRoot + "/missingValueCode/codeExplanation");
     }
-
 
     // handle attribute level coverage elements
 
