@@ -51,6 +51,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+
 import javax.swing.AbstractAction;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -785,8 +788,7 @@ public class AccessPage
     	// filter the tree
     	JPanel filterPanel = WidgetFactory.makePanel();
     	final AccessPage accessP = this;
-    	// add a button for executing the filter
-    	JButton filterButton = WidgetFactory.makeJButton(Language.getInstance().getMessage("Search"), new ActionListener() {
+    	final ActionListener searchAction = new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				accessP.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
 				try {
@@ -797,7 +799,22 @@ public class AccessPage
 					accessP.setCursor(Cursor.getDefaultCursor());
 				}
 			}
-    	});
+    	};
+    	// add the key listener if we don't already have it
+    	if (treeFilterField.getKeyListeners().length == 0) {
+	    	treeFilterField.addKeyListener(new KeyAdapter() {
+	    		public void keyPressed(KeyEvent e) {
+	    			if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+	    				searchAction.actionPerformed(null);
+	    			}
+	    		}
+	    		
+	    	});
+    	}
+    	// add a button for executing the filter
+    	JButton filterButton = WidgetFactory.makeJButton(
+    			Language.getInstance().getMessage("Search"), 
+    			searchAction);
     	filterPanel.add(treeFilterField);
     	filterPanel.add(filterButton);
     	
