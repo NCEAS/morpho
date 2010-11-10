@@ -800,6 +800,17 @@ public class AccessPage
 				}
 			}
     	};
+    	final ActionListener resetAction = new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				accessP.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+				try {
+					resetTree();
+				}
+				finally {
+					accessP.setCursor(Cursor.getDefaultCursor());
+				}
+			}
+    	};
     	// add the key listener if we don't already have it
     	if (treeFilterField.getKeyListeners().length == 0) {
 	    	treeFilterField.addKeyListener(new KeyAdapter() {
@@ -811,12 +822,18 @@ public class AccessPage
 	    		
 	    	});
     	}
+    	//disable the default button
+    	this.getRootPane().setDefaultButton(null);
     	// add a button for executing the filter
     	JButton filterButton = WidgetFactory.makeJButton(
     			Language.getInstance().getMessage("Search"), 
     			searchAction);
+    	JButton resetButton = WidgetFactory.makeJButton(
+    			Language.getInstance().getMessage("Reset"), 
+    			resetAction);
     	filterPanel.add(treeFilterField);
     	filterPanel.add(filterButton);
+    	filterPanel.add(resetButton);
     	
     	// add the tree filter
     	middlePanel.add(filterPanel, BorderLayout.NORTH);
@@ -885,6 +902,11 @@ public class AccessPage
       for (int count = rowCount; count > 0; count--) {
         treeTable.expandIt(count - 1);
       }
+  }
+  
+  private void resetTree() {
+	  treeFilterField.setText(EMPTY_STRING);
+	  generateAccessTree(false);
   }
 
   protected DefaultMutableTreeNode getTreeFromDocument(Document doc) {
@@ -1315,29 +1337,7 @@ public class AccessPage
    */
 
   public void onLoadAction() {
-    if (userDN != null && !alreadyGeneratedfromDocumentationMenu) {
-      // only do this if
-      if (Access.accessTreeNode == null ||
-          Access.accessTreeMetacatServerName.compareTo(Morpho.
-          thisStaticInstance.
-          getMetacatURLString()) != 0) {
-        /**
-         * accessTreePane is null... so we have to generate Access.accessTreeNode
-         */
-        generateAccessTree(false);
-      } else if (Access.accessTreeNode != null &&
-          Access.accessTreeMetacatServerName.compareTo(Morpho.
-          thisStaticInstance.
-          getMetacatURLString()) == 0) {
-
-        displayTree(Access.accessTreeNode);
-      }
-    } else if (Access.accessTreeNode == null ||
-          Access.accessTreeMetacatServerName.compareTo(Morpho.
-          thisStaticInstance.
-          getMetacatURLString()) != 0) {
-      generateAccessTree(false);
-    }
+	  resetTree();
   }
 
   /**
