@@ -37,6 +37,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
+import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
@@ -790,6 +791,7 @@ public class AccessPage
 				accessP.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
 				try {
 					generateAccessTree(false);
+					expandTree();
 				}
 				finally {
 					accessP.setCursor(Cursor.getDefaultCursor());
@@ -820,6 +822,53 @@ public class AccessPage
     typeComboBox.setEnabled(true);
     accessComboBox.setEnabled(true);
   }
+  
+  private boolean containsUserNode(DefaultMutableTreeNode treeNode) {
+	 
+	  int childCount = treeNode.getChildCount();
+	  for (int i = 0; i < childCount; i++) {
+		  DefaultMutableTreeNode child = (DefaultMutableTreeNode) treeNode.getChildAt(i);
+		  // is this a leaf that we want?
+		  if (child.isLeaf()) {
+			  AccessTreeNodeObject childAccessObject = (AccessTreeNodeObject) child.getUserObject();
+			  if (childAccessObject.nodeType == WizardSettings.ACCESS_PAGE_USER) {
+				  return true;
+			  }
+		  } else {
+			  return containsUserNode(child);
+		  }
+	  }
+	  // check this node
+	  AccessTreeNodeObject childAccessObject = (AccessTreeNodeObject) treeNode.getUserObject();
+	  if (childAccessObject.nodeType == WizardSettings.ACCESS_PAGE_USER) {
+		  return true;
+	  }
+	  return false;
+	  
+  }
+  
+  private DefaultMutableTreeNode pruneTree(DefaultMutableTreeNode treeNode) {
+	  
+	  List<DefaultMutableTreeNode> nodesToRemove = new ArrayList<DefaultMutableTreeNode>();
+	  Enumeration nodes = treeNode.breadthFirstEnumeration();
+	  while (nodes.hasMoreElements()) {
+		  DefaultMutableTreeNode node = (DefaultMutableTreeNode) nodes.nextElement();
+		  if (!containsUserNode(node)) {
+			  nodesToRemove.add(node);
+		  }
+	  }
+	  for (DefaultMutableTreeNode node: nodesToRemove) {
+		  node.removeFromParent();
+	  }
+	  return treeNode;
+  }
+  
+  private void expandTree() {
+	  int rowCount = treeTable.getRowCount();
+      for (int count = rowCount; count > 0; count--) {
+        treeTable.expandIt(count - 1);
+      }
+  }
 
   protected DefaultMutableTreeNode getTreeFromDocument(Document doc) {
     DefaultMutableTreeNode treeNode = null;
@@ -842,7 +891,8 @@ public class AccessPage
     	  }
         createSubTree(nl, topNode, filter);
       }
-      treeNode = topNode;
+      //treeNode = topNode;
+      treeNode = pruneTree(topNode);
     }
 
     if (treeNode != null) {
