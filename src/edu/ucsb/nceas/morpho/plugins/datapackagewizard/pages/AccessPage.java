@@ -823,7 +823,9 @@ public class AccessPage
 	    	});
     	}
     	//disable the default button
-    	this.getRootPane().setDefaultButton(null);
+    	if (this.getRootPane() != null) {
+    		this.getRootPane().setDefaultButton(null);
+    	}
     	// add a button for executing the filter
     	JButton filterButton = WidgetFactory.makeJButton(
     			Language.getInstance().getMessage("Search"), 
