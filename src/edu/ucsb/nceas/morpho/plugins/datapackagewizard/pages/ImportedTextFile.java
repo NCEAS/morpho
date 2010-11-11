@@ -25,19 +25,13 @@
  */
 package edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages;
 
-import edu.ucsb.nceas.morpho.framework.UIController;
-import edu.ucsb.nceas.morpho.plugins.TextImportListener;
-import edu.ucsb.nceas.morpho.plugins.datapackagewizard.UneditableTableModel;
-import edu.ucsb.nceas.morpho.util.Log;
-
-import static javax.swing.JOptionPane.showMessageDialog;
-
 import java.awt.Font;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -50,6 +44,10 @@ import javax.swing.ListSelectionModel;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
+
+import edu.ucsb.nceas.morpho.framework.UIController;
+import edu.ucsb.nceas.morpho.plugins.datapackagewizard.UneditableTableModel;
+import edu.ucsb.nceas.morpho.util.Log;
 
 
 
@@ -383,7 +381,7 @@ public class ImportedTextFile
 
 	      BufferedReader in = null;
 	      try {
-	        in = new BufferedReader(new FileReader(dataFile));
+	        in = new BufferedReader(new InputStreamReader(new FileInputStream(dataFile), Charset.forName("UTF-8")));
 	      } catch (IOException e) {
 	        e.printStackTrace();
 	      }

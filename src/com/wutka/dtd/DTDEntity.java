@@ -2,6 +2,7 @@ package com.wutka.dtd;
 
 import java.io.*;
 import java.net.*;
+import java.nio.charset.Charset;
 
 /** Represents an Entity defined in a DTD
  *
@@ -87,7 +88,10 @@ public class DTDEntity implements DTDOutput
                     File loc = (File) defaultLocation;
 
                     BufferedReader in = new BufferedReader(
-                        new FileReader(new File(loc, entityName)));
+                    		new InputStreamReader(
+                    				new FileInputStream(
+                    						new File(loc, entityName)), 
+                    						Charset.forName("UTF-8")));
 
                     return in;
                 }
@@ -102,7 +106,10 @@ public class DTDEntity implements DTDOutput
                 }
             }
             BufferedReader in = new BufferedReader(
-                new FileReader(entityName));
+            		new InputStreamReader(
+            				new FileInputStream(
+            						new File(entityName)), 
+            						Charset.forName("UTF-8")));
 
             return in;
         }

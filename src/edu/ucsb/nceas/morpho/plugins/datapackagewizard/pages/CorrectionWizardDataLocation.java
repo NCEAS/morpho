@@ -26,22 +26,16 @@
 package edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages;
 
 import java.awt.BorderLayout;
-import java.awt.Container;
 import java.awt.event.ActionListener;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.util.Iterator;
 import java.util.Vector;
 
 import javax.swing.Box;
 import javax.swing.JLabel;
-import javax.swing.JRadioButton;
 
 import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WidgetFactory;
 import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardSettings;
-import edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.DataLocation.ThirdChoiceWidget;
 import edu.ucsb.nceas.morpho.util.LoadDataPath;
 import edu.ucsb.nceas.morpho.util.Log;
 import edu.ucsb.nceas.morpho.util.ModifyingPageDataInfo;

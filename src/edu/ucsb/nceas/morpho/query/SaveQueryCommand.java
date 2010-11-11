@@ -26,11 +26,24 @@
 
 package edu.ucsb.nceas.morpho.query;
 
+import java.awt.Component;
+import java.awt.event.ActionEvent;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.nio.charset.Charset;
+import java.util.Enumeration;
+import java.util.Hashtable;
+
+import javax.swing.Action;
+
 import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.framework.ConfigXML;
 import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
 import edu.ucsb.nceas.morpho.framework.MorphoFrame;
-import edu.ucsb.nceas.morpho.framework.SwingWorker;
 import edu.ucsb.nceas.morpho.framework.UIController;
 import edu.ucsb.nceas.morpho.plugins.ServiceController;
 import edu.ucsb.nceas.morpho.plugins.ServiceNotHandledException;
@@ -38,21 +51,6 @@ import edu.ucsb.nceas.morpho.plugins.ServiceProvider;
 import edu.ucsb.nceas.morpho.util.Command;
 import edu.ucsb.nceas.morpho.util.GUIAction;
 import edu.ucsb.nceas.morpho.util.Log;
-
-import java.awt.event.ActionEvent;
-import java.io.IOException;
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileNotFoundException;
-import java.util.Enumeration;
-import java.util.Hashtable;
-import java.awt.Component;
-import java.awt.event.ActionEvent;
-
-import javax.swing.AbstractAction;
-import javax.swing.Action;
-import javax.swing.JDialog;
-import javax.swing.JMenuItem;
 
 /**
  * Class to handle savequery command
@@ -239,7 +237,7 @@ public class SaveQueryCommand implements Command
         File queryFile = queriesList[n];
         if (queryFile.isFile()) {
           try {
-            FileReader xml = new FileReader(queryFile);
+            Reader xml = new InputStreamReader(new FileInputStream(queryFile), Charset.forName("UTF-8"));
             Query newQuery = new Query(xml, myMorpho);
             addQueryToMenu(newQuery);
           } catch (FileNotFoundException fnf) {

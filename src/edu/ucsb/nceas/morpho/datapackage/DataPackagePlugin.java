@@ -64,10 +64,15 @@ import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.io.Reader;
+import java.io.Writer;
+import java.nio.charset.Charset;
 
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
@@ -1728,16 +1733,14 @@ public class DataPackagePlugin
   public void exportToBDP(File outputFile, String styleSheetLocation, String docid, String documentLocation) throws Exception
   {
     //Log.debug(5, "exporting to BDP hasn't done yet");
-    //get output file writer
-    FileWriter outputFileWriter = null;
       
     //get style sheet reader
     File styleSheetFile = new File(styleSheetLocation);
-    FileReader styleSheetReader = null;
+    Reader styleSheetReader = null;
     File styleSheetDir = null;
     try
     {
-      styleSheetReader = new FileReader(styleSheetFile);
+      styleSheetReader = new InputStreamReader(new FileInputStream(styleSheetFile), Charset.forName("UTF-8"));
       styleSheetDir = styleSheetFile.getParentFile();
     }
     catch(Exception e)
@@ -1785,7 +1788,7 @@ public class DataPackagePlugin
             Entity entity = new Entity(node);
             dataPackage.insertEntity(entity, 0);
             File newOutPutFile = new File(fileName+i+extension);          
-            styleSheetReader = new FileReader(styleSheetFile);
+            styleSheetReader = new InputStreamReader(new FileInputStream(styleSheetFile), Charset.forName("UTF-8"));
             doTransform(transformer, dataPackage.getDocument(), styleSheetReader, styleSheetDir.getAbsolutePath(), newOutPutFile);
             dataPackage.deleteEntity(0);
           }
@@ -1806,7 +1809,7 @@ public class DataPackagePlugin
       Reader styleSheetReader, String xslLocation, File outputFile) throws Exception
   {
     Reader anotherMetadataReader = transformer.transform(emlDoc, styleSheetReader, xslLocation);
-    FileWriter outputFileWriter = new FileWriter(outputFile);
+    Writer outputFileWriter = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(outputFile), Charset.forName("UTF-8")));
     char[] chartArray = new char[4*1024];
     int index = anotherMetadataReader.read(chartArray);
     while(index != -1)

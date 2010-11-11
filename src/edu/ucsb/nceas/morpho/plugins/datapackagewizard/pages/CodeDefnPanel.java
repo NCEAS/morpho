@@ -38,42 +38,24 @@ table has to be imported after that.
 
 package edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages;
 
-import edu.ucsb.nceas.morpho.Language;
-import edu.ucsb.nceas.morpho.Morpho;
-import edu.ucsb.nceas.morpho.datapackage.AbstractDataPackage;
-import edu.ucsb.nceas.morpho.datapackage.DataViewContainerPanel;
-import edu.ucsb.nceas.morpho.datastore.FileSystemDataStore;
-import edu.ucsb.nceas.morpho.datastore.MetacatDataStore;
-import edu.ucsb.nceas.morpho.framework.ConfigXML;
-import edu.ucsb.nceas.morpho.framework.MorphoFrame;
-import edu.ucsb.nceas.morpho.framework.UIController;
-import edu.ucsb.nceas.morpho.plugins.datapackagewizard.AbstractCustomTablePopupHandler;
-import edu.ucsb.nceas.morpho.plugins.datapackagewizard.CustomTable;
-import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WidgetFactory;
-import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardPageSubPanelAPI;
-import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardSettings;
-import edu.ucsb.nceas.morpho.util.Base64;
-import edu.ucsb.nceas.morpho.util.Log;
-import edu.ucsb.nceas.utilities.OrderedMap;
-
-import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.FileReader;
-import java.io.InputStreamReader;
-import java.io.StringReader;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.StringTokenizer;
-import java.util.Vector;
-
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Container;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemListener;
+import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStreamReader;
+import java.io.StringReader;
+import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.StringTokenizer;
+import java.util.Vector;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -88,6 +70,21 @@ import javax.swing.JRadioButton;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
+
+import edu.ucsb.nceas.morpho.Language;
+import edu.ucsb.nceas.morpho.Morpho;
+import edu.ucsb.nceas.morpho.datapackage.AbstractDataPackage;
+import edu.ucsb.nceas.morpho.datastore.FileSystemDataStore;
+import edu.ucsb.nceas.morpho.datastore.MetacatDataStore;
+import edu.ucsb.nceas.morpho.framework.UIController;
+import edu.ucsb.nceas.morpho.plugins.datapackagewizard.AbstractCustomTablePopupHandler;
+import edu.ucsb.nceas.morpho.plugins.datapackagewizard.CustomTable;
+import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WidgetFactory;
+import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardPageSubPanelAPI;
+import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardSettings;
+import edu.ucsb.nceas.morpho.util.Base64;
+import edu.ucsb.nceas.morpho.util.Log;
+import edu.ucsb.nceas.utilities.OrderedMap;
 
 public class CodeDefnPanel extends JPanel implements WizardPageSubPanelAPI {
 
@@ -1058,7 +1055,7 @@ public class CodeDefnPanel extends JPanel implements WizardPageSubPanelAPI {
     String token, oldToken = "";
     try
     {
-      BufferedReader br = new BufferedReader(new FileReader(file));
+      BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(file), Charset.forName("UTF-8")));
       int linecnt = 0;
       while( (line = br.readLine()) != null) {
         linecnt++;
@@ -1173,7 +1170,7 @@ public class CodeDefnPanel extends JPanel implements WizardPageSubPanelAPI {
     String token, oldToken = "";
     try
     {
-      BufferedReader br = new BufferedReader(new FileReader(file));
+      BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(file), Charset.forName("UTF-8")));
       int linecnt = 0;
       while( (line = br.readLine()) != null) {
         linecnt++;

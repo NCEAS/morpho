@@ -26,33 +26,14 @@
 
 package edu.ucsb.nceas.morpho.datapackage;
 
-import edu.ucsb.nceas.morpho.Morpho;
-import edu.ucsb.nceas.morpho.datastore.DataStoreInterface;
-import edu.ucsb.nceas.morpho.datastore.FileSystemDataStore;
-import edu.ucsb.nceas.morpho.datastore.LocalFileExistingException;
-import edu.ucsb.nceas.morpho.datastore.MetacatDataStore;
-import edu.ucsb.nceas.morpho.datastore.MetacatUploadException;
-import edu.ucsb.nceas.morpho.util.Log;
-import edu.ucsb.nceas.utilities.OrderedMap;
-import edu.ucsb.nceas.utilities.XMLUtilities;
-import edu.ucsb.nceas.morpho.util.IncompleteDocSettings;
-import edu.ucsb.nceas.morpho.plugins.EditingAttributeInfo;
-import edu.ucsb.nceas.morpho.plugins.IncompleteDocInfo;
-import edu.ucsb.nceas.morpho.plugins.WizardPageInfo;
-import edu.ucsb.nceas.morpho.util.XMLUtil;
-import edu.ucsb.nceas.morpho.util.XMLErrorHandler;
-
 import java.io.CharArrayWriter;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileReader;
 import java.io.StringReader;
-import java.util.Enumeration;
-import java.util.Iterator;
-import java.util.Vector;
-import java.util.List;
 import java.util.ArrayList;
-
+import java.util.Iterator;
+import java.util.List;
+import java.util.Vector;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.transform.ErrorListener;
@@ -60,28 +41,39 @@ import javax.xml.transform.Result;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.dom.DOMResult;
-import javax.xml.transform.sax.SAXResult;
 import javax.xml.transform.sax.SAXSource;
 import javax.xml.transform.sax.SAXTransformerFactory;
 import javax.xml.transform.sax.TransformerHandler;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
+import org.apache.xalan.templates.OutputProperties;
 import org.apache.xerces.dom.DOMImplementationImpl;
-import org.w3c.dom.Attr;
+import org.apache.xpath.XPathAPI;
 import org.w3c.dom.DOMImplementation;
 import org.w3c.dom.Document;
-import org.w3c.dom.Node;
 import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
-import org.apache.xpath.XPathAPI;
-import org.apache.xalan.templates.OutputProperties;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.XMLReaderFactory;
+
+import edu.ucsb.nceas.morpho.Morpho;
+import edu.ucsb.nceas.morpho.datastore.DataStoreInterface;
+import edu.ucsb.nceas.morpho.datastore.FileSystemDataStore;
+import edu.ucsb.nceas.morpho.datastore.MetacatDataStore;
+import edu.ucsb.nceas.morpho.datastore.MetacatUploadException;
+import edu.ucsb.nceas.morpho.plugins.EditingAttributeInfo;
+import edu.ucsb.nceas.morpho.plugins.IncompleteDocInfo;
+import edu.ucsb.nceas.morpho.plugins.WizardPageInfo;
+import edu.ucsb.nceas.morpho.util.IncompleteDocSettings;
+import edu.ucsb.nceas.morpho.util.Log;
+import edu.ucsb.nceas.morpho.util.XMLErrorHandler;
+import edu.ucsb.nceas.morpho.util.XMLUtil;
+import edu.ucsb.nceas.utilities.OrderedMap;
+import edu.ucsb.nceas.utilities.XMLUtilities;
 
 /**
  * class that represents a data package. This class is abstract. Specific datapackages

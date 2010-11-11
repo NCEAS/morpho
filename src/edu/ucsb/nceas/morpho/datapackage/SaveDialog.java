@@ -26,75 +26,29 @@
  */
 package edu.ucsb.nceas.morpho.datapackage;
 
+import java.awt.BorderLayout;
+import java.awt.Component;
+import java.awt.Window;
+
+import javax.swing.Box;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JDialog;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+
 import edu.ucsb.nceas.morpho.Language;
 import edu.ucsb.nceas.morpho.Morpho;
-import edu.ucsb.nceas.morpho.framework.ConfigXML;
+import edu.ucsb.nceas.morpho.datastore.MetacatUploadException;
 import edu.ucsb.nceas.morpho.framework.MorphoFrame;
-import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
-import edu.ucsb.nceas.morpho.util.Command;
-import edu.ucsb.nceas.morpho.util.GUIAction;
+import edu.ucsb.nceas.morpho.framework.UIController;
+import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WidgetFactory;
 import edu.ucsb.nceas.morpho.util.Log;
 import edu.ucsb.nceas.morpho.util.SaveEvent;
 import edu.ucsb.nceas.morpho.util.StateChangeEvent;
 import edu.ucsb.nceas.morpho.util.StateChangeMonitor;
 import edu.ucsb.nceas.morpho.util.Util;
-import edu.ucsb.nceas.morpho.framework.UIController;
-import edu.ucsb.nceas.morpho.plugins.ServiceController;
-import edu.ucsb.nceas.morpho.plugins.ServiceProvider;
-import edu.ucsb.nceas.morpho.plugins.ServiceNotHandledException;
-import edu.ucsb.nceas.morpho.datastore.FileSystemDataStore;
-import edu.ucsb.nceas.morpho.datastore.MetacatUploadException;
-import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WidgetFactory;
-
-import java.awt.BorderLayout;
-import java.awt.Component;
-import java.awt.Container;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
-import java.awt.FlowLayout;
-import java.awt.Frame;
-import java.awt.Insets;
-import java.awt.Window;
-import java.io.CharArrayWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.StringReader;
-import java.util.Vector;
-
-import javax.swing.Box;
-import javax.swing.BoxLayout;
-import javax.swing.ButtonGroup;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JDialog;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JCheckBox;
-import javax.swing.JTextField;
-import javax.swing.JTextArea;
-import javax.swing.WindowConstants;
-import javax.swing.SwingConstants;
-import javax.xml.transform.Result;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerConfigurationException;
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.dom.DOMResult;
-import javax.xml.transform.sax.SAXResult;
-import javax.xml.transform.sax.SAXSource;
-import javax.xml.transform.sax.SAXTransformerFactory;
-import javax.xml.transform.sax.TransformerHandler;
-import javax.xml.transform.stream.StreamResult;
-import javax.xml.transform.stream.StreamSource;
-
-import org.apache.xalan.templates.OutputProperties;
-import org.w3c.dom.Node;
-import org.xml.sax.InputSource;
-import org.xml.sax.XMLReader;
-import org.xml.sax.helpers.XMLReaderFactory;
-
-import edu.ucsb.nceas.morpho.util.XMLUtil;
 
 /**
  * A dialog box for user choice of export options

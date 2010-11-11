@@ -34,6 +34,7 @@
  
 package edu.ucsb.nceas.morpho.datapackage;
 import java.io.*;
+import java.nio.charset.Charset;
 import java.util.*;
 
 import edu.ucsb.nceas.morpho.framework.ConfigXML;
@@ -201,7 +202,7 @@ public class PersistentVector
     int nlines;
     File f = new File(filename);    
     try{
-      BufferedReader in = new BufferedReader(new FileReader(f));
+      BufferedReader in = new BufferedReader(new InputStreamReader(new FileInputStream(f), Charset.forName("UTF-8")));
       nlines = 0;
       long pos = 0;
       headerLinesVector = new Vector();
@@ -244,7 +245,7 @@ public class PersistentVector
     String temp;
     int nlines;
     try{
-      BufferedReader in = new BufferedReader(new FileReader(f));
+      BufferedReader in = new BufferedReader(new InputStreamReader(new FileInputStream(f), Charset.forName("UTF-8")));
       nlines = 0;
       long pos = 0;
       headerLinesVector = new Vector();
@@ -312,7 +313,7 @@ public class PersistentVector
   public void writeObjects(String filename) {
     File f = new File(filename);
     try{
-      BufferedWriter out = new BufferedWriter(new FileWriter(f));
+      BufferedWriter out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(f), Charset.forName("UTF-8")));
       // write header lines if they exist
       if (headerLinesVector!=null) {
         for (int jj=0;jj<headerLinesVector.size();jj++) {

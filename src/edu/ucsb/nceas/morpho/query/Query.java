@@ -26,40 +26,39 @@
 
 package edu.ucsb.nceas.morpho.query;
 
-import edu.ucsb.nceas.morpho.Morpho;
-import edu.ucsb.nceas.morpho.framework.ConfigXML;
-import edu.ucsb.nceas.morpho.framework.MorphoFrame;
-import edu.ucsb.nceas.morpho.framework.QueryRefreshInterface;
-import edu.ucsb.nceas.morpho.framework.SwingWorker;
-import edu.ucsb.nceas.morpho.util.Log;
-import edu.ucsb.nceas.morpho.util.SortableJTable;
-import edu.ucsb.nceas.morpho.util.StateChangeEvent;
-import edu.ucsb.nceas.morpho.util.StateChangeMonitor;
-
-
-import java.io.IOException;
+import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.io.StringReader;
+import java.io.Writer;
+import java.nio.charset.Charset;
 import java.util.Enumeration;
 import java.util.Properties;
 import java.util.Stack;
 import java.util.Vector;
-
 
 import org.xml.sax.Attributes;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
-import org.xml.sax.SAXParseException;
 import org.xml.sax.XMLReader;
-import org.xml.sax.helpers.XMLReaderFactory;
 import org.xml.sax.helpers.DefaultHandler;
+
+import edu.ucsb.nceas.morpho.Morpho;
+import edu.ucsb.nceas.morpho.framework.ConfigXML;
+import edu.ucsb.nceas.morpho.framework.MorphoFrame;
+import edu.ucsb.nceas.morpho.framework.QueryRefreshInterface;
+import edu.ucsb.nceas.morpho.framework.SwingWorker;
+import edu.ucsb.nceas.morpho.util.Log;
+import edu.ucsb.nceas.morpho.util.StateChangeEvent;
+import edu.ucsb.nceas.morpho.util.StateChangeMonitor;
 
 /**
  * A Class that represents a structured query, and can be
@@ -551,7 +550,7 @@ public class Query extends DefaultHandler {
   public String toXml() {
     StringBuffer self = new StringBuffer();
 
-    self.append("<?xml version=\"1.0\"?>\n");
+    self.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
     self.append("<pathquery version=\"1.2\">\n");
 
     // The identifier
@@ -1056,7 +1055,7 @@ public class Query extends DefaultHandler {
     }
     File queryFile = new File(queriesDir, getIdentifier());
 //DFH    boolean isNew = queryFile.createNewFile();
-    FileWriter output = new FileWriter(queryFile);
+    Writer output = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(queryFile), Charset.forName("UTF-8")));
     output.write(this.toXml());
     output.close();
   }
@@ -1093,7 +1092,7 @@ public class Query extends DefaultHandler {
 
        try {
          Morpho morpho = new Morpho(new ConfigXML("lib/config.xml"));
-         FileReader xml = new FileReader(new File(xmlfile));
+         Reader xml = new InputStreamReader(new FileInputStream(xmlfile), Charset.forName("UTF-8"));
 
          Query qspec = new Query(xml, morpho);
          Log.debug(9, qspec.toXml());

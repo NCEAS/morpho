@@ -26,33 +26,15 @@
 
 package edu.ucsb.nceas.morpho.datapackage;
 
-import edu.ucsb.nceas.morpho.Morpho;
-import edu.ucsb.nceas.morpho.datastore.FileSystemDataStore;
-import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
-//import edu.ucsb.nceas.morpho.framework.EMLTransformToNewestVersionDialog;
-import edu.ucsb.nceas.morpho.framework.ButterflyFlapCoordinator;
-import edu.ucsb.nceas.morpho.framework.MorphoFrame;
-import edu.ucsb.nceas.morpho.framework.UIController;
-import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
-import edu.ucsb.nceas.morpho.plugins.DataPackageWizardListener;
-import edu.ucsb.nceas.morpho.plugins.EntityWizardListener;
-import edu.ucsb.nceas.morpho.plugins.ServiceController;
-import edu.ucsb.nceas.morpho.plugins.ServiceNotHandledException;
-import edu.ucsb.nceas.morpho.plugins.ServiceProvider;
-import edu.ucsb.nceas.morpho.util.Command;
-import edu.ucsb.nceas.morpho.util.Log;
-import edu.ucsb.nceas.utilities.XMLUtilities;
-
 import java.awt.event.ActionEvent;
 import java.io.File;
-import java.io.FileReader;
-import java.util.Vector;
 
 import javax.swing.JFileChooser;
-import javax.swing.JOptionPane;
 
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
+import edu.ucsb.nceas.morpho.Morpho;
+import edu.ucsb.nceas.morpho.framework.UIController;
+import edu.ucsb.nceas.morpho.util.Command;
+import edu.ucsb.nceas.morpho.util.Log;
 
 /**
  * Class represents a command to import an external EML file to morpho system.

@@ -26,24 +26,15 @@
 
 package edu.ucsb.nceas.morpho.datapackage;
 
-import edu.ucsb.nceas.morpho.Morpho;
-import edu.ucsb.nceas.morpho.datastore.CacheAccessException;
-import edu.ucsb.nceas.morpho.datastore.FileSystemDataStore;
-import edu.ucsb.nceas.morpho.datastore.MetacatDataStore;
-import edu.ucsb.nceas.morpho.datastore.MetacatUploadException;
-import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
-import edu.ucsb.nceas.morpho.util.Log;
-import edu.ucsb.nceas.morpho.plugins.IncompleteDocInfo;
-import edu.ucsb.nceas.morpho.plugins.WizardPageInfo;
-import edu.ucsb.nceas.utilities.XMLUtilities;
-
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.FileReader;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.nio.charset.Charset;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Vector;
@@ -54,6 +45,16 @@ import org.w3c.dom.Document;
 import org.w3c.dom.DocumentType;
 import org.w3c.dom.Node;
 import org.xml.sax.InputSource;
+
+import edu.ucsb.nceas.morpho.Morpho;
+import edu.ucsb.nceas.morpho.datastore.CacheAccessException;
+import edu.ucsb.nceas.morpho.datastore.FileSystemDataStore;
+import edu.ucsb.nceas.morpho.datastore.MetacatDataStore;
+import edu.ucsb.nceas.morpho.datastore.MetacatUploadException;
+import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
+import edu.ucsb.nceas.morpho.plugins.IncompleteDocInfo;
+import edu.ucsb.nceas.morpho.util.Log;
+import edu.ucsb.nceas.utilities.XMLUtilities;
 
 /**
  * class that represents a data package. This class is abstract. Specific datapackages
@@ -475,7 +476,7 @@ public class EML2Beta6DataPackage extends AbstractDataPackage
 
       try
       {
-        FileReader fr = new FileReader(subfile);
+        Reader fr = new InputStreamReader(new FileInputStream(subfile), Charset.forName("UTF-8"));
         String xmlString = "";
         for(int j=0; j<5; j++)
         {

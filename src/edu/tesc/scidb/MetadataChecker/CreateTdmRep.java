@@ -1,7 +1,6 @@
 package edu.tesc.scidb.MetadataChecker;
 
 import java.io.File;
-import java.io.FileWriter;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.DriverManager;

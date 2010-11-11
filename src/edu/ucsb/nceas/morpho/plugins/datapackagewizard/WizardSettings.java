@@ -28,17 +28,15 @@
 
 package edu.ucsb.nceas.morpho.plugins.datapackagewizard;
 
-import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
-import edu.ucsb.nceas.morpho.util.Log;
-import edu.ucsb.nceas.utilities.IOUtil;
-import edu.ucsb.nceas.utilities.OrderedMap;
-import edu.ucsb.nceas.utilities.StringUtil;
-import edu.ucsb.nceas.utilities.XMLUtilities;
-
-import java.io.IOException;
-import java.io.Reader;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Font;
 import java.io.File;
-import java.io.FileReader;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -47,17 +45,18 @@ import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
 
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Font;
-
 import org.w3c.dom.Attr;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-import edu.ucsb.nceas.morpho.util.UISettings;
 
-import edu.ucsb.nceas.morpho.Language;//pstango 2010/03/15
+import edu.ucsb.nceas.morpho.Language;
+import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
+import edu.ucsb.nceas.morpho.util.Log;
+import edu.ucsb.nceas.morpho.util.UISettings;
+import edu.ucsb.nceas.utilities.OrderedMap;
+import edu.ucsb.nceas.utilities.StringUtil;
+import edu.ucsb.nceas.utilities.XMLUtilities;
 
 /**
  *  WizardSettings
@@ -549,7 +548,7 @@ public class WizardSettings {
     Reader reader = null;
     try {
       File unitDict = new File("./xsl/eml-unitDictionary.xml");
-      reader = new FileReader(unitDict);
+      reader = new InputStreamReader(new FileInputStream(unitDict), Charset.forName("UTF-8"));
       //        reader = IOUtil.getResourceAsInputStreamReader(EML_UNIT_DICTIONARY_PATH);
       // above change to use a FileReader was made to get this code to work on a Mac;
       // Use of getResourceAsInputStreamReader(EML_UNIT_DICTIONARY_PATH) seems to work fine on Windows!
@@ -818,7 +817,7 @@ public class WizardSettings {
     Reader reader = null;
     try {
       File unitDict = new File("./xsl/eml-unitDictionary.xml");
-      reader = new FileReader(unitDict);
+      reader = new InputStreamReader(new FileInputStream(unitDict), Charset.forName("UTF-8"));
       //        reader = IOUtil.getResourceAsInputStreamReader(EML_UNIT_DICTIONARY_PATH);
       // above change to use a FileReader was made to get this code to work on a Mac;
       // Use of getResourceAsInputStreamReader(EML_UNIT_DICTIONARY_PATH) seems to work fine on Windows!

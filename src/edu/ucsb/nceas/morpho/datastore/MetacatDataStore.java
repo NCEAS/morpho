@@ -27,6 +27,7 @@
 package edu.ucsb.nceas.morpho.datastore;
 
 import java.io.*;
+import java.nio.charset.Charset;
 import java.util.*;
 
 import edu.ucsb.nceas.morpho.Morpho;
@@ -64,8 +65,7 @@ public class MetacatDataStore extends DataStore implements DataStoreInterface
     String dirs = path.substring(0, path.lastIndexOf("/"));
     StringBuffer response = new StringBuffer();
     FileOutputStream fos;
-    FileWriter writer;
-    FileReader reader;
+    Reader reader;
     
     File localfile = new File(cachedir + "/" + path); //the path to the file
     File localdir = new File(cachedir + "/" + dirs); //the dir part of the path
@@ -149,7 +149,7 @@ public class MetacatDataStore extends DataStore implements DataStoreInterface
         
         // just look for error in first 1000 bytes - DFH
         int cnt = 0;
-        reader = new FileReader(localfile);
+        reader = new InputStreamReader(new FileInputStream(localfile), Charset.forName("UTF-8"));
         BufferedReader breader = new BufferedReader(reader);
         c = breader.read();
         while((c != -1)&&(cnt<1000))
@@ -217,8 +217,7 @@ public class MetacatDataStore extends DataStore implements DataStoreInterface
     String dirs = path.substring(0, path.lastIndexOf("/"));
     StringBuffer response = new StringBuffer();
     FileOutputStream fos;
-    FileWriter writer;
-    FileReader reader;
+    Reader reader;
     
     File localfile = new File(cachedir + "/" + path); //the path to the file
     File localdir = new File(cachedir + "/" + dirs); //the dir part of the path
@@ -277,7 +276,7 @@ public class MetacatDataStore extends DataStore implements DataStoreInterface
         
         // just look for error in first 1000 bytes - DFH
         int cnt = 0;
-        reader = new FileReader(localfile);
+        reader = new InputStreamReader(new FileInputStream(localfile), Charset.forName("UTF-8"));
         BufferedReader breader = new BufferedReader(reader);
         c = breader.read();
         while((c != -1)&&(cnt<1000))
@@ -476,7 +475,7 @@ public class MetacatDataStore extends DataStore implements DataStoreInterface
       //save a temp file so that the id can be put in the file.
       StringWriter sw = new StringWriter();
       File tempfile = new File(tempdir + "/metacat.noid");
-      FileWriter fw = new FileWriter(tempfile);
+      Writer fw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(tempfile), Charset.forName("UTF-8")));
       BufferedWriter bfw = new BufferedWriter(fw);
       int c = bfile.read();
       while(c != -1)
@@ -938,7 +937,7 @@ public class MetacatDataStore extends DataStore implements DataStoreInterface
       Log.debug(20, "Testing metadata upload...");
       String id = args[2];
       File f = new File(args[3]);
-      FileReader fr = new FileReader(f);
+      Reader fr = new InputStreamReader(new FileInputStream(f), Charset.forName("UTF-8"));
       //File metacatfile = mds.newFile(id, fr, true);
       //File metacatfile = mds.saveFile(id, fr, true);
       //Log.debug(20, "XML file uploaded!");

@@ -29,9 +29,14 @@ package edu.ucsb.nceas.morpho.framework;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.io.Reader;
+import java.io.Writer;
+import java.nio.charset.Charset;
 import java.util.Hashtable;
 
 /**
@@ -51,8 +56,8 @@ public class FileUtils
    */
   public static void copy(File inputFile, File outputFile) throws IOException
   {
-    FileReader in = new FileReader(inputFile);
-    FileWriter out = new FileWriter(outputFile);
+    Reader in = new InputStreamReader(new FileInputStream(inputFile), Charset.forName("UTF-8"));
+    Writer out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(outputFile), Charset.forName("UTF-8")));
     int len;
     char[] buffer =  new char[512];
     while ((len = in.read(buffer)) != -1) {
@@ -86,8 +91,8 @@ public class FileUtils
   public static void copy(File inputFile, File outputFile, Hashtable tokens)
          throws IOException
   {
-    BufferedReader in = new BufferedReader(new FileReader(inputFile));
-    BufferedWriter out = new BufferedWriter(new FileWriter(outputFile));
+    BufferedReader in = new BufferedReader(new InputStreamReader(new FileInputStream(inputFile), Charset.forName("UTF-8")));
+    BufferedWriter out = new BufferedWriter(new BufferedWriter(new OutputStreamWriter(new FileOutputStream(outputFile), Charset.forName("UTF-8"))));
 
     int length;
     String newline = null;

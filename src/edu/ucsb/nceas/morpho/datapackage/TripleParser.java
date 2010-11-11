@@ -27,35 +27,23 @@
  */
 package edu.ucsb.nceas.morpho.datapackage;
 
-import edu.ucsb.nceas.morpho.Morpho;
-import edu.ucsb.nceas.morpho.util.Log;
-
-import java.sql.*;
-import java.util.Stack;
-import java.util.Vector;
-import java.util.Enumeration; 
-import java.util.EmptyStackException;
-import java.util.Stack;
-import java.util.Hashtable;
-import java.io.FileReader;
-import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.Reader;
+import java.nio.charset.Charset;
 
 import org.xml.sax.Attributes;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.ErrorHandler;
-import org.xml.sax.SAXException;
-import org.xml.sax.SAXParseException;
-import org.xml.sax.ext.DeclHandler;
-import org.xml.sax.ext.LexicalHandler;
-import org.xml.sax.helpers.DefaultHandler;
-import org.xml.sax.helpers.AttributesImpl;
-import org.xml.sax.XMLReader;
-import org.xml.sax.helpers.XMLReaderFactory;
 import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
+import org.xml.sax.XMLReader;
+import org.xml.sax.helpers.DefaultHandler;
 
-import com.arbortext.catalog.*;
+import com.arbortext.catalog.CatalogEntityResolver;
+
+import edu.ucsb.nceas.morpho.Morpho;
 
 /** 
  * A Class implementing callback bethods for the SAX parser.  This class finds
@@ -175,7 +163,7 @@ public class TripleParser extends DefaultHandler
     System.out.println("Parsing " + args[0]);
     try
     {
-      FileReader xml = new FileReader(new File(filename));
+      Reader xml = new InputStreamReader(new FileInputStream(filename), Charset.forName("UTF-8"));
 
       //while(xml.ready())
       //  System.out.print((char)xml.read());

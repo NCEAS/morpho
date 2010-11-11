@@ -175,7 +175,7 @@ public class DBValidate {
   /** provide a list of errors from the validation process */
   public String returnErrors() {
     StringBuffer errorstring = new StringBuffer();
-    errorstring.append("<?xml version=\"1.0\" ?>\n");
+    errorstring.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
     if (ef != null && ef.getErrorNodes()!=null && 
         ef.getErrorNodes().size() > 0 ) {
       Vector errors = ef.getErrorNodes();

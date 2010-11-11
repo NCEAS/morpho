@@ -37,47 +37,33 @@
 package edu.ucsb.nceas.morpho.datapackage;
 
 
-import javax.xml.transform.*;
-import javax.xml.transform.sax.*;
-import javax.xml.transform.dom.*;
-import javax.xml.transform.stream.*;
-
-// Needed java classes
-import java.io.InputStream;
-import java.io.Reader;
-import java.io.IOException;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileReader;
-import java.io.BufferedInputStream;
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.StringWriter;
-import java.io.FileWriter;
+import java.io.FileOutputStream;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
+import java.nio.charset.Charset;
 
-import java.util.Properties;
+import javax.xml.transform.Result;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.URIResolver;
+import javax.xml.transform.sax.SAXResult;
+import javax.xml.transform.sax.SAXSource;
+import javax.xml.transform.sax.SAXTransformerFactory;
+import javax.xml.transform.sax.TransformerHandler;
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.stream.StreamSource;
 
-// Needed SAX classes
-import org.xml.sax.*;
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
-import org.xml.sax.Parser;
-import org.xml.sax.helpers.ParserAdapter;
-import org.xml.sax.helpers.XMLReaderFactory;
-import org.xml.sax.XMLReader;
-import org.xml.sax.XMLFilter;
-import org.xml.sax.ContentHandler;
-import org.xml.sax.ext.LexicalHandler;
-import org.xml.sax.ext.DeclHandler;
-
-// Imported Serializer classes
-import org.apache.xalan.serialize.Serializer;
-import org.apache.xalan.serialize.SerializerFactory;
 import org.apache.xalan.templates.OutputProperties;
+import org.xml.sax.InputSource;
+import org.xml.sax.XMLReader;
+import org.xml.sax.helpers.XMLReaderFactory;
 
 import edu.ucsb.nceas.morpho.util.Log;
-
-import javax.xml.parsers.*;
 
 public class EMLConvert
 {
@@ -157,7 +143,7 @@ public class EMLConvert
 
 //      StringWriter writer = new StringWriter();
       File outfile = new File(outputfileName);
-      FileWriter writer = new FileWriter(outfile);
+      Writer writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(outfile), Charset.forName("UTF-8")));
       Result result = new StreamResult(writer);
 
       tHandler2.setResult(result);

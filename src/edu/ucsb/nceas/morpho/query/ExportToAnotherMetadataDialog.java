@@ -25,41 +25,21 @@
  */
 package edu.ucsb.nceas.morpho.query;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Container;
-import java.awt.Dimension;
-import java.awt.Rectangle;
-import java.awt.Toolkit;
-import java.awt.Window;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.io.Reader;
-import java.io.StringReader;
+import java.io.Writer;
+import java.nio.charset.Charset;
 import java.util.Vector;
 
-import javax.swing.Box;
-import javax.swing.BoxLayout;
-import javax.swing.JButton;
-import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JFileChooser;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JList;
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTextField;
-import javax.swing.SwingConstants;
-import javax.swing.border.EmptyBorder;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 import javax.swing.filechooser.FileFilter;
 
 import org.w3c.dom.Document;
@@ -72,14 +52,11 @@ import edu.ucsb.nceas.morpho.framework.ConfigXML;
 import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
 import edu.ucsb.nceas.morpho.framework.MorphoFrame;
 import edu.ucsb.nceas.morpho.framework.SwingWorker;
-import edu.ucsb.nceas.morpho.framework.UIController;
 import edu.ucsb.nceas.morpho.plugins.ServiceController;
 import edu.ucsb.nceas.morpho.plugins.ServiceProvider;
 import edu.ucsb.nceas.morpho.util.Command;
 import edu.ucsb.nceas.morpho.util.Log;
-import edu.ucsb.nceas.morpho.util.Util;
 import edu.ucsb.nceas.morpho.util.XMLTransformer;
-import edu.ucsb.nceas.utilities.XMLUtilities;
 
 /**
  * Represents a dialog which can transform current data package to another metadata
@@ -382,15 +359,15 @@ public class ExportToAnotherMetadataDialog implements Command
   private void export(File outputFile, String styleSheetLocation)
   {
     //get output file writer
-    FileWriter outputFileWriter = null;
-      
+    Writer outputFileWriter = null;
+    
     //get style sheet reader
     File styleSheetFile = new File(styleSheetLocation);
-    FileReader styleSheetReader = null;
+    Reader styleSheetReader = null;
     File styleSheetDir = null;
     try
     {
-      styleSheetReader = new FileReader(styleSheetFile);
+      styleSheetReader = new InputStreamReader(new FileInputStream(styleSheetFile), Charset.forName("UTF-8"));
       styleSheetDir = styleSheetFile.getParentFile();
     }
     catch(Exception e)
@@ -426,7 +403,7 @@ public class ExportToAnotherMetadataDialog implements Command
       }
       Reader anotherMetadataReader = transformer.transform(emlDoc, styleSheetReader, 
                                         styleSheetDir.getAbsolutePath());
-      outputFileWriter = new FileWriter(outputFile);
+      outputFileWriter = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(outputFile), Charset.forName("UTF-8")));
       char[] chartArray = new char[4*1024];
       int index = anotherMetadataReader.read(chartArray);
       while(index != -1)

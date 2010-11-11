@@ -36,6 +36,7 @@ import edu.ucsb.nceas.morpho.util.StateChangeListener;
 import edu.ucsb.nceas.morpho.util.StateChangeMonitor;
 
 import java.net.*;
+import java.nio.charset.Charset;
 import java.io.*;
 import java.util.*;
 import java.awt.*;
@@ -626,7 +627,7 @@ public class ProfileDialog extends JDialog implements StateChangeListener
           ClassLoader cl = this.getClass().getClassLoader();
           InputStreamReader in = new InputStreamReader(
                                       cl.getResourceAsStream(defaultProfile));
-          FileWriter out = new FileWriter(new File(profileFileName));
+          Writer out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(new File(profileFileName)), Charset.forName("UTF-8")));
           int len;
           char[] buffer =  new char[512];
           while ((len = in.read(buffer)) != -1) {

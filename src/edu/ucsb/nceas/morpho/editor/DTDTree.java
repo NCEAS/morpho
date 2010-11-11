@@ -32,6 +32,7 @@ import java.util.*;
 import javax.swing.tree.*;
 import java.io.*;
 import java.net.URL;
+import java.nio.charset.Charset;
 
 /**
  * class for creating a treeModel based on structure defined 
@@ -96,7 +97,7 @@ public class DTDTree
 			//Reader reader = new FileReader(dtdUrl.openStream());
       //DTDParser parser = new DTDParser(new BufferedReader(reader));
       DTDParser parser = new DTDParser(new BufferedReader(
-                                      new FileReader(file)));
+    		  new InputStreamReader(new FileInputStream(file), Charset.forName("UTF-8"))));
       dtd = parser.parse(true);
       elementnames = new Vector();
       Enumeration e = dtd.elements.elements();

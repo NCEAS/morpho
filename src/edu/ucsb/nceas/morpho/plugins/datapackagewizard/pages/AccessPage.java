@@ -33,6 +33,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.charset.Charset;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -340,8 +341,8 @@ public class AccessPage
       // creating accessListFilePath....
       try {
         String xmlSource =
-            "<?xml version=\"1.0\"?>\n<accesslist></accesslist>\n";
-        byte buf[] = xmlSource.getBytes();
+            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<accesslist></accesslist>\n";
+        byte buf[] = xmlSource.getBytes(Charset.forName("UTF-8"));
         OutputStream f1 = new FileOutputStream(accessListFilePath);
         f1.write(buf);
         f1.close();
@@ -399,8 +400,8 @@ public class AccessPage
         // creating accessListFilePath....
         try {
           String xmlSource =
-              "<?xml version=\"1.0\"?>\n<accesslist></accesslist>\n";
-          byte buf[] = xmlSource.getBytes();
+              "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<accesslist></accesslist>\n";
+          byte buf[] = xmlSource.getBytes(Charset.forName("UTF-8"));
           OutputStream f1 = new FileOutputStream(accessListFilePath);
           f1.write(buf);
           f1.close();

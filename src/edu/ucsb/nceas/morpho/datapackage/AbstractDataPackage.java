@@ -27,41 +27,29 @@
 
 package edu.ucsb.nceas.morpho.datapackage;
 
-import edu.ucsb.nceas.morpho.Morpho;
-import edu.ucsb.nceas.morpho.datastore.CacheAccessException;
-import edu.ucsb.nceas.morpho.datastore.DataStoreInterface;
-import edu.ucsb.nceas.morpho.datastore.FileSystemDataStore;
-import edu.ucsb.nceas.morpho.datastore.MetacatDataStore;
-import edu.ucsb.nceas.morpho.datastore.MetacatUploadException;
-import edu.ucsb.nceas.morpho.framework.ConfigXML;
-import edu.ucsb.nceas.morpho.framework.UIController;
-import edu.ucsb.nceas.morpho.util.DocumentNotFoundException;
-import edu.ucsb.nceas.morpho.plugins.IncompleteDocInfo;
-import edu.ucsb.nceas.morpho.plugins.XMLFactoryInterface;
-import edu.ucsb.nceas.morpho.query.LocalQuery;
-import edu.ucsb.nceas.morpho.util.IOUtil;
-import edu.ucsb.nceas.morpho.util.IncompleteDocSettings;
-import edu.ucsb.nceas.morpho.util.LoadDataPath;
-import edu.ucsb.nceas.morpho.util.Log;
-import edu.ucsb.nceas.morpho.util.ModifyingPageDataInfo;
-import edu.ucsb.nceas.morpho.plugins.WizardPageInfo;
-import edu.ucsb.nceas.morpho.util.XMLTransformer;
-import edu.ucsb.nceas.morpho.util.XMLUtil;
-import edu.ucsb.nceas.utilities.XMLUtilities;
-import edu.ucsb.nceas.utilities.OrderedMap;
-
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.io.Reader;
+import java.io.Writer;
+import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+import java.util.Vector;
 import java.util.zip.Adler32;
 import java.util.zip.CheckedInputStream;
 import java.util.zip.ZipEntry;
@@ -80,19 +68,27 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 
-import java.util.Hashtable;
-import java.util.List;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.Arrays;
-import java.util.Properties;
-import java.util.Vector;
-import java.util.Iterator;
-import java.util.HashMap;
-import java.util.Map;
-import javax.xml.transform.*;
-
-import edu.ucsb.nceas.morpho.Language;//pstango 2010/03/15
+import edu.ucsb.nceas.morpho.Language;
+import edu.ucsb.nceas.morpho.Morpho;
+import edu.ucsb.nceas.morpho.datastore.CacheAccessException;
+import edu.ucsb.nceas.morpho.datastore.DataStoreInterface;
+import edu.ucsb.nceas.morpho.datastore.FileSystemDataStore;
+import edu.ucsb.nceas.morpho.datastore.MetacatDataStore;
+import edu.ucsb.nceas.morpho.datastore.MetacatUploadException;
+import edu.ucsb.nceas.morpho.framework.ConfigXML;
+import edu.ucsb.nceas.morpho.framework.UIController;
+import edu.ucsb.nceas.morpho.plugins.IncompleteDocInfo;
+import edu.ucsb.nceas.morpho.plugins.XMLFactoryInterface;
+import edu.ucsb.nceas.morpho.query.LocalQuery;
+import edu.ucsb.nceas.morpho.util.DocumentNotFoundException;
+import edu.ucsb.nceas.morpho.util.IOUtil;
+import edu.ucsb.nceas.morpho.util.IncompleteDocSettings;
+import edu.ucsb.nceas.morpho.util.LoadDataPath;
+import edu.ucsb.nceas.morpho.util.Log;
+import edu.ucsb.nceas.morpho.util.ModifyingPageDataInfo;
+import edu.ucsb.nceas.morpho.util.XMLTransformer;
+import edu.ucsb.nceas.utilities.OrderedMap;
+import edu.ucsb.nceas.utilities.XMLUtilities;
 
 /**
  * <p>class that represents a data package. This class is abstract. Specific datapackages
@@ -4428,7 +4424,7 @@ public abstract class AbstractDataPackage extends MetadataObject
       StringBuffer buffer = IOUtil.getAsStringBuffer(styleSheetReader, true);
       // Create a wrter
       String fileName = cssPath + "/export.css";
-      FileWriter writer = new FileWriter(fileName);
+      Writer writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(fileName), Charset.forName("UTF-8")));
       IOUtil.writeToWriter(buffer, writer, true);
     }
     catch (Exception e)
@@ -4482,7 +4478,7 @@ public abstract class AbstractDataPackage extends MetadataObject
       Reader xmlInputReader = null;
       Reader result = null;
       StringBuffer tempPathBuff = new StringBuffer();
-      xmlInputReader = new FileReader(openfile);
+      xmlInputReader = new InputStreamReader(new FileInputStream(openfile), Charset.forName("UTF-8"));
 
       XMLTransformer transformer = XMLTransformer.getInstance();
       // add some property for style sheet
@@ -4811,7 +4807,7 @@ public abstract class AbstractDataPackage extends MetadataObject
   //save the StringBuffer to the File path specified
   private void saveToFile(StringBuffer buff, File outputFile) throws
       IOException {
-    FileWriter fileWriter = new FileWriter(outputFile);
+    Writer fileWriter = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(outputFile), Charset.forName("UTF-8")));
     IOUtil.writeToWriter(buff, fileWriter, true);
   }
 

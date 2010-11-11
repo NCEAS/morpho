@@ -26,20 +26,62 @@
 
 package edu.ucsb.nceas.morpho;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.io.PrintStream;
+import java.io.StringWriter;
+import java.io.Writer;
+import java.net.MalformedURLException;
+import java.net.Socket;
+import java.net.URL;
+import java.net.URLConnection;
+import java.net.URLStreamHandler;
+import java.net.UnknownHostException;
+import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Properties;
+import java.util.Vector;
+
+import javax.swing.Action;
+import javax.swing.ImageIcon;
+import javax.swing.JOptionPane;
+import javax.swing.KeyStroke;
+import javax.swing.LookAndFeel;
+import javax.swing.Timer;
+import javax.swing.UIManager;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
+
+import org.xml.sax.ContentHandler;
+import org.xml.sax.ErrorHandler;
+import org.xml.sax.XMLReader;
+
 import edu.ucsb.nceas.itis.Itis;
 import edu.ucsb.nceas.itis.ItisException;
 import edu.ucsb.nceas.itis.Taxon;
-import edu.ucsb.nceas.morpho.datapackage.DataPackagePlugin;
-import edu.ucsb.nceas.morpho.datastore.DataStore;
 import edu.ucsb.nceas.morpho.datastore.FileSystemDataStore;
 import edu.ucsb.nceas.morpho.framework.BackupMorphoDataFrame;
 import edu.ucsb.nceas.morpho.framework.ConfigXML;
 import edu.ucsb.nceas.morpho.framework.ConnectionFrame;
 import edu.ucsb.nceas.morpho.framework.ConnectionListener;
 import edu.ucsb.nceas.morpho.framework.CorrectEML201DocsFrame;
-import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
 import edu.ucsb.nceas.morpho.framework.HelpCommand;
-import edu.ucsb.nceas.morpho.framework.HelpMetadataIntroCommand;
 import edu.ucsb.nceas.morpho.framework.HttpMessage;
 import edu.ucsb.nceas.morpho.framework.InitialScreen;
 import edu.ucsb.nceas.morpho.framework.MorphoFrame;
@@ -53,6 +95,7 @@ import edu.ucsb.nceas.morpho.framework.SwingWorker;
 import edu.ucsb.nceas.morpho.framework.UIController;
 import edu.ucsb.nceas.morpho.plugins.PluginInterface;
 import edu.ucsb.nceas.morpho.plugins.ServiceController;
+import edu.ucsb.nceas.morpho.plugins.ServiceExistsException;
 import edu.ucsb.nceas.morpho.plugins.ServiceNotHandledException;
 import edu.ucsb.nceas.morpho.plugins.ServiceProvider;
 import edu.ucsb.nceas.morpho.util.Command;
@@ -60,57 +103,6 @@ import edu.ucsb.nceas.morpho.util.GUIAction;
 import edu.ucsb.nceas.morpho.util.Log;
 import edu.ucsb.nceas.morpho.util.UISettings;
 import edu.ucsb.nceas.morpho.util.Util;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.PrintStream;
-import java.io.StringWriter;
-import java.net.MalformedURLException;
-import java.net.Socket;
-import java.net.URL;
-import java.net.URLConnection;
-import java.net.URLStreamHandler;
-import java.net.UnknownHostException;
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.Hashtable;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Properties;
-import java.util.Vector;
-import java.util.zip.GZIPOutputStream;
-
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.parsers.SAXParser;
-import javax.xml.parsers.SAXParserFactory;
-
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-
-import javax.swing.Action;
-import javax.swing.ImageIcon;
-import javax.swing.JOptionPane;
-import javax.swing.KeyStroke;
-import javax.swing.LookAndFeel;
-import javax.swing.Timer;
-import javax.swing.UIManager;
-
-import org.xml.sax.ContentHandler;
-import org.xml.sax.ErrorHandler;
-import org.xml.sax.XMLReader;
-
-import com.ice.tar.TarArchive;
-import com.ice.tar.TarEntry;
-
-import edu.ucsb.nceas.morpho.Language;//pstango 2010/03/15
 
 
 /**
@@ -126,7 +118,7 @@ import edu.ucsb.nceas.morpho.Language;//pstango 2010/03/15
 public class Morpho
 {
     /** The version of this release of Morpho */
-    public static String VERSION = "1.8.1-RC3";
+    public static String VERSION = "1.8.1-RC4";
 
     /** Constant to indicate a separator should precede an action */
     public static String SEPARATOR_PRECEDING = "separator_preceding";
@@ -2303,7 +2295,7 @@ public class Morpho
             profileFile = new File(configDir, profileFileName);
             if (profileFile.createNewFile()
                     || profileFile.length() == 0) {
-                FileWriter out = new FileWriter(profileFile);
+                Writer out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(profileFile), Charset.forName("UTF-8")));
                 out.write("<current_profile></current_profile>\n");
                 out.close();
             }

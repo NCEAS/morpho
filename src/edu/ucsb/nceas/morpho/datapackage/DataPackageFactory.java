@@ -26,29 +26,26 @@
 
 package edu.ucsb.nceas.morpho.datapackage;
 
-import org.w3c.dom.Attr;
-import org.w3c.dom.Node;
-import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
-import org.w3c.dom.Document;
-import org.w3c.dom.DocumentType;
-import org.w3c.dom.NamedNodeMap;
-import org.w3c.dom.DOMImplementation;
-import org.apache.xpath.XPathAPI;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.nio.charset.Charset;
+import java.util.StringTokenizer;
 
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 import org.xml.sax.InputSource;
 
-import java.util.Vector;
-import java.util.Hashtable;
-import java.util.StringTokenizer;
-import java.io.*;
 import edu.ucsb.nceas.morpho.Morpho;
-import edu.ucsb.nceas.morpho.datastore.*;
+import edu.ucsb.nceas.morpho.datastore.FileSystemDataStore;
+import edu.ucsb.nceas.morpho.datastore.MetacatDataStore;
+import edu.ucsb.nceas.morpho.editor.DocFrame;
 import edu.ucsb.nceas.morpho.util.Log;
-import edu.ucsb.nceas.utilities.*;
-import org.apache.xerces.dom.DOMImplementationImpl;
-import edu.ucsb.nceas.utilities.*;
-import edu.ucsb.nceas.morpho.editor.*;
+import edu.ucsb.nceas.utilities.OrderedMap;
+import edu.ucsb.nceas.utilities.XMLUtilities;
 
 /**
  * class (factory) for creating a new DataPackage
@@ -123,14 +120,14 @@ public class DataPackageFactory
       FileSystemDataStore fsds = new FileSystemDataStore(morpho);
      try {
         File file = fsds.openFile(docid);
-        in = new FileReader(file);
+        in = new InputStreamReader(new FileInputStream(file), Charset.forName("UTF-8"));
       }
       catch (Exception w) {Log.debug(20,"Problem opening file!");}
     } else { // must be on metacat only
       MetacatDataStore mds = new MetacatDataStore(morpho);
       try{
         File file = mds.openFile(docid);
-        in = new FileReader(file);
+        in = new InputStreamReader(new FileInputStream(file), Charset.forName("UTF-8"));
       }
       catch (Exception e) {Log.debug(20,"Problem opening file from Metacat!");}
     }
@@ -199,7 +196,7 @@ public class DataPackageFactory
      try 
      {
         File file = fsds.openIncompleteFile(docid);
-        in = new FileReader(file);
+        in = new InputStreamReader(new FileInputStream(file), Charset.forName("UTF-8"));
         source = new InputSource(in);
       }
       catch (Exception w) 
@@ -268,7 +265,7 @@ public class DataPackageFactory
     String errorMessage = "";
     try
     {
-      FileReader reader = new FileReader(file);
+      Reader reader = new InputStreamReader(new FileInputStream(file), Charset.forName("UTF-8"));
       String doctype = getDocTypeInfo(reader);
       if(reader != null)
       {
@@ -279,7 +276,7 @@ public class DataPackageFactory
       if(doctype.indexOf("eml-2.0")>-1|| doctype.indexOf("eml-2.1")>-1) 
       {
         // Note: assumed that this is ok for any 'eml-2.0.n' mod to eml2.0
-          reader = new FileReader(file);
+          reader = new InputStreamReader(new FileInputStream(file), Charset.forName("UTF-8"));
           dp = new EML200DataPackage();
           dp.load(new InputSource(reader));
        

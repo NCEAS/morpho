@@ -132,7 +132,7 @@ public class OpenDialogBoxCommand implements Command
   	ConfigXML config = Morpho.getConfiguration();
   	ConfigXML profile = morpho.getProfile();
     StringBuffer searchtext = new StringBuffer();
-    searchtext.append("<?xml version=\"1.0\"?>\n");
+    searchtext.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
     searchtext.append("<pathquery version=\"1.0\">\n");
     String lastname = profile.get("lastname", 0);
     String firstname = profile.get("firstname", 0);

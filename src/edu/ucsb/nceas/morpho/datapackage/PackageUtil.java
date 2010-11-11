@@ -55,6 +55,7 @@ import edu.ucsb.nceas.morpho.util.Log;
 
 import java.io.*;
 import java.net.URL;
+import java.nio.charset.Charset;
 import java.util.*;
 import java.lang.*;
 
@@ -147,7 +148,7 @@ public class PackageUtil
     Document doc;
     InputSource in;
 //    FileInputStream fs;
-    FileReader fs;
+    Reader fs;
     CatalogEntityResolver cer = new CatalogEntityResolver();
     try 
     {
@@ -175,7 +176,7 @@ public class PackageUtil
     try
     { //parse the wizard created file without the triples
 //      fs = new FileInputStream(file);
-      fs = new FileReader(file);
+      fs = new InputStreamReader(new FileInputStream(file), Charset.forName("UTF-8"));
       in = new InputSource(fs);
     }
     catch(FileNotFoundException fnf)
@@ -212,7 +213,7 @@ public class PackageUtil
     Document doc;
     InputSource in;
 //    FileInputStream fs;
-    FileReader fs;
+    Reader fs;
     CatalogEntityResolver cer = new CatalogEntityResolver();
     try 
     {
@@ -239,7 +240,7 @@ public class PackageUtil
     try
     { //parse the wizard created file without the triples
 //      fs = new FileInputStream(file);
-      fs = new FileReader(file);
+      fs = new InputStreamReader(new FileInputStream(file), Charset.forName("UTF-8"));
       in = new InputSource(fs);
     }
     catch(FileNotFoundException fnf)
@@ -286,7 +287,7 @@ public class PackageUtil
     case Node.DOCUMENT_NODE:
     {
 
-      sb.append("<?xml version=\"1.0\"?>");
+      sb.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
       print(((Document) node).getDocumentElement());
       //sb.flush();
       break;
@@ -420,7 +421,7 @@ public class PackageUtil
     String publicid = dt.getPublicId();
     String systemid = dt.getSystemId();
     String nameid = dt.getName();
-    String docString = "<?xml version=\"1.0\"?>";
+    String docString = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
     docString += "\n<!DOCTYPE " + nameid +  " PUBLIC \"" + publicid + 
                  "\" \"" + systemid + "\">\n";
     return docString;
@@ -537,7 +538,7 @@ public class PackageUtil
     StringBuffer sb = new StringBuffer();
     try
     {
-      FileReader fr = new FileReader(xmlFile);
+      Reader fr = new InputStreamReader(new FileInputStream(xmlFile), Charset.forName("UTF-8"));
       int c = fr.read();
         while(c != -1)
       {
@@ -977,12 +978,12 @@ public class PackageUtil
     File outfile = new File(fileName);
     try
     {
-      out = new PrintWriter(new FileWriter(fileName));
+      out = new PrintWriter(new OutputStreamWriter(new FileOutputStream(fileName), Charset.forName("UTF-8")));
     }
     catch(Exception e)
     {
     }
-    out.println("<?xml version=\"1.0\"?>");
+    out.println("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
     String dt = doctype;
     if (doctype==null) dt = "";
     out.println(dt);
@@ -1014,7 +1015,7 @@ public class PackageUtil
     case Node.DOCUMENT_NODE:
     {
 
-      out.println("<?xml version=\"1.0\"?>");
+      out.println("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
       print(((Document) node).getDocumentElement(), out);
       out.flush();
       break;

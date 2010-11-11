@@ -40,6 +40,7 @@ package edu.ucsb.nceas.morpho.util.treetable;
 
 import java.io.*;
 import java.net.*;
+import java.nio.charset.Charset;
 import java.util.*;
 import javax.swing.*;
 import javax.swing.tree.*;
@@ -94,8 +95,8 @@ public class Bookmarks {
      */
     protected void parse(String path) {
 	try {
-	    BufferedReader        reader = new BufferedReader(new FileReader
-							      (path));
+	    BufferedReader reader = new BufferedReader(
+	    		new InputStreamReader(new FileInputStream(path), Charset.forName("UTF-8")));
 
 	    new ParserDelegator().parse(reader, new CallbackHandler(), true);
 	}

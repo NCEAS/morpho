@@ -44,6 +44,7 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import com.arbortext.catalog.*;
 import java.net.URL;
+import java.nio.charset.Charset;
 import java.sql.Timestamp;
 import java.util.Vector;
 import java.util.Hashtable;
@@ -952,7 +953,7 @@ public class LocalQuery
         Morpho morpho = new Morpho(
                               new ConfigXML("lib/config.xml"));
 
-        FileReader xml = new FileReader(new File(xmlfile));
+        Reader xml = new InputStreamReader(new FileInputStream(xmlfile), Charset.forName("UTF-8"));
         Query query = new Query(xml, morpho);
 
         LocalQuery qspec = new LocalQuery(query, morpho);

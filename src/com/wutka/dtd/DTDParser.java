@@ -3,6 +3,7 @@ package com.wutka.dtd;
 import java.util.*;
 import java.io.*;
 import java.net.*;
+import java.nio.charset.Charset;
 
 /** Parses a DTD file and returns a DTD object
  *
@@ -39,7 +40,9 @@ public class DTDParser implements EntityExpansion
     {
         defaultLocation = new File(in.getParent());
 
-        scanner = new Scanner(new BufferedReader(new FileReader(in)),
+        scanner = new Scanner(
+        		new BufferedReader(
+        				new InputStreamReader(new FileInputStream(in), Charset.forName("UTF-8"))),
             false, this);
         dtd = new DTD();
     }
@@ -54,8 +57,12 @@ public class DTDParser implements EntityExpansion
     {
         defaultLocation = in.getParentFile();
 
-        scanner = new Scanner(new BufferedReader(new FileReader(in)),
-            trace, this);
+        scanner = 
+        	new Scanner(
+        		new BufferedReader(
+        				new InputStreamReader(new FileInputStream(in), Charset.forName("UTF-8"))),
+        				trace, 
+        				this);
         dtd = new DTD();
     }
 

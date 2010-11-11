@@ -26,66 +26,54 @@
 
 package edu.ucsb.nceas.morpho.datapackage;
 
-import edu.ucsb.nceas.morpho.Morpho;
-import edu.ucsb.nceas.morpho.framework.ConfigXML;
-import edu.ucsb.nceas.morpho.framework.MorphoFrame;
-import edu.ucsb.nceas.morpho.framework.UIController;
-import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
-import edu.ucsb.nceas.morpho.datastore.MetacatDataStore;
-import edu.ucsb.nceas.morpho.datastore.FileSystemDataStore;
-import edu.ucsb.nceas.morpho.datastore.CacheAccessException;
-import edu.ucsb.nceas.morpho.datastore.MetacatUploadException;
-import edu.ucsb.nceas.morpho.plugins.XMLFactoryInterface;
-import edu.ucsb.nceas.morpho.util.DocumentNotFoundException;
-import edu.ucsb.nceas.morpho.util.Log;
-import edu.ucsb.nceas.morpho.util.IOUtil;
-import edu.ucsb.nceas.morpho.util.XMLTransformer;
-import edu.ucsb.nceas.morpho.query.LocalQuery;
-
-import java.util.Vector;
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.io.Reader;
+import java.io.StringReader;
+import java.io.Writer;
+import java.nio.charset.Charset;
 import java.util.Hashtable;
 import java.util.Properties;
-import java.util.Enumeration;
 import java.util.StringTokenizer;
-
+import java.util.Vector;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
-import java.io.File;
-import java.io.Reader;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.StringWriter;
-import java.io.StringReader;
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.InputStreamReader;
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import javax.swing.*;
-
-
-import java.net.URL;
-
+import javax.swing.JOptionPane;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.transform.TransformerException;
 
-import org.w3c.dom.Attr;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
+import org.apache.xpath.XPathAPI;
 import org.w3c.dom.Document;
 import org.w3c.dom.DocumentType;
-import org.w3c.dom.NamedNodeMap;
-
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 
-import org.apache.xpath.XPathAPI;
-
 import com.arbortext.catalog.CatalogEntityResolver;
+
+import edu.ucsb.nceas.morpho.Morpho;
+import edu.ucsb.nceas.morpho.datastore.CacheAccessException;
+import edu.ucsb.nceas.morpho.datastore.FileSystemDataStore;
+import edu.ucsb.nceas.morpho.datastore.MetacatDataStore;
+import edu.ucsb.nceas.morpho.framework.ConfigXML;
+import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
+import edu.ucsb.nceas.morpho.framework.UIController;
+import edu.ucsb.nceas.morpho.plugins.XMLFactoryInterface;
+import edu.ucsb.nceas.morpho.query.LocalQuery;
+import edu.ucsb.nceas.morpho.util.DocumentNotFoundException;
+import edu.ucsb.nceas.morpho.util.IOUtil;
+import edu.ucsb.nceas.morpho.util.Log;
+import edu.ucsb.nceas.morpho.util.XMLTransformer;
 
 /**
  * class that represents a data package.
@@ -290,9 +278,9 @@ public class DataPackage implements XMLFactoryInterface
       identifier = identifier.substring(0,paramIndex);
     }
 
-    FileReader reader = null;
+    Reader reader = null;
     try {
-        reader = new FileReader(openAsFile(identifier));
+        reader = new InputStreamReader(new FileInputStream(openAsFile(identifier)), Charset.forName("UTF-8"));
     } catch (Exception ioe) {
         Log.debug(12, "Error instantiating reader "+ioe.getMessage());
         DocumentNotFoundException dnfe =  new DocumentNotFoundException(
@@ -482,7 +470,7 @@ public class DataPackage implements XMLFactoryInterface
 
       try
       { //get the subject files
-        FileReader fr = new FileReader(subfile);
+        Reader fr = new InputStreamReader(new FileInputStream(subfile), Charset.forName("UTF-8"));
         String xmlString = "";
         for(int j=0; j<5; j++)
         {
@@ -553,7 +541,7 @@ public class DataPackage implements XMLFactoryInterface
 
       try
       { //object files
-        FileReader fr = new FileReader(objfile);
+        Reader fr = new InputStreamReader(new FileInputStream(objfile), Charset.forName("UTF-8"));
         String xmlString = "";
         for(int j=0; j<5; j++)
         {
@@ -1035,7 +1023,7 @@ public class DataPackage implements XMLFactoryInterface
           //transform each file individually then concatenate all of the
           //transformations .
 
-            xmlInputReader = new FileReader(openfile);
+            xmlInputReader = new InputStreamReader(new FileInputStream(openfile), Charset.forName("UTF-8"));
 
             XMLTransformer transformer = XMLTransformer.getInstance();
             // add some property for style sheet
@@ -1283,7 +1271,7 @@ public class DataPackage implements XMLFactoryInterface
   //save the StringBuffer to the File path specified
   private void saveToFile(StringBuffer buff, File outputFile) throws IOException
   {
-    FileWriter fileWriter = new FileWriter(outputFile);
+    Writer fileWriter = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(outputFile), Charset.forName("UTF-8")));
     IOUtil.writeToWriter(buff, fileWriter, true);
   }
 
@@ -1395,7 +1383,7 @@ public class DataPackage implements XMLFactoryInterface
       StringBuffer buffer = IOUtil.getAsStringBuffer(styleSheetReader, true);
       // Create a wrter
       String fileName = path + "/"+ EXPORTSYLE + EXPORTSYLEEXTENSION;
-      FileWriter writer = new FileWriter(fileName);
+      Writer writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(fileName), Charset.forName("UTF-8")));
       IOUtil.writeToWriter(buffer, writer, true);
     }
     catch (Exception e)
@@ -1917,7 +1905,7 @@ public class DataPackage implements XMLFactoryInterface
 
       try
       {
-        FileReader fr = new FileReader(subfile);
+        Reader fr = new InputStreamReader(new FileInputStream(subfile), Charset.forName("UTF-8"));
         String xmlString = "";
         for(int j=0; j<5; j++)
         {
@@ -2066,7 +2054,7 @@ public class DataPackage implements XMLFactoryInterface
     if(locLocal) {
       try
       { //save the new package file
-        fsds.saveFile(dataPackageId, new FileReader(newDPTempFile));
+        fsds.saveFile(dataPackageId, new InputStreamReader(new FileInputStream(newDPTempFile), Charset.forName("UTF-8")));
       }
       catch(Exception e)
       {
@@ -2079,7 +2067,7 @@ public class DataPackage implements XMLFactoryInterface
       MetacatDataStore mds = new MetacatDataStore(morpho);
       try
       {
-        mds.saveFile(dataPackageId, new FileReader(newDPTempFile));
+        mds.saveFile(dataPackageId, new InputStreamReader(new FileInputStream(newDPTempFile), Charset.forName("UTF-8")));
       }
       catch(Exception e)
       {

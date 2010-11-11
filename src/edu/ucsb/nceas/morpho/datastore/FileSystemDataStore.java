@@ -31,6 +31,7 @@ import edu.ucsb.nceas.morpho.framework.ConfigXML;
 import edu.ucsb.nceas.morpho.util.Log;
 
 import java.io.*;
+import java.nio.charset.Charset;
 import java.util.*;
 
 /**
@@ -224,12 +225,8 @@ public class FileSystemDataStore extends DataStore
         }
       }
       bsr = new BufferedReader(file);
-      if (charset != null) {
-    	  bwriter = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(savefile), charset));
-      }
-      else {
-    	  bwriter = new BufferedWriter(new FileWriter(savefile));
-      }
+      bwriter = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(savefile), Charset.forName("UTF-8")));
+      
       int d = bsr.read();
       while(d != -1)
       {
@@ -394,7 +391,7 @@ public class FileSystemDataStore extends DataStore
         Morpho morpho = new Morpho(new ConfigXML("./lib/config.xml"));
         FileSystemDataStore fsds = new FileSystemDataStore(morpho);
         File newfile = fsds.openFile(filename);
-        fsds.saveFile(filename2, new FileReader(newfile));
+        fsds.saveFile(filename2, new InputStreamReader(new FileInputStream(newfile), Charset.forName("UTF-8")));
       }
       catch(Exception e)
       {
@@ -408,7 +405,7 @@ public class FileSystemDataStore extends DataStore
         Morpho morpho = new Morpho(new ConfigXML("./lib/config.xml"));
         FileSystemDataStore fsds = new FileSystemDataStore(morpho);
         File newfile = new File(filename);
-        fsds.saveFile(filename2, new FileReader(newfile));
+        fsds.saveFile(filename2, new InputStreamReader(new FileInputStream(newfile), Charset.forName("UTF-8")));
       }
       catch(Exception e)
       {
@@ -448,7 +445,7 @@ public class FileSystemDataStore extends DataStore
       
       //save a temp file so that the id can be put in the file.
       bfile = new BufferedReader(file);
-      bwriter = new BufferedWriter(new FileWriter(savefile));
+      bwriter = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(savefile), Charset.forName("UTF-8")));
       int d = bfile.read();
       while(d != -1)
       {

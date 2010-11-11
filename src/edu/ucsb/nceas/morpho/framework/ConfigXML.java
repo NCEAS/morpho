@@ -54,6 +54,7 @@ import org.xml.sax.SAXException;
 import org.xml.sax.InputSource;
 import com.arbortext.catalog.*;
 import java.io.*;
+import java.nio.charset.Charset;
 import java.util.Vector;
 import java.util.Hashtable;
 import javax.swing.*;
@@ -477,12 +478,12 @@ public class ConfigXML
    else {
     try
     {
-      out = new PrintWriter(new FileWriter(fileName));
+      out = new PrintWriter(new BufferedWriter(new OutputStreamWriter(new FileOutputStream(outfile), Charset.forName("UTF-8"))));
     }
     catch(Exception e)
     {
     }
-    out.println("<?xml version=\"1.0\"?>");
+    out.println("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
     print(nd, out);
     out.close();
    }
@@ -513,7 +514,7 @@ public class ConfigXML
     case Node.DOCUMENT_NODE:
     {
 
-      out.println("<?xml version=\"1.0\"?>");
+      out.println("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
       print(((Document) node).getDocumentElement(), out);
       out.flush();
       break;

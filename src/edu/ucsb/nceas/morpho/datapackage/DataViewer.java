@@ -34,7 +34,9 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
+import java.io.FileInputStream;
+import java.io.InputStreamReader;
+import java.nio.charset.Charset;
 import java.util.EventObject;
 import java.util.StringTokenizer;
 import java.util.Vector;
@@ -64,6 +66,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import edu.ucsb.nceas.morpho.Language;
 import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.framework.ConfigXML;
 import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
@@ -78,8 +81,6 @@ import edu.ucsb.nceas.morpho.util.Log;
 import edu.ucsb.nceas.morpho.util.StateChangeEvent;
 import edu.ucsb.nceas.morpho.util.StateChangeMonitor;
 import edu.ucsb.nceas.morpho.util.StoreStateChangeEvent;
-
-import edu.ucsb.nceas.morpho.Language;//pstango 2010/03/15
 
 /*
  * The DataViewer class is a panel that displays a text-based table
@@ -1067,7 +1068,7 @@ public class DataViewer extends javax.swing.JPanel
         int pos;
         String temp, temp1;
         try{
-          BufferedReader in = new BufferedReader(new FileReader(f));
+          BufferedReader in = new BufferedReader(new InputStreamReader(new FileInputStream(f), Charset.forName("UTF-8")));
           nlines = 0;
           try {
             while (((temp = in.readLine())!=null)&&(nlines<nlines_max)) {
@@ -1083,7 +1084,7 @@ public class DataViewer extends javax.swing.JPanel
         lines = new String[nlines];
           // now read again since we know how many lines
         try{
-          BufferedReader in1 = new BufferedReader(new FileReader(f));
+          BufferedReader in1 = new BufferedReader(new InputStreamReader(new FileInputStream(f), Charset.forName("UTF-8")));
           try {
             for (i=0;i<nlines;i++) {
                 temp = in1.readLine();

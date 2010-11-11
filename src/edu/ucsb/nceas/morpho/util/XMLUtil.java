@@ -161,7 +161,7 @@ public class XMLUtil
     case Node.DOCUMENT_NODE:
     {
 
-      out.println("<?xml version=\"1.0\"?>");
+      out.println("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
       print(((Document) node).getDocumentElement(), out);
       out.flush();
       break;

@@ -27,32 +27,23 @@
 
 package edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages;
 
-import edu.ucsb.nceas.morpho.Morpho;
-import edu.ucsb.nceas.morpho.datapackage.AccessionNumber;
-import edu.ucsb.nceas.morpho.datastore.FileSystemDataStore;
-import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
-import edu.ucsb.nceas.morpho.framework.AbstractUIPage;
-import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WidgetFactory;
-import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardContainerFrame;
-import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardSettings;
-import edu.ucsb.nceas.morpho.util.Base64;
-import edu.ucsb.nceas.morpho.util.Log;
-import edu.ucsb.nceas.morpho.util.Util;
-import edu.ucsb.nceas.utilities.OrderedMap;
-
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.FileInputStream;
-import java.io.IOException;
-
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.BufferedWriter;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.io.Reader;
+import java.io.Writer;
+import java.nio.charset.Charset;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -63,7 +54,19 @@ import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JTextField;
 
-import edu.ucsb.nceas.morpho.Language;//pstango 2010/03/15
+import edu.ucsb.nceas.morpho.Language;
+import edu.ucsb.nceas.morpho.Morpho;
+import edu.ucsb.nceas.morpho.datapackage.AccessionNumber;
+import edu.ucsb.nceas.morpho.datastore.FileSystemDataStore;
+import edu.ucsb.nceas.morpho.framework.AbstractUIPage;
+import edu.ucsb.nceas.morpho.plugins.DataPackageWizardInterface;
+import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WidgetFactory;
+import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardContainerFrame;
+import edu.ucsb.nceas.morpho.plugins.datapackagewizard.WizardSettings;
+import edu.ucsb.nceas.morpho.util.Base64;
+import edu.ucsb.nceas.morpho.util.Log;
+import edu.ucsb.nceas.morpho.util.Util;
+import edu.ucsb.nceas.utilities.OrderedMap;
 
 public class DataLocation extends AbstractUIPage {
 
@@ -775,7 +778,7 @@ public class DataLocation extends AbstractUIPage {
 	        File emptyDataFile = null;
 	        try {
 	          emptyDataFile = File.createTempFile(TMPFILENAME, null);
-	          FileWriter fileWriter = new FileWriter(emptyDataFile);
+	          Writer fileWriter = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(emptyDataFile), Charset.forName("UTF-8")));
 	          fileWriter.write("");
 	        } catch (IOException ex) {
 	          Log.debug(1, "error - cannot create a new empty data file!");
@@ -1224,7 +1227,7 @@ public class DataLocation extends AbstractUIPage {
       return null;
     }
     try {
-      FileReader fsr = new FileReader(f);
+      Reader fsr = new InputStreamReader(new FileInputStream(f), Charset.forName("UTF-8"));
       ByteArrayOutputStream baos = new ByteArrayOutputStream();
       int chr = 0;
       while ((chr = fsr.read()) != -1) {
@@ -1344,7 +1347,7 @@ public class DataLocation extends AbstractUIPage {
 	       try 
 	       {
 	         emptyDataFile = File.createTempFile(TMPFILENAME, null);
-	         FileWriter fileWriter = new FileWriter(emptyDataFile);
+	         Writer fileWriter = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(emptyDataFile), Charset.forName("UTF-8")));
 	         fileWriter.write("");
 	       } 
 	       catch (IOException ex) 

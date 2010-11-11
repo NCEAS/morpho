@@ -45,6 +45,7 @@ import com.arbortext.catalog.*;
 
 import java.util.*;
 import java.io.*;
+import java.nio.charset.Charset;
 
 /**
  * This class implements a collection of triples which make up all of the
@@ -282,7 +283,7 @@ public class TripleCollection
   public String toXML(String root)
   {
     StringBuffer sb = new StringBuffer();
-    sb.append("<?xml version=\"1.0\"?>");
+    sb.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
     if(root != null)
     {
       sb.append("<" + root + ">");
@@ -385,7 +386,7 @@ public class TripleCollection
     
     try
     {
-      FileReader xml = new FileReader(new File(filename));
+      Reader xml = new InputStreamReader(new FileInputStream(filename), Charset.forName("UTF-8"));
       TripleCollection tc = new TripleCollection(xml);
       System.out.println("Triples are:" );
       System.out.println(tc.toString());

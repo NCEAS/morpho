@@ -119,6 +119,7 @@ import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
 import java.net.URL;
+import java.nio.charset.Charset;
 import java.util.*;
 import javax.swing.*;
 import javax.swing.*;
@@ -671,7 +672,7 @@ public class DocFrame extends javax.swing.JFrame
      this();
      this.file = file;
      try {
-       BufferedReader in = new BufferedReader(new FileReader(file));
+       BufferedReader in = new BufferedReader(new InputStreamReader(new FileInputStream(file), Charset.forName("UTF-8")));
        StringWriter out = new StringWriter();
        int c;
        while ((c = in.read()) != -1) {
@@ -1000,8 +1001,11 @@ public class DocFrame extends javax.swing.JFrame
 // changed to look in lib directory to make it easier for user to customize
 //      BufferedReader in = new BufferedReader(new InputStreamReader(
 //                        cl.getResourceAsStream(rootname)));
-      BufferedReader in = new BufferedReader(new FileReader(
-                        "./lib/"+rootname));
+      BufferedReader in = new BufferedReader(
+    		  new InputStreamReader(
+    				  new FileInputStream(
+    						  "./lib/"+rootname), 
+    						  Charset.forName("UTF-8")));
       StringWriter out = new StringWriter();
       int c;
       while ((c = in.read()) != -1) { out.write(c);}
@@ -1142,8 +1146,9 @@ public class DocFrame extends javax.swing.JFrame
 // changed to look in lib directory to make it easier for user to customize
 //      BufferedReader in = new BufferedReader(new InputStreamReader(
 //                        cl.getResourceAsStream(rootname)));
-      BufferedReader in = new BufferedReader(new FileReader(
-                        "./lib/"+rootname));
+      BufferedReader in = new BufferedReader(
+    		  new InputStreamReader(
+    				  new FileInputStream("./lib/"+rootname), Charset.forName("UTF-8")));
       StringWriter out = new StringWriter();
       int c;
       while ((c = in.read()) != -1) { out.write(c);}
@@ -1941,7 +1946,7 @@ public class DocFrame extends javax.swing.JFrame
     trimAttributeNames(clone);  // remove extra info in attribute nodes
     File outputFile = new File(fn);
     try {
-      FileWriter out = new FileWriter(outputFile);
+      Writer out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(outputFile), Charset.forName("UTF-8")));
       tempStack = new Stack();
       start = new StringBuffer();
       if (trimFlag) {
@@ -1964,8 +1969,8 @@ public class DocFrame extends javax.swing.JFrame
         }
         doctype = "<!DOCTYPE " + rootNodeName + " PUBLIC " + temp + " " + temp1 + ">\n";
       }
-//      str1 = "<?xml version=\"1.0\"?>\n" + doctype + str1;
-      str1 = "<?xml version=\"1.0\"?>\n" + str1;
+//      str1 = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" + doctype + str1;
+      str1 = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" + str1;
 
       out.write(str1);
       out.close();
@@ -2009,7 +2014,7 @@ public class DocFrame extends javax.swing.JFrame
       doctype = "<!DOCTYPE " + rootNodeName + " PUBLIC " + temp + " " +
                 temp1 + ">\n";
     }
-    str1 = "<?xml version=\"1.0\"?>\n" + doctype + str1;
+    str1 = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" + doctype + str1;
 
     return str1;
   }
@@ -3058,7 +3063,7 @@ public class DocFrame extends javax.swing.JFrame
     treeModel = (DefaultTreeModel)tree.getModel();
     rootNode = (DefaultMutableTreeNode)treeModel.getRoot();
     String xmlout = writeXMLString(rootNode, returnErrorMessage);
-    if(xmlout.indexOf("<?xml version=\"1.0\"?>")<0){
+    if(xmlout.indexOf("<?xml version=\"1.0\"")<0){
       Log.debug(5, "Unable to trim following nodes: " + xmlout +
           "\n\nPlease check if all the required values are entered "
          + "and that there are no empty fields");
@@ -3170,7 +3175,7 @@ public class DocFrame extends javax.swing.JFrame
       //this is where file is saved
       StringReader sr = null;
       try{
-        FileWriter w = new FileWriter(savefile);
+        Writer w = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(savefile), Charset.forName("UTF-8")));
         sr = new StringReader(xmlout);
         int c;
         while ((c = sr.read())!=-1)
@@ -3243,7 +3248,7 @@ public class DocFrame extends javax.swing.JFrame
       //this is where file is opened
       StringWriter sw = null;
       try{
-        FileReader r = new FileReader(openfile);
+        Reader r = new InputStreamReader(new FileInputStream(openfile), Charset.forName("UTF-8"));
         sw = new StringWriter();
         int c;
         while ((c = r.read())!=-1)
@@ -3276,7 +3281,7 @@ public class DocFrame extends javax.swing.JFrame
     //this is where file is opened
     StringWriter sw = null;
     try{
-      FileReader r = new FileReader(openfile);
+      Reader r = new InputStreamReader(new FileInputStream(openfile), Charset.forName("UTF-8"));
       sw = new StringWriter();
       int c;
       while ((c = r.read())!=-1)
