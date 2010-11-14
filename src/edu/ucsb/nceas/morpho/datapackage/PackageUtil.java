@@ -26,40 +26,51 @@
 
 package edu.ucsb.nceas.morpho.datapackage;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.transform.TransformerException;
-import org.apache.xpath.XPathAPI;
-import org.w3c.dom.Attr;
-import org.w3c.dom.NamedNodeMap;
-import org.w3c.dom.Document;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.w3c.dom.DocumentType;
-import org.xml.sax.SAXException;
-import org.xml.sax.InputSource;
-
-import edu.ucsb.nceas.morpho.Morpho;
-import edu.ucsb.nceas.morpho.framework.ConfigXML;
-import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
-import edu.ucsb.nceas.morpho.query.LocalQuery;
-import edu.ucsb.nceas.morpho.util.XMLUtil;
-
-import edu.ucsb.nceas.morpho.framework.EditorInterface;
-import edu.ucsb.nceas.morpho.datastore.FileSystemDataStore;
-import edu.ucsb.nceas.morpho.datastore.MetacatDataStore;
-import edu.ucsb.nceas.morpho.datastore.CacheAccessException;
-import edu.ucsb.nceas.morpho.plugins.ServiceController;
-import edu.ucsb.nceas.morpho.plugins.ServiceProvider;
-import edu.ucsb.nceas.morpho.plugins.ServiceNotHandledException;
-import edu.ucsb.nceas.morpho.util.Log;
-
-import java.io.*;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.io.Reader;
+import java.io.StringReader;
+import java.io.Writer;
 import java.net.URL;
 import java.nio.charset.Charset;
-import java.util.*;
-import java.lang.*;
+import java.util.Hashtable;
+import java.util.Vector;
 
-import com.arbortext.catalog.*;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.transform.TransformerException;
+
+import org.apache.xpath.XPathAPI;
+import org.w3c.dom.Attr;
+import org.w3c.dom.Document;
+import org.w3c.dom.DocumentType;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
+
+import com.arbortext.catalog.Catalog;
+import com.arbortext.catalog.CatalogEntityResolver;
+
+import edu.ucsb.nceas.morpho.Morpho;
+import edu.ucsb.nceas.morpho.datastore.CacheAccessException;
+import edu.ucsb.nceas.morpho.datastore.FileSystemDataStore;
+import edu.ucsb.nceas.morpho.datastore.MetacatDataStore;
+import edu.ucsb.nceas.morpho.framework.ConfigXML;
+import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
+import edu.ucsb.nceas.morpho.framework.EditorInterface;
+import edu.ucsb.nceas.morpho.plugins.ServiceController;
+import edu.ucsb.nceas.morpho.plugins.ServiceNotHandledException;
+import edu.ucsb.nceas.morpho.plugins.ServiceProvider;
+import edu.ucsb.nceas.morpho.query.LocalQuery;
+import edu.ucsb.nceas.morpho.util.Log;
+import edu.ucsb.nceas.morpho.util.XMLUtil;
 
 /**
  * This class contains static utility methods that are used throughtout the
@@ -973,22 +984,22 @@ public class PackageUtil
    */
   static public void saveDOM(String fileName, Document doc, String doctype, Morpho morpho)
   { 
-    PrintWriter out = null;
+    Writer out = null;
     Node nd = doc.getDocumentElement();
     File outfile = new File(fileName);
     try
     {
-      out = new PrintWriter(new OutputStreamWriter(new FileOutputStream(fileName), Charset.forName("UTF-8")));
+      out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(fileName), Charset.forName("UTF-8")));
+      out.write("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
+      String dt = doctype;
+      if (doctype==null) dt = "";
+      out.write(dt);
+      print(nd, out);
+      out.close(); 
     }
-    catch(Exception e)
-    {
+    catch(Exception e) {
+    	e.printStackTrace();
     }
-    out.println("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
-    String dt = doctype;
-    if (doctype==null) dt = "";
-    out.println(dt);
-    print(nd, out);
-    out.close(); 
   }
 
   /**
@@ -999,7 +1010,7 @@ public class PackageUtil
    * @param node node usually set to the 'doc' node for complete XML file
    * re-write
    */
-  static private void print(Node node, PrintWriter out)
+  static private void print(Node node, Writer out) throws IOException
   {
 
     // is there anything to do?
@@ -1015,7 +1026,7 @@ public class PackageUtil
     case Node.DOCUMENT_NODE:
     {
 
-      out.println("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
+      out.write("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
       print(((Document) node).getDocumentElement(), out);
       out.flush();
       break;
@@ -1024,19 +1035,19 @@ public class PackageUtil
       // print element with attributes
     case Node.ELEMENT_NODE:
     {
-      out.print('<');
-      out.print(node.getNodeName());
+      out.write('<');
+      out.write(node.getNodeName());
       Attr attrs[] = sortAttributes(node.getAttributes());
       for (int i = 0; i < attrs.length; i++)
       {
         Attr attr = attrs[i];
-        out.print(' ');
-        out.print(attr.getNodeName());
-        out.print("=\"");
-        out.print(XMLUtil.normalize(attr.getNodeValue()));
-        out.print('"');
+        out.write(' ');
+        out.write(attr.getNodeName());
+        out.write("=\"");
+        out.write(XMLUtil.normalize(attr.getNodeValue()));
+        out.write('"');
       }
-      out.print('>');
+      out.write('>');
       NodeList children = node.getChildNodes();
       if (children != null)
       {
@@ -1052,9 +1063,9 @@ public class PackageUtil
       // handle entity reference nodes
     case Node.ENTITY_REFERENCE_NODE:
     {
-      out.print('&');
-      out.print(node.getNodeName());
-      out.print(';');
+      out.write('&');
+      out.write(node.getNodeName());
+      out.write(';');
 
       break;
     }
@@ -1062,9 +1073,9 @@ public class PackageUtil
       // print cdata sections
     case Node.CDATA_SECTION_NODE:
     {
-      out.print("<![CDATA[");
-      out.print(node.getNodeValue());
-      out.print("]]>");
+      out.write("<![CDATA[");
+      out.write(node.getNodeValue());
+      out.write("]]>");
 
       break;
     }
@@ -1072,31 +1083,31 @@ public class PackageUtil
       // print text
     case Node.TEXT_NODE:
     {
-      out.print(XMLUtil.normalize(node.getNodeValue()));
+      out.write(XMLUtil.normalize(node.getNodeValue()));
       break;
     }
 
       // print processing instruction
     case Node.PROCESSING_INSTRUCTION_NODE:
     {
-      out.print("<?");
-      out.print(node.getNodeName());
+      out.write("<?");
+      out.write(node.getNodeName());
       String data = node.getNodeValue();
       if (data != null && data.length() > 0)
       {
-        out.print(' ');
-        out.print(data);
+        out.write(' ');
+        out.write(data);
       }
-      out.print("?>");
+      out.write("?>");
       break;
     }
     }
 
     if (type == Node.ELEMENT_NODE)
     {
-      out.print("</");
-      out.print(node.getNodeName());
-      out.println('>');
+      out.write("</");
+      out.write(node.getNodeName());
+      out.write('>');
     }
 
     out.flush();

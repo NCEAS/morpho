@@ -26,38 +26,42 @@
 
 package edu.ucsb.nceas.morpho.framework;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStreamWriter;
+import java.io.StringReader;
+import java.io.StringWriter;
+import java.io.Writer;
+import java.nio.charset.Charset;
+import java.util.Hashtable;
+import java.util.Vector;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.stream.StreamSource;
+
+import org.apache.xpath.XPathAPI;
+import org.w3c.dom.Attr;
+import org.w3c.dom.Document;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
+
 import edu.ucsb.nceas.morpho.Morpho;
 import edu.ucsb.nceas.morpho.util.Log;
 import edu.ucsb.nceas.morpho.util.XMLUtil;
-
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.stream.StreamSource;
-import javax.xml.transform.stream.StreamResult;
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerConfigurationException;
-import javax.xml.transform.dom.DOMSource;
-
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.transform.TransformerException;
-import org.apache.xpath.XPathAPI;
-import org.w3c.dom.Attr;
-import org.w3c.dom.NamedNodeMap;
-import org.w3c.dom.NodeList;
-import org.w3c.dom.Document;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
-import org.xml.sax.InputSource;
-import com.arbortext.catalog.*;
-import java.io.*;
-import java.nio.charset.Charset;
-import java.util.Vector;
-import java.util.Hashtable;
-import javax.swing.*;
 
 
 /**
@@ -93,7 +97,7 @@ public class ConfigXML
   /**
    * Print writer (output)
    */
-  private PrintWriter out;
+  private Writer out;
 
   private static String configDirectory = ".morpho";
 
@@ -456,10 +460,16 @@ public class ConfigXML
 
   /**
    * Save the configuration file
+ * @throws IOException 
    */
   public void save()
   {
-    saveDOM(root);
+    try {
+		saveDOM(root);
+	} catch (IOException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	}
   }
 
   /**
@@ -469,7 +479,7 @@ public class ConfigXML
    *
    * @param nd node (usually the document root)
    */
-  public void saveDOM(Node nd)
+  public void saveDOM(Node nd) throws IOException
   {
     File outfile = new File(fileName);
    if (!outfile.canWrite()) {
@@ -478,12 +488,12 @@ public class ConfigXML
    else {
     try
     {
-      out = new PrintWriter(new BufferedWriter(new OutputStreamWriter(new FileOutputStream(outfile), Charset.forName("UTF-8"))));
+      out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(outfile), Charset.forName("UTF-8")));
     }
     catch(Exception e)
     {
     }
-    out.println("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
+    out.write("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
     print(nd, out);
     out.close();
    }
@@ -498,7 +508,7 @@ public class ConfigXML
    * @param node node usually set to the 'doc' node for complete XML file
    * re-write
    */
-  public void print(Node node, PrintWriter out)
+  public void print(Node node, Writer out) throws IOException
   {
 
     // is there anything to do?
@@ -514,7 +524,7 @@ public class ConfigXML
     case Node.DOCUMENT_NODE:
     {
 
-      out.println("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
+      out.write("<?xml version=\"1.0\" encoding=\"UTF-8\"?\n>");
       print(((Document) node).getDocumentElement(), out);
       out.flush();
       break;
@@ -523,19 +533,19 @@ public class ConfigXML
       // print element with attributes
     case Node.ELEMENT_NODE:
     {
-      out.print('<');
-      out.print(node.getNodeName());
+      out.write('<');
+      out.write(node.getNodeName());
       Attr attrs[] = sortAttributes(node.getAttributes());
       for (int i = 0; i < attrs.length; i++)
       {
         Attr attr = attrs[i];
-        out.print(' ');
-        out.print(attr.getNodeName());
-        out.print("=\"");
-        out.print(XMLUtil.normalize(attr.getNodeValue()));
-        out.print('"');
+        out.write(' ');
+        out.write(attr.getNodeName());
+        out.write("=\"");
+        out.write(XMLUtil.normalize(attr.getNodeValue()));
+        out.write('"');
       }
-      out.print('>');
+      out.write('>');
       NodeList children = node.getChildNodes();
       if (children != null)
       {
@@ -551,9 +561,9 @@ public class ConfigXML
       // handle entity reference nodes
     case Node.ENTITY_REFERENCE_NODE:
     {
-      out.print('&');
-      out.print(node.getNodeName());
-      out.print(';');
+      out.write('&');
+      out.write(node.getNodeName());
+      out.write(';');
 
       break;
     }
@@ -561,9 +571,9 @@ public class ConfigXML
       // print cdata sections
     case Node.CDATA_SECTION_NODE:
     {
-      out.print("<![CDATA[");
-      out.print(node.getNodeValue());
-      out.print("]]>");
+      out.write("<![CDATA[");
+      out.write(node.getNodeValue());
+      out.write("]]>");
 
       break;
     }
@@ -571,31 +581,31 @@ public class ConfigXML
       // print text
     case Node.TEXT_NODE:
     {
-      out.print(XMLUtil.normalize(node.getNodeValue()));
+      out.write(XMLUtil.normalize(node.getNodeValue()));
       break;
     }
 
       // print processing instruction
     case Node.PROCESSING_INSTRUCTION_NODE:
     {
-      out.print("<?");
-      out.print(node.getNodeName());
+      out.write("<?");
+      out.write(node.getNodeName());
       String data = node.getNodeValue();
       if (data != null && data.length() > 0)
       {
-        out.print(' ');
-        out.print(data);
+        out.write(' ');
+        out.write(data);
       }
-      out.print("?>");
+      out.write("?>");
       break;
     }
     }
 
     if (type == Node.ELEMENT_NODE)
     {
-      out.print("</");
-      out.print(node.getNodeName());
-      out.print(">\n");
+      out.write("</");
+      out.write(node.getNodeName());
+      out.write(">\n");
     }
 
     out.flush();
@@ -728,7 +738,11 @@ public class ConfigXML
   public String toString()
   {
     StringWriter sw = new StringWriter();
-    print(root, new PrintWriter(sw));
+	try {
+		print(root, new BufferedWriter(sw));
+	} catch (IOException e) {
+		e.printStackTrace();
+	}
     return sw.toString();
   }
 }

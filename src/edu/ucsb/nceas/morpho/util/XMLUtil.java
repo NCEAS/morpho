@@ -26,19 +26,23 @@
 
 package edu.ucsb.nceas.morpho.util;
 
-import org.apache.xpath.XPathAPI;
+import java.io.BufferedWriter;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.UnsupportedEncodingException;
+import java.io.Writer;
+import java.nio.charset.Charset;
+
 import org.w3c.dom.Attr;
-import org.w3c.dom.NamedNodeMap;
-import org.w3c.dom.NodeList;
 import org.w3c.dom.Document;
+import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
-import org.xml.sax.InputSource;
-import java.io.*;
 
 public class XMLUtil
 {
+	
     /** Normalizes the given string. */
     public static String normalize(Object ss) {
         String s = "";
@@ -97,9 +101,13 @@ public class XMLUtil
                       // otherwise skip
                     }
                     else {
-                        str.append("&#");
-                        str.append(Integer.toString(ch));
-                        str.append(';');
+                    	// do not do escape these now that we are using UTF-8
+                    	str.append(ch);
+                    	// commenting this out in favor of UTF-8 encoding, BRL 11/12/2010
+                    	// see http://bugzilla.ecoinformatics.org/show_bug.cgi?id=5238
+                        //str.append("&#");
+                        //str.append(Integer.toString(ch));
+                        //str.append(';');
                     }
                 }
             }
@@ -116,23 +124,29 @@ public class XMLUtil
     public static String getDOMTreeAsString(Node node) {
       if (node==null) return null;
       ByteArrayOutputStream baos = new ByteArrayOutputStream();
-      PrintWriter printWriter = new PrintWriter(baos);
+      Writer writer = new BufferedWriter(new OutputStreamWriter(baos, Charset.forName("UTF-8")));
 
       try {
-        print(node, printWriter);
+        print(node, writer);
       } catch (Exception e) {
         String msg = "getDOMTreeAsString() - unexpected Exception: "+e+"\n";
-        printWriter.println(msg);
-        e.printStackTrace(printWriter);
+        //printWriter.write(msg);
+        e.printStackTrace();
       } finally {
         try {
-          printWriter.flush();
+          writer.flush();
           baos.flush();
           baos.close();
-          printWriter.close();
+          writer.close();
         } catch (IOException ioe) {}
       }
-      return baos.toString();
+      String retString = null;
+      try {
+		retString = baos.toString(Charset.forName("UTF-8").name());
+	} catch (UnsupportedEncodingException e) {
+		e.printStackTrace();
+	}
+      return retString;
   }
 
 
@@ -145,7 +159,7 @@ public class XMLUtil
    * @param node node usually set to the 'doc' node for complete XML file
    * re-write
    */
-  public static void print(Node node, PrintWriter out)
+  public static void print(Node node, Writer out) throws IOException
   {
 
     // is there anything to do?
@@ -161,7 +175,7 @@ public class XMLUtil
     case Node.DOCUMENT_NODE:
     {
 
-      out.println("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
+      out.write("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
       print(((Document) node).getDocumentElement(), out);
       out.flush();
       break;
@@ -170,19 +184,19 @@ public class XMLUtil
       // print element with attributes
     case Node.ELEMENT_NODE:
     {
-      out.print('<');
-      out.print(node.getNodeName());
+      out.write('<');
+      out.write(node.getNodeName());
       Attr attrs[] = sortAttributes(node.getAttributes());
       for (int i = 0; i < attrs.length; i++)
       {
         Attr attr = attrs[i];
-        out.print(' ');
-        out.print(attr.getNodeName());
-        out.print("=\"");
-        out.print(XMLUtil.normalize(attr.getNodeValue()));
-        out.print('"');
+        out.write(' ');
+        out.write(attr.getNodeName());
+        out.write("=\"");
+        out.write(XMLUtil.normalize(attr.getNodeValue()));
+        out.write('"');
       }
-      out.print('>');
+      out.write('>');
       NodeList children = node.getChildNodes();
       if (children != null)
       {
@@ -198,9 +212,9 @@ public class XMLUtil
       // handle entity reference nodes
     case Node.ENTITY_REFERENCE_NODE:
     {
-      out.print('&');
-      out.print(node.getNodeName());
-      out.print(';');
+      out.write('&');
+      out.write(node.getNodeName());
+      out.write(';');
 
       break;
     }
@@ -208,9 +222,9 @@ public class XMLUtil
       // print cdata sections
     case Node.CDATA_SECTION_NODE:
     {
-      out.print("<![CDATA[");
-      out.print(node.getNodeValue());
-      out.print("]]>");
+      out.write("<![CDATA[");
+      out.write(node.getNodeValue());
+      out.write("]]>");
 
       break;
     }
@@ -218,31 +232,31 @@ public class XMLUtil
       // print text
     case Node.TEXT_NODE:
     {
-      out.print(XMLUtil.normalize(node.getNodeValue()));
+      out.write(XMLUtil.normalize(node.getNodeValue()));
       break;
     }
 
       // print processing instruction
     case Node.PROCESSING_INSTRUCTION_NODE:
     {
-      out.print("<?");
-      out.print(node.getNodeName());
+      out.write("<?");
+      out.write(node.getNodeName());
       String data = node.getNodeValue();
       if (data != null && data.length() > 0)
       {
-        out.print(' ');
-        out.print(data);
+        out.write(' ');
+        out.write(data);
       }
-      out.print("?>");
+      out.write("?>");
       break;
     }
     }
 
     if (type == Node.ELEMENT_NODE)
     {
-      out.print("</");
-      out.print(node.getNodeName());
-      out.print(">\n");
+      out.write("</");
+      out.write(node.getNodeName());
+      out.write(">\n");
     }
 
     out.flush();
