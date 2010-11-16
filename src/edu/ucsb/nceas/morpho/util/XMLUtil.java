@@ -101,13 +101,17 @@ public class XMLUtil
                       // otherwise skip
                     }
                     else {
-                    	// do not do escape these now that we are using UTF-8
-                    	str.append(ch);
-                    	// commenting this out in favor of UTF-8 encoding, BRL 11/12/2010
-                    	// see http://bugzilla.ecoinformatics.org/show_bug.cgi?id=5238
-                        //str.append("&#");
-                        //str.append(Integer.toString(ch));
-                        //str.append(';');
+                    	boolean escape = true;
+                    	if (!escape) {
+	                    	// do not do escape for true UTF-8 encoding
+	                    	str.append(ch);
+                    	} else {
+                    		// escape the special characters
+	                    	// see http://bugzilla.ecoinformatics.org/show_bug.cgi?id=5238
+	                        str.append("&#");
+	                        str.append(Integer.toString(ch));
+	                        str.append(';');
+                    	}
                     }
                 }
             }
