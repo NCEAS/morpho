@@ -118,7 +118,7 @@ import edu.ucsb.nceas.morpho.util.Util;
 public class Morpho
 {
     /** The version of this release of Morpho */
-    public static String VERSION = "1.8.1-RC5";
+    public static String VERSION = "1.8.1-RC6";
 
     /** Constant to indicate a separator should precede an action */
     public static String SEPARATOR_PRECEDING = "separator_preceding";
