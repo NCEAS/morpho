@@ -143,7 +143,7 @@ public class TextImportAttribute extends AbstractUIPage
 			   model.setColumnSelectionAllowed(true);
 			   model.setSelectionModel(dlsm);
 			   table.setColumnModel(model);
-			   table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+			   table.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
 			   table.doLayout();
 		   }
 		   
@@ -156,7 +156,7 @@ public class TextImportAttribute extends AbstractUIPage
 	   {
 		    this.setLayout(new BorderLayout());
 		    JPanel vbox = this;
-		    columnDataScrollPanel.setPreferredSize(new Dimension(80, 4000));
+		    columnDataScrollPanel.setPreferredSize(new Dimension(120, 4000));
 		    //updateColumnDataPanel()
 		    vbox.add(columnDataScrollPanel, BorderLayout.WEST);
 		    attributePage = (AttributePage) wizardPageLib.getPage(DataPackageWizardInterface.ATTRIBUTE_PAGE);
