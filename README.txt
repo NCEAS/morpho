@@ -91,8 +91,10 @@ Version History
 ***
 Version 1.8.1 is a significant update to 1.8.0 with new features and bug fixes. 
 	Multi-lingual support has been added in this release, and language packs for English, Spanish, Portuguese, French, Japanese, and Chinese are included. 
+	Explicit UTF-8 character encoding is used across the application.
 	Data entity management has been enhanced to allow import and export of non-tabular data files as well as the ability to view and convert these other data entities into data tables with attribute-level metadata descriptions.
 	Data packages can now be directly retrieved from the network or the local store using their Id.
+	Search filter for users in access control wizard
 	Important bug fixes include: 
 		-handling access control permissions in cases where there are mixed allow/deny rules
 		-effectively capturing consecutive column delimiters when importing data tables
