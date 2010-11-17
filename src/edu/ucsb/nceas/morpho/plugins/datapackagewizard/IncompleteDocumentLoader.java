@@ -506,7 +506,9 @@ public class IncompleteDocumentLoader
       ServiceProvider provider =
             services.getServiceProvider(DataPackageInterface.class);
       DataPackageInterface dataPackage = (DataPackageInterface)provider;
-      boolean visible = false;
+      // make it visible
+      // see http://bugzilla.ecoinformatics.org/show_bug.cgi?id=5245
+      boolean visible = true;
       frame = dataPackage.openNewDataPackage(adp, null, visible);
             
      } 
