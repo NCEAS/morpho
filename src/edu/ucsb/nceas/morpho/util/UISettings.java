@@ -204,9 +204,9 @@ public class UISettings
 
     public static final int WIZARD_Y_COORD = 100;
 
-    public static final int WIZARD_WIDTH   = 800;
+    public static final int WIZARD_WIDTH   = 900;
 
-    public static final int WIZARD_HEIGHT  = 600;
+    public static final int WIZARD_HEIGHT  = 750;
 
     public static final int DIALOG_SMALLER_THAN_WIZARD_BY = 30;
 
@@ -217,7 +217,7 @@ public class UISettings
         = WIZARD_HEIGHT - DIALOG_SMALLER_THAN_WIZARD_BY;
 
     public static final int POPUPDIALOG_FOR_ATTR_HEIGHT
-        = 130 + POPUPDIALOG_HEIGHT;
+        = 0 + POPUPDIALOG_HEIGHT;
 
 
 
