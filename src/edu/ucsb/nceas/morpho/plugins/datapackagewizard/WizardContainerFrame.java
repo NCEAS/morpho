@@ -300,7 +300,7 @@ public class WizardContainerFrame
     {
   	  if(fileID != null && adp!= null && status != null && status.equals(IncompleteDocSettings.ENTITYWIZARD))
   	  {
-  		  String emlDoc = XMLUtilities.getDOMTreeAsString(adp.getMetadataNode(), false);
+  		  String emlDoc = XMLUtil.getDOMTreeAsString(adp.getMetadataNode());
   		  String emlDocWithIncompleteInfo = addEntityWizardIncompleteInfo(emlDoc);
   		  //System.out.println("the original eml "+emlDoc);
   		  //System.out.println("the eml after appending incomplete info  "+emlDoc);
@@ -308,7 +308,7 @@ public class WizardContainerFrame
   	  }
   	  else if(fileID != null && adp!= null && status != null && status.equals(IncompleteDocSettings.CODEDEFINITIONWIZARD))
       {
-        String emlDoc = XMLUtilities.getDOMTreeAsString(adp.getMetadataNode(), false);
+        String emlDoc = XMLUtil.getDOMTreeAsString(adp.getMetadataNode());
         String emlDocWithIncompleteInfo = addCodeDefinitionWizardIncompleteInfo(emlDoc);
         //System.out.println("the original eml "+emlDoc);
         //System.out.println("the eml after appending incomplete info  "+emlDoc);
@@ -1317,7 +1317,7 @@ public class WizardContainerFrame
 			  try
 			  {
 			     // for datapackage wizard
-		         emlDoc = XMLUtilities.getDOMTreeAsString(temp, false);
+		         emlDoc = XMLUtil.getDOMTreeAsString(temp);
 		         //System.out.println("the original eml "+emlDoc);
 		         emlDoc = addPackageWizardIncompleteInfo(emlDoc);
 		      Log.debug(40, "The partial eml document is :\n"+emlDoc);
@@ -1359,7 +1359,7 @@ public class WizardContainerFrame
 				  }
 				  try
 				  {
-				    emlDoc = XMLUtilities.getDOMTreeAsString(adp.getMetadataNode(), false);
+				    emlDoc = XMLUtil.getDOMTreeAsString(adp.getMetadataNode());
 				    if(status.equals(IncompleteDocSettings.ENTITYWIZARD))
 				    {
 				      emlDoc = addEntityWizardIncompleteInfo(emlDoc);
@@ -1414,7 +1414,7 @@ public class WizardContainerFrame
   {
 	  FileSystemDataStore store = new FileSystemDataStore(Morpho.thisStaticInstance);
 	  StringReader reader = new StringReader(xml);
-	  store.saveIncompleteDataFile(docid, reader);
+	  store.saveIncompleteFile(docid, reader);
   }
   
   /*

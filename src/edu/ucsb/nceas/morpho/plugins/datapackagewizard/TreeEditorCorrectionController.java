@@ -53,6 +53,7 @@ import edu.ucsb.nceas.morpho.plugins.ServiceController;
 import edu.ucsb.nceas.morpho.plugins.ServiceNotHandledException;
 import edu.ucsb.nceas.morpho.plugins.ServiceProvider;
 import edu.ucsb.nceas.morpho.util.Log;
+import edu.ucsb.nceas.morpho.util.XMLUtil;
 import edu.ucsb.nceas.utilities.XMLUtilities;
 
 import org.w3c.dom.Node;
@@ -180,7 +181,7 @@ public class TreeEditorCorrectionController
 				  //Tree editors is done. Tree editor correction is after page wizard correction so we can display the data now
 				  // and we also can dispose the old frame
 				  Log.debug(45, "\n\n********** Correction Wizard by tree editor finished: DOM:");
-		          Log.debug(45, XMLUtilities.getDOMTreeAsString(dataPackage.getMetadataNode(), false));
+		          Log.debug(45, XMLUtil.getDOMTreeAsString(dataPackage.getMetadataNode()));
 		          try 
 		          {
 		        	 

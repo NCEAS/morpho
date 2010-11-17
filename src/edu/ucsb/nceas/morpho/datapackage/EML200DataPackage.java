@@ -325,7 +325,7 @@ public  class EML200DataPackage extends AbstractDataPackage
       {
         String id = getAccessionNumber();
         Log.debug(30, "Serialize metadata into incomplete dir with docid "+id);
-        File newFile = fsds.saveIncompleteDataFile(id, sr);
+        File newFile = fsds.saveIncompleteFile(id, sr);
         if (newFile != null)
         {
            this.setSerializeLocalSuccess(true);

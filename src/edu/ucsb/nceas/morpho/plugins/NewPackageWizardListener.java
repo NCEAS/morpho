@@ -34,6 +34,7 @@ import edu.ucsb.nceas.morpho.datapackage.DataPackageFactory;
 import edu.ucsb.nceas.morpho.framework.DataPackageInterface;
 import edu.ucsb.nceas.morpho.framework.MorphoFrame;
 import edu.ucsb.nceas.morpho.util.Log;
+import edu.ucsb.nceas.morpho.util.XMLUtil;
 import edu.ucsb.nceas.utilities.XMLUtilities;
 
 /**
@@ -73,7 +74,7 @@ public class NewPackageWizardListener implements  DataPackageWizardListener
       adp.setLocation(AbstractDataPackage.TEMPLOCATION);
       openMorphoFrameForDataPackage(adp);
       Log.debug(45, "\n\n********** Wizard finished: DOM:");
-      Log.debug(45, XMLUtilities.getDOMTreeAsString(newDOM, false));
+      Log.debug(45, XMLUtil.getDOMTreeAsString(newDOM));
     }
     
     /**

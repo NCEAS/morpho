@@ -48,6 +48,7 @@ import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.StringReader;
 import java.nio.charset.Charset;
@@ -937,15 +938,14 @@ public class CodeDefnPanel extends JPanel implements WizardPageSubPanelAPI {
         // is Base64
         byte[] decodedData = Base64.decode(inline);
         ByteArrayInputStream bais = new ByteArrayInputStream(decodedData);
-        InputStreamReader isr = new InputStreamReader(bais);
         FileSystemDataStore fds3 = new FileSystemDataStore(morpho);
-        entityFile = fds3.saveTempDataFile(adp.getAccessionNumber(), isr);
+        entityFile = fds3.saveTempDataFile(adp.getAccessionNumber(), bais);
       }
       else {
         // is assumed to be text
         FileSystemDataStore fds2 = new FileSystemDataStore(morpho);
-        StringReader sr2 = new StringReader(inline);
-        entityFile = fds2.saveTempDataFile(adp.getAccessionNumber(), sr2);
+        InputStream inlineStream = new ByteArrayInputStream(inline.getBytes(Charset.forName("UTF-8")));
+        entityFile = fds2.saveTempDataFile(adp.getAccessionNumber(), inlineStream);
       }
     } else if (adp.getDistributionUrl(entityIndex, 0,0).length()>0) {
 

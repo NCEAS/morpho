@@ -32,6 +32,7 @@ import javax.swing.*;
 import javax.swing.border.*;
 import javax.swing.event.ChangeListener;
 import java.io.*;
+import java.nio.charset.Charset;
 import java.util.*;
 import java.util.concurrent.Executors;
 
@@ -834,15 +835,14 @@ public void setTopPanel(JPanel jp) {
 
             byte[] decodedData = Base64.decode(inline);
             ByteArrayInputStream bais = new ByteArrayInputStream(decodedData);
-            InputStreamReader isr = new InputStreamReader(bais);
             FileSystemDataStore fds3 = new FileSystemDataStore(morpho);
-            displayFile = fds3.saveTempDataFile(adp.getAccessionNumber(), isr);
+            displayFile = fds3.saveTempDataFile(adp.getAccessionNumber(), bais);
           }
           else {
             // is assumed to be text
             FileSystemDataStore fds2 = new FileSystemDataStore(morpho);
-            StringReader sr2 = new StringReader(inline);
-            displayFile = fds2.saveTempDataFile(adp.getAccessionNumber(), sr2);
+            InputStream inlineStream = new ByteArrayInputStream(inline.getBytes(Charset.forName("UTF-8")));
+            displayFile = fds2.saveTempDataFile(adp.getAccessionNumber(), inlineStream);
           }
         } else if (adp.getDistributionUrl(index, 0,0).length()>0) {
           // this is the case where there is a url link to the data

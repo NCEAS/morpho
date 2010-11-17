@@ -127,16 +127,6 @@ public class FileSystemDataStore extends DataStore
     return file;
   }
 
-  public File saveDataFile(String name, Reader file)
-  {
-    return saveDataFile(name, file, datadir);
-  }
-  
-  public File saveTempDataFile(String name, Reader file)
-  {
-    return saveDataFile(name, file, tempdir);
-  }
-
   public File saveDataFile(String name, InputStream file)
   {
     return saveDataFile(name, file, datadir);
@@ -165,9 +155,9 @@ public class FileSystemDataStore extends DataStore
    * @param file  source of the file
    * @return
    */
-  public File saveIncompleteDataFile(String name, Reader file)
+  public File saveIncompleteFile(String name, Reader file)
   {
-    return saveDataFile(name, file, incompletedir);
+    return saveFile(name, file, incompletedir);
   }
  
   
@@ -415,64 +405,6 @@ public class FileSystemDataStore extends DataStore
     Log.debug(20, "done");
   }
   
- /**
-  *  A variant of saveFile designed for use with Data Files.
-  *  This avoids the writing of files to Strings that is in saveFile
-  *  and allows for very large data files. (i.e. no file is put entirely
-  *  in memory)
-  */
-  public File saveDataFile(String name, Reader file, String rootDir)
-  {
-    BufferedWriter bwriter = null;
-    BufferedReader bfile = null;
-    try
-    {
-      String path = parseId(name);
-      String dirs = path.substring(0, path.lastIndexOf("/"));
-      File savefile = new File(rootDir + "/" + path); //the path to the file
-      File savedir = new File(rootDir + "/" + dirs); //the dir part of the path
-      if(!savefile.exists())
-      {//if the file isn't there create it.
-        try
-        {
-          savedir.mkdirs(); //create any directories
-        }
-        catch(Exception ee)
-        {
-          ee.printStackTrace();
-        }
-      }
-      
-      //save a temp file so that the id can be put in the file.
-      bfile = new BufferedReader(file);
-      bwriter = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(savefile), Charset.forName("UTF-8")));
-      int d = bfile.read();
-      while(d != -1)
-      {
-        bwriter.write(d); //write out everything in the reader
-        d = bfile.read();
-      }
-      bfile.close();
-      bwriter.flush();
-      bwriter.close();
-      return savefile;
-    }
-    catch(Exception e)
-    {
-      e.printStackTrace();
-      return null;
-    }
-    finally {
-      try{
-        if (bfile!=null) bfile.close();
-        if (bwriter!=null) bwriter.flush();
-        if (bwriter!=null) bwriter.close();
-      }
-      catch (Exception t) {}
-    }
-
-  }
-
  /**
   *  A variant of saveFile designed for use with Data Files.
   *  This avoids the writing of files to Strings that is in saveFile

@@ -46,6 +46,7 @@ import edu.ucsb.nceas.morpho.plugins.datapackagewizard.pages.PartyPage;
 import edu.ucsb.nceas.morpho.plugins.IncompleteDocInfo;
 import edu.ucsb.nceas.morpho.util.IncompleteDocSettings;
 import edu.ucsb.nceas.morpho.util.Log;
+import edu.ucsb.nceas.morpho.util.XMLUtil;
 import edu.ucsb.nceas.utilities.OrderedMap;
 import edu.ucsb.nceas.utilities.XMLUtilities;
 
@@ -396,7 +397,7 @@ public class DataPackageWizardPlugin implements PluginInterface,
               WizardSettings.EML210_SCHEMA_NAMESPACE);
 
           Log.debug(45, "\n\n********** Wizard finished: DOM:");
-          Log.debug(45, XMLUtilities.getDOMTreeAsString(newDOM, false));
+          Log.debug(45, XMLUtil.getDOMTreeAsString(newDOM));
 
         }
 
