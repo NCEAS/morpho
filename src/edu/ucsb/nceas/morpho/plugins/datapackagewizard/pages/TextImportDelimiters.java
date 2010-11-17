@@ -142,9 +142,8 @@ public class TextImportDelimiters extends AbstractUIPage implements TableModelLi
 		    	      "<p>If the columns indicated in the table are incorrect, try changing the assumed delimiter(s)</p>", 1);
 		    vbox.add(desc1);
 		    vbox.add(WidgetFactory.makeDefaultSpacer());
-		    vbox.add(WidgetFactory.makeDefaultSpacer());
 		    
-		    JPanel delimitersPanel = WidgetFactory.makePanel(1);	   
+		    JPanel delimitersPanel = WidgetFactory.makePanel(2);	   
 		    delimiterLabel = WidgetFactory.makeLabel("Delimiters:", false);
 		    delimitersPanel.add(delimiterLabel);
 		    tabCheckBox = WidgetFactory.makeCheckBox(TAB, false);
@@ -169,12 +168,9 @@ public class TextImportDelimiters extends AbstractUIPage implements TableModelLi
 		    delimitersPanel.add(otherDelimiterTextField);
 		    delimitersPanel.setBorder(new javax.swing.border.EmptyBorder(WizardSettings.PADDING, 0, 0,
 		            WizardSettings.PADDING));
-		    
 		   
 		    vbox.add(delimitersPanel);
 		    vbox.add(WidgetFactory.makeDefaultSpacer());
-		    vbox.add(WidgetFactory.makeDefaultSpacer());
-
 		    
 		    JPanel consecutivePanel = WidgetFactory.makePanel(1);	
 		    consecutiveCheckBox = WidgetFactory.makeCheckBox(TREATCONSECUTIVE, false);

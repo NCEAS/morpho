@@ -133,7 +133,7 @@ public class TextImportEntity extends AbstractUIPage
 		    vbox.add(desc1);
 		    vbox.add(WidgetFactory.makeDefaultSpacer());
 		    
-		    JPanel namePanel = WidgetFactory.makePanel(1);	   
+		    JPanel namePanel = WidgetFactory.makePanel();	   
 		    nameLabel = WidgetFactory.makeLabel("Title:", true);
 		    namePanel.add(nameLabel);
 		    TableNameTextField = WidgetFactory.makeOneLineTextField();
@@ -147,7 +147,7 @@ public class TextImportEntity extends AbstractUIPage
 		    vbox.add(namePanel);
 		    vbox.add(WidgetFactory.makeDefaultSpacer());
 		    
-		    JPanel tableDescriptionPanel = WidgetFactory.makePanel(1);	   
+		    JPanel tableDescriptionPanel = WidgetFactory.makePanel();	   
 		    JLabel Step1_TableDescriptionLabel = WidgetFactory.makeLabel("Description:", false);
 		    tableDescriptionPanel.add(Step1_TableDescriptionLabel);
 		    TableDescriptionTextField = WidgetFactory.makeOneLineTextField();
