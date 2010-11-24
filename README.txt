@@ -26,23 +26,6 @@ Morpho's main features include:
   5. Easy-to-use collaboration features via the KNB system      
 
 **************************************************
-ATTENTION ! --  ATTENTION !  -- ATTENTION !  (April 15, 2004)
-
-
-Many sections of Morpho Version 1.5 (and subsequent versions) have been completely rewritten to work with
-EML 2.0.0 (and newer versions of EML). EML 2.0.0 is a considerable change from
-the so-called "Beta6" version used in previous versions of Morpho. Previously, eml
-modules were separate documents linked by references to IDs in a set of "triples".
-In EML 2.0.0, all metadata is stored in a single XML document. This change resulted
-in the need for considerable changes in the Morpho code.
-
-A significant effort has also been spent in creating a new Data Package Wizard to
-make it easier for a user to create a package without learning all the details of
-EML 2.0.0. The user can also edit many of the features of a document using forms
-from the Data Package Wizard called up from the Documentation menu.
-
-
-**************************************************
 
 Further documentation is available under the help menu in Morpho (after it has been installed), or in the "docs"subdirectory of the Morpho installation (after it has been installed), or on the KNB website  (http://knb.ecoinformatics.org/software/morpho/).
 
