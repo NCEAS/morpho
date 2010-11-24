@@ -1,7 +1,7 @@
 Morpho: XML Metadata Client  
 ---------------------------
 
-Version: 1.8.1
+Version: 1.9.0
 
 Feedback and bugs to: morpho-dev@ecoinformatics.org
                       http://bugzilla.ecoinformatics.org
@@ -72,7 +72,7 @@ See http://bugzilla.ecoinformatics.org where we maintain a comprehensive list of
 Version History
 -------------------------------
 ***
-Version 1.8.1 is a significant update to 1.8.0 with new features and bug fixes. 
+Version 1.9.0 is a significant update to 1.8.0 with new features and bug fixes. 
 	Multi-lingual support has been added in this release, and language packs for English, Spanish, Portuguese, French, Japanese, and Chinese are included. 
 	Explicit UTF-8 character encoding is used across the application.
 	Data entity management has been enhanced to allow import and export of non-tabular data files as well as the ability to view and convert these other data entities into data tables with attribute-level metadata descriptions.
